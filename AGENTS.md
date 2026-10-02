@@ -2667,6 +2667,347 @@ Testing
 
 ---
 
+# 101. 禁止随意回退 git 代码与本地修改
+
+AI Agent 严禁：
+
+```text
+git reset --hard
+git checkout -- <file>
+git clean -fd
+git stash drop
+rm -rf <用户已存在的本地文件 / 目录>
+```
+
+未经 Human 明确授权，不得丢弃用户已存在的本地工作树内容。
+
+正确流程：
+
+```text
+发现冲突 / 需要重置
+  ↓
+先备份（git add -A + git stash create / git commit --no-verify 临时保存）
+  ↓
+在回复中明确告知「即将回退 X，原因 Y，影响 Z」
+  ↓
+等用户授权
+  ↓
+执行回退 / 删除
+```
+
+不允许：
+
+```text
+"为了一次性跑通，我帮你 git reset 了"
+"修起来太绕，我直接 checkout 了旧版本"
+"无关紧要的本地文件我清理掉了"
+```
+
+这些都属于「擅自破坏用户工作树」。AGENTS.md §93 Stop-the-Line 的延伸。
+
+---
+
+# 102. 每次任务执行完必须做一次代码评审并修复
+
+每个 AI Agent Task 完成后必须：
+
+```text
+1. Read 自身 Changed Files
+2. 跑 §89 Review Checklist
+3. 跑 pnpm typecheck / pnpm lint / pnpm test / pnpm build
+4. 修复发现的问题
+5. 在 Task Completion Report（§94）里输出 review 结论
+```
+
+Review 必须覆盖：
+
+```text
+[ ] 是否符合 Task？
+[ ] 是否超出 Scope？
+[ ] 是否违反 Architecture？
+[ ] 是否修改 Public API？
+[ ] 是否有测试？
+[ ] 是否有 Regression Test？
+[ ] 是否存在 any / unknown 未收窄？
+[ ] 是否存在 eval / new Function？
+[ ] 是否存在 Memory Leak？
+[ ] 是否有敏感信息？
+[ ] 是否增加不必要依赖？
+[ ] 是否影响 Bundle？
+[ ] 是否影响 Uni？
+[ ] 是否影响 Schema？
+[ ] 是否引入未使用 import / export / 变量？
+```
+
+不允许：
+
+```text
+"代码能跑就行了"
+"lint warning 不影响功能"
+"测试 skip 一下"
+"我先这样提交，TODO human 后面再看"
+```
+
+评审不过关的任务不能 DONE。
+
+---
+
+# 103. Bug 修复后必须记录，方便下一次避免
+
+每个 Bug 修复必须留下三份记录：
+
+```text
+1. Regression Test
+   写一个能稳定复现 Bug 的测试，先验证 fail，再修复代码，验证 pass
+
+2. Root Cause Note
+   记录根因在：
+   .ai/decisions/<NNNN>-*.md  (架构 / 协议类)
+   .ai/tasks/follow-up/<task-id>.md  (实现细节)
+
+3. Memory Entry
+   跨项目适用的根因：
+   → User Memory /Users/mac/.minimax/memory/user.md
+   → Agent Memory /Users/mac/.minimax/agents/<name>/memory/MEMORY.md
+   只在本项目适用：
+   → Project Memory AGENTS.md 或引用 topic file
+```
+
+Memory 三层判定流程：
+
+```text
+换用户结论会变？ → User Memory
+换项目结论仍成立？ → Agent Memory
+只在本项目成立？   → Project Memory
+```
+
+格式（参考 MEMORY.md 现有条目）：
+
+```text
+### <一句话根因> (<日期>)
+Type: gotcha | rule | profile | project
+**坑**: <现场现象>
+**根因**: <技术解释>
+**教训**: <通用 vs 项目特定>
+**反模式**: <要避开的写法>
+**适用范围**: <跨项目 / 同类型 / 本项目>
+**对应代码**: path/to/file.ts(line N)
+```
+
+不允许：
+
+```text
+只改代码不写 Regression Test
+只在脑子里记下「下次注意」
+不写 memory，跨任务丢根因
+```
+
+---
+
+# 104. 避免重复造轮子
+
+新增代码 / 新增依赖前必须先检索：
+
+```text
+1. workspace 内是否已有同类型工具？
+   pnpm ls <pkg-name>
+   grep -r "functionName" packages/
+
+2. 已装 dependency 是否已有对应 API？
+   pnpm ls --depth 0
+
+3. 标准库 / 已知模式是否有现成实现？
+   e.g. ts-pattern / lodash / @vue/reactivity / zod
+```
+
+禁止：
+
+```text
+明明 @vue/reactivity 已经装好，自己写 Proxy 响应式
+明明 zod 已经装好，自己手写类型校验
+明明 ts-pattern 已经装好，自己写 if-else 链匹配
+明明 changeset 已经装好，自己写 changelog 脚本
+```
+
+例外（必须有显式理由并记录到 ADR）：
+
+```text
+1. 现有实现性能 / 包体积 / 平台兼容性不达标
+2. 现有实现违反项目硬性约束（AGENTS.md / PRD）
+3. 现有 API 与新需求冲突，且无法扩展
+```
+
+理由 + Trade-off 必须写到 `.ai/decisions/` 留档。
+
+---
+
+# 105. 代码质量高标准
+
+AUI 代码不允许出现「凑合」字样。
+
+CI 必须通过的硬性门：
+
+```text
+pnpm typecheck     → 0 error
+pnpm lint          → 0 warning（warning 也算不过）
+pnpm test          → 100% pass（不允许 skip / only）
+pnpm build         → 0 error
+```
+
+PR 合并前：
+
+```text
+[ ] Self Review（§89 checklist）
+[ ] Review Agent（§88）独立验证
+[ ] Human Gate（§90 涉及架构 / Public API 时）
+[ ] 没有 unhandled TODO / FIXME
+[ ] 没有废弃的代码路径
+```
+
+工程标准：
+
+```text
+[ ] 一个文件 ≤ 400 行（除非有明确理由）
+[ ] 一个函数 > 60 行要拆
+[ ] 嵌套 ≤ 3 层
+[ ] 圈复杂度 ≤ 10
+```
+
+---
+
+# 106. 不要写废代码和啰嗦代码
+
+以下情况禁止出现：
+
+```text
+未被任何调用方引用的代码（包括 type / interface / function / class）
+注释掉的旧代码（git history 是历史，注释不是）
+仅为了对齐格式而存在的空行 / 注释
+描述代码「做了什么」而不解释「为什么」的注释
+冗余的类型断言（TS 已经能 infer）
+防御性 null check（类型已经保证非 null）
+同义词变量（userName / username 重复）
+早期 return 之后还能走到的不可能分支
+```
+
+提倡：
+
+```text
+代码即文档，函数命名自解释
+短函数（≤ 30 行最佳，≤ 60 行 OK）
+3 次重复再抽象（Rule of Three）
+优先删除，再考虑重构
+```
+
+遇到「可能以后会用」：
+
+```text
+git 历史保留即可
+不写到当前 working tree
+不预留死代码 / TODO 占位
+```
+
+---
+
+# 107. 不要出现未引用的变量 / 方法
+
+TypeScript 严格模式必须开启：
+
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUnusedPrivateClassMembers": true  // TS 5.x
+  }
+}
+```
+
+ESLint 必须开启：
+
+```js
+{
+  rules: {
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+  }
+}
+```
+
+以下情况必须立即删除：
+
+```text
+未使用的局部变量 / 常量
+未引用的函数（除非 exported 且有合理外部使用预期）
+未使用的私有方法 / 字段
+未使用的类型 / interface / type alias
+未使用的 enum 成员
+参数声明但不使用（用 _ 前缀表明「有意忽略」）
+```
+
+`_` 前缀用于表示有意忽略；普通命名遗漏 → 直接删，不是加下划线。
+
+---
+
+# 108. 不要出现未使用的 import / export
+
+ESLint 必须开启：
+
+```js
+{
+  rules: {
+    'unused-imports/no-unused-imports': 'error',     // eslint-plugin-unused-imports
+    'unused-imports/no-unused-vars': 'off',          // 交给 TS noUnusedLocals
+  }
+}
+```
+
+以下情况必须立即清理：
+
+```text
+未使用的 import（import X from 'Y' 但 X 没用上）
+未使用的 export（export const X 但外部没 import）
+type-only import 没用 import type（影响运行时 bundle）
+namespace import 但只用了其中一个 named export
+```
+
+例外（必须有 ADR 留档）：
+
+```text
+1. package 入口文件 (src/index.ts) 的 barrel re-export
+   用于外部 `@aui/protocol` 一次性导入
+2. 类型 / 常量作为公共 API 暴露（标记为 @public in jsdoc）
+3. 测试 fixture 的 setup 文件中注册全局
+```
+
+每次任务完成时跑：
+
+```bash
+pnpm turbo run lint
+pnpm turbo run typecheck
+```
+
+0 warning 即通过；不允许 skip / disable。
+
+---
+
+# 109. 补充规则生效范围
+
+#101 ~ #108 是对 #1 ~ #100 的代码质量与流程纪律强化：
+
+| 规则 | 对应原编号 |
+| --- | --- |
+| #101 禁止回退 | §93 Stop-the-Line 延伸 |
+| #102 任务后评审 | §88 Review Agent + §94 Agent 输出标准 |
+| #103 Bug 记录 | §47 Bug 修复标准 + §75 AI Context 标准 |
+| #104 避免重复造轮子 | §56 Dependency 原则 |
+| #105 代码质量高标准 | §92 Merge Gate |
+| #106 不写废代码 | §11 禁止无意义重构 + §69 Documentation |
+| #107 无未用变量 / 方法 | §46 测试原则（Behavior > Implementation Detail） |
+| #108 无未用 import / export | §12 TypeScript 标准 + §13 TypeScript 类型原则 |
+
+---
+
 # END
 
-AUI Agent 执行标准 v1.0.0
+AUI Agent 执行标准 v1.0.1（补充规则 #101-#109）
