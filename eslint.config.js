@@ -1,9 +1,10 @@
 // ESLint 9.x flat config. Foundation-stage baseline.
-// Per-package overrides (e.g. TS-ESLint, Vue rules) will land in later phases.
+// Phase 1+: typescript-eslint parser enables TS type-only syntax + project-aware rules.
 
 import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
 
-export default [
+export default tseslint.config(
   // Global ignores
   {
     ignores: [
@@ -18,10 +19,13 @@ export default [
     ],
   },
 
-  // Recommended JS baseline for all JS/TS/MJS/CJS files
+  // Recommended JS for all JS/MJS/CJS files
   js.configs.recommended,
 
-  // Project-wide language options
+  // Type-aware recommended rules for all TS/TSX
+  ...tseslint.configs.recommended,
+
+  // Project-wide language options + rule overrides
   {
     files: ['**/*.{js,mjs,cjs,ts,tsx}'],
     languageOptions: {
@@ -36,10 +40,12 @@ export default [
     rules: {
       // TypeScript handles unused vars strictly; let TS own this rule
       'no-unused-vars': 'off',
-      // Prefer const; allow let when reassignment is needed
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       'prefer-const': 'error',
-      // Use === over ==
       eqeqeq: ['error', 'always', { null: 'ignore' }],
     },
   },
-];
+);
