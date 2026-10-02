@@ -1,5 +1,5 @@
 {
-  "name": "@aui/runtime",
+  "name": "@snui/runtime",
   "version": "0.0.0",
   "private": true,
   "description": "AUI Runtime — schema interpreter, local state, binding, action registry, lifecycle, error, inspection.",
@@ -23,9 +23,9 @@
     "clean": "rm -rf dist .turbo coverage"
   },
   "dependencies": {
-    "@aui/protocol": "workspace:",
-    "@aui/schema": "workspace:",
-    "@aui/tokens": "workspace:"
+    "@snui/protocol": "workspace:",
+    "@snui/schema": "workspace:",
+    "@snui/tokens": "workspace:"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

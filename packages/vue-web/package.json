@@ -1,5 +1,5 @@
 {
-  "name": "@aui/vue-web",
+  "name": "@snui/vue-web",
   "version": "0.0.0",
   "private": true,
   "description": "AUI Vue Web Renderer — Vue 3 mapping for Runtime nodes to DOM. Phase 2 deliverable.",
@@ -23,9 +23,9 @@
     "clean": "rm -rf dist .turbo coverage"
   },
   "dependencies": {
-    "@aui/protocol": "workspace:",
-    "@aui/schema": "workspace:",
-    "@aui/runtime": "workspace:"
+    "@snui/protocol": "workspace:",
+    "@snui/schema": "workspace:",
+    "@snui/runtime": "workspace:"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

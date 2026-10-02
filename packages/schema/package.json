@@ -1,5 +1,5 @@
 {
-  "name": "@aui/schema",
+  "name": "@snui/schema",
   "version": "0.0.0",
   "private": true,
   "description": "AUI Schema — Zod-based schema validation, normalization, version handling. Source of truth for types.",
@@ -23,7 +23,7 @@
     "clean": "rm -rf dist .turbo coverage"
   },
   "dependencies": {
-    "@aui/protocol": "workspace:"
+    "@snui/protocol": "workspace:"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

@@ -1,5 +1,5 @@
 {
-  "name": "@aui/tokens",
+  "name": "@snui/tokens",
   "version": "0.0.0",
   "private": true,
   "description": "AUI Tokens — Primitive / Semantic / Component token cascade with Theme / Style / Density dimensions.",

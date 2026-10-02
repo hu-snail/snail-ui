@@ -1,5 +1,5 @@
 {
-  "name": "@aui/protocol",
+  "name": "@snui/protocol",
   "version": "0.0.0",
   "private": true,
   "description": "AUI Protocol — framework-agnostic UI definitions. Zero runtime deps, no Vue, no DOM.",

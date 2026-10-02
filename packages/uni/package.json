@@ -1,5 +1,5 @@
 {
-  "name": "@aui/uni",
+  "name": "@snui/uni",
   "version": "0.0.0",
   "private": true,
   "description": "AUI Uni Adapter — uni-app UI library bridging AUI Schema to H5 / Mini Program / App.",
@@ -23,9 +23,9 @@
     "clean": "rm -rf dist .turbo coverage"
   },
   "dependencies": {
-    "@aui/protocol": "workspace:",
-    "@aui/schema": "workspace:",
-    "@aui/runtime": "workspace:"
+    "@snui/protocol": "workspace:",
+    "@snui/schema": "workspace:",
+    "@snui/runtime": "workspace:"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

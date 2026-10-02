@@ -35,13 +35,13 @@ importers:
 
   packages/ai:
     dependencies:
-      '@aui/protocol':
+      '@snui/protocol':
         specifier: 'workspace:'
         version: link:../protocol
-      '@aui/runtime':
+      '@snui/runtime':
         specifier: 'workspace:'
         version: link:../runtime
-      '@aui/schema':
+      '@snui/schema':
         specifier: 'workspace:'
         version: link:../schema
     devDependencies:
@@ -69,13 +69,13 @@ importers:
 
   packages/runtime:
     dependencies:
-      '@aui/protocol':
+      '@snui/protocol':
         specifier: 'workspace:'
         version: link:../protocol
-      '@aui/schema':
+      '@snui/schema':
         specifier: 'workspace:'
         version: link:../schema
-      '@aui/tokens':
+      '@snui/tokens':
         specifier: 'workspace:'
         version: link:../tokens
     devDependencies:
@@ -91,7 +91,7 @@ importers:
 
   packages/schema:
     dependencies:
-      '@aui/protocol':
+      '@snui/protocol':
         specifier: 'workspace:'
         version: link:../protocol
     devDependencies:
@@ -119,13 +119,13 @@ importers:
 
   packages/uni:
     dependencies:
-      '@aui/protocol':
+      '@snui/protocol':
         specifier: 'workspace:'
         version: link:../protocol
-      '@aui/runtime':
+      '@snui/runtime':
         specifier: 'workspace:'
         version: link:../runtime
-      '@aui/schema':
+      '@snui/schema':
         specifier: 'workspace:'
         version: link:../schema
     devDependencies:
@@ -141,13 +141,13 @@ importers:
 
   packages/vue-web:
     dependencies:
-      '@aui/protocol':
+      '@snui/protocol':
         specifier: 'workspace:'
         version: link:../protocol
-      '@aui/runtime':
+      '@snui/runtime':
         specifier: 'workspace:'
         version: link:../runtime
-      '@aui/schema':
+      '@snui/schema':
         specifier: 'workspace:'
         version: link:../schema
     devDependencies:
