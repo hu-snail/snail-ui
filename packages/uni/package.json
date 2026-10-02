@@ -1,0 +1,35 @@
+{
+  "name": "@aui/uni",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AUI Uni Adapter — uni-app UI library bridging AUI Schema to H5 / Mini Program / App.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@aui/protocol": "workspace:",
+    "@aui/schema": "workspace:",
+    "@aui/runtime": "workspace:"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8",
+    "eslint": "^9.17.0"
+  }
+}

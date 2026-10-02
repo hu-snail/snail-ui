@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Turbo
+.turbo/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+._*
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Test
+.nyc_output
+coverage/
+*.lcov
+
+# Cache
+.eslintcache
+.cache/
+.parcel-cache/
+.next/
+
+# Changesets: ignore generated MDs, keep config/README
+.changeset/*.md
+!.changeset/config.json
+!.changeset/README.md
+!.changeset/*.md.bak

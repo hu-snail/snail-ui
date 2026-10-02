@@ -1,0 +1,24 @@
+# Build outputs
+dist/
+build/
+out/
+.turbo/
+coverage/
+
+# Dependencies
+node_modules/
+
+# Editor / OS metadata (macOS AppleDouble)
+**/._*
+.DS_Store
+
+# Lockfiles
+pnpm-lock.yaml
+
+# Changesets: ignore generated MDs, keep config
+.changeset/*.md
+!.changeset/config.json
+!.changeset/README.md
+
+# Generated build info
+*.tsbuildinfo
