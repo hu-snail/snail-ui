@@ -11,12 +11,12 @@
  *   - `UIEventBindingSchema` / `UIEventBinding` — DOM event → action id (AUI-PROTOCOL-003)
  *   - `UIActionSchema` / `UIAction` — declarative action reference (AUI-PROTOCOL-004)
  *   - `AIActionMetadataSchema` / `AIActionMetadata` — AI metadata sub-schema
+ *   - `UIAccessibilitySchema` / `UIAccessibility` — A11y metadata (AUI-PROTOCOL-005)
  *   - `UI_SCHEMA_TYPE` — canonical schema id prefix (`aui.page`)
  *   - `UI_SCHEMA_VERSION` — current UISchema version constant
  *   - `AUI_PROTOCOL_VERSION` — protocol package version constant
  *
  * Sibling tasks (placeholders replaced as they merge):
- *   - AUI-PROTOCOL-005: UIAccessibility
  *   - AUI-PROTOCOL-006: UICapability
  *   - future task: UIStateSchema
  */
@@ -54,3 +54,5 @@ export {
   type UIAction,
   type AIActionMetadata,
 } from './ui-action.js';
+
+export { UIAccessibilitySchema, type UIAccessibility } from './ui-accessibility.js';
