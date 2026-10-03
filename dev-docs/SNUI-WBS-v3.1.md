@@ -273,9 +273,10 @@ AUI-{模块}-{编号}
 | AUI-DOCS-010 | StyleSwitcher 按 end 过滤 Pack | 🔵 |
 | AUI-DOCS-011 | ThemeCopier 按 end 生成 snippet | 🔵 |
 | AUI-DOCS-012 | StylePackPreview（端专属 Pack）| 🔵 |
-| AUI-DOCS-013 | Style Pack 文档页（按 end 列表）| 🔵 |
-| AUI-DOCS-014 | AI 生态文档页（端感知）| 🔵 |
-| AUI-DOCS-015 | 文档站首页 / 介绍 / architecture / style-packs / ai 端独立重写 | 🔵 |
+| AUI-DOCS-013 | Style Pack 文档页（按 end 列表）| ✅ |
+| AUI-DOCS-014 | AI 生态文档页（端感知）| ✅ |
+| AUI-DOCS-015 | 文档站首页 / 介绍 / architecture / style-packs / ai 端独立重写 | ✅ |
+| AUI-DOCS-016 | vitepress prerender ClientOnly / per-component demo | ✅ (per-component demo.vue, commits dba53c3 + 382164c) |
 
 ---
 
