@@ -1,7 +1,10 @@
 # snail-aui 整体架构 v3.0
 
-**版本**：v3.0  
-**状态**：Active  
+> ⚠️ **本文档已被 Architecture v3.1 取代（Superseded by `dev-docs/SNUI-Architecture-v3.1.md`）**  
+> 请勿再据此做新功能决策。仅用于历史追溯。
+
+**版本**：v3.0
+**状态**：Superseded（被 SNUI-Architecture-v3.1.md 取代）  
 **对应**：PRD v3.0 / ADR-0001 / ADR-0002  
 **日期**：2026-10-03
 

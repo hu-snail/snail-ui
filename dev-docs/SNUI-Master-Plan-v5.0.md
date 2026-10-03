@@ -1,7 +1,10 @@
 # snail-aui Master Plan v5.0
 
-**版本**：v5.0  
-**状态**：Active（supersedes Master Plan v4.0）  
+> ⚠️ **本文档已被 Master Plan v5.1 取代（Superseded by `dev-docs/SNUI-Master-Plan-v5.1.md`）**  
+> 请勿再据此做新功能决策。仅用于历史追溯。
+
+**版本**：v5.0
+**状态**：Superseded（被 SNUI-Master-Plan-v5.1.md 取代）（supersedes Master Plan v4.0）  
 **架构**：Component First / Token First / Style Pack First / AI Native  
 **日期**：2026-10-03
 

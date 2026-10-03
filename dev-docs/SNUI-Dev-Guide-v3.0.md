@@ -1,7 +1,10 @@
 # snail-aui 开发指南 v3.0
 
+> ⚠️ **本文档已被 Dev Guide v3.1 取代（Superseded by `dev-docs/SNUI-Dev-Guide-v3.1.md`）**  
+> 请勿再据此做开发。仅用于历史追溯。
+
 **版本**：v3.0  
-**状态**：Active  
+**状态**：Superseded（被 SNUI-Dev-Guide-v3.1.md 取代）  
 **面向**：所有参与 snail-aui 开发的 AI Agent 和人工开发者  
 **日期**：2026-10-03
 

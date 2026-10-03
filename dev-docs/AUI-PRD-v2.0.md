@@ -1,10 +1,11 @@
 # AUI 产品需求文档 v2.0
 
-> ⚠️ **本文档已被 PRD v3.0 取代（Superseded by `dev-docs/SNUI-PRD-v3.0.md`）**  
-> 请勿再据此做新功能决策。仅用于历史追溯。
+> ⚠️ **本文档已被 PRD v3.1 取代（Superseded by `dev-docs/SNUI-PRD-v3.1.md`）**  
+> 请勿再据此做新功能决策。仅用于历史追溯。  
+> 历史路径：v2.0 → v3.0 → v3.1。
 
 **版本**：v2.0
-**状态**：Superseded（被 SNUI-PRD-v3.0.md 取代）
+**状态**：Superseded（被 SNUI-PRD-v3.1.md 取代）
 **文档性质**：产品需求 + 系统架构 + 包边界
 **目标**：作为 AUI 2.x 开发的唯一上游需求基线
 

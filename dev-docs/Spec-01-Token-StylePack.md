@@ -1,444 +1,280 @@
 # Spec-01：Token 系统与 Style Pack 规范
 
-**版本**：v1.1  
-**状态**：Active  
-**对应**：PRD v3.0 §3 / Architecture v3.0 §2.1-2.2 / ADR-0002  
+**版本**：v1.2  
+**状态**：Active（supersedes v1.1）  
+**对应**：PRD v3.1 / ADR-0002  
 **日期**：2026-10-03
 
 ---
 
-## 1. Token 三层级联
-
-### 1.1 层级关系
+## 1. Token 三层级联（@snui/tokens，统一底层）
 
 ```text
-Primitive Tokens   原始设计值，无语义意义
-      ↓
-Semantic Tokens    有语义的引用，指向 Primitive CSS 变量
-      ↓
-Component Tokens   组件级覆盖，Style 轴可替换整个此层
-      ↓
---sn-* 别名层      品牌变量，组件实际消费（唯一消费入口）
+Primitive Tokens   原始设计值，无语义
+              ──  @snui/tokens 输出
+              ↓
+Semantic Tokens    语义名 → Primitive CSS 变量引用
+              ↓
+Component Tokens   组件级
+              ↓
+--aui-* CSS 变量  原始层（跨端统一）
+
+              ┌─────────────────────────┐
+              │ @snui/tokens-web          │
+              │   --sn-web-button-radius  │
+              │     → var(--aui-button-radius) │
+              ├─────────────────────────┤
+              │ @snui/tokens-mp           │
+              │   --sn-mp-button-radius   │
+              │     → var(--aui-button-radius) │
+              └─────────────────────────┘
 ```
 
-**唯一消费规则**：组件 CSS 只能用 `var(--sn-*)` 变量。不允许直接引用 `--aui-*` 或字面量颜色值。
-
-### 1.2 三轴独立原则
-
-| 轴 | 覆盖范围 | 禁止覆盖 |
-|---|---|---|
-| Theme（Light/Dark） | Primitive 颜色 + Semantic 颜色 | 圆角、间距、尺寸 |
-| Style（Modern/iOS/...） | Primitive 圆角/阴影 + Component Token | 颜色、间距、字号 |
-| Density（Compact/Comfortable） | Primitive 间距/尺寸/字号 | 颜色、圆角 |
-
-### 1.3 CSS 变量命名规范（已对齐实际输出）
-
-> ⚠️ 下表是规范目标，部分变量需要通过 AUI-FOUND-001 地基任务补齐。
-
-**Primitive 层**（`@snui/tokens` resolver 实际输出）
-
-```css
---aui-color-{palette}-{ramp}        /* --aui-color-blue-500 */
---aui-spacing-{scale}               /* --aui-spacing-3 */
---aui-radius-{scale}                /* --aui-radius-md */
---aui-shadow-{scale}                /* --aui-shadow-md */
---aui-font-size-{scale}             /* --aui-font-size-md */
---aui-motion-duration-{scale}       /* --aui-motion-duration-base */
-```
-
-**Semantic 层**
-
-```css
---aui-color-action-primary
---aui-color-action-primary-hover
---aui-color-text-primary
---aui-color-text-secondary
---aui-color-text-disabled
---aui-color-background-surface
---aui-color-background-subtle
---aui-color-border-default
---aui-color-border-subtle
---aui-color-feedback-{success|warning|danger|info}
-```
-
-**Component 层**（需要 AUI-FOUND-001 补全）
-
-```css
-/* 按钮 */
---aui-button-height-tiny            /* 24px */
---aui-button-height-small           /* 32px */
---aui-button-height-medium          /* 36px */
---aui-button-height-large           /* 44px */
---aui-button-radius                 /* 6px */
---aui-button-font-size              /* 14px */
---aui-button-focus-ring             /* rgba(22,119,255,0.25) */
-
-/* 输入框 */
---aui-input-height-small
---aui-input-height-medium
---aui-input-height-large
---aui-input-radius
-
-/* 卡片 */
---aui-card-padding
---aui-card-radius
---aui-card-shadow
-```
-
-**--sn-* 别名层**（组件实际消费，一对一映射 --aui-*）
-
-```css
---sn-color-action-primary           → var(--aui-color-action-primary)
---sn-color-text-primary             → var(--aui-color-text-primary)
---sn-button-height-medium           → var(--aui-button-height-medium)
---sn-button-radius                  → var(--aui-button-radius)
---sn-button-focus-ring              → var(--aui-button-focus-ring)
-/* 以此类推 */
-```
-
-### 1.4 地基任务：Token 命名对齐（AUI-FOUND-001）
-
-当前问题：`SnButton` 消费的变量名（`--sn-radius-button`、`--sn-button-size-medium-height` 等）与 `@snui/tokens` 实际输出的变量名不匹配，导致组件依赖硬编码兜底值，风格切换无效。
-
-修复清单（执行顺序）：
-
-1. 在 `packages/tokens/src/component.ts` 中补全所有 Button / Input / Card 的 Component Token 字段
-2. 在 `packages/tokens/src/resolver.ts` 的 `emitComponentBindings` 中输出这些字段
-3. 在 `packages/tokens/styles/index.css` 中补充对应默认值
-4. 修改 `SnButton.vue` 使用新的标准变量名（`--sn-button-radius`、`--sn-button-height-medium` 等）
-5. 对齐 `sn-button.vue`（uni 端）
-6. 补充测试：Token 变量名存在于 `snCssVars()` 输出中
-
-**完成标准**：`snCssVars()` 输出中包含所有 Button 消费的 `--aui-button-*` 变量，组件 CSS 中无兜底字面量值（`var(--sn-x, LITERAL)` 中的 LITERAL 只允许 `transparent` / `inherit` / `currentColor`）。
+**关键变更**：v3.1 在统一底层之上增加两个独立别名层包，按端区分。
 
 ---
 
-## 2. Style Pack 系统
+## 2. 端别名层包（v3.1 新增）
 
-### 2.1 三层结构
-
-风格包不是纯 Token 覆盖。对于需要视觉人格（涂鸦、便签、抖音等）的风格，只改 Token 无法达到效果。因此 Style Pack 由三层构成：
+### 2.1 设计
 
 ```text
-Token 层          覆盖颜色 / 圆角 / 间距 / 字号（通过 snCssVars()）
-    +
-皮肤 CSS 层       .snui-skin-{name} 作用域下的 CSS，提供特效/字体/装饰
-    +
-资源层（可选）    字体文件 / SVG 纹理 / CSS 自定义属性
+@snui/tokens   --aui-button-radius: 6px        (统一底层)
+   │
+   ├─→ @snui/tokens-web   --sn-web-button-radius: var(--aui-button-radius)   (Web 独立 dist)
+   │
+   └─→ @snui/tokens-mp    --sn-mp-button-radius: var(--aui-button-radius)    (uni 独立 dist)
 ```
 
-**边界约束（硬性）**：
-
-- 皮肤 CSS **只能**操作视觉层（颜色、阴影、背景、字体、动画、伪元素）
-- 皮肤 CSS **不能**修改组件 DOM 结构、Props、事件、行为
-- 皮肤 CSS **只能**通过 `.snui-skin-{name}` 前缀 + 组件根元素的 `data-skin` 钩子选择，不能用深层 DOM 选择器
-
-### 2.2 StylePackDefinition 接口
-
-```ts
-export interface StylePackDefinition {
-  /** kebab-case 唯一标识 */
-  name: string
-  /** 用户可见的显示名 */
-  label: string
-  /** 描述（文档 / MCP 用） */
-  description?: string
-
-  // --- Token 层 ---
-  /** Theme 覆盖（只能覆盖颜色） */
-  theme?: ThemeDefinition
-  /** Style 覆盖（圆角/阴影/Component token） */
-  style: StyleDefinition
-  /** Density 覆盖（间距/尺寸，可选） */
-  density?: DensityDefinition
-
-  // --- 皮肤 CSS 层 ---
-  /**
-   * 皮肤 CSS 文件路径（相对于包根目录）。
-   * 内容必须以 .snui-skin-{name} 开头，不允许全局选择器。
-   */
-  skinCss?: string
-
-  // --- 资源层 ---
-  /** 额外需要预加载的字体或资源（URL 数组） */
-  resources?: string[]
-
-  /** 文档站预览缩略图 */
-  previewImage?: string
-}
-```
-
-### 2.3 皮肤钩子（组件侧）
-
-每个组件根元素需要添加皮肤钩子属性（AUI-FOUND-004 任务）：
-
-```vue
-<!-- SnButton.vue -->
-<button
-  :class="classList"
-  data-snui-component="button"
->
-```
-
-皮肤 CSS 通过这个属性选择：
-
-```css
-/* doodle.skin.css */
-.snui-skin-doodle [data-snui-component="button"] {
-  font-family: 'Comic Sans MS', 'Segoe UI', cursive;
-  border: 2px solid currentColor;
-  box-shadow: 3px 3px 0 currentColor;
-  border-radius: 2px;
-}
-
-.snui-skin-doodle [data-snui-component="button"]:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 currentColor;
-}
-```
-
-### 2.4 风格包激活方式
-
-**Web 端**（文档站 StyleSwitcher）：
-
-```ts
-function applyPack(pack: StylePackDefinition) {
-  // 1. 注入 Token 层
-  let styleEl = document.getElementById('snui-pack') as HTMLStyleElement | null
-  if (!styleEl) {
-    styleEl = document.createElement('style')
-    styleEl.id = 'snui-pack'
-    document.head.appendChild(styleEl)
-  }
-  styleEl.textContent = snCssVars({
-    theme: pack.theme,
-    style: pack.style,
-    density: pack.density,
-  })
-
-  // 2. 激活皮肤 CSS class
-  document.body.className = document.body.className
-    .replace(/\bsnui-skin-\S+/g, '')
-    .trim()
-  if (pack.name !== 'default') {
-    document.body.classList.add(`snui-skin-${pack.name}`)
-  }
-
-  // 3. 加载皮肤 CSS（如果有）
-  if (pack.skinCss) {
-    let skinEl = document.getElementById('snui-skin') as HTMLLinkElement | null
-    if (!skinEl) {
-      skinEl = document.createElement('link')
-      skinEl.id = 'snui-skin'
-      skinEl.rel = 'stylesheet'
-      document.head.appendChild(skinEl)
-    }
-    skinEl.href = pack.skinCss
-  } else {
-    document.getElementById('snui-skin')?.remove()
-  }
-}
-```
-
-**uni 端**（小程序 / App / H5）：
-
-小程序不支持 `:root`、`[data-theme]` 选择器。通过 ConfigProvider 组件传递 `skin` prop：
-
-```vue
-<!-- ConfigProvider.vue（uni 端） -->
-<view :class="['sn-config-provider', skin ? `snui-skin-${skin}` : '']">
-  <slot />
-</view>
-
-<!-- 使用 -->
-<sn-config-provider skin="doodle">
-  <sn-button type="primary">按钮</sn-button>
-</sn-config-provider>
-```
-
-uni 端皮肤 CSS 只声明组件 class 级别的覆盖，不依赖 `:root` 或属性选择器：
-
-```css
-/* doodle.uni.css — 在 ConfigProvider 的 scoped 外层 */
-.snui-skin-doodle .sn-button {
-  font-family: cursive;
-  border: 4rpx solid currentColor;
-  box-shadow: 6rpx 6rpx 0 currentColor;
-}
-```
-
-**项目集成（复制配置片段）**：
-
-```ts
-// main.ts（Web 端）
-import { snCssVars } from '@snui/tokens'
-import { iosPack } from '@snui/style-packs/ios'
-
-// Token 层
-const el = document.createElement('style')
-el.id = 'snui-pack'
-el.textContent = snCssVars({ theme: iosPack.theme, style: iosPack.style })
-document.head.appendChild(el)
-
-// 皮肤 CSS 层（如果该 Pack 有皮肤 CSS）
-// iOS 只有 Token 层，无需此步
-```
-
-### 2.5 官方 Pack 设计规格
-
-| Pack | Token 层 | 皮肤 CSS 层 | 交付阶段 |
-|---|---|---|---|
-| default | 现有 Modern 封装 | 无 | M2 |
-| dark | 现有 dark theme 封装 | 无 | M2 |
-| ios | 苹果蓝、大圆角、无阴影 | 无 | M2 |
-| doodle | 黑白主色、微小圆角 | 手写字体、2px 偏移阴影、hover 轻移 | M3 |
-| sticky-note | 暖黄背景色 | 偏转卡片阴影、无边框 | M3 |
-| taobao | 橙红主色、圆润圆角 | 价格数字字重、橙色高亮 | M4 |
-| douyin | 深色底、红青主色 | 霓虹 glow（text-shadow / box-shadow）| M4 |
-
-**ios Pack 示例**：
-
-```ts
-import type { StylePackDefinition } from '@snui/style-packs'
-
-export const iosPack: StylePackDefinition = {
-  name: 'ios',
-  label: 'iOS 风格',
-  description: '参考 Apple Human Interface Guidelines，大圆角，无阴影，细线边框，苹果蓝',
-  theme: {
-    name: 'ios-light',
-    semantic: {
-      action: {
-        primary: '#007AFF',
-        primaryHover: '#3395FF',
-      },
-    },
-  },
-  style: {
-    name: 'ios',
-    primitive: {
-      radius: { sm: '8px', md: '12px', lg: '16px', xl: '20px' },
-      shadow: { sm: 'none', md: 'none', lg: 'none', xl: 'none' },
-    },
-    component: {
-      button: { radius: 'var(--aui-radius-lg)' },
-      card:   { radius: 'var(--aui-radius-xl)', shadow: 'none' },
-      input:  { radius: 'var(--aui-radius-md)' },
-    },
-  },
-  // 无皮肤 CSS，iOS 风格仅 Token 层即可
-}
-```
-
-**doodle Pack 示例**：
-
-```ts
-export const doodlePack: StylePackDefinition = {
-  name: 'doodle',
-  label: '涂鸦风格',
-  description: '手绘感边框，手写字体，黑白主色配色，偏移阴影',
-  theme: {
-    name: 'doodle',
-    semantic: {
-      action: {
-        primary: '#1a1a1a',
-        primaryHover: '#333',
-      },
-      text: { primary: '#1a1a1a' },
-      background: { surface: '#fafaf8' },
-    },
-  },
-  style: {
-    name: 'doodle',
-    primitive: {
-      radius: { sm: '2px', md: '3px', lg: '4px', xl: '6px' },
-      shadow: {
-        sm: '2px 2px 0 #1a1a1a',
-        md: '3px 3px 0 #1a1a1a',
-        lg: '4px 4px 0 #1a1a1a',
-      },
-    },
-    component: {
-      button: { radius: 'var(--aui-radius-sm)', shadow: 'var(--aui-shadow-md)' },
-      card:   { radius: 'var(--aui-radius-md)', shadow: 'var(--aui-shadow-lg)' },
-    },
-  },
-  skinCss: '/packs/doodle.skin.css',   // 皮肤 CSS 路径
-}
-```
-
-### 2.6 Pack 开发约束（CI 可验证）
-
-1. `style.component` 只能覆盖 `ComponentTokens` 已声明的字段（`pack validate` 检查）
-2. `theme` 不包含非颜色字段（`pack validate` 检查）
-3. 皮肤 CSS 所有选择器必须以 `.snui-skin-{name}` 开头（lint 检查）
-4. 皮肤 CSS 不允许 `!important`（lint 检查）
-5. 每个 Pack 必须有 `description` 字段
-
-### 2.7 Pack 文件结构
+### 2.2 包结构
 
 ```text
-packages/style-packs/
+packages/tokens-web/
 ├── src/
-│   ├── index.ts              # 聚合导出
-│   ├── default.ts
-│   ├── ios.ts
-│   ├── dark.ts
-│   ├── doodle.ts             # Phase M3
-│   ├── sticky-note.ts        # Phase M3
-│   ├── taobao.ts             # Phase M4
-│   └── douyin.ts             # Phase M4
-├── skins/
-│   ├── doodle.skin.css       # 皮肤 CSS（按需，M3）
-│   ├── sticky-note.skin.css  # 皮肤 CSS（按需，M3）
-│   ├── taobao.skin.css
-│   └── douyin.skin.css
-├── resources/                # 字体等资源（M4）
+│   ├── index.ts        # 生成 --sn-web-* 别名层的工具函数
+│   └── variables.ts    # 显式列出所有 --sn-web-* 别名映射
+├── styles/
+│   └── index.css       # @snui/vue-web 消费入口：import '@snui/tokens-web/styles'
+├── package.json
+└── tsconfig.json
+
+packages/tokens-mp/
+├── src/
+│   ├── index.ts        # 生成 --sn-mp-* 别名层
+│   └── variables.ts
+├── styles/
+│   └── index.css       # @snui/uni 消费入口：import '@snui/tokens-mp/styles'
 ├── package.json
 └── tsconfig.json
 ```
 
----
+### 2.3 别名映射表（每个端独立维护）
 
-## 3. Token 使用示例
+**`tokens-web/src/variables.ts`**：
 
-### 3.1 组件内正确用法
+```ts
+export const snWebAliasMap: ReadonlyArray<[string, string]> = [
+  // ['--sn-web-button-radius', '--aui-button-radius'],
+  // ['--sn-web-button-height-medium', '--aui-button-height-medium'],
+  // ...
+]
 
-```css
-/* ✅ 通过 --sn-* 别名，兜底值只允许关键字 */
-.sn-button {
-  background-color: var(--sn-color-action-primary);
-  border-radius: var(--sn-button-radius);
-  height: var(--sn-button-height-medium);
+export function renderSnWebStyles(): string {
+  return snWebAliasMap.map(([a, b]) => `  ${a}: var(${b});`).join('\n')
 }
-
-/* ❌ 禁止：硬编码颜色 */
-.sn-button { background-color: #1677ff; }
-
-/* ❌ 禁止：兜底字面量颜色 */
-.sn-button { background-color: var(--sn-color-action-primary, #1677ff); }
-
-/* ❌ 禁止：直接引用 --aui-* */
-.sn-button { background-color: var(--aui-color-action-primary); }
 ```
 
-**兜底值允许的关键字**：`transparent`、`inherit`、`currentColor`。
+**`tokens-mp/src/variables.ts`**：
 
-### 3.2 验证方法
+```ts
+export const snMpAliasMap: ReadonlyArray<[string, string]> = [
+  // ['--sn-mp-button-radius', '--aui-button-radius'],
+  // ['--sn-mp-button-height-medium', '--aui-button-height-medium'],
+  // 注意：rpx 单位的 token 会在这里做 px → rpx 转换
+  // ...
+]
+```
 
-```bash
-# Token 对齐检查（AUI-FOUND-001 完成后）
-pnpm snui token check   # 检查所有组件 CSS 中无字面量颜色兜底
+### 2.4 rpx 转换（仅 tokens-mp）
 
-# Pack 合法性检查
-pnpm snui pack validate
+移动端使用 `rpx` 单位。tokens-mp 在生成别名时把 px 值转为 rpx：
+
+```ts
+// 示例：--aui-button-height-medium: 36px → --sn-mp-button-height-medium: 72rpx
+// 转换规则：rpx = (px / 375) * 750 (假设设计稿 375 宽)
+// 实际工程化由 tokens-mp 内部处理
 ```
 
 ---
 
-## 4. 修订记录
+## 3. 三层级联
+
+```text
+Primitive Tokens   原始值，无语义（颜色 / 间距 / 圆角 / 阴影 / 字号 / 动效 / 尺寸）
+      ↓
+Semantic Tokens    语义名 → Primitive CSS 变量引用（action-primary / text-primary）
+      ↓
+Component Tokens   组件级（button-radius / card-shadow / input-height-medium）
+      ↓
+--aui-* 原始层     跨端统一
+      ↓
+--sn-{end}-* 别名层  按端独立消费入口
+```
+
+**唯一消费规则**：
+
+- `@snui/vue-web` 组件只能用 `var(--sn-web-*)`
+- `@snui/uni` 组件只能用 `var(--sn-mp-*)`
+- 兜底值只允许 `transparent` / `inherit` / `currentColor`
+
+### 三轴独立
+
+| 轴 | 改什么 | 禁止 |
+|---|---|---|
+| Theme | 颜色（Primitive + Semantic）| 圆角、间距、尺寸 |
+| Style | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
+| Density | 间距 + 尺寸 + 字号 | 颜色、圆角 |
+
+---
+
+## 4. 端独立的 ComponentToken 字段
+
+按端可能有不同字段：
+
+| 字段 | Web（`--sn-web-*`） | uni（`--sn-mp-*`） |
+|---|---|---|
+| button-radius | ✅ | ✅ |
+| button-height-medium | ✅ 36px | ✅ 72rpx |
+| table-row-height | ✅ | ❌ |
+| list-item-height | ❌ | ✅ 88rpx |
+| dropdown-item-padding | ✅ 8px 16px | ❌ |
+| sidebar-item-height | ❌ | ✅ 100rpx |
+
+每个端独立维护各自的 ComponentToken 字段映射，互不影响。
+
+---
+
+## 5. Style Pack 系统（跨端共用）
+
+### 5.1 StylePackDefinition 接口（带 end 字段）
+
+```ts
+export interface StylePackDefinition {
+  name: string          // kebab-case 唯一标识
+  label: string         // 用户可见显示名
+  description?: string
+  /** 适用端。默认 'both'（两端都可用） */
+  end?: 'web' | 'mp' | 'both'
+
+  // Token 层（端无关）
+  theme?: ThemeDefinition
+  style: StyleDefinition
+  density?: DensityDefinition
+
+  // 皮肤 CSS 层（端无关，但应用时按 end 注入）
+  skinCss?: string
+
+  // 资源层
+  resources?: ReadonlyArray<string>
+
+  previewImage?: string
+}
+```
+
+### 5.2 端专属 Pack 示例
+
+```ts
+// mp-taobao（仅移动端可用）
+export const mpTaobaoPack: StylePackDefinition = {
+  name: 'mp-taobao',
+  label: '淘宝风格（移动）',
+  description: '橙红主色，圆润圆角，密集布局，适合电商 App',
+  end: 'mp',  // ← 仅移动端
+  theme: { /* ... */ },
+  style: { /* ... */ },
+  skinCss: '/packs/mp-taobao.skin.css',
+}
+```
+
+```ts
+// mp-douyin（仅移动端）
+export const mpDouyinPack: StylePackDefinition = {
+  name: 'mp-douyin',
+  label: '抖音风格（移动）',
+  description: '深色底，红青主色，霓虹 glow',
+  end: 'mp',
+  // ...
+}
+```
+
+跨端共用 Pack（两端都用）：
+
+```ts
+export const defaultPack: StylePackDefinition = {
+  name: 'default',
+  end: 'both',  // 默认值，可省略
+  // ...
+}
+```
+
+---
+
+## 6. 应用 Style Pack（按端）
+
+```ts
+import { snCssVars } from '@snui/tokens'
+
+// Web 端应用
+const css = snCssVars({
+  end: 'web',
+  theme: pack.theme,
+  style: pack.style,
+  density: pack.density,
+})
+
+// uni 端应用
+const css = snCssVars({
+  end: 'mp',
+  theme: pack.theme,
+  style: pack.style,
+  density: pack.density,
+})
+```
+
+`snCssVars()` 内部按 `end` 选择输出 `--sn-web-*` 或 `--sn-mp-*` 别名层（实际由 tokens-web / tokens-mp 的 CSS 文件负责，js 函数只生成 `--aui-*` 原始层 + 端无关的 alias 选择）。
+
+---
+
+## 7. 文档站 / AI 端感知
+
+| 模块 | Web 处理 | uni 处理 |
+|---|---|---|
+| 文档站左侧导航 | "Web 组件" 分组 | "uni-app 组件" 分组 |
+| 文档站 StyleSwitcher | 列出 `end: 'web' \| 'both'` 的 Pack | 列出 `end: 'mp' \| 'both'` 的 Pack |
+| MCP `list_components` | `end: 'web'` 返回 SnButton / SnTable / ... | `end: 'mp'` 返回 sn-button / sn-list / ... |
+| MCP `get_style_pack` | 验证 `pack.end` 包含 'web' | 验证 `pack.end` 包含 'mp' |
+| ai-meta.json | components 分组 `web: [...]` / `mp: [...]` | 同 |
+
+---
+
+## 8. 未来扩展（React 端）
+
+完全按 v3.1 模式：
+
+1. 新建 `packages/tokens-react/` —— 生成 `--sn-react-*` 别名层
+2. 新建 `packages/react-web/` —— React 组件实现
+3. 更新 `@snui/style-packs` Pack `end` 字段（如果 Pack 也支持 React）
+4. 更新 `@snui/cli` 公共组件列表
+6. 更新 `@snui/docs` 端导航（加 "React 组件" 分组）
+
+**未来端与现有端 0 行源代码复用**。
+
+---
+
+## 9. 修订记录
 
 | 版本 | 日期 | 变更 |
 |---|---|---|
-| v1.0 | 2026-10-03 | 初始版本（Style Pack = 纯 Token，有误） |
-| v1.1 | 2026-10-03 | 修正：Style Pack = Token + 皮肤 CSS + 资源三层；补充 Token 命名对齐问题和地基任务；补充 uni 端主题注入策略 |
+| v1.0 | 2026-10-03 | 初始（Style Pack = Token only） |
+| v1.1 | 2026-10-03 | Style Pack = Token + 皮肤 CSS + 资源三层 |
+| **v1.2** | 2026-10-03 | **双端独立 + 双 Token 别名层 + end 字段（Active）** |

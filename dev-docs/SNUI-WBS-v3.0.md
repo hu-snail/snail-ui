@@ -1,7 +1,10 @@
 # snail-aui WBS v3.0 — 工作分解结构
 
+> ⚠️ **本文档已被 WBS v3.1 取代（Superseded by `dev-docs/SNUI-WBS-v3.1.md`）**  
+> 请勿再据此认领 Task ID。仅用于历史追溯。
+
 **版本**：v3.0（supersedes WBS v2.0）  
-**状态**：Active  
+**状态**：Superseded（被 SNUI-WBS-v3.1.md 取代）  
 **对应**：Master Plan v5.0  
 **日期**：2026-10-03
 

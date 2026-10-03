@@ -1,7 +1,10 @@
 # snail-aui 产品需求文档 v3.0
 
-**版本**：v3.0  
-**状态**：Active（supersedes PRD v2.0）  
+> ⚠️ **本文档已被 PRD v3.1 取代（Superseded by `dev-docs/SNUI-PRD-v3.1.md`）**  
+> 请勿再据此做新功能决策。仅用于历史追溯。
+
+**版本**：v3.0
+**状态**：Superseded（被 SNUI-PRD-v3.1.md 取代）  
 **架构依据**：ADR-0001（Component First）+ ADR-0002（Style Pack 三层 + AI Layer）  
 **日期**：2026-10-03
 
