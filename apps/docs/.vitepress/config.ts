@@ -188,6 +188,20 @@ export default defineConfig({
         '@snui/ai',
       ],
     },
+    // Per-component demo.vue imports these workspace packages dynamically.
+    // Without explicit optimizeDeps entries, vite serves them on first request
+    // which can race with vitepress SSR — resulting in 'demo failed to load'
+    // on the client. Forcing them into optimizeDeps pre-bundles the imports.
+    optimizeDeps: {
+      include: [
+        '@snui/vue-web',
+        '@snui/uni',
+        '@snui/tokens',
+        '@snui/style-packs',
+        '@snui/ai',
+        'vue',
+      ],
+    },
   },
 
   head: [
