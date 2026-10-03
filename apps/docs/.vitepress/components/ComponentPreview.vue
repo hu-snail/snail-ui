@@ -4,28 +4,30 @@ import { useData } from 'vitepress';
 
 /**
  * ComponentPreview — runtime mount of a single AUI component into a
- * preview slot inside the docs. The framework bundle is loaded on demand;
- * each preview mounts its own Vue renderer (and disposes on unmount) so
- * multiple previews on the same page stay isolated.
+ * preview slot inside the docs. Each preview mounts its own Vue renderer
+ * (and disposes on unmount) so multiple previews on the same page stay
+ * isolated.
+ *
+ * Loading model:
+ *   - The framework bundle is shipped as IIFE (apps/docs/public/framework-{web,uni}.js)
+ *   - We inject a <script src="..."> tag ONCE per end and wait for the global
+ *     (window.AUI_WEB / window.AUI_UNI) to appear. Cached per-end via Promise.
+ *   - This is the only approach that works in VitePress dev (vite rejects
+ *     `import()` of /public/* files because they bypass the plugin pipeline).
  *
  * Per AGENTS.md #110, every component page must include at least one preview
  * — this component is the only sanctioned way to add one.
  */
 
 interface Props {
-  /** Which end to load — web uses @snui/vue-web, uni uses @snui/uni. */
   end?: 'web' | 'uni';
-  /** Component type id (e.g. `button`). Must be registered in the framework. */
   name: string;
-  /** Component-specific props (forwarded into the schema). */
   variant?: string;
   size?: string;
   disabled?: boolean;
   loading?: boolean;
   text?: string;
-  /** Show on dark surface (demonstrates theme tokens on dark bg). */
   dark?: boolean;
-  /** Override the auto-injected props by passing a literal object. */
   rawProps?: Record<string, unknown>;
 }
 
@@ -44,8 +46,6 @@ const target = ref<HTMLDivElement | null>(null);
 const status = ref<'booting' | 'mounted' | 'error'>('booting');
 const errorMsg = ref('');
 
-// `useData()` lets us know which end the route is currently documenting;
-// we honor an explicit `end` prop first, fall back to the URL.
 const { page } = useData();
 
 const effectiveEnd = (): 'web' | 'uni' => {
@@ -58,9 +58,44 @@ const effectiveEnd = (): 'web' | 'uni' => {
 let mountedApp: { unmount: () => void } | null = null;
 let lastEnd = '';
 
+/** Per-end load promise — caches the global module across previews. */
+const loadCache = new Map<'web' | 'uni', Promise<unknown>>();
+
+function loadFramework(end: 'web' | 'uni'): Promise<unknown> {
+  if (loadCache.has(end)) return loadCache.get(end)!;
+  const globalKey = end === 'uni' ? 'AUI_UNI' : 'AUI_WEB';
+  const scriptSrc = end === 'uni' ? '/framework-uni.js' : '/framework-web.js';
+
+  const promise = new Promise((resolve, reject) => {
+    const w = window as unknown as Record<string, unknown>;
+    if (w[globalKey]) {
+      resolve(w[globalKey]);
+      return;
+    }
+    const existing = document.querySelector(`script[data-aui-end="${end}"]`);
+    if (existing) {
+      existing.addEventListener('load', () => resolve(w[globalKey]));
+      existing.addEventListener('error', () =>
+        reject(new Error(`failed to load ${scriptSrc}`)),
+      );
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = scriptSrc;
+    script.async = false;
+    script.dataset.auiEnd = end;
+    script.addEventListener('load', () => resolve(w[globalKey]));
+    script.addEventListener('error', () =>
+      reject(new Error(`failed to load ${scriptSrc}`)),
+    );
+    document.head.appendChild(script);
+  });
+  loadCache.set(end, promise);
+  return promise;
+}
+
 async function mountPreview() {
   if (!target.value) return;
-  // Tear down a previous mount if any.
   if (mountedApp) {
     try {
       mountedApp.unmount();
@@ -72,22 +107,14 @@ async function mountPreview() {
 
   const end = effectiveEnd();
   lastEnd = end;
-  const url = end === 'uni' ? '/framework-uni.js' : '/framework-web.js';
 
   try {
-    const mod = (await import(/* @vite-ignore */ url)) as Record<string, unknown>;
-    const AUI = (mod.default ?? mod) as {
-      createComponentRegistry?: () => unknown;
-      createVueRenderer?: (opts: unknown) => { mount: (schema: unknown, target: Element) => { unmount: () => void } };
-      createUniRenderer?: (opts: unknown) => { mount: (schema: unknown, target: Element) => { unmount: () => void } };
-      Button?: unknown;
-    };
+    const mod = (await loadFramework(end)) as Record<string, unknown>;
 
-    // Wire registry + renderer — both web and uni expose the same shape.
-    const createRegistry = (AUI.createComponentRegistry ?? AUI.createUniRegistry) as () => {
+    const createRegistry = (mod.createComponentRegistry ?? mod.createUniRegistry) as () => {
       register: (type: string, component: unknown) => void;
     };
-    const createRenderer = (AUI.createVueRenderer ?? AUI.createUniRenderer) as (opts: unknown) => {
+    const createRenderer = (mod.createVueRenderer ?? mod.createUniRenderer) as (opts: unknown) => {
       mount: (schema: unknown, target: Element) => { unmount: () => void };
     };
 
@@ -96,8 +123,7 @@ async function mountPreview() {
     }
 
     const registry = createRegistry();
-    // The Button component is exported by both bundles under name 'button'.
-    const buttonCtor = (AUI as Record<string, unknown>)['Button'];
+    const buttonCtor = (mod as Record<string, unknown>)['Button'];
     if (buttonCtor) registry.register('button', buttonCtor);
 
     const renderer = createRenderer({ registry });
@@ -137,7 +163,6 @@ onBeforeUnmount(() => {
   }
 });
 
-// If the user navigates between previews, re-mount.
 watch(() => props.name, () => {
   if (target.value) mountPreview();
 });
