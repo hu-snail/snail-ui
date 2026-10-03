@@ -45,6 +45,9 @@ const sidebar = {
       text: 'Web (Vue 3)',
       items: [
         { text: 'Button', link: '/components/web/button' },
+        { text: 'Input', link: '/components/web/input' },
+        { text: 'Form', link: '/components/web/form' },
+        { text: 'Card', link: '/components/web/card' },
       ],
     },
   ],
@@ -103,6 +106,9 @@ const enSidebar = {
       text: 'Web (Vue 3)',
       items: [
         { text: 'Button', link: '/en/components/web/button' },
+        { text: 'Input', link: '/en/components/web/input' },
+        { text: 'Form', link: '/en/components/web/form' },
+        { text: 'Card', link: '/en/components/web/card' },
       ],
     },
   ],

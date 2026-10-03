@@ -3,10 +3,9 @@ import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useData } from 'vitepress';
 
 /**
- * ComponentPreview — runtime mount of a single AUI component into a
- * preview slot inside the docs. Each preview mounts its own Vue renderer
- * (and disposes on unmount) so multiple previews on the same page stay
- * isolated.
+ * ComponentPreview — runtime mount of AUI components into a preview slot
+ * inside the docs. Each preview mounts its own Vue renderer (and disposes
+ * on unmount) so multiple previews on the same page stay isolated.
  *
  * Loading model:
  *   - The framework bundle is shipped as IIFE (apps/docs/public/framework-{web,uni}.js)
@@ -15,8 +14,19 @@ import { useData } from 'vitepress';
  *   - This is the only approach that works in VitePress dev (vite rejects
  *     `import()` of /public/* files because they bypass the plugin pipeline).
  *
- * Per AGENTS.md #110, every component page must include at least one preview
- * — this component is the only sanctioned way to add one.
+ * Phase 2 (AUI-WEB-004..007) components are auto-discovered from the bundle:
+ * the bundle exposes Button / Input / Form / FormItem / Card on the global
+ * (more may be added in future phases without touching this file).
+ *
+ * `rawProps` lets authors pass arbitrary props that don't fit the typed
+ * Props table (e.g. placeholder, name, maxlength, type).
+ *
+ * `children` is a JSON-encoded UINode tree used for compound previews
+ * (e.g. Form containing FormItem containing Input). It is parsed once on
+ * mount; failures surface as visible error chips.
+ *
+ * Per AGENTS.md §110, every component page must include at least one
+ * preview — this component is the only sanctioned way to add one.
  */
 
 interface Props {
@@ -28,7 +38,16 @@ interface Props {
   loading?: boolean;
   text?: string;
   dark?: boolean;
+  /**
+   * Free-form props (e.g. `placeholder`, `name`, `type`, `title`, `description`,
+   * `clearable`). Object-spread over (string | number | boolean).
+   */
   rawProps?: Record<string, unknown>;
+  /**
+   * JSON-encoded UINode[] tree — used when a preview needs nested children
+   * (FormItem > Input, Card with body, etc.). Parsed via JSON.parse.
+   */
+  children?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
   text: undefined,
   dark: false,
   rawProps: undefined,
+  children: undefined,
 });
 
 const target = ref<HTMLDivElement | null>(null);
@@ -94,13 +114,54 @@ function loadFramework(end: 'web' | 'uni'): Promise<unknown> {
   return promise;
 }
 
+/** Components exposed by every official framework bundle (web + uni). */
+const BUNDLED_COMPONENTS = [
+  'Button',
+  'Input',
+  'Form',
+  'FormItem',
+  'Card',
+] as const;
+
+function buildSchema(): { version: string; root: Record<string, unknown> } {
+  const componentProps: Record<string, unknown> = { ...(props.rawProps ?? {}) };
+  if (props.variant !== undefined) componentProps.variant = props.variant;
+  if (props.size !== undefined) componentProps.size = props.size;
+  if (props.disabled) componentProps.disabled = true;
+  if (props.loading) componentProps.loading = true;
+  if (props.text !== undefined) componentProps.text = props.text;
+
+  const root: Record<string, unknown> = {
+    id: `${props.name}-preview`,
+    type: props.name,
+    props: componentProps,
+  };
+
+  if (props.children) {
+    try {
+      const parsed = JSON.parse(props.children);
+      if (Array.isArray(parsed)) {
+        root.children = parsed;
+      } else {
+        throw new Error('children must be a JSON array of UINode objects');
+      }
+    } catch (err) {
+      throw new Error(
+        `ComponentPreview: invalid children JSON — ${(err as Error).message}`,
+      );
+    }
+  }
+
+  return { version: '1.0.0', root };
+}
+
 async function mountPreview() {
   if (!target.value) return;
   if (mountedApp) {
     try {
       mountedApp.unmount();
     } catch {
-      // ignore secondary errors
+      // ignore
     }
     mountedApp = null;
   }
@@ -111,39 +172,35 @@ async function mountPreview() {
   try {
     const mod = (await loadFramework(end)) as Record<string, unknown>;
 
-    const createRegistry = (mod.createComponentRegistry ?? mod.createUniRegistry) as () => {
+    const createRegistry = (mod.createComponentRegistry ??
+      mod.createUniRegistry) as () => {
       register: (type: string, component: unknown) => void;
     };
-    const createRenderer = (mod.createVueRenderer ?? mod.createUniRenderer) as (opts: unknown) => {
-      mount: (schema: unknown, target: Element) => { unmount: () => void };
+    const createRenderer = (mod.createVueRenderer ??
+      mod.createUniRenderer) as (opts: unknown) => {
+      mount: (
+        schema: unknown,
+        target: Element,
+      ) => { unmount: () => void };
     };
 
     if (!createRegistry || !createRenderer) {
-      throw new Error(`framework bundle (${end}) missing createComponentRegistry / createVueRenderer`);
+      throw new Error(
+        `framework bundle (${end}) missing createComponentRegistry / createVueRenderer`,
+      );
     }
 
     const registry = createRegistry();
-    const buttonCtor = (mod as Record<string, unknown>)['Button'];
-    if (buttonCtor) registry.register('button', buttonCtor);
+    // Auto-register every bundled official component. Authors can reference
+    // any of them in `name` or as a nested type inside `children`.
+    for (const ctorName of BUNDLED_COMPONENTS) {
+      const ctor = mod[ctorName];
+      if (ctor) registry.register(ctorName.toLowerCase(), ctor);
+    }
 
     const renderer = createRenderer({ registry });
 
-    const componentProps: Record<string, unknown> = props.rawProps ?? {};
-    if (props.variant !== undefined) componentProps.variant = props.variant;
-    if (props.size !== undefined) componentProps.size = props.size;
-    if (props.disabled) componentProps.disabled = true;
-    if (props.loading) componentProps.loading = true;
-    if (props.text !== undefined) componentProps.text = props.text;
-
-    const schema = {
-      version: '1.0.0',
-      root: {
-        id: `${props.name}-preview`,
-        type: props.name,
-        props: componentProps,
-      },
-    };
-
+    const schema = buildSchema();
     mountedApp = renderer.mount(schema, target.value);
     status.value = 'mounted';
   } catch (e) {
@@ -163,9 +220,12 @@ onBeforeUnmount(() => {
   }
 });
 
-watch(() => props.name, () => {
-  if (target.value) mountPreview();
-});
+watch(
+  () => [props.name, props.variant, props.size, props.disabled, props.loading, props.text, props.rawProps, props.children, props.end],
+  () => {
+    if (target.value) mountPreview();
+  },
+);
 </script>
 
 <template>

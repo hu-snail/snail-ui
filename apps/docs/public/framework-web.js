@@ -18,16 +18,20 @@ var AUI_WEB = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // packages/vue-web/src/index.ts
+  // ../../packages/vue-web/src/index.ts
   var src_exports = {};
   __export(src_exports, {
     AUI_VUE_WEB_VERSION: () => AUI_VUE_WEB_VERSION,
     Button: () => Button,
+    Card: () => Card,
+    Form: () => Form,
+    FormItem: () => FormItem,
+    Input: () => Input,
     createComponentRegistry: () => createComponentRegistry,
     createVueRenderer: () => createVueRenderer
   });
 
-  // packages/vue-web/src/registry.ts
+  // ../../packages/vue-web/src/registry.ts
   function createComponentRegistry(initial = /* @__PURE__ */ new Map()) {
     const components = new Map(initial);
     return {
@@ -55,7 +59,7 @@ var AUI_WEB = (() => {
     };
   }
 
-  // node_modules/.pnpm/@vue+shared@3.5.43/node_modules/@vue/shared/dist/shared.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+shared@3.5.43/node_modules/@vue/shared/dist/shared.esm-bundler.js
   // @__NO_SIDE_EFFECTS__
   function makeMap(str) {
     const map3 = /* @__PURE__ */ Object.create(null);
@@ -309,7 +313,7 @@ var AUI_WEB = (() => {
     return String(a) === String(b);
   }
 
-  // node_modules/.pnpm/@vue+reactivity@3.5.43/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+reactivity@3.5.43/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js
   function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
   }
@@ -1689,6 +1693,58 @@ var AUI_WEB = (() => {
   function isRef(r) {
     return r ? r["__v_isRef"] === true : false;
   }
+  // @__NO_SIDE_EFFECTS__
+  function ref(value) {
+    return createRef(value, false);
+  }
+  function createRef(rawValue, shallow) {
+    if (/* @__PURE__ */ isRef(rawValue)) {
+      return rawValue;
+    }
+    return new RefImpl(rawValue, shallow);
+  }
+  var RefImpl = class {
+    constructor(value, isShallow2) {
+      this.dep = new Dep();
+      this["__v_isRef"] = true;
+      this["__v_isShallow"] = false;
+      this._rawValue = isShallow2 ? value : /* @__PURE__ */ toRaw(value);
+      this._value = isShallow2 ? value : toReactive(value);
+      this["__v_isShallow"] = isShallow2;
+    }
+    get value() {
+      if (true) {
+        this.dep.track({
+          target: this,
+          type: "get",
+          key: "value"
+        });
+      } else {
+        this.dep.track();
+      }
+      return this._value;
+    }
+    set value(newValue) {
+      const oldValue = this._rawValue;
+      const useDirectValue = this["__v_isShallow"] || /* @__PURE__ */ isShallow(newValue) || /* @__PURE__ */ isReadonly(newValue);
+      newValue = useDirectValue ? newValue : /* @__PURE__ */ toRaw(newValue);
+      if (hasChanged(newValue, oldValue)) {
+        this._rawValue = newValue;
+        this._value = useDirectValue ? newValue : toReactive(newValue);
+        if (true) {
+          this.dep.trigger({
+            target: this,
+            type: "set",
+            key: "value",
+            newValue,
+            oldValue
+          });
+        } else {
+          this.dep.trigger();
+        }
+      }
+    }
+  };
   function unref(ref2) {
     return /* @__PURE__ */ isRef(ref2) ? ref2.value : ref2;
   }
@@ -1800,7 +1856,7 @@ var AUI_WEB = (() => {
         return traverse(source2, 1);
       return traverse(source2);
     };
-    let effect;
+    let effect2;
     let getter;
     let cleanup;
     let boundCleanup;
@@ -1840,7 +1896,7 @@ var AUI_WEB = (() => {
             }
           }
           const currentEffect = activeWatcher;
-          activeWatcher = effect;
+          activeWatcher = effect2;
           try {
             return call ? call(source, 3, [boundCleanup]) : source(boundCleanup);
           } finally {
@@ -1859,9 +1915,9 @@ var AUI_WEB = (() => {
     }
     const scope = getCurrentScope();
     const watchHandle = () => {
-      effect.stop();
+      effect2.stop();
       if (scope && scope.active) {
-        remove(scope.effects, effect);
+        remove(scope.effects, effect2);
       }
     };
     if (once && cb) {
@@ -1874,17 +1930,17 @@ var AUI_WEB = (() => {
     }
     let oldValue = isMultiSource ? new Array(source.length).fill(INITIAL_WATCHER_VALUE) : INITIAL_WATCHER_VALUE;
     const job = (immediateFirstRun) => {
-      if (!(effect.flags & 1) || !effect.dirty && !immediateFirstRun) {
+      if (!(effect2.flags & 1) || !effect2.dirty && !immediateFirstRun) {
         return;
       }
       if (cb) {
-        const newValue = effect.run();
+        const newValue = effect2.run();
         if (immediateFirstRun || deep || forceTrigger || (isMultiSource ? newValue.some((v, i) => hasChanged(v, oldValue[i])) : hasChanged(newValue, oldValue))) {
           if (cleanup) {
             cleanup();
           }
           const currentWatcher = activeWatcher;
-          activeWatcher = effect;
+          activeWatcher = effect2;
           try {
             const args = [
               newValue,
@@ -1902,43 +1958,43 @@ var AUI_WEB = (() => {
           }
         }
       } else {
-        effect.run();
+        effect2.run();
       }
     };
     if (augmentJob) {
       augmentJob(job);
     }
-    effect = new ReactiveEffect(getter);
-    effect.scheduler = scheduler ? () => scheduler(job, false) : job;
-    boundCleanup = (fn) => onWatcherCleanup(fn, false, effect);
-    cleanup = effect.onStop = () => {
-      const cleanups = cleanupMap.get(effect);
+    effect2 = new ReactiveEffect(getter);
+    effect2.scheduler = scheduler ? () => scheduler(job, false) : job;
+    boundCleanup = (fn) => onWatcherCleanup(fn, false, effect2);
+    cleanup = effect2.onStop = () => {
+      const cleanups = cleanupMap.get(effect2);
       if (cleanups) {
         if (call) {
           call(cleanups, 4);
         } else {
           for (const cleanup2 of cleanups) cleanup2();
         }
-        cleanupMap.delete(effect);
+        cleanupMap.delete(effect2);
       }
     };
     if (true) {
-      effect.onTrack = options.onTrack;
-      effect.onTrigger = options.onTrigger;
+      effect2.onTrack = options.onTrack;
+      effect2.onTrigger = options.onTrigger;
     }
     if (cb) {
       if (immediate) {
         job(true);
       } else {
-        oldValue = effect.run();
+        oldValue = effect2.run();
       }
     } else if (scheduler) {
       scheduler(job.bind(null, true), true);
     } else {
-      effect.run();
+      effect2.run();
     }
-    watchHandle.pause = effect.pause.bind(effect);
-    watchHandle.resume = effect.resume.bind(effect);
+    watchHandle.pause = effect2.pause.bind(effect2);
+    watchHandle.resume = effect2.resume.bind(effect2);
     watchHandle.stop = watchHandle;
     return watchHandle;
   }
@@ -1975,7 +2031,7 @@ var AUI_WEB = (() => {
     return value;
   }
 
-  // node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js
   var stack = [];
   function pushWarningContext(vnode) {
     stack.push(vnode);
@@ -5899,17 +5955,17 @@ For more details, see https://link.vuejs.org/feature-flags.`
         }
       };
       instance.scope.on();
-      const effect = instance.effect = new ReactiveEffect(componentUpdateFn);
+      const effect2 = instance.effect = new ReactiveEffect(componentUpdateFn);
       instance.scope.off();
-      const update = instance.update = effect.run.bind(effect);
-      const job = instance.job = effect.runIfDirty.bind(effect);
+      const update = instance.update = effect2.run.bind(effect2);
+      const job = instance.job = effect2.runIfDirty.bind(effect2);
       job.i = instance;
       job.id = instance.uid;
-      effect.scheduler = () => queueJob(job);
+      effect2.scheduler = () => queueJob(job);
       toggleRecurse(instance, true);
       if (true) {
-        effect.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
-        effect.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
+        effect2.onTrack = instance.rtc ? (e) => invokeArrayFns(instance.rtc, e) : void 0;
+        effect2.onTrigger = instance.rtg ? (e) => invokeArrayFns(instance.rtg, e) : void 0;
       }
       update();
     };
@@ -6516,12 +6572,12 @@ For more details, see https://link.vuejs.org/feature-flags.`
   function resolveChildrenNamespace({ type, props }, currentNamespace) {
     return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
   }
-  function toggleRecurse({ effect, job }, allowed) {
+  function toggleRecurse({ effect: effect2, job }, allowed) {
     if (allowed) {
-      effect.flags |= 32;
+      effect2.flags |= 32;
       job.flags |= 4;
     } else {
-      effect.flags &= -33;
+      effect2.flags &= -33;
       job.flags &= -5;
     }
   }
@@ -7641,7 +7697,7 @@ Component that was made reactive: `,
   var version = "3.5.43";
   var warn2 = true ? warn$1 : NOOP;
 
-  // node_modules/.pnpm/@vue+runtime-dom@3.5.43/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+runtime-dom@3.5.43/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js
   var policy = void 0;
   var tt = typeof window !== "undefined" && window.trustedTypes;
   if (tt) {
@@ -8193,7 +8249,7 @@ Expected function or array of functions, received type ${typeof value}.`
     return container;
   }
 
-  // node_modules/.pnpm/vue@3.5.43_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-bundler.js
+  // ../../node_modules/.pnpm/vue@3.5.43_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-bundler.js
   function initDev() {
     {
       initCustomFormatter();
@@ -8203,7 +8259,7 @@ Expected function or array of functions, received type ${typeof value}.`
     initDev();
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/external.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/external.js
   var external_exports = {};
   __export(external_exports, {
     $brand: () => $brand,
@@ -8466,7 +8522,7 @@ Expected function or array of functions, received type ${typeof value}.`
     xor: () => xor
   });
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/index.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/index.js
   var core_exports2 = {};
   __export(core_exports2, {
     $ZodAny: () => $ZodAny,
@@ -8783,7 +8839,7 @@ Expected function or array of functions, received type ${typeof value}.`
     withParser: () => withParser
   });
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/util.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/util.js
   var util_exports = {};
   __export(util_exports, {
     BIGINT_FORMAT_RANGES: () => BIGINT_FORMAT_RANGES,
@@ -9626,7 +9682,7 @@ Expected function or array of functions, received type ${typeof value}.`
     return fn;
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/core.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/core.js
   var _a;
   var NEVER = /* @__PURE__ */ Object.freeze({
     status: "aborted"
@@ -9748,7 +9804,7 @@ Expected function or array of functions, received type ${typeof value}.`
     return globalConfig;
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/errors.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/errors.js
   function _getMessage() {
     const internals = this._zod;
     internals.message ?? (internals.message = JSON.stringify(internals.def, jsonStringifyReplacer, 2));
@@ -9940,7 +9996,7 @@ Expected function or array of functions, received type ${typeof value}.`
     return lines.join("\n");
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/parse.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/parse.js
   function finalizeParams(callee, params) {
     return { callee: params?.callee ?? callee, Err: params?.Err };
   }
@@ -10100,7 +10156,7 @@ Expected function or array of functions, received type ${typeof value}.`
   };
   var safeDecodeAsync = /* @__PURE__ */ _safeDecodeAsync($ZodRealError);
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/regexes.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/regexes.js
   var regexes_exports = {};
   __export(regexes_exports, {
     anyString: () => anyString,
@@ -10272,7 +10328,7 @@ Expected function or array of functions, received type ${typeof value}.`
   var sha512_base64 = /* @__PURE__ */ fixedBase64(86, "==");
   var sha512_base64url = /* @__PURE__ */ fixedBase64url(86);
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/checks.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/checks.js
   var $ZodCheck = /* @__PURE__ */ $constructor("$ZodCheck", (inst, def2) => {
     var _a3;
     inst._zod ?? (inst._zod = {});
@@ -10748,7 +10804,7 @@ Expected function or array of functions, received type ${typeof value}.`
     };
   });
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/doc.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/doc.js
   var Doc = class {
     constructor(args = [], closed = {}) {
       this.content = [];
@@ -10789,14 +10845,14 @@ ${content.join("\n")}
     }
   };
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/versions.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/versions.js
   var version2 = {
     major: 4,
     minor: 6,
     patch: 5
   };
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/schemas.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/schemas.js
   var $ZodType = /* @__PURE__ */ $constructor("$ZodType", (inst, def2) => {
     var _a3;
     inst ?? (inst = {});
@@ -13210,7 +13266,7 @@ ${content.join("\n")}
     }
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/memoizer.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/memoizer.js
   var $ZodCyclicError = class extends Error {
     constructor() {
       super(`Cannot parse a reference cycle that closes through a transform`);
@@ -13484,7 +13540,7 @@ ${content.join("\n")}
     return backEdges !== void 0 && isRef2(value) && backEdges.has(value);
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/index.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/index.js
   var locales_exports = {};
   __export(locales_exports, {
     ar: () => ar_default,
@@ -13552,7 +13608,7 @@ ${content.join("\n")}
     zhTW: () => zh_TW_default
   });
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ar.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ar.js
   var error = () => {
     const Sizable = {
       string: { unit: "\u062D\u0631\u0641", verb: "\u0623\u0646 \u064A\u062D\u0648\u064A" },
@@ -13664,7 +13720,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/az.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/az.js
   var error2 = () => {
     const Sizable = {
       string: { unit: "simvol", verb: "olmal\u0131d\u0131r" },
@@ -13775,7 +13831,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/be.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/be.js
   function getBelarusianPlural(count, one, few, many) {
     const absCount = Math.abs(count);
     const lastDigit = absCount % 10;
@@ -13944,7 +14000,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/bg.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/bg.js
   var error4 = () => {
     const Sizable = {
       string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0430", verb: "\u0434\u0430 \u0441\u044A\u0434\u044A\u0440\u0436\u0430" },
@@ -14070,7 +14126,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/bn.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/bn.js
   var error5 = () => {
     const Sizable = {
       string: { unit: "\u0985\u0995\u09CD\u09B7\u09B0", verb: "\u09A5\u09BE\u0995\u09A4\u09C7 \u09B9\u09AC\u09C7" },
@@ -14184,7 +14240,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ca.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ca.js
   var error6 = () => {
     const Sizable = {
       string: { unit: "car\xE0cters", verb: "contenir" },
@@ -14297,7 +14353,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ckb.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ckb.js
   var error7 = () => {
     const Sizable = {
       string: { unit: "\u067E\u06CC\u062A", verb: "\u0628\u06CE\u062A" },
@@ -14430,7 +14486,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/cs.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/cs.js
   var error8 = () => {
     const Sizable = {
       string: { unit: "znak\u016F", verb: "m\xEDt" },
@@ -14547,7 +14603,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/da.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/da.js
   var error9 = () => {
     const Sizable = {
       string: { unit: "tegn", verb: "havde" },
@@ -14668,7 +14724,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/de.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/de.js
   var error10 = () => {
     const Sizable = {
       string: { unit: "Zeichen", verb: "zu haben" },
@@ -14782,7 +14838,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/el.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/el.js
   var error11 = () => {
     const Sizable = {
       string: { unit: "\u03C7\u03B1\u03C1\u03B1\u03BA\u03C4\u03AE\u03C1\u03B5\u03C2", verb: "\u03BD\u03B1 \u03AD\u03C7\u03B5\u03B9" },
@@ -14895,7 +14951,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/en.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/en.js
   var error12 = () => {
     const Sizable = {
       string: { unit: "characters", verb: "to have" },
@@ -15020,7 +15076,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/eo.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/eo.js
   var error13 = () => {
     const Sizable = {
       string: { unit: "karaktrojn", verb: "havi" },
@@ -15135,7 +15191,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/es.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/es.js
   var error14 = () => {
     const Sizable = {
       string: { unit: "caracteres", verb: "tener" },
@@ -15272,7 +15328,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fa.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fa.js
   var error15 = () => {
     const Sizable = {
       string: { unit: "\u06A9\u0627\u0631\u0627\u06A9\u062A\u0631", verb: "\u062F\u0627\u0634\u062A\u0647 \u0628\u0627\u0634\u062F" },
@@ -15392,7 +15448,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fi.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fi.js
   var error16 = () => {
     const Sizable = {
       string: { unit: "merkki\xE4", subject: "merkkijonon" },
@@ -15510,7 +15566,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fr.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fr.js
   var error17 = () => {
     const Sizable = {
       string: { unit: "caract\xE8res", verb: "avoir" },
@@ -15640,7 +15696,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fr-CA.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/fr-CA.js
   var error18 = () => {
     const Sizable = {
       string: { unit: "caract\xE8res", verb: "avoir" },
@@ -15753,7 +15809,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/gu.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/gu.js
   var error19 = () => {
     const Sizable = {
       string: { unit: "\u0A85\u0A95\u0ACD\u0AB7\u0AB0", verb: "\u0AB9\u0ACB\u0AB5\u0ABE \u0A9C\u0ACB\u0A88\u0A8F" },
@@ -15867,7 +15923,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/he.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/he.js
   var error20 = () => {
     const TypeNames = {
       string: { label: "\u05DE\u05D7\u05E8\u05D5\u05D6\u05EA", gender: "f" },
@@ -16069,7 +16125,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hi.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hi.js
   var error21 = () => {
     const Sizable = {
       string: { unit: "\u0905\u0915\u094D\u0937\u0930", verb: "\u0930\u0916\u0928\u0947 \u0915\u0947 \u0932\u093F\u090F" },
@@ -16181,7 +16237,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hr.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hr.js
   var error22 = () => {
     const Sizable = {
       string: { unit: "znakova", verb: "imati" },
@@ -16308,7 +16364,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hu.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hu.js
   var error23 = () => {
     const Sizable = {
       string: { unit: "karakter", verb: "legyen" },
@@ -16422,7 +16478,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hy.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/hy.js
   function getArmenianPlural(count, one, many) {
     return Math.abs(count) === 1 ? one : many;
   }
@@ -16581,7 +16637,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/id.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/id.js
   var error25 = () => {
     const Sizable = {
       string: { unit: "karakter", verb: "memiliki" },
@@ -16693,7 +16749,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/is.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/is.js
   var error26 = () => {
     const Sizable = {
       string: { unit: "stafi", verb: "a\xF0 hafa" },
@@ -16808,7 +16864,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/it.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/it.js
   var error27 = () => {
     const Sizable = {
       string: { unit: "caratteri", verb: "avere" },
@@ -16922,7 +16978,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ja.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ja.js
   var error28 = () => {
     const Sizable = {
       string: { unit: "\u6587\u5B57", verb: "\u3067\u3042\u308B" },
@@ -17035,7 +17091,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ka.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ka.js
   var error29 = () => {
     const Sizable = {
       string: { unit: "\u10E1\u10D8\u10DB\u10D1\u10DD\u10DA\u10DD", verb: "\u10E3\u10DC\u10D3\u10D0 \u10E8\u10D4\u10D8\u10EA\u10D0\u10D5\u10D3\u10D4\u10E1" },
@@ -17153,7 +17209,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/km.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/km.js
   var error30 = () => {
     const Sizable = {
       string: { unit: "\u178F\u17BD\u17A2\u1780\u17D2\u179F\u179A", verb: "\u1782\u17BD\u179A\u1798\u17B6\u1793" },
@@ -17269,12 +17325,12 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/kh.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/kh.js
   function kh_default() {
     return km_default();
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/kn.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/kn.js
   var error31 = () => {
     const Sizable = {
       string: { unit: "\u0C85\u0C95\u0CCD\u0CB7\u0CB0\u0C97\u0CB3\u0CC1", verb: "\u0CB9\u0CCA\u0C82\u0CA6\u0CB2\u0CC1" },
@@ -17390,7 +17446,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ko.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ko.js
   var error32 = () => {
     const Sizable = {
       string: { unit: "\uBB38\uC790", verb: "to have" },
@@ -17507,7 +17563,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/lt.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/lt.js
   var capitalizeFirstCharacter = (text) => {
     return text.charAt(0).toUpperCase() + text.slice(1);
   };
@@ -17715,7 +17771,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/mk.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/mk.js
   var error34 = () => {
     const Sizable = {
       string: { unit: "\u0437\u043D\u0430\u0446\u0438", verb: "\u0434\u0430 \u0438\u043C\u0430\u0430\u0442" },
@@ -17830,7 +17886,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ms.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ms.js
   var error35 = () => {
     const Sizable = {
       string: { unit: "aksara", verb: "mempunyai" },
@@ -17943,7 +17999,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ne.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ne.js
   var error36 = () => {
     const Sizable = {
       string: { unit: "\u0905\u0915\u094D\u0937\u0930", verb: "\u0939\u0941\u0928\u0941\u092A\u0930\u094D\u091B" },
@@ -18055,7 +18111,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/nl.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/nl.js
   var error37 = () => {
     const Sizable = {
       string: { unit: "tekens", verb: "heeft" },
@@ -18171,7 +18227,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/nn.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/nn.js
   var error38 = () => {
     const Sizable = {
       string: { unit: "teikn", verb: "\xE5 ha" },
@@ -18285,7 +18341,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/no.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/no.js
   var error39 = () => {
     const Sizable = {
       string: { unit: "tegn", verb: "\xE5 ha" },
@@ -18399,7 +18455,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ota.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ota.js
   var error40 = () => {
     const Sizable = {
       string: { unit: "harf", verb: "olmal\u0131d\u0131r" },
@@ -18514,7 +18570,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ps.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ps.js
   var error41 = () => {
     const Sizable = {
       string: { unit: "\u062A\u0648\u06A9\u064A", verb: "\u0648\u0644\u0631\u064A" },
@@ -18634,7 +18690,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/pl.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/pl.js
   var error42 = () => {
     const Sizable = {
       string: { unit: "znak\xF3w", verb: "mie\u0107" },
@@ -18749,7 +18805,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/pt.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/pt.js
   var error43 = () => {
     const Sizable = {
       string: { unit: "caracteres" },
@@ -18893,7 +18949,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/pt-BR.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/pt-BR.js
   var error44 = () => {
     const Sizable = {
       string: { unit: "caracteres" },
@@ -19038,7 +19094,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ro.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ro.js
   var error45 = () => {
     const Sizable = {
       string: { unit: "caractere", verb: "s\u0103 aib\u0103" },
@@ -19161,7 +19217,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ru.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ru.js
   function getRussianPlural(count, one, few, many) {
     const absCount = Math.abs(count);
     const lastDigit = absCount % 10;
@@ -19330,7 +19386,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/sk.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/sk.js
   var error47 = () => {
     const Sizable = {
       string: { unit: "znakov", verb: "ma\u0165" },
@@ -19447,7 +19503,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/sl.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/sl.js
   var error48 = () => {
     const Sizable = {
       string: { unit: "znakov", verb: "imeti" },
@@ -19562,7 +19618,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/sv.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/sv.js
   var error49 = () => {
     const Sizable = {
       string: { unit: "tecken", verb: "att ha" },
@@ -19678,7 +19734,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ta.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ta.js
   var error50 = () => {
     const Sizable = {
       string: { unit: "\u0B8E\u0BB4\u0BC1\u0BA4\u0BCD\u0BA4\u0BC1\u0B95\u0BCD\u0B95\u0BB3\u0BCD", verb: "\u0B95\u0BCA\u0BA3\u0BCD\u0B9F\u0BBF\u0BB0\u0BC1\u0B95\u0BCD\u0B95 \u0BB5\u0BC7\u0BA3\u0BCD\u0B9F\u0BC1\u0BAE\u0BCD" },
@@ -19794,7 +19850,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/tg.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/tg.js
   var error51 = () => {
     const Sizable = {
       string: { unit: "\u0430\u043B\u043E\u043C\u0430\u0442", verb: "\u0434\u043E\u0448\u0442\u0430 \u0431\u043E\u0448\u0430\u0434" },
@@ -19911,7 +19967,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/th.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/th.js
   var error52 = () => {
     const Sizable = {
       string: { unit: "\u0E15\u0E31\u0E27\u0E2D\u0E31\u0E01\u0E29\u0E23", verb: "\u0E04\u0E27\u0E23\u0E21\u0E35" },
@@ -20027,7 +20083,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/tk.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/tk.js
   var error53 = () => {
     const Sizable = {
       string: { unit: "simwol", verb: "bolmaly" },
@@ -20135,7 +20191,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/tr.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/tr.js
   var error54 = () => {
     const Sizable = {
       string: { unit: "karakter", verb: "olmal\u0131" },
@@ -20246,7 +20302,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/uk.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/uk.js
   var error55 = () => {
     const Sizable = {
       string: { unit: "\u0441\u0438\u043C\u0432\u043E\u043B\u0456\u0432", verb: "\u043C\u0430\u0442\u0438\u043C\u0435" },
@@ -20360,12 +20416,12 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ua.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ua.js
   function ua_default() {
     return uk_default();
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ur.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/ur.js
   var error56 = () => {
     const Sizable = {
       string: { unit: "\u062D\u0631\u0648\u0641", verb: "\u06C1\u0648\u0646\u0627" },
@@ -20481,7 +20537,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/uz.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/uz.js
   var error57 = () => {
     const Sizable = {
       string: { unit: "belgi", verb: "bo\u2018lishi kerak" },
@@ -20595,7 +20651,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/vi.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/vi.js
   var error58 = () => {
     const Sizable = {
       string: { unit: "k\xFD t\u1EF1", verb: "c\xF3" },
@@ -20709,7 +20765,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/zh-CN.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/zh-CN.js
   var error59 = () => {
     const Sizable = {
       string: { unit: "\u5B57\u7B26", verb: "\u5305\u542B" },
@@ -20824,7 +20880,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/zh-TW.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/zh-TW.js
   var error60 = () => {
     const Sizable = {
       string: { unit: "\u5B57\u5143", verb: "\u64C1\u6709" },
@@ -20937,7 +20993,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/yo.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/locales/yo.js
   var error61 = () => {
     const Sizable = {
       string: { unit: "\xE0mi", verb: "n\xED" },
@@ -21050,7 +21106,7 @@ ${content.join("\n")}
     };
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/registries.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/registries.js
   var _a2;
   var $output = /* @__PURE__ */ Symbol("ZodOutput");
   var $input = /* @__PURE__ */ Symbol("ZodInput");
@@ -21100,7 +21156,7 @@ ${content.join("\n")}
   (_a2 = globalThis).__zod_globalRegistry ?? (_a2.__zod_globalRegistry = registry());
   var globalRegistry = globalThis.__zod_globalRegistry;
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/compile.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/compile.js
   var INVALID = Symbol.for("zod.compile.invalid");
   var FALLBACK_FLAG = Symbol.for("zod.compile.fallback");
   var ZodCompileAsyncError = class extends Error {
@@ -22697,7 +22753,7 @@ ${code}
     return accessor;
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/api.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/api.js
   function snapshotChecks(def2) {
     if (def2.checks)
       def2.checks = [...def2.checks];
@@ -23756,7 +23812,7 @@ ${code}
     return inst;
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/to-json-schema.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/to-json-schema.js
   function assignProps(target, ...sources) {
     for (const source of sources) {
       for (const key of Reflect.ownKeys(source)) {
@@ -24286,7 +24342,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     return finalize(ctx, schema);
   };
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/json-schema-processors.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/json-schema-processors.js
   var narrowMin = (agg, key, value) => {
     if (agg[key] === void 0 || value > agg[key])
       agg[key] = value;
@@ -25034,7 +25090,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     return finalize(ctx, input2);
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/json-schema-generator.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/json-schema-generator.js
   var JSONSchemaGenerator = class {
     /** @deprecated Access via ctx instead */
     get metadataRegistry() {
@@ -25112,10 +25168,10 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     }
   };
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/json-schema.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/json-schema.js
   var json_schema_exports = {};
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/schemas.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/schemas.js
   var schemas_exports2 = {};
   __export(schemas_exports2, {
     ZodAny: () => ZodAny,
@@ -25296,7 +25352,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     xor: () => xor
   });
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/checks.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/checks.js
   var checks_exports2 = {};
   __export(checks_exports2, {
     endsWith: () => _endsWith,
@@ -25331,7 +25387,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     uppercase: () => _uppercase
   });
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/errors.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/errors.js
   var _installedErrorProtos = /* @__PURE__ */ new WeakSet([Object.prototype, Error.prototype]);
   function _lazyMethod(proto, key, make) {
     Object.defineProperty(proto, key, {
@@ -25377,7 +25433,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     Parent: Error
   });
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/parse.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/parse.js
   var parse2 = /* @__PURE__ */ _parse(ZodRealError);
   var parseAsync2 = /* @__PURE__ */ _parseAsync(ZodRealError);
   var safeParse2 = /* @__PURE__ */ _safeParse(ZodRealError);
@@ -25391,7 +25447,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
   var safeEncodeAsync2 = /* @__PURE__ */ _safeEncodeAsync(ZodRealError);
   var safeDecodeAsync2 = /* @__PURE__ */ _safeDecodeAsync(ZodRealError);
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/schemas.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/schemas.js
   function _ensureDefaultLocale() {
     if (!globalConfig.localeError)
       config(en_default());
@@ -26856,7 +26912,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     });
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/compat.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/compat.js
   var ZodIssueCode = {
     invalid_type: "invalid_type",
     too_big: "too_big",
@@ -26882,7 +26938,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
   /* @__PURE__ */ (function(ZodFirstPartyTypeKind2) {
   })(ZodFirstPartyTypeKind || (ZodFirstPartyTypeKind = {}));
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/iso.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/iso.js
   var iso_exports = {};
   __export(iso_exports, {
     ZodISODate: () => ZodISODate,
@@ -26907,7 +26963,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     return _isoDuration(ZodISODuration, params);
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/from-json-schema.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/from-json-schema.js
   var z = {
     ...schemas_exports2,
     ...checks_exports2,
@@ -27640,7 +27696,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     return convertSchema(normalized, ctx);
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/visit.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/core/visit.js
   var RESOLVING = Symbol("z.visit/resolving");
   function visit(schema, fnOrHandlers) {
     const fn = typeof fnOrHandlers === "function" ? fnOrHandlers : (node2, rewritten) => {
@@ -27793,7 +27849,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     return run(schema);
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/deep-partial.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/deep-partial.js
   function deepPartial(schema) {
     return visit(schema, {
       object: (s) => s.partial(),
@@ -27805,7 +27861,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     });
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/in-out.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/in-out.js
   function withChecks(side, checks) {
     if (!checks?.length)
       return side;
@@ -27835,7 +27891,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     });
   }
 
-  // node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/coerce.js
+  // ../../node_modules/.pnpm/zod@4.6.5/node_modules/zod/v4/classic/coerce.js
   var coerce_exports = {};
   __export(coerce_exports, {
     bigint: () => bigint3,
@@ -27860,7 +27916,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     return _coercedDate(ZodDate, params);
   }
 
-  // packages/protocol/dist/ui-binding.js
+  // ../../packages/protocol/dist/ui-binding.js
   var DOTTED_PATH_RE = /^[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*$/;
   var IDENT_RE = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
   var PROP_PATH_RE = /^props(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+$/;
@@ -27902,7 +27958,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     ExpressionBindingSchema
   ]);
 
-  // packages/protocol/dist/ui-event-binding.js
+  // ../../packages/protocol/dist/ui-event-binding.js
   var TRIGGER_ENUM2 = [
     "click",
     "change",
@@ -27918,7 +27974,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     action: external_exports.string().min(1, "action id must be a non-empty identifier").regex(/^[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*$/, "action id must be a dotted lowercase identifier")
   }).strict();
 
-  // packages/protocol/dist/ui-accessibility.js
+  // ../../packages/protocol/dist/ui-accessibility.js
   var KEYBOARD_KEY_ENUM = [
     "Enter",
     "Escape",
@@ -27943,7 +27999,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     description: external_exports.string().min(1, "description must be a non-empty string").max(1024, "description must be 1024 chars or less").optional()
   }).strict();
 
-  // packages/protocol/dist/ui-capability.js
+  // ../../packages/protocol/dist/ui-capability.js
   var PLATFORM_ENUM = [
     "web",
     "h5",
@@ -27968,7 +28024,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     message: "UICapability must declare at least one of platform, framework, or feature"
   });
 
-  // packages/protocol/dist/ui-node.js
+  // ../../packages/protocol/dist/ui-node.js
   var UINodeSchema = external_exports.lazy(() => external_exports.object({
     id: external_exports.string().min(1, "UINode id must be a non-empty string"),
     type: external_exports.string().min(1, "UINode type must be a non-empty string"),
@@ -27981,7 +28037,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     capability: UICapabilitySchema.optional()
   }).strict());
 
-  // packages/protocol/dist/ui-action.js
+  // ../../packages/protocol/dist/ui-action.js
   var ACTION_ID_RE = /^[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*$/;
   var ACTION_TYPE_RE = /^[a-z][a-z0-9_-]*$/;
   var AIActionMetadataSchema = external_exports.object({
@@ -27996,7 +28052,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     ai: AIActionMetadataSchema.optional()
   }).strict();
 
-  // packages/protocol/dist/ui-schema.js
+  // ../../packages/protocol/dist/ui-schema.js
   var SEMVER_RE = /^\d+\.\d+\.\d+(?:-[\w.]+)?(?:\+[\w.]+)?$/;
   var UISchemaSchema = external_exports.object({
     version: external_exports.string().regex(SEMVER_RE, "Schema version must be semver (e.g. 1.0.0 or 1.0.0-rc.1)"),
@@ -28007,7 +28063,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     metadata: external_exports.record(external_exports.string(), external_exports.unknown()).optional()
   });
 
-  // packages/protocol/dist/component-contract.js
+  // ../../packages/protocol/dist/component-contract.js
   function defineComponentContract(contract) {
     if (!/^\d+\.\d+\.\d+/.test(contract.version)) {
       throw new Error(`ComponentContract "${contract.name}" version "${contract.version}" must be semver (X.Y.Z)`);
@@ -28018,7 +28074,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     return Object.freeze({ ...contract });
   }
 
-  // packages/protocol/dist/button-contract.js
+  // ../../packages/protocol/dist/button-contract.js
   var ButtonVariantSchema = external_exports.enum(["primary", "secondary", "danger", "ghost"]);
   var ButtonSizeSchema = external_exports.enum(["small", "medium", "large"]);
   var ButtonTypeSchema = external_exports.enum(["button", "submit", "reset"]);
@@ -28095,7 +28151,259 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     ai: ButtonAIMetadata
   });
 
-  // packages/vue-web/src/button.ts
+  // ../../packages/protocol/dist/input-contract.js
+  var InputTypeSchema = external_exports.enum([
+    "text",
+    "password",
+    "email",
+    "number",
+    "tel",
+    "url",
+    "search"
+  ]);
+  var InputSizeSchema = external_exports.enum(["small", "medium", "large"]);
+  var InputPropsSchema = external_exports.object({
+    value: external_exports.string().default(""),
+    placeholder: external_exports.string().optional(),
+    disabled: external_exports.boolean().default(false),
+    readonly: external_exports.boolean().default(false),
+    type: InputTypeSchema.default("text"),
+    size: InputSizeSchema.default("medium"),
+    clearable: external_exports.boolean().default(false),
+    maxlength: external_exports.number().int().positive().optional(),
+    minlength: external_exports.number().int().nonnegative().optional(),
+    name: external_exports.string().min(1).optional()
+  }).strict();
+  var InputTokens = {
+    background: "var(--aui-color-input-bg)",
+    color: "var(--aui-color-input-text)",
+    borderColor: "var(--aui-color-input-border)",
+    placeholderColor: "var(--aui-color-input-placeholder)",
+    disabledBackground: "var(--aui-color-input-bg-disabled)",
+    disabledColor: "var(--aui-color-input-text-disabled)",
+    focusRing: "var(--aui-color-focus-ring)",
+    size: {
+      small: {
+        height: "var(--aui-control-height-sm)",
+        padding: "0 var(--aui-spacing-sm)",
+        fontSize: "var(--aui-font-size-sm)"
+      },
+      medium: {
+        height: "var(--aui-control-height-md)",
+        padding: "0 var(--aui-spacing-md)",
+        fontSize: "var(--aui-font-size-md)"
+      },
+      large: {
+        height: "var(--aui-control-height-lg)",
+        padding: "0 var(--aui-spacing-lg)",
+        fontSize: "var(--aui-font-size-lg)"
+      }
+    }
+  };
+  var InputAccessibility = {
+    role: "textbox",
+    keyboard: ["Tab", "ArrowLeft", "ArrowRight", "Backspace", "Delete"],
+    aria: {
+      "aria-disabled": "{binding:disabled}",
+      "aria-readonly": "{binding:readonly}",
+      "aria-placeholder": "{binding:placeholder}"
+    }
+  };
+  var InputCapabilities = [
+    "input",
+    "change",
+    "focus",
+    "blur",
+    "keyboard-tab"
+  ];
+  var InputAIMetadata = {
+    patchable: [
+      "value",
+      "placeholder",
+      "disabled",
+      "readonly",
+      "type",
+      "size",
+      "clearable",
+      "maxlength",
+      "minlength",
+      "name"
+    ],
+    readonly: ["role", "keyboard", "focus", "blur"]
+  };
+  var InputContract = defineComponentContract({
+    name: "input",
+    version: "0.1.0",
+    props: InputPropsSchema,
+    events: {
+      input: "input",
+      change: "change",
+      focus: "focus",
+      blur: "blur",
+      clear: "click"
+    },
+    slots: {},
+    tokens: InputTokens,
+    accessibility: InputAccessibility,
+    capabilities: InputCapabilities,
+    ai: InputAIMetadata
+  });
+
+  // ../../packages/protocol/dist/form-contract.js
+  var FormLayoutSchema = external_exports.enum(["horizontal", "vertical"]);
+  var FormRuleSchema = external_exports.object({
+    required: external_exports.boolean().optional(),
+    minLength: external_exports.number().int().nonnegative().optional(),
+    maxLength: external_exports.number().int().positive().optional(),
+    pattern: external_exports.string().optional(),
+    message: external_exports.string().optional()
+  }).strict();
+  var FormFieldSchema = external_exports.object({
+    /** Property path inside form values (e.g. `'email'`, `'address.city'`). */
+    prop: external_exports.string().min(1),
+    label: external_exports.string().optional(),
+    required: external_exports.boolean().optional(),
+    rules: external_exports.array(FormRuleSchema).optional(),
+    placeholder: external_exports.string().optional(),
+    type: external_exports.enum(["text", "password", "email", "number", "tel", "url", "search"]).default("text"),
+    disabled: external_exports.boolean().default(false)
+  }).strict();
+  var FormPropsSchema = external_exports.object({
+    layout: FormLayoutSchema.default("vertical"),
+    disabled: external_exports.boolean().default(false),
+    loading: external_exports.boolean().default(false),
+    /** Initial values keyed by `prop` path. */
+    initialValues: external_exports.record(external_exports.string(), external_exports.unknown()).default({}),
+    /** Inline field definitions — optional, the renderer may also use children. */
+    fields: external_exports.array(FormFieldSchema).optional(),
+    /** Optional form id (used as the wrapping `<form>` element id). */
+    formId: external_exports.string().min(1).optional()
+  }).strict();
+  var FormItemPropsSchema = external_exports.object({
+    /** Property path this item binds to. Required for value lookup / error lookup. */
+    prop: external_exports.string().min(1),
+    label: external_exports.string().optional(),
+    required: external_exports.boolean().default(false),
+    /** Error string for this item, set by the parent Form after validation. */
+    error: external_exports.string().optional()
+  }).strict();
+  var FormTokens = {
+    background: "var(--aui-color-surface)",
+    itemGap: "var(--aui-spacing-md)",
+    labelColor: "var(--aui-color-text-primary)",
+    errorColor: "var(--aui-color-text-danger)",
+    requiredColor: "var(--aui-color-text-danger)",
+    borderColor: "var(--aui-color-border-default)"
+  };
+  var FormItemTokens = {
+    ...FormTokens,
+    gap: "var(--aui-spacing-sm)"
+  };
+  var FormAccessibility = {
+    role: "form",
+    keyboard: ["Enter", "Tab"],
+    aria: {
+      "aria-busy": "{binding:loading}",
+      "aria-disabled": "{binding:disabled}"
+    }
+  };
+  var FormItemAccessibility = {
+    role: "group",
+    keyboard: [],
+    aria: {
+      "aria-required": "{binding:required}",
+      "aria-invalid": "{binding:hasError}"
+    }
+  };
+  var FormCapabilities = ["submit", "reset", "validate"];
+  var FormItemCapabilities = ["blur", "input"];
+  var FormAIMetadata = {
+    patchable: ["layout", "disabled", "loading", "initialValues", "fields", "formId"],
+    readonly: ["role", "submit", "reset"]
+  };
+  var FormItemAIMetadata = {
+    patchable: ["prop", "label", "required", "error"],
+    readonly: ["role"]
+  };
+  var FormContract = defineComponentContract({
+    name: "form",
+    version: "0.1.0",
+    props: FormPropsSchema,
+    events: {
+      submit: "submit",
+      reset: "reset",
+      validate: "validate"
+    },
+    slots: {},
+    tokens: FormTokens,
+    accessibility: FormAccessibility,
+    capabilities: FormCapabilities,
+    ai: FormAIMetadata
+  });
+  var FormItemContract = defineComponentContract({
+    name: "form-item",
+    version: "0.1.0",
+    props: FormItemPropsSchema,
+    events: {},
+    slots: {},
+    tokens: FormItemTokens,
+    accessibility: FormItemAccessibility,
+    capabilities: FormItemCapabilities,
+    ai: FormItemAIMetadata
+  });
+
+  // ../../packages/protocol/dist/card-contract.js
+  var CardVariantSchema = external_exports.enum(["default", "outlined", "elevated"]);
+  var CardPaddingSchema = external_exports.enum(["none", "sm", "md", "lg"]);
+  var CardPropsSchema = external_exports.object({
+    title: external_exports.string().optional(),
+    description: external_exports.string().optional(),
+    variant: CardVariantSchema.default("default"),
+    padding: CardPaddingSchema.default("md"),
+    bordered: external_exports.boolean().default(true),
+    shadow: external_exports.boolean().default(false)
+  }).strict();
+  var CardTokens = {
+    background: "var(--aui-color-surface)",
+    borderColor: "var(--aui-color-border-default)",
+    titleColor: "var(--aui-color-text-primary)",
+    descriptionColor: "var(--aui-color-text-secondary)",
+    footerBorderColor: "var(--aui-color-border-soft)",
+    shadow: "var(--aui-shadow-md)",
+    radius: "var(--aui-radius-card)",
+    padding: {
+      none: "0",
+      sm: "var(--aui-spacing-sm)",
+      md: "var(--aui-spacing-md)",
+      lg: "var(--aui-spacing-lg)"
+    }
+  };
+  var CardAccessibility = {
+    role: "region",
+    keyboard: [],
+    aria: {
+      "aria-labelledby": "{binding:titleId}",
+      "aria-describedby": "{binding:descriptionId}"
+    }
+  };
+  var CardCapabilities = [];
+  var CardAIMetadata = {
+    patchable: ["title", "description", "variant", "padding", "bordered", "shadow"],
+    readonly: ["role"]
+  };
+  var CardContract = defineComponentContract({
+    name: "card",
+    version: "0.1.0",
+    props: CardPropsSchema,
+    events: {},
+    slots: {},
+    tokens: CardTokens,
+    accessibility: CardAccessibility,
+    capabilities: CardCapabilities,
+    ai: CardAIMetadata
+  });
+
+  // ../../packages/vue-web/src/button.ts
   var Button = defineComponent({
     name: "SnuiButton",
     props: {
@@ -28179,7 +28487,357 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     }
   });
 
-  // packages/vue-web/src/renderer.ts
+  // ../../packages/vue-web/src/input.ts
+  var Input = defineComponent({
+    name: "SnuiInput",
+    props: {
+      value: { type: String, default: "" },
+      placeholder: { type: String, default: void 0 },
+      disabled: { type: Boolean, default: false },
+      readonly: { type: Boolean, default: false },
+      type: {
+        type: String,
+        default: "text"
+      },
+      size: {
+        type: String,
+        default: "medium"
+      },
+      clearable: { type: Boolean, default: false },
+      maxlength: { type: Number, default: void 0 },
+      minlength: { type: Number, default: void 0 },
+      name: { type: String, default: void 0 }
+    },
+    emits: {
+      input: (_value) => true,
+      change: (_value) => true,
+      focus: (_event) => true,
+      blur: (_event) => true,
+      clear: () => true
+    },
+    setup(props, { emit: emit2, attrs }) {
+      const sizeTokens = computed2(() => InputTokens.size[props.size]);
+      const styleMap = computed2(() => ({
+        background: props.disabled ? InputTokens.disabledBackground : InputTokens.background,
+        color: props.disabled ? InputTokens.disabledColor : InputTokens.color,
+        borderColor: InputTokens.borderColor,
+        height: sizeTokens.value.height,
+        padding: sizeTokens.value.padding,
+        fontSize: sizeTokens.value.fontSize
+      }));
+      const isInteractive = computed2(() => !props.disabled && !props.readonly);
+      const showClear = computed2(
+        () => props.clearable && !props.disabled && !props.readonly && props.value.length > 0
+      );
+      const wrapperClass = computed2(() => {
+        const list = ["snui-input", `snui-input--${props.size}`];
+        if (props.disabled) list.push("snui-input--disabled");
+        if (props.readonly) list.push("snui-input--readonly");
+        return list;
+      });
+      return () => {
+        const inputNode = h("input", {
+          class: "snui-input__control",
+          style: styleMap.value,
+          type: props.type,
+          value: props.value,
+          placeholder: props.placeholder,
+          disabled: props.disabled,
+          readonly: props.readonly,
+          maxlength: props.maxlength,
+          minlength: props.minlength,
+          name: props.name,
+          "aria-disabled": props.disabled,
+          "aria-readonly": props.readonly,
+          onInput: (event) => {
+            if (!isInteractive.value) return;
+            const target = event.target;
+            emit2("input", target.value);
+          },
+          onChange: (event) => {
+            if (!isInteractive.value) return;
+            const target = event.target;
+            emit2("change", target.value);
+          },
+          onFocus: (event) => emit2("focus", event),
+          onBlur: (event) => emit2("blur", event),
+          ...attrs
+        });
+        const children = [inputNode];
+        if (showClear.value) {
+          children.push(
+            h(
+              "button",
+              {
+                type: "button",
+                class: "snui-input__clear",
+                "aria-label": "Clear input",
+                tabindex: -1,
+                onClick: () => {
+                  if (!isInteractive.value) return;
+                  emit2("clear");
+                  emit2("input", "");
+                  emit2("change", "");
+                }
+              },
+              "\xD7"
+            )
+          );
+        }
+        return h("span", { class: wrapperClass.value }, children);
+      };
+    }
+  });
+
+  // ../../packages/vue-web/src/form.ts
+  var FormContextKey = Symbol("AUIFormContext");
+  var Form = defineComponent({
+    name: "SnuiForm",
+    props: {
+      layout: {
+        type: String,
+        default: "vertical"
+      },
+      disabled: { type: Boolean, default: false },
+      loading: { type: Boolean, default: false },
+      initialValues: {
+        type: Object,
+        default: () => ({})
+      },
+      fields: {
+        type: Array,
+        default: () => []
+      },
+      formId: { type: String, default: void 0 }
+    },
+    emits: {
+      submit: (_values) => true,
+      validate: (_result) => true
+    },
+    setup(props, { slots, emit: emit2, attrs }) {
+      const errorsState = ref({});
+      provide(FormContextKey, {
+        disabled: computed2(() => props.disabled),
+        loading: computed2(() => props.loading),
+        errors: errorsState
+      });
+      const styleMap = computed2(() => ({
+        background: FormTokens.background,
+        gap: FormTokens.itemGap
+      }));
+      const onSubmit = (event) => {
+        event.preventDefault();
+        const formEl = event.target;
+        const formData = new FormData(formEl);
+        const values = {};
+        for (const [key, value] of formData.entries()) {
+          if (typeof value === "string") {
+            values[key] = value;
+          }
+        }
+        const result = validateValues(values);
+        emit2("validate", result);
+        if (result.valid) {
+          emit2("submit", values);
+        } else {
+          errorsState.value = { ...result.errors };
+        }
+      };
+      const onReset = (event) => {
+        const formEl = event.target;
+        if (formEl && typeof formEl.reset === "function") {
+        }
+        errorsState.value = {};
+      };
+      const validateValues = (values) => {
+        const errs = {};
+        for (const field of props.fields ?? []) {
+          const value = values[field.prop] ?? "";
+          for (const rule of field.rules ?? []) {
+            if (rule.required && value.length === 0) {
+              errs[field.prop] = rule.message ?? `${field.label ?? field.prop} is required`;
+              break;
+            }
+            if (rule.minLength !== void 0 && value.length < rule.minLength) {
+              errs[field.prop] = rule.message ?? `Minimum length is ${rule.minLength}`;
+              break;
+            }
+            if (rule.maxLength !== void 0 && value.length > rule.maxLength) {
+              errs[field.prop] = rule.message ?? `Maximum length is ${rule.maxLength}`;
+              break;
+            }
+            if (rule.pattern !== void 0 && value.length > 0) {
+              try {
+                const re = new RegExp(rule.pattern);
+                if (!re.test(value)) {
+                  errs[field.prop] = rule.message ?? "Invalid format";
+                  break;
+                }
+              } catch {
+                errs[field.prop] = rule.message ?? "Invalid format";
+                break;
+              }
+            }
+          }
+        }
+        return { valid: Object.keys(errs).length === 0, errors: errs };
+      };
+      return () => {
+        const slotNodes = slots.default?.() ?? [];
+        return h(
+          "form",
+          {
+            id: props.formId,
+            class: ["snui-form", `snui-form--${props.layout}`],
+            style: styleMap.value,
+            "aria-busy": props.loading,
+            "aria-disabled": props.disabled,
+            novalidate: true,
+            onSubmit,
+            onReset,
+            ...attrs
+          },
+          slotNodes
+        );
+      };
+    }
+  });
+  var FormItem = defineComponent({
+    name: "SnuiFormItem",
+    props: {
+      prop: { type: String, required: true },
+      label: { type: String, default: void 0 },
+      required: { type: Boolean, default: false },
+      error: { type: String, default: void 0 }
+    },
+    setup(props, { slots, attrs }) {
+      const ctx = inject(FormContextKey, null);
+      const resolvedError = computed2(() => {
+        if (props.error) return props.error;
+        return ctx?.errors.value[props.prop];
+      });
+      const hasError = computed2(() => Boolean(resolvedError.value));
+      return () => {
+        const slotNodes = slots.default?.() ?? [];
+        const labelNode = props.label ? h(
+          "label",
+          { class: "snui-form-item__label", for: props.prop },
+          [
+            props.label,
+            props.required ? h("span", {
+              class: "snui-form-item__required",
+              "aria-hidden": "true"
+            }, "*") : null
+          ]
+        ) : null;
+        const errorNode = resolvedError.value ? h(
+          "div",
+          {
+            class: "snui-form-item__error",
+            role: "alert"
+          },
+          resolvedError.value
+        ) : null;
+        return h(
+          "div",
+          {
+            class: [
+              "snui-form-item",
+              hasError.value ? "snui-form-item--invalid" : ""
+            ],
+            style: { gap: FormItemTokens.gap },
+            "aria-required": props.required,
+            "aria-invalid": hasError.value,
+            ...attrs
+          },
+          [labelNode, ...slotNodes, errorNode].filter(Boolean)
+        );
+      };
+    }
+  });
+
+  // ../../packages/vue-web/src/card.ts
+  var cardHeaderSeq = 0;
+  var nextTitleId = () => `snui-card-title-${++cardHeaderSeq}`;
+  var nextDescId = () => `snui-card-desc-${cardHeaderSeq}`;
+  var Card = defineComponent({
+    name: "SnuiCard",
+    props: {
+      title: { type: String, default: void 0 },
+      description: { type: String, default: void 0 },
+      variant: {
+        type: String,
+        default: "default"
+      },
+      padding: {
+        type: String,
+        default: "md"
+      },
+      bordered: { type: Boolean, default: true },
+      shadow: { type: Boolean, default: false }
+    },
+    setup(props, { slots, attrs }) {
+      const titleId = computed2(() => props.title ? nextTitleId() : void 0);
+      const descriptionId = computed2(
+        () => props.description ? nextDescId() : void 0
+      );
+      const classList = computed2(() => {
+        const list = ["snui-card", `snui-card--${props.variant}`];
+        if (props.bordered) list.push("snui-card--bordered");
+        if (props.shadow) list.push("snui-card--elevated");
+        return list;
+      });
+      const styleMap = computed2(() => ({
+        background: CardTokens.background,
+        borderColor: CardTokens.borderColor,
+        borderRadius: CardTokens.radius,
+        boxShadow: props.shadow ? CardTokens.shadow : "none",
+        padding: CardTokens.padding[props.padding]
+      }));
+      return () => {
+        const headerNode = props.title || props.description ? h("header", { class: "snui-card__header" }, [
+          props.title ? h(
+            "h3",
+            {
+              class: "snui-card__title",
+              id: titleId.value
+            },
+            props.title
+          ) : null,
+          props.description ? h(
+            "p",
+            {
+              class: "snui-card__description",
+              id: descriptionId.value
+            },
+            props.description
+          ) : null
+        ]) : null;
+        const slotNodes = slots.default?.() ?? [];
+        const bodyNode = h(
+          "div",
+          { class: "snui-card__body" },
+          slotNodes
+        );
+        const footerSlot = slots.footer?.();
+        const footerNode = footerSlot && footerSlot.length > 0 ? h("footer", { class: "snui-card__footer" }, footerSlot) : null;
+        return h(
+          "section",
+          {
+            class: classList.value,
+            style: styleMap.value,
+            role: "region",
+            "aria-labelledby": titleId.value,
+            "aria-describedby": descriptionId.value,
+            ...attrs
+          },
+          [headerNode, bodyNode, footerNode].filter(Boolean)
+        );
+      };
+    }
+  });
+
+  // ../../packages/vue-web/src/renderer.ts
   function createVueRenderer(options) {
     const { registry: registry2 } = options;
     const renderNode = (node2) => {
@@ -28215,7 +28873,7 @@ Set the \`cycles\` parameter to \`"ref"\` to resolve cyclical schemas with defs.
     };
   }
 
-  // packages/vue-web/src/index.ts
+  // ../../packages/vue-web/src/index.ts
   var AUI_VUE_WEB_VERSION = "0.1.0";
   return __toCommonJS(src_exports);
 })();
