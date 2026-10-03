@@ -4,6 +4,19 @@ import StyleSwitcher from '../components/StyleSwitcher.vue';
 import ThemeCopier from '../components/ThemeCopier.vue';
 import Demo from '../components/Demo.vue';
 
+// Side-effect imports force vite optimizeDeps to pre-bundle these workspace
+// packages into apps/docs/.vitepress/cache/deps/. The per-component demo
+// .vue files reach them via dynamic import.meta.glob + defineAsyncComponent
+// which vite never sees at static-analysis time, so without these pre-loads
+// the browser-side fetch resolves to a raw ESM file (not esbuild-bundled)
+// and any raw `<script setup lang="ts">` markup in dist/*.vue.js trips the
+// loader — surfacing as 'demo failed to load: <name>'.
+import '@snui/vue-web'
+import '@snui/uni'
+import '@snui/tokens'
+import '@snui/style-packs'
+import '@snui/ai'
+
 /**
  * Register all docs-site components as VitePress global components.
  * Per AUI-PRD-v3.1 + ADR-0002 + Spec-05 §5 + AUI-DOCS-016:
