@@ -66,3 +66,34 @@ export {
   type ReactiveValue,
   type StopHandle,
 } from './reactive.js';
+
+export {
+  compileExpression,
+  evaluateExpression,
+  type BindingContext,
+  type CompiledExpression,
+} from './expression.js';
+
+export {
+  resolveBinding,
+  type ResolvedBinding,
+  type BindingResolveOptions,
+} from './binding.js';
+
+export {
+  matchEventBindings,
+  dispatchEvent,
+  resolveEventAction,
+  type PlatformEventLike,
+  type EventBindingDispatch,
+  type EventDispatchInput,
+} from './event-binding.js';
+
+export type {
+  UIBinding,
+  StateBinding,
+  ComputedBinding,
+  PropBinding,
+  EventBinding,
+  ExpressionBinding,
+} from './binding.js';
