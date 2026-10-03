@@ -13,7 +13,7 @@
  */
 
 import { ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import SnButton from '@snui/vue-web/src/button/SnButton.vue'
 
 const loading = ref(false)
 const lastClicked = ref<string | null>(null)

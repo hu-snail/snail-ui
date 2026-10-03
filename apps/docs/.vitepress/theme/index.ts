@@ -4,18 +4,6 @@ import StyleSwitcher from '../components/StyleSwitcher.vue';
 import ThemeCopier from '../components/ThemeCopier.vue';
 import Demo from '../components/Demo.vue';
 
-// Side-effect imports force vite optimizeDeps to pre-bundle these workspace
-// packages into apps/docs/.vitepress/cache/deps/. The per-component demo
-// .vue files reach them via dynamic import.meta.glob + defineAsyncComponent
-// which vite never sees at static-analysis time, so without these pre-loads
-// the browser-side fetch resolves to a raw ESM file (not esbuild-bundled)
-// and any raw `<script setup lang="ts">` markup in dist/*.vue.js trips the
-// loader — surfacing as 'demo failed to load: <name>'.
-import '@snui/vue-web'
-import '@snui/uni'
-import '@snui/tokens'
-import '@snui/style-packs'
-
 /**
  * Register all docs-site components as VitePress global components.
  * Per AUI-PRD-v3.1 + ADR-0002 + Spec-05 §5 + AUI-DOCS-016:
@@ -29,6 +17,14 @@ import '@snui/style-packs'
  * .vue files via @vue/compiler-sfc, so compile-time macros (defineOptions etc.)
  * work correctly — this bypasses the raw-ESM pitfall that BLOCKED the v3.0
  * top-level `<script setup>` approach.
+ *
+ * @snui/tokens + @snui/style-packs are statically imported by StyleSwitcher +
+ * ThemeCopier, so vite auto-discovers them for optimizeDeps. We deliberately
+ * do NOT pre-bundle @snui/vue-web or @snui/uni (their dist is vue-tsc-emitted
+ * and still contains raw compile-time macros — see config.ts optimizeDeps).
+ * Per-component demo files import SOURCE .vue files directly via
+ * `@snui/vue-web/src/...` / `@snui/uni/src/...`, which go through
+ * vite-plugin-vue and are compiled on the fly.
  */
 
 export default {

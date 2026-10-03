@@ -17,7 +17,9 @@
       "import": "./dist/resolver.js"
     },
     "./styles": "./dist/styles/index.css",
-    "./styles/": "./dist/styles/"
+    "./styles/": "./dist/styles/",
+    "./src/*.ts": "./src/*.ts",
+    "./src/*.vue": "./src/*.vue"
   },
   "files": [
     "dist"

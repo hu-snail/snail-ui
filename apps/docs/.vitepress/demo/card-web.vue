@@ -10,7 +10,7 @@
  */
 
 import { ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import SnButton from '@snui/vue-web/src/button/SnButton.vue'
 
 const ok = ref(false)
 function handleOk(): void {

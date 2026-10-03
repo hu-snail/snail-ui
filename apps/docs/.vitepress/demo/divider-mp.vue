@@ -9,7 +9,7 @@
  */
 
 import { ref } from 'vue'
-import { SnDivider } from '@snui/uni'
+import SnDivider from '@snui/uni/src/components/sn-divider/sn-divider.vue'
 
 const show = ref(true)
 function toggle(): void { show.value = !show.value }

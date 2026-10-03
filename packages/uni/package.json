@@ -12,7 +12,9 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./components/*": "./src/components/*"
+    "./components/*": "./src/components/*",
+    "./src/*.ts": "./src/*.ts",
+    "./src/*.vue": "./src/*.vue"
   },
   "files": [
     "src/components"

@@ -188,16 +188,26 @@ export default defineConfig({
         '@snui/ai',
       ],
     },
-    // Per-component demo.vue imports these workspace packages dynamically.
-    // Without explicit optimizeDeps entries, vite serves them on first request
-    // which can race with vitepress SSR — resulting in 'demo failed to load'
-    // on the client. Forcing them into optimizeDeps pre-bundles the imports.
-    // Note: @snui/ai is server-only (uses node:fs / node:url) — kept out of
-    // client optimize list. It's only used by MCP Server (future AUI-AI-004).
+    // Pre-bundle only `@snui/tokens` + `@snui/style-packs` (pure JS, safe to
+    // inline). DO NOT pre-bundle `@snui/vue-web` / `@snui/uni` — their dist
+    // is emitted by `vue-tsc` which does not run `@vue/compiler-sfc`, so the
+    // emitted `.vue.js` files still contain raw compile-time macros
+    // (defineOptions / defineProps / withDefaults / defineEmits / defineSlots)
+    // and would crash the browser as soon as vite tries to serve them
+    // through the pre-bundle cache.
+    //
+    // Per-component demo files (apps/docs/.vitepress/demo/*.vue) therefore
+    // import the SOURCE .vue files directly via `@snui/vue-web/src/...` /
+    // `@snui/uni/src/...` (see exports in those packages). vite-plugin-vue
+    // compiles those source SFCs at request time, which is what
+    // `@vue/compiler-sfc` does — the macros are transformed before the
+    // browser receives the JS.
+    //
+    // This avoids the chrome-extension ERR_FAILED pitfall that occurs when
+    // esbuild-emitted pre-bundle files reference absolute `/Volumes/...`
+    // paths the browser cannot resolve.
     optimizeDeps: {
       include: [
-        '@snui/vue-web',
-        '@snui/uni',
         '@snui/tokens',
         '@snui/style-packs',
         'vue',

@@ -8,7 +8,7 @@
  */
 
 import { reactive, ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import SnButton from '@snui/vue-web/src/button/SnButton.vue'
 
 const form = reactive({ email: '', password: '' })
 const loading = ref(false)
