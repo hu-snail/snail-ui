@@ -70,11 +70,11 @@ AUI-{模块}-{编号}
 
 | ID | 标题 | 状态 |
 |---|---|---|
-| AUI-FOUND-005 | 新建 `@snui/tokens-web` 包（生成 `--sn-web-*` 别名层）| 🔵 |
-| AUI-FOUND-006 | 新建 `@snui/tokens-mp` 包（生成 `--sn-mp-*` 别名层 + px→rpx 转换）| 🔵 |
-| AUI-FOUND-007 | 拆分 `vue-web` 消费 `--sn-web-*`（从 `--sn-*` 切过来）| 🔵 |
-| AUI-FOUND-008 | 拆分 `uni` 消费 `--sn-mp-*`（从 `--sn-*` 切过来）| 🔵 |
-| AUI-FOUND-009 | `@snui/cli/tokens-check` 升级：按端校验别名前缀（web 不允许 `--sn-mp-*`，反之亦然）| 🔵 |
+| AUI-FOUND-005 | 新建 `@snui/tokens-web` 包（生成 `--sn-web-*` 别名层）| ✅ |
+| AUI-FOUND-006 | 新建 `@snui/tokens-mp` 包（生成 `--sn-mp-*` 别名层 + px→rpx 转换）| ✅ |
+| AUI-FOUND-007 | 拆分 `vue-web` 消费 `--sn-web-*`（从 `--sn-*` 切过来）| ✅ |
+| AUI-FOUND-008 | 拆分 `uni` 消费 `--sn-mp-*`（从 `--sn-*` 切过来）| ✅ |
+| AUI-FOUND-009 | `@snui/cli/tokens-check` 升级：按端校验别名前缀（web 不允许 `--sn-mp-*`，反之亦然）| ✅ |
 
 ---
 
