@@ -85,6 +85,9 @@ importers:
       '@snui/tokens':
         specifier: 'workspace:'
         version: link:../tokens
+      '@vue/reactivity':
+        specifier: ^3.5.43
+        version: 3.5.43
     devDependencies:
       eslint:
         specifier: ^9.17.0
@@ -101,6 +104,9 @@ importers:
       '@snui/protocol':
         specifier: 'workspace:'
         version: link:../protocol
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
     devDependencies:
       eslint:
         specifier: ^9.17.0
