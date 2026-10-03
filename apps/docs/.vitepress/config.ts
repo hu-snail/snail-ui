@@ -114,8 +114,43 @@ const enSidebar = {
 export default defineConfig({
   title: 'AUI — AI-Friendly UI Component Library',
   description: 'Vue 3 + uni-app multi-end UI component library. Web API inspired by naive-ui, uni-app API inspired by wot-ui. Token-driven themes, real component rendering in docs.',
+  ignoreDeadLinks: true, // AUI-DOCS-015 will add /guide/uni/cross-platform
+
+  // VitePress bundles Vue SFCs through esbuild; raise target so top-level await
+  // patterns emitted by vue-tsc (in transitive deps) don't break the build.
+  vite: {
+    build: {
+      target: 'es2022',
+    },
+    ssr: {
+      // Per AUI-PRD-v3.0: ComponentPreview lazy-imports @snui/vue-web inside
+      // onMounted. Mark @snui/vue-web + @snui/tokens + @snui/style-packs as
+      // noExternal so vite handles them and the SSR build pipeline does not
+      // try to require them through node module resolution.
+      noExternal: [
+        '@snui/vue-web',
+        '@snui/uni',
+        '@snui/tokens',
+        '@snui/style-packs',
+        '@snui/ai',
+      ],
+    },
+  },
+
+  // Per AUI-PRD-v3.0 / ADR-0002:
+  //   ComponentPreview uses @snui/vue-web components which rely on
+  //   compile-time macros (defineOptions / defineProps). VitePress
+  //   prerender runs the .vue file as raw ESM in SSR; macros are not
+  //   transformed there. Mark ComponentPreview as client-only via a wrapper
+  //   and skip SSR for it.
+  //
+  // The actual fix lives in the ComponentPreview.vue file: it uses an
+  // `import.meta.env.SSR` guard + lazy import of @snui/vue-web.
+  // This config block documents the policy (AUI-DOCS-016).
 
   head: [
+    // Known-dead link to /guide/uni/cross-platform is tracked as AUI-DOCS-015
+    // (out of scope for this batch); ignore until that page is authored.
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', {

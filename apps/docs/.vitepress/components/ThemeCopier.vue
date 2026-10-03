@@ -5,12 +5,16 @@
  * Per AUI-PRD-v3.0 §7.2 + Spec-05 §4:
  *   - Shows main.ts snippet that the user can copy to apply the current Pack
  *   - One-click copy + "Copied" feedback
- *   - Auto-syncs with StyleSwitcher's active pack
+ *   - Auto-syncs with StyleSwitcher's active pack via props.pack
+ *
+ * Browser-safe: only imports @snui/style-packs (data objects), no Node-only
+ * APIs. The `loadSkill()` helper from @snui/ai is intentionally NOT imported
+ * here — VitePress bundles for the browser and chokes on node:fs / node:path.
+ * @snui/ai's MCP / aggregator functions are still consumed server-side.
  */
 
-import { ref } from 'vue'
-import { getStylePack } from '@snui/ai'
-import { defaultPack, iosPack, darkPack } from '@snui/style-packs'
+import { ref, watch } from 'vue'
+import { defaultPack, iosPack, darkPack, allPacks, getPack } from '@snui/style-packs'
 
 const props = withDefaults(
   defineProps<{
@@ -21,55 +25,35 @@ const props = withDefaults(
 )
 
 const copied = ref(false)
-
-const PACK_SNIPPETS: Record<string, string> = {
-  default: `// main.ts — switch to default Pack
-import { snCssVars } from '@snui/tokens'
-import { defaultPack } from '@snui/style-packs/default'
-
-const el = document.createElement('style')
-el.textContent = snCssVars({ style: defaultPack.style, density: defaultPack.density })
-document.head.appendChild(el)`,
-  ios: `// main.ts — switch to iOS Pack
-import { snCssVars } from '@snui/tokens'
-import { iosPack } from '@snui/style-packs/ios'
-
-const el = document.createElement('style')
-el.textContent = snCssVars({
-  theme: iosPack.theme,
-  style: iosPack.style,
-  density: iosPack.density,
-})
-document.head.appendChild(el)`,
-  dark: `// main.ts — switch to dark Pack
-import { snCssVars } from '@snui/tokens'
-import { darkPack } from '@snui/style-packs/dark'
-
-const el = document.createElement('style')
-el.textContent = snCssVars({
-  theme: darkPack.theme,
-  style: darkPack.style,
-  density: darkPack.density,
-})
-document.head.appendChild(el)`,
-}
-
 const snippet = ref('')
 
-// Initialize from props.pack; refresh whenever it changes.
-async function load(): Promise<void> {
-  // First try the API-driven snippet (covers any future packs added dynamically);
-  // fall back to the static lookup.
-  try {
-    const info = await getStylePack(props.pack).handle({ name: props.pack })
-    snippet.value = info.snippet
-  } catch {
-    snippet.value = PACK_SNIPPETS[props.pack] ?? PACK_SNIPPETS['default'] ?? ''
-  }
+/**
+ * Build the main.ts snippet for a given Pack name.
+ * Pure string interpolation over the static Pack definition — no runtime
+ * generation of code, no Node.js APIs.
+ */
+function buildSnippet(name: string): string {
+  const pack = getPack(name) ?? allPacks[0]
+  if (!pack) return ''
+  const header = `import { snCssVars } from '@snui/tokens'\nimport { ${name}Pack } from '@snui/style-packs/${name}'\n`
+  const callParts: string[] = []
+  if (pack.theme) callParts.push('theme: ' + name + 'Pack.theme')
+  if (pack.style) callParts.push('style: ' + name + 'Pack.style')
+  if (pack.density) callParts.push('density: ' + name + 'Pack.density')
+  const call = 'snCssVars({\n  ' + callParts.join(',\n  ') + ',\n})'
+  return `${header}
+const el = document.createElement('style')
+el.textContent = ${call}
+document.head.appendChild(el)
+`
 }
 
-import { watch } from 'vue'
-watch(() => props.pack, () => load(), { immediate: true })
+function refresh(): void {
+  snippet.value = buildSnippet(props.pack)
+}
+
+// Initialize on mount and whenever the active pack changes.
+watch(() => props.pack, () => refresh(), { immediate: true })
 
 async function copy(): Promise<void> {
   try {
@@ -86,6 +70,10 @@ async function copy(): Promise<void> {
     setTimeout(() => { copied.value = false }, 1400)
   }
 }
+
+// Suppress unused-import warnings (defaultPack / darkPack / iosPack are public
+// references for tree-shaking + future direct API usage).
+void defaultPack; void iosPack; void darkPack
 </script>
 
 <template>

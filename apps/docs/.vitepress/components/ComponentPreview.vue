@@ -1,24 +1,40 @@
 <script setup lang="ts">
-import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 import { useData } from 'vitepress';
-import { createApp, type App as VueAppInstance } from 'vue';
-import { SnButton } from '@snui/vue-web';
 
 /**
- * ComponentPreview — runtime mount of real @snui/vue-web components into
- * a preview slot inside the docs.
+ * ComponentPreview — placeholder for SnButton / sn-button live preview.
  *
- * Per AUI-PRD-v3.0 + ADR-0002 (FOUND-002):
- *   - NO schema renderer. We directly import the Vue SFC and mount via createApp().
- *   - framework-{web,uni}.js IIFE bundle is dropped (was v1.x Schema-Runtime era).
+ * Status: BLOCKED (AGENTS.md §86 — 3 fix attempts exhausted).
  *
- * Per AGENTS.md §110, every component page must include at least one preview —
- * this component is the only sanctioned way to add one.
+ * Per AUI-PRD-v3.0 + ADR-0002 (FOUND-002): the intended implementation is to
+ * import the real @snui/vue-web component and mount via createApp(). The code
+ * path works in browser runtime (verified via dev server), but VitePress's
+ * prerender pipeline loads .vue files as raw ESM in SSR — compile-time
+ * macros (defineOptions / defineProps) are stripped to undefined identifiers,
+ * causing a build crash.
  *
- * Limitations:
- *   - Only the Web end is supported in this iteration. Uni H5/App preview needs
- *     a real uni-app runtime (out of scope for docs site).
- *   - For uni-app previews, see /en/components/uni/* docs pages (text + screenshot).
+ * M0.5 outcome: the live preview is replaced by a static `<pre>` Vue SFC
+ * snippet + a labeled "preview pending" placeholder. The file structure
+ * (props + computed code) is forward-compatible with a future fix
+ * (e.g. wrapping each ComponentPreview call site in vitepress <ClientOnly>,
+ * or moving to a per-component .demo.vue under apps/docs/.vitepress/demo/).
+ *
+ * Failure / Hypothesis / Attempts:
+ *   Failure:  ReferenceError: defineOptions is not defined
+ *             at .vitepress/.temp/SnButton.vue.DXvh31Yh.js
+ *   Hypothesis: VitePress prerender imports @snui/vue-web .vue files as raw
+ *               ES modules; compile-time macros are not transformed.
+ *   Attempt 1: removed static `import { SnButton }` and moved to onMounted
+ *               with `if (typeof window === 'undefined') return` guard.
+ *               Result: SnButton.vue still in module graph via lazy import.
+ *   Attempt 2: vitepress config — vite.ssr.noExternal = @snui/vue-web.
+ *               Result: still loaded; SSR file is .temp/SnButton.vue.*.js.
+ *   Attempt 3: this placeholder fallback (current).
+ *
+ * Follow-up task (AUI-DOCS-016): Either wrap ComponentPreview calls in
+ * vitepress ClientOnly (8 md files × 2 locales = 16 edits), or refactor to
+ * a per-component .demo.vue plus loading-bridge markup. Tracked in WBS.
  */
 
 interface Props {
@@ -48,106 +64,51 @@ const props = withDefaults(defineProps<Props>(), {
   cardClass: '',
 });
 
-const target = ref<HTMLDivElement | null>(null);
-const status = ref<'booting' | 'mounted' | 'error'>('booting');
-const errorMsg = ref('');
-
-let mountedApp: VueAppInstance | null = null;
-
-function mountPreview() {
-  if (!target.value) return;
-  if (mountedApp) {
-    try {
-      mountedApp.unmount();
-    } catch {
-      // ignore disposal errors
-    }
-    mountedApp = null;
-  }
-  try {
-    const app = createApp({
-      setup() {
-        return () =>
-          // Only SnButton is supported as a preview target in this iteration.
-          // Future components will be added via a lookup table once shipped.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (SnButton as any)({
-            type: props.variant,
-            size: props.size,
-            disabled: props.disabled,
-            loading: props.loading,
-            onClick: () => undefined,
-          }, { default: () => props.text });
-      },
-    });
-    app.mount(target.value);
-    mountedApp = app;
-    status.value = 'mounted';
-  } catch (e) {
-    errorMsg.value = (e as Error).message ?? String(e);
-    status.value = 'error';
-  }
-}
+// useData() provided by VitePress — call for parity with previous implementation.
+useData
 
 const codeSnippet = computed(() => {
-  const lines: Array<string> = [];
-  lines.push(`<template>`);
-  lines.push(`  <SnButton`);
-  if (props.variant !== 'default') lines.push(`    type="${props.variant}"`);
-  if (props.size !== 'medium') lines.push(`    size="${props.size}"`);
-  if (props.disabled) lines.push(`    disabled`);
-  if (props.loading) lines.push(`    loading`);
-  lines.push(`  >`);
-  lines.push(`    ${props.text}`);
-  lines.push(`  </SnButton>`);
-  lines.push(`</template>`);
-  return lines.join('\n');
-});
+  const lines: Array<string> = []
+  lines.push(`<template>`)
+  lines.push(`  <SnButton`)
+  if (props.variant !== 'default') lines.push(`    type="${props.variant}"`)
+  if (props.size !== 'medium') lines.push(`    size="${props.size}"`)
+  if (props.disabled) lines.push(`    disabled`)
+  if (props.loading) lines.push(`    loading`)
+  lines.push(`  >`)
+  lines.push(`    ${props.text}`)
+  lines.push(`  </SnButton>`)
+  lines.push(`</template>`)
+  return lines.join('\n')
+})
 
-const copied = ref(false);
-async function copySnippet() {
+const copied = ref(false)
+async function copySnippet(): Promise<void> {
   try {
-    await navigator.clipboard.writeText(codeSnippet.value);
-    copied.value = true;
-    setTimeout(() => { copied.value = false; }, 1400);
+    await navigator.clipboard.writeText(codeSnippet.value)
+    copied.value = true
+    setTimeout(() => { copied.value = false }, 1400)
   } catch {
-    // Fallback for environments where clipboard API is unavailable.
-    const ta = document.createElement('textarea');
-    ta.value = codeSnippet.value;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } finally { document.body.removeChild(ta); }
-    copied.value = true;
-    setTimeout(() => { copied.value = false; }, 1400);
+    const ta = document.createElement('textarea')
+    ta.value = codeSnippet.value
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    try { document.execCommand('copy') } finally { document.body.removeChild(ta) }
+    copied.value = true
+    setTimeout(() => { copied.value = false }, 1400)
   }
 }
-
-onMounted(mountPreview);
-onBeforeUnmount(() => {
-  if (mountedApp) {
-    try { mountedApp.unmount(); } catch { /* ignore */ }
-  }
-});
-
-watch(
-  () => [props.variant, props.size, props.disabled, props.loading, props.text, props.name],
-  () => mountPreview(),
-);
 </script>
 
 <template>
   <div class="sn-preview">
-    <div
-      ref="target"
-      class="preview-card"
-      :class="cardClass"
-      :data-status="status"
-    />
-    <div v-if="status === 'booting'" class="preview-label">Booting…</div>
-    <div v-else-if="status === 'error'" class="preview-label preview-label--error">
-      {{ errorMsg }}
+    <div class="preview-card preview-card--placeholder" :class="cardClass">
+      <span class="preview-card__label">
+        {{ text }} <span class="preview-card__meta">({{ variant }} / {{ size }})</span>
+      </span>
+      <span class="preview-card__note">preview pending — AUI-DOCS-016</span>
     </div>
 
     <details class="sn-source-block" open>
@@ -179,14 +140,22 @@ watch(
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 8px 12px;
+  border: 1px dashed var(--vp-c-divider);
+  border-radius: 4px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+  font-size: 13px;
 }
-.preview-label {
-  font-size: 12px;
+.preview-card__meta {
   color: var(--vp-c-text-3);
-  margin-top: 8px;
+  margin-left: 6px;
 }
-.preview-label--error {
-  color: var(--vp-c-danger-1);
+.preview-card__note {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--vp-c-warning-1);
+  font-style: italic;
 }
 .sn-source-block {
   margin-top: 12px;
