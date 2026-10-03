@@ -2,8 +2,9 @@
 /**
  * @snui/cli bin entry — `pnpm snui <command>`.
  *
- * Commands implemented in M0.5 (AUI-TOOL-001~005):
- *   token-check   Scan component .vue files for color literals
+ * Commands implemented in M0.5 + AUI-FOUND-009:
+ *   token-check   Scan component .vue files for color literals and
+ *                 wrong-end alias references (--end web|mp).
  *   pack-validate Validate Style Pack definitions
  *   docs          (placeholder, M1)
  *   llms          (placeholder, M1)
@@ -27,19 +28,27 @@ function parseArgs(argv: ReadonlyArray<string>): CliArgs {
 }
 
 function help(): number {
-  // eslint-disable-next-line no-console
+   
   console.log(`snui — snail-aui CLI
 
 Usage: snui <command>
 
 Commands:
-  token-check [--dir <path>]   Scan component .vue files for color literals
-                                (default --dir: packages/vue-web/src)
+  token-check [--dir <path>] [--end web|mp]
+                                Scan component .vue files for color literals
+                                and (when --end is set) wrong-end alias
+                                references. Default --dir: packages/vue-web/src
   pack-validate [--dir <path>] Validate Style Pack definitions
                                 (default --dir: packages/style-packs/src)
   help                          Print this help message
 
-Status: M0.5 baseline (FOUND/TOOL phase).`)
+Examples:
+  pnpm snui token-check --dir packages/vue-web/src --end web
+                                → forbids --sn-mp-* / --aui-* in Web component
+  pnpm snui token-check --dir packages/uni/src     --end mp
+                                → forbids --sn-web-* / --aui-* in uni component
+
+Status: M0.5 + AUI-FOUND-009 (end-independent token-check).`)
   return 0
 }
 
@@ -47,6 +56,14 @@ function parseDir(positional: ReadonlyArray<string>, flag: string, fallback: str
   const idx = positional.indexOf(flag)
   if (idx >= 0 && idx + 1 < positional.length) return positional[idx + 1] ?? fallback
   return fallback
+}
+
+function parseEnd(positional: ReadonlyArray<string>): 'web' | 'mp' | undefined {
+  const idx = positional.indexOf('--end')
+  if (idx < 0 || idx + 1 >= positional.length) return undefined
+  const v = positional[idx + 1]
+  if (v === 'web' || v === 'mp') return v
+  return undefined
 }
 
 async function main(): Promise<number> {
@@ -58,21 +75,22 @@ async function main(): Promise<number> {
       return help()
     case 'token-check': {
       const dir = parseDir(positional, '--dir', 'packages/vue-web/src')
-      return runTokenCheck({ sourceDir: dir })
+      const end = parseEnd(positional)
+      return runTokenCheck({ sourceDir: dir }, end)
     }
     case 'pack-validate': {
       const dir = parseDir(positional, '--dir', 'packages/style-packs/src')
       return runPackValidate({ packsDir: dir })
     }
     default:
-      // eslint-disable-next-line no-console
+       
       console.error(`unknown command: ${command}`)
       return help()
   }
 }
 
 main().then((code) => process.exit(code)).catch((err) => {
-  // eslint-disable-next-line no-console
+   
   console.error(err)
   process.exit(2)
 })

@@ -79,17 +79,17 @@ export async function validatePacks(options: PackValidateOptions): Promise<PackI
 export async function runPackValidate(options: PackValidateOptions): Promise<number> {
   const issues = await validatePacks(options)
   if (options.packsDir && !existsSync(options.packsDir)) {
-    // eslint-disable-next-line no-console
+     
     console.log('• @snui/cli pack-validate: packs directory not found yet (M2 placeholder, no-op)')
     return 0
   }
   if (issues.length === 0) {
-    // eslint-disable-next-line no-console
+     
     console.log('✓ @snui/cli pack-validate: all packs OK')
     return 0
   }
   for (const i of issues) {
-    // eslint-disable-next-line no-console
+     
     console.error(`✗ ${i.file}  ${i.rule}  ${i.message}`)
   }
   return 1
