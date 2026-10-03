@@ -1,12 +1,15 @@
 {
   "name": "@snui/cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "AUI CLI — unplugin-vue-components resolver, llms.txt generator, doc extractor. Reads component ai-description.md files and produces machine-readable output.",
+  "description": "snail-aui CLI — unplugin-vue-components resolver, llms.txt / ai-meta generator, doc extractor, token check, pack validate. Per AUI-TOOL-001~005.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "snui": "./dist/bin/snui.js"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -19,6 +22,14 @@
     "./llms-txt": {
       "types": "./dist/llms-txt.d.ts",
       "import": "./dist/llms-txt.js"
+    },
+    "./token-check": {
+      "types": "./dist/token-check.d.ts",
+      "import": "./dist/token-check.js"
+    },
+    "./pack-validate": {
+      "types": "./dist/pack-validate.d.ts",
+      "import": "./dist/pack-validate.js"
     }
   },
   "files": [
@@ -33,6 +44,7 @@
     "clean": "rm -rf dist .turbo coverage"
   },
   "dependencies": {
+    "@snui/tokens": "workspace:",
     "@snui/vue-web": "workspace:"
   },
   "peerDependencies": {

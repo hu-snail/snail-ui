@@ -114,7 +114,7 @@ export function parseAiDescription(markdown: string): ParsedDescription {
       // When split, those inflate `cells.length`. Reconcile by absorbing
       // the extra cells back into the second column until we match the
       // expected column count from the header.
-      const name = trimmed[0].replace(new RegExp(PLACEHOLDER, 'g'), '|')
+      const name = (trimmed[0] ?? '').replace(new RegExp(PLACEHOLDER, 'g'), '|')
       const overflow = trimmed.length - expectedCols
       const typeEndIndex = overflow > 0 ? 2 + overflow : 2
       const typeOrPayload = trimmed.slice(1, typeEndIndex)
