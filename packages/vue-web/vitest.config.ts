@@ -29,7 +29,9 @@ export default defineConfig({
   test: {
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/._*'],
-    environment: 'node',
+    // happy-dom provides a lightweight DOM for Renderer.test.ts (real mount +
+    // DOM assertions). Other unit tests (registry / button) stay DOM-light.
+    environment: 'happy-dom',
     reporters: ['default'],
   },
 });
