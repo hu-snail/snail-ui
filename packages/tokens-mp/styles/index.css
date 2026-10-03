@@ -1,0 +1,48 @@
+/**
+ * @snui/tokens-mp static stylesheet — uni-app mobile end alias layer.
+ *
+ * Must be imported AFTER `@snui/tokens/styles` (so `--aui-*` is defined) and
+ * BEFORE any `@snui/uni` component CSS.
+ *
+ * Per Spec-01 v1.2 §2.4:
+ * - Size / spacing / radius components use rpx (px × 2 for 750 design).
+ * - Color aliases reference `--aui-*` unchanged.
+ */
+
+:root {
+  /* Component sizes — rpx (1px = 2rpx on 750 design canvas) */
+  --sn-mp-button-height-tiny: 48rpx;
+  --sn-mp-button-height-small: 64rpx;
+  --sn-mp-button-height-medium: 72rpx;
+  --sn-mp-button-height-large: 88rpx;
+  --sn-mp-button-padding-x: 24rpx;
+  --sn-mp-button-radius: 12rpx;
+  --sn-mp-button-font-size: 28rpx;
+
+  --sn-mp-input-height-small: 56rpx;
+  --sn-mp-input-height-medium: 68rpx;
+  --sn-mp-input-height-large: 84rpx;
+  --sn-mp-input-padding-x: 24rpx;
+  --sn-mp-input-radius: 12rpx;
+
+  --sn-mp-card-padding: 32rpx;
+  --sn-mp-card-radius: 16rpx;
+
+  /* Semantic colors — passthrough to --aui-* */
+  --sn-mp-color-text-primary: var(--aui-color-text-primary);
+  --sn-mp-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-mp-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-mp-color-text-on-primary: var(--aui-color-text-on-primary);
+  --sn-mp-color-background-surface: var(--aui-color-background-surface);
+  --sn-mp-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-mp-color-border-default: var(--aui-color-border-default);
+  --sn-mp-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-mp-color-action-primary: var(--aui-color-action-primary);
+  --sn-mp-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-mp-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-mp-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-mp-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-mp-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+  --sn-mp-color-feedback-info: var(--aui-color-feedback-info);
+  --sn-mp-focus-ring: var(--aui-focus-ring);
+}
