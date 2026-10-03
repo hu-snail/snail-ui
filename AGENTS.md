@@ -3019,17 +3019,21 @@ C. 修改 Tokens / A11y / Capabilities / AI patch boundary
 D. 修改 Component name / version
 ```
 
-文档更新清单（缺一不可）：
+文档更新清单（缺一不可，**双语 × 双端**）：
 
 ```text
-1. apps/docs/components/<name>.md        （Web 端，含 props 表格 + 真实预览）
-2. apps/docs/uni/components/<name>.md   （Uni 端，含 props 表格 + 真实预览）
-3. apps/docs/.vitepress/config.ts        （sidebar / nav 条目）
-4. apps/docs/public/framework-web.js     （重新 esbuild bundle）
-5. apps/docs/public/framework-uni.js     （重新 esbuild bundle）
+1. apps/docs/components/<name>.md           （Web · 中文）
+2. apps/docs/en/components/<name>.md         （Web · 英文）
+3. apps/docs/components/uni/components/<name>.md   （Uni · 中文）
+4. apps/docs/en/components/uni/components/<name>.md （Uni · 英文）
+5. apps/docs/.vitepress/config.ts            （sidebar / nav 条目 — 双 locale 都要加）
+6. apps/docs/public/framework-web.js         （重新 esbuild bundle）
+7. apps/docs/public/framework-uni.js         （重新 esbuild bundle）
 ```
 
 多端文档不能合并：Web 与 uni-app 的组件 Props / 事件 / 平台能力不同，必须分别维护。
+
+双语文档不能只翻一半：每个组件页的 zh 和 en 都必须更新，否则 CI / Review Agent 拒绝合并。
 
 预览必须真实跑通（`createVueRenderer().mount()` 或 `createUniRenderer().mount()`），不允许 mock 截图 / 静态 HTML。
 
@@ -3041,6 +3045,7 @@ D. 修改 Component name / version
 [ ] tokens 表格（引用 @snui/tokens 的 CSS var 变量名）
 [ ] 至少 1 个真实预览（variants / states 全展示）
 [ ] A11y 行为（role / keyboard）
+[ ] AI Patch Boundary 表（patchable / readonly 字段）
 ```
 
 禁止：提交未文档化的组件（违反 §69 Documentation + §92 Merge Gate）。
