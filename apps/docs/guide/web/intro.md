@@ -1,10 +1,10 @@
-# Introduction
+# 介绍
 
-AUI is an **AI-native multi-end UI framework**. It treats the UI as a schema, not as code: every screen is described by a `UISchema` (a typed JSON document), and the runtime interprets it. Renderers map the schema to DOM (Vue 3) or uni-app components.
+AUI 是一个 **AI-native 的多端 UI 框架**。它把 UI 当作 schema 而不是代码：每一个界面都由一个 `UISchema`（类型化的 JSON 文档）描述，运行时负责解释它。渲染器把 schema 映射到 DOM（Vue 3）或 uni-app 组件。
 
-## Why schema-first?
+## 为什么选择 Schema 优先？
 
-Traditional UI frameworks describe the UI in code:
+传统 UI 框架用代码描述 UI：
 
 ```vue
 <template>
@@ -12,7 +12,7 @@ Traditional UI frameworks describe the UI in code:
 </template>
 ```
 
-AUI describes the UI in data:
+AUI 用数据描述 UI：
 
 ```ts
 const schema: UISchema = {
@@ -26,37 +26,37 @@ const schema: UISchema = {
 };
 ```
 
-The benefits compound:
-- An LLM can **generate** a schema; a renderer turns it into pixels.
-- An LLM can **patch** a schema (JSON Patch); the runtime re-renders.
-- The same schema runs on **Web** (Vue 3) and **uni-app** (iOS / Android / H5 / MP).
-- Tokens, accessibility, and capabilities are **declared**, not hand-coded.
+带来的好处是叠加的：
+- LLM 可以 **生成** schema，渲染器再把它变成像素。
+- LLM 可以 **patch** schema（JSON Patch），运行时重新渲染。
+- 同一份 schema 可运行于 **Web**（Vue 3）和 **uni-app**（iOS / Android / H5 / MP）。
+- Token、可访问性、能力是**自描述**的，不是手写出来的。
 
-## Architecture in 30 seconds
+## 30 秒看懂架构
 
 ```
-@snui/protocol     ── Zod schemas (framework-agnostic)
+@snui/protocol     ── Zod schemas（框架无关）
        ↑
 @snui/schema       ── Validator + Normalizer + Version
-@snui/tokens       ── Primitive / Semantic / Component cascade
+@snui/tokens       ── Primitive / Semantic / Component 级联
 @snui/runtime      ── AUIRuntime + Reactive + Binding + Action + AppBridge
        ↑
-@snui/vue-web      ── Vue 3 renderer + Button (Phase 2)
-@snui/uni          ── uni-app renderer (Phase 3)
+@snui/vue-web      ── Vue 3 渲染器 + 4 个官方组件（Phase 2）
+@snui/uni          ── uni-app 渲染器（Phase 3）
 ```
 
-`@snui/protocol` never imports Vue. Renderers consume Runtime, not Protocol directly. The single-direction graph is enforced by package imports (AGENTS.md §67).
+`@snui/protocol` 永不引入 Vue。渲染器消费 Runtime，不直接依赖 Protocol。这个层级关系由 package 的导入方向强制保证（AGENTS.md §67）。
 
-## What ships today
+## 当前已交付
 
-- **Phase 1**: all 8 internal packages (28 tasks) — see [Architecture](/guide/web/architecture).
-- **Phase 2 starter**: `@snui/vue-web` ships a `Button` component as the first official contract.
-- **Phase 3**: `@snui/uni` is a placeholder — same contracts, uni-app renderer to follow.
+- **Phase 1**: 全部 8 个内部包（28 个任务）— 详见 [架构](/guide/web/architecture)。
+- **Phase 2**: `@snui/vue-web` 提供 4 个官方组件（`Button` / `Input` / `Form` / `Card`）+ Web E2E 测试。
+- **Phase 3**: `@snui/uni` 占位中 — 同样的协议，uni-app 渲染器随后交付。
 
-## Where to next
+## 下一步
 
-- [Installation](/guide/web/installation)
-- [Quick start (Web)](/guide/web/quick-start)
-- [Quick start (uni-app)](/guide/uni/quick-start)
-- [Architecture](/guide/web/architecture)
+- [安装](/guide/web/installation)
+- [Web 快速开始](/guide/web/quick-start)
+- [uni-app 快速开始](/guide/uni/quick-start)
+- [架构](/guide/web/architecture)
 - [Theme / Style / Density](/theme/overview)

@@ -1,21 +1,21 @@
-# Quick start (uni-app)
+# uni-app 快速开始
 
-AUI's uni-app renderer (Phase 3) shares the same Protocol / Runtime contracts as the Web renderer. The renderer maps `UINode.type` to a uni-app component rather than a DOM element.
+AUI 的 uni-app 渲染器（Phase 3）与 Web 渲染器共享同一份 Protocol / Runtime 契约。渲染器把 `UINode.type` 映射到 uni-app 组件而不是 DOM 元素。
 
-> ⚠️ `@snui/uni` is currently a placeholder package. The contract surface is finalized (see `/guide/web/architecture`), and component docs under `/components/uni/` will light up as the implementation lands in Phase 3.
+> ⚠️ `@snui/uni` 当前仍是占位 package。契约面已经定型（见 [/guide/web/architecture](/guide/web/architecture)），`/components/uni/` 下的组件文档会随着 Phase 3 实现落地而点亮。
 
-## 1. Install
+## 1. 安装
 
 ```bash
 pnpm add @snui/uni @snui/runtime @snui/protocol @snui/tokens
 ```
 
-Uni-app target peer is `@dcloudio/uni-app` (see uni-app docs).
+uni-app 编译目标的 peer 依赖为 `@dcloudio/uni-app`（详见 uni-app 文档）。
 
-## 2. Same UISchema, different renderer
+## 2. 同一份 UISchema，不同渲染器
 
 ```ts
-// main.ts (uni-app entry)
+// main.ts（uni-app 入口）
 import { createUniRenderer, createUniRegistry } from '@snui/uni';
 import { Button as UniButton } from '@snui/uni/components/button';
 
@@ -33,47 +33,47 @@ const schema = {
   },
 };
 
-// In a uni-app page:
+// 在一个 uni-app 页面中：
 export default {
   setup() {
     onMounted(() => {
-      renderer.mount(schema, /* uni-app page ref */);
+      renderer.mount(schema, /* uni-app 页面 ref */);
     });
   },
 };
 ```
 
-## 3. Capability fallback
+## 3. Capability 降级
 
-uni-app's API varies across platforms (WeChat MP / iOS / Android / H5). The renderer detects capabilities and falls back:
+uni-app 的 API 在不同平台（微信小程序 / iOS / Android / H5）之间有所差异。渲染器会检测能力并降级：
 
 ```ts
 import { UICapabilitySchema } from '@snui/protocol';
 
 const capability: UICapability = {
-  platform: 'mp-weixin',          // mini-program WeChat
+  platform: 'mp-weixin',          // 微信小程序
   feature: 'clipboard.write',
-  // Renderer picks the best API for the current platform, falling back when unsupported.
+  // 渲染器为当前平台挑选最合适的 API，不支持时降级。
 };
 ```
 
-See [Capabilities](/guide/web/architecture) for the full capability negotiation system.
+完整的能力协商系统见 [架构](/guide/web/architecture)。
 
-## What's the same vs different?
+## 相同 vs 差异
 
-| Concern | Web | uni-app |
+| 关注点 | Web | uni-app |
 | --- | --- | --- |
-| Schema | UISchema | Same |
-| Runtime | AUIRuntime | Same |
-| Tokens | Theme / Style / Density | Same |
-| Actions | ActionRegistry + AppBridge | Same AppBridge, host services differ |
-| Event catalog | DOM events (`click`, `change`, …) | Uni events + DOM events on H5 |
-| Renderer | `createVueRenderer()` | `createUniRenderer()` |
+| Schema | UISchema | 同 |
+| Runtime | AUIRuntime | 同 |
+| Tokens | Theme / Style / Density | 同 |
+| Actions | ActionRegistry + AppBridge | 同 AppBridge，host 服务实现不同 |
+| 事件目录 | DOM 事件（`click`、`change`、…） | Uni 事件 + H5 上的 DOM 事件 |
+| 渲染器 | `createVueRenderer()` | `createUniRenderer()` |
 
-The component contract's `events` and `capabilities` keys differ by end. Check `/components/uni/` for the uni-specific event catalog per component.
+组件契约的 `events` 与 `capabilities` 字段因端而异。请查看 `/components/uni/` 了解每个组件的 uni 专属事件目录。
 
-## Next
+## 下一步
 
 - [Button (uni)](/components/uni/button)
-- [Architecture](/guide/web/architecture)
-- [Web quick start](/guide/web/quick-start)
+- [架构](/guide/web/architecture)
+- [Web 快速开始](/guide/web/quick-start)

@@ -1,25 +1,25 @@
 # Style · Modern / Glass / Minimal
 
-The Style axis owns the **shape personality**: radius, shadow, and component shape tokens (button radius, card padding, etc.).
+Style 轴掌管 **形状个性**：圆角、阴影、组件形状 token（button 圆角、card 内边距等）。
 
-A Style does NOT touch colors (those are Theme) or size primitives (those are Density).
+Style 不会触及颜色（那归 Theme）或尺寸 primitive（那归 Density）。
 
-## Defaults shipped
+## 内置默认
 
 ```ts
 import { MODERN_STYLE } from '@snui/tokens';
 ```
 
-| Style | Personality |
+| Style | 风格 |
 | --- | --- |
-| `MODERN_STYLE` | 6px control radius, subtle shadow, flat surfaces |
-| `GLASS_STYLE` | (Phase 2) — 12px radius, elevated shadow, blur |
-| `MINIMAL_STYLE` | (Phase 2) — 0 radius, no shadow, hairline borders |
+| `MODERN_STYLE` | 6px 控件圆角，微妙阴影，平面表面 |
+| `GLASS_STYLE` | （Phase 2）— 12px 圆角，浮起阴影，毛玻璃 |
+| `MINIMAL_STYLE` | （Phase 2）— 0 圆角，无阴影，细线边框 |
 
-## Behavior on style change
+## 切换 Style 时的行为
 
 ```
-Style Change
+Style 切换
    ↓
 保留 Theme
    ↓
@@ -28,9 +28,9 @@ Style Change
 重新计算 Component Token
 ```
 
-Per AUI-PRD-v1.2.md §38: changing the style preserves Theme and Density. Only the component-shape tokens are recomputed.
+按 AUI-PRD-v1.2.md §38：切换 Style 时保留 Theme 与 Density。只重算组件形状 token。
 
-## Custom style
+## 自定义 Style
 
 ```ts
 import type { StyleDefinition } from '@snui/tokens';
@@ -48,17 +48,17 @@ const glass: StyleDefinition = {
 };
 ```
 
-When `glass` is applied, the Button's `--aui-button-radius` flips from `6px` to `16px` and shadow depth increases. Color and spacing stay identical.
+应用 `glass` 后，Button 的 `--aui-button-radius` 从 `6px` 切换到 `16px`，阴影深度增加。颜色和间距保持不变。
 
-## What a Style MUST NOT do
+## Style 不得做的事
 
-| Forbidden | Reason |
+| 禁止 | 原因 |
 | --- | --- |
-| Override color tokens | Belongs to Theme |
-| Override spacing / size primitives | Belongs to Density |
-| Tight-couple to a specific theme | Themes and Styles are independent axes |
+| 覆盖颜色 token | 属于 Theme |
+| 覆盖间距 / 尺寸 primitive | 属于 Density |
+| 与特定 Theme 强耦合 | Theme 与 Style 是独立的两轴 |
 
-## Live comparison
+## Live 对比
 
 <script setup>
 import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
@@ -68,10 +68,10 @@ import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
 
 <ComponentPreview name="button" variant="primary" text="Modern · large" size="large" />
 
-> Glass / Minimal previews land when those styles are implemented. The contract surface is the same; only the `component.*` overrides change.
+> Glass / Minimal 的 preview 会在相应样式实现后上线。契约面一致，只有 `component.*` 覆盖会变。
 
-## Next
+## 下一步
 
-- [Density (Compact / Comfortable)](/theme/density)
-- [Token cascade](/theme/cascade)
-- [Theme (Light / Dark)](/theme/theme)
+- [Density（Compact / Comfortable）](/theme/density)
+- [Token 级联](/theme/cascade)
+- [Theme（Light / Dark）](/theme/theme)

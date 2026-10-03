@@ -1,10 +1,10 @@
-# Token cascade
+# Token 级联
 
-The full cascade from primitive to component, with example bindings.
+从 primitive 到 component 的完整级联，并附示例绑定。
 
 ## Primitive
 
-Raw design values. No semantic meaning. Theme owns this.
+原始设计值，没有语义含义。Theme 掌管这里。
 
 ```text
 color.gray.50    = #fafafa
@@ -20,7 +20,7 @@ size.control.md  = 32px
 
 ## Semantic
 
-Semantic aliases reference primitive via `var()`.
+语义别名通过 `var()` 引用 primitive。
 
 ```text
 color.text.primary     → var(--aui-color-text-primary)
@@ -30,7 +30,7 @@ radius.control         → var(--aui-radius-control)
 size.control.md        → var(--aui-size-control-md)
 ```
 
-After resolution (Light theme):
+解析后（Light Theme）：
 
 ```text
 --aui-color-text-primary   → var(--aui-color-gray-900)
@@ -41,7 +41,7 @@ After resolution (Light theme):
 
 ## Component
 
-Component tokens reference semantic.
+Component token 引用 semantic。
 
 ```text
 button.heightMd       → var(--aui-size-control-md)
@@ -53,26 +53,26 @@ card.padding         → var(--aui-spacing-inset-lg)
 card.radius          → var(--aui-radius-card)
 ```
 
-After resolution:
+解析后：
 
 ```text
 --aui-button-height-md  → var(--aui-size-control-md)  → var(--aui-size-control-md)  → 32px
 --aui-button-radius     → var(--aui-radius-control)   → var(--aui-radius-md)       → 6px
 ```
 
-## Component CSS uses tokens only
+## Component CSS 只使用 token
 
-Components never hardcode colors / sizes / spacing:
+组件永远不硬编码颜色 / 尺寸 / 间距：
 
 ```css
-/* ✅ correct */
+/* ✅ 正确 */
 .snui-button {
   background: var(--aui-color-action-primary);
   border-radius: var(--aui-button-radius);
   height: var(--aui-button-height-md);
 }
 
-/* ❌ forbidden */
+/* ❌ 禁止 */
 .snui-button {
   background: #1677ff;
   border-radius: 6px;
@@ -80,9 +80,9 @@ Components never hardcode colors / sizes / spacing:
 }
 ```
 
-The hardcoded version locks the component to a specific theme / style / density. The token version follows whichever dimensions Axis Swap the host picks.
+硬编码版本把组件锁死到特定的 Theme / Style / Density。Token 版本会跟随宿主选定的维度组合切换。
 
-## Resolver output
+## Resolver 输出
 
 ```ts
 import { resolveEnvironment, renderStyleBlock } from '@snui/tokens';
@@ -94,7 +94,7 @@ const env = {
 };
 
 const bindings = resolveEnvironment(env);
-console.log(bindings.length);     // ~110 entries
+console.log(bindings.length);     // ~110 项
 console.log(bindings[0]);
 // { name: '--aui-color-gray-50', value: '#fafafa' }
 console.log(bindings.find(b => b.name === '--aui-color-blue-500'));
@@ -106,8 +106,8 @@ renderStyleBlock(bindings);
 // → ":root { --aui-color-gray-50: #fafafa; ... }"
 ```
 
-## Next
+## 下一步
 
-- [Theme (Light / Dark)](/theme/theme)
-- [Style (Modern / Glass / Minimal)](/theme/style)
-- [Density (Compact / Comfortable)](/theme/density)
+- [Theme（Light / Dark）](/theme/theme)
+- [Style（Modern / Glass / Minimal）](/theme/style)
+- [Density（Compact / Comfortable）](/theme/density)

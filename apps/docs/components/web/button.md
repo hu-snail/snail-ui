@@ -1,16 +1,16 @@
 # Button · Web
 
-The first official AUI component. Used by `apps/docs` itself in every preview. Maps to a real `<button>` DOM element via `@snui/vue-web`.
+首个 AUI 官方组件。`apps/docs` 的每个 preview 都用到它。通过 `@snui/vue-web` 映射到真实的 `<button>` DOM 元素。
 
 <script setup>
 import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
 </script>
 
-## Live render · real framework mount
+## Live render · 真实框架挂载
 
-The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/vue-web`. Refresh the page to re-mount.
+下面 12 个 button 通过 `createVueRenderer().mount()` 从 `@snui/vue-web` 挂载，刷新页面即可重新挂载。
 
-### Variants
+### 变体（Variants）
 
 <ComponentPreview name="button" variant="primary" text="Primary" />
 
@@ -20,7 +20,7 @@ The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/v
 
 <ComponentPreview name="button" variant="ghost" text="Ghost" />
 
-### Sizes
+### 尺寸（Sizes）
 
 <ComponentPreview name="button" variant="primary" size="small" text="Small" />
 
@@ -28,13 +28,13 @@ The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/v
 
 <ComponentPreview name="button" variant="primary" size="large" text="Large" />
 
-### States
+### 状态（States）
 
 <ComponentPreview name="button" variant="primary" :disabled="true" text="Disabled" />
 
 <ComponentPreview name="button" variant="primary" :loading="true" text="Loading" />
 
-### On dark surface
+### 暗色表面
 
 <ComponentPreview name="button" variant="primary" text="On dark" :dark="true" />
 
@@ -44,16 +44,16 @@ The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/v
 
 <table class="props">
   <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
+    <tr><th>Prop</th><th>类型</th><th>默认值</th><th>必填</th><th>说明</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>variant</code></td><td><code>'primary' | 'secondary' | 'danger' | 'ghost'</code></td><td><code>'primary'</code></td><td>No</td><td>Visual style. Maps to <code>--aui-color-action-*</code>.</td></tr>
-    <tr><td><code>size</code></td><td><code>'small' | 'medium' | 'large'</code></td><td><code>'medium'</code></td><td>No</td><td>Height + padding + font-size (sub-axis per §36).</td></tr>
-    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Suppresses click + applies <code>aria-disabled</code>.</td></tr>
-    <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Shows spinner + applies <code>aria-busy</code>; suppresses click.</td></tr>
-    <tr><td><code>icon</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Icon name (registered via <code>AppIcon</code>; see project README).</td></tr>
-    <tr><td><code>text</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Visible label. Min length 1.</td></tr>
-    <tr><td><code>type</code></td><td><code>'button' | 'submit' | 'reset'</code></td><td><code>'button'</code></td><td>No</td><td>Native button type.</td></tr>
+    <tr><td><code>variant</code></td><td><code>'primary' | 'secondary' | 'danger' | 'ghost'</code></td><td><code>'primary'</code></td><td>No</td><td>视觉风格。映射到 <code>--aui-color-action-*</code>。</td></tr>
+    <tr><td><code>size</code></td><td><code>'small' | 'medium' | 'large'</code></td><td><code>'medium'</code></td><td>No</td><td>高度 / 内边距 / 字号子轴（§36）。</td></tr>
+    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>禁用并应用 <code>aria-disabled</code>。</td></tr>
+    <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>显示 spinner 并应用 <code>aria-busy</code>；禁用 click。</td></tr>
+    <tr><td><code>icon</code></td><td><code>string</code></td><td>—</td><td>No</td><td>图标名（通过 <code>AppIcon</code> 注册）。</td></tr>
+    <tr><td><code>text</code></td><td><code>string</code></td><td>—</td><td>No</td><td>可见标签。最小长度 1。</td></tr>
+    <tr><td><code>type</code></td><td><code>'button' | 'submit' | 'reset'</code></td><td><code>'button'</code></td><td>No</td><td>原生 button type。</td></tr>
   </tbody>
 </table>
 
@@ -61,16 +61,16 @@ The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/v
 
 <table class="props">
   <thead>
-    <tr><th>Event id</th><th>DOM event</th><th>Notes</th></tr>
+    <tr><th>Event id</th><th>DOM event</th><th>说明</th></tr>
   </thead>
   <tbody>
-    <tr><td><code>click</code></td><td><code>click</code></td><td>Suppressed while <code>disabled</code> or <code>loading</code>.</td></tr>
+    <tr><td><code>click</code></td><td><code>click</code></td><td>当 <code>disabled</code> 或 <code>loading</code> 时被抑制。</td></tr>
   </tbody>
 </table>
 
 ## Tokens
 
-| Logical slot | CSS variable |
+| 逻辑槽位 | CSS 变量 |
 | --- | --- |
 | `primary.background` | `var(--aui-color-action-primary)` |
 | `primary.color` | `var(--aui-color-text-on-action)` |
@@ -83,16 +83,16 @@ The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/v
 
 ## Accessibility
 
-| Attribute | Value |
+| 属性 | 值 |
 | --- | --- |
 | `role` | `button` |
 | `keyboard` | `Enter`, `Space` |
-| `aria-disabled` | bound to `props.disabled` |
-| `aria-busy` | bound to `props.loading` |
+| `aria-disabled` | 绑定到 `props.disabled` |
+| `aria-busy` | 绑定到 `props.loading` |
 
 ## AI Patch Boundary
 
-| Status | Field |
+| 状态 | 字段 |
 | --- | --- |
 | `ai.patchable` | `variant`, `size`, `disabled`, `loading`, `icon`, `text`, `type` |
 | `ai.readonly` | `role`, `keyboard`, `click` |
@@ -103,4 +103,4 @@ The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/v
 
 ## Uni-app equivalent
 
-The same Button contract ships for uni-app with the same props, different event catalog. See [Button · uni-app](/components/uni/button).
+Button 契约同样适用于 uni-app，props 相同，事件名略有差异。详见 [Button · uni-app](/components/uni/button)。

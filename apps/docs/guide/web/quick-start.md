@@ -1,15 +1,15 @@
-# Quick start (Web)
+# Web 快速开始
 
-Mount a Button into a DOM target in under 60 seconds.
+60 秒内把一个 Button 挂到 DOM 节点上。
 
-## 1. Install
+## 1. 安装
 
 ```bash
 pnpm add @snui/vue-web @snui/runtime @snui/protocol @snui/tokens
 pnpm add vue@^3.5 zod
 ```
 
-## 2. Mount a Button
+## 2. 挂载 Button
 
 ```ts
 // main.ts
@@ -32,11 +32,11 @@ const schema = {
 renderer.mount(schema, document.getElementById('app')!);
 ```
 
-That's the smallest possible AUI app. The button is real DOM, the renderer is real Vue, and the schema is the source of truth.
+这就是最小可用的 AUI 应用。Button 是真实 DOM，渲染器是真实 Vue，schema 是事实源。
 
-## 3. Layer in state + actions
+## 3. 加上 State + Action
 
-For stateful behavior, add the Runtime:
+想要带状态的行为，加上 Runtime：
 
 ```ts
 import { createRuntime, createActionRegistry } from '@snui/runtime';
@@ -55,7 +55,7 @@ const runtime = createRuntime({
   platform: { id: 'web', capabilities: { supports: { dom: true } } },
 });
 
-// Click triggers the action:
+// 点击触发 action：
 const schemaWithEvent = {
   version: '1.0.0',
   root: {
@@ -69,9 +69,9 @@ const schemaWithEvent = {
 };
 ```
 
-## 4. Bind state to props
+## 4. 把 State 绑定到 Props
 
-State bindings reference dotted paths into the runtime's `state` object:
+State 绑定用点路径引用运行时 `state` 对象：
 
 ```ts
 const schema = {
@@ -90,10 +90,10 @@ const schema = {
 };
 ```
 
-The expression engine (AGENTS.md §23) is sandboxed — no `eval`, no `new Function`.
+表达式引擎（AGENTS.md §23）是沙箱化的——没有 `eval`，没有 `new Function`。
 
-## What's next?
+## 下一步
 
-- [Button component docs](/components/web/button)
+- [Button 组件文档](/components/web/button)
 - [Theme / Style / Density](/theme/overview)
-- [Architecture](/guide/web/architecture)
+- [架构](/guide/web/architecture)

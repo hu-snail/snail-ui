@@ -1,34 +1,34 @@
 # Theme / Style / Density
 
-AUI splits tokens into three independent dimensions. Each axis can be changed at runtime without touching the others.
+AUI 把 tokens 拆分成三个互相独立的维度。运行时切换任一维度都不会影响其他两个。
 
-| Axis | Owns | Example switches |
+| 轴 | 职责 | 切换示例 |
 | --- | --- | --- |
-| **Theme** | Color (text / background / border / action / feedback) | Light, Dark |
-| **Style** | Radius, Shadow, Component shape | Modern, Glass, Minimal |
-| **Density** | Size, Spacing, Font size | Compact, Comfortable |
+| **Theme** | 颜色（text / background / border / action / feedback） | Light、Dark |
+| **Style** | 圆角、阴影、组件形状 | Modern、Glass、Minimal |
+| **Density** | 尺寸、间距、字号 | Compact、Comfortable |
 
-The three dimensions **never** implicitly affect each other (AUI-PRD-v1.2.md §36: "三个维度不得隐式修改其他维度"). Changing the theme never alters spacing; changing density never alters color.
+三个维度 **永远不会** 隐式相互影响（AUI-PRD-v1.2.md §36：「三个维度不得隐式修改其他维度」）。改 Theme 不会动 spacing；改 Density 不会动颜色。
 
-## The cascade
+## 级联
 
 ```
-Default values
+默认值
    ↓
-Theme override     → primitive.color + semantic.color
+Theme 覆盖     → primitive.color + semantic.color
    ↓
-Style override     → primitive.radius/shadow + component tokens
+Style 覆盖     → primitive.radius/shadow + component tokens
    ↓
-Density override   → primitive.spacing/size/font.size
+Density 覆盖   → primitive.spacing/size/font.size
    ↓
-Variant            → component tokens (per-instance preset)
+Variant         → component 令牌（per-instance preset）
    ↓
-Instance override  → flat Record<string, string> (top-most)
+Instance 覆盖   → flat Record<string, string>（最上层）
 ```
 
-## Tokens are CSS variables
+## Tokens 即 CSS 变量
 
-The resolver outputs a flat `TokenBinding[]`:
+Resolver 输出扁平的 `TokenBinding[]`：
 
 ```ts
 { name: '--aui-color-blue-500', value: '#1677ff' }
@@ -36,16 +36,16 @@ The resolver outputs a flat `TokenBinding[]`:
 { name: '--aui-button-radius', value: 'var(--aui-radius-control)' }
 ```
 
-Components consume via `var(--aui-color-action-primary)` — they never see the raw primitive. This means a theme switch only changes the binding table, not the components.
+组件消费 `var(--aui-color-action-primary)`——从不直接接触原始 primitive。这意味着切换 Theme 只改绑定表，组件代码无需修改。
 
-## Pages in this section
+## 本节页面
 
-- [Theme (Light / Dark)](/theme/theme)
-- [Style (Modern / Glass / Minimal)](/theme/style)
-- [Density (Compact / Comfortable)](/theme/density)
-- [Token cascade](/theme/cascade)
+- [Theme（Light / Dark）](/theme/theme)
+- [Style（Modern / Glass / Minimal）](/theme/style)
+- [Density（Compact / Comfortable）](/theme/density)
+- [Token 级联](/theme/cascade)
 
-## Programmatic API
+## 编程式 API
 
 ```ts
 import { resolveEnvironment, renderStyleBlock } from '@snui/tokens';
@@ -54,7 +54,7 @@ const env = {
   theme: LIGHT_THEME,
   style: MODERN_STYLE,
   density: COMFORTABLE_DENSITY,
-  // Optional instance overrides
+  // 可选的实例覆盖
   instanceOverrides: {
     '--aui-color-action-primary': '#ff5500',
   },
@@ -62,14 +62,14 @@ const env = {
 
 const bindings = resolveEnvironment(env);
 
-// Inject as a CSS string:
+// 注入为 CSS 字符串：
 const css = renderStyleBlock(bindings);
 document.head.insertAdjacentHTML('beforeend', `<style>${css}</style>`);
 
-// Or attach to a host element directly:
+// 或者直接挂到宿主元素上：
 for (const { name, value } of bindings) {
   document.documentElement.style.setProperty(name, value);
 }
 ```
 
-See the [`@snui/tokens` source](https://github.com/hu-snail/snail-ui) for the full default scale.
+完整默认尺度见 [`@snui/tokens` 源码](https://github.com/hu-snail/snail-ui)。

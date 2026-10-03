@@ -1,24 +1,24 @@
 # Theme · Light / Dark
 
-The Theme axis owns the **color** system: text, background, border, action, and feedback colors.
+Theme 轴掌管 **颜色** 系统：text、background、border、action、feedback 颜色。
 
-A theme overrides primitive color + semantic color. It does NOT touch radius, shadow, spacing, or font sizes (those are Style + Density).
+Theme 覆盖 primitive color + semantic color。它**不会**触及 radius、shadow、spacing 或字号（那些归 Style + Density）。
 
-## Defaults shipped
+## 内置默认
 
 ```ts
 import { LIGHT_THEME, DARK_THEME } from '@snui/tokens';
 ```
 
-| Theme | Source of truth |
+| Theme | 事实源 |
 | --- | --- |
-| `LIGHT_THEME` | default — semantic.text.primary → `var(--aui-color-gray-900)` |
+| `LIGHT_THEME` | 默认 — semantic.text.primary → `var(--aui-color-gray-900)` |
 | `DARK_THEME` | semantic.text.primary → `var(--aui-color-gray-100)` |
 
-## Behavior on theme change
+## 切换 Theme 时的行为
 
 ```
-Theme Change
+Theme 切换
    ↓
 保留 Style
    ↓
@@ -27,9 +27,9 @@ Theme Change
 重新解析 Token
 ```
 
-Per AUI-PRD-v1.2.md §38: changing the theme preserves the Style and Density axes. Only the color layer is recomputed.
+按 AUI-PRD-v1.2.md §38：切换 Theme 时保留 Style 与 Density 轴。只重算颜色层。
 
-## Custom theme
+## 自定义 Theme
 
 ```ts
 import type { ThemeDefinition } from '@snui/tokens';
@@ -38,7 +38,7 @@ const brand: ThemeDefinition = {
   name: 'brand',
   primitive: {
     blue: {
-      500: '#5b21b6', // brand purple
+      500: '#5b21b6', // 品牌紫
     },
   },
   semantic: {
@@ -49,21 +49,21 @@ const brand: ThemeDefinition = {
 };
 ```
 
-When the user picks `brand`, every component using `--aui-color-action-primary` re-renders against the new primitive color (the primitive binding at `--aui-color-blue-500` swaps), without any code change.
+当用户选择 `brand` 时，所有引用 `--aui-color-action-primary` 的组件会基于新 primitive 颜色重新渲染（`--aui-color-blue-500` 的绑定被替换），无需任何代码改动。
 
-## What a theme MUST NOT do
+## Theme 不得做的事
 
-| Forbidden | Reason |
+| 禁止 | 原因 |
 | --- | --- |
-| Override radius / shadow / spacing | Belongs to Style / Density |
-| Reference `window` / `document` / global state | Tokens are pure data |
-| Reference the Style or Density axes | The three axes are independent |
+| 覆盖 radius / shadow / spacing | 属于 Style / Density |
+| 引用 `window` / `document` / 全局状态 | Tokens 是纯数据 |
+| 引用 Style 或 Density 轴 | 三轴互相独立 |
 
-If you find yourself reaching for any of the above, you're designing a Style or Density instead — split it.
+如果你发现自己想做上述事情，那其实是在设计 Style 或 Density——把它拆出来。
 
-## Live comparison
+## Live 对比
 
-The two previews below mount the same Button under LIGHT_THEME and DARK_THEME. The schema is identical; only the binding table differs.
+下面两个 preview 用同一份 Button 分别挂载 LIGHT_THEME 与 DARK_THEME。Schema 完全一致，只有绑定表不同。
 
 <script setup>
 import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
@@ -71,10 +71,10 @@ import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
 
 <ComponentPreview name="button" variant="primary" text="Light theme" />
 
-> Dark theme preview lands once the docs site picks up the night-mode toggle. The contract is identical; only the resolver output differs.
+> Dark theme preview 在文档站支持夜间模式切换后即上线。契约完全一致，只是 resolver 输出不同。
 
-## Next
+## 下一步
 
-- [Style (Modern / Glass / Minimal)](/theme/style)
-- [Density (Compact / Comfortable)](/theme/density)
-- [Token cascade](/theme/cascade)
+- [Style（Modern / Glass / Minimal）](/theme/style)
+- [Density（Compact / Comfortable）](/theme/density)
+- [Token 级联](/theme/cascade)

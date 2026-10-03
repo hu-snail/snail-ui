@@ -68,7 +68,7 @@ features:
 
 </div>
 
-## 已交付能力（Phase 1 · 28 / 28 任务）
+## 已交付能力（Phase 1 + Phase 2 · 35 / 35 任务）
 
 | 包 | 任务数 | 用途 |
 | --- | --- | --- |
@@ -79,6 +79,7 @@ features:
 | `@snui/reactive` | 3 | ReactiveAdapter 封装 `@vue/reactivity` |
 | `@snui/binding` | 3 | Resolver + 安全表达式引擎 + Event dispatch |
 | `@snui/action` | 3 | ActionRegistry + ActionHandler + AppBridge |
-| `@snui/vue-web` | 3 | Vue 3 渲染器 + Button |
+| `@snui/vue-web` | 7 | Vue 3 渲染器 + ComponentRegistry + 4 个官方组件（Button / Input / Form / Card）+ Web E2E |
+| `@snui/docs` | 1 | VitePress 多端文档站（含 live preview） |
 
 </div>
