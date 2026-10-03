@@ -12,12 +12,14 @@
  *   - `UIActionSchema` / `UIAction` — declarative action reference (AUI-PROTOCOL-004)
  *   - `AIActionMetadataSchema` / `AIActionMetadata` — AI metadata sub-schema
  *   - `UIAccessibilitySchema` / `UIAccessibility` — A11y metadata (AUI-PROTOCOL-005)
+ *   - `ButtonContract` / `ButtonPropsSchema` / `ButtonTokens` — official Button contract (AUI-WEB-003 / AUI-CONTRACT-001)
  *   - `UI_SCHEMA_TYPE` — canonical schema id prefix (`aui.page`)
  *   - `UI_SCHEMA_VERSION` — current UISchema version constant
  *   - `AUI_PROTOCOL_VERSION` — protocol package version constant
  *
  * Sibling tasks (placeholders replaced as they merge):
  *   - AUI-PROTOCOL-006: UICapability
+ *   - AUI-CONTRACT-002..006: Input / Form / Card / Select etc. contracts
  *   - future task: UIStateSchema
  */
 export const AUI_PROTOCOL_VERSION = '0.1.0';
@@ -56,3 +58,19 @@ export {
 } from './ui-action.js';
 
 export { UIAccessibilitySchema, type UIAccessibility } from './ui-accessibility.js';
+
+export {
+  ButtonContract,
+  ButtonPropsSchema,
+  ButtonVariantSchema,
+  ButtonSizeSchema,
+  ButtonTypeSchema,
+  ButtonTokens,
+  ButtonAccessibility,
+  ButtonCapabilities,
+  ButtonAIMetadata,
+  type ButtonProps,
+  type ButtonVariant,
+  type ButtonSize,
+  type ButtonType,
+} from './button-contract.js';
