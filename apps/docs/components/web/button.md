@@ -1,141 +1,122 @@
-# Button · Web
+# Button 按钮
 
-首个 AUI 官方组件。`apps/docs` 的每个 preview 都用到它。通过 `@snui/vue-web` 映射到真实的 `<button>` DOM 元素。
+按钮用于触发一个操作。`SnButton` 是 web 端最常用的组件，所有视觉属性都通过 `--sn-*` CSS 变量驱动。
+
+## 基础用法
 
 <script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
+import { SnButton } from '@snui/vue-web'
 </script>
 
-## Live render · 真实框架挂载
+<SnButton>默认</SnButton>
+<SnButton type="primary">主要</SnButton>
+<SnButton type="success">成功</SnButton>
+<SnButton type="warning">警告</SnButton>
+<SnButton type="danger">危险</SnButton>
 
-下面 12 个 button 通过 `createVueRenderer().mount()` 从 `@snui/vue-web` 挂载，刷新页面即可重新挂载。
-
-### 变体（Variants）
-
-<ComponentPreview name="button" variant="primary" text="Primary" />
-
-<ComponentPreview name="button" variant="secondary" text="Secondary" />
-
-<ComponentPreview name="button" variant="danger" text="Danger" />
-
-<ComponentPreview name="button" variant="ghost" text="Ghost" />
-
-### 尺寸（Sizes）
-
-<ComponentPreview name="button" variant="primary" size="small" text="Small" />
-
-<ComponentPreview name="button" variant="primary" size="medium" text="Medium" />
-
-<ComponentPreview name="button" variant="primary" size="large" text="Large" />
-
-### 状态（States）
-
-<ComponentPreview name="button" variant="primary" :disabled="true" text="Disabled" />
-
-<ComponentPreview name="button" variant="primary" :loading="true" text="Loading" />
-
-### 暗色表面
-
-<ComponentPreview name="button" variant="primary" text="On dark" :dark="true" />
-
-<ComponentPreview name="button" variant="ghost" text="Ghost dark" :dark="true" />
-
-### Schema 驱动示例
-
-下面把 Button 接到 schema + runtime + action registry 上，按下按钮触发一个 action。
-
-<ComponentPreview
-  name="button"
-  variant="primary"
-  text="Submit"
-/>
-
-```ts
-import { createRuntime, createActionRegistry } from '@snui/runtime';
-import { createVueRenderer, createComponentRegistry, Button } from '@snui/vue-web';
-import { LIGHT_THEME, MODERN_STYLE, COMFORTABLE_DENSITY } from '@snui/tokens';
-
-const actions = createActionRegistry();
-actions.register('submit', async (_ctx, params) => {
-  await fetch('/api/submit', { method: 'POST', body: JSON.stringify(params) });
-});
-
-const registry = createComponentRegistry();
-registry.register('button', Button);
-
-const renderer = createVueRenderer({ registry });
-renderer.mount({
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', text: 'Submit' },
-    events: { click: { kind: 'event', trigger: 'click' } },
-  },
-}, document.getElementById('app')!);
+```vue
+<template>
+  <SnButton>默认</SnButton>
+  <SnButton type="primary">主要</SnButton>
+  <SnButton type="success">成功</SnButton>
+  <SnButton type="warning">警告</SnButton>
+  <SnButton type="danger">危险</SnButton>
+</template>
 ```
 
-## Props
+## 尺寸
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>类型</th><th>默认值</th><th>必填</th><th>说明</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>variant</code></td><td><code>'primary' | 'secondary' | 'danger' | 'ghost'</code></td><td><code>'primary'</code></td><td>No</td><td>视觉风格。映射到 <code>--aui-color-action-*</code>。</td></tr>
-    <tr><td><code>size</code></td><td><code>'small' | 'medium' | 'large'</code></td><td><code>'medium'</code></td><td>No</td><td>高度 / 内边距 / 字号子轴（§36）。</td></tr>
-    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>禁用并应用 <code>aria-disabled</code>。</td></tr>
-    <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>显示 spinner 并应用 <code>aria-busy</code>；禁用 click。</td></tr>
-    <tr><td><code>icon</code></td><td><code>string</code></td><td>—</td><td>No</td><td>图标名（通过 <code>AppIcon</code> 注册）。</td></tr>
-    <tr><td><code>text</code></td><td><code>string</code></td><td>—</td><td>No</td><td>可见标签。最小长度 1。</td></tr>
-    <tr><td><code>type</code></td><td><code>'button' | 'submit' | 'reset'</code></td><td><code>'button'</code></td><td>No</td><td>原生 button type。</td></tr>
-  </tbody>
-</table>
+`tiny` / `small` / `medium` / `large` 四档。
 
-## Events
+<SnButton size="tiny">tiny</SnButton>
+<SnButton size="small">small</SnButton>
+<SnButton size="medium">medium</SnButton>
+<SnButton size="large">large</SnButton>
 
-<table class="props">
-  <thead>
-    <tr><th>Event id</th><th>DOM event</th><th>说明</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>click</code></td><td><code>click</code></td><td>当 <code>disabled</code> 或 <code>loading</code> 时被抑制。</td></tr>
-  </tbody>
-</table>
+## 块级与圆角
 
-## Tokens
+<SnButton block type="primary">块级按钮</SnButton>
+<SnButton round type="success">圆角按钮</SnButton>
 
-| 逻辑槽位 | CSS 变量 |
+## 状态
+
+<SnButton disabled>禁用</SnButton>
+<SnButton loading>加载中</SnButton>
+
+## 加载中
+
+加载状态下按钮不可点击，自动显示旋转图标。也可以用 `loading` slot 自定义。
+
+<SnButton loading type="primary">加载中…</SnButton>
+
+```vue
+<template>
+  <SnButton loading type="primary">加载中…</SnButton>
+</template>
+```
+
+## API
+
+### Props
+
+| 名称 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| type | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | 按钮类型 |
+| size | `'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 按钮尺寸 |
+| block | `boolean` | `false` | 是否为块级（占满父容器宽度） |
+| round | `boolean` | `false` | 是否为胶囊形 |
+| disabled | `boolean` | `false` | 是否禁用 |
+| loading | `boolean` | `false` | 是否加载中 |
+| htmlType | `'button' \| 'submit' \| 'reset'` | `'button'` | 原生 button type 属性 |
+| bordered | `boolean` | `true` | 是否显示边框（对 default 类型有效） |
+| ariaLabel | `string` | — | 无障碍标签 |
+
+### Events
+
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| click | `(event: MouseEvent)` | 点击按钮时触发。`disabled` 或 `loading` 时不触发 |
+
+### Slots
+
+| 名称 | 说明 |
 | --- | --- |
-| `primary.background` | `var(--aui-color-action-primary)` |
-| `primary.color` | `var(--aui-color-text-on-action)` |
-| `danger.background` | `var(--aui-color-action-danger)` |
-| `ghost.color` | `var(--aui-color-action-primary)` |
-| `ghost.borderColor` | `var(--aui-color-action-primary)` |
-| `size.small.height` | `var(--aui-control-height-sm)` |
-| `size.medium.height` | `var(--aui-control-height-md)` |
-| `size.large.height` | `var(--aui-control-height-lg)` |
+| default | 按钮内容 |
+| icon | 自定义图标（替代 loading spinner） |
+| loading | 自定义加载图标（替代默认 spinner） |
 
-## Accessibility
+### 类型定义
 
-| 属性 | 值 |
-| --- | --- |
-| `role` | `button` |
-| `keyboard` | `Enter`, `Space` |
-| `aria-disabled` | 绑定到 `props.disabled` |
-| `aria-busy` | 绑定到 `props.loading` |
+```ts
+import type { PropType } from 'vue'
 
-## AI Patch Boundary
+type ButtonType = 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info'
+type ButtonSize = 'tiny' | 'small' | 'medium' | 'large'
+```
 
-| 状态 | 字段 |
-| --- | --- |
-| `ai.patchable` | `variant`, `size`, `disabled`, `loading`, `icon`, `text`, `type` |
-| `ai.readonly` | `role`, `keyboard`, `click` |
+## 主题定制
 
-## Source
+通过 CSS 变量覆盖：
 
-`packages/protocol/src/button-contract.ts` (Contract source) · `packages/vue-web/src/button.ts` (Vue renderer)
+```css
+:root {
+  --sn-color-action-primary: #1677ff;       /* primary 背景 */
+  --sn-color-feedback-danger: #ef4444;      /* danger 背景 */
+  --sn-radius-button: 8px;                  /* 圆角 */
+  --sn-button-size-medium-height: 36px;     /* medium 尺寸高度 */
+}
+```
 
-## Uni-app equivalent
+## 无障碍
 
-Button 契约同样适用于 uni-app，props 相同，事件名略有差异。详见 [Button · uni-app](/components/uni/button)。
+- 使用原生 `<button>` 元素，`role="button"`
+- `disabled` 时设置 `aria-disabled="true"`
+- `loading` 时设置 `aria-busy="true"`
+- 支持 `aria-label` 覆盖
+- 键盘 Enter / Space 原生触发 click
+
+## 相关
+
+- 源文件：`packages/vue-web/src/button/SnButton.vue`
+- AI 描述：`packages/vue-web/src/button/ai-description.md`
+- uni 端：[`sn-button`](/components/uni/button)

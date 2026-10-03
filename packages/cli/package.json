@@ -1,0 +1,46 @@
+{
+  "name": "@snui/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI CLI — unplugin-vue-components resolver, llms.txt generator, doc extractor. Reads component ai-description.md files and produces machine-readable output.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./resolver": {
+      "types": "./dist/resolver.d.ts",
+      "import": "./dist/resolver.js"
+    },
+    "./llms-txt": {
+      "types": "./dist/llms-txt.d.ts",
+      "import": "./dist/llms-txt.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@snui/vue-web": "workspace:"
+  },
+  "peerDependencies": {
+    "unplugin-vue-components": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8",
+    "eslint": "^9.17.0"
+  }
+}

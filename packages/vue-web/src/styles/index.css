@@ -1,0 +1,25 @@
+/**
+ * @snui/vue-web default stylesheet — inject token CSS variables.
+ *
+ * Import this once at app entry:
+ *   import '@snui/vue-web/styles'
+ *
+ * Emits:
+ *   - `:root { --aui-* + --sn-* aliases }` (light theme)
+ *   - `[data-theme="dark"] { ... }` (dark theme)
+ *
+ * Components reference `--sn-*` variables only; this file wires up the
+ * alias layer to the underlying `@snui/tokens` cascade.
+ */
+
+@import '@snui/tokens/styles/index.css';
+
+/* Component-level style defaults that fall back if no token is set. */
+:root {
+  --sn-radius-button: 6px;
+  --sn-color-focus-ring: rgba(22, 119, 255, 0.25);
+  --sn-button-size-tiny-height: 24px;
+  --sn-button-size-small-height: 32px;
+  --sn-button-size-medium-height: 36px;
+  --sn-button-size-large-height: 44px;
+}

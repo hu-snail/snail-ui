@@ -1,15 +1,10 @@
-import { defineConfig } from 'vitepress';
+import { defineConfig } from 'vitepress'
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
  *
- * Locale structure:
- *   - Root paths default to Simplified Chinese (matches appLocale: zh)
- *   - `/en/...` paths mirror the English translation
- *   - The language switcher in the top nav is auto-rendered from the
- *     `locales` config when both are present
- *
- * Per AGENTS.md #110, every component page must be updated in both languages.
+ * Per ADR-0001: AUI is a traditional AI-friendly component library.
+ * Docs describe real components, not schema-driven runtimes.
  */
 
 const nav = [
@@ -25,53 +20,44 @@ const nav = [
     ],
   },
   { text: 'GitHub', link: 'https://github.com/hu-snail/snail-ui' },
-];
+]
 
 const sidebar = {
   '/guide/': [
     {
-      text: 'Getting started',
+      text: '快速开始',
       items: [
-        { text: 'Introduction', link: '/guide/web/intro' },
-        { text: 'Installation', link: '/guide/web/installation' },
-        { text: 'Quick start (Web)', link: '/guide/web/quick-start' },
-        { text: 'Quick start (uni-app)', link: '/guide/uni/quick-start' },
-        { text: 'Architecture', link: '/guide/web/architecture' },
+        { text: '介绍', link: '/guide/web/intro' },
+        { text: 'Web 快速开始', link: '/guide/web/quick-start' },
+        { text: 'uni-app 快速开始', link: '/guide/uni/quick-start' },
       ],
     },
   ],
   '/components/web/': [
     {
-      text: 'Web (Vue 3)',
+      text: 'Web 组件',
       items: [
-        { text: 'Button', link: '/components/web/button' },
-        { text: 'Input', link: '/components/web/input' },
-        { text: 'Form', link: '/components/web/form' },
-        { text: 'Card', link: '/components/web/card' },
+        { text: 'Button 按钮', link: '/components/web/button' },
       ],
     },
   ],
   '/components/uni/': [
     {
-      text: 'uni-app',
+      text: 'uni-app 组件',
       items: [
-        { text: 'Button', link: '/components/uni/button' },
+        { text: 'Button 按钮', link: '/components/uni/button' },
       ],
     },
   ],
   '/theme/': [
     {
-      text: 'Theme / Style / Density',
+      text: '主题与 Token',
       items: [
-        { text: 'Overview', link: '/theme/overview' },
-        { text: 'Theme (Light / Dark)', link: '/theme/theme' },
-        { text: 'Style (Modern / Glass)', link: '/theme/style' },
-        { text: 'Density (Compact / Comfortable)', link: '/theme/density' },
-        { text: 'Token cascade', link: '/theme/cascade' },
+        { text: 'Token 总览', link: '/theme/overview' },
       ],
     },
   ],
-};
+}
 
 const enNav = [
   { text: 'Guide', link: '/en/guide/web/intro' },
@@ -86,7 +72,7 @@ const enNav = [
     ],
   },
   { text: 'GitHub', link: 'https://github.com/hu-snail/snail-ui' },
-];
+]
 
 const enSidebar = {
   '/en/guide/': [
@@ -94,27 +80,22 @@ const enSidebar = {
       text: 'Getting started',
       items: [
         { text: 'Introduction', link: '/en/guide/web/intro' },
-        { text: 'Installation', link: '/en/guide/web/installation' },
-        { text: 'Quick start (Web)', link: '/en/guide/web/quick-start' },
-        { text: 'Quick start (uni-app)', link: '/en/guide/uni/quick-start' },
-        { text: 'Architecture', link: '/en/guide/web/architecture' },
+        { text: 'Web Quick Start', link: '/en/guide/web/quick-start' },
+        { text: 'uni-app Quick Start', link: '/en/guide/uni/quick-start' },
       ],
     },
   ],
   '/en/components/web/': [
     {
-      text: 'Web (Vue 3)',
+      text: 'Web components',
       items: [
         { text: 'Button', link: '/en/components/web/button' },
-        { text: 'Input', link: '/en/components/web/input' },
-        { text: 'Form', link: '/en/components/web/form' },
-        { text: 'Card', link: '/en/components/web/card' },
       ],
     },
   ],
   '/en/components/uni/': [
     {
-      text: 'uni-app',
+      text: 'uni-app components',
       items: [
         { text: 'Button', link: '/en/components/uni/button' },
       ],
@@ -122,22 +103,17 @@ const enSidebar = {
   ],
   '/en/theme/': [
     {
-      text: 'Theme / Style / Density',
+      text: 'Theme & Tokens',
       items: [
-        { text: 'Overview', link: '/en/theme/overview' },
-        { text: 'Theme (Light / Dark)', link: '/en/theme/theme' },
-        { text: 'Style (Modern / Glass)', link: '/en/theme/style' },
-        { text: 'Density (Compact / Comfortable)', link: '/en/theme/density' },
-        { text: 'Token cascade', link: '/en/theme/cascade' },
+        { text: 'Tokens overview', link: '/en/theme/overview' },
       ],
     },
   ],
-};
+}
 
 export default defineConfig({
-  title: 'AUI — AI-Native UI Framework',
-  description: 'AUI framework documentation. Schema-first, framework-agnostic UI runtime.',
-  cleanUrls: true,
+  title: 'AUI — AI-Friendly UI Component Library',
+  description: 'Vue 3 + uni-app multi-end UI component library. Web API inspired by naive-ui, uni-app API inspired by wot-ui. Token-driven themes, real component rendering in docs.',
 
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
@@ -153,8 +129,6 @@ export default defineConfig({
       label: '简体中文',
       lang: 'zh-CN',
       themeConfig: {
-        logo: { src: '/aui-mark.svg', alt: 'AUI' },
-        siteTitle: 'AUI',
         nav,
         sidebar,
         socialLinks: [{ icon: 'github', link: 'https://github.com/hu-snail/snail-ui' }],
@@ -169,8 +143,6 @@ export default defineConfig({
       label: 'English',
       lang: 'en-US',
       themeConfig: {
-        logo: { src: '/aui-mark.svg', alt: 'AUI' },
-        siteTitle: 'AUI',
         nav: enNav,
         sidebar: enSidebar,
         socialLinks: [{ icon: 'github', link: 'https://github.com/hu-snail/snail-ui' }],
@@ -182,4 +154,4 @@ export default defineConfig({
       },
     },
   },
-});
+})

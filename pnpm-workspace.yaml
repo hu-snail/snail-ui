@@ -1,10 +1,7 @@
 packages:
   - "packages/*"
-  - "apps/docs"
+  - "apps/*"
 
 # Future workspace entries (will be enabled in later phases):
-#   - "apps/playground"
-#   - "apps/studio"
-#   - "apps/cli"
 #   - "templates/*"
 #   - "examples/*"

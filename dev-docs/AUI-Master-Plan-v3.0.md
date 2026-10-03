@@ -1,8 +1,12 @@
 # AUI AI-Native 完整开发排期与执行计划 v3.0
 
+> ⚠️ **本文档已被 Master Plan v5.0 取代（Superseded by `dev-docs/SNUI-Master-Plan-v5.0.md`）**  
+> 请勿再据此做新功能决策。仅用于历史追溯。
+
 **项目：AUI**
 
 **版本：v3.0**
+**状态：Superseded（被 SNUI-Master-Plan-v5.0.md 取代）**
 
 **文档性质：Master Development Plan**
 

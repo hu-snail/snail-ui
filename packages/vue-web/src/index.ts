@@ -1,20 +1,20 @@
 /**
- * AUI Vue Web Renderer — Vue 3 mapping for Runtime nodes to DOM.
+ * @snui/vue-web — Web-end UI component library for Vue 3.
  *
- * Per AGENTS.md §59 Web/Uni share Protocol / Runtime / Contract / Token.
- * Platform differences resolve via Capability + Fallback, not by copy-pasting.
+ * Public API surface (v0.1.0):
+ *   - Named exports for each component (tree-shakeable)
+ *   - Default export for full install (`app.use(SnUI)`)
+ *   - `SnUIResolver` exposed via `./resolver` for unplugin-vue-components
+ *
+ * Per AGENTS.md §14, public API is explicit / stable / minimal / testable /
+ * extensible. No internal helpers leak.
  */
 
-export const AUI_VUE_WEB_VERSION = '0.1.0';
+export { default as SnButton } from './button/SnButton.vue'
 
-export { createComponentRegistry, type ComponentRegistry } from './registry.js';
+export { SnUI, default } from './install.js'
+export type { SnUIOptions } from './install.js'
 
-export { Button } from './button.js';
-
-export { Input } from './input.js';
-
-export { Form, FormItem, type FormContext, type FormFieldDescriptor, type FormFields, type ValidateResult } from './form.js';
-
-export { Card } from './card.js';
-
-export { createVueRenderer, type VueRenderer, type VueRendererOptions } from './renderer.js';
+// Re-export commonly needed token utilities for app-level theme overrides.
+export { snCssVars, snVarName, auiVarName } from '@snui/tokens'
+export type { SnCssVarsOptions } from '@snui/tokens'

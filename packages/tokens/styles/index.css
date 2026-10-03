@@ -1,0 +1,99 @@
+/**
+ * @snui/tokens static stylesheet — default token cascade.
+ *
+ * Inject at app entry to get all component CSS variables. The full cascade
+ * (Theme / Style / Density + variant) is also available programmatically via
+ * `snCssVars({ theme, style, density })` from `@snui/tokens`.
+ *
+ * This static file emits the default theme only (Light / Modern / Comfortable).
+ * For dark theme, add `data-theme="dark"` to `<html>` — the cascade below
+ * already includes the dark override.
+ */
+
+:root {
+  /* Primitive — color (blue ramp) */
+  --aui-color-blue-50: #eff6ff;
+  --aui-color-blue-100: #dbeafe;
+  --aui-color-blue-200: #bfdbfe;
+  --aui-color-blue-300: #93c5fd;
+  --aui-color-blue-400: #60a5fa;
+  --aui-color-blue-500: #1677ff;
+  --aui-color-blue-600: #2563eb;
+  --aui-color-blue-700: #1d4ed8;
+  --aui-color-blue-800: #1e40af;
+  --aui-color-blue-900: #1e3a8a;
+  --aui-color-blue-950: #172554;
+
+  --aui-color-neutral-50: #fafafa;
+  --aui-color-neutral-100: #f4f4f5;
+  --aui-color-neutral-200: #e4e4e7;
+  --aui-color-neutral-300: #d4d4d8;
+  --aui-color-neutral-400: #a1a1aa;
+  --aui-color-neutral-500: #71717a;
+  --aui-color-neutral-600: #52525b;
+  --aui-color-neutral-700: #3f3f46;
+  --aui-color-neutral-800: #27272a;
+  --aui-color-neutral-900: #18181b;
+
+  --aui-color-success: #10b981;
+  --aui-color-warning: #f59e0b;
+  --aui-color-danger: #ef4444;
+
+  /* Semantic — color */
+  --aui-color-text-primary: var(--aui-color-neutral-900);
+  --aui-color-text-secondary: var(--aui-color-neutral-600);
+  --aui-color-text-disabled: var(--aui-color-neutral-400);
+  --aui-color-text-on-primary: #fff;
+
+  --aui-color-background-surface: #ffffff;
+  --aui-color-background-subtle: var(--aui-color-neutral-50);
+
+  --aui-color-border-default: var(--aui-color-neutral-300);
+  --aui-color-border-subtle: var(--aui-color-neutral-200);
+
+  --aui-color-action-primary: var(--aui-color-blue-500);
+  --aui-color-action-primary-hover: var(--aui-color-blue-400);
+
+  --aui-color-feedback-success: var(--aui-color-success);
+  --aui-color-feedback-warning: var(--aui-color-warning);
+  --aui-color-feedback-danger: var(--aui-color-danger);
+  --aui-color-feedback-info: var(--aui-color-neutral-500);
+
+  /* Sn-* alias layer (brand) */
+  --sn-color-text-primary: var(--aui-color-text-primary);
+  --sn-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-color-text-on-primary: var(--aui-color-text-on-primary);
+  --sn-color-background-surface: var(--aui-color-background-surface);
+  --sn-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-color-border-default: var(--aui-color-border-default);
+  --sn-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-color-action-primary: var(--aui-color-action-primary);
+  --sn-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-color-feedback-danger-hover: #f87171;
+  --sn-color-feedback-info: var(--aui-color-feedback-info);
+}
+
+[data-theme="dark"] {
+  --aui-color-text-primary: #fafafa;
+  --aui-color-text-secondary: #a1a1aa;
+  --aui-color-text-disabled: #52525b;
+  --aui-color-background-surface: #18181b;
+  --aui-color-background-subtle: #27272a;
+  --aui-color-border-default: #3f3f46;
+  --aui-color-border-subtle: #27272a;
+  --aui-color-action-primary-hover: #3b82f6;
+
+  /* Sn-* alias for dark */
+  --sn-color-text-primary: var(--aui-color-text-primary);
+  --sn-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-color-background-surface: var(--aui-color-background-surface);
+  --sn-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-color-border-default: var(--aui-color-border-default);
+  --sn-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-color-action-primary-hover: var(--aui-color-action-primary-hover);
+}

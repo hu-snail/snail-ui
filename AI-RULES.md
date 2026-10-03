@@ -5,10 +5,30 @@ Project-specific AI agent rules. Read both this file and `/AGENTS.md` before any
 ## Quick links
 
 - Root Agent Standard: [`AGENTS.md`](./AGENTS.md)
-- Architecture Freeze (PRD): [`dev-docs/AUI-PRD-v1.2.md`](./dev-docs/AUI-PRD-v1.2.md)
-- Master Plan: [`dev-docs/AUI-Master-Plan-v3.0.md`](./dev-docs/AUI-Master-Plan-v3.0.md)
-- WBS Task Index: [`dev-docs/AUI-WBS-v1.0.md`](./dev-docs/AUI-WBS-v1.0.md)
+- PRD (Active): [`dev-docs/SNUI-PRD-v3.0.md`](./dev-docs/SNUI-PRD-v3.0.md)
+- Architecture (Active): [`dev-docs/SNUI-Architecture-v3.0.md`](./dev-docs/SNUI-Architecture-v3.0.md)
+- Master Plan (Active): [`dev-docs/SNUI-Master-Plan-v5.0.md`](./dev-docs/SNUI-Master-Plan-v5.0.md)
+- WBS Task Index (Active): [`dev-docs/SNUI-WBS-v3.0.md`](./dev-docs/SNUI-WBS-v3.0.md)
+- Dev Guide: [`dev-docs/SNUI-Dev-Guide-v3.0.md`](./dev-docs/SNUI-Dev-Guide-v3.0.md)
+- Spec-01 Token & Style Pack: [`dev-docs/Spec-01-Token-StylePack.md`](./dev-docs/Spec-01-Token-StylePack.md)
+- Spec-02 Component: [`dev-docs/Spec-02-Component.md`](./dev-docs/Spec-02-Component.md)
+- Spec-03 AI Layer: [`dev-docs/Spec-03-AI-Layer.md`](./dev-docs/Spec-03-AI-Layer.md)
+- Spec-04 Prototype & App: [`dev-docs/Spec-04-Prototype-App.md`](./dev-docs/Spec-04-Prototype-App.md)
+- Spec-05 Docs & StyleSwitcher: [`dev-docs/Spec-05-Docs-StyleSwitcher.md`](./dev-docs/Spec-05-Docs-StyleSwitcher.md)
+- ADR-0001: [`.ai/decisions/0001-framework-pivot.md`](./.ai/decisions/0001-framework-pivot.md)
+- ADR-0002: [`.ai/decisions/0002-ai-native-style-platform.md`](./.ai/decisions/0002-ai-native-style-platform.md)
 - AI scratchpad: [`./.ai/`](./.ai)
+
+## Superseded (do not use)
+
+| 文件 | 状态 |
+|---|---|
+| `dev-docs/AUI-PRD-v1.2.md` | Superseded by PRD v3.0 |
+| `dev-docs/AUI-PRD-v2.0.md` | Superseded by PRD v3.0 |
+| `dev-docs/AUI-Master-Plan-v3.0.md` | Superseded by Master Plan v5.0 |
+| `dev-docs/AUI-Master-Plan-v4.0.md` | Superseded by Master Plan v5.0 |
+| `dev-docs/AUI-WBS-v1.0.md` | Superseded by WBS v3.0 |
+| `dev-docs/AUI-WBS-v2.0.md` | Superseded by WBS v3.0 |
 
 ## Foundation phase quick reference
 

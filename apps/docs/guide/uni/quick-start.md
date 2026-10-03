@@ -1,79 +1,92 @@
-# uni-app 快速开始
+# 快速开始（uni-app）
 
-AUI 的 uni-app 渲染器（Phase 3）与 Web 渲染器共享同一份 Protocol / Runtime 契约。渲染器把 `UINode.type` 映射到 uni-app 组件而不是 DOM 元素。
+5 分钟把 `@snui/uni` 接入到 uni-app 项目。
 
-> ⚠️ `@snui/uni` 当前仍是占位 package。契约面已经定型（见 [/guide/web/architecture](/guide/web/architecture)），`/components/uni/` 下的组件文档会随着 Phase 3 实现落地而点亮。
-
-## 1. 安装
+## 安装
 
 ```bash
-pnpm add @snui/uni @snui/runtime @snui/protocol @snui/tokens
+pnpm add @snui/uni
 ```
 
-uni-app 编译目标的 peer 依赖为 `@dcloudio/uni-app`（详见 uni-app 文档）。
+## 配置 easycom
 
-## 2. 同一份 UISchema，不同渲染器
+`@snui/uni` 默认按 easycom 规范组织（`components/sn-*/sn-*.vue`），需要在你项目的 `pages.json` 中配置：
+
+```json
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^sn-(.*)": "@snui/uni/src/components/sn-$1/sn-$1.vue"
+    }
+  }
+}
+```
+
+或者使用默认扫描（推荐，需要将 `components/` 目录放在 `src/components/`）：
+
+```json
+{
+  "easycom": {
+    "autoscan": true,
+    "custom": {}
+  }
+}
+```
+
+## 引入样式
+
+`App.vue` 的 `<style>` 顶部：
+
+```css
+@import '@snui/tokens/styles/index.css';
+```
+
+## 使用组件
+
+模板里直接用（无需 import）：
+
+```vue
+<template>
+  <view class="container">
+    <sn-button type="primary" @click="onSubmit">提交</sn-button>
+  </view>
+</template>
+
+<script setup lang="ts">
+const onSubmit = () => {
+  uni.showToast({ title: '已提交' })
+}
+</script>
+```
+
+如需显式 import：
 
 ```ts
-// main.ts（uni-app 入口）
-import { createUniRenderer, createUniRegistry } from '@snui/uni';
-import { Button as UniButton } from '@snui/uni/components/button';
-
-const registry = createUniRegistry();
-registry.register('button', UniButton);
-
-const renderer = createUniRenderer({ registry });
-
-const schema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', size: 'medium', text: 'Submit' },
-  },
-};
-
-// 在一个 uni-app 页面中：
-export default {
-  setup() {
-    onMounted(() => {
-      renderer.mount(schema, /* uni-app 页面 ref */);
-    });
-  },
-};
+import { SnButton } from '@snui/uni'
 ```
 
-## 3. Capability 降级
+## 跨端构建
 
-uni-app 的 API 在不同平台（微信小程序 / iOS / Android / H5）之间有所差异。渲染器会检测能力并降级：
+`@snui/uni` 组件支持 H5、微信小程序、支付宝小程序、抖音小程序、App（uni-app x）。运行：
 
-```ts
-import { UICapabilitySchema } from '@snui/protocol';
-
-const capability: UICapability = {
-  platform: 'mp-weixin',          // 微信小程序
-  feature: 'clipboard.write',
-  // 渲染器为当前平台挑选最合适的 API，不支持时降级。
-};
+```bash
+pnpm dev:h5           # H5
+pnpm dev:mp-weixin    # 微信小程序
+pnpm dev:mp-alipay    # 支付宝小程序
+pnpm build:app        # App
 ```
 
-完整的能力协商系统见 [架构](/guide/web/architecture)。
+## 暗色模式
 
-## 相同 vs 差异
+```html
+<html data-theme="dark">
+```
 
-| 关注点 | Web | uni-app |
-| --- | --- | --- |
-| Schema | UISchema | 同 |
-| Runtime | AUIRuntime | 同 |
-| Tokens | Theme / Style / Density | 同 |
-| Actions | ActionRegistry + AppBridge | 同 AppBridge，host 服务实现不同 |
-| 事件目录 | DOM 事件（`click`、`change`、…） | Uni 事件 + H5 上的 DOM 事件 |
-| 渲染器 | `createVueRenderer()` | `createUniRenderer()` |
-
-组件契约的 `events` 与 `capabilities` 字段因端而异。请查看 `/components/uni/` 了解每个组件的 uni 专属事件目录。
+CSS 变量自动级联。
 
 ## 下一步
 
-- [Button (uni)](/components/uni/button)
-- [架构](/guide/web/architecture)
-- [Web 快速开始](/guide/web/quick-start)
+- 组件文档：[`sn-button`](/components/uni/button)
+- 跨端适配说明：[`跨端 capability`](/guide/uni/cross-platform)
+- Web 端接入：[`Web 快速开始`](/guide/web/quick-start)

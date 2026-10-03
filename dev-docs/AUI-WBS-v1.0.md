@@ -1,8 +1,11 @@
 # AUI WBS 完整开发任务表
 
+> ⚠️ **本文档已被 WBS v3.0 取代（Superseded by `dev-docs/SNUI-WBS-v3.0.md`）**  
+> 请勿再据此认领 Task ID。仅用于历史追溯。
+
 > **项目名称**：AUI — AI-Native Multi-End UI Framework  
 > **文档版本**：v1.0  
-> **文档状态**：Execution Ready  
+> **文档状态**：Superseded（被 SNUI-WBS-v3.0.md 取代）  
 > **开发模式**：AI Agent 主开发 + Human Architecture Gate + CI 自动验证  
 > **目标版本**：v0.1.0  
 > **核心目标**：完成 AUI Core + Vue Web + AUI Uni + Template System + AI Engine + Studio MVP + Ecosystem Foundation

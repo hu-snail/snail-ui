@@ -1,8 +1,8 @@
 {
   "name": "snui",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "AUI — AI-Native Multi-End UI Framework. Schema First. Protocol First. Runtime First.",
+  "description": "AUI — AI-Friendly Multi-End UI Component Library. Vue 3 (web) + uni-app. Token-driven themes, real component rendering, AI-friendly docs. Replaces v1.x schema-driven runtime framework (see ADR-0001).",
   "type": "module",
   "packageManager": "pnpm@10.28.2",
   "engines": {
@@ -12,12 +12,15 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:vue-web": "pnpm --filter @snui/vue-web dev",
+    "dev:preview": "pnpm --filter @snui/preview dev",
+    "dev:docs": "pnpm --filter @snui/docs dev",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "clean": "turbo run clean && rm -rf node_modules .turbo",
-    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,json,md,yaml,yml}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,cjs,json,md,yaml,yml}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,cjs,json,md,yaml,yml,vue}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,mjs,cjs,json,md,yaml,yml,vue}\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo run build && changeset publish"

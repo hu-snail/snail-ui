@@ -15,6 +15,7 @@ export default tseslint.config(
       '**/*.d.ts',
       '**/*.min.js',
       '**/._*',
+      '**/*.vue',
       '.changeset/**',
     ],
   },

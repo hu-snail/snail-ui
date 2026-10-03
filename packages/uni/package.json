@@ -1,8 +1,8 @@
 {
   "name": "@snui/uni",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "AUI Uni Adapter — uni-app UI library bridging AUI Schema to H5 / Mini Program / App.",
+  "description": "AUI Uni — uni-app multi-end UI component library. API style inspired by wot-ui. Easycom auto-registration. Cross-end (H5 / WeChat MP / Alipay MP / App).",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -11,26 +11,35 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./components/*": "./src/components/*"
   },
-  "files": ["dist"],
+  "files": [
+    "src/components"
+  ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "dev": "tsc -p tsconfig.json --watch",
-    "lint": "eslint src --ext .ts",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "vue-tsc -p tsconfig.json --emitDeclarationOnly false",
+    "dev": "vue-tsc -p tsconfig.json --watch --emitDeclarationOnly false",
+    "lint": "eslint src --ext .ts,.vue",
+    "typecheck": "vue-tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "clean": "rm -rf dist .turbo coverage"
   },
   "dependencies": {
-    "@snui/protocol": "workspace:",
-    "@snui/schema": "workspace:",
-    "@snui/runtime": "workspace:",
+    "@snui/tokens": "workspace:",
     "vue": "^3.5.43"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^9.17.0",
+    "happy-dom": "^15.11.7",
     "typescript": "^5.7.3",
     "vitest": "^2.1.8",
-    "eslint": "^9.17.0"
-  }
+    "vue-tsc": "^2.2.0"
+  },
+  "sideEffects": [
+    "**/*.vue",
+    "**/*.css"
+  ]
 }
