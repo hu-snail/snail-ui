@@ -28,6 +28,7 @@
     "@snui/protocol": "workspace:",
     "@snui/runtime": "workspace:",
     "@snui/schema": "workspace:",
+    "@snui/tokens": "workspace:",
     "vue": "^3.5.43"
   },
   "devDependencies": {

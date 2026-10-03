@@ -178,6 +178,9 @@ importers:
       '@snui/schema':
         specifier: 'workspace:'
         version: link:../schema
+      '@snui/tokens':
+        specifier: 'workspace:'
+        version: link:../tokens
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@5.9.3)

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AUI Framework — Phase 1 Visual Preview</title>
+<title>AUI Framework — Phase 2 Visual Preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -101,6 +101,34 @@
   .demo-status .ok { color: var(--success); }
   .demo-status .err { color: var(--danger); }
 
+  /* ─── Phase 2 Component Demos ────────────────────────── */
+  .phase2-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .phase2-card { background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-sm); }
+  .phase2-card h3 { font-size: 15px; font-weight: 600; margin: 0 0 4px;
+    display: flex; align-items: center; gap: 8px; }
+  .phase2-card .component-tag { font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; padding: 2px 6px; background: var(--accent-soft);
+    color: var(--accent); border-radius: 3px; font-weight: 500; }
+  .phase2-card p { font-size: 13px; color: var(--muted); margin: 0 0 16px;
+    line-height: 1.5; }
+  .phase2-mount { min-height: 64px; padding: 8px; background: var(--bg);
+    border-radius: 8px; border: 1px dashed var(--line-soft); }
+
+  /* Form demo specific */
+  .form-demo { display: grid; gap: 12px; }
+  .form-demo-status { font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--muted); padding-top: 8px; border-top: 1px solid var(--line-soft);
+    margin-top: 8px; min-height: 18px; }
+  .form-demo-status .ok { color: var(--success); }
+
+  /* Card demo specific */
+  .card-mount { padding: 0; }
+
+  @media (max-width: 768px) {
+    .phase2-grid { grid-template-columns: 1fr; }
+  }
+
   /* ─── Token Palette ────────────────────────────────── */
   .palette { display: grid; grid-template-columns: repeat(11, 1fr); gap: 2px; }
   .palette .swatch { aspect-ratio: 1; border-radius: 4px; display: flex;
@@ -158,26 +186,26 @@
   <!-- ─── Hero ──────────────────────────────────────────── -->
   <header class="hero">
     <div>
-      <div class="hero-meta">snail-aui / Phase 1 + Phase 2 starter</div>
+      <div class="hero-meta">snail-aui / Phase 2 complete — 4 official components</div>
       <h1>AI-Native UI Framework<br>for <span class="accent">Vue 3</span> &amp; <span class="accent">uni-app</span></h1>
       <p>Schema-first declarative UI runtime with token cascade, reactive binding, sandboxed expressions, and an action registry. The framework you build apps on top of — not the framework you build apps with.</p>
       <div class="live"><span class="pulse"></span>Live framework runtime mounted below</div>
     </div>
     <aside>
       <div class="stat-card">
-        <div class="label">Tasks delivered</div>
-        <div class="value">28 / 28</div>
-        <div class="delta">Phase 1 complete</div>
+        <div class="label">Phase 2 components</div>
+        <div class="value">4 / 4</div>
+        <div class="delta">Button · Input · Form · Card</div>
       </div>
       <div class="stat-card">
         <div class="label">Tests passing</div>
-        <div class="value">248</div>
-        <div class="delta">+161 since baseline</div>
+        <div class="value">306</div>
+        <div class="delta">vue-web: 38 tests</div>
       </div>
       <div class="stat-card">
-        <div class="label">Commits to main</div>
-        <div class="value">11</div>
-        <div class="delta">7e89b30 → fa09cd7</div>
+        <div class="label">Phase 2 tasks</div>
+        <div class="value">7 / 7</div>
+        <div class="delta">WEB-001..007</div>
       </div>
     </aside>
   </header>
@@ -200,6 +228,33 @@
         <label>loading</label><div class="demo-row" id="row-loading"></div>
       </div>
       <div class="demo-status" id="demo-status">Booting framework…</div>
+    </div>
+  </section>
+
+  <!-- ─── Section 1b: Phase 2 Component Demos ────────────── -->
+  <section>
+    <div class="section-header">
+      <span class="num">01b</span>
+      <h2>Phase 2 official components — Input · Card · Form</h2>
+    </div>
+    <p style="color:var(--muted);margin:-12px 0 16px">Three new official components wired through the same schema → runtime → renderer pipeline. Each card mounts live Vue components into a target element.</p>
+    <div class="phase2-grid">
+      <div class="phase2-card">
+        <h3>Input <span class="component-tag">AUI-WEB-004</span></h3>
+        <p>Controlled input with type / size / disabled / readonly / clearable + token-driven CSS vars. Emits input / change / focus / blur / clear.</p>
+        <div class="phase2-mount" id="mount-input"></div>
+      </div>
+      <div class="phase2-card">
+        <h3>Card <span class="component-tag">AUI-WEB-006</span></h3>
+        <p>Section landmark with title / description / variant / bordered + slot body. Shadow elevation through token cascade.</p>
+        <div class="phase2-mount card-mount" id="mount-card"></div>
+      </div>
+    </div>
+    <div class="phase2-card" style="margin-top: 24px">
+      <h3>Form + FormItem <span class="component-tag">AUI-WEB-005</span></h3>
+      <p>Native <code style="font-family:'JetBrains Mono',monospace;background:var(--line-soft);padding:1px 4px;border-radius:3px">&lt;form&gt;</code> with cascading context, FormData collection on submit, and field-level error wiring.</p>
+      <div class="form-demo" id="mount-form"></div>
+      <div class="form-demo-status" id="form-status">Form mounted — fill in and submit.</div>
     </div>
   </section>
 
@@ -237,8 +292,8 @@
       <div class="pkg">
         <div class="pkg-layer-badge">Renderer</div>
         <div class="pkg-header"><span class="pkg-name">@snui/vue-web</span><span class="pkg-version">0.1.0</span></div>
-        <div class="pkg-desc">Vue 3 mapping for UISchema → DOM. ComponentRegistry + Button (first official component).</div>
-        <div class="pkg-deps"><span>→ protocol</span><span>→ schema</span><span>→ runtime</span><span>vue</span></div>
+        <div class="pkg-desc">Vue 3 mapping for UISchema → DOM. ComponentRegistry + 4 official components (Button · Input · Form · Card).</div>
+        <div class="pkg-deps"><span>→ protocol</span><span>→ schema</span><span>→ runtime</span><span>→ tokens</span><span>vue</span></div>
       </div>
       <div class="pkg" style="opacity:0.55">
         <div class="pkg-layer-badge">Coming</div>
@@ -285,9 +340,9 @@
   <section>
     <div class="section-header">
       <span class="num">04</span>
-      <h2>Phase 1 delivery — 28 / 28 tasks</h2>
+      <h2>Phase 2 delivery — Vue Web Renderer + 4 official components</h2>
     </div>
-    <p style="color:var(--muted);margin:-12px 0 16px">Eight sub-task deliveries, each a single atomic commit on <code style="font-family:'JetBrains Mono',monospace">main</code>.</p>
+    <p style="color:var(--muted);margin:-12px 0 16px">Phase 1 foundation (28 / 28 tasks) + Phase 2 (7 / 7 tasks). Each row corresponds to a single delivery commit on <code style="font-family:'JetBrains Mono',monospace">main</code>.</p>
     <div class="board">
       <div class="board-row"><div class="area">Area</div><div class="summary">Scope</div><div class="count">Tasks</div><div class="hash">Commit</div></div>
       <div class="board-row"><div class="area">Protocol</div><div class="summary">UISchema, UINode, UIBinding, UIAction, UIAccessibility, UICapability</div><div class="count">6</div><div class="hash">4778aef</div></div>
@@ -298,13 +353,13 @@
       <div class="board-row"><div class="area">Reactive</div><div class="summary">ReactiveAdapter over @vue/reactivity</div><div class="count">3</div><div class="hash">023b847</div></div>
       <div class="board-row"><div class="area">Binding</div><div class="summary">Resolver, Safe expression engine, Event dispatch</div><div class="count">3</div><div class="hash">1dcbc9f</div></div>
       <div class="board-row"><div class="area">Action</div><div class="summary">ActionRegistry, ActionHandler, AppBridge</div><div class="count">3</div><div class="hash">50bcf5d</div></div>
-      <div class="board-row"><div class="area">Vue Web</div><div class="summary">Phase 2 starter: Renderer + ComponentRegistry + Button</div><div class="count">3</div><div class="hash">8695dac</div></div>
-      <div class="board-row" style="background:var(--accent-soft)"><div class="area">Workspace</div><div class="summary">Lockfile (vue/reactivity 3.5.43 + zod 4.6.5) + happy-dom smoke</div><div class="count">2</div><div class="hash">7e89b30 · fa09cd7</div></div>
+      <div class="board-row" style="background:var(--accent-soft)"><div class="area">Vue Web</div><div class="summary">Renderer + Registry + 4 components (Button · Input · Form · Card) + Web E2E</div><div class="count">7</div><div class="hash">AUI-WEB-001..007</div></div>
+      <div class="board-row"><div class="area">Workspace</div><div class="summary">Lockfile (vue/reactivity 3.5.43 + zod 4.6.5) + happy-dom smoke</div><div class="count">2</div><div class="hash">7e89b30 · fa09cd7</div></div>
     </div>
   </section>
 
   <footer>
-    <span>snail-aui · Phase 1 complete · pushed to <code style="font-family:'JetBrains Mono',monospace">github.com/hu-snail/snail-ui</code></span>
+    <span>snail-aui · Phase 2 complete · 35 / 35 tasks across all phases</span>
     <span>Built with the framework it documents</span>
   </footer>
 </div>
@@ -362,6 +417,125 @@
     // eslint-disable-next-line no-console
     console.error(e);
   }
+
+  /* ── 1b. Phase 2 component demos (Input · Card · Form) ──── */
+  (function () {
+    const AUI = window.AUI;
+    if (!AUI) return;
+    const { createComponentRegistry, createVueRenderer, Input, Card, Form, FormItem } = AUI;
+    const reg = createComponentRegistry();
+    reg.register('input', Input);
+    reg.register('card', Card);
+    reg.register('form', Form);
+    reg.register('form-item', FormItem);
+    const renderer = createVueRenderer({ registry: reg });
+
+    /* Input demo */
+    const inputMount = document.getElementById('mount-input');
+    if (inputMount) {
+      renderer.mount({
+        version: '1.0.0',
+        root: {
+          id: 'demo-input',
+          type: 'input',
+          props: {
+            value: 'Phase 2 starter',
+            placeholder: 'Search placeholder',
+            type: 'text',
+            size: 'medium',
+            clearable: true,
+          },
+        },
+      }, inputMount);
+    }
+
+    /* Card demo */
+    const cardMount = document.getElementById('mount-card');
+    if (cardMount) {
+      renderer.mount({
+        version: '1.0.0',
+        root: {
+          id: 'demo-card',
+          type: 'card',
+          props: {
+            title: 'Order #1024',
+            description: 'Placed today · shipped in 2 days',
+            variant: 'default',
+            bordered: true,
+            shadow: true,
+          },
+          children: [
+            {
+              id: 'demo-card-body',
+              type: 'card',
+              props: { bordered: false, padding: 'sm', title: 'nested' },
+            },
+          ],
+        },
+      }, cardMount);
+    }
+
+    /* Form demo */
+    const formMount = document.getElementById('mount-form');
+    const formStatus = document.getElementById('form-status');
+    if (formMount && formStatus) {
+      renderer.mount({
+        version: '1.0.0',
+        root: {
+          id: 'demo-form',
+          type: 'form',
+          props: { formId: 'preview-form', layout: 'vertical' },
+          children: [
+            {
+              id: 'f-name',
+              type: 'form-item',
+              props: { prop: 'name', label: 'Name', required: true },
+              children: [
+                {
+                  id: 'i-name',
+                  type: 'input',
+                  props: { value: '', placeholder: 'Your name', name: 'name', type: 'text' },
+                },
+              ],
+            },
+            {
+              id: 'f-email',
+              type: 'form-item',
+              props: { prop: 'email', label: 'Email', required: true },
+              children: [
+                {
+                  id: 'i-email',
+                  type: 'input',
+                  props: { value: '', placeholder: 'you@aui.dev', name: 'email', type: 'email' },
+                },
+              ],
+            },
+            {
+              id: 'f-submit',
+              type: 'button',
+              props: { variant: 'primary', text: 'Submit', type: 'submit' },
+            },
+          ],
+        },
+      }, formMount);
+
+      // Wire submit feedback: the native form collects FormData on submit.
+      const formEl = formMount.querySelector('form');
+      if (formEl) {
+        formEl.addEventListener('submit', (ev) => {
+          ev.preventDefault();
+          const fd = new FormData(formEl);
+          const entries = {};
+          for (const [k, v] of fd.entries()) entries[k] = String(v);
+          formStatus.innerHTML =
+            '<span class="ok">● submit captured</span> · ' +
+            Object.entries(entries)
+              .map(([k, v]) => `${k}=${v || '∅'}`)
+              .join(' · ');
+        });
+      }
+    }
+  })();
 
   /* ── 2. Color palette (blue ramp) ────────────────────────── */
   const palette = document.getElementById('palette');

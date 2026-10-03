@@ -11,4 +11,10 @@ export { createComponentRegistry, type ComponentRegistry } from './registry.js';
 
 export { Button } from './button.js';
 
+export { Input } from './input.js';
+
+export { Form, FormItem, type FormContext, type FormFieldDescriptor, type FormFields, type ValidateResult } from './form.js';
+
+export { Card } from './card.js';
+
 export { createVueRenderer, type VueRenderer, type VueRendererOptions } from './renderer.js';
