@@ -65,7 +65,7 @@ const cozy: DensityDefinition = {
 ## Live comparison
 
 <script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
+import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
 </script>
 
 <ComponentPreview name="button" variant="primary" size="medium" text="Comfortable · medium" />

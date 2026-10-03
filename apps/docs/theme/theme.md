@@ -66,7 +66,7 @@ If you find yourself reaching for any of the above, you're designing a Style or 
 The two previews below mount the same Button under LIGHT_THEME and DARK_THEME. The schema is identical; only the binding table differs.
 
 <script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
+import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
 </script>
 
 <ComponentPreview name="button" variant="primary" text="Light theme" />

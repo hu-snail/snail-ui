@@ -61,7 +61,7 @@ When `glass` is applied, the Button's `--aui-button-radius` flips from `6px` to 
 ## Live comparison
 
 <script setup>
-import ComponentPreview from '../../../.vitepress/components/ComponentPreview.vue';
+import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
 </script>
 
 <ComponentPreview name="button" variant="primary" text="Modern" />
