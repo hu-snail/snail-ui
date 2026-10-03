@@ -17,6 +17,8 @@
  *   - 装饰图标 / 动画
  */
 
+import { useSlots } from 'vue'
+
 defineOptions({ name: 'SnDivider' })
 
 const props = withDefaults(
@@ -42,6 +44,14 @@ defineSlots<{
   /** Optional content shown on the line (e.g. "OR"). */
   default?(): unknown
 }>()
+
+// useSlots() reference keeps vue-tsc treating this file as a Vue SFC and
+// emits the compiled JS to dist/divider/SnDivider.vue.js. Without an
+// explicit `import { ... } from 'vue'`, vue-tsc may skip JS emission and
+// leave raw SFC markup in dist — which trips up downstream consumers that
+// resolve `import { SnDivider } from '@snui/vue-web'` via the package
+// main entry.
+void useSlots
 </script>
 
 <template>

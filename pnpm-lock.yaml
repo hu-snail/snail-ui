@@ -158,11 +158,46 @@ importers:
         specifier: ^2.1.8
         version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)
 
+  packages/tokens-mp:
+    dependencies:
+      '@snui/tokens':
+        specifier: 'workspace:'
+        version: link:../tokens
+    devDependencies:
+      eslint:
+        specifier: ^9.17.0
+        version: 9.39.5
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)
+
+  packages/tokens-web:
+    dependencies:
+      '@snui/tokens':
+        specifier: 'workspace:'
+        version: link:../tokens
+    devDependencies:
+      eslint:
+        specifier: ^9.17.0
+        version: 9.39.5
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)
+
   packages/uni:
     dependencies:
       '@snui/tokens':
         specifier: 'workspace:'
         version: link:../tokens
+      '@snui/tokens-mp':
+        specifier: 'workspace:'
+        version: link:../tokens-mp
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@5.9.3)
@@ -194,6 +229,9 @@ importers:
       '@snui/tokens':
         specifier: 'workspace:'
         version: link:../tokens
+      '@snui/tokens-web':
+        specifier: 'workspace:'
+        version: link:../tokens-web
       vue:
         specifier: ^3.5.43
         version: 3.5.43(typescript@5.9.3)

@@ -8,6 +8,8 @@
 
 ## Basic usage
 
+<Demo name="button-web" />
+
 ```vue
 <script setup lang="ts">
 import { SnButton } from '@snui/vue-web'
