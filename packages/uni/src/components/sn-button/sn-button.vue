@@ -156,32 +156,32 @@ function onTap(event: Event): void {
 
 /* Variants — color tokens only; geometry stays as rpx values above. */
 .sn-button--primary {
-  background-color: var(--sn-color-action-primary);
-  color: var(--sn-color-text-on-primary);
-  border-color: var(--sn-color-action-primary);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+  border-color: var(--sn-mp-color-action-primary);
 }
 .sn-button--success {
-  background-color: var(--sn-color-feedback-success);
-  color: var(--sn-color-text-on-primary);
-  border-color: var(--sn-color-feedback-success);
+  background-color: var(--sn-mp-color-feedback-success);
+  color: var(--sn-mp-color-text-on-primary);
+  border-color: var(--sn-mp-color-feedback-success);
 }
 .sn-button--warning {
-  background-color: var(--sn-color-feedback-warning);
-  color: var(--sn-color-text-on-primary);
-  border-color: var(--sn-color-feedback-warning);
+  background-color: var(--sn-mp-color-feedback-warning);
+  color: var(--sn-mp-color-text-on-primary);
+  border-color: var(--sn-mp-color-feedback-warning);
 }
 .sn-button--danger {
-  background-color: var(--sn-color-feedback-danger);
-  color: var(--sn-color-text-on-primary);
-  border-color: var(--sn-color-feedback-danger);
+  background-color: var(--sn-mp-color-feedback-danger);
+  color: var(--sn-mp-color-text-on-primary);
+  border-color: var(--sn-mp-color-feedback-danger);
 }
 
 .sn-button--default {
-  background-color: var(--sn-color-background-surface);
-  color: var(--sn-color-text-primary);
+  background-color: var(--sn-mp-color-background-surface);
+  color: var(--sn-mp-color-text-primary);
 }
 .sn-button--default.sn-button--hairline {
-  border-color: var(--sn-color-border-default);
+  border-color: var(--sn-mp-color-border-default);
 }
 
 /* Spinner */
