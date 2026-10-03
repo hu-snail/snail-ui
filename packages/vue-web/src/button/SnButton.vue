@@ -87,6 +87,7 @@ function onClick(event: MouseEvent): void {
 
 <template>
   <button
+    data-snui-component="button"
     :class="classList"
     :type="htmlType"
     :disabled="disabled || loading"
@@ -119,9 +120,9 @@ function onClick(event: MouseEvent): void {
   justify-content: center;
   gap: 6px;
   margin: 0;
-  padding: 0 14px;
+  padding: 0 var(--sn-button-padding-x, 12px);
   border: 1px solid transparent;
-  border-radius: var(--sn-radius-button, 6px);
+  border-radius: var(--sn-button-radius);
   font-family: inherit;
   font-size: var(--sn-button-font-size, 14px);
   font-weight: 500;
@@ -134,7 +135,7 @@ function onClick(event: MouseEvent): void {
 }
 
 .sn-button:focus-visible {
-  box-shadow: 0 0 0 3px var(--sn-color-focus-ring, rgba(22, 119, 255, 0.25));
+  box-shadow: 0 0 0 3px var(--sn-focus-ring);
 }
 
 .sn-button--block {
@@ -155,66 +156,66 @@ function onClick(event: MouseEvent): void {
 
 /* Sizes */
 .sn-button--tiny {
-  height: var(--sn-button-size-tiny-height, 24px);
+  height: var(--sn-button-height-tiny);
   padding: 0 8px;
   font-size: 12px;
 }
 .sn-button--small {
-  height: var(--sn-button-size-small-height, 32px);
+  height: var(--sn-button-height-small);
   padding: 0 10px;
   font-size: 13px;
 }
 .sn-button--medium {
-  height: var(--sn-button-size-medium-height, 36px);
+  height: var(--sn-button-height-medium);
 }
 .sn-button--large {
-  height: var(--sn-button-size-large-height, 44px);
+  height: var(--sn-button-height-large);
   padding: 0 18px;
   font-size: 16px;
 }
 
 /* Variants */
 .sn-button--primary {
-  background-color: var(--sn-color-action-primary, #1677ff);
-  color: var(--sn-color-text-on-primary, #fff);
-  border-color: var(--sn-color-action-primary, #1677ff);
+  background-color: var(--sn-color-action-primary);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-action-primary);
 }
 .sn-button--primary:hover:not(.sn-button--disabled):not(.sn-button--loading) {
-  background-color: var(--sn-color-action-primary-hover, #4096ff);
+  background-color: var(--sn-color-action-primary-hover);
 }
 
 .sn-button--success {
-  background-color: var(--sn-color-feedback-success, #10b981);
-  color: #fff;
-  border-color: var(--sn-color-feedback-success, #10b981);
+  background-color: var(--sn-color-feedback-success);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-feedback-success);
 }
 .sn-button--warning {
-  background-color: var(--sn-color-feedback-warning, #f59e0b);
-  color: #fff;
-  border-color: var(--sn-color-feedback-warning, #f59e0b);
+  background-color: var(--sn-color-feedback-warning);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-feedback-warning);
 }
 .sn-button--danger {
-  background-color: var(--sn-color-feedback-danger, #ef4444);
-  color: #fff;
-  border-color: var(--sn-color-feedback-danger, #ef4444);
+  background-color: var(--sn-color-feedback-danger);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-feedback-danger);
 }
 .sn-button--danger:hover:not(.sn-button--disabled):not(.sn-button--loading) {
-  background-color: var(--sn-color-feedback-danger-hover, #f87171);
+  background-color: var(--sn-color-feedback-danger-hover);
 }
 .sn-button--info {
-  background-color: var(--sn-color-feedback-info, #6b7280);
-  color: #fff;
-  border-color: var(--sn-color-feedback-info, #6b7280);
+  background-color: var(--sn-color-feedback-info);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-feedback-info);
 }
 
 .sn-button--default {
-  background-color: var(--sn-color-background-surface, #fff);
-  color: var(--sn-color-text-primary, #14171e);
-  border-color: var(--sn-color-border-default, #d1d5db);
+  background-color: var(--sn-color-background-surface);
+  color: var(--sn-color-text-primary);
+  border-color: var(--sn-color-border-default);
 }
 .sn-button--default:hover:not(.sn-button--disabled):not(.sn-button--loading) {
-  border-color: var(--sn-color-action-primary, #1677ff);
-  color: var(--sn-color-action-primary, #1677ff);
+  border-color: var(--sn-color-action-primary);
+  color: var(--sn-color-action-primary);
 }
 
 .sn-button--text {

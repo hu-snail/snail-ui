@@ -75,6 +75,47 @@
   --sn-color-feedback-danger: var(--aui-color-feedback-danger);
   --sn-color-feedback-danger-hover: #f87171;
   --sn-color-feedback-info: var(--aui-color-feedback-info);
+  --sn-focus-ring: rgba(22, 119, 255, 0.25);
+
+  /* Component tokens (AUI-FOUND-001) */
+  --aui-button-height-tiny: 24px;
+  --aui-button-height-small: 32px;
+  --aui-button-height-medium: 36px;
+  --aui-button-height-large: 44px;
+  --aui-button-padding-x: 12px;
+  --aui-button-radius: 6px;
+  --aui-button-font-size: 14px;
+  --aui-button-shadow: none;
+
+  --aui-input-height-small: 28px;
+  --aui-input-height-medium: 34px;
+  --aui-input-height-large: 42px;
+  --aui-input-padding-x: 12px;
+  --aui-input-radius: 6px;
+
+  --aui-card-padding: 16px;
+  --aui-card-radius: 8px;
+  --aui-card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+
+  /* Sn-* component aliases */
+  --sn-button-height-tiny: var(--aui-button-height-tiny);
+  --sn-button-height-small: var(--aui-button-height-small);
+  --sn-button-height-medium: var(--aui-button-height-medium);
+  --sn-button-height-large: var(--aui-button-height-large);
+  --sn-button-padding-x: var(--aui-button-padding-x);
+  --sn-button-radius: var(--aui-button-radius);
+  --sn-button-font-size: var(--aui-button-font-size);
+  --sn-button-shadow: var(--aui-button-shadow);
+
+  --sn-input-height-small: var(--aui-input-height-small);
+  --sn-input-height-medium: var(--aui-input-height-medium);
+  --sn-input-height-large: var(--aui-input-height-large);
+  --sn-input-padding-x: var(--aui-input-padding-x);
+  --sn-input-radius: var(--aui-input-radius);
+
+  --sn-card-padding: var(--aui-card-padding);
+  --sn-card-radius: var(--aui-card-radius);
+  --sn-card-shadow: var(--aui-card-shadow);
 }
 
 [data-theme="dark"] {

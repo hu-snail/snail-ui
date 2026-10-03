@@ -205,24 +205,37 @@ function emitSemanticBindings(semantic: SemanticTokens): TokenBinding[] {
   return out;
 }
 
-/** Emit component CSS variable bindings. */
+/**
+ * Emit component CSS variable bindings. Per ADR-0002 + Spec-01 §1.3:
+ *   - camelCase property names are converted to kebab-case CSS identifiers
+ *     (e.g. `heightMedium` → `--aui-button-height-medium`)
+ *   - One-to-one `--sn-*` alias is emitted in the same pass (see css-vars.ts
+ *     `renderAliasBlock` which loops over the same binding list)
+ */
 function emitComponentBindings(component: ComponentTokens): TokenBinding[] {
   const out: TokenBinding[] = [];
-  function emitPath(prefix: string, value: unknown): void {
-    if (typeof value === 'string') {
-      out.push({ name: `--aui-${prefix}`, value });
-      return;
-    }
-    if (value !== null && typeof value === 'object') {
-      for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-        emitPath(`${prefix}-${k}`, v);
-      }
-    }
+
+  function emitKey(componentPrefix: string, propKey: string, value: unknown): void {
+    if (typeof value !== 'string') return;
+    const cssKey = camelToKebab(propKey);
+    out.push({ name: `--aui-${componentPrefix}-${cssKey}`, value });
   }
-  emitPath('button', component.button);
-  emitPath('input', component.input);
-  emitPath('card', component.card);
+
+  for (const k of Object.keys(component.button) as Array<keyof ComponentTokens['button']>) {
+    emitKey('button', k as string, component.button[k]);
+  }
+  for (const k of Object.keys(component.input) as Array<keyof ComponentTokens['input']>) {
+    emitKey('input', k as string, component.input[k]);
+  }
+  for (const k of Object.keys(component.card) as Array<keyof ComponentTokens['card']>) {
+    emitKey('card', k as string, component.card[k]);
+  }
   return out;
+}
+
+/** `heightMedium` → `height-medium`. Pure ASCII, no locale-dependent upper case. */
+function camelToKebab(input: string): string {
+  return input.replace(/[A-Z]/g, (ch) => `-${ch.toLowerCase()}`);
 }
 
 /**
