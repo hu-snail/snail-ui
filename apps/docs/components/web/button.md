@@ -40,6 +40,41 @@ import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
 
 <ComponentPreview name="button" variant="ghost" text="Ghost dark" :dark="true" />
 
+### Schema 驱动示例
+
+下面把 Button 接到 schema + runtime + action registry 上，按下按钮触发一个 action。
+
+<ComponentPreview
+  name="button"
+  variant="primary"
+  text="Submit"
+/>
+
+```ts
+import { createRuntime, createActionRegistry } from '@snui/runtime';
+import { createVueRenderer, createComponentRegistry, Button } from '@snui/vue-web';
+import { LIGHT_THEME, MODERN_STYLE, COMFORTABLE_DENSITY } from '@snui/tokens';
+
+const actions = createActionRegistry();
+actions.register('submit', async (_ctx, params) => {
+  await fetch('/api/submit', { method: 'POST', body: JSON.stringify(params) });
+});
+
+const registry = createComponentRegistry();
+registry.register('button', Button);
+
+const renderer = createVueRenderer({ registry });
+renderer.mount({
+  version: '1.0.0',
+  root: {
+    id: 'submit',
+    type: 'button',
+    props: { variant: 'primary', text: 'Submit' },
+    events: { click: { kind: 'event', trigger: 'click' } },
+  },
+}, document.getElementById('app')!);
+```
+
 ## Props
 
 <table class="props">

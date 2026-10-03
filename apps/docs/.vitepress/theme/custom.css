@@ -56,6 +56,120 @@
   margin-bottom: 8px;
 }
 
+/* ─── Source code blocks (schema + snippet + usage) ──── */
+.aui-preview {
+  margin: 24px 0;
+}
+
+.aui-preview > .preview-card {
+  margin: 0 0 8px 0;
+}
+
+.preview-source {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.aui-source-block {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+  overflow: hidden;
+  transition: border-color 120ms;
+}
+
+.aui-source-block[open] {
+  border-color: var(--vp-c-brand-1);
+}
+
+.aui-source-block > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 8px 12px 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+  user-select: none;
+  transition: background 120ms;
+}
+
+.aui-source-block > summary:hover {
+  background: var(--vp-c-bg-muted);
+}
+
+.aui-source-block > summary::marker,
+.aui-source-block > summary::-webkit-details-marker {
+  display: none;
+}
+
+.aui-source-block > summary::before {
+  content: '▸';
+  display: inline-block;
+  margin-right: 4px;
+  transition: transform 120ms;
+  color: var(--vp-c-text-3);
+}
+
+.aui-source-block[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.aui-source-label {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-1);
+}
+
+.aui-copy-btn {
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-2);
+  cursor: pointer;
+  transition: all 120ms;
+  letter-spacing: 0.02em;
+}
+
+.aui-copy-btn:hover {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+
+.aui-copy-btn.is-copied {
+  background: var(--vp-c-brand-soft);
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+
+.aui-source-pre {
+  margin: 0;
+  padding: 12px 16px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12.5px;
+  line-height: 1.6;
+  background: var(--vp-c-bg);
+  border-top: 1px solid var(--vp-c-divider);
+  overflow-x: auto;
+  color: var(--vp-c-text-1);
+}
+
+.aui-source-pre code {
+  font-family: inherit;
+  background: transparent;
+  padding: 0;
+}
+
 /* Props table tighter than default */
 table.props {
   width: 100%;

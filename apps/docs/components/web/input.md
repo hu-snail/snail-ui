@@ -36,6 +36,32 @@ import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
 
 <ComponentPreview name="input" :raw-props="{ value: '', placeholder: '最多 8 字符', maxlength: 8, name: 'username' }" />
 
+### 受控用法示例
+
+<ComponentPreview
+  name="input"
+  :raw-props="{ value: 'controlled', name: 'email', type: 'email', placeholder: 'you@aui.dev' }"
+/>
+
+```ts
+import { ref } from 'vue';
+import { createVueRenderer, createComponentRegistry, Input } from '@snui/vue-web';
+
+const value = ref('hello@aui.dev');
+
+// 或者直接构造 schema：
+const registry = createComponentRegistry();
+registry.register('input', Input);
+createVueRenderer({ registry }).mount({
+  version: '1.0.0',
+  root: {
+    id: 'email',
+    type: 'input',
+    props: { value: value.value, name: 'email', type: 'email' },
+  },
+}, document.getElementById('app')!);
+```
+
 ## Props
 
 <table class="props">

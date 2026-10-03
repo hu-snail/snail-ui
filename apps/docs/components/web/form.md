@@ -47,6 +47,58 @@ import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
   { id: "submit", type: "button", props: { variant: "danger", text: "Try again", type: "submit" } }
 ])' />
 
+### 完整登录流程（含 ActionRegistry）
+
+<ComponentPreview
+  name="form"
+  :raw-props="{ formId: 'full', layout: 'vertical' }"
+  :children='JSON.stringify([
+    { id: "f-name", type: "form-item", props: { prop: "name", label: "Name", required: true }, children: [
+      { id: "i-name", type: "input", props: { value: "Ada", type: "text", name: "name" } }
+    ]},
+    { id: "f-email", type: "form-item", props: { prop: "email", label: "Email", required: true }, children: [
+      { id: "i-email", type: "input", props: { value: "ada@aui.dev", type: "email", name: "email" } }
+    ]},
+    { id: "f-submit", type: "button", props: { variant: "primary", text: "Sign in", type: "submit" } }
+  ])'
+/>
+
+```ts
+import { createRuntime, createActionRegistry } from '@snui/runtime';
+import { createVueRenderer, createComponentRegistry, Form, FormItem, Input, Button } from '@snui/vue-web';
+import { LIGHT_THEME, MODERN_STYLE, COMFORTABLE_DENSITY } from '@snui/tokens';
+
+const actions = createActionRegistry();
+actions.register('sign-in', async (ctx, params) => {
+  console.log('submit values:', params);
+  // 真实场景：await fetch('/api/login', { method: 'POST', body: JSON.stringify(params) });
+});
+
+const registry = createComponentRegistry();
+registry.register('button', Button);
+registry.register('input', Input);
+registry.register('form', Form);
+registry.register('form-item', FormItem);
+
+const runtime = createRuntime({
+  schema: { version: '1.0.0', root: { id: 'root', type: 'form', props: { formId: 'login' } } },
+  registry: {
+    resolve: (type) => registry.has(type) ? { name: type, version: '0.1.0' } : undefined,
+    has: (type) => registry.has(type),
+    list: () => registry.list(),
+  },
+  actionRegistry: {
+    resolve: (id) => actions.resolve(id),
+    has: (id) => actions.has(id),
+  },
+  tokens: { theme: LIGHT_THEME, style: MODERN_STYLE, density: COMFORTABLE_DENSITY },
+  platform: { id: 'web', capabilities: { supports: { dom: true } } },
+});
+
+createVueRenderer({ registry }).mount(runtime.schema, document.getElementById('app')!);
+runtime.mount(document.getElementById('app')!);
+```
+
 ## Form props
 
 <table class="props">

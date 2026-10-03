@@ -44,6 +44,48 @@ import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
   { id: "b", type: "button", props: { variant: "primary", text: "Confirm" } }
 ])' />
 
+### Order summary（组合 Form + Input + Button）
+
+<ComponentPreview
+  name="card"
+  :raw-props="{ title: 'Order #1024', description: 'Pending payment', bordered: true, shadow: true }"
+  :children='JSON.stringify([
+    { id: "f", type: "form-item", props: { prop: "voucher", label: "Voucher" }, children: [
+      { id: "i", type: "input", props: { value: "", placeholder: "V-AUI-1024", name: "voucher" } }
+    ]},
+    { id: "b", type: "button", props: { variant: "primary", text: "Apply", type: "submit" } }
+  ])'
+/>
+
+```ts
+// Card 容器 + 嵌套 FormItem + Input + Button 的一次完整组合
+import { createVueRenderer, createComponentRegistry, Card, Form, FormItem, Input, Button } from '@snui/vue-web';
+
+const registry = createComponentRegistry();
+registry.register('card', Card);
+registry.register('form', Form);
+registry.register('form-item', FormItem);
+registry.register('input', Input);
+registry.register('button', Button);
+
+createVueRenderer({ registry }).mount({
+  version: '1.0.0',
+  root: {
+    id: 'order',
+    type: 'card',
+    props: { title: 'Order #1024', description: 'Pending payment' },
+    children: [
+      { id: 'f', type: 'form', props: { formId: 'voucher' }, children: [
+        { id: 'fi', type: 'form-item', props: { prop: 'voucher', label: 'Voucher' }, children: [
+          { id: 'i', type: 'input', props: { name: 'voucher', placeholder: 'V-AUI-1024' } }
+        ]},
+        { id: 's', type: 'button', props: { variant: 'primary', text: 'Apply', type: 'submit' } }
+      ]}
+    ],
+  },
+}, document.getElementById('app')!);
+```
+
 ## Props
 
 <table class="props">

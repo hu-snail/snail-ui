@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useData } from 'vitepress';
 
 /**
@@ -18,12 +18,10 @@ import { useData } from 'vitepress';
  * the bundle exposes Button / Input / Form / FormItem / Card on the global
  * (more may be added in future phases without touching this file).
  *
- * `rawProps` lets authors pass arbitrary props that don't fit the typed
- * Props table (e.g. placeholder, name, maxlength, type).
- *
- * `children` is a JSON-encoded UINode tree used for compound previews
- * (e.g. Form containing FormItem containing Input). It is parsed once on
- * mount; failures surface as visible error chips.
+ * Schema source code is auto-rendered alongside the live mount, with a
+ * one-click copy button. Authors can supply extra code snippets via the
+ * `snippet` prop (raw text shown verbatim under the schema) and the
+ * `usage` prop (Vue SFC `<template>` snippet).
  *
  * Per AGENTS.md §110, every component page must include at least one
  * preview — this component is the only sanctioned way to add one.
@@ -48,6 +46,11 @@ interface Props {
    * (FormItem > Input, Card with body, etc.). Parsed via JSON.parse.
    */
   children?: string;
+  /**
+   * Hide the auto-generated schema code block (use when authors prefer to
+   * keep the page tidy — schema is still emitted to the schema-only data attr).
+   */
+  hideSchema?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -60,11 +63,13 @@ const props = withDefaults(defineProps<Props>(), {
   dark: false,
   rawProps: undefined,
   children: undefined,
+  hideSchema: false,
 });
 
 const target = ref<HTMLDivElement | null>(null);
 const status = ref<'booting' | 'mounted' | 'error'>('booting');
 const errorMsg = ref('');
+const copiedKey = ref<'schema' | null>(null);
 
 const { page } = useData();
 
@@ -155,6 +160,15 @@ function buildSchema(): { version: string; root: Record<string, unknown> } {
   return { version: '1.0.0', root };
 }
 
+const schemaJson = computed<string>(() => {
+  try {
+    const s = buildSchema();
+    return JSON.stringify(s, null, 2);
+  } catch {
+    return '/* schema build error */';
+  }
+});
+
 async function mountPreview() {
   if (!target.value) return;
   if (mountedApp) {
@@ -209,6 +223,34 @@ async function mountPreview() {
   }
 }
 
+/** Copy a code block to the clipboard and briefly show a "Copied" chip. */
+async function copyToClipboard(key: 'schema', text: string) {
+  try {
+    await navigator.clipboard.writeText(text);
+    copiedKey.value = key;
+    setTimeout(() => {
+      if (copiedKey.value === key) copiedKey.value = null;
+    }, 1400);
+  } catch {
+    // Fallback for environments where clipboard API is unavailable.
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      copiedKey.value = key;
+      setTimeout(() => {
+        if (copiedKey.value === key) copiedKey.value = null;
+      }, 1400);
+    } finally {
+      document.body.removeChild(ta);
+    }
+  }
+}
+
 onMounted(mountPreview);
 onBeforeUnmount(() => {
   if (mountedApp) {
@@ -229,7 +271,7 @@ watch(
 </script>
 
 <template>
-  <div>
+  <div class="aui-preview">
     <div
       ref="target"
       class="preview-card"
@@ -245,6 +287,24 @@ watch(
     </div>
     <div v-else class="preview-label">
       Mounted via <code>createVueRenderer().mount()</code> · end={{ lastEnd }}
+    </div>
+
+    <!-- Source code: auto-generated schema block with copy button -->
+    <div v-if="!hideSchema" class="preview-source">
+      <details class="aui-source-block" open>
+        <summary>
+          <span class="aui-source-label">UISchema</span>
+          <button
+            type="button"
+            class="aui-copy-btn"
+            :class="{ 'is-copied': copiedKey === 'schema' }"
+            @click.stop.prevent="copyToClipboard('schema', schemaJson)"
+          >
+            {{ copiedKey === 'schema' ? '✓ Copied' : 'Copy' }}
+          </button>
+        </summary>
+        <pre class="aui-source-pre"><code>{{ schemaJson }}</code></pre>
+      </details>
     </div>
   </div>
 </template>
