@@ -59,3 +59,10 @@ export {
   type CreateRuntimeInput,
   type RuntimeHooks,
 } from './runtime.js';
+
+export {
+  createReactiveAdapter,
+  type ReactiveAdapter,
+  type ReactiveValue,
+  type StopHandle,
+} from './reactive.js';
