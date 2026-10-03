@@ -1514,7 +1514,56 @@ Commit
 
 ---
 
-# 56. Dependency 原则
+# 56. 任务完成立即 Commit + Push
+
+**每完成一个 Task 必须立即 `git commit` 并 `git push`，不允许本地堆积**。
+
+```text
+Task 完成
+ ↓
+§92 Merge Gate：typecheck + lint (0 warning) + test + build 全过
+ ↓
+git add -A
+ ↓
+git commit -m "<type>(<scope>): <description>"
+ ↓
+git push origin <branch>
+ ↓
+在 Task Completion Report (§94) 里记录 commit hash
+```
+
+**强制约束**：
+
+- 禁止"做完多个任务再一起 commit"
+- 禁止"完成任务后不 push"
+- 禁止"working tree 留着不 commit，下次继续干"
+- 禁止"修改了本地大量文件但未暂存"
+- 禁止 `git stash` 长期保存未完成的工作
+
+**理由**：
+
+- 防止本地工作树丢失（磁盘故障、断电、`rm -rf` 误操作）
+- 便于 Human 随时 review（每 commit 都是可 review 的最小单元）
+- 便于 Rollback（单一 task 失败只 revert 一个 commit）
+- 便于跨 session / 跨设备继续（commit + push 后任何 session 都能 resume）
+- CI 流水友好：每 commit 触发一次 CI，立刻发现 regression
+
+**例外**：
+
+- Human Gate 等待期间：未审批的代码可以保留在 working tree，但**不超过一天**；审批通过后立即 commit + push
+- 长期阻塞任务（>1 天）：拆成 subtask，每 subtask 一个 commit
+- 网络故障 push 失败：保留 commit 在本地，retry 直到成功；不可丢弃 commit
+
+**与其它规则的关系**：
+
+- 与 §55 配合：commit 粒度 = 一个 task / 一个 logical subtask
+- 与 §92 配合：commit 前必须通过 Merge Gate（typecheck / lint / test / build 全过）
+- 与 §94 配合：Task Completion Report 必须列出 commit hash
+- 与 §101 配合：未经用户授权，绝不 `git reset --hard` / `git checkout -- <file>` 破坏已 commit 的工作树
+
+---
+
+# 57. Dependency 原则
 
 新增依赖之前必须判断：
 
@@ -2550,6 +2599,7 @@ DONE
 10. Capability before Platform Assumption
 11. Human Gate before Architecture Change
 12. CI before Merge
+13. Commit + Push before Next Task   ← §56 强制任务节奏
 ```
 
 ---
@@ -3000,11 +3050,17 @@ pnpm turbo run typecheck
 | #101 禁止回退 | §93 Stop-the-Line 延伸 |
 | #102 任务后评审 | §88 Review Agent + §94 Agent 输出标准 |
 | #103 Bug 记录 | §47 Bug 修复标准 + §75 AI Context 标准 |
-| #104 避免重复造轮子 | §56 Dependency 原则 |
+| #104 避免重复造轮子 | §57 Dependency 原则 |
 | #105 代码质量高标准 | §92 Merge Gate |
 | #106 不写废代码 | §11 禁止无意义重构 + §69 Documentation |
 | #107 无未用变量 / 方法 | §46 测试原则（Behavior > Implementation Detail） |
 | #108 无未用 import / export | §12 TypeScript 标准 + §13 TypeScript 类型原则 |
+
+# 109.b 任务节奏强制
+
+| 规则 | 对应原编号 |
+| --- | --- |
+| 任务完成立即 commit + push | §56 任务完成立即 Commit + Push |
 
 ---
 
