@@ -37,6 +37,19 @@ importers:
         version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)
 
   apps/docs:
+    dependencies:
+      '@snui/ai':
+        specifier: 'workspace:'
+        version: link:../../packages/ai
+      '@snui/style-packs':
+        specifier: 'workspace:'
+        version: link:../../packages/style-packs
+      '@snui/tokens':
+        specifier: 'workspace:'
+        version: link:../../packages/tokens
+      '@snui/vue-web':
+        specifier: 'workspace:'
+        version: link:../../packages/vue-web
     devDependencies:
       esbuild:
         specifier: ^0.21.5
@@ -73,14 +86,55 @@ importers:
         specifier: ^2.2.0
         version: 2.2.12(typescript@5.9.3)
 
+  packages/ai:
+    dependencies:
+      '@snui/cli':
+        specifier: 'workspace:'
+        version: link:../cli
+      '@snui/style-packs':
+        specifier: 'workspace:'
+        version: link:../style-packs
+      '@snui/tokens':
+        specifier: 'workspace:'
+        version: link:../tokens
+    devDependencies:
+      eslint:
+        specifier: ^9.17.0
+        version: 9.39.5
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)
+
   packages/cli:
     dependencies:
+      '@snui/tokens':
+        specifier: 'workspace:'
+        version: link:../tokens
       '@snui/vue-web':
         specifier: 'workspace:'
         version: link:../vue-web
       unplugin-vue-components:
         specifier: '*'
         version: 32.1.0(esbuild@0.25.12)(rollup@4.64.0)(vite@6.4.3(@types/node@22.20.5))(vue@3.5.43(typescript@5.9.3))
+    devDependencies:
+      eslint:
+        specifier: ^9.17.0
+        version: 9.39.5
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.8
+        version: 2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)
+
+  packages/style-packs:
+    dependencies:
+      '@snui/tokens':
+        specifier: 'workspace:'
+        version: link:../tokens
     devDependencies:
       eslint:
         specifier: ^9.17.0
