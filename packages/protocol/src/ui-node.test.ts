@@ -48,10 +48,10 @@ describe('@snui/protocol — UINodeSchema', () => {
     const node: UINode = {
       id: 'a',
       type: 'input',
-      bindings: { value: { $bind: 'local.form.email' } },
-      events: { change: { action: 'submit' } },
+      bindings: { value: { kind: 'state', path: 'local.form.email' } },
+      events: { change: { trigger: 'click', action: 'submit' } },
       style: { color: 'red' },
-      accessibility: { ariaLabel: 'Email field' },
+      accessibility: { label: 'Email field' },
       capability: { feature: 'autocomplete', fallback: 'input' },
     };
     const result = UINodeSchema.safeParse(node);

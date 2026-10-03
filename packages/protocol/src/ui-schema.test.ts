@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { UISchemaSchema, UI_SCHEMA_TYPE, UI_SCHEMA_VERSION } from './ui-schema.js';
 
+const minimalRoot = { id: 'root', type: 'card' };
 const minimalValid: unknown = {
   version: '1.0.0',
-  root: { type: 'card' },
+  root: minimalRoot,
 };
 
 describe('@snui/protocol — UISchemaSchema', () => {
@@ -16,9 +17,9 @@ describe('@snui/protocol — UISchemaSchema', () => {
     const result = UISchemaSchema.safeParse({
       version: '1.0.0',
       id: 'login-basic',
-      root: { type: 'card' },
+      root: minimalRoot,
       state: { count: 0 },
-      actions: [{ id: 'submit' }],
+      actions: [{ id: 'user.login', type: 'submit' }],
       metadata: { author: 'team-a' },
     });
     expect(result.success).toBe(true);
@@ -30,13 +31,25 @@ describe('@snui/protocol — UISchemaSchema', () => {
   });
 
   it('rejects when version is missing', () => {
-    const result = UISchemaSchema.safeParse({ root: { type: 'card' } });
+    const result = UISchemaSchema.safeParse({ root: minimalRoot });
     expect(result.success).toBe(false);
   });
 
   it('rejects when version is not semver', () => {
-    const result = UISchemaSchema.safeParse({ version: 'v1.0', root: { type: 'card' } });
+    const result = UISchemaSchema.safeParse({ version: 'v1.0', root: minimalRoot });
     expect(result.success).toBe(false);
+  });
+
+  it('rejects root without UINode shape (after forward-ref replacement)', () => {
+    expect(UISchemaSchema.safeParse({ version: '1.0.0', root: 'not-a-node' }).success).toBe(false);
+    expect(UISchemaSchema.safeParse({ version: '1.0.0' }).success).toBe(false);
+  });
+
+  it('rejects invalid actions (post forward-ref replacement)', () => {
+    expect(
+      UISchemaSchema.safeParse({ version: '1.0.0', root: minimalRoot, actions: [{ bad: 'x' }] })
+        .success,
+    ).toBe(false);
   });
 
   it('rejects when id is an empty string', () => {

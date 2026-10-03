@@ -1,4 +1,8 @@
 import { z } from 'zod';
+import { UIBindingSchema, type UIBinding } from './ui-binding.js';
+import { UIEventBindingSchema, type UIEventBinding } from './ui-event-binding.js';
+import { UIAccessibilitySchema, type UIAccessibility } from './ui-accessibility.js';
+import { UICapabilitySchema, type UICapability } from './ui-capability.js';
 
 /**
  * AUI UINode — the recursive UI tree element.
@@ -13,13 +17,14 @@ import { z } from 'zod';
  * which depends on `UINode`). Zod's documented pattern is to declare the
  * recursive type manually and annotate the schema with `z.ZodType<T>`.
  *
- * Forward references — `bindings` / `events` / `style` / `accessibility` /
- * `capability` use `z.unknown()` placeholders. Replaced by sibling tasks:
- *   - bindings      → AUI-PROTOCOL-003 (UIBinding)
- *   - events        → AUI-PROTOCOL-003 (UIEventBinding)
- *   - accessibility → AUI-PROTOCOL-005 (UIAccessibility)
- *   - capability    → AUI-PROTOCOL-006 (UICapability)
- *   - style         → future task
+ * Consolidated forward references (AUI-PROTOCOL-CONSOLIDATE-001):
+ *   - `bindings`      → Record<string, UIBinding>     (AUI-PROTOCOL-003)
+ *   - `events`        → Record<string, UIEventBinding> (AUI-PROTOCOL-003)
+ *   - `accessibility` → UIAccessibility                (AUI-PROTOCOL-005)
+ *   - `capability`    → UICapability                   (AUI-PROTOCOL-006)
+ *
+ * Remaining placeholder:
+ *   - `style`         → future task (UIStyle — not in P0/P1 WBS)
  */
 
 export type UINode = {
@@ -27,13 +32,15 @@ export type UINode = {
   readonly type: string;
   props?: Record<string, unknown> | undefined;
   children?: UINode[] | undefined;
-  bindings?: Record<string, unknown> | undefined;
-  events?: Record<string, unknown> | undefined;
+  bindings?: Record<string, UIBinding> | undefined;
+  events?: Record<string, UIEventBinding> | undefined;
   style?: unknown | undefined;
-  accessibility?: unknown | undefined;
-  capability?: unknown | undefined;
+  accessibility?: UIAccessibility | undefined;
+  capability?: UICapability | undefined;
 };
 
+// Lazy recursive schema — children is UINode[] which requires the schema to
+// exist before the call site, hence `z.lazy`.
 export const UINodeSchema: z.ZodType<UINode> = z.lazy(() =>
   z
     .object({
@@ -45,15 +52,15 @@ export const UINodeSchema: z.ZodType<UINode> = z.lazy(() =>
 
       children: z.array(UINodeSchema).optional(),
 
-      bindings: z.record(z.string(), z.unknown()).optional(),
+      bindings: z.record(z.string(), UIBindingSchema).optional(),
 
-      events: z.record(z.string(), z.unknown()).optional(),
+      events: z.record(z.string(), UIEventBindingSchema).optional(),
 
       style: z.unknown().optional(),
 
-      accessibility: z.unknown().optional(),
+      accessibility: UIAccessibilitySchema.optional(),
 
-      capability: z.unknown().optional(),
+      capability: UICapabilitySchema.optional(),
     })
     .strict(),
 );

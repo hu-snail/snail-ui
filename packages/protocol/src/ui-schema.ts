@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { UINodeSchema } from './ui-node.js';
+import { UIActionSchema } from './ui-action.js';
 
 /**
  * AUI UISchema — canonical top-level UI contract.
@@ -6,15 +8,12 @@ import { z } from 'zod';
  * Per AGENTS.md §25, Zod is the Source of Truth. The TypeScript type is
  * derived via `z.infer`. No hand-written interface duplicates this shape.
  *
- * Forward references — `root`, `state`, and `actions` use `z.unknown()`
- * placeholders. They will be replaced by concrete Zod schemas as sibling
- * tasks land:
- *   - `root`   → AUI-PROTOCOL-002 (UINode)
- *   - `actions` → AUI-PROTOCOL-004 (UIAction)
- *   - `state`  → future task
+ * Consolidated forward references (AUI-PROTOCOL-CONSOLIDATE-001):
+ *   - `root`    → UINodeSchema (replaces forward ref from AUI-PROTOCOL-002)
+ *   - `actions` → UIActionSchema[] (replaces forward ref from AUI-PROTOCOL-004)
  *
- * Until replaced, these slots accept any JSON value. Downstream packages
- * MUST narrow these properties once the concrete types land.
+ * Remaining placeholders (kept as `z.unknown()` until their tasks land):
+ *   - `state`   → UIStateSchema (future task — not in P0 / P1 WBS yet)
  */
 
 const SEMVER_RE = /^\d+\.\d+\.\d+(?:-[\w.]+)?(?:\+[\w.]+)?$/;
@@ -26,11 +25,11 @@ export const UISchemaSchema = z.object({
 
   id: z.string().min(1, 'Schema id must be a non-empty string').optional(),
 
-  root: z.unknown(),
+  root: UINodeSchema,
 
   state: z.unknown().optional(),
 
-  actions: z.array(z.unknown()).optional(),
+  actions: z.array(UIActionSchema).optional(),
 
   metadata: z.record(z.string(), z.unknown()).optional(),
 });
