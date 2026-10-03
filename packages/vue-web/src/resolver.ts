@@ -36,11 +36,11 @@ export interface SnUIResolverOptions {
 /** Internal: list of public components in @snui/vue-web. */
 const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnButton',
+  'SnConfigProvider',
   // Phase 1 additions:
   // 'SnInput', 'SnSwitch', 'SnCheckbox', 'SnRadio',
   // 'SnDialog', 'SnToast', 'SnPopup', 'SnLoading',
   // 'SnAvatar', 'SnBadge', 'SnTag', 'SnCard', 'SnDivider',
-  // 'SnConfigProvider',
 ]
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {

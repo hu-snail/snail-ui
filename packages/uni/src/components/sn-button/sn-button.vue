@@ -81,7 +81,13 @@ function onTap(event: Event): void {
 </script>
 
 <template>
-  <view :class="classList" :aria-disabled="disabled || loading" :aria-busy="loading" @tap="onTap">
+  <view
+    data-snui-component="button"
+    :class="classList"
+    :aria-disabled="disabled || loading"
+    :aria-busy="loading"
+    @tap="onTap"
+  >
     <slot name="icon">
       <view v-if="loading" class="sn-button__spinner" aria-hidden="true">
         <slot name="loading">
@@ -109,7 +115,8 @@ function onTap(event: Event): void {
   cursor: pointer;
   user-select: none;
   transition: opacity 0.15s, background-color 0.15s, border-color 0.15s, color 0.15s;
-  /* uni-app uses rpx for cross-device sizing */
+  /* uni-app uses rpx for cross-device sizing; rpx is a typography/geometry unit,
+     not a color, so hardcoded rpx values are allowed per Spec-01 §3.1. */
   box-sizing: border-box;
 }
 
@@ -147,34 +154,34 @@ function onTap(event: Event): void {
   font-size: 32rpx;
 }
 
-/* Variants */
+/* Variants — color tokens only; geometry stays as rpx values above. */
 .sn-button--primary {
-  background-color: var(--sn-color-action-primary, #1677ff);
-  color: #fff;
-  border-color: var(--sn-color-action-primary, #1677ff);
+  background-color: var(--sn-color-action-primary);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-action-primary);
 }
 .sn-button--success {
-  background-color: var(--sn-color-feedback-success, #10b981);
-  color: #fff;
-  border-color: var(--sn-color-feedback-success, #10b981);
+  background-color: var(--sn-color-feedback-success);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-feedback-success);
 }
 .sn-button--warning {
-  background-color: var(--sn-color-feedback-warning, #f59e0b);
-  color: #fff;
-  border-color: var(--sn-color-feedback-warning, #f59e0b);
+  background-color: var(--sn-color-feedback-warning);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-feedback-warning);
 }
 .sn-button--danger {
-  background-color: var(--sn-color-feedback-danger, #ef4444);
-  color: #fff;
-  border-color: var(--sn-color-feedback-danger, #ef4444);
+  background-color: var(--sn-color-feedback-danger);
+  color: var(--sn-color-text-on-primary);
+  border-color: var(--sn-color-feedback-danger);
 }
 
 .sn-button--default {
-  background-color: var(--sn-color-background-surface, #ffffff);
-  color: var(--sn-color-text-primary, #14171e);
+  background-color: var(--sn-color-background-surface);
+  color: var(--sn-color-text-primary);
 }
 .sn-button--default.sn-button--hairline {
-  border-color: var(--sn-color-border-default, #d1d5db);
+  border-color: var(--sn-color-border-default);
 }
 
 /* Spinner */

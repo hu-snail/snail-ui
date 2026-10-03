@@ -7,6 +7,7 @@
 
 import type { App, Plugin } from 'vue'
 import SnButton from './button/SnButton.vue'
+import SnConfigProvider from './config-provider/SnConfigProvider.vue'
 
 export interface SnUIOptions {
   /** Skip auto-registration of specific components. */
@@ -15,6 +16,7 @@ export interface SnUIOptions {
 
 const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnButton', component: SnButton },
+  { name: 'SnConfigProvider', component: SnConfigProvider },
 ]
 
 export const SnUI: Plugin = {

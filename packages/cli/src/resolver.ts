@@ -30,6 +30,7 @@ export interface SnUIResolverOptions {
 /** Public component tag list — keep in sync with packages/vue-web/src/resolver.ts. */
 const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnButton',
+  'SnConfigProvider',
 ]
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {
