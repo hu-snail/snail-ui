@@ -1,10 +1,11 @@
 import { z } from 'zod';
+import { defineComponentContract, type ComponentContract } from './component-contract.js';
 
 /**
  * AUI Button — official component contract.
  *
- * Per AUI-WEB-003 acceptance: variant / size / disabled / loading / icon /
- * text / click. Plus Token / A11y / Schema / Binding / Action.
+ * Per AUI-WEB-003 acceptance: variant / size / disabled / loading / / text /
+ * click. Plus Token / A11y / Schema / Binding / Action.
  *
  * Per AGENTS.md §31, every official component MUST define this contract
  * (name / version / props / events / slots / tokens / accessibility /
@@ -13,6 +14,11 @@ import { z } from 'zod';
  * Per §57 (AI Patch Boundary), `ai.patchable` and `ai.readonly` declare which
  * fields AI may modify. Runtime state, internal handlers, and the role are
  * forbidden from AI mutation.
+ *
+ * The contract is sealed through `defineComponentContract<ButtonProps>(...)`
+ * so TS verifies the props schema aligns with the inferred TS type at the
+ * point of definition (AUI-CONTRACT-002 — Zod / Type / Default / Validation
+ * must stay consistent).
  */
 
 export const ButtonVariantSchema = z.enum(['primary', 'secondary', 'danger', 'ghost']);
@@ -118,9 +124,10 @@ export const ButtonAIMetadata = {
 
 /**
  * Button ComponentContract — AGENTS.md §31 shape.
- * Bundled so consumers (Studio, AI) can introspect a single object.
+ * `defineComponentContract<ButtonProps>` enforces that the schema's inferred
+ * TS type matches the `TProps` parameter — AUI-CONTRACT-002 invariant.
  */
-export const ButtonContract = {
+export const ButtonContract: ComponentContract<ButtonProps> = defineComponentContract<ButtonProps>({
   name: 'button',
   version: '0.1.0',
   props: ButtonPropsSchema,
@@ -130,4 +137,4 @@ export const ButtonContract = {
   accessibility: ButtonAccessibility,
   capabilities: ButtonCapabilities,
   ai: ButtonAIMetadata,
-} as const;
+});

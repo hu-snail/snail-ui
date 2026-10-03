@@ -63,6 +63,18 @@ export { UIAccessibilitySchema, type UIAccessibility } from './ui-accessibility.
 export { UICapabilitySchema, type UICapability } from './ui-capability.js';
 
 export {
+  defineComponentContract,
+  type ComponentContract,
+  type ContractAccessibility,
+  type ContractAIMetadata,
+  type ContractCapabilities,
+  type ContractEventMap,
+  type ContractSlotMap,
+  type ContractTokens,
+  type PropKeys,
+} from './component-contract.js';
+
+export {
   ButtonContract,
   ButtonPropsSchema,
   ButtonVariantSchema,
