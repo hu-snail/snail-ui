@@ -1,0 +1,56 @@
+/**
+ * @snui/tokens-web static stylesheet — Web end alias layer.
+ *
+ * Must be imported AFTER `@snui/tokens/styles` (so `--aui-*` is defined) and
+ * BEFORE any `@snui/vue-web` component CSS.
+ *
+ * Per Spec-01 v1.2 §2.3 + Spec-02 v1.1 §3.3:
+ * - Every alias here MUST also appear in `src/variables.ts` (consistency
+ *   enforced by `variablesMatchStyles()` test).
+ * - Direct `--aui-*` reference is forbidden inside `@snui/vue-web` component
+ *   CSS — use `--sn-web-*` aliases only.
+ */
+
+:root {
+  /* Semantic — color */
+  --sn-web-color-text-primary: var(--aui-color-text-primary);
+  --sn-web-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-web-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-web-color-text-on-primary: var(--aui-color-text-on-primary);
+  --sn-web-color-background-surface: var(--aui-color-background-surface);
+  --sn-web-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-web-color-border-default: var(--aui-color-border-default);
+  --sn-web-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-web-color-action-primary: var(--aui-color-action-primary);
+  --sn-web-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-web-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-web-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-web-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-web-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+  --sn-web-color-feedback-info: var(--aui-color-feedback-info);
+
+  /* Focus ring */
+  --sn-web-focus-ring: var(--aui-focus-ring);
+
+  /* Component tokens — Button (px) */
+  --sn-web-button-height-tiny: var(--aui-button-height-tiny);
+  --sn-web-button-height-small: var(--aui-button-height-small);
+  --sn-web-button-height-medium: var(--aui-button-height-medium);
+  --sn-web-button-height-large: var(--aui-button-height-large);
+  --sn-web-button-padding-x: var(--aui-button-padding-x);
+  --sn-web-button-radius: var(--aui-button-radius);
+  --sn-web-button-font-size: var(--aui-button-font-size);
+  --sn-web-button-shadow: var(--aui-button-shadow);
+
+  /* Component tokens — Input (px) */
+  --sn-web-input-height-small: var(--aui-input-height-small);
+  --sn-web-input-height-medium: var(--aui-input-height-medium);
+  --sn-web-input-height-large: var(--aui-input-height-large);
+  --sn-web-input-padding-x: var(--aui-input-padding-x);
+  --sn-web-input-radius: var(--aui-input-radius);
+
+  /* Component tokens — Card (px) */
+  --sn-web-card-padding: var(--aui-card-padding);
+  --sn-web-card-radius: var(--aui-card-radius);
+  --sn-web-card-shadow: var(--aui-card-shadow);
+}

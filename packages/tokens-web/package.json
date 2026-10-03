@@ -1,0 +1,38 @@
+{
+  "name": "@snui/tokens-web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI Tokens Web — end alias layer for the Web end. Generates --sn-web-* CSS variables that reference the shared --aui-* base layer from @snui/tokens. Web components must consume only --sn-web-* (px units).",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles": "./styles/index.css",
+    "./styles/": "./styles/"
+  },
+  "files": [
+    "dist",
+    "styles"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@snui/tokens": "workspace:"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8",
+    "eslint": "^9.17.0"
+  }
+}
