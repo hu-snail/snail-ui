@@ -25,7 +25,7 @@ features:
   - title: End-aware
     details: Web (PC) and uni (mobile) are fully independent — source, build, npm package, Token alias (--sn-web-* / --sn-mp-*). Future React end follows the same pattern. Zero source reuse.
   - title: Component First
-    details: Web side: SnButton / SnForm / SnTable / SnTree for desktop. Uni side: sn-button / sn-list / sn-grid for mobile. Each end designs API per its scenario, not mirror copies.
+    details: Web side — SnButton / SnForm / SnTable / SnTree for desktop. Uni side — sn-button / sn-list / sn-grid for mobile. Each end designs API per its scenario, not mirror copies.
   - title: Token First
     details: A shared base layer (@snui/tokens → --aui-*) + per-end alias packages (@snui/tokens-web → --sn-web-*, @snui/tokens-mp → --sn-mp-*). Components consume end-specific Tokens.
   - title: Style Pack First
