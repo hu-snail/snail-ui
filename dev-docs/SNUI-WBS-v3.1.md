@@ -53,7 +53,7 @@ AUI-{模块}-{编号}
 | AUI-REV-029 | WBS v3.1 — 双端任务拆分 | ✅ |
 | AUI-REV-030 | Master Plan v5.1 — 双端里程碑 | ✅ |
 | AUI-REV-031 | Dev Guide v3.1 — 端独立开发流程 | ✅ |
-| AUI-REV-032 | 文档站首页 / 介绍 / architecture / theme / style-packs / ai 端独立重写 | 🔵 |
+| AUI-REV-032 | 文档站首页 / 介绍 / architecture / theme / style-packs / ai / components 端独立重写（40 篇 zh+en + 文档站 build AUI-DOCS-016 解锁） | ✅ |
 
 ---
 
