@@ -1,221 +1,87 @@
 <script setup lang="ts">
 import { computed, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { useData } from 'vitepress';
+import { createApp, type App as VueAppInstance } from 'vue';
+import { SnButton } from '@snui/vue-web';
 
 /**
- * ComponentPreview — runtime mount of AUI components into a preview slot
- * inside the docs. Each preview mounts its own Vue renderer (and disposes
- * on unmount) so multiple previews on the same page stay isolated.
+ * ComponentPreview — runtime mount of real @snui/vue-web components into
+ * a preview slot inside the docs.
  *
- * Loading model:
- *   - The framework bundle is shipped as IIFE (apps/docs/public/framework-{web,uni}.js)
- *   - We inject a <script src="..."> tag ONCE per end and wait for the global
- *     (window.AUI_WEB / window.AUI_UNI) to appear. Cached per-end via Promise.
- *   - This is the only approach that works in VitePress dev (vite rejects
- *     `import()` of /public/* files because they bypass the plugin pipeline).
+ * Per AUI-PRD-v3.0 + ADR-0002 (FOUND-002):
+ *   - NO schema renderer. We directly import the Vue SFC and mount via createApp().
+ *   - framework-{web,uni}.js IIFE bundle is dropped (was v1.x Schema-Runtime era).
  *
- * Phase 2 (AUI-WEB-004..007) components are auto-discovered from the bundle:
- * the bundle exposes Button / Input / Form / FormItem / Card on the global
- * (more may be added in future phases without touching this file).
+ * Per AGENTS.md §110, every component page must include at least one preview —
+ * this component is the only sanctioned way to add one.
  *
- * Schema source code is auto-rendered alongside the live mount, with a
- * one-click copy button. Authors can supply extra code snippets via the
- * `snippet` prop (raw text shown verbatim under the schema) and the
- * `usage` prop (Vue SFC `<template>` snippet).
- *
- * Per AGENTS.md §110, every component page must include at least one
- * preview — this component is the only sanctioned way to add one.
+ * Limitations:
+ *   - Only the Web end is supported in this iteration. Uni H5/App preview needs
+ *     a real uni-app runtime (out of scope for docs site).
+ *   - For uni-app previews, see /en/components/uni/* docs pages (text + screenshot).
  */
 
 interface Props {
-  end?: 'web' | 'uni';
-  name: string;
-  variant?: string;
-  size?: string;
+  /** Component to render. Default: 'button' (only supported name in M0.5). */
+  name?: 'button';
+  /** Visual variant passed to <SnButton>. */
+  variant?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info';
+  /** Size preset passed to <SnButton>. */
+  size?: 'tiny' | 'small' | 'medium' | 'large';
+  /** Disabled flag. */
   disabled?: boolean;
+  /** Loading flag. */
   loading?: boolean;
+  /** Button label. */
   text?: string;
-  dark?: boolean;
-  /**
-   * Free-form props (e.g. `placeholder`, `name`, `type`, `title`, `description`,
-   * `clearable`). Object-spread over (string | number | boolean).
-   */
-  rawProps?: Record<string, unknown>;
-  /**
-   * JSON-encoded UINode[] tree — used when a preview needs nested children
-   * (FormItem > Input, Card with body, etc.). Parsed via JSON.parse.
-   */
-  children?: string;
-  /**
-   * Hide the auto-generated schema code block (use when authors prefer to
-   * keep the page tidy — schema is still emitted to the schema-only data attr).
-   */
-  hideSchema?: boolean;
+  /** Optional CSS class on the preview card. */
+  cardClass?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  end: 'web',
-  variant: undefined,
-  size: undefined,
+  name: 'button',
+  variant: 'default',
+  size: 'medium',
   disabled: false,
   loading: false,
-  text: undefined,
-  dark: false,
-  rawProps: undefined,
-  children: undefined,
-  hideSchema: false,
+  text: 'Button',
+  cardClass: '',
 });
 
 const target = ref<HTMLDivElement | null>(null);
 const status = ref<'booting' | 'mounted' | 'error'>('booting');
 const errorMsg = ref('');
-const copiedKey = ref<'schema' | null>(null);
 
-const { page } = useData();
+let mountedApp: VueAppInstance | null = null;
 
-const effectiveEnd = (): 'web' | 'uni' => {
-  if (props.end === 'uni') return 'uni';
-  if (props.end === 'web') return 'web';
-  if (page.value.relativePath.startsWith('components/uni')) return 'uni';
-  return 'web';
-};
-
-let mountedApp: { unmount: () => void } | null = null;
-let lastEnd = '';
-
-/** Per-end load promise — caches the global module across previews. */
-const loadCache = new Map<'web' | 'uni', Promise<unknown>>();
-
-function loadFramework(end: 'web' | 'uni'): Promise<unknown> {
-  if (loadCache.has(end)) return loadCache.get(end)!;
-  const globalKey = end === 'uni' ? 'AUI_UNI' : 'AUI_WEB';
-  const scriptSrc = end === 'uni' ? '/framework-uni.js' : '/framework-web.js';
-
-  const promise = new Promise((resolve, reject) => {
-    const w = window as unknown as Record<string, unknown>;
-    if (w[globalKey]) {
-      resolve(w[globalKey]);
-      return;
-    }
-    const existing = document.querySelector(`script[data-aui-end="${end}"]`);
-    if (existing) {
-      existing.addEventListener('load', () => resolve(w[globalKey]));
-      existing.addEventListener('error', () =>
-        reject(new Error(`failed to load ${scriptSrc}`)),
-      );
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = scriptSrc;
-    script.async = false;
-    script.dataset.auiEnd = end;
-    script.addEventListener('load', () => resolve(w[globalKey]));
-    script.addEventListener('error', () =>
-      reject(new Error(`failed to load ${scriptSrc}`)),
-    );
-    document.head.appendChild(script);
-  });
-  loadCache.set(end, promise);
-  return promise;
-}
-
-/** Components exposed by every official framework bundle (web + uni). */
-const BUNDLED_COMPONENTS = [
-  'Button',
-  'Input',
-  'Form',
-  'FormItem',
-  'Card',
-] as const;
-
-function buildSchema(): { version: string; root: Record<string, unknown> } {
-  const componentProps: Record<string, unknown> = { ...(props.rawProps ?? {}) };
-  if (props.variant !== undefined) componentProps.variant = props.variant;
-  if (props.size !== undefined) componentProps.size = props.size;
-  if (props.disabled) componentProps.disabled = true;
-  if (props.loading) componentProps.loading = true;
-  if (props.text !== undefined) componentProps.text = props.text;
-
-  const root: Record<string, unknown> = {
-    id: `${props.name}-preview`,
-    type: props.name,
-    props: componentProps,
-  };
-
-  if (props.children) {
-    try {
-      const parsed = JSON.parse(props.children);
-      if (Array.isArray(parsed)) {
-        root.children = parsed;
-      } else {
-        throw new Error('children must be a JSON array of UINode objects');
-      }
-    } catch (err) {
-      throw new Error(
-        `ComponentPreview: invalid children JSON — ${(err as Error).message}`,
-      );
-    }
-  }
-
-  return { version: '1.0.0', root };
-}
-
-const schemaJson = computed<string>(() => {
-  try {
-    const s = buildSchema();
-    return JSON.stringify(s, null, 2);
-  } catch {
-    return '/* schema build error */';
-  }
-});
-
-async function mountPreview() {
+function mountPreview() {
   if (!target.value) return;
   if (mountedApp) {
     try {
       mountedApp.unmount();
     } catch {
-      // ignore
+      // ignore disposal errors
     }
     mountedApp = null;
   }
-
-  const end = effectiveEnd();
-  lastEnd = end;
-
   try {
-    const mod = (await loadFramework(end)) as Record<string, unknown>;
-
-    const createRegistry = (mod.createComponentRegistry ??
-      mod.createUniRegistry) as () => {
-      register: (type: string, component: unknown) => void;
-    };
-    const createRenderer = (mod.createVueRenderer ??
-      mod.createUniRenderer) as (opts: unknown) => {
-      mount: (
-        schema: unknown,
-        target: Element,
-      ) => { unmount: () => void };
-    };
-
-    if (!createRegistry || !createRenderer) {
-      throw new Error(
-        `framework bundle (${end}) missing createComponentRegistry / createVueRenderer`,
-      );
-    }
-
-    const registry = createRegistry();
-    // Auto-register every bundled official component. Authors can reference
-    // any of them in `name` or as a nested type inside `children`.
-    for (const ctorName of BUNDLED_COMPONENTS) {
-      const ctor = mod[ctorName];
-      if (ctor) registry.register(ctorName.toLowerCase(), ctor);
-    }
-
-    const renderer = createRenderer({ registry });
-
-    const schema = buildSchema();
-    mountedApp = renderer.mount(schema, target.value);
+    const app = createApp({
+      setup() {
+        return () =>
+          // Only SnButton is supported as a preview target in this iteration.
+          // Future components will be added via a lookup table once shipped.
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (SnButton as any)({
+            type: props.variant,
+            size: props.size,
+            disabled: props.disabled,
+            loading: props.loading,
+            onClick: () => undefined,
+          }, { default: () => props.text });
+      },
+    });
+    app.mount(target.value);
+    mountedApp = app;
     status.value = 'mounted';
   } catch (e) {
     errorMsg.value = (e as Error).message ?? String(e);
@@ -223,88 +89,131 @@ async function mountPreview() {
   }
 }
 
-/** Copy a code block to the clipboard and briefly show a "Copied" chip. */
-async function copyToClipboard(key: 'schema', text: string) {
+const codeSnippet = computed(() => {
+  const lines: Array<string> = [];
+  lines.push(`<template>`);
+  lines.push(`  <SnButton`);
+  if (props.variant !== 'default') lines.push(`    type="${props.variant}"`);
+  if (props.size !== 'medium') lines.push(`    size="${props.size}"`);
+  if (props.disabled) lines.push(`    disabled`);
+  if (props.loading) lines.push(`    loading`);
+  lines.push(`  >`);
+  lines.push(`    ${props.text}`);
+  lines.push(`  </SnButton>`);
+  lines.push(`</template>`);
+  return lines.join('\n');
+});
+
+const copied = ref(false);
+async function copySnippet() {
   try {
-    await navigator.clipboard.writeText(text);
-    copiedKey.value = key;
-    setTimeout(() => {
-      if (copiedKey.value === key) copiedKey.value = null;
-    }, 1400);
+    await navigator.clipboard.writeText(codeSnippet.value);
+    copied.value = true;
+    setTimeout(() => { copied.value = false; }, 1400);
   } catch {
     // Fallback for environments where clipboard API is unavailable.
     const ta = document.createElement('textarea');
-    ta.value = text;
+    ta.value = codeSnippet.value;
     ta.style.position = 'fixed';
     ta.style.opacity = '0';
     document.body.appendChild(ta);
     ta.select();
-    try {
-      document.execCommand('copy');
-      copiedKey.value = key;
-      setTimeout(() => {
-        if (copiedKey.value === key) copiedKey.value = null;
-      }, 1400);
-    } finally {
-      document.body.removeChild(ta);
-    }
+    try { document.execCommand('copy'); } finally { document.body.removeChild(ta); }
+    copied.value = true;
+    setTimeout(() => { copied.value = false; }, 1400);
   }
 }
 
 onMounted(mountPreview);
 onBeforeUnmount(() => {
   if (mountedApp) {
-    try {
-      mountedApp.unmount();
-    } catch {
-      // ignore
-    }
+    try { mountedApp.unmount(); } catch { /* ignore */ }
   }
 });
 
 watch(
-  () => [props.name, props.variant, props.size, props.disabled, props.loading, props.text, props.rawProps, props.children, props.end],
-  () => {
-    if (target.value) mountPreview();
-  },
+  () => [props.variant, props.size, props.disabled, props.loading, props.text, props.name],
+  () => mountPreview(),
 );
 </script>
 
 <template>
-  <div class="aui-preview">
+  <div class="sn-preview">
     <div
       ref="target"
       class="preview-card"
-      :class="{ 'is-dark': dark }"
-      :data-end="effectiveEnd()"
+      :class="cardClass"
       :data-status="status"
     />
-    <div v-if="status === 'booting'" class="preview-label">
-      Booting {{ lastEnd }} framework…
-    </div>
-    <div v-else-if="status === 'error'" class="preview-label" style="color:var(--vp-c-danger-1)">
-      Framework failed: {{ errorMsg }}
-    </div>
-    <div v-else class="preview-label">
-      Mounted via <code>createVueRenderer().mount()</code> · end={{ lastEnd }}
+    <div v-if="status === 'booting'" class="preview-label">Booting…</div>
+    <div v-else-if="status === 'error'" class="preview-label preview-label--error">
+      {{ errorMsg }}
     </div>
 
-    <!-- Source code: auto-generated schema block with copy button -->
-    <div v-if="!hideSchema" class="preview-source">
-      <details class="aui-source-block" open>
-        <summary>
-          <span class="aui-source-label">UISchema</span>
-          <button
-            type="button"
-            class="aui-copy-btn"
-            :class="{ 'is-copied': copiedKey === 'schema' }"
-            @click.stop.prevent="copyToClipboard('schema', schemaJson)"
-          >
-            {{ copiedKey === 'schema' ? '✓ Copied' : 'Copy' }}
-          </button>
-        </summary>
-        <pre class="aui-source-pre"><code>{{ schemaJson }}</code></pre>
-      </details>
-    </div>
+    <details class="sn-source-block" open>
+      <summary>
+        <span class="sn-source-label">Vue SFC</span>
+        <button
+          type="button"
+          class="sn-copy-btn"
+          :class="{ 'is-copied': copied }"
+          @click.stop.prevent="copySnippet"
+        >
+          {{ copied ? '✓ Copied' : 'Copy' }}
+        </button>
+      </summary>
+      <pre class="sn-source-pre"><code>{{ codeSnippet }}</code></pre>
+    </details>
   </div>
 </template>
+
+<style scoped>
+.sn-preview {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0;
+}
+.preview-card {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.preview-label {
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+  margin-top: 8px;
+}
+.preview-label--error {
+  color: var(--vp-c-danger-1);
+}
+.sn-source-block {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.sn-source-block summary {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.sn-copy-btn {
+  font-size: 12px;
+  padding: 2px 8px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+}
+.sn-copy-btn.is-copied {
+  color: var(--vp-c-success-1);
+}
+.sn-source-pre {
+  background: var(--vp-c-bg-soft);
+  padding: 12px;
+  border-radius: 4px;
+  overflow-x: auto;
+  margin: 8px 0 0;
+}
+</style>
