@@ -3,15 +3,18 @@ import { defineConfig } from 'vitepress'
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
  *
- * Per ADR-0001: AUI is a traditional AI-friendly component library.
- * Docs describe real components, not schema-driven runtimes.
+ * Per ADR-0001 + ADR-0002:
+ *   AUI is an AI-Native component library with Style Pack + AI Layer.
+ *   Docs describe real components and Style Packs.
  */
 
 const nav = [
   { text: '指南', link: '/guide/web/intro' },
   { text: '组件 · Web', link: '/components/web/button' },
   { text: '组件 · uni-app', link: '/components/uni/button' },
+  { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
+  { text: 'AI 生态', link: '/ai/overview' },
   {
     text: 'English',
     items: [
@@ -28,6 +31,7 @@ const sidebar = {
       text: '快速开始',
       items: [
         { text: '介绍', link: '/guide/web/intro' },
+        { text: '架构', link: '/guide/web/architecture' },
         { text: 'Web 快速开始', link: '/guide/web/quick-start' },
         { text: 'uni-app 快速开始', link: '/guide/uni/quick-start' },
       ],
@@ -54,6 +58,31 @@ const sidebar = {
       text: '主题与 Token',
       items: [
         { text: 'Token 总览', link: '/theme/overview' },
+        { text: 'Theme（颜色）', link: '/theme/theme' },
+        { text: 'Style（形状）', link: '/theme/style' },
+        { text: 'Density（密度）', link: '/theme/density' },
+        { text: 'Token 级联', link: '/theme/cascade' },
+      ],
+    },
+  ],
+  '/style-packs/': [
+    {
+      text: '风格包',
+      items: [
+        { text: '风格包总览', link: '/style-packs/overview' },
+        { text: 'iOS 风格', link: '/style-packs/ios' },
+        { text: '自定义风格包', link: '/style-packs/custom' },
+      ],
+    },
+  ],
+  '/ai/': [
+    {
+      text: 'AI 生态',
+      items: [
+        { text: 'AI 生态总览', link: '/ai/overview' },
+        { text: 'Skill 文件', link: '/ai/skill' },
+        { text: 'MCP Server', link: '/ai/mcp' },
+        { text: '高保真原型', link: '/ai/prototype' },
       ],
     },
   ],
@@ -63,7 +92,9 @@ const enNav = [
   { text: 'Guide', link: '/en/guide/web/intro' },
   { text: 'Components · Web', link: '/en/components/web/button' },
   { text: 'Components · uni-app', link: '/en/components/uni/button' },
+  { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
+  { text: 'AI Ecosystem', link: '/en/ai/overview' },
   {
     text: '简体中文',
     items: [
@@ -80,6 +111,7 @@ const enSidebar = {
       text: 'Getting started',
       items: [
         { text: 'Introduction', link: '/en/guide/web/intro' },
+        { text: 'Architecture', link: '/en/guide/web/architecture' },
         { text: 'Web Quick Start', link: '/en/guide/web/quick-start' },
         { text: 'uni-app Quick Start', link: '/en/guide/uni/quick-start' },
       ],
@@ -106,27 +138,44 @@ const enSidebar = {
       text: 'Theme & Tokens',
       items: [
         { text: 'Tokens overview', link: '/en/theme/overview' },
+        { text: 'Theme (color)', link: '/en/theme/theme' },
+        { text: 'Style (shape)', link: '/en/theme/style' },
+        { text: 'Density (size)', link: '/en/theme/density' },
+        { text: 'Token cascade', link: '/en/theme/cascade' },
+      ],
+    },
+  ],
+  '/en/style-packs/': [
+    {
+      text: 'Style Packs',
+      items: [
+        { text: 'Overview', link: '/en/style-packs/overview' },
+        { text: 'iOS Style', link: '/en/style-packs/ios' },
+        { text: 'Custom Style Pack', link: '/en/style-packs/custom' },
+      ],
+    },
+  ],
+  '/en/ai/': [
+    {
+      text: 'AI Ecosystem',
+      items: [
+        { text: 'Overview', link: '/en/ai/overview' },
+        { text: 'Skill file', link: '/en/ai/skill' },
+        { text: 'MCP Server', link: '/en/ai/mcp' },
+        { text: 'Hi-fi prototype', link: '/en/ai/prototype' },
       ],
     },
   ],
 }
 
 export default defineConfig({
-  title: 'AUI — AI-Friendly UI Component Library',
-  description: 'Vue 3 + uni-app multi-end UI component library. Web API inspired by naive-ui, uni-app API inspired by wot-ui. Token-driven themes, real component rendering in docs.',
-  ignoreDeadLinks: true, // AUI-DOCS-015 will add /guide/uni/cross-platform
+  title: 'snail-aui — AI-Native UI 框架生态',
+  description: 'Vue 3 + uni-app 多端 AI-Native UI 框架生态。Component First / Token First / Style Pack First / AI Native。',
+  ignoreDeadLinks: true,
 
-  // VitePress bundles Vue SFCs through esbuild; raise target so top-level await
-  // patterns emitted by vue-tsc (in transitive deps) don't break the build.
   vite: {
-    build: {
-      target: 'es2022',
-    },
+    build: { target: 'es2022' },
     ssr: {
-      // Per AUI-PRD-v3.0: ComponentPreview lazy-imports @snui/vue-web inside
-      // onMounted. Mark @snui/vue-web + @snui/tokens + @snui/style-packs as
-      // noExternal so vite handles them and the SSR build pipeline does not
-      // try to require them through node module resolution.
       noExternal: [
         '@snui/vue-web',
         '@snui/uni',
@@ -137,20 +186,7 @@ export default defineConfig({
     },
   },
 
-  // Per AUI-PRD-v3.0 / ADR-0002:
-  //   ComponentPreview uses @snui/vue-web components which rely on
-  //   compile-time macros (defineOptions / defineProps). VitePress
-  //   prerender runs the .vue file as raw ESM in SSR; macros are not
-  //   transformed there. Mark ComponentPreview as client-only via a wrapper
-  //   and skip SSR for it.
-  //
-  // The actual fix lives in the ComponentPreview.vue file: it uses an
-  // `import.meta.env.SSR` guard + lazy import of @snui/vue-web.
-  // This config block documents the policy (AUI-DOCS-016).
-
   head: [
-    // Known-dead link to /guide/uni/cross-platform is tracked as AUI-DOCS-015
-    // (out of scope for this batch); ignore until that page is authored.
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
     ['link', {
