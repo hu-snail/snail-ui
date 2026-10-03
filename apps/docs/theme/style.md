@@ -1,13 +1,11 @@
-# Style · Modern / Glass / Minimal
+# Style · 风格轴（Modern / Glass / Minimal）
 
-Style 轴掌管 **形状个性**：圆角、阴影、组件形状 token（button 圆角、card 内边距等）。
-
-Style 不会触及颜色（那归 Theme）或尺寸 primitive（那归 Density）。
+Style 轴掌管**形状个性**：圆角、阴影、组件 Token（button 圆角、card 内边距等）。Style 不会触及颜色（那归 Theme）或尺寸 primitive（那归 Density）。
 
 ## 内置默认
 
 ```ts
-import { MODERN_STYLE } from '@snui/tokens';
+import { MODERN_STYLE } from '@snui/tokens'
 ```
 
 | Style | 风格 |
@@ -16,9 +14,13 @@ import { MODERN_STYLE } from '@snui/tokens';
 | `GLASS_STYLE` | （Phase 2）— 12px 圆角，浮起阴影，毛玻璃 |
 | `MINIMAL_STYLE` | （Phase 2）— 0 圆角，无阴影，细线边框 |
 
+## Style Pack vs Style 轴
+
+Style 轴是 Style 字段的标准定义（圆角 + 阴影 + Component Token）。**Style Pack** 是更上层的封装：Token + 皮肤 CSS + 资源 三层组合，能完全改变视觉人格（如涂鸦、便签、抖音）。详见 [风格包](/style-packs/overview)。
+
 ## 切换 Style 时的行为
 
-```
+```text
 Style 切换
    ↓
 保留 Theme
@@ -28,12 +30,12 @@ Style 切换
 重新计算 Component Token
 ```
 
-按 AUI-PRD-v1.2.md §38：切换 Style 时保留 Theme 与 Density。只重算组件形状 token。
+按 ADR-0002：切换 Style 时保留 Theme 与 Density。只重算组件形状 token。
 
 ## 自定义 Style
 
 ```ts
-import type { StyleDefinition } from '@snui/tokens';
+import type { StyleDefinition } from '@snui/tokens'
 
 const glass: StyleDefinition = {
   name: 'glass',
@@ -45,10 +47,10 @@ const glass: StyleDefinition = {
     button: { radius: 'var(--aui-radius-lg)' },
     card: { radius: 'var(--aui-radius-lg)' },
   },
-};
+}
 ```
 
-应用 `glass` 后，Button 的 `--aui-button-radius` 从 `6px` 切换到 `16px`，阴影深度增加。颜色和间距保持不变。
+应用 `glass` 后，Button 的 `--sn-button-radius` 从 `6px` 切换到 `16px`，阴影深度增加。颜色和间距保持不变。
 
 ## Style 不得做的事
 
@@ -58,20 +60,8 @@ const glass: StyleDefinition = {
 | 覆盖间距 / 尺寸 primitive | 属于 Density |
 | 与特定 Theme 强耦合 | Theme 与 Style 是独立的两轴 |
 
-## Live 对比
-
-<script setup>
-import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
-</script>
-
-<ComponentPreview name="button" variant="primary" text="Modern" />
-
-<ComponentPreview name="button" variant="primary" text="Modern · large" size="large" />
-
-> Glass / Minimal 的 preview 会在相应样式实现后上线。契约面一致，只有 `component.*` 覆盖会变。
-
 ## 下一步
 
-- [Density（Compact / Comfortable）](/theme/density)
+- [Density · 紧凑 / 舒适](/theme/density)
 - [Token 级联](/theme/cascade)
-- [Theme（Light / Dark）](/theme/theme)
+- [风格包（Style Pack）](/style-packs/overview)

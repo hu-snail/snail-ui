@@ -1,39 +1,41 @@
-# Style · Modern / Glass / Minimal
+# Style · the shape axis (Modern / Glass / Minimal)
 
-The Style axis owns the **shape personality**: radius, shadow, and component shape tokens (button radius, card padding, etc.).
+The Style axis owns **shape personality**: radii, shadows, component tokens (button radius, card padding). Style never touches color (that's Theme) or size primitives (that's Density).
 
-A Style does NOT touch colors (those are Theme) or size primitives (those are Density).
-
-## Defaults shipped
+## Built-in defaults
 
 ```ts
-import { MODERN_STYLE } from '@snui/tokens';
+import { MODERN_STYLE } from '@snui/tokens'
 ```
 
 | Style | Personality |
 | --- | --- |
-| `MODERN_STYLE` | 6px control radius, subtle shadow, flat surfaces |
-| `GLASS_STYLE` | (Phase 2) — 12px radius, elevated shadow, blur |
-| `MINIMAL_STYLE` | (Phase 2) — 0 radius, no shadow, hairline borders |
+| `MODERN_STYLE` | 6px control radius, subtle shadows, flat surfaces |
+| `GLASS_STYLE` | (Phase 2) — 12px radius, floating shadows, glassmorphic |
+| `MINIMAL_STYLE` | (Phase 2) — 0 radius, no shadow, hairline border |
 
-## Behavior on style change
+## Style Pack vs Style axis
 
+The Style axis is the standard definition of the Style field (radius + shadow + Component Token). A **Style Pack** is a higher-level wrapper: Token + skin CSS + resources layered to fully change the visual personality (doodle / sticky-note / Douyin). See [Style Packs](/en/style-packs/overview).
+
+## Switching Style behavior
+
+```text
+Style swap
+   ↓
+preserve Theme
+   ↓
+preserve Density
+   ↓
+recompute Component Token
 ```
-Style Change
-   ↓
-保留 Theme
-   ↓
-保留 Density
-   ↓
-重新计算 Component Token
-```
 
-Per AUI-PRD-v1.2.md §38: changing the style preserves Theme and Density. Only the component-shape tokens are recomputed.
+Per ADR-0002: switching Style preserves Theme and Density. Only component-shape Tokens are recomputed.
 
-## Custom style
+## Custom Style
 
 ```ts
-import type { StyleDefinition } from '@snui/tokens';
+import type { StyleDefinition } from '@snui/tokens'
 
 const glass: StyleDefinition = {
   name: 'glass',
@@ -45,33 +47,21 @@ const glass: StyleDefinition = {
     button: { radius: 'var(--aui-radius-lg)' },
     card: { radius: 'var(--aui-radius-lg)' },
   },
-};
+}
 ```
 
-When `glass` is applied, the Button's `--aui-button-radius` flips from `6px` to `16px` and shadow depth increases. Color and spacing stay identical.
+Apply `glass` and Button's `--sn-button-radius` switches from `6px` to `16px` while color and spacing stay.
 
-## What a Style MUST NOT do
+## Forbidden
 
-| Forbidden | Reason |
+| Don't | Why |
 | --- | --- |
-| Override color tokens | Belongs to Theme |
+| Override color Tokens | Belongs to Theme |
 | Override spacing / size primitives | Belongs to Density |
-| Tight-couple to a specific theme | Themes and Styles are independent axes |
+| Couple Style with a specific Theme | Theme and Style are independent |
 
-## Live comparison
+## Where to next
 
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
-
-<ComponentPreview name="button" variant="primary" text="Modern" />
-
-<ComponentPreview name="button" variant="primary" text="Modern · large" size="large" />
-
-> Glass / Minimal previews land when those styles are implemented. The contract surface is the same; only the `component.*` overrides change.
-
-## Next
-
-- [Density (Compact / Comfortable)](/en/theme/density)
+- [Density · compact / comfortable](/en/theme/density)
 - [Token cascade](/en/theme/cascade)
-- [Theme (Light / Dark)](/en/theme/theme)
+- [Style Packs](/en/style-packs/overview)

@@ -1,128 +1,160 @@
 # 架构
 
-AUI 由 7 个 package 组成单向依赖图。本页描述各层、它们之间的契约，以及保证彼此隔离的规则。
+snail-aui 由 6 个 npm 包组成。组件库底座（tokens / vue-web / uni）+ 风格包（style-packs）+ AI 层（ai）+ CLI 工具 + 文档站。包之间单向依赖，无循环。
 
-## Package 依赖图
+## 整体架构
 
-```
-                          ┌──────────────────────────┐
-                          │   @snui/protocol         │   ← Foundation
-                          │   (Zod schemas + types)  │     （无 Vue，无 DOM）
-                          └──────────────────────────┘
-                                  ▲        ▲        ▲
-                                  │        │        │
-            ┌─────────────────────┘        │        └────────────────────┐
-            │                              │                             │
-   ┌────────────────────┐    ┌──────────────────────┐    ┌──────────────────────┐
-   │  @snui/schema      │    │  @snui/tokens         │    │  @snui/runtime       │
-   │  Validator +      │    │  Primitive /         │    │  AUIRuntime +        │
-   │  Normalizer +     │    │  Semantic /          │    │  Reactive + Binding  │
-   │  Version          │    │  Component +         │    │  + Action +          │
-   │                   │    │  Cascade              │    │  AppBridge           │
-   └────────────────────┘    └──────────────────────┘    └──────────────────────┘
-                                                                   ▲
-                                                                   │
-                                              ┌────────────────────┴────────────────────┐
-                                              │                                         │
-                                  ┌──────────────────────────┐         ┌──────────────────────────┐
-                                  │   @snui/vue-web          │         │   @snui/uni              │
-                                  │   Vue 3 渲染器 +         │         │   uni-app 渲染器 +       │
-                                  │   4 个官方组件           │         │   UniButton               │
-                                  └──────────────────────────┘         └──────────────────────────┘
-```
-
-## 各层职责
-
-### Foundation — `@snui/protocol`
-
-- **契约**: `UISchema`, `UINode`, `UIBinding`, `UIAction`, `UIEventBinding`, `UIAccessibility`, `UICapability`, `ComponentContract`。
-- **不依赖**: Vue、DOM、Node、浏览器全局对象。
-- **输出**: 纯 TS 类型 + Zod schemas。事实源（AGENTS.md §25）。
-
-### Schema 工具 — `@snui/schema`
-
-- Validator 携带稳定的错误码（`SCHEMA_*`）。
-- Normalizer 处理规范化的键顺序（deterministic + idempotent）。
-- Version 兼容检查（`parseSchemaVersion`, `isCompatible`）。
-
-### Design tokens — `@snui/tokens`
-
-- Primitive 尺度（color、spacing、radius、font、shadow、motion、size）。
-- Semantic 别名（text/background/border tokens 引用 primitive CSS 变量）。
-- Component shape tokens（button/input/card）。
-- Resolver 输出扁平的 `TokenBinding[]`，可直接用于 `:root` 注入。
-
-### Runtime — `@snui/runtime`
-
-- `AUIRuntime` 外观，生命周期（create / mount / update / unmount / dispose）。
-- `RuntimeContext` 聚合每个 runtime 的工作集。
-- `ReactiveAdapter` 包装 `@vue/reactivity`（按 §19 不重新实现引擎）。
-- `BindingResolver` + 沙箱化 Expression DSL（parser，不用 eval）。
-- `ActionRegistry` + `ActionHandler` + `AppBridge`。
-- `LifecycleTracker` + `AUIError`。
-
-### Renderer — `@snui/vue-web` / `@snui/uni`
-
-- 把 `UINode.type` 映射到平台组件。
-- DOM / uni-app 事件绑定。
-- Capability 感知降级（缺失平台能力时）。
-- 自带首批官方组件契约（`Button` / `Input` / `Form` / `Card`）。
-
-## 边界规则（AGENTS.md §67）
-
-| 规则 | 来源 | 原因 |
-| --- | --- | --- |
-| `protocol` 不得 import Vue / DOM | §17 | 框架无关契约 |
-| `runtime` 不得 import renderer | §18 / §57 | 业务分离 |
-| Renderer 消费 Runtime，不直接依赖 Protocol | §67 | Renderer 关注点留在 renderer |
-| Schema 不直接调用业务服务 | §21 | 只允许 Schema → action id → Registry → Host Service |
-| Capability + Fallback，禁止静默行为变更 | §84–85 | 显式、可预测、可测试 |
-
-## Capability 协商
-
-组件通过 `UICapability` 声明所需能力：
-
-```ts
-const capability: UICapability = {
-  platform: 'web',
-  framework: 'vue3',
-  feature: 'pointer-events',
-  fallback: 'touch-events',
-};
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│                       AI 生态层                                  │
+│  snail-ui.skill.md   MCP Server   ai-meta.json   llms.txt       │
+│  (@snui/ai)                         (@snui/cli)                   │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │ 读取元数据
+┌─────────────────────▼───────────────────────────────────────────┐
+│                      文档 / 预览层                                │
+│  VitePress docs   StyleSwitcher   ThemeCopier   ComponentPreview │
+│  (@snui/docs)     — Web: body.class + <style>                    │
+│                   — uni: ConfigProvider skin prop                 │
+└──────────┬──────────────────────────────┬────────────────────────┘
+           │ import 组件                   │ 读取 Pack
+┌──────────▼──────────┐       ┌───────────▼──────────────────────┐
+│    组件实现层          │       │         Style Pack 层            │
+│  @snui/vue-web        │       │  @snui/style-packs              │
+│  @snui/uni            │       │                                  │
+│                       │       │  Token + 皮肤 CSS + 资源          │
+│  SnButton /           │       │  default / ios / dark /          │
+│  SnConfigProvider     │       │  doodle / sticky-note /          │
+│  每个组件根元素带      │       │  taobao / douyin                │
+│  data-snui-component  │       │                                  │
+└──────────┬────────────┘       └──────────────────────────────────┘
+           │ 消费 var(--sn-*)
+┌──────────▼──────────────────────────────────────────────────────┐
+│                      Token 层（@snui/tokens）                    │
+│                                                                  │
+│  Primitive  →  Semantic  →  Component                           │
+│  颜色/间距     action-primary   button-radius                    │
+│  圆角/阴影     text-secondary   card-shadow                      │
+│                                input-height                      │
+│                                                                  │
+│  Theme 轴（颜色）   Style 轴（形状）   Density 轴（尺寸间距）     │
+│  CSS 变量生成：--aui-* 原始层 + --sn-* 品牌别名层                 │
+└──────────────────────────────────────────────────────────────────┘
 ```
 
-运行时查询 `platform.capabilities`，渲染器选择最佳匹配。不支持的能力走降级——永不静默失败。
+## 包清单
 
-## Action 流程
+| 包 | 角色 | 依赖 |
+|---|---|---|
+| `@snui/tokens` | Token 三层级联 + 解析 | （叶子，零依赖） |
+| `@snui/vue-web` | Web 端组件库 | `@snui/tokens` |
+| `@snui/uni` | uni-app 端组件库 | `@snui/tokens` |
+| `@snui/style-packs` | 官方风格包集合 | `@snui/tokens`（类型） |
+| `@snui/ai` | Skill + MCP + ai-meta | `@snui/cli` + `@snui/tokens` + `@snui/style-packs` |
+| `@snui/cli` | resolver + llms.txt + token-check | `@snui/vue-web` + `@snui/tokens` |
+| `@snui/docs` | VitePress 文档站 | `vue-web` + `uni` + `style-packs` + `ai` |
 
+无循环依赖。
+
+## 三层 Token
+
+```text
+Primitive Tokens   原始值，无语义意义（颜色 / 间距 / 圆角 / 阴影 / 字号 / 动效 / 尺寸）
+      ↓
+Semantic Tokens    语义名，指向 Primitive 的 CSS var 引用（action-primary / text-primary）
+      ↓
+Component Tokens   组件级（button-radius / card-shadow / input-height-medium）
+      ↓
+--sn-* 别名层       品牌别名，组件实际消费（唯一消费入口）
 ```
-Schema（声明）             Runtime（解释）               Host（服务）
-   action id  ───────►  ActionRegistry.resolve(id)  ───────►  handler(context, params)
-                                                       ▲
-                                                       │
-                              AppBridge.{router, storage, notify, analytics, event, abortSignal}
-                                                       ▲
-                                                       │
-                              Host 应用实现 AppBridge
+
+**唯一消费规则**：组件 CSS 只能用 `var(--sn-*)` 变量。兜底值只允许 `transparent` / `inherit` / `currentColor`。
+
+## 三轴独立
+
+| 轴 | 改什么 | 禁止覆盖 |
+|---|---|---|
+| Theme | 颜色（Primitive + Semantic） | 圆角、间距、尺寸 |
+| Style | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
+| Density | 间距 + 尺寸 + 字号 | 颜色、圆角 |
+
+三轴修改互不影响。Style Pack 实际是三个轴的组合配置。
+
+## Style Pack 三层
+
+| 层 | 内容 | 必需 |
+|---|---|---|
+| Token 层 | 颜色 / 圆角 / 间距覆盖（snCssVars()）| 所有 Pack |
+| 皮肤 CSS 层 | .snui-skin-{name} 作用域 CSS（字体 / 装饰 / 特效） | 仅需视觉人格的 Pack（涂鸦 / 抖音） |
+| 资源层 | 字体 / 纹理 / SVG | 少数 Pack（抖音 / Taobao） |
+
+**硬约束**：皮肤 CSS 只能操作视觉层（颜色、阴影、字体、动画、伪元素），不能修改组件 .vue 的 DOM / Props / 行为。
+
+## uni / 小程序平台差异
+
+| 能力 | Web 端 | uni H5 | 微信 / 支付宝小程序 |
+|---|---|---|---|
+| `:root {}` CSS 变量 | ✅ | ✅ | ❌（只支持 page / 组件级） |
+| `[data-theme="dark"]` | ✅ | ✅ | ❌ |
+| `document.body.classList` | ✅ | ✅（H5）| ❌ |
+| 动态注入 `<style>` | ✅ | ✅（H5）| ❌ |
+| 皮肤 CSS（BEM class）| ✅ | ✅ | ✅（组件 scoped 级别） |
+
+**小程序皮肤策略**：ConfigProvider 根元素 class 传递 → 组件 scoped CSS 内声明 `.snui-skin-{name}` 覆盖 → 覆盖范围局限于 ConfigProvider 的 DOM 子树。
+
+## 包边界规则
+
+- tokens 零运行时依赖（叶子节点）
+- style-packs 只依赖 Token 类型，不依赖运行时
+- vue-web / uni 只通过 CSS 变量消费 Token，不 import JS
+- ai 不修改 vue-web / uni，只读元数据
+- 皮肤 CSS 不修改组件 .vue（只看 data-snui-component 钩子）
+- 禁止循环依赖（turbo lint 强制）
+
+## 数据流：用户在文档站切换风格
+
+```text
+点击 StyleSwitcher → 选择 "ios" Pack
+    ↓
+注入 Token 层：snCssVars(pack) → <style id="snui-pack"> 替换 :root 变量
+    ↓
+激活皮肤：document.body.classList.add('snui-skin-ios')
+    ↓
+加载皮肤 CSS（如有）：<link id="snui-skin" href="/packs/ios.skin.css">
+    ↓
+组件 CSS：
+  - 颜色/圆角/间距 → Token 层生效
+  - 手写字体/偏移阴影 → 皮肤 CSS 生效（.snui-skin-ios [data-snui-component="button"]）
+    ↓
+ThemeCopier 展示对应代码片段，用户复制
 ```
 
-Schema 永远不直接看到 host 服务，只看到 action id。
+## CI 流水线
 
-## 测试覆盖（306 个测试）
-
-| Package | 测试数 |
-| --- | --- |
-| `@snui/protocol` | 145（含 4 个 Component Contract） |
-| `@snui/schema` | 24 |
-| `@snui/tokens` | 20 |
-| `@snui/runtime` | 81 |
-| `@snui/vue-web` | 38（含 4 个 Web E2E） |
-| `@snui/uni` / `@snui/ai` | placeholder |
-
-每个新组件 / package 都随测试 + 文档一起落地（AGENTS.md §110）。
+```text
+PR 提交
+  ↓
+typecheck（turbo run typecheck，0 error）
+  ↓
+lint（turbo run lint，0 warning）
+  ↓
+test（turbo run test，100% pass）
+  ↓
+build（turbo run build，0 error）
+  ↓
+token check（snui token check，无字面量颜色兜底）
+  ↓
+pack validate（新增/修改 Pack 时）
+  ↓
+Review Agent（§88 Checklist）
+  ↓
+Human Gate（架构变更 / Public API 变更）
+  ↓
+merge main
+```
 
 ## 下一步
 
-- [Web 快速开始](/guide/web/quick-start)
-- [Theme / Style / Density](/theme/overview)
-- [组件](/components/web/button)
+- [主题与 Token](/theme/overview)
+- [风格包](/style-packs/overview)
+- [AI 生态](/ai/overview)

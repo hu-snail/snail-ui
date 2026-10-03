@@ -1,62 +1,65 @@
 # 介绍
 
-AUI 是一个 **AI-native 的多端 UI 框架**。它把 UI 当作 schema 而不是代码：每一个界面都由一个 `UISchema`（类型化的 JSON 文档）描述，运行时负责解释它。渲染器把 schema 映射到 DOM（Vue 3）或 uni-app 组件。
+snail-aui 是一个面向 Vue 3 + uni-app 多端的 **AI-Native UI 框架生态**。开发者用最普通的 Vue 组件写法直接 import；AI 能读懂组件、能产出高保真原型、能在线切换整体风格（涂鸦 / 便签 / iOS / 淘宝 / 抖音）；用户能复制一份配置就完成风格切换。
 
-## 为什么选择 Schema 优先？
+## 一句话定位
 
-传统 UI 框架用代码描述 UI：
+> 开发者：`<SnButton type="primary">提交</SnButton>`  
+> AI：通过 Skill + MCP 拿到组件元数据，产出可运行的 Vue SFC 原型  
+> 设计师：在文档站切换风格包预览效果，一键复制配置
 
-```vue
-<template>
-  <button class="btn btn--primary" @click="submit">Submit</button>
-</template>
+## 30 秒看懂
+
+```text
+@snui/tokens        ── Token 三层级联 + --sn-* 别名层
+        ↑
+@snui/vue-web       ── Web 端组件库（naive-ui 风格 API）
+@snui/uni           ── uni-app 端组件库（wot-ui 风格 API，easycom 注册）
+        ↑
+@snui/style-packs   ── 官方风格包（iOS / 暗色 / 涂鸦 / 抖音…）
+        ↑
+@snui/ai            ── Skill + MCP Server + ai-meta
+        ↑
+@snui/docs          ── VitePress 文档站（含 StyleSwitcher / ThemeCopier）
 ```
 
-AUI 用数据描述 UI：
+底层：
+- 开发者写传统 Vue SFC，零 schema、零运行时
+- AI 走 Skill + MCP 工具链理解组件、产出原型
+- 风格包只动 Token，不动组件
 
-```ts
-const schema: UISchema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', text: 'Submit' },
-    events: { click: { kind: 'event', trigger: 'click' } },
-  },
-};
-```
+## 与 v1.x 的区别
 
-带来的好处是叠加的：
-- LLM 可以 **生成** schema，渲染器再把它变成像素。
-- LLM 可以 **patch** schema（JSON Patch），运行时重新渲染。
-- 同一份 schema 可运行于 **Web**（Vue 3）和 **uni-app**（iOS / Android / H5 / MP）。
-- Token、可访问性、能力是**自描述**的，不是手写出来的。
+v1.x 的 Schema-Runtime 架构（UISchema + 解释器 + Action Registry + Binding 表达式）已被 ADR-0001 推翻。当前是 **Component First / Token First / Style Pack First / AI Native** 的组件库形态：
 
-## 30 秒看懂架构
+- **不做**：运行时 schema 解释器、Low-code Studio、Binding 表达式沙箱
+- **保留**：Token 系统、TypeScript strict、按需加载、文档真实渲染
+- **新增**：Style Pack 系统、AI Skill + MCP Server 生态
 
-```
-@snui/protocol     ── Zod schemas（框架无关）
-       ↑
-@snui/schema       ── Validator + Normalizer + Version
-@snui/tokens       ── Primitive / Semantic / Component 级联
-@snui/runtime      ── AUIRuntime + Reactive + Binding + Action + AppBridge
-       ↑
-@snui/vue-web      ── Vue 3 渲染器 + 4 个官方组件（Phase 2）
-@snui/uni          ── uni-app 渲染器（Phase 3）
-```
+## 已交付（M0 + M0.5 + M1-FOUND）
 
-`@snui/protocol` 永不引入 Vue。渲染器消费 Runtime，不直接依赖 Protocol。这个层级关系由 package 的导入方向强制保证（AGENTS.md §67）。
+- **M0（已完成）**：架构反转，Button demo 跑通，文档站建好
+- **M0.5（已完成）**：PRD v3.0 / Architecture v3.0 / Spec-01~05 文档体系建立；ADR-0002 风格包 + AI 层设计
+- **M1-FOUND（已完成）**：FOUND-001 Token 命名对齐、FOUND-002 ComponentPreview 重建、FOUND-003 SnConfigProvider + skin prop、FOUND-004 data-snui-component 钩子
+- **M1 组件**：AUI-CORE/NAV/FORM/FB/DSP/API 共 ~50 个组件跟进中
 
-## 当前已交付
+## 三轴独立原则
 
-- **Phase 1**: 全部 8 个内部包（28 个任务）— 详见 [架构](/guide/web/architecture)。
-- **Phase 2**: `@snui/vue-web` 提供 4 个官方组件（`Button` / `Input` / `Form` / `Card`）+ Web E2E 测试。
-- **Phase 3**: `@snui/uni` 占位中 — 同样的协议，uni-app 渲染器随后交付。
+Token 系统有三个独立维度，互不交叉：
+
+| 轴 | 改什么 | 不允许改 |
+|---|---|---|
+| Theme | 颜色（primitive color + semantic color） | 圆角、间距、尺寸 |
+| Style | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
+| Density | 间距 + 尺寸 + 字号 | 颜色、圆角 |
+
+风格包（如 iOS / 涂鸦）实际是 Theme + Style + Density 的组合配置。
 
 ## 下一步
 
-- [安装](/guide/web/installation)
 - [Web 快速开始](/guide/web/quick-start)
 - [uni-app 快速开始](/guide/uni/quick-start)
 - [架构](/guide/web/architecture)
-- [Theme / Style / Density](/theme/overview)
+- [主题与 Token](/theme/overview)
+- [风格包](/style-packs/overview)
+- [AI 生态](/ai/overview)

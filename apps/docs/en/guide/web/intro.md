@@ -1,62 +1,62 @@
 # Introduction
 
-AUI is an **AI-native multi-end UI framework**. It treats the UI as a schema, not as code: every screen is described by a `UISchema` (a typed JSON document), and the runtime interprets it. Renderers map the schema to DOM (Vue 3) or uni-app components.
+snail-aui is an **AI-Native UI framework ecosystem** for Vue 3 + uni-app. Developers use plain Vue components (`<SnButton type="primary">Submit</SnButton>`). AI can read every component, produce high-fidelity prototypes, and swap whole visual identities (doodle / sticky-note / iOS / Taobao / Douyin) in the docs site — then hand you a snippet to paste.
 
-## Why schema-first?
+## One-liner
 
-Traditional UI frameworks describe the UI in code:
-
-```vue
-<template>
-  <button class="btn btn--primary" @click="submit">Submit</button>
-</template>
-```
-
-AUI describes the UI in data:
-
-```ts
-const schema: UISchema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', text: 'Submit' },
-    events: { click: { kind: 'event', trigger: 'click' } },
-  },
-};
-```
-
-The benefits compound:
-- An LLM can **generate** a schema; a renderer turns it into pixels.
-- An LLM can **patch** a schema (JSON Patch); the runtime re-renders.
-- The same schema runs on **Web** (Vue 3) and **uni-app** (iOS / Android / H5 / MP).
-- Tokens, accessibility, and capabilities are **declared**, not hand-coded.
+> Developers: `<SnButton type="primary">Submit</SnButton>`  
+> AI: read meta via Skill + MCP, output a runnable Vue SFC prototype  
+> Designers: flip the Style Pack in the docs site, copy the config
 
 ## Architecture in 30 seconds
 
+```text
+@snui/tokens        ── Three-layer Token cascade + --sn-* brand alias
+        ↑
+@snui/vue-web       ── Web component library (naive-ui style API)
+@snui/uni           ── uni-app component library (wot-ui style API, easycom)
+        ↑
+@snui/style-packs   ── Official Style Packs (iOS / dark / doodle / Douyin…)
+        ↑
+@snui/ai            ── Skill + MCP Server + ai-meta
+        ↑
+@snui/docs          ── VitePress docs site (with StyleSwitcher / ThemeCopier)
 ```
-@snui/protocol     ── Zod schemas (framework-agnostic)
-       ↑
-@snui/schema       ── Validator + Normalizer + Version
-@snui/tokens       ── Primitive / Semantic / Component cascade
-@snui/runtime      ── AUIRuntime + Reactive + Binding + Action + AppBridge
-       ↑
-@snui/vue-web      ── Vue 3 renderer + Button (Phase 2)
-@snui/uni          ── uni-app renderer (Phase 3)
-```
 
-`@snui/protocol` never imports Vue. Renderers consume Runtime, not Protocol directly. The single-direction graph is enforced by package imports (AGENTS.md §67).
+What stays underneath:
+- Plain Vue SFC authoring (no schema, no runtime)
+- AI uses Skill + MCP tools to understand components
+- Style Packs touch Tokens, never component source
 
-## What ships today
+## What changed from v1.x
 
-- **Phase 1**: all 8 internal packages (28 tasks) — see [Architecture](/en/guide/web/architecture).
-- **Phase 2 starter**: `@snui/vue-web` ships a `Button` component as the first official contract.
-- **Phase 3**: `@snui/uni` is a placeholder — same contracts, uni-app renderer to follow.
+v1.x's Schema-Runtime architecture (UISchema + interpreter + ActionRegistry + Binding expressions) was rejected by ADR-0001. The current direction is **Component First / Token First / Style Pack First / AI Native**:
+
+- ❌ No runtime schema interpreter
+- ❌ No low-code Studio / drag-and-drop builder
+- ❌ No Binding expression sandbox
+- ✅ Token cascade preserved
+- ✅ TypeScript strict + on-demand loading
+- ✅ Docs render real components
+- ✅ Style Pack system + AI Layer (Skill + MCP)
+
+## Three independent axes
+
+Token system has three independent dimensions:
+
+| Axis | What it changes | Forbidden |
+|---|---|---|
+| Theme | Color (primitive + semantic) | Radius, spacing, size |
+| Style | Radius + shadow + Component Token | Color, spacing, font size |
+| Density | Spacing + size + font size | Color, radius |
+
+A Style Pack (iOS / doodle / etc.) is a combination of all three axes.
 
 ## Where to next
 
-- [Installation](/en/guide/web/installation)
-- [Quick start (Web)](/en/guide/web/quick-start)
-- [Quick start (uni-app)](/en/guide/uni/quick-start)
+- [Web quick start](/en/guide/web/quick-start)
+- [uni-app quick start](/en/guide/uni/quick-start)
 - [Architecture](/en/guide/web/architecture)
-- [Theme / Style / Density](/en/theme/overview)
+- [Theme & Tokens](/en/theme/overview)
+- [Style Packs](/en/style-packs/overview)
+- [AI Ecosystem](/en/ai/overview)

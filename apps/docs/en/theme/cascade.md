@@ -1,113 +1,88 @@
 # Token cascade
 
-The full cascade from primitive to component, with example bindings.
-
-## Primitive
-
-Raw design values. No semantic meaning. Theme owns this.
+Per ADR-0002 / Spec-01 §1, the priority order (low → high):
 
 ```text
-color.gray.50    = #fafafa
-color.gray.900   = #171717
-color.blue.500   = #1677ff
-spacing.4        = 12px
-radius.md        = 6px
-font.size.md     = 14px
-shadow.md        = 0 4px 8px rgba(0,0,0,0.08)
-motion.duration.base = 200ms
-size.control.md  = 32px
+1. Default Primitive Tokens
+2. Theme override   → Primitive color + Semantic color
+3. Style override   → Primitive radius / shadow + Component Token
+4. Density override → Primitive spacing / size / fontSize
+5. Variant override → Component Token
+6. Instance override → flat record, top-most priority
 ```
 
-## Semantic
+Output: a flat `{ name, value }` list ordered Primitive → Semantic → Component, ready for `:root` injection or `style.setProperty`.
 
-Semantic aliases reference primitive via `var()`.
-
-```text
-color.text.primary     → var(--aui-color-text-primary)
-color.action.primary   → var(--aui-color-action-primary)
-spacing.inset.md       → var(--aui-spacing-inset-md)
-radius.control         → var(--aui-radius-control)
-size.control.md        → var(--aui-size-control-md)
-```
-
-After resolution (Light theme):
-
-```text
---aui-color-text-primary   → var(--aui-color-gray-900)
---aui-color-gray-900       → #171717
---aui-color-action-primary → var(--aui-color-blue-500)
---aui-color-blue-500       → #1677ff
-```
-
-## Component
-
-Component tokens reference semantic.
-
-```text
-button.heightMd       → var(--aui-size-control-md)
-button.radius         → var(--aui-radius-control)
-button.paddingX       → var(--aui-spacing-inset-md)
-button.shadow         → var(--aui-shadow-control)
-input.height          → var(--aui-size-control-md)
-card.padding         → var(--aui-spacing-inset-lg)
-card.radius          → var(--aui-radius-card)
-```
-
-After resolution:
-
-```text
---aui-button-height-md  → var(--aui-size-control-md)  → var(--aui-size-control-md)  → 32px
---aui-button-radius     → var(--aui-radius-control)   → var(--aui-radius-md)       → 6px
-```
-
-## Component CSS uses tokens only
-
-Components never hardcode colors / sizes / spacing:
-
-```css
-/* ✅ correct */
-.snui-button {
-  background: var(--aui-color-action-primary);
-  border-radius: var(--aui-button-radius);
-  height: var(--aui-button-height-md);
-}
-
-/* ❌ forbidden */
-.snui-button {
-  background: #1677ff;
-  border-radius: 6px;
-  height: 32px;
-}
-```
-
-The hardcoded version locks the component to a specific theme / style / density. The token version follows whichever dimensions Axis Swap the host picks.
-
-## Resolver output
+## Each axis may only override declared slots
 
 ```ts
-import { resolveEnvironment, renderStyleBlock } from '@snui/tokens';
+export interface ThemeDefinition {
+  readonly name: string
+  readonly primitive?: Partial<PrimitiveTokens['color']>   // color only
+  readonly semantic?: Partial<{...}>                       // color only
+}
 
-const env = {
-  theme: LIGHT_THEME,
-  style: MODERN_STYLE,
-  density: COMFORTABLE_DENSITY,
-};
+export interface StyleDefinition {
+  readonly name: string
+  readonly primitive?: {
+    readonly radius?: Partial<PrimitiveTokens['radius']>  // radius only
+    readonly shadow?: Partial<PrimitiveTokens['shadow']>  // shadow only
+  }
+  readonly component?: Partial<{                          // declared component slots only
+    readonly button: Partial<ComponentTokens['button']>
+    readonly input:  Partial<ComponentTokens['input']>
+    readonly card:   Partial<ComponentTokens['card']>
+  }>
+}
 
-const bindings = resolveEnvironment(env);
-console.log(bindings.length);     // ~110 entries
-console.log(bindings[0]);
-// { name: '--aui-color-gray-50', value: '#fafafa' }
-console.log(bindings.find(b => b.name === '--aui-color-blue-500'));
-// { name: '--aui-color-blue-500', value: '#1677ff' }
-console.log(bindings.find(b => b.name === '--aui-button-radius'));
-// { name: '--aui-button-radius', value: 'var(--aui-radius-control)' }
-
-renderStyleBlock(bindings);
-// → ":root { --aui-color-gray-50: #fafafa; ... }"
+export interface DensityDefinition {
+  readonly name: string
+  readonly primitive?: {
+    readonly spacing?: Partial<PrimitiveTokens['spacing']>
+    readonly size?:    Partial<PrimitiveTokens['size']>
+    readonly font?:    Partial<...>
+  }>
+}
 ```
 
-## Next
+Per ADR-0002: a higher axis may only override what its type declaration allows. Theme cannot change radius; Style cannot change color; Density cannot change color or radius.
 
-- [Theme (Light / Dark)](/en/theme/theme)
-- [Style (Modern / Glass / Minimal)](/en/theme/style)
-- [Density (Compact / Comfortable)](/en/theme/density)
+## resolveEnvironment behavior
+
+```ts
+const bindings = resolveEnvironment({
+  theme: DARK_THEME,
+  style: MODERN_STYLE,
+  density: COMFORTABLE_DENSITY,
+  instanceOverrides: { '--sn-button-radius': '0px' },
+})
+```
+
+The returned `bindings` are sorted by dependency: Primitive first (referenced later), then Semantic, then Component. Instance overrides win last.
+
+## Emit CSS variables
+
+```ts
+import { renderStyleBlock } from '@snui/tokens'
+
+const css = renderStyleBlock(bindings)
+// ":root {"
+// "  --aui-color-blue-500: #1677ff;"
+// "  --aui-color-action-primary: var(--aui-color-blue-500);"
+// "  --aui-button-radius: 6px;"
+// "  --sn-button-radius: var(--aui-button-radius);"
+// "}"
+```
+
+Inject this into `:root` and you're done.
+
+## Global vs Instance overrides
+
+**Global** (recommended): call `snCssVars()` and inject `<style>` into `:root`, affects the whole app.
+
+**Instance**: per-component, e.g. `<SnButton :style="{ '--sn-button-radius': '0px' }">` — affects only this button. The `instanceOverrides` parameter on resolve takes precedence over everything else.
+
+## Where to next
+
+- [Style Packs](/en/style-packs/overview)
+- [AI Ecosystem](/en/ai/overview)

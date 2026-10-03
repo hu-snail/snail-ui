@@ -1,80 +1,85 @@
-# Theme · Light / Dark
+# Theme · light / dark
 
-The Theme axis owns the **color** system: text, background, border, action, and feedback colors.
+The Theme axis owns **color**: the Primitive color palette and Semantic color names.
 
-A theme overrides primitive color + semantic color. It does NOT touch radius, shadow, spacing, or font sizes (those are Style + Density).
-
-## Defaults shipped
+## Built-in defaults
 
 ```ts
-import { LIGHT_THEME, DARK_THEME } from '@snui/tokens';
+import { LIGHT_THEME, DARK_THEME } from '@snui/tokens'
 ```
 
-| Theme | Source of truth |
+| Theme | Use |
 | --- | --- |
-| `LIGHT_THEME` | default — semantic.text.primary → `var(--aui-color-gray-900)` |
-| `DARK_THEME` | semantic.text.primary → `var(--aui-color-gray-100)` |
+| `LIGHT_THEME` | Light background, dark text (default) |
+| `DARK_THEME` | Dark background, light text |
 
-## Behavior on theme change
-
-```
-Theme Change
-   ↓
-保留 Style
-   ↓
-保留 Density
-   ↓
-重新解析 Token
-```
-
-Per AUI-PRD-v1.2.md §38: changing the theme preserves the Style and Density axes. Only the color layer is recomputed.
-
-## Custom theme
+## Switching Theme
 
 ```ts
-import type { ThemeDefinition } from '@snui/tokens';
+import { snCssVars } from '@snui/tokens'
 
-const brand: ThemeDefinition = {
-  name: 'brand',
-  primitive: {
-    blue: {
-      500: '#5b21b6', // brand purple
-    },
-  },
+const el = document.createElement('style')
+el.textContent = snCssVars({
+  theme: DARK_THEME,    // ← swap Theme
+  style: MODERN_STYLE,  // keep Style
+  density: COMFORTABLE_DENSITY,  // keep Density
+})
+document.head.appendChild(el)
+```
+
+Per ADR-0002: switching Theme preserves Style and Density — only colors are recomputed.
+
+## Switching via `data-theme`
+
+snail-aui also supports the native CSS attribute-selector approach:
+
+```html
+<html data-theme="dark">
+```
+
+```css
+:root {
+  --sn-color-action-primary: #1677ff;
+}
+
+[data-theme="dark"] {
+  --sn-color-action-primary: #3b82f6;
+}
+```
+
+This is the easiest way outside MP (Web / H5 only — MP doesn't support attribute selectors).
+
+## Custom Theme
+
+```ts
+import type { ThemeDefinition } from '@snui/tokens'
+
+const myBrand: ThemeDefinition = {
+  name: 'my-brand',
   semantic: {
-    text: {
-      primary: 'var(--aui-color-blue-500)',
+    action: {
+      primary: '#ff5722',
+      primaryHover: '#ff7043',
+    },
+    background: {
+      surface: '#fffaf0',
     },
   },
-};
+}
 ```
 
-When the user picks `brand`, every component using `--aui-color-action-primary` re-renders against the new primitive color (the primitive binding at `--aui-color-blue-500` swaps), without any code change.
+Apply it via `snCssVars({ theme: myBrand })` and every `var(--sn-color-action-primary)` reference updates automatically.
 
-## What a theme MUST NOT do
+## Forbidden
 
-| Forbidden | Reason |
+| Don't | Why |
 | --- | --- |
-| Override radius / shadow / spacing | Belongs to Style / Density |
-| Reference `window` / `document` / global state | Tokens are pure data |
-| Reference the Style or Density axes | The three axes are independent |
+| Override radius Tokens | Belongs to Style |
+| Override spacing / size primitives | Belongs to Density |
+| Couple Theme with a specific Style | Theme and Style are independent |
 
-If you find yourself reaching for any of the above, you're designing a Style or Density instead — split it.
+## Where to next
 
-## Live comparison
-
-The two previews below mount the same Button under LIGHT_THEME and DARK_THEME. The schema is identical; only the binding table differs.
-
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
-
-<ComponentPreview name="button" variant="primary" text="Light theme" />
-
-> Dark theme preview lands once the docs site picks up the night-mode toggle. The contract is identical; only the resolver output differs.
-
-## Next
-
-- [Style (Modern / Glass / Minimal)](/en/theme/style)
-- [Density (Compact / Comfortable)](/en/theme/density)
+- [Style · the shape axis](/en/theme/style)
+- [Density · compact / comfortable](/en/theme/density)
 - [Token cascade](/en/theme/cascade)

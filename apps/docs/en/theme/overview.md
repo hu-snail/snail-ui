@@ -1,75 +1,91 @@
-# Theme / Style / Density
+# Tokens Overview
 
-AUI splits tokens into three independent dimensions. Each axis can be changed at runtime without touching the others.
+The heart of snail-aui's styling system is Tokens (design variables). Components never hardcode colors, spacing, or radii — every visual property references a Token.
 
-| Axis | Owns | Example switches |
-| --- | --- | --- |
-| **Theme** | Color (text / background / border / action / feedback) | Light, Dark |
-| **Style** | Radius, Shadow, Component shape | Modern, Glass, Minimal |
-| **Density** | Size, Spacing, Font size | Compact, Comfortable |
+## Three-layer cascade
 
-The three dimensions **never** implicitly affect each other (AUI-PRD-v1.2.md §36: "三个维度不得隐式修改其他维度"). Changing the theme never alters spacing; changing density never alters color.
-
-## The cascade
-
-```
-Default values
-   ↓
-Theme override     → primitive.color + semantic.color
-   ↓
-Style override     → primitive.radius/shadow + component tokens
-   ↓
-Density override   → primitive.spacing/size/font.size
-   ↓
-Variant            → component tokens (per-instance preset)
-   ↓
-Instance override  → flat Record<string, string> (top-most)
+```text
+Primitive   →  Semantic   →  Component   →  --sn-* alias
+raw values      semantics       component-level   brand consumption entry
 ```
 
-## Tokens are CSS variables
+The single rule: **components consume only `var(--sn-*)`**.
 
-The resolver outputs a flat `TokenBinding[]`:
+## Three independent axes
 
-```ts
-{ name: '--aui-color-blue-500', value: '#1677ff' }
-{ name: '--aui-color-text-primary', value: 'var(--aui-color-blue-500)' }
-{ name: '--aui-button-radius', value: 'var(--aui-radius-control)' }
+The Token system has three independent dimensions that don't cross:
+
+| Axis | What it changes | Forbidden |
+|---|---|---|
+| **Theme** | Color (Primitive + Semantic) | Radius, spacing, size |
+| **Style** | Radius + shadow + Component Token | Color, spacing, font size |
+| **Density** | Spacing + size + font size | Color, radius |
+
+Switching Theme does not affect component shape; switching Style does not affect color; switching Density does not affect color or radius.
+
+## Default values
+
+| Token | Default |
+|---|---|
+| `--sn-color-action-primary` | `#1677ff` (blue) |
+| `--sn-color-text-primary` | `#18181b` (near-black) |
+| `--sn-color-background-surface` | `#ffffff` (white) |
+| `--sn-button-radius` | `6px` |
+| `--sn-button-height-medium` | `36px` |
+| `--sn-card-shadow` | `0 1px 3px rgba(0,0,0,0.08)` |
+
+Switching the dark theme:
+
+- `--sn-color-action-primary` becomes `#3b82f6`
+- `--sn-color-background-surface` becomes `#18181b`
+- Radius and spacing are unchanged
+
+Switching the iOS Style Pack:
+
+- `--sn-button-radius` becomes `12px`
+- `--sn-button-shadow` becomes `none`
+- Color is unchanged
+
+## Full Token namespace
+
+### Color (Semantic)
+
+```css
+--sn-color-text-{primary, secondary, disabled, inverse, on-accent}
+--sn-color-background-{surface, elevated, sunken, overlay, accent, subtle}
+--sn-color-border-{subtle, default, strong, accent, focus}
+--sn-color-action-{primary, primary-hover, primary-active, secondary, secondary-hover}
+--sn-color-feedback-{success, warning, danger, info}
 ```
 
-Components consume via `var(--aui-color-action-primary)` — they never see the raw primitive. This means a theme switch only changes the binding table, not the components.
+### Component
 
-## Pages in this section
+```css
+/* Button */
+--sn-button-height-{tiny, small, medium, large}
+--sn-button-padding-x
+--sn-button-radius
+--sn-button-font-size
+--sn-button-shadow
 
-- [Theme (Light / Dark)](/en/theme/theme)
-- [Style (Modern / Glass / Minimal)](/en/theme/style)
-- [Density (Compact / Comfortable)](/en/theme/density)
+/* Input */
+--sn-input-height-{small, medium, large}
+--sn-input-padding-x
+--sn-input-radius
+
+/* Card */
+--sn-card-padding
+--sn-card-radius
+--sn-card-shadow
+
+/* Focus ring */
+--sn-focus-ring
+```
+
+## Where to next
+
+- [Theme · light / dark](/en/theme/theme)
+- [Style · the shape axis](/en/theme/style)
+- [Density · compact / comfortable](/en/theme/density)
 - [Token cascade](/en/theme/cascade)
-
-## Programmatic API
-
-```ts
-import { resolveEnvironment, renderStyleBlock } from '@snui/tokens';
-
-const env = {
-  theme: LIGHT_THEME,
-  style: MODERN_STYLE,
-  density: COMFORTABLE_DENSITY,
-  // Optional instance overrides
-  instanceOverrides: {
-    '--aui-color-action-primary': '#ff5500',
-  },
-};
-
-const bindings = resolveEnvironment(env);
-
-// Inject as a CSS string:
-const css = renderStyleBlock(bindings);
-document.head.insertAdjacentHTML('beforeend', `<style>${css}</style>`);
-
-// Or attach to a host element directly:
-for (const { name, value } of bindings) {
-  document.documentElement.style.setProperty(name, value);
-}
-```
-
-See the [`@snui/tokens` source](https://github.com/hu-snail/snail-ui) for the full default scale.
+- [Style Packs](/en/style-packs/overview)

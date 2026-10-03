@@ -1,113 +1,88 @@
 # Token 级联
 
-从 primitive 到 component 的完整级联，并附示例绑定。
-
-## Primitive
-
-原始设计值，没有语义含义。Theme 掌管这里。
+按 ADR-0002 / Spec-01 §1，Token 解析顺序（优先级低 → 高）：
 
 ```text
-color.gray.50    = #fafafa
-color.gray.900   = #171717
-color.blue.500   = #1677ff
-spacing.4        = 12px
-radius.md        = 6px
-font.size.md     = 14px
-shadow.md        = 0 4px 8px rgba(0,0,0,0.08)
-motion.duration.base = 200ms
-size.control.md  = 32px
+1. 默认 Primitive Tokens
+2. Theme 覆盖 → Primitive color + Semantic color
+3. Style 覆盖 → Primitive radius/shadow + Component Tokens
+4. Density 覆盖 → Primitive spacing/size/fontSize
+5. Variant 覆盖 → Component Tokens
+6. Instance 覆盖 → flat record，顶层优先级
 ```
 
-## Semantic
+输出：一个 `{ name, value }` 列表，按 Primitive → Semantic → Component 顺序排列，可直接注入 `:root` 或 `style.setProperty`。
 
-语义别名通过 `var()` 引用 primitive。
-
-```text
-color.text.primary     → var(--aui-color-text-primary)
-color.action.primary   → var(--aui-color-action-primary)
-spacing.inset.md       → var(--aui-spacing-inset-md)
-radius.control         → var(--aui-radius-control)
-size.control.md        → var(--aui-size-control-md)
-```
-
-解析后（Light Theme）：
-
-```text
---aui-color-text-primary   → var(--aui-color-gray-900)
---aui-color-gray-900       → #171717
---aui-color-action-primary → var(--aui-color-blue-500)
---aui-color-blue-500       → #1677ff
-```
-
-## Component
-
-Component token 引用 semantic。
-
-```text
-button.heightMd       → var(--aui-size-control-md)
-button.radius         → var(--aui-radius-control)
-button.paddingX       → var(--aui-spacing-inset-md)
-button.shadow         → var(--aui-shadow-control)
-input.height          → var(--aui-size-control-md)
-card.padding         → var(--aui-spacing-inset-lg)
-card.radius          → var(--aui-radius-card)
-```
-
-解析后：
-
-```text
---aui-button-height-md  → var(--aui-size-control-md)  → var(--aui-size-control-md)  → 32px
---aui-button-radius     → var(--aui-radius-control)   → var(--aui-radius-md)       → 6px
-```
-
-## Component CSS 只使用 token
-
-组件永远不硬编码颜色 / 尺寸 / 间距：
-
-```css
-/* ✅ 正确 */
-.snui-button {
-  background: var(--aui-color-action-primary);
-  border-radius: var(--aui-button-radius);
-  height: var(--aui-button-height-md);
-}
-
-/* ❌ 禁止 */
-.snui-button {
-  background: #1677ff;
-  border-radius: 6px;
-  height: 32px;
-}
-```
-
-硬编码版本把组件锁死到特定的 Theme / Style / Density。Token 版本会跟随宿主选定的维度组合切换。
-
-## Resolver 输出
+## 高层只能覆盖明确声明允许的 Token
 
 ```ts
-import { resolveEnvironment, renderStyleBlock } from '@snui/tokens';
+export interface ThemeDefinition {
+  readonly name: string
+  readonly primitive?: Partial<PrimitiveTokens['color']>   // ✅ 只允许 color
+  readonly semantic?: Partial<{...}>                       // ✅ 只允许 color
+}
 
-const env = {
-  theme: LIGHT_THEME,
+export interface StyleDefinition {
+  readonly name: string
+  readonly primitive?: {
+    readonly radius?: Partial<PrimitiveTokens['radius']>  // ✅ 只允许 radius
+    readonly shadow?: Partial<PrimitiveTokens['shadow']>  // ✅ 只允许 shadow
+  }
+  readonly component?: Partial<{                          // ✅ 只允许 Component Token 字段
+    readonly button: Partial<ComponentTokens['button']>
+    readonly input:  Partial<ComponentTokens['input']>
+    readonly card:   Partial<ComponentTokens['card']>
+  }>
+}
+
+export interface DensityDefinition {
+  readonly name: string
+  readonly primitive?: {
+    readonly spacing?: Partial<PrimitiveTokens['spacing']>
+    readonly size?:    Partial<PrimitiveTokens['size']>
+    readonly font?:    Partial<...>
+  }
+}
+```
+
+按 ADR-0002：高一层只能覆盖明确声明允许覆盖的 Token。Theme 不能改圆角；Style 不能改颜色；Density 不能改颜色或圆角。
+
+## resolveEnvironment 行为
+
+```ts
+const bindings = resolveEnvironment({
+  theme: DARK_THEME,
   style: MODERN_STYLE,
   density: COMFORTABLE_DENSITY,
-};
-
-const bindings = resolveEnvironment(env);
-console.log(bindings.length);     // ~110 项
-console.log(bindings[0]);
-// { name: '--aui-color-gray-50', value: '#fafafa' }
-console.log(bindings.find(b => b.name === '--aui-color-blue-500'));
-// { name: '--aui-color-blue-500', value: '#1677ff' }
-console.log(bindings.find(b => b.name === '--aui-button-radius'));
-// { name: '--aui-button-radius', value: 'var(--aui-radius-control)' }
-
-renderStyleBlock(bindings);
-// → ":root { --aui-color-gray-50: #fafafa; ... }"
+  instanceOverrides: { '--sn-button-radius': '0px' },
+})
 ```
+
+返回的 `bindings` 已经按依赖顺序排好：Primitive 先（被后面的引用），然后 Semantic，然后 Component。Instance overrides 最后。
+
+## 输出 CSS 变量
+
+```ts
+import { renderStyleBlock } from '@snui/tokens'
+
+const css = renderStyleBlock(bindings)
+// ":root {"
+// "  --aui-color-blue-500: #1677ff;"
+// "  --aui-color-action-primary: var(--aui-color-blue-500);"
+// "  --aui-button-radius: 6px;"
+// "  --sn-button-radius: var(--aui-button-radius);"
+// "}"
+```
+
+把它注入 `:root` 即可应用。
+
+## 全局 vs 实例覆盖
+
+**全局**（推荐）：通过 `snCssVars()` 注入 `<style>` 到 `:root`，影响整个应用。
+
+**实例**：组件级 `<SnButton :style="{ '--sn-button-radius': '0px' }">` —— 只影响这一个按钮。`instanceOverrides` 参数走 resolve 流程，优先级最高。
 
 ## 下一步
 
-- [Theme（Light / Dark）](/theme/theme)
-- [Style（Modern / Glass / Minimal）](/theme/style)
-- [Density（Compact / Comfortable）](/theme/density)
+- [风格包（Style Pack）](/style-packs/overview)
+- [AI 生态](/ai/overview)
