@@ -23,7 +23,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "vue-tsc -p tsconfig.json --emitDeclarationOnly false",
+    "build": "vue-tsc -p tsconfig.json --emitDeclarationOnly false && node ./scripts/copy-styles.mjs",
     "dev": "vue-tsc -p tsconfig.json --watch --emitDeclarationOnly false",
     "lint": "eslint src --ext .ts,.vue",
     "typecheck": "vue-tsc -p tsconfig.json --noEmit",
