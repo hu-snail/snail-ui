@@ -1,8 +1,8 @@
 packages:
   - "packages/*"
+  - "apps/docs"
 
 # Future workspace entries (will be enabled in later phases):
-#   - "apps/docs"
 #   - "apps/playground"
 #   - "apps/studio"
 #   - "apps/cli"

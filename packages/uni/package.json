@@ -25,7 +25,8 @@
   "dependencies": {
     "@snui/protocol": "workspace:",
     "@snui/schema": "workspace:",
-    "@snui/runtime": "workspace:"
+    "@snui/runtime": "workspace:",
+    "vue": "^3.5.43"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

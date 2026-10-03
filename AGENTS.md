@@ -3008,6 +3008,45 @@ pnpm turbo run typecheck
 
 ---
 
+# 110. 组件文档自动同步（VitePress）
+
+官方组件（`@snui/vue-web` / `@snui/uni`）在以下任一情况必须在同一 commit 内同步更新 `apps/docs/`：
+
+```text
+A. 新增组件
+B. 修改 Props schema / 默认值 / 事件
+C. 修改 Tokens / A11y / Capabilities / AI patch boundary
+D. 修改 Component name / version
+```
+
+文档更新清单（缺一不可）：
+
+```text
+1. apps/docs/components/<name>.md        （Web 端，含 props 表格 + 真实预览）
+2. apps/docs/uni/components/<name>.md   （Uni 端，含 props 表格 + 真实预览）
+3. apps/docs/.vitepress/config.ts        （sidebar / nav 条目）
+4. apps/docs/public/framework-web.js     （重新 esbuild bundle）
+5. apps/docs/public/framework-uni.js     （重新 esbuild bundle）
+```
+
+多端文档不能合并：Web 与 uni-app 的组件 Props / 事件 / 平台能力不同，必须分别维护。
+
+预览必须真实跑通（`createVueRenderer().mount()` 或 `createUniRenderer().mount()`），不允许 mock 截图 / 静态 HTML。
+
+每个组件页强制包含：
+
+```text
+[ ] props 表格（name / type / default / required / 说明）
+[ ] events 表格（如有）
+[ ] tokens 表格（引用 @snui/tokens 的 CSS var 变量名）
+[ ] 至少 1 个真实预览（variants / states 全展示）
+[ ] A11y 行为（role / keyboard）
+```
+
+禁止：提交未文档化的组件（违反 §69 Documentation + §92 Merge Gate）。
+
+---
+
 # END
 
-AUI Agent 执行标准 v1.0.1（补充规则 #101-#109）
+AUI Agent 执行标准 v1.0.1（补充规则 #101-#110）

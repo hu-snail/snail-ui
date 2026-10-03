@@ -1,0 +1,24 @@
+{
+  "name": "@snui/docs",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AUI documentation site (VitePress). Multi-end: web / uni-app.",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev . --port 4317",
+    "build": "vitepress build .",
+    "preview": "vitepress preview . --port 4318",
+    "bundle:web": "esbuild ../../packages/vue-web/src/index.ts --bundle --format=esm --target=es2022 --outfile=public/framework-web.js",
+    "bundle:uni": "esbuild ../../packages/uni/src/index.ts --bundle --format=esm --target=es2022 --outfile=public/framework-uni.js",
+    "bundle": "pnpm run bundle:web && pnpm run bundle:uni",
+    "lint": "echo 'docs lint: noop (markdown)'",
+    "typecheck": "echo 'docs typecheck: noop (markdown)'",
+    "test": "echo 'docs test: noop'",
+    "clean": "rm -rf .vitepress/cache .vitepress/dist docs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.5",
+    "vitepress": "^1.5.0",
+    "vue": "^3.5.43"
+  }
+}
