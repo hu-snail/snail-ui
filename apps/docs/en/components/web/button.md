@@ -2,8 +2,6 @@
 
 `SnButton` is the most common interactive component in `@snui/vue-web` (PC desktop). All visual properties are driven by the `--sn-web-*` Token alias layer.
 
-> **v3.1 End-Independent**: `SnButton` (`@snui/vue-web`) and `sn-button` (`@snui/uni`) are **two independent components** in two independent packages — fully independent from development to release. Web CSS uses only `var(--sn-web-*)` (px units); uni CSS uses only `var(--sn-mp-*)` (rpx units). **Zero source-code reuse between ends**.
-
 ---
 
 ## Basic usage
@@ -120,25 +118,8 @@ Web component CSS uses only `--sn-web-*`. Override:
 
 ---
 
-## End difference comparison
-
-| Dimension | Web (`SnButton`) | uni (`sn-button`) |
-|---|---|---|
-| Package | `@snui/vue-web` | `@snui/uni` |
-| Component name | `SnButton` (PascalCase import) | `sn-button` (kebab-case easycom) |
-| Token alias | `--sn-web-*` (px) | `--sn-mp-*` (rpx) |
-| Sizes | tiny / small / medium / large | small / medium / large (no tiny) |
-| Event | `click` (MouseEvent) | `click` (tap) |
-| End-specific Props | `htmlType` (native button type) | `hairline` / `feedback` (hairline + active feedback) |
-| Unit | — | rpx (auto 750 design width) |
-
-Web has unique `htmlType`; uni has unique `hairline` / `feedback`. Full comparison at [uni sn-button](/components/uni/button).
-
 ---
 
 ## Related
 
-- Source: `packages/vue-web/src/button/SnButton.vue`
-- AI description: `packages/vue-web/src/button/ai-description.md` (`end: web`)
-- Token alias layer: `packages/tokens-web/` (`--sn-web-*`)
 - uni: [`sn-button`](/components/uni/button)

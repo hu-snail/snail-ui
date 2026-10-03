@@ -2,8 +2,6 @@
 
 Controlled input control with Token alias-driven styles and a set of cross-browser native input events. Maps to a real `<input>` DOM element, rendered by `@snui/vue-web`.
 
-> **v3.1 End-Independent**: `SnInput` (`@snui/vue-web`) and `sn-input` (`@snui/uni`) are **two independent components**. Web CSS uses only `var(--sn-web-*)`. Component Contract is shared across ends, but Vue renderers are per-end.
-
 ---
 
 ## Basic usage
@@ -53,23 +51,6 @@ const email = ref('')
 
 ---
 
-## Tokens (Web alias layer)
-
-| Logical slot | CSS variable |
-| --- | --- |
-| `background` | `var(--sn-web-color-input-bg)` |
-| `color` | `var(--sn-web-color-input-text)` |
-| `borderColor` | `var(--sn-web-color-input-border)` |
-| `placeholderColor` | `var(--sn-web-color-input-placeholder)` |
-| `disabledBackground` | `var(--sn-web-color-input-bg-disabled)` |
-| `disabledColor` | `var(--sn-web-color-input-text-disabled)` |
-| `focusRing` | `var(--sn-web-color-focus-ring)` |
-| `size.small.height` | `var(--sn-web-control-height-sm)` |
-| `size.medium.height` | `var(--sn-web-control-height-md)` |
-| `size.large.height` | `var(--sn-web-control-height-lg)` |
-
-> v3.1 end-independent: SnInput source CSS internally uses `--sn-web-*` aliases (**not** `--aui-*`).
-
 ---
 
 ## Accessibility
@@ -84,26 +65,7 @@ const email = ref('')
 
 ---
 
-## End difference
-
-| Dimension | Web (`SnInput`) | uni (`sn-input`) |
-|---|---|---|
-| Package | `@snui/vue-web` | `@snui/uni` |
-| Container | `<input type="...">` | `<input>` (compiled by miniprogram) |
-| Token alias | `--sn-web-*` (px) | `--sn-mp-*` (rpx) |
-| clearable | ✓ | ✓ |
-| maxlength / minlength | ✓ | ✓ (miniprogram native) |
-| Default keyboard | platform-native | platform-native; mobile triggers soft keyboard |
-| End-specific Props | — | `confirmType` (done / send / search, etc.) |
-
 ---
-
-## AI Patch Boundary
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `value`, `placeholder`, `disabled`, `readonly`, `type`, `size`, `clearable`, `maxlength`, `minlength`, `name` |
-| `ai.readonly` | `role`, `keyboard`, `focus`, `blur` |
 
 ---
 
@@ -124,4 +86,4 @@ Input typically nests inside `SnForm` / `SnFormItem`. FormData auto-collects nam
 
 ## Source
 
-`packages/protocol/src/input-contract.ts` (Contract shared) · `packages/vue-web/src/input/SnInput.vue` (Web renderer) · `packages/tokens-web/` (alias layer)
+Contract shared across ends, Web renderer in `@snui/vue-web`.

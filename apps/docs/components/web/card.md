@@ -2,8 +2,6 @@
 
 `<section role="region">` 容器，支持 title / description 头部、Token 别名层驱动的阴影与边框、可选 body 与 footer 插槽。
 
-> **v3.1 端独立**：`SnCard` (`@snui/vue-web`) 与 `sn-card` (`@snui/uni`) 是**两个独立组件**。Web 端 CSS 只用 `var(--sn-web-*)` 别名层。组件 Contract 跨端共享（`packages/protocol/src/card-contract.ts`），但 Vue 渲染器按端独立实现。
-
 ---
 
 ## 基本用法
@@ -43,24 +41,6 @@ import '@snui/tokens-web/styles'
 
 ---
 
-## Token 消费（Web 别名层）
-
-| Logical slot | CSS variable |
-| --- | --- |
-| `background` | `var(--sn-web-color-surface)` |
-| `borderColor` | `var(--sn-web-color-border-default)` |
-| `titleColor` | `var(--sn-web-color-text-primary)` |
-| `descriptionColor` | `var(--sn-web-color-text-secondary)` |
-| `footerBorderColor` | `var(--sn-web-color-border-soft)` |
-| `shadow` | `var(--sn-web-shadow-md)` |
-| `radius` | `var(--sn-web-radius-card)` |
-| `padding.none` | `0` |
-| `padding.sm` | `var(--sn-web-spacing-sm)` |
-| `padding.md` | `var(--sn-web-spacing-md)` |
-| `padding.lg` | `var(--sn-web-spacing-lg)` |
-
-> v3.1 端独立：SnCard 源码用 `--sn-web-*` 别名层（**不**用 `--aui-*` 原始层）。`tokens-web` 包内建 `snWebAliasMap` 把 `--sn-web-*` 映射到 `--aui-*`。
-
 ---
 
 ## Accessibility
@@ -73,30 +53,9 @@ import '@snui/tokens-web/styles'
 
 ---
 
-## AI Patch Boundary
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `title`, `description`, `variant`, `padding`, `bordered`, `shadow` |
-| `ai.readonly` | `role` |
-
 ---
 
-## 端差异对照
-
-| 维度 | Web（`SnCard`） | uni（`sn-card`） |
-|---|---|---|
-| 包 | `@snui/vue-web` | `@snui/uni` |
-| 组件名 | `SnCard`（PascalCase import） | `sn-card`（kebab-case easycom） |
-| Token 别名 | `--sn-web-*`（px） | `--sn-mp-*`（rpx） |
-| variant | `default` / `outlined` / `elevated` | 同（移动端视觉差异由 rpx 自然产生） |
-| 默认 padding | `dense` | `medium` |
-
 ---
-
-## Source
-
-`packages/protocol/src/card-contract.ts`（Contract 跨端共享） · `packages/vue-web/src/card/SnCard.vue`（Web 渲染器） · `packages/tokens-web/`（别名层）
 
 ---
 

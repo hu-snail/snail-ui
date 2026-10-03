@@ -1,10 +1,6 @@
-# Button 按钮（Web 端）
+# Button 按钮
 
-`SnButton` 是 `@snui/vue-web`（PC 桌面端）最常用的交互组件。所有视觉属性通过 `--sn-web-*` Token 别名层驱动。
-
-> **v3.1 端独立**：`SnButton` (`@snui/vue-web`) 与 `sn-button` (`@snui/uni`) 是**两个独立组件**，分布在两个独立包，从开发到打包发布完全独立。Web 端 CSS 只用 `var(--sn-web-*)`（px 单位）；uni 端 CSS 只用 `var(--sn-mp-*)`（rpx 单位）。**两端 0 行源代码复用**。
-
----
+最常用的交互组件，触发一个操作。支持多种类型、尺寸、状态。
 
 ## 基础用法
 
@@ -13,7 +9,6 @@
 ```vue
 <script setup lang="ts">
 import { SnButton } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
 </script>
 
 <template>
@@ -27,7 +22,7 @@ import '@snui/tokens-web/styles'
 
 ## 尺寸
 
-`tiny` / `small` / `medium` / `large` 四档，对应 `--sn-web-button-height-{tiny,small,medium,large}`。
+`tiny` / `small` / `medium` / `large` 四档。
 
 ```vue
 <SnButton size="tiny">tiny</SnButton>
@@ -50,9 +45,7 @@ import '@snui/tokens-web/styles'
 <SnButton loading>加载中</SnButton>
 ```
 
-`loading` 状态下按钮不可点击，自动显示旋转图标。也可用 `loading` slot 自定义。
-
----
+`loading` 状态下按钮不可点击，自动显示旋转图标。
 
 ## API
 
@@ -62,12 +55,12 @@ import '@snui/tokens-web/styles'
 | --- | --- | --- | --- |
 | type | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | 按钮类型 |
 | size | `'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 按钮尺寸 |
-| block | `boolean` | `false` | 是否块级（占满父容器宽度） |
-| round | `boolean` | `false` | 是否胶囊形 |
-| disabled | `boolean` | `false` | 是否禁用 |
-| loading | `boolean` | `false` | 是否加载中 |
+| block | `boolean` | `false` | 块级（占满父容器宽度） |
+| round | `boolean` | `false` | 胶囊形 |
+| disabled | `boolean` | `false` | 禁用 |
+| loading | `boolean` | `false` | 加载中 |
 | htmlType | `'button' \| 'submit' \| 'reset'` | `'button'` | 原生 button type |
-| bordered | `boolean` | `true` | 是否显示边框（对 default 类型有效） |
+| bordered | `boolean` | `true` | 显示边框（对 default 类型有效） |
 | ariaLabel | `string` | — | 无障碍标签 |
 
 ### Events
@@ -84,32 +77,6 @@ import '@snui/tokens-web/styles'
 | icon | 自定义图标（替代 loading spinner） |
 | loading | 自定义加载图标（替代默认 spinner） |
 
-### 类型定义
-
-```ts
-type ButtonType = 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info'
-type ButtonSize = 'tiny' | 'small' | 'medium' | 'large'
-```
-
----
-
-## Token 定制（Web 别名层）
-
-Web 端组件 CSS 只用 `--sn-web-*` 别名层，覆盖方式：
-
-```css
-:root {
-  --sn-web-color-action-primary: #1677ff;       /* primary 背景 */
-  --sn-web-color-feedback-danger: #ef4444;      /* danger 背景 */
-  --sn-web-button-radius: 8px;                  /* 圆角 */
-  --sn-web-button-height-medium: 36px;          /* medium 高度 */
-}
-```
-
-> **禁止**：Web 端组件 CSS 不允许引用 `--sn-mp-*` 或 `--aui-*` 原始层。SnButton 源码 CSS 内部必须用 `--sn-web-*`。覆盖方式：通过 Style Pack 或在 `:root` 重新声明 `--sn-web-*` 别名（aliases 最终引用 `--aui-*`）。
-
----
-
 ## 无障碍
 
 - 使用原生 `<button>` 元素，`role="button"`
@@ -118,27 +85,6 @@ Web 端组件 CSS 只用 `--sn-web-*` 别名层，覆盖方式：
 - 支持 `aria-label` 覆盖
 - 键盘 Enter / Space 原生触发 click
 
----
-
-## 端差异对照
-
-| 维度 | Web（`SnButton`） | uni（`sn-button`） |
-|---|---|---|
-| 包 | `@snui/vue-web` | `@snui/uni` |
-| 组件名 | `SnButton`（PascalCase import） | `sn-button`（kebab-case easycom） |
-| Token 别名 | `--sn-web-*`（px） | `--sn-mp-*`（rpx） |
-| 尺寸档 | tiny / small / medium / large | small / medium / large（无 tiny） |
-| 事件 | `click` (MouseEvent) | `click` (tap event) |
-| 端专属 Props | `htmlType`（原生 button type） | `hairline` / `feedback`（细边框 + 反馈） |
-| 单位 | — | rpx（按钮尺寸自动按 750 设计稿） |
-
-Web 端独有 `htmlType`；uni 端独有 `hairline` / `feedback`。详细对照见 [uni 端 sn-button](/components/uni/button)。
-
----
-
 ## 相关
 
-- 源文件：`packages/vue-web/src/button/SnButton.vue`
-- AI 描述：`packages/vue-web/src/button/ai-description.md`（标注 `end: web`）
-- Token 别名层：`packages/tokens-web/`（`--sn-web-*`）
-- uni 端：[`sn-button`](/components/uni/button)
+- [uni 端 sn-button](/components/uni/button)

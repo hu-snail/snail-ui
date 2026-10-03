@@ -2,21 +2,9 @@
 
 `sn-button` 是 `@snui/uni`（移动端 / 小程序 / H5）核心交互组件。基于 easycom 自动注册，rpx 单位跨设备缩放。
 
-> **v3.1 端独立**：`sn-button` (`@snui/uni`) 与 `SnButton` (`@snui/vue-web`) 是**两个独立组件**。uni 端 CSS 只用 `var(--sn-mp-*)`（rpx）。**两端 0 行源代码复用**。详细差异对照见 [Web 端 SnButton](/components/web/button)。
-
 ---
 
 ## 自动注册（easycom）
-
-组件位于 `packages/uni/src/components/sn-button/sn-button.vue`，符合 easycom 规范，**无需 import 即可在模板中直接使用**：
-
-```vue
-<template>
-  <sn-button type="primary">提交</sn-button>
-</template>
-```
-
-easycom 路径约定：`^sn-(.*)` → `components/sn-$1/sn-$1.vue`。
 
 如需显式 import：
 
@@ -131,45 +119,7 @@ import '@snui/tokens-mp/styles'  // ← 必须显式 import rpx 别名层
 
 ---
 
-## Token 定制（uni 别名层 + rpx）
-
-uni 端组件 CSS 只用 `--sn-mp-*` 别名层，**单位是 rpx**（按 750 设计稿自动转换）：
-
-```css
-/* 自定义品牌色 */
-.sn-button {
-  background-color: var(--sn-mp-color-action-primary);
-  border-radius: var(--sn-mp-button-radius);   /* 自动转 rpx */
-  height: var(--sn-mp-button-height-medium);  /* 自动转 rpx */
-}
-```
-
-或在页面顶层 `:root` 覆盖：
-
-```css
-page {
-  --sn-mp-color-action-primary: #ff5722;
-  --sn-mp-button-radius: 12rpx;          /* 直接用 rpx */
-  --sn-mp-button-height-medium: 72rpx;
-}
-```
-
-> **禁止**：uni 端组件 CSS 不允许引用 `--sn-web-*` 或 `--aui-*` 原始层。覆盖方式：通过 Style Pack 或在 `page` 重新声明 `--sn-mp-*`。
-
 ---
-
-## 端差异对照
-
-| 维度 | Web（`SnButton`） | uni（`sn-button`） |
-|---|---|---|
-| 包 | `@snui/vue-web` | `@snui/uni` |
-| 组件名 | `SnButton`（PascalCase import） | `sn-button`（kebab-case easycom） |
-| Token 别名 | `--sn-web-*`（px） | `--sn-mp-*`（rpx） |
-| 尺寸档 | tiny / small / medium / large | small / medium / large（无 tiny） |
-| 事件 | `click` (MouseEvent) | `click` (tap event) |
-| 端专属 Props | `htmlType`（原生 button type） | `hairline` / `feedback`（细边框 + 反馈） |
-| 默认加载图标 | CSS 旋转 spinner | CSS spinner / uni-ui spinner |
-| 平台范围 | 现代浏览器 | H5 / 微信小程序 / 支付宝小程序 / App / 抖音小程序 |
 
 ---
 
@@ -185,7 +135,4 @@ page {
 
 ## 相关
 
-- 源文件：`packages/uni/src/components/sn-button/sn-button.vue`
-- AI 描述：`packages/uni/src/components/sn-button/ai-description.md`（标注 `end: mp`）
-- Token 别名层：`packages/tokens-mp/`（`--sn-mp-*` + rpx 转换）
 - Web 端：[`SnButton`](/components/web/button)

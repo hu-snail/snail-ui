@@ -2,13 +2,11 @@
 
 `sn-button` is the core interactive component in `@snui/uni` (mobile / miniprogram / H5). easycom auto-register, rpx for cross-device scaling.
 
-> **v3.1 End-Independent**: `sn-button` (`@snui/uni`) and `SnButton` (`@snui/vue-web`) are **two independent components**. uni CSS uses only `var(--sn-mp-*)` (rpx). **Zero source-code reuse**. Full comparison at [Web SnButton](/components/web/button).
-
 ---
 
 ## Auto-register (easycom)
 
-Located at `packages/uni/src/components/sn-button/sn-button.vue`, conforming to easycom — **no import needed in templates**:
+Conforms to easycom — **no import needed in templates**:
 
 ```vue
 <template>
@@ -157,19 +155,6 @@ page {
 
 ---
 
-## End difference
-
-| Dimension | Web (`SnButton`) | uni (`sn-button`) |
-|---|---|---|
-| Package | `@snui/vue-web` | `@snui/uni` |
-| Component name | `SnButton` (PascalCase import) | `sn-button` (kebab-case easycom) |
-| Token alias | `--sn-web-*` (px) | `--sn-mp-*` (rpx) |
-| Sizes | tiny / small / medium / large | small / medium / large (no tiny) |
-| Event | `click` (MouseEvent) | `click` (tap event) |
-| End-specific Props | `htmlType` (native button type) | `hairline` / `feedback` |
-| Default loading icon | CSS spinner | CSS spinner / uni-ui spinner |
-| Platform scope | Modern browsers | H5 / WeChat / Alipay / App / Douyin |
-
 ---
 
 ## Accessibility
@@ -184,7 +169,4 @@ page {
 
 ## Related
 
-- Source: `packages/uni/src/components/sn-button/sn-button.vue`
-- AI description: `packages/uni/src/components/sn-button/ai-description.md` (`end: mp`)
-- Token alias layer: `packages/tokens-mp/` (`--sn-mp-*` + rpx conversion)
 - Web: [`SnButton`](/components/web/button)

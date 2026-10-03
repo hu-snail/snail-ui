@@ -2,8 +2,6 @@
 
 原生 `<form>` 容器 + FormItem 子组件，支持 FormData 自动收集、字段级错误回显、disabled / loading 状态级联。
 
-> **v3.1 端独立**：`SnForm` / `SnFormItem` (`@snui/vue-web`) 与 `sn-form` / `sn-form-item` (`@snui/uni`) 是**两个独立组件**。Web 端 CSS 只用 `var(--sn-web-*)` 别名层。组件 Contract 跨端共享，Vue 渲染器按端独立实现。
-
 ---
 
 ## 基本用法
@@ -80,19 +78,6 @@ async function submit() {
 
 ---
 
-## Token 消费（Web 别名层）
-
-| Logical slot | CSS variable |
-| --- | --- |
-| `background` | `var(--sn-web-color-surface)` |
-| `itemGap` | `var(--sn-web-spacing-md)` |
-| `labelColor` | `var(--sn-web-color-text-primary)` |
-| `errorColor` | `var(--sn-web-color-text-danger)` |
-| `requiredColor` | `var(--sn-web-color-text-danger)` |
-| `borderColor` | `var(--sn-web-color-border-default)` |
-
-> v3.1 端独立：SnForm 源码 CSS 内部用 `--sn-web-*` 别名层（**不**用 `--aui-*`）。
-
 ---
 
 ## Accessibility
@@ -108,36 +93,10 @@ async function submit() {
 
 ---
 
-## 端差异对照
-
-| 维度 | Web（`SnForm`） | uni（`sn-form`） |
-|---|---|---|
-| 包 | `@snui/vue-web` | `@snui/uni` |
-| 容器 | `<form>` | `<form>`（小程序编译后） |
-| Token 别名 | `--sn-web-*` | `--sn-mp-*` |
-| 提交回调 | `@submit` (Vue emit) | `@submit` + `uni-forms` 表单库 |
-| 验证规则 | SnForm 内置（Phase 2 最小集） | uni-forms / async-validator 适配 |
-
 ---
-
-## AI Patch Boundary
-
-**Form**
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `layout`, `disabled`, `loading`, `initialValues`, `fields`, `formId` |
-| `ai.readonly` | `role`, `submit`, `reset` |
-
-**FormItem**
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `prop`, `label`, `required`, `error` |
-| `ai.readonly` | `role` |
 
 ---
 
 ## Source
 
-`packages/protocol/src/form-contract.ts`（Contract 跨端共享） · `packages/vue-web/src/form/SnForm.vue`（Web 渲染器） · `packages/tokens-web/`（别名层）
+Contract 跨端共享，Web 渲染器在 `@snui/vue-web`。

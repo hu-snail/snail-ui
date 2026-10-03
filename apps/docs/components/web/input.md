@@ -2,8 +2,6 @@
 
 受控输入控件，Token 别名层驱动的样式方案与一组跨浏览器原生 input 事件。映射到真实的 `<input>` DOM 元素，由 `@snui/vue-web` 渲染。
 
-> **v3.1 端独立**：`SnInput` (`@snui/vue-web`) 与 `sn-input` (`@snui/uni`) 是**两个独立组件**。Web 端 CSS 只用 `var(--sn-web-*)` 别名层。组件 Contract 跨端共享，Vue 渲染器按端独立实现。
-
 ---
 
 ## 基本用法
@@ -53,23 +51,6 @@ const email = ref('')
 
 ---
 
-## Token 消费（Web 别名层）
-
-| Logical slot | CSS variable |
-| --- | --- |
-| `background` | `var(--sn-web-color-input-bg)` |
-| `color` | `var(--sn-web-color-input-text)` |
-| `borderColor` | `var(--sn-web-color-input-border)` |
-| `placeholderColor` | `var(--sn-web-color-input-placeholder)` |
-| `disabledBackground` | `var(--sn-web-color-input-bg-disabled)` |
-| `disabledColor` | `var(--sn-web-color-input-text-disabled)` |
-| `focusRing` | `var(--sn-web-color-focus-ring)` |
-| `size.small.height` | `var(--sn-web-control-height-sm)` |
-| `size.medium.height` | `var(--sn-web-control-height-md)` |
-| `size.large.height` | `var(--sn-web-control-height-lg)` |
-
-> v3.1 端独立：SnInput 源码 CSS 内部用 `--sn-web-*` 别名层（**不**用 `--aui-*`）。`tokens-web` 包内部映射 `snWebAliasMap` 把 `--sn-web-*` → `--aui-*`。
-
 ---
 
 ## Accessibility
@@ -84,26 +65,7 @@ const email = ref('')
 
 ---
 
-## 端差异对照
-
-| 维度 | Web（`SnInput`） | uni（`sn-input`） |
-|---|---|---|
-| 包 | `@snui/vue-web` | `@snui/uni` |
-| 容器 | `<input type="...">` | `<input>`（小程序编译后） |
-| Token 别名 | `--sn-web-*`（px） | `--sn-mp-*`（rpx） |
-| clearable | ✓ | ✓ |
-| maxlength / minlength | ✓ | ✓（小程序原生） |
-| 默认 keyboard | 平台原生 | 平台原生；移动端会触发键盘弹起 |
-| 端专属 Props | — | `confirmType`（done / send / search 等） |
-
 ---
-
-## AI Patch Boundary
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `value`, `placeholder`, `disabled`, `readonly`, `type`, `size`, `clearable`, `maxlength`, `minlength`, `name` |
-| `ai.readonly` | `role`, `keyboard`, `focus`, `blur` |
 
 ---
 
@@ -124,4 +86,4 @@ const email = ref('')
 
 ## Source
 
-`packages/protocol/src/input-contract.ts`（Contract 跨端共享） · `packages/vue-web/src/input/SnInput.vue`（Web 渲染器） · `packages/tokens-web/`（别名层）
+Contract 跨端共享，Web 渲染器在 `@snui/vue-web`。

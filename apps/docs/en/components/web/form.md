@@ -2,8 +2,6 @@
 
 Native `<form>` container + FormItem sub-components, with FormData auto-collection, field-level error echoing, and disabled / loading state cascading.
 
-> **v3.1 End-Independent**: `SnForm` / `SnFormItem` (`@snui/vue-web`) and `sn-form` / `sn-form-item` (`@snui/uni`) are **two independent components**. Web CSS uses only `var(--sn-web-*)`. Component Contract is shared across ends, but Vue renderers are per-end.
-
 ---
 
 ## Basic usage
@@ -80,19 +78,6 @@ async function submit() {
 
 ---
 
-## Tokens (Web alias layer)
-
-| Logical slot | CSS variable |
-| --- | --- |
-| `background` | `var(--sn-web-color-surface)` |
-| `itemGap` | `var(--sn-web-spacing-md)` |
-| `labelColor` | `var(--sn-web-color-text-primary)` |
-| `errorColor` | `var(--sn-web-color-text-danger)` |
-| `requiredColor` | `var(--sn-web-color-text-danger)` |
-| `borderColor` | `var(--sn-web-color-border-default)` |
-
-> v3.1 end-independent: SnForm source uses `--sn-web-*` aliases (**not** `--aui-*`).
-
 ---
 
 ## Accessibility
@@ -108,36 +93,10 @@ async function submit() {
 
 ---
 
-## End difference
-
-| Dimension | Web (`SnForm`) | uni (`sn-form`) |
-|---|---|---|
-| Package | `@snui/vue-web` | `@snui/uni` |
-| Container | `<form>` | `<form>` (compiled by miniprogram) |
-| Token alias | `--sn-web-*` | `--sn-mp-*` |
-| Submit callback | `@submit` (Vue emit) | `@submit` + `uni-forms` library |
-| Validation | SnForm built-in (Phase 2 minimal) | uni-forms / async-validator |
-
 ---
-
-## AI Patch Boundary
-
-**Form**
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `layout`, `disabled`, `loading`, `initialValues`, `fields`, `formId` |
-| `ai.readonly` | `role`, `submit`, `reset` |
-
-**FormItem**
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `prop`, `label`, `required`, `error` |
-| `ai.readonly` | `role` |
 
 ---
 
 ## Source
 
-`packages/protocol/src/form-contract.ts` (Contract shared) · `packages/vue-web/src/form/SnForm.vue` (Web renderer) · `packages/tokens-web/` (alias layer)
+Contract shared across ends, Web renderer in `@snui/vue-web`.
