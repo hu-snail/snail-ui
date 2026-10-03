@@ -97,3 +97,28 @@ export type {
   EventBinding,
   ExpressionBinding,
 } from './binding.js';
+
+export {
+  createActionRegistry,
+  type ActionRegistry,
+  type ActionHandler,
+  type ActionHandlerEntry,
+  type ActionContext,
+  type ActionResult,
+  type ActionInvokeInput,
+  type CreateActionRegistryOptions,
+} from './action.js';
+
+export {
+  createNoopAppBridge,
+  listCapabilities,
+  type AppBridge,
+  type AppBridgeCapability,
+  type AppBridgeLike,
+  type RouterCapability,
+  type StorageCapability,
+  type NotifyCapability,
+  type NotifyLevel,
+  type AnalyticsCapability,
+  type EventCapability,
+} from './app-bridge.js';
