@@ -1,10 +1,10 @@
-# Card · Web
+# Card · Web（PC 端）
 
-`<section role="region">` 容器，支持 title / description 头部、token 驱动的阴影与边框、可选 body 与 footer 插槽。
+`<section role="region">` 容器，支持 title / description 头部、Token 别名层驱动的阴影与边框、可选 body 与 footer 插槽。
 
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
+> **v3.1 端独立**：`SnCard` (`@snui/vue-web`) 与 `sn-card` (`@snui/uni`) 是**两个独立组件**。Web 端 CSS 只用 `var(--sn-web-*)` 别名层。组件 Contract 跨端共享（`packages/protocol/src/card-contract.ts`），但 Vue 渲染器按端独立实现。
+
+---
 
 ## Live render · 真实框架挂载
 
@@ -57,66 +57,62 @@ import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
   ])'
 />
 
-```ts
-// Card 容器 + 嵌套 FormItem + Input + Button 的一次完整组合
-import { createVueRenderer, createComponentRegistry, Card, Form, FormItem, Input, Button } from '@snui/vue-web';
+---
 
-const registry = createComponentRegistry();
-registry.register('card', Card);
-registry.register('form', Form);
-registry.register('form-item', FormItem);
-registry.register('input', Input);
-registry.register('button', Button);
+## 基本用法
 
-createVueRenderer({ registry }).mount({
-  version: '1.0.0',
-  root: {
-    id: 'order',
-    type: 'card',
-    props: { title: 'Order #1024', description: 'Pending payment' },
-    children: [
-      { id: 'f', type: 'form', props: { formId: 'voucher' }, children: [
-        { id: 'fi', type: 'form-item', props: { prop: 'voucher', label: 'Voucher' }, children: [
-          { id: 'i', type: 'input', props: { name: 'voucher', placeholder: 'V-AUI-1024' } }
-        ]},
-        { id: 's', type: 'button', props: { variant: 'primary', text: 'Apply', type: 'submit' } }
-      ]}
-    ],
-  },
-}, document.getElementById('app')!);
+```vue
+<script setup lang="ts">
+import { SnCard, SnForm, SnFormItem, SnInput, SnButton } from '@snui/vue-web'
+import '@snui/tokens-web/styles'
+</script>
+
+<template>
+  <SnCard title="Order #1024" description="Pending payment" bordered shadow>
+    <SnForm>
+      <SnFormItem label="Voucher">
+        <SnInput placeholder="V-AUI-1024" />
+      </SnFormItem>
+      <SnButton type="primary">Apply</SnButton>
+    </SnForm>
+  </SnCard>
+</template>
 ```
+
+---
 
 ## Props
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>title</code></td><td><code>string</code></td><td>—</td><td>No</td><td>头部标题文本。</td></tr>
-    <tr><td><code>description</code></td><td><code>string</code></td><td>—</td><td>No</td><td>头部副标题。</td></tr>
-    <tr><td><code>variant</code></td><td><code>'default' | 'outlined' | 'elevated'</code></td><td><code>'default'</code></td><td>No</td><td>视觉风格变体。</td></tr>
-    <tr><td><code>padding</code></td><td><code>'none' | 'sm' | 'md' | 'lg'</code></td><td><code>'md'</code></td><td>No</td><td>内部 padding 子轴。</td></tr>
-    <tr><td><code>bordered</code></td><td><code>boolean</code></td><td><code>true</code></td><td>No</td><td>显示边框。</td></tr>
-    <tr><td><code>shadow</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>显示阴影。</td></tr>
-  </tbody>
-</table>
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | — | 头部标题文本 |
+| `description` | `string` | — | 头部副标题 |
+| `variant` | `'default' \| 'outlined' \| 'elevated'` | `'default'` | 视觉风格变体 |
+| `padding` | `'none' \| 'sm' \| 'md' \| 'lg'` | `'md'` | 内部 padding 子轴 |
+| `bordered` | `boolean` | `true` | 显示边框 |
+| `shadow` | `boolean` | `false` | 显示阴影 |
 
-## Tokens
+---
+
+## Token 消费（Web 别名层）
 
 | Logical slot | CSS variable |
 | --- | --- |
-| `background` | `var(--aui-color-surface)` |
-| `borderColor` | `var(--aui-color-border-default)` |
-| `titleColor` | `var(--aui-color-text-primary)` |
-| `descriptionColor` | `var(--aui-color-text-secondary)` |
-| `footerBorderColor` | `var(--aui-color-border-soft)` |
-| `shadow` | `var(--aui-shadow-md)` |
-| `radius` | `var(--aui-radius-card)` |
+| `background` | `var(--sn-web-color-surface)` |
+| `borderColor` | `var(--sn-web-color-border-default)` |
+| `titleColor` | `var(--sn-web-color-text-primary)` |
+| `descriptionColor` | `var(--sn-web-color-text-secondary)` |
+| `footerBorderColor` | `var(--sn-web-color-border-soft)` |
+| `shadow` | `var(--sn-web-shadow-md)` |
+| `radius` | `var(--sn-web-radius-card)` |
 | `padding.none` | `0` |
-| `padding.sm` | `var(--aui-spacing-sm)` |
-| `padding.md` | `var(--aui-spacing-md)` |
-| `padding.lg` | `var(--aui-spacing-lg)` |
+| `padding.sm` | `var(--sn-web-spacing-sm)` |
+| `padding.md` | `var(--sn-web-spacing-md)` |
+| `padding.lg` | `var(--sn-web-spacing-lg)` |
+
+> v3.1 端独立：SnCard 源码用 `--sn-web-*` 别名层（**不**用 `--aui-*` 原始层）。`tokens-web` 包内建 `snWebAliasMap` 把 `--sn-web-*` 映射到 `--aui-*`。
+
+---
 
 ## Accessibility
 
@@ -126,6 +122,8 @@ createVueRenderer({ registry }).mount({
 | `aria-labelledby` | 指向 `<h3>` 标题元素 id（当 `title` 存在时） |
 | `aria-describedby` | 指向 description 元素 id（当 `description` 存在时） |
 
+---
+
 ## AI Patch Boundary
 
 | Status | Field |
@@ -133,9 +131,25 @@ createVueRenderer({ registry }).mount({
 | `ai.patchable` | `title`, `description`, `variant`, `padding`, `bordered`, `shadow` |
 | `ai.readonly` | `role` |
 
+---
+
+## 端差异对照
+
+| 维度 | Web（`SnCard`） | uni（`sn-card`） |
+|---|---|---|
+| 包 | `@snui/vue-web` | `@snui/uni` |
+| 组件名 | `SnCard`（PascalCase import） | `sn-card`（kebab-case easycom） |
+| Token 别名 | `--sn-web-*`（px） | `--sn-mp-*`（rpx） |
+| variant | `default` / `outlined` / `elevated` | 同（移动端视觉差异由 rpx 自然产生） |
+| 默认 padding | `dense` | `medium` |
+
+---
+
 ## Source
 
-`packages/protocol/src/card-contract.ts` (Contract source) · `packages/vue-web/src/card.ts` (Vue renderer)
+`packages/protocol/src/card-contract.ts`（Contract 跨端共享） · `packages/vue-web/src/card/SnCard.vue`（Web 渲染器） · `packages/tokens-web/`（别名层）
+
+---
 
 ## 嵌套与子节点
 

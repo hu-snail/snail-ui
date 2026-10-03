@@ -1,6 +1,6 @@
 # Token 级联
 
-按 ADR-0002 / Spec-01 §1，Token 解析顺序（优先级低 → 高）：
+按 ADR-0002 + Spec-01 §1，Token 解析顺序（优先级低 → 高）：
 
 ```text
 1. 默认 Primitive Tokens
@@ -11,78 +11,80 @@
 6. Instance 覆盖 → flat record，顶层优先级
 ```
 
-输出：一个 `{ name, value }` 列表，按 Primitive → Semantic → Component 顺序排列，可直接注入 `:root` 或 `style.setProperty`。
+输出：扁平 `{ name, value }` 列表，按 Primitive → Semantic → Component 顺序排列。
 
 ## 高层只能覆盖明确声明允许的 Token
 
 ```ts
 export interface ThemeDefinition {
   readonly name: string
-  readonly primitive?: Partial<PrimitiveTokens['color']>   // ✅ 只允许 color
-  readonly semantic?: Partial<{...}>                       // ✅ 只允许 color
+  readonly primitive?: Partial<PrimitiveTokens['color']>   // color only
+  readonly semantic?: Partial<{...}>                       // color only
 }
 
 export interface StyleDefinition {
   readonly name: string
   readonly primitive?: {
-    readonly radius?: Partial<PrimitiveTokens['radius']>  // ✅ 只允许 radius
-    readonly shadow?: Partial<PrimitiveTokens['shadow']>  // ✅ 只允许 shadow
+    readonly radius?: Partial<PrimitiveTokens['radius']>  // radius only
+    readonly shadow?: Partial<PrimitiveTokens['shadow']>  // shadow only
   }
-  readonly component?: Partial<{                          // ✅ 只允许 Component Token 字段
+  readonly component?: Partial<{
     readonly button: Partial<ComponentTokens['button']>
     readonly input:  Partial<ComponentTokens['input']>
     readonly card:   Partial<ComponentTokens['card']>
   }>
 }
-
-export interface DensityDefinition {
-  readonly name: string
-  readonly primitive?: {
-    readonly spacing?: Partial<PrimitiveTokens['spacing']>
-    readonly size?:    Partial<PrimitiveTokens['size']>
-    readonly font?:    Partial<...>
-  }
-}
 ```
 
-按 ADR-0002：高一层只能覆盖明确声明允许覆盖的 Token。Theme 不能改圆角；Style 不能改颜色；Density 不能改颜色或圆角。
+## 端独立的别名层（v3.1 新增）
 
-## resolveEnvironment 行为
+```text
+@snui/tokens 输出 --aui-* 原始层
+   ↓
+@snui/tokens-web  生成 --sn-web-* 别名（Web 端独立 dist）
+@snui/tokens-mp   生成 --sn-mp-* 别名（uni 端独立 dist + rpx 转换）
+```
+
+## resolveEnvironment
 
 ```ts
 const bindings = resolveEnvironment({
   theme: DARK_THEME,
   style: MODERN_STYLE,
   density: COMFORTABLE_DENSITY,
-  instanceOverrides: { '--sn-button-radius': '0px' },
+  instanceOverrides: { '--sn-web-button-radius': '0px' },
 })
 ```
 
-返回的 `bindings` 已经按依赖顺序排好：Primitive 先（被后面的引用），然后 Semantic，然后 Component。Instance overrides 最后。
+按依赖顺序：Primitive 先，Semantic 后，Component 最后。Instance overrides 顶优先级。
 
-## 输出 CSS 变量
+## snCssVars + 端参数
 
 ```ts
-import { renderStyleBlock } from '@snui/tokens'
+import { snCssVars } from '@snui/tokens'
 
-const css = renderStyleBlock(bindings)
-// ":root {"
-// "  --aui-color-blue-500: #1677ff;"
-// "  --aui-color-action-primary: var(--aui-color-blue-500);"
-// "  --aui-button-radius: 6px;"
-// "  --sn-button-radius: var(--aui-button-radius);"
-// "}"
+// Web 端（输出 --sn-web-* 别名）
+const webCss = snCssVars({
+  end: 'web',
+  theme: DARK_THEME,
+  style: MODERN_STYLE,
+})
+
+// uni 端（输出 --sn-mp-* 别名 + rpx）
+const mpCss = snCssVars({
+  end: 'mp',
+  theme: DARK_THEME,
+  style: MODERN_STYLE,
+})
 ```
 
-把它注入 `:root` 即可应用。
+## 全局 vs 实例
 
-## 全局 vs 实例覆盖
+**全局**：注入 `<style>` 到 `:root`，影响整个应用。
 
-**全局**（推荐）：通过 `snCssVars()` 注入 `<style>` 到 `:root`，影响整个应用。
-
-**实例**：组件级 `<SnButton :style="{ '--sn-button-radius': '0px' }">` —— 只影响这一个按钮。`instanceOverrides` 参数走 resolve 流程，优先级最高。
+**实例**：组件级 `<SnButton :style="{ '--sn-web-button-radius': '0px' }">` —— 只影响单个按钮。
 
 ## 下一步
 
-- [风格包（Style Pack）](/style-packs/overview)
+- [风格包](/style-packs/overview)
 - [AI 生态](/ai/overview)

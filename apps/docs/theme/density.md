@@ -1,6 +1,6 @@
 # Density · 紧凑 / 舒适
 
-Density 轴掌管**尺寸密度**：间距、尺寸、字号。三轴独立，Density 不影响颜色或圆角。
+Density 轴掌管**尺寸密度**。不影响颜色或圆角。
 
 ## 内置默认
 
@@ -10,22 +10,17 @@ import { COMPACT_DENSITY, COMFORTABLE_DENSITY } from '@snui/tokens'
 
 | Density | 用途 |
 | --- | --- |
-| `COMFORTABLE_DENSITY` | 默认 — 宽松间距、大尺寸，适合触屏 / 移动端 |
-| `COMPACT_DENSITY` | 紧凑 — 缩小间距、控件高度，适合桌面端 / 信息密集场景 |
+| `COMFORTABLE_DENSITY` | 默认 — 宽松间距，大尺寸 |
+| `COMPACT_DENSITY` | 紧凑 — 信息密集场景 |
 
-## 切换 Density 时的行为
+## 端独立的 Density 基准
 
-```text
-Density 切换
-   ↓
-保留 Theme
-   ↓
-保留 Style
-   ↓
-重新计算 Primitive size / spacing / fontSize
-```
+Web 端和 uni 端 Density 预设映射到不同的 px / rpx 基准：
 
-按 ADR-0002：Density 切换只重新计算尺寸相关的 primitive。
+- **Web**：Density 输出 px 值（32px / 36px / 44px ...）
+- **uni**：Density 通过 `@snui/tokens-mp` 自动转 rpx（64rpx / 72rpx / 88rpx ...）
+
+切换 Density 保留 Theme 和 Style。
 
 ## 自定义 Density
 
@@ -35,28 +30,11 @@ import type { DensityDefinition } from '@snui/tokens'
 const dense: DensityDefinition = {
   name: 'dense',
   primitive: {
-    spacing: {
-      '3': '4px',     // 原 default 8px
-      '4': '8px',     // 原 default 12px
-      '5': '12px',    // 原 default 16px
-    },
-    size: {
-      control: {
-        sm: '20px',
-        md: '28px',
-        lg: '36px',
-      },
-    },
-    font: {
-      size: {
-        body: '13px',     // 原 default 14px
-      },
-    },
+    spacing: { '3': '4px', '4': '8px', '5': '12px' },
+    size: { control: { sm: '20px', md: '28px', lg: '36px' } },
   },
 }
 ```
-
-应用 `dense` 后，按钮高度从 `36px` 变 `28px`，文字 `14px` 变 `13px`，间距全面缩紧。颜色和圆角保持不变。
 
 ## Density 不得做的事
 

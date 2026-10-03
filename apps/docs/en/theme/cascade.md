@@ -1,6 +1,6 @@
 # Token cascade
 
-Per ADR-0002 / Spec-01 §1, the priority order (low → high):
+Per ADR-0002 + Spec-01 §1, the priority order (low → high):
 
 ```text
 1. Default Primitive Tokens
@@ -11,7 +11,7 @@ Per ADR-0002 / Spec-01 §1, the priority order (low → high):
 6. Instance override → flat record, top-most priority
 ```
 
-Output: a flat `{ name, value }` list ordered Primitive → Semantic → Component, ready for `:root` injection or `style.setProperty`.
+Output: a flat `{ name, value }` list ordered Primitive → Semantic → Component.
 
 ## Each axis may only override declared slots
 
@@ -28,59 +28,61 @@ export interface StyleDefinition {
     readonly radius?: Partial<PrimitiveTokens['radius']>  // radius only
     readonly shadow?: Partial<PrimitiveTokens['shadow']>  // shadow only
   }
-  readonly component?: Partial<{                          // declared component slots only
+  readonly component?: Partial<{
     readonly button: Partial<ComponentTokens['button']>
     readonly input:  Partial<ComponentTokens['input']>
     readonly card:   Partial<ComponentTokens['card']>
   }>
 }
-
-export interface DensityDefinition {
-  readonly name: string
-  readonly primitive?: {
-    readonly spacing?: Partial<PrimitiveTokens['spacing']>
-    readonly size?:    Partial<PrimitiveTokens['size']>
-    readonly font?:    Partial<...>
-  }>
-}
 ```
 
-Per ADR-0002: a higher axis may only override what its type declaration allows. Theme cannot change radius; Style cannot change color; Density cannot change color or radius.
+## End-aware alias layers (v3.1)
 
-## resolveEnvironment behavior
+```text
+@snui/tokens emits --aui-* raw layer
+   ↓
+@snui/tokens-web  emits --sn-web-* aliases (Web independent dist)
+@snui/tokens-mp   emits --sn-mp-* aliases (uni independent dist + rpx)
+```
+
+## resolveEnvironment
 
 ```ts
 const bindings = resolveEnvironment({
   theme: DARK_THEME,
   style: MODERN_STYLE,
   density: COMFORTABLE_DENSITY,
-  instanceOverrides: { '--sn-button-radius': '0px' },
+  instanceOverrides: { '--sn-web-button-radius': '0px' },
 })
 ```
 
-The returned `bindings` are sorted by dependency: Primitive first (referenced later), then Semantic, then Component. Instance overrides win last.
+Dependency order: Primitive first, then Semantic, then Component. Instance overrides win.
 
-## Emit CSS variables
+## snCssVars + end parameter
 
 ```ts
-import { renderStyleBlock } from '@snui/tokens'
+import { snCssVars } from '@snui/tokens'
 
-const css = renderStyleBlock(bindings)
-// ":root {"
-// "  --aui-color-blue-500: #1677ff;"
-// "  --aui-color-action-primary: var(--aui-color-blue-500);"
-// "  --aui-button-radius: 6px;"
-// "  --sn-button-radius: var(--aui-button-radius);"
-// "}"
+// Web (emits --sn-web-* aliases)
+const webCss = snCssVars({
+  end: 'web',
+  theme: DARK_THEME,
+  style: MODERN_STYLE,
+})
+
+// uni (emits --sn-mp-* aliases + rpx)
+const mpCss = snCssVars({
+  end: 'mp',
+  theme: DARK_THEME,
+  style: MODERN_STYLE,
+})
 ```
 
-Inject this into `:root` and you're done.
+## Global vs Instance
 
-## Global vs Instance overrides
+**Global**: inject `<style>` into `:root`, affects the whole app.
 
-**Global** (recommended): call `snCssVars()` and inject `<style>` into `:root`, affects the whole app.
-
-**Instance**: per-component, e.g. `<SnButton :style="{ '--sn-button-radius': '0px' }">` — affects only this button. The `instanceOverrides` parameter on resolve takes precedence over everything else.
+**Instance**: per-component, e.g. `<SnButton :style="{ '--sn-web-button-radius': '0px' }">` — affects only this button.
 
 ## Where to next
 

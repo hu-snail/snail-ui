@@ -1,6 +1,6 @@
 # Density · compact / comfortable
 
-The Density axis owns **size density**: spacing, sizes, font sizes. Three axes are independent — Density does not affect color or radius.
+The Density axis owns **size density**. Does not affect color or radius.
 
 ## Built-in defaults
 
@@ -10,22 +10,17 @@ import { COMPACT_DENSITY, COMFORTABLE_DENSITY } from '@snui/tokens'
 
 | Density | Use |
 | --- | --- |
-| `COMFORTABLE_DENSITY` | Default — generous spacing, large sizes, mobile-first |
+| `COMFORTABLE_DENSITY` | Default — generous spacing, large sizes |
 | `COMPACT_DENSITY` | Tighter spacing, smaller control heights, desktop / dense layouts |
 
-## Switching Density behavior
+## Per-end Density base
 
-```text
-Density swap
-   ↓
-preserve Theme
-   ↓
-preserve Style
-   ↓
-recompute Primitive size / spacing / fontSize
-```
+Web and uni Density presets map to different px / rpx bases:
 
-Per ADR-0002: switching Density only recomputes size-related primitives.
+- **Web**: Density outputs px values (32px / 36px / 44px ...)
+- **uni**: Density via `@snui/tokens-mp` auto-converts to rpx (64rpx / 72rpx / 88rpx ...)
+
+Switching Density preserves Theme and Style.
 
 ## Custom Density
 
@@ -35,28 +30,11 @@ import type { DensityDefinition } from '@snui/tokens'
 const dense: DensityDefinition = {
   name: 'dense',
   primitive: {
-    spacing: {
-      '3': '4px',     // was 8px
-      '4': '8px',     // was 12px
-      '5': '12px',    // was 16px
-    },
-    size: {
-      control: {
-        sm: '20px',
-        md: '28px',
-        lg: '36px',
-      },
-    },
-    font: {
-      size: {
-        body: '13px',     // was 14px
-      },
-    },
+    spacing: { '3': '4px', '4': '8px', '5': '12px' },
+    size: { control: { sm: '20px', md: '28px', lg: '36px' } },
   },
 }
 ```
-
-Apply `dense` and button height switches from `36px` to `28px`, body text from `14px` to `13px`. Color and radius stay unchanged.
 
 ## Forbidden
 
@@ -64,7 +42,7 @@ Apply `dense` and button height switches from `36px` to `28px`, body text from `
 | --- | --- |
 | Override color Tokens | Belongs to Theme |
 | Override radius / shadow | Belongs to Style |
-| Couple Density with specific Theme / Style | Three axes are independent |
+| Couple with specific Theme / Style | Three axes are independent |
 
 ## Where to next
 

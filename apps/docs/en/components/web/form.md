@@ -1,14 +1,14 @@
-# Form · Web
+# Form · Web (PC)
 
-Native `<form>` container with FormItem sub-component. Supports FormData collection, per-field error display, and cascading disabled / loading via `FormContext`.
+Native `<form>` container + FormItem sub-components, with FormData auto-collection, field-level error echoing, and disabled / loading state cascading.
 
-<script setup>
-import ComponentPreview from '../../../.vitepress/components/ComponentPreview.vue';
-</script>
+> **v3.1 End-Independent**: `SnForm` / `SnFormItem` (`@snui/vue-web`) and `sn-form` / `sn-form-item` (`@snui/uni`) are **two independent components**. Web CSS uses only `var(--sn-web-*)`. Component Contract is shared across ends, but Vue renderers are per-end.
+
+---
 
 ## Live render · real framework mount
 
-### Login form
+### Login form (minimal)
 
 <ComponentPreview name="form" :raw-props="{ formId: 'login', layout: 'vertical' }" :children='JSON.stringify([
   { id: "email-item", type: "form-item", props: { prop: "email", label: "Email", required: true }, children: [
@@ -38,7 +38,7 @@ import ComponentPreview from '../../../.vitepress/components/ComponentPreview.vu
   { id: "s", type: "button", props: { variant: "primary", text: "Submit", type: "submit", loading: true } }
 ])' />
 
-### Error wiring
+### Error wiring (FormItem error echo)
 
 <ComponentPreview name="form" :raw-props="{ formId: 'errors' }" :children='JSON.stringify([
   { id: "email", type: "form-item", props: { prop: "email", label: "Email", error: "Invalid email format" }, children: [
@@ -47,70 +47,110 @@ import ComponentPreview from '../../../.vitepress/components/ComponentPreview.vu
   { id: "submit", type: "button", props: { variant: "danger", text: "Try again", type: "submit" } }
 ])' />
 
+### Full login flow
+
+<ComponentPreview
+  name="form"
+  :raw-props="{ formId: 'full', layout: 'vertical' }"
+  :children='JSON.stringify([
+    { id: "f-name", type: "form-item", props: { prop: "name", label: "Name", required: true }, children: [
+      { id: "i-name", type: "input", props: { value: "Ada", type: "text", name: "name" } }
+    ]},
+    { id: "f-email", type: "form-item", props: { prop: "email", label: "Email", required: true }, children: [
+      { id: "i-email", type: "input", props: { value: "ada@aui.dev", type: "email", name: "email" } }
+    ]},
+    { id: "f-submit", type: "button", props: { variant: "primary", text: "Sign in", type: "submit" } }
+  ])'
+/>
+
+---
+
+## Basic usage
+
+```vue
+<script setup lang="ts">
+import { reactive, ref } from 'vue'
+import { SnForm, SnFormItem, SnInput, SnButton } from '@snui/vue-web'
+import '@snui/tokens-web/styles'
+
+const form = reactive({ email: '', password: '' })
+const loading = ref(false)
+
+async function submit() {
+  loading.value = true
+  await new Promise(r => setTimeout(r, 1000))
+  loading.value = false
+}
+</script>
+
+<template>
+  <SnForm :model="form" layout="vertical" @submit="submit">
+    <SnFormItem label="Email" required>
+      <SnInput v-model="form.email" type="email" placeholder="you@aui.dev" />
+    </SnFormItem>
+    <SnFormItem label="Password" required>
+      <SnInput v-model="form.password" type="password" placeholder="••••••" />
+    </SnFormItem>
+    <SnButton type="primary" :loading="loading" html-type="submit">Sign in</SnButton>
+  </SnForm>
+</template>
+```
+
+---
+
 ## Form props
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>layout</code></td><td><code>'horizontal' | 'vertical'</code></td><td><code>'vertical'</code></td><td>No</td><td>Layout direction.</td></tr>
-    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Disable the whole form (cascading via FormContext).</td></tr>
-    <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Form is loading (applies <code>aria-busy</code>).</td></tr>
-    <tr><td><code>initialValues</code></td><td><code>Record&lt;string, unknown&gt;</code></td><td><code>{}</code></td><td>No</td><td>Initial values (HTML FormData is still auto-collected by native inputs).</td></tr>
-    <tr><td><code>fields</code></td><td><code>FormField[]</code></td><td>—</td><td>No</td><td>Optional field descriptors; nested children is the common path.</td></tr>
-    <tr><td><code>formId</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Native <code>&lt;form&gt;</code> element id.</td></tr>
-  </tbody>
-</table>
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `layout` | `'horizontal' \| 'vertical'` | `'vertical'` | Layout direction |
+| `disabled` | `boolean` | `false` | Disable entire form (cascading) |
+| `loading` | `boolean` | `false` | Form loading (applies `aria-busy`) |
+| `initialValues` | `Record<string, unknown>` | `{}` | Initial values (FormData still auto-collected) |
+| `fields` | `FormField[]` | — | Field descriptor array; children tree is more common |
+| `formId` | `string` | — | Native `<form>` id |
 
 ## FormItem props
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>prop</code></td><td><code>string</code></td><td>—</td><td>**Yes**</td><td>Field path used for value / error lookup.</td></tr>
-    <tr><td><code>label</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Field label.</td></tr>
-    <tr><td><code>required</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Required field; renders <code>*</code> + <code>aria-required</code>.</td></tr>
-    <tr><td><code>error</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Field-level error message (from parent validate).</td></tr>
-  </tbody>
-</table>
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `prop` | `string` | — | **Required**. Field path for value lookup & error echo |
+| `label` | `string` | — | Field label |
+| `required` | `boolean` | `false` | Required, adds `*` + `aria-required` |
+| `error` | `string` | — | Field error (from parent validate) |
 
 ## Validation rules (`fields[].rules`)
 
-Phase 2 minimum rule set:
-
-| Rule | Behaviour |
+| Rule | Behavior |
 | --- | --- |
-| `required` | value must be a non-empty string |
-| `minLength` | minimum string length |
-| `maxLength` | maximum string length |
-| `pattern` | RegExp source string (compiled at runtime) |
-| `message` | custom error text |
+| `required` | Value is non-empty string |
+| `minLength` | Min string length |
+| `maxLength` | Max string length |
+| `pattern` | RegExp source (runtime compiled) |
+| `message` | Custom error text |
 
 ## Events
 
-<table class="props">
-  <thead>
-    <tr><th>Event id</th><th>DOM event</th><th>Payload</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>submit</code></td><td><code>submit</code></td><td><code>Record&lt;string, string&gt;</code> (cleaned values)</td></tr>
-    <tr><td><code>validate</code></td><td>—</td><td><code>{ valid: boolean; errors: Record&lt;string, string&gt; }</code></td></tr>
-  </tbody>
-</table>
+| Event id | DOM event | Payload |
+| --- | --- | --- |
+| `submit` | `submit` | `Record<string, string>` (sanitized values) |
+| `validate` | — | `{ valid: boolean; errors: Record<string, string> }` |
 
-## Tokens
+---
+
+## Tokens (Web alias layer)
 
 | Logical slot | CSS variable |
 | --- | --- |
-| `background` | `var(--aui-color-surface)` |
-| `itemGap` | `var(--aui-spacing-md)` |
-| `labelColor` | `var(--aui-color-text-primary)` |
-| `errorColor` | `var(--aui-color-text-danger)` |
-| `requiredColor` | `var(--aui-color-text-danger)` |
-| `borderColor` | `var(--aui-color-border-default)` |
+| `background` | `var(--sn-web-color-surface)` |
+| `itemGap` | `var(--sn-web-spacing-md)` |
+| `labelColor` | `var(--sn-web-color-text-primary)` |
+| `errorColor` | `var(--sn-web-color-text-danger)` |
+| `requiredColor` | `var(--sn-web-color-text-danger)` |
+| `borderColor` | `var(--sn-web-color-border-default)` |
+
+> v3.1 end-independent: SnForm source uses `--sn-web-*` aliases (**not** `--aui-*`).
+
+---
 
 ## Accessibility
 
@@ -121,7 +161,21 @@ Phase 2 minimum rule set:
 | `aria-busy` | bound to `Form.props.loading` |
 | `aria-disabled` | bound to `Form.props.disabled` |
 | `aria-required` | bound to `FormItem.props.required` |
-| `aria-invalid` | bound to <code>has-error(error)</code> (when error present) |
+| `aria-invalid` | bound to `has-error(error)` |
+
+---
+
+## End difference
+
+| Dimension | Web (`SnForm`) | uni (`sn-form`) |
+|---|---|---|
+| Package | `@snui/vue-web` | `@snui/uni` |
+| Container | `<form>` | `<form>` (compiled by miniprogram) |
+| Token alias | `--sn-web-*` | `--sn-mp-*` |
+| Submit callback | `@submit` (Vue emit) | `@submit` + `uni-forms` library |
+| Validation | SnForm built-in (Phase 2 minimal) | uni-forms / async-validator |
+
+---
 
 ## AI Patch Boundary
 
@@ -139,24 +193,8 @@ Phase 2 minimum rule set:
 | `ai.patchable` | `prop`, `label`, `required`, `error` |
 | `ai.readonly` | `role` |
 
+---
+
 ## Source
 
-`packages/protocol/src/form-contract.ts` (Contract source) · `packages/vue-web/src/form.ts` (Vue renderer)
-
-## Full pipeline (Schema → Runtime → Submit → Action)
-
-```text
-User types
-   ↓
-Input emits 'input' / 'change'
-   ↓
-Form's <form> dispatchEvent('submit')
-   ↓
-Form collects FormData → emit 'submit' (values)
-   ↓
-Runtime ActionRegistry dispatches registered handler
-   ↓
-Handler mutates state (or returns validation)
-   ↓
-Reactive re-render via @vue/reactivity
-```
+`packages/protocol/src/form-contract.ts` (Contract shared) · `packages/vue-web/src/form/SnForm.vue` (Web renderer) · `packages/tokens-web/` (alias layer)

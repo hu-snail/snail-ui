@@ -3,14 +3,14 @@ layout: home
 title: snail-aui — AI-Native UI 框架生态
 hero:
   name: snail-aui
-  text: Component First · Style Pack First · AI Native
-  tagline: 面向 Vue 3 + uni-app 多端的 UI 框架生态。开发者直接 import Vue 组件；AI 可读懂组件、产出高保真原型；用户在文档站一键切换涂鸦 / 便签 / iOS / 淘宝 / 抖音风格，复制配置到项目即刻生效。
+  text: Component First · Style Pack First · AI Native · End-aware
+  tagline: 面向 Vue 3（PC Web）+ uni-app（移动）的 AI-Native UI 框架生态。**Web 端面向桌面**，**uni 端面向移动**——两端从开发到打包完全独立，0 行源代码复用。未来 React 端按相同模式扩展。
   actions:
     - theme: brand
-      text: Web 快速开始
+      text: Web（PC 端）
       link: /guide/web/intro
     - theme: alt
-      text: uni-app 快速开始
+      text: uni-app（移动端）
       link: /guide/uni/quick-start
     - theme: alt
       text: 风格包
@@ -22,24 +22,22 @@ hero:
       text: GitHub
       link: https://github.com/hu-snail/snail-ui
 features:
+  - title: 端独立（End-aware）
+    details: Web 端（PC）和 uni 端（移动）从开发到打包完全独立 —— 独立源代码、独立构建、独立 npm 包、独立 Token 别名（--sn-web-* / --sn-mp-*）。未来 React 端按相同模式扩展，0 行跨端复用。
   - title: Component First
-    details: 每个组件是独立的 .vue 文件，直接 import 即可使用。Web 端 SnButton / SnConfigProvider 等，uni 端 sn-button / sn-config-provider 等。开发者不用学 schema、不用学 runtime，只用熟悉的 Vue 写法。
+    details: Web 端 SnButton / SnTable / SnTree 等 PC 端组件。uni 端 sn-button / sn-list / sn-grid 等移动端组件。各端按场景独立设计 API，不追求跨端同名同形。
   - title: Token First
-    details: CSS 变量三层级联驱动颜色 / 圆角 / 间距。Primitive（原始值）→ Semantic（语义名）→ Component（组件级）。组件只能用 var(--sn-*) 变量，零硬编码。
+    details: 统一底层 @snui/tokens 输出 --aui-* 原始层；每端通过独立别名包 (@snui/tokens-web / @snui/tokens-mp) 映射到 --sn-{end}-*。组件消费端独立 Token。
   - title: Style Pack First
-    details: 风格是一等公民。Style Pack = Token 层 + 皮肤 CSS 层 + 资源层三层组合。iOS / 暗色只需 Token 层即可；涂鸦 / 便签 / 抖音 需要皮肤 CSS 实现视觉人格。Pack 不允许修改组件 .vue。
+    details: 跨端共用风格包系统。Token + 皮肤 CSS + 资源三层。每个 Pack 标注 end: web / mp / both。Web 端有 web 品牌主题；uni 端有 mp-taobao / mp-douyin 等移动品牌主题。
   - title: AI Native
-    details: AI 能读懂组件、产出原型、修改 UI。snail-ui.skill.md 写给 AI 的行为契约；MCP Server 暴露 list / get / preview 工具；ai-meta.json 聚合所有元数据，AI 一次性加载上下文。
-  - title: 多端一致
-    details: Web (Vue 3) + uni-app 双端同名组件。API 语义一致，token 共享。uni 端走 easycom 自动注册，小程序不支持的能力自动降级。
-  - title: 一键复制配置
-    details: 文档站 ThemeCopier 展示当前 Style Pack 的 snCssVars(...) 代码片段，用户一键复制粘贴到 main.ts 即生效风格。无须手工调参。
+    details: AI 能读懂每个端组件、产出原型、修改 UI。snail-ui.skill.md 写 AI 行为契约；MCP Server 4 工具按 end 过滤；ai-meta.json 按端分组。
 ---
 
 <style scoped>
 .sn-home-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
   margin: 32px 0;
 }
@@ -52,23 +50,20 @@ features:
 .sn-home-card h3 {
   margin-top: 0;
 }
-.sn-home-card a {
-  font-weight: 500;
+.sn-home-card .sn-home-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  background: var(--vp-c-brand-1);
+  color: white;
+  margin-bottom: 8px;
 }
-.sn-home-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 24px 0;
+.sn-home-card .sn-home-tag-mp {
+  background: #10b981;
 }
-.sn-home-table th,
-.sn-home-table td {
-  text-align: left;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--vp-c-divider);
-}
-.sn-home-table th {
-  background: var(--vp-c-bg-soft);
-  font-weight: 600;
+.sn-home-card .sn-home-tag-both {
+  background: #8b5cf6;
 }
 </style>
 
@@ -80,69 +75,78 @@ features:
 
 <div class="sn-home-card">
 
+<span class="sn-home-tag">PC 端</span>
+
 ### Web (Vue 3)
 
-适用于基于 [Vue 3.5+](https://vuejs.org/) 构建的浏览器应用。
+适用于桌面浏览器应用：管理后台、CRM、ERP、IDE-like 工具。
 
 - 安装 `@snui/vue-web`
-- 命名空间：`SnButton` / `SnConfigProvider`
-- 真实渲染的 VitePress 文档
-- TypeScript strict 全推导
+- 命名空间：`SnButton` / `SnForm` / `SnTable` / `SnTree` ...
+- 消费 `--sn-web-*` Token 别名
+- 信息密度高、键盘 + 鼠标混合操作
 
-[Web 组件文档 →](/components/web/button) · [Web 快速开始 →](/guide/web/quick-start)
+[Web 组件 →](/components/web/button) · [Web 快速开始 →](/guide/web/quick-start)
 
 </div>
 
 <div class="sn-home-card">
 
+<span class="sn-home-tag sn-home-tag-mp">移动端</span>
+
 ### uni-app
 
-适用于基于 [uni-app](https://uniapp.dcloud.net.cn/) 的多端应用（iOS / Android / H5 / 小程序）。
+适用于移动触屏应用：电商、O2O、内容、企业 App。
 
 - 安装 `@snui/uni`
-- 命名空间：`sn-button` / `sn-config-provider`（easycom 自动注册）
-- 平台 capability 兜底（不支持的能力自动降级）
-- 与 Web 共享 Token 系统
+- 命名空间：`sn-button` / `sn-list` / `sn-grid` / `sn-pull-refresh` ...
+- 消费 `--sn-mp-*` Token 别名（px 自动转 rpx）
+- 触屏手势、移动端体验
 
-[uni-app 组件文档 →](/components/uni/button) · [uni-app 快速开始 →](/guide/uni/quick-start)
-
-</div>
+[uni-app 组件 →](/components/uni/button) · [uni-app 快速开始 →](/guide/uni/quick-start)
 
 </div>
 
-## v3.0 已交付（Foundation + M1-FOUND）
+</div>
 
-| 包 | 状态 | 作用 |
-| --- | --- | --- |
-| `@snui/tokens` | ✅ | Primitive / Semantic / Component 三层级联 + `--sn-*` 别名层 |
-| `@snui/vue-web` | ✅ | Web 端组件库（SnButton / SnConfigProvider） |
-| `@snui/uni` | ✅ | uni-app 端组件库（sn-button / sn-config-provider） |
-| `@snui/style-packs` | ✅ | default / ios / dark 官方风格包 |
-| `@snui/ai` | ✅ | Skill 文件 + MCP Server stub + ai-meta 生成器 |
-| `@snui/cli` | ✅ | unplugin resolver + llms.txt + token-check + pack-validate |
+## 端独立性原则（v3.1 最高优先级）
+
+```text
+每端独立源码 + 独立构建 + 独立 Token + 独立 npm 包
+
+@snui/vue-web         →  @snui/tokens-web  →  --sn-web-*  →  独立发布
+@snui/uni             →  @snui/tokens-mp   →  --sn-mp-*   →  独立发布
+@snui/react-web       →  @snui/tokens-react →  --sn-react-* → 独立发布 (未来)
+
+跨端共用（无关）：
+  - @snui/tokens         (统一 --aui-* 底层)
+  - @snui/style-packs    (风格包描述)
+  - @snui/ai              (Skill / MCP / ai-meta)
+  - @snui/cli            (resolver / llms.txt / token-check)
+  - @snui/docs            (文档站)
+
+跨端不共用：
+  - 任何组件 .vue 源代码
+  - 任何组件测试代码
+  - 任何 Token 别名层
+```
 
 ## 设计哲学
 
 ```text
-Component First    每个组件是独立的 .vue 文件，开箱即用
-Token First        CSS 变量三层级联驱动主题、风格、密度
-Style Pack First   风格是一等公民：Token + 皮肤 CSS + 资源三层可组合
-AI Native          AI 能读懂、能产出、能修改 UI，不是单纯的文档工具
-DX First           TS 类型完整推导 + 按需加载 + 真实渲染文档 + 一键复制
+Component First    每个组件是独立的 .vue 文件
+Token First        三层级联 + 每端独立别名层
+Style Pack First   跨端共用风格包
+AI Native          AI 能读懂、能产出、能修改 UI
+DX First           TS 类型 + 按需加载 + 真实文档 + 一键复制
+End-aware          Web 和 uni 端定位场景不同 → API 不同 → Token 不同
 ```
-
-## 不做什么
-
-- ❌ 不做运行时 Schema 解释器（v1.x 已被 ADR-0001 推翻）
-- ❌ 不做 Low-code Studio / 可视化搭建
-- ❌ 风格包不允许修改组件 .vue 逻辑（只操作 Token 层）
-- ❌ AI 不能绕过 Token 系统直接修改组件样式
 
 ## 下一步
 
-- [介绍](/guide/web/intro) — 30 秒看懂 snail-aui
-- [架构](/guide/web/architecture) — 包结构与数据流
-- [风格包](/style-packs/overview) — iOS / 暗色 / 涂鸦 / 抖音 一键切换
+- [Web 端介绍](/guide/web/intro) — 30 秒看懂 Web 端
+- [架构](/guide/web/architecture) — 双端包结构
+- [风格包](/style-packs/overview) — 跨端共用风格包
 - [AI 生态](/ai/overview) — Skill + MCP + 高保真原型
 
 </div>

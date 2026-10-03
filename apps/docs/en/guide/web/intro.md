@@ -1,56 +1,75 @@
 # Introduction
 
-snail-aui is an **AI-Native UI framework ecosystem** for Vue 3 + uni-app. Developers use plain Vue components (`<SnButton type="primary">Submit</SnButton>`). AI can read every component, produce high-fidelity prototypes, and swap whole visual identities (doodle / sticky-note / iOS / Taobao / Douyin) in the docs site — then hand you a snippet to paste.
+snail-aui v3.1 is an AI-Native UI framework ecosystem for **Vue 3 (Web, PC desktop)** + **uni-app (mobile, touch)**.
 
-## One-liner
+**The key design principle is: end-aware**.
 
-> Developers: `<SnButton type="primary">Submit</SnButton>`  
-> AI: read meta via Skill + MCP, output a runnable Vue SFC prototype  
-> Designers: flip the Style Pack in the docs site, copy the config
+> Web (PC) and uni (mobile) are **fully independent** from source to publish.  
+> Each end has independent source, independent build, independent npm package, independent Token alias.  
+> **Zero source reuse across ends**.
 
-## Architecture in 30 seconds
+Future ends (React, Flutter, ...) follow the same pattern: `@snui/tokens-{end}` alias package + `@snui/{end}` independent component package.
+
+## Two ends differ
+
+| Dimension | Web (PC desktop) | uni (mobile touch) |
+|---|---|---|
+| Typical apps | Admin dashboards, CRM, ERP, IDE-like tools, low-code platforms | E-commerce, content, O2O, enterprise apps |
+| Input | Mouse + keyboard | Touch + gestures |
+| Resolution | 1280×720+, scales to 4K | 320-414 width-first |
+| Components | Information density (Table / Tree / Pagination / Cascader / DatePicker ...) | Flow layout (List / PullRefresh / swiper / sticky-tabs / lazy-image ...) |
+| Namespace | SnButton / SnForm / SnTable ... | sn-button / sn-list / sn-grid ... |
+| Token alias | `var(--sn-web-*)` | `var(--sn-mp-*)` |
+| Size unit | px | rpx (auto-converted) |
+| API style | naive-ui style (config-driven) | wot-ui style (event-driven) |
+
+**Small overlap**: Button / ConfigProvider / Icon are the lowest-common-denominator components shared across ends.
+
+## Cross-end shared layers
+
+| Shared | How ends are separated |
+|---|---|
+| `@snui/tokens` unified base | Outputs `--aui-*` raw layer (end-agnostic) |
+| `@snui/style-packs` | Each Pack declares `end: web / mp / both` |
+| `@snui/ai` Skill + MCP | Tool output filtered by `end` |
+| `@snui/ai` ai-meta.json | components array grouped by end |
+| `@snui/cli` | resolver per-end, token-check per-end |
+| `@snui/docs` | nav split into Web / uni groups |
+
+## 30-second overview
 
 ```text
-@snui/tokens        ── Three-layer Token cascade + --sn-* brand alias
-        ↑
-@snui/vue-web       ── Web component library (naive-ui style API)
-@snui/uni           ── uni-app component library (wot-ui style API, easycom)
-        ↑
-@snui/style-packs   ── Official Style Packs (iOS / dark / doodle / Douyin…)
-        ↑
-@snui/ai            ── Skill + MCP Server + ai-meta
-        ↑
-@snui/docs          ── VitePress docs site (with StyleSwitcher / ThemeCopier)
+@snui/tokens         --aui-* raw layer (end-agnostic)
+        ↑              ↑
+   ┌────┴─────┐    ┌────┴──────┐
+   │         │    │          │
+@snui/tokens-web  @snui/tokens-mp
+--sn-web-* alias   --sn-mp-* alias (with rpx conversion)
+   ↑                     ↑
+@snui/vue-web         @snui/uni
+SnButton / SnTable    sn-button / sn-list / sn-pull-refresh
+(independent PC)       (independent mobile)
+
+Shared cross-end (end-agnostic):
+   @snui/style-packs   @snui/ai   @snui/cli   @snui/docs
 ```
 
-What stays underneath:
-- Plain Vue SFC authoring (no schema, no runtime)
-- AI uses Skill + MCP tools to understand components
-- Style Packs touch Tokens, never component source
+## Style Pack / AI vs end
 
-## What changed from v1.x
+- Style Packs are **shared cross-end**, but each Pack declares `end: web / mp / both`
+- Apply a Style Pack with `snCssVars({ end: 'web' | 'mp', theme, style })` — `end` determines whether `--sn-web-*` or `--sn-mp-*` is emitted
+- AI tools (Skill / ai-meta) classify components by end
+- MCP `list_components({ end })` filters by end
 
-v1.x's Schema-Runtime architecture (UISchema + interpreter + ActionRegistry + Binding expressions) was rejected by ADR-0001. The current direction is **Component First / Token First / Style Pack First / AI Native**:
+## What's shipped
 
-- ❌ No runtime schema interpreter
-- ❌ No low-code Studio / drag-and-drop builder
-- ❌ No Binding expression sandbox
-- ✅ Token cascade preserved
-- ✅ TypeScript strict + on-demand loading
-- ✅ Docs render real components
-- ✅ Style Pack system + AI Layer (Skill + MCP)
-
-## Three independent axes
-
-Token system has three independent dimensions:
-
-| Axis | What it changes | Forbidden |
-|---|---|---|
-| Theme | Color (primitive + semantic) | Radius, spacing, size |
-| Style | Radius + shadow + Component Token | Color, spacing, font size |
-| Density | Spacing + size + font size | Color, radius |
-
-A Style Pack (iOS / doodle / etc.) is a combination of all three axes.
+- **M0**: Framework pivot + Button demo ✅
+- **M0.5**: ADR-0002 (Style Pack + AI Layer) ✅
+- **M0.6**: ADR-0003 (end-aware split + dual Token aliases) ✅ — this batch: PRD v3.1 / Spec-01~02 / WBS v3.1 / Master Plan v5.1 / Dev Guide v3.1
+- **M1 (next)**: `@snui/tokens-web` / `@snui/tokens-mp` alias packages + first batch of ~10 components per end
+- **M2**: Style Packs (3 default + 2 mp) + AI Layer + StyleSwitcher / ThemeCopier
+- **M3**: doodle / sticky-note / wechat Packs + render_preview sandbox
+- **M4**: React end extension (same pattern) + VSCode plugin + visual regression
 
 ## Where to next
 

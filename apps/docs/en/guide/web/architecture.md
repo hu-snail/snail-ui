@@ -1,93 +1,123 @@
 # Architecture
 
-snail-aui is built from six npm packages. The component foundation (tokens / vue-web / uni) plus the Style Pack layer (style-packs), AI Layer (ai), CLI tool, and docs site. Single-direction dependencies, no cycles.
+snail-aui v3.1 is an end-aware AI-Native UI framework ecosystem. Web (PC) and uni (mobile) are fully independent — from source to build to npm. Zero source reuse across ends. Style Packs / AI Layer / docs are shared cross-end and filtered by `end`.
 
-## Architecture overview
+## Dual-end architecture
 
 ```text
-┌─────────────────────────────────────────────────────────────────┐
-│                       AI Ecosystem Layer                         │
-│  snail-ui.skill.md   MCP Server   ai-meta.json   llms.txt       │
-│  (@snui/ai)                         (@snui/cli)                   │
-└─────────────────────┬───────────────────────────────────────────┘
-                      │ reads metadata
-┌─────────────────────▼───────────────────────────────────────────┐
-│                      Docs / Preview Layer                        │
-│  VitePress docs   StyleSwitcher   ThemeCopier   ComponentPreview │
-│  (@snui/docs)     — Web: body.class + <style>                    │
-│                   — uni: ConfigProvider skin prop                 │
-└──────────┬──────────────────────────────┬────────────────────────┘
-           │ import components           │ reads Packs
-┌──────────▼──────────┐       ┌───────────▼──────────────────────┐
-│    Component Layer    │       │         Style Pack Layer         │
-│  @snui/vue-web        │       │  @snui/style-packs              │
-│  @snui/uni            │       │                                  │
-│                       │       │  Token + skin CSS + resources    │
-│  Each root element    │       │  default / ios / dark /          │
-│  carries              │       │  doodle / sticky-note /          │
-│  data-snui-component  │       │  taobao / douyin                 │
-└──────────┬────────────┘       └──────────────────────────────────┘
-           │ consumes var(--sn-*)
-┌──────────▼──────────────────────────────────────────────────────┐
-│                      Token Layer (@snui/tokens)                  │
-│                                                                  │
-│  Primitive  →  Semantic  →  Component                           │
-│  colors/spacing   action-primary   button-radius                 │
-│  radius/shadow    text-secondary   card-shadow                    │
-│                                input-height                      │
-│                                                                  │
-│  Theme (color) · Style (shape) · Density (size/spacing)         │
-│  Output: --aui-* raw layer + --sn-* brand alias                  │
-└──────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────┐
+│  AI Ecosystem (shared cross-end, filtered by end)                      │
+│  snail-ui.skill.md   MCP Server   ai-meta.json   llms.txt               │
+│  (@snui/ai)                                                                │
+└────────────┬──────────────────────────────────────────┬───────────────┘
+             │                                          │
+┌────────────▼──────────────┐            ┌───────────▼────────────────┐
+│  Web end (desktop)              │            │  uni end (mobile)             │
+│                                  │            │                              │
+│  @snui/vue-web                   │            │  @snui/uni                    │
+│    SnButton / SnForm /          │            │    sn-button / sn-list /     │
+│    SnTable / SnTree / ...        │            │    sn-grid / sn-pull-...      │
+│      ↓                           │            │      ↓                        │
+│  @snui/tokens-web                │            │  @snui/tokens-mp             │
+│    --sn-web-color-action-         │            │    --sn-mp-color-action-      │
+│    primary → --aui-color-         │            │    primary → --aui-color-      │
+│    action-primary                │            │    action-primary             │
+└─────────────┬────────────────────┘            └──────────────┬───────────────┘
+              │                                                  │
+              └───────────────────┬──────────────────────────┘
+                                  │
+┌──────────────────────────────▼──────────────────────────────────────┐
+│  Style Pack layer (shared cross-end, filtered by end)                  │
+│  @snui/style-packs   default(both) / dark(both) / ios(both) /         │
+│                      mp-taobao(mp) / mp-douyin(mp)                    │
+│      ↓                                                                  │
+│  @snui/tokens         Unified base layer → --aui-*                     │
+│  Primitive  →  Semantic  →  Component  →  --aui-*                     │
+│                       (Theme / Style / Density three independent axes) │
+└──────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Packages
 
-| Package | Role | Depends on |
+| Package | Role | End |
 |---|---|---|
-| `@snui/tokens` | Three-layer Token cascade + parser | (leaf, zero deps) |
-| `@snui/vue-web` | Web component library | `@snui/tokens` |
-| `@snui/uni` | uni-app component library | `@snui/tokens` |
-| `@snui/style-packs` | Official Style Pack collection | `@snui/tokens` (types) |
-| `@snui/ai` | Skill + MCP + ai-meta | `@snui/cli` + `@snui/tokens` + `@snui/style-packs` |
-| `@snui/cli` | resolver + llms.txt + token-check | `@snui/vue-web` + `@snui/tokens` |
-| `@snui/docs` | VitePress docs site | `vue-web` + `uni` + `style-packs` + `ai` |
+| `@snui/tokens` | Unified three-layer Token cascade, outputs `--aui-*` | shared base |
+| `@snui/tokens-web` | `--sn-web-*` alias layer | Web (independent) |
+| `@snui/tokens-mp` | `--sn-mp-*` alias layer (with px → rpx conversion) | uni (independent) |
+| `@snui/vue-web` | Web component library (SnButton / SnTable / ...) | Web (independent) |
+| `@snui/uni` | uni component library (sn-button / sn-list / ...) | uni (independent) |
+| `@snui/style-packs` | Style Pack descriptions (with `end` field) | shared cross-end |
+| `@snui/ai` | Skill + MCP + ai-meta | shared cross-end |
+| `@snui/cli` | resolver + llms.txt + token-check + pack-validate | shared cross-end |
+| `@snui/docs` | VitePress docs site | shared cross-end |
 
-No circular imports.
+## End-aware principle (v3.1, top priority)
 
-## Three-layer Token cascade
+> Each end is **fully independent** from source to publish.
 
-```text
-Primitive Tokens   Raw values, no semantics (colors / spacing / radius / shadow / fonts / motion / sizes)
-      ↓
-Semantic Tokens    Semantic names pointing at Primitive CSS vars (action-primary / text-primary)
-      ↓
-Component Tokens   Component-level (button-radius / card-shadow / input-height-medium)
-      ↓
---sn-* aliases      Brand aliases — the only consumption entry for components
+- Independent source dir (`packages/vue-web/` / `packages/uni/`)
+- Independent build (`dist/`) and independent npm publish
+- Independent TypeScript types (`.d.ts`)
+- Independent Token alias (`@snui/tokens-web` ≠ `@snui/tokens-mp`)
+- **Zero source reuse across ends**
+- Shared cross-end: metadata + tooling only (tokens / style-packs / ai / cli / docs)
+
+Future end (React, Flutter, ...) follows the same pattern:
+
+```
+@snui/tokens-{end}/   --sn-{end}-* alias layer
+@snui/{end}/          end component implementation (zero reuse)
 ```
 
-**Sole consumption rule**: components consume only `var(--sn-*)`. Fallback values are restricted to the keywords `transparent` / `inherit` / `currentColor`.
+## Three-layer Token (unified base @snui/tokens)
+
+```text
+Primitive  →  Semantic  →  Component  →  --aui-* raw layer
+raw values      semantics       component-level   cross-end unified
+                       ↓
+        ┌─────────────────┴─────────────────┐
+        ↓                                   ↓
+@snui/tokens-web                  @snui/tokens-mp
+--sn-web-* alias                  --sn-mp-* alias (with rpx conversion)
+        ↓                                   ↓
+   @snui/vue-web                       @snui/uni
+   consumed by Web                   consumed by uni
+```
+
+## Per-end Component Token differences
+
+Different ends have different Component Token fields, per scenario:
+
+| Field | Web (`--sn-web-*`) | uni (`--sn-mp-*`) |
+|---|---|---|
+| button-radius | ✅ 6px | ✅ 24rpx |
+| button-height-medium | ✅ 36px | ✅ 72rpx |
+| table-row-height | ✅ 32px | ❌ |
+| list-item-height | ❌ | ✅ 88rpx |
+| sidebar-item-height | ❌ | ✅ 100rpx |
+| dropdown-item-padding | ✅ 8px 16px | ❌ |
+
+`tokens-web` and `tokens-mp` independently maintain field maps; they don't interfere.
 
 ## Three independent axes
 
-| Axis | What it changes | Forbidden |
+| Axis | What | Forbidden |
 |---|---|---|
-| Theme | Color (Primitive + Semantic) | Radius, spacing, size |
+| Theme | Color | Radius, spacing, size |
 | Style | Radius + shadow + Component Token | Color, spacing, font size |
 | Density | Spacing + size + font size | Color, radius |
 
-A Style Pack (iOS / doodle / etc.) is a combined configuration across all three axes.
+Style Pack is a combination of all three.
 
 ## Style Pack three layers
 
 | Layer | Content | Required |
 |---|---|---|
-| Token layer | Color / radius / spacing overrides (snCssVars()) | Every Pack |
-| Skin CSS layer | `.snui-skin-{name}` scoped CSS (font / decoration / effects) | Only Packs needing visual personality (doodle / Douyin) |
-| Resource layer | Font files / textures / SVG | A few Packs (Douyin / Taobao) |
+| Token | Color / radius / spacing overrides | every Pack |
+| Skin CSS | `.snui-skin-{name}` scoped CSS | only Packs needing visual personality |
+| Resources | Fonts / textures | a few Packs |
 
-**Hard constraints**: skin CSS only modifies visual layers (color, shadow, font, animation, pseudo-elements) — never component DOM / Props / behavior.
+Skin CSS only modifies visual layers (color, shadow, font, animation, pseudo-elements) — never DOM / Props / behavior.
 
 ## uni / MP platform differences
 
@@ -97,63 +127,75 @@ A Style Pack (iOS / doodle / etc.) is a combined configuration across all three 
 | `[data-theme="dark"]` | ✅ | ✅ | ❌ |
 | `document.body.classList` | ✅ | ✅ (H5) | ❌ |
 | Dynamic `<style>` injection | ✅ | ✅ (H5) | ❌ |
-| Skin CSS (BEM class) | ✅ | ✅ | ✅ (component scoped only) |
+| Skin CSS (BEM class) | ✅ | ✅ | ✅ (component scoped) |
 
-**MP skin strategy**: ConfigProvider root class forwarding → component-scoped CSS overrides via `.snui-skin-{name}` → override scope is limited to the ConfigProvider subtree.
+MP uses `ConfigProvider` root class forwarding + component-scoped CSS overrides.
 
-## Package boundary rules
+## End-aware implementation
 
-- `tokens` is a leaf, zero runtime deps
-- `style-packs` depends only on Token types, not runtime
-- `vue-web` / `uni` consume Token via CSS vars only — no JS import
-- `ai` does not modify `vue-web` / `uni`, reads metadata only
-- Skin CSS never modifies component .vue (only the `data-snui-component` hook)
-- No cyclic dependencies (turbo lint enforced)
+```ts
+// tokens-web/src/variables.ts (Web alias map)
+export const snWebAliasMap = [
+  ['--sn-web-color-action-primary', '--aui-color-action-primary'],
+  // ...
+]
 
-## Data flow: docs StyleSwitcher
-
-```text
-Click StyleSwitcher → choose "ios" Pack
-    ↓
-Inject Token layer: snCssVars(pack) → <style id="snui-pack"> replaces :root vars
-    ↓
-Activate skin: document.body.classList.add('snui-skin-ios')
-    ↓
-Load skin CSS (if any): <link id="snui-skin" href="/packs/ios.skin.css">
-    ↓
-Component CSS:
-  - colors / radius / spacing → Token layer takes effect
-  - handwritten font / offset shadow → skin CSS takes effect
-    ↓
-ThemeCopier shows the snippet; user copies it.
+// tokens-mp/src/variables.ts (uni alias map, with px → rpx)
+export const snMpAliasMap = [
+  ['--sn-mp-color-action-primary', '--aui-color-action-primary'],
+  // note: px auto-converts to rpx
+  // ...
+]
 ```
+
+Component consumption:
+
+```css
+/* Web */
+.sn-button { background: var(--sn-web-color-action-primary); }
+
+/* uni */
+.sn-button { background: var(--sn-mp-color-action-primary); }
+```
+
+## Cross-end shared layers
+
+| Layer | How end is filtered |
+|---|---|
+| `@snui/style-packs` | Pack's `end: 'web' \| 'mp' \| 'both'` field |
+| `@snui/ai` Skill file | per-end component list |
+| `@snui/ai` MCP `list_components` | `end` input parameter |
+| `@snui/ai` ai-meta.json | components array grouped by end |
+| `@snui/docs` | nav split by Web / uni |
 
 ## CI pipeline
 
 ```text
 PR opened
   ↓
-typecheck (turbo run typecheck, 0 error)
+typecheck (per-end independent)
   ↓
-lint (turbo run lint, 0 warning)
+lint (per-end independent)
   ↓
-test (turbo run test, 100% pass)
+test (per-end independent)
   ↓
-build (turbo run build, 0 error)
+build (per-end produces dist/)
   ↓
-token check (snui token check, no literal color fallback)
+token check (per-end: validate alias prefix correctness)
   ↓
-pack validate (when adding/modifying a Pack)
+pack validate (cross-end Style Pack)
   ↓
-Review Agent (§88 Checklist)
+ai-meta generate (grouped by end)
   ↓
-Human Gate (architecture / Public API changes)
+Review Agent
+  ↓
+Human Gate (end-aware breakage / Public API change)
   ↓
 merge main
 ```
 
 ## Where to next
 
-- [Theme & Tokens](/en/theme/overview)
+- [Token cascade](/en/theme/cascade)
 - [Style Packs](/en/style-packs/overview)
 - [AI Ecosystem](/en/ai/overview)

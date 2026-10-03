@@ -3,14 +3,14 @@ layout: home
 title: snail-aui — AI-Native UI Framework Ecosystem
 hero:
   name: snail-aui
-  text: Component First · Style Pack First · AI Native
-  tagline: A multi-end UI framework ecosystem for Vue 3 + uni-app. Developers import Vue components directly. AI can read components, produce high-fidelity prototypes, and swap whole visual identities (doodle / sticky-note / iOS / Taobao / Douyin) with one click — then copy the config into your project.
+  text: Component First · Style Pack First · AI Native · End-aware
+  tagline: An AI-Native UI framework ecosystem for Vue 3 (PC Web) and uni-app (mobile). The Web end targets desktop information density; the uni end targets mobile touch. Each end is fully independent — from source to build to npm package. Zero source reuse across ends. Future React end follows the same extension pattern.
   actions:
     - theme: brand
-      text: Get started (Web)
+      text: Web (PC)
       link: /en/guide/web/intro
     - theme: alt
-      text: Get started (uni-app)
+      text: uni-app (Mobile)
       link: /en/guide/uni/quick-start
     - theme: alt
       text: Style Packs
@@ -22,24 +22,22 @@ hero:
       text: GitHub
       link: https://github.com/hu-snail/snail-ui
 features:
+  - title: End-aware
+    details: Web (PC) and uni (mobile) are fully independent — source, build, npm package, Token alias (--sn-web-* / --sn-mp-*). Future React end follows the same pattern. Zero source reuse.
   - title: Component First
-    details: Every component is a standalone .vue file — import and use. Web uses PascalCase (SnButton, SnConfigProvider). Uni uses kebab-case (sn-button, sn-config-provider) with easycom auto-registration. No schema language, no runtime, just familiar Vue.
+    details: Web side: SnButton / SnForm / SnTable / SnTree for desktop. Uni side: sn-button / sn-list / sn-grid for mobile. Each end designs API per its scenario, not mirror copies.
   - title: Token First
-    details: A three-layer CSS variable cascade (Primitive → Semantic → Component) drives color / radius / spacing. Components consume only var(--sn-*) — zero hardcoded color literals.
+    details: A shared base layer (@snui/tokens → --aui-*) + per-end alias packages (@snui/tokens-web → --sn-web-*, @snui/tokens-mp → --sn-mp-*). Components consume end-specific Tokens.
   - title: Style Pack First
-    details: Style is a first-class concept. A Style Pack is Token + skin CSS + resources, layered. iOS / dark only need the Token layer; doodle / sticky-note / Douyin need skin CSS for visual personality. Packs never modify component .vue files.
+    details: Cross-end shared style packs. Token + skin CSS + resources layered. Each Pack declares end: web / mp / both. Web has enterprise brand themes; uni has mp-taobao / mp-douyin mobile brand themes.
   - title: AI Native
-    details: AI reads, produces, modifies UIs. snail-ui.skill.md defines the AI behavior contract; the MCP Server exposes list / get / preview tools; ai-meta.json aggregates all metadata so an AI client can load context in one shot.
-  - title: Multi-end parity
-    details: Same component API on Web (Vue 3) and uni-app. Uni side handles capability detection (e.g. MP WXSS limitations) automatically with predictable fallbacks.
-  - title: One-click theme copy
-    details: The docs ThemeCopier renders a ready-to-paste snCssVars(...) snippet for the active Style Pack. Paste it into your main.ts — your whole app takes the new look instantly.
+    details: AI can read every component, produce prototypes, modify UIs. snail-ui.skill.md is the behavior contract; MCP Server filters by end; ai-meta.json groups components by end.
 ---
 
 <style scoped>
 .sn-home-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
   margin: 32px 0;
 }
@@ -52,23 +50,20 @@ features:
 .sn-home-card h3 {
   margin-top: 0;
 }
-.sn-home-card a {
-  font-weight: 500;
+.sn-home-card .sn-home-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  background: var(--vp-c-brand-1);
+  color: white;
+  margin-bottom: 8px;
 }
-.sn-home-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 24px 0;
+.sn-home-card .sn-home-tag-mp {
+  background: #10b981;
 }
-.sn-home-table th,
-.sn-home-table td {
-  text-align: left;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--vp-c-divider);
-}
-.sn-home-table th {
-  background: var(--vp-c-bg-soft);
-  font-weight: 600;
+.sn-home-card .sn-home-tag-both {
+  background: #8b5cf6;
 }
 </style>
 
@@ -80,69 +75,78 @@ features:
 
 <div class="sn-home-card">
 
+<span class="sn-home-tag">PC</span>
+
 ### Web (Vue 3)
 
-For browser apps built on [Vue 3.5+](https://vuejs.org/).
+For desktop browser apps: admin dashboards, CRM, ERP, IDE-like tools.
 
 - Install `@snui/vue-web`
-- Namespace: `SnButton` / `SnConfigProvider`
-- Real component rendering in docs
-- TypeScript strict throughout
+- Namespace: `SnButton` / `SnForm` / `SnTable` / `SnTree` ...
+- Consumes `--sn-web-*` Tokens
+- Information density, keyboard + mouse
 
-[Web component docs →](/en/components/web/button) · [Web quick start →](/en/guide/web/quick-start)
+[Web components →](/en/components/web/button) · [Web quick start →](/en/guide/web/quick-start)
 
 </div>
 
 <div class="sn-home-card">
 
+<span class="sn-home-tag sn-home-tag-mp">Mobile</span>
+
 ### uni-app
 
-For multi-end apps (iOS / Android / H5 / MP) on [uni-app](https://uniapp.dcloud.net.cn/).
+For mobile touch apps: e-commerce, O2O, content, enterprise apps.
 
 - Install `@snui/uni`
-- Namespace: `sn-button` / `sn-config-provider` (easycom auto-registration)
-- Platform capability fallbacks
-- Shares the Token cascade with Web
+- Namespace: `sn-button` / `sn-list` / `sn-grid` / `sn-pull-refresh` ...
+- Consumes `--sn-mp-*` Tokens (px auto-converts to rpx)
+- Touch gestures, mobile UX
 
-[uni-app component docs →](/en/components/uni/button) · [uni-app quick start →](/en/guide/uni/quick-start)
-
-</div>
+[uni-app components →](/en/components/uni/button) · [uni-app quick start →](/en/guide/uni/quick-start)
 
 </div>
 
-## v3.0 shipped (Foundation + M1-FOUND)
+</div>
 
-| Package | Status | Purpose |
-| --- | --- | --- |
-| `@snui/tokens` | ✅ | Primitive / Semantic / Component three-layer cascade + `--sn-*` alias layer |
-| `@snui/vue-web` | ✅ | Web component library (SnButton / SnConfigProvider) |
-| `@snui/uni` | ✅ | uni-app component library (sn-button / sn-config-provider) |
-| `@snui/style-packs` | ✅ | default / ios / dark official Style Packs |
-| `@snui/ai` | ✅ | Skill file + MCP Server stub + ai-meta aggregator |
-| `@snui/cli` | ✅ | unplugin resolver + llms.txt + token-check + pack-validate |
+## End-aware principle (v3.1, top priority)
+
+```text
+Each end is independent source + independent build + independent Token + independent npm package
+
+@snui/vue-web        →  @snui/tokens-web  →  --sn-web-*   →  independent publish
+@snui/uni            →  @snui/tokens-mp   →  --sn-mp-*    →  independent publish
+@snui/react-web      →  @snui/tokens-react →  --sn-react-* → independent publish (future)
+
+Cross-end shared (end-agnostic):
+  - @snui/tokens         (unified --aui-* base)
+  - @snui/style-packs    (style pack descriptions)
+  - @snui/ai             (Skill / MCP / ai-meta)
+  - @snui/cli            (resolver / llms.txt / token-check)
+  - @snui/docs           (docs site)
+
+Not shared across ends:
+  - any component .vue source
+  - any component test code
+  - any Token alias layer
+```
 
 ## Design philosophy
 
 ```text
 Component First    Each component is a standalone .vue file
-Token First        Three-layer CSS variable cascade
-Style Pack First   Token + skin CSS + resources — style is configurable
-AI Native          AI reads, produces, modifies UI — not just docs
-DX First           Full type coverage + on-demand loading + real docs + one-click
+Token First        Three-layer cascade + per-end alias layer
+Style Pack First   Cross-end shared style packs
+AI Native          AI reads, produces, modifies UI
+DX First           Full TS types + on-demand loading + real docs + one-click copy
+End-aware          Web and uni target different scenarios → API differs → Token differs
 ```
-
-## What we don't do
-
-- ❌ Runtime schema interpreter (rejected by ADR-0001)
-- ❌ Low-code Studio / drag-and-drop builder
-- ❌ Style Packs that modify component .vue files (only Token layer)
-- ❌ AI bypassing the Token system
 
 ## Where to next
 
-- [Introduction](/en/guide/web/intro) — snail-aui in 30 seconds
-- [Architecture](/en/guide/web/architecture) — packages and data flow
-- [Style Packs](/en/style-packs/overview) — swap iOS / dark / doodle / Douyin with one click
+- [Web Introduction](/en/guide/web/intro) — Web end in 30 seconds
+- [Architecture](/en/guide/web/architecture) — dual-end package structure
+- [Style Packs](/en/style-packs/overview) — cross-end shared
 - [AI Ecosystem](/en/ai/overview) — Skill + MCP + hi-fi prototypes
 
 </div>
