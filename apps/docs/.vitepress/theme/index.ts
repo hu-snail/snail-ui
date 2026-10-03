@@ -15,7 +15,6 @@ import '@snui/vue-web'
 import '@snui/uni'
 import '@snui/tokens'
 import '@snui/style-packs'
-import '@snui/ai'
 
 /**
  * Register all docs-site components as VitePress global components.

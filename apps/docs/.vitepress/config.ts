@@ -192,13 +192,14 @@ export default defineConfig({
     // Without explicit optimizeDeps entries, vite serves them on first request
     // which can race with vitepress SSR — resulting in 'demo failed to load'
     // on the client. Forcing them into optimizeDeps pre-bundles the imports.
+    // Note: @snui/ai is server-only (uses node:fs / node:url) — kept out of
+    // client optimize list. It's only used by MCP Server (future AUI-AI-004).
     optimizeDeps: {
       include: [
         '@snui/vue-web',
         '@snui/uni',
         '@snui/tokens',
         '@snui/style-packs',
-        '@snui/ai',
         'vue',
       ],
     },
