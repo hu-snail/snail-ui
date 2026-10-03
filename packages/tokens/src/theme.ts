@@ -27,8 +27,14 @@ export interface ThemeDefinition {
   readonly name: string;
   /** Optional primitive color override (full or partial). */
   readonly primitive?: Partial<PrimitiveTokens['color']>;
-  /** Optional semantic color override. */
-  readonly semantic?: Partial<SemanticTokens['color']>;
+  /** Optional semantic color override — each color sub-shape may be partially overridden. */
+  readonly semantic?: Partial<{
+    readonly text: Partial<SemanticTokens['color']['text']>;
+    readonly background: Partial<SemanticTokens['color']['background']>;
+    readonly border: Partial<SemanticTokens['color']['border']>;
+    readonly action: Partial<SemanticTokens['color']['action']>;
+    readonly feedback: Partial<SemanticTokens['color']['feedback']>;
+  }>;
 }
 
 /** A Style provides a partial override of primitive radius/shadow + component tokens. */
@@ -38,7 +44,12 @@ export interface StyleDefinition {
     readonly radius?: Partial<PrimitiveTokens['radius']>;
     readonly shadow?: Partial<PrimitiveTokens['shadow']>;
   };
-  readonly component?: Partial<ComponentTokens>;
+  /** Component tokens are deeply partial — each component sub-shape may be partially overridden. */
+  readonly component?: Partial<{
+    readonly button: Partial<ComponentTokens['button']>;
+    readonly input: Partial<ComponentTokens['input']>;
+    readonly card: Partial<ComponentTokens['card']>;
+  }>;
 }
 
 /** A Density provides a partial override of size / spacing / font primitives. */
@@ -58,7 +69,11 @@ export interface DensityDefinition {
 export interface VariantDefinition {
   readonly name: string;
   /** Component-name → partial token override. */
-  readonly component?: Partial<ComponentTokens>;
+  readonly component?: Partial<{
+    readonly button: Partial<ComponentTokens['button']>;
+    readonly input: Partial<ComponentTokens['input']>;
+    readonly card: Partial<ComponentTokens['card']>;
+  }>;
 }
 
 /** Combined environment passed to the resolver. */
