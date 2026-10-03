@@ -12,6 +12,7 @@
 
 export { default as SnButton } from './button/SnButton.vue'
 export { default as SnConfigProvider } from './config-provider/SnConfigProvider.vue'
+export { default as SnDivider } from './divider/SnDivider.vue'
 
 export { SnUI, default } from './install.js'
 export type { SnUIOptions } from './install.js'
