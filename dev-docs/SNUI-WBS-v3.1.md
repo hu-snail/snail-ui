@@ -89,7 +89,7 @@ AUI-{模块}-{编号}
 | AUI-WEB-003 | SnText | 🔵 |
 | AUI-WEB-004 | SnLayout（Row / Col）| 🔵 |
 | AUI-WEB-005 | SnConfigProvider | ✅ |
-| AUI-WEB-006 | SnDivider | 🔵 |
+| AUI-WEB-006 | SnDivider | ✅ |
 | AUI-WEB-007 | SnDropdown | 🔵（Web 专属）|
 | AUI-WEB-008 | SnTooltip | 🔵（Web 专属）|
 | AUI-WEB-009 | SnSplitter | 🔵（Web 专属）|
@@ -179,7 +179,7 @@ AUI-{模块}-{编号}
 | AUI-MP-002 | sn-icon | 🔵 |
 | AUI-MP-003 | sn-cell | 🔵（移动端列表行）|
 | AUI-MP-004 | sn-config-provider | ✅ |
-| AUI-MP-005 | sn-divider | 🔵 |
+| AUI-MP-005 | sn-divider | ✅ |
 | AUI-MP-006 | sn-tag | 🔵（移动端常用）|
 | AUI-MP-007 | sn-avatar | 🔵（移动端常用）|
 | AUI-MP-008 | sn-badge | 🔵（移动端常用）|
