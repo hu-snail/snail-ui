@@ -29,7 +29,7 @@ features:
   - title: Token First
     details: A shared base layer (@snui/tokens → --aui-*) + per-end alias packages (@snui/tokens-web → --sn-web-*, @snui/tokens-mp → --sn-mp-*). Components consume end-specific Tokens.
   - title: Style Pack First
-    details: Cross-end shared style packs. Token + skin CSS + resources layered. Each Pack declares end: web / mp / both. Web has enterprise brand themes; uni has mp-taobao / mp-douyin mobile brand themes.
+    details: Cross-end shared style packs. Token + skin CSS + resources layered. Each Pack declares an end field (values web / mp / both). Web has enterprise brand themes; uni has mp-taobao / mp-douyin mobile brand themes.
   - title: AI Native
     details: AI can read every component, produce prototypes, modify UIs. snail-ui.skill.md is the behavior contract; MCP Server filters by end; ai-meta.json groups components by end.
 ---

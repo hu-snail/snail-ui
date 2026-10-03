@@ -29,7 +29,7 @@ features:
   - title: Token First
     details: 统一底层 @snui/tokens 输出 --aui-* 原始层；每端通过独立别名包 (@snui/tokens-web / @snui/tokens-mp) 映射到 --sn-{end}-*。组件消费端独立 Token。
   - title: Style Pack First
-    details: 跨端共用风格包系统。Token + 皮肤 CSS + 资源三层。每个 Pack 标注 end: web / mp / both。Web 端有 web 品牌主题；uni 端有 mp-taobao / mp-douyin 等移动品牌主题。
+    details: 跨端共用风格包系统。Token + 皮肤 CSS + 资源三层。每个 Pack 标注 end 字段（取值 web / mp / both）。Web 端有 web 品牌主题；uni 端有 mp-taobao / mp-douyin 等移动品牌主题。
   - title: AI Native
     details: AI 能读懂每个端组件、产出原型、修改 UI。snail-ui.skill.md 写 AI 行为契约；MCP Server 4 工具按 end 过滤；ai-meta.json 按端分组。
 ---
