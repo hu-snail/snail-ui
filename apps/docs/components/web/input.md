@@ -6,46 +6,9 @@
 
 ---
 
-## Live render · 真实框架挂载
-
-下面所有输入框通过 `createVueRenderer().mount()` 挂载，刷新页面即可重新挂载。
-
-### Types（input type）
-
-<ComponentPreview name="input" :raw-props="{ value: 'text input', type: 'text', placeholder: '文本输入' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'a@b.dev', type: 'email', placeholder: '邮箱' }" />
-<ComponentPreview name="input" :raw-props="{ value: '', type: 'password', placeholder: '密码' }" />
-<ComponentPreview name="input" :raw-props="{ value: '13900000000', type: 'tel', placeholder: '手机号' }" />
-
-### Sizes（尺寸）
-
-<ComponentPreview name="input" :raw-props="{ value: 'Small', size: 'small', placeholder: '小号' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Medium', size: 'medium', placeholder: '中号' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Large', size: 'large', placeholder: '大号' }" />
-
-### States（状态）
-
-<ComponentPreview name="input" :raw-props="{ value: '禁用态', disabled: true }" />
-<ComponentPreview name="input" :raw-props="{ value: '只读态', readonly: true }" />
-
-### Clearable（可清除）
-
-<ComponentPreview name="input" :raw-props="{ value: '点击右侧 × 清空', clearable: true }" />
-
-### Length constraints（长度约束）
-
-<ComponentPreview name="input" :raw-props="{ value: '', placeholder: '最多 8 字符', maxlength: 8, name: 'username' }" />
-
-### 受控用法示例
-
-<ComponentPreview
-  name="input"
-  :raw-props="{ value: 'controlled', name: 'email', type: 'email', placeholder: 'you@aui.dev' }"
-/>
-
----
-
 ## 基本用法
+
+<Demo name="input-web" />
 
 ```vue
 <script setup lang="ts">

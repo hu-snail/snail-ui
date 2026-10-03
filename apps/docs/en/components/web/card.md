@@ -6,60 +6,9 @@
 
 ---
 
-## Live render · real framework mount
-
-### Default (default variant + bordered)
-
-<ComponentPreview name="card" :raw-props="{ title: 'Order #1024', description: 'Placed today · shipping in 2 days' }" :children='JSON.stringify([
-  { id: "amount", type: "card", props: { title: "Amount", bordered: false, padding: "sm" } }
-])' />
-
-### Outlined
-
-<ComponentPreview name="card" :raw-props="{ variant: 'outlined', title: 'Outlined card', description: 'Stronger border, no shadow' }" />
-
-### Elevated
-
-<ComponentPreview name="card" :raw-props="{ variant: 'elevated', title: 'Elevated card', description: 'Borderless + drop shadow' }" />
-
-### Padding variants
-
-<ComponentPreview name="card" :raw-props="{ title: 'No padding', padding: 'none', bordered: true }" :children='JSON.stringify([
-  { id: "i", type: "input", props: { value: "tight content", type: "text" } }
-])' />
-
-<ComponentPreview name="card" :raw-props="{ title: 'Large padding', padding: 'lg', bordered: true, shadow: true }" :children='JSON.stringify([
-  { id: "b", type: "button", props: { variant: "primary", text: "Click me" } }
-])' />
-
-### No header / No border
-
-<ComponentPreview name="card" :raw-props="{ bordered: false }" :children='JSON.stringify([
-  { id: "t", type: "button", props: { variant: "ghost", text: "Action" } }
-])' />
-
-### On dark surface
-
-<ComponentPreview name="card" dark :raw-props="{ title: 'On dark', description: 'High-contrast card', bordered: true, shadow: true }" :children='JSON.stringify([
-  { id: "b", type: "button", props: { variant: "primary", text: "Confirm" } }
-])' />
-
-### Order summary (Form + Input + Button composition)
-
-<ComponentPreview
-  name="card"
-  :raw-props="{ title: 'Order #1024', description: 'Pending payment', bordered: true, shadow: true }"
-  :children='JSON.stringify([
-    { id: "f", type: "form-item", props: { prop: "voucher", label: "Voucher" }, children: [
-      { id: "i", type: "input", props: { value: "", placeholder: "V-AUI-1024", name: "voucher" } }
-    ]},
-    { id: "b", type: "button", props: { variant: "primary", text: "Apply", type: "submit" } }
-  ])'
-/>
-
----
-
 ## Basic usage
+
+<Demo name="card-web" />
 
 ```vue
 <script setup lang="ts">

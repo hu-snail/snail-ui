@@ -42,6 +42,7 @@ const sidebar = {
       text: 'Web 组件',
       items: [
         { text: 'Button 按钮', link: '/components/web/button' },
+        { text: 'Divider 分割线', link: '/components/web/divider' },
       ],
     },
   ],
@@ -50,6 +51,7 @@ const sidebar = {
       text: 'uni-app 组件',
       items: [
         { text: 'Button 按钮', link: '/components/uni/button' },
+        { text: 'Divider 分割线', link: '/components/uni/divider' },
       ],
     },
   ],
@@ -122,6 +124,7 @@ const enSidebar = {
       text: 'Web components',
       items: [
         { text: 'Button', link: '/en/components/web/button' },
+        { text: 'Divider', link: '/en/components/web/divider' },
       ],
     },
   ],
@@ -130,6 +133,7 @@ const enSidebar = {
       text: 'uni-app components',
       items: [
         { text: 'Button', link: '/en/components/uni/button' },
+        { text: 'Divider', link: '/en/components/uni/divider' },
       ],
     },
   ],

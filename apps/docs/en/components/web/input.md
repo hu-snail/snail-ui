@@ -6,46 +6,9 @@ Controlled input control with Token alias-driven styles and a set of cross-brows
 
 ---
 
-## Live render · real framework mount
-
-The following inputs are mounted via `createVueRenderer().mount()`; refresh to remount.
-
-### Types
-
-<ComponentPreview name="input" :raw-props="{ value: 'text input', type: 'text', placeholder: 'Text' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'a@b.dev', type: 'email', placeholder: 'Email' }" />
-<ComponentPreview name="input" :raw-props="{ value: '', type: 'password', placeholder: 'Password' }" />
-<ComponentPreview name="input" :raw-props="{ value: '13900000000', type: 'tel', placeholder: 'Phone' }" />
-
-### Sizes
-
-<ComponentPreview name="input" :raw-props="{ value: 'Small', size: 'small', placeholder: 'Small' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Medium', size: 'medium', placeholder: 'Medium' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Large', size: 'large', placeholder: 'Large' }" />
-
-### States
-
-<ComponentPreview name="input" :raw-props="{ value: 'Disabled', disabled: true }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Readonly', readonly: true }" />
-
-### Clearable
-
-<ComponentPreview name="input" :raw-props="{ value: 'Click × to clear', clearable: true }" />
-
-### Length constraints
-
-<ComponentPreview name="input" :raw-props="{ value: '', placeholder: 'Max 8 chars', maxlength: 8, name: 'username' }" />
-
-### Controlled
-
-<ComponentPreview
-  name="input"
-  :raw-props="{ value: 'controlled', name: 'email', type: 'email', placeholder: 'you@aui.dev' }"
-/>
-
----
-
 ## Basic usage
+
+<Demo name="input-web" />
 
 ```vue
 <script setup lang="ts">

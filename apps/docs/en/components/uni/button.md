@@ -30,6 +30,8 @@ import { SnButton } from '@snui/uni'
 
 ## Basic usage
 
+<Demo name="button-mp" />
+
 ```vue
 <template>
   <view class="container">

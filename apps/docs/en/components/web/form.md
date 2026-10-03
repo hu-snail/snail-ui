@@ -6,66 +6,9 @@ Native `<form>` container + FormItem sub-components, with FormData auto-collecti
 
 ---
 
-## Live render · real framework mount
-
-### Login form (minimal)
-
-<ComponentPreview name="form" :raw-props="{ formId: 'login', layout: 'vertical' }" :children='JSON.stringify([
-  { id: "email-item", type: "form-item", props: { prop: "email", label: "Email", required: true }, children: [
-    { id: "email", type: "input", props: { value: "", type: "email", name: "email", placeholder: "you@aui.dev" } }
-  ]},
-  { id: "password-item", type: "form-item", props: { prop: "password", label: "Password", required: true }, children: [
-    { id: "password", type: "input", props: { value: "", type: "password", name: "password", placeholder: "••••••" } }
-  ]},
-  { id: "submit", type: "button", props: { variant: "primary", text: "Sign in", type: "submit" } }
-])' />
-
-### Disabled form
-
-<ComponentPreview name="form" :raw-props="{ formId: 'signup', disabled: true, layout: 'vertical' }" :children='JSON.stringify([
-  { id: "n", type: "form-item", props: { prop: "name", label: "Name" }, children: [
-    { id: "ni", type: "input", props: { value: "Ada Lovelace", name: "name", type: "text" } }
-  ]},
-  { id: "s", type: "button", props: { variant: "primary", text: "Submit", type: "submit" } }
-])' />
-
-### Loading form
-
-<ComponentPreview name="form" :raw-props='{ formId: "loading-demo", loading: true, layout: "vertical" }' :children='JSON.stringify([
-  { id: "e", type: "form-item", props: { prop: "email", label: "Email" }, children: [
-    { id: "ei", type: "input", props: { value: "loading@aui.dev", type: "email", name: "email" } }
-  ]},
-  { id: "s", type: "button", props: { variant: "primary", text: "Submit", type: "submit", loading: true } }
-])' />
-
-### Error wiring (FormItem error echo)
-
-<ComponentPreview name="form" :raw-props="{ formId: 'errors' }" :children='JSON.stringify([
-  { id: "email", type: "form-item", props: { prop: "email", label: "Email", error: "Invalid email format" }, children: [
-    { id: "email-input", type: "input", props: { value: "broken", type: "email", name: "email" } }
-  ]},
-  { id: "submit", type: "button", props: { variant: "danger", text: "Try again", type: "submit" } }
-])' />
-
-### Full login flow
-
-<ComponentPreview
-  name="form"
-  :raw-props="{ formId: 'full', layout: 'vertical' }"
-  :children='JSON.stringify([
-    { id: "f-name", type: "form-item", props: { prop: "name", label: "Name", required: true }, children: [
-      { id: "i-name", type: "input", props: { value: "Ada", type: "text", name: "name" } }
-    ]},
-    { id: "f-email", type: "form-item", props: { prop: "email", label: "Email", required: true }, children: [
-      { id: "i-email", type: "input", props: { value: "ada@aui.dev", type: "email", name: "email" } }
-    ]},
-    { id: "f-submit", type: "button", props: { variant: "primary", text: "Sign in", type: "submit" } }
-  ])'
-/>
-
----
-
 ## Basic usage
+
+<Demo name="form-web" />
 
 ```vue
 <script setup lang="ts">
