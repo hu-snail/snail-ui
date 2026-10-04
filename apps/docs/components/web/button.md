@@ -4,46 +4,21 @@
 
 ## 基础用法
 
-<Demo name="button-web" />
-
-```vue
-<script setup lang="ts">
-import { SnButton } from '@snui/vue-web'
-</script>
-
-<template>
-  <SnButton>默认</SnButton>
-  <SnButton type="primary">主要</SnButton>
-  <SnButton type="success">成功</SnButton>
-  <SnButton type="warning">警告</SnButton>
-  <SnButton type="danger">危险</SnButton>
-</template>
-```
+<Demo name="button-web-basic" description="六种语义类型：default / primary / success / warning / danger / info。" />
 
 ## 尺寸
 
-`tiny` / `small` / `medium` / `large` 四档。
+`tiny` / `small` / `medium` / `large` 四档，对应 `--sn-web-button-height-{tiny,small,medium,large}`。
 
-```vue
-<SnButton size="tiny">tiny</SnButton>
-<SnButton size="small">small</SnButton>
-<SnButton size="medium">medium</SnButton>
-<SnButton size="large">large</SnButton>
-```
+<Demo name="button-web-size" description="四档高度，覆盖从紧凑列表到首屏 CTA 的全部场景。" />
 
 ## 块级与圆角
 
-```vue
-<SnButton block type="primary">块级按钮</SnButton>
-<SnButton round type="success">圆角按钮</SnButton>
-```
+<Demo name="button-web-shape" description="block 占满父容器宽度，round 应用胶囊形圆角。" />
 
 ## 状态
 
-```vue
-<SnButton disabled>禁用</SnButton>
-<SnButton loading>加载中</SnButton>
-```
+<Demo name="button-web-state" description="disabled 完全禁用；loading 显示 spinner 且不可点击；可手动触发 loading 状态。" />
 
 `loading` 状态下按钮不可点击，自动显示旋转图标。
 

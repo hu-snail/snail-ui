@@ -2,27 +2,23 @@
 
 `SnDivider` 是 `@snui/vue-web`（PC 桌面端）的视觉分隔组件。所有视觉属性通过 `--sn-web-*` Token 别名层驱动。
 
----
-
 ## 实时预览
 
-<Demo name="divider-web" />
-
----
+<Demo name="divider-web" description="水平 / 虚线 / 带文字 / marginSize / 垂直 等全部 variants 的综合预览。" />
 
 ## 基础用法
 
-```vue
-<script setup lang="ts">
+`<SnDivider />` 即用，组件根据父容器自动撑开：
+
+```ts
 import { SnDivider } from '@snui/vue-web'
 import '@snui/tokens-web/styles'
-</script>
+```
 
-<template>
-  <p>上方文本</p>
-  <SnDivider />
-  <p>下方文本（horizontal 默认）</p>
-</template>
+```html
+<p>上方文本</p>
+<SnDivider />
+<p>下方文本（horizontal 默认）</p>
 ```
 
 ## API
@@ -42,19 +38,11 @@ import '@snui/tokens-web/styles'
 | --- | --- |
 | `default` | 中间文字（仅 horizontal 方向渲染）|
 
----
-
----
-
 ## 无障碍
 
 - `role="separator"`
 - `aria-orientation` 跟随 `direction` prop
 - 纯装饰，无键盘交互
-
----
-
----
 
 ## 相关
 

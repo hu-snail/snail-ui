@@ -2,55 +2,25 @@
 
 `SnButton` is the most common interactive component in `@snui/vue-web` (PC desktop). All visual properties are driven by the `--sn-web-*` Token alias layer.
 
----
-
 ## Basic usage
 
-<Demo name="button-web" />
-
-```vue
-<script setup lang="ts">
-import { SnButton } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-</script>
-
-<template>
-  <SnButton>Default</SnButton>
-  <SnButton type="primary">Primary</SnButton>
-  <SnButton type="success">Success</SnButton>
-  <SnButton type="warning">Warning</SnButton>
-  <SnButton type="danger">Danger</SnButton>
-</template>
-```
+<Demo name="button-web-basic" description="Six semantic types: default / primary / success / warning / danger / info." />
 
 ## Sizes
 
 `tiny` / `small` / `medium` / `large` correspond to `--sn-web-button-height-{tiny,small,medium,large}`.
 
-```vue
-<SnButton size="tiny">tiny</SnButton>
-<SnButton size="small">small</SnButton>
-<SnButton size="medium">medium</SnButton>
-<SnButton size="large">large</SnButton>
-```
+<Demo name="button-web-size" description="Four height tiers, covering everything from compact lists to hero CTAs." />
 
 ## Block & round
 
-```vue
-<SnButton block type="primary">Block</SnButton>
-<SnButton round type="success">Round</SnButton>
-```
+<Demo name="button-web-shape" description="block spans the parent width; round applies pill-shaped corners." />
 
 ## States
 
-```vue
-<SnButton disabled>Disabled</SnButton>
-<SnButton loading>Loading</SnButton>
-```
+<Demo name="button-web-state" description="disabled fully disables; loading shows spinner and is unclickable; can manually toggle loading state." />
 
 While `loading`, the button is unclickable and shows a spinner. Override via the `loading` slot.
-
----
 
 ## API
 
@@ -89,8 +59,6 @@ type ButtonType = 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'in
 type ButtonSize = 'tiny' | 'small' | 'medium' | 'large'
 ```
 
----
-
 ## Token customization (Web alias layer)
 
 Web component CSS uses only `--sn-web-*`. Override:
@@ -106,8 +74,6 @@ Web component CSS uses only `--sn-web-*`. Override:
 
 > **Forbidden**: Web component CSS must not reference `--sn-mp-*` or `--aui-*` directly. SnButton source CSS internally uses `--sn-web-*`. To override: re-declare `--sn-web-*` aliases in `:root` (aliases ultimately reference `--aui-*`).
 
----
-
 ## Accessibility
 
 - Native `<button>`, `role="button"`
@@ -116,10 +82,6 @@ Web component CSS uses only `--sn-web-*`. Override:
 - Supports `aria-label` override
 - Keyboard Enter / Space trigger click natively
 
----
-
----
-
 ## Related
 
-- uni: [`sn-button`](/components/uni/button)
+- uni: [`sn-button`](/en/components/uni/button)

@@ -2,31 +2,9 @@
 
 `<section role="region">` 容器，支持 title / description 头部、Token 别名层驱动的阴影与边框、可选 body 与 footer 插槽。
 
----
-
 ## 基本用法
 
-<Demo name="card-web" />
-
-```vue
-<script setup lang="ts">
-import { SnCard, SnForm, SnFormItem, SnInput, SnButton } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-</script>
-
-<template>
-  <SnCard title="Order #1024" description="Pending payment" bordered shadow>
-    <SnForm>
-      <SnFormItem label="Voucher">
-        <SnInput placeholder="V-AUI-1024" />
-      </SnFormItem>
-      <SnButton type="primary">Apply</SnButton>
-    </SnForm>
-  </SnCard>
-</template>
-```
-
----
+<Demo name="card-web" description="两种 variant：default（带边框）+ elevated（带阴影无边框）。展示 title / description 头部 + body + footer。" />
 
 ## Props
 
@@ -39,10 +17,6 @@ import '@snui/tokens-web/styles'
 | `bordered` | `boolean` | `true` | 显示边框 |
 | `shadow` | `boolean` | `false` | 显示阴影 |
 
----
-
----
-
 ## Accessibility
 
 | Attribute | Value |
@@ -50,14 +24,6 @@ import '@snui/tokens-web/styles'
 | `role` | `region` |
 | `aria-labelledby` | 指向 `<h3>` 标题元素 id（当 `title` 存在时） |
 | `aria-describedby` | 指向 description 元素 id（当 `description` 存在时） |
-
----
-
----
-
----
-
----
 
 ## 嵌套与子节点
 

@@ -2,31 +2,9 @@
 
 `<section role="region">` container with `title` / `description` header, Token alias-driven shadow & border, optional body & footer slots.
 
----
-
 ## Basic usage
 
-<Demo name="card-web" />
-
-```vue
-<script setup lang="ts">
-import { SnCard, SnForm, SnFormItem, SnInput, SnButton } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-</script>
-
-<template>
-  <SnCard title="Order #1024" description="Pending payment" bordered shadow>
-    <SnForm>
-      <SnFormItem label="Voucher">
-        <SnInput placeholder="V-AUI-1024" />
-      </SnFormItem>
-      <SnButton type="primary">Apply</SnButton>
-    </SnForm>
-  </SnCard>
-</template>
-```
-
----
+<Demo name="card-web" description="Two variants: default (with border) + elevated (with shadow, borderless). Shows title / description header + body + footer." />
 
 ## Props
 
@@ -39,10 +17,6 @@ import '@snui/tokens-web/styles'
 | `bordered` | `boolean` | `true` | Show border |
 | `shadow` | `boolean` | `false` | Show shadow |
 
----
-
----
-
 ## Accessibility
 
 | Attribute | Value |
@@ -51,17 +25,9 @@ import '@snui/tokens-web/styles'
 | `aria-labelledby` | points to `<h3>` title id (when `title` exists) |
 | `aria-describedby` | points to description id (when `description` exists) |
 
----
-
----
-
----
-
 ## Source
 
 Contract shared across ends, Web renderer in `@snui/vue-web`.
-
----
 
 ## Nesting & children
 

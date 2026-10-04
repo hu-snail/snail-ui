@@ -2,27 +2,9 @@
 
 受控输入控件，Token 别名层驱动的样式方案与一组跨浏览器原生 input 事件。映射到真实的 `<input>` DOM 元素，由 `@snui/vue-web` 渲染。
 
----
-
 ## 基本用法
 
-<Demo name="input-web" />
-
-```vue
-<script setup lang="ts">
-import { ref } from 'vue'
-import { SnInput } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-
-const email = ref('')
-</script>
-
-<template>
-  <SnInput v-model="email" type="email" placeholder="you@aui.dev" clearable />
-</template>
-```
-
----
+<Demo name="input-web" description="六种使用形态：text / email / password / disabled / readonly / clearable（含手动清空按钮）。" />
 
 ## Props
 
@@ -49,10 +31,6 @@ const email = ref('')
 | `blur` | `blur` | `FocusEvent` | 失去焦点 |
 | `clear` | `click`（清除按钮） | — | 用户点击清除按钮（`clearable=true`）；同时 emit 一对 `input`/`change`，值为 `''` |
 
----
-
----
-
 ## Accessibility
 
 | Attribute | Value |
@@ -63,17 +41,11 @@ const email = ref('')
 | `aria-readonly` | 绑定到 `props.readonly` |
 | `aria-placeholder` | 绑定到 `props.placeholder` |
 
----
-
----
-
----
-
 ## 与 Form 联动
 
 通常 Input 嵌入 `SnForm` / `SnFormItem` 容器，FormData 在原生 `<form>` submit 时自动收集带 `name` 的输入：
 
-```vue
+```html
 <SnForm @submit="onSubmit">
   <SnFormItem label="Email" required>
     <SnInput v-model="email" name="email" type="email" />
@@ -81,8 +53,6 @@ const email = ref('')
   <SnButton type="primary" html-type="submit">登录</SnButton>
 </SnForm>
 ```
-
----
 
 ## Source
 

@@ -2,16 +2,12 @@
 
 `sn-button` is the core interactive component in `@snui/uni` (mobile / miniprogram / H5). easycom auto-register, rpx for cross-device scaling.
 
----
-
 ## Auto-register (easycom)
 
 Conforms to easycom — **no import needed in templates**:
 
-```vue
-<template>
-  <sn-button type="primary">Submit</sn-button>
-</template>
+```html
+<sn-button type="primary">Submit</sn-button>
 ```
 
 easycom path: `^sn-(.*)` → `components/sn-$1/sn-$1.vue`.
@@ -24,65 +20,27 @@ import { SnButton } from '@snui/uni'
 
 > easycom is uni-app's official on-demand registration. **Web has no easycom** — explicit import required (`import { SnButton } from '@snui/vue-web'`).
 
----
-
 ## Basic usage
 
-<Demo name="button-mp" />
-
-```vue
-<template>
-  <view class="container">
-    <sn-button>Default</sn-button>
-    <sn-button type="primary">Primary</sn-button>
-    <sn-button type="success">Success</sn-button>
-    <sn-button type="warning">Warning</sn-button>
-    <sn-button type="danger">Danger</sn-button>
-  </view>
-</template>
-
-<script setup lang="ts">
-import '@snui/tokens-mp/styles'  // ← required: rpx alias layer
-</script>
-```
-
-> **Key difference**: uni side requires explicit `import '@snui/tokens-mp/styles'` (Web uses `import '@snui/tokens-web/styles'`).
-
----
+<Demo name="button-mp-basic" description="Five semantic types (no info — mobile doesn't need cool-tone weak alerts)." />
 
 ## Sizes
 
-`small` / `medium` / `large` (no `tiny` — mobile does not need it).
+`small` / `medium` / `large` (no `tiny` — mobile does not need it). Maps to `--sn-mp-button-height-{small,medium,large}` (auto-converted to rpx based on 750 design width).
 
-```vue
-<sn-button size="small">S</sn-button>
-<sn-button size="medium">M</sn-button>
-<sn-button size="large">L</sn-button>
-```
-
-Maps to `--sn-mp-button-height-{small,medium,large}` (auto-converted to rpx based on 750 design width).
-
----
+<Demo name="button-mp-size" description="Three height tiers, mobile usually only needs these three." />
 
 ## Block & round
 
 Block button (full parent width) is common on mobile:
 
-```vue
-<sn-button block type="primary">Block</sn-button>
-<sn-button round type="success">Round</sn-button>
-```
-
----
+<Demo name="button-mp-shape" description="block spans the parent width; round applies pill-shaped corners." />
 
 ## States
 
-```vue
-<sn-button disabled>Disabled</sn-button>
-<sn-button loading>Loading</sn-button>
-```
+<Demo name="button-mp-state" description="disabled fully disables; loading shows spinner and is unclickable; can manually toggle loading state." />
 
----
+> **Key difference**: uni side requires explicit `import '@snui/tokens-mp/styles'` (Web uses `import '@snui/tokens-web/styles'`).
 
 ## API
 
@@ -113,8 +71,6 @@ Block button (full parent width) is common on mobile:
 | icon | Custom icon |
 | loading | Custom loading icon |
 
----
-
 ## Cross-platform behavior
 
 | Platform | Behavior |
@@ -126,8 +82,6 @@ Block button (full parent width) is common on mobile:
 | Douyin miniprogram | Same as WeChat |
 
 Cross-platform consistency is guaranteed by uni-app, source unchanged.
-
----
 
 ## Token customization (uni alias layer + rpx)
 
@@ -153,10 +107,6 @@ page {
 
 > **Forbidden**: uni component CSS must not reference `--sn-web-*` or `--aui-*` directly. Override: via Style Pack or re-declare `--sn-mp-*` on `page`.
 
----
-
----
-
 ## Accessibility
 
 - `role="button"`
@@ -165,8 +115,6 @@ page {
 - Mobile tap (no keyboard)
 - Miniprogram semantic nodes (`button` wrapped by compiler)
 
----
-
 ## Related
 
-- Web: [`SnButton`](/components/web/button)
+- Web: [`SnButton`](/en/components/web/button)

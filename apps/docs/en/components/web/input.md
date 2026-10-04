@@ -2,27 +2,9 @@
 
 Controlled input control with Token alias-driven styles and a set of cross-browser native input events. Maps to a real `<input>` DOM element, rendered by `@snui/vue-web`.
 
----
-
 ## Basic usage
 
-<Demo name="input-web" />
-
-```vue
-<script setup lang="ts">
-import { ref } from 'vue'
-import { SnInput } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-
-const email = ref('')
-</script>
-
-<template>
-  <SnInput v-model="email" type="email" placeholder="you@aui.dev" clearable />
-</template>
-```
-
----
+<Demo name="input-web" description="Six usage forms: text / email / password / disabled / readonly / clearable (with manual clear button)." />
 
 ## Props
 
@@ -49,10 +31,6 @@ const email = ref('')
 | `blur` | `blur` | `FocusEvent` | Blurred |
 | `clear` | `click` (clear button) | — | User clicked × (when `clearable=true`); also emits `input`/`change` with `''` |
 
----
-
----
-
 ## Accessibility
 
 | Attribute | Value |
@@ -63,17 +41,11 @@ const email = ref('')
 | `aria-readonly` | bound to `props.readonly` |
 | `aria-placeholder` | bound to `props.placeholder` |
 
----
-
----
-
----
-
 ## Form integration
 
 Input typically nests inside `SnForm` / `SnFormItem`. FormData auto-collects named inputs on native `<form>` submit:
 
-```vue
+```html
 <SnForm @submit="onSubmit">
   <SnFormItem label="Email" required>
     <SnInput v-model="email" name="email" type="email" />
@@ -81,8 +53,6 @@ Input typically nests inside `SnForm` / `SnFormItem`. FormData auto-collects nam
   <SnButton type="primary" html-type="submit">Sign in</SnButton>
 </SnForm>
 ```
-
----
 
 ## Source
 

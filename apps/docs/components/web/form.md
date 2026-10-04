@@ -2,42 +2,9 @@
 
 原生 `<form>` 容器 + FormItem 子组件，支持 FormData 自动收集、字段级错误回显、disabled / loading 状态级联。
 
----
-
 ## 基本用法
 
-<Demo name="form-web" />
-
-```vue
-<script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { SnForm, SnFormItem, SnInput, SnButton } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-
-const form = reactive({ email: '', password: '' })
-const loading = ref(false)
-
-async function submit() {
-  loading.value = true
-  await new Promise(r => setTimeout(r, 1000))
-  loading.value = false
-}
-</script>
-
-<template>
-  <SnForm :model="form" layout="vertical" @submit="submit">
-    <SnFormItem label="邮箱" required>
-      <SnInput v-model="form.email" type="email" placeholder="you@aui.dev" />
-    </SnFormItem>
-    <SnFormItem label="密码" required>
-      <SnInput v-model="form.password" type="password" placeholder="••••••" />
-    </SnFormItem>
-    <SnButton type="primary" :loading="loading" html-type="submit">登录</SnButton>
-  </SnForm>
-</template>
-```
-
----
+<Demo name="form-web" description="垂直布局 Form + 两个 FormItem（Email / Password）+ 提交按钮。点击提交会触发 loading 状态并显示提交结果。" />
 
 ## Form props
 
@@ -76,10 +43,6 @@ async function submit() {
 | `submit` | `submit` | `Record<string, string>`（已清理的 values） |
 | `validate` | — | `{ valid: boolean; errors: Record<string, string> }` |
 
----
-
----
-
 ## Accessibility
 
 | Attribute | Value |
@@ -90,12 +53,6 @@ async function submit() {
 | `aria-disabled` | 绑定到 `Form.props.disabled` |
 | `aria-required` | 绑定到 `FormItem.props.required` |
 | `aria-invalid` | 绑定到 `has-error(error)` |
-
----
-
----
-
----
 
 ## Source
 

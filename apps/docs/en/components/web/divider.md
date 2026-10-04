@@ -2,27 +2,23 @@
 
 `SnDivider` is the visual separator component in `@snui/vue-web` (PC desktop). All visual properties are driven by the `--sn-web-*` Token alias layer.
 
----
-
 ## Live preview
 
-<Demo name="divider-web" />
-
----
+<Demo name="divider-web" description="Comprehensive preview of all variants: horizontal / dashed / with text / marginSize / vertical." />
 
 ## Basic usage
 
-```vue
-<script setup lang="ts">
+`<SnDivider />` is drop-in ready; the component auto-stretches to the parent container:
+
+```ts
 import { SnDivider } from '@snui/vue-web'
 import '@snui/tokens-web/styles'
-</script>
+```
 
-<template>
-  <p>Above</p>
-  <SnDivider />
-  <p>Below (horizontal default)</p>
-</template>
+```html
+<p>Above</p>
+<SnDivider />
+<p>Below (horizontal default)</p>
 ```
 
 ## API
@@ -42,19 +38,11 @@ import '@snui/tokens-web/styles'
 | --- | --- |
 | `default` | Text on the line (only horizontal) |
 
----
-
----
-
 ## Accessibility
 
 - `role="separator"`
 - `aria-orientation` follows `direction` prop
 - Pure decoration: no keyboard interaction
-
----
-
----
 
 ## Related
 

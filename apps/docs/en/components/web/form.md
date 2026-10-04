@@ -2,42 +2,9 @@
 
 Native `<form>` container + FormItem sub-components, with FormData auto-collection, field-level error echoing, and disabled / loading state cascading.
 
----
-
 ## Basic usage
 
-<Demo name="form-web" />
-
-```vue
-<script setup lang="ts">
-import { reactive, ref } from 'vue'
-import { SnForm, SnFormItem, SnInput, SnButton } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-
-const form = reactive({ email: '', password: '' })
-const loading = ref(false)
-
-async function submit() {
-  loading.value = true
-  await new Promise(r => setTimeout(r, 1000))
-  loading.value = false
-}
-</script>
-
-<template>
-  <SnForm :model="form" layout="vertical" @submit="submit">
-    <SnFormItem label="Email" required>
-      <SnInput v-model="form.email" type="email" placeholder="you@aui.dev" />
-    </SnFormItem>
-    <SnFormItem label="Password" required>
-      <SnInput v-model="form.password" type="password" placeholder="••••••" />
-    </SnFormItem>
-    <SnButton type="primary" :loading="loading" html-type="submit">Sign in</SnButton>
-  </SnForm>
-</template>
-```
-
----
+<Demo name="form-web" description="Vertical Form + two FormItems (Email / Password) + submit button. Click submit triggers loading state and displays the result." />
 
 ## Form props
 
@@ -48,7 +15,7 @@ async function submit() {
 | `loading` | `boolean` | `false` | Form loading (applies `aria-busy`) |
 | `initialValues` | `Record<string, unknown>` | `{}` | Initial values (FormData still auto-collected) |
 | `fields` | `FormField[]` | — | Field descriptor array; children tree is more common |
-| `formId` | `string` | — | Native `<form>` id |
+| `formId` | `string` | — | Native `<form>` element id |
 
 ## FormItem props
 
@@ -76,10 +43,6 @@ async function submit() {
 | `submit` | `submit` | `Record<string, string>` (sanitized values) |
 | `validate` | — | `{ valid: boolean; errors: Record<string, string> }` |
 
----
-
----
-
 ## Accessibility
 
 | Attribute | Value |
@@ -90,12 +53,6 @@ async function submit() {
 | `aria-disabled` | bound to `Form.props.disabled` |
 | `aria-required` | bound to `FormItem.props.required` |
 | `aria-invalid` | bound to `has-error(error)` |
-
----
-
----
-
----
 
 ## Source
 

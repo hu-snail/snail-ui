@@ -2,24 +2,18 @@
 
 `sn-divider` 是 `@snui/uni`（移动端 / 小程序 / H5）的视觉分隔组件。基于 easycom 自动注册，rpx 单位跨设备缩放。
 
----
-
 ## 实时预览
 
-<Demo name="divider-mp" />
-
----
+<Demo name="divider-mp" description="水平 / 虚线 / 带文字 / marginSize / 垂直 等全部 variants 的综合预览。" />
 
 ## 自动注册（easycom）
 
 组件符合 easycom 规范，**无需 import 即可在模板中直接使用**：
 
-```vue
-<template>
-  <p>上方文本</p>
-  <sn-divider />
-  <p>下方文本</p>
-</template>
+```html
+<p>上方文本</p>
+<sn-divider />
+<p>下方文本</p>
 ```
 
 如需显式 import：
@@ -27,8 +21,6 @@
 ```ts
 import { SnDivider } from '@snui/uni'
 ```
-
----
 
 ## API
 
@@ -47,12 +39,6 @@ import { SnDivider } from '@snui/uni'
 | 名称 | 说明 |
 | --- | --- |
 | `default` | 中间文字（仅 horizontal 渲染）|
-
----
-
----
-
----
 
 ## 相关
 
