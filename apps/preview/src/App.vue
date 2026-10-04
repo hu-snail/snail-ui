@@ -35,7 +35,7 @@ function toggleTheme(): void {
         <SnButton type="primary">Primary</SnButton>
         <SnButton type="success">Success</SnButton>
         <SnButton type="warning">Warning</SnButton>
-        <SnButton type="danger">Danger</SnButton>
+        <SnButton type="error">Danger</SnButton>
         <SnButton type="info">Info</SnButton>
       </div>
     </section>
