@@ -3,16 +3,21 @@
 // barrel at dist/styles/index.css.
 //
 // Token sources (resolved in priority order, first found wins):
-//   1. packages/vue-web/src/styles/index.css      (web-specific overrides)
-//   2. ../tokens-web/styles/index.css             (--sn-web-* alias layer)
-//   3. ../tokens/styles/index.css                 (--aui-* primitive layer)
+//   1. ../tokens/styles/index.css          (--aui-* primitive layer)
+//   2. ../tokens-web/styles/index.css      (--sn-web-* alias layer)
+//   3. src/styles/index.css                (web-specific overrides;
 //
-// vite emits the component CSS first (because of assetFileNames:
+//                                           STRIP @import rules — they
+//                                           don't survive being placed
+//                                           after sibling tokens, and
+//                                           they break vite's CSS parser
+//                                           which only allows @import
+//                                           at the top of the file)
+//
+// vite emits the component CSS first (assetFileNames:
 // 'styles/index.css' in vite.config.js). This script runs after
-// `vite build` and PREPENDS the global tokens to the same file so consumers
-// get one barrel: `@snui/vue-web/styles` = tokens + components in order:
-//   1. global tokens (so component CSS can reference --sn-* vars)
-//   2. component scoped styles
+// `vite build` and PREPENDS the global tokens to the same file so
+// consumers get one barrel: `@snui/vue-web/styles` = tokens + components.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -31,16 +36,26 @@ const dst = componentCss
 
 mkdirSync(dirname(dst), { recursive: true })
 
+function stripAtImports(css) {
+  // Drop @import rules + the line that contains them. They don't survive
+  // being placed after non-@import content per CSS spec, and vite's CSS
+  // parser refuses to process them at non-leading positions.
+  return css
+    .split('\n')
+    .filter((line) => !/^\s*@import\b/i.test(line))
+    .join('\n')
+}
+
 let tokensBundle = ''
 for (const src of sources) {
   if (existsSync(src)) {
-    tokensBundle += readFileSync(src, 'utf8') + '\n'
+    tokensBundle += stripAtImports(readFileSync(src, 'utf8')) + '\n'
   }
 }
 
 let body = ''
 if (existsSync(componentCss)) {
-  body = readFileSync(componentCss, 'utf8')
+  body = stripAtImports(readFileSync(componentCss, 'utf8'))
 }
 
 // Idempotent on repeated builds: only prepend tokens if not already there.

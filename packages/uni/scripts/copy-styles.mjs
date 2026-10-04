@@ -3,9 +3,10 @@
 // barrel at dist/styles/index.css.
 //
 // Token sources (resolved in priority order, first found wins):
-//   1. packages/uni/src/styles/index.css           (uni-specific overrides)
+//   1. ../tokens/styles/index.css                  (--aui-* primitive layer)
 //   2. ../tokens-mp/styles/index.css               (--sn-mp-* alias layer)
-//   3. ../tokens/styles/index.css                  (--aui-* primitive layer)
+//   3. src/styles/index.css                        (uni-specific overrides;
+//                                                  STRIP @import rules)
 //
 // Mirrors packages/vue-web/scripts/copy-styles.mjs.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
@@ -26,20 +27,25 @@ const dst = componentCss
 
 mkdirSync(dirname(dst), { recursive: true })
 
+function stripAtImports(css) {
+  return css
+    .split('\n')
+    .filter((line) => !/^\s*@import\b/i.test(line))
+    .join('\n')
+}
+
 let tokensBundle = ''
 for (const src of sources) {
   if (existsSync(src)) {
-    tokensBundle += readFileSync(src, 'utf8') + '\n'
+    tokensBundle += stripAtImports(readFileSync(src, 'utf8')) + '\n'
   }
 }
 
 let body = ''
 if (existsSync(componentCss)) {
-  body = readFileSync(componentCss, 'utf8')
+  body = stripAtImports(readFileSync(componentCss, 'utf8'))
 }
 
-// Only prepend tokens if they aren't already at the top of dst (idempotency
-// on repeated builds).
 const tokensSignature = tokensBundle.trim().slice(0, 80)
 if (tokensBundle && !body.startsWith(tokensSignature)) {
   writeFileSync(dst, `${tokensBundle}\n${body}`, 'utf8')
