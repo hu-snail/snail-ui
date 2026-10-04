@@ -12,9 +12,17 @@
 export { default as SnButton } from './components/sn-button/sn-button.vue'
 export { default as SnConfigProvider } from './components/sn-config-provider/sn-config-provider.vue'
 export { default as SnDivider } from './components/sn-divider/sn-divider.vue'
+export { default as SnForm } from './components/sn-form/sn-form.vue'
+export { default as SnFormItem } from './components/sn-form/sn-form-item.vue'
 export { default as SnIcon } from './components/sn-icon/sn-icon.vue'
 export type { IconData } from './components/sn-icon/sn-icon.vue'
 export { default as SnInput } from './components/sn-input/sn-input.vue'
+export type {
+  FormRule,
+  FormRules,
+  FormContext,
+  FormItemHandle,
+} from './components/sn-form/sn-form-types'
 
 // Uni-end icon name registry (mirrors web-end API surface).
 export {
