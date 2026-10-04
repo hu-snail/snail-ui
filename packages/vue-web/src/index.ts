@@ -13,6 +13,16 @@
 export { default as SnButton } from './button/SnButton.vue'
 export { default as SnConfigProvider } from './config-provider/SnConfigProvider.vue'
 export { default as SnDivider } from './divider/SnDivider.vue'
+export { default as SnIcon } from './icon/SnIcon.vue'
+export {
+  registerSnIcons,
+  clearSnIcons,
+  resolveIconByName,
+} from './icon/sn-icon-registry'
+export type {
+  IconComponent,
+  IconComponentProps,
+} from './icon/sn-icon-registry'
 
 export { SnUI, default } from './install.js'
 export type { SnUIOptions } from './install.js'
