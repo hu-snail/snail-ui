@@ -1,59 +1,99 @@
-# Form · Web (PC)
+# Form · Web
 
-Native `<form>` container + FormItem sub-components, with FormData auto-collection, field-level error echoing, and disabled / loading state cascading.
+Form orchestrator `SnForm` + field wrapper `SnFormItem`. Provide/inject plumbing, unified validate / reset / submit.
 
-## Basic usage
+## Basic
 
-<Demo name="form-web" description="Vertical Form + two FormItems (Email / Password) + submit button. Click submit triggers loading state and displays the result." />
+<Demo name="form-basic" description="Basic model + v-model + submit handler." />
 
-## Form props
+## FormRule (validation)
+
+<Demo name="form-rules" description="Every FormRule kind: required / type / pattern / length / numeric bounds / custom validator / async." />
+
+## Label position & width
+
+<Demo name="form-label" description="labelPosition: left / right / top + labelWidth." />
+
+## Inline label icon
+
+<Demo name="form-icon" description="icon / iconName props render an icon inside the label (SnIcon + lucide)." />
+
+## Reset / validate / submit
+
+<Demo name="form-reset-submit" description="formRef.validate() / validateField() / resetFields() / clearValidate(), html-type submit." />
+
+## Disabled form
+
+<Demo name="form-disabled" description="SnForm.disabled cascades into every FormItem." />
+
+## SnForm Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `layout` | `'horizontal' \| 'vertical'` | `'vertical'` | Layout direction |
-| `disabled` | `boolean` | `false` | Disable entire form (cascading) |
-| `loading` | `boolean` | `false` | Form loading (applies `aria-busy`) |
-| `initialValues` | `Record<string, unknown>` | `{}` | Initial values (FormData still auto-collected) |
-| `fields` | `FormField[]` | — | Field descriptor array; children tree is more common |
-| `formId` | `string` | — | Native `<form>` element id |
+| `model` | `Record<string, unknown>` | (required) | Reactive model. |
+| `rules` | `FormRules` | `{}` | Per-prop validation rules. |
+| `novalidate` | `boolean` | `true` | Disable browser HTML5 validation. |
+| `showMessage` | `boolean` | `true` | Show inline error / warning. |
+| `statusIcon` | `boolean` | `false` | Status icon (Phase 1 text-only). |
+| `labelPosition` | `left \| right \| top` | `right` | Form-wide label position. |
+| `labelWidth` | `number \| string` | `auto` | Form-wide label column width. |
 
-## FormItem props
+## SnFormItem Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `prop` | `string` | — | **Required**. Field path for value lookup & error echo |
-| `label` | `string` | — | Field label |
-| `required` | `boolean` | `false` | Required, adds `*` + `aria-required` |
-| `error` | `string` | — | Field error (from parent validate) |
+| `prop` | `string` | — | Dot-path into model. |
+| `label` | `string` | — | Visible label. |
+| `required` | `boolean` | `false` | Render `*` marker. |
+| `rules` | `FormRule[]` | — | Item-local rules (merged). |
+| `showMessage` | `boolean` | inherited | Override form level. |
+| `labelWidth` | `number \| string` | inherited | Override form level. |
+| `labelPosition` | `left \| right \| top` | inherited | Override form level. |
+| `ariaLabel` | `string` | — | Accessible name. |
+| `icon` | `IconComponent` | — | Direct lucide component. |
+| `iconName` | `string` | — | Resolve via `registerSnIcons`. |
+| `iconSize` | `number \| string` | `14` | Pixel / CSS length. |
 
-## Validation rules (`fields[].rules`)
+## FormRule union
 
-| Rule | Behavior |
-| --- | --- |
-| `required` | Value is non-empty string |
-| `minLength` | Min string length |
-| `maxLength` | Max string length |
-| `pattern` | RegExp source (runtime compiled) |
-| `message` | Custom error text |
+```ts
+type FormRule =
+  | { required: true; message: 'email' }
+  | { type: 'string' | 'number' | 'email' | 'url'; message: 'email' }
+  | { pattern: RegExp; message: 'email' }
+  | { minLength: number; maxLength: number; message: 'email' }
+  | { min: number; max: number; message: 'email' }
+  | { validator: (value) => boolean | string; message: 'email' }
+  | { asyncValidator: (value) => Promise<boolean | string>; message: 'email' }
+```
 
-## Events
+The first failing rule's `message` is shown. Async rules are awaited.
 
-| Event id | DOM event | Payload |
+## SnForm Exposed API
+
+```ts
+const formRef = ref<InstanceType<typeof SnForm> | null>(null)
+await formRef.value?.validate()
+await formRef.value?.validateField('email')
+formRef.value?.resetFields()
+formRef.value?.clearValidate()
+formRef.value?.clearValidate('email')
+```
+
+## SnForm Events
+
+| Event | Payload | When |
 | --- | --- | --- |
-| `submit` | `submit` | `Record<string, string>` (sanitized values) |
-| `validate` | — | `{ valid: boolean; errors: Record<string, string> }` |
+| `validate` | `{ valid, errors }` | After every full validate(). |
+| `reset` | — | After resetFields(). |
+| `submit` | `{ valid }` | After form submit + validate. |
 
 ## Accessibility
 
-| Attribute | Value |
-| --- | --- |
-| `role` | `form` (Form) · `group` (FormItem) |
-| `keyboard` | `Enter`, `Tab` (Form) · platform-native (FormItem) |
-| `aria-busy` | bound to `Form.props.loading` |
-| `aria-disabled` | bound to `Form.props.disabled` |
-| `aria-required` | bound to `FormItem.props.required` |
-| `aria-invalid` | bound to `has-error(error)` |
+- Wrapper `<form novalidate>` disables browser HTML5 validation.
+- `aria-live="assertive"` on errors, `polite` on warnings.
+- Label uses native `<label>` element for proximity association.
 
 ## Source
 
-Contract shared across ends, Web renderer in `@snui/vue-web`.
+Web renderer `@snui/vue-web`, uni renderer `@snui/uni`; FormRule type is shared across ends.

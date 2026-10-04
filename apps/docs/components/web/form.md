@@ -1,59 +1,101 @@
 # Form · Web（PC 端）
 
-原生 `<form>` 容器 + FormItem 子组件，支持 FormData 自动收集、字段级错误回显、disabled / loading 状态级联。
+表单编排器 `SnForm` + 字段包装 `SnFormItem`。Provide/Inject 通讯，统一校验 / 重置 / 提交。
 
-## 基本用法
+## 基础用法
 
-<Demo name="form-web" description="垂直布局 Form + 两个 FormItem（Email / Password）+ 提交按钮。点击提交会触发 loading 状态并显示提交结果。" />
+<Demo name="form-basic" description="基本 model + v-model 同步 + submit 处理。" />
 
-## Form props
+## 校验规则（FormRule）
+
+<Demo name="form-rules" description="覆盖所有 FormRule 类型：required / type / pattern / length / numeric bounds / custom validator / asyncValidator。" />
+
+## Label 位置与宽度
+
+<Demo name="form-label" description="labelPosition: left / right / top + labelWidth。" />
+
+## Inline label icon
+
+<Demo name="form-icon" description="icon / iconName prop 在 label 内渲染图标（SnIcon + lucide）。" />
+
+## 重置 / 校验 / 提交
+
+<Demo name="form-reset-submit" description="formRef.validate() / validateField() / resetFields() / clearValidate()，html-type submit。" />
+
+## 整体禁用（disabled）
+
+<Demo name="form-disabled" description="SnForm 的 disabled prop 级联到所有 FormItem。" />
+
+## SnForm Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `layout` | `'horizontal' \| 'vertical'` | `'vertical'` | 布局方向 |
-| `disabled` | `boolean` | `false` | 禁用整个表单（cascading via FormContext） |
-| `loading` | `boolean` | `false` | 表单加载中（应用 `aria-busy`） |
-| `initialValues` | `Record<string, unknown>` | `{}` | 初始值（HTML FormData 仍由原生 input 自动收集） |
-| `fields` | `FormField[]` | — | 字段描述数组，可选；内嵌 children 树是更常用的方式 |
-| `formId` | `string` | — | 原生 `<form>` 元素 id |
+| `model` | `Record<string, unknown>` | (required) | 响应式 model，items 通过 v-model 写入。 |
+| `rules` | `FormRules` | `{}` | 按 `prop` 键索引的校验规则集。 |
+| `novalidate` | `boolean` | `true` | 关闭原生 HTML5 校验。 |
+| `showMessage` | `boolean` | `true` | 是否显示错误 / 警告信息。 |
+| `statusIcon` | `boolean` | `false` | 状态图标（Phase 1 仅文本）。 |
+| `labelPosition` | `left \| right \| top` | `right` | 全局 label 位置。 |
+| `labelWidth` | `number \| string` | `auto` | 全局 label 列宽。 |
 
-## FormItem props
+## SnFormItem Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `prop` | `string` | — | **必填**。字段路径，用于值查找与错误回显 |
-| `label` | `string` | — | 字段标签 |
-| `required` | `boolean` | `false` | 必填，附加 `*` 标记 + `aria-required` |
-| `error` | `string` | — | 字段级错误信息（来自父级 validate） |
+| `prop` | `string` | — | model dot-path，缺省则 item 不参与校验。 |
+| `label` | `string` | — | label 文本。 |
+| `required` | `boolean` | `false` | 显示 `*` 标记。 |
+| `rules` | `FormRule[]` | — | item 本地规则，与 form rules 合并。 |
+| `showMessage` | `boolean` | inherited | 覆盖 form 级。 |
+| `labelWidth` | `number \| string` | inherited | 覆盖 form 级。 |
+| `labelPosition` | `left \| right \| top` | inherited | 覆盖 form 级。 |
+| `ariaLabel` | `string` | — | 屏幕阅读器名称。 |
+| `icon` | `IconComponent` | — | 直接传 lucide 组件。 |
+| `iconName` | `string` | — | 通过 `registerSnIcons` 解析。 |
+| `iconSize` | `number \| string` | `14` | 像素 / CSS 长度。 |
 
-## Validation rules（`fields[].rules`）
+## FormRule 联合类型
 
-| Rule | 行为 |
-| --- | --- |
-| `required` | 值非空字符串 |
-| `minLength` | 字符串长度下限 |
-| `maxLength` | 字符串长度上限 |
-| `pattern` | RegExp 源码（运行时编译） |
-| `message` | 自定义错误文本 |
+```ts
+type FormRule =
+  | { required: true; message: 'email' }
+  | { type: 'string' | 'number' | 'email' | 'url'; message: 'email' }
+  | { pattern: RegExp; message: 'email' }
+  | { minLength: number; maxLength: number; message: 'email' }
+  | { min: number; max: number; message: 'email' }
+  | { validator: (value) => boolean | string; message: 'email' }
+  | { asyncValidator: (value) => Promise<boolean | string>; message: 'email' }
+```
 
-## Events
+首个失败的 `message` 会被显示。Async 规则会被 `await`。
 
-| Event id | DOM event | Payload |
+## SnForm Exposed API
+
+通过 template ref 调用：
+
+```ts
+const formRef = ref<InstanceType<typeof SnForm> | null>(null)
+await formRef.value?.validate()
+await formRef.value?.validateField('email')
+formRef.value?.resetFields()
+formRef.value?.clearValidate()       // 全部
+formRef.value?.clearValidate('email') // 单个
+```
+
+## SnForm Events
+
+| Event | Payload | When |
 | --- | --- | --- |
-| `submit` | `submit` | `Record<string, string>`（已清理的 values） |
-| `validate` | — | `{ valid: boolean; errors: Record<string, string> }` |
+| `validate` | `{ valid, errors: Record<prop, message> }` | 每次全表 validate() 之后。 |
+| `reset` | — | `resetFields()` 后。 |
+| `submit` | `{ valid }` | 表单提交 + 校验完成。 |
 
 ## Accessibility
 
-| Attribute | Value |
-| --- | --- |
-| `role` | `form`（Form） · `group`（FormItem） |
-| `keyboard` | `Enter`, `Tab`（Form） · 平台原生（FormItem） |
-| `aria-busy` | 绑定到 `Form.props.loading` |
-| `aria-disabled` | 绑定到 `Form.props.disabled` |
-| `aria-required` | 绑定到 `FormItem.props.required` |
-| `aria-invalid` | 绑定到 `has-error(error)` |
+- 包裹 `<form novalidate>` 关闭原生 HTML5 校验。
+- 错误信息 `aria-live="assertive"`，警告 `aria-live="polite"`。
+- Label 使用原生 `<label>` 元素就近关联。
 
 ## Source
 
-Contract 跨端共享，Web 渲染器在 `@snui/vue-web`。
+Web 渲染器在 `@snui/vue-web`，uni 端在 `@snui/uni`，跨端共用 FormRule 类型。

@@ -1,59 +1,100 @@
-# Input · Web (PC)
+# Input · Web
 
-Controlled input control with Token alias-driven styles and a set of cross-browser native input events. Maps to a real `<input>` DOM element, rendered by `@snui/vue-web`.
+Controlled input. Renders a native `<input>` / `<textarea>` styled through the token alias layer.
 
-## Basic usage
+## Basic
 
-<Demo name="input-web" description="Six usage forms: text / email / password / disabled / readonly / clearable (with manual clear button)." />
+<Demo name="input-basic" description="Two-way v-model binding." />
+
+## Types
+
+<Demo name="input-types" description="8 native input types: text / password / email / number / tel / url / search." />
+
+## Sizes
+
+<Demo name="input-sizes" description="4 size presets: tiny / small / medium / large." />
+
+## Status
+
+<Demo name="input-status" description="default / error / warning — driven by FormItem validation, manual override allowed." />
+
+## States
+
+<Demo name="input-states" description="disabled / readonly / required — sets aria-* attributes accordingly." />
+
+## Clearable + Counter
+
+<Demo name="input-clearable-count" description="clearable shows × button; showCount + maxlength renders current / max." />
+
+## Slots
+
+<Demo name="input-slots" description="prefix / suffix / clear-icon / count slots. Combined with SnIcon + lucide." />
+
+## Border / Background / Radius
+
+<Demo name="input-bordered-bg-radius" description="bordered toggles 1px border; bg surface / transparent / soft; radius default / pill / square." />
+
+## Textarea
+
+Multi-line textarea via `type="textarea"`. See input-slots for an inline bio example, or:
+
+```vue
+<SnInput v-model="bio" type="textarea" :rows="4" :maxlength="280" show-count />
+```
 
 ## Props
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `value` | `string` | `''` | Controlled value |
-| `placeholder` | `string` | — | Empty placeholder |
-| `type` | `'text' \| 'password' \| 'email' \| 'number' \| 'tel' \| 'url' \| 'search'` | `'text'` | Native input type |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Height / padding / font size axis |
-| `disabled` | `boolean` | `false` | Disabled, applies `aria-disabled` |
-| `readonly` | `boolean` | `false` | Read-only, applies `aria-readonly` |
-| `clearable` | `boolean` | `false` | Show × clear button when value non-empty |
-| `maxlength` | `number` | — | Max characters |
-| `minlength` | `number` | — | Min characters |
-| `name` | `string` | — | Native name (for FormData collection) |
+| `modelValue` | `string \| number` | `''` | v-model value; `type="number"` coerces to number. |
+| `type` | `text \| password \| email \| number \| tel \| url \| search \| textarea` | `text` | Native input type; textarea renders multi-line. |
+| `size` | `tiny \| small \| medium \| large` | `medium` | Height / font-size. |
+| `placeholder` | `string` | `''` | Placeholder text. |
+| `disabled` | `boolean` | `false` | Disabled + aria-disabled. |
+| `readonly` | `boolean` | `false` | Read-only. |
+| `required` | `boolean` | `false` | aria-required="true". |
+| `ariaLabel` | `string` | — | Accessible name. |
+| `maxlength` | `number` | — | Forwarded. |
+| `minlength` | `number` | — | Forwarded. |
+| `showCount` | `boolean` | `false` | Show current / max counter. |
+| `clearable` | `boolean` | `false` | Show × button. |
+| `status` | `default \| error \| warning` | `default` | Border color + aria-invalid. |
+| `min / max / step` | `number` | — | Numeric bounds. |
+| `rows` | `number` | `3` | Textarea rows. |
+| `autosize` | `boolean \| { minRows, maxRows }` | `false` | Auto-grow textarea. |
+| `bordered` | `boolean` | `true` | Show 1px border. |
+| `bg` | `surface \| transparent \| soft` | `surface` | Background tone. |
+| `radius` | `default \| pill \| square` | `default` | Radius preset. |
 
 ## Events
 
-| Event id | DOM event | Payload | Notes |
-| --- | --- | --- | --- |
-| `input` | `input` | `string` | Every keystroke |
-| `change` | `change` | `string` | On commit (input + blur / Enter) |
-| `focus` | `focus` | `FocusEvent` | Focused |
-| `blur` | `blur` | `FocusEvent` | Blurred |
-| `clear` | `click` (clear button) | — | User clicked × (when `clearable=true`); also emits `input`/`change` with `''` |
+| Event | Payload | Notes |
+| --- | --- | --- |
+| `update:modelValue` | `(value)` | v-model sync. |
+| `input` | `(value, event)` | Native input. |
+| `change` | `(value, event)` | Native change. |
+| `focus` | `(event: FocusEvent)` | Native focus. |
+| `blur` | `(event: FocusEvent)` | Native blur. |
+| `clear` | — | × button click. |
+
+## Slots
+
+| Slot | Description |
+| --- | --- |
+| `prefix` | Left of input. |
+| `suffix` | Right of input. |
+| `clear-icon` | Custom × button content. |
+| `count` | Custom counter (receives `{ current, max }`). |
 
 ## Accessibility
 
 | Attribute | Value |
 | --- | --- |
-| `role` | `textbox` |
-| `keyboard` | `Tab`, `ArrowLeft`, `ArrowRight`, `Backspace`, `Delete` |
-| `aria-disabled` | bound to `props.disabled` |
-| `aria-readonly` | bound to `props.readonly` |
-| `aria-placeholder` | bound to `props.placeholder` |
-
-## Form integration
-
-Input typically nests inside `SnForm` / `SnFormItem`. FormData auto-collects named inputs on native `<form>` submit:
-
-```html
-<SnForm @submit="onSubmit">
-  <SnFormItem label="Email" required>
-    <SnInput v-model="email" name="email" type="email" />
-  </SnFormItem>
-  <SnButton type="primary" html-type="submit">Sign in</SnButton>
-</SnForm>
-```
+| `aria-invalid` | `props.status === 'error'`. |
+| `aria-required` | `props.required`. |
+| `aria-disabled` | `props.disabled`. |
+| Focus animation | border-color + outer ring, 0.18s ease-out; error/warning paints own soft outer ring. |
 
 ## Source
 
-Contract shared across ends, Web renderer in `@snui/vue-web`.
+Contract shared across ends. Web renderer lives at `@snui/vue-web`, uni renderer at `@snui/uni`.
