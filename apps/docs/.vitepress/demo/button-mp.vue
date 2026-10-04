@@ -4,7 +4,7 @@
  */
 
 import { ref } from 'vue'
-import { SnButton } from '@snui/uni'
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue'
 
 const loading = ref(false)
 const lastClicked = ref<string | null>(null)

@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitepress'
+import { fileURLToPath, URL } from 'node:url'
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -199,6 +200,23 @@ export default defineConfig({
 
   vite: {
     build: { target: 'es2022' },
+    resolve: {
+      // Per AUI-DOCS-016: when SnButton / SnDivider in uni-side use `<view>`
+      // (uni-app cross-end element) in the template, the dist build loses the
+      // `data-v-xxx` scope-id attribute on the rendered element because
+      // vite lib-mode SFC compilation doesn't emit `withScopeId(scopeId, fn)`
+      // wrapping. Without the data-v-xxx attribute the scoped CSS selectors
+      // (`<hash>[data-v-...]`) never match and the demo renders unstyled.
+      //
+      // Workaround: docs-side demos import directly from `packages/uni/src/...`
+      // so vite + @vitejs/plugin-vue recompile the SFC per-request and
+      // correctly inject the scopeId attribute. The dist build is still the
+      // canonical artifact; this alias only affects docs demos.
+      alias: {
+        '@snui/uni-src': fileURLToPath(new URL('../../../packages/uni/src', import.meta.url)),
+        '@snui/vue-web-src': fileURLToPath(new URL('../../../packages/vue-web/src', import.meta.url)),
+      },
+    },
     ssr: {
       noExternal: [
         '@snui/vue-web',

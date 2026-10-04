@@ -4,7 +4,7 @@
  * Per AUI-DOCS-016: imports the real @snui/uni sn-button via easycom.
  */
 import { ref } from 'vue'
-import { SnButton } from '@snui/uni'
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue'
 
 const loading = ref(false)
 function trigger(): void {
