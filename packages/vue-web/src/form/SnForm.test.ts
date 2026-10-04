@@ -271,4 +271,193 @@ describe('SnForm', () => {
     const wrapper = mount(FormHost)
     expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--with-icon')
   })
+
+  /* ── wot-ui `wd-form` 1:1 parity ─────────────────────────────────────── */
+
+  it('applies size class on the form root', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() { return () => h(SnForm, { model, size: 'large' }) },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--size-large')
+  })
+
+  it('applies value-align on the form root', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() { return () => h(SnForm, { model, valueAlign: 'right' }) },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--value-align-right')
+  })
+
+  it('adds border between items when border is true', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model, border: true }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--border')
+  })
+
+  it('hides asterisk when hideAsterisk is true', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model, hideAsterisk: true }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', required: true }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--hide-asterisk')
+  })
+
+  it('applies ellipsis class on the form root', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() { return () => h(SnForm, { model, ellipsis: true }) },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--ellipsis')
+  })
+
+  /* ── wot-ui `wd-form-item` 1:1 parity ────────────────────────────────── */
+
+  it('overrides form size at the FormItem level', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model, size: 'small' }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', size: 'large' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--size-large')
+  })
+
+  it('renders right-aligned value column when valueAlign is right', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', valueAlign: 'right' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--value-align-right')
+  })
+
+  it('renders asterisk on the right when asteriskPosition is right', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', required: true, asteriskPosition: 'right' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--asterisk-right')
+  })
+
+  it('truncates label with ellipsis when ellipsis is true', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Very long label', ellipsis: true }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--ellipsis')
+  })
+
+  it('renders right arrow when isLink is true', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', isLink: true }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--is-link')
+    expect(wrapper.find('.sn-form-item__arrow').exists()).toBe(true)
+  })
+
+  it('emits click on row click when clickable is true', async () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', clickable: true }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    await wrapper.find('.sn-form-item').trigger('click')
+    expect(wrapper.findComponent(SnFormItem).emitted('click')).toHaveLength(1)
+  })
+
+  it('renders description below the field', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', description: 'We will never spam you' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item__description').text()).toContain('spam')
+  })
+
+  it('renders placeholder when no default slot is provided', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', placeholder: 'Not set' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item__placeholder').text()).toBe('Not set')
+  })
+
+  it('applies border on a single FormItem without a form-level border', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', border: true }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--border')
+  })
+
+  it('applies center on a single FormItem', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', center: true }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--center')
+  })
 })

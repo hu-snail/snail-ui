@@ -61,13 +61,55 @@ const props = withDefaults(
     iconName?: string
     /** Pixel / CSS size forwarded to the embedded SnIcon. Default 14. */
     iconSize?: number | string
+
+    /* ── wot-ui `wd-form-item` 1:1 parity props ────────────────────────── */
+
+    /** Item-level size — overrides the parent SnForm's size. */
+    size?: 'small' | 'medium' | 'large'
+    /** Right-align the field value within the cell. */
+    valueAlign?: 'left' | 'right'
+    /** Override the form-level asterisk position for required fields. */
+    asteriskPosition?: 'left' | 'right'
+    /** Override the form-level hide-asterisk flag. */
+    hideAsterisk?: boolean | undefined
+    /** Truncate long labels with ellipsis (mirrors `wd-form-item ellipsis`). */
+    ellipsis?: boolean | undefined
+    /** Add a horizontal divider below this item. */
+    border?: boolean | undefined
+    /** Override the form-level vertical center flag. */
+    center?: boolean | undefined
+    /** When true, the entire row is clickable and emits `click`. */
+    clickable?: boolean
+    /** Show a right arrow to indicate navigation. */
+    isLink?: boolean
+    /** Placeholder shown when the row contains no input (Cell-style). */
+    placeholder?: string
+    /** Helper text shown below the field (independent of validation message). */
+    description?: string
   }>(),
   {
     showMessage: true,
     required: false,
     iconSize: 14,
+    /* Inheritance-resolving booleans (border / center / ellipsis /
+     * hideAsterisk) default to `undefined` so the computed can
+     * distinguish "not set" (inherit from parent form) from
+     * "explicitly false" via `resolveBool`. */
+    hideAsterisk: undefined,
+    border: undefined,
+    center: undefined,
+    ellipsis: undefined,
+    clickable: false,
+    isLink: false,
+    placeholder: '',
+    description: '',
   },
 )
+
+const emit = defineEmits<{
+  /** Fired when the row is clicked and `clickable` is true. */
+  (e: 'click', event: MouseEvent): void
+}>()
 
 const slots = defineSlots<{
   /** Default — the input element(s) for this field. */
@@ -76,9 +118,33 @@ const slots = defineSlots<{
   label?(): unknown
   /** Custom error / warning message content. */
   error?(): unknown
+  /** Custom description content. Falls back to the `description` prop. */
+  description?(): unknown
 }>()
 
+function onRowClick(event: MouseEvent): void {
+  if (!props.clickable) return
+  emit('click', event)
+}
+
 const ctx = inject(FORM_CONTEXT_KEY, null) as FormContext | null
+
+/**
+ * Resolve a boolean prop with a `undefined` form-inheritance semantics:
+ *  - if the FormItem passed a concrete value, that wins;
+ *  - else fall back to the parent SnForm's value;
+ *  - else fall back to the explicit `fallback`.
+ *
+ * `withDefaults` cannot capture this — passing nothing looks like the
+ * default `false`, not "inherit from context" — so we filter explicitly.
+ */
+function resolveBool(
+  propValue: boolean | undefined,
+  ctxValue: boolean | undefined,
+  fallback = false,
+): boolean {
+  return propValue !== undefined ? propValue : ctxValue !== undefined ? ctxValue : fallback
+}
 
 /** Reactive error / warning state for this item. */
 const status = ref<'default' | 'error' | 'warning'>('default')
@@ -167,12 +233,21 @@ const hasIcon = computed(() => resolvedIcon.value !== null)
 
 const classes = computed(() => [
   'sn-form-item',
-  `sn-form-item--${ctx?.labelPosition ?? 'right'}`,
+  `sn-form-item--${props.labelPosition ?? ctx?.labelPosition ?? 'right'}`,
   `sn-form-item--status-${status.value}`,
+  `sn-form-item--size-${props.size ?? ctx?.size ?? 'medium'}`,
+  `sn-form-item--value-align-${props.valueAlign ?? ctx?.valueAlign ?? 'left'}`,
+  `sn-form-item--asterisk-${props.asteriskPosition ?? ctx?.asteriskPosition ?? 'left'}`,
   {
     'sn-form-item--required': !!props.required,
     'sn-form-item--disabled': !!ctx?.disabled,
     'sn-form-item--with-icon': hasIcon.value,
+    'sn-form-item--border': resolveBool(props.border, ctx?.border),
+    'sn-form-item--center': resolveBool(props.center, ctx?.center),
+    'sn-form-item--ellipsis': resolveBool(props.ellipsis, ctx?.ellipsis),
+    'sn-form-item--hide-asterisk': resolveBool(props.hideAsterisk, ctx?.hideAsterisk),
+    'sn-form-item--clickable': !!props.clickable,
+    'sn-form-item--is-link': !!props.isLink,
   },
 ])
 
@@ -216,6 +291,7 @@ function deepClone<T>(value: T): T {
     :data-snui-component="props.prop ? 'form-item' : 'form-item-static'"
     :data-prop="props.prop"
     :data-status="status"
+    @click="onRowClick"
   >
     <label
       v-if="props.label || slots.label"
@@ -234,7 +310,15 @@ function deepClone<T>(value: T): T {
     </label>
 
     <div class="sn-form-item__control">
-      <slot />
+      <slot>
+        <span v-if="placeholder && !$slots.default" class="sn-form-item__placeholder">{{ placeholder }}</span>
+      </slot>
+      <p
+        v-if="description || slots.description"
+        class="sn-form-item__description"
+      >
+        <slot name="description">{{ description }}</slot>
+      </p>
       <p
         v-if="showMsg"
         class="sn-form-item__message"
@@ -243,6 +327,7 @@ function deepClone<T>(value: T): T {
       >
         <slot name="error">{{ message }}</slot>
       </p>
+      <span v-if="isLink" class="sn-form-item__arrow">›</span>
     </div>
   </div>
 </template>
@@ -279,6 +364,40 @@ function deepClone<T>(value: T): T {
   color: var(--sn-web-color-feedback-danger);
   margin-right: 2px;
 }
+/* Asterisk on the right side of the label, mirrors wd-form-item. */
+.sn-form-item--asterisk-right .sn-form-item__required {
+  margin-left: 4px;
+  margin-right: 0;
+}
+
+/* Ellipsis truncate long labels. */
+.sn-form-item--ellipsis .sn-form-item__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Border between this item and the next. */
+.sn-form-item--border {
+  border-bottom: 1px solid var(--sn-web-color-border-subtle, rgba(0, 0, 0, 0.06));
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+/* Center the control column. */
+.sn-form-item--center { align-items: center; }
+
+/* Hide asterisk on required fields. */
+.sn-form-item--hide-asterisk .sn-form-item__required { display: none; }
+
+/* Clickable row — visual affordance only; click handler is on the root. */
+.sn-form-item--clickable {
+  cursor: pointer;
+}
+.sn-form-item--clickable:hover {
+  background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.02));
+}
 
 /* Inline label icon — Sized via the SnIcon's own `1em` box, so it
  * inherits the label's font-size (13px) cleanly. */
@@ -287,18 +406,54 @@ function deepClone<T>(value: T): T {
   color: var(--sn-web-color-text-secondary);
 }
 
+/* Size variants — drives default font / line-height for the control. */
+.sn-form-item--size-small .sn-form-item__label { font-size: 12px; line-height: 28px; }
+.sn-form-item--size-medium .sn-form-item__label { font-size: 13px; line-height: 32px; }
+.sn-form-item--size-large .sn-form-item__label { font-size: 15px; line-height: 40px; }
+
+/* Right-aligned value column. */
+.sn-form-item--value-align-right .sn-form-item__control { text-align: right; }
+
+/* Placeholder for cell-style items without an input. */
+.sn-form-item__placeholder {
+  color: var(--sn-web-color-text-tertiary);
+}
+
+/* Description text — wot-ui parity. */
+.sn-form-item__description {
+  margin: 0;
+  font-size: 12px;
+  color: var(--sn-web-color-text-tertiary);
+  line-height: 1.4;
+}
+
 .sn-form-item__control {
   grid-area: control;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 4px;
   min-width: 0;
+}
+.sn-form-item--top .sn-form-item__control {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Right arrow for is-link rows. */
+.sn-form-item__arrow {
+  color: var(--sn-web-color-text-tertiary);
+  font-size: 18px;
+  line-height: 1;
+  margin-left: auto;
+  flex: 0 0 auto;
 }
 
 .sn-form-item__message {
   margin: 0;
   font-size: 12px;
   line-height: 1.4;
+  flex: 1 1 100%;
 }
 .sn-form-item__message[data-status="error"] {
   color: var(--sn-web-color-feedback-danger);

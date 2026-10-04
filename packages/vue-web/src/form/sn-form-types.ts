@@ -54,6 +54,29 @@ export interface FormContext {
   labelWidth: number | string
   /** Form-wide disabled flag. */
   disabled: boolean
+
+  /* ── wot-ui `wd-form` 1:1 parity fields ──────────────────────────────── */
+
+  /** Validation trigger inherited from parent. */
+  validateTrigger: 'blur' | 'change'
+  /** Reset-on-change inherited from parent. */
+  resetOnChange: boolean
+  /** Error type inherited from parent. */
+  errorType: 'message' | 'toast' | 'none'
+  /** Default size inherited from parent. */
+  size: 'small' | 'medium' | 'large'
+  /** Default value-align inherited from parent. */
+  valueAlign: 'left' | 'right'
+  /** Default asterisk position inherited from parent. */
+  asteriskPosition: 'left' | 'right'
+  /** Default hide-asterisk inherited from parent. */
+  hideAsterisk: boolean
+  /** Default ellipsis inherited from parent. */
+  ellipsis: boolean
+  /** Default border-between-items inherited from parent. */
+  border: boolean
+  /** Default vertical-center inherited from parent. */
+  center: boolean
 }
 
 /**
