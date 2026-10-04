@@ -3290,6 +3290,112 @@ grep -n "attrType=\|attr-type=\|tag=\|focusable=\|showIcon=\|icon-placement=\|se
 
 ---
 
+# 113. UI 图标禁止用 emoji，必须走 SnIcon / SnIcon 组件
+
+## 113.1 规则
+
+任何**面向用户**的 UI 元素（按钮、tag、close 触发、status indicator、navigation arrow、tab 切换、列表 chevron 等）需要"图标"语义时：
+
+```text
+✅ SnIcon component 渲染 SVG（resolved via registerSnIcons / 自带 builtin icons）
+✅ inline SVG 元素 <svg><path d="..." /></svg>
+✅ unicode 文本符号但**非 emoji**的字符（× · − + ※ → ← ↑ ↓ ▶ ◆ ★ — 但 × 是 delete 符号不是 emoji，谨慎）
+
+❌ ❌ ❌ emoji 字符 ❌ ❌ ❌
+   🙈 👁 👀 ⭐ ✨ ✓ ✔ ❌ 🛒 ⚡ 🎉 🚀 ✏ 🗑 🔍 💡 📝 ⚙ 🔔 🏠 ❤️
+```
+
+emoji 不允许出现在：
+- 组件 SFC 模板内（`<button>{{ 🙈 }}</button>` ← Stop-the-Line §93）
+- demo `<Demo name="..." />` 引用源里的 icon slot / inline text
+- docs markdown 里"装饰性"的图标
+
+emoji 允许出现在：
+- 文档正文中文描述用 emoji 提高可读性（如 `💡 Tips:` 前缀），**不**渲染为 UI 节点
+- 代码注释里说明规则的引用（如本节）
+- 测试 mock data 字符串（HTML attribute value 里用作占位符）— 但推荐改成普通 ASCII
+
+## 113.2 自带 builtin 图标 — 解耦第三方 icon 库
+
+`@snui/vue-web` 不强制依赖 lucide-vue-next / tabler-icons / heroicons / 任何第三方图标库。组件内部必须的少量核心图标（SnInput password toggle 的 Eye/EyeOff、SnInput clear button 的 X、SnButton loading spinner 等）由 `@snui/vue-web` 自带的 `packages/vue-web/src/icon/sn-input-icons.ts` 提供：
+
+```ts
+// packages/vue-web/src/icon/sn-input-icons.ts
+export const EyeIcon: IconComponent     // SVG <path> from MDI / Lucide
+export const EyeOffIcon: IconComponent  // 同上
+export const XIcon: IconComponent       // 同上
+```
+
+原则：
+- 任何**用户能看到的 UI 图标**走 SnIcon 组件 + IconComponent 数据
+- `IconComponent` 通过 `registerSnIcons({...})` 注册；包内置核心图标不依赖消费者手动注册
+- 消费者可以自由用 `registerSnIcons({ ChevronRight: ChevronRight, ... })` 覆盖或扩展
+
+`@snui/uni` 端同理：`packages/uni/src/components/sn-icon/sn-icon-set.ts` 维护一棵小图标集（X / Eye / EyeOff / ChevronRight 等），文件-per-icon 拆分以便 tree-shake。
+
+## 113.3 SnIcon 组件契约
+
+```ts
+// packages/vue-web/src/icon/SnIcon.vue / packages/uni/src/components/sn-icon/sn-icon.vue
+interface IconData {
+  viewBox: string
+  paths: string[]  // SVG <path d="...">，可多条
+}
+
+defineComponent<{ icon: IconComponent | IconComponent[]; size?: number | string }>(...)
+```
+
+- 严禁把 emoji 字符串塞进 `:icon`（运行时类型不匹配 → fall back to null → 控件没图标）
+- `cssIcon` mode 仅 web 端有：consumer 直接给 CSS class name（用于外接矢量字体等场景），内部也禁 emoji
+
+## 113.4 检测 / 校验
+
+CI / Review Agent 必须 grep：
+
+```bash
+# 找 docs / package 源码里的 emoji
+rg --pcre2 "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{1F000}-\x{1F2FF}]" \
+  apps/docs/.vitepress/demo \
+  packages/vue-web/src packages/uni/src/components
+```
+
+命中 → reject；要求改成 `SnIcon :icon="XIcon"` 或者内置 builtin icon。
+
+测试文件里的 mock string（test ID 占位符）属于宽松区，但**优先用 ASCII**（`"stub"` `"slot"` `"X"` 等）。
+
+## 113.5 demo 里的"切换按钮" / 状态指示
+
+写 demo 时不要做：
+
+```vue
+<!-- ❌ emoji-as-ui-icon -->
+<SnButton>{{ ok ? '✓ Done' : 'Apply' }}</SnButton>
+
+<!-- ❌ emoji in icon slot -->
+<SnButton><span>📁 Pick</span></SnButton>
+```
+
+要改成：
+
+```vue
+<!-- ✅ SnIcon + text -->
+<SnButton>
+  <SnIcon v-if="ok" :icon="CheckIcon" :size="14" />
+  {{ ok ? 'Done' : 'Apply' }}
+</SnButton>
+
+<!-- ✅ SnIcon (registered name) -->
+<SnButton :icon="ok ? 'Check' : 'Plus'">{{ ok ? 'Done' : 'Pick' }}</SnButton>
+```
+
+## 113.6 例外
+
+- **docs markdown 正文段落** 里的 emoji（如 `💡 注意：`）允许 — 它们渲染为文字字符、不进 UI 树
+- **代码注释 / 文档元描述** 里的 emoji（如本节）允许 — 它们不是 UI 节点
+- emoji-as-mock-data 在测试里（`<i data-testid="slot">anything</i>`）允许但不推荐
+
+---
+
 # END
 
-AUI Agent 执行标准 v1.0.1（补充规则 #101-#111）
+AUI Agent 执行标准 v1.0.1（补充规则 #101-#113）
