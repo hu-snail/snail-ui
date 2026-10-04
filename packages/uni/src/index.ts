@@ -14,6 +14,14 @@ export { default as SnConfigProvider } from './components/sn-config-provider/sn-
 export { default as SnDivider } from './components/sn-divider/sn-divider.vue'
 export { default as SnIcon } from './components/sn-icon/sn-icon.vue'
 export type { IconData } from './components/sn-icon/sn-icon.vue'
+export { default as SnInput } from './components/sn-input/sn-input.vue'
+
+// Uni-end icon name registry (mirrors web-end API surface).
+export {
+  registerSnIcons,
+  clearSnIcons,
+  resolveIconByName,
+} from './components/sn-icon/sn-icon-registry'
 
 // Shortcut icon data set — frozen `IconData` objects keyed by lucide
 // icon name. Tree-shakeable: each named import is its own ESM module.
