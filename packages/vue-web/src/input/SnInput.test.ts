@@ -210,16 +210,112 @@ describe('SnInput', () => {
     expect(wrapper.classes()).toContain('sn-input--status-warning')
   })
 
-  it('applies bordered class by default', () => {
+  it('applies border-all class by default', () => {
     const wrapper = mount(SnInput, { props: {} })
-    expect(wrapper.classes()).toContain('sn-input--bordered')
-    expect(wrapper.classes()).not.toContain('sn-input--borderless')
+    expect(wrapper.classes()).toContain('sn-input--border-all')
   })
 
-  it('toggles borderless when bordered is false', () => {
-    const wrapper = mount(SnInput, { props: { bordered: false } })
-    expect(wrapper.classes()).toContain('sn-input--borderless')
-    expect(wrapper.classes()).not.toContain('sn-input--bordered')
+  it('switches to border-bottom when border="bottom"', () => {
+    const wrapper = mount(SnInput, { props: { border: 'bottom' } })
+    expect(wrapper.classes()).toContain('sn-input--border-bottom')
+  })
+
+  it('switches to border-none when border="none"', () => {
+    const wrapper = mount(SnInput, { props: { border: 'none' } })
+    expect(wrapper.classes()).toContain('sn-input--border-none')
+  })
+
+  it('honors the deprecated bordered alias', () => {
+    const on = mount(SnInput, { props: { bordered: true } })
+    expect(on.classes()).toContain('sn-input--border-all')
+    const off = mount(SnInput, { props: { bordered: false } })
+    expect(off.classes()).toContain('sn-input--border-none')
+  })
+
+  it('applies align-right when alignRight is true', () => {
+    const wrapper = mount(SnInput, { props: { alignRight: true } })
+    expect(wrapper.classes()).toContain('sn-input--align-right')
+  })
+
+  it('applies compact when compact is true', () => {
+    const wrapper = mount(SnInput, { props: { compact: true } })
+    expect(wrapper.classes()).toContain('sn-input--compact')
+  })
+
+  it('shows clear button only on focus when clearTrigger=focus', async () => {
+    const wrapper = mount(SnInput, {
+      props: { clearable: true, clearTrigger: 'focus', modelValue: 'x' },
+    })
+    expect(wrapper.find('.sn-input__clear').exists()).toBe(false)
+    await wrapper.find('input').trigger('focus')
+    expect(wrapper.find('.sn-input__clear').exists()).toBe(true)
+  })
+
+  it('shows clear button always when clearTrigger=always', () => {
+    const wrapper = mount(SnInput, {
+      props: { clearable: true, clearTrigger: 'always', modelValue: 'x' },
+    })
+    expect(wrapper.find('.sn-input__clear').exists()).toBe(true)
+  })
+
+  it('forwards customClass to the root', () => {
+    const wrapper = mount(SnInput, { props: { customClass: 'my-input' } })
+    expect(wrapper.classes()).toContain('my-input')
+  })
+
+  it('forwards customInputClass to the inner native input', () => {
+    const wrapper = mount(SnInput, { props: { customInputClass: 'native-class' } })
+    expect(wrapper.find('input').classes()).toContain('native-class')
+  })
+
+  it('shows password toggle when showPassword is true on password inputs', async () => {
+    const wrapper = mount(SnInput, {
+      props: { type: 'password', showPassword: true, modelValue: 'secret' },
+    })
+    expect(wrapper.find('.sn-input__password-toggle').exists()).toBe(true)
+    expect(wrapper.find('input').attributes('type')).toBe('password')
+    await wrapper.find('.sn-input__password-toggle-btn').trigger('click')
+    expect(wrapper.find('input').attributes('type')).toBe('text')
+  })
+
+  it('emits clickPrefixIcon when prefixIcon is clicked', async () => {
+    const wrapper = mount(SnInput, {
+      props: { prefixIcon: 'user', modelValue: '' },
+    })
+    await wrapper.find('.sn-input__prefix').trigger('click')
+    expect(wrapper.emitted('clickPrefixIcon')).toBeDefined()
+  })
+
+  it('emits clickSuffixIcon when suffixIcon is clicked', async () => {
+    const wrapper = mount(SnInput, {
+      props: { suffixIcon: 'search', modelValue: '' },
+    })
+    await wrapper.find('.sn-input__suffix').trigger('click')
+    expect(wrapper.emitted('clickSuffixIcon')).toBeDefined()
+  })
+
+  it('emits click on the root wrapper', async () => {
+    const wrapper = mount(SnInput, { props: {} })
+    await wrapper.trigger('click')
+    expect(wrapper.emitted('click')).toHaveLength(1)
+  })
+
+  it('emits confirm on Enter key', async () => {
+    const wrapper = mount(SnInput, { props: { modelValue: 'hello' } })
+    await wrapper.find('input').trigger('keydown', { key: 'Enter' })
+    expect(wrapper.emitted('confirm')?.at(-1)).toEqual(['hello'])
+  })
+
+  it('treats showWordLimit as showCount alias', () => {
+    const wrapper = mount(SnInput, {
+      props: { showWordLimit: true, modelValue: 'hi' },
+    })
+    expect(wrapper.find('.sn-input__count').exists()).toBe(true)
+  })
+
+  it('forwards inputmode attribute', () => {
+    const wrapper = mount(SnInput, { props: { inputmode: 'numeric' } })
+    expect(wrapper.find('input').attributes('inputmode')).toBe('numeric')
   })
 
   it('applies bg-surface by default', () => {
