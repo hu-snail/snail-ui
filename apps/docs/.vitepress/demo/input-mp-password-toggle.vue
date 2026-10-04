@@ -9,7 +9,7 @@ const secret = ref('initial-secret-123')
 <template>
   <view class="sn-input-demo">
     <SnInput v-model="secret" type="password" show-password placeholder="Password with toggle" />
-    <text class="sn-input-demo__hint">点击 👁 切换密码显示</text>
+    <text class="sn-input-demo__hint">点击眼睛图标切换密码显示</text>
   </view>
 </template>
 

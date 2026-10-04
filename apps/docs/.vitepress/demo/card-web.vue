@@ -7,12 +7,19 @@
  * public @snui/vue-web surface. This demo uses a minimal Vue 3 SFC that
  * mimics Card's API via slot composition. Replace with the real Card once
  * AUI-WEB-LAYOUT-001 ships.
+ *
+ * Per AGENTS.md §113, UI icons come from SnIcon / SnIcon registry — never
+ * an emoji glyph. The "applied" feedback below uses the built-in Check
+ * icon resolved through SnIcon.
  */
 
 import { ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import { SnButton, SnIcon } from '@snui/vue-web'
+import { Check } from 'lucide-vue-next'
+import { markRaw } from 'vue'
 
 const ok = ref(false)
+const CheckIcon = markRaw(Check)
 function handleOk(): void {
   ok.value = true
   setTimeout(() => { ok.value = false }, 1200)
@@ -31,7 +38,10 @@ function handleOk(): void {
         <input class="sn-card__input" placeholder="V-AUI-1024" />
       </div>
       <footer class="sn-card__footer">
-        <SnButton @click="handleOk">{{ ok ? '✓ 已应用' : 'Apply' }}</SnButton>
+        <SnButton @click="handleOk">
+          <SnIcon v-if="ok" :icon="CheckIcon" :size="14" style="margin-right: 6px; vertical-align: -2px" />
+          {{ ok ? '已应用' : 'Apply' }}
+        </SnButton>
       </footer>
     </section>
 
