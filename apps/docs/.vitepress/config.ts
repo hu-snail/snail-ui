@@ -79,6 +79,13 @@ const sidebar = {
         { text: 'sn-icon 图标', link: '/components/uni/icon' },
       ],
     },
+    {
+      text: 'Form 表单组件',
+      items: [
+        { text: 'sn-input 输入框', link: '/components/uni/input' },
+        { text: 'sn-form 表单', link: '/components/uni/form' },
+      ],
+    },
     // Other 其他 — empty until ConfigProvider page ships.
   ],
   '/theme/': [
@@ -172,6 +179,13 @@ const enSidebar = {
         { text: 'sn-button', link: '/en/components/uni/button' },
         { text: 'sn-divider', link: '/en/components/uni/divider' },
         { text: 'sn-icon', link: '/en/components/uni/icon' },
+      ],
+    },
+    {
+      text: 'Form',
+      items: [
+        { text: 'sn-input', link: '/en/components/uni/input' },
+        { text: 'sn-form', link: '/en/components/uni/form' },
       ],
     },
     // Other — empty until ConfigProvider page ships.
