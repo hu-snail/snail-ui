@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /** Demo: sn-input — prefix / suffix / clear-icon / count slots (uni-end). */
 import { ref } from 'vue'
-import { SnIcon, SnInput } from '@snui/uni'
-import { registerSnIcons } from '@snui/uni'
-import { ChevronRight, Search, X } from '@snui/uni'
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry'
+import { ChevronRight, Search, X } from '@snui/uni-src/components/sn-icon/sn-icon-set'
 
 registerSnIcons({ ChevronRight, Search, X })
 

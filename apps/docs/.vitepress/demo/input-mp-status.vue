@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-input — status / error / warning (uni-end). */
 import { reactive } from 'vue'
-import { SnInput } from '@snui/uni'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
 
 const form = reactive({ default: 'Default', error: 'Invalid input', warning: 'Heads up' })
 </script>

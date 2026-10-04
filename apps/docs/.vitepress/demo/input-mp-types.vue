@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-input — every supported `type` variant (uni-end). */
 import { reactive } from 'vue'
-import { SnInput } from '@snui/uni'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
 
 const form = reactive({
   text: '',

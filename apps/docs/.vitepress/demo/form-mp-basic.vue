@@ -1,7 +1,10 @@
 <script setup lang="ts">
 /** Demo: sn-form — basic model + reactive submit (uni-end). */
 import { reactive, ref } from 'vue'
-import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/uni'
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue'
+import SnForm from '@snui/uni-src/components/sn-form/sn-form.vue'
+import SnFormItem from '@snui/uni-src/components/sn-form/sn-form-item.vue'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
 
 const form = reactive({ name: '', email: '' })
 const last = ref<string | null>(null)

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: sn-input — disabled / readonly / required (uni-end). */
-import { SnInput } from '@snui/uni'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
 </script>
 
 <template>

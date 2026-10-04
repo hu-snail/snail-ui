@@ -1,7 +1,9 @@
 <script setup lang="ts">
 /** Demo: sn-form — labelPosition × labelWidth (uni-end). */
 import { reactive } from 'vue'
-import { SnForm, SnFormItem, SnInput } from '@snui/uni'
+import SnForm from '@snui/uni-src/components/sn-form/sn-form.vue'
+import SnFormItem from '@snui/uni-src/components/sn-form/sn-form-item.vue'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
 
 const f1 = reactive({ a: '', b: '' })
 const f2 = reactive({ a: '', b: '' })

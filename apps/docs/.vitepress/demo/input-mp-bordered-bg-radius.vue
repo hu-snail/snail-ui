@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-input — bordered / bg / radius variants (uni-end). */
 import { ref } from 'vue'
-import { SnInput } from '@snui/uni'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
 
 const a = ref('')
 const b = ref('')

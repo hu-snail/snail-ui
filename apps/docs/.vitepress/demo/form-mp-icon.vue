@@ -1,9 +1,11 @@
 <script setup lang="ts">
 /** Demo: sn-form — inline label icon via `iconData` / `iconName` (uni-end). */
 import { reactive } from 'vue'
-import { SnForm, SnFormItem, SnInput } from '@snui/uni'
-import { registerSnIcons } from '@snui/uni'
-import { Bell, Settings, User } from '@snui/uni'
+import SnForm from '@snui/uni-src/components/sn-form/sn-form.vue'
+import SnFormItem from '@snui/uni-src/components/sn-form/sn-form-item.vue'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry'
+import { Bell, Settings, User } from '@snui/uni-src/components/sn-icon/sn-icon-set'
 
 registerSnIcons({ Settings, Bell, User })
 

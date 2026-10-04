@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: sn-input — all 3 size presets (uni-end). */
 import { reactive } from 'vue'
-import { SnInput } from '@snui/uni'
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'
 
 const form = reactive({ small: 'Small', medium: 'Medium', large: 'Large' })
 </script>
