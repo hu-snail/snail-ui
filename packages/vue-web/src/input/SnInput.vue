@@ -12,7 +12,8 @@
  * `defineSlots` + CSS variables.
  */
 
-import { computed, nextTick, ref, useId, useSlots } from 'vue'
+import { computed, markRaw, nextTick, ref, useId, useSlots } from 'vue'
+import { EyeIcon, EyeOffIcon, XIcon } from '../icon/sn-input-icons'
 
 defineOptions({ name: 'SnInput' })
 
@@ -325,6 +326,12 @@ const passwordVisible = ref(false)
 const effectivePasswordType = computed(() =>
   props.type === 'password' && passwordVisible.value ? 'text' : props.type,
 )
+/** Eye-toggle icon — wraps `EyeOff` while password is visible, `Eye` otherwise.
+ *  markRaw keeps Vue from proxying the icon component (silent warning). */
+const passwordToggleIcon = computed(() => markRaw(passwordVisible.value ? EyeOffIcon : EyeIcon))
+/** Default clear-button glyph (built-in X). markRaw'd so SnIcon doesn't
+ *  proxy the icon component. */
+const defaultClearIcon = markRaw(XIcon)
 
 const classList = computed(() => [
   'sn-input',
@@ -435,7 +442,7 @@ const wrapperStyle = computed(() => {
         :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
         @click.stop="passwordVisible = !passwordVisible"
       >
-        {{ passwordVisible ? '🙈' : '👁' }}
+        <SnIcon :icon="passwordToggleIcon" :size="11" />
       </button>
     </span>
 
@@ -447,7 +454,7 @@ const wrapperStyle = computed(() => {
         :aria-label="ariaLabel ? `Clear ${ariaLabel}` : 'Clear input'"
         @click.stop="onClear($event)"
       >
-        <slot name="clear-icon">×</slot>
+        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="10" /></slot>
       </button>
     </span>
 

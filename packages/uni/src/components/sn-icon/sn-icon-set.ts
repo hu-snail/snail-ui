@@ -73,6 +73,17 @@ export const Download = d(['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M7 10l5
 export const Upload = d(['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M17 8l-5-5-5 5', 'M12 3v12'])
 export const Menu = d(['M4 4h16', 'M4 12h16', 'M4 20h16'])
 export const MoreHorizontal = d(['M12 13v.01', 'M19 13v.01', 'M5 13v.01'])
+/* Password visibility toggle icons (per AGENTS.md §113 — UI icons must
+ * come from SnIcon / SnIcon registry; emoji 🙈 / 👁 is forbidden). */
+export const Eye = d([
+  '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z" />',
+  '<circle cx="12" cy="12" r="3" />',
+])
+export const EyeOff = d([
+  '<path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-10-7-10-7a18.45 18.45 0 0 1 4.06-5.94" />',
+  '<path d="M9.9 4.24A10.94 10.94 0 0 1 12 4c7 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19" />',
+  '<line x1="2" y1="2" x2="22" y2="22" />',
+])
 
 /**
  * Total export surface intentionally kept small (~22 icons). Adding

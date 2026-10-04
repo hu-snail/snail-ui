@@ -21,7 +21,10 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, nextTick, ref, useId, useSlots } from 'vue'
+import { computed, markRaw, nextTick, ref, useId, useSlots } from 'vue'
+import SnIcon from '../sn-icon/sn-icon.vue'
+import type { IconData } from '../sn-icon/sn-icon.vue'
+import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set'
 
 defineOptions({ name: 'SnInput' })
 
@@ -275,6 +278,17 @@ const passwordVisible = ref(false)
 const effectivePasswordType = computed(() =>
   props.type === 'password' && passwordVisible.value ? 'text' : props.type,
 )
+/**
+ * Eye-toggle icon — `EyeOff` while password is visible, `Eye` otherwise.
+ * Per AGENTS.md §113, UI icons must come from SnIcon / SnIcon registry;
+ * emoji 🙈 / 👁 is never rendered.
+ */
+const passwordToggleIcon = computed<IconData>(() =>
+  markRaw(passwordVisible.value ? EyeOff : Eye),
+)
+/** Default clear-button glyph (sn-icon-set X). markRaw'd so SnIcon doesn't
+ *  proxy the IconData record. */
+const defaultClearIcon = markRaw(XIcon)
 
 function onInput(event: Event): void {
   const target = event.target as HTMLInputElement | HTMLTextAreaElement
@@ -472,7 +486,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
         :tabindex="isInteractive ? 0 : -1"
         @tap.stop="passwordVisible = !passwordVisible"
-      >{{ passwordVisible ? '🙈' : '👁' }}</view>
+      ><SnIcon :icon="passwordToggleIcon" :size="20" /></view>
     </view>
 
     <view v-if="clearVisible" class="sn-input__clear" aria-hidden="true">
@@ -482,7 +496,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
         :tabindex="isInteractive ? 0 : -1"
         @tap.stop="onClear"
       >
-        <slot name="clear-icon">×</slot>
+        <slot name="clear-icon"><SnIcon :icon="defaultClearIcon" :size="20" /></slot>
       </view>
     </view>
 

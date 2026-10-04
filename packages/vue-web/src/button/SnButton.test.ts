@@ -85,7 +85,7 @@ describe('SnButton', () => {
     const wrapper = mount(SnButton, {
       slots: {
         default: 'Submit',
-        icon: '<i data-testid="icon">★</i>',
+        icon: '<i data-testid="icon">stub</i>',
       },
     })
     expect(wrapper.find('[data-testid="icon"]').exists()).toBe(true)
@@ -160,7 +160,7 @@ describe('SnButton', () => {
         props: { icon: TestIcon, iconName: 'TestIcon' },
         slots: {
           default: 'Slot wins',
-          icon: '<i data-testid="slot-icon">★</i>',
+          icon: '<i data-testid="slot-icon">slot</i>',
         },
       })
       expect(wrapper.find('[data-testid="slot-icon"]').exists()).toBe(true)

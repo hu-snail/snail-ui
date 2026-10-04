@@ -123,7 +123,7 @@ describe('sn-button', () => {
         props: { iconData: TestIcon, iconName: 'TestIcon' },
         slots: {
           default: 'Slot wins',
-          icon: '<view data-testid="slot-icon">★</view>',
+          icon: '<view data-testid="slot-icon">slot</view>',
         },
       })
       expect(wrapper.find('[data-testid="slot-icon"]').exists()).toBe(true)
