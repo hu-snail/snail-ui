@@ -3171,6 +3171,125 @@ grep -l "from '@snui/uni'" apps/docs/.vitepress/demo/*-mp-*.vue
 
 ---
 
+# 112. 双端组件 API 参考库 — 强约束
+
+snail-aui 的 `@snui/vue-web` 与 `@snui/uni` 在 API surface 上**不共用一份参考库**：
+
+| 端（package） | 参考库 | 文档地址 |
+|---|---|---|
+| `@snui/vue-web`（web 浏览器端） | **naive-ui** | https://www.naiveui.com/zh-CN/light/components/{button,input,form,...} |
+| `@snui/uni`（uni-app 小程序/H5/App 端） | **wot-ui** | https://wot-ui.cn/component/{input,button,form,...}.html |
+
+**每写一个组件的 prop / event / slot，都必须 1:1 对齐参考库同名列出的属性**（同名 ≠ 类型相同；类型 / 默认值 / 受控语义都按参考库约定走）。
+
+## 112.1 选错参考库 = Stop-the-Line
+
+```text
+❌ 在 @snui/vue-web/SnButton.vue 里抄 wd-button 的 open-type / hover-class / cell props
+❌ 在 @snui/uni/sn-button.vue 里抄 n-button 的 attrType / tag / showIcon props
+❌ 两端共用一份 props 列表（一个组件不应该既含 attrType 又含 hover-class）
+```
+
+任何违反 → AGENTS.md §93 Stop-the-Line。CI / Review Agent / Human Gate 三处都会拒收。
+
+## 112.2 规则如何落到代码层
+
+### a. 组件文件头部注释必须标注参考源
+
+```vue
+<script setup lang="ts">
+/**
+ * SnButton — web-end primary button (AUI-CORE-001).
+ *
+ * Reference library: naive-ui `n-button` (https://www.naiveui.com/...)
+ * Anything new added here MUST also be added to the reference list in
+ * AGENTS.md §112.
+ */
+</script>
+```
+
+`sn-*.vue`（uni 端）头部必须写 `Reference library: wot-ui wd-button`。
+
+### b. withDefaults 注释字段必须 1:1 复刻参考库的 prop 含义
+
+参考库 prop → snail 组件 prop 名字可以重命名（去繁就简到 www- 友好命名），但**默认值 / 可选值集合 / 受控语义必须对齐**。
+
+例：
+
+```ts
+// wot-ui wd-button:
+type: 'primary' | 'success' | 'warning' | 'danger' | 'info'  // 5 档 + 1 default
+variant: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'
+
+// naive-ui n-button:
+type: 'default' | 'primary' | 'tertiary' | 'info' | 'success' | 'warning' | 'error'
+attrType: 'button' | 'submit' | 'reset'
+```
+
+### c. 旧的别名 prop 必须保留 + 标注 `@deprecated`，不要破坏现有用户代码
+
+例：web SnButton 保留 `htmlType: 'button' | 'submit' | 'reset'` 作为 `attrType` 的 legacy alias；uni sn-input 保留 `bordered: boolean` 作为 `border: 'all' | 'bottom' | 'none'` 的 legacy alias。
+
+### d. 测试必须覆盖参考库的每个非平凡 prop
+
+| 参考库 prop | 测试必含 | 备注 |
+|---|---|---|
+| `border: 'all' \| 'bottom' \| 'none'` | 3 个 class 渲染 + `bordered` alias | 跨端通用 |
+| `variant: 'plain' \| 'soft' \| 'dashed' \| 'subtle' \| 'text'` | 5 个 class 渲染 | 仅 uni |
+| `attrType: 'button' \| 'submit' \| 'reset'` | type 属性转发 | 仅 web |
+| `loadingColor` | inline style 转发 | 仅 uni |
+| `iconPlacement: 'left' \| 'right'` | 右对齐 class | 仅 web |
+| `openType: 'share' \| ...` | open-type 属性转发 | 仅 uni（uni-app MP only） |
+
+每个组件完成时 test 覆盖率（含对齐比例）写入 §94 Task Completion Report 的 `Tests` 行。
+
+### e. PR / merge gate 必须校验
+
+Review Agent / CI 在合并前必须做一次反向校验：
+
+```bash
+# 1. web 端必须对 naive-ui 对得上，不能有 wot-ui-only 的 props
+grep -n "open-type\|hover-class\|hover-start-time\|hover-stay-time\|form-type\|cell=\|variant=\|loading-color\|custom-style=\|custom-class=" \
+  packages/vue-web/src/**/*.vue \
+  --include=SnButton.vue --include=SnInput.vue --include=SnForm.vue --include=SnFormItem.vue
+
+# 命中 → reject（这些是 uni-only 的，web 端不该出现）
+```
+
+```bash
+# 2. uni 端必须对 wot-ui 对得上，不能有 naive-ui-only 的 props
+grep -n "attrType=\|attr-type=\|tag=\|focusable=\|showIcon=\|icon-placement=\|secondary=\|quaternary=\|strong=" \
+  packages/uni/src/components/*/*.vue
+
+# 命中 → reject（这些是 web-only 的，uni 端不该出现）
+```
+
+### f. 持续校验
+
+每次新组件 / 新 prop 加入 → 必须同时更新：
+
+1. 组件 SFC 头部注释（reference library）
+2. withDefaults 默认值（与参考库一致）
+3. 测试（每个新增 prop 至少一份渲染 / 行为测试）
+4. 本规则 §112.2 表格（如新增 prop 类别）
+
+不允许只更新前端 SFC 而漏测试或漏规则 —— 会让下一次同组件迭代无法对齐。
+
+## 112.3 例外：MP-only / Web-only 边界
+
+某些 prop 仅在某一端的 runtime 下有意义：
+
+| prop | 仅在哪端 | 备注 |
+|---|---|---|
+| `open-type`, `hover-class`, `hover-start-time`, `hover-stay-time`, `form-type` | uni（uni-app MP runtime） | 不要搬到 web |
+| `cursor`, `selection-start`, `selection-end`, `placeholder-style`, `placeholder-class`（uni MP native attr 形态）, `confirm-type`, `hold-keyboard`, `adjust-position`, `always-embed` | uni（uni-app MP runtime） | 不要搬到 web |
+| `attrType`, `tag` (`'button' \| 'a' \| 'div' \| 'span'`), `focusable`, `iconPlacement`, `showIcon`, `color`, `secondary`, `tertiary`, `quaternary`, `strong`, `ghost`, `dashed`, `circle`, `tertiary` | web | 不要搬到 uni |
+| `attrType` legacy alias `htmlType` | web | 仅作 back-compat alias |
+
+跨端**通用**部分（type / size / disabled / placeholder / clearable 等基础受控 props）必须 1:1 对齐；任一端漏补都需要补齐，缺口是设计 bug，不是可选优化。
+
+---
+
 # END
 
 AUI Agent 执行标准 v1.0.1（补充规则 #101-#111）
