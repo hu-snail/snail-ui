@@ -18,7 +18,8 @@
     "@snui/style-packs": "workspace:",
     "@snui/tokens": "workspace:",
     "@snui/uni": "workspace:",
-    "@snui/vue-web": "workspace:"
+    "@snui/vue-web": "workspace:",
+    "shiki": "2.5.0"
   },
   "devDependencies": {
     "esbuild": "^0.21.5",

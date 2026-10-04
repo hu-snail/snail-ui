@@ -21,7 +21,7 @@
  *   <Demo name="divider-mp" description="基本分割线" />
  */
 
-import { computed, defineAsyncComponent, h, ref } from 'vue'
+import { computed, defineAsyncComponent, h, ref, watch } from 'vue'
 
 interface Props {
   /** Demo file basename (without .vue) under apps/docs/.vitepress/demo/. */
@@ -95,7 +95,8 @@ const source = computed<RawModule>(() => {
   return `// Demo source not found: ${props.name}`
 })
 
-// Code panel: collapsed by default. Click summary to expand.
+// Code panel: collapsed by default. Toggled by toolbar button (and also by
+// the inner ⏵ chevron when the user wants a quick inline affordance).
 const codeOpen = ref(false)
 function toggleCode() {
   codeOpen.value = !codeOpen.value
@@ -116,30 +117,35 @@ async function copyCode(): Promise<void> {
   }
 }
 
-// Toolbar: fullscreen toggle (uses Fullscreen API on the demo card root).
-const cardRef = ref<HTMLElement | null>(null)
-const isFullscreen = ref(false)
-async function toggleFullscreen(): Promise<void> {
-  const el = cardRef.value
-  if (!el) return
-  if (document.fullscreenElement === el) {
-    await document.exitFullscreen()
-  } else {
-    await el.requestFullscreen()
-  }
-}
-if (typeof document !== 'undefined') {
-  document.addEventListener('fullscreenchange', () => {
-    isFullscreen.value = document.fullscreenElement === cardRef.value
-  })
-}
+// Syntax-highlighted HTML (Shiki). Demo files are .vue (script + template +
+// <style scoped>), so we always pass `lang: 'vue'` regardless of demo kind.
+// Highlighted HTML is built lazily — only when the code panel is expanded,
+// to avoid paying the highlight cost for collapsed panels.
+import { createHighlighter } from 'shiki'
+const highlighted = ref('')
+const highlighterPromise = createHighlighter({
+  themes: ['github-light'],
+  langs: ['vue'],
+})
+watch(
+  [() => codeOpen.value, () => source.value],
+  async ([open, src]) => {
+    if (!open) {
+      highlighted.value = ''
+      return
+    }
+    const hl = await highlighterPromise
+    highlighted.value = hl.codeToHtml(src, { lang: 'vue', theme: 'github-light' })
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
   <div :class="['sn-demo', bare ? 'sn-demo--bare' : '']">
     <p v-if="description" class="sn-demo__description">{{ description }}</p>
 
-    <div ref="cardRef" class="sn-demo__card">
+    <div class="sn-demo__card">
       <ClientOnly>
         <component :is="AsyncDemo" />
         <template #fallback>
@@ -166,28 +172,19 @@ if (typeof document !== 'undefined') {
         <button
           type="button"
           class="sn-demo__action"
-          :title="isFullscreen ? '退出全屏' : '全屏'"
-          @click="toggleFullscreen"
+          :title="codeOpen ? '收起代码' : '展开代码'"
+          :aria-expanded="codeOpen"
+          @click="toggleCode"
         >
-          <span aria-hidden="true">{{ isFullscreen ? '⤡' : '⤢' }}</span>
-          <span class="sn-demo__action-label">{{ isFullscreen ? '退出' : '全屏' }}</span>
+          <span class="sn-demo__chevron" aria-hidden="true">{{ codeOpen ? '▾' : '▸' }}</span>
+          <span class="sn-demo__action-label">{{ codeOpen ? '收起代码' : '展开代码' }}</span>
         </button>
       </div>
     </div>
 
-    <div class="sn-demo__code" :class="{ 'sn-demo__code--open': codeOpen }">
-      <button
-        type="button"
-        class="sn-demo__code-toggle"
-        :aria-expanded="codeOpen"
-        @click="toggleCode"
-      >
-        <span class="sn-demo__chevron" aria-hidden="true">{{ codeOpen ? '▾' : '▸' }}</span>
-        <span>{{ codeOpen ? '收起代码' : '展开代码' }}</span>
-      </button>
-      <div v-show="codeOpen" class="sn-demo__code-body">
-        <pre><code>{{ source }}</code></pre>
-      </div>
+    <div v-show="codeOpen" class="sn-demo__code">
+      <div class="sn-demo__code-body" v-html="highlighted || ''" />
+      <pre v-if="!highlighted" class="sn-demo__code-fallback"><code>{{ source }}</code></pre>
     </div>
   </div>
 </template>
@@ -309,47 +306,46 @@ if (typeof document !== 'undefined') {
   overflow: hidden;
 }
 
-.sn-demo__code-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 8px 12px;
-  border: 0;
-  background: transparent;
-  color: var(--vp-c-text-2);
-  font-size: 13px;
-  cursor: pointer;
-  text-align: left;
-}
-.sn-demo__code-toggle:hover {
-  color: var(--vp-c-text-1);
-}
 .sn-demo__chevron {
   font-size: 12px;
   line-height: 1;
 }
 
+/* Shiki output: a <pre> containing <code><span>…</span></code>. */
 .sn-demo__code-body {
-  border-top: 1px solid var(--vp-c-divider);
-  background: var(--vp-c-bg-alt);
   padding: 12px 16px;
   overflow-x: auto;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 1.55;
   font-family: var(--vp-font-family-mono);
 }
-.sn-demo__code-body pre {
+.sn-demo__code-body :deep(pre) {
   margin: 0;
-  background: transparent;
   padding: 0;
+  background: transparent !important;
 }
-.sn-demo__code-body code {
-  background: transparent;
+.sn-demo__code-body :deep(code) {
+  display: block;
+  background: transparent !important;
   padding: 0;
   font-family: inherit;
   font-size: inherit;
   color: var(--vp-c-text-1);
+}
+.sn-demo__code-body :deep(.line) {
+  display: block;
+  min-height: 1em;
+}
+
+/* Plain-text fallback used until Shiki finishes (rare). */
+.sn-demo__code-fallback {
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.55;
+  font-family: var(--vp-font-family-mono);
+  white-space: pre;
+  overflow-x: auto;
 }
 
 @media (max-width: 640px) {

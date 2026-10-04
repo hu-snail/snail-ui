@@ -53,6 +53,9 @@ importers:
       '@snui/vue-web':
         specifier: 'workspace:'
         version: link:../../packages/vue-web
+      shiki:
+        specifier: 2.5.0
+        version: 2.5.0
     devDependencies:
       esbuild:
         specifier: ^0.21.5
