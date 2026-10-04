@@ -45,10 +45,32 @@ export interface CardComponentTokens {
   readonly shadow: SemanticRef;
 }
 
+/**
+ * Icon component tokens — drives SnIcon / sn-icon geometry.
+ *
+ * Per Spec-01 v1.2 §2.3: icon sizing follows the same 5-tier rhythm as
+ * button / input (tiny / small / medium / large / xlarge). The medium
+ * tier matches the lucide 16px default — consumers rarely override.
+ *
+ * `strokeWidth` is the SVG `stroke-width` attribute value in design units
+ * (lucide convention: 2 on a 24×24 grid). The `absoluteStrokeWidth`
+ * SnIcon prop switches this from "scale with size" to "constant pixels"
+ * — see lucide docs for the rationale.
+ */
+export interface IconComponentTokens {
+  readonly sizeTiny: SemanticRef;
+  readonly sizeSmall: SemanticRef;
+  readonly sizeMedium: SemanticRef;
+  readonly sizeLarge: SemanticRef;
+  readonly sizeXlarge: SemanticRef;
+  readonly strokeWidth: SemanticRef;
+}
+
 export interface ComponentTokens {
   readonly button: ButtonComponentTokens;
   readonly input: InputComponentTokens;
   readonly card: CardComponentTokens;
+  readonly icon: IconComponentTokens;
 }
 
 /**
@@ -82,5 +104,13 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     padding: '16px',
     radius: '8px',
     shadow: '0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06)',
+  },
+  icon: {
+    sizeTiny: '12px',
+    sizeSmall: '14px',
+    sizeMedium: '16px',
+    sizeLarge: '20px',
+    sizeXlarge: '24px',
+    strokeWidth: '2',
   },
 };

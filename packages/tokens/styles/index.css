@@ -97,6 +97,16 @@
   --aui-card-radius: 8px;
   --aui-card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
 
+  /* Component tokens — Icon (5-tier size + stroke width).
+     Drives SnIcon / sn-icon geometry. Default sizeMedium matches lucide's
+     16px default. strokeWidth follows lucide's 2-unit standard. */
+  --aui-icon-size-tiny: 12px;
+  --aui-icon-size-small: 14px;
+  --aui-icon-size-medium: 16px;
+  --aui-icon-size-large: 20px;
+  --aui-icon-size-xlarge: 24px;
+  --aui-icon-stroke-width: 2;
+
   /* Sn-* component aliases */
   --sn-button-height-tiny: var(--aui-button-height-tiny);
   --sn-button-height-small: var(--aui-button-height-small);
@@ -116,6 +126,13 @@
   --sn-card-padding: var(--aui-card-padding);
   --sn-card-radius: var(--aui-card-radius);
   --sn-card-shadow: var(--aui-card-shadow);
+
+  --sn-icon-size-tiny: var(--aui-icon-size-tiny);
+  --sn-icon-size-small: var(--aui-icon-size-small);
+  --sn-icon-size-medium: var(--aui-icon-size-medium);
+  --sn-icon-size-large: var(--aui-icon-size-large);
+  --sn-icon-size-xlarge: var(--aui-icon-size-xlarge);
+  --sn-icon-stroke-width: var(--aui-icon-stroke-width);
 }
 
 [data-theme="dark"] {
