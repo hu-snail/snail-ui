@@ -63,7 +63,12 @@ export function rpxTransform(): Plugin {
   // Absolute path of the uni package source (matches @snui/uni-src alias
   // resolution). Used as a stable filter anchor in addition to the
   // package name so workers don't need to recompute the path each time.
-  const uniSrcAbsPath = fileURLToPath(new URL('../../../packages/uni/src', import.meta.url))
+  // Path is anchored from THIS file's URL (apps/docs/.vitepress/utils/),
+  // so 4 `..` steps walk back to the monorepo root before descending into
+  // packages/uni/src. One `..` fewer lands inside apps/packages, which
+  // doesn't exist — that bug shipped in commit 0622e1e and caused the
+  // source-import path to be silently skipped.
+  const uniSrcAbsPath = fileURLToPath(new URL('../../../../packages/uni/src', import.meta.url))
   return {
     name: 'snui-rpx-to-px',
     enforce: 'post',
