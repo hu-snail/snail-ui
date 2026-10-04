@@ -53,4 +53,14 @@
   --sn-web-card-padding: var(--aui-card-padding);
   --sn-web-card-radius: var(--aui-card-radius);
   --sn-web-card-shadow: var(--aui-card-shadow);
+
+  /* Component tokens — Icon (px).
+     Drives SnIcon size scale + stroke width. Default sizeMedium matches
+     lucide-vue-next's 16px standard. Override per-app via :root. */
+  --sn-web-icon-size-tiny: var(--aui-icon-size-tiny);
+  --sn-web-icon-size-small: var(--aui-icon-size-small);
+  --sn-web-icon-size-medium: var(--aui-icon-size-medium);
+  --sn-web-icon-size-large: var(--aui-icon-size-large);
+  --sn-web-icon-size-xlarge: var(--aui-icon-size-xlarge);
+  --sn-web-icon-stroke-width: var(--aui-icon-stroke-width);
 }

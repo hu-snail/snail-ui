@@ -57,6 +57,16 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-card-padding', '--aui-card-padding'],
   ['--sn-web-card-radius', '--aui-card-radius'],
   ['--sn-web-card-shadow', '--aui-card-shadow'],
+
+  // Component tokens — Icon (px). Drives SnIcon size scale + stroke width.
+  // Default sizeMedium (16px) matches lucide-vue-next's standard icon size.
+  // Consumers override via :root { --sn-web-icon-size-medium: 18px; } etc.
+  ['--sn-web-icon-size-tiny', '--aui-icon-size-tiny'],
+  ['--sn-web-icon-size-small', '--aui-icon-size-small'],
+  ['--sn-web-icon-size-medium', '--aui-icon-size-medium'],
+  ['--sn-web-icon-size-large', '--aui-icon-size-large'],
+  ['--sn-web-icon-size-xlarge', '--aui-icon-size-xlarge'],
+  ['--sn-web-icon-stroke-width', '--aui-icon-stroke-width'],
 ] as const
 
 /** Render the alias layer as CSS `:root { ... }` block. */

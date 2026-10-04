@@ -34,6 +34,13 @@ describe('@snui/tokens-web alias layer', () => {
     // input + card
     expect(aliases).toContain('--sn-web-input-radius')
     expect(aliases).toContain('--sn-web-card-radius')
+    // icon (AUI-WEB-002 follow-up)
+    expect(aliases).toContain('--sn-web-icon-size-medium')
+    expect(aliases).toContain('--sn-web-icon-size-tiny')
+    expect(aliases).toContain('--sn-web-icon-size-small')
+    expect(aliases).toContain('--sn-web-icon-size-large')
+    expect(aliases).toContain('--sn-web-icon-size-xlarge')
+    expect(aliases).toContain('--sn-web-icon-stroke-width')
     expect(aliases).toContain('--sn-web-focus-ring')
   })
 
