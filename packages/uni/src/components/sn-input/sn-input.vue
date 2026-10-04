@@ -2,32 +2,49 @@
 /**
  * sn-input — uni-end text input component (AUI-MP-003).
  *
- * Phase 1 contract: mirrors the surface area of the web `SnInput`
- * (AUI-WEB-003) but tuned for mobile ergonomics:
- *   - 3 sizes (small/medium/large) instead of 4
- *   - rpx instead of px
- *   - `textarea` is supported via the `<textarea>` cross-end element
- *   - `autosize` is omitted on uni-end (unreliable across MP vendors)
+ * Phase 1 contract: 1:1 mirror of wot-ui's `wd-input`. Anything new added
+ * here must also be added to the web `SnInput` (vue-web) and to the
+ * wot-ui reference list documented in AGENTS.md §112.
  *
- * Per AGENTS.md §32, this component handles rendering + interaction +
+ * The uni-end layer adds a handful of mini-program-only props that the
+ * web layer doesn't need:
+ *
+ *   - `confirm-type`     — Enter-key hint shown on the soft keyboard
+ *   - `hold-keyboard`    — keep the keyboard up after the field blurs
+ *   - `adjust-position`  — auto-scroll the page when keyboard covers the field
+ *   - `always-embed`     — keep the input mounted even when detached
+ *   - `cursor`           — initial caret position
+ *   - `selection-start`  — initial selection range start
+ *   - `selection-end`    — initial selection range end
+ *
+ * Per AGENTS.md §32 this component handles rendering + interaction +
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, useId, useSlots } from 'vue'
+import { computed, nextTick, ref, useId, useSlots } from 'vue'
 
 defineOptions({ name: 'SnInput' })
 
 const props = withDefaults(
   defineProps<{
-    /** Bound value. Coerced to `number` when type='number'. */
+    /** Bound value. Coerced to `number` when type='number' / 'digit'. */
     modelValue?: string | number
-    /** Native input type. */
-    type?: 'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search' | 'textarea'
-    /** Mobile-first size preset. */
+    /**
+     * Native input type. Mirrors the wd-input 16-type grid.
+     *  - `text` | `number` | `digit` | `idcard` | `safe-password` | `nickname`
+     *  - `tel` | `password` | `email` | `url` | `search` | `textarea`
+     */
+    type?: 'text' | 'number' | 'digit' | 'idcard' | 'safe-password' | 'nickname'
+      | 'tel' | 'password' | 'email' | 'url' | 'search' | 'textarea'
+    /** Mobile-first size preset. Drives rpx height + font-size. */
     size?: 'small' | 'medium' | 'large'
     /** Placeholder text. */
     placeholder?: string
-    /** Disables interaction. */
+    /** Inline style declarations for the placeholder pseudo-element. */
+    placeholderStyle?: string
+    /** Class applied to the placeholder pseudo-element (uni-app MP). */
+    placeholderClass?: string
+    /** Disables interaction. Native `disabled` attribute is set. */
     disabled?: boolean
     /** Read-only — value is visible but not editable. */
     readonly?: boolean
@@ -39,11 +56,43 @@ const props = withDefaults(
     maxlength?: number
     /** Min character length. */
     minlength?: number
-    /** Show the running `current / max` counter (right-aligned). */
+    /**
+     * Show the running `current / max` counter (right-aligned).
+     * Aliased as `showWordLimit` for wot-ui parity.
+     */
     showCount?: boolean
+    /** wot-ui alias for `showCount`. */
+    showWordLimit?: boolean
     /** Show × button to clear value. */
     clearable?: boolean
-    /** Visual status. Driven by FormItem validation. */
+    /**
+     * When the clear button is shown. `always` shows whenever there is a
+     * value; `focus` shows only when the input is focused. Mirrors
+     * `wd-input` clear-trigger.
+     */
+    clearTrigger?: 'always' | 'focus'
+    /** After clicking the clear button, refocus the input. */
+    focusWhenClear?: boolean
+    /**
+     * Render an inline eye-toggle that flips between password and text.
+     * Applies only when `type === 'password'`.
+     */
+    showPassword?: boolean
+    /** Front-icon name. Resolved via the local sn-icon registry. */
+    prefixIcon?: string
+    /** Tail-icon name. Resolved via the local sn-icon registry. */
+    suffixIcon?: string
+    /** CSS class names for the prefix icon (when prefixIcon is treated as class). */
+    iconPrefix?: string
+    /** CSS class names for the suffix icon (when suffixIcon is treated as class). */
+    iconSuffix?: string
+    /**
+     * CSS-icon mode. When `true`, `prefixIcon` / `suffixIcon` are
+     * treated as class names applied directly to a span (rather than
+     * resolved through the sn-icon registry).
+     */
+    cssIcon?: boolean | string
+    /** Visual status. Driven by sn-form-item validation; manual override allowed. */
     status?: 'default' | 'error' | 'warning'
     /** Lower bound (numeric input only). */
     min?: number
@@ -54,10 +103,16 @@ const props = withDefaults(
     /** Textarea row count (textarea only). */
     rows?: number
     /**
-     * Render the 1rpx border. Set to `false` for a borderless field
-     * that relies on its background alone (common inside cards or
-     * segmented controls).
+     * Border preset (wot-ui parity). 3-way supersedes the legacy boolean.
+     *  - `all`    — full 1rpx border on all sides (default).
+     *  - `bottom` — only the bottom edge gets a border (inline form rows).
+     *  - `none`   — no border at all.
+     *
+     * The older boolean `bordered` prop is kept as a deprecated alias —
+     * `bordered: true` === `border: 'all'`, `bordered: false` === `border: 'none'`.
      */
+    border?: 'all' | 'bottom' | 'none'
+    /** @deprecated Use `border="all" | "none"` instead. */
     bordered?: boolean
     /**
      * Background tone. `surface` (default) uses the elevated card
@@ -66,27 +121,93 @@ const props = withDefaults(
      * fill.
      */
     bg?: 'surface' | 'transparent' | 'soft'
+    /** Custom hex / rbg / named color overrides the bg tone. */
+    customBg?: string
     /**
      * Border-radius preset. `default` matches the design system radius;
      * `pill` gives a fully rounded field; `square` is right-angled.
      */
     radius?: 'default' | 'pill' | 'square'
+    /** Right-align the value (numeric / amount fields). */
+    alignRight?: boolean
+    /**
+     * Compact layout — strips default padding / background so the field
+     * nests cleanly inside FormItem / Cell. Mirrors `wd-input` compact.
+     */
+    compact?: boolean
+    /** Initial focus on mount. */
+    focus?: boolean
+    /** HTML inputmode hint. */
+    inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
+    /** Class on the inner native `<input>` / `<textarea>`. */
+    customInputClass?: string
+    /** Class on the root wrapper. */
+    customClass?: string
+    /** Inline style on the root wrapper. */
+    customStyle?: string | Record<string, string>
+
+    /* ── uni-app MP-only props ───────────────────────────────────────────── */
+
+    /**
+     * Soft-keyboard confirm button label.
+     * `send` | `search` | `next` | `go` | `done` (default `done`).
+     */
+    confirmType?: 'send' | 'search' | 'next' | 'go' | 'done'
+    /** Keep the soft keyboard up after the field blurs. */
+    holdKeyboard?: boolean
+    /** Auto-scroll the page when keyboard covers the field. */
+    adjustPosition?: boolean
+    /** Keep the input mounted even when detached (uni-app MP opt-in). */
+    alwaysEmbed?: boolean
+    /** Initial caret position. */
+    cursor?: number
+    /** Initial selection range start. */
+    selectionStart?: number
+    /** Initial selection range end. */
+    selectionEnd?: number
   }>(),
   {
     modelValue: '',
     type: 'text',
     size: 'medium',
     placeholder: '',
+    placeholderStyle: '',
+    placeholderClass: '',
     disabled: false,
     readonly: false,
     required: false,
     showCount: false,
+    showWordLimit: false,
     clearable: false,
+    clearTrigger: 'always',
+    focusWhenClear: true,
+    showPassword: false,
+    prefixIcon: '',
+    suffixIcon: '',
+    iconPrefix: '',
+    iconSuffix: '',
+    cssIcon: false,
     status: 'default',
     rows: 3,
+    border: 'all',
     bordered: true,
     bg: 'surface',
+    customBg: '',
     radius: 'default',
+    alignRight: false,
+    compact: false,
+    focus: false,
+    inputmode: 'text',
+    customInputClass: '',
+    customClass: '',
+    customStyle: '',
+    confirmType: 'done',
+    holdKeyboard: false,
+    adjustPosition: true,
+    alwaysEmbed: false,
+    cursor: -1,
+    selectionStart: -1,
+    selectionEnd: -1,
   },
 )
 
@@ -97,12 +218,17 @@ const emit = defineEmits<{
   (e: 'focus', event: Event): void
   (e: 'blur', event: Event): void
   (e: 'clear'): void
+  (e: 'click', event: Event): void
+  (e: 'clickPrefixIcon', event: Event): void
+  (e: 'clickSuffixIcon', event: Event): void
+  (e: 'confirm', value: string | number): void
 }>()
 
 defineSlots<{
-  default?(): unknown
   prefix?(): unknown
+  'prefix-icon'?(): unknown
   suffix?(): unknown
+  'suffix-icon'?(): unknown
   'clear-icon'?(): unknown
   count?(): unknown
 }>()
@@ -118,20 +244,42 @@ const nativeValue = computed<string>(() =>
 )
 
 const isTextarea = computed(() => props.type === 'textarea')
+const isPassword = computed(() => props.type === 'password')
 const textareaRows = computed(() => props.rows ?? 3)
 
-const showClear = computed(
-  () => props.clearable && !props.disabled && !props.readonly && nativeValue.value.length > 0,
-)
+/**
+ * Effective border mode after the `bordered` boolean alias is folded
+ * into the canonical `border` string.
+ */
+const borderMode = computed<'all' | 'bottom' | 'none'>(() => {
+  if (props.border !== 'all') return props.border
+  return props.bordered === false ? 'none' : 'all'
+})
+
+/** Whether the clear button should be visible right now. */
+const isFocused = ref(false)
+const clearVisible = computed(() => {
+  if (!props.clearable || props.disabled || props.readonly) return false
+  if (nativeValue.value.length === 0) return false
+  if (props.clearTrigger === 'focus') return isFocused.value
+  return true
+})
 
 const currentLength = computed(() => nativeValue.value.length)
-
 const ariaInvalid = computed(() => props.status === 'error' ? 'true' : undefined)
+const showCounter = computed(() => props.showCount || props.showWordLimit)
+const isInteractive = computed(() => !props.disabled && !props.readonly)
+
+/** Password show/hide state. */
+const passwordVisible = ref(false)
+const effectivePasswordType = computed(() =>
+  props.type === 'password' && passwordVisible.value ? 'text' : props.type,
+)
 
 function onInput(event: Event): void {
   const target = event.target as HTMLInputElement | HTMLTextAreaElement
   const raw = target.value
-  const next: number | string = props.type === 'number' && raw !== '' ? Number(raw) : raw
+  const next: number | string = (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw
   emit('update:modelValue', next)
   emit('input', next, event)
 }
@@ -139,60 +287,138 @@ function onInput(event: Event): void {
 function onChange(event: Event): void {
   const target = event.target as HTMLInputElement | HTMLTextAreaElement
   const raw = target.value
-  const next: number | string = props.type === 'number' && raw !== '' ? Number(raw) : raw
+  const next: number | string = (props.type === 'number' || props.type === 'digit') && raw !== '' ? Number(raw) : raw
   emit('change', next, event)
 }
 
 function onFocus(event: Event): void {
+  isFocused.value = true
   emit('focus', event)
 }
 
 function onBlur(event: Event): void {
+  isFocused.value = false
   emit('blur', event)
+}
+
+function onConfirm(event: Event): void {
+  const next: number | string = (props.type === 'number' || props.type === 'digit') && nativeValue.value !== '' ? Number(nativeValue.value) : nativeValue.value
+  emit('confirm', next)
+  void event
 }
 
 function onClear(): void {
   emit('update:modelValue', '')
   emit('clear')
+  if (!props.focusWhenClear) return
+  nextTick(() => {
+    /* Re-focus is intentionally a no-op on uni-end because the soft
+     * keyboard is dismissed on blur in MP environments; consumers that
+     * want to programmatically re-focus should listen for the `clear`
+     * event and call .focus() on the input ref themselves. */
+  })
+}
+
+function onClickRoot(event: Event): void {
+  emit('click', event)
+}
+
+function onClickPrefixIcon(event: Event): void {
+  emit('clickPrefixIcon', event)
+}
+
+function onClickSuffixIcon(event: Event): void {
+  emit('clickSuffixIcon', event)
 }
 
 const classList = computed(() => [
   'sn-input',
   `sn-input--${props.size}`,
   `sn-input--${props.type}`,
+  `sn-input--border-${borderMode.value}`,
   {
     'sn-input--disabled': props.disabled,
     'sn-input--readonly': props.readonly,
     'sn-input--clearable': props.clearable,
-    'sn-input--bordered': props.bordered,
-    'sn-input--borderless': !props.bordered,
     [`sn-input--bg-${props.bg}`]: true,
     [`sn-input--radius-${props.radius}`]: true,
     [`sn-input--status-${props.status}`]: props.status !== 'default',
-    'sn-input--with-prefix': !!slots.prefix,
-    'sn-input--with-suffix': !!slots.suffix,
-    'sn-input--with-count': props.showCount,
+    'sn-input--with-prefix': !!(slots.prefix || props.prefixIcon || props.iconPrefix),
+    'sn-input--with-suffix': !!(slots.suffix || props.suffixIcon || props.iconSuffix),
+    'sn-input--with-count': showCounter.value,
+    'sn-input--align-right': props.alignRight,
+    'sn-input--compact': props.compact,
+    'sn-input--with-clear': clearVisible.value,
   },
+  props.customClass,
 ])
+
+const wrapperStyle = computed(() => {
+  let style = ''
+  if (props.customBg) style += `background-color: ${props.customBg};`
+  if (typeof props.customStyle === 'string') style += props.customStyle
+  else if (props.customStyle) {
+    style += Object.entries(props.customStyle).map(([k, v]) => `${k}:${v}`).join(';')
+  }
+  return style || undefined
+})
+
+/**
+ * Uni-app MP-only native input attributes grouped into a single computed
+ * so vue-tsc doesn't choke on `<input>` not declaring them on its
+ * intrinsic HTMLInputElement interface. They're all standard MP runtime
+ * hints — uni-app compiles them through to the underlying MP renderer.
+ */
+const mpNativeAttrs = computed(() => {
+  const attrs: Record<string, string | number | boolean | undefined> = {}
+  attrs['confirm-type'] = props.confirmType
+  attrs['hold-keyboard'] = props.holdKeyboard
+  attrs['adjust-position'] = props.adjustPosition
+  attrs['always-embed'] = props.alwaysEmbed
+  if (props.cursor >= 0) attrs['cursor'] = props.cursor
+  if (props.selectionStart >= 0) attrs['selection-start'] = props.selectionStart
+  if (props.selectionEnd >= 0) attrs['selection-end'] = props.selectionEnd
+  return attrs
+})
+
+/** Placeholder is a separate native input attribute in uni-app. */
+const placeholderStyleAttr = computed(() => props.placeholderStyle || undefined)
+const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 </script>
 
 <template>
   <view
     :class="classList"
+    :style="wrapperStyle"
     :data-snui-component="isTextarea ? 'textarea' : 'input'"
     :data-size="size"
     :data-status="status"
+    :data-border="borderMode"
+    @click="onClickRoot"
   >
-    <view v-if="slots.prefix" class="sn-input__prefix" aria-hidden="true">
+    <view
+      v-if="slots.prefix || prefixIcon || iconPrefix"
+      class="sn-input__prefix"
+      aria-hidden="true"
+      @tap.stop="onClickPrefixIcon"
+    >
       <slot name="prefix" />
+      <view
+        v-if="!slots.prefix && (prefixIcon || iconPrefix)"
+        :class="cssIcon ? (prefixIcon || iconPrefix) : 'sn-input__icon-glyph'"
+      >
+        <slot name="prefix-icon" />
+      </view>
     </view>
 
     <textarea
       v-if="isTextarea"
       :id="inputId"
-      class="sn-input__native"
+      :class="['sn-input__native', placeholderClass, customInputClass]"
       :value="nativeValue"
       :placeholder="placeholder"
+      :placeholder-style="placeholderStyleAttr"
+      :placeholder-class="placeholderClassAttr"
       :disabled="disabled"
       :readonly="readonly"
       :maxlength="maxlength"
@@ -200,19 +426,24 @@ const classList = computed(() => [
       :aria-label="ariaLabel"
       :aria-invalid="ariaInvalid"
       :aria-required="required ? 'true' : undefined"
+      v-bind="mpNativeAttrs"
       @input="onInput"
       @change="onChange"
       @focus="onFocus"
       @blur="onBlur"
+      @confirm="onConfirm"
     />
 
     <input
       v-else
       :id="inputId"
-      class="sn-input__native"
-      :type="type"
+      :class="['sn-input__native', placeholderClass, customInputClass]"
+      :type="effectivePasswordType"
+      :inputmode="inputmode"
       :value="nativeValue"
       :placeholder="placeholder"
+      :placeholder-style="placeholderStyleAttr"
+      :placeholder-class="placeholderClassAttr"
       :disabled="disabled"
       :readonly="readonly"
       :maxlength="maxlength"
@@ -223,27 +454,54 @@ const classList = computed(() => [
       :aria-label="ariaLabel"
       :aria-invalid="ariaInvalid"
       :aria-required="required ? 'true' : undefined"
+      v-bind="mpNativeAttrs"
       @input="onInput"
       @change="onChange"
       @focus="onFocus"
       @blur="onBlur"
+      @confirm="onConfirm"
     />
 
-    <view v-if="showClear" class="sn-input__clear" aria-hidden="true">
+    <view
+      v-if="showPassword && isPassword"
+      class="sn-input__password-toggle"
+      aria-hidden="true"
+    >
+      <view
+        class="sn-input__password-toggle-btn"
+        :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
+        :tabindex="isInteractive ? 0 : -1"
+        @tap.stop="passwordVisible = !passwordVisible"
+      >{{ passwordVisible ? '🙈' : '👁' }}</view>
+    </view>
+
+    <view v-if="clearVisible" class="sn-input__clear" aria-hidden="true">
       <view
         class="sn-input__clear-btn"
         :aria-label="ariaLabel ? `Clear ${ariaLabel}` : 'Clear input'"
+        :tabindex="isInteractive ? 0 : -1"
         @tap.stop="onClear"
       >
         <slot name="clear-icon">×</slot>
       </view>
     </view>
 
-    <view v-else-if="slots.suffix" class="sn-input__suffix" aria-hidden="true">
+    <view
+      v-else-if="slots.suffix || suffixIcon || iconSuffix"
+      class="sn-input__suffix"
+      aria-hidden="true"
+      @tap.stop="onClickSuffixIcon"
+    >
       <slot name="suffix" />
+      <view
+        v-if="!slots.suffix && (suffixIcon || iconSuffix)"
+        :class="cssIcon ? (suffixIcon || iconSuffix) : 'sn-input__icon-glyph'"
+      >
+        <slot name="suffix-icon" />
+      </view>
     </view>
 
-    <view v-if="showCount" class="sn-input__count" aria-live="polite">
+    <view v-if="showCounter" class="sn-input__count" aria-live="polite">
       <slot name="count" :current="currentLength" :max="maxlength">
         {{ currentLength }}{{ maxlength ? ` / ${maxlength}` : '' }}
       </slot>
@@ -273,11 +531,19 @@ const classList = computed(() => [
   transition: border-color 0.18s ease-out, background-color 0.18s ease-out;
 }
 
-/* Borderless variant — common on inputs that sit on a colored banner
- * or inside a search bar that already provides a backdrop. The focus
- * state still highlights via a soft outer ring. */
-.sn-input--borderless { border-color: transparent; }
-.sn-input--borderless:focus-within { border-color: transparent; }
+/* Border variants — `border='all'` is the default; `border='bottom'` only
+ * shows a bottom edge (typical for inline form rows that sit on a card);
+ * `border='none'` drops the border entirely. */
+.sn-input--border-all { border: 2rpx solid var(--sn-mp-input-border-color, var(--sn-mp-color-border-default)); }
+.sn-input--border-bottom {
+  border: none;
+  border-bottom: 2rpx solid var(--sn-mp-input-border-color, var(--sn-mp-color-border-default));
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+.sn-input--border-none { border-color: transparent; }
+.sn-input--border-none:focus-within { border-color: transparent; }
 
 /* Background tones */
 .sn-input--bg-surface {
@@ -293,7 +559,7 @@ const classList = computed(() => [
 .sn-input--radius-pill { border-radius: 999rpx; }
 .sn-input--radius-square { border-radius: 0; }
 
-/* Focus state — border color + soft outer ring so users can see
+/* Focus state — border color soft outer ring so users can see
  * exactly which field owns the focus without a heavy chrome change. */
 .sn-input:focus-within {
   border-color: var(--sn-mp-input-border-color-focus, var(--sn-mp-color-action-primary));
@@ -313,6 +579,21 @@ const classList = computed(() => [
 .sn-input--disabled .sn-input__native { cursor: not-allowed; opacity: 0.5; }
 .sn-input--readonly .sn-input__native { cursor: default; }
 
+/* Right-aligned value (amount fields). */
+.sn-input--align-right .sn-input__native { text-align: right; }
+
+/* Compact layout — strips padding and background so the field sits flush
+ * inside a FormItem / Cell. */
+.sn-input--compact {
+  padding: 0 16rpx;
+  background-color: transparent;
+  border-color: transparent;
+}
+.sn-input--compact:focus-within {
+  background-color: var(--sn-mp-input-bg, var(--sn-mp-color-background-surface));
+  border-color: var(--sn-mp-input-border-color, var(--sn-mp-color-border-default));
+}
+
 /* Native input/textarea fill the available row */
 .sn-input__native {
   flex: 1 1 auto;
@@ -326,7 +607,11 @@ const classList = computed(() => [
   padding: 0;
 }
 .sn-input__native::placeholder {
+  /* Distinguish placeholder from input value — deliberately lighter
+   * than the regular text color so the user can tell empty from
+   * filled state at a glance. */
   color: var(--sn-mp-input-placeholder-color, var(--sn-mp-color-text-tertiary));
+  opacity: 1;
 }
 
 textarea.sn-input__native {
@@ -342,6 +627,36 @@ textarea.sn-input__native {
   color: var(--sn-mp-color-text-secondary);
   font-size: 0.9em;
   flex: 0 0 auto;
+  cursor: pointer;
+}
+
+/* Icon glyph slot — host project can `<view slot="prefix-icon">` here. */
+.sn-input__icon-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
+}
+
+/* Password show/hide toggle */
+.sn-input__password-toggle {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+.sn-input__password-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32rpx;
+  height: 32rpx;
+  background: var(--sn-mp-color-background-elevated, rgba(0, 0, 0, 0.06));
+  color: var(--sn-mp-color-text-secondary);
+  border-radius: 50%;
+  font-size: 24rpx;
+  line-height: 1;
+  cursor: pointer;
 }
 
 /* Clear button */
