@@ -13,7 +13,12 @@
  * without DOM lookups.
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, provide, ref } from 'vue'
+import { computed, inject, markRaw, onBeforeUnmount, onMounted, provide, ref } from 'vue'
+import SnIcon from '../icon/SnIcon.vue'
+import {
+  resolveIconByName,
+  type IconComponent,
+} from '../icon/sn-icon-registry'
 import {
   FORM_CONTEXT_KEY,
   FORM_ITEM_STATE_KEY,
@@ -46,10 +51,21 @@ const props = withDefaults(
     labelPosition?: 'left' | 'right' | 'top'
     /** Accessible label override (used when label is hidden but a11y needs an accessible name). */
     ariaLabel?: string
+    /**
+     * Optional icon rendered inline with the label. Accepts an icon
+     * component (e.g. lucide-vue-next) directly. Use `iconName` for
+     * the registry lookup path.
+     */
+    icon?: IconComponent
+    /** Icon name resolved via the SnIcon registry. */
+    iconName?: string
+    /** Pixel / CSS size forwarded to the embedded SnIcon. Default 14. */
+    iconSize?: number | string
   }>(),
   {
     showMessage: true,
     required: false,
+    iconSize: 14,
   },
 )
 
@@ -141,6 +157,14 @@ const showMsg = computed(() => {
   return flag && message.value.length > 0
 })
 
+/** Resolved icon component (web). */
+const resolvedIcon = computed<IconComponent | null>(() => {
+  const icon = props.icon ?? (props.iconName ? resolveIconByName(props.iconName) : null)
+  return icon ? markRaw(icon) : null
+})
+
+const hasIcon = computed(() => resolvedIcon.value !== null)
+
 const classes = computed(() => [
   'sn-form-item',
   `sn-form-item--${ctx?.labelPosition ?? 'right'}`,
@@ -148,12 +172,29 @@ const classes = computed(() => [
   {
     'sn-form-item--required': !!props.required,
     'sn-form-item--disabled': !!ctx?.disabled,
+    'sn-form-item--with-icon': hasIcon.value,
   },
 ])
 
 const labelStyle = computed(() => {
   const width = props.labelWidth ?? ctx?.labelWidth ?? 'auto'
   return width === 'auto' ? undefined : { width: typeof width === 'number' ? `${width}px` : width }
+})
+
+/**
+ * Grid track width for the label column. `auto` lets the column hug
+ * content (good for short labels); any explicit value (number = px,
+ * string = CSS length) pins the column. Both `labelPosition: left` and
+ * `labelPosition: right` consume this — without it the label column
+ * is sized by the longest label across all items, which makes the
+ * field column ragged.
+ */
+const gridStyle = computed(() => {
+  const position = props.labelPosition ?? ctx?.labelPosition ?? 'right'
+  if (position === 'top') return undefined
+  const width = props.labelWidth ?? ctx?.labelWidth ?? 'auto'
+  const track = width === 'auto' ? 'auto' : typeof width === 'number' ? `${width}px` : width
+  return { gridTemplateColumns: `${track} 1fr` }
 })
 
 function deepClone<T>(value: T): T {
@@ -171,6 +212,7 @@ function deepClone<T>(value: T): T {
 <template>
   <div
     :class="classes"
+    :style="gridStyle"
     :data-snui-component="props.prop ? 'form-item' : 'form-item-static'"
     :data-prop="props.prop"
     :data-status="status"
@@ -182,6 +224,12 @@ function deepClone<T>(value: T): T {
       :aria-label="ariaLabel"
     >
       <span v-if="required" class="sn-form-item__required" aria-hidden="true">*</span>
+      <SnIcon
+        v-if="resolvedIcon"
+        class="sn-form-item__icon"
+        :icon="resolvedIcon"
+        :size="iconSize ?? 14"
+      />
       <slot name="label">{{ props.label }}</slot>
     </label>
 
@@ -230,6 +278,13 @@ function deepClone<T>(value: T): T {
 .sn-form-item__required {
   color: var(--sn-web-color-feedback-danger);
   margin-right: 2px;
+}
+
+/* Inline label icon — Sized via the SnIcon's own `1em` box, so it
+ * inherits the label's font-size (13px) cleanly. */
+.sn-form-item__icon {
+  margin-right: 4px;
+  color: var(--sn-web-color-text-secondary);
 }
 
 .sn-form-item__control {

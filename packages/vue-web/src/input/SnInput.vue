@@ -54,6 +54,24 @@ const props = withDefaults(
     rows?: number
     /** Auto-grow textarea to fit content. */
     autosize?: boolean | { minRows?: number; maxRows?: number }
+    /**
+     * Render the 1px border. Set to `false` for a borderless input that
+     * relies on background + underline for its outline (common on
+     * search bars inside toolbars).
+     */
+    bordered?: boolean
+    /**
+     * Background tone. `surface` (default) uses the elevated card color;
+     * `transparent` removes the background (e.g. for inputs that sit
+     * directly on a colored banner); `soft` is a subtle secondary fill.
+     */
+    bg?: 'surface' | 'transparent' | 'soft'
+    /**
+     * Border-radius preset. `default` matches the design system radius;
+     * `pill` gives a fully rounded field (search-bar style); `square`
+     * is right-angled.
+     */
+    radius?: 'default' | 'pill' | 'square'
   }>(),
   {
     modelValue: '',
@@ -68,6 +86,9 @@ const props = withDefaults(
     status: 'default',
     rows: 3,
     autosize: false,
+    bordered: true,
+    bg: 'surface',
+    radius: 'default',
   },
 )
 
@@ -157,6 +178,10 @@ const classList = computed(() => [
     'sn-input--disabled': props.disabled,
     'sn-input--readonly': props.readonly,
     'sn-input--clearable': props.clearable,
+    'sn-input--bordered': props.bordered,
+    'sn-input--borderless': !props.bordered,
+    [`sn-input--bg-${props.bg}`]: true,
+    [`sn-input--radius-${props.radius}`]: true,
     [`sn-input--status-${props.status}`]: props.status !== 'default',
     'sn-input--with-prefix': !!slots.prefix,
     'sn-input--with-suffix': !!slots.suffix,
@@ -262,10 +287,48 @@ const classList = computed(() => [
   color: var(--sn-web-input-text-color, var(--sn-web-color-text-primary));
   font-family: inherit;
   line-height: 1;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out,
+    background-color 0.18s ease-out;
   box-sizing: border-box;
 }
 
+/*
+ * Borderless variant — common for inputs that sit on a colored banner
+ * or inside a search bar that already provides a backdrop. The focus
+ * state still highlights via a soft outer ring instead of a border swap.
+ */
+.sn-input--borderless {
+  border-color: transparent;
+}
+.sn-input--borderless:focus-within {
+  border-color: transparent;
+  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
+}
+
+/* Background tones */
+.sn-input--bg-surface {
+  background-color: var(--sn-web-input-bg, var(--sn-web-color-background-surface));
+}
+.sn-input--bg-transparent {
+  background-color: transparent;
+}
+.sn-input--bg-soft {
+  background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
+}
+
+/* Radius presets */
+.sn-input--radius-default {
+  border-radius: var(--sn-web-input-radius, 6px);
+}
+.sn-input--radius-pill {
+  border-radius: 999px;
+}
+.sn-input--radius-square {
+  border-radius: 0;
+}
+
+/* Focus state — border + outer ring + soft scale so users can see
+ * exactly which field owns the focus without a heavy chrome change. */
 .sn-input:focus-within {
   border-color: var(--sn-web-input-border-color-focus, var(--sn-web-color-action-primary));
   box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
@@ -277,12 +340,20 @@ const classList = computed(() => [
 .sn-input--medium { height: 32px; font-size: 14px; }
 .sn-input--large { height: 40px; font-size: 15px; }
 
-/* Status */
+/* Status — applied after the focus border so error/warning wins. */
 .sn-input--status-error {
   border-color: var(--sn-web-color-feedback-danger);
 }
+.sn-input--status-error:focus-within {
+  border-color: var(--sn-web-color-feedback-danger);
+  box-shadow: 0 0 0 3px var(--sn-web-color-feedback-danger-soft, rgba(255, 77, 79, 0.15));
+}
 .sn-input--status-warning {
   border-color: var(--sn-web-color-feedback-warning);
+}
+.sn-input--status-warning:focus-within {
+  border-color: var(--sn-web-color-feedback-warning);
+  box-shadow: 0 0 0 3px var(--sn-web-color-feedback-warning-soft, rgba(250, 173, 20, 0.15));
 }
 
 /* States */

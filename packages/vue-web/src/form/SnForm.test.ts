@@ -227,4 +227,48 @@ describe('SnForm', () => {
     const wrapper = mount(App, { props: { model, rules: {}, required: true } })
     expect(wrapper.find('.sn-form-item__required').exists()).toBe(true)
   })
+
+  it('applies labelWidth via the grid template columns', () => {
+    const model = reactive({ email: '', password: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model, labelWidth: 120 }, {
+          default: () => h(SnFormItem, { prop: 'email' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    const item = wrapper.find('.sn-form-item')
+    const style = (item as { attributes: (s: string) => string | undefined }).attributes('style') ?? ''
+    expect(style).toContain('grid-template-columns')
+    expect(style).toContain('120px')
+  })
+
+  it('renders inline label icon when icon prop is provided', () => {
+    const Heart = defineComponent({ name: 'Heart', render: () => h('svg', { 'data-testid': 'heart' }) })
+    const model = reactive({ email: '', password: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', icon: Heart }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('[data-testid="heart"]').exists()).toBe(true)
+  })
+
+  it('applies with-icon modifier class when icon present', () => {
+    const Heart = defineComponent({ name: 'Heart', render: () => h('svg') })
+    const model = reactive({ email: '', password: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', icon: Heart }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--with-icon')
+  })
 })

@@ -209,4 +209,46 @@ describe('SnInput', () => {
     const wrapper = mount(SnInput, { props: { status: 'warning' } })
     expect(wrapper.classes()).toContain('sn-input--status-warning')
   })
+
+  it('applies bordered class by default', () => {
+    const wrapper = mount(SnInput, { props: {} })
+    expect(wrapper.classes()).toContain('sn-input--bordered')
+    expect(wrapper.classes()).not.toContain('sn-input--borderless')
+  })
+
+  it('toggles borderless when bordered is false', () => {
+    const wrapper = mount(SnInput, { props: { bordered: false } })
+    expect(wrapper.classes()).toContain('sn-input--borderless')
+    expect(wrapper.classes()).not.toContain('sn-input--bordered')
+  })
+
+  it('applies bg-surface by default', () => {
+    const wrapper = mount(SnInput, { props: {} })
+    expect(wrapper.classes()).toContain('sn-input--bg-surface')
+  })
+
+  it('switches to bg-transparent', () => {
+    const wrapper = mount(SnInput, { props: { bg: 'transparent' } })
+    expect(wrapper.classes()).toContain('sn-input--bg-transparent')
+  })
+
+  it('switches to bg-soft', () => {
+    const wrapper = mount(SnInput, { props: { bg: 'soft' } })
+    expect(wrapper.classes()).toContain('sn-input--bg-soft')
+  })
+
+  it('applies radius-default by default', () => {
+    const wrapper = mount(SnInput, { props: {} })
+    expect(wrapper.classes()).toContain('sn-input--radius-default')
+  })
+
+  it('switches to radius-pill', () => {
+    const wrapper = mount(SnInput, { props: { radius: 'pill' } })
+    expect(wrapper.classes()).toContain('sn-input--radius-pill')
+  })
+
+  it('switches to radius-square', () => {
+    const wrapper = mount(SnInput, { props: { radius: 'square' } })
+    expect(wrapper.classes()).toContain('sn-input--radius-square')
+  })
 })
