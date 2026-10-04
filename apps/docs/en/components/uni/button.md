@@ -2,6 +2,9 @@
 
 `sn-button` is the core interactive component in `@snui/uni` (mobile / miniprogram / H5). easycom auto-register, rpx for cross-device scaling.
 
+> **Reference library**: [wot-ui `wd-button`](https://wot-ui.cn/component/button.html) — 1:1 parity on props / events (per AGENTS.md §112).
+> Renderer additionally absorbs uni-app runtime attrs (`hover-class` / `open-type` / `form-type` etc. MP-only concepts).
+
 ## Auto-register (easycom)
 
 Conforms to easycom — **no import needed in templates**:
@@ -22,11 +25,11 @@ import { SnButton } from '@snui/uni'
 
 ## Basic usage
 
-<Demo name="button-mp-basic" description="Five semantic types (no info — mobile doesn't need cool-tone weak alerts)." />
+<Demo name="button-mp-basic" description="6 semantic types: primary / success / warning / danger / info / default." />
 
 ## Sizes
 
-`small` / `medium` / `large` (no `tiny` — mobile does not need it). Maps to `--sn-mp-button-height-{small,medium,large}` (auto-converted to rpx based on 750 design width).
+3 tiers `small` / `medium` / `large` (no `tiny` / `huge` on mobile). Maps to `--sn-mp-button-height-{small,medium,large}` (auto-converted to rpx based on 750 design width).
 
 <Demo name="button-mp-size" description="Three height tiers, mobile usually only needs these three." />
 
@@ -40,6 +43,30 @@ Block button (full parent width) is common on mobile:
 
 <Demo name="button-mp-state" description="disabled fully disables; loading shows spinner and is unclickable; can manually toggle loading state." />
 
+## Variant: base / plain / dashed / soft / subtle / text
+
+<Demo name="button-mp-variant" description="wot-ui variant 6 tiers: base (filled), plain (transparent + colored border), dashed (dashed border), soft (soft bg + colored text), subtle (very light bg), text (text-only)." />
+
+## Cell: hover / fill / menu
+
+<Demo name="button-mp-cell" description="Cell list: hover (active bg), fill (always gray bg), menu (transparent + no radius)." />
+
+## Custom background / color / loading color
+
+<Demo name="button-mp-custom" description="bgColor / color overrides; loadingColor changes spinner color; loadingSize changes rpx size." />
+
+## Open-type (MP-only)
+
+<Demo name="button-mp-open-type" description="open-type: share / feedback / launchApp / contact / getUserInfo / openSetting / favorite / chooseAvatar." />
+
+## hover-class / hover-start-time / hover-stay-time
+
+<Demo name="button-mp-hover" description="Custom press-feedback class; hover-start-time how long before triggering; hover-stay-time how long after release before removing." />
+
+## formType (MP-only)
+
+<Demo name="button-mp-form-type" description="form-type='submit' submits form; form-type='reset' resets form." />
+
 > **Key difference**: uni side requires explicit `import '@snui/tokens-mp/styles'` (Web uses `import '@snui/tokens-web/styles'`).
 
 ## API
@@ -48,35 +75,53 @@ Block button (full parent width) is common on mobile:
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| type | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Button type |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | Button size |
-| block | `boolean` | `false` | Block |
-| round | `boolean` | `false` | Pill shape |
-| disabled | `boolean` | `false` | Disabled |
-| loading | `boolean` | `false` | Loading |
-| hairline | `boolean` | `true` | Hairline border (default type) |
-| feedback | `boolean` | `true` | Active feedback (opacity) |
+| `type` | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | Semantic type. |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Button size. |
+| `block` | `boolean` | `false` | Block. |
+| `round` | `boolean` | `false` | Pill shape. |
+| `disabled` | `boolean` | `false` | Disabled. |
+| `loading` | `boolean` | `false` | Loading (spinner + click suppression). |
+| `hairline` | `boolean` | `true` | Hairline border on `default` type. |
+| `feedback` | `boolean` | `true` | Active feedback (opacity). |
+| `plain` | `boolean` | `false` | Low-emphasis style (v1: equals `variant='plain'`). |
+| `variant` | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'` | `'base'` | wot-ui `wd-button variant`. |
+| `cell` | `'hover' \| 'fill' \| 'menu'` | — | Cell list style (wot-ui `wd-button cell`). |
+| `loadingColor` | `string` | `''` | Custom spinner color. |
+| `loadingSize` | `number \| string` | `32` | Spinner rpx / px size. |
+| `hoverClass` | `string` | `'sn-button--feedback'` | Touch-feedback class. |
+| `hoverStartTime` | `number` | `0` | How long to hold before triggering hoverClass. |
+| `hoverStayTime` | `number` | `70` | How long after release before removing hoverClass. |
+| `openType` | `'share' \| 'feedback' \| 'launchApp' \| 'contact' \| 'getUserInfo' \| 'openSetting' \| 'lifestyle' \| 'livePlayer' \| 'favorite' \| 'chooseAvatar' \| 'weRunGroup'` | — | WeChat MP open-type passthrough. |
+| `formType` | `'submit' \| 'reset'` | — | Form submission type (wot-ui `wd-button form-type`). |
+| `bgColor` | `string` | `''` | Inline `background-color` override. |
+| `color` | `string` | `''` | Inline `color` + `border-color` override. |
+| `customClass` | `string` | `''` | Root extra class. |
+| `customStyle` | `string \| Record<string,string>` | `''` | Root inline style. |
+| `iconData` | `IconData` | — | Frozen `{ viewBox, paths }`. |
+| `iconName` | `string` | — | Resolve via `registerSnIcons`. |
+| `iconSize` | `number \| string` | `32` | rpx / px size. |
+| `ariaLabel` | `string` | — | A11y label. |
 
 ### Events
 
 | Name | Payload | Description |
 | --- | --- | --- |
-| click | `(event: Event)` | Tap event (mobile uses `tap`) |
+| `click` | `(event: Event)` | Tap (mobile uses `tap`). |
 
 ### Slots
 
 | Name | Description |
 | --- | --- |
-| default | Button content |
-| icon | Custom icon |
-| loading | Custom loading icon |
+| `default` | Button content. |
+| `icon` | Custom icon. |
+| `loading` | Custom loading icon. |
 
 ## Cross-platform behavior
 
 | Platform | Behavior |
 | --- | --- |
 | H5 | Renders as `<button>`, touch triggers click |
-| WeChat miniprogram | Compiles to native view, auto-registers tap |
+| WeChat miniprogram | Compiles to native view, auto-registers tap; supports `open-type` |
 | Alipay miniprogram | Same |
 | App (uni-app x) | Native render, touch feedback |
 | Douyin miniprogram | Same as WeChat |
@@ -117,4 +162,4 @@ page {
 
 ## Related
 
-- Web: [`SnButton`](/en/components/web/button)
+- Web: [`SnButton`](/en/components/web/button) — naive-ui 1:1, includes text/ghost/dashed/circle/strong/secondary/tertiary/quaternary variants.

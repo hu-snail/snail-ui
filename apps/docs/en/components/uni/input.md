@@ -2,17 +2,24 @@
 
 Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, tokens drive the surface.
 
+> **Reference library**: [wot-ui `wd-input`](https://wot-ui.cn/component/input.html) — 1:1 parity on props / events (per AGENTS.md §112).
+> Renderer additionally absorbs uni-app runtime attrs (`confirm-type` / `hold-keyboard` / `placeholder-style` native attr, etc.).
+
 ## Basic
 
 <Demo name="input-mp-basic" description="v-model binding." />
 
 ## Types
 
-<Demo name="input-mp-types" description="7 native types: text / password / email / number / tel / url / search." />
+16 native input types, including the mobile-friendly `digit` / `idcard` / `nickname` / `safe-password`.
+
+<Demo name="input-mp-types" description="16 types: text / password / email / number / digit / idcard / nickname / safe-password / tel / url / search / textarea." />
 
 ## Sizes
 
-<Demo name="input-mp-sizes" description="3 size presets: small / medium / large." />
+3 tiers `small` / `medium` / `large` (mobile rhythm).
+
+<Demo name="input-mp-sizes" description="3 sizes (rpx: 56/72/88)." />
 
 ## Status
 
@@ -20,19 +27,31 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 
 ## States
 
-<Demo name="input-mp-states" description="disabled / readonly / required." />
+<Demo name="input-mp-states" description="disabled / readonly / required + aria-*." />
 
 ## Clearable + Counter
 
-<Demo name="input-mp-clearable-count" description="clearable + showCount + maxlength." />
+<Demo name="input-mp-clearable-count" description="clearable × button; clearTrigger 'always' | 'focus'; showCount / showWordLimit + maxlength counter." />
 
-## Slots
+## Show Password
 
-<Demo name="input-mp-slots" description="prefix / suffix / clear-icon / count slots + sn-icon integration." />
+<Demo name="input-mp-password-toggle" description="type='password' + showPassword renders eye toggle." />
+
+## Prefix / Suffix Icon
+
+<Demo name="input-mp-prefix-suffix" description="prefixIcon / suffixIcon via SnIcon; iconPrefix / iconSuffix / cssIcon css-class fallbacks." />
 
 ## Border / Background / Radius
 
-<Demo name="input-mp-bordered-bg-radius" description="bordered toggles 2rpx border; bg surface / transparent / soft; radius default / pill / square." />
+<Demo name="input-mp-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none' (bordered alias); bg / customBg; radius preset." />
+
+## alignRight / compact / inputmode
+
+<Demo name="input-mp-align-compact" description="amount right-align; compact mode; inputmode soft-keyboard hint." />
+
+## MP-only runtime attrs
+
+<Demo name="input-mp-runtime" description="confirm-type / hold-keyboard / adjust-position / always-embed / cursor / selection-start / selection-end / placeholder-style / placeholder-class." />
 
 ## Textarea
 
@@ -40,33 +59,83 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 
 ## Props
 
-| Prop | Type | Default |
-| --- | --- | --- |
-| `modelValue` | `string \| number` | `''` |
-| `type` | `text \| password \| email \| number \| tel \| url \| search \| textarea` | `text` |
-| `size` | `small \| medium \| large` | `medium` |
-| `placeholder` | `string` | `''` |
-| `disabled` | `boolean` | `false` |
-| `readonly` | `boolean` | `false` |
-| `required` | `boolean` | `false` |
-| `maxlength` / `minlength` | `number` | — |
-| `showCount` | `boolean` | `false` |
-| `clearable` | `boolean` | `false` |
-| `status` | `default \| error \| warning` | `default` |
-| `min / max / step` | `number` | — |
-| `rows` | `number` | `3` |
-| `bordered` | `boolean` | `true` |
-| `bg` | `surface \| transparent \| soft` | `surface` |
-| `radius` | `default \| pill \| square` | `default` |
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `string \| number` | `''` | v-model value. |
+| `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | Native input type. |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | rpx height / font-size. |
+| `placeholder` | `string` | `''` | Placeholder text. |
+| `placeholderStyle` | `string` | `''` | Inline CSS injected into `::placeholder`. |
+| `placeholderClass` | `string` | `''` | Extra class on placeholder. |
+| `disabled` | `boolean` | `false` | Disabled. |
+| `readonly` | `boolean` | `false` | Read-only. |
+| `required` | `boolean` | `false` | aria-required. |
+| `maxlength` / `minlength` | `number` | — | Forwarded. |
+| `showCount` | `boolean` | `false` | Show counter. |
+| `showWordLimit` | `boolean` | `false` | `showCount` wot-ui alias. |
+| `clearable` | `boolean` | `false` | × button. |
+| `clearTrigger` | `'always' \| 'focus'` | `'always'` | × button visibility trigger. |
+| `focusWhenClear` | `boolean` | `true` | Auto-refocus after × click (uni-side placeholder — soft-keyboard dismissal). |
+| `showPassword` | `boolean` | `false` | Eye toggle on `type='password'`. |
+| `prefixIcon` | `string` | `''` | Front icon name (resolved via SnIcon). |
+| `suffixIcon` | `string` | `''` | Tail icon name. |
+| `iconPrefix` | `string` | `''` | Front icon CSS class (bypass SnIcon). |
+| `iconSuffix` | `string` | `''` | Tail icon CSS class. |
+| `cssIcon` | `boolean \| string` | `false` | `true` treats prefix/suffix icon as CSS class. |
+| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | Border + aria-invalid. |
+| `min` / `max` / `step` | `number` | — | Numeric bounds. |
+| `rows` | `number` | `3` | Textarea rows. |
+| `border` | `'all' \| 'bottom' \| 'none'` | `'all'` | Border mode (2rpx). |
+| `bordered` *(deprecated)* | `boolean` | `true` | Alias: `true / false` ↔ `'all' / 'none'`. |
+| `bg` | `'surface' \| 'transparent' \| 'soft'` | `'surface'` | Background tone. |
+| `customBg` | `string` | `''` | Inline bg override. |
+| `radius` | `'default' \| 'pill' \| 'square'` | `'default'` | Radius preset. |
+| `alignRight` | `boolean` | `false` | Right-align value. |
+| `compact` | `boolean` | `false` | Compact layout. |
+| `focus` | `boolean` | `false` | Auto-focus on mount. |
+| `inputmode` | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'` | Soft-keyboard hint. |
+| `customInputClass` | `string` | `''` | Inner `<input>` / `<textarea>` class. |
+| `customClass` | `string` | `''` | Root class. |
+| `customStyle` | `string \| Record<string,string>` | `''` | Root inline style. |
+
+### MP-only runtime attrs (uni-app compile-time passthrough)
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `confirmType` | `'send' \| 'search' \| 'next' \| 'go' \| 'done'` | `'done'` | Soft-keyboard confirm button label. |
+| `holdKeyboard` | `boolean` | `false` | Keep keyboard up after field blurs. |
+| `adjustPosition` | `boolean` | `true` | Auto-scroll page when keyboard covers field. |
+| `alwaysEmbed` | `boolean` | `false` | Input stays mounted even when detached. |
+| `cursor` | `number` | `-1` | Initial caret position. `-1` means unset. |
+| `selectionStart` | `number` | `-1` | Initial selection range start. |
+| `selectionEnd` | `number` | `-1` | Initial selection range end. |
 
 ## Events
 
-`update:modelValue` / `input` / `change` / `focus` / `blur` / `clear`.
+| Event | Payload | Notes |
+| --- | --- | --- |
+| `update:modelValue` | `(value)` | v-model sync. |
+| `input` | `(value, event)` | Native input. |
+| `change` | `(value, event)` | Native change. |
+| `focus` | `(event)` | Native focus. |
+| `blur` | `(event)` | Native blur. |
+| `clear` | — | × button click. |
+| `click` | `(event)` | Root click. |
+| `clickPrefixIcon` | `(event)` | Click on prefix icon region. |
+| `clickSuffixIcon` | `(event)` | Click on suffix icon region. |
+| `confirm` | `(value)` | Soft-keyboard confirm / textarea confirm. |
 
 ## Slots
 
-`prefix` / `suffix` / `clear-icon` / `count`.
+| Slot | Description |
+| --- | --- |
+| `prefix` | Left of input. |
+| `suffix` | Right of input. |
+| `prefix-icon` | Custom SnIcon front content (overrides `prefixIcon`). |
+| `suffix-icon` | Custom SnIcon tail content. |
+| `clear-icon` | Custom × button content. |
+| `count` | Custom counter (receives `{ current, max }`). |
 
 ## Source
 
-Uni renderer at `@snui/uni`; contract shared with web.
+Cross-end protocol shared, uni renderer at `@snui/uni` (`packages/uni/src/components/sn-input/`).
