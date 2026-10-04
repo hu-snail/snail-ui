@@ -43,6 +43,19 @@ export const snMpSizeMap: ReadonlyArray<readonly [string, string]> = [
   // Card
   ['--sn-mp-card-padding', toRpx(16)],
   ['--sn-mp-card-radius', toRpx(8)],
+
+  // Icon (5-tier size + stroke width).
+  // Default sizeMedium 32rpx = 16px on a 375 viewport — matches lucide's
+  // 16px standard icon. Mobile-side consumers override per-page:
+  //   page { --sn-mp-icon-size-medium: 36rpx; }   /* slightly larger for touch */
+  ['--sn-mp-icon-size-tiny', toRpx(12)],
+  ['--sn-mp-icon-size-small', toRpx(14)],
+  ['--sn-mp-icon-size-medium', toRpx(16)],
+  ['--sn-mp-icon-size-large', toRpx(20)],
+  ['--sn-mp-icon-size-xlarge', toRpx(24)],
+  // stroke-width stays as raw design unit (no px/rpx conversion needed for
+  // the SVG attribute); emitted literally so the runtime sees `2` not `4`.
+  ['--sn-mp-icon-stroke-width', '2'],
 ]
 
 /**

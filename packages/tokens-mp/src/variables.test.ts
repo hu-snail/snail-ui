@@ -33,8 +33,12 @@ describe('@snui/tokens-mp rpx conversion', () => {
   })
 
   it('emits rpx literals for size aliases (not `var()` indirection)', () => {
-    for (const [, value] of snMpSizeMap) {
-      expect(value.endsWith('rpx')).toBe(true)
+    for (const [alias, value] of snMpSizeMap) {
+      // `--sn-mp-icon-stroke-width` is a raw design unit, not a CSS length,
+      // so it intentionally stays as a bare number (`2`), not `rpx`. Every
+      // other size alias must end in `rpx`.
+      if (alias === '--sn-mp-icon-stroke-width') continue
+      expect(value.endsWith('rpx'), `${alias} should be rpx (got ${value})`).toBe(true)
       expect(value.startsWith('var(')).toBe(false)
     }
   })
@@ -50,12 +54,19 @@ describe('@snui/tokens-mp rpx conversion', () => {
     }
   })
 
-  it('declares expected component tokens (button / input / card)', () => {
+  it('declares expected component tokens (button / input / card / icon)', () => {
     const aliases = listSnMpAliases()
     expect(aliases).toContain('--sn-mp-button-height-medium')
     expect(aliases).toContain('--sn-mp-button-radius')
     expect(aliases).toContain('--sn-mp-input-radius')
     expect(aliases).toContain('--sn-mp-card-radius')
+    // icon (AUI-MP-002 follow-up)
+    expect(aliases).toContain('--sn-mp-icon-size-medium')
+    expect(aliases).toContain('--sn-mp-icon-size-tiny')
+    expect(aliases).toContain('--sn-mp-icon-size-small')
+    expect(aliases).toContain('--sn-mp-icon-size-large')
+    expect(aliases).toContain('--sn-mp-icon-size-xlarge')
+    expect(aliases).toContain('--sn-mp-icon-stroke-width')
     expect(aliases).toContain('--sn-mp-color-action-primary')
     expect(aliases).toContain('--sn-mp-focus-ring')
   })

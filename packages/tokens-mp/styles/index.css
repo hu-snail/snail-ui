@@ -28,6 +28,19 @@
   --sn-mp-card-padding: 32rpx;
   --sn-mp-card-radius: 16rpx;
 
+  /* Component sizes — Icon (5-tier rpx scale + stroke width).
+     Drives sn-icon geometry. sizeMedium 32rpx = 16px on 375 viewport,
+     matching lucide's standard 16px icon. Mobile consumers override
+     per-page via `page { --sn-mp-icon-size-medium: 36rpx; }`. */
+  --sn-mp-icon-size-tiny: 24rpx;
+  --sn-mp-icon-size-small: 28rpx;
+  --sn-mp-icon-size-medium: 32rpx;
+  --sn-mp-icon-size-large: 40rpx;
+  --sn-mp-icon-size-xlarge: 48rpx;
+  /* stroke-width stays as raw design unit (no rpx conversion); SVG attribute
+     receives `2` literally. */
+  --sn-mp-icon-stroke-width: 2;
+
   /* Semantic colors — passthrough to --aui-* */
   --sn-mp-color-text-primary: var(--aui-color-text-primary);
   --sn-mp-color-text-secondary: var(--aui-color-text-secondary);
