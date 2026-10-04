@@ -19,24 +19,49 @@ defineOptions({ name: 'SnButton' })
 
 const props = withDefaults(
   defineProps<{
-    /** Button visual variant. Maps to `--sn-web-button-{variant}-bg`. */
-    type?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info'
-    /** Button size. Maps to `--sn-web-button-size-{size}-height`. */
-    size?: 'tiny' | 'small' | 'medium' | 'large'
-    /** Renders block-level (full width). */
-    block?: boolean
+    /* ── naive-ui `n-button` 1:1 surface ───────────────────────────────── */
+
+    /** Button visual type. Mirrors n-button.type. */
+    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error' | 'tertiary'
     /** Pill-shaped (radius: 999px). */
     round?: boolean
+    /** Fully circular — equal padding on all sides. */
+    circle?: boolean
+    /** Renders block-level (full width). */
+    block?: boolean
+    /** Plain-text style — transparent background, no border. */
+    text?: boolean
+    /** Dashed border style for placeholder / disabled-state visuals. */
+    dashed?: boolean
+    /** Ghost style — transparent background, colored border. */
+    ghost?: boolean
+    /** Reverse the colored hover state. */
+    secondary?: boolean
+    /** Lower-emphasis text variant of `text`. */
+    tertiary?: boolean
+    /** Even lower-emphasis text variant. */
+    quaternary?: boolean
+    /** Stronger emphasis on filled variants. */
+    strong?: boolean
+    /** Custom button color (any valid CSS). Overrides `type` color. */
+    color?: string
+    /** Button size. Drives height + font-size. */
+    size?: 'tiny' | 'small' | 'medium' | 'large' | 'huge'
     /** Disabled state — skips click event and aria-disabled. */
     disabled?: boolean
     /** Loading state — shows spinner and skips click event. */
     loading?: boolean
     /** Native button type attribute (button / submit / reset). */
-    htmlType?: 'button' | 'submit' | 'reset'
-    /** Whether the button has a border (for ghost / default types). */
-    bordered?: boolean
+    attrType?: 'button' | 'submit' | 'reset' | undefined
+    /**
+     * HTML tag rendered as the root. Allows rendering as `<a>` or
+     * arbitrary element for navigation. Defaults to `<button>`.
+     */
+    tag?: 'button' | 'a' | 'div' | 'span'
     /** Native ARIA label override. */
     ariaLabel?: string
+    /** Tabindex override (default 0; -1 to remove from tab order). */
+    focusable?: boolean
     /**
      * Icon component to render before the default slot. Bundlers walk the
      * named import statically and tree-shake unused icons.
@@ -48,19 +73,50 @@ const props = withDefaults(
      * common case does not require wrapping `<SnIcon>` in a slot.
      */
     iconName?: string
+    /** Icon placement: 'left' (default) or 'right' of the slot. */
+    iconPlacement?: 'left' | 'right'
     /** Pixel / CSS size forwarded to the embedded SnIcon. Default 14. */
     iconSize?: number | string
+    /**
+     * Whether to show the icon at all. `false` hides icon even if
+     * `icon` or `iconName` is set. Defaults to `true`.
+     */
+    showIcon?: boolean
+
+    /* ── legacy / deprecated aliases (kept for back-compat) ─────────────── */
+
+    /** @deprecated Use `attrType` instead. Kept as undefined-default so
+     * `attrType` wins when both are set. */
+    htmlType?: 'button' | 'submit' | 'reset' | undefined
+    /** @deprecated Renamed; mirrors the legacy boolean border flag. */
+    bordered?: boolean
   }>(),
   {
     type: 'default',
     size: 'medium',
     block: false,
     round: false,
+    circle: false,
+    text: false,
+    dashed: false,
+    ghost: false,
+    secondary: false,
+    tertiary: false,
+    quaternary: false,
+    strong: false,
     disabled: false,
     loading: false,
-    htmlType: 'button',
-    bordered: true,
+    /* attrType intentionally defaults to undefined so the legacy
+     * htmlType alias can still drive the native type when only it is set. */
+    attrType: undefined,
+    tag: 'button',
+    focusable: true,
     iconSize: 14,
+    iconPlacement: 'left',
+    showIcon: true,
+    /* deprecated aliases — undefined defaults so they don't shadow attrType. */
+    htmlType: undefined,
+    bordered: true,
   },
 )
 
@@ -92,6 +148,15 @@ defineSlots<{
   loading(): unknown
 }>()
 
+/** Resolved native button type attribute (prefer attrType, fall back to legacy htmlType). */
+const resolvedAttrType = computed(() => props.attrType || props.htmlType || 'button')
+
+/** Whether the rendered root has an icon visible. */
+const showIconSlot = computed(() => props.showIcon && !props.loading)
+
+/** Inherit color via inline style — naive-ui parity. */
+const colorStyle = computed(() => props.color ? `--sn-button-color: ${props.color}` : undefined)
+
 const classList = computed(() => [
   'sn-button',
   `sn-button--${props.type}`,
@@ -99,10 +164,18 @@ const classList = computed(() => [
   {
     'sn-button--block': props.block,
     'sn-button--round': props.round,
+    'sn-button--circle': props.circle,
+    'sn-button--text': props.text,
+    'sn-button--dashed': props.dashed,
+    'sn-button--ghost': props.ghost,
+    'sn-button--secondary': props.secondary,
+    'sn-button--tertiary': props.tertiary,
+    'sn-button--quaternary': props.quaternary,
+    'sn-button--strong': props.strong,
     'sn-button--disabled': props.disabled,
     'sn-button--loading': props.loading,
+    'sn-button--icon-right': props.iconPlacement === 'right',
     'sn-button--bordered': props.bordered,
-    'sn-button--text': props.type === 'default' && !props.bordered,
   },
 ])
 
@@ -117,27 +190,30 @@ function onClick(event: MouseEvent): void {
 </script>
 
 <template>
-  <button
+  <component
+    :is="tag === 'button' ? 'button' : tag"
     data-snui-component="button"
     :class="classList"
-    :type="htmlType"
-    :disabled="disabled || loading"
-    :aria-disabled="disabled || loading"
-    :aria-busy="loading"
-    role="button"
+    :style="colorStyle"
+    :type="tag === 'button' ? resolvedAttrType : undefined"
+    :disabled="(tag === 'button' && (disabled || loading)) || undefined"
+    :aria-disabled="disabled || loading || undefined"
+    :aria-busy="loading || undefined"
+    :tabindex="!focusable && !(disabled || loading) ? -1 : undefined"
     :aria-label="ariaLabel"
+    role="button"
     @click="onClick"
   >
-    <span v-if="$slots.icon" class="sn-button__icon">
+    <span v-if="showIconSlot && $slots.icon" class="sn-button__icon">
       <slot name="icon" />
     </span>
     <SnIcon
-      v-else-if="resolvedIcon"
+      v-else-if="showIconSlot && resolvedIcon"
       class="sn-button__icon"
       :icon="resolvedIcon"
       :size="iconSize ?? 14"
     />
-    <span v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
+    <span v-if="loading" class="sn-button__spinner" aria-hidden="true">
       <slot name="loading">
         <svg viewBox="0 0 16 16" class="sn-button__spinner-svg">
           <circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="14 28" />
@@ -147,7 +223,7 @@ function onClick(event: MouseEvent): void {
     <span class="sn-button__content">
       <slot />
     </span>
-  </button>
+  </component>
 </template>
 
 <style scoped>
@@ -210,6 +286,11 @@ function onClick(event: MouseEvent): void {
   padding: 0 18px;
   font-size: 16px;
 }
+.sn-button--huge {
+  height: var(--sn-web-button-height-huge, 48px);
+  padding: 0 22px;
+  font-size: 18px;
+}
 
 /* Variants */
 .sn-button--primary {
@@ -255,10 +336,60 @@ function onClick(event: MouseEvent): void {
   color: var(--sn-web-color-action-primary);
 }
 
+/* Tertiary variant — naive-ui n-button tertiary. */
+.sn-button--tertiary {
+  background-color: var(--sn-button-color, var(--sn-web-color-action-primary-soft, rgba(22, 119, 255, 0.16)));
+  color: var(--sn-button-color, var(--sn-web-color-action-primary));
+  border-color: transparent;
+}
+
+/* Text variant — plain text, transparent. */
 .sn-button--text {
   background-color: transparent;
   border-color: transparent;
+  color: var(--sn-button-color, var(--sn-web-color-text-primary));
 }
+.sn-button--text:hover:not(.sn-button--disabled):not(.sn-button--loading) {
+  background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
+}
+
+/* Dashed border. */
+.sn-button--dashed {
+  border-style: dashed;
+}
+
+/* Ghost — transparent background, colored border. */
+.sn-button--ghost {
+  background-color: transparent;
+}
+.sn-button--ghost.sn-button--primary {
+  color: var(--sn-web-color-action-primary);
+  border-color: var(--sn-web-color-action-primary);
+}
+.sn-button--ghost.sn-button--error {
+  color: var(--sn-web-color-feedback-danger);
+  border-color: var(--sn-web-color-feedback-danger);
+}
+
+/* Circle — equal padding, 1:1 aspect ratio. */
+.sn-button--circle {
+  border-radius: 50%;
+  padding: 0;
+  width: var(--sn-web-button-height-medium, 32px);
+  aspect-ratio: 1 / 1;
+}
+.sn-button--circle.sn-button--tiny { width: var(--sn-web-button-height-tiny, 24px); }
+.sn-button--circle.sn-button--small { width: var(--sn-web-button-height-small, 28px); }
+.sn-button--circle.sn-button--large { width: var(--sn-web-button-height-large, 40px); }
+.sn-button--circle.sn-button--huge { width: var(--sn-web-button-height-huge, 48px); }
+
+/* Strong — heavier emphasis on filled variants. */
+.sn-button--strong.sn-button--primary {
+  box-shadow: 0 0 8px var(--sn-web-color-action-primary-soft, rgba(22, 119, 255, 0.4));
+}
+
+/* Icon placement — render content + icon in row-reverse for right. */
+.sn-button--icon-right { flex-direction: row-reverse; }
 
 /* Spinner */
 .sn-button__spinner {

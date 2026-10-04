@@ -166,5 +166,126 @@ describe('SnButton', () => {
       expect(wrapper.find('[data-testid="slot-icon"]').exists()).toBe(true)
       expect(wrapper.find('[data-testid="embedded-icon"]').exists()).toBe(false)
     })
+
+    it('honors `circle` for round icon-only buttons', () => {
+      const wrapper = mount(SnButton, {
+        props: { circle: true, icon: TestIcon },
+      })
+      expect(wrapper.classes()).toContain('sn-button--circle')
+    })
+
+    it('hides icon when showIcon is false', () => {
+      const wrapper = mount(SnButton, {
+        props: { icon: TestIcon, showIcon: false },
+        slots: { default: 'No icon' },
+      })
+      expect(wrapper.find('[data-testid="embedded-icon"]').exists()).toBe(false)
+    })
+
+    it('applies icon-right class when iconPlacement is right', () => {
+      const wrapper = mount(SnButton, {
+        props: { icon: TestIcon, iconPlacement: 'right' },
+        slots: { default: 'Right' },
+      })
+      expect(wrapper.classes()).toContain('sn-button--icon-right')
+    })
+  })
+
+  /* ── naive-ui `n-button` 1:1 parity ──────────────────────────────────── */
+
+  it('honors `text` variant for transparent look', () => {
+    const wrapper = mount(SnButton, {
+      props: { text: true },
+      slots: { default: 'Text' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--text')
+  })
+
+  it('honors `ghost` variant', () => {
+    const wrapper = mount(SnButton, {
+      props: { ghost: true, type: 'primary' },
+      slots: { default: 'Ghost' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--ghost')
+  })
+
+  it('honors `dashed` variant', () => {
+    const wrapper = mount(SnButton, {
+      props: { dashed: true },
+      slots: { default: 'Dashed' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--dashed')
+  })
+
+  it('honors `tertiary` variant', () => {
+    const wrapper = mount(SnButton, {
+      props: { tertiary: true },
+      slots: { default: 'Tertiary' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--tertiary')
+  })
+
+  it('honors `quaternary` variant', () => {
+    const wrapper = mount(SnButton, {
+      props: { quaternary: true },
+      slots: { default: 'Quaternary' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--quaternary')
+  })
+
+  it('honors `strong` modifier', () => {
+    const wrapper = mount(SnButton, {
+      props: { strong: true, type: 'primary' },
+      slots: { default: 'Strong' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--strong')
+  })
+
+  it('forwards attrType to native button type attribute', () => {
+    const wrapper = mount(SnButton, {
+      props: { attrType: 'submit' },
+      slots: { default: 'Submit' },
+    })
+    expect(wrapper.attributes('type')).toBe('submit')
+  })
+
+  it('renders huge size variant', () => {
+    const wrapper = mount(SnButton, {
+      props: { size: 'huge' },
+      slots: { default: 'Huge' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--huge')
+  })
+
+  it('applies inline color when color prop is provided', () => {
+    const wrapper = mount(SnButton, {
+      props: { color: '#abcdef' },
+      slots: { default: 'Colored' },
+    })
+    expect(wrapper.attributes('style')).toContain('--sn-button-color: #abcdef')
+  })
+
+  it('renders as <a> when tag is "a"', () => {
+    const wrapper = mount(SnButton, {
+      props: { tag: 'a' },
+      slots: { default: 'Link' },
+    })
+    expect(wrapper.element.tagName).toBe('A')
+  })
+
+  it('still accepts legacy htmlType alias', () => {
+    const wrapper = mount(SnButton, {
+      props: { htmlType: 'reset' },
+      slots: { default: 'Reset' },
+    })
+    expect(wrapper.attributes('type')).toBe('reset')
+  })
+
+  it('sets tabindex=-1 when focusable=false', () => {
+    const wrapper = mount(SnButton, {
+      props: { focusable: false },
+      slots: { default: 'Unfocusable' },
+    })
+    expect(wrapper.attributes('tabindex')).toBe('-1')
   })
 })
