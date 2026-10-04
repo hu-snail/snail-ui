@@ -124,4 +124,37 @@ describe('sn-form', () => {
     const wrapper = mount(App, { props: { model, rules: {}, required: true } })
     expect(wrapper.find('.sn-form-item__required').exists()).toBe(true)
   })
+
+  it('applies labelWidth via the grid template columns', () => {
+    const model = reactive({ email: '', password: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model, labelWidth: 160 }, {
+          default: () => h(SnFormItem, { prop: 'email' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    const style = wrapper.find('.sn-form-item').attributes('style') ?? ''
+    expect(style).toContain('grid-template-columns')
+    expect(style).toContain('160rpx')
+  })
+
+  it('renders inline label icon when iconData prop is provided', () => {
+    const Heart = Object.freeze({
+      viewBox: '0 0 24 24',
+      paths: ['M19 14 L12 21 L5 14'],
+    })
+    const model = reactive({ email: '', password: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email', iconData: Heart }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item__icon').exists()).toBe(true)
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--with-icon')
+  })
 })

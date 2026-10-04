@@ -53,6 +53,24 @@ const props = withDefaults(
     step?: number
     /** Textarea row count (textarea only). */
     rows?: number
+    /**
+     * Render the 1rpx border. Set to `false` for a borderless field
+     * that relies on its background alone (common inside cards or
+     * segmented controls).
+     */
+    bordered?: boolean
+    /**
+     * Background tone. `surface` (default) uses the elevated card
+     * color; `transparent` removes the background for inputs that
+     * sit directly on a colored banner; `soft` is a subtle secondary
+     * fill.
+     */
+    bg?: 'surface' | 'transparent' | 'soft'
+    /**
+     * Border-radius preset. `default` matches the design system radius;
+     * `pill` gives a fully rounded field; `square` is right-angled.
+     */
+    radius?: 'default' | 'pill' | 'square'
   }>(),
   {
     modelValue: '',
@@ -66,6 +84,9 @@ const props = withDefaults(
     clearable: false,
     status: 'default',
     rows: 3,
+    bordered: true,
+    bg: 'surface',
+    radius: 'default',
   },
 )
 
@@ -143,6 +164,10 @@ const classList = computed(() => [
     'sn-input--disabled': props.disabled,
     'sn-input--readonly': props.readonly,
     'sn-input--clearable': props.clearable,
+    'sn-input--bordered': props.bordered,
+    'sn-input--borderless': !props.bordered,
+    [`sn-input--bg-${props.bg}`]: true,
+    [`sn-input--radius-${props.radius}`]: true,
     [`sn-input--status-${props.status}`]: props.status !== 'default',
     'sn-input--with-prefix': !!slots.prefix,
     'sn-input--with-suffix': !!slots.suffix,
@@ -245,8 +270,31 @@ const classList = computed(() => [
   font-family: inherit;
   line-height: 1;
   box-sizing: border-box;
+  transition: border-color 0.18s ease-out, background-color 0.18s ease-out;
 }
 
+/* Borderless variant — common on inputs that sit on a colored banner
+ * or inside a search bar that already provides a backdrop. The focus
+ * state still highlights via a soft outer ring. */
+.sn-input--borderless { border-color: transparent; }
+.sn-input--borderless:focus-within { border-color: transparent; }
+
+/* Background tones */
+.sn-input--bg-surface {
+  background-color: var(--sn-mp-input-bg, var(--sn-mp-color-background-surface));
+}
+.sn-input--bg-transparent { background-color: transparent; }
+.sn-input--bg-soft {
+  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+}
+
+/* Radius presets */
+.sn-input--radius-default { border-radius: var(--sn-mp-input-radius, 12rpx); }
+.sn-input--radius-pill { border-radius: 999rpx; }
+.sn-input--radius-square { border-radius: 0; }
+
+/* Focus state — border color + soft outer ring so users can see
+ * exactly which field owns the focus without a heavy chrome change. */
 .sn-input:focus-within {
   border-color: var(--sn-mp-input-border-color-focus, var(--sn-mp-color-action-primary));
 }
@@ -256,7 +304,7 @@ const classList = computed(() => [
 .sn-input--medium { height: 72rpx; font-size: 28rpx; }
 .sn-input--large { height: 88rpx; font-size: 32rpx; }
 
-/* Status */
+/* Status — applied after the focus border so error/warning wins. */
 .sn-input--status-error { border-color: var(--sn-mp-color-feedback-danger); }
 .sn-input--status-warning { border-color: var(--sn-mp-color-feedback-warning); }
 
