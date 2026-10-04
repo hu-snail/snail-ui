@@ -19,6 +19,7 @@
     "@snui/tokens": "workspace:",
     "@snui/uni": "workspace:",
     "@snui/vue-web": "workspace:",
+    "lucide-vue-next": "^0.460.0",
     "shiki": "2.5.0"
   },
   "devDependencies": {

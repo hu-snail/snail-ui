@@ -54,6 +54,7 @@ const sidebar = {
       items: [
         { text: 'Button 按钮', link: '/components/web/button' },
         { text: 'Divider 分割线', link: '/components/web/divider' },
+        { text: 'Icon 图标', link: '/components/web/icon' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.
@@ -69,6 +70,7 @@ const sidebar = {
       items: [
         { text: 'sn-button 按钮', link: '/components/uni/button' },
         { text: 'sn-divider 分割线', link: '/components/uni/divider' },
+        { text: 'sn-icon 图标', link: '/components/uni/icon' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.
@@ -145,6 +147,7 @@ const enSidebar = {
       items: [
         { text: 'Button', link: '/en/components/web/button' },
         { text: 'Divider', link: '/en/components/web/divider' },
+        { text: 'Icon', link: '/en/components/web/icon' },
       ],
     },
     // Other — empty until ConfigProvider page ships.
@@ -155,6 +158,7 @@ const enSidebar = {
       items: [
         { text: 'sn-button', link: '/en/components/uni/button' },
         { text: 'sn-divider', link: '/en/components/uni/divider' },
+        { text: 'sn-icon', link: '/en/components/uni/icon' },
       ],
     },
     // Other — empty until ConfigProvider page ships.
@@ -246,6 +250,7 @@ export default defineConfig({
       include: [
         '@snui/tokens',
         '@snui/style-packs',
+        'lucide-vue-next',
         'vue',
       ],
     },
