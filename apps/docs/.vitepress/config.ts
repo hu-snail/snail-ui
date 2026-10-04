@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { fileURLToPath, URL } from 'node:url'
+import { rpxTransform } from './utils/rpx-transform'
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -200,6 +201,12 @@ export default defineConfig({
 
   vite: {
     build: { target: 'es2022' },
+    plugins: [
+      // Convert uni-app `rpx` units → `px` so uni-end component styles
+      // (SnButton / SnDivider) render correctly in the browser preview.
+      // See ./utils/rpx-transform.ts for rationale + scope.
+      rpxTransform(),
+    ],
     resolve: {
       // Per AUI-DOCS-016: when SnButton / SnDivider in uni-side use `<view>`
       // (uni-app cross-end element) in the template, the dist build loses the
