@@ -13,8 +13,16 @@
 export { default as SnButton } from './button/SnButton.vue'
 export { default as SnConfigProvider } from './config-provider/SnConfigProvider.vue'
 export { default as SnDivider } from './divider/SnDivider.vue'
+export { default as SnForm } from './form/SnForm.vue'
+export { default as SnFormItem } from './form/SnFormItem.vue'
 export { default as SnIcon } from './icon/SnIcon.vue'
 export { default as SnInput } from './input/SnInput.vue'
+export type {
+  FormRule,
+  FormRules,
+  FormContext,
+  FormItemHandle,
+} from './form/sn-form-types'
 export {
   registerSnIcons,
   clearSnIcons,
