@@ -1,110 +1,234 @@
 <script setup lang="ts">
 /**
- * Demo — wrapper that mounts a per-component demo .vue file.
+ * Demo — wraps a per-component demo .vue file with a unified demo + code
+ * module (per docs redesign, AUI-DOCS-016 + WBS v3.1).
  *
- * Per AUI-DOCS-016 + Spec-05 §5: each component has a standalone
- * `apps/docs/.vitepress/demo/<name>.vue` file that imports the real
- * `@snui/vue-web` or `@snui/uni` component. This wrapper does:
+ * Per-component demo files live at apps/docs/.vitepress/demo/<name>.vue.
+ * VitePress compiles them via @vue/compiler-sfc (compile-time macros like
+ * defineOptions / defineProps are transformed before reaching the browser).
  *
- *   1. Dynamic import of the demo file (async chunk split)
- *   2. ClientOnly gating so vitepress prerender never touches it
- *   3. Error fallback when the named demo file is missing
- *
- * Why this works (vs v3.0 placeholder):
- *   .vue files are compiled via @vue/compiler-sfc — compile-time macros
- *   (defineOptions / defineProps / withDefaults) are transformed before
- *   reaching the browser. Markdown top-level `<script setup>` blocks were
- *   processed as raw ESM during vitepress prerender, which strips the
- *   macros and breaks the build. Per-component demo .vue files bypass
- *   that pipeline.
+ * Features:
+ *   1. Live render of the named demo file via dynamic import + ClientOnly
+ *   2. Collapsible code block (default collapsed) showing the demo source
+ *   3. Toolbar with copy button (TS source → clipboard) + fullscreen toggle
+ *   4. Optional `description` prop shown above the demo (supports markdown
+ *      inline code via backticks already)
+ *   5. TS-only source rendering (raw source from `?raw` import). JS conversion
+ *      skipped — naive TS→JS stripping is fragile and not worth the surface
  *
  * Usage in .md:
  *   <Demo name="button-web" />
- *   <Demo name="divider-mp" card-class="compact" />
+ *   <Demo name="divider-mp" description="基本分割线" />
  */
 
-import { computed, defineAsyncComponent, h } from 'vue'
+import { computed, defineAsyncComponent, h, ref } from 'vue'
 
 interface Props {
   /** Demo file basename (without .vue) under apps/docs/.vitepress/demo/. */
   name: string
-  /** Optional CSS class on the wrapping card. */
-  cardClass?: string
+  /** Optional description shown above the demo (rendered as plain text). */
+  description?: string
   /** Hide the wrapping card chrome (used inside docs prose). */
   bare?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  cardClass: '',
+  description: '',
   bare: false,
 })
 
-const fallbackRender = (msg: string) => () => h('div', { class: 'sn-demo-error' }, msg)
-
-// `import.meta.glob` lets Vite discover all demo files at build time so the
-// dynamic import path stays static and tree-shakable. We list every demo
-// name explicitly (no directory scan) to keep type safety.
+// Dynamic import of demo file (async chunk split).
 const demoModules = import.meta.glob('../demo/*.vue')
-
 const AsyncDemo = defineAsyncComponent({
   loader: () => {
     const key = `../demo/${props.name}.vue`
     const mod = demoModules[key]
     if (!mod) {
-      return Promise.resolve(fallbackRender(`demo not found: ${props.name}`))
+      return Promise.resolve(
+        { render: () => h('div', { class: 'sn-demo-error' }, `demo not found: ${props.name}`) },
+      )
     }
-    return mod().then((m: { default: unknown }) => m).catch((err: unknown) => {
-      // eslint-disable-next-line no-console
-      console.error(`[Demo] failed to load ${props.name}:`, err)
-      return fallbackRender(`demo failed to load: ${props.name}`)
-    })
+    return mod()
+      .then((m: { default: unknown }) => m)
+      .catch((err: unknown) => {
+        // eslint-disable-next-line no-console
+        console.error(`[Demo] failed to load ${props.name}:`, err)
+        return {
+          render: () => h('div', { class: 'sn-demo-error' }, `demo failed to load: ${props.name}`),
+        }
+      })
   },
   delay: 0,
-  errorComponent: { render: () => null },
 })
 
-const wrapperClass = computed(() => [
-  'sn-demo-host',
-  props.bare ? 'sn-demo-host--bare' : '',
-  props.cardClass,
-])
+// Raw source of the demo file (for the code panel).
+// Use `eager: true` so vite inlines the raw string at build time — without it,
+// glob returns `() => Promise<string>` loaders, which can never satisfy the
+// `typeof mod === 'string'` check below and silently fall through to the
+// "not found" placeholder.
+//
+// `import.meta.glob` key shape is build-dependent: with `query: '?raw'` the
+// key may be `../demo/<name>.vue` or `../demo/<name>.vue?raw` depending on
+// vite version / transform pipeline. Match by filename suffix instead of a
+// literal key to be robust.
+type RawModule = string
+const sourceModules = import.meta.glob<RawModule>('../demo/*.vue', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
+
+function findSourceKey(name: string): string | undefined {
+  const base = `/${name}.vue`
+  for (const key of Object.keys(sourceModules)) {
+    if (key.endsWith(base) || key.endsWith(`${base}?raw`)) return key
+  }
+  return undefined
+}
+
+const source = computed<RawModule>(() => {
+  const key = findSourceKey(props.name)
+  if (key !== undefined) {
+    const mod = sourceModules[key]
+    if (typeof mod === 'string') return mod
+  }
+  return `// Demo source not found: ${props.name}`
+})
+
+// Code panel: collapsed by default. Click summary to expand.
+const codeOpen = ref(false)
+function toggleCode() {
+  codeOpen.value = !codeOpen.value
+}
+
+// Toolbar: copy-to-clipboard.
+const copied = ref(false)
+async function copyCode(): Promise<void> {
+  try {
+    await navigator.clipboard.writeText(source.value)
+    copied.value = true
+    setTimeout(() => {
+      copied.value = false
+    }, 1500)
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[Demo] copy failed', err)
+  }
+}
+
+// Toolbar: fullscreen toggle (uses Fullscreen API on the demo card root).
+const cardRef = ref<HTMLElement | null>(null)
+const isFullscreen = ref(false)
+async function toggleFullscreen(): Promise<void> {
+  const el = cardRef.value
+  if (!el) return
+  if (document.fullscreenElement === el) {
+    await document.exitFullscreen()
+  } else {
+    await el.requestFullscreen()
+  }
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('fullscreenchange', () => {
+    isFullscreen.value = document.fullscreenElement === cardRef.value
+  })
+}
 </script>
 
 <template>
-  <ClientOnly>
-    <div :class="wrapperClass">
-      <component :is="AsyncDemo" />
+  <div :class="['sn-demo', bare ? 'sn-demo--bare' : '']">
+    <p v-if="description" class="sn-demo__description">{{ description }}</p>
+
+    <div ref="cardRef" class="sn-demo__card">
+      <ClientOnly>
+        <component :is="AsyncDemo" />
+        <template #fallback>
+          <div class="sn-demo__loading">
+            <span class="sn-demo-spinner" aria-hidden="true" />
+            <span>Loading {{ name }} …</span>
+          </div>
+        </template>
+      </ClientOnly>
     </div>
-    <template #fallback>
-      <div class="sn-demo-host sn-demo-host--loading">
-        <span class="sn-demo-spinner" aria-hidden="true" />
-        <span>Loading {{ name }} …</span>
+
+    <div class="sn-demo__toolbar">
+      <span class="sn-demo__lang">TypeScript</span>
+      <div class="sn-demo__actions">
+        <button
+          type="button"
+          class="sn-demo__action"
+          :title="copied ? '已复制' : '复制代码'"
+          @click="copyCode"
+        >
+          <span aria-hidden="true">{{ copied ? '✓' : '⧉' }}</span>
+          <span class="sn-demo__action-label">{{ copied ? '已复制' : '复制' }}</span>
+        </button>
+        <button
+          type="button"
+          class="sn-demo__action"
+          :title="isFullscreen ? '退出全屏' : '全屏'"
+          @click="toggleFullscreen"
+        >
+          <span aria-hidden="true">{{ isFullscreen ? '⤡' : '⤢' }}</span>
+          <span class="sn-demo__action-label">{{ isFullscreen ? '退出' : '全屏' }}</span>
+        </button>
       </div>
-    </template>
-  </ClientOnly>
+    </div>
+
+    <div class="sn-demo__code" :class="{ 'sn-demo__code--open': codeOpen }">
+      <button
+        type="button"
+        class="sn-demo__code-toggle"
+        :aria-expanded="codeOpen"
+        @click="toggleCode"
+      >
+        <span class="sn-demo__chevron" aria-hidden="true">{{ codeOpen ? '▾' : '▸' }}</span>
+        <span>{{ codeOpen ? '收起代码' : '展开代码' }}</span>
+      </button>
+      <div v-show="codeOpen" class="sn-demo__code-body">
+        <pre><code>{{ source }}</code></pre>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped>
-.sn-demo-host {
+.sn-demo {
+  margin: 24px 0;
+}
+
+.sn-demo__description {
+  margin: 0 0 12px;
+  color: var(--vp-c-text-2);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.sn-demo__card {
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
-  padding: 16px;
-  margin: 12px 0;
+  padding: 24px;
   background: var(--vp-c-bg-soft);
+  min-height: 80px;
+  position: relative;
 }
-.sn-demo-host--bare {
+
+.sn-demo--bare .sn-demo__card {
   border: 0;
   padding: 0;
   background: transparent;
 }
-.sn-demo-host--loading {
+
+.sn-demo__loading {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--vp-c-text-2);
   font-size: 13px;
 }
+
 .sn-demo-spinner {
+  display: inline-block;
   width: 12px;
   height: 12px;
   border: 2px solid var(--vp-c-divider);
@@ -113,13 +237,124 @@ const wrapperClass = computed(() => [
   animation: sn-demo-spin 0.8s linear infinite;
 }
 @keyframes sn-demo-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+
 .sn-demo-error {
   color: var(--vp-c-danger-1);
   font-size: 13px;
   padding: 8px 12px;
   border: 1px dashed var(--vp-c-danger-1);
   border-radius: 4px;
+}
+
+.sn-demo__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 0 4px;
+}
+
+.sn-demo__lang {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--vp-c-brand-1);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.sn-demo__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sn-demo__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 4px;
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-2);
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.sn-demo__action:hover {
+  color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+}
+.sn-demo__action span[aria-hidden] {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.sn-demo__code {
+  margin-top: 8px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+  overflow: hidden;
+}
+
+.sn-demo__code-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  color: var(--vp-c-text-2);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+}
+.sn-demo__code-toggle:hover {
+  color: var(--vp-c-text-1);
+}
+.sn-demo__chevron {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.sn-demo__code-body {
+  border-top: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg-alt);
+  padding: 12px 16px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: var(--vp-font-family-mono);
+}
+.sn-demo__code-body pre {
+  margin: 0;
+  background: transparent;
+  padding: 0;
+}
+.sn-demo__code-body code {
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--vp-c-text-1);
+}
+
+@media (max-width: 640px) {
+  .sn-demo__action-label {
+    display: none;
+  }
 }
 </style>
