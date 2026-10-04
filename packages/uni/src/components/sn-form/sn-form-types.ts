@@ -30,6 +30,19 @@ export interface FormContext {
   labelPosition: 'left' | 'right' | 'top'
   labelWidth: number | string
   disabled: boolean
+
+  /* ── wot-ui `wd-form` 1:1 parity fields ──────────────────────────────── */
+
+  validateTrigger: 'blur' | 'change'
+  resetOnChange: boolean
+  errorType: 'message' | 'toast' | 'none'
+  size: 'small' | 'medium' | 'large'
+  valueAlign: 'left' | 'right'
+  asteriskPosition: 'left' | 'right'
+  hideAsterisk: boolean
+  ellipsis: boolean
+  border: boolean
+  center: boolean
 }
 
 export interface FormItemHandle {
