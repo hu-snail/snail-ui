@@ -3,16 +3,11 @@
 // barrel at dist/styles/index.css.
 //
 // Token sources (resolved in priority order, first found wins):
-//   1. packages/vue-web/src/styles/index.css      (web-specific overrides)
-//   2. ../tokens-web/styles/index.css             (--sn-web-* alias layer)
-//   3. ../tokens/styles/index.css                 (--aui-* primitive layer)
+//   1. packages/uni/src/styles/index.css           (uni-specific overrides)
+//   2. ../tokens-mp/styles/index.css               (--sn-mp-* alias layer)
+//   3. ../tokens/styles/index.css                  (--aui-* primitive layer)
 //
-// vite emits the component CSS first (because of assetFileNames:
-// 'styles/index.css' in vite.config.js). This script runs after
-// `vite build` and PREPENDS the global tokens to the same file so consumers
-// get one barrel: `@snui/vue-web/styles` = tokens + components in order:
-//   1. global tokens (so component CSS can reference --sn-* vars)
-//   2. component scoped styles
+// Mirrors packages/vue-web/scripts/copy-styles.mjs.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -22,7 +17,7 @@ const root = resolve(__dirname, '..')
 
 const sources = [
   resolve(root, '../tokens/styles/index.css'),
-  resolve(root, '../tokens-web/styles/index.css'),
+  resolve(root, '../tokens-mp/styles/index.css'),
   resolve(root, 'src/styles/index.css'),
 ]
 
@@ -43,7 +38,8 @@ if (existsSync(componentCss)) {
   body = readFileSync(componentCss, 'utf8')
 }
 
-// Idempotent on repeated builds: only prepend tokens if not already there.
+// Only prepend tokens if they aren't already at the top of dst (idempotency
+// on repeated builds).
 const tokensSignature = tokensBundle.trim().slice(0, 80)
 if (tokensBundle && !body.startsWith(tokensSignature)) {
   writeFileSync(dst, `${tokensBundle}\n${body}`, 'utf8')

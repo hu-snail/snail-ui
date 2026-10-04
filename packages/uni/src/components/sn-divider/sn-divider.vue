@@ -21,8 +21,6 @@
  *   - 装饰图标 / 动画
  */
 
-import { defineOptions, withDefaults, defineProps, defineSlots } from 'vue'
-
 defineOptions({ name: 'SnDivider' })
 
 const props = withDefaults(

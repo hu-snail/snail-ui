@@ -1,5 +1,7 @@
 import DefaultTheme from 'vitepress/theme';
 import './custom.css';
+import '@snui/vue-web/styles';
+import '@snui/uni/styles';
 import StyleSwitcher from '../components/StyleSwitcher.vue';
 import ThemeCopier from '../components/ThemeCopier.vue';
 import Demo from '../components/Demo.vue';
@@ -11,20 +13,13 @@ import Demo from '../components/Demo.vue';
  *   - ThemeCopier:   paste-ready snCssVars() snippet (按 end, AUI-DOCS-011)
  *   - Demo:          per-component live render via demo/<name>.vue
  *
- * Note: ComponentPreview.vue placeholder was removed in this iteration. Each
- * component page now references <Demo name="button-web" /> (or similar),
- * which dynamically loads the corresponding demo .vue file. VitePress compiles
- * .vue files via @vue/compiler-sfc, so compile-time macros (defineOptions etc.)
- * work correctly — this bypasses the raw-ESM pitfall that BLOCKED the v3.0
- * top-level `<script setup>` approach.
+ * Per-component demo files import from the package main entry
+ * (`import { SnButton } from '@snui/vue-web'`), which resolves to the
+ * vite-built dist/index.js. This end-to-end exercises the published dist —
+ * if a demo renders, the dist is verified to be consumable.
  *
  * @snui/tokens + @snui/style-packs are statically imported by StyleSwitcher +
- * ThemeCopier, so vite auto-discovers them for optimizeDeps. We deliberately
- * do NOT pre-bundle @snui/vue-web or @snui/uni (their dist is vue-tsc-emitted
- * and still contains raw compile-time macros — see config.ts optimizeDeps).
- * Per-component demo files import SOURCE .vue files directly via
- * `@snui/vue-web/src/...` / `@snui/uni/src/...`, which go through
- * vite-plugin-vue and are compiled on the fly.
+ * ThemeCopier, so vite auto-discovers them for optimizeDeps.
  */
 
 export default {

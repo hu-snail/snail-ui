@@ -8,7 +8,7 @@
  */
 
 import { ref } from 'vue'
-import SnButton from '@snui/vue-web/src/button/SnButton.vue'
+import { SnButton } from '@snui/vue-web'
 
 const text = ref('')
 const email = ref('ada@aui.dev')

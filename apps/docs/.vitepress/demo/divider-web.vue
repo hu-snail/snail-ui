@@ -5,8 +5,7 @@
  */
 
 import { ref } from 'vue'
-import SnDivider from '@snui/vue-web/src/divider/SnDivider.vue'
-import SnButton from '@snui/vue-web/src/button/SnButton.vue'
+import { SnDivider, SnButton } from '@snui/vue-web'
 
 const show = ref(true)
 function toggle(): void { show.value = !show.value }
