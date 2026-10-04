@@ -2,9 +2,6 @@
 
 表单编排器 `SnForm` + 字段包装 `SnFormItem`。Provide/Inject 通讯，统一校验 / 重置 / 提交。
 
-> **API 参考库**：[wot-ui `wd-form`](https://wot-ui.cn/component/form.html) — Props / events 1:1 (按 AGENTS.md §112)。
-> 注：表单组件 web 端延续 wot-ui 1:1 是因为 form 的语义 prop（`validate-trigger` / `error-type` / `hide-asterisk` 等）与表单行为绑定强，未与 naive-ui 的 `n-form` 完全对齐。
-
 ## 基础用法
 
 <Demo name="form-basic" description="基本 model + v-model 同步 + submit 处理。" />

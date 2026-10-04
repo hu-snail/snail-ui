@@ -2,8 +2,6 @@
 
 `SnForm` + `SnFormItem` 提供 provide/inject 通讯，统一校验 / 重置 / 提交流程。
 
-> **API 参考库**：[wot-ui `wd-form`](https://wot-ui.cn/component/form.html) — Props / events 1:1 对齐（按 AGENTS.md §112）。
-
 ## 基础用法
 
 <Demo name="form-mp-basic" description="基本 model + v-model + submit 处理。" />

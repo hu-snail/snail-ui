@@ -2,9 +2,6 @@
 
 Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, tokens drive the surface.
 
-> **Reference library**: [wot-ui `wd-input`](https://wot-ui.cn/component/input.html) — 1:1 parity on props / events (per AGENTS.md §112).
-> Renderer additionally absorbs uni-app runtime attrs (`confirm-type` / `hold-keyboard` / `placeholder-style` native attr, etc.).
-
 ## Basic
 
 <Demo name="input-mp-basic" description="v-model binding." />

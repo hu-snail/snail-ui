@@ -2,8 +2,6 @@
 
 `SnForm` + `SnFormItem` for uni-app multi-end. Provide/inject plumbing, unified validate / reset / submit.
 
-> **Reference library**: [wot-ui `wd-form`](https://wot-ui.cn/component/form.html) — 1:1 parity on props / events (per AGENTS.md §112).
-
 ## Basic
 
 <Demo name="form-mp-basic" description="Model + v-model + submit handler." />

@@ -2,9 +2,6 @@
 
 `sn-button` 是 `@snui/uni`（移动端 / 小程序 / H5）核心交互组件。基于 easycom 自动注册，rpx 单位跨设备缩放。
 
-> **API 参考库**：[wot-ui `wd-button`](https://wot-ui.cn/component/button.html) — Props / events 1:1 对齐（按 AGENTS.md §112）。
-> 渲染层额外吸收 uni-app runtime 专属 attrs（`hover-class` / `open-type` / `form-type` 等 MP-only 概念）。
-
 ## 自动注册（easycom）
 
 如需显式 import：
@@ -130,4 +127,4 @@ import { SnButton } from '@snui/uni'
 
 ## 相关
 
-- Web 端：[`SnButton`](/components/web/button)（naive-ui 1:1，含 text/ghost/dashed/circle/strong/secondary/tertiary/quaternary 等变体）
+- Web 端：[`SnButton`](/components/web/button)（含 text/ghost/dashed/circle/strong/secondary/tertiary/quaternary 等变体）

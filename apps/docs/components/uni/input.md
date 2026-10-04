@@ -2,9 +2,6 @@
 
 跨 uni-app 多端的受控输入控件。rpx 几何，token 别名层驱动样式；H5 / 微信小程序 / App 全端共用一套 API。
 
-> **API 参考库**：[wot-ui `wd-input`](https://wot-ui.cn/component/input.html) — Props / events 1:1 对齐（按 AGENTS.md §112）。
-> 渲染层额外吸收 uni-app runtime 专属 attrs（`confirm-type` / `hold-keyboard` / `placeholder-style` native attr 等）。
-
 ## 基础用法
 
 <Demo name="input-mp-basic" description="v-model 双向绑定。" />

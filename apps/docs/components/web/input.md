@@ -2,8 +2,6 @@
 
 受控输入控件。映射到原生 `<input>` / `<textarea>`，Token 别名层驱动的样式方案。
 
-> **API 参考库**：[naive-ui `n-input`](https://www.naiveui.com/zh-CN/light/components/input) — Props / events 1:1 对齐（按 AGENTS.md §112）。
-
 ## 基础用法
 
 <Demo name="input-basic" description="v-model 双向绑定。" />

@@ -2,14 +2,9 @@
 
 `SnButton` is the most common interactive component in `@snui/vue-web` (PC desktop). All visual properties are driven by the `--sn-web-*` Token alias layer.
 
-> **Reference library**: [naive-ui `n-button`](https://www.naiveui.com/zh-CN/light/components/button) — 1:1 parity on props / events (per AGENTS.md §112).
-> Variant vocabulary was migrated from wot-ui's `variant: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'` to naive-ui's `text / ghost / dashed / circle / strong / secondary / tertiary / quaternary`.
-
 ## Basic usage
 
 <Demo name="button-web-basic" description="6 semantic types: default / primary / info / success / warning / error." />
-
-> Note: naive-ui uses `error` (not `danger`). Legacy wot-ui `type='danger'` has been renamed to `type='error'`.
 
 ## Sizes
 
@@ -124,4 +119,4 @@ Web component CSS uses only `--sn-web-*`. Override:
 
 ## Related
 
-- uni: [`sn-button`](/en/components/uni/button) — wot-ui 1:1, includes MP-only open-type / hover-class / cell concepts
+- uni: [`sn-button`](/en/components/uni/button) — includes MP-only open-type / hover-class / cell concepts

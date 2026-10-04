@@ -2,9 +2,6 @@
 
 `sn-button` is the core interactive component in `@snui/uni` (mobile / miniprogram / H5). easycom auto-register, rpx for cross-device scaling.
 
-> **Reference library**: [wot-ui `wd-button`](https://wot-ui.cn/component/button.html) — 1:1 parity on props / events (per AGENTS.md §112).
-> Renderer additionally absorbs uni-app runtime attrs (`hover-class` / `open-type` / `form-type` etc. MP-only concepts).
-
 ## Auto-register (easycom)
 
 Conforms to easycom — **no import needed in templates**:
@@ -162,4 +159,4 @@ page {
 
 ## Related
 
-- Web: [`SnButton`](/en/components/web/button) — naive-ui 1:1, includes text/ghost/dashed/circle/strong/secondary/tertiary/quaternary variants.
+- Web: [`SnButton`](/en/components/web/button) — includes text/ghost/dashed/circle/strong/secondary/tertiary/quaternary variants.

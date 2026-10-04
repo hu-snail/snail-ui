@@ -2,9 +2,6 @@
 
 Form orchestrator `SnForm` + field wrapper `SnFormItem`. Provide/inject plumbing, unified validate / reset / submit.
 
-> **Reference library**: [wot-ui `wd-form`](https://wot-ui.cn/component/form.html) — 1:1 parity on props / events (per AGENTS.md §112).
-> Note: form semantics (`validate-trigger` / `error-type` / `hide-asterisk`) align with wot-ui rather than naive-ui's `n-form` — switching would break the rule semantics.
-
 ## Basic
 
 <Demo name="form-basic" description="Basic model + v-model + submit handler." />

@@ -2,14 +2,9 @@
 
 最常用的交互组件，触发一个操作。支持多种类型、尺寸、状态、变体。
 
-> **API 参考库**：[naive-ui `n-button`](https://www.naiveui.com/zh-CN/light/components/button) — Props / events 1:1 对齐（按 AGENTS.md §112）。
-> 注：SnButton 改用 naive-ui 后，variant 词汇表从 wot-ui 的 `variant: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'` 改为 naive-ui 的 `text / ghost / dashed / circle / strong / secondary / tertiary / quaternary`。
-
 ## 基础用法
 
 <Demo name="button-web-basic" description="6 种语义类型：default / primary / info / success / warning / error。" />
-
-> 注意：naive-ui 用 `error`（不是 `danger`）。原 wot-ui 时代的 `type='danger'` 已迁移为 `type='error'`。
 
 ## 尺寸
 
@@ -107,4 +102,4 @@
 
 ## 相关
 
-- [uni 端 sn-button](/components/uni/button)（wot-ui 1:1，含 open-type / hover-class / cell 等 MP-only 概念）
+- [uni 端 sn-button](/components/uni/button)（含 open-type / hover-class / cell 等移动端能力）

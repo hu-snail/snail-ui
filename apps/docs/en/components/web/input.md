@@ -2,8 +2,6 @@
 
 Controlled input. Renders a native `<input>` / `<textarea>` styled through the token alias layer.
 
-> **Reference library**: [wot-ui `wd-input`](https://wot-ui.cn/component/input.html) — 1:1 parity on props / events (per AGENTS.md §112).
-
 ## Basic
 
 <Demo name="input-basic" description="Two-way v-model binding." />
