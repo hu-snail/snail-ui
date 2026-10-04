@@ -3108,6 +3108,69 @@ D. 修改 Component name / version
 
 ---
 
+# 111. 文档站 uni-end 预览 rpx 适配
+
+uni-app 组件以 `rpx` 作为跨端尺寸单位。浏览器 CSS 解析器**不**认识 `rpx`，会把含 rpx 的属性整条丢弃 → input/form/button 等几何 box（padding / border / border-radius / font-size / height / gap / margin）在 docs 预览里全部失效，渲染出扁平无样式的盒（见 issue：`/components/uni/input` 的 input-mp-types 截图）。
+
+解法由两层组合，**两层都不可少**：
+
+## 1.1 docs-side vite plugin：rpxTransform
+
+`apps/docs/.vitepress/utils/rpx-transform.ts` 已经挂着。它在 `transform()` 里匹配以下三种 id 形态并把所有 `(\d+)rpx` 替换为 `(\d+ × 0.5)px`：
+
+```text
+a. id.includes('@snui/uni')                       — 包主入口 import（dist barrel）
+b. id.includes('<packages/uni/src>/')             — SFC scoped CSS via @snui/uni-src alias
+c. id.includes('/packages/uni/dist/')             — 直接 file fetch（vite dev 的 /@fs/... 形态）
+```
+
+0.5 是标准 750rpx → 375px viewport 映射。
+
+**id 匹配规则改动时必须 review 这三个形态是否都还覆盖** —— bundler / monorepo layout 变化可能让 path 重写，filter regression 直接表现成"demo 没样式"。
+
+## 1.2 docs demo 必须走 `@snui/uni-src` 而非 `@snui/uni`
+
+每个 uni-end demo 文件（`apps/docs/.vitepress/demo/*-mp-*.vue`）必须从 `@snui/uni-src/components/<comp>/<comp>.vue` import 组件本体 + types / shortcut data / registry，**禁止**：
+
+```ts
+import { SnInput } from '@snui/uni'                       // ❌ dist 入口
+import { registerSnIcons } from '@snui/uni'              // ❌
+import type { FormRule } from '@snui/uni'                // ❌
+import { ChevronRight } from '@snui/uni'                 // ❌ shortcut data
+```
+
+正确写法：
+
+```ts
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'           // ✓
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry'  // ✓
+import type { FormRule } from '@snui/uni-src/components/sn-form/sn-form-types'  // ✓
+import { ChevronRight } from '@snui/uni-src/components/sn-icon/sn-icon-set'    // ✓
+```
+
+**为什么强制 source import**：
+
+1. `@snui/uni-src` alias 走 vite-plugin-vue 重编 SFC，scoped CSS id 形如
+   `…/packages/uni/src/components/sn-input/sn-input.vue?vue&type=style&index=0&scoped=true&lang.css`，
+   plugin 走 (b) 分支必命中。
+2. `@snui/uni` dist 入口由 vite resolve 到 `dist/styles/index.css`，
+   plugin 走 (a) 或 (c) 分支，依赖 path string 命中。
+3. 包 main 入口的 bundled JS 不带 scoped style，**所有**样式只在 `dist/styles/index.css`。
+   一旦 monorepo 路径规划变化（hoisted node_modules / workspace layout shift），
+   (a) / (c) 分支就 miss；source import 的 (b) 分支永远命中 —— **plugin 修改也救不回的方向**。
+
+**写新 mp demo 时**：先看 `apps/docs/.vitepress/demo/button-mp-*.vue` 的写法作为模板。
+
+review agent / Reviewer 检查 mp demo 时，必须 grep：
+
+```bash
+grep -l "from '@snui/uni'" apps/docs/.vitepress/demo/*-mp-*.vue
+```
+
+若有命中 → reject，要求改写为 `@snui/uni-src/...`。
+
+---
+
 # END
 
-AUI Agent 执行标准 v1.0.1（补充规则 #101-#110）
+AUI Agent 执行标准 v1.0.1（补充规则 #101-#111）

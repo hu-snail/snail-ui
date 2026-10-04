@@ -73,12 +73,23 @@ export function rpxTransform(): Plugin {
     name: 'snui-rpx-to-px',
     enforce: 'post',
     transform(code, id) {
-      // Match either the package barrel CSS (@snui/uni import) or SFC
-      // scoped CSS emitted from the uni source tree (resolved via the
-      // docs-side @snui/uni-src alias). The trailing slash on the source
-      // path is required so packages/unii/... or similar names don't
-      // accidentally match.
-      if (!id.includes('@snui/uni') && !id.includes(uniSrcAbsPath)) return
+      // Match any of:
+      //   - `@snui/uni` package import (resolved by vite to the dist barrel)
+      //   - SFC scoped CSS emitted from `packages/uni/src` (the
+      //     `@snui/uni-src` alias path) — id is the absolute file path
+      //   - Direct file fetch of `packages/uni/dist/...` — vite dev
+      //     serves the dist barrel via `/@fs/<abs-path>` and the plugin
+      //     sees the bare absolute path
+      //
+      // The trailing slash on the source / dist paths is required so
+      // packages/unii/... or similar names don't accidentally match.
+      if (
+        !id.includes('@snui/uni') &&
+        !id.includes(`${uniSrcAbsPath}/`) &&
+        !id.includes('/packages/uni/dist/')
+      ) {
+        return
+      }
       const transformed = code.replace(
         /(-?\d+(?:\.\d+)?)rpx\b/g,
         (_match, raw: string) => `${parseFloat(raw) * 0.5}px`,
