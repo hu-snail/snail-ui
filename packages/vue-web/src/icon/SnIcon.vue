@@ -65,7 +65,7 @@
  * a release-day addition.
  */
 
-import { computed } from 'vue'
+import { computed, markRaw } from 'vue'
 import type { IconComponent, IconComponentProps } from './sn-icon-registry'
 import { resolveIconByName } from './sn-icon-registry'
 
@@ -107,10 +107,17 @@ const props = withDefaults(
   },
 )
 
+/**
+ * Resolved icon component: prefer explicit `icon`, fall back to
+ * registry lookup by `name`. Returns `null` when neither resolves.
+ *
+ * `markRaw` keeps the component out of Vue's reactivity proxy — passing
+ * a component through `props` would otherwise warn ("Component that
+ * was made a reactive object") every render.
+ */
 const resolvedIcon = computed<IconComponent | null>(() => {
-  if (props.icon) return props.icon
-  if (props.name) return resolveIconByName(props.name) ?? null
-  return null
+  const icon = props.icon ?? (props.name ? resolveIconByName(props.name) : null)
+  return icon ? markRaw(icon) : null
 })
 
 const hasIcon = computed(() => resolvedIcon.value !== null)

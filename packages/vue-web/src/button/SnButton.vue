@@ -10,7 +10,10 @@
  * `defineSlots` + CSS variables. The SFC is the source of truth.
  */
 
-import { computed } from 'vue'
+import { computed, markRaw } from 'vue'
+import SnIcon from '../icon/SnIcon.vue'
+import type { IconComponent } from '../icon/sn-icon-registry'
+import { resolveIconByName } from '../icon/sn-icon-registry'
 
 defineOptions({ name: 'SnButton' })
 
@@ -34,6 +37,19 @@ const props = withDefaults(
     bordered?: boolean
     /** Native ARIA label override. */
     ariaLabel?: string
+    /**
+     * Icon component to render before the default slot. Bundlers walk the
+     * named import statically and tree-shake unused icons.
+     */
+    icon?: IconComponent
+    /**
+     * Icon name resolved via the SnIcon registry (populated by
+     * `registerSnIcons()` at app bootstrap). Convenience prop so the
+     * common case does not require wrapping `<SnIcon>` in a slot.
+     */
+    iconName?: string
+    /** Pixel / CSS size forwarded to the embedded SnIcon. Default 14. */
+    iconSize?: number | string
   }>(),
   {
     type: 'default',
@@ -44,8 +60,23 @@ const props = withDefaults(
     loading: false,
     htmlType: 'button',
     bordered: true,
+    iconSize: 14,
   },
 )
+
+/**
+ * Resolved icon component: prefer explicit `icon`, fall back to
+ * registry lookup by `iconName`. Returns `null` when neither resolves
+ * (template renders the default spinner / nothing instead).
+ *
+ * `markRaw` keeps the component out of Vue's reactivity proxy — passing
+ * a component through `props` would otherwise warn ("Component that
+ * was made a reactive object") every render.
+ */
+const resolvedIcon = computed<IconComponent | null>(() => {
+  const icon = props.icon ?? (props.iconName ? resolveIconByName(props.iconName) : null)
+  return icon ? markRaw(icon) : null
+})
 
 const emit = defineEmits<{
   /** Native click. Skipped when disabled or loading. */
@@ -100,6 +131,12 @@ function onClick(event: MouseEvent): void {
     <span v-if="$slots.icon" class="sn-button__icon">
       <slot name="icon" />
     </span>
+    <SnIcon
+      v-else-if="resolvedIcon"
+      class="sn-button__icon"
+      :icon="resolvedIcon"
+      :size="iconSize ?? 14"
+    />
     <span v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
       <slot name="loading">
         <svg viewBox="0 0 16 16" class="sn-button__spinner-svg">

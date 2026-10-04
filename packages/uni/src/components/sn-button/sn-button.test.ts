@@ -6,9 +6,11 @@
  * safe-area) are documented but not unit-tested here.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import SnButton from './sn-button.vue'
+import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry'
+import type { IconData } from '../sn-icon/sn-icon.vue'
 
 describe('sn-button', () => {
   it('renders default slot content', () => {
@@ -77,5 +79,54 @@ describe('sn-button', () => {
       slots: { default: 'X' },
     })
     expect(wrapper.attributes('aria-disabled')).toBe('true')
+  })
+
+  describe('iconData / iconName props', () => {
+    const TestIcon: IconData = Object.freeze({
+      viewBox: '0 0 24 24',
+      paths: ['M1 1 L23 23'],
+    })
+
+    beforeEach(() => {
+      clearSnIcons()
+    })
+
+    it('renders the embedded icon when `iconData` prop is provided', () => {
+      const wrapper = mount(SnButton, {
+        props: { iconData: TestIcon },
+        slots: { default: 'With icon' },
+      })
+      // The embedded sn-icon is rendered via the inner <view class="sn-icon">.
+      expect(wrapper.find('.sn-icon').exists()).toBe(true)
+    })
+
+    it('resolves icon from registry when `iconName` prop is provided', () => {
+      registerSnIcons({ TestIcon })
+      const wrapper = mount(SnButton, {
+        props: { iconName: 'TestIcon' },
+        slots: { default: 'Named' },
+      })
+      expect(wrapper.find('.sn-icon').exists()).toBe(true)
+    })
+
+    it('falls through to loading spinner when `iconName` is unregistered', () => {
+      const wrapper = mount(SnButton, {
+        props: { iconName: 'Missing', loading: true },
+        slots: { default: 'X' },
+      })
+      expect(wrapper.find('.sn-icon').exists()).toBe(false)
+      expect(wrapper.find('.sn-button__spinner').exists()).toBe(true)
+    })
+
+    it('icon slot overrides iconData / iconName props', () => {
+      const wrapper = mount(SnButton, {
+        props: { iconData: TestIcon, iconName: 'TestIcon' },
+        slots: {
+          default: 'Slot wins',
+          icon: '<view data-testid="slot-icon">★</view>',
+        },
+      })
+      expect(wrapper.find('[data-testid="slot-icon"]').exists()).toBe(true)
+    })
   })
 })

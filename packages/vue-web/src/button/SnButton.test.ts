@@ -7,11 +7,15 @@
  *   - click suppressed when disabled or loading
  *   - aria attributes set correctly
  *   - classes follow `sn-button--{variant}` / `sn-button--{size}` convention
+ *   - `icon` / `iconName` props auto-render an embedded SnIcon
+ *   - the `icon` slot overrides `icon` / `iconName` props
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { h, defineComponent } from 'vue'
 import SnButton from './SnButton.vue'
+import { clearSnIcons, registerSnIcons } from '../icon/sn-icon-registry'
 
 describe('SnButton', () => {
   it('renders default slot content', () => {
@@ -102,5 +106,65 @@ describe('SnButton', () => {
     })
     expect(wrapper.attributes('role')).toBe('button')
     expect(wrapper.attributes('aria-label')).toBe('Submit form')
+  })
+
+  describe('icon prop / iconName prop', () => {
+    /** Stub icon component — no real SVG, just a `data-testid` marker. */
+    const TestIcon = defineComponent({
+      name: 'TestIcon',
+      props: { size: { default: 16 } },
+      render() {
+        return h('svg', { 'data-testid': 'embedded-icon', 'data-size': String(this.size) })
+      },
+    })
+
+    beforeEach(() => {
+      clearSnIcons()
+    })
+
+    it('renders the icon component when `icon` prop is provided', () => {
+      const wrapper = mount(SnButton, {
+        props: { icon: TestIcon },
+        slots: { default: 'With icon' },
+      })
+      expect(wrapper.find('[data-testid="embedded-icon"]').exists()).toBe(true)
+    })
+
+    it('resolves icon from registry when `iconName` prop is provided', () => {
+      registerSnIcons({ TestIcon })
+      const wrapper = mount(SnButton, {
+        props: { iconName: 'TestIcon' },
+        slots: { default: 'Named' },
+      })
+      expect(wrapper.find('[data-testid="embedded-icon"]').exists()).toBe(true)
+    })
+
+    it('falls through to loading spinner when `iconName` is unregistered', () => {
+      const wrapper = mount(SnButton, {
+        props: { iconName: 'Missing', loading: true },
+        slots: { default: 'X' },
+      })
+      expect(wrapper.find('.sn-button__spinner').exists()).toBe(true)
+    })
+
+    it('forwards `iconSize` to the embedded SnIcon', () => {
+      const wrapper = mount(SnButton, {
+        props: { icon: TestIcon, iconSize: 20 },
+        slots: { default: 'S' },
+      })
+      expect(wrapper.find('[data-size="20"]').exists()).toBe(true)
+    })
+
+    it('icon slot overrides icon / iconName props', () => {
+      const wrapper = mount(SnButton, {
+        props: { icon: TestIcon, iconName: 'TestIcon' },
+        slots: {
+          default: 'Slot wins',
+          icon: '<i data-testid="slot-icon">★</i>',
+        },
+      })
+      expect(wrapper.find('[data-testid="slot-icon"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="embedded-icon"]').exists()).toBe(false)
+    })
   })
 })

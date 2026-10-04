@@ -11,7 +11,10 @@
  * bridge only. No schema validation; no business logic.
  */
 
-import { computed } from 'vue'
+import { computed, markRaw } from 'vue'
+import SnIcon from '../sn-icon/sn-icon.vue'
+import type { IconData } from '../sn-icon/sn-icon.vue'
+import { resolveIconByName } from '../sn-icon/sn-icon-registry'
 
 defineOptions({ name: 'SnButton' })
 
@@ -33,6 +36,20 @@ const props = withDefaults(
     hairline?: boolean
     /** Tap feedback (active state opacity). */
     feedback?: boolean
+    /**
+     * Icon data (frozen `{ viewBox, paths }` object) to render before the
+     * default slot. Bundlers walk the named import statically and tree-
+     * shake unused icons.
+     */
+    iconData?: IconData
+    /**
+     * Icon name resolved via the sn-icon registry (populated by
+     * `registerSnIcons()` at app bootstrap). Convenience prop so the
+     * common case does not require wrapping `<sn-icon>` in a slot.
+     */
+    iconName?: string
+    /** rpx / pixel size forwarded to the embedded sn-icon. Default 32. */
+    iconSize?: number | string
   }>(),
   {
     type: 'default',
@@ -43,8 +60,19 @@ const props = withDefaults(
     loading: false,
     hairline: true,
     feedback: true,
+    iconSize: 32,
   },
 )
+
+/**
+ * Resolved icon data: prefer explicit `iconData`, fall back to registry
+ * lookup by `iconName`. Returns `null` when neither resolves (template
+ * renders the default spinner / nothing instead).
+ */
+const resolvedIconData = computed<IconData | null>(() => {
+  const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null)
+  return icon ? markRaw(icon) : null
+})
 
 const emit = defineEmits<{
   (e: 'click', event: Event): void
@@ -89,7 +117,8 @@ function onTap(event: Event): void {
     @tap="onTap"
   >
     <slot name="icon">
-      <view v-if="loading" class="sn-button__spinner" aria-hidden="true">
+      <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="iconSize ?? 32" />
+      <view v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
         <slot name="loading">
           <view class="sn-button__spinner-dot" />
         </slot>
