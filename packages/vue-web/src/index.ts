@@ -14,6 +14,7 @@ export { default as SnButton } from './button/SnButton.vue'
 export { default as SnConfigProvider } from './config-provider/SnConfigProvider.vue'
 export { default as SnDivider } from './divider/SnDivider.vue'
 export { default as SnIcon } from './icon/SnIcon.vue'
+export { default as SnInput } from './input/SnInput.vue'
 export {
   registerSnIcons,
   clearSnIcons,
