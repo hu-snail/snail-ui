@@ -57,8 +57,14 @@ const sidebar = {
         { text: 'Icon 图标', link: '/components/web/icon' },
       ],
     },
+    {
+      text: 'Form 表单组件',
+      items: [
+        { text: 'Input 输入框', link: '/components/web/input' },
+        { text: 'Form 表单', link: '/components/web/form' },
+      ],
+    },
     // Other 其他 — empty until ConfigProvider page ships.
-    // Form 表单组件 — empty until SnInput / SnForm / SnFormItem ship.
     // Data Display 数据展示 — empty until SnCard / SnTag / SnBadge ship.
     // Navigation 导航组件 — empty until SnMenu / SnTabs / SnBreadcrumb ship.
     // Feedback 反馈组件 — empty until SnAlert / SnToast / SnModal ship.
@@ -148,6 +154,13 @@ const enSidebar = {
         { text: 'Button', link: '/en/components/web/button' },
         { text: 'Divider', link: '/en/components/web/divider' },
         { text: 'Icon', link: '/en/components/web/icon' },
+      ],
+    },
+    {
+      text: 'Form',
+      items: [
+        { text: 'Input', link: '/en/components/web/input' },
+        { text: 'Form', link: '/en/components/web/form' },
       ],
     },
     // Other — empty until ConfigProvider page ships.

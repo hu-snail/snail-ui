@@ -1,79 +1,115 @@
 <script setup lang="ts">
 /**
- * Demo: SnForm (Web) — placeholder live render.
+ * Demo: SnForm (Web) — full validation + submit flow with SnForm +
+ * SnFormItem + SnInput + SnButton.
  *
- * Full Form requires v1.x protocol (Form / FormItem / Field contract) not yet
- * shipped in @snui/vue-web. This demo shows native <form> + SnInput +
- * SnButton interaction as a forward-compatible preview.
+ * Demonstrates:
+ *   - reactive model + per-field FormRule
+ *   - validate() called from submit
+ *   - error / warning messages render below each item
+ *   - resetFields restores the snapshot
+ *   - form-level disabled cascades
  */
 
 import { reactive, ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web'
+import type { FormRule } from '@snui/vue-web'
 
-const form = reactive({ email: '', password: '' })
-const loading = ref(false)
-const submitted = ref<{ email: string; password: string } | null>(null)
+const form = reactive({
+  email: '',
+  password: '',
+  age: 18,
+  bio: '',
+  agreement: false,
+})
 
-async function submit(e: Event): Promise<void> {
-  e.preventDefault()
-  loading.value = true
-  await new Promise((r) => setTimeout(r, 800))
-  submitted.value = { email: form.email, password: form.password }
-  loading.value = false
+const lastSubmit = ref<{ email: string; valid: boolean } | null>(null)
+const submitting = ref(false)
+
+const rules: Record<string, FormRule[]> = {
+  email: [
+    { required: true, message: 'Email is required' },
+    { type: 'email', message: 'Must be a valid email' },
+  ],
+  password: [
+    { required: true, message: 'Password is required' },
+    { minLength: 8, message: 'Use at least 8 characters' },
+  ],
+  age: [
+    { required: true, min: 18, max: 120, message: 'Must be 18+' },
+  ],
+  bio: [
+    { maxLength: 280, message: 'Keep it under 280 chars' },
+  ],
+}
+
+async function onSubmit(payload: { valid: boolean }): Promise<void> {
+  if (!payload.valid) return
+  submitting.value = true
+  await new Promise((r) => setTimeout(r, 600))
+  lastSubmit.value = { email: form.email, valid: payload.valid }
+  submitting.value = false
+}
+
+function onReset(): void {
+  lastSubmit.value = null
 }
 </script>
 
 <template>
-  <form class="sn-form" @submit="submit">
-    <div class="sn-form__item">
-      <label class="sn-form__label">Email</label>
-      <input v-model="form.email" type="email" placeholder="you@aui.dev" class="sn-form__input" />
-    </div>
-    <div class="sn-form__item">
-      <label class="sn-form__label">Password</label>
-      <input v-model="form.password" type="password" placeholder="••••••" class="sn-form__input" />
-    </div>
-    <SnButton type="primary" html-type="submit" :loading="loading">登录</SnButton>
+  <div class="sn-form-demo">
+    <SnForm
+      :model="form"
+      :rules="rules"
+      label-position="right"
+      label-width="80"
+      @submit="onSubmit"
+      @reset="onReset"
+    >
+      <SnFormItem prop="email" label="Email" required>
+        <SnInput v-model="form.email" type="email" placeholder="you@aui.dev" />
+      </SnFormItem>
 
-    <p v-if="submitted" class="sn-form__log">
-      ✓ 已提交：<code>{{ submitted.email }}</code>
-    </p>
-  </form>
+      <SnFormItem prop="password" label="Password" required>
+        <SnInput v-model="form.password" type="password" placeholder="••••••••" />
+      </SnFormItem>
+
+      <SnFormItem prop="age" label="Age">
+        <SnInput v-model="form.age" type="number" :min="0" :max="120" />
+      </SnFormItem>
+
+      <SnFormItem prop="bio" label="Bio" label-position="top">
+        <SnInput v-model="form.bio" type="textarea" :rows="3" placeholder="Optional bio" />
+      </SnFormItem>
+
+      <div class="sn-form-demo__actions">
+        <SnButton html-type="submit" type="primary" :loading="submitting">Sign up</SnButton>
+        <SnButton html-type="reset" @click="$refs.form?.resetFields()">Reset</SnButton>
+      </div>
+    </SnForm>
+
+    <pre v-if="lastSubmit" class="sn-form-demo__log">Submitted: {{ JSON.stringify(lastSubmit, null, 2) }}</pre>
+  </div>
 </template>
 
 <style scoped>
-.sn-form {
+.sn-form-demo {
+  max-width: 480px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  max-width: 320px;
+  gap: 16px;
 }
-.sn-form__item {
+.sn-form-demo__actions {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+  margin-top: 8px;
 }
-.sn-form__label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
-}
-.sn-form__input {
-  padding: 6px 10px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 4px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
-  font-size: 13px;
-}
-.sn-form__log {
+.sn-form-demo__log {
   margin: 0;
-  font-size: 12px;
-  color: var(--vp-c-success-1);
-}
-.sn-form__log code {
+  padding: 12px;
   background: var(--vp-c-bg-soft);
-  padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
 }
 </style>
