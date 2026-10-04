@@ -12,6 +12,38 @@
 export { default as SnButton } from './components/sn-button/sn-button.vue'
 export { default as SnConfigProvider } from './components/sn-config-provider/sn-config-provider.vue'
 export { default as SnDivider } from './components/sn-divider/sn-divider.vue'
+export { default as SnIcon } from './components/sn-icon/sn-icon.vue'
+export type { IconData } from './components/sn-icon/sn-icon.vue'
+
+// Shortcut icon data set — frozen `IconData` objects keyed by lucide
+// icon name. Tree-shakeable: each named import is its own ESM module.
+// Consumers add their own icons by extending sn-icon-set.ts (or by
+// creating one-file-per-icon under `components/sn-icon/icons/`).
+export {
+  ChevronRight,
+  ChevronLeft,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
+  ArrowLeft,
+  Check,
+  X,
+  Plus,
+  Minus,
+  Search,
+  Settings,
+  User,
+  Bell,
+  Home,
+  Heart,
+  Star,
+  Trash,
+  Edit,
+  Download,
+  Upload,
+  Menu,
+  MoreHorizontal,
+} from './components/sn-icon/sn-icon-set'
 
 // Re-export token utilities for app-level theme overrides.
 export { snCssVars, snVarName, auiVarName } from '@snui/tokens'
