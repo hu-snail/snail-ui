@@ -37,23 +37,39 @@ const sidebar = {
       ],
     },
   ],
+  // Component categories — one entry per category. Each entry maps to one
+  // or more component pages. Order matters (left-to-right in sidebar).
+  // Categories with empty `items` are hidden from sidebar (VitePress collapses
+  // empty sections). Add the first component page link to a category to make
+  // it appear.
+  //
+  // Per Spec-02 v1.1 + WBS v3.1, the planned category taxonomy is:
+  //   基础组件 / 表单组件 / 数据展示 / 导航组件 / 反馈组件 / 其他 / AI 组件
+  // Currently shipped: Button + Divider (Basic) + ConfigProvider (Other).
   '/components/web/': [
     {
-      text: 'Web 组件',
+      text: 'Basic 基础组件',
       items: [
         { text: 'Button 按钮', link: '/components/web/button' },
         { text: 'Divider 分割线', link: '/components/web/divider' },
       ],
     },
+    // Other 其他 — empty until ConfigProvider page ships.
+    // Form 表单组件 — empty until SnInput / SnForm / SnFormItem ship.
+    // Data Display 数据展示 — empty until SnCard / SnTag / SnBadge ship.
+    // Navigation 导航组件 — empty until SnMenu / SnTabs / SnBreadcrumb ship.
+    // Feedback 反馈组件 — empty until SnAlert / SnToast / SnModal ship.
+    // AI 组件 — empty until SnippetPanel / StylePreview / RenderShot ship.
   ],
   '/components/uni/': [
     {
-      text: 'uni-app 组件',
+      text: 'Basic 基础组件',
       items: [
-        { text: 'Button 按钮', link: '/components/uni/button' },
-        { text: 'Divider 分割线', link: '/components/uni/divider' },
+        { text: 'sn-button 按钮', link: '/components/uni/button' },
+        { text: 'sn-divider 分割线', link: '/components/uni/divider' },
       ],
     },
+    // Other 其他 — empty until ConfigProvider page ships.
   ],
   '/theme/': [
     {
@@ -119,23 +135,27 @@ const enSidebar = {
       ],
     },
   ],
+  // Mirror of zh sidebar (per AUI-DOCS-002 + AUI-DOCS-013). Categories
+  // hidden when empty.
   '/en/components/web/': [
     {
-      text: 'Web components',
+      text: 'Basic',
       items: [
         { text: 'Button', link: '/en/components/web/button' },
         { text: 'Divider', link: '/en/components/web/divider' },
       ],
     },
+    // Other — empty until ConfigProvider page ships.
   ],
   '/en/components/uni/': [
     {
-      text: 'uni-app components',
+      text: 'Basic',
       items: [
-        { text: 'Button', link: '/en/components/uni/button' },
-        { text: 'Divider', link: '/en/components/uni/divider' },
+        { text: 'sn-button', link: '/en/components/uni/button' },
+        { text: 'sn-divider', link: '/en/components/uni/divider' },
       ],
     },
+    // Other — empty until ConfigProvider page ships.
   ],
   '/en/theme/': [
     {
