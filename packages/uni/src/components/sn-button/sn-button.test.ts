@@ -129,4 +129,126 @@ describe('sn-button', () => {
       expect(wrapper.find('[data-testid="slot-icon"]').exists()).toBe(true)
     })
   })
+
+  /* ── wot-ui `wd-button` 1:1 parity ────────────────────────────────────── */
+
+  it('applies variant-base by default', () => {
+    const wrapper = mount(SnButton, { slots: { default: 'X' } })
+    expect(wrapper.classes()).toContain('sn-button--variant-base')
+  })
+
+  it('honors variant=plain for transparent look', () => {
+    const wrapper = mount(SnButton, {
+      props: { variant: 'plain', type: 'primary' },
+      slots: { default: 'P' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--variant-plain')
+  })
+
+  it('honors variant=soft for tinted background', () => {
+    const wrapper = mount(SnButton, {
+      props: { variant: 'soft', type: 'primary' },
+      slots: { default: 'S' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--variant-soft')
+  })
+
+  it('honors variant=dashed for dashed border', () => {
+    const wrapper = mount(SnButton, {
+      props: { variant: 'dashed' },
+      slots: { default: 'D' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--variant-dashed')
+  })
+
+  it('honors variant=text for plain text button', () => {
+    const wrapper = mount(SnButton, {
+      props: { variant: 'text' },
+      slots: { default: 'T' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--variant-text')
+  })
+
+  it('honors variant=subtle for light-gray background', () => {
+    const wrapper = mount(SnButton, {
+      props: { variant: 'subtle' },
+      slots: { default: 'S' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--variant-subtle')
+  })
+
+  it('honors cell=hover modifier', () => {
+    const wrapper = mount(SnButton, {
+      props: { cell: 'hover' },
+      slots: { default: 'C' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--cell-hover')
+  })
+
+  it('honors plain boolean prop', () => {
+    const wrapper = mount(SnButton, {
+      props: { plain: true },
+      slots: { default: 'P' },
+    })
+    expect(wrapper.classes()).toContain('sn-button--plain')
+  })
+
+  it('forwards open-type attribute', () => {
+    const wrapper = mount(SnButton, {
+      props: { openType: 'share' },
+      slots: { default: 'Share' },
+    })
+    expect(wrapper.attributes('open-type')).toBe('share')
+  })
+
+  it('forwards form-type attribute when set', () => {
+    const wrapper = mount(SnButton, {
+      props: { formType: 'submit' },
+      slots: { default: 'Submit' },
+    })
+    expect(wrapper.attributes('form-type')).toBe('submit')
+  })
+
+  it('forwards hover-class / hover-start-time / hover-stay-time', () => {
+    const wrapper = mount(SnButton, {
+      props: { hoverClass: 'custom-press', hoverStartTime: 50, hoverStayTime: 600 },
+      slots: { default: 'H' },
+    })
+    expect(wrapper.attributes('hover-class')).toBe('custom-press')
+    expect(wrapper.attributes('hover-start-time')).toBe('50')
+    expect(wrapper.attributes('hover-stay-time')).toBe('600')
+  })
+
+  it('applies inline bgColor / color when provided', () => {
+    const wrapper = mount(SnButton, {
+      props: { bgColor: '#abcdef', color: '#123456' },
+      slots: { default: 'C' },
+    })
+    expect(wrapper.attributes('style')).toContain('background-color: #abcdef')
+    expect(wrapper.attributes('style')).toContain('color: #123456')
+  })
+
+  it('applies loadingColor to spinner style', () => {
+    const wrapper = mount(SnButton, {
+      props: { loading: true, loadingColor: '#abcdef' },
+      slots: { default: 'L' },
+    })
+    expect(wrapper.find('.sn-button__spinner').attributes('style')).toContain('#abcdef')
+  })
+
+  it('forwards customClass to the root', () => {
+    const wrapper = mount(SnButton, {
+      props: { customClass: 'my-cta' },
+      slots: { default: 'X' },
+    })
+    expect(wrapper.classes()).toContain('my-cta')
+  })
+
+  it('forwards ariaLabel', () => {
+    const wrapper = mount(SnButton, {
+      props: { ariaLabel: 'Submit form' },
+      slots: { default: 'X' },
+    })
+    expect(wrapper.attributes('aria-label')).toBe('Submit form')
+  })
 })

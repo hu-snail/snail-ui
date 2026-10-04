@@ -20,8 +20,10 @@ defineOptions({ name: 'SnButton' })
 
 const props = withDefaults(
   defineProps<{
+    /* ── wot-ui `wd-button` 1:1 surface ─────────────────────────────────── */
+
     /** Visual variant. Drives background / border / text color. */
-    type?: 'primary' | 'default' | 'success' | 'warning' | 'danger'
+    type?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info'
     /** Size preset. */
     size?: 'small' | 'medium' | 'large'
     /** Block (full-width) layout — common on mobile. */
@@ -37,15 +39,52 @@ const props = withDefaults(
     /** Tap feedback (active state opacity). */
     feedback?: boolean
     /**
+     * Plain / low-key style. Drives the variant — for wot-ui parity this
+     * maps to `variant: 'plain'` automatically when `type === 'primary'`.
+     */
+    plain?: boolean
+    /** wot-ui style variant. Mirrors `wd-button variant`. */
+    variant?: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'
+    /** Cell-style preset. Mirrors wd-button cell. */
+    cell?: 'hover' | 'fill' | 'menu' | undefined
+    /** Custom loading spinner color. */
+    loadingColor?: string
+    /** Custom loading spinner size (rpx). */
+    loadingSize?: number | string
+    /** Open-type routing hint — uni-app MP only. */
+    openType?:
+      | 'share' | 'feedback' | 'launchApp' | 'contact' | 'getUserInfo'
+      | 'openSetting' | 'lifestyle' | 'livePlayer' | 'favorite'
+      | 'chooseAvatar' | 'weRunGroup'
+    /** Override the hover class (uni-app MP). */
+    hoverClass?: string
+    /** Hover start time (ms, uni-app MP). */
+    hoverStartTime?: number
+    /** Hover stay time (ms, uni-app MP). */
+    hoverStayTime?: number
+    /** Form submission type. */
+    formType?: 'submit' | 'reset' | undefined
+    /** Class on the root element. */
+    customClass?: string
+    /** Inline style on the root element. */
+    customStyle?: string | Record<string, string>
+    /** Custom background color override. */
+    bgColor?: string
+    /** Custom text/border color override. */
+    color?: string
+    /** Accessible label override. */
+    ariaLabel?: string
+
+    /* ── icon handling (mirror of web) ─────────────────────────────────── */
+
+    /**
      * Icon data (frozen `{ viewBox, paths }` object) to render before the
-     * default slot. Bundlers walk the named import statically and tree-
-     * shake unused icons.
+     * default slot.
      */
     iconData?: IconData
     /**
      * Icon name resolved via the sn-icon registry (populated by
-     * `registerSnIcons()` at app bootstrap). Convenience prop so the
-     * common case does not require wrapping `<sn-icon>` in a slot.
+     * `registerSnIcons()` at app bootstrap).
      */
     iconName?: string
     /** rpx / pixel size forwarded to the embedded sn-icon. Default 32. */
@@ -60,6 +99,19 @@ const props = withDefaults(
     loading: false,
     hairline: true,
     feedback: true,
+    plain: false,
+    variant: 'base',
+    cell: undefined,
+    loadingColor: '',
+    loadingSize: 32,
+    hoverClass: 'sn-button--feedback',
+    hoverStartTime: 0,
+    hoverStayTime: 70,
+    formType: undefined,
+    customClass: '',
+    customStyle: '',
+    bgColor: '',
+    color: '',
     iconSize: 32,
   },
 )
@@ -88,6 +140,7 @@ const classList = computed(() => [
   'sn-button',
   `sn-button--${props.type}`,
   `sn-button--${props.size}`,
+  `sn-button--variant-${props.variant}`,
   {
     'sn-button--block': props.block,
     'sn-button--round': props.round,
@@ -95,8 +148,22 @@ const classList = computed(() => [
     'sn-button--loading': props.loading,
     'sn-button--hairline': props.hairline && props.type === 'default',
     'sn-button--feedback': props.feedback,
+    'sn-button--plain': props.plain,
+    'sn-button--cell-hover': props.cell === 'hover',
+    'sn-button--cell-fill': props.cell === 'fill',
+    'sn-button--cell-menu': props.cell === 'menu',
   },
+  props.customClass,
 ])
+
+const wrapperStyle = computed(() => {
+  let style = ''
+  if (props.bgColor) style += `background-color: ${props.bgColor};`
+  if (props.color) style += `color: ${props.color};border-color: ${props.color};`
+  if (typeof props.customStyle === 'string') style += props.customStyle
+  else if (props.customStyle) style += Object.entries(props.customStyle).map(([k, v]) => `${k}:${v}`).join(';')
+  return style || undefined
+})
 
 function onTap(event: Event): void {
   if (props.disabled || props.loading) {
@@ -112,15 +179,27 @@ function onTap(event: Event): void {
   <view
     data-snui-component="button"
     :class="classList"
+    :style="wrapperStyle"
     :aria-disabled="disabled || loading"
     :aria-busy="loading"
+    :aria-label="ariaLabel"
+    :hover-class="hoverClass"
+    :hover-start-time="hoverStartTime"
+    :hover-stay-time="hoverStayTime"
+    :form-type="formType || undefined"
+    :open-type="openType"
     @tap="onTap"
   >
     <slot name="icon">
       <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="iconSize ?? 32" />
-      <view v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
+      <view
+        v-else-if="loading"
+        class="sn-button__spinner"
+        :style="loadingColor ? `color: ${loadingColor}` : undefined"
+        aria-hidden="true"
+      >
         <slot name="loading">
-          <view class="sn-button__spinner-dot" />
+          <view class="sn-button__spinner-dot" :style="`width: ${loadingSize}rpx; height: ${loadingSize}rpx`" />
         </slot>
       </view>
     </slot>
@@ -204,6 +283,11 @@ function onTap(event: Event): void {
   color: var(--sn-mp-color-text-on-primary);
   border-color: var(--sn-mp-color-feedback-danger);
 }
+.sn-button--info {
+  background-color: var(--sn-mp-color-feedback-info);
+  color: var(--sn-mp-color-text-on-primary);
+  border-color: var(--sn-mp-color-feedback-info);
+}
 
 .sn-button--default {
   background-color: var(--sn-mp-color-background-surface);
@@ -211,6 +295,60 @@ function onTap(event: Event): void {
 }
 .sn-button--default.sn-button--hairline {
   border-color: var(--sn-mp-color-border-default);
+}
+
+/* Variant: plain — transparent background, colored border. */
+.sn-button--variant-plain.sn-button--primary {
+  background-color: transparent;
+  color: var(--sn-mp-color-action-primary);
+  border-color: var(--sn-mp-color-action-primary);
+}
+.sn-button--variant-plain.sn-button--danger {
+  background-color: transparent;
+  color: var(--sn-mp-color-feedback-danger);
+  border-color: var(--sn-mp-color-feedback-danger);
+}
+
+/* Variant: soft — tinted background. */
+.sn-button--variant-soft.sn-button--primary {
+  background-color: var(--sn-mp-color-action-primary-soft, rgba(30, 128, 255, 0.16));
+  color: var(--sn-mp-color-action-primary);
+  border-color: transparent;
+}
+.sn-button--variant-soft.sn-button--danger {
+  background-color: var(--sn-mp-color-feedback-danger-soft, rgba(255, 77, 79, 0.16));
+  color: var(--sn-mp-color-feedback-danger);
+  border-color: transparent;
+}
+
+/* Variant: dashed — dashed border. */
+.sn-button--variant-dashed {
+  border-style: dashed;
+}
+
+/* Variant: text — transparent, no border. */
+.sn-button--variant-text {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+/* Variant: subtle — light gray background, primary text. */
+.sn-button--variant-subtle {
+  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+  color: var(--sn-mp-color-text-primary);
+  border-color: transparent;
+}
+
+/* Cell hover — used inside Cell menu lists. */
+.sn-button--cell-hover:active:not(.sn-button--disabled):not(.sn-button--loading) {
+  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+}
+.sn-button--cell-fill {
+  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+}
+.sn-button--cell-menu {
+  background-color: transparent;
+  border-radius: 0;
 }
 
 /* Spinner */
