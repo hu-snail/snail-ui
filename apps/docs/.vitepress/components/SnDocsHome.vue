@@ -10,31 +10,19 @@
  * `{{ }}` / `:prop` syntax inside HTML blocks).
  *
  * Per AUI-DOCS-019, this is Phase-1 of "replace docs chrome with real Sn*
- * components". Toggle Style Pack → the hero + features + next links all
- * follow the active skin via CSS variables.
+ * components". Toggle Style Pack → the hero + features all follow the
+ * active skin via CSS variables.
+ *
+ * Visual pattern: Mantine-style marketing landing — pill announcement,
+ * single huge h1, concise subtitle, primary CTA, and 4 visual preview
+ * cards (not text-heavy feature blurbs).
  */
 
-import { SnButton, SnCard, SnConfigProvider, SnGrid } from '@snui/vue-web'
+import { SnButton, SnCard, SnConfigProvider, SnGrid, SnInput } from '@snui/vue-web'
 
-const features = [
-  { title: '端独立（End-aware）', details: 'Web 端（PC）和 uni 端（移动）从开发到打包完全独立 —— 独立源代码、独立构建、独立 npm 包、独立 Token 别名（--sn-web-* / --sn-mp-*）。未来 React 端按相同模式扩展，0 行跨端复用。' },
-  { title: 'Component First', details: 'Web 端 SnButton / SnTable / SnTree 等 PC 端组件。uni 端 sn-button / sn-list 等移动端组件。各端按场景独立设计 API，不追求跨端同名同形。' },
-  { title: 'Token First', details: '统一底层 @snui/tokens 输出 --aui-* 原始层；每端通过独立别名包 (@snui/tokens-web / @snui/tokens-mp) 映射到 --sn-{end}-*。组件消费端独立 Token。' },
-  { title: 'Style Pack First', details: '跨端共用风格包系统。Token + 皮肤 CSS + 资源三层。每个 Pack 标注 end 字段（取值 web / mp / both）。Web 端有 web 品牌主题；uni 端有 mp-taobao / mp-douyin 等移动品牌主题。' },
-  { title: 'AI Native', details: 'AI 能读懂每个端组件、产出原型、修改 UI。snail-ui.skill.md 写 AI 行为契约；MCP Server 4 工具按 end 过滤；ai-meta.json 按端分组。' },
-]
-
-const actions = [
-  { kind: 'primary', text: 'Web（PC 端）', link: '/guide/web/intro', external: false },
-  { kind: 'default', text: 'uni-app（移动端）', link: '/guide/uni/quick-start', external: false },
-  { kind: 'default', text: '风格包', link: '/style-packs/overview', external: false },
-  { kind: 'default', text: 'AI 生态', link: '/ai/overview', external: false },
-  { kind: 'default', text: 'GitHub', link: 'https://github.com/hu-snail/snail-ui', external: true },
-]
-
-function handleAction(action: { external: boolean; link: string }): void {
-  if (action.external && typeof window !== 'undefined') {
-    window.open(action.link, '_blank', 'noopener')
+function openGithub(): void {
+  if (typeof window !== 'undefined') {
+    window.open('https://github.com/hu-snail/snail-ui', '_blank', 'noopener')
   }
 }
 </script>
@@ -42,128 +30,355 @@ function handleAction(action: { external: boolean; link: string }): void {
 <template>
   <SnConfigProvider>
     <div class="sn-home">
+      <!-- ─────────── Hero ─────────── -->
       <section class="sn-home__hero">
-        <h1 class="sn-home__brand">snail-aui</h1>
-        <h2 class="sn-home__title">Component First · Style Pack First · AI Native · End-aware</h2>
-        <p class="sn-home__tagline">
-          面向 Vue 3（PC Web）+ uni-app（移动）的 AI-Native UI 框架生态。<strong>Web 端面向桌面</strong>，<strong>uni 端面向移动</strong>——两端从开发到打包完全独立，0 行源代码复用。未来 React 端按相同模式扩展。
+        <a href="/ai/overview" class="sn-home__pill">
+          <span class="sn-home__pill-dot" aria-hidden="true" />
+          <span class="sn-home__pill-text">New: Style Pack · MCP Server · SnForm</span>
+          <span class="sn-home__pill-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <h1 class="sn-home__title">
+          The Foundation for<br>
+          your AI-Native Design System
+        </h1>
+
+        <p class="sn-home__subtitle">
+          面向 Vue 3（PC Web）+ uni-app（移动）的 AI-Native UI 框架生态。
+          <strong>Web 端面向桌面</strong>，<strong>uni 端面向移动</strong>——两端从开发到打包完全独立，0 行源代码复用。未来 React 端按相同模式扩展。
         </p>
+
         <div class="sn-home__actions">
-          <SnButton
-            v-for="act in actions"
-            :key="act.link"
-            :variant="act.kind"
-            :href="act.external ? undefined : act.link"
-            @click="act.external ? handleAction(act) : undefined"
-          >
-            {{ act.text }}
+          <SnButton variant="primary" size="large" href="/guide/web/intro">
+            开始使用
+            <span class="sn-home__cta-arrow" aria-hidden="true">→</span>
+          </SnButton>
+          <SnButton variant="tertiary" size="large" @click="openGithub">
+            GitHub
           </SnButton>
         </div>
       </section>
 
-      <section class="sn-home__features">
-        <SnGrid :cols="3" :x-gap="16" :y-gap="16">
-          <SnCard
-            v-for="f in features"
-            :key="f.title"
-            :padding="'md'"
-          >
-            <h3 class="sn-home-card__title">{{ f.title }}</h3>
-            <p class="sn-home-card__details">{{ f.details }}</p>
-          </SnCard>
-        </SnGrid>
-      </section>
+      <!-- ─────────── Visual preview grid ─────────── -->
+      <section class="sn-home__previews">
+        <SnGrid :cols="4" :x-gap="20" :y-gap="20">
 
-      <section class="sn-home__next">
-        <h2 class="sn-home__next-title">下一步</h2>
-        <ul class="sn-home__next-list">
-          <li><a href="/guide/web/intro">Web 端介绍</a> — 30 秒看懂 Web 端</li>
-          <li><a href="/guide/web/architecture">架构</a> — 双端包结构</li>
-          <li><a href="/style-packs/overview">风格包</a> — 跨端共用风格包</li>
-          <li><a href="/ai/overview">AI 生态</a> — Skill + MCP + 高保真原型</li>
-        </ul>
+          <!-- Card 1 — Components -->
+          <SnCard variant="outlined" size="large" hoverable>
+            <h3 class="sn-home-card__title">Components</h3>
+            <p class="sn-home-card__sub">6 语义类型 · 5 尺寸 · 3 变体</p>
+            <div class="sn-home-card__buttons">
+              <SnButton variant="default" size="tiny">默认</SnButton>
+              <SnButton variant="primary" size="tiny">主要</SnButton>
+              <SnButton variant="info" size="tiny">信息</SnButton>
+              <SnButton variant="success" size="tiny">成功</SnButton>
+              <SnButton variant="warning" size="tiny">警告</SnButton>
+              <SnButton variant="error" size="tiny">危险</SnButton>
+            </div>
+            <SnInput model-value="" placeholder="SnInput 搜索组件" size="small" />
+          </SnCard>
+
+          <!-- Card 2 — Style Pack -->
+          <SnCard variant="outlined" size="large" hoverable>
+            <h3 class="sn-home-card__title">Style Pack</h3>
+            <p class="sn-home-card__sub">跨端共用风格包系统</p>
+            <div class="sn-home-card__packs">
+              <span class="pack-tag pack-tag--default">Default</span>
+              <span class="pack-tag pack-tag--doodle">Doodle</span>
+              <span class="pack-tag pack-tag--ios">iOS</span>
+              <span class="pack-tag pack-tag--mp">mp-taobao</span>
+            </div>
+            <p class="sn-home-card__foot">
+              Token + 皮肤 CSS + 资源三层，每包独立 npm 包（end: web / mp / both）。
+            </p>
+          </SnCard>
+
+          <!-- Card 3 — AI Native -->
+          <SnCard variant="outlined" size="large" hoverable>
+            <h3 class="sn-home-card__title">AI Native</h3>
+            <p class="sn-home-card__sub">Skill + MCP + ai-meta.json</p>
+            <div class="sn-home-card__code">
+              <code class="sn-home-card__line">
+                <span class="sn-home-card__prompt">$</span>
+                claude "用 snail-ui 做登录页"
+              </code>
+              <code class="sn-home-card__line sn-home-card__line--out">
+                → 6 步生成 Button + Input + Card
+              </code>
+              <code class="sn-home-card__line sn-home-card__line--out">
+                → MCP Server 自动按 end 过滤
+              </code>
+            </div>
+          </SnCard>
+
+          <!-- Card 4 — End-aware -->
+          <SnCard variant="outlined" size="large" hoverable>
+            <h3 class="sn-home-card__title">End-aware</h3>
+            <p class="sn-home-card__sub">两端独立源代码 / 构建 / npm 包</p>
+            <div class="sn-home-card__ends">
+              <div class="end-row">
+                <span class="end-tag end-tag--web">Web</span>
+                <code class="end-cmd">@snui/vue-web</code>
+              </div>
+              <div class="end-row">
+                <span class="end-tag end-tag--mp">uni</span>
+                <code class="end-cmd">@snui/uni</code>
+              </div>
+              <div class="end-row">
+                <span class="end-tag end-tag--react">React</span>
+                <code class="end-cmd end-cmd--plan">@snui/react*</code>
+              </div>
+            </div>
+          </SnCard>
+
+        </SnGrid>
       </section>
     </div>
   </SnConfigProvider>
 </template>
 
 <style scoped>
+/* ─────────── Layout shell ─────────── */
 .sn-home {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 24px 24px 48px;
 }
+
+/* ─────────── Hero ─────────── */
 .sn-home__hero {
   text-align: center;
-  padding: 64px 0 48px;
+  padding: 56px 0 64px;
 }
-.sn-home__brand {
-  font-size: 56px;
-  font-weight: 700;
-  margin: 0;
-  color: var(--sn-web-color-action-primary);
-  letter-spacing: -0.02em;
+
+/* Pill announcement */
+.sn-home__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--sn-web-color-border-default);
+  border-radius: 999px;
+  background: var(--sn-web-color-background-surface);
+  color: var(--sn-web-color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 28px;
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
 }
-.sn-home__title {
-  font-size: 32px;
-  font-weight: 600;
-  margin: 12px 0 24px;
+.sn-home__pill:hover {
+  border-color: var(--sn-web-color-action-primary);
   color: var(--sn-web-color-text-primary);
 }
-.sn-home__tagline {
-  font-size: 16px;
+.sn-home__pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sn-web-color-success, #07c160);
+  flex-shrink: 0;
+  box-shadow: 0 0 0 4px rgba(7, 193, 96, 0.12);
+}
+.sn-home__pill-arrow {
+  font-size: 14px;
+  transition: transform 0.2s;
+}
+.sn-home__pill:hover .sn-home__pill-arrow {
+  transform: translateX(3px);
+}
+
+/* Title */
+.sn-home__title {
+  font-size: 64px;
+  font-weight: 700;
+  margin: 0 0 24px;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--sn-web-color-text-primary);
+}
+@media (max-width: 768px) {
+  .sn-home__title { font-size: 40px; }
+}
+
+/* Subtitle */
+.sn-home__subtitle {
+  font-size: 18px;
   line-height: 1.6;
   max-width: 720px;
-  margin: 0 auto 32px;
+  margin: 0 auto 40px;
   color: var(--sn-web-color-text-secondary);
 }
+.sn-home__subtitle strong {
+  color: var(--sn-web-color-text-primary);
+  font-weight: 600;
+}
+
+/* Actions */
 .sn-home__actions {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
   gap: 12px;
+  flex-wrap: wrap;
 }
-.sn-home__features {
-  margin: 48px 0;
+.sn-home__cta-arrow {
+  margin-left: 6px;
+  display: inline-block;
+  transition: transform 0.2s;
 }
+.sn-home__actions :deep(.sn-button:hover) .sn-home__cta-arrow {
+  transform: translateX(4px);
+}
+
+/* ─────────── Preview grid ─────────── */
+.sn-home__previews {
+  margin: 0 0 24px;
+}
+
+/* Card heading */
 .sn-home-card__title {
-  margin: 0 0 12px;
+  margin: 0 0 4px;
   font-size: 18px;
   font-weight: 600;
   color: var(--sn-web-color-text-primary);
 }
-.sn-home-card__details {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--sn-web-color-text-secondary);
+.sn-home-card__sub {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: var(--sn-web-color-text-tertiary);
 }
-.sn-home__next {
-  margin: 48px 0 24px;
-}
-.sn-home__next-title {
-  font-size: 22px;
-  font-weight: 600;
-  color: var(--sn-web-color-text-primary);
-  border-top: 1px solid var(--sn-web-color-border-default);
-  padding-top: 24px;
-}
-.sn-home__next-list {
-  list-style: disc;
-  padding-left: 24px;
-  color: var(--sn-web-color-text-primary);
-}
-.sn-home__next-list a {
-  color: var(--sn-web-color-action-primary);
-  text-decoration: none;
+.sn-home-card__foot {
+  margin: 16px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--sn-web-color-text-tertiary);
 }
 
-/* Doodle skin */
-.snui-skin-doodle .sn-home__brand {
-  font-family: 'Comic Sans MS', 'Marker Felt', sans-serif;
+/* Card 1 — buttons preview */
+.sn-home-card__buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* Card 2 — pack tags */
+.sn-home-card__packs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.pack-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid currentColor;
+  line-height: 1.4;
+}
+.pack-tag--default {
+  color: #6b7280;
+  background: rgba(107, 114, 128, 0.08);
+}
+.pack-tag--doodle {
   color: #1a1a1a;
+  background: #fff8b8;
+  border-style: dashed;
+  font-family: 'Comic Sans MS', 'Marker Felt', sans-serif;
+}
+.pack-tag--ios {
+  color: #007aff;
+  background: rgba(0, 122, 255, 0.08);
+}
+.pack-tag--mp {
+  color: #ff5000;
+  background: rgba(255, 80, 0, 0.08);
+}
+
+/* Card 3 — code preview */
+.sn-home-card__code {
+  background: var(--sn-web-color-background-code, rgba(0, 0, 0, 0.04));
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.7;
+  border: 1px solid var(--sn-web-color-border-default);
+}
+.sn-home-card__line {
+  display: block;
+  color: var(--sn-web-color-text-primary);
+  word-break: break-all;
+}
+.sn-home-card__prompt {
+  color: var(--sn-web-color-success, #07c160);
+  margin-right: 6px;
+  user-select: none;
+}
+.sn-home-card__line--out {
+  color: var(--sn-web-color-text-tertiary);
+}
+
+/* Card 4 — end rows */
+.sn-home-card__ends {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.end-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.03));
+}
+.end-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: white;
+}
+.end-tag--web { background: #1677ff; }
+.end-tag--mp { background: #07c160; }
+.end-tag--react { background: #61dafb; color: #1a1a1a; }
+.end-cmd {
+  font-family: 'JetBrains Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--sn-web-color-text-secondary);
+}
+.end-cmd--plan {
+  color: var(--sn-web-color-text-tertiary);
+}
+
+/* ─────────── Doodle skin ─────────── */
+.snui-skin-doodle .sn-home__title {
+  font-family: 'Comic Sans MS', 'Marker Felt', sans-serif;
+  border-bottom: 2.5px solid #1a1a1a;
+  display: inline-block;
+  padding: 0 16px 8px;
+}
+.snui-skin-doodle .sn-home__pill {
+  border: 2px dashed #1a1a1a;
+  border-radius: 999px;
 }
 .snui-skin-doodle .sn-home-card__title {
   font-weight: 700;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #1a1a1a;
+}
+.snui-skin-doodle .end-tag {
+  border: 1.5px solid #1a1a1a;
+}
+.snui-skin-doodle .pack-tag--default {
+  color: #1a1a1a;
+  background: #fff;
 }
 </style>
