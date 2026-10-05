@@ -331,16 +331,33 @@ function onClick(event: MouseEvent): void {
   color: var(--sn-web-color-text-primary);
   border-color: var(--sn-web-color-border-default);
 }
+/* When the `color` prop is set, override default-type chrome to the
+ * chosen color: bg → soft tint, border + text → saturated tone. */
+.sn-button--default[style*="--sn-button-color"] {
+  background-color: color-mix(in srgb, var(--sn-button-color) 12%, var(--sn-web-color-background-surface));
+  border-color: var(--sn-button-color);
+  color: var(--sn-button-color);
+}
 .sn-button--default:hover:not(.sn-button--disabled):not(.sn-button--loading) {
   border-color: var(--sn-web-color-action-primary);
   color: var(--sn-web-color-action-primary);
 }
+.sn-button--default[style*="--sn-button-color"]:hover:not(.sn-button--disabled):not(.sn-button--loading) {
+  border-color: var(--sn-button-color);
+  color: var(--sn-button-color);
+  background-color: color-mix(in srgb, var(--sn-button-color) 22%, var(--sn-web-color-background-surface));
+}
 
-/* Tertiary variant — naive-ui n-button tertiary. */
+/* Tertiary variant — naive-ui n-button tertiary. Soft bg tint +
+ * saturated text/border. When `color` prop is set, derives a tint by
+ * mixing 14% of the chosen color onto the surface. */
 .sn-button--tertiary {
-  background-color: var(--sn-button-color, var(--sn-web-color-action-primary-soft, rgba(22, 119, 255, 0.16)));
+  background-color: color-mix(in srgb, var(--sn-button-color, var(--sn-web-color-action-primary)) 14%, transparent);
   color: var(--sn-button-color, var(--sn-web-color-action-primary));
   border-color: transparent;
+}
+.sn-button--tertiary:hover:not(.sn-button--disabled):not(.sn-button--loading) {
+  background-color: color-mix(in srgb, var(--sn-button-color, var(--sn-web-color-action-primary)) 22%, transparent);
 }
 
 /* Text variant — plain text, transparent. */
@@ -370,25 +387,54 @@ function onClick(event: MouseEvent): void {
   color: var(--sn-web-color-feedback-danger);
   border-color: var(--sn-web-color-feedback-danger);
 }
+/* Ghost + color prop: pick up --sn-button-color for both border + text. */
+.sn-button--ghost[style*="--sn-button-color"] {
+  color: var(--sn-button-color);
+  border-color: var(--sn-button-color);
+}
+.sn-button--ghost[style*="--sn-button-color"]:hover:not(.sn-button--disabled):not(.sn-button--loading) {
+  background-color: color-mix(in srgb, var(--sn-button-color) 12%, transparent);
+}
 
-/* Circle — equal padding, 1:1 aspect ratio. */
+/* Circle — equal padding, 1:1 aspect ratio. Display: grid +
+ * place-items: center is more robust than inline-flex for icon-only
+ * circle centering (single child, both axes simultaneously). */
 .sn-button--circle {
   border-radius: 50%;
   padding: 0;
   width: var(--sn-web-button-height-medium, 32px);
-  aspect-ratio: 1 / 1;
-  /* Explicit re-assertion: the flex container must keep both axes
-   * centered even when the only child is the icon span (which, in
-   * absence of a default slot, is now the sole flex item). */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  height: var(--sn-web-button-height-medium, 32px);
+  min-width: var(--sn-web-button-height-medium, 32px);
+  min-height: var(--sn-web-button-height-medium, 32px);
+  display: inline-grid;
+  place-items: center;
   gap: 0;
+  line-height: 0;
 }
-.sn-button--circle.sn-button--tiny { width: var(--sn-web-button-height-tiny, 24px); }
-.sn-button--circle.sn-button--small { width: var(--sn-web-button-height-small, 28px); }
-.sn-button--circle.sn-button--large { width: var(--sn-web-button-height-large, 40px); }
-.sn-button--circle.sn-button--huge { width: var(--sn-web-button-height-huge, 48px); }
+.sn-button--circle.sn-button--tiny {
+  width: var(--sn-web-button-height-tiny, 24px);
+  height: var(--sn-web-button-height-tiny, 24px);
+  min-width: var(--sn-web-button-height-tiny, 24px);
+  min-height: var(--sn-web-button-height-tiny, 24px);
+}
+.sn-button--circle.sn-button--small {
+  width: var(--sn-web-button-height-small, 28px);
+  height: var(--sn-web-button-height-small, 28px);
+  min-width: var(--sn-web-button-height-small, 28px);
+  min-height: var(--sn-web-button-height-small, 28px);
+}
+.sn-button--circle.sn-button--large {
+  width: var(--sn-web-button-height-large, 40px);
+  height: var(--sn-web-button-height-large, 40px);
+  min-width: var(--sn-web-button-height-large, 40px);
+  min-height: var(--sn-web-button-height-large, 40px);
+}
+.sn-button--circle.sn-button--huge {
+  width: var(--sn-web-button-height-huge, 48px);
+  height: var(--sn-web-button-height-huge, 48px);
+  min-width: var(--sn-web-button-height-huge, 48px);
+  min-height: var(--sn-web-button-height-huge, 48px);
+}
 
 /* Defensive: the icon wrapper is a flex item inside `.sn-button`; lock
  * its own axis centering so lucide's inline SVG (rendered with

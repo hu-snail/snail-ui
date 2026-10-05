@@ -195,6 +195,28 @@ describe('SnButton', () => {
       expect(wrapper.find('.sn-button__icon').classes()).toContain('sn-button__icon')
     })
 
+    it('circle button has the .sn-button--circle modifier class', () => {
+      // happy-dom doesn't compute `display: inline-grid` from <style scoped>;
+      // verify via the class hook + readable class list instead.
+      const wrapper = mount(SnButton, {
+        props: { circle: true, icon: TestIcon },
+      })
+      expect(wrapper.classes()).toContain('sn-button--circle')
+    })
+
+    it('injects --sn-button-color CSS var when color prop is set', () => {
+      const wrapper = mount(SnButton, {
+        props: { color: '#abcdef' },
+        slots: { default: 'X' },
+      })
+      expect((wrapper.element as HTMLElement).style.getPropertyValue('--sn-button-color')).toBe('#abcdef')
+    })
+
+    it('does not inject --sn-button-color when color prop is omitted', () => {
+      const wrapper = mount(SnButton, { slots: { default: 'X' } })
+      expect((wrapper.element as HTMLElement).style.getPropertyValue('--sn-button-color')).toBe('')
+    })
+
     it('applies icon-right class when iconPlacement is right', () => {
       const wrapper = mount(SnButton, {
         props: { icon: TestIcon, iconPlacement: 'right' },
