@@ -13,7 +13,7 @@
  */
 
 import { computed } from 'vue'
-import { useRoute } from 'vitepress'
+import { useData, useRoute } from 'vitepress'
 import { SnButton, SnConfigProvider, SnMenu } from '@snui/vue-web'
 import type { SnMenuOption } from '@snui/vue-web'
 
@@ -30,6 +30,7 @@ const props = withDefaults(
 )
 
 const route = useRoute()
+const { isDark } = useData()
 
 /** Map nav items → SnMenu options. Active state is derived from useRoute(). */
 const menuOptions = computed<SnMenuOption[]>(() =>
@@ -52,13 +53,11 @@ const activeKey = computed<string | null>(() => {
   return best
 })
 
-/** Toggle dark mode by inverting vitepress's `appearance` localStorage. */
+/** Toggle dark mode by inverting the reactive `isDark` ref from vitepress.
+ * Vitepress handles persistence (localStorage) + `<html class="dark">` for us,
+ * so we just flip the boolean. */
 function toggleTheme(): void {
-  if (typeof localStorage === 'undefined') return
-  const cur = localStorage.getItem('vitepress-theme-appearance') || 'auto'
-  const next = cur === 'dark' ? 'light' : 'dark'
-  localStorage.setItem('vitepress-theme-appearance', next)
-  document.documentElement.classList.toggle('dark', next === 'dark')
+  isDark.value = !isDark.value
 }
 
 function openSearch(): void {
@@ -101,6 +100,7 @@ function openSearch(): void {
   display: flex;
   align-items: center;
   gap: 16px;
+  width: 100%;
   padding: 12px 24px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-primary);

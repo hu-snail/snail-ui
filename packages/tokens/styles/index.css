@@ -6,8 +6,9 @@
  * `snCssVars({ theme, style, density })` from `@snui/tokens`.
  *
  * This static file emits the default theme only (Light / Modern / Comfortable).
- * For dark theme, add `data-theme="dark"` to `<html>` — the cascade below
- * already includes the dark override.
+ * For dark theme, add either `.dark` class OR `data-theme="dark"` to `<html>`
+ * — the cascade below includes both, so v-press-style `.dark` and custom
+ * `data-theme` stylesheets both flip the same set of variables.
  */
 
 :root {
@@ -135,7 +136,8 @@
   --sn-icon-stroke-width: var(--aui-icon-stroke-width);
 }
 
-[data-theme="dark"] {
+[data-theme="dark"],
+.dark {
   --aui-color-text-primary: #fafafa;
   --aui-color-text-secondary: #a1a1aa;
   --aui-color-text-disabled: #52525b;
