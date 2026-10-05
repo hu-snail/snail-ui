@@ -472,4 +472,72 @@ function onClick(event: MouseEvent): void {
 @keyframes sn-button-spin {
   to { transform: rotate(360deg); }
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Doodle skin — activated when an ancestor has `.snui-skin-doodle`
+   (toggled on document.body by DemoLabFab when doodlePack is selected,
+   or by ConfigProvider / consumer code).
+
+   Token layer alone (doodlePack's --sn-button-radius, --sn-button-shadow,
+   etc.) provides wavy corners and offset shadow via var() reads.
+   This block adds the things that aren't expressible as tokens:
+     - 2.5px solid ink border (was 1px transparent / 1px colored)
+     - Pressed-paper hover lift (1px translate + shadow grows)
+     - Slight text-shadow for marker bleed (subtle, only on filled)
+     - circle variant stays ink-bordered but drops the radius override
+       so the token wavy still applies (circle clamps to 50% anyway)
+   ────────────────────────────────────────────────────────────────────── */
+.snui-skin-doodle .sn-button {
+  border-width: 2.5px;
+  border-style: solid;
+  border-color: #1a1a1a;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.snui-skin-doodle .sn-button:hover:not(.sn-button--disabled):not(.sn-button--loading) {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--sn-web-button-shadow);
+}
+.snui-skin-doodle .sn-button:active:not(.sn-button--disabled):not(.sn-button--loading) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #1a1a1a;
+}
+
+/* Filled variants keep ink border + token shadow (pack supplies it). */
+.snui-skin-doodle .sn-button--primary,
+.snui-skin-doodle .sn-button--success,
+.snui-skin-doodle .sn-button--warning,
+.snui-skin-doodle .sn-button--error,
+.snui-skin-doodle .sn-button--info {
+  border-color: #1a1a1a;
+}
+
+/* Ghost + dashed: ink border is already supplied by the type rule; keep
+ * transparent fill on ghost, dashed pattern on dashed. The token
+ * border-radius (wavy) carries over. */
+.snui-skin-doodle .sn-button--ghost {
+  background-color: transparent;
+}
+.snui-skin-doodle .sn-button--dashed {
+  border-style: dashed;
+}
+
+/* Text + tertiary + quaternary: no visible border, but the press lift
+ * still signals interactivity. */
+.snui-skin-doodle .sn-button--text,
+.snui-skin-doodle .sn-button--tertiary,
+.snui-skin-doodle .sn-button--quaternary {
+  border-color: transparent;
+  background-color: transparent;
+}
+.snui-skin-doodle .sn-button--secondary {
+  background-color: var(--sn-web-color-background-subtle);
+  border-color: #1a1a1a;
+}
+
+/* Round + circle: wavy radius collapses to ellipse on circle (50% clamp
+ * in .sn-button--circle takes precedence); round keeps wavy. */
+.snui-skin-doodle .sn-button--round {
+  border-radius: 999px;
+}
 </style>

@@ -420,4 +420,16 @@ function deepClone<T>(value: T): T {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* Doodle skin. */
+.snui-skin-doodle .sn-form-item__label {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.snui-skin-doodle .sn-form-item__message {
+  font-weight: 600;
+  padding: 4rpx 12rpx;
+  border: 3rpx solid currentColor;
+  border-radius: 12rpx 4rpx / 4rpx 12rpx;
+}
 </style>

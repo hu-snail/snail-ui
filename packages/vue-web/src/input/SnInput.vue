@@ -699,4 +699,26 @@ textarea.sn-input__native {
   align-self: flex-end;
   margin-top: 2px;
 }
+
+/* Doodle skin: ink border + sticker shadow + pressed-paper focus ring. */
+.snui-skin-doodle .sn-input {
+  border-width: 2.5px;
+  border-style: solid;
+  border-color: #1a1a1a;
+  background-color: var(--sn-web-color-background-elevated, #fff);
+  font-weight: 600;
+}
+.snui-skin-doodle .sn-input:hover:not(.sn-input--disabled):not(.sn-input--readonly) {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--sn-web-input-shadow, 2px 2px 0 #1a1a1a);
+}
+.snui-skin-doodle .sn-input:focus-within {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--sn-web-input-shadow, 2px 2px 0 #1a1a1a);
+}
+.snui-skin-doodle .sn-input__password-toggle-btn,
+.snui-skin-doodle .sn-input__clear-btn {
+  border: 2px solid #1a1a1a;
+  box-shadow: 1px 1px 0 #1a1a1a;
+}
 </style>

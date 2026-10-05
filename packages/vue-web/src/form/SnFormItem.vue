@@ -466,4 +466,16 @@ function deepClone<T>(value: T): T {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+/* Doodle skin: bolder label + lift feedback on hover. */
+.snui-skin-doodle .sn-form-item__label {
+  font-weight: 700;
+  color: #1a1a1a;
+}
+.snui-skin-doodle .sn-form-item__message {
+  font-weight: 600;
+  padding: 2px 6px;
+  border: 1.5px solid currentColor;
+  border-radius: 6px 2px / 2px 6px;
+}
 </style>

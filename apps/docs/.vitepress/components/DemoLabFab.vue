@@ -58,6 +58,9 @@ function applyPack(name: string): void {
     document.head.appendChild(styleEl)
   }
   styleEl.textContent = css
+  // Skin class: component packages ship `.snui-skin-{name}` overrides
+  // (see @snui/vue-web/src/button/SnButton.vue Doodle skin block, etc.).
+  // Toggling here is what makes components visually re-theme live.
   document.body.classList.forEach((c) => {
     if (c.startsWith('snui-skin-')) document.body.classList.remove(c)
   })

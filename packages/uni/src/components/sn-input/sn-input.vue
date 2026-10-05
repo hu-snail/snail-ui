@@ -714,4 +714,26 @@ textarea.sn-input__native {
   align-self: flex-end;
   margin-top: 4rpx;
 }
+
+/* Doodle skin. */
+.snui-skin-doodle .sn-input {
+  border-width: 5rpx;
+  border-style: solid;
+  border-color: #1a1a1a;
+  background-color: var(--sn-mp-color-background-elevated, #fff);
+  font-weight: 600;
+}
+.snui-skin-doodle .sn-input:hover:not(.sn-input--disabled):not(.sn-input--readonly) {
+  transform: translate(-2rpx, -2rpx);
+  box-shadow: 4rpx 4rpx 0 #1a1a1a;
+}
+.snui-skin-doodle .sn-input:focus-within {
+  transform: translate(-2rpx, -2rpx);
+  box-shadow: 4rpx 4rpx 0 #1a1a1a;
+}
+.snui-skin-doodle .sn-input__password-toggle-btn,
+.snui-skin-doodle .sn-input__clear-btn {
+  border: 4rpx solid #1a1a1a;
+  box-shadow: 2rpx 2rpx 0 #1a1a1a;
+}
 </style>

@@ -370,4 +370,11 @@ function deepClone<T>(value: T): T {
 .sn-form--size-small { font-size: 12px; }
 .sn-form--size-medium { font-size: 14px; }
 .sn-form--size-large { font-size: 15px; }
+
+/* Doodle skin: dashed ink separators between items. */
+.snui-skin-doodle.sn-form--border :deep(.sn-form-item) {
+  border-bottom-style: dashed;
+  border-bottom-color: #1a1a1a;
+  border-bottom-width: 2px;
+}
 </style>

@@ -36,6 +36,10 @@
 
 <Demo name="button-web-tag" description="tag='a' 渲染为 link；tag='div' 渲染为容器；默认 tag='button'。" />
 
+## 涂鸦风格（Doodle Style Pack）
+
+<Demo name="button-web-doodle" description="切换到 Doodle 风格包后，按钮 / 分割线自动应用粗墨边 + 硬阴影 + 波浪圆角。本 demo 在内部独立包一层 .snui-skin-doodle 容器，即使全局未切换也能看到涂鸦效果。" />
+
 ## 图标位置 + 显示开关（`iconPlacement` + `showIcon`）
 
 <Demo name="button-web-icon-placement" description="iconPlacement 'right' 把图标放右边；showIcon false 完全隐藏图标（loading 仍可显示）。" />

@@ -123,4 +123,24 @@ void useSlots
   font-size: 14px;
   background: var(--sn-web-color-background-surface);
 }
+
+/* Doodle skin: thick ink dashed line + sticker-bordered text label. */
+.snui-skin-doodle .sn-divider--horizontal {
+  border-top-width: 2.5px;
+  border-top-color: #1a1a1a;
+  border-top-style: dashed;
+}
+.snui-skin-doodle .sn-divider--vertical {
+  border-left-width: 2.5px;
+  border-left-color: #1a1a1a;
+  border-left-style: dashed;
+}
+.snui-skin-doodle .sn-divider__text {
+  padding: 2px 10px;
+  border: 2px solid #1a1a1a;
+  border-radius: 10px 2px / 2px 10px;
+  font-weight: 700;
+  background: var(--sn-web-color-background-surface);
+  box-shadow: 2px 2px 0 #1a1a1a;
+}
 </style>

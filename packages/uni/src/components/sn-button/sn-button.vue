@@ -367,4 +367,57 @@ function onTap(event: Event): void {
 @keyframes sn-button-spin {
   to { transform: rotate(360deg); }
 }
+
+/* Doodle skin — see packages/vue-web/src/button/SnButton.vue for full
+ * rationale. uni side mirrors the same .snui-skin-doodle CSS but uses
+ * rpx units (uni-app cross-end) for border thickness so it scales
+ * correctly on small devices.
+ *
+ * Note: rpx units in this CSS get converted to px by the docs site's
+ * vite rpx-transform plugin (see apps/docs/.vitepress/utils/rpx-transform.ts).
+ * In a real uni-app runtime these stay as rpx. */
+.snui-skin-doodle .sn-button {
+  border-width: 5rpx;
+  border-style: solid;
+  border-color: #1a1a1a;
+  font-weight: 700;
+  letter-spacing: 0.4rpx;
+}
+.snui-skin-doodle .sn-button:hover:not(.sn-button--disabled):not(.sn-button--loading) {
+  transform: translate(-2rpx, -2rpx);
+  box-shadow: var(--sn-mp-button-shadow, 6rpx 6rpx 0 #1a1a1a);
+}
+.snui-skin-doodle .sn-button:active:not(.sn-button--disabled):not(.sn-button--loading) {
+  transform: translate(4rpx, 4rpx);
+  box-shadow: 2rpx 2rpx 0 #1a1a1a;
+}
+.snui-skin-doodle .sn-button--primary,
+.snui-skin-doodle .sn-button--success,
+.snui-skin-doodle .sn-button--warning,
+.snui-skin-doodle .sn-button--danger,
+.snui-skin-doodle .sn-button--info {
+  border-color: #1a1a1a;
+}
+.snui-skin-doodle .sn-button--ghost {
+  background-color: transparent;
+}
+.snui-skin-doodle .sn-button--variant-dashed {
+  border-style: dashed;
+}
+.snui-skin-doodle .sn-button--variant-text,
+.snui-skin-doodle .sn-button--variant-plain,
+.snui-skin-doodle .sn-button--variant-subtle {
+  background-color: transparent;
+  border-color: transparent;
+}
+.snui-skin-doodle .sn-button--variant-soft {
+  border-color: transparent;
+}
+.snui-skin-doodle .sn-button--cell-fill {
+  background-color: var(--sn-mp-color-background-subtle);
+  border-color: #1a1a1a;
+}
+.snui-skin-doodle .sn-button--round {
+  border-radius: 999rpx;
+}
 </style>

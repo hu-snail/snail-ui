@@ -282,4 +282,11 @@ function deepClone<T>(value: T): T {
 .sn-form--size-small { font-size: 24rpx; }
 .sn-form--size-medium { font-size: 28rpx; }
 .sn-form--size-large { font-size: 32rpx; }
+
+/* Doodle skin. */
+.snui-skin-doodle.sn-form--border :deep(.sn-form-item) {
+  border-bottom-style: dashed;
+  border-bottom-color: #1a1a1a;
+  border-bottom-width: 4rpx;
+}
 </style>

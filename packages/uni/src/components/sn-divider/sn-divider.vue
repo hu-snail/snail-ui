@@ -121,4 +121,24 @@ defineSlots<{
   font-size: 28rpx;
   background: var(--sn-mp-color-background-surface);
 }
+
+/* Doodle skin. */
+.snui-skin-doodle .sn-divider--horizontal {
+  border-top-width: 5rpx;
+  border-top-color: #1a1a1a;
+  border-top-style: dashed;
+}
+.snui-skin-doodle .sn-divider--vertical {
+  border-left-width: 5rpx;
+  border-left-color: #1a1a1a;
+  border-left-style: dashed;
+}
+.snui-skin-doodle .sn-divider__text {
+  padding: 4rpx 20rpx;
+  border: 4rpx solid #1a1a1a;
+  border-radius: 20rpx 4rpx / 4rpx 20rpx;
+  font-weight: 700;
+  background: var(--sn-mp-color-background-surface);
+  box-shadow: 4rpx 4rpx 0 #1a1a1a;
+}
 </style>
