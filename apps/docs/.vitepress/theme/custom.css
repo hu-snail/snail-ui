@@ -276,3 +276,12 @@ table.props code {
   justify-content: flex-start !important;
   padding: 0 !important;
 }
+
+/* Vitepress's .container caps at calc(--vp-layout-max-width - 64px) = 1376px
+ * and centers itself. On wide viewports (>1440px) that leaves ~140 px of bare
+ * page color on left + right and the Sn* chrome background stops at 1376 px.
+ * Override to 100% so SnDocsNav (and any future full-width chrome) renders
+ * edge-to-edge regardless of viewport. */
+.VPNavBar .wrapper .container {
+  max-width: 100% !important;
+}
