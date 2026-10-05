@@ -101,10 +101,15 @@ function openSearch(): void {
   align-items: center;
   gap: 16px;
   width: 100%;
-  padding: 12px 0;
+  padding: 12px 32px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-primary);
   border-bottom: 1px solid var(--sn-web-color-border-default);
+}
+@media (max-width: 767px) {
+  .sn-docs-nav {
+    padding: 10px 16px;
+  }
 }
 .sn-docs-nav__brand {
   text-decoration: none;

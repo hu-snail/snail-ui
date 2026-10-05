@@ -381,4 +381,102 @@ function openGithub(): void {
   color: #1a1a1a;
   background: #fff;
 }
+
+/* ─────────── Mobile adaptations ─────────── */
+@media (max-width: 960px) {
+  /* Page shell */
+  .sn-home {
+    padding: 16px 20px 32px;
+  }
+  .sn-home__hero {
+    padding: 32px 0 40px;
+  }
+  /* Pill — keep on one line, trim text */
+  .sn-home__pill {
+    font-size: 12px;
+    padding: 5px 12px;
+    margin-bottom: 20px;
+    gap: 6px;
+  }
+  .sn-home__pill-dot {
+    width: 6px;
+    height: 6px;
+  }
+  /* Title — bigger drop on tablet, still 2-line wrap */
+  .sn-home__title {
+    font-size: 44px;
+    letter-spacing: -0.025em;
+    margin: 0 0 18px;
+  }
+  /* Subtitle — tighter line-height, less bottom margin */
+  .sn-home__subtitle {
+    font-size: 16px;
+    margin: 0 auto 28px;
+  }
+  /* Actions — keep them on the row, smaller */
+  .sn-home__actions {
+    gap: 10px;
+  }
+  /* Preview grid: 4 → 2 columns on tablet.
+     Use :deep() to pierce SnGrid's scoped inline grid-template-columns. */
+  .sn-home__previews :deep(.sn-grid) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    row-gap: 14px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Page shell — even tighter */
+  .sn-home {
+    padding: 12px 16px 24px;
+  }
+  .sn-home__hero {
+    padding: 24px 0 28px;
+  }
+  /* Title — phone-sized */
+  .sn-home__title {
+    font-size: 32px;
+    letter-spacing: -0.02em;
+  }
+  /* Subtitle */
+  .sn-home__subtitle {
+    font-size: 14px;
+    line-height: 1.55;
+    margin: 0 auto 24px;
+  }
+  /* Pill — drop arrow on phone to save space */
+  .sn-home__pill-arrow {
+    display: none;
+  }
+  /* CTAs — full width on phone, stacked */
+  .sn-home__actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    gap: 8px;
+  }
+  .sn-home__actions :deep(.sn-button) {
+    width: 100%;
+  }
+  /* Preview grid: 2 → 1 column on phone */
+  .sn-home__previews :deep(.sn-grid) {
+    grid-template-columns: 1fr !important;
+    row-gap: 12px !important;
+  }
+  /* Card internals — tighter padding via SmCard size='large' is too generous,
+     shrink the content padding by overriding the inner sn-card__content. */
+  .sn-home__previews :deep(.sn-card__content) {
+    padding: 16px !important;
+  }
+  /* Card 1 buttons — collapse 2x3 to 3x2 to use less card height */
+  .sn-home-card__buttons {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* Card 4 end-row — wrap tag + cmd line by line on phone */
+  .end-row {
+    flex-wrap: wrap;
+  }
+}
 </style>
