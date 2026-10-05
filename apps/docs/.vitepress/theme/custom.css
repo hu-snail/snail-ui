@@ -239,19 +239,31 @@ table.props code {
 }
 /* ----------------------------------------------------------------------
  * Phase-1 chrome replacement (AUI-DOCS-019):
- * SnDocsNav + SnDocsFooter now own the top-bar + footer. Hide vitepress's
- * default VPNavBarMenu + VPFooter so we don't double-render nav links.
- * SnDocsNav lives inside the `nav-bar-content-before` slot (Layout.vue) so
- * it's already inside the VPNavBar shell — we just suppress the duplicate
- * menu items + footer.
+ * SnDocsNav + SnDocsFooter now own the top-bar + footer. Hide ALL of
+ * vitepress's default chrome so the real @snui/vue-web components are
+ * the sole render path. SnDocsNav lives inside the `nav-bar-content-before`
+ * slot (Layout.vue) so it inherits the VPNavBar shell height + sticky
+ * behavior — we just suppress the duplicate title / menu / search /
+ * appearance-toggle / social links / footer.
+ *
+ *   VPNavBarTitle         default brand text on the left (overrides SnDocsNav brand)
+ *   VPNavBarMenu          default menu links (already replaced by SnMenu)
+ *   VPNavBarSearch        default ⌘K search button (already replaced by SnButton)
+ *   VPNavBarAppearance    default light/dark toggle (already replaced by SnButton)
+ *   VPNavBarExtra / VPFooter / VPSocialLinks  default extras (already replaced)
+ *
+ * VPNavBarHamburger is intentionally KEPT for mobile menu trigger.
  * ---------------------------------------------------------------------- */
 .VPNavBarMenu,
 .VPNavBarMenuLink,
+.VPNavBarTitle,
+.VPNavBarTitleLink,
+.VPNavBarSearch,
+.VPNavBarAppearance,
+.VPNavBarExtra,
 .VPSocialLinks,
-.VPNavBarExtra {
-  display: none !important;
-}
-
-.VPFooter {
+.VPFooter,
+.VPNavBar .divider,
+.VPNavBar .divider-line {
   display: none !important;
 }

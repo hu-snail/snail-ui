@@ -14,7 +14,7 @@
 
 import { computed } from 'vue'
 import { useRoute } from 'vitepress'
-import { SnButton, SnConfigProvider, SnDivider, SnMenu } from '@snui/vue-web'
+import { SnButton, SnConfigProvider, SnMenu } from '@snui/vue-web'
 import type { SnMenuOption } from '@snui/vue-web'
 
 interface NavItem { text: string; link: string }
@@ -93,7 +93,6 @@ function openSearch(): void {
         </SnButton>
       </div>
     </div>
-    <SnDivider />
   </SnConfigProvider>
 </template>
 
@@ -105,6 +104,7 @@ function openSearch(): void {
   padding: 12px 24px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-primary);
+  border-bottom: 1px solid var(--sn-web-color-border-default);
 }
 .sn-docs-nav__brand {
   text-decoration: none;
