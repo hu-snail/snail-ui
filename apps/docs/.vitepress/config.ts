@@ -221,6 +221,90 @@ export default defineConfig({
   description: 'Vue 3 + uni-app 多端 AI-Native UI 框架生态。Component First / Token First / Style Pack First / AI Native。',
   ignoreDeadLinks: true,
 
+  themeConfig: {
+    // Per VitePress 1.6+: local search provider is read from
+    // `site.themeConfig.search`, not from root-level `search`. When defined
+    // here, the build-time constant `__VP_LOCAL_SEARCH__` becomes true and
+    // VPNavBarSearch renders the LocalSearchBox + search-button.
+    // Both locales (root + en) inherit this block (resolveSiteDataByRoute
+    // merges root themeConfig into each locale's).
+    //
+    // Translations layout (see VPLocalSearchBox.vue:120):
+    //   options.translations — default UI strings (used as fallback and by
+    //                          the root locale)
+    //   options.locales[<localeKey>].translations — per-locale overrides
+    //
+    // The root locale uses options.translations directly; the en locale
+    // overrides via options.locales.en.translations.
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: {
+            buttonText: '搜索文档',
+            buttonAriaLabel: '搜索文档',
+          },
+          modal: {
+            noResultsText: '没有找到相关结果',
+            resetButtonTitle: '清除查询',
+            backButtonTitle: '返回',
+            footer: {
+              selectText: '选择',
+              navigateText: '导航',
+              closeText: '关闭',
+            },
+          },
+        },
+        locales: {
+          en: {
+            translations: {
+              button: {
+                buttonText: 'Search docs',
+                buttonAriaLabel: 'Search docs',
+              },
+              modal: {
+                noResultsText: 'No results',
+                resetButtonTitle: 'Clear query',
+                backButtonTitle: 'Back',
+                footer: {
+                  selectText: 'select',
+                  navigateText: 'navigate',
+                  closeText: 'close',
+                },
+              },
+            },
+          },
+        },
+        miniSearch: {
+          tokenize: ((text: string): string[] => {
+            const lowered = text.toLowerCase()
+            const tokens: string[] = []
+            for (const word of lowered.split(/[\s\u2000-\u206f\u2e00-\u2e7f\\'!"#$%&()*+,\-./:;<=>?@[\]^`{|}~]+/g)) {
+              if (word) tokens.push(word)
+            }
+            const chars = [...lowered]
+            for (let i = 0; i < chars.length; i++) {
+              const ch = chars[i] ?? ''
+              if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(ch)) {
+                tokens.push(ch)
+                const next = chars[i + 1] ?? ''
+                if (/[\u4e00-\u9fff]/.test(next)) {
+                  tokens.push(ch + next)
+                }
+              }
+            }
+            return tokens
+          }) as MiniSearchOptions['tokenize'],
+          searchOptions: {
+            fuzzy: 0.2,
+            prefix: true,
+            boost: { title: 4, text: 1 },
+          } as MiniSearchOptions['searchOptions'],
+        },
+      },
+    },
+  },
+
   vite: {
     build: { target: 'es2022' },
     plugins: [
@@ -311,81 +395,17 @@ export default defineConfig({
   },
 
   /**
-   * Local search — VitePress 1.6's built-in minisearch. The provider
-   * declaration below is bilingual-aware (translations render in zh
-   * when locale=zh-CN, en otherwise). Single shared index covers both
-   * locales so a search for 'Button' on zh finds the en doc and
-   * vice versa, and '按钮' on en still hits zh content.
+   * (Removed) Root-level `search` block.
    *
-   * The tokenizer (under options.miniSearch.tokenize) is the piece
-   * that makes Chinese searchable: CJK characters become single-char
-   * tokens + sliding bigrams, so substring searches like '分割' hit
-   * any page whose content contains those characters. ASCII words
-   * tokenize on whitespace + punctuation as usual.
+   * In VitePress <1.6 this lived at root level, but the 1.6 local-search
+   * plugin reads `site.themeConfig.search.provider` (see
+   * `node_modules/vitepress/dist/node/chunk-D3CUZ4fa.js:40427` and
+   * `:44943`). With `search` at root, `__VP_LOCAL_SEARCH__` evaluates to
+   * false at build time, the VPNavBarSearch template removes the LocalSearchBox
+   * branch, and the navbar renders only logo + nav + theme-toggle — no search
+   * button at all (verified against the live dev server).
+   *
+   * The same provider config has been added to `themeConfig.search` above
+   * so both root and en locales inherit a working search.
    */
-  search: {
-    provider: 'local',
-    options: {
-      translations: {
-        root: {
-          button: {
-            buttonText: '搜索文档',
-            buttonAriaLabel: '搜索文档',
-          },
-          modal: {
-            noResultsText: '没有找到相关结果',
-            resetButtonTitle: '清除查询',
-            backButtonTitle: '返回',
-            footer: {
-              selectText: '选择',
-              navigateText: '导航',
-              closeText: '关闭',
-            },
-          },
-        },
-        en: {
-          button: {
-            buttonText: 'Search docs',
-            buttonAriaLabel: 'Search docs',
-          },
-          modal: {
-            noResultsText: 'No results',
-            resetButtonTitle: 'Clear query',
-            backButtonTitle: 'Back',
-            footer: {
-              selectText: 'select',
-              navigateText: 'navigate',
-              closeText: 'close',
-            },
-          },
-        },
-      },
-      miniSearch: {
-        tokenize: ((text: string): string[] => {
-          const lowered = text.toLowerCase()
-          const tokens: string[] = []
-          for (const word of lowered.split(/[\s\u2000-\u206f\u2e00-\u2e7f\\'!"#$%&()*+,\-./:;<=>?@[\]^`{|}~]+/g)) {
-            if (word) tokens.push(word)
-          }
-          const chars = [...lowered]
-          for (let i = 0; i < chars.length; i++) {
-            const ch = chars[i] ?? ''
-            if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(ch)) {
-              tokens.push(ch)
-              const next = chars[i + 1] ?? ''
-              if (/[\u4e00-\u9fff]/.test(next)) {
-                tokens.push(ch + next)
-              }
-            }
-          }
-          return tokens
-        }) as MiniSearchOptions['tokenize'],
-        searchOptions: {
-          fuzzy: 0.2,
-          prefix: true,
-          boost: { title: 4, text: 1 },
-        } as MiniSearchOptions['searchOptions'],
-      },
-    },
-  },
 })
