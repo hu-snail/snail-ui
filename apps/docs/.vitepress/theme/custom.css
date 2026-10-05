@@ -214,12 +214,10 @@ table.props code {
 .snui-button--large { height: 40px; padding: 0 20px; font-size: 16px; }
 
 /* ──────────────────────────────────────────────────────────────────────
-   Navbar search button — make it visibly a search affordance on every
-   viewport (VitePress's default collapses to a bare icon at <768px and
-   even at desktop width the placeholder is small enough to miss). Click
-   handler is intercepted by CommandPalette (capture-phase) so the user
-   gets our component-aware palette instead of the built-in local-search
-   modal.
+   Navbar DocSearch-Button — widen + border so the VitePress-builtin
+   search affordance (button + `/` + Cmd/Ctrl+K hotkey) is unmistakable
+   on every viewport. Default collapse to a bare 48x55 icon is replaced
+   by a 200px-wide pill that matches the rest of the navbar chrome.
    ────────────────────────────────────────────────────────────────────── */
 .DocSearch-Button {
   width: auto !important;
@@ -238,13 +236,4 @@ table.props code {
 .DocSearch-Button:hover {
   border-color: var(--vp-c-brand-1) !important;
   color: var(--vp-c-text-1) !important;
-}
-.DocSearch-Button-Placeholder,
-.DocSearch-Button-Keys,
-.DocSearch-Search-Icon {
-  display: inline-flex !important;
-  visibility: visible !important;
-}
-.DocSearch-Button-Keys {
-  margin-left: auto !important;
 }

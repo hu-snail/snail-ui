@@ -311,21 +311,55 @@ export default defineConfig({
   },
 
   /**
-   * Local search (the built-in VitePress minisearch provider). Single
-   * config across both locales — the index is built from every page
-   * regardless of locale, so a search for 'Button' on the zh page still
-   * finds the en doc (and vice versa), and a search for '按钮' hits
-   * every zh page whose content contains those characters.
+   * Local search — VitePress 1.6's built-in minisearch. The provider
+   * declaration below is bilingual-aware (translations render in zh
+   * when locale=zh-CN, en otherwise). Single shared index covers both
+   * locales so a search for 'Button' on zh finds the en doc and
+   * vice versa, and '按钮' on en still hits zh content.
    *
-   * The tokenizer is the only piece that's zh-aware:
-   *   - ASCII: split on whitespace + punctuation (latin languages)
-   *   - CJK: per-character + sliding bigrams (U+4E00-U+9FFF + ext A/B)
-   *     so 2-char substrings of Chinese terms are searchable.
-   * Fuzzy 0.2 + prefix=true give reasonable recall for typos.
+   * The tokenizer (under options.miniSearch.tokenize) is the piece
+   * that makes Chinese searchable: CJK characters become single-char
+   * tokens + sliding bigrams, so substring searches like '分割' hit
+   * any page whose content contains those characters. ASCII words
+   * tokenize on whitespace + punctuation as usual.
    */
   search: {
     provider: 'local',
     options: {
+      translations: {
+        root: {
+          button: {
+            buttonText: '搜索文档',
+            buttonAriaLabel: '搜索文档',
+          },
+          modal: {
+            noResultsText: '没有找到相关结果',
+            resetButtonTitle: '清除查询',
+            backButtonTitle: '返回',
+            footer: {
+              selectText: '选择',
+              navigateText: '导航',
+              closeText: '关闭',
+            },
+          },
+        },
+        en: {
+          button: {
+            buttonText: 'Search docs',
+            buttonAriaLabel: 'Search docs',
+          },
+          modal: {
+            noResultsText: 'No results',
+            resetButtonTitle: 'Clear query',
+            backButtonTitle: 'Back',
+            footer: {
+              selectText: 'select',
+              navigateText: 'navigate',
+              closeText: 'close',
+            },
+          },
+        },
+      },
       miniSearch: {
         tokenize: ((text: string): string[] => {
           const lowered = text.toLowerCase()
