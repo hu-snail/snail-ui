@@ -9,16 +9,23 @@
 export { defaultPack } from './default.js'
 export { iosPack } from './ios.js'
 export { darkPack } from './dark.js'
+export { doodlePack } from './doodle.js'
 export type { StylePackDefinition } from './types.js'
 
 import { defaultPack } from './default.js'
 import { iosPack } from './ios.js'
 import { darkPack } from './dark.js'
+import { doodlePack } from './doodle.js'
 
 import type { StylePackDefinition } from './types.js'
 
 /** All official packs, in display order for the docs site. */
-export const allPacks: ReadonlyArray<StylePackDefinition> = [defaultPack, iosPack, darkPack]
+export const allPacks: ReadonlyArray<StylePackDefinition> = [
+  defaultPack,
+  iosPack,
+  doodlePack,
+  darkPack,
+]
 
 /** Lookup by name. Returns undefined for unknown packs. */
 export function getPack(name: string): StylePackDefinition | undefined {

@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { defaultPack, iosPack, darkPack, allPacks, getPack } from './index.js'
+import { defaultPack, iosPack, darkPack, doodlePack, allPacks, getPack } from './index.js'
 
 describe('@snui/style-packs', () => {
-  it('exposes three official packs', () => {
-    expect(allPacks.length).toBe(3)
+  it('exposes four official packs', () => {
+    expect(allPacks.length).toBe(4)
   })
 
   it('all packs have required fields', () => {
@@ -28,8 +28,14 @@ describe('@snui/style-packs', () => {
     expect(darkPack.theme?.semantic?.background?.surface).toBe('#18181b')
   })
 
+  it('doodlePack has marker-pink primary and sticker shadows', () => {
+    expect(doodlePack.theme?.semantic?.action?.primary).toBe('#FF6B9D')
+    expect(doodlePack.style.component.button?.shadow).toContain('#1a1a1a')
+  })
+
   it('getPack() returns the right pack', () => {
     expect(getPack('ios')?.label).toBe('iOS 风格')
+    expect(getPack('doodle')?.label).toBe('Doodle 涂鸦')
     expect(getPack('nope')).toBeUndefined()
   })
 })
