@@ -17,13 +17,6 @@ const nav = [
   { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
-  {
-    text: 'English',
-    items: [
-      { text: '简体中文', link: '/' },
-      { text: 'English', link: '/en/' },
-    ],
-  },
   { text: 'GitHub', link: 'https://github.com/hu-snail/snail-ui' },
 ]
 
@@ -130,13 +123,6 @@ const enNav = [
   { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
-  {
-    text: '简体中文',
-    items: [
-      { text: '简体中文', link: '/' },
-      { text: 'English', link: '/en/' },
-    ],
-  },
   { text: 'GitHub', link: 'https://github.com/hu-snail/snail-ui' },
 ]
 
@@ -294,7 +280,7 @@ export default defineConfig({
 
   locales: {
     root: {
-      label: '简体中文',
+      label: '中文 / EN',
       lang: 'zh-CN',
       themeConfig: {
         nav,
@@ -308,7 +294,7 @@ export default defineConfig({
       },
     },
     en: {
-      label: 'English',
+      label: '中文 / EN',
       lang: 'en-US',
       themeConfig: {
         nav: enNav,
