@@ -140,6 +140,8 @@ function onInputKeydown(e: KeyboardEvent): void {
 
 onMounted(() => {
   window.addEventListener('keydown', onGlobalKeydown)
+  // Listen for explicit open requests from our own NavSearchTrigger button.
+  window.addEventListener('snui:open-command-palette', openPaletteFromEvent)
   // Intercept VitePress's default navbar search button (`.DocSearch-Button`)
   // so clicking it opens OUR palette instead of the built-in local-search
   // modal. Without this, two search UIs coexist and the navbar button
@@ -149,17 +151,22 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onGlobalKeydown)
+  window.removeEventListener('snui:open-command-palette', openPaletteFromEvent)
   document.removeEventListener('click', onDocClickCapture, { capture: true })
 })
+
+function openPaletteFromEvent(): void {
+  open.value = true
+  query.value = ''
+  selectedIdx.value = 0
+}
 
 function onDocClickCapture(e: MouseEvent): void {
   const target = e.target as HTMLElement | null
   if (target?.closest?.('.DocSearch-Button')) {
     e.stopPropagation()
     e.preventDefault()
-    open.value = true
-    query.value = ''
-    selectedIdx.value = 0
+    openPaletteFromEvent()
   }
 }
 </script>
