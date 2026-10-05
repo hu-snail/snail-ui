@@ -20,27 +20,27 @@
 
 <Demo name="button-web-state" description="disabled 完全禁用；loading 显示 spinner 且不可点击；可手动触发 loading 状态。" />
 
-## Variant：text / ghost / dashed
+## 变体：`text` / `ghost` / `dashed`
 
 <Demo name="button-web-variant" description="text 文字按钮、ghost 透明边框、dashed 虚线边框。" />
 
-## Circle / Strong / Secondary / Tertiary / Quaternary
+## 强调梯度（`circle` / `strong` / `secondary` / `tertiary` / `quaternary`）
 
 <Demo name="button-web-emphasis" description="circle 圆形仅图标；strong 主色阴影；secondary / tertiary / quaternary 文字变体强调梯度。" />
 
-## Custom color
+## 自定义颜色（`color`）
 
 <Demo name="button-web-color" description="color prop 设置自定义 CSS 颜色 → `--sn-button-color`。" />
 
-## Tag-based 渲染（`<a>` / `<div>` / `<span>`）
+## 根标签切换（`tag` — `<a>` / `<div>` / `<span>`）
 
 <Demo name="button-web-tag" description="tag='a' 渲染为 link；tag='div' 渲染为容器；默认 tag='button'。" />
 
-## iconPlacement + showIcon
+## 图标位置 + 显示开关（`iconPlacement` + `showIcon`）
 
 <Demo name="button-web-icon-placement" description="iconPlacement 'right' 把图标放右边；showIcon false 完全隐藏图标（loading 仍可显示）。" />
 
-## attrType + focusable
+## 原生 type + 可聚焦（`attrType` + `focusable`）
 
 <Demo name="button-web-attr-type" description="attrType 提交表单；focusable false 移除 tab 焦点。" />
 

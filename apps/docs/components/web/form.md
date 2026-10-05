@@ -26,15 +26,15 @@
 
 <Demo name="form-disabled" description="SnForm 的 disabled prop 级联到所有 FormItem。" />
 
-## Cell-style（border / ellipsis / clickable / isLink）
+## Cell 列表化（`border` / `ellipsis` / `clickable` / `isLink`）
 
 <Demo name="form-cell" description="Cell 列表化：border 加分割线、ellipsis 长 label 截断、clickable 整行可点 + click 事件、isLink 显示 › 箭头、placeholder 占位、description 副文本。" />
 
-## Form-level size / valueAlign / asteriskPosition / hideAsterisk
+## 表单级默认（`size` / `valueAlign` / `asteriskPosition` / `hideAsterisk`）
 
 <Demo name="form-cell-style" description="Form 级统一：size 缩放、valueAlign right、asteriskPosition right、hideAsterisk 关掉 * 标记。" />
 
-## validateTrigger / resetOnChange / errorType
+## 校验触发 / 重置切换 / 错误展示（`validateTrigger` / `resetOnChange` / `errorType`）
 
 <Demo name="form-validation-flow" description="validateTrigger: 'blur' | 'change'；resetOnChange 提交后自动清错误；errorType: 'message' | 'toast' | 'none'。" />
 

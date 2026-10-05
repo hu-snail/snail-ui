@@ -26,15 +26,15 @@
 
 <Demo name="input-mp-states" description="disabled / readonly / required + aria-*。" />
 
-## Clearable + Counter
+## 清空 + 计数（`clearable` / `showCount`）
 
 <Demo name="input-mp-clearable-count" description="clearable × 按钮；clearTrigger: 'always' | 'focus'；showCount / showWordLimit + maxlength 计数。" />
 
-## Show Password
+## 密码显示切换（`showPassword`）
 
 <Demo name="input-mp-password-toggle" description="type='password' + showPassword 渲染眼睛切换。" />
 
-## Prefix / Suffix Icon
+## 前缀 / 后缀图标（`prefixIcon` / `suffixIcon`）
 
 <Demo name="input-mp-prefix-suffix" description="prefixIcon / suffixIcon 通过 SnIcon 渲染；iconPrefix / iconSuffix / cssIcon 三种 css class 模式。" />
 
@@ -42,11 +42,11 @@
 
 <Demo name="input-mp-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none'（bordered alias）；bg / customBg；radius 三种圆角。" />
 
-## alignRight / compact / inputmode
+## 右对齐 / 紧凑 / 输入模式（`alignRight` / `compact` / `inputmode`）
 
 <Demo name="input-mp-align-compact" description="金额字段右对齐；compact 紧凑模式；inputmode 软键盘提示。" />
 
-## MP-only runtime attrs
+## 小程序运行时专属属性（MP-only）
 
 <Demo name="input-mp-runtime" description="confirm-type / hold-keyboard / adjust-position / always-embed / cursor / selection-start / selection-end / placeholder-style / placeholder-class。" />
 

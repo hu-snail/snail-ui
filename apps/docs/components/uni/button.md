@@ -32,27 +32,27 @@ import { SnButton } from '@snui/uni'
 
 <Demo name="button-mp-state" description="disabled 完全禁用；loading 显示 spinner 且不可点击；可手动触发 loading 状态。" />
 
-## Variant: base / plain / dashed / soft / subtle / text
+## 变体（`variant`：`base` / `plain` / `dashed` / `soft` / `subtle` / `text`）
 
 <Demo name="button-mp-variant" description="wot-ui variant 6 档：base 填充实心、plain 透明描边、dashed 虚线、soft 浅色填充、subtle 极淡灰底、text 纯文字。" />
 
-## Cell: hover / fill / menu
+## Cell 列表化（`cell`：`hover` / `fill` / `menu`）
 
 <Demo name="button-mp-cell" description="Cell 列表化：hover 按下灰底、fill 常驻灰底、menu 透明无圆角。" />
 
-## 自定义背景 / 颜色 / loading 颜色
+## 自定义背景 / 颜色 / loading 颜色（`bgColor` / `color` / `loadingColor` / `loadingSize`）
 
 <Demo name="button-mp-custom" description="bgColor / color 覆盖；loadingColor 改 spinner 颜色；loadingSize 改 rpx 尺寸。" />
 
-## Open-type（MP-only）
+## 开放能力（`open-type`，MP-only）
 
 <Demo name="button-mp-open-type" description="open-type: share / feedback / launchApp / contact / getUserInfo / openSetting / favorite / chooseAvatar。" />
 
-## hover-class / hover-start-time / hover-stay-time
+## 按住反馈（`hover-class` / `hover-start-time` / `hover-stay-time`）
 
 <Demo name="button-mp-hover" description="自定义 press 反馈 class；hover-start-time 按住多久触发；hover-stay-time 松手后多久消失。" />
 
-## formType（MP-only）
+## 表单提交类型（`form-type`，MP-only）
 
 <Demo name="button-mp-form-type" description="form-type='submit' 提交表单；form-type='reset' 重置表单。" />
 

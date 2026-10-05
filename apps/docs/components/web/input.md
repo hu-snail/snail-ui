@@ -26,15 +26,15 @@
 
 <Demo name="input-states" description="disabled 禁用交互，readonly 只读不可改，required 设 aria-required。" />
 
-## Clearable + Counter
+## 清空 + 计数（`clearable` / `showCount`）
 
 <Demo name="input-clearable-count" description="clearable × 按钮；clearTrigger: 'always' | 'focus'；showCount / showWordLimit + maxlength 计数。" />
 
-## Show Password
+## 密码显示切换（`showPassword`）
 
 <Demo name="input-password-toggle" description="type='password' + showPassword 渲染眼睛切换图标。" />
 
-## Prefix / Suffix Icon
+## 前缀 / 后缀图标（`prefixIcon` / `suffixIcon`）
 
 <Demo name="input-prefix-suffix" description="prefixIcon / suffixIcon 通过 SnIcon 渲染；cssIcon 改为 CSS class。" />
 
@@ -42,11 +42,11 @@
 
 <Demo name="input-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none'（bordered alias）；bg / customBg；radius 三种圆角。" />
 
-## alignRight / compact / inputmode
+## 右对齐 / 紧凑 / 输入模式（`alignRight` / `compact` / `inputmode`）
 
 <Demo name="input-align-compact" description="金额字段右对齐；compact 紧凑模式；inputmode 软键盘提示。" />
 
-## customClass / customStyle / customInputClass
+## 自定义类 / 自定义样式（`customClass` / `customStyle` / `customInputClass`）
 
 <Demo name="input-custom" description="三处 class / style 钩子。" />
 
