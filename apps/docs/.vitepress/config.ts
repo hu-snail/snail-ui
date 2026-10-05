@@ -17,7 +17,6 @@ const nav = [
   { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
-  { text: 'GitHub', link: 'https://github.com/hu-snail/snail-ui' },
 ]
 
 const sidebar = {
@@ -123,7 +122,6 @@ const enNav = [
   { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
-  { text: 'GitHub', link: 'https://github.com/hu-snail/snail-ui' },
 ]
 
 const enSidebar = {
@@ -285,7 +283,6 @@ export default defineConfig({
       themeConfig: {
         nav,
         sidebar,
-        socialLinks: [{ icon: 'github', link: 'https://github.com/hu-snail/snail-ui' }],
         footer: {
           message: 'Released under the MIT License.',
           copyright: 'Copyright © 2026 hu-snail',
@@ -299,7 +296,6 @@ export default defineConfig({
       themeConfig: {
         nav: enNav,
         sidebar: enSidebar,
-        socialLinks: [{ icon: 'github', link: 'https://github.com/hu-snail/snail-ui' }],
         footer: {
           message: 'Released under the MIT License.',
           copyright: 'Copyright © 2026 hu-snail',

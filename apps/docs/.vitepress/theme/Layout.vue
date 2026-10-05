@@ -8,6 +8,9 @@
  * Per AUI-DOCS-018, the FAB is the cross-page "Demo Lab" entry — Style
  * switcher + Theme snippet + Demo preview all in one bottom-right popover.
  *
+ * Per AUI-DOCS-019, CommandPalette is mounted globally via Teleport — Cmd/Ctrl+K
+ * opens a fuzzy-search popover for jumping to components & demos.
+ *
  * Wrapped in <ClientOnly> because DemoLabFab uses Teleport → document.body,
  * which only makes sense client-side (SSR would otherwise fail on
  * `document.body.appendChild`).
@@ -17,6 +20,7 @@ import DefaultTheme from 'vitepress/theme'
 import { useRoute } from 'vitepress'
 import { computed } from 'vue'
 import DemoLabFab from '../components/DemoLabFab.vue'
+import CommandPalette from '../components/CommandPalette.vue'
 
 const route = useRoute()
 const showFab = computed(() => route.path.startsWith('/components/'))
@@ -27,6 +31,7 @@ const showFab = computed(() => route.path.startsWith('/components/'))
     <template #doc-after>
       <ClientOnly>
         <DemoLabFab v-if="showFab" />
+        <CommandPalette />
       </ClientOnly>
     </template>
   </DefaultTheme.Layout>
