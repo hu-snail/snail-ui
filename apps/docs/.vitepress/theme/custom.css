@@ -288,17 +288,12 @@ table.props code {
 
 /* Vitepress puts horizontal padding on `.wrapper` (32px on desktop, 24/8 on
  * mobile), which insets the cream-bg SnDocsNav from the viewport edges —
- * Sn* chrome can't reach the true page border. Move the breathing room from
- * .wrapper to .container so the chrome background fills 100% width but the
- * brand / actions inside still get the same inset. */
+ * Sn* chrome can't reach the true page border. Zero out both layers so
+ * SnDocsNav (which itself manages its own top/bottom padding via Sn*-tokens)
+ * truly spans 0 → 100% viewport width. */
 .VPNavBar .wrapper {
   padding: 0 !important;
 }
 .VPNavBar .wrapper .container {
-  padding: 0 32px !important;
-}
-@media (max-width: 767px) {
-  .VPNavBar .wrapper .container {
-    padding: 0 16px !important;
-  }
+  padding: 0 !important;
 }
