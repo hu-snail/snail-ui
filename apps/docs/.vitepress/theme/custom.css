@@ -237,3 +237,21 @@ table.props code {
   border-color: var(--vp-c-brand-1) !important;
   color: var(--vp-c-text-1) !important;
 }
+/* ----------------------------------------------------------------------
+ * Phase-1 chrome replacement (AUI-DOCS-019):
+ * SnDocsNav + SnDocsFooter now own the top-bar + footer. Hide vitepress's
+ * default VPNavBarMenu + VPFooter so we don't double-render nav links.
+ * SnDocsNav lives inside the `nav-bar-content-before` slot (Layout.vue) so
+ * it's already inside the VPNavBar shell — we just suppress the duplicate
+ * menu items + footer.
+ * ---------------------------------------------------------------------- */
+.VPNavBarMenu,
+.VPNavBarMenuLink,
+.VPSocialLinks,
+.VPNavBarExtra {
+  display: none !important;
+}
+
+.VPFooter {
+  display: none !important;
+}

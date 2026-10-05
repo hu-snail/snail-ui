@@ -12,12 +12,19 @@
 
 export { default as SnButton } from './button/SnButton.vue'
 export { default as SnCard } from './card/SnCard.vue'
+export { default as SnCollapse } from './collapse/SnCollapse.vue'
+export { default as SnCollapseItem } from './collapse/SnCollapseItem.vue'
 export { default as SnConfigProvider } from './config-provider/SnConfigProvider.vue'
 export { default as SnDivider } from './divider/SnDivider.vue'
 export { default as SnForm } from './form/SnForm.vue'
 export { default as SnFormItem } from './form/SnFormItem.vue'
+export { default as SnGrid } from './grid/SnGrid.vue'
 export { default as SnIcon } from './icon/SnIcon.vue'
 export { default as SnInput } from './input/SnInput.vue'
+export { default as SnMenu } from './menu/SnMenu.vue'
+export type { SnMenuOption } from './menu/SnMenu.vue'
+export { default as SnBreadcrumb } from './breadcrumb/SnBreadcrumb.vue'
+export { default as SnBreadcrumbItem } from './breadcrumb/SnBreadcrumbItem.vue'
 export type {
   FormRule,
   FormRules,
