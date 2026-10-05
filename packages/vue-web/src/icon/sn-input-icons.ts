@@ -10,30 +10,6 @@
 import { defineComponent, h } from 'vue'
 import type { IconComponent } from './sn-icon-registry'
 
-function svgIcon(path: string, viewBox = '0 0 24 24'): IconComponent {
-  return defineComponent({
-    name: 'SnBuiltInIcon',
-    props: { size: { default: 14 } },
-    render() {
-      return h(
-        'svg',
-        {
-          viewBox,
-          width: String(this.size ?? 14),
-          height: String(this.size ?? 14),
-          fill: 'none',
-          stroke: 'currentColor',
-          'stroke-width': '2',
-          'stroke-linecap': 'round',
-          'stroke-linejoin': 'round',
-          'aria-hidden': 'true',
-        },
-        [h('path', { d: path })],
-      )
-    },
-  }) as unknown as IconComponent
-}
-
 function svgIconMulti(paths: string[], viewBox = '0 0 24 24'): IconComponent {
   return defineComponent({
     name: 'SnBuiltInIcon',

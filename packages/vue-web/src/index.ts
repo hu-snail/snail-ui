@@ -11,6 +11,7 @@
  */
 
 export { default as SnButton } from './button/SnButton.vue'
+export { default as SnCard } from './card/SnCard.vue'
 export { default as SnConfigProvider } from './config-provider/SnConfigProvider.vue'
 export { default as SnDivider } from './divider/SnDivider.vue'
 export { default as SnForm } from './form/SnForm.vue'

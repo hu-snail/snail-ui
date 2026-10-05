@@ -1,20 +1,18 @@
 <script setup lang="ts">
 /**
- * Demo: SnCard (Web) — placeholder live render.
- *
- * Note: A full live SnCard mount requires the v3.0 protocol contract (Card,
- * Form, FormItem, Input, Button types) which is not exported by the
- * public @snui/vue-web surface. This demo uses a minimal Vue 3 SFC that
- * mimics Card's API via slot composition. Replace with the real Card once
- * AUI-WEB-LAYOUT-001 ships.
+ * Demo: SnCard (Web) — live render of the new card component
+ * (AUI-WEB-LAYOUT-001). Two cards:
+ *   1. Default variant: bordered, no shadow, title + description header
+ *      (custom title slot with `<h3>` + `<p>`), body content, footer with
+ *      SnButton + SnIcon Check feedback.
+ *   2. Elevated variant: borderless + shadow, plain title prop.
  *
  * Per AGENTS.md §113, UI icons come from SnIcon / SnIcon registry — never
- * an emoji glyph. The "applied" feedback below uses the built-in Check
- * icon resolved through SnIcon.
+ * an emoji glyph.
  */
 
 import { ref } from 'vue'
-import { SnButton, SnIcon } from '@snui/vue-web'
+import { SnButton, SnCard, SnIcon } from '@snui/vue-web'
 import { Check } from 'lucide-vue-next'
 import { markRaw } from 'vue'
 
@@ -28,32 +26,24 @@ function handleOk(): void {
 
 <template>
   <div class="sn-demo">
-    <section class="sn-card sn-card--default" role="region" aria-label="Order summary">
-      <header class="sn-card__header">
+    <SnCard aria-label="Order summary">
+      <template #header>
         <h3>Order #1024</h3>
         <p>Pending payment</p>
-      </header>
-      <div class="sn-card__body">
-        <p>请输入凭证编号以激活订单。</p>
-        <input class="sn-card__input" placeholder="V-AUI-1024" />
-      </div>
-      <footer class="sn-card__footer">
+      </template>
+      <p>请输入凭证编号以激活订单。</p>
+      <input class="sn-card__input" placeholder="V-AUI-1024" />
+      <template #footer>
         <SnButton @click="handleOk">
           <SnIcon v-if="ok" :icon="CheckIcon" :size="14" style="margin-right: 6px; vertical-align: -2px" />
           {{ ok ? '已应用' : 'Apply' }}
         </SnButton>
-      </footer>
-    </section>
+      </template>
+    </SnCard>
 
-    <section class="sn-card sn-card--elevated" role="region" aria-label="Outlined example">
-      <header class="sn-card__header">
-        <h3>Elevated card</h3>
-        <p>Borderless + drop shadow</p>
-      </header>
-      <div class="sn-card__body">
-        <p>风格包切换时 Card 的视觉会跟随 Theme / Style / Density。</p>
-      </div>
-    </section>
+    <SnCard title="Elevated card" variant="elevated" aria-label="Elevated example">
+      <p>风格包切换时 Card 的视觉会跟随 Theme / Style / Density。</p>
+    </SnCard>
   </div>
 </template>
 
@@ -62,28 +52,6 @@ function handleOk(): void {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-.sn-card {
-  background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
-  padding: 16px;
-}
-.sn-card--elevated {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.10);
-}
-.sn-card__header h3 {
-  margin: 0;
-  font-size: 16px;
-}
-.sn-card__header p {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: var(--vp-c-text-2);
-}
-.sn-card__body {
-  margin-top: 12px;
-  font-size: 13px;
 }
 .sn-card__input {
   display: block;
@@ -95,8 +63,5 @@ function handleOk(): void {
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
   font-size: 13px;
-}
-.sn-card__footer {
-  margin-top: 12px;
 }
 </style>

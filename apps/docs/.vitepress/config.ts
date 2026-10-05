@@ -63,6 +63,12 @@ const sidebar = {
         { text: 'Form 表单', link: '/components/web/form' },
       ],
     },
+    {
+      text: 'Layout 布局组件',
+      items: [
+        { text: 'Card 卡片', link: '/components/web/card' },
+      ],
+    },
     // Other 其他 — empty until ConfigProvider page ships.
     // Data Display 数据展示 — empty until SnCard / SnTag / SnBadge ship.
     // Navigation 导航组件 — empty until SnMenu / SnTabs / SnBreadcrumb ship.
@@ -83,6 +89,12 @@ const sidebar = {
       items: [
         { text: 'sn-input 输入框', link: '/components/uni/input' },
         { text: 'sn-form 表单', link: '/components/uni/form' },
+      ],
+    },
+    {
+      text: 'Layout 布局组件',
+      items: [
+        { text: 'sn-card 卡片', link: '/components/uni/card' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.
@@ -161,6 +173,12 @@ const enSidebar = {
         { text: 'Form', link: '/en/components/web/form' },
       ],
     },
+    {
+      text: 'Layout',
+      items: [
+        { text: 'Card', link: '/en/components/web/card' },
+      ],
+    },
     // Other — empty until ConfigProvider page ships.
   ],
   '/en/components/uni/': [
@@ -177,6 +195,12 @@ const enSidebar = {
       items: [
         { text: 'sn-input', link: '/en/components/uni/input' },
         { text: 'sn-form', link: '/en/components/uni/form' },
+      ],
+    },
+    {
+      text: 'Layout',
+      items: [
+        { text: 'sn-card', link: '/en/components/uni/card' },
       ],
     },
     // Other — empty until ConfigProvider page ships.
