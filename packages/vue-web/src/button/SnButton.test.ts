@@ -182,6 +182,19 @@ describe('SnButton', () => {
       expect(wrapper.find('[data-testid="embedded-icon"]').exists()).toBe(false)
     })
 
+    it('circle + icon-only does NOT render an empty .sn-button__content span', () => {
+      // Regression: a phantom empty <span class="sn-button__content"> would
+      // consume the flex `gap: 6px` and shift the icon off-center inside
+      // the 32px circle. v-if="$slots.default" guard prevents that.
+      const wrapper = mount(SnButton, {
+        props: { circle: true, icon: TestIcon },
+      })
+      expect(wrapper.find('.sn-button__content').exists()).toBe(false)
+      expect(wrapper.find('.sn-button__icon').exists()).toBe(true)
+      // Icon wrapper itself is a centered flex item (defensive re-assertion).
+      expect(wrapper.find('.sn-button__icon').classes()).toContain('sn-button__icon')
+    })
+
     it('applies icon-right class when iconPlacement is right', () => {
       const wrapper = mount(SnButton, {
         props: { icon: TestIcon, iconPlacement: 'right' },

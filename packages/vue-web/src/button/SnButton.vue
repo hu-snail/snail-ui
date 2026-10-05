@@ -220,7 +220,7 @@ function onClick(event: MouseEvent): void {
         </svg>
       </slot>
     </span>
-    <span class="sn-button__content">
+    <span v-if="$slots.default" class="sn-button__content">
       <slot />
     </span>
   </component>
@@ -377,11 +377,33 @@ function onClick(event: MouseEvent): void {
   padding: 0;
   width: var(--sn-web-button-height-medium, 32px);
   aspect-ratio: 1 / 1;
+  /* Explicit re-assertion: the flex container must keep both axes
+   * centered even when the only child is the icon span (which, in
+   * absence of a default slot, is now the sole flex item). */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
 }
 .sn-button--circle.sn-button--tiny { width: var(--sn-web-button-height-tiny, 24px); }
 .sn-button--circle.sn-button--small { width: var(--sn-web-button-height-small, 28px); }
 .sn-button--circle.sn-button--large { width: var(--sn-web-button-height-large, 40px); }
 .sn-button--circle.sn-button--huge { width: var(--sn-web-button-height-huge, 48px); }
+
+/* Defensive: the icon wrapper is a flex item inside `.sn-button`; lock
+ * its own axis centering so lucide's inline SVG (rendered with
+ * `display: inline` by default — leaves a tiny baseline gap that nudges
+ * the icon off-center inside a square button) sits dead-center. */
+.sn-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.sn-button__icon :deep(svg) {
+  display: block;
+}
 
 /* Strong — heavier emphasis on filled variants. */
 .sn-button--strong.sn-button--primary {
