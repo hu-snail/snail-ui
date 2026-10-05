@@ -111,6 +111,20 @@ function openSearch(): void {
     padding: 10px 16px;
   }
 }
+
+/* Tablet (≤960px) and phone: SnMenu overflows the narrow container,
+ * so collapse it to icon-only search + theme toggle. Vitepress's built-in
+ * `VPNavBarHamburger` becomes visible at ≤768px and re-exposes the nav
+ * items via the default mobile screen drawer (themeConfig.nav). */
+@media (max-width: 960px) {
+  .sn-docs-nav__menu {
+    display: none;
+  }
+  .sn-docs-nav__search-label,
+  .sn-docs-nav__kbd {
+    display: none;
+  }
+}
 .sn-docs-nav__brand {
   text-decoration: none;
   font-weight: 700;

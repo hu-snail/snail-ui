@@ -67,11 +67,19 @@ const sidebar = {
       text: 'Layout 布局组件',
       items: [
         { text: 'Card 卡片', link: '/components/web/card' },
+        { text: 'Grid 网格', link: '/components/web/grid' },
+        { text: 'Collapse 折叠面板', link: '/components/web/collapse' },
+      ],
+    },
+    {
+      text: 'Navigation 导航组件',
+      items: [
+        { text: 'Menu 菜单', link: '/components/web/menu' },
+        { text: 'Breadcrumb 面包屑', link: '/components/web/breadcrumb' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.
     // Data Display 数据展示 — empty until SnCard / SnTag / SnBadge ship.
-    // Navigation 导航组件 — empty until SnMenu / SnTabs / SnBreadcrumb ship.
     // Feedback 反馈组件 — empty until SnAlert / SnToast / SnModal ship.
     // AI 组件 — empty until SnippetPanel / StylePreview / RenderShot ship.
   ],
@@ -177,6 +185,15 @@ const enSidebar = {
       text: 'Layout',
       items: [
         { text: 'Card', link: '/en/components/web/card' },
+        { text: 'Grid', link: '/en/components/web/grid' },
+        { text: 'Collapse', link: '/en/components/web/collapse' },
+      ],
+    },
+    {
+      text: 'Navigation',
+      items: [
+        { text: 'Menu', link: '/en/components/web/menu' },
+        { text: 'Breadcrumb', link: '/en/components/web/breadcrumb' },
       ],
     },
     // Other — empty until ConfigProvider page ships.
