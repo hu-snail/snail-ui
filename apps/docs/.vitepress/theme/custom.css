@@ -267,3 +267,12 @@ table.props code {
 .VPNavBar .divider-line {
   display: none !important;
 }
+
+/* Vitepress's .content-body pushes children to the right (flex-end) so the
+ * default search / menu / appearance sit at the right edge. After we hide
+ * those, only SnDocsNav is left but the flex-end still pushes it right.
+ * Override to flex-start so SnDocsNav spans the full nav width. */
+.VPNavBar .content .content-body {
+  justify-content: flex-start !important;
+  padding: 0 !important;
+}
