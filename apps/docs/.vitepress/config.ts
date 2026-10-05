@@ -1,5 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { fileURLToPath, URL } from 'node:url'
+import type { Options as MiniSearchOptions } from 'minisearch'
 import { rpxTransform } from './utils/rpx-transform'
 
 /**
@@ -8,6 +9,12 @@ import { rpxTransform } from './utils/rpx-transform'
  * Per ADR-0001 + ADR-0002:
  *   AUI is an AI-Native component library with Style Pack + AI Layer.
  *   Docs describe real components and Style Packs.
+ *
+ * Local search (VitePress built-in minisearch) is configured below to
+ * support Chinese content: we slice CJK characters into per-character
+ * tokens + sliding bigrams so substring searches like '按钮' or '分割'
+ * hit pages whose content contains those characters. ASCII words are
+ * tokenized on whitespace + punctuation.
  */
 
 const nav = [
@@ -287,7 +294,6 @@ export default defineConfig({
           message: 'Released under the MIT License.',
           copyright: 'Copyright © 2026 hu-snail',
         },
-        search: { provider: 'local' },
       },
     },
     en: {
@@ -300,7 +306,51 @@ export default defineConfig({
           message: 'Released under the MIT License.',
           copyright: 'Copyright © 2026 hu-snail',
         },
-        search: { provider: 'local' },
+      },
+    },
+  },
+
+  /**
+   * Local search (the built-in VitePress minisearch provider). Single
+   * config across both locales — the index is built from every page
+   * regardless of locale, so a search for 'Button' on the zh page still
+   * finds the en doc (and vice versa), and a search for '按钮' hits
+   * every zh page whose content contains those characters.
+   *
+   * The tokenizer is the only piece that's zh-aware:
+   *   - ASCII: split on whitespace + punctuation (latin languages)
+   *   - CJK: per-character + sliding bigrams (U+4E00-U+9FFF + ext A/B)
+   *     so 2-char substrings of Chinese terms are searchable.
+   * Fuzzy 0.2 + prefix=true give reasonable recall for typos.
+   */
+  search: {
+    provider: 'local',
+    options: {
+      miniSearch: {
+        tokenize: ((text: string): string[] => {
+          const lowered = text.toLowerCase()
+          const tokens: string[] = []
+          for (const word of lowered.split(/[\s\u2000-\u206f\u2e00-\u2e7f\\'!"#$%&()*+,\-./:;<=>?@[\]^`{|}~]+/g)) {
+            if (word) tokens.push(word)
+          }
+          const chars = [...lowered]
+          for (let i = 0; i < chars.length; i++) {
+            const ch = chars[i] ?? ''
+            if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(ch)) {
+              tokens.push(ch)
+              const next = chars[i + 1] ?? ''
+              if (/[\u4e00-\u9fff]/.test(next)) {
+                tokens.push(ch + next)
+              }
+            }
+          }
+          return tokens
+        }) as MiniSearchOptions['tokenize'],
+        searchOptions: {
+          fuzzy: 0.2,
+          prefix: true,
+          boost: { title: 4, text: 1 },
+        } as MiniSearchOptions['searchOptions'],
       },
     },
   },
