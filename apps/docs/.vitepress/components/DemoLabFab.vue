@@ -90,9 +90,44 @@ function displayValue(name: string): string {
 }
 
 /**
+ * Normalize any CSS color value to `#rrggbb` so it can be used as an
+ * `<input type="color">` value. Returns null when parsing fails.
+ *
+ * Browsers' <input type=color> only accepts 6-digit hex; pack CSS may
+ * emit `rgb(...)`, `var(...)`, or `#1677ff` shorthand — all need
+ * conversion. We use a hidden div + getComputedStyle for resolution.
+ */
+function normalizeColor(value: string): string | null {
+  if (!value) return null
+  if (/^#[0-9a-f]{6}$/i.test(value.trim())) return value.trim()
+  if (typeof document === 'undefined') return null
+  const probe = document.createElement('div')
+  probe.style.color = value
+  document.body.appendChild(probe)
+  const resolved = getComputedStyle(probe).color
+  document.body.removeChild(probe)
+  // resolved is `rgb(r, g, b)` or `rgba(r, g, b, a)`
+  const m = resolved.match(/rgba?\(([^)]+)\)/)
+  if (!m) return null
+  const parts = m[1].split(',').map((s) => s.trim())
+  if (parts.length < 3) return null
+  const r = parseInt(parts[0] || '0', 10).toString(16).padStart(2, '0')
+  const g = parseInt(parts[1] || '0', 10).toString(16).padStart(2, '0')
+  const b = parseInt(parts[2] || '0', 10).toString(16).padStart(2, '0')
+  return `#${r}${g}${b}`
+}
+
+/**
  * Apply a user override on a token. Re-injects the merged CSS into
  * `<style id="snui-docs-pack">`. Other tokens (and the pack's own
  * non-overridden vars) stay intact.
+ *
+ * Important: the token editor surfaces `--sn-color-action-primary`
+ * (the bare alias that snCssVars() emits), but components actually
+ * read `--sn-web-color-action-primary` / `--sn-mp-color-action-primary`
+ * (per-end aliases emitted by each component package's dist CSS).
+ * We therefore expand every override to all three alias forms so
+ * edits land on the variables that components actually consume.
  */
 function setToken(name: string, value: string): void {
   userOverrides.value = { ...userOverrides.value, [name]: value }
@@ -102,6 +137,23 @@ function setToken(name: string, value: string): void {
 function resetOverrides(): void {
   userOverrides.value = {}
   refreshStyle()
+}
+
+/**
+ * Expand one canonical token name into the three alias forms the
+ * runtime actually reads. Returns [name] when the input doesn't match
+ * the --sn- pattern (e.g. a fully-qualified end name).
+ */
+function expandAliasNames(name: string): string[] {
+  if (name.startsWith('--sn-')) {
+    const rest = name.slice('--sn-'.length)
+    return [
+      `--sn-${rest}`,
+      `--sn-web-${rest}`,
+      `--sn-mp-${rest}`,
+    ]
+  }
+  return [name]
 }
 
 // ─── Style injection (pack CSS + user overrides) ─────────────────────────
@@ -129,10 +181,13 @@ function refreshStyle(): void {
   })
   const overrideEntries = Object.entries(userOverrides.value)
   if (overrideEntries.length) {
-    const overrideLines = overrideEntries
-      .map(([k, v]) => `  ${k}: ${v};`)
-      .join('\n')
-    css += `\n:root {\n${overrideLines}\n}\n`
+    const lines: string[] = []
+    for (const [name, value] of overrideEntries) {
+      for (const alias of expandAliasNames(name)) {
+        lines.push(`  ${alias}: ${value};`)
+      }
+    }
+    css += `\n:root {\n${lines.join('\n')}\n}\n`
   }
   el.textContent = css
 }
@@ -344,11 +399,17 @@ const tokenGroups = computed(() => {
               >
                 <label class="sn-lab-fab__token-label" :title="t.name">{{ t.label }}</label>
                 <div class="sn-lab-fab__token-control">
+                  <span
+                    v-if="t.type === 'color'"
+                    class="sn-lab-fab__swatch"
+                    :title="displayValue(t.name)"
+                    :style="{ background: displayValue(t.name) }"
+                  />
                   <input
                     v-if="t.type === 'color'"
                     type="color"
                     class="sn-lab-fab__color-picker"
-                    :value="displayValue(t.name) || '#000000'"
+                    :value="normalizeColor(displayValue(t.name)) || '#000000'"
                     @input="(e: Event) => setToken(t.name, (e.target as HTMLInputElement).value)"
                   />
                   <input
@@ -773,6 +834,18 @@ const tokenGroups = computed(() => {
   background: transparent;
   cursor: pointer;
   flex-shrink: 0;
+}
+.sn-lab-fab__swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--sn-fab-border-c);
+  border-radius: 3px;
+  flex-shrink: 0;
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%),
+    linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%);
+  background-size: 8px 8px;
+  background-position: 0 0, 4px 4px;
 }
 .sn-lab-fab__color-picker::-webkit-color-swatch-wrapper {
   padding: 2px;
