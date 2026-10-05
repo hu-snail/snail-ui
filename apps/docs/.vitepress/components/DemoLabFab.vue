@@ -5,28 +5,37 @@
  * Per AUI-PRD-v3.1 §7.3 + AUI-DOCS-018:
  *   - Fixed bottom-right FAB; only renders on `/components/**` routes
  *   - Click → expandable popover with 3 tabs:
- *       Style   风格切换 (Style Pack 列表 + 一键注入 + skin class)
- *       Theme   主题变量 (当前 pack 的 main.ts snippet, 可复制)
- *       Preview Demo 实时渲染 (FAB 内嵌 <Demo> 渲染, 可切换 demo 名)
- *   - 实时渲染: 切 Style Pack 时若 Preview tab 激活, 嵌入 demo 立即反映新主题
+ *       Style   Style Pack switcher (injects CSS variables + skin class)
+ *       Theme   Token editor (color pickers + text inputs) + copyable snippet
+ *       Preview Live demo render inside the FAB
+ *   - Pack-aware visual: the FAB's own chrome morphs to match the
+ *     currently active Style Pack — Default / iOS / Doodle / Dark each
+ *     get a distinct look (border-radius, shadow, trigger color).
  *
  * Why a single FAB (instead of multiple separate widgets)?
- *   - 三个功能都围绕"组件实时调试"展开, 合并入口减少 sidebar 干扰
- *   - 一致的右下角锚点, 切换页面不需要找入口
- *   - Preview tab 是 FAB 独有功能, 跟 StyleSwitcher / ThemeCopier 是超集
- *
- * Browser-only, mounted by theme/Layout.vue in doc-after slot.
- * `@snui/style-packs` + `@snui/tokens` are statically imported → vite auto-
- * discovers them for optimizeDeps.
+ *   - Three functions all serve "live demo debugging" — one anchor
+ *   - Switch pages → FAB is always in the same spot
+ *   - Theme Editor is FAB-unique (not exposed in StyleSwitcher / ThemeCopier)
  */
 
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vitepress'
-import { Beaker, Palette, Code2, X, Check } from 'lucide-vue-next'
+import { Beaker, Palette, Code2, X, Check, RotateCcw } from 'lucide-vue-next'
 import { allPacks, getPack } from '@snui/style-packs'
 import { snCssVars } from '@snui/tokens'
 
 type Tab = 'style' | 'theme' | 'preview'
+
+interface TokenDef {
+  /** CSS variable name. */
+  name: string
+  /** Human-readable label shown in the editor. */
+  label: string
+  /** Input kind: 'color' (color picker) or 'text' (free-form CSS value). */
+  type: 'color' | 'text'
+  /** Group header inside the editor. */
+  group: 'color' | 'shape'
+}
 
 const route = useRoute()
 const open = ref(false)
@@ -42,22 +51,97 @@ const PACKS = allPacks.map((p) => ({
   description: p.description ?? '',
 }))
 
-function applyPack(name: string): void {
-  activePack.value = name
-  const pack = getPack(name)
+// ─── Theme: token editor + copyable snippet ──────────────────────────────
+const THEMABLE_TOKENS: TokenDef[] = [
+  { name: '--sn-color-action-primary', label: '主色', type: 'color', group: 'color' },
+  { name: '--sn-color-background-surface', label: '纸色', type: 'color', group: 'color' },
+  { name: '--sn-color-text-primary', label: '文字色', type: 'color', group: 'color' },
+  { name: '--sn-color-feedback-success', label: '成功色', type: 'color', group: 'color' },
+  { name: '--sn-color-feedback-warning', label: '警告色', type: 'color', group: 'color' },
+  { name: '--sn-color-feedback-danger', label: '危险色', type: 'color', group: 'color' },
+  { name: '--sn-button-radius', label: '按钮圆角', type: 'text', group: 'shape' },
+  { name: '--sn-button-shadow', label: '按钮阴影', type: 'text', group: 'shape' },
+  { name: '--sn-input-radius', label: '输入框圆角', type: 'text', group: 'shape' },
+]
+
+/**
+ * User override map: token name → user-supplied CSS value.
+ * Survives style-pack switches (cleared explicitly via resetOverrides
+ * or when switching packs the user can still see their changes
+ * layered on top).
+ */
+const userOverrides = ref<Record<string, string>>({})
+
+/**
+ * Read the current resolved CSS variable from `:root` (or `:host`).
+ * Returns '' if the variable is not defined yet (e.g. before the pack
+ * CSS was injected).
+ */
+function readCurrentToken(name: string): string {
+  if (typeof window === 'undefined') return ''
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
+/**
+ * Display value: prefer user override, fall back to current resolved value.
+ */
+function displayValue(name: string): string {
+  return userOverrides.value[name] ?? readCurrentToken(name)
+}
+
+/**
+ * Apply a user override on a token. Re-injects the merged CSS into
+ * `<style id="snui-docs-pack">`. Other tokens (and the pack's own
+ * non-overridden vars) stay intact.
+ */
+function setToken(name: string, value: string): void {
+  userOverrides.value = { ...userOverrides.value, [name]: value }
+  refreshStyle()
+}
+
+function resetOverrides(): void {
+  userOverrides.value = {}
+  refreshStyle()
+}
+
+// ─── Style injection (pack CSS + user overrides) ─────────────────────────
+let styleEl: HTMLStyleElement | null = null
+
+function ensureStyleEl(): HTMLStyleElement {
+  let el = document.getElementById('snui-docs-pack') as HTMLStyleElement | null
+  if (!el) {
+    el = document.createElement('style')
+    el.id = 'snui-docs-pack'
+    document.head.appendChild(el)
+  }
+  styleEl = el
+  return el
+}
+
+function refreshStyle(): void {
+  const pack = getPack(activePack.value)
   if (!pack) return
-  const css = snCssVars({
+  const el = ensureStyleEl()
+  let css = snCssVars({
     theme: pack.theme,
     style: pack.style,
     density: pack.density,
   })
-  let styleEl = document.getElementById('snui-docs-pack') as HTMLStyleElement | null
-  if (!styleEl) {
-    styleEl = document.createElement('style')
-    styleEl.id = 'snui-docs-pack'
-    document.head.appendChild(styleEl)
+  const overrideEntries = Object.entries(userOverrides.value)
+  if (overrideEntries.length) {
+    const overrideLines = overrideEntries
+      .map(([k, v]) => `  ${k}: ${v};`)
+      .join('\n')
+    css += `\n:root {\n${overrideLines}\n}\n`
   }
-  styleEl.textContent = css
+  el.textContent = css
+}
+
+function applyPack(name: string): void {
+  activePack.value = name
+  const pack = getPack(name)
+  if (!pack) return
+  refreshStyle()
   // Skin class: component packages ship `.snui-skin-{name}` overrides
   // (see @snui/vue-web/src/button/SnButton.vue Doodle skin block, etc.).
   // Toggling here is what makes components visually re-theme live.
@@ -67,7 +151,7 @@ function applyPack(name: string): void {
   if (name !== 'default') document.body.classList.add(`snui-skin-${name}`)
 }
 
-// ─── Theme snippet ────────────────────────────────────────────────────────
+// ─── Copyable snippet for the active pack ────────────────────────────────
 const snippet = ref('')
 const copied = ref(false)
 function buildSnippet(name: string): string {
@@ -88,6 +172,8 @@ document.head.appendChild(el)
 watch(activePack, () => {
   snippet.value = buildSnippet(activePack.value)
   copied.value = false
+  // Refresh display values so the editor reflects the new pack's defaults.
+  // (Don't clobber userOverrides — those stay applied on top.)
 }, { immediate: true })
 
 async function copySnippet(): Promise<void> {
@@ -107,12 +193,6 @@ async function copySnippet(): Promise<void> {
 }
 
 // ─── Demo preview ─────────────────────────────────────────────────────────
-// Collect every demo filename reachable via import.meta.glob. The user picks
-// one to render inside the FAB popover. Same glob key as Demo.vue so the
-// candidates are identical to the page-level <Demo /> components.
-//
-// Demo.vue itself uses import.meta.glob('../demo/*.vue'). We mirror that path
-// here so glob resolution matches.
 interface DemoMap {
   [k: string]: () => Promise<unknown>
 }
@@ -127,31 +207,37 @@ const allDemos = computed<string[]>(() => {
     .sort()
 })
 
-// Default to the first demo in the FAB; user can switch.
 const previewName = ref<string>('')
 watch(allDemos, (list) => {
   if (!previewName.value && list.length) previewName.value = list[0] || ''
 }, { immediate: true })
-
 const previewKey = computed(() => previewName.value)
 
-// Reset FAB state when navigating between component pages so the user gets
-// a clean FAB popover per page.
 watch(() => route.path, () => {
   open.value = false
 })
 
 onMounted(() => {
-  // Close on Escape.
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') open.value = false
   })
+})
+
+const tokenGroups = computed(() => {
+  const groups: Record<string, TokenDef[]> = { color: [], shape: [] }
+  for (const t of THEMABLE_TOKENS) groups[t.group].push(t)
+  return groups
 })
 </script>
 
 <template>
   <Teleport to="body">
-    <div v-if="showFab" class="sn-lab-fab" :class="{ 'is-open': open }">
+    <div
+      v-if="showFab"
+      class="sn-lab-fab"
+      :data-pack="activePack"
+      :class="{ 'is-open': open }"
+    >
       <div v-if="open" class="sn-lab-fab__panel" role="dialog" aria-label="Demo Lab">
         <div class="sn-lab-fab__header">
           <span class="sn-lab-fab__title">
@@ -220,21 +306,67 @@ onMounted(() => {
             </button>
           </div>
 
-          <!-- Theme tab -->
+          <!-- Theme tab: token editor + copyable snippet -->
           <div v-show="tab === 'theme'" class="sn-lab-fab__section">
             <div class="sn-lab-fab__theme-head">
               <span class="sn-lab-fab__theme-name">{{ activePack }}</span>
-              <button
-                type="button"
-                class="sn-lab-fab__copy"
-                :class="{ 'is-copied': copied }"
-                @click="copySnippet"
-              >
-                <Check v-if="copied" :size="12" />
-                <span>{{ copied ? '已复制' : '复制' }}</span>
-              </button>
+              <div class="sn-lab-fab__theme-actions">
+                <button
+                  type="button"
+                  class="sn-lab-fab__icon-btn"
+                  title="重置所有 token"
+                  :disabled="Object.keys(userOverrides).length === 0"
+                  @click="resetOverrides"
+                >
+                  <RotateCcw :size="12" />
+                  重置
+                </button>
+                <button
+                  type="button"
+                  class="sn-lab-fab__copy"
+                  :class="{ 'is-copied': copied }"
+                  @click="copySnippet"
+                >
+                  <Check v-if="copied" :size="12" />
+                  <span>{{ copied ? '已复制' : '复制' }}</span>
+                </button>
+              </div>
             </div>
-            <pre class="sn-lab-fab__pre"><code>{{ snippet }}</code></pre>
+
+            <div v-for="(tokens, groupName) in tokenGroups" :key="groupName" class="sn-lab-fab__token-group">
+              <div class="sn-lab-fab__token-group-label">
+                {{ groupName === 'color' ? '颜色' : '形状' }}
+              </div>
+              <div
+                v-for="t in tokens"
+                :key="t.name"
+                class="sn-lab-fab__token-row"
+              >
+                <label class="sn-lab-fab__token-label" :title="t.name">{{ t.label }}</label>
+                <div class="sn-lab-fab__token-control">
+                  <input
+                    v-if="t.type === 'color'"
+                    type="color"
+                    class="sn-lab-fab__color-picker"
+                    :value="displayValue(t.name) || '#000000'"
+                    @input="(e: Event) => setToken(t.name, (e.target as HTMLInputElement).value)"
+                  />
+                  <input
+                    v-else
+                    type="text"
+                    class="sn-lab-fab__text-input"
+                    :value="displayValue(t.name)"
+                    :placeholder="readCurrentToken(t.name)"
+                    @input="(e: Event) => setToken(t.name, (e.target as HTMLInputElement).value)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <details class="sn-lab-fab__snippet">
+              <summary>复制 main.ts 片段</summary>
+              <pre class="sn-lab-fab__pre"><code>{{ snippet }}</code></pre>
+            </details>
           </div>
 
           <!-- Preview tab — embed <Demo> in real time -->
@@ -278,24 +410,26 @@ onMounted(() => {
 
 <style scoped>
 /* ──────────────────────────────────────────────────────────────────────
-   Doodle Style — thick ink border + hard offset shadow + wavy corners +
-   paper-cream background. Inspired by Excalidraw / notebook stickers.
-   Always visible regardless of light/dark mode (the FAB must read clearly
-   as a tool layer, not blend into the doc chrome).
-
-   Background uses vp-c-bg-elv (VitePress 1.6+ spelling; older 1.5 used
-   vp-c-bg-elevated). The previous name silently resolved to undefined →
-   transparent panel, which is why "panel had no background".
+   Pack-aware visual tokens. The FAB reads these local custom properties
+   for its own chrome so that each Style Pack has its own look. The pack
+   itself doesn't drive these — they're per-FAB concerns (a panel has to
+   stay legible against any theme) — but the four families cover the
+   official packs.
    ────────────────────────────────────────────────────────────────────── */
 .sn-lab-fab {
-  --sn-doodle-ink: #1a1a1a;
-  --sn-doodle-paper: #FFF8E7;
-  --sn-doodle-yellow: #FFD93D;
-  --sn-doodle-pink: #FF7AB6;
-  --sn-doodle-cyan: #6BCBEF;
-  --sn-doodle-green: #B8E986;
-  --sn-doodle-shadow: 4px 4px 0 var(--sn-doodle-ink);
-  --sn-doodle-shadow-lg: 6px 6px 0 var(--sn-doodle-ink);
+  /* Default (modern) — neutral, soft shadow, plain rounded. */
+  --sn-fab-border-w: 1px;
+  --sn-fab-border-c: var(--vp-c-divider);
+  --sn-fab-radius: 12px;
+  --sn-fab-shadow: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --sn-fab-bg: var(--vp-c-bg-elv, #ffffff);
+  --sn-fab-fg: var(--vp-c-text-1);
+  --sn-fab-accent: var(--vp-c-brand-1);
+  --sn-fab-accent-soft: var(--vp-c-bg-soft);
+  --sn-fab-trigger-bg: var(--vp-c-bg-elv, #ffffff);
+  --sn-fab-trigger-fg: var(--vp-c-text-1);
+  --sn-fab-trigger-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --sn-fab-tilt: 0deg;
 
   position: fixed;
   bottom: 24px;
@@ -304,7 +438,53 @@ onMounted(() => {
   font-family: var(--vp-font-family-base, -apple-system, BlinkMacSystemFont, sans-serif);
 }
 
-/* ── Trigger: round sticker, ink-bordered, offset shadow, slight tilt ── */
+/* iOS — flat borderless, larger radius, no shadow. */
+.sn-lab-fab[data-pack="ios"] {
+  --sn-fab-border-w: 0.5px;
+  --sn-fab-border-c: rgba(0, 0, 0, 0.12);
+  --sn-fab-radius: 14px;
+  --sn-fab-shadow: 0 0 0 rgba(0, 0, 0, 0);
+  --sn-fab-bg: rgba(255, 255, 255, 0.96);
+  --sn-fab-trigger-bg: var(--sn-color-action-primary, #007AFF);
+  --sn-fab-trigger-fg: #ffffff;
+  --sn-fab-trigger-shadow: 0 4px 12px rgba(0, 122, 255, 0.30);
+  --sn-fab-tilt: 0deg;
+}
+
+/* Doodle — sticker: thick ink border, hard offset shadow, wavy corners,
+   paper-cream body, tilted slightly. */
+.sn-lab-fab[data-pack="doodle"] {
+  --sn-fab-border-w: 2.5px;
+  --sn-fab-border-c: #1a1a1a;
+  --sn-fab-radius: 22px 6px / 6px 22px;
+  --sn-fab-shadow: 6px 6px 0 #1a1a1a;
+  --sn-fab-bg: var(--vp-c-bg-elv, #FFFBEB);
+  --sn-fab-fg: #1a1a1a;
+  --sn-fab-accent: #FF6B9D;
+  --sn-fab-accent-soft: #FFF8E7;
+  --sn-fab-trigger-bg: #FFD93D;
+  --sn-fab-trigger-fg: #1a1a1a;
+  --sn-fab-trigger-shadow: 4px 4px 0 #1a1a1a;
+  --sn-fab-tilt: 0.6deg;
+}
+
+/* Dark — low-saturation dark surface, soft shadow, no tilt. */
+.sn-lab-fab[data-pack="dark"] {
+  --sn-fab-border-w: 1px;
+  --sn-fab-border-c: rgba(255, 255, 255, 0.08);
+  --sn-fab-radius: 12px;
+  --sn-fab-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --sn-fab-bg: #202127;
+  --sn-fab-fg: #fafafa;
+  --sn-fab-accent: #3b82f6;
+  --sn-fab-accent-soft: #27272a;
+  --sn-fab-trigger-bg: #27272a;
+  --sn-fab-trigger-fg: #fafafa;
+  --sn-fab-trigger-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --sn-fab-tilt: 0deg;
+}
+
+/* ── Trigger ── */
 .sn-lab-fab__trigger {
   display: inline-flex;
   align-items: center;
@@ -312,51 +492,50 @@ onMounted(() => {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 2.5px solid var(--sn-doodle-ink);
-  background: var(--sn-doodle-yellow);
-  color: var(--sn-doodle-ink);
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  background: var(--sn-fab-trigger-bg);
+  color: var(--sn-fab-trigger-fg);
   cursor: pointer;
-  box-shadow: var(--sn-doodle-shadow);
-  transform: rotate(-6deg);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s;
+  box-shadow: var(--sn-fab-trigger-shadow);
+  transform: rotate(calc(var(--sn-fab-tilt) * -2));
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s, color 0.18s;
 }
 .sn-lab-fab__trigger:hover {
-  transform: rotate(-2deg) translate(-1px, -1px);
-  background: var(--sn-doodle-pink);
-  box-shadow: 5px 5px 0 var(--sn-doodle-ink);
+  transform: rotate(0deg) translate(-1px, -1px);
+  box-shadow: calc(var(--sn-fab-trigger-shadow) + 2px 2px 0 rgba(0,0,0,0.1));
 }
 .sn-lab-fab__trigger:active {
-  transform: rotate(-4deg) translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--sn-doodle-ink);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
 }
 .sn-lab-fab.is-open .sn-lab-fab__trigger {
-  background: var(--sn-doodle-ink);
-  color: var(--sn-doodle-yellow);
-  border-color: var(--sn-doodle-ink);
+  background: var(--sn-fab-fg);
+  color: var(--sn-fab-bg);
   transform: rotate(0deg);
-  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
 }
 
-/* ── Panel: notebook paper with wavy corners + hard offset shadow ── */
+/* ── Panel ── */
 .sn-lab-fab__panel {
   position: absolute;
   bottom: calc(100% + 12px);
   right: 0;
-  width: min(420px, calc(100vw - 32px));
-  max-height: min(640px, calc(100vh - 96px));
-  background: var(--vp-c-bg-elv, #ffffff);
-  border: 2.5px solid var(--sn-doodle-ink);
-  border-radius: 22px 6px 22px 6px / 6px 22px 6px 22px;
-  box-shadow: var(--sn-doodle-shadow-lg);
+  width: min(440px, calc(100vw - 32px));
+  max-height: min(680px, calc(100vh - 96px));
+  background: var(--sn-fab-bg);
+  color: var(--sn-fab-fg);
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: var(--sn-fab-radius);
+  box-shadow: var(--sn-fab-shadow);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transform: rotate(0.6deg);
+  transform: rotate(var(--sn-fab-tilt));
 }
 
-/* Subtle paper-grain texture: two crossing diagonal lines, very low opacity.
-   Avoids depending on extra asset files; pure CSS noise via repeating gradients. */
-.sn-lab-fab__panel::before {
+/* Optional paper-grain only when in doodle mode (uses pack signal,
+   not a hand-coded selector, so it follows whichever pack is active
+   — currently only doodle opts in). */
+.sn-lab-fab[data-pack="doodle"] .sn-lab-fab__panel::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -372,22 +551,21 @@ onMounted(() => {
   z-index: 1;
 }
 
+/* ── Header ── */
 .sn-lab-fab__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-bottom: 2px dashed var(--sn-doodle-ink);
-  background: var(--sn-doodle-yellow);
+  border-bottom: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
 }
 .sn-lab-fab__title {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  font-weight: 700;
-  color: var(--sn-doodle-ink);
-  letter-spacing: 0.2px;
+  font-weight: 600;
+  color: var(--sn-fab-fg);
 }
 .sn-lab-fab__close {
   display: inline-flex;
@@ -396,25 +574,22 @@ onMounted(() => {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid var(--sn-doodle-ink);
-  background: var(--sn-doodle-paper);
-  color: var(--sn-doodle-ink);
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  background: var(--sn-fab-bg);
+  color: var(--sn-fab-fg);
   cursor: pointer;
-  box-shadow: 1px 1px 0 var(--sn-doodle-ink);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition: transform 0.15s;
 }
 .sn-lab-fab__close:hover {
   transform: rotate(90deg);
-  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
 }
 
-/* ── Tabs: chunky pill buttons with hard offset shadows ── */
+/* ── Tabs ── */
 .sn-lab-fab__tabs {
   display: flex;
-  gap: 6px;
-  padding: 10px 12px;
-  border-bottom: 2px dashed var(--sn-doodle-ink);
-  background: var(--sn-doodle-paper);
+  gap: 4px;
+  padding: 8px;
+  border-bottom: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
 }
 .sn-lab-fab__tab {
   display: inline-flex;
@@ -422,28 +597,24 @@ onMounted(() => {
   gap: 4px;
   flex: 1;
   justify-content: center;
-  height: 30px;
-  border: 2px solid var(--sn-doodle-ink);
-  border-radius: 8px 2px 8px 2px / 2px 8px 2px 8px;
-  background: var(--vp-c-bg-elv, #ffffff);
-  color: var(--sn-doodle-ink);
+  height: 28px;
+  border: var(--sn-fab-border-w) solid transparent;
+  border-radius: calc(var(--sn-fab-radius) / 2);
+  background: transparent;
+  color: var(--sn-fab-fg);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
-  transition: transform 0.12s, box-shadow 0.12s;
+  opacity: 0.6;
+  transition: opacity 0.15s, background 0.15s;
 }
 .sn-lab-fab__tab:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
-}
-.sn-lab-fab__tab:active {
-  transform: translate(1px, 1px);
-  box-shadow: 0 0 0 var(--sn-doodle-ink);
+  opacity: 1;
 }
 .sn-lab-fab__tab.is-active {
-  background: var(--sn-doodle-pink);
-  color: var(--sn-doodle-ink);
+  opacity: 1;
+  background: var(--sn-fab-accent-soft);
+  border-color: var(--sn-fab-border-c);
 }
 
 .sn-lab-fab__body {
@@ -457,32 +628,34 @@ onMounted(() => {
   gap: 8px;
 }
 
-/* ── Style pack cards: hand-drawn bordered boxes ── */
+/* ── Style pack cards ── */
 .sn-lab-fab__pack {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
   padding: 10px 12px;
-  border: 2px solid var(--sn-doodle-ink);
-  border-radius: 10px 2px 10px 2px / 2px 10px 2px 10px;
-  background: var(--vp-c-bg-elv, #ffffff);
-  color: var(--sn-doodle-ink);
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: calc(var(--sn-fab-radius) / 2);
+  background: var(--sn-fab-bg);
+  color: var(--sn-fab-fg);
   text-align: left;
   cursor: pointer;
-  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
-  transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+  transition: background 0.15s;
 }
 .sn-lab-fab__pack:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
-  background: var(--sn-doodle-paper);
+  background: var(--sn-fab-accent-soft);
 }
 .sn-lab-fab__pack.is-active {
-  background: var(--sn-doodle-green);
+  background: var(--sn-fab-accent);
+  color: #fff;
+  border-color: var(--sn-fab-accent);
+}
+.sn-lab-fab__pack.is-active .sn-lab-fab__pack-desc {
+  opacity: 0.85;
 }
 .sn-lab-fab__pack-label {
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
 }
 .sn-lab-fab__pack-desc {
@@ -490,68 +663,167 @@ onMounted(() => {
   opacity: 0.7;
 }
 
+/* ── Theme tab header ── */
 .sn-lab-fab__theme-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 6px;
+  gap: 6px;
 }
 .sn-lab-fab__theme-name {
   display: inline-flex;
   align-items: center;
   height: 22px;
   padding: 0 10px;
-  border: 2px solid var(--sn-doodle-ink);
-  border-radius: 6px 2px 6px 2px / 2px 6px 2px 6px;
-  background: var(--sn-doodle-cyan);
-  color: var(--sn-doodle-ink);
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: calc(var(--sn-fab-radius) / 2);
+  background: var(--sn-fab-accent-soft);
+  color: var(--sn-fab-fg);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   text-transform: capitalize;
+}
+.sn-lab-fab__theme-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.sn-lab-fab__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 24px;
+  padding: 0 8px;
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: calc(var(--sn-fab-radius) / 2);
+  background: var(--sn-fab-bg);
+  color: var(--sn-fab-fg);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.sn-lab-fab__icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.sn-lab-fab__icon-btn:hover:not(:disabled) {
+  background: var(--sn-fab-accent-soft);
 }
 .sn-lab-fab__copy {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  height: 26px;
-  padding: 0 12px;
-  border: 2px solid var(--sn-doodle-ink);
-  border-radius: 6px 2px 6px 2px / 2px 6px 2px 6px;
-  background: var(--vp-c-bg-elv, #ffffff);
-  color: var(--sn-doodle-ink);
-  font-size: 12px;
-  font-weight: 600;
+  gap: 3px;
+  height: 24px;
+  padding: 0 8px;
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: calc(var(--sn-fab-radius) / 2);
+  background: var(--sn-fab-bg);
+  color: var(--sn-fab-fg);
+  font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
-  transition: transform 0.12s, box-shadow 0.12s;
-}
-.sn-lab-fab__copy:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
-}
-.sn-lab-fab__copy:active {
-  transform: translate(1px, 1px);
-  box-shadow: 0 0 0 var(--sn-doodle-ink);
 }
 .sn-lab-fab__copy.is-copied {
-  background: var(--sn-doodle-green);
+  background: var(--sn-fab-accent);
+  color: #fff;
+  border-color: var(--sn-fab-accent);
 }
 
+/* ── Token editor ── */
+.sn-lab-fab__token-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sn-lab-fab__token-group-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--sn-fab-fg);
+  opacity: 0.55;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.sn-lab-fab__token-row {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.sn-lab-fab__token-label {
+  font-size: 11px;
+  color: var(--sn-fab-fg);
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sn-lab-fab__token-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.sn-lab-fab__color-picker {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sn-lab-fab__color-picker::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+.sn-lab-fab__color-picker::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+.sn-lab-fab__text-input {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 8px;
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: 4px;
+  background: var(--sn-fab-bg);
+  color: var(--sn-fab-fg);
+  font-family: var(--vp-font-family-mono);
+  font-size: 11px;
+}
+.sn-lab-fab__text-input:focus,
+.sn-lab-fab__color-picker:focus {
+  outline: 2px solid var(--sn-fab-accent);
+  outline-offset: 1px;
+}
+
+.sn-lab-fab__snippet {
+  margin-top: 6px;
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: calc(var(--sn-fab-radius) / 2);
+  background: var(--sn-fab-accent-soft);
+  color: var(--sn-fab-fg);
+}
+.sn-lab-fab__snippet summary {
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
 .sn-lab-fab__pre {
   margin: 0;
   padding: 10px 12px;
-  border: 2px solid var(--sn-doodle-ink);
-  border-radius: 8px 2px 8px 2px / 2px 8px 2px 8px;
-  background: var(--sn-doodle-paper);
+  border-top: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  background: var(--sn-fab-bg);
   font-family: var(--vp-font-family-mono);
   font-size: 11px;
   line-height: 1.55;
   white-space: pre;
   overflow-x: auto;
-  color: var(--sn-doodle-ink);
-  max-height: 320px;
-  overflow-y: auto;
-  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
+  color: var(--sn-fab-fg);
 }
 
 /* ── Preview tab ── */
@@ -564,19 +836,18 @@ onMounted(() => {
   justify-content: space-between;
   font-size: 12px;
   font-weight: 600;
-  color: var(--sn-doodle-ink);
+  color: var(--sn-fab-fg);
 }
 .sn-lab-fab__preview-count {
   display: inline-flex;
   align-items: center;
-  height: 20px;
-  padding: 0 8px;
-  border: 2px solid var(--sn-doodle-ink);
-  border-radius: 10px 2px 10px 2px / 2px 10px 2px 10px;
-  background: var(--sn-doodle-yellow);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--sn-doodle-ink);
+  height: 18px;
+  padding: 0 6px;
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: 9px;
+  background: var(--sn-fab-accent-soft);
+  font-size: 10px;
+  color: var(--sn-fab-fg);
 }
 .sn-lab-fab__demos {
   display: flex;
@@ -586,34 +857,32 @@ onMounted(() => {
 .sn-lab-fab__demo-pill {
   display: inline-flex;
   align-items: center;
-  height: 24px;
-  padding: 0 10px;
-  border: 2px solid var(--sn-doodle-ink);
-  border-radius: 12px 2px 12px 2px / 2px 12px 2px 12px;
-  background: var(--vp-c-bg-elv, #ffffff);
-  color: var(--sn-doodle-ink);
+  height: 22px;
+  padding: 0 8px;
+  border: var(--sn-fab-border-w) solid var(--sn-fab-border-c);
+  border-radius: 11px;
+  background: var(--sn-fab-bg);
+  color: var(--sn-fab-fg);
   font-size: 11px;
-  font-weight: 500;
   font-family: var(--vp-font-family-mono);
   cursor: pointer;
-  box-shadow: 1px 1px 0 var(--sn-doodle-ink);
-  transition: transform 0.12s, box-shadow 0.12s;
+  opacity: 0.7;
+  transition: opacity 0.12s, background 0.12s;
 }
 .sn-lab-fab__demo-pill:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
-  background: var(--sn-doodle-paper);
+  opacity: 1;
 }
 .sn-lab-fab__demo-pill.is-active {
-  background: var(--sn-doodle-pink);
-  color: var(--sn-doodle-ink);
+  opacity: 1;
+  background: var(--sn-fab-accent);
+  color: #fff;
+  border-color: var(--sn-fab-accent);
 }
-
 .sn-lab-fab__preview-stage {
-  border: 2px dashed var(--sn-doodle-ink);
-  border-radius: 10px 2px 10px 2px / 2px 10px 2px 10px;
+  border: var(--sn-fab-border-w) dashed var(--sn-fab-border-c);
+  border-radius: calc(var(--sn-fab-radius) / 2);
   padding: 12px;
-  background: var(--sn-doodle-paper);
+  background: var(--sn-fab-accent-soft);
   min-height: 80px;
 }
 
