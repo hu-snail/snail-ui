@@ -274,8 +274,26 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Container — Teleport target so scoping still works on :deep children. */
+/* ──────────────────────────────────────────────────────────────────────
+   Doodle Style — thick ink border + hard offset shadow + wavy corners +
+   paper-cream background. Inspired by Excalidraw / notebook stickers.
+   Always visible regardless of light/dark mode (the FAB must read clearly
+   as a tool layer, not blend into the doc chrome).
+
+   Background uses vp-c-bg-elv (VitePress 1.6+ spelling; older 1.5 used
+   vp-c-bg-elevated). The previous name silently resolved to undefined →
+   transparent panel, which is why "panel had no background".
+   ────────────────────────────────────────────────────────────────────── */
 .sn-lab-fab {
+  --sn-doodle-ink: #1a1a1a;
+  --sn-doodle-paper: #FFF8E7;
+  --sn-doodle-yellow: #FFD93D;
+  --sn-doodle-pink: #FF7AB6;
+  --sn-doodle-cyan: #6BCBEF;
+  --sn-doodle-green: #B8E986;
+  --sn-doodle-shadow: 4px 4px 0 var(--sn-doodle-ink);
+  --sn-doodle-shadow-lg: 6px 6px 0 var(--sn-doodle-ink);
+
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -283,43 +301,72 @@ onMounted(() => {
   font-family: var(--vp-font-family-base, -apple-system, BlinkMacSystemFont, sans-serif);
 }
 
+/* ── Trigger: round sticker, ink-bordered, offset shadow, slight tilt ── */
 .sn-lab-fab__trigger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  border: 1px solid var(--vp-c-divider);
-  background: var(--vp-c-bg-elevated);
-  color: var(--vp-c-text-1);
+  border: 2.5px solid var(--sn-doodle-ink);
+  background: var(--sn-doodle-yellow);
+  color: var(--sn-doodle-ink);
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, color 0.15s;
+  box-shadow: var(--sn-doodle-shadow);
+  transform: rotate(-6deg);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s;
 }
 .sn-lab-fab__trigger:hover {
-  transform: translateY(-1px);
-  color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.06);
+  transform: rotate(-2deg) translate(-1px, -1px);
+  background: var(--sn-doodle-pink);
+  box-shadow: 5px 5px 0 var(--sn-doodle-ink);
+}
+.sn-lab-fab__trigger:active {
+  transform: rotate(-4deg) translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--sn-doodle-ink);
 }
 .sn-lab-fab.is-open .sn-lab-fab__trigger {
-  color: var(--vp-c-bg-elevated);
-  background: var(--vp-c-text-1);
+  background: var(--sn-doodle-ink);
+  color: var(--sn-doodle-yellow);
+  border-color: var(--sn-doodle-ink);
+  transform: rotate(0deg);
+  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
 }
 
+/* ── Panel: notebook paper with wavy corners + hard offset shadow ── */
 .sn-lab-fab__panel {
   position: absolute;
   bottom: calc(100% + 12px);
   right: 0;
   width: min(420px, calc(100vw - 32px));
   max-height: min(640px, calc(100vh - 96px));
-  background: var(--vp-c-bg-elevated);
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+  background: var(--vp-c-bg-elv, #ffffff);
+  border: 2.5px solid var(--sn-doodle-ink);
+  border-radius: 22px 6px 22px 6px / 6px 22px 6px 22px;
+  box-shadow: var(--sn-doodle-shadow-lg);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transform: rotate(0.6deg);
+}
+
+/* Subtle paper-grain texture: two crossing diagonal lines, very low opacity.
+   Avoids depending on extra asset files; pure CSS noise via repeating gradients. */
+.sn-lab-fab__panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(26, 26, 26, 0.025) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(26, 26, 26, 0.025) 0 1px, transparent 1px 22px);
+  border-radius: inherit;
+  z-index: 0;
+}
+.sn-lab-fab__panel > * {
+  position: relative;
+  z-index: 1;
 }
 
 .sn-lab-fab__header {
@@ -327,15 +374,17 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 10px 12px;
-  border-bottom: 1px solid var(--vp-c-divider);
+  border-bottom: 2px dashed var(--sn-doodle-ink);
+  background: var(--sn-doodle-yellow);
 }
 .sn-lab-fab__title {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--vp-c-text-1);
+  font-weight: 700;
+  color: var(--sn-doodle-ink);
+  letter-spacing: 0.2px;
 }
 .sn-lab-fab__close {
   display: inline-flex;
@@ -343,23 +392,26 @@ onMounted(() => {
   justify-content: center;
   width: 22px;
   height: 22px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--vp-c-text-2);
+  border-radius: 50%;
+  border: 2px solid var(--sn-doodle-ink);
+  background: var(--sn-doodle-paper);
+  color: var(--sn-doodle-ink);
   cursor: pointer;
+  box-shadow: 1px 1px 0 var(--sn-doodle-ink);
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 .sn-lab-fab__close:hover {
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-1);
+  transform: rotate(90deg);
+  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
 }
 
+/* ── Tabs: chunky pill buttons with hard offset shadows ── */
 .sn-lab-fab__tabs {
   display: flex;
-  gap: 2px;
-  padding: 6px;
-  border-bottom: 1px solid var(--vp-c-divider);
-  background: var(--vp-c-bg-soft);
+  gap: 6px;
+  padding: 10px 12px;
+  border-bottom: 2px dashed var(--sn-doodle-ink);
+  background: var(--sn-doodle-paper);
 }
 .sn-lab-fab__tab {
   display: inline-flex;
@@ -367,22 +419,28 @@ onMounted(() => {
   gap: 4px;
   flex: 1;
   justify-content: center;
-  height: 28px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--vp-c-text-2);
+  height: 30px;
+  border: 2px solid var(--sn-doodle-ink);
+  border-radius: 8px 2px 8px 2px / 2px 8px 2px 8px;
+  background: var(--vp-c-bg-elv, #ffffff);
+  color: var(--sn-doodle-ink);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
+  transition: transform 0.12s, box-shadow 0.12s;
 }
 .sn-lab-fab__tab:hover {
-  color: var(--vp-c-text-1);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
+}
+.sn-lab-fab__tab:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 0 var(--sn-doodle-ink);
 }
 .sn-lab-fab__tab.is-active {
-  background: var(--vp-c-bg-elevated);
-  border-color: var(--vp-c-divider);
-  color: var(--vp-c-text-1);
+  background: var(--sn-doodle-pink);
+  color: var(--sn-doodle-ink);
 }
 
 .sn-lab-fab__body {
@@ -396,82 +454,104 @@ onMounted(() => {
   gap: 8px;
 }
 
+/* ── Style pack cards: hand-drawn bordered boxes ── */
 .sn-lab-fab__pack {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
   padding: 10px 12px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
+  border: 2px solid var(--sn-doodle-ink);
+  border-radius: 10px 2px 10px 2px / 2px 10px 2px 10px;
+  background: var(--vp-c-bg-elv, #ffffff);
+  color: var(--sn-doodle-ink);
   text-align: left;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
+  transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
 }
 .sn-lab-fab__pack:hover {
-  border-color: var(--vp-c-brand-1);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
+  background: var(--sn-doodle-paper);
 }
 .sn-lab-fab__pack.is-active {
-  border-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-  background: var(--vp-c-bg-soft);
+  background: var(--sn-doodle-green);
 }
 .sn-lab-fab__pack-label {
-  font-weight: 500;
+  font-weight: 700;
   font-size: 13px;
 }
 .sn-lab-fab__pack-desc {
   font-size: 11px;
-  color: var(--vp-c-text-3);
+  opacity: 0.7;
 }
 
 .sn-lab-fab__theme-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 .sn-lab-fab__theme-name {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 10px;
+  border: 2px solid var(--sn-doodle-ink);
+  border-radius: 6px 2px 6px 2px / 2px 6px 2px 6px;
+  background: var(--sn-doodle-cyan);
+  color: var(--sn-doodle-ink);
   font-size: 12px;
-  color: var(--vp-c-text-2);
-  font-weight: 500;
+  font-weight: 700;
   text-transform: capitalize;
 }
 .sn-lab-fab__copy {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 24px;
-  padding: 0 10px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 4px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-1);
+  height: 26px;
+  padding: 0 12px;
+  border: 2px solid var(--sn-doodle-ink);
+  border-radius: 6px 2px 6px 2px / 2px 6px 2px 6px;
+  background: var(--vp-c-bg-elv, #ffffff);
+  color: var(--sn-doodle-ink);
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.sn-lab-fab__copy:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--sn-doodle-ink);
+}
+.sn-lab-fab__copy:active {
+  transform: translate(1px, 1px);
+  box-shadow: 0 0 0 var(--sn-doodle-ink);
 }
 .sn-lab-fab__copy.is-copied {
-  color: var(--vp-c-success-1);
-  border-color: var(--vp-c-success-1);
+  background: var(--sn-doodle-green);
 }
 
 .sn-lab-fab__pre {
   margin: 0;
   padding: 10px 12px;
-  border-radius: 6px;
-  background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-divider);
+  border: 2px solid var(--sn-doodle-ink);
+  border-radius: 8px 2px 8px 2px / 2px 8px 2px 8px;
+  background: var(--sn-doodle-paper);
   font-family: var(--vp-font-family-mono);
   font-size: 11px;
   line-height: 1.55;
   white-space: pre;
   overflow-x: auto;
-  color: var(--vp-c-text-1);
+  color: var(--sn-doodle-ink);
   max-height: 320px;
   overflow-y: auto;
+  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
 }
 
+/* ── Preview tab ── */
 .sn-lab-fab__section--preview {
   gap: 10px;
 }
@@ -480,19 +560,20 @@ onMounted(() => {
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--vp-c-text-2);
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--sn-doodle-ink);
 }
 .sn-lab-fab__preview-count {
   display: inline-flex;
   align-items: center;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: 9px;
-  background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-divider);
+  height: 20px;
+  padding: 0 8px;
+  border: 2px solid var(--sn-doodle-ink);
+  border-radius: 10px 2px 10px 2px / 2px 10px 2px 10px;
+  background: var(--sn-doodle-yellow);
   font-size: 11px;
-  color: var(--vp-c-text-3);
+  font-weight: 700;
+  color: var(--sn-doodle-ink);
 }
 .sn-lab-fab__demos {
   display: flex;
@@ -502,38 +583,36 @@ onMounted(() => {
 .sn-lab-fab__demo-pill {
   display: inline-flex;
   align-items: center;
-  height: 22px;
-  padding: 0 8px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 11px;
-  background: var(--vp-c-bg);
-  color: var(--vp-c-text-2);
+  height: 24px;
+  padding: 0 10px;
+  border: 2px solid var(--sn-doodle-ink);
+  border-radius: 12px 2px 12px 2px / 2px 12px 2px 12px;
+  background: var(--vp-c-bg-elv, #ffffff);
+  color: var(--sn-doodle-ink);
   font-size: 11px;
+  font-weight: 500;
   font-family: var(--vp-font-family-mono);
   cursor: pointer;
+  box-shadow: 1px 1px 0 var(--sn-doodle-ink);
+  transition: transform 0.12s, box-shadow 0.12s;
 }
 .sn-lab-fab__demo-pill:hover {
-  border-color: var(--vp-c-brand-1);
-  color: var(--vp-c-text-1);
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 var(--sn-doodle-ink);
+  background: var(--sn-doodle-paper);
 }
 .sn-lab-fab__demo-pill.is-active {
-  border-color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-  color: var(--sn-web-color-action-primary, var(--vp-c-brand-1));
-  background: var(--vp-c-bg-soft);
+  background: var(--sn-doodle-pink);
+  color: var(--sn-doodle-ink);
 }
 
 .sn-lab-fab__preview-stage {
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
+  border: 2px dashed var(--sn-doodle-ink);
+  border-radius: 10px 2px 10px 2px / 2px 10px 2px 10px;
   padding: 12px;
-  background: var(--vp-c-bg-soft);
+  background: var(--sn-doodle-paper);
   min-height: 80px;
 }
-
-/* Demo.vue uses :deep scope - in scoped FAB we need to reach its DOM. The
-   embedded <Demo bare /> inside .sn-lab-fab__preview-stage should render
-   normally because Teleport-to-body + scoped CSS still match the inner
-   scoped styles via [data-v-*] attribute on the wrapper. */
 
 @media (max-width: 640px) {
   .sn-lab-fab {

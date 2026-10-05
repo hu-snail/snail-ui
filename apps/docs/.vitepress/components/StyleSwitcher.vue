@@ -116,7 +116,7 @@ function applyPack(name: string): void {
   position: absolute;
   bottom: calc(100% + 8px);
   right: 0;
-  background: var(--vp-c-bg-elevated);
+  background: var(--vp-c-bg-elv, #ffffff);
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
   padding: 8px;
