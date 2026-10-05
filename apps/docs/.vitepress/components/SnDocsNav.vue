@@ -101,7 +101,7 @@ function openSearch(): void {
   align-items: center;
   gap: 16px;
   width: 100%;
-  padding: 12px 24px;
+  padding: 12px 0;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-primary);
   border-bottom: 1px solid var(--sn-web-color-border-default);
