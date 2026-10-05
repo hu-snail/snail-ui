@@ -212,3 +212,39 @@ table.props code {
 .snui-button--small { height: 24px; padding: 0 12px; font-size: 12px; }
 .snui-button--medium { height: 32px; padding: 0 16px; font-size: 14px; }
 .snui-button--large { height: 40px; padding: 0 20px; font-size: 16px; }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Navbar search button — make it visibly a search affordance on every
+   viewport (VitePress's default collapses to a bare icon at <768px and
+   even at desktop width the placeholder is small enough to miss). Click
+   handler is intercepted by CommandPalette (capture-phase) so the user
+   gets our component-aware palette instead of the built-in local-search
+   modal.
+   ────────────────────────────────────────────────────────────────────── */
+.DocSearch-Button {
+  width: auto !important;
+  min-width: 200px !important;
+  height: 36px !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  border-radius: 8px !important;
+  background-color: var(--vp-c-bg-alt, var(--vp-c-bg-soft)) !important;
+  padding: 0 12px !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  color: var(--vp-c-text-2) !important;
+  transition: border-color 0.2s, background 0.2s !important;
+}
+.DocSearch-Button:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  color: var(--vp-c-text-1) !important;
+}
+.DocSearch-Button-Placeholder,
+.DocSearch-Button-Keys,
+.DocSearch-Search-Icon {
+  display: inline-flex !important;
+  visibility: visible !important;
+}
+.DocSearch-Button-Keys {
+  margin-left: auto !important;
+}

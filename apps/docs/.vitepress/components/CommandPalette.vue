@@ -140,10 +140,28 @@ function onInputKeydown(e: KeyboardEvent): void {
 
 onMounted(() => {
   window.addEventListener('keydown', onGlobalKeydown)
+  // Intercept VitePress's default navbar search button (`.DocSearch-Button`)
+  // so clicking it opens OUR palette instead of the built-in local-search
+  // modal. Without this, two search UIs coexist and the navbar button
+  // never reaches us. Capture phase + stopPropagation prevents VitePress's
+  // own @click handler from firing.
+  document.addEventListener('click', onDocClickCapture, { capture: true })
 })
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', onGlobalKeydown)
+  document.removeEventListener('click', onDocClickCapture, { capture: true })
 })
+
+function onDocClickCapture(e: MouseEvent): void {
+  const target = e.target as HTMLElement | null
+  if (target?.closest?.('.DocSearch-Button')) {
+    e.stopPropagation()
+    e.preventDefault()
+    open.value = true
+    query.value = ''
+    selectedIdx.value = 0
+  }
+}
 </script>
 
 <template>
