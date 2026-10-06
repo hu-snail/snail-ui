@@ -4,12 +4,22 @@
  *
  * Reference library: naive-ui `n-menu`
  *   (https://www.naiveui.com/zh-CN/light/components/menu)
- * Per AGENTS.md §112, the props that drive the docs-site chrome (mode,
- * options, value, expandedKeys, onUpdate*) are 1:1 with n-menu.
+ * Per AGENTS.md §112, props + their semantics mirror n-menu 1:1.
  *
- * Advanced n-menu features (suffix / collapsed / collapsedWidth /
- * layoutSiderInjection / dropdown submenu / virtualized overflow ellipsis
- * / tree-mate based label field remapping) are §112 future markers.
+ * 1:1 parity (this version): mode / options / value / defaultValue /
+ *   expandedKeys / defaultExpandedKeys / defaultExpandAll / accordion /
+ *   indent / inverted / options.icon / label-field / key-field /
+ *   children-field remap (so consumers can pass API-shaped trees without
+ *   reshaping).
+ *
+ * §112 future markers (NOT in this version, doc-roadmap):
+ *   - collapsed / collapsedWidth: sidecar collapse-to-bar layout
+ *   - layoutSiderInjection / responsive: auto-collapsing sidebar
+ *   - dropdown submenu (dropdownProps)
+ *   - renderIcon / renderLabel / renderSuffix / renderExtra render-fns
+ *   - nodeProps: per-node Vue props injection
+ *   - virtualized overflow ellipsis
+ *   - tree-mate based label remap (we expose plain key/children-field instead)
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only (px units).
@@ -17,17 +27,20 @@
  * Usage:
  *   <SnMenu mode="horizontal" :options="navItems" v-model:value="active" />
  *   <SnMenu mode="vertical" :options="treeItems" v-model:value="active"
- *           v-model:expanded-keys="expanded" />
+ *           v-model:expanded-keys="expanded" :accordion="true" />
  *
  * options shape:
- *   { key, label, children?: SnMenuOption[], disabled?: boolean, href?: string, icon?: Component }
+ *   { key, label, children?, disabled?, href?, [icon]? }  (default)
+ *   { [label-field], [key-field], [children-field], ... }  (with remap)
  */
 
 import { computed } from 'vue'
 
 defineOptions({ name: 'SnMenu' })
 
-/** SnMenu option shape — flat-friendly, recursive for vertical mode. */
+/** SnMenu option shape — default field names. When consumers pass a tree
+ * that doesn't match (e.g. their API returns `title` instead of `label`),
+ * they set `label-field="title"` etc. on the menu to remap. */
 export interface SnMenuOption {
   key: string | number
   label: string
@@ -35,9 +48,12 @@ export interface SnMenuOption {
   children?: SnMenuOption[]
   /** Disable interaction. */
   disabled?: boolean
-  /** Optional href for navigation. When provided, item renders as <a>. */
-  href?: string
-  /** Optional icon component reference. */
+  /** Optional href for navigation. When provided, item renders as <a>.
+   * `undefined` is allowed for the default-valued optional field so the
+   * normalize step can write back `undefined` without TS complaining under
+   * `exactOptionalPropertyTypes`. */
+  href?: string | undefined
+  /** Optional icon component reference (markRaw Component or functional). */
   icon?: unknown
 }
 
@@ -63,6 +79,15 @@ const props = withDefaults(
     accordion?: boolean
     /** Indent per level (px). Mirrors n-menu `indent`. Default 32. */
     indent?: number
+    /** Dark backdrop variant — colors flip for use on color-background navbars.
+     * Mirrors n-menu `inverted`. Default false. */
+    inverted?: boolean
+    /** Field name used to read each node's `key`. Mirrors n-menu `key-field`. */
+    keyField?: string
+    /** Field name used to read each node's `label`. Mirrors n-menu `label-field`. */
+    labelField?: string
+    /** Field name used to read each node's children array. Mirrors n-menu `children-field`. */
+    childrenField?: string
   }>(),
   {
     mode: 'vertical',
@@ -74,6 +99,10 @@ const props = withDefaults(
     defaultExpandAll: false,
     accordion: false,
     indent: 32,
+    inverted: false,
+    keyField: 'key',
+    labelField: 'label',
+    childrenField: 'children',
   },
 )
 
@@ -84,8 +113,46 @@ const emit = defineEmits<{
   (e: 'select', value: string | number | null, item: SnMenuOption): void
 }>()
 
+/* ─────────── Tree remapping (key-field / label-field / children-field) ───────
+ * Consumers frequently have an API payload that uses different field names
+ * (e.g. `id` instead of `key`, `title` instead of `label`). Rather than force
+ * them to reshape the tree, we expose n-menu's field-remap props. Internally
+ * we normalize on read; the consumer's original object is unchanged. */
+interface RawNode {
+  [k: string]: unknown
+}
+function readKey(raw: RawNode): string | number {
+  const v = raw[props.keyField]
+  return (typeof v === 'string' || typeof v === 'number') ? v : ''
+}
+function readLabel(raw: RawNode): string {
+  const v = raw[props.labelField]
+  return typeof v === 'string' ? v : ''
+}
+function readChildren(raw: RawNode): RawNode[] | undefined {
+  const v = raw[props.childrenField]
+  return Array.isArray(v) ? (v as RawNode[]) : undefined
+}
+function normalize(raw: RawNode): SnMenuOption {
+  const children = readChildren(raw)
+  const out: SnMenuOption = {
+    key: readKey(raw),
+    label: readLabel(raw),
+    disabled: typeof raw['disabled'] === 'boolean' ? raw['disabled'] : false,
+    href: typeof raw['href'] === 'string' ? raw['href'] : undefined,
+    icon: raw['icon'],
+  }
+  if (children) out.children = children.map((c) => normalize(c))
+  return out
+}
+const normalizedOptions = computed<SnMenuOption[]>(() =>
+  (props.options ?? []).map((o) => normalize(o as unknown as RawNode)),
+)
+
+/* ─────────── Reactive state ─────────── */
+
 /** Reactive view of the current value. Falls back to `defaultValue`. */
-const currentValue = computed<string | number |null>(() => {
+const currentValue = computed<string | number | null>(() => {
   return props.value !== null ? props.value : props.defaultValue
 })
 
@@ -103,7 +170,7 @@ const currentExpanded = computed<Set<string | number>>(() => {
         }
       }
     }
-    walk(props.options ?? [])
+    walk(normalizedOptions.value)
     return all
   }
   return new Set<string | number>()
@@ -128,7 +195,7 @@ function toggleGroup(key: string | number): void {
   else {
     if (props.accordion) {
       // Close other top-level groups
-      for (const o of props.options ?? []) {
+      for (const o of normalizedOptions.value) {
         if (o.children && o.children.length && o.key !== key) {
           next.delete(o.key)
         }
@@ -152,11 +219,15 @@ function indentStyleForLevel(level: number): Record<string, string> {
 
 <template>
   <nav
-    :class="['sn-menu', `sn-menu--${mode}`]"
+    :class="[
+      'sn-menu',
+      `sn-menu--${mode}`,
+      inverted ? 'sn-menu--inverted' : '',
+    ]"
     :role="mode === 'horizontal' ? 'menubar' : 'menu'"
   >
     <div class="sn-menu__list">
-      <template v-for="item in options" :key="`top-${item.key}`">
+      <template v-for="item in normalizedOptions" :key="`top-${item.key}`">
         <component
           :is="isLink(item) ? 'a' : 'button'"
           v-if="mode === 'horizontal' || !item.children?.length"
@@ -166,6 +237,7 @@ function indentStyleForLevel(level: number): Record<string, string> {
               'sn-menu-item--disabled': item.disabled,
               'sn-menu-item--group': !!item.children?.length,
               'sn-menu-item--expanded': isExpanded(item.key) && !!item.children?.length,
+              'sn-menu-item--inverted': inverted,
             },
           ]"
           :type="isLink(item) ? undefined : 'button'"
@@ -191,7 +263,9 @@ function indentStyleForLevel(level: number): Record<string, string> {
           type="button"
           :class="[
             'sn-menu-item sn-menu-item--group',
-            { 'sn-menu-item--expanded': isExpanded(item.key) },
+            { 'sn-menu-item--expanded': isExpanded(item.key),
+              'sn-menu-item--inverted': inverted,
+            },
           ]"
           :aria-expanded="isExpanded(item.key) ? 'true' : 'false'"
           @click="toggleGroup(item.key)"
@@ -215,6 +289,7 @@ function indentStyleForLevel(level: number): Record<string, string> {
               'sn-menu-item sn-menu-item--leaf',
               { 'sn-menu-item--active': isActive(child.key),
                 'sn-menu-item--disabled': child.disabled,
+                'sn-menu-item--inverted': inverted,
               },
             ]"
             :href="isLink(child) ? child.href : undefined"
@@ -282,6 +357,15 @@ function indentStyleForLevel(level: number): Record<string, string> {
 .sn-menu-item--group {
   font-weight: 600;
 }
+.sn-menu-item__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+  flex-shrink: 0;
+}
 .sn-menu-item__caret {
   margin-left: auto;
   font-size: 10px;
@@ -295,6 +379,27 @@ function indentStyleForLevel(level: number): Record<string, string> {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+/* Inverted (dark backdrop nav) — n-menu `inverted: true`. Active item
+ * uses a translucent white wash + bold text; hover is a faint white wash.
+ * Pairs with --sn-web-color-action-primary / --sn-web-color-text-on-primary
+ * via the consumer (no hardcoded brand colors here). */
+.sn-menu--inverted,
+.sn-menu--inverted .sn-menu-item {
+  color: rgba(255, 255, 255, 0.82);
+}
+.sn-menu--inverted .sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active) {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+.sn-menu--inverted .sn-menu-item--active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-weight: 600;
+}
+.sn-menu--inverted .sn-menu-item__caret {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Doodle skin */

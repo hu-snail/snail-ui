@@ -6,9 +6,15 @@
 
 ## 实时预览
 
-<Demo name="menu-web-horizontal" description="horizontal 模式（顶导航风格）" />
+<Demo name="menu-web-basic" description="horizontal 模式 + selected state (v-model:value)" />
 
-<Demo name="menu-web-vertical" description="vertical 模式（侧边栏风格）+ accordion" />
+<Demo name="menu-web-vertical" description="vertical 模式（侧边栏风格）+ accordion 互斥展开" />
+
+<Demo name="menu-web-icons" description="options.icon — 用 SnIcon / lucide 给每项加图标" />
+
+<Demo name="menu-web-inverted" description="inverted: true — 深色背景顶导航（适合 colorful nav bar）" />
+
+<Demo name="menu-web-field-remap" description="label-field / key-field / children-field — 适配 API 树形（不用 reshape 数据）" />
 
 ## 基础用法
 
@@ -58,6 +64,10 @@ const active = ref<string | null>(null)
 | `defaultExpandAll` | `boolean` | `false` | 默认展开所有有子节点的组 |
 | `accordion` | `boolean` | `false` | 同时只允许一个 group 展开（手风琴） |
 | `indent` | `number` | `32` | 每层 indent 像素（vertical 模式） |
+| `inverted` | `boolean` | `false` | 深色背景变体（适合 gradient / dark surface 顶导航） |
+| `keyField` | `string` | `'key'` | 树节点的 key 字段名（API 树 remap） |
+| `labelField` | `string` | `'label'` | 树节点的 label 字段名 |
+| `childrenField` | `string` | `'children'` | 树节点的 children 字段名 |
 
 ### SnMenuOption
 
@@ -68,9 +78,12 @@ interface SnMenuOption {
   children?: SnMenuOption[]       // vertical 模式生效
   disabled?: boolean
   href?: string                  // 传了就渲染为 <a>
-  icon?: Component               // 预留 icon 槽（v0.1 未消费）
+  icon?: Component               // 每项可选图标（SnIcon / lucide 等）
 }
 ```
+
+> 通过 `keyField` / `labelField` / `childrenField` 三个 prop，可直接消费 API
+> 返回的树而不必 reshape。详见上面 `menu-web-field-remap` demo。
 
 ### Events
 

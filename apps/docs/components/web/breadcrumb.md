@@ -6,6 +6,10 @@
 
 <Demo name="breadcrumb-web-basic" description="默认分隔符 / 自定义分隔符 / 最后一页不可点" />
 
+<Demo name="breadcrumb-web-separator" description="4 种分隔符变体（/ / › / · / →）" />
+
+<Demo name="breadcrumb-web-item-count" description="itemCount 截断 + 「X more」 affordance" />
+
 ## 基础用法
 
 ```ts
@@ -30,6 +34,7 @@ import '@snui/tokens-web/styles'
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `separator` | `string` | `'/'` | 分隔符文本 |
+| `itemCount` | `number` | `Infinity` | 最多显示几项；超出部分中间折叠为「X more」 |
 
 ### SnBreadcrumbItem Props
 

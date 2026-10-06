@@ -8,6 +8,18 @@
 
 <Demo name="card-web" description="默认 variant（带边框）+ elevated variant（无边框 + 阴影）。展示 title + header slot + footer slot + body 内容。" />
 
+## 实时预览
+
+<Demo name="card-web-cover" description="cover 槽位（顶部 banner）+ action 槽位（底部按钮）" />
+
+<Demo name="card-web-footer" description="footer 槽位（时间戳 + 操作）" />
+
+<Demo name="card-web-closable" description="closable: true + @close 事件" />
+
+<Demo name="card-web-hoverable" description="hoverable: true 鼠标悬停上浮（+ elevated 组合）" />
+
+<Demo name="card-web-sizes" description="size 4 档（small / medium / large / huge）— padding + 视觉块体量差异" />
+
 ## Props
 
 > 完整 prop 列表与 [naive-ui `n-card`](https://www.naiveui.com/zh-CN/light/components/card) 1:1 对齐。下表标注 `§112 对齐` = naive-ui 同名 prop；`便利 alias` = snail-aui 友好命名，行为映射到对齐 props。

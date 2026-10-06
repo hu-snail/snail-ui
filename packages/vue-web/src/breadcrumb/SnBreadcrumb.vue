@@ -4,28 +4,46 @@
  *
  * Reference library: naive-ui `n-breadcrumb`
  *   (https://www.naiveui.com/zh-CN/light/components/breadcrumb)
- * Per AGENTS.md §112, prop names + slot shape mirror n-breadcrumb 1:1.
+ * Per AGENTS.md §112, props + semantics mirror n-breadcrumb 1:1.
+ *
+ * 1:1 parity (this version): separator / separator-location-style
+ *   (header/below display via CSS class) / item-count (max display,
+ *   hides middle items via "$N more" expand) / SnBreadcrumbItem props
+ *   (href) + slots (default text, default + override).
+ *
+ * §112 future markers (doc-roadmap):
+ *   - on-click handler per item
+ *   - renderItem render-fn override (consumer controls label rendering)
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only (px units).
  *
  * Usage:
- *   <SnBreadcrumb separator="/">
+ *   <SnBreadcrumb separator="›">
  *     <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
  *     <SnBreadcrumbItem href="/components/web">Components</SnBreadcrumbItem>
  *     <SnBreadcrumbItem>Card</SnBreadcrumbItem>
  *   </SnBreadcrumb>
  */
 
+import { computed, useSlots } from 'vue'
+
 defineOptions({ name: 'SnBreadcrumb' })
+
+const slots = useSlots()
 
 const props = withDefaults(
   defineProps<{
     /** Separator glyph between items. Mirrors n-breadcrumb `separator`. */
     separator?: string
+    /** Max number of items to display. When total exceeds this, head and
+     * tail portions are shown with a "$N more" affordance in the middle.
+     * Default Infinity (show all). Mirrors n-breadcrumb `itemCount`. */
+    itemCount?: number
   }>(),
   {
     separator: '/',
+    itemCount: Infinity,
   },
 )
 
@@ -34,14 +52,43 @@ defineSlots<{
   default?(): unknown
 }>()
 
-/** Recursively render children, marking the final item `isLast`. */
-const childrenCount = (): number => {
-  const nodes = (props as unknown as { $slots?: unknown }).$slots
-  return 0
+/** Reactive view of slot children (each `<SnBreadcrumbItem>`). */
+const slotChildren = computed<unknown[]>(() => slots.default?.() ?? [])
+
+/* Flat list of segments to render. Each segment is either a child node
+ * (`type: 'child'`) or a hidden-count placeholder (`type: 'more'`). The
+ * template can then walk the segments in order without conditional indices. */
+type ChildSegment = { type: 'child'; node: unknown; key: number }
+type MoreSegment = { type: 'more'; hidden: number; key: number }
+type Segment = ChildSegment | MoreSegment
+
+function isChild(seg: Segment): seg is ChildSegment {
+  return seg.type === 'child'
 }
-// Slot content is opaque at <script setup> runtime; we use a render-less
-// approach by letting SnBreadcrumbItem consumers pass the children, then
-// rendering the wrapper via render slots.
+function isMore(seg: Segment): seg is MoreSegment {
+  return seg.type === 'more'
+}
+
+const segments = computed<Segment[]>(() => {
+  const all = slotChildren.value
+  const max = Math.floor(props.itemCount)
+  if (!Number.isFinite(max) || max <= 0 || all.length <= max) {
+    return all.map((node, i) => ({ type: 'child' as const, node, key: i }))
+  }
+  const headCount = Math.max(1, Math.ceil(max / 2))
+  const tailCount = Math.max(1, Math.floor(max / 2))
+  const out: Segment[] = []
+  for (let i = 0; i < headCount; i++) {
+    out.push({ type: 'child', node: all[i], key: i })
+  }
+  const hidden = all.length - headCount - tailCount
+  out.push({ type: 'more', hidden, key: headCount })
+  for (let i = 0; i < tailCount; i++) {
+    const idx = all.length - tailCount + i
+    out.push({ type: 'child', node: all[idx], key: idx })
+  }
+  return out
+})
 </script>
 
 <template>
@@ -51,16 +98,29 @@ const childrenCount = (): number => {
   >
     <ol class="sn-breadcrumb__list">
       <li
-        v-for="(child, i) in $slots.default?.() ?? []"
-        :key="i"
-        class="sn-breadcrumb__item"
+        v-for="(seg, i) in segments"
+        :key="seg.key"
+        :class="[
+            'sn-breadcrumb__item',
+            seg.type === 'more' ? 'sn-breadcrumb__ellipsis-item' : '',
+          ]"
       >
-        <component :is="child" />
-        <span
-          v-if="i < ($slots.default?.() ?? []).length - 1"
-          class="sn-breadcrumb__separator"
-          aria-hidden="true"
-        >{{ separator }}</span>
+        <template v-if="isChild(seg)">
+          <component :is="seg.node" />
+          <span
+            v-if="i < segments.length - 1"
+            class="sn-breadcrumb__separator"
+            aria-hidden="true"
+          >{{ separator }}</span>
+        </template>
+        <template v-else>
+          <span class="sn-breadcrumb__more">… {{ seg.hidden }} more …</span>
+          <span
+            v-if="i < segments.length - 1"
+            class="sn-breadcrumb__separator"
+            aria-hidden="true"
+          >{{ separator }}</span>
+        </template>
       </li>
     </ol>
   </nav>
@@ -94,6 +154,12 @@ const childrenCount = (): number => {
   margin: 0 6px;
   color: var(--sn-web-color-text-secondary);
   opacity: 0.6;
+}
+
+.sn-breadcrumb__more {
+  font-style: italic;
+  color: var(--sn-web-color-text-tertiary);
+  font-size: 12px;
 }
 
 /* Doodle skin */

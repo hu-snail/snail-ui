@@ -4,21 +4,26 @@
  *
  * Reference library: naive-ui `n-collapse`
  *   (https://www.naiveui.com/zh-CN/light/components/collapse)
- * Per AGENTS.md §112, prop names + default values mirror n-collapse 1:1.
+ * Per AGENTS.md §112, props + semantics mirror n-collapse 1:1.
+ *
+ * 1:1 parity (this version): expandedNames / defaultExpandedNames /
+ *   accordion / arrowPlacement / trigger / displayDirective /
+ *   bordered.
+ *
+ * §112 future markers (doc-roadmap):
+ *   - arrow-round / arrow-color custom CSS hooks
+ *   - item-types for type-level rendering (info / success / warning / error)
+ *   - title-spacing configurable gap between header + content
+ *   - on-item-header-click timing / appear-disappear curves
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only (px units).
  *
  * Usage:
- *   <SnCollapse :default-expanded-names="['1']">
+ *   <SnCollapse :default-expanded-names="['1']" bordered>
  *     <SnCollapseItem title="Section 1" name="1">Content 1</SnCollapseItem>
  *     <SnCollapseItem title="Section 2" name="2">Content 2</SnCollapseItem>
  *   </SnCollapse>
- *
- * Not responsible for:
- *   - Animation timing curves (n-collapse uses appear/disappear timing — v0.1
- *     uses simple transition; expand later)
- *   - lazy rendering (n-collapse `displayDirective: 'show' | 'if'`)
  */
 
 import { computed, provide } from 'vue'
@@ -38,6 +43,13 @@ const props = withDefaults(
     arrowPlacement?: 'left' | 'right'
     /** Trigger mode. Mirrors n-collapse `trigger`. */
     trigger?: 'click' | 'hover'
+    /** Whether to render a bordered container around the collapse group.
+     * Mirrors n-collapse `bordered`. Default false. */
+    bordered?: boolean
+    /** How to render collapsed content: 'show' uses display (keeps DOM, cheap
+     * to toggle); 'if' uses v-if (saves DOM but re-mount cost on each toggle).
+     * Mirrors n-collapse `displayDirective`. Default 'if'. */
+    displayDirective?: 'show' | 'if'
   }>(),
   {
     expandedNames: () => [],
@@ -45,6 +57,8 @@ const props = withDefaults(
     accordion: false,
     arrowPlacement: 'left',
     trigger: 'click',
+    bordered: false,
+    displayDirective: 'if',
   },
 )
 
@@ -85,6 +99,8 @@ function isExpanded(name: string | number): boolean {
 provide('sn-collapse-toggle', toggleItem)
 provide('sn-collapse-is-expanded', isExpanded)
 provide('sn-collapse-arrow-placement', () => props.arrowPlacement)
+provide('sn-collapse-display-directive', () => props.displayDirective)
+provide('sn-collapse-trigger', () => props.trigger)
 </script>
 
 <template>
@@ -93,6 +109,7 @@ provide('sn-collapse-arrow-placement', () => props.arrowPlacement)
       'sn-collapse',
       `sn-collapse--arrow-${arrowPlacement}`,
       accordion ? 'sn-collapse--accordion' : '',
+      bordered ? 'sn-collapse--bordered' : '',
     ]"
     role="region"
   >
@@ -105,5 +122,15 @@ provide('sn-collapse-arrow-placement', () => props.arrowPlacement)
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+/* Bordered mode — wrap each item in a card-like outline (mirrors
+ * n-collapse `bordered: true`). Items visually stack with shared borders. */
+.sn-collapse--bordered {
+  gap: 0;
+  border: 1px solid var(--sn-web-color-border-default);
+  border-radius: 6px;
+  background: var(--sn-web-color-background-surface);
+  overflow: hidden;
 }
 </style>

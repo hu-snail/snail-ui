@@ -35,16 +35,25 @@ const props = withDefaults(
 type ToggleFn = (name: string | number) => void
 type IsExpandedFn = (name: string | number) => boolean
 type ArrowFn = () => 'left' | 'right'
+type DisplayFn = () => 'show' | 'if'
+type TriggerFn = () => 'click' | 'hover'
 
 const toggle = inject<ToggleFn>('sn-collapse-toggle', () => {})
 const isExpanded = inject<IsExpandedFn>('sn-collapse-is-expanded', () => false)
 const getArrowPlacement = inject<ArrowFn>('sn-collapse-arrow-placement', () => 'left')
+const getDisplayDirective = inject<DisplayFn>('sn-collapse-display-directive', () => 'if' as const)
+const getTrigger = inject<TriggerFn>('sn-collapse-trigger', () => 'click' as const)
 
 function handleHeaderClick(): void {
   if (props.disabled) return
   if (typeof props.name === 'number' || typeof props.name === 'string') {
     toggle(props.name)
   }
+}
+
+function handleHeaderMouseenter(): void {
+  if (getTrigger() !== 'hover') return
+  handleHeaderClick()
 }
 
 const expanded = (): boolean => {
@@ -62,6 +71,17 @@ const arrowPlacement = (): 'left' | 'right' => {
   if (props.arrow === 'left' || props.arrow === 'right') return props.arrow
   return getArrowPlacement()
 }
+
+/** `v-show` vs `v-if` for collapsed content — selected via parent's
+ * `displayDirective`. 'show' = always rendered, toggle via display:none.
+ * 'if' = unmounted when not expanded (default, cheaper for heavy content). */
+const displayMode = (): 'show' | 'if' => getDisplayDirective()
+
+/** Whether parent is in 'show' mode (always mount). */
+const isShowMode = (): boolean => displayMode() === 'show'
+
+/** Whether parent is in 'if' mode AND this item is expanded (mount now). */
+const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded()
 </script>
 
 <template>
@@ -79,6 +99,7 @@ const arrowPlacement = (): 'left' | 'right' => {
       :aria-disabled="disabled || undefined"
       :tabindex="disabled ? -1 : 0"
       @click="handleHeaderClick"
+      @mouseenter="handleHeaderMouseenter"
       @keydown.enter.prevent="handleHeaderClick"
       @keydown.space.prevent="handleHeaderClick"
     >
@@ -94,8 +115,23 @@ const arrowPlacement = (): 'left' | 'right' => {
         aria-hidden="true"
       >{{ expanded() ? '▾' : '▸' }}</span>
     </header>
+    <!--
+      Body rendering strategy (per parent's `displayDirective`):
+        - 'if'  → mounted only while expanded (cheaper for heavy content)
+        - 'show' → always mounted; v-show toggles visibility
+      We split into two mutually exclusive divs to avoid the
+      v-if + v-show ambiguity that warns "Invalid vnode type".
+    -->
     <div
+      v-if="isShowMode()"
       v-show="expanded()"
+      class="sn-collapse-item__body"
+      role="region"
+    >
+      <slot />
+    </div>
+    <div
+      v-else-if="isIfModeMounted()"
       class="sn-collapse-item__body"
       role="region"
     >
@@ -150,6 +186,23 @@ const arrowPlacement = (): 'left' | 'right' => {
 .sn-collapse-item--disabled .sn-collapse-item__header {
   cursor: not-allowed;
   opacity: 0.5;
+}
+
+/* Bordered mode (parent .sn-collapse--bordered) — drop our own rounded
+ * surface so each item's bottom border lines up with the next item's top
+ * border (clean shared-line visual, like n-collapse). */
+.sn-collapse--bordered .sn-collapse-item {
+  border-radius: 0;
+  background: transparent;
+}
+.sn-collapse--bordered .sn-collapse-item:not(:first-child) {
+  border-top: 1px solid var(--sn-web-color-border-default);
+}
+.sn-collapse--bordered .sn-collapse-item__header {
+  border-radius: 0;
+}
+.sn-collapse--bordered .sn-collapse-item__header:hover:not(.sn-collapse-item__header--disabled) {
+  background: var(--sn-web-color-background-subtle);
 }
 
 /* Doodle skin */

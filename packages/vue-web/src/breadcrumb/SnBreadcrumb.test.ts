@@ -65,4 +65,43 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
     expect(w.find('.sn-breadcrumb__item span').exists()).toBe(true)
     expect(w.find('.sn-breadcrumb__item a').exists()).toBe(false)
   })
+
+  /* ─────────── §112 expansion: itemCount truncation ───────── */
+
+  it('itemCount limits visible items + adds ellipsis', () => {
+    const renderLong = {
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb separator="/" :item-count="3">
+          <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/a">A</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/b">B</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/c">C</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/d">D</SnBreadcrumbItem>
+          <SnBreadcrumbItem>Current</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    }
+    const w = mount(renderLong)
+    // itemCount=3 with total=6: head(2) + ellipsis(1) + tail(1) = 4 visible
+    // li elements (each li also carries .sn-breadcrumb__item).
+    expect(w.findAll('.sn-breadcrumb__item').length).toBe(4)
+    expect(w.find('.sn-breadcrumb__ellipsis-item').exists()).toBe(true)
+    expect(w.find('.sn-breadcrumb__more').exists()).toBe(true)
+    expect(w.find('.sn-breadcrumb__more').text()).toContain('3')
+  })
+
+  it('itemCount above total renders all items, no ellipsis', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb separator="/" :item-count="99">
+          <SnBreadcrumbItem href="/">A</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/b">B</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    expect(w.findAll('.sn-breadcrumb__item').length).toBe(2)
+    expect(w.find('.sn-breadcrumb__more').exists()).toBe(false)
+  })
 })

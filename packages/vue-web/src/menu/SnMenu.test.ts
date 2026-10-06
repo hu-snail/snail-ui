@@ -180,4 +180,95 @@ describe('SnMenu (AUI-WEB-NAV-001)', () => {
     expect(activeLeaf).toBeTruthy()
     expect(activeLeaf!.attributes('aria-current')).toBe('page')
   })
+
+  /* ─────────── §112 expansion: icon / inverted / field remap ─────────── */
+
+  it('renders options.icon component inside the item', () => {
+    const IconStub = { template: '<i class="my-icon" />' }
+    const withIcon: SnMenuOption[] = [
+      { key: 'a', label: 'A', icon: IconStub, href: '/a' },
+    ]
+    const w = mount(SnMenu, {
+      props: { mode: 'horizontal', options: withIcon },
+    })
+    expect(w.find('.sn-menu-item__icon .my-icon').exists()).toBe(true)
+  })
+
+  it('inverted mode applies inverted class for dark nav', () => {
+    const w = mount(SnMenu, {
+      props: { mode: 'horizontal', options: navItems, inverted: true },
+    })
+    expect(w.classes()).toContain('sn-menu--inverted')
+    expect(w.find('.sn-menu-item').classes()).toContain('sn-menu-item--inverted')
+  })
+
+  it('label-field remaps label from a custom key', () => {
+    interface ApiNode { id: string; title: string }
+    const apiTree: ApiNode[] = [
+      { id: 'guide', title: 'API Guide' },
+      { id: 'intro', title: 'API Intro' },
+    ]
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'horizontal',
+        // Cast through unknown — consumer is responsible for shape match
+        options: apiTree as unknown as SnMenuOption[],
+        keyField: 'id',
+        labelField: 'title',
+      },
+    })
+    expect(w.text()).toContain('API Guide')
+    expect(w.text()).toContain('API Intro')
+  })
+
+  it('key-field remaps key from a custom key + works with v-model:value', async () => {
+    interface ApiNode { uid: number; title: string; href: string }
+    const apiTree: ApiNode[] = [
+      { uid: 100, title: 'One', href: '/one' },
+      { uid: 200, title: 'Two', href: '/two' },
+    ]
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'horizontal',
+        options: apiTree as unknown as SnMenuOption[],
+        keyField: 'uid',
+        labelField: 'title',
+        value: 200,
+      },
+    })
+    const active = w.find('.sn-menu-item--active')
+    expect(active.exists()).toBe(true)
+    expect(active.text()).toContain('Two')
+  })
+
+  it('children-field remaps nested children array', async () => {
+    interface ApiNode {
+      id: string
+      title: string
+      kids?: ApiNode[]
+    }
+    const apiTree: ApiNode[] = [
+      {
+        id: 'grp',
+        title: 'Group',
+        kids: [
+          { id: 'leaf1', title: 'Leaf 1' },
+          { id: 'leaf2', title: 'Leaf 2' },
+        ],
+      },
+    ]
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'vertical',
+        options: apiTree as unknown as SnMenuOption[],
+        keyField: 'id',
+        labelField: 'title',
+        childrenField: 'kids',
+        defaultExpandedKeys: ['grp'],
+      },
+    })
+    expect(w.findAll('.sn-menu-item--leaf').length).toBe(2)
+    expect(w.text()).toContain('Leaf 1')
+    expect(w.text()).toContain('Leaf 2')
+  })
 })

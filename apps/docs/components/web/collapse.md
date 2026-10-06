@@ -10,6 +10,10 @@ n-collapse 的高级参数（`displayDirective` 懒渲染策略、`lazyRender`�
 
 <Demo name="collapse-web-accordion" description="accordion 模式（互斥展开）+ arrowPlacement='right'" />
 
+<Demo name="collapse-web-bordered" description="bordered: true — 卡片化外框，组间共享分隔线" />
+
+<Demo name="collapse-web-trigger" description="trigger='hover' + displayDirective='show' — 鼠标悬停展开 / DOM 常驻 toggle" />
+
 ## 基础用法
 
 ```ts
@@ -47,6 +51,8 @@ import '@snui/tokens-web/styles'
 | `accordion` | `boolean` | `false` | 一次只展开一个 |
 | `arrowPlacement` | `'left' \| 'right'` | `'left'` | 箭头位置 |
 | `trigger` | `'click' \| 'hover'` | `'click'` | 展开触发方式 |
+| `bordered` | `boolean` | `false` | 卡片化外框（共享分隔线） |
+| `displayDirective` | `'show' \| 'if'` | `'if'` | 折叠区切换策略（'show'=常驻 DOM toggle display；'if'=v-if unmount） |
 
 ### SnCollapse Props Events
 
