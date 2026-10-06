@@ -68,8 +68,8 @@ import '@snui/tokens-web/styles'
 
 ## 无障碍
 
-- 根 `<nav aria-label="Breadcrumb">`
-- 内部 `<ul>` 语义化列表（`n-breadcrumb` 用 `<ul>`，不用 `<ol>` —— 参考源码）
+- 根 `<nav aria-label="Breadcrumb">`（landmark 区域，无障碍读到面包屑就是导航区）
+- 内部使用 `<div>` 而不是 `<ul>/<li>`：避免各浏览器对 `<li>` 默认样式（list-style / `padding-inline-start`）的差异干扰 `text-align:center` 居中；可访问性语义已经由外层 `<nav>` landmark 提供，不需要再叠加 list role
 - 分隔符 `<span role="separator" aria-hidden="true">`
 - 当 `window.location.href` 与 `href` 路径匹配时，自动添加 `aria-current="location"`
 

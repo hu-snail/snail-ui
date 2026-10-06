@@ -119,7 +119,14 @@ function handleClick(e: MouseEvent): void {
 </script>
 
 <template>
-  <li
+  <!--
+    Each segment is a plain <div> (not <li>). The breadcrumb is announced to
+    assistive tech via the wrapping <nav aria-label="Breadcrumb"> landmark, so
+    a child list role would only add noise; using <div> also dodges the
+    cross-browser default <li> marker offset that breaks baseline alignment
+    when a SnIcon is present.
+  -->
+  <div
     :class="[
       'sn-breadcrumb-item',
       clickable ? 'sn-breadcrumb-item--clickable' : 'sn-breadcrumb-item--disabled',
@@ -152,7 +159,7 @@ function handleClick(e: MouseEvent): void {
     >
       <slot name="separator">{{ effectiveSeparator }}</slot>
     </span>
-  </li>
+  </div>
 </template>
 
 <style scoped>
@@ -161,7 +168,6 @@ function handleClick(e: MouseEvent): void {
 .sn-breadcrumb-item {
   display: inline-flex;
   align-items: center;
-  list-style: none;
 }
 
 .sn-breadcrumb-item__link {

@@ -108,13 +108,23 @@ function isEllipsis(seg: Segment): seg is EllipsisSeg {
     class="sn-breadcrumb"
     aria-label="Breadcrumb"
   >
-    <ul class="sn-breadcrumb__list">
+    <!--
+      Container is a <div> (not <ul>) on purpose.
+      - The wrapper element keeps its own width (display: inline-flex on .sn-breadcrumb
+        already shrinks the nav to content width); a default-styled <ul> on some
+        browsers can drag in unwanted margin / `padding-inline-start` rules that
+        fights text-align:center centering.
+      - The breadcrumb is still semantically a navigation region via the wrapping
+        <nav aria-label="Breadcrumb">; readers get the landmark without us paying
+        for a list's inherent bullet markers / line breaks on legacy engines.
+    -->
+    <div class="sn-breadcrumb__list">
       <!--
         When `maxCount` is set, render the truncated segments instead of
         the raw children. Each segment is either a real `<SnBreadcrumbItem>`
         child VNode (`kind: 'child'`) or an ellipsis placeholder
-        (`kind: 'ellipsis'`) which we render inline as a plain <li>.
-        SnBreadcrumbItem renders its own <li> + trailing separator, so we
+        (`kind: 'ellipsis'`) which we render inline as a plain <div>.
+        SnBreadcrumbItem renders its own <div> + trailing separator, so we
         just splat the VNode via `<component :is>` — Vue resolves it back
         to the original SnBreadcrumbItem instance.
       -->
@@ -123,7 +133,7 @@ function isEllipsis(seg: Segment): seg is EllipsisSeg {
           v-if="!isEllipsis(seg)"
           :is="seg.node"
         />
-        <li
+        <div
           v-else
           class="sn-breadcrumb-item sn-breadcrumb-item--ellipsis"
           aria-hidden="true"
@@ -134,9 +144,9 @@ function isEllipsis(seg: Segment): seg is EllipsisSeg {
             class="sn-breadcrumb-item__separator"
             role="separator"
           >{{ separator }}</span>
-        </li>
+        </div>
       </template>
-    </ul>
+    </div>
   </nav>
 </template>
 
@@ -167,7 +177,6 @@ function isEllipsis(seg: Segment): seg is EllipsisSeg {
 }
 
 .sn-breadcrumb__list {
-  list-style: none;
   margin: 0;
   padding: 0;
   display: flex;

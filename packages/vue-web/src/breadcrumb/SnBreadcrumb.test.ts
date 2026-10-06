@@ -96,19 +96,19 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
 
   it('renders one <li> per SnBreadcrumbItem child', () => {
     const w = mount(renderItems())
-    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(3)
+    expect(w.findAll('.sn-breadcrumb-item').length).toBe(3)
   })
 
   it('renders SnBreadcrumbItem as <a> when href is provided', () => {
     const w = mount(renderItems())
-    const anchors = w.findAll('li.sn-breadcrumb-item a')
+    const anchors = w.findAll('.sn-breadcrumb-item a')
     expect(anchors.length).toBe(2)
     expect(anchors[0]!.attributes('href')).toBe('/')
   })
 
   it('renders SnBreadcrumbItem as <span> when no href', () => {
     const w = mount(renderItems())
-    const lastLi = w.findAll('li.sn-breadcrumb-item').at(-1)!
+    const lastLi = w.findAll('.sn-breadcrumb-item').at(-1)!
     expect(lastLi.find('a').exists()).toBe(false)
     expect(lastLi.find('span.sn-breadcrumb-item__link').exists()).toBe(true)
   })
@@ -124,7 +124,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         </SnBreadcrumb>
       `,
     })
-    const li = w.find('li.sn-breadcrumb-item')
+    const li = w.find('.sn-breadcrumb-item')
     expect(li.classes()).not.toContain('sn-breadcrumb-item--clickable')
     expect(li.classes()).toContain('sn-breadcrumb-item--disabled')
   })
@@ -175,7 +175,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         return { onClick }
       },
     })
-    await w.find('li.sn-breadcrumb-item a').trigger('click')
+    await w.find('.sn-breadcrumb-item a').trigger('click')
     expect(onClick).toHaveBeenCalledTimes(1)
   })
 
@@ -193,12 +193,12 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         return { StubIcon }
       },
     })
-    const icon = w.find('li.sn-breadcrumb-item .sn-icon')
+    const icon = w.find('.sn-breadcrumb-item .sn-icon')
     expect(icon.exists()).toBe(true)
     // Icon must come before the label text inside the link wrapper.
     // Use li (not tag-specific) because SnBreadcrumbItem renders <span>
     // when no href is given.
-    const li = w.find('li.sn-breadcrumb-item')
+    const li = w.find('.sn-breadcrumb-item')
     const link = li.element.querySelector('.sn-breadcrumb-item__link')!
     expect(link.firstElementChild!.classList.contains('sn-icon')).toBe(true)
     // Slot text is the next sibling after the SnIcon wrapper.
@@ -223,7 +223,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
       `,
     })
     // head(1) + ellipsis(1) + tail(2) = 4 list items
-    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(4)
+    expect(w.findAll('.sn-breadcrumb-item').length).toBe(4)
     expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(true)
     expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toBe('…')
   })
@@ -243,7 +243,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
       `,
     })
     // head(1) + ellipsis(1) + tail(3) = 5 list items
-    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(5)
+    expect(w.findAll('.sn-breadcrumb-item').length).toBe(5)
     expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(true)
     expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toBe('…')
   })
@@ -259,7 +259,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         </SnBreadcrumb>
       `,
     })
-    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(3)
+    expect(w.findAll('.sn-breadcrumb-item').length).toBe(3)
     expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(false)
   })
 
@@ -275,7 +275,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         </SnBreadcrumb>
       `,
     })
-    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(4)
+    expect(w.findAll('.sn-breadcrumb-item').length).toBe(4)
     expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(false)
   })
 
@@ -290,7 +290,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         </SnBreadcrumb>
       `,
     })
-    const link = w.find('li.sn-breadcrumb-item a, li.sn-breadcrumb-item span.sn-breadcrumb-item__link')
+    const link = w.find('.sn-breadcrumb-item a, .sn-breadcrumb-item span.sn-breadcrumb-item__link')
     expect(link.classes()).toContain('sn-breadcrumb-item__link--chip')
   })
 
@@ -303,7 +303,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         </SnBreadcrumb>
       `,
     })
-    const link = w.find('li.sn-breadcrumb-item a, li.sn-breadcrumb-item span.sn-breadcrumb-item__link')
+    const link = w.find('.sn-breadcrumb-item a, .sn-breadcrumb-item span.sn-breadcrumb-item__link')
     expect(link.classes()).toContain('sn-breadcrumb-item__link--outlined')
   })
 
@@ -316,7 +316,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
         </SnBreadcrumb>
       `,
     })
-    const link = w.find('li.sn-breadcrumb-item a, li.sn-breadcrumb-item span.sn-breadcrumb-item__link')
+    const link = w.find('.sn-breadcrumb-item a, .sn-breadcrumb-item span.sn-breadcrumb-item__link')
     expect(link.classes()).not.toContain('sn-breadcrumb-item__link--chip')
     expect(link.classes()).not.toContain('sn-breadcrumb-item__link--outlined')
   })
@@ -336,7 +336,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
       attachTo: document.body,
     })
     await new Promise((r) => setTimeout(r, 0))
-    const link = w.find('li.sn-breadcrumb-item .sn-breadcrumb-item__link')
+    const link = w.find('.sn-breadcrumb-item .sn-breadcrumb-item__link')
     expect(link.classes()).toContain('sn-breadcrumb-item__link--chip')
     expect(link.attributes('aria-current')).toBe('location')
   })
@@ -359,7 +359,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
       attachTo: document.body,
     })
     await new Promise((r) => setTimeout(r, 0))
-    const link = w.find('li.sn-breadcrumb-item a')
+    const link = w.find('.sn-breadcrumb-item a')
     expect(link.attributes('aria-current')).toBe('location')
   })
 
@@ -378,7 +378,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
       attachTo: document.body,
     })
     await new Promise((r) => setTimeout(r, 0))
-    const link = w.find('li.sn-breadcrumb-item a')
+    const link = w.find('.sn-breadcrumb-item a')
     expect(link.attributes('aria-current')).toBeUndefined()
   })
 })
