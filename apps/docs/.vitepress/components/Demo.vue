@@ -22,6 +22,8 @@
  */
 
 import { computed, defineAsyncComponent, h, ref, watch } from 'vue'
+import { Check, Copy, ChevronRight, ChevronDown } from 'lucide-vue-next'
+import { SnIcon } from '@snui/vue-web'
 
 interface Props {
   /** Demo file basename (without .vue) under apps/docs/.vitepress/demo/. */
@@ -166,7 +168,7 @@ watch(
           :title="copied ? '已复制' : '复制代码'"
           @click="copyCode"
         >
-          <span aria-hidden="true">{{ copied ? '✓' : '⧉' }}</span>
+          <SnIcon :icon="copied ? Check : Copy" :size="14" />
           <span class="sn-demo__action-label">{{ copied ? '已复制' : '复制' }}</span>
         </button>
         <button
@@ -176,7 +178,11 @@ watch(
           :aria-expanded="codeOpen"
           @click="toggleCode"
         >
-          <span class="sn-demo__chevron" aria-hidden="true">{{ codeOpen ? '▾' : '▸' }}</span>
+          <SnIcon
+            :icon="codeOpen ? ChevronDown : ChevronRight"
+            :size="14"
+            class="sn-demo__chevron"
+          />
           <span class="sn-demo__action-label">{{ codeOpen ? '收起代码' : '展开代码' }}</span>
         </button>
       </div>

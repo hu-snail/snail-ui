@@ -86,18 +86,18 @@ const props = withDefaults(
      */
     name?: string
     /** Pixel size (or CSS length). Forwarded to the inner icon component. */
-    size?: number | string
+    size?: number | string | undefined
     /** Stroke color. Inherits from `currentColor` by default. */
-    color?: string
+    color?: string | undefined
     /** Stroke width in design-units. Default 2 (lucide's standard). */
-    strokeWidth?: number | string
+    strokeWidth?: number | string | undefined
     /**
      * If true, stroke width is interpreted in absolute pixels rather
      * than scaling with `size`. Matches lucide's `absoluteStrokeWidth`.
      */
-    strokeWidthAbsolute?: boolean
+    strokeWidthAbsolute?: boolean | undefined
     /** Optional CSS class for the inner SVG element. */
-    defaultClass?: string
+    defaultClass?: string | undefined
   }>(),
   {
     size: 16,

@@ -115,14 +115,17 @@ describe('SnMenu (AUI-WEB-NAV-001)', () => {
     expect(leaves[0]!.text()).toContain('Button')
   })
 
-  it('renders caret icon (▾/▸) for groups in vertical mode', () => {
+  it('renders caret icons (SnIcon) for groups in vertical mode', () => {
     const w = mount(SnMenu, {
       props: { mode: 'vertical', options: treeItems, expandedKeys: ['basic'] },
     })
     const expanded = w.find('.sn-menu-item--group--expanded, .sn-menu-item--expanded')
     expect(expanded.exists()).toBe(true)
-    expect(w.text()).toContain('▾')
-    expect(w.text()).toContain('▸')
+    // Each group renders an SnIcon caret wrapper inside .sn-menu-item__caret
+    const carets = w.findAll('.sn-menu-item__caret .sn-icon')
+    // basic is expanded, form is collapsed → both ChevronDown + ChevronRight
+    // render in DOM (the SnIcon keeps the lucide component inside).
+    expect(carets.length).toBeGreaterThanOrEqual(2)
   })
 
   it('honors defaultExpandedKeys for initial render', () => {

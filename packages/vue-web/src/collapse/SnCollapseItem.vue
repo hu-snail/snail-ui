@@ -10,6 +10,8 @@
  */
 
 import { inject } from 'vue'
+import { ChevronRight, ChevronDown } from 'lucide-vue-next'
+import SnIcon from '../icon/SnIcon.vue'
 
 defineOptions({ name: 'SnCollapseItem' })
 
@@ -107,13 +109,17 @@ const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded()
         v-if="showArrow() && arrowPlacement() === 'left'"
         class="sn-collapse-item__caret"
         aria-hidden="true"
-      >{{ expanded() ? '▾' : '▸' }}</span>
+      >
+        <SnIcon :icon="expanded() ? ChevronDown : ChevronRight" :size="14" />
+      </span>
       <span class="sn-collapse-item__title">{{ title }}</span>
       <span
         v-if="showArrow() && arrowPlacement() === 'right'"
         class="sn-collapse-item__caret"
         aria-hidden="true"
-      >{{ expanded() ? '▾' : '▸' }}</span>
+      >
+        <SnIcon :icon="expanded() ? ChevronDown : ChevronRight" :size="14" />
+      </span>
     </header>
     <!--
       Body rendering strategy (per parent's `displayDirective`):

@@ -15,6 +15,8 @@
 
 import { ref, watch } from 'vue'
 import { defaultPack, iosPack, darkPack, allPacks, getPack } from '@snui/style-packs'
+import { Check, Copy } from 'lucide-vue-next'
+import { SnIcon } from '@snui/vue-web'
 
 const props = withDefaults(
   defineProps<{
@@ -86,7 +88,9 @@ void defaultPack; void iosPack; void darkPack
         :class="{ 'is-copied': copied }"
         @click="copy"
       >
-        {{ copied ? '✓ Copied' : 'Copy' }}
+        <SnIcon v-if="copied" :icon="Check" :size="12" />
+        <SnIcon v-else :icon="Copy" :size="12" />
+        <span style="margin-left: 4px;">{{ copied ? 'Copied' : 'Copy' }}</span>
       </button>
     </div>
     <pre class="sn-theme-copier__pre"><code>{{ snippet }}</code></pre>

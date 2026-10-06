@@ -32,6 +32,14 @@ import type { FunctionalComponent } from 'vue'
  * `exactOptionalPropertyTypes: true` in tsconfig requires `undefined`
  * in the union so consumers can spread `?: ... | undefined` without a
  * TS error.
+ *
+ * The component is loosely typed as `FunctionalComponent<Record<string,
+ * unknown>>` so individual icon libraries (lucide-vue-next uses
+ * `size: number`, ionicons5 uses `size?: number | string`, tabler uses
+ * `size?: number | string`) can all be passed in. SnIcon only forwards
+ * the four props (`size`, `color`, `stroke-width`, `absolute-stroke-width`)
+ * via `<component :is>` — Vue silently drops any prop the inner component
+ * doesn't declare. Extra `defaultClass` lands via the `<span>` wrapper.
  */
 export interface IconComponentProps {
   size?: number | string | undefined
@@ -42,7 +50,7 @@ export interface IconComponentProps {
   [key: string]: unknown
 }
 
-export type IconComponent = FunctionalComponent<IconComponentProps>
+export type IconComponent = FunctionalComponent<Record<string, unknown>>
 
 /**
  * Module-level registry. Plain object so `Object.create(null)` keeps the

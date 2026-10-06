@@ -15,6 +15,8 @@
 import { ref } from 'vue'
 import { allPacks } from '@snui/style-packs'
 import { snCssVars } from '@snui/tokens'
+import { ChevronRight, ChevronDown } from 'lucide-vue-next'
+import { SnIcon } from '@snui/vue-web'
 
 const activePack = ref<string>('default')
 const open = ref(false)
@@ -64,7 +66,9 @@ function applyPack(name: string): void {
     >
       <span class="sn-style-switcher__dot" :style="{ background: 'var(--sn-color-action-primary)' }" />
       <span class="sn-style-switcher__label">{{ activePack }}</span>
-      <span class="sn-style-switcher__chevron">{{ open ? '▾' : '▸' }}</span>
+      <span class="sn-style-switcher__chevron">
+        <SnIcon :icon="open ? ChevronDown : ChevronRight" :size="12" />
+      </span>
     </button>
     <div v-if="open" class="sn-style-switcher__panel" role="dialog" aria-label="Style Pack">
       <button

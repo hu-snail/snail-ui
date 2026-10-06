@@ -35,6 +35,8 @@
  */
 
 import { computed } from 'vue'
+import { ChevronRight, ChevronDown } from 'lucide-vue-next'
+import SnIcon from '../icon/SnIcon.vue'
 
 defineOptions({ name: 'SnMenu' })
 
@@ -255,7 +257,9 @@ function indentStyleForLevel(level: number): Record<string, string> {
             v-if="mode === 'vertical' && item.children?.length"
             class="sn-menu-item__caret"
             aria-hidden="true"
-          >{{ isExpanded(item.key) ? '▾' : '▸' }}</span>
+          >
+            <SnIcon :icon="isExpanded(item.key) ? ChevronDown : ChevronRight" :size="14" />
+          </span>
         </component>
         <!-- Vertical mode: group header only (when no children rendered) -->
         <button
@@ -272,7 +276,9 @@ function indentStyleForLevel(level: number): Record<string, string> {
         >
           <span v-if="item.icon" class="sn-menu-item__icon"><component :is="item.icon" /></span>
           <span class="sn-menu-item__label">{{ item.label }}</span>
-          <span class="sn-menu-item__caret" aria-hidden="true">{{ isExpanded(item.key) ? '▾' : '▸' }}</span>
+          <span class="sn-menu-item__caret" aria-hidden="true">
+            <SnIcon :icon="isExpanded(item.key) ? ChevronDown : ChevronRight" :size="14" />
+          </span>
         </button>
         <!-- Vertical mode: nested children when group expanded -->
         <div
