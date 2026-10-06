@@ -64,8 +64,18 @@ export interface SnMenuOption {
 //   (https://github.com/tusen-ai/naive-ui/blob/main/src/menu/src/Menu.tsx)
 const props = withDefaults(
   defineProps<{
-    /** Display mode. Mirrors n-menu `mode`. Default 'vertical'. */
-    mode?: 'vertical' | 'horizontal'
+    /** Display mode. Mirrors n-menu `mode` plus AUI extension `popButton`.
+     * Default 'vertical'.
+     *   - `vertical`   — sidebar / inline expansion
+     *   - `horizontal` — top navbar
+     *   - `popButton`  — Floating Action Button (FAB) menu: the menu
+     *                    floats at the page's bottom-right, every item
+     *                    renders as a circular icon button, and the menu
+     *                    expands horizontally on hover to reveal each
+     *                    item's label (Material Design Speed Dial style).
+     *                    AUI extension beyond n-menu — naive-ui doesn't
+     *                    ship a popButton mode. */
+    mode?: 'vertical' | 'horizontal' | 'popButton'
     /** Menu options tree. Mirrors n-menu `options`. */
     options?: SnMenuOption[]
     /** Selected key. Mirrors n-menu `value`. */
@@ -479,6 +489,100 @@ function indentStyleForLevel(level: number): Record<string, string> {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+/* ─────────── popButton mode (FAB / Speed Dial) ─────────── */
+
+/* The whole menu is anchored to the bottom-right of the viewport and
+ * lays out as a vertical stack of circular icon buttons. On hover, each
+ * item's label slides in from the right. Mirrors Material Design's FAB
+ * Speed Dial + Element Plus's `el-floating-button` shape. */
+.sn-menu--popButton {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+}
+.sn-menu--popButton .sn-menu__list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.sn-menu--popButton .sn-menu-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--sn-web-color-background-elevated, #fff);
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  color: var(--sn-web-color-text-primary);
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition:
+    width 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+  overflow: hidden;
+}
+.sn-menu--popButton .sn-menu-item:hover {
+  width: auto;
+  min-width: 48px;
+  padding: 0 16px 0 12px;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.12),
+    0 8px 24px rgba(0, 0, 0, 0.08);
+  transform: translateX(-2px);
+}
+.sn-menu--popButton .sn-menu-item__icon {
+  width: 22px;
+  height: 22px;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.sn-menu--popButton .sn-menu-item__label {
+  display: none;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  margin-left: 0;
+  opacity: 0;
+  transform: translateX(8px);
+  transition:
+    opacity 0.18s ease 0.04s,
+    transform 0.18s ease 0.04s;
+}
+.sn-menu--popButton .sn-menu-item:hover .sn-menu-item__label {
+  display: inline-flex;
+  opacity: 1;
+  transform: translateX(0);
+}
+.sn-menu--popButton .sn-menu-item--group {
+  display: none; /* groups don't make sense in popButton; flatten to leaves */
+}
+/* Active item gets the primary fill (Material Design accent) */
+.sn-menu--popButton .sn-menu-item--active {
+  background: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-text-on-primary, #fff);
+}
+.sn-menu--popButton .sn-menu-item--active:hover .sn-menu-item__label {
+  color: var(--sn-web-color-text-on-primary, #fff);
+}
+
+/* Inverted popButton (on dark surface): use white wash instead of card */
+.sn-menu--popButton.sn-menu--inverted .sn-menu-item {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  backdrop-filter: blur(6px);
+}
+.sn-menu--popButton.sn-menu--inverted .sn-menu-item:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* ─────────── Collapsed mode ─────────── */

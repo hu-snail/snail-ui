@@ -18,6 +18,8 @@
 
 <Demo name="menu-web-collapsed" description="collapsed icon-only 折叠模式 + hover popover 子菜单" />
 
+<Demo name="menu-web-pop-button" description="popButton 悬浮按钮菜单（Material Design Speed Dial 风格）" />
+
 ## 基础用法
 
 ```ts
@@ -57,7 +59,7 @@ const active = ref<string | null>(null)
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `mode` | `'horizontal' \| 'vertical'` | `'vertical'` | 展示模式（顶导航 vs 侧边栏） |
+| `mode` | `'horizontal' \| 'vertical' \| 'popButton'` | `'vertical'` | 展示模式。`vertical` 侧边栏、`horizontal` 顶导航、`popButton` 浮动按钮菜单（Material Design Speed Dial 风格，固定右下角，hover 展开 label） |
 | `options` | `SnMenuOption[]` | `[]` | 选项树（详见下文） |
 | `value` | `string \| number \| null` | `null` | 受控选中 key |
 | `defaultValue` | `string \| number \| null` | `null` | 非受控初始 key |

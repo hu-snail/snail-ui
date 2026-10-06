@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { defineComponent, h } from 'vue'
 import SnMenu, { type SnMenuOption } from './SnMenu.vue'
 
 const navItems: SnMenuOption[] = [
@@ -359,5 +360,60 @@ describe('SnMenu (AUI-WEB-NAV-001)', () => {
     expect(w.find('.sn-menu-submenu-popover').exists()).toBe(false)
     // Inline children should be present as .sn-menu-item--leaf
     expect(w.findAll('.sn-menu-item--leaf').length).toBeGreaterThan(0)
+  })
+
+  /* ─────────── §112 expansion: popButton (FAB / Speed Dial) ───────── */
+
+  const PopIcon = defineComponent({
+    name: 'PopIcon',
+    setup() {
+      return () => h('svg', { 'data-pop-icon': '' })
+    },
+  })
+
+  it('mode=popButton applies fixed positioning + circular item shape', () => {
+    const flatItems = [
+      { key: 'ideas', label: 'Ideas', icon: PopIcon },
+      { key: 'camera', label: 'Camera', icon: PopIcon },
+      { key: 'plus', label: 'New', icon: PopIcon },
+    ]
+    const w = mount(SnMenu, {
+      props: { mode: 'popButton', options: flatItems },
+    })
+    expect(w.classes()).toContain('sn-menu--popButton')
+    const items = w.findAll('.sn-menu-item')
+    expect(items.length).toBe(3)
+  })
+
+  it('popButton labels are hidden by default but DOM contains them', () => {
+    const flatItems = [
+      { key: 'ideas', label: 'Ideas', icon: PopIcon },
+    ]
+    const w = mount(SnMenu, {
+      props: { mode: 'popButton', options: flatItems },
+    })
+    expect(w.find('.sn-menu-item__label').exists()).toBe(true)
+    expect(w.find('.sn-menu--popButton').exists()).toBe(true)
+  })
+
+  it('popButton hides group wrappers (submenus don\'t render in this mode)', () => {
+    const w = mount(SnMenu, {
+      props: { mode: 'popButton', options: treeItems },
+    })
+    // Group items should not render in popButton mode (flattened to leaves)
+    expect(w.find('.sn-menu-item--group').exists()).toBe(false)
+  })
+
+  it('clicking a popButton item still emits update:value', async () => {
+    const flatItems = [
+      { key: 'ideas', label: 'Ideas', icon: PopIcon },
+    ]
+    const w = mount(SnMenu, {
+      props: { mode: 'popButton', options: flatItems, value: null },
+    })
+    await w.find('.sn-menu-item').trigger('click')
+    const emitted = w.emitted('update:value')
+    expect(emitted).toBeTruthy()
+    expect(emitted![0]![0]).toBe('ideas')
   })
 })
