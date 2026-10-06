@@ -128,7 +128,7 @@ function isEllipsis(seg: Segment): seg is EllipsisSeg {
           class="sn-breadcrumb-item sn-breadcrumb-item--ellipsis"
           aria-hidden="true"
         >
-          <span class="sn-breadcrumb-item__link sn-breadcrumb-item__link--ellipsis">… {{ seg.hidden }} more …</span>
+          <span class="sn-breadcrumb-item__link sn-breadcrumb-item__link--ellipsis">…</span>
           <span
             v-if="i < segments.length - 1"
             class="sn-breadcrumb-item__separator"

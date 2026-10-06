@@ -191,6 +191,13 @@ function handleClick(e: MouseEvent): void {
 
 .sn-breadcrumb-item__icon {
   flex: none;
+  /* Slight negative top offset so lucide's slightly-above-center icon
+   * strokes align with the optical center of the slot label rather than
+   * the SVG box center (SVG box center ≠ optical center for stroke
+   * glyphs). Without this, the first item's icon visually sits a few
+   * pixels higher than the trailing text — most visible in chip / pill
+   * variants where the baseline is anchored to the chip pill height. */
+  vertical-align: -1px;
 }
 
 /* ─────────── Variants ─────────── */

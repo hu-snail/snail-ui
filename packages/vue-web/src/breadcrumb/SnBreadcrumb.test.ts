@@ -196,7 +196,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
     // head(1) + ellipsis(1) + tail(2) = 4 list items
     expect(w.findAll('li.sn-breadcrumb-item').length).toBe(4)
     expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(true)
-    expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toContain('4 more')
+    expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toBe('…')
   })
 
   it('maxCount=4 keeps head(1) + ellipsis + tail(3) for a 6-item trail', () => {
@@ -216,7 +216,7 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
     // head(1) + ellipsis(1) + tail(3) = 5 list items
     expect(w.findAll('li.sn-breadcrumb-item').length).toBe(5)
     expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(true)
-    expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toContain('2 more')
+    expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toBe('…')
   })
 
   it('maxCount above total renders all items, no ellipsis', () => {
