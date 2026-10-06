@@ -13,6 +13,15 @@
  *   / disabled remap. Plus hover-popover submenu rendering in collapsed
  *   mode (pure CSS, no portal needed for the basic case).
  *
+ * popButton mode (AUI extension beyond n-menu — Material Design Speed
+ * Dial / Element Plus el-fab shape):
+ *   - Menu sits as a circular FAB stack. The trigger item (default:
+ *     last in options, override via `triggerKey`) is always visible.
+ *   - Hovering the menu area expands the rest of the items vertically
+ *     above the trigger with a smooth height + opacity transition.
+ *   - Each expanded item is wrapped in <SnTooltip content={label}>
+ *     so hovering an item shows its label without consuming width.
+ *
  * §112 future markers (NOT in this version, doc-roadmap):
  *   - layoutSiderInjection / responsive: auto-collapsing sidebar driven
  *     by an outer <n-layout-sider>
@@ -35,9 +44,10 @@
  *   { [label-field], [key-field], [children-field], ... }  (with remap)
  */
 
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { ChevronRight, ChevronDown } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
+import SnTooltip from '../tooltip/SnTooltip.vue'
 
 defineOptions({ name: 'SnMenu' })
 
@@ -68,14 +78,21 @@ const props = withDefaults(
      * Default 'vertical'.
      *   - `vertical`   — sidebar / inline expansion
      *   - `horizontal` — top navbar
-     *   - `popButton`  — Floating Action Button (FAB) menu: the menu
-     *                    floats at the page's bottom-right, every item
-     *                    renders as a circular icon button, and the menu
-     *                    expands horizontally on hover to reveal each
-     *                    item's label (Material Design Speed Dial style).
+     *   - `popButton`  — Floating Action Button (FAB) menu: all items
+     *                    render as circular icon buttons stacked
+     *                    vertically. The trigger (last by default, or the
+     *                    item whose key matches `triggerKey`) is always
+     *                    visible; hovering the menu area expands the other
+     *                    items above the trigger. Each item shows a
+     *                    `<SnTooltip>` on hover. Position the menu inside
+     *                    a `position: relative` parent to anchor it where
+     *                    you want.
      *                    AUI extension beyond n-menu — naive-ui doesn't
      *                    ship a popButton mode. */
     mode?: 'vertical' | 'horizontal' | 'popButton'
+    /** Which item is the always-visible trigger in popButton mode.
+     * Defaults to the last item in `options`. AUI extension. */
+    triggerKey?: string | number
     /** Menu options tree. Mirrors n-menu `options`. */
     options?: SnMenuOption[]
     /** Selected key. Mirrors n-menu `value`. */
@@ -143,6 +160,7 @@ const props = withDefaults(
     iconSize: 20,
     dropdownPlacement: 'right-start',
     disabledField: 'disabled',
+    triggerKey: '',
   },
 )
 
@@ -255,6 +273,41 @@ function indentStyleForLevel(level: number): Record<string, string> {
     ? { paddingLeft: `${props.indent * level}px` }
     : {}
 }
+
+/* ─────────── popButton state ─────────── */
+
+/** Which option is the always-visible trigger. Defaults to the last item
+ * in `normalizedOptions`. Populated lazily because the options array is
+ * the source of truth. */
+const popTriggerKey = computed<string | number>(() => {
+  if (props.triggerKey !== '' && props.triggerKey !== undefined) return props.triggerKey
+  const opts = normalizedOptions.value
+  return opts[opts.length - 1]?.key ?? ''
+})
+
+/** Items other than the trigger (rendered above the trigger, hidden until hover). */
+const popExpandedItems = computed<SnMenuOption[]>(() => {
+  const opts = normalizedOptions.value
+  const tk = popTriggerKey.value
+  return opts.filter((o) => o.key !== tk)
+})
+
+/** Hover state — true while the user is over the menu root or any item. */
+const popHovering = ref(false)
+
+/* Provide / consume hover so each leaf <button>'s mouseenter keeps the
+ * menu expanded even when the cursor crosses the gap between items. */
+function onRootMouseEnter(): void {
+  if (props.mode === 'popButton') popHovering.value = true
+}
+function onRootMouseLeave(): void {
+  if (props.mode === 'popButton') popHovering.value = false
+}
+
+/** Is this item the always-visible popButton trigger? */
+function isPopTrigger(item: SnMenuOption): boolean {
+  return item.key === popTriggerKey.value
+}
 </script>
 
 <template>
@@ -264,9 +317,12 @@ function indentStyleForLevel(level: number): Record<string, string> {
       `sn-menu--${mode}`,
       collapsed ? 'sn-menu--collapsed' : '',
       inverted ? 'sn-menu--inverted' : '',
+      mode === 'popButton' && popHovering ? 'sn-menu--popButton-open' : '',
     ]"
     :role="mode === 'horizontal' ? 'menubar' : 'menu'"
     :style="collapsed && mode === 'vertical' ? `--sn-menu-collapsed-width: ${collapsedWidth}px; --sn-menu-icon-size: ${collapsedIconSize}px;` : `--sn-menu-icon-size: ${iconSize}px;`"
+    @mouseenter="onRootMouseEnter"
+    @mouseleave="onRootMouseLeave"
   >
     <div class="sn-menu__list">
       <template v-for="item in normalizedOptions" :key="`top-${item.key}`">
@@ -402,14 +458,44 @@ function indentStyleForLevel(level: number): Record<string, string> {
         </div>
 
         <!-- Top-level leaf item (no children) -->
+        <SnTooltip
+          v-else-if="mode === 'popButton' && !isPopTrigger(item)"
+          :content="item.label"
+          placement="top-start"
+          :disabled="!!inverted"
+        >
+          <component
+            :is="isLink(item) ? 'a' : 'button'"
+            :class="[
+              'sn-menu-item sn-menu-item--popButton',
+              { 'sn-menu-item--active': isActive(item.key),
+                'sn-menu-item--disabled': item.disabled,
+                'sn-menu-item--inverted': inverted,
+              },
+            ]"
+            :type="isLink(item) ? undefined : 'button'"
+            :href="isLink(item) ? item.href : undefined"
+            :disabled="!isLink(item) ? item.disabled : undefined"
+            :aria-disabled="item.disabled || undefined"
+            :aria-current="isActive(item.key) ? 'page' : undefined"
+            @click="selectOption(item)"
+          >
+            <span v-if="item.icon" class="sn-menu-item__icon">
+              <component :is="item.icon" />
+            </span>
+            <span class="sn-menu-item__label">{{ item.label }}</span>
+          </component>
+        </SnTooltip>
         <component
           :is="isLink(item) ? 'a' : 'button'"
-          v-else
+          v-else-if="!(mode === 'popButton' && !isPopTrigger(item))"
           :class="[
             'sn-menu-item',
             { 'sn-menu-item--active': isActive(item.key),
               'sn-menu-item--disabled': item.disabled,
               'sn-menu-item--inverted': inverted,
+              'sn-menu-item--popButton-trigger':
+                mode === 'popButton' && isPopTrigger(item),
             },
           ]"
           :type="isLink(item) ? undefined : 'button'"
@@ -503,54 +589,57 @@ function indentStyleForLevel(level: number): Record<string, string> {
   gap: 2px;
 }
 
-/* ─────────── popButton mode (FAB / Speed Dial) ─────────── */
-
-/* The whole menu is anchored to the bottom-right of the viewport and
- * lays out as a vertical stack of circular icon buttons. On hover, each
- * item's label slides in from the right. Mirrors Material Design's FAB
- * Speed Dial + Element Plus's `el-floating-button` shape. */
+/* ─────────── popButton mode (FAB / Speed Dial) ───────────
+ * Floating Action Button group: a vertical column of icon-only circular
+ * buttons. The trigger (last item by default, or item matching
+ * `triggerKey`) is always visible. Hovering the menu area expands the
+ * rest above the trigger with a fade + slide; each expanded item shows
+ * a tooltip with its text via the <SnTooltip> wrapper in the template.
+ *
+ * The menu no longer anchors itself to the viewport — position the
+ * consumer's parent (`position: relative` is enough) to place it. This
+ * matches the behavior of `el-fab` and most FAB menus in real apps
+ * (where you typically want it inside a card / panel, not stuck to the
+ * viewport corner). */
 .sn-menu--popButton {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
+  display: inline-flex;
   z-index: 50;
 }
 .sn-menu--popButton .sn-menu__list {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 12px;
+  align-items: center;
+  gap: 10px;
 }
 .sn-menu--popButton .sn-menu-item {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 0;
+  justify-content: center;
   width: 48px;
   height: 48px;
+  padding: 0;
   border-radius: 999px;
   background: var(--sn-web-color-background-elevated, #fff);
   box-shadow:
     0 2px 6px rgba(0, 0, 0, 0.08),
     0 4px 12px rgba(0, 0, 0, 0.06);
   color: var(--sn-web-color-text-primary);
-  justify-content: center;
   border: none;
   cursor: pointer;
   transition:
-    width 0.18s ease,
     box-shadow 0.18s ease,
-    transform 0.18s ease;
-  overflow: hidden;
+    transform 0.18s ease,
+    background-color 0.18s ease;
 }
-.sn-menu--popButton .sn-menu-item:hover {
-  width: auto;
-  min-width: 48px;
-  padding: 0 16px 0 12px;
+.sn-menu--popButton .sn-menu-item:hover:not(.sn-menu-item--disabled) {
   box-shadow:
     0 4px 10px rgba(0, 0, 0, 0.12),
     0 8px 24px rgba(0, 0, 0, 0.08);
-  transform: translateX(-2px);
+  transform: translateY(-1px);
+}
+.sn-menu--popButton .sn-menu-item--active {
+  background: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-text-on-primary, #fff);
 }
 .sn-menu--popButton .sn-menu-item__icon {
   width: 22px;
@@ -558,43 +647,51 @@ function indentStyleForLevel(level: number): Record<string, string> {
   font-size: 22px;
   flex-shrink: 0;
 }
+/* Hide the inline label — the expanded item's label comes from the
+ * wrapping <SnTooltip>, not from a slide-in span. (The trigger keeps
+ * its label hidden too — only the icon shows.) */
 .sn-menu--popButton .sn-menu-item__label {
   display: none;
-  white-space: nowrap;
-  font-size: 13px;
-  font-weight: 500;
-  margin-left: 0;
-  opacity: 0;
-  transform: translateX(8px);
-  transition:
-    opacity 0.18s ease 0.04s,
-    transform 0.18s ease 0.04s;
-}
-.sn-menu--popButton .sn-menu-item:hover .sn-menu-item__label {
-  display: inline-flex;
-  opacity: 1;
-  transform: translateX(0);
-}
-.sn-menu--popButton .sn-menu-item--group {
-  display: none; /* groups don't make sense in popButton; flatten to leaves */
-}
-/* Active item gets the primary fill (Material Design accent) */
-.sn-menu--popButton .sn-menu-item--active {
-  background: var(--sn-web-color-action-primary);
-  color: var(--sn-web-color-text-on-primary, #fff);
-}
-.sn-menu--popButton .sn-menu-item--active:hover .sn-menu-item__label {
-  color: var(--sn-web-color-text-on-primary, #fff);
 }
 
-/* Inverted popButton (on dark surface): use white wash instead of card */
+/* Expanded items (every item except the trigger) — hidden by default,
+ * shown on root hover. Animations: opacity + slight slide down so the
+ * stack "lifts" out of the trigger button. */
+.sn-menu--popButton .sn-menu-item--popButton {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px) scale(0.92);
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(2) { transition-delay: 0ms; }
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(3) { transition-delay: 0.04s; }
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(4) { transition-delay: 0.08s; }
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(5) { transition-delay: 0.12s; }
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(n+6) { transition-delay: 0.16s; }
+
+/* Hide groups in popButton — flatten to leaves per the doc-roadmap. */
+.sn-menu--popButton .sn-menu-item--group {
+  display: none;
+}
+
+/* Inverted popButton (on dark surface) — wash + backdrop blur. */
 .sn-menu--popButton.sn-menu--inverted .sn-menu-item {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
   backdrop-filter: blur(6px);
 }
-.sn-menu--popButton.sn-menu--inverted .sn-menu-item:hover {
+.sn-menu--popButton.sn-menu--inverted .sn-menu-item:hover:not(.sn-menu-item--disabled) {
   background: rgba(255, 255, 255, 0.2);
+}
+.sn-menu--popButton.sn-menu--inverted .sn-menu-item--active {
+  background: var(--sn-web-color-action-primary);
 }
 
 /* ─────────── Collapsed mode ─────────── */

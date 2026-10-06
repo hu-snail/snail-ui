@@ -3,44 +3,40 @@
  * menu-web-pop-button — SnMenu `mode="popButton"` (Floating Action
  * Button menu / Speed Dial).
  *
- * The menu anchors to the bottom-right of the viewport. Each item is a
- * 48×48 circular icon button; on hover the icon's label slides in from
- * the right (Material Design Speed Dial style).
+ * 三种交互状态：
+ *   1. 默认          — 只有 trigger button（options 最后一项）显示
+ *   2. hover 整个    — 其余圆形按钮淡入上滑展开（视觉）
+ *   3. hover 单项   — 该项用 SnTooltip 显示文本
  *
- * Use cases: secondary actions that shouldn't be in the main nav but
- * need persistent access — quick-add, AI helper, capture, etc.
- *
- * NOTE on the demo: the SnMenu root is `position: fixed` so the menu
- * floats at the page's bottom-right in a real app. Inside a docs demo
- * card that lives in the article flow, the fixed element would anchor
- * to the viewport (outside the demo card). To show it inside the demo
- * stage we override position to `absolute` via inline style — this is
- * purely a demo concern; in production the menu stays viewport-fixed.
+ * 没有 viewport 固定定位 — 容器自带 `position: relative`，所以 demo
+ * 里浮窗就停在卡片里；生产场景用同样的方式把 fab 嵌到你的面板/边栏里。
  */
 import { ref } from 'vue'
 import { SnMenu } from '@snui/vue-web'
-import { Lightbulb, Camera, Plus } from 'lucide-vue-next'
+import { Lightbulb, Lightbulb as LightbulbOff, Plus } from 'lucide-vue-next'
 
-const active = ref<string | number | null>(null)
+const active = ref<string | number | null>('ideas')
 
 const items = [
-  { key: 'ideas', label: 'Ideas', icon: Lightbulb },
-  { key: 'camera', label: 'Camera', icon: Camera },
-  { key: 'new', label: '新建', icon: Plus },
+  { key: 'ideas',  label: 'Ideas',  icon: Lightbulb },
+  { key: 'camera', label: 'Camera', icon: LightbulbOff },
+  // Last item is the always-visible trigger.
+  { key: 'new',    label: '新建',   icon: Plus },
 ]
 </script>
 
 <template>
   <div class="sn-pop-button-demo">
     <div class="sn-pop-button-demo__stage">
-      <span class="sn-pop-button-demo__target">悬停右下角悬浮按钮 → 展开 label</span>
-      <SnMenu
-        mode="popButton"
-        :options="items"
-        v-model:value="active"
-        style="position: absolute;"
-      />
+      <span class="sn-pop-button-demo__hint">
+        hover 右下角的 <code>+</code> → 上面 2 项展开 → hover 单项出 Tooltip
+      </span>
+
+      <div class="sn-pop-button-demo__anchor">
+        <SnMenu mode="popButton" :options="items" v-model:value="active" />
+      </div>
     </div>
+
     <p class="sn-pop-button-demo__active">
       当前选中：<code>{{ active ?? '(无)' }}</code>
     </p>
@@ -52,22 +48,37 @@ const items = [
   display: flex;
   flex-direction: column;
   gap: 12px;
-  align-items: center;
+  align-items: stretch;
 }
 .sn-pop-button-demo__stage {
   position: relative;
   width: 100%;
-  height: 220px;
+  height: 260px;
   background: var(--vp-c-bg-soft);
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  color: var(--vp-c-text-3);
+  overflow: hidden;
 }
-.sn-pop-button-demo__target {
+.sn-pop-button-demo__hint {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
   user-select: none;
+}
+.sn-pop-button-demo__hint code {
+  background: var(--vp-c-bg);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-family: ui-monospace, monospace;
+}
+.sn-pop-button-demo__anchor {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  /* parent is `position: relative` so SnMenu sits here instead of the
+   * viewport. (SnMenu root is `display: inline-flex`.) */
 }
 .sn-pop-button-demo__active {
   margin: 0;

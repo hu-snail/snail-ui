@@ -76,6 +76,7 @@ const sidebar = {
       items: [
         { text: 'Menu 菜单', link: '/components/web/menu' },
         { text: 'Breadcrumb 面包屑', link: '/components/web/breadcrumb' },
+        { text: 'Tooltip 工具提示', link: '/components/web/tooltip' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.
@@ -194,6 +195,7 @@ const enSidebar = {
       items: [
         { text: 'Menu', link: '/en/components/web/menu' },
         { text: 'Breadcrumb', link: '/en/components/web/breadcrumb' },
+        { text: 'Tooltip', link: '/en/components/web/tooltip' },
       ],
     },
     // Other — empty until ConfigProvider page ships.

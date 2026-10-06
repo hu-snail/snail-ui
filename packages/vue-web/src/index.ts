@@ -25,6 +25,8 @@ export { default as SnMenu } from './menu/SnMenu.vue'
 export type { SnMenuOption } from './menu/SnMenu.vue'
 export { default as SnBreadcrumb } from './breadcrumb/SnBreadcrumb.vue'
 export { default as SnBreadcrumbItem } from './breadcrumb/SnBreadcrumbItem.vue'
+export { default as SnTooltip } from './tooltip/SnTooltip.vue'
+export type { SnTooltipPlacement } from './tooltip/SnTooltip.vue'
 export type {
   FormRule,
   FormRules,

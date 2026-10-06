@@ -18,7 +18,7 @@
 
 <Demo name="menu-web-collapsed" description="collapsed icon-only 折叠模式 + hover popover 子菜单" />
 
-<Demo name="menu-web-pop-button" description="popButton 悬浮按钮菜单（Material Design Speed Dial 风格）" />
+<Demo name="menu-web-pop-button" description="popButton FAB 菜单：默认只显示 trigger，hover 整个区域展开其余圆形按钮，每项 hover 显示 SnTooltip 文字" />
 
 ## 基础用法
 
@@ -59,7 +59,8 @@ const active = ref<string | null>(null)
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `mode` | `'horizontal' \| 'vertical' \| 'popButton'` | `'vertical'` | 展示模式。`vertical` 侧边栏、`horizontal` 顶导航、`popButton` 浮动按钮菜单（Material Design Speed Dial 风格，固定右下角，hover 展开 label） |
+| `mode` | `'horizontal' \| 'vertical' \| 'popButton'` | `'vertical'` | 展示模式。`vertical` 侧边栏、`horizontal` 顶导航、`popButton` 浮动按钮菜单：所有项渲染为圆形 icon 按钮，**默认只显示 trigger（options 最后一项，可用 `triggerKey` 覆盖）**，hover 整个 menu 区域后其余按钮淡入上滑展开，单项 hover 显示 `SnTooltip` 文字。组件不再自带 viewport 定位 —— 包一层 `position: relative` 父容器即可放在你想要的任何位置 |
+| `triggerKey` | `string \| number` | `''` | popButton 模式下指定哪个 item 是 trigger（默认最后一项）。`key` 必须匹配 `SnMenuOption.key` |
 | `options` | `SnMenuOption[]` | `[]` | 选项树（详见下文） |
 | `value` | `string \| number \| null` | `null` | 受控选中 key |
 | `defaultValue` | `string \| number \| null` | `null` | 非受控初始 key |
@@ -114,3 +115,4 @@ interface SnMenuOption {
 ## 相关
 
 - 路由级面包屑：[`SnBreadcrumb`](/components/web/breadcrumb)
+- 圆形按钮上的悬浮文字：[`SnTooltip`](/components/web/tooltip)
