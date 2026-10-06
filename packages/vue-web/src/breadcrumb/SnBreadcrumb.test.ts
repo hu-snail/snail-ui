@@ -176,6 +176,80 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
     expect(link.textContent).toContain('Home')
   })
 
+  /* ─────────── §112 expansion: maxCount truncation ───────── */
+
+  it('maxCount caps visible items to head(1) + ellipsis + tail(max-1)', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb :max-count="3">
+          <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/a">A</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/b">B</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/c">C</SnBreadcrumbItem>
+          <SnBreadcrumbItem href="/d">D</SnBreadcrumbItem>
+          <SnBreadcrumbItem>News</SnBreadcrumbItem>
+          <SnBreadcrumbItem>Post</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    // head(1) + ellipsis(1) + tail(2) = 4 list items
+    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(4)
+    expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(true)
+    expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toContain('4 more')
+  })
+
+  it('maxCount=4 keeps head(1) + ellipsis + tail(3) for a 6-item trail', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb :max-count="4">
+          <SnBreadcrumbItem>A</SnBreadcrumbItem>
+          <SnBreadcrumbItem>B</SnBreadcrumbItem>
+          <SnBreadcrumbItem>C</SnBreadcrumbItem>
+          <SnBreadcrumbItem>D</SnBreadcrumbItem>
+          <SnBreadcrumbItem>E</SnBreadcrumbItem>
+          <SnBreadcrumbItem>F</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    // head(1) + ellipsis(1) + tail(3) = 5 list items
+    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(5)
+    expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(true)
+    expect(w.find('.sn-breadcrumb-item__link--ellipsis').text()).toContain('2 more')
+  })
+
+  it('maxCount above total renders all items, no ellipsis', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb :max-count="99">
+          <SnBreadcrumbItem>A</SnBreadcrumbItem>
+          <SnBreadcrumbItem>B</SnBreadcrumbItem>
+          <SnBreadcrumbItem>C</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(3)
+    expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(false)
+  })
+
+  it('maxCount=Infinity (default) renders all items', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem>A</SnBreadcrumbItem>
+          <SnBreadcrumbItem>B</SnBreadcrumbItem>
+          <SnBreadcrumbItem>C</SnBreadcrumbItem>
+          <SnBreadcrumbItem>D</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(4)
+    expect(w.find('.sn-breadcrumb-item--ellipsis').exists()).toBe(false)
+  })
+
   /* ─────────── §112 expansion: variant (AUI extension) ───────── */
 
   it('variant=chip adds the chip modifier class on the link', () => {

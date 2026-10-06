@@ -14,6 +14,8 @@
 
 <Demo name="breadcrumb-web-variant" description="plain / chip / outlined 三种 variant（每项背景可独立设置）" />
 
+<Demo name="breadcrumb-web-max-count" description="maxCount 超出折叠：head(1) + … + tail(maxCount-1)（Element Plus / NextUI 风格）" />
+
 ## 基础用法
 
 ```ts
@@ -38,6 +40,7 @@ import '@snui/tokens-web/styles'
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `separator` | `string` | `'/'` | 全局分隔符。每项可通过 `separator` prop 或 `<template #separator>` slot 覆盖。 |
+| `maxCount` | `number` | `Infinity` | 最多显示几项；超出部分折叠为 `head(1) + ellipsis + tail(maxCount-1)`。算法与 Element Plus `max-count` / NextUI `maxItems` 一致。AUI 扩展（naive-ui 用 dropdown slot 处理长面包屑，本 prop 提供更快的声明式 cap）。 |
 
 ### SnBreadcrumbItem Props
 
@@ -75,6 +78,7 @@ import '@snui/tokens-web/styles'
 | naive-ui | SnBreadcrumb | 备注 |
 | --- | --- | --- |
 | `separator` | `separator` | ✓ 1:1 |
+| (max-count) | `maxCount` | AUI 扩展（Element Plus / NextUI 风格；naive-ui 用 dropdown slot） |
 | `separator-location-style` | — | naive-ui 2.x 已移除 |
 | (item-count) | — | naive-ui 没这 prop；如需截断请用 `<SnMenu>` 子树 + 自定义渲染 |
 | n-breadcrumb-item `href` | `href` | ✓ 1:1 |
