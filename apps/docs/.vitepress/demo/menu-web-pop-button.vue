@@ -9,6 +9,13 @@
  *
  * Use cases: secondary actions that shouldn't be in the main nav but
  * need persistent access — quick-add, AI helper, capture, etc.
+ *
+ * NOTE on the demo: the SnMenu root is `position: fixed` so the menu
+ * floats at the page's bottom-right in a real app. Inside a docs demo
+ * card that lives in the article flow, the fixed element would anchor
+ * to the viewport (outside the demo card). To show it inside the demo
+ * stage we override position to `absolute` via inline style — this is
+ * purely a demo concern; in production the menu stays viewport-fixed.
  */
 import { ref } from 'vue'
 import { SnMenu } from '@snui/vue-web'
@@ -25,17 +32,15 @@ const items = [
 
 <template>
   <div class="sn-pop-button-demo">
-    <p class="sn-pop-button-demo__hint">
-      悬停右下角悬浮按钮 → 展开 label；点击激活后保持 primary fill
-    </p>
     <div class="sn-pop-button-demo__stage">
-      <span class="sn-pop-button-demo__target">菜单固定在右下角</span>
+      <span class="sn-pop-button-demo__target">悬停右下角悬浮按钮 → 展开 label</span>
+      <SnMenu
+        mode="popButton"
+        :options="items"
+        v-model:value="active"
+        style="position: absolute;"
+      />
     </div>
-    <SnMenu
-      mode="popButton"
-      :options="items"
-      v-model:value="active"
-    />
     <p class="sn-pop-button-demo__active">
       当前选中：<code>{{ active ?? '(无)' }}</code>
     </p>
@@ -44,20 +49,13 @@ const items = [
 
 <style scoped>
 .sn-pop-button-demo {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
-  min-height: 240px;
-}
-.sn-pop-button-demo__hint {
-  margin: 0;
-  font-size: 12px;
-  color: var(--vp-c-text-2);
-  text-align: center;
 }
 .sn-pop-button-demo__stage {
+  position: relative;
   width: 100%;
   height: 220px;
   background: var(--vp-c-bg-soft);
@@ -67,6 +65,9 @@ const items = [
   justify-content: center;
   font-size: 13px;
   color: var(--vp-c-text-3);
+}
+.sn-pop-button-demo__target {
+  user-select: none;
 }
 .sn-pop-button-demo__active {
   margin: 0;

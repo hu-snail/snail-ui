@@ -57,6 +57,9 @@ const items = [
         style="border: 1px solid var(--vp-c-divider); border-radius: 8px;"
       />
     </div>
+    <p class="sn-menu-collapsed-demo__hint" style="max-width: 240px; text-align: center;">
+      悬停右下角悬浮按钮 → 右侧弹出子菜单 popover
+    </p>
     <p class="sn-menu-collapsed-demo__hint">
       悬停带子菜单的图标（设置 / 守卫）→ 右侧弹出子菜单 popover
     </p>
@@ -83,11 +86,14 @@ const items = [
   color: var(--vp-c-text-1);
 }
 .sn-menu-collapsed-demo__stage {
-  padding: 16px 24px;
+  /* Right padding leaves room for the hover popover (popover width ~180px
+   * + 8px offset from the menu's right edge). Without this, the popover
+   * gets clipped by the demo card's border. */
+  padding: 16px 220px 16px 24px;
   background: var(--vp-c-bg-soft);
   border-radius: 8px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
 }
 .sn-menu-collapsed-demo__hint {
   margin: 0;

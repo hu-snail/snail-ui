@@ -327,6 +327,18 @@ function indentStyleForLevel(level: number): Record<string, string> {
             popover panel itself is the children list rendered inline +
             absolutely positioned.
           -->
+          <!--
+            Hover-bridge element that fills the 8px visual gap between
+            the menu's right edge and the popover's left edge. Without
+            this, mouse motion through the gap would mouseleave the
+            wrapper (collapsing the popover) before mouseenter reaches
+            the popover itself.
+          -->
+          <div
+            v-if="collapsed && item.children?.length"
+            class="sn-menu-popover-bridge"
+            aria-hidden="true"
+          />
           <div
             v-if="collapsed && item.children?.length"
             class="sn-menu-submenu-popover"
@@ -617,7 +629,18 @@ function indentStyleForLevel(level: number): Record<string, string> {
 /* ─────────── Submenu popover (collapsed hover) ───────────
  * Renders hidden by default; visible while the parent group-wrapper is
  * hovered, focused-within, or the popover itself has focus. Anchored to
- * the right of the bar with a small offset. Pure CSS — no portal. */
+ * the right of the bar with a transparent hover-bridge in between so
+ * mouse motion through the gap doesn't collapse the popover.
+ * Pure CSS — no portal. */
+.sn-menu-popover-bridge {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 8px;
+  height: 100%;
+  z-index: 99;
+  /* Visible for hover purposes; no background so it doesn't show visually. */
+}
 .sn-menu-submenu-popover {
   position: absolute;
   top: 0;
@@ -641,13 +664,14 @@ function indentStyleForLevel(level: number): Record<string, string> {
     opacity 0.15s ease,
     transform 0.15s ease;
 }
-/* Show on hover / focus within the wrapper. The wrapper selector is the
- * sibling of the popover in the DOM, so :hover / :focus-within on it
- * toggles the popover's visibility. */
+/* Show on hover / focus within the wrapper OR the bridge OR the popover
+ * itself. All three together keep the popover open while the mouse
+ * moves through the gap. */
 .sn-menu-group-wrapper--collapsed-popover:hover .sn-menu-submenu-popover,
 .sn-menu-group-wrapper--collapsed-popover:focus-within .sn-menu-submenu-popover,
 .sn-menu-submenu-popover:hover,
-.sn-menu-submenu-popover:focus-within {
+.sn-menu-submenu-popover:focus-within,
+.sn-menu-popover-bridge:hover ~ .sn-menu-submenu-popover {
   opacity: 1;
   transform: translateX(0);
   pointer-events: auto;
