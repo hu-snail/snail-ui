@@ -58,9 +58,6 @@ const items = [
       />
     </div>
     <p class="sn-menu-collapsed-demo__hint" style="max-width: 240px; text-align: center;">
-      悬停右下角悬浮按钮 → 右侧弹出子菜单 popover
-    </p>
-    <p class="sn-menu-collapsed-demo__hint">
       悬停带子菜单的图标（设置 / 守卫）→ 右侧弹出子菜单 popover
     </p>
     <p class="sn-menu-collapsed-demo__active">
