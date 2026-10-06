@@ -1,8 +1,21 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import SnBreadcrumb from './SnBreadcrumb.vue'
 import SnBreadcrumbItem from './SnBreadcrumbItem.vue'
+
+/**
+ * Read the component source — used for CSS contract assertions that the test
+ * environment (happy-dom) cannot enforce because it does not parse scoped
+ * `<style>` blocks. Pinned here so a regression that reverts the breadcrumb
+ * to `display: block` (and breaks `text-align: center` centering in any
+ * docs/card wrapper) fails CI before it reaches the browser.
+ */
+const here = dirname(fileURLToPath(import.meta.url))
+const breadcrumbSource = readFileSync(resolve(here, './SnBreadcrumb.vue'), 'utf8')
 
 /** Minimal lucide-style icon stub for tests (vue-test-utils can't pull
  *  in lucide-vue-next without pulling in 1500 modules). */
@@ -30,6 +43,22 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
     const w = mount(SnBreadcrumb, { slots: { default: () => h(SnBreadcrumbItem, null, { default: () => 'x' }) } })
     expect(w.element.tagName).toBe('NAV')
     expect(w.attributes('aria-label')).toBe('Breadcrumb')
+  })
+
+  /* ─────────── §112 default centering ───────── */
+  /*
+   * Regression guard: <nav> defaults to display:block, which makes the
+   * breadcrumb span the full container width and ignore parent
+   * text-align:center. The .sn-breadcrumb rule pins `display: inline-flex`
+   * so the most common wrapper pattern (`<div style="text-align: center">`)
+   * actually centers the breadcrumb.
+   *
+   * happy-dom doesn't parse <style> blocks, so we assert against the source
+   * string of the component — brittle to whitespace but explicit about intent.
+   */
+  it('pins the breadcrumb nav to display:inline-flex by default', () => {
+    const rule = /\.sn-breadcrumb\s*\{[^}]*display:\s*inline-flex/m
+    expect(rule.test(breadcrumbSource)).toBe(true)
   })
 
   it('honors a custom separator via the per-item prop', () => {

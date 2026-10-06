@@ -144,6 +144,24 @@ function isEllipsis(seg: Segment): seg is EllipsisSeg {
 /* Web side: --sn-web-* aliases only. */
 
 .sn-breadcrumb {
+  /*
+   * Default to inline-flex (not `display: block`).
+   *
+   * Rationale: <nav> is block-level, which means it takes the full width of
+   * its parent and `text-align: center` on the parent only centers text
+   * INSIDE the nav, not the nav itself. The breadcrumb then stays
+   * left-aligned in any wrapper that uses the common pattern of
+   * `text-align: center` on the surrounding card/section.
+   *
+   * `inline-flex` makes the nav an inline box whose width matches its
+   * content — parents can now center it with `text-align: center`, and
+   * flex parents still see a normal flex item. Consumers who want a
+   * full-width breadcrumb wrap it in `<div style="display: flex">` (or
+   * set `display: flex` on `.sn-breadcrumb` themselves).
+   */
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
   font-size: 13px;
   color: var(--sn-web-color-text-secondary);
 }
