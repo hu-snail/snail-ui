@@ -39,6 +39,12 @@ const props = withDefaults(
     showSeparator?: boolean
     /** Optional leading icon. SnIcon-wrapped (per AGENTS §113). */
     icon?: IconComponent
+    /** Visual treatment. `plain` (default) = transparent, sits inline.
+     * `chip` = filled background pill (each item rendered as a distinct
+     * rounded chip, useful for compact trail in dashboards). `outlined`
+     * = transparent background + thin border. AUI extension beyond
+     * n-breadcrumb-item (naive-ui doesn't have a chip variant). */
+    variant?: 'plain' | 'chip' | 'outlined'
     /** Click handler. Mirrors n-breadcrumb-item `onClick`. */
     onClick?: (e: MouseEvent) => void
   }>(),
@@ -47,6 +53,7 @@ const props = withDefaults(
     clickable: true,
     separator: '',
     showSeparator: true,
+    variant: 'plain',
   },
 )
 
@@ -123,6 +130,7 @@ function handleClick(e: MouseEvent): void {
       :class="[
         'sn-breadcrumb-item__link',
         icon ? 'sn-breadcrumb-item__link--has-icon' : '',
+        variant !== 'plain' ? `sn-breadcrumb-item__link--${variant}` : '',
       ]"
       :href="href || undefined"
       :aria-current="ariaCurrent ?? undefined"
@@ -185,6 +193,46 @@ function handleClick(e: MouseEvent): void {
   flex: none;
 }
 
+/* ─────────── Variants ─────────── */
+
+/* chip: filled background pill, each item reads as a discrete chip.
+ * Pair with a tighter separator (or `show-separator=false` per item). */
+.sn-breadcrumb-item__link--chip {
+  background: var(--sn-web-color-background-subtle);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: var(--sn-web-color-text-primary);
+  line-height: 1.5;
+  margin: -2px -4px;
+}
+.sn-breadcrumb-item__link--chip:hover:not([aria-current='location']) {
+  background: var(--sn-web-color-background-elevated, #f1f5f9);
+}
+.sn-breadcrumb-item__link--chip[aria-current='location'] {
+  background: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-text-on-primary, #fff);
+}
+
+/* outlined: transparent background + border, for medium-emphasis chips. */
+.sn-breadcrumb-item__link--outlined {
+  border: 1px solid var(--sn-web-color-border-default);
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 13px;
+  color: var(--sn-web-color-text-primary);
+  line-height: 1.5;
+  margin: -2px -4px;
+}
+.sn-breadcrumb-item__link--outlined:hover:not([aria-current='location']) {
+  border-color: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-action-primary);
+}
+.sn-breadcrumb-item__link--outlined[aria-current='location'] {
+  border-color: var(--sn-web-color-action-primary);
+  background: var(--sn-web-color-background-elevated, rgba(99, 102, 241, 0.06));
+}
+
 .sn-breadcrumb-item__separator {
   margin: 0 6px;
   color: var(--sn-web-color-text-secondary);
@@ -195,5 +243,8 @@ function handleClick(e: MouseEvent): void {
 /* Doodle skin */
 .snui-skin-doodle .sn-breadcrumb-item__separator {
   font-weight: 700;
+}
+.snui-skin-doodle .sn-breadcrumb-item__link--chip {
+  border: 2px solid #1a1a1a;
 }
 </style>

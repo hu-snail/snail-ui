@@ -176,6 +176,68 @@ describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
     expect(link.textContent).toContain('Home')
   })
 
+  /* ─────────── §112 expansion: variant (AUI extension) ───────── */
+
+  it('variant=chip adds the chip modifier class on the link', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem variant="chip">A</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    const link = w.find('li.sn-breadcrumb-item a, li.sn-breadcrumb-item span.sn-breadcrumb-item__link')
+    expect(link.classes()).toContain('sn-breadcrumb-item__link--chip')
+  })
+
+  it('variant=outlined adds the outlined modifier class', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem variant="outlined">A</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    const link = w.find('li.sn-breadcrumb-item a, li.sn-breadcrumb-item span.sn-breadcrumb-item__link')
+    expect(link.classes()).toContain('sn-breadcrumb-item__link--outlined')
+  })
+
+  it('variant defaults to plain (no modifier class)', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem>A</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    const link = w.find('li.sn-breadcrumb-item a, li.sn-breadcrumb-item span.sn-breadcrumb-item__link')
+    expect(link.classes()).not.toContain('sn-breadcrumb-item__link--chip')
+    expect(link.classes()).not.toContain('sn-breadcrumb-item__link--outlined')
+  })
+
+  it('variant=chip + aria-current renders chip with primary fill', async () => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { href: 'http://localhost:3000/x' },
+    })
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem variant="chip" href="/x">Current</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+      attachTo: document.body,
+    })
+    await new Promise((r) => setTimeout(r, 0))
+    const link = w.find('li.sn-breadcrumb-item .sn-breadcrumb-item__link')
+    expect(link.classes()).toContain('sn-breadcrumb-item__link--chip')
+    expect(link.attributes('aria-current')).toBe('location')
+  })
+
   /* ─────────── §112 expansion: aria-current ───────── */
 
   it('marks aria-current="location" when window.location.href matches href', async () => {

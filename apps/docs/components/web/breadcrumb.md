@@ -10,7 +10,9 @@
 
 <Demo name="breadcrumb-web-separator" description="parent-level / per-item / slot 三种 separator 覆盖方式 + showSeparator=false" />
 
-<Demo name="breadcrumb-web-icon" description="SnBreadcrumbItem icon prop（lucide 图标内嵌）" />
+<Demo name="breadcrumb-web-icon" description="SnBreadcrumbItem icon prop（lucide 图标内嵌）+ chip variant 居中" />
+
+<Demo name="breadcrumb-web-variant" description="plain / chip / outlined 三种 variant（每项背景可独立设置）" />
 
 ## 基础用法
 
@@ -46,6 +48,7 @@ import '@snui/tokens-web/styles'
 | `separator` | `string` | `''` | 当前项的覆盖分隔符（空时回退到 parent） |
 | `showSeparator` | `boolean` | `true` | 是否渲染 trailing 分隔符 |
 | `icon` | `IconComponent` | `undefined` | 前置图标（SnIcon-wrapped；任意 lucide / ionicons5 / tabler FunctionalComponent） |
+| `variant` | `'plain' \| 'chip' \| 'outlined'` | `'plain'` | 背景样式。AUI 扩展。`plain` 透明（naive-ui 默认行为），`chip` 填充背景圆角胶囊（适合 dashboard / settings 紧凑路径），`outlined` 透明 + 边框（中强调）。可以每项独立设置。 |
 
 ### SnBreadcrumbItem Events
 
@@ -80,6 +83,7 @@ import '@snui/tokens-web/styles'
 | n-breadcrumb-item `showSeparator` | `showSeparator` | ✓ 1:1 |
 | n-breadcrumb-item `onClick` | `onClick` (+ `click` event) | ✓ 1:1 |
 | (icon) | `icon` prop (SnIcon-wrapped) | AUI §113 扩展 |
+| (variant) | `variant` prop (`plain` \| `chip` \| `outlined`) | AUI 扩展（naive-ui 没背景 variant） |
 | (n-breadcrumb-item) slot `separator` | `<template #separator>` | ✓ 1:1 |
 
 ## 相关
