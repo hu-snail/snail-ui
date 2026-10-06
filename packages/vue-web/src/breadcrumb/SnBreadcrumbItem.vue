@@ -191,13 +191,19 @@ function handleClick(e: MouseEvent): void {
 
 .sn-breadcrumb-item__icon {
   flex: none;
-  /* Slight negative top offset so lucide's slightly-above-center icon
-   * strokes align with the optical center of the slot label rather than
-   * the SVG box center (SVG box center ≠ optical center for stroke
-   * glyphs). Without this, the first item's icon visually sits a few
-   * pixels higher than the trailing text — most visible in chip / pill
-   * variants where the baseline is anchored to the chip pill height. */
-  vertical-align: -1px;
+  /* Display as inline-flex + center-align so the icon's box does NOT
+   * affect baseline alignment with sibling text. (Earlier attempt used
+   * vertical-align: -1px, but that pushed the wrapper's baseline
+   * down by 1px, which then made any item containing an icon have a
+   * different baseline from sibling items without an icon — visible as
+   * the first item in a breadcrumb trail sitting a hair higher than
+   * its neighbours.) Using inline-flex keeps the icon vertically
+   * centered with the slot label while leaving the row baseline
+   * untouched. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 /* ─────────── Variants ─────────── */
