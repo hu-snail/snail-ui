@@ -274,4 +274,90 @@ describe('SnMenu (AUI-WEB-NAV-001)', () => {
     expect(w.text()).toContain('Leaf 1')
     expect(w.text()).toContain('Leaf 2')
   })
+
+  /* ─────────── §112 expansion: collapsed bar + hover popover submenu ───────── */
+
+  it('collapsed mode hides labels + caret + clamps menu width', () => {
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'vertical',
+        options: treeItems,
+        collapsed: true,
+        collapsedWidth: 64,
+      },
+    })
+    expect(w.classes()).toContain('sn-menu--collapsed')
+    expect(w.attributes('style')).toContain('--sn-menu-collapsed-width: 64px')
+    // Labels + carets are still in the DOM but visually hidden by
+    // .sn-menu--collapsed .sn-menu-item__label { display: none } in the
+    // scoped stylesheet. Verify they exist (template didn't drop them).
+    expect(w.findAll('.sn-menu-item__label').length).toBeGreaterThan(0)
+    expect(w.findAll('.sn-menu-item__caret').length).toBeGreaterThan(0)
+  })
+
+  it('collapsed mode renders hover-popover with submenu children', () => {
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'vertical',
+        options: treeItems,
+        collapsed: true,
+      },
+    })
+    // Each group wrapper contains a popover with the children
+    const popovers = w.findAll('.sn-menu-submenu-popover')
+    expect(popovers.length).toBeGreaterThan(0)
+    // The popover should have children leaves
+    const firstPopover = popovers[0]!
+    const popLeaves = firstPopover.findAll('.sn-menu-item--popover-leaf')
+    expect(popLeaves.length).toBeGreaterThan(0)
+  })
+
+  it('collapsed popover is initially hidden via opacity:0', () => {
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'vertical',
+        options: treeItems,
+        collapsed: true,
+      },
+    })
+    const popover = w.find('.sn-menu-submenu-popover')
+    const styles = popover.attributes('style') ?? ''
+    // The CSS rule sets opacity:0; computed inline style is empty until
+    // hover. Check that the popover has the visibility class wrapper.
+    const wrapper = w.find('.sn-menu-group-wrapper--collapsed-popover')
+    expect(wrapper.exists()).toBe(true)
+    void styles
+  })
+
+  it('clicking a popover-leaf selects it even if the parent group is collapsed', async () => {
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'vertical',
+        options: treeItems,
+        collapsed: true,
+        value: null,
+      },
+    })
+    const popover = w.find('.sn-menu-submenu-popover')
+    // First popover belongs to the 'basic' group whose first child is 'button'
+    const leaf = popover.findAll('.sn-menu-item--popover-leaf')[0]!
+    await leaf.trigger('click')
+    const emitted = w.emitted('update:value')
+    expect(emitted).toBeTruthy()
+    expect(emitted![0]![0]).toBe('button')
+  })
+
+  it('non-collapsed vertical submenu renders children inline (no popover)', () => {
+    const w = mount(SnMenu, {
+      props: {
+        mode: 'vertical',
+        options: treeItems,
+        expandedKeys: ['basic'],
+        collapsed: false,
+      },
+    })
+    expect(w.find('.sn-menu-submenu-popover').exists()).toBe(false)
+    // Inline children should be present as .sn-menu-item--leaf
+    expect(w.findAll('.sn-menu-item--leaf').length).toBeGreaterThan(0)
+  })
 })

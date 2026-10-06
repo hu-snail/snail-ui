@@ -8,17 +8,18 @@
  *
  * 1:1 parity (this version): mode / options / value / defaultValue /
  *   expandedKeys / defaultExpandedKeys / defaultExpandAll / accordion /
- *   indent / inverted / options.icon / label-field / key-field /
- *   children-field remap (so consumers can pass API-shaped trees without
- *   reshaping).
+ *   indent / inverted / collapsed / collapsedWidth / collapsedIconSize /
+ *   iconSize / label-field / key-field / children-field / dropdownPlacement
+ *   / disabled remap. Plus hover-popover submenu rendering in collapsed
+ *   mode (pure CSS, no portal needed for the basic case).
  *
  * §112 future markers (NOT in this version, doc-roadmap):
- *   - collapsed / collapsedWidth: sidecar collapse-to-bar layout
- *   - layoutSiderInjection / responsive: auto-collapsing sidebar
- *   - dropdown submenu (dropdownProps)
+ *   - layoutSiderInjection / responsive: auto-collapsing sidebar driven
+ *     by an outer <n-layout-sider>
+ *   - dropdownProps: full naive-ui dropdown prop pass-through
  *   - renderIcon / renderLabel / renderSuffix / renderExtra render-fns
  *   - nodeProps: per-node Vue props injection
- *   - virtualized overflow ellipsis
+ *   - virtualized overflow ellipsis (horizontal mode auto-collapse)
  *   - tree-mate based label remap (we expose plain key/children-field instead)
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
@@ -90,6 +91,27 @@ const props = withDefaults(
     labelField?: string
     /** Field name used to read each node's children array. Mirrors n-menu `children-field`. */
     childrenField?: string
+    /** Whether the menu is rendered in collapsed (icon-only) form. Mirrors
+     * n-menu `collapsed`. Submenus in collapsed mode open via a hover
+     * popover anchored to the right of the parent item. Default false. */
+    collapsed?: boolean
+    /** Width (px) of the collapsed bar. Mirrors n-menu `collapsed-width`.
+     * Default 48 (matches Element Plus). */
+    collapsedWidth?: number
+    /** Icon size (px) used in collapsed mode. Mirrors n-menu
+     * `collapsed-icon-size`. Default 24. */
+    collapsedIconSize?: number
+    /** Icon size (px) used in normal mode. Mirrors n-menu `icon-size`.
+     * Default 20. */
+    iconSize?: number
+    /** Popover placement for submenus in collapsed mode. Mirrors n-menu
+     * `dropdown-placement`. Default 'right-start' (popover opens to the
+     * right of the bar, top-aligned with the hovered item — matches
+     * Element Plus and naive-ui default). */
+    dropdownPlacement?: 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom'
+    /** Field name used to read each node's `disabled` flag. Mirrors n-menu
+     * `disabled-field`. Default 'disabled'. */
+    disabledField?: string
   }>(),
   {
     mode: 'vertical',
@@ -105,6 +127,12 @@ const props = withDefaults(
     keyField: 'key',
     labelField: 'label',
     childrenField: 'children',
+    collapsed: false,
+    collapsedWidth: 48,
+    collapsedIconSize: 24,
+    iconSize: 20,
+    dropdownPlacement: 'right-start',
+    disabledField: 'disabled',
   },
 )
 
@@ -140,7 +168,7 @@ function normalize(raw: RawNode): SnMenuOption {
   const out: SnMenuOption = {
     key: readKey(raw),
     label: readLabel(raw),
-    disabled: typeof raw['disabled'] === 'boolean' ? raw['disabled'] : false,
+    disabled: typeof raw[props.disabledField] === 'boolean' ? raw[props.disabledField] as boolean : false,
     href: typeof raw['href'] === 'string' ? raw['href'] : undefined,
     icon: raw['icon'],
   }
@@ -224,21 +252,141 @@ function indentStyleForLevel(level: number): Record<string, string> {
     :class="[
       'sn-menu',
       `sn-menu--${mode}`,
+      collapsed ? 'sn-menu--collapsed' : '',
       inverted ? 'sn-menu--inverted' : '',
     ]"
     :role="mode === 'horizontal' ? 'menubar' : 'menu'"
+    :style="collapsed && mode === 'vertical' ? `--sn-menu-collapsed-width: ${collapsedWidth}px; --sn-menu-icon-size: ${collapsedIconSize}px;` : `--sn-menu-icon-size: ${iconSize}px;`"
   >
     <div class="sn-menu__list">
       <template v-for="item in normalizedOptions" :key="`top-${item.key}`">
+        <!--
+          Each top-level item is rendered as:
+            - horizontal mode + no children  → <a> / <button>
+            - vertical mode + has children   → <button> with hover popover
+              for nested children (popover only shows in collapsed mode; in
+              normal vertical the children render inline below the parent)
+            - vertical mode + no children    → <a> / <button>
+
+          Collapsed mode forces every top-level item to render the icon-only
+          branch (label + caret hidden via .sn-menu--collapsed .sn-menu-item__label).
+        -->
+        <div
+          v-if="mode === 'vertical' && item.children?.length"
+          class="sn-menu-group-wrapper"
+          :class="{
+            'sn-menu-group-wrapper--collapsed-popover': collapsed,
+            'sn-menu-group-wrapper--expanded': !collapsed && isExpanded(item.key),
+          }"
+        >
+          <component
+            :is="isLink(item) ? 'a' : 'button'"
+            :class="[
+              'sn-menu-item sn-menu-item--group',
+              { 'sn-menu-item--active': isActive(item.key),
+                'sn-menu-item--disabled': item.disabled,
+                'sn-menu-item--expanded': !collapsed && isExpanded(item.key),
+                'sn-menu-item--inverted': inverted,
+              },
+            ]"
+            :type="isLink(item) ? undefined : 'button'"
+            :href="!collapsed && isLink(item) ? item.href : undefined"
+            :disabled="!isLink(item) ? item.disabled : undefined"
+            :aria-disabled="item.disabled || undefined"
+            :aria-current="!collapsed && isActive(item.key) ? 'page' : undefined"
+            :aria-expanded="isExpanded(item.key) ? 'true' : 'false'"
+            :aria-haspopup="collapsed ? 'menu' : undefined"
+            @click="collapsed ? null : toggleGroup(item.key)"
+          >
+            <span v-if="item.icon" class="sn-menu-item__icon">
+              <component :is="item.icon" />
+            </span>
+            <span class="sn-menu-item__label">{{ item.label }}</span>
+            <span
+              class="sn-menu-item__caret"
+              aria-hidden="true"
+            >
+              <SnIcon :icon="isExpanded(item.key) ? ChevronDown : ChevronRight" :size="14" />
+            </span>
+          </component>
+
+          <!--
+            Collapsed mode: hover-triggered popover anchored to the right
+            of the parent. Pure CSS — :hover on the wrapper toggles a
+            `data-show` attribute via `.sn-menu-group-wrapper:hover`. The
+            popover panel itself is the children list rendered inline +
+            absolutely positioned.
+          -->
+          <div
+            v-if="collapsed && item.children?.length"
+            class="sn-menu-submenu-popover"
+            role="menu"
+            :aria-label="item.label"
+            @click.stop
+          >
+            <component
+              :is="isLink(child) ? 'a' : 'button'"
+              v-for="child in item.children"
+              :key="`pop-${child.key}`"
+              :type="isLink(child) ? undefined : 'button'"
+              :class="[
+                'sn-menu-item sn-menu-item--popover-leaf',
+                { 'sn-menu-item--active': isActive(child.key),
+                  'sn-menu-item--disabled': child.disabled,
+                  'sn-menu-item--inverted': inverted,
+                },
+              ]"
+              :href="isLink(child) ? child.href : undefined"
+              :disabled="!isLink(child) ? child.disabled : undefined"
+              :aria-disabled="child.disabled || undefined"
+              :aria-current="isActive(child.key) ? 'page' : undefined"
+              @click="selectOption(child)"
+            >
+              <span v-if="child.icon" class="sn-menu-item__icon">
+                <component :is="child.icon" />
+              </span>
+              <span class="sn-menu-item__label">{{ child.label }}</span>
+            </component>
+          </div>
+
+          <!-- Normal (expanded) vertical: render children under the parent -->
+          <div
+            v-else-if="!collapsed && isExpanded(item.key)"
+            class="sn-menu-group"
+            role="group"
+          >
+            <component
+              :is="isLink(child) ? 'a' : 'button'"
+              v-for="child in item.children"
+              :key="`c-${child.key}`"
+              :type="isLink(child) ? undefined : 'button'"
+              :class="[
+                'sn-menu-item sn-menu-item--leaf',
+                { 'sn-menu-item--active': isActive(child.key),
+                  'sn-menu-item--disabled': child.disabled,
+                  'sn-menu-item--inverted': inverted,
+                },
+              ]"
+              :href="isLink(child) ? child.href : undefined"
+              :disabled="!isLink(child) ? child.disabled : undefined"
+              :aria-disabled="child.disabled || undefined"
+              :aria-current="isActive(child.key) ? 'page' : undefined"
+              :style="indentStyleForLevel(1)"
+              @click="selectOption(child)"
+            >
+              <span class="sn-menu-item__label">{{ child.label }}</span>
+            </component>
+          </div>
+        </div>
+
+        <!-- Top-level leaf item (no children) -->
         <component
           :is="isLink(item) ? 'a' : 'button'"
-          v-if="mode === 'horizontal' || !item.children?.length"
+          v-else
           :class="[
             'sn-menu-item',
             { 'sn-menu-item--active': isActive(item.key),
               'sn-menu-item--disabled': item.disabled,
-              'sn-menu-item--group': !!item.children?.length,
-              'sn-menu-item--expanded': isExpanded(item.key) && !!item.children?.length,
               'sn-menu-item--inverted': inverted,
             },
           ]"
@@ -247,67 +395,13 @@ function indentStyleForLevel(level: number): Record<string, string> {
           :disabled="!isLink(item) ? item.disabled : undefined"
           :aria-disabled="item.disabled || undefined"
           :aria-current="isActive(item.key) ? 'page' : undefined"
-          :aria-expanded="mode === 'vertical' && item.children?.length ? (isExpanded(item.key) ? 'true' : 'false') : undefined"
-          :style="indentStyleForLevel(0)"
-          @click="mode === 'vertical' && item.children?.length ? toggleGroup(item.key) : selectOption(item)"
+          @click="selectOption(item)"
         >
-          <span v-if="item.icon" class="sn-menu-item__icon"><component :is="item.icon" /></span>
-          <span class="sn-menu-item__label">{{ item.label }}</span>
-          <span
-            v-if="mode === 'vertical' && item.children?.length"
-            class="sn-menu-item__caret"
-            aria-hidden="true"
-          >
-            <SnIcon :icon="isExpanded(item.key) ? ChevronDown : ChevronRight" :size="14" />
+          <span v-if="item.icon" class="sn-menu-item__icon">
+            <component :is="item.icon" />
           </span>
+          <span class="sn-menu-item__label">{{ item.label }}</span>
         </component>
-        <!-- Vertical mode: group header only (when no children rendered) -->
-        <button
-          v-else-if="mode === 'vertical' && item.children?.length"
-          type="button"
-          :class="[
-            'sn-menu-item sn-menu-item--group',
-            { 'sn-menu-item--expanded': isExpanded(item.key),
-              'sn-menu-item--inverted': inverted,
-            },
-          ]"
-          :aria-expanded="isExpanded(item.key) ? 'true' : 'false'"
-          @click="toggleGroup(item.key)"
-        >
-          <span v-if="item.icon" class="sn-menu-item__icon"><component :is="item.icon" /></span>
-          <span class="sn-menu-item__label">{{ item.label }}</span>
-          <span class="sn-menu-item__caret" aria-hidden="true">
-            <SnIcon :icon="isExpanded(item.key) ? ChevronDown : ChevronRight" :size="14" />
-          </span>
-        </button>
-        <!-- Vertical mode: nested children when group expanded -->
-        <div
-          v-if="mode === 'vertical' && item.children?.length && isExpanded(item.key)"
-          class="sn-menu-group"
-          role="group"
-        >
-          <component
-            :is="isLink(child) ? 'a' : 'button'"
-            v-for="child in item.children"
-            :key="`c-${child.key}`"
-            :type="isLink(child) ? undefined : 'button'"
-            :class="[
-              'sn-menu-item sn-menu-item--leaf',
-              { 'sn-menu-item--active': isActive(child.key),
-                'sn-menu-item--disabled': child.disabled,
-                'sn-menu-item--inverted': inverted,
-              },
-            ]"
-            :href="isLink(child) ? child.href : undefined"
-            :disabled="!isLink(child) ? child.disabled : undefined"
-            :aria-disabled="child.disabled || undefined"
-            :aria-current="isActive(child.key) ? 'page' : undefined"
-            :style="indentStyleForLevel(1)"
-            @click="selectOption(child)"
-          >
-            <span class="sn-menu-item__label">{{ child.label }}</span>
-          </component>
-        </div>
       </template>
     </div>
   </nav>
@@ -385,6 +479,84 @@ function indentStyleForLevel(level: number): Record<string, string> {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+/* ─────────── Collapsed mode ─────────── */
+
+/* Group wrapper used for vertical items with children. Holds the parent
+ * trigger + (popover | inline-children) so hover can target both. */
+.sn-menu-group-wrapper {
+  position: relative;
+}
+
+/* Collapsed bar: clamp the menu to its width, center icons, hide labels
+ * + carets. The token --sn-menu-collapsed-width / --sn-menu-icon-size
+ * are set inline on the root <nav> based on `collapsedWidth` /
+ * `collapsedIconSize`. */
+.sn-menu--collapsed.sn-menu--vertical .sn-menu__list {
+  width: var(--sn-menu-collapsed-width, 48px);
+}
+.sn-menu--collapsed .sn-menu-item__label,
+.sn-menu--collapsed .sn-menu-item__caret {
+  display: none;
+}
+.sn-menu--collapsed .sn-menu-item {
+  justify-content: center;
+  padding: 12px 0;
+}
+.sn-menu--collapsed .sn-menu-item__icon {
+  width: var(--sn-menu-icon-size, 24px);
+  height: var(--sn-menu-icon-size, 24px);
+  font-size: var(--sn-menu-icon-size, 24px);
+}
+
+/* ─────────── Submenu popover (collapsed hover) ───────────
+ * Renders hidden by default; visible while the parent group-wrapper is
+ * hovered, focused-within, or the popover itself has focus. Anchored to
+ * the right of the bar with a small offset. Pure CSS — no portal. */
+.sn-menu-submenu-popover {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 8px);
+  min-width: 180px;
+  padding: 6px;
+  border-radius: 8px;
+  background: var(--sn-web-color-background-elevated, #fff);
+  box-shadow:
+    0 6px 16px -4px rgba(0, 0, 0, 0.12),
+    0 4px 8px -2px rgba(0, 0, 0, 0.08),
+    0 0 0 1px var(--sn-web-color-border-default, rgba(0, 0, 0, 0.06));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 100;
+  opacity: 0;
+  transform: translateX(-4px);
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+/* Show on hover / focus within the wrapper. The wrapper selector is the
+ * sibling of the popover in the DOM, so :hover / :focus-within on it
+ * toggles the popover's visibility. */
+.sn-menu-group-wrapper--collapsed-popover:hover .sn-menu-submenu-popover,
+.sn-menu-group-wrapper--collapsed-popover:focus-within .sn-menu-submenu-popover,
+.sn-menu-submenu-popover:hover,
+.sn-menu-submenu-popover:focus-within {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.sn-menu-item--popover-leaf {
+  width: 100%;
+  justify-content: flex-start;
+}
+.sn-menu-item--popover-leaf .sn-menu-item__icon {
+  width: var(--sn-menu-icon-size, 20px);
+  height: var(--sn-menu-icon-size, 20px);
+  font-size: var(--sn-menu-icon-size, 20px);
 }
 
 /* Inverted (dark backdrop nav) — n-menu `inverted: true`. Active item

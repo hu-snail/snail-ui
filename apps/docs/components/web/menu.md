@@ -2,7 +2,7 @@
 
 `SnMenu` 是 `@snui/vue-web`（PC 桌面端）的层级导航菜单，支持 horizontal / vertical 两种模式。v-model:value 同步当前选中项、v-model:expandedKeys 同步展开组（vertical 模式）。
 
-按 AGENTS.md §112，prop 名义对齐 [naive-ui `n-menu`](https://www.naiveui.com/zh-CN/light/components/menu)。n-menu 的高级 prop（`suffix` / `collapsed` / `collapsedWidth` / `layoutSiderInjection` / 树状 label remap 等）当前未实现（doc-roadmap 列），需要时再加。
+按 AGENTS.md §112，prop 名义对齐 [naive-ui `n-menu`](https://www.naiveui.com/zh-CN/light/components/menu)。支持 `collapsed` icon-only 折叠模式 + hover popover 子菜单（CSS 实现，不需要 portal）。
 
 ## 实时预览
 
@@ -15,6 +15,8 @@
 <Demo name="menu-web-inverted" description="inverted: true — 深色背景顶导航（适合 colorful nav bar）" />
 
 <Demo name="menu-web-field-remap" description="label-field / key-field / children-field — 适配 API 树形（不用 reshape 数据）" />
+
+<Demo name="menu-web-collapsed" description="collapsed icon-only 折叠模式 + hover popover 子菜单" />
 
 ## 基础用法
 
@@ -65,9 +67,15 @@ const active = ref<string | null>(null)
 | `accordion` | `boolean` | `false` | 同时只允许一个 group 展开（手风琴） |
 | `indent` | `number` | `32` | 每层 indent 像素（vertical 模式） |
 | `inverted` | `boolean` | `false` | 深色背景变体（适合 gradient / dark surface 顶导航） |
+| `collapsed` | `boolean` | `false` | 折叠模式（vertical）：只显示 icon，子菜单 hover 弹出 popover |
+| `collapsedWidth` | `number` | `48` | 折叠模式容器宽度（px） |
+| `collapsedIconSize` | `number` | `24` | 折叠模式 icon 尺寸（px） |
+| `iconSize` | `number` | `20` | 正常模式 icon 尺寸（px） |
+| `dropdownPlacement` | `'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom'` | `'right-start'` | 折叠模式下子菜单 popover 位置 |
 | `keyField` | `string` | `'key'` | 树节点的 key 字段名（API 树 remap） |
 | `labelField` | `string` | `'label'` | 树节点的 label 字段名 |
 | `childrenField` | `string` | `'children'` | 树节点的 children 字段名 |
+| `disabledField` | `string` | `'disabled'` | 树节点的 disabled 字段名 |
 
 ### SnMenuOption
 
