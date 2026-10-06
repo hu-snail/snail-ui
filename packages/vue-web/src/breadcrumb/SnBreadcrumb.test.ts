@@ -1,7 +1,18 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { defineComponent, h } from 'vue'
 import SnBreadcrumb from './SnBreadcrumb.vue'
 import SnBreadcrumbItem from './SnBreadcrumbItem.vue'
+
+/** Minimal lucide-style icon stub for tests (vue-test-utils can't pull
+ *  in lucide-vue-next without pulling in 1500 modules). */
+const StubIcon = defineComponent({
+  name: 'StubIcon',
+  props: { size: { type: Number, default: 16 } },
+  setup(props) {
+    return () => h('svg', { 'data-stub-icon': '', width: props.size, height: props.size })
+  },
+})
 
 const renderItems = () => ({
   components: { SnBreadcrumb, SnBreadcrumbItem },
@@ -16,92 +27,193 @@ const renderItems = () => ({
 
 describe('SnBreadcrumb (AUI-WEB-NAV-003)', () => {
   it('renders a nav with breadcrumb role', () => {
-    const w = mount(SnBreadcrumb, { slots: { default: '<a>Home</a>' } })
+    const w = mount(SnBreadcrumb, { slots: { default: () => h(SnBreadcrumbItem, null, { default: () => 'x' }) } })
     expect(w.element.tagName).toBe('NAV')
     expect(w.attributes('aria-label')).toBe('Breadcrumb')
   })
 
-  it('renders the default separator', () => {
-    const w = mount(SnBreadcrumb, { slots: { default: '<a>x</a><span>y</span>' } })
-    expect(w.text()).toContain('/')
-    expect(w.find('.sn-breadcrumb__separator').exists()).toBe(true)
-  })
-
-  it('honors a custom separator', () => {
-    const w = mount(SnBreadcrumb, {
-      props: { separator: '›' },
-      slots: { default: '<a>x</a><span>y</span>' },
-    })
-    expect(w.find('.sn-breadcrumb__separator').text()).toBe('›')
-  })
-
-  it('renders one <li> per slot child', () => {
-    const w = mount(renderItems())
-    expect(w.findAll('li.sn-breadcrumb__item').length).toBe(3)
-  })
-
-  it('renders separators between siblings (n-1 separators for n items)', () => {
-    const w = mount(renderItems())
-    expect(w.findAll('.sn-breadcrumb__separator').length).toBe(2)
-  })
-
-  it('does not render a trailing separator after the last item', () => {
-    const w = mount(renderItems())
-    const lastItem = w.findAll('li.sn-breadcrumb__item').at(-1)!
-    expect(lastItem.find('.sn-breadcrumb__separator').exists()).toBe(false)
-  })
-
-  it('renders SnBreadcrumbItem child as <a> when href is provided', () => {
-    const w = mount(SnBreadcrumb, {
-      slots: { default: '<a href="/x">x</a>' },
-    })
-    expect(w.find('a').attributes('href')).toBe('/x')
-  })
-
-  it('renders SnBreadcrumbItem child as <span> when no href', () => {
-    const w = mount(SnBreadcrumb, {
-      slots: { default: '<span>y</span>' },
-    })
-    expect(w.find('.sn-breadcrumb__item span').exists()).toBe(true)
-    expect(w.find('.sn-breadcrumb__item a').exists()).toBe(false)
-  })
-
-  /* ─────────── §112 expansion: itemCount truncation ───────── */
-
-  it('itemCount limits visible items + adds ellipsis', () => {
-    const renderLong = {
-      components: { SnBreadcrumb, SnBreadcrumbItem },
-      template: `
-        <SnBreadcrumb separator="/" :item-count="3">
-          <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
-          <SnBreadcrumbItem href="/a">A</SnBreadcrumbItem>
-          <SnBreadcrumbItem href="/b">B</SnBreadcrumbItem>
-          <SnBreadcrumbItem href="/c">C</SnBreadcrumbItem>
-          <SnBreadcrumbItem href="/d">D</SnBreadcrumbItem>
-          <SnBreadcrumbItem>Current</SnBreadcrumbItem>
-        </SnBreadcrumb>
-      `,
-    }
-    const w = mount(renderLong)
-    // itemCount=3 with total=6: head(2) + ellipsis(1) + tail(1) = 4 visible
-    // li elements (each li also carries .sn-breadcrumb__item).
-    expect(w.findAll('.sn-breadcrumb__item').length).toBe(4)
-    expect(w.find('.sn-breadcrumb__ellipsis-item').exists()).toBe(true)
-    expect(w.find('.sn-breadcrumb__more').exists()).toBe(true)
-    expect(w.find('.sn-breadcrumb__more').text()).toContain('3')
-  })
-
-  it('itemCount above total renders all items, no ellipsis', () => {
+  it('honors a custom separator via the per-item prop', () => {
     const w = mount({
       components: { SnBreadcrumb, SnBreadcrumbItem },
       template: `
-        <SnBreadcrumb separator="/" :item-count="99">
-          <SnBreadcrumbItem href="/">A</SnBreadcrumbItem>
-          <SnBreadcrumbItem href="/b">B</SnBreadcrumbItem>
+        <SnBreadcrumb separator="/">
+          <SnBreadcrumbItem href="/a">A</SnBreadcrumbItem>
+          <SnBreadcrumbItem separator="~">B</SnBreadcrumbItem>
+          <SnBreadcrumbItem>C</SnBreadcrumbItem>
         </SnBreadcrumb>
       `,
     })
-    expect(w.findAll('.sn-breadcrumb__item').length).toBe(2)
-    expect(w.find('.sn-breadcrumb__more').exists()).toBe(false)
+    const seps = w.findAll('.sn-breadcrumb-item__separator')
+    expect(seps.length).toBe(3) // every item renders its own trailing separator
+    expect(seps[0]!.text()).toBe('/')
+    expect(seps[1]!.text()).toBe('~')
+  })
+
+  it('uses the parent separator as the default for every item', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb separator="›">
+          <SnBreadcrumbItem>A</SnBreadcrumbItem>
+          <SnBreadcrumbItem>B</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    const seps = w.findAll('.sn-breadcrumb-item__separator')
+    expect(seps.length).toBe(2)
+    expect(seps[0]!.text()).toBe('›')
+    expect(seps[1]!.text()).toBe('›')
+  })
+
+  it('renders one <li> per SnBreadcrumbItem child', () => {
+    const w = mount(renderItems())
+    expect(w.findAll('li.sn-breadcrumb-item').length).toBe(3)
+  })
+
+  it('renders SnBreadcrumbItem as <a> when href is provided', () => {
+    const w = mount(renderItems())
+    const anchors = w.findAll('li.sn-breadcrumb-item a')
+    expect(anchors.length).toBe(2)
+    expect(anchors[0]!.attributes('href')).toBe('/')
+  })
+
+  it('renders SnBreadcrumbItem as <span> when no href', () => {
+    const w = mount(renderItems())
+    const lastLi = w.findAll('li.sn-breadcrumb-item').at(-1)!
+    expect(lastLi.find('a').exists()).toBe(false)
+    expect(lastLi.find('span.sn-breadcrumb-item__link').exists()).toBe(true)
+  })
+
+  /* ─────────── §112 expansion: per-item override + showSeparator + clickable ───────── */
+
+  it('clickable=false drops the clickable class', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem :clickable="false">A</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    const li = w.find('li.sn-breadcrumb-item')
+    expect(li.classes()).not.toContain('sn-breadcrumb-item--clickable')
+    expect(li.classes()).toContain('sn-breadcrumb-item--disabled')
+  })
+
+  it('showSeparator=false omits the trailing separator span', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem :show-separator="false">A</SnBreadcrumbItem>
+          <SnBreadcrumbItem>B</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    const seps = w.findAll('.sn-breadcrumb-item__separator')
+    expect(seps.length).toBe(1)
+  })
+
+  it('separator slot overrides the prop and parent', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb separator="/">
+          <SnBreadcrumbItem>
+            A
+            <template #separator><svg data-stub-sep /></template>
+          </SnBreadcrumbItem>
+          <SnBreadcrumbItem>B</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+    })
+    const firstSep = w.findAll('.sn-breadcrumb-item__separator')[0]!
+    expect(firstSep.find('[data-stub-sep]').exists()).toBe(true)
+    // No text fallback when slot renders.
+    expect(firstSep.text()).toBe('')
+  })
+
+  it('invokes onClick handler when the link is clicked', async () => {
+    const onClick = vi.fn()
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem href="/" @click="onClick">Home</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+      setup() {
+        return { onClick }
+      },
+    })
+    await w.find('li.sn-breadcrumb-item a').trigger('click')
+    expect(onClick).toHaveBeenCalledTimes(1)
+  })
+
+  /* ─────────── §112 expansion: icon support ───────── */
+
+  it('renders an icon SnIcon before the slot content', () => {
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem, StubIcon },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem :icon="StubIcon">Home</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+      setup() {
+        return { StubIcon }
+      },
+    })
+    const icon = w.find('li.sn-breadcrumb-item .sn-icon')
+    expect(icon.exists()).toBe(true)
+    // Icon must come before the label text inside the link wrapper.
+    // Use li (not tag-specific) because SnBreadcrumbItem renders <span>
+    // when no href is given.
+    const li = w.find('li.sn-breadcrumb-item')
+    const link = li.element.querySelector('.sn-breadcrumb-item__link')!
+    expect(link.firstElementChild!.classList.contains('sn-icon')).toBe(true)
+    // Slot text is the next sibling after the SnIcon wrapper.
+    expect(link.textContent).toContain('Home')
+  })
+
+  /* ─────────── §112 expansion: aria-current ───────── */
+
+  it('marks aria-current="location" when window.location.href matches href', async () => {
+    // happy-dom provides window.location; mount an item with the same path.
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { href: 'http://localhost:3000/components/breadcrumb' },
+    })
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem href="/components/breadcrumb">Breadcrumb</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+      attachTo: document.body,
+    })
+    await new Promise((r) => setTimeout(r, 0))
+    const link = w.find('li.sn-breadcrumb-item a')
+    expect(link.attributes('aria-current')).toBe('location')
+  })
+
+  it('does NOT mark aria-current when paths differ', async () => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: { href: 'http://localhost:3000/other' },
+    })
+    const w = mount({
+      components: { SnBreadcrumb, SnBreadcrumbItem },
+      template: `
+        <SnBreadcrumb>
+          <SnBreadcrumbItem href="/components/breadcrumb">Breadcrumb</SnBreadcrumbItem>
+        </SnBreadcrumb>
+      `,
+      attachTo: document.body,
+    })
+    await new Promise((r) => setTimeout(r, 0))
+    const link = w.find('li.sn-breadcrumb-item a')
+    expect(link.attributes('aria-current')).toBeUndefined()
   })
 })
