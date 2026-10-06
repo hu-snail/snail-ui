@@ -16,59 +16,50 @@ import { Home, Settings, FileText } from 'lucide-vue-next'
 
 <template>
   <div class="sn-breadcrumb-demo">
-    <div class="sn-breadcrumb-demo__row">
-      <p class="sn-breadcrumb-demo__label">plain (default)</p>
-      <SnBreadcrumb>
-        <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/guide">Guide</SnBreadcrumbItem>
-        <SnBreadcrumbItem>Install</SnBreadcrumbItem>
-      </SnBreadcrumb>
-    </div>
-    <div class="sn-breadcrumb-demo__row">
-      <p class="sn-breadcrumb-demo__label">chip — 每项独立填充背景</p>
-      <SnBreadcrumb>
-        <SnBreadcrumbItem variant="chip" :icon="Home" href="/">首页</SnBreadcrumbItem>
-        <SnBreadcrumbItem variant="chip" :icon="Settings" href="/settings">设置</SnBreadcrumbItem>
-        <SnBreadcrumbItem variant="chip" :icon="FileText" :show-separator="false">详情</SnBreadcrumbItem>
-      </SnBreadcrumb>
-    </div>
-    <div class="sn-breadcrumb-demo__row">
-      <p class="sn-breadcrumb-demo__label">outlined — 透明 + 边框</p>
-      <SnBreadcrumb>
-        <SnBreadcrumbItem variant="outlined" href="/">Home</SnBreadcrumbItem>
-        <SnBreadcrumbItem variant="outlined" href="/guide">Guide</SnBreadcrumbItem>
-        <SnBreadcrumbItem variant="outlined" :show-separator="false">Install</SnBreadcrumbItem>
-      </SnBreadcrumb>
-    </div>
-    <div class="sn-breadcrumb-demo__row">
-      <p class="sn-breadcrumb-demo__label">mix — 当前页 outlined / 其他 plain</p>
-      <SnBreadcrumb>
-        <SnBreadcrumbItem variant="chip" :icon="Home" href="/">Home</SnBreadcrumbItem>
-        <SnBreadcrumbItem variant="chip" :icon="Settings" href="/settings">Settings</SnBreadcrumbItem>
-        <SnBreadcrumbItem variant="outlined" :show-separator="false">Profile</SnBreadcrumbItem>
-      </SnBreadcrumb>
-    </div>
+    <p class="sn-breadcrumb-demo__label">plain (default)</p>
+    <SnBreadcrumb>
+      <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/guide">Guide</SnBreadcrumbItem>
+      <SnBreadcrumbItem>Install</SnBreadcrumbItem>
+    </SnBreadcrumb>
+
+    <p class="sn-breadcrumb-demo__label">chip — 每项独立填充背景</p>
+    <SnBreadcrumb>
+      <SnBreadcrumbItem variant="chip" :icon="Home" href="/">首页</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="chip" :icon="Settings" href="/settings">设置</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="chip" :icon="FileText" :show-separator="false">详情</SnBreadcrumbItem>
+    </SnBreadcrumb>
+
+    <p class="sn-breadcrumb-demo__label">outlined — 透明 + 边框</p>
+    <SnBreadcrumb>
+      <SnBreadcrumbItem variant="outlined" href="/">Home</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="outlined" href="/guide">Guide</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="outlined" :show-separator="false">Install</SnBreadcrumbItem>
+    </SnBreadcrumb>
+
+    <p class="sn-breadcrumb-demo__label">mix — 当前页 outlined / 其他 plain</p>
+    <SnBreadcrumb>
+      <SnBreadcrumbItem variant="chip" :icon="Home" href="/">Home</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="chip" :icon="Settings" href="/settings">Settings</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="outlined" :show-separator="false">Profile</SnBreadcrumbItem>
+    </SnBreadcrumb>
   </div>
 </template>
 
 <style scoped>
 .sn-breadcrumb-demo {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-}
-.sn-breadcrumb-demo__row {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
+  text-align: center;
 }
 .sn-breadcrumb-demo__label {
-  margin: 0;
+  margin: 0 0 4px;
   font-size: 12px;
   color: var(--vp-c-text-2);
-  text-align: center;
+}
+.sn-breadcrumb-demo :deep(.sn-breadcrumb) {
+  display: inline-flex;
+  margin: 0 auto 16px;
+}
+.sn-breadcrumb-demo :deep(.sn-breadcrumb:last-of-type) {
+  margin-bottom: 0;
 }
 </style>

@@ -19,57 +19,49 @@ import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
 
 <template>
   <div class="sn-breadcrumb-demo">
-    <div class="sn-breadcrumb-demo__row">
-      <p class="sn-breadcrumb-demo__label">全部显示（5 项）</p>
-      <SnBreadcrumb>
-        <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs">Docs</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs/web">Web</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs/web/sn-breadcrumb">SnBreadcrumb</SnBreadcrumbItem>
-        <SnBreadcrumbItem>Current</SnBreadcrumbItem>
-      </SnBreadcrumb>
-    </div>
-    <div class="sn-breadcrumb-demo__row">
-      <p class="sn-breadcrumb-demo__label">max-count=3 — 折叠中间 2 项</p>
-      <SnBreadcrumb :max-count="3">
-        <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs">Docs</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs/web">Web</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs/web/sn-breadcrumb">SnBreadcrumb</SnBreadcrumbItem>
-        <SnBreadcrumbItem>Current</SnBreadcrumbItem>
-      </SnBreadcrumb>
-    </div>
-    <div class="sn-breadcrumb-demo__row">
-      <p class="sn-breadcrumb-demo__label">max-count=4 — 折叠中间 1 项</p>
-      <SnBreadcrumb :max-count="4">
-        <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs">Docs</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs/web">Web</SnBreadcrumbItem>
-        <SnBreadcrumbItem href="/docs/web/sn-breadcrumb">SnBreadcrumb</SnBreadcrumbItem>
-        <SnBreadcrumbItem>Current</SnBreadcrumbItem>
-      </SnBreadcrumb>
-    </div>
+    <p class="sn-breadcrumb-demo__label">全部显示（5 项）</p>
+    <SnBreadcrumb>
+      <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs">Docs</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs/web">Web</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs/web/sn-breadcrumb">SnBreadcrumb</SnBreadcrumbItem>
+      <SnBreadcrumbItem>Current</SnBreadcrumbItem>
+    </SnBreadcrumb>
+
+    <p class="sn-breadcrumb-demo__label">max-count=3 — 折叠中间 2 项</p>
+    <SnBreadcrumb :max-count="3">
+      <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs">Docs</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs/web">Web</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs/web/sn-breadcrumb">SnBreadcrumb</SnBreadcrumbItem>
+      <SnBreadcrumbItem>Current</SnBreadcrumbItem>
+    </SnBreadcrumb>
+
+    <p class="sn-breadcrumb-demo__label">max-count=4 — 折叠中间 1 项</p>
+    <SnBreadcrumb :max-count="4">
+      <SnBreadcrumbItem href="/">Home</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs">Docs</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs/web">Web</SnBreadcrumbItem>
+      <SnBreadcrumbItem href="/docs/web/sn-breadcrumb">SnBreadcrumb</SnBreadcrumbItem>
+      <SnBreadcrumbItem>Current</SnBreadcrumbItem>
+    </SnBreadcrumb>
   </div>
 </template>
 
 <style scoped>
 .sn-breadcrumb-demo {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: center;
-}
-.sn-breadcrumb-demo__row {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
+  text-align: center;
 }
 .sn-breadcrumb-demo__label {
-  margin: 0;
+  margin: 0 0 4px;
   font-size: 12px;
   color: var(--vp-c-text-2);
-  text-align: center;
+}
+.sn-breadcrumb-demo :deep(.sn-breadcrumb) {
+  display: inline-flex;
+  margin: 0 auto 16px;
+}
+.sn-breadcrumb-demo :deep(.sn-breadcrumb:last-of-type) {
+  margin-bottom: 0;
 }
 </style>
