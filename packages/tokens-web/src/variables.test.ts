@@ -42,6 +42,14 @@ describe('@snui/tokens-web alias layer', () => {
     expect(aliases).toContain('--sn-web-icon-size-xlarge')
     expect(aliases).toContain('--sn-web-icon-stroke-width')
     expect(aliases).toContain('--sn-web-focus-ring')
+    // spin (AUI-WEB-FB-006)
+    expect(aliases).toContain('--sn-web-spin-color')
+    expect(aliases).toContain('--sn-web-spin-text-color')
+    expect(aliases).toContain('--sn-web-spin-size-medium')
+    expect(aliases).toContain('--sn-web-spin-size-huge')
+    expect(aliases).toContain('--sn-web-spin-font-size')
+    expect(aliases).toContain('--sn-web-spin-opacity-spinning')
+    expect(aliases).toContain('--sn-web-spin-description-gap')
   })
 
   it('maps every alias to a `--aui-*` base layer reference', () => {

@@ -88,6 +88,7 @@ const sidebar = {
       text: 'Feedback 反馈组件',
       items: [
         { text: 'Alert 提示', link: '/components/web/alert' },
+        { text: 'Loading 加载中', link: '/components/web/loading' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.

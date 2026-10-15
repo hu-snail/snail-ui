@@ -70,6 +70,7 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnTooltip',
   // Feedback
   'SnAlert',
+  'SnLoading',
 ]
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {

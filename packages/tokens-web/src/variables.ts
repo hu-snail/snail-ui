@@ -67,6 +67,20 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-icon-size-large', '--aui-icon-size-large'],
   ['--sn-web-icon-size-xlarge', '--aui-icon-size-xlarge'],
   ['--sn-web-icon-stroke-width', '--aui-icon-stroke-width'],
+
+  // Component tokens — Spin (px / unitless). Drives SnLoading.
+  // `color` / `textColor` / `fontSize` / `descriptionGap` resolve through the
+  // semantic layer in the base block; `opacitySpinning` is a bare number.
+  ['--sn-web-spin-color', '--aui-spin-color'],
+  ['--sn-web-spin-text-color', '--aui-spin-text-color'],
+  ['--sn-web-spin-size-tiny', '--aui-spin-size-tiny'],
+  ['--sn-web-spin-size-small', '--aui-spin-size-small'],
+  ['--sn-web-spin-size-medium', '--aui-spin-size-medium'],
+  ['--sn-web-spin-size-large', '--aui-spin-size-large'],
+  ['--sn-web-spin-size-huge', '--aui-spin-size-huge'],
+  ['--sn-web-spin-font-size', '--aui-spin-font-size'],
+  ['--sn-web-spin-opacity-spinning', '--aui-spin-opacity-spinning'],
+  ['--sn-web-spin-description-gap', '--aui-spin-description-gap'],
 ] as const
 
 /** Render the alias layer as CSS `:root { ... }` block. */

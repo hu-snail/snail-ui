@@ -66,11 +66,34 @@ export interface IconComponentTokens {
   readonly strokeWidth: SemanticRef;
 }
 
+/**
+ * Spin component tokens — drives SnLoading.
+ *
+ * Per naive-ui `spinLight`, the spinner inherits its colour from the action
+ * (primary) colour and its size from the control heights; the content behind
+ * a spinning overlay is dimmed by `opacitySpinning`, which upstream aliases to
+ * the disabled opacity. `descriptionGap` is upstream's hard-coded 8px, lifted
+ * into a token here so the Style axis can tighten or loosen it.
+ */
+export interface SpinComponentTokens {
+  readonly color: SemanticRef;
+  readonly textColor: SemanticRef;
+  readonly sizeTiny: SemanticRef;
+  readonly sizeSmall: SemanticRef;
+  readonly sizeMedium: SemanticRef;
+  readonly sizeLarge: SemanticRef;
+  readonly sizeHuge: SemanticRef;
+  readonly fontSize: SemanticRef;
+  readonly opacitySpinning: SemanticRef;
+  readonly descriptionGap: SemanticRef;
+}
+
 export interface ComponentTokens {
   readonly button: ButtonComponentTokens;
   readonly input: InputComponentTokens;
   readonly card: CardComponentTokens;
   readonly icon: IconComponentTokens;
+  readonly spin: SpinComponentTokens;
 }
 
 /**
@@ -112,5 +135,17 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     sizeLarge: '20px',
     sizeXlarge: '24px',
     strokeWidth: '2',
+  },
+  spin: {
+    color: 'var(--aui-color-action-primary)',
+    textColor: 'var(--aui-color-text-secondary)',
+    sizeTiny: '14px',
+    sizeSmall: '18px',
+    sizeMedium: '24px',
+    sizeLarge: '32px',
+    sizeHuge: '40px',
+    fontSize: 'var(--aui-font-size-md)',
+    opacitySpinning: '0.55',
+    descriptionGap: 'var(--aui-spacing-3)',
   },
 };

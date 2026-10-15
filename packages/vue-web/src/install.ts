@@ -24,6 +24,7 @@ import SnFormItem from './form/SnFormItem.vue'
 import SnGrid from './grid/SnGrid.vue'
 import SnIcon from './icon/SnIcon.vue'
 import SnInput from './input/SnInput.vue'
+import SnLoading from './loading/SnLoading.vue'
 import SnMenu from './menu/SnMenu.vue'
 import SnTooltip from './tooltip/SnTooltip.vue'
 import SnTabs from './tabs/SnTabs.vue'
@@ -60,6 +61,7 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnGrid', component: SnGrid },
   { name: 'SnIcon', component: SnIcon },
   { name: 'SnInput', component: SnInput },
+  { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },
   { name: 'SnStep', component: SnStep },
   { name: 'SnSteps', component: SnSteps },

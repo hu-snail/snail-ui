@@ -221,14 +221,16 @@ function emitComponentBindings(component: ComponentTokens): TokenBinding[] {
     out.push({ name: `--aui-${componentPrefix}-${cssKey}`, value });
   }
 
-  for (const k of Object.keys(component.button) as Array<keyof ComponentTokens['button']>) {
-    emitKey('button', k as string, component.button[k]);
-  }
-  for (const k of Object.keys(component.input) as Array<keyof ComponentTokens['input']>) {
-    emitKey('input', k as string, component.input[k]);
-  }
-  for (const k of Object.keys(component.card) as Array<keyof ComponentTokens['card']>) {
-    emitKey('card', k as string, component.card[k]);
+  // Walk every group on the ComponentTokens object instead of listing the
+  // keys by hand: an explicit list silently skips a group the moment one is
+  // added (which is how `icon` went unemitted while its `--sn-web-icon-*`
+  // aliases already pointed at it). The key order is the declaration order,
+  // so the CSS output stays deterministic.
+  for (const group of Object.keys(component) as Array<keyof ComponentTokens>) {
+    const tokens = component[group];
+    for (const key of Object.keys(tokens) as string[]) {
+      emitKey(group as string, key, (tokens as Record<string, unknown>)[key]);
+    }
   }
   return out;
 }

@@ -63,4 +63,16 @@
   --sn-web-icon-size-large: var(--aui-icon-size-large);
   --sn-web-icon-size-xlarge: var(--aui-icon-size-xlarge);
   --sn-web-icon-stroke-width: var(--aui-icon-stroke-width);
+
+  /* Component tokens — Spin (px / unitless). Drives SnLoading. */
+  --sn-web-spin-color: var(--aui-spin-color);
+  --sn-web-spin-text-color: var(--aui-spin-text-color);
+  --sn-web-spin-size-tiny: var(--aui-spin-size-tiny);
+  --sn-web-spin-size-small: var(--aui-spin-size-small);
+  --sn-web-spin-size-medium: var(--aui-spin-size-medium);
+  --sn-web-spin-size-large: var(--aui-spin-size-large);
+  --sn-web-spin-size-huge: var(--aui-spin-size-huge);
+  --sn-web-spin-font-size: var(--aui-spin-font-size);
+  --sn-web-spin-opacity-spinning: var(--aui-spin-opacity-spinning);
+  --sn-web-spin-description-gap: var(--aui-spin-description-gap);
 }
