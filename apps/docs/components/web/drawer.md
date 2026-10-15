@@ -13,7 +13,7 @@ naive-ui 把「抽屉」拆成两个组件，本库同样拆：
 | `SnDrawer` | Teleport、遮罩、四向定位与滑入过渡、`<html>` 滚动锁、`Escape`、`z-index`、承载面板的插槽 |
 | `SnDrawerContent` | 头部（标题 + 关闭按钮）、正文、底部三行 |
 
-不给 `SnDrawer` 传插槽时，它会用 `title` / `closable` 两个便捷 prop 组一个裸的 `SnDrawerContent`，让一行式用法保持简短。
+`SnDrawer` 只负责遮罩、滑入动画和滚动锁；面板里的头部、正文、底部由 `SnDrawerContent` 提供，通过 `default` 插槽传入。上游 `n-drawer` 也没有 `title` / `closable`，这两个属于内容组件。
 
 ## 实时预览
 
@@ -29,8 +29,8 @@ import '@snui/tokens-web/styles'
 ```
 
 ```html
-<SnDrawer v-model:show="open" title="设置" placement="right" :width="400">
-  <SnDrawerContent title="设置">
+<SnDrawer v-model:show="open" placement="right" :width="400">
+  <SnDrawerContent title="设置" closable>
     <p>正文内容</p>
     <template #footer>
       <SnButton @click="open = false">取消</SnButton>
@@ -57,8 +57,6 @@ import '@snui/tokens-web/styles'
 | `blockScroll` | `boolean` | `true` | 打开时锁定 `<html>` 滚动。 |
 | `closeOnEsc` | `boolean` | `true` | `Escape` 是否请求关闭。 |
 | `contentClass` / `contentStyle` | `string` / `string \| CSSProperties` | `undefined` | 内容包装层额外的 class / style。 |
-| `title` | `string` | `undefined` | 标题，传给默认的 `SnDrawerContent`。 |
-| `closable` | `boolean` | `undefined` | 默认内容是否显示关闭按钮。 |
 
 ## 回调 props
 
@@ -85,7 +83,7 @@ import '@snui/tokens-web/styles'
 
 | 名称 | 说明 |
 |---|---|
-| `default` | 面板内容，通常是一个 `<SnDrawerContent>`。缺省时回退到由 `title` / `closable` 组成的裸 `SnDrawerContent`。 |
+| `default` | 面板内容，通常是一个 `<SnDrawerContent>`。上游 `n-drawer` 同样要求调用方显式提供内容，不提供时为空白面板。 |
 
 ## 行为说明
 
@@ -122,7 +120,7 @@ import '@snui/tokens-web/styles'
 | 名称 | 类型 | 默认 | 说明 |
 |---|---|---|---|
 | `title` | `string` | `undefined` | 头部标题。 |
-| `closable` | `boolean` | `true` | 是否渲染关闭按钮。 |
+| `closable` | `boolean` | `false` | 是否渲染关闭按钮。上游声明为裸 `Boolean`，默认取 falsy。 |
 | `nativeScrollbar` | `boolean` | `true` | 给正文加 `--native-scrollbar` class 钩子。 |
 | `headerClass` / `headerStyle` | `string` / `string \| CSSProperties` | `undefined` | 头部额外的 class / style。 |
 | `bodyClass` / `bodyStyle` | `string` / `string \| CSSProperties` | `undefined` | 正文额外的 class / style。 |

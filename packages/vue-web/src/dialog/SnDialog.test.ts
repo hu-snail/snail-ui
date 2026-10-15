@@ -15,6 +15,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import SnDialog from './SnDialog.vue'
+import { expectIconRendered, expectNoMissingIcons } from '../test-utils/icon-assertions'
 
 function mountDialog(
   props: Record<string, unknown> = {},
@@ -126,6 +127,16 @@ describe('SnDialog (AUI-WEB-FB-001)', () => {
       await wrapper.find('.sn-dialog__close').trigger('click')
 
       expect(wrapper.emitted('close')).toHaveLength(1)
+    })
+
+    it('should render a real svg in the close button', () => {
+      // Regression: the glyph was passed as `:component="X"` — not an SnIcon
+      // prop — so the button rendered the `.sn-icon--missing` placeholder with
+      // no svg and looked empty.
+      const wrapper = mountDialog({ closable: true })
+
+      expectIconRendered(wrapper.find('.sn-dialog__close'), '.sn-icon')
+      expectNoMissingIcons(wrapper, 'SnDialog closable')
     })
 
     it('should let the close slot replace the built-in button', () => {
@@ -275,6 +286,20 @@ describe('SnDialog (AUI-WEB-FB-001)', () => {
   describe('type and icon', () => {
     it('should render the icon by default', () => {
       expect(mountDialog({ title: 't' }).find('.sn-dialog__icon').exists()).toBe(true)
+    })
+
+    it('should render a real svg for every icon type', () => {
+      // Regression: type glyphs went through `:component="…"`, a prop SnIcon
+      // does not declare, so `.sn-dialog__icon` existed but held only the
+      // placeholder. Assert the svg body for each type (incl. the default).
+      for (const type of ['default', 'info', 'success', 'warning', 'error']) {
+        const wrapper = mountDialog({ type, title: 't' })
+        const icon = wrapper.find('.sn-dialog__icon')
+        if (icon.exists()) {
+          expectIconRendered(icon, '.sn-icon')
+        }
+        expectNoMissingIcons(wrapper, `SnDialog type=${type}`)
+      }
     })
 
     it('should hide the icon when showIcon is false', () => {

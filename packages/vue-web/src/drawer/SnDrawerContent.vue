@@ -132,7 +132,7 @@ function handleCloseClick(): void {
         data-snui-component="SnDrawerClose"
         @click="handleCloseClick"
       >
-        <SnIcon :component="X" />
+        <SnIcon :icon="X" />
       </button>
     </div>
 

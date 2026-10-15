@@ -16,7 +16,7 @@ const showBare = ref(false)
     <div class="drw-content__bar">
       <SnButton type="primary" @click="showFull = true">完整三段</SnButton>
       <SnButton @click="showNoFooter = true">无 footer</SnButton>
-      <SnButton @click="showBare = true">不带插槽</SnButton>
+      <SnButton @click="showBare = true">只有关闭按钮</SnButton>
     </div>
 
     <!-- header / body / footer all present, with a custom header slot. -->
@@ -40,8 +40,12 @@ const showBare = ref(false)
       </SnDrawerContent>
     </SnDrawer>
 
-    <!-- No default slot ⇒ SnDrawer builds a bare SnDrawerContent from title. -->
-    <SnDrawer v-model:show="showBare" title="由 title 组装" :width="320" />
+    <!-- A bare `closable` header still shows, so the close button has a home.
+         SnDrawer itself takes no `title` / `closable` — upstream `n-drawer`
+         does not either; both live on the content component. -->
+    <SnDrawer v-model:show="showBare" :width="320">
+      <SnDrawerContent closable />
+    </SnDrawer>
   </div>
 </template>
 

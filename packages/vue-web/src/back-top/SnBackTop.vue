@@ -264,7 +264,7 @@ defineExpose({
       @click="handleClick"
     >
       <slot>
-        <SnIcon :component="ChevronsUp" />
+        <SnIcon :icon="ChevronsUp" />
       </slot>
     </button>
   </Transition>

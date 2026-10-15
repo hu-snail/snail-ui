@@ -18,6 +18,7 @@ import { h } from 'vue'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import SnDrawer from './SnDrawer.vue'
 import SnDrawerContent from './SnDrawerContent.vue'
+import { expectIconRendered, expectNoMissingIcons } from '../test-utils/icon-assertions'
 
 function mountDrawer(
   props: Record<string, unknown> = {},
@@ -315,11 +316,14 @@ describe('SnDrawer (AUI-WEB-FB-003)', () => {
       expect(inner.attributes('style')).toContain('padding: 0')
     })
 
-    it('should render a default SnDrawerContent when no slot is given', () => {
-      const wrapper = mountDrawer({ show: true, title: '设置' })
+    it('should render an empty panel when no slot is given', () => {
+      // Upstream `n-drawer` has no `title` / `closable` shortcut either — the
+      // content always comes from the caller's default slot.
+      const wrapper = mountDrawer({ show: true })
 
-      expect(wrapper.find('[data-snui-component="SnDrawerContent"]').exists()).toBe(true)
-      expect(wrapper.find('.sn-drawer-header__main').text()).toBe('设置')
+      expect(wrapper.find('[data-snui-component="SnDrawerContent"]').exists()).toBe(false)
+      expect(wrapper.find('.sn-drawer').exists()).toBe(true)
+      expect(wrapper.find('.sn-drawer-content-wrapper').text()).toBe('')
     })
   })
 
@@ -401,6 +405,22 @@ describe('SnDrawerContent (AUI-WEB-FB-003)', () => {
     expect(mountContent({ closable: true }).find('.sn-drawer-header__close').exists()).toBe(
       true,
     )
+  })
+
+  it('should render a real icon in the close button', () => {
+    // Regression: the close glyph was passed as `:component="X"`, which is not
+    // an SnIcon prop, so SnIcon fell back to `.sn-icon--missing` and drew no
+    // svg — the button was visually empty. Assert the svg body, not the
+    // wrapper span (the placeholder also renders `.sn-icon`).
+    const wrapper = mountContent({ closable: true })
+    const close = wrapper.find('.sn-drawer-header__close')
+
+    expectIconRendered(close, '.sn-icon')
+    expect(close.find('svg').exists()).toBe(true)
+  })
+
+  it('should leave no unresolved icon placeholders in the header', () => {
+    expectNoMissingIcons(mountContent({ closable: true, title: '设置' }), 'SnDrawerContent')
   })
 
   it('should label the close button for screen readers', () => {

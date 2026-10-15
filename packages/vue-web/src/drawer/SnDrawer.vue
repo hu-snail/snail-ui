@@ -9,8 +9,13 @@
  * 1:1 parity (this version): show / width / height / placement /
  *   maskClosable / showMask / to / displayDirective / nativeScrollbar /
  *   zIndex / onMaskClick / contentClass / contentStyle / onEsc / closeOnEsc /
- *   onAfterEnter / onAfterLeave / 'onUpdate:show'.
+ *   blockScroll / onAfterEnter / onAfterLeave / 'onUpdate:show'.
  *
+ *   Content is always supplied by the caller through the default slot,
+ *   normally as a `<SnDrawerContent>`. Upstream `n-drawer` has no `title` /
+ *   `closable` props either — those live on `n-drawer-content` — so
+ *   SnDrawer deliberately declares no such shortcut. An empty default slot
+ *   renders an empty panel, same as upstream.
  * Scope split vs upstream:
  *   Upstream splits the feature across `n-drawer` (teleport + mask +
  *   body wrapper + focus trap) and `n-drawer-content` (header / body /
@@ -49,7 +54,9 @@
  * `--sn-web-*` token aliases only (px units).
  *
  * Usage:
- *   <SnDrawer v-model:show="open" title="设置">…</SnDrawer>
+ *   <SnDrawer v-model:show="open">
+ *     <SnDrawerContent title="设置" closable>…</SnDrawerContent>
+ *   </SnDrawer>
  *   <SnDrawer v-model:show="open" placement="bottom" :height="300">…</SnDrawer>
  */
 
@@ -61,7 +68,6 @@ import {
   watch,
   type CSSProperties,
 } from 'vue'
-import SnDrawerContent from './SnDrawerContent.vue'
 import { SN_DRAWER_INJECTION_KEY, type SnDrawerApi } from './drawer-context'
 
 defineOptions({ name: 'SnDrawer' })
@@ -117,10 +123,6 @@ const props = withDefaults(
     onAfterEnter?: () => void
     /** Called after the leave transition finishes. */
     onAfterLeave?: () => void
-    /** Title. Convenience pass-through to `<SnDrawerContent>`. */
-    title?: string
-    /** Show the header close button. Convenience pass-through. */
-    closable?: boolean
   }>(),
   {
     show: false,
@@ -141,8 +143,6 @@ const props = withDefaults(
     blockScroll: true,
     onAfterEnter: undefined as any,
     onAfterLeave: undefined as any,
-    title: undefined as any,
-    closable: true,
   },
 )
 
@@ -260,14 +260,6 @@ function handleAfterLeave(): void {
   emit('after-leave')
 }
 
-/**
- * Pass-throughs for the built-in `<SnDrawerContent>` fallback. Narrowed to
- * definite values because the child's optional props reject an explicit
- * `undefined` under `exactOptionalPropertyTypes`.
- */
-const fallbackTitle = computed(() => props.title ?? '')
-const fallbackClosable = computed(() => props.closable === true)
-
 // ── Scroll lock ──────────────────────────────────────────────────────────
 // Lock <html> while open and restore the *previous* inline value on release,
 // so a pre-existing `overflow: hidden` set by the host is not clobbered.
@@ -347,9 +339,7 @@ onBeforeUnmount(() => {
               :style="contentStyle"
               role="none"
             >
-              <slot>
-                <SnDrawerContent :title="fallbackTitle" :closable="fallbackClosable" />
-              </slot>
+              <slot />
             </div>
           </div>
         </Transition>

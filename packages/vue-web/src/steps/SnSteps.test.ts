@@ -4,6 +4,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import SnSteps from './SnSteps.vue'
 import SnStep from './SnStep.vue'
 import SnIcon from '../icon/SnIcon.vue'
+import { expectIconRendered, expectNoMissingIcons } from '../test-utils/icon-assertions'
 
 interface StepSpec {
   title?: string
@@ -190,6 +191,20 @@ describe('SnSteps (AUI-WEB-NAV-004)', () => {
       const third = w.findAll('.sn-step')[2]!
       expect(third.findComponent(SnIcon).exists()).toBe(false)
       expect(third.find('.sn-step__index').text()).toBe('3')
+    })
+
+    it('renders real svgs for the finish and error glyphs', () => {
+      // Regression: both glyphs were passed as `:component="…"` — not an
+      // SnIcon prop — so the step circle held the `.sn-icon--missing`
+      // placeholder and drew no svg. `findComponent(SnIcon)` still passed.
+      const finish = mount(wrapSteps({ current: 3 }, THREE)).findAll('.sn-step')[0]!
+      expectIconRendered(finish, '.sn-step__status-icon')
+      expectNoMissingIcons(finish, 'SnStep finish')
+
+      const error = mount(wrapSteps({ current: 2, status: 'error' }, THREE))
+        .findAll('.sn-step')[1]!
+      expectIconRendered(error, '.sn-step__status-icon')
+      expectNoMissingIcons(error, 'SnStep error')
     })
   })
 

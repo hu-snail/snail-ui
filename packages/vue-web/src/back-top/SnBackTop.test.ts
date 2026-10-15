@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import SnBackTop from './SnBackTop.vue'
+import { expectIconRendered, expectNoMissingIcons } from '../test-utils/icon-assertions'
 
 /**
  * Scroll behaviour tests.
@@ -94,6 +95,23 @@ describe('SnBackTop', () => {
       expect(
         wrapper.find('button[data-snui-component="back-top"]').attributes('aria-label'),
       ).toBe('回到顶部')
+    })
+
+    it('should render a real svg icon by default', async () => {
+      // Regression: the glyph was passed as `:component="ChevronsUp"` — not an
+      // SnIcon prop — so the button rendered the `.sn-icon--missing`
+      // placeholder with no svg and appeared blank.
+      // `mountBackTop` supplies a `default` slot, which replaces the built-in
+      // icon, so mount bare here.
+      const wrapper = mount(SnBackTop, {
+        props: { visibilityHeight: 0 },
+        attachTo: document.body,
+      })
+      await scrollTo(10)
+
+      const button = wrapper.find('button[data-snui-component="back-top"]')
+      expectIconRendered(button, '.sn-icon')
+      expectNoMissingIcons(button, 'SnBackTop')
     })
   })
 

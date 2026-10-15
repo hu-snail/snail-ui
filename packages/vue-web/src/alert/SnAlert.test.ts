@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
 import SnAlert from './SnAlert.vue'
 import SnIcon from '../icon/SnIcon.vue'
+import { expectIconRendered, expectNoMissingIcons } from '../test-utils/icon-assertions'
 
 /** Mount SnAlert with slots, mirroring real usage. */
 function mountAlert(
@@ -94,6 +95,18 @@ describe('SnAlert (AUI-WEB-FB-008)', () => {
       expect(w.find('.sn-alert__icon').findComponent(SnIcon).exists()).toBe(true)
     })
 
+    it('renders a real svg for every icon type', () => {
+      // Regression: the type glyphs were passed as `:component="…"`, which is
+      // not an SnIcon prop — every alert drew the `.sn-icon--missing`
+      // placeholder instead of a glyph. `findComponent(SnIcon)` above still
+      // passed, so assert on the rendered svg body.
+      for (const type of ['success', 'info', 'warning', 'error']) {
+        const w = mountAlert({ type })
+        expectIconRendered(w.find('.sn-alert__icon'), '.sn-icon')
+        expectNoMissingIcons(w, `SnAlert type=${type}`)
+      }
+    })
+
     it('hides the icon when showIcon is false', () => {
       const w = mountAlert({ type: 'success', showIcon: false })
       expect(w.find('.sn-alert__icon').exists()).toBe(false)
@@ -116,6 +129,15 @@ describe('SnAlert (AUI-WEB-FB-008)', () => {
       )
       expect(w.find('.custom-icon').exists()).toBe(true)
       expect(w.find('.sn-alert__icon').findComponent(SnIcon).exists()).toBe(false)
+    })
+
+    it('renders a real svg in the close button', () => {
+      // Same regression class as the type glyph: `:component="X"` left the
+      // close button visually empty.
+      const w = mountAlert({ closable: true })
+
+      expectIconRendered(w.find('.sn-alert__close'), '.sn-icon')
+      expectNoMissingIcons(w, 'SnAlert closable')
     })
   })
 

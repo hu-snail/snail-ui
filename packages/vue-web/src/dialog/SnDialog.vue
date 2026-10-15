@@ -255,14 +255,14 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
       data-snui-component="SnDialogClose"
       @click="emit('close')"
     >
-      <SnIcon :component="X" />
+      <SnIcon :icon="X" />
     </button>
 
     <!-- 'top' placement hoists the icon into its own centred row. -->
     <div v-if="hasIcon && isTopIcon" class="sn-dialog__icon-container">
       <span class="sn-dialog__icon" :style="{ color: iconColorVar }">
         <slot name="icon">
-          <SnIcon :component="mergedIcon" />
+          <SnIcon :icon="mergedIcon" />
         </slot>
       </span>
     </div>
@@ -270,7 +270,7 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
     <div class="sn-dialog__title" :class="titleClass" :style="titleStyle">
       <span v-if="hasIcon && !isTopIcon" class="sn-dialog__icon" :style="{ color: iconColorVar }">
         <slot name="icon">
-          <SnIcon :component="mergedIcon" />
+          <SnIcon :icon="mergedIcon" />
         </slot>
       </span>
       <slot name="header">{{ title }}</slot>

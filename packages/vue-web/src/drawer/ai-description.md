@@ -24,8 +24,10 @@ division exactly.
 - `SnDrawerContent` owns: the header (title + close button), body and
   footer rows.
 
-Giving `SnDrawer` no slot renders a bare `SnDrawerContent` built from the
-`title` / `closable` convenience props, so the one-line case stays short.
+The panel body always comes from the caller's `default` slot, normally as a
+`<SnDrawerContent>`. Upstream `n-drawer` has no `title` / `closable` props
+either — both belong to `n-drawer-content` — so `SnDrawer` intentionally
+declares no such shortcut.
 
 ## Reference Library
 
@@ -56,8 +58,6 @@ import { SnDrawer, SnDrawerContent } from '@snui/vue-web'
 | `closeOnEsc` | `boolean` | `true` | Escape requests a close. |
 | `contentClass` | `string` | `undefined` | Extra class on the content wrapper. |
 | `contentStyle` | `string \| CSSProperties` | `undefined` | Extra style on the content wrapper. |
-| `title` | `string` | `undefined` | Title, passed to the default `<SnDrawerContent>`. |
-| `closable` | `boolean` | `undefined` | Show the header close button on the default content. |
 
 ## SnDrawer Callback Props
 
@@ -86,7 +86,7 @@ the prop by hand, or the caller's handler runs twice.
 
 | Name | Description |
 |---|---|
-| `default` | The panel body — normally a `<SnDrawerContent>`. Falls back to a bare `SnDrawerContent` built from `title` / `closable`. |
+| `default` | The panel body — normally a `<SnDrawerContent>`. The caller must supply it; upstream `n-drawer` behaves the same way, rendering an empty panel otherwise. |
 
 ## Behaviour notes
 
@@ -126,7 +126,7 @@ The panel's three rows: header (title + close), body and optional footer.
 | Name | Type | Default | Description |
 |---|---|---|---|
 | `title` | `string` | `undefined` | Header title. |
-| `closable` | `boolean` | `true` | Render the header close button. |
+| `closable` | `boolean` | `false` | Render the header close button. Upstream declares it as a bare `Boolean`, so the default is falsy. |
 | `nativeScrollbar` | `boolean` | `true` | Adds the `--native-scrollbar` class hook to the body. |
 | `headerClass` / `headerStyle` | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the header. |
 | `bodyClass` / `bodyStyle` | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the body. |

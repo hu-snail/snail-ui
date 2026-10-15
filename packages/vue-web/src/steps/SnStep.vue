@@ -113,7 +113,7 @@ function handleClick() {
         <slot name="icon">
           <SnIcon
             v-if="mergedStatus === 'finish' || mergedStatus === 'error'"
-            :component="mergedStatus === 'finish' ? Check : X"
+            :icon="mergedStatus === 'finish' ? Check : X"
             class="sn-step__status-icon"
           />
           <span v-else class="sn-step__index">{{ internalIndex }}</span>
@@ -130,7 +130,7 @@ function handleClick() {
             <slot name="icon">
               <SnIcon
                 v-if="mergedStatus === 'finish' || mergedStatus === 'error'"
-                :component="mergedStatus === 'finish' ? Check : X"
+                :icon="mergedStatus === 'finish' ? Check : X"
                 class="sn-step__status-icon"
               />
               <span v-else class="sn-step__index">{{ internalIndex }}</span>
@@ -148,7 +148,7 @@ function handleClick() {
           <slot name="icon">
             <SnIcon
               v-if="mergedStatus === 'finish' || mergedStatus === 'error'"
-              :component="mergedStatus === 'finish' ? Check : X"
+              :icon="mergedStatus === 'finish' ? Check : X"
               class="sn-step__status-icon"
             />
             <span v-else class="sn-step__index">{{ internalIndex }}</span>

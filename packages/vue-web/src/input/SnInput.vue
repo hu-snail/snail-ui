@@ -14,6 +14,7 @@
 
 import { computed, markRaw, nextTick, ref, useId, useSlots } from 'vue'
 import { EyeIcon, EyeOffIcon, XIcon } from '../icon/sn-input-icons'
+import SnIcon from '../icon/SnIcon.vue'
 
 defineOptions({ name: 'SnInput' })
 

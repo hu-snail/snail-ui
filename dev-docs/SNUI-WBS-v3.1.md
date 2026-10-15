@@ -144,6 +144,14 @@ AUI-{模块}-{编号}
 | AUI-WEB-FB-007 | SnSkeleton | 通用 |
 | AUI-WEB-FB-008 | SnAlert | Web 专属 |
 
+### 缺陷修复（发现于 FB-003 深度自检）
+
+| ID | 标题 | 状态 |
+|---|---|---|
+| AUI-FOUND-006 | 补齐悬空 `--aui-*` 基础 token（background-elevated / -overlay / -soft、border-strong、feedback-danger-soft、feedback-warning-soft、bg-* 系列等 20 个被引用但 `packages/tokens/styles/index.css` 未产出） | TODO |
+| AUI-FOUND-007 | SnInput.vue 14 处颜色字面量（`rgba()` / `#1a1a1a`）违反 Spec-02 §3.3，依赖 AUI-FOUND-006 的 token 补齐后替换 | TODO |
+| AUI-WEB-FB-003a | SnDrawer 补 `trapFocus` / `autoFocus` / `resizable` / `maxWidth` / `maxHeight` / `minWidth` / `minHeight` / `scrollbarProps` 等价上游 props | TODO |
+
 ### 导航（8 个）
 
 | ID | 组件 | 备注 |

@@ -157,7 +157,7 @@ function handleAfterLeave() {
 
       <div v-if="showIcon" class="sn-alert__icon" aria-hidden="true">
         <slot name="icon">
-          <SnIcon v-if="iconComponent" :component="iconComponent" />
+          <SnIcon v-if="iconComponent" :icon="iconComponent" />
         </slot>
       </div>
 
@@ -177,7 +177,7 @@ function handleAfterLeave() {
         aria-label="关闭"
         @click="handleCloseClick"
       >
-        <SnIcon :component="X" />
+        <SnIcon :icon="X" />
       </button>
     </div>
   </Transition>
