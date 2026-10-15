@@ -75,4 +75,12 @@
   --sn-web-spin-font-size: var(--aui-spin-font-size);
   --sn-web-spin-opacity-spinning: var(--aui-spin-opacity-spinning);
   --sn-web-spin-description-gap: var(--aui-spin-description-gap);
+
+  /* Component tokens — Skeleton (px / unitless). Drives SnSkeleton. */
+  --sn-web-skeleton-color: var(--aui-skeleton-color);
+  --sn-web-skeleton-color-end: var(--aui-skeleton-color-end);
+  --sn-web-skeleton-radius: var(--aui-skeleton-radius);
+  --sn-web-skeleton-height-small: var(--aui-skeleton-height-small);
+  --sn-web-skeleton-height-medium: var(--aui-skeleton-height-medium);
+  --sn-web-skeleton-height-large: var(--aui-skeleton-height-large);
 }

@@ -71,6 +71,7 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   // Feedback
   'SnAlert',
   'SnLoading',
+  'SnSkeleton',
 ]
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {

@@ -81,6 +81,16 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-spin-font-size', '--aui-spin-font-size'],
   ['--sn-web-spin-opacity-spinning', '--aui-spin-opacity-spinning'],
   ['--sn-web-spin-description-gap', '--aui-spin-description-gap'],
+
+  // Component tokens — Skeleton (px / unitless). Drives SnSkeleton.
+  // `color` / `colorEnd` / `radius` resolve through the semantic layer in the
+  // base block; the height tiers are px.
+  ['--sn-web-skeleton-color', '--aui-skeleton-color'],
+  ['--sn-web-skeleton-color-end', '--aui-skeleton-color-end'],
+  ['--sn-web-skeleton-radius', '--aui-skeleton-radius'],
+  ['--sn-web-skeleton-height-small', '--aui-skeleton-height-small'],
+  ['--sn-web-skeleton-height-medium', '--aui-skeleton-height-medium'],
+  ['--sn-web-skeleton-height-large', '--aui-skeleton-height-large'],
 ] as const
 
 /** Render the alias layer as CSS `:root { ... }` block. */

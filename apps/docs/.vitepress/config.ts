@@ -89,6 +89,7 @@ const sidebar = {
       items: [
         { text: 'Alert 提示', link: '/components/web/alert' },
         { text: 'Loading 加载中', link: '/components/web/loading' },
+        { text: 'Skeleton 骨架屏', link: '/components/web/skeleton' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.

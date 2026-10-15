@@ -88,12 +88,22 @@ export interface SpinComponentTokens {
   readonly descriptionGap: SemanticRef;
 }
 
+export interface SkeletonComponentTokens {
+  readonly color: SemanticRef;
+  readonly colorEnd: SemanticRef;
+  readonly radius: SemanticRef;
+  readonly heightSmall: SemanticRef;
+  readonly heightMedium: SemanticRef;
+  readonly heightLarge: SemanticRef;
+}
+
 export interface ComponentTokens {
   readonly button: ButtonComponentTokens;
   readonly input: InputComponentTokens;
   readonly card: CardComponentTokens;
   readonly icon: IconComponentTokens;
   readonly spin: SpinComponentTokens;
+  readonly skeleton: SkeletonComponentTokens;
 }
 
 /**
@@ -147,5 +157,13 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     fontSize: 'var(--aui-font-size-md)',
     opacitySpinning: '0.55',
     descriptionGap: 'var(--aui-spacing-3)',
+  },
+  skeleton: {
+    color: 'var(--aui-color-bg-subtle)',
+    colorEnd: 'var(--aui-color-border-subtle)',
+    radius: 'var(--aui-radius-control)',
+    heightSmall: '20px',
+    heightMedium: '24px',
+    heightLarge: '32px',
   },
 };

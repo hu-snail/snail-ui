@@ -26,6 +26,7 @@ import SnIcon from './icon/SnIcon.vue'
 import SnInput from './input/SnInput.vue'
 import SnLoading from './loading/SnLoading.vue'
 import SnMenu from './menu/SnMenu.vue'
+import SnSkeleton from './skeleton/SnSkeleton.vue'
 import SnTooltip from './tooltip/SnTooltip.vue'
 import SnTabs from './tabs/SnTabs.vue'
 import SnTabPane from './tabs/SnTabPane.vue'
@@ -63,6 +64,7 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnInput', component: SnInput },
   { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },
+  { name: 'SnSkeleton', component: SnSkeleton },
   { name: 'SnStep', component: SnStep },
   { name: 'SnSteps', component: SnSteps },
   { name: 'SnTabPane', component: SnTabPane },
