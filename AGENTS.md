@@ -3396,6 +3396,157 @@ rg --pcre2 "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{1F000}-\x{1F2FF}]" \
 
 ---
 
+# 114. 组件文档文案规范 — 禁止出现外部参考库名称
+
+## 114.1 规则
+
+**snail-aui 的组件文档（`apps/docs/**`、`packages/*/src/**/ai-description.md`）是自有产品的文档，不是参考库的镜像说明。**
+
+禁止在用户可见文档中出现：
+
+```text
+naive-ui / naive ui / NButton / NInput ...
+wot-ui / wot design ...
+Element Plus / Ant Design / antd / Vant / Arco ...
+对标 xxx / 参考 xxx / 与 xxx 对齐 / 同 xxx 一致
+parity with xxx / aligned with xxx / same as xxx
+```
+
+也禁止出现这类表述的变体：
+
+```text
+❌ 对标 naive-ui 实现
+❌ 与参考库保持 1:1
+❌ 参考 naive-ui 的 props 设计
+❌ 本组件按 naive-ui 语义实现
+```
+
+## 114.2 为什么
+
+1. **产品独立性** — snail-aui 是独立组件库，文档不应替第三方做宣传，也不应让用户觉得「这是某库的仿制版」。
+2. **可维护性** — 一旦文档和外部库绑定，外部库改名 / 改语义就会让文档变成误导。
+3. **§112 已覆盖内部约束** — 参考库关系属于 **Agent 内部实现约定**，应写在源码头部注释（§112.2a）和 `ai-description.md` 的元信息里，**不进入面向用户的文档正文**。
+
+## 114.3 正确写法
+
+| 场景 | ❌ 禁止 | ✅ 正确 |
+| --- | --- | --- |
+| 导语 | 本组件对标 naive-ui 的 Drawer | 抽屉用于从屏幕侧边滑出承载辅助内容 |
+| props 说明 | 与 naive-ui 保持一致的 `resizable` | `resizable` 控制是否允许拖拽边缘调整宽高 |
+| 迁移提示 | 从 Element Plus 迁移请参考… | 删除该段，或改写为能力对比说明 |
+| demo 标题 | naive-ui 风格的多层抽屉 | 多层嵌套抽屉 |
+
+## 114.4 内部元信息例外（不进用户文档）
+
+以下位置**允许且要求**标注参考源 —— 它们属于 §112.2a 的 Agent 契约，不是用户文档：
+
+- `packages/<pkg>/src/<camelCase>/ai-description.md` 的 frontmatter / 元信息区
+- `packages/<pkg>/src/<camelCase>/Sn<Name>.vue` 头部注释
+- `AGENTS.md`、`dev-docs/**` 等内部文档
+
+判定标准：**用户打开文档站会看到的内容里绝不能出现外部库名；仓库内部协作文档里必须保留。**
+
+## 114.5 校验
+
+```bash
+# 用户可见文档里的外部库名 / 对标文案（命中即修）
+grep -rniE "naive-?ui|wot-?ui|element-plus|ant-?design|vant|arco-?design|对标|参考库|参考 ?UI|与.*对齐" \
+  apps/docs/ --include=*.md --include=*.vue \
+  | grep -v "node_modules"
+```
+
+CI 应把该检查纳入 gate；命中数必须为 0（§114.4 列出的内部元信息路径除外）。
+
+---
+
+# 115. 组件文档与演示质量标准
+
+## 115.1 演示覆盖面
+
+每个 web 端组件在 `apps/docs/.vitepress/demo/` 下的演示必须覆盖参考实现（§112 定义的参考库）的**全部常规场景**。
+
+判定：
+
+```text
+参考实现的每个非 debug 演示
+  ↓
+snail-aui 必须有对应用例
+```
+
+- **debug 类演示**（`*-debug`、`rtl-debug`、`dark-*-debug`、`focus-debug`）**可选**：能覆盖则覆盖，不覆盖时必须在 `dev-docs/SNUI-WBS-v3.1.md` 登记为待办。
+- 每个演示**一个文件**，命名 `<component>-web-<scenario>.vue`（kebab-case，见 §36）。
+- 演示必须**自包含可运行**：不依赖未导出的内部状态，不 mock 掉真实交互路径。
+
+## 115.2 演示质量标准
+
+```text
+[ ] 每个 demo 只讲清一个场景，标题即场景名
+[ ] 用 SnIcon 表示图标（§113），禁止 emoji / 第三方 icon 组件
+[ ] 颜色 / 间距走 var(--sn-web-*) token（Spec-02），禁止字面量
+[ ] 交互真实可用：点击 / 拖拽 / 键盘可达
+[ ] 不使用「演示 A / 演示 B」这类无语义占位文案
+[ ] 与同组件其他 demo 视觉风格统一（间距、对齐、容器宽度）
+```
+
+「演示是乱的」属于质量缺陷，不是风格偏好 —— 遇到必须修，不得放过。
+
+## 115.3 文档结构标准
+
+每个组件文档 `apps/docs/components/web/<component>.md` 必须按固定骨架组织：
+
+```md
+# 组件名 Name
+
+<一句话定位：这个组件解决什么问题>
+
+## 何时使用
+
+- 场景 1
+- 场景 2
+
+## 代码演示
+
+### <场景名>
+
+<描述该场景要说明的能力>
+
+<demo 组件引用>
+
+## API
+
+### Props
+
+| 名称 | 类型 | 默认值 | 说明 |
+
+### Events
+
+| 名称 | 参数 | 说明 |
+
+### Slots
+
+| 名称 | 参数 | 说明 |
+
+### Methods
+
+| 名称 | 类型 | 说明 |
+```
+
+规则：
+
+- 章节顺序固定：`何时使用` → `代码演示` → `API`。
+- API 表**只写实际存在的成员**；未实现项不得出现在表里，应登记到 WBS（§112 future markers）。
+- Props 说明用**行为描述**，不用「同某某库」这类比较句式（§114）。
+- 每个 Props 行必须有默认值；无默认值写 `undefined`。
+
+## 115.4 与其它规则的关系
+
+- 与 §112 配合：props 语义 1:1 对齐是**内部约束**，文档呈现是**自有表述**。
+- 与 §110 配合：文档自动同步机制不变。
+- 与 §113 配合：演示里的图标一律走 SnIcon。
+- 与 §94 配合：Task Completion Report 必须列出「demo 数量 before → after」。
+
+---
+
 # END
 
 AUI Agent 执行标准 v1.0.1（补充规则 #101-#113）
