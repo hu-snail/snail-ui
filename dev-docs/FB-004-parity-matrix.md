@@ -24,11 +24,14 @@
 | bordered | P1 |
 | icon（自定义图标） | P1 |
 | no-icon（`showIcon=false`） | P1 |
-| marquee（跑马灯） | P2 |
 | ~~types~~ 已有 | — |
 | ~~closable~~ 已有 | — |
 
-**props 缺口**：`marquee`（+ `marqueeProps`）
+**props 缺口**：**无**。
+
+核验记录（`src/alert/src/Alert.tsx` line 32-55）：上游 `alertProps` 只含 `title` / `showIcon`(true) / `type`('default') / `bordered`(true) / `closable`(Boolean=falsy) / `onClose` / `onAfterLeave` / `onAfterHide`(deprecated)。**不存在 `marquee` prop** —— 官方 demo 的 `marquee.vue` 演示的是「Alert 内嵌 Marquee 组件」，属组合用法而非 Alert 的 prop。因此本组件 props 已 1:1，缺的只是 demo。
+
+`marquee` 场景的实现方式：在 Alert 的 `default` 插槽里放跑马灯内容即可，无需新增 prop。
 
 ---
 
