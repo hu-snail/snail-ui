@@ -227,9 +227,12 @@ function emitComponentBindings(component: ComponentTokens): TokenBinding[] {
   // aliases already pointed at it). The key order is the declaration order,
   // so the CSS output stays deterministic.
   for (const group of Object.keys(component) as Array<keyof ComponentTokens>) {
-    const tokens = component[group];
-    for (const key of Object.keys(tokens) as string[]) {
-      emitKey(group as string, key, (tokens as Record<string, unknown>)[key]);
+    // Double assertion on purpose: `ComponentTokens[K]` is a heterogeneous
+    // union of interfaces with no index signature, so a direct cast to
+    // `Record<string, unknown>` is rejected by TS2352 as group count grows.
+    const tokens = component[group] as unknown as Record<string, unknown>;
+    for (const key of Object.keys(tokens)) {
+      emitKey(group as string, key, tokens[key]);
     }
   }
   return out;

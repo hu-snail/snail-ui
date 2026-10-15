@@ -66,12 +66,16 @@ export function parseAiDescription(markdown: string): ParsedDescription {
       continue
     }
 
-    if (line.startsWith('## ')) {
-      const heading = line.slice(3).toLowerCase()
-      if (heading.startsWith('prop')) section = 'props'
-      else if (heading.startsWith('event')) section = 'events'
-      else if (heading.startsWith('slot')) section = 'slots'
-      else if (heading.startsWith('token')) section = 'tokens'
+    if (line.startsWith('## ') || line.startsWith('### ')) {
+      // Match the section keyword *anywhere* in the heading, not just at the
+      // start: multi-component folders title their tables `## SnCollapse Props`
+      // / `## SnDrawerContent Events`, which `startsWith('prop')` would miss.
+      const heading = line.replace(/^#{2,3}\s+/, '').toLowerCase()
+      // Word-boundary match avoids false hits such as "Properties"/"Tokens".
+      if (/\bprops?\b/.test(heading)) section = 'props'
+      else if (/\bevents?\b/.test(heading)) section = 'events'
+      else if (/\bslots?\b/.test(heading)) section = 'slots'
+      else if (/\btokens?\b/.test(heading)) section = 'tokens'
       else section = 'header'
       expectedCols = 0
       continue

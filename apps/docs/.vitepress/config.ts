@@ -89,6 +89,7 @@ const sidebar = {
       items: [
         { text: 'Alert 提示', link: '/components/web/alert' },
         { text: 'Dialog 对话框', link: '/components/web/dialog' },
+        { text: 'Drawer 抽屉', link: '/components/web/drawer' },
         { text: 'Loading 加载中', link: '/components/web/loading' },
         { text: 'Skeleton 骨架屏', link: '/components/web/skeleton' },
       ],

@@ -81,4 +81,46 @@ describe('parseAiDescription', () => {
     expect(parsed.slots).toEqual([])
     expect(parsed.tokens).toEqual([])
   })
+
+  // Multi-component folders title their tables with the component name
+  // (`## SnCollapse Props`, `## SnDrawerContent Events`). The section keyword
+  // is therefore not at the start of the heading.
+  it('extracts sections from component-prefixed headings', () => {
+    const md = [
+      '## SnCollapse Props',
+      '',
+      `${PIPE} Name ${PIPE} Type ${PIPE} Default ${PIPE} Description ${PIPE}`,
+      `${PIPE}---${PIPE}---${PIPE}---${PIPE}---${PIPE}`,
+      `${PIPE} accordion ${PIPE} boolean ${PIPE} false ${PIPE} One at a time. ${PIPE}`,
+      '',
+      '## SnCollapseItem Events',
+      '',
+      `${PIPE} Name ${PIPE} Payload ${PIPE} Description ${PIPE}`,
+      `${PIPE}---${PIPE}---${PIPE}---${PIPE}`,
+      `${PIPE} toggle ${PIPE} () => void ${PIPE} Header toggled. ${PIPE}`,
+      '',
+      '## SnCollapseItem Slots',
+      '',
+      `${PIPE} Name ${PIPE} Description ${PIPE}`,
+      `${PIPE}---${PIPE}---${PIPE}`,
+      `${PIPE} header ${PIPE} Header row. ${PIPE}`,
+    ].join('\n')
+    const parsed = parseAiDescription(md)
+
+    expect(parsed.props.map((p) => p.name)).toEqual(['accordion'])
+    expect(parsed.events.map((e) => e.name)).toEqual(['toggle'])
+    expect(parsed.slots).toEqual(['header'])
+  })
+
+  it('does not treat unrelated headings as sections', () => {
+    const md = [
+      '## Properties of interest',
+      '',
+      `${PIPE} Name ${PIPE} Description ${PIPE}`,
+      `${PIPE}---${PIPE}---${PIPE}`,
+      `${PIPE} notAProp ${PIPE} Should be ignored. ${PIPE}`,
+    ].join('\n')
+
+    expect(parseAiDescription(md).props).toEqual([])
+  })
 })

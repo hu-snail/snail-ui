@@ -113,4 +113,26 @@
   --sn-web-dialog-close-color-hover: var(--aui-dialog-close-color-hover);
   --sn-web-dialog-close-icon-color: var(--aui-dialog-close-icon-color);
   --sn-web-dialog-close-icon-color-hover: var(--aui-dialog-close-icon-color-hover);
+
+  /* Drawer — full upstream `n-drawer` var surface. */
+  --sn-web-drawer-color: var(--aui-drawer-color);
+  --sn-web-drawer-text-color: var(--aui-drawer-text-color);
+  --sn-web-drawer-title-text-color: var(--aui-drawer-title-text-color);
+  --sn-web-drawer-box-shadow: var(--aui-drawer-box-shadow);
+  --sn-web-drawer-line-height: var(--aui-drawer-line-height);
+  --sn-web-drawer-radius: var(--aui-drawer-radius);
+  --sn-web-drawer-header-padding: var(--aui-drawer-header-padding);
+  --sn-web-drawer-body-padding: var(--aui-drawer-body-padding);
+  --sn-web-drawer-footer-padding: var(--aui-drawer-footer-padding);
+  --sn-web-drawer-title-font-size: var(--aui-drawer-title-font-size);
+  --sn-web-drawer-title-font-weight: var(--aui-drawer-title-font-weight);
+  --sn-web-drawer-header-border-bottom: var(--aui-drawer-header-border-bottom);
+  --sn-web-drawer-footer-border-top: var(--aui-drawer-footer-border-top);
+  --sn-web-drawer-close-size: var(--aui-drawer-close-size);
+  --sn-web-drawer-close-icon-size: var(--aui-drawer-close-icon-size);
+  --sn-web-drawer-close-icon-color: var(--aui-drawer-close-icon-color);
+  --sn-web-drawer-close-icon-color-hover: var(--aui-drawer-close-icon-color-hover);
+  --sn-web-drawer-close-color: var(--aui-drawer-close-color);
+  --sn-web-drawer-close-color-hover: var(--aui-drawer-close-color-hover);
+  --sn-web-drawer-mask-color: var(--aui-drawer-mask-color);
 }

@@ -25,6 +25,8 @@ import SnGrid from './grid/SnGrid.vue'
 import SnIcon from './icon/SnIcon.vue'
 import SnInput from './input/SnInput.vue'
 import SnDialog from './dialog/SnDialog.vue'
+import SnDrawer from './drawer/SnDrawer.vue'
+import SnDrawerContent from './drawer/SnDrawerContent.vue'
 import SnLoading from './loading/SnLoading.vue'
 import SnMenu from './menu/SnMenu.vue'
 import SnSkeleton from './skeleton/SnSkeleton.vue'
@@ -59,6 +61,8 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnConfigProvider', component: SnConfigProvider },
   { name: 'SnDialog', component: SnDialog },
   { name: 'SnDivider', component: SnDivider },
+  { name: 'SnDrawer', component: SnDrawer },
+  { name: 'SnDrawerContent', component: SnDrawerContent },
   { name: 'SnForm', component: SnForm },
   { name: 'SnFormItem', component: SnFormItem },
   { name: 'SnGrid', component: SnGrid },

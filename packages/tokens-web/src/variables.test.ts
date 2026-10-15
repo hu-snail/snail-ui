@@ -62,6 +62,11 @@ describe('@snui/tokens-web alias layer', () => {
     expect(aliases).toContain('--sn-web-dialog-title-text-color')
     expect(aliases).toContain('--sn-web-dialog-icon-color-error')
     expect(aliases).toContain('--sn-web-dialog-close-margin-icon-top')
+    // drawer (AUI-WEB-FB-003)
+    expect(aliases).toContain('--sn-web-drawer-color')
+    expect(aliases).toContain('--sn-web-drawer-header-padding')
+    expect(aliases).toContain('--sn-web-drawer-footer-border-top')
+    expect(aliases).toContain('--sn-web-drawer-mask-color')
   })
 
   it('maps every alias to a `--aui-*` base layer reference', () => {

@@ -123,6 +123,28 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-dialog-close-color-hover', '--aui-dialog-close-color-hover'],
   ['--sn-web-dialog-close-icon-color', '--aui-dialog-close-icon-color'],
   ['--sn-web-dialog-close-icon-color-hover', '--aui-dialog-close-icon-color-hover'],
+  // Full upstream `n-drawer` var surface: surface/text/shadow, header/body/
+  // footer padding + borders, and the close button + mask colours.
+  ['--sn-web-drawer-color', '--aui-drawer-color'],
+  ['--sn-web-drawer-text-color', '--aui-drawer-text-color'],
+  ['--sn-web-drawer-title-text-color', '--aui-drawer-title-text-color'],
+  ['--sn-web-drawer-box-shadow', '--aui-drawer-box-shadow'],
+  ['--sn-web-drawer-line-height', '--aui-drawer-line-height'],
+  ['--sn-web-drawer-radius', '--aui-drawer-radius'],
+  ['--sn-web-drawer-header-padding', '--aui-drawer-header-padding'],
+  ['--sn-web-drawer-body-padding', '--aui-drawer-body-padding'],
+  ['--sn-web-drawer-footer-padding', '--aui-drawer-footer-padding'],
+  ['--sn-web-drawer-title-font-size', '--aui-drawer-title-font-size'],
+  ['--sn-web-drawer-title-font-weight', '--aui-drawer-title-font-weight'],
+  ['--sn-web-drawer-header-border-bottom', '--aui-drawer-header-border-bottom'],
+  ['--sn-web-drawer-footer-border-top', '--aui-drawer-footer-border-top'],
+  ['--sn-web-drawer-close-size', '--aui-drawer-close-size'],
+  ['--sn-web-drawer-close-icon-size', '--aui-drawer-close-icon-size'],
+  ['--sn-web-drawer-close-icon-color', '--aui-drawer-close-icon-color'],
+  ['--sn-web-drawer-close-icon-color-hover', '--aui-drawer-close-icon-color-hover'],
+  ['--sn-web-drawer-close-color', '--aui-drawer-close-color'],
+  ['--sn-web-drawer-close-color-hover', '--aui-drawer-close-color-hover'],
+  ['--sn-web-drawer-mask-color', '--aui-drawer-mask-color'],
 ] as const
 
 /** Render the alias layer as CSS `:root { ... }` block. */

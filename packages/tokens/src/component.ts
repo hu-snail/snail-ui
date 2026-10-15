@@ -128,6 +128,29 @@ export interface DialogComponentTokens {
   readonly closeIconColorHover: SemanticRef;
 }
 
+export interface DrawerComponentTokens {
+  readonly color: SemanticRef;
+  readonly textColor: SemanticRef;
+  readonly titleTextColor: SemanticRef;
+  readonly boxShadow: SemanticRef;
+  readonly lineHeight: SemanticRef;
+  readonly radius: SemanticRef;
+  readonly headerPadding: SemanticRef;
+  readonly bodyPadding: SemanticRef;
+  readonly footerPadding: SemanticRef;
+  readonly titleFontSize: SemanticRef;
+  readonly titleFontWeight: SemanticRef;
+  readonly headerBorderBottom: SemanticRef;
+  readonly footerBorderTop: SemanticRef;
+  readonly closeSize: SemanticRef;
+  readonly closeIconSize: SemanticRef;
+  readonly closeIconColor: SemanticRef;
+  readonly closeIconColorHover: SemanticRef;
+  readonly closeColor: SemanticRef;
+  readonly closeColorHover: SemanticRef;
+  readonly maskColor: SemanticRef;
+}
+
 export interface ComponentTokens {
   readonly button: ButtonComponentTokens;
   readonly input: InputComponentTokens;
@@ -136,6 +159,7 @@ export interface ComponentTokens {
   readonly spin: SpinComponentTokens;
   readonly skeleton: SkeletonComponentTokens;
   readonly dialog: DialogComponentTokens;
+  readonly drawer: DrawerComponentTokens;
 }
 
 /**
@@ -227,5 +251,27 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     closeColorHover: 'var(--aui-color-background-subtle)',
     closeIconColor: 'var(--aui-color-text-secondary)',
     closeIconColorHover: 'var(--aui-color-text-primary)',
+  },
+  drawer: {
+    color: 'var(--aui-color-background-elevated)',
+    textColor: 'var(--aui-color-text-secondary)',
+    titleTextColor: 'var(--aui-color-text-primary)',
+    boxShadow: 'var(--aui-shadow-overlay)',
+    lineHeight: 'var(--aui-font-line-height-normal)',
+    radius: 'var(--aui-radius-card)',
+    headerPadding: '16px 24px',
+    bodyPadding: '16px 24px',
+    footerPadding: '16px 24px',
+    titleFontSize: 'var(--aui-font-size-xl)',
+    titleFontWeight: 'var(--aui-font-weight-semibold)',
+    headerBorderBottom: '1px solid var(--aui-color-border-subtle)',
+    footerBorderTop: '1px solid var(--aui-color-border-subtle)',
+    closeSize: '22px',
+    closeIconSize: '18px',
+    closeIconColor: 'var(--aui-color-text-secondary)',
+    closeIconColorHover: 'var(--aui-color-text-primary)',
+    closeColor: 'transparent',
+    closeColorHover: 'var(--aui-color-background-subtle)',
+    maskColor: 'var(--aui-color-background-overlay)',
   },
 };

@@ -71,6 +71,8 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   // Feedback
   'SnAlert',
   'SnDialog',
+  'SnDrawer',
+  'SnDrawerContent',
   'SnLoading',
   'SnSkeleton',
 ]
