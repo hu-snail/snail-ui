@@ -83,4 +83,34 @@
   --sn-web-skeleton-height-small: var(--aui-skeleton-height-small);
   --sn-web-skeleton-height-medium: var(--aui-skeleton-height-medium);
   --sn-web-skeleton-height-large: var(--aui-skeleton-height-large);
+
+  /* Component tokens — Dialog (px / color / unitless). Drives SnDialog. */
+  --sn-web-dialog-color: var(--aui-dialog-color);
+  --sn-web-dialog-text-color: var(--aui-dialog-text-color);
+  --sn-web-dialog-title-text-color: var(--aui-dialog-title-text-color);
+  --sn-web-dialog-border: var(--aui-dialog-border);
+  --sn-web-dialog-radius: var(--aui-dialog-radius);
+  --sn-web-dialog-padding: var(--aui-dialog-padding);
+  --sn-web-dialog-title-font-size: var(--aui-dialog-title-font-size);
+  --sn-web-dialog-title-font-weight: var(--aui-dialog-title-font-weight);
+  --sn-web-dialog-font-size: var(--aui-dialog-font-size);
+  --sn-web-dialog-line-height: var(--aui-dialog-line-height);
+  --sn-web-dialog-icon-size: var(--aui-dialog-icon-size);
+  --sn-web-dialog-icon-margin: var(--aui-dialog-icon-margin);
+  --sn-web-dialog-icon-margin-icon-top: var(--aui-dialog-icon-margin-icon-top);
+  --sn-web-dialog-icon-color: var(--aui-dialog-icon-color);
+  --sn-web-dialog-icon-color-info: var(--aui-dialog-icon-color-info);
+  --sn-web-dialog-icon-color-success: var(--aui-dialog-icon-color-success);
+  --sn-web-dialog-icon-color-warning: var(--aui-dialog-icon-color-warning);
+  --sn-web-dialog-icon-color-error: var(--aui-dialog-icon-color-error);
+  --sn-web-dialog-content-margin: var(--aui-dialog-content-margin);
+  --sn-web-dialog-action-space: var(--aui-dialog-action-space);
+  --sn-web-dialog-close-size: var(--aui-dialog-close-size);
+  --sn-web-dialog-close-icon-size: var(--aui-dialog-close-icon-size);
+  --sn-web-dialog-close-margin: var(--aui-dialog-close-margin);
+  --sn-web-dialog-close-margin-icon-top: var(--aui-dialog-close-margin-icon-top);
+  --sn-web-dialog-close-color: var(--aui-dialog-close-color);
+  --sn-web-dialog-close-color-hover: var(--aui-dialog-close-color-hover);
+  --sn-web-dialog-close-icon-color: var(--aui-dialog-close-icon-color);
+  --sn-web-dialog-close-icon-color-hover: var(--aui-dialog-close-icon-color-hover);
 }

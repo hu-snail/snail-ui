@@ -24,6 +24,7 @@ import SnFormItem from './form/SnFormItem.vue'
 import SnGrid from './grid/SnGrid.vue'
 import SnIcon from './icon/SnIcon.vue'
 import SnInput from './input/SnInput.vue'
+import SnDialog from './dialog/SnDialog.vue'
 import SnLoading from './loading/SnLoading.vue'
 import SnMenu from './menu/SnMenu.vue'
 import SnSkeleton from './skeleton/SnSkeleton.vue'
@@ -56,6 +57,7 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnCollapse', component: SnCollapse },
   { name: 'SnCollapseItem', component: SnCollapseItem },
   { name: 'SnConfigProvider', component: SnConfigProvider },
+  { name: 'SnDialog', component: SnDialog },
   { name: 'SnDivider', component: SnDivider },
   { name: 'SnForm', component: SnForm },
   { name: 'SnFormItem', component: SnFormItem },

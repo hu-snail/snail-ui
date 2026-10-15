@@ -91,6 +91,38 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-skeleton-height-small', '--aui-skeleton-height-small'],
   ['--sn-web-skeleton-height-medium', '--aui-skeleton-height-medium'],
   ['--sn-web-skeleton-height-large', '--aui-skeleton-height-large'],
+
+  // Component tokens — Dialog (px / color / unitless). Drives SnDialog.
+  // Full upstream `n-dialog` var surface: surface/text/border, icon per type,
+  // close button, and the action row geometry.
+  ['--sn-web-dialog-color', '--aui-dialog-color'],
+  ['--sn-web-dialog-text-color', '--aui-dialog-text-color'],
+  ['--sn-web-dialog-title-text-color', '--aui-dialog-title-text-color'],
+  ['--sn-web-dialog-border', '--aui-dialog-border'],
+  ['--sn-web-dialog-radius', '--aui-dialog-radius'],
+  ['--sn-web-dialog-padding', '--aui-dialog-padding'],
+  ['--sn-web-dialog-title-font-size', '--aui-dialog-title-font-size'],
+  ['--sn-web-dialog-title-font-weight', '--aui-dialog-title-font-weight'],
+  ['--sn-web-dialog-font-size', '--aui-dialog-font-size'],
+  ['--sn-web-dialog-line-height', '--aui-dialog-line-height'],
+  ['--sn-web-dialog-icon-size', '--aui-dialog-icon-size'],
+  ['--sn-web-dialog-icon-margin', '--aui-dialog-icon-margin'],
+  ['--sn-web-dialog-icon-margin-icon-top', '--aui-dialog-icon-margin-icon-top'],
+  ['--sn-web-dialog-icon-color', '--aui-dialog-icon-color'],
+  ['--sn-web-dialog-icon-color-info', '--aui-dialog-icon-color-info'],
+  ['--sn-web-dialog-icon-color-success', '--aui-dialog-icon-color-success'],
+  ['--sn-web-dialog-icon-color-warning', '--aui-dialog-icon-color-warning'],
+  ['--sn-web-dialog-icon-color-error', '--aui-dialog-icon-color-error'],
+  ['--sn-web-dialog-content-margin', '--aui-dialog-content-margin'],
+  ['--sn-web-dialog-action-space', '--aui-dialog-action-space'],
+  ['--sn-web-dialog-close-size', '--aui-dialog-close-size'],
+  ['--sn-web-dialog-close-icon-size', '--aui-dialog-close-icon-size'],
+  ['--sn-web-dialog-close-margin', '--aui-dialog-close-margin'],
+  ['--sn-web-dialog-close-margin-icon-top', '--aui-dialog-close-margin-icon-top'],
+  ['--sn-web-dialog-close-color', '--aui-dialog-close-color'],
+  ['--sn-web-dialog-close-color-hover', '--aui-dialog-close-color-hover'],
+  ['--sn-web-dialog-close-icon-color', '--aui-dialog-close-icon-color'],
+  ['--sn-web-dialog-close-icon-color-hover', '--aui-dialog-close-icon-color-hover'],
 ] as const
 
 /** Render the alias layer as CSS `:root { ... }` block. */

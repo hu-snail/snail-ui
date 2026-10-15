@@ -97,6 +97,37 @@ export interface SkeletonComponentTokens {
   readonly heightLarge: SemanticRef;
 }
 
+export interface DialogComponentTokens {
+  readonly color: SemanticRef;
+  readonly textColor: SemanticRef;
+  readonly titleTextColor: SemanticRef;
+  readonly border: SemanticRef;
+  readonly radius: SemanticRef;
+  readonly padding: SemanticRef;
+  readonly titleFontSize: SemanticRef;
+  readonly titleFontWeight: SemanticRef;
+  readonly fontSize: SemanticRef;
+  readonly lineHeight: SemanticRef;
+  readonly iconSize: SemanticRef;
+  readonly iconMargin: SemanticRef;
+  readonly iconMarginIconTop: SemanticRef;
+  readonly iconColor: SemanticRef;
+  readonly iconColorInfo: SemanticRef;
+  readonly iconColorSuccess: SemanticRef;
+  readonly iconColorWarning: SemanticRef;
+  readonly iconColorError: SemanticRef;
+  readonly contentMargin: SemanticRef;
+  readonly actionSpace: SemanticRef;
+  readonly closeSize: SemanticRef;
+  readonly closeIconSize: SemanticRef;
+  readonly closeMargin: SemanticRef;
+  readonly closeMarginIconTop: SemanticRef;
+  readonly closeColor: SemanticRef;
+  readonly closeColorHover: SemanticRef;
+  readonly closeIconColor: SemanticRef;
+  readonly closeIconColorHover: SemanticRef;
+}
+
 export interface ComponentTokens {
   readonly button: ButtonComponentTokens;
   readonly input: InputComponentTokens;
@@ -104,6 +135,7 @@ export interface ComponentTokens {
   readonly icon: IconComponentTokens;
   readonly spin: SpinComponentTokens;
   readonly skeleton: SkeletonComponentTokens;
+  readonly dialog: DialogComponentTokens;
 }
 
 /**
@@ -165,5 +197,35 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     heightSmall: '20px',
     heightMedium: '24px',
     heightLarge: '32px',
+  },
+  dialog: {
+    color: 'var(--aui-color-background-elevated)',
+    textColor: 'var(--aui-color-text-secondary)',
+    titleTextColor: 'var(--aui-color-text-primary)',
+    border: '1px solid var(--aui-color-border-default)',
+    radius: 'var(--aui-radius-card)',
+    padding: 'var(--aui-spacing-5)',
+    titleFontSize: 'var(--aui-font-size-xl)',
+    titleFontWeight: 'var(--aui-font-weight-semibold)',
+    fontSize: 'var(--aui-font-size-md)',
+    lineHeight: 'var(--aui-font-line-height-normal)',
+    iconSize: '28px',
+    iconMargin: '0 4px 0 0',
+    iconMarginIconTop: '4px 0 8px 0',
+    iconColor: 'var(--aui-color-action-primary)',
+    iconColorInfo: 'var(--aui-color-feedback-info)',
+    iconColorSuccess: 'var(--aui-color-feedback-success)',
+    iconColorWarning: 'var(--aui-color-feedback-warning)',
+    iconColorError: 'var(--aui-color-feedback-danger)',
+    contentMargin: '8px 0 16px 0',
+    actionSpace: '12px',
+    closeSize: '22px',
+    closeIconSize: '18px',
+    closeMargin: '20px 26px 0 0',
+    closeMarginIconTop: '10px 16px 0 0',
+    closeColor: 'transparent',
+    closeColorHover: 'var(--aui-color-background-subtle)',
+    closeIconColor: 'var(--aui-color-text-secondary)',
+    closeIconColorHover: 'var(--aui-color-text-primary)',
   },
 };

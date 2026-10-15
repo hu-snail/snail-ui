@@ -57,6 +57,11 @@ describe('@snui/tokens-web alias layer', () => {
     expect(aliases).toContain('--sn-web-skeleton-height-small')
     expect(aliases).toContain('--sn-web-skeleton-height-medium')
     expect(aliases).toContain('--sn-web-skeleton-height-large')
+    // dialog (AUI-WEB-FB-001)
+    expect(aliases).toContain('--sn-web-dialog-color')
+    expect(aliases).toContain('--sn-web-dialog-title-text-color')
+    expect(aliases).toContain('--sn-web-dialog-icon-color-error')
+    expect(aliases).toContain('--sn-web-dialog-close-margin-icon-top')
   })
 
   it('maps every alias to a `--aui-*` base layer reference', () => {
