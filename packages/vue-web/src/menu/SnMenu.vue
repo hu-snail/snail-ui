@@ -44,7 +44,7 @@
  *   { [label-field], [key-field], [children-field], ... }  (with remap)
  */
 
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { ChevronRight, ChevronDown } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
 import SnTooltip from '../tooltip/SnTooltip.vue'
@@ -139,6 +139,28 @@ const props = withDefaults(
     /** Field name used to read each node's `disabled` flag. Mirrors n-menu
      * `disabled-field`. Default 'disabled'. */
     disabledField?: string
+    /** Viewport breakpoint below which the menu auto-collapses. Mirrors
+     * Element Plus `el-menu` `breakpoint`. When the window inner-width is
+     * strictly less than the threshold, the menu collapses and emits
+     * `update:collapsed`. Set to `undefined` (default) to disable
+     * responsive collapse — `collapsed` is then purely consumer-driven.
+     *
+     * Accepts either a named token (Element Plus convention):
+     *   - `'xs'` → 480px
+     *   - `'sm'` → 768px
+     *   - `'md'` → 992px
+     *   - `'lg'` → 1200px
+     *   - `'xl'` → 1920px
+     * or an explicit pixel number.
+     *
+     * On SSR / non-browser environments the resize listener is not
+     * installed and the prop is a no-op. */
+    breakpoint?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number
+    /** Initial collapsed state for the responsive-collapse path (i.e.
+     * when `breakpoint` is set). When `breakpoint` is unset this prop is
+     * ignored — uncontrolled initial state is whatever `collapsed` is at
+     * mount. Default false. */
+    defaultCollapsed?: boolean
   }>(),
   {
     mode: 'vertical',
@@ -161,6 +183,7 @@ const props = withDefaults(
     dropdownPlacement: 'right-start',
     disabledField: 'disabled',
     triggerKey: '',
+    defaultCollapsed: false,
   },
 )
 
@@ -169,6 +192,10 @@ const emit = defineEmits<{
   (e: 'update:expandedKeys', keys: Array<string | number>): void
   /** Fired when a leaf item is clicked (n-menu `onUpdateValue`). */
   (e: 'select', value: string | number | null, item: SnMenuOption): void
+  /** Fired when collapsed state flips (v-model:collapsed). The
+   * responsive-breakpoint path emits this when window inner-width crosses
+   * the threshold; the consumer can also drive `collapsed` directly. */
+  (e: 'update:collapsed', collapsed: boolean): void
 }>()
 
 /* ─────────── Tree remapping (key-field / label-field / children-field) ───────
@@ -208,6 +235,89 @@ const normalizedOptions = computed<SnMenuOption[]>(() =>
 )
 
 /* ─────────── Reactive state ─────────── */
+
+/** Effective collapsed state. Resolves three sources in priority order:
+ *   1. `collapsed` prop (controlled) — wins if explicitly true OR false.
+ *   2. Responsive `breakpoint` auto-collapse — when set, we mirror the
+ *      current window inner-width across the threshold. The consumer
+ *      receives `update:collapsed` events so they can persist the state.
+ *   3. `defaultCollapsed` (uncontrolled initial). */
+const breakpointPx = computed<number | undefined>(() => {
+  if (props.breakpoint === undefined) return undefined
+  if (typeof props.breakpoint === 'number') return props.breakpoint
+  switch (props.breakpoint) {
+    case 'xs': return 480
+    case 'sm': return 768
+    case 'md': return 992
+    case 'lg': return 1200
+    case 'xl': return 1920
+    default: return undefined
+  }
+})
+
+/** Internal collapsed flag driven by the breakpoint listener. Starts at
+ * `defaultCollapsed` and flips on resize. We expose `effectiveCollapsed`
+ * (not this directly) to callers so the controlled `collapsed` prop still
+ * wins when present. */
+const breakpointCollapsed = ref<boolean>(props.defaultCollapsed)
+
+/** `collapsed` is treated as controlled when the consumer passes it (any
+ * value, true or false — `false` is explicit). We can't distinguish
+ * "not passed" from "passed=false" with a boolean prop, so we treat both
+ * `collapsed === false` and `collapsed === true` as controlled. The
+ * responsive auto-collapse still emits `update:collapsed` so the consumer
+ * can mirror the new state — if they don't, the next manual override
+ * resets. */
+const effectiveCollapsed = computed<boolean>(() => {
+  // Always honor the explicit prop first.
+  if (props.collapsed) return true
+  // When breakpoint is set, auto-collapse mirrors the resize listener.
+  if (breakpointPx.value !== undefined) return breakpointCollapsed.value
+  // No breakpoint, prop is false → not collapsed.
+  return false
+})
+
+/** Install / remove the resize listener once `breakpointPx` becomes known.
+ * Guarded for SSR / non-browser environments (no `window`). The listener
+ * is idempotent: re-installing on the same instance is a no-op. */
+let resizeHandler: (() => void) | null = null
+function installResizeListener(): void {
+  if (typeof window === 'undefined') return
+  if (resizeHandler) return
+  resizeHandler = () => {
+    const threshold = breakpointPx.value
+    if (threshold === undefined) return
+    const shouldCollapse = window.innerWidth < threshold
+    if (breakpointCollapsed.value !== shouldCollapse) {
+      breakpointCollapsed.value = shouldCollapse
+      // Notify consumer so they can mirror via v-model:collapsed.
+      emit('update:collapsed', shouldCollapse)
+    }
+  }
+  window.addEventListener('resize', resizeHandler)
+  // Synchronously evaluate the current viewport on install so we collapse
+  // immediately when the page first loads narrower than the threshold
+  // (without waiting for the user to resize).
+  resizeHandler()
+}
+function uninstallResizeListener(): void {
+  if (resizeHandler && typeof window !== 'undefined') {
+    window.removeEventListener('resize', resizeHandler)
+  }
+  resizeHandler = null
+}
+
+onMounted(() => {
+  if (breakpointPx.value !== undefined) installResizeListener()
+})
+onBeforeUnmount(() => {
+  uninstallResizeListener()
+})
+// React to breakpoint prop changing at runtime (rare but supported).
+watch(breakpointPx, (px) => {
+  uninstallResizeListener()
+  if (px !== undefined) installResizeListener()
+})
 
 /** Reactive view of the current value. Falls back to `defaultValue`. */
 const currentValue = computed<string | number | null>(() => {
@@ -315,12 +425,12 @@ function isPopTrigger(item: SnMenuOption): boolean {
     :class="[
       'sn-menu',
       `sn-menu--${mode}`,
-      collapsed ? 'sn-menu--collapsed' : '',
+      effectiveCollapsed ? 'sn-menu--collapsed' : '',
       inverted ? 'sn-menu--inverted' : '',
       mode === 'popButton' && popHovering ? 'sn-menu--popButton-open' : '',
     ]"
     :role="mode === 'horizontal' ? 'menubar' : 'menu'"
-    :style="collapsed && mode === 'vertical' ? `--sn-menu-collapsed-width: ${collapsedWidth}px; --sn-menu-icon-size: ${collapsedIconSize}px;` : `--sn-menu-icon-size: ${iconSize}px;`"
+    :style="effectiveCollapsed && mode === 'vertical' ? `--sn-menu-collapsed-width: ${collapsedWidth}px; --sn-menu-icon-size: ${collapsedIconSize}px;` : `--sn-menu-icon-size: ${iconSize}px;`"
     @mouseenter="onRootMouseEnter"
     @mouseleave="onRootMouseLeave"
   >
@@ -341,8 +451,8 @@ function isPopTrigger(item: SnMenuOption): boolean {
           v-if="mode === 'vertical' && item.children?.length"
           class="sn-menu-group-wrapper"
           :class="{
-            'sn-menu-group-wrapper--collapsed-popover': collapsed,
-            'sn-menu-group-wrapper--expanded': !collapsed && isExpanded(item.key),
+            'sn-menu-group-wrapper--collapsed-popover': effectiveCollapsed,
+            'sn-menu-group-wrapper--expanded': !effectiveCollapsed && isExpanded(item.key),
           }"
         >
           <component
@@ -351,18 +461,18 @@ function isPopTrigger(item: SnMenuOption): boolean {
               'sn-menu-item sn-menu-item--group',
               { 'sn-menu-item--active': isActive(item.key),
                 'sn-menu-item--disabled': item.disabled,
-                'sn-menu-item--expanded': !collapsed && isExpanded(item.key),
+                'sn-menu-item--expanded': !effectiveCollapsed && isExpanded(item.key),
                 'sn-menu-item--inverted': inverted,
               },
             ]"
             :type="isLink(item) ? undefined : 'button'"
-            :href="!collapsed && isLink(item) ? item.href : undefined"
+            :href="!effectiveCollapsed && isLink(item) ? item.href : undefined"
             :disabled="!isLink(item) ? item.disabled : undefined"
             :aria-disabled="item.disabled || undefined"
-            :aria-current="!collapsed && isActive(item.key) ? 'page' : undefined"
+            :aria-current="!effectiveCollapsed && isActive(item.key) ? 'page' : undefined"
             :aria-expanded="isExpanded(item.key) ? 'true' : 'false'"
-            :aria-haspopup="collapsed ? 'menu' : undefined"
-            @click="collapsed ? null : toggleGroup(item.key)"
+            :aria-haspopup="effectiveCollapsed ? 'menu' : undefined"
+            @click="effectiveCollapsed ? null : toggleGroup(item.key)"
           >
             <span v-if="item.icon" class="sn-menu-item__icon">
               <component :is="item.icon" />
@@ -391,12 +501,12 @@ function isPopTrigger(item: SnMenuOption): boolean {
             the popover itself.
           -->
           <div
-            v-if="collapsed && item.children?.length"
+            v-if="effectiveCollapsed && item.children?.length"
             class="sn-menu-popover-bridge"
             aria-hidden="true"
           />
           <div
-            v-if="collapsed && item.children?.length"
+            v-if="effectiveCollapsed && item.children?.length"
             class="sn-menu-submenu-popover"
             role="menu"
             :aria-label="item.label"
@@ -429,7 +539,7 @@ function isPopTrigger(item: SnMenuOption): boolean {
 
           <!-- Normal (expanded) vertical: render children under the parent -->
           <div
-            v-else-if="!collapsed && isExpanded(item.key)"
+            v-else-if="!effectiveCollapsed && isExpanded(item.key)"
             class="sn-menu-group"
             role="group"
           >
@@ -551,6 +661,17 @@ function isPopTrigger(item: SnMenuOption): boolean {
   transition: background-color 0.15s ease, color 0.15s ease;
   text-decoration: none;
 }
+/* Force vertical items to be full-width of their list so the active
+ * highlight, hover wash, and `justify-content: center` (used in
+ * collapsed mode) all span the full bar. `inline-flex` items default
+ * to content-width inside a flex-column container and won't be stretched
+ * by `align-items: stretch` because their intrinsic cross-axis size is
+ * their content (icon), which would otherwise leave collapsed items
+ * 22px wide on a 64px-wide bar. */
+.sn-menu--vertical .sn-menu-item {
+  width: 100%;
+  justify-content: flex-start;
+}
 .sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active) {
   background: rgba(0, 0, 0, 0.04);
 }
@@ -573,6 +694,17 @@ function isPopTrigger(item: SnMenuOption): boolean {
   height: 16px;
   font-size: 14px;
   flex-shrink: 0;
+}
+/* Constrain the icon SVG to the container size. Icon components
+ * (lucide-vue-next etc.) declare an intrinsic `width`/`height` on the
+ * <svg>; without this clamp a 24×24 icon would overflow a 22×22 box and
+ * appear visually oversized in collapsed mode. `width: 100%` lets the
+ * container's `--sn-menu-icon-size` drive the final rendered size. */
+.sn-menu-item__icon :deep(svg) {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }
 .sn-menu-item__caret {
   margin-left: auto;
@@ -709,8 +841,8 @@ function isPopTrigger(item: SnMenuOption): boolean {
 .sn-menu--collapsed.sn-menu--vertical .sn-menu__list {
   width: var(--sn-menu-collapsed-width, 48px);
 }
-.sn-menu--collapsed .sn-menu-item__label,
-.sn-menu--collapsed .sn-menu-item__caret {
+.sn-menu--collapsed .sn-menu-item:not(.sn-menu-item--popover-leaf) .sn-menu-item__label,
+.sn-menu--collapsed .sn-menu-item:not(.sn-menu-item--popover-leaf) .sn-menu-item__caret {
   display: none;
 }
 .sn-menu--collapsed .sn-menu-item {
@@ -784,13 +916,39 @@ function isPopTrigger(item: SnMenuOption): boolean {
   font-size: var(--sn-menu-icon-size, 20px);
 }
 
-/* Inverted (dark backdrop nav) — n-menu `inverted: true`. Active item
- * uses a translucent white wash + bold text; hover is a faint white wash.
- * Pairs with --sn-web-color-action-primary / --sn-web-color-text-on-primary
- * via the consumer (no hardcoded brand colors here). */
+/* Inverted (dark backdrop nav) — n-menu `inverted: true`. The nav itself
+ * paints a dark surface (matches Element Plus's `el-menu--dark` style);
+ * active item uses a translucent white wash + bold text; hover is a faint
+ * white wash. Pairs with --sn-web-color-action-primary /
+ * --sn-web-color-text-on-primary via the consumer (no hardcoded brand
+ * colors here). */
+.sn-menu--inverted {
+  background: #001529;
+  color: rgba(255, 255, 255, 0.82);
+  border-radius: 4px;
+}
 .sn-menu--inverted,
 .sn-menu--inverted .sn-menu-item {
   color: rgba(255, 255, 255, 0.82);
+}
+/* Popover lives in white panel regardless of parent mode — its items
+ * MUST inherit dark text or they vanish (white text on white bg). Force
+ * the popover branch back to the default text color and let the
+ * hover/active inverted accents come from the inverted leaf variant. */
+.sn-menu--inverted .sn-menu-submenu-popover {
+  color: var(--sn-web-color-text-primary, #1f2937);
+}
+.sn-menu--inverted .sn-menu-submenu-popover .sn-menu-item {
+  color: var(--sn-web-color-text-primary, #1f2937);
+}
+.sn-menu--inverted .sn-menu-submenu-popover .sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active) {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--sn-web-color-text-primary, #1f2937);
+}
+.sn-menu--inverted .sn-menu-submenu-popover .sn-menu-item--active {
+  background: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-text-on-primary, #fff);
+  font-weight: 600;
 }
 .sn-menu--inverted .sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active) {
   background: rgba(255, 255, 255, 0.08);

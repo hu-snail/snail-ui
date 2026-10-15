@@ -18,6 +18,12 @@
 
 <Demo name="menu-web-collapsed" description="collapsed icon-only 折叠模式 + hover popover 子菜单" />
 
+<Demo name="menu-web-collapsed-inline" description="通过 collapsed 来指定菜单收起 —— 顶部 toggle 按钮驱动 v-model:collapsed" />
+
+<Demo name="menu-web-responsive-collapse" description="设置 breakpoint 可触发响应式收缩 —— 视口低于阈值时自动折叠成 icon-only 侧栏" />
+
+<Demo name="menu-web-inline-submenu" description="菜单内可以嵌入多个子项，通过 defaultExpandedKeys（文档中常称 openKeys）可以设置默认打开的子项" />
+
 <Demo name="menu-web-pop-button" description="popButton FAB 菜单：默认只显示 trigger，hover 整个区域展开其余圆形按钮，每项 hover 显示 SnTooltip 文字" />
 
 ## 基础用法
@@ -79,6 +85,8 @@ const active = ref<string | null>(null)
 | `labelField` | `string` | `'label'` | 树节点的 label 字段名 |
 | `childrenField` | `string` | `'children'` | 树节点的 children 字段名 |
 | `disabledField` | `string` | `'disabled'` | 树节点的 disabled 字段名 |
+| `breakpoint` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` | `undefined` | 视口宽度响应式断点。`undefined` 表示关闭。设置后：当 `window.innerWidth` 严格小于阈值时菜单自动折叠，并通过 `update:collapsed` 事件回写给消费者。命名断点对齐 Element Plus：`xs=480` / `sm=768` / `md=992` / `lg=1200` / `xl=1920`（px）；也可直接传像素数字。SSR / 非浏览器环境不安装 resize 监听 |
+| `defaultCollapsed` | `boolean` | `false` | 仅在 `breakpoint` 生效时使用 —— 视口宽度在初始测量时低于阈值时的初始折叠态（受控用 `collapsed` + `v-model:collapsed`） |
 
 ### SnMenuOption
 
@@ -102,6 +110,7 @@ interface SnMenuOption {
 | --- | --- | --- |
 | `update:value` | `(value: string \| number \| null)` | 选中变化（v-model） |
 | `update:expandedKeys` | `(keys: Array<string \| number>)` | 展开变化（v-model） |
+| `update:collapsed` | `(collapsed: boolean)` | 折叠态变化（v-model）。`breakpoint` 路径在 resize 跨越阈值时触发；消费者也可直接驱动 `collapsed` |
 | `select` | `(value, item: SnMenuOption)` | 点击叶子项 |
 
 ## 无障碍

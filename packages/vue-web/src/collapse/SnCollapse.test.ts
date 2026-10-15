@@ -248,10 +248,6 @@ describe('SnCollapse (AUI-WEB-LAYOUT-005)', () => {
   })
 
   it('arrow prop overrides parent arrowPlacement per-item', () => {
-    const Wrapper = wrapCollapse(
-      { arrowPlacement: 'left', defaultExpandedNames: ['a'] },
-      [{ name: 'a', title: 'Auth', body: 'AAA' }],
-    )
     // wrapCollapse doesn't pass arrow prop; rebuild manually with arrow prop
     const WrapperWithArrow = defineComponent({
       components: { SnCollapse, SnCollapseItem },
