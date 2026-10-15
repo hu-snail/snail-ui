@@ -1,170 +1,181 @@
 # Drawer 抽屉（Web 端）
 
-`SnDrawer` 是从屏幕四边滑入的**浮层外壳**：遮罩 + 面板 + 方向定位 + 滚动锁。面板内部的标题 / 正文 / 底部由配套的 `SnDrawerContent` 渲染。两者的 props 与语义按 [naive-ui `n-drawer`](https://www.naiveui.com/zh-CN/light/components/drawer) 1:1 对齐（AGENTS.md §112）。
+`SnDrawer` 是从屏幕四边滑入的浮层外壳：遮罩 + 面板 + 方向定位 + 滚动锁 + 焦点管理。面板内部的标题 / 正文 / 底部由配套的 `SnDrawerContent` 渲染。
 
-典型场景：表单填写、设置面板、详情查看。
+## 何时使用
+
+- 需要在当前页面上方承载辅助内容，同时保留对背景页面的上下文感。
+- 内容量超过对话框能舒适承载的范围（长表单、多段说明、配置面板）。
+- 需要用户在一个不离开当前页面的独立空间里完成一段操作。
+
+不适合：只需要一句确认时，用 `SnDialog`；内容需要用户完全沉浸且不返回时，用独立路由。
 
 ## 两个组件的分工
 
-naive-ui 把「抽屉」拆成两个组件，本库同样拆：
+抽屉被拆成外壳与内容两层：
 
-| 组件 | 负责 |
+| 组件 | 职责 |
 |---|---|
-| `SnDrawer` | Teleport、遮罩、四向定位与滑入过渡、`<html>` 滚动锁、`Escape`、`z-index`、承载面板的插槽 |
-| `SnDrawerContent` | 头部（标题 + 关闭按钮）、正文、底部三行 |
+| `SnDrawer` | 遮罩、进出场动画、方向定位、滚动锁、焦点陷阱、尺寸与拖拽调整 |
+| `SnDrawerContent` | 面板内的头部（标题 + 关闭按钮）、可滚动主体、底部操作区 |
 
-`SnDrawer` 只负责遮罩、滑入动画和滚动锁；面板里的头部、正文、底部由 `SnDrawerContent` 提供，通过 `default` 插槽传入。上游 `n-drawer` 也没有 `title` / `closable`，这两个属于内容组件。
+`SnDrawer` 通过 `default` 插槽接收面板内容，通常传入一个 `<SnDrawerContent>`。不传内容时是一个空白面板。
 
-## 实时预览
+## 代码演示
 
-<Demo name="drawer-web-basic" description="四向 placement 切换 + 遮罩点击 / Escape 关闭" />
+### 基础用法
 
-<Demo name="drawer-web-content" description="SnDrawerContent 的 header / body / footer 三段与自定义插槽" />
+从右侧滑入的标准抽屉。
 
-## 基础用法
+<Demo name="drawer-web-basic" description="右侧滑入的基础抽屉" />
 
-```ts
-import { SnDrawer, SnDrawerContent } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-```
+### 内容骨架
 
-```html
-<SnDrawer v-model:show="open" placement="right" :width="400">
-  <SnDrawerContent title="设置" closable>
-    <p>正文内容</p>
-    <template #footer>
-      <SnButton @click="open = false">取消</SnButton>
-      <SnButton type="primary" @click="save">保存</SnButton>
-    </template>
-  </SnDrawerContent>
-</SnDrawer>
-```
+`SnDrawerContent` 的头部 / 主体 / 底部三段结构。
 
-## Props
+<Demo name="drawer-web-content" description="SnDrawerContent 的三段结构与插槽" />
 
-| 名称 | 类型 | 默认 | 说明 |
-|---|---|---|---|
-| `show` | `boolean` | `false` | 是否打开。 |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | 从哪条边滑入。 |
-| `width` | `number \| string` | `undefined` | 面板宽度。**只对 `left` / `right` 生效。** |
-| `height` | `number \| string` | `undefined` | 面板高度。**只对 `top` / `bottom` 生效。** |
-| `maskClosable` | `boolean` | `true` | 点击遮罩是否请求关闭。 |
-| `showMask` | `boolean \| 'transparent'` | `true` | 遮罩可见性。`'transparent'` 保留遮罩（仍吞点击）但不绘制。 |
-| `to` | `string \| HTMLElement` | `undefined` | Teleport 目标。`undefined` 表示不 teleport（就地渲染）。 |
-| `displayDirective` | `'if' \| 'show'` | `'if'` | `'if'` 关闭时卸载面板；`'show'` 保持挂载并切 `display`。 |
-| `nativeScrollbar` | `boolean` | `true` | 传 `false` 会加 `--native-scrollbar` class 钩子供自定义滚动条。见 §112。 |
-| `zIndex` | `number` | `undefined` | 浮层层级。 |
-| `blockScroll` | `boolean` | `true` | 打开时锁定 `<html>` 滚动。 |
-| `closeOnEsc` | `boolean` | `true` | `Escape` 是否请求关闭。 |
-| `contentClass` / `contentStyle` | `string` / `string \| CSSProperties` | `undefined` | 内容包装层额外的 class / style。 |
+### 拖拽调整尺寸
 
-## 回调 props
+开启 `resizable` 后可拖拽或键盘调整面板宽度。
 
-| 名称 | 类型 | 说明 |
-|---|---|---|
-| `onMaskClick` | `(e: MouseEvent) => void` | 遮罩被点击。在任何关闭动作之前触发，且**不受** `maskClosable` 影响。 |
-| `onEsc` | `() => void` | `Escape` 被按下。在任何关闭动作之前触发，且**不受** `closeOnEsc` 影响。 |
-| `onAfterEnter` | `() => void` | 进入过渡结束。 |
-| `onAfterLeave` | `() => void` | 离开过渡结束。 |
+<Demo name="drawer-web-resizable" description="resizable 拖拽与键盘调整，受 min/max 约束" />
 
-这四个与同名事件一一对应 —— Vue 会把 `mask-click` 路由到 `onMaskClick`（`esc` 同理），所以组件内部**不能**在 emit 之后再手动调一次 prop，否则调用方的处理函数会跑两遍。
+### 多层嵌套
 
-## 事件
+每一层抽屉持有独立状态，关闭内层不影响外层。
 
-| 事件 | 载荷 | 触发时机 |
-|---|---|---|
-| `update:show` | `boolean` | 抽屉请求开关。 |
-| `after-enter` | `()` | 进入过渡结束。 |
-| `after-leave` | `()` | 离开过渡结束。 |
+<Demo name="drawer-web-multiple" description="两层嵌套抽屉，状态彼此独立" />
+
+### 指定挂载容器
+
+用 `to` 把抽屉限制在局部容器内渲染。
+
+<Demo name="drawer-web-target" description="to 指定挂载容器，抽屉被限制在局部区域内" />
+
+### 内容滚动
+
+头部与底部固定，主体区域独立滚动。
+
+<Demo name="drawer-web-scroll" description="长内容下的三段布局：固定头尾 + 滚动主体" />
+
+### 关闭按钮
+
+`closable` 控制标题右侧的关闭按钮，也可以完全交给底部操作区。
+
+<Demo name="drawer-web-closable" description="closable 开关与底部操作区两种退出路径" />
+
+## API
+
+### SnDrawer Props
+
+| 名称 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `show` | `boolean` | `false` | 是否展示抽屉。 |
+| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | 抽屉展示的位置。 |
+| `width` | `number \| string` | `undefined` | 抽屉宽度，在位置是 `left` 和 `right` 时生效。 |
+| `height` | `number \| string` | `undefined` | 抽屉高度，在位置是 `top` 和 `bottom` 时生效。 |
+| `defaultWidth` | `number \| string` | `251` | 拖拽调整的起始宽度，在位置是 `left` 和 `right` 时生效。 |
+| `defaultHeight` | `number \| string` | `251` | 拖拽调整的起始高度，在位置是 `top` 和 `bottom` 时生效。 |
+| `resizable` | `boolean` | `false` | 是否允许拖拽调整面板宽高。 |
+| `maxWidth` | `number` | `undefined` | 拖拽时的最大宽度（px）。 |
+| `maxHeight` | `number` | `undefined` | 拖拽时的最大高度（px）。 |
+| `minWidth` | `number` | `undefined` | 拖拽时的最小宽度（px）。 |
+| `minHeight` | `number` | `undefined` | 拖拽时的最小高度（px）。 |
+| `showMask` | `boolean \| 'transparent'` | `true` | 是否显示遮罩。`'transparent'` 展示透明遮罩；`false` 会同时禁用焦点陷阱。 |
+| `maskClosable` | `boolean` | `true` | 点击遮罩时是否关闭抽屉。 |
+| `closeOnEsc` | `boolean` | `true` | 按下 Escape 是否关闭抽屉。 |
+| `autoFocus` | `boolean` | `true` | 打开时是否自动聚焦面板内第一个可聚焦元素。 |
+| `trapFocus` | `boolean` | `true` | 是否将 Tab 焦点锁定在面板内部。 |
+| `blockScroll` | `boolean` | `true` | 打开时是否禁用 `<html>` 滚动。 |
+| `displayDirective` | `'if' \| 'show'` | `'if'` | 控制内容渲染的指令。`'if'` 用 `v-if`，`'show'` 用 `v-show` 保留节点。 |
+| `nativeScrollbar` | `boolean` | `true` | 是否使用原生滚动容器。 |
+| `scrollbarProps` | `SnDrawerScrollbarProps` | `undefined` | 传给滚动容器的属性，支持 `trigger` / `xScrollable` / `onScroll`。 |
+| `to` | `string \| HTMLElement` | `'body'` | 抽屉渲染的目标容器。 |
+| `zIndex` | `number` | `undefined` | 抽屉的层级。 |
+| `contentClass` | `string` | `undefined` | 可滚动内容节点的类名。 |
+| `contentStyle` | `string \| CSSProperties` | `undefined` | 可滚动内容节点的样式。 |
+| `onMaskClick` | `(e: MouseEvent) => void` | `undefined` | 点击遮罩时调用（在关闭判定之前）。 |
+| `onEsc` | `() => void` | `undefined` | 按下 Escape 时调用（在关闭判定之前）。 |
+| `onAfterEnter` | `() => void` | `undefined` | 进场过渡结束后调用。 |
+| `onAfterLeave` | `() => void` | `undefined` | 离场过渡结束后调用。 |
+
+### SnDrawer Events
+
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| `update:show` | `boolean` | 显示状态变化。 |
+| `update:width` | `number` | 拖拽产生了新的宽度。 |
+| `update:height` | `number` | 拖拽产生了新的高度。 |
 | `mask-click` | `MouseEvent` | 遮罩被点击。 |
-| `esc` | `()` | `Escape` 被按下。 |
+| `esc` | `()` | 按下了 Escape。 |
+| `after-enter` | `()` | 进场过渡结束。 |
+| `after-leave` | `()` | 离场过渡结束。 |
 
-## 插槽
+### SnDrawer Slots
 
-| 名称 | 说明 |
-|---|---|
-| `default` | 面板内容，通常是一个 `<SnDrawerContent>`。上游 `n-drawer` 同样要求调用方显式提供内容，不提供时为空白面板。 |
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| `default` | `()` | 面板内容，通常是 `<SnDrawerContent>`。 |
 
-## 行为说明
+### SnDrawerContent Props
 
-### 宽高受 placement 约束
+| 名称 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `title` | `string` | `undefined` | 标题文字。 |
+| `closable` | `boolean` | `false` | 是否显示标题右侧的关闭按钮。 |
+| `nativeScrollbar` | `boolean` | `true` | 主体部分是否使用原生滚动条。 |
+| `bodyClass` | `string` | `undefined` | 主体区域的类名。 |
+| `bodyStyle` | `string \| CSSProperties` | `undefined` | 主体区域的样式。 |
+| `bodyContentClass` | `string` | `undefined` | 主体内容节点的类名。 |
+| `bodyContentStyle` | `string \| CSSProperties` | `undefined` | 主体内容节点的样式。 |
+| `headerClass` | `string` | `undefined` | 头部区域的类名。 |
+| `headerStyle` | `string \| CSSProperties` | `undefined` | 头部区域的样式。 |
+| `footerClass` | `string` | `undefined` | 底部区域的类名。 |
+| `footerStyle` | `string \| CSSProperties` | `undefined` | 底部区域的样式。 |
 
-复刻上游：`left` / `right` 读 `width`，`top` / `bottom` 读 `height`，**另一维度交给样式表**。数字转 `px`，字符串原样使用。两个都没传时，组件输出**空字符串**而非内联值 —— 避免空声明把样式表的默认值盖掉（沿用 SnSkeleton 的既有约定）。
+### SnDrawerContent Events
 
-### 遮罩的三种状态
-
-- `true`：绘制遮罩并吞点击。
-- `'transparent'`：保持挂载、仍然吞点击，但不绘制任何东西。
-- `false`：完全不渲染。
-
-前两种状态下 `mask-click` 都会触发，**与 `maskClosable` 无关** —— `maskClosable` 只决定要不要*请求关闭*。
-
-### Escape 与输入法
-
-`closeOnEsc` 控制关闭，但当 `event.isComposing` 为真时（中文 / 日文输入法正在取消组合）**永不关闭** —— 与上游 `useIsComposing` 同一道守卫。
-
-### 滚动锁是「还原」不是「清空」
-
-打开时把 `<html>` 既有的内联 `overflow` 记下来，释放时还原，所以宿主自己设过的值不会被冲掉。`onBeforeUnmount` 里还有一道兜底：抽屉在打开状态下被销毁也会还原。
-
-### 子组件可关闭抽屉
-
-`SnDrawer` 通过 `SN_DRAWER_INJECTION_KEY` 把自己 provide 出去；后代的 `SnDrawerContent` inject 到之后，关闭按钮会顺带请求父抽屉隐藏 —— 等价上游的 `drawerInjectionKey`。
-
-## SnDrawerContent
-
-面板的三行：头部（标题 + 关闭按钮）、正文、可选底部。
-
-### Props
-
-| 名称 | 类型 | 默认 | 说明 |
-|---|---|---|---|
-| `title` | `string` | `undefined` | 头部标题。 |
-| `closable` | `boolean` | `false` | 是否渲染关闭按钮。上游声明为裸 `Boolean`，默认取 falsy。 |
-| `nativeScrollbar` | `boolean` | `true` | 给正文加 `--native-scrollbar` class 钩子。 |
-| `headerClass` / `headerStyle` | `string` / `string \| CSSProperties` | `undefined` | 头部额外的 class / style。 |
-| `bodyClass` / `bodyStyle` | `string` / `string \| CSSProperties` | `undefined` | 正文额外的 class / style。 |
-| `bodyContentClass` / `bodyContentStyle` | `string` / `string \| CSSProperties` | `undefined` | 正文内层内容元素额外的 class / style。 |
-| `footerClass` / `footerStyle` | `string` / `string \| CSSProperties` | `undefined` | 底部额外的 class / style。 |
-
-### 事件
-
-| 事件 | 载荷 | 触发时机 |
-|---|---|---|
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
 | `close` | `()` | 关闭按钮被点击。 |
 
-### 插槽
+### SnDrawerContent Slots
 
-| 名称 | 说明 |
-|---|---|
-| `default` | 正文内容。 |
-| `header` | 头部行，替代 `title`。 |
-| `footer` | 底部行。不提供则**完全不渲染**底部元素。 |
-| `close` | 关闭按钮，替代内置图形。 |
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| `default` | `()` | 主体内容。 |
+| `header` | `()` | 头部行，替代 `title`。 |
+| `footer` | `()` | 底部行，仅在填充时渲染。 |
 
-### 行为说明
+## 尺寸与拖拽
 
-- **头部的出现规则**：有 `header` 插槽、或 `title`、或 `closable` 为真，三者命中其一即渲染；否则头部整体缺席，正文成为第一行，并带上 `--last` 类去掉下边距。
-- **底部的出现规则**：只有提供 `footer` 插槽才渲染，没有兜底内容。
-- **关闭行为**：关闭按钮 emit `close`，**并且**在注入到父抽屉时请求父抽屉隐藏。放在抽屉里用时可以不绑 `@close`。
-- 标题元素是 `role="heading"` + `aria-level="1"`。
+`width` / `height` 只在对应方向生效：`width` 作用于 `left` / `right`，`height` 作用于 `top` / `bottom`。
+
+两者都未设置时，面板尺寸交给样式表 —— 此时 `defaultWidth` / `defaultHeight` 不参与。只有在 `resizable` 打开时，它们才作为拖拽的起始值。拖拽过程中组件实时更新面板尺寸，指针抬起时通过 `update:width` / `update:height` 把结果交回宿主，由宿主持有最终值。
+
+拖拽带也可以键盘操作：聚焦后按方向键每次调整 16px，`Home` 跳到最小、`End` 跳到最大。所有结果都会经过 `minWidth` / `minHeight` / `maxWidth` / `maxHeight` 收敛。
+
+## 焦点管理
+
+打开时，`autoFocus` 会把焦点移到面板内第一个可聚焦元素（没有可聚焦内容时落在面板本身）。`trapFocus` 让 Tab 与 Shift+Tab 在面板内循环，`autoFocus` 关闭时陷阱依然生效。
+
+`showMask` 为 `false` 时焦点陷阱会被强制关闭 —— 没有可见的模态边界时，劫持 Tab 会让用户失去对页面的控制。关闭抽屉后，焦点归还给打开它之前持有焦点的元素。
 
 ## 无障碍
 
-- 面板根元素 `role="dialog"` + `aria-modal="true"`；遮罩是 `aria-hidden="true"`。
-- 关闭按钮是真实的 `<button type="button">`，带 `aria-label="关闭"` 与 `:focus-visible` 焦点环。
-- 头部标题以一级标题暴露。
-
-以下**尚未实现**（见 §112）：焦点陷阱、初始焦点、关闭后焦点归还、面板到标题的 `aria-labelledby` 关联。
+- 面板 `role="dialog"` + `aria-modal="true"`。
+- 开启焦点陷阱时面板带 `tabindex="-1"`，让陷阱有一个可回落的锚点。
+- 拖拽带 `role="separator"`，带 `aria-orientation` 与本地化 `aria-label`，可聚焦并支持方向键。
+- 关闭按钮是真实的 `<button type="button">`，带 `aria-label="关闭"`。
+- 遮罩 `aria-hidden="true"`，不进入可访问性树。
 
 ## 主题
 
-两个组件的 token 面都落在样式表里（`--sn-web-drawer-*`），**不输出任何内联主题样式** —— 改主题靠覆盖 token。唯一的内联样式是受 placement 约束的 `width` / `height`，以及调用方自己传的 `contentStyle` / `headerStyle` 之类的透传。
+两个组件的 token 面都落在样式表里（`--sn-web-drawer-*`），**不输出任何内联主题样式** —— 改主题靠覆盖 token。唯一的内联样式是受 placement 约束的 `width` / `height`，以及调用方自己传的 `contentStyle` 之类的透传。
 
-## 已知取舍（§112 future markers）
+## 已知取舍
 
-- **焦点陷阱**：上游用 `vueuc` 的 `VFocusTrap` 包住面板；本版尚未实现（与 `SnDialog` 同一缺口）。
-- **`nativeScrollbar` 仅为 API 对齐**：上游传 `false` 时切到 `NScrollbar` 的虚拟滚动条；两边目前都渲染原生滚动容器，保留 `--native-scrollbar` class 作为定制钩子，真正的虚拟滚动条未实现。
-- **`resizable` / `maxWidth` / `maxHeight` / `minWidth` / `minHeight` / `scrollbarProps`** 等上游 props **尚未纳入**。补齐（尤其是 `resizable`，上游靠拖拽 + 三条 3px 触发条实现）属于后续任务。
-- 过渡使用硬编码的 `0.2s` / `0.3s` 时长，而非上游的 easing token —— tokens 包没有 motion/时长别名可消费。
-- 上游 `drawer-cssr` 里的拖拽改尺寸触发器（3px 边缘）与逐 placement 的圆角规则，本版只落圆角，未落改尺寸手柄。
+- `nativeScrollbar` 为 `false` 时不做虚拟滚动条替换，只保留原生容器与类名钩子。
+- `scrollbarProps` 只应用滚动相关的子集（`trigger` / `xScrollable` / `onScroll`），虚拟滚动条几何参数不适用。
+- 全局 drawer 默认值未建模，`placement` 等逐实例读取。

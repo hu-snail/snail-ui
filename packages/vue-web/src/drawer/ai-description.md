@@ -53,6 +53,16 @@ import { SnDrawer, SnDrawerContent } from '@snui/vue-web'
 | `to` | `string \| HTMLElement` | `undefined` | Teleport target. `undefined` disables teleport (renders in place). |
 | `displayDirective` | `'if' \| 'show'` | `'if'` | `'if'` unmounts the panel when closed; `'show'` keeps it mounted and toggles `display`. |
 | `nativeScrollbar` | `boolean` | `true` | `false` adds the `--native-scrollbar` class hook for a custom scrollbar. See §112 markers. |
+| `defaultWidth` | `number \| string` | `251` | Resize starting width. Only consulted when `resizable` is on. |
+| `defaultHeight` | `number \| string` | `251` | Resize starting height. Only consulted when `resizable` is on. |
+| `resizable` | `boolean` | `false` | Enable pointer / keyboard edge resizing. |
+| `maxWidth` | `number` | `undefined` | Drag upper bound (px). |
+| `maxHeight` | `number` | `undefined` | Drag upper bound (px). |
+| `minWidth` | `number` | `undefined` | Drag lower bound (px). |
+| `minHeight` | `number` | `undefined` | Drag lower bound (px). |
+| `autoFocus` | `boolean` | `true` | Focus the first focusable node on open. |
+| `trapFocus` | `boolean` | `true` | Cycle Tab inside the panel. Force-disabled when `showMask` is `false`. |
+| `scrollbarProps` | `SnDrawerScrollbarProps` | `undefined` | Scroll-container subset: `trigger` / `xScrollable` / `onScroll`. |
 | `zIndex` | `number` | `undefined` | Stacking order of the overlay. |
 | `blockScroll` | `boolean` | `true` | Lock `<html>` scroll while open. |
 | `closeOnEsc` | `boolean` | `true` | Escape requests a close. |
@@ -162,16 +172,21 @@ The panel's three rows: header (title + close), body and optional footer.
 
 ## §112 future markers
 
-- **Focus trap.** Upstream wraps the panel in `vueuc`'s `VFocusTrap`; this
-  version does not trap focus yet (same gap as `SnDialog`).
+- **Focus trap** is implemented in-panel (`trapFocus`): Tab / Shift+Tab
+  cycle through the panel's focusable nodes, `autoFocus` moves focus in on
+  open, and focus is restored to the previously active element on close.
+  Upstream uses `vueuc`'s `VFocusTrap`; this version hand-rolls the same
+  contract without the dependency.
 - **`nativeScrollbar` is API-alignment only.** Upstream switches to
   `NScrollbar`'s virtual scrollbar when `false`; both branches render the
   native scroll container here, keeping the `--native-scrollbar` class as
   the customisation hook. A real virtual scrollbar is not implemented.
-- **`resizable` / `maxWidth` / `maxHeight` / `minWidth` / `minHeight` /
-  `scrollbarProps`** are upstream props that are **not** accepted yet.
-  Adding them (notably `resizable`, which upstream drives with a pointer
-  drag and three resize triggers) is a follow-up.
+- **`scrollbarProps` applies only the scroll-relevant subset** (`trigger` /
+  `xScrollable` / `onScroll`). The virtual-scrollbar geometry props
+  (`size` / `railColor` / …) have no effect on a native container.
+- **`resizable` uses a single edge handle**, not upstream's three drag
+  triggers, and commits through `update:width` / `update:height` so the
+  host keeps ownership of the authoritative size.
 - Transitions use hard-coded `0.2s` / `0.3s` durations rather than
   upstream's easing tokens: the tokens package exposes no motion/duration
   alias to consume.

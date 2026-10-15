@@ -481,4 +481,141 @@ describe('SnDrawerContent (AUI-WEB-FB-003)', () => {
 
     expect(wrapper.emitted('update:show')).toEqual([[false]])
   })
+
+  describe('resizable', () => {
+    it('should not render a resize handle by default', () => {
+      expect(mountDrawer({ show: true }).find('.sn-drawer__resize-handle').exists()).toBe(false)
+    })
+
+    it('should render a keyboard-reachable handle when resizable', () => {
+      const handle = mountDrawer({ show: true, resizable: true })
+        .find('.sn-drawer__resize-handle')
+
+      expect(handle.exists()).toBe(true)
+      expect(handle.attributes('role')).toBe('separator')
+      expect(handle.attributes('tabindex')).toBe('0')
+    })
+
+    it('should orient the handle by placement', () => {
+      const vertical = mountDrawer({ show: true, resizable: true, placement: 'right' })
+        .find('.sn-drawer__resize-handle')
+      const horizontal = mountDrawer({ show: true, resizable: true, placement: 'bottom' })
+        .find('.sn-drawer__resize-handle')
+
+      expect(vertical.attributes('aria-orientation')).toBe('vertical')
+      expect(horizontal.attributes('aria-orientation')).toBe('horizontal')
+    })
+
+    it('should apply defaultWidth as the starting size when resizable', () => {
+      const panel = panelOf(mountDrawer({ show: true, resizable: true, defaultWidth: 400 }))
+
+      expect(panel.element.style.width).toBe('400px')
+    })
+
+    it('should let an explicit width win over defaultWidth', () => {
+      const panel = panelOf(
+        mountDrawer({ show: true, resizable: true, width: 320, defaultWidth: 400 }),
+      )
+
+      expect(panel.element.style.width).toBe('320px')
+    })
+
+    it('should emit update:width from an arrow-key nudge', async () => {
+      const wrapper = mountDrawer({ show: true, resizable: true, width: 320 })
+
+      await wrapper.find('.sn-drawer__resize-handle').trigger('keydown', { key: 'ArrowRight' })
+
+      expect(wrapper.emitted('update:width')).toEqual([[336]])
+    })
+
+    it('should emit update:height for a vertical placement nudge', async () => {
+      const wrapper = mountDrawer({
+        show: true,
+        resizable: true,
+        placement: 'bottom',
+        height: 300,
+      })
+
+      await wrapper.find('.sn-drawer__resize-handle').trigger('keydown', { key: 'ArrowDown' })
+
+      expect(wrapper.emitted('update:height')).toEqual([[316]])
+    })
+
+    it('should clamp a nudge against maxWidth', async () => {
+      const wrapper = mountDrawer({
+        show: true,
+        resizable: true,
+        width: 320,
+        maxWidth: 330,
+      })
+
+      await wrapper.find('.sn-drawer__resize-handle').trigger('keydown', { key: 'ArrowRight' })
+
+      expect(wrapper.emitted('update:width')).toEqual([[330]])
+    })
+
+    it('should clamp a nudge against minWidth', async () => {
+      const wrapper = mountDrawer({
+        show: true,
+        resizable: true,
+        width: 320,
+        minWidth: 312,
+      })
+
+      await wrapper.find('.sn-drawer__resize-handle').trigger('keydown', { key: 'ArrowLeft' })
+
+      expect(wrapper.emitted('update:width')).toEqual([[312]])
+    })
+
+    it('should ignore resize keys when resizable is off', async () => {
+      const wrapper = mountDrawer({ show: true, width: 320 })
+
+      await wrapper.find('.sn-drawer').trigger('keydown', { key: 'ArrowRight' })
+
+      expect(wrapper.emitted('update:width')).toBeUndefined()
+    })
+  })
+
+  describe('focus management', () => {
+    it('should mark the panel focusable only while the focus trap is on', () => {
+      const trapped = panelOf(mountDrawer({ show: true }))
+      const untrapped = panelOf(mountDrawer({ show: true, trapFocus: false }))
+
+      expect(trapped.attributes('tabindex')).toBe('-1')
+      expect(untrapped.attributes('tabindex')).toBeUndefined()
+    })
+
+    it('should disable the trap when the mask is hidden', () => {
+      const panel = panelOf(mountDrawer({ show: true, showMask: false }))
+
+      expect(panel.attributes('tabindex')).toBeUndefined()
+    })
+
+    it('should accept autoFocus without throwing', () => {
+      expect(() => mountDrawer({ show: true, autoFocus: false })).not.toThrow()
+    })
+  })
+
+  describe('scrollbarProps', () => {
+    it('should expose the trigger as a data attribute', () => {
+      const content = mountDrawer({
+        show: true,
+        scrollbarProps: { trigger: 'none' },
+      }).find('.sn-drawer-content-wrapper')
+
+      expect(content.attributes('data-scroll-trigger')).toBe('none')
+    })
+
+    it('should forward the scroll callback', async () => {
+      const onScroll = vi.fn()
+      const content = mountDrawer({
+        show: true,
+        scrollbarProps: { onScroll },
+      }).find('.sn-drawer-content-wrapper')
+
+      await content.trigger('scroll')
+
+      expect(onScroll).toHaveBeenCalledTimes(1)
+    })
+  })
 })
