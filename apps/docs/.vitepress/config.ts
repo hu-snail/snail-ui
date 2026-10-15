@@ -81,9 +81,15 @@ const sidebar = {
         { text: 'Tooltip 工具提示', link: '/components/web/tooltip' },
       ],
     },
+    {
+      text: 'Feedback 反馈组件',
+      items: [
+        { text: 'Alert 提示', link: '/components/web/alert' },
+      ],
+    },
     // Other 其他 — empty until ConfigProvider page ships.
-    // Data Display 数据展示 — empty until SnCard / SnTag / SnBadge ship.
-    // Feedback 反馈组件 — empty until SnAlert / SnToast / SnModal ship.
+    // Data Display 数据展示 — empty until SnTag / SnBadge ship.
+    // Feedback 反馈组件 — SnToast / SnModal pending.
     // AI 组件 — empty until SnippetPanel / StylePreview / RenderShot ship.
   ],
   '/components/uni/': [
