@@ -9,6 +9,8 @@ import type { App, Plugin } from 'vue'
 import SnButton from './button/SnButton.vue'
 import SnConfigProvider from './config-provider/SnConfigProvider.vue'
 import SnTooltip from './tooltip/SnTooltip.vue'
+import SnTabs from './tabs/SnTabs.vue'
+import SnTabPane from './tabs/SnTabPane.vue'
 
 export interface SnUIOptions {
   /** Skip auto-registration of specific components. */
@@ -19,6 +21,8 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnButton', component: SnButton },
   { name: 'SnConfigProvider', component: SnConfigProvider },
   { name: 'SnTooltip', component: SnTooltip },
+  { name: 'SnTabs', component: SnTabs },
+  { name: 'SnTabPane', component: SnTabPane },
 ]
 
 export const SnUI: Plugin = {

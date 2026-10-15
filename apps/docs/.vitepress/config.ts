@@ -76,6 +76,7 @@ const sidebar = {
       items: [
         { text: 'Menu 菜单', link: '/components/web/menu' },
         { text: 'Breadcrumb 面包屑', link: '/components/web/breadcrumb' },
+        { text: 'Tabs 标签页', link: '/components/web/tabs' },
         { text: 'Tooltip 工具提示', link: '/components/web/tooltip' },
       ],
     },
