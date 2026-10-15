@@ -33,14 +33,43 @@ export interface SnUIResolverOptions {
   library?: string
 }
 
-/** Internal: list of public components in @snui/vue-web. */
-const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
+/**
+ * Internal: list of public components in @snui/vue-web.
+ *
+ * Must stay in sync with the named exports in `index.ts` — a component that is
+ * exported but missing here silently fails to auto-import under
+ * unplugin-vue-components. `resolver.test.ts` asserts the two lists match.
+ */
+export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
+  // Basic
   'SnButton',
   'SnConfigProvider',
-  // Phase 1 additions:
-  // 'SnInput', 'SnSwitch', 'SnCheckbox', 'SnRadio',
-  // 'SnDialog', 'SnToast', 'SnPopup', 'SnLoading',
-  // 'SnAvatar', 'SnBadge', 'SnTag', 'SnCard', 'SnDivider',
+  'SnDivider',
+  'SnIcon',
+  // Form
+  'SnForm',
+  'SnFormItem',
+  'SnInput',
+  // Layout
+  'SnCard',
+  'SnCollapse',
+  'SnCollapseItem',
+  'SnGrid',
+  // Navigation
+  'SnAffix',
+  'SnAnchor',
+  'SnAnchorLink',
+  'SnBackTop',
+  'SnBreadcrumb',
+  'SnBreadcrumbItem',
+  'SnMenu',
+  'SnStep',
+  'SnSteps',
+  'SnTabPane',
+  'SnTabs',
+  'SnTooltip',
+  // Feedback
+  'SnAlert',
 ]
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {
