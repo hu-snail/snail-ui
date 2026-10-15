@@ -11,6 +11,8 @@ import SnConfigProvider from './config-provider/SnConfigProvider.vue'
 import SnTooltip from './tooltip/SnTooltip.vue'
 import SnTabs from './tabs/SnTabs.vue'
 import SnTabPane from './tabs/SnTabPane.vue'
+import SnSteps from './steps/SnSteps.vue'
+import SnStep from './steps/SnStep.vue'
 
 export interface SnUIOptions {
   /** Skip auto-registration of specific components. */
@@ -23,6 +25,8 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnTooltip', component: SnTooltip },
   { name: 'SnTabs', component: SnTabs },
   { name: 'SnTabPane', component: SnTabPane },
+  { name: 'SnSteps', component: SnSteps },
+  { name: 'SnStep', component: SnStep },
 ]
 
 export const SnUI: Plugin = {
