@@ -8,6 +8,10 @@
 import type { App, Plugin } from 'vue'
 import SnButton from './button/SnButton.vue'
 import SnAlert from './alert/SnAlert.vue'
+import SnAffix from './affix/SnAffix.vue'
+import SnAnchor from './anchor/SnAnchor.vue'
+import SnAnchorLink from './anchor/SnAnchorLink.vue'
+import SnBackTop from './back-top/SnBackTop.vue'
 import SnConfigProvider from './config-provider/SnConfigProvider.vue'
 import SnTooltip from './tooltip/SnTooltip.vue'
 import SnTabs from './tabs/SnTabs.vue'
@@ -23,6 +27,10 @@ export interface SnUIOptions {
 const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnButton', component: SnButton },
   { name: 'SnAlert', component: SnAlert },
+  { name: 'SnAffix', component: SnAffix },
+  { name: 'SnAnchor', component: SnAnchor },
+  { name: 'SnAnchorLink', component: SnAnchorLink },
+  { name: 'SnBackTop', component: SnBackTop },
   { name: 'SnConfigProvider', component: SnConfigProvider },
   { name: 'SnTooltip', component: SnTooltip },
   { name: 'SnTabs', component: SnTabs },

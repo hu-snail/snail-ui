@@ -12,6 +12,11 @@
 
 export { default as SnButton } from './button/SnButton.vue'
 export { default as SnAlert } from './alert/SnAlert.vue'
+export { default as SnAffix } from './affix/SnAffix.vue'
+export type { SnAffixScrollTarget } from './affix/SnAffix.vue'
+export { default as SnAnchor } from './anchor/SnAnchor.vue'
+export { default as SnAnchorLink } from './anchor/SnAnchorLink.vue'
+export { default as SnBackTop } from './back-top/SnBackTop.vue'
 export { default as SnCard } from './card/SnCard.vue'
 export { default as SnCollapse } from './collapse/SnCollapse.vue'
 export { default as SnCollapseItem } from './collapse/SnCollapseItem.vue'

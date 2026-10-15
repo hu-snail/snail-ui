@@ -79,6 +79,9 @@ const sidebar = {
         { text: 'Tabs 标签页', link: '/components/web/tabs' },
         { text: 'Steps 步骤条', link: '/components/web/steps' },
         { text: 'Tooltip 工具提示', link: '/components/web/tooltip' },
+        { text: 'Affix 固钉', link: '/components/web/affix' },
+        { text: 'Anchor 锚点', link: '/components/web/anchor' },
+        { text: 'BackTop 回到顶部', link: '/components/web/back-top' },
       ],
     },
     {
