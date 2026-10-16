@@ -1,30 +1,58 @@
-# Tooltip 工具提示（Web 端）
+# Tooltip 文字提示（Web 端）
 
-`SnTooltip` 是 `@snui/vue-web` 的悬浮提示组件。鼠标移入目标时显示文字提示，移开消失。支持 hover / click / focus 三种触发方式，受控 / 非受控两种状态管理，以及自动 boundary detection + teleport to body。
+`SnTooltip` 是轻量的悬浮提示：鼠标悬停、点击或聚焦时，在触发元素旁边弹出一小段说明文字。
 
-按 AGENTS.md §112，prop 名 + slot + event 全部对齐 [naive-ui `n-tooltip`](https://www.naiveui.com/zh-CN/light/components/tooltip)。
+## 何时使用
 
-## 实时预览
+- 图标按钮、缩写字段需要补充说明文字。
+- 截断的文本需要展示完整内容。
+- 需要为不常用的操作提供一句提示，但不想占用固定空间。
 
-<Demo name="tooltip-web-basic" description="基础 hover 触发 + 4 个 placement" />
+不适合：内容需要用户交互（表单、按钮）时，用 `SnPopover` 类组件；信息本身需要一直可见时，直接写在页面上。
 
-<Demo name="tooltip-web-controlled" description="受控 (v-model:show) + 点击触发" />
+## 代码演示
 
-<Demo name="tooltip-web-content-slot" description="content slot 富文本 / 自定义内容" />
+### 基础用法
 
-## 基础用法
+十二个方位中的常用几个。
 
-```ts
-import { SnTooltip } from '@snui/vue-web'
-```
+<Demo name="tooltip-web-basic" description="八方位 placement 基础演示" />
 
-```html
-<SnTooltip content="Ideas">
-  <button class="sn-fab">💡</button>
-</SnTooltip>
-```
+### 触发方式
 
-默认触发方式是 `hover` —— 鼠标进入 trigger 区域显示提示，离开后延迟关闭（默认 100ms 关闭延迟，避免鼠标从 trigger 滑向 popover 时的闪烁）。
+`hover` / `click` / `focus` / `manual` 四种触发手势。
+
+<Demo name="tooltip-web-trigger" description="四种 trigger 手势对照" />
+
+### 事件回调
+
+`show` / `hide` / `update:show` 与外部点击回调。
+
+<Demo name="tooltip-web-event" description="事件流回显与 onClickoutside" />
+
+### 全部方位
+
+十二个 placement 在同一舞台上对照。
+
+<Demo name="tooltip-web-placement" description="十二方位全览" />
+
+### 外观控制
+
+箭头、内容样式、宽度与动画开关。
+
+<Demo name="tooltip-web-appearance" description="箭头 / 内容样式 / 宽度 / 动画的组合" />
+
+### 富文本内容
+
+用 `content` 插槽承载结构化内容。
+
+<Demo name="tooltip-web-content-slot" description="content 插槽承载多行富文本" />
+
+### 受控显示
+
+用 `show` 完全接管显示状态。
+
+<Demo name="tooltip-web-controlled" description="v-model:show 受控模式" />
 
 ## API
 
@@ -32,54 +60,89 @@ import { SnTooltip } from '@snui/vue-web'
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `show` | `boolean \| undefined` | `undefined` | 受控显示状态。`undefined` 走非受控（内部 state）。 |
-| `defaultShow` | `boolean` | `false` | 非受控初始状态。 |
-| `trigger` | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'hover'` | 触发方式。`'manual'` 关闭所有自动行为，只用 `show` 控制。 |
-| `placement` | `'top-start' \| 'top' \| 'top-end' \| ...` | `'top'` | 12 个方向（top/right/bottom/left × start/center/end）。 |
-| `delay` | `number \| [number, number]` | `100` | 单一数字 = 开/闭同延迟；数组 = `[open, close]` 非对称延迟。 |
-| `arrow` | `boolean` | `true` | 是否显示方向箭头。 |
-| `content` | `string` | `''` | popover 文本内容，也可以走 `#content` slot。 |
-| `wrapped` | `boolean` | `true` | 是否把 trigger 套一层 `<span>`（默认套，方便接 mouseenter）。设 `false` 时消费方自己写 trigger。 |
-| `disabled` | `boolean` | `false` | 完全禁用显示。 |
-
-### Slots
-
-| 名称 | 说明 |
-| --- | --- |
-| `default` | trigger 元素 |
-| `content` | popover 内容（覆盖 `content` prop） |
+| `show` | `boolean` | `undefined` | 是否显示。`undefined` 为不受控模式。 |
+| `defaultShow` | `boolean` | `false` | 不受控模式下的初始显示状态。 |
+| `trigger` | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'hover'` | 触发方式。`'manual'` 时只由 `show` 控制。 |
+| `placement` | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'` | 弹出位置。 |
+| `content` | `string` | `''` | 提示文字。 |
+| `delay` | `number \| [number, number]` | `100` | 打开延迟（ms）。传数组时第二项覆盖关闭延迟。 |
+| `duration` | `number` | `100` | 关闭延迟（ms）。 |
+| `arrow` | `boolean` | `true` | 是否显示箭头。 |
+| `arrowPointToCenter` | `boolean` | `false` | 箭头是否指向气泡中心而非触发器边缘。 |
+| `arrowClass` | `string` | `undefined` | 箭头元素的类名。 |
+| `arrowStyle` | `CSSProperties` | `undefined` | 箭头元素的样式。 |
+| `contentClass` | `string` | `undefined` | 内容区域的类名。 |
+| `contentStyle` | `CSSProperties` | `undefined` | 内容区域的样式。 |
+| `displayDirective` | `'if' \| 'show'` | `'if'` | `'if'` 关闭后卸载；`'show'` 保留节点并切换 `display`。 |
+| `animated` | `boolean` | `true` | 是否使用进出场动画。 |
+| `raw` | `boolean` | `false` | 是否移除内置气泡样式，交由调用方绘制。 |
+| `scrollable` | `boolean` | `false` | 内容超出高度时是否可滚动。 |
+| `flip` | `boolean` | `true` | 空间不足时是否自动翻转到对侧。 |
+| `overlap` | `boolean` | `false` | 是否覆盖触发器而非并排。 |
+| `keepAliveOnHover` | `boolean` | `true` | `hover` 触发时，指针移入气泡是否保持显示。 |
+| `width` | `number \| 'trigger'` | `undefined` | 宽度。`'trigger'` 表示与触发器等宽。 |
+| `to` | `string \| HTMLElement \| false` | `'body'` | 弹层的挂载容器。`false` 表示原地渲染。 |
+| `zIndex` | `number` | `undefined` | 层级。 |
+| `disabled` | `boolean` | `false` | 是否禁用弹出。 |
+| `wrapped` | `boolean` | `true` | 是否用一层 `<span>` 包裹触发内容以承载指针事件。 |
+| `onClickoutside` | `(e: MouseEvent) => void` | `undefined` | 点击外部时调用。 |
 
 ### Events
 
-| 名称 | 载荷 | 触发时机 |
+| 名称 | 参数 | 说明 |
 | --- | --- | --- |
-| `update:show` | `(show: boolean)` | 显示状态变化（v-model:show） |
-| `show` | `()` | 每次显示时触发 |
-| `hide` | `()` | 每次隐藏时触发 |
+| `update:show` | `boolean` | 显示状态变化。 |
+| `show` | `()` | 弹层出现。 |
+| `hide` | `()` | 弹层隐藏。 |
 
-### 模板方法（`ref` 暴露）
+### Slots
 
-```ts
-type SnPopoverExposed = {
-  show: () => void
-  hide: () => void
-  isShown: () => boolean
-}
-```
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| `default` | `(scope)` | 触发元素。`wrapped` 为 `false` 时通过 scope 注入 `triggerRef`。 |
+| `content` | `()` | 气泡内容，替代 `content` prop。 |
 
-```html
-<SnTooltip ref="tip" content="x">
-  <button @click="tip?.show()">×</button>
-</SnTooltip>
-```
+### Methods
+
+| 名称 | 类型 | 说明 |
+| --- | --- | --- |
+| `show` | `() => void` | 命令式显示。 |
+| `hide` | `() => void` | 命令式隐藏。 |
+| `isShown` | `() => boolean` | 读取当前显示状态。 |
+
+## 打开与关闭时机
+
+`delay` 与 `duration` 分别控制两侧的延迟，默认各 100ms：
+
+- `delay` 只在打开时生效，避免指针划过时闪烁。
+- `duration` 只在关闭时生效。
+
+`delay` 传 `[open, close]` 数组时，第二项会覆盖 `duration`，方便为同一实例配置不对称的延迟。
+
+## 定位与翻转
+
+弹层渲染到 `body`（可用 `to` 改），因此不会被父级的 `overflow: hidden` 裁切。
+
+定位基于触发器的实际位置计算。当指定方向空间不足时，`flip`（默认 `true`）会让弹层翻到对侧。箭头会跟随触发器的中点，并在气泡边缘内收敛，不会飘出边界。
+
+`overlap` 让气泡压在触发器上；`width="trigger"` 把气泡宽度对齐触发器。
+
+## 显示与卸载
+
+`displayDirective` 决定关闭后弹层的去留：`'if'` 直接卸载，`'show'` 保留节点只切换 `display` —— 后者适合气泡内有需要保留的状态（滚动位置、输入内容）。
 
 ## 无障碍
 
-- popover 容器 `<div role="tooltip">` —— 屏幕阅读器在 trigger focus 后会朗读提示内容
-- popover 通过 `<Teleport to="body">` 渲染，避免任何 `overflow: hidden` 父容器把提示裁掉
-- popover 默认 `pointer-events: auto`，trigger 和 popover 之间的间隙有 hover bridge，避免鼠标穿过空隙导致 popover 闪烁关闭
+- 弹层元素带 `role="tooltip"`。
+- 箭头为装饰性元素，`aria-hidden="true"`。
+- 内容不应承载交互操作 —— 提示类元素通常在失焦后即消失。
 
-## 相关
+## 主题
 
-- [`SnMenu` popButton 模式](/components/web/menu) —— 圆形按钮组里每项都套一个 SnTooltip 显示文字
-- [naive-ui n-tooltip](https://www.naiveui.com/zh-CN/light/components/tooltip) —— 参考实现
+组件消费 `--sn-web-color-tooltip-background` 与文本色 token。`raw` 为 `true` 时移除全部内置视觉，交由调用方绘制。
+
+## 已知取舍
+
+- 进出场动画使用固定曲线与 180ms 时长，尚未接入 motion token。
+- 未实现 `x` / `y` 手动定位（上游为显式坐标控制）。
+- 未实现 `xScrollable` 等同族滚动条参数。

@@ -178,10 +178,17 @@
 | arrow（箭头控制） | P1 |
 | ~~basic~~ 已有 | — |
 
-**props 缺口（重要）**：
-- **自造 prop 待清理**：`wrapped` —— naive-ui 无此 prop，§112.1 违规。
-- 缺失：`raw` / `arrowClass` / `arrowStyle` / `arrowWrapperClass` / `arrowWrapperStyle` / `animated` / `arrowPointToCenter` / `contentClass` / `contentStyle` / `displayDirective` / `duration` / `flip` / `keepAliveOnHover` / `overlap` / `scrollable` / `to` / `width` / `zIndex` / `onClickoutside`。
-- `delay`：naive-ui 是 `number`（`100`），sn 扩展了 `[number, number]` —— 属追加，保留但需标注。
+**props 缺口（重要）**：**已补齐** ✅
+
+新增 17 个 props：`raw` / `animated` / `arrowPointToCenter` / `arrowClass` / `arrowStyle` / `contentClass` / `contentStyle` / `displayDirective` / `duration` / `flip` / `keepAliveOnHover` / `overlap` / `scrollable` / `to` / `width`(number | 'trigger') / `zIndex` / `onClickoutside`。
+
+- `wrapped` 保留为本地扩展（默认 `true`，承载指针事件的包装层），与上游 `raw` 是不同关注点，两者都接受。
+- `delay` 保持 `number | [number, number]`（数组第二项覆盖 `duration`，属追加）。
+- **修掉一个既有 bug**：`watch(visible)` 缺少 `immediate`，导致受控模式 `show: true` 挂载时弹层定位与外部点击监听都不生效（气泡出现在 (0,0)）。已在原始代码上用探针复现确认。
+
+未实现（记录为 future markers）：`x` / `y` 手动坐标定位、`headerClass` / `footerClass` 等 popover header/footer 族。
+
+测试：11 → 24。demo：3 → 7。
 
 ---
 

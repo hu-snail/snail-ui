@@ -60,13 +60,31 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
   })
 
   it('hides after mouseleave', async () => {
-    const w = mountTooltip({ content: 'hello', delay: 0 })
+    // `delay` gates opening and `duration` gates closing — both must be 0
+    // for the hide to be observable within the test's wait window.
+    const w = mountTooltip({ content: 'hello', delay: 0, duration: 0 })
     await w.find('.sn-tooltip-trigger').trigger('mouseenter')
     await nextTick()
     await new Promise((r) => setTimeout(r, 10))
     expect(document.body.querySelector('.sn-tooltip')).not.toBeNull()
     await w.find('.sn-tooltip-trigger').trigger('mouseleave')
     await new Promise((r) => setTimeout(r, 10))
+    expect(document.body.querySelector('.sn-tooltip')).toBeNull()
+  })
+
+  it('should keep the popover open until duration elapses', async () => {
+    const w = mountTooltip({ content: 'hello', delay: 0, duration: 120 })
+    await w.find('.sn-tooltip-trigger').trigger('mouseenter')
+    await nextTick()
+    await new Promise((r) => setTimeout(r, 10))
+    expect(document.body.querySelector('.sn-tooltip')).not.toBeNull()
+
+    await w.find('.sn-tooltip-trigger').trigger('mouseleave')
+    await new Promise((r) => setTimeout(r, 20))
+    // Still inside the close window.
+    expect(document.body.querySelector('.sn-tooltip')).not.toBeNull()
+
+    await new Promise((r) => setTimeout(r, 140))
     expect(document.body.querySelector('.sn-tooltip')).toBeNull()
   })
 
@@ -155,5 +173,127 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
     await new Promise((r) => setTimeout(r, 10))
     const pop = document.body.querySelector('.sn-tooltip')
     expect(pop?.querySelector('.sn-tooltip__arrow')).toBeNull()
+  })
+
+  describe('displayDirective', () => {
+    it('should unmount the popover after hiding by default', async () => {
+      const w = mountTooltip({ content: 'x', delay: 0, duration: 0 })
+      await w.find('.sn-tooltip-trigger').trigger('mouseenter')
+      await new Promise((r) => setTimeout(r, 10))
+      await w.find('.sn-tooltip-trigger').trigger('mouseleave')
+      await new Promise((r) => setTimeout(r, 10))
+
+      expect(document.body.querySelector('.sn-tooltip')).toBeNull()
+    })
+
+    it('should keep the node mounted with displayDirective=show', async () => {
+      const w = mountTooltip({ content: 'x', delay: 0, duration: 0, displayDirective: 'show' })
+      await w.find('.sn-tooltip-trigger').trigger('mouseenter')
+      await new Promise((r) => setTimeout(r, 10))
+      await w.find('.sn-tooltip-trigger').trigger('mouseleave')
+      await new Promise((r) => setTimeout(r, 10))
+
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement | null
+      expect(pop).not.toBeNull()
+      // Retained but hidden.
+      expect(pop?.style.display).toBe('none')
+    })
+  })
+
+  describe('appearance props', () => {
+    it('should drop the built-in bubble styling when raw', async () => {
+      mountTooltip({ content: 'x', show: true, raw: true })
+      await new Promise((r) => setTimeout(r, 10))
+
+      expect(document.body.querySelector('.sn-tooltip')?.classList).toContain('sn-tooltip--raw')
+    })
+
+    it('should mark the popover non-animated when animated is false', async () => {
+      mountTooltip({ content: 'x', show: true, animated: false })
+      await new Promise((r) => setTimeout(r, 10))
+
+      expect(document.body.querySelector('.sn-tooltip')?.classList)
+        .toContain('sn-tooltip--no-animation')
+    })
+
+    it('should mark the body scrollable when scrollable', async () => {
+      mountTooltip({ content: 'x', show: true, scrollable: true })
+      await new Promise((r) => setTimeout(r, 10))
+
+      expect(document.body.querySelector('.sn-tooltip')?.classList)
+        .toContain('sn-tooltip--scrollable')
+    })
+
+    it('should forward contentClass and contentStyle to the body', async () => {
+      mountTooltip({
+        content: 'x',
+        show: true,
+        contentClass: 'my-body',
+        contentStyle: { color: 'red' },
+      })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const body = document.body.querySelector('.sn-tooltip__body')
+      expect(body?.classList).toContain('my-body')
+      expect((body as HTMLElement | null)?.style.color).toBe('red')
+    })
+
+    it('should apply arrowClass to the arrow element', async () => {
+      mountTooltip({ content: 'x', show: true, arrowClass: 'my-arrow' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      expect(document.body.querySelector('.sn-tooltip__arrow')?.classList)
+        .toContain('my-arrow')
+    })
+
+    it('should apply zIndex to the popover style', async () => {
+      mountTooltip({ content: 'x', show: true, zIndex: 4242 })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement | null
+      expect(pop?.style.zIndex).toBe('4242')
+    })
+
+    it('should pin the popover width to the trigger when width="trigger"', async () => {
+      mountTooltip({ content: 'x', show: true, width: 'trigger' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement | null
+      // stubRect reports a 100px-wide trigger.
+      expect(pop?.style.width).toBe('100px')
+    })
+
+    it('should apply a numeric width directly', async () => {
+      mountTooltip({ content: 'x', show: true, width: 240 })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement | null
+      expect(pop?.style.width).toBe('240px')
+    })
+  })
+
+  describe('onClickoutside', () => {
+    it('should invoke the callback on an outside click', async () => {
+      const onClickoutside = vi.fn()
+      mountTooltip({ content: 'x', show: true, trigger: 'click', onClickoutside })
+      await nextTick()
+      await new Promise((r) => setTimeout(r, 10))
+
+      document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+
+      expect(onClickoutside).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not fire when the click lands inside the popover', async () => {
+      const onClickoutside = vi.fn()
+      mountTooltip({ content: 'x', show: true, trigger: 'click', onClickoutside })
+      await nextTick()
+      await new Promise((r) => setTimeout(r, 10))
+
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement
+      pop.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
+
+      expect(onClickoutside).not.toHaveBeenCalled()
+    })
   })
 })

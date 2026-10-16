@@ -10,9 +10,17 @@
  *   - show / defaultShow (controlled vs uncontrolled)
  *   - trigger ('hover' | 'click' | 'focus' | 'manual')
  *   - placement ('top-start' | 'top' | 'top-end' | ... | 'left-end')
- *   - delay (open + close debounce, single number = both; n-facing pairs them)
- *   - arrow / content / disabled
- *   - raw / bordered / arrow-style variants
+ *   - delay (open) + duration (close); delay also accepts [open, close]
+ *   - arrow / showArrow semantics / arrowPointToCenter / arrowClass /
+ *     arrowStyle
+ *   - content / disabled / raw / animated / overlap / scrollable
+ *   - displayDirective ('if' | 'show')
+ *   - flip / keepAliveOnHover / width ('trigger' | number) / zIndex / to
+ *   - contentClass / contentStyle / onClickoutside
+ *
+ * `wrapped` is a local addition (default true) that keeps the pointer
+ * listeners on a structural `<span>`; upstream's `raw` is the inverse
+ * concern and both are accepted.
  *
  * Design:
  *   The trigger slot is the visible target (e.g. a button). The popover
@@ -43,6 +51,7 @@ import {
   ref,
   useSlots,
   watch,
+  type CSSProperties,
 } from 'vue'
 
 defineOptions({ name: 'SnTooltip' })
@@ -92,11 +101,84 @@ const props = withDefaults(
      */
     content?: string | undefined
     /**
-     * Render the trigger inline as a `<span>` so it can hold mouse events
-     * even if the consumer's element is e.g. an SVG. Default true
-     * (matches naive-ui). Mirrors n-tooltip `raw` of inverse=false.
+     * Render the trigger inside a wrapper `<span>` that owns the pointer
+     * listeners. Set to `false` when the slot already renders a focusable
+     * element and the extra wrapper would break layout. Mirrors n-popover
+     * `raw` (inverted: this library defaults to wrapping). Default true.
      */
     wrapped?: boolean
+    /**
+     * Skip the library's own bubble styling so the caller can paint the
+     * popover entirely. Mirrors n-popover `raw`. Default false.
+     */
+    raw?: boolean
+    /**
+     * Animate the popover in/out. Mirrors n-popover `animated`. Default true.
+     */
+    animated?: boolean
+    /**
+     * Point the arrow at the trigger's centre rather than its edge. Mirrors
+     * n-popover `arrowPointToCenter`. Default false.
+     */
+    arrowPointToCenter?: boolean
+    /** Class on the arrow element. Mirrors n-popover `arrowClass`. */
+    arrowClass?: string
+    /** Style on the arrow element. Mirrors n-popover `arrowStyle`. */
+    arrowStyle?: CSSProperties
+    /** Class on the scrollable body. Mirrors n-popover `contentClass`. */
+    contentClass?: string
+    /** Style on the scrollable body. Mirrors n-popover `contentStyle`. */
+    contentStyle?: CSSProperties
+    /**
+     * `'if'` unmounts the popover on hide; `'show'` keeps the node and
+     * toggles `display`. Mirrors n-popover `displayDirective`. Default 'if'.
+     */
+    displayDirective?: 'if' | 'show'
+    /**
+     * How long the popover lingers before closing, in ms. Distinct from
+     * `delay`, which gates opening. Mirrors n-popover `duration`.
+     * Default 100.
+     */
+    duration?: number
+    /**
+     * Flip to the opposite side when the chosen placement would overflow
+     * the viewport. Mirrors n-popover `flip`. Default true.
+     */
+    flip?: boolean
+    /**
+     * Keep the popover open while the pointer is inside it (hover trigger
+     * only). Mirrors n-popover `keepAliveOnHover`. Default true.
+     */
+    keepAliveOnHover?: boolean
+    /**
+     * Let the popover overlap the trigger instead of sitting beside it.
+     * Mirrors n-popover `overlap`. Default false.
+     */
+    overlap?: boolean
+    /**
+     * Make the popover body scrollable once it exceeds `max-height`.
+     * Mirrors n-popover `scrollable`. Default false.
+     */
+    scrollable?: boolean
+    /**
+     * Where to teleport the popover. `false` keeps it inline (useful inside
+     * transform-heavy ancestors). Mirrors n-popover `to`. Default 'body'.
+     */
+    to?: string | HTMLElement | false
+    /**
+     * Pin the popover width to the trigger's width. Mirrors n-popover
+     * `width` = `'trigger'`; a number sets a fixed width in px.
+     */
+    width?: number | 'trigger'
+    /**
+     * Explicit stacking order. Mirrors n-popover `zIndex`.
+     */
+    zIndex?: number
+    /**
+     * Called when a click lands outside the popover and its trigger.
+     * Mirrors n-popover `onClickoutside`.
+     */
+    onClickoutside?: (e: MouseEvent) => void
     /**
      * Disable showing entirely. Mirrors n-tooltip `disabled`. Default false.
      */
@@ -111,6 +193,23 @@ const props = withDefaults(
     arrow: true,
     content: '',
     wrapped: true,
+    raw: false,
+    animated: true,
+    arrowPointToCenter: false,
+    arrowClass: undefined as any,
+    arrowStyle: undefined as any,
+    contentClass: undefined as any,
+    contentStyle: undefined as any,
+    displayDirective: 'if',
+    duration: 100,
+    flip: true,
+    keepAliveOnHover: true,
+    overlap: false,
+    scrollable: false,
+    to: 'body',
+    width: undefined as any,
+    zIndex: undefined as any,
+    onClickoutside: undefined as any,
     disabled: false,
   },
 )
@@ -149,9 +248,14 @@ function setVisible(next: boolean): void {
 
 /* ─────────── Delay timers ─────────── */
 
+/**
+ * `delay` gates opening; `duration` gates closing. A `[open, close]` tuple
+ * on `delay` overrides `duration` for the closing side, which keeps the
+ * convenience of the pair form without a second prop.
+ */
 const [openDelay, closeDelay] = computed<[number, number]>(() => {
   const d = props.delay
-  return Array.isArray(d) ? d : [d, d]
+  return Array.isArray(d) ? d : [d, props.duration]
 }).value as [number, number]
 
 let openTimer: ReturnType<typeof setTimeout> | null = null
@@ -209,10 +313,14 @@ function onTriggerBlur(e: FocusEvent): void {
  * either side's enter cancelling the other's close timer. */
 function onPopoverMouseEnter(): void {
   if (props.trigger !== 'hover') return
+  // Without keepAliveOnHover the popover closes as soon as the pointer
+  // leaves the trigger, so entering the bubble must not cancel the timer.
+  if (!props.keepAliveOnHover) return
   clearTimers()
 }
 function onPopoverMouseLeave(e: MouseEvent): void {
   if (props.trigger !== 'hover') return
+  if (!props.keepAliveOnHover) return
   const to = e.relatedTarget as Node | null
   if (to && triggerEl.value && triggerEl.value.contains(to)) return
   scheduleClose()
@@ -272,7 +380,9 @@ async function recompute(): Promise<void> {
   const vw = window.innerWidth
   const vh = window.innerHeight
   const margin = 8 // minimum gap between popover and viewport edge
-  const arrowSize = 8
+  // `overlap` seats the bubble on the trigger instead of beside it, so no
+  // arrow-sized gap is reserved.
+  const arrowSize = props.overlap ? 0 : 8
 
   // Determine initial side + alignment from placement string
   // e.g. 'top-start' → side='top', align='start'
@@ -328,7 +438,7 @@ async function recompute(): Promise<void> {
     return out
   }
 
-  // Try the requested side; flip if it doesn't fit.
+  // Try the requested side; flip if it doesn't fit and `flip` allows it.
   const opposite: Record<typeof side, typeof side> = {
     top: 'bottom',
     bottom: 'top',
@@ -337,30 +447,44 @@ async function recompute(): Promise<void> {
   }
   let finalSide = side
   let r = rectFor(side, trigBox, popBox)
-  if (!r) {
+  if (!r && props.flip) {
     r = rectFor(opposite[side], trigBox, popBox)
     if (r) finalSide = opposite[side]
   }
   // Last resort — center on the trigger's preferred side even if clipped.
   if (!r) r = rectFor(side, trigBox, popBox)!
 
+  // `width="trigger"` pins the bubble's horizontal size to the trigger.
+  const widthStyle = props.width === 'trigger'
+    ? { width: `${trigBox.width}px` }
+    : typeof props.width === 'number'
+      ? { width: `${props.width}px` }
+      : {}
+
   popoverStyle.value = {
     position: 'fixed',
     top: `${r.top}px`,
     left: `${r.left}px`,
+    ...Object.fromEntries(
+      Object.entries(widthStyle).map(([k, v]) => [k, String(v)]),
+    ),
+    ...(props.zIndex === undefined ? {} : { zIndex: String(props.zIndex) }),
   }
 
-  // Arrow position: aim at the trigger's midpoint on the relevant axis.
+  // Arrow position: aim at the trigger's midpoint on the relevant axis,
+  // or at the popover's own centre when `arrowPointToCenter` is set.
   // Clamp so it stays on the popover.
   const arrowOffset: Record<string, string> = {}
   const popCenterX = r.left + r.width / 2
   const popCenterY = r.top + r.height / 2
   const triggerCenterX = trigBox.left + trigBox.width / 2
   const triggerCenterY = trigBox.top + trigBox.height / 2
+  const aimX = props.arrowPointToCenter ? popCenterX : triggerCenterX
+  const aimY = props.arrowPointToCenter ? popCenterY : triggerCenterY
   if (finalSide === 'top' || finalSide === 'bottom') {
     const arrowCenter = Math.max(
       r.left + arrowSize,
-      Math.min(popCenterX, triggerCenterX, r.left + r.width - arrowSize),
+      Math.min(popCenterX, aimX, r.left + r.width - arrowSize),
     )
     arrowOffset.left = `${arrowCenter - r.left}px`
     arrowOffset.top = ''
@@ -369,7 +493,7 @@ async function recompute(): Promise<void> {
   else {
     const arrowCenter = Math.max(
       r.top + arrowSize,
-      Math.min(popCenterY, triggerCenterY, r.top + r.height - arrowSize),
+      Math.min(popCenterY, aimY, r.top + r.height - arrowSize),
     )
     arrowOffset.top = `${arrowCenter - r.top}px`
     arrowOffset.left = ''
@@ -397,7 +521,10 @@ watch(visible, async (v) => {
     window.removeEventListener('scroll', onScrollOrResize, true)
     window.removeEventListener('resize', onScrollOrResize)
   }
-})
+  // `immediate` matters for controlled consumers that mount already open:
+  // without it the first render never positions the popover, because
+  // `visible` never transitions from false to true.
+}, { immediate: true })
 function onScrollOrResize(): void {
   void recompute()
 }
@@ -410,6 +537,7 @@ function onDocumentMouseDown(e: MouseEvent): void {
   if (!t) return
   if (triggerEl.value && triggerEl.value.contains(t)) return
   if (popoverEl.value && popoverEl.value.contains(t)) return
+  props.onClickoutside?.(e)
   setVisible(false)
 }
 
@@ -417,7 +545,9 @@ watch(visible, (v) => {
   if (props.trigger !== 'click') return
   if (v) document.addEventListener('mousedown', onDocumentMouseDown)
   else document.removeEventListener('mousedown', onDocumentMouseDown)
-})
+  // Same reason as the positioning watcher: a controlled popover can mount
+  // already visible, and the listener must be attached on that first pass.
+}, { immediate: true })
 
 /* ─────────── Cleanup ─────────── */
 
@@ -451,6 +581,21 @@ const arrowPlacementClass = computed(() => {
   const side = props.placement.split('-')[0]
   return `sn-tooltip__arrow--${side}`
 })
+
+/**
+ * `displayDirective: 'if'` mounts the popover only while visible.
+ * `'show'` keeps it mounted after the first reveal and toggles display,
+ * which preserves internal state (scroll position, embedded inputs).
+ */
+const hasBeenVisible = ref(false)
+watch(visible, (v) => {
+  if (v) hasBeenVisible.value = true
+})
+const shouldRenderPopover = computed(() =>
+  props.displayDirective === 'show'
+    ? hasBeenVisible.value
+    : visible.value && !props.disabled,
+)
 
 // Expose imperative API for parents that prefer ref-based control.
 defineExpose({
@@ -489,25 +634,31 @@ void slots
     <slot :trigger-ref="(el: HTMLElement | null) => { triggerEl = el }" />
   </template>
 
-  <Teleport to="body">
+  <Teleport :to="to === false ? 'body' : to" :disabled="to === false">
     <div
-      v-if="visible && !disabled"
+      v-if="shouldRenderPopover"
+      v-show="visible && !disabled"
       ref="popoverEl"
       class="sn-tooltip"
-      :class="`sn-tooltip--${props.placement}`"
+      :class="[
+        `sn-tooltip--${props.placement}`,
+        raw && 'sn-tooltip--raw',
+        scrollable && 'sn-tooltip--scrollable',
+        !animated && 'sn-tooltip--no-animation',
+      ]"
       :style="popoverStyle"
       role="tooltip"
       @mouseenter="onPopoverMouseEnter"
       @mouseleave="onPopoverMouseLeave"
     >
-      <div class="sn-tooltip__body">
+      <div class="sn-tooltip__body" :class="contentClass" :style="contentStyle">
         <slot name="content">{{ content }}</slot>
       </div>
       <span
         v-if="arrow"
         class="sn-tooltip__arrow"
-        :class="arrowPlacementClass"
-        :style="arrowStyle"
+        :class="[arrowPlacementClass, arrowClass]"
+        :style="{ ...arrowStyle, ...(props.arrowStyle ?? {}) }"
         aria-hidden="true"
       />
     </div>
@@ -547,6 +698,31 @@ void slots
 .sn-tooltip--bottom { animation-name: sn-tooltip-in-bottom; }
 .sn-tooltip--left   { animation-name: sn-tooltip-in-left; }
 .sn-tooltip--right  { animation-name: sn-tooltip-in-right; }
+
+/* `animated: false` — keep the bubble static. */
+.sn-tooltip--no-animation {
+  animation: none;
+}
+
+/* `raw: true` — the caller paints the bubble, so drop every visual we own
+ * while keeping the positioning contract intact. */
+.sn-tooltip--raw {
+  padding: 0;
+  max-width: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* `scrollable: true` — cap the height and let the body scroll. An explicit
+ * max-height inline style still wins. */
+.sn-tooltip--scrollable .sn-tooltip__body {
+  max-height: 60vh;
+  overflow: auto;
+}
 
 .sn-tooltip__body {
   /* Allow the consumer to put arbitrary rich content — including
