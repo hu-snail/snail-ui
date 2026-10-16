@@ -9,8 +9,9 @@
  *   - `displayDirective` deciding whether the panel unmounts;
  *   - Escape closing the drawer while honouring `closeOnEsc` + IME.
  *
- * The drawer teleports to `body` by default, so the tests mount with
- * `to: undefined` (teleport disabled) and read the markup in place.
+ * The drawer teleports to `body` by default (same as upstream), so most cases
+ * mount with `global.stubs.teleport` to keep the markup readable in place; the
+ * `teleport` suite below opts back into the real Teleport to pin the default.
  */
 
 import { mount } from '@vue/test-utils'
@@ -347,6 +348,54 @@ describe('SnDrawer (AUI-WEB-FB-003)', () => {
       const wrapper = mountDrawer({ show: true, blockScroll: false })
 
       expect(document.documentElement.style.overflow).not.toBe('hidden')
+
+      wrapper.unmount()
+    })
+  })
+
+  // Regression: the panel used to mount in place unless `to` was passed, so a
+  // drawer opened from inside a scrolling/overflow-hidden ancestor was clipped
+  // and could not paint a full-viewport mask. Upstream teleports to `body` by
+  // default (`VLazyTeleport to={this.to}`, no disabling), and so do we.
+  describe('teleport', () => {
+    function mountTeleported(props: Record<string, unknown> = {}) {
+      const host = document.createElement('div')
+      document.body.appendChild(host)
+      return mount(SnDrawer, { props: props as never, attachTo: host })
+    }
+
+    beforeEach(() => {
+      document.body.innerHTML = ''
+    })
+
+    it('should mount the panel in document.body by default', () => {
+      const wrapper = mountTeleported({ show: true })
+
+      expect(wrapper.find('.sn-drawer').exists()).toBe(false)
+      expect(document.body.querySelector('.sn-drawer')).not.toBeNull()
+
+      wrapper.unmount()
+    })
+
+    it('should mount the panel outside its original host element', () => {
+      const wrapper = mountTeleported({ show: true })
+
+      // The host keeps only the Teleport placeholder comment; the panel is
+      // not a descendant of it any more.
+      expect(wrapper.element.parentElement?.querySelector('.sn-drawer')).toBeNull()
+      expect(document.body.querySelector('.sn-drawer')?.closest('.sn-drawer-container')).not.toBeNull()
+
+      wrapper.unmount()
+    })
+
+    it('should teleport into an explicit `to` target', () => {
+      const target = document.createElement('div')
+      target.id = 'drawer-host'
+      document.body.appendChild(target)
+
+      const wrapper = mountTeleported({ show: true, to: '#drawer-host' })
+
+      expect(target.querySelector('.sn-drawer')).not.toBeNull()
 
       wrapper.unmount()
     })

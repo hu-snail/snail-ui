@@ -124,10 +124,11 @@ void ctx
   flex-direction: row;
 }
 
-/* Vertical + content-bottom stacks the steps instead of laying them out
- * along the main axis. */
-.sn-steps--vertical,
-.sn-steps--content-bottom {
+/* Only the vertical modifier stacks the steps; horizontal content-bottom
+ * keeps the row and folds each step internally instead (naive-ui parity —
+ * grouping content-bottom here stacked every step into one column, which
+ * broke the horizontal demo). */
+.sn-steps--vertical {
   flex-direction: column;
 }
 </style>

@@ -141,7 +141,9 @@ function handleClick() {
       </div>
     </template>
 
-    <!-- Horizontal + contentPlacement="right": indicator, splitor, content. -->
+    <!-- Horizontal + contentPlacement="right": circle first, then content;
+         the connector line lives inside the content header, right after the
+         title (naive-ui DOM form). -->
     <template v-else>
       <div class="sn-step__indicator sn-step__indicator--row">
         <div class="sn-step__indicator-slot">
@@ -154,7 +156,6 @@ function handleClick() {
             <span v-else class="sn-step__index">{{ internalIndex }}</span>
           </slot>
         </div>
-        <div class="sn-step__splitor sn-step__splitor--inline" />
       </div>
     </template>
 
@@ -163,6 +164,12 @@ function handleClick() {
         <div class="sn-step__content-header-title">
           <slot name="title">{{ title }}</slot>
         </div>
+        <!-- Connector line after the title, horizontal + content-right only
+             (naive-ui: `!vertical && contentPlacement === 'right'`). -->
+        <div
+          v-if="!steps.vertical.value && steps.contentPlacement.value === 'right'"
+          class="sn-step__splitor sn-step__splitor--inline"
+        />
       </div>
       <div v-if="$slots.default || description" class="sn-step__content-description">
         <slot>{{ description }}</slot>
@@ -208,8 +215,7 @@ function handleClick() {
 .sn-step__indicator--row {
   flex-direction: row;
   align-items: center;
-  flex: 1;
-  min-width: 0;
+  flex: none;
 }
 
 .sn-step__indicator-slot {
@@ -245,9 +251,16 @@ function handleClick() {
   background: var(--sn-web-color-border-default);
 }
 
-.sn-step__indicator--row > .sn-step__splitor--inline {
+/* Inline splitor: sits in the content header after the title and fills the
+ * remaining row (naive-ui: height 1px, margin 0 12px). */
+.sn-step__content-header > .sn-step__splitor--inline {
   height: 1px;
   margin: 0 12px;
+}
+
+/* The last step has nothing to connect to (naive-ui `:last-child`). */
+.sn-step:last-child .sn-step__splitor {
+  display: none;
 }
 
 .sn-step__indicator > .sn-step__splitor {
@@ -269,25 +282,27 @@ function handleClick() {
   min-width: 0;
 }
 
-.sn-step__indicator--row + .sn-step__content {
-  flex: none;
-  max-width: 180px;
+/* Title row: the title never wraps (naive-ui `white-space: nowrap;
+ * flex: 0`); the connector line fills the rest of the row. The 9px inset
+ * mirrors naive-ui's content-header margin-left against the indicator. */
+.sn-step__content-header {
+  display: flex;
+  align-items: center;
+  margin-left: 9px;
 }
 
 .sn-step__content-header-title {
+  flex: none;
+  white-space: nowrap;
   font-size: 14px;
   font-weight: 500;
   line-height: 24px;
   color: var(--sn-web-color-text-primary);
 }
 
-.sn-step__indicator-slot + .sn-step__content,
-.sn-step__indicator-slot ~ .sn-step__content {
-  margin-left: 0;
-}
-
 .sn-step__content-description {
   margin-top: 2px;
+  margin-left: 9px;
   font-size: 13px;
   line-height: 20px;
   color: var(--sn-web-color-text-secondary);
@@ -384,5 +399,13 @@ function handleClick() {
 
 .sn-steps--content-bottom .sn-step__content {
   padding-top: 8px;
+}
+
+/* The 9px header/description inset is a content-right + vertical affordance;
+ * under content-bottom the text aligns flush with the indicator column
+ * (naive-ui overrides margin-left to 0 the same way). */
+.sn-steps--content-bottom .sn-step__content-header,
+.sn-steps--content-bottom .sn-step__content-description {
+  margin-left: 0;
 }
 </style>

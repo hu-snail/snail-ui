@@ -281,6 +281,39 @@ describe('SnSteps (AUI-WEB-NAV-004)', () => {
       const w = mount(wrapSteps({ current: 1 }, THREE))
       expect(w.findAll('.sn-step__line')).toHaveLength(0)
     })
+
+    it('places the connector line after the title in content-right mode', () => {
+      // Regression: the splitor used to sit inside the indicator row between
+      // circle and title, pushing the title to the far end of the row.
+      // naive-ui puts it in the content header, right after the title.
+      const w = mount(wrapSteps({ current: 1 }, THREE))
+      const headers = w.findAll('.sn-step__content-header')
+      expect(headers[0]!.find('.sn-step__splitor').exists()).toBe(true)
+      expect(
+        w.find('.sn-step__indicator--row .sn-step__splitor').exists(),
+      ).toBe(false)
+    })
+
+    it('places the connector line inside the line row in content-bottom mode', () => {
+      const w = mount(
+        wrapSteps({ current: 1, contentPlacement: 'bottom' }, THREE),
+      )
+      const lines = w.findAll('.sn-step__line')
+      expect(lines[0]!.find('.sn-step__splitor').exists()).toBe(true)
+      expect(
+        w.find('.sn-step__content-header .sn-step__splitor').exists(),
+      ).toBe(false)
+    })
+
+    it('keeps the connector line in the indicator column in vertical mode', () => {
+      const w = mount(wrapSteps({ current: 1, vertical: true }, THREE))
+      expect(w.find('.sn-step__indicator .sn-step__splitor').exists()).toBe(
+        true,
+      )
+      expect(
+        w.find('.sn-step__content-header .sn-step__splitor').exists(),
+      ).toBe(false)
+    })
   })
 
   describe('slots', () => {

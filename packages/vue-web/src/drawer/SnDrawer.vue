@@ -560,7 +560,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <Teleport :to="to ?? 'body'" :disabled="to === undefined">
+  <Teleport :to="to ?? 'body'">
     <div
       v-show="show === true"
       class="sn-drawer-container"
@@ -641,6 +641,9 @@ onBeforeUnmount(() => {
 .sn-drawer-container {
   position: fixed;
   inset: 0;
+  /* Above page content by default; `zIndex` overrides this inline. Upstream
+   * gets the same effect from `v-zindexable`. */
+  z-index: 1000;
   pointer-events: none;
 }
 
@@ -705,7 +708,7 @@ onBeforeUnmount(() => {
   position: absolute;
   inset: 0;
   margin: auto;
-  background: var(--sn-web-drawer-resize-line-color, var(--sn-web-color-border));
+  background: var(--sn-web-drawer-resize-line-color, var(--sn-web-color-border-default));
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -717,7 +720,7 @@ onBeforeUnmount(() => {
 }
 
 .sn-drawer__resize-handle:focus-visible {
-  outline: 2px solid var(--sn-web-color-primary);
+  outline: 2px solid var(--sn-web-color-action-primary);
   outline-offset: -2px;
 }
 
