@@ -1,71 +1,124 @@
 <script setup lang="ts">
 /**
- * tooltip-web-trigger — the four trigger gestures side by side.
+ * tooltip-web-trigger — 四种触发手势对照。
+ *
+ * 用统一的「卡片 + 标注」结构：每个手势一个 card，顶部是 prop 名，
+ * 中间是触发器，底部一句行为说明。这样四张卡片横向对照时，读者
+ * 能直接看出 hover / click / focus / manual 的差异。
  */
 import { SnTooltip } from '@snui/vue-web'
+
+const cases = [
+  {
+    trigger: 'hover',
+    label: 'hover（默认）',
+    desc: '悬停后出现，移开即隐藏',
+    content: '悬停 100ms 后出现',
+    btn: '悬停我',
+  },
+  {
+    trigger: 'click',
+    label: 'click',
+    desc: '点击切换，点外部关闭',
+    content: '点击切换，点外部关闭',
+    btn: '点我',
+  },
+  {
+    trigger: 'focus',
+    label: 'focus',
+    desc: '聚焦时出现，失焦后隐藏',
+    content: '聚焦时出现，失焦后隐藏',
+    btn: '聚焦我',
+  },
+  {
+    trigger: 'manual',
+    label: 'manual',
+    desc: '只由 show 控制，不响应手势',
+    content: '只由 show 控制，不响应手势',
+    btn: '手动控制',
+  },
+] as const
 </script>
 
 <template>
   <div class="tt-trigger">
-    <div class="tt-trigger__cell">
-      <span class="tt-trigger__cap">hover（默认）</span>
-      <SnTooltip content="悬停 100ms 后出现" trigger="hover">
-        <button class="tt-btn" type="button">悬停我</button>
-      </SnTooltip>
-    </div>
+    <article
+      v-for="c in cases"
+      :key="c.trigger"
+      class="tt-trigger__card"
+    >
+      <header class="tt-trigger__head">
+        <code class="tt-trigger__prop">trigger="{{ c.trigger }}"</code>
+        <span class="tt-trigger__name">{{ c.label }}</span>
+      </header>
 
-    <div class="tt-trigger__cell">
-      <span class="tt-trigger__cap">click</span>
-      <SnTooltip content="点击切换，点外部关闭" trigger="click">
-        <button class="tt-btn" type="button">点我</button>
-      </SnTooltip>
-    </div>
+      <div class="tt-trigger__stage">
+        <SnTooltip :content="c.content" :trigger="c.trigger">
+          <button class="tt-trigger__btn" type="button">{{ c.btn }}</button>
+        </SnTooltip>
+      </div>
 
-    <div class="tt-trigger__cell">
-      <span class="tt-trigger__cap">focus</span>
-      <SnTooltip content="聚焦时出现，失焦后隐藏" trigger="focus">
-        <button class="tt-btn" type="button">聚焦我</button>
-      </SnTooltip>
-    </div>
-
-    <div class="tt-trigger__cell">
-      <span class="tt-trigger__cap">manual</span>
-      <SnTooltip content="只由 show 控制，不响应手势" trigger="manual">
-        <button class="tt-btn" type="button">手动控制</button>
-      </SnTooltip>
-    </div>
+      <footer class="tt-trigger__desc">{{ c.desc }}</footer>
+    </article>
   </div>
 </template>
 
 <style scoped>
 .tt-trigger {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 32px;
-  padding: 40px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  width: 100%;
 }
-.tt-trigger__cell {
+.tt-trigger__card {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 10px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg);
+  padding: 14px;
 }
-.tt-trigger__cap {
-  font-size: 12px;
-  color: var(--sn-web-color-text-tertiary);
+.tt-trigger__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
-.tt-btn {
-  border: 1px solid var(--sn-web-color-border);
-  background: var(--sn-web-color-background);
-  color: var(--sn-web-color-text);
+.tt-trigger__prop {
+  font-size: 11px;
+  color: var(--vp-c-text-3);
+}
+.tt-trigger__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+/* Give the bubble room to open above / below the trigger without escaping
+ * the card and getting clipped. */
+.tt-trigger__stage {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+.tt-trigger__btn {
+  border: 1px solid var(--vp-c-divider);
+  background: var(--vp-c-bg);
+  color: var(--vp-c-text-1);
   padding: 6px 14px;
   border-radius: 6px;
   font: inherit;
   font-size: 13px;
   cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
 }
-.tt-btn:hover {
-  border-color: var(--sn-web-color-primary);
-  color: var(--sn-web-color-primary);
+.tt-trigger__btn:hover {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+}
+.tt-trigger__desc {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--vp-c-text-3);
 }
 </style>

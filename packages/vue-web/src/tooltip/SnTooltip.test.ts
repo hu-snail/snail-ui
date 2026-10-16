@@ -13,16 +13,54 @@ const Trigger = defineComponent({
 /**
  * happy-dom doesn't implement getBoundingClientRect predictably;
  * stub it on every HTMLElement so position math has stable input.
+ *
+ * The popover is the only element that reports a *different* rect from the
+ * trigger (200×40 vs 100×32) — otherwise `recompute()` cannot tell the two
+ * apart, and assertions on the computed `top` / `left` would be vacuous.
+ *
+ * The trigger sits at the centre of the 1280×800 viewport on purpose: every
+ * placement then has room on all four sides, so `flip` never fires and each
+ * assertion measures the requested side rather than the flipped one.
  */
+const TRIGGER_RECT = { top: 384, left: 500, width: 100, height: 32 }
+const POPOVER_RECT = { top: 0, left: 0, width: 200, height: 40 }
+const ARROW_SIZE = 8 // must track SnTooltip's own arrow reserve
+
 function stubRect() {
   Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
     configurable: true,
     value(this: HTMLElement) {
-      return { top: 100, left: 100, right: 200, bottom: 132, width: 100, height: 32, x: 100, y: 100, toJSON() { return {} } }
+      const isPopover = this.classList?.contains('sn-tooltip')
+      const r = isPopover ? POPOVER_RECT : TRIGGER_RECT
+      return {
+        top: r.top,
+        left: r.left,
+        width: r.width,
+        height: r.height,
+        right: r.left + r.width,
+        bottom: r.top + r.height,
+        x: r.left,
+        y: r.top,
+        toJSON() { return {} },
+      }
     },
   })
   Object.defineProperty(window, 'innerWidth',  { configurable: true, value: 1280 })
   Object.defineProperty(window, 'innerHeight', { configurable: true, value: 800 })
+}
+
+/** Read the teleported popover's computed inline position. */
+function popoverStyle(): CSSStyleDeclaration {
+  const pop = document.body.querySelector('.sn-tooltip') as HTMLElement | null
+  expect(pop).not.toBeNull()
+  return pop!.style
+}
+
+/** Read the teleported arrow's computed inline position. */
+function arrowEl(): HTMLElement {
+  const arrow = document.body.querySelector('.sn-tooltip__arrow') as HTMLElement | null
+  expect(arrow).not.toBeNull()
+  return arrow!
 }
 
 describe('SnTooltip (AUI-WEB-FEED-006)', () => {
@@ -136,14 +174,6 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
     await new Promise((r) => setTimeout(r, 10))
     const pop = document.body.querySelector('.sn-tooltip')
     expect(pop?.textContent).toContain('Ideas')
-  })
-
-  it('placement prop sets direction class', async () => {
-    mountTooltip({ content: 'x', show: true, placement: 'bottom-end' })
-    await nextTick()
-    await new Promise((r) => setTimeout(r, 10))
-    const pop = document.body.querySelector('.sn-tooltip')
-    expect(pop?.classList.contains('sn-tooltip--bottom-end')).toBe(true)
   })
 
   it('exposes imperative show / hide via the component instance', async () => {
@@ -269,6 +299,236 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
 
       const pop = document.body.querySelector('.sn-tooltip') as HTMLElement | null
       expect(pop?.style.width).toBe('240px')
+    })
+  })
+
+  /**
+   * Positioning + arrow geometry.
+   *
+   * These assertions cover a bug class that renders perfectly well in unit
+   * tests but is obviously wrong on screen: the bubble lands on top of the
+   * trigger (or clips against the viewport) and the arrow detaches from the
+   * bubble. All expectations here are derived from the stubbed rects:
+   *   trigger  → top 384, left 500, 100×32   (right 600, bottom 416)
+   *   popover  → 200×40
+   *   viewport → 1280×800
+   * The trigger centre is therefore (550, 400) and the trigger's top edge is
+   * exactly `bottom - ARROW_SIZE` whenever the arrow reserve works.
+   */
+  describe('positioning and arrow geometry', () => {
+    it('should place a top tooltip entirely above the trigger, with no gap', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'top' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const s = popoverStyle()
+      const top = Number.parseFloat(s.top)
+      expect(top).toBe(TRIGGER_RECT.top - POPOVER_RECT.height - ARROW_SIZE)
+      // The bubble stops one arrow-band short of the trigger; the arrow fills
+      // that band, so the rendered result reads as "no gap".
+      expect(top + POPOVER_RECT.height).toBe(TRIGGER_RECT.top - ARROW_SIZE)
+      expect(top + POPOVER_RECT.height + ARROW_SIZE).toBe(TRIGGER_RECT.top)
+    })
+
+    it('should place a bottom tooltip entirely below the trigger, with no gap', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'bottom' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const s = popoverStyle()
+      const triggerBottom = TRIGGER_RECT.top + TRIGGER_RECT.height
+      expect(Number.parseFloat(s.top)).toBe(triggerBottom + ARROW_SIZE)
+    })
+
+    it('should place a left tooltip entirely left of the trigger, with no gap', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'left' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const s = popoverStyle()
+      expect(Number.parseFloat(s.left)).toBe(TRIGGER_RECT.left - POPOVER_RECT.width - ARROW_SIZE)
+    })
+
+    it('should place a right tooltip entirely right of the trigger, with no gap', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'right' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const s = popoverStyle()
+      const triggerRight = TRIGGER_RECT.left + TRIGGER_RECT.width
+      expect(Number.parseFloat(s.left)).toBe(triggerRight + ARROW_SIZE)
+    })
+
+    it('should centre a `top` tooltip on the trigger, keeping the bubble on screen', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'top' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const s = popoverStyle()
+      const popCenter = Number.parseFloat(s.left) + POPOVER_RECT.width / 2
+      const triggerCenter = TRIGGER_RECT.left + TRIGGER_RECT.width / 2
+      expect(popCenter).toBe(triggerCenter)
+    })
+
+    /**
+     * Regression: an edge-aligned (`-start` / `-end`) bubble that cannot fit
+     * inside the viewport must be nudged back in, not clipped. The bug this
+     * guards against returned the raw, unclamped rect from the final "last
+     * resort" branch — and, when *both* axes failed the probe, returned
+     * `null` and crashed `recompute()` on `r.top`.
+     */
+    it('should clamp an edge-aligned bubble back inside the viewport', async () => {
+      // Trigger inside the viewport but close to the right edge: a
+      // `top-start` bubble would run 200px from 1150 → past 1280.
+      Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
+        configurable: true,
+        value(this: HTMLElement) {
+          const isPopover = this.classList?.contains('sn-tooltip')
+          const r = isPopover
+            ? POPOVER_RECT
+            : { top: 384, left: 1150, width: 100, height: 32 }
+          return {
+            top: r.top, left: r.left, width: r.width, height: r.height,
+            right: r.left + r.width, bottom: r.top + r.height,
+            x: r.left, y: r.top, toJSON() { return {} },
+          }
+        },
+      })
+
+      mountTooltip({ content: 'x', show: true, placement: 'top-start' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const s = popoverStyle()
+      const left = Number.parseFloat(s.left)
+      expect(left).toBeGreaterThanOrEqual(0)
+      expect(left + POPOVER_RECT.width).toBeLessThanOrEqual(1280)
+    })
+
+    /**
+     * Regression: the arrow must *track the trigger's centre* along the cross
+     * axis. The bug this guards against clamped the aim with the bubble's own
+     * mid-point as a ceiling, which parked the arrow at the bubble's middle
+     * whenever the bubble was wider than the trigger — visually detached from
+     * the element it is supposed to point at.
+     *
+     * A `top-start` bubble starts flush with the trigger, so its 200px width
+     * extends 150px *past* the trigger's centre (which sits 50px in). The
+     * arrow must therefore land at 50px, not at the 100px bubble midpoint.
+     */
+    it('should aim a top arrow at the trigger centre, not the bubble centre', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'top-start' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const a = arrowEl().style
+      const popLeft = Number.parseFloat(popoverStyle().left)
+      const triggerCenter = TRIGGER_RECT.left + TRIGGER_RECT.width / 2
+      const arrowLeft = Number.parseFloat(a.left)
+
+      expect(arrowLeft).toBe(triggerCenter - popLeft)
+      // Inside the bubble, and deliberately *not* on its centre (100px).
+      expect(arrowLeft).toBeGreaterThan(0)
+      expect(arrowLeft).toBeLessThan(POPOVER_RECT.width)
+      expect(arrowLeft).not.toBe(POPOVER_RECT.width / 2)
+      // Vertical anchor: the arrow hangs in the reserved band at the bottom.
+      expect(Number.parseFloat(a.bottom)).toBe(-ARROW_SIZE)
+      expect(a.top).toBe('')
+    })
+
+    it('should anchor a bottom arrow inside the bubble band', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'bottom' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const a = arrowEl().style
+      const popLeft = Number.parseFloat(popoverStyle().left)
+      const triggerCenter = TRIGGER_RECT.left + TRIGGER_RECT.width / 2
+      expect(Number.parseFloat(a.top)).toBe(-ARROW_SIZE)
+      expect(a.bottom).toBe('')
+      expect(Number.parseFloat(a.left)).toBe(triggerCenter - popLeft)
+      expect(Number.parseFloat(a.left)).toBeGreaterThan(0)
+      expect(Number.parseFloat(a.left)).toBeLessThan(POPOVER_RECT.width)
+    })
+
+    it('should anchor a left arrow inside the bubble band', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'left' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const a = arrowEl().style
+      const popTop = Number.parseFloat(popoverStyle().top)
+      const triggerCenterY = TRIGGER_RECT.top + TRIGGER_RECT.height / 2
+      expect(Number.parseFloat(a.right)).toBe(-ARROW_SIZE)
+      expect(a.left).toBe('')
+      expect(Number.parseFloat(a.top)).toBe(triggerCenterY - popTop)
+      expect(Number.parseFloat(a.top)).toBeGreaterThan(0)
+      expect(Number.parseFloat(a.top)).toBeLessThan(POPOVER_RECT.height)
+    })
+
+    it('should anchor a right arrow inside the bubble band', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'right' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const a = arrowEl().style
+      const popTop = Number.parseFloat(popoverStyle().top)
+      const triggerCenterY = TRIGGER_RECT.top + TRIGGER_RECT.height / 2
+      expect(Number.parseFloat(a.left)).toBe(-ARROW_SIZE)
+      expect(a.right).toBe('')
+      expect(Number.parseFloat(a.top)).toBe(triggerCenterY - popTop)
+      expect(Number.parseFloat(a.top)).toBeGreaterThan(0)
+      expect(Number.parseFloat(a.top)).toBeLessThan(POPOVER_RECT.height)
+    })
+
+    /** `placement` still names the requested side, per the public contract. */
+    it('should keep the requested placement class on the bubble', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'bottom-end' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement
+      expect(pop.classList.contains('sn-tooltip--bottom-end')).toBe(true)
+    })
+
+    /**
+     * `flip` re-resolves the side, so the arrow direction and the enter
+     * animation must follow the side the bubble actually landed on rather
+     * than the one that was requested. Mirroring `placement` left a flipped
+     * bubble animating (and pointing) at the wrong edge.
+     */
+    it('should follow the flipped side when flip reassigns the placement', async () => {
+      // Trigger pinned to the top edge: a `top` bubble has nowhere to go.
+      Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
+        configurable: true,
+        value(this: HTMLElement) {
+          const isPopover = this.classList?.contains('sn-tooltip')
+          const r = isPopover ? POPOVER_RECT : { top: 4, left: 500, width: 100, height: 32 }
+          return {
+            top: r.top, left: r.left, width: r.width, height: r.height,
+            right: r.left + r.width, bottom: r.top + r.height,
+            x: r.left, y: r.top, toJSON() { return {} },
+          }
+        },
+      })
+
+      mountTooltip({ content: 'x', show: true, placement: 'top' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      // Flipped below the trigger: the resolved side is published as an
+      // extra modifier, and the arrow now points up from the bubble's top.
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement
+      expect(pop.classList.contains('sn-tooltip--bottom')).toBe(true)
+      expect(Number.parseFloat(popoverStyle().top)).toBe(4 + 32 + ARROW_SIZE)
+
+      const arrow = arrowEl()
+      expect(arrow.classList.contains('sn-tooltip__arrow--bottom')).toBe(true)
+      expect(arrow.classList.contains('sn-tooltip__arrow--top')).toBe(false)
+      expect(Number.parseFloat(arrow.style.top)).toBe(-ARROW_SIZE)
+    })
+
+    /**
+     * The arrow parks in a band *outside* the bubble's padding box, so the
+     * bubble must never clip its own overflow — `overflow: hidden` here
+     * slices the triangle off and re-creates the detached-arrow symptom.
+     */
+    it('should not clip the arrow at the bubble boundary', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'top' })
+      await new Promise((r) => setTimeout(r, 10))
+
+      const pop = document.body.querySelector('.sn-tooltip') as HTMLElement
+      // Multi-line content (the default) must not become scrollable either —
+      // `scrollable` is opt-in and is what legitimately sets `overflow: auto`.
+      expect(pop.classList.contains('sn-tooltip--scrollable')).toBe(false)
     })
   })
 

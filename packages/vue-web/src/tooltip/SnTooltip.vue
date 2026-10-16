@@ -328,6 +328,13 @@ function onPopoverMouseLeave(e: MouseEvent): void {
 
 /* ─────────── Positioning + boundary detection ─────────── */
 
+/**
+ * Arrow geometry, in px. The triangle is drawn with borders below (see
+ * `.sn-tooltip__arrow--*`), so this constant is the single place the JS
+ * layout reserve and the CSS shape are kept in step.
+ */
+const ARROW_SIZE = 8
+
 interface PositionRect {
   top: number
   left: number
@@ -341,6 +348,15 @@ interface PositionRect {
 
 const popoverStyle = ref<Record<string, string>>({})
 const arrowStyle = ref<Record<string, string>>({})
+
+/**
+ * Which side the popover actually ended up on. `placement` is only the
+ * *request*: boundary detection can flip it, and the flip has to be
+ * reflected by both the arrow direction and the enter animation. Mirroring
+ * `placement` alone (the previous behaviour) left a flipped bubble pointing
+ * the wrong way, with its arrow parked outside the bubble.
+ */
+const resolvedSide = ref<'top' | 'right' | 'bottom' | 'left'>('top')
 
 /**
  * Compute the popover position. Layout strategy: measure trigger +
@@ -381,8 +397,10 @@ async function recompute(): Promise<void> {
   const vh = window.innerHeight
   const margin = 8 // minimum gap between popover and viewport edge
   // `overlap` seats the bubble on the trigger instead of beside it, so no
-  // arrow-sized gap is reserved.
-  const arrowSize = props.overlap ? 0 : 8
+  // arrow-sized gap is reserved. A resting `overlap` is 8px by default, so
+  // the reserved band and the CSS arrow size must agree — keep ARROW_SIZE
+  // and `.sn-tooltip__arrow--*`'s border-width in sync.
+  const arrowSize = props.overlap ? 0 : ARROW_SIZE
 
   // Determine initial side + alignment from placement string
   // e.g. 'top-start' → side='top', align='start'
@@ -390,55 +408,118 @@ async function recompute(): Promise<void> {
   const side = sideRaw as 'top' | 'right' | 'bottom' | 'left'
   const align = alignRaw as 'start' | 'center' | 'end'
 
-  // Helper: try side, return rect if it fits, else null.
-  function rectFor(sideChoice: typeof side, trigger: PositionRect, pop: PositionRect): PositionRect | null {
+  /**
+   * How far the arrow's centre must sit from the bubble's own edge. Half the
+   * border-box (8px of the 16px triangle) is the geometric minimum; inset it
+   * a little further so the triangle's flat base stays inside the rounded
+   * corner instead of poking out of it.
+   */
+  const arrowInset = arrowSize > 0 ? arrowSize + 4 : 0
+
+  /**
+   * Nudge a coordinate back inside `[margin, limit - size - margin]` so a
+   * bubble that is wider (or taller) than the space beside its trigger is
+   * still fully readable instead of being clipped by the viewport.
+   */
+  function clampWithin(value: number, size: number, limit: number): number {
+    const max = Math.min(value, limit - size - margin)
+    // `Math.max` runs second so a bubble larger than the viewport anchors to
+    // the near edge rather than escaping past the far one.
+    return Math.max(margin, max)
+  }
+
+  // Helper: lay out the bubble on `sideChoice`. `strict` returns null when
+  // the result cannot be shown in full — used when picking which side to
+  // use. `strict: false` clamps along the cross axis so we never end up
+  // without a rect.
+  function rectFor(
+    sideChoice: typeof side,
+    trigger: PositionRect,
+    pop: PositionRect,
+    strict = true,
+  ): PositionRect | null {
     const out: PositionRect = {
       top: 0, left: 0,
       width: pop.width, height: pop.height,
       right: 0, bottom: 0,
     }
-    let triggerEdge = 0
     switch (sideChoice) {
       case 'top':
         out.top = trigger.top - pop.height - arrowSize
-        triggerEdge = trigger.top
         break
       case 'bottom':
         out.top = trigger.bottom + arrowSize
-        triggerEdge = trigger.bottom
         break
       case 'left':
         out.left = trigger.left - pop.width - arrowSize
-        triggerEdge = trigger.left
         break
       case 'right':
         out.left = trigger.right + arrowSize
-        triggerEdge = trigger.right
         break
     }
+    // Cross axis: order the bubble per `align`. Used verbatim while probing
+    // (so an honest overflow can trigger a flip), clamped when we have
+    // committed to this side.
+    const place = (raw: number, size: number, limit: number): number =>
+      strict ? raw : clampWithin(raw, size, limit)
     // Horizontal axis
     if (sideChoice === 'top' || sideChoice === 'bottom') {
       switch (align) {
-        case 'start': out.left = trigger.left; break
-        case 'end': out.left = trigger.right - pop.width; break
-        default: out.left = trigger.left + trigger.width / 2 - pop.width / 2
+        case 'start': out.left = place(trigger.left, pop.width, vw); break
+        case 'end': out.left = place(trigger.right - pop.width, pop.width, vw); break
+        default:
+          out.left = place(
+            trigger.left + trigger.width / 2 - pop.width / 2,
+            pop.width,
+            vw,
+          )
       }
     }
     // Vertical axis
     else {
       switch (align) {
-        case 'start': out.top = trigger.top; break
-        case 'end': out.top = trigger.bottom - pop.height; break
-        default: out.top = trigger.top + trigger.height / 2 - pop.height / 2
+        case 'start': out.top = place(trigger.top, pop.height, vh); break
+        case 'end': out.top = place(trigger.bottom - pop.height, pop.height, vh); break
+        default:
+          out.top = place(
+            trigger.top + trigger.height / 2 - pop.height / 2,
+            pop.height,
+            vh,
+          )
       }
     }
-    // Check viewport fit
-    if (out.top < margin || out.top + pop.height > vh - margin) return null
-    if (out.left < margin || out.left + pop.width > vw - margin) return null
+    // Check viewport fit along the *main* axis. The cross axis is already
+    // clamped when `!strict`, so re-testing it would reject rects that
+    // rectFor just made fit.
+    if (sideChoice === 'top' || sideChoice === 'bottom') {
+      if (out.top < margin || out.top + pop.height > vh - margin) return null
+    }
+    else {
+      if (out.left < margin || out.left + pop.width > vw - margin) return null
+    }
     return out
   }
 
-  // Try the requested side; flip if it doesn't fit and `flip` allows it.
+  /**
+   * Does a laid-out bubble keep its *cross* axis inside the viewport? The
+   * main axis is already validated by `rectFor`'s strict probe; this catches
+   * the edge-aligned case (`top-start` near the right edge) where the bubble
+   * fits vertically but hangs off the side.
+   */
+  function fitsCrossAxis(
+    sideChoice: typeof side,
+    rect: PositionRect,
+    width: number,
+    height: number,
+  ): boolean {
+    if (sideChoice === 'top' || sideChoice === 'bottom') {
+      return rect.left >= margin && rect.left + rect.width <= width - margin
+    }
+    return rect.top >= margin && rect.top + rect.height <= height - margin
+  }
+
+  // Try the requested side; flip if the main axis doesn't fit and `flip`
+  // allows it.
   const opposite: Record<typeof side, typeof side> = {
     top: 'bottom',
     bottom: 'top',
@@ -448,11 +529,22 @@ async function recompute(): Promise<void> {
   let finalSide = side
   let r = rectFor(side, trigBox, popBox)
   if (!r && props.flip) {
-    r = rectFor(opposite[side], trigBox, popBox)
-    if (r) finalSide = opposite[side]
+    const flipped = rectFor(opposite[side], trigBox, popBox)
+    if (flipped) {
+      r = flipped
+      finalSide = opposite[side]
+    }
   }
-  // Last resort — center on the trigger's preferred side even if clipped.
-  if (!r) r = rectFor(side, trigBox, popBox)!
+  // Nothing exact on the main axis, or the bubble landed with its *cross*
+  // axis hanging off screen (an edge-aligned `top-start`/`bottom-end` near a
+  // viewport edge). Lay it out on the chosen side and clamp the cross axis,
+  // so the bubble is nudged back into view rather than clipped. Returning the
+  // raw rect here used to push edge-aligned bubbles past the viewport edge,
+  // and when *both* axes failed it left `r` null and crashed on `r.top`.
+  if (!r || !fitsCrossAxis(finalSide, r, vw, vh)) {
+    r = rectFor(finalSide, trigBox, popBox, false)!
+  }
+  resolvedSide.value = finalSide
 
   // `width="trigger"` pins the bubble's horizontal size to the trigger.
   const widthStyle = props.width === 'trigger'
@@ -473,7 +565,12 @@ async function recompute(): Promise<void> {
 
   // Arrow position: aim at the trigger's midpoint on the relevant axis,
   // or at the popover's own centre when `arrowPointToCenter` is set.
-  // Clamp so it stays on the popover.
+  //
+  // The object is built from scratch on every pass rather than mutated:
+  // only the two axes that apply to the resolved side are ever set, so a
+  // stale `left` / `top` from the previous orientation cannot survive a
+  // flip, a scroll, or a resize — which is exactly how the arrow used to
+  // detach from the bubble.
   const arrowOffset: Record<string, string> = {}
   const popCenterX = r.left + r.width / 2
   const popCenterY = r.top + r.height / 2
@@ -481,22 +578,27 @@ async function recompute(): Promise<void> {
   const triggerCenterY = trigBox.top + trigBox.height / 2
   const aimX = props.arrowPointToCenter ? popCenterX : triggerCenterX
   const aimY = props.arrowPointToCenter ? popCenterY : triggerCenterY
+
+  /**
+   * Clamp the arrow's centre into the bubble, keeping `arrowInset` of margin
+   * at both ends. `Math.max(lo, ...)` runs last so a bubble narrower than the
+   * inset band pins the arrow to its start edge instead of escaping past the
+   * end edge.
+   */
+  function clampAim(aim: number, start: number, size: number): number {
+    const lo = start + arrowInset
+    const hi = start + size - arrowInset
+    return Math.max(lo, Math.min(aim, hi))
+  }
+
   if (finalSide === 'top' || finalSide === 'bottom') {
-    const arrowCenter = Math.max(
-      r.left + arrowSize,
-      Math.min(popCenterX, aimX, r.left + r.width - arrowSize),
-    )
+    const arrowCenter = clampAim(aimX, r.left, r.width)
     arrowOffset.left = `${arrowCenter - r.left}px`
-    arrowOffset.top = ''
     arrowOffset[finalSide === 'top' ? 'bottom' : 'top'] = `-${arrowSize}px`
   }
   else {
-    const arrowCenter = Math.max(
-      r.top + arrowSize,
-      Math.min(popCenterY, aimY, r.top + r.height - arrowSize),
-    )
+    const arrowCenter = clampAim(aimY, r.top, r.height)
     arrowOffset.top = `${arrowCenter - r.top}px`
-    arrowOffset.left = ''
     arrowOffset[finalSide === 'left' ? 'right' : 'left'] = `-${arrowSize}px`
   }
   arrowStyle.value = arrowOffset
@@ -575,11 +677,23 @@ watch(() => props.show, (s) => {
 })
 
 const arrowPlacementClass = computed(() => {
-  // Map current resolved side to a CSS modifier. Falls back to `top`
-  // because the arrow's default upward-pointing shape sits at the bottom
-  // edge of the popover.
-  const side = props.placement.split('-')[0]
-  return `sn-tooltip__arrow--${side}`
+  // Driven by the *resolved* side rather than the requested `placement`:
+  // a bubble flipped by boundary detection still has to point its arrow —
+  // and play its enter animation — the way it actually landed.
+  return `sn-tooltip__arrow--${resolvedSide.value}`
+})
+
+/**
+ * Modifier for the bubble itself. Keeps the requested placement (so
+ * consumers can style `sn-tooltip--top-start` and friends) *and* adds the
+ * resolved side, which the directional enter animation keys off. Without
+ * the second class a flipped bubble would animate in from the side it was
+ * asked for, not the side it landed on.
+ */
+const popoverPlacementClass = computed<string[]>(() => {
+  const requested = `sn-tooltip--${props.placement}`
+  const resolved = `sn-tooltip--${resolvedSide.value}`
+  return requested === resolved ? [requested] : [requested, resolved]
 })
 
 /**
@@ -641,7 +755,7 @@ void slots
       ref="popoverEl"
       class="sn-tooltip"
       :class="[
-        `sn-tooltip--${props.placement}`,
+        popoverPlacementClass,
         raw && 'sn-tooltip--raw',
         scrollable && 'sn-tooltip--scrollable',
         !animated && 'sn-tooltip--no-animation',
@@ -679,6 +793,7 @@ void slots
   pointer-events: auto; /* re-enable for hover bridge so user can
                           * reach into the popover without the
                           * trigger mouseleave firing first */
+  box-sizing: border-box;
   font-size: 13px;
   line-height: 1.5;
   color: var(--sn-web-color-text-on-primary, #fff);
@@ -686,6 +801,9 @@ void slots
   border-radius: 6px;
   padding: 6px 10px;
   max-width: 280px;
+  /* The arrow is positioned in the band *outside* the padding box (a
+   * negative inset), so the bubble must not clip its own overflow. */
+  overflow: visible;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.08),
     0 6px 18px rgba(0, 0, 0, 0.18);

@@ -1,49 +1,99 @@
 <script setup lang="ts">
 /**
- * tooltip-web-content-slot — SnTooltip content slot 富文本。组件留了
- * 一个 `#content` named slot，popover 体内可以塞任何 Vue 内容
- * （多行文本、code 标签、小图标、行内链接）。
+ * tooltip-web-content-slot — 用 `#content` 插槽承载结构化内容。
+ *
+ * 每个用例一个区块，说明它和默认 `content` prop 的差别：插槽里
+ * 可以放多行、`<code>`、行内强调等任意 Vue 内容。
  */
 import { SnTooltip } from '@snui/vue-web'
 </script>
 
 <template>
-  <div class="sn-tooltip-slot-demo">
-    <SnTooltip placement="top">
-      <button class="sn-tooltip-slot-demo__btn">多行 + code</button>
-      <template #content>
-        <div class="sn-tooltip-slot-demo__rich">
-          <div>支持多行文本</div>
-          <code>code: SnTooltip</code>
-        </div>
-      </template>
-    </SnTooltip>
+  <div class="tt-slot">
+    <section class="tt-slot__section">
+      <h4 class="tt-slot__title">多行 + code</h4>
+      <p class="tt-slot__hint">
+        默认 <code>content</code> prop 只接受纯文本；需要多行或行内标记时用插槽。
+      </p>
+      <div class="tt-slot__stage">
+        <SnTooltip placement="top">
+          <button class="tt-slot__btn" type="button">多行 + code</button>
+          <template #content>
+            <div class="tt-slot__rich">
+              <div>支持多行文本</div>
+              <code>code: SnTooltip</code>
+            </div>
+          </template>
+        </SnTooltip>
+      </div>
+    </section>
 
-    <SnTooltip placement="right" :arrow="false">
-      <button class="sn-tooltip-slot-demo__btn">无箭头</button>
-      <template #content>
-        <span style="font-style: italic">arrow: false</span>
-      </template>
-    </SnTooltip>
+    <section class="tt-slot__section">
+      <h4 class="tt-slot__title">配合 :arrow="false"</h4>
+      <p class="tt-slot__hint">插槽内容与外观 prop 可以自由组合。</p>
+      <div class="tt-slot__stage">
+        <SnTooltip placement="right" :arrow="false">
+          <button class="tt-slot__btn" type="button">无箭头</button>
+          <template #content>
+            <span class="tt-slot__italic">arrow: false</span>
+          </template>
+        </SnTooltip>
+      </div>
+    </section>
 
-    <SnTooltip placement="bottom-start" :delay="[200, 0]">
-      <button class="sn-tooltip-slot-demo__btn">延迟 200ms 打开</button>
-      <template #content>
-        用 <code>:delay="[200, 0]"</code> 控制打开延迟，关闭无延迟
-      </template>
-    </SnTooltip>
+    <section class="tt-slot__section">
+      <h4 class="tt-slot__title">配合 :delay="[200, 0]"</h4>
+      <p class="tt-slot__hint">
+        打开延迟 200ms，关闭无延迟 —— 适合指针容易划过的密集布局。
+      </p>
+      <div class="tt-slot__stage">
+        <SnTooltip placement="bottom-start" :delay="[200, 0]">
+          <button class="tt-slot__btn" type="button">延迟 200ms 打开</button>
+          <template #content>
+            用 <code>:delay="[200, 0]"</code> 控制打开延迟，关闭无延迟
+          </template>
+        </SnTooltip>
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.sn-tooltip-slot-demo {
+.tt-slot {
   display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 40px 0;
-  justify-content: center;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
 }
-.sn-tooltip-slot-demo__btn {
+.tt-slot__section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tt-slot__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+.tt-slot__hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--vp-c-text-3);
+}
+.tt-slot__hint code {
+  font-size: 11px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--vp-c-bg-alt);
+}
+.tt-slot__stage {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+.tt-slot__btn {
   border: 1px solid var(--vp-c-divider);
   background: var(--vp-c-bg);
   color: var(--vp-c-text-1);
@@ -52,19 +102,24 @@ import { SnTooltip } from '@snui/vue-web'
   font: inherit;
   font-size: 13px;
   cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
 }
-.sn-tooltip-slot-demo__btn:hover {
+.tt-slot__btn:hover {
   border-color: var(--vp-c-brand-1);
   color: var(--vp-c-brand-1);
 }
-.sn-tooltip-slot-demo__rich {
+.tt-slot__rich {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-.sn-tooltip-slot-demo__rich code {
+.tt-slot__rich code {
   font-family: ui-monospace, monospace;
   font-size: 12px;
   opacity: 0.85;
+}
+.tt-slot__italic {
+  font-style: italic;
 }
 </style>
