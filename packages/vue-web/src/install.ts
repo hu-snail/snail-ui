@@ -24,6 +24,15 @@ import SnFormItem from './form/SnFormItem.vue'
 import SnGrid from './grid/SnGrid.vue'
 import SnIcon from './icon/SnIcon.vue'
 import SnInput from './input/SnInput.vue'
+import SnCheckbox from './checkbox/SnCheckbox.vue'
+import SnCheckboxGroup from './checkbox/SnCheckboxGroup.vue'
+import SnRadio from './radio/SnRadio.vue'
+import SnRadioButton from './radio/SnRadioButton.vue'
+import SnRadioGroup from './radio/SnRadioGroup.vue'
+import SnSwitch from './switch/SnSwitch.vue'
+import SnSlider from './slider/SnSlider.vue'
+import SnRate from './rate/SnRate.vue'
+import SnInputNumber from './input-number/SnInputNumber.vue'
 import SnDialog from './dialog/SnDialog.vue'
 import SnDrawer from './drawer/SnDrawer.vue'
 import SnDrawerContent from './drawer/SnDrawerContent.vue'
@@ -68,6 +77,15 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnGrid', component: SnGrid },
   { name: 'SnIcon', component: SnIcon },
   { name: 'SnInput', component: SnInput },
+  { name: 'SnCheckbox', component: SnCheckbox },
+  { name: 'SnCheckboxGroup', component: SnCheckboxGroup },
+  { name: 'SnRadio', component: SnRadio },
+  { name: 'SnRadioButton', component: SnRadioButton },
+  { name: 'SnRadioGroup', component: SnRadioGroup },
+  { name: 'SnSwitch', component: SnSwitch },
+  { name: 'SnSlider', component: SnSlider },
+  { name: 'SnRate', component: SnRate },
+  { name: 'SnInputNumber', component: SnInputNumber },
   { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },
   { name: 'SnSkeleton', component: SnSkeleton },
