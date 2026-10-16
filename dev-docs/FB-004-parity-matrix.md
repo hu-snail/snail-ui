@@ -71,9 +71,16 @@
 | resizable（拖拽调整尺寸） | P1 |
 | ~~basic~~ 已有 | — |
 
-**props 缺口（AUI-WEB-FB-003a）**：
-`trapFocus` / `autoFocus` / `resizable` / `maxWidth` / `maxHeight` / `minWidth` / `minHeight` / `scrollbarProps`
-（`defaultWidth`=251 / `defaultHeight`=251 已核）
+**props 缺口（AUI-WEB-FB-003a）**：**已补齐** ✅
+
+本轮新增 12 个 props / events：`defaultWidth`(251) / `defaultHeight`(251) / `resizable` / `maxWidth` / `maxHeight` / `minWidth` / `minHeight` / `autoFocus`(true) / `trapFocus`(true) / `scrollbarProps` + `update:width` / `update:height` 事件。
+
+实现取舍：
+- `resizable` 用单边手柄 + 键盘（方向键 16px、Home/End 到边界），非上游的三触发器方案。
+- `scrollbarProps` 只应用滚动子集（`trigger` / `xScrollable` / `onScroll`），虚拟几何参数对原生容器无意义。
+- 焦点陷阱为手写实现（Tab 循环 + autoFocus + 关闭后焦点归还），不引入 `vueuc` 依赖。
+
+测试：58 → 73（+15，覆盖全部新增 props）。
 
 ---
 

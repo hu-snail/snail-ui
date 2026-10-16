@@ -1,76 +1,77 @@
 # Skeleton 骨架屏（Web 端）
 
-`SnSkeleton` 是内容加载期间的占位块。一个标签覆盖常见形状：`text` 让它落进一行文字里、`circle` 变成头像、`repeat` 变多行段落。props 与语义按 [naive-ui `n-skeleton`](https://www.naiveui.com/zh-CN/light/components/skeleton) 1:1 对齐（AGENTS.md §112）。
+`SnSkeleton` 是内容加载期间的占位块。一个标签覆盖常见形状：`text` 让它落进一行文字里、`circle` 变成头像、`repeat` 变多行段落。
 
-典型场景：列表首屏、卡片详情、头像 + 标题 + 正文组合。
+## 何时使用
 
-## 实时预览
+- 内容的最终结构可以预测，用占位块撑住布局避免跳动。
+- 首次加载列表、卡片、详情页时，先给出形状再填内容。
+- 需要比转圈更平滑的加载感知，减少「空白 → 突然出现」的割裂感。
+
+不适合：结构完全不可预测时，用 `SnLoading` 更诚实。
+
+## 代码演示
+
+### 基础用法
+
+行内、块级、圆形、段落四种基本形状。
 
 <Demo name="skeleton-web-basic" description="行内 / 块级 / 圆形 / 段落四种形状" />
 
+### 盒子形态
+
+非文字几何体的占位，包含尺寸档与多行重复。
+
+<Demo name="skeleton-web-box" description="显式尺寸、size 三档、repeat 多行与圆角对照" />
+
+### 尺寸与形状
+
+`size` 与 `text` / `circle` / `round` 的组合，以及 `animated` 开关。
+
+<Demo name="skeleton-web-size" description="三档 size 与三种形状的组合，含 animated 开关" />
+
+### 卡片占位
+
+拼一个卡片占位，并切换动画与圆角。
+
 <Demo name="skeleton-web-card" description="拼一个卡片占位，并切换 animated / sharp" />
-
-## 基础用法
-
-```ts
-import { SnSkeleton } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-```
-
-```html
-<SnSkeleton height="24px" width="60%" />
-<SnSkeleton circle :height="48" />
-<SnSkeleton text width="4em" />
-```
-
-`width` / `height` 接受数字（按 px 处理）或任意 CSS 长度。不给尺寸时，高度落回 `size` 档位，再没有就用样式表里的 `1em` / `100%`。
-
-## 尺寸解析顺序
-
-按以下顺序取第一个命中的值：
-
-1. `circle` 会把占位块变成正方形 —— 显式 `width` 同时充当高度，反之亦然（两者都给时 `width` 获胜）。
-2. 显式的 `width` / `height` 按原值使用。
-3. `size` 档位高度补齐仍然缺失的那一维。
-
-## 圆角
-
-`circle` → `50%`，否则 `round` → `4096px`，否则 `sharp`（默认）→ 交给样式表，否则 `--sn-web-skeleton-radius`。所以 `sharp: false` 才是"用 token 圆角"。
-
-## 形状与动画
-
-```html
-<!-- 行内：落在标题里 -->
-<h1>标题<SnSkeleton text width="4em" /></h1>
-
-<!-- 段落：重复 3 行 -->
-<SnSkeleton repeat="3" height="1em" />
-
-<!-- 关掉闪烁 -->
-<SnSkeleton :animated="false" height="1em" />
-```
-
-`repeat` 渲染 N 个**并列**块（不是嵌套），每个块独立一个元素。
 
 ## API
 
-### SnSkeleton Props
+### Props
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `text` | `boolean` | `false` | 行内块，基线偏移 `-0.125em`，可嵌入文本行 |
-| `round` | `boolean` | `false` | 两端全圆角（`4096px`） |
-| `circle` | `boolean` | `false` | 正方形占位 + `border-radius: 50%` |
-| `height` | `string \| number` | `undefined` | 数字按 px，CSS 长度原样透传 |
-| `width` | `string \| number` | `undefined` | 数字按 px，CSS 长度原样透传 |
-| `size` | `'small' \| 'medium' \| 'large'` | `undefined` | 高度档位，仅在未显式给尺寸时生效 |
-| `repeat` | `number` | `1` | 并列块数量，小于 2 按 1 处理 |
-| `animated` | `boolean` | `true` | 是否播放闪烁动画 |
-| `sharp` | `boolean` | `true` | 保持直角；设 `false` 读取 token 圆角 |
+| `text` | `boolean` | `false` | 渲染为文本骨架。 |
+| `round` | `boolean` | `false` | 渲染为圆角骨架。 |
+| `circle` | `boolean` | `false` | 渲染为圆形骨架。 |
+| `height` | `string \| number` | `undefined` | 骨架高度。 |
+| `width` | `string \| number` | `undefined` | 骨架宽度。 |
+| `size` | `'small' \| 'medium' \| 'large'` | `undefined` | 骨架大小，决定默认高度。 |
+| `repeat` | `string \| number` | `1` | 重复次数。 |
+| `animated` | `boolean` | `true` | 是否启用闪烁动画。 |
+| `sharp` | `boolean` | `true` | 是否渲染为直角骨架。 |
 
-### Tokens
+### Slots
 
-组件消费 `--sn-web-skeleton-*`，它们是 `--aui-*` 的别名：
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| `default` | `()` | 自定义骨架内容，替代内置占位块。 |
+
+## 圆角解析顺序
+
+圆角的判定有优先级，从高到低：
+
+1. `circle` → `50%`
+2. `round` → `4096px`
+3. `sharp`（默认）→ 交给样式表（直角）
+4. `sharp: false` → 取 `--sn-web-skeleton-radius`
+
+所以 `sharp: false` 才是「使用 token 圆角」的开关。
+
+## 主题
+
+组件消费 `--sn-web-skeleton-*` token 别名：
 
 | Token | 说明 |
 | --- | --- |
@@ -81,18 +82,11 @@ import '@snui/tokens-web/styles'
 
 ## 无障碍
 
-- 每个占位块带 `aria-hidden="true"`，屏幕阅读器直接跳过
-- 不给 `role` —— 骨架屏靠布局传达"还没加载"，真正内容挂载后由内容自身的语义接管
-- 闪烁动画是背景色渐变而非位移，未加 `prefers-reduced-motion` 抑制；需要关闭时用 `:animated="false"`
+- 骨架块对辅助技术隐藏，不参与可访问性树的朗读。
+- 加载状态的整体语义应由外层的 `SnLoading` 或 `aria-busy` 承载。
 
-## 与 n-skeleton 的差异（§112 future markers）
+## 已知取舍
 
-- 上游按实例输出 `--n-color-start` / `--n-color-end` / `--n-bezier`；本库改为在 CSS 里读取 `--sn-web-skeleton-*` token 块，因此 inline style 只承载几何属性。
-- 上游 `repeat` 分支返回 fragment（`<>{...}</>`）；这里外层是一个 `display: contents` 的普通元素，单根模板仍能产出并列块而不引入额外布局盒。
-- 上游的 `animation: 2s skeleton-loading infinite cubic-bezier(...)` 与过渡时长（`0.3s`）为硬编码值，未接入 theme token —— tokens 包尚无 motion 别名，SnConfigProvider 也尚未建模。
-- 未复刻上游 `useHoudini()` 调用（其为 CSS `@property` 注册准备，本库直接读 token）。
-
-## 相关
-
-- [`SnLoading`](/components/web/loading) —— 请求进行中的阻塞遮罩，而非"内容未到位"的占位
-- [`SnCard`](/components/web/card) —— 常作为被骨架化的容器
+- 几何属性以 inline style 承载，颜色与圆角走 CSS token 块。
+- 闪烁动画时长（`2s`）与过渡时长（`0.3s`）为硬编码值，尚未接入 motion token。
+- 未处理 `prefers-reduced-motion`，动画降级待补。

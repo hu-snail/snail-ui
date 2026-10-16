@@ -1,96 +1,72 @@
 # Affix 固钉（Web 端）
 
-`SnAffix` 把内容吸附在视口（或自定义滚动容器）的顶部/底部，滚动回阈值以上时自动释放。props 与语义按 [naive-ui `n-affix`](https://www.naiveui.com/zh-CN/light/components/affix) 1:1 对齐（AGENTS.md §112）。
+`SnAffix` 把内容吸附在视口（或自定义滚动容器）的顶部/底部，滚动回阈值以上时自动释放。
 
-典型场景：表格吸顶表头、侧边栏固定操作区、长表单的「保存」工具条。
+## 何时使用
 
-## 实时预览
+- 工具栏、操作条需要在长内容滚动时保持可见。
+- 侧边栏目录需要跟随滚动停留在视口内。
+- 表格的表头或操作列需要在滚动时固定。
 
-<Demo name="affix-web-basic" description="吸附在自定义滚动容器顶部的工具条" />
+不适合：内容本身不滚动时，直接使用普通定位即可。
 
-<Demo name="affix-web-position" description="position 为 fixed / absolute 的差异" />
+## 代码演示
 
-## 基础用法
+### 基础用法
 
-```ts
-import { SnAffix } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-```
+滚动到达阈值后元素吸附在顶部。
 
-```html
-<SnAffix :trigger-top="80" :top="80">
-  <SnButton type="primary">固定在顶部</SnButton>
-</SnAffix>
-```
+<Demo name="affix-web-basic" description="滚动到达阈值后吸附在顶部" />
 
-`triggerTop` 是**何时**开始吸附，`top` 是吸附后**停在哪里**。两者常取同一个值；只传其中一个时另一个会回退到它：
+### 吸附位置
 
-```html
-<!-- 等价写法 -->
-<SnAffix :top="80">…</SnAffix>
-```
+`position` 与 `top` / `bottom` 决定吸附的表现形式。
 
-底部吸附用 `bottom` / `triggerBottom`：
+<Demo name="affix-web-position" description="fixed 与 absolute 两种吸附方式对照" />
 
-```html
-<SnAffix :trigger-bottom="0" :bottom="0">…</SnAffix>
-```
+## API
 
-上下条件可同时生效 —— 只要满足其中之一即视为已吸附。
+### Props
+
+| 名称 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `position` | `'fixed' \| 'absolute'` | `'fixed'` | 吸附时使用的 CSS 定位方式。 |
+| `top` | `number` | `undefined` | 触发顶部固定后的 CSS `top`。未设定时使用 `triggerTop`。 |
+| `bottom` | `number` | `undefined` | 触发底部固定后的 CSS `bottom`。未设定时使用 `triggerBottom`。 |
+| `triggerTop` | `number` | `undefined` | 触发顶部固定时与目标元素顶部的距离。未设定时使用 `top`。 |
+| `triggerBottom` | `number` | `undefined` | 触发底部固定时与目标元素底部的距离。未设定时使用 `bottom`。 |
+| `listenTo` | `string \| HTMLElement \| Document \| Window \| (() => HTMLElement)` | `document` | 需要监听滚动的元素。 |
+| `target` | `() => HTMLElement \| undefined` | `undefined` | 计算偏移基准的目标元素。 |
+
+### Slots
+
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| `default` | `()` | 需要吸附的内容。 |
+
+## 触发与释放
+
+吸附由两个阈值共同决定：
+
+- **触发**：容器顶部滚过 `triggerTop` 时进入吸附。
+- **释放**：容器滚回阈值以上时退出吸附，元素回到文档流中的原始位置。
+
+`top` / `bottom` 决定吸附后的实际定位值；不设置时会回落到对应的 `trigger*` 值，因此简单场景只需要写 `triggerTop`。
 
 ## 滚动容器
 
-默认监听 `document`。传入 `listenTo` 可指向任意滚动容器：
+默认监听整个文档。当页面中只有局部区域滚动时，用 `listenTo` 指向那个滚动容器 —— 传入元素、选择器或返回元素的函数都可以：
 
 ```html
 <SnAffix :listen-to="() => scrollRef" :trigger-top="0" :top="0">…</SnAffix>
 ```
 
-`listenTo` 接受 `string` 选择器、`HTMLElement` / `Document`，或返回元素的 getter 函数。
-
-## 释放时机
-
-释放是**带滞回**的：一旦吸附，元素会保持吸附，直到滚动位置越过**吸附发生时记录下的滚动位置**，而不是等矩形回到阈值以外。这样避免了阈值边界上的抖动。
-
-## API
-
-### SnAffix Props
-
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `listenTo` | `string \| HTMLElement \| Document \| (() => HTMLElement \| Document)` | `document` | 监听的滚动容器 |
-| `top` | `number` | `undefined` | 吸附时距视口顶部的偏移 |
-| `bottom` | `number` | `undefined` | 吸附时距视口底部的偏移 |
-| `triggerTop` | `number` | `undefined` | 顶部吸附的触发阈值；缺省回退到 `top` |
-| `triggerBottom` | `number` | `undefined` | 底部吸附的触发阈值；缺省回退到 `bottom` |
-| `position` | `'fixed' \| 'absolute'` | `'fixed'` | `fixed` 脱离文档流；`absolute` 保留占位 |
-| `offsetTop` | `number` | `undefined` | **@deprecated**，请使用 `triggerTop` |
-| `offsetBottom` | `number` | `undefined` | **@deprecated**，请使用 `triggerBottom` |
-| `target` | `() => HTMLElement` | `undefined` | **@deprecated**，请使用 `listenTo` |
-
-### Slots
-
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 需要吸附的元素 |
-
-### Exposed
-
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
-| `affixed` | `ComputedRef<boolean>` | 当前是否处于吸附状态 |
-
 ## 无障碍
 
-- 包裹层纯布局，不带 role / `aria-*`，插槽内容自身的语义得以保留
-- 吸附是「重新定位」而非「重建节点」，因此滚动过程中焦点不会丢失
-- 包裹可交互元素（如按钮）时它仍可聚焦、可操作
+- 吸附是纯视觉行为，不改变元素的语义角色。
+- 吸附后的内容仍可被键盘聚焦 —— 组件不对焦点做任何干预。
 
-## 与 n-affix 的差异（§112 future markers）
+## 已知取舍
 
-- 吸附元素的 `z-index` 固定为 `10`。naive-ui 通过主题 token（`boxShadow` / `color` / `width` 等）暴露这些值，SnConfigProvider 尚未建模。
-- `position` 逐实例读取，未建模 `n-config-provider` 的全局默认值。
-
-## 相关
-
-- 需要「滚动时固定整块导航」可直接用 [`SnAnchor`](/components/web/anchor) 的 `affix` 属性
+- 吸附元素的 `z-index` 固定为 `10`，尚未通过 token 暴露。
+- `position` 逐实例读取，全局默认值未建模。
