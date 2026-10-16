@@ -39,7 +39,7 @@ import { SnSteps, SnStep } from '@snui/vue-web'
 .steps-demo__label {
   margin: 0 0 10px;
   font-size: 12px;
-  color: var(--vp-c-text-2);
+  color: var(--sn-web-color-text-secondary);
   font-family: ui-monospace, monospace;
 }
 </style>
