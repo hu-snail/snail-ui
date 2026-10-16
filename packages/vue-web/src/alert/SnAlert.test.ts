@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick } from 'vue'
@@ -112,9 +114,19 @@ describe('SnAlert (AUI-WEB-FB-008)', () => {
       expect(w.find('.sn-alert__icon').exists()).toBe(false)
     })
 
-    it('renders no built-in icon for type="default"', () => {
+    it('renders no icon column at all for type="default"', () => {
+      // Regression: the column rendered empty but kept its 8px right margin,
+      // so every default-type alert indented its body for nothing.
       const w = mountAlert({ type: 'default' })
-      expect(w.find('.sn-alert__icon').findComponent(SnIcon).exists()).toBe(false)
+      expect(w.find('.sn-alert__icon').exists()).toBe(false)
+    })
+
+    it('still renders the column when a default-type alert supplies an icon slot', () => {
+      const w = mountAlert(
+        { type: 'default' },
+        { icon: () => h('span', { class: 'custom-icon' }, '!') },
+      )
+      expect(w.find('.sn-alert__icon .custom-icon').exists()).toBe(true)
     })
 
     it('marks the icon container aria-hidden', () => {
@@ -138,6 +150,81 @@ describe('SnAlert (AUI-WEB-FB-008)', () => {
 
       expectIconRendered(w.find('.sn-alert__close'), '.sn-icon')
       expectNoMissingIcons(w, 'SnAlert closable')
+    })
+  })
+
+  /**
+   * Icon / title centring.
+   *
+   * happy-dom has no layout engine, so the geometry contract is asserted
+   * against the component's own CSS — the same approach SnSteps.test.ts uses
+   * for its hover-colour guard. Measured in a real browser before/after:
+   *
+   *   before — glyph box 14×16 (squashed), glyph centre 3.5px above the first
+   *            text line, close glyph 12.9–24.1px below it, and a title-only
+   *            banner sitting 5.2px above its own vertical centre.
+   *   after  — glyph 16×16, every offset +0.69px (sub-pixel font-metric noise
+   *            between an svg box and the text ink inside the same line box).
+   */
+  describe('icon / title alignment', () => {
+    const source = readFileSync('src/alert/SnAlert.vue', 'utf-8')
+    const styleBlock = /<style scoped>([\s\S]*?)<\/style>/.exec(source)
+    if (!styleBlock) throw new Error('SnAlert.vue lost its <style scoped> block')
+    const style = styleBlock[1].replace(/\/\*[\s\S]*?\*\//g, '')
+
+    /** Flatten the style block into { selectors, body } rules. */
+    const rules = [...style.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map((m) => ({
+      selectors: m[1].split(',').map((s) => s.replace(/\s+/g, ' ').trim()),
+      body: m[2].replace(/\s+/g, ' ').trim(),
+    }))
+
+    function bodyOf(selector: string): string {
+      const rule = rules.find((r) => r.selectors.includes(selector))
+      if (!rule) throw new Error(`no CSS rule for "${selector}"`)
+      return rule.body
+    }
+
+    it('aligns the icon and close columns to the first text line', () => {
+      // `align-items: stretch` grew both columns to the banner height and left
+      // their glyphs pinned at the top.
+      expect(bodyOf('.sn-alert')).toContain('align-items: flex-start')
+    })
+
+    it('centres the glyph in a first-line-tall icon box', () => {
+      const body = bodyOf('.sn-alert__icon')
+      expect(body).toContain('display: flex')
+      expect(body).toContain('align-items: center')
+      expect(body).toContain('justify-content: center')
+      // 1.6em == the first text line box (font-size 14px × line-height 1.6).
+      expect(body).toContain('height: 1.6em')
+    })
+
+    it('drops the line-height collapse that offset the glyph', () => {
+      expect(bodyOf('.sn-alert__icon')).not.toContain('line-height')
+      expect(bodyOf('.sn-alert__close')).not.toContain('line-height')
+    })
+
+    it('lets the glyph size its own box instead of squashing it to 1em', () => {
+      // SnIcon's wrapper is `width/height: 1em` (14px here) around a 16px svg,
+      // so the wrapper shrank the svg horizontally to 14×16.
+      expect(bodyOf('.sn-alert__icon :deep(.sn-icon)')).toContain('width: auto')
+      expect(bodyOf('.sn-alert__icon :deep(svg)')).toContain('flex: none')
+    })
+
+    it('inherits font metrics in the close button so 1.6em matches the text', () => {
+      // <button> ignores inherited font-size, so 1.6em resolved against the
+      // UA's 13.33px and the × landed off the title line.
+      const body = bodyOf('.sn-alert__close')
+      expect(body).toContain('font: inherit')
+      expect(body).toContain('height: 1.6em')
+      expect(body).toContain('align-items: center')
+    })
+
+    it('keeps the 2px title gap on the pair, not on a title-only banner', () => {
+      expect(bodyOf('.sn-alert-body__title')).not.toContain('margin-bottom')
+      expect(
+        bodyOf('.sn-alert-body__title + .sn-alert-body__content'),
+      ).toContain('margin-top: 2px')
     })
   })
 

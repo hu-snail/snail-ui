@@ -155,7 +155,16 @@ function handleAfterLeave() {
     >
       <div v-if="bordered" class="sn-alert__border" />
 
-      <div v-if="showIcon" class="sn-alert__icon" aria-hidden="true">
+      <!--
+        The column only renders when it actually holds a glyph. An empty
+        `showIcon` column (type="default" with no `icon` slot) still carried
+        its 8px right margin, indenting the body for nothing.
+      -->
+      <div
+        v-if="showIcon && (iconComponent || $slots.icon)"
+        class="sn-alert__icon"
+        aria-hidden="true"
+      >
         <slot name="icon">
           <SnIcon v-if="iconComponent" :icon="iconComponent" />
         </slot>
@@ -190,6 +199,10 @@ function handleAfterLeave() {
 .sn-alert {
   position: relative;
   display: flex;
+  /* The icon and the close button align to the *first text line*, not to the
+   * middle of a multi-line banner — `stretch` used to grow both columns to the
+   * full height and leave their glyphs pinned at the top. */
+  align-items: flex-start;
   box-sizing: border-box;
   width: 100%;
   padding: 8px 12px;
@@ -277,21 +290,49 @@ function handleAfterLeave() {
 
 /* ---------- Icon ---------- */
 
+/* `height: 1.6em` is exactly the first text line box (`font-size` 14px ×
+ * `line-height` 1.6 above), so centering the glyph in it puts the icon on the
+ * title's optical center. Both values are em-relative to `.sn-alert`, so a
+ * consumer overriding `font-size` keeps them in step. */
 .sn-alert__icon {
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.6em;
   margin-right: 8px;
-  line-height: 0;
+}
+
+/* SnIcon sizes its wrapper at `1em` of the ambient font (14px here) while the
+ * glyph it forwards is 16px, so the wrapper used to squash the svg to 14×16.
+ * Let the glyph define the box, and keep flex from shrinking it. */
+.sn-alert__icon :deep(.sn-icon),
+.sn-alert__close :deep(.sn-icon) {
+  width: auto;
+  height: auto;
+}
+
+.sn-alert__icon :deep(svg),
+.sn-alert__close :deep(svg) {
+  display: block;
+  flex: none;
 }
 
 .sn-alert__close {
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 1.6em;
   margin-left: 8px;
   padding: 0;
   border: none;
+  /* `<button>` does not inherit font metrics by default; without this the
+   * `1.6em` above resolves against the UA's 13.33px instead of our 14px. */
+  font: inherit;
   background: transparent;
   color: inherit;
   opacity: 0.6;
-  line-height: 0;
   cursor: pointer;
 }
 
@@ -314,7 +355,13 @@ function handleAfterLeave() {
 
 .sn-alert-body__title {
   font-weight: 600;
-  margin-bottom: 2px;
+}
+
+/* The gap belongs to the title/content *pair*. As a `margin-bottom` on the
+ * title it also padded a title-only banner, so the title sat 2px above the
+ * vertical center of its own box. */
+.sn-alert-body__title + .sn-alert-body__content {
+  margin-top: 2px;
 }
 
 .sn-alert-body__content {

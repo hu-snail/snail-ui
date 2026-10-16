@@ -124,7 +124,9 @@ function onClose() {
 
 ## 主题
 
-组件消费 `--sn-web-alert-*` token 别名，改主题靠覆盖 token。
+组件没有 alert 专属 token，配色直接消费语义 token：`--sn-web-color-feedback-info` / `-success` / `-warning` / `-danger`（类型色，底色由它 12% 混白得来）、`--sn-web-color-background-subtle` / `-surface`、`--sn-web-color-text-primary`、`--sn-web-color-border-default`、`--sn-web-focus-ring`。改主题靠覆盖这些 token。
+
+图标列与关闭按钮的高度固定为首行行盒（`1.6em`），图形在其中水平垂直居中；图形尺寸来自 `SnIcon` 的默认 `size`（16px）。覆盖 `.sn-alert` 的 `font-size` 时行盒高度会同步缩放。
 
 ## 已知取舍
 
