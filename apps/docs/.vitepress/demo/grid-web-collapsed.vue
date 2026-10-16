@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
  * grid-web-collapsed — SnGrid collapsed mode (show only first N rows,
- * expose "+N more" affordance via the suffix slot). Mirrors n-grid
- * `collapsed` + `collapsedRows`.
+ * expose "+N more" affordance via the suffix slot): `collapsed`
+ * + `collapsedRows`.
  */
 import { ref } from 'vue'
 import { SnButton, SnCard, SnGrid } from '@snui/vue-web'

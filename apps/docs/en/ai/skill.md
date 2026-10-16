@@ -49,7 +49,7 @@ import '@snui/tokens-web/styles'
 
 **Forbidden**:
 
-- Other UI libraries (Ant Design / Element Plus / Naive UI / Vant, etc.)
+- Any third-party UI libraries outside snail-aui
 - Mixed prefixes (`A-` / `El-` / `N-` / `Van-`)
 - **Cross-end imports** (`@snui/vue-web` must not appear in `@snui/uni` projects, and vice versa)
 

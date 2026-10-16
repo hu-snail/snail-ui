@@ -6,7 +6,7 @@
  * viewport inner-width is strictly less than the threshold. The component
  * mirrors the current viewport across the threshold via a window resize
  * listener and emits `update:collapsed` so the consumer can persist the
- * state via `v-model:collapsed`. Breakpoints use Element Plus naming:
+ * state via `v-model:collapsed`. Named breakpoints resolve to px thresholds:
  *   xs=480  sm=768  md=992  lg=1200  xl=1920  (px)
  *
  * The stage below uses CSS `max-width` with a manual toggle to simulate
@@ -28,7 +28,7 @@ const collapsed = ref(false)
 const stageWidth = ref(1024)
 // Pre-open Navigation 1 so the demo shows the expanded menu (submenu
 // items rendered inline) at viewport >= md breakpoint — matches the
-// Element Plus reference for 响应式收缩.
+// responsive-collapse behavior documented in menu.md.
 const expanded = ref<Array<string | number>>(['n1'])
 
 const items: SnMenuOption[] = [

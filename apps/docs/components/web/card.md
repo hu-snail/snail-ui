@@ -1,8 +1,7 @@
 # Card · Web（PC 端）
 
-`<div role="region">` 容器，按顺序区域承载 cover → header → content → footer → action。视觉走 `--sn-web-card-*` Token 别名层（padding / radius / shadow），同时支持 naive-ui `n-card` 1:1 parity 的所有 props 与 slots。
+`<div role="region">` 容器，按顺序区域承载 cover → header → content → footer → action。视觉走 `--sn-web-card-*` Token 别名层（padding / radius / shadow）。
 
-参考库：[naive-ui `n-card`](https://www.naiveui.com/zh-CN/light/components/card)（按 AGENTS.md §112 强约束对齐）。
 
 ## 基本用法
 
@@ -22,34 +21,34 @@
 
 ## Props
 
-> 完整 prop 列表与 [naive-ui `n-card`](https://www.naiveui.com/zh-CN/light/components/card) 1:1 对齐。下表标注 `§112 对齐` = naive-ui 同名 prop；`便利 alias` = snail-aui 友好命名，行为映射到对齐 props。
+> 下表 `标准` 列表示契约内的标准 prop；`便利 alias` 列表示 snail-aui 提供的友好命名，行为映射到标准 prop。
 
 | Prop | Type | Default | 类别 | Description |
 | --- | --- | --- | --- | --- |
-| `title` | `string \| (() => VNode)` | — | §112 对齐 | 头部标题文本或渲染函数 |
-| `contentClass` | `string` | — | §112 对齐 | 内容区 class 名 |
-| `contentStyle` | `string \| CSSProperties` | — | §112 对齐 | 内容区 inline style |
-| `contentScrollable` | `boolean` | `false` | §112 对齐 | 内容区超长时可滚动（max-height + overflow:auto） |
-| `headerClass` | `string` | — | §112 对齐 | 头部 class 名 |
-| `headerStyle` | `string \| CSSProperties` | — | §112 对齐 | 头部 inline style |
-| `headerExtraClass` | `string` | — | §112 对齐 | 头部右侧区域 class 名 |
-| `headerExtraStyle` | `string \| CSSProperties` | — | §112 对齐 | 头部右侧区域 inline style |
-| `footerClass` | `string` | — | §112 对齐 | 底部 class 名 |
-| `footerStyle` | `string \| CSSProperties` | — | §112 对齐 | 底部 inline style |
-| `embedded` | `boolean` | `false` | §112 对齐 | 嵌套卡片模式（去边框 + 阴影） |
-| `segmented` | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false` | §112 对齐 | 区域之间的分割线 |
-| `size` | `'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | §112 对齐 | padding + font-size 子轴 |
-| `bordered` | `boolean` | `true` | §112 对齐 | 是否显示外边框 |
-| `closable` | `boolean` | `false` | §112 对齐 | 头部显示关闭按钮（需 `onClose` 才有作用） |
-| `hoverable` | `boolean` | `false` | §112 对齐 | hover 时显示上浮视觉效果 |
-| `role` | `string` | `'region'` | §112 对齐 | 无障碍 role 属性 |
-| `tag` | `keyof HTMLElementTagNameMap` | `'div'` | §112 对齐 | 根节点元素类型 |
-| `cover` | `() => VNode` | — | §112 对齐 | 顶部封面区渲染函数 |
-| `content` | `string \| (() => VNode)` | — | §112 对齐 | 内容区文本或渲染函数（`default` slot 不传时生效） |
-| `footer` | `() => VNode` | — | §112 对齐 | 底部区渲染函数 |
-| `action` | `() => VNode` | — | §112 对齐 | 底部下方操作区渲染函数 |
-| `headerExtra` | `() => VNode` | — | §112 对齐 | 头部右侧渲染函数 |
-| `closeFocusable` | `boolean` | `true` | §112 对齐 | 关闭按钮是否可键盘聚焦 |
+| `title` | `string \| (() => VNode)` | — | 标准 | 头部标题文本或渲染函数 |
+| `contentClass` | `string` | — | 标准 | 内容区 class 名 |
+| `contentStyle` | `string \| CSSProperties` | — | 标准 | 内容区 inline style |
+| `contentScrollable` | `boolean` | `false` | 标准 | 内容区超长时可滚动（max-height + overflow:auto） |
+| `headerClass` | `string` | — | 标准 | 头部 class 名 |
+| `headerStyle` | `string \| CSSProperties` | — | 标准 | 头部 inline style |
+| `headerExtraClass` | `string` | — | 标准 | 头部右侧区域 class 名 |
+| `headerExtraStyle` | `string \| CSSProperties` | — | 标准 | 头部右侧区域 inline style |
+| `footerClass` | `string` | — | 标准 | 底部 class 名 |
+| `footerStyle` | `string \| CSSProperties` | — | 标准 | 底部 inline style |
+| `embedded` | `boolean` | `false` | 标准 | 嵌套卡片模式（去边框 + 阴影） |
+| `segmented` | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false` | 标准 | 区域之间的分割线 |
+| `size` | `'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | 标准 | padding + font-size 子轴 |
+| `bordered` | `boolean` | `true` | 标准 | 是否显示外边框 |
+| `closable` | `boolean` | `false` | 标准 | 头部显示关闭按钮（需 `onClose` 才有作用） |
+| `hoverable` | `boolean` | `false` | 标准 | hover 时显示上浮视觉效果 |
+| `role` | `string` | `'region'` | 标准 | 无障碍 role 属性 |
+| `tag` | `keyof HTMLElementTagNameMap` | `'div'` | 标准 | 根节点元素类型 |
+| `cover` | `() => VNode` | — | 标准 | 顶部封面区渲染函数 |
+| `content` | `string \| (() => VNode)` | — | 标准 | 内容区文本或渲染函数（`default` slot 不传时生效） |
+| `footer` | `() => VNode` | — | 标准 | 底部区渲染函数 |
+| `action` | `() => VNode` | — | 标准 | 底部下方操作区渲染函数 |
+| `headerExtra` | `() => VNode` | — | 标准 | 头部右侧渲染函数 |
+| `closeFocusable` | `boolean` | `true` | 标准 | 关闭按钮是否可键盘聚焦 |
 | `variant` | `'default' \| 'outlined' \| 'elevated'` | `'default'` | 便利 alias | 映射到 `(bordered, shadow)` 组合（`'elevated'` = 无边框 + 阴影；`'default'`/`'outlined'` = 带边框 + 无阴影） |
 | `padding` | `'none' \| 'sm' \| 'md' \| 'lg'` | `'md'` | 便利 alias | 映射到 `size`（`'none'` = 不加 size class；`'sm'` = small；`'md'` = medium；`'lg'` = large） |
 | `shadow` | `boolean` | `false` | 便利 alias | 是否显示阴影（消费 `--sn-web-card-shadow`） |

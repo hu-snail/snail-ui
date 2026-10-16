@@ -49,7 +49,7 @@ import '@snui/tokens-web/styles'
 
 **禁止**：
 
-- 禁止引入 snail-aui 外的 UI 组件库（Ant Design / Element Plus / Naive UI / Vant 等）
+- 禁止引入 snail-aui 外的任何第三方 UI 组件库
 - 禁止混用其他前缀（`A-` / `El-` / `N-` / `Van-`）
 - **禁止 Web 和 uni 互相 import**（`@snui/vue-web` 不允许出现在 `@snui/uni` 项目，反之亦然）
 

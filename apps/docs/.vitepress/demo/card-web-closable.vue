@@ -1,7 +1,6 @@
 <script setup lang="ts">
 /**
  * card-web-closable — SnCard with `closable: true` + close event emission.
- * Mirrors n-card's `closable` prop + `on-close` event.
  */
 import { ref } from 'vue'
 import { SnCard } from '@snui/vue-web'

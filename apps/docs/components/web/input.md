@@ -64,9 +64,9 @@
 | --- | --- | --- | --- |
 | `modelValue` | `string \| number` | `''` | 双向绑定值。`type='number'` 时输入会强转为 number。 |
 | `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | 原生 input type。`textarea` 渲染多行文本域。 |
-| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 高度 / 字号。`mini` 在 wot-ui-parity 下新增。 |
+| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 高度 / 字号。 |
 | `placeholder` | `string` | `''` | 占位符。 |
-| `placeholderStyle` | `string` | `''` | 行内 CSS 注入 `::placeholder` 伪元素（naive-ui `placeholder-style`）。 |
+| `placeholderStyle` | `string` | `''` | 行内 CSS 注入 `::placeholder` 伪元素。 |
 | `placeholderClass` | `string` | `''` | 占位符上的额外 class。 |
 | `disabled` | `boolean` | `false` | 禁用 + `aria-disabled`。 |
 | `readonly` | `boolean` | `false` | 只读。 |
@@ -74,8 +74,8 @@
 | `ariaLabel` | `string` | — | 无障碍标签。 |
 | `maxlength` | `number` | — | 原生 maxlength。 |
 | `minlength` | `number` | — | 原生 minlength。 |
-| `showCount` | `boolean` | `false` | 渲染 `current / max` 计数（naive-ui `show-count`）。 |
-| `showWordLimit` | `boolean` | `false` | `showCount` 的 alias（wot-ui `show-word-limit`）。 |
+| `showCount` | `boolean` | `false` | 渲染 `current / max` 计数。 |
+| `showWordLimit` | `boolean` | `false` | `showCount` 的别名。 |
 | `clearable` | `boolean` | `false` | 显示 × 清除按钮。 |
 | `clearTrigger` | `'always' \| 'focus'` | `'always'` | × 按钮显示时机：`focus` 仅在聚焦时显示。 |
 | `focusWhenClear` | `boolean` | `true` | × 点击后自动 refocus。 |

@@ -21,7 +21,7 @@ snail-aui v3.1 是面向 **Vue 3（Web 端，PC 桌面）** + **uni-app（移动
 | 命名空间 | SnButton / SnForm / SnTable ... | sn-button / sn-list / sn-grid ... |
 | Token 别名 | `var(--sn-web-*)` | `var(--sn-mp-*)` |
 | 尺寸单位 | px | rpx（自动转换）|
-| API 风格 | naive-ui 风格（配置驱动） | wot-ui 风格（事件驱动） |
+| API 风格 | Web 端配置驱动 | uni 端事件驱动 |
 
 **少量共享**：Button / ConfigProvider / Icon 是两端的最低公约数组件。
 

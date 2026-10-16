@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * card-web-sizes — SnCard with all 4 size presets (small/medium/large/huge).
- * `size` drives padding + font-size (mirrors n-card `size`).
+ * `size` drives padding + font-size.
  */
 import { SnCard } from '@snui/vue-web'
 </script>

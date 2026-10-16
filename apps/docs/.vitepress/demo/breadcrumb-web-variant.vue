@@ -2,13 +2,12 @@
 /**
  * breadcrumb-web-variant — SnBreadcrumbItem `variant` prop.
  * Each item can independently pick a background treatment:
- *   - `plain` (default) — transparent, sits inline (naive-ui default)
+ *   - `plain` (default) — transparent, sits inline
  *   - `chip` — filled background pill, ideal for compact trail in
  *              dashboards / settings pages
  *   - `outlined` — transparent + thin border, medium emphasis
- * AUI extension beyond n-breadcrumb-item (naive-ui doesn't ship a
- * background variant). Combine with `show-separator=false` on every
- * item for the cleanest chip look.
+ * snail-aui extension: a per-item background variant. Combine with
+ * `show-separator=false` on every item for the cleanest chip look.
  */
 import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
 import { Home, Settings, FileText } from 'lucide-vue-next'

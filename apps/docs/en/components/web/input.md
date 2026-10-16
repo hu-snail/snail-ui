@@ -64,7 +64,7 @@ Multi-line textarea via `type="textarea"`. See input-slots for an inline bio exa
 | --- | --- | --- | --- |
 | `modelValue` | `string \| number` | `''` | v-model value; `type="number"` coerces to number. |
 | `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | Native input type; textarea renders multi-line. |
-| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | Height / font-size. `mini` is wot-ui-parity. |
+| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | Height / font-size. |
 | `placeholder` | `string` | `''` | Placeholder text. |
 | `placeholderStyle` | `string` | `''` | Inline CSS injected into `::placeholder` pseudo-element. |
 | `placeholderClass` | `string` | `''` | Extra class on placeholder pseudo-element. |
@@ -75,7 +75,7 @@ Multi-line textarea via `type="textarea"`. See input-slots for an inline bio exa
 | `maxlength` | `number` | — | Forwarded. |
 | `minlength` | `number` | — | Forwarded. |
 | `showCount` | `boolean` | `false` | Show current / max counter. |
-| `showWordLimit` | `boolean` | `false` | Alias for `showCount` (wot-ui). |
+| `showWordLimit` | `boolean` | `false` | Alias for `showCount`. |
 | `clearable` | `boolean` | `false` | Show × button. |
 | `clearTrigger` | `'always' \| 'focus'` | `'always'` | When × shows: `focus` only on focus. |
 | `focusWhenClear` | `boolean` | `true` | Auto-refocus after × click. |

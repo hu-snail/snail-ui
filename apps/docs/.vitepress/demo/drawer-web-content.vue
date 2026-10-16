@@ -41,8 +41,8 @@ const showBare = ref(false)
     </SnDrawer>
 
     <!-- A bare `closable` header still shows, so the close button has a home.
-         SnDrawer itself takes no `title` / `closable` — upstream `n-drawer`
-         does not either; both live on the content component. -->
+         SnDrawer itself takes no `title` / `closable`; both live on the
+         content component. -->
     <SnDrawer v-model:show="showBare" :width="320">
       <SnDrawerContent closable />
     </SnDrawer>

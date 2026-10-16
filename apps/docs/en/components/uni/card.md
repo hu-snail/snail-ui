@@ -1,8 +1,6 @@
 # Card · uni-app (Mobile)
 
-`<view role="region">` container for mobile / miniprogram cards. Visual styling is driven by `--sn-mp-card-*` token aliases (rpx units). Props + slots are 1:1 with wot-ui `wd-card`.
-
-Reference library: [wot-ui `wd-card`](https://wot-ui.cn/component/card.html) (per AGENTS.md §112 hard rule).
+`<view role="region">` container for mobile / miniprogram cards. Visual styling is driven by `--sn-mp-card-*` token aliases (rpx units).
 
 ## Basic usage
 
@@ -10,7 +8,7 @@ Reference library: [wot-ui `wd-card`](https://wot-ui.cn/component/card.html) (pe
 
 ## Props
 
-> Full prop list is 1:1 with [wot-ui `wd-card`](https://wot-ui.cn/component/card.html) (per AGENTS.md §112). Web-only `variant` / `padding` / `shadow` / `closable` / `hoverable` / `embedded` / `segmented` aliases are intentionally NOT exposed — §112.1 reverse-check rejects uni-side web-only props.
+> The full prop list follows the library's dual-platform contract. Web-only `variant` / `padding` / `shadow` / `closable` / `hoverable` / `embedded` / `segmented` aliases are intentionally NOT exposed — passing them is rejected by contract validation.
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

@@ -54,7 +54,7 @@
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'tertiary'` | `'default'` | 按钮语义类型（naive-ui n-button）。 |
+| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'tertiary'` | `'default'` | 按钮语义类型。 |
 | `size` | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | 按钮尺寸。 |
 | `block` | `boolean` | `false` | 块级（占满父容器宽度）。 |
 | `round` | `boolean` | `false` | 胶囊形（`border-radius: 999px`）。 |
@@ -68,17 +68,17 @@
 | `strong` | `boolean` | `false` | 加重阴影（实心按钮）。 |
 | `color` | `string` | — | 自定义 CSS 颜色；`--sn-button-color` token 覆盖 type 配色。 |
 | `tag` | `'button' \| 'a' \| 'div' \| 'span'` | `'button'` | 根元素。`a` 时 `disabled` 失效（HTMLAnchorElement 不支持）。 |
-| `attrType` | `'button' \| 'submit' \| 'reset'` | `'button'` | 原生 `<button>` 的 type 属性（naive-ui `attr-type`）。 |
+| `attrType` | `'button' \| 'submit' \| 'reset'` | `'button'` | 原生 `<button>` 的 type 属性。 |
 | `htmlType` *(deprecated)* | `'button' \| 'submit' \| 'reset'` | — | `attrType` 的 legacy alias。 |
 | `disabled` | `boolean` | `false` | 禁用。 |
 | `loading` | `boolean` | `false` | 加载中（spinner + 阻止 click）。 |
 | `focusable` | `boolean` | `true` | 是否可 tab 聚焦。 |
 | `icon` | `IconComponent` | — | 直接传 lucide 组件。 |
 | `iconName` | `string` | — | 通过 `registerSnIcons` 解析。 |
-| `iconPlacement` | `'left' \| 'right'` | `'left'` | 图标位置（naive-ui `icon-placement`）。 |
+| `iconPlacement` | `'left' \| 'right'` | `'left'` | 图标位置。 |
 | `iconSize` | `number \| string` | `14` | 图标 px / CSS 长度。 |
 | `showIcon` | `boolean` | `true` | 是否显示图标。`false` 隐藏（loading 仍显示 spinner）。 |
-| `bordered` *(deprecated)* | `boolean` | `true` | 旧 border 标志。naive-ui 没这个 prop，保留仅作 back-compat。 |
+| `bordered` *(deprecated)* | `boolean` | `true` | 旧 border 标志，保留仅作向后兼容。 |
 | `ariaLabel` | `string` | — | 无障碍标签。 |
 
 ### Events

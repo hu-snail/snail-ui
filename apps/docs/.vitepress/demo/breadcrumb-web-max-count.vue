@@ -5,14 +5,12 @@
  * head(1) + ellipsis + tail(maxCount-1) — the middle items fold into
  * a single "… N more …" affordance.
  *
- * Algorithm mirrors Element Plus `max-count` / NextUI `maxItems`:
  *   - head always shows the first 1 item
  *   - tail shows the last `maxCount - 1` items
  *   - everything between is collapsed
  *
- * AUI extension beyond n-breadcrumb (naive-ui handles long breadcrumbs
- * via a dropdown slot on the middle item; this prop gives consumers a
- * faster declarative cap).
+ * snail-aui extension: a declarative cap on long breadcrumb trails
+ * (no dropdown wiring needed on the middle item).
  */
 import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
 </script>

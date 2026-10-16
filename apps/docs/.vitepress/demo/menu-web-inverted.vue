@@ -1,9 +1,8 @@
 <script setup lang="ts">
 /**
- * menu-web-inverted — SnMenu inverted variant for dark backdrop navbars
- * (mirrors n-menu `inverted: true`). Colors flip for high-contrast over
- * dark surfaces — used by the docs chrome's SnDocsNav when a colored /
- * dark style pack is active.
+ * menu-web-inverted — SnMenu inverted variant for dark backdrop navbars.
+ * Colors flip for high-contrast over dark surfaces — used by
+ * the docs chrome's SnDocsNav when a colored / dark style pack is active.
  */
 import { ref } from 'vue'
 import { SnMenu } from '@snui/vue-web'

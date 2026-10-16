@@ -42,7 +42,7 @@ Block button (full parent width) is common on mobile:
 
 ## Variant: base / plain / dashed / soft / subtle / text
 
-<Demo name="button-mp-variant" description="wot-ui variant 6 tiers: base (filled), plain (transparent + colored border), dashed (dashed border), soft (soft bg + colored text), subtle (very light bg), text (text-only)." />
+<Demo name="button-mp-variant" description="6 variant tiers: base (filled), plain (transparent + colored border), dashed (dashed border), soft (soft bg + colored text), subtle (very light bg), text (text-only)." />
 
 ## Cell: hover / fill / menu
 
@@ -81,15 +81,15 @@ Block button (full parent width) is common on mobile:
 | `hairline` | `boolean` | `true` | Hairline border on `default` type. |
 | `feedback` | `boolean` | `true` | Active feedback (opacity). |
 | `plain` | `boolean` | `false` | Low-emphasis style (v1: equals `variant='plain'`). |
-| `variant` | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'` | `'base'` | wot-ui `wd-button variant`. |
-| `cell` | `'hover' \| 'fill' \| 'menu'` | — | Cell list style (wot-ui `wd-button cell`). |
+| `variant` | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'` | `'base'` | Visual variant: filled, outlined, dashed, soft fill, very light bg, text-only. |
+| `cell` | `'hover' \| 'fill' \| 'menu'` | — | Cell list style. |
 | `loadingColor` | `string` | `''` | Custom spinner color. |
 | `loadingSize` | `number \| string` | `32` | Spinner rpx / px size. |
 | `hoverClass` | `string` | `'sn-button--feedback'` | Touch-feedback class. |
 | `hoverStartTime` | `number` | `0` | How long to hold before triggering hoverClass. |
 | `hoverStayTime` | `number` | `70` | How long after release before removing hoverClass. |
 | `openType` | `'share' \| 'feedback' \| 'launchApp' \| 'contact' \| 'getUserInfo' \| 'openSetting' \| 'lifestyle' \| 'livePlayer' \| 'favorite' \| 'chooseAvatar' \| 'weRunGroup'` | — | WeChat MP open-type passthrough. |
-| `formType` | `'submit' \| 'reset'` | — | Form submission type (wot-ui `wd-button form-type`). |
+| `formType` | `'submit' \| 'reset'` | — | Form submission type. |
 | `bgColor` | `string` | `''` | Inline `background-color` override. |
 | `color` | `string` | `''` | Inline `color` + `border-color` override. |
 | `customClass` | `string` | `''` | Root extra class. |

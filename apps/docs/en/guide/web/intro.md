@@ -21,7 +21,7 @@ Future ends (React, Flutter, ...) follow the same pattern: `@snui/tokens-{end}` 
 | Namespace | SnButton / SnForm / SnTable ... | sn-button / sn-list / sn-grid ... |
 | Token alias | `var(--sn-web-*)` | `var(--sn-mp-*)` |
 | Size unit | px | rpx (auto-converted) |
-| API style | naive-ui style (config-driven) | wot-ui style (event-driven) |
+| API style | Web: config-driven | uni: event-driven |
 
 **Small overlap**: Button / ConfigProvider / Icon are the lowest-common-denominator components shared across ends.
 

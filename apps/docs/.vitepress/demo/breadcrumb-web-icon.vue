@@ -1,9 +1,8 @@
 <script setup lang="ts">
 /**
  * breadcrumb-web-icon — SnBreadcrumbItem `icon` prop (SnIcon-wrapped).
- * Replaces the naive-ui `cB('icon')` slot pattern with a typed prop
- * so consumers get the full lucide / iconify / @vicons tree-shake
- * benefits without manually wrapping each glyph in <SnIcon>.
+ * Typed icon prop gives consumers the full lucide / iconify / @vicons
+ * tree-shake benefits without manually wrapping each glyph in <SnIcon>.
  */
 import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
 import { Home, ChevronRight, Settings, FileText } from 'lucide-vue-next'

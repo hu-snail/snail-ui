@@ -1,8 +1,6 @@
 # Card · Web (PC)
 
-`<div role="region">` container rendering cover → header → content → footer → action in order. Visual styling is driven by `--sn-web-card-*` token aliases (padding / radius / shadow), with full 1:1 prop / slot parity against naive-ui `n-card`.
-
-Reference library: [naive-ui `n-card`](https://www.naiveui.com/zh-CN/light/components/card) (per AGENTS.md §112 hard rule).
+`<div role="region">` container rendering cover → header → content → footer → action in order. Visual styling is driven by `--sn-web-card-*` token aliases (padding / radius / shadow).
 
 ## Basic usage
 
@@ -10,34 +8,34 @@ Reference library: [naive-ui `n-card`](https://www.naiveui.com/zh-CN/light/compo
 
 ## Props
 
-> Full prop list is 1:1 with [naive-ui `n-card`](https://www.naiveui.com/zh-CN/light/components/card). `§112 aligned` = same-named prop; `convenience alias` = snail-aui-friendly name that maps to aligned props.
+> The `Standard` column marks contract-standard props; `convenience alias` marks snail-aui-friendly names that map to standard props.
 
 | Prop | Type | Default | Category | Description |
 | --- | --- | --- | --- | --- |
-| `title` | `string \| (() => VNode)` | — | §112 aligned | Header title text or render function |
-| `contentClass` | `string` | — | §112 aligned | Class for content region |
-| `contentStyle` | `string \| CSSProperties` | — | §112 aligned | Inline style for content region |
-| `contentScrollable` | `boolean` | `false` | §112 aligned | Make content scrollable when overflowed (max-height + overflow:auto) |
-| `headerClass` | `string` | — | §112 aligned | Class for header region |
-| `headerStyle` | `string \| CSSProperties` | — | §112 aligned | Inline style for header region |
-| `headerExtraClass` | `string` | — | §112 aligned | Class for header-extra region |
-| `headerExtraStyle` | `string \| CSSProperties` | — | §112 aligned | Inline style for header-extra region |
-| `footerClass` | `string` | — | §112 aligned | Class for footer region |
-| `footerStyle` | `string \| CSSProperties` | — | §112 aligned | Inline style for footer region |
-| `embedded` | `boolean` | `false` | §112 aligned | Nested-card mode (strips border + shadow) |
-| `segmented` | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false` | §112 aligned | Divider lines between regions |
-| `size` | `'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | §112 aligned | Padding + font-size preset |
-| `bordered` | `boolean` | `true` | §112 aligned | Show 1px outer border |
-| `closable` | `boolean` | `false` | §112 aligned | Show close button in header (needs `onClose`) |
-| `hoverable` | `boolean` | `false` | §112 aligned | Apply hover-lift visual cue |
-| `role` | `string` | `'region'` | §112 aligned | Accessible role |
-| `tag` | `keyof HTMLElementTagNameMap` | `'div'` | §112 aligned | Root element tag |
-| `cover` | `() => VNode` | — | §112 aligned | Render fn for top cover region |
-| `content` | `string \| (() => VNode)` | — | §112 aligned | Content text or render fn (when `default` slot absent) |
-| `footer` | `() => VNode` | — | §112 aligned | Render fn for footer region |
-| `action` | `() => VNode` | — | §112 aligned | Render fn for action region (below footer) |
-| `headerExtra` | `() => VNode` | — | §112 aligned | Render fn for header-extra region |
-| `closeFocusable` | `boolean` | `true` | §112 aligned | Close button keyboard-focusable |
+| `title` | `string \| (() => VNode)` | — | Standard | Header title text or render function |
+| `contentClass` | `string` | — | Standard | Class for content region |
+| `contentStyle` | `string \| CSSProperties` | — | Standard | Inline style for content region |
+| `contentScrollable` | `boolean` | `false` | Standard | Make content scrollable when overflowed (max-height + overflow:auto) |
+| `headerClass` | `string` | — | Standard | Class for header region |
+| `headerStyle` | `string \| CSSProperties` | — | Standard | Inline style for header region |
+| `headerExtraClass` | `string` | — | Standard | Class for header-extra region |
+| `headerExtraStyle` | `string \| CSSProperties` | — | Standard | Inline style for header-extra region |
+| `footerClass` | `string` | — | Standard | Class for footer region |
+| `footerStyle` | `string \| CSSProperties` | — | Standard | Inline style for footer region |
+| `embedded` | `boolean` | `false` | Standard | Nested-card mode (strips border + shadow) |
+| `segmented` | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false` | Standard | Divider lines between regions |
+| `size` | `'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | Standard | Padding + font-size preset |
+| `bordered` | `boolean` | `true` | Standard | Show 1px outer border |
+| `closable` | `boolean` | `false` | Standard | Show close button in header (needs `onClose`) |
+| `hoverable` | `boolean` | `false` | Standard | Apply hover-lift visual cue |
+| `role` | `string` | `'region'` | Standard | Accessible role |
+| `tag` | `keyof HTMLElementTagNameMap` | `'div'` | Standard | Root element tag |
+| `cover` | `() => VNode` | — | Standard | Render fn for top cover region |
+| `content` | `string \| (() => VNode)` | — | Standard | Content text or render fn (when `default` slot absent) |
+| `footer` | `() => VNode` | — | Standard | Render fn for footer region |
+| `action` | `() => VNode` | — | Standard | Render fn for action region (below footer) |
+| `headerExtra` | `() => VNode` | — | Standard | Render fn for header-extra region |
+| `closeFocusable` | `boolean` | `true` | Standard | Close button keyboard-focusable |
 | `variant` | `'default' \| 'outlined' \| 'elevated'` | `'default'` | convenience alias | Maps to `(bordered, shadow)` combination |
 | `padding` | `'none' \| 'sm' \| 'md' \| 'lg'` | `'md'` | convenience alias | Maps to `size` |
 | `shadow` | `boolean` | `false` | convenience alias | Show shadow (consumes `--sn-web-card-shadow`) |

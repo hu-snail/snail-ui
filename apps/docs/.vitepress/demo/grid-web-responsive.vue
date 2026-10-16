@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * grid-web-responsive — SnGrid responsive column count via breakpoint object
- * (mirrors n-grid `cols` accepting a responsive object). Resize the
+ * (`cols` accepts a responsive object). Resize the
  * browser to see columns change at xs<480 / s≥480 / m≥640 / l≥768 / xl≥1024 / xxl≥1280.
  */
 import { SnCard, SnGrid } from '@snui/vue-web'

@@ -69,7 +69,7 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 | `required` | `boolean` | `false` | aria-required. |
 | `maxlength` / `minlength` | `number` | — | Forwarded. |
 | `showCount` | `boolean` | `false` | Show counter. |
-| `showWordLimit` | `boolean` | `false` | `showCount` wot-ui alias. |
+| `showWordLimit` | `boolean` | `false` | `showCount` alias. |
 | `clearable` | `boolean` | `false` | × button. |
 | `clearTrigger` | `'always' \| 'focus'` | `'always'` | × button visibility trigger. |
 | `focusWhenClear` | `boolean` | `true` | Auto-refocus after × click (uni-side placeholder — soft-keyboard dismissal). |

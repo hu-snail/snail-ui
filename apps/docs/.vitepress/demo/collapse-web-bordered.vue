@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * collapse-web-bordered — SnCollapse bordered variant (card-like outline
- * with shared lines between items). Mirrors n-collapse `bordered: true`.
+ * with shared lines between items).
  */
 import { ref } from 'vue'
 import { SnCollapse, SnCollapseItem } from '@snui/vue-web'

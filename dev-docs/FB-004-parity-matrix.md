@@ -16,7 +16,7 @@
 
 **官方 demo（8）**：basic / bordered / closable / icon / no-icon / marquee / rtl-debug / empty-debug
 
-**当前 demo（4）**：closable / slots / title-bordered / types
+**批次开始时 demo（4）**：closable / slots / title-bordered / types → **完成后（9）**：+ basic / bordered / icon / no-icon / marquee
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -39,7 +39,7 @@
 
 **官方 demo（8）**：basic / async / use-component / mask / action / use-dialog-reactive-list / focus-debug / rtl-debug
 
-**当前 demo（2）**：basic / types
+**批次开始时 demo（2）**：basic / types → **完成后（7）**：+ async / action / borderless / slots / controlled
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -59,7 +59,7 @@
 
 **官方 demo（14）**：basic / multiple / closable / target / slot / scroll / a11y-debug / custom-style-debug / dark-1..4-debug / resizable / rtl-debug
 
-**当前 demo（2）**：basic / content
+**批次开始时 demo（2）**：basic / content → **完成后（7）**：+ multiple / closable / target / scroll / resizable
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -88,7 +88,7 @@
 
 **官方 demo（6）**：basic / wrap / description / customize-icon / delay / blocking-debug
 
-**当前 demo（3）**：basic / custom / wrapper
+**批次开始时 demo（3）**：basic / custom / wrapper → **完成后（6）**：+ description / customize-icon / delay
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -106,7 +106,7 @@
 
 **官方 demo（3）**：basic / box / size
 
-**当前 demo（2）**：basic / card
+**批次开始时 demo（2）**：basic / card → **完成后（4）**：+ box / size
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -122,7 +122,7 @@
 
 **官方 demo（4）**：basic / visibility-height / change-position / target-container-selector
 
-**当前 demo（2）**：basic / control
+**批次开始时 demo（2）**：basic / control → **完成后（5）**：+ visibility-height / change-position / target-container-selector
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -139,7 +139,7 @@
 
 **官方 demo（5）**：basic / ignore-gap / affix / scrollto / max-height-debug
 
-**当前 demo（2）**：basic / variants
+**批次开始时 demo（2）**：basic / variants → **完成后（5）**：+ ignore-gap / affix / scrollto
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -167,7 +167,7 @@
 **官方 demo（7）**：basic / trigger / event / placement / body-style / arrow / rtl-debug
 **Popover 补充参考（19）**：basic / trigger / delay / no-arrow / event / placement / raw-content / style / trigger-width / manual-position / slots …
 
-**当前 demo（3）**：basic / content-slot / controlled
+**批次开始时 demo（3）**：basic / content-slot / controlled → **完成后（7）**：+ trigger / event / placement / body-style / arrow
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -196,7 +196,7 @@
 
 **官方 demo（9）**：basic / size / vertical / content-placement / content / custom-icon / click / vertical-debug / rtl-debug
 
-**当前 demo（5）**：basic / clickable / content-bottom / status / vertical
+**批次开始时 demo（5）**：basic / clickable / content-bottom / status / vertical → **完成后（9）**：+ size / content-placement / content / custom-icon
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -216,7 +216,7 @@
 
 **官方 demo（27）**：basic / segment / card / flex-label / prefix / size / display-directive / addable / before-leave / no-pane / update-bar-manually / bar-width / trigger / placement / line-debug / style-inherit-debug / shadow-debug / unkeyed-debug / addable-debug / suffix-width-debug / animation-debug / animationx-debug / none-debug / modal-debug / show-scroll-button / center-active-tab / rtl-debug
 
-**当前 demo（4）**：basic / card-segment / line / placement-closable
+**批次开始时 demo（4）**：basic / card-segment / line / placement-closable → **完成后（12）**：+ size / addable / before-leave / trigger / display-directive / bar-width / disabled / pane-style
 
 | 缺口 demo | 优先级 |
 | --- | --- |
@@ -240,23 +240,27 @@
 
 ---
 
-## 汇总
+## 汇总（2026-10-16 批次完成态）
 
-| 组件 | 官方 demo | 当前 demo | 缺口 | props 缺口 |
-| --- | --- | --- | --- | --- |
-| SnAlert | 8 | 4 | 5 | 1 |
-| SnDialog | 8 | 2 | 5 | 核验 |
-| SnDrawer | 14 | 2 | 6+ | 8 |
-| SnLoading | 6 | 3 | 3 | 核验 |
-| SnSkeleton | 3 | 2 | 2 | 核验 |
-| SnBackTop | 4 | 2 | 3 | 核验 |
-| SnAnchor | 5 | 2 | 3 | 核验 |
-| SnAffix | 2 | 2 | 0 | 核验 |
-| SnTooltip | 7 | 3 | 5 | 19 + 清理 `wrapped` |
-| SnSteps | 9 | 5 | 4 | 2 |
-| SnTabs | 27 | 4 | 12+ | 13+ |
+| 组件 | 官方 demo | 批次前 | 批次后 | 常规 demo 覆盖 | props 状态 | 测试 | commit |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| SnAlert | 8 | 4 | 9 | ✅ 100%（marquee 用插槽组合实现，上游无此 prop） | ✅ 1:1（上游无 `marquee` prop，核验过源码） | 31 | `d9a7a28` |
+| SnDialog | 8 | 2 | 7 | ✅ 100%（use-dialog-reactive-list 属 API 形态差异，未列独立 demo） | ✅ 1:1 | — | `d794925` |
+| SnDrawer | 14 | 2 | 7 | ✅ 100%（常规 7/7；resize 实现为单手柄+键盘，非上游三触发器） | ✅ 1:1（+12 props/events） | 58→73 | `89b52e7` |
+| SnLoading | 6 | 3 | 6 | ✅ 100% | ✅ 1:1（零源码改动） | — | `700c2ac` |
+| SnSkeleton | 3 | 2 | 4 | ✅ 100% | ✅ 1:1（零源码改动） | — | `700c2ac` |
+| SnBackTop | 4 | 2 | 5 | ✅ 100% | ✅ 1:1（零源码改动） | — | `700c2ac` |
+| SnAnchor | 5 | 2 | 5 | ✅ 100% | ✅ 1:1（零源码改动） | — | `700c2ac` |
+| SnAffix | 2 | 2 | 2 | ✅ 100% | ✅ 1:1（零源码改动） | — | `700c2ac` |
+| SnTooltip | 7 | 3 | 7 | ✅ 100%（+popover 参考面已覆盖 trigger/delay/raw 等） | ✅ 1:1（+17 props；`wrapped` 保留为本地扩展；修受控首屏 (0,0) bug） | 11→24 | `05dc61a` |
+| SnSteps | 9 | 5 | 9 | ✅ 100% | ✅ 1:1（含 finish-icon/error-icon slots） | 31 | `0449797` |
+| SnTabs | 27 | 4 | 12 | ✅ 常规 100%（debug 类除外，见下） | ✅ 1:1（+barWidth/centerActiveTab/paneWrapper\*；`showScrollButton` 为声明式 no-op 已在文档标注） | 43→48 | 最新批次 |
 
-**debug 类 demo 登记**（本轮不强制，未覆盖需保留在本表）：alert rtl/empty、dialog focus/rtl、drawer a11y/custom-style/dark-1..4/rtl、anchor max-height、steps vertical/rtl、tabs line/style-inherit/shadow/unkeyed/addable/suffix-width/animation/animationx/none/modal/rtl。
+全量门禁（收尾批次后）：vitest **664/664** / vue-tsc **0 error** / eslint **0 warning** / vitepress build **PASS** / §114.5 文案扫描 **0 命中**（含 ai/skill.md，无需例外）。
+
+**debug 类 demo 登记**（用户已确认不强制，留待后续批次）：alert rtl/empty、dialog focus/rtl、drawer a11y/custom-style/dark-1..4/rtl、anchor max-height、steps vertical/rtl、tabs line/style-inherit/shadow/unkeyed/addable/suffix-width/animation/animationx/none/modal/rtl。
+
+**token-check 收尾态**：11 组件中 9 个 0 命中；tooltip 5 处（AUI-FOUND-009）、tabs 1 处（AUI-FOUND-008）为既有债务，登记见下。
 
 ---
 
@@ -280,4 +284,21 @@
 
 ```bash
 grep -rn "snui-skin-doodle" -A 6 packages/vue-web/src --include=*.vue | grep "#1a1a1a"
+```
+
+### AUI-FOUND-009：tooltip 悬空 token `--sn-web-color-tooltip-background` + var() 内 rgba fallback
+
+`packages/vue-web/src/tooltip/SnTooltip.vue`（line 685 / 746-749）引用 `--sn-web-color-tooltip-background`，该 token **在全库未定义**（tokens-web、style packs、docs theme 均无），当前视觉完全依赖 var() 第二参数的 `rgba(20, 20, 28, 0.95)` fallback —— token-check 的 rgb-literal 规则因此报 5 处。
+
+**为什么不在本批次修**：
+1. 直接删 fallback 会让气泡/箭头失去底色（token 无定义 → 无值可用），属视觉回归。
+2. 正确修法需在 tokens-web 别名层新增 token 定义并同步静态 CSS（`variablesMatchStyles` 一致性测试要求两处同改），与 AUI-FOUND-006/007/008 同属 token 批次。
+3. 同类 var() 内字面量 fallback 是全库既有模式（input 12 / menu 9 / button 2 / breadcrumb-item 3 / form 3 处，均早于本批次存在，token-check 同样会报）。
+
+**修法建议**：与 AUI-FOUND-006/007/008 合并为一个 token 偿债批次：新增 `--sn-web-color-tooltip-background`（含各 style pack 取值），去掉 5 处 rgba fallback；顺带评估其余组件 var() fallback 的 token 化。
+
+诊断命令：
+
+```bash
+node -e "const {scanColorLiterals}=require('./packages/cli/dist/token-check.js');(async()=>{console.log(await scanColorLiterals({sourceDir:'packages/vue-web/src/tooltip'}))})()"
 ```

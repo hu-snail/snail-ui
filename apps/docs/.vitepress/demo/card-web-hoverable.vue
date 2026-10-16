@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * card-web-hoverable — SnCard with `hoverable: true` (mouse hover lifts the
- * card with a soft shadow). Mirrors n-card's `hoverable` prop.
+ * card with a soft shadow).
  */
 import { SnCard } from '@snui/vue-web'
 </script>

@@ -34,7 +34,7 @@ import { SnButton } from '@snui/uni'
 
 ## 变体（`variant`：`base` / `plain` / `dashed` / `soft` / `subtle` / `text`）
 
-<Demo name="button-mp-variant" description="wot-ui variant 6 档：base 填充实心、plain 透明描边、dashed 虚线、soft 浅色填充、subtle 极淡灰底、text 纯文字。" />
+<Demo name="button-mp-variant" description="variant 6 档：base 填充实心、plain 透明描边、dashed 虚线、soft 浅色填充、subtle 极淡灰底、text 纯文字。" />
 
 ## Cell 列表化（`cell`：`hover` / `fill` / `menu`）
 
@@ -73,15 +73,15 @@ import { SnButton } from '@snui/uni'
 | `hairline` | `boolean` | `true` | 显示细边框（default 类型）。 |
 | `feedback` | `boolean` | `true` | 点击反馈（active 透明度）。 |
 | `plain` | `boolean` | `false` | 低强调度样式（v1: 等价 `variant='plain'`）。 |
-| `variant` | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'` | `'base'` | wot-ui `wd-button variant`。 |
-| `cell` | `'hover' \| 'fill' \| 'menu'` | — | Cell 列表化样式（wot-ui `wd-button cell`）。 |
+| `variant` | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'` | `'base'` | 视觉变体：填充、描边、虚线、浅填充、极淡灰底、纯文字。 |
+| `cell` | `'hover' \| 'fill' \| 'menu'` | — | Cell 列表化样式。 |
 | `loadingColor` | `string` | `''` | 自定义 spinner 颜色。 |
 | `loadingSize` | `number \| string` | `32` | spinner rpx / px 尺寸。 |
 | `hoverClass` | `string` | `'sn-button--feedback'` | 触摸反馈 class。 |
 | `hoverStartTime` | `number` | `0` | 按住多久触发 hoverClass。 |
 | `hoverStayTime` | `number` | `70` | 松手后多久撤销 hoverClass。 |
 | `openType` | `'share' \| 'feedback' \| 'launchApp' \| 'contact' \| 'getUserInfo' \| 'openSetting' \| 'lifestyle' \| 'livePlayer' \| 'favorite' \| 'chooseAvatar' \| 'weRunGroup'` | — | 微信小程序 open-type 透传。 |
-| `formType` | `'submit' \| 'reset'` | — | 表单提交类型（wot-ui `wd-button form-type`）。 |
+| `formType` | `'submit' \| 'reset'` | — | 表单提交类型。 |
 | `bgColor` | `string` | `''` | 内联 `background-color` 覆盖。 |
 | `color` | `string` | `''` | 内联 `color` + `border-color` 覆盖。 |
 | `customClass` | `string` | `''` | 根元素额外 class。 |

@@ -2,7 +2,7 @@
 
 `SnGrid` 是 `@snui/vue-web`（PC 桌面端）的 CSS Grid 容器。基于 `display:grid` + `grid-template-columns:repeat(N,minmax(0,1fr))`，适合等宽多列排版（卡片墙、特性区、表单字段等）。
 
-按 AGENTS.md §112，prop 名义对齐 [naive-ui `n-grid`](https://www.naiveui.com/zh-CN/light/components/grid)。n-grid 的高级参数（`suffix / collapsed` / `collapsedRows` / `layoutShiftDisabled` / 自适应断点观察器等）当前未实现（doc-roadmap 列），需要时再加。
+prop 命名与语义遵循本库的双端契约。高级参数（`suffix` / `collapsed` / `collapsedRows` / `layoutShiftDisabled` / 自适应断点观察器等）当前未实现（doc-roadmap 列），需要时再加。
 
 ## 实时预览
 
@@ -38,7 +38,7 @@ import '@snui/tokens-web/styles'
 | `cols` | `number \| ResponsiveCols` | `24` | 列数；可传对象 `{xs,s,m,l,xl,xxl}` 按断点切换 |
 | `xGap` | `number \| string` | `0` | 列间距（px） |
 | `yGap` | `number \| string` | `0` | 行间距（px） |
-| `itemResponsive` | `boolean` | `false` | 启用子节点 resize 监听（n-grid 同名） |
+| `itemResponsive` | `boolean` | `false` | 启用子节点 resize 监听 |
 | `itemStyle` | `string \| CSSProperties` | — | 透传到每个直接子节点 |
 | `collapsed` | `boolean` | `false` | 折叠模式：仅显示前 `collapsedRows` 行 + suffix |
 | `collapsedRows` | `number` | `1` | `collapsed: true` 时显示的行数 |
@@ -72,4 +72,4 @@ interface ResponsiveCols {
 
 ## 相关
 
-- 表格类复杂排版：未来可补 `SnTable`（n-table 同名）
+- 表格类复杂排版：未来可补 `SnTable`

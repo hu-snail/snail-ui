@@ -6,7 +6,7 @@ import { SnButton } from '@snui/vue-web'
 <template>
   <div class="sn-demo">
     <SnButton tag="button" type="primary">tag=button</SnButton>
-    <SnButton tag="a" type="primary" href="https://wot-ui.cn" target="_blank">
+    <SnButton tag="a" type="primary" href="https://example.com" target="_blank">
       tag=a (link)
     </SnButton>
     <SnButton tag="div" type="success">tag=div</SnButton>

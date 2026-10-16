@@ -2,7 +2,7 @@
 
 `SnMenu` 是 `@snui/vue-web`（PC 桌面端）的层级导航菜单，支持 horizontal / vertical 两种模式。v-model:value 同步当前选中项、v-model:expandedKeys 同步展开组（vertical 模式）。
 
-按 AGENTS.md §112，prop 名义对齐 [naive-ui `n-menu`](https://www.naiveui.com/zh-CN/light/components/menu)。支持 `collapsed` icon-only 折叠模式 + hover popover 子菜单（CSS 实现，不需要 portal）。
+prop 命名与语义遵循本库的双端契约。支持 `collapsed` icon-only 折叠模式 + hover popover 子菜单（CSS 实现，不需要 portal）。
 
 ## 实时预览
 
@@ -85,7 +85,7 @@ const active = ref<string | null>(null)
 | `labelField` | `string` | `'label'` | 树节点的 label 字段名 |
 | `childrenField` | `string` | `'children'` | 树节点的 children 字段名 |
 | `disabledField` | `string` | `'disabled'` | 树节点的 disabled 字段名 |
-| `breakpoint` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` | `undefined` | 视口宽度响应式断点。`undefined` 表示关闭。设置后：当 `window.innerWidth` 严格小于阈值时菜单自动折叠，并通过 `update:collapsed` 事件回写给消费者。命名断点对齐 Element Plus：`xs=480` / `sm=768` / `md=992` / `lg=1200` / `xl=1920`（px）；也可直接传像素数字。SSR / 非浏览器环境不安装 resize 监听 |
+| `breakpoint` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` | `undefined` | 视口宽度响应式断点。`undefined` 表示关闭。设置后：当 `window.innerWidth` 严格小于阈值时菜单自动折叠，并通过 `update:collapsed` 事件回写给消费者。命名断点对应像素值：`xs=480` / `sm=768` / `md=992` / `lg=1200` / `xl=1920`（px）；也可直接传像素数字。SSR / 非浏览器环境不安装 resize 监听 |
 | `defaultCollapsed` | `boolean` | `false` | 仅在 `breakpoint` 生效时使用 —— 视口宽度在初始测量时低于阈值时的初始折叠态（受控用 `collapsed` + `v-model:collapsed`） |
 
 ### SnMenuOption

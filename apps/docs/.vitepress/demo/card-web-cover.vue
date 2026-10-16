@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
- * card-web-cover — SnCard with cover slot (above header). Mirrors
- * n-card's `cover` slot for banner image / illustration at the top.
+ * card-web-cover — SnCard with cover slot (above header). The `cover`
+ * slot hosts a banner image / illustration at the top.
  */
 import { SnButton, SnCard } from '@snui/vue-web'
 </script>

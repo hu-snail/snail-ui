@@ -70,7 +70,7 @@
 | `maxlength` | `number` | — | 原生 maxlength。 |
 | `minlength` | `number` | — | 原生 minlength。 |
 | `showCount` | `boolean` | `false` | 计数。 |
-| `showWordLimit` | `boolean` | `false` | `showCount` 的 wot-ui alias。 |
+| `showWordLimit` | `boolean` | `false` | `showCount` 的别名。 |
 | `clearable` | `boolean` | `false` | × 清除按钮。 |
 | `clearTrigger` | `'always' \| 'focus'` | `'always'` | × 按钮显示时机。 |
 | `focusWhenClear` | `boolean` | `true` | × 点击后自动 refocus（uni 端为 placeholder，软键盘被收起）。 |

@@ -52,7 +52,7 @@ While `loading`, the button is unclickable and shows a spinner. Override via the
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'tertiary'` | `'default'` | Semantic type (naive-ui n-button). |
+| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'tertiary'` | `'default'` | Semantic type. |
 | `size` | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | Button size. |
 | `block` | `boolean` | `false` | Block (full width). |
 | `round` | `boolean` | `false` | Pill shape (`border-radius: 999px`). |
@@ -66,17 +66,17 @@ While `loading`, the button is unclickable and shows a spinner. Override via the
 | `strong` | `boolean` | `false` | Heavier shadow (filled buttons). |
 | `color` | `string` | — | Custom CSS color; `--sn-button-color` token overrides type color. |
 | `tag` | `'button' \| 'a' \| 'div' \| 'span'` | `'button'` | Root element. `a` disables `disabled` (HTMLAnchorElement doesn't support it). |
-| `attrType` | `'button' \| 'submit' \| 'reset'` | `'button'` | Native `<button>` `type` (naive-ui `attr-type`). |
+| `attrType` | `'button' \| 'submit' \| 'reset'` | `'button'` | Native `<button>` `type`. |
 | `htmlType` *(deprecated)* | `'button' \| 'submit' \| 'reset'` | — | Legacy alias of `attrType`. |
 | `disabled` | `boolean` | `false` | Disabled. |
 | `loading` | `boolean` | `false` | Loading (spinner + click suppression). |
 | `focusable` | `boolean` | `true` | Whether the button can be tab-focused. |
 | `icon` | `IconComponent` | — | Pass lucide component directly. |
 | `iconName` | `string` | — | Resolved via `registerSnIcons`. |
-| `iconPlacement` | `'left' \| 'right'` | `'left'` | Icon placement (naive-ui `icon-placement`). |
+| `iconPlacement` | `'left' \| 'right'` | `'left'` | Icon placement. |
 | `iconSize` | `number \| string` | `14` | Icon px / CSS length. |
 | `showIcon` | `boolean` | `true` | Whether to show the icon. `false` hides (loading still renders spinner). |
-| `bordered` *(deprecated)* | `boolean` | `true` | Legacy border flag. naive-ui doesn't have this; kept for back-compat only. |
+| `bordered` *(deprecated)* | `boolean` | `true` | Legacy border flag, kept for back-compat only. |
 | `ariaLabel` | `string` | — | A11y label. |
 
 ### Events

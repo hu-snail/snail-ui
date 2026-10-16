@@ -1,8 +1,8 @@
 # Breadcrumb 面包屑（Web 端）
 
-`SnBreadcrumb` + `SnBreadcrumbItem` 是 `@snui/vue-web`（PC 桌面端）的层级路径展示。按 [naive-ui `n-breadcrumb`](https://www.naiveui.com/zh-CN/light/components/breadcrumb) 1:1 对齐（AGENTS.md §112）—— prop 名 + slot 形状 + separator 渲染位置（每项自己渲染 trailing separator，与 n-breadcrumb 完全一致）。
+`SnBreadcrumb` + `SnBreadcrumbItem` 展示当前位置在层级结构中的路径，并提供逐级返回的入口。每项自行渲染尾随分隔符。
 
-新增（非 naive-ui）但符合 AUI 风格的扩展：`icon` prop（SnIcon-wrapped，AGENTS §113 强约束）。
+在基础能力之外，本库提供 `icon` 前置图标与 `variant` 背景样式两个扩展点。
 
 ## 实时预览
 
@@ -14,7 +14,7 @@
 
 <Demo name="breadcrumb-web-variant" description="plain / chip / outlined 三种 variant（每项背景可独立设置）" />
 
-<Demo name="breadcrumb-web-max-count" description="maxCount 超出折叠：head(1) + … + tail(maxCount-1)（Element Plus / NextUI 风格）" />
+<Demo name="breadcrumb-web-max-count" description="maxCount 超出折叠：head(1) + … + tail(maxCount-1)" />
 
 ## 基础用法
 
@@ -40,7 +40,7 @@ import '@snui/tokens-web/styles'
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `separator` | `string` | `'/'` | 全局分隔符。每项可通过 `separator` prop 或 `<template #separator>` slot 覆盖。 |
-| `maxCount` | `number` | `Infinity` | 最多显示几项；超出部分折叠为 `head(1) + ellipsis + tail(maxCount-1)`。算法与 Element Plus `max-count` / NextUI `maxItems` 一致。AUI 扩展（naive-ui 用 dropdown slot 处理长面包屑，本 prop 提供更快的声明式 cap）。 |
+| `maxCount` | `number` | `Infinity` | 最多显示几项；超出部分折叠为 `head(1) + ellipsis + tail(maxCount-1)`。 |
 
 ### SnBreadcrumbItem Props
 
@@ -50,8 +50,8 @@ import '@snui/tokens-web/styles'
 | `clickable` | `boolean` | `true` | 是否可点 / 可 hover |
 | `separator` | `string` | `''` | 当前项的覆盖分隔符（空时回退到 parent） |
 | `showSeparator` | `boolean` | `true` | 是否渲染 trailing 分隔符 |
-| `icon` | `IconComponent` | `undefined` | 前置图标（SnIcon-wrapped；任意 lucide / ionicons5 / tabler FunctionalComponent） |
-| `variant` | `'plain' \| 'chip' \| 'outlined'` | `'plain'` | 背景样式。AUI 扩展。`plain` 透明（naive-ui 默认行为），`chip` 填充背景圆角胶囊（适合 dashboard / settings 紧凑路径），`outlined` 透明 + 边框（中强调）。可以每项独立设置。 |
+| `icon` | `IconComponent` | `undefined` | 前置图标，通过 `SnIcon` 渲染。 |
+| `variant` | `'plain' \| 'chip' \| 'outlined'` | `'plain'` | 背景样式。`plain` 透明，`chip` 填充背景圆角胶囊（适合 dashboard / settings 紧凑路径），`outlined` 透明加边框。可以每项独立设置。 |
 
 ### SnBreadcrumbItem Events
 
@@ -72,23 +72,6 @@ import '@snui/tokens-web/styles'
 - 内部使用 `<div>` 而不是 `<ul>/<li>`：避免各浏览器对 `<li>` 默认样式（list-style / `padding-inline-start`）的差异干扰 `text-align:center` 居中；可访问性语义已经由外层 `<nav>` landmark 提供，不需要再叠加 list role
 - 分隔符 `<span role="separator" aria-hidden="true">`
 - 当 `window.location.href` 与 `href` 路径匹配时，自动添加 `aria-current="location"`
-
-## 与 naive-ui 的差异
-
-| naive-ui | SnBreadcrumb | 备注 |
-| --- | --- | --- |
-| `separator` | `separator` | ✓ 1:1 |
-| (max-count) | `maxCount` | AUI 扩展（Element Plus / NextUI 风格；naive-ui 用 dropdown slot） |
-| `separator-location-style` | — | naive-ui 2.x 已移除 |
-| (item-count) | — | naive-ui 没这 prop；如需截断请用 `<SnMenu>` 子树 + 自定义渲染 |
-| n-breadcrumb-item `href` | `href` | ✓ 1:1 |
-| n-breadcrumb-item `clickable` | `clickable` | ✓ 1:1 |
-| n-breadcrumb-item `separator` | `separator` | ✓ 1:1 |
-| n-breadcrumb-item `showSeparator` | `showSeparator` | ✓ 1:1 |
-| n-breadcrumb-item `onClick` | `onClick` (+ `click` event) | ✓ 1:1 |
-| (icon) | `icon` prop (SnIcon-wrapped) | AUI §113 扩展 |
-| (variant) | `variant` prop (`plain` \| `chip` \| `outlined`) | AUI 扩展（naive-ui 没背景 variant） |
-| (n-breadcrumb-item) slot `separator` | `<template #separator>` | ✓ 1:1 |
 
 ## 相关
 

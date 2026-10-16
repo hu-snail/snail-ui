@@ -1,8 +1,8 @@
 # Collapse 折叠面板（Web 端）
 
-`SnCollapse` + `SnCollapseItem` 是 `@snui/vue-web`（PC 桌面端）的折叠面板组。手风琴（accordion）模式、箭头位置（arrowPlacement）、触发方式（hover / click）按 [naive-ui `n-collapse`](https://www.naiveui.com/zh-CN/light/components/collapse) 1:1 对齐（AGENTS.md §112）。
+`SnCollapse` + `SnCollapseItem` 是 `@snui/vue-web`（PC 桌面端）的折叠面板组。手风琴（accordion）模式、箭头位置（arrowPlacement）、触发方式（hover / click）。
 
-n-collapse 的高级参数（`displayDirective` 懒渲染策略、`lazyRender`、展开时机动画曲线等）当前未实现（doc-roadmap 列），需要时再加。
+高级参数（`displayDirective` 懒渲染策略、`lazyRender`、展开时机动画曲线等）当前未实现（doc-roadmap 列），需要时再加。
 
 ## 实时预览
 

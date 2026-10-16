@@ -1,8 +1,7 @@
 # Card · uni-app（移动端）
 
-`<view role="region">` 容器，移动 / 小程序端简单卡片的承载层。视觉走 `--sn-mp-card-*` Token 别名层（rpx 单位），props 与 slots 1:1 对齐 wot-ui `wd-card`。
+`<view role="region">` 容器，移动 / 小程序端简单卡片的承载层。视觉走 `--sn-mp-card-*` Token 别名层（rpx 单位），props 与 slots 遵循本库的双端契约。
 
-参考库：[wot-ui `wd-card`](https://wot-ui.cn/component/card.html)（按 AGENTS.md §112 强约束对齐）。
 
 ## 基本用法
 
@@ -10,7 +9,7 @@
 
 ## Props
 
-> 完整 prop 列表与 [wot-ui `wd-card`](https://wot-ui.cn/component/card.html) 1:1 对齐（按 AGENTS.md §112）。**Web 端的 `variant` / `padding` / `shadow` / `closable` / `hoverable` / `embedded` / `segmented` 等便利 alias 在 uni 端有意不实现**（§112.1 反向校验会拒收）。
+> 完整 prop 列表遵循本库的双端契约。**Web 端的 `variant` / `padding` / `shadow` / `closable` / `hoverable` / `embedded` / `segmented` 等便利 alias 在 uni 端有意不实现**（传入会被契约校验拒绝）。
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |

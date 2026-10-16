@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
  * card-web-footer — SnCard with footer slot (below content) for actions /
- * metadata. Mirrors n-card's `footer` slot.
+ * metadata — the `footer` slot.
  */
 import { SnButton, SnCard } from '@snui/vue-web'
 </script>
