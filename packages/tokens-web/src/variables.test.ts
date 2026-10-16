@@ -26,7 +26,12 @@ describe('@snui/tokens-web alias layer', () => {
     // semantic colors
     expect(aliases).toContain('--sn-web-color-action-primary')
     expect(aliases).toContain('--sn-web-color-text-on-primary')
+    // tertiary backs secondary-level copy in docs prose + home page
+    expect(aliases).toContain('--sn-web-color-text-tertiary')
     expect(aliases).toContain('--sn-web-color-background-surface')
+    // overlay / elevated back the modal masks (dialog stage, drawer, modal)
+    expect(aliases).toContain('--sn-web-color-background-overlay')
+    expect(aliases).toContain('--sn-web-color-background-elevated')
     expect(aliases).toContain('--sn-web-color-border-default')
     // button component tokens
     expect(aliases).toContain('--sn-web-button-radius')

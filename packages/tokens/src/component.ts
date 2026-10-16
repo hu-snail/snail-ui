@@ -215,7 +215,11 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     descriptionGap: 'var(--aui-spacing-3)',
   },
   skeleton: {
-    color: 'var(--aui-color-bg-subtle)',
+    // `--aui-color-background-subtle` is the name actually emitted by the
+    // static cascade (packages/tokens/styles/index.css). The `--aui-color-bg-*`
+    // primitive family is resolver-only debt — never emitted anywhere — so
+    // referencing it here left SnSkeleton's base color dangling.
+    color: 'var(--aui-color-background-subtle)',
     colorEnd: 'var(--aui-color-border-subtle)',
     radius: 'var(--aui-radius-control)',
     heightSmall: '20px',

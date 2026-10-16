@@ -51,6 +51,16 @@ export interface ColorSemanticFeedback {
   readonly success: SemanticRef;
   readonly warning: SemanticRef;
   readonly danger: SemanticRef;
+  /**
+   * Hover variant of `danger` — consumed by destructive states (e.g. button
+   * danger hover via the `--sn-web-color-feedback-danger-hover` alias).
+   *
+   * Unlike its siblings, this ref points at a primitive ramp slot
+   * (`red-400`) rather than the semantic name itself, so resolver output
+   * resolves without a theme override. Do not "fix" it into the circular
+   * identity form the sibling entries use.
+   */
+  readonly dangerHover: SemanticRef;
   readonly info: SemanticRef;
 }
 
@@ -173,6 +183,7 @@ export const DEFAULT_SEMANTIC_TOKENS: SemanticTokens = {
       success: 'var(--aui-color-feedback-success)',
       warning: 'var(--aui-color-feedback-warning)',
       danger: 'var(--aui-color-feedback-danger)',
+      dangerHover: 'var(--aui-color-red-400)',
       info: 'var(--aui-color-feedback-info)',
     },
   },

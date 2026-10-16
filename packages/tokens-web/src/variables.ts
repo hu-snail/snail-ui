@@ -19,10 +19,13 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   // Semantic — color
   ['--sn-web-color-text-primary', '--aui-color-text-primary'],
   ['--sn-web-color-text-secondary', '--aui-color-text-secondary'],
+  ['--sn-web-color-text-tertiary', '--aui-color-text-tertiary'],
   ['--sn-web-color-text-disabled', '--aui-color-text-disabled'],
   ['--sn-web-color-text-on-primary', '--aui-color-text-on-primary'],
   ['--sn-web-color-background-surface', '--aui-color-background-surface'],
   ['--sn-web-color-background-subtle', '--aui-color-background-subtle'],
+  ['--sn-web-color-background-overlay', '--aui-color-background-overlay'],
+  ['--sn-web-color-background-elevated', '--aui-color-background-elevated'],
   ['--sn-web-color-border-default', '--aui-color-border-default'],
   ['--sn-web-color-border-subtle', '--aui-color-border-subtle'],
   ['--sn-web-color-action-primary', '--aui-color-action-primary'],

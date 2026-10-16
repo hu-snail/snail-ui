@@ -15,10 +15,13 @@
   /* Semantic — color */
   --sn-web-color-text-primary: var(--aui-color-text-primary);
   --sn-web-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-web-color-text-tertiary: var(--aui-color-text-tertiary);
   --sn-web-color-text-disabled: var(--aui-color-text-disabled);
   --sn-web-color-text-on-primary: var(--aui-color-text-on-primary);
   --sn-web-color-background-surface: var(--aui-color-background-surface);
   --sn-web-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-web-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-web-color-background-elevated: var(--aui-color-background-elevated);
   --sn-web-color-border-default: var(--aui-color-border-default);
   --sn-web-color-border-subtle: var(--aui-color-border-subtle);
   --sn-web-color-action-primary: var(--aui-color-action-primary);
