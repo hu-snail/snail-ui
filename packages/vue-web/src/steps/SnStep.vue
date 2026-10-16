@@ -200,8 +200,17 @@ function handleClick() {
   cursor: pointer;
 }
 
+/* Hover tint applies to the *neutral* steps only. `process` / `finish` /
+ * `error` already carry a semantic colour and must keep it on hover — an
+ * unconditional hover rule here would repaint an error title with the primary
+ * colour, since a bare `:hover` would otherwise out-specify (or, at equal
+ * specificity, be authored after) the status blocks below. */
 .sn-step--clickable:hover .sn-step__content-header-title {
   color: var(--sn-web-color-action-primary);
+}
+
+.sn-step--clickable:hover.sn-step--error-status .sn-step__content-header-title {
+  color: var(--sn-web-color-feedback-danger-hover);
 }
 
 /* ---------- Indicator ---------- */

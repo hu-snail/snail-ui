@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs'
+
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, nextTick, ref } from 'vue'
@@ -379,6 +381,52 @@ describe('SnSteps (AUI-WEB-NAV-004)', () => {
     it('marks a step that has a description', () => {
       const w = mount(wrapSteps({ current: 1 }, [{ title: 'A', description: 'd' }]))
       expect(w.find('.sn-step').classes()).toContain('sn-step--show-description')
+    })
+  })
+
+  /**
+   * The hover tint is a CSS-only behaviour, so jsdom cannot compute it. These
+   * pin the source rule that protects the semantic status colours instead:
+   * with equal specificity and the hover block authored first, an error step
+   * used to flip to the primary colour on hover (reported from the docs site).
+   * The guard rule must therefore name the status *and* keep a higher
+   * specificity than the neutral hover tint.
+   */
+  describe('status colour on hover', () => {
+    // Read via cwd-relative path: `import.meta.url` is not a file: URL under
+    // vitest's transform pipeline, and the suite always runs from the package
+    // root (`pnpm --filter @snui/vue-web test`).
+    const source = readFileSync('src/steps/SnStep.vue', 'utf-8')
+
+    /** (classes+pseudo-classes, elements) — enough to compare these rules. */
+    function specificity(selector: string): number {
+      const classes =
+        (selector.match(/\.[\w-]+/g) || []).length +
+        (selector.match(/:(?!:)[\w-]+/g) || []).length
+      const elements = (selector.match(/(^|[\s>+~])[a-z][\w-]*/g) || []).length
+      return classes * 100 + elements
+    }
+
+    it('keeps an error title on its semantic colour while hovered', () => {
+      const guard =
+        '.sn-step--clickable:hover.sn-step--error-status .sn-step__content-header-title'
+      expect(source).toContain(guard)
+      expect(source).toContain('color: var(--sn-web-color-feedback-danger-hover)')
+    })
+
+    it('gives the error hover guard a higher specificity than the neutral tint', () => {
+      const neutral = '.sn-step--clickable:hover .sn-step__content-header-title'
+      const guard =
+        '.sn-step--clickable:hover.sn-step--error-status .sn-step__content-header-title'
+
+      expect(source).toContain(neutral)
+      expect(specificity(guard)).toBeGreaterThan(specificity(neutral))
+    })
+
+    it('still tints the neutral (wait / unfinished) title on hover', () => {
+      // The generic tint must stay: only the semantic statuses opt out.
+      expect(source).toContain('color: var(--sn-web-color-action-primary)')
+      expect(source).toContain('.sn-step--clickable:hover .sn-step__content-header-title')
     })
   })
 
