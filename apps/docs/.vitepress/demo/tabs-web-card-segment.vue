@@ -42,7 +42,7 @@ const segmentActive = ref<string>('day')
 .tabs-demo__label {
   margin: 0 0 8px;
   font-size: 12px;
-  color: var(--vp-c-text-2);
+  color: var(--sn-web-color-text-secondary);
   font-family: ui-monospace, monospace;
 }
 </style>

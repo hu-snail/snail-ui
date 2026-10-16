@@ -257,3 +257,27 @@
 | SnTabs | 27 | 4 | 12+ | 13+ |
 
 **debug 类 demo 登记**（本轮不强制，未覆盖需保留在本表）：alert rtl/empty、dialog focus/rtl、drawer a11y/custom-style/dark-1..4/rtl、anchor max-height、steps vertical/rtl、tabs line/style-inherit/shadow/unkeyed/addable/suffix-width/animation/animationx/none/modal/rtl。
+
+---
+
+## 本轮新发现缺陷（未在本批次修复）
+
+### AUI-FOUND-008：doodle 皮肤墨水色 `#1a1a1a` 硬编码（跨组件）
+
+`snui-skin-doodle` 皮肤用字面量 `#1a1a1a` 作为手绘描边色，散落在多个组件：
+
+| 文件 | 位置 |
+| --- | --- |
+| `packages/vue-web/src/tabs/SnTabs.vue` | `line 613` —— `border: 2.5px solid #1a1a1a` |
+| `packages/vue-web/src/button/SnButton.vue` | `line 493` / `line 512` —— `border-color: #1a1a1a` |
+| 其余 doodle 消费者 | 待扫 |
+
+**为什么不在 tabs 批次修**：这是一个**跨组件的皮肤 token 缺口**，不是单点笔误。只在 tabs 一处替换会造成皮肤内部不一致；正确做法是先补一个 `--sn-web-skin-doodle-ink` 类 token，再统一替换所有消费者。
+
+**修法建议**：在 doodle 皮肤块定义 `--sn-web-skin-doodle-ink`，把上表所有站点改为 `var(--sn-web-skin-doodle-ink)`，并在 `packages/tokens-web` 的别名层与静态 CSS 里同步注册（注意 `variablesMatchStyles` 一致性测试要求两处同改）。
+
+诊断命令：
+
+```bash
+grep -rn "snui-skin-doodle" -A 6 packages/vue-web/src --include=*.vue | grep "#1a1a1a"
+```

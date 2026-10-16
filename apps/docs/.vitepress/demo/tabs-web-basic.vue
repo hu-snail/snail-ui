@@ -33,10 +33,10 @@ const active = ref<string>('overview')
 .tabs-demo__state {
   margin: 12px 0 0;
   font-size: 13px;
-  color: var(--vp-c-text-2);
+  color: var(--sn-web-color-text-secondary);
 }
 .tabs-demo__state code {
-  background: var(--vp-c-bg-soft);
+  background: var(--sn-web-color-background-subtle);
   padding: 1px 6px;
   border-radius: 3px;
   font-family: ui-monospace, monospace;

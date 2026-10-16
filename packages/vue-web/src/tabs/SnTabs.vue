@@ -8,18 +8,19 @@
  *
  * 1:1 parity (this version): value / defaultValue / trigger / type /
  *   size / placement / closable / addable / animated / justifyContent /
- *   tabsPadding / showScrollButton / onBeforeLeave / paneClass / paneStyle.
+ *   tabsPadding / showScrollButton / onBeforeLeave / paneClass / paneStyle /
+ *   paneWrapperClass / paneWrapperStyle / barWidth / centerActiveTab.
  *
  * Pane content is declared via `<SnTabPane>` children (mirrors n-tab-pane).
  * Children read the active value + type through provide/inject, so the tab
  * strip and pane visibility stay in sync without prop drilling.
  *
  * Skipped vs n-tabs (documented §112 markers, not implemented):
- *   - `centerActiveTab` / `barWidth` — requires layout measurement of the
- *     strip; both are cosmetic-only and need ResizeObserver plumbing.
  *   - `SnTabPane` `tab` / `prefix` / `suffix` slots — the strip renders the
  *     `tab` prop as text. Rich (vnode) tab labels would need the pane to
  *     hand its slot vnodes up through injection; deferred.
+ *   - `justifyContent` values beyond what the strip's flex layout already
+ *     supports are passed straight through to CSS.
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only (px units).
@@ -31,7 +32,7 @@
  *   </SnTabs>
  */
 
-import { computed, provide, ref, toRef, watch } from 'vue'
+import { computed, nextTick, onMounted, provide, ref, toRef, watch } from 'vue'
 import { Plus } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
 
@@ -89,6 +90,22 @@ const props = withDefaults(
     /** Inline style applied to every pane wrapper. Mirrors n-tabs
      * `paneStyle`. */
     paneStyle?: string | Record<string, string>
+    /**
+     * Fixed width for the active bar, in px. When omitted the bar matches
+     * the active tab's own width. Mirrors n-tabs `barWidth`.
+     */
+    barWidth?: number
+    /**
+     * Keep the active tab scrolled to the centre of the strip. Mirrors
+     * n-tabs `centerActiveTab`. Only meaningful when the strip overflows.
+     */
+    centerActiveTab?: boolean
+    /** Class on the pane wrapper element. Mirrors n-tabs
+     * `paneWrapperClass`. */
+    paneWrapperClass?: string
+    /** Style on the pane wrapper element. Mirrors n-tabs
+     * `paneWrapperStyle`. */
+    paneWrapperStyle?: string | Record<string, string>
     /** Guard fired before switching tabs; return false (or a promise
      * resolving to false) to block the switch. Mirrors n-tabs
      * `onBeforeLeave`. */
@@ -110,6 +127,7 @@ const props = withDefaults(
     animated: false,
     tabsPadding: 0,
     showScrollButton: false,
+    centerActiveTab: false,
   },
 )
 
@@ -207,6 +225,52 @@ function handleTabMouseenter(name: string | number): void {
   void activateTab(name)
 }
 
+/* ── Active-bar geometry (`barWidth` + `centerActiveTab`) ────────────────
+ * The bar is drawn by a dedicated element rather than a `::after` on the
+ * active tab, because `barWidth` decouples the bar's width from the tab's
+ * own width and `centerActiveTab` needs a measurable box to scroll to. */
+const navEl = ref<HTMLElement | null>(null)
+
+/** The active tab's element, used to size and position the bar. */
+function activeTabEl(): HTMLElement | null {
+  const nav = navEl.value
+  if (!nav) return null
+  const index = panes.value.findIndex((p) => p.name === activeValue.value)
+  if (index < 0) return null
+  return (nav.querySelectorAll<HTMLElement>('.sn-tabs__tab')[index]) ?? null
+}
+
+/**
+ * Inline style for the bar. Without `barWidth` the bar takes the active
+ * tab's own width, which is what the stylesheet's `::after` behaviour
+ * produced — so we only emit inline geometry when a width is pinned or the
+ * tab needs centring.
+ */
+const barStyle = computed<Record<string, string> | undefined>(() => {
+  if (props.barWidth === undefined) return undefined
+  return { width: `${props.barWidth}px`, maxWidth: '100%' }
+})
+
+/** Scroll the active tab to the middle of the strip. */
+async function centerActiveTab(): Promise<void> {
+  if (!props.centerActiveTab) return
+  await nextTick()
+  const nav = navEl.value
+  const tab = activeTabEl()
+  if (!nav || !tab) return
+  const target = tab.offsetLeft - (nav.clientWidth - tab.offsetWidth) / 2
+  nav.scrollTo({ left: Math.max(0, target), behavior: 'smooth' })
+}
+
+watch(activeValue, () => {
+  void centerActiveTab()
+})
+// `immediate` on the watcher above would run during setup, before `navEl`
+// has a DOM node. Mount is the earliest point the strip can be measured.
+onMounted(() => {
+  void centerActiveTab()
+})
+
 function handleClose(name: string | number, event: MouseEvent): void {
   event.stopPropagation()
   emit('close', name)
@@ -259,6 +323,7 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
     :style="tabsPadding ? { padding: `${tabsPadding}px` } : undefined"
   >
     <div
+      ref="navEl"
       class="sn-tabs__nav"
       role="tablist"
       :aria-orientation="isVertical ? 'vertical' : 'horizontal'"
@@ -276,7 +341,7 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
           pane.disabled ? 'sn-tabs__tab--disabled' : '',
           tabClass,
         ]"
-        :style="toStyleBinding(tabStyle)"
+        :style="[toStyleBinding(tabStyle), pane.name === activeValue ? barStyle : undefined]"
         :aria-selected="pane.name === activeValue"
         :aria-disabled="pane.disabled || undefined"
         :tabindex="pane.name === activeValue ? 0 : -1"
@@ -307,7 +372,11 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
       <slot name="suffix" />
     </div>
 
-    <div class="sn-tabs__panes">
+    <div
+      class="sn-tabs__panes"
+      :class="paneWrapperClass"
+      :style="toStyleBinding(paneWrapperStyle)"
+    >
       <slot />
     </div>
   </div>

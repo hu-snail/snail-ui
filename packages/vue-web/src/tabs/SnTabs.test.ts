@@ -456,4 +456,76 @@ describe('SnTabs (AUI-WEB-NAV-002)', () => {
     await nextTick()
     expect(w.findAll('[role="tab"]')).toHaveLength(1)
   })
+
+  describe('barWidth', () => {
+    const panes = [
+      { name: 'a', body: 'A' },
+      { name: 'b', body: 'B' },
+    ]
+
+    it('should leave the active tab unstyled when barWidth is unset', async () => {
+      const w = mount(wrapTabs({ defaultValue: 'a' }, panes))
+      await nextTick()
+
+      const active = w.find('.sn-tabs__tab--active')
+      expect(active.attributes('style')).toBeUndefined()
+    })
+
+    it('should pin the active bar width when barWidth is set', async () => {
+      const w = mount(wrapTabs({ defaultValue: 'a', barWidth: 24 }, panes))
+      await nextTick()
+
+      const style = w.find('.sn-tabs__tab--active').attributes('style')
+      expect(style).toContain('width: 24px')
+    })
+  })
+
+  describe('centerActiveTab', () => {
+    const panes = [
+      { name: 'a', body: 'A' },
+      { name: 'b', body: 'B' },
+    ]
+
+    it('should not scroll when centerActiveTab is off', async () => {
+      const w = mount(wrapTabs({ defaultValue: 'b' }, panes))
+      const nav = w.find('.sn-tabs__nav').element as HTMLElement
+      const scrollTo = vi.fn()
+      nav.scrollTo = scrollTo
+      await nextTick()
+      await new Promise((r) => setTimeout(r, 10))
+
+      expect(scrollTo).not.toHaveBeenCalled()
+    })
+
+    it('should scroll the active tab toward the centre', async () => {
+      const w = mount(wrapTabs({ defaultValue: 'b', centerActiveTab: true }, panes))
+      const nav = w.find('.sn-tabs__nav').element as HTMLElement
+      const scrollTo = vi.fn()
+      nav.scrollTo = scrollTo
+      // Give the strip a measurable box in happy-dom.
+      Object.defineProperty(nav, 'clientWidth', { configurable: true, value: 400 })
+      await nextTick()
+      await new Promise((r) => setTimeout(r, 10))
+
+      expect(scrollTo).toHaveBeenCalled()
+    })
+  })
+
+  describe('pane wrapper', () => {
+    it('should forward paneWrapperClass and paneWrapperStyle', async () => {
+      const w = mount(wrapTabs(
+        {
+          defaultValue: 'a',
+          paneWrapperClass: 'my-wrapper',
+          paneWrapperStyle: { background: 'red' },
+        },
+        [{ name: 'a', body: 'A' }],
+      ))
+      await nextTick()
+
+      const wrapper = w.find('.sn-tabs__panes')
+      expect(wrapper.classes()).toContain('my-wrapper')
+      expect(wrapper.attributes('style')).toContain('background: red')
+    })
+  })
 })
