@@ -3,7 +3,8 @@
  * dialog-web-controlled — visibility owned by the parent via v-model:show.
  *
  * Shows: controlled mode (`show` + `update:show`) and `closeFocusable`.
- * The dialog itself never writes visible state; it only emits.
+ * The dialog itself never writes visible state; it only emits. The stage
+ * follows the same contract — it emits, the parent decides.
  */
 import { ref } from 'vue'
 import { SnButton, SnDialog } from '@snui/vue-web'
@@ -27,9 +28,8 @@ function log(name: string): void {
       </label>
     </div>
 
-    <div v-if="open" class="dlg-ctrl__host">
+    <DialogStage v-model:show="open" @close="log('stage-close')">
       <SnDialog
-        v-model:show="open"
         title="受控对话框"
         content="显示状态由父组件持有，关闭按钮只发出 update:show 事件。"
         positive-text="确定"
@@ -40,7 +40,7 @@ function log(name: string): void {
         @negative-click="log('negative-click')"
         @close="log('close')"
       />
-    </div>
+    </DialogStage>
 
     <ul class="dlg-ctrl__log">
       <li v-for="(e, i) in events" :key="i">
@@ -70,13 +70,6 @@ function log(name: string): void {
   gap: 6px;
   font-size: 13px;
   color: var(--sn-web-color-text-secondary);
-}
-.dlg-ctrl__host {
-  width: 100%;
-  max-width: 446px;
-  padding: 24px;
-  border-radius: 8px;
-  background: var(--sn-web-color-background-subtle);
 }
 .dlg-ctrl__log {
   margin: 0;

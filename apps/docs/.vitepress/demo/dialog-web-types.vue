@@ -1,34 +1,52 @@
 <script setup lang="ts">
 /**
  * dialog-web-types — the five semantic types plus the two icon placements.
+ *
+ * Each type gets its own trigger; the dialog opens as a real modal so the
+ * icon / colour delta is judged at panel size rather than in a cramped card.
  */
-import { SnDialog } from '@snui/vue-web'
+import { ref } from 'vue'
+import { SnButton, SnDialog } from '@snui/vue-web'
 
 const types = ['default', 'info', 'success', 'warning', 'error'] as const
+type DialogType = (typeof types)[number]
+
+const open = ref(false)
+const active = ref<DialogType>('info')
+const topIcon = ref(false)
+
+function show(type: DialogType, iconTop = false): void {
+  active.value = type
+  topIcon.value = iconTop
+  open.value = true
+}
 </script>
 
 <template>
   <div class="dlg-types">
-    <div v-for="type in types" :key="type" class="dlg-types__cell">
-      <SnDialog
-        :type="type"
-        :title="type"
-        content="每种 type 都有自己的图标与图标配色。"
-        positive-text="确定"
-        negative-text="取消"
-      />
+    <div class="dlg-types__bar">
+      <SnButton v-for="type in types" :key="type" size="small" @click="show(type)">
+        {{ type }}
+      </SnButton>
+      <SnButton size="small" @click="show('success', true)">icon-placement=&quot;top&quot;</SnButton>
     </div>
 
-    <div class="dlg-types__cell dlg-types__cell--top">
+    <DialogStage v-model:show="open">
       <SnDialog
-        type="success"
-        icon-placement="top"
-        title="上传完成"
-        content="iconPlacement=&quot;top&quot; 把图标抬到标题上方并居中。"
-        positive-text="知道了"
-        :closable="false"
+        :type="active"
+        :icon-placement="topIcon ? 'top' : 'left'"
+        :title="topIcon ? '上传完成' : active"
+        :content="
+          topIcon
+            ? 'iconPlacement=&quot;top&quot; 把图标抬到标题上方并居中。'
+            : '每种 type 都有自己的图标与图标配色。'
+        "
+        :positive-text="topIcon ? '知道了' : '确定'"
+        :negative-text="topIcon ? undefined : '取消'"
+        @positive-click="open = false"
+        @negative-click="open = false"
       />
-    </div>
+    </DialogStage>
   </div>
 </template>
 
@@ -36,17 +54,12 @@ const types = ['default', 'info', 'success', 'warning', 'error'] as const
 .dlg-types {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 8px;
   width: 100%;
 }
-.dlg-types__cell {
-  flex: 1 1 260px;
-  min-width: 260px;
-  padding: 20px;
-  border-radius: 8px;
-  background: var(--sn-web-color-background-subtle);
-}
-.dlg-types__cell--top {
-  flex-basis: 100%;
+.dlg-types__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 </style>

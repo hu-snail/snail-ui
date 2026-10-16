@@ -19,9 +19,9 @@ function pick(choice: string): void {
 
 <template>
   <div class="dlg-action">
-    <SnButton @click="open = true">重新打开</SnButton>
+    <SnButton type="primary" @click="open = true">打开对话框</SnButton>
 
-    <div v-if="open" class="dlg-action__host">
+    <DialogStage v-model:show="open">
       <SnDialog title="选择保存方式" content="这份草稿要保存到哪里？">
         <template #action>
           <div class="dlg-action__row">
@@ -31,7 +31,7 @@ function pick(choice: string): void {
           </div>
         </template>
       </SnDialog>
-    </div>
+    </DialogStage>
 
     <p class="dlg-action__log">
       已选：<code>{{ picked }}</code>
@@ -46,13 +46,6 @@ function pick(choice: string): void {
   align-items: flex-start;
   gap: 16px;
   width: 100%;
-}
-.dlg-action__host {
-  width: 100%;
-  max-width: 446px;
-  padding: 24px;
-  border-radius: 8px;
-  background: var(--sn-web-color-background-subtle);
 }
 /* Three-way choice: the action slot owns the row layout. */
 .dlg-action__row {

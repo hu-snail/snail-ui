@@ -6,6 +6,7 @@ import StyleSwitcher from '../components/StyleSwitcher.vue';
 import ThemeCopier from '../components/ThemeCopier.vue';
 import Demo from '../components/Demo.vue';
 import DemoLabFab from '../components/DemoLabFab.vue';
+import DialogStage from '../components/DialogStage.vue';
 import Layout from './Layout.vue';
 
 /**
@@ -15,6 +16,8 @@ import Layout from './Layout.vue';
  *   - ThemeCopier:   paste-ready snCssVars() snippet (按 end, AUI-DOCS-011)
  *   - Demo:          per-component live render via demo/<name>.vue
  *   - DemoLabFab:    global FAB → Style + Theme + Preview (AUI-DOCS-018)
+ *   - DialogStage:   modal overlay shell for the dialog demos (docs-only;
+ *                    the library's overlay belongs to the future provider)
  *
  * Custom Layout.vue mounts DemoLabFab into the doc-after slot; the FAB itself
  * only renders when route.path starts with `/components/`.
@@ -36,5 +39,6 @@ export default {
     app.component('ThemeCopier', ThemeCopier)
     app.component('Demo', Demo)
     app.component('DemoLabFab', DemoLabFab)
+    app.component('DialogStage', DialogStage)
   },
 }

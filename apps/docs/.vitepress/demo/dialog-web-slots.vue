@@ -19,15 +19,15 @@ const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }))
 <template>
   <div class="dlg-slots">
     <div class="dlg-slots__bar">
-      <SnButton size="small" @click="open = true">重新打开</SnButton>
+      <SnButton type="primary" size="small" @click="open = true">打开对话框</SnButton>
       <label class="dlg-slots__toggle">
         <input v-model="showIcon" type="checkbox">
         showIcon
       </label>
     </div>
 
-    <div v-if="open" class="dlg-slots__host">
-      <SnDialog :show-icon="showIcon" type="info">
+    <DialogStage v-model:show="open">
+      <SnDialog :show-icon="showIcon" type="info" closable>
         <template #icon>
           <component :is="customIcon" />
         </template>
@@ -47,7 +47,7 @@ const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }))
           <SnButton size="small" @click="open = false">知道了</SnButton>
         </template>
       </SnDialog>
-    </div>
+    </DialogStage>
   </div>
 </template>
 
@@ -70,13 +70,6 @@ const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }))
   gap: 6px;
   font-size: 13px;
   color: var(--sn-web-color-text-secondary);
-}
-.dlg-slots__host {
-  width: 100%;
-  max-width: 446px;
-  padding: 24px;
-  border-radius: 8px;
-  background: var(--sn-web-color-background-subtle);
 }
 .dlg-slots__title {
   font-weight: 600;

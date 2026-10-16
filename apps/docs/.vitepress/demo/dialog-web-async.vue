@@ -26,7 +26,7 @@ async function confirm(): Promise<void> {
   <div class="dlg-async">
     <SnButton type="primary" @click="open = true">提交订单</SnButton>
 
-    <div v-if="open" class="dlg-async__host">
+    <DialogStage v-model:show="open" :mask-closable="!loading">
       <SnDialog
         title="确认提交"
         content="提交后订单将进入处理流程，无法直接修改。"
@@ -37,7 +37,7 @@ async function confirm(): Promise<void> {
         @negative-click="open = false"
         @close="open = false"
       />
-    </div>
+    </DialogStage>
 
     <p class="dlg-async__log">
       状态：<code>{{ done }}</code>
@@ -52,13 +52,6 @@ async function confirm(): Promise<void> {
   align-items: flex-start;
   gap: 16px;
   width: 100%;
-}
-.dlg-async__host {
-  width: 100%;
-  max-width: 446px;
-  padding: 24px;
-  border-radius: 8px;
-  background: var(--sn-web-color-background-subtle);
 }
 .dlg-async__log {
   margin: 0;
