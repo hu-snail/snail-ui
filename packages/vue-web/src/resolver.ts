@@ -64,6 +64,11 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnAutoComplete',
   'SnDynamicInput',
   'SnDynamicTags',
+  'SnTimePicker',
+  'SnCascader',
+  'SnTreeSelect',
+  'SnMention',
+  'SnUpload',
   // Layout
   'SnCard',
   'SnCollapse',

@@ -38,6 +38,11 @@ import SnOption from './select/SnOption.vue'
 import SnAutoComplete from './auto-complete/SnAutoComplete.vue'
 import SnDynamicInput from './dynamic-input/SnDynamicInput.vue'
 import SnDynamicTags from './dynamic-tags/SnDynamicTags.vue'
+import SnTimePicker from './time-picker/SnTimePicker.vue'
+import SnCascader from './cascader/SnCascader.vue'
+import SnTreeSelect from './tree-select/SnTreeSelect.vue'
+import SnMention from './mention/SnMention.vue'
+import SnUpload from './upload/SnUpload.vue'
 import SnDialog from './dialog/SnDialog.vue'
 import SnDrawer from './drawer/SnDrawer.vue'
 import SnDrawerContent from './drawer/SnDrawerContent.vue'
@@ -96,6 +101,11 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnAutoComplete', component: SnAutoComplete },
   { name: 'SnDynamicInput', component: SnDynamicInput },
   { name: 'SnDynamicTags', component: SnDynamicTags },
+  { name: 'SnTimePicker', component: SnTimePicker },
+  { name: 'SnCascader', component: SnCascader },
+  { name: 'SnTreeSelect', component: SnTreeSelect },
+  { name: 'SnMention', component: SnMention },
+  { name: 'SnUpload', component: SnUpload },
   { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },
   { name: 'SnSkeleton', component: SnSkeleton },

@@ -55,6 +55,30 @@ export type {
 } from './auto-complete/sn-auto-complete-types'
 export { default as SnDynamicInput } from './dynamic-input/SnDynamicInput.vue'
 export { default as SnDynamicTags } from './dynamic-tags/SnDynamicTags.vue'
+export { default as SnTimePicker } from './time-picker/SnTimePicker.vue'
+export type { SnTimePickerFormat } from './time-picker/sn-time-picker-types'
+export { default as SnCascader } from './cascader/SnCascader.vue'
+export type {
+  SnCascaderValue,
+  SnCascaderOptionInput,
+  SnCascaderNode,
+} from './cascader/sn-cascader-types'
+export { default as SnTreeSelect } from './tree-select/SnTreeSelect.vue'
+export type {
+  SnTreeSelectValue,
+  SnTreeSelectOptionInput,
+  SnTreeSelectNode,
+} from './tree-select/sn-tree-select-types'
+export { default as SnMention } from './mention/SnMention.vue'
+export type { SnMentionOption, SnMentionRawOption } from './mention/sn-mention-types'
+export { default as SnUpload } from './upload/SnUpload.vue'
+export type {
+  SnUploadStatus,
+  SnUploadListType,
+  SnUploadFile,
+  SnUploadCustomRequest,
+  SnUploadBeforeUpload,
+} from './upload/sn-upload-types'
 export { default as SnLoading } from './loading/SnLoading.vue'
 export { default as SnDialog } from './dialog/SnDialog.vue'
 export type { SnDialogIconPlacement, SnDialogType } from './dialog/SnDialog.vue'
