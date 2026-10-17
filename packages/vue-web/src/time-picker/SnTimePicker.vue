@@ -60,38 +60,40 @@
 
     <!-- Time panel — teleported to body, one listbox per column -->
     <Teleport to="body">
-      <div
-        v-if="isPanelOpen"
-        :id="panelId"
-        ref="panelRef"
-        :class="['sn-time-picker-panel', `sn-time-picker-panel--${placement}`]"
-        :style="panelStyle"
-        role="group"
-        :aria-label="ariaLabel || 'Time picker panel'"
-        @mousedown.prevent
-      >
+      <Transition name="sn-pop">
         <div
-          v-for="col in visibleColumns"
-          :key="col.key"
-          class="sn-time-picker-col"
-          :class="{ 'sn-time-picker-col--active': col.key === activeColumn }"
-          role="listbox"
-          :aria-label="col.ariaLabel"
+          v-if="isPanelOpen"
+          :id="panelId"
+          ref="panelRef"
+          :class="['sn-time-picker-panel', `sn-time-picker-panel--${placement}`]"
+          :style="panelStyle"
+          role="group"
+          :aria-label="ariaLabel || 'Time picker panel'"
+          @mousedown.prevent
         >
           <div
-            v-for="item in col.items"
-            :id="item.id"
-            :key="item.value"
-            class="sn-time-picker-item"
-            :class="{ 'sn-time-picker-item--selected': item.isSelected }"
-            role="option"
-            :aria-selected="item.isSelected ? 'true' : 'false'"
-            :data-column="col.key"
-            :data-value="item.value"
-            @click="onItemClick(col.key, item.value)"
-          >{{ item.label }}</div>
+            v-for="col in visibleColumns"
+            :key="col.key"
+            class="sn-time-picker-col"
+            :class="{ 'sn-time-picker-col--active': col.key === activeColumn }"
+            role="listbox"
+            :aria-label="col.ariaLabel"
+          >
+            <div
+              v-for="item in col.items"
+              :id="item.id"
+              :key="item.value"
+              class="sn-time-picker-item"
+              :class="{ 'sn-time-picker-item--selected': item.isSelected }"
+              role="option"
+              :aria-selected="item.isSelected ? 'true' : 'false'"
+              :data-column="col.key"
+              :data-value="item.value"
+              @click="onItemClick(col.key, item.value)"
+            >{{ item.label }}</div>
+          </div>
         </div>
-      </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -144,6 +146,7 @@ import {
 } from 'vue'
 import SnIcon from '../icon/SnIcon.vue'
 import { ChevronDownIcon, CloseIcon } from './sn-time-picker-icons'
+import { useOverlayFollow } from '../_internal/use-overlay-follow'
 import {
   buildTimestamp,
   formatTimeOfDay,
@@ -410,12 +413,16 @@ function repositionPanel(): void {
   const panel = panelRef.value
   if (!root || !panel) return
   const rootRect = root.getBoundingClientRect()
-  const panelRect = panel.getBoundingClientRect()
+  // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
+  // transform (scale 0.92) does not distort — getBoundingClientRect would
+  // measure the scaled panel while the enter transition is running.
+  const panelWidth = panel.offsetWidth
+  const panelHeight = panel.offsetHeight
   const vw = window.innerWidth
   const vh = window.innerHeight
 
   // Width: at least the trigger width (naive behavior).
-  const width = Math.max(rootRect.width, panelRect.width)
+  const width = Math.max(rootRect.width, panelWidth)
   const left = Math.min(
     Math.max(PANEL_VIEWPORT_GAP, rootRect.left),
     Math.max(PANEL_VIEWPORT_GAP, vw - width - PANEL_VIEWPORT_GAP),
@@ -425,11 +432,11 @@ function repositionPanel(): void {
   // but has room above.
   const roomBelow = vh - rootRect.bottom
   const roomAbove = rootRect.top
-  const useTop = roomBelow < panelRect.height && roomAbove > roomBelow
+  const useTop = roomBelow < panelHeight && roomAbove > roomBelow
   placement.value = useTop ? 'top' : 'bottom'
 
   const top = useTop
-    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelRect.height)
+    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight)
     : rootRect.bottom
 
   panelStyle.value = {
@@ -439,6 +446,11 @@ function repositionPanel(): void {
     'min-width': `${Math.round(rootRect.width)}px`,
   }
 }
+
+/* Scroll/resize follow: while the panel is open, any scroll (page or a
+ * nested scrollable ancestor) or viewport resize re-runs repositionPanel so
+ * the fixed-position panel stays glued to the trigger instead of detaching. */
+const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen)
 
 /* ─────────── Column scrolling ─────────── */
 
@@ -485,6 +497,7 @@ function openPanel(): void {
   activeColumn.value = visibleColumns.value[0]?.key ?? 'hour'
   void nextTick(() => {
     repositionPanel()
+    followViewport.start()
     scrollAllColumnsIntoView()
   })
 }
@@ -492,6 +505,7 @@ function openPanel(): void {
 function closePanel(): void {
   if (!isPanelOpen.value) return
   isPanelOpen.value = false
+  followViewport.stop()
 }
 
 /* ─────────── Commit ─────────── */
@@ -645,6 +659,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('mousedown', onDocumentMouseDown)
+  followViewport.stop()
 })
 
 watch(() => props.modelValue, () => {
@@ -685,7 +700,7 @@ watch(() => [props.format, props.use12Hours], () => {
   padding: 0 var(--sn-web-time-picker-padding-x, 10px);
   width: var(--sn-web-time-picker-width, 100%);
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-time-picker-border-color, var(--sn-web-color-border-default));
+  border: 1px solid var(--sn-web-time-picker-border-color, var(--sn-web-color-border-subtle));
   border-radius: var(--sn-web-time-picker-radius, 6px);
   background-color: var(--sn-web-time-picker-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-time-picker-text-color, var(--sn-web-color-text-primary));
@@ -816,27 +831,53 @@ watch(() => [props.format, props.use12Hours], () => {
   z-index: var(--sn-web-time-picker-panel-z-index, 1000);
   padding: 4px;
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-time-picker-panel-border-color, var(--sn-web-color-border-default));
-  border-radius: var(--sn-web-time-picker-panel-radius, 6px);
+  border: 1px solid var(--sn-web-time-picker-panel-border-color, rgba(0, 0, 0, 0.06));
+  border-radius: var(--sn-web-time-picker-panel-radius, 3px);
   background-color: var(
     --sn-web-time-picker-panel-bg,
     var(--sn-web-color-background-elevated)
   );
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 6px 18px rgba(0, 0, 0, 0.14);
+  /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
+  box-shadow: var(
+    --sn-web-time-picker-panel-shadow,
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
+  );
   font-family: inherit;
   font-size: var(--sn-web-time-picker-panel-font-size, 13px);
-  animation: sn-time-picker-panel-in 0.15s ease-out;
 }
 
-@keyframes sn-time-picker-panel-in {
-  from {
-    opacity: 0;
-    transform: scaleY(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
+/* The panel drops from the trigger edge it is anchored to. */
+.sn-time-picker-panel--bottom {
+  transform-origin: center top;
+}
+
+.sn-time-picker-panel--top {
+  transform-origin: center bottom;
+}
+
+/* sn-pop — naive fade-in-scale-up: enter rises into place, leave fades out. */
+.sn-pop-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-leave-active {
+  transition:
+    opacity 0.15s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+}
+
+.sn-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 .sn-time-picker-col {
@@ -875,7 +916,10 @@ watch(() => [props.format, props.use12Hours], () => {
 }
 
 .sn-time-picker-item:hover {
-  background-color: var(--sn-web-time-picker-item-bg-hover, var(--sn-web-color-background-subtle));
+  background-color: var(
+    --sn-web-time-picker-item-bg-hover,
+    var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04))
+  );
 }
 
 .sn-time-picker-item--selected {

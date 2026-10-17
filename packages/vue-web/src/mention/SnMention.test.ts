@@ -67,6 +67,14 @@ async function type(wrapper: ReturnType<typeof mountMention>, text: string, care
   await input.trigger('input')
 }
 
+/**
+ * Wait out the sn-pop leave transition (150ms + frame timing) so a closed
+ * panel is actually gone from the DOM before asserting.
+ */
+async function panelLeft(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 250))
+}
+
 describe('SnMention', () => {
   beforeEach(() => {
     // happy-dom has no layout — give the root + panel stable rects
@@ -125,6 +133,7 @@ describe('SnMention', () => {
     await type(w, '@al')
     expect(panel()).not.toBeNull()
     await type(w, '@al and more')
+    await panelLeft()
     expect(panel()).toBeNull()
   })
 
@@ -175,6 +184,7 @@ describe('SnMention', () => {
     panelOptions()[0]?.click()
     await nextTick()
     await nextTick()
+    await panelLeft()
     expect(panel()).toBeNull()
   })
 
@@ -237,6 +247,7 @@ describe('SnMention', () => {
     await type(w, '@')
     expect(panel()).not.toBeNull()
     await input.trigger('keydown', { key: 'Escape' })
+    await panelLeft()
     expect(panel()).toBeNull()
   })
 
@@ -327,6 +338,7 @@ describe('SnMention', () => {
     expect(panel()).not.toBeNull()
     document.dispatchEvent(new Event('pointerdown'))
     await nextTick()
+    await panelLeft()
     expect(panel()).toBeNull()
 
     // Listener must be removed on unmount — dispatch after unmount is a no-op.
@@ -381,5 +393,92 @@ describe('SnMention', () => {
     await type(w, '@a')
     await nextTick()
     expect(panel()?.classList.contains('sn-mention__menu--top')).toBe(true)
+  })
+
+  it('opens the panel through the sn-pop transition and settles with it mounted', async () => {
+    // VTU stubs Transition by default; opt into the real one here so the
+    // sn-pop enter classes are actually applied.
+    const w = mount(SnMention, {
+      props: { options: USERS, modelValue: '' },
+      attachTo: document.body,
+      global: { stubs: { transition: false } },
+    })
+    mounted.push(w)
+    await type(w, '@')
+    const menu = panel() as HTMLElement
+    // Enter classes prove the Transition name is sn-pop (applied synchronously).
+    expect(menu).not.toBeNull()
+    expect(
+      menu.classList.contains('sn-pop-enter-from') ||
+        menu.classList.contains('sn-pop-enter-active'),
+    ).toBe(true)
+    // Enter completes within 300ms: panel still mounted, enter classes gone.
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    const settled = panel() as HTMLElement | null
+    expect(settled).not.toBeNull()
+    expect(settled.classList.contains('sn-pop-enter-active')).toBe(false)
+    expect(settled.classList.contains('sn-pop-enter-from')).toBe(false)
+  })
+
+  /* ───── scroll follow (useOverlayFollow) ───── */
+
+  /** rAF stub that runs the queued frame synchronously. */
+  function stubSyncFrame(): void {
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(0)
+      return 0
+    })
+  }
+
+  const TRIGGER_RECT = (left: number) =>
+    ({ top: 300, left, width: 200, height: 32, right: left + 200, bottom: 332, x: left, y: 300, toJSON: () => ({}) })
+  const MENU_RECT =
+    { top: 0, left: 0, width: 200, height: 120, right: 200, bottom: 120, x: 0, y: 0, toJSON: () => ({}) }
+
+  it('keeps the panel glued to the input when the page scrolls while open', async () => {
+    const w = mountMention({ modelValue: '' })
+    await type(w, '@al')
+    await nextTick()
+    const menu = panel() as HTMLElement
+    expect(menu.style.left).toBe('40px')
+    // The page scrolled: the input's viewport rect moved 80px right.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        return this.classList.contains('sn-mention__menu') ? MENU_RECT : TRIGGER_RECT(120)
+      },
+    )
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(menu.style.left).toBe('120px')
+    vi.unstubAllGlobals()
+  })
+
+  it('stops following page scroll once the panel closes', async () => {
+    const removeSpy = vi.spyOn(window, 'removeEventListener')
+    const w = mountMention({ modelValue: '' })
+    await type(w, '@al')
+    await nextTick()
+    await w.find('input').trigger('keydown', { key: 'Escape' })
+    await nextTick()
+    expect(removeSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function),
+      expect.objectContaining({ capture: true }),
+    )
+  })
+
+  it('stops following page scroll after unmount', async () => {
+    const w = mountMention({ modelValue: '' })
+    await type(w, '@al')
+    await nextTick()
+    w.unmount()
+    mounted.splice(mounted.indexOf(w), 1)
+    const reads = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(reads).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
   })
 })

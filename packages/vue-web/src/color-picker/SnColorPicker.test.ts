@@ -62,6 +62,14 @@ async function openPanel(wrapper: { find: (sel: string) => { trigger: (ev: strin
   await nextTick()
 }
 
+/**
+ * Wait out the sn-pop leave transition (150ms + frame timing) so a closed
+ * panel is actually gone from the DOM before asserting.
+ */
+async function panelLeft(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 250))
+}
+
 describe('SnColorPicker', () => {
   beforeEach(() => {
     // happy-dom has no layout — stable rects: SV square 200x200 at origin,
@@ -389,11 +397,13 @@ describe('SnColorPicker', () => {
     await trigger.trigger('click')
     expect(panelEl()).not.toBeNull()
     await trigger.trigger('click')
+    await panelLeft()
     expect(panelEl()).toBeNull()
     await trigger.trigger('keydown', { key: 'Enter' })
     expect(panelEl()).not.toBeNull()
     await trigger.trigger('keydown', { key: 'Escape' })
     await nextTick()
+    await panelLeft()
     expect(panelEl()).toBeNull()
   })
 
@@ -405,6 +415,7 @@ describe('SnColorPicker', () => {
     expect(panelEl()).not.toBeNull()
     document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
     await nextTick()
+    await panelLeft()
     expect(panelEl()).toBeNull()
   })
 
@@ -436,5 +447,97 @@ describe('SnColorPicker', () => {
     const panel = panelEl()
     expect(panel?.style.top).toBe('332px')
     expect(panel?.classList.contains('sn-color-picker-panel--bottom')).toBe(true)
+  })
+
+  it('opens the panel through the sn-pop transition and settles with it mounted', async () => {
+    // VTU stubs Transition by default; opt into the real one here so the
+    // sn-pop enter classes are actually applied.
+    const w = mount(SnColorPicker, {
+      props: {},
+      attachTo: document.body,
+      global: { stubs: { transition: false } },
+    })
+    mounted.push(w)
+    await openPanel(w)
+    const panel = panelEl() as HTMLElement
+    // Enter classes prove the Transition name is sn-pop (applied synchronously).
+    expect(panel).not.toBeNull()
+    expect(
+      panel.classList.contains('sn-pop-enter-from') ||
+        panel.classList.contains('sn-pop-enter-active'),
+    ).toBe(true)
+    // Enter completes within 300ms: panel still mounted, enter classes gone.
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    const settled = panelEl() as HTMLElement | null
+    expect(settled).not.toBeNull()
+    expect(settled.classList.contains('sn-pop-enter-active')).toBe(false)
+    expect(settled.classList.contains('sn-pop-enter-from')).toBe(false)
+  })
+
+  /* ───── scroll follow (useOverlayFollow) ───── */
+
+  /** rAF stub that runs the queued frame synchronously. */
+  function stubSyncFrame(): void {
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(0)
+      return 0
+    })
+  }
+
+  it('keeps the panel glued to the trigger when the page scrolls while open', async () => {
+    const w = mountPicker()
+    await openPanel(w)
+    await nextTick()
+    const panel = panelEl() as HTMLElement
+    expect(panel.style.left).toBe('40px')
+    // The page scrolled: the trigger's viewport rect moved 80px right.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        const cls = this.classList
+        if (cls.contains('sn-color-picker-panel__sv')) {
+          return { top: 0, left: 0, width: 200, height: 200, right: 200, bottom: 200, x: 0, y: 0, toJSON: () => ({}) }
+        }
+        if (cls.contains('sn-color-picker-panel__rail')) {
+          return { top: 0, left: 0, width: 200, height: 12, right: 200, bottom: 12, x: 0, y: 0, toJSON: () => ({}) }
+        }
+        if (cls.contains('sn-color-picker-panel')) {
+          return { top: 0, left: 0, width: 220, height: 300, right: 220, bottom: 300, x: 0, y: 0, toJSON: () => ({}) }
+        }
+        return { top: 300, left: 120, width: 200, height: 32, right: 320, bottom: 332, x: 120, y: 300, toJSON: () => ({}) }
+      },
+    )
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(panel.style.left).toBe('120px')
+    vi.unstubAllGlobals()
+  })
+
+  it('stops following page scroll once the panel closes', async () => {
+    const removeSpy = vi.spyOn(window, 'removeEventListener')
+    const w = mountPicker()
+    await openPanel(w)
+    await nextTick()
+    await w.find('.sn-color-picker__selection').trigger('click')
+    await nextTick()
+    expect(removeSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function),
+      expect.objectContaining({ capture: true }),
+    )
+  })
+
+  it('stops following page scroll after unmount', async () => {
+    const w = mountPicker()
+    await openPanel(w)
+    await nextTick()
+    w.unmount()
+    mounted.splice(mounted.indexOf(w), 1)
+    const reads = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(reads).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
   })
 })

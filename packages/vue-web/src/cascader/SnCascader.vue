@@ -93,67 +93,69 @@
 
     <!-- Dropdown: cascading columns (or the filter match list) -->
     <Teleport to="body">
-      <div
-        v-if="isMenuOpen"
-        :id="menuId"
-        ref="menuRef"
-        :class="['sn-cascader-menu', `sn-cascader-menu--${placement}`]"
-        :style="menuStyle"
-        @mousedown.prevent
-      >
-        <div v-if="showEmptyState" class="sn-cascader-menu__empty">
-          <slot name="empty">{{ emptyText }}</slot>
-        </div>
-        <div v-else-if="isFiltering" class="sn-cascader-menu__columns">
-          <div class="sn-cascader-menu__column" role="listbox" aria-label="Matching options">
-            <div
-              v-for="node in filteredLeaves"
-              :key="node.key"
-              :id="optionDomId(node)"
-              :class="optionClasses(node)"
-              role="option"
-              :aria-selected="node.key === selectedKey ? 'true' : 'false'"
-              :aria-disabled="node.disabled ? 'true' : undefined"
-              :data-key="node.key"
-              @click="onOptionClick(node)"
-              @mouseenter="onOptionMouseEnter(node)"
-            >
-              <span class="sn-cascader-option__label">{{ pathText(node) }}</span>
-            </div>
+      <Transition name="sn-pop">
+        <div
+          v-if="isMenuOpen"
+          :id="menuId"
+          ref="menuRef"
+          :class="['sn-cascader-menu', `sn-cascader-menu--${placement}`]"
+          :style="menuStyle"
+          @mousedown.prevent
+        >
+          <div v-if="showEmptyState" class="sn-cascader-menu__empty">
+            <slot name="empty">{{ emptyText }}</slot>
           </div>
-        </div>
-        <div v-else class="sn-cascader-menu__columns">
-          <div
-            v-for="(column, columnIndex) in expandedColumns"
-            :key="columnIndex"
-            class="sn-cascader-menu__column"
-            role="listbox"
-            :aria-label="`Level ${columnIndex + 1}`"
-          >
-            <div
-              v-for="node in column"
-              :key="node.key"
-              :id="optionDomId(node)"
-              :class="optionClasses(node)"
-              role="option"
-              :aria-selected="node.key === selectedKey ? 'true' : 'false'"
-              :aria-disabled="node.disabled ? 'true' : undefined"
-              :data-key="node.key"
-              @click="onOptionClick(node)"
-              @mouseenter="onOptionMouseEnter(node)"
-            >
-              <span class="sn-cascader-option__label">{{ node.label }}</span>
-              <span
-                v-if="!node.isLeaf"
-                class="sn-cascader-option__expand"
-                aria-hidden="true"
+          <div v-else-if="isFiltering" class="sn-cascader-menu__columns">
+            <div class="sn-cascader-menu__column" role="listbox" aria-label="Matching options">
+              <div
+                v-for="node in filteredLeaves"
+                :key="node.key"
+                :id="optionDomId(node)"
+                :class="optionClasses(node)"
+                role="option"
+                :aria-selected="node.key === selectedKey ? 'true' : 'false'"
+                :aria-disabled="node.disabled ? 'true' : undefined"
+                :data-key="node.key"
+                @click="onOptionClick(node)"
+                @mouseenter="onOptionMouseEnter(node)"
               >
-                <SnIcon :icon="ChevronRightIcon" :size="12" />
-              </span>
+                <span class="sn-cascader-option__label">{{ pathText(node) }}</span>
+              </div>
+            </div>
+          </div>
+          <div v-else class="sn-cascader-menu__columns">
+            <div
+              v-for="(column, columnIndex) in expandedColumns"
+              :key="columnIndex"
+              class="sn-cascader-menu__column"
+              role="listbox"
+              :aria-label="`Level ${columnIndex + 1}`"
+            >
+              <div
+                v-for="node in column"
+                :key="node.key"
+                :id="optionDomId(node)"
+                :class="optionClasses(node)"
+                role="option"
+                :aria-selected="node.key === selectedKey ? 'true' : 'false'"
+                :aria-disabled="node.disabled ? 'true' : undefined"
+                :data-key="node.key"
+                @click="onOptionClick(node)"
+                @mouseenter="onOptionMouseEnter(node)"
+              >
+                <span class="sn-cascader-option__label">{{ node.label }}</span>
+                <span
+                  v-if="!node.isLeaf"
+                  class="sn-cascader-option__expand"
+                  aria-hidden="true"
+                >
+                  <SnIcon :icon="ChevronRightIcon" :size="12" />
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -199,6 +201,7 @@
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import SnIcon from '../icon/SnIcon.vue'
+import { useOverlayFollow } from '../_internal/use-overlay-follow'
 import { ChevronDownIcon, ChevronRightIcon, CloseIcon } from './sn-cascader-icons'
 import {
   collectCascaderLeaves,
@@ -420,12 +423,16 @@ async function repositionMenu(): Promise<void> {
   const menu = menuRef.value
   if (!root || !menu) return
   const rootRect = root.getBoundingClientRect()
-  const menuRect = menu.getBoundingClientRect()
+  // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
+  // transform (scale 0.92) does not distort — getBoundingClientRect would
+  // measure the scaled panel while the enter transition is running.
+  const menuWidth = menu.offsetWidth
+  const menuHeight = menu.offsetHeight
   const vw = window.innerWidth
   const vh = window.innerHeight
 
   // Width: at least the trigger width.
-  const width = Math.max(rootRect.width, menuRect.width)
+  const width = Math.max(rootRect.width, menuWidth)
   const left = Math.min(
     Math.max(MENU_VIEWPORT_GAP, rootRect.left),
     Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
@@ -435,11 +442,11 @@ async function repositionMenu(): Promise<void> {
   // but has room above.
   const roomBelow = vh - rootRect.bottom
   const roomAbove = rootRect.top
-  const useTop = roomBelow < menuRect.height && roomAbove > roomBelow
+  const useTop = roomBelow < menuHeight && roomAbove > roomBelow
   placement.value = useTop ? 'top' : 'bottom'
 
   const top = useTop
-    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuRect.height)
+    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight)
     : rootRect.bottom
 
   menuStyle.value = {
@@ -449,6 +456,11 @@ async function repositionMenu(): Promise<void> {
     'min-width': `${Math.round(rootRect.width)}px`,
   }
 }
+
+/* Scroll/resize follow: while the menu is open, any scroll (page or a nested
+ * scrollable ancestor) or viewport resize re-runs repositionMenu so the
+ * fixed-position menu stays glued to the trigger instead of detaching. */
+const followViewport = useOverlayFollow(rootRef, menuRef, repositionMenu, isMenuOpen)
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
@@ -479,6 +491,7 @@ function openMenu(): void {
   }
   void nextTick(() => {
     void repositionMenu()
+    followViewport.start()
     if (props.filterable) {
       filterInputRef.value?.focus()
     }
@@ -488,6 +501,7 @@ function openMenu(): void {
 function closeMenu(): void {
   if (!isMenuOpen.value) return
   isMenuOpen.value = false
+  followViewport.stop()
   query.value = ''
   expandedKeys.value = []
   activeColumn.value = 0
@@ -688,6 +702,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('mousedown', onDocumentMouseDown)
+  followViewport.stop()
 })
 
 watch(() => props.options, () => {
@@ -717,7 +732,7 @@ watch(isMenuOpen, (open) => {
   padding: 0 var(--sn-web-cascader-padding-x, 10px);
   width: var(--sn-web-cascader-width, 100%);
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-cascader-border-color, var(--sn-web-color-border-default));
+  border: 1px solid var(--sn-web-cascader-border-color, var(--sn-web-color-border-subtle));
   border-radius: var(--sn-web-cascader-radius, 6px);
   background-color: var(--sn-web-cascader-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-cascader-text-color, var(--sn-web-color-text-primary));
@@ -874,30 +889,52 @@ watch(isMenuOpen, (open) => {
   min-width: 120px;
   padding: 4px 0;
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-cascader-menu-border-color, var(--sn-web-color-border-default));
-  border-radius: var(--sn-web-cascader-menu-radius, var(--sn-web-cascader-radius, 6px));
+  border: 1px solid var(--sn-web-cascader-menu-border-color, rgba(0, 0, 0, 0.06));
+  border-radius: var(--sn-web-cascader-menu-radius, 3px);
   background-color: var(
     --sn-web-cascader-menu-bg,
     var(--sn-web-color-background-elevated)
   );
+  /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
   box-shadow: var(
     --sn-web-cascader-menu-shadow,
-    0 1px 2px var(--sn-web-color-background-overlay),
-    0 6px 18px var(--sn-web-color-background-overlay)
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
   );
   font-family: inherit;
-  animation: sn-cascader-menu-in 0.15s ease-out;
 }
 
-@keyframes sn-cascader-menu-in {
-  from {
-    opacity: 0;
-    transform: scaleY(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
+/* The panel drops from the trigger edge it is anchored to. */
+.sn-cascader-menu--bottom {
+  transform-origin: center top;
+}
+
+.sn-cascader-menu--top {
+  transform-origin: center bottom;
+}
+
+/* sn-pop — naive fade-in-scale-up: enter rises into place, leave fades out. */
+.sn-pop-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-leave-active {
+  transition:
+    opacity 0.15s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+}
+
+.sn-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 .sn-cascader-menu__columns {
@@ -964,7 +1001,7 @@ watch(isMenuOpen, (open) => {
 .sn-cascader-option--pending {
   background-color: var(
     --sn-web-cascader-option-bg-hover,
-    var(--sn-web-color-background-surface-hover)
+    var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04))
   );
 }
 

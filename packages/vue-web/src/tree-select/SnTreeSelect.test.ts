@@ -70,6 +70,14 @@ async function openMenu(wrapper: { find: (sel: string) => { trigger: (ev: string
   await nextTick()
 }
 
+/**
+ * Wait out the sn-pop leave transition (150ms + frame timing) so a closed
+ * panel is actually gone from the DOM before asserting.
+ */
+async function menuLeft(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 250))
+}
+
 /** All node rows currently in the teleported menu. */
 function nodeRows(): HTMLElement[] {
   return Array.from(document.body.querySelectorAll<HTMLElement>('.sn-tree-select-node'))
@@ -144,6 +152,7 @@ describe('SnTreeSelect', () => {
     expect(document.body.querySelector('.sn-tree-select-menu')).not.toBeNull()
     rowByValue('apple')?.click()
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-tree-select-menu')).toBeNull()
   })
 
@@ -511,6 +520,7 @@ describe('SnTreeSelect', () => {
     await openMenu(w)
     await triggerOf(w).trigger('keydown', { key: 'Escape' })
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-tree-select-menu')).toBeNull()
   })
 
@@ -533,6 +543,7 @@ describe('SnTreeSelect', () => {
     expect(document.body.querySelector('.sn-tree-select-menu')).not.toBeNull()
     await trigger.trigger('click')
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-tree-select-menu')).toBeNull()
   })
 
@@ -541,6 +552,7 @@ describe('SnTreeSelect', () => {
     await openMenu(w)
     document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-tree-select-menu')).toBeNull()
   })
 
@@ -591,5 +603,92 @@ describe('SnTreeSelect', () => {
     const menu = document.body.querySelector('.sn-tree-select-menu') as HTMLElement
     expect(menu.style.top).toBe('332px')
     expect(menu.style.left).toBe('40px')
+  })
+
+  it('opens the menu through the sn-pop transition and settles with it mounted', async () => {
+    // VTU stubs Transition by default; opt into the real one here so the
+    // sn-pop enter classes are actually applied.
+    const w = mount(SnTreeSelect, {
+      props: { options: TREE },
+      attachTo: document.body,
+      global: { stubs: { transition: false } },
+    })
+    mounted.push(w)
+    await openMenu(w)
+    const menu = document.body.querySelector('.sn-tree-select-menu') as HTMLElement
+    // Enter classes prove the Transition name is sn-pop (applied synchronously).
+    expect(menu).not.toBeNull()
+    expect(
+      menu.classList.contains('sn-pop-enter-from') ||
+        menu.classList.contains('sn-pop-enter-active'),
+    ).toBe(true)
+    // Enter completes within 300ms: panel still mounted, enter classes gone.
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    const settled = document.body.querySelector('.sn-tree-select-menu') as HTMLElement | null
+    expect(settled).not.toBeNull()
+    expect(settled.classList.contains('sn-pop-enter-active')).toBe(false)
+    expect(settled.classList.contains('sn-pop-enter-from')).toBe(false)
+  })
+
+  /* ───── scroll follow (useOverlayFollow) ───── */
+
+  /** rAF stub that runs the queued frame synchronously. */
+  function stubSyncFrame(): void {
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(0)
+      return 0
+    })
+  }
+
+  const TRIGGER_RECT = (left: number) =>
+    ({ top: 300, left, width: 200, height: 32, right: left + 200, bottom: 332, x: left, y: 300, toJSON: () => ({}) })
+  const MENU_RECT =
+    { top: 0, left: 0, width: 200, height: 160, right: 200, bottom: 160, x: 0, y: 0, toJSON: () => ({}) }
+
+  it('keeps the menu glued to the trigger when the page scrolls while open', async () => {
+    const w = mountTree()
+    await openMenu(w)
+    await nextTick()
+    const menu = document.body.querySelector('.sn-tree-select-menu') as HTMLElement
+    expect(menu.style.left).toBe('40px')
+    // The page scrolled: the trigger's viewport rect moved 80px right.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        return this.classList.contains('sn-tree-select-menu') ? MENU_RECT : TRIGGER_RECT(120)
+      },
+    )
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(menu.style.left).toBe('120px')
+    vi.unstubAllGlobals()
+  })
+
+  it('stops following page scroll once the menu closes', async () => {
+    const removeSpy = vi.spyOn(window, 'removeEventListener')
+    const w = mountTree()
+    await openMenu(w)
+    await nextTick()
+    await triggerOf(w).trigger('click')
+    await nextTick()
+    expect(removeSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function),
+      expect.objectContaining({ capture: true }),
+    )
+  })
+
+  it('stops following page scroll after unmount', async () => {
+    const w = mountTree()
+    await openMenu(w)
+    await nextTick()
+    w.unmount()
+    mounted.splice(mounted.indexOf(w), 1)
+    const reads = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(reads).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
   })
 })

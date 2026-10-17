@@ -164,75 +164,77 @@
 
     <!-- Dropdown tree menu -->
     <Teleport to="body">
-      <div
-        v-if="isMenuOpen"
-        :id="menuId"
-        ref="menuRef"
-        :class="['sn-tree-select-menu', `sn-tree-select-menu--${placement}`]"
-        :style="menuStyle"
-        role="tree"
-        :aria-label="ariaLabel || 'Options'"
-        :aria-multiselectable="isMulti ? 'true' : undefined"
-        @mousedown.prevent
-      >
-        <div ref="menuBodyRef" class="sn-tree-select-menu__body">
-          <template v-if="visibleNodes.length > 0">
-            <div
-              v-for="node in visibleNodes"
-              :key="node.key"
-              :id="nodeDomId(node.key)"
-              :class="['sn-tree-select-node', {
-                'sn-tree-select-node--selected': isSelected(node),
-                'sn-tree-select-node--pending': pendingKey === node.key,
-                'sn-tree-select-node--disabled': node.disabled,
-              }]"
-              role="treeitem"
-              :aria-selected="isSelected(node) ? 'true' : 'false'"
-              :aria-disabled="node.disabled ? 'true' : undefined"
-              :aria-expanded="hasChildren(node) ? (isNodeExpanded(node) ? 'true' : 'false') : undefined"
-              :aria-level="node.depth + 1"
-              :data-key="node.key"
-              :data-value="String(node.value)"
-              :style="nodeStyle(node)"
-              @click="chooseNode(node)"
-              @mouseenter="onNodeEnter(node)"
-            >
-              <button
-                v-if="hasChildren(node)"
-                type="button"
-                class="sn-tree-select-node__switcher"
-                :class="{ 'sn-tree-select-node__switcher--expanded': isNodeExpanded(node) }"
-                :aria-label="isNodeExpanded(node) ? `Collapse ${node.label}` : `Expand ${node.label}`"
-                :tabindex="-1"
-                @click.stop="toggleExpand(node)"
+      <Transition name="sn-pop">
+        <div
+          v-if="isMenuOpen"
+          :id="menuId"
+          ref="menuRef"
+          :class="['sn-tree-select-menu', `sn-tree-select-menu--${placement}`]"
+          :style="menuStyle"
+          role="tree"
+          :aria-label="ariaLabel || 'Options'"
+          :aria-multiselectable="isMulti ? 'true' : undefined"
+          @mousedown.prevent
+        >
+          <div ref="menuBodyRef" class="sn-tree-select-menu__body">
+            <template v-if="visibleNodes.length > 0">
+              <div
+                v-for="node in visibleNodes"
+                :key="node.key"
+                :id="nodeDomId(node.key)"
+                :class="['sn-tree-select-node', {
+                  'sn-tree-select-node--selected': isSelected(node),
+                  'sn-tree-select-node--pending': pendingKey === node.key,
+                  'sn-tree-select-node--disabled': node.disabled,
+                }]"
+                role="treeitem"
+                :aria-selected="isSelected(node) ? 'true' : 'false'"
+                :aria-disabled="node.disabled ? 'true' : undefined"
+                :aria-expanded="hasChildren(node) ? (isNodeExpanded(node) ? 'true' : 'false') : undefined"
+                :aria-level="node.depth + 1"
+                :data-key="node.key"
+                :data-value="String(node.value)"
+                :style="nodeStyle(node)"
+                @click="chooseNode(node)"
+                @mouseenter="onNodeEnter(node)"
               >
-                <svg
-                  viewBox="0 0 24 24"
-                  width="12"
-                  height="12"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
+                <button
+                  v-if="hasChildren(node)"
+                  type="button"
+                  class="sn-tree-select-node__switcher"
+                  :class="{ 'sn-tree-select-node__switcher--expanded': isNodeExpanded(node) }"
+                  :aria-label="isNodeExpanded(node) ? `Collapse ${node.label}` : `Expand ${node.label}`"
+                  :tabindex="-1"
+                  @click.stop="toggleExpand(node)"
                 >
-                  <path d="m9 6 6 6-6 6" />
-                </svg>
-              </button>
-              <span
-                v-else
-                class="sn-tree-select-node__switcher-placeholder"
-                aria-hidden="true"
-              />
-              <span class="sn-tree-select-node__label">{{ node.label }}</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="12"
+                    height="12"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m9 6 6 6-6 6" />
+                  </svg>
+                </button>
+                <span
+                  v-else
+                  class="sn-tree-select-node__switcher-placeholder"
+                  aria-hidden="true"
+                />
+                <span class="sn-tree-select-node__label">{{ node.label }}</span>
+              </div>
+            </template>
+            <div v-else class="sn-tree-select-menu__empty">
+              <slot name="empty">{{ emptyText }}</slot>
             </div>
-          </template>
-          <div v-else class="sn-tree-select-menu__empty">
-            <slot name="empty">{{ emptyText }}</slot>
           </div>
         </div>
-      </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -288,6 +290,7 @@ import {
   type SnTreeSelectStatus,
   type SnTreeSelectValue,
 } from './sn-tree-select-types'
+import { useOverlayFollow } from '../_internal/use-overlay-follow'
 
 defineOptions({ name: 'SnTreeSelect' })
 
@@ -611,11 +614,15 @@ async function repositionMenu(): Promise<void> {
   const menu = menuRef.value
   if (!root || !menu) return
   const rootRect = root.getBoundingClientRect()
-  const menuRect = menu.getBoundingClientRect()
+  // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
+  // transform (scale 0.92) does not distort — getBoundingClientRect would
+  // measure the scaled panel while the enter transition is running.
+  const menuWidth = menu.offsetWidth
+  const menuHeight = menu.offsetHeight
   const vw = window.innerWidth
   const vh = window.innerHeight
 
-  const width = Math.max(rootRect.width, menuRect.width)
+  const width = Math.max(rootRect.width, menuWidth)
   const left = Math.min(
     Math.max(MENU_VIEWPORT_GAP, rootRect.left),
     Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
@@ -625,11 +632,11 @@ async function repositionMenu(): Promise<void> {
   // but has room above.
   const roomBelow = vh - rootRect.bottom
   const roomAbove = rootRect.top
-  const useTop = roomBelow < menuRect.height && roomAbove > roomBelow
+  const useTop = roomBelow < menuHeight && roomAbove > roomBelow
   placement.value = useTop ? 'top' : 'bottom'
 
   const top = useTop
-    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuRect.height)
+    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight)
     : rootRect.bottom
 
   menuStyle.value = {
@@ -639,6 +646,11 @@ async function repositionMenu(): Promise<void> {
     'min-width': `${Math.round(rootRect.width)}px`,
   }
 }
+
+/* Scroll/resize follow: while the menu is open, any scroll (page or a nested
+ * scrollable ancestor) or viewport resize re-runs repositionMenu so the
+ * fixed-position menu stays glued to the trigger instead of detaching. */
+const followViewport = useOverlayFollow(rootRef, menuRef, repositionMenu, isMenuOpen)
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
@@ -659,6 +671,7 @@ function openMenu(): void {
   pendingKey.value = null
   void nextTick(() => {
     void repositionMenu()
+    followViewport.start()
     if (props.filterable) {
       filterInputRef.value?.focus()
     }
@@ -668,6 +681,7 @@ function openMenu(): void {
 function closeMenu(): void {
   if (!isMenuOpen.value) return
   isMenuOpen.value = false
+  followViewport.stop()
   query.value = ''
   pendingKey.value = null
 }
@@ -883,6 +897,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('mousedown', onDocumentMouseDown)
+  followViewport.stop()
 })
 
 watch(() => props.options, () => {
@@ -923,7 +938,7 @@ const wrapperStyle = computed<string>(() => {
   padding: 0 var(--sn-web-tree-select-padding-x, 10px);
   width: var(--sn-web-tree-select-width, 100%);
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-tree-select-border-color, var(--sn-web-color-border-default));
+  border: 1px solid var(--sn-web-tree-select-border-color, var(--sn-web-color-border-subtle));
   border-radius: var(--sn-web-tree-select-radius, 6px);
   background-color: var(--sn-web-tree-select-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-tree-select-text-color, var(--sn-web-color-text-primary));
@@ -1123,30 +1138,52 @@ const wrapperStyle = computed<string>(() => {
   min-width: 120px;
   padding: 4px 0;
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-tree-select-menu-border-color, var(--sn-web-color-border-default));
-  border-radius: var(--sn-web-tree-select-menu-radius, var(--sn-web-tree-select-radius, 6px));
+  border: 1px solid var(--sn-web-tree-select-menu-border-color, rgba(0, 0, 0, 0.06));
+  border-radius: var(--sn-web-tree-select-menu-radius, 3px);
   background-color: var(
     --sn-web-tree-select-menu-bg,
     var(--sn-web-color-background-elevated)
   );
+  /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
   box-shadow: var(
     --sn-web-tree-select-menu-shadow,
-    0 1px 2px rgba(0, 0, 0, 0.08),
-    0 6px 18px rgba(0, 0, 0, 0.14)
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
   );
   font-family: inherit;
-  animation: sn-tree-select-menu-in 0.15s ease-out;
 }
 
-@keyframes sn-tree-select-menu-in {
-  from {
-    opacity: 0;
-    transform: scaleY(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
+/* The panel drops from the trigger edge it is anchored to. */
+.sn-tree-select-menu--bottom {
+  transform-origin: center top;
+}
+
+.sn-tree-select-menu--top {
+  transform-origin: center bottom;
+}
+
+/* sn-pop — naive fade-in-scale-up: enter rises into place, leave fades out. */
+.sn-pop-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-leave-active {
+  transition:
+    opacity 0.15s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+}
+
+.sn-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 .sn-tree-select-menu__body {
@@ -1185,7 +1222,10 @@ const wrapperStyle = computed<string>(() => {
 }
 
 .sn-tree-select-node--pending {
-  background-color: var(--sn-web-tree-select-node-bg-hover, rgba(0, 0, 0, 0.045));
+  background-color: var(
+    --sn-web-tree-select-node-bg-hover,
+    var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.045))
+  );
 }
 
 .sn-tree-select-node--selected {

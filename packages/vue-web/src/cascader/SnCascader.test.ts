@@ -82,6 +82,14 @@ async function openMenu(wrapper: Findable) {
   await nextTick()
 }
 
+/**
+ * Wait out the sn-pop leave transition (150ms + frame timing) so a closed
+ * panel is actually gone from the DOM before asserting.
+ */
+async function menuLeft(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 250))
+}
+
 /** The trigger combobox element. */
 function triggerOf(wrapper: Findable) {
   return wrapper.find('.sn-cascader__selection')
@@ -154,6 +162,7 @@ describe('SnCascader', () => {
     expect(wrapper.emitted('change')?.at(-1)).toEqual([['asia', 'china', 'beijing']])
     await nextTick()
     // Menu closes after the leaf commit; the trigger echoes the full path.
+    await menuLeft()
     expect(document.body.querySelector('.sn-cascader-menu')).toBeNull()
     expect(wrapper.find('.sn-cascader__single-value').text()).toBe('Asia / China / Beijing')
   })
@@ -368,6 +377,7 @@ describe('SnCascader', () => {
     await trigger.trigger('keydown', { key: 'Enter' })
     expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['asia', 'china', 'beijing']])
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-cascader-menu')).toBeNull()
   })
 
@@ -424,6 +434,7 @@ describe('SnCascader', () => {
     await openMenu(w)
     await triggerOf(w).trigger('keydown', { key: 'Escape' })
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-cascader-menu')).toBeNull()
   })
 
@@ -475,6 +486,7 @@ describe('SnCascader', () => {
     expect(document.body.querySelector('.sn-cascader-menu')).not.toBeNull()
     await trigger.trigger('click')
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-cascader-menu')).toBeNull()
   })
 
@@ -500,6 +512,7 @@ describe('SnCascader', () => {
     await openMenu(w)
     document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }))
     await nextTick()
+    await menuLeft()
     expect(document.body.querySelector('.sn-cascader-menu')).toBeNull()
   })
 
@@ -584,5 +597,92 @@ describe('SnCascader', () => {
     const menu = document.body.querySelector('.sn-cascader-menu') as HTMLElement
     expect(menu.style.top).toBe('332px')
     expect(menu.style.left).toBe('40px')
+  })
+
+  it('opens the menu through the sn-pop transition and settles with it mounted', async () => {
+    // VTU stubs Transition by default; opt into the real one here so the
+    // sn-pop enter classes are actually applied.
+    const w = mount(SnCascader, {
+      props: { options: OPTIONS },
+      attachTo: document.body,
+      global: { stubs: { transition: false } },
+    })
+    mounted.push(w)
+    await openMenu(w)
+    const menu = document.body.querySelector('.sn-cascader-menu') as HTMLElement
+    // Enter classes prove the Transition name is sn-pop (applied synchronously).
+    expect(menu).not.toBeNull()
+    expect(
+      menu.classList.contains('sn-pop-enter-from') ||
+        menu.classList.contains('sn-pop-enter-active'),
+    ).toBe(true)
+    // Enter completes within 300ms: panel still mounted, enter classes gone.
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    const settled = document.body.querySelector('.sn-cascader-menu') as HTMLElement | null
+    expect(settled).not.toBeNull()
+    expect(settled.classList.contains('sn-pop-enter-active')).toBe(false)
+    expect(settled.classList.contains('sn-pop-enter-from')).toBe(false)
+  })
+
+  /* ───── scroll follow (useOverlayFollow) ───── */
+
+  /** rAF stub that runs the queued frame synchronously. */
+  function stubSyncFrame(): void {
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(0)
+      return 0
+    })
+  }
+
+  const TRIGGER_RECT = (left: number) =>
+    ({ top: 300, left, width: 200, height: 32, right: left + 200, bottom: 332, x: left, y: 300, toJSON: () => ({}) })
+  const MENU_RECT =
+    { top: 0, left: 0, width: 200, height: 160, right: 200, bottom: 160, x: 0, y: 0, toJSON: () => ({}) }
+
+  it('keeps the menu glued to the trigger when the page scrolls while open', async () => {
+    const w = mountCascader()
+    await openMenu(w)
+    await nextTick()
+    const menu = document.body.querySelector('.sn-cascader-menu') as HTMLElement
+    expect(menu.style.left).toBe('40px')
+    // The page scrolled: the trigger's viewport rect moved 80px right.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        return this.classList.contains('sn-cascader-menu') ? MENU_RECT : TRIGGER_RECT(120)
+      },
+    )
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(menu.style.left).toBe('120px')
+    vi.unstubAllGlobals()
+  })
+
+  it('stops following page scroll once the menu closes', async () => {
+    const removeSpy = vi.spyOn(window, 'removeEventListener')
+    const w = mountCascader()
+    await openMenu(w)
+    await nextTick()
+    await triggerOf(w).trigger('click')
+    await nextTick()
+    expect(removeSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function),
+      expect.objectContaining({ capture: true }),
+    )
+  })
+
+  it('stops following page scroll after unmount', async () => {
+    const w = mountCascader()
+    await openMenu(w)
+    await nextTick()
+    w.unmount()
+    mounted.splice(mounted.indexOf(w), 1)
+    const reads = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    expect(reads).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
   })
 })

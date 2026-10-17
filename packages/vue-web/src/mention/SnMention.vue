@@ -41,6 +41,7 @@ import {
   type SnMentionOption,
   type SnMentionRawOption,
 } from './sn-mention-types'
+import { useOverlayFollow } from '../_internal/use-overlay-follow'
 
 defineOptions({ name: 'SnMention' })
 
@@ -295,6 +296,7 @@ function refreshTrigger(): void {
 
 function closeMenu(): void {
   isMenuOpen.value = false
+  followViewport.stop()
   triggerState.value = null
   triggerQuery.value = ''
   activeIndex.value = -1
@@ -455,11 +457,15 @@ function repositionMenu(): void {
   const menu = menuEl.value
   if (root === null || menu === null) return
   const rootRect = root.getBoundingClientRect()
-  const menuRect = menu.getBoundingClientRect()
+  // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
+  // transform (scale 0.92) does not distort — getBoundingClientRect would
+  // measure the scaled panel while the enter transition is running.
+  const menuWidth = menu.offsetWidth
+  const menuHeight = menu.offsetHeight
   const vw = window.innerWidth
   const vh = window.innerHeight
 
-  const width = Math.max(rootRect.width, menuRect.width)
+  const width = Math.max(rootRect.width, menuWidth)
   const left = Math.min(
     Math.max(PANEL_VIEWPORT_GAP, rootRect.left),
     Math.max(PANEL_VIEWPORT_GAP, vw - width - PANEL_VIEWPORT_GAP),
@@ -469,11 +475,11 @@ function repositionMenu(): void {
   // room above.
   const roomBelow = vh - rootRect.bottom
   const roomAbove = rootRect.top
-  const useTop = roomBelow < menuRect.height && roomAbove > roomBelow
+  const useTop = roomBelow < menuHeight && roomAbove > roomBelow
   placement.value = useTop ? 'top' : 'bottom'
 
   const top = useTop
-    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - menuRect.height)
+    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - menuHeight)
     : rootRect.bottom
 
   menuStyle.value = {
@@ -485,7 +491,12 @@ function repositionMenu(): void {
 }
 
 watch(isMenuOpen, (open) => {
-  if (open) void nextTick(() => repositionMenu())
+  if (open) {
+    void nextTick(() => {
+      repositionMenu()
+      followViewport.start()
+    })
+  }
 })
 
 watch(filteredOptions, () => {
@@ -514,7 +525,15 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('pointerdown', onDocumentPointerdown)
+  followViewport.stop()
 })
+
+/* Scroll/resize follow: while the panel is open, any scroll (page or a
+ * nested scrollable ancestor) or viewport resize re-runs repositionMenu so
+ * the fixed-position panel stays glued to the input instead of detaching.
+ * Declared after rootEl/menuEl exist; closeMenu/open-watch reference it at
+ * call time. */
+const followViewport = useOverlayFollow(rootEl, menuEl, repositionMenu, isMenuOpen)
 
 /* ------------------------------------------------------------------ *
  * ARIA / classes
@@ -596,35 +615,37 @@ const classList = computed(() => [
          viewport flip (placement class is informational; coords come from
          the reposition pass). -->
     <Teleport to="body">
-      <div
-        v-if="showMenu || showEmpty"
-        :id="menuId"
-        ref="menuEl"
-        :class="['sn-mention__menu', `sn-mention__menu--${placement}`]"
-        :style="menuStyle"
-        role="listbox"
-        :aria-label="ariaLabel || 'Suggestions'"
-      >
-        <div v-if="showEmpty" class="sn-mention__empty">
-          <slot name="empty">No data</slot>
+      <Transition name="sn-pop">
+        <div
+          v-if="showMenu || showEmpty"
+          :id="menuId"
+          ref="menuEl"
+          :class="['sn-mention__menu', `sn-mention__menu--${placement}`]"
+          :style="menuStyle"
+          role="listbox"
+          :aria-label="ariaLabel || 'Suggestions'"
+        >
+          <div v-if="showEmpty" class="sn-mention__empty">
+            <slot name="empty">No data</slot>
+          </div>
+          <template v-else>
+            <div
+              v-for="(option, i) in filteredOptions"
+              :key="option.id"
+              :id="option.id"
+              class="sn-mention__option"
+              :class="{ 'sn-mention__option--active': i === activeIndex }"
+              role="option"
+              :aria-selected="i === activeIndex ? 'true' : 'false'"
+              :aria-disabled="option.disabled ? 'true' : undefined"
+              :data-disabled="option.disabled"
+              @mouseenter="onOptionEnter(i)"
+              @mousedown.prevent
+              @click="selectOption(option)"
+            >{{ option.label }}</div>
+          </template>
         </div>
-        <template v-else>
-          <div
-            v-for="(option, i) in filteredOptions"
-            :key="option.id"
-            :id="option.id"
-            class="sn-mention__option"
-            :class="{ 'sn-mention__option--active': i === activeIndex }"
-            role="option"
-            :aria-selected="i === activeIndex ? 'true' : 'false'"
-            :aria-disabled="option.disabled ? 'true' : undefined"
-            :data-disabled="option.disabled"
-            @mouseenter="onOptionEnter(i)"
-            @mousedown.prevent
-            @click="selectOption(option)"
-          >{{ option.label }}</div>
-        </template>
-      </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -635,7 +656,7 @@ const classList = computed(() => [
   align-items: center;
   position: relative;
   padding: 0 var(--sn-web-mention-padding-x, var(--sn-web-input-padding-x, 10px));
-  border: 1px solid var(--sn-web-mention-border-color, var(--sn-web-color-border-default));
+  border: 1px solid var(--sn-web-mention-border-color, var(--sn-web-color-border-subtle));
   border-radius: var(--sn-web-mention-radius, var(--sn-web-input-radius, 6px));
   background-color: var(--sn-web-mention-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-mention-text-color, var(--sn-web-color-text-primary));
@@ -732,11 +753,49 @@ const classList = computed(() => [
   max-height: var(--sn-web-mention-menu-max-height, 240px);
   overflow-y: auto;
   padding: var(--sn-web-mention-menu-padding, 4px) 0;
-  border-radius: var(--sn-web-mention-menu-radius, 6px);
+  border-radius: var(--sn-web-mention-menu-radius, 3px);
   background-color: var(--sn-web-mention-menu-bg, var(--sn-web-color-background-elevated));
-  border: 1px solid var(--sn-web-mention-menu-border-color, var(--sn-web-color-border-subtle));
-  box-shadow: var(--sn-web-mention-menu-shadow, 0 3px 12px var(--sn-web-color-background-overlay));
+  border: 1px solid var(--sn-web-mention-menu-border-color, rgba(0, 0, 0, 0.06));
+  /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
+  box-shadow: var(
+    --sn-web-mention-menu-shadow,
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
+  );
   z-index: var(--sn-web-mention-menu-z-index, 100);
+}
+
+/* The panel drops from the trigger edge it is anchored to. */
+.sn-mention__menu--bottom {
+  transform-origin: center top;
+}
+
+.sn-mention__menu--top {
+  transform-origin: center bottom;
+}
+
+/* sn-pop — naive fade-in-scale-up: enter rises into place, leave fades out. */
+.sn-pop-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-leave-active {
+  transition:
+    opacity 0.15s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+}
+
+.sn-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 /* Options */
@@ -755,7 +814,10 @@ const classList = computed(() => [
 
 .sn-mention__option:hover,
 .sn-mention__option--active {
-  background-color: var(--sn-web-mention-option-bg-active, rgba(0, 0, 0, 0.04));
+  background-color: var(
+    --sn-web-mention-option-bg-active,
+    var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04))
+  );
   color: var(--sn-web-mention-option-text-color-active, var(--sn-web-color-action-primary));
 }
 

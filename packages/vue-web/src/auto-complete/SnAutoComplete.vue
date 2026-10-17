@@ -28,6 +28,7 @@ import {
 } from 'vue'
 import { XIcon } from '../icon/sn-input-icons'
 import SnIcon from '../icon/SnIcon.vue'
+import { useOverlayFollow } from '../_internal/use-overlay-follow'
 import {
   type SnAutoCompleteGetShow,
   type SnAutoCompleteOptionLabel,
@@ -183,10 +184,15 @@ function openMenu(): void {
   if (!isInteractive.value) return
   isMenuOpen.value = true
   activeIndex.value = -1
+  void nextTick(() => {
+    repositionMenu()
+    followViewport.start()
+  })
 }
 
 function closeMenu(): void {
   isMenuOpen.value = false
+  followViewport.stop()
   activeIndex.value = -1
 }
 
@@ -343,6 +349,30 @@ onBeforeUnmount(() => {
 })
 
 /* ------------------------------------------------------------------ *
+ * Panel placement + scroll follow — the dropdown is absolutely positioned
+ * (glued to the field by the browser), so "reposition" only maintains the
+ * flip placement: drop below the field when the viewport has room, flip
+ * above when it doesn't (the --flip class; the page scrolling changes the
+ * room, so placement is re-derived on scroll/resize while open).
+ * ------------------------------------------------------------------ */
+
+const menuEl = ref<HTMLElement | null>(null)
+const isFlipped = ref(false)
+
+function repositionMenu(): void {
+  const root = rootEl.value
+  const menu = menuEl.value
+  if (root === null || menu === null) return
+  const rootRect = root.getBoundingClientRect()
+  const roomBelow = window.innerHeight - rootRect.bottom
+  const roomAbove = rootRect.top
+  isFlipped.value = roomBelow < menu.offsetHeight && roomAbove > roomBelow
+}
+
+/** Scroll/resize follow while the dropdown is open (useOverlayFollow). */
+const followViewport = useOverlayFollow(rootEl, menuEl, repositionMenu, isMenuOpen)
+
+/* ------------------------------------------------------------------ *
  * Highlight — naive's nested-label highlight semantics, simplified to
  * substring containment matching per segment (per task spec).
  * ------------------------------------------------------------------ */
@@ -456,43 +486,47 @@ const classList = computed(() => [
     </span>
 
     <!-- Dropdown panel: absolutely positioned below the field (flips up when
-         there is no room below — handled via the --flip class from JS). -->
-    <div
-      v-if="showMenu || showEmpty"
-      :id="`${inputId}-menu`"
-      class="sn-auto-complete__menu"
-      role="listbox"
-      :aria-label="ariaLabel || 'Suggestions'"
-    >
-      <div v-if="showEmpty" class="sn-auto-complete__empty">
-        <slot name="empty">No data</slot>
-      </div>
-      <template v-else>
-        <div
-          v-for="(option, i) in renderedOptions"
-          :key="option.id"
-          :id="option.id"
-          class="sn-auto-complete__option"
-          :class="{ 'sn-auto-complete__option--active': i === activeIndex }"
-          role="option"
-          :aria-selected="i === activeIndex ? 'true' : 'false'"
-          :aria-disabled="option.disabled ? 'true' : undefined"
-          :data-disabled="option.disabled"
-          @mouseenter="onOptionEnter(i)"
-          @mousedown.prevent
-          @click="selectOption(option)"
-        >
-          <template v-for="(chunks, si) in option.chunkedSegments" :key="si">
-            <span
-              v-for="(chunk, ci) in chunks"
-              :key="ci"
-              :class="chunk.matched ? 'sn-auto-complete__option-hl' : ''"
-            >{{ chunk.text }}</span>
-            <span v-if="si < option.chunkedSegments.length - 1" class="sn-auto-complete__option-sep">&nbsp;</span>
-          </template>
+         there is no room below — placement derived by repositionMenu). -->
+    <Transition name="sn-pop">
+      <div
+        v-if="showMenu || showEmpty"
+        :id="`${inputId}-menu`"
+        ref="menuEl"
+        class="sn-auto-complete__menu"
+        :class="{ 'sn-auto-complete__menu--flip': isFlipped }"
+        role="listbox"
+        :aria-label="ariaLabel || 'Suggestions'"
+      >
+        <div v-if="showEmpty" class="sn-auto-complete__empty">
+          <slot name="empty">No data</slot>
         </div>
-      </template>
-    </div>
+        <template v-else>
+          <div
+            v-for="(option, i) in renderedOptions"
+            :key="option.id"
+            :id="option.id"
+            class="sn-auto-complete__option"
+            :class="{ 'sn-auto-complete__option--active': i === activeIndex }"
+            role="option"
+            :aria-selected="i === activeIndex ? 'true' : 'false'"
+            :aria-disabled="option.disabled ? 'true' : undefined"
+            :data-disabled="option.disabled"
+            @mouseenter="onOptionEnter(i)"
+            @mousedown.prevent
+            @click="selectOption(option)"
+          >
+            <template v-for="(chunks, si) in option.chunkedSegments" :key="si">
+              <span
+                v-for="(chunk, ci) in chunks"
+                :key="ci"
+                :class="chunk.matched ? 'sn-auto-complete__option-hl' : ''"
+              >{{ chunk.text }}</span>
+              <span v-if="si < option.chunkedSegments.length - 1" class="sn-auto-complete__option-sep">&nbsp;</span>
+            </template>
+          </div>
+        </template>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -502,7 +536,7 @@ const classList = computed(() => [
   align-items: center;
   position: relative;
   padding: 0 var(--sn-web-auto-complete-padding-x, var(--sn-web-input-padding-x, 10px));
-  border: 1px solid var(--sn-web-auto-complete-border-color, var(--sn-web-input-border-color, var(--sn-web-color-border-default)));
+  border: 1px solid var(--sn-web-auto-complete-border-color, var(--sn-web-input-border-color, var(--sn-web-color-border-subtle)));
   border-radius: var(--sn-web-auto-complete-radius, var(--sn-web-input-radius, 6px));
   background-color: var(--sn-web-auto-complete-bg, var(--sn-web-input-bg, var(--sn-web-color-background-surface)));
   color: var(--sn-web-auto-complete-text-color, var(--sn-web-input-text-color, var(--sn-web-color-text-primary)));
@@ -601,11 +635,22 @@ const classList = computed(() => [
   max-height: var(--sn-web-auto-complete-menu-max-height, 240px);
   overflow-y: auto;
   padding: var(--sn-web-auto-complete-menu-padding, 4px) 0;
-  border-radius: var(--sn-web-auto-complete-menu-radius, 6px);
+  border-radius: var(--sn-web-auto-complete-menu-radius, 3px);
   background-color: var(--sn-web-auto-complete-menu-bg, var(--sn-web-color-background-elevated));
-  border: 1px solid var(--sn-web-auto-complete-menu-border-color, var(--sn-web-color-border-subtle));
-  box-shadow: var(--sn-web-auto-complete-menu-shadow, 0 3px 12px var(--sn-web-color-background-overlay));
+  border: 1px solid var(--sn-web-auto-complete-menu-border-color, rgba(0, 0, 0, 0.06));
+  /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
+  box-shadow: var(
+    --sn-web-auto-complete-menu-shadow,
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
+  );
   z-index: var(--sn-web-auto-complete-menu-z-index, 100);
+}
+
+/* The panel drops from the trigger edge it is anchored to. */
+.sn-auto-complete__menu {
+  transform-origin: center top;
 }
 
 /* Flip-up variant (no room below) — flipped by the JS placement check. */
@@ -614,6 +659,30 @@ const classList = computed(() => [
   bottom: 100%;
   margin-top: 0;
   margin-bottom: var(--sn-web-auto-complete-menu-gap, 4px);
+  transform-origin: center bottom;
+}
+
+/* sn-pop — naive fade-in-scale-up: enter rises into place, leave fades out. */
+.sn-pop-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-leave-active {
+  transition:
+    opacity 0.15s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+}
+
+.sn-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 /* Options */

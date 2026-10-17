@@ -9,7 +9,7 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { h, ref } from 'vue'
+import { h, nextTick, ref } from 'vue'
 import SnAutoComplete from './SnAutoComplete.vue'
 
 function mountComplete(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
@@ -39,6 +39,14 @@ async function openDropdown(wrapper: ReturnType<typeof mount>) {
     menu: wrapper.find('.sn-auto-complete__menu'),
     options: wrapper.findAll('.sn-auto-complete__option'),
   }
+}
+
+/**
+ * Wait out the sn-pop leave transition (150ms + frame timing) so a closed
+ * panel is actually gone from the DOM before asserting.
+ */
+async function menuLeft(): Promise<void> {
+  await new Promise((resolve) => setTimeout(resolve, 250))
 }
 
 describe('SnAutoComplete', () => {
@@ -138,6 +146,7 @@ describe('SnAutoComplete', () => {
     await input.trigger('focus')
     expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(true)
     await input.trigger('keydown', { key: 'Escape' })
+    await menuLeft()
     expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(false)
   })
 
@@ -262,6 +271,7 @@ describe('SnAutoComplete', () => {
     expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(true)
     document.dispatchEvent(new Event('pointerdown'))
     await wrapper.vm.$nextTick()
+    await menuLeft()
     expect(wrapper.find('.sn-auto-complete__menu').exists()).toBe(false)
 
     // Listener must be removed on unmount — dispatch after unmount is a no-op.
@@ -290,5 +300,95 @@ describe('SnAutoComplete', () => {
   it('forwards the placeholder', () => {
     const wrapper = mountComplete({ placeholder: 'Type a fruit' })
     expect(wrapper.find('input').attributes('placeholder')).toBe('Type a fruit')
+  })
+
+  it('opens the dropdown through the sn-pop transition and settles with it mounted', async () => {
+    // VTU stubs Transition by default; opt into the real one here so the
+    // sn-pop enter classes are actually applied.
+    const wrapper = mount(SnAutoComplete, {
+      props: { modelValue: '', options: ['apple'] },
+      global: { stubs: { transition: false } },
+    })
+    await wrapper.find('input').trigger('focus')
+    const menu = wrapper.find('.sn-auto-complete__menu')
+    // Enter classes prove the Transition name is sn-pop (applied synchronously).
+    expect(menu.exists()).toBe(true)
+    expect(
+      menu.classes().includes('sn-pop-enter-from') ||
+        menu.classes().includes('sn-pop-enter-active'),
+    ).toBe(true)
+    // Enter completes within 300ms: panel still mounted, enter classes gone.
+    await new Promise((resolve) => setTimeout(resolve, 300))
+    const settled = wrapper.find('.sn-auto-complete__menu')
+    expect(settled.exists()).toBe(true)
+    expect(settled.classes().includes('sn-pop-enter-active')).toBe(false)
+    expect(settled.classes().includes('sn-pop-enter-from')).toBe(false)
+  })
+
+  /* ───── scroll follow (useOverlayFollow) ───── */
+
+  /** rAF stub that runs the queued frame synchronously. */
+  function stubSyncFrame(): void {
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(0)
+      return 0
+    })
+  }
+
+  it('re-derives the flip placement when the page scrolls while open', async () => {
+    const w = mountComplete({ options: ['a', 'ab'] })
+    await w.find('input').trigger('focus')
+    await nextTick()
+    const menu = w.find('.sn-auto-complete__menu')
+    expect(menu.exists()).toBe(true)
+    // Default (unmocked) rects leave plenty of room below — no flip.
+    expect(menu.classes().includes('sn-auto-complete__menu--flip')).toBe(false)
+    // The page scrolled: the field now sits near the viewport bottom.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      function (this: HTMLElement) {
+        return {
+          top: 700, left: 40, width: 200, height: 32, right: 240, bottom: 732, x: 40, y: 700, toJSON: () => ({}),
+        }
+      },
+    )
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockImplementation(
+      function (this: HTMLElement) {
+        return this.classList.contains('sn-auto-complete__menu') ? 160 : 0
+      },
+    )
+    stubSyncFrame()
+    window.dispatchEvent(new Event('scroll'))
+    await nextTick()
+    // No room below (768 - 732 < 160), room above — the dropdown flips up.
+    expect(w.find('.sn-auto-complete__menu').classes()).toContain('sn-auto-complete__menu--flip')
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+  })
+
+  it('stops following page scroll once the dropdown closes', async () => {
+    const removeSpy = vi.spyOn(window, 'removeEventListener')
+    const w = mountComplete({ options: ['a', 'ab'] })
+    await w.find('input').trigger('focus')
+    await nextTick()
+    await w.find('input').trigger('keydown', { key: 'Escape' })
+    await nextTick()
+    expect(removeSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function),
+      expect.objectContaining({ capture: true }),
+    )
+  })
+
+  it('detaches the scroll follower on unmount', async () => {
+    const removeSpy = vi.spyOn(window, 'removeEventListener')
+    const w = mountComplete({ options: ['a', 'ab'] })
+    await w.find('input').trigger('focus')
+    await nextTick()
+    w.unmount()
+    expect(removeSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function),
+      expect.objectContaining({ capture: true }),
+    )
   })
 })

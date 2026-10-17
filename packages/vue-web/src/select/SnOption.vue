@@ -89,7 +89,7 @@ function onHover(): void {
 .sn-select-option--pending {
   background-color: var(
     --sn-web-select-option-bg-hover,
-    var(--sn-web-color-background-surface-hover)
+    var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04))
   );
 }
 

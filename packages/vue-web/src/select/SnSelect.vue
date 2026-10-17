@@ -141,61 +141,63 @@
 
     <!-- Dropdown menu -->
     <Teleport to="body">
-      <div
-        v-if="isMenuOpen"
-        :id="menuId"
-        ref="menuRef"
-        :class="['sn-select-menu', `sn-select-menu--${placement}`, {
-          'sn-select-menu--tag': tag,
-        }]"
-        :style="menuStyle"
-        role="listbox"
-        :aria-label="ariaLabel || label || 'Options'"
-        :aria-multiselectable="multiple ? 'true' : undefined"
-        @mousedown.prevent
-      >
-        <div class="sn-select-menu__header">
-          <slot name="header" />
-        </div>
+      <Transition name="sn-pop">
         <div
-          ref="menuBodyRef"
-          class="sn-select-menu__body"
-          :style="menuBodyStyle"
-          @scroll="onMenuScroll"
+          v-if="isMenuOpen"
+          :id="menuId"
+          ref="menuRef"
+          :class="['sn-select-menu', `sn-select-menu--${placement}`, {
+            'sn-select-menu--tag': tag,
+          }]"
+          :style="menuStyle"
+          role="listbox"
+          :aria-label="ariaLabel || label || 'Options'"
+          :aria-multiselectable="multiple ? 'true' : undefined"
+          @mousedown.prevent
         >
-          <template v-if="hasMenuContent">
-            <template v-for="node in filteredNodes" :key="node.key">
-              <div
-                v-if="node.kind === 'group'"
-                class="sn-select-menu__group"
-                role="group"
-                :aria-label="node.label"
-              >
-                <div class="sn-select-menu__group-label" aria-hidden="true">{{ node.label }}</div>
+          <div class="sn-select-menu__header">
+            <slot name="header" />
+          </div>
+          <div
+            ref="menuBodyRef"
+            class="sn-select-menu__body"
+            :style="menuBodyStyle"
+            @scroll="onMenuScroll"
+          >
+            <template v-if="hasMenuContent">
+              <template v-for="node in filteredNodes" :key="node.key">
+                <div
+                  v-if="node.kind === 'group'"
+                  class="sn-select-menu__group"
+                  role="group"
+                  :aria-label="node.label"
+                >
+                  <div class="sn-select-menu__group-label" aria-hidden="true">{{ node.label }}</div>
+                  <SnOption
+                    v-for="child in node.children"
+                    :key="child.key"
+                    :label="child.label"
+                    :value="child.value"
+                    :disabled="child.disabled"
+                  />
+                </div>
                 <SnOption
-                  v-for="child in node.children"
-                  :key="child.key"
-                  :label="child.label"
-                  :value="child.value"
-                  :disabled="child.disabled"
+                  v-else
+                  :label="node.label"
+                  :value="node.value"
+                  :disabled="node.disabled"
                 />
-              </div>
-              <SnOption
-                v-else
-                :label="node.label"
-                :value="node.value"
-                :disabled="node.disabled"
-              />
+              </template>
             </template>
-          </template>
-          <div v-else class="sn-select-menu__empty">
-            <slot name="empty">{{ emptyText }}</slot>
+            <div v-else class="sn-select-menu__empty">
+              <slot name="empty">{{ emptyText }}</slot>
+            </div>
+          </div>
+          <div class="sn-select-menu__action">
+            <slot name="action" />
           </div>
         </div>
-        <div class="sn-select-menu__action">
-          <slot name="action" />
-        </div>
-      </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -229,6 +231,10 @@
  * Dropdown positioning: absolute coordinates against the trigger rect
  * (bottom preferred, flips to top when the viewport lacks room — the
  * same simplified strategy SnTooltip documents; no full popper).
+ * Horizontal = naive: panel left edge aligns with the trigger left edge;
+ * when the panel would cross the viewport's right edge it shifts left so
+ * the right edge fits (right-aligned shrink). While open, page/nested
+ * scroll + resize re-run the reposition pass (useOverlayFollow).
  *
  * Per AGENTS.md §30/31: props / events / slots / tokens / accessibility
  * declared below; CSS uses `--sn-web-select-*` aliases + `--sn-web-color-*`
@@ -246,6 +252,7 @@ import {
 } from 'vue'
 import SnIcon from '../icon/SnIcon.vue'
 import SnOption from './SnOption.vue'
+import { useOverlayFollow } from '../_internal/use-overlay-follow'
 import { ChevronDownIcon, CloseIcon, LoadingIcon } from './sn-select-icons'
 import {
   defaultSelectFilter,
@@ -595,12 +602,16 @@ async function repositionMenu(): Promise<void> {
   const menu = menuRef.value
   if (!root || !menu) return
   const rootRect = root.getBoundingClientRect()
-  const menuRect = menu.getBoundingClientRect()
+  // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
+  // transform (scale 0.92) does not distort — getBoundingClientRect would
+  // measure the scaled panel while the enter transition is running.
+  const menuWidth = menu.offsetWidth
+  const menuHeight = menu.offsetHeight
   const vw = window.innerWidth
   const vh = window.innerHeight
 
   // Width: at least the trigger width (naive behavior).
-  const width = Math.max(rootRect.width, menuRect.width)
+  const width = Math.max(rootRect.width, menuWidth)
   const left = Math.min(
     Math.max(MENU_VIEWPORT_GAP, rootRect.left),
     Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
@@ -611,11 +622,11 @@ async function repositionMenu(): Promise<void> {
   const roomBelow = vh - rootRect.bottom
   const roomAbove = rootRect.top
   let useTop = false
-  if (roomBelow < menuRect.height && roomAbove > roomBelow) useTop = true
+  if (roomBelow < menuHeight && roomAbove > roomBelow) useTop = true
   placement.value = useTop ? 'top' : 'bottom'
 
   const top = useTop
-    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuRect.height)
+    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight)
     : rootRect.bottom
 
   menuStyle.value = {
@@ -625,6 +636,11 @@ async function repositionMenu(): Promise<void> {
     'min-width': `${Math.round(rootRect.width)}px`,
   }
 }
+
+/* Scroll/resize follow: while the menu is open, any scroll (page or a nested
+ * scrollable ancestor) or viewport resize re-runs repositionMenu so the
+ * fixed-position menu stays glued to the trigger instead of detaching. */
+const followViewport = useOverlayFollow(rootRef, menuRef, repositionMenu, isMenuOpen)
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
@@ -646,6 +662,7 @@ function openMenu(): void {
   pendingValue.value = null
   void nextTick(() => {
     void repositionMenu()
+    followViewport.start()
     if (props.filterable) {
       filterInputRef.value?.focus()
     }
@@ -655,6 +672,7 @@ function openMenu(): void {
 function closeMenu(): void {
   if (!isMenuOpen.value) return
   isMenuOpen.value = false
+  followViewport.stop()
   query.value = ''
   pendingIndex.value = -1
   pendingValue.value = null
@@ -827,6 +845,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   document.removeEventListener('mousedown', onDocumentMouseDown)
+  followViewport.stop()
 })
 
 watch(() => props.options, () => {
@@ -863,7 +882,7 @@ const wrapperStyle = computed(() => {
   padding: 0 var(--sn-web-select-padding-x, 10px);
   width: var(--sn-web-select-width, 100%);
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-select-border-color, var(--sn-web-color-border-default));
+  border: 1px solid var(--sn-web-select-border-color, var(--sn-web-color-border-subtle));
   border-radius: var(--sn-web-select-radius, 6px);
   background-color: var(--sn-web-select-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-select-text-color, var(--sn-web-color-text-primary));
@@ -1097,26 +1116,52 @@ const wrapperStyle = computed(() => {
   min-width: 120px;
   padding: 4px 0;
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-select-menu-border-color, var(--sn-web-color-border-default));
-  border-radius: var(--sn-web-select-menu-radius, var(--sn-web-select-radius, 6px));
+  border: 1px solid var(--sn-web-select-menu-border-color, rgba(0, 0, 0, 0.06));
+  border-radius: var(--sn-web-select-menu-radius, 3px);
   background-color: var(
     --sn-web-select-menu-bg,
     var(--sn-web-color-background-elevated)
   );
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 6px 18px rgba(0, 0, 0, 0.14);
+  /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
+  box-shadow: var(
+    --sn-web-select-menu-shadow,
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
+  );
   font-family: inherit;
-  animation: sn-select-menu-in 0.15s ease-out;
 }
 
-@keyframes sn-select-menu-in {
-  from {
-    opacity: 0;
-    transform: scaleY(0.94);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
+/* The panel drops from the trigger edge it is anchored to. */
+.sn-select-menu--bottom {
+  transform-origin: center top;
+}
+
+.sn-select-menu--top {
+  transform-origin: center bottom;
+}
+
+/* sn-pop — naive fade-in-scale-up: enter rises into place, leave fades out. */
+.sn-pop-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-leave-active {
+  transition:
+    opacity 0.15s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+}
+
+.sn-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 .sn-select-menu__body {

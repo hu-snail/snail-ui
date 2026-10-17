@@ -60,123 +60,124 @@
 
     <!-- Color panel — teleported to body -->
     <Teleport to="body">
-      <div
-        v-if="isPanelOpen"
-        :id="panelId"
-        ref="panelRef"
-        :class="['sn-color-picker-panel', `sn-color-picker-panel--${placement}`]"
-        :style="panelStyle"
-        role="dialog"
-        aria-label="Color picker panel"
-        @mousedown.prevent
-      >
-        <!-- Mode tabs -->
-        <div v-if="visibleModes.length > 1" class="sn-color-picker-panel__modes" role="tablist">
-          <button
-            v-for="mode in visibleModes"
-            :key="mode"
-            type="button"
-            class="sn-color-picker-panel__mode"
-            :class="{ 'sn-color-picker-panel__mode--active': mode === activeMode }"
-            role="tab"
-            :aria-selected="mode === activeMode ? 'true' : 'false'"
-            @click="setActiveMode(mode)"
-          >{{ mode.toUpperCase() }}</button>
-        </div>
-
-        <!-- SV square -->
+      <Transition name="sn-pop">
         <div
-          ref="svRef"
-          class="sn-color-picker-panel__sv"
-          :style="{ backgroundColor: hueBackground(draft.h) }"
-          @pointerdown="onSvPointerDown"
+          v-if="isPanelOpen"
+          :id="panelId"
+          ref="panelRef"
+          :class="['sn-color-picker-panel', `sn-color-picker-panel--${placement}`]"
+          :style="panelStyle"
+          role="dialog"
+          aria-label="Color picker panel"
+          @mousedown.prevent
         >
-          <div
-            ref="svHandleRef"
-            class="sn-color-picker-panel__sv-handle"
-            role="slider"
-            aria-label="Saturation and value"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            :aria-valuetext="`S ${Math.round(draft.s)}%, V ${Math.round(draft.v)}%`"
-            :tabindex="isInteractive ? 0 : -1"
-            :style="{ left: `${draft.s}%`, top: `${100 - draft.v}%`, backgroundColor: previewColor }"
-            @keydown="onHandleKeyDown($event, 'sv')"
-          />
-        </div>
-
-        <!-- Hue + alpha rails -->
-        <div class="sn-color-picker-panel__rails">
-          <div
-            ref="hueRef"
-            class="sn-color-picker-panel__rail sn-color-picker-panel__hue"
-            @pointerdown="onHuePointerDown"
-          >
-            <div
-              class="sn-color-picker-panel__thumb"
-              role="slider"
-              aria-label="Hue"
-              aria-valuemin="0"
-              aria-valuemax="360"
-              :aria-valuenow="Math.round(draft.h)"
-              :tabindex="isInteractive ? 0 : -1"
-              :style="{ left: `${(draft.h / 360) * 100}%` }"
-              @keydown="onHandleKeyDown($event, 'h')"
-            />
+          <div v-if="visibleModes.length > 1" class="sn-color-picker-panel__modes" role="tablist">
+            <button
+              v-for="mode in visibleModes"
+              :key="mode"
+              type="button"
+              class="sn-color-picker-panel__mode"
+              :class="{ 'sn-color-picker-panel__mode--active': mode === activeMode }"
+              role="tab"
+              :aria-selected="mode === activeMode ? 'true' : 'false'"
+              @click="setActiveMode(mode)"
+            >{{ mode.toUpperCase() }}</button>
           </div>
+
+          <!-- SV square -->
           <div
-            v-if="showAlpha"
-            ref="alphaRef"
-            class="sn-color-picker-panel__rail sn-color-picker-panel__alpha"
-            :style="alphaRailStyle"
-            @pointerdown="onAlphaPointerDown"
+            ref="svRef"
+            class="sn-color-picker-panel__sv"
+            :style="{ backgroundColor: hueBackground(draft.h) }"
+            @pointerdown="onSvPointerDown"
           >
             <div
-              class="sn-color-picker-panel__thumb"
+              ref="svHandleRef"
+              class="sn-color-picker-panel__sv-handle"
               role="slider"
-              aria-label="Opacity"
+              aria-label="Saturation and value"
               aria-valuemin="0"
               aria-valuemax="100"
-              :aria-valuenow="Math.round(draft.a * 100)"
+              :aria-valuetext="`S ${Math.round(draft.s)}%, V ${Math.round(draft.v)}%`"
               :tabindex="isInteractive ? 0 : -1"
-              :style="{ left: `${draft.a * 100}%` }"
-              @keydown="onHandleKeyDown($event, 'a')"
+              :style="{ left: `${draft.s}%`, top: `${100 - draft.v}%`, backgroundColor: previewColor }"
+              @keydown="onHandleKeyDown($event, 'sv')"
+            />
+          </div>
+
+          <!-- Hue + alpha rails -->
+          <div class="sn-color-picker-panel__rails">
+            <div
+              ref="hueRef"
+              class="sn-color-picker-panel__rail sn-color-picker-panel__hue"
+              @pointerdown="onHuePointerDown"
+            >
+              <div
+                class="sn-color-picker-panel__thumb"
+                role="slider"
+                aria-label="Hue"
+                aria-valuemin="0"
+                aria-valuemax="360"
+                :aria-valuenow="Math.round(draft.h)"
+                :tabindex="isInteractive ? 0 : -1"
+                :style="{ left: `${(draft.h / 360) * 100}%` }"
+                @keydown="onHandleKeyDown($event, 'h')"
+              />
+            </div>
+            <div
+              v-if="showAlpha"
+              ref="alphaRef"
+              class="sn-color-picker-panel__rail sn-color-picker-panel__alpha"
+              :style="alphaRailStyle"
+              @pointerdown="onAlphaPointerDown"
+            >
+              <div
+                class="sn-color-picker-panel__thumb"
+                role="slider"
+                aria-label="Opacity"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                :aria-valuenow="Math.round(draft.a * 100)"
+                :tabindex="isInteractive ? 0 : -1"
+                :style="{ left: `${draft.a * 100}%` }"
+                @keydown="onHandleKeyDown($event, 'a')"
+              />
+            </div>
+          </div>
+
+          <!-- Current color preview + mode text input -->
+          <div class="sn-color-picker-panel__inputs">
+            <span
+              class="sn-color-picker-panel__preview"
+              :style="{ backgroundColor: previewColor }"
+              aria-hidden="true"
+            />
+            <input
+              ref="inputRef"
+              v-model="inputText"
+              type="text"
+              class="sn-color-picker-panel__input"
+              aria-label="Color value"
+              spellcheck="false"
+              @keydown.enter.prevent="commitInput"
+              @blur="commitInput"
+            >
+          </div>
+
+          <!-- Swatches -->
+          <div v-if="normalizedSwatches.length > 0" class="sn-color-picker-panel__swatches">
+            <button
+              v-for="swatch in normalizedSwatches"
+              :key="swatch.value"
+              type="button"
+              class="sn-color-picker-panel__swatch"
+              :style="{ backgroundColor: swatch.css }"
+              :aria-label="`Select ${swatch.value}`"
+              @click="selectSwatch(swatch.value)"
             />
           </div>
         </div>
-
-        <!-- Current color preview + mode text input -->
-        <div class="sn-color-picker-panel__inputs">
-          <span
-            class="sn-color-picker-panel__preview"
-            :style="{ backgroundColor: previewColor }"
-            aria-hidden="true"
-          />
-          <input
-            ref="inputRef"
-            v-model="inputText"
-            type="text"
-            class="sn-color-picker-panel__input"
-            aria-label="Color value"
-            spellcheck="false"
-            @keydown.enter.prevent="commitInput"
-            @blur="commitInput"
-          >
-        </div>
-
-        <!-- Swatches -->
-        <div v-if="normalizedSwatches.length > 0" class="sn-color-picker-panel__swatches">
-          <button
-            v-for="swatch in normalizedSwatches"
-            :key="swatch.value"
-            type="button"
-            class="sn-color-picker-panel__swatch"
-            :style="{ backgroundColor: swatch.css }"
-            :aria-label="`Select ${swatch.value}`"
-            @click="selectSwatch(swatch.value)"
-          />
-        </div>
-      </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -228,6 +229,7 @@ import {
 } from 'vue'
 import SnIcon from '../icon/SnIcon.vue'
 import { ChevronDownIcon, CloseIcon } from './sn-color-picker-icons'
+import { useOverlayFollow } from '../_internal/use-overlay-follow'
 import {
   clamp,
   formatHsl,
@@ -444,21 +446,25 @@ function repositionPanel(): void {
   const panel = panelRef.value
   if (!root || !panel) return
   const rootRect = root.getBoundingClientRect()
-  const panelRect = panel.getBoundingClientRect()
+  // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
+  // transform (scale 0.92) does not distort — getBoundingClientRect would
+  // measure the scaled panel while the enter transition is running.
+  const panelWidth = panel.offsetWidth
+  const panelHeight = panel.offsetHeight
   const vw = window.innerWidth
   const vh = window.innerHeight
 
-  const width = Math.max(rootRect.width, panelRect.width)
+  const width = Math.max(rootRect.width, panelWidth)
   const left = Math.min(
     Math.max(PANEL_VIEWPORT_GAP, rootRect.left),
     Math.max(PANEL_VIEWPORT_GAP, vw - width - PANEL_VIEWPORT_GAP),
   )
   const roomBelow = vh - rootRect.bottom
   const roomAbove = rootRect.top
-  const useTop = roomBelow < panelRect.height && roomAbove > roomBelow
+  const useTop = roomBelow < panelHeight && roomAbove > roomBelow
   placement.value = useTop ? 'top' : 'bottom'
   const top = useTop
-    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelRect.height)
+    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight)
     : rootRect.bottom
 
   panelStyle.value = {
@@ -468,6 +474,11 @@ function repositionPanel(): void {
     'min-width': `${Math.round(rootRect.width)}px`,
   }
 }
+
+/* Scroll/resize follow: while the panel is open, any scroll (page or a
+ * nested scrollable ancestor) or viewport resize re-runs repositionPanel so
+ * the fixed-position panel stays glued to the trigger instead of detaching. */
+const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen)
 
 /* ─────────── Pointer drag (document listeners, §41/§42) ─────────── */
 
@@ -550,6 +561,7 @@ function openPanel(): void {
   initDraftFromModel()
   void nextTick(() => {
     repositionPanel()
+    followViewport.start()
     inputRef.value?.focus()
   })
 }
@@ -557,6 +569,7 @@ function openPanel(): void {
 function closePanel(): void {
   if (!isPanelOpen.value) return
   isPanelOpen.value = false
+  followViewport.stop()
   dragState = null
 }
 
@@ -691,6 +704,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('mousedown', onDocumentMouseDown)
   document.removeEventListener('pointermove', onDocumentPointerMove)
   document.removeEventListener('pointerup', onDocumentPointerUp)
+  followViewport.stop()
 })
 
 watch(() => props.modelValue, () => {
@@ -726,7 +740,7 @@ watch(() => [props.modes, props.showAlpha], () => {
   padding-right: calc(var(--sn-web-color-picker-padding-x, 10px) + 22px);
   width: var(--sn-web-color-picker-width, 100%);
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-color-picker-border-color, var(--sn-web-color-border-default));
+  border: 1px solid var(--sn-web-color-picker-border-color, var(--sn-web-color-border-subtle));
   border-radius: var(--sn-web-color-picker-radius, 6px);
   background-color: var(--sn-web-color-picker-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-color-picker-text-color, var(--sn-web-color-text-primary));
@@ -849,18 +863,50 @@ watch(() => [props.modes, props.showAlpha], () => {
   gap: 10px;
   padding: 10px;
   box-sizing: border-box;
-  border: 1px solid var(--sn-web-color-picker-panel-border-color, var(--sn-web-color-border-default));
-  border-radius: var(--sn-web-color-picker-panel-radius, 6px);
+  border: 1px solid var(--sn-web-color-picker-panel-border-color, rgba(0, 0, 0, 0.06));
+  border-radius: var(--sn-web-color-picker-panel-radius, 3px);
   background-color: var(--sn-web-color-picker-panel-bg, var(--sn-web-color-background-elevated));
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08), 0 6px 18px rgba(0, 0, 0, 0.14);
+  /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
+  box-shadow: var(
+    --sn-web-color-picker-panel-shadow,
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
+  );
   font-family: inherit;
   font-size: var(--sn-web-color-picker-panel-font-size, 13px);
-  animation: sn-color-picker-panel-in 0.15s ease-out;
 }
 
-@keyframes sn-color-picker-panel-in {
-  from { opacity: 0; transform: scaleY(0.94); }
-  to { opacity: 1; transform: scaleY(1); }
+/* The panel drops from the trigger edge it is anchored to. */
+.sn-color-picker-panel--bottom {
+  transform-origin: center top;
+}
+
+.sn-color-picker-panel--top {
+  transform-origin: center bottom;
+}
+
+/* sn-pop — naive fade-in-scale-up: enter rises into place, leave fades out. */
+.sn-pop-enter-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-leave-active {
+  transition:
+    opacity 0.15s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-pop-enter-from {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+}
+
+.sn-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 
 /* Mode tabs */
