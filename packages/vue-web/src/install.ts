@@ -33,6 +33,11 @@ import SnSwitch from './switch/SnSwitch.vue'
 import SnSlider from './slider/SnSlider.vue'
 import SnRate from './rate/SnRate.vue'
 import SnInputNumber from './input-number/SnInputNumber.vue'
+import SnSelect from './select/SnSelect.vue'
+import SnOption from './select/SnOption.vue'
+import SnAutoComplete from './auto-complete/SnAutoComplete.vue'
+import SnDynamicInput from './dynamic-input/SnDynamicInput.vue'
+import SnDynamicTags from './dynamic-tags/SnDynamicTags.vue'
 import SnDialog from './dialog/SnDialog.vue'
 import SnDrawer from './drawer/SnDrawer.vue'
 import SnDrawerContent from './drawer/SnDrawerContent.vue'
@@ -86,6 +91,11 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnSlider', component: SnSlider },
   { name: 'SnRate', component: SnRate },
   { name: 'SnInputNumber', component: SnInputNumber },
+  { name: 'SnSelect', component: SnSelect },
+  { name: 'SnOption', component: SnOption },
+  { name: 'SnAutoComplete', component: SnAutoComplete },
+  { name: 'SnDynamicInput', component: SnDynamicInput },
+  { name: 'SnDynamicTags', component: SnDynamicTags },
   { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },
   { name: 'SnSkeleton', component: SnSkeleton },

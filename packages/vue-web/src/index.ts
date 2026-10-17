@@ -38,6 +38,23 @@ export { default as SnSwitch } from './switch/SnSwitch.vue'
 export { default as SnSlider } from './slider/SnSlider.vue'
 export { default as SnRate } from './rate/SnRate.vue'
 export { default as SnInputNumber } from './input-number/SnInputNumber.vue'
+export { default as SnSelect } from './select/SnSelect.vue'
+export { default as SnOption } from './select/SnOption.vue'
+export type {
+  SnSelectValue,
+  SnSelectOptionInput,
+  SnSelectLeafOption,
+  SnSelectGroupOption,
+  SnSelectFilter,
+} from './select/sn-select-types'
+export { default as SnAutoComplete } from './auto-complete/SnAutoComplete.vue'
+export type {
+  SnAutoCompleteOption,
+  SnAutoCompleteRawOption,
+  SnAutoCompleteGetShow,
+} from './auto-complete/sn-auto-complete-types'
+export { default as SnDynamicInput } from './dynamic-input/SnDynamicInput.vue'
+export { default as SnDynamicTags } from './dynamic-tags/SnDynamicTags.vue'
 export { default as SnLoading } from './loading/SnLoading.vue'
 export { default as SnDialog } from './dialog/SnDialog.vue'
 export type { SnDialogIconPlacement, SnDialogType } from './dialog/SnDialog.vue'
