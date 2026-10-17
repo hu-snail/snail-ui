@@ -882,7 +882,8 @@ watch(isMenuOpen, (open) => {
   );
   box-shadow: var(
     --sn-web-cascader-menu-shadow,
-    0 1px 2px rgba(0, 0, 0, 0.08), 0 6px 18px rgba(0, 0, 0, 0.14)
+    0 1px 2px var(--sn-web-color-background-overlay),
+    0 6px 18px var(--sn-web-color-background-overlay)
   );
   font-family: inherit;
   animation: sn-cascader-menu-in 0.15s ease-out;
