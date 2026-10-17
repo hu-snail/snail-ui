@@ -61,6 +61,10 @@ const sidebar = {
       items: [
         { text: 'Input 输入框', link: '/components/web/input' },
         { text: 'InputNumber 数字输入', link: '/components/web/input-number' },
+        { text: 'AutoComplete 自动补全', link: '/components/web/auto-complete' },
+        { text: 'Select 选择器', link: '/components/web/select' },
+        { text: 'DynamicInput 动态输入', link: '/components/web/dynamic-input' },
+        { text: 'DynamicTags 动态标签', link: '/components/web/dynamic-tags' },
         { text: 'Checkbox 多选框', link: '/components/web/checkbox' },
         { text: 'Radio 单选框', link: '/components/web/radio' },
         { text: 'Switch 开关', link: '/components/web/switch' },
@@ -201,6 +205,10 @@ const enSidebar = {
       items: [
         { text: 'Input', link: '/en/components/web/input' },
         { text: 'InputNumber', link: '/en/components/web/input-number' },
+        { text: 'AutoComplete', link: '/en/components/web/auto-complete' },
+        { text: 'Select', link: '/en/components/web/select' },
+        { text: 'DynamicInput', link: '/en/components/web/dynamic-input' },
+        { text: 'DynamicTags', link: '/en/components/web/dynamic-tags' },
         { text: 'Checkbox', link: '/en/components/web/checkbox' },
         { text: 'Radio', link: '/en/components/web/radio' },
         { text: 'Switch', link: '/en/components/web/switch' },
