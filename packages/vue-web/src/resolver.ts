@@ -69,6 +69,8 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnTreeSelect',
   'SnMention',
   'SnUpload',
+  'SnDatePicker',
+  'SnColorPicker',
   // Layout
   'SnCard',
   'SnCollapse',

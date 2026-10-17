@@ -79,6 +79,14 @@ export type {
   SnUploadCustomRequest,
   SnUploadBeforeUpload,
 } from './upload/sn-upload-types'
+export { default as SnDatePicker } from './date-picker/SnDatePicker.vue'
+export type {
+  SnDatePickerType,
+  SnDateValue,
+  SnDateRangeValue,
+} from './date-picker/sn-date-picker-types'
+export { default as SnColorPicker } from './color-picker/SnColorPicker.vue'
+export type { SnColorPickerMode } from './color-picker/sn-color-picker-types'
 export { default as SnLoading } from './loading/SnLoading.vue'
 export { default as SnDialog } from './dialog/SnDialog.vue'
 export type { SnDialogIconPlacement, SnDialogType } from './dialog/SnDialog.vue'

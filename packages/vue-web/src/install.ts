@@ -43,6 +43,8 @@ import SnCascader from './cascader/SnCascader.vue'
 import SnTreeSelect from './tree-select/SnTreeSelect.vue'
 import SnMention from './mention/SnMention.vue'
 import SnUpload from './upload/SnUpload.vue'
+import SnDatePicker from './date-picker/SnDatePicker.vue'
+import SnColorPicker from './color-picker/SnColorPicker.vue'
 import SnDialog from './dialog/SnDialog.vue'
 import SnDrawer from './drawer/SnDrawer.vue'
 import SnDrawerContent from './drawer/SnDrawerContent.vue'
@@ -106,6 +108,8 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnTreeSelect', component: SnTreeSelect },
   { name: 'SnMention', component: SnMention },
   { name: 'SnUpload', component: SnUpload },
+  { name: 'SnDatePicker', component: SnDatePicker },
+  { name: 'SnColorPicker', component: SnColorPicker },
   { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },
   { name: 'SnSkeleton', component: SnSkeleton },
