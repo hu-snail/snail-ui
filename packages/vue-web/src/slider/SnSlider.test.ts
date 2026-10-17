@@ -11,12 +11,20 @@
  *   - vertical orientation geometry
  *   - tooltip / formatTooltip
  *   - ARIA slider semantics
+ *   - visual regression: computed styles (rail positioning, fill track
+ *     sizing) and the active-handle class on hover/focus
+ *
+ * vitest runs with CSS processing off, so the SFC <style> is never injected;
+ * the visual-regression block injects the real stylesheet into the document
+ * itself before asserting on getComputedStyle (happy-dom cascades it).
  *
  * jsdom has no layout: getBoundingClientRect is mocked to a fixed rect.
  */
 
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import SnSlider from './SnSlider.vue'
 
 /** Horizontal track rect: x 0..200. Vertical: y 0..200 (top 0). */
@@ -324,5 +332,65 @@ describe('SnSlider', () => {
       document.dispatchEvent(new MouseEvent('mouseup'))
     })
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([15])
+  })
+
+  describe('visual regression', () => {
+    let styleEl: HTMLStyleElement | null = null
+
+    beforeAll(() => {
+      // vitest cwd = packages/vue-web (per-package vitest config).
+      const source = readFileSync(join(process.cwd(), 'src/slider/SnSlider.vue'), 'utf8')
+      const css = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)?.[1] ?? ''
+      expect(css).toContain('.sn-slider__rail')
+      styleEl = document.createElement('style')
+      styleEl.textContent = css
+      document.head.appendChild(styleEl)
+    })
+
+    afterAll(() => {
+      styleEl?.remove()
+      styleEl = null
+    })
+
+    it('positions the rail as the fill-track origin with a full-height fill', () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 40 }, attachTo: document.body })
+      const railStyle = getComputedStyle(wrapper.find('.sn-slider__rail').element)
+      const trackStyle = getComputedStyle(wrapper.find('.sn-slider__track').element)
+      expect(railStyle.position).toBe('relative')
+      expect(trackStyle.position).toBe('absolute')
+      expect(trackStyle.top).toBe('0px')
+      expect(trackStyle.height).toBe('100%')
+      wrapper.unmount()
+    })
+
+    it('anchors the vertical fill track to the rail column', () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 40, vertical: true },
+        attachTo: document.body,
+      })
+      const trackStyle = getComputedStyle(wrapper.find('.sn-slider__track').element)
+      expect(trackStyle.top).toBe('auto')
+      expect(trackStyle.width).toBe('100%')
+      wrapper.unmount()
+    })
+
+    it('toggles the active class on the hovered handle', async () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 40 } })
+      const handle = wrapper.find('[role="slider"]')
+      expect(handle.classes()).not.toContain('sn-slider__handle--active')
+      await handle.trigger('mouseenter')
+      expect(handle.classes()).toContain('sn-slider__handle--active')
+      await handle.trigger('mouseleave')
+      expect(handle.classes()).not.toContain('sn-slider__handle--active')
+    })
+
+    it('never activates the handle on hover when disabled or readonly', async () => {
+      const disabled = mount(SnSlider, { props: { modelValue: 40, disabled: true } })
+      await disabled.find('[role="slider"]').trigger('mouseenter')
+      expect(disabled.find('[role="slider"]').classes()).not.toContain('sn-slider__handle--active')
+      const readonly = mount(SnSlider, { props: { modelValue: 40, readonly: true } })
+      await readonly.find('[role="slider"]').trigger('mouseenter')
+      expect(readonly.find('[role="slider"]').classes()).not.toContain('sn-slider__handle--active')
+    })
   })
 })

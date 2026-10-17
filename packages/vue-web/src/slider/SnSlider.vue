@@ -183,6 +183,12 @@ function activeIndex(): number | null {
   return hoverIndex.value ?? draggingIndex.value
 }
 
+/** Hover / focus drives the tooltip + active visuals — never on disabled/readonly. */
+function setHoverIndex(index: number | null): void {
+  if (index !== null && !isInteractive.value) return
+  hoverIndex.value = index
+}
+
 function pointerToValue(e: MouseEvent): number {
   const el = trackRef.value
   if (!el) return pair.value[1]
@@ -406,10 +412,10 @@ const ariaText = (index: number): string => {
           :aria-disabled="disabled ? 'true' : undefined"
           :aria-orientation="vertical ? 'vertical' : 'horizontal'"
           @mousedown="onHandleMousedown($event, index)"
-          @mouseenter="hoverIndex = index"
-          @mouseleave="hoverIndex = null"
-          @focus="hoverIndex = index"
-          @blur="hoverIndex = null"
+          @mouseenter="setHoverIndex(index)"
+          @mouseleave="setHoverIndex(null)"
+          @focus="setHoverIndex(index)"
+          @blur="setHoverIndex(null)"
           @keydown="onHandleKeydown($event, index)"
         >
           <div
@@ -451,10 +457,21 @@ const ariaText = (index: number): string => {
   cursor: not-allowed;
 }
 
+/* The fill track is an absolute child of the relative rail: horizontal
+   stretches full height (inline style owns left/width), vertical anchors
+   from the inline `bottom`/`height` pair and stretches the rail column. */
 .sn-slider__track {
   position: absolute;
+  top: 0;
+  height: 100%;
   border-radius: inherit;
   background-color: var(--sn-web-slider-track-bg, var(--sn-web-color-action-primary));
+}
+
+.sn-slider--vertical .sn-slider__track {
+  top: auto;
+  left: 0;
+  width: 100%;
 }
 
 .sn-slider--disabled .sn-slider__track {
@@ -475,20 +492,35 @@ const ariaText = (index: number): string => {
 
 .sn-slider__handle {
   position: absolute;
+  top: 50%;
   width: var(--sn-web-slider-handle-size, 16px);
   height: var(--sn-web-slider-handle-size, 16px);
   border-radius: 50%;
   border: 2px solid var(--sn-web-slider-handle-border-color, var(--sn-web-color-action-primary));
   background-color: var(--sn-web-slider-handle-bg, var(--sn-web-color-background-surface, #fff));
-  box-shadow: var(--sn-web-slider-handle-shadow, 0 1px 3px rgba(0, 0, 0, 0.15));
-  transform: translate(-50%, 50%);
+  box-shadow: var(--sn-web-slider-handle-shadow, 0 1px 3px rgba(0, 0, 0, 0.2));
+  transform: translate(-50%, -50%);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
   cursor: grab;
   outline: none;
   z-index: 1;
 }
 
+/* Vertical: anchored by the inline `bottom` percent — center across the rail. */
 .sn-slider--vertical .sn-slider__handle {
+  top: auto;
+  left: 50%;
   transform: translate(-50%, 50%);
+}
+
+/* Hover / focus / drag (class-driven, so disabled/readonly never grow). */
+.sn-slider__handle--active {
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: var(--sn-web-slider-handle-shadow-active, 0 2px 6px rgba(0, 0, 0, 0.25));
+}
+
+.sn-slider--vertical .sn-slider__handle--active {
+  transform: translate(-50%, 50%) scale(1.15);
 }
 
 .sn-slider__handle:focus-visible {
@@ -499,6 +531,8 @@ const ariaText = (index: number): string => {
 .sn-slider--readonly .sn-slider__handle {
   cursor: not-allowed;
   border-color: var(--sn-web-slider-handle-border-color-disabled, var(--sn-web-color-action-disabled, rgba(0, 0, 0, 0.25)));
+  background-color: var(--sn-web-slider-handle-bg-disabled, var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.09)));
+  box-shadow: none;
 }
 
 .sn-slider--dragging .sn-slider__handle--active {
@@ -517,6 +551,7 @@ const ariaText = (index: number): string => {
   font-size: 12px;
   line-height: 1.4;
   white-space: nowrap;
+  box-shadow: var(--sn-web-slider-tooltip-shadow, 0 2px 8px rgba(0, 0, 0, 0.25));
   pointer-events: none;
   z-index: 2;
 }
@@ -546,12 +581,17 @@ const ariaText = (index: number): string => {
   transform: translateY(-50%);
 }
 
+/* Zero-size origin box: the dot + label position themselves from its
+   origin, so centering the box centers the whole mark on the rail. */
 .sn-slider__mark {
   position: absolute;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .sn-slider--vertical .sn-slider__mark {
+  top: auto;
+  left: 50%;
   transform: translate(-50%, 50%);
 }
 
