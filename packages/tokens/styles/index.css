@@ -258,6 +258,8 @@
   --aui-dialog-color: var(--aui-color-background-elevated);
   --aui-dialog-text-color: var(--aui-color-text-secondary);
   --aui-dialog-title-text-color: var(--aui-color-text-primary);
+  /* Upstream n-dialog panel shadow: three soft layers, max 28px blur. */
+  --aui-dialog-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   --aui-dialog-border: 1px solid var(--aui-color-border-default);
   --aui-dialog-radius: var(--aui-radius-card);
   --aui-dialog-padding: var(--aui-spacing-5);
@@ -288,6 +290,7 @@
   --sn-dialog-color: var(--aui-dialog-color);
   --sn-dialog-text-color: var(--aui-dialog-text-color);
   --sn-dialog-title-text-color: var(--aui-dialog-title-text-color);
+  --sn-dialog-box-shadow: var(--aui-dialog-box-shadow);
   --sn-dialog-border: var(--aui-dialog-border);
   --sn-dialog-radius: var(--aui-dialog-radius);
   --sn-dialog-padding: var(--aui-dialog-padding);

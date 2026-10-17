@@ -91,6 +91,32 @@ describe('SnDrawer (AUI-WEB-FB-003)', () => {
     })
   })
 
+  describe('transitions', () => {
+    it('should slide the panel under the placement name and fade the mask under sn-fade', async () => {
+      // VTU stubs <Transition> by default, which erases exactly the enter
+      // classes pinned here — opt back into the real Transition (keeping the
+      // teleport stub) so opening actually plays both enter transitions and
+      // the class prefixes become observable: the panel enters under
+      // `sn-drawer-slide-<placement>`, the mask under `sn-fade`.
+      const wrapper = mount(SnDrawer, {
+        props: { show: false } as never,
+        global: { stubs: { teleport: true, transition: false } },
+      })
+
+      await wrapper.setProps({ show: true })
+
+      expect(panelOf(wrapper).classes()).toEqual(
+        expect.arrayContaining([
+          'sn-drawer-slide-right-enter-from',
+          'sn-drawer-slide-right-enter-active',
+        ]),
+      )
+      expect(wrapper.find('.sn-drawer-mask').classes()).toEqual(
+        expect.arrayContaining(['sn-fade-enter-from', 'sn-fade-enter-active']),
+      )
+    })
+  })
+
   describe('width and height', () => {
     it('should treat a numeric width as px', () => {
       const panel = panelOf(mountDrawer({ show: true, width: 400 }))

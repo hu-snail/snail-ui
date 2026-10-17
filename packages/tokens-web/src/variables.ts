@@ -101,6 +101,7 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-dialog-color', '--aui-dialog-color'],
   ['--sn-web-dialog-text-color', '--aui-dialog-text-color'],
   ['--sn-web-dialog-title-text-color', '--aui-dialog-title-text-color'],
+  ['--sn-web-dialog-box-shadow', '--aui-dialog-box-shadow'],
   ['--sn-web-dialog-border', '--aui-dialog-border'],
   ['--sn-web-dialog-radius', '--aui-dialog-radius'],
   ['--sn-web-dialog-padding', '--aui-dialog-padding'],

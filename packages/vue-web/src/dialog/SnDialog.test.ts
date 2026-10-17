@@ -389,6 +389,25 @@ describe('SnDialog (AUI-WEB-FB-001)', () => {
     })
   })
 
+  describe('pop transition', () => {
+    it('should mount with the sn-dialog-pop transition name', () => {
+      // VTU stubs <Transition> by default, which erases exactly the enter
+      // classes pinned here — opt back into the real Transition for this
+      // case. With `appear`, the enter fires on first mount, so the card a
+      // caller renders with a plain `v-if="show"` pops (opacity + scale)
+      // instead of snapping in. Docs demos and e2e key off the class
+      // prefix, so the name is part of the observable contract.
+      const wrapper = mount(SnDialog, {
+        props: { title: 't' },
+        global: { stubs: { transition: false } },
+      })
+
+      expect(wrapper.find('.sn-dialog').classes()).toEqual(
+        expect.arrayContaining(['sn-dialog-pop-enter-from', 'sn-dialog-pop-enter-active']),
+      )
+    })
+  })
+
   describe('class and style passthrough', () => {
     it('should forward titleClass / titleStyle to the title row', () => {
       const wrapper = mountDialog({

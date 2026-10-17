@@ -32,11 +32,19 @@
  *     'primary' for 'default'. Only the positive button shows `loading`.
  *   - `content--last` drops the bottom margin when the action row is absent.
  *
+ *   - The panel pops on mount: the card is wrapped in
+ *     `<Transition name="sn-dialog-pop" appear>` (opacity + scale, 220ms in /
+ *     180ms out), so a caller's plain `v-if="show"` animates like the
+ *     upstream provider-mounted dialog instead of snapping in. Vue plays the
+ *     leave transition when the component unmounts (the hooks live on the
+ *     panel element, which `remove()` consults).
+ *
  * Divergence from n-dialog (documented):
  *   - Upstream reads ~25 `--n-*` vars from a JS theme object. This library
  *     reads the `--sn-web-dialog-*` token block in CSS instead, so no inline
  *     style is needed at all — which also means the dialog is themeable by
- *     overriding tokens rather than props.
+ *     overriding tokens rather than props. The panel shadow
+ *     (`--sn-web-dialog-box-shadow`) carries the upstream dialog value.
  *   - Icons use lucide (`Info` / `CircleCheck` / `TriangleAlert` / `CircleX`
  *     / `X`) via SnIcon, matching this library's icon strategy rather than
  *     upstream's bespoke SVG icon set.
@@ -233,87 +241,89 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
 </script>
 
 <template>
-  <div
-    data-snui-component="SnDialog"
-    class="sn-dialog"
-    :class="[
-      closable && 'sn-dialog--closable',
-      `sn-dialog--icon-${mergedIconPlacement}`,
-      bordered && 'sn-dialog--bordered',
-    ]"
-    role="dialog"
-    :aria-modal="false"
-  >
-    <!-- Close button: user slot wins, otherwise the built-in glyph. -->
-    <slot v-if="closable && slots.close" name="close" />
-    <button
-      v-else-if="showBuiltinClose"
-      type="button"
-      class="sn-dialog__close"
-      aria-label="关闭"
-      :tabindex="closeFocusable ? 0 : -1"
-      data-snui-component="SnDialogClose"
-      @click="emit('close')"
-    >
-      <SnIcon :icon="X" />
-    </button>
-
-    <!-- 'top' placement hoists the icon into its own centred row. -->
-    <div v-if="hasIcon && isTopIcon" class="sn-dialog__icon-container">
-      <span class="sn-dialog__icon" :style="{ color: iconColorVar }">
-        <slot name="icon">
-          <SnIcon :icon="mergedIcon" />
-        </slot>
-      </span>
-    </div>
-
-    <div class="sn-dialog__title" :class="titleClass" :style="titleStyle">
-      <span v-if="hasIcon && !isTopIcon" class="sn-dialog__icon" :style="{ color: iconColorVar }">
-        <slot name="icon">
-          <SnIcon :icon="mergedIcon" />
-        </slot>
-      </span>
-      <slot name="header">{{ title }}</slot>
-    </div>
-
+  <Transition name="sn-dialog-pop" appear>
     <div
-      class="sn-dialog__content"
-      :class="[!hasActionRow && 'sn-dialog__content--last', contentClass]"
-      :style="contentStyle"
+      data-snui-component="SnDialog"
+      class="sn-dialog"
+      :class="[
+        closable && 'sn-dialog--closable',
+        `sn-dialog--icon-${mergedIconPlacement}`,
+        bordered && 'sn-dialog--bordered',
+      ]"
+      role="dialog"
+      :aria-modal="false"
     >
-      <slot>{{ content }}</slot>
-    </div>
+      <!-- Close button: user slot wins, otherwise the built-in glyph. -->
+      <slot v-if="closable && slots.close" name="close" />
+      <button
+        v-else-if="showBuiltinClose"
+        type="button"
+        class="sn-dialog__close"
+        aria-label="关闭"
+        :tabindex="closeFocusable ? 0 : -1"
+        data-snui-component="SnDialogClose"
+        @click="emit('close')"
+      >
+        <SnIcon :icon="X" />
+      </button>
 
-    <div
-      v-if="hasActionRow"
-      class="sn-dialog__action"
-      :class="actionClass"
-      :style="actionStyle"
-    >
-      <slot name="action">
-        <SnButton
-          v-if="negativeText"
-          v-bind="negativeButtonProps"
-          ghost
-          size="small"
-          @click="emit('negative-click', $event)"
-        >
-          {{ negativeText }}
-        </SnButton>
-        <SnButton
-          v-if="positiveText"
-          v-bind="positiveButtonProps"
-          :type="positiveButtonType"
-          size="small"
-          :loading="isLoading"
-          :disabled="isLoading"
-          @click="emit('positive-click', $event)"
-        >
-          {{ positiveText }}
-        </SnButton>
-      </slot>
+      <!-- 'top' placement hoists the icon into its own centred row. -->
+      <div v-if="hasIcon && isTopIcon" class="sn-dialog__icon-container">
+        <span class="sn-dialog__icon" :style="{ color: iconColorVar }">
+          <slot name="icon">
+            <SnIcon :icon="mergedIcon" />
+          </slot>
+        </span>
+      </div>
+
+      <div class="sn-dialog__title" :class="titleClass" :style="titleStyle">
+        <span v-if="hasIcon && !isTopIcon" class="sn-dialog__icon" :style="{ color: iconColorVar }">
+          <slot name="icon">
+            <SnIcon :icon="mergedIcon" />
+          </slot>
+        </span>
+        <slot name="header">{{ title }}</slot>
+      </div>
+
+      <div
+        class="sn-dialog__content"
+        :class="[!hasActionRow && 'sn-dialog__content--last', contentClass]"
+        :style="contentStyle"
+      >
+        <slot>{{ content }}</slot>
+      </div>
+
+      <div
+        v-if="hasActionRow"
+        class="sn-dialog__action"
+        :class="actionClass"
+        :style="actionStyle"
+      >
+        <slot name="action">
+          <SnButton
+            v-if="negativeText"
+            v-bind="negativeButtonProps"
+            ghost
+            size="small"
+            @click="emit('negative-click', $event)"
+          >
+            {{ negativeText }}
+          </SnButton>
+          <SnButton
+            v-if="positiveText"
+            v-bind="positiveButtonProps"
+            :type="positiveButtonType"
+            size="small"
+            :loading="isLoading"
+            :disabled="isLoading"
+            @click="emit('positive-click', $event)"
+          >
+            {{ positiveText }}
+          </SnButton>
+        </slot>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -328,6 +338,9 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
   background: var(--sn-web-dialog-color);
   color: var(--sn-web-dialog-text-color);
   border-radius: var(--sn-web-dialog-radius);
+  /* Upstream n-dialog panel shadow (light, 3-layer). The value lives on the
+   * token (`--aui-dialog-box-shadow`), not inline, per §34. */
+  box-shadow: var(--sn-web-dialog-box-shadow);
   line-height: var(--sn-web-dialog-line-height);
   word-break: break-word;
   transition:
@@ -338,6 +351,10 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
 
 .sn-dialog--bordered {
   border: var(--sn-web-dialog-border);
+  /* Upstream's dialog border is nearly invisible next to its shadow — drop
+   * the colour one step below the default border (same treatment as the
+   * drawer header / footer rules). */
+  border-color: var(--sn-web-color-border-subtle);
 }
 
 .sn-dialog__close {
@@ -439,5 +456,34 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
 
 .sn-dialog--icon-top .sn-dialog__content {
   text-align: center;
+}
+
+/* ── mount / leave animation ──────────────────────────────────────────
+ * The card scales up from 92% while fading in (220ms) and settles back to
+ * 95% on the way out (180ms), both on the same decelerating bezier as the
+ * drawer slide. `appear` on the template <Transition> is what makes a
+ * caller's plain `v-if="show"` animate like the upstream provider-mounted
+ * dialog. */
+
+.sn-dialog-pop-enter-active {
+  transition:
+    opacity 0.22s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.22s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-dialog-pop-leave-active {
+  transition:
+    opacity 0.18s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.18s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-dialog-pop-enter-from {
+  opacity: 0;
+  transform: scale(0.92);
+}
+
+.sn-dialog-pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
 }
 </style>

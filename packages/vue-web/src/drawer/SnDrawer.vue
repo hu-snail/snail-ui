@@ -573,7 +573,7 @@ onBeforeUnmount(() => {
         role="none"
         @keydown="handlePanelKeydown"
       >
-        <Transition name="sn-drawer-fade">
+        <Transition name="sn-fade" appear>
           <div
             v-if="showMask !== false && maskVisible"
             aria-hidden="true"
@@ -585,6 +585,7 @@ onBeforeUnmount(() => {
 
         <Transition
           :name="`sn-drawer-slide-${placement}`"
+          appear
           @after-enter="handleAfterEnter"
           @after-leave="handleAfterLeave"
         >
@@ -801,47 +802,63 @@ onBeforeUnmount(() => {
 
 /* ── transitions ────────────────────────────────────────────────────── */
 
-.sn-drawer-fade-enter-active,
-.sn-drawer-fade-leave-active {
+/* Mask: plain overlay fade, 200ms ease both ways (same curve family as the
+ * dialog mask). The fade classes are shared under the `sn-fade` name so the
+ * upcoming dialog overlay (FB-002) can reuse them. */
+
+.sn-fade-enter-active,
+.sn-fade-leave-active {
   transition: opacity 0.2s ease;
 }
 
-.sn-drawer-fade-enter-from,
-.sn-drawer-fade-leave-to {
+.sn-fade-enter-from,
+.sn-fade-leave-to {
   opacity: 0;
 }
 
+/* Panel: slides in from the placement edge while fading, on the same
+ * decelerating bezier as the dialog pop. Enter (260ms) runs longer than
+ * leave (200ms) so opening feels weighted and closing feels snappy. */
+
 .sn-drawer-slide-right-enter-active,
-.sn-drawer-slide-right-leave-active,
 .sn-drawer-slide-left-enter-active,
-.sn-drawer-slide-left-leave-active {
-  transition: transform 0.3s ease;
+.sn-drawer-slide-top-enter-active,
+.sn-drawer-slide-bottom-enter-active {
+  transition:
+    transform 0.26s cubic-bezier(0, 0, 0.2, 1),
+    opacity 0.26s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.sn-drawer-slide-right-leave-active,
+.sn-drawer-slide-left-leave-active,
+.sn-drawer-slide-top-leave-active,
+.sn-drawer-slide-bottom-leave-active {
+  transition:
+    transform 0.2s cubic-bezier(0, 0, 0.2, 1),
+    opacity 0.2s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .sn-drawer-slide-right-enter-from,
 .sn-drawer-slide-right-leave-to {
   transform: translateX(100%);
+  opacity: 0;
 }
 
 .sn-drawer-slide-left-enter-from,
 .sn-drawer-slide-left-leave-to {
   transform: translateX(-100%);
-}
-
-.sn-drawer-slide-top-enter-active,
-.sn-drawer-slide-top-leave-active,
-.sn-drawer-slide-bottom-enter-active,
-.sn-drawer-slide-bottom-leave-active {
-  transition: transform 0.3s ease;
+  opacity: 0;
 }
 
 .sn-drawer-slide-top-enter-from,
 .sn-drawer-slide-top-leave-to {
   transform: translateY(-100%);
+  opacity: 0;
 }
 
 .sn-drawer-slide-bottom-enter-from,
 .sn-drawer-slide-bottom-leave-to {
   transform: translateY(100%);
+  opacity: 0;
 }
 </style>

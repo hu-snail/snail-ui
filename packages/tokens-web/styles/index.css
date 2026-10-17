@@ -91,6 +91,7 @@
   --sn-web-dialog-color: var(--aui-dialog-color);
   --sn-web-dialog-text-color: var(--aui-dialog-text-color);
   --sn-web-dialog-title-text-color: var(--aui-dialog-title-text-color);
+  --sn-web-dialog-box-shadow: var(--aui-dialog-box-shadow);
   --sn-web-dialog-border: var(--aui-dialog-border);
   --sn-web-dialog-radius: var(--aui-dialog-radius);
   --sn-web-dialog-padding: var(--aui-dialog-padding);
