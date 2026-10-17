@@ -10,8 +10,6 @@
  * resolver.ts) is touched.
  */
 
-import type { InjectionKey, Ref } from 'vue'
-
 /** Value type selectable inside SnTreeSelect — naive tree keys are string | number. */
 export type SnTreeSelectValue = string | number
 
@@ -54,37 +52,3 @@ export function defaultTreeSelectFilter(pattern: string, label: string): boolean
   if (pattern === '') return true
   return label.toLowerCase().includes(pattern.toLowerCase())
 }
-
-/**
- * Menu context injected by SnTreeSelect into SnTreeNode rows (internal).
- * Mirrors the SnSelect / SnOption injection convention — the parent owns
- * all state; the row only reports clicks / hover and reads derived flags.
- */
-export interface SnTreeSelectMenuContext {
-  /** Values currently selected (single selection still uses a 1-length view). */
-  selectedValues: Ref<ReadonlyArray<SnTreeSelectValue>>
-  /** Keyboard / hover highlight target key (`aria-activedescendant` source). */
-  pendingKey: Ref<string | null>
-  /** TreeSelect-level disabled flag. */
-  menuDisabled: Ref<boolean>
-  /** TreeSelect size preset — rows shrink with the trigger. */
-  menuSize: Ref<SnTreeSelectSize>
-  /** Whether the trigger runs in multiple mode (check marks per row). */
-  isMultiple: boolean
-  /** Stable DOM id for one row (drives aria-activedescendant). */
-  nodeId: (node: SnTreeSelectNode) => string
-  /** Expansion test for a parent node (leaves are never expanded). */
-  isNodeExpanded: (node: SnTreeSelectNode) => boolean
-  /** Row membership test against `selectedValues`. */
-  isNodeSelected: (value: SnTreeSelectValue) => boolean
-  /** Commit a row selection (click or Enter). */
-  chooseNode: (value: SnTreeSelectValue) => void
-  /** Toggle a parent's expand state. */
-  toggleExpand: (node: SnTreeSelectNode) => void
-  /** Move the highlight to a row (hover / click). */
-  setPending: (key: string) => void
-}
-
-/** Injection key for the tree select menu context (internal). */
-export const SN_TREE_SELECT_MENU_KEY: InjectionKey<SnTreeSelectMenuContext>
-  = Symbol('sn-tree-select-menu')
