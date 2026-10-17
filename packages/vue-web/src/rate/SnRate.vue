@@ -234,6 +234,12 @@ const classList = computed(() => [
   overflow: hidden;
 }
 
+/* The right hit zone must reveal the star's RIGHT half: shift the
+   fixed-size star left by one zone width (100% of the 50%-wide zone). */
+.sn-rate__half--right .sn-rate__star {
+  margin-left: -100%;
+}
+
 .sn-rate__full {
   display: inline-flex;
   width: 100%;
@@ -244,6 +250,9 @@ const classList = computed(() => [
   width: var(--sn-web-rate-star-size, 18px);
   height: var(--sn-web-rate-star-size, 18px);
   display: block;
+  /* Hit zones are inline-flex: without flex:none the SVG flex-shrinks to the
+     50%-wide zone (squashed star, misaligned with the fill overlay). */
+  flex: none;
 }
 
 /* Unfilled star: outline via token border color. */

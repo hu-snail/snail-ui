@@ -65,6 +65,28 @@ describe('SnRate', () => {
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2])
   })
 
+  it('keeps half-star layers fixed-size (no squashed/compressed star copies)', () => {
+    // Regression: the hit zones are inline-flex, so without `flex: none` the
+    // star SVGs flex-shrink to the 50%-wide zone and the half star renders
+    // squashed and misaligned with the fill overlay. Every layer inside a
+    // half item must carry the fixed-size `.sn-rate__star` class (width is
+    // the star-size var), never a zone-derived size.
+    const wrapper = mount(SnRate, { props: { allowHalf: true, modelValue: 3.5 } })
+    const halfItem = wrapper.findAll('.sn-rate__item')[3]
+    // Base layer: one same-size star per hit zone (2 zones), plus the filled
+    // overlay reusing the same fixed-size star class — no scaled copy.
+    expect(halfItem.findAll('.sn-rate__star--base')).toHaveLength(2)
+    const zoneStars = [
+      ...halfItem.findAll('.sn-rate__half .sn-rate__star'),
+      halfItem.find('.sn-rate__star--filled'),
+    ]
+    for (const star of zoneStars) {
+      expect(star.classes()).toContain('sn-rate__star')
+    }
+    // Fill overlay still clips to the half value.
+    expect(halfItem.find('.sn-rate__fill').attributes('style')).toContain('width: 50%')
+  })
+
   it('clears when the same value is clicked again and clearable is set', async () => {
     const wrapper = mount(SnRate, { props: { clearable: true, modelValue: 3 } })
     await wrapper.findAll('.sn-rate__item')[2].find('.sn-rate__full').trigger('click')
