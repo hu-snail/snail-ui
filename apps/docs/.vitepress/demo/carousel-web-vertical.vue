@@ -1,0 +1,38 @@
+<script setup lang="ts">
+/** Demo: SnCarousel — vertical direction with dots on the right. */
+import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
+
+const images = [
+  { src: 'https://picsum.photos/id/1060/600/500', alt: '灯塔' },
+  { src: 'https://picsum.photos/id/1062/600/500', alt: '小狗' },
+  { src: 'https://picsum.photos/id/1069/600/500', alt: '花田' },
+]
+</script>
+
+<template>
+  <div class="demo-row">
+    <SnCarousel
+      direction="vertical"
+      dot-placement="right"
+      style="width: 320px; height: 280px; border-radius: 8px; overflow: hidden"
+    >
+      <SnCarouselItem v-for="img in images" :key="img.src">
+        <img :src="img.src" :alt="img.alt" style="width: 100%; height: 100%; object-fit: cover">
+      </SnCarouselItem>
+    </SnCarousel>
+    <p class="demo-hint">竖向滚动 + 右侧指示点，滚轮/触摸沿 Y 轴切换。</p>
+  </div>
+</template>
+
+<style scoped>
+.demo-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.demo-hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--sn-web-color-text-secondary);
+}
+</style>
