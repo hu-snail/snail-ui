@@ -54,6 +54,10 @@ const sidebar = {
         { text: 'Button 按钮', link: '/components/web/button' },
         { text: 'Divider 分割线', link: '/components/web/divider' },
         { text: 'Icon 图标', link: '/components/web/icon' },
+        { text: 'Text 排版', link: '/components/web/text' },
+        { text: 'Avatar 头像', link: '/components/web/avatar' },
+        { text: 'Tag 标签', link: '/components/web/tag' },
+        { text: 'Dropdown 下拉菜单', link: '/components/web/dropdown' },
       ],
     },
     {
@@ -86,6 +90,10 @@ const sidebar = {
         { text: 'Card 卡片', link: '/components/web/card' },
         { text: 'Grid 网格', link: '/components/web/grid' },
         { text: 'Collapse 折叠面板', link: '/components/web/collapse' },
+        { text: 'Space 间距', link: '/components/web/space' },
+        { text: 'Flex 弹性布局', link: '/components/web/flex' },
+        { text: 'Layout 布局', link: '/components/web/layout' },
+        { text: 'Splitter 分栏', link: '/components/web/splitter' },
       ],
     },
     {
@@ -205,6 +213,10 @@ const enSidebar = {
         { text: 'Button', link: '/en/components/web/button' },
         { text: 'Divider', link: '/en/components/web/divider' },
         { text: 'Icon', link: '/en/components/web/icon' },
+        { text: 'Text', link: '/en/components/web/text' },
+        { text: 'Avatar', link: '/en/components/web/avatar' },
+        { text: 'Tag', link: '/en/components/web/tag' },
+        { text: 'Dropdown', link: '/en/components/web/dropdown' },
       ],
     },
     {
@@ -237,6 +249,10 @@ const enSidebar = {
         { text: 'Card', link: '/en/components/web/card' },
         { text: 'Grid', link: '/en/components/web/grid' },
         { text: 'Collapse', link: '/en/components/web/collapse' },
+        { text: 'Space', link: '/en/components/web/space' },
+        { text: 'Flex', link: '/en/components/web/flex' },
+        { text: 'Layout', link: '/en/components/web/layout' },
+        { text: 'Splitter', link: '/en/components/web/splitter' },
       ],
     },
     {
