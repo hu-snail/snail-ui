@@ -36,7 +36,7 @@ const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#49505
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
+.demo-col { display: flex; flex-direction: column; gap: 24px; max-width: 480px; }
 .hint { margin: 0; color: var(--sn-web-color-text-secondary); font-size: 13px; }
 .scroll-box {
   display: flex;
@@ -45,8 +45,8 @@ const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#49505
   height: 200px;
   overflow: auto;
   padding: 4px;
-  border: 1px solid var(--sn-web-color-border-subtle);
-  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
+  border-radius: 3px;
 }
 .placeholder {
   display: flex;
@@ -55,8 +55,8 @@ const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#49505
   width: 120px;
   height: 80px;
   color: var(--sn-web-color-text-tertiary);
-  background: var(--sn-web-color-background-subtle);
-  border-radius: 4px;
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.5%, var(--sn-web-color-background-surface));
+  border-radius: 3px;
   font-size: 12px;
 }
 </style>

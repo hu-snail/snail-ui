@@ -16,7 +16,7 @@ import { SnTime } from '@snui/vue-web'
 .time-demo {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
   color: var(--sn-web-color-text-secondary);
 }
 </style>

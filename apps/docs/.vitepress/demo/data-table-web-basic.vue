@@ -47,11 +47,11 @@ const data: Song[] = [
 
 <style scoped>
 .sn-demo { max-width: 640px; }
-.sn-demo-tip { margin: 0 0 8px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
+.sn-demo-tip { margin: 0 0 24px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
 .sn-demo-play {
   padding: 0 10px;
   height: 26px;
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: 3px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-action-primary);

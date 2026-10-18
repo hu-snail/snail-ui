@@ -26,19 +26,21 @@ const log = ref(makeLog())
 </template>
 
 <style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--sn-web-color-text-primary);
+}
+
 .sn-demo__toolbar {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
 }
 
 .sn-demo__label {
   color: var(--sn-web-color-text-secondary);
   font-size: 13px;
-}
-
-.sn-demo {
-  color: var(--sn-web-color-text-primary);
 }
 </style>

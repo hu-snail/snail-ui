@@ -35,7 +35,8 @@ function isDateDisabled(ts: number): boolean {
 .sn-demo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
+  max-width: 960px;
 }
 
 .sn-demo-cell {

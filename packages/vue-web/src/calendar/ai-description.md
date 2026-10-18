@@ -81,8 +81,8 @@ import SnCalendar from '@snui/vue-web/src/calendar/SnCalendar.vue'
 |---|---|---|
 | Text primary / secondary / disabled / on-primary | `--sn-web-color-text-*` | Title, body, grayed cells, today circle |
 | Action primary | `--sn-web-color-action-primary` | Today circle, selection bar |
-| Background surface / subtle | `--sn-web-color-background-*` | Button + cell surfaces, hover |
-| Border default / subtle | `--sn-web-color-border-*` | Button borders, grid lines |
+| Background surface | `--sn-web-color-background-surface` | Button + cell base surface |
+| Text primary + surface via color-mix | — | Grid lines / button outlines 6%, cell hover 4.7%, button hover 2% |
 | Focus ring | `--sn-web-focus-ring` | Button `:focus-visible` outline |
 
 ## Versioning

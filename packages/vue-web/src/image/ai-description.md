@@ -128,7 +128,8 @@ import SnImageGroup from '@snui/vue-web/src/image/SnImageGroup.vue'
 | Background overlay | `--sn-web-color-background-overlay` | Preview mask |
 | Background elevated | `--sn-web-color-background-elevated` | Toolbar surface |
 | Text secondary | `--sn-web-color-text-secondary` | Toolbar icon color |
-| Background subtle | `--sn-web-color-background-subtle` | Toolbar button hover |
+| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary` | Thumbnail border (mixed with surface) |
+| Text primary (+ color-mix 4.7%) | `--sn-web-color-text-primary` | Toolbar button hover (mixed with surface) |
 
 ## Versioning
 

@@ -460,7 +460,7 @@ const headerNodes = (): VNodeChild[] => {
 /* ---------- Title header ---------- */
 
 .sn-descriptions__header {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 18px;
   line-height: 1.6;
   margin-bottom: 16px;
@@ -489,7 +489,7 @@ const headerNodes = (): VNodeChild[] => {
 
 .sn-descriptions__table-header {
   padding: var(--sn-descriptions-th-padding);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.6;
   display: table-cell;
   box-sizing: border-box;
@@ -515,7 +515,7 @@ const headerNodes = (): VNodeChild[] => {
 }
 
 .sn-descriptions__label {
-  font-weight: 600;
+  font-weight: 500;
   display: inline-block;
   margin-right: 14px;
   color: var(--sn-web-color-text-primary);
@@ -558,8 +558,11 @@ const headerNodes = (): VNodeChild[] => {
   text-align: right;
 }
 
-/* ---------- Bordered grid ---------- */
-
+/* ---------- Bordered grid ----------
+ * naive composes its grid from dividerColor (rgb(239,239,245) ≈ 6% ink
+ * on white) and tableHeaderColor (rgb(250,250,252) ≈ 2% ink) — one step
+ * lighter than --sn-web-color-border-* / --sn-web-color-background-subtle,
+ * hence the color-mix formulas instead of those heavier tokens. */
 .sn-descriptions--bordered {
   --sn-descriptions-th-padding: 12px 16px;
   --sn-descriptions-td-padding: 12px 16px;
@@ -579,22 +582,26 @@ const headerNodes = (): VNodeChild[] => {
   border-radius: 3px;
   overflow: hidden;
   background: var(--sn-web-color-background-surface);
-  border: 1px solid var(--sn-web-color-border-subtle);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 
 .sn-descriptions--bordered .sn-descriptions__table-header {
   font-weight: 400;
   background-clip: padding-box;
-  background-color: var(--sn-web-color-background-subtle);
+  background-color: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-descriptions--bordered .sn-descriptions__table-row:not(:last-child) .sn-descriptions__table-header,
 .sn-descriptions--bordered .sn-descriptions__table-row:not(:last-child) .sn-descriptions__table-content {
-  border-bottom: 1px solid var(--sn-web-color-border-subtle);
+  border-bottom: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 
 .sn-descriptions--bordered .sn-descriptions__table-header:not(:last-child),
 .sn-descriptions--bordered .sn-descriptions__table-content:not(:last-child) {
-  border-right: 1px solid var(--sn-web-color-border-subtle);
+  border-right: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 </style>

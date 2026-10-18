@@ -196,7 +196,7 @@ const hasDescriptionArea = (): boolean =>
 
 .sn-thing__title {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   transition: color 0.3s ease;
   color: var(--sn-web-color-text-primary);
 }

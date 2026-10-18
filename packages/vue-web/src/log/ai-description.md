@@ -73,10 +73,11 @@ import SnLog from '@snui/vue-web/src/log/SnLog.vue'
 
 | Token | CSS Variable | Purpose |
 |---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Log text + loader label |
+| Text primary | `--sn-web-color-text-primary` | Log text |
+| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary` | Loader pill border (mixed with surface) |
+| Text secondary | `--sn-web-color-text-secondary` | Loader pill label |
 | Action primary | `--sn-web-color-action-primary` | Loader spinner color |
-| Background overlay | `--sn-web-color-background-overlay` | Loader pill background |
-| Border default | `--sn-web-color-border-default` | Loader pill border |
+| Background elevated | `--sn-web-color-background-elevated` | Loader pill background |
 
 ## Versioning
 

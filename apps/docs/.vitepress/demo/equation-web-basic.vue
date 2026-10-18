@@ -20,7 +20,7 @@ const equation = '\\displaystyle= \\frac{k(k+1)}{2}+k+1'
 .sn-demo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .sn-demo__text {

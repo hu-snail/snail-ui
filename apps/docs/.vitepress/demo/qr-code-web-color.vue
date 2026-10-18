@@ -20,5 +20,5 @@ const color = ref('#225a95')
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; }
+.demo-col { display: flex; flex-direction: column; gap: 24px; }
 </style>

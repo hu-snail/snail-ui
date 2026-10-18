@@ -34,6 +34,6 @@ function downloadManually(): void {
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
 .hint { margin: 0; color: var(--sn-web-color-text-secondary); font-size: 13px; }
 </style>

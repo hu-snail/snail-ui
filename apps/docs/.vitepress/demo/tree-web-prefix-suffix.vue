@@ -31,26 +31,31 @@ const renderTreeData: SnTreeOption[] = [
 
 <template>
   <div class="sn-demo">
-    <p class="sn-demo__label">节点级 prefix / suffix 字段：</p>
-    <SnTree
-      v-model:selected-keys="selected"
-      :data="data"
-      block-line
-      :default-expanded-keys="['vue']"
-    />
+    <section class="sn-demo__section">
+      <p class="sn-demo__label">节点级 prefix / suffix 字段：</p>
+      <SnTree
+        v-model:selected-keys="selected"
+        :data="data"
+        block-line
+        :default-expanded-keys="['vue']"
+      />
+    </section>
 
-    <p class="sn-demo__label">树级 render-prefix / render-suffix（收到 option / checked / selected）：</p>
-    <SnTree
-      :data="renderTreeData"
-      block-line
-      :render-prefix="({ option, selected: isSelected }) => (isSelected ? '● ' : '') + String(option.key)"
-      :render-suffix="({ checked }) => (checked ? '已勾选' : '未勾选')"
-      :default-expanded-keys="['docs']"
-    />
+    <section class="sn-demo__section">
+      <p class="sn-demo__label">树级 render-prefix / render-suffix（收到 option / checked / selected）：</p>
+      <SnTree
+        :data="renderTreeData"
+        block-line
+        :render-prefix="({ option, selected: isSelected }) => (isSelected ? '● ' : '') + String(option.key)"
+        :render-suffix="({ checked }) => (checked ? '已勾选' : '未勾选')"
+        :default-expanded-keys="['docs']"
+      />
+    </section>
   </div>
 </template>
 
 <style scoped>
-.sn-demo { max-width: 360px; display: flex; flex-direction: column; gap: 4px; }
-.sn-demo__label { margin: 8px 0 0; font-size: 12px; color: var(--sn-web-color-text-tertiary); }
+.sn-demo { max-width: 360px; display: flex; flex-direction: column; gap: 24px; }
+.sn-demo__section { display: flex; flex-direction: column; }
+.sn-demo__label { margin: 0 0 4px; font-size: 12px; color: var(--sn-web-color-text-tertiary); }
 </style>

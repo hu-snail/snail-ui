@@ -13,7 +13,7 @@ import { SnEmpty } from '@snui/vue-web'
 .empty-demo {
   display: flex;
   justify-content: center;
-  padding: 16px 0;
+  padding: 24px 0;
   width: 100%;
 }
 </style>

@@ -31,7 +31,7 @@ function reload(): void {
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; }
+.demo-col { display: flex; flex-direction: column; gap: 24px; }
 .demo-row { display: flex; gap: 8px; align-items: center; }
 .error-box {
   display: flex;
@@ -42,8 +42,8 @@ function reload(): void {
   width: 120px;
   height: 90px;
   color: var(--sn-web-color-text-tertiary);
-  background: var(--sn-web-color-background-subtle);
-  border-radius: 4px;
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.5%, var(--sn-web-color-background-surface));
+  border-radius: 3px;
   font-size: 12px;
 }
 </style>

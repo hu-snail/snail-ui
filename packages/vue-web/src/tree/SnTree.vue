@@ -563,7 +563,8 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
  * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`). */
 
 /* Metrics mirror n-tree: 14px text, 24px node content, 3px row padding,
- * 3px radius, 24px default indent. */
+ * 2px node radius (borderRadiusSmall), 24px default indent, hover ≈ 4.7%
+ * ink / pressed ≈ 7% ink (naive hoverColor / pressedColor). */
 .sn-tree {
   font-size: 14px;
   line-height: 1.5;
@@ -580,7 +581,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   position: relative;
   display: flex;
   align-items: center;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .sn-tree__indent {
@@ -637,7 +638,13 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 
 .sn-tree__checkbox-frame {
   fill: transparent;
-  stroke: var(--sn-web-color-border-default);
+  /* naive checkbox border = rgb(224,224,230) ≈ 12% ink on white — the
+   * "slightly emphasized" mix, not the heavier --sn-web-color-border-default. */
+  stroke: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 12%,
+    var(--sn-web-color-background-surface)
+  );
   transition: fill 0.15s ease, stroke 0.15s ease;
 }
 
@@ -683,7 +690,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   min-height: 24px;
   box-sizing: border-box;
   padding: 0 6px 0 4px;
-  border-radius: 3px;
+  border-radius: 2px;
   user-select: none;
   transition: background-color 0.3s, color 0.3s;
 }
@@ -714,11 +721,11 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 /* Hover / pressed / selected — default: backgrounds on the content part. */
 
 .sn-tree:not(.sn-tree--block-line) .sn-tree__node:not(.sn-tree__node--disabled) .sn-tree__node-content:hover {
-  background: var(--sn-web-color-background-subtle);
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
 }
 
 .sn-tree:not(.sn-tree--block-line) .sn-tree__node--selectable .sn-tree__node-content:active {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 8%, transparent);
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 7%, transparent);
 }
 
 .sn-tree:not(.sn-tree--block-line) .sn-tree__node-content--selected {
@@ -732,11 +739,11 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 /* Hover / pressed / selected — block-line: backgrounds on the whole row. */
 
 .sn-tree--block-line .sn-tree__node:not(.sn-tree__node--disabled):hover {
-  background: var(--sn-web-color-background-subtle);
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
 }
 
 .sn-tree--block-line .sn-tree__node--selectable:not(.sn-tree__node--selected):active {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 8%, transparent);
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 7%, transparent);
 }
 
 .sn-tree--block-line .sn-tree__node--selected {

@@ -320,6 +320,9 @@ defineExpose({
 }
 
 .sn-image img {
+  /* Keep declared width/height exact with the 1px emphasized edge. */
+  box-sizing: border-box;
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: inherit;
 }
 </style>

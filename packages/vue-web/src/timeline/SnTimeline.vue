@@ -83,10 +83,16 @@ provide(SN_TIMELINE_INJECTION_KEY, {
   display: flex;
   flex-direction: column;
   line-height: 1.25;
-  /* Reference titleMargin / titleFontSize / iconSize per size. */
+  /* Reference titleMargin / titleFontSize / iconSize per size.
+   * Rail = naive lineColor → rendered as the ≈6%-ink hairline mix
+   * (--sn-web-color-border-subtle reads one step heavier). */
   --sn-timeline-title-margin: 0 0 6px 0;
   --sn-timeline-title-font-size: 14px;
-  --sn-timeline-line-color: var(--sn-web-color-border-subtle);
+  --sn-timeline-line-color: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 6%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-timeline--large {

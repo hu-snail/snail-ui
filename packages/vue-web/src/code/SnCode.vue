@@ -231,10 +231,22 @@ function tokenizeJson(source: string): SnCodeSegment[] {
   color: var(--sn-web-color-text-primary);
 }
 
+/* Block surface: light neutral plate (4.5% ink) with a 1px emphasized border
+ * (12% ink) and 3px radius. Inline mode stays a bare fragment. */
+.sn-code:not(.sn-code--inline) {
+  display: block;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  line-height: 1.7;
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.5%, var(--sn-web-color-background-surface));
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
+  border-radius: 3px;
+}
+
 /* The gutter and the code block share the same inherited line-height so the
  * rows line up exactly (reference cssr: display:flex on the show-line-numbers
  * modifier, padding-right: 12px on the gutter). */
-.sn-code--show-line-numbers {
+.sn-code:not(.sn-code--inline).sn-code--show-line-numbers {
   display: flex;
 }
 
@@ -255,6 +267,9 @@ function tokenizeJson(source: string): SnCodeSegment[] {
 
 .sn-code__code {
   white-space: pre;
+  /* Scroll long lines inside the block (gutter stays put in flex mode). */
+  overflow-x: auto;
+  min-width: 0;
 }
 
 .sn-code--word-wrap .sn-code__code {

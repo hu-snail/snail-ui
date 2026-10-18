@@ -53,6 +53,6 @@ function renderToolbar({ nodes }: { nodes: Record<string, unknown> }): unknown {
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
 .copied { color: var(--sn-web-color-feedback-success); font-size: 12px; }
 </style>

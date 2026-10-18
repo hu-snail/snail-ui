@@ -32,5 +32,5 @@ const errorCorrectionLevel = ref<'L' | 'M' | 'Q' | 'H'>('M')
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
 </style>

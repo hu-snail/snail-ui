@@ -44,9 +44,11 @@
  *     rowProps onClick).
  *   - ellipsis renders a plain `title` tooltip; the n-ellipsis float is a
  *     future marker.
- *   - Theme tokens are mapped to `--sn-web-*`: grid lines
- *     `--sn-web-color-border-subtle`, header bg `--sn-web-color-background-subtle`,
- *     hover/sorting/striped surfaces via color-mix on subtle/surface.
+ *   - Theme tokens are mapped to `--sn-web-*` via color-mix on
+ *     text-primary / surface (naive light.ts weights): inner grid lines are
+ *     a 6% hairline, the outer frame + control outlines 12%, header bg 2%,
+ *     row hover 3%, striped 2%. The old border-subtle / background-subtle
+ *     semantic tiers were the "thick border" root cause.
  *
  * Deferred (future markers, not in the public API yet): virtual-scroll,
  * flex-height, resizable columns, column drag sort, tree data
@@ -1666,19 +1668,41 @@ const innerStyle = computed<Record<string, string>>(() => {
  * Dimensions follow naive-ui src/data-table/src/styles/index.cssr.ts +
  * styles/_common.ts: th/td padding 8/12/12px, sorter 15px, filter 36px
  * trigger / 15px glyph, empty padding 48px 0, pagination margin 12px 0 0,
- * radius 3px, line-height 1.6, tabular-nums. */
+ * radius 3px, line-height 1.6, tabular-nums.
+ * Colors follow naive-ui light.ts over white: inner grid lines = divider
+ * 6% ink (rgb(239,239,245)), outer frame / control outlines 12%
+ * (rgb(224,224,230)), header bg 2% (#fafafc), row hover 3%
+ * (rgba(0,0,100,.03)), striped 2% (rgba(0,0,100,.02)). The heavy
+ * border-default / background-subtle semantic tiers caused the "thick
+ * border" look and are no longer used here. */
 
 .sn-data-table {
-  --sn-dt-border-color: var(--sn-web-color-border-subtle);
-  --sn-dt-th-bg: var(--sn-web-color-background-subtle);
+  /* Emphasized outline: outer frame, floating filter menu, control
+   * borders (checkbox / radio / pagination) — one step above hairline. */
+  --sn-dt-border-color: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 12%,
+    var(--sn-web-color-background-surface)
+  );
+  /* Hairline: row / column separators inside the grid. */
+  --sn-dt-divider-color: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 6%,
+    var(--sn-web-color-background-surface)
+  );
+  --sn-dt-th-bg: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
   --sn-dt-hover-bg: color-mix(
     in srgb,
-    var(--sn-web-color-background-subtle) 45%,
+    var(--sn-web-color-text-primary) 3%,
     var(--sn-web-color-background-surface)
   );
   --sn-dt-striped-bg: color-mix(
     in srgb,
-    var(--sn-web-color-background-subtle) 30%,
+    var(--sn-web-color-text-primary) 2%,
     var(--sn-web-color-background-surface)
   );
   --sn-dt-th-text: var(--sn-web-color-text-primary);
@@ -1749,7 +1773,7 @@ const innerStyle = computed<Record<string, string>>(() => {
   font-weight: 500;
   color: var(--sn-dt-th-text);
   background-color: var(--sn-dt-th-bg);
-  border-bottom: 1px solid var(--sn-dt-border-color);
+  border-bottom: 1px solid var(--sn-dt-divider-color);
   transition:
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -1911,7 +1935,7 @@ const innerStyle = computed<Record<string, string>>(() => {
   display: flex;
   justify-content: space-evenly;
   padding: 8px 12px;
-  border-top: 1px solid var(--sn-dt-border-color);
+  border-top: 1px solid var(--sn-dt-divider-color);
 }
 
 .sn-data-table__filter-action {
@@ -1938,7 +1962,7 @@ const innerStyle = computed<Record<string, string>>(() => {
   box-sizing: border-box;
   width: 14px;
   height: 14px;
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid var(--sn-dt-border-color);
   border-radius: 3px;
   color: var(--sn-web-color-text-on-primary);
   background-color: var(--sn-web-color-background-surface);
@@ -1988,7 +2012,7 @@ const innerStyle = computed<Record<string, string>>(() => {
   box-sizing: border-box;
   width: 14px;
   height: 14px;
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid var(--sn-dt-border-color);
   border-radius: 50%;
   background-color: var(--sn-web-color-background-surface);
   transition: border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2031,7 +2055,7 @@ const innerStyle = computed<Record<string, string>>(() => {
   color: var(--sn-dt-td-text);
   background-color: var(--sn-web-color-background-surface);
   border: none;
-  border-bottom: 1px solid var(--sn-dt-border-color);
+  border-bottom: 1px solid var(--sn-dt-divider-color);
   transition:
     box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -2056,11 +2080,11 @@ const innerStyle = computed<Record<string, string>>(() => {
 }
 
 .sn-data-table__td--last-row {
-  border-bottom: 0 solid var(--sn-dt-border-color);
+  border-bottom: 0 solid var(--sn-dt-divider-color);
 }
 
 .sn-data-table--bottom-bordered .sn-data-table__td--last-row {
-  border-bottom: 1px solid var(--sn-dt-border-color);
+  border-bottom: 1px solid var(--sn-dt-divider-color);
 }
 
 .sn-data-table__td--expand-cell {
@@ -2179,7 +2203,7 @@ const innerStyle = computed<Record<string, string>>(() => {
 
 .sn-data-table:not(.sn-data-table--single-line) .sn-data-table__th,
 .sn-data-table:not(.sn-data-table--single-line) .sn-data-table__td {
-  border-right: 1px solid var(--sn-dt-border-color);
+  border-right: 1px solid var(--sn-dt-divider-color);
 }
 
 .sn-data-table:not(.sn-data-table--single-line) .sn-data-table__th:last-child,
@@ -2188,11 +2212,11 @@ const innerStyle = computed<Record<string, string>>(() => {
 }
 
 .sn-data-table--single-column .sn-data-table__td {
-  border-bottom: 0 solid var(--sn-dt-border-color);
+  border-bottom: 0 solid var(--sn-dt-divider-color);
 }
 
 .sn-data-table--single-column.sn-data-table--bottom-bordered .sn-data-table__td--last-row {
-  border-bottom: 1px solid var(--sn-dt-border-color);
+  border-bottom: 1px solid var(--sn-dt-divider-color);
 }
 
 /* ---------- Loading ---------- */
@@ -2255,7 +2279,7 @@ const innerStyle = computed<Record<string, string>>(() => {
   font-size: 14px;
   color: var(--sn-dt-td-text);
   background-color: var(--sn-web-color-background-surface);
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid var(--sn-dt-border-color);
   border-radius: var(--sn-dt-radius);
   cursor: pointer;
   transition:
@@ -2296,7 +2320,7 @@ const innerStyle = computed<Record<string, string>>(() => {
   font-size: 14px;
   color: var(--sn-dt-td-text);
   background-color: var(--sn-web-color-background-surface);
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid var(--sn-dt-border-color);
   border-radius: var(--sn-dt-radius);
 }
 </style>

@@ -22,5 +22,5 @@
 </template>
 
 <style scoped>
-.sn-demo { max-width: 560px; }
+.sn-demo { max-width: 560px; overflow-x: auto; }
 </style>

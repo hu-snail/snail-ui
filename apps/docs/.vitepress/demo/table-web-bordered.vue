@@ -49,7 +49,8 @@
 .sn-demo {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   max-width: 560px;
+  overflow-x: auto;
 }
 </style>

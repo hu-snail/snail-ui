@@ -219,7 +219,8 @@ defineExpose({ scrollTo })
   word-break: break-word;
 }
 
-/* ---------- Loader pill (reference cssr: 34px pill, right 16px top 8px) ---------- */
+/* ---------- Loader pill (reference cssr: 34px pill, right 16px top 8px,
+ * 1px borderColor border, modalColor surface, textColor2 label) ---------- */
 
 .sn-log__loader {
   position: absolute;
@@ -228,11 +229,11 @@ defineExpose({ scrollTo })
   box-sizing: border-box;
   height: 34px;
   border-radius: 17px;
-  border: 1px solid var(--sn-web-color-border-default);
-  background: var(--sn-web-color-background-overlay);
-  color: var(--sn-web-color-text-primary);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
+  background: var(--sn-web-color-background-elevated);
+  color: var(--sn-web-color-text-secondary);
   font-size: 14px;
-  line-height: 32px;
+  line-height: 34px;
   white-space: nowrap;
   overflow: hidden;
 }
@@ -240,7 +241,7 @@ defineExpose({ scrollTo })
 .sn-log__loader-text {
   display: inline-block;
   vertical-align: bottom;
-  line-height: 32px;
+  line-height: 34px;
   padding-left: 40px;
   padding-right: 20px;
   white-space: nowrap;

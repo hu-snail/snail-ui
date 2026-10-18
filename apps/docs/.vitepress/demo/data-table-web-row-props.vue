@@ -34,6 +34,6 @@ function handleRowClick(row: Record<string, unknown>): void {
 
 <style scoped>
 .sn-demo { max-width: 560px; }
-.sn-demo-tip { margin: 0 0 8px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
+.sn-demo-tip { margin: 0 0 24px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
 .sn-demo :deep(.sn-demo-senior .sn-data-table__td:first-child) { color: var(--sn-web-color-feedback-warning); }
 </style>

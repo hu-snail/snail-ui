@@ -56,13 +56,15 @@ watchEffect(() => {
 </template>
 
 <style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--sn-web-color-text-primary);
+}
+
 .sn-demo__toolbar {
   display: flex;
   gap: 8px;
-  margin-bottom: 8px;
-}
-
-.sn-demo {
-  color: var(--sn-web-color-text-primary);
 }
 </style>

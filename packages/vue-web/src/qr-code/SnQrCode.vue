@@ -349,8 +349,9 @@ const rootStyle = computed<CSSProperties>(() => ({
   display: flex;
   align-items: center;
   padding: 2px;
-  border-radius: 4px;
-  background: var(--sn-web-color-background-overlay);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
+  border-radius: 3px;
+  background: var(--sn-web-color-background-elevated);
   opacity: 0;
   transition: opacity 0.2s;
 }
@@ -370,13 +371,13 @@ const rootStyle = computed<CSSProperties>(() => ({
   border: none;
   border-radius: 3px;
   font: inherit;
-  color: var(--sn-web-color-text-on-primary);
+  color: var(--sn-web-color-text-secondary);
   background: transparent;
   cursor: pointer;
 }
 
 .sn-qr-code__toolbar-button:hover {
-  background: var(--sn-web-color-action-primary-hover);
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
 }
 
 .sn-qr-code__toolbar-button svg {

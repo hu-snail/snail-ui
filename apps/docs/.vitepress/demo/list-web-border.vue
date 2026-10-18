@@ -25,7 +25,7 @@ import { SnList, SnListItem } from '@snui/vue-web'
 .list-demo {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   width: 100%;
   max-width: 480px;
 }

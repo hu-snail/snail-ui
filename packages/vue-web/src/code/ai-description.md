@@ -63,6 +63,8 @@ import SnCode from '@snui/vue-web/src/code/SnCode.vue'
 | Token | CSS Variable | Purpose |
 |---|---|---|
 | Text primary | `--sn-web-color-text-primary` | Base code color |
+| Text primary (+ color-mix 4.5%) | `--sn-web-color-text-primary` | Block surface background (mixed with surface) |
+| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary` | Block border (mixed with surface) |
 | Text tertiary | `--sn-web-color-text-tertiary` | Line-number gutter |
 | Action primary | `--sn-web-color-action-primary` | JSON key token |
 | Feedback success | `--sn-web-color-feedback-success` | JSON string token |

@@ -18,7 +18,7 @@ import { SnCode } from '@snui/vue-web'
 .sn-code-demo {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
   color: var(--sn-web-color-text-primary);
 }
 </style>

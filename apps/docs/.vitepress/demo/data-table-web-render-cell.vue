@@ -17,7 +17,7 @@ const columns = [
             color: row.online ? 'var(--sn-web-color-feedback-success)' : 'var(--sn-web-color-text-tertiary)',
             borderColor: row.online
               ? 'var(--sn-web-color-feedback-success)'
-              : 'var(--sn-web-color-border-default)',
+              : 'color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface))',
           },
         },
         row.online ? '在线' : '离线',

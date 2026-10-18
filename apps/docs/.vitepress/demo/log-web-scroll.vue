@@ -60,20 +60,22 @@ function noteEvent(name: string) {
 </template>
 
 <style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--sn-web-color-text-primary);
+}
+
 .sn-demo__toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 8px;
 }
 
 .sn-demo__status {
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--sn-web-color-text-secondary);
   font-size: 13px;
-}
-
-.sn-demo {
-  color: var(--sn-web-color-text-primary);
 }
 </style>

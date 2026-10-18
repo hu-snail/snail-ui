@@ -53,8 +53,9 @@ None.
   in the parent scope).
 - naive-ui's inside-modal / inside-popover theme context variants are not
   ported.
-- Theme colors are mapped to `--sn-web-*` (grid `border-subtle`, header
-  `background-subtle`).
+- Theme colors are mapped to `--sn-web-*` via color-mix on
+  text-primary / surface: grid lines are a 6% hairline, the outer frame
+  12%, header bg 2%, striped 2%.
 
 ## Accessibility
 
@@ -65,9 +66,9 @@ None.
 
 | Token | CSS Variable | Purpose |
 |---|---|---|
-| Border subtle | `--sn-web-color-border-subtle` | Grid lines + outer border |
-| Background surface / subtle | `--sn-web-color-background-*` | td / th background; striped via color-mix |
+| Background surface | `--sn-web-color-background-surface` | td / table background |
 | Text primary / secondary | `--sn-web-color-text-*` | th / td text |
+| Text primary + surface via color-mix | — | Grid lines 6% (hairline), outer border 12%, th bg 2%, striped 2% |
 
 ## Versioning
 

@@ -138,9 +138,9 @@ render-filter-menu hooks, CSV export, exposed methods
 
 | Token | CSS Variable | Purpose |
 |---|---|---|
-| Border subtle / default | `--sn-web-color-border-*` | Grid lines, checkbox / pagination borders |
-| Background surface / subtle / elevated | `--sn-web-color-background-*` | td / th / filter-menu surfaces; hover / striped / sorting via color-mix |
+| Background surface / elevated | `--sn-web-color-background-*` | td / filter-menu surfaces |
 | Text primary / secondary / tertiary / on-primary | `--sn-web-color-text-*` | th / td / icons / checkbox glyph |
+| Text primary + surface via color-mix | — | Grid lines 6% (hairline), outer frame / control borders 12%, th bg 2%, hover 3%, striped 2% |
 | Action primary (+hover) | `--sn-web-color-action-primary(-hover)` | Active sort/filter icons, checked box, pagination active, spinner |
 | Focus ring | `--sn-web-focus-ring` | Checkbox / expand trigger focus outline |
 | Card shadow | `--sn-web-card-shadow` | Filter menu elevation |

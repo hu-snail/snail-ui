@@ -185,9 +185,30 @@ function goToday(): void {
 
 <style scoped>
 /* Web side: --sn-web-* aliases only. Direct --aui-* / --sn-mp-* forbidden
- * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`). */
+ * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`).
+ * Colors per naive-ui Calendar light.ts over white: grid lines / button
+ * outlines 6% ink (divider tier, = composite(cardColor, dividerColor)),
+ * cell hover 4.7% (rgb(243,243,245)),
+ * button hover 2% (secondary surface tier). The heavy border-default /
+ * background-subtle semantic tiers caused the "thick border" look. */
 
 .sn-calendar {
+  --sn-calendar-border-color: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 6%,
+    var(--sn-web-color-background-surface)
+  );
+  --sn-calendar-hover-bg: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.7%,
+    var(--sn-web-color-background-surface)
+  );
+  --sn-calendar-secondary-bg: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
+
   display: flex;
   flex-direction: column;
   height: 720px;
@@ -226,7 +247,7 @@ function goToday(): void {
   box-sizing: border-box;
   height: 28px;
   padding: 0 10px;
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid var(--sn-calendar-border-color);
   border-radius: 3px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-secondary);
@@ -241,7 +262,7 @@ function goToday(): void {
 }
 
 .sn-calendar__btn:hover {
-  background: var(--sn-web-color-background-subtle);
+  background: var(--sn-calendar-secondary-bg);
 }
 
 .sn-calendar__btn:focus-visible {
@@ -277,8 +298,8 @@ function goToday(): void {
   grid-template-columns: repeat(7, minmax(0, 1fr));
   grid-auto-rows: 1fr;
   flex: 1;
-  border-top: 1px solid var(--sn-web-color-border-subtle);
-  border-left: 1px solid var(--sn-web-color-border-subtle);
+  border-top: 1px solid var(--sn-calendar-border-color);
+  border-left: 1px solid var(--sn-calendar-border-color);
   border-radius: 3px;
 }
 
@@ -286,8 +307,8 @@ function goToday(): void {
   box-sizing: border-box;
   position: relative;
   padding: 10px;
-  border-right: 1px solid var(--sn-web-color-border-subtle);
-  border-bottom: 1px solid var(--sn-web-color-border-subtle);
+  border-right: 1px solid var(--sn-calendar-border-color);
+  border-bottom: 1px solid var(--sn-calendar-border-color);
   cursor: pointer;
   transition:
     color 0.3s,
@@ -308,7 +329,7 @@ function goToday(): void {
 }
 
 .sn-calendar__cell:hover {
-  background-color: var(--sn-web-color-background-subtle);
+  background-color: var(--sn-calendar-hover-bg);
 }
 
 .sn-calendar__cell--disabled {

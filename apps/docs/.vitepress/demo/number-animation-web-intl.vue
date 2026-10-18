@@ -32,6 +32,6 @@ function handlePlay(): void {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
+  gap: 24px;
 }
 </style>

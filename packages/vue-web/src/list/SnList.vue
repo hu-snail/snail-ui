@@ -106,8 +106,10 @@ provide(SN_LIST_INJECTION_KEY, {
     border-color 0.3s ease;
 }
 
+/* naive list borderColor = dividerColor (≈6% ink on white) — the hairline
+ * mix, not the heavier --sn-web-color-border-* tokens. */
 .sn-list--bordered {
-  border: 1px solid var(--sn-web-color-border-subtle);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
   border-radius: 3px;
 }
 
@@ -120,7 +122,7 @@ provide(SN_LIST_INJECTION_KEY, {
 }
 
 .sn-list__header:not(:last-child) {
-  border-bottom: 1px solid var(--sn-web-color-border-subtle);
+  border-bottom: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 
 /* Bordered / hoverable lists pad the header/footer like the rows. */

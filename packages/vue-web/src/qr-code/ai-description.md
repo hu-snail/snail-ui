@@ -77,10 +77,10 @@ None.
 
 | Token | CSS Variable | Purpose |
 |---|---|---|
-| Background overlay | `--sn-web-color-background-overlay` | Floating toolbar backdrop |
-| Text on primary | `--sn-web-color-text-on-primary` | Toolbar icon color |
-| Action primary hover | `--sn-web-color-action-primary-hover` | Toolbar button hover |
-| Background elevated | `--sn-web-color-background-elevated` | (spare) elevated toolbar surface |
+| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary` | Toolbar border (mixed with surface) |
+| Text secondary | `--sn-web-color-text-secondary` | Toolbar icon color |
+| Text primary (+ color-mix 4.7%) | `--sn-web-color-text-primary` | Toolbar button hover (mixed with surface) |
+| Background elevated | `--sn-web-color-background-elevated` | Toolbar surface |
 
 The QR foreground/background colors are user props (theme-independent), as in
 the reference.

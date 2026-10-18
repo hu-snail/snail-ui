@@ -27,7 +27,7 @@ const data = [
 .sn-demo {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   max-width: 640px;
 }
 </style>

@@ -232,7 +232,7 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
   margin: var(--sn-timeline-title-margin);
   font-size: var(--sn-timeline-title-font-size);
   transition: color 0.3s ease;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--sn-web-color-text-primary);
 }
 

@@ -32,10 +32,10 @@ function toggleLoading(): void {
 <style scoped>
 .sn-demo { max-width: 560px; }
 .sn-demo-btn {
-  margin-bottom: 12px;
+  margin-bottom: 24px;
   padding: 0 12px;
   height: 28px;
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: 3px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-secondary);

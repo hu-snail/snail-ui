@@ -104,15 +104,16 @@ const showDivider = list ? list.showDivider : ref(true)
 }
 
 .sn-list--show-divider .sn-list-item:not(:last-child) .sn-list-item__divider {
-  background-color: var(--sn-web-color-border-subtle);
+  background-color: color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 
 .sn-list--hoverable .sn-list-item {
   border-radius: 3px;
 }
 
+/* Row hover mirrors naive hoverColor rgb(243,243,245) ≈ 4.7% ink on white. */
 .sn-list--hoverable .sn-list-item:hover {
-  background-color: var(--sn-web-color-background-subtle);
+  background-color: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
 }
 
 .sn-list--hoverable .sn-list-item:hover .sn-list-item__divider {

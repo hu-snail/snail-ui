@@ -49,13 +49,16 @@ function handleReachBottom() {
 </template>
 
 <style scoped>
-.sn-demo__status {
-  margin: 0 0 8px;
-  color: var(--sn-web-color-text-secondary);
-  font-size: 13px;
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  color: var(--sn-web-color-text-primary);
 }
 
-.sn-demo {
-  color: var(--sn-web-color-text-primary);
+.sn-demo__status {
+  margin: 0;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 13px;
 }
 </style>

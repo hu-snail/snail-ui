@@ -544,7 +544,6 @@ const previewStyle = computed<CSSProperties>(() => ({
   border-radius: 24px;
   color: var(--sn-web-color-text-secondary);
   background: var(--sn-web-color-background-elevated);
-  box-shadow: var(--sn-web-color-border-subtle, transparent);
   animation: sn-image-preview-fade-in 0.2s;
 }
 
@@ -568,7 +567,7 @@ const previewStyle = computed<CSSProperties>(() => ({
 
 .sn-image-preview__toolbar-button:hover,
 .sn-image-preview__toolbar :deep(.sn-image-preview__toolbar-button:hover) {
-  background: var(--sn-web-color-background-subtle);
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
 }
 
 .sn-image-preview__toolbar-button svg,

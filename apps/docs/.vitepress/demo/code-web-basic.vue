@@ -32,11 +32,7 @@ const cppCode = `int main () {
 .sn-code-demo {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   color: var(--sn-web-color-text-primary);
-}
-
-.sn-code-demo > * {
-  overflow: auto;
 }
 </style>

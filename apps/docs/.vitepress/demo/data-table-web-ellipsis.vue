@@ -39,5 +39,5 @@ const data = [
 
 <style scoped>
 .sn-demo { max-width: 420px; }
-.sn-demo-tip { margin: 0 0 8px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
+.sn-demo-tip { margin: 0 0 24px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
 </style>

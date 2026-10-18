@@ -15,6 +15,6 @@ import { SnTree } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 16px; max-width: 320px; }
+.sn-demo { display: flex; flex-direction: column; gap: 24px; max-width: 320px; }
 .sn-demo__empty { color: var(--sn-web-color-text-tertiary); }
 </style>

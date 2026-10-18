@@ -18,6 +18,12 @@ const patterns = ['Snail AUI', 'typeScript']
 </template>
 
 <style scoped>
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
 .sn-demo__hint {
   margin: 0;
   color: var(--sn-web-color-text-primary);
