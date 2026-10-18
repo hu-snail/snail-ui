@@ -148,7 +148,15 @@ export type {
 // Data Display 数据展示 — mirrors naive-ui's data-display category
 // (batch AUI-WEB-DD-001..021, see dev-docs/SNUI-WBS-v3.1.md).
 export { default as SnCalendar } from './calendar/SnCalendar.vue'
+export { default as SnCarousel } from './carousel/SnCarousel.vue'
+export { default as SnCarouselItem } from './carousel/SnCarouselItem.vue'
+export type {
+  CarouselArrowSlotProps,
+  CarouselDotSlotProps,
+} from './carousel/SnCarousel.vue'
 export { default as SnCode } from './code/SnCode.vue'
+export { default as SnComment } from './comment/SnComment.vue'
+export type { SnCommentAlign } from './comment/SnComment.vue'
 export { default as SnCountdown } from './countdown/SnCountdown.vue'
 export { default as SnDataTable } from './data-table/SnDataTable.vue'
 export type {
@@ -172,6 +180,10 @@ export { default as SnEmpty } from './empty/SnEmpty.vue'
 export { default as SnEquation } from './equation/SnEquation.vue'
 export type { SnEquationKatex } from './equation/sn-equation-types'
 export { default as SnHeatmap } from './heatmap/SnHeatmap.vue'
+export type {
+  SnHeatmapTooltipConfig,
+  SnHeatmapTooltipDay,
+} from './heatmap/heatmap-tooltip'
 export { default as SnHighlight } from './highlight/SnHighlight.vue'
 export { default as SnImage } from './image/SnImage.vue'
 export { default as SnImageGroup } from './image/SnImageGroup.vue'

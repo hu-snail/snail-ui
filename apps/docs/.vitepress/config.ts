@@ -123,8 +123,10 @@ const sidebar = {
       text: 'Data Display 数据展示',
       items: [
         { text: 'Calendar 日历', link: '/components/web/calendar' },
+        { text: 'Carousel 轮播图', link: '/components/web/carousel' },
         { text: 'Countdown 倒计时', link: '/components/web/countdown' },
         { text: 'Code 代码', link: '/components/web/code' },
+        { text: 'Comment 注释', link: '/components/web/comment' },
         { text: 'DataTable 数据表格', link: '/components/web/data-table' },
         { text: 'Descriptions 描述列表', link: '/components/web/descriptions' },
         { text: 'Empty 空状态', link: '/components/web/empty' },
@@ -284,8 +286,10 @@ const enSidebar = {
       text: 'Data Display',
       items: [
         { text: 'Calendar', link: '/en/components/web/calendar' },
+        { text: 'Carousel', link: '/en/components/web/carousel' },
         { text: 'Countdown', link: '/en/components/web/countdown' },
         { text: 'Code', link: '/en/components/web/code' },
+        { text: 'Comment', link: '/en/components/web/comment' },
         { text: 'DataTable', link: '/en/components/web/data-table' },
         { text: 'Descriptions', link: '/en/components/web/descriptions' },
         { text: 'Empty', link: '/en/components/web/empty' },

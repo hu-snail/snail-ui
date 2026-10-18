@@ -72,7 +72,10 @@ import SnTabPane from './tabs/SnTabPane.vue'
 import SnSteps from './steps/SnSteps.vue'
 import SnStep from './steps/SnStep.vue'
 import SnCalendar from './calendar/SnCalendar.vue'
+import SnCarousel from './carousel/SnCarousel.vue'
+import SnCarouselItem from './carousel/SnCarouselItem.vue'
 import SnCode from './code/SnCode.vue'
+import SnComment from './comment/SnComment.vue'
 import SnCountdown from './countdown/SnCountdown.vue'
 import SnDataTable from './data-table/SnDataTable.vue'
 import SnDescriptions from './descriptions/SnDescriptions.vue'
@@ -175,7 +178,10 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnTooltip', component: SnTooltip },
   // Data Display 数据展示 (AUI-WEB-DD-001..021)
   { name: 'SnCalendar', component: SnCalendar },
+  { name: 'SnCarousel', component: SnCarousel },
+  { name: 'SnCarouselItem', component: SnCarouselItem },
   { name: 'SnCode', component: SnCode },
+  { name: 'SnComment', component: SnComment },
   { name: 'SnCountdown', component: SnCountdown },
   { name: 'SnDataTable', component: SnDataTable },
   { name: 'SnDescriptions', component: SnDescriptions },

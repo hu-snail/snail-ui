@@ -113,7 +113,10 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnSkeleton',
   // Data Display 数据展示 (AUI-WEB-DD-001..021)
   'SnCalendar',
+  'SnCarousel',
+  'SnCarouselItem',
   'SnCode',
+  'SnComment',
   'SnCountdown',
   'SnDataTable',
   'SnDescriptions',

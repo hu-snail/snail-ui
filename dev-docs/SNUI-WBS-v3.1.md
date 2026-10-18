@@ -131,10 +131,11 @@ AUI-{模块}-{编号}
 | AUI-WEB-DATA-009 | SnEmpty | 通用 |
 | AUI-WEB-DATA-010 | SnStatistic | Web 专属 |
 
-### 数据展示大分类 · naive 对标批次（AUI-WEB-DD-001..021）
+### 数据展示大分类 · naive 对标批次（AUI-WEB-DD-001..023）
 
 对标 naive-ui「数据展示」21 个组件 1:1 还原（§112）。与上表 DATA 编号的映射：
 SnTable → DATA-001、SnTree → DATA-003、SnDescriptions → DATA-007、SnEmpty → DATA-009、SnStatistic → DATA-010。
+DD-022/023 为后续追加：SnComment（naive 无此组件，按用户指定参考 Arco Design Vue，显式 divergence）、SnCarousel（naive 1:1）。
 
 | ID | 组件 | naive 参考 | 状态 |
 |---|---|---|---|
@@ -159,6 +160,8 @@ SnTable → DATA-001、SnTree → DATA-003、SnDescriptions → DATA-007、SnEmp
 | AUI-WEB-DD-019 | SnTime | n-time | 本批次 |
 | AUI-WEB-DD-020 | SnTimeline / SnTimelineItem | n-timeline | 本批次 |
 | AUI-WEB-DD-021 | SnTree | n-tree | 本批次（拖拽 / 虚拟滚动 / 键盘导航 / 异步子节点为 future marker） |
+| AUI-WEB-DD-022 | SnComment | arco-design-vue a-comment（显式 divergence：naive 无 Comment） | 已交付（editor demo 依赖 Input/Button，future） |
+| AUI-WEB-DD-023 | SnCarousel / SnCarouselItem | n-carousel | 已交付（default-index 修正 naive 的空列表坍缩 bug，登记 divergence；slides-per-view='auto' 视觉待浏览器冒烟） |
 
 #### DD 批次 demo 缺口（§115.1 登记）
 
@@ -169,6 +172,8 @@ SnTable → DATA-001、SnTree → DATA-003、SnDescriptions → DATA-007、SnEmp
 | log/highlight | SnLog | 依赖 hljs 自定义语言；随 SnCode 的 hljs 集成一并补（future marker） |
 | descriptions/single-line-debug、list/rtl-debug、thing/rtl-debug、timeline/nested-debug | SnDescriptions 等 | debug 类演示（§115.1 可选），待补 |
 | data-table ×17（merge-cell / multiple-sorter / column-draggable / group-header / ellipsis-tooltip / ajax / virtual×2 / custom-filter-menu / tree / flex-height / editable×2 / context-menu / async-expand / export-csv） | SnDataTable | 均依赖 deferred 特性（见 DD-004 future markers），特性落地时逐个补 demo |
+| carousel ×10（space-between / slides-per-view-auto / centered / transition-name / hover / keyboard / mousewheel / simulate-drag / custom-card / custom-dots） | SnCarousel | API 已实现，场景 demo 按 §115.1 优先级后补（见 DD-023） |
+| comment/editor | SnComment | 依赖尚不存在的 Input / Button 组件 |
 
 ### 反馈（8 个）
 
