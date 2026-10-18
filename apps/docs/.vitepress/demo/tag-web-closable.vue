@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /** Demo: SnTag — closable. */
 import { ref } from 'vue'
+import { SnTag } from '@snui/vue-web'
 const visible = ref(true)
 </script>
 

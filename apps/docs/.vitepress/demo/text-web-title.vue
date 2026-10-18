@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTitle + SnParagraph. */
+import { SnTitle, SnParagraph } from '@snui/vue-web'
 </script>
 
 <template>

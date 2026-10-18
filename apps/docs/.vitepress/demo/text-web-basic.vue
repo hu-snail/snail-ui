@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnText — basic + six types. */
+import { SnText } from '@snui/vue-web'
 </script>
 
 <template>

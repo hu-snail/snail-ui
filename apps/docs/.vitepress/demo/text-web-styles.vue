@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnText — style modifiers. */
+import { SnText } from '@snui/vue-web'
 </script>
 
 <template>

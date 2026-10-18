@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /** Demo: SnAvatar — error fallback chain. */
 import { ref } from 'vue'
+import { SnAvatar, SnButton } from '@snui/vue-web'
 const src = ref('https://invalid.example.com/broken.png')
 </script>
 

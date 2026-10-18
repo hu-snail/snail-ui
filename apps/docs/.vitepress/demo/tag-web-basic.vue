@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTag — basic types + sizes. */
+import { SnTag } from '@snui/vue-web'
 </script>
 
 <template>

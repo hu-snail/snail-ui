@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnText — depth scale. */
+import { SnText } from '@snui/vue-web'
 </script>
 
 <template>

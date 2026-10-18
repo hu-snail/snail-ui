@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /** Demo: SnTag — checkable. */
 import { ref } from 'vue'
+import { SnTag } from '@snui/vue-web'
 const picked = ref(true)
 </script>
 

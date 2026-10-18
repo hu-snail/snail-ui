@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnAvatar — shapes & color. */
+import { SnAvatar } from '@snui/vue-web'
 </script>
 
 <template>
