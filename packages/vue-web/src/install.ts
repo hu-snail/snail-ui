@@ -45,6 +45,21 @@ import SnMention from './mention/SnMention.vue'
 import SnUpload from './upload/SnUpload.vue'
 import SnDatePicker from './date-picker/SnDatePicker.vue'
 import SnColorPicker from './color-picker/SnColorPicker.vue'
+import SnText from './text/SnText.vue'
+import SnTitle from './text/SnTitle.vue'
+import SnParagraph from './text/SnParagraph.vue'
+import SnAvatar from './avatar/SnAvatar.vue'
+import SnTag from './tag/SnTag.vue'
+import SnSpace from './space/SnSpace.vue'
+import SnFlex from './flex/SnFlex.vue'
+import SnLayout from './layout/SnLayout.vue'
+import SnLayoutHeader from './layout/SnLayoutHeader.vue'
+import SnLayoutContent from './layout/SnLayoutContent.vue'
+import SnLayoutFooter from './layout/SnLayoutFooter.vue'
+import SnLayoutSider from './layout/SnLayoutSider.vue'
+import SnSplitter from './splitter/SnSplitter.vue'
+import SnSplitterPanel from './splitter/SnSplitterPanel.vue'
+import SnDropdown from './dropdown/SnDropdown.vue'
 import SnDialog from './dialog/SnDialog.vue'
 import SnDrawer from './drawer/SnDrawer.vue'
 import SnDrawerContent from './drawer/SnDrawerContent.vue'
@@ -110,6 +125,21 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnUpload', component: SnUpload },
   { name: 'SnDatePicker', component: SnDatePicker },
   { name: 'SnColorPicker', component: SnColorPicker },
+  { name: 'SnText', component: SnText },
+  { name: 'SnTitle', component: SnTitle },
+  { name: 'SnParagraph', component: SnParagraph },
+  { name: 'SnAvatar', component: SnAvatar },
+  { name: 'SnTag', component: SnTag },
+  { name: 'SnSpace', component: SnSpace },
+  { name: 'SnFlex', component: SnFlex },
+  { name: 'SnLayout', component: SnLayout },
+  { name: 'SnLayoutHeader', component: SnLayoutHeader },
+  { name: 'SnLayoutContent', component: SnLayoutContent },
+  { name: 'SnLayoutFooter', component: SnLayoutFooter },
+  { name: 'SnLayoutSider', component: SnLayoutSider },
+  { name: 'SnSplitter', component: SnSplitter },
+  { name: 'SnSplitterPanel', component: SnSplitterPanel },
+  { name: 'SnDropdown', component: SnDropdown },
   { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },
   { name: 'SnSkeleton', component: SnSkeleton },

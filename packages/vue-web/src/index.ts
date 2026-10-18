@@ -87,6 +87,30 @@ export type {
 } from './date-picker/sn-date-picker-types'
 export { default as SnColorPicker } from './color-picker/SnColorPicker.vue'
 export type { SnColorPickerMode } from './color-picker/sn-color-picker-types'
+export { default as SnText } from './text/SnText.vue'
+export { default as SnTitle } from './text/SnTitle.vue'
+export { default as SnParagraph } from './text/SnParagraph.vue'
+export { default as SnAvatar } from './avatar/SnAvatar.vue'
+export { default as SnTag } from './tag/SnTag.vue'
+export { default as SnSpace } from './space/SnSpace.vue'
+export { default as SnFlex } from './flex/SnFlex.vue'
+export { default as SnLayout } from './layout/SnLayout.vue'
+export { default as SnLayoutHeader } from './layout/SnLayoutHeader.vue'
+export { default as SnLayoutContent } from './layout/SnLayoutContent.vue'
+export { default as SnLayoutFooter } from './layout/SnLayoutFooter.vue'
+export { default as SnLayoutSider } from './layout/SnLayoutSider.vue'
+export type { SnLayoutPosition, SnLayoutStyleValue } from './layout/sn-layout-types'
+export { default as SnSplitter } from './splitter/SnSplitter.vue'
+export { default as SnSplitterPanel } from './splitter/SnSplitterPanel.vue'
+export type { SnSplitterDirection } from './splitter/splitter-context'
+export { default as SnDropdown } from './dropdown/SnDropdown.vue'
+export type {
+  SnDropdownOption,
+  SnDropdownMenuNode,
+  SnDropdownKey,
+  SnDropdownPlacement,
+  SnDropdownTrigger,
+} from './dropdown/sn-dropdown-types'
 export { default as SnLoading } from './loading/SnLoading.vue'
 export { default as SnDialog } from './dialog/SnDialog.vue'
 export type { SnDialogIconPlacement, SnDialogType } from './dialog/SnDialog.vue'
