@@ -2,7 +2,12 @@
 /** Demo: SnLog — programmatic scrollTo with and without silent. */
 import { ref } from 'vue'
 import { SnButton, SnLog } from '@snui/vue-web'
-import type { SnLogScrollToOptions } from '@snui/vue-web/src/log/SnLog.vue'
+
+interface ScrollToOptions {
+  top?: number
+  position?: 'top' | 'bottom'
+  silent?: boolean
+}
 
 function makeLog(): string {
   const lines: string[] = []
@@ -17,7 +22,7 @@ const lastEvent = ref('（暂无事件）')
 
 const logRef = ref<InstanceType<typeof SnLog> | null>(null)
 
-function scrollTo(options: SnLogScrollToOptions) {
+function scrollTo(options: ScrollToOptions) {
   logRef.value?.scrollTo(options)
 }
 
