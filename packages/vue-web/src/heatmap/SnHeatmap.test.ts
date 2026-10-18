@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
+import { describe, it, expect, afterEach } from 'vitest'
+import { mount, type VueWrapper } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import SnHeatmap from './SnHeatmap.vue'
 import {
@@ -244,15 +244,13 @@ describe('SnHeatmap (AUI-WEB-DD-008)', () => {
     expect(w.findAll('.sn-heatmap__day-cell')).toHaveLength(14)
   })
 
-  it('should show the native title hint only when tooltip is on', () => {
+  it('should not render tooltip wrappers or native titles by default', () => {
+    // Detailed tooltip behavior is covered in the dedicated describe below
+    // (teleport + timer conventions, mirroring SnTooltip.test.ts).
     const data: SnHeatmapDataItem[] = [{ timestamp: day(2026, 2, 2), value: 3 }]
-    const off = mountHeatmap({ data })
-    expect(off.find('.sn-heatmap__rect').attributes('title')).toBeUndefined()
-
-    const on = mountHeatmap({ data, tooltip: true })
-    const title = on.find('.sn-heatmap__rect').attributes('title')
-    expect(title).toContain('3')
-    expect(title).toContain(new Date(day(2026, 2, 2)).toLocaleDateString())
+    const w = mountHeatmap({ data })
+    expect(w.find('.sn-tooltip-trigger').exists()).toBe(false)
+    expect(w.find('.sn-heatmap__rect').attributes('title')).toBeUndefined()
   })
 
   it('should render the 7 × 53 loading skeleton', () => {
@@ -353,5 +351,130 @@ describe('SnHeatmap (AUI-WEB-DD-008)', () => {
     )
     expect(w.text()).toContain('较少')
     expect(w.text()).toContain('较多')
+  })
+})
+
+describe('SnHeatmap tooltip (n-heatmap `tooltip` parity)', () => {
+  /** One full week (Mon 2026-03-02 … Sun 2026-03-08) → one rect per day. */
+  const week: SnHeatmapDataItem[] = Array.from({ length: 7 }, (_, i) => ({
+    timestamp: day(2026, 2, 2 + i),
+    value: i === 0 ? 3 : 0,
+  }))
+
+  /** Attached mount: hover tooltips teleport to document.body. */
+  function mountTooltipHeatmap(
+    props: Record<string, unknown>,
+    slots: Record<string, unknown> = {},
+  ): VueWrapper {
+    return mount(
+      defineComponent({
+        components: { SnHeatmap },
+        setup() {
+          return () => h(SnHeatmap, props as never, slots as never)
+        },
+      }),
+      { attachTo: document.body },
+    )
+  }
+
+  let active: VueWrapper | null = null
+
+  afterEach(() => {
+    active?.unmount()
+    active = null
+    // Tear down any Teleport nodes that survived the test.
+    document.body.querySelectorAll('.sn-tooltip').forEach((el) => el.remove())
+  })
+
+  /** Hover the rect of the given day index and wait past the open delay. */
+  async function hoverRect(index: number, waitMs = 150): Promise<HTMLElement> {
+    const triggers = active!.findAll('.sn-tooltip-trigger')
+    await triggers[index]!.trigger('mouseenter')
+    await new Promise((r) => setTimeout(r, waitMs))
+    const pop = document.body.querySelector('.sn-tooltip') as HTMLElement | null
+    expect(pop).not.toBeNull()
+    return pop!
+  }
+
+  it('should render no SnTooltip instances at all when tooltip is false', () => {
+    active = mountTooltipHeatmap({ data: week })
+    expect(active.findAll('.sn-tooltip-trigger')).toHaveLength(0)
+    expect(document.body.querySelector('.sn-tooltip')).toBeNull()
+  })
+
+  it('should show the default date + value content on hover when tooltip is true', async () => {
+    active = mountTooltipHeatmap({ data: week, tooltip: true })
+    // 7 rects, each wrapped in a hover tooltip trigger.
+    expect(active.findAll('.sn-tooltip-trigger')).toHaveLength(7)
+    const pop = await hoverRect(0)
+    expect(pop.textContent).toContain('2026-03-02：3')
+  })
+
+  it('should render the tooltip slot content with the cell DayRect params', async () => {
+    let seen: Record<string, unknown> | null = null
+    active = mountTooltipHeatmap(
+      { data: week, tooltip: true },
+      {
+        tooltip: (day: Record<string, unknown>) => {
+          seen = day
+          return h('span', { class: 'custom-tip' }, `自定义 ${String(day.value)}`)
+        },
+      },
+    )
+    const pop = await hoverRect(0)
+    expect(pop.querySelector('.custom-tip')?.textContent).toBe('自定义 3')
+    // DayRect shape, 1:1 with the reference interface.
+    expect(seen).toMatchObject({
+      timestamp: day(2026, 2, 2),
+      value: 3,
+      dayOfWeek: 1, // Monday = 1 (0 = Sunday, reference convention)
+      rowIndex: 0,
+      colIndex: 0,
+    })
+    expect(typeof seen!.color).toBe('string')
+  })
+
+  it('should forward the tooltip config placement and delay', async () => {
+    active = mountTooltipHeatmap({
+      data: week,
+      tooltip: { placement: 'bottom', delay: 0 },
+    })
+    const pop = await hoverRect(0, 10)
+    // SnTooltip marks the popover with the requested placement class.
+    expect(pop.classList).toContain('sn-tooltip--bottom')
+  })
+
+  it('should forward the tooltip config showArrow toggle when the slot is absent', async () => {
+    active = mountTooltipHeatmap({
+      data: week,
+      tooltip: { placement: 'bottom', showArrow: false, delay: 0 },
+    })
+    const pop = await hoverRect(0, 10)
+    // The default date + value text still renders without a slot.
+    expect(pop.textContent).toContain('2026-03-02：3')
+    // showArrow: false removes the arrow from the bubble.
+    expect(pop.querySelector('.sn-tooltip__arrow')).toBeNull()
+  })
+
+  it('should use the tooltip config content when the slot is absent', async () => {
+    active = mountTooltipHeatmap({
+      data: week,
+      tooltip: { content: '配置文本', delay: 0 },
+    })
+    const pop = await hoverRect(0, 10)
+    // Config content replaces the default date + value text.
+    expect(pop.textContent).toContain('配置文本')
+    expect(pop.textContent).not.toContain('2026-03-02')
+  })
+
+  it('should suppress tooltips while loading (reference Rect parity)', () => {
+    active = mountTooltipHeatmap({
+      data: week,
+      loadingData: week,
+      tooltip: true,
+      loading: true,
+    })
+    expect(active.findAll('.sn-tooltip-trigger')).toHaveLength(0)
+    expect(active.findAll('.sn-heatmap__rect--loading')).toHaveLength(7)
   })
 })

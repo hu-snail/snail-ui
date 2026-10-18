@@ -15,7 +15,8 @@ color indicator footer.
 Per AGENTS.md §112, this component's API surface mirrors naive-ui
 `n-heatmap`
 (https://www.naiveui.com/zh-CN/light/components/heatmap, source
-`src/heatmap/src/Heatmap.tsx`, a 2.42+ component).
+`src/heatmap/src/Heatmap.tsx` + `Rect.tsx` + `interface.ts`, a 2.42+
+component).
 
 ## Import
 
@@ -39,7 +40,7 @@ import SnHeatmap from '@snui/vue-web/src/heatmap/SnHeatmap.vue'
 | `show-week-labels` | `boolean` | `true` | no | Show the left week labels. |
 | `show-month-labels` | `boolean` | `true` | no | Show the top month labels. |
 | `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Scale preset (rects 10 / 11 / 12 px, gaps 2 / 3 / 3 px). |
-| `tooltip` | `boolean` | `false` | no | Native `title` hover hint per cell. |
+| `tooltip` | `boolean \| SnHeatmapTooltipConfig` | `false` | no | Per-cell hover tooltip (SnTooltip wrap, lazy popover); `true` = default content `YYYY-MM-DD：value`, object = `TooltipProps` subset (`content` — bubble text when the `tooltip` slot is absent, `placement` default `'top'`, `showArrow` default `true`, `delay` default `100`, `style` / `class` on the popover body). |
 | `x-gap` | `number \| string` | `undefined` | no | Overrides the vertical (row) side of the grid spacing (second `border-spacing` value, like the reference cssr). |
 | `y-gap` | `number \| string` | `undefined` | no | Overrides the horizontal (column) side of the grid spacing (first `border-spacing` value, like the reference cssr). |
 
@@ -55,6 +56,7 @@ None (the reference has no events).
 | `indicator` | — | Replaces the whole right-side indicator. |
 | `indicator-leading-text` | — | Leading indicator text (default '少'). |
 | `indicator-trailing-text` | — | Trailing indicator text (default '多'). |
+| `tooltip` | Cell data object `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }` | Custom per-cell tooltip content; 1:1 with the reference `DayRect` (`dayOfWeek` 0 = Sunday; `color` is the custom palette entry or the level's `--sn-heatmap-color-N` variable). |
 
 ## Behavior
 
@@ -77,9 +79,14 @@ None (the reference has no events).
   `--sn-web-color-*`; `colorTheme` maps green/blue/orange/red onto the
   semantic feedback hues and purple onto a danger/primary mix. Custom
   `activeColors` / `minimumColor` strings are honored verbatim.
-- Hover hints use the native `title` attribute; the reference's
-  `tooltip` object form and its `tooltip` slot are deferred (a native
-  title cannot carry custom node content).
+- Cell tooltips wrap each rect in the first-party `SnTooltip` (uncontrolled
+  hover trigger, like the reference wrapping `n-tooltip`); `tooltip: false`
+  renders no tooltip instances at all. The object form forwards a
+  `TooltipProps` subset (`content` / `placement` / `showArrow` / `delay` /
+  popover-body `style` / `class`). The default content renders
+  `YYYY-MM-DD：value` (the reference uses `toLocaleDateString()`); the
+  `tooltip` slot receives the reference `DayRect` shape. Loading cells skip
+  the tooltip (reference `Rect.tsx` parity).
 - Labels ('少' / '多', week chars '一'…'日', month names 'M月') are fixed
   zh-CN strings (the reference derives them from its locale system).
 - The loading pulse is a scoped keyframes class (the reference injects a
@@ -92,7 +99,8 @@ None (the reference has no events).
 - Week / month label cells are real `th` elements; decorative empty week
   header cells are `aria-hidden`.
 - Cells are plain colored squares (the reference exposes no grid roles
-  either); the hover hint is the native `title` attribute.
+  either); with `tooltip` enabled the popover carries `role="tooltip"`
+  from SnTooltip.
 
 ## Tokens Consumed (end: web)
 
@@ -100,8 +108,8 @@ None (the reference has no events).
 |---|---|---|
 | Action primary | `--sn-web-color-action-primary` | Default scale base |
 | Feedback success / info / warning / danger | `--sn-web-color-feedback-*` | colorTheme bases |
-| Background surface / subtle | `--sn-web-color-background-*` | Scale ramp base + minimum level |
-| Text secondary / primary | `--sn-web-color-text-*` | Labels; loading pulse mix |
+| Background surface | `--sn-web-color-background-surface` | Scale ramp base; minimum level mixes 2% text-primary over it (batch visual spec, not `background-subtle`) |
+| Text secondary / primary | `--sn-web-color-text-*` | Labels; loading pulse mix; minimum-level mix |
 
 ## Versioning
 

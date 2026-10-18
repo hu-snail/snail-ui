@@ -63,7 +63,7 @@ const data = computed(generateYearData)
 .sn-demo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .sn-demo-controls {

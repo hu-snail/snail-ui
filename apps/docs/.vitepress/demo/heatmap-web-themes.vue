@@ -44,7 +44,7 @@ const data = ref(buildData())
 .sn-demo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .sn-demo__section {

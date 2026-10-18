@@ -21,9 +21,23 @@ toggleable.
 
 `footer` for the left footer area, `indicator` to replace the indicator
 block, `indicator-leading-text` / `indicator-trailing-text` for the scale
-texts; `tooltip` enables the native hover hint.
+texts.
 
-<Demo name="heatmap-web-slots" description="footer / indicator / indicator text slots + tooltip." />
+<Demo name="heatmap-web-slots" description="footer / indicator / indicator text slots." />
+
+## Tooltip
+
+`tooltip` enables the per-cell hover tooltip (1:1 with n-heatmap, default
+`false`): `true` uses the default popover (`YYYY-MM-DD：value`), an object
+forwards the optional `content / placement / showArrow / delay / style / class`.
+
+<Demo name="heatmap-web-tooltip" description="The tooltip switch." />
+
+The `tooltip` slot receives the cell data object (same as the n-heatmap
+`DayRect`: `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }`)
+for fully custom popover content.
+
+<Demo name="heatmap-web-tooltip-slot" description="Custom tooltip slot content." />
 
 ## Color themes
 
@@ -49,7 +63,7 @@ texts; `tooltip` enables the native hover hint.
 | show-week-labels | `boolean` | `true` | Left week labels |
 | show-month-labels | `boolean` | `true` | Top month labels |
 | size | `'small' \| 'medium' \| 'large'` | `'medium'` | Scale (rects 10 / 11 / 12 px) |
-| tooltip | `boolean` | `false` | Native title hint ('date value') |
+| tooltip | `boolean \| SnHeatmapTooltipConfig` | `false` | Per-cell hover tooltip (SnTooltip wrap; `false` renders no popover at all); `true` uses the default content `YYYY-MM-DD：value`, an object forwards `content` (bubble text when the slot is absent) / `placement` (default `'top'`) / `showArrow` (default `true`) / `delay` (default `100`) / `style` / `class` |
 | x-gap | `number \| string` | `undefined` | Overrides the vertical (row) side of the spacing (second border-spacing value) |
 | y-gap | `number \| string` | `undefined` | Overrides the horizontal (column) side of the spacing (first border-spacing value) |
 
@@ -65,6 +79,7 @@ None.
 | indicator | — | Replaces the right-side indicator |
 | indicator-leading-text | — | Leading scale text (default '少') |
 | indicator-trailing-text | — | Trailing scale text (default '多') |
+| tooltip | Cell data object `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }` | Custom per-cell popover content (same as the n-heatmap `DayRect`; `dayOfWeek` 0 = Sunday) |
 
 The grid is always 7 rows (one per weekday); data is sorted and
 week-aligned; levels use 5 buckets scaled by the data max.

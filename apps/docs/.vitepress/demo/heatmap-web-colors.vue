@@ -76,7 +76,7 @@ function pickPreset(index: number) {
 .sn-demo {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
 }
 
 .sn-demo__controls {
@@ -95,7 +95,8 @@ function pickPreset(index: number) {
 .sn-demo__btn {
   height: 28px;
   padding: 0 10px;
-  border: 1px solid var(--sn-web-color-border-default);
+  /* Control edge per the global spec: ~12% ink over surface (naive borderColor), not --sn-web-color-border-default. */
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: 3px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-secondary);
@@ -110,7 +111,7 @@ function pickPreset(index: number) {
 .sn-demo__select {
   height: 28px;
   padding: 0 8px;
-  border: 1px solid var(--sn-web-color-border-default);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: 3px;
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-text-secondary);

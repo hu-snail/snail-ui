@@ -18,12 +18,16 @@
  *     semantic feedback hues and purple onto a danger/primary mix.
  *     User-supplied `activeColors` / `minimumColor` strings are honored
  *     verbatim via inline backgrounds (data, not component styling).
- *   - Cell hover hints use the native `title` attribute (the reference
- *     wraps each rect in n-tooltip and accepts a TooltipProps object;
- *     only the boolean form of `tooltip` is implemented). The `tooltip`
- *     slot is therefore deferred too — a native title cannot carry custom
- *     node content; footer / indicator / indicator text slots are all
- *     implemented.
+ *   - Cell hover tooltips wrap each rect in the first-party `SnTooltip`
+ *     (uncontrolled hover trigger, like the reference wrapping `n-tooltip`)
+ *     whenever `tooltip` is truthy; `false` renders the bare rect with no
+ *     tooltip instances. The object form forwards a `TooltipProps` subset
+ *     (`placement` / `showArrow` / `delay` / popover-body
+ *     `style` / `class`), and the `tooltip` slot receives the cell's
+ *     `DayRect`. Loading cells skip the tooltip (reference `Rect.tsx`
+ *     parity). The default content renders `YYYY-MM-DD：value` (the
+ *     reference uses `toLocaleDateString()`); `footer / indicator /
+ *     indicator text` slots are all implemented.
  *   - Labels ('少' / '多', week chars, month names) are fixed zh-CN
  *     strings (the reference derives them from its locale system).
  *   - The loading pulse is a scoped keyframes class (the reference
@@ -40,6 +44,9 @@
  */
 
 import { computed, useSlots } from 'vue'
+import SnTooltip from '../tooltip/SnTooltip.vue'
+import { defaultTooltipContent } from './heatmap-tooltip'
+import type { SnHeatmapTooltipConfig, SnHeatmapTooltipDay } from './heatmap-tooltip'
 import {
   buildHeatmapMatrix,
   buildLoadingMatrix,
@@ -58,11 +65,13 @@ import type {
 
 defineOptions({ name: 'SnHeatmap' })
 
-/** Laid-out cell with the resolved color level. */
+/** Laid-out cell with the resolved color level (row/col carried for tooltip slot params). */
 interface SnHeatmapViewCell {
   timestamp: number
   value: number | null | undefined
   level: number
+  rowIndex: number
+  colIndex: number
 }
 
 const props = withDefaults(
@@ -91,8 +100,12 @@ const props = withDefaults(
     showMonthLabels?: boolean
     /** Scale preset (rects 10 / 11 / 12 px). Mirrors n-heatmap `size`. */
     size?: 'small' | 'medium' | 'large'
-    /** Native `title` hover hint (reference wraps n-tooltip; boolean form only). Mirrors n-heatmap `tooltip`. */
-    tooltip?: boolean
+    /**
+     * Per-cell hover tooltip: `false` renders the bare rect (no tooltip
+     * instances), `true` uses the SnTooltip defaults, an object forwards a
+     * `TooltipProps` subset. Mirrors n-heatmap `tooltip` (1:1).
+     */
+    tooltip?: boolean | SnHeatmapTooltipConfig | undefined
     /** Vertical (row) side of the grid spacing (px number or CSS length; second border-spacing value, like the reference cssr). Mirrors n-heatmap `xGap`. */
     xGap?: number | string | undefined
     /** Horizontal (column) side of the grid spacing (px number or CSS length; first border-spacing value, like the reference cssr). Mirrors n-heatmap `yGap`. */
@@ -126,6 +139,8 @@ defineSlots<{
   'indicator-leading-text'?(): unknown
   /** Trailing indicator text (default '多'). */
   'indicator-trailing-text'?(): unknown
+  /** Custom per-cell tooltip content; receives the cell's `DayRect` (1:1 reference slot). */
+  tooltip?(day: SnHeatmapTooltipDay): unknown
 }>()
 
 const slots = useSlots()
@@ -177,6 +192,8 @@ const viewRows = computed<ReadonlyArray<ReadonlyArray<SnHeatmapViewCell | null>>
         timestamp: cell.timestamp,
         value: cell.value,
         level: calcLevel(cell.value, maxValue.value, levelCount.value),
+        rowIndex: cell.rowIndex,
+        colIndex: cell.colIndex,
       }
     }))
   }
@@ -219,10 +236,42 @@ function rectStyle(cell: SnHeatmapViewCell): Record<string, string> | undefined 
   return typeof color === 'string' ? { background: color } : undefined
 }
 
-function titleFor(cell: SnHeatmapViewCell): string | undefined {
-  if (!props.tooltip || props.loading) return undefined
-  const date = new Date(cell.timestamp).toLocaleDateString()
-  return cell.value !== null ? `${date} ${cell.value ?? 0}` : date
+/* ─────────── Tooltip (reference Rect.tsx) ─────────── */
+
+/** Truthy `tooltip` (true | config object) wraps rects; `loading` skips the wrap like the reference. */
+const tooltipEnabled = computed(() => Boolean(props.tooltip) && !props.loading)
+
+/** Object form of `tooltip` (`{}` for `true`), like the reference `tooltipPropsRef`. */
+const tooltipConfig = computed<SnHeatmapTooltipConfig>(() =>
+  typeof props.tooltip === 'object' ? props.tooltip : {},
+)
+
+/** Resolved cell color: the custom palette entry or the level's CSS variable (tooltip slot param). */
+function colorFor(cell: SnHeatmapViewCell): string {
+  const custom = palette.value?.[cell.level]
+  return typeof custom === 'string'
+    ? custom
+    : `var(--sn-heatmap-color-${cell.level})`
+}
+
+/**
+ * Bubble text when the `tooltip` slot is absent: the config `content`,
+ * falling back to the reference default (`date + value`).
+ */
+function tooltipText(cell: SnHeatmapViewCell): string {
+  return tooltipConfig.value.content ?? defaultTooltipContent(cell)
+}
+
+/** Build the reference `DayRect` shape for the `tooltip` slot. */
+function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
+  return {
+    timestamp: cell.timestamp,
+    value: cell.value,
+    color: colorFor(cell),
+    dayOfWeek: new Date(cell.timestamp).getDay(),
+    rowIndex: cell.rowIndex,
+    colIndex: cell.colIndex,
+  }
 }
 </script>
 
@@ -258,14 +307,39 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
             </td>
             <template v-for="(cell, colIndex) in row" :key="`cell-${colIndex}`">
               <td v-if="cell && cell.value !== null" class="sn-heatmap__day-cell">
+                <!-- `tooltip === false` renders the bare rect (no tooltip
+                     instances at all — the grid can carry ~371 cells). -->
+                <SnTooltip
+                  v-if="tooltipEnabled"
+                  trigger="hover"
+                  :placement="tooltipConfig.placement ?? 'top'"
+                  :arrow="tooltipConfig.showArrow ?? true"
+                  :delay="tooltipConfig.delay ?? 100"
+                  :content-class="tooltipConfig.class ?? ''"
+                  :content-style="tooltipConfig.style ?? {}"
+                >
+                  <div
+                    class="sn-heatmap__rect"
+                    :class="[
+                      `sn-heatmap__rect--level-${cell.level}`,
+                      loading ? 'sn-heatmap__rect--loading' : '',
+                    ]"
+                    :style="rectStyle(cell)"
+                  />
+                  <template #content>
+                    <slot name="tooltip" v-bind="tooltipDay(cell)">
+                      {{ tooltipText(cell) }}
+                    </slot>
+                  </template>
+                </SnTooltip>
                 <div
+                  v-else
                   class="sn-heatmap__rect"
                   :class="[
                     `sn-heatmap__rect--level-${cell.level}`,
                     loading ? 'sn-heatmap__rect--loading' : '',
                   ]"
                   :style="rectStyle(cell)"
-                  :title="titleFor(cell)"
                 />
               </td>
               <td v-else class="sn-heatmap__day-cell">
@@ -316,7 +390,9 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
 
 .sn-heatmap {
   --sn-heatmap-base: var(--sn-web-color-action-primary);
-  --sn-heatmap-color-0: var(--sn-web-color-background-subtle);
+  /* Batch visual spec: secondary surfaces use a 2% text-primary mix over
+   * the surface token; --sn-web-color-background-subtle is reserved out. */
+  --sn-heatmap-color-0: color-mix(in srgb, var(--sn-web-color-text-primary) 2%, var(--sn-web-color-background-surface));
   --sn-heatmap-color-1: color-mix(in srgb, var(--sn-heatmap-base) 30%, var(--sn-web-color-background-surface));
   --sn-heatmap-color-2: color-mix(in srgb, var(--sn-heatmap-base) 55%, var(--sn-web-color-background-surface));
   --sn-heatmap-color-3: color-mix(in srgb, var(--sn-heatmap-base) 78%, var(--sn-web-color-background-surface));
@@ -327,6 +403,8 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
   --sn-heatmap-x-gap: 3px;
   --sn-heatmap-y-gap: 3px;
   --sn-heatmap-radius: 2px;
+  /* The reference eases with its common cubicBezierEaseInOut. */
+  --sn-heatmap-bezier: cubic-bezier(0.4, 0, 0.2, 1);
 
   display: flex;
   flex-direction: column;
@@ -391,6 +469,7 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
   font-weight: 400;
   padding: 0 2px 8px;
   vertical-align: bottom;
+  transition: color 0.3s var(--sn-heatmap-bezier);
 }
 
 .sn-heatmap__week-label-cell {
@@ -405,6 +484,7 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
   vertical-align: middle;
   white-space: nowrap;
   font-weight: 400;
+  transition: color 0.3s var(--sn-heatmap-bezier);
 }
 
 .sn-heatmap__day-cell {
@@ -413,6 +493,17 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
   padding: 0;
   border: none;
   vertical-align: middle;
+  transition: color 0.3s var(--sn-heatmap-bezier);
+}
+
+/*
+ * SnTooltip's trigger `<span>` defaults to `display: inline-flex`, whose
+ * line box (strut) would inflate the fixed-height day cell. Flatten it to
+ * a block-level flex box so a tooltip-enabled grid keeps the exact cell
+ * metrics of a bare one.
+ */
+.sn-heatmap__day-cell :deep(.sn-tooltip-trigger) {
+  display: flex;
 }
 
 .sn-heatmap__empty-cell {
@@ -427,7 +518,7 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
   width: var(--sn-heatmap-rect-size);
   height: var(--sn-heatmap-rect-size);
   border-radius: var(--sn-heatmap-radius);
-  transition: background-color 0.3s;
+  transition: background-color 0.3s var(--sn-heatmap-bezier);
 }
 
 .sn-heatmap__rect--level-0,
@@ -498,6 +589,8 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  /* The reference color-indicator separates label / cells / label by 4px. */
+  gap: 4px;
 }
 
 .sn-heatmap__indicator-cells {
@@ -509,6 +602,7 @@ function titleFor(cell: SnHeatmapViewCell): string | undefined {
   width: var(--sn-heatmap-rect-size);
   height: var(--sn-heatmap-rect-size);
   border-radius: var(--sn-heatmap-radius);
+  transition: background-color 0.3s var(--sn-heatmap-bezier);
 }
 
 .sn-heatmap__indicator-label {

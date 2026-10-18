@@ -24,9 +24,19 @@
 
 ### 插槽用法
 
-`footer` 自定义左侧信息，`indicator` 整块替换右侧指示器，`indicator-leading-text` / `indicator-trailing-text` 覆写指示器两端文本；`tooltip` 开启原生悬浮提示。
+`footer` 自定义左侧信息，`indicator` 整块替换右侧指示器，`indicator-leading-text` / `indicator-trailing-text` 覆写指示器两端文本。
 
-<Demo name="heatmap-web-slots" description="footer / indicator / 指示器文本插槽 + tooltip。" />
+<Demo name="heatmap-web-slots" description="footer / indicator / 指示器文本插槽。" />
+
+### 悬浮提示
+
+`tooltip` 开启每格悬浮提示（1:1 对齐 n-heatmap，默认 `false`）：`true` 使用默认浮层（内容「YYYY-MM-DD：数值」），对象形式透传 `content / placement / showArrow / delay / style / class`（均为可选）。
+
+<Demo name="heatmap-web-tooltip" description="tooltip 开关。" />
+
+`tooltip` 插槽接收格子数据对象（同 n-heatmap `DayRect`：`{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }`），可完全自定义浮层内容。
+
+<Demo name="heatmap-web-tooltip-slot" description="tooltip 插槽自定义内容。" />
 
 ### 内置色系
 
@@ -52,7 +62,7 @@
 | show-week-labels | `boolean` | `true` | 左侧周标签 |
 | show-month-labels | `boolean` | `true` | 顶部月份标签 |
 | size | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（格子 10 / 11 / 12px） |
-| tooltip | `boolean` | `false` | 悬浮时通过原生 title 显示「日期 数值」 |
+| tooltip | `boolean \| SnHeatmapTooltipConfig` | `false` | 每格悬浮提示（SnTooltip 包裹，`false` 不渲染任何浮层）；`true` 用默认内容「YYYY-MM-DD：数值」，对象形式透传 `content`（无插槽时的文本）/ `placement`（默认 `'top'`）/ `showArrow`（默认 `true`）/ `delay`（默认 `100`）/ `style` / `class` |
 | x-gap | `number \| string` | `undefined` | 覆写垂直（行）方向间距（border-spacing 第二值，同参考实现） |
 | y-gap | `number \| string` | `undefined` | 覆写水平（列）方向间距（border-spacing 第一值，同参考实现） |
 
@@ -68,6 +78,7 @@
 | indicator | — | 整块替换右侧指示器 |
 | indicator-leading-text | — | 指示器起始文本（默认「少」） |
 | indicator-trailing-text | — | 指示器结束文本（默认「多」） |
+| tooltip | 格子数据对象 `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }` | 自定义每格悬浮内容（同 n-heatmap `DayRect`，`dayOfWeek` 0 = 周日） |
 
 ### 行为说明
 
@@ -75,5 +86,6 @@
 - 色阶 5 档：值 ≤ 0 映射最浅档，其余按 `值 / 最大值` 分档；最大值取自数据。
 - 月份标签按列首格所属月份合并，覆盖不足 3 周的月份不显示。
 - 显式 `value: null` 的格子渲染为空白格；`value: 0` 渲染最浅色。
+- `tooltip` 开启时每格包一层悬浮浮层（懒渲染：未 hover 不挂载浮层内容）；`loading` 中不渲染浮层（同 n-heatmap）。
 
 完整契约见组件 `ai-description.md`。
