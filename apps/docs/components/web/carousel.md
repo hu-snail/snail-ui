@@ -60,6 +60,26 @@
 
 <Demo name="carousel-web-custom-arrow-and-dots" description="作用域插槽自绘箭头与序号指示点" />
 
+### 视频
+
+`<video controls muted>` 直接放进 `SnCarouselItem` 即可作为轮播帧：离开当前帧时组件自动 `pause()` 其中的视频（不会后台漏音），视频控件上的按下不会触发拖拽，进度条/音量等原生交互可用。
+
+<Demo name="carousel-web-video" description="视频 + 图片混排，切走自动暂停" />
+
+### 业务场景
+
+营销 banner（`title` / `description` 标题描述浮层）：
+
+<Demo name="carousel-web-banner" description="营销 banner：caption 标题描述 + 线形指示点" />
+
+电商商品卡片（`slides-per-view=3` + `space-between=16` + `loop`）：
+
+<Demo name="carousel-web-product-cards" description="一屏三张商品卡，鼠标拖拽换页" />
+
+新闻 / 公告（`direction="vertical"` + `autoplay`）：
+
+<Demo name="carousel-web-news" description="纵向新闻滚动条，悬停暂停、可拖拽" />
+
 ## API
 
 ### SnCarousel Props
@@ -94,7 +114,12 @@
 
 ### SnCarouselItem Props
 
-无属性；内容放默认插槽，状态（current / prev / next）由父级注入。
+| Prop | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| title | `string` | `undefined` | 底部渐变浮层的主标题（超出 naive 的扩展能力） |
+| description | `string` | `undefined` | 标题下方的次级描述行 |
+
+title / description / `caption` 插槽任一存在时渲染底部浮层（渐变背景 + 白字，`pointer-events: none` 不挡拖拽）；`caption` 插槽内容会替换 title/description 文本。
 
 ### Slots
 
@@ -104,6 +129,7 @@
 | SnCarousel | `arrow` | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | 自定义箭头 |
 | SnCarousel | `dots` | `{ total, currentIndex, to }` | 自定义指示点 |
 | SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }` | slide 内容 |
+| SnCarouselItem | `caption` | — | 自定义 caption 浮层内容（替换 title/description 文本） |
 
 ### Inst Methods
 
@@ -117,7 +143,9 @@
 ## Divergence / future
 
 - 与 naive 的有意分歧：`default-index` 在 naive 2.43.1 中因空列表初始化失效（恒为 0），本组件修正为真正生效。
+- 超出 naive 的扩展能力（有意 divergence）：① `SnCarouselItem` 的 `title` / `description` props 与 `caption` 插槽（底部渐变文字浮层）；② slide 失去 current 态时自动 `pause()` 其内部 `<video>`（卸载时同样清理）；③ 拖拽起点落在交互元素（`video / audio / a / button / input / textarea / select / [contenteditable] / [data-no-drag]`）内时不启动拖拽，保证原生控件可用（naive 对所有 mouse 拖拽起点一律 `preventDefault`）。
+- 文档 demo 全部默认开启 `draggable` 方便体验；组件默认值仍与 naive 对齐为 `false`。
 - 未提供 demo 的能力（API 已实现）：`space-between` 独立场景、`centered-slides`、`effect="custom"`（`transition-props`）、`hover`/`keyboard`/`mousewheel`/`simulate-drag` 场景、`slides-per-view="auto"`、`dot-placement="top"/"right"`、`on-update:current-index` 受控联动。
-- 拖拽几何（多页吸附、甩动阈值）在 `carousel-utils.ts` 纯函数层测试，happy-dom 不做 DOM 级拖拽断言。
+- 拖拽几何（多页吸附、甩动阈值）在 `carousel-utils.ts` 纯函数层测试，happy-dom 不做 DOM 级拖拽断言（0×0 视口会把拖拽偏移钳到 0；交互元素抑制用例通过 stub `offsetWidth` 观察整条链路）。
 
 完整契约见组件 `ai-description.md`。

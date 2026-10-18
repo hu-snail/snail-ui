@@ -16,20 +16,46 @@
  * sizing/margins for `slides-per-view` + `space-between`, transition
  * timing for fade/card, and prev/next-slide-style overrides in card mode.
  *
+ * Extensions beyond naive (registered in ai-description.md):
+ *   - `title` / `description` props + `caption` slot render a bottom
+ *     gradient text overlay (the naive item has no caption layer).
+ *   - When the slide stops being current, native `<video>` elements inside
+ *     it are paused (video banners must not keep playing off-screen).
+ *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only.
  *
  * Usage:
  *   <SnCarousel>
- *     <SnCarouselItem>…</SnCarouselItem>
+ *     <SnCarouselItem title="…">…</SnCarouselItem>
  *   </SnCarousel>
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
 import { carouselContextKey } from './SnCarousel.vue'
 import type { SnCarouselContext } from './SnCarousel.vue'
 
 defineOptions({ name: 'SnCarouselItem' })
+
+const props = defineProps<{
+  /** Caption line rendered in the bottom gradient overlay. */
+  title?: string
+  /** Secondary caption line under the title. */
+  description?: string
+}>()
+
+defineSlots<{
+  default?: (props: {
+    isPrev: boolean
+    isNext: boolean
+    isActive: boolean
+    index: number
+  }) => unknown
+  /** Replaces the `title` / `description` text inside the caption overlay. */
+  caption?: () => unknown
+}>()
+
+const slots = useSlots()
 
 function useCarouselContextOrThrow(): SnCarouselContext {
   const ctx = inject(carouselContextKey)
@@ -55,12 +81,36 @@ const isNext = computed<boolean>(() => context.isNext(index.value))
 const isActive = computed<boolean>(() => context.isActive(index.value))
 const style = computed(() => context.getSlideStyle(index.value))
 
+/** The bottom gradient overlay renders when any caption source exists. */
+const hasCaption = computed<boolean>(() =>
+  Boolean(props.title || props.description || slots.caption),
+)
+
+/**
+ * Pause native `<video>` elements inside this slide. Pause on an already
+ * paused element is a no-op (spec), so there is no state tracking here.
+ */
+function pauseSlideVideos(): void {
+  const root = selfElRef.value
+  if (!root) return
+  const videos = root.querySelectorAll('video')
+  for (const video of videos) {
+    video.pause()
+  }
+}
+
+// Off-screen slides must not keep playing their video banners.
+watch(isActive, (active) => {
+  if (!active) pauseSlideVideos()
+})
+
 onMounted(() => {
   context.addSlide(selfElRef.value ?? undefined)
 })
 
 onBeforeUnmount(() => {
   context.removeSlide(selfElRef.value ?? undefined)
+  pauseSlideVideos()
 })
 
 function handleClick(event: MouseEvent): void {
@@ -85,6 +135,12 @@ function handleClick(event: MouseEvent): void {
     @click.capture="handleClick"
   >
     <slot :is-prev="isPrev" :is-next="isNext" :is-active="isActive" :index="index" />
+    <div v-if="hasCaption" class="sn-carousel__caption">
+      <slot name="caption">
+        <p v-if="title" class="sn-carousel__caption-title">{{ title }}</p>
+        <p v-if="description" class="sn-carousel__caption-description">{{ description }}</p>
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -106,6 +162,39 @@ function handleClick(event: MouseEvent): void {
 
 .sn-carousel__slide > :deep(img) {
   display: block;
+}
+
+/* ── caption overlay (beyond naive — see ai-description.md) ──
+ * Renders over arbitrary slide imagery, so the text colours are the same
+ * white-overlay rgba() values the dots/arrows already use (registered in
+ * ai-description.md). `pointer-events: none` keeps drag + click-through
+ * working; the gradient uses the overlay background token. */
+.sn-carousel__caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  padding: 12px 16px;
+  background: linear-gradient(transparent, var(--sn-web-color-background-overlay));
+  color: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+.sn-carousel__caption-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.sn-carousel__caption-description {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* ── effect: fade — absolute stack, opacity swap ── */

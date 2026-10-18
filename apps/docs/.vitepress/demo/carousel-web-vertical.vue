@@ -12,6 +12,7 @@ const images = [
 <template>
   <div class="demo-row">
     <SnCarousel
+      draggable
       direction="vertical"
       dot-placement="right"
       style="width: 320px; height: 280px; border-radius: 8px; overflow: hidden"

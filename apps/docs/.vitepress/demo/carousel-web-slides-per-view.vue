@@ -13,6 +13,7 @@ const images = [
 
 <template>
   <SnCarousel
+    draggable
     :slides-per-view="3"
     :space-between="12"
     :loop="false"

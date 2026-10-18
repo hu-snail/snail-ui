@@ -15,6 +15,7 @@ const images = [
     <div v-for="effect in effects" :key="effect">
       <p class="demo-label">effect="{{ effect }}"</p>
       <SnCarousel
+        draggable
         :effect="effect"
         :transition-style="{ transitionDuration: '500ms' }"
         style="height: 200px; border-radius: 8px; overflow: hidden"

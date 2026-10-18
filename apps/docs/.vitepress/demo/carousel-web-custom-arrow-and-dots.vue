@@ -16,6 +16,7 @@ const current = ref(0)
 <template>
   <div class="custom-carousel">
     <SnCarousel
+      draggable
       v-model:current-index="current"
       style="height: 240px; border-radius: 8px; overflow: hidden"
     >

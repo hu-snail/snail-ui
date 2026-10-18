@@ -717,4 +717,214 @@ describe('SnCarousel', () => {
     // touch-action flip + column layout come from the classes (CSS).
     expect(w.find('.sn-carousel__slides').exists()).toBe(true)
   })
+
+  /* ─────────── caption overlay (beyond naive) ─────────── */
+
+  interface CaptionSlide {
+    title?: string
+    description?: string
+    captionSlot?: boolean
+  }
+
+  function mountCaptionCarousel(
+    items: CaptionSlide[],
+    props: Record<string, unknown> = {},
+  ): ReturnType<typeof mount> {
+    return mount(defineComponent({
+      components: { SnCarousel, SnCarouselItem },
+      setup() {
+        return () => h(SnCarousel, { style: 'width:300px;height:150px', ...props } as never, {
+          default: () => items.map((item, i) =>
+            h(SnCarouselItem, { key: i, title: item.title, description: item.description }, {
+              default: () => h('img', { src: `img-${i}.png`, alt: `slide-${i}` }),
+              ...(item.captionSlot
+                ? { caption: () => h('span', { class: 'caption-slot-body' }, 'slot-caption') }
+                : {}),
+            })),
+        })
+      },
+    }))
+  }
+
+  it('should render the caption overlay with title and description', async () => {
+    const w = mountCaptionCarousel(
+      [{ title: 'Banner title', description: 'Banner description' }],
+      { loop: false },
+    )
+    await nextTick()
+    const overlay = w.find('.sn-carousel__caption')
+    expect(overlay.exists()).toBe(true)
+    expect(overlay.find('.sn-carousel__caption-title').text()).toBe('Banner title')
+    expect(overlay.find('.sn-carousel__caption-description').text()).toBe('Banner description')
+  })
+
+  it('should render the caption overlay for a title only', async () => {
+    const w = mountCaptionCarousel([{ title: 'Only title' }], { loop: false })
+    await nextTick()
+    const overlay = w.find('.sn-carousel__caption')
+    expect(overlay.exists()).toBe(true)
+    expect(overlay.find('.sn-carousel__caption-title').text()).toBe('Only title')
+    expect(overlay.find('.sn-carousel__caption-description').exists()).toBe(false)
+  })
+
+  it('should render the caption overlay for a description only', async () => {
+    const w = mountCaptionCarousel([{ description: 'Only description' }], { loop: false })
+    await nextTick()
+    const overlay = w.find('.sn-carousel__caption')
+    expect(overlay.exists()).toBe(true)
+    expect(overlay.find('.sn-carousel__caption-title').exists()).toBe(false)
+    expect(overlay.find('.sn-carousel__caption-description').text()).toBe('Only description')
+  })
+
+  it('should let the caption slot replace the title/description text', async () => {
+    const w = mountCaptionCarousel(
+      [{ title: 'Prop title', captionSlot: true }],
+      { loop: false },
+    )
+    await nextTick()
+    const overlay = w.find('.sn-carousel__caption')
+    expect(overlay.exists()).toBe(true)
+    expect(overlay.find('.caption-slot-body').text()).toBe('slot-caption')
+    // The prop fallback text is replaced by the slot content.
+    expect(overlay.find('.sn-carousel__caption-title').exists()).toBe(false)
+    expect(overlay.text()).not.toContain('Prop title')
+  })
+
+  it('should not render the caption overlay without any caption source', async () => {
+    const w = mountCaptionCarousel([{}, {}, {}], { loop: false })
+    await nextTick()
+    expect(w.findAll('.sn-carousel__caption')).toHaveLength(0)
+  })
+
+  /* ─────────── video slides (beyond naive) ─────────── */
+
+  it('should pause videos inside a slide when it stops being current', async () => {
+    const w = mount(defineComponent({
+      components: { SnCarousel, SnCarouselItem },
+      setup() {
+        return () => h(SnCarousel, { style: 'width:300px;height:150px' } as never, {
+          default: () => [
+            h(SnCarouselItem, { key: 0 }, { default: () => h('video', { src: 'a.mp4' }) }),
+            h(SnCarouselItem, { key: 1 }, { default: () => h('video', { src: 'b.mp4' }) }),
+            h(SnCarouselItem, { key: 2 }, { default: () => 'C' }),
+          ],
+        })
+      },
+    }))
+    await nextTick()
+    const videoA = w.find('video[src="a.mp4"]').element as HTMLVideoElement
+    const pauseSpy = vi.spyOn(videoA, 'pause')
+    const inst = w.findComponent(SnCarousel).vm as unknown as SnCarouselInst
+    inst.next()
+    await nextTick()
+    expect(pauseSpy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should pause videos inside a slide when the item unmounts', async () => {
+    const w = mount(defineComponent({
+      components: { SnCarousel, SnCarouselItem },
+      setup() {
+        return () => h(SnCarousel, { loop: false, style: 'width:300px;height:150px' } as never, {
+          default: () => [h(SnCarouselItem, { key: 0 }, { default: () => h('video', { src: 'a.mp4' }) })],
+        })
+      },
+    }))
+    await nextTick()
+    const videoA = w.find('video').element as HTMLVideoElement
+    const pauseSpy = vi.spyOn(videoA, 'pause')
+    w.unmount()
+    expect(pauseSpy).toHaveBeenCalledTimes(1)
+  })
+
+  /* ─────────── drag start suppression (interactive elements) ─────────── */
+
+  /**
+   * happy-dom measures every element 0×0, so the drag offset would clamp
+   * to ±0 and the whole chain (follow-the-finger translate → snap/flick →
+   * index change) stays unobservable. Stubbing `offsetWidth` gives the drag
+   * math a real viewport (width 300 → clamp ±300, half-view 150).
+   */
+  function stubMeasuredWidth(): ReturnType<typeof vi.spyOn> {
+    return vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(300)
+  }
+
+  it('should not start a mouse drag from inside a video but drag from the slide body', async () => {
+    const sizeSpy = stubMeasuredWidth()
+    try {
+      const w = mount(defineComponent({
+        components: { SnCarousel, SnCarouselItem },
+        setup() {
+          return () => h(SnCarousel, { draggable: true, style: 'width:300px;height:150px' } as never, {
+            default: () => [
+              h(SnCarouselItem, { key: 0 }, { default: () => h('video', { src: 'a.mp4' }) }),
+              h(SnCarouselItem, { key: 1 }, { default: () => 'B' }),
+              h(SnCarouselItem, { key: 2 }, { default: () => 'C' }),
+            ],
+          })
+        },
+      }))
+      await nextTick()
+      const slidesEl = w.find('.sn-carousel__slides')
+
+      // Mousedown inside the video → no drag listeners: moving the pointer
+      // 200px left and releasing leaves index and track untouched.
+      await w.find('video').trigger('mousedown', { clientX: 100, clientY: 10 })
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }))
+      document.dispatchEvent(new MouseEvent('mouseup'))
+      await nextTick()
+      expect(activeDotIndex(w)).toBe(0)
+      expect(slidesEl.attributes('style')).not.toContain('translateX(-500px)')
+
+      // Mousedown on the slide body → track follows the pointer (300 base
+      // + 200 offset), then the > half-viewport release flips to slide 2.
+      await slidesEl.trigger('mousedown', { clientX: 100, clientY: 10 })
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }))
+      await nextTick()
+      expect(slidesEl.attributes('style')).toContain('translateX(-500px)')
+      document.dispatchEvent(new MouseEvent('mouseup'))
+      await nextTick()
+      expect(activeDotIndex(w)).toBe(1)
+    }
+    finally {
+      sizeSpy.mockRestore()
+    }
+  })
+
+  it('should not start a mouse drag from inside a link or button', async () => {
+    const sizeSpy = stubMeasuredWidth()
+    try {
+      const w = mount(defineComponent({
+        components: { SnCarousel, SnCarouselItem },
+        setup() {
+          return () => h(SnCarousel, { draggable: true, style: 'width:300px;height:150px' } as never, {
+            default: () => [
+              h(SnCarouselItem, { key: 0 }, {
+                default: () => [
+                  h('a', { href: '#target', class: 'drag-anchor' }, 'link'),
+                  h('button', { type: 'button', class: 'drag-button' }, 'button'),
+                ],
+              }),
+              h(SnCarouselItem, { key: 1 }, { default: () => 'B' }),
+            ],
+          })
+        },
+      }))
+      await nextTick()
+      const slidesEl = w.find('.sn-carousel__slides')
+
+      for (const selector of ['.drag-anchor', '.drag-button']) {
+        await w.find(selector).trigger('mousedown', { clientX: 100, clientY: 10 })
+        document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }))
+        document.dispatchEvent(new MouseEvent('mouseup'))
+        await nextTick()
+        // A broken suppression would drag the track to translateX(-200px)
+        // and snap onto slide 2 (dot 1); nothing may move instead.
+        expect(slidesEl.attributes('style')).not.toContain('translateX(-200px)')
+        expect(activeDotIndex(w)).toBe(0)
+      }
+    }
+    finally {
+      sizeSpy.mockRestore()
+    }
+  })
 })

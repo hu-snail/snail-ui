@@ -10,7 +10,7 @@ const images = [
 </script>
 
 <template>
-  <SnCarousel style="height: 240px; border-radius: 8px; overflow: hidden">
+  <SnCarousel draggable style="height: 240px; border-radius: 8px; overflow: hidden">
     <SnCarouselItem v-for="img in images" :key="img.src">
       <img :src="img.src" :alt="img.alt" style="width: 100%; height: 100%; object-fit: cover">
     </SnCarouselItem>

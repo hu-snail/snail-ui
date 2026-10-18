@@ -13,7 +13,7 @@ const images = [
   <div class="demo-col">
     <div>
       <p class="demo-label">dot-type="line"</p>
-      <SnCarousel dot-type="line" style="height: 200px; border-radius: 8px; overflow: hidden">
+      <SnCarousel draggable dot-type="line" style="height: 200px; border-radius: 8px; overflow: hidden">
         <SnCarouselItem v-for="img in images" :key="img.src">
           <img :src="img.src" :alt="img.alt" style="width: 100%; height: 100%; object-fit: cover">
         </SnCarouselItem>
@@ -21,7 +21,7 @@ const images = [
     </div>
     <div>
       <p class="demo-label">dot-placement="left"</p>
-      <SnCarousel dot-placement="left" style="height: 200px; border-radius: 8px; overflow: hidden">
+      <SnCarousel draggable dot-placement="left" style="height: 200px; border-radius: 8px; overflow: hidden">
         <SnCarouselItem v-for="img in images" :key="img.src">
           <img :src="img.src" :alt="img.alt" style="width: 100%; height: 100%; object-fit: cover">
         </SnCarouselItem>

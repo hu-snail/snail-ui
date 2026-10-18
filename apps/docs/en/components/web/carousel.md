@@ -67,6 +67,29 @@ The `arrow` / `dots` scoped slots fully replace the built-ins
 
 <Demo name="carousel-web-custom-arrow-and-dots" description="Scoped-slot arrows and numbered dots" />
 
+### Video
+
+Drop a native `<video controls muted>` into a `SnCarouselItem`: when a
+slide stops being current the component automatically pauses its videos
+(no background audio), and pressing inside the video never starts a drag,
+so the native timeline/volume controls keep working.
+
+<Demo name="carousel-web-video" description="Video + image slides, auto-paused off-screen" />
+
+### Real-world scenarios
+
+Marketing banner (`title` / `description` caption overlay):
+
+<Demo name="carousel-web-banner" description="Marketing banner with captions and line dots" />
+
+E-commerce product cards (`slides-per-view=3` + `space-between=16` + `loop`):
+
+<Demo name="carousel-web-product-cards" description="Three product cards per view, mouse drag" />
+
+News / announcements (`direction="vertical"` + `autoplay`):
+
+<Demo name="carousel-web-news" description="Vertical news ticker, hover pause, draggable" />
+
 ## API
 
 ### SnCarousel Props
@@ -101,8 +124,15 @@ Event: `update:current-index (currentIndex: number, lastIndex: number)`.
 
 ### SnCarouselItem Props
 
-None; content goes into the default slot, state (current / prev / next)
-is derived from the parent.
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | `string` | `undefined` | Primary caption in the bottom gradient overlay (beyond naive). |
+| description | `string` | `undefined` | Secondary caption line under the title. |
+
+When `title`, `description` or the `caption` slot is present, a bottom
+overlay renders (gradient background + white text, `pointer-events: none`
+so dragging passes through); `caption` slot content replaces the
+title/description text.
 
 ### Slots
 
@@ -112,6 +142,7 @@ is derived from the parent.
 | SnCarousel | `arrow` | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Custom arrows. |
 | SnCarousel | `dots` | `{ total, currentIndex, to }` | Custom dots. |
 | SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }` | Slide content. |
+| SnCarouselItem | `caption` | — | Custom caption overlay content (replaces title/description text). |
 
 ### Inst Methods
 
@@ -127,6 +158,16 @@ is derived from the parent.
 - Intentional divergence from naive: `default-index` is broken in
   naive-ui 2.43.1 (initializes against an empty slide list, always
   collapsing to 0); SnCarousel honours it.
+- Extensions beyond naive (intentional divergences): ① `SnCarouselItem`
+  `title` / `description` props + `caption` slot (bottom gradient text
+  overlay); ② a slide losing the current state auto-pauses its inner
+  `<video>` elements (also cleaned up on unmount); ③ a drag never starts
+  when mousedown/touchstart lands inside an interactive element
+  (`video / audio / a / button / input / textarea / select /
+  [contenteditable] / [data-no-drag]`), keeping native controls usable
+  (naive preventDefaults every mouse drag start).
+- Docs demos all enable `draggable` for easy trying; the component default
+  stays naive-aligned at `false`.
 - Implemented but without a dedicated demo: standalone `space-between`
   scenario, `centered-slides`, `effect="custom"` (`transition-props`),
   `hover` / `keyboard` / `mousewheel` / `simulate-drag` scenarios,
@@ -134,6 +175,8 @@ is derived from the parent.
   `current-index` wiring.
 - Drag geometry (multi-page snapping, flick thresholds) is tested at the
   pure-function layer in `carousel-utils.ts`; happy-dom performs no
-  DOM-level drag assertions.
+  DOM-level drag assertions (a 0×0 viewport clamps the drag offset to 0;
+  the interactive-element suppression cases stub `offsetWidth` to observe
+  the full chain).
 
 See the component's `ai-description.md` for the full contract.

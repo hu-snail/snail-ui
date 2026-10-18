@@ -48,7 +48,20 @@ import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
   position (can cross multiple pages) or by flick (> 50% viewport or
   0.4 px/ms — naive thresholds). Transition is disabled while dragging;
   a drag beats a pending autoplay tick; only one carousel may drag at a
-  time (module-level flag, naive parity).
+  time (module-level flag, naive parity). A drag never starts when
+  mousedown/touchstart lands inside an interactive element (`video,
+  audio, a, button, input, textarea, select, [contenteditable],
+  [data-no-drag]`) — native controls keep working; card-mode side-slide
+  click navigation is unaffected (it listens for `click`).
+- **Caption** (SnCarouselItem, beyond naive): `title` / `description`
+  props render a bottom gradient text overlay; the `caption` slot
+  replaces that text. The overlay renders only when at least one caption
+  source exists and is `pointer-events: none`.
+- **Video** (beyond naive): when a slide stops being current, native
+  `<video>` elements inside it are paused via `querySelectorAll('video')`
+  (`pause()` on an already-paused element is a spec no-op); unmounting
+  the item pauses too. Playback is never started automatically — the
+  business decides (e.g. `autoplay` on the video itself).
 - **Autoplay**: `interval` (default 5000ms) timer; pauses while the
   pointer is over the carousel (`mouseenter` stops, `mouseleave`
   restarts), and restarts after index changes and resizes.
@@ -94,7 +107,12 @@ import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
 
 ## SnCarouselItem Props
 
-None. Content is the default slot; per-slide behaviour (current/prev/next
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `title` | `string \| undefined` | `undefined` | Primary caption in the bottom gradient overlay (beyond naive). |
+| `description` | `string \| undefined` | `undefined` | Secondary caption line under the title. |
+
+Content is the default slot; per-slide behaviour (current/prev/next
 state, sizing, margins, card transforms) is derived from the parent
 through provide/inject (mirrors naive CarouselContext).
 
@@ -112,6 +130,7 @@ through provide/inject (mirrors naive CarouselContext).
 | `SnCarousel` | `arrow` | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Replaces the built-in arrow pair. `prev`/`next` are the transition-guarded variants. |
 | `SnCarousel` | `dots` | `{ total, currentIndex, to }` | Replaces the built-in dots. |
 | `SnCarouselItem` | `default` | `{ isPrev, isNext, isActive, index }` | Slide content. |
+| `SnCarouselItem` | `caption` | — | Replaces the `title` / `description` text inside the caption overlay. |
 
 ## Inst Methods (defineExpose)
 
@@ -133,6 +152,21 @@ through provide/inject (mirrors naive CarouselContext).
 - **Wheel accumulation**: none — identical to naive (single-event 10px
   threshold; `inTransition` acts as the throttle). Registered because the
   naive source is often misread as accumulating deltas.
+- **Caption overlay (beyond naive)**: `SnCarouselItem` gains `title` /
+  `description` props and a `caption` slot rendering a bottom
+  `linear-gradient(transparent, var(--sn-web-color-background-overlay))`
+  text layer with `pointer-events: none`. naive's carousel item has no
+  caption surface. Rendered only when at least one caption source exists.
+- **Video auto-pause (beyond naive)**: a slide losing the current state
+  pauses the `<video>` elements inside it (and on item unmount); naive
+  has no media lifecycle. Playback start is left to the business.
+- **Drag-start suppression (beyond naive)**: naive preventDefaults every
+  mouse drag start (`Carousel.tsx handleTouchstart`), which breaks
+  `<video controls>`, links and form controls inside slides. SnCarousel
+  skips the drag when the press target matches the interactive selector
+  above (plus `[data-no-drag]` opt-out). `draggable`/`touchable`
+  defaults stay naive-aligned (`false` / `true`); the docs demos enable
+  `draggable` for discoverability.
 
 ## §112 future markers (declared parity, deferred)
 
@@ -148,17 +182,22 @@ through provide/inject (mirrors naive CarouselContext).
 | Token / colour | Value | Purpose |
 |---|---|---|
 | `--sn-web-bezier-ease` | token | All transitions' easing |
+| `--sn-web-color-background-overlay` | token | Caption overlay gradient end (mask semantics) |
 | Dot colours | `rgba(255,255,255,.3 / .5 / 1)` | Inactive / focused / active dots |
 | Arrow background | `rgba(255,255,255,.2)`, hover `.3` | Arrow buttons |
 | Arrow icon colour | `color-mix(in srgb, rgba(255,255,255,1) 93%, transparent)` | ≈ naive `#eee` (see note) |
+| Caption text | `rgba(255,255,255,.9)` title, `.7` description | White overlay text on arbitrary imagery |
 
-Token note: dots and arrows render on top of arbitrary slide imagery, so
-they use the white-overlay rgba() values that naive's own carousel theme
-(`styles/light.ts`) uses — `dotColor rgba(255,255,255,.3)`, active `1`,
-focus `.5`, arrow background `rgba(255,255,255,.2/.3)` straight from
-naive's cssr. The only literal naive uses is `arrowColor: '#eee'`; the
-repo token discipline forbids literal hex, so it is expressed as an
-equivalent white color-mix (93% ≈ #eee) and flagged here.
+Token note: dots, arrows and the caption overlay render on top of
+arbitrary slide imagery, so they use the white-overlay rgba() values that
+naive's own carousel theme (`styles/light.ts`) uses — `dotColor
+rgba(255,255,255,.3)`, active `1`, focus `.5`, arrow background
+`rgba(255,255,255,.2/.3)` straight from naive's cssr. The only literal
+naive uses is `arrowColor: '#eee'`; the repo token discipline forbids
+literal hex, so it is expressed as an equivalent white color-mix (93% ≈
+#eee) and flagged here. Caption title/description extend the same
+white-overlay exemption (`.9` / `.7`); the gradient end is the overlay
+background token, not a literal.
 
 ## Accessibility
 

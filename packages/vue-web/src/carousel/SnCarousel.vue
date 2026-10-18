@@ -96,6 +96,10 @@ let globalDragging = false
  *     against an empty slide list (total view = 1) which collapses
  *     `default-index` to 0 (verified against naive-ui 2.43.1; naive ships
  *     no default-index demo).
+ *   - Drag start is suppressed when mousedown/touchstart lands inside an
+ *     interactive element (`video, audio, a, button, input, …`,
+ *     `[data-no-drag]`) so native controls keep working; naive
+ *     preventDefaults every mouse drag start.
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only (px units). Indicator dots and arrows
@@ -644,11 +648,24 @@ function onCarouselItemClick(index: number, event: MouseEvent): void {
   }
 }
 
+/**
+ * Interactive elements keep their native pointer/touch behaviour: a drag
+ * never starts when mousedown/touchstart lands inside one (a `<video
+ * controls>` timeline, a link, a form control). Card-mode side-slide
+ * navigation is unaffected — it listens for `click`, not for drag start.
+ * (Beyond naive, which preventDefaults every mouse drag start.)
+ */
+const NO_DRAG_SELECTOR
+  = 'video, audio, a, button, input, textarea, select, [contenteditable], [data-no-drag]'
+
 function handleTouchstart(event: MouseEvent | TouchEvent): void {
   if (globalDragging) return
   const slidesEl = slidesElRef.value
   const target = event.target
   if (!slidesEl || !(target instanceof Node) || !slidesEl.contains(target)) {
+    return
+  }
+  if (target instanceof Element && target.closest(NO_DRAG_SELECTOR)) {
     return
   }
   globalDragging = true
