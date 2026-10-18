@@ -48,7 +48,7 @@ function formatDate(timestamp: number): string {
     <p class="sn-demo-tip">
       <code>tooltip</code> 插槽收到格子数据对象
       <code>{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }</code>，可完全自定义浮层内容；
-      对象形式同时透传 <code>content / placement / showArrow / delay / style / class</code>。
+      对象形式同时透传 <code>placement / showArrow / delay / style / class</code>。
     </p>
   </div>
 </template>

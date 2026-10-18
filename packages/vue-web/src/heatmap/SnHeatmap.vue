@@ -254,14 +254,6 @@ function colorFor(cell: SnHeatmapViewCell): string {
     : `var(--sn-heatmap-color-${cell.level})`
 }
 
-/**
- * Bubble text when the `tooltip` slot is absent: the config `content`,
- * falling back to the reference default (`date + value`).
- */
-function tooltipText(cell: SnHeatmapViewCell): string {
-  return tooltipConfig.value.content ?? defaultTooltipContent(cell)
-}
-
 /** Build the reference `DayRect` shape for the `tooltip` slot. */
 function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
   return {
@@ -328,7 +320,7 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
                   />
                   <template #content>
                     <slot name="tooltip" v-bind="tooltipDay(cell)">
-                      {{ tooltipText(cell) }}
+                      {{ defaultTooltipContent(cell) }}
                     </slot>
                   </template>
                 </SnTooltip>

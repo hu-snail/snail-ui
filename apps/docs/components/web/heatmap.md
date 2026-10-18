@@ -30,7 +30,7 @@
 
 ### 悬浮提示
 
-`tooltip` 开启每格悬浮提示（1:1 对齐 n-heatmap，默认 `false`）：`true` 使用默认浮层（内容「YYYY-MM-DD：数值」），对象形式透传 `content / placement / showArrow / delay / style / class`（均为可选）。
+`tooltip` 开启每格悬浮提示（1:1 对齐 n-heatmap，默认 `false`）：`true` 使用默认浮层（内容「YYYY-MM-DD：数值」），对象形式透传 `placement / showArrow / delay / style / class`（均为可选）。
 
 <Demo name="heatmap-web-tooltip" description="tooltip 开关。" />
 
@@ -62,7 +62,7 @@
 | show-week-labels | `boolean` | `true` | 左侧周标签 |
 | show-month-labels | `boolean` | `true` | 顶部月份标签 |
 | size | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（格子 10 / 11 / 12px） |
-| tooltip | `boolean \| SnHeatmapTooltipConfig` | `false` | 每格悬浮提示（SnTooltip 包裹，`false` 不渲染任何浮层）；`true` 用默认内容「YYYY-MM-DD：数值」，对象形式透传 `content`（无插槽时的文本）/ `placement`（默认 `'top'`）/ `showArrow`（默认 `true`）/ `delay`（默认 `100`）/ `style` / `class` |
+| tooltip | `boolean \| SnHeatmapTooltipConfig` | `false` | 每格悬浮提示（SnTooltip 包裹，`false` 不渲染任何浮层）；`true` 用默认内容「YYYY-MM-DD：数值」，对象形式透传 `placement`（默认 `'top'`）/ `showArrow`（默认 `true`）/ `delay`（默认 `100`）/ `style` / `class` |
 | x-gap | `number \| string` | `undefined` | 覆写垂直（行）方向间距（border-spacing 第二值，同参考实现） |
 | y-gap | `number \| string` | `undefined` | 覆写水平（列）方向间距（border-spacing 第一值，同参考实现） |
 

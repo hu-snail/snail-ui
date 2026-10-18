@@ -82,7 +82,7 @@ None (the reference has no events).
 - Cell tooltips wrap each rect in the first-party `SnTooltip` (uncontrolled
   hover trigger, like the reference wrapping `n-tooltip`); `tooltip: false`
   renders no tooltip instances at all. The object form forwards a
-  `TooltipProps` subset (`content` / `placement` / `showArrow` / `delay` /
+  `TooltipProps` subset (`placement` / `showArrow` / `delay` /
   popover-body `style` / `class`). The default content renders
   `YYYY-MM-DD：value` (the reference uses `toLocaleDateString()`); the
   `tooltip` slot receives the reference `DayRect` shape. Loading cells skip

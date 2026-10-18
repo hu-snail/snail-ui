@@ -19,11 +19,6 @@ import type { SnTooltipPlacement } from '../tooltip/SnTooltip.vue'
 
 /** Per-cell tooltip options (a `TooltipProps` subset, all optional). */
 export interface SnHeatmapTooltipConfig {
-  /**
-   * Bubble text used when the `tooltip` slot is absent. Mirrors n-tooltip
-   * `content`; when omitted the default date + value text renders.
-   */
-  content?: string
   /** Popover placement. Default `'top'` (like the reference hover tooltip). */
   placement?: SnTooltipPlacement
   /** Show the popover arrow. Mirrors `TooltipProps.showArrow`; maps onto the SnTooltip arrow prop. Default `true`. */

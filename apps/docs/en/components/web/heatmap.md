@@ -29,7 +29,7 @@ texts.
 
 `tooltip` enables the per-cell hover tooltip (1:1 with n-heatmap, default
 `false`): `true` uses the default popover (`YYYY-MM-DD：value`), an object
-forwards the optional `content / placement / showArrow / delay / style / class`.
+forwards the optional `placement / showArrow / delay / style / class`.
 
 <Demo name="heatmap-web-tooltip" description="The tooltip switch." />
 
@@ -63,7 +63,7 @@ for fully custom popover content.
 | show-week-labels | `boolean` | `true` | Left week labels |
 | show-month-labels | `boolean` | `true` | Top month labels |
 | size | `'small' \| 'medium' \| 'large'` | `'medium'` | Scale (rects 10 / 11 / 12 px) |
-| tooltip | `boolean \| SnHeatmapTooltipConfig` | `false` | Per-cell hover tooltip (SnTooltip wrap; `false` renders no popover at all); `true` uses the default content `YYYY-MM-DD：value`, an object forwards `content` (bubble text when the slot is absent) / `placement` (default `'top'`) / `showArrow` (default `true`) / `delay` (default `100`) / `style` / `class` |
+| tooltip | `boolean \| SnHeatmapTooltipConfig` | `false` | Per-cell hover tooltip (SnTooltip wrap; `false` renders no popover at all); `true` uses the default content `YYYY-MM-DD：value`, an object forwards `placement` (default `'top'`) / `showArrow` (default `true`) / `delay` (default `100`) / `style` / `class` |
 | x-gap | `number \| string` | `undefined` | Overrides the vertical (row) side of the spacing (second border-spacing value) |
 | y-gap | `number \| string` | `undefined` | Overrides the horizontal (column) side of the spacing (first border-spacing value) |
 

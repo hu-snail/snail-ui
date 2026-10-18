@@ -456,17 +456,6 @@ describe('SnHeatmap tooltip (n-heatmap `tooltip` parity)', () => {
     expect(pop.querySelector('.sn-tooltip__arrow')).toBeNull()
   })
 
-  it('should use the tooltip config content when the slot is absent', async () => {
-    active = mountTooltipHeatmap({
-      data: week,
-      tooltip: { content: '配置文本', delay: 0 },
-    })
-    const pop = await hoverRect(0, 10)
-    // Config content replaces the default date + value text.
-    expect(pop.textContent).toContain('配置文本')
-    expect(pop.textContent).not.toContain('2026-03-02')
-  })
-
   it('should suppress tooltips while loading (reference Rect parity)', () => {
     active = mountTooltipHeatmap({
       data: week,
