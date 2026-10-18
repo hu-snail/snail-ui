@@ -53,7 +53,9 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: ['vue', '@snui/tokens', '@snui/tokens-web'],
+      // katex stays external (imported by SnEquation): consumers resolve it
+      // from their own node_modules — keeps the library bundle small.
+      external: ['vue', '@snui/tokens', '@snui/tokens-web', 'katex'],
       output: {
         // Each entry becomes a single ESM file (no per-component .vue.js
         // leaks). per-component `.d.ts` comes from the separate

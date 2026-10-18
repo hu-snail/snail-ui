@@ -145,6 +145,57 @@ export type {
   IconComponentProps,
 } from './icon/sn-icon-registry'
 
+// Data Display 数据展示 — mirrors naive-ui's data-display category
+// (batch AUI-WEB-DD-001..021, see dev-docs/SNUI-WBS-v3.1.md).
+export { default as SnCalendar } from './calendar/SnCalendar.vue'
+export { default as SnCode } from './code/SnCode.vue'
+export { default as SnCountdown } from './countdown/SnCountdown.vue'
+export { default as SnDataTable } from './data-table/SnDataTable.vue'
+export type {
+  DataTableRowKey,
+  DataTableRowData,
+  DataTableColumn,
+  DataTableColumns,
+  DataTableSortOrder,
+  DataTableSortState,
+  DataTableFilterOption,
+  DataTableFilterState,
+  DataTableCompareFn,
+  DataTableCreateSummary,
+  DataTableSummaryCell,
+  DataTableSummaryRow,
+  DataTablePagination,
+} from './data-table/sn-data-table-types'
+export { default as SnDescriptions } from './descriptions/SnDescriptions.vue'
+export { default as SnDescriptionsItem } from './descriptions/SnDescriptionsItem.vue'
+export { default as SnEmpty } from './empty/SnEmpty.vue'
+export { default as SnEquation } from './equation/SnEquation.vue'
+export type { SnEquationKatex } from './equation/sn-equation-types'
+export { default as SnHeatmap } from './heatmap/SnHeatmap.vue'
+export { default as SnHighlight } from './highlight/SnHighlight.vue'
+export { default as SnImage } from './image/SnImage.vue'
+export { default as SnImageGroup } from './image/SnImageGroup.vue'
+export { default as SnInfiniteScroll } from './infinite-scroll/SnInfiniteScroll.vue'
+export { default as SnList } from './list/SnList.vue'
+export { default as SnListItem } from './list/SnListItem.vue'
+export { default as SnLog } from './log/SnLog.vue'
+export { default as SnNumberAnimation } from './number-animation/SnNumberAnimation.vue'
+export { default as SnQrCode } from './qr-code/SnQrCode.vue'
+export { default as SnStatistic } from './statistic/SnStatistic.vue'
+export { default as SnTable } from './table/SnTable.vue'
+export { default as SnThing } from './thing/SnThing.vue'
+export { default as SnTime } from './time/SnTime.vue'
+export { default as SnTimeline } from './timeline/SnTimeline.vue'
+export { default as SnTimelineItem } from './timeline/SnTimelineItem.vue'
+export { default as SnTree } from './tree/SnTree.vue'
+export type {
+  SnTreeKey,
+  SnTreeFieldNames,
+  SnTreeOption,
+  SnTreeRenderProps,
+  SnTreeNode,
+} from './tree/sn-tree-types'
+
 export { SnUI, default } from './install.js'
 export type { SnUIOptions } from './install.js'
 

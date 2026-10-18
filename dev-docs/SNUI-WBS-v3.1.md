@@ -131,6 +131,45 @@ AUI-{模块}-{编号}
 | AUI-WEB-DATA-009 | SnEmpty | 通用 |
 | AUI-WEB-DATA-010 | SnStatistic | Web 专属 |
 
+### 数据展示大分类 · naive 对标批次（AUI-WEB-DD-001..021）
+
+对标 naive-ui「数据展示」21 个组件 1:1 还原（§112）。与上表 DATA 编号的映射：
+SnTable → DATA-001、SnTree → DATA-003、SnDescriptions → DATA-007、SnEmpty → DATA-009、SnStatistic → DATA-010。
+
+| ID | 组件 | naive 参考 | 状态 |
+|---|---|---|---|
+| AUI-WEB-DD-001 | SnCalendar | n-calendar | 本批次 |
+| AUI-WEB-DD-002 | SnCode | n-code | 本批次（hljs 高亮为 future marker） |
+| AUI-WEB-DD-003 | SnCountdown | n-countdown | 本批次 |
+| AUI-WEB-DD-004 | SnDataTable | n-data-table | 本批次（virtual-scroll / flex-height / 列宽拖拽 / 树形数据为 future marker；内置分页为简化实现，SnPagination 独立组件见 DATA-008） |
+| AUI-WEB-DD-005 | SnDescriptions / SnDescriptionsItem | n-descriptions | 本批次 |
+| AUI-WEB-DD-006 | SnEmpty | n-empty | 本批次 |
+| AUI-WEB-DD-007 | SnEquation | n-equation | 本批次（katex 为依赖，CSS/字体经 copy-styles 进 styles barrel） |
+| AUI-WEB-DD-008 | SnHeatmap | n-heatmap | 本批次 |
+| AUI-WEB-DD-009 | SnHighlight | n-highlight | 本批次 |
+| AUI-WEB-DD-010 | SnImage / SnImageGroup | n-image | 本批次 |
+| AUI-WEB-DD-011 | SnInfiniteScroll | n-infinite-scroll | 本批次 |
+| AUI-WEB-DD-012 | SnList / SnListItem | n-list | 本批次 |
+| AUI-WEB-DD-013 | SnLog | n-log | 本批次（monitor / 虚拟滚动为 future marker） |
+| AUI-WEB-DD-014 | SnNumberAnimation | n-number-animation | 本批次 |
+| AUI-WEB-DD-015 | SnQrCode | n-qr-code | 本批次（自研 QR 编码器 sn-qr-core，零依赖） |
+| AUI-WEB-DD-016 | SnStatistic | n-statistic | 本批次 |
+| AUI-WEB-DD-017 | SnTable | n-table | 本批次 |
+| AUI-WEB-DD-018 | SnThing | n-thing | 本批次 |
+| AUI-WEB-DD-019 | SnTime | n-time | 本批次 |
+| AUI-WEB-DD-020 | SnTimeline / SnTimelineItem | n-timeline | 本批次 |
+| AUI-WEB-DD-021 | SnTree | n-tree | 本批次（拖拽 / 虚拟滚动 / 键盘导航 / 异步子节点为 future marker） |
+
+#### DD 批次 demo 缺口（§115.1 登记）
+
+| naive demo | 组件 | 原因 |
+|---|---|---|
+| image/custom | SnImage | 依赖 naive theme-overrides 机制，sn 无对应能力 |
+| image/component-preview / component-preview-group | SnImage | naive 独立预览组件（NImagePreview 公开导出），本批次未拆公开 |
+| log/highlight | SnLog | 依赖 hljs 自定义语言；随 SnCode 的 hljs 集成一并补（future marker） |
+| descriptions/single-line-debug、list/rtl-debug、thing/rtl-debug、timeline/nested-debug | SnDescriptions 等 | debug 类演示（§115.1 可选），待补 |
+| data-table ×17（merge-cell / multiple-sorter / column-draggable / group-header / ellipsis-tooltip / ajax / virtual×2 / custom-filter-menu / tree / flex-height / editable×2 / context-menu / async-expand / export-csv） | SnDataTable | 均依赖 deferred 特性（见 DD-004 future markers），特性落地时逐个补 demo |
+
 ### 反馈（8 个）
 
 | ID | 组件 | 备注 |

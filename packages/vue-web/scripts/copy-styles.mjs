@@ -18,9 +18,10 @@
 // 'styles/index.css' in vite.config.js). This script runs after
 // `vite build` and PREPENDS the global tokens to the same file so
 // consumers get one barrel: `@snui/vue-web/styles` = tokens + components.
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
+import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { createRequire } from 'node:module'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = resolve(__dirname, '..')
@@ -60,12 +61,51 @@ if (existsSync(componentCss)) {
 
 // Idempotent on repeated builds: only prepend tokens if not already there.
 const tokensSignature = tokensBundle.trim().slice(0, 80)
+let output = ''
 if (tokensBundle && !body.startsWith(tokensSignature)) {
-  writeFileSync(dst, `${tokensBundle}\n${body}`, 'utf8')
-  console.log('✓ copy-styles:', dst, '(tokens + components)')
-} else if (!existsSync(dst)) {
-  writeFileSync(dst, '/* No styles yet */\n', 'utf8')
-  console.log('✓ copy-styles:', dst, '(empty placeholder)')
+  output = `${tokensBundle}\n${body}`
+} else if (body) {
+  output = body
 } else {
-  console.log('✓ copy-styles:', dst, '(already up to date)')
+  output = '/* No styles yet */\n'
+}
+
+// Append KaTeX CSS + fonts (used by SnEquation). katex.min.css references
+// fonts with relative `url(fonts/...)` paths, so the font files are copied
+// next to the barrel at dist/styles/fonts/ and the CSS is appended verbatim.
+// Idempotent: guarded by a marker comment.
+function appendKatex(css) {
+  const marker = '/* KaTeX (SnEquation) */'
+  if (css.includes(marker)) {
+    return css
+  }
+  const req = createRequire(import.meta.url)
+  let katexDir
+  try {
+    katexDir = dirname(req.resolve('katex/package.json', { paths: [root] }))
+  } catch {
+    return css // katex not installed — SnEquation falls back to 'no katex provided'
+  }
+  const katexCssPath = resolve(katexDir, 'dist/katex.min.css')
+  if (!existsSync(katexCssPath)) {
+    return css
+  }
+  const fontsSrc = resolve(katexDir, 'dist/fonts')
+  if (existsSync(fontsSrc)) {
+    const fontsDst = resolve(dirname(dst), 'fonts')
+    mkdirSync(fontsDst, { recursive: true })
+    for (const fontFile of readdirSync(fontsSrc)) {
+      copyFileSync(resolve(fontsSrc, fontFile), resolve(fontsDst, fontFile))
+    }
+  }
+  return `${css}\n${marker}\n${readFileSync(katexCssPath, 'utf8')}\n`
+}
+
+const hadBody = output !== '/* No styles yet */\n'
+const withKatex = appendKatex(output)
+writeFileSync(dst, withKatex, 'utf8')
+if (withKatex.includes('/* KaTeX (SnEquation) */')) {
+  console.log('✓ copy-styles:', dst, hadBody ? '(tokens + components + katex)' : '(katex only)')
+} else {
+  console.log('✓ copy-styles:', dst, hadBody ? '(tokens + components)' : '(empty placeholder)')
 }

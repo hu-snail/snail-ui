@@ -71,6 +71,31 @@ import SnTabs from './tabs/SnTabs.vue'
 import SnTabPane from './tabs/SnTabPane.vue'
 import SnSteps from './steps/SnSteps.vue'
 import SnStep from './steps/SnStep.vue'
+import SnCalendar from './calendar/SnCalendar.vue'
+import SnCode from './code/SnCode.vue'
+import SnCountdown from './countdown/SnCountdown.vue'
+import SnDataTable from './data-table/SnDataTable.vue'
+import SnDescriptions from './descriptions/SnDescriptions.vue'
+import SnDescriptionsItem from './descriptions/SnDescriptionsItem.vue'
+import SnEmpty from './empty/SnEmpty.vue'
+import SnEquation from './equation/SnEquation.vue'
+import SnHeatmap from './heatmap/SnHeatmap.vue'
+import SnHighlight from './highlight/SnHighlight.vue'
+import SnImage from './image/SnImage.vue'
+import SnImageGroup from './image/SnImageGroup.vue'
+import SnInfiniteScroll from './infinite-scroll/SnInfiniteScroll.vue'
+import SnList from './list/SnList.vue'
+import SnListItem from './list/SnListItem.vue'
+import SnLog from './log/SnLog.vue'
+import SnNumberAnimation from './number-animation/SnNumberAnimation.vue'
+import SnQrCode from './qr-code/SnQrCode.vue'
+import SnStatistic from './statistic/SnStatistic.vue'
+import SnTable from './table/SnTable.vue'
+import SnThing from './thing/SnThing.vue'
+import SnTime from './time/SnTime.vue'
+import SnTimeline from './timeline/SnTimeline.vue'
+import SnTimelineItem from './timeline/SnTimelineItem.vue'
+import SnTree from './tree/SnTree.vue'
 
 export interface SnUIOptions {
   /** Skip auto-registration of specific components. */
@@ -148,6 +173,32 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnTabPane', component: SnTabPane },
   { name: 'SnTabs', component: SnTabs },
   { name: 'SnTooltip', component: SnTooltip },
+  // Data Display 数据展示 (AUI-WEB-DD-001..021)
+  { name: 'SnCalendar', component: SnCalendar },
+  { name: 'SnCode', component: SnCode },
+  { name: 'SnCountdown', component: SnCountdown },
+  { name: 'SnDataTable', component: SnDataTable },
+  { name: 'SnDescriptions', component: SnDescriptions },
+  { name: 'SnDescriptionsItem', component: SnDescriptionsItem },
+  { name: 'SnEmpty', component: SnEmpty },
+  { name: 'SnEquation', component: SnEquation },
+  { name: 'SnHeatmap', component: SnHeatmap },
+  { name: 'SnHighlight', component: SnHighlight },
+  { name: 'SnImage', component: SnImage },
+  { name: 'SnImageGroup', component: SnImageGroup },
+  { name: 'SnInfiniteScroll', component: SnInfiniteScroll },
+  { name: 'SnList', component: SnList },
+  { name: 'SnListItem', component: SnListItem },
+  { name: 'SnLog', component: SnLog },
+  { name: 'SnNumberAnimation', component: SnNumberAnimation },
+  { name: 'SnQrCode', component: SnQrCode },
+  { name: 'SnStatistic', component: SnStatistic },
+  { name: 'SnTable', component: SnTable },
+  { name: 'SnThing', component: SnThing },
+  { name: 'SnTime', component: SnTime },
+  { name: 'SnTimeline', component: SnTimeline },
+  { name: 'SnTimelineItem', component: SnTimelineItem },
+  { name: 'SnTree', component: SnTree },
 ]
 
 export const SnUI: Plugin = {
