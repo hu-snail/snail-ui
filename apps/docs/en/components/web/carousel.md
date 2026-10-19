@@ -54,11 +54,32 @@ when `loop=false`).
 
 <Demo name="carousel-web-effect" description="slide vs fade vs card" />
 
+### Custom transition
+
+`effect="custom"` hands transition control to the business: slides toggle
+through `v-show` inside a `<Transition>`; pass any Vue `<Transition>`
+props via `transition-props` and define the enter/leave classes yourself.
+
+<Demo name="carousel-web-effect-custom" description="effect=custom + transition-props zoom-fade" />
+
+### 3D card effect
+
+`effect="card"` ships a built-in 3D card stack: the current card sits
+centred, side cards recede, and clicking a side card navigates to it.
+
+<Demo name="carousel-web-card-3d" description="effect=card 3D card stack" />
+
 ### Multiple slides per view
 
 `slides-per-view` + `space-between`.
 
 <Demo name="carousel-web-slides-per-view" description="slides-per-view=3 + space-between" />
+
+### Mouse wheel
+
+`mousewheel`: scrolling the wheel over the carousel switches slides.
+
+<Demo name="carousel-web-mousewheel" description="mousewheel wheel switching" />
 
 ### Custom arrows and dots
 
@@ -69,10 +90,10 @@ The `arrow` / `dots` scoped slots fully replace the built-ins
 
 ### Video
 
-Drop a native `<video controls muted>` into a `SnCarouselItem`: when a
-slide stops being current the component automatically pauses its videos
-(no background audio), and pressing inside the video never starts a drag,
-so the native timeline/volume controls keep working.
+Drop a native `<video>` into a `SnCarouselItem`: when a slide stops being
+current the component automatically pauses its videos (no background
+audio), and pressing inside the video never starts a drag. This demo
+renders no native controls — click the video to toggle play/pause.
 
 <Demo name="carousel-web-video" description="Video + image slides, auto-paused off-screen" />
 
@@ -169,10 +190,9 @@ title/description text.
 - Docs demos all enable `draggable` for easy trying; the component default
   stays naive-aligned at `false`.
 - Implemented but without a dedicated demo: standalone `space-between`
-  scenario, `centered-slides`, `effect="custom"` (`transition-props`),
-  `hover` / `keyboard` / `mousewheel` / `simulate-drag` scenarios,
-  `slides-per-view="auto"`, `dot-placement="top"` / `"right"`, controlled
-  `current-index` wiring.
+  scenario, `centered-slides`, `hover` / `keyboard` / `simulate-drag`
+  scenarios, `slides-per-view="auto"`, `dot-placement="top"` / `"right"`,
+  controlled `current-index` wiring.
 - Drag geometry (multi-page snapping, flick thresholds) is tested at the
   pure-function layer in `carousel-utils.ts`; happy-dom performs no
   DOM-level drag assertions (a 0×0 viewport clamps the drag offset to 0;

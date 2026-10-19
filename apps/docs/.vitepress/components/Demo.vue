@@ -211,7 +211,8 @@ watch(
   border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
   border-radius: 8px;
   padding: 24px;
-  background: var(--vp-c-bg-soft);
+  /* 白底，与组件 surface 一致（原 --vp-c-bg-soft 是浅灰，混在 demo 里发灰）。 */
+  background: var(--sn-web-color-background-surface);
   min-height: 80px;
   position: relative;
 }
