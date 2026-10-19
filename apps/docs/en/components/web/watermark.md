@@ -1,7 +1,7 @@
 # Watermark · Web
 
-Tiles a text or image watermark over a page or a content area to mark
-ownership, discourage screenshots, or label confidential pages.
+Tiles a text or image watermark over a page or a region to mark ownership,
+discourage screenshots, or label confidential pages.
 
 ## When to use
 
@@ -9,30 +9,49 @@ ownership, discourage screenshots, or label confidential pages.
 - Internal systems and reports need a "confidential" notice.
 - Fullscreen mode covers the viewport — dialogs, players, overlays.
 
-## Basic
+## Demos
 
-Wraps content and tiles the watermark above it. Pass an array for
-multi-line marks; `cross` staggers adjacent tiles.
+### Basic
 
-<Demo name="watermark-web-basic" description="Wrapped content / multi-line text / cross stagger / rotate & opacity." />
+Wraps content and tiles the watermark above it; `rotate` / `opacity` control
+the tilt and the density.
+
+<Demo name="watermark-web-basic" description="Wrapped content / rotate and opacity." />
+
+### Multi-line content and staggered tiles
+
+With an array, `content` renders one line per item spaced by `lineHeight`;
+`cross` staggers adjacent tiles by half a tile.
+
+<Demo name="watermark-web-content" description="content array / cross stagger side by side." />
+
+### Style customisation
+
+`fontSize` / `lineHeight` / `rotate` / `opacity` / `fontColor` /
+`fontWeight` can be adjusted live; text always rotates around the tile
+centre.
+
+<Demo name="watermark-web-style" description="fontSize / rotate / opacity / fontColor adjusted live." />
 
 ### Fullscreen
 
-With `fullscreen` the watermark covers the viewport (fixed, teleported
-to body) and wraps nothing.
+With `fullscreen` the watermark covers the viewport (fixed) and wraps
+nothing; `zIndex` controls the overlay stacking order.
 
 <Demo name="watermark-web-fullscreen" description="fullscreen coverage + zIndex." />
 
 ## API
 
-### SnWatermark Props
+### Props
 
-| Prop | Type | Default | Notes |
+All props are optional.
+
+| Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| content | `string \| string[]` | — | Watermark text; array items = lines |
-| image | `string` | — | Watermark image URL (replaces text) |
-| cross | `boolean` | `false` | Stagger adjacent tiles |
-| fullscreen | `boolean` | `false` | Cover the whole viewport |
+| content | `string \| string[]` | `undefined` | Watermark text; array items are separate lines, an empty string draws nothing |
+| image | `string` | `undefined` | Watermark image URL; drawn instead of text |
+| cross | `boolean` | `false` | Stagger adjacent tiles by half a tile |
+| fullscreen | `boolean` | `false` | Cover the whole viewport instead of wrapping content |
 | fontSize | `number` | `16` | Text size (px) |
 | lineHeight | `number` | `16` | Text line height (px) |
 | width | `number` | `128` | Tile width (px) |
@@ -42,34 +61,37 @@ to body) and wraps nothing.
 | y | `number` | `0` | Tile y offset (px) |
 | zIndex | `number` | `10` | Overlay stacking order |
 | opacity | `number` | `0.5` | Overlay opacity (0–1) |
-| fontFamily | `string` | — | Text font family |
-| fontWeight | `number \| string` | — | Text font weight |
-| fontStyle | `'normal' \| 'italic' \| 'oblique'` | — | Text font style |
-| fontColor | `string` | — | Text color |
-| background | `string` | — | Tile background color |
+| fontFamily | `string` | `undefined` | Text font family |
+| fontWeight | `number \| string` | `undefined` | Text font weight |
+| fontStyle | `'normal' \| 'italic' \| 'oblique'` | `undefined` | Text font style |
+| fontColor | `string` | `undefined` | Text color |
+| background | `string` | `undefined` | Tile background color |
 | grayscale | `number` | `0` | Overlay CSS grayscale (0–1) |
-| blend | `CSSProperties['mixBlendMode']` | — | Overlay mix-blend-mode |
+| blend | `CSSProperties['mixBlendMode']` | `undefined` | Overlay mix-blend-mode |
 
-### SnWatermark Slots
+### Slots
 
-| Slot | Notes |
-| --- | --- |
-| default | Content the watermark covers (ignored when `fullscreen`) |
+| Name | Scope | Description |
+| --- | --- | --- |
+| default | — | Content the watermark covers; not rendered when `fullscreen` |
 
-No events. Implementation: one tile is painted on an offscreen canvas →
-`toDataURL` becomes the overlay's repeating `background-image`
-(`pointer-events: none`). Without a canvas environment (SSR / tests) it
-degrades to a repeated text grid.
+No events.
+
+Implementation: a single tile is painted on an offscreen canvas and becomes
+the overlay's repeating background image with `pointer-events: none`;
+without a canvas environment (SSR / tests) it degrades to a repeated text
+grid with the same geometry. `fontColor` / `background` therefore need real
+CSS color values — canvas cannot resolve `var(...)` references.
 
 ## Tokens
 
-Fully prop-driven (canvas paint colors and the degraded text grid come
-from props); consumes no theme tokens.
+Fully prop-driven (both the canvas paint colors and the degraded text grid
+come from props); consumes no theme tokens.
 
 ## Accessibility
 
-- The overlay is `aria-hidden="true"` with `pointer-events: none` —
-  purely decorative, never intercepts interaction.
+- The overlay is `aria-hidden="true"` with `pointer-events: none` — purely
+  decorative, never intercepts interaction.
 - Watermark text is not exposed to assistive tech; convey important
   information with real page content.
 
@@ -78,7 +100,7 @@ from props); consumes no theme tokens.
 - Patches may change `content` / `opacity` / `rotate` / `zIndex`.
 - The watermark never affects content semantics; patches must not place
   business-critical information only in the watermark.
-- `fullscreen` teleports to body; patches must not manipulate teleported
-  nodes directly.
+- Tiles are rendered by the internal canvas / text grid; patches must not
+  manipulate overlay nodes directly.
 
 See the component `ai-description.md` for the full contract.

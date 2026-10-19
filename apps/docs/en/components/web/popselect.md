@@ -1,9 +1,6 @@
 # Popselect · Web
 
-`SnPopselect` is a dropdown selection menu anchored to a trigger: a white
-listbox with single / multiple selection, grouped options, keyboard
-navigation and custom row renderers — for toolbar filters and light
-switches that don't warrant a full select field.
+`SnPopselect` is a dropdown selection menu anchored to a trigger: a white listbox with single / multiple selection, grouped options, keyboard navigation and custom row renderers — for toolbar filters and light switches that don't warrant a full select field.
 
 ## When to use
 
@@ -11,19 +8,31 @@ switches that don't warrant a full select field.
 - Few, simple (possibly grouped) options whose result acts directly on the trigger.
 - Multiple selection where the menu should stay open for continuous toggling.
 
-## Basic
+## Demos
 
-Click to open, single selection. The selected row is marked with primary
-text and a check glyph; the menu closes after committing.
+### Basic usage
 
-<Demo name="popselect-web-basic" description="single select, selected state, disabled and grouped options" />
+Click to open, single selection. The selected row is marked with primary text and a check glyph; the menu closes after committing.
+
+<Demo name="popselect-web-basic" description="single select, selected state, disabled row and grouped options" />
 
 ### Multiple and scrolling
 
-`multiple` keeps the menu open for continuous toggling; `scrollable` caps
-the menu height when there are many options.
+`multiple` keeps the menu open for continuous toggling; `scrollable` caps the menu height when there are many options.
 
 <Demo name="popselect-web-multiple" description="multiple + scrollable + controlled value" />
+
+### Grouped options
+
+An entry with a non-empty `children` array renders as a group header that cannot be selected and never enters the keyboard sequence; bare values sit between groups untouched.
+
+<Demo name="popselect-web-groups" description="group headers, a disabled leaf and mixed bare values" />
+
+### Custom row rendering
+
+`render-label` replaces the row label (an icon prefix here) and `render-option` wraps the whole default row node to append extra information.
+
+<Demo name="popselect-web-render" description="renderLabel icon prefix and renderOption status caption" />
 
 ## API
 
@@ -31,30 +40,30 @@ the menu height when there are many options.
 
 | Prop | Type | Default | Notes |
 | --- | --- | --- | --- |
-| options | `SnSelectOptionInput[]` | `[]` | Bare values or `{ label, value, disabled, children }` records; `children` renders a group header. Same shape as SnSelect options. |
-| value | `SnSelectValue \| SnSelectValue[] \| null` | `undefined` | Selected value(s); `undefined` = uncontrolled mode. |
-| default-value | `SnSelectValue \| SnSelectValue[] \| null` | `null` (`[]` when `multiple`) | Initial value for uncontrolled mode. |
-| multiple | `boolean` | `false` | Toggle / multi-select mode. |
-| trigger | `'click' \| 'hover' \| 'manual' \| 'focus'` | `'click'` | Opening gesture. |
-| placement | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'bottom'` | Menu position relative to the trigger. |
-| scrollable | `boolean` | `false` | Cap the menu height and scroll overflow. |
-| render-label | `(option, selected) => VNodeChild` | `undefined` | Custom row label renderer; receives the normalized leaf and selected flag. |
-| render-option | `(info: { node, option, selected }) => VNodeChild` | `undefined` | Wraps the whole default row node. |
+| options | `SnSelectOptionInput[]` | `[]` | Bare values or `{ label, value, disabled, children }` records; a non-empty `children` renders a group header. |
+| value | `SnSelectValue \| SnSelectValue[] \| null` | `undefined` | Selected value; `undefined` = uncontrolled mode driven by internal state. |
+| default-value | `SnSelectValue \| SnSelectValue[] \| null` | `undefined` | Initial value for uncontrolled mode; `null` in single mode, `[]` in multiple mode when unset. |
+| multiple | `boolean` | `false` | Toggle / multi-select mode; commits an array and keeps the menu open. |
+| trigger | `'click' \| 'hover' \| 'manual' \| 'focus'` | `'click'` | Opening gesture; `'manual'` is driven by `show` only. |
+| placement | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'bottom'` | Requested side; can flip when space runs out. |
+| scrollable | `boolean` | `false` | Cap the menu height and scroll the overflowing rows. |
+| render-label | `(option, selected) => VNodeChild` | `undefined` | Custom row label renderer; receives the normalized leaf and the selected flag. |
+| render-option | `(info: { node, option, selected }) => VNodeChild` | `undefined` | Wraps the whole default row node to append extra information; wins over `render-label` when both are given. |
 | menu-props | `Record<string, unknown>` | `undefined` | Attributes spread onto the listbox element. |
-| show | `boolean` | `undefined` | Menu show state; `undefined` = uncontrolled mode. |
+| show | `boolean` | `undefined` | Menu show state; `undefined` = uncontrolled mode driven by internal state. |
 
 ### Events
 
 | Name | Payload | Notes |
 | --- | --- | --- |
-| `update:value` | `SnSelectValue \| SnSelectValue[] \| null` | Selection changed (v-model:value). Single mode commits one value; multiple mode commits the array. |
-| `update:show` | `boolean` | Menu show state change (v-model:show). |
+| `update:value` | `SnSelectValue \| SnSelectValue[] \| null` | Selection changed (v-model:value). Single mode commits one value, multiple mode commits the whole array. |
+| `update:show` | `boolean` | Menu show state changed (v-model:show). |
 
 ### Slots
 
 | Slot | Notes |
 | --- | --- |
-| default | Trigger element. |
+| default | Trigger element — the visible node the menu anchors to. |
 
 ### Methods
 
@@ -62,7 +71,7 @@ the menu height when there are many options.
 | --- | --- | --- |
 | `show` | `() => void` | Programmatic open. |
 | `hide` | `() => void` | Programmatic close. |
-| `isShown` | `() => boolean` | Read the current show state. |
+| `isShown` | `() => boolean` | Read the effective show state. |
 
 ## Tokens
 
@@ -80,13 +89,10 @@ the menu height when there are many options.
 
 ## Accessibility
 
-- Menu container: `role="listbox"` (+ `aria-multiselectable` in multiple
-  mode; `aria-activedescendant` points at the highlighted row).
-- Rows: `role="option"` with `aria-selected` and `aria-disabled`; the
-  selected row's check glyph is decorative.
+- Menu container: `role="listbox"` (+ `aria-multiselectable` in multiple mode; `aria-activedescendant` points at the highlighted row).
+- Rows: `role="option"` with `aria-selected` and `aria-disabled`; the selected row's check glyph is decorative.
 - Trigger wrapper: `aria-expanded` + `aria-haspopup="listbox"`.
-- Keyboard: ↑ / ↓ move the highlight (disabled rows skipped), Enter
-  commits, Escape closes.
+- Keyboard: ↑ / ↓ move the highlight (disabled rows skipped), Enter commits, Escape closes; the menu re-anchors to the trigger while the page scrolls.
 
 ## AI Patch Boundary
 

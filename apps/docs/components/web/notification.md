@@ -1,6 +1,6 @@
 # Notification 通知（Web 端）
 
-`SnNotificationProvider` + `useNotification()` 提供全局通知能力：在屏幕角落堆叠展示轻量反馈（信息 / 成功 / 警告 / 错误），到时自动消失，也可手动关闭。
+`SnNotificationProvider` + `useNotification()` 提供全局通知：在屏幕的某个角落堆叠展示轻量反馈卡片，到时自动消失，也可以随时手动关闭。
 
 与 `SnAlert`（行内、留在文档流）和 `SnDialog`（阻断、需要用户决策）不同，通知是转瞬即逝的全局浮层反馈。
 
@@ -16,60 +16,81 @@
 
 ### 基础用法
 
-`SnNotificationProvider` 包裹应用（或需要的子树），后代组件在 `setup` 中调用 `useNotification()` 触发通知。四种语义类型的图标与配色：
+`SnNotificationProvider` 包裹应用（或需要的子树），后代组件在 `setup` 中调用 `useNotification()` 触发通知；同一处也演示了 `duration: 0` 的常驻通知、句柄关闭与 `destroyAll()`：
 
 <Demo name="notification-web-basic" description="Provider 包裹 + 四种类型通知触发 + destroyAll" />
 
+### 四种语义类型
+
+`info` / `success` / `warning` / `error` 各自驱动一套内置图标与配色，`type` 缺省时为 `default`（不渲染图标）：
+
+<Demo name="notification-web-types" description="四种语义类型的图标与配色对照" />
+
+### 堆叠方位
+
+`placement` 决定通知堆叠吸附的角落，支持上下两条边的六个方位。切换后已在屏的通知也会一起移动到新方位；`bottom` 系列自下而上生长：
+
+<Demo name="notification-web-placement" description="六个 placement 按钮切换，通知移动到所选角落" />
+
+### 数量上限
+
+`max` 限制同时可见的条数，超出时最先加入的一条会被移除：
+
+<Demo name="notification-web-max" description="max=3：连点触发，最旧的一条被挤出" />
+
+### 自定义内容与句柄关闭
+
+`avatar` / `meta` / `footer` / `description` 组合出自定义卡片；`create()` 返回的句柄可被长期持有，随时 `destroy()`：
+
+<Demo name="notification-web-custom" description="avatar 头像 + meta 时间 + footer 操作按钮 + 持有句柄手动关闭" />
+
 ## API
 
-### SnNotificationProvider Props
+### Props
+
+`SnNotificationProvider` 的 props：
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `placement` | `'top' \| 'top-right' \| 'top-left' \| 'bottom' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | 通知堆叠方位。`bottom` 系列自下而上生长。 |
-| `max` | `number` | `Infinity` | 同时存在的最大通知数，超出时移除最旧的一条。 |
+| `placement` | `'top' \| 'top-right' \| 'top-left' \| 'bottom' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | 通知堆叠方位。`bottom` 系列自下而上生长（新通知出现在下方）。 |
+| `max` | `number` | `Infinity` | 同时存在的最大通知数，超出时移除最先加入的一条。 |
 | `to` | `string \| HTMLElement` | `'body'` | 堆叠容器的 Teleport 挂载目标。 |
 | `container-style` | `string \| CSSProperties` | `undefined` | 附加到堆叠容器上的内联样式。 |
-| `scrollable` | `boolean` | `false` | 通知过多时容器内部滚动（限制最大高度）。 |
+| `scrollable` | `boolean` | `false` | 通知过多时容器内部滚动（最大高度为视口高度减去上下偏移）。 |
 
-### useNotification()
-
-在 `SnNotificationProvider` **后代组件**的 `setup` 中调用，返回 `NotificationApi`：
-
-| 方法 | 签名 | 说明 |
-| --- | --- | --- |
-| `create` | `(options: NotificationOptions) => NotificationReactive` | 推入一条通知，`options.type` 缺省时为 `'default'`（无图标）。 |
-| `info` | `(options) => NotificationReactive` | 等价于 `create`，强制 `type: 'info'`。 |
-| `success` | `(options) => NotificationReactive` | 等价于 `create`，强制 `type: 'success'`。 |
-| `warning` | `(options) => NotificationReactive` | 等价于 `create`，强制 `type: 'warning'`。 |
-| `error` | `(options) => NotificationReactive` | 等价于 `create`，强制 `type: 'error'`。 |
-| `destroyAll` | `() => void` | 移除当前全部通知。 |
-
-`NotificationReactive` 即通知句柄：`destroy()` 手动关闭该条通知（触发 `onClose`）。
-
-未挂载 Provider 时调用 `useNotification()` 不会报错：控制台会输出一条包含 `PROVIDER_MISSING` 结构化代码的警告，并返回一个安全的 no-op API。
+Provider 的默认插槽承载触发区（见下方 Slots）。
 
 ### NotificationOptions
 
+`create()` 与四个快捷方法统一接收该对象：
+
 | 属性 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| `type` | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动内置图标与配色。 |
-| `title` | `string` | `undefined` | 标题行。 |
+| `type` | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动内置图标与配色；`'default'` 不渲染图标。 |
+| `title` | `string` | `undefined` | 标题行（加粗）。 |
 | `content` | `string` | `undefined` | 正文。 |
 | `description` | `string` | `undefined` | 正文下方的次级说明文字。 |
 | `meta` | `string` | `undefined` | 底部小字备注（如时间戳）。 |
 | `avatar` | `() => VNodeChild` | `undefined` | 头部头像渲染函数。 |
 | `footer` | `() => VNodeChild` | `undefined` | 底部操作区渲染函数。 |
-| `duration` | `number` | `3000` | 自动关闭延时（ms）；`0` 表示不自动关闭。 |
-| `closable` | `boolean` | `true` | 是否显示右上角关闭按钮。 |
-| `keepAliveOnHover` | `boolean` | `true` | 指针悬停在通知上时暂停 `duration` 倒计时，移开后继续。 |
-| `onClose` | `() => void` | `undefined` | 通知被关闭时调用（关闭按钮 / 倒计时到期 / `destroy()` / `destroyAll()`）。 |
+| `duration` | `number` | `3000` | 自动关闭延时（ms）；`0` 或负数表示不自动关闭。 |
+| `closable` | `boolean` | `true` | 是否渲染右上角关闭按钮。 |
+| `keepAliveOnHover` | `boolean` | `true` | 指针悬停在通知上时暂停 `duration` 倒计时，移开后以剩余时间继续。 |
+| `onClose` | `() => void` | `undefined` | 通知被关闭时调用（关闭按钮 / 倒计时到期 / `destroy()` / `destroyAll()` / `max` 挤出）。 |
 | `onAfterEnter` | `() => void` | `undefined` | 进场过渡结束后调用。 |
 | `onAfterLeave` | `() => void` | `undefined` | 离场过渡结束后调用。 |
 
-### Slots（SnNotification 卡片）
+### NotificationReactive
 
-通知卡片一般由 Provider 内部渲染；需要完全自绘堆叠时可直接使用 `SnNotification`：
+每条通知返回的句柄：
+
+| 方法 | 签名 | 说明 |
+| --- | --- | --- |
+| `destroy` | `() => void` | 关闭该条通知：触发其 `onClose`，随后播放离场过渡并移除。已移除后再调用为空操作。 |
+
+### Slots
+
+`SnNotification` 是实际渲染的通知卡片，由 Provider 内部批量渲染；需要完全自绘堆叠时也可直接使用该组件：
 
 | 名称 | 参数 | 说明 |
 | --- | --- | --- |
@@ -79,41 +100,24 @@
 | `footer` | `()` | 底部操作区，替代 `footer` 渲染函数。 |
 | `avatar` | `()` | 头部头像，替代 `avatar` 渲染函数。 |
 
-## 用法示例
+`SnNotificationProvider` 的 `default` 插槽承载触发区，`useNotification()` 必须在它的后代组件中调用。
 
-```vue
-<script setup lang="ts">
-import { defineComponent, h } from 'vue'
-import { SnButton, SnNotificationProvider, useNotification } from '@snui/vue-web'
+### Methods
 
-// useNotification 必须在 Provider 后代组件的 setup 中调用
-const Trigger = defineComponent({
-  name: 'NotificationTrigger',
-  setup() {
-    const notification = useNotification()
+在 `SnNotificationProvider` **后代组件**的 `setup` 中调用 `useNotification()`，返回 `NotificationApi`：
 
-    const notify = () => {
-      const handle = notification.success({
-        title: '已保存',
-        content: '配置已生效',
-        duration: 3000,
-      })
-      // 需要时提前关闭：handle.destroy()
-    }
+| 方法 | 签名 | 说明 |
+| --- | --- | --- |
+| `create` | `(options: NotificationOptions) => NotificationReactive` | 推入一条通知，`type` 按 `options.type`（缺省 `'default'`）。 |
+| `info` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'info'`。 |
+| `success` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'success'`。 |
+| `warning` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'warning'`。 |
+| `error` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'error'`。 |
+| `destroyAll` | `() => void` | 移除当前全部通知，逐条触发各自的 `onClose`。 |
 
-    return () => h(SnButton, { type: 'primary', onClick: notify }, () => '保存')
-  },
-})
-</script>
+四个快捷方法会覆盖 `options.type`。未挂载 Provider 时调用 `useNotification()` 不会抛错：控制台输出一条包含 `PROVIDER_MISSING` 结构化代码的警告，并返回安全的 no-op API（所有方法均无副作用，句柄的 `destroy()` 同样为空操作）。
 
-<template>
-  <SnNotificationProvider>
-    <Trigger />
-  </SnNotificationProvider>
-</template>
-```
-
-## 主题
+## Tokens
 
 组件没有专属必填 token，配色直接消费语义 token；以下 `--sn-web-notification-*` 变量提供尺寸 / 层级覆盖（未定义时使用内置回退值）：
 
@@ -125,7 +129,7 @@ const Trigger = defineComponent({
 | `--sn-web-notification-offset` | `24px` | 距屏幕边缘距离 |
 | `--sn-web-notification-z-index` | `6000` | 堆叠容器层级 |
 | `--sn-web-notification-icon-color-info` | info 色 | `info` 图标颜色 |
-| `--sn-web-notification-icon-color-success` | info 色 | `success` 图标颜色（与参考语义一致） |
+| `--sn-web-notification-icon-color-success` | info 色 | `success` 图标颜色 |
 | `--sn-web-notification-icon-color-warning` | warning 色 | `warning` 图标颜色 |
 | `--sn-web-notification-icon-color-error` | danger 色 | `error` 图标颜色 |
 
@@ -137,6 +141,7 @@ const Trigger = defineComponent({
 - 单条通知：`error` / `warning` 为 `role="alert"`（即时播报），其余为 `role="status"`（礼貌播报）。
 - 类型图标 `aria-hidden="true"`，类型语义由文字与播报承载。
 - 关闭按钮为真实 `<button type="button">`，带 `aria-label="关闭"` 与 `:focus-visible` 焦点环。
+- 容器本身 `pointer-events: none`，只有卡片可交互，不会挡住页面其他区域。
 
 ## AI Patch Boundary
 

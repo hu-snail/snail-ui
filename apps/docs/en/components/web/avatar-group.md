@@ -9,32 +9,54 @@ avatar.
 - The avatar count is unknown and needs an overflow cap.
 - Clicking the `+N` summary reveals the full member list.
 
-## Basic
+## Demos
 
-Default layout overlaps avatars (tightening); with `maxOptions` the
-overflow collapses into a `+k` summary whose click calls `onExpand`.
+### Basic group
 
-<Demo name="avatar-group-web-basic" description="Tightening overlap / shrink scaling / maxOptions + onExpand." />
+The default layout overlaps avatars (tightening); it can also be switched to
+a shrinking size gradient.
+
+<Demo name="avatar-group-web-basic" description="Tightening overlap / shrink scaling / maxOptions overflow + onExpand." />
+
+### Overflow cap and expand callback
+
+With `maxOptions` set to `{ max, onExpand }` only the first `max − 1` avatars
+are rendered plus a `+k` summary (k = total − max + 1); clicking the summary
+calls `onExpand`. Passing a plain number keeps the summary static and emits
+nothing.
+
+<Demo name="avatar-group-web-max" description="max / onExpand revealing everyone + a plain number cap for comparison." />
+
+### Shrink behavior vs tightening
+
+`sizeBehavior` controls the stack: `tightening` overlaps with a negative
+margin at full size, `shrink` scales each following avatar down (0.06 per
+step, down to 0.7). `size` only styles the `+k` summary avatar.
+
+<Demo name="avatar-group-web-shrink" description="tightening vs shrink + summary avatar size." />
 
 ## API
 
-### SnAvatarGroup Props
+### Props
 
-| Prop | Type | Default | Notes |
+All props are optional.
+
+| Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| maxOptions | `{ max: number; onExpand?: () => void } \| number` | — | With `max: n` the group shows `n − 1` avatars + a `+k` summary (`k = total − n + 1`); clicking calls `onExpand`; the number form has no click hook |
-| size | `number \| 'small' \| 'medium' \| 'large'` | `'medium'` | Summary avatar size |
-| sizeBehavior | `'tightening' \| 'shrink'` | `'tightening'` | `tightening` overlaps (−10px margin); `shrink` scales each following avatar down |
+| maxOptions | `{ max: number; onExpand?: () => void } \| number` | `undefined` | Overflow control: with `max: n` the group shows `n − 1` avatars + a `+k` summary (k = total − n + 1); clicking calls `onExpand`, the number form has no click hook |
+| size | `number \| 'small' \| 'medium' \| 'large'` | `'medium'` | Summary avatar size; child avatars keep their own `SnAvatar` size |
+| sizeBehavior | `'tightening' \| 'shrink'` | `'tightening'` | `tightening` overlaps with a negative margin; `shrink` scales each avatar down (0.06 per step, min 0.7) |
 
-### SnAvatarGroup Slots
+### Slots
 
-| Slot | Notes |
-| --- | --- |
-| default | Avatar list — render `SnAvatar` elements (fragments / nested arrays are flattened) |
+| Name | Scope | Description |
+| --- | --- | --- |
+| default | — | Avatar list — render `SnAvatar` elements (fragments and nested arrays are flattened, comment nodes are dropped) |
 
-No events (the expand callback arrives via `maxOptions.onExpand`).
-Note: `size` only styles the summary avatar; child avatars keep their
-own `SnAvatar` size.
+No events (the expand callback arrives via `maxOptions.onExpand`). When the
+slotted count exceeds the cap, the `+k` summary renders as
+`<button type="button">` with an `aria-label`; without a callback it stays a
+static element.
 
 ## Tokens
 
@@ -47,9 +69,9 @@ own `SnAvatar` size.
 
 ## Accessibility
 
-- The expandable summary renders as `<button type="button">` with
-  `aria-label` ("还有 k 个头像"); without `onExpand` it stays a static
-  span.
+- The expandable summary renders as `<button type="button">` with an
+  `aria-label` describing how many avatars remain; without `onExpand` it
+  stays a static element.
 - Child avatars carry their own semantics from `SnAvatar`.
 
 ## AI Patch Boundary

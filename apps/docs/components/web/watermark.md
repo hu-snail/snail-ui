@@ -1,6 +1,6 @@
 # Watermark 水印（Web 端）
 
-在页面或指定区域上平铺文字 / 图片水印，用于标记版权、防截图扩散或标注敏感信息。
+在页面或指定区域上平铺文字 / 图片水印，用于标记版权、抑制截图扩散或标注敏感信息。
 
 ## 何时使用
 
@@ -10,52 +10,68 @@
 
 ## 代码演示
 
-### 基础用法
+### 基础水印
 
-默认包裹内容并在其上平铺水印；多行文案传入数组。`cross` 让相邻瓦片交错排布。
+默认包裹内容并在其上平铺水印，`rotate` / `opacity` 控制倾斜与浓度。
 
-<Demo name="watermark-web-basic" description="包裹内容平铺 / 多行文案 / 交错瓦片 / 旋转与透明度。" />
+<Demo name="watermark-web-basic" description="包裹内容平铺 / 旋转与透明度。" />
+
+### 多行文案与交错瓦片
+
+`content` 传数组时每项一行，行距由 `lineHeight` 控制；`cross` 让相邻瓦片错开半个瓦片高度。
+
+<Demo name="watermark-web-content" description="content 多行文本数组 / cross 交错对照。" />
+
+### 样式定制
+
+`fontSize` / `lineHeight` / `rotate` / `opacity` / `fontColor` / `fontWeight` 可实时调整，文字始终以瓦片中心旋转。
+
+<Demo name="watermark-web-style" description="fontSize / rotate / opacity / fontColor 实时定制。" />
 
 ### 全屏水印
 
-`fullscreen` 时水印覆盖整个视口（fixed + teleport 到 body），不包裹任何内容。
+`fullscreen` 时水印覆盖整个视口（fixed 定位），不包裹任何内容；`zIndex` 控制覆盖层层级。
 
 <Demo name="watermark-web-fullscreen" description="fullscreen 全屏覆盖 + zIndex。" />
 
 ## API
 
-### SnWatermark Props
+### Props
 
-| Prop | 类型 | 默认值 | 说明 |
+所有 Props 均为可选。
+
+| 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| content | `string \| string[]` | — | 水印文字；数组每项一行 |
-| image | `string` | — | 水印图片地址（替代文字） |
-| cross | `boolean` | `false` | 相邻瓦片交错排布 |
-| fullscreen | `boolean` | `false` | 覆盖整个视口 |
+| content | `string \| string[]` | `undefined` | 水印文字；数组时每项一行，空字符串不绘制文字 |
+| image | `string` | `undefined` | 水印图片地址；设置后替代文字绘制 |
+| cross | `boolean` | `false` | 相邻瓦片交错排布（错开半个瓦片） |
+| fullscreen | `boolean` | `false` | 覆盖整个视口而非包裹内容 |
 | fontSize | `number` | `16` | 文字大小（px） |
 | lineHeight | `number` | `16` | 文字行高（px） |
 | width | `number` | `128` | 瓦片宽度（px） |
 | height | `number` | `64` | 瓦片高度（px） |
-| rotate | `number` | `0` | 瓦片旋转角度 |
+| rotate | `number` | `0` | 瓦片旋转角度（度） |
 | x | `number` | `0` | 瓦片内水平偏移（px） |
 | y | `number` | `0` | 瓦片内垂直偏移（px） |
 | zIndex | `number` | `10` | 覆盖层层级 |
 | opacity | `number` | `0.5` | 覆盖层透明度（0–1） |
-| fontFamily | `string` | — | 文字字体 |
-| fontWeight | `number \| string` | — | 文字字重 |
-| fontStyle | `'normal' \| 'italic' \| 'oblique'` | — | 文字样式 |
-| fontColor | `string` | — | 文字颜色 |
-| background | `string` | — | 瓦片背景色 |
+| fontFamily | `string` | `undefined` | 水印文字字体 |
+| fontWeight | `number \| string` | `undefined` | 水印文字字重 |
+| fontStyle | `'normal' \| 'italic' \| 'oblique'` | `undefined` | 水印文字样式 |
+| fontColor | `string` | `undefined` | 水印文字颜色 |
+| background | `string` | `undefined` | 瓦片背景色 |
 | grayscale | `number` | `0` | 覆盖层灰度（CSS filter，0–1） |
-| blend | `CSSProperties['mixBlendMode']` | — | 覆盖层混合模式（CSS mix-blend-mode） |
+| blend | `CSSProperties['mixBlendMode']` | `undefined` | 覆盖层混合模式（CSS mix-blend-mode） |
 
-### SnWatermark Slots
+### Slots
 
-| Slot | 说明 |
-| --- | --- |
-| default | 被水印覆盖的内容（`fullscreen` 时忽略） |
+| 名称 | 参数 | 说明 |
+| --- | --- | --- |
+| default | — | 被水印覆盖的内容；`fullscreen` 时不渲染 |
 
-无事件。实现：单瓦片离屏 canvas 绘制 → `toDataURL` 作为覆盖层 `background-image` 平铺（`pointer-events: none`）。无 canvas 环境（SSR / 测试）自动降级为重复文本网格。
+无事件。
+
+实现说明：单瓦片在离屏 canvas 上绘制后转成覆盖层的重复背景图，覆盖层为 `pointer-events: none`；无 canvas 环境（SSR / 测试）自动降级为同样几何的重复文本网格。因此 `fontColor` / `background` 需要传真实 CSS 颜色值（`var(...)` 变量无法被 canvas 解析）。
 
 ## Tokens
 
@@ -66,10 +82,10 @@
 - 覆盖层 `aria-hidden="true"` 且 `pointer-events: none`，纯装饰、不拦截交互。
 - 水印文字不进入无障碍树；重要信息请用真实页面内容承载。
 
-## AI Patch 边界
+## AI Patch Boundary
 
 - AI 可通过 Patch 修改 `content` / `opacity` / `rotate` / `zIndex` 等展示属性。
 - 水印不影响内容的可访问性语义；Patch 不应把关键业务信息只放在水印里。
-- `fullscreen` 通过 Teleport 挂载到 body；Patch 不应直接操作 Teleport 节点。
+- 瓦片由内部 canvas / 文本网格渲染；Patch 不应直接改写覆盖层节点。
 
 完整契约见组件 `ai-description.md`。
