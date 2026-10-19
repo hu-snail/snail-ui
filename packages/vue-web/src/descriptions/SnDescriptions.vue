@@ -487,7 +487,11 @@ const headerNodes = (): VNodeChild[] => {
   transition: border-color 0.3s ease;
 }
 
+/* Defensive `border: none`: host-global table chrome (e.g. a docs site
+ * styling `.vp-doc th/td`) must not draw borders the component did not ask
+ * for — bordered mode re-asserts its own grid at higher specificity. */
 .sn-descriptions__table-header {
+  border: none;
   padding: var(--sn-descriptions-th-padding);
   font-weight: 500;
   line-height: 1.6;
@@ -502,6 +506,7 @@ const headerNodes = (): VNodeChild[] => {
 }
 
 .sn-descriptions__table-content {
+  border: none;
   padding: var(--sn-descriptions-td-padding);
   vertical-align: top;
   line-height: 1.6;

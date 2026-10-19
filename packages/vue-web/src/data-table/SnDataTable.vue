@@ -1773,6 +1773,9 @@ const innerStyle = computed<Record<string, string>>(() => {
   font-weight: 500;
   color: var(--sn-dt-th-text);
   background-color: var(--sn-dt-th-bg);
+  /* Defensive reset, mirrors `__td`: host-global table chrome (e.g. a docs
+   * site styling `.vp-doc th/td`) must not leak onto undeclared sides. */
+  border: none;
   border-bottom: 1px solid var(--sn-dt-divider-color);
   transition:
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),

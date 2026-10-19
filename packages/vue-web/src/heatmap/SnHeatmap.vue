@@ -459,6 +459,9 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
   height: 15px;
   line-height: 15px;
   font-weight: 400;
+  /* Defensive reset, mirrors the other cells: docs-site `.vp-doc th/td`
+   * chrome must not draw a frame around month labels. */
+  border: none;
   padding: 0 2px 8px;
   vertical-align: bottom;
   transition: color 0.3s var(--sn-heatmap-bezier);
