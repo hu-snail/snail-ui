@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTable — single-column keeps row separators only. */
+import { SnTable } from '@snui/vue-web'
 </script>
 
 <template>

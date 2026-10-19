@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTable — single-line=false restores column separators. */
+import { SnTable } from '@snui/vue-web'
 </script>
 
 <template>

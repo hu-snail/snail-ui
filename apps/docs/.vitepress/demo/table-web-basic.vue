@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTable — basic merged-border grid with authored thead/tbody. */
+import { SnTable } from '@snui/vue-web'
 </script>
 
 <template>

@@ -442,7 +442,9 @@ const headerNodes = (): VNodeChild[] => {
   /* Size + bordered driven paddings (reference: thPaddingBordered* /
    * tdPadding* per size). */
   --sn-descriptions-font-size: 14px;
-  --sn-descriptions-th-padding: 0;
+  /* naive reference thPadding: 12px column gap (left placement), 8px gap
+   * between the label row and its content row (top placement). */
+  --sn-descriptions-th-padding: 0 12px 8px 0;
   --sn-descriptions-td-padding: 0 0 12px 0;
   font-size: var(--sn-descriptions-font-size);
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTable — striped zebra rows. */
+import { SnTable } from '@snui/vue-web'
 </script>
 
 <template>

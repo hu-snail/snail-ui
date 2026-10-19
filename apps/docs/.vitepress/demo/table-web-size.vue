@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTable — small / medium / large size scale. */
+import { SnTable } from '@snui/vue-web'
 </script>
 
 <template>

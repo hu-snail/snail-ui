@@ -1,5 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTable — bordered frame vs borderless with bottom border. */
+import { SnTable } from '@snui/vue-web'
 </script>
 
 <template>
