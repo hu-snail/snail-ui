@@ -139,4 +139,39 @@
   --sn-web-drawer-close-color: var(--aui-drawer-close-color);
   --sn-web-drawer-close-color-hover: var(--aui-drawer-close-color-hover);
   --sn-web-drawer-mask-color: var(--aui-drawer-mask-color);
+
+  /* Semantic scale — spacing / radius / shadow / typography (AUI-TPL-001) */
+  --sn-web-spacing-0: var(--aui-spacing-0);
+  --sn-web-spacing-1: var(--aui-spacing-1);
+  --sn-web-spacing-2: var(--aui-spacing-2);
+  --sn-web-spacing-3: var(--aui-spacing-3);
+  --sn-web-spacing-4: var(--aui-spacing-4);
+  --sn-web-spacing-5: var(--aui-spacing-5);
+  --sn-web-spacing-6: var(--aui-spacing-6);
+  --sn-web-spacing-8: var(--aui-spacing-8);
+  --sn-web-spacing-10: var(--aui-spacing-10);
+  --sn-web-spacing-12: var(--aui-spacing-12);
+  --sn-web-radius-xs: var(--aui-radius-xs);
+  --sn-web-radius-sm: var(--aui-radius-sm);
+  --sn-web-radius-md: var(--aui-radius-md);
+  --sn-web-radius-lg: var(--aui-radius-lg);
+  --sn-web-radius-xl: var(--aui-radius-xl);
+  --sn-web-radius-full: var(--aui-radius-full);
+  --sn-web-shadow-xs: var(--aui-shadow-xs);
+  --sn-web-shadow-sm: var(--aui-shadow-sm);
+  --sn-web-shadow-md: var(--aui-shadow-md);
+  --sn-web-shadow-lg: var(--aui-shadow-lg);
+  --sn-web-font-size-xs: var(--aui-font-size-xs);
+  --sn-web-font-size-sm: var(--aui-font-size-sm);
+  --sn-web-font-size-md: var(--aui-font-size-md);
+  --sn-web-font-size-lg: var(--aui-font-size-lg);
+  --sn-web-font-size-xl: var(--aui-font-size-xl);
+  --sn-web-font-size-2xl: var(--aui-font-size-2xl);
+  --sn-web-font-weight-normal: var(--aui-font-weight-normal);
+  --sn-web-font-weight-medium: var(--aui-font-weight-medium);
+  --sn-web-font-weight-semibold: var(--aui-font-weight-semibold);
+  --sn-web-font-weight-bold: var(--aui-font-weight-bold);
+  --sn-web-font-line-height-tight: var(--aui-font-line-height-tight);
+  --sn-web-font-line-height-normal: var(--aui-font-line-height-normal);
+  --sn-web-font-line-height-loose: var(--aui-font-line-height-loose);
 }

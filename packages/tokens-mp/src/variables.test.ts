@@ -13,6 +13,7 @@ import { describe, it, expect } from 'vitest'
 
 import {
   snMpSizeMap,
+  snMpUnitlessMap,
   snMpColorMap,
   snMpAliasMap,
   renderSnMpStyles,
@@ -43,6 +44,20 @@ describe('@snui/tokens-mp rpx conversion', () => {
     }
   })
 
+  it('emits unitless numbers for ratio/weight aliases (never rpx)', () => {
+    for (const [alias, value] of snMpUnitlessMap) {
+      expect(value.endsWith('rpx'), `${alias} must NOT be rpx (got ${value})`).toBe(false)
+      expect(value.startsWith('var(')).toBe(false)
+      expect(Number.isFinite(Number(value)), `${alias} should be a bare number`).toBe(true)
+    }
+  })
+
+  it('passes shadow / focus-ring aliases through to `var(--aui-*)`', () => {
+    for (const alias of ['--sn-mp-shadow-xs', '--sn-mp-shadow-md', '--sn-mp-card-shadow', '--sn-mp-focus-ring']) {
+      expect(listSnMpAliases()).toContain(alias)
+    }
+  })
+
   it('emits `var(--aui-*)` indirection for color aliases (no unit conversion)', () => {
     // color aliases + focus-ring (counting pass-through indirection)
     for (const [alias, value] of snMpColorMap) {
@@ -69,6 +84,10 @@ describe('@snui/tokens-mp rpx conversion', () => {
     expect(aliases).toContain('--sn-mp-icon-stroke-width')
     expect(aliases).toContain('--sn-mp-color-action-primary')
     expect(aliases).toContain('--sn-mp-focus-ring')
+    // semantic scale (AUI-TPL-001) — rpx-converted so both ends share rhythm
+    expect(aliases).toContain('--sn-mp-spacing-5')
+    expect(aliases).toContain('--sn-mp-spacing-8')
+    expect(aliases).toContain('--sn-mp-radius-lg')
   })
 
   it('has unique aliases (no duplicate mappings)', () => {

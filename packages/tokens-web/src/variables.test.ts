@@ -72,6 +72,14 @@ describe('@snui/tokens-web alias layer', () => {
     expect(aliases).toContain('--sn-web-drawer-header-padding')
     expect(aliases).toContain('--sn-web-drawer-footer-border-top')
     expect(aliases).toContain('--sn-web-drawer-mask-color')
+    // semantic scale (AUI-TPL-001) — templates compose pages from these
+    expect(aliases).toContain('--sn-web-spacing-5')
+    expect(aliases).toContain('--sn-web-spacing-8')
+    expect(aliases).toContain('--sn-web-radius-lg')
+    expect(aliases).toContain('--sn-web-shadow-md')
+    expect(aliases).toContain('--sn-web-font-size-md')
+    expect(aliases).toContain('--sn-web-font-weight-semibold')
+    expect(aliases).toContain('--sn-web-font-line-height-normal')
   })
 
   it('maps every alias to a `--aui-*` base layer reference', () => {

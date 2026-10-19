@@ -41,6 +41,37 @@
      receives `2` literally. */
   --sn-mp-icon-stroke-width: 2;
 
+  /* Semantic scale — spacing / radius (AUI-TPL-001) */
+  --sn-mp-spacing-0: 0rpx;
+  --sn-mp-spacing-1: 4rpx;
+  --sn-mp-spacing-2: 8rpx;
+  --sn-mp-spacing-3: 16rpx;
+  --sn-mp-spacing-4: 24rpx;
+  --sn-mp-spacing-5: 32rpx;
+  --sn-mp-spacing-6: 40rpx;
+  --sn-mp-spacing-8: 48rpx;
+  --sn-mp-spacing-10: 64rpx;
+  --sn-mp-spacing-12: 80rpx;
+  --sn-mp-radius-xs: 4rpx;
+  --sn-mp-radius-sm: 8rpx;
+  --sn-mp-radius-md: 12rpx;
+  --sn-mp-radius-lg: 16rpx;
+  --sn-mp-radius-xl: 24rpx;
+  --sn-mp-radius-full: 19998rpx;
+  --sn-mp-font-size-xs: 22rpx;
+  --sn-mp-font-size-sm: 24rpx;
+  --sn-mp-font-size-md: 28rpx;
+  --sn-mp-font-size-lg: 32rpx;
+  --sn-mp-font-size-xl: 36rpx;
+  --sn-mp-font-size-2xl: 40rpx;
+  --sn-mp-font-line-height-tight: 1.2;
+  --sn-mp-font-line-height-normal: 1.5;
+  --sn-mp-font-line-height-loose: 1.8;
+  --sn-mp-font-weight-normal: 400;
+  --sn-mp-font-weight-medium: 500;
+  --sn-mp-font-weight-semibold: 600;
+  --sn-mp-font-weight-bold: 700;
+
   /* Semantic colors — passthrough to --aui-* */
   --sn-mp-color-text-primary: var(--aui-color-text-primary);
   --sn-mp-color-text-secondary: var(--aui-color-text-secondary);
@@ -57,5 +88,14 @@
   --sn-mp-color-feedback-danger: var(--aui-color-feedback-danger);
   --sn-mp-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
   --sn-mp-color-feedback-info: var(--aui-color-feedback-info);
+  --sn-mp-color-background-elevated: var(--aui-color-background-elevated);
+  --sn-mp-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-mp-color-text-tertiary: var(--aui-color-text-tertiary);
+  --sn-mp-shadow-xs: var(--aui-shadow-xs);
+  --sn-mp-shadow-sm: var(--aui-shadow-sm);
+  --sn-mp-shadow-md: var(--aui-shadow-md);
+  --sn-mp-shadow-lg: var(--aui-shadow-lg);
+  --sn-mp-button-shadow: var(--aui-button-shadow);
+  --sn-mp-card-shadow: var(--aui-card-shadow);
   --sn-mp-focus-ring: var(--aui-focus-ring);
 }

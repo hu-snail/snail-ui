@@ -18,6 +18,7 @@
 export {
   snMpAliasMap,
   snMpSizeMap,
+  snMpUnitlessMap,
   snMpColorMap,
   renderSnMpStyles,
   listSnMpAliases,

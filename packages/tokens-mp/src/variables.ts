@@ -56,12 +56,44 @@ export const snMpSizeMap: ReadonlyArray<readonly [string, string]> = [
   // stroke-width stays as raw design unit (no px/rpx conversion needed for
   // the SVG attribute); emitted literally so the runtime sees `2` not `4`.
   ['--sn-mp-icon-stroke-width', '2'],
+
+  // Semantic scale — spacing / radius (AUI-TPL-001). The mp end converts the
+  // px design values to rpx so uni templates share the web rhythm exactly;
+  // without this layer a template would have to hard-code rpx literals and
+  // drift from the shared 8pt scale.
+  ['--sn-mp-spacing-0', toRpx(0)],
+  ['--sn-mp-spacing-1', toRpx(2)],
+  ['--sn-mp-spacing-2', toRpx(4)],
+  ['--sn-mp-spacing-3', toRpx(8)],
+  ['--sn-mp-spacing-4', toRpx(12)],
+  ['--sn-mp-spacing-5', toRpx(16)],
+  ['--sn-mp-spacing-6', toRpx(20)],
+  ['--sn-mp-spacing-8', toRpx(24)],
+  ['--sn-mp-spacing-10', toRpx(32)],
+  ['--sn-mp-spacing-12', toRpx(40)],
+  ['--sn-mp-radius-xs', toRpx(2)],
+  ['--sn-mp-radius-sm', toRpx(4)],
+  ['--sn-mp-radius-md', toRpx(6)],
+  ['--sn-mp-radius-lg', toRpx(8)],
+  ['--sn-mp-radius-xl', toRpx(12)],
+  ['--sn-mp-radius-full', toRpx(9999)],
+
+  // Typography (AUI-TPL-002). Templates set body copy, so the mp end needs the
+  // font scale the web end already aliases. Line heights are unitless ratios
+  // and live in `snMpUnitlessMap` instead — this map stays strictly rpx so its
+  // contract (every value is a length) keeps holding.
+  ['--sn-mp-font-size-xs', toRpx(11)],
+  ['--sn-mp-font-size-sm', toRpx(12)],
+  ['--sn-mp-font-size-md', toRpx(14)],
+  ['--sn-mp-font-size-lg', toRpx(16)],
+  ['--sn-mp-font-size-xl', toRpx(18)],
+  ['--sn-mp-font-size-2xl', toRpx(20)],
 ]
 
 /**
- * Pass-through color aliases (no unit conversion). Each entry is
- * `['--sn-mp-xxx', 'var(--aui-xxx)']` — colors flow through to the unified
- * base layer so that themes / Style Packs affect both ends identically.
+ * Pass-through aliases (no unit conversion) — colors, shadows, focus ring.
+ * Each entry is `['--sn-mp-xxx', 'var(--aui-xxx)']`, so themes / Style Packs
+ * affect both ends identically.
  */
 export const snMpColorMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-color-text-primary', 'var(--aui-color-text-primary)'],
@@ -79,12 +111,38 @@ export const snMpColorMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-color-feedback-danger', 'var(--aui-color-feedback-danger)'],
   ['--sn-mp-color-feedback-danger-hover', 'var(--aui-color-feedback-danger-hover)'],
   ['--sn-mp-color-feedback-info', 'var(--aui-color-feedback-info)'],
+  ['--sn-mp-color-background-elevated', 'var(--aui-color-background-elevated)'],
+  ['--sn-mp-color-background-overlay', 'var(--aui-color-background-overlay)'],
+  ['--sn-mp-color-text-tertiary', 'var(--aui-color-text-tertiary)'],
+  ['--sn-mp-shadow-xs', 'var(--aui-shadow-xs)'],
+  ['--sn-mp-shadow-sm', 'var(--aui-shadow-sm)'],
+  ['--sn-mp-shadow-md', 'var(--aui-shadow-md)'],
+  ['--sn-mp-shadow-lg', 'var(--aui-shadow-lg)'],
   ['--sn-mp-focus-ring', 'var(--aui-focus-ring)'],
+  ['--sn-mp-button-shadow', 'var(--aui-button-shadow)'],
+  ['--sn-mp-card-shadow', 'var(--aui-card-shadow)'],
+]
+
+/**
+ * Unitless scale aliases — ratios and raw design units that must NOT be
+ * converted to rpx (a line-height of `1.5` means the same thing on every
+ * device; `3rpx` would be meaningless). Kept apart from `snMpSizeMap` so that
+ * map's "every value is an rpx length" contract keeps holding.
+ */
+export const snMpUnitlessMap: ReadonlyArray<readonly [string, string]> = [
+  ['--sn-mp-font-line-height-tight', '1.2'],
+  ['--sn-mp-font-line-height-normal', '1.5'],
+  ['--sn-mp-font-line-height-loose', '1.8'],
+  ['--sn-mp-font-weight-normal', '400'],
+  ['--sn-mp-font-weight-medium', '500'],
+  ['--sn-mp-font-weight-semibold', '600'],
+  ['--sn-mp-font-weight-bold', '700'],
 ]
 
 /** Combined: all aliases emitted by this package. */
 export const snMpAliasMap: ReadonlyArray<readonly [string, string]> = [
   ...snMpSizeMap,
+  ...snMpUnitlessMap,
   ...snMpColorMap,
 ]
 
