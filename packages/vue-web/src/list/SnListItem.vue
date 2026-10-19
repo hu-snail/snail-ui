@@ -80,16 +80,20 @@ const showDivider = list ? list.showDivider : ref(true)
 
 .sn-list-item__prefix {
   margin-right: 20px;
-  flex: 0;
+  /* flex: 0 lets suffix/prefix shrink to min-content and squeezes the main
+   * column (suffix text wraps vertically); keep both at natural size. */
+  flex: none;
 }
 
 .sn-list-item__suffix {
   margin-left: 20px;
-  flex: 0;
+  flex: none;
+  text-align: right;
 }
 
 .sn-list-item__main {
   flex: 1;
+  min-width: 0;
 }
 
 .sn-list-item__divider {

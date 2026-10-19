@@ -1722,6 +1722,17 @@ const innerStyle = computed<Record<string, string>>(() => {
   font-variant-numeric: tabular-nums;
 }
 
+/* Host chrome (e.g. vitepress `.vp-doc table/tr`) must not leak in:
+ * display:block kills width:100%, tr border-top doubles cell borders. */
+.sn-data-table__table {
+  display: table;
+  margin: 0;
+}
+
+.sn-data-table__tr {
+  border: none;
+}
+
 .sn-data-table--small {
   --sn-dt-th-padding: 8px;
   --sn-dt-td-padding: 8px;

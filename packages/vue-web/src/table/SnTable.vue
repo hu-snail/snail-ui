@@ -116,6 +116,10 @@ defineSlots<{
   );
 
   width: 100%;
+  /* Host-global chrome (e.g. vitepress `.vp-doc table { display: block }`)
+   * degrades the table to a block and kills width:100% — re-assert. */
+  display: table;
+  margin: 0;
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   line-height: 1.6;
@@ -133,6 +137,12 @@ defineSlots<{
 }
 
 /* ---------- Cells (slotted content is parent-scoped -> :deep) ---------- */
+
+/* Host chrome (e.g. `.vp-doc tr { border-top: 1px }`) stacks with the cell
+ * border-bottom and doubles the separator — rows draw no border of their own. */
+.sn-table :deep(tr) {
+  border: none;
+}
 
 .sn-table :deep(th) {
   white-space: nowrap;

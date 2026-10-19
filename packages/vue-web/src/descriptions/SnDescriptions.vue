@@ -477,6 +477,10 @@ const headerNodes = (): VNodeChild[] => {
 
 .sn-descriptions__table {
   width: 100%;
+  /* Host chrome (e.g. vitepress `.vp-doc table { display: block }`)
+   * degrades the table to a block and kills width:100% — re-assert. */
+  display: table;
+  margin: 0;
   border-collapse: separate;
   border-spacing: 0;
   box-sizing: border-box;
@@ -484,6 +488,9 @@ const headerNodes = (): VNodeChild[] => {
 
 .sn-descriptions__table-row {
   box-sizing: border-box;
+  /* Host chrome (e.g. `.vp-doc tr { border-top: 1px }`) stacks with the
+   * bordered cell grid and doubles separators — rows draw no border. */
+  border: none;
   transition: border-color 0.3s ease;
 }
 
