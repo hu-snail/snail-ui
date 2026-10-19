@@ -123,10 +123,12 @@ async function copyCode(): Promise<void> {
 // <style scoped>), so we always pass `lang: 'vue'` regardless of demo kind.
 // Highlighted HTML is built lazily — only when the code panel is expanded,
 // to avoid paying the highlight cost for collapsed panels.
+// Dual-theme output (light + dark) so the panel keeps readable contrast in
+// both modes; the CSS below picks the matching --shiki-* variable.
 import { createHighlighter } from 'shiki'
 const highlighted = ref('')
 const highlighterPromise = createHighlighter({
-  themes: ['github-light'],
+  themes: ['github-light', 'github-dark'],
   langs: ['vue'],
 })
 watch(
@@ -137,7 +139,11 @@ watch(
       return
     }
     const hl = await highlighterPromise
-    highlighted.value = hl.codeToHtml(src, { lang: 'vue', theme: 'github-light' })
+    highlighted.value = hl.codeToHtml(src, {
+      lang: 'vue',
+      themes: { light: 'github-light', dark: 'github-dark' },
+      defaultColor: false,
+    })
   },
   { immediate: true },
 )
@@ -208,11 +214,11 @@ watch(
 }
 
 .sn-demo__card {
-  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
+  border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
   padding: 24px;
-  /* 白底，与组件 surface 一致（原 --vp-c-bg-soft 是浅灰，混在 demo 里发灰）。 */
-  background: var(--sn-web-color-background-surface);
+  /* 预览面与页面底色一致（白底），避免浅灰内嵌。 */
+  background: var(--vp-c-bg);
   min-height: 80px;
   position: relative;
 }
@@ -263,17 +269,18 @@ watch(
   padding: 0 4px;
 }
 
+/* 语言徽标：中性柔和底，不用彩色填充。 */
 .sn-demo__lang {
   display: inline-flex;
   align-items: center;
   height: 22px;
   padding: 0 8px;
-  border-radius: 4px;
-  background: var(--vp-c-brand-1);
-  color: #fff;
+  border-radius: 6px;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
 }
 
 .sn-demo__actions {
@@ -282,34 +289,36 @@ watch(
   gap: 4px;
 }
 
+/* 工具栏按钮：ghost 按钮，无边框，hover 用柔和底。 */
 .sn-demo__action {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  height: 26px;
+  height: 28px;
   padding: 0 8px;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 4px;
-  background: var(--vp-c-bg);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
   color: var(--vp-c-text-2);
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
+  transition: background-color 0.15s, color 0.15s;
 }
 .sn-demo__action:hover {
-  color: var(--vp-c-brand-1);
-  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
 }
 .sn-demo__action span[aria-hidden] {
   font-size: 14px;
   line-height: 1;
 }
 
+/* 代码面板：细发丝边框 + 柔和中性底 + 微圆角。 */
 .sn-demo__code {
   margin-top: 8px;
   border: 1px solid var(--vp-c-divider);
   border-radius: 6px;
-  background: var(--vp-c-bg);
+  background: var(--vp-c-bg-soft);
   overflow: hidden;
 }
 
@@ -344,6 +353,16 @@ watch(
   min-height: 1em;
 }
 
+/* Shiki 双主题 token：明/暗各取一套配色，避免浅底浅字 / 深底深字。 */
+.sn-demo__code-body :deep(.shiki),
+.sn-demo__code-body :deep(.shiki span) {
+  color: var(--shiki-light, var(--vp-c-text-1));
+}
+.dark .sn-demo__code-body :deep(.shiki),
+.dark .sn-demo__code-body :deep(.shiki span) {
+  color: var(--shiki-dark, var(--vp-c-text-1));
+}
+
 /* Plain-text fallback used until Shiki finishes (rare). */
 .sn-demo__code-fallback {
   margin: 0;
@@ -351,6 +370,8 @@ watch(
   font-size: 13px;
   line-height: 1.55;
   font-family: var(--vp-font-family-mono);
+  color: var(--vp-c-text-1);
+  background: transparent;
   white-space: pre;
   overflow-x: auto;
 }

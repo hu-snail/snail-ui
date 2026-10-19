@@ -1,7 +1,13 @@
 <script setup lang="ts">
 /**
  * SnDocsNav — top navigation bar for the docs site, built from real
- * @snui/vue-web components (SnMenu + SnButton + SnDivider + SnConfigProvider).
+ * @snui/vue-web components (SnMenu + SnButton + SnConfigProvider).
+ *
+ * Visual intent: a quiet, neutral chrome band. Secondary-toned labels that
+ * lift to the primary text tone on hover, transparent surfaces, a single
+ * hairline rule, no fills / shadows / decorative separators. The sticky bar
+ * shell behind this band owns the page-level background treatment; this
+ * component owns a 56px content band with 24px side gutters.
  *
  * Replaces vitepress's default VPNav so the chrome follows Sn* skin/theme
  * switches. Vitepress chrome below this layer (sidebar / footer / outline /
@@ -14,7 +20,8 @@
 
 import { computed } from 'vue'
 import { useData, useRoute } from 'vitepress'
-import { SnButton, SnConfigProvider, SnMenu } from '@snui/vue-web'
+import { Moon, Search, Snail, Sun } from 'lucide-vue-next'
+import { SnButton, SnConfigProvider, SnIcon, SnMenu } from '@snui/vue-web'
 import type { SnMenuOption } from '@snui/vue-web'
 
 interface NavItem { text: string; link: string }
@@ -71,7 +78,8 @@ function openSearch(): void {
   <SnConfigProvider skin="">
     <div class="sn-docs-nav">
       <a class="sn-docs-nav__brand" href="/" aria-label="Home">
-        <span class="sn-docs-nav__brand-mark">snail-aui</span>
+        <SnIcon class="sn-docs-nav__brand-icon" :icon="Snail" />
+        <span class="sn-docs-nav__brand-text">snail-aui</span>
       </a>
       <div class="sn-docs-nav__menu">
         <SnMenu
@@ -82,13 +90,13 @@ function openSearch(): void {
         />
       </div>
       <div class="sn-docs-nav__actions">
-        <SnButton variant="ghost" size="small" aria-label="Search docs" @click="openSearch">
-          <span class="sn-docs-nav__search-glyph" aria-hidden="true">⌕</span>
+        <SnButton class="sn-docs-nav__action sn-docs-nav__search" variant="ghost" size="small" aria-label="Search docs" @click="openSearch">
+          <SnIcon class="sn-docs-nav__action-icon" :icon="Search" />
           <span class="sn-docs-nav__search-label">搜索文档</span>
           <span class="sn-docs-nav__kbd" aria-hidden="true">⌘K</span>
         </SnButton>
-        <SnButton variant="ghost" size="small" aria-label="Toggle theme" @click="toggleTheme">
-          <span aria-hidden="true">◐</span>
+        <SnButton class="sn-docs-nav__action" variant="ghost" size="small" aria-label="Toggle theme" @click="toggleTheme">
+          <SnIcon class="sn-docs-nav__action-icon" :icon="isDark ? Sun : Moon" />
         </SnButton>
       </div>
     </div>
@@ -96,26 +104,147 @@ function openSearch(): void {
 </template>
 
 <style scoped>
+/* ─────────── Band ───────────
+ * 56px content band. `align-self: stretch` lets the band reach the bottom
+ * edge of the sticky bar shell so the hairline below lands on that edge
+ * instead of floating above it (the shell is taller than the band). */
 .sn-docs-nav {
+  align-self: stretch;
   display: flex;
   align-items: center;
   gap: 16px;
+  box-sizing: border-box;
   width: 100%;
-  padding: 12px 32px;
-  background: var(--sn-web-color-background-surface);
+  min-height: 56px;
+  padding: 0 24px;
+  background: transparent;
   color: var(--sn-web-color-text-primary);
+  /* `border-default` is the hairline tone that still reads as a line in both
+   * light and dark; `border-subtle` is a wash, not an edge. */
   border-bottom: 1px solid var(--sn-web-color-border-default);
 }
-@media (max-width: 767px) {
-  .sn-docs-nav {
-    padding: 10px 16px;
-  }
+
+/* ─────────── Brand ─────────── */
+.sn-docs-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--sn-web-color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* Only the mark carries the brand accent; the wordmark stays neutral so the
+ * band reads as chrome rather than as a coloured banner. */
+.sn-docs-nav__brand-icon {
+  color: var(--sn-web-color-action-primary);
 }
 
-/* Tablet (≤960px) and phone: SnMenu overflows the narrow container,
- * so collapse it to icon-only search + theme toggle. Vitepress's built-in
- * `VPNavBarHamburger` becomes visible at ≤768px and re-exposes the nav
- * items via the default mobile screen drawer (themeConfig.nav). */
+/* ─────────── Menu ───────────
+ * SnMenu ships its own item chrome (filled active pill, larger type). The
+ * overrides below re-dress its items as quiet text rows: no fill, tighter
+ * type, wash-on-hover. */
+.sn-docs-nav__menu {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.sn-docs-nav__menu :deep(.sn-menu__list) {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.sn-docs-nav__menu :deep(.sn-menu-item) {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 32px;
+  color: var(--sn-web-color-text-secondary);
+}
+.sn-docs-nav__menu :deep(.sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active)) {
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-docs-nav__menu :deep(.sn-menu-item--active) {
+  background: transparent;
+  color: var(--sn-web-color-text-primary);
+  font-weight: 500;
+}
+
+/* ─────────── Actions ───────────
+ * Icon-only ghost buttons: 32×32, 6px radius, wash-on-hover. */
+.sn-docs-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.sn-docs-nav__actions :deep(.sn-button) {
+  height: 32px;
+  min-width: 32px;
+  padding: 0 6px;
+  gap: 6px;
+  border-radius: 6px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 13px;
+}
+.sn-docs-nav__actions :deep(.sn-button:hover:not(.sn-button--disabled):not(.sn-button--loading)) {
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-docs-nav__actions :deep(.sn-button__content) {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+/* Icon boxes are driven by the shared icon size token; the inner svg follows
+ * the box so a token override stays consistent. */
+.sn-docs-nav__brand-icon,
+.sn-docs-nav__action-icon {
+  width: var(--sn-web-icon-size-medium);
+  height: var(--sn-web-icon-size-medium);
+}
+.sn-docs-nav__brand-icon :deep(svg),
+.sn-docs-nav__action-icon :deep(svg) {
+  width: 100%;
+  height: 100%;
+}
+/* The search affordance carries a label, so it is wider than a square icon
+ * button but keeps the same 32px height / 6px radius. */
+.sn-docs-nav__actions :deep(.sn-docs-nav__search) {
+  padding: 0 8px;
+}
+.sn-docs-nav__search-label {
+  font-size: 13px;
+  color: var(--sn-web-color-text-tertiary);
+}
+.sn-docs-nav__kbd {
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1;
+  padding: 3px 5px;
+  border: 1px solid var(--sn-web-color-border-default);
+  border-radius: 4px;
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-tertiary);
+}
+
+/* ─────────── Narrow viewports ───────────
+ * Below 960px SnMenu overflows the band, so collapse it to the icon-only
+ * search + theme toggle. Vitepress's built-in `VPNavBarHamburger` becomes
+ * visible at ≤768px and re-exposes the nav items via the default mobile
+ * screen drawer (themeConfig.nav). */
 @media (max-width: 960px) {
   .sn-docs-nav__menu {
     display: none;
@@ -125,54 +254,10 @@ function openSearch(): void {
     display: none;
   }
 }
-.sn-docs-nav__brand {
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 18px;
-  color: var(--sn-web-color-action-primary);
-  margin-right: 12px;
-  white-space: nowrap;
-}
-.sn-docs-nav__brand-mark {
-  font-family: inherit;
-}
-.sn-docs-nav__menu {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.sn-docs-nav__actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-.sn-docs-nav__search-glyph {
-  font-size: 14px;
-  margin-right: 4px;
-}
-.sn-docs-nav__search-label {
-  font-size: 13px;
-}
-.sn-docs-nav__kbd {
-  font-size: 11px;
-  font-family: monospace;
-  border: 1px solid var(--sn-web-color-border-default);
-  border-radius: 3px;
-  padding: 0 4px;
-  margin-left: 6px;
-  background: rgba(0, 0, 0, 0.03);
-}
-
-/* Doodle skin */
-.snui-skin-doodle .sn-docs-nav {
-  border-bottom: 2.5px solid #1a1a1a;
-}
-.snui-skin-doodle .sn-docs-nav__brand {
-  color: #1a1a1a;
-  font-family: 'Comic Sans MS', 'Marker Felt', sans-serif;
-}
-.snui-skin-doodle .sn-docs-nav__kbd {
-  border: 2px solid #1a1a1a;
-  background: #fff;
+@media (max-width: 767px) {
+  .sn-docs-nav {
+    gap: 12px;
+    padding: 0 16px;
+  }
 }
 </style>

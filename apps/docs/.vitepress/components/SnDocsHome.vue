@@ -9,16 +9,17 @@
  * because vitepress markdown's template binding parser mangles vue
  * `{{ }}` / `:prop` syntax inside HTML blocks).
  *
- * Per AUI-DOCS-019, this is Phase-1 of "replace docs chrome with real Sn*
- * components". Toggle Style Pack → the hero + features all follow the
- * active skin via CSS variables.
- *
- * Visual pattern: Mantine-style marketing landing — pill announcement,
- * single huge h1, concise subtitle, primary CTA, and 4 visual preview
- * cards (not text-heavy feature blurbs).
+ * Visual intent: neutral marketing chrome. A compact centred hero (heavy
+ * display title, muted body copy, one filled brand button + one outline
+ * button) over a 4-up card grid. Cards are flat surfaces: 1px hairline,
+ * 8px radius, generous interior padding, no shadows. Colour is reserved for
+ * the brand accent on the primary action and the brand mark; everything else
+ * stays on the neutral text/border scale. Toggle Style Pack → the hero +
+ * features all follow the active skin via CSS variables.
  */
 
-import { SnButton, SnCard, SnConfigProvider, SnGrid, SnInput } from '@snui/vue-web'
+import { ArrowRight } from 'lucide-vue-next'
+import { SnButton, SnCard, SnConfigProvider, SnGrid, SnIcon, SnInput } from '@snui/vue-web'
 
 function openGithub(): void {
   if (typeof window !== 'undefined') {
@@ -35,7 +36,7 @@ function openGithub(): void {
         <a href="/ai/overview" class="sn-home__pill">
           <span class="sn-home__pill-dot" aria-hidden="true" />
           <span class="sn-home__pill-text">New: Style Pack · MCP Server · SnForm</span>
-          <span class="sn-home__pill-arrow" aria-hidden="true">→</span>
+          <SnIcon class="sn-home__pill-icon" :icon="ArrowRight" />
         </a>
 
         <h1 class="sn-home__title">
@@ -51,7 +52,7 @@ function openGithub(): void {
         <div class="sn-home__actions">
           <SnButton variant="primary" size="large" href="/guide/web/intro">
             开始使用
-            <span class="sn-home__cta-arrow" aria-hidden="true">→</span>
+            <SnIcon class="sn-home__cta-icon" :icon="ArrowRight" />
           </SnButton>
           <SnButton variant="tertiary" size="large" @click="openGithub">
             GitHub
@@ -59,12 +60,12 @@ function openGithub(): void {
         </div>
       </section>
 
-      <!-- ─────────── Visual preview grid ─────────── -->
+      <!-- ─────────── Preview grid ─────────── -->
       <section class="sn-home__previews">
         <SnGrid :cols="4" :x-gap="20" :y-gap="20">
 
           <!-- Card 1 — Components -->
-          <SnCard variant="outlined" size="large" hoverable>
+          <SnCard variant="outlined" size="large">
             <h3 class="sn-home-card__title">Components</h3>
             <p class="sn-home-card__sub">6 语义类型 · 5 尺寸 · 3 变体</p>
             <div class="sn-home-card__buttons">
@@ -79,14 +80,14 @@ function openGithub(): void {
           </SnCard>
 
           <!-- Card 2 — Style Pack -->
-          <SnCard variant="outlined" size="large" hoverable>
+          <SnCard variant="outlined" size="large">
             <h3 class="sn-home-card__title">Style Pack</h3>
             <p class="sn-home-card__sub">跨端共用风格包系统</p>
             <div class="sn-home-card__packs">
-              <span class="pack-tag pack-tag--default">Default</span>
-              <span class="pack-tag pack-tag--doodle">Doodle</span>
-              <span class="pack-tag pack-tag--ios">iOS</span>
-              <span class="pack-tag pack-tag--mp">mp-taobao</span>
+              <span class="pack-tag">Default</span>
+              <span class="pack-tag">Doodle</span>
+              <span class="pack-tag">iOS</span>
+              <span class="pack-tag">mp-taobao</span>
             </div>
             <p class="sn-home-card__foot">
               Token + 皮肤 CSS + 资源三层，每包独立 npm 包（end: web / mp / both）。
@@ -94,7 +95,7 @@ function openGithub(): void {
           </SnCard>
 
           <!-- Card 3 — AI Native -->
-          <SnCard variant="outlined" size="large" hoverable>
+          <SnCard variant="outlined" size="large">
             <h3 class="sn-home-card__title">AI Native</h3>
             <p class="sn-home-card__sub">Skill + MCP + ai-meta.json</p>
             <div class="sn-home-card__code">
@@ -112,20 +113,20 @@ function openGithub(): void {
           </SnCard>
 
           <!-- Card 4 — End-aware -->
-          <SnCard variant="outlined" size="large" hoverable>
+          <SnCard variant="outlined" size="large">
             <h3 class="sn-home-card__title">End-aware</h3>
             <p class="sn-home-card__sub">两端独立源代码 / 构建 / npm 包</p>
             <div class="sn-home-card__ends">
               <div class="end-row">
-                <span class="end-tag end-tag--web">Web</span>
+                <span class="end-tag">Web</span>
                 <code class="end-cmd">@snui/vue-web</code>
               </div>
               <div class="end-row">
-                <span class="end-tag end-tag--mp">uni</span>
+                <span class="end-tag">uni</span>
                 <code class="end-cmd">@snui/uni</code>
               </div>
               <div class="end-row">
-                <span class="end-tag end-tag--react">React</span>
+                <span class="end-tag">React</span>
                 <code class="end-cmd end-cmd--plan">@snui/react*</code>
               </div>
             </div>
@@ -142,70 +143,67 @@ function openGithub(): void {
 .sn-home {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 24px 48px;
+  padding: 32px 24px 48px;
 }
 
 /* ─────────── Hero ─────────── */
 .sn-home__hero {
   text-align: center;
-  padding: 56px 0 64px;
+  padding: 32px 0 48px;
 }
 
-/* Pill announcement */
+/* Pill announcement — hairline only, one brand-toned dot as the accent. */
 .sn-home__pill {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border: 1px solid var(--sn-web-color-border-default);
   border-radius: 999px;
-  background: var(--sn-web-color-background-surface);
+  background: transparent;
   color: var(--sn-web-color-text-secondary);
   font-size: 13px;
   font-weight: 500;
   text-decoration: none;
-  margin-bottom: 28px;
-  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  margin-bottom: 24px;
+  transition: background-color 0.2s, color 0.2s;
 }
 .sn-home__pill:hover {
-  border-color: var(--sn-web-color-action-primary);
+  background: var(--sn-web-color-background-subtle);
   color: var(--sn-web-color-text-primary);
 }
 .sn-home__pill-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--sn-web-color-success, #07c160);
+  background: var(--sn-web-color-action-primary);
   flex-shrink: 0;
-  box-shadow: 0 0 0 4px rgba(7, 193, 96, 0.12);
 }
-.sn-home__pill-arrow {
-  font-size: 14px;
-  transition: transform 0.2s;
+.sn-home__pill-icon {
+  width: var(--sn-web-icon-size-small);
+  height: var(--sn-web-icon-size-small);
 }
-.sn-home__pill:hover .sn-home__pill-arrow {
-  transform: translateX(3px);
+.sn-home__pill-icon :deep(svg) {
+  width: 100%;
+  height: 100%;
 }
 
 /* Title */
 .sn-home__title {
-  font-size: 64px;
+  font-size: 36px;
   font-weight: 700;
-  margin: 0 0 24px;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
+  margin: 0 0 20px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: var(--sn-web-color-text-primary);
-}
-@media (max-width: 768px) {
-  .sn-home__title { font-size: 40px; }
 }
 
 /* Subtitle */
 .sn-home__subtitle {
-  font-size: 18px;
-  line-height: 1.6;
-  max-width: 720px;
-  margin: 0 auto 40px;
+  font-size: 15px;
+  line-height: 1.75;
+  max-width: 640px;
+  margin: 0 auto 32px;
   color: var(--sn-web-color-text-secondary);
 }
 .sn-home__subtitle strong {
@@ -220,36 +218,49 @@ function openGithub(): void {
   gap: 12px;
   flex-wrap: wrap;
 }
-.sn-home__cta-arrow {
-  margin-left: 6px;
-  display: inline-block;
-  transition: transform 0.2s;
+/* Secondary action reads as an outline control: hairline border, transparent
+ * fill, neutral hover wash. */
+.sn-home__actions :deep(.sn-button--tertiary) {
+  background: transparent;
+  border-color: var(--sn-web-color-border-default);
+  color: var(--sn-web-color-text-primary);
 }
-.sn-home__actions :deep(.sn-button:hover) .sn-home__cta-arrow {
-  transform: translateX(4px);
+.sn-home__actions :deep(.sn-button--tertiary:hover:not(.sn-button--disabled):not(.sn-button--loading)) {
+  background: var(--sn-web-color-background-subtle);
+  border-color: var(--sn-web-color-border-default);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-home__cta-icon {
+  width: var(--sn-web-icon-size-small);
+  height: var(--sn-web-icon-size-small);
+  margin-left: 2px;
+}
+.sn-home__cta-icon :deep(svg) {
+  width: 100%;
+  height: 100%;
 }
 
 /* ─────────── Preview grid ─────────── */
 .sn-home__previews {
-  margin: 0 0 24px;
+  margin: 0;
 }
 
 /* Card heading */
 .sn-home-card__title {
   margin: 0 0 4px;
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--sn-web-color-text-primary);
 }
 .sn-home-card__sub {
-  margin: 0 0 20px;
-  font-size: 13px;
-  color: var(--sn-web-color-text-tertiary);
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--sn-web-color-text-secondary);
 }
 .sn-home-card__foot {
   margin: 16px 0 0;
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--sn-web-color-text-tertiary);
 }
 
@@ -261,7 +272,8 @@ function openGithub(): void {
   margin-bottom: 12px;
 }
 
-/* Card 2 — pack tags */
+/* Card 2 — pack tags. Neutral chips: the pack identity is carried by the
+ * label + the live skin applied elsewhere on the page, not by a swatch. */
 .sn-home-card__packs {
   display: flex;
   flex-wrap: wrap;
@@ -275,45 +287,29 @@ function openGithub(): void {
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid currentColor;
   line-height: 1.4;
-}
-.pack-tag--default {
-  color: #6b7280;
-  background: rgba(107, 114, 128, 0.08);
-}
-.pack-tag--doodle {
-  color: #1a1a1a;
-  background: #fff8b8;
-  border-style: dashed;
-  font-family: 'Comic Sans MS', 'Marker Felt', sans-serif;
-}
-.pack-tag--ios {
-  color: #007aff;
-  background: rgba(0, 122, 255, 0.08);
-}
-.pack-tag--mp {
-  color: #ff5000;
-  background: rgba(255, 80, 0, 0.08);
+  border: 1px solid var(--sn-web-color-border-default);
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-secondary);
 }
 
 /* Card 3 — code preview */
 .sn-home-card__code {
-  background: var(--sn-web-color-background-code, rgba(0, 0, 0, 0.04));
-  border-radius: 8px;
+  background: var(--sn-web-color-background-subtle);
+  border: 1px solid var(--sn-web-color-border-subtle);
+  border-radius: 6px;
   padding: 12px 14px;
   font-family: 'JetBrains Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
   font-size: 12.5px;
   line-height: 1.7;
-  border: 1px solid var(--sn-web-color-border-default);
 }
 .sn-home-card__line {
   display: block;
-  color: var(--sn-web-color-text-primary);
+  color: var(--sn-web-color-text-secondary);
   word-break: break-all;
 }
 .sn-home-card__prompt {
-  color: var(--sn-web-color-success, #07c160);
+  color: var(--sn-web-color-text-tertiary);
   margin-right: 6px;
   user-select: none;
 }
@@ -331,9 +327,9 @@ function openGithub(): void {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
+  padding: 6px 10px;
   border-radius: 6px;
-  background: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.03));
+  background: var(--sn-web-color-background-subtle);
 }
 .end-tag {
   display: inline-block;
@@ -343,11 +339,9 @@ function openGithub(): void {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: white;
+  border: 1px solid var(--sn-web-color-border-default);
+  color: var(--sn-web-color-text-secondary);
 }
-.end-tag--web { background: #1677ff; }
-.end-tag--mp { background: #07c160; }
-.end-tag--react { background: #61dafb; color: #1a1a1a; }
 .end-cmd {
   font-family: 'JetBrains Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
   font-size: 12px;
@@ -357,63 +351,33 @@ function openGithub(): void {
   color: var(--sn-web-color-text-tertiary);
 }
 
-/* ─────────── Doodle skin ─────────── */
-.snui-skin-doodle .sn-home__title {
-  font-family: 'Comic Sans MS', 'Marker Felt', sans-serif;
-  border-bottom: 2.5px solid #1a1a1a;
-  display: inline-block;
-  padding: 0 16px 8px;
-}
-.snui-skin-doodle .sn-home__pill {
-  border: 2px dashed #1a1a1a;
-  border-radius: 999px;
-}
-.snui-skin-doodle .sn-home-card__title {
-  font-weight: 700;
-  text-decoration: underline;
-  text-decoration-style: wavy;
-  text-decoration-color: #1a1a1a;
-}
-.snui-skin-doodle .end-tag {
-  border: 1.5px solid #1a1a1a;
-}
-.snui-skin-doodle .pack-tag--default {
-  color: #1a1a1a;
-  background: #fff;
-}
-
 /* ─────────── Mobile adaptations ─────────── */
 @media (max-width: 960px) {
   /* Page shell */
   .sn-home {
-    padding: 16px 20px 32px;
+    padding: 24px 20px 40px;
   }
   .sn-home__hero {
-    padding: 32px 0 40px;
+    padding: 24px 0 40px;
   }
   /* Pill — keep on one line, trim text */
   .sn-home__pill {
     font-size: 12px;
-    padding: 5px 12px;
+    padding: 4px 10px;
     margin-bottom: 20px;
     gap: 6px;
   }
-  .sn-home__pill-dot {
-    width: 6px;
-    height: 6px;
-  }
-  /* Title — bigger drop on tablet, still 2-line wrap */
+  /* Title — one step down, still display-weight */
   .sn-home__title {
-    font-size: 44px;
-    letter-spacing: -0.025em;
-    margin: 0 0 18px;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
   }
-  /* Subtitle — tighter line-height, less bottom margin */
+  /* Subtitle — less bottom margin, tighter measure */
   .sn-home__subtitle {
-    font-size: 16px;
-    margin: 0 auto 28px;
+    margin: 0 auto 24px;
   }
-  /* Actions — keep them on the row, smaller */
+  /* Actions — keep them on the row */
   .sn-home__actions {
     gap: 10px;
   }
@@ -421,31 +385,25 @@ function openGithub(): void {
      Use :deep() to pierce SnGrid's scoped inline grid-template-columns. */
   .sn-home__previews :deep(.sn-grid) {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    row-gap: 14px !important;
+    row-gap: 16px !important;
   }
 }
 
 @media (max-width: 640px) {
   /* Page shell — even tighter */
   .sn-home {
-    padding: 12px 16px 24px;
+    padding: 16px 16px 32px;
   }
   .sn-home__hero {
-    padding: 24px 0 28px;
+    padding: 20px 0 32px;
   }
-  /* Title — phone-sized */
-  .sn-home__title {
-    font-size: 32px;
-    letter-spacing: -0.02em;
-  }
-  /* Subtitle */
+  /* Subtitle — tighter line-height */
   .sn-home__subtitle {
-    font-size: 14px;
-    line-height: 1.55;
-    margin: 0 auto 24px;
+    line-height: 1.7;
+    margin: 0 auto 20px;
   }
-  /* Pill — drop arrow on phone to save space */
-  .sn-home__pill-arrow {
+  /* Pill — drop the arrow on phone to save space */
+  .sn-home__pill-icon {
     display: none;
   }
   /* CTAs — full width on phone, stacked */
@@ -463,12 +421,7 @@ function openGithub(): void {
   /* Preview grid: 2 → 1 column on phone */
   .sn-home__previews :deep(.sn-grid) {
     grid-template-columns: 1fr !important;
-    row-gap: 12px !important;
-  }
-  /* Card internals — tighter padding via SmCard size='large' is too generous,
-     shrink the content padding by overriding the inner sn-card__content. */
-  .sn-home__previews :deep(.sn-card__content) {
-    padding: 16px !important;
+    row-gap: 16px !important;
   }
   /* Card 1 buttons — collapse 2x3 to 3x2 to use less card height */
   .sn-home-card__buttons {

@@ -190,7 +190,11 @@ function emitSemanticBindings(semantic: SemanticTokens): TokenBinding[] {
     }
     if (value !== null && typeof value === 'object') {
       for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-        emitPath(`${prefix}-${k}`, v);
+        // Keys are camelCase in TS but kebab-case in CSS. Emitting them raw
+        // produced names no consumer asks for (`--aui-color-action-primaryHover`
+        // instead of `--aui-color-action-primary-hover`), so runtime theme
+        // overrides silently missed every multi-word semantic token.
+        emitPath(`${prefix}-${camelToKebab(k)}`, v);
       }
     }
   }

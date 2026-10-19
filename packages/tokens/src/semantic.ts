@@ -19,7 +19,8 @@ export interface ColorSemanticText {
   readonly tertiary: SemanticRef;
   readonly disabled: SemanticRef;
   readonly inverse: SemanticRef;
-  readonly onAccent: SemanticRef;
+  /** Text/icon colour placed on the accent (primary) surface. */
+  readonly onPrimary: SemanticRef;
 }
 
 export interface ColorSemanticBackground {
@@ -149,42 +150,51 @@ export interface SemanticTokens {
  */
 export const DEFAULT_SEMANTIC_TOKENS: SemanticTokens = {
   color: {
+    // Semantic → primitive references, as the layer model prescribes (§33). The
+    // refs must name variables the runtime pass actually emits, otherwise the
+    // snippet is invalid CSS: pointing at the semantic's own name produced a
+    // `var()` cycle, and the old `--aui-color-bg-surface` spelling pointed at a
+    // name only the static stylesheet defines.
+    // `#ffffff` / the overlay rgba stay literal — no primitive expresses pure
+    // white or a translucent scrim.
     text: {
-      primary: 'var(--aui-color-text-primary)',
-      secondary: 'var(--aui-color-text-secondary)',
-      tertiary: 'var(--aui-color-text-tertiary)',
-      disabled: 'var(--aui-color-text-disabled)',
-      inverse: 'var(--aui-color-text-inverse)',
-      onAccent: 'var(--aui-color-text-on-accent)',
+      primary: 'var(--aui-color-gray-950)',
+      secondary: 'var(--aui-color-gray-500)',
+      tertiary: 'var(--aui-color-gray-400)',
+      disabled: 'var(--aui-color-gray-300)',
+      inverse: 'var(--aui-color-gray-50)',
+      onPrimary: '#ffffff',
     },
     background: {
-      surface: 'var(--aui-color-bg-surface)',
-      elevated: 'var(--aui-color-bg-elevated)',
-      sunken: 'var(--aui-color-bg-sunken)',
-      overlay: 'var(--aui-color-bg-overlay)',
-      accent: 'var(--aui-color-bg-accent)',
-      subtle: 'var(--aui-color-bg-subtle)',
+      surface: '#ffffff',
+      elevated: '#ffffff',
+      sunken: 'var(--aui-color-gray-100)',
+      overlay: 'rgba(0, 0, 0, 0.8)',
+      accent: 'var(--aui-color-blue-50)',
+      subtle: 'var(--aui-color-gray-100)',
     },
     border: {
-      subtle: 'var(--aui-color-border-subtle)',
-      default: 'var(--aui-color-border-default)',
-      strong: 'var(--aui-color-border-strong)',
-      accent: 'var(--aui-color-border-accent)',
-      focus: 'var(--aui-color-border-focus)',
+      subtle: 'var(--aui-color-gray-100)',
+      default: 'var(--aui-color-gray-200)',
+      strong: 'var(--aui-color-gray-300)',
+      accent: 'var(--aui-color-blue-500)',
+      focus: 'var(--aui-color-blue-500)',
     },
     action: {
-      primary: 'var(--aui-color-action-primary)',
-      primaryHover: 'var(--aui-color-action-primary-hover)',
-      primaryActive: 'var(--aui-color-action-primary-active)',
-      secondary: 'var(--aui-color-action-secondary)',
-      secondaryHover: 'var(--aui-color-action-secondary-hover)',
+      primary: 'var(--aui-color-blue-500)',
+      primaryHover: 'var(--aui-color-blue-400)',
+      primaryActive: 'var(--aui-color-blue-600)',
+      secondary: 'var(--aui-color-gray-100)',
+      secondaryHover: 'var(--aui-color-gray-200)',
     },
     feedback: {
-      success: 'var(--aui-color-feedback-success)',
-      warning: 'var(--aui-color-feedback-warning)',
-      danger: 'var(--aui-color-feedback-danger)',
+      // The success colour is the stylesheet's emerald; the primitive green ramp
+      // slots elsewhere (#22c55e), so this one keeps its literal.
+      success: '#10b981',
+      warning: 'var(--aui-color-amber-500)',
+      danger: 'var(--aui-color-red-500)',
       dangerHover: 'var(--aui-color-red-400)',
-      info: 'var(--aui-color-feedback-info)',
+      info: 'var(--aui-color-gray-500)',
     },
   },
   spacing: {

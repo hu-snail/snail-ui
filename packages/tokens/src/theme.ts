@@ -89,43 +89,59 @@ export interface TokenEnvironment {
 
 export const LIGHT_THEME: ThemeDefinition = {
   name: 'light',
-  semantic: {
-    text: {
-      primary: 'var(--aui-color-text-primary)',
-      secondary: 'var(--aui-color-text-secondary)',
-      tertiary: 'var(--aui-color-text-tertiary)',
-      disabled: 'var(--aui-color-text-disabled)',
-      inverse: 'var(--aui-color-text-inverse)',
-      onAccent: 'var(--aui-color-text-on-accent)',
-    },
-  },
+  // No semantic overrides on purpose: the defaults in `semantic.ts` already
+  // carry the light values. Re-stating them as `var()` self-references here
+  // (the previous shape) emitted a `--aui-color-text-primary: var(--aui-color-
+  // text-primary)` cycle into the runtime snippet.
+  semantic: {},
 };
 
 export const DARK_THEME: ThemeDefinition = {
   name: 'dark',
   primitive: {
+    // Inverted zinc ramp: in dark mode the low slots hold the *darkest*
+    // colours (50 = darkest … 950 = lightest), mirroring the zinc values the
+    // static `[data-theme="dark"], .dark` block emits in styles/index.css.
     gray: {
-      50: '#0a0a0a',
-      100: '#171717',
-      200: '#262626',
-      300: '#404040',
-      400: '#525252',
-      500: '#737373',
-      600: '#a3a3a3',
-      700: '#d4d4d4',
-      800: '#e5e5e5',
-      900: '#f5f5f5',
-      950: '#fafafa',
+      50: '#09090b',
+      100: '#18181b',
+      200: '#27272a',
+      300: '#3f3f46',
+      400: '#52525b',
+      500: '#71717a',
+      600: '#a1a1aa',
+      700: '#d4d4d8',
+      800: '#e4e4e7',
+      900: '#fafafa',
+      950: '#ffffff',
     },
   },
   semantic: {
+    // Literal colours, mirroring the static `[data-theme="dark"], .dark` block
+    // in styles/index.css. `onPrimary` stays light on purpose: the accent keeps
+    // its blue in both themes, so a dark-ramp slot would paint near-black text
+    // on the blue button.
     text: {
-      primary: 'var(--aui-color-gray-100)',
-      secondary: 'var(--aui-color-gray-300)',
-      tertiary: 'var(--aui-color-gray-500)',
-      disabled: 'var(--aui-color-gray-700)',
-      inverse: 'var(--aui-color-gray-900)',
-      onAccent: 'var(--aui-color-gray-50)',
+      primary: '#fafafa',
+      secondary: '#a1a1aa',
+      tertiary: '#71717a',
+      disabled: '#52525b',
+      inverse: '#09090b',
+      onPrimary: '#ffffff',
+    },
+    background: {
+      surface: '#09090b',
+      elevated: '#18181b',
+      subtle: '#27272a',
+      overlay: 'rgba(0, 0, 0, 0.8)',
+    },
+    border: {
+      default: '#27272a',
+      subtle: '#27272a',
+    },
+    feedback: {
+      danger: '#7f1d1d',
+      dangerHover: '#991b1b',
     },
   },
 };

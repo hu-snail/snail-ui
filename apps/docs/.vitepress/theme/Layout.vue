@@ -49,8 +49,10 @@ const showFab = computed(() => route.path.startsWith('/components/'))
       <SnDocsHome />
     </template>
 
-    <!-- Replace the default footer with SnDocsFooter. -->
-    <template #layout-footer>
+    <!-- Replace the default footer with SnDocsFooter. VitePress 1.6.x exposes
+         `layout-bottom` (there is no `layout-footer`), and the default
+         VPFooter is suppressed in custom.css. -->
+    <template #layout-bottom>
       <SnDocsFooter />
     </template>
 

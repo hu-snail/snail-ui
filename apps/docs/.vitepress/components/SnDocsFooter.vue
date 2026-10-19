@@ -1,42 +1,56 @@
 <script setup lang="ts">
 /**
- * SnDocsFooter — footer chrome, built from real @snui/vue-web components
- * (SnDivider + SnCard). Replaces vitepress's default VPFooter.
+ * SnDocsFooter — footer chrome for the docs site. Replaces vitepress's
+ * default VPFooter.
  *
- * Wraps the page-end with a divider line + a 2-cell card grid holding the
- * MIT message and copyright. Follows the active SnConfigProvider skin.
+ * Visual intent: a plain text line, not a card. A single hairline rule
+ * separates the footer from the page content; the two text columns sit on
+ * one row (space-between) on wide viewports and stack on narrow ones. No
+ * container chrome, no fills, no shadows. Type is muted and compact.
  */
-
-import { SnCard, SnDivider } from '@snui/vue-web'
 </script>
 
 <template>
   <footer class="sn-docs-footer">
-    <SnDivider />
-    <SnCard variant="outlined" :padding="'sm'" class="sn-footer-container">
+    <div class="sn-docs-footer__inner">
       <p class="sn-docs-footer__msg">Released under the MIT License.</p>
       <p class="sn-docs-footer__copyright">Copyright © 2026 hu-snail</p>
-    </SnCard>
+    </div>
   </footer>
 </template>
 
 <style scoped>
 .sn-docs-footer {
-  padding: 0 24px;
-}
-.sn-docs-footer__msg {
-  margin: 0;
-  font-size: 13px;
-  color: var(--sn-web-color-text-secondary);
-}
-.sn-docs-footer__copyright {
-  margin: 4px 0 0;
-  font-size: 12px;
-  color: var(--sn-web-color-text-secondary);
+  /* `border-default` is the lightest border tone that still reads as a line in
+   * light mode (`border-subtle` resolves to the same wash tone as the hover
+   * fills there); in dark mode both tones are identical. */
+  border-top: 1px solid var(--sn-web-color-border-default);
+  padding: 24px 0;
 }
 
-/* Doodle skin */
-.snui-skin-doodle .sn-footer-container {
-  border: 2.5px dashed #1a1a1a;
+.sn-docs-footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding: 0 24px;
+}
+
+.sn-docs-footer__msg,
+.sn-docs-footer__copyright {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--sn-web-color-text-tertiary);
+}
+
+/* Narrow viewports: stack the two columns, left aligned. */
+@media (max-width: 640px) {
+  .sn-docs-footer__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 16px;
+  }
 }
 </style>
