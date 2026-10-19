@@ -2,6 +2,11 @@ import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import SnWatermark from './SnWatermark.vue'
+import {
+  watermarkTileCanvasSize,
+  watermarkTileCssSize,
+  watermarkTileDrawOffsets,
+} from './watermark-tile'
 
 /**
  * Mount SnWatermark through a wrapper component, mirroring real usage.
@@ -141,4 +146,39 @@ describe('SnWatermark (AUI-WEB-DD-024)', () => {
       expect(document.body.querySelector('.sn-watermark__overlay--fixed')).toBeNull()
     })
   })
+  describe('tile geometry (cross / dpr regression)', () => {
+    it('keeps a plain grid single-copy at logical size', () => {
+      expect(watermarkTileCanvasSize({ width: 128, height: 64, dpr: 2 })).toEqual({
+        width: 256,
+        height: 128,
+      })
+      expect(watermarkTileDrawOffsets({ width: 128, height: 64, dpr: 2 })).toEqual([
+        { width: 0, height: 0 },
+      ])
+      expect(watermarkTileCssSize({ width: 128, height: 64 })).toBe('128px 64px')
+    })
+
+    it('doubles the canvas, the paint passes and the CSS tile when cross is set', () => {
+      // Regression: `cross` used to be honoured only by the degraded text grid,
+      // so the canvas tile — the path every browser takes — ignored it.
+      expect(
+        watermarkTileCanvasSize({ width: 128, height: 64, cross: true, dpr: 2 }),
+      ).toEqual({ width: 512, height: 256 })
+      expect(watermarkTileDrawOffsets({ width: 128, height: 64, cross: true, dpr: 2 })).toEqual([
+        { width: 0, height: 0 },
+        { width: 256, height: 128 },
+      ])
+      // Regression: the tile is sized in CSS px, so a HiDPI canvas does not
+      // render dpr× too large (and 2× again for cross).
+      expect(watermarkTileCssSize({ width: 128, height: 64, cross: true })).toBe('256px 128px')
+    })
+
+    it('never produces a zero-sized canvas', () => {
+      expect(watermarkTileCanvasSize({ width: 0, height: 0, dpr: 0 })).toEqual({
+        width: 1,
+        height: 1,
+      })
+    })
+  })
+
 })

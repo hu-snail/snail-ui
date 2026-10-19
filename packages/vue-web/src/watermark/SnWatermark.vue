@@ -42,6 +42,11 @@ import {
   watch,
   type CSSProperties,
 } from 'vue'
+import {
+  watermarkTileCanvasSize,
+  watermarkTileCssSize,
+  watermarkTileDrawOffsets,
+} from './watermark-tile'
 
 defineOptions({ name: 'SnWatermark' })
 
@@ -148,8 +153,14 @@ function drawTile(): void {
     typeof window !== 'undefined' && window.devicePixelRatio > 0
       ? window.devicePixelRatio
       : 1
-  canvas.width = Math.max(1, Math.floor(props.width * dpr))
-  canvas.height = Math.max(1, Math.floor(props.height * dpr))
+  const canvasSize = watermarkTileCanvasSize({
+    width: props.width,
+    height: props.height,
+    cross: props.cross,
+    dpr,
+  })
+  canvas.width = canvasSize.width
+  canvas.height = canvasSize.height
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
@@ -157,52 +168,62 @@ function drawTile(): void {
   const paintHeight = props.height * dpr
   ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-  // Tile background — transparent unless explicitly set.
+  // Tile background — transparent unless explicitly set. Painted across the
+  // whole canvas so a staggered copy sits on the same backdrop.
   const bgColor = props.background
   if (bgColor) {
     ctx.fillStyle = bgColor
-    ctx.fillRect(0, 0, paintWidth, paintHeight)
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
   }
 
-  // Rotate around the tile centre; mirror the CSS fallback grid.
+  // Rotate around each tile's centre; mirror the CSS fallback grid. With
+  // `cross` two copies are painted — origin and one tile down-right — so the
+  // repeating 2×2 canvas reads as a staggered lattice.
   const centerX = paintWidth / 2
   const centerY = paintHeight / 2
-  ctx.save()
-  ctx.translate(centerX + props.x * dpr, centerY + props.y * dpr)
-  ctx.rotate((props.rotate * Math.PI) / 180)
+  for (const offset of watermarkTileDrawOffsets({
+    width: props.width,
+    height: props.height,
+    cross: props.cross,
+    dpr,
+  })) {
+    ctx.save()
+    ctx.translate(offset.width + centerX + props.x * dpr, offset.height + centerY + props.y * dpr)
+    ctx.rotate((props.rotate * Math.PI) / 180)
 
-  if (props.image) {
-    const img = loadedImageRef.value
-    if (img) {
-      const aspectRatio =
-        img.naturalWidth && img.naturalHeight
-          ? img.naturalWidth / img.naturalHeight
-          : 1
-      const drawWidth = aspectRatio >= 1 ? paintWidth : paintWidth * aspectRatio
-      const drawHeight = aspectRatio <= 1 ? paintHeight : paintHeight / aspectRatio
-      if (props.grayscale > 0) ctx.filter = `grayscale(${props.grayscale})`
-      ctx.drawImage(img, (paintWidth - drawWidth) / 2, (paintHeight - drawHeight) / 2, drawWidth, drawHeight)
-      ctx.filter = 'none'
+    if (props.image) {
+      const img = loadedImageRef.value
+      if (img) {
+        const aspectRatio =
+          img.naturalWidth && img.naturalHeight
+            ? img.naturalWidth / img.naturalHeight
+            : 1
+        const drawWidth = aspectRatio >= 1 ? paintWidth : paintWidth * aspectRatio
+        const drawHeight = aspectRatio <= 1 ? paintHeight : paintHeight / aspectRatio
+        if (props.grayscale > 0) ctx.filter = `grayscale(${props.grayscale})`
+        ctx.drawImage(img, (paintWidth - drawWidth) / 2, (paintHeight - drawHeight) / 2, drawWidth, drawHeight)
+        ctx.filter = 'none'
+      }
     }
+    else {
+      const lines = textLines.value
+      ctx.fillStyle = resolvePaintColor(props.fontColor, 'rgba(51, 54, 57, 0.12)')
+      ctx.font = [
+        props.fontStyle ?? 'normal',
+        props.fontWeight != null ? String(props.fontWeight) : 'normal',
+        `${props.fontSize * dpr}px`,
+        props.fontFamily ?? 'sans-serif',
+      ].join(' ')
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      // Coordinates are relative to the translated tile centre.
+      const startY = (-(lines.length - 1) * props.lineHeight * dpr) / 2
+      lines.forEach((line, index) => {
+        ctx.fillText(line, 0, startY + index * props.lineHeight * dpr)
+      })
+    }
+    ctx.restore()
   }
-  else {
-    const lines = textLines.value
-    ctx.fillStyle = resolvePaintColor(props.fontColor, 'rgba(51, 54, 57, 0.12)')
-    ctx.font = [
-      props.fontStyle ?? 'normal',
-      props.fontWeight != null ? String(props.fontWeight) : 'normal',
-      `${props.fontSize * dpr}px`,
-      props.fontFamily ?? 'sans-serif',
-    ].join(' ')
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    // Coordinates are relative to the translated tile centre.
-    const startY = (-(lines.length - 1) * props.lineHeight * dpr) / 2
-    lines.forEach((line, index) => {
-      ctx.fillText(line, 0, startY + index * props.lineHeight * dpr)
-    })
-  }
-  ctx.restore()
 
   try {
     tileUrl.value = canvas.toDataURL('image/png')
@@ -295,6 +316,14 @@ const overlayStyle = computed<CSSProperties>(() => {
   if (props.grayscale > 0) style.filter = `grayscale(${props.grayscale})`
   if (tileUrl.value) {
     style.backgroundImage = `url(${tileUrl.value})`
+    // Pin the tile to its logical size. A canvas' intrinsic size is in device
+    // px, so without this the tile would render `dpr`× too large on a HiDPI
+    // screen — and a `cross` canvas (2×2 tiles) would double that again.
+    style.backgroundSize = watermarkTileCssSize({
+      width: props.width,
+      height: props.height,
+      cross: props.cross,
+    })
   }
   else {
     // Fallback grid: tint the tiles so the text layer reads as a watermark.
