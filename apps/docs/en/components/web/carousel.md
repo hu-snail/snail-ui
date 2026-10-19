@@ -176,9 +176,9 @@ title/description text.
 
 ## Divergence / future
 
-- Intentional divergence from naive: `default-index` is broken in
-  naive-ui 2.43.1 (initializes against an empty slide list, always
-  collapsing to 0); SnCarousel honours it.
+- Intentional divergence: `default-index` was found to be broken in the
+  upstream implementation (initializes against an empty slide list,
+  always collapsing to 0); SnCarousel honours it.
 - Extensions beyond naive (intentional divergences): ① `SnCarouselItem`
   `title` / `description` props + `caption` slot (bottom gradient text
   overlay); ② a slide losing the current state auto-pauses its inner

@@ -58,6 +58,11 @@ const sidebar = {
         { text: 'Avatar 头像', link: '/components/web/avatar' },
         { text: 'Tag 标签', link: '/components/web/tag' },
         { text: 'Dropdown 下拉菜单', link: '/components/web/dropdown' },
+        { text: 'Popover 弹出层', link: '/components/web/popover' },
+        { text: 'Popconfirm 气泡确认', link: '/components/web/popconfirm' },
+        { text: 'Popselect 气泡选择', link: '/components/web/popselect' },
+        { text: 'AvatarGroup 头像组', link: '/components/web/avatar-group' },
+        { text: 'Link 链接', link: '/components/web/link' },
       ],
     },
     {
@@ -82,6 +87,7 @@ const sidebar = {
         { text: 'Slider 滑块', link: '/components/web/slider' },
         { text: 'Rate 评分', link: '/components/web/rate' },
         { text: 'Form 表单', link: '/components/web/form' },
+        { text: 'Transfer 穿梭框', link: '/components/web/transfer' },
       ],
     },
     {
@@ -107,6 +113,8 @@ const sidebar = {
         { text: 'Affix 固钉', link: '/components/web/affix' },
         { text: 'Anchor 锚点', link: '/components/web/anchor' },
         { text: 'BackTop 回到顶部', link: '/components/web/back-top' },
+        { text: 'Pagination 分页', link: '/components/web/pagination' },
+        { text: 'PageHeader 页头', link: '/components/web/page-header' },
       ],
     },
     {
@@ -117,6 +125,9 @@ const sidebar = {
         { text: 'Drawer 抽屉', link: '/components/web/drawer' },
         { text: 'Loading 加载中', link: '/components/web/loading' },
         { text: 'Skeleton 骨架屏', link: '/components/web/skeleton' },
+        { text: 'Notification 通知', link: '/components/web/notification' },
+        { text: 'LoadingBar 加载条', link: '/components/web/loading-bar' },
+        { text: 'Progress 进度条', link: '/components/web/progress' },
       ],
     },
     {
@@ -145,6 +156,9 @@ const sidebar = {
         { text: 'InfiniteScroll 无限滚动', link: '/components/web/infinite-scroll' },
         { text: 'Highlight 高亮文本', link: '/components/web/highlight' },
         { text: 'Heatmap 热力图', link: '/components/web/heatmap' },
+        { text: 'Watermark 水印', link: '/components/web/watermark' },
+        { text: 'Ellipsis 文本省略', link: '/components/web/ellipsis' },
+        { text: 'VirtualList 虚拟列表', link: '/components/web/virtual-list' },
       ],
     },
     // Other 其他 — empty until ConfigProvider page ships.
@@ -244,6 +258,11 @@ const enSidebar = {
         { text: 'Avatar', link: '/en/components/web/avatar' },
         { text: 'Tag', link: '/en/components/web/tag' },
         { text: 'Dropdown', link: '/en/components/web/dropdown' },
+        { text: 'Popover', link: '/en/components/web/popover' },
+        { text: 'Popconfirm', link: '/en/components/web/popconfirm' },
+        { text: 'Popselect', link: '/en/components/web/popselect' },
+        { text: 'AvatarGroup', link: '/en/components/web/avatar-group' },
+        { text: 'Link', link: '/en/components/web/link' },
       ],
     },
     {
@@ -268,6 +287,7 @@ const enSidebar = {
         { text: 'Slider', link: '/en/components/web/slider' },
         { text: 'Rate', link: '/en/components/web/rate' },
         { text: 'Form', link: '/en/components/web/form' },
+        { text: 'Transfer', link: '/en/components/web/transfer' },
       ],
     },
     {
@@ -280,6 +300,21 @@ const enSidebar = {
         { text: 'Flex', link: '/en/components/web/flex' },
         { text: 'Layout', link: '/en/components/web/layout' },
         { text: 'Splitter', link: '/en/components/web/splitter' },
+      ],
+    },
+    {
+      text: 'Navigation',
+      items: [
+        { text: 'Pagination', link: '/en/components/web/pagination' },
+        { text: 'PageHeader', link: '/en/components/web/page-header' },
+      ],
+    },
+    {
+      text: 'Feedback',
+      items: [
+        { text: 'Notification', link: '/en/components/web/notification' },
+        { text: 'LoadingBar', link: '/en/components/web/loading-bar' },
+        { text: 'Progress', link: '/en/components/web/progress' },
       ],
     },
     {
@@ -308,6 +343,9 @@ const enSidebar = {
         { text: 'InfiniteScroll', link: '/en/components/web/infinite-scroll' },
         { text: 'Highlight', link: '/en/components/web/highlight' },
         { text: 'Heatmap', link: '/en/components/web/heatmap' },
+        { text: 'Watermark', link: '/en/components/web/watermark' },
+        { text: 'Ellipsis', link: '/en/components/web/ellipsis' },
+        { text: 'VirtualList', link: '/en/components/web/virtual-list' },
       ],
     },
     // Other — empty until ConfigProvider page ships.

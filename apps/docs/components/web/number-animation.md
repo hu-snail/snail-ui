@@ -1,6 +1,6 @@
 # NumberAnimation · Web（PC 端）
 
-数值动画（对标 n-number-animation）：数字从 `from` 缓动滚动到 `to`，支持精度、千分位分隔符与国际化。
+数值动画：数字从 `from` 缓动滚动到 `to`，支持精度、千分位分隔符与国际化。
 
 ## 何时使用
 

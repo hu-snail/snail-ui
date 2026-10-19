@@ -1,6 +1,6 @@
 # Splitter · Web（PC 端）
 
-分栏容器（对标 n-splitter / n-splitter-panel）。拖拽调整面板比例，键盘可达，支持折叠。
+分栏容器。拖拽调整面板比例，键盘可达，支持折叠。
 
 ## 基础用法
 

@@ -219,6 +219,25 @@ DD-022/023 为后续追加：SnComment（naive 无此组件，按用户指定参
 | AUI-WEB-LAYOUT-004 | SnLayout | Web 专属 |
 | AUI-WEB-LAYOUT-005 | SnCollapse | Web 专属 |
 
+### 对标 Naive UI 缺失组件批次（v3.1 追加）
+
+| ID | 组件 | 状态 |
+|---|---|---|
+| AUI-WEB-FB-009 | SnPopover | ✅ 本批次 |
+| AUI-WEB-FB-010 | SnPopconfirm | ✅ 本批次 |
+| AUI-WEB-FB-011 | SnPopselect | ✅ 本批次 |
+| AUI-WEB-FB-012 | SnNotification（Provider + useNotification） | ✅ 本批次 |
+| AUI-WEB-FB-013 | SnLoadingBar（Provider + useLoadingBar） | ✅ 本批次 |
+| AUI-WEB-FB-014 | SnProgress | ✅ 本批次 |
+| AUI-WEB-DD-024 | SnWatermark | ✅ 本批次 |
+| AUI-WEB-DD-025 | SnEllipsis | ✅ 本批次 |
+| AUI-WEB-DD-026 | SnAvatarGroup | ✅ 本批次 |
+| AUI-WEB-DD-027 | SnPageHeader | ✅ 本批次 |
+| AUI-WEB-DD-028 | SnLink | ✅ 本批次 |
+| AUI-WEB-DD-029 | SnVirtualList | ✅ 本批次 |
+| AUI-WEB-NAV-009 | SnPagination | ✅ 本批次 |
+| AUI-WEB-FORM-017 | SnTransfer | ✅ 本批次 |
+
 ---
 
 ## M1-MP uni 端组件（移动触屏）

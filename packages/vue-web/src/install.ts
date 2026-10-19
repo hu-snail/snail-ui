@@ -99,6 +99,21 @@ import SnTime from './time/SnTime.vue'
 import SnTimeline from './timeline/SnTimeline.vue'
 import SnTimelineItem from './timeline/SnTimelineItem.vue'
 import SnTree from './tree/SnTree.vue'
+import SnPopover from './popover/SnPopover.vue'
+import SnPopconfirm from './popconfirm/SnPopconfirm.vue'
+import SnPopselect from './popselect/SnPopselect.vue'
+import SnNotificationProvider from './notification/SnNotificationProvider.vue'
+import SnNotification from './notification/SnNotification.vue'
+import SnLoadingBarProvider from './loading-bar/SnLoadingBarProvider.vue'
+import SnProgress from './progress/SnProgress.vue'
+import SnWatermark from './watermark/SnWatermark.vue'
+import SnEllipsis from './ellipsis/SnEllipsis.vue'
+import SnAvatarGroup from './avatar-group/SnAvatarGroup.vue'
+import SnPageHeader from './page-header/SnPageHeader.vue'
+import SnLink from './link/SnLink.vue'
+import SnVirtualList from './virtual-list/SnVirtualList.vue'
+import SnPagination from './pagination/SnPagination.vue'
+import SnTransfer from './transfer/SnTransfer.vue'
 
 export interface SnUIOptions {
   /** Skip auto-registration of specific components. */
@@ -194,6 +209,25 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnImageGroup', component: SnImageGroup },
   { name: 'SnInfiniteScroll', component: SnInfiniteScroll },
   { name: 'SnList', component: SnList },
+  // Popover 弹层家族 (AUI-WEB-FB-009..011)
+  { name: 'SnPopover', component: SnPopover },
+  { name: 'SnPopconfirm', component: SnPopconfirm },
+  { name: 'SnPopselect', component: SnPopselect },
+  // Feedback 反馈补充 (AUI-WEB-FB-012/013)
+  { name: 'SnNotificationProvider', component: SnNotificationProvider },
+  { name: 'SnNotification', component: SnNotification },
+  { name: 'SnLoadingBarProvider', component: SnLoadingBarProvider },
+  // Data Display 补充 (AUI-WEB-DD-024..029)
+  { name: 'SnProgress', component: SnProgress },
+  { name: 'SnWatermark', component: SnWatermark },
+  { name: 'SnEllipsis', component: SnEllipsis },
+  { name: 'SnAvatarGroup', component: SnAvatarGroup },
+  { name: 'SnPageHeader', component: SnPageHeader },
+  { name: 'SnLink', component: SnLink },
+  { name: 'SnVirtualList', component: SnVirtualList },
+  // Navigation / Form 补充 (AUI-WEB-NAV-009 / AUI-WEB-FORM-017)
+  { name: 'SnPagination', component: SnPagination },
+  { name: 'SnTransfer', component: SnTransfer },
   { name: 'SnListItem', component: SnListItem },
   { name: 'SnLog', component: SnLog },
   { name: 'SnNumberAnimation', component: SnNumberAnimation },

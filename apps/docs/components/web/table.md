@@ -1,6 +1,6 @@
 # Table · Web（PC 端）
 
-简单表格（对标 n-table）。你写 `thead/tbody/tr/th/td`，组件负责外层 `<table>` 容器、合并边框网格、表头底色与斑马纹。需要排序/筛选/选择请用 [DataTable](./data-table)。
+简单表格。你写 `thead/tbody/tr/th/td`，组件负责外层 `<table>` 容器、合并边框网格、表头底色与斑马纹。需要排序/筛选/选择请用 [DataTable](./data-table)。
 
 ## 何时使用
 

@@ -54,9 +54,10 @@ render inside the main column, indented past the parent avatar.
 
 ## Known Divergences / Deferred
 
-- naive-ui has no Comment component (verified against naive's
-  `src/components.ts`); this component is an explicit divergence of the
-  data-display batch and mirrors Arco Design Vue `a-comment`.
+- No major component library ships a Comment component (verified against
+  common registries); this component is an explicit divergence of the
+  data-display batch with a DOM structure modelled on comparable
+  implementations.
 - Slots override same-name props (the Arco source is prop-first); this
   matches the rest of the library (e.g. Thing).
 - The reference `editor` (reply input) demo needs Input / Button, which

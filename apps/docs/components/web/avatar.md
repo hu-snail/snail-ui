@@ -1,6 +1,6 @@
 # Avatar · Web（PC 端）
 
-头像（对标 n-avatar）。图片 / 文字缩略 / 图标三态，加载失败自动 fallback。
+头像组件。图片 / 文字缩略 / 图标三态，加载失败自动 fallback。
 
 ## 基础用法
 

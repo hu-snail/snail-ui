@@ -1,6 +1,6 @@
 # Equation 公式 · Web（PC 端）
 
-LaTeX 数学公式渲染（对标 n-equation）。内置 KaTeX，开箱即用，支持 displayMode / 自定义宏 / 替换渲染器。
+LaTeX 数学公式渲染。内置 KaTeX，开箱即用，支持 displayMode / 自定义宏 / 替换渲染器。
 
 ## 何时使用
 

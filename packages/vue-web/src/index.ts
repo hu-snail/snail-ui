@@ -208,6 +208,60 @@ export type {
   SnTreeNode,
 } from './tree/sn-tree-types'
 
+// Popover 弹层家族 (AUI-WEB-FB-009..011)
+export { default as SnPopover } from './popover/SnPopover.vue'
+export type { SnPopoverPlacement } from './popover/SnPopover.vue'
+export { default as SnPopconfirm } from './popconfirm/SnPopconfirm.vue'
+export type {
+  SnPopconfirmPlacement,
+  SnPopconfirmActionReturn,
+} from './popconfirm/SnPopconfirm.vue'
+export { default as SnPopselect } from './popselect/SnPopselect.vue'
+export type {
+  SnPopselectValue,
+  SnPopselectLeafOption,
+  SnPopselectGroupOption,
+  SnPopselectMenuNode,
+  SnPopselectRenderLabel,
+  SnPopselectRenderOption,
+} from './popselect/sn-popselect-types'
+
+// Feedback 反馈补充 (AUI-WEB-FB-012/013) — Provider + composable API
+export { default as SnNotificationProvider } from './notification/SnNotificationProvider.vue'
+export { default as SnNotification } from './notification/SnNotification.vue'
+export { useNotification } from './notification/use-notification'
+export type {
+  NotificationType,
+  NotificationPlacement,
+  NotificationOptions,
+  NotificationReactive,
+  NotificationApi,
+} from './notification/notification-types'
+export { default as SnLoadingBarProvider } from './loading-bar/SnLoadingBarProvider.vue'
+export { useLoadingBar } from './loading-bar/use-loading-bar'
+export type { LoadingBarApi } from './loading-bar/loading-bar-types'
+
+// Data Display 补充 (AUI-WEB-DD-024..029)
+export { default as SnProgress } from './progress/SnProgress.vue'
+export type {
+  SnProgressType,
+  SnProgressStatus,
+  SnProgressIndicatorPlacement,
+  SnProgressGradientStop,
+} from './progress/SnProgress.vue'
+export { default as SnWatermark } from './watermark/SnWatermark.vue'
+export { default as SnEllipsis } from './ellipsis/SnEllipsis.vue'
+export type { SnEllipsisTooltipOptions } from './ellipsis/SnEllipsis.vue'
+export { default as SnAvatarGroup } from './avatar-group/SnAvatarGroup.vue'
+export type { SnAvatarGroupMaxOptions } from './avatar-group/SnAvatarGroup.vue'
+export { default as SnPageHeader } from './page-header/SnPageHeader.vue'
+export { default as SnLink } from './link/SnLink.vue'
+export { default as SnVirtualList } from './virtual-list/SnVirtualList.vue'
+
+// Navigation / Form 补充 (AUI-WEB-NAV-009 / AUI-WEB-FORM-017)
+export { default as SnPagination } from './pagination/SnPagination.vue'
+export { default as SnTransfer } from './transfer/SnTransfer.vue'
+
 export { SnUI, default } from './install.js'
 export type { SnUIOptions } from './install.js'
 

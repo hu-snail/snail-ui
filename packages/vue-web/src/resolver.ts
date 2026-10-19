@@ -140,6 +140,25 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnTimeline',
   'SnTimelineItem',
   'SnTree',
+  // Popover 弹层家族 (AUI-WEB-FB-009..011)
+  'SnPopover',
+  'SnPopconfirm',
+  'SnPopselect',
+  // Feedback 反馈补充 (AUI-WEB-FB-012/013)
+  'SnNotificationProvider',
+  'SnNotification',
+  'SnLoadingBarProvider',
+  // Data Display 补充 (AUI-WEB-DD-024..029)
+  'SnProgress',
+  'SnWatermark',
+  'SnEllipsis',
+  'SnAvatarGroup',
+  'SnPageHeader',
+  'SnLink',
+  'SnVirtualList',
+  // Navigation / Form 补充 (AUI-WEB-NAV-009 / AUI-WEB-FORM-017)
+  'SnPagination',
+  'SnTransfer',
 ]
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {

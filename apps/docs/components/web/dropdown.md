@@ -1,6 +1,6 @@
 # Dropdown · Web（PC 端）
 
-下拉菜单（对标 n-dropdown）。click / hover 双触发，六档 placement + 视口翻转，滚动跟随。
+下拉菜单。click / hover 双触发，六档 placement + 视口翻转，滚动跟随。
 
 ## 基础用法
 

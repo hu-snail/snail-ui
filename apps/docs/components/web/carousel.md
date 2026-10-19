@@ -1,6 +1,6 @@
 # Carousel 轮播图（Web 端）
 
-`SnCarousel` + `SnCarouselItem` 在有限空间内轮播展示内容，支持 slide / fade / card / custom 四种切换效果、循环克隆、自动播放、拖拽、滚轮与键盘切换（对标 n-carousel）。
+`SnCarousel` + `SnCarouselItem` 在有限空间内轮播展示内容，支持 slide / fade / card / custom 四种切换效果、循环克隆、自动播放、拖拽、滚轮与键盘切换。
 
 ## 何时使用
 
@@ -162,7 +162,7 @@ title / description / `caption` 插槽任一存在时渲染底部浮层（渐变
 
 - 与 naive 的有意分歧：`default-index` 在 naive 2.43.1 中因空列表初始化失效（恒为 0），本组件修正为真正生效。
 - 超出 naive 的扩展能力（有意 divergence）：① `SnCarouselItem` 的 `title` / `description` props 与 `caption` 插槽（底部渐变文字浮层）；② slide 失去 current 态时自动 `pause()` 其内部 `<video>`（卸载时同样清理）；③ 拖拽起点落在交互元素（`video / audio / a / button / input / textarea / select / [contenteditable] / [data-no-drag]`）内时不启动拖拽，保证原生控件可用（naive 对所有 mouse 拖拽起点一律 `preventDefault`）。
-- 文档 demo 全部默认开启 `draggable` 方便体验；组件默认值仍与 naive 对齐为 `false`。
+- 文档 demo 全部默认开启 `draggable` 方便体验；组件默认值仍保持 `false`（保守默认）。
 - 未提供 demo 的能力（API 已实现）：`space-between` 独立场景、`centered-slides`、`hover`/`keyboard`/`simulate-drag` 场景、`slides-per-view="auto"`、`dot-placement="top"/"right"`、`on-update:current-index` 受控联动。
 - 拖拽几何（多页吸附、甩动阈值）在 `carousel-utils.ts` 纯函数层测试，happy-dom 不做 DOM 级拖拽断言（0×0 视口会把拖拽偏移钳到 0；交互元素抑制用例通过 stub `offsetWidth` 观察整条链路）。
 

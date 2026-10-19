@@ -1,6 +1,6 @@
 # Layout · Web（PC 端）
 
-页面布局族（对标 n-layout 五件套）：SnLayout / SnLayoutSider / SnLayoutHeader / SnLayoutContent / SnLayoutFooter。
+页面布局族五件套：SnLayout / SnLayoutSider / SnLayoutHeader / SnLayoutContent / SnLayoutFooter。
 
 ## 基础三段
 

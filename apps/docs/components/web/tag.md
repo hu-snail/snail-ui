@@ -1,6 +1,6 @@
 # Tag · Web（PC 端）
 
-标签（对标 n-tag）。六色 type、可关闭、可选中（checkable）。
+标签组件。六色 type、可关闭、可选中（checkable）。
 
 ## 基础用法
 

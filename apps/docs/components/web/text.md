@@ -1,6 +1,6 @@
 # Text · Web（PC 端）
 
-文本排版（对标 n-text / n-title / n-paragraph）。六色 type、depth 色阶、行内样式修饰、code 底色。
+文本排版组件。六色 type、depth 色阶、行内样式修饰、code 底色。
 
 ## 基础用法
 

@@ -1,6 +1,6 @@
 # Countdown · Web（PC 端）
 
-倒计时（对标 n-countdown）：从 `duration` 毫秒倒数到 0，渲染 `HH:MM:SS`，支持小数精度与自定义渲染。
+倒计时：从 `duration` 毫秒倒数到 0，渲染 `HH:MM:SS`，支持小数精度与自定义渲染。
 
 ## 何时使用
 

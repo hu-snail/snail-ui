@@ -1,6 +1,6 @@
 # Space · Web（PC 端）
 
-间距容器（对标 n-space）。CSS gap 实现，子项无包裹层。
+间距容器。CSS gap 实现，子项无包裹层。
 
 ## 基础用法
 

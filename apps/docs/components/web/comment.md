@@ -45,13 +45,13 @@
 | actions | `()` | 操作列表（通常放若干 span） |
 | default | `()` | 嵌套的 `<SnComment>` 回复 |
 
-DOM 结构与 Arco 对齐：头像列 + 主列（第一行作者 + 时间，第二行正文，第三行操作），嵌套回复渲染在主列内、缩进到父头像右侧。
+DOM 结构：头像列 + 主列（第一行作者 + 时间，第二行正文，第三行操作），嵌套回复渲染在主列内、缩进到父头像右侧。
 
-## 与参考库的差异
+## 设计差异
 
-- naive-ui 没有 Comment 组件（已核对 naive `src/components.ts` 全表），本组件为「数据展示」批次的显式 divergence，参考 Arco Design Vue `a-comment` 实现。
+- 主流组件库暂无同类 Comment 组件（已核对常用组件注册表全表），本组件为「数据展示」批次的显式 divergence，DOM 结构参考同类实现。
 - 插槽优先于同名 prop（Arco 源码是 prop 优先），与本仓库其他组件（如 Thing）保持一致。
-- 参考库的 `editor`（回复输入框）demo 依赖 Input / Button 组件，本库暂未提供，登记为 future。
+- 同类组件的 `editor`（回复输入框）demo 依赖 Input / Button 组件，本库暂未提供，登记为 future。
 - 字号/间距以 Arco less 源码为准：正文 14px、作者 14px、时间 12px、操作 14px，头像 32px 圆形，操作行间距 8px，嵌套/相邻评论纵向节奏 20px。
 
 完整契约见组件 `ai-description.md`。
