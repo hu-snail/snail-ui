@@ -34,5 +34,5 @@
 </template>
 
 <style scoped>
-.sn-demo { max-width: 560px; overflow-x: auto; }
+.sn-demo { overflow-x: auto; }
 </style>

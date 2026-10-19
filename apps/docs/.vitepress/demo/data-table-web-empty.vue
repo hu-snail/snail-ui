@@ -25,7 +25,7 @@ const emptyData: Array<Record<string, unknown>> = []
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 560px;
+
 }
 .sn-demo-empty {
   padding: 48px 0;

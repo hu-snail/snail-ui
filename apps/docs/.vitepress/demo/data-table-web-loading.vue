@@ -30,7 +30,6 @@ function toggleLoading(): void {
 </template>
 
 <style scoped>
-.sn-demo { max-width: 560px; }
 .sn-demo-btn {
   margin-bottom: 24px;
   padding: 0 12px;

@@ -30,6 +30,6 @@ import { SnList, SnListItem } from '@snui/vue-web'
 <style scoped>
 .list-demo {
   width: 100%;
-  max-width: 480px;
+
 }
 </style>

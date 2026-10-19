@@ -30,5 +30,4 @@ function createSummary(pageData: Array<Record<string, unknown>>) {
 </template>
 
 <style scoped>
-.sn-demo { max-width: 720px; }
 </style>

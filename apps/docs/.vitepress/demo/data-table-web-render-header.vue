@@ -24,5 +24,4 @@ const data = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 560px; }
 </style>

@@ -37,5 +37,4 @@ const pagination = reactive({
 </template>
 
 <style scoped>
-.sn-demo { max-width: 720px; }
 </style>

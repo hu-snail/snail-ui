@@ -39,6 +39,5 @@ function handleSorter(state: SortStateLike | SortStateLike[] | null): void {
 </template>
 
 <style scoped>
-.sn-demo { max-width: 560px; }
 .sn-demo-tip { margin: 0 0 24px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
 </style>

@@ -21,7 +21,6 @@ const data = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 640px; }
 .sn-demo :deep(.sn-demo-age-col) {
   color: var(--sn-web-color-action-primary);
   font-variant-numeric: tabular-nums;

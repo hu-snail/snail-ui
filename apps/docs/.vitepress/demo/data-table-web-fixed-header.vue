@@ -23,5 +23,4 @@ const data = Array.from({ length: 20 }).map((_, index) => ({
 </template>
 
 <style scoped>
-.sn-demo { max-width: 720px; }
 </style>

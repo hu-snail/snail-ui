@@ -22,5 +22,4 @@ const data = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 640px; }
 </style>

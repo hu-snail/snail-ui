@@ -208,7 +208,7 @@ watch(
 }
 
 .sn-demo__card {
-  border: 1px solid var(--vp-c-divider);
+  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
   border-radius: 8px;
   padding: 24px;
   background: var(--vp-c-bg-soft);

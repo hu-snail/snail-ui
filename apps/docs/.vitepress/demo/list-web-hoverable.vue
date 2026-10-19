@@ -21,7 +21,7 @@ const picked = ref('')
 <style scoped>
 .list-demo {
   width: 100%;
-  max-width: 480px;
+
 }
 .list-demo__state {
   margin: 12px 0 0;

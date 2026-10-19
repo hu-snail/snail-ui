@@ -38,7 +38,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 560px;
+
   overflow-x: auto;
 }
 </style>

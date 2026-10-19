@@ -39,7 +39,6 @@ const data = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 560px; }
 .sn-demo :deep(.sn-demo-tag) {
   display: inline-block;
   padding: 0 8px;
