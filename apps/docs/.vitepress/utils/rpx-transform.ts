@@ -69,6 +69,11 @@ export function rpxTransform(): Plugin {
   // doesn't exist — that bug shipped in commit 0622e1e and caused the
   // source-import path to be silently skipped.
   const uniSrcAbsPath = fileURLToPath(new URL('../../../../packages/uni/src', import.meta.url))
+  // @snui/templates ships uni-end templates whose own CSS carries rpx
+  // literals; they need the same conversion or the demo renders unstyled.
+  const templatesSrcAbsPath = fileURLToPath(
+    new URL('../../../../packages/templates/src/uni', import.meta.url),
+  )
   return {
     name: 'snui-rpx-to-px',
     enforce: 'post',
@@ -86,6 +91,7 @@ export function rpxTransform(): Plugin {
       if (
         !id.includes('@snui/uni') &&
         !id.includes(`${uniSrcAbsPath}/`) &&
+        !id.includes(`${templatesSrcAbsPath}/`) &&
         !id.includes('/packages/uni/dist/')
       ) {
         return

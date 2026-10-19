@@ -24,6 +24,7 @@ const nav = [
   { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
+  { text: '模板', link: '/templates/web/chat' },
 ]
 
 const sidebar = {
@@ -222,6 +223,32 @@ const sidebar = {
       ],
     },
   ],
+  // Templates 模板 — installable page/section compositions. Split by end so a
+  // consumer sees exactly the set that matches the library they installed.
+  '/templates/': [
+    {
+      text: '概览',
+      items: [
+        { text: '模板总览', link: '/templates/overview' },
+      ],
+    },
+    {
+      text: 'Web 模板',
+      items: [
+        { text: 'AI 对话页', link: '/templates/web/chat' },
+        { text: 'AI 输入框', link: '/templates/web/prompt' },
+        { text: '消息模块', link: '/templates/web/message-list' },
+        { text: '模型配置页', link: '/templates/web/model-config' },
+      ],
+    },
+    {
+      text: 'uni-app 模板',
+      items: [
+        { text: 'AI 对话页', link: '/templates/uni/chat' },
+        { text: '消息模块', link: '/templates/uni/message-list' },
+      ],
+    },
+  ],
 }
 
 const enNav = [
@@ -231,6 +258,7 @@ const enNav = [
   { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
+  { text: 'Templates', link: '/en/templates/web/chat' },
 ]
 
 const enSidebar = {
@@ -407,6 +435,30 @@ const enSidebar = {
       ],
     },
   ],
+  '/en/templates/': [
+    {
+      text: 'Overview',
+      items: [
+        { text: 'Templates overview', link: '/en/templates/overview' },
+      ],
+    },
+    {
+      text: 'Web templates',
+      items: [
+        { text: 'AI chat page', link: '/en/templates/web/chat' },
+        { text: 'AI prompt', link: '/en/templates/web/prompt' },
+        { text: 'Message module', link: '/en/templates/web/message-list' },
+        { text: 'Model config page', link: '/en/templates/web/model-config' },
+      ],
+    },
+    {
+      text: 'uni-app templates',
+      items: [
+        { text: 'AI chat page', link: '/en/templates/uni/chat' },
+        { text: 'Message module', link: '/en/templates/uni/message-list' },
+      ],
+    },
+  ],
 }
 
 export default defineConfig({
@@ -521,6 +573,7 @@ export default defineConfig({
       alias: {
         '@snui/uni-src': fileURLToPath(new URL('../../../packages/uni/src', import.meta.url)),
         '@snui/vue-web-src': fileURLToPath(new URL('../../../packages/vue-web/src', import.meta.url)),
+        '@snui/templates-src': fileURLToPath(new URL('../../../packages/templates/src', import.meta.url)),
       },
     },
     ssr: {
@@ -530,6 +583,7 @@ export default defineConfig({
         '@snui/tokens',
         '@snui/style-packs',
         '@snui/ai',
+        '@snui/templates',
       ],
     },
     // Pre-bundle only `@snui/tokens` + `@snui/style-packs` (pure JS, safe to

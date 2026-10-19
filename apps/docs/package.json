@@ -16,6 +16,7 @@
   "dependencies": {
     "@snui/ai": "workspace:",
     "@snui/style-packs": "workspace:",
+    "@snui/templates": "workspace:",
     "@snui/tokens": "workspace:",
     "@snui/uni": "workspace:",
     "@snui/vue-web": "workspace:",

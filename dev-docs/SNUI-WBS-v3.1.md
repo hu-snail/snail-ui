@@ -349,6 +349,17 @@ DD-022/023 为后续追加：SnComment（naive 无此组件，按用户指定参
 | AUI-DOCS-015 | 文档站首页 / 介绍 / architecture / style-packs / ai 端独立重写 | ✅ |
 | AUI-DOCS-016 | vitepress prerender ClientOnly / per-component demo | ✅ (per-component demo.vue, commits dba53c3 + 382164c) |
 
+### 模板生态（AUI-TPL，v3.2 追加）
+
+| ID | 标题 | 状态 |
+|---|---|---|
+| AUI-TPL-001 | 新增 `@snui/templates` 包（`web/` + `uni/` 目录拆分 + 按模板子路径导出，实现按需加载）| ✅ |
+| AUI-TPL-002 | Web 4 模板（AI 对话页 / AI 输入框 / 消息模块 / 模型配置页）+ uni 2 模板（对话页 / 消息模块），全部支持 props 配置 | ✅ |
+| AUI-TPL-003 | `tokens-web` / `tokens-mp` 补齐共享语义刻度（spacing / radius / shadow / typography / line-height）+ 单元测试 | ✅ |
+| AUI-TPL-004 | 文档站「模板」导航 + web / uni 模板文档页（zh + en 双语 + 可运行 demo）| ✅ |
+| AUI-TPL-005 | 模板 `ai-description.md` + CLI `llms-txt` 集成 | 🔵 |
+| AUI-TPL-006 | AI Repair 模板 Patch 通道 | 🔵 |
+
 ---
 
 ## M3 风格扩展 + 高保真
@@ -407,3 +418,4 @@ DD-022/023 为后续追加：SnComment（naive 无此组件，按用户指定参
 | v2.0 | 2026-10-03 | 重组为组件库形态 |
 | v3.0 | 2026-10-03 | 新增 Style Pack + AI Layer 任务 |
 | **v3.1** | 2026-10-03 | **Web / uni 端独立任务拆分；新增 `tokens-web` / `tokens-mp` 别名层包；引入未来 React 端扩展路径** |
+| **v3.2** | 2026-10-03 | **新增 `@snui/templates` 模板生态包（按需加载 + props 配置）；补齐 tokens-web / tokens-mp 共享语义刻度** |
