@@ -355,6 +355,7 @@ const enSidebar = {
         { text: 'Calendar', link: '/en/components/web/calendar' },
         { text: 'Carousel', link: '/en/components/web/carousel' },
         { text: 'Marquee', link: '/en/components/web/marquee' },
+        { text: 'Tabs', link: '/en/components/web/tabs' },
         { text: 'Countdown', link: '/en/components/web/countdown' },
         { text: 'Code', link: '/en/components/web/code' },
         { text: 'Comment', link: '/en/components/web/comment' },

@@ -1,5 +1,10 @@
 <script setup lang="ts">
-/** Demo: SnVideoPreview — basic thumbnail with a poster and inline playback. */
+/**
+ * Demo: SnVideoPreview — basic media box with a poster and inline playback.
+ *
+ * `controls` (default `true`) renders OUR custom bar, never the browser's
+ * native one — see the "custom bar vs native" demo for the difference.
+ */
 import { SnVideoPreview } from '@snui/vue-web'
 
 /**

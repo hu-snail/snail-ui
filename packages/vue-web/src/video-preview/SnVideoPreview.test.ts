@@ -16,6 +16,17 @@
  * 3. Focus return is asserted through `document.activeElement`: the toolbar
  *    affordance is the trigger, and it must be focused again after the overlay
  *    closes.
+ *
+ * 4. `controls` no longer means the native `<video controls>` attribute — it
+ *    renders our custom, beautified bar (`SnVideoControls.vue`). The native
+ *    attribute only appears through `nativeControls`. The bar's own static
+ *    query helpers are used instead of `mount(SnVideoControls)` so these tests
+ *    only need the main component's SFC types.
+ *
+ * 5. happy-dom has neither `HTMLMediaElement.requestFullscreen` nor
+ *    `document.exitFullscreen`, which is exactly the branch where the
+ *    fullscreen button must disappear. `Object.defineProperty` installs a fake
+ *    API for the "supported" branch and `afterEach` reverts it.
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -94,6 +105,91 @@ function closeButton(): HTMLElement | null {
   return document.querySelector('[aria-label="关闭"]')
 }
 
+/* ── Custom bar queries / fullscreen API harness ────────────────────────── */
+
+function barOf(wrapper: Wrapper): ReturnType<Wrapper['find']> {
+  return wrapper.find('[data-snui-component="video-controls"]')
+}
+
+function barButtonOf(wrapper: Wrapper, label: string): ReturnType<Wrapper['find']> {
+  return wrapper.find(`[data-snui-component="video-controls"] button[aria-label="${label}"]`)
+}
+
+function timelineOf(wrapper: Wrapper): ReturnType<Wrapper['find']> {
+  return wrapper.find('[data-snui-component="video-controls"] input[type="range"]')
+}
+
+/** `[0]` / `[1]` are current and total time, in DOM order. */
+function barTimesOf(wrapper: Wrapper): string[] {
+  return wrapper
+    .findAll('[data-snui-component="video-controls"] .sn-video-controls__time')
+    .map((node) => node.text())
+}
+
+const originalRequestFullscreen = Object.getOwnPropertyDescriptor(
+  HTMLMediaElement.prototype,
+  'requestFullscreen',
+)
+const originalExitFullscreen = Object.getOwnPropertyDescriptor(Document.prototype, 'exitFullscreen')
+/**
+ * happy-dom declares `document.exitFullscreen` as a *throwing function* and
+ * mirrors `Document.prototype` through an own getter, so the instance copy has
+ * to be captured and restored separately from the prototype one.
+ */
+const originalDocumentExitFullscreen = Object.getOwnPropertyDescriptor(
+  document,
+  'exitFullscreen',
+)
+
+const requestFullscreenMock = vi.fn(() => Promise.resolve())
+const exitFullscreenMock = vi.fn(() => Promise.resolve())
+
+/**
+ * Install a full Fullscreen API pair so the bar renders its button. Both holes
+ * are patched: `HTMLMediaElement.requestFullscreen` is normally absent, and
+ * `document.exitFullscreen` is the one happy-dom mirrors through an own
+ * accessor, so it needs an own override on top of the prototype one.
+ */
+function installFullscreenApi(): void {
+  Object.defineProperty(HTMLMediaElement.prototype, 'requestFullscreen', {
+    configurable: true,
+    writable: true,
+    value: requestFullscreenMock,
+  })
+  Object.defineProperty(Document.prototype, 'exitFullscreen', {
+    configurable: true,
+    writable: true,
+    value: exitFullscreenMock,
+  })
+  Object.defineProperty(document, 'exitFullscreen', {
+    configurable: true,
+    writable: true,
+    value: exitFullscreenMock,
+  })
+}
+
+/** happy-dom has no working Fullscreen API: undo whatever a test installed. */
+function restoreFullscreenApi(): void {
+  for (const [target, name, descriptor] of [
+    [HTMLMediaElement.prototype, 'requestFullscreen', originalRequestFullscreen],
+    [Document.prototype, 'exitFullscreen', originalExitFullscreen],
+    [document, 'exitFullscreen', originalDocumentExitFullscreen],
+  ] as const) {
+    if (descriptor) Object.defineProperty(target, name, descriptor)
+    else delete (target as unknown as Record<string, unknown>)[name]
+  }
+}
+
+/**
+ * happy-dom's Fullscreen surface is partial: `document.exitFullscreen` is
+ * always a callable function there while `fullscreenElement` stays `null`.
+ * The component therefore probes `fullscreenElement` as well, which makes
+ * "API available" and "API missing" both testable.
+ */
+function defineFullscreenElement(value: unknown): void {
+  Object.defineProperty(document, 'fullscreenElement', { configurable: true, value })
+}
+
 beforeEach(() => {
   playMock = vi.fn(() => Promise.resolve())
   pauseMock = vi.fn()
@@ -101,8 +197,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
+  restoreFullscreenApi()
+  requestFullscreenMock.mockClear()
+  exitFullscreenMock.mockClear()
   for (const wrapper of mountedWrappers.splice(0)) wrapper.unmount()
-  document.body.innerHTML = ''
   document.documentElement.style.overflow = ''
   restoreMediaMethods()
   vi.restoreAllMocks()
@@ -157,20 +255,23 @@ describe('SnVideoPreview (AUI-WEB-DD-011)', () => {
       expectNoMissingIcons(wrapper, 'SnVideoPreview')
     })
 
-    it('should forward controls / loop / muted / preload to the video element', () => {
+    it('should forward loop / muted / preload and render the custom bar instead of native controls', () => {
       const wrapper = mountVideo({ controls: true, loop: true, muted: true, preload: 'auto' })
       const video = videoOf(wrapper)
 
-      expect(video.element.hasAttribute('controls')).toBe(true)
+      // `controls` = OUR bar. The UA attribute is what `nativeControls` adds.
+      expect(video.element.hasAttribute('controls')).toBe(false)
+      expect(barOf(wrapper).exists()).toBe(true)
       expect(video.element.hasAttribute('loop')).toBe(true)
       expect((video.element as HTMLVideoElement).muted).toBe(true)
       expect(video.attributes('preload')).toBe('auto')
     })
 
-    it('should omit native controls when controls is false', () => {
+    it('should render no bar at all when controls is false', () => {
       const wrapper = mountVideo({ controls: false })
 
       expect(videoOf(wrapper).element.hasAttribute('controls')).toBe(false)
+      expect(barOf(wrapper).exists()).toBe(false)
     })
 
     it('should use alt as the accessible name, falling back to title', () => {
@@ -179,6 +280,16 @@ describe('SnVideoPreview (AUI-WEB-DD-011)', () => {
         videoOf(mountVideo({ title: '宣传片', alt: '产品宣传片' })).attributes('aria-label'),
       ).toBe('产品宣传片')
       expect(videoOf(mountVideo()).attributes('aria-label')).toBeUndefined()
+    })
+
+    it('should always render playsinline and the legacy webkit-playsinline', () => {
+      // iOS Safari hijacks the screen for a playing video without these; there
+      // is deliberately no prop to turn them off.
+      for (const wrapper of [mountVideo(), mountVideo({ background: true })]) {
+        const video = videoOf(wrapper).element
+        expect(video.hasAttribute('playsinline')).toBe(true)
+        expect(video.hasAttribute('webkit-playsinline')).toBe(true)
+      }
     })
   })
 
@@ -373,6 +484,273 @@ describe('SnVideoPreview (AUI-WEB-DD-011)', () => {
 
       expect(overlayRoot()).toBeNull()
       expect(wrapper.emitted('preview')).toBeUndefined()
+    })
+
+  })
+
+  describe('custom control bar', () => {
+    it('should render the beautified bar by default and never the native controls attribute', () => {
+      const wrapper = mountVideo()
+
+      expect(barOf(wrapper).exists()).toBe(true)
+      expect(videoOf(wrapper).element.hasAttribute('controls')).toBe(false)
+      // play/pause, mute, timeline, current + total time.
+      expect(barButtonOf(wrapper, '播放').exists()).toBe(true)
+      expect(barButtonOf(wrapper, '静音').exists()).toBe(true)
+      expect(timelineOf(wrapper).exists()).toBe(true)
+      expect(barTimesOf(wrapper)).toHaveLength(2)
+      expectNoMissingIcons(wrapper, 'SnVideoPreview')
+    })
+
+    it('should render the native controls attribute only when nativeControls is set', () => {
+      const wrapper = mountVideo({ nativeControls: true })
+
+      expect(videoOf(wrapper).element.hasAttribute('controls')).toBe(true)
+      // The custom bar is still the visible one — `controls` stays at its default.
+      expect(barOf(wrapper).exists()).toBe(true)
+
+      const nativeOnly = mountVideo({ nativeControls: true, controls: false })
+      expect(videoOf(nativeOnly).element.hasAttribute('controls')).toBe(true)
+      expect(barOf(nativeOnly).exists()).toBe(false)
+    })
+
+    it('should toggle play() and pause() from the bar play/pause button', async () => {
+      const wrapper = mountVideo()
+
+      await barButtonOf(wrapper, '播放').trigger('click')
+      expect(playMock).toHaveBeenCalledTimes(1)
+
+      // The glyph + label follow the media element's own `play` event.
+      await videoOf(wrapper).trigger('play')
+      expect(barButtonOf(wrapper, '暂停').exists()).toBe(true)
+
+      await barButtonOf(wrapper, '暂停').trigger('click')
+      expect(pauseMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('should toggle video.muted from the mute button without emitting media events', async () => {
+      const wrapper = mountVideo()
+      const video = videoOf(wrapper).element as HTMLVideoElement
+      expect(video.muted).toBe(false)
+
+      await barButtonOf(wrapper, '静音').trigger('click')
+      expect(video.muted).toBe(true)
+      expect(barButtonOf(wrapper, '取消静音').exists()).toBe(true)
+
+      await barButtonOf(wrapper, '取消静音').trigger('click')
+      expect(video.muted).toBe(false)
+
+      // Toggling mute is local UI state: no play/pause/ended/preview/close.
+      for (const name of ['play', 'pause', 'ended', 'error', 'preview', 'close'] as const) {
+        expect(wrapper.emitted(name)).toBeUndefined()
+      }
+    })
+
+    it('should reflect currentTime / duration and seek through the media element', async () => {
+      const wrapper = mountVideo()
+      const video = videoOf(wrapper).element as HTMLVideoElement
+
+      // `loadedmetadata` carries the duration, `timeupdate` the position.
+      Object.defineProperty(video, 'duration', { configurable: true, value: 95 })
+      Object.defineProperty(video, 'currentTime', { configurable: true, value: 12, writable: true })
+      video.dispatchEvent(new Event('loadedmetadata'))
+      video.dispatchEvent(new Event('timeupdate'))
+      await nextTick()
+
+      expect(barTimesOf(wrapper)).toEqual(['00:12', '01:35'])
+      expect(timelineOf(wrapper).attributes('max')).toBe('95')
+      expect(timelineOf(wrapper).attributes('aria-valuetext')).toBe('00:12 / 01:35')
+
+      const timeline = timelineOf(wrapper)
+      ;(timeline.element as HTMLInputElement).value = '42'
+      await timeline.trigger('input')
+
+      expect(video.currentTime).toBe(42)
+      expect(barTimesOf(wrapper)[0]).toBe('00:42')
+
+      // `change` releases the scrub override: the element is authoritative again.
+      Object.defineProperty(video, 'currentTime', { configurable: true, value: 43, writable: true })
+      await timeline.trigger('change')
+      video.dispatchEvent(new Event('timeupdate'))
+      await nextTick()
+      expect(barTimesOf(wrapper)[0]).toBe('00:43')
+    })
+
+    it('should hide the fullscreen button when the Fullscreen API is unavailable', () => {
+      // happy-dom exposes no Fullscreen implementation (and the default
+      // document has no `fullscreenElement`): the button must not be offered.
+      const wrapper = mountVideo()
+
+      expect(barButtonOf(wrapper, '全屏').exists()).toBe(false)
+      expect(barButtonOf(wrapper, '退出全屏').exists()).toBe(false)
+    })
+
+    it('should call the media fullscreen API when it is available', async () => {
+      installFullscreenApi()
+      defineFullscreenElement(null)
+      const wrapper = mountVideo()
+      const video = videoOf(wrapper).element as HTMLVideoElement
+      // `mount()` does not flush the mounted hook: the capability probe (and
+      // therefore the button) only lands after a tick.
+      await nextTick()
+
+      const button = barButtonOf(wrapper, '全屏')
+      expect(button.exists()).toBe(true)
+      expectIconRendered(button, '.sn-icon')
+
+      await button.trigger('click')
+      expect(requestFullscreenMock).toHaveBeenCalledTimes(1)
+
+      // A fullscreenchange hands the glyph over to "exit".
+      defineFullscreenElement(video)
+      document.dispatchEvent(new Event('fullscreenchange'))
+      await nextTick()
+      expect(barButtonOf(wrapper, '退出全屏').exists()).toBe(true)
+
+      await barButtonOf(wrapper, '退出全屏').trigger('click')
+      expect(exitFullscreenMock).toHaveBeenCalledTimes(1)
+
+      defineFullscreenElement(null)
+      document.dispatchEvent(new Event('fullscreenchange'))
+      await nextTick()
+      expect(barButtonOf(wrapper, '全屏').exists()).toBe(true)
+    })
+
+    it('should drop the fullscreenchange listener on unmount', async () => {
+      installFullscreenApi()
+      defineFullscreenElement(null)
+      const removeSpy = vi.spyOn(document, 'removeEventListener')
+      const wrapper = mountVideo()
+      // Let the mounted hook register the document listener first.
+      await nextTick()
+      expect(typeof document.fullscreenElement).toBe('object')
+
+      wrapper.unmount()
+
+      expect(removeSpy).toHaveBeenCalledWith('fullscreenchange', expect.any(Function))
+    })
+
+    it('should reuse the same bar inside the overlay', async () => {
+      const wrapper = mountVideo({ title: '宣传片' })
+      await previewTriggerOf(wrapper).trigger('click')
+      await nextTick()
+
+      const overlayBar = overlayRoot()?.querySelector('[data-snui-component="video-controls"]')
+      expect(overlayBar).not.toBeNull()
+      // The overlay video itself never gets the native attribute by default.
+      expect(overlayRoot()?.querySelector('video')?.hasAttribute('controls')).toBe(false)
+    })
+
+    it('should drive the overlay video from its own bar buttons', async () => {
+      const wrapper = mountVideo()
+      await previewTriggerOf(wrapper).trigger('click')
+      await nextTick()
+
+      // Query the bar inside the teleported overlay, not the inline one.
+      const overlayPlay = overlayRoot()!.querySelector<HTMLElement>('button[aria-label="播放"]')!
+      expect(overlayPlay).not.toBeNull()
+      overlayPlay.click()
+      await nextTick()
+      expect(playMock).toHaveBeenCalledTimes(1)
+
+      const overlayPause = overlayRoot()!.querySelector<HTMLElement>('button[aria-label="暂停"]')!
+      expect(overlayPause).not.toBeNull()
+      overlayPause.click()
+      await nextTick()
+      expect(pauseMock).toHaveBeenCalledTimes(1)
+    })
+  })
+
+  describe('background mode', () => {
+    it('should hide every player affordance', () => {
+      const wrapper = mountVideo({ background: true })
+
+      expect(wrapper.find('.sn-video-preview__mask').exists()).toBe(false)
+      expect(wrapper.find('button[aria-label="播放视频"]').exists()).toBe(false)
+      expect(wrapper.find('.sn-video-preview__toolbar').exists()).toBe(false)
+      expect(barOf(wrapper).exists()).toBe(false)
+      expect(videoOf(wrapper).element.hasAttribute('controls')).toBe(false)
+      expect(overlayRoot()).toBeNull()
+    })
+
+    it('should hide the placeholder slot and the poster scrim', () => {
+      const wrapper = mountVideo(
+        { background: true, poster: POSTER_SRC },
+        { placeholder: '<span class="demo-placeholder">加载中</span>' },
+      )
+
+      expect(wrapper.find('.sn-video-preview__placeholder').exists()).toBe(false)
+      expect(videoOf(wrapper).attributes('poster')).toBeUndefined()
+    })
+
+    it('should force muted / autoplay / loop / cover and fill the parent', () => {
+      const wrapper = mountVideo({ background: true, objectFit: 'contain' })
+      const video = videoOf(wrapper).element as HTMLVideoElement
+
+      expect(video.hasAttribute('autoplay')).toBe(true)
+      expect(video.hasAttribute('loop')).toBe(true)
+      expect(video.hasAttribute('muted')).toBe(true)
+      expect(video.muted).toBe(true)
+      expect(video.getAttribute('style')).toContain('object-fit: cover')
+
+      // Fills a `position: relative` hero section instead of using width/height.
+      expect(wrapper.element.style.position).toBe('absolute')
+      // Written as the four longhands: `inset` is a shorthand the CSSOM may
+      // drop (happy-dom does), and the box must span its parent either way.
+      for (const side of ['top', 'right', 'bottom', 'left'] as const) {
+        expect(wrapper.element.style[side]).toBe('0px')
+      }
+      expect(wrapper.element.style.width).toBe('')
+    })
+
+    it('should mark the video as decorative', () => {
+      const wrapper = mountVideo({ background: true, title: '宣传片', alt: '产品宣传片' })
+      const video = videoOf(wrapper).element
+
+      expect(video.getAttribute('aria-hidden')).toBe('true')
+      expect(video.hasAttribute('aria-label')).toBe(false)
+      expect(video.getAttribute('style')).toContain('pointer-events: none')
+    })
+
+    it('should override nativeControls and ignore showPreview()', () => {
+      const wrapper = mountVideo({ background: true, nativeControls: true })
+      expect(videoOf(wrapper).element.hasAttribute('controls')).toBe(false)
+
+      const vm = wrapper.vm as unknown as { showPreview: () => void }
+      vm.showPreview()
+      expect(overlayRoot()).toBeNull()
+      expect(wrapper.emitted('preview')).toBeUndefined()
+    })
+  })
+
+  describe('autoplay policy', () => {
+    it('should force the muted attribute when autoplay is on', () => {
+      const wrapper = mountVideo({ autoplay: true })
+      const video = videoOf(wrapper).element as HTMLVideoElement
+
+      expect(video.hasAttribute('autoplay')).toBe(true)
+      expect(video.hasAttribute('muted')).toBe(true)
+      expect(video.muted).toBe(true)
+    })
+
+    it('should run the background autoplay+muted JS fallback on mount', async () => {
+      // The attribute alone is not enough on every engine: the *property* is
+      // written as well. Instrument the prototype setter, which is what the
+      // component call resolves to, to prove the write actually happens.
+      const mutedSetter = vi.spyOn(HTMLMediaElement.prototype, 'muted', 'set')
+
+      const wrapper = mountVideo({ background: true })
+
+      expect(mutedSetter).toHaveBeenCalled()
+      const video = videoOf(wrapper).element as HTMLVideoElement
+      expect(video.muted).toBe(true)
+
+      // A stray unmute (e.g. a UA policy reset) is re-read from the element on
+      // `play`; the media engine already allows the muted autoplay attempt.
+      video.muted = false
+      await videoOf(wrapper).trigger('play')
+      expect(barOf(wrapper).exists()).toBe(false)
+      expect(video.muted).toBe(false)
     })
   })
 

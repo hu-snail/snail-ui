@@ -12,9 +12,19 @@
  * centered larger video, a header with the optional title, a close button,
  * ESC-to-close and click-mask-to-close.
  *
+ * ## Control bar
+ *
+ * The overlay reuses `SnVideoControls.vue` — the exact same bar the inline box
+ * renders — so the modal player looks identical to the inline one and there is
+ * only one bar stylesheet in the package. The bar is presentational: this
+ * component owns the media element and performs the guarded calls.
+ *
+ * `controls` = our custom bar, `nativeControls` = the UA's own `controls`
+ * attribute (unstylable, inconsistent across browsers — escape hatch only).
+ *
  * Documented divergences from SnImagePreview (not §112 violations):
- *   - No zoom/rotate/pan toolbar: a video already ships its own native
- *     controls, so the overlay only offers "close".
+ *   - No zoom/rotate/pan toolbar: a video has playback controls instead, so
+ *     the overlay itself only offers "close".
  *   - Page scroll is locked while shown, like SnImagePreview.
  *   - The mask uses `--sn-web-*` tokens (overlay/toolbar surfaces) rather
  *     than hardcoded rgba literals.
@@ -27,9 +37,10 @@
  *     @update:show="show = $event" />
  */
 
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { X } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
+import SnVideoControls from './SnVideoControls.vue'
 
 defineOptions({ name: 'SnVideoPreviewOverlay' })
 
@@ -46,10 +57,11 @@ const props = withDefaults(
     /** Initial visibility for uncontrolled usage. */
     defaultShow?: boolean
     /** Close when the mask is clicked. */
-    /** Close when the mask is clicked. */
     closeOnMaskClick?: boolean | undefined
-    /** Native controls on the overlay video. */
+    /** Render OUR custom, beautified control bar (never the native one). */
     controls?: boolean | undefined
+    /** Render the browser's own `controls` attribute (unstylable, UA-drawn). */
+    nativeControls?: boolean | undefined
     /** Start playing as soon as the overlay mounts. */
     autoplay?: boolean | undefined
     /** Loop the overlay video. */
@@ -67,6 +79,7 @@ const props = withDefaults(
     defaultShow: false,
     closeOnMaskClick: true,
     controls: true,
+    nativeControls: false,
     autoplay: false,
     loop: false,
     muted: false,
@@ -102,11 +115,59 @@ function close(): void {
   doUpdateShow(false)
 }
 
+/* ── Playback state fed to the shared control bar ───────────────────────── */
+
+const isPlaying = ref(false)
+const currentTime = ref(0)
+const duration = ref(0)
+const isMutedState = ref(props.muted)
+const isFullscreen = ref(false)
+/** Feature detection: absent in happy-dom and in some embedded WebViews. */
+const canFullscreen = ref(false)
+
+/** Autoplay is only allowed for muted media — same rule as the inline box. */
+const isAutoplay = computed(() => props.autoplay)
+
+watch(
+  () => props.muted,
+  (value) => {
+    isMutedState.value = value
+  },
+)
+
+watch(isAutoplay, (value) => {
+  if (value) isMutedState.value = true
+})
+
 /* ── Media helpers (every call is guarded: happy-dom has no media engine) ── */
 
 function pauseVideo(): void {
   const el = videoRef.value
   if (el && typeof el.pause === 'function') el.pause()
+  isPlaying.value = false
+}
+
+function attemptPlay(): void {
+  const el = videoRef.value
+  if (!el || typeof el.play !== 'function') return
+  isPlaying.value = true
+  const result: unknown = el.play()
+  if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
+    void (result as Promise<unknown>).catch(() => {
+      // Autoplay refused by policy — stay paused on the poster.
+      isPlaying.value = false
+    })
+  }
+}
+
+function togglePlay(): void {
+  if (isPlaying.value) pauseVideo()
+  else attemptPlay()
+}
+
+function syncMutedStateFromElement(): void {
+  const el = videoRef.value
+  if (el) isMutedState.value = el.muted
 }
 
 /** Drop the media resource so no decoder/buffer outlives the overlay (§41). */
@@ -116,6 +177,115 @@ function resetVideoSource(): void {
   pauseVideo()
   el.removeAttribute('src')
   if (typeof el.load === 'function') el.load()
+}
+
+/* ── Bar bridge (bar → media element) ───────────────────────────────────── */
+
+function handleBarTogglePlay(): void {
+  togglePlay()
+}
+
+function handleBarToggleMute(): void {
+  const el = videoRef.value
+  const next = !isMutedState.value
+  if (el) el.muted = next
+  isMutedState.value = el ? el.muted : next
+}
+
+function handleBarSeek(time: number): void {
+  const el = videoRef.value
+  if (!el) return
+  el.currentTime = time
+  currentTime.value = time
+}
+
+/* ── Element listeners (§41: every one is removed on unmount) ───────────── */
+
+const MEDIA_EVENTS = ['timeupdate', 'loadedmetadata', 'durationchange', 'volumechange'] as const
+const mediaListeners: Record<(typeof MEDIA_EVENTS)[number], () => void> = {
+  timeupdate: () => {
+    const el = videoRef.value
+    if (el) currentTime.value = el.currentTime
+  },
+  loadedmetadata: () => {
+    const el = videoRef.value
+    if (el) duration.value = el.duration
+  },
+  durationchange: () => {
+    const el = videoRef.value
+    if (el && Number.isFinite(el.duration)) duration.value = el.duration
+  },
+  volumechange: () => {
+    syncMutedStateFromElement()
+  },
+}
+
+let listenedVideo: HTMLVideoElement | null = null
+
+function attachVideoListeners(): void {
+  const el = videoRef.value
+  if (!el) return
+  for (const name of MEDIA_EVENTS) el.addEventListener(name, mediaListeners[name])
+  listenedVideo = el
+}
+
+function detachVideoListeners(): void {
+  const el = listenedVideo
+  if (!el) return
+  for (const name of MEDIA_EVENTS) el.removeEventListener(name, mediaListeners[name])
+  listenedVideo = null
+}
+
+function handleVideoClick(): void {
+  // The custom bar owns play/pause; the native bar owns the rest. Only a
+  // chrome-less player reacts to a click on the video body.
+  if (props.controls || props.nativeControls) return
+  togglePlay()
+}
+
+/* ── Fullscreen (feature-detected; owns its own document listener) ──────── */
+
+/**
+ * Feature detection for the Fullscreen API. `fullscreenElement` is probed too:
+ * some environments expose a `document.exitFullscreen` function without ever
+ * implementing fullscreen (happy-dom does exactly that), and offering a dead
+ * button is worse than offering none.
+ */
+function supportsFullscreen(el: HTMLVideoElement): boolean {
+  const request: unknown = (el as unknown as { requestFullscreen?: unknown }).requestFullscreen
+  const exit: unknown = (document as unknown as { exitFullscreen?: unknown }).exitFullscreen
+  return (
+    typeof request === 'function' &&
+    typeof exit === 'function' &&
+    Object.prototype.hasOwnProperty.call(document, 'fullscreenElement')
+  )
+}
+
+function isVideoFullscreen(el: HTMLVideoElement | null): boolean {
+  if (!el) return false
+  return document.fullscreenElement === el
+}
+
+function handleFullscreenChange(): void {
+  isFullscreen.value = isVideoFullscreen(videoRef.value)
+}
+
+function toggleFullscreen(): void {
+  const el = videoRef.value
+  if (!el || !canFullscreen.value) return
+  const doc = document as unknown as { exitFullscreen: () => Promise<void> | void }
+  if (isVideoFullscreen(el)) {
+    void doc.exitFullscreen()
+    return
+  }
+  const request = (el as unknown as { requestFullscreen: () => Promise<void> | void })
+    .requestFullscreen
+  const result: unknown = request.call(el)
+  if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
+    void (result as Promise<unknown>).catch(() => {
+      // Rejected (permissions / gesture) — stay in the dialog.
+    })
+  }
 }
 
 /* ── Keyboard + scroll lock while shown ─────────────────────────────────── */
@@ -149,14 +319,28 @@ watch(mergedShow, (shown) => {
   }
 })
 
+onMounted(() => {
+  const el = videoRef.value
+  if (!el) return
+  canFullscreen.value = supportsFullscreen(el)
+  // Autoplay+muted fallback: the attribute alone is not enough everywhere.
+  if (isAutoplay.value && el.muted !== isMutedState.value) el.muted = isMutedState.value
+  if (canFullscreen.value && typeof document !== 'undefined') {
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+  }
+  attachVideoListeners()
+})
+
 onBeforeUnmount(() => {
   if (typeof document !== 'undefined') {
     document.removeEventListener('keydown', handleKeydown)
+    document.removeEventListener('fullscreenchange', handleFullscreenChange)
     if (isScrollLocked) {
       document.documentElement.style.overflow = memoizedHtmlOverflow ?? ''
       isScrollLocked = false
     }
   }
+  detachVideoListeners()
   resetVideoSource()
 })
 
@@ -164,6 +348,18 @@ function handleMaskClick(): void {
   if (props.closeOnMaskClick) close()
 }
 
+function handleVideoPlay(): void {
+  isPlaying.value = true
+  syncMutedStateFromElement()
+}
+
+function handleVideoPause(): void {
+  isPlaying.value = false
+}
+
+function handleVideoEnded(): void {
+  isPlaying.value = false
+}
 </script>
 
 <template>
@@ -190,19 +386,41 @@ function handleMaskClick(): void {
             <SnIcon :icon="X" />
           </button>
         </div>
-        <video
-          ref="videoRef"
-          class="sn-video-preview-overlay__video"
-          :src="src"
-          :poster="poster"
-          :controls="controls"
-          :autoplay="autoplay"
-          :loop="loop"
-          :muted="muted"
-          :preload="preload"
-          :aria-label="dialogLabel"
-          playsinline
-        />
+        <div class="sn-video-preview-overlay__stage">
+          <video
+            ref="videoRef"
+            class="sn-video-preview-overlay__video"
+            :src="src"
+            :poster="poster"
+            :controls="nativeControls"
+            :autoplay="isAutoplay"
+            :loop="loop"
+            :muted="isMutedState"
+            :preload="preload"
+            :aria-label="dialogLabel"
+            playsinline
+            webkit-playsinline
+            @click="handleVideoClick"
+            @play="handleVideoPlay"
+            @pause="handleVideoPause"
+            @ended="handleVideoEnded"
+          />
+          <!-- Same bar as the inline box: one implementation, one stylesheet. -->
+          <div v-if="controls" class="sn-video-preview-overlay__controls">
+            <SnVideoControls
+              :is-playing="isPlaying"
+              :current-time="currentTime"
+              :duration="duration"
+              :is-muted="isMutedState"
+              :is-fullscreen="isFullscreen"
+              :can-fullscreen="canFullscreen"
+              @toggle-play="handleBarTogglePlay"
+              @toggle-mute="handleBarToggleMute"
+              @seek="handleBarSeek"
+              @toggle-fullscreen="toggleFullscreen"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </Teleport>
@@ -278,6 +496,15 @@ function handleMaskClick(): void {
   outline-offset: 2px;
 }
 
+/* Positioning context for the shared control bar. */
+.sn-video-preview-overlay__stage {
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  border-radius: var(--sn-web-radius-md, 6px);
+  background: var(--sn-web-color-background-surface, #000000);
+}
+
 .sn-video-preview-overlay__video {
   object-fit: contain;
   display: block;
@@ -285,8 +512,16 @@ function handleMaskClick(): void {
   max-height: calc(
     100vh - var(--sn-web-video-preview-overlay-header-height, 32px) - var(--sn-web-video-preview-overlay-gutter, 48px)
   );
-  border-radius: var(--sn-web-radius-md, 6px);
   background: var(--sn-web-color-background-surface, #000000);
+}
+
+.sn-video-preview-overlay__controls {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: var(--sn-web-video-preview-controls-z-index, 1);
+  line-height: 1;
 }
 
 @keyframes sn-video-preview-overlay-fade-in {
