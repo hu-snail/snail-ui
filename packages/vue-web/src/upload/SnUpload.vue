@@ -4,23 +4,31 @@
  *
  * Reference library: naive-ui `n-upload`
  *   (https://www.naiveui.com/zh-CN/light/components/upload)
- * Core surface only (the drag-upload/chunk/directory/abstract advanced
- * faces are out of scope — see ai-description.md).
+ * Core surface: chunked / directory / abstract upload stay out of scope
+ * (see ai-description.md). The drag zone IS first class — the whole root is
+ * a drop target, and `dragger` swaps the compact trigger for a full dashed
+ * drop area (additive divergence: n-upload has no `dragger`).
  *
  * Semantics:
- *   - trigger: default "click to upload" button (inline SVG upload glyph)
- *     + a drag zone (dragover highlight, drop adds files)
+ *   - trigger: default "click to upload" button (inline SVG upload glyph);
+ *     `dragger` renders the same accept path as a dashed drop area
+ *   - the whole root is a drop target (dragover highlight, drop adds files)
  *   - picked files enter an internal (uncontrolled) list; `update:fileList`
  *     + `change` cascade out on every mutation for hosts that want to mirror
  *   - max: file-count cap — the trigger hides once reached and drops past
  *     the cap are ignored
- *   - listType 'text' | 'image' (image creates an objectURL thumbnail)
+ *   - listType 'text' | 'image' (image creates an objectURL thumbnail);
+ *     previewable entries get an eye affordance next to the remove button
  *   - status machine pending → uploading → done | error; a `customRequest`
  *     Promise drives it, without one no network request is made and the
- *     entry flips straight to done
+ *     entry flips straight to done. The driver may write `percentage`
+ *     (0–100) on the live entry; `showProgress` then renders a determinate
+ *     bar in place of the indeterminate spinner
  *   - defaultUpload false → files land as pending and wait for the exposed
  *     submit() (accepts an optional entry id)
  *   - beforeUpload may reject a file entirely (sync boolean or Promise)
+ *   - onPreview (prop) / `preview` (event) fire when an entry's preview
+ *     affordance is activated
  *
  * Per AGENTS.md §41: objectURLs created for thumbnails are revoked on
  * remove + onBeforeUnmount.
@@ -34,6 +42,7 @@ import type { ComponentPublicInstance } from 'vue'
 import SnIcon from '../icon/SnIcon.vue'
 import {
   CloseIcon,
+  EyeIcon,
   LoadingIcon,
   UploadIcon,
 } from './sn-upload-icons'
@@ -42,6 +51,7 @@ import type {
   SnUploadCustomRequest,
   SnUploadFile,
   SnUploadListType,
+  SnUploadPreviewHandler,
 } from './sn-upload-types'
 
 defineOptions({ name: 'SnUpload' })
@@ -71,6 +81,25 @@ const props = withDefaults(
     defaultUpload?: boolean
     /** Per-file gate; false (or a throw) keeps the file out of the list. */
     onBeforeUpload?: SnUploadBeforeUpload | undefined
+    /**
+     * Render a full dashed drop area instead of the compact trigger button.
+     * Additive divergence — n-upload has no `dragger`. The accept path is
+     * identical (click opens the picker, drops anywhere on the root land in
+     * the list).
+     */
+    dragger?: boolean
+    /**
+     * Render a determinate progress bar on `uploading` entries that carry a
+     * `percentage` (written by the `customRequest` driver). Entries without
+     * one keep the indeterminate spinner.
+     */
+    showProgress?: boolean
+    /**
+     * Called when an entry's preview affordance is activated (mirrors
+     * n-upload `onPreview`). The `preview` event fires as well, so a host
+     * can use either the prop or `@preview`.
+     */
+    onPreview?: SnUploadPreviewHandler | undefined
   }>(),
   {
     multiple: false,
@@ -82,6 +111,9 @@ const props = withDefaults(
     customRequest: undefined,
     defaultUpload: true,
     onBeforeUpload: undefined,
+    dragger: false,
+    showProgress: true,
+    onPreview: undefined,
   },
 )
 
@@ -92,6 +124,8 @@ const emit = defineEmits<{
   (e: 'change', fileList: SnUploadFile[]): void
   /** A file was removed from the list. */
   (e: 'remove', file: SnUploadFile): void
+  /** An entry's preview affordance was activated (`onPreview` also fires). */
+  (e: 'preview', file: SnUploadFile): void
 }>()
 
 defineSlots<{
@@ -136,6 +170,38 @@ const isAtMax = computed(() =>
 
 /** The trigger renders only when interactive and below the max cap. */
 const triggerVisible = computed(() => isInteractive.value && !isAtMax.value)
+
+/**
+ * Whether an entry offers a preview affordance: it has an objectURL
+ * thumbnail, or the host supplied `onPreview`. Disabled / read-only lists
+ * render no affordance at all.
+ */
+function isPreviewable(file: SnUploadFile): boolean {
+  return isInteractive.value && (props.onPreview !== undefined || file.url !== undefined)
+}
+
+/**
+ * Activate an entry's preview.
+ *
+ * Only `emit` delivers it: because `preview` is a declared emit, Vue routes
+ * both the `onPreview` prop and a `@preview` listener to the same handler,
+ * so calling the prop directly as well would invoke it twice.
+ */
+function previewFile(file: SnUploadFile): void {
+  emit('preview', file)
+}
+
+/** Clamped 0–100 progress, or `undefined` when the entry has no value yet. */
+function clampedPercentage(file: SnUploadFile): number | undefined {
+  const value = file.percentage
+  if (typeof value !== 'number' || Number.isNaN(value)) return undefined
+  return Math.min(100, Math.max(0, Math.round(value)))
+}
+
+/** Whether an uploading entry draws the determinate bar instead of a spinner. */
+function showsProgressBar(file: SnUploadFile): boolean {
+  return props.showProgress && file.status === 'uploading' && clampedPercentage(file) !== undefined
+}
 
 /* ─────────── Helpers ─────────── */
 
@@ -344,7 +410,24 @@ defineExpose({ submit })
     >
 
     <button
-      v-if="triggerVisible"
+      v-if="triggerVisible && dragger"
+      type="button"
+      class="sn-upload__dragger"
+      :class="{ 'sn-upload__dragger--over': isDragging }"
+      aria-label="Drag files here or click to upload"
+      @click="openPicker"
+    >
+      <slot name="trigger">
+        <SnIcon :icon="UploadIcon" :size="28" class="sn-upload__dragger-glyph" />
+        <span class="sn-upload__dragger-title">点击或拖拽文件到此区域上传</span>
+        <span class="sn-upload__dragger-hint">
+          支持单个或批量上传{{ accept ? `，仅接受 ${accept}` : '' }}
+        </span>
+      </slot>
+    </button>
+
+    <button
+      v-else-if="triggerVisible"
       type="button"
       class="sn-upload__trigger"
       aria-label="Upload files"
@@ -373,7 +456,16 @@ defineExpose({ submit })
           :src="file.url"
           :alt="file.name"
         >
-        <span class="sn-upload__name" :title="file.name">{{ file.name }}</span>
+        <button
+          v-if="isPreviewable(file)"
+          type="button"
+          class="sn-upload__name sn-upload__name--previewable"
+          :title="file.name"
+          @click="previewFile(file)"
+        >
+          {{ file.name }}
+        </button>
+        <span v-else class="sn-upload__name" :title="file.name">{{ file.name }}</span>
         <span class="sn-upload__size">{{ formatFileSize(file.size) }}</span>
         <span class="sn-upload__status" :data-status="file.status">
           <SnIcon
@@ -385,6 +477,15 @@ defineExpose({ submit })
           <template v-else>{{ statusText(file.status) }}</template>
         </span>
         <button
+          v-if="isPreviewable(file)"
+          type="button"
+          class="sn-upload__preview"
+          :aria-label="`Preview ${file.name}`"
+          @click="previewFile(file)"
+        >
+          <SnIcon :icon="EyeIcon" :size="12" />
+        </button>
+        <button
           v-if="isInteractive"
           type="button"
           class="sn-upload__remove"
@@ -393,6 +494,20 @@ defineExpose({ submit })
         >
           <SnIcon :icon="CloseIcon" :size="10" />
         </button>
+        <span
+          v-if="showsProgressBar(file)"
+          class="sn-upload__progress"
+          role="progressbar"
+          :aria-valuenow="clampedPercentage(file)"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          :aria-label="`Uploading ${file.name}`"
+        >
+          <span
+            class="sn-upload__progress-fill"
+            :style="{ width: `${clampedPercentage(file)}%` }"
+          />
+        </span>
       </li>
     </ul>
   </div>
@@ -561,5 +676,118 @@ defineExpose({ submit })
 .sn-upload__remove:hover {
   color: var(--sn-web-upload-remove-color-hover, var(--sn-web-color-text-primary));
   background-color: var(--sn-web-upload-remove-bg-hover, var(--sn-web-color-background-overlay));
+}
+
+/* ---------- Drop area (`dragger`) ---------- */
+.sn-upload__dragger {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  min-height: var(--sn-web-upload-dragger-height, 140px);
+  padding: var(--sn-web-upload-dragger-padding, 16px 20px);
+  border: 1px dashed
+    var(--sn-web-upload-dragger-border-color, var(--sn-web-color-border-default));
+  border-radius: var(--sn-web-upload-radius, 6px);
+  background-color: var(--sn-web-upload-dragger-bg, var(--sn-web-color-background-subtle));
+  color: var(--sn-web-upload-text-color, var(--sn-web-color-text-primary));
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease-out,
+    background-color 0.15s ease-out;
+}
+
+.sn-upload__dragger:hover,
+.sn-upload__dragger:focus-visible,
+.sn-upload__dragger--over {
+  border-color: var(--sn-web-upload-drag-border-color, var(--sn-web-color-action-primary));
+}
+
+.sn-upload__dragger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--sn-web-focus-ring, var(--sn-web-color-action-primary-soft));
+}
+
+.sn-upload__dragger-glyph {
+  color: var(--sn-web-upload-drag-border-color, var(--sn-web-color-action-primary));
+}
+
+.sn-upload__dragger-title {
+  font-size: var(--sn-web-upload-font-size, 14px);
+}
+
+.sn-upload__dragger-hint {
+  font-size: calc(1em - 2px);
+  color: var(--sn-web-upload-size-color, var(--sn-web-color-text-tertiary));
+}
+
+/* ---------- Progress bar (uploading entries with a percentage) ---------- */
+.sn-upload__item {
+  /* The bar spans its own line under the entry's metadata row. */
+  flex-wrap: wrap;
+}
+
+.sn-upload__progress {
+  display: block;
+  flex: 0 0 100%;
+  height: var(--sn-web-upload-progress-height, 2px);
+  margin-top: var(--sn-web-upload-item-gap, 4px);
+  border-radius: 1px;
+  background-color: var(--sn-web-upload-progress-track, var(--sn-web-color-background-overlay));
+  overflow: hidden;
+}
+
+.sn-upload__progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background-color: var(--sn-web-upload-progress-fill, var(--sn-web-color-action-primary));
+  transition: width 0.2s linear;
+}
+
+/* ---------- Click-to-preview affordances ---------- */
+.sn-upload__name--previewable {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sn-upload__name--previewable:hover {
+  color: var(--sn-web-upload-trigger-color-hover, var(--sn-web-color-action-primary));
+}
+
+.sn-upload__preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin-left: auto;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sn-web-upload-remove-color, var(--sn-web-color-text-tertiary));
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.sn-upload__preview:hover {
+  color: var(--sn-web-upload-trigger-color-hover, var(--sn-web-color-action-primary));
+  background-color: var(--sn-web-upload-remove-bg-hover, var(--sn-web-color-background-overlay));
+}
+
+/* With a preview button present it owns the auto margin; the remove button
+ * only needs a hairline gap (higher specificity than `.sn-upload__remove`). */
+.sn-upload__preview + .sn-upload__remove {
+  margin-left: 4px;
 }
 </style>

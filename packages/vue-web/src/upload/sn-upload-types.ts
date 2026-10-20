@@ -44,8 +44,16 @@ export interface SnUploadFile {
    * `| undefined` per `exactOptionalPropertyTypes` — revoke clears it.
    */
   url?: string | undefined
+  /**
+   * Upload progress in percent (0–100). A `customRequest` driver may write
+   * it on the live entry while the upload runs; with `showProgress` on, the
+   * entry renders a determinate progress bar instead of the indeterminate
+   * spinner. Values outside 0–100 are clamped.
+   *
+   * `| undefined` because `pending` entries have no progress yet.
+   */
+  percentage?: number | undefined
 }
-
 /**
  * Custom upload driver. Resolve → the entry flips to `done`; reject →
  * `error`. Receives the live entry plus a snapshot of the current list.
@@ -62,3 +70,10 @@ export type SnUploadCustomRequest = (
 export type SnUploadBeforeUpload = (
   file: SnUploadFile,
 ) => boolean | Promise<boolean>
+
+/**
+ * Click-to-preview handler, mirroring n-upload `onPreview`. Called with the
+ * clicked entry; `update:fileList` / `preview` also fire so a host can use
+ * either the prop or the event.
+ */
+export type SnUploadPreviewHandler = (file: SnUploadFile) => void

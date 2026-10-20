@@ -8,10 +8,11 @@ Web 端文件上传组件。位于 `packages/vue-web/src/upload/`。
 
 ## 概述
 
-`SnUpload` 提供一个「点击上传」触发按钮 + 整块拖放区域，选中或拖入的
+`SnUpload` 提供四种触发形态——紧凑按钮（默认）、`dragger` 整块虚线拖放区、
+宿主组合出的「输入框 + 上传」（见 docs 演示）、弹窗内上传——选中或拖入的
 文件进入内部维护的列表（非受控内部态为主），每项展示文件名、大小、
-状态（pending / uploading / done / error）与移除按钮。上传行为完全由
-`customRequest` 驱动：组件自身**不发任何网络请求**；未传
+状态（pending / uploading / done / error）、可选进度条、预览入口与移除按钮。
+上传行为完全由 `customRequest` 驱动：组件自身**不发任何网络请求**；未传
 `customRequest` 时文件入列后直接置为 `done`（纯本地状态模式）。
 
 ## 状态机
@@ -25,6 +26,8 @@ pending ──submit/startUpload──▶ uploading ──resolve──▶ done
 - `defaultUpload: false`：文件停留在 `pending`，等待 ref 上的
   `submit(fileId?)` 手动触发（不传 id 则 flush 全部 pending）。
 - 无 `customRequest`：`pending` 直接翻转 `done`，不发网络请求。
+- 驱动可在上传过程中往条目写 `percentage`（0–100，越界收敛）：`showProgress`
+  打开时该条目渲染确定性进度条，不写则保持不确定转圈。
 
 ## Props
 
@@ -40,6 +43,9 @@ pending ──submit/startUpload──▶ uploading ──resolve──▶ done
 | `customRequest` | `(file, fileList) => Promise<void>` | — | 自定义上传驱动；resolve → `done`，reject → `error`；未传则不发网络请求 |
 | `defaultUpload` | `boolean` | `true` | `false` 时文件只入列（pending），等 `submit()` 手动上传 |
 | `onBeforeUpload` | `(file) => boolean \| Promise<boolean>` | — | 单文件闸门；返回 / resolve `false`（或 throw）则该文件不入列 |
+| `dragger` | `boolean` | `false` | 整块虚线拖放区替代紧凑触发按钮（追加式偏离，见「与上游的差异」） |
+| `showProgress` | `boolean` | `true` | 上传中且条目带 `percentage` 时渲染确定性进度条，否则退回转圈 |
+| `onPreview` | `(file: SnUploadFile) => void` | — | 点击预览回调（镜像上游 `onPreview`）；与 `@preview` 同一处理函数，只调用一次 |
 
 ## Events
 
@@ -48,6 +54,7 @@ pending ──submit/startUpload──▶ uploading ──resolve──▶ done
 | `update:fileList` | `SnUploadFile[]` | 列表任何变更（可选拿来做受控镜像） |
 | `change` | `SnUploadFile[]` | 同上 |
 | `remove` | `SnUploadFile` | 某文件被移除 |
+| `preview` | `SnUploadFile` | 条目预览入口被激活（名称或眼镜按钮） |
 
 ## Slots
 
@@ -71,12 +78,27 @@ pending ──submit/startUpload──▶ uploading ──resolve──▶ done
 - **max**：列表长度到 `max` 后触发按钮隐藏；一次拖入超额部分被丢弃。
 - **移除**：× 按钮，先 revoke 缩略图 objectURL 再出列，随后 emit
   `remove` + `update:fileList` / `change`。
+- **进度**：`showProgress`（默认开）下，带 `percentage` 的 uploading 条目
+  渲染确定性进度条（`role="progressbar"` + `aria-valuenow`），否则显示转圈。
+- **预览**：条目可预览时（`listType: 'image'` 已有 objectURL 缩略图，或宿主
+  传了 `onPreview`）列表右侧渲染眼镜按钮，条目名称也变成可点；两条路径都
+  派发 `preview` 事件（`emit` 是唯一投递路径，避免与 `onPreview` 双调用）。
+  `disabled` / `readonly` 下不渲染预览入口。
 
 ## objectURL 生命周期（§41 dispose）
 
 `listType: 'image'` 时每个文件入列即 `URL.createObjectURL`；
 - 移除该文件 → 立即 `revokeObjectURL`
 - 组件卸载（onBeforeUnmount）→ 逐条 revoke 所有剩余 objectURL
+
+## 与上游的差异（§112）
+
+上游 `n-upload` 没有 `dragger`，也没有内置进度条与预览入口（其
+`listType: 'image-card'` 的预览是另一套）。本组件的三处增补属于**追加式
+偏离**：`dragger`（虚线拖放区）、`percentage` + `showProgress`（确定性
+进度条）、`onPreview` + `preview` 事件（点击预览）。`customRequest`
+签名（`(file, fileList) => Promise`）保持本仓库既有形态，未改成上游的
+options 对象，避免破坏已发布 API；驱动通过写入条目 `percentage` 回报进度。
 
 ## Tokens
 

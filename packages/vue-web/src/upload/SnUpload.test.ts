@@ -339,4 +339,155 @@ describe('SnUpload', () => {
     expect(wrapper.find('[data-testid="custom-trigger"]').exists()).toBe(true)
     expect(wrapper.get('.sn-upload__trigger').text()).not.toContain('点击上传')
   })
+  /* ───── dragger mode ───── */
+
+  it('renders a dashed drop area instead of the trigger button when dragger is on', () => {
+    const wrapper = mountUpload({ dragger: true })
+    const dragger = wrapper.get('.sn-upload__dragger')
+    expect(dragger.element.tagName).toBe('BUTTON')
+    expect(dragger.text()).toContain('点击或拖拽文件到此区域上传')
+    expect(wrapper.find('.sn-upload__trigger').exists()).toBe(false)
+  })
+
+  it('opens the picker from the drop area', async () => {
+    const wrapper = mountUpload({ dragger: true })
+    const input = wrapper.get('input[type="file"]').element as HTMLInputElement
+    const clickSpy = vi.spyOn(input, 'click').mockImplementation(() => {})
+    await wrapper.get('.sn-upload__dragger').trigger('click')
+    expect(clickSpy).toHaveBeenCalledTimes(1)
+    clickSpy.mockRestore()
+  })
+
+  it('marks the drop area while a drag hovers it', async () => {
+    const wrapper = mountUpload({ dragger: true })
+    dispatchDragEvent(wrapper, 'dragover', [])
+    await nextTick()
+    expect(wrapper.get('.sn-upload__dragger').classes()).toContain('sn-upload__dragger--over')
+    dispatchDragEvent(wrapper, 'dragleave', [])
+    await nextTick()
+    expect(wrapper.get('.sn-upload__dragger').classes()).not.toContain('sn-upload__dragger--over')
+  })
+
+  it('accepts a drop onto the root while dragger is on', async () => {
+    const wrapper = mountUpload({ dragger: true, multiple: true })
+    dispatchDragEvent(wrapper, 'drop', [makeFile('a.txt'), makeFile('b.txt')])
+    await nextTick()
+    await Promise.resolve()
+    expect(wrapper.findAll('.sn-upload__item')).toHaveLength(2)
+  })
+
+  it('renders the custom trigger slot inside the drop area', () => {
+    const wrapper = mount(SnUpload, {
+      props: { dragger: true },
+      slots: { trigger: '<i data-testid="custom-drop">拖到这里</i>' },
+    })
+    expect(wrapper.find('[data-testid="custom-drop"]').exists()).toBe(true)
+    expect(wrapper.get('.sn-upload__dragger').text()).not.toContain('点击或拖拽')
+  })
+
+  /* ───── progress bar ───── */
+
+  it('renders a determinate bar while an entry uploads with a percentage', async () => {
+    const wrapper = mountUpload({
+      customRequest: (file: SnUploadFile) => {
+        file.percentage = 40
+        return new Promise<void>(() => {})
+      },
+    })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    await nextTick()
+    const bar = wrapper.get('.sn-upload__progress')
+    expect(bar.attributes('role')).toBe('progressbar')
+    expect(bar.attributes('aria-valuenow')).toBe('40')
+    expect(wrapper.get('.sn-upload__progress-fill').attributes('style')).toContain('width: 40%')
+  })
+
+  it('clamps a percentage outside 0–100', async () => {
+    const wrapper = mountUpload({
+      customRequest: (file: SnUploadFile) => {
+        file.percentage = 150
+        return new Promise<void>(() => {})
+      },
+    })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    await nextTick()
+    expect(wrapper.get('.sn-upload__progress').attributes('aria-valuenow')).toBe('100')
+  })
+
+  it('falls back to the spinner when the driver writes no percentage', async () => {
+    const wrapper = mountUpload({
+      customRequest: () => new Promise<void>(() => {}),
+    })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    await nextTick()
+    expect(wrapper.find('.sn-upload__progress').exists()).toBe(false)
+    expect(wrapper.find('.sn-upload__spin').exists()).toBe(true)
+  })
+
+  it('hides the bar when showProgress is false', async () => {
+    const wrapper = mountUpload({
+      showProgress: false,
+      customRequest: (file: SnUploadFile) => {
+        file.percentage = 10
+        return new Promise<void>(() => {})
+      },
+    })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    await nextTick()
+    expect(wrapper.find('.sn-upload__progress').exists()).toBe(false)
+  })
+
+  /* ───── click-to-preview ───── */
+
+  it('renders no preview affordance for a plain text entry', async () => {
+    const wrapper = mountUpload()
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    expect(wrapper.find('.sn-upload__preview').exists()).toBe(false)
+    expect(wrapper.find('.sn-upload__name--previewable').exists()).toBe(false)
+  })
+
+  it('shows the preview affordance when onPreview is provided', async () => {
+    const wrapper = mountUpload({ onPreview: vi.fn() })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    expect(wrapper.find('.sn-upload__preview').exists()).toBe(true)
+    expect(wrapper.find('.sn-upload__name--previewable').exists()).toBe(true)
+  })
+
+  it('calls onPreview and emits preview when the eye affordance is clicked', async () => {
+    const onPreview = vi.fn()
+    const wrapper = mountUpload({ onPreview })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    await wrapper.get('.sn-upload__preview').trigger('click')
+    expect(onPreview).toHaveBeenCalledTimes(1)
+    const emitted = wrapper.emitted('preview')
+    expect(emitted).toHaveLength(1)
+    expect((emitted?.[0]?.[0] as SnUploadFile).name).toBe('a.txt')
+  })
+
+  it('also activates the preview from the entry name', async () => {
+    const onPreview = vi.fn()
+    const wrapper = mountUpload({ onPreview })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    await wrapper.get('.sn-upload__name--previewable').trigger('click')
+    expect(onPreview).toHaveBeenCalledTimes(1)
+    expect(wrapper.emitted('preview')).toHaveLength(1)
+  })
+
+  it('offers preview for an image thumbnail even without onPreview', async () => {
+    const createSpy = vi.spyOn(URL, 'createObjectURL')
+    const wrapper = mountUpload({ listType: 'image' })
+    await pickFiles(wrapper, [makeFile('a.png')])
+    expect(wrapper.find('.sn-upload__thumb').exists()).toBe(true)
+    expect(wrapper.find('.sn-upload__preview').exists()).toBe(true)
+    createSpy.mockRestore()
+  })
+
+  it('drops the preview affordance when the list turns read-only', async () => {
+    const wrapper = mountUpload({ onPreview: vi.fn() })
+    await pickFiles(wrapper, [makeFile('a.txt')])
+    expect(wrapper.find('.sn-upload__preview').exists()).toBe(true)
+    await wrapper.setProps({ readonly: true })
+    expect(wrapper.find('.sn-upload__preview').exists()).toBe(false)
+    expect(wrapper.find('.sn-upload__name--previewable').exists()).toBe(false)
+  })
 })

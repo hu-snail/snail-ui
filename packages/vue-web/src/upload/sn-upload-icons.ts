@@ -53,3 +53,9 @@ export const LoadingIcon: IconComponent = svgIconMulti([
   'M2 12h4',
   'm4.9 7.8 2.9-2.9',
 ])
+
+/** Eye — preview glyph for a previewable list entry. */
+export const EyeIcon: IconComponent = svgIconMulti([
+  'M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z',
+  'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+])
