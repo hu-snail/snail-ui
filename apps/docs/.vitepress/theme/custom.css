@@ -941,3 +941,34 @@ table.props code {
   margin-top: 6px;
   padding: 0;
 }
+
+/* =====================================================================
+   14. Template-end filter (the web / uni-app capsule)
+   ----------------------------------------------------------------------
+ * The 模板 sidebar lists one page per AI 套件 template, and every page covers
+ * both ends inside the article. Three of those templates are web-only, so
+ * `<html data-sn-template-end="uni">` — set by
+ * components/SnDocsTemplateEnd.vue through utils/template-end.ts — hides their
+ * sidebar entries and the list then mirrors what the selected end ships.
+ *
+ * `:has()` targets the item WRAPPER because vitepress renders
+ * `.VPSidebarItem > .item > a[href]`; hiding the <a> alone would leave the
+ * wrapper's spacing behind as a gap.
+ *
+ * Hrefs are matched with `*=` because dev serves `/templates/ai/chat` while a
+ * build emits `/templates/ai/chat.html`, and the /en/ locale prefixes the whole
+ * path. Keep these three in sync with WEB_ONLY_ROUTES in
+ * utils/template-end.ts, which the capsule's "this page is web-only" hint is
+ * built from.
+ *
+ * Nothing is hidden while the attribute is absent, so SSR and pages without a
+ * sidebar are unaffected. The capsule itself needs no outer margin: vitepress
+ * places `sidebar-nav-before` inside `nav.nav`, i.e. within VPSidebar's own
+ * padding.
+ * ===================================================================== */
+
+html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/templates/ai/assistant']),
+html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/templates/ai/prompt']),
+html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/templates/ai/model-config']) {
+  display: none;
+}

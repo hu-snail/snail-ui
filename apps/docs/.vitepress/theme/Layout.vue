@@ -32,11 +32,13 @@ import SnDocsFooter from '../components/SnDocsFooter.vue'
 import SnDocsHome from '../components/SnDocsHome.vue'
 import SnDocsSidebarToggle from '../components/SnDocsSidebarToggle.vue'
 import SnDocsDocActions from '../components/SnDocsDocActions.vue'
+import SnDocsTemplateEnd from '../components/SnDocsTemplateEnd.vue'
 import { enNav, nav } from '../config-nav'
 
 const route = useRoute()
 const isHome = computed(() => route.path === '/' || route.path === '')
 const showFab = computed(() => route.path.startsWith('/components/'))
+const showTemplateEnd = computed(() => route.path.startsWith('/templates/'))
 
 /** The `/en/` locale mirrors the root locale; swap the nav list with it. */
 const isEn = computed(() => route.path === '/en' || route.path.startsWith('/en/'))
@@ -48,6 +50,14 @@ const navItems = computed(() => (isEn.value ? enNav : nav))
     <!-- Replace the default top nav with SnDocsNav (real @snui/vue-web). -->
     <template #nav-bar-content-before>
       <SnDocsNav :items="navItems" />
+    </template>
+
+    <!-- 模板 section: pick the end you are building for. The capsule rides
+         vitepress's `sidebar-nav-before` slot, i.e. directly above the 概览
+         group, and filters the template entries down to that end's templates
+         (state: utils/template-end.ts, filter: custom.css §14). -->
+    <template v-if="showTemplateEnd" #sidebar-nav-before>
+      <SnDocsTemplateEnd />
     </template>
 
     <!-- Sidebar collapse handle: a tab riding the sidebar's right border
