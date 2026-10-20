@@ -645,3 +645,31 @@ table.props code {
     padding-left: var(--vp-sidebar-width) !important;
   }
 }
+
+/* =====================================================================
+   11. Maximise the article width on doc pages
+   ----------------------------------------------------------------------
+ * VitePress caps the article at 688px whenever the page has an aside (the
+ * right-hand outline): `.VPDoc.has-aside .content-container { max-width:
+ * 688px }`. Measured at 1339px that left the prose 683px wide inside a
+ * 1067px doc area, i.e. a large dead column on the right.
+ *
+ * Let the article fill the space between the sidebar and the outline. The
+ * 32px gutters owned by `.VPDoc` keep the requested breathing room on both
+ * sides, so the text never runs edge-to-edge.
+ * ===================================================================== */
+/* `!important` is required: vitepress ships this rule from a `<style scoped>`
+ * block, so it lands as `.VPDoc.has-aside .content-container[data-v-…]` and
+ * outranks any unscoped selector we can write. */
+.VPDoc.has-aside .content-container {
+  max-width: 100% !important;
+}
+
+/* VitePress pads BOTH `.VPDoc` (32px) and `.content` (32px) horizontally, i.e.
+ * 64px of gutter on each side of the article. Keep the outer `.VPDoc` gutter
+ * and drop the inner duplicate so the article gets those 64px back; the text
+ * still keeps a 32px breathing space on both sides. */
+.VPDoc > .container > .content {
+  padding-left: 0;
+  padding-right: 0;
+}
