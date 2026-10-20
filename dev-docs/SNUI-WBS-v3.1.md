@@ -360,6 +360,7 @@ DD-022/023 为后续追加：SnComment（naive 无此组件，按用户指定参
 | AUI-TPL-005 | 模板 `ai-description.md` + CLI `llms-txt` 集成 | 🔵 |
 | AUI-TPL-006 | AI Repair 模板 Patch 通道 | 🔵 |
 | AUI-TPL-007 | 统一 AI 助手模板 `SnAiAssistant`（对话页 + 模型配置抽屉）+ 模板 CSS 按需切分（`cssCodeSplit` + 逐模板样式文件，废弃单一全量样式文件）+ 文档按「AI 套件」大分类重组到 `/templates/ai/*` | ✅ |
+| AUI-TPL-008 | 助手改为真正的组装：抽出共用轮次引擎 `useAiTurnQueue`（`SnAiChat` 与 `SnAiAssistant` 各挂载它），`SnAiChat` / `SnAiAssistant` 均组装自 消息列表 + 输入框 + 引擎（助手再加 模型配置）+ 引擎子路径 `@snui/templates/web/turn-queue` 公开 | ✅ |
 
 ---
 

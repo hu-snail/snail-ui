@@ -138,3 +138,29 @@ ADR-0001 确定了 Component First 底座：`@snui/vue-web` / `@snui/uni` 提供
   `exports`，否则子路径不可达 / 样式不会随模板加载；
 - 旧的 `/templates/web/*`、`/templates/uni/*` 路径不再存在（文档站尚未发布，
   未做重定向）。
+
+## Revision (v3.2.2) — 助手改为真正的组装
+
+原先 `SnAiAssistant` 是「包一层」：内部渲染 `SnAiChat`，再加一个模型配置抽屉。它虽然能用，
+但组装关系是隐藏的——助手依赖一个同级页面，而不是依赖那些零件，`SnAiChat` 里的调度也无法被
+另一种布局复用。
+
+改成：
+
+1. **抽出轮次引擎 `useAiTurnQueue`**（`src/web/use-ai-turn-queue.ts`）：排队、轮次分发、
+   流式折叠、结构化错误、中断与卸载回收，全部集中在这里。`SnAiChat` 与 `SnAiAssistant`
+   都只挂载它，不再各写一份。
+2. **两个页面模板都是组装页**：
+   - `SnAiChat` = 消息列表模板 + 输入框模板 + 引擎；
+   - `SnAiAssistant` = 消息列表模板 + 输入框模板 + 模型配置模板（抽屉）+ 引擎。
+   助手不再包含 `SnAiChat`。
+3. **引擎作为公开子路径**：`@snui/templates/web/turn-queue`，使用方可以拿零件 + 引擎
+   自己组装页面，行为与两个页面模板一致（同一个实现）。
+
+后果：
+
+- `SnAiChat` 从 434 行降到 ~205 行（§105 的 400 行上限恢复达标）；助手多出的样式是页面
+  框架，不是逻辑；
+- 助手的 props / 事件与 `SnAiChat` 同名同语义，两者互换仍只需改标签名；
+- 新增页面模板时必须接入同一个引擎，否则排队 / 中断语义会与既有页面分叉；
+- uni 端仍是独立的 `sn-ai-chat` / `sn-ai-message`（本次未做引擎共享）。
