@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import type { Options as MiniSearchOptions } from 'minisearch'
 import { rpxTransform } from './utils/rpx-transform'
 import { rawDocSource } from './utils/raw-doc-source'
+import { demoGrid } from './utils/demo-grid'
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -553,9 +554,14 @@ export default defineConfig({
 
   // Publish each page's raw markdown so the "copy document" button can hand
   // the reader the exact source. See ./utils/raw-doc-source.ts.
+  //
+  // Group every demo section into a two-per-row card grid (`sn-demo-grid` /
+  // `sn-demo-cell`), so the demo cards read like naive-ui's. See
+  // ./utils/demo-grid.ts.
   markdown: {
     config: (md) => {
       rawDocSource(md)
+      demoGrid(md)
     },
   },
 

@@ -714,3 +714,116 @@ table.props code {
     display: none;
   }
 }
+
+/* =====================================================================
+   13. Demo cards — two per row (naive-ui style)
+   ----------------------------------------------------------------------
+ * utils/demo-grid.ts wraps every "one demo per heading" section in
+ * `.sn-demo-cell`, and every run of two or more consecutive cells in
+ * `.sn-demo-grid`. So a doc page reads as a grid of cards (two per row)
+ * instead of one full-width preview per row.
+ *
+ * These rules reach across a component boundary: `.sn-demo*` is a
+ * `<style scoped>` block inside Demo.vue, i.e. it ships as
+ * `.sn-demo__card[data-v-…]` (2 class-level selectors). Prefixing with
+ * `.vp-doc .sn-demo-cell` puts ours at 3, which wins no matter which
+ * order the two stylesheets end up in the bundle — no `!important`
+ * needed.
+ * ===================================================================== */
+
+.sn-demo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+  margin: 16px 0 24px;
+}
+
+/* Two per row once the article can hold them. 1200px is where the article
+ * (sidebar + gutters excluded) is ~860px, i.e. two ~420px cards; below that
+ * one full-width card keeps wider demos (forms, model config) usable. */
+@media (min-width: 1200px) {
+  .sn-demo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* The card. */
+.vp-doc .sn-demo-cell {
+  min-width: 0;
+  margin: 16px 0 24px;
+  padding: 16px 16px 12px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  background: var(--vp-c-bg);
+}
+
+/* Inside the grid the gap and the grid margin own the spacing. */
+.sn-demo-grid > .sn-demo-cell {
+  margin: 0;
+}
+
+/* The section heading becomes the card title. It stays a real heading, so its
+ * `#` anchor, its sidebar entry and its "on this page" link keep working; we
+ * only drop the page-level chrome (48px top margin, hairline rules, 24px+20px
+ * scale) and pin the absolutely-positioned anchor to the title's own top. */
+.vp-doc .sn-demo-cell > h2,
+.vp-doc .sn-demo-cell > h3,
+.vp-doc .sn-demo-cell > h4 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.vp-doc .sn-demo-cell > h2 .header-anchor,
+.vp-doc .sn-demo-cell > h3 .header-anchor,
+.vp-doc .sn-demo-cell > h4 .header-anchor {
+  top: 0;
+}
+
+/* A note between the title and the demo (e.g. "5 档 `tiny` / `small` …"). */
+.vp-doc .sn-demo-cell > p {
+  margin: 6px 0 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+}
+
+/* Everything below reaches into Demo.vue only through a direct-child chain
+ * (`cell > .sn-demo > …`). Demo *files* reuse the plain `sn-demo` /
+ * `sn-demo__toolbar` class names for their own roots — they sit deeper in the
+ * tree (inside `.sn-demo__card`), so the chain leaves them alone. */
+
+/* Demo.vue's own 24px rhythm would double the card padding. */
+.vp-doc .sn-demo-cell > .sn-demo {
+  margin: 0;
+}
+
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__description {
+  margin: 4px 0 10px;
+  font-size: 13px;
+}
+
+/* Preview plane: a tinted surface rather than a second border nested inside
+ * the card's own. */
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__card {
+  padding: 20px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+}
+
+/* `bare` demos opt out of the preview chrome entirely. */
+.vp-doc .sn-demo-cell > .sn-demo.sn-demo--bare > .sn-demo__card {
+  padding: 0;
+  background: transparent;
+}
+
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__toolbar {
+  margin-top: 6px;
+  padding: 0;
+}
