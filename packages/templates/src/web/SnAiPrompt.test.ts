@@ -163,6 +163,75 @@ describe('SnAiPrompt', () => {
   })
 
   describe('reasoning slider', () => {
+
+  describe('paste and preview', () => {
+    /** Minimal clipboardData stand-in: happy-dom cannot construct one. */
+    function clipboardOf(files: File[]): { items: { kind: string; getAsFile: () => File }[] } {
+      return { items: files.map((file) => ({ kind: 'file', getAsFile: () => file })) }
+    }
+
+    function paste(wrapper: ReturnType<typeof mount>, clipboardData: unknown): Event {
+      const event = new Event('paste', { bubbles: true, cancelable: true })
+      Object.defineProperty(event, 'clipboardData', { value: clipboardData })
+      wrapper.find('textarea').element.dispatchEvent(event)
+      return event
+    }
+
+    it('should attach a pasted image and swallow the default insert', () => {
+      const wrapper = mount(SnAiPrompt)
+      const file = new File(['x'], 'shot.png', { type: 'image/png' })
+
+      const event = paste(wrapper, clipboardOf([file]))
+
+      expect(wrapper.emitted('attach')?.[0]?.[0]).toEqual([file])
+      expect(event.defaultPrevented).toBe(true)
+    })
+
+    it('should leave a text-only paste to the textarea', () => {
+      const wrapper = mount(SnAiPrompt)
+
+      const event = paste(wrapper, { items: [{ kind: 'string', getAsFile: () => null }] })
+
+      expect(wrapper.emitted('attach')).toBeUndefined()
+      expect(event.defaultPrevented).toBe(false)
+    })
+
+    it('should preview an image attachment through the image lightbox', () => {
+      const wrapper = mount(SnAiPrompt, {
+        props: {
+          attachments: [{ id: 'a1', name: 'shot.png', mime: 'image/png', url: 'blob:shot' }],
+        },
+      })
+
+      const thumb = wrapper.findComponent({ name: 'SnImage' })
+      expect(thumb.exists()).toBe(true)
+      expect(thumb.props('src')).toBe('blob:shot')
+      expect(thumb.props('alt')).toBe('shot.png')
+    })
+
+    it('should link-preview a non-image attachment', () => {
+      const wrapper = mount(SnAiPrompt, {
+        props: {
+          attachments: [{ id: 'a1', name: 'report.pdf', mime: 'application/pdf', url: '/r.pdf' }],
+        },
+      })
+
+      const anchor = wrapper.find('.sn-ai-prompt__chip-preview')
+      expect(anchor.attributes('href')).toBe('/r.pdf')
+      expect(anchor.attributes('target')).toBe('_blank')
+      expect(anchor.attributes('rel')).toBe('noopener noreferrer')
+    })
+
+    it('should keep a plain glyph while an attachment has no preview url', () => {
+      const wrapper = mount(SnAiPrompt, {
+        props: { attachments: [{ id: 'a1', name: 'still-uploading.bin' }] },
+      })
+
+      expect(wrapper.find('.sn-ai-prompt__chip-preview').exists()).toBe(false)
+      expect(wrapper.findComponent({ name: 'SnImage' }).exists()).toBe(false)
+      expect(wrapper.text()).toContain('still-uploading.bin')
+    })
+  })
     it('should show the tier label with its token budget', () => {
       const wrapper = mount(SnAiPrompt, {
         props: { models, modelId: 'm-deep', thinkingLevel: 'medium' },

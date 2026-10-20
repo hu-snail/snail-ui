@@ -177,7 +177,7 @@ function onAttach(files: File[]): void {
 
 附件面板、三个选择器、思考程度拉条、发送与停止切换、以及排队行都在同一个演示里。
 
-<Demo name="ai-prompt-web-basic" description="点击发送后进入运行态，再次发送会看到排队行。" />
+<Demo name="ai-prompt-web-basic" description="把图片粘贴进输入框即可看到缩略图，点击缩略图预览；发送后进入运行态，再次发送会看到排队行。" />
 
 ## API
 
@@ -217,7 +217,7 @@ function onAttach(files: File[]): void {
 | `send` | `SnAiQueuedTurn` | 一轮输入已组装完成，可以运行。 |
 | `stop` | — | 停止正在运行的一轮。 |
 | `remove-queued` | `string` | 移除队列中的某一项。 |
-| `attach` | `File[]` | 用户选择了文件，上传由宿主机负责。 |
+| `attach` | `File[]` | 用户选择或粘贴了文件；上传由宿主机负责。 |
 
 ### Slots
 
@@ -243,7 +243,8 @@ function onAttach(files: File[]): void {
 | 发送可用性 | 输入框有内容，或已附加至少一个附件 |
 | 运行中 | 发送按钮变为停止按钮，点击触发 `stop` |
 | 思考程度 | 所选模型不支持推理时，该控件不渲染 |
-| 附件 | 通过面板选择图片 / 文档，选中的文件以 `attach` 事件交给宿主机上传 |
+| 附件 | 通过面板选择，或直接把图片 / 文件粘贴进输入框；两者都走同一个 `attach` 事件交给宿主机上传 |
+| 附件预览 | 点击附件前面的缩略图 / 图标预览：图片打开灯箱，其它文件在新标签页打开；需要宿主机在 `SnAiAttachment.url` 上给出地址 |
 
 ## 主题与 token 定制
 
@@ -297,3 +298,6 @@ function onAttach(files: File[]): void {
 
 **Q：`queued` 不传行不行？**
 可以。不传就没有排队行；配合 `showQueue` 可以只关掉渲染而保留数据。
+
+**Q：附件怎么才能点击预览？**
+宿主机在上传完成后把地址写进 `SnAiAttachment.url` 即可：图片会显示缩略图并打开灯箱，其它文件点击后在新标签页打开。没有 `url`（例如还在上传中）的附件仍然只显示图标，且不可点击。

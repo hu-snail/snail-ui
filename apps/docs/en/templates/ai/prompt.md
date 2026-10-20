@@ -179,7 +179,7 @@ function onAttach(files: File[]): void {
 
 The attachment panel, the three selectors, the reasoning slider, the send/stop swap and the queue row all appear in one demo.
 
-<Demo name="ai-prompt-web-basic" description="Sending puts it into a running state; sending again shows the queue row." />
+<Demo name="ai-prompt-web-basic" description="Paste an image into the composer to get a chip with a clickable thumbnail; sending puts it into a running state and sending again shows the queue row." />
 
 ## API
 
@@ -219,7 +219,7 @@ The attachment panel, the three selectors, the reasoning slider, the send/stop s
 | `send` | `SnAiQueuedTurn` | A turn is composed and ready to run. |
 | `stop` | — | Stop the running turn. |
 | `remove-queued` | `string` | Remove a queued turn. |
-| `attach` | `File[]` | The user picked files; uploading belongs to the host. |
+| `attach` | `File[]` | The user picked or pasted files; uploading belongs to the host. |
 
 ### Slots
 
@@ -245,7 +245,8 @@ The attachment panel, the three selectors, the reasoning slider, the send/stop s
 | Send availability | The draft has text, or at least one attachment is present |
 | While running | The send button becomes stop and emits `stop` |
 | Reasoning tier | The control is not rendered when the picked model cannot reason |
-| Attachments | Pick images / documents from the panel; the chosen files are handed to the host via `attach` |
+| Attachments | Pick from the panel, or paste an image / file straight into the composer; both are handed to the host through the same `attach` event |
+| Attachment preview | Click the chip's thumbnail / glyph to preview: images open the lightbox, other files open in a new tab. Requires the host to set `SnAiAttachment.url` |
 
 ## Theme and token customisation
 
@@ -298,3 +299,6 @@ No. `Enter` to send and `Shift + Enter` for a newline are fixed, and `Enter` dur
 
 **Q: Can I omit `queued`?**
 Yes. Without it there is no queue row; `showQueue` lets you hide the rendering while keeping the data.
+
+**Q: How do I make an attachment previewable?**
+Set `SnAiAttachment.url` once the upload finishes: images then render a thumbnail that opens the lightbox, and other files open in a new tab when clicked. A chip without a `url` (still uploading, say) keeps its glyph and is not clickable.

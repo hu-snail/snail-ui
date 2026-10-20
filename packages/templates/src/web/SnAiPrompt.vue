@@ -22,7 +22,7 @@
  *   <SnAiPrompt v-model="text" :models="models" @send="onSend" @stop="onStop" />
  */
 import { computed, ref } from 'vue'
-import { SnDropdown, SnIcon, SnSlider, SnTooltip } from '@snui/vue-web'
+import { SnDropdown, SnIcon, SnImage, SnSlider, SnTooltip } from '@snui/vue-web'
 import type { IconComponent } from '@snui/vue-web'
 import {
   AgentIcon,
@@ -232,6 +232,30 @@ function onFilesPicked(event: Event): void {
   input.value = ''
 }
 
+/**
+ * Paste an image or file straight into the composer. Clipboard files arrive as
+ * `kind === 'file'` items, and they carry no filename (Chromium yields
+ * `image.png`, Safari `blob`), so the host gets the same `attach` channel as
+ * the file picker and needs only one upload path.
+ *
+ * A text-only paste is left alone so the textarea inserts it as usual.
+ */
+function onPaste(event: ClipboardEvent): void {
+  const items = event.clipboardData?.items
+  if (!items) return
+
+  const files: File[] = []
+  for (const item of items) {
+    if (item.kind !== 'file') continue
+    const file = item.getAsFile()
+    if (file) files.push(file)
+  }
+  if (!files.length) return
+
+  event.preventDefault()
+  emit('attach', files)
+}
+
 function removeAttachment(id: string): void {
   emit(
     'update:attachments',
@@ -247,6 +271,17 @@ function attachmentIcon(attachment: SnAiAttachment): IconComponent {
 function attachmentMeta(attachment: SnAiAttachment): string {
   const size = formatBytes(attachment.size)
   return [attachment.mime ?? '', size].filter(Boolean).join(' · ')
+}
+
+/**
+ * How a chip's leading element previews its attachment: `image` renders an
+ * `SnImage` (its own lightbox overlay), `link` opens the url in a new tab, and
+ * anything without a url keeps a plain glyph. The url comes from the host once
+ * it has finished uploading, so a still-uploading chip simply has no preview.
+ */
+function attachmentPreview(attachment: SnAiAttachment): 'image' | 'link' | 'none' {
+  if (!attachment.url) return 'none'
+  return attachment.mime?.startsWith('image/') ? 'image' : 'link'
 }
 
 /* ── Selectors ───────────────────────────────────────────────────────────── */
@@ -340,7 +375,30 @@ function queuePreview(turn: SnAiQueuedTurn): string {
           class="sn-ai-prompt__chip"
           :class="{ 'sn-ai-prompt__chip--error': attachment.status === 'error' }"
         >
-          <SnIcon :icon="attachmentIcon(attachment)" :size="13" />
+          <!-- The leading element doubles as the preview affordance: an image
+               opens the SnImage lightbox, any other file with a url opens in a
+               new tab, and a file without one keeps the plain glyph. -->
+          <SnImage
+            v-if="attachmentPreview(attachment) === 'image'"
+            class="sn-ai-prompt__chip-thumb"
+            :src="attachment.url"
+            :alt="attachment.name"
+            :width="20"
+            :height="20"
+            object-fit="cover"
+          />
+          <a
+            v-else-if="attachmentPreview(attachment) === 'link'"
+            class="sn-ai-prompt__chip-preview"
+            :href="attachment.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="`预览附件 ${attachment.name}`"
+            :title="`预览附件 ${attachment.name}`"
+          >
+            <SnIcon :icon="attachmentIcon(attachment)" :size="13" />
+          </a>
+          <SnIcon v-else :icon="attachmentIcon(attachment)" :size="13" />
           <span class="sn-ai-prompt__chip-name">{{ attachment.name }}</span>
           <span v-if="attachmentMeta(attachment)" class="sn-ai-prompt__chip-meta">
             {{ attachmentMeta(attachment) }}
@@ -367,6 +425,7 @@ function queuePreview(turn: SnAiQueuedTurn): string {
         aria-label="消息内容"
         @input="onInput"
         @keydown="onKeydown"
+        @paste="onPaste"
       />
 
       <!-- Toolbar: attachment, agent, permission, model, thinking -->
@@ -674,6 +733,23 @@ function queuePreview(turn: SnAiQueuedTurn): string {
 
 .sn-ai-prompt__chip-meta {
   color: var(--sn-web-color-text-tertiary);
+}
+
+/* Preview affordances at the leading edge of a chip. The thumbnail is an
+ * SnImage, so clicking it opens the shared lightbox overlay. */
+.sn-ai-prompt__chip-thumb {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--sn-web-radius-sm);
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.sn-ai-prompt__chip-preview {
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
 }
 
 .sn-ai-prompt__chip-remove {
