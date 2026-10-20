@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h, ref, nextTick } from 'vue'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import SnTabs from './SnTabs.vue'
 import SnTabPane from './SnTabPane.vue'
 
@@ -227,7 +229,7 @@ describe('SnTabs (AUI-WEB-NAV-002)', () => {
 
   /* ─────────── type / size / placement ─────────── */
 
-  it.each(['line', 'card', 'bar', 'segment'] as const)(
+  it.each(['line', 'card', 'bar', 'segment', 'chrome'] as const)(
     'applies the type=%s modifier class',
     async (type) => {
       const w = mount(wrapTabs({ type, defaultValue: 'a' }, basicPanes))
@@ -239,6 +241,54 @@ describe('SnTabs (AUI-WEB-NAV-002)', () => {
   it('defaults to type=bar', () => {
     const w = mount(wrapTabs({ defaultValue: 'a' }, basicPanes))
     expect(w.find('.sn-tabs--bar').exists()).toBe(true)
+  })
+
+  /**
+   * `type="chrome"` is an additive divergence: the reference has no
+   * browser-style strip. happy-dom performs no layout, so the visual
+   * contract (tinted strip, hairline drawn inside the strip's padding box
+   * so the active tab's opaque background covers it, rounded-top tabs) is
+   * asserted against the SFC source — the technique `SnAlert.test.ts` uses
+   * for its alignment tokens.
+   */
+  describe('type=chrome (browser tab strip)', () => {
+    const source = readFileSync(join(process.cwd(), 'src/tabs/SnTabs.vue'), 'utf8')
+    const style = (/<style scoped>([\s\S]*?)<\/style>/.exec(source)?.[1] ?? '').replace(
+      /\/\*[\s\S]*?\*\//g,
+      '',
+    )
+
+    it('keeps the strip clipped and draws its hairline inside the padding box', () => {
+      // The base strip stays `overflow: hidden`, so the chrome hairline must
+      // not rely on a negative offset that clipping would swallow.
+      expect(style).toMatch(/\.sn-tabs__nav\s*\{[^}]*overflow:\s*hidden/)
+      expect(style).toContain('background-position: bottom left;')
+      expect(style).toContain('background-size: 100% 1px;')
+      expect(style).not.toMatch(/\.sn-tabs--chrome[^{]*\{[^}]*bottom:\s*-1px/)
+    })
+
+    it('rounds the tab tops and keeps the active tab on the content surface', () => {
+      expect(style).toContain('border-radius: 8px 8px 0 0;')
+      expect(style).toMatch(
+        /\.sn-tabs--chrome \.sn-tabs__tab--active\s*\{[^}]*background:\s*var\(--sn-web-color-background-surface\)/,
+      )
+    })
+
+    it('reveals the close affordance on hover and on the active tab', () => {
+      expect(style).toMatch(/\.sn-tabs--chrome \.sn-tabs__tab-close\s*\{[^}]*opacity:\s*0/)
+      expect(style).toMatch(
+        /\.sn-tabs--chrome \.sn-tabs__tab--active \.sn-tabs__tab-close\s*\{[^}]*opacity:\s*1/,
+      )
+    })
+
+    it('renders the chrome modifier with closable + addable affordances', async () => {
+      const w = mount(wrapTabs({ type: 'chrome', closable: true, addable: true, defaultValue: 'a' }, basicPanes))
+      await nextTick()
+      expect(w.find('.sn-tabs--chrome').exists()).toBe(true)
+      expect(w.findAll('.sn-tabs__tab')).toHaveLength(basicPanes.length)
+      expect(w.findAll('.sn-tabs__tab-close')).toHaveLength(basicPanes.length)
+      expect(w.find('.sn-tabs__add').exists()).toBe(true)
+    })
   })
 
   it.each(['small', 'medium', 'large'] as const)(

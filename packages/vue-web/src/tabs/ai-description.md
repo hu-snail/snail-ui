@@ -29,7 +29,7 @@ import { SnTabs, SnTabPane } from '@snui/vue-web'
 | `value` | `string \| number` | `undefined` | Active pane name (controlled, `v-model:value`). |
 | `defaultValue` | `string \| number` | `undefined` | Initial active pane name (uncontrolled). |
 | `trigger` | `'click' \| 'hover'` | `'click'` | Whether tabs activate on click or hover. |
-| `type` | `'line' \| 'card' \| 'bar' \| 'segment'` | `'bar'` | Tab strip visual style. |
+| `type` | `'line' \| 'card' \| 'bar' \| 'segment' \| 'chrome'` | `'bar'` | Tab strip visual style. `'chrome'` is an additive divergence — a browser-style strip (see below). |
 | `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Tab strip size. |
 | `placement` | `'top' \| 'right' \| 'bottom' \| 'left' \| 'start' \| 'end'` | `'top'` | Strip position. `start`/`end` are deprecated aliases for `left`/`right`. |
 | `closable` | `boolean` | `false` | Show a close button on every tab. |
@@ -81,6 +81,20 @@ import { SnTabs, SnTabPane } from '@snui/vue-web'
   the strip currently renders the `tab` prop as plain text.
 - `syncBarPosition` / `scrollToCurrentTab` instance methods.
 - `TabsButton` scroll arrows (`showScrollButton` is a declared no-op).
+
+## Additive divergence: `type="chrome"`
+
+The reference exposes only `line` / `card` / `bar` / `segment`. `'chrome'`
+was requested by the product owner and adds a browser-style tab strip:
+a tinted strip whose bottom hairline runs under the inactive tabs, the
+active tab rounded at the top and opening onto the content surface, a
+hairline between two inactive neighbours, and a close affordance revealed
+on hover / on the active tab. The hairline is a `background-image` on the
+last pixel of the strip's padding box (not a `border-bottom`), so the
+active tab's opaque background covers it while the strip keeps its
+`overflow: hidden` clipping. It is tuned for the horizontal placements;
+under a vertical placement the strip keeps its own stacking and only the
+tab shape carries over.
 
 ## Tokens Consumed (end: web)
 

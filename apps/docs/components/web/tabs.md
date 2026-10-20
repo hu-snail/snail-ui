@@ -14,7 +14,7 @@
 
 ### 基础用法
 
-四种视觉样式中的 `bar`（默认）与 `line`。
+五种视觉样式中的 `bar`（默认）与 `line`。
 
 <Demo name="tabs-web-basic" description="bar 与 line 两种基础样式" />
 
@@ -23,6 +23,16 @@
 `card` 与 `segment` 两种强调型样式。
 
 <Demo name="tabs-web-card-segment" description="card 与 segment 样式" />
+
+### Chrome 浏览器风格
+
+`type="chrome"` 渲染浏览器标签行：标签条是一层浅色底，底边细线在非活动标签下方贯通；活动标签顶部圆角、直接“打开”到内容面上；相邻两个非活动标签之间有一条细分隔线；关闭位在 hover 与活动标签上才显示。与 `closable` / `addable` 组合即可得到完整的浏览器标签体验。
+
+<Demo name="tabs-web-chrome" description="chrome 标签行：hover 显示关闭位、末尾 + 新增标签" />
+
+标签条的 `prefix` / `suffix` 插槽可以放导航动作，等价于浏览器窗口的标签行：
+
+<Demo name="tabs-web-chrome-toolbar" description="prefix 放前进/后退/刷新，suffix 放星标" />
 
 ### 尺寸
 
@@ -86,12 +96,12 @@
 | --- | --- | --- | --- |
 | `value` | `string \| number` | `undefined` | 受控模式下的选中值。 |
 | `defaultValue` | `string \| number` | `undefined` | 非受控模式下的初始值。 |
-| `type` | `'bar' \| 'line' \| 'card' \| 'segment'` | `'bar'` | 标签样式。 |
+| `type` | `'bar' \| 'line' \| 'card' \| 'segment' \| 'chrome'` | `'bar'` | 标签样式。`chrome` 为追加式偏离（谷歌浏览器风格）。 |
 | `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸。 |
 | `placement` | `'left' \| 'right' \| 'top' \| 'bottom' \| 'start' \| 'end'` | `'top'` | 标签条位置。 |
 | `trigger` | `'click' \| 'hover'` | `'click'` | 激活标签的手势。 |
-| `closable` | `boolean` | `false` | 是否允许关闭标签，仅 `type="card"` 生效。 |
-| `addable` | `boolean \| { disabled?: boolean }` | `false` | 是否允许新增标签，仅 `type="card"` 生效。 |
+| `closable` | `boolean` | `false` | 是否允许关闭标签（所有样式均渲染关闭位，视觉上为 `card` / `chrome` 设计）。 |
+| `addable` | `boolean \| { disabled?: boolean }` | `false` | 是否允许新增标签（同上，`chrome` 下表现为浏览器标签行末尾的圆形 `+`）。 |
 | `animated` | `boolean` | `false` | 切换面板时是否使用动画。 |
 | `justifyContent` | `'space-between' \| 'space-around' \| 'space-evenly' \| 'start' \| 'center' \| 'end'` | `undefined` | 标签条主轴排列方式。 |
 | `tabsPadding` | `number` | `0` | 标签栏起止方向的内边距。 |
@@ -170,3 +180,6 @@
 
 - 面板的富文本标签（`tab` / `prefix` / `suffix` 插槽）未实现，标签条以文字渲染。
 - `showScrollButton` 为声明式对齐，当前标签条为裁切而非滚动，此项为 no-op。
+- `type="chrome"`（浏览器标签风格）是对 naive-ui `n-tabs` 的**追加式偏离**：上游只有
+  `line` / `card` / `bar` / `segment`。该样式针对横向 `placement` 调优，竖向放置时只保留标签形状；
+  标签条依然保持裁切（不改为滚动）。

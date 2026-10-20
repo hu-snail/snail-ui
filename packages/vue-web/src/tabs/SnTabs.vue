@@ -15,6 +15,10 @@
  * Children read the active value + type through provide/inject, so the tab
  * strip and pane visibility stay in sync without prop drilling.
  *
+ * Additive vs n-tabs (documented divergence, requested feature):
+ *   - `type="chrome"` renders a browser-style tab strip (Chrome-like).
+ *     The reference exposes only line / card / bar / segment.
+ *
  * Skipped vs n-tabs (documented §112 markers, not implemented):
  *   - `SnTabPane` `tab` / `prefix` / `suffix` slots — the strip renders the
  *     `tab` prop as text. Rich (vnode) tab labels would need the pane to
@@ -47,8 +51,13 @@ const props = withDefaults(
     defaultValue?: string | number
     /** Whether tabs activate on click or hover. Mirrors n-tabs `trigger`. */
     trigger?: 'click' | 'hover'
-    /** Tab visual style. Mirrors n-tabs `type`. Default 'bar'. */
-    type?: 'line' | 'card' | 'bar' | 'segment'
+    /**
+     * Tab visual style. Mirrors n-tabs `type` (default `'bar'`) and adds
+     * `'chrome'` — a browser-style tab strip. `'chrome'` is an additive
+     * divergence from the reference, which has no browser chrome; it is
+     * tuned for the horizontal placements (top / bottom).
+     */
+    type?: 'line' | 'card' | 'bar' | 'segment' | 'chrome'
     /** Tab strip size. Mirrors n-tabs `size`. Default 'medium'. */
     size?: 'small' | 'medium' | 'large'
     /** Where the tab strip sits relative to the panes. Mirrors n-tabs
@@ -576,6 +585,113 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
   background: var(--sn-web-color-background-surface);
   color: var(--sn-web-color-action-primary);
   box-shadow: var(--sn-web-input-shadow);
+}
+
+/* ── type: chrome — browser-style tab strip ──────────────────────────────
+ * Additive vs the reference (n-tabs has no browser chrome; part of the
+ * requested 谷歌浏览器风格). Modern Chrome: a tinted strip whose bottom
+ * hairline runs under the inactive tabs, the active tab rounded at the
+ * top and opening onto the content surface, and a hairline separator
+ * between two inactive neighbours.
+ *
+ * The strip hairline is a background-image on the last pixel of the
+ * strip's own padding box rather than a `border-bottom`, so the active
+ * tab's opaque surface background covers it without any negative offset
+ * — the strip keeps its `overflow: hidden`, so an overflowing strip is
+ * still clipped exactly as the other types are. */
+.sn-tabs--chrome .sn-tabs__nav {
+  align-items: flex-end;
+  gap: 2px;
+  padding: 6px 8px 0;
+  /* No `--sn-web-color-background-soft` alias is emitted (AUI-FOUND-006), so
+   * the raised strip tone is `subtle` — light in light mode, and lighter than
+   * the `surface` an active tab opens onto in dark mode. The hairline uses a
+   * text-tinted mix because `border-default` equals `subtle` in dark mode. */
+  background-color: var(--sn-web-color-background-subtle);
+  background-image: linear-gradient(
+    color-mix(in srgb, var(--sn-web-color-text-primary) 14%, transparent),
+    color-mix(in srgb, var(--sn-web-color-text-primary) 14%, transparent)
+  );
+  background-repeat: no-repeat;
+  background-position: bottom left;
+  background-size: 100% 1px;
+}
+
+.sn-tabs--chrome .sn-tabs__tab {
+  height: 30px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  background: transparent;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 13px;
+}
+
+.sn-tabs--chrome
+  .sn-tabs__tab:hover:not(.sn-tabs__tab--disabled):not(.sn-tabs__tab--active) {
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 6%, transparent);
+}
+
+/* Hairline between two inactive neighbours — Chrome draws none beside the
+ * active tab. */
+.sn-tabs--chrome
+  .sn-tabs__tab:not(.sn-tabs__tab--active)
+  + .sn-tabs__tab:not(.sn-tabs__tab--active)::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 14%, transparent);
+}
+
+.sn-tabs--chrome .sn-tabs__tab--active {
+  background: var(--sn-web-color-background-surface);
+  border-color: var(--sn-web-color-border-default);
+  color: var(--sn-web-color-text-primary);
+}
+
+/* Chrome reveals the close affordance on hover and on the active tab. */
+.sn-tabs--chrome .sn-tabs__tab-close {
+  opacity: 0;
+  transition: opacity 0.15s var(--sn-web-bezier-ease);
+}
+
+.sn-tabs--chrome .sn-tabs__tab:hover .sn-tabs__tab-close,
+.sn-tabs--chrome .sn-tabs__tab--active .sn-tabs__tab-close {
+  opacity: 1;
+}
+
+.sn-tabs--chrome .sn-tabs__add {
+  border-radius: 50%;
+  color: var(--sn-web-color-text-secondary);
+}
+
+.sn-tabs--chrome .sn-tabs__add:hover:not(.sn-tabs__add--disabled) {
+  background: color-mix(in srgb, var(--sn-web-color-text-primary) 8%, transparent);
+}
+
+/* `chrome` mirrors a browser's horizontal strip. A vertical placement keeps
+ * the strip's own stacking (it is not a browser affordance) and only the
+ * tab shape is carried over. */
+.sn-tabs--chrome.sn-tabs--left .sn-tabs__nav,
+.sn-tabs--chrome.sn-tabs--right .sn-tabs__nav {
+  align-items: stretch;
+  padding: 6px 0;
+  background-image: none;
+}
+
+.sn-tabs--chrome.sn-tabs--left .sn-tabs__tab,
+.sn-tabs--chrome.sn-tabs--right .sn-tabs__tab {
+  border-radius: 8px;
+  border-bottom: 1px solid transparent;
+}
+
+.sn-tabs--chrome.sn-tabs--left .sn-tabs__tab--active,
+.sn-tabs--chrome.sn-tabs--right .sn-tabs__tab--active {
+  border-color: var(--sn-web-color-border-default);
 }
 
 /* ── size modifiers ── */
