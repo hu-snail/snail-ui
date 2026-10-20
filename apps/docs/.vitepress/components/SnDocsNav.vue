@@ -72,6 +72,22 @@ function openSearch(): void {
   const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true })
   window.dispatchEvent(event)
 }
+
+/** Locale switch — the docs site ships a zh root locale plus an `/en/` locale. */
+const isEn = computed<boolean>(() => route.path === '/en' || route.path.startsWith('/en/'))
+
+/** Counterpart URL of the current page in the other locale. */
+const localeSwitchHref = computed<string>(() => {
+  const clean = route.path.replace(/\.html$/, '').replace(/\/+$/, '') || '/'
+  const inEn = clean === '/en' || clean.startsWith('/en/')
+  const bare = inEn ? clean.slice('/en'.length) || '/' : clean
+  if (isEn.value) return bare === '/' ? '/' : bare
+  return bare === '/' ? '/en/' : `/en${bare}`
+})
+
+/** Show the *target* locale — the usual switcher convention. */
+const localeSwitchLabel = computed<string>(() => (isEn.value ? '中文' : 'EN'))
+const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' : 'Switch to English'))
 </script>
 
 <template>
@@ -94,6 +110,16 @@ function openSearch(): void {
           <SnIcon class="sn-docs-nav__action-icon" :icon="Search" />
           <span class="sn-docs-nav__search-label">搜索文档</span>
           <span class="sn-docs-nav__kbd" aria-hidden="true">⌘K</span>
+        </SnButton>
+        <SnButton
+          class="sn-docs-nav__action sn-docs-nav__locale"
+          tag="a"
+          variant="ghost"
+          size="small"
+          :href="localeSwitchHref"
+          :aria-label="localeSwitchAria"
+        >
+          {{ localeSwitchLabel }}
         </SnButton>
         <SnButton class="sn-docs-nav__action" variant="ghost" size="small" aria-label="Toggle theme" @click="toggleTheme">
           <SnIcon class="sn-docs-nav__action-icon" :icon="isDark ? Sun : Moon" />

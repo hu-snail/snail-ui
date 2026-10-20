@@ -5,7 +5,7 @@
  * vitepress's DefaultTheme.
  *
  * Phase 1 chrome replacement (per WBS AUI-DOCS-019):
- *   - SnDocsNav: SnMenu + SnDivider + SnButton (search + theme toggle)
+ *   - SnDocsNav: SnMenu + SnDivider + SnButton (search + locale switch + theme toggle)
  *   - SnDocsFooter: SnDivider + SnCard
  *   - SnDocsHome: SnGrid + SnCard + SnButton (mounted on home-hero-after)
  *   - SnDocsSidebar: SnCollapse + SnCard (consumed via SnDocsPage wrapper
@@ -28,18 +28,22 @@ import DemoLabFab from '../components/DemoLabFab.vue'
 import SnDocsNav from '../components/SnDocsNav.vue'
 import SnDocsFooter from '../components/SnDocsFooter.vue'
 import SnDocsHome from '../components/SnDocsHome.vue'
-import { nav } from '../config-nav'
+import { enNav, nav } from '../config-nav'
 
 const route = useRoute()
 const isHome = computed(() => route.path === '/' || route.path === '')
 const showFab = computed(() => route.path.startsWith('/components/'))
+
+/** The `/en/` locale mirrors the root locale; swap the nav list with it. */
+const isEn = computed(() => route.path === '/en' || route.path.startsWith('/en/'))
+const navItems = computed(() => (isEn.value ? enNav : nav))
 </script>
 
 <template>
   <DefaultTheme.Layout>
     <!-- Replace the default top nav with SnDocsNav (real @snui/vue-web). -->
     <template #nav-bar-content-before>
-      <SnDocsNav :items="nav" />
+      <SnDocsNav :items="navItems" />
     </template>
 
     <!-- Mount the custom home page (only rendered on /, inside the home

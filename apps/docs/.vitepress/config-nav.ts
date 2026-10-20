@@ -6,6 +6,9 @@
  * importing the entire vitepress config (which would force vite config
  * resolution at runtime).
  *
+ * `nav` is the zh (root locale) list; `enNav` is the `/en/` locale list.
+ * The custom Layout picks one from the active route — see Layout.vue.
+ *
  * If you change the order / labels here, also update config.ts themeConfig.nav
  * for vitepress's own internal pages (404, page navigation links, etc).
  */
@@ -20,4 +23,14 @@ export const nav: DocsNavItem[] = [
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
   { text: '模板', link: '/templates/overview' },
+]
+
+export const enNav: DocsNavItem[] = [
+  { text: 'Guide', link: '/en/guide/web/intro' },
+  { text: 'Components · Web', link: '/en/components/web/button' },
+  { text: 'Components · uni-app', link: '/en/components/uni/button' },
+  { text: 'Style Packs', link: '/en/style-packs/overview' },
+  { text: 'Theme', link: '/en/theme/overview' },
+  { text: 'AI Ecosystem', link: '/en/ai/overview' },
+  { text: 'Templates', link: '/en/templates/overview' },
 ]
