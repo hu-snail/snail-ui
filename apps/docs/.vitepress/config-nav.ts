@@ -19,4 +19,5 @@ export const nav: DocsNavItem[] = [
   { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
+  { text: '模板', link: '/templates/overview' },
 ]
