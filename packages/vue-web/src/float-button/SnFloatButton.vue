@@ -40,7 +40,7 @@
  *   <SnFloatButton type="primary" badge="5" shape="square" description="消息" />
  */
 
-import { computed, inject, markRaw, useSlots } from 'vue'
+import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
 import type { ComputedRef, CSSProperties } from 'vue'
 import SnIcon from '../icon/SnIcon.vue'
 import type { IconComponent } from '../icon/sn-icon-registry'
@@ -108,6 +108,18 @@ const props = withDefaults(
     left?: number | string
     /** Stacking order of the fixed root. Ignored inside a group. */
     zIndex?: number
+    /**
+     * `false` pins the button to its nearest positioned ancestor instead of
+     * the viewport — drop it into a `position: relative` hero/section (or set
+     * `container`) when the button belongs to that block, not to the page.
+     */
+    fixed?: boolean
+    /**
+     * Explicit positioning context (selector or element) for `fixed: false`.
+     * When omitted the root only switches to `position: absolute`, so the
+     * offset resolves against the nearest positioned ancestor.
+     */
+    container?: string | HTMLElement | undefined
   }>(),
   {
     type: 'default',
@@ -118,6 +130,8 @@ const props = withDefaults(
     visible: true,
     placement: 'bottom-right',
     zIndex: 1000,
+    fixed: true,
+    container: undefined,
   },
 )
 
@@ -144,6 +158,9 @@ const floatButtonGroup = inject<SnFloatButtonGroupContext | null>(
   FLOAT_BUTTON_GROUP_KEY,
   null,
 )
+
+/** Root element — the handle `container` mounting moves and restores. */
+const rootRef = ref<HTMLElement | null>(null)
 
 /** Whether the parent group owns the fixed position. */
 const inGroup = computed(() => floatButtonGroup !== null)
@@ -194,11 +211,12 @@ function formatLength(value: string | number): string {
 }
 
 /**
- * Fixed-corner style for the standalone case.
+ * Corner style for the standalone case.
  *
  * `placement` only fills an axis the caller did not offset explicitly, so
- * `top` / `bottom` (`left` / `right`) win over the corner preset. Inside a
- * group the style is empty: `.sn-float-button--in-group` makes the child
+ * `top` / `bottom` (`left` / `right`) win over the corner preset. `fixed` off
+ * pins the button to its positioning context instead of the viewport. Inside
+ * a group the style is empty: `.sn-float-button--in-group` makes the child
  * static and full width.
  */
 const rootStyle = computed<CSSProperties>(() => {
@@ -208,7 +226,7 @@ const rootStyle = computed<CSSProperties>(() => {
   const isLeft = props.placement === 'top-left' || props.placement === 'bottom-left'
 
   const style: CSSProperties = {
-    position: 'fixed',
+    position: props.fixed ? 'fixed' : 'absolute',
     zIndex: props.zIndex,
   }
 
@@ -227,6 +245,45 @@ const rootStyle = computed<CSSProperties>(() => {
   }
 
   return style
+})
+
+/* ---------- Container mounting (§41) ---------- */
+
+/**
+ * The context `container="…"` resolved to. `fixed: false` + an explicit
+ * `container` renders the button inside that element, so the instance owns
+ * the move: it inserts a comment placeholder at the original spot, appends
+ * the root to the container, and on unmount puts the root back. No listener
+ * or observer is created, so there is nothing else to dispose.
+ */
+let containerHost: { parent: Node; placeholder: Comment } | null = null
+
+function resolveContainer(target: string | HTMLElement | undefined): HTMLElement | null {
+  if (target === undefined) return null
+  if (typeof target !== 'string') return target
+  if (typeof document === 'undefined') return null
+  return document.querySelector<HTMLElement>(target)
+}
+
+onMounted(() => {
+  if (props.fixed || inGroup.value) return
+  const container = resolveContainer(props.container)
+  const root = rootRef.value
+  const parent = root?.parentNode
+  if (!container || !root || !parent) return
+  const placeholder = document.createComment('sn-float-button')
+  parent.insertBefore(placeholder, root)
+  container.appendChild(root)
+  containerHost = { parent, placeholder }
+})
+
+onBeforeUnmount(() => {
+  const host = containerHost
+  if (!host) return
+  const root = rootRef.value
+  if (root) host.parent.insertBefore(root, host.placeholder)
+  host.placeholder.remove()
+  containerHost = null
 })
 
 const rootClass = computed(() => [
@@ -256,6 +313,7 @@ function handleClick(event: MouseEvent): void {
 <template>
   <component
     :is="isLink ? 'a' : 'button'"
+    ref="rootRef"
     v-if="visible"
     data-snui-component="float-button"
     :class="rootClass"

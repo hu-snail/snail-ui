@@ -60,6 +60,8 @@ switches the root element from `<button>` to `<a>`.
 | placement | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Fixed corner; ignored inside a group |
 | right / bottom / top / left | `number \| string` | `undefined` | Explicit offset overriding the placement axis |
 | zIndex | `number` | `1000` | Stacking order; ignored inside a group |
+| fixed | `boolean` | `true` | `false` pins the button to its nearest positioned ancestor (or `container`) instead of the viewport |
+| container | `string \| HTMLElement` | `undefined` | Positioning context for `fixed: false`: a selector or an element |
 
 ### SnFloatButtonGroup Props
 
@@ -70,6 +72,8 @@ switches the root element from `<button>` to `<a>`.
 | trigger | `'click' \| 'hover'` | `'click'` | Gesture that opens the stack |
 | placement | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Fixed corner of the whole group |
 | right / bottom / top / left | `number \| string` | `undefined` | Explicit offsets overriding `placement` (defaults `right` / `bottom` = 24) |
+| fixed | `boolean` | `true` | Same as the single button: `false` pins the whole group in its positioning context |
+| container | `string \| HTMLElement` | `undefined` | Positioning context for `fixed: false` |
 | zIndex | `number` | `1000` | Stacking order of the fixed root |
 | gap | `number` | `12` | Vertical gap between the stacked children (and to the trigger) |
 | triggerIcon | `IconComponent` (lucide component) | lucide `Plus` | Trigger glyph, rotated 45° while open |
@@ -106,6 +110,21 @@ The `SnFloatButton` root is `position: fixed`; its inline style is computed from
 Inside `SnFloatButtonGroup` a child becomes `position: static` and full width:
 the group owns the position, and the child's own `placement` / offsets /
 `zIndex` stop applying.
+
+**When not to use `fixed`**: in a docs site or a preview card the button
+belongs to a module, and `fixed` makes it escape that module and land in the
+browser's own bottom-right corner (stacking with the page's other overlays).
+Use `fixed: false` to pin it inside a `position: relative` parent:
+
+```vue
+<section style="position: relative">
+  <SnFloatButton :fixed="false" :icon="Plus" :right="16" :bottom="16" />
+</section>
+```
+
+To pin it to a container that is not the parent, pass `container` (selector or
+element): the component moves its root there on mount and puts it back on
+unmount. Nothing else is registered, so there is no extra cleanup.
 
 ## Controlled and uncontrolled
 

@@ -56,11 +56,20 @@ import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web'
 | `top` | `number \| string` | `undefined` | no | Explicit top offset; overrides the placement axis. |
 | `left` | `number \| string` | `undefined` | no | Explicit left offset; overrides the placement axis. |
 | `zIndex` | `number` | `1000` | no | Stacking order of the fixed root. Ignored inside a group. |
+| `fixed` | `boolean` | `true` | no | `false` pins the button to its positioning context instead of the viewport. |
+| `container` | `string \| HTMLElement` | `undefined` | no | Positioning context for `fixed: false` (selector or element). |
 
 Corner defaults: with the default `placement="bottom-right"` and no explicit
 offsets the button is pinned at `right: 24px; bottom: 24px`. `placement` only
 fills the axis the caller did not offset explicitly, so `top: 8` keeps
 `right: 24px` but drops `bottom`.
+
+`fixed` (default `true`) is the viewport-pinned mode. `fixed: false` switches
+the root to `position: absolute` so the offset resolves against the nearest
+positioned ancestor, and `container` (selector or element) mounts the root into
+that element instead — a comment placeholder is left at the original spot and
+the root is moved back on unmount (§41). Use it whenever the button belongs to
+a block (a docs preview card, a hero section) rather than to the page.
 
 ### SnFloatButtonGroup
 

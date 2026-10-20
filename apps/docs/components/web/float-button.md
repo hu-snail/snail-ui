@@ -54,6 +54,8 @@
 | `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | 固定到视口的哪个角；在按钮组内会被忽略。 |
 | `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | 显式偏移，覆盖 `placement` 对应的轴。 |
 | `zIndex` | `number` | `1000` | 固定定位的层级；在按钮组内会被忽略。 |
+| `fixed` | `boolean` | `true` | `false` 时不再固定到视口，改为钉在最近的定位祖先（或 `container`）内。 |
+| `container` | `string \| HTMLElement` | `undefined` | `fixed: false` 时的定位上下文：选择器或元素。 |
 
 ### SnFloatButtonGroup Props
 
@@ -65,6 +67,8 @@
 | `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | 整个按钮组的固定角。 |
 | `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | 显式偏移，覆盖 `placement`（默认 `right` / `bottom` 为 24）。 |
 | `zIndex` | `number` | `1000` | 固定定位的层级。 |
+| `fixed` | `boolean` | `true` | 同上：`false` 时整组钉在定位上下文内。 |
+| `container` | `string \| HTMLElement` | `undefined` | `fixed: false` 时的定位上下文。 |
 | `gap` | `number` | `12` | 子按钮之间（以及到触发器）的垂直间距。 |
 | `triggerIcon` | `IconComponent`（lucide 组件） | lucide `Plus` | 触发器图标，展开时旋转 45°。 |
 | `triggerTooltip` | `string` | `undefined` | 同时设置触发器的原生 `title` 与无障碍名称。 |
@@ -97,6 +101,19 @@
 
 放进 `SnFloatButtonGroup` 之后，子按钮变成 `position: static` 且撑满整列 —— 位置由组统一
 拥有，子按钮自己的 `placement` / 偏移 / `zIndex` 都不再生效。
+
+**什么时候不要用 `fixed`**：文档站 / 预览卡这类「按钮属于某个模块」的场景，`fixed`
+会让按钮飞出模块、跑到浏览器窗口右下角（再和页面其它浮层叠在一起）。这时用
+`fixed: false` 把它钉在 `position: relative` 的父容器里：
+
+```vue
+<section style="position: relative">
+  <SnFloatButton :fixed="false" :icon="Plus" :right="16" :bottom="16" />
+</section>
+```
+
+需要钉到一个**不是父级**的容器时，传 `container`（选择器或元素），组件会在挂载时把
+根节点移进去、卸载时移回原位；这一过程不注册任何监听或观察者，因此没有额外清理。
 
 ## 受控与非受控
 

@@ -46,7 +46,15 @@
  *   </SnFloatButtonGroup>
  */
 
-import { computed, markRaw, onBeforeUnmount, provide, ref, watch } from 'vue'
+import {
+  computed,
+  markRaw,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  ref,
+  watch,
+} from 'vue'
 import type { ComputedRef, CSSProperties } from 'vue'
 import { Plus } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
@@ -97,6 +105,13 @@ const props = withDefaults(
     left?: number | string
     /** Stacking order of the fixed root. */
     zIndex?: number
+    /**
+     * `false` pins the group to its nearest positioned ancestor instead of the
+     * viewport (or to `container` when one is given).
+     */
+    fixed?: boolean
+    /** Explicit positioning context (selector or element) for `fixed: false`. */
+    container?: string | HTMLElement | undefined
     /** Vertical gap between the stacked children (and to the trigger). */
     gap?: number
     /**
@@ -192,7 +207,7 @@ function resolveFixedStyle(): CSSProperties {
   const isLeft = props.placement === 'top-left' || props.placement === 'bottom-left'
 
   const style: CSSProperties = {
-    position: 'fixed',
+    position: props.fixed ? 'fixed' : 'absolute',
     zIndex: props.zIndex,
   }
 
@@ -264,6 +279,35 @@ function isPointerInsideGroup(event: MouseEvent): boolean {
     event.clientY <= rect.bottom
   )
 }
+
+/* ---------- Container mounting (§41) ---------- */
+
+/**
+ * `fixed: false` + `container` renders the group inside that element: the
+ * instance inserts a comment placeholder where the root originally sat,
+ * appends the root to the container and restores it on unmount. `rootRef`
+ * already exists for the hover guard, so nothing extra needs disposal.
+ */
+let containerHost: { parent: Node; placeholder: Comment } | null = null
+
+function resolveContainer(target: string | HTMLElement | undefined): HTMLElement | null {
+  if (target === undefined) return null
+  if (typeof target !== 'string') return target
+  if (typeof document === 'undefined') return null
+  return document.querySelector<HTMLElement>(target)
+}
+
+onMounted(() => {
+  if (props.fixed) return
+  const container = resolveContainer(props.container)
+  const root = rootRef.value
+  const parent = root?.parentNode
+  if (!container || !root || !parent) return
+  const placeholder = document.createComment('sn-float-button-group')
+  parent.insertBefore(placeholder, root)
+  container.appendChild(root)
+  containerHost = { parent, placeholder }
+})
 
 function handleDocumentMouseMove(event: MouseEvent): void {
   if (isPointerInsideGroup(event)) return

@@ -290,11 +290,44 @@ describe('SnFloatButtonGroup', () => {
     })
 
     it('should pin the group to the bottom-right corner by default', () => {
-      const el = mountGroup().find(GROUP).element as HTMLElement
+      const el = mountGroup({ fixed: true }).find(GROUP).element as HTMLElement
       expect(el.style.position).toBe('fixed')
       expect(el.style.right).toBe('24px')
       expect(el.style.bottom).toBe('24px')
       expect(el.style.zIndex).toBe('1000')
+    })
+
+    it('should stay inside its positioning context when fixed is off', () => {
+      const wrapper = mountGroup({ fixed: false })
+      const el = wrapper.find(GROUP).element as HTMLElement
+      // No container given: absolute positioning resolves against the parent.
+      expect(el.style.position).toBe('absolute')
+      expect(el.style.right).toBe('24px')
+      expect(el.style.bottom).toBe('24px')
+      expect(el.parentElement).not.toBe(document.body)
+    })
+
+    it('should move into a container element and leave no stray host', () => {
+      const host = document.createElement('div')
+      document.body.appendChild(host)
+      const anchor = document.createElement('div')
+      document.body.appendChild(anchor)
+
+      const wrapper = mount(SnFloatButtonGroup, {
+        props: { fixed: false, container: host },
+        slots: { default: () => h(SnFloatButton, { icon: FileText, tooltip: '文档' }) },
+        attachTo: anchor,
+      })
+
+      const el = wrapper.find(GROUP).element as HTMLElement
+      expect(el.parentElement).toBe(host)
+      wrapper.unmount()
+      // Unmount restores the root next to its placeholder, then drops it.
+      expect(host.contains(el)).toBe(false)
+      expect(document.body.contains(el)).toBe(false)
+
+      host.remove()
+      anchor.remove()
     })
 
     it('should honour placement and explicit offsets for the group', () => {
