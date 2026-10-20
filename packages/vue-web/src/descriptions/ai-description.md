@@ -67,6 +67,12 @@ None — pure display component.
 - Non-item children are filtered silently (reference warns in dev).
 - Fragment children (`<template v-for>` items) are flattened
   recursively — data-driven item lists work.
+- **Cell gutter (visual divergence).** The reference's non-bordered
+  `tdPadding` is `0 0 12px 0` — i.e. content cells carry no horizontal
+  padding. Here they carry the same 12px column gutter as the label row
+  (`0 12px 12px 0`; small `0 12px 8px 0`, large `0 12px 16px 0`), so
+  left-placement items no longer touch each other and top-placement
+  content columns line up with their labels.
 
 ## Layout contract
 
@@ -74,6 +80,9 @@ None — pure display component.
   hidden `visibility: collapse` sizing row.
 - A row's last entry stretches to fill remaining tracks.
 - `separator` renders only for `label-placement="left"` + `bordered=false`.
+- Non-bordered content cells keep a 12px horizontal gutter (see
+  Divergences); the bordered grid keeps the reference's `12px 16px` cell
+  box (`8px 12px` small / `16px 24px` large).
 
 ## Tokens Consumed (end: web)
 

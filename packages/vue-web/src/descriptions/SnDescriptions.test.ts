@@ -2,6 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent, h } from 'vue'
 import SnDescriptions from './SnDescriptions.vue'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import SnDescriptionsItem from './SnDescriptionsItem.vue'
 
 /** Mount SnDescriptions through a wrapper component, mirroring real usage. */
@@ -283,6 +285,41 @@ describe('SnDescriptions (AUI-WEB-DD-005)', () => {
       )
       expect(w.find('.sn-descriptions__table-header').classes()).toContain('my-label')
       expect(w.find('.sn-descriptions__table-content').classes()).toContain('my-content')
+    })
+  })
+  describe('cell padding', () => {
+    /**
+     * Regression guard for the "描述组件没有 padding" report: the non-bordered
+     * content cells must carry the same 12px column gutter the label row
+     * already used, so left-placement items stop touching each other.
+     *
+     * happy-dom performs no layout, so the authored custom properties are
+     * asserted against the SFC source (vitest cwd = packages/vue-web), the
+     * same technique `SnAlert.test.ts` uses for its alignment tokens.
+     */
+    const source = readFileSync(join(process.cwd(), 'src/descriptions/SnDescriptions.vue'), 'utf8')
+    const style = (/<style scoped>([\s\S]*?)<\/style>/.exec(source)?.[1] ?? '').replace(
+      /\/\*[\s\S]*?\*\//g,
+      '',
+    )
+
+    it('gives non-bordered content cells a horizontal column gutter', () => {
+      expect(style).toContain('--sn-descriptions-td-padding: 0 12px 12px 0;')
+      expect(style).toContain('--sn-descriptions-td-padding: 0 12px 8px 0;')
+      expect(style).toContain('--sn-descriptions-td-padding: 0 12px 16px 0;')
+      // The label row keeps its own 12px column gutter and 8px row gap.
+      expect(style).toContain('--sn-descriptions-th-padding: 0 12px 8px 0;')
+      // The bordered grid keeps its own 12px / 16px cell box.
+      expect(style).toContain('--sn-descriptions-td-padding: 12px 16px;')
+    })
+
+    it('renders one cell per entry in left placement so the gutter separates them', () => {
+      const w = mountDescriptions({ labelPlacement: 'left' }, itemSlots())
+      // Left placement without border: 3 combined label/content cells, no
+      // sizer row and no separate label row.
+      expect(w.findAll('.sn-descriptions__table-content')).toHaveLength(3)
+      expect(w.findAll('.sn-descriptions__label')).toHaveLength(3)
+      expect(w.findAll('.sn-descriptions__table-header')).toHaveLength(0)
     })
   })
 })

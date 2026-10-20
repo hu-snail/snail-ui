@@ -79,4 +79,6 @@
 
 布局规则：网格按 `column * 2` 条物理轨道展开；每行最后一个条目自动撑满剩余轨道；`label-placement="top"` 会输出一行隐藏的定宽辅助行。
 
+单元格留白：非描边模式下内容单元格带 12px 横向列间距（与 label 行一致），`label-placement="left"` 的相邻条目不再彼此贴住；描边网格沿用 12px 16px 的单元格内边距（small 8px 12px / large 16px 24px）。
+
 完整契约见组件 `ai-description.md`。

@@ -445,18 +445,25 @@ const headerNodes = (): VNodeChild[] => {
   /* naive reference thPadding: 12px column gap (left placement), 8px gap
    * between the label row and its content row (top placement). */
   --sn-descriptions-th-padding: 0 12px 8px 0;
-  --sn-descriptions-td-padding: 0 0 12px 0;
+  /* Documented divergence from the reference `tdPadding: 0 0 12px 0`:
+   * the content cells carry the same 12px column gutter the label row
+   * already uses. With zero horizontal padding the component rendered
+   * "without padding" — under `label-placement="left"` the next item's
+   * label started flush against the previous item's content, and under
+   * the default `top` placement the content columns had no gutter at
+   * all while their labels did. */
+  --sn-descriptions-td-padding: 0 12px 12px 0;
   font-size: var(--sn-descriptions-font-size);
 }
 
 .sn-descriptions--small {
   --sn-descriptions-font-size: 12px;
-  --sn-descriptions-td-padding: 0 0 8px 0;
+  --sn-descriptions-td-padding: 0 12px 8px 0;
 }
 
 .sn-descriptions--large {
   --sn-descriptions-font-size: 15px;
-  --sn-descriptions-td-padding: 0 0 16px 0;
+  --sn-descriptions-td-padding: 0 12px 16px 0;
 }
 
 /* ---------- Title header ---------- */

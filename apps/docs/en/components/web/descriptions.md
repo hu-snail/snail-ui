@@ -81,4 +81,9 @@ spans and an optional bordered outline.
 Layout: the grid expands over `column * 2` physical tracks; each row's
 last entry stretches to fill the remaining tracks.
 
+Cell padding: outside bordered mode the content cells carry a 12px
+horizontal column gutter (matching the label row), so left-placement
+entries no longer sit flush against each other; the bordered grid keeps
+its 12px 16px cell box (8px 12px small / 16px 24px large).
+
 See the component `ai-description.md` for the full contract.
