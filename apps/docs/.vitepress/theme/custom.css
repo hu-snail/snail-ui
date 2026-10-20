@@ -716,12 +716,17 @@ table.props code {
 }
 
 /* =====================================================================
-   13. Demo cards — two per row (naive-ui style)
+   13. Demo cards — waterfall layout, two columns
    ----------------------------------------------------------------------
  * utils/demo-grid.ts wraps every "one demo per heading" section in
  * `.sn-demo-cell`, and every run of two or more consecutive cells in
- * `.sn-demo-grid`. So a doc page reads as a grid of cards (two per row)
- * instead of one full-width preview per row.
+ * `.sn-demo-grid`.
+ *
+ * The container is a CSS multi-column box, not a grid: each column packs
+ * on its own, so a tall card never pushes the card next to it downwards
+ * and leaves a hole beside it (the "height mismatch" a grid produces).
+ * It also re-flows for free — when a demo's async chunk lands, the code
+ * panel expands or the window resizes — with no JS measuring step.
  *
  * These rules reach across a component boundary: `.sn-demo*` is a
  * `<style scoped>` block inside Demo.vue, i.e. it ships as
@@ -732,19 +737,17 @@ table.props code {
  * ===================================================================== */
 
 .sn-demo-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
+  column-count: 1;
+  column-gap: 16px;
   margin: 16px 0 24px;
 }
 
-/* Two per row once the article can hold them. 1200px is where the article
+/* Two columns once the article can hold them. 1200px is where the article
  * (sidebar + gutters excluded) is ~860px, i.e. two ~420px cards; below that
- * one full-width card keeps wider demos (forms, model config) usable. */
+ * one full-width column keeps wider demos (forms, model config) usable. */
 @media (min-width: 1200px) {
   .sn-demo-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-count: 2;
   }
 }
 
@@ -758,9 +761,14 @@ table.props code {
   background: var(--vp-c-bg);
 }
 
-/* Inside the grid the gap and the grid margin own the spacing. */
+/* Inside the waterfall the column gap owns the horizontal spacing and each
+ * card owns the vertical one. `break-inside` keeps a card in one piece, so a
+ * column break can only land between cards. */
 .sn-demo-grid > .sn-demo-cell {
-  margin: 0;
+  margin: 0 0 16px;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
 }
 
 /* The section heading becomes the card title. It stays a real heading, so its
@@ -808,13 +816,13 @@ table.props code {
   font-size: 13px;
 }
 
-/* Preview plane: a tinted surface rather than a second border nested inside
- * the card's own. */
+/* Preview plane: the plain card surface (white in light mode, page colour in
+ * dark mode), so demos sit on the same surface as the card and no tinted
+ * block frames them. */
 .vp-doc .sn-demo-cell > .sn-demo > .sn-demo__card {
   padding: 20px 16px;
   border: 0;
-  border-radius: 8px;
-  background: var(--vp-c-bg-soft);
+  background: var(--vp-c-bg);
 }
 
 /* `bare` demos opt out of the preview chrome entirely. */
