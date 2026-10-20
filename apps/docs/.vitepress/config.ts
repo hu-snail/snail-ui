@@ -226,8 +226,9 @@ const sidebar = {
       ],
     },
   ],
-  // Templates 模板 — installable page/section compositions. Split by end so a
-  // consumer sees exactly the set that matches the library they installed.
+  // Templates 模板 — grouped by category. Web and uni-app share one message
+  // contract and differ only in layout, so a template is one page with its ends
+  // tagged inside it, rather than a separate page per end.
   '/templates/': [
     {
       text: '概览',
@@ -236,19 +237,13 @@ const sidebar = {
       ],
     },
     {
-      text: 'Web 模板',
+      text: 'AI 套件',
       items: [
-        { text: 'AI 对话页', link: '/templates/web/chat' },
-        { text: 'AI 输入框', link: '/templates/web/prompt' },
-        { text: '消息模块', link: '/templates/web/message-list' },
-        { text: '模型配置页', link: '/templates/web/model-config' },
-      ],
-    },
-    {
-      text: 'uni-app 模板',
-      items: [
-        { text: 'AI 对话页', link: '/templates/uni/chat' },
-        { text: '消息模块', link: '/templates/uni/message-list' },
+        { text: 'AI 助手', link: '/templates/ai/assistant' },
+        { text: 'AI 对话页', link: '/templates/ai/chat' },
+        { text: 'AI 输入框', link: '/templates/ai/prompt' },
+        { text: '消息列表', link: '/templates/ai/message-list' },
+        { text: '模型配置', link: '/templates/ai/model-config' },
       ],
     },
   ],
@@ -446,19 +441,13 @@ const enSidebar = {
       ],
     },
     {
-      text: 'Web templates',
+      text: 'AI Suite',
       items: [
-        { text: 'AI chat page', link: '/en/templates/web/chat' },
-        { text: 'AI prompt', link: '/en/templates/web/prompt' },
-        { text: 'Message module', link: '/en/templates/web/message-list' },
-        { text: 'Model config page', link: '/en/templates/web/model-config' },
-      ],
-    },
-    {
-      text: 'uni-app templates',
-      items: [
-        { text: 'AI chat page', link: '/en/templates/uni/chat' },
-        { text: 'Message module', link: '/en/templates/uni/message-list' },
+        { text: 'AI assistant', link: '/en/templates/ai/assistant' },
+        { text: 'AI chat page', link: '/en/templates/ai/chat' },
+        { text: 'AI prompt', link: '/en/templates/ai/prompt' },
+        { text: 'Message list', link: '/en/templates/ai/message-list' },
+        { text: 'Model config', link: '/en/templates/ai/model-config' },
       ],
     },
   ],
