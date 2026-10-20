@@ -10,7 +10,8 @@ import { computed, ref, h } from 'vue'
 import { SnButton, SnDialog, SnIcon } from '@snui/vue-web'
 import { CloudUpload, X } from 'lucide-vue-next'
 
-const open = ref(true)
+// Closed on load — a dialog must not appear before the reader asks for it.
+const open = ref(false)
 const showIcon = ref(true)
 
 const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }))

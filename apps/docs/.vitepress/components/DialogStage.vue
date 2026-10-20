@@ -152,7 +152,10 @@ function handleKeydown(event: KeyboardEvent): void {
 .dlg-stage__mask {
   position: absolute;
   inset: 0;
-  background: var(--sn-web-color-background-overlay);
+  /* The library token is 80% black — heavier than the reference dialog mask,
+   * and with the old demo defaults (three dialogs auto-opened on load) the
+   * masks stacked into near-opaque black. Derive ~44% from the same token. */
+  background: color-mix(in srgb, var(--sn-web-color-background-overlay) 55%, transparent);
 }
 
 .dlg-stage__panel {

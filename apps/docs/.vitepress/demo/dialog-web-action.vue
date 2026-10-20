@@ -8,7 +8,8 @@
 import { ref } from 'vue'
 import { SnButton, SnDialog } from '@snui/vue-web'
 
-const open = ref(true)
+// Closed on load — a dialog must not appear before the reader asks for it.
+const open = ref(false)
 const picked = ref('—')
 
 function pick(choice: string): void {
