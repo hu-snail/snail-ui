@@ -29,9 +29,16 @@ Web 与 uni-app 的差异不再单独分页说明，而是写在每个模板页�
 
 ## 统一模板与按需子模板
 
-`SnAiAssistant` 是「AI 套件」的伞形模板：内部就是 `SnAiChat`，再加上模型配置入口与抽屉。它接受 `SnAiChat` 的全部 props 与事件，因此从对话页换到助手只需改标签名；`:show-model-config="false"` 还能让它退化成纯对话页。
+模板是**组装**出来的：转录区、输入区、模型配置三块各自独立，调度由轮次引擎提供。两个页面模板共用同一个引擎，因此它们的排队、中断、流式行为完全一致：
 
-`SnAiChat` 仍然保留，作为**纯对话页**（不要配置入口）的选择。需要更细粒度时，三个子模板可以单独引：
+| 页面模板 | 组装 |
+| --- | --- |
+| `SnAiAssistant` | 消息列表 + 输入框 + 模型配置抽屉 + 轮次引擎 |
+| `SnAiChat` | 消息列表 + 输入框 + 轮次引擎（没有配置入口） |
+
+助手接受 `SnAiChat` 的全部 props 与事件（同名同语义），两者互换只需改标签名；`:show-model-config="false"` 还能让助手退化成纯对话页。
+
+每一块都能单独引，自己拼页面：
 
 ```ts
 // 只要输入区：页面自己拥有转录区
@@ -42,9 +49,12 @@ import { SnModelConfig } from '@snui/templates/web/model-config'
 
 // 只要转录区：自己接流式数据
 import { SnAiMessageList } from '@snui/templates/web/message-list'
+
+// 调度、排队、流式折叠、中断：两个页面模板用的同一个引擎
+import { useAiTurnQueue } from '@snui/templates/web/turn-queue'
 ```
 
-一句话原则：**整页用助手 / 对话页，只有一块用子模板。**
+一句话原则：**整页用助手 / 对话页；只缺一块就用子模板；自己组页面就用引擎 + 子模板。**
 
 ## 按需加载
 

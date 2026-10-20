@@ -1,6 +1,6 @@
 # AI 对话页 AiChat / sn-ai-chat
 
-一整页可用的 AI 对话界面：消息列表、输入框、排队调度与中断控制已经组合好。安装后传入一个「运行一轮对话」的函数（`run`）即可跑起来，Web 与 uni-app 两端共用同一份消息 / 流式契约。
+一个完整可用的 AI 对话页：Web 端由消息列表模板（转录区）、输入框模板（输入区）与两页共用的轮次引擎（排队调度 / 中断）组装而成。安装后传入一个「运行一轮对话」的函数（`run`）即可跑起来，Web 与 uni-app 两端共用同一份消息 / 流式契约。
 
 > 平台：`Web`（`SnAiChat`，来自 `@snui/templates/web/chat`） / `uni-app`（`SnAiChat`，来自 `@snui/templates/uni/chat`）
 

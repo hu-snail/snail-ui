@@ -1,6 +1,6 @@
 # AI Assistant SnAiAssistant
 
-The whole AI suite in one page: header + transcript + composer, **plus a pre-wired model-config drawer**. It is the chat page `SnAiChat` with a model-config entry point added, so one component gives you a complete AI page that can both chat and change models.
+The whole AI suite **assembled** into one page: the transcript comes from the message-list template, the input area from the composer template, model config sits in the drawer behind the header's entry point, and a turn engine shared with the chat page supplies the scheduling in the middle. One component gives you a complete AI page that both chats and changes models — while every one of those pieces stays importable on its own.
 
 > Platform: `Web`
 
@@ -11,6 +11,19 @@ The whole AI suite in one page: header + transcript + composer, **plus a pre-wir
 - Model config should appear as a drawer that does not interrupt the conversation (instead of a separate settings page)
 - You need your own header buttons (history, share, clear), which the `header-actions` slot provides
 - You only want one piece (composer only, transcript only, config panel only) — import the matching sub-template instead, see "The unified template and its on-demand sub-templates"
+
+## How it is assembled
+
+The assistant is not a new monolith: it is the pieces below put together. Both page templates share the scheduling engine, so an assembled page queues, aborts and streams exactly the way they do:
+
+| Region | Comes from | Import separately |
+| --- | --- | --- |
+| Transcript | The message-list template | `@snui/templates/web/message-list` |
+| Input area | The composer template | `@snui/templates/web/prompt` |
+| Model config (drawer) | The model-config template | `@snui/templates/web/model-config` |
+| Scheduling · queue · stream folding · abort | The turn engine | `@snui/templates/web/turn-queue` |
+
+`SnAiChat` is the same parts minus the drawer.
 
 ## Install and on-demand loading
 
@@ -250,10 +263,10 @@ Drawer width is not a token; use the `model-config-width` prop.
 ## FAQ
 
 **Q: How exactly does it relate to `SnAiChat`?**
-`SnAiAssistant` is the umbrella template of the AI suite: inside, it *is* `SnAiChat` plus the model-config entry point and drawer. `SnAiChat` remains available when you want a **plain chat page** with no config entry point. The props and events are fully compatible, so switching from `SnAiChat` only means renaming the tag.
+They are **two assemblies over the same engine**: both schedule through `useAiTurnQueue`, both draw the transcript with the message-list template and the input with the composer template — the assistant merely adds the model-config entry point and its drawer. It no longer wraps the chat page, so there is no "change one layer, touch two". The same-named props and events mean the same thing, so switching is a tag rename.
 
 **Q: What if I only want the composer (or only the config panel)?**
-Import the sub-template on demand: `@snui/templates/web/prompt`, `@snui/templates/web/model-config`, `@snui/templates/web/message-list`. See "The unified template and its on-demand sub-templates" in the [templates overview](/en/templates/overview).
+Import the sub-templates on demand: `@snui/templates/web/prompt`, `@snui/templates/web/model-config`, `@snui/templates/web/message-list`. To assemble your own page, the scheduling engine is importable too: `@snui/templates/web/turn-queue`. See "The unified template and its on-demand sub-templates" in the [templates overview](/en/templates/overview).
 
 **Q: Can the component read the credential in the drawer?**
 No. The credential is only ever written into the vendor object you passed in; the component exposes no separate credential event channel and never logs it.

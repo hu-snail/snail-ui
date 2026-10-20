@@ -1,6 +1,6 @@
 # AI Chat Page AiChat / sn-ai-chat
 
-A complete AI conversation page: message list, composer, queue scheduling and abort control come pre-wired. Install it, pass in a "run one turn" function (`run`), and it works. The web and uni-app ends share one message / stream contract.
+A complete AI conversation page. On the web it is assembled from the message-list template (the transcript), the composer template (the input area) and the turn engine it shares with the assistant (queue scheduling and abort). Install it, pass in a "run one turn" function (`run`), and it works. The web and uni-app ends share one message / stream contract.
 
 > Platform: `Web` (`SnAiChat` from `@snui/templates/web/chat`) / `uni-app` (`SnAiChat` from `@snui/templates/uni/chat`)
 

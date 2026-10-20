@@ -29,9 +29,16 @@ Web and uni-app differences are no longer separate pages: each template page doc
 
 ## The unified template and its on-demand sub-templates
 
-`SnAiAssistant` is the umbrella template of the AI Suite: inside, it *is* `SnAiChat` plus the model-config entry point and drawer. It accepts every `SnAiChat` prop and event, so switching from the chat page only means renaming the tag; `:show-model-config="false"` also reduces it to a plain chat page.
+Templates are **assembled**: the transcript, the input area and the model config are three independent blocks, and scheduling comes from the turn engine. Both page templates share one engine, so their queueing, abort and streaming behave identically:
 
-`SnAiChat` remains available as the **plain chat page** (no config entry point). For finer granularity, the three sub-templates can be imported individually:
+| Page template | Assembly |
+| --- | --- |
+| `SnAiAssistant` | Message list + composer + model-config drawer + turn engine |
+| `SnAiChat` | Message list + composer + turn engine (no config entry point) |
+
+The assistant accepts every `SnAiChat` prop and event (same names, same semantics), so switching between them is a tag rename; `:show-model-config="false"` also reduces the assistant to a plain chat page.
+
+Every block can be imported on its own to build your own page:
 
 ```ts
 // Composer only: your page owns the transcript
@@ -42,9 +49,12 @@ import { SnModelConfig } from '@snui/templates/web/model-config'
 
 // Transcript only: feed it your own streaming data
 import { SnAiMessageList } from '@snui/templates/web/message-list'
+
+// Scheduling, queueing, stream folding, abort: the same engine both pages use
+import { useAiTurnQueue } from '@snui/templates/web/turn-queue'
 ```
 
-The rule of thumb: **use the assistant / chat page for a whole page, and a sub-template when you need one block.**
+The rule of thumb: **use the assistant / chat page for a whole page; import a block when you are missing one piece; use the engine plus blocks to assemble your own page.**
 
 ## On-demand loading
 
