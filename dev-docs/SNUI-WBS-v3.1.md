@@ -359,6 +359,7 @@ DD-022/023 为后续追加：SnComment（naive 无此组件，按用户指定参
 | AUI-TPL-004 | 文档站「模板」导航 + web / uni 模板文档页（zh + en 双语 + 可运行 demo）| ✅ |
 | AUI-TPL-005 | 模板 `ai-description.md` + CLI `llms-txt` 集成 | 🔵 |
 | AUI-TPL-006 | AI Repair 模板 Patch 通道 | 🔵 |
+| AUI-TPL-007 | 统一 AI 助手模板 `SnAiAssistant`（对话页 + 模型配置抽屉）+ 模板 CSS 按需切分（`cssCodeSplit` + 逐模板样式文件，废弃单一全量样式文件）+ 文档按「AI 套件」大分类重组到 `/templates/ai/*` | ✅ |
 
 ---
 

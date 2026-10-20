@@ -106,3 +106,35 @@ ADR-0001 确定了 Component First 底座：`@snui/vue-web` / `@snui/uni` 提供
 - WBS：`dev-docs/SNUI-WBS-v3.1.md` — AUI-TPL-001 .. AUI-TPL-004
 - ADR-0001（Component First 底座）、ADR-0002（Style Pack + AI Layer）
 - Spec-01 v1.2 §2.4（端别名层）、Spec-02 v1.1 §3.3（uni 只用 `--sn-mp-*`）
+
+## Revision (v3.2.1) — per-template CSS + the unified AI assistant
+
+1. **样式按模板切分，不再只有一个大样式文件。** `vite.config.js` 打开
+   `cssCodeSplit: true`（Vite 在库模式下默认关闭），再由
+   `scripts/emit-template-styles.mjs` 插件把「某个 entry 的 chunk 闭包 CSS」
+   合并成 `dist/styles/<template>.css`，token 层单独输出为
+   `dist/styles/tokens.css`；插件同时把 `import '…/tokens.css'` 与
+   `import '…/<template>.css'` 追加到对应 entry chunk，因此
+   `import { SnAiChat } from '@snui/templates/web/chat'` 会自动带上该模板
+   自己的样式，且不会顺带打进其它模板的样式。
+   - 旧形态：单个 `dist/styles/index.css` = token 31.8 kB + 全部模板 43.2 kB = 75 kB；
+   - 新形态：`tokens.css` ~31 kB + 单模板 6.6–28.7 kB，按需加载；
+   - `@snui/templates/styles` 现在指向 token 层（应用入口引一次），
+     `@snui/templates/styles/web-chat.css` 等仍可手动单独引入。
+2. **AI 套件收敛为一个统一模板 `SnAiAssistant`**
+   （`@snui/templates/web/assistant`）：页头 + 转录 + 输入区 + 模型配置抽屉。
+   `SnAiChat` 保留为「纯对话页」；`SnAiPrompt` / `SnModelConfig` /
+   `SnAiMessageList` 仍可单独按需引入。`SnAiAssistant` 只声明自己的 props，
+   其余 props / 事件经 `$attrs` 透传给 `SnAiChat`。
+3. **文档按大分类组织**：模板菜单一级为「AI 套件」，二级为模板
+   （AI 助手 / AI 对话页 / AI 输入框 / 消息列表 / 模型配置）；Web 与
+   uni-app 差异写在同一页内，路径统一为 `/templates/ai/*`。
+
+后果：
+
+- 消费者不再需要「引一次全量样式」；多个模板共存时 token 层是同一个模块，
+  只加载一次；
+- 新增模板时必须同时登记 `vite.config.js` 的 entry 与 `package.json`
+  `exports`，否则子路径不可达 / 样式不会随模板加载；
+- 旧的 `/templates/web/*`、`/templates/uni/*` 路径不再存在（文档站尚未发布，
+  未做重定向）。
