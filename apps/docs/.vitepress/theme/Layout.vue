@@ -31,7 +31,7 @@ import SnDocsNav from '../components/SnDocsNav.vue'
 import SnDocsFooter from '../components/SnDocsFooter.vue'
 import SnDocsHome from '../components/SnDocsHome.vue'
 import SnDocsSidebarToggle from '../components/SnDocsSidebarToggle.vue'
-import SnDocsCopyDoc from '../components/SnDocsCopyDoc.vue'
+import SnDocsDocActions from '../components/SnDocsDocActions.vue'
 import { enNav, nav } from '../config-nav'
 
 const route = useRoute()
@@ -80,9 +80,11 @@ const navItems = computed(() => (isEn.value ? enNav : nav))
       <SnDocsFooter />
     </template>
 
-    <!-- Top of the article: copy this page's markdown source. -->
+    <!-- Article title row: copy the page source + open it on GitHub. The
+         row is taken out of flow in custom.css §11 so it shares the line
+         with the <h1> instead of pushing it down. -->
     <template #doc-before>
-      <SnDocsCopyDoc />
+      <SnDocsDocActions />
     </template>
 
     <!-- doc-after still hosts the FAB (existing Phase-2 contract). -->

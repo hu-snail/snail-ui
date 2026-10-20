@@ -728,6 +728,30 @@ table.props code {
   padding-right: 0;
 }
 
+/* ---------------------------------------------------------------------
+ * Title row: the copy / edit actions are mounted through `doc-before`,
+ * which VitePress renders as a sibling ABOVE `<main class="main">` inside
+ * `.content-container` — so in flow they push the `<h1>` down by their own
+ * height. Park the row instead: `.content-container` becomes its containing
+ * block and the row sits at the top-right, sharing the title's line.
+ *
+ * `.vp-doc h1` then reserves that corner so a long title wraps before it
+ * reaches the two 32px buttons (2 × 32 + 6 gap + 12 breathing room).
+ * --------------------------------------------------------------------- */
+.VPDoc .content-container {
+  position: relative;
+}
+
+.sn-docs-doc-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.vp-doc h1 {
+  padding-right: 82px;
+}
+
 /* =====================================================================
    12. Collapsible left sidebar
    ----------------------------------------------------------------------
