@@ -287,15 +287,23 @@ describe('SnDescriptions (AUI-WEB-DD-005)', () => {
       expect(w.find('.sn-descriptions__table-content').classes()).toContain('my-content')
     })
   })
-  describe('cell padding', () => {
+  describe('reference parity + host isolation', () => {
     /**
-     * Regression guard for the "描述组件没有 padding" report: the non-bordered
-     * content cells must carry the same 12px column gutter the label row
-     * already used, so left-placement items stop touching each other.
+     * Regression guards for the "描述组件样式不对" report. Two independent
+     * causes were fixed and neither is observable in happy-dom (it performs no
+     * layout, and the host stylesheet is not part of the mount), so the
+     * authored CSS is read from the SFC source (vitest cwd = packages/vue-web)
+     * — the technique `SnAlert.test.ts` uses for its token values.
      *
-     * happy-dom performs no layout, so the authored custom properties are
-     * asserted against the SFC source (vitest cwd = packages/vue-web), the
-     * same technique `SnAlert.test.ts` uses for its alignment tokens.
+     *   1. Padding: the non-bordered cells stay on the reference's `thPadding`
+     *      / `tdPadding` scale (content cells carry vertical rhythm only).
+     *   2. Host isolation: the component renders a real `<table>` / `<th>` /
+     *      `<td>`, so a host page's `.vp-doc th { background-color }`,
+     *      `.vp-doc th, .vp-doc td { border-top }` and
+     *      `.vp-doc table { border; border-radius }` *tie* with a single
+     *      component class and then win on stylesheet order. Qualifying every
+     *      table/cell rule with the root class makes the component's three
+     *      classes outrank the host's two.
      */
     const source = readFileSync(join(process.cwd(), 'src/descriptions/SnDescriptions.vue'), 'utf8')
     const style = (/<style scoped>([\s\S]*?)<\/style>/.exec(source)?.[1] ?? '').replace(
@@ -303,17 +311,52 @@ describe('SnDescriptions (AUI-WEB-DD-005)', () => {
       '',
     )
 
-    it('gives non-bordered content cells a horizontal column gutter', () => {
-      expect(style).toContain('--sn-descriptions-td-padding: 0 12px 12px 0;')
-      expect(style).toContain('--sn-descriptions-td-padding: 0 12px 8px 0;')
-      expect(style).toContain('--sn-descriptions-td-padding: 0 12px 16px 0;')
-      // The label row keeps its own 12px column gutter and 8px row gap.
+    it('keeps the reference padding scale for non-bordered cells', () => {
+      // naive thPadding (12px column gap, 8px row gap) / tdPadding (rhythm only).
       expect(style).toContain('--sn-descriptions-th-padding: 0 12px 8px 0;')
-      // The bordered grid keeps its own 12px / 16px cell box.
+      expect(style).toContain('--sn-descriptions-td-padding: 0 0 12px 0;')
+      expect(style).toContain('--sn-descriptions-td-padding: 0 0 8px 0;')
+      expect(style).toContain('--sn-descriptions-td-padding: 0 0 16px 0;')
+      // The bordered grid keeps the reference's 12px / 16px cell box.
       expect(style).toContain('--sn-descriptions-td-padding: 12px 16px;')
     })
 
-    it('renders one cell per entry in left placement so the gutter separates them', () => {
+    it('qualifies every table / row / cell rule with the root class', () => {
+      expect(style).toContain('.sn-descriptions .sn-descriptions__table {')
+      expect(style).toContain('.sn-descriptions .sn-descriptions__table-row {')
+      expect(style).toContain('.sn-descriptions .sn-descriptions__table-header,')
+      expect(style).toContain('.sn-descriptions .sn-descriptions__table-content {')
+
+      // An unqualified selector would tie with `.vp-doc th/td/tr` and depend on
+      // stylesheet order; there must be none left.
+      const unqualified =
+        style.match(
+          /^\.sn-descriptions__(?:table|table-header|table-content|table-row)\s*[,{]/gm,
+        ) ?? []
+      expect(unqualified).toHaveLength(0)
+    })
+
+    it('resets the host fill, border and frame', () => {
+      expect(style).toMatch(/\.sn-descriptions \.sn-descriptions__table \{[\s\S]*?border: none;/)
+      expect(style).toMatch(
+        /\.sn-descriptions \.sn-descriptions__table \{[\s\S]*?border-radius: 0;/,
+      )
+      expect(style).toMatch(
+        /\.sn-descriptions \.sn-descriptions__table \{[\s\S]*?display: table;/,
+      )
+      // `.vp-doc th` paints a soft fill; `.vp-doc th/td` add a top rule.
+      expect(style).toMatch(
+        /\.sn-descriptions \.sn-descriptions__table-header,[\s\S]*?background-color: transparent;/,
+      )
+      expect(style).toMatch(
+        /\.sn-descriptions \.sn-descriptions__table-header,[\s\S]*?border: none;/,
+      )
+      expect(style).toMatch(
+        /\.sn-descriptions \.sn-descriptions__table-row \{[\s\S]*?background-color: transparent;/,
+      )
+    })
+
+    it('renders one cell per entry in left placement', () => {
       const w = mountDescriptions({ labelPlacement: 'left' }, itemSlots())
       // Left placement without border: 3 combined label/content cells, no
       // sizer row and no separate label row.

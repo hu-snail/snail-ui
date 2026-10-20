@@ -439,31 +439,27 @@ const headerNodes = (): VNodeChild[] => {
  * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`). */
 
 .sn-descriptions {
-  /* Size + bordered driven paddings (reference: thPaddingBordered* /
-   * tdPadding* per size). */
+  /* Size + bordered driven paddings (mirrors the reference `thPadding*` /
+   * `tdPadding*` scale 1:1). */
   --sn-descriptions-font-size: 14px;
-  /* naive reference thPadding: 12px column gap (left placement), 8px gap
+  /* naive non-bordered `thPadding`: 12px column gap (left placement), 8px gap
    * between the label row and its content row (top placement). */
   --sn-descriptions-th-padding: 0 12px 8px 0;
-  /* Documented divergence from the reference `tdPadding: 0 0 12px 0`:
-   * the content cells carry the same 12px column gutter the label row
-   * already uses. With zero horizontal padding the component rendered
-   * "without padding" — under `label-placement="left"` the next item's
-   * label started flush against the previous item's content, and under
-   * the default `top` placement the content columns had no gutter at
-   * all while their labels did. */
-  --sn-descriptions-td-padding: 0 12px 12px 0;
+  /* naive non-bordered `tdPadding`: vertical rhythm only — the reference puts
+   * no horizontal padding on the content cells, and the top-placement column
+   * boundaries come from the label row above. */
+  --sn-descriptions-td-padding: 0 0 12px 0;
   font-size: var(--sn-descriptions-font-size);
 }
 
 .sn-descriptions--small {
   --sn-descriptions-font-size: 12px;
-  --sn-descriptions-td-padding: 0 12px 8px 0;
+  --sn-descriptions-td-padding: 0 0 8px 0;
 }
 
 .sn-descriptions--large {
   --sn-descriptions-font-size: 15px;
-  --sn-descriptions-td-padding: 0 12px 16px 0;
+  --sn-descriptions-td-padding: 0 0 16px 0;
 }
 
 /* ---------- Title header ---------- */
@@ -484,55 +480,63 @@ const headerNodes = (): VNodeChild[] => {
     border-color 0.3s ease;
 }
 
-.sn-descriptions__table {
+/* ---------- Host-chrome quarantine ----------
+ * The component renders a real <table>/<th>/<td>, so a host page's own table
+ * chrome lands on it: the docs site ships `.vp-doc th { background-color:
+ * var(--vp-c-bg-soft) }`, `.vp-doc th, .vp-doc td { border-top: 1px … }` and
+ * `.vp-doc table { border: 1px; border-radius: 8px; font-size: 13.5px }`,
+ * which turned the borderless grid into a tinted, ruled table. Those host
+ * selectors are two classes deep, i.e. they *tie* with a single component
+ * class and the winner then depends on stylesheet order. Every rule below is
+ * therefore qualified with the root class — three classes always outrank the
+ * host — while the `--bordered` / alignment blocks further down still win by
+ * source order, so the bordered grid is untouched. */
+.sn-descriptions .sn-descriptions__table {
   width: 100%;
-  /* Host chrome (e.g. vitepress `.vp-doc table { display: block }`)
-   * degrades the table to a block and kills width:100% — re-assert. */
   display: table;
   margin: 0;
+  border: none;
+  border-radius: 0;
   border-collapse: separate;
   border-spacing: 0;
   box-sizing: border-box;
+  font-size: var(--sn-descriptions-font-size);
 }
 
-.sn-descriptions__table-row {
+.sn-descriptions .sn-descriptions__table-row {
   box-sizing: border-box;
-  /* Host chrome (e.g. `.vp-doc tr { border-top: 1px }`) stacks with the
-   * bordered cell grid and doubles separators — rows draw no border. */
   border: none;
+  background-color: transparent;
   transition: border-color 0.3s ease;
 }
 
-/* Defensive `border: none`: host-global table chrome (e.g. a docs site
- * styling `.vp-doc th/td`) must not draw borders the component did not ask
- * for — bordered mode re-asserts its own grid at higher specificity. */
-.sn-descriptions__table-header {
-  border: none;
-  padding: var(--sn-descriptions-th-padding);
-  font-weight: 500;
-  line-height: 1.6;
+.sn-descriptions .sn-descriptions__table-header,
+.sn-descriptions .sn-descriptions__table-content {
   display: table-cell;
   box-sizing: border-box;
-  color: var(--sn-web-color-text-primary);
-  text-align: left;
+  border: none;
+  background-color: transparent;
+  font-size: var(--sn-descriptions-font-size);
+  line-height: 1.6;
+  vertical-align: top;
   transition:
     color 0.3s ease,
     background-color 0.3s ease,
     border-color 0.3s ease;
 }
 
-.sn-descriptions__table-content {
-  border: none;
+/* Reference `th` box: no fill, 500 weight, primary ink. */
+.sn-descriptions .sn-descriptions__table-header {
+  padding: var(--sn-descriptions-th-padding);
+  font-weight: 500;
+  color: var(--sn-web-color-text-primary);
+  text-align: left;
+}
+
+/* Reference `td` box: no fill, vertical rhythm only. */
+.sn-descriptions .sn-descriptions__table-content {
   padding: var(--sn-descriptions-td-padding);
-  vertical-align: top;
-  line-height: 1.6;
-  display: table-cell;
-  box-sizing: border-box;
   color: var(--sn-web-color-text-secondary);
-  transition:
-    color 0.3s ease,
-    background-color 0.3s ease,
-    border-color 0.3s ease;
 }
 
 .sn-descriptions__label {
