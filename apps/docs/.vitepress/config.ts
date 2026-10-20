@@ -24,7 +24,7 @@ const nav = [
   { text: '风格包', link: '/style-packs/overview' },
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
-  { text: '模板', link: '/templates/web/chat' },
+  { text: '模板', link: '/templates/overview' },
 ]
 
 const sidebar = {
@@ -258,7 +258,7 @@ const enNav = [
   { text: 'Style Packs', link: '/en/style-packs/overview' },
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
-  { text: 'Templates', link: '/en/templates/web/chat' },
+  { text: 'Templates', link: '/en/templates/overview' },
 ]
 
 const enSidebar = {
