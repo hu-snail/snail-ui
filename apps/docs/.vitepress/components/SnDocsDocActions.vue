@@ -21,8 +21,9 @@
  * docs `srcDir`, so one pattern covers both locales.
  *
  * Mounted through the `doc-before` slot, i.e. as a sibling of the article
- * body inside `.content-container`; custom.css §11 takes it out of flow so
- * it shares the line with the title instead of pushing it down.
+ * body inside `.content-container`; custom.css §11 takes it out of flow and
+ * lifts it above the article so it shares the title's line *and* keeps its
+ * hit area.
  */
 
 import { computed, onBeforeUnmount, ref } from 'vue'
@@ -34,16 +35,25 @@ import { RAW_DOC_SOURCE_ATTR } from '../utils/raw-doc-source'
 /** Written onto every page by the markdown-it rule in config.ts. */
 const SOURCE_SELECTOR = `div[${RAW_DOC_SOURCE_ATTR}]`
 
-/** Repository root for "edit this page". `:path` is `page.relativePath`. */
-const EDIT_BASE = 'https://github.com/hu-snail/snail-ui/edit/main/apps/docs/'
+/** Used only if `themeConfig.editBase` is missing (see utils/edit-link.ts). */
+const EDIT_BASE_FALLBACK = 'https://github.com/hu-snail/snail-ui/edit/main/apps/docs/'
 
 /** How long the success / failure state stays on screen (ms). */
 const FEEDBACK_MS = 2000
 
-const { page } = useData()
+const { page, theme } = useData()
+
+/**
+ * Branch-matched at build time by utils/edit-link.ts and shipped through
+ * `themeConfig.editBase`; the constant is only a safety net for a config
+ * that predates it.
+ */
+const editBase = computed<string>(
+  () => (theme.value as { editBase?: string }).editBase || EDIT_BASE_FALLBACK,
+)
 
 const editUrl = computed<string>(() =>
-  page.value.relativePath ? `${EDIT_BASE}${page.value.relativePath}` : '',
+  page.value.relativePath ? `${editBase.value}${page.value.relativePath}` : '',
 )
 
 const state = ref<'idle' | 'copied' | 'failed'>('idle')
@@ -76,6 +86,38 @@ function flash(next: 'copied' | 'failed'): void {
   }, FEEDBACK_MS)
 }
 
+/**
+ * `navigator.clipboard` only exists in a secure context, and it can also be
+ * present yet reject (permissions policy). The published site is https, but
+ * an `http://` preview — or an embedded/iframe context — would otherwise
+ * fail every time behind "复制失败". Fall back to the selection-based copy,
+ * which still works there. No `await` runs before `execCommand`, so the call
+ * stays inside the click's user-gesture window.
+ */
+async function writeClipboard(text: string): Promise<void> {
+  if (navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return
+    } catch {
+      // fall through to the legacy path
+    }
+  }
+
+  const scratch = document.createElement('textarea')
+  scratch.value = text
+  scratch.setAttribute('readonly', '')
+  // Off-screen but still selectable — `display: none` could not be selected.
+  scratch.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0'
+  document.body.appendChild(scratch)
+  try {
+    scratch.select()
+    if (!document.execCommand('copy')) throw new Error('copy rejected')
+  } finally {
+    document.body.removeChild(scratch)
+  }
+}
+
 async function copyDoc(): Promise<void> {
   const source = readSource()
   if (!source) {
@@ -83,7 +125,7 @@ async function copyDoc(): Promise<void> {
     return
   }
   try {
-    await navigator.clipboard.writeText(source)
+    await writeClipboard(source)
     flash('copied')
   } catch {
     flash('failed')

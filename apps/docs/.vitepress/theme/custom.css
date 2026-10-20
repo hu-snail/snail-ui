@@ -735,6 +735,14 @@ table.props code {
  * height. Park the row instead: `.content-container` becomes its containing
  * block and the row sits at the top-right, sharing the title's line.
  *
+ * `z-index: 1` is load-bearing, not decoration. The <h1> that the row
+ * overlaps is itself `position: relative` (vitepress ships that), so both
+ * are positioned boxes and, with `z-index: auto` on each, they paint in DOM
+ * order — i.e. `<main>`/`<h1>` come after the slot and cover the row.
+ * Measured before this fix: `elementFromPoint()` over either button centre
+ * returned the H1, so neither button could be clicked at all. Lifting the
+ * row above the article's own positioned content restores the hit area.
+ *
  * `.vp-doc h1` then reserves that corner so a long title wraps before it
  * reaches the two 32px buttons (2 × 32 + 6 gap + 12 breathing room).
  * --------------------------------------------------------------------- */
@@ -746,6 +754,7 @@ table.props code {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 1;
 }
 
 .vp-doc h1 {

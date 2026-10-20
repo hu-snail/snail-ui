@@ -4,6 +4,7 @@ import type { Options as MiniSearchOptions } from 'minisearch'
 import { rpxTransform } from './utils/rpx-transform'
 import { rawDocSource } from './utils/raw-doc-source'
 import { demoGrid } from './utils/demo-grid'
+import { EDIT_BASE } from './utils/edit-link'
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -469,6 +470,10 @@ export default defineConfig({
   ignoreDeadLinks: true,
 
   themeConfig: {
+    // Base URL for the title-row "edit this page" action. Branch-matched at
+    // build time (see utils/edit-link.ts) and consumed by
+    // components/SnDocsDocActions.vue; both locales inherit it.
+    editBase: EDIT_BASE,
     // Per VitePress 1.6+: local search provider is read from
     // `site.themeConfig.search`, not from root-level `search`. When defined
     // here, the build-time constant `__VP_LOCAL_SEARCH__` becomes true and
