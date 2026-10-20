@@ -154,17 +154,47 @@
 
 /* =====================================================================
    4. Tables (Props / API)
-   ===================================================================== */
+   ----------------------------------------------------------------------
+ * VitePress ships `table { display: block; overflow-x: auto }` so a wide
+ * table can scroll. The catch: `display: block` turns the element into a
+ * block container whose rows are wrapped in an *anonymous* table box, and
+ * that box is fit-content. `width: 100%` therefore only stretched the
+ * invisible wrapper — measured on /components/web/button, the 4-column
+ * Props table rendered ~430px wide inside an 816px article and left half
+ * the module empty.
+ *
+ * `display: table` makes `width: 100%` mean what it says, and auto layout
+ * then hands the spare width to the widest column (说明 / Description)
+ * instead of wrapping it early.
+ * ===================================================================== */
 
 .vp-doc table {
-  display: block;
+  display: table;
   width: 100%;
   font-size: 13.5px;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--vp-c-divider);
   border-radius: 8px;
-  /* Clips to the radius while keeping horizontal scroll on narrow viewports. */
+}
+
+/* Below 768px there is no spare width to give away: back to vitepress's
+ * scrollable block rather than squeezing every cell onto three lines. */
+@media (max-width: 767px) {
+  .vp-doc table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* A demo card is only a fraction of the article wide (≈400px in the
+ * waterfall), and the tables that live there are the *component's* own
+ * 5-7 column previews. Filling the card would squeeze them into an
+ * unusable grid and, once the columns' min-content widths add up, the
+ * table would spill out of the card and across the article. Keep
+ * vitepress's scrollable box for those. */
+.sn-demo-cell table {
+  display: block;
   overflow-x: auto;
 }
 
@@ -189,6 +219,17 @@
 
 .vp-doc thead tr:first-child th {
   border-top: 0;
+}
+
+/* `overflow` no longer clips the table to its 8px radius (it was only ever
+ * doing that because the element was a scroll container), so round the
+ * header row's own background — the only filled band in this style. */
+.vp-doc thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+
+.vp-doc thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
 }
 
 .vp-doc th {
