@@ -79,6 +79,8 @@
 
 布局规则：网格按 `column * 2` 条物理轨道展开；每行最后一个条目自动撑满剩余轨道；`label-placement="top"` 会输出一行隐藏的定宽辅助行。
 
-单元格留白：非描边模式下内容单元格带 12px 横向列间距（与 label 行一致），`label-placement="left"` 的相邻条目不再彼此贴住；描边网格沿用 12px 16px 的单元格内边距（small 8px 12px / large 16px 24px）。
+单元格留白与 naive-ui 参考值 1:1：非描边标签格 `0 12px 8px 0`、内容格 `0 0 12px 0`（small / large 只改纵向节奏）；描边网格 `12px 16px`（small `8px 12px` / large `16px 24px`）。
+
+样式隔离：组件渲染的是真实 `<table>` / `<th>` / `<td>`，宿主的全局表格样式（例如文档站的 `.vp-doc th { background-color }`、`.vp-doc th, .vp-doc td { border-top }`、`.vp-doc table { border; border-radius }`）会命中它。组件内所有表格 / 行 / 单元格规则都带根类名前缀，保证始终压过宿主样式——这也意味着在文档站里它不会再被渲染成「带底色的表格」。
 
 完整契约见组件 `ai-description.md`。

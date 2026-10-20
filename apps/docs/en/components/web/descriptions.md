@@ -81,9 +81,17 @@ spans and an optional bordered outline.
 Layout: the grid expands over `column * 2` physical tracks; each row's
 last entry stretches to fill the remaining tracks.
 
-Cell padding: outside bordered mode the content cells carry a 12px
-horizontal column gutter (matching the label row), so left-placement
-entries no longer sit flush against each other; the bordered grid keeps
-its 12px 16px cell box (8px 12px small / 16px 24px large).
+Cell padding matches the naive-ui reference 1:1: the label cell is
+`0 12px 8px 0`, the content cell `0 0 12px 0` (small / large only change the
+vertical rhythm); the bordered grid uses `12px 16px` (`8px 12px` small /
+`16px 24px` large).
+
+Style isolation: the component renders a real `<table>` / `<th>` / `<td>`, so
+a host page's global table styles (the docs site's
+`.vp-doc th { background-color }`, `.vp-doc th, .vp-doc td { border-top }`,
+`.vp-doc table { border; border-radius }`) hit it too. Every table / row / cell
+rule is scoped under the component root class so it always outranks the host —
+which is why it no longer renders as a tinted, framed table inside the docs
+site.
 
 See the component `ai-description.md` for the full contract.
