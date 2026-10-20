@@ -16,6 +16,10 @@
       "types": "./dist/web/index.d.ts",
       "import": "./dist/web/index.js"
     },
+    "./web/assistant": {
+      "types": "./dist/web/assistant.d.ts",
+      "import": "./dist/web/assistant.js"
+    },
     "./web/chat": {
       "types": "./dist/web/chat.d.ts",
       "import": "./dist/web/chat.js"
@@ -44,8 +48,8 @@
       "types": "./dist/uni/message-list.d.ts",
       "import": "./dist/uni/message-list.js"
     },
-    "./styles": "./dist/styles/index.css",
-    "./styles/": "./dist/styles/",
+    "./styles": "./dist/styles/tokens.css",
+    "./styles/*": "./dist/styles/*",
     "./src/*.ts": "./src/*.ts",
     "./src/*.vue": "./src/*.vue"
   },
@@ -53,7 +57,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "vite build && vue-tsc -p tsconfig.json --emitDeclarationOnly && node ./scripts/copy-styles.mjs",
+    "build": "vite build && vue-tsc -p tsconfig.json --emitDeclarationOnly",
     "dev": "vite build --watch",
     "lint": "eslint src --ext .ts,.vue",
     "typecheck": "vue-tsc -p tsconfig.json --noEmit",

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
+import { templateStyles } from './scripts/emit-template-styles.mjs'
 
 /**
  * vite build config for @snui/templates.
@@ -16,17 +17,23 @@ import { fileURLToPath, URL } from 'node:url'
  * of the whole library. The barrel entries (`web/index`, `uni/index`) are
  * convenience re-exports for consumers that want everything.
  *
+ * Styles follow the same rule. `cssCodeSplit: true` is required because Vite's
+ * library mode defaults it to false and would flatten every template's CSS
+ * into one stylesheet; `templateStyles()` then folds the per-chunk CSS into one
+ * file per template, emits the shared token layer as `styles/tokens.css`, and
+ * makes each entry chunk import its own pair. That is what makes
+ * `@snui/templates/web/chat` carry the chat styles and no others — see
+ * ./scripts/emit-template-styles.mjs for the reasoning.
+ *
  * Pipeline (per package.json `build`):
- *   1. `vite build` — emits dist/{web,uni}/*.js (lib ESM, shared deps split
- *                     into chunks/) + dist/styles/index.css
+ *   1. `vite build` — emits dist/{web,uni}/*.js + dist/styles/{tokens,<template>}.css
  *   2. `vue-tsc --emitDeclarationOnly` — emits dist/** d.ts declarations
- *   3. `node ./scripts/copy-styles.mjs` — prepends the token cascade to
- *      dist/styles/index.css so `@snui/templates/styles` is self-sufficient
  */
 
 const entry = {
   index: fileURLToPath(new URL('./src/index.ts', import.meta.url)),
   'web/index': fileURLToPath(new URL('./src/web/index.ts', import.meta.url)),
+  'web/assistant': fileURLToPath(new URL('./src/web/assistant.ts', import.meta.url)),
   'web/chat': fileURLToPath(new URL('./src/web/chat.ts', import.meta.url)),
   'web/prompt': fileURLToPath(new URL('./src/web/prompt.ts', import.meta.url)),
   'web/message-list': fileURLToPath(new URL('./src/web/message-list.ts', import.meta.url)),
@@ -37,13 +44,17 @@ const entry = {
 }
 
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), templateStyles()],
+
   build: {
     target: 'es2022',
     outDir: 'dist',
     emptyOutDir: false,
     sourcemap: true,
     minify: false,
+    // Load-bearing: library mode defaults this to false, which would emit one
+    // stylesheet containing every template.
+    cssCodeSplit: true,
     lib: {
       entry,
       name: 'SnUITemplates',
@@ -57,15 +68,18 @@ export default defineConfig({
       output: {
         entryFileNames: '[name].js',
         chunkFileNames: 'chunks/[name]-[hash].js',
-        // All extracted CSS lands at dist/styles/index.css; copy-styles.mjs
-        // then prepends the token cascade onto that same file.
+        // Transient: escapes one file per chunk, named after the component.
+        // templateStyles() folds these into styles/<template>.css and deletes
+        // the originals, so a consumer only ever sees the aggregate per
+        // template, never the per-component split.
         assetFileNames: (info) => {
-          if (info.name && info.name.endsWith('.css')) return 'styles/index.css'
+          if (info.name && info.name.endsWith('.css')) return `styles/${info.name}`
           return 'assets/[name][extname]'
         },
       },
     },
   },
+
   resolve: {
     alias: {
       '@snui/tokens': fileURLToPath(new URL('../tokens/src/index.ts', import.meta.url)),
