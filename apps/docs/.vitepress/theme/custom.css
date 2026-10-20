@@ -601,3 +601,47 @@ table.props code {
 .VPNavBar .wrapper .container {
   padding: 0 !important;
 }
+
+/* =====================================================================
+   10. Full-bleed layout parity with the home page
+   ----------------------------------------------------------------------
+ * The home page has no sidebar, so vitepress never insets `.content` and
+ * SnDocsNav spans the viewport edge-to-edge. Doc pages carry `has-sidebar`,
+ * and vitepress centres their whole chrome to its 1440px layout:
+ *
+ *   >=960px :  `.VPNavBar.has-sidebar .content` gets the sidebar inset on
+ *              the left + 32px on the right
+ *   >=1440px:  `.VPNavBar.has-sidebar .content` AND `.VPContent.has-sidebar`
+ *              additionally get `(100vw - 1440px) / 2` on both sides, and
+ *              `.VPSidebar` widens to `(100% - 1376px) / 2 + 272px` so its
+ *              labels keep lining up with the centred article
+ *
+ * Measured at 1920px that left the nav inset 512px / 272px (SnDocsNav only
+ * 1136px wide) and the article with a 240px dead gutter on the right.
+ *
+ * SnDocsNav already owns its own 24px token gutters, and the sidebar starts
+ * *below* the navbar (`--vp-layout-top-height`), so the nav bar can span the
+ * full viewport on doc pages too. The sidebar keeps its standard
+ * `--vp-sidebar-width` and the article sits directly next to it, filling the
+ * rest of the viewport — no max-width anywhere, matching the home page.
+ * ===================================================================== */
+
+/* Nav bar: full-bleed at every width (parity with the home page). */
+.VPNavBar.has-sidebar .content {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+@media (min-width: 1440px) {
+  /* Sidebar: back to its standard width + gutter. */
+  .VPSidebar {
+    padding-left: 32px !important;
+    width: var(--vp-sidebar-width) !important;
+  }
+
+  /* Article: start right after the sidebar and fill the remaining width. */
+  .VPContent.has-sidebar {
+    padding-right: 0 !important;
+    padding-left: var(--vp-sidebar-width) !important;
+  }
+}
