@@ -677,27 +677,47 @@ table.props code {
 /* =====================================================================
    12. Collapsible left sidebar
    ----------------------------------------------------------------------
- * The collapse control is injected into VPSidebar via the
- * `sidebar-nav-before` slot (theme/Layout.vue) and the matching expand
- * control renders in SnDocsNav while collapsed. Both read the shared state in
- * utils/sidebar-collapse.ts, which mirrors it onto
- * `<html class="sn-sidebar-collapsed">`.
+ * The collapse control is the tab that rides the sidebar's right border
+ * line, vertically centred in the viewport. It is a plain
+ * `position: fixed` element, which is why theme/Layout.vue mounts it
+ * through `layout-top`, i.e. OUTSIDE VPSidebar: that element is
+ * `overflow: hidden`, so a child of it would be clipped at the very
+ * border it has to sit on, and it also carries a (near-identity)
+ * transform, which would make it the containing block for a fixed child
+ * and pin the tab to the sidebar box instead of the viewport.
  *
- * Above 960px the sidebar is a fixed column, so collapsing it is purely a
- * layout change: hide it and hand its width back to the article. Below 960px
- * the same element is the mobile drawer opened by vitepress's hamburger —
- * hiding it there would break that drawer, so the whole block is desktop-only
- * and both toggles are hidden on small screens.
+ * The tab only makes sense while a sidebar is on screen and expanded:
+ *   - `:has(.VPSidebar)` skips pages that render no sidebar (home,
+ *     standalone docs pages)
+ *   - `.sn-sidebar-collapsed` steps aside for the expand control
+ *     SnDocsNav renders while collapsed
+ *   - below 960px the same element is vitepress's off-canvas drawer, so
+ *     the handle is desktop-only (SnDocsNav's control is hidden there too)
+ *
+ * Collapsing above 960px is then purely a layout change: hide the sidebar
+ * and hand its column back to the article.
  * ===================================================================== */
 
-/* Control row at the very top of the sidebar nav. */
-.sn-docs-sidebar-head {
-  display: flex;
-  justify-content: flex-end;
-  padding-bottom: 8px;
+/* Off by default; only the desktop + expanded + sidebar-present case below
+ * switches it on. */
+.sn-docs-sidebar-handle {
+  display: none;
 }
 
 @media (min-width: 960px) {
+  /* `left` is the sidebar's border-box right edge, i.e. exactly where its
+   * `border-right` ends, so the tab hangs off that line without covering
+   * it. 272px + the 20px tab still clears the article, whose text starts
+   * at 304px. */
+  html:has(.VPSidebar):not(.sn-sidebar-collapsed) .sn-docs-sidebar-handle {
+    position: fixed;
+    top: 50%;
+    left: var(--vp-sidebar-width);
+    z-index: 61;
+    display: flex;
+    transform: translateY(-50%);
+  }
+
   html.sn-sidebar-collapsed .VPSidebar {
     display: none !important;
   }
@@ -709,7 +729,6 @@ table.props code {
 }
 
 @media (max-width: 959px) {
-  .sn-docs-sidebar-head,
   .sn-docs-nav .sn-docs-sidebar-toggle {
     display: none;
   }

@@ -50,12 +50,19 @@ const navItems = computed(() => (isEn.value ? enNav : nav))
       <SnDocsNav :items="navItems" />
     </template>
 
-    <!-- Top of the left nav: the sidebar collapse control. It lives inside
-         VPSidebar (via `sidebar-nav-before`), so it disappears together with
-         the sidebar; SnDocsNav renders the matching expand control. -->
-    <template #sidebar-nav-before>
-      <div class="sn-docs-sidebar-head">
-        <SnDocsSidebarToggle />
+    <!-- Sidebar collapse handle: a tab riding the sidebar's right border
+         line. It is mounted here, through `layout-top` — i.e. OUTSIDE
+         VPSidebar — because that element is `overflow: hidden` (a child
+         would be clipped at the border) and carries a transform (which
+         turns it into the containing block for fixed children, so
+         `position: fixed` inside it would resolve against the sidebar box,
+         not the viewport). custom.css §12 shows it only on desktop, only
+         when a sidebar is actually rendered, and only while expanded;
+         SnDocsNav takes over with the matching expand control once
+         collapsed. -->
+    <template #layout-top>
+      <div class="sn-docs-sidebar-handle">
+        <SnDocsSidebarToggle placement="handle" />
       </div>
     </template>
 
