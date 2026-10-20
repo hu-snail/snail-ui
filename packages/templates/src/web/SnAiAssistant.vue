@@ -62,7 +62,12 @@ const props = withDefaults(
     /** Provider currently being connection-tested (renders its spinner). */
     testingVendorId?: string | undefined
     /** Generation parameters shown in the drawer. */
-    modelParams?: SnAiModelParams | undefined
+    /**
+     * Generation parameters shown in the drawer. Named to mirror
+     * `SnModelConfig` (`params` / `update:params`), so `v-model:params` works
+     * here and one handler can be handed to either component.
+     */
+    params?: SnAiModelParams | undefined
     /** Offer add / edit / delete affordances inside the drawer. */
     editableModels?: boolean
     /** Controlled drawer visibility; leave undefined to let the template own it. */
@@ -74,7 +79,7 @@ const props = withDefaults(
     activeVendorId: undefined,
     activeModelId: undefined,
     testingVendorId: undefined,
-    modelParams: undefined,
+    params: undefined,
     editableModels: true,
     modelConfigOpen: undefined,
   },
@@ -151,7 +156,7 @@ const drawerWidth = computed<number | string>(() => props.modelConfigWidth ?? 42
             :vendors="vendors"
             :active-vendor-id="activeVendorId"
             :active-model-id="activeModelId"
-            :params="modelParams"
+            :params="params"
             :testing-vendor-id="testingVendorId"
             :editable="editableModels"
             :title="drawerTitle"

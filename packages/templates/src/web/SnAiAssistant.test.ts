@@ -13,7 +13,7 @@
 import { describe, expect, it } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import SnAiAssistant from './SnAiAssistant.vue'
-import type { SnAiMessage, SnAiVendor } from '../shared/types'
+import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '../shared/types'
 
 const vendors: SnAiVendor[] = [
   {
@@ -27,6 +27,7 @@ interface AssistantOptions {
   showModelConfig?: boolean
   modelConfigOpen?: boolean | undefined
   title?: string
+  params?: SnAiModelParams | undefined
 }
 
 /** Teleport is stubbed so the drawer's panel renders inline and is findable. */
@@ -87,6 +88,17 @@ describe('SnAiAssistant', () => {
 
       expect(wrapper.findComponent({ name: 'SnModelConfig' }).props('vendors')).toEqual(vendors)
     })
+    it('should own `params` rather than falling through to the chat page', () => {
+      const params: SnAiModelParams = { temperature: 0.4, stream: true }
+      const wrapper = mountAssistant({ params, modelConfigOpen: true })
+
+      // A declared prop: an undeclared `params` would sit in $attrs, reach
+      // SnConfigProvider — which renders fragment / teleport roots and cannot
+      // inherit attributes — and warn, while `v-model:params` would never bind.
+      expect(wrapper.props('params')).toEqual(params)
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).props('params')).toEqual(params)
+    })
+
 
     it('should drop the entry point and the panel when disabled', () => {
       const wrapper = mountAssistant({ showModelConfig: false, modelConfigOpen: true })

@@ -135,7 +135,7 @@ function onTestConnection({ vendorId }: { vendorId: string }): void {
     :run="run"
     :vendors="vendors"
     :models="models"
-    :model-params="params"
+    v-model:params="params"
     title="AI 助手"
     model-config-title="模型与参数"
     :model-config-width="480"
@@ -178,7 +178,7 @@ function onTestConnection({ vendorId }: { vendorId: string }): void {
 | `modelConfigOpen` | `boolean \| undefined` | `undefined` | 受控的抽屉开合状态；不传时由模板自己记住 |
 | `activeVendorId` | `string \| undefined` | `undefined` | 传给模型配置的当前厂商 |
 | `activeModelId` | `string \| undefined` | `undefined` | 传给模型配置的当前模型 |
-| `modelParams` | `SnAiModelParams \| undefined` | `undefined` | 传给模型配置的生成参数 |
+| `params` | `SnAiModelParams \| undefined` | `undefined` | 传给模型配置的生成参数 |
 | `editableModels` | `boolean` | `true` | 是否允许在抽屉里增删改厂商 / 模型 |
 | `vendors` | `SnAiVendor[] \| undefined` | `undefined` | 已配置的厂商。抽屉与输入区模型选择器共用这一份 |
 
@@ -193,7 +193,7 @@ function onTestConnection({ vendorId }: { vendorId: string }): void {
 | `update:params` | `SnAiModelParams` | 抽屉里改动了生成参数 |
 | `test-connection` | `{ vendorId }` | 请求宿主机验证该厂商的接口与凭证 |
 
-事件名沿用模型配置的命名（`update:params` 而非 `update:modelParams`），这样同一个 handler 可以原样给 `SnModelConfig` 用。
+prop 与事件名都与模型配置模板保持一致（`params` / `update:params`），因此 `v-model:params` 直接可用，同一个 handler 也可以原样交给 `SnModelConfig`。
 
 ### Slots
 

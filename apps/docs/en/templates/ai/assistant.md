@@ -135,7 +135,7 @@ function onTestConnection({ vendorId }: { vendorId: string }): void {
     :run="run"
     :vendors="vendors"
     :models="models"
-    :model-params="params"
+    v-model:params="params"
     title="AI assistant"
     model-config-title="Models and parameters"
     :model-config-width="480"
@@ -178,7 +178,7 @@ Beyond those, this template adds only the members below:
 | `modelConfigOpen` | `boolean \| undefined` | `undefined` | Controlled drawer visibility; the template remembers it when unset |
 | `activeVendorId` | `string \| undefined` | `undefined` | Vendor passed to the model config |
 | `activeModelId` | `string \| undefined` | `undefined` | Model passed to the model config |
-| `modelParams` | `SnAiModelParams \| undefined` | `undefined` | Generation parameters passed to the model config |
+| `params` | `SnAiModelParams \| undefined` | `undefined` | Generation parameters passed to the model config |
 | `editableModels` | `boolean` | `true` | Offer add / edit / delete affordances inside the drawer |
 | `vendors` | `SnAiVendor[] \| undefined` | `undefined` | Configured vendors. The drawer and the composer's model picker share this one list |
 
@@ -193,7 +193,7 @@ Beyond those, this template adds only the members below:
 | `update:params` | `SnAiModelParams` | Generation parameters changed in the drawer |
 | `test-connection` | `{ vendorId }` | Ask the host to verify this vendor's endpoint and credential |
 
-Event names follow the model config's naming (`update:params`, not `update:modelParams`), so the same handler can be handed to `SnModelConfig` unchanged.
+Both the prop and the event match the model config template (`params` / `update:params`), so `v-model:params` works and the same handler can be handed to `SnModelConfig` unchanged.
 
 ### Slots
 
