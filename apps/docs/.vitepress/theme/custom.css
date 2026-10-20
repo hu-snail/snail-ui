@@ -74,14 +74,15 @@
   margin-bottom: 8px;
 }
 
-/* Section heading: 1px hairline underline, compact scale. */
+/* Section heading: compact scale. Deliberately no rule under the text — the
+ * hairline this page uses between sections stays *above* the heading, where
+ * vitepress puts it (`.vp-doc h2 { border-top: … }`). */
+
 .vp-doc h2 {
   font-size: 20px;
   font-weight: 600;
   line-height: 1.5;
   letter-spacing: -0.01em;
-  border-bottom: 1px solid var(--vp-c-divider);
-  padding-bottom: 8px;
 }
 
 .vp-doc h3 {
@@ -647,28 +648,40 @@ table.props code {
 }
 
 /* =====================================================================
-   11. Maximise the article width on doc pages
+   11. Article width and gutters on doc pages
    ----------------------------------------------------------------------
  * VitePress caps the article at 688px whenever the page has an aside (the
  * right-hand outline): `.VPDoc.has-aside .content-container { max-width:
  * 688px }`. Measured at 1339px that left the prose 683px wide inside a
  * 1067px doc area, i.e. a large dead column on the right.
  *
- * Let the article fill the space between the sidebar and the outline. The
- * 32px gutters owned by `.VPDoc` keep the requested breathing room on both
- * sides, so the text never runs edge-to-edge.
+ * Let the article fill the space between the sidebar and the outline, and
+ * own the breathing room on both sides explicitly:
+ *   - `.VPDoc` carries a 48px gutter left and right
+ *   - the duplicate 32px vitepress also puts on the inner `.content` is
+ *     dropped, so the two don't stack into 80px
+ *
+ * Measured at 1440px the article therefore starts 48px after the sidebar
+ * and ends 48px before the outline, instead of 32px / 32px.
  * ===================================================================== */
-/* `!important` is required: vitepress ships this rule from a `<style scoped>`
- * block, so it lands as `.VPDoc.has-aside .content-container[data-v-…]` and
- * outranks any unscoped selector we can write. */
+/* `!important` is required: vitepress ships these rules from a `<style scoped>`
+ * block, so they land as `.VPDoc[data-v-…]` / `.VPDoc.has-aside
+ * .content-container[data-v-…]` and outrank any unscoped selector we can
+ * write. */
 .VPDoc.has-aside .content-container {
   max-width: 100% !important;
 }
 
-/* VitePress pads BOTH `.VPDoc` (32px) and `.content` (32px) horizontally, i.e.
- * 64px of gutter on each side of the article. Keep the outer `.VPDoc` gutter
- * and drop the inner duplicate so the article gets those 64px back; the text
- * still keeps a 32px breathing space on both sides. */
+/* Desktop only: below 960px vitepress's own 24px gutter is already a large
+ * share of the viewport, and the outline is gone. */
+@media (min-width: 960px) {
+  .VPDoc {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+}
+
+/* Drop the inner duplicate so the two gutters don't stack. */
 .VPDoc > .container > .content {
   padding-left: 0;
   padding-right: 0;
