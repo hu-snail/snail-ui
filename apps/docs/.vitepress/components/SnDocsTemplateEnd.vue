@@ -68,6 +68,9 @@ function onChange(value: SnRadioValue): void {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  /* Clear of the fixed navbar: the sidebar's own top padding sits underneath it,
+   * so without this the capsule reads as pinned to the top edge. */
+  padding-top: 16px;
   margin-bottom: 12px;
 }
 
@@ -75,7 +78,6 @@ function onChange(value: SnRadioValue): void {
 .sn-docs-template-end__capsule {
   width: 100%;
 }
-
 .sn-docs-template-end__hint {
   margin: 0;
   color: var(--vp-c-text-3);
