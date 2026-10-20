@@ -38,6 +38,7 @@ const entry = {
   'web/prompt': fileURLToPath(new URL('./src/web/prompt.ts', import.meta.url)),
   'web/message-list': fileURLToPath(new URL('./src/web/message-list.ts', import.meta.url)),
   'web/model-config': fileURLToPath(new URL('./src/web/model-config.ts', import.meta.url)),
+  'web/turn-queue': fileURLToPath(new URL('./src/web/turn-queue.ts', import.meta.url)),
   'uni/index': fileURLToPath(new URL('./src/uni/index.ts', import.meta.url)),
   'uni/chat': fileURLToPath(new URL('./src/uni/chat.ts', import.meta.url)),
   'uni/message-list': fileURLToPath(new URL('./src/uni/message-list.ts', import.meta.url)),

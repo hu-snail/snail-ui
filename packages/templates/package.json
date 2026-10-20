@@ -36,6 +36,10 @@
       "types": "./dist/web/model-config.d.ts",
       "import": "./dist/web/model-config.js"
     },
+    "./web/turn-queue": {
+      "types": "./dist/web/turn-queue.d.ts",
+      "import": "./dist/web/turn-queue.js"
+    },
     "./uni": {
       "types": "./dist/uni/index.d.ts",
       "import": "./dist/uni/index.js"

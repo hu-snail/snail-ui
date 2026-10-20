@@ -10,10 +10,11 @@
  *   - the panel's own events are re-emitted so a host can own the state
  */
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
 import SnAiAssistant from './SnAiAssistant.vue'
 import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '../shared/types'
+import type { SnAiRunTurn } from './use-ai-turn-queue'
 
 const vendors: SnAiVendor[] = [
   {
@@ -47,10 +48,36 @@ function triggerOf(wrapper: VueWrapper) {
 
 describe('SnAiAssistant', () => {
   describe('composition', () => {
-    it('should forward undeclared props to the conversation page', () => {
+    it('should assemble the message list and the composer, not wrap another page', () => {
       const wrapper = mountAssistant({ title: '代码助手' })
 
-      expect(wrapper.find('.sn-ai-chat__title').text()).toBe('代码助手')
+      expect(wrapper.find('.sn-ai-assistant__title').text()).toBe('代码助手')
+      expect(wrapper.findComponent({ name: 'SnAiMessageList' }).exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'SnAiPrompt' }).exists()).toBe(true)
+      // The chat page is a sibling assembly, never a child of this one.
+      expect(wrapper.findComponent({ name: 'SnAiChat' }).exists()).toBe(false)
+    })
+
+    it('should run a turn through the shared engine', async () => {
+      const run = vi.fn<SnAiRunTurn>(async (_turn, context) => {
+        context.emit({ type: 'text', text: '答案' })
+      })
+      const wrapper = mountAssistant({ run })
+
+      wrapper.findComponent({ name: 'SnAiPrompt' }).vm.$emit('send', {
+        id: 't1',
+        text: '问题',
+        attachments: [],
+        createdAt: 1,
+      })
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(run).toHaveBeenCalledTimes(1)
+      expect(wrapper.emitted('turn-start')).toHaveLength(1)
+      const transcript = wrapper.emitted('update:messages')?.at(-1)?.[0] as SnAiMessage[]
+      expect(transcript.map((message) => message.role)).toEqual(['user', 'assistant'])
+      expect(transcript[1]?.parts[0]).toEqual({ type: 'text', text: '答案' })
+      expect(transcript[1]?.status).toBe('done')
     })
 
     it('should render the chat page and the model-config panel as one template', async () => {

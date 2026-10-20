@@ -15,3 +15,12 @@ export { default as SnAiThinking } from './SnAiThinking.vue'
 export { default as SnModelConfig } from './SnModelConfig.vue'
 
 export { toIconComponent } from './icon-adapter'
+
+/* The turn engine the two page templates assemble their pages around. */
+export { useAiTurnQueue } from './use-ai-turn-queue'
+export type {
+  AiTurnQueue,
+  AiTurnQueueHooks,
+  AiTurnQueueOptions,
+  SnAiRunTurn,
+} from './use-ai-turn-queue'
