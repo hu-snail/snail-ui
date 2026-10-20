@@ -673,3 +673,44 @@ table.props code {
   padding-left: 0;
   padding-right: 0;
 }
+
+/* =====================================================================
+   12. Collapsible left sidebar
+   ----------------------------------------------------------------------
+ * The collapse control is injected into VPSidebar via the
+ * `sidebar-nav-before` slot (theme/Layout.vue) and the matching expand
+ * control renders in SnDocsNav while collapsed. Both read the shared state in
+ * utils/sidebar-collapse.ts, which mirrors it onto
+ * `<html class="sn-sidebar-collapsed">`.
+ *
+ * Above 960px the sidebar is a fixed column, so collapsing it is purely a
+ * layout change: hide it and hand its width back to the article. Below 960px
+ * the same element is the mobile drawer opened by vitepress's hamburger —
+ * hiding it there would break that drawer, so the whole block is desktop-only
+ * and both toggles are hidden on small screens.
+ * ===================================================================== */
+
+/* Control row at the very top of the sidebar nav. */
+.sn-docs-sidebar-head {
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 8px;
+}
+
+@media (min-width: 960px) {
+  html.sn-sidebar-collapsed .VPSidebar {
+    display: none !important;
+  }
+
+  /* Reclaim the sidebar column for the article. */
+  html.sn-sidebar-collapsed .VPContent.has-sidebar {
+    padding-left: 0 !important;
+  }
+}
+
+@media (max-width: 959px) {
+  .sn-docs-sidebar-head,
+  .sn-docs-nav .sn-docs-sidebar-toggle {
+    display: none;
+  }
+}

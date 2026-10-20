@@ -23,6 +23,8 @@ import { useData, useRoute } from 'vitepress'
 import { Moon, Search, Snail, Sun } from 'lucide-vue-next'
 import { SnButton, SnConfigProvider, SnIcon, SnMenu } from '@snui/vue-web'
 import type { SnMenuOption } from '@snui/vue-web'
+import SnDocsSidebarToggle from './SnDocsSidebarToggle.vue'
+import { useSidebarCollapse } from '../utils/sidebar-collapse'
 
 interface NavItem { text: string; link: string }
 
@@ -38,6 +40,9 @@ const props = withDefaults(
 
 const route = useRoute()
 const { isDark } = useData()
+
+/** Sidebar state — the navbar hosts the expand control while collapsed. */
+const { collapsed } = useSidebarCollapse()
 
 /** Map nav items → SnMenu options. Active state is derived from useRoute(). */
 const menuOptions = computed<SnMenuOption[]>(() =>
@@ -93,6 +98,7 @@ const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' 
 <template>
   <SnConfigProvider skin="">
     <div class="sn-docs-nav">
+      <SnDocsSidebarToggle v-if="collapsed" />
       <a class="sn-docs-nav__brand" href="/" aria-label="Home">
         <SnIcon class="sn-docs-nav__brand-icon" :icon="Snail" />
         <span class="sn-docs-nav__brand-text">snail-aui</span>

@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { fileURLToPath, URL } from 'node:url'
 import type { Options as MiniSearchOptions } from 'minisearch'
 import { rpxTransform } from './utils/rpx-transform'
+import { rawDocSource } from './utils/raw-doc-source'
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -547,6 +548,14 @@ export default defineConfig({
           } as MiniSearchOptions['searchOptions'],
         },
       },
+    },
+  },
+
+  // Publish each page's raw markdown so the "copy document" button can hand
+  // the reader the exact source. See ./utils/raw-doc-source.ts.
+  markdown: {
+    config: (md) => {
+      rawDocSource(md)
     },
   },
 
