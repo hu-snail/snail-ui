@@ -262,6 +262,13 @@ export { default as SnVirtualList } from './virtual-list/SnVirtualList.vue'
 export { default as SnPagination } from './pagination/SnPagination.vue'
 export { default as SnTransfer } from './transfer/SnTransfer.vue'
 
+// 追加批次 (AUI-WEB-FB-015 / DD-030..032): 悬浮按钮 / 瀑布流 / 视频预览 / 跑马灯
+export { default as SnFloatButton } from './float-button/SnFloatButton.vue'
+export { default as SnFloatButtonGroup } from './float-button/SnFloatButtonGroup.vue'
+export { default as SnWaterfall } from './waterfall/SnWaterfall.vue'
+export { default as SnVideoPreview } from './video-preview/SnVideoPreview.vue'
+export { default as SnMarquee } from './marquee/SnMarquee.vue'
+
 export { SnUI, default } from './install.js'
 export type { SnUIOptions } from './install.js'
 

@@ -104,6 +104,7 @@ const sidebar = {
         { text: 'Flex 弹性布局', link: '/components/web/flex' },
         { text: 'Layout 布局', link: '/components/web/layout' },
         { text: 'Splitter 分栏', link: '/components/web/splitter' },
+        { text: 'Waterfall 瀑布流', link: '/components/web/waterfall' },
       ],
     },
     {
@@ -117,6 +118,7 @@ const sidebar = {
         { text: 'Affix 固钉', link: '/components/web/affix' },
         { text: 'Anchor 锚点', link: '/components/web/anchor' },
         { text: 'BackTop 回到顶部', link: '/components/web/back-top' },
+        { text: 'FloatButton 悬浮按钮', link: '/components/web/float-button' },
         { text: 'Pagination 分页', link: '/components/web/pagination' },
         { text: 'PageHeader 页头', link: '/components/web/page-header' },
       ],
@@ -139,6 +141,7 @@ const sidebar = {
       items: [
         { text: 'Calendar 日历', link: '/components/web/calendar' },
         { text: 'Carousel 轮播图', link: '/components/web/carousel' },
+        { text: 'Marquee 跑马灯', link: '/components/web/marquee' },
         { text: 'Countdown 倒计时', link: '/components/web/countdown' },
         { text: 'Code 代码', link: '/components/web/code' },
         { text: 'Comment 注释', link: '/components/web/comment' },
@@ -147,6 +150,7 @@ const sidebar = {
         { text: 'Empty 空状态', link: '/components/web/empty' },
         { text: 'Equation 公式', link: '/components/web/equation' },
         { text: 'Image 图片', link: '/components/web/image' },
+        { text: 'VideoPreview 视频预览', link: '/components/web/video-preview' },
         { text: 'List 列表', link: '/components/web/list' },
         { text: 'Log 日志', link: '/components/web/log' },
         { text: 'NumberAnimation 数字动画', link: '/components/web/number-animation' },
@@ -326,6 +330,7 @@ const enSidebar = {
         { text: 'Flex', link: '/en/components/web/flex' },
         { text: 'Layout', link: '/en/components/web/layout' },
         { text: 'Splitter', link: '/en/components/web/splitter' },
+        { text: 'Waterfall', link: '/en/components/web/waterfall' },
       ],
     },
     {
@@ -333,6 +338,7 @@ const enSidebar = {
       items: [
         { text: 'Pagination', link: '/en/components/web/pagination' },
         { text: 'PageHeader', link: '/en/components/web/page-header' },
+        { text: 'FloatButton', link: '/en/components/web/float-button' },
       ],
     },
     {
@@ -348,6 +354,7 @@ const enSidebar = {
       items: [
         { text: 'Calendar', link: '/en/components/web/calendar' },
         { text: 'Carousel', link: '/en/components/web/carousel' },
+        { text: 'Marquee', link: '/en/components/web/marquee' },
         { text: 'Countdown', link: '/en/components/web/countdown' },
         { text: 'Code', link: '/en/components/web/code' },
         { text: 'Comment', link: '/en/components/web/comment' },
@@ -356,6 +363,7 @@ const enSidebar = {
         { text: 'Empty', link: '/en/components/web/empty' },
         { text: 'Equation', link: '/en/components/web/equation' },
         { text: 'Image', link: '/en/components/web/image' },
+        { text: 'VideoPreview', link: '/en/components/web/video-preview' },
         { text: 'List', link: '/en/components/web/list' },
         { text: 'Log', link: '/en/components/web/log' },
         { text: 'NumberAnimation', link: '/en/components/web/number-animation' },

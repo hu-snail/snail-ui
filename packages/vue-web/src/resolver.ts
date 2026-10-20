@@ -159,6 +159,12 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   // Navigation / Form 补充 (AUI-WEB-NAV-009 / AUI-WEB-FORM-017)
   'SnPagination',
   'SnTransfer',
+  // 追加批次 (AUI-WEB-FB-015 / DD-030..032)
+  'SnFloatButton',
+  'SnFloatButtonGroup',
+  'SnWaterfall',
+  'SnVideoPreview',
+  'SnMarquee',
 ]
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {

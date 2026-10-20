@@ -114,6 +114,11 @@ import SnLink from './link/SnLink.vue'
 import SnVirtualList from './virtual-list/SnVirtualList.vue'
 import SnPagination from './pagination/SnPagination.vue'
 import SnTransfer from './transfer/SnTransfer.vue'
+import SnFloatButton from './float-button/SnFloatButton.vue'
+import SnFloatButtonGroup from './float-button/SnFloatButtonGroup.vue'
+import SnWaterfall from './waterfall/SnWaterfall.vue'
+import SnVideoPreview from './video-preview/SnVideoPreview.vue'
+import SnMarquee from './marquee/SnMarquee.vue'
 
 export interface SnUIOptions {
   /** Skip auto-registration of specific components. */
@@ -239,6 +244,12 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnTimeline', component: SnTimeline },
   { name: 'SnTimelineItem', component: SnTimelineItem },
   { name: 'SnTree', component: SnTree },
+  // 追加批次 (AUI-WEB-FB-015 / DD-030..032)
+  { name: 'SnFloatButton', component: SnFloatButton },
+  { name: 'SnFloatButtonGroup', component: SnFloatButtonGroup },
+  { name: 'SnWaterfall', component: SnWaterfall },
+  { name: 'SnVideoPreview', component: SnVideoPreview },
+  { name: 'SnMarquee', component: SnMarquee },
 ]
 
 export const SnUI: Plugin = {

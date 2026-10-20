@@ -238,6 +238,23 @@ DD-022/023 为后续追加：SnComment（naive 无此组件，按用户指定参
 | AUI-WEB-NAV-009 | SnPagination | ✅ 本批次 |
 | AUI-WEB-FORM-017 | SnTransfer | ✅ 本批次 |
 
+### 追加批次 ② — 产品侧组件优化需求（✅ 本批次）
+
+| ID | 组件 / 能力 | 参照 / 备注 | 状态 |
+|---|---|---|---|
+| AUI-WEB-FB-015 | SnFloatButton / SnFloatButtonGroup | Ant Design Vue `FloatButton` / `FloatButton.Group`（naive-ui 无此组件，登记 divergence） | ✅ |
+| AUI-WEB-DD-030 | SnWaterfall | CSS 多列瀑布流；技术参照本仓库 `docs/.vitepress/utils/demo-grid.ts`（naive-ui 无 `n-waterfall`） | ✅ |
+| AUI-WEB-DD-031 | SnVideoPreview（+ 内部 SnVideoPreviewOverlay） | 参照本仓库 `SnImage` 预览模型（naive-ui 无视频组件） | ✅ |
+| AUI-WEB-DD-032 | SnMarquee（跑马灯） | naive-ui 无；props 参照 `react-fast-marquee` / `vue3-marquee` 命名 | ✅ |
+| AUI-WEB-FORM-018 | SnUpload 追加 `dragger` / `percentage` + `showProgress` / `onPreview` + `preview` | 追加式偏离 n-upload（无 dragger、无内置进度条与预览入口）；新增 拖拽 / 输入框+上传 / 弹窗 三档 demo | ✅ |
+| AUI-WEB-NAV-002a | SnTabs `type="chrome"`（谷歌浏览器风格） | 追加式偏离 n-tabs（上游仅 line / card / bar / segment） | ✅ |
+| AUI-WEB-DD-005a | SnDescriptions 非描边内容单元格补 12px 横向列间距 | 修复「描述组件没有 padding」；登记视觉 divergence | ✅ |
+| AUI-WEB-001a | SnButton 交互场景 demo（模拟登录 / 提交 / 下载 / 收藏 / 复制 / 加购 / 二次确认删除） | 纯 docs demo，无组件 API 变更 | ✅ |
+
+> 新增组件的 ai-description 顶部标注 `AUI-WEB-DD-030..032` / `AUI-WEB-FB-015`，
+> 已同步 `index.ts` / `install.ts` / `resolver.ts`（`install.test.ts` + `resolver.test.ts` 交叉校验通过）
+> 与 docs 侧栏（zh + en）。
+
 ---
 
 ## M1-MP uni 端组件（移动触屏）
