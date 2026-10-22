@@ -1,0 +1,22 @@
+<script setup lang="ts">
+/** Demo: SnImage — open the preview manually through the showPreview method. */
+import { ref } from 'vue'
+import { SnButton, SnImage } from '@snui/vue-web'
+
+const imageRef = ref<{ showPreview: () => void } | null>(null)
+
+function openPreview(): void {
+  imageRef.value?.showPreview()
+}
+</script>
+
+<template>
+  <div class="demo-col">
+    <SnButton type="primary" size="small" @click="openPreview">Show image preview</SnButton>
+    <SnImage ref="imageRef" width="120" src="https://picsum.photos/id/1043/1200/800" alt="Manual preview" />
+  </div>
+</template>
+
+<style scoped>
+.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
+</style>
