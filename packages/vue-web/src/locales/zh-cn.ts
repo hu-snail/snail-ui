@@ -1,20 +1,25 @@
 /**
  * zh-CN locale — the built-in default for @snui/vue-web (naive-ui style).
  *
- * Structure is grouped by component namespace (`Upload` / `Log` /
- * `VideoControls` / `DatePicker` / `Pagination` / `Calendar`). `zhCN` values
- * are exactly the strings the components rendered before i18n existed, so
- * the default rendering stays byte-identical to the pre-locale behavior
- * (backward compatibility). Strings that were hardcoded English (upload
- * picker / trigger aria affordances) keep those exact strings here for the
- * same reason.
+ * Structure is grouped by component namespace. `zhCN` values are exactly the
+ * strings the components rendered before i18n existed, so the default
+ * rendering stays byte-identical to the pre-locale behavior (backward
+ * compatibility). Strings that were hardcoded English keep those exact
+ * strings here for the same reason.
  *
  * Conventions:
- *   - `{name}` / `{accept}` / `{y}` / `{m}` / `{total}` placeholders are
- *     filled by the component (`String.replace`), never by the locale author.
+ *   - `{name}` / `{accept}` / `{y}` / `{m}` / `{total}` / `{page}` /
+ *     `{title}` / `{count}` placeholders are filled by the component
+ *     (`String.replace`), never by the locale author.
  *   - A custom locale may omit whole namespaces; every namespace it DOES
  *     provide must be complete (see `use-locale.ts` for the merge contract).
  */
+
+/** Shared strings used by several components. */
+export interface SnCommonLocale {
+  /** Close affordance `aria-label` (dialog / alert / tag / notification…). */
+  close: string
+}
 
 /** Localized strings for SnUpload. */
 export interface SnUploadLocale {
@@ -54,7 +59,7 @@ export interface SnLogLocale {
   loading: string
 }
 
-/** Localized strings for the internal SnVideoControls bar. */
+/** Localized strings for the internal SnVideoControls bar + SnVideoPreview. */
 export interface SnVideoControlsLocale {
   /** Play button action label (announced before playing). */
   play: string
@@ -72,6 +77,10 @@ export interface SnVideoControlsLocale {
   toolbar: string
   /** Timeline range input `aria-label`. */
   timeline: string
+  /** Play overlay button `aria-label`. */
+  playVideo: string
+  /** Zoom / preview overlay button `aria-label`. */
+  zoomIn: string
 }
 
 /** Localized strings for SnDatePicker. */
@@ -90,9 +99,23 @@ export interface SnDatePickerLocale {
   rangeStartPlaceholder: string
   /** Range end placeholder. */
   rangeEndPlaceholder: string
+  /** Range separator rendered between the two inputs. */
+  to: string
+  /** Datetime range: start time column label. */
+  startTime: string
+  /** Datetime range: end time column label. */
+  endTime: string
+  /** Datetime range confirm button. */
+  confirm: string
+  /** Hour column `aria-label`. */
+  hour: string
+  /** Minute column `aria-label`. */
+  minute: string
+  /** Second column `aria-label`. */
+  second: string
 }
 
-/** Localized strings for SnPagination. */
+/** Localized strings for SnPagination (also consumed by SnDataTable). */
 export interface SnPaginationLocale {
   /** Total counter text, `{total}` is the item count placeholder. */
   total: string
@@ -110,6 +133,10 @@ export interface SnPaginationLocale {
   perPage: string
   /** `<nav>` `aria-label`. */
   navigationAriaLabel: string
+  /** Jumper input visible label. */
+  jumpLabel: string
+  /** Suffix after the page-size number (`{size} 条/页`). */
+  itemsPerPage: string
 }
 
 /** Localized strings for SnCalendar. */
@@ -128,6 +155,90 @@ export interface SnCalendarLocale {
   today: string
 }
 
+/** Localized strings for SnTransfer. */
+export interface SnTransferLocale {
+  /** Select-all checkbox `aria-label`, `{title}` is the panel title. */
+  selectAll: string
+  /** Filter input placeholder. */
+  searchPlaceholder: string
+  /** Source filter input `aria-label`. */
+  filterSource: string
+  /** Target filter input `aria-label`. */
+  filterTarget: string
+  /** Move-selected-right button `aria-label`. */
+  moveSelectedRight: string
+  /** Move-all-right button `aria-label`. */
+  moveAllRight: string
+  /** Move-selected-left button `aria-label`. */
+  moveSelectedLeft: string
+  /** Move-all-left button `aria-label`. */
+  moveAllLeft: string
+}
+
+/** Localized strings for SnDataTable (pagination reuses SnPaginationLocale). */
+export interface SnDataTableLocale {
+  /** Filter confirm button. */
+  confirm: string
+  /** Filter reset button. */
+  reset: string
+}
+
+/** Localized strings for SnTree. */
+export interface SnTreeLocale {
+  /** Expanded row toggle `aria-label`. */
+  collapse: string
+  /** Collapsed row toggle `aria-label`. */
+  expand: string
+}
+
+/** Shared empty-state description (SnTree / SnDataTable default slots). */
+export interface SnEmptyLocale {
+  /** Default empty description. */
+  description: string
+}
+
+/** Localized strings for SnQrCode. */
+export interface SnQrCodeLocale {
+  /** Download action `title` / `aria-label`. */
+  download: string
+}
+
+/** Localized strings for SnHeatmap. */
+export interface SnHeatmapLocale {
+  /** Leading indicator text (low end). */
+  less: string
+  /** Trailing indicator text (high end). */
+  more: string
+}
+
+/** Localized strings for SnBackTop. */
+export interface SnBackTopLocale {
+  /** The button `aria-label`. */
+  backToTop: string
+}
+
+/** Localized strings for SnDrawer. */
+export interface SnDrawerLocale {
+  /** Vertical drawer drag handle `aria-label`. */
+  resizeVertical: string
+  /** Horizontal drawer drag handle `aria-label`. */
+  resizeHorizontal: string
+}
+
+/** Localized strings for SnAvatarGroup. */
+export interface SnAvatarGroupLocale {
+  /** Overflow indicator `aria-label`, `{count}` is the hidden avatar count. */
+  rest: string
+}
+
+/** Localized strings for SnPopconfirm. */
+export interface SnPopconfirmLocale {
+  /** Default cancel button label (prop `negative-text` overrides). */
+  negativeText: string
+  /** Default confirm button label (prop `positive-text` overrides). */
+  positiveText: string
+}
+
 /**
  * Locale contract for @snui/vue-web — `zhCN` / `enUS` ship complete
  * translations; custom locales may omit whole namespaces (per-namespace
@@ -136,11 +247,13 @@ export interface SnCalendarLocale {
 export interface SnLocale {
   /** Locale identifier, e.g. `'zh-CN'`. */
   name: string
+  /** Strings shared by several components. */
+  Common: SnCommonLocale
   /** SnUpload strings. */
   Upload: SnUploadLocale
   /** SnLog strings. */
   Log: SnLogLocale
-  /** SnVideoControls strings. */
+  /** SnVideoControls / SnVideoPreview strings. */
   VideoControls: SnVideoControlsLocale
   /** SnDatePicker strings. */
   DatePicker: SnDatePickerLocale
@@ -148,11 +261,34 @@ export interface SnLocale {
   Pagination: SnPaginationLocale
   /** SnCalendar strings. */
   Calendar: SnCalendarLocale
+  /** SnTransfer strings. */
+  Transfer: SnTransferLocale
+  /** SnDataTable strings. */
+  DataTable: SnDataTableLocale
+  /** SnTree strings. */
+  Tree: SnTreeLocale
+  /** Shared empty-state strings. */
+  Empty: SnEmptyLocale
+  /** SnQrCode strings. */
+  QrCode: SnQrCodeLocale
+  /** SnHeatmap strings. */
+  Heatmap: SnHeatmapLocale
+  /** SnBackTop strings. */
+  BackTop: SnBackTopLocale
+  /** SnDrawer strings. */
+  Drawer: SnDrawerLocale
+  /** SnAvatarGroup strings. */
+  AvatarGroup: SnAvatarGroupLocale
+  /** SnPopconfirm strings. */
+  Popconfirm: SnPopconfirmLocale
 }
 
 /** Built-in Chinese (Simplified) locale — values mirror the pre-locale UI. */
 export const zhCN: SnLocale = {
   name: 'zh-CN',
+  Common: {
+    close: '关闭',
+  },
   Upload: {
     pending: '待上传',
     uploading: '上传中',
@@ -181,6 +317,8 @@ export const zhCN: SnLocale = {
     exitFullscreen: '退出全屏',
     toolbar: '播放控制',
     timeline: '播放进度',
+    playVideo: '播放视频',
+    zoomIn: '放大预览',
   },
   DatePicker: {
     weekdays: ['一', '二', '三', '四', '五', '六', '日'],
@@ -193,6 +331,13 @@ export const zhCN: SnLocale = {
     placeholder: '请选择日期',
     rangeStartPlaceholder: '开始日期',
     rangeEndPlaceholder: '结束日期',
+    to: '至',
+    startTime: '开始时间',
+    endTime: '结束时间',
+    confirm: '确认',
+    hour: '小时',
+    minute: '分钟',
+    second: '秒',
   },
   Pagination: {
     total: '共 {total} 条',
@@ -203,6 +348,8 @@ export const zhCN: SnLocale = {
     jumpAriaLabel: '跳页输入，输入页码后回车跳转',
     perPage: '每页条数',
     navigationAriaLabel: 'Pagination',
+    jumpLabel: '跳至',
+    itemsPerPage: '条/页',
   },
   Calendar: {
     monthTitle: '{y}年{m}月',
@@ -211,5 +358,47 @@ export const zhCN: SnLocale = {
     nextMonth: '下个月',
     gridLabel: '日历',
     today: '今天',
+  },
+  Transfer: {
+    selectAll: '全选 {title}',
+    searchPlaceholder: '请搜索',
+    filterSource: '过滤源列表',
+    filterTarget: '过滤目标列表',
+    moveSelectedRight: '右移选中项',
+    moveAllRight: '全部右移',
+    moveSelectedLeft: '左移选中项',
+    moveAllLeft: '全部左移',
+  },
+  DataTable: {
+    confirm: '确认',
+    reset: '重置',
+  },
+  Tree: {
+    collapse: '收起',
+    expand: '展开',
+  },
+  Empty: {
+    description: '无数据',
+  },
+  QrCode: {
+    download: '下载二维码',
+  },
+  Heatmap: {
+    less: '少',
+    more: '多',
+  },
+  BackTop: {
+    backToTop: '回到顶部',
+  },
+  Drawer: {
+    resizeVertical: '拖拽调整高度',
+    resizeHorizontal: '拖拽调整宽度',
+  },
+  AvatarGroup: {
+    rest: '还有 {count} 个头像',
+  },
+  Popconfirm: {
+    negativeText: '取消',
+    positiveText: '确定',
   },
 }

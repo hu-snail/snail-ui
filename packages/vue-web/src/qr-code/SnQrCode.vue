@@ -35,9 +35,13 @@
  */
 
 import { computed, onBeforeUnmount, onMounted, ref, watch, type CSSProperties } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { encode } from './sn-qr-core'
 
 defineOptions({ name: 'SnQrCode' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -304,8 +308,8 @@ const rootStyle = computed<CSSProperties>(() => ({
       <button
         type="button"
         class="sn-qr-code__toolbar-button"
-        title="下载二维码"
-        aria-label="下载二维码"
+        :title="locale.QrCode.download"
+        :aria-label="locale.QrCode.download"
         @click="handleDownload"
       >
         <svg

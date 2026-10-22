@@ -76,6 +76,7 @@
  */
 
 import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import type { CSSProperties } from 'vue'
 import { Maximize, Play } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
@@ -83,6 +84,9 @@ import SnVideoControls from './SnVideoControls.vue'
 import SnVideoPreviewOverlay from './SnVideoPreviewOverlay.vue'
 
 defineOptions({ name: 'SnVideoPreview' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -593,7 +597,7 @@ defineExpose({
       <button
         type="button"
         class="sn-video-preview__play"
-        aria-label="播放视频"
+        :aria-label="locale.VideoControls.playVideo"
         @click.stop="handlePlayButtonClick"
       >
         <slot name="play-icon">
@@ -611,7 +615,7 @@ defineExpose({
           ref="previewButtonRef"
           type="button"
           class="sn-video-preview__toolbar-button"
-          aria-label="放大预览"
+          :aria-label="locale.VideoControls.zoomIn"
           @click.stop="showPreview"
         >
           <SnIcon :icon="Maximize" />

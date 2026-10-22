@@ -34,7 +34,7 @@
       <template v-if="isRange">
         <span v-if="rangeStartText !== null" class="sn-date-picker__value">{{ rangeStartText }}</span>
         <span v-else class="sn-date-picker__placeholder">{{ rangePlaceholders[0] }}</span>
-        <span class="sn-date-picker__separator" aria-hidden="true">至</span>
+        <span class="sn-date-picker__separator" aria-hidden="true">{{ locale.DatePicker.to }}</span>
         <span v-if="rangeEndText !== null" class="sn-date-picker__value">{{ rangeEndText }}</span>
         <span v-else class="sn-date-picker__placeholder">{{ rangePlaceholders[1] }}</span>
       </template>
@@ -189,7 +189,7 @@
               :key="col.key"
               class="sn-date-picker-time-col"
               role="listbox"
-              :aria-label="col.ariaLabel"
+              :aria-label="locale.DatePicker[col.key]"
             >
               <div
                 v-for="v in col.values"
@@ -207,14 +207,14 @@
 
           <div v-if="hasTime && isRange && rangeDraft.start !== null && rangeDraft.end !== null" class="sn-date-picker-panel__time sn-date-picker-panel__time--range">
             <div v-for="side in RANGE_SIDES" :key="side" class="sn-date-picker-time-group">
-              <div class="sn-date-picker-time-group__label">{{ side === 'start' ? '开始时间' : '结束时间' }}</div>
+              <div class="sn-date-picker-time-group__label">{{ side === 'start' ? locale.DatePicker.startTime : locale.DatePicker.endTime }}</div>
               <div class="sn-date-picker-panel__time">
                 <div
                   v-for="col in timeColumns"
                   :key="col.key"
                   class="sn-date-picker-time-col"
                   role="listbox"
-                  :aria-label="`${side === 'start' ? '开始' : '结束'}${col.ariaLabel}`"
+                  :aria-label="`${side === 'start' ? locale.DatePicker.startTime : locale.DatePicker.endTime} ${locale.DatePicker[col.key]}`"
                 >
                   <div
                     v-for="v in col.values"
@@ -234,7 +234,7 @@
 
           <div v-if="hasTime" class="sn-date-picker-panel__footer">
             <button type="button" class="sn-date-picker-panel__confirm" :tabindex="-1" @click="confirmAndClose">
-              确认
+              {{ locale.DatePicker.confirm }}
             </button>
           </div>
         </div>
@@ -643,9 +643,9 @@ function isYearCellCursor(ts: number): boolean {
 /* ─────────── Time columns ─────────── */
 
 const timeColumns = computed(() => [
-  { key: 'hour' as const, values: rangeInclusive(0, 23), ariaLabel: '小时' },
-  { key: 'minute' as const, values: rangeInclusive(0, 59), ariaLabel: '分钟' },
-  { key: 'second' as const, values: rangeInclusive(0, 59), ariaLabel: '秒' },
+  { key: 'hour' as const, values: rangeInclusive(0, 23) },
+  { key: 'minute' as const, values: rangeInclusive(0, 59) },
+  { key: 'second' as const, values: rangeInclusive(0, 59) },
 ])
 
 /* ─────────── aria-activedescendant ─────────── */

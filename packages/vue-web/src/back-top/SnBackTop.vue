@@ -35,10 +35,14 @@
  */
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { ChevronsUp } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
 
 defineOptions({ name: 'SnBackTop' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -259,7 +263,7 @@ defineExpose({
       type="button"
       data-snui-component="back-top"
       class="sn-back-top"
-      aria-label="回到顶部"
+      :aria-label="locale.BackTop.backToTop"
       :style="style"
       @click="handleClick"
     >

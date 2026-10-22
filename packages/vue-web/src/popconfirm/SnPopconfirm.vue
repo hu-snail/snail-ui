@@ -56,10 +56,18 @@
 import { computed, markRaw, nextTick, onBeforeUnmount, ref, watch, type CSSProperties } from 'vue'
 import { AlertTriangle } from 'lucide-vue-next'
 import SnButton from '../button/SnButton.vue'
+import { useLocale } from '../locales/use-locale'
 import SnIcon from '../icon/SnIcon.vue'
 import type { IconComponent } from '../icon/sn-icon-registry'
 
 defineOptions({ name: 'SnPopconfirm' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
+
+/** Effective button labels: explicit props win over the locale defaults. */
+const effectiveNegativeText = computed(() => props.negativeText ?? locale.value.Popconfirm.negativeText)
+const effectivePositiveText = computed(() => props.positiveText ?? locale.value.Popconfirm.positiveText)
 
 export type SnPopconfirmPlacement =
   | 'top-start' | 'top' | 'top-end'
@@ -119,9 +127,9 @@ const props = withDefaults(
      * Default true.
      */
     showIcon?: boolean
-    /** Cancel button label. Mirrors n-popconfirm `negativeText`. Default '取消'. */
+    /** Cancel button label. Mirrors n-popconfirm `negativeText`. Default: locale Popconfirm.negativeText. */
     negativeText?: string
-    /** Confirm button label. Mirrors n-popconfirm `positiveText`. Default '确定'. */
+    /** Confirm button label. Mirrors n-popconfirm `positiveText`. Default: locale Popconfirm.positiveText. */
     positiveText?: string
     /** Extra props forwarded to the cancel SnButton. */
     negativeButtonProps?: Record<string, unknown> | undefined
@@ -183,8 +191,6 @@ const props = withDefaults(
     content: '',
     icon: undefined,
     showIcon: true,
-    negativeText: '取消',
-    positiveText: '确定',
     negativeButtonProps: undefined,
     positiveButtonProps: undefined,
     onPositiveClick: undefined,
@@ -659,7 +665,7 @@ defineExpose({
                 v-bind="negativeButtonProps"
                 @click="onNegativeClick"
               >
-                {{ negativeText }}
+                {{ effectiveNegativeText }}
               </SnButton>
               <SnButton
                 size="tiny"
@@ -667,7 +673,7 @@ defineExpose({
                 v-bind="positiveButtonProps"
                 @click="onPositiveClick"
               >
-                {{ positiveText }}
+                {{ effectivePositiveText }}
               </SnButton>
             </slot>
           </div>

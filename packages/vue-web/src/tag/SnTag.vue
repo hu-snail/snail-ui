@@ -26,8 +26,12 @@
  */
 
 import { ref } from 'vue'
+import { useLocale } from '../locales/use-locale'
 
 defineOptions({ name: 'SnTag' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -119,7 +123,7 @@ function toggleChecked(): void {
       v-if="closable"
       type="button"
       class="sn-tag__close"
-      aria-label="关闭"
+      :aria-label="locale.Common.close"
       :disabled="disabled"
       @click="handleCloseClick"
     >

@@ -32,6 +32,7 @@
  */
 
 import { computed, ref } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import {
   AlertTriangle,
   Check,
@@ -42,6 +43,9 @@ import {
 import SnIcon from '../icon/SnIcon.vue'
 
 defineOptions({ name: 'SnAlert' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -183,7 +187,7 @@ function handleAfterLeave() {
         v-if="closable"
         type="button"
         class="sn-alert__close"
-        aria-label="关闭"
+        :aria-label="locale.Common.close"
         @click="handleCloseClick"
       >
         <SnIcon :icon="X" />

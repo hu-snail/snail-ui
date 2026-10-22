@@ -32,11 +32,15 @@
  */
 
 import { computed, inject, type CSSProperties } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { X } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
 import { SN_DRAWER_INJECTION_KEY, type SnDrawerApi } from './drawer-context'
 
 defineOptions({ name: 'SnDrawerContent' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -128,7 +132,7 @@ function handleCloseClick(): void {
         v-if="closable"
         type="button"
         class="sn-drawer-header__close"
-        aria-label="关闭"
+        :aria-label="locale.Common.close"
         data-snui-component="SnDrawerClose"
         @click="handleCloseClick"
       >

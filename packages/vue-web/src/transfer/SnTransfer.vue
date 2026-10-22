@@ -44,6 +44,7 @@
  */
 
 import { computed, defineComponent, ref, watch } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import type { PropType, VNodeChild } from 'vue'
 import {
   ChevronLeft,
@@ -59,6 +60,9 @@ import SnIcon from '../icon/SnIcon.vue'
 import SnInput from '../input/SnInput.vue'
 
 defineOptions({ name: 'SnTransfer' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 /** One transferable entry. Mirrors the reference option shape. */
 interface SnTransferOption {
@@ -326,7 +330,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
           :model-value="sourceAllChecked"
           :indeterminate="sourceSomeChecked"
           :disabled="isDisabled || sourceCheckable.length === 0"
-          :aria-label="`全选 ${resolvedSourceTitle}`"
+          :aria-label="locale.Transfer.selectAll.replace('{title}', resolvedSourceTitle)"
           @update:model-value="toggleAll('source', $event as SnCheckboxValue)"
         />
         <span class="sn-transfer__title">{{ resolvedSourceTitle }}</span>
@@ -337,9 +341,9 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
           v-model="sourceFilter"
           size="small"
           clearable
-          :placeholder="sourceFilterPlaceholder ?? '请搜索'"
+          :placeholder="sourceFilterPlaceholder ?? locale.Transfer.searchPlaceholder"
           :disabled="isDisabled"
-          aria-label="过滤源列表"
+          :aria-label="locale.Transfer.filterSource"
         />
       </div>
       <div
@@ -387,7 +391,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
         size="small"
         circle
         :disabled="!canMoveSelectedRight"
-        aria-label="右移选中项"
+        :aria-label="locale.Transfer.moveSelectedRight"
         @click="moveRight(false)"
       >
         <SnIcon :icon="ChevronRight" :size="16" />
@@ -396,7 +400,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
         size="small"
         circle
         :disabled="!canMoveAllRight"
-        aria-label="全部右移"
+        :aria-label="locale.Transfer.moveAllRight"
         @click="moveRight(true)"
       >
         <SnIcon :icon="ChevronsRight" :size="16" />
@@ -405,7 +409,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
         size="small"
         circle
         :disabled="!canMoveSelectedLeft"
-        aria-label="左移选中项"
+        :aria-label="locale.Transfer.moveSelectedLeft"
         @click="moveLeft(false)"
       >
         <SnIcon :icon="ChevronsLeft" :size="16" />
@@ -414,7 +418,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
         size="small"
         circle
         :disabled="!canMoveAllLeft"
-        aria-label="全部左移"
+        :aria-label="locale.Transfer.moveAllLeft"
         @click="moveLeft(true)"
       >
         <SnIcon :icon="ChevronLeft" :size="16" />
@@ -429,7 +433,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
           :model-value="targetAllChecked"
           :indeterminate="targetSomeChecked"
           :disabled="isDisabled || targetCheckable.length === 0"
-          :aria-label="`全选 ${resolvedTargetTitle}`"
+          :aria-label="locale.Transfer.selectAll.replace('{title}', resolvedTargetTitle)"
           @update:model-value="toggleAll('target', $event as SnCheckboxValue)"
         />
         <span class="sn-transfer__title">{{ resolvedTargetTitle }}</span>
@@ -440,9 +444,9 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
           v-model="targetFilter"
           size="small"
           clearable
-          :placeholder="targetFilterPlaceholder ?? '请搜索'"
+          :placeholder="targetFilterPlaceholder ?? locale.Transfer.searchPlaceholder"
           :disabled="isDisabled"
-          aria-label="过滤目标列表"
+          :aria-label="locale.Transfer.filterTarget"
         />
       </div>
       <div

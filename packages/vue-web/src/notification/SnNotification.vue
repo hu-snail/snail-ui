@@ -54,12 +54,16 @@
  */
 
 import { computed, onBeforeUnmount, onMounted, useSlots } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
 import type { IconComponent } from '../icon/sn-icon-registry'
 import type { NotificationType } from './notification-types'
 
 defineOptions({ name: 'SnNotification' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -248,7 +252,7 @@ onBeforeUnmount(() => {
       v-if="closable"
       type="button"
       class="sn-notification__close"
-      aria-label="关闭"
+      :aria-label="locale.Common.close"
       @click="handleCloseClick"
     >
       <SnIcon :icon="X" />

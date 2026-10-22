@@ -30,10 +30,14 @@
  */
 
 import { computed, useSlots, type CSSProperties } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { Comment, Fragment } from 'vue'
 import SnAvatar from '../avatar/SnAvatar.vue'
 
 defineOptions({ name: 'SnAvatarGroup' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 /** Mirrors n-avatar-group `maxOptions`. */
 export interface SnAvatarGroupMaxOptions {
@@ -165,7 +169,7 @@ const restIsClickable = computed(() => onExpand.value !== undefined)
         :is="restIsClickable ? 'button' : 'span'"
         class="sn-avatar-group__rest-trigger"
         :type="restIsClickable ? 'button' : undefined"
-        :aria-label="restIsClickable ? `还有 ${restCount} 个头像` : undefined"
+        :aria-label="restIsClickable ? locale.AvatarGroup.rest.replace('{count}', String(restCount)) : undefined"
         @click="handleExpand"
       >
         <SnAvatar :size="size ?? 'medium'" class="sn-avatar-group__rest-avatar">+{{ restCount }}</SnAvatar>

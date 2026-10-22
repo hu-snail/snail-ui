@@ -53,12 +53,23 @@ export function useLocale(): ComputedRef<SnLocale> {
     return {
       ...zhCN,
       ...source,
+      Common: { ...zhCN.Common, ...source.Common },
       Upload: { ...zhCN.Upload, ...source.Upload },
       Log: { ...zhCN.Log, ...source.Log },
       VideoControls: { ...zhCN.VideoControls, ...source.VideoControls },
       DatePicker: { ...zhCN.DatePicker, ...source.DatePicker },
       Pagination: { ...zhCN.Pagination, ...source.Pagination },
       Calendar: { ...zhCN.Calendar, ...source.Calendar },
+      Transfer: { ...zhCN.Transfer, ...source.Transfer },
+      DataTable: { ...zhCN.DataTable, ...source.DataTable },
+      Tree: { ...zhCN.Tree, ...source.Tree },
+      Empty: { ...zhCN.Empty, ...source.Empty },
+      QrCode: { ...zhCN.QrCode, ...source.QrCode },
+      Heatmap: { ...zhCN.Heatmap, ...source.Heatmap },
+      BackTop: { ...zhCN.BackTop, ...source.BackTop },
+      Drawer: { ...zhCN.Drawer, ...source.Drawer },
+      AvatarGroup: { ...zhCN.AvatarGroup, ...source.AvatarGroup },
+      Popconfirm: { ...zhCN.Popconfirm, ...source.Popconfirm },
     }
   })
 }

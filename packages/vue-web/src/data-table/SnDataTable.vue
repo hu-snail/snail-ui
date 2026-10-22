@@ -75,6 +75,7 @@ import {
   ref,
   watch,
 } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import type { PropType, VNodeChild } from 'vue'
 import type { HTMLAttributes } from 'vue'
 import type {
@@ -96,6 +97,9 @@ import type {
 import type { DataTableCreateSummary } from './sn-data-table-types'
 
 defineOptions({ name: 'SnDataTable' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -1391,14 +1395,14 @@ const innerStyle = computed<Record<string, string>>(() => {
                         class="sn-data-table__filter-action"
                         @click.stop="confirmFilterMenu"
                       >
-                        确认
+                        {{ locale.DataTable.confirm }}
                       </button>
                       <button
                         type="button"
                         class="sn-data-table__filter-action"
                         @click.stop="resetFilterMenu"
                       >
-                        重置
+                        {{ locale.DataTable.reset }}
                       </button>
                     </div>
                   </div>
@@ -1552,7 +1556,7 @@ const innerStyle = computed<Record<string, string>>(() => {
                       <path d="M22 12h-6l-2 3h-4l-2-3H2" />
                       <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
                     </svg>
-                    <span class="sn-data-table__empty-text">无数据</span>
+                    <span class="sn-data-table__empty-text">{{ locale.Empty.description }}</span>
                   </div>
                 </slot>
               </td>
@@ -1577,12 +1581,12 @@ const innerStyle = computed<Record<string, string>>(() => {
       </div>
     </div>
     <div v-if="paginationConfig !== null" class="sn-data-table__pagination">
-      <span class="sn-data-table__pagination-total">共 {{ itemCount }} 条</span>
+      <span class="sn-data-table__pagination-total">{{ locale.Pagination.total.replace('{total}', String(itemCount)) }}</span>
       <button
         type="button"
         class="sn-data-table__pagination-item sn-data-table__pagination-arrow"
         :disabled="mergedPage <= 1 || loading"
-        aria-label="上一页"
+        :aria-label="locale.Pagination.prevPage"
         @click="handlePageChange(mergedPage - 1)"
       >
         <svg
@@ -1613,7 +1617,7 @@ const innerStyle = computed<Record<string, string>>(() => {
         type="button"
         class="sn-data-table__pagination-item sn-data-table__pagination-arrow"
         :disabled="mergedPage >= pageCount || loading"
-        aria-label="下一页"
+        :aria-label="locale.Pagination.nextPage"
         @click="handlePageChange(mergedPage + 1)"
       >
         <svg
@@ -1633,7 +1637,7 @@ const innerStyle = computed<Record<string, string>>(() => {
         class="sn-data-table__pagination-size"
         :value="mergedPageSize"
         :disabled="loading"
-        aria-label="每页条数"
+        :aria-label="locale.Pagination.perPage"
         @change="handlePageSizeSelect"
       >
         <option
@@ -1641,7 +1645,7 @@ const innerStyle = computed<Record<string, string>>(() => {
           :key="sizeOption"
           :value="sizeOption"
         >
-          {{ sizeOption }} 条/页
+          {{ sizeOption }} {{ locale.Pagination.itemsPerPage }}
         </option>
       </select>
     </div>

@@ -62,12 +62,16 @@
  */
 
 import { computed } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-vue-next'
 import SnButton from '../button/SnButton.vue'
 import SnIcon from '../icon/SnIcon.vue'
 import type { IconComponent } from '../icon/sn-icon-registry'
 
 defineOptions({ name: 'SnDialog' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 /** `n-dialog` iconPlacement values. */
 export type SnDialogIconPlacement = 'left' | 'top'
@@ -259,7 +263,7 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
         v-else-if="showBuiltinClose"
         type="button"
         class="sn-dialog__close"
-        aria-label="关闭"
+        :aria-label="locale.Common.close"
         :tabindex="closeFocusable ? 0 : -1"
         data-snui-component="SnDialogClose"
         @click="emit('close')"

@@ -38,11 +38,15 @@
  */
 
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { X } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
 import SnVideoControls from './SnVideoControls.vue'
 
 defineOptions({ name: 'SnVideoPreviewOverlay' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -380,7 +384,7 @@ function handleVideoEnded(): void {
             ref="closeButtonRef"
             type="button"
             class="sn-video-preview-overlay__close"
-            aria-label="关闭"
+            :aria-label="locale.Common.close"
             @click="close"
           >
             <SnIcon :icon="X" />

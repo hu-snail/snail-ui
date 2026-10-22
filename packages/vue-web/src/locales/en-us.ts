@@ -9,6 +9,9 @@ import type { SnLocale } from './zh-cn'
 /** Built-in English (US) locale. */
 export const enUS: SnLocale = {
   name: 'en-US',
+  Common: {
+    close: 'Close',
+  },
   Upload: {
     pending: 'Pending',
     uploading: 'Uploading',
@@ -37,6 +40,8 @@ export const enUS: SnLocale = {
     exitFullscreen: 'Exit fullscreen',
     toolbar: 'Playback controls',
     timeline: 'Playback progress',
+    playVideo: 'Play video',
+    zoomIn: 'Zoom in',
   },
   DatePicker: {
     weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
@@ -49,6 +54,13 @@ export const enUS: SnLocale = {
     placeholder: 'Select date',
     rangeStartPlaceholder: 'Start date',
     rangeEndPlaceholder: 'End date',
+    to: 'to',
+    startTime: 'Start time',
+    endTime: 'End time',
+    confirm: 'Confirm',
+    hour: 'Hours',
+    minute: 'Minutes',
+    second: 'Seconds',
   },
   Pagination: {
     total: '{total} items',
@@ -59,13 +71,57 @@ export const enUS: SnLocale = {
     jumpAriaLabel: 'Page jump input, press Enter to navigate',
     perPage: 'Items per page',
     navigationAriaLabel: 'Pagination',
+    jumpLabel: 'Goto',
+    itemsPerPage: 'per page',
   },
   Calendar: {
     monthTitle: '{m} {y}',
     weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     prevMonth: 'Previous month',
-    today: 'Today',
     nextMonth: 'Next month',
     gridLabel: 'Calendar',
+    today: 'Today',
+  },
+  Transfer: {
+    selectAll: 'Select all {title}',
+    searchPlaceholder: 'Search',
+    filterSource: 'Filter source list',
+    filterTarget: 'Filter target list',
+    moveSelectedRight: 'Move selected right',
+    moveAllRight: 'Move all right',
+    moveSelectedLeft: 'Move selected left',
+    moveAllLeft: 'Move all left',
+  },
+  DataTable: {
+    confirm: 'Confirm',
+    reset: 'Reset',
+  },
+  Tree: {
+    collapse: 'Collapse',
+    expand: 'Expand',
+  },
+  Empty: {
+    description: 'No data',
+  },
+  QrCode: {
+    download: 'Download QR code',
+  },
+  Heatmap: {
+    less: 'Less',
+    more: 'More',
+  },
+  BackTop: {
+    backToTop: 'Back to top',
+  },
+  Drawer: {
+    resizeVertical: 'Drag to resize height',
+    resizeHorizontal: 'Drag to resize width',
+  },
+  AvatarGroup: {
+    rest: '{count} more avatars',
+  },
+  Popconfirm: {
+    negativeText: 'Cancel',
+    positiveText: 'Confirm',
   },
 }

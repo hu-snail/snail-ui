@@ -69,9 +69,13 @@ import {
   watch,
   type CSSProperties,
 } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import { SN_DRAWER_INJECTION_KEY, type SnDrawerApi } from './drawer-context'
 
 defineOptions({ name: 'SnDrawer' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 /** `n-drawer` placement values. */
 export type SnDrawerPlacement = 'left' | 'right' | 'top' | 'bottom'
@@ -611,7 +615,7 @@ onBeforeUnmount(() => {
               :class="`sn-drawer__resize-handle--${placement}`"
               role="separator"
               :aria-orientation="isVertical ? 'horizontal' : 'vertical'"
-              :aria-label="isVertical ? '拖拽调整高度' : '拖拽调整宽度'"
+              :aria-label="isVertical ? locale.Drawer.resizeVertical : locale.Drawer.resizeHorizontal"
               :tabindex="0"
               @pointerdown="onDragStart"
               @keydown="onDragKeydown"

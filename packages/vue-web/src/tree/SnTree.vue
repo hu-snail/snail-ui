@@ -41,6 +41,7 @@
  */
 
 import { computed, ref } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import type { VNodeChild } from 'vue'
 import type {
   SnTreeCheckAction,
@@ -54,6 +55,9 @@ import type {
 } from './sn-tree-types'
 
 defineOptions({ name: 'SnTree' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -492,7 +496,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
           role="button"
           tabindex="-1"
           :aria-expanded="row.nonLeaf ? row.expanded : undefined"
-          :aria-label="row.expanded ? '收起' : '展开'"
+          :aria-label="row.expanded ? locale.Tree.collapse : locale.Tree.expand"
           @click.stop="handleSwitcherClick(row)"
         >
           <svg
@@ -553,7 +557,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
       </div>
     </div>
     <div v-if="rows.length === 0" class="sn-tree__empty">
-      <slot name="empty">无数据</slot>
+      <slot name="empty">{{ locale.Empty.description }}</slot>
     </div>
   </div>
 </template>

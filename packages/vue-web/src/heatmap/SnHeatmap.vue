@@ -44,6 +44,7 @@
  */
 
 import { computed, useSlots } from 'vue'
+import { useLocale } from '../locales/use-locale'
 import SnTooltip from '../tooltip/SnTooltip.vue'
 import { defaultTooltipContent } from './heatmap-tooltip'
 import type { SnHeatmapTooltipConfig, SnHeatmapTooltipDay } from './heatmap-tooltip'
@@ -64,6 +65,9 @@ import type {
 } from './heatmap-utils'
 
 defineOptions({ name: 'SnHeatmap' })
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
 
 /** Laid-out cell with the resolved color level (row/col carried for tooltip slot params). */
 interface SnHeatmapViewCell {
@@ -353,7 +357,7 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
         <slot name="indicator">
           <template v-if="showColorIndicator">
             <span class="sn-heatmap__indicator-label">
-              <slot name="indicator-leading-text">少</slot>
+              <slot name="indicator-leading-text">{{ locale.Heatmap.less }}</slot>
             </span>
             <div class="sn-heatmap__indicator-cells">
               <div
@@ -365,7 +369,7 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
               />
             </div>
             <span class="sn-heatmap__indicator-label">
-              <slot name="indicator-trailing-text">多</slot>
+              <slot name="indicator-trailing-text">{{ locale.Heatmap.more }}</slot>
             </span>
           </template>
         </slot>

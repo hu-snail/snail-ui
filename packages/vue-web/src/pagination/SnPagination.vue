@@ -376,7 +376,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
     </ul>
 
     <div v-if="showQuickJumper && !simple" class="sn-pagination__jumper">
-      <span class="sn-pagination__jumper-label">跳至</span>
+      <span class="sn-pagination__jumper-label">{{ paginationLocale.jumpLabel }}</span>
       <SnInput
         v-model="jumperValue"
         class="sn-pagination__jumper-input"
