@@ -8,11 +8,12 @@ const b = ref(25)
 
 <template>
   <div class="demo-row">
-    <SnInputNumber v-model="a" :min="0" :max="100" :step="5" />
-    <SnInputNumber v-model="b" :min="0" :max="100" :step="25" step-strictly />
+    <SnInputNumber v-model="a" :min="0" :max="100" :step="5" class="demo-field" />
+    <SnInputNumber v-model="b" :min="0" :max="100" :step="25" step-strictly class="demo-field" />
   </div>
 </template>
 
 <style scoped>
 .demo-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.demo-field { width: 160px; }
 </style>

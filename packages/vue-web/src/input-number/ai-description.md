@@ -21,7 +21,7 @@ Web 端数字输入组件，对标 naive-ui `n-input-number` 1:1。位于 `packa
 | `placeholder` | `string` | `''` | 占位文案 |
 | `stepStrictly` | `boolean` | `false` | 提交值必须是 `step` 的整数倍（以 `min`，缺省 0 为基准 snap） |
 | `showButton` | `boolean` | `true` | 是否渲染 +/− 步进按钮 |
-| `buttonPlacement` | `'both' \| 'right'` | `'right'` | 按钮位置：两侧 / 右侧堆叠 |
+| `buttonPlacement` | `'both' \| 'right'` | `'right'` | 按钮位置：`right` 尾部横排（− +）/ `both` 分置左右两端 |
 | `clearable` | `boolean` | `false` | 有值时显示清空按钮，点击提交 `null` |
 | `format` | `(value: number) => string \| number` | — | 展示格式化（如百分比） |
 | `parse` | `(input: string) => number \| null` | — | `format` 的反函数，解析用户输入 |

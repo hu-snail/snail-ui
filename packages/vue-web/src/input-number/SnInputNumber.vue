@@ -5,6 +5,12 @@
  * Independent implementation (not built on SnInput internals) with visual
  * tokens aligned to SnInput (`--sn-web-input-*`, `sn-input-number--{size}`).
  *
+ * Steppers follow naive-ui's InputNumber: transparent icon text-buttons —
+ * `buttonPlacement="right"` (default) renders the − / + pair side by side in
+ * the tail; `"both"` splits minus into the head (prefix side) and plus into
+ * the tail. No divider chrome; the icon tints with the action colour on
+ * hover and fades to the disabled colour at bounds.
+ *
  * Per AGENTS.md §30/31: contract declared via defineProps/defineEmits/
  * defineSlots + CSS variables. a11y: role="spinbutton" on the native input
  * with aria-valuenow / aria-valuemin / aria-valuemax.
@@ -329,6 +335,20 @@ const ariaValueMax = computed<string | undefined>(() =>
   props.max !== undefined ? String(props.max) : undefined,
 )
 
+/** Stepper icon size per size preset (naive-ui parity: scaled with field height). */
+const iconSize = computed<number>(() => {
+  switch (props.size) {
+    case 'mini':
+    case 'tiny':
+      return 14
+    case 'small':
+    case 'medium':
+      return 16
+    case 'large':
+      return 20
+  }
+})
+
 const classList = computed(() => [
   'sn-input-number',
   `sn-input-number--${props.size}`,
@@ -344,13 +364,9 @@ const classList = computed(() => [
 
 <template>
   <div :class="classList" :data-snui-component="'input-number'" :data-size="size">
-    <span v-if="slots.prefix" class="sn-input-number__prefix" aria-hidden="true">
-      <slot name="prefix" />
-    </span>
-
     <span
       v-if="showButton && buttonPlacement === 'both'"
-      class="sn-input-number__stepper"
+      class="sn-input-number__stepper sn-input-number__stepper--head"
       @mouseleave="stopRepeat"
       @mouseup="stopRepeat"
     >
@@ -358,12 +374,16 @@ const classList = computed(() => [
         type="button"
         class="sn-input-number__btn sn-input-number__btn--minus"
         :disabled="minusDisabled"
-        :tabindex="minusDisabled ? -1 : 0"
+        :tabindex="-1"
         aria-label="Decrease"
         @mousedown.prevent="onMinusDown"
       >
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+        <svg viewBox="0 0 512 512" :width="iconSize" :height="iconSize" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M400 256H112" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </button>
+    </span>
+
+    <span v-if="slots.prefix" class="sn-input-number__prefix" aria-hidden="true">
+      <slot name="prefix" />
     </span>
 
     <input
@@ -397,7 +417,7 @@ const classList = computed(() => [
         @mousedown.prevent
         @click.stop="onClear"
       >
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
       </button>
     </span>
 
@@ -412,21 +432,21 @@ const classList = computed(() => [
         type="button"
         class="sn-input-number__btn sn-input-number__btn--minus"
         :disabled="minusDisabled"
-        :tabindex="minusDisabled ? -1 : 0"
+        :tabindex="-1"
         aria-label="Decrease"
         @mousedown.prevent="onMinusDown"
       >
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+        <svg viewBox="0 0 512 512" :width="iconSize" :height="iconSize" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M400 256H112" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </button>
       <button
         type="button"
         class="sn-input-number__btn sn-input-number__btn--plus"
         :disabled="plusDisabled"
-        :tabindex="plusDisabled ? -1 : 0"
+        :tabindex="-1"
         aria-label="Increase"
         @mousedown.prevent="onPlusDown"
       >
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+        <svg viewBox="0 0 512 512" :width="iconSize" :height="iconSize" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M256 112V400M400 256H112" stroke="currentColor" stroke-width="32" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </button>
     </span>
 
@@ -504,42 +524,33 @@ const classList = computed(() => [
   padding-right: var(--sn-web-input-padding-x, 10px);
 }
 
-/* Steppers */
+/* Steppers — naive-ui-style icon text buttons: transparent, no divider
+ * chrome; the icon itself tints to the action colour on hover and fades to
+ * the disabled colour at bounds. The `right` placement keeps both buttons
+ * side by side in the tail (horizontal pair); `both` splits minus into the
+ * head stepper (prefix side) and plus into the tail. */
 .sn-input-number__stepper {
   display: inline-flex;
   align-items: center;
-}
-.sn-input-number--placement-right .sn-input-number__stepper {
-  flex-direction: column;
+  justify-content: center;
 }
 
 .sn-input-number__btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 22px;
+  align-self: stretch;
   border: none;
   background: transparent;
   color: var(--sn-web-color-text-secondary, rgba(0, 0, 0, 0.55));
   cursor: pointer;
-  padding: 0 var(--sn-web-input-padding-x, 10px);
-  align-self: stretch;
-  min-width: 26px;
-  transition: background-color 0.15s ease-out, color 0.15s ease-out;
-}
-
-.sn-input-number--placement-both .sn-input-number__btn {
-  border-right: 1px solid var(--sn-web-input-border-color, var(--sn-web-color-border-default));
-}
-.sn-input-number--placement-both .sn-input-number__btn--plus {
-  border-right: none;
-  border-left: 1px solid var(--sn-web-input-border-color, var(--sn-web-color-border-default));
-}
-.sn-input-number--placement-right .sn-input-number__stepper--tail .sn-input-number__btn--minus {
-  border-bottom: 1px solid var(--sn-web-input-border-color, var(--sn-web-color-border-default));
+  padding: 0;
+  transition: color 0.15s ease-out;
 }
 
 .sn-input-number__btn:hover:not(:disabled) {
-  background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
+  color: var(--sn-web-color-action-primary-hover, var(--sn-web-color-action-primary, rgba(22, 119, 255, 0.9)));
 }
 
 .sn-input-number__btn:disabled {
@@ -566,12 +577,14 @@ const classList = computed(() => [
   color: var(--sn-web-color-text-primary, rgba(0, 0, 0, 0.85));
 }
 
-.sn-input-number--disabled,
-.sn-input-number--readonly {
+/* Disabled greys the surface (naive-ui parity); readonly keeps the normal
+ * surface and just blocks edits. */
+.sn-input-number--disabled {
   background-color: var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04));
   cursor: not-allowed;
-}
-.sn-input-number--disabled {
   color: var(--sn-web-color-text-disabled, rgba(0, 0, 0, 0.25));
+}
+.sn-input-number--readonly {
+  cursor: default;
 }
 </style>

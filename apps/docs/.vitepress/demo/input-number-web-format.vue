@@ -15,12 +15,13 @@ function parse(text: string): number | null {
 
 <template>
   <div class="demo-row">
-    <SnInputNumber v-model="amount" :format="format" :parse="parse" :step="100" />
+    <SnInputNumber v-model="amount" :format="format" :parse="parse" :step="100" class="demo-field" />
     <span class="demo-log">amount = {{ amount }}</span>
   </div>
 </template>
 
 <style scoped>
 .demo-row { display: flex; gap: 16px; align-items: center; }
+.demo-field { width: 160px; }
 .demo-log { font-size: 13px; color: var(--vp-c-text-2); }
 </style>

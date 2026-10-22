@@ -39,7 +39,7 @@
 | stepStrictly | `boolean` | `false` | 值吸附 step 网格 |
 | size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
 | showButton | `boolean` | `true` | 显示步进按钮 |
-| buttonPlacement | `'both'\|'right'` | `'both'` | 按钮位置 |
+| buttonPlacement | `'both' \| 'right'` | `'right'` | 按钮位置 |
 | clearable | `boolean` | `false` | 清空按钮 |
 | format | `(value: number) => string` | — | 展示格式化 |
 | parse | `(text: string) => number \| null` | — | 解析 |
