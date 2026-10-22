@@ -99,7 +99,7 @@ const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' 
   <SnConfigProvider skin="">
     <div class="sn-docs-nav">
       <SnDocsSidebarToggle v-if="collapsed" />
-      <a class="sn-docs-nav__brand" href="/" aria-label="Home">
+      <a class="sn-docs-nav__brand" :href="isEn ? '/en/' : '/'" aria-label="Home">
         <SnIcon class="sn-docs-nav__brand-icon" :icon="Snail" />
         <span class="sn-docs-nav__brand-text">snail-aui</span>
       </a>

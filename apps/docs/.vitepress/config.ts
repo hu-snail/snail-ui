@@ -282,6 +282,14 @@ const enSidebar = {
         { text: 'uni-app Quick Start', link: '/en/guide/uni/quick-start' },
       ],
     },
+    {
+      text: 'Advanced',
+      items: [
+        { text: 'SSR / Nuxt', link: '/en/guide/web/ssr-nuxt' },
+        { text: 'Internationalization (i18n)', link: '/en/guide/web/i18n' },
+        { text: 'Fonts', link: '/en/guide/web/fonts' },
+      ],
+    },
   ],
   // Mirror of zh sidebar (per AUI-DOCS-002 + AUI-DOCS-013). Categories
   // hidden when empty.
