@@ -49,7 +49,28 @@ defineOptions({ name: 'SnFloatButton' })
 
 type SnFloatButtonType = 'default' | 'primary'
 type SnFloatButtonShape = 'circle' | 'square'
-type SnFloatButtonPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+
+/**
+ * Where a floating button (or its group) pins. Four corners plus the four
+ * edge midpoints — the corner aliases are the historical surface; the edge
+ * values centre the box on that edge.
+ */
+export type SnFloatButtonPlacement =
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'top'
+  | 'right'
+  | 'bottom'
+  | 'left'
+
+/**
+ * Where an opened group stack grows from its trigger. `'auto'` derives it from
+ * the trigger's own placement (the stack opens towards the viewport centre),
+ * which is what keeps a bottom-corner group opening upwards.
+ */
+export type SnFloatButtonGroupDirection = 'auto' | 'up' | 'down' | 'left' | 'right'
 
 /**
  * Contract handed down by `<SnFloatButtonGroup>` through provide/inject.
@@ -211,40 +232,95 @@ function formatLength(value: string | number): string {
 }
 
 /**
- * Corner style for the standalone case.
+ * Resolve the offsets a `placement` implies.
  *
- * `placement` only fills an axis the caller did not offset explicitly, so
- * `top` / `bottom` (`left` / `right`) win over the corner preset. `fixed` off
- * pins the button to its positioning context instead of the viewport. Inside
- * a group the style is empty: `.sn-float-button--in-group` makes the child
- * static and full width.
+ * Eight anchors: the four corners and the four edge midpoints. A corner pins
+ * both axes to `DEFAULT_OFFSET`; an edge pins its own axis to `DEFAULT_OFFSET`
+ * and centres the box on the other one with `50%` + a `translate` (a
+ * percentage offset alone would pin the box's leading edge to the middle, not
+ * its centre).
+ *
+ * Explicit `top` / `bottom` / `left` / `right` always win over the preset.
  */
-const rootStyle = computed<CSSProperties>(() => {
-  if (inGroup.value) return {}
+interface ResolvedPlacement {
+  style: CSSProperties
+  /** Axis-aligned centring needs a translate; `0` otherwise. */
+  translateX: string
+  translateY: string
+}
 
-  const isTop = props.placement === 'top-left' || props.placement === 'top-right'
-  const isLeft = props.placement === 'top-left' || props.placement === 'bottom-left'
-
+function resolvePlacement(
+  placement: SnFloatButtonPlacement,
+  offsets: {
+    top?: number | string | undefined
+    bottom?: number | string | undefined
+    left?: number | string | undefined
+    right?: number | string | undefined
+  },
+  fixed: boolean,
+  zIndex: number,
+): ResolvedPlacement {
   const style: CSSProperties = {
-    position: props.fixed ? 'fixed' : 'absolute',
-    zIndex: props.zIndex,
+    position: fixed ? 'fixed' : 'absolute',
+    zIndex,
   }
 
-  if (props.top !== undefined) style.top = formatLength(props.top)
-  if (props.bottom !== undefined) style.bottom = formatLength(props.bottom)
-  if (props.left !== undefined) style.left = formatLength(props.left)
-  if (props.right !== undefined) style.right = formatLength(props.right)
+  if (offsets.top !== undefined) style.top = formatLength(offsets.top)
+  if (offsets.bottom !== undefined) style.bottom = formatLength(offsets.bottom)
+  if (offsets.left !== undefined) style.left = formatLength(offsets.left)
+  if (offsets.right !== undefined) style.right = formatLength(offsets.right)
 
-  if (props.top === undefined && props.bottom === undefined) {
+  const hasVertical = offsets.top !== undefined || offsets.bottom !== undefined
+  const hasHorizontal = offsets.left !== undefined || offsets.right !== undefined
+
+  const isTop = placement === 'top-left' || placement === 'top-right' || placement === 'top'
+  const isBottom = placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom'
+  const isLeft = placement === 'top-left' || placement === 'bottom-left' || placement === 'left'
+  const isRight = placement === 'top-right' || placement === 'bottom-right' || placement === 'right'
+
+  /** Edge-midpoint anchors centre on the perpendicular axis. */
+  const centreHorizontally = placement === 'top' || placement === 'bottom'
+  const centreVertically = placement === 'left' || placement === 'right'
+
+  if (!hasVertical) {
     if (isTop) style.top = DEFAULT_OFFSET
-    else style.bottom = DEFAULT_OFFSET
+    else if (isBottom) style.bottom = DEFAULT_OFFSET
+    else if (centreVertically) {
+      // Left/right edge: centre on the vertical axis.
+      style.top = '50%'
+    }
   }
-  if (props.left === undefined && props.right === undefined) {
+  if (!hasHorizontal) {
     if (isLeft) style.left = DEFAULT_OFFSET
-    else style.right = DEFAULT_OFFSET
+    else if (isRight) style.right = DEFAULT_OFFSET
+    else if (centreHorizontally) {
+      // Top/bottom edge: centre on the horizontal axis.
+      style.left = '50%'
+    }
   }
 
-  return style
+  return {
+    style,
+    translateX: !hasHorizontal && centreHorizontally ? '-50%' : '0',
+    translateY: !hasVertical && centreVertically ? '-50%' : '0',
+  }
+}
+
+/** Corner style for the standalone case (empty inside a group). */
+const resolvedPlacement = computed<ResolvedPlacement>(() => {
+  if (inGroup.value) return { style: {}, translateX: '0', translateY: '0' }
+  return resolvePlacement(
+    props.placement,
+    { top: props.top, bottom: props.bottom, left: props.left, right: props.right },
+    props.fixed,
+    props.zIndex,
+  )
+})
+
+const rootStyle = computed<CSSProperties>(() => {
+  const { style, translateX, translateY } = resolvedPlacement.value
+  if (translateX === '0' && translateY === '0') return style
+  return { ...style, transform: `translate(${translateX}, ${translateY})` }
 })
 
 /* ---------- Container mounting (§41) ---------- */
@@ -423,12 +499,27 @@ function handleClick(event: MouseEvent): void {
   text-decoration: none;
 }
 
-/* Inside a group the group owns positioning: the child fills the group
- * column and stays in normal flow (`position: static`). */
+/* Inside a group the group owns positioning: the child stays in normal flow
+ * (`position: static`) at its natural size.
+ *
+ * Deliberately NOT `width: 100%`: the group root is an `inline-flex` column,
+ * so a percentage width on its children is a circular dependency — the root
+ * shrink-to-fits to its children while the children claim 100% of the root.
+ * Browsers resolve that against an almost-zero width and the buttons collapse
+ * into narrow ovals. `align-items: center` in the group centres the fixed box
+ * instead, which is what a circular action needs. */
 .sn-float-button--in-group {
   position: static;
-  width: 100%;
+  flex: 0 0 auto;
+  width: var(--sn-web-float-button-size, 40px);
   box-shadow: var(--sn-web-shadow-sm, 0 2px 8px color-mix(in srgb, var(--sn-web-color-text-primary, #1f2329) 12%, transparent));
+}
+
+/* A square child is the one that genuinely wants the stack's width, because
+ * its `description` line can be wider than the icon box. */
+.sn-float-button--in-group.sn-float-button--square {
+  width: auto;
+  min-width: var(--sn-web-float-button-size, 40px);
 }
 
 /* ---------- Icon + description ---------- */

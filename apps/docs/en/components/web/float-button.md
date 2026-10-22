@@ -25,12 +25,24 @@ Default circle, `type="primary"` circle, and `shape="square"` with a
 
 <Demo name="float-button-web-basic" description="Default circle / primary circle / square with text, three corner offsets." />
 
+### The eight anchors
+
+`placement` accepts four corners plus the four edge midpoints; an edge anchor centres the button on that edge with `50%` + a translate.
+
+<Demo name="float-button-web-placement" description="top-left / top / top-right / left / right / bottom-left / bottom / bottom-right" />
+
 ### Group
 
 `SnFloatButtonGroup` owns the fixed corner for the whole stack (the children
 only render content), and `v-model:open` can take over the open state.
 
 <Demo name="float-button-web-group" description="Three actions stacked in one corner, opened through a controlled v-model:open." />
+
+### Opening direction
+
+`direction` on `SnFloatButtonGroup` decides which side the stack grows on: `up` (the default for a bottom anchor), `down`, `left` or `right`. Omitted, it is derived from `placement` so the stack always opens towards the viewport centre.
+
+<Demo name="float-button-web-direction" description="up / down / left / right side by side" />
 
 ### Badge and link
 
@@ -70,7 +82,8 @@ switches the root element from `<button>` to `<a>`.
 | shape | `'circle' \| 'square'` | `'circle'` | Handed to every child and overrides the child's own `shape` |
 | open | `boolean` | `undefined` | Controlled open state (`v-model:open`); omitted = uncontrolled |
 | trigger | `'click' \| 'hover'` | `'click'` | Gesture that opens the stack |
-| placement | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Fixed corner of the whole group |
+| placement | same eight anchors as `SnFloatButton` | `'bottom-right'` | Anchor of the whole group |
+| direction | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'` | Which side the stack opens on; `auto` derives it from `placement` (always towards the viewport centre) |
 | right / bottom / top / left | `number \| string` | `undefined` | Explicit offsets overriding `placement` (defaults `right` / `bottom` = 24) |
 | fixed | `boolean` | `true` | Same as the single button: `false` pins the whole group in its positioning context |
 | container | `string \| HTMLElement` | `undefined` | Positioning context for `fixed: false` |

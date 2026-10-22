@@ -20,12 +20,24 @@
 
 <Demo name="float-button-web-basic" description="默认圆形 / 品牌色圆形 / 方形带文字，右下角三档偏移" />
 
+### 八个方位
+
+`placement` 支持四角 + 四边中点共 8 个锚点；边中点会用 `50%` + translate 把按钮居中在该边上。
+
+<Demo name="float-button-web-placement" description="top-left / top / top-right / left / right / bottom-left / bottom / bottom-right" />
+
 ### 按钮组
 
 `SnFloatButtonGroup` 拥有整个按钮组的固定位置，子按钮只负责渲染内容；`v-model:open`
 可以接管展开状态。
 
 <Demo name="float-button-web-group" description="三个操作堆叠在同一个角上，v-model:open 受控展开" />
+
+### 展开方向
+
+`SnFloatButtonGroup` 的 `direction` 决定堆栈从触发器往哪边长：`up`（默认，右下角向上）/ `down` / `left` / `right`。省略时按 `placement` 自动推导，永远朝视口中心展开。
+
+<Demo name="float-button-web-direction" description="up / down / left / right 四个展开方向并排对照" />
 
 ### 徽标与链接
 
@@ -51,7 +63,7 @@
 | `target` | `'_blank' \| '_self' \| '_parent' \| '_top'` | `undefined` | 原生链接打开方式，仅在 `href` 下有意义。 |
 | `disabled` | `boolean` | `false` | 禁用：不触发 `click`，根元素带 `aria-disabled="true"`。 |
 | `visible` | `boolean` | `true` | 是否渲染整个按钮（`v-if`）。 |
-| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | 固定到视口的哪个角；在按钮组内会被忽略。 |
+| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom-right'` | 8 个定位锚点（四角 + 四边中点）；在按钮组内会被忽略。 |
 | `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | 显式偏移，覆盖 `placement` 对应的轴。 |
 | `zIndex` | `number` | `1000` | 固定定位的层级；在按钮组内会被忽略。 |
 | `fixed` | `boolean` | `true` | `false` 时不再固定到视口，改为钉在最近的定位祖先（或 `container`）内。 |
@@ -64,7 +76,8 @@
 | `shape` | `'circle' \| 'square'` | `'circle'` | 下发给所有子按钮，覆盖子按钮自己的 `shape`。 |
 | `open` | `boolean` | `undefined` | 受控展开状态（`v-model:open`）。不传即为非受控。 |
 | `trigger` | `'click' \| 'hover'` | `'click'` | 展开手势。 |
-| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | 整个按钮组的固定角。 |
+| `placement` | 同 `SnFloatButton`（8 个锚点） | `'bottom-right'` | 整个按钮组的定位锚点。 |
+| `direction` | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'` | 堆栈展开方向；`auto` 按 `placement` 推导，永远朝视口中心展开。 |
 | `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | 显式偏移，覆盖 `placement`（默认 `right` / `bottom` 为 24）。 |
 | `zIndex` | `number` | `1000` | 固定定位的层级。 |
 | `fixed` | `boolean` | `true` | 同上：`false` 时整组钉在定位上下文内。 |

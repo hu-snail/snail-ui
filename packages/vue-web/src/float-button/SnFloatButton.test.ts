@@ -181,6 +181,40 @@ describe('SnFloatButton', () => {
       expect(el.style.right).toBe('24px')
     })
 
+    it('should centre on an edge for the four edge anchors', () => {
+      // `top` / `bottom` centre horizontally; `left` / `right` vertically.
+      const top = mountButton({ placement: 'top' }).find(BUTTON).element as HTMLElement
+      expect(top.style.top).toBe('24px')
+      expect(top.style.left).toBe('50%')
+      expect(top.style.transform).toBe('translate(-50%, 0)')
+
+      const right = mountButton({ placement: 'right' }).find(BUTTON).element as HTMLElement
+      expect(right.style.right).toBe('24px')
+      expect(right.style.top).toBe('50%')
+      expect(right.style.transform).toBe('translate(0, -50%)')
+    })
+
+    it('should not translate when the caller offsets the centred axis', () => {
+      // An explicit `left` replaces the `50%` centring, so the translate goes away.
+      const el = mountButton({ placement: 'top', left: 40 }).find(BUTTON)
+        .element as HTMLElement
+      expect(el.style.left).toBe('40px')
+      expect(el.style.top).toBe('24px')
+      expect(el.style.transform).toBe('')
+    })
+
+    it('should centre a corner-free edge on both axes correctly', () => {
+      const bottom = mountButton({ placement: 'bottom' }).find(BUTTON).element as HTMLElement
+      expect(bottom.style.bottom).toBe('24px')
+      expect(bottom.style.left).toBe('50%')
+      expect(bottom.style.transform).toBe('translate(-50%, 0)')
+
+      const left = mountButton({ placement: 'left' }).find(BUTTON).element as HTMLElement
+      expect(left.style.left).toBe('24px')
+      expect(left.style.top).toBe('50%')
+      expect(left.style.transform).toBe('translate(0, -50%)')
+    })
+
     it('should accept numeric and string offsets', () => {
       const el = mountButton({ right: 40, bottom: '10%' }).find(BUTTON)
         .element as HTMLElement
@@ -328,6 +362,43 @@ describe('SnFloatButtonGroup', () => {
 
       host.remove()
       anchor.remove()
+    })
+
+    it('should derive the opening direction from the anchor', () => {
+      // A bottom anchor opens upwards, a top anchor downwards, and the edge
+      // anchors open towards the viewport centre.
+      const bottom = mountGroup({ placement: 'bottom-right' })
+      expect(bottom.find(GROUP).classes()).toContain('sn-float-button-group--dir-up')
+
+      const top = mountGroup({ placement: 'top-left' })
+      expect(top.find(GROUP).classes()).toContain('sn-float-button-group--dir-down')
+
+      const left = mountGroup({ placement: 'left' })
+      expect(left.find(GROUP).classes()).toContain('sn-float-button-group--dir-right')
+
+      const right = mountGroup({ placement: 'right' })
+      expect(right.find(GROUP).classes()).toContain('sn-float-button-group--dir-left')
+    })
+
+    it('should let an explicit direction win over the anchor', () => {
+      const wrapper = mountGroup({ placement: 'bottom-right', direction: 'left' })
+      const root = wrapper.find(GROUP)
+      expect(root.classes()).toContain('sn-float-button-group--dir-left')
+      expect(root.classes()).not.toContain('sn-float-button-group--dir-up')
+    })
+
+    it('should treat direction=auto as "derive from the anchor"', () => {
+      const wrapper = mountGroup({ placement: 'top-right', direction: 'auto' })
+      expect(wrapper.find(GROUP).classes()).toContain('sn-float-button-group--dir-down')
+    })
+
+    it('should mark vertical stacks so the axis can be styled', () => {
+      expect(mountGroup({ direction: 'up' }).find(GROUP).classes()).toContain(
+        'sn-float-button-group--vertical',
+      )
+      expect(mountGroup({ direction: 'left' }).find(GROUP).classes()).not.toContain(
+        'sn-float-button-group--vertical',
+      )
     })
 
     it('should honour placement and explicit offsets for the group', () => {

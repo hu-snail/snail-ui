@@ -59,12 +59,16 @@ import type { ComputedRef, CSSProperties } from 'vue'
 import { Plus } from 'lucide-vue-next'
 import SnIcon from '../icon/SnIcon.vue'
 import SnFloatButton from './SnFloatButton.vue'
+import type {
+  SnFloatButtonGroupDirection,
+  SnFloatButtonPlacement,
+} from './SnFloatButton.vue'
 import type { IconComponent } from '../icon/sn-icon-registry'
 
 defineOptions({ name: 'SnFloatButtonGroup' })
 
 type SnFloatButtonGroupShape = 'circle' | 'square'
-type SnFloatButtonGroupPlacement = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
+type SnFloatButtonGroupPlacement = SnFloatButtonPlacement
 
 /**
  * Shape contract handed down to every child `SnFloatButton` through
@@ -95,6 +99,13 @@ const props = withDefaults(
     trigger?: 'click' | 'hover'
     /** Fixed corner of the group (and therefore of its children). */
     placement?: SnFloatButtonGroupPlacement
+    /**
+     * Which way the stack opens from the trigger. `'auto'` (default) derives it
+     * from `placement` — the stack always grows towards the viewport centre, so
+     * a bottom-corner group opens upwards and a left-edge group opens
+     * rightwards. Set it explicitly to override.
+     */
+    direction?: SnFloatButtonGroupDirection
     /** Explicit distance from the viewport right edge; overrides `placement`. */
     right?: number | string
     /** Explicit distance from the viewport bottom edge; overrides `placement`. */
@@ -191,21 +202,24 @@ const groupShape = computed<SnFloatButtonGroupShape>(() => props.shape)
 
 provide<SnFloatButtonGroupContext>(FLOAT_BUTTON_GROUP_KEY, { shape: groupShape })
 
-// ---------- Positioning (same model as SnFloatButton) ----------
+// ---------- Positioning (8 anchors, shared model with SnFloatButton) ----------
 
 function formatLength(value: string | number): string {
   return typeof value === 'number' ? `${value}px` : value
 }
 
 /**
- * Fixed-corner style. `placement` only fills an axis the caller did not
- * offset explicitly, so `top` / `bottom` (`left` / `right`) win over the
- * corner preset.
+ * Where the group's root pins. Same eight anchors as `SnFloatButton`: corners
+ * pin both axes, edge midpoints pin their own axis and centre the box on the
+ * other one via `50%` + a `translate`.
  */
-function resolveFixedStyle(): CSSProperties {
-  const isTop = props.placement === 'top-left' || props.placement === 'top-right'
-  const isLeft = props.placement === 'top-left' || props.placement === 'bottom-left'
+interface ResolvedGroupPlacement {
+  style: CSSProperties
+  translateX: string
+  translateY: string
+}
 
+function resolveGroupPlacement(): ResolvedGroupPlacement {
   const style: CSSProperties = {
     position: props.fixed ? 'fixed' : 'absolute',
     zIndex: props.zIndex,
@@ -216,23 +230,72 @@ function resolveFixedStyle(): CSSProperties {
   if (props.left !== undefined) style.left = formatLength(props.left)
   if (props.right !== undefined) style.right = formatLength(props.right)
 
-  if (props.top === undefined && props.bottom === undefined) {
+  const hasVertical = props.top !== undefined || props.bottom !== undefined
+  const hasHorizontal = props.left !== undefined || props.right !== undefined
+
+  const placement = props.placement
+  const isTop = placement === 'top-left' || placement === 'top-right' || placement === 'top'
+  const isBottom =
+    placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom'
+  const isLeft = placement === 'top-left' || placement === 'bottom-left' || placement === 'left'
+  const isRight = placement === 'top-right' || placement === 'bottom-right' || placement === 'right'
+
+  const centreHorizontally = placement === 'top' || placement === 'bottom'
+  const centreVertically = placement === 'left' || placement === 'right'
+
+  if (!hasVertical) {
     if (isTop) style.top = DEFAULT_OFFSET
-    else style.bottom = DEFAULT_OFFSET
+    else if (isBottom) style.bottom = DEFAULT_OFFSET
+    else if (centreVertically) style.top = '50%'
   }
-  if (props.left === undefined && props.right === undefined) {
+  if (!hasHorizontal) {
     if (isLeft) style.left = DEFAULT_OFFSET
-    else style.right = DEFAULT_OFFSET
+    else if (isRight) style.right = DEFAULT_OFFSET
+    else if (centreHorizontally) style.left = '50%'
   }
 
-  return style
+  return {
+    style,
+    translateX: !hasHorizontal && centreHorizontally ? '-50%' : '0',
+    translateY: !hasVertical && centreVertically ? '-50%' : '0',
+  }
 }
 
-/** Root: fixed corner + the gap between the stack and the trigger. */
-const rootStyle = computed<CSSProperties>(() => ({
-  ...resolveFixedStyle(),
-  rowGap: `${props.gap}px`,
-}))
+const resolvedGroupPlacement = computed<ResolvedGroupPlacement>(() => resolveGroupPlacement())
+
+/**
+ * Which way the stack grows. `'auto'` reads the anchor: the stack always
+ * opens towards the viewport centre, so a bottom-anchored group stacks
+ * upwards and a left-anchored one stacks rightwards.
+ */
+const resolvedDirection = computed<'up' | 'down' | 'left' | 'right'>(() => {
+  // `direction` is optional and deliberately has no `withDefaults` entry (a
+  // union of literals would be inferred as a prop *factory* by the SFC
+  // compiler), so `undefined` means "derive from the anchor".
+  const wanted = props.direction
+  if (wanted !== undefined && wanted !== 'auto') return wanted
+
+  const placement = props.placement
+  if (placement === 'top-left' || placement === 'top-right' || placement === 'top') return 'down'
+  if (placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom') {
+    return 'up'
+  }
+  if (placement === 'left') return 'right'
+  return 'left'
+})
+
+/** Vertical stacks put the trigger last (below the stack) when opening up. */
+const isVerticalStack = computed(
+  () => resolvedDirection.value === 'up' || resolvedDirection.value === 'down',
+)
+
+/** Root: anchor + the gap between the stack and the trigger. */
+const rootStyle = computed<CSSProperties>(() => {
+  const { style, translateX, translateY } = resolvedGroupPlacement.value
+  const base: CSSProperties = { ...style, rowGap: `${props.gap}px` }
+  if (translateX === '0' && translateY === '0') return base
+  return { ...base, transform: `translate(${translateX}, ${translateY})` }
+})
 
 /** Stack of children: the same gap applies between the children themselves. */
 const itemsStyle = computed<CSSProperties>(() => ({ gap: `${props.gap}px` }))
@@ -240,7 +303,11 @@ const itemsStyle = computed<CSSProperties>(() => ({ gap: `${props.gap}px` }))
 const rootClass = computed(() => [
   'sn-float-button-group',
   `sn-float-button-group--${props.shape}`,
-  { 'sn-float-button-group--open': mergedOpen.value },
+  `sn-float-button-group--dir-${resolvedDirection.value}`,
+  {
+    'sn-float-button-group--open': mergedOpen.value,
+    'sn-float-button-group--vertical': isVerticalStack.value,
+  },
 ])
 
 // ---------- Trigger ----------
@@ -313,12 +380,14 @@ function handleDocumentMouseMove(event: MouseEvent): void {
   if (isPointerInsideGroup(event)) return
   setOpen(false)
 }
-
 function bindHoverGuard(): void {
+  // SSR guard (§SSR): the immediate hover watch calls unbind on the server.
+  if (typeof document === 'undefined') return
   document.addEventListener('mousemove', handleDocumentMouseMove)
 }
 
 function unbindHoverGuard(): void {
+  if (typeof document === 'undefined') return
   document.removeEventListener('mousemove', handleDocumentMouseMove)
 }
 
@@ -386,21 +455,73 @@ onBeforeUnmount(unbindHoverGuard)
 /* Web side: --sn-web-* aliases only. Direct --aui-* / --sn-mp-* forbidden
  * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`). */
 
+/* The root is one flex line; DOM order is always stack-then-trigger, and the
+ * opening direction flips the axis so the trigger lands where it must be:
+ *   up    → column         stack above, trigger at the bottom
+ *   down  → column-reverse trigger on top, stack below it
+ *   left  → row            stack on the left, trigger at the right
+ *   right → row-reverse    trigger on the left, stack to its right
+ * Keeping the DOM order fixed means `aria-expanded` and the focus order do not
+ * change when the direction does. */
 .sn-float-button-group {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  width: fit-content;
 }
 
+.sn-float-button-group--dir-down {
+  flex-direction: column-reverse;
+}
+
+/* The stack slides in from the trigger: a vertical stack travels on Y, a
+ * horizontal one on X, and the sign follows the opening direction. */
+.sn-float-button-group--dir-up .sn-float-button-group-items-enter-from,
+.sn-float-button-group--dir-up .sn-float-button-group-items-leave-to {
+  transform: translateY(8px);
+}
+
+.sn-float-button-group--dir-down .sn-float-button-group-items-enter-from,
+.sn-float-button-group--dir-down .sn-float-button-group-items-leave-to {
+  transform: translateY(-8px);
+}
+
+.sn-float-button-group--dir-left .sn-float-button-group-items-enter-from,
+.sn-float-button-group--dir-left .sn-float-button-group-items-leave-to {
+  transform: translateX(8px);
+}
+
+.sn-float-button-group--dir-right .sn-float-button-group-items-enter-from,
+.sn-float-button-group--dir-right .sn-float-button-group-items-leave-to {
+  transform: translateX(-8px);
+}
+
+.sn-float-button-group--dir-left,
+.sn-float-button-group--dir-right {
+  flex-direction: row;
+  align-items: center;
+}
+
+.sn-float-button-group--dir-right {
+  flex-direction: row-reverse;
+}
+
+/* The stack is a plain flex line: it must never claim a width of its own —
+ * the children size themselves (see `.sn-float-button--in-group`). */
 .sn-float-button-group__items {
   display: flex;
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
-  width: 100%;
+  width: fit-content;
 }
 
+.sn-float-button-group--dir-left .sn-float-button-group__items,
+.sn-float-button-group--dir-right .sn-float-button-group__items {
+  flex-direction: row;
+  align-items: center;
+}
 /* ---------- Trigger ---------- */
 
 .sn-float-button-group__trigger-icon {

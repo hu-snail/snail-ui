@@ -50,7 +50,7 @@ import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web'
 | `target` | `'_blank' \| '_self' \| '_parent' \| '_top'` | `undefined` | no | Native link target; only meaningful with `href`. |
 | `disabled` | `boolean` | `false` | no | Suppresses `click` and sets `aria-disabled="true"`. |
 | `visible` | `boolean` | `true` | no | `v-if` the whole button. |
-| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | no | Fixed corner. Ignored inside a group. |
+| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom-right'` | no | One of eight anchors (four corners + four edge midpoints). Ignored inside a group. |
 | `right` | `number \| string` | `undefined` | no | Explicit right offset; overrides the placement axis. |
 | `bottom` | `number \| string` | `undefined` | no | Explicit bottom offset; overrides the placement axis. |
 | `top` | `number \| string` | `undefined` | no | Explicit top offset; overrides the placement axis. |
@@ -63,6 +63,11 @@ Corner defaults: with the default `placement="bottom-right"` and no explicit
 offsets the button is pinned at `right: 24px; bottom: 24px`. `placement` only
 fills the axis the caller did not offset explicitly, so `top: 8` keeps
 `right: 24px` but drops `bottom`.
+
+Edge anchors (`top` / `right` / `bottom` / `left`) pin their own axis to the
+default offset and centre the box on the perpendicular axis with `50%` plus a
+`translate(-50%, …)` — a percentage offset alone would put the box's leading
+edge on the midpoint rather than its centre.
 
 `fixed` (default `true`) is the viewport-pinned mode. `fixed: false` switches
 the root to `position: absolute` so the offset resolves against the nearest
@@ -78,8 +83,11 @@ a block (a docs preview card, a hero section) rather than to the page.
 | `shape` | `'circle' \| 'square'` | `'circle'` | no | Handed to every child and overrides the child's own `shape`. |
 | `open` | `boolean` | `undefined` | no | Controlled open state (`v-model:open`). Omitted = uncontrolled. |
 | `trigger` | `'click' \| 'hover'` | `'click'` | no | Gesture that opens the stack. |
-| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | no | Fixed corner of the group (and of its children). |
+| `placement` | same eight anchors as `SnFloatButton` | `'bottom-right'` | no | Anchor of the group (and of its children). |
+| `direction` | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'` | no | Which side the stack opens on; `auto` derives it from `placement`. |
 | `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | no | Explicit offsets overriding `placement` (defaults `right`/`bottom` = 24). |
+| `fixed` | `boolean` | `true` | no | `false` pins the group in its positioning context instead of the viewport. |
+| `container` | `string \| HTMLElement` | `undefined` | no | Positioning context for `fixed: false`. |
 | `zIndex` | `number` | `1000` | no | Stacking order of the fixed root. |
 | `gap` | `number` | `12` | no | Vertical gap between the stacked children (and to the trigger). |
 | `triggerIcon` | `IconComponent` (lucide component) | lucide `Plus` | no | Trigger glyph; rotated 45° while open. |
@@ -99,7 +107,7 @@ a block (a docs preview card, a hero section) rather than to the page.
 
 | Name | Params | Description |
 |---|---|---|
-| `default` | `()` | The `SnFloatButton` children, stacked above the trigger. |
+| `default` | `()` | The `SnFloatButton` children. They stack on the side `direction` selects (above the trigger by default). |
 | `trigger` | `()` | Replaces the built-in trigger button entirely. |
 
 ## Events
@@ -120,9 +128,17 @@ a block (a docs preview card, a hero section) rather than to the page.
 ## Behaviour
 
 - Positioning: the root is `position: fixed` with an inline style computed from
-  `placement` / explicit offsets / `zIndex`. Inside a group the child renders
-  `position: static`, full width, and ignores its own offsets and `zIndex` —
-  the group owns the corner for the whole stack.
+  `placement` / explicit offsets / `zIndex` (eight anchors, see above).
+  `fixed: false` makes it `position: absolute` in its positioning context.
+  Inside a group the child renders `position: static` at its natural size
+  (never `width: 100%` — that is a circular dependency against the group's
+  shrink-to-fit flex line and collapses the circle into an oval) and ignores
+  its own offsets and `zIndex`: the group owns the anchor for the whole stack.
+- Group stack: `direction` (`up` / `down` / `left` / `right`, or `auto` to
+  derive it from the anchor) picks the flex axis and its reversal, so the
+  stack always grows away from the viewport edge the group is pinned to. The
+  DOM order stays stack-then-trigger for every direction, so `aria-expanded`
+  and the tab order never change.
 - Group context: the group `provide`s `sn-float-button-group` (a reactive
   `{ shape }` object). A child `inject`s it, inherits `shape`, and keeps working
   standalone because the inject falls back to `null`.
