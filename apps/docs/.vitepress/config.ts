@@ -40,7 +40,6 @@ const sidebar = {
         { text: 'Web 快速开始', link: '/guide/web/quick-start' },
         { text: 'uni-app 快速开始', link: '/guide/uni/quick-start' },
       ],
-      ],
     },
     {
       text: '进阶',
