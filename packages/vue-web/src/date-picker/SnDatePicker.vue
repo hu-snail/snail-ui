@@ -135,6 +135,7 @@
                     :aria-selected="isCellSelected(cell.ts) || isCellStart(cell.ts) || isCellEnd(cell.ts) ? 'true' : 'false'"
                     :data-value="cell.ts"
                     @click="onDayCellClick(cell.ts)"
+                    @mouseenter="onDayCellHover(cell.ts)"
                   >{{ cell.day }}</div>
                 </div>
               </div>
@@ -427,10 +428,17 @@ const timeDraft = ref<SnTimeOfDay>({ hour: 0, minute: 0, second: 0 })
 /** Range-mode pending days (local midnights). */
 const rangeDraft = ref<{ start: number | null; end: number | null }>({ start: null, end: null })
 /** Range-mode pending time-of-day per side. */
-const rangeTimeDraft = ref<Record<SnRangeSide, SnTimeOfDay>>({
+const rangeTimeDraft = ref<{ start: SnTimeOfDay; end: SnTimeOfDay }>({
   start: { hour: 0, minute: 0, second: 0 },
   end: { hour: 0, minute: 0, second: 0 },
 })
+/**
+ * Range-mode hover preview: while the end date is being picked, the cell
+ * under the pointer becomes the provisional end so the in-range light
+ * background tracks the mouse live (reference UX). Cleared on commit,
+ * fresh pick, panel close, and external model changes.
+ */
+const rangeHoverEnd = ref<number | null>(null)
 
 const isRange = computed(() => isRangeType(props.type))
 const hasTime = computed(() => hasTimePart(props.type))
@@ -557,6 +565,11 @@ function isCellSelected(ts: number): boolean {
 
 function isCellStart(ts: number): boolean {
   if (isRange.value) {
+    // Draft pick in progress — the draft start wins over the committed one
+    // (restarting a pick must move the --start marker immediately).
+    if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
+      return isSameDay(ts, rangeDraft.value.start)
+    }
     if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[0])
     return rangeDraft.value.start !== null && isSameDay(ts, rangeDraft.value.start)
   }
@@ -565,6 +578,10 @@ function isCellStart(ts: number): boolean {
 
 function isCellEnd(ts: number): boolean {
   if (isRange.value) {
+    // No end picked yet — no --end marker (the pointer cell shows --cursor).
+    if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
+      return false
+    }
     if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[1])
     return rangeDraft.value.end !== null && isSameDay(ts, rangeDraft.value.end)
   }
@@ -572,21 +589,15 @@ function isCellEnd(ts: number): boolean {
 }
 
 function rangeBounds(): { start: number | null; end: number | null } {
+  // Draft pick in progress (start set, end pending) — the preview wins over
+  // the committed model so restarting a pick clears the old interval at once.
+  if (isRange.value && rangeDraft.value.start !== null && rangeDraft.value.end === null) {
+    const a = startOfDay(rangeDraft.value.start)
+    const b = startOfDay(rangeHoverEnd.value ?? cursor.value)
+    return a <= b ? { start: a, end: b } : { start: b, end: a }
+  }
   if (isRange.value && rangeModel.value !== null) {
     return { start: rangeModel.value[0], end: rangeModel.value[1] }
-  }
-  // Draft phase: while the end date is being picked, preview the pending
-  // interval following the cursor (like the reference implementations) so
-  // the in-range light background tracks the selection live. Direction-
-  // agnostic: a cursor earlier than the start flips the bounds.
-  if (
-    rangeDraft.value.start !== null &&
-    rangeDraft.value.end === null &&
-    cursor.value !== null
-  ) {
-    const a = startOfDay(rangeDraft.value.start)
-    const b = startOfDay(cursor.value)
-    return a <= b ? { start: a, end: b } : { start: b, end: a }
   }
   return rangeDraft.value
 }
@@ -717,6 +728,7 @@ function initDraftsFromModel(): void {
     const v = rangeModel.value
     if (v !== null) {
       rangeDraft.value = { start: startOfDay(v[0]), end: startOfDay(v[1]) }
+      rangeHoverEnd.value = null
       const sa = getDateParts(v[0])
       const sb = getDateParts(v[1])
       rangeTimeDraft.value = {
@@ -727,6 +739,7 @@ function initDraftsFromModel(): void {
       cursor.value = v[0]
     } else {
       rangeDraft.value = { start: null, end: null }
+      rangeHoverEnd.value = null
       rangeTimeDraft.value = {
         start: { hour: 0, minute: 0, second: 0 },
         end: { hour: 0, minute: 0, second: 0 },
@@ -765,6 +778,7 @@ function openPanel(): void {
 function closePanel(): void {
   if (!isPanelOpen.value) return
   isPanelOpen.value = false
+  rangeHoverEnd.value = null
   followViewport.stop()
 }
 
@@ -829,11 +843,13 @@ function onDayCellClick(ts: number): void {
     if (rangeDraft.value.start === null || rangeDraft.value.end !== null) {
       // Fresh pick: start over with the clicked day as start.
       rangeDraft.value = { start: day, end: null }
+      rangeHoverEnd.value = null
     } else {
       // Second pick: swap when end < start, then commit.
       const start = rangeDraft.value.start
       const [lo, hi] = day < start ? [day, start] : [start, day]
       rangeDraft.value = { start: lo, end: hi }
+      rangeHoverEnd.value = null
       if (hasTime.value) {
         commitRange() // datetimerange keeps the panel open (确认 closes)
       } else {
@@ -846,6 +862,18 @@ function onDayCellClick(ts: number): void {
   dateDraft.value = day
   commitSingle()
   if (!hasTime.value) closePanel()
+}
+
+/**
+ * Range draft preview: while picking the end date, the hovered cell becomes
+ * the provisional end so `--in-range` light background tracks the pointer.
+ * Outside the draft phase (or in single modes) this is a no-op.
+ */
+function onDayCellHover(ts: number): void {
+  if (!isRange.value || !isInteractive.value) return
+  if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
+    rangeHoverEnd.value = startOfDay(ts)
+  }
 }
 
 function onMonthCellClick(ts: number): void {

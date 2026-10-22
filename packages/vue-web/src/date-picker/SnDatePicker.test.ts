@@ -380,6 +380,31 @@ describe('SnDatePicker', () => {
     expect(value.value).toEqual([ts(2026, 0, 10), ts(2026, 0, 12)])
   })
 
+  it('previews the pending interval with the in-range background while picking the end date', async () => {
+    const { wrapper: w, value } = mountVModel([ts(2026, 0, 5), ts(2026, 0, 20)], { type: 'daterange' })
+    await openPanel(w)
+    // Panel opens with a full value — clicking a day restarts the pick:
+    // first click sets the new start, no end yet — nothing is in range.
+    dayCell(ts(2026, 0, 5))?.click()
+    await nextTick()
+    expect(dayCell(ts(2026, 0, 5))?.classList.contains('sn-date-picker-cell--start')).toBe(true)
+    expect(dayCell(ts(2026, 0, 10))?.classList.contains('sn-date-picker-cell--in-range')).toBe(false)
+    // light in-range background (the pointer cell itself is the cursor).
+    dayCell(ts(2026, 0, 10))?.dispatchEvent(new Event('mouseenter'))
+    await nextTick()
+    expect(dayCell(ts(2026, 0, 7))?.classList.contains('sn-date-picker-cell--in-range')).toBe(true)
+    // Hovering BEFORE the start flips the preview bounds (direction-agnostic).
+    dayCell(ts(2026, 0, 2))?.dispatchEvent(new Event('mouseenter'))
+    await nextTick()
+    expect(dayCell(ts(2026, 0, 2))?.classList.contains('sn-date-picker-cell--in-range')).toBe(false)
+    expect(dayCell(ts(2026, 0, 4))?.classList.contains('sn-date-picker-cell--in-range')).toBe(true)
+    // Committing (non-datetime) closes the panel and emits the full range;
+    // the hovered preview never leaked into the emitted value.
+    dayCell(ts(2026, 0, 12))?.click()
+    await nextTick()
+    expect(value.value).toEqual([ts(2026, 0, 5), ts(2026, 0, 12)])
+  })
+
   it('renders two time groups in datetimerange mode', async () => {
     const w = mountPicker({ type: 'datetimerange', modelValue: [ts(2026, 0, 5, 9, 0, 0), ts(2026, 0, 20, 18, 0, 0)] })
     await openPanel(w)
