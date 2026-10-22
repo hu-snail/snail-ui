@@ -40,10 +40,21 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 // Dynamic import of demo file (async chunk split).
-const demoModules = import.meta.glob('../demo/*.vue')
+//
+// 双语机制(naive-ui 官网同构):英文站点优先加载 `demo-en/<name>.vue`
+// 影子文件(渲染 + 代码面板都用它);不存在时回退中文 demo。影子文件是
+// 普通源码,保持 demo「可复制即真实用法」的教学价值;md 页零改动。
+import { useData } from 'vitepress'
+const { lang } = useData()
+const isEn = computed(() => lang.value === 'en-US')
+const demoModules = {
+  ...import.meta.glob('../demo/*.vue'),
+  ...import.meta.glob('../demo-en/*.vue'),
+}
 const AsyncDemo = defineAsyncComponent({
   loader: () => {
-    const key = `../demo/${props.name}.vue`
+    const enKey = `../demo-en/${props.name}.vue`
+    const key = isEn.value && demoModules[enKey] !== undefined ? enKey : `../demo/${props.name}.vue`
     const mod = demoModules[key]
     if (!mod) {
       return Promise.resolve(
@@ -63,25 +74,32 @@ const AsyncDemo = defineAsyncComponent({
   delay: 0,
 })
 
-// Raw source of the demo file (for the code panel).
-// Use `eager: true` so vite inlines the raw string at build time — without it,
-// glob returns `() => Promise<string>` loaders, which can never satisfy the
-// `typeof mod === 'string'` check below and silently fall through to the
-// "not found" placeholder.
+/** 双语 chrome 文案(复制 / 展开代码),跟随站点语言。 */
+const t = computed(() =>
+  isEn.value
+    ? { copy: 'Copy', copied: 'Copied', copyCode: 'Copy code', expandCode: 'Show code', collapseCode: 'Hide code' }
+    : { copy: '复制', copied: '已复制', copyCode: '复制代码', expandCode: '展开代码', collapseCode: '收起代码' },
+)
+
+// Raw source of the demo file (for the code panel). Both the Chinese and
+// English shadow dirs are inlined eagerly (`?raw` build-time strings).
 //
-// `import.meta.glob` key shape is build-dependent: with `query: '?raw'` the
-// key may be `../demo/<name>.vue` or `../demo/<name>.vue?raw` depending on
-// vite version / transform pipeline. Match by filename suffix instead of a
-// literal key to be robust.
+// `import.meta.glob` key shape is build-dependent (may or may not carry the
+// `?raw` suffix) — match by filename suffix instead of a literal key.
 type RawModule = string
-const sourceModules = import.meta.glob<RawModule>('../demo/*.vue', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-})
+const sourceModules = {
+  ...import.meta.glob<RawModule>('../demo/*.vue', { query: '?raw', import: 'default', eager: true }),
+  ...import.meta.glob<RawModule>('../demo-en/*.vue', { query: '?raw', import: 'default', eager: true }),
+}
 
 function findSourceKey(name: string): string | undefined {
-  const base = `/${name}.vue`
+  // English site shows the English shadow source when available (the code
+  // panel must match what is rendered), falling back to the Chinese demo.
+  const enBase = `/demo-en/${name}.vue`
+  const base = `/demo/${name}.vue`
+  for (const key of Object.keys(sourceModules)) {
+    if (isEn.value && (key.endsWith(enBase) || key.endsWith(`${enBase}?raw`))) return key
+  }
   for (const key of Object.keys(sourceModules)) {
     if (key.endsWith(base) || key.endsWith(`${base}?raw`)) return key
   }
@@ -96,6 +114,7 @@ const source = computed<RawModule>(() => {
   }
   return `// Demo source not found: ${props.name}`
 })
+
 
 // Code panel: collapsed by default. Toggled by toolbar button (and also by
 // the inner ⏵ chevron when the user wants a quick inline affordance).
@@ -171,16 +190,16 @@ watch(
         <button
           type="button"
           class="sn-demo__action"
-          :title="copied ? '已复制' : '复制代码'"
+          :title="copied ? t.copied : t.copyCode"
           @click="copyCode"
         >
           <SnIcon :icon="copied ? Check : Copy" :size="14" />
-          <span class="sn-demo__action-label">{{ copied ? '已复制' : '复制' }}</span>
+          <span class="sn-demo__action-label">{{ copied ? t.copied : t.copy }}</span>
         </button>
         <button
           type="button"
           class="sn-demo__action"
-          :title="codeOpen ? '收起代码' : '展开代码'"
+          :title="codeOpen ? t.collapseCode : t.expandCode"
           :aria-expanded="codeOpen"
           @click="toggleCode"
         >
@@ -189,7 +208,7 @@ watch(
             :size="14"
             class="sn-demo__chevron"
           />
-          <span class="sn-demo__action-label">{{ codeOpen ? '收起代码' : '展开代码' }}</span>
+          <span class="sn-demo__action-label">{{ codeOpen ? t.collapseCode : t.expandCode }}</span>
         </button>
       </div>
     </div>

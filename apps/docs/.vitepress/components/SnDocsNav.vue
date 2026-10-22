@@ -114,7 +114,7 @@ const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' 
       <div class="sn-docs-nav__actions">
         <SnButton class="sn-docs-nav__action sn-docs-nav__search" variant="ghost" size="small" aria-label="Search docs" @click="openSearch">
           <SnIcon class="sn-docs-nav__action-icon" :icon="Search" />
-          <span class="sn-docs-nav__search-label">搜索文档</span>
+          <span class="sn-docs-nav__search-label">{{ isEn ? 'Search docs' : '搜索文档' }}</span>
           <span class="sn-docs-nav__kbd" aria-hidden="true">⌘K</span>
         </SnButton>
         <SnButton
