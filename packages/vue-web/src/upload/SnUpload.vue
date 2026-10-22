@@ -40,6 +40,7 @@
 import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import type { ComponentPublicInstance } from 'vue'
 import SnIcon from '../icon/SnIcon.vue'
+import { useLocale } from '../locales/use-locale'
 import {
   CloseIcon,
   EyeIcon,
@@ -127,11 +128,27 @@ const emit = defineEmits<{
   /** An entry's preview affordance was activated (`onPreview` also fires). */
   (e: 'preview', file: SnUploadFile): void
 }>()
-
 defineSlots<{
   /** Custom trigger content (replaces the default button body). */
   trigger?(): unknown
 }>()
+
+/* ─────────── Locale ─────────── */
+
+const locale = useLocale()
+
+/** `Upload` namespace of the active locale (labels + aria strings). */
+const uploadLocale = computed(() => locale.value.Upload)
+
+/**
+ * Drop-area hint: base text plus the accept suffix. The suffix carries an
+ * `{accept}` placeholder the locale author controls the wording of.
+ */
+const draggerHintText = computed(() => {
+  const hint = uploadLocale.value.draggerHint
+  if (!props.accept) return hint
+  return hint + uploadLocale.value.draggerHintAccept.replace('{accept}', props.accept)
+})
 
 /* ─────────── State ─────────── */
 
@@ -151,15 +168,10 @@ function setInputRef(el: Element | ComponentPublicInstance | null): void {
   inputRef.value = el as HTMLInputElement | null
 }
 
-/** Chinese status label per state-machine status (uploading draws a spinner). */
+/** Status label per state-machine status (uploading draws a spinner). */
 function statusText(status: SnUploadFile['status']): string {
-  const labels: Record<SnUploadFile['status'], string> = {
-    pending: '待上传',
-    uploading: '上传中',
-    done: '已完成',
-    error: '失败',
-  }
-  return labels[status]
+  // Upload locale keys mirror the status union 1:1.
+  return uploadLocale.value[status]
 }
 
 const isInteractive = computed(() => !props.disabled && !props.readonly)
@@ -208,6 +220,14 @@ function showsProgressBar(file: SnUploadFile): boolean {
 function emitListChange(): void {
   emit('update:fileList', [...fileList.value])
   emit('change', [...fileList.value])
+}
+
+/**
+ * Fill the `{name}` placeholder used by the parameterized aria labels
+ * (`previewAriaLabel` / `removeAriaLabel` / `uploadingAriaLabel`).
+ */
+function withFileName(template: string, name: string): string {
+  return template.replace('{name}', name)
 }
 
 /** Format bytes into a compact human string (B / KB / MB / GB). */
@@ -405,7 +425,7 @@ defineExpose({ submit })
       :multiple="multiple"
       :accept="accept || undefined"
       :disabled="disabled"
-      :aria-label="'Choose files to upload'"
+      :aria-label="uploadLocale.inputAriaLabel"
       @change="onInputChange"
     >
 
@@ -414,28 +434,27 @@ defineExpose({ submit })
       type="button"
       class="sn-upload__dragger"
       :class="{ 'sn-upload__dragger--over': isDragging }"
-      aria-label="Drag files here or click to upload"
+      :aria-label="uploadLocale.draggerAriaLabel"
       @click="openPicker"
     >
       <slot name="trigger">
         <SnIcon :icon="UploadIcon" :size="28" class="sn-upload__dragger-glyph" />
-        <span class="sn-upload__dragger-title">点击或拖拽文件到此区域上传</span>
+        <span class="sn-upload__dragger-title">{{ uploadLocale.draggerTitle }}</span>
         <span class="sn-upload__dragger-hint">
-          支持单个或批量上传{{ accept ? `，仅接受 ${accept}` : '' }}
+          {{ draggerHintText }}
         </span>
       </slot>
     </button>
 
     <button
       v-else-if="triggerVisible"
-      type="button"
       class="sn-upload__trigger"
-      aria-label="Upload files"
+      :aria-label="uploadLocale.triggerAriaLabel"
       @click="openPicker"
     >
       <slot name="trigger">
         <SnIcon :icon="UploadIcon" :size="14" />
-        <span>点击上传</span>
+        <span>{{ uploadLocale.clickToUpload }}</span>
       </slot>
     </button>
 
@@ -480,7 +499,7 @@ defineExpose({ submit })
           v-if="isPreviewable(file)"
           type="button"
           class="sn-upload__preview"
-          :aria-label="`Preview ${file.name}`"
+          :aria-label="uploadLocale.previewAriaLabel.replace('{name}', file.name)"
           @click="previewFile(file)"
         >
           <SnIcon :icon="EyeIcon" :size="12" />
@@ -489,7 +508,7 @@ defineExpose({ submit })
           v-if="isInteractive"
           type="button"
           class="sn-upload__remove"
-          :aria-label="`Remove ${file.name}`"
+          :aria-label="uploadLocale.removeAriaLabel.replace('{name}', file.name)"
           @click="removeFile(file)"
         >
           <SnIcon :icon="CloseIcon" :size="10" />
@@ -501,7 +520,7 @@ defineExpose({ submit })
           :aria-valuenow="clampedPercentage(file)"
           aria-valuemin="0"
           aria-valuemax="100"
-          :aria-label="`Uploading ${file.name}`"
+          :aria-label="uploadLocale.uploadingAriaLabel.replace('{name}', file.name)"
         >
           <span
             class="sn-upload__progress-fill"

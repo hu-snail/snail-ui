@@ -268,6 +268,10 @@ export { default as SnFloatButtonGroup } from './float-button/SnFloatButtonGroup
 export { default as SnWaterfall } from './waterfall/SnWaterfall.vue'
 export { default as SnVideoPreview } from './video-preview/SnVideoPreview.vue'
 export { default as SnMarquee } from './marquee/SnMarquee.vue'
+export type {
+  SnFloatButtonGroupDirection,
+  SnFloatButtonPlacement,
+} from './float-button/SnFloatButton.vue'
 
 export { SnUI, default } from './install.js'
 export type { SnUIOptions } from './install.js'
@@ -275,3 +279,19 @@ export type { SnUIOptions } from './install.js'
 // Re-export commonly needed token utilities for app-level theme overrides.
 export { snCssVars, snVarName, auiVarName } from '@snui/tokens'
 export type { SnCssVarsOptions } from '@snui/tokens'
+
+// i18n (naive-ui style) — locale objects consumed via <SnConfigProvider :locale>.
+export { zhCN, enUS } from './locales'
+export type {
+  SnLocale,
+  SnUploadLocale,
+  SnLogLocale,
+  SnVideoControlsLocale,
+  SnDatePickerLocale,
+  SnPaginationLocale,
+  SnCalendarLocale,
+} from './locales'
+
+// Font configuration — consumed via <SnConfigProvider :font> (naive-ui
+// "fonts" doc equivalent). See apps/docs/components/web/fonts.md.
+export type { SnFontOverride } from './config-provider/sn-config-provider-types'

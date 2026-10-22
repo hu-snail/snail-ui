@@ -29,9 +29,14 @@
  */
 
 import { computed, nextTick, ref } from 'vue'
+import { useLocale } from '../locales/use-locale'
 
 defineOptions({ name: 'SnLog' })
 
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
+/** Active locale namespace for the loading indicator. */
+const logLocale = computed(() => locale.value.Log)
 /** Options for the exposed `scrollTo` method (mirrors the reference LogInst). */
 export interface SnLogScrollToOptions {
   /** Absolute scroll offset in px. */
@@ -191,7 +196,7 @@ defineExpose({ scrollTo })
         <svg class="sn-log__loader-spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-dasharray="42 14" />
         </svg>
-        <span class="sn-log__loader-text">加载中</span>
+        <span class="sn-log__loader-text">{{ logLocale.loading }}</span>
       </div>
     </Transition>
   </div>

@@ -40,6 +40,15 @@ const sidebar = {
         { text: 'Web 快速开始', link: '/guide/web/quick-start' },
         { text: 'uni-app 快速开始', link: '/guide/uni/quick-start' },
       ],
+      ],
+    },
+    {
+      text: '进阶',
+      items: [
+        { text: 'SSR / Nuxt', link: '/guide/web/ssr-nuxt' },
+        { text: '国际化 i18n', link: '/guide/web/i18n' },
+        { text: '字体配置', link: '/guide/web/fonts' },
+      ],
     },
   ],
   // Component categories — one entry per category. Each entry maps to one

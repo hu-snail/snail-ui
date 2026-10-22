@@ -42,7 +42,9 @@ import {
   panelInfoOf,
   startOfMonth,
   addMonths,
+  weekdayIndexOf,
 } from './date-grid'
+import { useLocale } from '../locales/use-locale'
 import type { SnCalendarCell, SnCalendarDateItem } from './date-grid'
 
 defineOptions({ name: 'SnCalendar' })
@@ -87,12 +89,25 @@ const mergedValue = computed(() =>
 
 const monthTs = ref(startOfMonth(props.defaultValue ?? now))
 
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
+const calendarLocale = computed(() => locale.value.Calendar)
 const viewCells = computed(() =>
-  buildCalendarCells(monthTs.value, mergedValue.value, now, props.isDateDisabled),
+  buildCalendarCells(monthTs.value, mergedValue.value, now, props.isDateDisabled).map((cell) => ({
+    ...cell,
+    weekdayLabel: calendarLocale.value.weekdays[weekdayIndexOf(cell.ts)] ?? cell.weekdayLabel,
+  })),
 )
 
 const panelYear = computed(() => panelInfoOf(monthTs.value).year)
 const panelMonth = computed(() => panelInfoOf(monthTs.value).month)
+
+/** Localized header title ('2026年3月' under zhCN). */
+const calendarMonthTitle = computed(() =>
+  calendarLocale.value.monthTitle
+    .replace('{y}', String(panelYear.value))
+    .replace('{m}', String(panelMonth.value)),
+)
 
 function selectCell(cell: SnCalendarCell): void {
   if (cell.disabled) return
@@ -128,25 +143,25 @@ function goToday(): void {
     <div class="sn-calendar__header">
       <div class="sn-calendar__title">
         <slot name="header" :year="panelYear" :month="panelMonth">
-          {{ panelYear }}年{{ panelMonth }}月
+          {{ calendarMonthTitle }}
         </slot>
       </div>
       <div class="sn-calendar__actions">
         <button
           type="button"
           class="sn-calendar__btn sn-calendar__btn--icon"
-          aria-label="上个月"
+          :aria-label="calendarLocale.prevMonth"
           @click="shiftMonth(-1)"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="m15 18-6-6 6-6" />
           </svg>
         </button>
-        <button type="button" class="sn-calendar__btn" @click="goToday">今天</button>
+        <button type="button" class="sn-calendar__btn" @click="goToday">{{ calendarLocale.today }}</button>
         <button
           type="button"
           class="sn-calendar__btn sn-calendar__btn--icon"
-          aria-label="下个月"
+          :aria-label="calendarLocale.nextMonth"
           @click="shiftMonth(1)"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -155,7 +170,7 @@ function goToday(): void {
         </button>
       </div>
     </div>
-    <div class="sn-calendar__dates" role="grid" aria-label="日历">
+    <div class="sn-calendar__dates" role="grid" :aria-label="calendarLocale.gridLabel">
       <div
         v-for="(cell, index) in viewCells"
         :key="index"

@@ -52,8 +52,14 @@ import SnIcon from '../icon/SnIcon.vue'
 import SnInput from '../input/SnInput.vue'
 import SnSelect from '../select/SnSelect.vue'
 import type { SnSelectValue } from '../select/sn-select-types'
-
 defineOptions({ name: 'SnPagination' })
+
+import { useLocale } from '../locales/use-locale'
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
+/** Active Pagination locale namespace (naive-ui i18n). */
+const paginationLocale = computed(() => locale.value.Pagination)
 
 /** A rendered pager item: a page number or an ellipsis marker. */
 type PaginationDisplayItem = number | 'start-ellipsis' | 'end-ellipsis'
@@ -278,12 +284,12 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
       'sn-pagination--disabled': disabled,
     }"
     role="navigation"
-    aria-label="Pagination"
+    :aria-label="paginationLocale.navigationAriaLabel"
   >
     <div v-if="$slots.prefix" class="sn-pagination__prefix">
       <slot name="prefix" />
     </div>
-    <span v-if="showTotal" class="sn-pagination__total">共 {{ itemCount }} 条</span>
+    <span v-if="showTotal" class="sn-pagination__total">{{ paginationLocale.total.replace('{total}', String(itemCount)) }}</span>
 
     <!-- Simple mode: prev / page input / count / next -->
     <div v-if="simple" class="sn-pagination__simple">
@@ -292,7 +298,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         text
         size="small"
         :disabled="isDisabled || mergedPage <= 1"
-        aria-label="上一页"
+        :aria-label="paginationLocale.prevPage"
         @click="go(mergedPage - 1)"
       >
         <slot name="prev"><SnIcon :icon="ChevronLeft" :size="16" /></slot>
@@ -302,7 +308,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         class="sn-pagination__simple-input"
         size="small"
         :disabled="isDisabled"
-        :aria-label="`当前页码，共 ${mergedPageCount} 页`"
+        :aria-label="paginationLocale.currentPageStatus.replace('{total}', String(mergedPageCount))"
         @confirm="commitSimpleInput"
         @blur="commitSimpleInput"
       />
@@ -312,7 +318,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         text
         size="small"
         :disabled="isDisabled || mergedPage >= mergedPageCount"
-        aria-label="下一页"
+        :aria-label="paginationLocale.nextPage"
         @click="go(mergedPage + 1)"
       >
         <slot name="next"><SnIcon :icon="ChevronRight" :size="16" /></slot>
@@ -327,7 +333,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
           text
           size="small"
           :disabled="isDisabled || mergedPage <= 1"
-          aria-label="上一页"
+          :aria-label="paginationLocale.prevPage"
           @click="go(mergedPage - 1)"
         >
           <slot name="prev"><SnIcon :icon="ChevronLeft" :size="16" /></slot>
@@ -348,7 +354,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
           text
           size="small"
           :disabled="isDisabled"
-          :aria-label="`第 ${item} 页`"
+          :aria-label="paginationLocale.page.replace('{page}', String(item))"
           :aria-current="item === mergedPage ? 'page' : undefined"
           @click="go(item)"
         >
@@ -361,7 +367,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
           text
           size="small"
           :disabled="isDisabled || mergedPage >= mergedPageCount"
-          aria-label="下一页"
+          :aria-label="paginationLocale.nextPage"
           @click="go(mergedPage + 1)"
         >
           <slot name="next"><SnIcon :icon="ChevronRight" :size="16" /></slot>
@@ -376,7 +382,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         class="sn-pagination__jumper-input"
         size="small"
         :disabled="isDisabled"
-        aria-label="跳页输入，输入页码后回车跳转"
+        :aria-label="paginationLocale.jumpAriaLabel"
         @confirm="commitJumper"
         @blur="commitJumper"
       />
@@ -389,7 +395,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         :model-value="mergedPageSize"
         :options="pageSizeOptions"
         :disabled="isDisabled"
-        aria-label="每页条数"
+        :aria-label="paginationLocale.perPage"
         @update:model-value="onPageSizeSelect"
       />
     </div>

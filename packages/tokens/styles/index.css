@@ -95,6 +95,19 @@
   --aui-font-line-height-tight: 1.2;
   --aui-font-line-height-normal: 1.5;
   --aui-font-line-height-loose: 1.8;
+  /* Primitive — font family (mirrors PRIMITIVE_TOKENS.font.family) */
+  --aui-font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --aui-font-family-serif: Georgia, "Times New Roman", serif;
+  --aui-font-family-mono: "SF Mono", Monaco, Menlo, Consolas, monospace;
+  /* Semantic — font family / size bindings. Override these (e.g. via
+     <SnConfigProvider :font="..."> or a global stylesheet) to re-skin
+     typography without touching components. */
+  --aui-font-family-body: var(--aui-font-family-sans);
+  --aui-font-family-heading: var(--aui-font-family-sans);
+  --aui-font-family-code: var(--aui-font-family-mono);
+  --aui-font-size-body: var(--aui-font-size-md);
+  --aui-font-size-caption: var(--aui-font-size-sm);
+  --aui-font-size-heading: var(--aui-font-size-xl);
 
   /* Semantic — color */
   --aui-color-text-primary: var(--aui-color-neutral-950);

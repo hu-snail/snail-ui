@@ -331,6 +331,9 @@ function onDocumentKeydown(e: KeyboardEvent): void {
 }
 
 watch(visible, (v) => {
+  // SSR guard (§SSR): the immediate pass runs during server render where
+  // window / document do not exist; listeners are client-only.
+  if (typeof window === 'undefined') return
   if (v) document.addEventListener('keydown', onDocumentKeydown)
   else document.removeEventListener('keydown', onDocumentKeydown)
   // A controlled menu can mount already visible — the listener must
@@ -528,6 +531,9 @@ async function recompute(): Promise<void> {
 /* Reposition on show and on scroll/resize while open. */
 let resizeObserver: ResizeObserver | null = null
 watch(visible, async (v) => {
+  // SSR guard (§SSR): the immediate pass runs during server render where
+  // window / document do not exist; listeners are client-only.
+  if (typeof window === 'undefined') return
   if (v) {
     // Seed the keyboard highlight — covers both gesture opens and
     // controlled consumers that mount already visible.
@@ -561,6 +567,9 @@ function onDocumentMouseDown(e: MouseEvent): void {
 }
 
 watch(visible, (v) => {
+  // SSR guard (§SSR): the immediate pass runs during server render where
+  // window / document do not exist; listeners are client-only.
+  if (typeof window === 'undefined') return
   if (props.trigger !== 'click') return
   if (v) document.addEventListener('mousedown', onDocumentMouseDown)
   else document.removeEventListener('mousedown', onDocumentMouseDown)

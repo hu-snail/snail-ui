@@ -8,11 +8,16 @@ import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
 const vueEsmEntry = require.resolve('vue/dist/vue.esm-bundler.js')
+// The `vue` alias is prefix-matched, so `vue/server-renderer` (used by the
+// SSR smoke tests) would otherwise resolve into the bundler entry path and
+// fail. Alias the subpath explicitly — order matters (more specific first).
+const vueServerRendererEntry = require.resolve('vue/server-renderer')
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
+      'vue/server-renderer': vueServerRendererEntry,
       vue: vueEsmEntry,
     },
   },

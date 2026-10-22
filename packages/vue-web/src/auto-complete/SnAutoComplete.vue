@@ -21,6 +21,7 @@ import {
   computed,
   nextTick,
   onBeforeUnmount,
+  onMounted,
   ref,
   useId,
   useSlots,
@@ -342,7 +343,12 @@ function onDocumentPointerdown(event: PointerEvent): void {
 
 const rootEl = ref<HTMLElement | null>(null)
 
-document.addEventListener('pointerdown', onDocumentPointerdown)
+// Document-level listener must bind client-only (§SSR): setup also runs on
+// the server where `document` does not exist. onBeforeUnmount is skipped by
+// Vue on the server, so the pair stays balanced.
+onMounted(() => {
+  document.addEventListener('pointerdown', onDocumentPointerdown)
+})
 
 onBeforeUnmount(() => {
   document.removeEventListener('pointerdown', onDocumentPointerdown)

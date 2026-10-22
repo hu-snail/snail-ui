@@ -482,6 +482,9 @@ async function recompute(): Promise<void> {
  * scroll — the event does not bubble). */
 let resizeObserver: ResizeObserver | null = null
 watch(visible, async (v) => {
+  // SSR guard (§SSR): the immediate pass runs during server render where
+  // window / document do not exist; listeners are client-only.
+  if (typeof window === 'undefined') return
   if (v) {
     await recompute()
     if (!resizeObserver && typeof ResizeObserver !== 'undefined') {
@@ -513,6 +516,9 @@ function onDocumentMouseDown(e: MouseEvent): void {
 }
 
 watch(visible, (v) => {
+  // SSR guard (§SSR): the immediate pass runs during server render where
+  // window / document do not exist; listeners are client-only.
+  if (typeof window === 'undefined') return
   if (props.trigger !== 'click') return
   if (v) document.addEventListener('mousedown', onDocumentMouseDown)
   else document.removeEventListener('mousedown', onDocumentMouseDown)

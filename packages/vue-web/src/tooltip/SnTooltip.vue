@@ -609,6 +609,9 @@ async function recompute(): Promise<void> {
  * arbitrary parent containers is out of scope for v0. */
 let resizeObserver: ResizeObserver | null = null
 watch(visible, async (v) => {
+  // SSR guard (§SSR): the immediate pass runs during server render where
+  // window / document do not exist; listeners are client-only.
+  if (typeof window === 'undefined') return
   if (v) {
     await recompute()
     if (!resizeObserver && typeof ResizeObserver !== 'undefined') {

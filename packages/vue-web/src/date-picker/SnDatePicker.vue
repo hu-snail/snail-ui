@@ -111,7 +111,7 @@
               <div v-if="viewMode === 'day'" class="sn-date-picker-grid" role="grid" :aria-label="cal.title">
                 <div class="sn-date-picker-grid__row" role="row">
                   <span
-                    v-for="wd in WEEKDAY_LABELS"
+                    v-for="wd in datePickerLocale.weekdays"
                     :key="wd"
                     class="sn-date-picker-grid__weekday"
                     role="columnheader"
@@ -296,16 +296,15 @@ import {
   DoubleChevronLeftIcon,
   DoubleChevronRightIcon,
 } from './sn-date-picker-icons'
+import { useLocale } from '../locales/use-locale'
 import {
   DEFAULT_FORMATS,
-  WEEKDAY_LABELS,
   addMonths,
   buildMonthGrid,
   buildMonthUnitGrid,
   buildYearUnitGrid,
   combineDateTime,
   formatDecadeTitle,
-  formatMonthTitle,
   formatDate,
   getDateParts,
   hasTimePart,
@@ -391,8 +390,11 @@ const RANGE_SIDES: readonly SnRangeSide[] = ['start', 'end']
 /** Panel grid view — 'day' for date grids, 'month'/'year' are drill-downs. */
 type SnViewMode = 'day' | 'month' | 'year'
 
-const DEFAULT_RANGE_PLACEHOLDERS: readonly [string, string] = ['开始日期', '结束日期']
-
+/** Active DatePicker locale namespace (naive-ui i18n). */
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
+/** Active DatePicker locale namespace (naive-ui i18n). */
+const datePickerLocale = computed(() => locale.value.DatePicker)
 /** Module-level counter so every instance owns unique DOM ids. */
 let datePickerInstanceSeed = 0
 const instanceId = ++datePickerInstanceSeed
@@ -457,14 +459,14 @@ const hasValue = computed(() => singleModel.value !== null || rangeModel.value !
 const singlePlaceholder = computed(() =>
   typeof props.placeholder === 'string' && props.placeholder !== ''
     ? props.placeholder
-    : '请选择日期',
+    : datePickerLocale.value.placeholder,
 )
 
 const rangePlaceholders = computed<readonly [string, string]>(() => {
   if (Array.isArray(props.placeholder) && props.placeholder.length === 2) {
     return [props.placeholder[0], props.placeholder[1]]
   }
-  return DEFAULT_RANGE_PLACEHOLDERS
+  return [datePickerLocale.value.rangeStartPlaceholder, datePickerLocale.value.rangeEndPlaceholder]
 })
 
 const singleText = computed<string | null>(() =>
@@ -518,11 +520,14 @@ function calendarOf(anchor: number, key: string): SnCalendarViewModel {
     key,
     year: p.year,
     month: p.month,
-    title: formatMonthTitle(p.year, p.month),
-    yearTitle: `${p.year}年`,
+    title: datePickerLocale.value.monthTitle.replace('{y}', String(p.year)).replace('{m}', String(p.month + 1)),
+    yearTitle: datePickerLocale.value.yearTitle.replace('{y}', String(p.year)),
     decadeTitle: formatDecadeTitle(p.year),
     monthGrid: buildMonthGrid(p.year, p.month),
-    monthUnitRows: chunk(buildMonthUnitGrid(p.year), 4),
+    monthUnitRows: chunk(
+      buildMonthUnitGrid(p.year).map((c) => ({ ...c, label: datePickerLocale.value.months[c.value] ?? c.label })),
+      4,
+    ),
     yearUnitRows: chunk(buildYearUnitGrid(p.year), 4),
   }
 }

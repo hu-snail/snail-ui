@@ -161,6 +161,9 @@
   --sn-web-shadow-sm: var(--aui-shadow-sm);
   --sn-web-shadow-md: var(--aui-shadow-md);
   --sn-web-shadow-lg: var(--aui-shadow-lg);
+  --sn-web-font-family-body: var(--aui-font-family-body);
+  --sn-web-font-family-heading: var(--aui-font-family-heading);
+  --sn-web-font-family-code: var(--aui-font-family-code);
   --sn-web-font-size-xs: var(--aui-font-size-xs);
   --sn-web-font-size-sm: var(--aui-font-size-sm);
   --sn-web-font-size-md: var(--aui-font-size-md);

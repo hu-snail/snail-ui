@@ -42,6 +42,7 @@
 
 import { computed, ref } from 'vue'
 import { Maximize, Minimize, Pause, Play, Volume2, VolumeX } from 'lucide-vue-next'
+import { useLocale } from '../locales/use-locale'
 import SnIcon from '../icon/SnIcon.vue'
 
 defineOptions({ name: 'SnVideoControls' })
@@ -96,9 +97,14 @@ function formatTime(seconds: number): string {
 const currentText = computed(() => formatTime(props.currentTime))
 const totalText = computed(() => formatTime(props.duration))
 
-const playLabel = computed(() => (props.isPlaying ? '暂停' : '播放'))
-const muteLabel = computed(() => (props.isMuted ? '取消静音' : '静音'))
-const fullscreenLabel = computed(() => (props.isFullscreen ? '退出全屏' : '全屏'))
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale()
+/** Locale namespace for control labels / aria (naive-ui i18n). */
+const controlsLocale = computed(() => locale.value.VideoControls)
+
+const playLabel = computed(() => (props.isPlaying ? controlsLocale.value.pause : controlsLocale.value.play))
+const muteLabel = computed(() => (props.isMuted ? controlsLocale.value.unmute : controlsLocale.value.mute))
+const fullscreenLabel = computed(() => (props.isFullscreen ? controlsLocale.value.exitFullscreen : controlsLocale.value.fullscreen))
 
 /* ── Timeline ───────────────────────────────────────────────────────────── */
 
@@ -152,7 +158,7 @@ function handleToggleFullscreen(): void {
 </script>
 
 <template>
-  <div data-snui-component="video-controls" class="sn-video-controls" role="toolbar" aria-label="播放控制">
+  <div data-snui-component="video-controls" class="sn-video-controls" role="toolbar" :aria-label="controlsLocale.toolbar">
     <button
       type="button"
       class="sn-video-controls__button sn-video-controls__play"
@@ -174,13 +180,13 @@ function handleToggleFullscreen(): void {
     <span class="sn-video-controls__time" aria-hidden="true">{{ currentText }}</span>
 
     <input
+      :aria-label="controlsLocale.timeline"
       class="sn-video-controls__timeline"
       type="range"
       min="0"
       :max="maxTime"
       step="0.1"
       :value="timelineValue"
-      aria-label="播放进度"
       :aria-valuetext="timelineValueText"
       @input="handleTimelineInput"
       @change="handleTimelineChange"

@@ -176,7 +176,7 @@ let registryOrder: string[] = []
 
 /** Initial values captured at mount — used by `resetFields()`. */
 const initialValues = new Map<string, unknown>()
-for (const key of Object.keys(props.model)) {
+for (const key of Object.keys(props.model ?? {})) {
   initialValues.set(key, deepClone(props.model[key]))
 }
 
