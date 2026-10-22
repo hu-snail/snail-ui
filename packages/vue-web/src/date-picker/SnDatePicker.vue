@@ -575,6 +575,19 @@ function rangeBounds(): { start: number | null; end: number | null } {
   if (isRange.value && rangeModel.value !== null) {
     return { start: rangeModel.value[0], end: rangeModel.value[1] }
   }
+  // Draft phase: while the end date is being picked, preview the pending
+  // interval following the cursor (like the reference implementations) so
+  // the in-range light background tracks the selection live. Direction-
+  // agnostic: a cursor earlier than the start flips the bounds.
+  if (
+    rangeDraft.value.start !== null &&
+    rangeDraft.value.end === null &&
+    cursor.value !== null
+  ) {
+    const a = startOfDay(rangeDraft.value.start)
+    const b = startOfDay(cursor.value)
+    return a <= b ? { start: a, end: b } : { start: b, end: a }
+  }
   return rangeDraft.value
 }
 

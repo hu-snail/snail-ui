@@ -124,6 +124,7 @@
 
   --aui-color-action-primary: var(--aui-color-blue-500);
   --aui-color-action-primary-hover: var(--aui-color-blue-400);
+  --aui-color-action-primary-soft: var(--aui-color-blue-50);
 
   --aui-color-feedback-success: var(--aui-color-success);
   --aui-color-feedback-warning: var(--aui-color-warning);

@@ -34,6 +34,9 @@ import SnDocsSidebarToggle from '../components/SnDocsSidebarToggle.vue'
 import SnDocsDocActions from '../components/SnDocsDocActions.vue'
 import SnDocsTemplateEnd from '../components/SnDocsTemplateEnd.vue'
 import { enNav, nav } from '../config-nav'
+import { useData } from 'vitepress'
+import { SnConfigProvider, enUS } from '@snui/vue-web'
+import type { SnLocaleInput } from '@snui/vue-web'
 
 const route = useRoute()
 const isHome = computed(() => route.path === '/' || route.path === '')
@@ -43,10 +46,21 @@ const showTemplateEnd = computed(() => route.path.startsWith('/templates/'))
 /** The `/en/` locale mirrors the root locale; swap the nav list with it. */
 const isEn = computed(() => route.path === '/en' || route.path.startsWith('/en/'))
 const navItems = computed(() => (isEn.value ? enNav : nav))
+
+/**
+ * 站点级组件 locale —— 跟随 VitePress 语言切换（root=zh-CN → 内置 zhCN，
+ * /en/ → enUS）。嵌套的 `<SnConfigProvider skin>` 会透传该值（见组件内
+ * parentLocale 逻辑），所有示例组件随站点语言自动切换文案。
+ */
+const { lang } = useData()
+const siteLocale = computed<SnLocaleInput | undefined>(() =>
+  lang.value === 'en-US' ? enUS : undefined,
+)
 </script>
 
 <template>
-  <DefaultTheme.Layout>
+  <SnConfigProvider :locale="siteLocale">
+    <DefaultTheme.Layout>
     <!-- Replace the default top nav with SnDocsNav (real @snui/vue-web). -->
     <template #nav-bar-content-before>
       <SnDocsNav :items="navItems" />
@@ -104,4 +118,5 @@ const navItems = computed(() => (isEn.value ? enNav : nav))
       </ClientOnly>
     </template>
   </DefaultTheme.Layout>
+  </SnConfigProvider>
 </template>

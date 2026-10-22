@@ -30,6 +30,7 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-color-border-subtle', '--aui-color-border-subtle'],
   ['--sn-web-color-action-primary', '--aui-color-action-primary'],
   ['--sn-web-color-action-primary-hover', '--aui-color-action-primary-hover'],
+  ['--sn-web-color-action-primary-soft', '--aui-color-action-primary-soft'],
   ['--sn-web-color-feedback-success', '--aui-color-feedback-success'],
   ['--sn-web-color-feedback-warning', '--aui-color-feedback-warning'],
   ['--sn-web-color-feedback-danger', '--aui-color-feedback-danger'],

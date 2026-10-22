@@ -59,4 +59,17 @@ describe('useLocale', () => {
     })
     expect(w.find('button').text()).toContain('Click to upload')
   })
+
+  it('should pass the site locale through nested providers that omit it', () => {
+    // Chrome components nest `<SnConfigProvider skin>` without a locale —
+    // they must NOT override the site-level locale with the zhCN fallback.
+    const w = mount(SnConfigProvider, {
+      props: { locale: enUS },
+      slots: {
+        default: () =>
+          h(SnConfigProvider, null, { default: () => h(SnLog, { loading: true }) }),
+      },
+    })
+    expect(w.find('.sn-log__loader-text').text()).toBe('Loading')
+  })
 })

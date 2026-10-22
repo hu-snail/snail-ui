@@ -26,6 +26,7 @@
   --sn-web-color-border-subtle: var(--aui-color-border-subtle);
   --sn-web-color-action-primary: var(--aui-color-action-primary);
   --sn-web-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-web-color-action-primary-soft: var(--aui-color-action-primary-soft);
   --sn-web-color-feedback-success: var(--aui-color-feedback-success);
   --sn-web-color-feedback-warning: var(--aui-color-feedback-warning);
   --sn-web-color-feedback-danger: var(--aui-color-feedback-danger);

@@ -17,7 +17,7 @@
  *   - 路由
  */
 
-import { computed, watch, onBeforeUnmount, provide } from 'vue'
+import { computed, inject, isRef, watch, onBeforeUnmount, provide } from 'vue'
 import { SN_LOCALE_KEY } from '../locales/use-locale'
 import type { SnLocaleInput } from '../locales/use-locale'
 
@@ -107,7 +107,20 @@ provide('snui-skin', props.skin)
  * prop 的 ref，`locale` 变化时后代组件无需重挂载即可切换文案。`null`
  * 表示未提供 locale → 后代回落内置 zhCN。
  */
-provide(SN_LOCALE_KEY, computed<SnLocaleInput | null>(() => props.locale ?? null))
+/**
+ * Reactive locale provision（响应式 provide）。未传 `locale` 时**透传祖先**
+ * 的注入值（chrome 组件里嵌套的 `<SnConfigProvider skin>` 不会把站点级
+ * locale 覆盖掉），都没有才回落 `null` → 后代取内置 zhCN。提供的是跟随
+ * `locale` prop 的 ref，后代组件无需重挂载即可切换文案。
+ */
+const parentLocale = inject(SN_LOCALE_KEY, null)
+provide(
+  SN_LOCALE_KEY,
+  computed<SnLocaleInput | null>(() => {
+    if (props.locale) return props.locale
+    return isRef(parentLocale) ? parentLocale.value : parentLocale
+  }),
+)
 
 const SKIN_CLASS_PREFIX = 'snui-skin-'
 
