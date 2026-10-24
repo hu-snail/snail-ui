@@ -77,6 +77,17 @@ describe('sn-input', () => {
     expect(wrapper.find('input').attributes('aria-invalid')).toBeUndefined()
   })
 
+  it('applies the error class and aria-invalid from the error boolean', () => {
+    const wrapper = mount(SnInput, { props: { error: true } })
+    expect(wrapper.classes()).toContain('sn-input--error')
+    expect(wrapper.find('input').attributes('aria-invalid')).toBe('true')
+  })
+
+  it('omits the error class when error is false', () => {
+    const wrapper = mount(SnInput, { props: { error: false } })
+    expect(wrapper.classes()).not.toContain('sn-input--error')
+  })
+
   it('sets aria-required when required prop is true', () => {
     const wrapper = mount(SnInput, { props: { required: true } })
     expect(wrapper.find('input').attributes('aria-required')).toBe('true')
@@ -262,6 +273,31 @@ describe('sn-input', () => {
     expect(input.attributes('hold-keyboard')).toBe('true')
     expect(input.attributes('adjust-position')).toBe('false')
     expect(input.attributes('always-embed')).toBe('true')
+  })
+
+  it('forwards cursor-spacing / confirm-hold / ignore-composition-event / enable-native', () => {
+    const wrapper = mount(SnInput, {
+      props: {
+        cursorSpacing: 20,
+        confirmHold: true,
+        ignoreCompositionEvent: false,
+        enableNative: false,
+      },
+    })
+    const input = wrapper.find('input')
+    expect(input.attributes('cursor-spacing')).toBe('20')
+    expect(input.attributes('confirm-hold')).toBe('true')
+    expect(input.attributes('ignore-composition-event')).toBe('false')
+    expect(input.attributes('enable-native')).toBe('false')
+  })
+
+  it('forwards the MP keyboard attrs to the textarea too', () => {
+    const wrapper = mount(SnInput, {
+      props: { type: 'textarea', cursorSpacing: 12, confirmHold: true },
+    })
+    const textarea = wrapper.find('textarea')
+    expect(textarea.attributes('cursor-spacing')).toBe('12')
+    expect(textarea.attributes('confirm-hold')).toBe('true')
   })
 
   it('forwards cursor / selection-start / selection-end when set', () => {

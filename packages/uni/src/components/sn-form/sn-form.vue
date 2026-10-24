@@ -56,6 +56,19 @@ const props = withDefaults(
     hideAsterisk?: boolean
     /** Truncate long labels with ellipsis. */
     ellipsis?: boolean
+    /**
+     * Form-level validation schema (`wd-form` `schema`). Declared for parity;
+     * rules are still supplied through `rules` / per-item `rules`, so this
+     * object is stored on the context and never interpreted here.
+     */
+    schema?: Record<string, unknown> | undefined
+    /** Left title column width (`wd-form` `title-width`). Inherited by items. */
+    titleWidth?: number | string | undefined
+    /**
+     * Cell layout (`wd-form` `layout`): `horizontal` puts label and control
+     * side by side, `vertical` stacks them. Inherited by items.
+     */
+    layout?: 'horizontal' | 'vertical'
   }>(),
   {
     rules: () => ({}),
@@ -74,6 +87,9 @@ const props = withDefaults(
     asteriskPosition: 'left',
     hideAsterisk: false,
     ellipsis: false,
+    schema: undefined,
+    titleWidth: undefined,
+    layout: 'horizontal',
   },
 )
 
@@ -91,7 +107,9 @@ const ctx = reactive({
   model: props.model,
   rules: props.rules,
   showMessage: props.showMessage,
-  statusIcon: false,
+  // Flows through to SnFormItem so `status-icon` finally has an effect; it used
+  // to be pinned to `false` here, which made the prop a no-op.
+  statusIcon: props.statusIcon,
   labelPosition: props.labelPosition,
   labelWidth: props.labelWidth,
   disabled: props.disabled,
@@ -105,13 +123,19 @@ const ctx = reactive({
   ellipsis: props.ellipsis,
   border: props.border,
   center: props.center,
+  schema: props.schema,
+  titleWidth: props.titleWidth,
+  layout: props.layout,
 })
 
 ctx.model = props.model
 ctx.rules = props.rules
 ctx.showMessage = props.showMessage
 ctx.labelPosition = props.labelPosition
-ctx.labelWidth = props.labelWidth
+/* `title-width` is wd-form's name for the label column width; folding it into
+ * `labelWidth` is what lets every descendant FormItem inherit it without a
+ * second inheritance channel. */
+ctx.labelWidth = props.titleWidth ?? props.labelWidth
 ctx.disabled = props.disabled
 ctx.validateTrigger = props.validateTrigger
 ctx.resetOnChange = props.resetOnChange
@@ -123,6 +147,9 @@ ctx.hideAsterisk = props.hideAsterisk
 ctx.ellipsis = props.ellipsis
 ctx.border = props.border
 ctx.center = props.center
+ctx.schema = props.schema
+ctx.titleWidth = props.titleWidth
+ctx.layout = props.layout
 
 provide(FORM_CONTEXT_KEY, ctx)
 
@@ -208,6 +235,7 @@ const classes = computed(() => [
   `sn-form--label-${props.labelPosition}`,
   `sn-form--size-${props.size}`,
   `sn-form--value-align-${props.valueAlign}`,
+  `sn-form--layout-${props.layout}`,
   {
     'sn-form--disabled': props.disabled,
     'sn-form--border': props.border,
@@ -265,7 +293,7 @@ function deepClone<T>(value: T): T {
 /* Border between items — adds a hairline divider under every FormItem. */
 .sn-form--border :deep(.sn-form-item) {
   padding-bottom: 24rpx;
-  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle, rgba(0, 0, 0, 0.06));
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
   margin-bottom: 24rpx;
 }
 .sn-form--border :deep(.sn-form-item:last-child) {
@@ -282,6 +310,21 @@ function deepClone<T>(value: T): T {
 .sn-form--size-small { font-size: 24rpx; }
 .sn-form--size-medium { font-size: 28rpx; }
 .sn-form--size-large { font-size: 32rpx; }
+
+/* Cell layout — `vertical` stacks the label above the control in every
+ * descendant FormItem, `horizontal` keeps the two columns side by side. */
+.sn-form--layout-vertical :deep(.sn-form-item) {
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+.sn-form--layout-vertical :deep(.sn-form-item__label) {
+  text-align: left;
+  padding: 0;
+}
+.sn-form--layout-vertical :deep(.sn-form-item__control) {
+  flex-direction: column;
+  align-items: stretch;
+}
 
 /* Doodle skin. */
 .snui-skin-doodle.sn-form--border :deep(.sn-form-item) {

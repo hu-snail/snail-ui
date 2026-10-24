@@ -117,8 +117,8 @@ defineSlots<{
   display: flex;
   flex-direction: column;
   padding: var(--sn-mp-card-padding, 32rpx);
-  background: var(--sn-mp-color-background-surface, #ffffff);
-  color: var(--sn-mp-color-text-primary, #333333);
+  background: var(--sn-mp-color-background-surface);
+  color: var(--sn-mp-color-text-primary);
   border-radius: var(--sn-mp-card-radius, 16rpx);
   font-size: 28rpx;
   line-height: 1.5;
@@ -133,7 +133,7 @@ defineSlots<{
 .sn-card__title {
   font-size: 32rpx;
   font-weight: 600;
-  color: var(--sn-mp-color-text-primary, #333333);
+  color: var(--sn-mp-color-text-primary);
   margin-bottom: 16rpx;
 }
 
@@ -145,7 +145,7 @@ defineSlots<{
 .sn-card__footer {
   margin-top: 24rpx;
   padding-top: 24rpx;
-  border-top: 2rpx solid var(--sn-mp-color-border-default, #e5e5e5);
+  border-top: 2rpx solid var(--sn-mp-color-border-default);
 }
 
 /* Doodle skin */

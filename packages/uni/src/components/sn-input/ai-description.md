@@ -28,6 +28,12 @@ for validation surfacing.
 | status         | `'default' \| 'error' \| 'warning'`               | `'default'` | Drives border color + `aria-invalid`.                                |
 | required       | `boolean`                                         | `false`     | Sets `aria-required`.                                                 |
 | ariaLabel      | `string`                                          | —           | Accessible name.                                                      |
+| error          | `boolean`                                         | `false`     | Error chrome (`sn-input--error`) + `aria-invalid`. Same visual as `status="error"`. |
+| cursorSpacing  | `number`                                          | `0`         | Forwarded as the MP native `cursor-spacing`.                          |
+| confirmHold    | `boolean`                                         | `false`     | Forwarded as the MP native `confirm-hold`.                            |
+| ignoreCompositionEvent | `boolean`                                  | `true`      | Forwarded as the MP native `ignore-composition-event`.                |
+| enableNative   | `boolean`                                         | `true`      | Forwarded as the MP native `enable-native` (Alipay MP).               |
+| confirmType / holdKeyboard / adjustPosition / alwaysEmbed | `string` / `boolean` | `'done'` / `false` / `true` / `false` | Other MP native input attributes, forwarded to the inner `<input>` / `<textarea>`. |
 
 ## Events
 

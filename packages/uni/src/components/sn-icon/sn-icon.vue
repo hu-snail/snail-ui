@@ -65,25 +65,56 @@ const props = withDefaults(
      * Icon data — typically a frozen object imported from
      * `@snui/uni` shortcut icons or your own icon pack. Tree-shakeable:
      * only the icons you named-import end up in the bundle.
+     *
+     * Optional since the wot-ui-compatible `name` API was added: pass either
+     * `icon` (SVG data) or `name` (iconfont glyph).
      */
-    icon: IconData
+    icon?: IconData | undefined
+    /**
+     * Iconfont glyph name — wot-ui's primary API (`wd-icon`).
+     *
+     * Resolves to `<view class="{classPrefix}-{name}">` so any iconfont whose
+     * class names follow the `wd-icon-*` convention works unchanged. Requires
+     * the iconfont stylesheet to be loaded by the host app.
+     */
+    name?: string | undefined
+    /**
+     * Class-name prefix for the iconfont glyph. wot-ui defaults to `wd-icon`;
+     * this package defaults to `sn-icon` to match its own iconfont build.
+     */
+    classPrefix?: string | undefined
+    /**
+     * Render `name` as a CSS icon: `<view class="{name}">` with no prefix.
+     * Mirrors wot-ui's `css-icon`, which lets consumers point at an arbitrary
+     * class instead of the iconfont prefix convention.
+     */
+    cssIcon?: boolean | string | undefined
     /** Pixel size (or CSS length). rpx is interpreted by uni-app at runtime. */
-    size?: number | string
-    /** Stroke color. Defaults to `currentColor`. */
-    color?: string
+    size?: number | string | undefined
+    /** Stroke / glyph color. Defaults to `currentColor`. */
+    color?: string | undefined
     /** Stroke width in design units. Default 2 (lucide's standard). */
-    strokeWidth?: number | string
+    strokeWidth?: number | string | undefined
     /**
      * If true, stroke width is interpreted in absolute pixels rather
      * than scaling with `size`. Mirrors lucide's `absoluteStrokeWidth`.
      */
-    strokeWidthAbsolute?: boolean
+    strokeWidthAbsolute?: boolean | undefined
+    /** Class on the root element. Mirrors wot-ui `custom-class`. */
+    customClass?: string | undefined
+    /** Inline style on the root element. Mirrors wot-ui `custom-style`. */
+    customStyle?: string | Record<string, string> | undefined
   }>(),
   {
+    name: '',
+    classPrefix: 'sn-icon',
+    cssIcon: false,
     size: 32,
     color: 'currentColor',
     strokeWidth: 2,
     strokeWidthAbsolute: false,
+    customClass: '',
+    customStyle: '',
   },
 )
 
@@ -91,7 +122,7 @@ const props = withDefaults(
  * Final SVG viewBox: use the icon's own when provided, else lucide's
  * default 24x24 grid.
  */
-const viewBox = computed(() => props.icon.viewBox ?? '0 0 24 24')
+const viewBox = computed(() => props.icon?.viewBox ?? '0 0 24 24')
 
 /**
  * Effective stroke-width — passed through to the inner `<svg>`. uni-app
@@ -101,17 +132,64 @@ const viewBox = computed(() => props.icon.viewBox ?? '0 0 24 24')
 const effectiveStrokeWidth = computed(() =>
   props.strokeWidthAbsolute ? props.strokeWidth : props.strokeWidth,
 )
+
+/**
+ * Which rendering path this instance takes.
+ *
+ * `name` (or a string `css-icon`) selects the iconfont path; SVG data
+ * (`icon`) selects the inline-SVG path. `name` wins when both are given,
+ * because that is the wot-ui-native call shape.
+ */
+const isGlyph = computed(() => props.name !== '' || typeof props.cssIcon === 'string')
+
+/** Resolved iconfont class list for the glyph path. */
+const glyphClass = computed<string[]>(() => {
+  if (typeof props.cssIcon === 'string' && props.cssIcon !== '') {
+    // `css-icon="my-class"` → render that class verbatim (no prefix).
+    return [props.cssIcon]
+  }
+  const base = props.name === '' ? '' : `${props.classPrefix}-${props.name}`
+  const out: string[] = []
+  if (base !== '') out.push(base)
+  if (props.cssIcon === true && props.name !== '') out.push(props.name)
+  return out
+})
+
+/** Size box shared by both rendering paths. */
+const boxStyle = computed(() => {
+  const len = typeof props.size === 'number' ? `${props.size}px` : props.size
+  const style: Record<string, string> = { width: len, height: len }
+  if (props.color !== 'currentColor') style.color = props.color
+  if (typeof props.customStyle === 'string') {
+    if (props.customStyle !== '') style.cssText = props.customStyle
+  } else {
+    Object.assign(style, props.customStyle)
+  }
+  return style
+})
 </script>
 
 <template>
   <view
     class="sn-icon"
+    :class="[customClass]"
     data-snui-component="icon"
     :aria-hidden="true"
-    :style="{ width: typeof size === 'number' ? size + 'px' : size, height: typeof size === 'number' ? size + 'px' : size }"
+    :style="boxStyle"
   >
     <!--
-      Inline `<svg>` works in:
+      Iconfont glyph path (wot-ui native): the class name carries the glyph,
+      the stylesheet is supplied by the host app.
+    -->
+    <view
+      v-if="isGlyph"
+      class="sn-icon__glyph"
+      :class="glyphClass"
+      data-sn-icon-glyph=""
+    />
+
+    <!--
+      Inline `<svg>` path (SVG IconData). Works in:
         - H5 (browser)  : direct DOM, identical to web.
         - 微信小程序 : the SVG renders as <image> by the runtime
                        (not pixel-perfect on all platforms, but the
@@ -124,6 +202,7 @@ const effectiveStrokeWidth = computed(() =>
       standalone documents and harmless when nested.
     -->
     <svg
+      v-else-if="icon"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="viewBox"
       fill="none"
@@ -164,3 +243,18 @@ const effectiveStrokeWidth = computed(() =>
   height: 100%;
 }
 </style>
+
+/*
+ * Iconfont glyph box.
+ *
+ * The glyph itself comes from the host app's iconfont stylesheet; this rule
+ * only guarantees the element is a block box that fills the wrapper and
+ * inherits colour, so both rendering paths behave identically.
+ */
+.sn-icon__glyph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  line-height: 1;
+  text-align: center;
+}

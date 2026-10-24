@@ -13,6 +13,10 @@
  *   - `hold-keyboard`    — keep the keyboard up after the field blurs
  *   - `adjust-position`  — auto-scroll the page when keyboard covers the field
  *   - `always-embed`     — keep the input mounted even when detached
+ *   - `cursor-spacing`   — gap between caret and keyboard
+ *   - `confirm-hold`     — keep the keyboard up after the confirm key
+ *   - `ignore-composition-event` — IME composition handling opt-out
+ *   - `enable-native`    — Alipay MP native-widget opt-in
  *   - `cursor`           — initial caret position
  *   - `selection-start`  — initial selection range start
  *   - `selection-end`    — initial selection range end
@@ -148,6 +152,12 @@ const props = withDefaults(
     customClass?: string
     /** Inline style on the root wrapper. */
     customStyle?: string | Record<string, string>
+    /**
+     * Error state (`wd-input` `error`). Drives the `sn-input--error` class and
+     * `aria-invalid`. Independent of the legacy 3-way `status` prop — either
+     * one turns the error chrome on.
+     */
+    error?: boolean
 
     /* ── uni-app MP-only props ───────────────────────────────────────────── */
 
@@ -168,6 +178,21 @@ const props = withDefaults(
     selectionStart?: number
     /** Initial selection range end. */
     selectionEnd?: number
+
+    /** Distance kept between the caret and the soft keyboard (px). */
+    cursorSpacing?: number
+    /** Keep the keyboard up when the confirm key is tapped. */
+    confirmHold?: boolean
+    /**
+     * Ignore IME composition events. `false` re-enables composition events and
+     * lets `input` fire mid-composition (uni-app MP native attribute).
+     */
+    ignoreCompositionEvent?: boolean
+    /**
+     * Alipay MP: render the native input widget instead of the simulated one —
+     * `false` avoids the page shifting when the keyboard opens.
+     */
+    enableNative?: boolean
   }>(),
   {
     modelValue: '',
@@ -204,6 +229,11 @@ const props = withDefaults(
     customInputClass: '',
     customClass: '',
     customStyle: '',
+    error: false,
+    cursorSpacing: 0,
+    confirmHold: false,
+    ignoreCompositionEvent: true,
+    enableNative: true,
     confirmType: 'done',
     holdKeyboard: false,
     adjustPosition: true,
@@ -269,7 +299,8 @@ const clearVisible = computed(() => {
 })
 
 const currentLength = computed(() => nativeValue.value.length)
-const ariaInvalid = computed(() => props.status === 'error' ? 'true' : undefined)
+const isError = computed(() => props.error || props.status === 'error')
+const ariaInvalid = computed(() => isError.value ? 'true' : undefined)
 const showCounter = computed(() => props.showCount || props.showWordLimit)
 const isInteractive = computed(() => !props.disabled && !props.readonly)
 
@@ -357,6 +388,7 @@ const classList = computed(() => [
     [`sn-input--bg-${props.bg}`]: true,
     [`sn-input--radius-${props.radius}`]: true,
     [`sn-input--status-${props.status}`]: props.status !== 'default',
+    'sn-input--error': isError.value,
     'sn-input--with-prefix': !!(slots.prefix || props.prefixIcon || props.iconPrefix),
     'sn-input--with-suffix': !!(slots.suffix || props.suffixIcon || props.iconSuffix),
     'sn-input--with-count': showCounter.value,
@@ -389,6 +421,10 @@ const mpNativeAttrs = computed(() => {
   attrs['hold-keyboard'] = props.holdKeyboard
   attrs['adjust-position'] = props.adjustPosition
   attrs['always-embed'] = props.alwaysEmbed
+  attrs['cursor-spacing'] = props.cursorSpacing
+  attrs['confirm-hold'] = props.confirmHold
+  attrs['ignore-composition-event'] = props.ignoreCompositionEvent
+  attrs['enable-native'] = props.enableNative
   if (props.cursor >= 0) attrs['cursor'] = props.cursor
   if (props.selectionStart >= 0) attrs['selection-start'] = props.selectionStart
   if (props.selectionEnd >= 0) attrs['selection-end'] = props.selectionEnd
@@ -535,10 +571,10 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
   gap: 12rpx;
   position: relative;
   padding: 0 var(--sn-mp-input-padding-x, 20rpx);
-  border: 2rpx solid var(--sn-mp-input-border-color, var(--sn-mp-color-border-default));
+  border: 2rpx solid var(--sn-mp-color-input-border, var(--sn-mp-color-border-default));
   border-radius: var(--sn-mp-input-radius, 12rpx);
-  background-color: var(--sn-mp-input-bg, var(--sn-mp-color-background-surface));
-  color: var(--sn-mp-input-text-color, var(--sn-mp-color-text-primary));
+  background-color: var(--sn-mp-color-input-bg, var(--sn-mp-color-background-surface));
+  color: var(--sn-mp-color-input-text, var(--sn-mp-color-text-primary));
   font-family: inherit;
   line-height: 1;
   box-sizing: border-box;
@@ -548,10 +584,10 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 /* Border variants — `border='all'` is the default; `border='bottom'` only
  * shows a bottom edge (typical for inline form rows that sit on a card);
  * `border='none'` drops the border entirely. */
-.sn-input--border-all { border: 2rpx solid var(--sn-mp-input-border-color, var(--sn-mp-color-border-default)); }
+.sn-input--border-all { border: 2rpx solid var(--sn-mp-color-input-border, var(--sn-mp-color-border-default)); }
 .sn-input--border-bottom {
   border: none;
-  border-bottom: 2rpx solid var(--sn-mp-input-border-color, var(--sn-mp-color-border-default));
+  border-bottom: 2rpx solid var(--sn-mp-color-input-border, var(--sn-mp-color-border-default));
   border-radius: 0;
   padding-left: 0;
   padding-right: 0;
@@ -561,11 +597,11 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 
 /* Background tones */
 .sn-input--bg-surface {
-  background-color: var(--sn-mp-input-bg, var(--sn-mp-color-background-surface));
+  background-color: var(--sn-mp-color-input-bg, var(--sn-mp-color-background-surface));
 }
 .sn-input--bg-transparent { background-color: transparent; }
 .sn-input--bg-soft {
-  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+  background-color: var(--sn-mp-color-background-soft);
 }
 
 /* Radius presets */
@@ -576,7 +612,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 /* Focus state — border color soft outer ring so users can see
  * exactly which field owns the focus without a heavy chrome change. */
 .sn-input:focus-within {
-  border-color: var(--sn-mp-input-border-color-focus, var(--sn-mp-color-action-primary));
+  border-color: var(--sn-mp-color-input-border-focus, var(--sn-mp-color-action-primary));
 }
 
 /* Sizes */
@@ -587,6 +623,10 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 /* Status — applied after the focus border so error/warning wins. */
 .sn-input--status-error { border-color: var(--sn-mp-color-feedback-danger); }
 .sn-input--status-warning { border-color: var(--sn-mp-color-feedback-warning); }
+
+/* `error` boolean (wd-input parity) — same chrome as `status="error"`. */
+.sn-input--error { border-color: var(--sn-mp-color-feedback-danger); }
+.sn-input--error:focus-within { border-color: var(--sn-mp-color-feedback-danger); }
 
 /* States */
 .sn-input--disabled,
@@ -604,8 +644,8 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
   border-color: transparent;
 }
 .sn-input--compact:focus-within {
-  background-color: var(--sn-mp-input-bg, var(--sn-mp-color-background-surface));
-  border-color: var(--sn-mp-input-border-color, var(--sn-mp-color-border-default));
+  background-color: var(--sn-mp-color-input-bg, var(--sn-mp-color-background-surface));
+  border-color: var(--sn-mp-color-input-border, var(--sn-mp-color-border-default));
 }
 
 /* Native input/textarea fill the available row */
@@ -624,7 +664,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
   /* Distinguish placeholder from input value — deliberately lighter
    * than the regular text color so the user can tell empty from
    * filled state at a glance. */
-  color: var(--sn-mp-input-placeholder-color, var(--sn-mp-color-text-tertiary));
+  color: var(--sn-mp-color-input-placeholder, var(--sn-mp-color-text-tertiary));
   opacity: 1;
 }
 
@@ -665,7 +705,7 @@ textarea.sn-input__native {
   justify-content: center;
   width: 32rpx;
   height: 32rpx;
-  background: var(--sn-mp-color-background-elevated, rgba(0, 0, 0, 0.06));
+  background: var(--sn-mp-color-background-elevated);
   color: var(--sn-mp-color-text-secondary);
   border-radius: 50%;
   font-size: 24rpx;
@@ -685,7 +725,7 @@ textarea.sn-input__native {
   justify-content: center;
   width: 32rpx;
   height: 32rpx;
-  background: var(--sn-mp-color-background-elevated, rgba(0, 0, 0, 0.06));
+  background: var(--sn-mp-color-background-elevated);
   color: var(--sn-mp-color-text-secondary);
   border-radius: 50%;
   font-size: 24rpx;
@@ -720,7 +760,7 @@ textarea.sn-input__native {
   border-width: 5rpx;
   border-style: solid;
   border-color: #1a1a1a;
-  background-color: var(--sn-mp-color-background-elevated, #fff);
+  background-color: var(--sn-mp-color-background-elevated);
   font-weight: 600;
 }
 .snui-skin-doodle .sn-input:hover:not(.sn-input--disabled):not(.sn-input--readonly) {

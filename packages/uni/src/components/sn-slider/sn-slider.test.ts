@@ -1,0 +1,205 @@
+/**
+ * sn-slider unit tests — uni-end slider with touch dragging.
+ *
+ * Behaviour only (AGENTS.md §46): snapping, clamping, range mode knob
+ * crossing, the dragstart / dragmove / dragend trio, disabled blocking, the
+ * marks rendering and the color forwarding. No rpx numbers in assertions.
+ */
+
+import { describe, it, expect } from 'vitest'
+import { mount } from '@vue/test-utils'
+import SnSlider from './sn-slider.vue'
+
+/** Give the track a deterministic 100px-wide box so ratios are exact. */
+function withTrackBox(w: ReturnType<typeof mount>, width = 100, height = 100): void {
+  const track = w.find('.sn-slider__track')
+  const element = track.element as HTMLElement
+  element.getBoundingClientRect = () => ({
+    left: 0, top: 0, width, height, right: width, bottom: height, x: 0, y: 0,
+    toJSON: () => ({}),
+  }) as DOMRect
+}
+
+const lastValue = (w: ReturnType<typeof mount>): unknown =>
+  w.emitted('update:modelValue')?.at(-1)?.[0]
+
+describe('sn-slider', () => {
+  describe('structure', () => {
+    it('renders a track with role="slider" and aria bounds', () => {
+      const w = mount(SnSlider, { props: { modelValue: 40, min: 10, max: 90 } })
+      const track = w.find('.sn-slider__track')
+      expect(track.attributes('role')).toBe('slider')
+      expect(track.attributes('aria-valuemin')).toBe('10')
+      expect(track.attributes('aria-valuemax')).toBe('90')
+      expect(track.attributes('aria-valuenow')).toBe('40')
+    })
+
+    it('positions the knob by percentage', () => {
+      const w = mount(SnSlider, { props: { modelValue: 25, min: 0, max: 100 } })
+      expect(w.find('.sn-slider__knob').attributes('style')).toContain('left: 25%')
+    })
+
+    it('renders two knobs in range mode', () => {
+      const w = mount(SnSlider, { props: { modelValue: [20, 60], range: true } })
+      expect(w.findAll('.sn-slider__knob')).toHaveLength(2)
+      expect(w.classes()).toContain('sn-slider--range')
+    })
+
+    it('applies the theme / vertical / disabled classes', () => {
+      expect(mount(SnSlider, { props: { theme: 'capsule' } }).classes()).toContain('sn-slider--capsule')
+      expect(mount(SnSlider, { props: { vertical: true } }).classes()).toContain('sn-slider--vertical')
+      expect(mount(SnSlider, { props: { disabled: true } }).classes()).toContain('sn-slider--disabled')
+    })
+
+    it('renders the extreme captions when showExtremeValue is set', () => {
+      const w = mount(SnSlider, { props: { showExtremeValue: true, min: 5, max: 95 } })
+      const extremes = w.findAll('.sn-slider__extreme')
+      expect(extremes).toHaveLength(2)
+      expect(extremes[0]?.text()).toBe('5')
+      expect(extremes[1]?.text()).toBe('95')
+    })
+
+    it('shows the value bubble unless popoverVisible is never', () => {
+      expect(mount(SnSlider).find('.sn-slider__popover').exists()).toBe(true)
+      expect(mount(SnSlider, { props: { popoverVisible: 'never' } }).find('.sn-slider__popover').exists())
+        .toBe(false)
+    })
+
+    it('normalizes a reversed range pair', () => {
+      const w = mount(SnSlider, { props: { modelValue: [80, 20], range: true } })
+      const knobs = w.findAll('.sn-slider__knob')
+      expect(knobs[0]?.attributes('style')).toContain('left: 20%')
+      expect(knobs[1]?.attributes('style')).toContain('left: 80%')
+    })
+  })
+
+  describe('dragging', () => {
+    it('emits dragstart / dragmove / dragend with the current value', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 20 } })
+      withTrackBox(w)
+      const knob = w.find('.sn-slider__knob')
+      await knob.trigger('touchstart', { touches: [{ clientX: 20 }] })
+      await w.find('.sn-slider__track').trigger('touchmove', { touches: [{ clientX: 50 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 50 }] })
+      expect(w.emitted('dragstart')).toHaveLength(1)
+      expect(w.emitted('dragmove')).toHaveLength(1)
+      expect(w.emitted('dragend')).toHaveLength(1)
+    })
+
+    it('snaps the dragged value to the step grid', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 0, step: 10 } })
+      withTrackBox(w)
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 0 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 47 }] })
+      expect(lastValue(w)).toBe(50)
+    })
+
+    it('clamps to max', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 90, max: 100 } })
+      withTrackBox(w)
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 90 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 400 }] })
+      expect(lastValue(w)).toBe(100)
+    })
+
+    it('clamps to min', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 10, min: 10 } })
+      withTrackBox(w)
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 10 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: -400 }] })
+      expect(w.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('moves only the right knob past the left one in range mode', async () => {
+      const w = mount(SnSlider, { props: { modelValue: [20, 60], range: true } })
+      withTrackBox(w)
+      await w.findAll('.sn-slider__knob')[1]?.trigger('touchstart', { touches: [{ clientX: 60 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 5 }] })
+      expect(lastValue(w)).toEqual([20, 20])
+    })
+
+    it('moves only the left knob before the right one in range mode', async () => {
+      const w = mount(SnSlider, { props: { modelValue: [20, 60], range: true } })
+      withTrackBox(w)
+      await w.findAll('.sn-slider__knob')[0]?.trigger('touchstart', { touches: [{ clientX: 20 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 95 }] })
+      expect(lastValue(w)).toEqual([60, 60])
+    })
+
+    it('does not emit while disabled', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 20, disabled: true } })
+      withTrackBox(w)
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 20 }] })
+      await w.find('.sn-slider__track').trigger('touchmove', { touches: [{ clientX: 60 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 60 }] })
+      expect(w.emitted('update:modelValue')).toBeUndefined()
+      expect(w.emitted('dragstart')).toBeUndefined()
+    })
+
+    it('stops the drag on touchcancel', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 20 } })
+      withTrackBox(w)
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 20 }] })
+      await w.find('.sn-slider__track').trigger('touchcancel')
+      expect(w.emitted('dragend')).toHaveLength(1)
+      await w.find('.sn-slider__track').trigger('touchmove', { touches: [{ clientX: 70 }] })
+      expect(w.emitted('dragmove')).toBeUndefined()
+    })
+  })
+
+  describe('vertical mode', () => {
+    it('maps the pointer position from the bottom edge', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 0, vertical: true } })
+      withTrackBox(w, 100, 100)
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientY: 100 }] })
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientY: 25 }] })
+      expect(lastValue(w)).toBe(75)
+    })
+
+    it('exposes aria-orientation="vertical"', () => {
+      expect(mount(SnSlider, { props: { vertical: true } }).find('.sn-slider__track')
+        .attributes('aria-orientation')).toBe('vertical')
+    })
+  })
+
+  describe('marks', () => {
+    it('renders array marks', () => {
+      const w = mount(SnSlider, {
+        props: { modelValue: 30, marks: [{ value: 0, label: 'low' }, { value: 100, label: 'high' }] },
+      })
+      const marks = w.findAll('.sn-slider__mark')
+      expect(marks).toHaveLength(2)
+      expect(marks[0]?.text()).toBe('low')
+    })
+
+    it('renders record marks and marks the reached ones active', () => {
+      const w = mount(SnSlider, { props: { modelValue: 30, marks: { 0: 'a', 50: 'b' } } })
+      const marks = w.findAll('.sn-slider__mark')
+      expect(marks[0]?.classes()).toContain('sn-slider__mark--active')
+      expect(marks[1]?.classes()).not.toContain('sn-slider__mark--active')
+    })
+
+    it('adds the with-marks class and the scale ticks', () => {
+      const w = mount(SnSlider, { props: { marks: [{ value: 25 }] } })
+      expect(w.classes()).toContain('sn-slider--with-marks')
+      expect(w.findAll('.sn-slider__scale')).toHaveLength(1)
+    })
+  })
+
+  describe('colors', () => {
+    it('forwards activeColor / inactiveColor as custom properties', () => {
+      const w = mount(SnSlider, { props: { activeColor: 'rgb(1, 2, 3)', inactiveColor: 'rgb(4, 5, 6)' } })
+      const style = w.attributes('style') ?? ''
+      expect(style).toContain('--sn-slider-line-bg: rgb(1, 2, 3)')
+      expect(style).toContain('--sn-slider-bar-bg: rgb(4, 5, 6)')
+    })
+  })
+
+  describe('exposed API', () => {
+    it('initSlider re-measures the track without throwing', () => {
+      const w = mount(SnSlider)
+      const vm = w.vm as unknown as { initSlider(): void }
+      expect(() => { vm.initSlider() }).not.toThrow()
+    })
+  })
+})

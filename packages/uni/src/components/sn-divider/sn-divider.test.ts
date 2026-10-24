@@ -45,4 +45,34 @@ describe('sn-divider (AUI-MP-005)', () => {
     })
     expect(w.find('.sn-divider__text').exists()).toBe(false)
   })
+
+  /* ── wot-ui `wd-divider` 1:1 parity ──────────────────────────────────── */
+
+  it('renders the vertical variant from the vertical prop', () => {
+    const w = mount(SnDivider, { props: { vertical: true }, slots: { default: 'OR' } })
+    expect(w.classes()).toContain('sn-divider--vertical')
+    expect(w.attributes('aria-orientation')).toBe('vertical')
+    expect(w.find('.sn-divider__text').exists()).toBe(false)
+  })
+
+  it('applies the content-position class', () => {
+    const w = mount(SnDivider, { props: { contentPosition: 'left' }, slots: { default: 'OR' } })
+    expect(w.classes()).toContain('sn-divider--content-left')
+  })
+
+  it('defaults the content position to center', () => {
+    const w = mount(SnDivider, { slots: { default: 'OR' } })
+    expect(w.classes()).toContain('sn-divider--content-center')
+  })
+
+  it('forwards customClass and a string customStyle', () => {
+    const w = mount(SnDivider, { props: { customClass: 'my-divider', customStyle: 'opacity: 0.5' } })
+    expect(w.classes()).toContain('my-divider')
+    expect(w.attributes('style')).toContain('opacity')
+  })
+
+  it('merges a Record customStyle into the root style', () => {
+    const w = mount(SnDivider, { props: { customStyle: { marginTop: '8px' } } })
+    expect(w.attributes('style')).toContain('margin-top')
+  })
 })

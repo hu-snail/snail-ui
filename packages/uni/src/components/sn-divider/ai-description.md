@@ -29,6 +29,10 @@ import { SnDivider } from '@snui/uni'
 | `hairline` | `boolean` | `true` | no | Hairline (1rpx) thin border. Mobile common. |
 | `color` | `string` | — | no | Inline border color (any CSS color value). |
 | `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Vertical margin (only applied for horizontal direction). |
+| `contentPosition` | `'left' \| 'center' \| 'right'` | `'center'` | no | Content position along the line (`wd-divider` `content-position`). |
+| `vertical` | `boolean` | `false` | no | Vertical separator. Same axis as `direction: 'vertical'` (`wd-divider` `vertical`). |
+| `customClass` | `string` | `''` | no | Extra class on the root node. |
+| `customStyle` | `string \| Record<string, string>` | `''` | no | Extra inline style on the root node. |
 
 ## Slots
 

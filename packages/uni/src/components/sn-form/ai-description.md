@@ -32,10 +32,13 @@ Types and the rules-engine live in sibling modules
 | model         | `Record<string, unknown>`               | (required)  | Reactive model.                                                       |
 | rules         | `FormRules`                             | `{}`         | Per-field rules keyed by `prop`.                                      |
 | showMessage   | `boolean`                               | `true`       | Show the inline `.sn-form-item__message`.                             |
-| statusIcon    | `boolean`                               | `false`      | Status icon (Phase 1: text only).                                     |
+| statusIcon    | `boolean`                               | `false`      | Status glyph before the message; item-level `statusIcon` overrides it. |
 | labelPosition | `'left' \| 'right' \| 'top'`           | `'right'`    | Inherited by all child sn-form-items.                                |
 | labelWidth    | `number \| string`                       | `'auto'`     | Width for left/right labels.                                         |
 | disabled      | `boolean`                               | `false`      | Disables the entire form.                                            |
+| schema        | `Record<string, unknown> \| undefined`  | `undefined`  | Form-level schema (`wd-form` parity). Stored on the context; rules still come from `rules`. |
+| titleWidth    | `number \| string \| undefined`         | `undefined`  | Left title column width (`wd-form` `title-width`); folded into the inherited `labelWidth`. |
+| layout        | `'horizontal' \| 'vertical'`            | `'horizontal'` | Cell layout inherited by every child sn-form-item. |
 
 ## sn-form events
 

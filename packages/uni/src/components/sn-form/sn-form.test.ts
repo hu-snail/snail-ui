@@ -298,4 +298,109 @@ describe('sn-form', () => {
     const wrapper = mount(FormHost)
     expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--asterisk-right')
   })
+
+  /* ── wd-form `schema` / `title-width` / `layout` ─────────────────────── */
+
+  it('applies the layout class on the form root', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() { return () => h(SnForm, { model, layout: 'vertical' }) },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--layout-vertical')
+  })
+
+  it('defaults the layout to horizontal', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() { return () => h(SnForm, { model }) },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--layout-horizontal')
+  })
+
+  it('inherits title-width into the FormItem label column', () => {
+    const model = reactive({ email: '' })
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model, titleWidth: 200 }, {
+          default: () => h(SnFormItem, { prop: 'email' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(wrapper.find('.sn-form-item').attributes('style')).toContain('200rpx')
+  })
+
+  it('accepts a schema object without affecting validation', async () => {
+    const model = reactive({ email: '' })
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const FormHost = defineComponent({
+      setup() {
+        return () => h(SnForm, { model, rules, schema: { email: { required: true } } }, {
+          default: () => h(SnFormItem, { prop: 'email', label: 'Email' }),
+        })
+      },
+    })
+    const wrapper = mount(FormHost)
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false)
+  })
+})
+describe('SnForm statusIcon', () => {
+  it('should render a status glyph when the form enables status-icon', async () => {
+    const model = reactive({ email: '' })
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const FormHost = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules, statusIcon: true },
+            { default: () => h(SnFormItem, { prop: 'email', label: 'Email' }) },
+          )
+      },
+    })
+    const wrapper = mount(FormHost)
+    await wrapper.findComponent(SnForm).vm.validate()
+    await nextTick()
+    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(1)
+  })
+
+  it('should not render a status glyph by default', async () => {
+    const model = reactive({ email: '' })
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const FormHost = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules },
+            { default: () => h(SnFormItem, { prop: 'email', label: 'Email' }) },
+          )
+      },
+    })
+    const wrapper = mount(FormHost)
+    await wrapper.findComponent(SnForm).vm.validate()
+    await nextTick()
+    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(0)
+  })
+
+  it('should let an item override the form-level status-icon', async () => {
+    const model = reactive({ email: '' })
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const FormHost = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules, statusIcon: false },
+            { default: () => h(SnFormItem, { prop: 'email', label: 'Email', statusIcon: true }) },
+          )
+      },
+    })
+    const wrapper = mount(FormHost)
+    await wrapper.findComponent(SnForm).vm.validate()
+    await nextTick()
+    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(1)
+  })
 })

@@ -32,6 +32,14 @@ const props = withDefaults(
     required?: boolean
     rules?: FormRule[]
     showMessage?: boolean
+    /**
+     * Render a status glyph before the validation message.
+     *
+     * Overrides the form-level `status-icon`; when omitted the form's value is
+     * used. Declared here as well because an item may want the glyph without
+     * turning it on for the whole form.
+     */
+    statusIcon?: boolean | undefined
     labelWidth?: number | string
     labelPosition?: 'left' | 'right' | 'top'
     ariaLabel?: string
@@ -81,6 +89,7 @@ const props = withDefaults(
     border: undefined,
     center: undefined,
     ellipsis: undefined,
+    statusIcon: undefined,
     clickable: false,
     isLink: false,
     placeholder: '',
@@ -194,6 +203,31 @@ const showMsg = computed(() => {
   return flag && message.value.length > 0
 })
 
+/**
+ * Show a status glyph next to the message.
+ *
+ * `statusIcon` used to be a prop that reached the context but was then
+ * hard-coded to `false`, so passing it had no effect at all. It now flows
+ * through: the item-level prop wins over the form-level default.
+ *
+ * The glyph is a plain character rather than an icon component: the form must
+ * stay usable without an icon pack loaded, and a text marker needs no font.
+ */
+const showStatusIcon = computed<boolean>(() => {
+  const flag = props.statusIcon ?? ctx?.statusIcon ?? false
+  return flag && message.value.length > 0
+})
+
+/** Glyph for the current validation state. */
+/** Glyph for the current validation state. */
+const statusGlyph = computed<string>(() => {
+  // `status` is three-state here (no `success` state is produced by the
+  // validator), so the glyph only needs to distinguish error from warning.
+  if (status.value === 'error') return '!'
+  if (status.value === 'warning') return '!'
+  return ''
+})
+
 /** Resolved icon data (uni). */
 const resolvedIconData = computed<IconData | null>(() => {
   const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null)
@@ -290,6 +324,16 @@ function deepClone<T>(value: T): T {
         :data-status="status"
         :aria-live="status === 'error' ? 'assertive' : 'polite'"
       >
+        <!--
+          Status glyph. `status-icon` used to be accepted and silently dropped;
+          it now actually renders. Kept as text so no icon pack is required.
+        -->
+        <text
+          v-if="showStatusIcon && statusGlyph !== ''"
+          class="sn-form-item__status-icon"
+          :data-status="status"
+          aria-hidden="true"
+        >{{ statusGlyph }}</text>
         <slot name="error">{{ message }}</slot>
       </view>
       <text v-if="isLink" class="sn-form-item__arrow">›</text>
@@ -338,7 +382,7 @@ function deepClone<T>(value: T): T {
 
 /* Border between this item and the next. */
 .sn-form-item--border {
-  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle, rgba(0, 0, 0, 0.06));
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
   padding-bottom: 24rpx;
   margin-bottom: 24rpx;
 }
@@ -354,7 +398,7 @@ function deepClone<T>(value: T): T {
   cursor: pointer;
 }
 .sn-form-item--clickable:active {
-  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+  background-color: var(--sn-mp-color-background-soft);
 }
 
 /* Inline label icon — sized via SnIcon's own rpx box. */
@@ -408,6 +452,33 @@ function deepClone<T>(value: T): T {
   font-size: 24rpx;
   line-height: 1.4;
   flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+/* Status glyph — sits before the message text, tinted by validation state. */
+.sn-form-item__status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  font-size: 20rpx;
+  line-height: 1;
+  flex: 0 0 auto;
+  color: var(--sn-mp-color-text-on-primary);
+  background: var(--sn-mp-color-text-tertiary);
+}
+.sn-form-item__status-icon[data-status="error"] {
+  background: var(--sn-mp-color-feedback-danger);
+}
+.sn-form-item__status-icon[data-status="warning"] {
+  background: var(--sn-mp-color-feedback-warning);
+}
+.sn-form-item__status-icon[data-status="success"] {
+  background: var(--sn-mp-color-feedback-success);
 }
 .sn-form-item__message[data-status="error"] {
   color: var(--sn-mp-color-feedback-danger);

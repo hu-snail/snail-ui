@@ -89,6 +89,50 @@ const props = withDefaults(
     iconName?: string
     /** rpx / pixel size forwarded to the embedded sn-icon. Default 32. */
     iconSize?: number | string
+    /**
+     * Iconfont glyph name — wot-ui's `icon` prop (`wd-button icon="check"`).
+     *
+     * Distinct from `iconName` (SVG registry lookup): this resolves through the
+     * iconfont class convention, which is what wot-ui's docs teach.
+     */
+    icon?: string
+    /** Class-name prefix for the iconfont glyph. Mirrors wot-ui `class-prefix`. */
+    classPrefix?: string
+    /** CSS icon class (or `true` to also apply the raw name). Mirrors `css-icon`. */
+    cssIcon?: boolean | string
+    /**
+     * Loading indicator config — mirrors wot-ui `loading-props`.
+     *
+     * Accepts the shape `wd-loading` takes (`{ color, size, text, ... }`); the
+     * fields this component understands are applied to the spinner, the rest
+     * are ignored so a config written for wot-ui still type-checks.
+     */
+    loadingProps?: {
+      color?: string
+      size?: number | string
+      text?: string
+      [key: string]: unknown
+    } | undefined
+    /** Prevent the press state from bubbling to ancestors (uni-app MP). */
+    hoverStopPropagation?: boolean
+    /** `open-type=contact` session language: `zh_CN` / `zh_TW` / `en`. */
+    lang?: 'zh_CN' | 'zh_TW' | 'en' | ''
+    /** `open-type=contact` session source. */
+    sessionFrom?: string
+    /** `open-type=contact` message card title. */
+    sendMessageTitle?: string
+    /** `open-type=contact` message card path. */
+    sendMessagePath?: string
+    /** `open-type=contact` message card image. */
+    sendMessageImg?: string
+    /** `open-type=launchApp` launch parameters. */
+    appParameter?: string
+    /** `open-type=contact` — show the session message card. */
+    showMessageCard?: boolean
+    /** Unique button identifier. */
+    buttonId?: string
+    /** Alipay authorization scope (`open-type=getAuthorize`). */
+    scope?: 'phoneNumber' | 'userInfo' | ''
   }>(),
   {
     type: 'default',
@@ -113,6 +157,20 @@ const props = withDefaults(
     bgColor: '',
     color: '',
     iconSize: 32,
+    icon: '',
+    classPrefix: 'sn-icon',
+    cssIcon: false,
+    loadingProps: undefined,
+    hoverStopPropagation: false,
+    lang: '',
+    sessionFrom: '',
+    sendMessageTitle: '',
+    sendMessagePath: '',
+    sendMessageImg: '',
+    appParameter: '',
+    showMessageCard: false,
+    buttonId: '',
+    scope: '',
   },
 )
 
@@ -126,6 +184,26 @@ const resolvedIconData = computed<IconData | null>(() => {
   return icon ? markRaw(icon) : null
 })
 
+/**
+ * Loading spinner appearance.
+ *
+ * wot-ui exposes both the flat props (`loading-color` / `loading-size`) and a
+ * `loading-props` object. The flat props win when set, so existing call sites
+ * keep working; `loading-props` is the fallback for configs written against
+ * wd-button.
+ */
+const spinnerColor = computed<string>(() => {
+  if (props.loadingColor !== '') return props.loadingColor
+  const fromProps = props.loadingProps?.color
+  return typeof fromProps === 'string' ? fromProps : ''
+})
+
+const spinnerSize = computed<number | string>(() => {
+  if (props.loadingSize !== 32) return props.loadingSize
+  const fromProps = props.loadingProps?.size
+  if (typeof fromProps === 'number' || typeof fromProps === 'string') return fromProps
+  return props.loadingSize
+})
 const emit = defineEmits<{
   (e: 'click', event: Event): void
 }>()
@@ -186,20 +264,48 @@ function onTap(event: Event): void {
     :hover-class="hoverClass"
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
+    :hover-stop-propagation="hoverStopPropagation || undefined"
     :form-type="formType || undefined"
     :open-type="openType"
+    :lang="lang || undefined"
+    :session-from="sessionFrom || undefined"
+    :send-message-title="sendMessageTitle || undefined"
+    :send-message-path="sendMessagePath || undefined"
+    :send-message-img="sendMessageImg || undefined"
+    :app-parameter="appParameter || undefined"
+    :show-message-card="showMessageCard || undefined"
+    :button-id="buttonId || undefined"
+    :scope="scope || undefined"
     @tap="onTap"
   >
     <slot name="icon">
-      <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="iconSize ?? 32" />
+      <!--
+        Icon precedence: SVG data (`iconData` / registry `iconName`) first,
+        then the wot-ui iconfont API (`icon` + `class-prefix` + `css-icon`).
+      -->
+      <SnIcon
+        v-if="resolvedIconData"
+        :icon="resolvedIconData"
+        :size="iconSize ?? 32"
+      />
+      <SnIcon
+        v-else-if="icon"
+        :name="icon"
+        :class-prefix="classPrefix"
+        :css-icon="cssIcon"
+        :size="iconSize ?? 32"
+      />
       <view
         v-else-if="loading"
         class="sn-button__spinner"
-        :style="loadingColor ? `color: ${loadingColor}` : undefined"
+        :style="spinnerColor ? `color: ${spinnerColor}` : undefined"
         aria-hidden="true"
       >
         <slot name="loading">
-          <view class="sn-button__spinner-dot" :style="`width: ${loadingSize}rpx; height: ${loadingSize}rpx`" />
+          <view
+            class="sn-button__spinner-dot"
+            :style="`width: ${spinnerSize}rpx; height: ${spinnerSize}rpx`"
+          />
         </slot>
       </view>
     </slot>
@@ -311,12 +417,12 @@ function onTap(event: Event): void {
 
 /* Variant: soft — tinted background. */
 .sn-button--variant-soft.sn-button--primary {
-  background-color: var(--sn-mp-color-action-primary-soft, rgba(30, 128, 255, 0.16));
+  background-color: var(--sn-mp-color-action-primary-soft);
   color: var(--sn-mp-color-action-primary);
   border-color: transparent;
 }
 .sn-button--variant-soft.sn-button--danger {
-  background-color: var(--sn-mp-color-feedback-danger-soft, rgba(255, 77, 79, 0.16));
+  background-color: var(--sn-mp-color-feedback-danger-soft);
   color: var(--sn-mp-color-feedback-danger);
   border-color: transparent;
 }
@@ -334,17 +440,17 @@ function onTap(event: Event): void {
 
 /* Variant: subtle — light gray background, primary text. */
 .sn-button--variant-subtle {
-  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+  background-color: var(--sn-mp-color-background-soft);
   color: var(--sn-mp-color-text-primary);
   border-color: transparent;
 }
 
 /* Cell hover — used inside Cell menu lists. */
 .sn-button--cell-hover:active:not(.sn-button--disabled):not(.sn-button--loading) {
-  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+  background-color: var(--sn-mp-color-background-soft);
 }
 .sn-button--cell-fill {
-  background-color: var(--sn-mp-color-background-soft, rgba(0, 0, 0, 0.04));
+  background-color: var(--sn-mp-color-background-soft);
 }
 .sn-button--cell-menu {
   background-color: transparent;

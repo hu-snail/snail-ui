@@ -43,6 +43,15 @@ export interface FormContext {
   ellipsis: boolean
   border: boolean
   center: boolean
+
+  /* ── wd-form `schema` / `title-width` / `layout` ─────────────────────── */
+
+  /** Form-level schema (parity; not interpreted by this build). */
+  schema: Record<string, unknown> | undefined
+  /** Raw `title-width` as declared on the form. */
+  titleWidth: number | string | undefined
+  /** Cell layout inherited by every descendant FormItem. */
+  layout: 'horizontal' | 'vertical'
 }
 
 export interface FormItemHandle {
