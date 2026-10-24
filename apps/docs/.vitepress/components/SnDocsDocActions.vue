@@ -67,12 +67,22 @@ const label = computed<string>(() => {
 
 const icon = computed(() => (state.value === 'copied' ? Check : Copy))
 
+/**
+ * Read the page's markdown back out of its hidden carrier element.
+ *
+ * The payload is base64 (see `utils/raw-doc-source.ts` for why escaping alone
+ * is not enough: Vue's template tokenizer re-parses attribute values, so any
+ * `<` in the markdown collides with the page's own attribute names). Decoding
+ * is the exact inverse — base64 → UTF-8 bytes → string.
+ */
 function readSource(): string {
   const el = document.querySelector<HTMLElement>(SOURCE_SELECTOR)
   const payload = el ? el.getAttribute(RAW_DOC_SOURCE_ATTR) : null
   if (!payload) return ''
   try {
-    return JSON.parse(payload) as string
+    const binary = atob(payload)
+    const bytes = Uint8Array.from(binary, (ch) => ch.charCodeAt(0))
+    return new TextDecoder().decode(bytes)
   } catch {
     return ''
   }

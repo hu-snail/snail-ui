@@ -972,3 +972,60 @@ html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/template
 html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/templates/ai/model-config']) {
   display: none;
 }
+
+/* =====================================================================
+   15. Preview dock — article keeps code, device stays on the right
+   ----------------------------------------------------------------------
+ * On uni component pages `Demo.vue` teleports each demo's live preview into
+ * `DemoDock` (fixed, 400px, top-right). The article therefore only carries the
+ * heading, the note and the code block — which is the part a reader copies.
+ *
+ * The article must yield the dock's width or the fixed panel would cover the
+ * prose. The outline is already hidden on these pages (the dock replaces it),
+ * so the article reclaims that column and then reserves the dock gutter.
+ *
+ * Below 1200px the dock is not mounted at all (see DemoDock.vue), so these
+ * rules only apply where the panel actually exists.
+ * ===================================================================== */
+
+@media (min-width: 1200px) {
+  /* Doc area: reserve the dock column on the right. */
+  html:has(.sn-dock) .VPContent.has-sidebar {
+    padding-right: 448px !important;
+  }
+
+  /* The right-hand outline would sit under the dock; the dock's section tabs
+   * already provide page-level navigation for these pages. */
+  html:has(.sn-dock) .VPDoc .aside {
+    display: none !important;
+  }
+
+  html:has(.sn-dock) .VPDoc.has-aside .content-container {
+    max-width: 100% !important;
+  }
+}
+
+/* A demo whose preview lives in the dock collapses to its code block: the
+ * article must not leave an empty preview card behind. */
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__stage--docked,
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__stage:empty {
+  display: none;
+}
+
+/* The "shown in the panel" affordance for the non-docked fallback path. */
+.sn-demo__docked-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px dashed var(--vp-c-divider);
+  border-radius: 6px;
+  color: var(--vp-c-text-3);
+  font-size: 12px;
+}
+
+/* In the dock the device frame is the panel's content: no outer margin. */
+.sn-dock__host .sn-phone {
+  margin: 0;
+  padding: 0;
+}

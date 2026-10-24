@@ -59,6 +59,20 @@ import type { Plugin } from 'vite'
  * Comments like `1px = 2rpx` will have the `2rpx` portion collapsed to
  * `1px`, which is harmless (the comment is purely descriptive).
  */
+
+/**
+ * Collapse every `<number>rpx` token to its `px` equivalent (0.5 ratio).
+ *
+ * Exported so the same rule is testable on its own and so the `transform` /
+ * `generateBundle` hooks share one implementation — the two paths must never
+ * disagree about the ratio.
+ */
+export function convertRpx(code: string): string {
+  return code.replace(
+    /(-?\d+(?:\.\d+)?)rpx\b/g,
+    (_match, raw: string) => `${parseFloat(raw) * 0.5}px`,
+  )
+}
 export function rpxTransform(): Plugin {
   // Absolute path of the uni package source (matches @snui/uni-src alias
   // resolution). Used as a stable filter anchor in addition to the
@@ -74,6 +88,14 @@ export function rpxTransform(): Plugin {
   const templatesSrcAbsPath = fileURLToPath(
     new URL('../../../../packages/templates/src/uni', import.meta.url),
   )
+  // The demo files themselves are part of the uni-end preview surface: their
+  // scoped `<style>` blocks are written in rpx (mobile rhythm — a 16rpx gap
+  // is the uni-app equivalent of 8px). Without this anchor the demo wrapper
+  // CSS keeps its `rpx` units, the browser drops every geometric declaration,
+  // and a demo that is supposed to be a flex column renders as a run-on line
+  // even though the components inside it are styled correctly.
+  const demoAbsPath = fileURLToPath(new URL('../../demo', import.meta.url))
+  const demoEnAbsPath = fileURLToPath(new URL('../../demo-en', import.meta.url))
   return {
     name: 'snui-rpx-to-px',
     enforce: 'post',
@@ -85,23 +107,50 @@ export function rpxTransform(): Plugin {
       //   - Direct file fetch of `packages/uni/dist/...` — vite dev
       //     serves the dist barrel via `/@fs/<abs-path>` and the plugin
       //     sees the bare absolute path
-      //
       // The trailing slash on the source / dist paths is required so
       // packages/unii/... or similar names don't accidentally match.
+      //
+      // The two demo anchors are directory prefixes, so the trailing slash is
+      // what keeps `demo-en/` from also matching the `demo/` anchor.
       if (
         !id.includes('@snui/uni') &&
         !id.includes(`${uniSrcAbsPath}/`) &&
         !id.includes(`${templatesSrcAbsPath}/`) &&
-        !id.includes('/packages/uni/dist/')
+        !id.includes('/packages/uni/dist/') &&
+        !id.includes(`${demoAbsPath}/`) &&
+        !id.includes(`${demoEnAbsPath}/`)
       ) {
         return
       }
-      const transformed = code.replace(
-        /(-?\d+(?:\.\d+)?)rpx\b/g,
-        (_match, raw: string) => `${parseFloat(raw) * 0.5}px`,
-      )
+      const transformed = convertRpx(code)
       if (transformed === code) return
       return { code: transformed, map: null }
+    },
+    /**
+     * Production CSS pass.
+     *
+     * `transform` alone is not enough for a build: vite routes every extracted
+     * stylesheet through its own CSS pipeline (postcss → minify) and the
+     * scoped-SFC style modules never reach this plugin's `transform` hook in
+     * that path. The result was a `vitepress build` whose CSS still carried
+     * ~670 `rpx` tokens — the browser drops every one of them, so the
+     * *published* site rendered uni components with no padding / radius /
+     * height while `vitepress dev` looked correct.
+     *
+     * `generateBundle` runs after all CSS has been concatenated into the final
+     * asset, which is the last point where the conversion can still happen.
+     * Only `.css` assets are touched; JS chunks are left alone.
+     */
+    generateBundle(_options, bundle) {
+      for (const file of Object.values(bundle)) {
+        if (file.type !== 'asset') continue
+        if (!file.fileName.endsWith('.css')) continue
+        const source = typeof file.source === 'string'
+          ? file.source
+          : Buffer.from(file.source).toString('utf8')
+        const converted = convertRpx(source)
+        if (converted !== source) file.source = converted
+      }
     },
   }
 }

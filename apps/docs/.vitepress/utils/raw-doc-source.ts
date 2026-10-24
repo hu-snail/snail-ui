@@ -47,12 +47,33 @@ interface MarkdownRenderer {
   }
 }
 
-function escapeAttribute(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
+/**
+ * Encode the page source for a `data-*` attribute.
+ *
+ * ## Why base64 and not HTML escaping
+ *
+ * The emitted attribute is part of the compiled Vue template, and Vue's
+ * template compiler runs its own HTML tokenizer over attribute *values* — it
+ * does not treat `&lt;` / `&#60;` as "this is not markup". A markdown body
+ * contains real tags (`<Demo name="…" description="…">`, `<sn-config-provider
+ * theme="dark">`, …), so every one of those attribute names was parsed a
+ * second time and collided with the page's own attributes:
+ *
+ *   components/uni/fab.md (86:30): Duplicate attribute.
+ *
+ * Escaping cannot fix that — the tokenizer decodes entities first, then parses.
+ * Base64 removes the possibility entirely: the value has no `<`, `>`, `"` or
+ * `&`, so the tokenizer sees one opaque token. The reader-facing behaviour is
+ * unchanged (`SnDocsDocActions` decodes it back to the exact markdown).
+ *
+ * `btoa` cannot take arbitrary Unicode, so the string is UTF-8 encoded first.
+ */
+function encodeSource(value: string): string {
+  const bytes = new TextEncoder().encode(value)
+  let binary = ''
+  for (const byte of bytes) binary += String.fromCharCode(byte)
+  // eslint-disable-next-line no-undef
+  return btoa(binary)
 }
 
 export function rawDocSource(md: MarkdownRenderer): void {
@@ -62,7 +83,7 @@ export function rawDocSource(md: MarkdownRenderer): void {
 
     const token = new state.Token('html_block', '', 0)
     token.content =
-      `<div hidden ${RAW_DOC_SOURCE_ATTR}="${escapeAttribute(JSON.stringify(source))}"></div>`
+      `<div hidden ${RAW_DOC_SOURCE_ATTR}="${encodeSource(source)}"></div>`
     state.tokens.push(token)
   })
 }

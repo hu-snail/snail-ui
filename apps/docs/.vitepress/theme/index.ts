@@ -30,7 +30,7 @@ import Layout from './Layout.vue';
  * @snui/tokens + @snui/style-packs are statically imported by StyleSwitcher +
  * ThemeCopier + DemoLabFab, so vite auto-discovers them for optimizeDeps.
  */
-
+import { installUniPreviewShims } from '../utils/uni-preview-shims'
 export default {
   extends: DefaultTheme,
   Layout,
@@ -40,5 +40,8 @@ export default {
     app.component('Demo', Demo)
     app.component('DemoLabFab', DemoLabFab)
     app.component('DialogStage', DialogStage)
+    // Teach the preview to emit uni-app's `tap` gesture and apply
+    // `hover-class`; without it every uni demo is inert (see the shim docs).
+    installUniPreviewShims()
   },
 }

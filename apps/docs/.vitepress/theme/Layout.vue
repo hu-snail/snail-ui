@@ -23,10 +23,12 @@
  * `/components/**`, gated inside the FAB itself).
  */
 
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import DefaultTheme from 'vitepress/theme'
 import { useRoute } from 'vitepress'
 import DemoLabFab from '../components/DemoLabFab.vue'
+import DemoDock from '../components/DemoDock.vue'
+import { resetDock } from '../utils/demo-dock'
 import SnDocsNav from '../components/SnDocsNav.vue'
 import SnDocsFooter from '../components/SnDocsFooter.vue'
 import SnDocsHome from '../components/SnDocsHome.vue'
@@ -55,6 +57,23 @@ const navItems = computed(() => (isEn.value ? enNav : nav))
 const { lang } = useData()
 const siteLocale = computed<SnLocaleInput | undefined>(() =>
   lang.value === 'en-US' ? enUS : undefined,
+)
+
+/**
+ * The demo registry is per-page state, so a route change must clear it.
+ *
+ * Without this, navigating from `tag` to `badge` would leave the previous
+ * page's section tabs in the dock (and a stale `active` name pointing at a
+ * demo that no longer exists). `flush: 'post'` runs the reset after the old
+ * page's demos have unmounted, so the new page starts from an empty registry
+ * rather than racing its own registrations.
+ */
+watch(
+  () => route.path,
+  () => {
+    resetDock()
+  },
+  { flush: 'post' },
 )
 </script>
 
@@ -111,10 +130,19 @@ const siteLocale = computed<SnLocaleInput | undefined>(() =>
       <SnDocsDocActions />
     </template>
 
-    <!-- doc-after still hosts the FAB (existing Phase-2 contract). -->
+    <!--
+      doc-after hosts two page-level widgets:
+        - DemoLabFab: the style / theme / preview FAB (AUI-DOCS-018)
+        - DemoDock:   the fixed device preview panel on uni component pages
+
+      DemoDock renders itself through a Teleport to the document body because
+      it is position:fixed; placing it here only decides *when* it mounts, not
+      where it paints.
+    -->
     <template #doc-after>
       <ClientOnly>
         <DemoLabFab v-if="showFab" />
+        <DemoDock />
       </ClientOnly>
     </template>
   </DefaultTheme.Layout>

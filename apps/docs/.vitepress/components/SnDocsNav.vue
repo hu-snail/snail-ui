@@ -19,7 +19,7 @@
  */
 
 import { computed } from 'vue'
-import { useData, useRoute } from 'vitepress'
+import { useData, useRoute, useRouter } from 'vitepress'
 import { Moon, Search, Snail, Sun } from 'lucide-vue-next'
 import { SnButton, SnConfigProvider, SnIcon, SnMenu } from '@snui/vue-web'
 import type { SnMenuOption } from '@snui/vue-web'
@@ -39,6 +39,7 @@ const props = withDefaults(
 )
 
 const route = useRoute()
+const router = useRouter()
 const { isDark } = useData()
 
 /** Sidebar state — the navbar hosts the expand control while collapsed. */
@@ -93,6 +94,33 @@ const localeSwitchHref = computed<string>(() => {
 /** Show the *target* locale — the usual switcher convention. */
 const localeSwitchLabel = computed<string>(() => (isEn.value ? '中文' : 'EN'))
 const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' : 'Switch to English'))
+
+/**
+ * Switch locale through VitePress's client router instead of letting the
+ * browser follow the `href`.
+ *
+ * The anchor alone is not enough: VitePress intercepts same-origin `<a>`
+ * clicks with a delegated window listener installed by `createRouter()`, i.e.
+ * only once the app bundle has run and the page has hydrated. Until then a
+ * click falls through to the browser's native navigation and reloads the whole
+ * document — which is exactly what the locale switch must not do.
+ *
+ * `router.go()` performs the SPA transition (history.pushState + component
+ * swap + scroll handling) regardless of hydration timing, so calling it here
+ * and preventing the default keeps the switch a pure client-side route change.
+ *
+ * Modified clicks (⌘/Ctrl/Shift/Alt, non-primary button) are deliberately left
+ * to the browser so "open in new tab" keeps working.
+ */
+function onLocaleClick(event: MouseEvent): void {
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return
+  // VitePress's delegated listener (capture phase on `window`) runs first once
+  // the app has hydrated and already called `preventDefault()` + `router.go()`.
+  // Skip in that case to avoid a second, redundant page-module fetch.
+  if (event.defaultPrevented) return
+  event.preventDefault()
+  void router.go(localeSwitchHref.value)
+}
 </script>
 
 <template>
@@ -124,6 +152,7 @@ const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' 
           size="small"
           :href="localeSwitchHref"
           :aria-label="localeSwitchAria"
+          @click="onLocaleClick"
         >
           {{ localeSwitchLabel }}
         </SnButton>
