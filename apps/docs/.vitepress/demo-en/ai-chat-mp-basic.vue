@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /**
- * Demo: AI 对话页（uni-app）— 消息与思考输出。
+ * Demo: AI chat page (uni-app) — messages and reasoning output.
  *
- * uni 端模板与 web 端共用同一份消息契约，这里以静态转录展示思考折叠、
- * 流式光标、错误卡片与停止提示在移动端的排版。
+ * The uni template shares the message contract with the web end; this static
+ * transcript shows reasoning collapse, streaming cursor, error card and stop hint on mobile.
  */
 import SnAiChat from '@snui/templates-src/uni/sn-ai-chat.vue'
 import type { SnAiMessage } from '@snui/templates-src/shared/types'

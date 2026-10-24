@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * Demo: 消息模块（uni-app）— 单条消息的移动端排版。
+ * Demo: message module (uni-app) — mobile layout of a single message.
  *
- * 展示思考折叠、工具行、附件行、流式光标与错误重试在 uni 端的渲染。
+ * Renders reasoning collapse, tool row, attachment row, streaming cursor and error retry on uni.
  */
 import SnAiMessage from '@snui/templates-src/uni/sn-ai-message.vue'
 import type { SnAiMessage as SnAiMessageData } from '@snui/templates-src/shared/types'

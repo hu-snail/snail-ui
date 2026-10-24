@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: sn-button — cell 'hover' | 'fill' | 'menu' (Cell 列表化样式). */
+/** Demo: sn-button — cell 'hover' | 'fill' | 'menu' (cell-list styling). */
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue'
 </script>
 
