@@ -39,8 +39,6 @@
 
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useData, useRoute } from 'vitepress'
-import { Maximize2, Minimize2, X } from 'lucide-vue-next'
-import { SnIcon } from '@snui/vue-web'
 import PhoneFrame from './PhoneFrame.vue'
 import { dockState, setDockOpen, type DockEntry } from '../utils/demo-dock'
 import { loadDemoComponent } from '../utils/demo-loader'
@@ -85,48 +83,31 @@ function demoFor(name: string): ReturnType<typeof loadDemoComponent> {
 /**
  * Navigation title for the device chrome — the page's own `<h1>`, which is
  * what a mini program's navigation bar shows.
+ *
+ * Reactive per route: taken from VitePress page data (the frontmatter title)
+ * instead of scraping the DOM once at mount, so switching between component
+ * pages updates the bar. DOM scraping remains as a fallback because the
+ * fallback 404 / bare pages have no frontmatter title.
  */
-const pageTitle = ref('')
+const { page } = useData()
 
-const expanded = ref(false)
+const pageTitle = computed<string>(() => {
+  const fromData = page.value.title?.trim() ?? ''
+  if (fromData !== '') return fromData
+  const h1 = document.querySelector('.vp-doc h1')
+  return h1?.textContent?.replace(/[#\u200b]/g, '').trim() ?? ''
+})
 
 const t = computed(() =>
   isEn.value
     ? {
-        title: 'Preview',
         empty: 'No preview on this page',
-        close: 'Hide preview',
-        expand: 'Expand preview',
-        collapse: 'Collapse preview',
       }
     : {
-        title: '预览',
         empty: '本页暂无预览',
-        close: '收起预览',
-        expand: '放大预览',
-        collapse: '缩小预览',
       },
 )
 
-function close(): void {
-  setDockOpen(false)
-}
-
-function toggleExpand(): void {
-  expanded.value = !expanded.value
-}
-
-/**
- * Read the page title once the article has rendered.
- *
- * The dock is mounted through `doc-after`, so `<h1>` already exists by the
- * time `onMounted` runs. Reading it here (instead of taking a prop) keeps the
- * dock decoupled from the markdown page, which cannot pass props.
- */
-function readPageTitle(): string {
-  const h1 = document.querySelector('.vp-doc h1')
-  return h1?.textContent?.trim() ?? ''
-}
 
 /**
  * Track the viewport width so the dock only claims layout space when there is
@@ -150,7 +131,6 @@ onMounted(() => {
   // claim the active slot; `Demo.vue` also seeds this synchronously on uni
   // routes to survive the opposite mount order.
   if (isDockRoute.value) setDockOpen(true)
-  pageTitle.value = readPageTitle()
 })
 
 onBeforeUnmount(() => {
@@ -169,7 +149,6 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
     <aside
       v-if="visible"
       class="sn-dock"
-      :class="[expanded ? 'sn-dock--expanded' : '']"
       aria-label="Component preview"
     >
       <!--
@@ -187,7 +166,6 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
       <div class="sn-dock__body">
         <PhoneFrame
           v-if="entries.length > 0"
-          ref="phoneRef"
           :title="pageTitle"
         >
           <section
@@ -207,34 +185,6 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
         <p v-else class="sn-dock__empty">{{ t.empty }}</p>
       </div>
 
-      <!--
-        Floating controls.
-
-        The panel *is* the phone, so it carries no title bar: a band of chrome
-        above the screen would compete with the component being documented.
-        Expand / close stay reachable but only fade in on hover, which keeps
-        the resting state a clean device surface.
-      -->
-      <div class="sn-dock__actions">
-        <button
-          type="button"
-          class="sn-dock__action"
-          :title="expanded ? t.collapse : t.expand"
-          :aria-label="expanded ? t.collapse : t.expand"
-          @click="toggleExpand"
-        >
-          <SnIcon :icon="expanded ? Minimize2 : Maximize2" :size="15" />
-        </button>
-        <button
-          type="button"
-          class="sn-dock__action"
-          :title="t.close"
-          :aria-label="t.close"
-          @click="close"
-        >
-          <SnIcon :icon="X" :size="15" />
-        </button>
-      </div>
     </aside>
   </Teleport>
 </template>
@@ -274,52 +224,6 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
 
 .dark .sn-dock {
   box-shadow: 0 18px 48px -18px rgba(0, 0, 0, 0.7);
-}
-
-.sn-dock--expanded {
-  width: min(520px, calc(100vw - 48px));
-}
-
-/*
- * Floating controls.
- *
- * Reachable but not in the way: they sit over the status-bar area and only
- * become visible on hover (or when focused via keyboard). The resting state is
- * an untouched device surface.
- */
-.sn-dock__actions {
-  position: absolute;
-  top: 44px;
-  right: 12px;
-  z-index: 5;
-  display: inline-flex;
-  gap: 2px;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.sn-dock:hover .sn-dock__actions,
-.sn-dock__actions:focus-within {
-  opacity: 1;
-}
-
-.sn-dock__action {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border: 0;
-  border-radius: 6px;
-  background: var(--vp-c-bg-soft);
-  color: var(--vp-c-text-2);
-  cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
-}
-
-.sn-dock__action:hover {
-  background: var(--vp-c-default-soft);
-  color: var(--vp-c-text-1);
 }
 
 /*
