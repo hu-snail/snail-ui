@@ -3288,6 +3288,54 @@ grep -n "attrType=\|attr-type=\|tag=\|focusable=\|showIcon=\|icon-placement=\|se
 
 跨端**通用**部分（type / size / disabled / placeholder / clearable 等基础受控 props）必须 1:1 对齐；任一端漏补都需要补齐，缺口是设计 bug，不是可选优化。
 
+## 112.4 机器可读规格（`.ai/reference/`）
+
+§112 的 1:1 对齐要求过去只能靠逐个打开上游文档页人工比对，无法在 review 中
+diff。现在 wot-ui 的完整 API 面已抓取入库：
+
+```text
+.ai/reference/wot-ui-api-spec.json   wot-ui v2.3.2，82 个组件 / 1480 个 prop
+.ai/reference/README.md              结构说明 + 使用规则
+```
+
+新增 `sn-*` 组件时的强制顺序：
+
+```text
+读 .ai/reference/wot-ui-api-spec.json 对应条目
+ ↓
+按 name / type / default 声明 props
+ ↓
+写测试（每个非平凡 prop 至少一条断言）
+ ↓
+更新 ai-description.md + 双语文档
+```
+
+**禁止凭记忆写 prop**。规格里没有的 prop 不得出现在 uni 端（web-only prop
+同样禁止，见 §112.1）。确实需要新增 AUI 专属能力时，必须在组件头注释里标注
+"additive"，并同步登记到本规则。
+
+## 112.5 uni 端暗色模式契约
+
+uni-app 运行在无 `document` / 无 `:root` 的小程序与原生 App 上，web 的
+`.dark` on `<html>` 方案不可用。uni 端暗色的唯一契约：
+
+```text
+--sn-mp-color-* 别名  +  .sn-theme-dark class（或 page.sn-theme-dark）
+```
+
+强制约束：
+
+1. 组件颜色 **只能** 通过 `var(--sn-mp-color-*)` 取得，禁止颜色字面量
+2. **禁止** `var(--sn-mp-x, #fff)` 这类浅色兜底 —— 兜底会让暗色下漏出浅色
+3. 新增 `--sn-mp-color-*` 必须在 `packages/tokens-mp/styles/index.css` 的
+   `page.sn-theme-dark, .sn-theme-dark` 块里同步覆盖
+   （`packages/tokens-mp/src/variables.test.ts` 有回归测试守着）
+4. 组件文档页必须有「暗色模式」小节，说明可用
+   `<sn-config-provider theme="dark">` 包裹验证
+
+`sn-config-provider` 的 `theme` / `themeVars` 对应 `wd-config-provider` 同名
+prop；`skin`（Style Pack）是 AUI 追加能力，不替代 `theme`。
+
 ---
 
 # 113. UI 图标禁止用 emoji，必须走 SnIcon / SnIcon 组件
