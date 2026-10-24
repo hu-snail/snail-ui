@@ -38,6 +38,12 @@
 
 <Demo name="form-mp-validation-flow" description="validateTrigger: 'blur' | 'change'；resetOnChange 提交后自动清错误；errorType: 'message' | 'toast' | 'none'。" />
 
+## 表单级 schema、标题宽度、布局与消息开关（`schema` / `titleWidth` / `layout` / `center` / `showMessage`）
+
+`title-width` 与 `label-width` 共用继承链（title-width 优先）；`layout` 取 `horizontal` / `vertical` 决定 label 与控件的排布；`center` 让控件列在单元格内垂直居中；`schema` 是表单级校验描述（本构建只存进上下文，实际校验仍走 `rules`）；`show-message=false` 时校验照跑但不渲染消息行。
+
+<Demo name="form-mp-schema-layout" description="titleWidth 与 labelWidth 共用继承链；layout horizontal / vertical 决定 label 排布；center 垂直居中；schema 作为表单级校验描述存进上下文；showMessage=false 只关掉消息行。" />
+
 ## SnForm Props
 
 | Prop | Type | Default | Description |
@@ -45,7 +51,7 @@
 | `model` | `Record<string, unknown>` | (required) | 响应式 model。 |
 | `rules` | `FormRules` | `{}` | 校验规则集。 |
 | `showMessage` | `boolean` | `true` | 显示错误信息。 |
-| `statusIcon` | `boolean` | `false` | 状态图标。 |
+| `statusIcon` | `boolean` | `false` | 校验消息前显示状态图标（`!` / `✓`），表单项可单独覆盖。 |
 | `labelPosition` | `'left' \| 'right' \| 'top'` | `'right'` | label 位置。 |
 | `labelWidth` | `number \| string` | `'auto'` | label 列宽。 |
 | `disabled` | `boolean` | `false` | 整体禁用。 |
@@ -59,6 +65,9 @@
 | `asteriskPosition` | `'left' \| 'right'` | `'left'` | `*` 位置。 |
 | `hideAsterisk` | `boolean` | `false` | 隐藏 required 标记。 |
 | `ellipsis` | `boolean` | `false` | 长 label 截断。 |
+| `schema` | `Record<string, unknown> \| undefined` | `undefined` | 表单级校验 schema（对齐 wd-form）；存入 context，规则仍走 `rules`。 |
+| `titleWidth` | `number \| string \| undefined` | `undefined` | 左侧标题列宽（对齐 wd-form `title-width`）；折叠进继承的 `labelWidth`。 |
+| `layout` | `'horizontal' \| 'vertical'` | `'horizontal'` | 单元格布局，被所有子 FormItem 继承。 |
 
 ## SnFormItem Props
 

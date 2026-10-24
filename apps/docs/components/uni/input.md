@@ -50,6 +50,30 @@
 
 <Demo name="input-mp-runtime" description="confirm-type / hold-keyboard / adjust-position / always-embed / cursor / selection-start / selection-end / placeholder-style / placeholder-class。" />
 
+## 清空与聚焦细节（`clearTrigger` / `focusWhenClear` / `focus` / `placeholderClass` / `placeholderStyle`）
+
+`clearTrigger="focus"` 让 × 只在聚焦时出现；`focusWhenClear` 控制清空后是否回焦；`focus` 挂载即聚焦；`placeholderClass` / `placeholderStyle` 定制占位符。
+
+<Demo name="input-mp-clear-focus" description="clearTrigger always / focus；focusWhenClear；focus 挂载即聚焦；placeholderClass + placeholderStyle。" />
+
+## 字数统计别名（`showWordLimit`）
+
+`showWordLimit` 是 `showCount` 的 wot-ui 别名，两者等价，都需配合 `maxlength`。
+
+<Demo name="input-mp-word-limit" description="showWordLimit + maxlength；与 showCount 等价。" />
+
+## 原生键盘属性（`cursorSpacing` / `confirmHold` / `ignoreCompositionEvent` / `enableNative`）
+
+`cursorSpacing` 设光标与键盘的间距，`confirmHold` 点确认键时保持键盘，`ignoreCompositionEvent=false` 让合成期间也触发 `input`，`enableNative=false` 让支付宝小程序改用模拟输入框。
+
+<Demo name="input-mp-native-attrs" description="cursorSpacing；confirmHold；ignoreCompositionEvent=false；enableNative=false。" />
+
+## 自定义样式挂载点（`customClass` / `customStyle` / `customInputClass`）
+
+`customClass` / `customStyle` 作用于根节点，`customInputClass` 作用于内层原生 `<input>` / `<textarea>`。
+
+<Demo name="input-mp-custom-class" description="customClass + customStyle 挂根节点；customInputClass 挂内层原生输入框。" />
+
 ## Textarea
 
 `type="textarea"` 渲染多行域，独立 `.sn-input--textarea` 样式。
@@ -95,6 +119,7 @@
 | `customInputClass` | `string` | `''` | 内层 `<input>` / `<textarea>` class。 |
 | `customClass` | `string` | `''` | 根 class。 |
 | `customStyle` | `string \| Record<string,string>` | `''` | 根 inline style。 |
+| `error` | `boolean` | `false` | 错误态：`sn-input--error` class + `aria-invalid`（等价于 `status="error"` 的视觉）。 |
 
 ### MP-only runtime attrs（uni-app 编译期透传）
 
@@ -107,6 +132,10 @@
 | `cursor` | `number` | `-1` | 初始光标位置。`-1` 表示不设置。 |
 | `selectionStart` | `number` | `-1` | 初始选区起点。 |
 | `selectionEnd` | `number` | `-1` | 初始选区终点。 |
+| `cursorSpacing` | `number` | `0` | 光标与软键盘之间的距离。 |
+| `confirmHold` | `boolean` | `false` | 点击键盘 confirm 按钮后保持键盘不收起。 |
+| `ignoreCompositionEvent` | `boolean` | `true` | 忽略输入法合成事件（`false` 时合成期间也会触发 input）。 |
+| `enableNative` | `boolean` | `true` | 支付宝小程序启用原生输入框。 |
 
 ## Events
 

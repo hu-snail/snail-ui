@@ -65,17 +65,40 @@ SVG path 从 https://lucide.dev/icons 复制，ISC 协议可商用。
 
 <Demo name="icon-mp-registry" description="自定义 IconData + SnButton 的 #icon slot 集成（Plus / 自定义 / X）。" />
 
+## 字体图标（name / classPrefix）
+
+`name` 走 wot-ui 的原生字形路径：组件渲染 `<view class="{classPrefix}-{name}">`，字形由宿主加载的 iconfont 样式表提供。`class-prefix` 默认 `sn-icon`，需要兼容 `wd-icon-*` 命名的字体时直接改前缀。
+
+<Demo name="icon-mp-name" description="name + class-prefix 生成的 iconfont 类名：默认 sn-icon-home，class-prefix 改成 wd-icon 后为 wd-icon-home。" />
+
+## CSS 图标（cssIcon）
+
+`css-icon` 传字符串时，该 class 原样挂在字形节点上（不追加前缀），适合已经有自己命名的图标子集 / 背景图 / 伪元素方案。传布尔值且同时给了 `name` 时，两种类名会同时挂上。
+
+<Demo name="icon-mp-css" description="css-icon 传字符串 class 原样渲染；css-icon 布尔形式 + name 同时挂两个类名。" />
+
+## 根节点自定义类名与样式（`customClass` / `customStyle`）
+
+`customClass` 追加到 sn-icon 根节点类名，`customStyle` 与尺寸盒子合并 —— 字符串形式整体写入根节点样式（会覆盖默认 `width` / `height`），对象形式与尺寸合并。需要给图标加边框、内边距或底色时用它们；只改颜色优先用 `color`。
+
+<Demo name="icon-mp-custom" description="customClass 加虚线框；customStyle 字符串改颜色 / 内边距 / 底色；两者叠加；color prop 对照。" />
+
 ## API
 
 ### Props
 
 | 名称 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
-| icon | `IconData` | — | 必填，SVG path 数据对象 |
+| icon | `IconData` | — | SVG path 数据对象（与 `name` 二选一） |
 | size | `number \| string` | `32` | 图标尺寸（推荐 rpx） |
 | color | `string` | `'currentColor'` | 描边颜色（继承父元素 color） |
 | strokeWidth | `number \| string` | `2` | 描边宽度 |
 | strokeWidthAbsolute | `boolean` | `false` | 描边按绝对像素 |
+| name | `string` | `''` | iconfont 字形名，渲染 `{classPrefix}-{name}` |
+| classPrefix | `string` | `'sn-icon'` | iconfont 类名前缀 |
+| cssIcon | `boolean \| string` | `false` | 传字符串时该 class 原样渲染（不加前缀）；布尔值 + name 时两种类名同时挂 |
+| customClass | `string` | `''` | 根节点追加类名 |
+| customStyle | `string \| Record<string,string>` | `''` | 根节点内联样式 |
 
 `IconData` 接口：
 

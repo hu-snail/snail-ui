@@ -65,17 +65,40 @@ Copy SVG paths from https://lucide.dev/icons (ISC-licensed, commercial-use OK).
 
 <Demo name="icon-mp-registry" description="Custom IconData + SnButton's #icon slot (Plus / custom / X)." />
 
+## Iconfont glyphs (name / classPrefix)
+
+`name` uses wot-ui's native glyph path: the component renders `<view class="{classPrefix}-{name}">` and the glyph comes from the iconfont stylesheet the host loads. `class-prefix` defaults to `sn-icon`; change the prefix to work with a font that uses `wd-icon-*` naming.
+
+<Demo name="icon-mp-name" description="The iconfont class name produced by name + class-prefix: sn-icon-home by default, wd-icon-home once class-prefix is wd-icon." />
+
+## CSS icons (cssIcon)
+
+When `css-icon` receives a string, that class goes on the glyph node verbatim (no prefix added) — the fit for an icon subset, background image or pseudo-element that already carries its own naming. With the boolean form plus `name`, both class names are applied.
+
+<Demo name="icon-mp-css" description="css-icon with a string class renders verbatim; the boolean form with name applies both class names." />
+
+## Root class and inline style (`customClass` / `customStyle`)
+
+`customClass` appends to the sn-icon root class, and `customStyle` merges into the sizing box — a string is written as the root style wholesale (replacing the default `width` / `height`), an object merges with the size. Reach for them when the icon needs a border, padding or a fill; to change only the colour prefer `color`.
+
+<Demo name="icon-mp-custom" description="customClass adds a dashed frame; a string customStyle sets colour / padding / fill; both together; the color prop as a control." />
+
 ## API
 
 ### Props
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| icon | `IconData` | — | Required, SVG path data object |
+| icon | `IconData` | — | SVG path data object (alternative to `name`) |
 | size | `number \| string` | `32` | Icon size (rpx recommended) |
 | color | `string` | `'currentColor'` | Stroke color (inherits parent `color`) |
 | strokeWidth | `number \| string` | `2` | Stroke width in design units |
 | strokeWidthAbsolute | `boolean` | `false` | If true, stroke width is interpreted in absolute pixels rather than scaling with `size` |
+| name | `string` | `''` | Iconfont glyph name; renders `{classPrefix}-{name}` |
+| classPrefix | `string` | `'sn-icon'` | Iconfont class-name prefix |
+| cssIcon | `boolean \| string` | `false` | A string renders that class verbatim (no prefix); with the boolean form plus `name`, both class names are applied |
+| customClass | `string` | `''` | Extra class on the root node |
+| customStyle | `string \| Record<string,string>` | `''` | Inline style on the root node |
 
 `IconData` interface:
 

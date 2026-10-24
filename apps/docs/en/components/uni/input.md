@@ -50,6 +50,30 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 
 <Demo name="input-mp-runtime" description="confirm-type / hold-keyboard / adjust-position / always-embed / cursor / selection-start / selection-end / placeholder-style / placeholder-class." />
 
+## Clear & focus details (`clearTrigger` / `focusWhenClear` / `focus` / `placeholderClass` / `placeholderStyle`)
+
+`clearTrigger="focus"` shows the × only while focused; `focusWhenClear` decides whether the field re-focuses after clearing; `focus` focuses on mount; `placeholderClass` / `placeholderStyle` restyle the placeholder.
+
+<Demo name="input-mp-clear-focus" description="clearTrigger always / focus; focusWhenClear; focus on mount; placeholderClass + placeholderStyle." />
+
+## Word-count alias (`showWordLimit`)
+
+`showWordLimit` is the wot-ui alias of `showCount`; both are equivalent and both need `maxlength`.
+
+<Demo name="input-mp-word-limit" description="showWordLimit + maxlength; equivalent to showCount." />
+
+## Native keyboard attrs (`cursorSpacing` / `confirmHold` / `ignoreCompositionEvent` / `enableNative`)
+
+`cursorSpacing` sets the caret-to-keyboard gap, `confirmHold` keeps the keyboard up on confirm, `ignoreCompositionEvent=false` lets `input` fire mid-composition and `enableNative=false` makes Alipay MP use the simulated field.
+
+<Demo name="input-mp-native-attrs" description="cursorSpacing; confirmHold; ignoreCompositionEvent=false; enableNative=false." />
+
+## Custom style mount points (`customClass` / `customStyle` / `customInputClass`)
+
+`customClass` / `customStyle` land on the root node; `customInputClass` lands on the inner native `<input>` / `<textarea>`.
+
+<Demo name="input-mp-custom-class" description="customClass + customStyle on the root; customInputClass on the inner native field." />
+
 ## Textarea
 
 `type="textarea"` renders multi-line.
@@ -94,6 +118,7 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 | `customInputClass` | `string` | `''` | Inner `<input>` / `<textarea>` class. |
 | `customClass` | `string` | `''` | Root class. |
 | `customStyle` | `string \| Record<string,string>` | `''` | Root inline style. |
+| `error` | `boolean` | `false` | Error chrome: `sn-input--error` class + `aria-invalid` (same visual as `status="error"`). |
 
 ### MP-only runtime attrs (uni-app compile-time passthrough)
 
@@ -106,6 +131,10 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 | `cursor` | `number` | `-1` | Initial caret position. `-1` means unset. |
 | `selectionStart` | `number` | `-1` | Initial selection range start. |
 | `selectionEnd` | `number` | `-1` | Initial selection range end. |
+| `cursorSpacing` | `number` | `0` | Gap between the caret and the soft keyboard. |
+| `confirmHold` | `boolean` | `false` | Keep the keyboard up after the confirm key. |
+| `ignoreCompositionEvent` | `boolean` | `true` | Ignore IME composition events (`false` also fires `input` mid-composition). |
+| `enableNative` | `boolean` | `true` | Alipay MP: use the native input widget. |
 
 ## Events
 

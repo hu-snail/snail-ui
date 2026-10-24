@@ -7,6 +7,12 @@
 
 <Demo name="card-mp" description="默认 Card（带 title prop + footer slot）+ Rectangle Card（type='rectangle'，列表大格样式）。" />
 
+## 分区自定义类名与样式
+
+`customTitleClass` / `customContentClass` / `customFooterClass` 分别挂到标题区 / 内容区 / 底部区节点；`customClass` 作用于根节点，`customStyle` 追加到根节点 inline style。
+
+<Demo name="card-mp-custom" description="三个分区类名、根节点类名与 inline style，以及 rectangle 变体上的同一套定制。" />
+
 ## Props
 
 > 完整 prop 列表遵循本库的双端契约。**Web 端的 `variant` / `padding` / `shadow` / `closable` / `hoverable` / `embedded` / `segmented` 等便利 alias 在 uni 端有意不实现**（传入会被契约校验拒绝）。

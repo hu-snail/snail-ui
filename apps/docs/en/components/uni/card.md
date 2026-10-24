@@ -6,6 +6,12 @@
 
 <Demo name="card-mp" description="Default card (title prop + footer slot) + Rectangle card (type='rectangle', list-style)." />
 
+## Per-region custom classes and styles
+
+`customTitleClass` / `customContentClass` / `customFooterClass` attach to the title / content / footer nodes; `customClass` lands on the root node and `customStyle` is appended to its inline style.
+
+<Demo name="card-mp-custom" description="Three region classes, the root class plus inline style, and the same customisation on the rectangle variant." />
+
 ## Props
 
 > The full prop list follows the library's dual-platform contract. Web-only `variant` / `padding` / `shadow` / `closable` / `hoverable` / `embedded` / `segmented` aliases are intentionally NOT exposed — passing them is rejected by contract validation.

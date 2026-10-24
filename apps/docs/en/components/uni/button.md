@@ -6,7 +6,7 @@
 
 Conforms to easycom — **no import needed in templates**:
 
-```html
+```vue
 <sn-button type="primary">Submit</sn-button>
 ```
 
@@ -52,9 +52,38 @@ Block button (full parent width) is common on mobile:
 
 <Demo name="button-mp-custom" description="bgColor / color overrides; loadingColor changes spinner color; loadingSize changes rpx size." />
 
+## Iconfont icons (`icon` / `class-prefix` / `css-icon`)
+
+`icon` takes the wot-ui iconfont path: the component forwards `icon` to the embedded sn-icon, which renders `<view class="{classPrefix}-{icon}">`; the glyph comes from the iconfont stylesheet the host app loads. `class-prefix` defaults to `sn-icon`; a string `css-icon` is used as the class prefix itself, and the boolean form plus `icon` applies both class names. Mutually exclusive with the SVG path (`iconData` / `iconName`), which wins.
+
+<Demo name="button-mp-iconfont" description="icon + class-prefix build {prefix}-{icon}; a string css-icon renders verbatim; the boolean form applies both class names." />
+
+## loading config and hairline (`loading-props` / `hairline`)
+
+`loading-props` is the wot-ui `wd-button` object shape (`{ color, size, text }`). This component reads `color` / `size` and ignores the rest, so a config written for wd-button passes through. The flat `loading-color` / `loading-size` props win; `loading-props` is the fallback.
+
+`hairline` only applies to `type="default"` (the semantic types already carry a coloured border). It defaults to `true`; `false` makes the border transparent.
+
+<Demo name="button-mp-loading-props" description="loading-props color / size; the flat props win; hairline next to the loading state." />
+
 ## Open-type (MP-only)
 
 <Demo name="button-mp-open-type" description="open-type: share / feedback / launchApp / contact / getUserInfo / openSetting / favorite / chooseAvatar." />
+
+## Extension attributes (`session-from` / `send-message-*` / `app-parameter` / `scope` …)
+
+Beyond `open-type`, WeChat / Alipay expect a companion set of attributes. The component forwards them to the root node as-is: the H5 preview has no such capability, so they land on the node without triggering anything; a miniprogram runtime reads the same attribute and calls the platform API.
+
+| Attribute | Belongs to |
+| --- | --- |
+| `session-from` / `send-message-title` / `send-message-path` / `send-message-img` / `show-message-card` | `open-type="contact"` customer-service card |
+| `app-parameter` | payload carried by `open-type="launchApp"` |
+| `lang` | customer-service language: `zh_CN` / `zh_TW` / `en` |
+| `button-id` | unique id for anchoring customer-service messages |
+| `scope` | Alipay authorization scope (`phoneNumber` / `userInfo`) |
+| `hover-stop-propagation` | generic: the press state does not bubble to ancestors |
+
+<Demo name="button-mp-mp-open-type" description="open-type extension attributes: contact session config, three lang values, app-parameter, scope, hover-stop-propagation." />
 
 ## hover-class / hover-start-time / hover-stay-time
 
@@ -97,6 +126,20 @@ Block button (full parent width) is common on mobile:
 | `iconData` | `IconData` | — | Frozen `{ viewBox, paths }`. |
 | `iconName` | `string` | — | Resolve via `registerSnIcons`. |
 | `iconSize` | `number \| string` | `32` | rpx / px size. |
+| `icon` | `string` | `''` | Iconfont glyph name, built into `{classPrefix}-{icon}`. |
+| `classPrefix` | `string` | `'sn-icon'` | Iconfont class prefix. |
+| `cssIcon` | `boolean \| string` | `false` | A string becomes the class prefix; the boolean form plus `icon` applies both class names. |
+| `loadingProps` | `{ color?, size?, text?, … }` | — | wot-ui `loading-props` object; the flat `loadingColor` / `loadingSize` win. |
+| `hoverStopPropagation` | `boolean` | `false` | The press state does not bubble to ancestors. |
+| `lang` | `'zh_CN' \| 'zh_TW' \| 'en' \| ''` | `''` | `open-type=contact` session language. |
+| `sessionFrom` | `string` | `''` | `open-type=contact` session source. |
+| `sendMessageTitle` | `string` | `''` | `open-type=contact` message card title. |
+| `sendMessagePath` | `string` | `''` | `open-type=contact` message card path. |
+| `sendMessageImg` | `string` | `''` | `open-type=contact` message card image. |
+| `appParameter` | `string` | `''` | `open-type=launchApp` payload. |
+| `showMessageCard` | `boolean` | `false` | `open-type=contact` — show the session card. |
+| `buttonId` | `string` | `''` | Unique id for anchoring customer-service messages. |
+| `scope` | `'phoneNumber' \| 'userInfo' \| ''` | `''` | Alipay authorization scope. |
 | `ariaLabel` | `string` | — | A11y label. |
 
 ### Events

@@ -38,6 +38,12 @@
 
 <Demo name="form-mp-validation-flow" description="validateTrigger 'blur' | 'change'; resetOnChange; errorType 'message' | 'toast' | 'none'." />
 
+## Form-level schema, title width, layout & the message switch (`schema` / `titleWidth` / `layout` / `center` / `showMessage`)
+
+`title-width` shares the inheritance chain with `label-width` (title-width wins); `layout` takes `horizontal` / `vertical` for label-vs-control placement; `center` vertically centers the control column inside each cell; `schema` is a form-level validation description (this build stores it on the context; validation still runs through `rules`); `show-message=false` keeps validation running but renders no message row.
+
+<Demo name="form-mp-schema-layout" description="`titleWidth` shares the inheritance chain with `labelWidth`; `layout` horizontal / vertical places the label; `center` vertically centers; `schema` is stored as a form-level validation description; `showMessage=false` only drops the message row." />
+
 ## SnForm Props
 
 | Prop | Type | Default | Description |
@@ -45,7 +51,7 @@
 | `model` | `Record<string, unknown>` | (required) | Reactive model. |
 | `rules` | `FormRules` | `{}` | Per-prop validation rules. |
 | `showMessage` | `boolean` | `true` | Show inline error / warning. |
-| `statusIcon` | `boolean` | `false` | Status icon. |
+| `statusIcon` | `boolean` | `false` | Shows a status glyph (`!` / `✓`) before the validation message; an item may override it. |
 | `labelPosition` | `'left' \| 'right' \| 'top'` | `'right'` | Label position. |
 | `labelWidth` | `number \| string` | `'auto'` | Label column width. |
 | `disabled` | `boolean` | `false` | Disable whole form. |
@@ -59,6 +65,9 @@
 | `asteriskPosition` | `'left' \| 'right'` | `'left'` | Where `*` sits. |
 | `hideAsterisk` | `boolean` | `false` | Hide required marker. |
 | `ellipsis` | `boolean` | `false` | Truncate long labels. |
+| `schema` | `Record<string, unknown> \| undefined` | `undefined` | Form-level schema (wd-form parity); stored on the context, rules still come from `rules`. |
+| `titleWidth` | `number \| string \| undefined` | `undefined` | Left title column width (wd-form `title-width`); folded into the inherited `labelWidth`. |
+| `layout` | `'horizontal' \| 'vertical'` | `'horizontal'` | Cell layout inherited by every FormItem. |
 
 ## SnFormItem Props
 
