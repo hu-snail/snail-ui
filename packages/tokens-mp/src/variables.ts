@@ -99,21 +99,59 @@ export const snMpColorMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-color-text-primary', 'var(--aui-color-text-primary)'],
   ['--sn-mp-color-text-secondary', 'var(--aui-color-text-secondary)'],
   ['--sn-mp-color-text-disabled', 'var(--aui-color-text-disabled)'],
+  ['--sn-mp-color-text-tertiary', 'var(--aui-color-text-tertiary)'],
   ['--sn-mp-color-text-on-primary', 'var(--aui-color-text-on-primary)'],
   ['--sn-mp-color-background-surface', 'var(--aui-color-background-surface)'],
   ['--sn-mp-color-background-subtle', 'var(--aui-color-background-subtle)'],
+  ['--sn-mp-color-background-elevated', 'var(--aui-color-background-elevated)'],
+  ['--sn-mp-color-background-overlay', 'var(--aui-color-background-overlay)'],
+  // Tinted surfaces used by soft / subtle variants and cell fill states.
+  // They resolve through the semantic layer (not a literal rgba) so dark mode
+  // flips them along with the rest of the palette — a hardcoded
+  // `rgba(0,0,0,0.04)` stays invisible on a dark surface.
+  ['--sn-mp-color-background-soft', 'var(--aui-color-background-subtle)'],
+  ['--sn-mp-color-background-sunken', 'var(--aui-color-background-sunken)'],
   ['--sn-mp-color-border-default', 'var(--aui-color-border-default)'],
   ['--sn-mp-color-border-subtle', 'var(--aui-color-border-subtle)'],
   ['--sn-mp-color-action-primary', 'var(--aui-color-action-primary)'],
   ['--sn-mp-color-action-primary-hover', 'var(--aui-color-action-primary-hover)'],
+  ['--sn-mp-color-action-primary-soft', 'var(--aui-color-action-primary-soft)'],
   ['--sn-mp-color-feedback-success', 'var(--aui-color-feedback-success)'],
+  ['--sn-mp-color-feedback-success-soft', 'var(--aui-color-feedback-success-soft)'],
   ['--sn-mp-color-feedback-warning', 'var(--aui-color-feedback-warning)'],
+  ['--sn-mp-color-feedback-warning-soft', 'var(--aui-color-feedback-warning-soft)'],
   ['--sn-mp-color-feedback-danger', 'var(--aui-color-feedback-danger)'],
   ['--sn-mp-color-feedback-danger-hover', 'var(--aui-color-feedback-danger-hover)'],
+  ['--sn-mp-color-feedback-danger-soft', 'var(--aui-color-feedback-danger-soft)'],
   ['--sn-mp-color-feedback-info', 'var(--aui-color-feedback-info)'],
-  ['--sn-mp-color-background-elevated', 'var(--aui-color-background-elevated)'],
-  ['--sn-mp-color-background-overlay', 'var(--aui-color-background-overlay)'],
-  ['--sn-mp-color-text-tertiary', 'var(--aui-color-text-tertiary)'],
+  // Input surface slots — referenced by sn-input / sn-form-item.
+  ['--sn-mp-color-input-bg', 'var(--aui-color-background-surface)'],
+  ['--sn-mp-color-input-text', 'var(--aui-color-text-primary)'],
+  ['--sn-mp-color-input-placeholder', 'var(--aui-color-text-disabled)'],
+  ['--sn-mp-color-input-border', 'var(--aui-color-border-default)'],
+  ['--sn-mp-color-input-border-focus', 'var(--aui-color-action-primary)'],
+  // Selection-control slots — consumed by sn-checkbox / sn-radio / sn-switch.
+  // `control-unchecked` is the unchecked ring / inactive rail; it needs its own
+  // slot because the neutral border token (`border-default`) sits at gray-200
+  // in light mode, which is invisible against the near-black dark surface.
+  // `control-knob` is the switch thumb / checkbox tick plate: it stays light in
+  // both themes because the rail underneath it is a saturated brand fill.
+  ['--sn-mp-color-control-unchecked', 'var(--aui-color-border-default)'],
+  ['--sn-mp-color-control-knob', 'var(--aui-color-background-elevated)'],
+  // Extra accent hues — the tag `type` set needs five more distinguishable
+  // colours than the semantic palette carries. Each pair is solid + tint so a
+  // tag can render both the filled (`dark`) and tinted (`light`) variant from
+  // tokens only; the dark block re-declares the tints with a higher alpha.
+  ['--sn-mp-color-volcano', 'var(--aui-color-volcano)'],
+  ['--sn-mp-color-volcano-soft', 'var(--aui-color-volcano-soft)'],
+  ['--sn-mp-color-lightblue', 'var(--aui-color-lightblue)'],
+  ['--sn-mp-color-lightblue-soft', 'var(--aui-color-lightblue-soft)'],
+  ['--sn-mp-color-cyan', 'var(--aui-color-cyan)'],
+  ['--sn-mp-color-cyan-soft', 'var(--aui-color-cyan-soft)'],
+  ['--sn-mp-color-pink', 'var(--aui-color-pink)'],
+  ['--sn-mp-color-pink-soft', 'var(--aui-color-pink-soft)'],
+  ['--sn-mp-color-purple', 'var(--aui-color-purple)'],
+  ['--sn-mp-color-purple-soft', 'var(--aui-color-purple-soft)'],
   ['--sn-mp-shadow-xs', 'var(--aui-shadow-xs)'],
   ['--sn-mp-shadow-sm', 'var(--aui-shadow-sm)'],
   ['--sn-mp-shadow-md', 'var(--aui-shadow-md)'],

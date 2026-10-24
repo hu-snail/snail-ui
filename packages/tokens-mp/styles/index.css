@@ -76,21 +76,49 @@
   --sn-mp-color-text-primary: var(--aui-color-text-primary);
   --sn-mp-color-text-secondary: var(--aui-color-text-secondary);
   --sn-mp-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-mp-color-text-tertiary: var(--aui-color-text-tertiary);
   --sn-mp-color-text-on-primary: var(--aui-color-text-on-primary);
   --sn-mp-color-background-surface: var(--aui-color-background-surface);
   --sn-mp-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-mp-color-background-elevated: var(--aui-color-background-elevated);
+  --sn-mp-color-background-overlay: var(--aui-color-background-overlay);
+  /* Tinted surfaces — soft / subtle variants and cell fill states. */
+  --sn-mp-color-background-soft: var(--aui-color-background-subtle);
+  --sn-mp-color-background-sunken: var(--aui-color-background-sunken);
   --sn-mp-color-border-default: var(--aui-color-border-default);
   --sn-mp-color-border-subtle: var(--aui-color-border-subtle);
   --sn-mp-color-action-primary: var(--aui-color-action-primary);
   --sn-mp-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-mp-color-action-primary-soft: var(--aui-color-action-primary-soft);
   --sn-mp-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-mp-color-feedback-success-soft: var(--aui-color-feedback-success-soft);
   --sn-mp-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-mp-color-feedback-warning-soft: var(--aui-color-feedback-warning-soft);
   --sn-mp-color-feedback-danger: var(--aui-color-feedback-danger);
   --sn-mp-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+  --sn-mp-color-feedback-danger-soft: var(--aui-color-feedback-danger-soft);
   --sn-mp-color-feedback-info: var(--aui-color-feedback-info);
-  --sn-mp-color-background-elevated: var(--aui-color-background-elevated);
-  --sn-mp-color-background-overlay: var(--aui-color-background-overlay);
-  --sn-mp-color-text-tertiary: var(--aui-color-text-tertiary);
+  /* Input surface slots — referenced by sn-input / sn-form-item. */
+  --sn-mp-color-input-bg: var(--aui-color-background-surface);
+  --sn-mp-color-input-text: var(--aui-color-text-primary);
+  --sn-mp-color-input-placeholder: var(--aui-color-text-disabled);
+  --sn-mp-color-input-border: var(--aui-color-border-default);
+  --sn-mp-color-input-border-focus: var(--aui-color-action-primary);
+  /* Selection-control slots — sn-checkbox / sn-radio / sn-switch. */
+  --sn-mp-color-control-unchecked: var(--aui-color-border-default);
+  --sn-mp-color-control-knob: var(--aui-color-background-elevated);
+  /* Extra accent hues — the tag `type` set. Solid + tint pairs so both the
+     filled and the tinted tag variant resolve from tokens only. */
+  --sn-mp-color-volcano: var(--aui-color-volcano);
+  --sn-mp-color-volcano-soft: var(--aui-color-volcano-soft);
+  --sn-mp-color-lightblue: var(--aui-color-lightblue);
+  --sn-mp-color-lightblue-soft: var(--aui-color-lightblue-soft);
+  --sn-mp-color-cyan: var(--aui-color-cyan);
+  --sn-mp-color-cyan-soft: var(--aui-color-cyan-soft);
+  --sn-mp-color-pink: var(--aui-color-pink);
+  --sn-mp-color-pink-soft: var(--aui-color-pink-soft);
+  --sn-mp-color-purple: var(--aui-color-purple);
+  --sn-mp-color-purple-soft: var(--aui-color-purple-soft);
   --sn-mp-shadow-xs: var(--aui-shadow-xs);
   --sn-mp-shadow-sm: var(--aui-shadow-sm);
   --sn-mp-shadow-md: var(--aui-shadow-md);
@@ -98,4 +126,79 @@
   --sn-mp-button-shadow: var(--aui-button-shadow);
   --sn-mp-card-shadow: var(--aui-card-shadow);
   --sn-mp-focus-ring: var(--aui-focus-ring);
+}
+
+/*
+ * Dark theme for the mobile end.
+ *
+ * uni-app runs on miniprogram (WXSS / ACSS) and native App (nvue) targets that
+ * have no `:root` and no `document` — so the web approach of flipping a class
+ * on `<html>` cannot drive them. Two hooks cover every target:
+ *
+ *   1. `page` — the uni-app page root. A consumer sets `page { … }`
+ *      or the runtime class below.
+ *   2. `.sn-theme-dark` — a class the app puts on the page root (or on any
+ *      wrapping `<view>`), which also works inside a `SnConfigProvider`.
+ *
+ * Both blocks are duplicated on purpose: the alias layer must resolve to the
+ * same dark values whether the app toggles the page-level or the scoped class.
+ * Only color / shadow slots flip — geometry (rpx) is theme-independent.
+ */
+page.sn-theme-dark,
+.sn-theme-dark {
+  --sn-mp-color-text-primary: #fafafa;
+  --sn-mp-color-text-secondary: #a1a1aa;
+  --sn-mp-color-text-tertiary: #71717a;
+  --sn-mp-color-text-disabled: #52525b;
+  --sn-mp-color-background-surface: #09090b;
+  --sn-mp-color-background-subtle: #27272a;
+  --sn-mp-color-background-elevated: #18181b;
+  --sn-mp-color-background-soft: #27272a;
+  --sn-mp-color-background-sunken: #18181b;
+  --sn-mp-color-border-default: #27272a;
+  --sn-mp-color-border-subtle: #27272a;
+  /* Brand colours keep their identity in dark mode; only the tint alphas grow
+     so a soft surface stays visible on a near-black page. */
+  --sn-mp-color-action-primary: var(--aui-color-action-primary);
+  --sn-mp-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-mp-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-mp-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-mp-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-mp-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+  --sn-mp-color-feedback-info: var(--aui-color-feedback-info);
+  --sn-mp-color-action-primary-soft: rgba(22, 119, 255, 0.22);
+  --sn-mp-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
+  --sn-mp-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
+  --sn-mp-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);
+  /* Extra tag hues: the solid fill carries white text in both themes, so only
+     the tint alpha grows — the hue itself keeps its identity. */
+  --sn-mp-color-volcano: var(--aui-color-volcano);
+  --sn-mp-color-lightblue: var(--aui-color-lightblue);
+  --sn-mp-color-cyan: var(--aui-color-cyan);
+  --sn-mp-color-pink: var(--aui-color-pink);
+  --sn-mp-color-purple: var(--aui-color-purple);
+  --sn-mp-color-volcano-soft: rgba(250, 140, 22, 0.22);
+  --sn-mp-color-lightblue-soft: rgba(56, 189, 248, 0.22);
+  --sn-mp-color-cyan-soft: rgba(8, 145, 178, 0.22);
+  --sn-mp-color-pink-soft: rgba(219, 39, 119, 0.22);
+  --sn-mp-color-purple-soft: rgba(124, 58, 237, 0.22);
+  --sn-mp-color-input-bg: #18181b;
+  --sn-mp-color-input-text: #fafafa;
+  --sn-mp-color-input-placeholder: #52525b;
+  --sn-mp-color-input-border: #27272a;
+  /* The focus ring keeps the brand hue — it is the one accent that must stay
+     recognisable when everything else is monochrome. */
+  --sn-mp-color-input-border-focus: var(--aui-color-action-primary);
+  /* Selection-control slots: the unchecked ring / inactive rail needs a lighter
+     neutral than `border-default` (gray-800 on near-black would vanish), and the
+     switch thumb / tick plate stays near-white because the rail under it is a
+     saturated brand fill in both themes. */
+  --sn-mp-color-control-unchecked: #3f3f46;
+  --sn-mp-color-control-knob: #fafafa;
+  /* The overlay scrim is near-black in both themes — the page under it is
+     dark already, so the alpha does not need to change. */
+  --sn-mp-color-background-overlay: rgba(0, 0, 0, 0.8);
+  /* Text on a filled surface stays white in both themes: the fill colour
+     itself does not invert, so the label on top of it must not either. */
+  --sn-mp-color-text-on-primary: #ffffff;
 }

@@ -118,6 +118,7 @@
 
   --aui-color-background-surface: #ffffff;
   --aui-color-background-subtle: var(--aui-color-neutral-100);
+  --aui-color-background-sunken: var(--aui-color-neutral-50);
 
   --aui-color-border-default: var(--aui-color-neutral-200);
   --aui-color-border-subtle: var(--aui-color-neutral-100);
@@ -130,7 +131,39 @@
   --aui-color-feedback-warning: var(--aui-color-warning);
   --aui-color-feedback-danger: var(--aui-color-danger);
   --aui-color-feedback-info: var(--aui-color-neutral-500);
-
+  /*
+   * Tinted feedback / action surfaces ("soft" variants, tag light style,
+   * alert backgrounds). Literal light tints rather than primitive ramp refs:
+   * the ramps only carry blue / neutral, and a 12% alpha of the base hue keeps
+   * the tint on-brand without inventing a second palette. Dark mode overrides
+   * these four with higher-alpha tints so they stay visible on a dark surface.
+   */
+  --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.12);
+  --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.12);
+  --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.12);
+  /*
+   * Extra hue families used by the mobile tag's `type` set. The semantic
+   * palette only carries blue / neutral / green / amber / red, while a tag
+   * needs a few more distinguishable accents. Flat single values (same shape
+   * as `--aui-color-success` above) rather than full ramps: nothing consumes
+   * intermediate steps yet.
+   *
+   * They intentionally keep their identity in dark mode — a solid tag
+   * background carries white text in both themes, so brightening the hue
+   * would only cost contrast.
+   */
+  --aui-color-volcano: #fa8c16;
+  --aui-color-lightblue: #38bdf8;
+  --aui-color-cyan: #0891b2;
+  --aui-color-pink: #db2777;
+  --aui-color-purple: #7c3aed;
+  /* Light-variant tints of the hues above — same 12% / 22% pattern as the
+     feedback tints declared earlier in this block. */
+  --aui-color-volcano-soft: rgba(250, 140, 22, 0.12);
+  --aui-color-lightblue-soft: rgba(56, 189, 248, 0.12);
+  --aui-color-cyan-soft: rgba(8, 145, 178, 0.12);
+  --aui-color-pink-soft: rgba(219, 39, 119, 0.12);
+  --aui-color-purple-soft: rgba(124, 58, 237, 0.12);
   --aui-color-background-elevated: #ffffff;
   --aui-color-background-overlay: rgba(0, 0, 0, 0.8);
   --aui-color-feedback-danger-hover: #f87171;
@@ -165,6 +198,16 @@
   --sn-color-feedback-danger: var(--aui-color-feedback-danger);
   --sn-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
   --sn-color-feedback-info: var(--aui-color-feedback-info);
+  --sn-color-volcano: var(--aui-color-volcano);
+  --sn-color-lightblue: var(--aui-color-lightblue);
+  --sn-color-cyan: var(--aui-color-cyan);
+  --sn-color-pink: var(--aui-color-pink);
+  --sn-color-purple: var(--aui-color-purple);
+  --sn-color-volcano-soft: var(--aui-color-volcano-soft);
+  --sn-color-lightblue-soft: var(--aui-color-lightblue-soft);
+  --sn-color-cyan-soft: var(--aui-color-cyan-soft);
+  --sn-color-pink-soft: var(--aui-color-pink-soft);
+  --sn-color-purple-soft: var(--aui-color-purple-soft);
   --sn-focus-ring: var(--aui-focus-ring);
 
   /* Component tokens — button */
@@ -393,6 +436,26 @@
   --aui-color-action-primary-hover: #3b82f6;
   --aui-color-feedback-danger: #7f1d1d;
   --aui-color-feedback-danger-hover: #991b1b;
+  /*
+   * Dark-mode counterparts of the tinted surfaces declared in `:root`.
+   *
+   * Alpha has to grow on a dark background: a 12% tint over `#09090b` is
+   * invisible, while 22% reads as a subtle wash without glowing. The neutral
+   * sunken slot also has to move *below* the surface (a lighter gray would read
+   * as elevation, which is the opposite of "sunken").
+   */
+  --aui-color-background-sunken: #18181b;
+  --aui-color-action-primary-soft: rgba(22, 119, 255, 0.22);
+  --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
+  --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
+  --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);
+  /* Dark counterparts of the extra tag hues: the hue keeps its identity, only
+     the tint alpha grows so a light-variant tag stays visible on a dark page. */
+  --aui-color-volcano-soft: rgba(250, 140, 22, 0.22);
+  --aui-color-lightblue-soft: rgba(56, 189, 248, 0.22);
+  --aui-color-cyan-soft: rgba(8, 145, 178, 0.22);
+  --aui-color-pink-soft: rgba(219, 39, 119, 0.22);
+  --aui-color-purple-soft: rgba(124, 58, 237, 0.22);
 
   /* Sn-* alias for dark */
   --sn-color-text-primary: var(--aui-color-text-primary);

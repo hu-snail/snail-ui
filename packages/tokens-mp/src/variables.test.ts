@@ -107,6 +107,39 @@ describe('@snui/tokens-mp rpx conversion', () => {
     }
   })
 
+  it('declares a dark block that overrides every color alias it defines', async () => {
+    // The dark block is hand-written CSS (the JS map only emits `:root`), so
+    // nothing else guards it against drifting from the alias layer. Every
+    // color alias that exists in `:root` must be re-declared for dark, or a
+    // component using it keeps its light value on a dark page.
+    const css = await readFile(stylesheetPath, 'utf-8')
+    const darkBlock = css.slice(css.indexOf('page.sn-theme-dark'))
+    expect(darkBlock.length, 'dark block should exist').toBeGreaterThan(0)
+    for (const [alias] of snMpColorMap) {
+      if (!alias.includes('color-')) continue
+      expect(darkBlock, `${alias} missing from the dark block`).toContain(`${alias}:`)
+    }
+  })
+
+  it('exposes the tinted / input aliases the components actually reference', () => {
+    // Regression guard: components used to reference `--sn-mp-color-background-soft`
+    // and friends before those aliases existed, so `var()` fell through to the
+    // hardcoded light fallback and dark mode rendered light boxes.
+    const aliases = listSnMpAliases()
+    for (const alias of [
+      '--sn-mp-color-background-soft',
+      '--sn-mp-color-action-primary-soft',
+      '--sn-mp-color-feedback-danger-soft',
+      '--sn-mp-color-input-bg',
+      '--sn-mp-color-input-text',
+      '--sn-mp-color-input-placeholder',
+      '--sn-mp-color-input-border',
+      '--sn-mp-color-input-border-focus',
+    ]) {
+      expect(aliases).toContain(alias)
+    }
+  })
+
   it('renders `:root { ... }` block with all aliases', () => {
     const css = renderSnMpStyles()
     expect(css.startsWith(':root {')).toBe(true)
