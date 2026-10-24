@@ -655,6 +655,34 @@ export default defineConfig({
   description: 'Vue 3 + uni-app 多端 AI-Native UI 框架生态。Component First / Token First / Style Pack First / AI Native。',
   ignoreDeadLinks: true,
 
+  /**
+   * uni-app built-in elements are plain tags in the uni-end SFC templates.
+   * Vue treats dash-containing unknown tags (`scroll-view`, `swiper-item`,
+   * `picker-view`) as unregistered components and warns on every render;
+   * registering them as custom elements keeps them inert host elements —
+   * exactly what the uni H5 runtime makes of them. (`view` / `text` / `image`
+   * are already silent, but listing them documents the contract.)
+   */
+  vue: {
+    template: {
+      compilerOptions: {
+        isCustomElement: (tag: string): boolean =>
+          [
+            'view',
+            'text',
+            'image',
+            'scroll-view',
+            'swiper',
+            'swiper-item',
+            'picker-view',
+            'picker-view-column',
+            'canvas',
+            'video',
+          ].includes(tag),
+      },
+    },
+  },
+
   themeConfig: {
     // Base URL for the title-row "edit this page" action. Branch-matched at
     // build time (see utils/edit-link.ts) and consumed by

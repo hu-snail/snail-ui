@@ -8,7 +8,12 @@
  * exactly the bug this suite was written for.
  */
 import { afterEach, describe, expect, it } from 'vitest'
-import { installUniPreviewShims } from './uni-preview-shims'
+import {
+  convertInlineRpx,
+  installStyleRpxBridge,
+  installUniApiPolyfill,
+  installUniPreviewShims,
+} from './uni-preview-shims'
 
 let dispose: (() => void) | null = null
 
@@ -168,5 +173,239 @@ describe('hover-stop-propagation', () => {
     // The flagging node still lights up; its ancestors do not.
     expect(inner.classList.contains('inner-pressed')).toBe(true)
     expect(outer.classList.contains('outer-pressed')).toBe(false)
+  })
+})
+
+/**
+ * Inline rpx conversion.
+ *
+ * uni components compute inline styles with rpx; the browser drops every
+ * declaration whose value carries an unknown unit, which collapsed the circle
+ * rings, picker columns, cropper frame and swiper track in the preview. The
+ * shim rewrites those tokens at the DOM boundary, mirroring the uni H5
+ * runtime.
+ */
+describe('inline rpx conversion', () => {
+  it('should convert rpx tokens in an inline style to px', () => {
+    expect(convertInlineRpx('--sn-circle-size: 120rpx; --sn-circle-width: 18rpx')).toBe(
+      '--sn-circle-size: 60px; --sn-circle-width: 9px',
+    )
+  })
+
+  it('should convert negative and fractional values', () => {
+    expect(convertInlineRpx('margin-left: -20rpx; top: 1.5rpx')).toBe(
+      'margin-left: -10px; top: 0.75px',
+    )
+  })
+
+  it('should leave non-rpx declarations untouched', () => {
+    expect(convertInlineRpx('width: 40%; left: 12px')).toBe('width: 40%; left: 12px')
+  })
+
+  it('should convert existing inline styles on install', () => {
+    document.body.innerHTML = '<div class="sn-demo"><view style="height: 264rpx"></view></div>'
+    dispose = installUniPreviewShims()
+
+    const node = document.querySelector('view')
+    expect(node?.getAttribute('style')).toBe('height: 132px')
+  })
+
+  it('should convert inline styles written after install', async () => {
+    document.body.innerHTML = '<div class="sn-demo"><view id="target"></view></div>'
+    dispose = installUniPreviewShims()
+    const node = document.getElementById('target')
+
+    node?.setAttribute('style', 'transform: translateY(88rpx)')
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(node?.getAttribute('style')).toBe('transform: translateY(44px)')
+  })
+})
+
+/**
+ * Style-object rpx bridge.
+ *
+ * Vue's object-form style binding writes `el.style.width = '64rpx'`; the browser
+ * drops the value silently, so the element collapses (the toast check icon
+ * rendered at the SVG's intrinsic 300×150 instead of 32px). The bridge converts
+ * the value on the way in.
+ */
+describe('style object rpx bridge', () => {
+  it('should convert rpx assigned through the style object', () => {
+    installStyleRpxBridge()
+    const node = document.createElement('view')
+
+    node.style.width = '64rpx'
+    node.style.height = '120rpx'
+
+    expect(node.style.width).toBe('32px')
+    expect(node.style.height).toBe('60px')
+  })
+
+  it('should convert rpx passed to setProperty (custom properties)', () => {
+    installStyleRpxBridge()
+    const node = document.createElement('view')
+
+    node.style.setProperty('--sn-circle-size', '120rpx')
+
+    expect(node.style.getPropertyValue('--sn-circle-size')).toBe('60px')
+  })
+
+  it('should leave px and percentage values untouched', () => {
+    installStyleRpxBridge()
+    const node = document.createElement('view')
+
+    node.style.width = '40px'
+    node.style.left = '25%'
+
+    expect(node.style.width).toBe('40px')
+    expect(node.style.left).toBe('25%')
+  })
+})
+
+/**
+ * Mouse → touch bridge.
+ *
+ * Every gesture component listens to touch events only, so a desktop mouse
+ * produced nothing: sliders would not drag, picker rollers would not turn,
+ * slide-verify could not be swiped and the signature pad stayed blank.
+ */
+describe('mouse to touch bridge', () => {
+  it('should dispatch touchstart / touchmove / touchend from a mouse drag', () => {
+    document.body.innerHTML = '<div class="sn-demo"><view id="track"></view></div>'
+    dispose = installUniPreviewShims()
+    const track = document.getElementById('track')
+    const seen: string[] = []
+    for (const type of ['touchstart', 'touchmove', 'touchend']) {
+      track?.addEventListener(type, () => seen.push(type))
+    }
+
+    track?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 20 }))
+    document.body.dispatchEvent(
+      new MouseEvent('mousemove', { bubbles: true, clientX: 40, clientY: 20 }),
+    )
+    document.body.dispatchEvent(
+      new MouseEvent('mouseup', { bubbles: true, clientX: 40, clientY: 20 }),
+    )
+
+    expect(seen).toEqual(['touchstart', 'touchmove', 'touchend'])
+  })
+
+  it('should carry the pointer coordinates on the synthetic touch', () => {
+    document.body.innerHTML = '<div class="sn-demo"><view id="track"></view></div>'
+    dispose = installUniPreviewShims()
+    const track = document.getElementById('track')
+    let clientX = -1
+    track?.addEventListener('touchstart', (event) => {
+      const touch = (event as TouchEvent).touches?.[0]
+      clientX = touch?.clientX ?? -1
+    })
+
+    track?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 42, clientY: 20 }))
+
+    expect(clientX).toBe(42)
+  })
+
+  it('should not bridge drags that start outside a preview surface', () => {
+    document.body.innerHTML = '<div class="outside"><view id="track"></view></div>'
+    dispose = installUniPreviewShims()
+    const track = document.getElementById('track')
+    let fired = false
+    track?.addEventListener('touchstart', () => {
+      fired = true
+    })
+
+    track?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 20 }))
+
+    expect(fired).toBe(false)
+  })
+})
+
+/**
+ * Tap slop.
+ *
+ * A drag that ends on an element must not also count as a tap, otherwise
+ * releasing a picker roller selects whatever sits under the pointer and a
+ * slider throw re-seats the knob.
+ */
+describe('tap slop', () => {
+  it('should not dispatch tap when the gesture moved beyond the slop', () => {
+    document.body.innerHTML = '<div class="sn-demo"><view id="track"></view></div>'
+    dispose = installUniPreviewShims()
+    const track = document.getElementById('track')
+    let taps = 0
+    track?.addEventListener('tap', () => {
+      taps += 1
+    })
+
+    track?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 20 }))
+    document.body.dispatchEvent(
+      new MouseEvent('mousemove', { bubbles: true, clientX: 120, clientY: 20 }),
+    )
+    document.body.dispatchEvent(
+      new MouseEvent('mouseup', { bubbles: true, clientX: 120, clientY: 20 }),
+    )
+
+    expect(taps).toBe(0)
+  })
+
+  it('should dispatch tap when the gesture stayed put', () => {
+    document.body.innerHTML = '<div class="sn-demo"><view id="track"></view></div>'
+    dispose = installUniPreviewShims()
+    const track = document.getElementById('track')
+    let taps = 0
+    track?.addEventListener('tap', () => {
+      taps += 1
+    })
+
+    track?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 20 }))
+    document.body.dispatchEvent(
+      new MouseEvent('mouseup', { bubbles: true, clientX: 12, clientY: 21 }),
+    )
+
+    expect(taps).toBe(1)
+  })
+})
+
+/**
+ * `uni` API polyfill.
+ *
+ * The components read `uni.createSelectorQuery` / `uni.getSystemInfoSync`;
+ * without the polyfill those paths silently degrade (selector-mode preview
+ * hit zones, floating-panel sizing).
+ */
+interface SelectorQueryStub {
+  selectAll: (selector: string) => {
+    boundingClientRect: (callback: (rects: Array<{ width: number }>) => void) => unknown
+  }
+  exec: () => void
+}
+
+describe('uni api polyfill', () => {
+  it('should expose createSelectorQuery that measures DOM boxes', () => {
+    document.body.innerHTML =
+      '<div class="sn-demo"><view class="thumb" style="width: 40px; height: 20px"></view></div>'
+    installUniApiPolyfill()
+
+    let measured: Array<{ width: number }> = []
+    const host = globalThis as { uni?: { createSelectorQuery: () => SelectorQueryStub } }
+    const query = host.uni?.createSelectorQuery()
+    query.selectAll('.thumb').boundingClientRect((rects: Array<{ width: number }>) => {
+      measured = rects
+    })
+    query.exec()
+
+    expect(measured).toHaveLength(1)
+  })
+
+  it('should not overwrite members a real host already provides', () => {
+    const marker = (): string => 'host'
+    const host = globalThis as { uni?: Record<string, unknown> }
+    host.uni = { getSystemInfoSync: marker }
+
+    installUniApiPolyfill()
+
+    expect((host.uni?.getSystemInfoSync as () => string)()).toBe('host')
+    delete host.uni
   })
 })

@@ -122,15 +122,18 @@ onMounted(() => {
   mq = window.matchMedia('(min-width: 1200px)')
   const apply = (matches: boolean): void => {
     wideEnough.value = matches
+    // Wide again on a uni route: re-open so the dock claims the demos.
+    // Narrow: close it — `Demo.vue` then falls back to inline rendering.
+    // Opening the dock on a narrow viewport used to hide every demo (the
+    // panel is not rendered below 1200px, so the inline slot only showed the
+    // "moved to the panel" note). The re-open keeps a window that grows past
+    // 1200px after mount from staying closed until the route changes.
+    if (matches && isDockRoute.value) setDockOpen(true)
     if (!matches) setDockOpen(false)
   }
   apply(mq.matches)
   onMqChange = (e: MediaQueryListEvent) => apply(e.matches)
   mq.addEventListener('change', onMqChange)
-  // The dock must be open before the demos register, so the first demo can
-  // claim the active slot; `Demo.vue` also seeds this synchronously on uni
-  // routes to survive the opposite mount order.
-  if (isDockRoute.value) setDockOpen(true)
 })
 
 onBeforeUnmount(() => {

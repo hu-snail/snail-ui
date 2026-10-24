@@ -15,9 +15,9 @@ const preview = ref<{
 } | null>(null)
 
 const images = [
-  'https://picsum.photos/seed/snui-beh-a/900/1300',
-  'https://picsum.photos/seed/snui-beh-b/900/1300',
-  'https://picsum.photos/seed/snui-beh-c/900/1300',
+  '/demo/snui-photo-1.jpg',
+  '/demo/snui-photo-2.jpg',
+  '/demo/snui-photo-3.jpg',
 ]
 
 const lastEvent = ref('—')

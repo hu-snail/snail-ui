@@ -251,7 +251,7 @@ const rootStyle = computed(() => {
       @tap="onTap"
     >
       <view v-if="statusIcon" class="sn-notify__icon" aria-hidden="true">
-        <SnIcon :icon="statusIcon" :size="36" />
+        <SnIcon :icon="statusIcon" :size="18" />
       </view>
 
       <view class="sn-notify__content">
@@ -271,7 +271,7 @@ const rootStyle = computed(() => {
         aria-label="close"
         @tap="onCloseTap"
       >
-        <SnIcon :icon="XIcon" :size="32" />
+        <SnIcon :icon="XIcon" :size="16" />
       </view>
     </view>
   </view>

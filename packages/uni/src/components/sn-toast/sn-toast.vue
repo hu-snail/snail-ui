@@ -181,9 +181,15 @@ function clearAllTimers(): void {
   clearLeaveTimer()
 }
 
-/** Resolve a numeric-or-string size prop to a CSS length. */
-function resolveSize(value: number | string | undefined, fallback: number): string | number {
-  if (value === undefined || value === '') return fallback
+/**
+ * Resolve a numeric-or-string size prop to a CSS length.
+ *
+ * A bare number is an rpx design value on the uni end, so the fallback is rpx
+ * too: returning the raw number made the browser read it as CSS px and the
+ * status glyph rendered at twice the intended size (a 64px check in a toast).
+ */
+function resolveSize(value: number | string | undefined, fallbackRpx: number): string | number {
+  if (value === undefined || value === '') return `${fallbackRpx}rpx`
   return typeof value === 'number' ? `${value}rpx` : value
 }
 

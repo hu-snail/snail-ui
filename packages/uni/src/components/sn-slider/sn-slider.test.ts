@@ -59,10 +59,30 @@ describe('sn-slider', () => {
       expect(extremes[1]?.text()).toBe('95')
     })
 
-    it('shows the value bubble unless popoverVisible is never', () => {
-      expect(mount(SnSlider).find('.sn-slider__popover').exists()).toBe(true)
+    it('shows the value bubble only while dragging by default', () => {
+      // `normal` (default) matches wd-slider: the bubble appears for the knob
+      // being dragged, never permanently.
+      expect(mount(SnSlider).find('.sn-slider__popover').exists()).toBe(false)
       expect(mount(SnSlider, { props: { popoverVisible: 'never' } }).find('.sn-slider__popover').exists())
         .toBe(false)
+    })
+
+    it('pins the bubble with popoverVisible="always"', () => {
+      expect(mount(SnSlider, { props: { popoverVisible: 'always' } }).find('.sn-slider__popover').exists())
+        .toBe(true)
+    })
+
+    it('shows the bubble for the dragged knob and hides it on release', async () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 40 } })
+      const track = wrapper.find('.sn-slider__track')
+      expect(wrapper.find('.sn-slider__popover').exists()).toBe(false)
+
+      await track.trigger('touchstart', { touches: [{ clientX: 200, clientY: 0 }] })
+      await track.trigger('touchmove', { touches: [{ clientX: 260, clientY: 0 }] })
+      expect(wrapper.find('.sn-slider__popover').exists()).toBe(true)
+
+      await track.trigger('touchend', { changedTouches: [{ clientX: 260, clientY: 0 }] })
+      expect(wrapper.find('.sn-slider__popover').exists()).toBe(false)
     })
 
     it('normalizes a reversed range pair', () => {

@@ -14,8 +14,8 @@ const preview = ref<{
 } | null>(null)
 
 const images = [
-  'https://picsum.photos/seed/snui-cap-a/900/1200',
-  'https://picsum.photos/seed/snui-cap-b/900/1200',
+  '/demo/snui-photo-2.jpg',
+  '/demo/snui-photo-3.jpg',
 ]
 </script>
 

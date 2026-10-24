@@ -11,7 +11,7 @@ const visible = ref(false)
 const ratio = ref<'1:1' | '16:9' | '9:16'>('16:9')
 const lastRatio = ref('—')
 
-const imgSrc = 'https://picsum.photos/seed/snui-crop-wide/1400/900'
+const imgSrc = '/demo/snui-crop-wide.jpg'
 
 function open(next: '1:1' | '16:9' | '9:16') {
   ratio.value = next

@@ -194,7 +194,12 @@ function onTrackStart(event: Event): void {
 
 /* ── Dragging ──────────────────────────────────────────────────────────── */
 
-/** `0` = left / single knob, `1` = right knob (range mode). */
+/**
+ * Drag in progress — `0` = left / single knob, `1` = right knob, `null` = rest.
+ *
+ * Drives the value bubble: `popoverVisible: 'normal'` shows it only for the knob
+ * being dragged (wd-slider behaviour); `'always'` / `'never'` ignore this state.
+ */
 const dragKnob = ref<0 | 1 | null>(null)
 
 function positionOf(event: Event): number {
@@ -379,7 +384,18 @@ function knobStyle(value: number): Record<string, string> {
   return { left: percent, top: '50%' }
 }
 
-const showPopover = computed(() => props.popoverVisible === 'always' || props.popoverVisible === 'normal')
+/**
+ * Whether the bubble of one knob is on screen.
+ *
+ * `'always'` pins it, `'never'` removes it, and the default `'normal'` shows it
+ * only while that knob is dragged — a permanently visible bubble overlaps the
+ * surrounding layout (and the reference only shows it during a drag).
+ */
+function popoverShown(knob: 0 | 1): boolean {
+  if (props.popoverVisible === 'always') return true
+  if (props.popoverVisible === 'never') return false
+  return dragKnob.value === knob
+}
 
 function knobValue(knob: 0 | 1): number {
   return props.range ? pair.value[knob] : pair.value[1]
@@ -431,7 +447,7 @@ function knobValue(knob: 0 | 1): number {
           @touchstart.stop="onKnobStart(range ? 0 : 1, $event)"
         >
           <view
-            v-if="showPopover"
+            v-if="popoverShown(range ? 0 : 1)"
             class="sn-slider__popover"
             aria-hidden="true"
           >{{ knobValue(range ? 0 : 1) }}</view>
@@ -446,7 +462,7 @@ function knobValue(knob: 0 | 1): number {
           :tabindex="disabled ? -1 : 0"
           @touchstart.stop="onKnobStart(1, $event)"
         >
-          <view v-if="showPopover" class="sn-slider__popover" aria-hidden="true">{{ knobValue(1) }}</view>
+          <view v-if="popoverShown(1)" class="sn-slider__popover" aria-hidden="true">{{ knobValue(1) }}</view>
         </view>
       </view>
 

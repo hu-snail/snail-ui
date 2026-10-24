@@ -14,7 +14,7 @@ const exportScale = ref(2)
 const quality = ref(0.85)
 const fileType = ref<'png' | 'jpg'>('png')
 
-const imgSrc = 'https://picsum.photos/seed/snui-crop-export/1200/900'
+const imgSrc = '/demo/snui-crop-wide.jpg'
 
 function open(next: 'png' | 'jpg') {
   fileType.value = next

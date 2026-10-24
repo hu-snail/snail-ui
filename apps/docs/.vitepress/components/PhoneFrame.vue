@@ -436,6 +436,47 @@ defineExpose({ scrollToSection })
 }
 
 /*
+ * `<scroll-view>` is a real scrolling container in uni-app: `scroll-y` makes it
+ * a vertical scroller and components (calendar-view, index-bar, chat lists)
+ * size it from the outside. The browser knows no such element, so without a
+ * base rule it renders `display: inline; overflow: visible` and the panel grows
+ * past the screen instead of scrolling inside it.
+ */
+.sn-phone__screen scroll-view {
+  display: block;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.sn-phone__screen scroll-view::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * `<image>`: uni's image is a sized box (object-fit via `mode`), and the
+ * browser maps the tag to a plain `img` whose intrinsic 300×150 pre-load size
+ * would break the layout.
+ */
+.sn-phone__screen image {
+  display: block;
+  box-sizing: border-box;
+}
+
+/*
+ * The mouse→touch bridge turns drags into touch gestures; native text
+ * selection would fight the gesture (a picker drag paints a blue selection).
+ * A uni device has nothing to select on a drag, so the preview drops selection
+ * inside the screen. Inputs stay usable.
+ */
+.sn-phone__screen {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/*
  * Demo layout defaults.
  *
  * `<view>` is a block element (see the reset above), so a demo root needs no
