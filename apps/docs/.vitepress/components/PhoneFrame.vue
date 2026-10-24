@@ -194,6 +194,24 @@ defineExpose({ scrollToSection })
   width: 100%;
   max-width: 100%;
   /*
+   * Clip `position: fixed` overlays to the device.
+   *
+   * The uni overlay components (popup / dialog / keyboard / toast / notify…)
+   * root at `position: fixed`, which is correct in a real miniprogram — the
+   * host page IS the viewport. Inside the docs preview the browser viewport is
+   * the whole page, so a `fixed` overlay would paint across the article.
+   *
+   * A `transform` on this element turns it into the containing block for fixed
+   * descendants, so overlays resolve against the screen box instead of the
+   * browser window — exactly the device behaviour, without touching the
+   * library. `translateZ(0)` is the cheapest compositing-safe form and cannot
+   * be overridden by demo styles the way `transform: none` could.
+   *
+   * `min-height: 0` (below) keeps the flex child shrinkable so content scrolls
+   * inside the screen rather than pushing the panel open.
+   */
+  transform: translateZ(0);
+  /*
    * Auto-height mode: the screen may shrink to the space its parent gives it.
    * Without `min-height: 0` a flex child refuses to go below its content size,
    * so the content would overflow the panel instead of scrolling inside it.
