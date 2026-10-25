@@ -155,13 +155,11 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
         scenario of the page's component with its own browsing context
         (gestures, fixed layers, in-frame history). `Demo.vue` renders no
         inline preview on uni pages while this panel is open, so each demo
-        body exists exactly once — inside the frame.
+        body exists exactly once — inside the frame. No PhoneFrame title: the
+        preview page carries its own bar and a second one here would stack.
       -->
       <div class="sn-dock__body">
-        <PhoneFrame
-          v-if="entries.length > 0 && dockPreviewUrl !== ''"
-          :title="pageTitle"
-        >
+        <PhoneFrame v-if="entries.length > 0 && dockPreviewUrl !== ''">
           <iframe
             class="sn-dock__frame"
             :src="dockPreviewUrl"
