@@ -69,3 +69,15 @@ CSS 子集（ucss）+ `.uvue` 文件。其**蒸汽模式（vapor, HBuilderX 5.21
   核对报告增量。
 - 文档规则 §110 的「双语 × 双端」在 uni-x 端暂以「双语接入指南 + 端口状态表」代替
   逐组件文档，待真机验证后按 §110 补齐。
+
+## Revision (2026-10-25) — Style Pack 实测状态
+
+初版 Decision 中「skin 在 uni-x 端暂缺」的判断**过时**：两段式后代规则的 CSS 变量
+上下文注入（即本 ADR 的 flatten 机制）在产物层面**就是**皮肤变量化——实测
+`dist/components` 中 59 个组件保留 `.snui-skin-doodle { --snx-*: … }` 单类变量块，
+1097 条注入 / 434 处 `var()` 消费。真实缺口仅 9 条含 `:hover/:active` 的交互态皮肤
+规则（伪类在 App 端不可表达，属平台限制而非架构缺口）。
+
+源码侧的「后代选择器彻底消失」重构（`--snui-skin-*` 命名规约）降级为**可选优化**：
+uni 端（老 uni-app）依赖后代选择器工作正常，uni-x 端由管线等效表达。回归由
+`packages/uni-x/src/transform/transform-skin.test.ts` 锁定。
