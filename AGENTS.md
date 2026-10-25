@@ -3601,6 +3601,68 @@ snail-aui 必须有对应用例
 
 ---
 
+# 116. uni-app / uni-app x 双端适配规范（单源码双产物）
+
+> 架构依据：ADR-0004（`.ai/decisions/0004-uni-x-adoption.md`）。
+> uni-app x 指 App 端蒸汽模式（vapor, HBuilderX 5.21+）；其 web / 小程序目标不在范围内。
+
+## 116.1 架构铁律
+
+```text
+packages/uni      唯一组件源码（uni-app 全端 + uni-app x 的事实源）
+       ↓  确定性转换管线
+packages/uni-x    转换器 + 锚定补丁 → dist/components/*.uvue（npm 发布，prepack 自动生成）
+```
+
+- **禁止**手写第二套 `.uvue` 组件树；**禁止**手改 `packages/uni-x/dist`（生成物）。
+- uni-x 消费方式：`pnpm add @snui/uni-x` + easycom 指向
+  `@snui/uni-x/components/sn-$1/sn-$1.uvue`；用户侧零生成、零拷贝。
+- 所有无法自动转换的组件级差异必须落在 `packages/uni-x/src/transform/patches.ts`
+  锚定补丁，缺口登记于 `PORTING-REPORT.md` 与 `cli.ts` 的 `MANUAL_FLAGS`。
+
+## 116.2 双端兼容写法（在 packages/uni 写组件时强制）
+
+**CSS**：
+
+| 规则 | 原因 |
+| --- | --- |
+| 只用 class 选择器（复合 `.a.b` 允许）；后代选择器最多两段且目标必须单 class | App 端仅 class 选择器；两段式会被管线降级为 CSS 变量上下文注入，其余直接删除并上报 |
+| 禁伪类（`:hover/:active/:focus/:nth-child`）与伪元素（`::before/::after`） | App 端不支持；按压态一律 `hover-class`，分隔线用真实元素，交错样式用 v-for index class |
+| 文字必须显式写在 `<text>` 内；**不依赖样式继承** | App 端文本不继承容器样式；裸文本会被自动包 `<text>` 且无样式 |
+| 皮肤 / 主题差异走 CSS 变量（`--sn-mp-*`），禁止新增 `.snui-skin-xxx` 后代选择器覆盖 | 后代选择器在 App 端无法表达（skin 变量化是 ADR-0004 既定方向） |
+| `cursor` / `user-select` / `outline` 等允许存在但会被剥离 | 不得让布局依赖它们 |
+
+**模板**：
+
+- 事件用 `@click`（`@tap` 会被归一为 `@click`）。
+- `<component :is>` 允许（uvue App 端官方支持）；新增用法必须登记到 `MANUAL_FLAGS` 验证。
+- 禁 `position: sticky`（App 端不支持，内置 sticky-section 仅限 list-view 内）。
+- `data-*` 属性仅作工具钩子（uni-x 产物中被剥离），不得承载运行时语义。
+
+**脚本**：
+
+- DOM / `window` 访问必须包 `#ifdef H5`。
+- `event.preventDefault()` / `stopImmediatePropagation()` 会被转为可选调用，不得依赖其同步生效。
+- 不得消费 `defineSlots` 返回值（现有例外：sn-form-item，已登记）。
+
+## 116.3 补丁纪律
+
+- 锚点失配 = 构建失败 = 必须同步 `patches.ts`；禁止放宽锚点或绕过构建。
+- 新增 / 修改组件后必须跑 `pnpm -F @snui/uni-x build`，并检查 `PORTING-REPORT.md`：
+  该文件**不得新增** pseudo-class / pseudo-element / attribute-selector /
+  combinator 类 issue——出现即改写法，或配补丁并在 `MANUAL_FLAGS` 登记。
+
+## 116.4 文档与状态
+
+- uni-x 能力变化必须同步双语指南 `apps/docs/guide/uni/uni-app-x.md`（含 en）的
+  状态表与真机验证清单。
+- §110 的逐组件三端文档在 uni-x 真机验证完成前不展开，以指南状态表 +
+  PORTING-REPORT 为准（ADR-0004 Consequences）。
+- 发版：`prepack` 自动重建 `dist/`；正式发布需将 `@snui/uni-x` `private` 翻转并走
+  changesets（`privatePackages.policy: "disallow"`，见包 README）。
+
+---
+
 # END
 
-AUI Agent 执行标准 v1.0.1（补充规则 #101-#113）
+AUI Agent 执行标准 v1.0.2（补充规则 #101-#116）

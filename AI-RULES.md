@@ -17,6 +17,7 @@ Project-specific AI agent rules. Read both this file and `/AGENTS.md` before any
 - Spec-05 Docs & StyleSwitcher: [`dev-docs/Spec-05-Docs-StyleSwitcher.md`](./dev-docs/Spec-05-Docs-StyleSwitcher.md)
 - ADR-0001: [`.ai/decisions/0001-framework-pivot.md`](./.ai/decisions/0001-framework-pivot.md)
 - ADR-0002: [`.ai/decisions/0002-ai-native-style-platform.md`](./.ai/decisions/0002-ai-native-style-platform.md)
+- ADR-0004: [`.ai/decisions/0004-uni-x-adoption.md`](./.ai/decisions/0004-uni-x-adoption.md) — uni-app x（蒸汽模式）单源码双产物架构，规范见 AGENTS.md §116
 - AI scratchpad: [`./.ai/`](./.ai)
 
 ## Superseded (do not use)
