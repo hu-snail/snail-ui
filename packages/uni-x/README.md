@@ -16,6 +16,15 @@ pnpm -F @snui/uni-x typecheck
 后，在 `pages.json` 里把 easycom 指到 `@snui/uni-x/components/sn-$1/sn-$1.uvue`
 即可，无需生成或拷贝。完整接入步骤见文档站 `guide/uni/uni-app-x`（双语）。
 
+## 打包 / 发版
+
+- `prepack` 钩子在 `pnpm pack` / `pnpm publish` 时**自动重新生成 `dist/`**，
+  打进包里的永远是当前源码的最新转换结果，不存在过期产物。
+- 当前 `"private": true`（与仓库其他包一致；changesets 配置
+  `privatePackages.policy: "disallow"` 不允许私有包走版本发布）。正式发版时：
+  ① `private` 改为 `false`；② 添加 changeset；③ 走仓库
+  `pnpm release`（turbo build + changeset publish）即可，产物结构无需再动。
+
 ## 转换规则
 
 | 层 | 规则 |

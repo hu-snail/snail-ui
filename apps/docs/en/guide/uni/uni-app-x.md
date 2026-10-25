@@ -22,8 +22,9 @@ pnpm add @snui/uni-x
 
 The artifacts (`.uvue` components + theme) are **shipped with the package**
 (under `dist/components/…` inside it) — nothing to generate or copy on your
-side. Before the first release, run `pnpm -F @snui/uni-x build && pnpm -F
-@snui/uni-x pack` in this repo and install the resulting tarball.
+side. Before the first release, run `pnpm -F @snui/uni-x pack` in this repo
+and install the resulting tarball (the `prepack` hook regenerates `dist/`
+automatically, so the tarball always carries the latest transform output).
 
 ### 2. Configure easycom
 

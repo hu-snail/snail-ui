@@ -19,7 +19,8 @@ pnpm add @snui/uni-x
 
 组件产物（`.uvue` + 主题层）**已随包发布**（包内 `dist/components/…` 结构），
 无需在本地执行生成、也无需拷贝目录。包尚未正式发版时，可在本仓库执行
-`pnpm -F @snui/uni-x build && pnpm -F @snui/uni-x pack` 得到 tarball 后安装。
+`pnpm -F @snui/uni-x pack` 得到 tarball 后安装（`prepack` 钩子会自动重新生成
+`dist/`，保证打出来的包永远是最新转换结果）。
 
 ### 2. 配置 easycom
 

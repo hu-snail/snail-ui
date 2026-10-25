@@ -9,13 +9,18 @@
   ],
   "exports": {
     "./components/*": "./dist/components/*",
-    "./theme/index.css": "./dist/theme/index.css"
+    "./theme/index.css": "./dist/theme/index.css",
+    "./package.json": "./package.json"
   },
   "sideEffects": [
     "**/*.css"
   ],
+  "peerDependencies": {
+    "vue": "^3.5.43"
+  },
   "scripts": {
     "build": "node src/transform/cli.ts",
+    "prepack": "pnpm build",
     "lint": "eslint src",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
