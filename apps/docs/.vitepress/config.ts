@@ -184,6 +184,12 @@ const sidebar = {
   ],
   '/components/uni/': [
     {
+      text: 'Overview 总览',
+      items: [
+        { text: '组件总览'.trim(), link: '/components/uni/overview' },
+      ],
+    },
+    {
       text: 'Basic 基础组件',
       items: [
         { text: 'sn-button 按钮'.trim(), link: '/components/uni/button' },
@@ -289,6 +295,17 @@ const sidebar = {
         { text: 'sn-img-cropper 图片裁剪'.trim(), link: '/components/uni/img-cropper' },
         { text: 'sn-qr-code 二维码'.trim(), link: '/components/uni/qr-code' },
         { text: 'sn-table 表格'.trim(), link: '/components/uni/table' },
+      ],
+    },
+    {
+      text: 'Business 业务组件',
+      items: [
+        { text: 'sn-liquid 水波进度球'.trim(), link: '/components/uni/liquid' },
+        { text: 'sn-barcode 条形码'.trim(), link: '/components/uni/barcode' },
+        { text: 'sn-dialer 大转盘'.trim(), link: '/components/uni/dialer' },
+        { text: 'sn-scratchcard 刮刮乐'.trim(), link: '/components/uni/scratchcard' },
+        { text: 'sn-lucky 抽奖九宫格'.trim(), link: '/components/uni/lucky' },
+        { text: 'sn-typing 输入中'.trim(), link: '/components/uni/typing' },
       ],
     },
   ],
@@ -491,6 +508,12 @@ const enSidebar = {
   ],
   '/en/components/uni/': [
     {
+      text: 'Overview',
+      items: [
+        { text: 'Component Overview', link: '/en/components/uni/overview' },
+      ],
+    },
+    {
       text: 'Basic',
       items: [
         { text: 'sn-button', link: '/en/components/uni/button' },
@@ -596,6 +619,17 @@ const enSidebar = {
         { text: 'sn-img-cropper', link: '/en/components/uni/img-cropper' },
         { text: 'sn-qr-code', link: '/en/components/uni/qr-code' },
         { text: 'sn-table', link: '/en/components/uni/table' },
+      ],
+    },
+    {
+      text: 'Business',
+      items: [
+        { text: 'sn-liquid', link: '/en/components/uni/liquid' },
+        { text: 'sn-barcode', link: '/en/components/uni/barcode' },
+        { text: 'sn-dialer', link: '/en/components/uni/dialer' },
+        { text: 'sn-scratchcard', link: '/en/components/uni/scratchcard' },
+        { text: 'sn-lucky', link: '/en/components/uni/lucky' },
+        { text: 'sn-typing', link: '/en/components/uni/typing' },
       ],
     },
   ],
