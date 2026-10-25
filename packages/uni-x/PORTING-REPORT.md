@@ -10,7 +10,7 @@
 | template-attr | 152 |
 | defineSlots-stripped | 60 |
 | pseudo-class | 42 |
-| patch | 31 |
+| patch | 36 |
 | unsupported-property | 31 |
 | template-bare-text | 20 |
 | script-guard | 9 |
@@ -24,6 +24,7 @@
 - **sn-table** — uvue officially supports `<component :is>` on App (vue/built-in docs), but cellRenderers pass a slot *function* as the value; that shape needs compile verification on device.
 - **sn-sticky** — `position: sticky` is unsupported on App vapor and the built-in sticky-section/sticky-header only work inside list-view; the component degrades to normal flow (patched + documented).
 - **sn-form-item** — consumed `defineSlots` return (`const slots = defineSlots…`); verify the macro exists on the vapor compiler.
+- **sn-qr-code** — canvas runs on the W3C-aligned 2d context of uni-app x (bitmap sizing + `toDataURL` export patched in); verify first-paint bitmap timing and the roundRect/gradient fallbacks on device.
 - **sn-icon** — IconData path renders via `<image>` + SVG data URL; verify App-side SVG decode, otherwise use the iconfont glyph path (`name` prop).
 - **Style packs** — all `.snui-skin-doodle` descendant rules are dropped pending the variable-based skin architecture (ADR-0004).
 - **Device-verify list** — hover-class press states, `aria-*` pass-through, `:style`-injected CSS variables, `gap`, keyframes under bytecode rendering, fixed + safe-area (see README).
@@ -434,6 +435,11 @@
 
 ### sn-qr-code/sn-qr-code.uvue
 
+- patch applied — `patch`: UniHost gains getDeviceInfo for uni-app x canvas bitmap sizing
+- patch applied — `patch`: CanvasLike gains toDataURL (uni-app x export path)
+- patch applied — `patch`: uni-app x canvas bitmap sizing + DPR scale added (official sample pattern)
+- patch applied — `patch`: element-context path (uni-app x template ref = UniCanvasElement) applies bitmap sizing
+- patch applied — `patch`: exportImage prefers ctx.toDataURL (uni-app x); legacy canvasToTempFilePath stays as fallback
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 5 data-* attribute(s) stripped
 

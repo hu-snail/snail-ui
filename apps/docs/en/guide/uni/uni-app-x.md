@@ -72,7 +72,7 @@ Same as the uni end: wrap with `<sn-config-provider theme="dark">`, or add the
 | Style Packs (skin) | Missing: `.snui-skin-doodle` descendant rules cannot be expressed on App; pending the variable-based rework |
 | sn-table | uvue officially supports `<component :is>` on App; the slot-function value shape used here needs compile verification |
 | sn-sticky | Degrades to normal flow on App (vapor has no `position: sticky`; built-in sticky-section works only inside list-view) — use list-view + sticky-section for list pinning |
-| Canvas components (qr-code / signature / watermark / img-cropper) | Pending uni-app x canvas API adaptation |
+| Canvas components | Only sn-qr-code actually uses canvas — adapted to the uni-app x API (W3C 2d context + bitmap DPR sizing + `toDataURL` export); sn-signature / sn-watermark / sn-img-cropper were designed canvas-free (view strokes / view tiling / geometry reporting), nothing to change |
 | Desktop H5 mouse gestures (picker-view) | Gated behind `#ifdef H5`; App stays touch-only |
 
 Every transform decision (dropped rules, wrapped text, renamed events) is

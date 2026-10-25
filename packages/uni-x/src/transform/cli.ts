@@ -152,6 +152,7 @@ const MANUAL_FLAGS: string[] = [
   '**sn-table** — uvue officially supports `<component :is>` on App (vue/built-in docs), but cellRenderers pass a slot *function* as the value; that shape needs compile verification on device.',
   '**sn-sticky** — `position: sticky` is unsupported on App vapor and the built-in sticky-section/sticky-header only work inside list-view; the component degrades to normal flow (patched + documented).',
   '**sn-form-item** — consumed `defineSlots` return (`const slots = defineSlots…`); verify the macro exists on the vapor compiler.',
+  '**sn-qr-code** — canvas runs on the W3C-aligned 2d context of uni-app x (bitmap sizing + `toDataURL` export patched in); verify first-paint bitmap timing and the roundRect/gradient fallbacks on device.',
   '**sn-icon** — IconData path renders via `<image>` + SVG data URL; verify App-side SVG decode, otherwise use the iconfont glyph path (`name` prop).',
   '**Style packs** — all `.snui-skin-doodle` descendant rules are dropped pending the variable-based skin architecture (ADR-0004).',
   '**Device-verify list** — hover-class press states, `aria-*` pass-through, `:style`-injected CSS variables, `gap`, keyframes under bytecode rendering, fixed + safe-area (see README).',

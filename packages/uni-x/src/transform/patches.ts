@@ -289,6 +289,100 @@ const iconDataUrl = computed<string | undefined>(() => {
     },
   ],
 
+  'sn-qr-code/sn-qr-code.vue': [
+    {
+      anchor: `interface UniHost {
+  createCanvasContext?: (id: string, component?: unknown) => CanvasLike
+  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void
+}`,
+      replacement: `interface UniHost {
+  createCanvasContext?: (id: string, component?: unknown) => CanvasLike
+  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void
+  /** uni-app x only: device pixel ratio source for canvas bitmap sizing. */
+  getDeviceInfo?: () => unknown
+}`,
+      note: 'UniHost gains getDeviceInfo for uni-app x canvas bitmap sizing',
+    },
+    {
+      anchor: `  /** uni canvas only: flush the command queue to the native canvas. */
+  draw?: (reserve?: boolean, callback?: () => void) => void
+}`,
+      replacement: `  /** uni canvas only: flush the command queue to the native canvas. */
+  draw?: (reserve?: boolean, callback?: () => void) => void
+  /** uni-app x only: export the bitmap as a data URL (W3C-aligned). */
+  toDataURL?: () => string
+}`,
+      note: 'CanvasLike gains toDataURL (uni-app x export path)',
+    },
+    {
+      anchor: `/** Acquire the drawing surface: uni context first, DOM canvas second. */
+function getSurface(): CanvasLike | null {`,
+      replacement: `/**
+ * uni-app x: the canvas bitmap defaults to 0×0 and there is no automatic DPR
+ * handling — size it from the element box and scale once (official canvas
+ * sample). Old-uni hosts size the bitmap themselves; this is skipped when the
+ * element has no box yet (first paint before layout).
+ */
+function applyCanvasBitmapSize(canvas: unknown, context: CanvasLike): void {
+  const el = canvas as { width?: number; height?: number; offsetWidth?: number; offsetHeight?: number }
+  const deviceInfo = getUni()?.getDeviceInfo?.() as { devicePixelRatio?: number } | undefined
+  const dpr = deviceInfo?.devicePixelRatio ?? 1
+  const width = el.offsetWidth ?? 0
+  const height = el.offsetHeight ?? 0
+  if (width <= 0 || height <= 0) return
+  el.width = Math.round(width * dpr)
+  el.height = Math.round(height * dpr)
+  context.scale?.(dpr, dpr)
+}
+
+/** Acquire the drawing surface: uni context first, DOM canvas second. */
+function getSurface(): CanvasLike | null {`,
+      note: 'uni-app x canvas bitmap sizing + DPR scale added (official sample pattern)',
+    },
+    {
+      anchor: `      const context = domCanvas.getContext?.('2d')
+      if (context !== null && typeof context === 'object') {
+        surface = context as CanvasLike
+        surfaceCanvasId = canvasIdValue.value
+        return surface
+      }`,
+      replacement: `      const context = domCanvas.getContext?.('2d')
+      if (context !== null && typeof context === 'object') {
+        surface = context as CanvasLike
+        applyCanvasBitmapSize(domCanvas, surface)
+        surfaceCanvasId = canvasIdValue.value
+        return surface
+      }`,
+      note: 'element-context path (uni-app x template ref = UniCanvasElement) applies bitmap sizing',
+    },
+    {
+      anchor: `    const toTempFilePath = getUni()?.canvasToTempFilePath
+    if (typeof toTempFilePath !== 'function') {`,
+      replacement: `    // uni-app x: export straight from the 2d context (canvasToTempFilePath is
+    // legacy-only there); on this path the promise resolves to a data URL.
+    const toDataUrl = surface?.toDataURL
+    if (typeof toDataUrl === 'function') {
+      try {
+        const dataUrl: string = toDataUrl.call(surface)
+        if (dataUrl.startsWith('data:image/')) {
+          resolve(dataUrl)
+          return
+        }
+      } catch (error) {
+        reject({
+          code: 'EXPORT_FAILED',
+          message: 'canvas toDataURL failed',
+          cause: error,
+        } satisfies QrExportError)
+        return
+      }
+    }
+    const toTempFilePath = getUni()?.canvasToTempFilePath
+    if (typeof toTempFilePath !== 'function') {`,
+      note: 'exportImage prefers ctx.toDataURL (uni-app x); legacy canvasToTempFilePath stays as fallback',
+    },
+  ],
+
   'sn-sticky/sn-sticky.vue': [
     {
       anchor: `.sn-sticky {

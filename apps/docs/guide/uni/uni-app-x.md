@@ -66,7 +66,7 @@ pnpm add @snui/uni-x
 | Style Pack（skin） | 暂缺：`.snui-skin-doodle` 后代选择器规则在 App 端无法表达，待变量化改造 |
 | sn-table | uvue App 端官方支持 `<component :is>`；本组件把插槽函数传给 `:is` 的形态待编译验证 |
 | sn-sticky | App 端降级为普通布局（蒸汽模式不支持 `position: sticky`，内置 sticky-section 仅限 list-view 内）；列表内吸顶请用 list-view + sticky-section |
-| canvas 四件套（qr-code / signature / watermark / img-cropper） | 待按 uni-app x canvas API 适配 |
+| canvas 组件 | 仅 sn-qr-code 实际使用 canvas——已适配 uni-app x 新 API（W3C 2d 上下文 + 位图 DPR 尺寸 + `toDataURL` 导出）；sn-signature / sn-watermark / sn-img-cropper 本就是无 canvas 设计（视图描边 / 视图平铺 / 几何上报由宿主光栅化），无需改动 |
 | 桌面 H5 鼠标手势（picker-view） | 已用 `#ifdef H5` 隔离，App 端仅触摸 |
 
 每条转换决定的明细（删除的规则、包的文本、重写的事件）见
