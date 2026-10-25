@@ -45,6 +45,17 @@ function query(pageNo: number, pageSize: number): void {
 - **纯滑动容器**：`refresher-enabled=false` + `load-more-enabled=false` 时不发请求、无页脚，组件退化为纯滚动容器；两个开关可独立控制、实时生效。
 - **手势环境**：uni 运行时（小程序 / App / uni H5）走原生 refresher 与触底事件；纯浏览器宿主（如文档预览）自动启用内置触摸手势模拟，下拉刷新与上拉加载同样可用。
 
+## 性能与模式
+
+sn-paging 在不同运行模式下使用不同的滚动与渲染方案：
+
+| | 内置 scroll-view 滚动 | 页面滚动 | uni-app x 原生渲染 |
+| --- | --- | --- | --- |
+| 说明 | 组件自带滚动容器，页面结构最简单，默认模式 | 列表跟随页面滚动（use-page-scroll 思路），适合长内容图文流 | App 端由 `@snui/uni-x` 转换为 uvue 产物，运行在原生渲染引擎上 |
+| 手势 | 原生 refresher + 触底事件，浏览器预览自动回退触摸模拟 | 页面级下拉刷新由宿主页面承担 | 原生 refresher，事件由 uts 层派发 |
+| 适用 | 绝大多数列表页（默认推荐） | 需要与页面其它内容共享滚动的场景 | 追求极致性能的 App 端列表 |
+| 状态 | 已支持 | 规划中 | 已支持（真机验证清单见 uni-app x 指南） |
+
 ## API
 
 ### Props

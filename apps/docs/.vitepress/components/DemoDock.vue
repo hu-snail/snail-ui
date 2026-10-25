@@ -38,10 +38,9 @@
  */
 
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useData, useRoute } from 'vitepress'
+import { useData, useRoute, withBase } from 'vitepress'
 import PhoneFrame from './PhoneFrame.vue'
 import { dockState, setDockOpen, type DockEntry } from '../utils/demo-dock'
-import { loadDemoComponent } from '../utils/demo-loader'
 
 const { lang } = useData()
 const route = useRoute()
@@ -60,25 +59,22 @@ const isDockRoute = computed(() => {
 })
 
 const entries = computed<DockEntry[]>(() => dockState.entries)
-const activeName = computed(() => dockState.active)
-/**
- * Async component cache, keyed by demo name.
- *
- * `defineAsyncComponent` returns a *new* component object on every call, and
- * Vue treats a new object as a different component — so resolving inside the
- * template would remount the demo (and re-run its side effects) on every
- * reactive tick. Caching per name keeps identity stable for the page.
- */
-const componentCache = new Map<string, ReturnType<typeof loadDemoComponent>>()
 
-function demoFor(name: string): ReturnType<typeof loadDemoComponent> {
-  let component = componentCache.get(name)
-  if (component === undefined) {
-    component = loadDemoComponent(name, isEn.value)
-    componentCache.set(name, component)
-  }
-  return component
-}
+/**
+ * The dock shows the standalone preview route for the page's component — one
+ * iframe instead of stacked demo bodies. Scenario switching, the uni-app /
+ * uni-app x mode split and the in-frame back button live in MpPreview.vue;
+ * rendering here would fight the docs layout for gestures and fixed layers.
+ */
+const previewComp = computed(() => {
+  const match = route.path.match(/\/components\/uni\/([^/.]+)/)
+  return match?.[1] ?? ''
+})
+
+const dockPreviewUrl = computed(() => {
+  if (previewComp.value === '') return ''
+  return withBase(`/preview-mp?comp=${previewComp.value}`)
+})
 
 /**
  * Navigation title for the device chrome — the page's own `<h1>`, which is
@@ -155,35 +151,22 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
       aria-label="Component preview"
     >
       <!--
-        One device, one scroll surface, every demo stacked inside it.
-
-        Rendering all demos here (instead of only the selected one) is what
-        makes the preview read like a real page: section headings, spacing and
-        scroll behaviour are exactly what a mini program shows. It also removes
-        the mount-order coupling the teleport design had — nothing crosses a
-        component boundary, so no `<Teleport>` target can go missing.
-
-        `Demo.vue` renders no inline preview on uni pages while this panel is
-        open, so each demo body exists exactly once.
+        One device, one iframe: the standalone preview route renders every
+        scenario of the page's component with its own browsing context
+        (gestures, fixed layers, in-frame history). `Demo.vue` renders no
+        inline preview on uni pages while this panel is open, so each demo
+        body exists exactly once — inside the frame.
       -->
       <div class="sn-dock__body">
         <PhoneFrame
-          v-if="entries.length > 0"
+          v-if="entries.length > 0 && dockPreviewUrl !== ''"
           :title="pageTitle"
         >
-          <section
-            v-for="(entry, index) in entries"
-            :id="'sn-dock-section-' + entry.name"
-            :key="entry.name"
-            class="sn-dock__section"
-            :class="[entry.name === activeName ? 'sn-dock__section--active' : '']"
-          >
-            <h4 class="sn-dock__section-title">
-              <span class="sn-dock__section-num">{{ index + 1 }}</span>
-              {{ entry.label }}
-            </h4>
-            <component :is="demoFor(entry.name)" />
-          </section>
+          <iframe
+            class="sn-dock__frame"
+            :src="dockPreviewUrl"
+            :title="pageTitle"
+          />
         </PhoneFrame>
         <p v-else class="sn-dock__empty">{{ t.empty }}</p>
       </div>
@@ -245,45 +228,13 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
   overflow: hidden;
 }
 
-/* One section per demo, stacked in document order inside the device. */
-.sn-dock__section {
-  padding: 4px 0 20px;
-  border-bottom: 1px solid var(--vp-c-divider);
-}
-
-.sn-dock__section:last-child {
-  border-bottom: 0;
-  padding-bottom: 4px;
-}
-
-/* Section heading: small numbered label, so the stacked page stays scannable. */
-.sn-dock__section-title {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin: 0 0 12px;
-  padding: 0;
+/* The preview surface: the demo page owns its own background and scrolling. */
+.sn-dock__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
   border: 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--vp-c-text-2);
-}
-
-.sn-dock__section-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 16px;
-  height: 16px;
-  border-radius: 4px;
-  background: var(--vp-c-default-soft);
-  color: var(--vp-c-text-3);
-  font-size: 10px;
-  font-variant-numeric: tabular-nums;
-}
-
-.sn-dock__section--active .sn-dock__section-title {
-  color: var(--vp-c-text-1);
+  background: #f8f8f8;
 }
 
 .sn-dock__empty {

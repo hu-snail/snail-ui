@@ -77,6 +77,19 @@ export function loadDemoComponent(name: string, isEn: boolean): Component {
   })
 }
 
+/**
+ * List the uni demo names of one component, e.g. `paging` →
+ * `['paging-mp-app', 'paging-mp-basic', …]`. Powers the preview route's
+ * scenario switcher; sorted so the chip order is stable across builds.
+ */
+export function listMpDemoNames(comp: string): string[] {
+  const prefix = `../demo/${comp}-mp`
+  return Object.keys(demoModules)
+    .filter((key) => key.startsWith(prefix))
+    .map((key) => key.slice('../demo/'.length).replace(/\.vue$/, ''))
+    .sort()
+}
+
 /** Raw source of a demo file (for the code panel), preferring the English shadow. */
 type RawModule = string
 

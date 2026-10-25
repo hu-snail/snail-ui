@@ -5,12 +5,21 @@
  * 布局对齐参考图：模拟器预览背景 #f8f8f8；每个分类是一张独立圆角卡片；
  * 分类标题完整显示（不省略）；搜索 + 分类 chips 实时过滤。
  * 数据与 sidebar 分组同源：overview-mp-data.ts（新增组件两边同步）。
+ *
+ * 条目点击进入该组件的独立预览路由（/preview-mp?comp=<short>）。本 demo
+ * 运行在预览 iframe 内，跳转只改写 iframe 自己的地址，返回即回到本目录。
  */
 import { computed, ref } from 'vue'
+import { withBase } from 'vitepress'
 import { OVERVIEW_GROUPS, OVERVIEW_TOTAL } from './overview-mp-data'
 
 const keyword = ref('')
 const activeGroup = ref('all')
+
+function openPreview(name: string): void {
+  const short = name.replace(/^sn-/, '')
+  window.location.href = withBase(`/preview-mp?comp=${short}`)
+}
 
 const groups = computed(() => {
   const key = keyword.value.trim().toLowerCase()
@@ -82,7 +91,13 @@ const shownTotal = computed(() => groups.value.reduce((sum, group) => sum + grou
         <text class="ov__card-title">{{ group.label }}</text>
         <text class="ov__card-count">{{ group.items.length }}</text>
       </view>
-      <view v-for="item in group.items" :key="item.name" class="ov__item" :hover-class="'ov__item--down'">
+      <view
+        v-for="item in group.items"
+        :key="item.name"
+        class="ov__item"
+        :hover-class="'ov__item--down'"
+        @click="openPreview(item.name)"
+      >
         <view class="ov__item-dot" />
         <view class="ov__item-body">
           <text class="ov__item-name">{{ item.name }}</text>

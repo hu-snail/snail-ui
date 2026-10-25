@@ -64,6 +64,17 @@ function query(pageNo: number, pageSize: number): void {
   and bottom events; plain browser hosts (the docs preview) automatically
   enable a built-in touch fallback, so both gestures work there too.
 
+## Performance and modes
+
+sn-paging targets different scroll/render pipelines per runtime:
+
+| | Built-in scroll-view | Page scroll | uni-app x native rendering |
+| --- | --- | --- | --- |
+| Description | The component owns its scroll container — the default, simplest shape | The list rides the page scroll (use-page-scroll idea) for long mixed content | On App, `@snui/uni-x` transforms the component into uvue output running on a native rendering engine |
+| Gestures | Native refresher + bottom events; browser previews fall back to touch simulation | Page-level refresh is owned by the host page | Native refresher with events dispatched from the uts layer |
+| Best for | Most list pages (recommended default) | Screens sharing one scroll with other content | Maximum-performance App lists |
+| Status | Supported | Planned | Supported (see the uni-app x guide's device checklist) |
+
 ## API
 
 ### Props

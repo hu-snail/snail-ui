@@ -147,9 +147,18 @@ onBeforeUnmount(() => {
 // 双语机制(naive-ui 官网同构):英文站点优先加载 `demo-en/<name>.vue`
 // 影子文件(渲染 + 代码面板都用它);不存在时回退中文 demo。影子文件是
 // 普通源码,保持 demo「可复制即真实用法」的教学价值;md 页零改动。
-import { useData } from 'vitepress'
+import { useData, withBase } from 'vitepress'
 const { lang } = useData()
 const isEn = computed(() => lang.value === 'en-US')
+
+/**
+ * uni demos render through the standalone preview route inside an iframe: the
+ * frame gives the demo its own browsing context (gestures, fixed layers and
+ * page scrolling behave like a real app screen) and its own history, so the
+ * in-frame back button returns to the overview without touching the docs
+ * route. The scenario itself lives in MpPreview.vue.
+ */
+const mpPreviewUrl = computed(() => withBase(`/preview-mp?demo=${props.name}`))
 
 // Async demo component, resolved through the shared loader so `DemoDock` and
 // this component can never disagree about which file a name maps to (English
@@ -348,8 +357,13 @@ watch(
     </div>
     <div v-else-if="isMobileDemo" class="sn-demo__stage">
       <ClientOnly>
-        <PhoneFrame>
-          <component :is="AsyncDemo" />
+        <PhoneFrame :height="640">
+          <iframe
+            class="sn-demo__frame"
+            :src="mpPreviewUrl"
+            :title="`uni preview: ${name}`"
+            loading="lazy"
+          />
         </PhoneFrame>
         <template #fallback>
           <div class="sn-demo__loading">
@@ -476,6 +490,15 @@ watch(
   justify-content: center;
   padding: 8px 0 0;
   min-height: 80px;
+}
+
+/* The in-frame preview surface: the demo page owns its own background. */
+.sn-demo__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #f8f8f8;
 }
 
 .sn-demo__loading {
