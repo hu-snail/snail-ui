@@ -8,6 +8,7 @@
 
 import { beforeAll, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import SnDatetimePickerView from './sn-datetime-picker-view.vue'
 
 /**
@@ -256,6 +257,50 @@ describe('sn-datetime-picker-view', () => {
       const w = mountView({ type: 'time' })
       const vm = w.vm as unknown as { correctValue(value: string | number): string | number }
       expect(vm.correctValue('9:5')).toBe('09:05')
+    })
+  })
+
+  describe('desktop H5 mouse + wheel', () => {
+    it('marks the root and columns for the mouse gesture path', () => {
+      const w = mountView({ type: 'time' })
+      expect(w.attributes('data-snui-mouse-gesture')).toBe('datetime-picker-view')
+      const columns = w.findAll('.sn-datetime-picker-view__column')
+      expect(columns[0]?.attributes('data-snui-column')).toBe('0')
+      expect(columns[1]?.attributes('data-snui-column')).toBe('1')
+    })
+
+    it('selects a row from a mouse drag on the minute column', async () => {
+      const w = mountView({ type: 'time', modelValue: '10:30' })
+      const minute = w.findAll('.sn-datetime-picker-view__column')[1]?.element
+      // One synchronous batch keeps the release inside the velocity window,
+      // so the drag commits exactly the travelled rows.
+      minute?.dispatchEvent(
+        new MouseEvent('mousedown', { bubbles: true, cancelable: true, clientY: 300 }),
+      )
+      document.dispatchEvent(new MouseEvent('mousemove', { clientY: 256 }))
+      document.dispatchEvent(new MouseEvent('mouseup', { clientY: 256 }))
+      await nextTick()
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual(['10:31'])
+    })
+
+    it('advances the hour on a wheel notch', async () => {
+      const w = mountView({ type: 'time', modelValue: '10:30' })
+      const hour = w.findAll('.sn-datetime-picker-view__column')[0]?.element
+      hour?.dispatchEvent(
+        new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100 }),
+      )
+      await nextTick()
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual(['11:30'])
+    })
+
+    it('stops the mouse listeners on unmount', () => {
+      const w = mountView({ type: 'time', modelValue: '10:30' })
+      const hour = w.findAll('.sn-datetime-picker-view__column')[0]?.element
+      w.unmount()
+      hour?.dispatchEvent(
+        new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100 }),
+      )
+      expect(w.emitted('update:modelValue')).toBeUndefined()
     })
   })
 })

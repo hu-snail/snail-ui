@@ -7,6 +7,7 @@
  */
 import { beforeAll, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 import SnPickerView from './sn-picker-view.vue'
 import type { PickerViewChangePayload } from './sn-picker-view-types'
 
@@ -305,6 +306,63 @@ describe('sn-picker-view', () => {
       const vm = w.vm as unknown as { resetColumns(): void }
       vm.resetColumns()
       expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['apple']])
+    })
+  })
+
+  describe('desktop H5 mouse + wheel', () => {
+    it('marks the root and columns for the mouse gesture path', () => {
+      const w = mountView()
+      expect(w.attributes('data-snui-mouse-gesture')).toBe('picker-view')
+      expect(w.find('.sn-picker-view__column').attributes('data-snui-column')).toBe('0')
+    })
+
+    it('selects a row from a mouse drag', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column').element
+      // One synchronous batch: the release lands well inside the velocity
+      // window, so the drag commits exactly the travelled rows.
+      column.dispatchEvent(
+        new MouseEvent('mousedown', { bubbles: true, cancelable: true, clientY: 300 }),
+      )
+      document.dispatchEvent(new MouseEvent('mousemove', { clientY: 256 }))
+      document.dispatchEvent(new MouseEvent('mouseup', { clientY: 256 }))
+      await nextTick()
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']])
+    })
+
+    it('does not commit a mouse click in place', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column').element
+      column.dispatchEvent(
+        new MouseEvent('mousedown', { bubbles: true, cancelable: true, clientY: 300 }),
+      )
+      document.dispatchEvent(new MouseEvent('mouseup', { clientY: 298 }))
+      await nextTick()
+      expect(w.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('selects the next row on a wheel notch', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column').element
+      column.dispatchEvent(
+        new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100 }),
+      )
+      await nextTick()
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']])
+      expect(w.emitted('change')?.at(-1)?.[0]).toMatchObject({
+        selectedValues: ['banana'],
+        columnIndex: 0,
+      })
+    })
+
+    it('stops the mouse listeners on unmount', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column').element
+      w.unmount()
+      column.dispatchEvent(
+        new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY: 100 }),
+      )
+      expect(w.emitted('update:modelValue')).toBeUndefined()
     })
   })
 })

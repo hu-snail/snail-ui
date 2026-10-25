@@ -28,6 +28,13 @@
  * state is component state that dies with the component. The column binds
  * `@touchmove.stop.prevent` so the page cannot scroll the gesture away.
  *
+ * ## Desktop H5 input — mouse drag + wheel (additive, AGENTS.md §112)
+ *
+ * `bindMouseGestures` from the shared engine is attached to the root element
+ * on mount — browser hosts only, mini-programs have no `document`. A mouse
+ * drag runs the same drag core as touch; the wheel advances one committed row
+ * per notch.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -35,7 +42,7 @@
  *   - 日历面板（月份网格）— 用 sn-calendar-view
  */
 
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type { PickerValue } from '../sn-picker-view/sn-picker-view-types'
 import { createRollerDrag } from '../sn-picker-view/sn-picker-view-drag'
 import {
@@ -355,7 +362,27 @@ const {
   onTouchEnd,
   onTouchCancel,
   shouldIgnoreTap,
+  bindMouseGestures,
 } = drag
+
+/* ── Desktop H5: mouse drag + wheel (additive) ─────────────────────────── */
+
+const rootRef = ref<unknown>(null)
+let disposeMouseGestures: (() => void) | null = null
+
+onMounted(() => {
+  // Browser hosts only — a mini-program page has no `document`, and uni H5
+  // wraps `<view>` in a component instance, so unwrap `$el` when present.
+  if (typeof document === 'undefined') return
+  const el = (rootRef.value as { $el?: unknown } | null)?.$el
+    ?? (rootRef.value as unknown)
+  if (el instanceof HTMLElement) disposeMouseGestures = bindMouseGestures(el)
+})
+
+onBeforeUnmount(() => {
+  disposeMouseGestures?.()
+  disposeMouseGestures = null
+})
 
 function onItemTap(columnIndex: number, rowIndex: number): void {
   // Uni re-fires `tap` on the touchstart target when the finger lifts; after
@@ -414,9 +441,11 @@ const ariaValue = computed(() =>
 
 <template>
   <view
+    ref="rootRef"
     :class="rootClass"
     :style="rootStyle"
     :data-snui-component="'datetime-picker-view'"
+    :data-snui-mouse-gesture="'datetime-picker-view'"
     role="group"
     :aria-label="ariaValue"
   >
@@ -424,6 +453,7 @@ const ariaValue = computed(() =>
       v-for="(column, columnIndex) in columns"
       :key="column.type"
       class="sn-datetime-picker-view__column"
+      :data-snui-column="columnIndex"
       :style="{ height: columnHeightRpx }"
       @touchstart="onTouchStart($event, columnIndex)"
       @touchmove.stop.prevent="onTouchMove($event, columnIndex)"

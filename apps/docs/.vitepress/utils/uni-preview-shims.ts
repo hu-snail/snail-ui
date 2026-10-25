@@ -279,12 +279,17 @@ function dispatchBridgedTouch(
  * the touch *target* pinned to the mousedown element: per the touch-event
  * spec every event of one gesture targets the start element, which is what
  * picker columns and sliders rely on while the pointer travels.
+ *
+ * Components that own their mouse input (`[data-snui-mouse-gesture]`, e.g.
+ * the picker rollers) are skipped: bridging them would drive their drag core
+ * twice per gesture.
  */
 export function bindMouseToTouch(root: ParentNode): () => void {
   const onMouseDown = (event: MouseEvent): void => {
     if (event.button !== 0) return
     const target = event.target
     if (!(target instanceof Element) || !inPreview(target)) return
+    if (target.closest('[data-snui-mouse-gesture]') !== null) return
     if (bridged !== null) return
     bridged = { target, identifier: bridgedId }
     dispatchBridgedTouch('touchstart', target, event.clientX, event.clientY)
@@ -296,9 +301,16 @@ export function bindMouseToTouch(root: ParentNode): () => void {
   }
 
   const onMouseUp = (event: MouseEvent): void => finish('touchend', event)
-  // Leaving the window mid-drag ends the gesture like a system cancel.
+  // A `mouseleave` must only end the gesture when the pointer left the
+  // window. This listener runs in the capture phase, so it also sees every
+  // element-level `mouseleave` — crossing a picker row or a slider tick fires
+  // one constantly, and cancelling on those killed any drag longer than one
+  // element ("滚轮拖不动"). Only the event that targets the document itself
+  // is the left-the-window signal.
   const onMouseLeave = (event: MouseEvent): void => {
-    if (bridged !== null) finish('touchcancel', event)
+    if (bridged === null) return
+    if (event.target !== document && event.target !== document.documentElement) return
+    finish('touchcancel', event)
   }
   const onBlur = (): void => {
     if (bridged === null) return

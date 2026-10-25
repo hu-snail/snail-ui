@@ -5,7 +5,7 @@
  * deterministic — no fake timers, no wall clock. Component-level gesture
  * coverage lives in `sn-picker-view.test.ts`.
  */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { createRollerDrag, type RollerDragOptions } from './sn-picker-view-drag'
 
 /**
@@ -220,6 +220,221 @@ describe('sn-picker-view-drag', () => {
       api.onTouchEnd(touchEnd(100), 0)
       const fiveRows = api.snapDurationMs.value
       expect(fiveRows).toBeGreaterThan(oneRow)
+    })
+  })
+
+  /* ── Desktop H5: mouse drag + wheel ─────────────────────────────────── */
+
+  describe('mouse + wheel (desktop H5)', () => {
+    /** Cleanups to run after each test. */
+    const teardown: Array<() => void> = []
+
+    afterEach(() => {
+      while (teardown.length > 0) teardown.pop()?.()
+    })
+
+    /** A root + `data-snui-column` column, as the SFC renders them. */
+    function mountSurface(
+      api: ReturnType<typeof createRollerDrag>,
+    ): { column: HTMLElement, dispose: () => void } {
+      const root = document.createElement('div')
+      const column = document.createElement('div')
+      column.setAttribute('data-snui-column', '0')
+      root.appendChild(column)
+      document.body.appendChild(root)
+      const disposeMouse = api.bindMouseGestures(root)
+      const dispose = (): void => {
+        disposeMouse()
+        root.remove()
+      }
+      teardown.push(dispose)
+      return { column, dispose }
+    }
+
+    /** Document-level observer for one event type; auto-removed. */
+    function observeDefaultPrevented(type: string): () => boolean {
+      let prevented = false
+      const listener = (event: Event): void => {
+        prevented = event.defaultPrevented
+      }
+      // Bubble phase, so the engine's root listener (dispatched first for a
+      // bubbling event) has already run by the time this fires.
+      document.addEventListener(type, listener)
+      teardown.push(() => document.removeEventListener(type, listener))
+      return () => prevented
+    }
+
+    function mouseDown(el: Element, y: number, button = 0): void {
+      el.dispatchEvent(
+        new MouseEvent('mousedown', { bubbles: true, cancelable: true, button, clientY: y }),
+      )
+    }
+
+    function mouseMove(y: number): void {
+      document.dispatchEvent(new MouseEvent('mousemove', { clientY: y }))
+    }
+
+    function mouseUp(y: number): void {
+      document.dispatchEvent(new MouseEvent('mouseup', { clientY: y }))
+    }
+
+    function wheel(el: Element, deltaY: number): void {
+      el.dispatchEvent(new WheelEvent('wheel', { bubbles: true, cancelable: true, deltaY }))
+    }
+
+    it('commits from a mouse drag like a touch drag', () => {
+      const { api, commits } = mountEngine()
+      const surface = mountSurface(api)
+      mouseDown(surface.column, 300)
+      mouseMove(256)
+      mouseUp(256)
+      // 44px up at the 375px reference viewport = exactly one row.
+      expect(commits).toEqual([[0, 1]])
+    })
+
+    it('tracks the roller with the pointer while the button is down', () => {
+      const { api } = mountEngine()
+      const surface = mountSurface(api)
+      mouseDown(surface.column, 300)
+      mouseMove(256)
+      // Base offset for row 0 is 220rpx; one row up subtracts 88rpx.
+      expect(api.columnOffsetRpx(0)).toBe(220 - 88)
+      mouseUp(256)
+    })
+
+    it('emits pickstart / pickend for a mouse drag', () => {
+      const { api, starts, ends } = mountEngine()
+      const surface = mountSurface(api)
+      mouseDown(surface.column, 300)
+      mouseMove(256)
+      mouseUp(256)
+      expect(starts).toHaveLength(1)
+      expect(ends).toHaveLength(1)
+    })
+
+    it('does not commit a mouse click in place', () => {
+      const { api, commits } = mountEngine()
+      const surface = mountSurface(api)
+      mouseDown(surface.column, 300)
+      mouseUp(298)
+      expect(commits).toEqual([])
+    })
+
+    it('ignores non-left buttons and presses outside a column', () => {
+      const { api, starts } = mountEngine()
+      const surface = mountSurface(api)
+      mouseDown(surface.column, 300, 2)
+      mouseDown(surface.column.parentElement as Element, 300)
+      expect(starts).toEqual([])
+    })
+
+    it('prevents the default mousedown so the drag cannot select page text', () => {
+      const { api } = mountEngine()
+      const surface = mountSurface(api)
+      const wasPrevented = observeDefaultPrevented('mousedown')
+      mouseDown(surface.column, 300)
+      mouseUp(300)
+      expect(wasPrevented()).toBe(true)
+    })
+
+    it('suppresses the synthetic mouse event that follows a touch', () => {
+      const { api, tick, starts } = mountEngine()
+      const surface = mountSurface(api)
+      api.onTouchStart(touchStart(300), 0)
+      api.onTouchEnd(touchEnd(300), 0)
+      tick(100)
+      mouseDown(surface.column, 300)
+      expect(starts).toHaveLength(1)
+      tick(600)
+      mouseDown(surface.column, 300)
+      expect(starts).toHaveLength(2)
+      mouseUp(300)
+    })
+
+    it('keeps dragging when the pointer merely crosses an element boundary', () => {
+      const { api, commits, ends } = mountEngine()
+      const surface = mountSurface(api)
+      mouseDown(surface.column, 300)
+      // Crossing rows fires element-level `mouseleave`s — they must not end
+      // the gesture (the "滚轮拖不动" regression).
+      surface.column.dispatchEvent(new MouseEvent('mouseleave', { cancelable: true }))
+      mouseMove(256)
+      expect(api.dragColumn.value).toBe(0)
+      mouseUp(256)
+      expect(commits).toEqual([[0, 1]])
+      expect(ends).toHaveLength(1)
+    })
+
+    it('cancels the drag when the pointer leaves the window', () => {
+      const { api, commits, ends } = mountEngine()
+      const surface = mountSurface(api)
+      mouseDown(surface.column, 300)
+      mouseMove(256)
+      document.dispatchEvent(new MouseEvent('mouseleave', { cancelable: true }))
+      expect(api.dragColumn.value).toBe(null)
+      expect(ends).toHaveLength(1)
+      mouseUp(256)
+      expect(commits).toEqual([])
+    })
+
+    it('stops responding after dispose', () => {
+      const { api, commits, starts } = mountEngine()
+      const surface = mountSurface(api)
+      surface.dispose()
+      mouseDown(surface.column, 300)
+      wheel(surface.column, 100)
+      expect(starts).toEqual([])
+      expect(commits).toEqual([])
+    })
+
+    it('advances one row per wheel notch', () => {
+      // `indexOf` must follow the host selection update between notches.
+      let current = 0
+      const { api, commits } = mountEngine({ indexOf: () => current })
+      const surface = mountSurface(api)
+      wheel(surface.column, 100)
+      current = 1
+      wheel(surface.column, 100)
+      expect(commits).toEqual([[0, 1], [0, 2]])
+    })
+
+    it('scrolls back on a negative wheel notch', () => {
+      const { api, commits } = mountEngine({ indexOf: () => 3 })
+      const surface = mountSurface(api)
+      wheel(surface.column, -100)
+      expect(commits).toEqual([[0, 2]])
+    })
+
+    it('skips a disabled row on wheel travel', () => {
+      const { api, commits } = mountEngine({ isRowDisabled: (_c, row) => row === 1 })
+      const surface = mountSurface(api)
+      wheel(surface.column, 100)
+      expect(commits).toEqual([[0, 2]])
+    })
+
+    it('clamps at the column ends without committing', () => {
+      const { api, commits } = mountEngine({ indexOf: () => 7 })
+      const surface = mountSurface(api)
+      wheel(surface.column, 100)
+      wheel(surface.column, 300)
+      expect(commits).toEqual([])
+    })
+
+    it('accumulates fractional notches into whole rows', () => {
+      const { api, commits } = mountEngine()
+      const surface = mountSurface(api)
+      wheel(surface.column, 60)
+      expect(commits).toEqual([])
+      wheel(surface.column, 60)
+      expect(commits).toEqual([[0, 1]])
+    })
+
+    it('prevents the default page scroll on wheel', () => {
+      const { api } = mountEngine()
+      const surface = mountSurface(api)
+      const wasPrevented = observeDefaultPrevented('wheel')
+      wheel(surface.column, 100)
+      expect(wasPrevented()).toBe(true)
     })
   })
 })

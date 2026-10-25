@@ -319,6 +319,66 @@ describe('mouse to touch bridge', () => {
 
     expect(fired).toBe(false)
   })
+
+  it('should keep bridging when the pointer crosses an element boundary', () => {
+    // Regression: the capture-phase mouseleave listener used to cancel the
+    // bridged gesture on every element-level mouseleave — a drag longer than
+    // one picker row died as touchcancel and the wheel read as "拖不动".
+    document.body.innerHTML =
+      '<div class="sn-demo"><view id="track"><view id="row"></view></view></div>'
+    dispose = installUniPreviewShims()
+    const track = document.getElementById('track')
+    const row = document.getElementById('row')
+    const seen: string[] = []
+    for (const type of ['touchmove', 'touchcancel', 'touchend']) {
+      track?.addEventListener(type, () => seen.push(type))
+    }
+
+    track?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 20 }))
+    row?.dispatchEvent(new MouseEvent('mouseleave', { cancelable: true }))
+    document.body.dispatchEvent(
+      new MouseEvent('mousemove', { bubbles: true, clientX: 40, clientY: 20 }),
+    )
+    document.body.dispatchEvent(
+      new MouseEvent('mouseup', { bubbles: true, clientX: 40, clientY: 20 }),
+    )
+
+    expect(seen).toEqual(['touchmove', 'touchend'])
+  })
+
+  it('should cancel the bridged drag when the pointer leaves the window', () => {
+    document.body.innerHTML = '<div class="sn-demo"><view id="track"></view></div>'
+    dispose = installUniPreviewShims()
+    const track = document.getElementById('track')
+    const seen: string[] = []
+    for (const type of ['touchcancel', 'touchend']) {
+      track?.addEventListener(type, () => seen.push(type))
+    }
+
+    track?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 20 }))
+    // A mouseleave whose target is the document itself = the pointer left
+    // the window (mouseleave does not bubble, so only that one arrives here).
+    document.dispatchEvent(new MouseEvent('mouseleave', { cancelable: true }))
+
+    expect(seen).toEqual(['touchcancel'])
+  })
+
+  it('should not bridge mousedown on components that own their mouse input', () => {
+    // The picker rollers handle mouse drag + wheel themselves; bridging them
+    // would drive their drag core twice per gesture.
+    document.body.innerHTML =
+      '<div class="sn-demo"><view id="roller" data-snui-mouse-gesture="picker-view"></view></div>'
+    dispose = installUniPreviewShims()
+    const roller = document.getElementById('roller')
+    let fired = false
+    roller?.addEventListener('touchstart', () => {
+      fired = true
+    })
+
+    roller?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 20 }))
+
+    expect(fired).toBe(false)
+  })
 })
 
 /**

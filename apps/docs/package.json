@@ -10,7 +10,7 @@
     "preview": "vitepress preview . --port 4318",
     "lint": "echo 'docs lint: noop (markdown)'",
     "typecheck": "echo 'docs typecheck: noop (markdown)'",
-    "test": "echo 'docs test: noop'",
+    "test": "vitest run .vitepress/utils",
     "clean": "rm -rf .vitepress/cache .vitepress/dist docs"
   },
   "dependencies": {
@@ -25,6 +25,8 @@
   },
   "devDependencies": {
     "esbuild": "^0.21.5",
+    "happy-dom": "^15.11.7",
+    "vitest": "^2.1.8",
     "vitepress": "^1.5.0",
     "vue": "^3.5.43"
   }

@@ -35,11 +35,30 @@
  * gesture away) and `.prevent` blocks the native scroll on H5 / App. The
  * roller must therefore own the whole vertical gesture once a drag starts.
  *
+ * ## Desktop H5: mouse + wheel (additive, AGENTS.md §112)
+ *
+ * A uni H5 page opened in a desktop browser has a mouse, and browsers do not
+ * translate mouse drags into touch events — so a touch-only roller was dead on
+ * the desktop. `bindMouseGestures(root)` adds the two missing inputs, browser
+ * hosts only (`typeof document !== 'undefined'`; mini-programs never call it):
+ *
+ *   - **mouse drag** — `mousedown` on a column anchors the same drag core the
+ *     touch path uses; `mousemove` / `mouseup` are tracked on `document` (a
+ *     mouse gesture may travel anywhere in the page) and detached on release,
+ *     unmount or window exit. Synthetic mouse events that follow a real touch
+ *     (tap → mousedown/click) are suppressed via a timestamp window, so a
+ *     touch never double-fires the drag.
+ *   - **wheel** — one committed row per accumulated `deltaY` notch; `preventDefault`
+ *     keeps the page from scrolling instead of the wheel. Disabled rows are
+ *     skipped in the travel direction, exactly like a settle.
+ *
  * ## Lifecycle (AGENTS.md §41 / §82)
  *
- * No listeners, no timers, no observers: drag state is plain component state
- * reset on `touchend` / `touchcancel` and dies with the component. Nothing to
- * dispose. Timing uses `Date.now()` reads only.
+ * The touch path owns no listeners, no timers, no observers: drag state is
+ * plain component state reset on `touchend` / `touchcancel` and dies with the
+ * component. The mouse path owns document-level followers only while a drag is
+ * running plus the two root listeners, all removed by the disposer the
+ * component calls on unmount. Timing uses `Date.now()` reads only.
  */
 
 import { ref, type Ref } from 'vue'
@@ -69,6 +88,15 @@ const SNAP_MS_PER_ROW = 40
 
 /** A velocity sample shorter than this is noise, not a flick. */
 const MIN_SAMPLE_MS = 16
+
+/** mousedown within this window after a touch is the tap's synthetic mouse. */
+const MOUSE_SUPPRESS_MS = 500
+
+/** Wheel: accumulated deltaY per committed row (≈ one notch ≈ 100px). */
+const WHEEL_NOTCH_PX = 100
+
+/** Wheel accumulator resets after the wheel idles this long. */
+const WHEEL_IDLE_MS = 200
 
 /** Loose shape of a touch point across uni-app / DOM events. */
 interface TouchPointLike {
@@ -132,6 +160,15 @@ export interface RollerDragApi {
    * settled — row taps must be ignored until the next gesture begins.
    */
   shouldIgnoreTap(): boolean
+  /**
+   * Desktop H5 input (additive): mouse drag + wheel on the component root.
+   *
+   * Columns are located through their `data-snui-column="<index>"` attribute,
+   * which the SFCs put on every column element. `HTMLElement` (not `Element`)
+   * so the mouse / wheel listeners get their typed event maps. Returns a
+   * disposer that the component calls on unmount (AGENTS.md §41).
+   */
+  bindMouseGestures(root: HTMLElement): () => void
 }
 
 /** First non-empty touch list — `touchend` only populates `changedTouches`. */
@@ -191,6 +228,16 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
   let windowT = 0
   let lastY = 0
   let lastT = 0
+
+  /** `now()` of the last touch event — suppresses the tap's synthetic mouse. */
+  let lastTouchAt = -Infinity
+  /** True while the running gesture comes from the mouse (not touch). */
+  let isMouseGesture = false
+  /** Removes the document-level mouse followers; `null` when no mouse drag. */
+  let detachMouseFollowers: (() => void) | null = null
+  /** Wheel accumulator (px) and its last event time. */
+  let wheelAccumY = 0
+  let lastWheelAt = -Infinity
 
   const now = options.now ?? ((): number => Date.now())
 
@@ -303,72 +350,231 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
     return height / visible
   }
 
-  function onTouchStart(event: Event, columnIndex: number): void {
-    if (options.isDisabled()) return
-    const list = readTouchList(event)
-    // A second finger is a pinch, not a drag — keep the running gesture.
-    if (list.length > 1) return
-    if (options.lengthOf(columnIndex) <= 0) return
-    const y = touchY(event, null)
-    if (y === null) return
+  /** Anchor a gesture on a column — shared by the touch and mouse starts. */
+  function beginDrag(columnIndex: number, y: number): void {
     dragColumn.value = columnIndex
     anchorIndex = options.indexOf(columnIndex)
     anchorRpx = baseOffsetRpx(columnIndex)
     startY = y
     movedPx = 0
-    rowHeightPx = measureRowHeightPx(event)
-    identifier = list[0]?.identifier ?? null
     dragDelta.value = 0
     isDragging.value = true
     resetSamples(y, now())
     options.onStart()
   }
 
-  function onTouchMove(event: Event, columnIndex: number): void {
-    if (dragColumn.value !== columnIndex) return
-    const y = touchY(event, identifier)
-    if (y === null) return
-    const time = now()
-    trackSample(y, time)
+  /** Track the pointer through a running gesture — shared move body. */
+  function dragTo(y: number): void {
+    const active = dragColumn.value
+    if (active === null) return
+    trackSample(y, now())
     movedPx = Math.max(movedPx, Math.abs(y - startY))
     dragDelta.value = dampDelta((y - startY) * rpxPerPixel())
     if (options.isImmediate()) {
-      options.commit(columnIndex, resolveRow(columnIndex, dragDelta.value))
+      options.commit(active, resolveRow(active, dragDelta.value))
     }
   }
 
-  function onTouchEnd(event: Event, columnIndex: number): void {
+  /** Settle a released gesture — shared end body. */
+  function settleDrag(y: number): void {
     const active = dragColumn.value
     if (active === null) return
-    // `touchend` fires on the element that received `touchstart`; still read
-    // the position from whichever column owns the gesture.
-    const y = touchY(event, identifier) ?? lastY
     const time = now()
     trackSample(y, time)
     const rawDelta = (y - startY) * rpxPerPixel()
     movedPx = Math.max(movedPx, Math.abs(y - startY))
     const settledDelta = dampDelta(rawDelta)
     const drag = movedPx >= DRAG_THRESHOLD_PX
-    dragColumn.value = null
-    isDragging.value = false
-    dragDelta.value = 0
+    endGesture()
     if (drag && options.lengthOf(active) > 0) {
       const target = resolveRow(active, settledDelta + flingRpx(y, time))
       snapDurationMs.value = settleDurationMs(target)
       options.commit(active, target)
     }
     options.onEnd()
+  }
+
+  /** Reset the gesture state without committing. */
+  function cancelDrag(): void {
+    if (dragColumn.value === null) return
+    endGesture()
+    options.onEnd()
+  }
+
+  function endGesture(): void {
+    dragColumn.value = null
+    isDragging.value = false
+    dragDelta.value = 0
+    isMouseGesture = false
+    detachMouseFollowers?.()
+    detachMouseFollowers = null
+  }
+
+  function onTouchStart(event: Event, columnIndex: number): void {
+    if (options.isDisabled()) return
+    if (dragColumn.value !== null) return
+    const list = readTouchList(event)
+    // A second finger is a pinch, not a drag — keep the running gesture.
+    if (list.length > 1) return
+    if (options.lengthOf(columnIndex) <= 0) return
+    const y = touchY(event, null)
+    if (y === null) return
+    rowHeightPx = measureRowHeightPx(event)
+    identifier = list[0]?.identifier ?? null
+    lastTouchAt = now()
+    isMouseGesture = false
+    beginDrag(columnIndex, y)
+  }
+
+  function onTouchMove(event: Event, columnIndex: number): void {
+    if (isMouseGesture) return
+    if (dragColumn.value !== columnIndex) return
+    const y = touchY(event, identifier)
+    if (y === null) return
+    lastTouchAt = now()
+    dragTo(y)
+  }
+
+  function onTouchEnd(event: Event, columnIndex: number): void {
+    if (isMouseGesture) return
+    if (dragColumn.value === null) return
+    // `touchend` fires on the element that received `touchstart`; still read
+    // the position from whichever column owns the gesture.
+    const y = touchY(event, identifier) ?? lastY
+    lastTouchAt = now()
+    settleDrag(y)
     void columnIndex
   }
 
   function onTouchCancel(columnIndex: number): void {
     void columnIndex
+    if (isMouseGesture) return
     if (dragColumn.value === null) return
     // A system gesture stole the touch: settle back without committing.
-    dragColumn.value = null
-    isDragging.value = false
-    dragDelta.value = 0
-    options.onEnd()
+    cancelDrag()
+  }
+
+  /* ── Desktop H5: mouse drag + wheel (additive) ─────────────────────────── */
+
+  /** Column element + index for a DOM target, or null outside any column. */
+  function columnOf(target: EventTarget | null): { el: Element, index: number } | null {
+    if (!(target instanceof Element)) return null
+    const column = target.closest('[data-snui-column]')
+    if (column === null) return null
+    // `Number(null)` is 0, so an absent/empty attribute must be rejected
+    // before the numeric read.
+    const raw = column.getAttribute('data-snui-column')
+    if (raw === null || raw.trim() === '') return null
+    const index = Number(raw)
+    if (!Number.isInteger(index) || index < 0) return null
+    return { el: column, index }
+  }
+
+  /**
+   * Row `steps` away from `from`, skipping disabled rows in the travel
+   * direction. Stops at the column bounds without moving.
+   */
+  function stepRow(columnIndex: number, from: number, steps: number): number {
+    const last = Math.max(options.lengthOf(columnIndex) - 1, 0)
+    const direction = steps > 0 ? 1 : -1
+    let row = from
+    let left = Math.abs(steps)
+    while (left > 0) {
+      row += direction
+      if (row < 0 || row > last) return from
+      if (!options.isRowDisabled(columnIndex, row)) left -= 1
+    }
+    return row
+  }
+
+  /**
+   * Track the running mouse drag from `document`.
+   *
+   * `mouseleave` does not bubble, so a bubble-phase listener on `document`
+   * only fires for the one that targets the document itself — the pointer
+   * left the window. Crossing element boundaries inside the page fires on
+   * those elements and never reaches this listener, so a drag that travels
+   * across rows is not cancelled.
+   */
+  function attachMouseFollowers(): void {
+    const onMove = (event: MouseEvent): void => dragTo(event.clientY)
+    const onUp = (event: MouseEvent): void => settleDrag(event.clientY)
+    const onLeaveWindow = (): void => cancelDrag()
+    const onBlur = (): void => cancelDrag()
+    document.addEventListener('mousemove', onMove)
+    document.addEventListener('mouseup', onUp)
+    document.addEventListener('mouseleave', onLeaveWindow)
+    window.addEventListener('blur', onBlur)
+    detachMouseFollowers = () => {
+      document.removeEventListener('mousemove', onMove)
+      document.removeEventListener('mouseup', onUp)
+      document.removeEventListener('mouseleave', onLeaveWindow)
+      window.removeEventListener('blur', onBlur)
+      detachMouseFollowers = null
+    }
+  }
+
+  function bindMouseGestures(root: HTMLElement): () => void {
+    // Mini-programs have no document; the SFCs skip the call, but the guard
+    // keeps a stray use in another host inert instead of crashing.
+    if (typeof document === 'undefined') return () => {}
+
+    const onMouseDown = (event: MouseEvent): void => {
+      if (event.button !== 0) return
+      if (options.isDisabled()) return
+      if (dragColumn.value !== null) return
+      // The synthetic mouse events that follow a touch (tap → mousedown /
+      // click) are the same gesture, not a new drag.
+      if (now() - lastTouchAt < MOUSE_SUPPRESS_MS) return
+      const column = columnOf(event.target)
+      if (column === null) return
+      if (options.lengthOf(column.index) <= 0) return
+      // Exact row height for this desktop zoom level, straight from the box.
+      const rect = column.el.getBoundingClientRect()
+      const visible = Math.max(options.visibleCount(), 1)
+      rowHeightPx = rect.height > 0 ? rect.height / visible : 0
+      identifier = null
+      isMouseGesture = true
+      beginDrag(column.index, event.clientY)
+      // A roller drag must not select page text along the way.
+      event.preventDefault()
+      attachMouseFollowers()
+    }
+
+    const onWheel = (event: WheelEvent): void => {
+      if (event.defaultPrevented) return
+      if (options.isDisabled()) return
+      // A wheel notch while a drag is running would commit from a stale
+      // anchor; the running gesture owns the column.
+      if (dragColumn.value !== null) return
+      const column = columnOf(event.target)
+      if (column === null) return
+      if (options.lengthOf(column.index) <= 0) return
+      // The wheel drives the roller; the page must not scroll under it.
+      event.preventDefault()
+      const time = now()
+      if (time - lastWheelAt > WHEEL_IDLE_MS) wheelAccumY = 0
+      lastWheelAt = time
+      // Firefox reports lines, every other engine pixels.
+      const lineScale = event.deltaMode === 1 ? 33 : 1
+      wheelAccumY += event.deltaY * lineScale
+      const rows = Math.trunc(wheelAccumY / WHEEL_NOTCH_PX)
+      if (rows === 0) return
+      wheelAccumY -= rows * WHEEL_NOTCH_PX
+      const from = options.indexOf(column.index)
+      const target = stepRow(column.index, from, rows)
+      if (target === from) return
+      snapDurationMs.value = settleDurationMs(target)
+      options.commit(column.index, target)
+    }
+
+    root.addEventListener('mousedown', onMouseDown)
+    root.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      root.removeEventListener('mousedown', onMouseDown)
+      root.removeEventListener('wheel', onWheel)
+      endGesture()
+    }
   }
 
   return {
@@ -386,5 +592,6 @@ export function createRollerDrag(options: RollerDragOptions): RollerDragApi {
     shouldIgnoreTap(): boolean {
       return movedPx >= DRAG_THRESHOLD_PX
     },
+    bindMouseGestures,
   }
 }

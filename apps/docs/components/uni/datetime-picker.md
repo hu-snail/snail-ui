@@ -80,6 +80,10 @@ type="time" 写回 "HH:mm" 字符串；beforeConfirm 返回 false 时弹层不�
 - 取消 / 确认为 `role="button"`，带 `aria-label`。
 - 滚筒本体的 `aria-label` 与隐藏 live region 携带当前值。
 
+## 桌面端 H5 交互
+
+H5 端在触摸之外支持桌面输入：弹层内的滚筒可按住鼠标左键上下拖动滚动选择，也可使用鼠标滚轮——每滚一格前进一行（两端按 `minDate` / `maxDate` 与时分秒边界收边）。滚轮手势由滚筒接管，页面不会跟着滚动；点击某一行也可直接选中。小程序端保持触摸手势。
+
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：

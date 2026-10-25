@@ -76,6 +76,10 @@ This component exposes no slots.
 - Cancel / confirm are `role="button"` with `aria-label`.
 - The sheet itself is the `sn-popup` panel, already `role="dialog"` + `aria-modal`.
 
+## Desktop H5 input
+
+Beyond touch, the H5 build accepts desktop input on the sheet roller: hold the left mouse button and drag up or down to scroll, or turn the mouse wheel — one committed row per notch (disabled rows are skipped, both ends clamp). The wheel gesture drives the roller instead of scrolling the page; clicking a row selects it directly. Mini-program targets stay touch-only.
+
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:

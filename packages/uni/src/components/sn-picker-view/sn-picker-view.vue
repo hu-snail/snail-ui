@@ -32,6 +32,14 @@
  * `catchtouchmove` on mini-programs so the page cannot scroll the gesture
  * away (the old "滑不动"), and `.prevent` blocks native scroll on H5 / App.
  *
+ * ## Desktop H5 input — mouse drag + wheel (additive, AGENTS.md §112)
+ *
+ * `bindMouseGestures` from the shared engine is attached to the root element
+ * on mount — browser hosts only, mini-programs have no `document`. A mouse
+ * drag runs the same drag core as touch; the wheel advances one committed row
+ * per notch. The root carries `data-snui-mouse-gesture` so the docs-preview
+ * mouse→touch bridge can leave these gestures to the component.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -39,7 +47,7 @@
  *   - 日期列生成 — 用 sn-datetime-picker-view
  */
 
-import { computed } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import type {
   NormalizedPickerOption,
   PickerColumn,
@@ -215,7 +223,27 @@ const {
   onTouchEnd,
   onTouchCancel,
   shouldIgnoreTap,
+  bindMouseGestures,
 } = drag
+
+/* ── Desktop H5: mouse drag + wheel (additive) ─────────────────────────── */
+
+const rootRef = ref<unknown>(null)
+let disposeMouseGestures: (() => void) | null = null
+
+onMounted(() => {
+  // Browser hosts only — a mini-program page has no `document`, and uni H5
+  // wraps `<view>` in a component instance, so unwrap `$el` when present.
+  if (typeof document === 'undefined') return
+  const el = (rootRef.value as { $el?: unknown } | null)?.$el
+    ?? (rootRef.value as unknown)
+  if (el instanceof HTMLElement) disposeMouseGestures = bindMouseGestures(el)
+})
+
+onBeforeUnmount(() => {
+  disposeMouseGestures?.()
+  disposeMouseGestures = null
+})
 
 /** Commit a row index for one column: emits `update:modelValue` + `change`. */
 function commit(columnIndex: number, rowIndex: number): void {
@@ -354,9 +382,11 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
 
 <template>
   <view
+    ref="rootRef"
     :class="rootClass"
     :style="rootStyle"
     :data-snui-component="'picker-view'"
+    :data-snui-mouse-gesture="'picker-view'"
     role="group"
     :aria-disabled="disabled ? 'true' : undefined"
   >
@@ -364,6 +394,7 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       v-for="(column, columnIndex) in resolvedColumns"
       :key="columnIndex"
       class="sn-picker-view__column"
+      :data-snui-column="columnIndex"
       :style="{ height: columnHeightRpx }"
       @touchstart="onTouchStart($event, columnIndex)"
       @touchmove.stop.prevent="onTouchMove($event, columnIndex)"

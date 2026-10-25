@@ -3288,6 +3288,12 @@ grep -n "attrType=\|attr-type=\|tag=\|focusable=\|showIcon=\|icon-placement=\|se
 
 跨端**通用**部分（type / size / disabled / placeholder / clearable 等基础受控 props）必须 1:1 对齐；任一端漏补都需要补齐，缺口是设计 bug，不是可选优化。
 
+### 112.3a 登记的 additive 能力（uni 端）
+
+| 能力 | 组件 | 行为 |
+|---|---|---|
+| 桌面 H5 鼠标拖拽 + 滚轮（additive） | `sn-picker-view` / `sn-datetime-picker-view`（`sn-picker` / `sn-datetime-picker` 弹层内同享） | H5 宿主（`typeof document !== 'undefined'`）在触摸之外额外支持鼠标拖动滚轮与 wheel 逐行滚动；实现于 `packages/uni/src/components/sn-picker-view/sn-picker-view-drag.ts` 的 `bindMouseGestures`，组件根节点携带 `data-snui-mouse-gesture` 供 docs 预览桥识别跳过。参考库无此能力，属 AUI 追加 |
+
 ## 112.4 机器可读规格（`.ai/reference/`）
 
 §112 的 1:1 对齐要求过去只能靠逐个打开上游文档页人工比对，无法在 review 中

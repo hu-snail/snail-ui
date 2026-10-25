@@ -79,6 +79,10 @@ This component exposes no slots.
 - Root is `role="group"` with `aria-disabled`.
 - Each row is `role="button"` with `aria-selected` / `aria-disabled`.
 
+## Desktop H5 input
+
+Beyond touch, the H5 build accepts desktop input on the roller: hold the left mouse button and drag up or down to scroll, or turn the mouse wheel — one committed row per notch (disabled rows are skipped, both ends clamp). The wheel gesture drives the roller instead of scrolling the page; clicking a row selects it directly. Mini-program targets stay touch-only.
+
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
