@@ -39,6 +39,25 @@ describe('sn-slider', () => {
       expect(w.find('.sn-slider__knob').attributes('style')).toContain('left: 25%')
     })
 
+    it('leaves line centering to the stylesheet instead of inline overrides', () => {
+      // Regression: an inline `top: 0` (horizontal) / `left: 0` (vertical)
+      // overrode the scoped `top: 50%` / `left: 50%` centering and pinned the
+      // active fill to the track edge, 12px off the knob center.
+      const horizontal = mount(SnSlider, { props: { modelValue: 40 } })
+      const style = horizontal.find('.sn-slider__line').attributes('style') ?? ''
+      expect(style).toContain('left: 0%')
+      expect(style).toContain('width: 40%')
+      expect(style).not.toContain('top')
+      expect(style).not.toContain('bottom')
+
+      const vertical = mount(SnSlider, { props: { modelValue: 40, vertical: true } })
+      const verticalStyle = vertical.find('.sn-slider__line').attributes('style') ?? ''
+      expect(verticalStyle).toContain('bottom: 0%')
+      expect(verticalStyle).toContain('height: 40%')
+      expect(verticalStyle).not.toContain('left')
+      expect(verticalStyle).not.toContain('right')
+    })
+
     it('renders two knobs in range mode', () => {
       const w = mount(SnSlider, { props: { modelValue: [20, 60], range: true } })
       expect(w.findAll('.sn-slider__knob')).toHaveLength(2)

@@ -360,21 +360,25 @@ const rootStyle = computed(() => {
   return base ? `${base}; ${props.customStyle}` : props.customStyle
 })
 
+/**
+ * Active fill geometry only — start + length, in %.
+ *
+ * Centering (the perpendicular axis) is owned by the scoped stylesheet
+ * (`top: 50%; margin-top: -1px` / `left: 50%; margin-left: -1px`): emitting
+ * `top: 0` / `left: 0` here overrides those class values and pins the line to
+ * the track's top / left edge, 12px off the knob center.
+ */
 const activeStyle = computed(() => {
   const size = `${activeWidthPercent.value}%`
   if (props.vertical) {
     return {
       bottom: `${activeStartPercent.value}%`,
       height: size,
-      left: '0',
-      right: '0',
     }
   }
   return {
     left: `${activeStartPercent.value}%`,
     width: size,
-    top: '0',
-    bottom: '0',
   }
 })
 
@@ -664,6 +668,9 @@ function knobValue(knob: 0 | 1): number {
   position: absolute;
   transform: translateX(-50%);
   font-size: var(--sn-mp-font-size-xs);
+  /* The inherited document line-height makes the label taller than the 32rpx
+     marks row and the captions bleed into the next block. */
+  line-height: 1.2;
   color: var(--sn-slider-scale-desc-color, var(--sn-mp-color-text-tertiary));
   white-space: nowrap;
 }
