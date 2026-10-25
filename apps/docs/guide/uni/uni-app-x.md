@@ -64,7 +64,8 @@ pnpm add @snui/uni-x
 | 组件生成 | 全量 82 组件（95 个 `.uvue`）+ 29 个 ts 工具文件 |
 | 主题 / 暗色 | 已生成 class-only token 层 |
 | Style Pack（skin） | 暂缺：`.snui-skin-doodle` 后代选择器规则在 App 端无法表达，待变量化改造 |
-| sn-table | `<component :is>` 动态组件待手工适配 |
+| sn-table | uvue App 端官方支持 `<component :is>`；本组件把插槽函数传给 `:is` 的形态待编译验证 |
+| sn-sticky | App 端降级为普通布局（蒸汽模式不支持 `position: sticky`，内置 sticky-section 仅限 list-view 内）；列表内吸顶请用 list-view + sticky-section |
 | canvas 四件套（qr-code / signature / watermark / img-cropper） | 待按 uni-app x canvas API 适配 |
 | 桌面 H5 鼠标手势（picker-view） | 已用 `#ifdef H5` 隔离，App 端仅触摸 |
 

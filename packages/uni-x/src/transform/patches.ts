@@ -289,6 +289,21 @@ const iconDataUrl = computed<string | undefined>(() => {
     },
   ],
 
+  'sn-sticky/sn-sticky.vue': [
+    {
+      anchor: `.sn-sticky {
+  position: sticky;
+  box-sizing: border-box;`,
+      replacement: `/* uni-app x App: position: sticky is unsupported (css/position docs) and the
+   built-in sticky-section/sticky-header only work inside list-view, so the
+   component degrades to normal flow. For App-side pinning inside lists, hosts
+   should use list-view + sticky-section/sticky-header directly. */
+.sn-sticky {
+  box-sizing: border-box;`,
+      note: 'position: sticky removed — explicit normal-flow degradation on App (docs note the list-view alternative)',
+    },
+  ],
+
   'sn-config-provider/sn-config-provider.vue': [
     {
       anchor: `const rootClass = computed(() => [

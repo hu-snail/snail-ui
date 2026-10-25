@@ -70,7 +70,8 @@ Same as the uni end: wrap with `<sn-config-provider theme="dark">`, or add the
 | Components | All 82 components (95 `.uvue` files) + 29 ts helpers |
 | Theme / dark mode | Class-only token layer generated |
 | Style Packs (skin) | Missing: `.snui-skin-doodle` descendant rules cannot be expressed on App; pending the variable-based rework |
-| sn-table | `<component :is>` dynamic component needs a manual port |
+| sn-table | uvue officially supports `<component :is>` on App; the slot-function value shape used here needs compile verification |
+| sn-sticky | Degrades to normal flow on App (vapor has no `position: sticky`; built-in sticky-section works only inside list-view) — use list-view + sticky-section for list pinning |
 | Canvas components (qr-code / signature / watermark / img-cropper) | Pending uni-app x canvas API adaptation |
 | Desktop H5 mouse gestures (picker-view) | Gated behind `#ifdef H5`; App stays touch-only |
 

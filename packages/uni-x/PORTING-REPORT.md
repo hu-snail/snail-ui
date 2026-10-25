@@ -10,8 +10,8 @@
 | template-attr | 152 |
 | defineSlots-stripped | 60 |
 | pseudo-class | 42 |
+| patch | 31 |
 | unsupported-property | 31 |
-| patch | 30 |
 | template-bare-text | 20 |
 | script-guard | 9 |
 | pseudo-element | 6 |
@@ -21,7 +21,8 @@
 
 ## Manual-port flags (curated)
 
-- **sn-table** — `<component :is>` dynamic component (cellRenderers) has unconfirmed uvue support; manual port required before use.
+- **sn-table** — uvue officially supports `<component :is>` on App (vue/built-in docs), but cellRenderers pass a slot *function* as the value; that shape needs compile verification on device.
+- **sn-sticky** — `position: sticky` is unsupported on App vapor and the built-in sticky-section/sticky-header only work inside list-view; the component degrades to normal flow (patched + documented).
 - **sn-form-item** — consumed `defineSlots` return (`const slots = defineSlots…`); verify the macro exists on the vapor compiler.
 - **sn-icon** — IconData path renders via `<image>` + SVG data URL; verify App-side SVG decode, otherwise use the iconfont glyph path (`name` prop).
 - **Style packs** — all `.snui-skin-doodle` descendant rules are dropped pending the variable-based skin architecture (ADR-0004).
@@ -541,6 +542,7 @@
 
 ### sn-sticky/sn-sticky.uvue
 
+- patch applied — `patch`: position: sticky removed — explicit normal-flow degradation on App (docs note the list-view alternative)
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 

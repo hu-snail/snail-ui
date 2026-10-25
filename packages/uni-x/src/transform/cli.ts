@@ -149,7 +149,8 @@ function emitReport(counts: { uvueCount: number; tsCount: number }): void {
 }
 
 const MANUAL_FLAGS: string[] = [
-  '**sn-table** — `<component :is>` dynamic component (cellRenderers) has unconfirmed uvue support; manual port required before use.',
+  '**sn-table** — uvue officially supports `<component :is>` on App (vue/built-in docs), but cellRenderers pass a slot *function* as the value; that shape needs compile verification on device.',
+  '**sn-sticky** — `position: sticky` is unsupported on App vapor and the built-in sticky-section/sticky-header only work inside list-view; the component degrades to normal flow (patched + documented).',
   '**sn-form-item** — consumed `defineSlots` return (`const slots = defineSlots…`); verify the macro exists on the vapor compiler.',
   '**sn-icon** — IconData path renders via `<image>` + SVG data URL; verify App-side SVG decode, otherwise use the iconfont glyph path (`name` prop).',
   '**Style packs** — all `.snui-skin-doodle` descendant rules are dropped pending the variable-based skin architecture (ADR-0004).',
