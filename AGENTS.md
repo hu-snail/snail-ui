@@ -3320,6 +3320,14 @@ diff。现在 wot-ui 的完整 API 面已抓取入库：
 同样禁止，见 §112.1）。确实需要新增 AUI 专属能力时，必须在组件头注释里标注
 "additive"，并同步登记到本规则。
 
+### 112.4a 用户指定的例外参考库（uni 端）
+
+个别组件的参考库由 Human 显式指定（产品决策，§99），登记如下：
+
+| 组件 | 参考库 | 依据 |
+| --- | --- | --- |
+| `sn-paging` | z-paging（https://z-paging.zxlee.cn） | Human 指令（2026-10-25）：高性能、轻量化对标 z-paging 的分页容器。wot-ui spec 无对应容器组件（仅 `wd-loading` / `wd-loadmore`，二者仍是内嵌指示器的参考）；prop 命名 / 默认文案对齐 z-paging 子集，wot-ui / naive-ui 独有 prop 不得混入 |
+
 ## 112.5 uni 端暗色模式契约
 
 uni-app 运行在无 `document` / 无 `:root` 的小程序与原生 App 上，web 的

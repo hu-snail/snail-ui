@@ -70,6 +70,7 @@ export { default as SnNoticeBar } from './components/sn-notice-bar/sn-notice-bar
 export { default as SnNotify } from './components/sn-notify/sn-notify.vue'
 export { default as SnOverlay } from './components/sn-overlay/sn-overlay.vue'
 export { default as SnPagination } from './components/sn-pagination/sn-pagination.vue'
+export { default as SnPaging } from './components/sn-paging/sn-paging.vue'
 export { default as SnPasswordInput } from './components/sn-password-input/sn-password-input.vue'
 export { default as SnPicker } from './components/sn-picker/sn-picker.vue'
 export { default as SnPickerView } from './components/sn-picker-view/sn-picker-view.vue'
