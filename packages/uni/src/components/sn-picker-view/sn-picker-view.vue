@@ -23,9 +23,14 @@
  *
  * ## Touch lifecycle (AGENTS.md §41)
  *
- * No global listeners, no timers, no observers: drag state is plain
- * component state that is reset on `touchend` / `touchcancel` and dies with
- * the component. Nothing to dispose.
+ * The gesture math lives in `sn-picker-view-drag.ts` (shared with
+ * `sn-datetime-picker-view`): no global listeners, no timers, no observers.
+ * Drag state is plain component state that is reset on `touchend` /
+ * `touchcancel` and dies with the component. Nothing to dispose.
+ *
+ * The column binds `@touchmove.stop.prevent` — `.stop` compiles to
+ * `catchtouchmove` on mini-programs so the page cannot scroll the gesture
+ * away (the old "滑不动"), and `.prevent` blocks native scroll on H5 / App.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -34,7 +39,7 @@
  *   - 日期列生成 — 用 sn-datetime-picker-view
  */
 
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import type {
   NormalizedPickerOption,
   PickerColumn,
@@ -42,6 +47,7 @@ import type {
   PickerValue,
   PickerViewChangePayload,
 } from './sn-picker-view-types'
+import { createRollerDrag } from './sn-picker-view-drag'
 
 defineOptions({ name: 'SnPickerView' })
 
@@ -184,45 +190,32 @@ const itemHeightRpx = computed(() => `${itemRpx.value}rpx`)
 const visibleCount = computed(() => Math.max(props.visibleItemCount, 1))
 const columnHeightRpx = computed(() => `${itemRpx.value * visibleCount.value}rpx`)
 
-/* ── Drag state ────────────────────────────────────────────────────────── */
+/* ── Drag engine (shared with sn-datetime-picker-view) ─────────────────── */
 
-/** Column currently being dragged (`null` = at rest). */
-const dragColumn = ref<number | null>(null)
-/** Touch origin (clientY, px). */
-let dragStartY = 0
-/** Accumulated drag distance in rpx. */
-const dragDelta = ref(0)
+const drag = createRollerDrag({
+  isDisabled: () => props.disabled,
+  itemRpx: () => itemRpx.value,
+  visibleCount: () => visibleCount.value,
+  indexOf: columnIndex => selectedIndexes.value[columnIndex] ?? 0,
+  lengthOf: columnIndex => resolvedColumns.value[columnIndex]?.length ?? 0,
+  isRowDisabled: (columnIndex, rowIndex) =>
+    resolvedColumns.value[columnIndex]?.[rowIndex]?.disabled === true,
+  isImmediate: () => props.immediateChange,
+  commit,
+  onStart: () => emit('pickstart'),
+  onEnd: () => emit('pickend'),
+})
 
-function baseOffsetRpx(columnIndex: number): number {
-  const index = selectedIndexes.value[columnIndex] ?? 0
-  return ((visibleCount.value - 1) / 2 - index) * itemRpx.value
-}
-
-function columnOffsetRpx(columnIndex: number): number {
-  const base = baseOffsetRpx(columnIndex)
-  return dragColumn.value === columnIndex ? base + dragDelta.value : base
-}
-
-/** Touch Y from a uni-app / DOM touch event. */
-function touchY(event: Event): number {
-  const detail = event as unknown as {
-    touches?: Array<{ clientY?: number, pageY?: number }>
-    changedTouches?: Array<{ clientY?: number, pageY?: number }>
-    detail?: { y?: number }
-  }
-  const list = detail.touches ?? detail.changedTouches
-  const point = list && list.length > 0 ? list[0] : undefined
-  if (point && typeof point.clientY === 'number') return point.clientY
-  if (point && typeof point.pageY === 'number') return point.pageY
-  if (detail.detail && typeof detail.detail.y === 'number') return detail.detail.y
-  return 0
-}
-
-function clampIndex(index: number, column: NormalizedPickerOption[]): number {
-  if (index < 0) return 0
-  const last = column.length - 1
-  return index > last ? Math.max(last, 0) : index
-}
+const {
+  isDragging,
+  snapDurationMs,
+  columnOffsetRpx,
+  onTouchStart,
+  onTouchMove,
+  onTouchEnd,
+  onTouchCancel,
+  shouldIgnoreTap,
+} = drag
 
 /** Commit a row index for one column: emits `update:modelValue` + `change`. */
 function commit(columnIndex: number, rowIndex: number): void {
@@ -265,58 +258,11 @@ function buildPayload(values: PickerValue[], columnIndex: number): PickerViewCha
   }
 }
 
-function onTouchStart(event: Event, columnIndex: number): void {
-  if (props.disabled) return
-  const column = resolvedColumns.value[columnIndex]
-  if (!column || column.length === 0) return
-  dragColumn.value = columnIndex
-  dragStartY = touchY(event)
-  dragDelta.value = 0
-  emit('pickstart')
-}
-
-function onTouchMove(event: Event, columnIndex: number): void {
-  if (props.disabled || dragColumn.value !== columnIndex) return
-  dragDelta.value = (touchY(event) - dragStartY) * RATIO
-  if (!props.immediateChange) return
-  const column = resolvedColumns.value[columnIndex]
-  if (!column) return
-  const index = clampIndex(
-    Math.round((selectedIndexes.value[columnIndex] ?? 0) - dragDelta.value / itemRpx.value),
-    column,
-  )
-  commit(columnIndex, index)
-}
-
-function onTouchEnd(event: Event, columnIndex: number): void {
-  if (dragColumn.value !== columnIndex) return
-  const column = resolvedColumns.value[columnIndex]
-  // The release gesture carries the final Y; `dragDelta` only exists when a
-  // touchmove actually ran, so the end position must be read here too.
-  const delta = (touchY(event) - dragStartY) * RATIO
-  dragColumn.value = null
-  dragDelta.value = 0
-  if (!column || column.length === 0) {
-    emit('pickend')
-    return
-  }
-  const index = clampIndex(
-    Math.round((selectedIndexes.value[columnIndex] ?? 0) - delta / itemRpx.value),
-    column,
-  )
-  commit(columnIndex, index)
-  emit('pickend')
-}
-
-function onTouchCancel(columnIndex: number): void {
-  if (dragColumn.value !== columnIndex) return
-  dragColumn.value = null
-  dragDelta.value = 0
-  emit('pickend')
-}
-
 function onItemTap(columnIndex: number, rowIndex: number): void {
   if (props.disabled) return
+  // Uni re-fires `tap` on the touchstart target when the finger lifts; after
+  // a real drag that row is no longer the one the gesture settled on.
+  if (shouldIgnoreTap()) return
   commit(columnIndex, rowIndex)
 }
 
@@ -392,6 +338,7 @@ const rootStyle = computed(() => {
   const vars = [
     `--sn-picker-view-item-height: ${itemHeightRpx.value}`,
     `--sn-picker-view-mask-height: ${maskHeightRpx.value}`,
+    `--sn-picker-view-settle-duration: ${snapDurationMs.value}ms`,
   ].join('; ')
   return props.customStyle ? `${vars}; ${props.customStyle}` : vars
 })
@@ -419,17 +366,19 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
       class="sn-picker-view__column"
       :style="{ height: columnHeightRpx }"
       @touchstart="onTouchStart($event, columnIndex)"
-      @touchmove="onTouchMove($event, columnIndex)"
+      @touchmove.stop.prevent="onTouchMove($event, columnIndex)"
       @touchend="onTouchEnd($event, columnIndex)"
       @touchcancel="onTouchCancel(columnIndex)"
     >
       <view
         class="sn-picker-view__roller"
+        :class="{ 'sn-picker-view__roller--dragging': isDragging }"
         :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
       >
         <view
           v-for="(option, rowIndex) in column"
           :key="option.value"
+          v-memo="[option.label, isActive(columnIndex, rowIndex), option.disabled, itemHeightRpx]"
           :class="[
             'sn-picker-view__item',
             {
@@ -472,11 +421,23 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
   flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
+  /* H5 / App webview: a roller drag must never become a page scroll.
+     Mini-programs use `catchtouchmove` (the `.stop` modifier) instead. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .sn-picker-view__roller {
-  transition: transform 0.18s ease-out;
+  /* Settle only — the length scales with the distance to the snapped row. */
+  transition: transform var(--sn-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+}
+
+/* While a finger is down the roller tracks it 1:1: any transition here makes
+   the wheel lag behind and read as "the wheel will not move". */
+.sn-picker-view__roller--dragging {
+  transition: none;
 }
 
 .sn-picker-view__item {

@@ -22,8 +22,11 @@
  *
  * ## Touch lifecycle (AGENTS.md §41)
  *
- * Same as `sn-picker-view`: no global listener, no timer, no observer. Drag
- * state is component state that dies with the component.
+ * Same as `sn-picker-view`: the gesture math lives in the shared
+ * `sn-picker-view-drag` engine (anchored offset, momentum, changedTouches
+ * release, edge damping) — no global listener, no timer, no observer. Drag
+ * state is component state that dies with the component. The column binds
+ * `@touchmove.stop.prevent` so the page cannot scroll the gesture away.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -32,8 +35,9 @@
  *   - 日历面板（月份网格）— 用 sn-calendar-view
  */
 
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import type { PickerValue } from '../sn-picker-view/sn-picker-view-types'
+import { createRollerDrag } from '../sn-picker-view/sn-picker-view-drag'
 import {
   type DateParts,
   type DateTimeColumnType,
@@ -314,7 +318,7 @@ function selectRow(columnIndex: number, rowIndex: number): void {
   emitParts(next, columnIndex)
 }
 
-/* ── Touch ─────────────────────────────────────────────────────────────── */
+/* ── Geometry (all rpx — 1px design = 2rpx) ────────────────────────────── */
 
 const RATIO = 2
 
@@ -327,74 +331,36 @@ const maskHeightRpx = computed(() => {
   return `${Math.max(rest / 2, 0)}rpx`
 })
 
-const dragColumn = ref<number | null>(null)
-let dragStartY = 0
-const dragDelta = ref(0)
+/* ── Drag engine (shared with sn-picker-view) ──────────────────────────── */
 
-function baseOffsetRpx(columnIndex: number): number {
-  return ((visibleCount.value - 1) / 2 - indexOf(columnIndex)) * itemRpx.value
-}
+const drag = createRollerDrag({
+  isDisabled: () => false,
+  itemRpx: () => itemRpx.value,
+  visibleCount: () => visibleCount.value,
+  indexOf: columnIndex => indexOf(columnIndex),
+  lengthOf: columnIndex => columns.value[columnIndex]?.values.length ?? 0,
+  isRowDisabled: () => false,
+  isImmediate: () => props.immediateChange,
+  commit: (columnIndex, rowIndex) => selectRow(columnIndex, rowIndex),
+  onStart: () => emit('pickstart'),
+  onEnd: () => emit('pickend'),
+})
 
-function columnOffsetRpx(columnIndex: number): number {
-  const base = baseOffsetRpx(columnIndex)
-  return dragColumn.value === columnIndex ? base + dragDelta.value : base
-}
-
-function touchY(event: Event): number {
-  const detail = event as unknown as {
-    touches?: Array<{ clientY?: number, pageY?: number }>
-    changedTouches?: Array<{ clientY?: number, pageY?: number }>
-    detail?: { y?: number }
-  }
-  const list = detail.touches ?? detail.changedTouches
-  const point = list && list.length > 0 ? list[0] : undefined
-  if (point && typeof point.clientY === 'number') return point.clientY
-  if (point && typeof point.pageY === 'number') return point.pageY
-  if (detail.detail && typeof detail.detail.y === 'number') return detail.detail.y
-  return 0
-}
-
-function clampRow(columnIndex: number, rowIndex: number): number {
-  const column = columns.value[columnIndex]
-  if (!column) return 0
-  const last = column.values.length - 1
-  if (rowIndex < 0) return 0
-  return rowIndex > last ? Math.max(last, 0) : rowIndex
-}
-
-function onTouchStart(event: Event, columnIndex: number): void {
-  dragColumn.value = columnIndex
-  dragStartY = touchY(event)
-  dragDelta.value = 0
-  emit('pickstart')
-}
-
-function onTouchMove(event: Event, columnIndex: number): void {
-  if (dragColumn.value !== columnIndex) return
-  dragDelta.value = (touchY(event) - dragStartY) * RATIO
-  if (!props.immediateChange) return
-  const row = clampRow(columnIndex, Math.round(indexOf(columnIndex) - dragDelta.value / itemRpx.value))
-  selectRow(columnIndex, row)
-}
-
-function onTouchEnd(event: Event, columnIndex: number): void {
-  if (dragColumn.value !== columnIndex) return
-  const delta = (touchY(event) - dragStartY) * RATIO
-  dragColumn.value = null
-  dragDelta.value = 0
-  const row = clampRow(columnIndex, Math.round(indexOf(columnIndex) - delta / itemRpx.value))
-  selectRow(columnIndex, row)
-  emit('pickend')
-}
-
-function onTouchCancel(columnIndex: number): void {
-  if (dragColumn.value !== columnIndex) return
-  dragColumn.value = null
-  dragDelta.value = 0
-  emit('pickend')
-}
+const {
+  isDragging,
+  snapDurationMs,
+  columnOffsetRpx,
+  onTouchStart,
+  onTouchMove,
+  onTouchEnd,
+  onTouchCancel,
+  shouldIgnoreTap,
+} = drag
 
 function onItemTap(columnIndex: number, rowIndex: number): void {
+  // Uni re-fires `tap` on the touchstart target when the finger lifts; after
+  // a real drag that row is no longer the one the gesture settled on.
+  if (shouldIgnoreTap()) return
   selectRow(columnIndex, rowIndex)
 }
 
@@ -432,6 +398,7 @@ const rootStyle = computed(() => {
   const vars = [
     `--sn-datetime-picker-view-item-height: ${itemHeightRpx.value}`,
     `--sn-datetime-picker-view-mask-height: ${maskHeightRpx.value}`,
+    `--sn-datetime-picker-view-settle-duration: ${snapDurationMs.value}ms`,
   ].join('; ')
   return props.customStyle ? `${vars}; ${props.customStyle}` : vars
 })
@@ -459,17 +426,23 @@ const ariaValue = computed(() =>
       class="sn-datetime-picker-view__column"
       :style="{ height: columnHeightRpx }"
       @touchstart="onTouchStart($event, columnIndex)"
-      @touchmove="onTouchMove($event, columnIndex)"
+      @touchmove.stop.prevent="onTouchMove($event, columnIndex)"
       @touchend="onTouchEnd($event, columnIndex)"
       @touchcancel="onTouchCancel(columnIndex)"
     >
       <view
         class="sn-datetime-picker-view__roller"
+        :class="{ 'sn-datetime-picker-view__roller--dragging': isDragging }"
         :style="{ transform: `translateY(${columnOffsetRpx(columnIndex)}rpx)` }"
       >
         <view
           v-for="(value, rowIndex) in column.values"
           :key="value"
+          v-memo="[
+            column.labels[rowIndex],
+            column.selected === value,
+            itemHeightRpx,
+          ]"
           :class="[
             'sn-datetime-picker-view__item',
             { 'sn-datetime-picker-view__item--active': column.selected === value },
@@ -509,11 +482,23 @@ const ariaValue = computed(() =>
   flex: 1 1 0;
   min-width: 0;
   overflow: hidden;
+  /* H5 / App webview: a roller drag must never become a page scroll.
+     Mini-programs use `catchtouchmove` (the `.stop` modifier) instead. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .sn-datetime-picker-view__roller {
-  transition: transform 0.18s ease-out;
+  /* Settle only — the length scales with the distance to the snapped row. */
+  transition: transform var(--sn-datetime-picker-view-settle-duration, 180ms) cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+}
+
+/* While a finger is down the roller tracks it 1:1: any transition here makes
+   the wheel lag behind and read as "the wheel will not move". */
+.sn-datetime-picker-view__roller--dragging {
+  transition: none;
 }
 
 .sn-datetime-picker-view__item {

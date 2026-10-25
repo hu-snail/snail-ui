@@ -6,9 +6,19 @@
  * writes and the exposed helpers. No rpx numbers in assertions.
  */
 
-import { describe, it, expect } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import SnDatetimePickerView from './sn-datetime-picker-view.vue'
+
+/**
+ * Pin the viewport to the 750rpx design reference (375px) so the drag
+ * engine's px → rpx fallback ratio is exactly 2 — drag assertions below read
+ * in whole rows (44px = one 88rpx row) instead of depending on happy-dom's
+ * default window width.
+ */
+beforeAll(() => {
+  Object.defineProperty(globalThis, 'innerWidth', { value: 375, configurable: true, writable: true })
+})
 
 /** 2024-06-15 10:30:00 local time. */
 const BASE = new Date(2024, 5, 15, 10, 30, 0).getTime()
@@ -208,8 +218,23 @@ describe('sn-datetime-picker-view', () => {
       const value = w.emitted('update:modelValue')?.[0]?.[0] as number
       expect(new Date(value).getFullYear()).toBe(2025)
     })
+    it('reads the release point from changedTouches when touches is empty', async () => {
+      // Regression: real `touchend` events carry an EMPTY `touches` array and
+      // only `changedTouches` holds the point — the old read returned 0, so a
+      // downward drag snapped the wheel to the LAST row instead of the first.
+      const w = mountView({ type: 'year' })
+      const column = w.find('.sn-datetime-picker-view__column')
+      await column.trigger('touchstart', { touches: [{ clientY: 300, identifier: 1 }] })
+      // Drag down well past the start: every momentum-free reading clamps to
+      // the minimum year (2020), while the old y=0 bug landed on the maximum.
+      await column.trigger('touchend', {
+        touches: [],
+        changedTouches: [{ clientY: 500, identifier: 1 }],
+      })
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number
+      expect(new Date(value).getFullYear()).toBe(2020)
+    })
   })
-
   describe('exposed API', () => {
     it('getSelectedOptions returns one entry per column', () => {
       const w = mountView({ type: 'date' })

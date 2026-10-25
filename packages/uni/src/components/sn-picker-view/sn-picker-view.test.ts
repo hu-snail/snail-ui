@@ -5,13 +5,22 @@
  * rows, the cascade column derivation and the exposed query API. No rpx
  * numbers in assertions — happy-dom discards lengths it cannot parse.
  */
-
-import { describe, it, expect } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import SnPickerView from './sn-picker-view.vue'
 import type { PickerViewChangePayload } from './sn-picker-view-types'
 
 const FRUITS = ['apple', 'banana', 'cherry']
+
+/**
+ * Pin the viewport to the 750rpx design reference (375px) so the drag engine's
+ * px → rpx fallback ratio is exactly 2 — the drag assertions below then read
+ * in whole rows (44px = one 88rpx row) instead of depending on happy-dom's
+ * default window width.
+ */
+beforeAll(() => {
+  Object.defineProperty(globalThis, 'innerWidth', { value: 375, configurable: true, writable: true })
+})
 
 function mountView(props: Record<string, unknown> = {}) {
   return mount(SnPickerView, { props: { modelValue: [], columns: [FRUITS], ...props } })
@@ -154,6 +163,85 @@ describe('sn-picker-view', () => {
       await column.trigger('touchstart', { touches: [{ clientY: 300 }] })
       await column.trigger('touchmove', { touches: [{ clientY: 250 }] })
       expect(w.emitted('update:modelValue')).toHaveLength(1)
+    })
+
+    it('reads the release point from changedTouches when touches is empty', async () => {
+      // Regression: real `touchend` events carry an EMPTY `touches` array and
+      // only `changedTouches` holds the point. The old `touches ?? changed…`
+      // read returned 0 and snapped the wheel to a wild row on every release.
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column')
+      await column.trigger('touchstart', { touches: [{ clientY: 300, identifier: 1 }] })
+      await column.trigger('touchend', {
+        touches: [],
+        changedTouches: [{ clientY: 250, identifier: 1 }],
+      })
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']])
+    })
+
+    it('keeps the drag anchored to the touch origin while committing mid-drag', async () => {
+      // Regression: with immediateChange the old code re-based the offset on
+      // the live selection on every commit, so rolling back half a row jumped
+      // the wheel to the previously committed row instead of the finger.
+      const w = mountView({ modelValue: ['apple'], immediateChange: true })
+      const column = w.find('.sn-picker-view__column')
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] })
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']])
+      // Emulate the v-model echo so the next commit sees the new selection —
+      // the anchor must stay on apple anyway (that is the regression).
+      await w.setProps({ modelValue: ['banana'] })
+      // Roll the finger back down: the selection must return to apple.
+      await column.trigger('touchmove', { touches: [{ clientY: 290 }] })
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['apple']])
+    })
+
+    it('skips a disabled row when the drag settles on it', async () => {
+      const w = mountView({
+        modelValue: ['a'],
+        columns: [['a', { value: 'b', label: 'b', disabled: true }, 'c']],
+      })
+      const column = w.find('.sn-picker-view__column')
+      // Exactly one row up — lands on the disabled row, settles past it.
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      await column.trigger('touchend', { touches: [{ clientY: 256 }] })
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['c']])
+    })
+
+    it('stays on the first row when dragged past the top', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column')
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      await column.trigger('touchend', { touches: [{ clientY: 900 }] })
+      expect(w.emitted('update:modelValue')).toBeUndefined()
+    })
+
+    it('ignores a second simultaneous finger', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column')
+      await column.trigger('touchstart', { touches: [{ clientY: 100 }, { clientY: 200 }] })
+      expect(w.emitted('pickstart')).toBeUndefined()
+    })
+
+    it('suppresses the row tap that follows a drag', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column')
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] })
+      await column.trigger('touchend', { touches: [{ clientY: 256 }] })
+      // The tap target is the row the finger went DOWN on (apple), which must
+      // not override the row the drag just settled (banana).
+      await w.findAll('.sn-picker-view__item')[0]?.trigger('tap')
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']])
+    })
+
+    it('flags the roller as dragging while a finger is down', async () => {
+      const w = mountView({ modelValue: ['apple'] })
+      const column = w.find('.sn-picker-view__column')
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      expect(w.find('.sn-picker-view__roller').classes()).toContain('sn-picker-view__roller--dragging')
+      await column.trigger('touchend', { touches: [{ clientY: 300 }] })
+      expect(w.find('.sn-picker-view__roller').classes()).not.toContain('sn-picker-view__roller--dragging')
     })
   })
 
