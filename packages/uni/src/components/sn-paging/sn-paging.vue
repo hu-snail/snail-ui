@@ -21,6 +21,12 @@
  * reacts to state transitions. That is what keeps the component light: the
  * pull physics is the host's, not ours.
  *
+ * The one exception is the plain-browser host (the docs preview): there the
+ * `scroll-view` is an inert custom element with no uni runtime behind it, so
+ * `sn-paging-simulate.ts` installs a minimal touch/scroll fallback — drag
+ * below the top pulls, a geometry check near the bottom loads. Real uni
+ * targets never wire it up.
+ *
  * ## Data flow (one-way out via v-model)
  *
  *   mounted(auto) / pull / scrolltolower → emit('query', pageNo, pageSize)
@@ -42,12 +48,25 @@
  *   - 虚拟列表 / use-page-scroll 模式 — 登记为后续任务
  */
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue'
 import SnIcon from '../sn-icon/sn-icon.vue'
 import SnLoading from '../sn-loading/sn-loading.vue'
 import { ChevronDown } from '../sn-icon/sn-icon-set'
+import { createBrowserPagingGesture } from './sn-paging-simulate'
 
 defineOptions({ name: 'SnPaging' })
+
+/**
+ * True when rendering without a uni runtime (plain browser / docs preview):
+ * the scroll-view is an inert host element there, so the native refresher and
+ * `@scrolltolower` do not exist and the touch fallback takes over.
+ */
+const isBrowserHost =
+  typeof document !== 'undefined' &&
+  typeof (globalThis as { uni?: unknown }).uni === 'undefined'
+
+/** Expanded refresher height in px (100rpx at the 750→375 docs mapping). */
+const REFRESHER_HEIGHT_PX = 50
 
 /** Visual phase of the custom refresher slot. */
 type RefresherPhase = 'idle' | 'pulling' | 'ready' | 'refreshing' | 'complete'
@@ -100,9 +119,11 @@ const props = withDefaults(
 
     /** Text of the built-in empty view. */
     emptyText?: string
-    /** Custom class for the root scroll-view. */
+    /** Pad the container bottom for the device safe area (iPhone X+). */
+    safeAreaInsetBottom?: boolean
+    /** Custom class for the root node. */
     customClass?: string
-    /** Custom inline style for the root scroll-view. */
+    /** Custom inline style for the root node. */
     customStyle?: string
   }>(),
   {
@@ -124,6 +145,7 @@ const props = withDefaults(
     loadMoreNoMoreText: '没有更多了',
     loadMoreFailText: '加载失败，点击重试',
     emptyText: '暂无数据',
+    safeAreaInsetBottom: false,
     customClass: '',
     customStyle: '',
   },
@@ -141,6 +163,10 @@ const emit = defineEmits<{
 defineSlots<{
   /** List rows; render the bound v-model array here. */
   default?(): unknown
+  /** Fixed above the scroll area; does not scroll with the list. */
+  top?(): unknown
+  /** Fixed below the scroll area; does not scroll with the list. */
+  bottom?(): unknown
   /** Replaces the built-in empty view. */
   empty?(): unknown
   /** Replaces the built-in refresher content (icon + text). */
@@ -160,7 +186,12 @@ const hasLoaded = ref(false)
 const refresherTriggered = ref(false)
 const refresherPhase = ref<RefresherPhase>('idle')
 const loadMorePhase = ref<LoadMorePhase>('default')
+/** Live pull distance in px — only driven by the browser fallback. */
+const pullDistance = ref(0)
+/** scroll-view host element; an inert element on browser hosts. */
+const scrollEl = ref<HTMLElement | ComponentPublicInstance | null>(null)
 let completeHoldTimer: ReturnType<typeof setTimeout> | null = null
+let disposeGesture: (() => void) | null = null
 
 /** Whether scroll-to-bottom loads the next page. */
 const isLoadMoreEnabled = computed(() => props.loadMoreEnabled)
@@ -209,6 +240,28 @@ const footerText = computed(() => {
   if (noMore.value) return props.loadMoreNoMoreText
   if (loadMorePhase.value === 'fail') return props.loadMoreFailText
   return props.loadMoreDefaultText
+})
+
+const rootClass = computed(() => [
+  'sn-paging',
+  { 'sn-paging--safe-bottom': props.safeAreaInsetBottom },
+  props.customClass,
+])
+
+/**
+ * Inline height for the refresher area on browser hosts, where the native
+ * refresher cannot drive it. On uni hosts this stays `undefined` and the
+ * scroll-view owns the refresher geometry.
+ */
+const refresherStyle = computed(() => {
+  if (!isBrowserHost) return undefined
+  if (refresherPhase.value === 'refreshing' || refresherPhase.value === 'complete') {
+    return `height: ${REFRESHER_HEIGHT_PX}px`
+  }
+  const dragging = refresherPhase.value === 'pulling' || refresherPhase.value === 'ready'
+  const height = dragging ? pullDistance.value : 0
+  const transition = dragging ? 'none' : 'height 0.2s ease'
+  return `height: ${Math.round(height)}px; transition: ${transition}`
 })
 
 function clearCompleteHold(): void {
@@ -306,6 +359,7 @@ function onRefresherPulling(event: { detail?: { dy?: number } }): void {
 }
 
 function onRefresherRefresh(): void {
+  if (!props.refresherEnabled) return
   if (isLoading.value) {
     /* A query is already in flight — collapse the gesture, never stack. */
     refresherTriggered.value = false
@@ -339,6 +393,18 @@ function onScroll(event: unknown): void {
   emit('scroll', event)
 }
 
+/** Browser fallback pull update: drive the phase + inline height together. */
+function onSimulatedPull(distance: number): void {
+  if (isLoading.value) return
+  pullDistance.value = distance
+  refresherPhase.value =
+    distance <= 0
+      ? 'idle'
+      : distance >= props.refresherThreshold
+        ? 'ready'
+        : 'pulling'
+}
+
 /** Trigger a refresh with the refresher animation (z-paging `refresh`). */
 function refresh(): void {
   startRefresh(true)
@@ -368,82 +434,139 @@ function completeByNoMore(data: unknown[], isNoMore: boolean): void {
 
 onMounted(() => {
   if (props.auto) startRefresh(false)
+  if (!isBrowserHost) return
+  const el = scrollEl.value
+  if (!(el instanceof HTMLElement)) return
+  disposeGesture = createBrowserPagingGesture(el, {
+    isRefresherEnabled: () => props.refresherEnabled,
+    refresherThreshold: () => props.refresherThreshold,
+    lowerThreshold: () => props.lowerThreshold,
+    isBusy: () => isLoading.value,
+    onPull: onSimulatedPull,
+    onRefreshArm: onRefresherRefresh,
+    onReachBottom: onScrollToLower,
+  })
 })
 
-onBeforeUnmount(clearCompleteHold)
+onBeforeUnmount(() => {
+  clearCompleteHold()
+  disposeGesture?.()
+  disposeGesture = null
+})
 
 defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore })
 </script>
 
 <template>
-  <scroll-view
+  <view
     class="sn-paging"
-    :class="customClass"
+    :class="rootClass"
     :style="customStyle || undefined"
     data-snui-component="paging"
-    scroll-y
-    :refresher-enabled="refresherEnabled"
-    refresher-default-style="none"
-    :refresher-threshold="refresherThreshold"
-    :refresher-triggered="refresherTriggered"
-    :lower-threshold="lowerThreshold"
-    @refresherpulling="onRefresherPulling"
-    @refresherrefresh="onRefresherRefresh"
-    @refresherrestore="onRefresherSettled"
-    @refresherabort="onRefresherSettled"
-    @scrolltolower="onScrollToLower"
-    @scroll="onScroll"
   >
-    <!-- `slot="refresher"` (not `#refresher`): the attribute form is what the
-     * uni compilers map onto the native refresher slot on MP / App, and plain
-     * attribute content survives SSR compilation of custom elements. -->
-    <view slot="refresher" class="sn-paging__refresher" aria-hidden="true">
-      <slot name="refresher">
-        <SnIcon
-          class="sn-paging__refresher-icon"
-          :class="{ 'sn-paging__refresher-icon--ready': isRefresherReady }"
-          :icon="ChevronDown"
-          :size="32"
-        />
-        <text class="sn-paging__refresher-text">{{ refresherText }}</text>
-      </slot>
+    <!-- Unconditional fixed wrappers: with no slot content they collapse to
+     * zero height, and `$slots` lookups stay out of the template (§116). -->
+    <view class="sn-paging__fixed sn-paging__fixed--top">
+      <slot name="top" />
     </view>
 
-    <slot />
-
-    <view v-if="isEmpty" class="sn-paging__empty">
-      <slot name="empty">
-        <text class="sn-paging__empty-text">{{ emptyText }}</text>
-      </slot>
-    </view>
-
-    <view
-      v-if="showFooter"
-      class="sn-paging__footer"
-      role="status"
-      aria-live="polite"
-      :aria-busy="isLoading"
-      @click="onFooterTap"
+    <scroll-view
+      ref="scrollEl"
+      class="sn-paging__scroll"
+      scroll-y
+      :refresher-enabled="refresherEnabled"
+      refresher-default-style="none"
+      :refresher-threshold="refresherThreshold"
+      :refresher-triggered="refresherTriggered"
+      :lower-threshold="lowerThreshold"
+      @refresherpulling="onRefresherPulling"
+      @refresherrefresh="onRefresherRefresh"
+      @refresherrestore="onRefresherSettled"
+      @refresherabort="onRefresherSettled"
+      @scrolltolower="onScrollToLower"
+      @scroll="onScroll"
     >
-      <view v-if="isLoading" class="sn-paging__footer-spinner">
-        <SnLoading :size="28" text="" />
-      </view>
-      <text
-        class="sn-paging__footer-text"
-        :class="{ 'sn-paging__footer-text--fail': isFooterFail }"
+      <!-- `slot="refresher"` (not `#refresher`): the attribute form is what the
+       * uni compilers map onto the native refresher slot on MP / App, and plain
+       * attribute content survives SSR compilation of custom elements. On
+       * browser hosts the inline height stands in for the native geometry. -->
+      <view
+        slot="refresher"
+        class="sn-paging__refresher"
+        :style="refresherStyle"
+        aria-hidden="true"
       >
-        {{ footerText }}
-      </text>
+        <slot name="refresher">
+          <SnIcon
+            class="sn-paging__refresher-icon"
+            :class="{ 'sn-paging__refresher-icon--ready': isRefresherReady }"
+            :icon="ChevronDown"
+            :size="32"
+          />
+          <text class="sn-paging__refresher-text">{{ refresherText }}</text>
+        </slot>
+      </view>
+
+      <slot />
+
+      <view v-if="isEmpty" class="sn-paging__empty">
+        <slot name="empty">
+          <text class="sn-paging__empty-text">{{ emptyText }}</text>
+        </slot>
+      </view>
+
+      <view
+        v-if="showFooter"
+        class="sn-paging__footer"
+        role="status"
+        aria-live="polite"
+        :aria-busy="isLoading"
+        @click="onFooterTap"
+      >
+        <view v-if="isLoading" class="sn-paging__footer-spinner">
+          <SnLoading :size="28" text="" />
+        </view>
+        <text
+          class="sn-paging__footer-text"
+          :class="{ 'sn-paging__footer-text--fail': isFooterFail }"
+        >
+          {{ footerText }}
+        </text>
+      </view>
+    </scroll-view>
+
+    <view class="sn-paging__fixed sn-paging__fixed--bottom">
+      <slot name="bottom" />
     </view>
-  </scroll-view>
+  </view>
 </template>
 
 <style scoped>
 /* uni side: --sn-mp-* aliases only; geometry in rpx (750 design canvas). */
 .sn-paging {
+  display: flex;
+  flex-direction: column;
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+}
+
+/* Device safe area (iPhone X+); `constant()` covers legacy WeChat webview. */
+.sn-paging--safe-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* #top / #bottom fixed areas — collapsed to zero height when empty. */
+.sn-paging__fixed {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.sn-paging__scroll {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
   /* Plain-CSS hosts (docs preview) need the rule; uni hosts manage their own
    * scroll layer and ignore it. */
   overflow-y: auto;
@@ -454,8 +577,11 @@ defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore })
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   gap: var(--sn-mp-spacing-2);
+  width: 100%;
   height: 100rpx;
+  overflow: hidden;
 }
 
 .sn-paging__refresher-icon {

@@ -28,6 +28,14 @@ the page size or the total is reached.
 
 <Demo name="paging-mp-states" description="Empty data renders the empty slot; complete(false) simulates a failure with a tappable retry footer; reload() restarts." />
 
+### Pure scroll container and gesture switches
+
+<Demo name="paging-mp-scroll" description="Two switches toggle pull-to-refresh / load-more live; both off degrades to a plain scroll container." />
+
+### App case: channel tabs + detail page
+
+<Demo name="paging-mp-app" description="#top search bar and tabs, #bottom fixed action bar (safe-area padded); tapping a row opens a detail page with its own paged reply list." />
+
 ## Protocol
 
 ```ts
@@ -48,6 +56,13 @@ function query(pageNo: number, pageSize: number): void {
   tapping retries the same page.
 - **Height contract**: the root fills its parent (`height: 100%`); the parent
   must provide a definite height.
+- **Pure scroll container**: with `refresher-enabled=false` and
+  `load-more-enabled=false` the component issues no queries, renders no
+  footer, and acts as a plain scroll container; both switches are independent
+  and take effect live.
+- **Gesture hosts**: uni runtimes (MP / App / uni H5) use the native refresher
+  and bottom events; plain browser hosts (the docs preview) automatically
+  enable a built-in touch fallback, so both gestures work there too.
 
 ## API
 
@@ -73,6 +88,7 @@ function query(pageNo: number, pageSize: number): void {
 | `loadMoreNoMoreText` | `string` | `没有更多了` | Footer text once everything is loaded |
 | `loadMoreFailText` | `string` | `加载失败，点击重试` | Footer text after a failure |
 | `emptyText` | `string` | `暂无数据` | Built-in empty view text |
+| `safeAreaInsetBottom` | `boolean` | `false` | Pad the container bottom for the device safe area |
 | `customClass` | `string` | `''` | Root class forwarding |
 | `customStyle` | `string` | `''` | Root style forwarding |
 
@@ -89,6 +105,8 @@ function query(pageNo: number, pageSize: number): void {
 | Name | Description |
 | --- | --- |
 | — | List rows; render the bound v-model array here |
+| `top` | Fixed above the scroll area; does not scroll with the list |
+| `bottom` | Fixed below the scroll area; does not scroll with the list |
 | `empty` | Custom empty view |
 | `refresher` | Custom refresher content (icon + text by default) |
 

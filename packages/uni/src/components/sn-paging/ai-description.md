@@ -15,7 +15,9 @@
 Pull-to-refresh + load-more list container. The pull gesture is `scroll-view`'s
 native refresher (`refresher-enabled` + custom `refresher` slot) and load-more
 is native `@scrolltolower` — no JS touch simulation, so the component stays
-light and the gesture runs on the platform scroll layer. The host fetches data
+light and the gesture runs on the platform scroll layer. Plain browser hosts
+(the docs preview) get a minimal touch/scroll fallback via
+`sn-paging-simulate.ts`, so both gestures work there too. The host fetches data
 in `@query` and reports back through `complete*`; pages are aggregated and
 pushed out via `v-model`.
 
@@ -53,7 +55,8 @@ import { SnPaging } from '@snui/uni'
 | `loadMoreNoMoreText` | `string` | `'没有更多了'` | Footer text once every page is loaded. |
 | `loadMoreFailText` | `string` | `'加载失败，点击重试'` | Footer text after a failure; tap retries. |
 | `emptyText` | `string` | `'暂无数据'` | Built-in empty view text. |
-| `customClass` | `string` | `''` | Root scroll-view class forwarding. |
+| `safeAreaInsetBottom` | `boolean` | `false` | Pad the container bottom for the device safe area. |
+| `customClass` | `string` | `''` | Root node class forwarding. |
 | `customStyle` | `string` | `''` | Root scroll-view style forwarding. |
 
 ## Events
@@ -69,6 +72,8 @@ import { SnPaging } from '@snui/uni'
 | Name | Description |
 |---|---|
 | `default` | List rows; render the bound v-model array here. |
+| `top` | Fixed above the scroll area; does not scroll with the list. |
+| `bottom` | Fixed below the scroll area; does not scroll with the list. |
 | `empty` | Replaces the built-in empty view. |
 | `refresher` | Replaces the built-in refresher content (icon + text). |
 

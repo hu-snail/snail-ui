@@ -318,6 +318,64 @@ describe('sn-paging', () => {
     })
   })
 
+  describe('browser gesture fallback', () => {
+    /* The vitest host has `document` and no `uni`, so the fallback is the
+     * active gesture path here — exactly the docs-preview environment. */
+
+    it('a pull past the threshold triggers the refresh query', async () => {
+      const { wrapper } = mountPaging({ auto: false })
+      const scroller = wrapper.find('scroll-view')
+      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      await scroller.trigger('touchmove', { touches: [{ clientY: 380 }] })
+      expect(wrapper.find('.sn-paging__refresher').attributes('style')).toContain('transition: none')
+
+      await scroller.trigger('touchend')
+      expect(queryCalls(wrapper)).toEqual([[1, 10]])
+      await flush()
+      expect(wrapper.find('.sn-paging__refresher').attributes('style')).toContain('height: 50px')
+    })
+
+    it('a pull below the threshold snaps back without querying', async () => {
+      const { wrapper } = mountPaging({ auto: false })
+      const scroller = wrapper.find('scroll-view')
+      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      await scroller.trigger('touchmove', { touches: [{ clientY: 360 }] })
+      await scroller.trigger('touchend')
+      expect(queryCalls(wrapper)).toHaveLength(0)
+      await flush()
+      expect(wrapper.find('.sn-paging__refresher').attributes('style')).toContain('height: 0px')
+    })
+
+    it('dragging is ignored while a query is in flight', async () => {
+      const { wrapper } = mountPaging()
+      const scroller = wrapper.find('scroll-view')
+      await scroller.trigger('touchstart', { touches: [{ clientY: 300 }] })
+      await scroller.trigger('touchmove', { touches: [{ clientY: 380 }] })
+      await scroller.trigger('touchend')
+      expect(queryCalls(wrapper)).toHaveLength(1)
+    })
+
+    it('scrolling near the bottom loads the next page', async () => {
+      const { wrapper } = mountPaging()
+      wrapper.vm.completeByTotal(['a', 'b'], 30)
+      await flush()
+
+      const el = wrapper.find('scroll-view').element as HTMLElement
+      Object.defineProperty(el, 'scrollHeight', { value: 1000, configurable: true })
+      Object.defineProperty(el, 'clientHeight', { value: 600, configurable: true })
+      el.scrollTop = 400
+      el.dispatchEvent(new Event('scroll'))
+      await flush()
+      expect(queryCalls(wrapper)[1]).toEqual([2, 10])
+    })
+
+    it('refresherEnabled=false blocks the refresh handler', async () => {
+      const { wrapper } = mountPaging({ auto: false, refresherEnabled: false })
+      await wrapper.find('scroll-view').trigger('refresherrefresh')
+      expect(queryCalls(wrapper)).toHaveLength(0)
+    })
+  })
+
   describe('passthrough / forwarding', () => {
     it('re-emits scroll-view scroll events', async () => {
       const { wrapper } = mountPaging({ auto: false })
@@ -327,9 +385,37 @@ describe('sn-paging', () => {
 
     it('forwards customClass and customStyle to the root', () => {
       const { wrapper } = mountPaging({ auto: false, customClass: 'my-list', customStyle: 'height: 50vh' })
-      const root = wrapper.find('scroll-view')
-      expect(root.classes()).toContain('my-list')
-      expect(root.attributes('style')).toContain('height: 50vh')
+      expect(wrapper.classes()).toContain('sn-paging')
+      expect(wrapper.classes()).toContain('my-list')
+      expect(wrapper.attributes('style')).toContain('height: 50vh')
+      expect(wrapper.find('scroll-view').classes()).toContain('sn-paging__scroll')
+    })
+
+    it('adds the safe-area modifier only when safeAreaInsetBottom is set', () => {
+      const on = mountPaging({ auto: false, safeAreaInsetBottom: true })
+      expect(on.wrapper.classes()).toContain('sn-paging--safe-bottom')
+      const off = mountPaging({ auto: false })
+      expect(off.wrapper.classes()).not.toContain('sn-paging--safe-bottom')
+    })
+
+    it('renders the fixed #top / #bottom slot areas', () => {
+      const wrapper = mount(SnPaging, {
+        props: { modelValue: [], 'onUpdate:modelValue': () => {} },
+        slots: {
+          top: '<text class="custom-top">顶部</text>',
+          bottom: '<text class="custom-bottom">底部</text>',
+        },
+      })
+      expect(wrapper.find('.sn-paging__fixed--top .custom-top').text()).toBe('顶部')
+      expect(wrapper.find('.sn-paging__fixed--bottom .custom-bottom').text()).toBe('底部')
+    })
+
+    it('renders empty fixed areas when the slots are unused', () => {
+      const { wrapper } = mountPaging({ auto: false })
+      const top = wrapper.find('.sn-paging__fixed--top')
+      expect(top.exists()).toBe(true)
+      expect(top.text()).toBe('')
+      expect(wrapper.find('.sn-paging__fixed--bottom').text()).toBe('')
     })
   })
 })

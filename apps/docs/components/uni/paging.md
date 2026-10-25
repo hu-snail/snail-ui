@@ -20,6 +20,14 @@
 
 <Demo name="paging-mp-states" description="空数据走 empty 插槽；complete(false) 模拟失败，页脚可点击重试；reload() 手动重新加载。" />
 
+### 纯滑动容器与手势开关
+
+<Demo name="paging-mp-scroll" description="两个开关实时控制下拉刷新 / 上拉加载；全部关闭时退化为纯滚动容器。" />
+
+### 应用案例：频道 tabs + 二级页面
+
+<Demo name="paging-mp-app" description="#top 搜索栏与 tabs、#bottom 固定操作栏（安全区适配）；点条目进入二级页面的独立分页评论列表。" />
+
 ## 使用协议
 
 ```ts
@@ -34,6 +42,8 @@ function query(pageNo: number, pageSize: number): void {
 - **判停规则**：`completeByTotal` 在聚合长度达到 `total` 时判停；`completeByNoMore` 按显式标记判停；普通 `complete` 在返回页短于 `defaultPageSize` 时判停。
 - **失败语义**：`complete(false)`（或非数组入参）记为失败——首屏失败显示可重试页脚；翻页失败保留已加载数据、页脚停在失败态，点击重发同一页。
 - **高度契约**：组件根节点高度 `100%`，父容器必须给定高度（`height` / flex 布局均可）。
+- **纯滑动容器**：`refresher-enabled=false` + `load-more-enabled=false` 时不发请求、无页脚，组件退化为纯滚动容器；两个开关可独立控制、实时生效。
+- **手势环境**：uni 运行时（小程序 / App / uni H5）走原生 refresher 与触底事件；纯浏览器宿主（如文档预览）自动启用内置触摸手势模拟，下拉刷新与上拉加载同样可用。
 
 ## API
 
@@ -59,6 +69,7 @@ function query(pageNo: number, pageSize: number): void {
 | `loadMoreNoMoreText` | `string` | `没有更多了` | 全部加载完的页脚文案 |
 | `loadMoreFailText` | `string` | `加载失败，点击重试` | 失败页脚文案 |
 | `emptyText` | `string` | `暂无数据` | 内置空态文案 |
+| `safeAreaInsetBottom` | `boolean` | `false` | 容器底部适配设备安全区（iPhone X+ 刘海屏） |
 | `customClass` | `string` | `''` | 根节点自定义类名 |
 | `customStyle` | `string` | `''` | 根节点自定义样式 |
 
@@ -75,6 +86,8 @@ function query(pageNo: number, pageSize: number): void {
 | 名称 | 说明 |
 | --- | --- |
 | — | 列表内容；渲染 v-model 绑定的数组 |
+| `top` | 固定在滚动区上方，不随列表滚动（如搜索栏 / tabs） |
+| `bottom` | 固定在滚动区下方，不随列表滚动（如操作栏） |
 | `empty` | 自定义空态内容 |
 | `refresher` | 自定义下拉刷新区内容（默认图标 + 文案） |
 
