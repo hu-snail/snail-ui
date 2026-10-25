@@ -182,14 +182,16 @@ defineExpose({ scrollToSection })
   margin: 0 auto;
 }
 
-/* Screen: the actual viewport. White in the light theme, dark in the dark one. */
+/* Screen: the actual viewport. Matches the preview page background (#f8f8f8 /
+ * #17171a in dark) so the simulator surface and the demo content read as one
+ * surface, with no white flash while the iframe loads. */
 .sn-phone__screen {
   position: relative;
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   overflow: hidden;
-  background: var(--vp-c-bg);
+  background: #f8f8f8;
   color: var(--vp-c-text-1);
   width: 100%;
   max-width: 100%;
@@ -373,6 +375,10 @@ defineExpose({ scrollToSection })
   background: #000;
   z-index: 2;
   pointer-events: none;
+}
+
+.dark .sn-phone__screen {
+  background: #17171a;
 }
 
 .dark .sn-phone__island {

@@ -40,7 +40,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useData, useRoute, withBase } from 'vitepress'
 import PhoneFrame from './PhoneFrame.vue'
-import { dockState, setDockOpen, type DockEntry } from '../utils/demo-dock'
+import { dockState, setDockOpen, uniCompFromRoute, type DockEntry } from '../utils/demo-dock'
 
 const { lang } = useData()
 const route = useRoute()
@@ -62,18 +62,17 @@ const entries = computed<DockEntry[]>(() => dockState.entries)
 
 /**
  * The dock shows the standalone preview route for the page's component — one
- * iframe instead of stacked demo bodies. Scenario switching, the uni-app /
- * uni-app x mode split and the in-frame back button live in MpPreview.vue;
- * rendering here would fight the docs layout for gestures and fixed layers.
+ * iframe instead of stacked demo bodies. Scenario switching and the in-frame
+ * back button live in MpPreview.vue; rendering here would fight the docs
+ * layout for gestures and fixed layers. The overview page previews its
+ * directory (the home view), not a component scenario list.
  */
-const previewComp = computed(() => {
-  const match = route.path.match(/\/components\/uni\/([^/.]+)/)
-  return match?.[1] ?? ''
-})
-
 const dockPreviewUrl = computed(() => {
-  if (previewComp.value === '') return ''
-  return withBase(`/preview-mp?comp=${previewComp.value}`)
+  const comp = uniCompFromRoute(route.path)
+  if (comp === '') return ''
+  return withBase(
+    comp === 'overview' ? '/preview-mp?home=1' : `/preview-mp?comp=${comp}`,
+  )
 })
 
 /**

@@ -96,3 +96,31 @@ export function resetDock(): void {
   dockState.entries = []
   dockState.active = ''
 }
+
+/* ── Inline preview claim ────────────────────────────────────────────────
+ *
+ * A docs page renders at most ONE uni preview iframe inline: the frame boots
+ * a full browsing context, so one iframe per demo section is what made pages
+ * crawl. The first mobile demo of a route claims the single inline frame —
+ * it shows the component's whole scenario stack (one titled module per
+ * section, in order) — and the other sections point up to it. The claim is
+ * per-route and self-healing: a new path re-seeds it on the next claim.
+ */
+const inlineClaim: { path: string; owner: string } = { path: '', owner: '' }
+
+export function claimInlinePreview(name: string, path: string): boolean {
+  if (inlineClaim.path !== path) {
+    inlineClaim.path = path
+    inlineClaim.owner = ''
+  }
+  if (inlineClaim.owner === '') inlineClaim.owner = name
+  return inlineClaim.owner === name
+}
+
+/**
+ * Component short name from a docs route path
+ * (`/components/uni/paging.html` → `paging`, same for `/en/…`).
+ */
+export function uniCompFromRoute(path: string): string {
+  return path.match(/\/components\/uni\/([^/.]+)/)?.[1] ?? ''
+}

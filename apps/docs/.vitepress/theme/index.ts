@@ -7,6 +7,7 @@ import ThemeCopier from '../components/ThemeCopier.vue';
 import Demo from '../components/Demo.vue';
 import DemoLabFab from '../components/DemoLabFab.vue';
 import DialogStage from '../components/DialogStage.vue';
+import MpHome from '../components/MpHome.vue';
 import Layout from './Layout.vue';
 
 /**
@@ -40,6 +41,7 @@ export default {
     app.component('Demo', Demo)
     app.component('DemoLabFab', DemoLabFab)
     app.component('DialogStage', DialogStage)
+    app.component('MpHome', MpHome)
     // Teach the preview to emit uni-app's `tap` gesture and apply
     // `hover-class`; without it every uni demo is inert (see the shim docs).
     installUniPreviewShims()

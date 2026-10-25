@@ -2,7 +2,9 @@
 
 A catalog of the uni-app end: 86 components across 6 categories.
 
-<Demo name="overview-mp" description="uni component overview: category cards + search + filter, an in-simulator directory page." />
+A catalog of the uni-app end: 86 components across 6 categories. The simulator below is an interactive directory — search, filter by category, and tap a component to open its standalone preview (all scenarios stacked), with in-frame back navigation.
+
+<MpHome />
 
 ## Categories
 
@@ -17,4 +19,4 @@ A catalog of the uni-app end: 86 components across 6 categories.
 
 ## Notes
 
-The overview shares its data with the sidebar grouping (`overview-mp-data.ts`); update both when adding components.
+The overview shares its data with the sidebar grouping (`.vitepress/utils/overview-data.ts`); update both when adding components. It is also the preview route's home view (the default when `/preview-mp` opens without parameters).

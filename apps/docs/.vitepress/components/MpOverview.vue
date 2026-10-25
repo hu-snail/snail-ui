@@ -1,17 +1,17 @@
 <script setup lang="ts">
 /**
- * Demo: 组件总览（uni-end）— 手机内组件目录。
+ * MpOverview — the in-simulator component directory (the preview route's home).
  *
  * 布局对齐参考图：模拟器预览背景 #f8f8f8；每个分类是一张独立圆角卡片；
  * 分类标题完整显示（不省略）；搜索 + 分类 chips 实时过滤。
- * 数据与 sidebar 分组同源：overview-mp-data.ts（新增组件两边同步）。
+ * 数据与 sidebar 分组同源：utils/overview-data.ts（新增组件两边同步）。
  *
  * 条目点击进入该组件的独立预览路由（/preview-mp?comp=<short>）。本 demo
  * 运行在预览 iframe 内，跳转只改写 iframe 自己的地址，返回即回到本目录。
  */
 import { computed, ref } from 'vue'
 import { withBase } from 'vitepress'
-import { OVERVIEW_GROUPS, OVERVIEW_TOTAL } from './overview-mp-data'
+import { OVERVIEW_GROUPS, OVERVIEW_TOTAL } from '../utils/overview-data'
 
 const keyword = ref('')
 const activeGroup = ref('all')

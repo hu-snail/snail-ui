@@ -28,11 +28,12 @@
  */
 
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { Check, Copy, ChevronRight, ChevronDown } from 'lucide-vue-next'
+import { ChevronRight, ChevronDown, Check, Copy } from 'lucide-vue-next'
 import { SnIcon } from '@snui/vue-web'
 import PhoneFrame from './PhoneFrame.vue'
-import { dockState, registerDemo, unregisterDemo } from '../utils/demo-dock'
+import { dockState, claimInlinePreview, uniCompFromRoute, registerDemo, unregisterDemo } from '../utils/demo-dock'
 import { loadDemoComponent, loadDemoSource } from '../utils/demo-loader'
+import { useData, useRoute, withBase } from 'vitepress'
 
 interface Props {
   /** Demo file basename (without .vue) under apps/docs/.vitepress/demo/. */
@@ -147,7 +148,6 @@ onBeforeUnmount(() => {
 // 双语机制(naive-ui 官网同构):英文站点优先加载 `demo-en/<name>.vue`
 // 影子文件(渲染 + 代码面板都用它);不存在时回退中文 demo。影子文件是
 // 普通源码,保持 demo「可复制即真实用法」的教学价值;md 页零改动。
-import { useData, withBase } from 'vitepress'
 const { lang } = useData()
 const isEn = computed(() => lang.value === 'en-US')
 
@@ -156,9 +156,28 @@ const isEn = computed(() => lang.value === 'en-US')
  * frame gives the demo its own browsing context (gestures, fixed layers and
  * page scrolling behave like a real app screen) and its own history, so the
  * in-frame back button returns to the overview without touching the docs
- * route. The scenario itself lives in MpPreview.vue.
+ * route. The scenario stack itself lives in MpPreview.vue.
+ *
+ * ONE frame per page: a browsing context is expensive, so the first mobile
+ * demo of the route claims the only inline frame (it already stacks every
+ * scenario of the component, in document order) and the later sections point
+ * up to it — that claim is what fixed "the preview loads forever" pages.
  */
-const mpPreviewUrl = computed(() => withBase(`/preview-mp?demo=${props.name}`))
+const route = useRoute()
+const ownsInlineFrame = ref(false)
+watch(
+  () => route.path,
+  () => {
+    ownsInlineFrame.value =
+      isMobileDemo.value && claimInlinePreview(props.name, route.path)
+  },
+  { immediate: true },
+)
+
+const mpPreviewUrl = computed(() => {
+  const comp = uniCompFromRoute(route.path)
+  return withBase(comp === '' ? '/preview-mp?home=1' : `/preview-mp?comp=${comp}`)
+})
 
 // Async demo component, resolved through the shared loader so `DemoDock` and
 // this component can never disagree about which file a name maps to (English
@@ -175,6 +194,7 @@ const t = computed(() =>
         expandCode: 'Show code',
         collapseCode: 'Hide code',
         inPanel: 'Live preview is in the panel on the right',
+        inFrame: 'Live preview is in the phone frame above (all scenarios)',
         codeTabs: 'Code sections',
       }
     : {
@@ -184,6 +204,7 @@ const t = computed(() =>
         expandCode: '展开代码',
         collapseCode: '收起代码',
         inPanel: '实时预览已移至右侧预览面板',
+        inFrame: '实时预览见上方手机框（含全部场景）',
         codeTabs: '代码分区',
       },
 )
@@ -345,19 +366,19 @@ watch(
     <p v-if="description" class="sn-demo__description">{{ description }}</p>
 
     <!--
-      Live preview, rendered here only when the dock is not showing this demo.
-
-      On a uni page with the dock open, the panel on the right owns every
-      preview, so this slot collapses to a one-line note and the article keeps
-      prose + code. Otherwise the frame renders inline exactly as before
-      (narrow viewport, non-uni page, or the reader closed the dock).
+      Live preview: the dock owns it on wide uni pages; otherwise the FIRST
+      mobile demo of the page owns the single inline frame (it stacks every
+      scenario of the component); the remaining sections point to it.
     -->
     <div v-if="inDock" class="sn-demo__docked">
       <span class="sn-demo__docked-note">{{ t.inPanel }}</span>
     </div>
+    <div v-else-if="isMobileDemo && !ownsInlineFrame" class="sn-demo__docked">
+      <span class="sn-demo__docked-note">{{ t.inFrame }}</span>
+    </div>
     <div v-else-if="isMobileDemo" class="sn-demo__stage">
       <ClientOnly>
-        <PhoneFrame :height="640">
+        <PhoneFrame :height="720">
           <iframe
             class="sn-demo__frame"
             :src="mpPreviewUrl"

@@ -26,18 +26,23 @@ import { computed, onBeforeUnmount, onMounted, ref, type Component } from 'vue'
 import { useData, withBase } from 'vitepress'
 import { ChevronLeft } from 'lucide-vue-next'
 import { listMpDemoNames, loadDemoComponent } from '../utils/demo-loader'
+import MpOverview from './MpOverview.vue'
 
 const { lang } = useData()
 const isEn = computed(() => lang.value === 'en-US')
 
 const comp = ref('')
 const pinnedDemo = ref('')
+/** Home = the overview directory: no bar, the page *is* the directory. */
+const isHome = ref(false)
 const ready = ref(false)
 
 onMounted(() => {
   const params = new URLSearchParams(window.location.search)
   comp.value = (params.get('comp') ?? '').trim()
   pinnedDemo.value = (params.get('demo') ?? '').trim()
+  isHome.value =
+    params.get('home') === '1' || (comp.value === '' && pinnedDemo.value === '')
   ready.value = true
   syncTheme()
 })
@@ -140,7 +145,10 @@ function goBack(): void {
 let themeObserver: MutationObserver | null = null
 
 function applyDark(dark: boolean): void {
+  /* `dark` drives the page chrome; `sn-theme-dark` flips the uni component
+   * tokens (--sn-mp-*), the uni-end dark contract (AGENTS.md §112.5). */
   document.documentElement.classList.toggle('dark', dark)
+  document.documentElement.classList.toggle('sn-theme-dark', dark)
 }
 
 function syncTheme(): void {
@@ -176,8 +184,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="mpp">
-    <header class="mpp__bar">
+  <div class="mpp" :class="{ 'mpp--home': isHome }">
+    <header v-if="!isHome" class="mpp__bar">
       <button class="mpp__back" type="button" :aria-label="t.back" @click="goBack">
         <ChevronLeft :size="18" />
         <span class="mpp__back-label">{{ t.back }}</span>
@@ -188,23 +196,27 @@ onBeforeUnmount(() => {
       <span class="mpp__shim" aria-hidden="true" />
     </header>
 
-    <main class="mpp__body">
+    <main class="mpp__body" :class="{ 'mpp__body--home': isHome }">
       <ClientOnly>
-        <section v-for="(scenario, index) in scenarios" :key="scenario.name" class="mpp__module">
-          <h2 class="mpp__module-title">
-            <span class="mpp__module-num">{{ index + 1 }}</span>
-            <span class="mpp__module-label">{{ scenario.label }}</span>
-          </h2>
-          <div class="mpp__card">
-            <component :is="scenario.component" />
-          </div>
-        </section>
+        <MpOverview v-if="isHome" />
 
-        <p v-if="ready && scenarios.length === 0" class="mpp__missing">{{ t.missing }}</p>
-        <p v-else-if="!ready" class="mpp__missing">{{ t.loading }}</p>
+        <template v-else>
+          <section v-for="(scenario, index) in scenarios" :key="scenario.name" class="mpp__module">
+            <h2 class="mpp__module-title">
+              <span class="mpp__module-num">{{ index + 1 }}</span>
+              <span class="mpp__module-label">{{ scenario.label }}</span>
+            </h2>
+            <div class="mpp__card">
+              <component :is="scenario.component" />
+            </div>
+          </section>
+
+          <p v-if="ready && scenarios.length === 0" class="mpp__missing">{{ t.missing }}</p>
+          <p v-else-if="!ready" class="mpp__missing">{{ t.loading }}</p>
+        </template>
 
         <template #fallback>
-          <p class="mpp__missing">{{ t.loading }}</p>
+          <p v-if="!isHome" class="mpp__missing">{{ t.loading }}</p>
         </template>
       </ClientOnly>
     </main>
@@ -292,6 +304,12 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
   width: 100%;
   padding: 14px 12px 24px;
+}
+
+/* Home: the overview owns its own background, padding and cards. */
+.mpp__body--home {
+  gap: 0;
+  padding: 0;
 }
 
 /* Module: small grey title above a white flat 24px-radius card. */
