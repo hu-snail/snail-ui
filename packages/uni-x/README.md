@@ -1,19 +1,20 @@
 # @snui/uni-x
 
 uni-app x（App 端蒸汽模式）产物生成器。**不是第二套组件代码**：组件唯一事实源是
-[`@snui/uni`](../uni)，本包把它的 `.vue` 源码确定性转换为 `.uvue` + uni_modules
-产物（架构决策见 `.ai/decisions/0004-uni-x-adoption.md`）。
+[`@snui/uni`](../uni)，本包把它的 `.vue` 源码确定性转换为 npm 可直接消费的
+`.uvue` 产物（架构决策见 `.ai/decisions/0004-uni-x-adoption.md`）。
 
 ## 命令
 
 ```bash
-pnpm -F @snui/uni-x build   # 生成 dist/uni_modules/snail-uix/ + PORTING-REPORT.md
+pnpm -F @snui/uni-x build   # 生成 dist/（components/ + theme/）+ PORTING-REPORT.md
 pnpm -F @snui/uni-x test    # 转换器单元测试（30 个行为测试）
 pnpm -F @snui/uni-x typecheck
 ```
 
-消费方式（拷贝 `dist/uni_modules/snail-uix` 到 HBuilderX 工程等）见文档站
-`guide/uni/uni-app-x`（双语）。
+`dist/` 通过 package.json `files` 随 npm 包发布——消费方 `pnpm add @snui/uni-x`
+后，在 `pages.json` 里把 easycom 指到 `@snui/uni-x/components/sn-$1/sn-$1.uvue`
+即可，无需生成或拷贝。完整接入步骤见文档站 `guide/uni/uni-app-x`（双语）。
 
 ## 转换规则
 

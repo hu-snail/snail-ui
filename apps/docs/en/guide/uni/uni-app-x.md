@@ -14,14 +14,16 @@ hand-maintained component codebase.
 
 ## Getting started
 
-### 1. Build the artifacts
+### 1. Install
 
 ```bash
-pnpm -F @snui/uni-x build
+pnpm add @snui/uni-x
 ```
 
-This produces `packages/uni-x/dist/uni_modules/snail-uix/`. Copy the whole
-`snail-uix` folder into your uni-app x project's `uni_modules/` directory.
+The artifacts (`.uvue` components + theme) are **shipped with the package**
+(under `dist/components/…` inside it) — nothing to generate or copy on your
+side. Before the first release, run `pnpm -F @snui/uni-x build && pnpm -F
+@snui/uni-x pack` in this repo and install the resulting tarball.
 
 ### 2. Configure easycom
 
@@ -32,7 +34,7 @@ In `pages.json`:
   "easycom": {
     "autoscan": true,
     "custom": {
-      "^sn-(.*)": "@/uni_modules/snail-uix/components/sn-$1/sn-$1.uvue"
+      "^sn-(.*)": "@snui/uni-x/components/sn-$1/sn-$1.uvue"
     }
   }
 }
@@ -44,7 +46,7 @@ Import the class-only token layer in `App.uvue` (App has no `:root`; variables
 mount on `.sn-theme-root`, which `sn-config-provider` adds automatically):
 
 ```css
-@import "uni_modules/snail-uix/theme/index.css";
+@import "@snui/uni-x/theme/index.css";
 ```
 
 Pages that do not use `sn-config-provider` should add `class="sn-theme-root"`

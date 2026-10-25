@@ -11,14 +11,15 @@ uni-app（H5 / 小程序 / App）与 uni-app x。uni-app x 消费的 `.uvue` 产
 
 ## 接入步骤
 
-### 1. 生成产物
+### 1. 安装
 
 ```bash
-pnpm -F @snui/uni-x build
+pnpm add @snui/uni-x
 ```
 
-产出 `packages/uni-x/dist/uni_modules/snail-uix/`，把整个 `snail-uix` 目录拷贝到
-uni-app x 工程的 `uni_modules/` 下。
+组件产物（`.uvue` + 主题层）**已随包发布**（包内 `dist/components/…` 结构），
+无需在本地执行生成、也无需拷贝目录。包尚未正式发版时，可在本仓库执行
+`pnpm -F @snui/uni-x build && pnpm -F @snui/uni-x pack` 得到 tarball 后安装。
 
 ### 2. 配置 easycom
 
@@ -29,7 +30,7 @@ uni-app x 工程的 `uni_modules/` 下。
   "easycom": {
     "autoscan": true,
     "custom": {
-      "^sn-(.*)": "@/uni_modules/snail-uix/components/sn-$1/sn-$1.uvue"
+      "^sn-(.*)": "@snui/uni-x/components/sn-$1/sn-$1.uvue"
     }
   }
 }
@@ -41,7 +42,7 @@ uni-app x 工程的 `uni_modules/` 下。
 `.sn-theme-root` 上，`sn-config-provider` 会自动携带该 class）：
 
 ```css
-@import "uni_modules/snail-uix/theme/index.css";
+@import "@snui/uni-x/theme/index.css";
 ```
 
 不使用 `sn-config-provider` 的页面，请在页面根节点加 `class="sn-theme-root"`。

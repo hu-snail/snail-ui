@@ -1,11 +1,13 @@
 /**
- * Build CLI: emits the uni-app x consumption artifact from @snui/uni sources.
+ * Build CLI: emits the npm-consumable uni-app x artifact from @snui/uni sources.
  *
- * Output (dist/, gitignored):
- *   dist/uni_modules/snail-uix/components/<comp>/<comp>.uvue   (easycom layout)
- *   dist/uni_modules/snail-uix/components/<comp>/<helper>.ts   (copied, patched)
- *   dist/uni_modules/snail-uix/theme/index.css                 (class-only tokens)
- *   dist/uni_modules/snail-uix/package.json
+ * The package publishes `dist/` directly — consumers `npm install @snui/uni-x`
+ * and point easycom at the package path. No build or copy steps on the user side.
+ *
+ * Output (dist/, gitignored, shipped via package.json `files`):
+ *   dist/components/<comp>/<comp>.uvue   (easycom layout)
+ *   dist/components/<comp>/<helper>.ts   (copied, patched)
+ *   dist/theme/index.css                 (class-only tokens)
  *   dist/PORTING-REPORT.md  (+ copy at package root for review)
  *
  * Exits non-zero when a patch anchor goes missing (upstream drift).
@@ -18,7 +20,6 @@ import { applyPatches } from './patches.ts';
 import { transformVueToUvue } from './index.ts';
 import type { IssueKind, TransformIssue } from './types.ts';
 
-const PLUGIN_ID = 'snail-uix';
 const pkgRoot: string = process.cwd();
 const uniComponentsDir: string = resolve(pkgRoot, '../../packages/uni/src/components');
 const tokenSources: string[] = [
@@ -26,7 +27,7 @@ const tokenSources: string[] = [
   resolve(pkgRoot, '../../packages/tokens-mp/styles/index.css'),
 ];
 const distDir: string = resolve(pkgRoot, 'dist');
-const umdRoot: string = join(distDir, 'uni_modules', PLUGIN_ID);
+const componentsDir: string = join(distDir, 'components');
 
 interface FileOutcome {
   relPath: string;
@@ -47,7 +48,7 @@ function transformComponents(): { uvueCount: number; tsCount: number } {
   for (const compDir of readdirSync(uniComponentsDir, { withFileTypes: true })) {
     if (!compDir.isDirectory()) continue;
     const compName: string = compDir.name;
-    const outDir: string = join(umdRoot, 'components', compName);
+    const outDir: string = join(componentsDir, compName);
     mkdirSync(outDir, { recursive: true });
     for (const entry of readdirSync(join(uniComponentsDir, compName), { withFileTypes: true })) {
       if (!entry.isFile() || isSkipFile(entry.name)) continue;
@@ -79,7 +80,7 @@ function emitTheme(): void {
     ' * Generated from @snui/tokens + @snui/tokens-mp. `:root` / `page` selectors',
     ' * are rewritten to `.sn-theme-root` (sn-config-provider adds it to its root',
     ' * node; non-provider hosts must put the class on their page root view).',
-    ' * Import from App.uvue:  @import "uni_modules/snail-uix/theme/index.css";',
+    ' * Import from App.uvue:  @import "@snui/uni-x/theme/index.css";',
     ' */',
     '',
   ];
@@ -88,20 +89,8 @@ function emitTheme(): void {
     const result = transformCss(css, 'tokens', relative(distDir, file));
     parts.push(`/* ---- source: ${relative(resolve(pkgRoot, '../..'), file)} ---- */`, result.css, '');
   }
-  mkdirSync(join(umdRoot, 'theme'), { recursive: true });
-  writeFileSync(join(umdRoot, 'theme', 'index.css'), `${parts.join('\n')}\n`);
-}
-
-function emitPackageJson(): void {
-  const meta = {
-    id: PLUGIN_ID,
-    displayName: 'Snail AUI for uni-app x',
-    version: '0.1.0',
-    description: 'Generated uni-app x (vapor mode) port of @snui/uni. See ADR-0004.',
-    keywords: ['ui', 'uni-app-x', 'aui'],
-    uni_modules: {},
-  };
-  writeFileSync(join(umdRoot, 'package.json'), `${JSON.stringify(meta, null, 2)}\n`);
+  mkdirSync(join(distDir, 'theme'), { recursive: true });
+  writeFileSync(join(distDir, 'theme', 'index.css'), `${parts.join('\n')}\n`);
 }
 
 const KIND_LABELS: Record<IssueKind, string> = {
@@ -169,10 +158,9 @@ const MANUAL_FLAGS: string[] = [
 
 function main(): void {
   rmSync(distDir, { recursive: true, force: true });
-  mkdirSync(umdRoot, { recursive: true });
+  mkdirSync(componentsDir, { recursive: true });
   const counts = transformComponents();
   emitTheme();
-  emitPackageJson();
   emitReport(counts);
   const dropped: number = outcomes.reduce(
     (acc, o) => acc + o.issues.filter((i) => i.kind.startsWith('pseudo') || i.kind === 'combinator-unsupported' || i.kind === 'attribute-selector' || i.kind === 'tag-only-selector').length,
