@@ -73,7 +73,27 @@ export function convertRpx(code: string): string {
     (_match, raw: string) => `${parseFloat(raw) * 0.5}px`,
   )
 }
+
+/**
+ * Does this module id carry CSS that the browser will parse as a stylesheet?
+ *
+ * Two shapes exist in practice: plain `.css` files and the SFC virtual style
+ * modules emitted by vite-plugin-vue
+ * (`…​.vue?vue&type=style&index=0&scoped=…&lang.css`). Everything else a demo
+ * directory serves (`?raw` sources, compiled JS) must keep its original text.
+ */
+export function isCssModuleId(id: string): boolean {
+  return id.includes('type=style') || id.includes('lang.css') || id.endsWith('.css')
+}
+
 export function rpxTransform(): Plugin {
+  // vite's asset plugin statically rewrites `new URL('<literal>', import.meta.url)`
+  // into a resolved module URL (http://…/@fs/...), which `fileURLToPath` then
+  // rejects ("The URL must be of scheme file") — vitest loads this module
+  // through vite-node and hit exactly that. Holding the base in a variable
+  // breaks the literal pattern, so the resolution stays a runtime operation
+  // under every loader (esbuild config bundle, vite dev, vitest).
+  const moduleUrl = import.meta.url
   // Absolute path of the uni package source (matches @snui/uni-src alias
   // resolution). Used as a stable filter anchor in addition to the
   // package name so workers don't need to recompute the path each time.
@@ -82,11 +102,11 @@ export function rpxTransform(): Plugin {
   // packages/uni/src. One `..` fewer lands inside apps/packages, which
   // doesn't exist — that bug shipped in commit 0622e1e and caused the
   // source-import path to be silently skipped.
-  const uniSrcAbsPath = fileURLToPath(new URL('../../../../packages/uni/src', import.meta.url))
+  const uniSrcAbsPath = fileURLToPath(new URL('../../../../packages/uni/src', moduleUrl))
   // @snui/templates ships uni-end templates whose own CSS carries rpx
   // literals; they need the same conversion or the demo renders unstyled.
   const templatesSrcAbsPath = fileURLToPath(
-    new URL('../../../../packages/templates/src/uni', import.meta.url),
+    new URL('../../../../packages/templates/src/uni', moduleUrl),
   )
   // The demo files themselves are part of the uni-end preview surface: their
   // scoped `<style>` blocks are written in rpx (mobile rhythm — a 16rpx gap
@@ -94,8 +114,15 @@ export function rpxTransform(): Plugin {
   // CSS keeps its `rpx` units, the browser drops every geometric declaration,
   // and a demo that is supposed to be a flex column renders as a run-on line
   // even though the components inside it are styled correctly.
-  const demoAbsPath = fileURLToPath(new URL('../../demo', import.meta.url))
-  const demoEnAbsPath = fileURLToPath(new URL('../../demo-en', import.meta.url))
+  //
+  // `import.meta.url` is THIS FILE, so URL resolution replaces the filename
+  // first: the base directory is `…/apps/docs/.vitepress/utils/`. ONE `..`
+  // walks up to `…/.vitepress/`, where the demo directories actually live
+  // (`…/.vitepress/demo`). A second `..` lands in `apps/docs/demo`, which
+  // does not exist — that off-by-one shipped with the anchor and silently
+  // disabled it (every demo scoped style kept its raw rpx).
+  const demoAbsPath = fileURLToPath(new URL('../demo', moduleUrl))
+  const demoEnAbsPath = fileURLToPath(new URL('../demo-en', moduleUrl))
   return {
     name: 'snui-rpx-to-px',
     enforce: 'post',
@@ -112,13 +139,21 @@ export function rpxTransform(): Plugin {
       //
       // The two demo anchors are directory prefixes, so the trailing slash is
       // what keeps `demo-en/` from also matching the `demo/` anchor.
+      //
+      // Demo directory matches are restricted to CSS modules: the same
+      // directory also serves `?raw` source modules (the code panel shows the
+      // original SFC text, which must keep its `rpx` for readers to copy) and
+      // the compiled JS chunks (inline `custom-style` rpx is converted at
+      // runtime by the uni preview shims instead).
+      const isDemoModule =
+        id.includes(`${demoAbsPath}/`) || id.includes(`${demoEnAbsPath}/`)
+      if (isDemoModule && !isCssModuleId(id)) return
       if (
         !id.includes('@snui/uni') &&
         !id.includes(`${uniSrcAbsPath}/`) &&
         !id.includes(`${templatesSrcAbsPath}/`) &&
         !id.includes('/packages/uni/dist/') &&
-        !id.includes(`${demoAbsPath}/`) &&
-        !id.includes(`${demoEnAbsPath}/`)
+        !isDemoModule
       ) {
         return
       }

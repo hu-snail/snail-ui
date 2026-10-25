@@ -53,20 +53,22 @@ const styled = ref(45)
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 24rpx;
   align-items: stretch;
   width: 100%;
 }
 .sn-demo__row {
   display: flex;
   align-items: flex-start;
-  gap: 32rpx;
+  gap: 48rpx;
+  padding: 8rpx 0;
 }
 .sn-demo__col {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8rpx;
+  gap: 12rpx;
+  min-width: 96rpx;
 }
 .sn-demo__label {
   color: var(--sn-mp-color-text-secondary);
