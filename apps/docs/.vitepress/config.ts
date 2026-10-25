@@ -39,6 +39,7 @@ const sidebar = {
         { text: '架构', link: '/guide/web/architecture' },
         { text: 'Web 快速开始', link: '/guide/web/quick-start' },
         { text: 'uni-app 快速开始', link: '/guide/uni/quick-start' },
+        { text: 'uni-app x（蒸汽模式）', link: '/guide/uni/uni-app-x' },
       ],
     },
     {
@@ -366,6 +367,7 @@ const enSidebar = {
         { text: 'Architecture', link: '/en/guide/web/architecture' },
         { text: 'Web Quick Start', link: '/en/guide/web/quick-start' },
         { text: 'uni-app Quick Start', link: '/en/guide/uni/quick-start' },
+        { text: 'uni-app x (Vapor Mode)', link: '/en/guide/uni/uni-app-x' },
       ],
     },
     {
