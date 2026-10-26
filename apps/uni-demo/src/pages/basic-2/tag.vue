@@ -5,51 +5,54 @@ import Demo1 from './demos/tag-mp-closable.vue';
 import Demo2 from './demos/tag-mp-color-custom.vue';
 import Demo3 from './demos/tag-mp-size.vue';
 import Demo4 from './demos/tag-mp-variant.vue';
+import DemoPageShell from '../../components/DemoPageShell.vue';
 </script>
 
 <template>
-  <view class="page">
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">基础用法</text>
+  <DemoPageShell :title-zh="'标签'" :title-en="'Tag'">
+    <view class="page">
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">基础用法</text>
+        </view>
+        <view class="module__body">
+          <Demo0 />
+        </view>
       </view>
-      <view class="module__body">
-        <Demo0 />
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">closable</text>
+        </view>
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">color-custom</text>
+        </view>
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">尺寸</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">变体</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
+        </view>
       </view>
     </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">closable</text>
-      </view>
-      <view class="module__body">
-        <Demo1 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">color-custom</text>
-      </view>
-      <view class="module__body">
-        <Demo2 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">尺寸</text>
-      </view>
-      <view class="module__body">
-        <Demo3 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">变体</text>
-      </view>
-      <view class="module__body">
-        <Demo4 />
-      </view>
-    </view>
-  </view>
+  </DemoPageShell>
 </template>
 
 <style scoped>
@@ -58,8 +61,6 @@ import Demo4 from './demos/tag-mp-variant.vue';
 }
 
 .module {
-  background-color: #ffffff;
-  border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
 }
@@ -71,7 +72,7 @@ import Demo4 from './demos/tag-mp-variant.vue';
 .module__title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f1f1f;
+  color: var(--demo-title);
 }
 
 .module__body {

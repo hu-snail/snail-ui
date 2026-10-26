@@ -5,51 +5,54 @@ import Demo1 from './demos/popup-mp-config.vue';
 import Demo2 from './demos/popup-mp-position.vue';
 import Demo3 from './demos/popup-mp-scroll.vue';
 import Demo4 from './demos/popup-mp-surface.vue';
+import DemoPageShell from '../../components/DemoPageShell.vue';
 </script>
 
 <template>
-  <view class="page">
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">基础用法</text>
+  <DemoPageShell :title-zh="'弹出层'" :title-en="'Popup'">
+    <view class="page">
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">基础用法</text>
+        </view>
+        <view class="module__body">
+          <Demo0 />
+        </view>
       </view>
-      <view class="module__body">
-        <Demo0 />
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">配置</text>
+        </view>
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">位置</text>
+        </view>
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">滚动</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">surface</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
+        </view>
       </view>
     </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">配置</text>
-      </view>
-      <view class="module__body">
-        <Demo1 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">位置</text>
-      </view>
-      <view class="module__body">
-        <Demo2 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">滚动</text>
-      </view>
-      <view class="module__body">
-        <Demo3 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">surface</text>
-      </view>
-      <view class="module__body">
-        <Demo4 />
-      </view>
-    </view>
-  </view>
+  </DemoPageShell>
 </template>
 
 <style scoped>
@@ -58,8 +61,6 @@ import Demo4 from './demos/popup-mp-surface.vue';
 }
 
 .module {
-  background-color: #ffffff;
-  border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
 }
@@ -71,7 +72,7 @@ import Demo4 from './demos/popup-mp-surface.vue';
 .module__title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f1f1f;
+  color: var(--demo-title);
 }
 
 .module__body {

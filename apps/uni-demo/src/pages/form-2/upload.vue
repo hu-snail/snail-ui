@@ -7,67 +7,70 @@ import Demo3 from './demos/upload-mp-events-counter.vue';
 import Demo4 from './demos/upload-mp-multiple-source.vue';
 import Demo5 from './demos/upload-mp-preview-custom.vue';
 import Demo6 from './demos/upload-mp-request-method.vue';
+import DemoPageShell from '../../components/DemoPageShell.vue';
 </script>
 
 <template>
-  <view class="page">
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">基础用法</text>
+  <DemoPageShell :title-zh="'上传'" :title-en="'Upload'">
+    <view class="page">
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">基础用法</text>
+        </view>
+        <view class="module__body">
+          <Demo0 />
+        </view>
       </view>
-      <view class="module__body">
-        <Demo0 />
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">before-hooks</text>
+        </view>
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">disabled-status</text>
+        </view>
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">events-counter</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">multiple-source</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">preview-custom</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">request-method</text>
+        </view>
+        <view class="module__body">
+          <Demo6 />
+        </view>
       </view>
     </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">before-hooks</text>
-      </view>
-      <view class="module__body">
-        <Demo1 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">disabled-status</text>
-      </view>
-      <view class="module__body">
-        <Demo2 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">events-counter</text>
-      </view>
-      <view class="module__body">
-        <Demo3 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">multiple-source</text>
-      </view>
-      <view class="module__body">
-        <Demo4 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">preview-custom</text>
-      </view>
-      <view class="module__body">
-        <Demo5 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">request-method</text>
-      </view>
-      <view class="module__body">
-        <Demo6 />
-      </view>
-    </view>
-  </view>
+  </DemoPageShell>
 </template>
 
 <style scoped>
@@ -76,8 +79,6 @@ import Demo6 from './demos/upload-mp-request-method.vue';
 }
 
 .module {
-  background-color: #ffffff;
-  border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
 }
@@ -89,7 +90,7 @@ import Demo6 from './demos/upload-mp-request-method.vue';
 .module__title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f1f1f;
+  color: var(--demo-title);
 }
 
 .module__body {

@@ -9,6 +9,13 @@ uni 端（`@snui/uni`）组件 demo 的**唯一事实源**与真实运行时演�
   仓库 CI（`uni-demo-deploy.yml`）自动发布到 GitHub Pages。
 - **微信小程序**：`pnpm build:mp-weixin` 产出 `dist/build/mp-weixin`，
   用微信开发者工具导入运行。
+- **页面 UI**：总览/组件页共用 `DemoPageShell`——渐变弥散背景 + 呼吸动画、
+  玻璃卡（浅色透明渐变 + 圆角 + 描边，backdrop-filter 渐进增强）、中/英切换
+  与深/浅主题切换按钮（`src/state/demo-ui.ts`，uni storage 持久化）、总览页
+  组件搜索（中文名/英文名/key/描述本地过滤）。已知边界：组件库 token 目前
+  仅浅色（深色主题作用于页面骨架）；H5 端原生导航栏颜色不随主题（uni API
+  限制）；组件中文名/描述与场景标题暂无英文数据（英文模式下组件名用 key
+  的 Title Case，分组标签双语）。
 
 ## 脚本
 

@@ -4,43 +4,46 @@ import Demo0 from './demos/text-mp-basic.vue';
 import Demo1 from './demos/text-mp-custom.vue';
 import Demo2 from './demos/text-mp-lines.vue';
 import Demo3 from './demos/text-mp-mode.vue';
+import DemoPageShell from '../../components/DemoPageShell.vue';
 </script>
 
 <template>
-  <view class="page">
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">基础用法</text>
+  <DemoPageShell :title-zh="'文本'" :title-en="'Text'">
+    <view class="page">
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">基础用法</text>
+        </view>
+        <view class="module__body">
+          <Demo0 />
+        </view>
       </view>
-      <view class="module__body">
-        <Demo0 />
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">自定义</text>
+        </view>
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">lines</text>
+        </view>
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">mode</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
       </view>
     </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">自定义</text>
-      </view>
-      <view class="module__body">
-        <Demo1 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">lines</text>
-      </view>
-      <view class="module__body">
-        <Demo2 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">mode</text>
-      </view>
-      <view class="module__body">
-        <Demo3 />
-      </view>
-    </view>
-  </view>
+  </DemoPageShell>
 </template>
 
 <style scoped>
@@ -49,8 +52,6 @@ import Demo3 from './demos/text-mp-mode.vue';
 }
 
 .module {
-  background-color: #ffffff;
-  border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
 }
@@ -62,7 +63,7 @@ import Demo3 from './demos/text-mp-mode.vue';
 .module__title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f1f1f;
+  color: var(--demo-title);
 }
 
 .module__body {
