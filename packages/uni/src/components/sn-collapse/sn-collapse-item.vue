@@ -25,7 +25,7 @@
  *   - 内容排版 — 由使用方决定
  */
 
-import { computed, inject, onBeforeUnmount, onMounted } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { ChevronDown } from '../sn-icon/sn-icon-set';
 import { SN_COLLAPSE_KEY, type SnCollapseItemBeforeExpand } from './sn-collapse-types';
@@ -111,11 +111,17 @@ async function onTap(): Promise<void> {
   /* Collapsing never needs a veto — only opening does. */
   if (!expanded.value && !(await canExpand())) return;
   collapse.toggle(props.name);
-  emit('change', { name: props.name, expanded: !expanded.value });
+  /* `expanded` already reflects the post-toggle state, so it *is* the new one. */
+  emit('change', { name: props.name, expanded: expanded.value });
 }
 
 /* The container needs the name list for `toggleAll`; report it on mount. */
-onMounted(() => collapse?.registerName(props.name));
+onMounted(() => collapse?.registerName(props.name, props.disabled));
+/* Keep the registered disabled state fresh so `skipDisabled` stays accurate. */
+watch(
+  () => props.disabled,
+  (disabled) => collapse?.registerName(props.name, disabled),
+);
 onBeforeUnmount(() => collapse?.unregisterName(props.name));
 
 /** Slot scope flags, narrowed to `boolean` for the template. */

@@ -9,6 +9,13 @@
  *   - `indicator` accepts `true`, `false` and a config object; `minShowNum`
  *     gates visibility and `type` picks dots / bars / fraction
  *   - `change` / `animationfinish` / `click` / `update:current` payloads
+ *
+ * Untestable in happy-dom: autoplay timing with fake timers, loop wrap-around
+ * and touch-swipe direction physics. The component delegates all of these to
+ * the native `<swiper>` element (see the SFC header — no timer or touch
+ * handler lives here, so there is nothing to fake); happy-dom renders
+ * `<swiper>` as an inert unknown element, so only the forwarded attributes and
+ * the re-emitted change / animationfinish events can be verified.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -208,5 +215,146 @@ describe('sn-swiper', () => {
       },
     });
     expect(wrapper.findAll('.sn-swiper__item')).toHaveLength(3);
+  });
+
+  describe('native swiper forwarding', () => {
+    it('publishes the margins as custom properties only when set', () => {
+      const withMargins = mount(SnSwiper, {
+        props: { list, previousMargin: 20, nextMargin: 30 },
+      });
+      const style = withMargins.find('.sn-swiper__native').attributes('style') ?? '';
+      // Custom properties survive happy-dom's CSS parser (regular rpx lengths
+      // do not), so the raw rpx values are assertable here.
+      expect(style).toContain('--sn-swiper-previous-margin: 20rpx');
+      expect(style).toContain('--sn-swiper-next-margin: 30rpx');
+
+      const withoutMargins = mount(SnSwiper, { props: { list } });
+      expect(withoutMargins.find('.sn-swiper__native').attributes('style')).toBeUndefined();
+    });
+
+    it('forwards snapToEdge to the native swiper', () => {
+      const off = mount(SnSwiper, { props: { list } });
+      expect(off.find('.sn-swiper__native').attributes('snap-to-edge')).toBe('false');
+
+      const on = mount(SnSwiper, { props: { list, snapToEdge: true } });
+      expect(on.find('.sn-swiper__native').attributes('snap-to-edge')).toBe('true');
+    });
+
+    it('drops the easing-function attribute for the default easing', () => {
+      const wrapper = mount(SnSwiper, { props: { list } });
+      expect(wrapper.find('.sn-swiper__native').attributes('easing-function')).toBeUndefined();
+    });
+
+    it('forwards a non-default easing-function', () => {
+      const wrapper = mount(SnSwiper, { props: { list, easingFunction: 'linear' } });
+      expect(wrapper.find('.sn-swiper__native').attributes('easing-function')).toBe('linear');
+    });
+
+    it('forwards the current index to the native swiper', () => {
+      const wrapper = mount(SnSwiper, { props: { list, current: 2 } });
+      expect(wrapper.find('.sn-swiper__native').attributes('current')).toBe('2');
+    });
+
+    it('forwards a px height string as an inline length on the root', () => {
+      const wrapper = mount(SnSwiper, { props: { list, height: '320px' } });
+      expect(wrapper.attributes('style')).toContain('height: 320px');
+    });
+  });
+
+  describe('slide content', () => {
+    it('forwards imageMode to the inner image', () => {
+      const wrapper = mount(SnSwiper, { props: { list, imageMode: 'aspectFit' } });
+      expect(wrapper.find('.sn-img__image').attributes('mode')).toBe('aspectFit');
+    });
+
+    it('defaults imageMode to aspectFill', () => {
+      const wrapper = mount(SnSwiper, { props: { list } });
+      expect(wrapper.find('.sn-img__image').attributes('mode')).toBe('aspectFill');
+    });
+
+    it('forwards showMenuByLongpress to the inner image', () => {
+      const wrapper = mount(SnSwiper, { props: { list, showMenuByLongpress: true } });
+      expect(wrapper.find('.sn-img__image').attributes('show-menu-by-longpress')).toBe('true');
+    });
+
+    it('applies customItemClass to every slide', () => {
+      const wrapper = mount(SnSwiper, { props: { list, customItemClass: 'my-item' } });
+      for (const item of wrapper.findAll('.sn-swiper__item')) {
+        expect(item.classes()).toContain('my-item');
+      }
+    });
+
+    it('applies customTextClass / customTextStyle to the caption', () => {
+      const wrapper = mount(SnSwiper, {
+        props: {
+          list: [{ value: 'https://x/1.png', text: '第一张' }],
+          customTextClass: 'my-caption',
+          customTextStyle: 'background: red',
+        },
+      });
+      const caption = wrapper.find('.sn-swiper__caption');
+      expect(caption.attributes('style')).toContain('background: red');
+      expect(caption.find('.sn-swiper__caption-text').classes()).toContain('my-caption');
+    });
+
+    it('renders no caption for a string slide', () => {
+      const wrapper = mount(SnSwiper, { props: { list: ['https://x/1.png'] } });
+      expect(wrapper.find('.sn-swiper__caption').exists()).toBe(false);
+    });
+
+    it('renders nothing for an empty list', () => {
+      const wrapper = mount(SnSwiper, { props: { list: [] } });
+      expect(wrapper.findAll('.sn-swiper__item')).toHaveLength(0);
+      expect(wrapper.find('.sn-swiper__indicator').exists()).toBe(false);
+    });
+  });
+
+  describe('indicator details', () => {
+    it('hides the indicator for a single slide by default', () => {
+      const wrapper = mount(SnSwiper, { props: { list: ['https://x/1.png'] } });
+      expect(wrapper.find('.sn-swiper__indicator').exists()).toBe(false);
+    });
+
+    it('marks the indicator aria-hidden', () => {
+      const wrapper = mount(SnSwiper, { props: { list } });
+      expect(wrapper.find('.sn-swiper__indicator').attributes('aria-hidden')).toBe('true');
+    });
+
+    it('shows a single slide when minShowNum is lowered', () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list: ['https://x/1.png'], indicator: { minShowNum: 1 } },
+      });
+      expect(wrapper.find('.sn-swiper__indicator').exists()).toBe(true);
+    });
+
+    it('tracks the bound current in the fraction text', () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, current: 0, indicator: { type: 'fraction' } },
+      });
+      expect(wrapper.find('.sn-swiper__fraction-text').text()).toBe('1/3');
+    });
+
+    it('moves the active dot when the bound current changes', async () => {
+      const wrapper = mount(SnSwiper, { props: { list, current: 0 } });
+      await wrapper.find('.sn-swiper__native').trigger('change', {
+        detail: { current: 1, source: 'touch' },
+      });
+      await wrapper.setProps({ current: 1 });
+      const dots = wrapper.findAll('.sn-swiper__dot');
+      expect(dots[1]!.classes()).toContain('sn-swiper__dot--active');
+      expect(dots[0]!.classes()).not.toContain('sn-swiper__dot--active');
+    });
+  });
+
+  it('emits click with the raw object item', async () => {
+    const item = { value: 'https://x/1.png', text: '第一张' };
+    const wrapper = mount(SnSwiper, { props: { list: [item] } });
+    await wrapper.find('.sn-swiper__slide').trigger('tap');
+    expect(wrapper.emitted('click')?.[0]).toEqual([{ index: 0, item }]);
+  });
+
+  it('merges customStyle into the root style', () => {
+    const wrapper = mount(SnSwiper, { props: { list, customStyle: 'margin: 8px' } });
+    expect(wrapper.attributes('style')).toContain('margin: 8px');
   });
 });

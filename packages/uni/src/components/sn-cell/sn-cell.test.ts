@@ -44,6 +44,14 @@ describe('sn-cell', () => {
       );
     });
 
+    it('renders a numeric zero value instead of the placeholder', () => {
+      const wrapper = mount(SnCell, { props: { title: 'Count', value: 0, placeholder: 'None' } });
+      expect(wrapper.find('.sn-cell__value-text').text()).toBe('0');
+      expect(wrapper.find('.sn-cell__value-text').classes()).not.toContain(
+        'sn-cell__value-text--placeholder',
+      );
+    });
+
     it('renders the label under the title', () => {
       const wrapper = mount(SnCell, { props: { title: 'A', label: 'hint' } });
       expect(wrapper.find('.sn-cell__label').text()).toBe('hint');
@@ -83,6 +91,33 @@ describe('sn-cell', () => {
       expect(wrapper.find('.custom-title').exists()).toBe(false);
       expect(wrapper.find('.sn-cell__title-text').text()).toBe('A');
     });
+
+    it('renders the label slot when useLabelSlot is on', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', label: 'prop label' },
+        slots: { label: '<text class="custom-label">slot label</text>' },
+      });
+      expect(wrapper.find('.custom-label').text()).toBe('slot label');
+      expect(wrapper.find('.sn-cell__label').exists()).toBe(false);
+    });
+
+    it('ignores the label slot when useLabelSlot is off', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', label: 'prop label', useLabelSlot: false },
+        slots: { label: '<text class="custom-label">slot label</text>' },
+      });
+      expect(wrapper.find('.custom-label').exists()).toBe(false);
+      expect(wrapper.find('.sn-cell__label').text()).toBe('prop label');
+    });
+
+    it('renders the prefix slot over the prefix icon', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIcon: 'User' },
+        slots: { prefix: '<text class="custom-prefix">P</text>' },
+      });
+      expect(wrapper.find('.custom-prefix').text()).toBe('P');
+      expect(wrapper.find('.sn-cell__icon').exists()).toBe(false);
+    });
   });
 
   describe('events', () => {
@@ -113,6 +148,17 @@ describe('sn-cell', () => {
     it('leaves a static cell without a role', () => {
       expect(mount(SnCell, { props: { title: 'A' } }).attributes('role')).toBeUndefined();
     });
+
+    it('names an interactive cell after its title', () => {
+      const wrapper = mount(SnCell, { props: { title: 'Settings', clickable: true } });
+      expect(wrapper.attributes('aria-label')).toBe('Settings');
+    });
+
+    it('leaves a static cell without an aria-label', () => {
+      expect(
+        mount(SnCell, { props: { title: 'Settings' } }).attributes('aria-label'),
+      ).toBeUndefined();
+    });
   });
 
   describe('arrow / icons', () => {
@@ -134,6 +180,47 @@ describe('sn-cell', () => {
       expect(wrapper.find('.sn-cell__arrow .sn-icon').attributes('style')).toContain(
         'rotate(-90deg)',
       );
+    });
+
+    it('rotates the arrow to each remaining direction', () => {
+      const expectations: Array<['left' | 'down' | 'right', string]> = [
+        ['left', 'rotate(180deg)'],
+        ['down', 'rotate(90deg)'],
+        ['right', 'none'],
+      ];
+      for (const [direction, transform] of expectations) {
+        const wrapper = mount(SnCell, {
+          props: { title: 'A', isLink: true, arrowDirection: direction },
+        });
+        expect(wrapper.find('.sn-cell__arrow .sn-icon').attributes('style')).toContain(transform);
+      }
+    });
+
+    it('renders a registry-resolved suffix icon', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const wrapper = mount(SnCell, { props: { title: 'A', suffixIcon: 'Star' } });
+      expect(wrapper.find('.sn-cell__icon.sn-icon').exists()).toBe(true);
+      clearSnIcons();
+    });
+
+    it('sizes the icons through iconSize', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIcon: 'Star', iconSize: 40 },
+      });
+      expect(wrapper.find('.sn-cell__icon').attributes('style')).toContain('width: 40px');
+      clearSnIcons();
+    });
+
+    it('accepts a cssIcon string as the class prefix', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIcon: 'user', cssIcon: 'icon' },
+      });
+      expect(wrapper.find('.sn-cell__icon').classes()).toContain('icon-user');
     });
 
     it('renders a registry-resolved prefix icon', async () => {
@@ -213,6 +300,43 @@ describe('sn-cell', () => {
       expect(wrapper.classes()).toContain('my-cell');
       expect(wrapper.attributes('style')).toContain('margin: 4px');
     });
+
+    it('applies the ellipsis class when asked', () => {
+      expect(mount(SnCell, { props: { title: 'A', ellipsis: true } }).classes()).toContain(
+        'sn-cell--ellipsis',
+      );
+    });
+
+    it('renders the cell border outside a group when explicitly on', () => {
+      expect(mount(SnCell, { props: { title: 'A', border: true } }).classes()).toContain(
+        'sn-cell--border',
+      );
+    });
+  });
+
+  describe('navigation payload', () => {
+    it('forwards to / replace through the click payload', async () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', clickable: true, to: '/detail', replace: true },
+      });
+      await wrapper.trigger('tap');
+      const [, navigation] = wrapper.emitted('click')?.[0] ?? [];
+      expect(navigation).toEqual({ to: '/detail', replace: true });
+    });
+
+    it('carries the defaults when to / replace are unset', async () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', isLink: true } });
+      await wrapper.trigger('tap');
+      const [, navigation] = wrapper.emitted('click')?.[0] ?? [];
+      expect(navigation).toEqual({ to: '', replace: false });
+    });
+
+    it('keeps the event object as the first payload argument', async () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', clickable: true } });
+      await wrapper.trigger('tap');
+      const [event] = wrapper.emitted('click')?.[0] ?? [];
+      expect(event).toBeInstanceOf(Event);
+    });
   });
 });
 
@@ -250,6 +374,33 @@ describe('sn-cell-group', () => {
     const wrapper = mountGroup({ insert: true, border: true });
     expect(wrapper.find('.sn-cell-group').classes()).toContain('sn-cell-group--insert');
     expect(wrapper.find('.sn-cell-group').classes()).toContain('sn-cell-group--bordered');
+  });
+
+  it('marks the cells as insert rows inside an insert group', () => {
+    expect(mountGroup({ insert: true }).find('.sn-cell').classes()).toContain('sn-cell--insert');
+    expect(mountGroup().find('.sn-cell').classes()).not.toContain('sn-cell--insert');
+  });
+
+  it('applies the large size class on the group', () => {
+    expect(mountGroup({ size: 'large' }).find('.sn-cell-group').classes()).toContain(
+      'sn-cell-group--large',
+    );
+  });
+
+  it('renders the group title / value slots over the props', () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnCellGroup, { title: 'ignored', value: 'ignored' }, {
+            title: () => h('text', { class: 'custom-group-title' }, 'slot title'),
+            value: () => h('text', { class: 'custom-group-value' }, 'slot value'),
+          });
+      },
+    });
+    const wrapper = mount(Harness);
+    expect(wrapper.find('.custom-group-title').text()).toBe('slot title');
+    expect(wrapper.find('.custom-group-value').text()).toBe('slot value');
+    expect(wrapper.find('.sn-cell-group__title-text').exists()).toBe(false);
   });
 
   it('inherits the border flag into cells', () => {

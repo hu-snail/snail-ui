@@ -248,5 +248,94 @@ describe('sn-grid', () => {
       expect(wrapper.find('.sn-grid').attributes('role')).toBe('list');
       expect(wrapper.find('.sn-grid-item').attributes('role')).toBe('listitem');
     });
+
+    it('renders the icon slot over the icon prop', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnGrid, {}, {
+              default: () => [
+                h(SnGridItem, { text: 'A', icon: 'Star' }, {
+                  icon: () => h('text', { class: 'custom-icon' }, 'slot icon'),
+                }),
+              ],
+            });
+        },
+      });
+      const wrapper = mount(Harness);
+      expect(wrapper.find('.custom-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-grid-item__icon').exists()).toBe(false);
+      clearSnIcons();
+    });
+
+    it('renders the text slot over the text prop', () => {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnGrid, {}, {
+              default: () => [
+                h(SnGridItem, { text: 'prop text' }, {
+                  text: () => h('text', { class: 'custom-text' }, 'slot text'),
+                }),
+              ],
+            });
+        },
+      });
+      const wrapper = mount(Harness);
+      expect(wrapper.find('.custom-text').text()).toBe('slot text');
+      expect(wrapper.find('.sn-grid-item__text').exists()).toBe(false);
+    });
+
+    it('sizes the resolved icon from the grid iconSize', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const wrapper = mountGrid({ iconSize: '40px' }, [{ text: 'A', icon: 'Star' }]);
+      expect(wrapper.find('.sn-grid-item__icon').attributes('style')).toContain('width: 40px');
+      clearSnIcons();
+    });
+
+    it('defaults the resolved icon size to 28px', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const wrapper = mountGrid({}, [{ text: 'A', icon: 'Star' }]);
+      expect(wrapper.find('.sn-grid-item__icon').attributes('style')).toContain('width: 28px');
+      clearSnIcons();
+    });
+
+    it('renders no badge text for a string value above max', () => {
+      // Only numeric values honour the max ceiling; strings render verbatim.
+      expect(
+        mountGrid({}, [{ text: 'A', value: '200', max: 99 }])
+          .find('.sn-grid-item__badge-text')
+          .text(),
+      ).toBe('200');
+    });
+
+    it('renders an empty string value as no badge', () => {
+      expect(
+        mountGrid({}, [{ text: 'A', value: '' }])
+          .find('.sn-grid-item__badge')
+          .exists(),
+      ).toBe(false);
+    });
+  });
+
+  describe('hover feedback', () => {
+    it('attaches the hover class only to clickable cells', () => {
+      expect(mountGrid().find('.sn-grid-item').attributes('hover-class')).toBe('none');
+      expect(mountGrid({ clickable: true }).find('.sn-grid-item').attributes('hover-class')).toBe(
+        'sn-grid-item__content--hover',
+      );
+    });
+
+    it('accepts a custom hover class from the grid', () => {
+      const wrapper = mountGrid({ clickable: true, hoverClass: 'my-hover' });
+      expect(wrapper.find('.sn-grid-item').attributes('hover-class')).toBe('my-hover');
+    });
   });
 });

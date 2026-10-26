@@ -114,4 +114,45 @@ describe('sn-empty', () => {
     expect(wrapper.attributes('role')).toBe('status');
     expect(wrapper.attributes('aria-label')).toBe('没有搜索结果');
   });
+
+  it('falls back to the generic empty label without a tip', () => {
+    const wrapper = mount(SnEmpty);
+    expect(wrapper.attributes('aria-label')).toBe('empty');
+  });
+
+  it('marks the glyph box aria-hidden', () => {
+    expect(mount(SnEmpty).find('.sn-empty__image').attributes('aria-hidden')).toBe('true');
+  });
+
+  it('requests aspectFit on the rendered image', () => {
+    const wrapper = mount(SnEmpty, { props: { icon: '/static/empty.png' } });
+    expect(wrapper.find('image').attributes('mode')).toBe('aspectFit');
+  });
+
+  it('renders the default glyph for an unregistered icon name', () => {
+    const wrapper = mount(SnEmpty, { props: { icon: 'not-registered-anywhere' } });
+    expect(wrapper.find('.sn-empty__image svg').exists()).toBe(true);
+    expect(wrapper.find('image').exists()).toBe(false);
+  });
+
+  it('renders the default glyph for an empty icon', () => {
+    const wrapper = mount(SnEmpty, { props: { icon: '' } });
+    expect(wrapper.find('.sn-empty__image svg').exists()).toBe(true);
+  });
+
+  it('sizes the registry icon through iconSize', () => {
+    registerSnIcons({ home: Home });
+    const wrapper = mount(SnEmpty, { props: { icon: 'home', iconSize: '120px' } });
+    expect(wrapper.find('.sn-empty__image .sn-icon').attributes('style')).toContain(
+      'width: 120px',
+    );
+  });
+
+  it('defaults the glyph size to 96px', () => {
+    registerSnIcons({ home: Home });
+    const wrapper = mount(SnEmpty, { props: { icon: 'home' } });
+    expect(wrapper.find('.sn-empty__image .sn-icon').attributes('style')).toContain(
+      'width: 96px',
+    );
+  });
 });

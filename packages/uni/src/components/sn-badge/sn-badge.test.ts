@@ -54,6 +54,16 @@ describe('sn-badge', () => {
       const w = mount(SnBadge, { props: { value: 5, hidden: true } });
       expect(w.find('.sn-badge__marker').exists()).toBe(false);
     });
+
+    it('renders no marker for an empty-string value', () => {
+      const w = mount(SnBadge, { props: { value: '' } });
+      expect(w.find('.sn-badge__marker').exists()).toBe(false);
+    });
+
+    it('lets hidden win over dot mode', () => {
+      const w = mount(SnBadge, { props: { isDot: true, hidden: true } });
+      expect(w.find('.sn-badge__marker').exists()).toBe(false);
+    });
   });
 
   describe('dot mode', () => {
@@ -128,6 +138,11 @@ describe('sn-badge', () => {
 
     it('leaves the marker style empty without offsets or bgColor', () => {
       const w = mount(SnBadge, { props: { value: 1 } });
+      expect(w.find('.sn-badge__marker').attributes('style')).toBeUndefined();
+    });
+
+    it('ignores empty-string offsets', () => {
+      const w = mount(SnBadge, { props: { value: 1, top: '', right: '' } });
       expect(w.find('.sn-badge__marker').attributes('style')).toBeUndefined();
     });
   });

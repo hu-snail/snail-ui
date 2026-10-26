@@ -9,7 +9,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, ref } from 'vue';
 import SnCollapse from './sn-collapse.vue';
 import SnCollapseItem from './sn-collapse-item.vue';
 
@@ -228,13 +228,16 @@ describe('sn-collapse', () => {
   });
 
   describe('toggleAll', () => {
+    function collapseVm(wrapper: ReturnType<typeof mount>) {
+      return wrapper.findComponent(SnCollapse).vm as unknown as {
+        toggleAll: (options?: { expanded?: boolean; skipDisabled?: boolean }) => void;
+      };
+    }
+
     it('opens every panel with expanded: true', async () => {
       const wrapper = mountCollapse({ modelValue: [] });
       await wrapper.vm.$nextTick();
-      const vm = wrapper.findComponent(SnCollapse).vm as unknown as {
-        toggleAll: (options?: { expanded?: boolean }) => void;
-      };
-      vm.toggleAll({ expanded: true });
+      collapseVm(wrapper).toggleAll({ expanded: true });
       await wrapper.vm.$nextTick();
       expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
         ['a', 'b', 'c'],
@@ -244,12 +247,135 @@ describe('sn-collapse', () => {
     it('closes every panel with expanded: false', async () => {
       const wrapper = mountCollapse({ modelValue: ['a', 'b'] });
       await wrapper.vm.$nextTick();
-      const vm = wrapper.findComponent(SnCollapse).vm as unknown as {
-        toggleAll: (options?: { expanded?: boolean }) => void;
-      };
-      vm.toggleAll({ expanded: false });
+      collapseVm(wrapper).toggleAll({ expanded: false });
       await wrapper.vm.$nextTick();
       expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([[]]);
+    });
+
+    it('opens every panel when omitted and all are closed', async () => {
+      const wrapper = mountCollapse({ modelValue: [] });
+      await wrapper.vm.$nextTick();
+      collapseVm(wrapper).toggleAll();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        ['a', 'b', 'c'],
+      ]);
+    });
+
+    it('closes every panel when omitted and some are open', async () => {
+      const wrapper = mountCollapse({ modelValue: ['b'] });
+      await wrapper.vm.$nextTick();
+      collapseVm(wrapper).toggleAll();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([[]]);
+    });
+
+    it('opens only the enabled panels with skipDisabled', async () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A' },
+        { name: 'b', title: 'B', disabled: true },
+        { name: 'c', title: 'C' },
+      ]);
+      await wrapper.vm.$nextTick();
+      collapseVm(wrapper).toggleAll({ expanded: true, skipDisabled: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        ['a', 'c'],
+      ]);
+      expect(wrapper.findAll('.sn-collapse-item')[1]!.classes()).not.toContain(
+        'sn-collapse-item--expanded',
+      );
+    });
+
+    it('keeps open disabled panels open when closing with skipDisabled', async () => {
+      const wrapper = mountCollapse({ modelValue: ['a', 'b'] }, [
+        { name: 'a', title: 'A' },
+        { name: 'b', title: 'B', disabled: true },
+      ]);
+      await wrapper.vm.$nextTick();
+      collapseVm(wrapper).toggleAll({ expanded: false, skipDisabled: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        ['b'],
+      ]);
+      expect(wrapper.findAll('.sn-collapse-item')[1]!.classes()).toContain(
+        'sn-collapse-item--expanded',
+      );
+    });
+
+    it('flips only the enabled panels with skipDisabled', async () => {
+      const wrapper = mountCollapse({ modelValue: ['a'] }, [
+        { name: 'a', title: 'A' },
+        { name: 'b', title: 'B', disabled: true },
+      ]);
+      await wrapper.vm.$nextTick();
+      // 'a' (enabled) is open → enabled panels close, the disabled one stays.
+      collapseVm(wrapper).toggleAll({ skipDisabled: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([[]]);
+
+      collapseVm(wrapper).toggleAll({ skipDisabled: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        ['a'],
+      ]);
+    });
+
+    it('re-reads the disabled state when an item flips disabled later', async () => {
+      const disabled = ref(false);
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnCollapse, { modelValue: [] }, {
+              default: () => [
+                h(SnCollapseItem, { name: 'a', title: 'A', disabled: disabled.value }),
+                h(SnCollapseItem, { name: 'b', title: 'B' }),
+              ],
+            });
+        },
+      });
+      const wrapper = mount(Harness);
+      await wrapper.vm.$nextTick();
+      disabled.value = true;
+      await wrapper.vm.$nextTick();
+      collapseVm(wrapper).toggleAll({ expanded: true, skipDisabled: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([['b']]);
+    });
+
+    it('forgets unmounted panels', async () => {
+      const show = ref(true);
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnCollapse, { modelValue: [] }, {
+              default: () => [
+                h(SnCollapseItem, { name: 'a', title: 'A' }),
+                show.value ? h(SnCollapseItem, { name: 'b', title: 'B' }) : null,
+              ],
+            });
+        },
+      });
+      const wrapper = mount(Harness);
+      await wrapper.vm.$nextTick();
+      show.value = false;
+      await wrapper.vm.$nextTick();
+      collapseVm(wrapper).toggleAll({ expanded: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([['a']]);
+    });
+
+    it('flips the view-more flag in view-more mode', async () => {
+      const wrapper = mountCollapse({ viewmore: true, modelValue: false }, [{ name: 'a' }]);
+      await wrapper.vm.$nextTick();
+      collapseVm(wrapper).toggleAll({ expanded: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([true]);
+      collapseVm(wrapper).toggleAll();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual([
+        false,
+      ]);
     });
   });
 
@@ -280,11 +406,71 @@ describe('sn-collapse', () => {
       expect(wrapper.find('.sn-collapse-item__title-text').exists()).toBe(false);
     });
 
+    it('exposes the expanded / disabled flags to the title slot', () => {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(
+              SnCollapse,
+              { modelValue: ['a'] },
+              {
+                default: () => [
+                  h(
+                    SnCollapseItem,
+                    { name: 'a', title: 'A', disabled: true },
+                    {
+                      title: ({
+                        expanded,
+                        disabled,
+                      }: {
+                        expanded: boolean;
+                        disabled: boolean;
+                      }) => h('text', { class: 'custom-title' }, `${expanded}-${disabled}`),
+                    },
+                  ),
+                ],
+              },
+            );
+        },
+      });
+      expect(mount(Harness).find('.custom-title').text()).toBe('true-true');
+    });
+
     it('marks the header as role="button" with aria-expanded', () => {
       const wrapper = mountCollapse({ modelValue: ['a'] });
       const header = wrapper.find('.sn-collapse-item__header');
       expect(header.attributes('role')).toBe('button');
       expect(header.attributes('aria-expanded')).toBe('true');
+    });
+
+    it('closes the panel to aria-expanded="false" when the header is tapped', async () => {
+      const wrapper = mountCollapse({ modelValue: ['a'] }, [{ name: 'a', title: 'A' }]);
+      await wrapper.find('.sn-collapse-item__header').trigger('tap');
+      expect(wrapper.find('.sn-collapse-item__header').attributes('aria-expanded')).toBe('false');
+    });
+
+    it('names the header after the title', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'Pricing' }]);
+      expect(wrapper.find('.sn-collapse-item__header').attributes('aria-label')).toBe('Pricing');
+    });
+
+    it('marks the body as a region', () => {
+      const wrapper = mountCollapse({ modelValue: ['a'] });
+      expect(wrapper.find('.sn-collapse-item__body').attributes('role')).toBe('region');
+    });
+
+    it('hides the body of a closed panel in normal mode', () => {
+      // happy-dom's getComputedStyle does not feed VTU's isVisible() for the
+      // v-show contract here, so assert the inline style v-show writes.
+      const closed = mountCollapse({ modelValue: [] }, [{ name: 'a' }]);
+      expect(closed.find('.sn-collapse-item__body').attributes('style')).toContain(
+        'display: none',
+      );
+
+      const open = mountCollapse({ modelValue: ['a'] }, [{ name: 'a' }]);
+      expect(open.find('.sn-collapse-item__body').attributes('style') ?? '').not.toContain(
+        'display: none',
+      );
     });
 
     it('forwards customClass on the container and the item', () => {
@@ -303,6 +489,93 @@ describe('sn-collapse', () => {
       const wrapper = mount(Harness);
       expect(wrapper.find('.sn-collapse').classes()).toContain('my-collapse');
       expect(wrapper.find('.sn-collapse-item').classes()).toContain('my-item');
+    });
+
+    it('drops the item border when border is off', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', border: false }]);
+      expect(wrapper.find('.sn-collapse-item').classes()).not.toContain(
+        'sn-collapse-item--border',
+      );
+    });
+
+    it('forwards customBodyClass / customBodyStyle on the body', () => {
+      const wrapper = mountCollapse({ modelValue: ['a'] }, [
+        { name: 'a', customBodyClass: 'my-body', customBodyStyle: 'padding: 8px' },
+      ]);
+      const body = wrapper.find('.sn-collapse-item__body');
+      expect(body.classes()).toContain('my-body');
+      expect(body.attributes('style')).toContain('padding: 8px');
+    });
+
+    it('rotates the arrow 180 degrees while expanded', () => {
+      const closed = mountCollapse({ modelValue: [] }, [{ name: 'a' }]);
+      expect(closed.find('.sn-collapse-item__arrow .sn-icon').attributes('style')).toContain(
+        'rotate(0deg)',
+      );
+
+      const open = mountCollapse({ modelValue: ['a'] }, [{ name: 'a' }]);
+      expect(open.find('.sn-collapse-item__arrow .sn-icon').attributes('style')).toContain(
+        'rotate(180deg)',
+      );
+    });
+  });
+
+  describe('item change event', () => {
+    it('emits change with the panel name and its new state', async () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A' }]);
+      await wrapper.findAll('.sn-collapse-item__header')[0]!.trigger('tap');
+      expect(wrapper.findComponent(SnCollapseItem).emitted('change')?.[0]).toEqual([
+        { name: 'a', expanded: true },
+      ]);
+
+      await wrapper.findAll('.sn-collapse-item__header')[0]!.trigger('tap');
+      expect(wrapper.findComponent(SnCollapseItem).emitted('change')?.[1]).toEqual([
+        { name: 'a', expanded: false },
+      ]);
+    });
+
+    it('does not emit change for a disabled panel', async () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [
+        { name: 'a', title: 'A', disabled: true },
+      ]);
+      await wrapper.find('.sn-collapse-item__header').trigger('tap');
+      expect(wrapper.findComponent(SnCollapseItem).emitted('change')).toBeUndefined();
+    });
+  });
+
+  describe('view-more presentation', () => {
+    it('marks the more control aria-expanded and restyles it', async () => {
+      const wrapper = mountCollapse(
+        { viewmore: true, modelValue: false, customMoreSlotClass: 'my-more' },
+        [{ name: 'a' }],
+      );
+      const more = wrapper.find('.sn-collapse__more');
+      expect(more.classes()).toContain('my-more');
+      expect(more.attributes('role')).toBe('button');
+      expect(more.attributes('aria-expanded')).toBe('false');
+      expect(more.text()).toBe('展开');
+      await more.trigger('tap');
+      expect(wrapper.find('.sn-collapse__more').attributes('aria-expanded')).toBe('true');
+      expect(wrapper.find('.sn-collapse__more').text()).toBe('收起');
+    });
+
+    it('starts view-more mode from a true bound value', () => {
+      const wrapper = mountCollapse({ viewmore: true, modelValue: true }, [{ name: 'a' }]);
+      expect(wrapper.find('.sn-collapse__more').attributes('aria-expanded')).toBe('true');
+    });
+
+    it('adds the viewmore container class', () => {
+      const wrapper = mountCollapse({ viewmore: true, modelValue: false }, [{ name: 'a' }]);
+      expect(wrapper.find('.sn-collapse').classes()).toContain('sn-collapse--viewmore');
+    });
+  });
+
+  describe('accordion defaults', () => {
+    it('starts closed with the default empty-string model', async () => {
+      const wrapper = mountCollapse({ accordion: true });
+      expect(wrapper.findAll('.sn-collapse-item--expanded')).toHaveLength(0);
+      await wrapper.findAll('.sn-collapse-item__header')[0]!.trigger('tap');
+      expect(wrapper.findComponent(SnCollapse).emitted('update:modelValue')?.at(-1)).toEqual(['a']);
     });
   });
 });

@@ -46,7 +46,7 @@ export interface SnCollapseContext {
   /** Flip the whole container in view-more mode. */
   toggleViewmore: () => void;
   /** Report a panel name so `toggleAll` can enumerate the panels. */
-  registerName: (name: string) => void;
+  registerName: (name: string, disabled?: boolean) => void;
   /** Drop a panel name when it unmounts. */
   unregisterName: (name: string) => void;
 }

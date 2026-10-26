@@ -160,14 +160,27 @@ function toggleAll(options: SnCollapseToggleAllOptions = {}): void {
     commit(innerNames.value);
     return;
   }
+  /*
+   * `skipDisabled` keeps disabled panels at their current state (wd-collapse's
+   * documented contract, same option sn-checkbox-group honours) — the open set
+   * is computed from the enabled panels plus whatever disabled panels were
+   * already open.
+   */
+  const skip = options.skipDisabled === true;
+  const enabledNames = skip
+    ? allNames.value.filter((name) => !disabledNames.value.has(name))
+    : allNames.value;
+  const openDisabledNames = skip
+    ? innerNames.value.filter((name) => disabledNames.value.has(name))
+    : [];
   const next =
     options.expanded === undefined
-      ? innerNames.value.length > 0
-        ? []
-        : allNames.value
+      ? innerNames.value.some((name) => !disabledNames.value.has(name))
+        ? openDisabledNames
+        : [...innerNames.value, ...enabledNames]
       : options.expanded
-        ? allNames.value
-        : [];
+        ? [...openDisabledNames, ...enabledNames]
+        : openDisabledNames;
   innerNames.value = next;
   commit(next);
 }
@@ -178,19 +191,29 @@ function toggleAll(options: SnCollapseToggleAllOptions = {}): void {
  * relies on the registered list, kept in `knownNames`.
  */
 const knownNames = ref<string[]>([]);
+/** Registered panels whose `disabled` prop is on; `skipDisabled` skips these. */
+const disabledNames = ref<ReadonlySet<string>>(new Set());
 
 const allNames = computed(() => knownNames.value);
 
 /** View-more open flag, exposed to the `more` slot and the items. */
 const viewmoreExpanded = computed(() => innerViewmore.value);
 
-/** Report a panel name so `toggleAll` can enumerate every panel. */
-function registerName(name: string): void {
+/** Report a panel name (and its disabled state) so `toggleAll` can enumerate every panel. */
+function registerName(name: string, disabled?: boolean): void {
   if (!knownNames.value.includes(name)) knownNames.value = [...knownNames.value, name];
+  const nextDisabled = new Set(disabledNames.value);
+  if (disabled === true) nextDisabled.add(name);
+  else nextDisabled.delete(name);
+  disabledNames.value = nextDisabled;
 }
 
 function unregisterName(name: string): void {
   knownNames.value = knownNames.value.filter((entry) => entry !== name);
+  if (!disabledNames.value.has(name)) return;
+  const nextDisabled = new Set(disabledNames.value);
+  nextDisabled.delete(name);
+  disabledNames.value = nextDisabled;
 }
 
 provide(SN_COLLAPSE_KEY, {

@@ -6,12 +6,31 @@
  *   - `width` / `height` / `radius` become inline lengths; `round` adds the class
  *   - `load` / `error` emit and swap the loading / error overlays
  *   - `showLoading: false` / `showError: false` suppress the overlays
- *   - a tap always emits `click`
+ *   - a tap always emits `click`; `enablePreview` opens `uni.previewImage`
+ *
+ * Untestable in happy-dom: the numeric `width` / `height` / `radius` → rpx
+ * conversion — happy-dom's CSS parser silently drops rpx declarations from the
+ * style attribute (custom properties survive; regular lengths don't), so the
+ * computed inline length never reaches the DOM. The same limitation applies to
+ * real image decoding / native long-press menus.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterAll, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnImg from './sn-img.vue';
+
+/** Minimal shape of the `uni` namespace the preview path touches. */
+interface PreviewHost {
+  uni?: { previewImage?: (options: { urls: string[]; current: string }) => void };
+}
+
+const host = globalThis as PreviewHost;
+const originalUni = host.uni;
+
+afterAll(() => {
+  if (originalUni === undefined) delete host.uni;
+  else host.uni = originalUni;
+});
 
 describe('sn-img', () => {
   it('renders the image with src and mode', () => {
@@ -118,5 +137,93 @@ describe('sn-img', () => {
     expect(wrapper.classes()).toContain('my-img');
     expect(wrapper.attributes('style')).toContain('margin: 8px');
     expect(wrapper.find('.sn-img__image').classes()).toContain('my-image');
+  });
+
+  describe('enablePreview', () => {
+    it('opens uni.previewImage with the src when tapped', async () => {
+      const previewImage = vi.fn();
+      host.uni = { previewImage };
+      const wrapper = mount(SnImg, { props: { src: 'https://x/a.png', enablePreview: true } });
+      await wrapper.trigger('tap');
+      expect(previewImage).toHaveBeenCalledTimes(1);
+      expect(previewImage).toHaveBeenCalledWith({
+        urls: ['https://x/a.png'],
+        current: 'https://x/a.png',
+      });
+      expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+
+    it('previews previewSrc instead of src when given', async () => {
+      const previewImage = vi.fn();
+      host.uni = { previewImage };
+      const wrapper = mount(SnImg, {
+        props: { src: 'https://x/thumb.png', previewSrc: 'https://x/full.png', enablePreview: true },
+      });
+      await wrapper.trigger('tap');
+      expect(previewImage).toHaveBeenCalledWith({
+        urls: ['https://x/full.png'],
+        current: 'https://x/full.png',
+      });
+    });
+
+    it('does not open the preview when enablePreview is off', async () => {
+      const previewImage = vi.fn();
+      host.uni = { previewImage };
+      const wrapper = mount(SnImg, { props: { src: 'https://x/a.png' } });
+      await wrapper.trigger('tap');
+      expect(previewImage).not.toHaveBeenCalled();
+    });
+
+    it('does not open the preview without a src', async () => {
+      const previewImage = vi.fn();
+      host.uni = { previewImage };
+      const wrapper = mount(SnImg, { props: { enablePreview: true } });
+      await wrapper.trigger('tap');
+      expect(previewImage).not.toHaveBeenCalled();
+    });
+
+    it('stays silent where the uni preview API is missing', async () => {
+      delete host.uni;
+      const wrapper = mount(SnImg, { props: { src: 'https://x/a.png', enablePreview: true } });
+      await wrapper.trigger('tap');
+      expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+  });
+
+  describe('src lifecycle', () => {
+    it('returns to the loading state when src changes after a load', async () => {
+      const wrapper = mount(SnImg, { props: { src: 'a.png' } });
+      await wrapper.find('.sn-img__image').trigger('load');
+      expect(wrapper.find('.sn-img__loading').exists()).toBe(false);
+      await wrapper.setProps({ src: 'b.png' });
+      expect(wrapper.find('.sn-img__loading').exists()).toBe(true);
+      expect(wrapper.classes()).not.toContain('sn-img--loaded');
+    });
+
+    it('returns to the loading state when src changes after an error', async () => {
+      const wrapper = mount(SnImg, { props: { src: 'a.png' } });
+      await wrapper.find('.sn-img__image').trigger('error');
+      expect(wrapper.find('.sn-img__error').exists()).toBe(true);
+      await wrapper.setProps({ src: 'b.png' });
+      expect(wrapper.find('.sn-img__error').exists()).toBe(false);
+      expect(wrapper.classes()).not.toContain('sn-img--error');
+    });
+
+    it('replays load / error per attempt', async () => {
+      const wrapper = mount(SnImg, { props: { src: 'a.png' } });
+      await wrapper.find('.sn-img__image').trigger('error');
+      await wrapper.setProps({ src: 'b.png' });
+      await wrapper.find('.sn-img__image').trigger('load');
+      expect(wrapper.emitted('error')).toHaveLength(1);
+      expect(wrapper.emitted('load')).toHaveLength(1);
+    });
+  });
+
+  it('emits the tap event object as the click payload', async () => {
+    const wrapper = mount(SnImg, { props: { src: 'a.png' } });
+    await wrapper.trigger('tap');
+    const payload = wrapper.emitted('click')?.[0]?.[0];
+    expect(payload).toBeInstanceOf(Event);
+    expect((payload as Event).type).toBe('tap');
   });
 });

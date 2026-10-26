@@ -146,10 +146,70 @@ describe('sn-avatar', () => {
       expect(w.attributes('aria-label')).toBe('AU');
     });
 
+    it('falls back to alt for the accessible name while the image loads', () => {
+      const w = mount(SnAvatar, { props: { src: '/a.png', alt: 'Avatar B' } });
+      expect(w.attributes('aria-label')).toBe('Avatar B');
+    });
+
     it('emits click when tapped', async () => {
       const w = mount(SnAvatar, { props: { text: 'A' } });
       await w.trigger('tap');
       expect(w.emitted('click')).toHaveLength(1);
+    });
+
+    it('emits the error event object', async () => {
+      const w = mount(SnAvatar, { props: { src: '/broken.png' } });
+      await w.find('.sn-avatar__image').trigger('error');
+      const payload = w.emitted('error')?.[0]?.[0];
+      expect(payload).toBeInstanceOf(Event);
+    });
+  });
+
+  describe('remaining fallbacks', () => {
+    it('prefers text over the icon when both are given', () => {
+      registerSnIcons({ User });
+      const w = mount(SnAvatar, { props: { text: 'AU', icon: 'User' } });
+      expect(w.find('.sn-avatar__text').text()).toBe('AU');
+      expect(w.find('.sn-avatar__icon').exists()).toBe(false);
+      clearSnIcons();
+    });
+
+    it('degrades the failed image to the icon', async () => {
+      registerSnIcons({ User });
+      const w = mount(SnAvatar, { props: { src: '/broken.png', icon: 'User' } });
+      await w.find('.sn-avatar__image').trigger('error');
+      expect(w.find('.sn-avatar__image').exists()).toBe(false);
+      expect(w.find('.sn-avatar__icon').exists()).toBe(true);
+      clearSnIcons();
+    });
+
+    it('renders an empty avatar when nothing resolves', () => {
+      const w = mount(SnAvatar, { props: { icon: 'never-registered' } });
+      expect(w.find('.sn-avatar__image').exists()).toBe(false);
+      expect(w.find('.sn-avatar__text').exists()).toBe(false);
+      expect(w.find('.sn-avatar__icon').exists()).toBe(false);
+      expect(w.find('svg').exists()).toBe(false);
+    });
+
+    it('shrinks the icon on the small preset', () => {
+      registerSnIcons({ User });
+      const small = mount(SnAvatar, { props: { icon: 'User', size: 'small' } });
+      expect(small.find('.sn-avatar__icon').attributes('style')).toContain('width: 24px');
+
+      const normal = mount(SnAvatar, { props: { icon: 'User', size: 'normal' } });
+      expect(normal.find('.sn-avatar__icon').attributes('style')).toContain('width: 32px');
+      clearSnIcons();
+    });
+
+    it('treats a cssIcon string as the class prefix', () => {
+      const w = mount(SnAvatar, { props: { icon: 'user', cssIcon: 'icon' } });
+      expect(w.find('.sn-avatar__icon').classes()).toContain('icon-user');
+    });
+
+    it('keeps the aria role even when empty', () => {
+      const w = mount(SnAvatar, { props: { icon: 'never-registered' } });
+      expect(w.attributes('role')).toBe('img');
+      expect(w.attributes('aria-label')).toBeUndefined();
     });
   });
 });

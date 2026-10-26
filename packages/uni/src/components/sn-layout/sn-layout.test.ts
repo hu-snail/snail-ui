@@ -130,6 +130,28 @@ describe('sn-layout', () => {
         .attributes('style');
       expect(style).toContain('flex-basis: 4.1666');
     });
+
+    it('clamps an offset above the grid', () => {
+      const style = mountLayout({}, [{ span: 1, offset: 30 }])
+        .find('.sn-col')
+        .attributes('style');
+      /* 23 / 24 of the row. */
+      expect(style).toContain('margin-left: 95.83');
+    });
+
+    it('clamps a negative offset to no margin', () => {
+      const style = mountLayout({}, [{ span: 12, offset: -4 }])
+        .find('.sn-col')
+        .attributes('style');
+      expect(style).not.toContain('margin-left');
+    });
+
+    it('keeps the column width exact for spans that divide 24 unevenly', () => {
+      const style = mountLayout({}, [{ span: 5 }])
+        .find('.sn-col')
+        .attributes('style');
+      expect(style).toContain('flex-basis: 20.8333');
+    });
   });
 
   describe('forwarding', () => {

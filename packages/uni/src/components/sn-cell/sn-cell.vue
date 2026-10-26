@@ -152,8 +152,11 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  /** `clickable` 或 `isLink` 为 true 时，点击单元格触发。 */
-  (e: 'click', event: Event): void;
+  /**
+   * `clickable` 或 `isLink` 为 true 时，点击单元格触发。第二个参数透出
+   * `to` / `replace`，由宿主决定路由方式（§60 — 组件不自行跳转）。
+   */
+  (e: 'click', event: Event, navigation: { to: string; replace: boolean }): void;
 }>();
 
 defineSlots<{
@@ -228,7 +231,7 @@ const titleStyle = computed(() => {
 
 function onTap(event: Event): void {
   if (!isInteractive.value) return;
-  emit('click', event);
+  emit('click', event, { to: props.to, replace: props.replace });
 }
 
 const rootClass = computed(() => [
