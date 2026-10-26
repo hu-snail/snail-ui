@@ -102,3 +102,90 @@ describe('sn-icon', () => {
     expect(style).toContain('height: 1.5em');
   });
 });
+
+describe('sn-icon iconfont glyph path (wot-ui `name` API)', () => {
+  it('renders a glyph element instead of an svg when name is given', () => {
+    const wrapper = mount(SnIcon, { props: { name: 'close' } });
+    expect(wrapper.find('svg').exists()).toBe(false);
+    const glyph = wrapper.find('.sn-icon__glyph');
+    expect(glyph.exists()).toBe(true);
+    expect(glyph.classes()).toContain('sn-icon-close');
+  });
+
+  it('prefers the name glyph over inline svg data when both are given', () => {
+    const wrapper = mount(SnIcon, { props: { name: 'close', icon: fakeIcon } });
+    expect(wrapper.find('.sn-icon__glyph').exists()).toBe(true);
+    expect(wrapper.find('svg').exists()).toBe(false);
+  });
+
+  it('builds the glyph class from classPrefix', () => {
+    const wrapper = mount(SnIcon, { props: { name: 'close', classPrefix: 'my-font' } });
+    expect(wrapper.find('.sn-icon__glyph').classes()).toContain('my-font-close');
+  });
+
+  it('adds the bare name as a second class when cssIcon is true', () => {
+    const wrapper = mount(SnIcon, { props: { name: 'close', cssIcon: true } });
+    const classes = wrapper.find('.sn-icon__glyph').classes();
+    expect(classes).toContain('sn-icon-close');
+    expect(classes).toContain('close');
+  });
+
+  it('renders a string cssIcon verbatim without the prefix', () => {
+    const wrapper = mount(SnIcon, { props: { cssIcon: 'my-css-glyph' } });
+    const glyph = wrapper.find('.sn-icon__glyph');
+    expect(glyph.exists()).toBe(true);
+    expect(glyph.classes()).toContain('my-css-glyph');
+    expect(glyph.classes()).not.toContain('sn-icon-my-css-glyph');
+  });
+
+  it('renders a string cssIcon even when svg icon data is provided', () => {
+    const wrapper = mount(SnIcon, { props: { cssIcon: 'my-css-glyph', icon: fakeIcon } });
+    expect(wrapper.find('.sn-icon__glyph').exists()).toBe(true);
+    expect(wrapper.find('svg').exists()).toBe(false);
+  });
+
+  it('renders nothing when cssIcon is true but name is empty (a css icon needs a class name)', () => {
+    const wrapper = mount(SnIcon, { props: { cssIcon: true } });
+    expect(wrapper.find('.sn-icon__glyph').exists()).toBe(false);
+    expect(wrapper.find('svg').exists()).toBe(false);
+  });
+});
+
+describe('sn-icon root passthrough', () => {
+  it('applies customClass to the wrapper', () => {
+    const wrapper = mount(SnIcon, { props: { icon: fakeIcon, customClass: 'my-icon' } });
+    expect(wrapper.classes()).toContain('my-icon');
+  });
+
+  it('applies a string customStyle on the wrapper', () => {
+    const wrapper = mount(SnIcon, {
+      props: { icon: fakeIcon, customStyle: 'opacity: 0.5' },
+    });
+    expect(wrapper.attributes('style')).toContain('opacity');
+  });
+
+  it('merges a Record customStyle into the wrapper style', () => {
+    const wrapper = mount(SnIcon, {
+      props: { icon: fakeIcon, customStyle: { opacity: '0.5' } },
+    });
+    expect(wrapper.attributes('style')).toContain('opacity');
+  });
+
+  it('sets the explicit color on the wrapper style so css inheritance reaches the glyph path', () => {
+    const wrapper = mount(SnIcon, { props: { name: 'close', color: '#ff0000' } });
+    expect(wrapper.attributes('style')).toContain('color: #ff0000');
+  });
+
+  it('omits the wrapper color for the currentColor default', () => {
+    const wrapper = mount(SnIcon, { props: { icon: fakeIcon } });
+    expect(wrapper.attributes('style')).not.toContain('color');
+  });
+
+  it('keeps forwarding strokeWidth when strokeWidthAbsolute is set (characterization: the flag does not change the svg attribute on the H5 renderer)', () => {
+    const wrapper = mount(SnIcon, {
+      props: { icon: fakeIcon, strokeWidth: 2, strokeWidthAbsolute: true },
+    });
+    expect(wrapper.find('svg').attributes('stroke-width')).toBe('2');
+    expect(wrapper.find('svg').exists()).toBe(true);
+  });
+});

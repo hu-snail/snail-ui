@@ -44,4 +44,28 @@ describe('sn-root-portal', () => {
     const wrapper = mount(SnRootPortal, { slots: { default: 'x' } });
     expect(wrapper.attributes('role')).toBeUndefined();
   });
+
+  it('always carries the sn-root-portal class', () => {
+    const wrapper = mount(SnRootPortal, { props: { customClass: 'my-portal' } });
+    expect(wrapper.classes()).toEqual(['sn-root-portal', 'my-portal']);
+  });
+
+  it('treats an explicit empty customStyle like an absent one', () => {
+    const wrapper = mount(SnRootPortal, { props: { customStyle: '' } });
+    expect(wrapper.attributes('style')).toBeUndefined();
+  });
+
+  it('renders multiple children inside the same layer', () => {
+    const wrapper = mount(SnRootPortal, {
+      slots: { default: '<view class="a" /><view class="b" />' },
+    });
+    expect(wrapper.find('.a').exists()).toBe(true);
+    expect(wrapper.find('.b').exists()).toBe(true);
+  });
+
+  it('keeps rendering the layer when the slot is empty', () => {
+    const wrapper = mount(SnRootPortal);
+    expect(wrapper.classes()).toContain('sn-root-portal');
+    expect(wrapper.attributes('data-snui-component')).toBe('root-portal');
+  });
 });

@@ -77,4 +77,56 @@ describe('sn-divider (AUI-MP-005)', () => {
     const w = mount(SnDivider, { props: { customStyle: { marginTop: '8px' } } });
     expect(w.attributes('style')).toContain('margin-top');
   });
+
+  it('applies the color override as border-color', () => {
+    const w = mount(SnDivider, { props: { color: '#ff0000' } });
+    expect(w.attributes('style')).toContain('border-color');
+    expect(w.attributes('style')).toContain('#ff0000');
+  });
+
+  it('omits border-color when no color prop is given', () => {
+    const w = mount(SnDivider);
+    expect(w.attributes('style')).not.toContain('border-color');
+  });
+
+  it('applies the right content-position class', () => {
+    const w = mount(SnDivider, { props: { contentPosition: 'right' }, slots: { default: 'OR' } });
+    expect(w.classes()).toContain('sn-divider--content-right');
+    expect(w.find('.sn-divider__text').exists()).toBe(true);
+  });
+
+  it('applies each marginSize variant class', () => {
+    expect(mount(SnDivider, { props: { marginSize: 'small' } }).classes()).toContain(
+      'sn-divider--margin-small',
+    );
+    expect(mount(SnDivider, { props: { marginSize: 'large' } }).classes()).toContain(
+      'sn-divider--margin-large',
+    );
+    expect(mount(SnDivider, { props: { marginSize: 'medium' } }).classes()).toContain(
+      'sn-divider--margin-medium',
+    );
+  });
+
+  it('keeps the dashed border declaration on the vertical axis', () => {
+    const w = mount(SnDivider, { props: { vertical: true, dashed: true } });
+    expect(w.classes()).toContain('sn-divider--dashed');
+    expect(w.attributes('style')).toContain('dashed');
+  });
+
+  it('renders the vertical variant once when both vertical prop and direction are given', () => {
+    const w = mount(SnDivider, { props: { vertical: true, direction: 'vertical' } });
+    expect(w.classes().filter((c) => c === 'sn-divider--vertical')).toHaveLength(1);
+  });
+
+  it('keeps direction="horizontal" authoritative when vertical prop is false', () => {
+    const w = mount(SnDivider, { props: { vertical: false, direction: 'horizontal' } });
+    expect(w.classes()).toContain('sn-divider--horizontal');
+    expect(w.attributes('aria-orientation')).toBe('horizontal');
+  });
+
+  it('drops the dashed style declaration when dashed is false', () => {
+    const w = mount(SnDivider);
+    expect(w.attributes('style')).not.toContain('dashed');
+    expect(w.attributes('style')).toContain('solid');
+  });
 });

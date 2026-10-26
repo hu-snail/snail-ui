@@ -48,4 +48,30 @@ describe('sn-sticky', () => {
     expect(wrapper.element.tagName.toLowerCase()).toBe('view');
     expect(wrapper.find('.inner').exists()).toBe(true);
   });
+
+  it('exposes the component marker for inspection tooling', () => {
+    const wrapper = mount(SnSticky, { slots: { default: 'x' } });
+    expect(wrapper.attributes('data-snui-component')).toBe('sticky');
+  });
+
+  it('writes a z-index of 0 explicitly', () => {
+    const wrapper = mount(SnSticky, { props: { zIndex: 0 } });
+    expect(wrapper.attributes('style')).toContain('z-index: 0');
+  });
+
+  it('appends customStyle after the sticky insets so the consumer override wins', () => {
+    const wrapper = mount(SnSticky, {
+      props: { offsetTop: 12, zIndex: 3, customStyle: 'top: 99px;' },
+    });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style.indexOf('top: 12px')).toBeLessThan(style.indexOf('top: 99px'));
+    expect(style).toContain('z-index: 3');
+  });
+
+  it('keeps the sticky insets when only customClass is provided', () => {
+    const wrapper = mount(SnSticky, { props: { customClass: 'only-class' } });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style).toContain('top: 0px');
+    expect(style).toContain('z-index: 1');
+  });
 });

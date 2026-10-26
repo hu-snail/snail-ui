@@ -70,4 +70,30 @@ describe('sn-gap', () => {
       expect(w.attributes('role')).toBe('presentation');
     });
   });
+
+  describe('edge cases', () => {
+    it('exposes the component marker for inspection tooling', () => {
+      const w = mount(SnGap);
+      expect(w.attributes('data-snui-component')).toBe('gap');
+    });
+
+    it('renders a zero-height spacer for height 0', () => {
+      const w = mount(SnGap, { props: { height: 0 } });
+      expect(w.attributes('style')).toContain('height: 0px');
+    });
+
+    it('appends customStyle after the height declaration', () => {
+      const w = mount(SnGap, {
+        props: { height: 10, customStyle: 'margin: 2px' },
+      });
+      const style = w.attributes('style') ?? '';
+      expect(style.indexOf('height: 10px')).toBeLessThan(style.indexOf('margin'));
+    });
+
+    it('stays a plain spacer when safeAreaBottom and the transparent bg default are explicitly given', () => {
+      const w = mount(SnGap, { props: { safeAreaBottom: false, bgColor: 'transparent' } });
+      expect(w.classes()).not.toContain('sn-gap--safe-area');
+      expect(w.attributes('style')).not.toContain('background-color');
+    });
+  });
 });

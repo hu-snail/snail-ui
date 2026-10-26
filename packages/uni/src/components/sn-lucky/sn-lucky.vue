@@ -150,7 +150,13 @@ defineExpose({ play, stop });
 
 const rootClass = computed(() => ['sn-lucky', props.customClass]);
 const rootStyle = computed(() => {
-  const parts = [`gap: ${props.gutter}`, `padding: ${props.gutter}`];
+  // cellHeight 通过 CSS 变量下传：.sn-lucky__cell 的 height 读取
+  // var(--sn-lucky-cell)，小程序端无法用行内样式覆盖子孙节点。
+  const parts = [
+    `--sn-lucky-cell: ${props.cellHeight}`,
+    `gap: ${props.gutter}`,
+    `padding: ${props.gutter}`,
+  ];
   if (props.customStyle !== '') parts.push(props.customStyle);
   return parts.join('; ');
 });

@@ -90,4 +90,34 @@ describe('sn-card (AUI-MP-BIZ-001)', () => {
     });
     expect(w.attributes('style')).toContain('#f0f0f0');
   });
+
+  it('omits the content region when no default slot is provided', () => {
+    const w = mount(SnCard, { props: { title: 't' } });
+    expect(w.find('.sn-card__content').exists()).toBe(false);
+  });
+
+  it('renders the title region from the title slot even without a title prop', () => {
+    const w = mount(SnCard, { slots: { title: '<text>slot only</text>' } });
+    expect(w.find('.sn-card__title').exists()).toBe(true);
+    expect(w.text()).toContain('slot only');
+  });
+
+  it('renders no title region for an explicit empty title', () => {
+    const w = mount(SnCard, { props: { title: '' }, slots: { default: 'body' } });
+    expect(w.find('.sn-card__title').exists()).toBe(false);
+  });
+
+  it('renders title, content and footer regions in document order', () => {
+    const w = mount(SnCard, {
+      props: { title: '标题' },
+      slots: { default: '正文', footer: '<text>操作</text>' },
+    });
+    const regions = Array.from(w.element.children).map((el) => el.className);
+    expect(regions).toEqual(['sn-card__title', 'sn-card__content', 'sn-card__footer']);
+  });
+
+  it('renders an empty card body (root only) without any region', () => {
+    const w = mount(SnCard);
+    expect(w.element.children).toHaveLength(0);
+  });
 });
