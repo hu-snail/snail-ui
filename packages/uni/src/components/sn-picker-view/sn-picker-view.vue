@@ -409,7 +409,6 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
         <view
           v-for="(option, rowIndex) in column"
           :key="option.value"
-          v-memo="[option.label, isActive(columnIndex, rowIndex), option.disabled, itemHeightRpx]"
           :class="[
             'sn-picker-view__item',
             {

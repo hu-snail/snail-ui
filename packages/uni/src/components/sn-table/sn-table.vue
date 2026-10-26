@@ -384,6 +384,9 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
               :style="cellStyle(column.cssWidth, column.stickyLeft)"
               role="cell"
             >
+              <!-- MP 编译器不支持动态组件（<component :is>）：自定义单元格渲染
+                   仅 H5 可用，MP 降级为文本单元格（follow-up 已登记）。 -->
+              <!-- #ifndef MP -->
               <component
                 :is="cellRenderers[column.prop]"
                 v-if="cellRenderers[column.prop]"
@@ -391,6 +394,10 @@ function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' |
                 :index="rowIndex"
               />
               <text v-else class="sn-table__cell-text">{{ cellText(row, column.prop) }}</text>
+              <!-- #endif -->
+              <!-- #ifdef MP -->
+              <text class="sn-table__cell-text">{{ cellText(row, column.prop) }}</text>
+              <!-- #endif -->
             </view>
           </view>
 

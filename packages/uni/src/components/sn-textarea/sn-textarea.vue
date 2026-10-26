@@ -272,28 +272,9 @@ const classList = computed(() => [
 const wrapperStyle = computed(() => props.customStyle || undefined)
 
 /**
- * uni-app MP-only native textarea attributes grouped into one object so
- * vue-tsc does not have to know about them on the intrinsic element type.
+ * uni-app MP-only native textarea attributes.（MP 端模板不支持 v-bind="obj"
+ * 展开，这些属性已在模板中显式逐条绑定。）
  */
-const mpNativeAttrs = computed(() => {
-  const attrs: Record<string, string | number | boolean | undefined> = {}
-  attrs['auto-focus'] = props.autoFocus
-  attrs['auto-height'] = props.autoHeight
-  attrs['fixed'] = props.fixed
-  attrs['cursor-spacing'] = props.cursorSpacing
-  attrs['confirm-hold'] = props.confirmHold
-  attrs['show-confirm-bar'] = props.showConfirmBar
-  attrs['adjust-position'] = props.adjustPosition
-  attrs['disable-default-padding'] = props.disableDefaultPadding
-  attrs['hold-keyboard'] = props.holdKeyboard
-  attrs['ignore-composition-event'] = props.ignoreCompositionEvent
-  attrs['enable-native'] = props.enableNative
-  if (props.confirmType) attrs['confirm-type'] = props.confirmType
-  if (props.cursor >= 0) attrs['cursor'] = props.cursor
-  if (props.selectionStart >= 0) attrs['selection-start'] = props.selectionStart
-  if (props.selectionEnd >= 0) attrs['selection-end'] = props.selectionEnd
-  return attrs
-})
 </script>
 
 <template>
@@ -333,7 +314,21 @@ const mpNativeAttrs = computed(() => {
       :aria-invalid="error ? 'true' : undefined"
       :aria-disabled="disabled ? 'true' : undefined"
       :aria-readonly="readonly ? 'true' : undefined"
-      v-bind="mpNativeAttrs"
+      :auto-focus="autoFocus"
+      :auto-height="autoHeight"
+      :fixed="fixed"
+      :cursor-spacing="cursorSpacing"
+      :confirm-hold="confirmHold"
+      :show-confirm-bar="showConfirmBar"
+      :adjust-position="adjustPosition"
+      :disable-default-padding="disableDefaultPadding"
+      :hold-keyboard="holdKeyboard"
+      :ignore-composition-event="ignoreCompositionEvent"
+      :enable-native="enableNative"
+      :confirm-type="confirmType"
+      :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
+      :selection-start="selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined"
+      :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
       @input="onInput"
       @change="onChange"
       @focus="onFocus"

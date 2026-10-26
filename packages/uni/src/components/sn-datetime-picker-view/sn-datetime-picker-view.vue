@@ -468,11 +468,6 @@ const ariaValue = computed(() =>
         <view
           v-for="(value, rowIndex) in column.values"
           :key="value"
-          v-memo="[
-            column.labels[rowIndex],
-            column.selected === value,
-            itemHeightRpx,
-          ]"
           :class="[
             'sn-datetime-picker-view__item',
             { 'sn-datetime-picker-view__item--active': column.selected === value },

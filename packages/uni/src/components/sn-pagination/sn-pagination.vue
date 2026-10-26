@@ -199,14 +199,28 @@ const messageText = computed(
         :aria-label="prevText || 'Previous page'"
         @tap="goTo(currentPage - 1)"
       >
-        <slot name="prev" v-bind="slotScope">
+        <!-- MP 编译器不支持 <slot> 上的 v-bind="obj" 批量传参，显式展开（key 与
+             PaginationSlotScope 一致，消费者用法不变）。 -->
+        <slot
+          name="prev"
+          :modelValue="slotScope.modelValue"
+          :totalPageNum="slotScope.totalPageNum"
+          :total="slotScope.total"
+          :pageSize="slotScope.pageSize"
+        >
           <SnIcon v-if="showIcon" :icon="ChevronLeft" :size="28" />
           <text v-if="prevText" class="sn-pagination__text">{{ prevText }}</text>
         </slot>
       </view>
 
       <view class="sn-pagination__pages">
-        <slot name="size" v-bind="slotScope">
+        <slot
+          name="size"
+          :modelValue="slotScope.modelValue"
+          :totalPageNum="slotScope.totalPageNum"
+          :total="slotScope.total"
+          :pageSize="slotScope.pageSize"
+        >
           <template v-for="(item, index) in pageItems" :key="`${item}-${index}`">
             <text
               v-if="item === 'ellipsis'"
@@ -236,7 +250,13 @@ const messageText = computed(
         :aria-label="nextText || 'Next page'"
         @tap="goTo(currentPage + 1)"
       >
-        <slot name="next" v-bind="slotScope">
+        <slot
+          name="next"
+          :modelValue="slotScope.modelValue"
+          :totalPageNum="slotScope.totalPageNum"
+          :total="slotScope.total"
+          :pageSize="slotScope.pageSize"
+        >
           <text v-if="nextText" class="sn-pagination__text">{{ nextText }}</text>
           <SnIcon v-if="showIcon" :icon="ChevronRight" :size="28" />
         </slot>
@@ -244,7 +264,13 @@ const messageText = computed(
     </view>
 
     <view v-if="showMessage" class="sn-pagination__message">
-      <slot name="message" v-bind="slotScope">
+      <slot
+        name="message"
+        :modelValue="slotScope.modelValue"
+        :totalPageNum="slotScope.totalPageNum"
+        :total="slotScope.total"
+        :pageSize="slotScope.pageSize"
+      >
         <text class="sn-pagination__message-text">{{ messageText }}</text>
       </slot>
     </view>

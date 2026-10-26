@@ -25,7 +25,7 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, markRaw, nextTick, ref, useId, useSlots } from 'vue'
+import { computed, markRaw, nextTick, ref, useSlots } from 'vue'
 import SnIcon from '../sn-icon/sn-icon.vue'
 import type { IconData } from '../sn-icon/sn-icon.vue'
 import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set'
@@ -266,7 +266,10 @@ defineSlots<{
   count?(): unknown
 }>()
 
-const inputId = useId()
+// uni 的 vue 运行时（uni-h5-vue / mp 编译目标）不导出 Vue 3.5 的 useId，
+// 改用模块级计数器生成稳定的 DOM id（label 关联用，无需跨端唯一语义）。
+let snInputUid = 0
+const inputId = `sn-input-${++snInputUid}`
 const slots = useSlots()
 
 /** DOM-bound value (always string). */
@@ -414,22 +417,8 @@ const wrapperStyle = computed(() => {
  * so vue-tsc doesn't choke on `<input>` not declaring them on its
  * intrinsic HTMLInputElement interface. They're all standard MP runtime
  * hints — uni-app compiles them through to the underlying MP renderer.
+ * （MP 端模板不支持 v-bind="obj" 展开，这些属性已在模板中显式逐条绑定。）
  */
-const mpNativeAttrs = computed(() => {
-  const attrs: Record<string, string | number | boolean | undefined> = {}
-  attrs['confirm-type'] = props.confirmType
-  attrs['hold-keyboard'] = props.holdKeyboard
-  attrs['adjust-position'] = props.adjustPosition
-  attrs['always-embed'] = props.alwaysEmbed
-  attrs['cursor-spacing'] = props.cursorSpacing
-  attrs['confirm-hold'] = props.confirmHold
-  attrs['ignore-composition-event'] = props.ignoreCompositionEvent
-  attrs['enable-native'] = props.enableNative
-  if (props.cursor >= 0) attrs['cursor'] = props.cursor
-  if (props.selectionStart >= 0) attrs['selection-start'] = props.selectionStart
-  if (props.selectionEnd >= 0) attrs['selection-end'] = props.selectionEnd
-  return attrs
-})
 
 /** Placeholder is a separate native input attribute in uni-app. */
 const placeholderStyleAttr = computed(() => props.placeholderStyle || undefined)
@@ -476,7 +465,17 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
       :aria-label="ariaLabel"
       :aria-invalid="ariaInvalid"
       :aria-required="required ? 'true' : undefined"
-      v-bind="mpNativeAttrs"
+      :confirm-type="confirmType"
+      :hold-keyboard="holdKeyboard"
+      :adjust-position="adjustPosition"
+      :always-embed="alwaysEmbed"
+      :cursor-spacing="cursorSpacing"
+      :confirm-hold="confirmHold"
+      :ignore-composition-event="ignoreCompositionEvent"
+      :enable-native="enableNative"
+      :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
+      :selection-start="selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined"
+      :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
       @input="onInput"
       @change="onChange"
       @focus="onFocus"
@@ -504,7 +503,17 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
       :aria-label="ariaLabel"
       :aria-invalid="ariaInvalid"
       :aria-required="required ? 'true' : undefined"
-      v-bind="mpNativeAttrs"
+      :confirm-type="confirmType"
+      :hold-keyboard="holdKeyboard"
+      :adjust-position="adjustPosition"
+      :always-embed="alwaysEmbed"
+      :cursor-spacing="cursorSpacing"
+      :confirm-hold="confirmHold"
+      :ignore-composition-event="ignoreCompositionEvent"
+      :enable-native="enableNative"
+      :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
+      :selection-start="selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined"
+      :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
       @input="onInput"
       @change="onChange"
       @focus="onFocus"
