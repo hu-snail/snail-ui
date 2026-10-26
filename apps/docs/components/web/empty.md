@@ -26,19 +26,19 @@
 
 ### SnEmpty Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| description | `string` | `undefined` | 描述文本，缺省为「无数据」，`default` 插槽可覆盖 |
-| show-description | `boolean` | `true` | 是否展示描述 |
-| show-icon | `boolean` | `true` | 是否展示图标 |
-| size | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | 尺寸（图标 28 / 34 / 40 / 46 / 52px） |
+| 名称             | 类型                                                 | 默认值      | 说明                                             |
+| ---------------- | ---------------------------------------------------- | ----------- | ------------------------------------------------ |
+| description      | `string`                                             | `undefined` | 描述文本，缺省为「无数据」，`default` 插槽可覆盖 |
+| show-description | `boolean`                                            | `true`      | 是否展示描述                                     |
+| show-icon        | `boolean`                                            | `true`      | 是否展示图标                                     |
+| size             | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'`  | 尺寸（图标 28 / 34 / 40 / 46 / 52px）            |
 
 ### SnEmpty Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | `()` | 替代描述内容 |
-| extra | `()` | 描述下方的附加内容 |
-| icon | `()` | 自定义图标，替换默认内联 SVG |
+| 名称    | 参数 | 说明                         |
+| ------- | ---- | ---------------------------- |
+| default | `()` | 替代描述内容                 |
+| extra   | `()` | 描述下方的附加内容           |
+| icon    | `()` | 自定义图标，替换默认内联 SVG |
 
 完整契约见组件 `ai-description.md`。

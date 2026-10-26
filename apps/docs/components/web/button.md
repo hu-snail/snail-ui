@@ -62,47 +62,47 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'tertiary'` | `'default'` | 按钮语义类型。 |
-| `size` | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | 按钮尺寸。 |
-| `block` | `boolean` | `false` | 块级（占满父容器宽度）。 |
-| `round` | `boolean` | `false` | 胶囊形（`border-radius: 999px`）。 |
-| `circle` | `boolean` | `false` | 圆形（正方形 padding）。 |
-| `text` | `boolean` | `false` | 文字按钮 — 透明背景、无边框。 |
-| `ghost` | `boolean` | `false` | 透明背景 + 着色边框。 |
-| `dashed` | `boolean` | `false` | 虚线边框。 |
-| `secondary` | `boolean` | `false` | 反色 hover（视觉变体）。 |
-| `tertiary` | `boolean` | `false` | 弱化主色填充（soft-bg variant）。 |
-| `quaternary` | `boolean` | `false` | 文字型 tertiary。 |
-| `strong` | `boolean` | `false` | 加重阴影（实心按钮）。 |
-| `color` | `string` | — | 自定义 CSS 颜色；`--sn-button-color` token 覆盖 type 配色。 |
-| `tag` | `'button' \| 'a' \| 'div' \| 'span'` | `'button'` | 根元素。`a` 时 `disabled` 失效（HTMLAnchorElement 不支持）。 |
-| `attrType` | `'button' \| 'submit' \| 'reset'` | `'button'` | 原生 `<button>` 的 type 属性。 |
-| `htmlType` *(deprecated)* | `'button' \| 'submit' \| 'reset'` | — | `attrType` 的 legacy alias。 |
-| `disabled` | `boolean` | `false` | 禁用。 |
-| `loading` | `boolean` | `false` | 加载中（spinner + 阻止 click）。 |
-| `focusable` | `boolean` | `true` | 是否可 tab 聚焦。 |
-| `icon` | `IconComponent` | — | 直接传 lucide 组件。 |
-| `iconName` | `string` | — | 通过 `registerSnIcons` 解析。 |
-| `iconPlacement` | `'left' \| 'right'` | `'left'` | 图标位置。 |
-| `iconSize` | `number \| string` | `14` | 图标 px / CSS 长度。 |
-| `showIcon` | `boolean` | `true` | 是否显示图标。`false` 隐藏（loading 仍显示 spinner）。 |
-| `bordered` *(deprecated)* | `boolean` | `true` | 旧 border 标志，保留仅作向后兼容。 |
-| `ariaLabel` | `string` | — | 无障碍标签。 |
+| 名称                      | 类型                                                                                  | 默认值      | 说明                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------ |
+| `type`                    | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'tertiary'` | `'default'` | 按钮语义类型。                                               |
+| `size`                    | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'`                                  | `'medium'`  | 按钮尺寸。                                                   |
+| `block`                   | `boolean`                                                                             | `false`     | 块级（占满父容器宽度）。                                     |
+| `round`                   | `boolean`                                                                             | `false`     | 胶囊形（`border-radius: 999px`）。                           |
+| `circle`                  | `boolean`                                                                             | `false`     | 圆形（正方形 padding）。                                     |
+| `text`                    | `boolean`                                                                             | `false`     | 文字按钮 — 透明背景、无边框。                                |
+| `ghost`                   | `boolean`                                                                             | `false`     | 透明背景 + 着色边框。                                        |
+| `dashed`                  | `boolean`                                                                             | `false`     | 虚线边框。                                                   |
+| `secondary`               | `boolean`                                                                             | `false`     | 反色 hover（视觉变体）。                                     |
+| `tertiary`                | `boolean`                                                                             | `false`     | 弱化主色填充（soft-bg variant）。                            |
+| `quaternary`              | `boolean`                                                                             | `false`     | 文字型 tertiary。                                            |
+| `strong`                  | `boolean`                                                                             | `false`     | 加重阴影（实心按钮）。                                       |
+| `color`                   | `string`                                                                              | —           | 自定义 CSS 颜色；`--sn-button-color` token 覆盖 type 配色。  |
+| `tag`                     | `'button' \| 'a' \| 'div' \| 'span'`                                                  | `'button'`  | 根元素。`a` 时 `disabled` 失效（HTMLAnchorElement 不支持）。 |
+| `attrType`                | `'button' \| 'submit' \| 'reset'`                                                     | `'button'`  | 原生 `<button>` 的 type 属性。                               |
+| `htmlType` _(deprecated)_ | `'button' \| 'submit' \| 'reset'`                                                     | —           | `attrType` 的 legacy alias。                                 |
+| `disabled`                | `boolean`                                                                             | `false`     | 禁用。                                                       |
+| `loading`                 | `boolean`                                                                             | `false`     | 加载中（spinner + 阻止 click）。                             |
+| `focusable`               | `boolean`                                                                             | `true`      | 是否可 tab 聚焦。                                            |
+| `icon`                    | `IconComponent`                                                                       | —           | 直接传 lucide 组件。                                         |
+| `iconName`                | `string`                                                                              | —           | 通过 `registerSnIcons` 解析。                                |
+| `iconPlacement`           | `'left' \| 'right'`                                                                   | `'left'`    | 图标位置。                                                   |
+| `iconSize`                | `number \| string`                                                                    | `14`        | 图标 px / CSS 长度。                                         |
+| `showIcon`                | `boolean`                                                                             | `true`      | 是否显示图标。`false` 隐藏（loading 仍显示 spinner）。       |
+| `bordered` _(deprecated)_ | `boolean`                                                                             | `true`      | 旧 border 标志，保留仅作向后兼容。                           |
+| `ariaLabel`               | `string`                                                                              | —           | 无障碍标签。                                                 |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数                  | 说明                                            |
+| ------- | --------------------- | ----------------------------------------------- |
 | `click` | `(event: MouseEvent)` | 点击按钮触发；`disabled` / `loading` 时不触发。 |
 
 ### Slots
 
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 按钮内容。 |
-| `icon` | 自定义图标（替代默认 icon 渲染）。 |
+| 名称      | 说明                                 |
+| --------- | ------------------------------------ |
+| `default` | 按钮内容。                           |
+| `icon`    | 自定义图标（替代默认 icon 渲染）。   |
 | `loading` | 自定义加载图标（替代默认 spinner）。 |
 
 ## 无障碍

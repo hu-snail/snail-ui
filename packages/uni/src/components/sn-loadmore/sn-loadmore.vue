@@ -36,30 +36,30 @@
  *   - 空状态 — 用 sn-empty
  */
 
-import { computed } from 'vue'
-import SnLoading from '../sn-loading/sn-loading.vue'
+import { computed } from 'vue';
+import SnLoading from '../sn-loading/sn-loading.vue';
 
-defineOptions({ name: 'SnLoadmore' })
+defineOptions({ name: 'SnLoadmore' });
 
 /** Load state. Mirrors `wd-loadmore` `state`. */
-type LoadMoreState = '' | 'loading' | 'finished' | 'error'
+type LoadMoreState = '' | 'loading' | 'finished' | 'error';
 
 const props = withDefaults(
   defineProps<{
     /** Current load state; empty renders nothing. */
-    state?: LoadMoreState
+    state?: LoadMoreState;
     /** Text shown while loading. */
-    loadingText?: string
+    loadingText?: string;
     /** Text shown once everything is loaded. */
-    finishedText?: string
+    finishedText?: string;
     /** Text shown after a failure. */
-    errorText?: string
+    errorText?: string;
     /** Props forwarded to the inner sn-loading. */
-    loadingProps?: Record<string, unknown>
+    loadingProps?: Record<string, unknown>;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     state: '',
@@ -70,35 +70,35 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Custom loading content. */
-  loading?(): unknown
+  loading?(): unknown;
   /** Custom finished content. */
-  finished?(): unknown
+  finished?(): unknown;
   /** Custom error content. */
-  error?(): unknown
-}>()
+  error?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'reload'): void
-}>()
+  (e: 'reload'): void;
+}>();
 
 /** The error state is tappable and adds the retry hint. */
-const isError = computed(() => props.state === 'error')
+const isError = computed(() => props.state === 'error');
 
 const rootClass = computed(() => [
   'sn-loadmore',
   { 'sn-loadmore--error': isError.value },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 
 function onTap(): void {
-  if (!isError.value) return
-  emit('reload')
+  if (!isError.value) return;
+  emit('reload');
 }
 </script>
 

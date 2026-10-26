@@ -1,12 +1,16 @@
 <script setup lang="ts">
 /** Demo: SnButton (Web) — attrType (form submit/reset) + focusable. */
-import { reactive, ref } from 'vue'
-import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web'
+import { reactive, ref } from 'vue';
+import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web';
 
-const form = reactive({ email: '' })
-const count = ref(0)
-function submit(): void { count.value++ }
-function reset(): void { form.email = '' }
+const form = reactive({ email: '' });
+const count = ref(0);
+function submit(): void {
+  count.value++;
+}
+function reset(): void {
+  form.email = '';
+}
 </script>
 
 <template>
@@ -26,7 +30,18 @@ function reset(): void { form.email = '' }
 </template>
 
 <style scoped>
-.sn-demo { max-width: 360px; }
-.sn-demo__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-p { margin-top: 12px; font-size: 12px; color: var(--vp-c-text-2); }
+.sn-demo {
+  max-width: 360px;
+}
+.sn-demo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+p {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+}
 </style>

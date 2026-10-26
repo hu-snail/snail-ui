@@ -45,38 +45,38 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| page | `number \| undefined` | `undefined` | 当前页。`undefined` 为不受控模式，由 `default-page` 初始化；越界值收敛到 `[1, 总页数]`。 |
-| item-count | `number` | `0` | 数据总条数，`page-count` 未提供时用于推导总页数。 |
-| page-size | `number \| null \| undefined` | `undefined` | 每页条数。`undefined` / `null` 回退到内部状态（由 `default-page-size` 初始化）。 |
-| default-page | `number` | `1` | 不受控模式的初始页码。 |
-| default-page-size | `number` | `10` | 不受控模式的初始每页条数。 |
-| page-count | `number` | `undefined` | 显式总页数，优先级高于 `item-count / page-size` 推导结果。 |
-| page-sizes | `Array<number \| { label: string; value: number }>` | `[10, 20, 30, 40]` | 条数下拉的选项；纯数字渲染为 `N / 页`。 |
-| show-quick-jumper | `boolean` | `false` | 显示「跳至」输入框，回车 / 失焦提交；简洁模式下不渲染。 |
-| show-size-picker | `boolean` | `false` | 显示每页条数下拉。 |
-| page-slot | `number` | `9` | 页码按钮的最大数量，总页数超出时折叠省略号。 |
-| show-total | `boolean` | `false` | 显示「共 N 条」。 |
-| simple | `boolean` | `false` | 简洁模式：上一页 / 页码输入 / 总页数 / 下一页，不渲染页码列表与跳页输入。 |
-| disabled | `boolean` | `false` | 禁用全部控件；禁用期间的交互不提交事件。 |
+| 名称              | 类型                                                | 默认值             | 说明                                                                                     |
+| ----------------- | --------------------------------------------------- | ------------------ | ---------------------------------------------------------------------------------------- |
+| page              | `number \| undefined`                               | `undefined`        | 当前页。`undefined` 为不受控模式，由 `default-page` 初始化；越界值收敛到 `[1, 总页数]`。 |
+| item-count        | `number`                                            | `0`                | 数据总条数，`page-count` 未提供时用于推导总页数。                                        |
+| page-size         | `number \| null \| undefined`                       | `undefined`        | 每页条数。`undefined` / `null` 回退到内部状态（由 `default-page-size` 初始化）。         |
+| default-page      | `number`                                            | `1`                | 不受控模式的初始页码。                                                                   |
+| default-page-size | `number`                                            | `10`               | 不受控模式的初始每页条数。                                                               |
+| page-count        | `number`                                            | `undefined`        | 显式总页数，优先级高于 `item-count / page-size` 推导结果。                               |
+| page-sizes        | `Array<number \| { label: string; value: number }>` | `[10, 20, 30, 40]` | 条数下拉的选项；纯数字渲染为 `N / 页`。                                                  |
+| show-quick-jumper | `boolean`                                           | `false`            | 显示「跳至」输入框，回车 / 失焦提交；简洁模式下不渲染。                                  |
+| show-size-picker  | `boolean`                                           | `false`            | 显示每页条数下拉。                                                                       |
+| page-slot         | `number`                                            | `9`                | 页码按钮的最大数量，总页数超出时折叠省略号。                                             |
+| show-total        | `boolean`                                           | `false`            | 显示「共 N 条」。                                                                        |
+| simple            | `boolean`                                           | `false`            | 简洁模式：上一页 / 页码输入 / 总页数 / 下一页，不渲染页码列表与跳页输入。                |
+| disabled          | `boolean`                                           | `false`            | 禁用全部控件；禁用期间的交互不提交事件。                                                 |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| update:page | `(page: number)` | 页码提交（页码点击 / 跳页输入 / 简洁模式输入）。 |
-| update:page-size | `(pageSize: number)` | 每页条数提交（条数下拉选择）。 |
+| 名称             | 参数                 | 说明                                             |
+| ---------------- | -------------------- | ------------------------------------------------ |
+| update:page      | `(page: number)`     | 页码提交（页码点击 / 跳页输入 / 简洁模式输入）。 |
+| update:page-size | `(pageSize: number)` | 每页条数提交（条数下拉选择）。                   |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| prev | — | 上一页按钮内容，替换默认的左箭头图标。 |
-| next | — | 下一页按钮内容，替换默认的右箭头图标。 |
-| prefix | — | 分页器左侧内容。 |
-| suffix | — | 分页器右侧内容。 |
-| label | `{ page: number }` | 页码按钮内部文案；省略号标记不经过该插槽。 |
+| 名称   | 参数               | 说明                                       |
+| ------ | ------------------ | ------------------------------------------ |
+| prev   | —                  | 上一页按钮内容，替换默认的左箭头图标。     |
+| next   | —                  | 下一页按钮内容，替换默认的右箭头图标。     |
+| prefix | —                  | 分页器左侧内容。                           |
+| suffix | —                  | 分页器右侧内容。                           |
+| label  | `{ page: number }` | 页码按钮内部文案；省略号标记不经过该插槽。 |
 
 ### Methods
 
@@ -90,12 +90,12 @@
 
 ## Tokens
 
-| Token | CSS 变量 | 用途 |
-| --- | --- | --- |
-| 次级文字色 | `--sn-web-color-text-secondary` | 默认页码 / 省略号 |
-| 三级文字色 | `--sn-web-color-text-tertiary` | 总条数 / 跳页标签 / 总页数 |
-| 主操作色 | `--sn-web-color-action-primary` | 当前页高亮（16% 主色底 + 主色文字） |
-| 小号按钮高度 | `--sn-web-button-height-small` | 页码项与省略号的最小宽高（回退 28px） |
+| Token        | CSS 变量                        | 用途                                  |
+| ------------ | ------------------------------- | ------------------------------------- |
+| 次级文字色   | `--sn-web-color-text-secondary` | 默认页码 / 省略号                     |
+| 三级文字色   | `--sn-web-color-text-tertiary`  | 总条数 / 跳页标签 / 总页数            |
+| 主操作色     | `--sn-web-color-action-primary` | 当前页高亮（16% 主色底 + 主色文字）   |
+| 小号按钮高度 | `--sn-web-button-height-small`  | 页码项与省略号的最小宽高（回退 28px） |
 
 ## 无障碍
 
@@ -107,12 +107,12 @@
 
 ## AI Patch Boundary
 
-| 可安全由 AI 生成 | 需要人工确认 |
-| --- | --- |
-| `page` / `page-size` / `page-count` / `item-count` 等数据面绑定 | 受控 `v-model:page` 与宿主数据源的同步策略（列表重新拉取时机） |
-| `show-total` / `show-quick-jumper` / `show-size-picker` / `simple` 等展示开关 | 切换每页条数后是否把页码重置回第 1 页 |
-| `page-sizes` 档位文案与静态 `page-slot` 取值 | `label` / `prefix` / `suffix` 等插槽内容与事件处理器 |
-| 文档、demo 中的静态组合用法 | 分页变化触发的数据请求 |
+| 可安全由 AI 生成                                                              | 需要人工确认                                                   |
+| ----------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `page` / `page-size` / `page-count` / `item-count` 等数据面绑定               | 受控 `v-model:page` 与宿主数据源的同步策略（列表重新拉取时机） |
+| `show-total` / `show-quick-jumper` / `show-size-picker` / `simple` 等展示开关 | 切换每页条数后是否把页码重置回第 1 页                          |
+| `page-sizes` 档位文案与静态 `page-slot` 取值                                  | `label` / `prefix` / `suffix` 等插槽内容与事件处理器           |
+| 文档、demo 中的静态组合用法                                                   | 分页变化触发的数据请求                                         |
 
 - AI 生成的 JSON Patch 只允许修改以上 Props 数据面，不得注入事件处理器、插槽内容或组件内部状态。
 - `page-count` 与 `item-count` 同时出现时以 `page-count` 为准，Patch 二者须保持一致语义。

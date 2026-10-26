@@ -33,33 +33,33 @@ added to the wd-watermark parity list.
 ```
 
 ```ts
-import { SnWatermark } from '@snui/uni'
+import { SnWatermark } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `content` | string | '' | no | Watermark text. |
-| `image` | string | '' | no | Watermark image source. |
-| `imageHeight` | number | 100 | no | Image height in px. |
-| `imageWidth` | number | 100 | no | Image width in px. |
-| `gutterX` | number | 0 | no | Horizontal gutter between tiles, in px. |
-| `gutterY` | number | 0 | no | Vertical gutter between tiles, in px. |
-| `width` | number | 100 | no | Tile width in px. |
-| `height` | number | 100 | no | Tile height in px. |
-| `fullScreen` | boolean | true | no | Cover the whole viewport. |
-| `color` | string | '' | no | Text color override. |
-| `size` | number | 14 | no | Text size in px. |
-| `fontStyle` | 'normal' | 'italic' | 'oblique' | 'normal' | no | Font style. |
-| `fontWeight` | string | number | 'normal' | no | Font weight. |
-| `fontFamily` | string | 'PingFang SC' | no | Font family. |
-| `rotate` | number | -25 | no | Rotation angle in degrees. |
-| `zIndex` | number | 1100 | no | Stacking level. |
-| `opacity` | number | — | no | Opacity, 0–1. |
-| `layout` | 'grid' | 'staggered' | 'grid' | no | Repeat layout. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
-| `customClass` | string | '' | no | Custom class for the root node. |
+| Name          | Type     | Default       | Required  | Description                             |
+| ------------- | -------- | ------------- | --------- | --------------------------------------- |
+| `content`     | string   | ''            | no        | Watermark text.                         |
+| `image`       | string   | ''            | no        | Watermark image source.                 |
+| `imageHeight` | number   | 100           | no        | Image height in px.                     |
+| `imageWidth`  | number   | 100           | no        | Image width in px.                      |
+| `gutterX`     | number   | 0             | no        | Horizontal gutter between tiles, in px. |
+| `gutterY`     | number   | 0             | no        | Vertical gutter between tiles, in px.   |
+| `width`       | number   | 100           | no        | Tile width in px.                       |
+| `height`      | number   | 100           | no        | Tile height in px.                      |
+| `fullScreen`  | boolean  | true          | no        | Cover the whole viewport.               |
+| `color`       | string   | ''            | no        | Text color override.                    |
+| `size`        | number   | 14            | no        | Text size in px.                        |
+| `fontStyle`   | 'normal' | 'italic'      | 'oblique' | 'normal'                                | no             | Font style. |
+| `fontWeight`  | string   | number        | 'normal'  | no                                      | Font weight.   |
+| `fontFamily`  | string   | 'PingFang SC' | no        | Font family.                            |
+| `rotate`      | number   | -25           | no        | Rotation angle in degrees.              |
+| `zIndex`      | number   | 1100          | no        | Stacking level.                         |
+| `opacity`     | number   | —             | no        | Opacity, 0–1.                           |
+| `layout`      | 'grid'   | 'staggered'   | 'grid'    | no                                      | Repeat layout. |
+| `customStyle` | string   | ''            | no        | Custom inline style for the root node.  |
+| `customClass` | string   | ''            | no        | Custom class for the root node.         |
 
 ## Events
 
@@ -67,15 +67,15 @@ None — the component is presentational.
 
 ## Slots
 
-| Slot | Description |
-|---|---|
+| Slot      | Description                                         |
+| --------- | --------------------------------------------------- |
 | `default` | Custom tile content (replaces `content` / `image`). |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text disabled | `--sn-mp-color-text-disabled` | Default watermark ink |
+| Token             | CSS Variable                     | Purpose               |
+| ----------------- | -------------------------------- | --------------------- |
+| Text disabled     | `--sn-mp-color-text-disabled`    | Default watermark ink |
 | Line height tight | `--sn-mp-font-line-height-tight` | Tile text line height |
 
 ## Accessibility

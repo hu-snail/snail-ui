@@ -18,13 +18,13 @@ Spacing container (n-space aligned). CSS gap — no wrapper elements.
 
 ### SnSpace Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| vertical | `boolean` | `false` | Vertical (forces nowrap) |
-| size | `number \| 'small'\|'medium'\|'large' \| [number, number]` | `'medium'` | Gap (8/12/16) |
-| wrap | `boolean` | `true` | Wrapping |
-| justify | flex justify values | `'start'` | Main axis (start/end → flex-*) |
-| align | flex align values | — | Cross axis |
-| inline | `boolean` | `false` | Inline container |
+| Prop     | Type                                                       | Default    | Notes                          |
+| -------- | ---------------------------------------------------------- | ---------- | ------------------------------ |
+| vertical | `boolean`                                                  | `false`    | Vertical (forces nowrap)       |
+| size     | `number \| 'small'\|'medium'\|'large' \| [number, number]` | `'medium'` | Gap (8/12/16)                  |
+| wrap     | `boolean`                                                  | `true`     | Wrapping                       |
+| justify  | flex justify values                                        | `'start'`  | Main axis (start/end → flex-*) |
+| align    | flex align values                                          | —          | Cross axis                     |
+| inline   | `boolean`                                                  | `false`    | Inline container               |
 
 See the component `ai-description.md` for the full contract.

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnWatermark — fullscreen coverage toggled from the page. */
-import { ref } from 'vue'
-import { SnButton, SnWatermark } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnWatermark } from '@snui/vue-web';
 
-const fullscreen = ref(false)
+const fullscreen = ref(false);
 </script>
 
 <template>

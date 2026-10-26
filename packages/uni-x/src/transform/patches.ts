@@ -26,8 +26,7 @@ export const PATCHES: Record<string, SourcePatch[]> = {
     },
     {
       anchor: '    :hover-class="hoverClass"',
-      replacement:
-        "    :hover-class=\"feedback && !disabled && !loading ? hoverClass : 'none'\"",
+      replacement: '    :hover-class="feedback && !disabled && !loading ? hoverClass : \'none\'"',
       note: 'hover-class gated on feedback/disabled/loading (App has no :active pseudo)',
     },
     {
@@ -204,8 +203,7 @@ const iconDataUrl = computed<string | undefined>(() => {
     },
     {
       anchor: '<view v-for="i in 3" :key="i" class="sn-loading__dot" />',
-      replacement:
-        `<view v-for="i in 3" :key="i" class="sn-loading__dot" :class="'sn-loading__dot--' + i" />`,
+      replacement: `<view v-for="i in 3" :key="i" class="sn-loading__dot" :class="'sn-loading__dot--' + i" />`,
       note: 'nth-child delays → per-index modifier class',
     },
     {

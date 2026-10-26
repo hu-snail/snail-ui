@@ -19,39 +19,39 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnTimeline from '@snui/vue-web/src/timeline/SnTimeline.vue'
-import SnTimelineItem from '@snui/vue-web/src/timeline/SnTimelineItem.vue'
+import SnTimeline from '@snui/vue-web/src/timeline/SnTimeline.vue';
+import SnTimelineItem from '@snui/vue-web/src/timeline/SnTimelineItem.vue';
 ```
 
 ## Props (SnTimeline)
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `horizontal` | `boolean` | `false` | no | Lay the entries out horizontally. |
-| `item-placement` | `'left' \| 'right'` | `'left'` | no | Which side the rail sits on (vertical only). |
-| `size` | `'medium' \| 'large'` | `'medium'` | no | Title scale (14/16 px). |
-| `icon-size` | `number` | `undefined` | no | Node/icon edge length in px (default 14). |
+| Name             | Type                  | Default     | Required | Description                                  |
+| ---------------- | --------------------- | ----------- | -------- | -------------------------------------------- |
+| `horizontal`     | `boolean`             | `false`     | no       | Lay the entries out horizontally.            |
+| `item-placement` | `'left' \| 'right'`   | `'left'`    | no       | Which side the rail sits on (vertical only). |
+| `size`           | `'medium' \| 'large'` | `'medium'`  | no       | Title scale (14/16 px).                      |
+| `icon-size`      | `number`              | `undefined` | no       | Node/icon edge length in px (default 14).    |
 
 ## Props (SnTimelineItem)
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `type` | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | no | Semantic node color. |
-| `title` | `string` | `undefined` | no | Entry title (`header` slot overrides). |
-| `content` | `string` | `undefined` | no | Entry body (`default` slot overrides). |
-| `time` | `string \| number` | `undefined` | no | Meta line (`footer` slot overrides). |
-| `color` | `string` | `undefined` | no | Custom node color (ring border / icon color). |
-| `line-type` | `'default' \| 'dashed'` | `'default'` | no | Rail segment style after this node. |
+| Name        | Type                                                       | Default     | Required | Description                                   |
+| ----------- | ---------------------------------------------------------- | ----------- | -------- | --------------------------------------------- |
+| `type`      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | no       | Semantic node color.                          |
+| `title`     | `string`                                                   | `undefined` | no       | Entry title (`header` slot overrides).        |
+| `content`   | `string`                                                   | `undefined` | no       | Entry body (`default` slot overrides).        |
+| `time`      | `string \| number`                                         | `undefined` | no       | Meta line (`footer` slot overrides).          |
+| `color`     | `string`                                                   | `undefined` | no       | Custom node color (ring border / icon color). |
+| `line-type` | `'default' \| 'dashed'`                                    | `'default'` | no       | Rail segment style after this node.           |
 
 ## Slots
 
-| Component | Name | Description |
-|---|---|---|
-| SnTimeline | `default` | `<SnTimelineItem>` entries. |
-| SnTimelineItem | `default` | Entry body (overrides `content`). |
-| SnTimelineItem | `icon` | Custom node icon (replaces the circle). |
-| SnTimelineItem | `header` | Entry title (overrides `title`). |
-| SnTimelineItem | `footer` | Meta line (overrides `time`). |
+| Component      | Name      | Description                             |
+| -------------- | --------- | --------------------------------------- |
+| SnTimeline     | `default` | `<SnTimelineItem>` entries.             |
+| SnTimelineItem | `default` | Entry body (overrides `content`).       |
+| SnTimelineItem | `icon`    | Custom node icon (replaces the circle). |
+| SnTimelineItem | `header`  | Entry title (overrides `title`).        |
+| SnTimelineItem | `footer`  | Meta line (overrides `time`).           |
 
 ## Events
 
@@ -72,11 +72,11 @@ None — pure display component.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary / secondary / tertiary | `--sn-web-color-text-*` | Title / body / meta text |
-| Feedback info / success / warning / danger | `--sn-web-color-feedback-*` | Semantic node colors |
-| Border subtle | `--sn-web-color-border-subtle` | Rail line + default node |
+| Token                                      | CSS Variable                   | Purpose                  |
+| ------------------------------------------ | ------------------------------ | ------------------------ |
+| Text primary / secondary / tertiary        | `--sn-web-color-text-*`        | Title / body / meta text |
+| Feedback info / success / warning / danger | `--sn-web-color-feedback-*`    | Semantic node colors     |
+| Border subtle                              | `--sn-web-color-border-subtle` | Rail line + default node |
 
 ## Versioning
 

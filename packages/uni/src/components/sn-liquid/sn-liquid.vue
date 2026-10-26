@@ -15,30 +15,30 @@
  * Not responsible for: 业务进度计算 —— 由宿主传入 percent。
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
-defineOptions({ name: 'SnLiquid' })
+defineOptions({ name: 'SnLiquid' });
 
 const props = withDefaults(
   defineProps<{
     /** 进度百分比（0-100），超出范围会被夹取。 */
-    percent?: number
+    percent?: number;
     /** 球体尺寸（rpx / px 长度字符串）。 */
-    size?: string
+    size?: string;
     /** 水位 / current 过渡时长（ms），0 表示立即到位。 */
-    duration?: number
+    duration?: number;
     /** 是否显示外圈描边。 */
-    outline?: boolean
+    outline?: boolean;
     /** 圆角（默认正圆）。 */
-    radius?: string
+    radius?: string;
     /** 波浪颜色。 */
-    waveColor?: string
+    waveColor?: string;
     /** 球内背景色（水面以上区域）。 */
-    innerColor?: string
+    innerColor?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     percent: 0,
@@ -51,63 +51,67 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:current', value: number): void
-}>()
+  (e: 'update:current', value: number): void;
+}>();
 
 defineSlots<{
   /** 球心自定义内容（默认渲染 `current%` 文字）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const clampedPercent = computed(() => Math.min(100, Math.max(0, props.percent)))
+const clampedPercent = computed(() => Math.min(100, Math.max(0, props.percent)));
 
 /** 过渡中的水位（`v-model:current`），JS 缓动驱动以便文字与波浪同步。 */
-const current = ref(clampedPercent.value)
-let ticker: ReturnType<typeof setInterval> | null = null
+const current = ref(clampedPercent.value);
+let ticker: ReturnType<typeof setInterval> | null = null;
 
 function stopTicker(): void {
   if (ticker !== null) {
-    clearInterval(ticker)
-    ticker = null
+    clearInterval(ticker);
+    ticker = null;
   }
 }
 
 watch(
   clampedPercent,
   (target) => {
-    stopTicker()
-    const from = current.value
-    const delta = target - from
+    stopTicker();
+    const from = current.value;
+    const delta = target - from;
     if (delta === 0 || props.duration <= 0) {
-      current.value = target
-      emit('update:current', Math.round(target))
-      return
+      current.value = target;
+      emit('update:current', Math.round(target));
+      return;
     }
-    const startedAt = Date.now()
+    const startedAt = Date.now();
     ticker = setInterval(() => {
-      const t = Math.min(1, (Date.now() - startedAt) / props.duration)
-      const eased = 1 - Math.pow(1 - t, 3)
-      current.value = from + delta * eased
-      emit('update:current', Math.round(current.value))
-      if (t >= 1) stopTicker()
-    }, 30)
+      const t = Math.min(1, (Date.now() - startedAt) / props.duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      current.value = from + delta * eased;
+      emit('update:current', Math.round(current.value));
+      if (t >= 1) stopTicker();
+    }, 30);
   },
   { immediate: true },
-)
+);
 
-onBeforeUnmount(stopTicker)
+onBeforeUnmount(stopTicker);
 
 /** 解析长度字符串（数值 + 单位），供波浪几何计算。 */
 function parseLength(input: string): { value: number; unit: string } {
-  const match = /^(-?[\d.]+)(rpx|px|%)?$/.exec(input.trim())
-  if (match === null) return { value: 160, unit: 'rpx' }
-  return { value: Number(match[1]), unit: match[2] ?? 'rpx' }
+  const match = /^(-?[\d.]+)(rpx|px|%)?$/.exec(input.trim());
+  if (match === null) return { value: 160, unit: 'rpx' };
+  return { value: Number(match[1]), unit: match[2] ?? 'rpx' };
 }
 
-const rootClass = computed(() => ['sn-liquid', { 'sn-liquid--outline': props.outline }, props.customClass])
+const rootClass = computed(() => [
+  'sn-liquid',
+  { 'sn-liquid--outline': props.outline },
+  props.customClass,
+]);
 
 const rootStyle = computed(() => {
   const parts = [
@@ -115,29 +119,30 @@ const rootStyle = computed(() => {
     `height: ${props.size}`,
     `border-radius: ${props.radius}`,
     `background-color: ${props.innerColor}`,
-  ]
-  if (props.customStyle !== '') parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  ];
+  if (props.customStyle !== '') parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 const waterStyle = computed(
-  () => `height: ${current.value}%; transition: height ${props.duration}ms cubic-bezier(0.33, 1, 0.68, 1)`,
-)
+  () =>
+    `height: ${current.value}%; transition: height ${props.duration}ms cubic-bezier(0.33, 1, 0.68, 1)`,
+);
 
 /** 波浪块几何：宽度 / 高度 2×size，顶缘探出水面约 0.2×size 并绕中心旋转。 */
 const frontWaveStyle = computed(() => {
-  const { value, unit } = parseLength(props.size)
+  const { value, unit } = parseLength(props.size);
   return [
     `width: ${value * 2}${unit}`,
     `height: ${value * 2}${unit}`,
     `left: ${-value * 0.5}${unit}`,
     `top: ${-value * 0.2}${unit}`,
     `background-color: ${props.waveColor}`,
-  ].join('; ')
-})
+  ].join('; ');
+});
 
 const backWaveStyle = computed(() => {
-  const { value, unit } = parseLength(props.size)
+  const { value, unit } = parseLength(props.size);
   return [
     `width: ${value * 2}${unit}`,
     `height: ${value * 2}${unit}`,
@@ -145,12 +150,17 @@ const backWaveStyle = computed(() => {
     `top: ${-value * 0.26}${unit}`,
     `background-color: ${props.waveColor}`,
     'opacity: 0.45',
-  ].join('; ')
-})
+  ].join('; ');
+});
 </script>
 
 <template>
-  <view :class="rootClass" :style="rootStyle" role="img" :aria-label="`进度 ${Math.round(current)}%`">
+  <view
+    :class="rootClass"
+    :style="rootStyle"
+    role="img"
+    :aria-label="`进度 ${Math.round(current)}%`"
+  >
     <view class="sn-liquid__water" :style="waterStyle">
       <view class="sn-liquid__wave sn-liquid__wave--back" :style="backWaveStyle" />
       <view class="sn-liquid__wave sn-liquid__wave--front" :style="frontWaveStyle" />

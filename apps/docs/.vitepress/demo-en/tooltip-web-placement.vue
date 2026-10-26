@@ -7,28 +7,19 @@
  * row is further split into start/center/end, so the differences are obvious at a
  * glance instead of twelve buttons crowded into one blob.
  */
-import { SnTooltip } from '@snui/vue-web'
+import { SnTooltip } from '@snui/vue-web';
 
 const rows = [
   ['top-start', 'top', 'top-end'],
   ['left-start', 'left', 'left-end', 'right-start', 'right', 'right-end'],
   ['bottom-start', 'bottom', 'bottom-end'],
-] as const
+] as const;
 </script>
 
 <template>
   <div class="tt-place">
-    <section
-      v-for="(row, i) in rows"
-      :key="i"
-      class="tt-place__row"
-    >
-      <SnTooltip
-        v-for="p in row"
-        :key="p"
-        :content="p"
-        :placement="p"
-      >
+    <section v-for="(row, i) in rows" :key="i" class="tt-place__row">
+      <SnTooltip v-for="p in row" :key="p" :content="p" :placement="p">
         <button class="tt-place__btn" type="button">{{ p }}</button>
       </SnTooltip>
     </section>
@@ -60,7 +51,9 @@ const rows = [
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-place__btn:hover {
   border-color: var(--vp-c-brand-1);

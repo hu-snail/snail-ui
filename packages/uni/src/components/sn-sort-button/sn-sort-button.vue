@@ -25,33 +25,33 @@
  *   - 排序请求 / 列表重排 — 由宿主在 `change` 里处理
  */
 
-import { computed } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { ChevronDown as ChevronDownIcon, ChevronUp as ChevronUpIcon } from '../sn-icon/sn-icon-set'
+import { computed } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { ChevronDown as ChevronDownIcon, ChevronUp as ChevronUpIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnSortButton' })
+defineOptions({ name: 'SnSortButton' });
 
 /** `1` ascending, `0` reset, `-1` descending. */
-type SortButtonValue = 1 | 0 | -1
+type SortButtonValue = 1 | 0 | -1;
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-sort-button` 1:1 surface ─────────────────────────────── */
 
     /** Current direction (`v-model`). */
-    modelValue?: SortButtonValue
+    modelValue?: SortButtonValue;
     /** Button label. */
-    title?: string
+    title?: string;
     /** Include the reset state in the tap cycle. */
-    allowReset?: boolean
+    allowReset?: boolean;
     /** Cycle to descending before ascending. */
-    descFirst?: boolean
+    descFirst?: boolean;
     /** Render an underline under the label. */
-    line?: boolean
+    line?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 0,
@@ -62,12 +62,12 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: SortButtonValue): void
-  (e: 'change', payload: { value: SortButtonValue }): void
-}>()
+  (e: 'update:modelValue', value: SortButtonValue): void;
+  (e: 'change', payload: { value: SortButtonValue }): void;
+}>();
 
 /**
  * The next direction for the current one.
@@ -78,22 +78,22 @@ const emit = defineEmits<{
  * `1` and `-1`.
  */
 function nextValue(current: SortButtonValue): SortButtonValue {
-  if (current === 0) return props.descFirst ? -1 : 1
+  if (current === 0) return props.descFirst ? -1 : 1;
   if (current === 1) {
-    if (props.descFirst) return props.allowReset ? 0 : -1
-    return -1
+    if (props.descFirst) return props.allowReset ? 0 : -1;
+    return -1;
   }
-  if (props.descFirst) return 1
-  return props.allowReset ? 0 : 1
+  if (props.descFirst) return 1;
+  return props.allowReset ? 0 : 1;
 }
 
 function onTap(): void {
-  const next = nextValue(props.modelValue)
-  emit('update:modelValue', next)
-  emit('change', { value: next })
+  const next = nextValue(props.modelValue);
+  emit('update:modelValue', next);
+  emit('change', { value: next });
 }
 
-const isActive = computed(() => props.modelValue !== 0)
+const isActive = computed(() => props.modelValue !== 0);
 
 const rootClass = computed(() => [
   'sn-sort-button',
@@ -104,18 +104,18 @@ const rootClass = computed(() => [
     'sn-sort-button--line': props.line,
   },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => props.customStyle || undefined)
+const rootStyle = computed(() => props.customStyle || undefined);
 
 /** Chevron shown for the current direction (`ChevronDown` when reset). */
-const arrowIcon = computed(() => (props.modelValue === 1 ? ChevronUpIcon : ChevronDownIcon))
+const arrowIcon = computed(() => (props.modelValue === 1 ? ChevronUpIcon : ChevronDownIcon));
 
 const ariaSort = computed(() => {
-  if (props.modelValue === 1) return 'ascending'
-  if (props.modelValue === -1) return 'descending'
-  return 'none'
-})
+  if (props.modelValue === 1) return 'ascending';
+  if (props.modelValue === -1) return 'descending';
+  return 'none';
+});
 </script>
 
 <template>

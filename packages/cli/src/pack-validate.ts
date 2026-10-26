@@ -17,20 +17,20 @@
  * absent directory.
  */
 
-import { existsSync } from 'node:fs'
-import { readdir, readFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { existsSync } from 'node:fs';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 export interface PackValidateOptions {
-  packsDir: string
+  packsDir: string;
   /** Known ComponentToken key names. Filled by the CLI loader. */
-  knownComponentKeys?: ReadonlyArray<string>
+  knownComponentKeys?: ReadonlyArray<string>;
 }
 
 export interface PackIssue {
-  file: string
-  rule: string
-  message: string
+  file: string;
+  rule: string;
+  message: string;
 }
 
 const COMPONENT_TOKENS: ReadonlyArray<string> = [
@@ -51,48 +51,48 @@ const COMPONENT_TOKENS: ReadonlyArray<string> = [
   'card.padding',
   'card.radius',
   'card.shadow',
-]
+];
 
 export async function validatePacks(options: PackValidateOptions): Promise<PackIssue[]> {
-  const issues: PackIssue[] = []
+  const issues: PackIssue[] = [];
   if (!existsSync(options.packsDir)) {
     // M2 placeholder: when @snui/style-packs is not yet implemented, return empty.
-    return []
+    return [];
   }
-  const entries = await readdir(options.packsDir, { withFileTypes: true })
+  const entries = await readdir(options.packsDir, { withFileTypes: true });
   for (const entry of entries) {
-    if (!entry.isFile() || !entry.name.endsWith('.ts') || entry.name === 'index.ts') continue
-    const full = join(options.packsDir, entry.name)
-    const text = await readFile(full, 'utf-8')
-    const hasName = /name\s*:\s*['"][a-z][a-z0-9-]*['"]/.test(text)
-    const hasLabel = /label\s*:\s*['"]/.test(text)
-    const hasDescription = /description\s*:\s*['"]/.test(text)
-    const hasStyle = /style\s*:\s*\{/.test(text)
-    if (!hasName) issues.push({ file: full, rule: 'pack.name', message: 'missing `name` (kebab-case)' })
-    if (!hasLabel) issues.push({ file: full, rule: 'pack.label', message: 'missing `label`' })
-    if (!hasDescription) issues.push({ file: full, rule: 'pack.description', message: 'missing `description`' })
-    if (!hasStyle) issues.push({ file: full, rule: 'pack.style', message: 'missing `style` block' })
+    if (!entry.isFile() || !entry.name.endsWith('.ts') || entry.name === 'index.ts') continue;
+    const full = join(options.packsDir, entry.name);
+    const text = await readFile(full, 'utf-8');
+    const hasName = /name\s*:\s*['"][a-z][a-z0-9-]*['"]/.test(text);
+    const hasLabel = /label\s*:\s*['"]/.test(text);
+    const hasDescription = /description\s*:\s*['"]/.test(text);
+    const hasStyle = /style\s*:\s*\{/.test(text);
+    if (!hasName)
+      issues.push({ file: full, rule: 'pack.name', message: 'missing `name` (kebab-case)' });
+    if (!hasLabel) issues.push({ file: full, rule: 'pack.label', message: 'missing `label`' });
+    if (!hasDescription)
+      issues.push({ file: full, rule: 'pack.description', message: 'missing `description`' });
+    if (!hasStyle)
+      issues.push({ file: full, rule: 'pack.style', message: 'missing `style` block' });
   }
-  return issues
+  return issues;
 }
 
 export async function runPackValidate(options: PackValidateOptions): Promise<number> {
-  const issues = await validatePacks(options)
+  const issues = await validatePacks(options);
   if (options.packsDir && !existsSync(options.packsDir)) {
-     
-    console.log('• @snui/cli pack-validate: packs directory not found yet (M2 placeholder, no-op)')
-    return 0
+    console.log('• @snui/cli pack-validate: packs directory not found yet (M2 placeholder, no-op)');
+    return 0;
   }
   if (issues.length === 0) {
-     
-    console.log('✓ @snui/cli pack-validate: all packs OK')
-    return 0
+    console.log('✓ @snui/cli pack-validate: all packs OK');
+    return 0;
   }
   for (const i of issues) {
-     
-    console.error(`✗ ${i.file}  ${i.rule}  ${i.message}`)
+    console.error(`✗ ${i.file}  ${i.rule}  ${i.message}`);
   }
-  return 1
+  return 1;
 }
 
-export { COMPONENT_TOKENS }
+export { COMPONENT_TOKENS };

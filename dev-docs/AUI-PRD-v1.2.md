@@ -455,9 +455,9 @@ YAML 可以作为：
 
 ```ts
 interface UISchema {
-  schema: string
-  version: string
-  root: UINode
+  schema: string;
+  version: string;
+  root: UINode;
 }
 ```
 
@@ -481,20 +481,20 @@ interface UISchema {
 
 ```ts
 interface UINode {
-  id?: string
-  type: string
+  id?: string;
+  type: string;
 
-  props?: Record<string, unknown>
+  props?: Record<string, unknown>;
 
-  children?: UINode[]
+  children?: UINode[];
 
-  bindings?: Record<string, UIBinding>
+  bindings?: Record<string, UIBinding>;
 
-  events?: Record<string, UIEventBinding>
+  events?: Record<string, UIEventBinding>;
 
-  a11y?: UIAccessibility
+  a11y?: UIAccessibility;
 
-  style?: Record<string, unknown>
+  style?: Record<string, unknown>;
 }
 ```
 
@@ -568,9 +568,7 @@ Schema 必须经过 Validator。
 
 ```ts
 interface SchemaValidator {
-  validate(
-    schema: UISchema
-  ): ValidationResult
+  validate(schema: UISchema): ValidationResult;
 }
 ```
 
@@ -578,8 +576,8 @@ interface SchemaValidator {
 
 ```ts
 interface ValidationResult {
-  valid: boolean
-  errors: SchemaValidationError[]
+  valid: boolean;
+  errors: SchemaValidationError[];
 }
 ```
 
@@ -587,20 +585,14 @@ interface ValidationResult {
 
 ```ts
 interface SchemaValidationError {
-  path: string
-  code: string
-  message: string
-  hint?: string
+  path: string;
+  code: string;
+  message: string;
+  hint?: string;
 
-  source:
-    | "schema"
-    | "component"
-    | "binding"
-    | "action"
+  source: 'schema' | 'component' | 'binding' | 'action';
 
-  severity:
-    | "error"
-    | "warning"
+  severity: 'error' | 'warning';
 }
 ```
 
@@ -707,24 +699,24 @@ AUI 不拥有。
 
 ```ts
 interface RuntimeContext {
-  localState: LocalState
+  localState: LocalState;
 
-  externalState: ExternalStateBridge
+  externalState: ExternalStateBridge;
 
-  computed: ComputedRegistry
+  computed: ComputedRegistry;
 
-  actions: ActionRegistry
+  actions: ActionRegistry;
 
-  bridge: AppBridge
+  bridge: AppBridge;
 
-  signal: AbortSignal
+  signal: AbortSignal;
 }
 ```
 
 禁止提供模糊的：
 
 ```ts
-context.state
+context.state;
 ```
 
 作为所有状态的统一入口。
@@ -742,11 +734,11 @@ Vue 3 Reactivity
 使用：
 
 ```ts
-ref
-reactive
-computed
-effect
-effectScope
+ref;
+reactive;
+computed;
+effect;
+effectScope;
 ```
 
 AUI 不自研 Proxy Reactive Engine。
@@ -757,19 +749,13 @@ AUI 不自研 Proxy Reactive Engine。
 
 ```ts
 interface ReactiveAdapter {
-  createState<T>(
-    value: T
-  ): ReactiveValue<T>
+  createState<T>(value: T): ReactiveValue<T>;
 
-  computed<T>(
-    getter: () => T
-  ): ReactiveValue<T>
+  computed<T>(getter: () => T): ReactiveValue<T>;
 
-  effect(
-    fn: () => void
-  ): StopHandle
+  effect(fn: () => void): StopHandle;
 
-  dispose(): void
+  dispose(): void;
 }
 ```
 
@@ -810,13 +796,13 @@ Binding 必须区分：
 ### Read
 
 ```ts
-resolve(binding, context)
+resolve(binding, context);
 ```
 
 ### Write
 
 ```ts
-set(binding, value, context)
+set(binding, value, context);
 ```
 
 ---
@@ -933,19 +919,16 @@ Service / Router / Notify
 
 ```ts
 interface ActionDefinition<TPayload = unknown> {
-  id: string
+  id: string;
 
-  payload?: ZodType<TPayload>
+  payload?: ZodType<TPayload>;
 
-  execute(
-    context: ActionContext,
-    payload: TPayload
-  ): Promise<ActionResult>
+  execute(context: ActionContext, payload: TPayload): Promise<ActionResult>;
 
   ai?: {
-    description: string
-    allowed: boolean
-  }
+    description: string;
+    allowed: boolean;
+  };
 }
 ```
 
@@ -957,19 +940,11 @@ Action Payload 必须经过 Zod 验证。
 
 ```ts
 interface ActionRegistry {
-  register(
-    action: ActionDefinition
-  ): void
+  register(action: ActionDefinition): void;
 
-  get(
-    id: string
-  ): ActionDefinition | undefined
+  get(id: string): ActionDefinition | undefined;
 
-  execute(
-    id: string,
-    payload: unknown,
-    context: ActionContext
-  ): Promise<ActionResult>
+  execute(id: string, payload: unknown, context: ActionContext): Promise<ActionResult>;
 }
 ```
 
@@ -993,9 +968,7 @@ AppBridge 不直接把业务服务作为 Schema API。
 
 ```ts
 interface ServiceRegistry {
-  get(
-    id: string
-  ): ServiceFunction | undefined
+  get(id: string): ServiceFunction | undefined;
 }
 ```
 
@@ -1017,29 +990,26 @@ AppBridge 是 AUI Runtime 与 Host Application 的唯一正式业务能力边界
 
 ```ts
 interface AppBridge {
-  services?: ServiceRegistry
+  services?: ServiceRegistry;
 
   router?: {
-    push(path: string): void
-    replace(path: string): void
-    back(): void
-  }
+    push(path: string): void;
+    replace(path: string): void;
+    back(): void;
+  };
 
-  emit?: (
-    event: string,
-    payload?: unknown
-  ) => void
+  emit?: (event: string, payload?: unknown) => void;
 
   notify?: {
-    success(message: string): void
-    error(message: string): void
-    info(message: string): void
-    warning?(message: string): void
-  }
+    success(message: string): void;
+    error(message: string): void;
+    info(message: string): void;
+    warning?(message: string): void;
+  };
 
-  state?: ExternalStateBridge
+  state?: ExternalStateBridge;
 
-  abortSignal?: AbortSignal
+  abortSignal?: AbortSignal;
 }
 ```
 
@@ -1055,9 +1025,9 @@ const app = createAUI({
   bridge: {
     services,
     router,
-    notify
-  }
-})
+    notify,
+  },
+});
 ```
 
 所有字段可选。
@@ -1097,25 +1067,25 @@ Contract：
 
 ```ts
 interface ComponentContract<TProps = unknown> {
-  name: string
+  name: string;
 
-  version: string
+  version: string;
 
-  props: ZodType<TProps>
+  props: ZodType<TProps>;
 
-  events: ComponentEventDefinition[]
+  events: ComponentEventDefinition[];
 
-  slots: ComponentSlotDefinition[]
+  slots: ComponentSlotDefinition[];
 
-  exposes?: ComponentExposeDefinition[]
+  exposes?: ComponentExposeDefinition[];
 
-  tokens: ComponentTokenDefinition
+  tokens: ComponentTokenDefinition;
 
-  capabilities: UICapability[]
+  capabilities: UICapability[];
 
-  accessibility: UIAccessibility
+  accessibility: UIAccessibility;
 
-  ai: AIComponentMetadata
+  ai: AIComponentMetadata;
 }
 ```
 
@@ -1129,37 +1099,18 @@ Zod 是 Component Schema 的 Source of Truth。
 
 ```ts
 const ButtonPropsSchema = z.object({
-  type: z
-    .enum([
-      "primary",
-      "secondary",
-      "danger"
-    ])
-    .default("primary"),
+  type: z.enum(['primary', 'secondary', 'danger']).default('primary'),
 
-  size: z
-    .enum([
-      "small",
-      "medium",
-      "large"
-    ])
-    .default("medium"),
+  size: z.enum(['small', 'medium', 'large']).default('medium'),
 
-  disabled: z
-    .boolean()
-    .default(false),
+  disabled: z.boolean().default(false),
 
-  loading: z
-    .boolean()
-    .default(false),
+  loading: z.boolean().default(false),
 
-  text: z
-    .string()
-    .optional()
-})
+  text: z.string().optional(),
+});
 
-type ButtonProps =
-  z.infer<typeof ButtonPropsSchema>
+type ButtonProps = z.infer<typeof ButtonPropsSchema>;
 ```
 
 禁止同时维护一套与 Zod 不一致的 Props Type。
@@ -1212,9 +1163,9 @@ Schema 层定义：
 
 ```ts
 interface ComponentSlotDefinition {
-  name: string
-  required: boolean
-  accepts: string[]
+  name: string;
+  required: boolean;
+  accepts: string[];
 }
 ```
 
@@ -1505,20 +1456,11 @@ Phase 1 定义最小 Renderer Contract：
 
 ```ts
 interface RendererAdapter {
-  mount(
-    node: UINode,
-    context: RenderContext
-  ): RendererInstance
+  mount(node: UINode, context: RenderContext): RendererInstance;
 
-  update(
-    instance: RendererInstance,
-    node: UINode,
-    context: RenderContext
-  ): void
+  update(instance: RendererInstance, node: UINode, context: RenderContext): void;
 
-  unmount(
-    instance: RendererInstance
-  ): void
+  unmount(instance: RendererInstance): void;
 }
 ```
 
@@ -1619,32 +1561,21 @@ subscription
 
 ```ts
 interface AUIError {
-  code: string
+  code: string;
 
-  message: string
+  message: string;
 
-  path?: string
+  path?: string;
 
-  source:
-    | "schema"
-    | "runtime"
-    | "renderer"
-    | "component"
-    | "binding"
-    | "action"
-    | "bridge"
+  source: 'schema' | 'runtime' | 'renderer' | 'component' | 'binding' | 'action' | 'bridge';
 
-  severity:
-    | "info"
-    | "warning"
-    | "error"
-    | "fatal"
+  severity: 'info' | 'warning' | 'error' | 'fatal';
 
-  recoverable: boolean
+  recoverable: boolean;
 
-  hint?: string
+  hint?: string;
 
-  cause?: unknown
+  cause?: unknown;
 }
 ```
 
@@ -1714,15 +1645,9 @@ Schema 半修改
 
 ```ts
 interface PatchEngine {
-  preview(
-    schema: UISchema,
-    patch: JSONPatch[]
-  ): PatchResult
+  preview(schema: UISchema, patch: JSONPatch[]): PatchResult;
 
-  commit(
-    schema: UISchema,
-    patch: JSONPatch[]
-  ): PatchResult
+  commit(schema: UISchema, patch: JSONPatch[]): PatchResult;
 }
 ```
 
@@ -1785,24 +1710,24 @@ Major
 Phase 1：
 
 ```ts
-runtime.inspect()
+runtime.inspect();
 ```
 
 接口：
 
 ```ts
 interface RuntimeInspection {
-  schemaVersion: string
+  schemaVersion: string;
 
-  nodes: RuntimeNodeInspection[]
+  nodes: RuntimeNodeInspection[];
 
-  errors: AUIError[]
+  errors: AUIError[];
 
-  renderStats: RenderStats
+  renderStats: RenderStats;
 
-  bindings?: BindingInspection[]
+  bindings?: BindingInspection[];
 
-  actions?: ActionInspection[]
+  actions?: ActionInspection[];
 }
 ```
 
@@ -1998,15 +1923,15 @@ Component Contract 应提供：
 
 ```ts
 interface AIComponentMetadata {
-  description?: string
+  description?: string;
 
-  patchable: string[]
+  patchable: string[];
 
-  readonly: string[]
+  readonly: string[];
 
-  examples?: unknown[]
+  examples?: unknown[];
 
-  constraints?: string[]
+  constraints?: string[];
 }
 ```
 

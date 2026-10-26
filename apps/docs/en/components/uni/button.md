@@ -15,7 +15,7 @@ easycom path: `^sn-(.*)` → `components/sn-$1/sn-$1.vue`.
 Explicit import (optional):
 
 ```ts
-import { SnButton } from '@snui/uni'
+import { SnButton } from '@snui/uni';
 ```
 
 > easycom is uni-app's official on-demand registration. **Web has no easycom** — explicit import required (`import { SnButton } from '@snui/vue-web'`).
@@ -74,14 +74,14 @@ Block button (full parent width) is common on mobile:
 
 Beyond `open-type`, WeChat / Alipay expect a companion set of attributes. The component forwards them to the root node as-is: the H5 preview has no such capability, so they land on the node without triggering anything; a miniprogram runtime reads the same attribute and calls the platform API.
 
-| Attribute | Belongs to |
-| --- | --- |
-| `session-from` / `send-message-title` / `send-message-path` / `send-message-img` / `show-message-card` | `open-type="contact"` customer-service card |
-| `app-parameter` | payload carried by `open-type="launchApp"` |
-| `lang` | customer-service language: `zh_CN` / `zh_TW` / `en` |
-| `button-id` | unique id for anchoring customer-service messages |
-| `scope` | Alipay authorization scope (`phoneNumber` / `userInfo`) |
-| `hover-stop-propagation` | generic: the press state does not bubble to ancestors |
+| Attribute                                                                                              | Belongs to                                              |
+| ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| `session-from` / `send-message-title` / `send-message-path` / `send-message-img` / `show-message-card` | `open-type="contact"` customer-service card             |
+| `app-parameter`                                                                                        | payload carried by `open-type="launchApp"`              |
+| `lang`                                                                                                 | customer-service language: `zh_CN` / `zh_TW` / `en`     |
+| `button-id`                                                                                            | unique id for anchoring customer-service messages       |
+| `scope`                                                                                                | Alipay authorization scope (`phoneNumber` / `userInfo`) |
+| `hover-stop-propagation`                                                                               | generic: the press state does not bubble to ancestors   |
 
 <Demo name="button-mp-mp-open-type" description="open-type extension attributes: contact session config, three lang values, app-parameter, scope, hover-stop-propagation." />
 
@@ -99,72 +99,72 @@ Beyond `open-type`, WeChat / Alipay expect a companion set of attributes. The co
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `type` | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | Semantic type. |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Button size. |
-| `block` | `boolean` | `false` | Block. |
-| `round` | `boolean` | `false` | Pill shape. |
-| `disabled` | `boolean` | `false` | Disabled. |
-| `loading` | `boolean` | `false` | Loading (spinner + click suppression). |
-| `hairline` | `boolean` | `true` | Hairline border on `default` type. |
-| `feedback` | `boolean` | `true` | Active feedback (opacity). |
-| `plain` | `boolean` | `false` | Low-emphasis style (v1: equals `variant='plain'`). |
-| `variant` | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'` | `'base'` | Visual variant: filled, outlined, dashed, soft fill, very light bg, text-only. |
-| `cell` | `'hover' \| 'fill' \| 'menu'` | — | Cell list style. |
-| `loadingColor` | `string` | `''` | Custom spinner color. |
-| `loadingSize` | `number \| string` | `32` | Spinner rpx / px size. |
-| `hoverClass` | `string` | `'sn-button--feedback'` | Touch-feedback class. |
-| `hoverStartTime` | `number` | `0` | How long to hold before triggering hoverClass. |
-| `hoverStayTime` | `number` | `70` | How long after release before removing hoverClass. |
-| `openType` | `'share' \| 'feedback' \| 'launchApp' \| 'contact' \| 'getUserInfo' \| 'openSetting' \| 'lifestyle' \| 'livePlayer' \| 'favorite' \| 'chooseAvatar' \| 'weRunGroup'` | — | WeChat MP open-type passthrough. |
-| `formType` | `'submit' \| 'reset'` | — | Form submission type. |
-| `bgColor` | `string` | `''` | Inline `background-color` override. |
-| `color` | `string` | `''` | Inline `color` + `border-color` override. |
-| `customClass` | `string` | `''` | Root extra class. |
-| `customStyle` | `string \| Record<string,string>` | `''` | Root inline style. |
-| `iconData` | `IconData` | — | Frozen `{ viewBox, paths }`. |
-| `iconName` | `string` | — | Resolve via `registerSnIcons`. |
-| `iconSize` | `number \| string` | `32` | rpx / px size. |
-| `icon` | `string` | `''` | Iconfont glyph name, built into `{classPrefix}-{icon}`. |
-| `classPrefix` | `string` | `'sn-icon'` | Iconfont class prefix. |
-| `cssIcon` | `boolean \| string` | `false` | A string becomes the class prefix; the boolean form plus `icon` applies both class names. |
-| `loadingProps` | `{ color?, size?, text?, … }` | — | wot-ui `loading-props` object; the flat `loadingColor` / `loadingSize` win. |
-| `hoverStopPropagation` | `boolean` | `false` | The press state does not bubble to ancestors. |
-| `lang` | `'zh_CN' \| 'zh_TW' \| 'en' \| ''` | `''` | `open-type=contact` session language. |
-| `sessionFrom` | `string` | `''` | `open-type=contact` session source. |
-| `sendMessageTitle` | `string` | `''` | `open-type=contact` message card title. |
-| `sendMessagePath` | `string` | `''` | `open-type=contact` message card path. |
-| `sendMessageImg` | `string` | `''` | `open-type=contact` message card image. |
-| `appParameter` | `string` | `''` | `open-type=launchApp` payload. |
-| `showMessageCard` | `boolean` | `false` | `open-type=contact` — show the session card. |
-| `buttonId` | `string` | `''` | Unique id for anchoring customer-service messages. |
-| `scope` | `'phoneNumber' \| 'userInfo' \| ''` | `''` | Alipay authorization scope. |
-| `ariaLabel` | `string` | — | A11y label. |
+| Name                   | Type                                                                                                                                                                 | Default                 | Description                                                                               |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------- |
+| `type`                 | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger' \| 'info'`                                                                                             | `'default'`             | Semantic type.                                                                            |
+| `size`                 | `'small' \| 'medium' \| 'large'`                                                                                                                                     | `'medium'`              | Button size.                                                                              |
+| `block`                | `boolean`                                                                                                                                                            | `false`                 | Block.                                                                                    |
+| `round`                | `boolean`                                                                                                                                                            | `false`                 | Pill shape.                                                                               |
+| `disabled`             | `boolean`                                                                                                                                                            | `false`                 | Disabled.                                                                                 |
+| `loading`              | `boolean`                                                                                                                                                            | `false`                 | Loading (spinner + click suppression).                                                    |
+| `hairline`             | `boolean`                                                                                                                                                            | `true`                  | Hairline border on `default` type.                                                        |
+| `feedback`             | `boolean`                                                                                                                                                            | `true`                  | Active feedback (opacity).                                                                |
+| `plain`                | `boolean`                                                                                                                                                            | `false`                 | Low-emphasis style (v1: equals `variant='plain'`).                                        |
+| `variant`              | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'`                                                                                                      | `'base'`                | Visual variant: filled, outlined, dashed, soft fill, very light bg, text-only.            |
+| `cell`                 | `'hover' \| 'fill' \| 'menu'`                                                                                                                                        | —                       | Cell list style.                                                                          |
+| `loadingColor`         | `string`                                                                                                                                                             | `''`                    | Custom spinner color.                                                                     |
+| `loadingSize`          | `number \| string`                                                                                                                                                   | `32`                    | Spinner rpx / px size.                                                                    |
+| `hoverClass`           | `string`                                                                                                                                                             | `'sn-button--feedback'` | Touch-feedback class.                                                                     |
+| `hoverStartTime`       | `number`                                                                                                                                                             | `0`                     | How long to hold before triggering hoverClass.                                            |
+| `hoverStayTime`        | `number`                                                                                                                                                             | `70`                    | How long after release before removing hoverClass.                                        |
+| `openType`             | `'share' \| 'feedback' \| 'launchApp' \| 'contact' \| 'getUserInfo' \| 'openSetting' \| 'lifestyle' \| 'livePlayer' \| 'favorite' \| 'chooseAvatar' \| 'weRunGroup'` | —                       | WeChat MP open-type passthrough.                                                          |
+| `formType`             | `'submit' \| 'reset'`                                                                                                                                                | —                       | Form submission type.                                                                     |
+| `bgColor`              | `string`                                                                                                                                                             | `''`                    | Inline `background-color` override.                                                       |
+| `color`                | `string`                                                                                                                                                             | `''`                    | Inline `color` + `border-color` override.                                                 |
+| `customClass`          | `string`                                                                                                                                                             | `''`                    | Root extra class.                                                                         |
+| `customStyle`          | `string \| Record<string,string>`                                                                                                                                    | `''`                    | Root inline style.                                                                        |
+| `iconData`             | `IconData`                                                                                                                                                           | —                       | Frozen `{ viewBox, paths }`.                                                              |
+| `iconName`             | `string`                                                                                                                                                             | —                       | Resolve via `registerSnIcons`.                                                            |
+| `iconSize`             | `number \| string`                                                                                                                                                   | `32`                    | rpx / px size.                                                                            |
+| `icon`                 | `string`                                                                                                                                                             | `''`                    | Iconfont glyph name, built into `{classPrefix}-{icon}`.                                   |
+| `classPrefix`          | `string`                                                                                                                                                             | `'sn-icon'`             | Iconfont class prefix.                                                                    |
+| `cssIcon`              | `boolean \| string`                                                                                                                                                  | `false`                 | A string becomes the class prefix; the boolean form plus `icon` applies both class names. |
+| `loadingProps`         | `{ color?, size?, text?, … }`                                                                                                                                        | —                       | wot-ui `loading-props` object; the flat `loadingColor` / `loadingSize` win.               |
+| `hoverStopPropagation` | `boolean`                                                                                                                                                            | `false`                 | The press state does not bubble to ancestors.                                             |
+| `lang`                 | `'zh_CN' \| 'zh_TW' \| 'en' \| ''`                                                                                                                                   | `''`                    | `open-type=contact` session language.                                                     |
+| `sessionFrom`          | `string`                                                                                                                                                             | `''`                    | `open-type=contact` session source.                                                       |
+| `sendMessageTitle`     | `string`                                                                                                                                                             | `''`                    | `open-type=contact` message card title.                                                   |
+| `sendMessagePath`      | `string`                                                                                                                                                             | `''`                    | `open-type=contact` message card path.                                                    |
+| `sendMessageImg`       | `string`                                                                                                                                                             | `''`                    | `open-type=contact` message card image.                                                   |
+| `appParameter`         | `string`                                                                                                                                                             | `''`                    | `open-type=launchApp` payload.                                                            |
+| `showMessageCard`      | `boolean`                                                                                                                                                            | `false`                 | `open-type=contact` — show the session card.                                              |
+| `buttonId`             | `string`                                                                                                                                                             | `''`                    | Unique id for anchoring customer-service messages.                                        |
+| `scope`                | `'phoneNumber' \| 'userInfo' \| ''`                                                                                                                                  | `''`                    | Alipay authorization scope.                                                               |
+| `ariaLabel`            | `string`                                                                                                                                                             | —                       | A11y label.                                                                               |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
+| Name    | Payload          | Description              |
+| ------- | ---------------- | ------------------------ |
 | `click` | `(event: Event)` | Tap (mobile uses `tap`). |
 
 ### Slots
 
-| Name | Description |
-| --- | --- |
-| `default` | Button content. |
-| `icon` | Custom icon. |
+| Name      | Description          |
+| --------- | -------------------- |
+| `default` | Button content.      |
+| `icon`    | Custom icon.         |
 | `loading` | Custom loading icon. |
 
 ## Cross-platform behavior
 
-| Platform | Behavior |
-| --- | --- |
-| H5 | Renders as `<button>`, touch triggers click |
+| Platform           | Behavior                                                          |
+| ------------------ | ----------------------------------------------------------------- |
+| H5                 | Renders as `<button>`, touch triggers click                       |
 | WeChat miniprogram | Compiles to native view, auto-registers tap; supports `open-type` |
-| Alipay miniprogram | Same |
-| App (uni-app x) | Native render, touch feedback |
-| Douyin miniprogram | Same as WeChat |
+| Alipay miniprogram | Same                                                              |
+| App (uni-app x)    | Native render, touch feedback                                     |
+| Douyin miniprogram | Same as WeChat                                                    |
 
 Cross-platform consistency is guaranteed by uni-app, source unchanged.
 
@@ -175,8 +175,8 @@ uni component CSS uses only `--sn-mp-*` alias layer, **unit is rpx** (auto-conve
 ```css
 .sn-button {
   background-color: var(--sn-mp-color-action-primary);
-  border-radius: var(--sn-mp-button-radius);    /* auto rpx */
-  height: var(--sn-mp-button-height-medium);   /* auto rpx */
+  border-radius: var(--sn-mp-button-radius); /* auto rpx */
+  height: var(--sn-mp-button-height-medium); /* auto rpx */
 }
 ```
 

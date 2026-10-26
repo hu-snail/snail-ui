@@ -3,36 +3,36 @@
  * alert-web-closable — a closable alert plus one whose `onClose` vetoes
  * the dismissal while an async "save" is pending.
  */
-import { ref } from 'vue'
-import { SnAlert, SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAlert, SnButton } from '@snui/vue-web';
 
-const log = ref<string[]>([])
-const saving = ref(false)
+const log = ref<string[]>([]);
+const saving = ref(false);
 
 function record(message: string) {
-  log.value = [...log.value, `${new Date().toLocaleTimeString()} ${message}`].slice(-5)
+  log.value = [...log.value, `${new Date().toLocaleTimeString()} ${message}`].slice(-5);
 }
 
 function onAfterLeave() {
-  record('onAfterLeave — node removed')
+  record('onAfterLeave — node removed');
 }
 
 /** Async veto: block the close while `saving` is true. */
 async function onCloseVetoable() {
   if (saving.value) {
-    record('onClose returned false — close blocked')
-    return false
+    record('onClose returned false — close blocked');
+    return false;
   }
-  record('onClose passed — close allowed')
-  return true
+  record('onClose passed — close allowed');
+  return true;
 }
 
 async function simulateSave() {
-  saving.value = true
-  record('Saving started… (clicking close now will be blocked)')
-  await new Promise((resolve) => setTimeout(resolve, 1500))
-  saving.value = false
-  record('Save finished')
+  saving.value = true;
+  record('Saving started… (clicking close now will be blocked)');
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  saving.value = false;
+  record('Save finished');
 }
 </script>
 
@@ -50,7 +50,8 @@ async function simulateSave() {
       @close-click="record('closeClick event')"
       @leave="onAfterLeave"
     >
-      Clicking × while a save is in progress won't close it — <code>onClose</code> returns <code>false</code> blocked this close.
+      Clicking × while a save is in progress won't close it — <code>onClose</code> returns
+      <code>false</code> blocked this close.
     </SnAlert>
 
     <div class="alert-demo__actions">

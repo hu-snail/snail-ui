@@ -7,11 +7,11 @@
  * cannot parse.
  */
 
-import { describe, it, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
-import { defineComponent, h, ref } from 'vue'
-import SnSidebar from './sn-sidebar.vue'
-import SnSidebarItem from './sn-sidebar-item.vue'
+import { describe, it, expect, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { defineComponent, h, ref } from 'vue';
+import SnSidebar from './sn-sidebar.vue';
+import SnSidebarItem from './sn-sidebar-item.vue';
 
 /** Harness that mounts a sidebar with the given items. */
 function mountSidebar(
@@ -27,187 +27,202 @@ function mountSidebar(
       return () =>
         h(SnSidebar, props, {
           default: () => items.map((item) => h(SnSidebarItem, item)),
-        })
+        });
     },
-  })
-  return mount(Harness)
+  });
+  return mount(Harness);
 }
 
 describe('sn-sidebar', () => {
   describe('v-model', () => {
     it('marks the item matching modelValue as active', () => {
-      const items = mountSidebar({ modelValue: 1 }).findAll('.sn-sidebar-item')
-      expect(items[0]!.classes()).not.toContain('sn-sidebar-item--active')
-      expect(items[1]!.classes()).toContain('sn-sidebar-item--active')
-    })
+      const items = mountSidebar({ modelValue: 1 }).findAll('.sn-sidebar-item');
+      expect(items[0]!.classes()).not.toContain('sn-sidebar-item--active');
+      expect(items[1]!.classes()).toContain('sn-sidebar-item--active');
+    });
 
     it('emits update:modelValue on tap', async () => {
-      const wrapper = mountSidebar({ modelValue: 0 })
-      await wrapper.findAll('.sn-sidebar-item')[2]!.trigger('tap')
-      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')?.at(-1)).toEqual([2])
-    })
+      const wrapper = mountSidebar({ modelValue: 0 });
+      await wrapper.findAll('.sn-sidebar-item')[2]!.trigger('tap');
+      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')?.at(-1)).toEqual([2]);
+    });
 
     it('emits change with { value, label } on tap', async () => {
-      const wrapper = mountSidebar({ modelValue: 0 })
-      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap')
-      expect(wrapper.findComponent(SnSidebar).emitted('change')?.at(-1))
-        .toEqual([{ value: 1, label: 'Todo' }])
-    })
+      const wrapper = mountSidebar({ modelValue: 0 });
+      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
+      expect(wrapper.findComponent(SnSidebar).emitted('change')?.at(-1)).toEqual([
+        { value: 1, label: 'Todo' },
+      ]);
+    });
 
     it('does not emit when the tapped item is already active', async () => {
-      const wrapper = mountSidebar({ modelValue: 0 })
-      await wrapper.findAll('.sn-sidebar-item')[0]!.trigger('tap')
-      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined()
-    })
+      const wrapper = mountSidebar({ modelValue: 0 });
+      await wrapper.findAll('.sn-sidebar-item')[0]!.trigger('tap');
+      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined();
+    });
 
     it('works uncontrolled', async () => {
-      const wrapper = mountSidebar()
-      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap')
-      await wrapper.vm.$nextTick()
-      expect(wrapper.findAll('.sn-sidebar-item')[1]!.classes())
-        .toContain('sn-sidebar-item--active')
-    })
+      const wrapper = mountSidebar();
+      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findAll('.sn-sidebar-item')[1]!.classes()).toContain(
+        'sn-sidebar-item--active',
+      );
+    });
 
     it('follows a later modelValue change (controlled)', async () => {
-      const value = ref(0)
+      const value = ref(0);
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnSidebar, { modelValue: value.value }, {
-              default: () => [
-                h(SnSidebarItem, { label: 'A', value: 0 }),
-                h(SnSidebarItem, { label: 'B', value: 1 }),
-              ],
-            })
+            h(
+              SnSidebar,
+              { modelValue: value.value },
+              {
+                default: () => [
+                  h(SnSidebarItem, { label: 'A', value: 0 }),
+                  h(SnSidebarItem, { label: 'B', value: 1 }),
+                ],
+              },
+            );
         },
-      })
-      const wrapper = mount(Harness)
-      value.value = 1
-      await wrapper.vm.$nextTick()
-      expect(wrapper.findAll('.sn-sidebar-item')[1]!.classes())
-        .toContain('sn-sidebar-item--active')
-    })
+      });
+      const wrapper = mount(Harness);
+      value.value = 1;
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findAll('.sn-sidebar-item')[1]!.classes()).toContain(
+        'sn-sidebar-item--active',
+      );
+    });
 
     it('falls back to the label as the item value', async () => {
-      const wrapper = mountSidebar({ modelValue: 'All' }, [{ label: 'All' }, { label: 'Todo' }])
-      expect(wrapper.findAll('.sn-sidebar-item')[0]!.classes())
-        .toContain('sn-sidebar-item--active')
-      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap')
-      expect(wrapper.findComponent(SnSidebar).emitted('change')?.at(-1))
-        .toEqual([{ value: 'Todo', label: 'Todo' }])
-    })
-  })
+      const wrapper = mountSidebar({ modelValue: 'All' }, [{ label: 'All' }, { label: 'Todo' }]);
+      expect(wrapper.findAll('.sn-sidebar-item')[0]!.classes()).toContain(
+        'sn-sidebar-item--active',
+      );
+      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
+      expect(wrapper.findComponent(SnSidebar).emitted('change')?.at(-1)).toEqual([
+        { value: 'Todo', label: 'Todo' },
+      ]);
+    });
+  });
 
   describe('beforeChange', () => {
     it('commits when beforeChange resolves true', async () => {
-      const beforeChange = vi.fn(() => true)
-      const wrapper = mountSidebar({ modelValue: 0, beforeChange })
-      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap')
+      const beforeChange = vi.fn(() => true);
+      const wrapper = mountSidebar({ modelValue: 0, beforeChange });
+      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
       await vi.waitFor(() => {
-        expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')?.at(-1)).toEqual([1])
-      })
-      expect(beforeChange).toHaveBeenCalledWith(1)
-    })
+        expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')?.at(-1)).toEqual([1]);
+      });
+      expect(beforeChange).toHaveBeenCalledWith(1);
+    });
 
     it('does not commit when beforeChange resolves false', async () => {
-      const beforeChange = vi.fn(async () => false)
-      const wrapper = mountSidebar({ modelValue: 0, beforeChange })
-      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap')
-      await vi.waitFor(() => expect(beforeChange).toHaveBeenCalled())
-      await wrapper.vm.$nextTick()
-      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined()
-    })
+      const beforeChange = vi.fn(async () => false);
+      const wrapper = mountSidebar({ modelValue: 0, beforeChange });
+      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
+      await vi.waitFor(() => expect(beforeChange).toHaveBeenCalled());
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined();
+    });
 
     it('does not commit when beforeChange rejects', async () => {
       const beforeChange = vi.fn(async () => {
-        throw new Error('denied')
-      })
-      const wrapper = mountSidebar({ modelValue: 0, beforeChange })
-      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap')
-      await vi.waitFor(() => expect(beforeChange).toHaveBeenCalled())
-      await wrapper.vm.$nextTick()
-      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined()
-    })
-  })
+        throw new Error('denied');
+      });
+      const wrapper = mountSidebar({ modelValue: 0, beforeChange });
+      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
+      await vi.waitFor(() => expect(beforeChange).toHaveBeenCalled());
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined();
+    });
+  });
 
   describe('layout / accessibility', () => {
     it('exposes role="tablist" with a vertical orientation', () => {
-      const wrapper = mountSidebar()
-      expect(wrapper.find('.sn-sidebar').attributes('role')).toBe('tablist')
-      expect(wrapper.find('.sn-sidebar').attributes('aria-orientation')).toBe('vertical')
-    })
+      const wrapper = mountSidebar();
+      expect(wrapper.find('.sn-sidebar').attributes('role')).toBe('tablist');
+      expect(wrapper.find('.sn-sidebar').attributes('aria-orientation')).toBe('vertical');
+    });
 
     it('exposes role="tab" and aria-selected on each item', () => {
-      const items = mountSidebar({ modelValue: 1 }).findAll('.sn-sidebar-item')
-      expect(items[0]!.attributes('role')).toBe('tab')
-      expect(items[0]!.attributes('aria-selected')).toBe('false')
-      expect(items[1]!.attributes('aria-selected')).toBe('true')
-    })
+      const items = mountSidebar({ modelValue: 1 }).findAll('.sn-sidebar-item');
+      expect(items[0]!.attributes('role')).toBe('tab');
+      expect(items[0]!.attributes('aria-selected')).toBe('false');
+      expect(items[1]!.attributes('aria-selected')).toBe('true');
+    });
 
     it('forwards customClass and customStyle on the container', () => {
-      const wrapper = mountSidebar({ customClass: 'my-side', customStyle: 'margin: 4px;' })
-      expect(wrapper.find('.sn-sidebar').classes()).toContain('my-side')
-      expect(wrapper.find('.sn-sidebar').attributes('style')).toContain('margin: 4px')
-    })
-  })
-})
+      const wrapper = mountSidebar({ customClass: 'my-side', customStyle: 'margin: 4px;' });
+      expect(wrapper.find('.sn-sidebar').classes()).toContain('my-side');
+      expect(wrapper.find('.sn-sidebar').attributes('style')).toContain('margin: 4px');
+    });
+  });
+});
 
 describe('sn-sidebar-item', () => {
   it('renders the label', () => {
-    expect(mountSidebar({}, [{ label: 'Todo', value: 0 }])
-      .find('.sn-sidebar-item__label').text()).toBe('Todo')
-  })
+    expect(
+      mountSidebar({}, [{ label: 'Todo', value: 0 }])
+        .find('.sn-sidebar-item__label')
+        .text(),
+    ).toBe('Todo');
+  });
 
   it('blocks a disabled item', async () => {
     const wrapper = mountSidebar({ modelValue: 0 }, [
       { label: 'A', value: 0 },
       { label: 'B', value: 1, disabled: true },
-    ])
-    await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap')
-    expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined()
-    expect(wrapper.findAll('.sn-sidebar-item')[1]!.attributes('aria-disabled')).toBe('true')
-  })
+    ]);
+    await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
+    expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined();
+    expect(wrapper.findAll('.sn-sidebar-item')[1]!.attributes('aria-disabled')).toBe('true');
+  });
 
   it('renders a numeric badge', () => {
-    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, badge: 5 }])
-    expect(wrapper.find('.sn-sidebar-item__badge-text').text()).toBe('5')
-  })
+    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, badge: 5 }]);
+    expect(wrapper.find('.sn-sidebar-item__badge-text').text()).toBe('5');
+  });
 
   it('caps the badge at max', () => {
-    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, badge: 120, max: 99 }])
-    expect(wrapper.find('.sn-sidebar-item__badge-text').text()).toBe('99+')
-  })
+    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, badge: 120, max: 99 }]);
+    expect(wrapper.find('.sn-sidebar-item__badge-text').text()).toBe('99+');
+  });
 
   it('renders a dot badge when isDot is on', () => {
-    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, isDot: true }])
-    expect(wrapper.find('.sn-sidebar-item__badge--dot').exists()).toBe(true)
-    expect(wrapper.find('.sn-sidebar-item__badge-text').exists()).toBe(false)
-  })
+    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, isDot: true }]);
+    expect(wrapper.find('.sn-sidebar-item__badge--dot').exists()).toBe(true);
+    expect(wrapper.find('.sn-sidebar-item__badge-text').exists()).toBe(false);
+  });
 
   it('renders no badge without a badge value', () => {
-    expect(mountSidebar({}, [{ label: 'A', value: 0 }])
-      .find('.sn-sidebar-item__badge').exists()).toBe(false)
-  })
+    expect(
+      mountSidebar({}, [{ label: 'A', value: 0 }])
+        .find('.sn-sidebar-item__badge')
+        .exists(),
+    ).toBe(false);
+  });
 
   it('renders a registry-resolved icon', async () => {
-    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry')
-    const { Star } = await import('../sn-icon/sn-icon-set')
-    registerSnIcons({ Star })
-    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, icon: 'Star' }])
-    expect(wrapper.find('.sn-sidebar-item__icon.sn-icon').exists()).toBe(true)
-    clearSnIcons()
-  })
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Star } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Star });
+    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, icon: 'Star' }]);
+    expect(wrapper.find('.sn-sidebar-item__icon.sn-icon').exists()).toBe(true);
+    clearSnIcons();
+  });
 
   it('renders a font icon when cssIcon is on', () => {
     const wrapper = mountSidebar({}, [
       { label: 'A', value: 0, icon: 'star', iconPrefix: 'sn', cssIcon: true },
-    ])
-    expect(wrapper.find('.sn-sidebar-item__icon').classes()).toContain('sn-star')
-  })
+    ]);
+    expect(wrapper.find('.sn-sidebar-item__icon').classes()).toContain('sn-star');
+  });
 
   it('is inert when mounted outside a sidebar', async () => {
-    const wrapper = mount(SnSidebarItem, { props: { label: 'orphan', value: 1 } })
-    await wrapper.trigger('tap')
-    expect(wrapper.classes()).not.toContain('sn-sidebar-item--active')
-  })
-})
+    const wrapper = mount(SnSidebarItem, { props: { label: 'orphan', value: 1 } });
+    await wrapper.trigger('tap');
+    expect(wrapper.classes()).not.toContain('sn-sidebar-item--active');
+  });
+});

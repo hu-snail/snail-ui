@@ -31,51 +31,62 @@
  *   - 头像（圆形 + 回退文案）— 用 sn-avatar
  */
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue';
 
-defineOptions({ name: 'SnImg' })
+defineOptions({ name: 'SnImg' });
 
 /**
  * Crop mode. Mirrors uni-app's `<image mode>` set, which is what the wd
  * reference documents for `mode`.
  */
 type ImageMode =
-  | 'scaleToFill' | 'aspectFit' | 'aspectFill' | 'widthFix' | 'heightFix'
-  | 'top' | 'bottom' | 'center' | 'left' | 'right'
-  | 'top left' | 'top right' | 'bottom left' | 'bottom right'
+  | 'scaleToFill'
+  | 'aspectFit'
+  | 'aspectFill'
+  | 'widthFix'
+  | 'heightFix'
+  | 'top'
+  | 'bottom'
+  | 'center'
+  | 'left'
+  | 'right'
+  | 'top left'
+  | 'top right'
+  | 'bottom left'
+  | 'bottom right';
 
 const props = withDefaults(
   defineProps<{
     /** Image source. */
-    src?: string
+    src?: string;
     /** Image opened by `enablePreview` (defaults to `src`). */
-    previewSrc?: string
+    previewSrc?: string;
     /** Width — a bare number is treated as rpx. */
-    width?: string | number
+    width?: string | number;
     /** Height — a bare number is treated as rpx. */
-    height?: string | number
+    height?: string | number;
     /** Crop mode. */
-    mode?: ImageMode
+    mode?: ImageMode;
     /** Render as a circle. */
-    round?: boolean
+    round?: boolean;
     /** Corner radius — a bare number is treated as rpx. */
-    radius?: string | number
+    radius?: string | number;
     /** Lazy-load the image (uni `<image lazy-load>`). */
-    lazyLoad?: boolean
+    lazyLoad?: boolean;
     /** Tap opens `uni.previewImage`. */
-    enablePreview?: boolean
+    enablePreview?: boolean;
     /** Long-press shows the miniprogram QR menu (WeChat only). */
-    showMenuByLongpress?: boolean
+    showMenuByLongpress?: boolean;
     /** Show the built-in loading indicator until the image loads. */
-    showLoading?: boolean
+    showLoading?: boolean;
     /** Show the built-in error state when the image fails. */
-    showError?: boolean
+    showError?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /** Custom class for the inner `<image>`. */
-    customImage?: string
+    customImage?: string;
   }>(),
   {
     src: '',
@@ -94,51 +105,54 @@ const props = withDefaults(
     customStyle: '',
     customImage: '',
   },
-)
+);
 
 defineSlots<{
   /** Custom loading state. */
-  loading?(): unknown
+  loading?(): unknown;
   /** Custom error state. */
-  error?(): unknown
-}>()
+  error?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'click', event: Event): void
-  (e: 'load', event: Event): void
-  (e: 'error', event: Event): void
-}>()
+  (e: 'click', event: Event): void;
+  (e: 'load', event: Event): void;
+  (e: 'error', event: Event): void;
+}>();
 
 /** Image load state. */
-const status = ref<'idle' | 'loading' | 'loaded' | 'error'>('loading')
+const status = ref<'idle' | 'loading' | 'loaded' | 'error'>('loading');
 
-watch(() => props.src, () => {
-  status.value = 'loading'
-})
+watch(
+  () => props.src,
+  () => {
+    status.value = 'loading';
+  },
+);
 
 /** Resolve a numeric-or-string length prop (bare number = rpx). */
 function toLength(value: string | number): string | undefined {
-  if (value === '' || value === undefined) return undefined
-  return typeof value === 'number' ? `${value}rpx` : value
+  if (value === '' || value === undefined) return undefined;
+  return typeof value === 'number' ? `${value}rpx` : value;
 }
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  const width = toLength(props.width)
-  const height = toLength(props.height)
-  const radius = toLength(props.radius)
-  if (width) parts.push(`width: ${width}`)
-  if (height) parts.push(`height: ${height}`)
-  if (radius) parts.push(`border-radius: ${radius}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  const width = toLength(props.width);
+  const height = toLength(props.height);
+  const radius = toLength(props.radius);
+  if (width) parts.push(`width: ${width}`);
+  if (height) parts.push(`height: ${height}`);
+  if (radius) parts.push(`border-radius: ${radius}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 const imageClass = computed(() => [
   'sn-img__image',
   { 'sn-img__image--hidden': status.value === 'error' },
   props.customImage,
-])
+]);
 
 const rootClass = computed(() => [
   'sn-img',
@@ -148,41 +162,38 @@ const rootClass = computed(() => [
     'sn-img--error': status.value === 'error',
   },
   props.customClass,
-])
+]);
 
 /** Preview API, resolved lazily through the global uni namespace. */
 function openPreview(): void {
-  const preview = props.previewSrc !== '' ? props.previewSrc : props.src
-  if (!preview) return
-  const host = globalThis as { uni?: { previewImage?: (options: { urls: string[]; current: string }) => void } }
-  const previewImage = host.uni?.previewImage
-  if (typeof previewImage !== 'function') return
-  previewImage({ urls: [preview], current: preview })
+  const preview = props.previewSrc !== '' ? props.previewSrc : props.src;
+  if (!preview) return;
+  const host = globalThis as {
+    uni?: { previewImage?: (options: { urls: string[]; current: string }) => void };
+  };
+  const previewImage = host.uni?.previewImage;
+  if (typeof previewImage !== 'function') return;
+  previewImage({ urls: [preview], current: preview });
 }
 
 function onTap(event: Event): void {
-  emit('click', event)
-  if (props.enablePreview) openPreview()
+  emit('click', event);
+  if (props.enablePreview) openPreview();
 }
 
 function onLoad(event: Event): void {
-  status.value = 'loaded'
-  emit('load', event)
+  status.value = 'loaded';
+  emit('load', event);
 }
 
 function onError(event: Event): void {
-  status.value = 'error'
-  emit('error', event)
+  status.value = 'error';
+  emit('error', event);
 }
 </script>
 
 <template>
-  <view
-    data-snui-component="img"
-    :class="rootClass"
-    :style="rootStyle"
-    @tap="onTap"
-  >
+  <view data-snui-component="img" :class="rootClass" :style="rootStyle" @tap="onTap">
     <image
       v-if="src"
       :class="imageClass"
@@ -260,7 +271,9 @@ function onError(event: Event): void {
 }
 
 @keyframes sn-img-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .sn-img__error-text {

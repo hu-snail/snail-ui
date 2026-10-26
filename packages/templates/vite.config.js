@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { fileURLToPath, URL } from 'node:url'
-import { templateStyles } from './scripts/emit-template-styles.mjs'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from 'node:url';
+import { templateStyles } from './scripts/emit-template-styles.mjs';
 
 /**
  * vite build config for @snui/templates.
@@ -42,7 +42,7 @@ const entry = {
   'uni/index': fileURLToPath(new URL('./src/uni/index.ts', import.meta.url)),
   'uni/chat': fileURLToPath(new URL('./src/uni/chat.ts', import.meta.url)),
   'uni/message-list': fileURLToPath(new URL('./src/uni/message-list.ts', import.meta.url)),
-}
+};
 
 export default defineConfig({
   plugins: [vue(), templateStyles()],
@@ -74,8 +74,8 @@ export default defineConfig({
         // the originals, so a consumer only ever sees the aggregate per
         // template, never the per-component split.
         assetFileNames: (info) => {
-          if (info.name && info.name.endsWith('.css')) return `styles/${info.name}`
-          return 'assets/[name][extname]'
+          if (info.name && info.name.endsWith('.css')) return `styles/${info.name}`;
+          return 'assets/[name][extname]';
         },
       },
     },
@@ -86,4 +86,4 @@ export default defineConfig({
       '@snui/tokens': fileURLToPath(new URL('../tokens/src/index.ts', import.meta.url)),
     },
   },
-})
+});

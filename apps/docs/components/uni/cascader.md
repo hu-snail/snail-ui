@@ -33,33 +33,33 @@ checkStrictly 允许确认任意层级，并显示确认按钮；lazyLoad 在展
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number \| Array<...>` | `undefined` | 叶子值，或异步模式下的路径数组 |
-| `visible` | `boolean` | `false` | 弹层显隐 |
-| `options` | `CascaderOption[]` | `[]` | 层级选项树 |
-| `title` | `string` | `''` | 工具栏标题 |
-| `beforeConfirm` | `({ value, selectedOptions }) => boolean \| Promise<boolean>` | `undefined` | 确认前钩子 |
-| `checkStrictly` | `boolean` | `false` | 任意级可选 |
-| `confirmText` | `string` | `'确认'` | 确认按钮文案 |
-| `valueKey` / `textKey` / `childrenKey` / `tipKey` / `isLeafKey` | `string` | `'value'` / `'text'` / `'children'` / `'tip'` / `'isLeaf'` | 节点字段名 |
-| `lazyLoad` | `CascaderLazyLoad` | `undefined` | 异步加载回调 `(option, tabIndex, resolve)` |
-| `closeOnClickModal` | `boolean` | `true` | 点击遮罩关闭 |
-| `zIndex` / `safeAreaInsetBottom` | `number` / `boolean` | `15` / `true` | 层级 / 安全区 |
-| `lineWidth` / `lineHeight` | `number \| string` | `undefined` | 激活指示条尺寸 |
-| `lineTheme` | `'normal' \| 'text' \| 'underline' \| 'dot'` | `'normal'` | 指示条位置样式 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                                                            | 类型                                                          | 默认值                                                     | 说明                                       |
+| --------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| `modelValue`                                                    | `string \| number \| Array<...>`                              | `undefined`                                                | 叶子值，或异步模式下的路径数组             |
+| `visible`                                                       | `boolean`                                                     | `false`                                                    | 弹层显隐                                   |
+| `options`                                                       | `CascaderOption[]`                                            | `[]`                                                       | 层级选项树                                 |
+| `title`                                                         | `string`                                                      | `''`                                                       | 工具栏标题                                 |
+| `beforeConfirm`                                                 | `({ value, selectedOptions }) => boolean \| Promise<boolean>` | `undefined`                                                | 确认前钩子                                 |
+| `checkStrictly`                                                 | `boolean`                                                     | `false`                                                    | 任意级可选                                 |
+| `confirmText`                                                   | `string`                                                      | `'确认'`                                                   | 确认按钮文案                               |
+| `valueKey` / `textKey` / `childrenKey` / `tipKey` / `isLeafKey` | `string`                                                      | `'value'` / `'text'` / `'children'` / `'tip'` / `'isLeaf'` | 节点字段名                                 |
+| `lazyLoad`                                                      | `CascaderLazyLoad`                                            | `undefined`                                                | 异步加载回调 `(option, tabIndex, resolve)` |
+| `closeOnClickModal`                                             | `boolean`                                                     | `true`                                                     | 点击遮罩关闭                               |
+| `zIndex` / `safeAreaInsetBottom`                                | `number` / `boolean`                                          | `15` / `true`                                              | 层级 / 安全区                              |
+| `lineWidth` / `lineHeight`                                      | `number \| string`                                            | `undefined`                                                | 激活指示条尺寸                             |
+| `lineTheme`                                                     | `'normal' \| 'text' \| 'underline' \| 'dot'`                  | `'normal'`                                                 | 指示条位置样式                             |
+| `customClass` / `customStyle`                                   | `string`                                                      | `''`                                                       | 根节点自定义类名 / 样式                    |
 
 > **未实现**：`root-portal`：uni-app 小程序没有 portal 宿主。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 确认选择时 | `(value)` |
-| `update:visible` | 弹层显隐变化时 | `(value: boolean)` |
-| `confirm` | 确认时 | `{ value, selectedOptions }` |
-| `close` | 未确认关闭时 | — |
+| 事件名              | 说明           | 参数                         |
+| ------------------- | -------------- | ---------------------------- |
+| `update:modelValue` | 确认选择时     | `(value)`                    |
+| `update:visible`    | 弹层显隐变化时 | `(value: boolean)`           |
+| `confirm`           | 确认时         | `{ value, selectedOptions }` |
+| `close`             | 未确认关闭时   | —                            |
 
 ## Slots
 
@@ -67,14 +67,14 @@ checkStrictly 允许确认任意层级，并显示确认按钮；lazyLoad 在展
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | 弹层底色 |
-| ``--sn-mp-color-background-soft`` | tab 底色 |
-| ``--sn-mp-color-action-primary`` | 激活 tab / 选中行 / 勾选图标 |
-| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-disabled`` | 文字与禁用态 |
-| ``--sn-mp-color-border-subtle`` | 行与工具栏分割线 |
-| ``--sn-mp-radius-md`` | tab / 按钮圆角 |
+| 变量                                                                      | 用途                         |
+| ------------------------------------------------------------------------- | ---------------------------- |
+| `--sn-mp-color-background-elevated`                                       | 弹层底色                     |
+| `--sn-mp-color-background-soft`                                           | tab 底色                     |
+| `--sn-mp-color-action-primary`                                            | 激活 tab / 选中行 / 勾选图标 |
+| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-disabled`` | 文字与禁用态                 |
+| `--sn-mp-color-border-subtle`                                             | 行与工具栏分割线             |
+| `--sn-mp-radius-md`                                                       | tab / 按钮圆角               |
 
 ## 无障碍
 
@@ -85,4 +85,3 @@ checkStrictly 允许确认任意层级，并显示确认按钮；lazyLoad 在展
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

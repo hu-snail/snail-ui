@@ -20,32 +20,32 @@ Task ID: AUI-WEB-FORM-017.
 ## Import
 
 ```ts
-import SnTransfer from '@snui/vue-web/src/transfer/SnTransfer.vue'
+import SnTransfer from '@snui/vue-web/src/transfer/SnTransfer.vue';
 // or, once registered by the package entry:
-import { SnTransfer } from '@snui/vue-web'
+import { SnTransfer } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `options` | `Array<{ label: string; value: string \| number; disabled?: boolean }>` | `[]` | no | Transferable entries. |
-| `value` | `Array<string \| number> \| undefined` | `undefined` | no | Selected (target) values (controlled); falls back to internal state. |
-| `defaultValue` | `Array<string \| number>` | `[]` | no | Initial selected values for uncontrolled mode. |
-| `filterable` | `boolean` | `false` | no | Show a filter input in each panel. |
-| `sourceFilterPlaceholder` | `string \| undefined` | `undefined` | no | Source filter placeholder (falls back to 请搜索). |
-| `targetFilterPlaceholder` | `string \| undefined` | `undefined` | no | Target filter placeholder (falls back to 请搜索). |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Row / button scale. |
-| `disabled` | `boolean` | `false` | no | Disable every control. |
-| `sourceTitle` | `string \| undefined` | `undefined` | no | Source panel title (falls back to 源). |
-| `targetTitle` | `string \| undefined` | `undefined` | no | Target panel title (falls back to 目标). |
-| `renderSourceLabel` | `({ option }) => VNodeChild \| undefined` | `undefined` | no | Custom source row label renderer. |
-| `renderTargetLabel` | `({ option }) => VNodeChild \| undefined` | `undefined` | no | Custom target row label renderer. |
+| Name                      | Type                                                                    | Default     | Required | Description                                                          |
+| ------------------------- | ----------------------------------------------------------------------- | ----------- | -------- | -------------------------------------------------------------------- |
+| `options`                 | `Array<{ label: string; value: string \| number; disabled?: boolean }>` | `[]`        | no       | Transferable entries.                                                |
+| `value`                   | `Array<string \| number> \| undefined`                                  | `undefined` | no       | Selected (target) values (controlled); falls back to internal state. |
+| `defaultValue`            | `Array<string \| number>`                                               | `[]`        | no       | Initial selected values for uncontrolled mode.                       |
+| `filterable`              | `boolean`                                                               | `false`     | no       | Show a filter input in each panel.                                   |
+| `sourceFilterPlaceholder` | `string \| undefined`                                                   | `undefined` | no       | Source filter placeholder (falls back to 请搜索).                    |
+| `targetFilterPlaceholder` | `string \| undefined`                                                   | `undefined` | no       | Target filter placeholder (falls back to 请搜索).                    |
+| `size`                    | `'small' \| 'medium' \| 'large'`                                        | `'medium'`  | no       | Row / button scale.                                                  |
+| `disabled`                | `boolean`                                                               | `false`     | no       | Disable every control.                                               |
+| `sourceTitle`             | `string \| undefined`                                                   | `undefined` | no       | Source panel title (falls back to 源).                               |
+| `targetTitle`             | `string \| undefined`                                                   | `undefined` | no       | Target panel title (falls back to 目标).                             |
+| `renderSourceLabel`       | `({ option }) => VNodeChild \| undefined`                               | `undefined` | no       | Custom source row label renderer.                                    |
+| `renderTargetLabel`       | `({ option }) => VNodeChild \| undefined`                               | `undefined` | no       | Custom target row label renderer.                                    |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
+| Name           | Payload                            | Description                                    |
+| -------------- | ---------------------------------- | ---------------------------------------------- |
 | `update:value` | `(value: Array<string \| number>)` | Selected values committed by a move operation. |
 
 ## Slots
@@ -85,13 +85,13 @@ None (row customization goes through the `renderSourceLabel` /
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Border default / subtle | `--sn-web-color-border-default`, `--sn-web-color-border-subtle` | Panel / header borders |
-| Background surface / subtle | `--sn-web-color-background-surface`, `--sn-web-color-background-subtle` | Panel + header / row hover |
-| Text primary / tertiary / disabled | `--sn-web-color-text-primary`, `--sn-web-color-text-tertiary`, `--sn-web-color-text-disabled` | Row, count, disabled-option text |
-| Input radius | `--sn-web-input-radius` | Panel radius |
-| Button height small / medium / large | `--sn-web-button-height-*` | Row heights per size |
+| Token                                | CSS Variable                                                                                  | Purpose                          |
+| ------------------------------------ | --------------------------------------------------------------------------------------------- | -------------------------------- |
+| Border default / subtle              | `--sn-web-color-border-default`, `--sn-web-color-border-subtle`                               | Panel / header borders           |
+| Background surface / subtle          | `--sn-web-color-background-surface`, `--sn-web-color-background-subtle`                       | Panel + header / row hover       |
+| Text primary / tertiary / disabled   | `--sn-web-color-text-primary`, `--sn-web-color-text-tertiary`, `--sn-web-color-text-disabled` | Row, count, disabled-option text |
+| Input radius                         | `--sn-web-input-radius`                                                                       | Panel radius                     |
+| Button height small / medium / large | `--sn-web-button-height-*`                                                                    | Row heights per size             |
 
 ## Versioning
 

@@ -32,7 +32,10 @@ describe('transformTemplate', () => {
   });
 
   it('should rename @tap to @click preserving modifiers', () => {
-    const r = transformTemplate('<view @tap="onTap" @tap.stop="onStop" @touchstart="onDown" />', FILE);
+    const r = transformTemplate(
+      '<view @tap="onTap" @tap.stop="onStop" @touchstart="onDown" />',
+      FILE,
+    );
     expect(r.code).toContain('@click="onTap"');
     expect(r.code).toContain('@click.stop="onStop"');
     expect(r.code).toContain('@touchstart="onDown"');
@@ -57,7 +60,7 @@ describe('transformTemplate', () => {
   });
 
   it('should not treat > inside attribute values as tag end', () => {
-    const r = transformTemplate('<view :class="a > b ? \'x\' : \'y\'" />', FILE);
-    expect(r.code).toBe('<view :class="a > b ? \'x\' : \'y\'" />');
+    const r = transformTemplate("<view :class=\"a > b ? 'x' : 'y'\" />", FILE);
+    expect(r.code).toBe("<view :class=\"a > b ? 'x' : 'y'\" />");
   });
 });

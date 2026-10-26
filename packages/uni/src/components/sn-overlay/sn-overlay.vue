@@ -30,33 +30,33 @@
  *   - 页面路由级遮罩 — 由宿主 AppBridge 决定
  */
 
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-defineOptions({ name: 'SnOverlay' })
+defineOptions({ name: 'SnOverlay' });
 
 /**
  * Animation duration. `false` disables the animation, `true` falls back to the
  * 300ms default, and a record sets the enter / leave legs independently —
  * mirrors `wd-overlay` `duration`.
  */
-type OverlayDuration = number | boolean | Record<string, number>
+type OverlayDuration = number | boolean | Record<string, number>;
 
-const DEFAULT_DURATION = 300
+const DEFAULT_DURATION = 300;
 
 const props = withDefaults(
   defineProps<{
     /** Whether the overlay is shown. */
-    show?: boolean
+    show?: boolean;
     /** Animation duration in ms. `false` = no animation, record = per-leg. */
-    duration?: OverlayDuration
+    duration?: OverlayDuration;
     /** Lock background scroll while shown (intercepts touchmove). */
-    lockScroll?: boolean
+    lockScroll?: boolean;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
   }>(),
   {
     show: false,
@@ -66,41 +66,41 @@ const props = withDefaults(
     customStyle: '',
     customClass: '',
   },
-)
+);
 
 defineSlots<{
   /** Content rendered on top of the scrim (centred). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'click', event: Event): void
-  (e: 'before-enter'): void
-  (e: 'enter'): void
-  (e: 'after-enter'): void
-  (e: 'before-leave'): void
-  (e: 'leave'): void
-  (e: 'after-leave'): void
-}>()
+  (e: 'click', event: Event): void;
+  (e: 'before-enter'): void;
+  (e: 'enter'): void;
+  (e: 'after-enter'): void;
+  (e: 'before-leave'): void;
+  (e: 'leave'): void;
+  (e: 'after-leave'): void;
+}>();
 
 /** Resolve the duration for one animation leg. */
 function resolveDuration(value: OverlayDuration, leg: 'enter' | 'leave'): number {
-  if (value === false) return 0
-  if (value === true) return DEFAULT_DURATION
-  if (typeof value === 'number') return value
-  const legValue = value[leg] ?? value.enter ?? value.leave
-  return typeof legValue === 'number' ? legValue : DEFAULT_DURATION
+  if (value === false) return 0;
+  if (value === true) return DEFAULT_DURATION;
+  if (typeof value === 'number') return value;
+  const legValue = value[leg] ?? value.enter ?? value.leave;
+  return typeof legValue === 'number' ? legValue : DEFAULT_DURATION;
 }
 
 /** Node present in the tree. Cleared once the leave animation finished. */
-const isMounted = ref(props.show)
+const isMounted = ref(props.show);
 /** Target visible state — drives the opacity transition. */
-const isShown = ref(props.show)
+const isShown = ref(props.show);
 /** Duration of the currently running leg (drives the inline transition). */
-const durationMs = ref(resolveDuration(props.duration, 'enter'))
+const durationMs = ref(resolveDuration(props.duration, 'enter'));
 
 /** Single pending animation timer (disposed on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * Animation generation. `enter()` awaits a tick before flipping the visible
@@ -109,96 +109,96 @@ let timer: ReturnType<typeof setTimeout> | null = null
  * `after-leave` would never fire. Every leg bumps the token and drops its
  * result when a newer leg has started.
  */
-let generation = 0
+let generation = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 async function enter(): Promise<void> {
-  clearTimer()
-  const token = ++generation
-  durationMs.value = resolveDuration(props.duration, 'enter')
-  emit('before-enter')
-  isMounted.value = true
+  clearTimer();
+  const token = ++generation;
+  durationMs.value = resolveDuration(props.duration, 'enter');
+  emit('before-enter');
+  isMounted.value = true;
   // One tick so the initial (hidden) style is committed before the
   // transition class lands — otherwise the browser coalesces both frames
   // and the overlay pops in without animating.
-  await nextTick()
+  await nextTick();
   // A leave started while we were waiting for the tick — abandon this leg.
-  if (token !== generation) return
-  isShown.value = true
-  emit('enter')
+  if (token !== generation) return;
+  isShown.value = true;
+  emit('enter');
   if (durationMs.value <= 0) {
-    emit('after-enter')
-    return
+    emit('after-enter');
+    return;
   }
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    emit('after-enter')
-  }, durationMs.value)
+    timer = null;
+    if (token !== generation) return;
+    emit('after-enter');
+  }, durationMs.value);
 }
 
 function leave(): void {
-  clearTimer()
-  const token = ++generation
-  durationMs.value = resolveDuration(props.duration, 'leave')
-  emit('before-leave')
-  isShown.value = false
-  emit('leave')
+  clearTimer();
+  const token = ++generation;
+  durationMs.value = resolveDuration(props.duration, 'leave');
+  emit('before-leave');
+  isShown.value = false;
+  emit('leave');
   if (durationMs.value <= 0) {
-    isMounted.value = false
-    emit('after-leave')
-    return
+    isMounted.value = false;
+    emit('after-leave');
+    return;
   }
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    isMounted.value = false
-    emit('after-leave')
-  }, durationMs.value)
+    timer = null;
+    if (token !== generation) return;
+    isMounted.value = false;
+    emit('after-leave');
+  }, durationMs.value);
 }
 
 watch(
   () => props.show,
   (value) => {
-    if (value) void enter()
-    else leave()
+    if (value) void enter();
+    else leave();
   },
-)
+);
 
 onMounted(() => {
   // Initial `show` renders immediately without replaying the enter events —
   // a popup that is already open on first paint was never "entered".
   if (props.show) {
-    isMounted.value = true
-    isShown.value = true
+    isMounted.value = true;
+    isShown.value = true;
   }
-})
+});
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 const rootClass = computed(() => [
   'sn-overlay',
   { 'sn-overlay--shown': isShown.value },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
   const style = [
     `z-index: ${props.zIndex}`,
     `transition-duration: ${durationMs.value}ms`,
     props.customStyle,
-  ].filter(Boolean)
-  return style.join('; ')
-})
+  ].filter(Boolean);
+  return style.join('; ');
+});
 
 function onTap(event: Event): void {
-  emit('click', event)
+  emit('click', event);
 }
 
 /**
@@ -206,8 +206,8 @@ function onTap(event: Event): void {
  * `catchtouchmove`: the event neither bubbles to the page nor scrolls it.
  */
 function onTouchMove(event: Event): void {
-  if (!props.lockScroll) return
-  event.preventDefault()
+  if (!props.lockScroll) return;
+  event.preventDefault();
 }
 </script>
 

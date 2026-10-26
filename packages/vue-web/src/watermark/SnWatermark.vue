@@ -34,64 +34,57 @@
  *   <SnWatermark :content="['AUI', '内部资料']" :rotate="-30" />
  */
 
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-  type CSSProperties,
-} from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch, type CSSProperties } from 'vue';
 import {
   watermarkTileCanvasSize,
   watermarkTileCssSize,
   watermarkTileDrawOffsets,
-} from './watermark-tile'
+} from './watermark-tile';
 
-defineOptions({ name: 'SnWatermark' })
+defineOptions({ name: 'SnWatermark' });
 
 const props = withDefaults(
   defineProps<{
     /** Watermark text; array items render as separate lines. Mirrors n-watermark `content`. */
-    content?: string | string[] | undefined
+    content?: string | string[] | undefined;
     /** Watermark image URL (drawn instead of text). Mirrors n-watermark `image`. */
-    image?: string | undefined
+    image?: string | undefined;
     /** Stagger alternate tiles by half a tile. Mirrors n-watermark `cross`. Default false. */
-    cross?: boolean
+    cross?: boolean;
     /** Cover the whole viewport instead of the wrapper. Mirrors n-watermark `fullscreen`. Default false. */
-    fullscreen?: boolean
+    fullscreen?: boolean;
     /** Text size in px. Mirrors n-watermark `fontSize`. Default 16. */
-    fontSize?: number
+    fontSize?: number;
     /** Text line height in px. Mirrors n-watermark `lineHeight`. Default 16. */
-    lineHeight?: number
+    lineHeight?: number;
     /** Tile width in px. Mirrors n-watermark `width`. Default 128. */
-    width?: number
+    width?: number;
     /** Tile height in px. Mirrors n-watermark `height`. Default 64. */
-    height?: number
+    height?: number;
     /** Tile rotation in degrees. Mirrors n-watermark `rotate`. Default 0. */
-    rotate?: number
+    rotate?: number;
     /** Tile x offset in px. Mirrors n-watermark `x`. Default 0. */
-    x?: number
+    x?: number;
     /** Tile y offset in px. Mirrors n-watermark `y`. Default 0. */
-    y?: number
+    y?: number;
     /** Overlay stacking order. Mirrors n-watermark `zIndex`. Default 10. */
-    zIndex?: number
+    zIndex?: number;
     /** Overlay opacity (0–1). Mirrors n-watermark `opacity`. Default 0.5. */
-    opacity?: number
+    opacity?: number;
     /** Text font family. Mirrors n-watermark `fontFamily`. */
-    fontFamily?: string | undefined
+    fontFamily?: string | undefined;
     /** Text font weight. Mirrors n-watermark `fontWeight`. */
-    fontWeight?: number | string | undefined
+    fontWeight?: number | string | undefined;
     /** Text font style. Mirrors n-watermark `fontStyle`. */
-    fontStyle?: 'normal' | 'italic' | 'oblique' | undefined
+    fontStyle?: 'normal' | 'italic' | 'oblique' | undefined;
     /** Text color. Mirrors n-watermark `fontColor`. */
-    fontColor?: string | undefined
+    fontColor?: string | undefined;
     /** Tile background color. Mirrors n-watermark `background`. */
-    background?: string | undefined
+    background?: string | undefined;
     /** CSS filter grayscale on the overlay. Mirrors n-watermark `grayscale`. Default 0. */
-    grayscale?: number
+    grayscale?: number;
     /** CSS mix-blend-mode on the overlay. Mirrors n-watermark `blend`. */
-    blend?: CSSProperties['mixBlendMode'] | undefined
+    blend?: CSSProperties['mixBlendMode'] | undefined;
   }>(),
   {
     content: undefined,
@@ -115,156 +108,155 @@ const props = withDefaults(
     grayscale: 0,
     blend: undefined,
   },
-)
+);
 
 defineSlots<{
   /** Content the watermark covers. Mirrors n-watermark `default`. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /* ─────────── Tile content ─────────── */
 
 /** Text lines: string → single line, array → one line per item. */
 const textLines = computed<string[]>(() => {
-  if (props.content === undefined || props.content === '') return []
-  return Array.isArray(props.content) ? props.content : [props.content]
-})
-
+  if (props.content === undefined || props.content === '') return [];
+  return Array.isArray(props.content) ? props.content : [props.content];
+});
 
 /* ─────────── Canvas tile ────────────────────────────────────────────────
  * happy-dom (and SSR hosts) either lack canvas or return null from
  * getContext — every drawing call is guarded and the component degrades
  * to the repeated-text fallback grid. */
 
-const tileCanvasRef = ref<HTMLCanvasElement | null>(null)
-const tileUrl = ref<string | null>(null)
-const loadedImageRef = ref<HTMLImageElement | null>(null)
-let imageLoadGeneration = 0
+const tileCanvasRef = ref<HTMLCanvasElement | null>(null);
+const tileUrl = ref<string | null>(null);
+const loadedImageRef = ref<HTMLImageElement | null>(null);
+let imageLoadGeneration = 0;
 
 /** Colors that survive as canvas paint values (CSS var() strings cannot). */
 function resolvePaintColor(value: string | undefined, fallback: string): string {
-  return value ?? fallback
+  return value ?? fallback;
 }
 
 function drawTile(): void {
-  const canvas = tileCanvasRef.value
-  if (!canvas) return
+  const canvas = tileCanvasRef.value;
+  if (!canvas) return;
   const dpr =
-    typeof window !== 'undefined' && window.devicePixelRatio > 0
-      ? window.devicePixelRatio
-      : 1
+    typeof window !== 'undefined' && window.devicePixelRatio > 0 ? window.devicePixelRatio : 1;
   const canvasSize = watermarkTileCanvasSize({
     width: props.width,
     height: props.height,
     cross: props.cross,
     dpr,
-  })
-  canvas.width = canvasSize.width
-  canvas.height = canvasSize.height
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
+  });
+  canvas.width = canvasSize.width;
+  canvas.height = canvasSize.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
 
-  const paintWidth = props.width * dpr
-  const paintHeight = props.height * dpr
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  const paintWidth = props.width * dpr;
+  const paintHeight = props.height * dpr;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // Tile background — transparent unless explicitly set. Painted across the
   // whole canvas so a staggered copy sits on the same backdrop.
-  const bgColor = props.background
+  const bgColor = props.background;
   if (bgColor) {
-    ctx.fillStyle = bgColor
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
 
   // Rotate around each tile's centre; mirror the CSS fallback grid. With
   // `cross` two copies are painted — origin and one tile down-right — so the
   // repeating 2×2 canvas reads as a staggered lattice.
-  const centerX = paintWidth / 2
-  const centerY = paintHeight / 2
+  const centerX = paintWidth / 2;
+  const centerY = paintHeight / 2;
   for (const offset of watermarkTileDrawOffsets({
     width: props.width,
     height: props.height,
     cross: props.cross,
     dpr,
   })) {
-    ctx.save()
-    ctx.translate(offset.width + centerX + props.x * dpr, offset.height + centerY + props.y * dpr)
-    ctx.rotate((props.rotate * Math.PI) / 180)
+    ctx.save();
+    ctx.translate(offset.width + centerX + props.x * dpr, offset.height + centerY + props.y * dpr);
+    ctx.rotate((props.rotate * Math.PI) / 180);
 
     if (props.image) {
-      const img = loadedImageRef.value
+      const img = loadedImageRef.value;
       if (img) {
         const aspectRatio =
-          img.naturalWidth && img.naturalHeight
-            ? img.naturalWidth / img.naturalHeight
-            : 1
-        const drawWidth = aspectRatio >= 1 ? paintWidth : paintWidth * aspectRatio
-        const drawHeight = aspectRatio <= 1 ? paintHeight : paintHeight / aspectRatio
-        if (props.grayscale > 0) ctx.filter = `grayscale(${props.grayscale})`
-        ctx.drawImage(img, (paintWidth - drawWidth) / 2, (paintHeight - drawHeight) / 2, drawWidth, drawHeight)
-        ctx.filter = 'none'
+          img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+        const drawWidth = aspectRatio >= 1 ? paintWidth : paintWidth * aspectRatio;
+        const drawHeight = aspectRatio <= 1 ? paintHeight : paintHeight / aspectRatio;
+        if (props.grayscale > 0) ctx.filter = `grayscale(${props.grayscale})`;
+        ctx.drawImage(
+          img,
+          (paintWidth - drawWidth) / 2,
+          (paintHeight - drawHeight) / 2,
+          drawWidth,
+          drawHeight,
+        );
+        ctx.filter = 'none';
       }
-    }
-    else {
-      const lines = textLines.value
-      ctx.fillStyle = resolvePaintColor(props.fontColor, 'rgba(51, 54, 57, 0.12)')
+    } else {
+      const lines = textLines.value;
+      ctx.fillStyle = resolvePaintColor(props.fontColor, 'rgba(51, 54, 57, 0.12)');
       ctx.font = [
         props.fontStyle ?? 'normal',
         props.fontWeight != null ? String(props.fontWeight) : 'normal',
         `${props.fontSize * dpr}px`,
         props.fontFamily ?? 'sans-serif',
-      ].join(' ')
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
+      ].join(' ');
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       // Coordinates are relative to the translated tile centre.
-      const startY = (-(lines.length - 1) * props.lineHeight * dpr) / 2
+      const startY = (-(lines.length - 1) * props.lineHeight * dpr) / 2;
       lines.forEach((line, index) => {
-        ctx.fillText(line, 0, startY + index * props.lineHeight * dpr)
-      })
+        ctx.fillText(line, 0, startY + index * props.lineHeight * dpr);
+      });
     }
-    ctx.restore()
+    ctx.restore();
   }
 
   try {
-    tileUrl.value = canvas.toDataURL('image/png')
-  }
-  catch {
+    tileUrl.value = canvas.toDataURL('image/png');
+  } catch {
     // Tainted canvas or headless hosts without toDataURL — degrade to the
     // text grid instead of failing the render.
-    tileUrl.value = null
+    tileUrl.value = null;
   }
 }
 
 /* ─────────── Image preload ─────────── */
 
 function loadImage(): void {
-  imageLoadGeneration++
-  loadedImageRef.value = null
+  imageLoadGeneration++;
+  loadedImageRef.value = null;
   if (!props.image || typeof Image === 'undefined') {
-    drawTile()
-    return
+    drawTile();
+    return;
   }
-  const generation = imageLoadGeneration
-  const img = new Image()
+  const generation = imageLoadGeneration;
+  const img = new Image();
   img.onload = () => {
-    if (generation !== imageLoadGeneration) return
-    loadedImageRef.value = img
-    drawTile()
-  }
+    if (generation !== imageLoadGeneration) return;
+    loadedImageRef.value = img;
+    drawTile();
+  };
   img.onerror = () => {
-    if (generation !== imageLoadGeneration) return
-    drawTile()
-  }
-  img.src = props.image
+    if (generation !== imageLoadGeneration) return;
+    drawTile();
+  };
+  img.src = props.image;
 }
 
 watch(
   () => [props.image],
   () => {
-    loadImage()
+    loadImage();
   },
   { immediate: false },
-)
+);
 
 watch(
   () => [
@@ -282,22 +274,22 @@ watch(
     props.grayscale,
   ],
   () => {
-    drawTile()
+    drawTile();
   },
   { immediate: false },
-)
+);
 
 onMounted(() => {
   // The immediate watchers run during setup when refs are still null —
   // the first paint must happen after mount.
-  if (props.image) loadImage()
-  else drawTile()
-})
+  if (props.image) loadImage();
+  else drawTile();
+});
 
 onBeforeUnmount(() => {
   // Invalidate in-flight image loads so late callbacks cannot write state.
-  imageLoadGeneration++
-})
+  imageLoadGeneration++;
+});
 
 /* ─────────── Overlay ─────────── */
 
@@ -311,11 +303,11 @@ const overlayStyle = computed<CSSProperties>(() => {
     right: '0',
     bottom: '0',
     left: '0',
-  }
-  if (props.blend) style.mixBlendMode = props.blend
-  if (props.grayscale > 0) style.filter = `grayscale(${props.grayscale})`
+  };
+  if (props.blend) style.mixBlendMode = props.blend;
+  if (props.grayscale > 0) style.filter = `grayscale(${props.grayscale})`;
   if (tileUrl.value) {
-    style.backgroundImage = `url(${tileUrl.value})`
+    style.backgroundImage = `url(${tileUrl.value})`;
     // Pin the tile to its logical size. A canvas' intrinsic size is in device
     // px, so without this the tile would render `dpr`× too large on a HiDPI
     // screen — and a `cross` canvas (2×2 tiles) would double that again.
@@ -323,33 +315,32 @@ const overlayStyle = computed<CSSProperties>(() => {
       width: props.width,
       height: props.height,
       cross: props.cross,
-    })
-  }
-  else {
+    });
+  } else {
     // Fallback grid: tint the tiles so the text layer reads as a watermark.
-    style.backgroundColor = props.background ?? 'transparent'
+    style.backgroundColor = props.background ?? 'transparent';
   }
-  return style
-})
+  return style;
+});
 
 /** Alternate tiles shift by half a tile in both axes when `cross` is set. */
 interface FallbackTile {
-  key: string
-  row: number
-  col: number
-  style: CSSProperties
+  key: string;
+  row: number;
+  col: number;
+  style: CSSProperties;
 }
 
 const fallbackTiles = computed<FallbackTile[]>(() => {
-  if (tileUrl.value) return []
-  const tiles: FallbackTile[] = []
+  if (tileUrl.value) return [];
+  const tiles: FallbackTile[] = [];
   // Cover a generous fixed area — the fallback is a degraded mode, so it
   // does not need to react to the wrapper's measured size.
-  const cols = 8
-  const rows = 16
+  const cols = 8;
+  const rows = 16;
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < cols; col++) {
-      const stagger = props.cross && (row + col) % 2 === 1
+      const stagger = props.cross && (row + col) % 2 === 1;
       tiles.push({
         key: `${row}-${col}`,
         row,
@@ -361,11 +352,11 @@ const fallbackTiles = computed<FallbackTile[]>(() => {
           left: `${col * props.width + (stagger ? props.width / 2 : 0)}px`,
           top: `${row * props.height + (stagger ? props.height / 2 : 0)}px`,
         },
-      })
+      });
     }
   }
-  return tiles
-})
+  return tiles;
+});
 
 const fallbackTextStyle = computed<CSSProperties>(() => ({
   fontSize: `${props.fontSize}px`,
@@ -381,7 +372,7 @@ const fallbackTextStyle = computed<CSSProperties>(() => ({
   width: '100%',
   height: '100%',
   transform: `rotate(${props.rotate}deg)`,
-}))
+}));
 </script>
 
 <template>
@@ -398,12 +389,7 @@ const fallbackTextStyle = computed<CSSProperties>(() => ({
     -->
     <canvas ref="tileCanvasRef" class="sn-watermark__canvas" aria-hidden="true" />
 
-    <div
-      v-if="!fullscreen"
-      class="sn-watermark__overlay"
-      :style="overlayStyle"
-      aria-hidden="true"
-    >
+    <div v-if="!fullscreen" class="sn-watermark__overlay" :style="overlayStyle" aria-hidden="true">
       <!-- Degraded mode (no canvas): repeated text tiles. -->
       <template v-if="!tileUrl">
         <span
@@ -413,7 +399,12 @@ const fallbackTextStyle = computed<CSSProperties>(() => ({
           :style="tile.style"
         >
           <span class="sn-watermark__fallback-text" :style="fallbackTextStyle">
-            <span v-for="(line, index) in textLines" :key="index" class="sn-watermark__fallback-line">{{ line }}</span>
+            <span
+              v-for="(line, index) in textLines"
+              :key="index"
+              class="sn-watermark__fallback-line"
+              >{{ line }}</span
+            >
           </span>
         </span>
       </template>

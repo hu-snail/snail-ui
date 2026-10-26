@@ -3,13 +3,13 @@
  * Demo: SnAvatarGroup — `maxOptions.max` caps the visible avatars and collapses
  * the rest into a `+k` summary; `onExpand` reveals every member.
  */
-import { computed, ref } from 'vue'
-import { SnAvatar, SnAvatarGroup, SnButton } from '@snui/vue-web'
+import { computed, ref } from 'vue';
+import { SnAvatar, SnAvatarGroup, SnButton } from '@snui/vue-web';
 
 interface Member {
-  id: number
-  label: string
-  color: string
+  id: number;
+  label: string;
+  color: string;
 }
 
 /** Solid-token circles with a text thumbnail — no remote images needed. */
@@ -22,29 +22,27 @@ const members: Member[] = [
   { id: 6, label: '陈', color: 'var(--sn-web-color-text-tertiary)' },
   { id: 7, label: '周', color: 'var(--sn-web-color-text-primary)' },
   { id: 8, label: '吴', color: 'var(--sn-web-color-text-secondary)' },
-]
+];
 
-const MAX_OPTIONS = 4
-const max = ref(MAX_OPTIONS)
-const expandCount = ref(0)
+const MAX_OPTIONS = 4;
+const max = ref(MAX_OPTIONS);
+const expandCount = ref(0);
 
-const visibleCount = computed(() =>
-  members.length > max.value ? max.value - 1 : members.length,
-)
+const visibleCount = computed(() => (members.length > max.value ? max.value - 1 : members.length));
 
 const restCount = computed(() =>
   members.length > max.value ? members.length - visibleCount.value : 0,
-)
+);
 
 function handleExpand(): void {
-  expandCount.value += 1
+  expandCount.value += 1;
   // 真实行为：点击「+N」汇总头像后展开全部成员。
-  max.value = members.length
+  max.value = members.length;
 }
 
 function reset(): void {
-  max.value = MAX_OPTIONS
-  expandCount.value = 0
+  max.value = MAX_OPTIONS;
+  expandCount.value = 0;
 }
 </script>
 
@@ -52,7 +50,9 @@ function reset(): void {
   <div class="avatar-max-demo">
     <section class="avatar-max-demo__block">
       <h4>
-        maxOptions = {{ max }}（显示 {{ visibleCount }} 个头像<span v-if="restCount > 0"> + 「+{{ restCount }}」汇总</span>）
+        maxOptions = {{ max }}（显示 {{ visibleCount }} 个头像<span v-if="restCount > 0">
+          + 「+{{ restCount }}」汇总</span
+        >）
       </h4>
       <SnAvatarGroup :max-options="{ max, onExpand: handleExpand }">
         <SnAvatar

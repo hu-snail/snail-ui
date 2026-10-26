@@ -3,7 +3,7 @@
  * alert-web-title-bordered — contrasts the default bordered look with
  * `bordered="false"` (bare fill, no outline).
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>

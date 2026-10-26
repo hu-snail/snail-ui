@@ -33,51 +33,51 @@
  *   - 底部标签栏 — 用 sn-tabbar
  */
 
-import { computed, provide, ref, watch } from 'vue'
-import { SN_TABS_KEY, type SnTabEntry, type SnTabsValue } from './sn-tabs-types'
+import { computed, provide, ref, watch } from 'vue';
+import { SN_TABS_KEY, type SnTabEntry, type SnTabsValue } from './sn-tabs-types';
 
-defineOptions({ name: 'SnTabs' })
+defineOptions({ name: 'SnTabs' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-tabs` 1:1 surface ───────────────────────────────────── */
 
     /** 当前激活项，可为索引或名称。 */
-    modelValue?: SnTabsValue
+    modelValue?: SnTabsValue;
     /** 自动开启滚动的标签数量阈值。 */
-    slidableNum?: number
+    slidableNum?: number;
     /** 显示导航地图的标签数量阈值（未实现：地图浮层，见文档）。 */
-    mapNum?: number
+    mapNum?: number;
     /** 导航地图标题（未实现：地图浮层，见文档）。 */
-    mapTitle?: string
+    mapTitle?: string;
     /** 是否开启粘性布局。 */
-    sticky?: boolean
+    sticky?: boolean;
     /** 吸顶偏移量（px）。 */
-    offsetTop?: number
+    offsetTop?: number;
     /** 是否开启手势滑动切换。 */
-    swipeable?: boolean
+    swipeable?: boolean;
     /** 底部条样式：normal / text / underline / dot。 */
-    lineTheme?: 'normal' | 'text' | 'underline' | 'dot'
+    lineTheme?: 'normal' | 'text' | 'underline' | 'dot';
     /** 底部条宽度（数字按 px，字符串原样转发）。 */
-    lineWidth?: number | string | undefined
+    lineWidth?: number | string | undefined;
     /** 底部条高度（数字按 px，字符串原样转发）。 */
-    lineHeight?: number | string | undefined
+    lineHeight?: number | string | undefined;
     /** 激活项文字颜色（内联覆盖，空 = 令牌默认）。 */
-    color?: string
+    color?: string;
     /** 非激活项文字颜色（内联覆盖，空 = 令牌默认）。 */
-    inactiveColor?: string
+    inactiveColor?: string;
     /** 是否开启切换动画。 */
-    animated?: boolean
+    animated?: boolean;
     /** 动画时长，单位毫秒。 */
-    duration?: number
+    duration?: number;
     /** 滚动导航：auto（超过阈值才滚动）/ always。 */
-    slidable?: 'auto' | 'always'
+    slidable?: 'auto' | 'always';
     /** 滚动时是否显示滚动条。 */
-    showScrollbar?: boolean
+    showScrollbar?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 0,
@@ -99,109 +99,109 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model 同步。 */
-  (e: 'update:modelValue', value: SnTabsValue): void
+  (e: 'update:modelValue', value: SnTabsValue): void;
   /** 激活项变化时触发。 */
-  (e: 'change', payload: { index: number; name: SnTabsValue | undefined }): void
+  (e: 'change', payload: { index: number; name: SnTabsValue | undefined }): void;
   /** 点击页签标题时触发。 */
-  (e: 'click', payload: { index: number; name: SnTabsValue | undefined }): void
+  (e: 'click', payload: { index: number; name: SnTabsValue | undefined }): void;
   /** 点击禁用页签时触发。 */
-  (e: 'disabled', payload: { index: number; name: SnTabsValue | undefined }): void
-}>()
+  (e: 'disabled', payload: { index: number; name: SnTabsValue | undefined }): void;
+}>();
 
 defineSlots<{
   /** Tab 内容（sn-tab 列表）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Registered panes in DOM order. */
-const tabs = ref<SnTabEntry[]>([])
+const tabs = ref<SnTabEntry[]>([]);
 
 /** Uncontrolled fallback + controlled sync — both modes stay in step. */
-const innerValue = ref<SnTabsValue>(props.modelValue)
+const innerValue = ref<SnTabsValue>(props.modelValue);
 watch(
   () => props.modelValue,
   (next) => {
-    innerValue.value = next
+    innerValue.value = next;
   },
-)
-const activeValue = computed<SnTabsValue>(() => innerValue.value)
+);
+const activeValue = computed<SnTabsValue>(() => innerValue.value);
 
 /** Index of the active pane: matched by name first, then by position. */
 const activeIndex = computed<number>(() => {
   const named = tabs.value.findIndex((tab) => {
-    const name = tab.getName()
-    return name !== undefined && name === activeValue.value
-  })
-  if (named !== -1) return named
-  const asIndex = Number(activeValue.value)
-  return Number.isNaN(asIndex) ? 0 : asIndex
-})
+    const name = tab.getName();
+    return name !== undefined && name === activeValue.value;
+  });
+  if (named !== -1) return named;
+  const asIndex = Number(activeValue.value);
+  return Number.isNaN(asIndex) ? 0 : asIndex;
+});
 
 function isActive(index: number, name: SnTabsValue | undefined): boolean {
-  return name !== undefined ? name === activeValue.value : index === activeIndex.value
+  return name !== undefined ? name === activeValue.value : index === activeIndex.value;
 }
 
 /** Append a pane and hand back its index (DOM order). */
 function registerTab(entry: SnTabEntry): number {
-  tabs.value = [...tabs.value, entry]
-  return tabs.value.length - 1
+  tabs.value = [...tabs.value, entry];
+  return tabs.value.length - 1;
 }
 
 /** Drop a pane when it unmounts. */
 function unregisterTab(uid: number): void {
-  tabs.value = tabs.value.filter((tab) => tab.uid !== uid)
+  tabs.value = tabs.value.filter((tab) => tab.uid !== uid);
 }
 
 /** Commit a selection. Disabled panes emit `disabled` instead. */
 function select(index: number): void {
-  const tab = tabs.value[index]
-  if (!tab) return
-  const name = tab.getName()
+  const tab = tabs.value[index];
+  if (!tab) return;
+  const name = tab.getName();
   if (tab.getDisabled()) {
-    emit('disabled', { index, name })
-    return
+    emit('disabled', { index, name });
+    return;
   }
-  emit('click', { index, name })
-  const next: SnTabsValue = name ?? index
-  if (next === activeValue.value) return
-  innerValue.value = next
-  emit('update:modelValue', next)
-  emit('change', { index, name })
+  emit('click', { index, name });
+  const next: SnTabsValue = name ?? index;
+  if (next === activeValue.value) return;
+  innerValue.value = next;
+  emit('update:modelValue', next);
+  emit('change', { index, name });
 }
 
 /** Swipe support — a horizontal drag past the threshold steps one pane. */
-const SWIPE_THRESHOLD = 40
-let touchStartX = 0
+const SWIPE_THRESHOLD = 40;
+let touchStartX = 0;
 
 function onTouchStart(event: TouchEvent): void {
-  const touch = event.touches[0]
-  touchStartX = touch ? touch.clientX : 0
+  const touch = event.touches[0];
+  touchStartX = touch ? touch.clientX : 0;
 }
 
 function onTouchEnd(event: TouchEvent): void {
-  if (!props.swipeable) return
-  const touch = event.changedTouches[0]
-  if (!touch) return
-  const delta = touch.clientX - touchStartX
-  if (Math.abs(delta) < SWIPE_THRESHOLD) return
-  const target = activeIndex.value + (delta < 0 ? 1 : -1)
-  if (target < 0 || target >= tabs.value.length) return
-  select(target)
+  if (!props.swipeable) return;
+  const touch = event.changedTouches[0];
+  if (!touch) return;
+  const delta = touch.clientX - touchStartX;
+  if (Math.abs(delta) < SWIPE_THRESHOLD) return;
+  const target = activeIndex.value + (delta < 0 ? 1 : -1);
+  if (target < 0 || target >= tabs.value.length) return;
+  select(target);
 }
 
-provide(SN_TABS_KEY, { activeValue, isActive, registerTab, unregisterTab })
+provide(SN_TABS_KEY, { activeValue, isActive, registerTab, unregisterTab });
 
 /** Public imperative API — mirrors wd-tabs' exposed methods (§14). */
 defineExpose({
   setActive: (value: SnTabsValue) => {
-    innerValue.value = value
+    innerValue.value = value;
   },
   activeIndex,
-})
+});
 
 const rootClass = computed(() => [
   'sn-tabs',
@@ -212,41 +212,41 @@ const rootClass = computed(() => [
     'sn-tabs--scrollable': props.slidable === 'always' || tabs.value.length > props.slidableNum,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.customStyle) parts.push(props.customStyle)
-  if (props.animated) parts.push(`--snui-tabs-duration: ${props.duration}ms`)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.customStyle) parts.push(props.customStyle);
+  if (props.animated) parts.push(`--snui-tabs-duration: ${props.duration}ms`);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 const navStyle = computed(() => {
-  if (!props.sticky) return undefined
-  return `top: ${props.offsetTop}px`
-})
+  if (!props.sticky) return undefined;
+  return `top: ${props.offsetTop}px`;
+});
 
 /** Inline width / height for the active bar (numbers are px). */
 function toLength(value: number | string | undefined): string | undefined {
-  if (value === undefined || value === '') return undefined
-  return typeof value === 'number' ? `${value}px` : value
+  if (value === undefined || value === '') return undefined;
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 const lineStyle = computed(() => {
-  const width = toLength(props.lineWidth)
-  const height = toLength(props.lineHeight)
-  const parts: string[] = []
-  if (width) parts.push(`width: ${width}`)
-  if (height) parts.push(`height: ${height}`)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const width = toLength(props.lineWidth);
+  const height = toLength(props.lineHeight);
+  const parts: string[] = [];
+  if (width) parts.push(`width: ${width}`);
+  if (height) parts.push(`height: ${height}`);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 function titleColor(index: number): string | undefined {
-  const tab = tabs.value[index]
-  if (!tab) return undefined
-  const active = isActive(index, tab.getName())
-  const custom = active ? props.color : props.inactiveColor
-  return custom === '' ? undefined : custom
+  const tab = tabs.value[index];
+  if (!tab) return undefined;
+  const active = isActive(index, tab.getName());
+  const custom = active ? props.color : props.inactiveColor;
+  return custom === '' ? undefined : custom;
 }
 </script>
 
@@ -275,7 +275,10 @@ function titleColor(index: number): string | undefined {
           :aria-label="tab.getTitle()"
           @tap="select(index)"
         >
-          <text class="sn-tabs__title" :style="titleColor(index) ? `color: ${titleColor(index)}` : undefined">
+          <text
+            class="sn-tabs__title"
+            :style="titleColor(index) ? `color: ${titleColor(index)}` : undefined"
+          >
             {{ tab.getTitle() }}
           </text>
           <view
@@ -372,7 +375,9 @@ function titleColor(index: number): string | undefined {
 }
 
 .sn-tabs--animated .sn-tabs__line {
-  transition: width var(--snui-tabs-duration, 300ms) ease, transform var(--snui-tabs-duration, 300ms) ease;
+  transition:
+    width var(--snui-tabs-duration, 300ms) ease,
+    transform var(--snui-tabs-duration, 300ms) ease;
 }
 
 /* Line themes — geometry only; colour stays the action token. */

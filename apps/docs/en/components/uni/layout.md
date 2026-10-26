@@ -34,30 +34,30 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnLayout } from '@snui/uni/components/sn-layout/sn-layout.vue'
-import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue'
+import { SnLayout } from '@snui/uni/components/sn-layout/sn-layout.vue';
+import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue';
 ```
 
 ## Props
 
 ### sn-layout
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `gutter` | `number` | `0` | Column gutter in px |
-| `justify` | `'start' \| 'center' \| 'end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'start'` | Main-axis alignment |
-| `align` | `'top' \| 'middle' \| 'bottom'` | `'top'` | Cross-axis alignment |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type                                                                                  | Default   | Description                   |
+| ------------- | ------------------------------------------------------------------------------------- | --------- | ----------------------------- |
+| `gutter`      | `number`                                                                              | `0`       | Column gutter in px           |
+| `justify`     | `'start' \| 'center' \| 'end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'start'` | Main-axis alignment           |
+| `align`       | `'top' \| 'middle' \| 'bottom'`                                                       | `'top'`   | Cross-axis alignment          |
+| `customClass` | `string`                                                                              | `''`      | Extra class on the root node  |
+| `customStyle` | `string`                                                                              | `''`      | Inline style on the root node |
 
 ### sn-col
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `span` | `number` | `24` | Column width in 24ths |
-| `offset` | `number` | `0` | Left offset in 24ths |
-| `customClass` | `string` | `''` | Extra class on the column root |
-| `customStyle` | `string` | `''` | Inline style on the column root |
+| Prop          | Type     | Default | Description                     |
+| ------------- | -------- | ------- | ------------------------------- |
+| `span`        | `number` | `24`    | Column width in 24ths           |
+| `offset`      | `number` | `0`     | Left offset in 24ths            |
+| `customClass` | `string` | `''`    | Extra class on the column root  |
+| `customStyle` | `string` | `''`    | Inline style on the column root |
 
 ## Events
 
@@ -65,10 +65,10 @@ None. `sn-layout` / `sn-col` are pure layout components with no interaction surf
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot               | Description                     |
+| ------------------ | ------------------------------- |
 | `default` (layout) | Row content (`sn-col` children) |
-| `default` (col) | Column content |
+| `default` (col)    | Column content                  |
 
 ## Theme variables
 
@@ -85,7 +85,6 @@ None. `sn-layout` / `sn-col` are pure layout components with no interaction surf
 `sn-layout` / `sn-col` declare no colours, so dark mode needs no adaptation: backgrounds and text come from the content's own `--sn-mp-color-*` tokens, which flip automatically under `.sn-theme-dark`.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

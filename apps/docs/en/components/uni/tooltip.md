@@ -29,7 +29,6 @@
 
 <Demo name="tooltip-mp-config" description="No arrow / close button + offset / disabled." />
 
-
 ## Multi-line content and the content slot
 
 An array `content` renders one line per entry (objects contribute whichever of `label` / `text` / `content` / `name` is present); the `content` slot replaces the bubble body entirely with any structure:
@@ -37,56 +36,56 @@ An array `content` renders one line per entry (objects contribute whichever of `
 <Demo name="tooltip-mp-content" description="array content renders multiple lines; the content slot carries a custom structure; offset as [x, y] and { x, y }." />
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | Whether the bubble is shown (`v-model`) |
-| `content` | `string \| Array<Record<string, unknown> \| string>` | `''` | Hint text; an array renders one line per entry (`label` / `text` / `content` / `name`, or a plain string) |
-| `placement` | 12-direction union (`top` / `bottom` / `left` / `right` + `-start` / `-end`) | `'bottom'` | Bubble anchor |
-| `offset` | `number \| number[] \| { x?, y? }` | `0` | Gap from the trigger, in design px |
-| `visibleArrow` | `boolean` | `true` | Render the arrow |
-| `disabled` | `boolean` | `false` | Disable the trigger |
-| `showClose` | `boolean` | `false` | Render a close button |
-| `customArrow` | `string` | `''` | Extra class on the arrow node |
-| `customPop` | `string` | `''` | Extra class on the bubble node |
-| `customClass` | `string` | `''` | Root class |
-| `customStyle` | `string` | `''` | Root inline style |
-| `rootPortal` | `boolean` | `false` | **Not implemented** (no portal host on miniprogram) |
+| Prop           | Type                                                                         | Default    | Description                                                                                               |
+| -------------- | ---------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------------- |
+| `modelValue`   | `boolean`                                                                    | `false`    | Whether the bubble is shown (`v-model`)                                                                   |
+| `content`      | `string \| Array<Record<string, unknown> \| string>`                         | `''`       | Hint text; an array renders one line per entry (`label` / `text` / `content` / `name`, or a plain string) |
+| `placement`    | 12-direction union (`top` / `bottom` / `left` / `right` + `-start` / `-end`) | `'bottom'` | Bubble anchor                                                                                             |
+| `offset`       | `number \| number[] \| { x?, y? }`                                           | `0`        | Gap from the trigger, in design px                                                                        |
+| `visibleArrow` | `boolean`                                                                    | `true`     | Render the arrow                                                                                          |
+| `disabled`     | `boolean`                                                                    | `false`    | Disable the trigger                                                                                       |
+| `showClose`    | `boolean`                                                                    | `false`    | Render a close button                                                                                     |
+| `customArrow`  | `string`                                                                     | `''`       | Extra class on the arrow node                                                                             |
+| `customPop`    | `string`                                                                     | `''`       | Extra class on the bubble node                                                                            |
+| `customClass`  | `string`                                                                     | `''`       | Root class                                                                                                |
+| `customStyle`  | `string`                                                                     | `''`       | Root inline style                                                                                         |
+| `rootPortal`   | `boolean`                                                                    | `false`    | **Not implemented** (no portal host on miniprogram)                                                       |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Visibility changed | `(value: boolean)` |
-| `open` | Bubble shown | — |
-| `close` | Bubble hidden | — |
-| `change` | Visibility changed | `{ show: boolean }` |
+| Event               | Description        | Payload             |
+| ------------------- | ------------------ | ------------------- |
+| `update:modelValue` | Visibility changed | `(value: boolean)`  |
+| `open`              | Bubble shown       | —                   |
+| `close`             | Bubble hidden      | —                   |
+| `change`            | Visibility changed | `{ show: boolean }` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` | Trigger content |
+| Slot      | Description                            |
+| --------- | -------------------------------------- |
+| `default` | Trigger content                        |
 | `content` | Custom bubble body; replaces `content` |
 
 ## Methods
 
-| Method | Description |
-| --- | --- |
-| `open()` | Show the bubble |
-| `close()` | Hide the bubble |
+| Method             | Description         |
+| ------------------ | ------------------- |
+| `open()`           | Show the bubble     |
+| `close()`          | Hide the bubble     |
 | `updatePosition()` | Compatibility no-op |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-text-primary` | Bubble background (inverted surface, flips in dark mode) |
-| `--sn-mp-color-background-elevated` | Bubble text / close glyph |
-| `--sn-mp-shadow-md` | Bubble shadow |
-| `--sn-mp-radius-md` | Bubble corners |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Bubble padding and gaps |
-| `--sn-mp-font-size-sm` | Bubble font size |
-| `--sn-mp-font-line-height-normal` | Bubble line height |
+| Variable                                                        | Purpose                                                  |
+| --------------------------------------------------------------- | -------------------------------------------------------- |
+| `--sn-mp-color-text-primary`                                    | Bubble background (inverted surface, flips in dark mode) |
+| `--sn-mp-color-background-elevated`                             | Bubble text / close glyph                                |
+| `--sn-mp-shadow-md`                                             | Bubble shadow                                            |
+| `--sn-mp-radius-md`                                             | Bubble corners                                           |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Bubble padding and gaps                                  |
+| `--sn-mp-font-size-sm`                                          | Bubble font size                                         |
+| `--sn-mp-font-line-height-normal`                               | Bubble line height                                       |
 
 ## Accessibility
 

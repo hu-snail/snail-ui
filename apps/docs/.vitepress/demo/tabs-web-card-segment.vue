@@ -3,11 +3,11 @@
  * tabs-web-card-segment — SnTabs `type="card"` (boxed tabs) next to
  * `type="segment"` (segmented control), the two "filled" visual styles.
  */
-import { ref } from 'vue'
-import { SnTabs, SnTabPane } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabs, SnTabPane } from '@snui/vue-web';
 
-const cardActive = ref<string>('overview')
-const segmentActive = ref<string>('day')
+const cardActive = ref<string>('overview');
+const segmentActive = ref<string>('day');
 </script>
 
 <template>

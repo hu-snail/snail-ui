@@ -17,35 +17,35 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui `n-log`
 ## Import
 
 ```ts
-import SnLog from '@snui/vue-web/src/log/SnLog.vue'
+import SnLog from '@snui/vue-web/src/log/SnLog.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `log` | `string` | `undefined` | no | Log content; split into lines on `\n`. Takes precedence over `lines`. |
-| `lines` | `string[]` | `[]` | no | Log lines; ignored when `log` is a non-empty string. |
-| `trim` | `boolean` | `false` | no | Trim each displayed line. |
-| `loading` | `boolean` | `false` | no | Show the loading indicator pill. |
-| `fontSize` | `number` | `14` | no | Text size in px. |
-| `lineHeight` | `number` | `1.25` | no | Unitless line-height. |
-| `rows` | `number` | `15` | no | Visible row count; height = round(rows × line-height × font-size) px. |
-| `offsetTop` | `number` | `0` | no | Top reach tolerance in px. |
-| `offsetBottom` | `number` | `0` | no | Bottom reach tolerance in px. |
+| Name           | Type       | Default     | Required | Description                                                           |
+| -------------- | ---------- | ----------- | -------- | --------------------------------------------------------------------- |
+| `log`          | `string`   | `undefined` | no       | Log content; split into lines on `\n`. Takes precedence over `lines`. |
+| `lines`        | `string[]` | `[]`        | no       | Log lines; ignored when `log` is a non-empty string.                  |
+| `trim`         | `boolean`  | `false`     | no       | Trim each displayed line.                                             |
+| `loading`      | `boolean`  | `false`     | no       | Show the loading indicator pill.                                      |
+| `fontSize`     | `number`   | `14`        | no       | Text size in px.                                                      |
+| `lineHeight`   | `number`   | `1.25`      | no       | Unitless line-height.                                                 |
+| `rows`         | `number`   | `15`        | no       | Visible row count; height = round(rows × line-height × font-size) px. |
+| `offsetTop`    | `number`   | `0`         | no       | Top reach tolerance in px.                                            |
+| `offsetBottom` | `number`   | `0`         | no       | Bottom reach tolerance in px.                                         |
 
 ## Events
 
-| Name | Parameters | Description |
-|---|---|---|
-| `reach-top` | — | Scrolled to the top (within `offset-top`). |
-| `reach-bottom` | — | Scrolled to the bottom (within `offset-bottom`). |
+| Name           | Parameters          | Description                                                              |
+| -------------- | ------------------- | ------------------------------------------------------------------------ |
+| `reach-top`    | —                   | Scrolled to the top (within `offset-top`).                               |
+| `reach-bottom` | —                   | Scrolled to the bottom (within `offset-bottom`).                         |
 | `require-more` | `'top' \| 'bottom'` | Scrolled past a tolerance; fires repeatedly while scrolling at the edge. |
 
 ## Methods
 
-| Name | Signature | Description |
-|---|---|---|
+| Name       | Signature                                                                             | Description                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `scrollTo` | `(options: { top?: number, position?: 'top' \| 'bottom', silent?: boolean }) => void` | Programmatic scroll; `silent` suppresses reach / require-more events for the triggered scroll. |
 
 ## Divergences from the reference API
@@ -63,7 +63,7 @@ import SnLog from '@snui/vue-web/src/log/SnLog.vue'
 - `require-more` keeps firing while the user keeps scrolling at an edge;
   `reach-top` / `reach-bottom` fire once per arrival.
 - Lines render inside `pre` elements (`white-space: pre-wrap;
-  word-break: break-word`), so long lines soft-wrap.
+word-break: break-word`), so long lines soft-wrap.
 
 ## Accessibility
 
@@ -71,13 +71,13 @@ import SnLog from '@snui/vue-web/src/log/SnLog.vue'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Log text |
-| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary` | Loader pill border (mixed with surface) |
-| Text secondary | `--sn-web-color-text-secondary` | Loader pill label |
-| Action primary | `--sn-web-color-action-primary` | Loader spinner color |
-| Background elevated | `--sn-web-color-background-elevated` | Loader pill background |
+| Token                          | CSS Variable                         | Purpose                                 |
+| ------------------------------ | ------------------------------------ | --------------------------------------- |
+| Text primary                   | `--sn-web-color-text-primary`        | Log text                                |
+| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary`        | Loader pill border (mixed with surface) |
+| Text secondary                 | `--sn-web-color-text-secondary`      | Loader pill label                       |
+| Action primary                 | `--sn-web-color-action-primary`      | Loader spinner color                    |
+| Background elevated            | `--sn-web-color-background-elevated` | Loader pill background                  |
 
 ## Versioning
 

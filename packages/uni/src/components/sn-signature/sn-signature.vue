@@ -42,33 +42,33 @@
  *   - 业务字段校验 — 用 sn-form-item
  */
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
-defineOptions({ name: 'SnSignature' })
+defineOptions({ name: 'SnSignature' });
 
 /** One sampled point, in px design units relative to the pad. */
 interface SignaturePoint {
-  x: number
-  y: number
+  x: number;
+  y: number;
 }
 
 /** A drawn segment ready for the template. */
 interface SignatureSegment {
-  left: number
-  top: number
-  width: number
-  angle: number
+  left: number;
+  top: number;
+  width: number;
+  angle: number;
 }
 
 /** Nested array of strokes; each stroke is a point list. */
-type SignaturePaths = SignaturePoint[][]
+type SignaturePaths = SignaturePoint[][];
 
 /** Payload of the `confirm` event. */
 export interface SignatureResult {
   /** Stroke geometry (px design units, pad-relative). */
-  paths: SignaturePaths
+  paths: SignaturePaths;
   /** Whether the pad has no stroke at all. */
-  isEmpty: boolean
+  isEmpty: boolean;
 }
 
 const props = withDefaults(
@@ -76,58 +76,58 @@ const props = withDefaults(
     /* ── wot-ui `wd-signature` 1:1 surface ──────────────────────────────── */
 
     /** Stroke color (CSS color). Empty = `--sn-mp-color-text-primary`. */
-    penColor?: string
+    penColor?: string;
     /** Stroke width in px design units. */
-    lineWidth?: number
+    lineWidth?: number;
     /** Confirm button label. */
-    confirmText?: string
+    confirmText?: string;
     /** Clear button label. */
-    clearText?: string
+    clearText?: string;
     /** Undo button label. */
-    revokeText?: string
+    revokeText?: string;
     /** Redo button label. */
-    restoreText?: string
+    restoreText?: string;
     /** Undo button label (`undo-text`; wins over `revokeText` when set). */
-    undoText?: string
+    undoText?: string;
     /** Redo button label (`redo-text`; wins over `restoreText` when set). */
-    redoText?: string
+    redoText?: string;
     /** Disables drawing and every button. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Pad height. A number is an rpx design value. */
-    height?: string | number | undefined
+    height?: string | number | undefined;
     /** Pad width. A number is an rpx design value. */
-    width?: string | number | undefined
+    width?: string | number | undefined;
     /** Pad background color (CSS color). Empty = token default. */
-    backgroundColor?: string
+    backgroundColor?: string;
     /** Intercept touchmove so the page behind cannot scroll while drawing. */
-    disableScroll?: boolean
+    disableScroll?: boolean;
     /** Keep an undo / redo history. */
-    enableHistory?: boolean
+    enableHistory?: boolean;
     /** Number of strokes undo / redo moves per tap. */
-    step?: number
+    step?: number;
     /*
      * Export / pressure props — declared for wd-signature parity, inert here
      * (see the header). The host applies the export trio when it rasterizes
      * the geometry reported by `confirm`.
      */
     /** Export image type. */
-    fileType?: 'png' | 'jpg'
+    fileType?: 'png' | 'jpg';
     /** Export image quality, 0–1. */
-    quality?: number
+    quality?: number;
     /** Export scale factor. */
-    exportScale?: number
+    exportScale?: number;
     /** Enable pressure simulation. */
-    pressure?: boolean
+    pressure?: boolean;
     /** Max stroke width under pressure (design px). */
-    maxWidth?: number
+    maxWidth?: number;
     /** Min stroke width under pressure (design px). */
-    minWidth?: number
+    minWidth?: number;
     /** Minimum pointer speed before pressure widening kicks in. */
-    minSpeed?: number
+    minSpeed?: number;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     penColor: '',
@@ -155,146 +155,146 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'start', event: Event): void
-  (e: 'end', event: Event): void
-  (e: 'signing', event: Event): void
-  (e: 'confirm', result: SignatureResult): void
-  (e: 'clear'): void
-}>()
+  (e: 'start', event: Event): void;
+  (e: 'end', event: Event): void;
+  (e: 'signing', event: Event): void;
+  (e: 'confirm', result: SignatureResult): void;
+  (e: 'clear'): void;
+}>();
 
 /* ── Stroke state ──────────────────────────────────────────────────────── */
 
 /** Committed strokes. */
-const strokes = ref<SignaturePaths>([])
+const strokes = ref<SignaturePaths>([]);
 /** The stroke currently being drawn. */
-const current = ref<SignaturePoint[]>([])
+const current = ref<SignaturePoint[]>([]);
 /** Strokes removed by undo, kept for redo. */
-const undone = ref<SignaturePaths>([])
+const undone = ref<SignaturePaths>([]);
 /** Whether a finger is down. */
-const drawing = ref(false)
+const drawing = ref(false);
 
 /** History depth guard — very long sessions must not grow without bound. */
-const MAX_STROKES = 200
+const MAX_STROKES = 200;
 
 function resetHistory(): void {
-  undone.value = []
+  undone.value = [];
 }
 
 function onClear(): void {
-  if (props.disabled) return
-  strokes.value = []
-  current.value = []
-  resetHistory()
-  emit('clear')
+  if (props.disabled) return;
+  strokes.value = [];
+  current.value = [];
+  resetHistory();
+  emit('clear');
 }
 
 /** Undo `step` strokes (wd-signature `revoke`). */
 function revoke(): void {
-  if (props.disabled || !props.enableHistory) return
-  const count = Math.max(Math.floor(props.step), 1)
-  const taken = strokes.value.slice(-count)
-  if (taken.length === 0) return
-  undone.value = [...undone.value, ...taken]
-  strokes.value = strokes.value.slice(0, strokes.value.length - taken.length)
+  if (props.disabled || !props.enableHistory) return;
+  const count = Math.max(Math.floor(props.step), 1);
+  const taken = strokes.value.slice(-count);
+  if (taken.length === 0) return;
+  undone.value = [...undone.value, ...taken];
+  strokes.value = strokes.value.slice(0, strokes.value.length - taken.length);
 }
 
 /** Redo `step` strokes (wd-signature `restore`). */
 function restore(): void {
-  if (props.disabled || !props.enableHistory) return
-  const count = Math.max(Math.floor(props.step), 1)
-  const taken = undone.value.slice(-count)
-  if (taken.length === 0) return
-  undone.value = undone.value.slice(0, undone.value.length - taken.length)
-  strokes.value = [...strokes.value, ...taken]
+  if (props.disabled || !props.enableHistory) return;
+  const count = Math.max(Math.floor(props.step), 1);
+  const taken = undone.value.slice(-count);
+  if (taken.length === 0) return;
+  undone.value = undone.value.slice(0, undone.value.length - taken.length);
+  strokes.value = [...strokes.value, ...taken];
 }
 
-const canUndo = computed(() => props.enableHistory && strokes.value.length > 0)
-const canRedo = computed(() => props.enableHistory && undone.value.length > 0)
+const canUndo = computed(() => props.enableHistory && strokes.value.length > 0);
+const canRedo = computed(() => props.enableHistory && undone.value.length > 0);
 
-const isEmpty = computed(() => strokes.value.length === 0 && current.value.length === 0)
+const isEmpty = computed(() => strokes.value.length === 0 && current.value.length === 0);
 
 /* ── Touch ─────────────────────────────────────────────────────────────── */
 
-const padRef = ref<{ getBoundingClientRect?: () => { left: number, top: number } } | null>(null)
+const padRef = ref<{ getBoundingClientRect?: () => { left: number; top: number } } | null>(null);
 
 /** Read the pointer position relative to the pad, in px design units. */
 function pointOf(event: Event): SignaturePoint | null {
   const detail = event as unknown as {
-    touches?: Array<{ clientX?: number, clientY?: number, pageX?: number, pageY?: number }>
-    changedTouches?: Array<{ clientX?: number, clientY?: number, pageX?: number, pageY?: number }>
-    detail?: { x?: number, y?: number }
-  }
-  const list = detail.touches ?? detail.changedTouches
-  const raw = list && list.length > 0 ? list[0] : undefined
-  let x = raw && typeof raw.clientX === 'number' ? raw.clientX : undefined
-  let y = raw && typeof raw.clientY === 'number' ? raw.clientY : undefined
-  if (x === undefined && raw && typeof raw.pageX === 'number') x = raw.pageX
-  if (y === undefined && raw && typeof raw.pageY === 'number') y = raw.pageY
-  if (x === undefined && detail.detail && typeof detail.detail.x === 'number') x = detail.detail.x
-  if (y === undefined && detail.detail && typeof detail.detail.y === 'number') y = detail.detail.y
-  if (x === undefined || y === undefined) return null
-  const rect = padRef.value?.getBoundingClientRect?.()
-  return { x: x - (rect?.left ?? 0), y: y - (rect?.top ?? 0) }
+    touches?: Array<{ clientX?: number; clientY?: number; pageX?: number; pageY?: number }>;
+    changedTouches?: Array<{ clientX?: number; clientY?: number; pageX?: number; pageY?: number }>;
+    detail?: { x?: number; y?: number };
+  };
+  const list = detail.touches ?? detail.changedTouches;
+  const raw = list && list.length > 0 ? list[0] : undefined;
+  let x = raw && typeof raw.clientX === 'number' ? raw.clientX : undefined;
+  let y = raw && typeof raw.clientY === 'number' ? raw.clientY : undefined;
+  if (x === undefined && raw && typeof raw.pageX === 'number') x = raw.pageX;
+  if (y === undefined && raw && typeof raw.pageY === 'number') y = raw.pageY;
+  if (x === undefined && detail.detail && typeof detail.detail.x === 'number') x = detail.detail.x;
+  if (y === undefined && detail.detail && typeof detail.detail.y === 'number') y = detail.detail.y;
+  if (x === undefined || y === undefined) return null;
+  const rect = padRef.value?.getBoundingClientRect?.();
+  return { x: x - (rect?.left ?? 0), y: y - (rect?.top ?? 0) };
 }
 
 function onTouchStart(event: Event): void {
-  if (props.disabled) return
-  const point = pointOf(event)
-  if (!point) return
-  drawing.value = true
-  current.value = [point]
-  resetHistory()
-  emit('start', event)
+  if (props.disabled) return;
+  const point = pointOf(event);
+  if (!point) return;
+  drawing.value = true;
+  current.value = [point];
+  resetHistory();
+  emit('start', event);
 }
 
 function onTouchMove(event: Event): void {
-  if (props.disabled || !drawing.value) return
-  if (props.disableScroll) event.preventDefault()
-  const point = pointOf(event)
-  if (!point) return
-  const last = current.value[current.value.length - 1]
+  if (props.disabled || !drawing.value) return;
+  if (props.disableScroll) event.preventDefault();
+  const point = pointOf(event);
+  if (!point) return;
+  const last = current.value[current.value.length - 1];
   // Drop sub-pixel duplicates — they produce zero-length, invisible segments.
-  if (last && Math.abs(point.x - last.x) < 0.5 && Math.abs(point.y - last.y) < 0.5) return
-  current.value = [...current.value, point]
-  emit('signing', event)
+  if (last && Math.abs(point.x - last.x) < 0.5 && Math.abs(point.y - last.y) < 0.5) return;
+  current.value = [...current.value, point];
+  emit('signing', event);
 }
 
 function onTouchEnd(event: Event): void {
-  if (!drawing.value) return
-  drawing.value = false
-  const stroke = current.value
-  current.value = []
+  if (!drawing.value) return;
+  drawing.value = false;
+  const stroke = current.value;
+  current.value = [];
   // A single point is a deliberate dot, not noise — commit it so a quick tap
   // still leaves a mark (matches wd-signature's tap behaviour).
   if (stroke.length > 0) {
-    const next = [...strokes.value, stroke]
-    strokes.value = next.length > MAX_STROKES ? next.slice(next.length - MAX_STROKES) : next
+    const next = [...strokes.value, stroke];
+    strokes.value = next.length > MAX_STROKES ? next.slice(next.length - MAX_STROKES) : next;
   }
-  emit('end', event)
+  emit('end', event);
 }
 
 function onTouchCancel(): void {
-  drawing.value = false
-  current.value = []
+  drawing.value = false;
+  current.value = [];
 }
 
 /* ── Confirm ───────────────────────────────────────────────────────────── */
 
 function confirm(): void {
-  if (props.disabled) return
-  emit('confirm', { paths: strokes.value.slice(), isEmpty: isEmpty.value })
+  if (props.disabled) return;
+  emit('confirm', { paths: strokes.value.slice(), isEmpty: isEmpty.value });
 }
 
-defineExpose({ confirm, clear: onClear, revoke, restore, init: resetHistory })
+defineExpose({ confirm, clear: onClear, revoke, restore, init: resetHistory });
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
-const RATIO = 2
+const RATIO = 2;
 
-const configuredStep = computed(() => Math.max(Math.floor(props.step), 1))
+const configuredStep = computed(() => Math.max(Math.floor(props.step), 1));
 
 const rootClass = computed(() => [
   'sn-signature',
@@ -302,51 +302,55 @@ const rootClass = computed(() => [
     'sn-signature--disabled': props.disabled,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const vars: string[] = []
-  if (props.penColor) vars.push(`--sn-signature-pen-color: ${props.penColor}`)
-  if (props.backgroundColor) vars.push(`--sn-signature-pad-bg: ${props.backgroundColor}`)
+  const vars: string[] = [];
+  if (props.penColor) vars.push(`--sn-signature-pen-color: ${props.penColor}`);
+  if (props.backgroundColor) vars.push(`--sn-signature-pad-bg: ${props.backgroundColor}`);
   if (props.height !== undefined) {
-    vars.push(`--sn-signature-height: ${typeof props.height === 'number' ? `${props.height * RATIO}rpx` : props.height}`)
+    vars.push(
+      `--sn-signature-height: ${typeof props.height === 'number' ? `${props.height * RATIO}rpx` : props.height}`,
+    );
   }
   if (props.width !== undefined) {
-    vars.push(`--sn-signature-width: ${typeof props.width === 'number' ? `${props.width * RATIO}rpx` : props.width}`)
+    vars.push(
+      `--sn-signature-width: ${typeof props.width === 'number' ? `${props.width * RATIO}rpx` : props.width}`,
+    );
   }
-  vars.push(`--sn-signature-line-width: ${props.lineWidth * RATIO}rpx`)
-  const base = vars.join('; ')
-  if (!props.customStyle) return base
-  return base ? `${base}; ${props.customStyle}` : props.customStyle
-})
+  vars.push(`--sn-signature-line-width: ${props.lineWidth * RATIO}rpx`);
+  const base = vars.join('; ');
+  if (!props.customStyle) return base;
+  return base ? `${base}; ${props.customStyle}` : props.customStyle;
+});
 
 /** Turn a stroke into rotated bars. */
 function segmentsOf(stroke: SignaturePoint[]): SignatureSegment[] {
-  const bars: SignatureSegment[] = []
+  const bars: SignatureSegment[] = [];
   for (let i = 1; i < stroke.length; i += 1) {
-    const from = stroke[i - 1]
-    const to = stroke[i]
-    if (!from || !to) continue
-    const dx = to.x - from.x
-    const dy = to.y - from.y
-    const length = Math.sqrt(dx * dx + dy * dy)
-    if (length < 0.5) continue
+    const from = stroke[i - 1];
+    const to = stroke[i];
+    if (!from || !to) continue;
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const length = Math.sqrt(dx * dx + dy * dy);
+    if (length < 0.5) continue;
     bars.push({
       left: from.x,
       top: from.y,
       width: length,
       angle: (Math.atan2(dy, dx) * 180) / Math.PI,
-    })
+    });
   }
-  return bars
+  return bars;
 }
 
 /** Every rendered bar across the finished strokes and the live one. */
 const renderedStrokes = computed(() =>
   [...strokes.value, ...(current.value.length > 1 ? [current.value] : [])]
     .map((stroke, index) => ({ index, bars: segmentsOf(stroke) }))
-    .filter(stroke => stroke.bars.length > 0),
-)
+    .filter((stroke) => stroke.bars.length > 0),
+);
 
 function barStyle(bar: SignatureSegment): string {
   return [
@@ -354,33 +358,33 @@ function barStyle(bar: SignatureSegment): string {
     `top: ${bar.top * RATIO}rpx`,
     `width: ${bar.width * RATIO}rpx`,
     `transform: rotate(${bar.angle}deg)`,
-  ].join('; ')
+  ].join('; ');
 }
 
 /** Single-point taps render as a dot so a quick tap still leaves a mark. */
 const dotPoints = computed(() =>
   [...strokes.value, current.value]
-    .filter(stroke => stroke.length === 1)
-    .map(stroke => stroke[0])
+    .filter((stroke) => stroke.length === 1)
+    .map((stroke) => stroke[0])
     .filter((point): point is SignaturePoint => point !== undefined),
-)
+);
 
 function dotStyle(point: SignaturePoint): string {
-  return `left: ${point.x * RATIO}rpx; top: ${point.y * RATIO}rpx`
+  return `left: ${point.x * RATIO}rpx; top: ${point.y * RATIO}rpx`;
 }
 
-const undoLabel = computed(() => props.undoText || props.revokeText)
-const redoLabel = computed(() => props.redoText || props.restoreText)
+const undoLabel = computed(() => props.undoText || props.revokeText);
+const redoLabel = computed(() => props.redoText || props.restoreText);
 
 /** Freeze the history into a plain value so nothing reactive leaks out. */
 function historySnapshot(): SignaturePaths {
-  return strokes.value.map(stroke => stroke.map(point => ({ ...point })))
+  return strokes.value.map((stroke) => stroke.map((point) => ({ ...point })));
 }
 
-const canUndoLabel = computed(() => `${undoLabel.value} (${strokes.value.length})`)
-const canRedoLabel = computed(() => `${redoLabel.value} (${undone.value.length})`)
-const stepHint = computed(() => String(configuredStep.value))
-const historySnapshotHint = computed(() => String(historySnapshot().length))
+const canUndoLabel = computed(() => `${undoLabel.value} (${strokes.value.length})`);
+const canRedoLabel = computed(() => `${redoLabel.value} (${undone.value.length})`);
+const stepHint = computed(() => String(configuredStep.value));
+const historySnapshotHint = computed(() => String(historySnapshot().length));
 </script>
 
 <template>
@@ -433,7 +437,8 @@ const historySnapshotHint = computed(() => String(historySnapshot().length))
         :aria-disabled="props.disabled ? 'true' : undefined"
         :tabindex="props.disabled ? -1 : 0"
         @tap="onClear"
-      >{{ props.clearText }}</view>
+        >{{ props.clearText }}</view
+      >
 
       <view
         v-if="props.enableHistory"
@@ -442,7 +447,8 @@ const historySnapshotHint = computed(() => String(historySnapshot().length))
         :aria-label="canUndoLabel"
         :aria-disabled="!canUndo ? 'true' : undefined"
         @tap="revoke"
-      >{{ undoLabel }}</view>
+        >{{ undoLabel }}</view
+      >
 
       <view
         v-if="props.enableHistory"
@@ -451,17 +457,25 @@ const historySnapshotHint = computed(() => String(historySnapshot().length))
         :aria-label="canRedoLabel"
         :aria-disabled="!canRedo ? 'true' : undefined"
         @tap="restore"
-      >{{ redoLabel }}</view>
+        >{{ redoLabel }}</view
+      >
 
       <view
-        :class="['sn-signature__button', 'sn-signature__button--primary', { 'sn-signature__button--disabled': props.disabled }]"
+        :class="[
+          'sn-signature__button',
+          'sn-signature__button--primary',
+          { 'sn-signature__button--disabled': props.disabled },
+        ]"
         role="button"
         :aria-label="props.confirmText"
         @tap="confirm"
-      >{{ props.confirmText }}</view>
+        >{{ props.confirmText }}</view
+      >
     </view>
 
-    <text class="sn-signature__meta" aria-live="polite">{{ stepHint }} · {{ historySnapshotHint }}</text>
+    <text class="sn-signature__meta" aria-live="polite"
+      >{{ stepHint }} · {{ historySnapshotHint }}</text
+    >
   </view>
 </template>
 

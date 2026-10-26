@@ -26,24 +26,24 @@
 
 ### SnComment Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| author | `string` | `undefined` | 作者名，`author` 插槽可覆盖 |
-| avatar | `string` | `undefined` | 头像图片 URL（渲染为 32px 圆形），`avatar` 插槽可覆盖 |
-| content | `string` | `undefined` | 评论内容，`content` 插槽可覆盖 |
-| datetime | `string` | `undefined` | 时间描述，`datetime` 插槽可覆盖 |
-| align | `'left' \| 'right' \| { datetime?: 'left' \| 'right'; actions?: 'left' \| 'right' }` | `'left'` | 时间行与操作行的对齐：字符串两行同时生效，对象形态分别控制，缺省键回退 `left` |
+| 名称     | 类型                                                                                 | 默认值      | 说明                                                                          |
+| -------- | ------------------------------------------------------------------------------------ | ----------- | ----------------------------------------------------------------------------- |
+| author   | `string`                                                                             | `undefined` | 作者名，`author` 插槽可覆盖                                                   |
+| avatar   | `string`                                                                             | `undefined` | 头像图片 URL（渲染为 32px 圆形），`avatar` 插槽可覆盖                         |
+| content  | `string`                                                                             | `undefined` | 评论内容，`content` 插槽可覆盖                                                |
+| datetime | `string`                                                                             | `undefined` | 时间描述，`datetime` 插槽可覆盖                                               |
+| align    | `'left' \| 'right' \| { datetime?: 'left' \| 'right'; actions?: 'left' \| 'right' }` | `'left'`    | 时间行与操作行的对齐：字符串两行同时生效，对象形态分别控制，缺省键回退 `left` |
 
 ### SnComment Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| avatar | `()` | 头像区域，覆盖 `avatar` |
-| author | `()` | 作者区域，覆盖 `author` |
-| datetime | `()` | 时间区域，覆盖 `datetime` |
-| content | `()` | 内容区域，覆盖 `content` |
-| actions | `()` | 操作列表（通常放若干 span） |
-| default | `()` | 嵌套的 `<SnComment>` 回复 |
+| 名称     | 参数 | 说明                        |
+| -------- | ---- | --------------------------- |
+| avatar   | `()` | 头像区域，覆盖 `avatar`     |
+| author   | `()` | 作者区域，覆盖 `author`     |
+| datetime | `()` | 时间区域，覆盖 `datetime`   |
+| content  | `()` | 内容区域，覆盖 `content`    |
+| actions  | `()` | 操作列表（通常放若干 span） |
+| default  | `()` | 嵌套的 `<SnComment>` 回复   |
 
 DOM 结构：头像列 + 主列（第一行作者 + 时间，第二行正文，第三行操作），嵌套回复渲染在主列内、缩进到父头像右侧。
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnCode — basic usage (json tokenized + plain languages). */
-import { SnCode } from '@snui/vue-web'
+import { SnCode } from '@snui/vue-web';
 
 const jsonCode = `{
   "name": "snail-aui",
@@ -8,16 +8,16 @@ const jsonCode = `{
   "keywords": ["ui", "tokens"],
   "stable": true,
   "deps": 0
-}`
+}`;
 
 const jsCode = `function sleep (ms = 1000) {
   return new Promise(resolve => setTimeout(resolve, ms))
-}`
+}`;
 
 const cppCode = `int main () {
   std::cout << "Hello Snail AUI";
   return 0;
-}`
+}`;
 </script>
 
 <template>

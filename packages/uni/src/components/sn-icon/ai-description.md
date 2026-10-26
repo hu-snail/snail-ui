@@ -10,11 +10,11 @@ Lucide 是 Feather Icons 的社区 fork，1500+ 个统一 24×24 / 2px 描边风
 
 ## 为什么不用 iconfont / Sprite
 
-| 方案 | 问题 |
-|---|---|
-| iconfont | 单个 woff 文件几百 KB，无法 tree-shake，新增要重新生成字体 |
-| SVG Sprite (`<use>`) | sprite 文件会越来越大，新增需重新 build |
-| lucide-vue-next | web Vue 3 only，不能跨端到 uni-app |
+| 方案                 | 问题                                                       |
+| -------------------- | ---------------------------------------------------------- |
+| iconfont             | 单个 woff 文件几百 KB，无法 tree-shake，新增要重新生成字体 |
+| SVG Sprite (`<use>`) | sprite 文件会越来越大，新增需重新 build                    |
+| lucide-vue-next      | web Vue 3 only，不能跨端到 uni-app                         |
 
 sn-icon 走「每个图标 = 一个 ESM 数据模块」路线。命名 export 让按需加载成为编译期静态分析 —— bundler 看到 `import { ChevronRight } from '@snui/uni'` 只打包这一个 path 数据。
 
@@ -24,13 +24,13 @@ sn-icon 走「每个图标 = 一个 ESM 数据模块」路线。命名 export �
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnIcon, type IconData } from '@snui/uni'
+import { ref } from 'vue';
+import { SnIcon, type IconData } from '@snui/uni';
 
 const myIcon: IconData = {
   viewBox: '0 0 24 24',
   paths: ['m9 18 6-6-6-6'],
-}
+};
 </script>
 
 <template>
@@ -42,7 +42,7 @@ const myIcon: IconData = {
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, ChevronRight, Search, Settings } from '@snui/uni'
+import { SnIcon, ChevronRight, Search, Settings } from '@snui/uni';
 </script>
 
 <template>
@@ -59,20 +59,20 @@ import { SnIcon, ChevronRight, Search, Settings } from '@snui/uni'
 每个图标一个文件 `src/components/sn-icon/icons/chevron-right.ts`：
 
 ```ts
-import type { IconData } from '../sn-icon.vue'
+import type { IconData } from '../sn-icon.vue';
 
 export const ChevronRight: IconData = {
   viewBox: '0 0 24 24',
   paths: ['m9 18 6-6-6-6'],
-}
+};
 ```
 
 用户：
 
 ```vue
 <script setup lang="ts">
-import { SnIcon } from '@snui/uni'
-import { ChevronRight } from './icons/chevron-right'
+import { SnIcon } from '@snui/uni';
+import { ChevronRight } from './icons/chevron-right';
 </script>
 
 <template>
@@ -82,31 +82,31 @@ import { ChevronRight } from './icons/chevron-right'
 
 ## 跨端渲染
 
-| 端 | 行为 |
-|---|---|
-| H5 | inline SVG，浏览器原生渲染 |
-| 微信小程序 | SVG 编译为 image 标签，部分平台非像素完美 |
-| App (uni-app x) | 原生 SVG，Webview 层 |
-| 抖音 / 支付宝小程序 | 各家 SVG 兼容性不同，通常能渲染 |
+| 端                  | 行为                                      |
+| ------------------- | ----------------------------------------- |
+| H5                  | inline SVG，浏览器原生渲染                |
+| 微信小程序          | SVG 编译为 image 标签，部分平台非像素完美 |
+| App (uni-app x)     | 原生 SVG，Webview 层                      |
+| 抖音 / 支付宝小程序 | 各家 SVG 兼容性不同，通常能渲染           |
 
 ## API
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| `icon` | `IconData` | — | 必填，SVG path 数据对象 |
-| `size` | `number \| string` | `32` | 图标尺寸（uni 端推荐 rpx） |
-| `color` | `string` | `'currentColor'` | 描边颜色（继承父元素 color） |
-| `strokeWidth` | `number \| string` | `2` | 描边宽度 |
-| `strokeWidthAbsolute` | `boolean` | `false` | 描边是否按绝对像素 |
+| 名称                  | 类型               | 默认值           | 说明                         |
+| --------------------- | ------------------ | ---------------- | ---------------------------- |
+| `icon`                | `IconData`         | —                | 必填，SVG path 数据对象      |
+| `size`                | `number \| string` | `32`             | 图标尺寸（uni 端推荐 rpx）   |
+| `color`               | `string`           | `'currentColor'` | 描边颜色（继承父元素 color） |
+| `strokeWidth`         | `number \| string` | `2`              | 描边宽度                     |
+| `strokeWidthAbsolute` | `boolean`          | `false`          | 描边是否按绝对像素           |
 
 `IconData` 接口：
 
 ```ts
 interface IconData {
-  viewBox?: string      // 默认 '0 0 24 24'
-  paths: string[]       // 一或多条 SVG <path d="...">
+  viewBox?: string; // 默认 '0 0 24 24'
+  paths: string[]; // 一或多条 SVG <path d="...">
 }
 ```
 

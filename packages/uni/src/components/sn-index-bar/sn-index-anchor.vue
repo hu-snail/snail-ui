@@ -25,53 +25,53 @@
  *   - 分组数据 — 由使用方提供
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import { nextUid } from '../../utils/uid'
-import { SN_INDEX_BAR_KEY, type SnIndexBarValue } from './sn-index-bar-types'
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import { nextUid } from '../../utils/uid';
+import { SN_INDEX_BAR_KEY, type SnIndexBarValue } from './sn-index-bar-types';
 
-defineOptions({ name: 'SnIndexAnchor' })
+defineOptions({ name: 'SnIndexAnchor' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-index-anchor` 1:1 surface ───────────────────────────── */
 
     /** 索引字符。 */
-    index?: SnIndexBarValue
+    index?: SnIndexBarValue;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     index: '',
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 自定义内容（该索引下的条目列表）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const bar = inject(SN_INDEX_BAR_KEY, null)
+const bar = inject(SN_INDEX_BAR_KEY, null);
 
-const uid = nextUid()
+const uid = nextUid();
 
 /** DOM id handed to `scroll-view scroll-into-view`. */
-const anchorId = `sn-index-anchor-${uid}`
+const anchorId = `sn-index-anchor-${uid}`;
 
-const isActive = computed(() => bar?.activeIndex() === props.index)
+const isActive = computed(() => bar?.activeIndex() === props.index);
 
 onMounted(() => {
   bar?.registerAnchor({
     uid,
     getIndex: () => props.index,
     getId: () => anchorId,
-  })
-})
+  });
+});
 
-onBeforeUnmount(() => bar?.unregisterAnchor(uid))
+onBeforeUnmount(() => bar?.unregisterAnchor(uid));
 
 const rootClass = computed(() => [
   'sn-index-anchor',
@@ -79,7 +79,7 @@ const rootClass = computed(() => [
     'sn-index-anchor--active': isActive.value,
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>

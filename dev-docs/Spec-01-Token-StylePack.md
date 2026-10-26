@@ -77,10 +77,10 @@ export const snWebAliasMap: ReadonlyArray<[string, string]> = [
   // ['--sn-web-button-radius', '--aui-button-radius'],
   // ['--sn-web-button-height-medium', '--aui-button-height-medium'],
   // ...
-]
+];
 
 export function renderSnWebStyles(): string {
-  return snWebAliasMap.map(([a, b]) => `  ${a}: var(${b});`).join('\n')
+  return snWebAliasMap.map(([a, b]) => `  ${a}: var(${b});`).join('\n');
 }
 ```
 
@@ -92,7 +92,7 @@ export const snMpAliasMap: ReadonlyArray<[string, string]> = [
   // ['--sn-mp-button-height-medium', '--aui-button-height-medium'],
   // 注意：rpx 单位的 token 会在这里做 px → rpx 转换
   // ...
-]
+];
 ```
 
 ### 2.4 rpx 转换（仅 tokens-mp）
@@ -129,11 +129,11 @@ Component Tokens   组件级（button-radius / card-shadow / input-height-medium
 
 ### 三轴独立
 
-| 轴 | 改什么 | 禁止 |
-|---|---|---|
-| Theme | 颜色（Primitive + Semantic）| 圆角、间距、尺寸 |
-| Style | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
-| Density | 间距 + 尺寸 + 字号 | 颜色、圆角 |
+| 轴      | 改什么                        | 禁止             |
+| ------- | ----------------------------- | ---------------- |
+| Theme   | 颜色（Primitive + Semantic）  | 圆角、间距、尺寸 |
+| Style   | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
+| Density | 间距 + 尺寸 + 字号            | 颜色、圆角       |
 
 ---
 
@@ -141,14 +141,14 @@ Component Tokens   组件级（button-radius / card-shadow / input-height-medium
 
 按端可能有不同字段：
 
-| 字段 | Web（`--sn-web-*`） | uni（`--sn-mp-*`） |
-|---|---|---|
-| button-radius | ✅ | ✅ |
-| button-height-medium | ✅ 36px | ✅ 72rpx |
-| table-row-height | ✅ | ❌ |
-| list-item-height | ❌ | ✅ 88rpx |
-| dropdown-item-padding | ✅ 8px 16px | ❌ |
-| sidebar-item-height | ❌ | ✅ 100rpx |
+| 字段                  | Web（`--sn-web-*`） | uni（`--sn-mp-*`） |
+| --------------------- | ------------------- | ------------------ |
+| button-radius         | ✅                  | ✅                 |
+| button-height-medium  | ✅ 36px             | ✅ 72rpx           |
+| table-row-height      | ✅                  | ❌                 |
+| list-item-height      | ❌                  | ✅ 88rpx           |
+| dropdown-item-padding | ✅ 8px 16px         | ❌                 |
+| sidebar-item-height   | ❌                  | ✅ 100rpx          |
 
 每个端独立维护各自的 ComponentToken 字段映射，互不影响。
 
@@ -160,24 +160,24 @@ Component Tokens   组件级（button-radius / card-shadow / input-height-medium
 
 ```ts
 export interface StylePackDefinition {
-  name: string          // kebab-case 唯一标识
-  label: string         // 用户可见显示名
-  description?: string
+  name: string; // kebab-case 唯一标识
+  label: string; // 用户可见显示名
+  description?: string;
   /** 适用端。默认 'both'（两端都可用） */
-  end?: 'web' | 'mp' | 'both'
+  end?: 'web' | 'mp' | 'both';
 
   // Token 层（端无关）
-  theme?: ThemeDefinition
-  style: StyleDefinition
-  density?: DensityDefinition
+  theme?: ThemeDefinition;
+  style: StyleDefinition;
+  density?: DensityDefinition;
 
   // 皮肤 CSS 层（端无关，但应用时按 end 注入）
-  skinCss?: string
+  skinCss?: string;
 
   // 资源层
-  resources?: ReadonlyArray<string>
+  resources?: ReadonlyArray<string>;
 
-  previewImage?: string
+  previewImage?: string;
 }
 ```
 
@@ -189,11 +189,11 @@ export const mpTaobaoPack: StylePackDefinition = {
   name: 'mp-taobao',
   label: '淘宝风格（移动）',
   description: '橙红主色，圆润圆角，密集布局，适合电商 App',
-  end: 'mp',  // ← 仅移动端
-  theme: { /* ... */ },
-  style: { /* ... */ },
+  end: 'mp', // ← 仅移动端
+  theme: {/* ... */},
+  style: {/* ... */},
   skinCss: '/packs/mp-taobao.skin.css',
-}
+};
 ```
 
 ```ts
@@ -204,7 +204,7 @@ export const mpDouyinPack: StylePackDefinition = {
   description: '深色底，红青主色，霓虹 glow',
   end: 'mp',
   // ...
-}
+};
 ```
 
 跨端共用 Pack（两端都用）：
@@ -212,9 +212,9 @@ export const mpDouyinPack: StylePackDefinition = {
 ```ts
 export const defaultPack: StylePackDefinition = {
   name: 'default',
-  end: 'both',  // 默认值，可省略
+  end: 'both', // 默认值，可省略
   // ...
-}
+};
 ```
 
 ---
@@ -222,7 +222,7 @@ export const defaultPack: StylePackDefinition = {
 ## 6. 应用 Style Pack（按端）
 
 ```ts
-import { snCssVars } from '@snui/tokens'
+import { snCssVars } from '@snui/tokens';
 
 // Web 端应用
 const css = snCssVars({
@@ -230,7 +230,7 @@ const css = snCssVars({
   theme: pack.theme,
   style: pack.style,
   density: pack.density,
-})
+});
 
 // uni 端应用
 const css = snCssVars({
@@ -238,7 +238,7 @@ const css = snCssVars({
   theme: pack.theme,
   style: pack.style,
   density: pack.density,
-})
+});
 ```
 
 `snCssVars()` 内部按 `end` 选择输出 `--sn-web-*` 或 `--sn-mp-*` 别名层（实际由 tokens-web / tokens-mp 的 CSS 文件负责，js 函数只生成 `--aui-*` 原始层 + 端无关的 alias 选择）。
@@ -247,13 +247,13 @@ const css = snCssVars({
 
 ## 7. 文档站 / AI 端感知
 
-| 模块 | Web 处理 | uni 处理 |
-|---|---|---|
-| 文档站左侧导航 | "Web 组件" 分组 | "uni-app 组件" 分组 |
-| 文档站 StyleSwitcher | 列出 `end: 'web' \| 'both'` 的 Pack | 列出 `end: 'mp' \| 'both'` 的 Pack |
+| 模块                  | Web 处理                                   | uni 处理                                   |
+| --------------------- | ------------------------------------------ | ------------------------------------------ |
+| 文档站左侧导航        | "Web 组件" 分组                            | "uni-app 组件" 分组                        |
+| 文档站 StyleSwitcher  | 列出 `end: 'web' \| 'both'` 的 Pack        | 列出 `end: 'mp' \| 'both'` 的 Pack         |
 | MCP `list_components` | `end: 'web'` 返回 SnButton / SnTable / ... | `end: 'mp'` 返回 sn-button / sn-list / ... |
-| MCP `get_style_pack` | 验证 `pack.end` 包含 'web' | 验证 `pack.end` 包含 'mp' |
-| ai-meta.json | components 分组 `web: [...]` / `mp: [...]` | 同 |
+| MCP `get_style_pack`  | 验证 `pack.end` 包含 'web'                 | 验证 `pack.end` 包含 'mp'                  |
+| ai-meta.json          | components 分组 `web: [...]` / `mp: [...]` | 同                                         |
 
 ---
 
@@ -265,7 +265,7 @@ const css = snCssVars({
 2. 新建 `packages/react-web/` —— React 组件实现
 3. 更新 `@snui/style-packs` Pack `end` 字段（如果 Pack 也支持 React）
 4. 更新 `@snui/cli` 公共组件列表
-6. 更新 `@snui/docs` 端导航（加 "React 组件" 分组）
+5. 更新 `@snui/docs` 端导航（加 "React 组件" 分组）
 
 **未来端与现有端 0 行源代码复用**。
 
@@ -273,8 +273,8 @@ const css = snCssVars({
 
 ## 9. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.0 | 2026-10-03 | 初始（Style Pack = Token only） |
-| v1.1 | 2026-10-03 | Style Pack = Token + 皮肤 CSS + 资源三层 |
+| 版本     | 日期       | 变更                                                |
+| -------- | ---------- | --------------------------------------------------- |
+| v1.0     | 2026-10-03 | 初始（Style Pack = Token only）                     |
+| v1.1     | 2026-10-03 | Style Pack = Token + 皮肤 CSS + 资源三层            |
 | **v1.2** | 2026-10-03 | **双端独立 + 双 Token 别名层 + end 字段（Active）** |

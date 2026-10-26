@@ -3,17 +3,17 @@
  */
 
 /** Keyboard layout. */
-export type KeyboardMode = 'default' | 'custom' | 'car'
+export type KeyboardMode = 'default' | 'custom' | 'car';
 
 /** Car-plate keyboard language. */
-export type CarKeyboardLang = 'zh' | 'en'
+export type CarKeyboardLang = 'zh' | 'en';
 
 /** One key definition. */
 export interface KeyboardKey {
   /** Key label. */
-  text: string
+  text: string;
   /** Value appended to the model when tapped. */
-  value: string
+  value: string;
   /** Optional CSS class for the key. */
-  className?: string
+  className?: string;
 }

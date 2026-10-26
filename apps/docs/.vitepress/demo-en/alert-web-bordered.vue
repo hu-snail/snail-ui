@@ -5,15 +5,19 @@
  * Shows: the `bordered` prop. Borderless keeps the type tint on the fill
  * instead of drawing a full outline.
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>
   <div class="alert-bordered">
     <div class="alert-bordered__cell">
       <span class="alert-bordered__cap">bordered (default)</span>
-      <SnAlert type="info" title="Bordered">Border and type color apply together; good for standalone blocks of information.</SnAlert>
-      <SnAlert type="success" title="Bordered">Operation completed. You can safely continue to the next step.</SnAlert>
+      <SnAlert type="info" title="Bordered"
+        >Border and type color apply together; good for standalone blocks of information.</SnAlert
+      >
+      <SnAlert type="success" title="Bordered"
+        >Operation completed. You can safely continue to the next step.</SnAlert
+      >
     </div>
 
     <div class="alert-bordered__cell">

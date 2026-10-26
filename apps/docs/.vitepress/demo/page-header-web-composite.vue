@@ -3,26 +3,22 @@
  * Demo: SnPageHeader — subtitle + `#extra` actions + `#footer`, with the
  * back control wired to real state instead of a no-op handler.
  */
-import { ref } from 'vue'
-import { SnButton, SnIcon, SnPageHeader, registerSnIcons } from '@snui/vue-web'
-import { Clock, Download, Share2 } from 'lucide-vue-next'
+import { ref } from 'vue';
+import { SnButton, SnIcon, SnPageHeader, registerSnIcons } from '@snui/vue-web';
+import { Clock, Download, Share2 } from 'lucide-vue-next';
 
-registerSnIcons({ Clock, Download, Share2 })
+registerSnIcons({ Clock, Download, Share2 });
 
-const lastAction = ref('等待操作')
+const lastAction = ref('等待操作');
 
 function handleBack(): void {
-  lastAction.value = '返回上一级（back 事件已触发）'
+  lastAction.value = '返回上一级（back 事件已触发）';
 }
 </script>
 
 <template>
   <div class="page-header-composite-demo">
-    <SnPageHeader
-      title="订单详情"
-      subtitle="订单号 SN-20240612-0088 · 已完成"
-      @back="handleBack"
-    >
+    <SnPageHeader title="订单详情" subtitle="订单号 SN-20240612-0088 · 已完成" @back="handleBack">
       <div class="page-header-composite-demo__body">
         <p>最近一次操作：{{ lastAction }}</p>
         <p>页头右侧的操作区由 #extra 插槽承载，底部说明由 #footer 承载。</p>
@@ -33,12 +29,7 @@ function handleBack(): void {
           <SnButton size="small" icon-name="Download" @click="lastAction = '导出报表'">
             导出
           </SnButton>
-          <SnButton
-            size="small"
-            type="primary"
-            icon-name="Share2"
-            @click="lastAction = '分享链接'"
-          >
+          <SnButton size="small" type="primary" icon-name="Share2" @click="lastAction = '分享链接'">
             分享
           </SnButton>
         </div>

@@ -2,16 +2,16 @@
 /**
  * Demo: SnPopover — delay / duration timing control (open & close debounce).
  */
-import { ref } from 'vue'
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnPopover } from '@snui/vue-web';
 
-const defaultEvent = ref('（尚未触发）')
-const slowOpenEvent = ref('（尚未触发）')
-const asymmetricEvent = ref('（尚未触发）')
+const defaultEvent = ref('（尚未触发）');
+const slowOpenEvent = ref('（尚未触发）');
+const asymmetricEvent = ref('（尚未触发）');
 
 function stamp(kind: 'show' | 'hide'): string {
-  const time = new Date().toLocaleTimeString('zh-CN', { hour12: false })
-  return `${kind} @ ${time}`
+  const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+  return `${kind} @ ${time}`;
 }
 </script>
 

@@ -22,40 +22,40 @@
  *   </SnTimeline>
  */
 
-import { provide, toRef } from 'vue'
-import { SN_TIMELINE_INJECTION_KEY } from './timeline-context'
+import { provide, toRef } from 'vue';
+import { SN_TIMELINE_INJECTION_KEY } from './timeline-context';
 
-defineOptions({ name: 'SnTimeline' })
+defineOptions({ name: 'SnTimeline' });
 
 const props = withDefaults(
   defineProps<{
     /** Lay the items out horizontally. */
-    horizontal?: boolean
+    horizontal?: boolean;
     /** Which side the rail sits on (ignored while horizontal). */
-    itemPlacement?: 'left' | 'right'
+    itemPlacement?: 'left' | 'right';
     /** Title scale of the items. */
-    size?: 'medium' | 'large'
+    size?: 'medium' | 'large';
     /** Node/icon edge length in px. */
-    iconSize?: number
+    iconSize?: number;
   }>(),
   {
     horizontal: false,
     itemPlacement: 'left',
     size: 'medium',
   },
-)
+);
 
 defineSlots<{
   /** `<SnTimelineItem>` entries. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 provide(SN_TIMELINE_INJECTION_KEY, {
   horizontal: toRef(props, 'horizontal'),
   itemPlacement: toRef(props, 'itemPlacement'),
   size: toRef(props, 'size'),
   iconSize: toRef(props, 'iconSize'),
-})
+});
 </script>
 
 <template>

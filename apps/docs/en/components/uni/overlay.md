@@ -19,39 +19,39 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `show` | `boolean` | `false` | Whether the overlay is shown |
-| `duration` | `number \| boolean \| Record<string, number>` | `300` | Animation duration; `false` disables, an object sets enter / leave separately |
-| `lockScroll` | `boolean` | `true` | Lock background scroll |
-| `zIndex` | `number` | `10` | Stacking level |
-| `customStyle` | `string` | `''` | Root inline style |
-| `customClass` | `string` | `''` | Root class |
+| Prop          | Type                                          | Default | Description                                                                   |
+| ------------- | --------------------------------------------- | ------- | ----------------------------------------------------------------------------- |
+| `show`        | `boolean`                                     | `false` | Whether the overlay is shown                                                  |
+| `duration`    | `number \| boolean \| Record<string, number>` | `300`   | Animation duration; `false` disables, an object sets enter / leave separately |
+| `lockScroll`  | `boolean`                                     | `true`  | Lock background scroll                                                        |
+| `zIndex`      | `number`                                      | `10`    | Stacking level                                                                |
+| `customStyle` | `string`                                      | `''`    | Root inline style                                                             |
+| `customClass` | `string`                                      | `''`    | Root class                                                                    |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `click` | The overlay was tapped | `(event: Event)` |
-| `before-enter` | Before the enter animation | — |
-| `enter` | Enter animation started | — |
-| `after-enter` | Enter animation finished | — |
-| `before-leave` | Before the leave animation | — |
-| `leave` | Leave animation started | — |
-| `after-leave` | Leave animation finished | — |
+| Event          | Description                | Payload          |
+| -------------- | -------------------------- | ---------------- |
+| `click`        | The overlay was tapped     | `(event: Event)` |
+| `before-enter` | Before the enter animation | —                |
+| `enter`        | Enter animation started    | —                |
+| `after-enter`  | Enter animation finished   | —                |
+| `before-leave` | Before the leave animation | —                |
+| `leave`        | Leave animation started    | —                |
+| `after-leave`  | Leave animation finished   | —                |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                                    |
+| --------- | ---------------------------------------------- |
 | `default` | Content rendered on top of the scrim (centred) |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | Scrim color |
-| `--sn-mp-color-text-on-primary` | Content text color over the scrim |
+| Variable                           | Purpose                           |
+| ---------------------------------- | --------------------------------- |
+| `--sn-mp-color-background-overlay` | Scrim color                       |
+| `--sn-mp-color-text-on-primary`    | Content text color over the scrim |
 
 ## Accessibility
 
@@ -62,7 +62,6 @@
 ## Dark mode
 
 The scrim uses `--sn-mp-color-background-overlay`, already overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles` (a deeper near-black), so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

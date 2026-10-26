@@ -2,8 +2,8 @@
 /**
  * Demo: SnIcon (web-end) — size scale + stroke-width variants.
  */
-import { Star } from 'lucide-vue-next'
-import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue'
+import { Star } from 'lucide-vue-next';
+import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue';
 </script>
 
 <template>

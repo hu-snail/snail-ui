@@ -31,28 +31,28 @@
  *   <SnLink tag="span" @click="open">伪链接</SnLink>
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnLink' })
+defineOptions({ name: 'SnLink' });
 
-type LinkType = 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
+type LinkType = 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error';
 
 const props = withDefaults(
   defineProps<{
     /** Navigation target. Mirrors n-a `href`. */
-    href?: string | undefined
+    href?: string | undefined;
     /** Browsing context for the navigation (`_blank`, …). Mirrors n-a `target`. */
-    target?: string | undefined
+    target?: string | undefined;
     /** Relationship metadata for the target. Mirrors n-a `rel`. */
-    rel?: string | undefined
+    rel?: string | undefined;
     /** Visual type — drives the text color. Mirrors n-a `type`. Default 'default'. */
-    type?: LinkType
+    type?: LinkType;
     /** Disabled state — blocks clicks and navigation. Mirrors n-a `disabled`. Default false. */
-    disabled?: boolean
+    disabled?: boolean;
     /** `true` underlines permanently; `false` underlines on hover only. Mirrors n-a `underline`. Default false. */
-    underline?: boolean
+    underline?: boolean;
     /** Element to render as the root. Mirrors n-a `tag`. Default 'a'. */
-    tag?: string
+    tag?: string;
   }>(),
   {
     href: undefined,
@@ -63,39 +63,39 @@ const props = withDefaults(
     underline: false,
     tag: 'a',
   },
-)
+);
 
 const emit = defineEmits<{
   /** Fired on activation; suppressed while `disabled`. Mirrors n-a `onClick`. */
-  (e: 'click', event: MouseEvent): void
-}>()
+  (e: 'click', event: MouseEvent): void;
+}>();
 
 defineSlots<{
   /** Link text. Mirrors n-a `default`. */
-  default?(): unknown
+  default?(): unknown;
   /** Leading icon. Mirrors n-a `icon`. */
-  icon?(): unknown
-}>()
+  icon?(): unknown;
+}>();
 
-const isAnchor = computed(() => props.tag === 'a')
+const isAnchor = computed(() => props.tag === 'a');
 
 const rootProps = computed<Record<string, string | undefined>>(() => {
-  if (!isAnchor.value) return {}
+  if (!isAnchor.value) return {};
   return {
     href: props.disabled ? undefined : props.href,
     target: props.target,
     rel: props.rel,
-  }
-})
+  };
+});
 
 function handleClick(event: MouseEvent): void {
   if (props.disabled) {
     // Keep the page from navigating; keyboard activation is covered by
     // aria-disabled + the click guard.
-    event.preventDefault()
-    return
+    event.preventDefault();
+    return;
   }
-  emit('click', event)
+  emit('click', event);
 }
 
 const rootClass = computed(() => [
@@ -104,7 +104,7 @@ const rootClass = computed(() => [
     'sn-link--disabled': props.disabled,
     'sn-link--underline': props.underline,
   },
-])
+]);
 </script>
 
 <template>
@@ -135,7 +135,9 @@ const rootClass = computed(() => [
   color: var(--sn-web-color-text-primary);
   text-decoration: none;
   cursor: pointer;
-  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sn-link__icon {

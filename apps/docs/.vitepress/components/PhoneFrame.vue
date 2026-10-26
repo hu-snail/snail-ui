@@ -40,14 +40,14 @@
  * so they never leak into the rest of the docs site.
  */
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 
 interface Props {
   /**
    * Navigation-bar title. A mini program page always shows one; leave empty
    * for a bare screen (inline single-demo previews).
    */
-  title?: string
+  title?: string;
   /**
    * Screen height.
    *
@@ -57,19 +57,19 @@ interface Props {
    * because a preview that clips its own content is worse than one that is
    * slightly tall.
    */
-  height?: number | 'auto'
+  height?: number | 'auto';
 }
 
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   height: 'auto',
-})
+});
 
 /**
  * Screen corner radius. A current-generation phone is ~44px at this width;
  * the value is fixed because the surface no longer carries a device switcher.
  */
-const SCREEN_RADIUS = 44
+const SCREEN_RADIUS = 44;
 
 const screenStyle = computed(() => ({
   borderRadius: `${SCREEN_RADIUS}px`,
@@ -77,9 +77,9 @@ const screenStyle = computed(() => ({
   // content height but is capped by the dock's available space, and the inner
   // scroll area absorbs the overflow. A numeric height pins the screen.
   height: props.height === 'auto' ? undefined : `${props.height}px`,
-}))
+}));
 
-const scrollEl = ref<HTMLElement | null>(null)
+const scrollEl = ref<HTMLElement | null>(null);
 
 /**
  * Scroll the screen so a section is at the top of the visible area.
@@ -90,14 +90,14 @@ const scrollEl = ref<HTMLElement | null>(null)
  * would move the whole docs page.
  */
 function scrollToSection(id: string): void {
-  const host = scrollEl.value
-  if (host === null) return
-  const target = host.querySelector(`#${CSS.escape(id)}`) as HTMLElement | null
-  if (target === null) return
-  host.scrollTo({ top: target.offsetTop - 8, behavior: 'smooth' })
+  const host = scrollEl.value;
+  if (host === null) return;
+  const target = host.querySelector(`#${CSS.escape(id)}`) as HTMLElement | null;
+  if (target === null) return;
+  host.scrollTo({ top: target.offsetTop - 8, behavior: 'smooth' });
 }
 
-defineExpose({ scrollToSection })
+defineExpose({ scrollToSection });
 </script>
 
 <template>
@@ -120,8 +120,13 @@ defineExpose({ scrollToSection })
           </svg>
           <svg viewBox="0 0 16 12" class="sn-phone__wifi" aria-hidden="true">
             <path d="M8 11.2 5.6 8.4a3.6 3.6 0 0 1 4.8 0L8 11.2Z" />
-            <path d="M8 6.6c-1.6 0-3.1.6-4.2 1.7l-1.2-1.3A7.6 7.6 0 0 1 8 4.8c2.1 0 4 .8 5.4 2.2l-1.2 1.3A5.9 5.9 0 0 0 8 6.6Z" />
-            <path d="M8 2.4c-2.6 0-5 1-6.8 2.8L0 3.9A11.6 11.6 0 0 1 8 .6c3 0 5.8 1.2 8 3.3l-1.2 1.3A9.9 9.9 0 0 0 8 2.4Z" opacity="0.55" />
+            <path
+              d="M8 6.6c-1.6 0-3.1.6-4.2 1.7l-1.2-1.3A7.6 7.6 0 0 1 8 4.8c2.1 0 4 .8 5.4 2.2l-1.2 1.3A5.9 5.9 0 0 0 8 6.6Z"
+            />
+            <path
+              d="M8 2.4c-2.6 0-5 1-6.8 2.8L0 3.9A11.6 11.6 0 0 1 8 .6c3 0 5.8 1.2 8 3.3l-1.2 1.3A9.9 9.9 0 0 0 8 2.4Z"
+              opacity="0.55"
+            />
           </svg>
           <span class="sn-phone__battery">
             <span class="sn-phone__battery-fill" />
@@ -140,7 +145,14 @@ defineExpose({ scrollToSection })
       <div v-if="title" class="sn-phone__navbar">
         <span class="sn-phone__navbar-back" aria-hidden="true">
           <svg viewBox="0 0 24 24" class="sn-phone__navbar-icon">
-            <path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+              d="m15 18-6-6 6-6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </span>
         <span class="sn-phone__navbar-title">{{ title }}</span>

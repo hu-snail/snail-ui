@@ -24,36 +24,36 @@
  *   </SnDescriptionsItem>
  */
 
-import type { CSSProperties } from 'vue'
+import type { CSSProperties } from 'vue';
 
-defineOptions({ name: 'SnDescriptionsItem' })
+defineOptions({ name: 'SnDescriptionsItem' });
 
 withDefaults(
   defineProps<{
     /** Label text. Use the `label` slot for rich label content. */
-    label?: string
+    label?: string;
     /** How many columns of the parent grid this entry occupies. */
-    span?: number
+    span?: number;
     /** Class applied to the rendered label cell / inline label span. */
-    labelClass?: string
+    labelClass?: string;
     /** Style applied to the rendered label cell / inline label span. */
-    labelStyle?: string | CSSProperties
+    labelStyle?: string | CSSProperties;
     /** Class applied to the rendered content cell / inline content span. */
-    contentClass?: string
+    contentClass?: string;
     /** Style applied to the rendered content cell / inline content span. */
-    contentStyle?: string | CSSProperties
+    contentStyle?: string | CSSProperties;
   }>(),
   {
     span: 1,
   },
-)
+);
 
 defineSlots<{
   /** Description content. */
-  default?(): unknown
+  default?(): unknown;
   /** Label content — overrides the `label` prop. */
-  label?(): unknown
-}>()
+  label?(): unknown;
+}>();
 </script>
 
 <template>

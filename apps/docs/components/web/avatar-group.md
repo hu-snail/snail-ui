@@ -34,28 +34,28 @@
 
 所有 Props 均为可选。
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| maxOptions | `{ max: number; onExpand?: () => void } \| number` | `undefined` | 溢出控制：`max: n` 时显示前 `n − 1` 个头像 + 「+k」汇总（k = 总数 − n + 1）；点击汇总触发 `onExpand`，纯数字形式无点击回调 |
-| size | `number \| 'small' \| 'medium' \| 'large'` | `'medium'` | 汇总头像尺寸；子头像尺寸由各自的 `SnAvatar` 决定 |
-| sizeBehavior | `'tightening' \| 'shrink'` | `'tightening'` | `tightening` 负 margin 重叠；`shrink` 逐个缩小（每级 0.06，最小 0.7） |
+| 名称         | 类型                                               | 默认值         | 说明                                                                                                                       |
+| ------------ | -------------------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| maxOptions   | `{ max: number; onExpand?: () => void } \| number` | `undefined`    | 溢出控制：`max: n` 时显示前 `n − 1` 个头像 + 「+k」汇总（k = 总数 − n + 1）；点击汇总触发 `onExpand`，纯数字形式无点击回调 |
+| size         | `number \| 'small' \| 'medium' \| 'large'`         | `'medium'`     | 汇总头像尺寸；子头像尺寸由各自的 `SnAvatar` 决定                                                                           |
+| sizeBehavior | `'tightening' \| 'shrink'`                         | `'tightening'` | `tightening` 负 margin 重叠；`shrink` 逐个缩小（每级 0.06，最小 0.7）                                                      |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | — | 头像列表，渲染 `SnAvatar` 元素（片段与嵌套数组会被展平，注释节点不计入） |
+| 名称    | 参数 | 说明                                                                     |
+| ------- | ---- | ------------------------------------------------------------------------ |
+| default | —    | 头像列表，渲染 `SnAvatar` 元素（片段与嵌套数组会被展平，注释节点不计入） |
 
 无事件（展开回调经 `maxOptions.onExpand` 传入）。插槽头像数量超过上限时，`+k` 汇总渲染为 `<button type="button">`（有回调时带 `aria-label` 并可点击），无回调时为静态元素。
 
 ## Tokens
 
-| Token | 用途 |
-| --- | --- |
+| Token                               | 用途                 |
+| ----------------------------------- | -------------------- |
 | `--sn-web-color-background-surface` | 收紧叠放时的头像描边 |
-| `--sn-web-color-background-subtle` | 汇总头像背景 |
-| `--sn-web-color-text-secondary` | 汇总头像文字 |
-| `--sn-web-focus-ring` | 展开按钮键盘焦点 |
+| `--sn-web-color-background-subtle`  | 汇总头像背景         |
+| `--sn-web-color-text-secondary`     | 汇总头像文字         |
+| `--sn-web-focus-ring`               | 展开按钮键盘焦点     |
 
 ## 无障碍
 

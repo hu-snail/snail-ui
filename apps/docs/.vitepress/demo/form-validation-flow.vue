@@ -1,22 +1,22 @@
 <script setup lang="ts">
 /** Demo: SnForm + SnFormItem — validateTrigger / resetOnChange / errorType. */
-import { reactive, ref } from 'vue'
-import { SnForm, SnFormItem, SnInput } from '@snui/vue-web'
-import type { FormRule } from '@snui/vue-web'
+import { reactive, ref } from 'vue';
+import { SnForm, SnFormItem, SnInput } from '@snui/vue-web';
+import type { FormRule } from '@snui/vue-web';
 
-const onBlur = reactive({ a: '' })
-const onChange = reactive({ a: '' })
-const silent = reactive({ a: '' })
+const onBlur = reactive({ a: '' });
+const onChange = reactive({ a: '' });
+const silent = reactive({ a: '' });
 
 const onBlurRules: Record<string, FormRule[]> = {
   a: [{ required: true, message: 'Required on blur' }],
-}
+};
 const onChangeRules: Record<string, FormRule[]> = {
   a: [{ required: true, message: 'Required on every change' }],
-}
+};
 const silentRules: Record<string, FormRule[]> = {
   a: [{ required: true, message: 'Silent — errorType=none' }],
-}
+};
 </script>
 
 <template>
@@ -54,7 +54,20 @@ const silentRules: Record<string, FormRule[]> = {
 </template>
 
 <style scoped>
-.sn-demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
-.sn-demo-grid section h4 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--vp-c-text-2); }
-.sn-demo__hint { margin-top: 12px; font-size: 12px; color: var(--vp-c-text-2); }
+.sn-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+.sn-demo-grid section h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+}
+.sn-demo__hint {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+}
 </style>

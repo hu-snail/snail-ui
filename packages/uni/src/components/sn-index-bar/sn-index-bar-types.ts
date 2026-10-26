@@ -7,29 +7,29 @@
  * `scroll-into-view` takes a node id, not an offset.
  */
 
-import type { InjectionKey } from 'vue'
+import type { InjectionKey } from 'vue';
 
 /** Value type shared by the bar's index and each anchor's `index`. */
-export type SnIndexBarValue = string | number
+export type SnIndexBarValue = string | number;
 
 /** One registered anchor, in DOM order. */
 export interface SnIndexAnchorEntry {
   /** Stable registration id. */
-  uid: number
+  uid: number;
   /** Anchor index character(s) — also the sidebar entry label. */
-  getIndex: () => SnIndexBarValue
+  getIndex: () => SnIndexBarValue;
   /** DOM id of the anchor root, used as the `scroll-into-view` target. */
-  getId: () => string
+  getId: () => string;
 }
 
 /** Context injected by `SnIndexBar` into child `SnIndexAnchor` instances. */
 export interface SnIndexBarContext {
   /** Register an anchor; returns its index in DOM order. */
-  registerAnchor: (entry: SnIndexAnchorEntry) => number
+  registerAnchor: (entry: SnIndexAnchorEntry) => number;
   /** Drop an anchor when it unmounts. */
-  unregisterAnchor: (uid: number) => void
+  unregisterAnchor: (uid: number) => void;
   /** Currently highlighted index (drives the sidebar active state). */
-  activeIndex: () => SnIndexBarValue | undefined
+  activeIndex: () => SnIndexBarValue | undefined;
 }
 
-export const SN_INDEX_BAR_KEY: InjectionKey<SnIndexBarContext> = Symbol('sn-index-bar')
+export const SN_INDEX_BAR_KEY: InjectionKey<SnIndexBarContext> = Symbol('sn-index-bar');

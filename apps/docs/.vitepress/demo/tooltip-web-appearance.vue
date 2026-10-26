@@ -6,7 +6,7 @@
  * 说明。所有卡片共用同一套 stage 内边距，避免「有的气泡能展开、
  * 有的被裁掉」。
  */
-import { SnTooltip } from '@snui/vue-web'
+import { SnTooltip } from '@snui/vue-web';
 </script>
 
 <template>
@@ -43,11 +43,7 @@ import { SnTooltip } from '@snui/vue-web'
         <span class="tt-appear__name">箭头指中心</span>
       </header>
       <div class="tt-appear__stage">
-        <SnTooltip
-          content="箭头指向气泡中心"
-          placement="top"
-          arrow-point-to-center
-        >
+        <SnTooltip content="箭头指向气泡中心" placement="top" arrow-point-to-center>
           <button class="tt-appear__btn" type="button">悬停</button>
         </SnTooltip>
       </div>
@@ -60,11 +56,7 @@ import { SnTooltip } from '@snui/vue-web'
         <span class="tt-appear__name">自定义箭头</span>
       </header>
       <div class="tt-appear__stage">
-        <SnTooltip
-          content="箭头被放大并染色"
-          placement="bottom"
-          arrow-class="tt-appear__big-arrow"
-        >
+        <SnTooltip content="箭头被放大并染色" placement="bottom" arrow-class="tt-appear__big-arrow">
           <button class="tt-appear__btn" type="button">悬停</button>
         </SnTooltip>
       </div>
@@ -163,7 +155,9 @@ import { SnTooltip } from '@snui/vue-web'
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-appear__btn--wide {
   min-width: 200px;

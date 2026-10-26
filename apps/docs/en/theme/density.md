@@ -5,13 +5,13 @@ The Density axis owns **size density**. Does not affect color or radius.
 ## Built-in defaults
 
 ```ts
-import { COMPACT_DENSITY, COMFORTABLE_DENSITY } from '@snui/tokens'
+import { COMPACT_DENSITY, COMFORTABLE_DENSITY } from '@snui/tokens';
 ```
 
-| Density | Use |
-| --- | --- |
-| `COMFORTABLE_DENSITY` | Default — generous spacing, large sizes |
-| `COMPACT_DENSITY` | Tighter spacing, smaller control heights, desktop / dense layouts |
+| Density               | Use                                                               |
+| --------------------- | ----------------------------------------------------------------- |
+| `COMFORTABLE_DENSITY` | Default — generous spacing, large sizes                           |
+| `COMPACT_DENSITY`     | Tighter spacing, smaller control heights, desktop / dense layouts |
 
 ## Per-end Density base
 
@@ -25,7 +25,7 @@ Switching Density preserves Theme and Style.
 ## Custom Density
 
 ```ts
-import type { DensityDefinition } from '@snui/tokens'
+import type { DensityDefinition } from '@snui/tokens';
 
 const dense: DensityDefinition = {
   name: 'dense',
@@ -33,15 +33,15 @@ const dense: DensityDefinition = {
     spacing: { '3': '4px', '4': '8px', '5': '12px' },
     size: { control: { sm: '20px', md: '28px', lg: '36px' } },
   },
-}
+};
 ```
 
 ## Forbidden
 
-| Don't | Why |
-| --- | --- |
-| Override color Tokens | Belongs to Theme |
-| Override radius / shadow | Belongs to Style |
+| Don't                              | Why                        |
+| ---------------------------------- | -------------------------- |
+| Override color Tokens              | Belongs to Theme           |
+| Override radius / shadow           | Belongs to Style           |
 | Couple with specific Theme / Style | Three axes are independent |
 
 ## Where to next

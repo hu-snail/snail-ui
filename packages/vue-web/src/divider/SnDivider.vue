@@ -17,20 +17,20 @@
  *   - 装饰图标 / 动画
  */
 
-import { useSlots } from 'vue'
+import { useSlots } from 'vue';
 
-defineOptions({ name: 'SnDivider' })
+defineOptions({ name: 'SnDivider' });
 
 const props = withDefaults(
   defineProps<{
     /** Axis: horizontal (full-width line) or vertical (inline line). */
-    direction?: 'horizontal' | 'vertical'
+    direction?: 'horizontal' | 'vertical';
     /** Dashed instead of solid. */
-    dashed?: boolean
+    dashed?: boolean;
     /** Optional color override (CSS color value). */
-    color?: string
+    color?: string;
     /** Vertical margin (only for horizontal direction). */
-    marginSize?: 'small' | 'medium' | 'large'
+    marginSize?: 'small' | 'medium' | 'large';
   }>(),
   {
     direction: 'horizontal',
@@ -38,12 +38,12 @@ const props = withDefaults(
     color: '',
     marginSize: 'medium',
   },
-)
+);
 
 defineSlots<{
   /** Optional content shown on the line (e.g. "OR"). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 // useSlots() reference keeps vue-tsc treating this file as a Vue SFC and
 // emits the compiled JS to dist/divider/SnDivider.vue.js. Without an
@@ -51,7 +51,7 @@ defineSlots<{
 // leave raw SFC markup in dist — which trips up downstream consumers that
 // resolve `import { SnDivider } from '@snui/vue-web'` via the package
 // main entry.
-void useSlots
+void useSlots;
 </script>
 
 <template>

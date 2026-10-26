@@ -18,23 +18,23 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnCountdown from '@snui/vue-web/src/countdown/SnCountdown.vue'
+import SnCountdown from '@snui/vue-web/src/countdown/SnCountdown.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `duration` | `number` | `0` | no | Countdown length in ms (non-reactive). |
-| `active` | `boolean` | `true` | no | Whether the countdown is ticking. |
-| `precision` | `0 \| 1 \| 2 \| 3` | `0` | no | Displayed precision: 0 = seconds, 1-3 add decimal digits. |
-| `render` | `(info: { hours, minutes, seconds, milliseconds }) => VNodeChild` | — | no | Custom render for the remaining time info. |
+| Name        | Type                                                              | Default | Required | Description                                               |
+| ----------- | ----------------------------------------------------------------- | ------- | -------- | --------------------------------------------------------- |
+| `duration`  | `number`                                                          | `0`     | no       | Countdown length in ms (non-reactive).                    |
+| `active`    | `boolean`                                                         | `true`  | no       | Whether the countdown is ticking.                         |
+| `precision` | `0 \| 1 \| 2 \| 3`                                                | `0`     | no       | Displayed precision: 0 = seconds, 1-3 add decimal digits. |
+| `render`    | `(info: { hours, minutes, seconds, milliseconds }) => VNodeChild` | —       | no       | Custom render for the remaining time info.                |
 
 ## Events
 
-| Name | Parameters | Description |
-|---|---|---|
-| `finish` | — | Countdown reached zero (once per run; fires again after `reset`). |
+| Name     | Parameters | Description                                                       |
+| -------- | ---------- | ----------------------------------------------------------------- |
+| `finish` | —          | Countdown reached zero (once per run; fires again after `reset`). |
 
 ## Slots
 
@@ -42,9 +42,9 @@ None (use the `render` prop for custom output).
 
 ## Exposed Methods
 
-| Name | Parameters | Description |
-|---|---|---|
-| `reset` | — | Restore the full duration and restart. |
+| Name    | Parameters | Description                            |
+| ------- | ---------- | -------------------------------------- |
+| `reset` | —          | Restore the full duration and restart. |
 
 ## Divergences from the reference API
 

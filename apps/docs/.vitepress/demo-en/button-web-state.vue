@@ -3,13 +3,15 @@
  * Demo: SnButton (Web) — disabled & loading.
  * Per AUI-DOCS-016: imports the real @snui/vue-web SnButton.
  */
-import { ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton } from '@snui/vue-web';
 
-const loading = ref(false)
+const loading = ref(false);
 function trigger(): void {
-  loading.value = true
-  setTimeout(() => { loading.value = false }, 1000)
+  loading.value = true;
+  setTimeout(() => {
+    loading.value = false;
+  }, 1000);
 }
 </script>
 

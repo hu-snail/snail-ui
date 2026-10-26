@@ -35,55 +35,55 @@
 如需显式 import：
 
 ```ts
-import { SnIndexBar } from '@snui/uni/components/sn-index-bar/sn-index-bar.vue'
-import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor.vue'
+import { SnIndexBar } from '@snui/uni/components/sn-index-bar/sn-index-bar.vue';
+import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor.vue';
 ```
 
 ## Props
 
 ### sn-index-bar
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `sticky` | `boolean` | `false` | 索引是否吸顶 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型      | 默认值  | 说明                      |
+| ------------- | --------- | ------- | ------------------------- |
+| `sticky`      | `boolean` | `false` | 索引是否吸顶              |
+| `customClass` | `string`  | `''`    | 根节点自定义类名          |
+| `customStyle` | `string`  | `''`    | 根节点自定义 inline style |
 
 ### sn-index-anchor
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `index` | `string \| number` | `''` | 索引字符 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型               | 默认值 | 说明                      |
+| ------------- | ------------------ | ------ | ------------------------- |
+| `index`       | `string \| number` | `''`   | 索引字符                  |
+| `customClass` | `string`           | `''`   | 根节点自定义类名          |
+| `customStyle` | `string`           | `''`   | 根节点自定义 inline style |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名   | 说明               | 参数          |
+| -------- | ------------------ | ------------- |
 | `change` | 激活索引变化时触发 | `({ index })` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名                 | 说明                                   |
+| ---------------------- | -------------------------------------- |
 | `default`（index-bar） | 索引列表内容（`sn-index-anchor` 集合） |
-| `default`（anchor） | 该索引下的条目内容 |
+| `default`（anchor）    | 该索引下的条目内容                     |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-surface` | 列表与条目底色 |
-| `--sn-mp-color-background-soft` | 分组标题底色 |
-| `--sn-mp-color-action-primary-soft` | 激活分组标题底色 |
-| `--sn-mp-color-text-secondary` | 索引项与分组标题文字色 |
-| `--sn-mp-color-action-primary` | 激活索引项底色与激活标题文字色 |
-| `--sn-mp-color-text-on-primary` | 激活索引项文字色 |
-| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | 索引项 / 分组标题字号 |
-| `--sn-mp-font-weight-medium` | 分组标题字重 |
-| `--sn-mp-radius-full` | 索引项胶囊圆角 |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | 索引项间距 / 分组标题内边距 |
+| 变量                                            | 用途                           |
+| ----------------------------------------------- | ------------------------------ |
+| `--sn-mp-color-background-surface`              | 列表与条目底色                 |
+| `--sn-mp-color-background-soft`                 | 分组标题底色                   |
+| `--sn-mp-color-action-primary-soft`             | 激活分组标题底色               |
+| `--sn-mp-color-text-secondary`                  | 索引项与分组标题文字色         |
+| `--sn-mp-color-action-primary`                  | 激活索引项底色与激活标题文字色 |
+| `--sn-mp-color-text-on-primary`                 | 激活索引项文字色               |
+| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | 索引项 / 分组标题字号          |
+| `--sn-mp-font-weight-medium`                    | 分组标题字重                   |
+| `--sn-mp-radius-full`                           | 索引项胶囊圆角                 |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | 索引项间距 / 分组标题内边距    |
 
 ## 无障碍
 
@@ -97,7 +97,6 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 `sn-index-bar` 的全部颜色来自 `--sn-mp-color-*`，没有浅色 `var()` 兜底，因此在 `.sn-theme-dark` 下自动适配：列表底色切到暗色表面，分组标题使用暗色 soft 底，激活索引项保持主色胶囊。
 
 用 sn-config-provider 的 theme 设为 dark 包裹即可验证：
-
 
 ## 相关
 

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — row selection with checked-row-keys + disabled rows. */
-import { ref } from 'vue'
-import { SnDataTable } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnDataTable } from '@snui/vue-web';
 
-const checkedRowKeys = ref<Array<string | number>>([])
+const checkedRowKeys = ref<Array<string | number>>([]);
 
 const columns = [
   {
@@ -13,14 +13,15 @@ const columns = [
   { title: 'Name', key: 'name' },
   { title: 'Age', key: 'age' },
   { title: 'Address', key: 'address' },
-]
+];
 
 const data = Array.from({ length: 8 }).map((_, index) => ({
   name: `Edward King ${index}`,
   age: 32,
   address: `London, Park Lane no. ${index}`,
   key: index,
-}))</script>
+}));
+</script>
 
 <template>
   <div class="sn-demo">
@@ -35,5 +36,9 @@ const data = Array.from({ length: 8 }).map((_, index) => ({
 </template>
 
 <style scoped>
-.sn-demo-tip { margin: 0 0 24px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
+.sn-demo-tip {
+  margin: 0 0 24px;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 14px;
+}
 </style>

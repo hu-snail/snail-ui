@@ -45,52 +45,52 @@ so this component creates no timer and registers no listener.
 ```
 
 ```ts
-import { SnSwiper } from '@snui/uni'
+import { SnSwiper } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `autoplay` | boolean | true | no | Autoplay. |
-| `current` | number | 0 | no | Current slide index (`v-model:current`). |
-| `direction` | 'horizontal' | 'vertical' | 'horizontal' | no | Scroll axis. |
-| `displayMultipleItems` | number | 1 | no | Slides visible at once. |
-| `duration` | number | 300 | no | Slide transition duration in ms. |
-| `easingFunction` | string | 'default' | no | Easing name (forwarded to the native swiper). |
-| `height` | string | number | 192 | no | Carousel height (bare number = rpx). |
-| `interval` | number | 5000 | no | Autoplay interval in ms. |
-| `list` | (string | SnSwiperItem)[] | [] | no | Slide data. |
-| `loop` | boolean | true | no | Loop the slides. |
-| `nextMargin` | string | number | 0 | no | Next-slide inset (bare number = rpx). |
-| `indicatorPosition` | SwiperIndicatorPosition | 'bottom' | no | Indicator anchor. |
-| `previousMargin` | string | number | 0 | no | Previous-slide inset (bare number = rpx). |
-| `radius` | string | number | '' | no | Corner radius (bare number = rpx). |
-| `snapToEdge` | boolean | false | no | Snap the insets to the first / last slide. |
-| `indicator` | boolean | SnSwiperIndicator | true | no | Indicator config; `false` hides it. |
-| `imageMode` | SwiperImageMode | 'aspectFill' | no | Crop mode forwarded to sn-img. |
-| `showMenuByLongpress` | boolean | false | no | Long-press QR menu (WeChat only). |
-| `valueKey` | string | 'value' | no | Image URL field name on an item object. |
-| `textKey` | string | 'text' | no | Caption field name on an item object. |
-| `customIndicatorClass` | string | '' | no | Custom class for the indicator node. |
-| `customImageClass` | string | '' | no | Custom class for the image node. |
-| `customItemClass` | string | '' | no | Custom class for each slide. |
-| `customTextClass` | string | '' | no | Custom class for the caption node. |
-| `customTextStyle` | string | '' | no | Custom inline style for the caption node. |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name                   | Type                    | Default           | Required     | Description                                   |
+| ---------------------- | ----------------------- | ----------------- | ------------ | --------------------------------------------- |
+| `autoplay`             | boolean                 | true              | no           | Autoplay.                                     |
+| `current`              | number                  | 0                 | no           | Current slide index (`v-model:current`).      |
+| `direction`            | 'horizontal'            | 'vertical'        | 'horizontal' | no                                            | Scroll axis.                              |
+| `displayMultipleItems` | number                  | 1                 | no           | Slides visible at once.                       |
+| `duration`             | number                  | 300               | no           | Slide transition duration in ms.              |
+| `easingFunction`       | string                  | 'default'         | no           | Easing name (forwarded to the native swiper). |
+| `height`               | string                  | number            | 192          | no                                            | Carousel height (bare number = rpx).      |
+| `interval`             | number                  | 5000              | no           | Autoplay interval in ms.                      |
+| `list`                 | (string                 | SnSwiperItem)[]   | []           | no                                            | Slide data.                               |
+| `loop`                 | boolean                 | true              | no           | Loop the slides.                              |
+| `nextMargin`           | string                  | number            | 0            | no                                            | Next-slide inset (bare number = rpx).     |
+| `indicatorPosition`    | SwiperIndicatorPosition | 'bottom'          | no           | Indicator anchor.                             |
+| `previousMargin`       | string                  | number            | 0            | no                                            | Previous-slide inset (bare number = rpx). |
+| `radius`               | string                  | number            | ''           | no                                            | Corner radius (bare number = rpx).        |
+| `snapToEdge`           | boolean                 | false             | no           | Snap the insets to the first / last slide.    |
+| `indicator`            | boolean                 | SnSwiperIndicator | true         | no                                            | Indicator config; `false` hides it.       |
+| `imageMode`            | SwiperImageMode         | 'aspectFill'      | no           | Crop mode forwarded to sn-img.                |
+| `showMenuByLongpress`  | boolean                 | false             | no           | Long-press QR menu (WeChat only).             |
+| `valueKey`             | string                  | 'value'           | no           | Image URL field name on an item object.       |
+| `textKey`              | string                  | 'text'            | no           | Caption field name on an item object.         |
+| `customIndicatorClass` | string                  | ''                | no           | Custom class for the indicator node.          |
+| `customImageClass`     | string                  | ''                | no           | Custom class for the image node.              |
+| `customItemClass`      | string                  | ''                | no           | Custom class for each slide.                  |
+| `customTextClass`      | string                  | ''                | no           | Custom class for the caption node.            |
+| `customTextStyle`      | string                  | ''                | no           | Custom inline style for the caption node.     |
+| `customClass`          | string                  | ''                | no           | Custom class for the root node.               |
+| `customStyle`          | string                  | ''                | no           | Custom inline style for the root node.        |
 
 `SnSwiperItem` = `{ value?, poster?, text?, type?: 'image' | 'video' }`.
 `SnSwiperIndicator` = `{ type?: 'dots' | 'dots-bar' | 'fraction'; minShowNum?; showControls? }`.
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `click` | { index, item } | Slide tapped. |
-| `change` | { current, source } | Slide switched. |
-| `animationfinish` | { current, source } | Slide animation finished. |
-| `update:current` | number | Current index sync (`v-model:current`). |
+| Event             | Payload             | Description                             |
+| ----------------- | ------------------- | --------------------------------------- |
+| `click`           | { index, item }     | Slide tapped.                           |
+| `change`          | { current, source } | Slide switched.                         |
+| `animationfinish` | { current, source } | Slide animation finished.               |
+| `update:current`  | number              | Current index sync (`v-model:current`). |
 
 ## Slots
 
@@ -98,17 +98,17 @@ None.
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background subtle | `--sn-mp-color-background-subtle` | Slide plate |
-| Background elevated | `--sn-mp-color-background-elevated` | Inactive dot |
-| Background overlay | `--sn-mp-color-background-overlay` | Caption + fraction plate |
-| Action primary | `--sn-mp-color-action-primary` | Active dot |
-| Text on primary | `--sn-mp-color-text-on-primary` | Caption + fraction text |
-| Font size XS / MD / LG | `--sn-mp-font-size-xs …` | Fraction / caption / arrows |
-| Line height normal | `--sn-mp-font-line-height-normal` | Text line height |
-| Spacing 1–4 | `--sn-mp-spacing-1 …` | Indicator padding + caption padding |
-| Radius XS / full / LG | `--sn-mp-radius-xs …` | Dots / arrows / container |
+| Token                  | CSS Variable                        | Purpose                             |
+| ---------------------- | ----------------------------------- | ----------------------------------- |
+| Background subtle      | `--sn-mp-color-background-subtle`   | Slide plate                         |
+| Background elevated    | `--sn-mp-color-background-elevated` | Inactive dot                        |
+| Background overlay     | `--sn-mp-color-background-overlay`  | Caption + fraction plate            |
+| Action primary         | `--sn-mp-color-action-primary`      | Active dot                          |
+| Text on primary        | `--sn-mp-color-text-on-primary`     | Caption + fraction text             |
+| Font size XS / MD / LG | `--sn-mp-font-size-xs …`            | Fraction / caption / arrows         |
+| Line height normal     | `--sn-mp-font-line-height-normal`   | Text line height                    |
+| Spacing 1–4            | `--sn-mp-spacing-1 …`               | Indicator padding + caption padding |
+| Radius XS / full / LG  | `--sn-mp-radius-xs …`               | Dots / arrows / container           |
 
 ## Accessibility
 

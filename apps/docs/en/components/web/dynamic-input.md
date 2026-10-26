@@ -26,15 +26,15 @@ Dynamic input rows. Array v-model with per-row editing and + / − controls; slo
 
 ### SnDynamicInput Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `Array<string \| number \| Record<string, unknown> \| null>` | `[]` | v-model; emits a fresh array |
-| preset | `() => unknown` | `() => null` | New-row factory |
-| onCreate | `(value, index) => unknown` | — | Refine after preset |
-| min / max | `number` | — | Row-count bounds |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size |
-| status | `'default'\|'error'\|'warning'` | `'default'` | Status (cascades to rows) |
+| Prop                | Type                                                         | Default      | Notes                        |
+| ------------------- | ------------------------------------------------------------ | ------------ | ---------------------------- |
+| modelValue          | `Array<string \| number \| Record<string, unknown> \| null>` | `[]`         | v-model; emits a fresh array |
+| preset              | `() => unknown`                                              | `() => null` | New-row factory              |
+| onCreate            | `(value, index) => unknown`                                  | —            | Refine after preset          |
+| min / max           | `number`                                                     | —            | Row-count bounds             |
+| disabled / readonly | `boolean`                                                    | `false`      | Disabled / read-only         |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'`                 | `'medium'`   | Size                         |
+| status              | `'default'\|'error'\|'warning'`                              | `'default'`  | Status (cascades to rows)    |
 
 Slot: `default` (scoped `{ value, index }`; required for object rows). Note: rows are keyed by index — focus may not migrate on adjacent-row insertion (naive uses internal ids); see ai-description.md.
 

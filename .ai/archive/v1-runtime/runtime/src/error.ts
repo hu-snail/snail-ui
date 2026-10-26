@@ -56,7 +56,9 @@ export function createAUIError(input: CreateAUIErrorInput): AUIError {
   if (!/^[A-Z][A-Z0-9_]*$/.test(input.code.replace(/^AUI_/, ''))) {
     throw new Error(`AUIError code "${input.code}" must be UPPER_SNAKE_CASE`);
   }
-  const code = input.code.startsWith(`${ERROR_CODE_NAMESPACE}`) ? input.code : `${ERROR_CODE_NAMESPACE}${input.code}`;
+  const code = input.code.startsWith(`${ERROR_CODE_NAMESPACE}`)
+    ? input.code
+    : `${ERROR_CODE_NAMESPACE}${input.code}`;
   const err: AUIError = {
     code,
     message: input.message,
@@ -73,10 +75,12 @@ export function createAUIError(input: CreateAUIErrorInput): AUIError {
 export function isAUIError(value: unknown): value is AUIError {
   if (value === null || typeof value !== 'object') return false;
   const v = value as Record<string, unknown>;
-  return typeof v.code === 'string'
-    && typeof v.message === 'string'
-    && typeof v.source === 'string'
-    && typeof v.severity === 'string';
+  return (
+    typeof v.code === 'string' &&
+    typeof v.message === 'string' &&
+    typeof v.source === 'string' &&
+    typeof v.severity === 'string'
+  );
 }
 
 /** Convert any thrown value into an AUIError. */

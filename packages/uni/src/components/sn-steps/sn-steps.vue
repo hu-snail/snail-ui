@@ -26,29 +26,29 @@
  *   - 步骤之间的业务流转 — 由宿主按 `active` 驱动
  */
 
-import { computed, provide, ref, toRef } from 'vue'
-import { SN_STEPS_KEY } from './sn-steps-types'
+import { computed, provide, ref, toRef } from 'vue';
+import { SN_STEPS_KEY } from './sn-steps-types';
 
-defineOptions({ name: 'SnSteps' })
+defineOptions({ name: 'SnSteps' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-steps` 1:1 surface ──────────────────────────────────── */
 
     /** 当前激活步骤下标。 */
-    active?: number
+    active?: number;
     /** 是否垂直方向展示。 */
-    vertical?: boolean
+    vertical?: boolean;
     /** 是否使用点状步骤条。 */
-    dot?: boolean
+    dot?: boolean;
     /** 步骤条间距，默认自动计算。 */
-    space?: string
+    space?: string;
     /** 是否水平居中，只对横向步骤条有效。 */
-    alignCenter?: boolean
+    alignCenter?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     active: 0,
@@ -59,26 +59,26 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Step 列表。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Registered step ids in DOM order. */
-const stepIds = ref<number[]>([])
+const stepIds = ref<number[]>([]);
 
 /** Number of registered steps — drives the "last step" flag. */
-const stepCount = computed(() => stepIds.value.length)
+const stepCount = computed(() => stepIds.value.length);
 
 function registerStep(uid: number): number {
-  stepIds.value = [...stepIds.value, uid]
-  return stepIds.value.length - 1
+  stepIds.value = [...stepIds.value, uid];
+  return stepIds.value.length - 1;
 }
 
 function unregisterStep(uid: number): void {
-  stepIds.value = stepIds.value.filter((entry) => entry !== uid)
+  stepIds.value = stepIds.value.filter((entry) => entry !== uid);
 }
 
 provide(SN_STEPS_KEY, {
@@ -90,7 +90,7 @@ provide(SN_STEPS_KEY, {
   registerStep,
   unregisterStep,
   stepCount,
-})
+});
 
 const rootClass = computed(() => [
   'sn-steps',
@@ -101,7 +101,7 @@ const rootClass = computed(() => [
     'sn-steps--center': props.alignCenter && !props.vertical,
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>

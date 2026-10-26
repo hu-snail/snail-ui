@@ -3,18 +3,18 @@
  * loading-web-wrapper — passing a default slot turns the spinner into an
  * overlay and dims the wrapped content while `show` is true.
  */
-import { ref } from 'vue'
-import { SnButton, SnLoading } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnLoading } from '@snui/vue-web';
 
-const loading = ref(false)
-const text = ref('刷新后内容会更新')
+const loading = ref(false);
+const text = ref('刷新后内容会更新');
 
 function reload(): void {
-  loading.value = true
+  loading.value = true;
   window.setTimeout(() => {
-    loading.value = false
-    text.value = `刷新于 ${new Date().toLocaleTimeString()}`
-  }, 1500)
+    loading.value = false;
+    text.value = `刷新于 ${new Date().toLocaleTimeString()}`;
+  }, 1500);
 }
 </script>
 

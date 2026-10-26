@@ -17,35 +17,35 @@ Visual separator between content blocks on mobile / miniprogram. Pure decoration
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnDivider } from '@snui/uni'
+import { SnDivider } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | no | Axis of the line. |
-| `dashed` | `boolean` | `false` | no | Dashed border instead of solid. |
-| `hairline` | `boolean` | `true` | no | Hairline (1rpx) thin border. Mobile common. |
-| `color` | `string` | — | no | Inline border color (any CSS color value). |
-| `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Vertical margin (only applied for horizontal direction). |
-| `contentPosition` | `'left' \| 'center' \| 'right'` | `'center'` | no | Content position along the line (`wd-divider` `content-position`). |
-| `vertical` | `boolean` | `false` | no | Vertical separator. Same axis as `direction: 'vertical'` (`wd-divider` `vertical`). |
-| `customClass` | `string` | `''` | no | Extra class on the root node. |
-| `customStyle` | `string \| Record<string, string>` | `''` | no | Extra inline style on the root node. |
+| Name              | Type                               | Default        | Required | Description                                                                         |
+| ----------------- | ---------------------------------- | -------------- | -------- | ----------------------------------------------------------------------------------- |
+| `direction`       | `'horizontal' \| 'vertical'`       | `'horizontal'` | no       | Axis of the line.                                                                   |
+| `dashed`          | `boolean`                          | `false`        | no       | Dashed border instead of solid.                                                     |
+| `hairline`        | `boolean`                          | `true`         | no       | Hairline (1rpx) thin border. Mobile common.                                         |
+| `color`           | `string`                           | —              | no       | Inline border color (any CSS color value).                                          |
+| `marginSize`      | `'small' \| 'medium' \| 'large'`   | `'medium'`     | no       | Vertical margin (only applied for horizontal direction).                            |
+| `contentPosition` | `'left' \| 'center' \| 'right'`    | `'center'`     | no       | Content position along the line (`wd-divider` `content-position`).                  |
+| `vertical`        | `boolean`                          | `false`        | no       | Vertical separator. Same axis as `direction: 'vertical'` (`wd-divider` `vertical`). |
+| `customClass`     | `string`                           | `''`           | no       | Extra class on the root node.                                                       |
+| `customStyle`     | `string \| Record<string, string>` | `''`           | no       | Extra inline style on the root node.                                                |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                    |
+| --------- | ---------------------------------------------- |
 | `default` | Optional text rendered on the horizontal line. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Border default | `--sn-mp-color-border-default` | Line color |
-| Text secondary | `--sn-mp-color-text-secondary` | Slot text color |
+| Token              | CSS Variable                       | Purpose              |
+| ------------------ | ---------------------------------- | -------------------- |
+| Border default     | `--sn-mp-color-border-default`     | Line color           |
+| Text secondary     | `--sn-mp-color-text-secondary`     | Slot text color      |
 | Background surface | `--sn-mp-color-background-surface` | Slot text background |
 
 ## Accessibility

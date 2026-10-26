@@ -33,34 +33,34 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnSteps } from '@snui/uni/components/sn-steps/sn-steps.vue'
-import { SnStep } from '@snui/uni/components/sn-steps/sn-step.vue'
+import { SnSteps } from '@snui/uni/components/sn-steps/sn-steps.vue';
+import { SnStep } from '@snui/uni/components/sn-steps/sn-step.vue';
 ```
 
 ## Props
 
 ### sn-steps
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `active` | `number` | `0` | Active step index |
-| `vertical` | `boolean` | `false` | Vertical layout |
-| `dot` | `boolean` | `false` | Dot indicators |
-| `space` | `string` | `''` | Step spacing (auto by default) |
+| Prop          | Type      | Default | Description                                  |
+| ------------- | --------- | ------- | -------------------------------------------- |
+| `active`      | `number`  | `0`     | Active step index                            |
+| `vertical`    | `boolean` | `false` | Vertical layout                              |
+| `dot`         | `boolean` | `false` | Dot indicators                               |
+| `space`       | `string`  | `''`    | Step spacing (auto by default)               |
 | `alignCenter` | `boolean` | `false` | Centre horizontally (horizontal layout only) |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| `customClass` | `string`  | `''`    | Extra class on the root node                 |
+| `customStyle` | `string`  | `''`    | Inline style on the root node                |
 
 ### sn-step
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | `''` | Step title |
-| `description` | `string` | `''` | Step description |
-| `icon` | `string` | `''` | Step icon name (registered via `registerSnIcons()`) |
-| `status` | `'finished' \| 'process' \| 'error' \| 'wait'` | `undefined` | Step state (derived from `active` when omitted) |
-| `customClass` | `string` | `''` | Extra class on the step root |
-| `customStyle` | `string` | `''` | Inline style on the step root |
+| Prop          | Type                                           | Default     | Description                                         |
+| ------------- | ---------------------------------------------- | ----------- | --------------------------------------------------- |
+| `title`       | `string`                                       | `''`        | Step title                                          |
+| `description` | `string`                                       | `''`        | Step description                                    |
+| `icon`        | `string`                                       | `''`        | Step icon name (registered via `registerSnIcons()`) |
+| `status`      | `'finished' \| 'process' \| 'error' \| 'wait'` | `undefined` | Step state (derived from `active` when omitted)     |
+| `customClass` | `string`                                       | `''`        | Extra class on the step root                        |
+| `customStyle` | `string`                                       | `''`        | Inline style on the step root                       |
 
 ## Events
 
@@ -68,28 +68,28 @@ Neither `sn-steps` nor `sn-step` emits: the state is driven entirely by the `act
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` (steps) | Step list |
-| `icon` (step) | Custom step icon |
-| `title` (step) | Custom step title |
+| Slot                 | Description             |
+| -------------------- | ----------------------- |
+| `default` (steps)    | Step list               |
+| `icon` (step)        | Custom step icon        |
+| `title` (step)       | Custom step title       |
 | `description` (step) | Custom step description |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | Indicator and step surface |
-| `--sn-mp-color-border-default` | Indicator ring and connector |
-| `--sn-mp-color-border-subtle` | Dot-mode connector |
-| `--sn-mp-color-text-secondary` | Wait / finished title and description |
-| `--sn-mp-color-action-primary` | Process / finished indicator and connector |
-| `--sn-mp-color-text-on-primary` | Icon inside a filled indicator |
-| `--sn-mp-color-feedback-danger` | Error indicator and title |
-| `--sn-mp-font-size-md` / `--sn-mp-font-size-xs` | Title / description size |
-| `--sn-mp-font-weight-medium` | Process title weight |
-| `--sn-mp-radius-full` | Circle indicator radius |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | Title-description gap / vertical content indent |
+| Variable                                        | Purpose                                         |
+| ----------------------------------------------- | ----------------------------------------------- |
+| `--sn-mp-color-background-surface`              | Indicator and step surface                      |
+| `--sn-mp-color-border-default`                  | Indicator ring and connector                    |
+| `--sn-mp-color-border-subtle`                   | Dot-mode connector                              |
+| `--sn-mp-color-text-secondary`                  | Wait / finished title and description           |
+| `--sn-mp-color-action-primary`                  | Process / finished indicator and connector      |
+| `--sn-mp-color-text-on-primary`                 | Icon inside a filled indicator                  |
+| `--sn-mp-color-feedback-danger`                 | Error indicator and title                       |
+| `--sn-mp-font-size-md` / `--sn-mp-font-size-xs` | Title / description size                        |
+| `--sn-mp-font-weight-medium`                    | Process title weight                            |
+| `--sn-mp-radius-full`                           | Circle indicator radius                         |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | Title-description gap / vertical content indent |
 
 ## Accessibility
 
@@ -103,7 +103,6 @@ Neither `sn-steps` nor `sn-step` emits: the state is driven entirely by the `act
 Every colour in `sn-steps` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: indicator surfaces flip to the dark surface, inactive rings and connectors use the dark border token, the active state keeps the brand hue, and the error state keeps the danger hue.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

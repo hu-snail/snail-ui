@@ -1,4 +1,4 @@
-import type { StylePackDefinition } from './types.js'
+import type { StylePackDefinition } from './types.js';
 
 /**
  * Doodle Pack — hand-drawn / notebook-sticker style.
@@ -42,7 +42,7 @@ export const doodlePack: StylePackDefinition = {
       },
       background: {
         surface: '#FFF8E7', // notebook cream
-        subtle: '#F5E6B8',  // darker cream
+        subtle: '#F5E6B8', // darker cream
         elevated: '#FFFBEB',
       },
       border: {
@@ -50,14 +50,14 @@ export const doodlePack: StylePackDefinition = {
         subtle: '#3f3f46',
       },
       action: {
-        primary: '#FF6B9D',       // marker pink
+        primary: '#FF6B9D', // marker pink
         primaryHover: '#FF85B0',
       },
       feedback: {
-        success: '#7BC85A',       // grass green
-        warning: '#FFC83D',       // marker yellow
-        danger: '#FF5C5C',        // marker red
-        info: '#5DADE2',          // sky blue
+        success: '#7BC85A', // grass green
+        warning: '#FFC83D', // marker yellow
+        danger: '#FF5C5C', // marker red
+        info: '#5DADE2', // sky blue
       },
     },
   },
@@ -96,6 +96,6 @@ export const doodlePack: StylePackDefinition = {
   density: {
     name: 'comfortable',
   },
-}
+};
 
-export default doodlePack
+export default doodlePack;

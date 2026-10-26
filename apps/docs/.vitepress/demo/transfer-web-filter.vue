@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /** Demo: SnTransfer — 过滤搜索 + 禁用项 + 面板标题 + 自定义行渲染。 */
-import { ref } from 'vue'
-import { h } from 'vue'
-import { SnTransfer } from '@snui/vue-web'
+import { ref } from 'vue';
+import { h } from 'vue';
+import { SnTransfer } from '@snui/vue-web';
 
 interface DemoOption {
-  label: string
-  value: string
-  disabled?: boolean
+  label: string;
+  value: string;
+  disabled?: boolean;
 }
 
 const options: DemoOption[] = [
@@ -17,13 +17,13 @@ const options: DemoOption[] = [
   { label: '杭州 · 运营部（锁定）', value: 'hz-ops', disabled: true },
   { label: '广州 · 客服部', value: 'gz-support' },
   { label: '成都 · 财务部', value: 'cd-finance' },
-]
+];
 
-const target = ref<string[]>(['sh-design'])
+const target = ref<string[]>(['sh-design']);
 
 /** 自定义源面板行渲染：部门名加粗。 */
 function renderSourceLabel({ option }: { option: DemoOption }) {
-  return h('strong', option.label)
+  return h('strong', option.label);
 }
 </script>
 

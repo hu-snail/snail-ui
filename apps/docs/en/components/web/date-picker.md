@@ -30,16 +30,16 @@ Date picker with date / datetime / month / year / daterange / datetimerange mode
 
 ### SnDatePicker Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| type | `'date'\|'datetime'\|'month'\|'year'\|'daterange'\|'datetimerange'` | `'date'` | Mode (range values are arrays) |
-| modelValue | `number \| [number, number] \| null` | `null` | ms timestamp (range: `[start, end]`) |
-| format | `string` | per mode | Lowercase tokens (yyyy/yy/MM/M/dd/d/HH/H/mm/m/ss/s) |
-| placeholder | `string \| [string, string]` | — | Placeholder (dual in range) |
-| clearable | `boolean` | `false` | Clear button |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size |
-| status | `'default'\|'error'\|'warning'` | `'default'` | Status |
+| Prop                | Type                                                                | Default     | Notes                                               |
+| ------------------- | ------------------------------------------------------------------- | ----------- | --------------------------------------------------- |
+| type                | `'date'\|'datetime'\|'month'\|'year'\|'daterange'\|'datetimerange'` | `'date'`    | Mode (range values are arrays)                      |
+| modelValue          | `number \| [number, number] \| null`                                | `null`      | ms timestamp (range: `[start, end]`)                |
+| format              | `string`                                                            | per mode    | Lowercase tokens (yyyy/yy/MM/M/dd/d/HH/H/mm/m/ss/s) |
+| placeholder         | `string \| [string, string]`                                        | —           | Placeholder (dual in range)                         |
+| clearable           | `boolean`                                                           | `false`     | Clear button                                        |
+| disabled / readonly | `boolean`                                                           | `false`     | Disabled / read-only                                |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'`                        | `'medium'`  | Size                                                |
+| status              | `'default'\|'error'\|'warning'`                                     | `'default'` | Status                                              |
 
 Events: `update:modelValue` / `change` / `clear` / `focus` / `blur`. Keyboard: Arrow move, PageUp/PageDown month/year paging, Enter pick/confirm, Esc close, Space open. ARIA: grid/gridcell + aria-selected. date/month/year commit on click; datetime modes require confirm. Weeks start Monday; panel copy is zh-CN.
 

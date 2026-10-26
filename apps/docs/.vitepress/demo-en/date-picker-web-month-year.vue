@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnDatePicker — month / year modes. */
-import { ref } from 'vue'
-import { SnDatePicker } from '@snui/vue-web'
-const month = ref<number | null>(null)
-const year = ref<number | null>(null)
+import { ref } from 'vue';
+import { SnDatePicker } from '@snui/vue-web';
+const month = ref<number | null>(null);
+const year = ref<number | null>(null);
 </script>
 
 <template>
@@ -14,5 +14,9 @@ const year = ref<number | null>(null)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 12px; align-items: center; }
+.demo-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 </style>

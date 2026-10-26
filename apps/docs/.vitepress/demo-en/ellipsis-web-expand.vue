@@ -3,12 +3,12 @@
  * Demo: SnEllipsis — `expandTrigger="click"` toggles the clamped text between
  * collapsed and expanded in place, without a tooltip round-trip.
  */
-import { SnEllipsis } from '@snui/vue-web'
+import { SnEllipsis } from '@snui/vue-web';
 
 const longText =
   'Click this text to toggle between clamped and full content: collapsed keeps two lines with an ellipsis at the end,' +
   'expanded shows the full content without the tooltip; click again to return to the clamped state.' +
-  'The state is fully maintained inside the component; no external expanded prop is needed.'
+  'The state is fully maintained inside the component; no external expanded prop is needed.';
 </script>
 
 <template>

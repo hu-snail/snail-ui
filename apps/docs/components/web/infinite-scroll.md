@@ -25,12 +25,12 @@
 
 ### SnInfiniteScroll Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| distance | `number` | `0` | 触底触发 `load` 的距离阈值（px） |
-| load | `() => Promise<void> \| void` | `undefined` | 触底时的加载回调；Promise 未决期间不重复触发，拒绝会被吞掉并复位状态 |
-| scrollbarProps | `Record<string, unknown>` | `undefined` | 附加到内部滚动容器上的属性 |
-| showLoading | `boolean` | `true` | `load` 未决期间在内容底部显示转圈 |
+| 名称           | 类型                          | 默认值      | 说明                                                                 |
+| -------------- | ----------------------------- | ----------- | -------------------------------------------------------------------- |
+| distance       | `number`                      | `0`         | 触底触发 `load` 的距离阈值（px）                                     |
+| load           | `() => Promise<void> \| void` | `undefined` | 触底时的加载回调；Promise 未决期间不重复触发，拒绝会被吞掉并复位状态 |
+| scrollbarProps | `Record<string, unknown>`     | `undefined` | 附加到内部滚动容器上的属性                                           |
+| showLoading    | `boolean`                     | `true`      | `load` 未决期间在内容底部显示转圈                                    |
 
 ### SnInfiniteScroll Events
 
@@ -38,9 +38,9 @@
 
 ### SnInfiniteScroll Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | — | 滚动内容 |
+| 名称    | 参数 | 说明     |
+| ------- | ---- | -------- |
+| default | —    | 滚动内容 |
 
 尺寸由使用方控制（如 `style="height: 240px"`），根元素即滚动容器（`overflow: auto`）。
 

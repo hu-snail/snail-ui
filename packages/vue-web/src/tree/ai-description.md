@@ -17,38 +17,34 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui `n-tree`
 ## Import
 
 ```ts
-import SnTree from '@snui/vue-web/src/tree/SnTree.vue'
-import type {
-  SnTreeKey,
-  SnTreeOption,
-  SnTreeRenderSidePart,
-} from '@snui/vue-web/src/tree/sn-tree-types'
+import SnTree from '@snui/vue-web/src/tree/SnTree.vue';
+import type { SnTreeKey, SnTreeOption, SnTreeRenderSidePart } from '@snui/vue-web/src/tree/sn-tree-types';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `data` | `SnTreeOption[]` | `[]` | no | Tree node data. |
-| `keyField` | `string` | `'key'` | no | Field name of the node key. |
-| `labelField` | `string` | `'label'` | no | Field name of the node label. |
-| `childrenField` | `string` | `'children'` | no | Field name of the child list. |
-| `defaultExpandedKeys` | `SnTreeKey[]` | `[]` | no | Uncontrolled initially expanded keys. |
-| `expandedKeys` | `SnTreeKey[] \| undefined` | `undefined` | no | Controlled expanded keys (`v-model:expanded-keys`); `undefined` = uncontrolled. |
-| `defaultExpandAll` | `boolean` | `false` | no | Expand every non-leaf node initially. |
-| `selectable` | `boolean` | `true` | no | Allow selecting nodes by click. |
-| `selectedKeys` | `SnTreeKey[] \| undefined` | `undefined` | no | Controlled selected keys (`v-model:selected-keys`). |
-| `defaultSelectedKeys` | `SnTreeKey[]` | `[]` | no | Uncontrolled initially selected keys. |
-| `multiple` | `boolean` | `false` | no | Allow multiple selected nodes. |
-| `cancelable` | `boolean` | `true` | no | Clicking a selected node deselects it. |
-| `checkable` | `boolean` | `false` | no | Render a checkbox per node. |
-| `checkedKeys` | `SnTreeKey[] \| undefined` | `undefined` | no | Controlled checked keys (`v-model:checked-keys`). |
-| `defaultCheckedKeys` | `SnTreeKey[]` | `[]` | no | Uncontrolled initially checked keys. |
-| `cascade` | `boolean` | `false` | no | Checkboxes cascade to children; parents show an indeterminate state. |
-| `blockLine` | `boolean` | `false` | no | Hover/selected background spans the whole node row. |
-| `indent` | `number` | `24` | no | Per-level indent width (px). |
-| `renderPrefix` | `SnTreeRenderSidePart` | `undefined` | no | Node prefix render fn, receives `{ option, checked, selected }`. |
-| `renderSuffix` | `SnTreeRenderSidePart` | `undefined` | no | Node suffix render fn, receives `{ option, checked, selected }`. |
+| Name                  | Type                       | Default      | Required | Description                                                                     |
+| --------------------- | -------------------------- | ------------ | -------- | ------------------------------------------------------------------------------- |
+| `data`                | `SnTreeOption[]`           | `[]`         | no       | Tree node data.                                                                 |
+| `keyField`            | `string`                   | `'key'`      | no       | Field name of the node key.                                                     |
+| `labelField`          | `string`                   | `'label'`    | no       | Field name of the node label.                                                   |
+| `childrenField`       | `string`                   | `'children'` | no       | Field name of the child list.                                                   |
+| `defaultExpandedKeys` | `SnTreeKey[]`              | `[]`         | no       | Uncontrolled initially expanded keys.                                           |
+| `expandedKeys`        | `SnTreeKey[] \| undefined` | `undefined`  | no       | Controlled expanded keys (`v-model:expanded-keys`); `undefined` = uncontrolled. |
+| `defaultExpandAll`    | `boolean`                  | `false`      | no       | Expand every non-leaf node initially.                                           |
+| `selectable`          | `boolean`                  | `true`       | no       | Allow selecting nodes by click.                                                 |
+| `selectedKeys`        | `SnTreeKey[] \| undefined` | `undefined`  | no       | Controlled selected keys (`v-model:selected-keys`).                             |
+| `defaultSelectedKeys` | `SnTreeKey[]`              | `[]`         | no       | Uncontrolled initially selected keys.                                           |
+| `multiple`            | `boolean`                  | `false`      | no       | Allow multiple selected nodes.                                                  |
+| `cancelable`          | `boolean`                  | `true`       | no       | Clicking a selected node deselects it.                                          |
+| `checkable`           | `boolean`                  | `false`      | no       | Render a checkbox per node.                                                     |
+| `checkedKeys`         | `SnTreeKey[] \| undefined` | `undefined`  | no       | Controlled checked keys (`v-model:checked-keys`).                               |
+| `defaultCheckedKeys`  | `SnTreeKey[]`              | `[]`         | no       | Uncontrolled initially checked keys.                                            |
+| `cascade`             | `boolean`                  | `false`      | no       | Checkboxes cascade to children; parents show an indeterminate state.            |
+| `blockLine`           | `boolean`                  | `false`      | no       | Hover/selected background spans the whole node row.                             |
+| `indent`              | `number`                   | `24`         | no       | Per-level indent width (px).                                                    |
+| `renderPrefix`        | `SnTreeRenderSidePart`     | `undefined`  | no       | Node prefix render fn, receives `{ option, checked, selected }`.                |
+| `renderSuffix`        | `SnTreeRenderSidePart`     | `undefined`  | no       | Node suffix render fn, receives `{ option, checked, selected }`.                |
 
 ### TreeOption fields
 
@@ -60,18 +56,18 @@ import type {
 
 ## Events
 
-| Name | Parameters | Description |
-|---|---|---|
+| Name                  | Parameters                                                                    | Description                                           |
+| --------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------- |
 | `update:expandedKeys` | `(keys, options, meta: { node, action: 'expand' \| 'collapse' \| 'filter' })` | Expansion changed — supports `v-model:expanded-keys`. |
-| `update:selectedKeys` | `(keys, options, meta: { node, action: 'select' \| 'unselect' })` | Selection changed — supports `v-model:selected-keys`. |
-| `update:checkedKeys` | `(keys, options, meta: { node, action: 'check' \| 'uncheck' })` | Checking changed — supports `v-model:checked-keys`. |
+| `update:selectedKeys` | `(keys, options, meta: { node, action: 'select' \| 'unselect' })`             | Selection changed — supports `v-model:selected-keys`. |
+| `update:checkedKeys`  | `(keys, options, meta: { node, action: 'check' \| 'uncheck' })`               | Checking changed — supports `v-model:checked-keys`.   |
 
 `options` maps each emitted key to its `SnTreeOption` (or `null`).
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name    | Description                                              |
+| ------- | -------------------------------------------------------- |
 | `empty` | Rendered when `data` produces no rows (default: 无数据). |
 
 ## Deferred (future markers — not implemented)
@@ -112,12 +108,12 @@ import type {
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary / tertiary / disabled / on-primary | `--sn-web-color-text-*` | Node text, switcher + empty color, disabled text, check mark |
-| Background subtle | `--sn-web-color-background-subtle` | Row hover background |
-| Action primary | `--sn-web-color-action-primary` | Checked checkbox, selected background tint (10% `color-mix`) |
-| Border default | `--sn-web-color-border-default` | Checkbox frame |
+| Token                                           | CSS Variable                       | Purpose                                                      |
+| ----------------------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| Text primary / tertiary / disabled / on-primary | `--sn-web-color-text-*`            | Node text, switcher + empty color, disabled text, check mark |
+| Background subtle                               | `--sn-web-color-background-subtle` | Row hover background                                         |
+| Action primary                                  | `--sn-web-color-action-primary`    | Checked checkbox, selected background tint (10% `color-mix`) |
+| Border default                                  | `--sn-web-color-border-default`    | Checkbox frame                                               |
 
 ## Versioning
 

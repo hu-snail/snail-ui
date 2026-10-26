@@ -19,15 +19,7 @@ describe('@snui/protocol — InputContract', () => {
     });
 
     it('accepts all documented types', () => {
-      for (const t of [
-        'text',
-        'password',
-        'email',
-        'number',
-        'tel',
-        'url',
-        'search',
-      ] as const) {
+      for (const t of ['text', 'password', 'email', 'number', 'tel', 'url', 'search'] as const) {
         expect(InputPropsSchema.safeParse({ type: t }).success).toBe(true);
       }
     });
@@ -75,9 +67,7 @@ describe('@snui/protocol — InputContract', () => {
     });
 
     it('rejects unknown extra fields (strict)', () => {
-      expect(
-        InputPropsSchema.safeParse({ type: 'text', sneaky: true }).success,
-      ).toBe(false);
+      expect(InputPropsSchema.safeParse({ type: 'text', sneaky: true }).success).toBe(false);
     });
   });
 

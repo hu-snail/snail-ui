@@ -28,30 +28,30 @@ A string `css-icon` applies that class verbatim to the glyph node; the boolean f
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| null` | `null` | Current score |
-| `num` | `number` | `5` | Number of icons |
-| `readonly` | `boolean` | `false` | Render-only mode |
-| `size` | `string \| number` | `undefined` | Icon size (px design units) |
-| `space` | `string \| number` | `undefined` | Gap between icons |
-| `color` | `string` | `''` | Inactive color |
-| `activeColor` | `string \| string[]` | `''` | Active color, or one per icon |
-| `icon` / `activeIcon` | `string` | `'star'` | Registry icon names |
-| `iconPrefix` | `string` | `''` | Parity only (informational) |
-| `cssIcon` | `boolean \| string` | `false` | Treat the icon names as CSS classes |
-| `disabled` | `boolean` | `false` | Disables every icon |
-| `allowHalf` | `boolean` | `false` | Half-star selection |
-| `clearable` | `boolean` | `false` | Re-tap clears back to `null` |
-| `block` | `boolean` | `false` | Stretch across the row |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                          | Type                 | Default     | Description                         |
+| ----------------------------- | -------------------- | ----------- | ----------------------------------- |
+| `modelValue`                  | `number \| null`     | `null`      | Current score                       |
+| `num`                         | `number`             | `5`         | Number of icons                     |
+| `readonly`                    | `boolean`            | `false`     | Render-only mode                    |
+| `size`                        | `string \| number`   | `undefined` | Icon size (px design units)         |
+| `space`                       | `string \| number`   | `undefined` | Gap between icons                   |
+| `color`                       | `string`             | `''`        | Inactive color                      |
+| `activeColor`                 | `string \| string[]` | `''`        | Active color, or one per icon       |
+| `icon` / `activeIcon`         | `string`             | `'star'`    | Registry icon names                 |
+| `iconPrefix`                  | `string`             | `''`        | Parity only (informational)         |
+| `cssIcon`                     | `boolean \| string`  | `false`     | Treat the icon names as CSS classes |
+| `disabled`                    | `boolean`            | `false`     | Disables every icon                 |
+| `allowHalf`                   | `boolean`            | `false`     | Half-star selection                 |
+| `clearable`                   | `boolean`            | `false`     | Re-tap clears back to `null`        |
+| `block`                       | `boolean`            | `false`     | Stretch across the row              |
+| `customClass` / `customStyle` | `string`             | `''`        | Root class / inline style           |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Score changed | `(value: number \| null)` |
-| `change` | Score changed (same tick) | `{ value }` |
+| Event               | Description               | Payload                   |
+| ------------------- | ------------------------- | ------------------------- |
+| `update:modelValue` | Score changed             | `(value: number \| null)` |
+| `change`            | Score changed (same tick) | `{ value }`               |
 
 ## Slots
 
@@ -59,11 +59,11 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-feedback-warning`` | Default active star |
-| ``--sn-mp-color-text-disabled`` | Default inactive star |
-| ``--sn-mp-spacing-2`` | Default icon gap |
+| Token                            | Purpose               |
+| -------------------------------- | --------------------- |
+| `--sn-mp-color-feedback-warning` | Default active star   |
+| `--sn-mp-color-text-disabled`    | Default inactive star |
+| `--sn-mp-spacing-2`              | Default icon gap      |
 
 ## Accessibility
 
@@ -73,4 +73,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

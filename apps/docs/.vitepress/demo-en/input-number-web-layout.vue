@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnInputNumber — buttonPlacement + sizes. */
-import { ref } from 'vue'
-import { SnInputNumber } from '@snui/vue-web'
-const v = ref(1)
+import { ref } from 'vue';
+import { SnInputNumber } from '@snui/vue-web';
+const v = ref(1);
 </script>
 
 <template>
@@ -24,7 +24,19 @@ const v = ref(1)
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-.demo-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-.demo-field { width: 108px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.demo-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.demo-field {
+  width: 108px;
+}
 </style>

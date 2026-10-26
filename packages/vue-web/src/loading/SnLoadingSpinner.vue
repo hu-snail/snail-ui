@@ -14,35 +14,35 @@
  * CSS spin would just rotate a static arc.
  */
 
-defineOptions({ name: 'SnLoadingSpinner' })
+defineOptions({ name: 'SnLoadingSpinner' });
 
 const props = withDefaults(
   defineProps<{
     /** SVG arc radius in design units. */
-    radius?: number
+    radius?: number;
     /** Scale factor applied to `radius`. */
-    scale?: number
+    scale?: number;
     /** Arc stroke width in SVG units. */
-    strokeWidth?: number
+    strokeWidth?: number;
   }>(),
   {
     radius: 100,
     scale: 1,
     strokeWidth: 28,
   },
-)
+);
 
 /** SMIL cycle length, matching upstream's `duration` constant. */
-const ROTATION_DURATION = '1.6s'
+const ROTATION_DURATION = '1.6s';
 
-const scaledRadius = props.radius / props.scale
+const scaledRadius = props.radius / props.scale;
 /** Upstream insets the sweeping circle by half the stroke width. */
-const circleRadius = props.radius - props.strokeWidth / 2
-const circumference = 2 * Math.PI * circleRadius
+const circleRadius = props.radius - props.strokeWidth / 2;
+const circumference = 2 * Math.PI * circleRadius;
 /** Upstream draws a fixed 0.9-of-circumference arc, offset by 0.75. */
-const dashArray = (0.9 * circumference).toFixed(3)
-const dashOffset = (0.75 * circumference).toFixed(3)
-const dashOffsetMin = (0.25 * circumference).toFixed(3)
+const dashArray = (0.9 * circumference).toFixed(3);
+const dashOffset = (0.75 * circumference).toFixed(3);
+const dashOffsetMin = (0.25 * circumference).toFixed(3);
 </script>
 
 <template>

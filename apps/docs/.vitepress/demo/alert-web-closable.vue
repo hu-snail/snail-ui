@@ -3,36 +3,36 @@
  * alert-web-closable — a closable alert plus one whose `onClose` vetoes
  * the dismissal while an async "save" is pending.
  */
-import { ref } from 'vue'
-import { SnAlert, SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAlert, SnButton } from '@snui/vue-web';
 
-const log = ref<string[]>([])
-const saving = ref(false)
+const log = ref<string[]>([]);
+const saving = ref(false);
 
 function record(message: string) {
-  log.value = [...log.value, `${new Date().toLocaleTimeString()} ${message}`].slice(-5)
+  log.value = [...log.value, `${new Date().toLocaleTimeString()} ${message}`].slice(-5);
 }
 
 function onAfterLeave() {
-  record('onAfterLeave — 节点已移除')
+  record('onAfterLeave — 节点已移除');
 }
 
 /** Async veto: block the close while `saving` is true. */
 async function onCloseVetoable() {
   if (saving.value) {
-    record('onClose 返回 false — 已拦截关闭')
-    return false
+    record('onClose 返回 false — 已拦截关闭');
+    return false;
   }
-  record('onClose 通过 — 允许关闭')
-  return true
+  record('onClose 通过 — 允许关闭');
+  return true;
 }
 
 async function simulateSave() {
-  saving.value = true
-  record('开始保存…（此时点击关闭会被拦截）')
-  await new Promise((resolve) => setTimeout(resolve, 1500))
-  saving.value = false
-  record('保存结束')
+  saving.value = true;
+  record('开始保存…（此时点击关闭会被拦截）');
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+  saving.value = false;
+  record('保存结束');
 }
 </script>
 

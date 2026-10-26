@@ -8,5 +8,5 @@
  * (mirrors n-equation's `katex` prop).
  */
 export interface SnEquationKatex {
-  renderToString(expression: string, options?: Record<string, unknown>): string
+  renderToString(expression: string, options?: Record<string, unknown>): string;
 }

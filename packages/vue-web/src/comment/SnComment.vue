@@ -1,11 +1,11 @@
 <script lang="ts">
 /** Comment alignment: the string form applies to both rows; the object form overrides rows separately. */
 export interface SnCommentAlignParts {
-  datetime?: 'left' | 'right'
-  actions?: 'left' | 'right'
+  datetime?: 'left' | 'right';
+  actions?: 'left' | 'right';
 }
 
-export type SnCommentAlign = 'left' | 'right' | SnCommentAlignParts
+export type SnCommentAlign = 'left' | 'right' | SnCommentAlignParts;
 </script>
 
 <script setup lang="ts">
@@ -44,65 +44,65 @@ export type SnCommentAlign = 'left' | 'right' | SnCommentAlignParts
  *   </SnComment>
  */
 
-import { computed, useSlots } from 'vue'
+import { computed, useSlots } from 'vue';
 
-defineOptions({ name: 'SnComment' })
+defineOptions({ name: 'SnComment' });
 
 const props = withDefaults(
   defineProps<{
     /** Author name; the `author` slot overrides it. */
-    author?: string
+    author?: string;
     /** Avatar image URL; the `avatar` slot overrides it. */
-    avatar?: string
+    avatar?: string;
     /** Comment body; the `content` slot overrides it. */
-    content?: string
+    content?: string;
     /** Datetime text; the `datetime` slot overrides it. */
-    datetime?: string
+    datetime?: string;
     /** Alignment of the datetime row and the actions row. A string applies
      * to both rows; an object overrides them separately. */
-    align?: SnCommentAlign
+    align?: SnCommentAlign;
   }>(),
   {
     align: 'left',
   },
-)
+);
 
 defineSlots<{
   /** Avatar column content (overrides `avatar`). */
-  avatar?(): unknown
+  avatar?(): unknown;
   /** Author name (overrides `author`). */
-  author?(): unknown
+  author?(): unknown;
   /** Datetime text (overrides `datetime`). */
-  datetime?(): unknown
+  datetime?(): unknown;
   /** Comment body (overrides `content`). */
-  content?(): unknown
+  content?(): unknown;
   /** Actions row (usually plain spans). */
-  actions?(): unknown
+  actions?(): unknown;
   /** Nested `<SnComment>` replies. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Reference truthiness: an empty-string prop counts as absent, a slot
  * always provides the area (arco `hasPropOrSlot`), with slot-wins order. */
-const hasAuthor = (): boolean => Boolean(props.author || slots.author)
-const hasAvatar = (): boolean => Boolean(props.avatar || slots.avatar)
-const hasContent = (): boolean => Boolean(props.content || slots.content)
-const hasDatetime = (): boolean => Boolean(props.datetime || slots.datetime)
+const hasAuthor = (): boolean => Boolean(props.author || slots.author);
+const hasAvatar = (): boolean => Boolean(props.avatar || slots.avatar);
+const hasContent = (): boolean => Boolean(props.content || slots.content);
+const hasDatetime = (): boolean => Boolean(props.datetime || slots.datetime);
 
 /** Resolved row alignment; string form fans out to both rows, object form
  * falls back to `left` per missing key (arco computedAlign behavior). */
 const alignParts = computed<{ datetime: 'left' | 'right'; actions: 'left' | 'right' }>(() => {
-  const value = props.align
+  const value = props.align;
   if (typeof value === 'string') {
-    return { datetime: value, actions: value }
+    return { datetime: value, actions: value };
   }
   return {
     datetime: value.datetime ?? 'left',
     actions: value.actions ?? 'left',
-  }
-})
+  };
+});
 </script>
 
 <template>

@@ -45,50 +45,50 @@ The second-to-last layer of the fallback chain is a font icon: with `cssIcon` tr
 For an explicit import:
 
 ```ts
-import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue'
+import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `src` | `string` | `''` | Image URL; failure falls back to `alt` → text → icon |
-| `text` | `string` | `''` | Initials / short label |
-| `icon` | `string` | `''` | Icon name (registered via `registerSnIcons()`) |
-| `iconPrefix` | `string` | `''` | Iconfont class prefix, used when `cssIcon` is on |
-| `cssIcon` | `boolean \| string` | `false` | Render a font icon; a string value is the class prefix |
-| `size` | `string \| number` | `'normal'` | Preset or custom length; a number is px |
-| `shape` | `'round' \| 'square'` | `'round'` | Avatar outline |
-| `bgColor` | `string` | `''` | Inline background override |
-| `color` | `string` | `''` | Inline text / icon colour override |
-| `alt` | `string` | `''` | Placeholder label used when the image fails |
-| `mode` | `string` | `'aspectFill'` | uni-app `<image>` fill mode |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type                  | Default        | Description                                            |
+| ------------- | --------------------- | -------------- | ------------------------------------------------------ |
+| `src`         | `string`              | `''`           | Image URL; failure falls back to `alt` → text → icon   |
+| `text`        | `string`              | `''`           | Initials / short label                                 |
+| `icon`        | `string`              | `''`           | Icon name (registered via `registerSnIcons()`)         |
+| `iconPrefix`  | `string`              | `''`           | Iconfont class prefix, used when `cssIcon` is on       |
+| `cssIcon`     | `boolean \| string`   | `false`        | Render a font icon; a string value is the class prefix |
+| `size`        | `string \| number`    | `'normal'`     | Preset or custom length; a number is px                |
+| `shape`       | `'round' \| 'square'` | `'round'`      | Avatar outline                                         |
+| `bgColor`     | `string`              | `''`           | Inline background override                             |
+| `color`       | `string`              | `''`           | Inline text / icon colour override                     |
+| `alt`         | `string`              | `''`           | Placeholder label used when the image fails            |
+| `mode`        | `string`              | `'aspectFill'` | uni-app `<image>` fill mode                            |
+| `customClass` | `string`              | `''`           | Extra class on the root node                           |
+| `customStyle` | `string`              | `''`           | Inline style on the root node                          |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `click` | Tapped anywhere on the avatar | `(event: Event)` |
+| Event   | Description                                                    | Payload          |
+| ------- | -------------------------------------------------------------- | ---------------- |
+| `click` | Tapped anywhere on the avatar                                  | `(event: Event)` |
 | `error` | Image failed to load (the fallback layer is already rendering) | `(event: Event)` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                                          |
+| --------- | ---------------------------------------------------- |
 | `default` | Fully custom content; overrides every built-in layer |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-subtle` | Default placeholder fill |
-| `--sn-mp-color-text-secondary` | Default initials colour |
-| `--sn-mp-color-text-primary` | Doodle skin outline |
-| `--sn-mp-font-size-{xs,md,lg,xl}` | Initials size, scaled by preset |
-| `--sn-mp-font-weight-{semibold,bold}` | Initials weight |
-| `--sn-mp-radius-{md,full}` | `square` vs `round` shape |
+| Variable                              | Purpose                         |
+| ------------------------------------- | ------------------------------- |
+| `--sn-mp-color-background-subtle`     | Default placeholder fill        |
+| `--sn-mp-color-text-secondary`        | Default initials colour         |
+| `--sn-mp-color-text-primary`          | Doodle skin outline             |
+| `--sn-mp-font-size-{xs,md,lg,xl}`     | Initials size, scaled by preset |
+| `--sn-mp-font-weight-{semibold,bold}` | Initials weight                 |
+| `--sn-mp-radius-{md,full}`            | `square` vs `round` shape       |
 
 ## Accessibility
 
@@ -104,7 +104,6 @@ Both the background and the text colour come from `--sn-mp-color-*` with no ligh
 - `bgColor` / `color` overrides apply verbatim; use `var(--sn-mp-*)` for them so they track dark mode.
 
 Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

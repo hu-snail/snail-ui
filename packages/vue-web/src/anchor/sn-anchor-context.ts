@@ -9,21 +9,19 @@
  * Kept in a plain `.ts` module (rather than inside SnAnchor.vue) so that
  * SnAnchorLink can import the key without a circular import.
  */
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 export interface SnAnchorContext {
   /** Currently active link href, or `null` when none is active. */
-  activeHref: Ref<string | null>
+  activeHref: Ref<string | null>;
   /** Scroll into view and mark `href` active. */
-  setActiveHref: (href: string, transition?: boolean) => void
+  setActiveHref: (href: string, transition?: boolean) => void;
   /** Reposition the rail bar against `titleEl` (a link's `<a>` element). */
-  updateBarPosition: (titleEl: HTMLElement, transition?: boolean) => void
+  updateBarPosition: (titleEl: HTMLElement, transition?: boolean) => void;
   /** Hrefs of every mounted link, in mount order. */
-  collectedLinkHrefs: string[]
+  collectedLinkHrefs: string[];
   /** `<a>` elements of every mounted link, in mount order. */
-  titleEls: HTMLElement[]
+  titleEls: HTMLElement[];
 }
 
-export const snAnchorInjectionKey: InjectionKey<SnAnchorContext> = Symbol(
-  'sn-anchor',
-)
+export const snAnchorInjectionKey: InjectionKey<SnAnchorContext> = Symbol('sn-anchor');

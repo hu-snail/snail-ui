@@ -28,36 +28,36 @@ With `cascade`, `columns` is a tree and the following columns are derived from t
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `Array<string \| number>` | `[]` | Selected value per column |
-| `columns` | `Array<Array<string \| number \| object>>` | `[]` | Columns; the option tree when `cascade` is set |
-| `itemHeight` | `number` | `44` | Row height in px design units |
-| `visibleItemCount` | `number` | `6` | Number of visible rows |
-| `valueKey` / `labelKey` / `childrenKey` | `string` | `'value'` / `'label'` / `'children'` | Option keys |
-| `immediateChange` | `boolean` | `false` | Emit `change` while dragging |
-| `cascade` | `boolean` | `false` | Treat `columns` as a nested tree |
-| `disabled` | `boolean` | `false` | Disables the roller |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                                    | Type                                       | Default                              | Description                                    |
+| --------------------------------------- | ------------------------------------------ | ------------------------------------ | ---------------------------------------------- |
+| `modelValue`                            | `Array<string \| number>`                  | `[]`                                 | Selected value per column                      |
+| `columns`                               | `Array<Array<string \| number \| object>>` | `[]`                                 | Columns; the option tree when `cascade` is set |
+| `itemHeight`                            | `number`                                   | `44`                                 | Row height in px design units                  |
+| `visibleItemCount`                      | `number`                                   | `6`                                  | Number of visible rows                         |
+| `valueKey` / `labelKey` / `childrenKey` | `string`                                   | `'value'` / `'label'` / `'children'` | Option keys                                    |
+| `immediateChange`                       | `boolean`                                  | `false`                              | Emit `change` while dragging                   |
+| `cascade`                               | `boolean`                                  | `false`                              | Treat `columns` as a nested tree               |
+| `disabled`                              | `boolean`                                  | `false`                              | Disables the roller                            |
+| `customClass` / `customStyle`           | `string`                                   | `''`                                 | Root class / inline style                      |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Selection changed | `(value: Array)` |
-| `change` | Selection settled (or per move with `immediateChange`) | `PickerViewChangePayload` |
-| `pickstart` / `pickend` | Touch drag start / end | — |
+| Event                   | Description                                            | Payload                   |
+| ----------------------- | ------------------------------------------------------ | ------------------------- |
+| `update:modelValue`     | Selection changed                                      | `(value: Array)`          |
+| `change`                | Selection settled (or per move with `immediateChange`) | `PickerViewChangePayload` |
+| `pickstart` / `pickend` | Touch drag start / end                                 | —                         |
 
 ## Exposed API
 
-| Member | Signature | Description |
-| --- | --- | --- |
-| `getSelectedValues` | `() => Array` | Current value per column |
-| `getSelectedOptions` | `() => Array` | Current raw option per column |
-| `getSelectedLabels` | `() => string[]` | Current label per column |
-| `getSelectedIndex` / `getColumnIndex` | `() => number[]` | Selected row index per column |
-| `getColumnsData` / `getColumnData` | `(index?) => Array` | Normalized column data |
-| `resetColumns` | `() => void` | Reset every column to its first selectable row |
+| Member                                | Signature           | Description                                    |
+| ------------------------------------- | ------------------- | ---------------------------------------------- |
+| `getSelectedValues`                   | `() => Array`       | Current value per column                       |
+| `getSelectedOptions`                  | `() => Array`       | Current raw option per column                  |
+| `getSelectedLabels`                   | `() => string[]`    | Current label per column                       |
+| `getSelectedIndex` / `getColumnIndex` | `() => number[]`    | Selected row index per column                  |
+| `getColumnsData` / `getColumnData`    | `(index?) => Array` | Normalized column data                         |
+| `resetColumns`                        | `() => void`        | Reset every column to its first selectable row |
 
 ## Slots
 
@@ -65,14 +65,14 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | Roller surface |
+| Token                                                       | Purpose                       |
+| ----------------------------------------------------------- | ----------------------------- |
+| `--sn-mp-color-background-elevated`                         | Roller surface                |
 | ``--sn-mp-color-text-primary` / `-secondary` / `-disabled`` | Active / idle / disabled rows |
-| ``--sn-mp-color-border-subtle`` | Selection indicator |
-| ``--sn-mp-font-size-md`` | Row text size |
-| ``--sn-mp-font-weight-semibold`` | Active row weight |
-| ``--sn-mp-spacing-2` / `-3`` | Indicator inset / row padding |
+| `--sn-mp-color-border-subtle`                               | Selection indicator           |
+| `--sn-mp-font-size-md`                                      | Row text size                 |
+| `--sn-mp-font-weight-semibold`                              | Active row weight             |
+| ``--sn-mp-spacing-2` / `-3``                                | Indicator inset / row padding |
 
 ## Accessibility
 
@@ -86,4 +86,3 @@ Beyond touch, the H5 build accepts desktop input on the roller: hold the left mo
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

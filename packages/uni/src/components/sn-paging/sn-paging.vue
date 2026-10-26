@@ -48,13 +48,13 @@
  *   - 虚拟列表 / use-page-scroll 模式 — 登记为后续任务
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import SnLoading from '../sn-loading/sn-loading.vue'
-import { ChevronDown } from '../sn-icon/sn-icon-set'
-import { createBrowserPagingGesture } from './sn-paging-simulate'
+import { computed, onBeforeUnmount, onMounted, ref, type ComponentPublicInstance } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import SnLoading from '../sn-loading/sn-loading.vue';
+import { ChevronDown } from '../sn-icon/sn-icon-set';
+import { createBrowserPagingGesture } from './sn-paging-simulate';
 
-defineOptions({ name: 'SnPaging' })
+defineOptions({ name: 'SnPaging' });
 
 /**
  * True when rendering without a uni runtime (plain browser / docs preview):
@@ -62,69 +62,68 @@ defineOptions({ name: 'SnPaging' })
  * `@scrolltolower` do not exist and the touch fallback takes over.
  */
 const isBrowserHost =
-  typeof document !== 'undefined' &&
-  typeof (globalThis as { uni?: unknown }).uni === 'undefined'
+  typeof document !== 'undefined' && typeof (globalThis as { uni?: unknown }).uni === 'undefined';
 
 /** Expanded refresher height in px (100rpx at the 750→375 docs mapping). */
-const REFRESHER_HEIGHT_PX = 50
+const REFRESHER_HEIGHT_PX = 50;
 
 /** Visual phase of the custom refresher slot. */
-type RefresherPhase = 'idle' | 'pulling' | 'ready' | 'refreshing' | 'complete'
+type RefresherPhase = 'idle' | 'pulling' | 'ready' | 'refreshing' | 'complete';
 /** Visual phase of the load-more footer. */
-type LoadMorePhase = 'default' | 'loading' | 'noMore' | 'fail'
+type LoadMorePhase = 'default' | 'loading' | 'noMore' | 'fail';
 /** Which kind of query is in flight. */
-type QueryPhase = 'refresh' | 'loadMore'
+type QueryPhase = 'refresh' | 'loadMore';
 
 const props = withDefaults(
   defineProps<{
     /** v-model — aggregated list; the host renders it in the default slot. */
-    modelValue?: unknown[]
+    modelValue?: unknown[];
     /** Fire the first query automatically after mount. */
-    auto?: boolean
+    auto?: boolean;
     /** First page number emitted by `query`. */
-    defaultPageNo?: number
+    defaultPageNo?: number;
     /** Page size emitted by `query`; a shorter page ends the sequence. */
-    defaultPageSize?: number
+    defaultPageSize?: number;
     /* ── refresher (z-paging subset) ─────────────────────────────────── */
 
     /** Enable the native pull-to-refresh gesture. */
-    refresherEnabled?: boolean
+    refresherEnabled?: boolean;
     /** Pull distance that arms the refresh, in px (scroll-view contract). */
-    refresherThreshold?: number
+    refresherThreshold?: number;
     /** Text while pulling below the threshold. */
-    refresherDefaultText?: string
+    refresherDefaultText?: string;
     /** Text once the pull passed the threshold. */
-    refresherPullingText?: string
+    refresherPullingText?: string;
     /** Text while the refresh query is in flight. */
-    refresherRefreshingText?: string
+    refresherRefreshingText?: string;
     /** Text shown during the success hold after `complete`. */
-    refresherCompleteText?: string
+    refresherCompleteText?: string;
     /** How long the success text holds, in ms; 0 skips the hold. */
-    refresherCompleteDuration?: number
+    refresherCompleteDuration?: number;
     /* ── load-more (z-paging subset) ─────────────────────────────────── */
 
     /** Enable loading the next page on scroll-to-bottom. */
-    loadMoreEnabled?: boolean
+    loadMoreEnabled?: boolean;
     /** Distance from the bottom that fires load-more, in px. */
-    lowerThreshold?: number
+    lowerThreshold?: number;
     /** Footer text when idle; tapping it loads the next page. */
-    loadMoreDefaultText?: string
+    loadMoreDefaultText?: string;
     /** Footer text while a page is loading. */
-    loadMoreLoadingText?: string
+    loadMoreLoadingText?: string;
     /** Footer text once every page is loaded. */
-    loadMoreNoMoreText?: string
+    loadMoreNoMoreText?: string;
     /** Footer text after a failure; tapping it retries. */
-    loadMoreFailText?: string
+    loadMoreFailText?: string;
     /* ── empty / root ────────────────────────────────────────────────── */
 
     /** Text of the built-in empty view. */
-    emptyText?: string
+    emptyText?: string;
     /** Pad the container bottom for the device safe area (iPhone X+). */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: () => [],
@@ -149,72 +148,72 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** Fired for every query; the host must answer via `complete*`. */
-  (e: 'query', pageNo: number, pageSize: number): void
+  (e: 'query', pageNo: number, pageSize: number): void;
   /** v-model update — the aggregated list. */
-  (e: 'update:modelValue', list: unknown[]): void
+  (e: 'update:modelValue', list: unknown[]): void;
   /** scroll-view `@scroll` passthrough (e.g. feeding sn-backtop). */
-  (e: 'scroll', event: unknown): void
-}>()
+  (e: 'scroll', event: unknown): void;
+}>();
 
 defineSlots<{
   /** List rows; render the bound v-model array here. */
-  default?(): unknown
+  default?(): unknown;
   /** Fixed above the scroll area; does not scroll with the list. */
-  top?(): unknown
+  top?(): unknown;
   /** Fixed below the scroll area; does not scroll with the list. */
-  bottom?(): unknown
+  bottom?(): unknown;
   /** Replaces the built-in empty view. */
-  empty?(): unknown
+  empty?(): unknown;
   /** Replaces the built-in refresher content (icon + text). */
-  refresher?(): unknown
-}>()
+  refresher?(): unknown;
+}>();
 
-const pageNo = ref(props.defaultPageNo)
+const pageNo = ref(props.defaultPageNo);
 /** True while an emitted query has not been answered via `complete*`. */
-const isLoading = ref(false)
+const isLoading = ref(false);
 /** Kind of the in-flight query — decides how `complete*` aggregates. */
-const phase = ref<QueryPhase>('refresh')
+const phase = ref<QueryPhase>('refresh');
 /** Kind of the query that failed last — routes the footer retry. */
-const failedPhase = ref<QueryPhase>('refresh')
-const noMore = ref(false)
+const failedPhase = ref<QueryPhase>('refresh');
+const noMore = ref(false);
 /** A `complete*` succeeded at least once — gates the empty view. */
-const hasLoaded = ref(false)
-const refresherTriggered = ref(false)
-const refresherPhase = ref<RefresherPhase>('idle')
-const loadMorePhase = ref<LoadMorePhase>('default')
+const hasLoaded = ref(false);
+const refresherTriggered = ref(false);
+const refresherPhase = ref<RefresherPhase>('idle');
+const loadMorePhase = ref<LoadMorePhase>('default');
 /** Live pull distance in px — only driven by the browser fallback. */
-const pullDistance = ref(0)
+const pullDistance = ref(0);
 /** scroll-view host element; an inert element on browser hosts. */
-const scrollEl = ref<HTMLElement | ComponentPublicInstance | null>(null)
-let completeHoldTimer: ReturnType<typeof setTimeout> | null = null
-let disposeGesture: (() => void) | null = null
+const scrollEl = ref<HTMLElement | ComponentPublicInstance | null>(null);
+let completeHoldTimer: ReturnType<typeof setTimeout> | null = null;
+let disposeGesture: (() => void) | null = null;
 
 /** Whether scroll-to-bottom loads the next page. */
-const isLoadMoreEnabled = computed(() => props.loadMoreEnabled)
+const isLoadMoreEnabled = computed(() => props.loadMoreEnabled);
 
 const isRefresherReady = computed(
   () =>
     refresherPhase.value === 'ready' ||
     refresherPhase.value === 'refreshing' ||
     refresherPhase.value === 'complete',
-)
+);
 
 const refresherText = computed(() => {
   switch (refresherPhase.value) {
     case 'ready':
-      return props.refresherPullingText
+      return props.refresherPullingText;
     case 'refreshing':
-      return props.refresherRefreshingText
+      return props.refresherRefreshingText;
     case 'complete':
-      return props.refresherCompleteText
+      return props.refresherCompleteText;
     default:
-      return props.refresherDefaultText
+      return props.refresherDefaultText;
   }
-})
+});
 
 const isEmpty = computed(
   () =>
@@ -222,31 +221,29 @@ const isEmpty = computed(
     !isLoading.value &&
     hasLoaded.value &&
     loadMorePhase.value !== 'fail',
-)
+);
 
-const isFooterFail = computed(
-  () => !isLoading.value && loadMorePhase.value === 'fail',
-)
+const isFooterFail = computed(() => !isLoading.value && loadMorePhase.value === 'fail');
 
 const showFooter = computed(() => {
-  if (isLoading.value) return true
-  if (props.modelValue.length === 0) return loadMorePhase.value === 'fail'
-  if (!isLoadMoreEnabled.value) return false
-  return true
-})
+  if (isLoading.value) return true;
+  if (props.modelValue.length === 0) return loadMorePhase.value === 'fail';
+  if (!isLoadMoreEnabled.value) return false;
+  return true;
+});
 
 const footerText = computed(() => {
-  if (isLoading.value) return props.loadMoreLoadingText
-  if (noMore.value) return props.loadMoreNoMoreText
-  if (loadMorePhase.value === 'fail') return props.loadMoreFailText
-  return props.loadMoreDefaultText
-})
+  if (isLoading.value) return props.loadMoreLoadingText;
+  if (noMore.value) return props.loadMoreNoMoreText;
+  if (loadMorePhase.value === 'fail') return props.loadMoreFailText;
+  return props.loadMoreDefaultText;
+});
 
 const rootClass = computed(() => [
   'sn-paging',
   { 'sn-paging--safe-bottom': props.safeAreaInsetBottom },
   props.customClass,
-])
+]);
 
 /**
  * Inline height for the refresher area on browser hosts, where the native
@@ -254,84 +251,84 @@ const rootClass = computed(() => [
  * scroll-view owns the refresher geometry.
  */
 const refresherStyle = computed(() => {
-  if (!isBrowserHost) return undefined
+  if (!isBrowserHost) return undefined;
   if (refresherPhase.value === 'refreshing' || refresherPhase.value === 'complete') {
-    return `height: ${REFRESHER_HEIGHT_PX}px`
+    return `height: ${REFRESHER_HEIGHT_PX}px`;
   }
-  const dragging = refresherPhase.value === 'pulling' || refresherPhase.value === 'ready'
-  const height = dragging ? pullDistance.value : 0
-  const transition = dragging ? 'none' : 'height 0.2s ease'
-  return `height: ${Math.round(height)}px; transition: ${transition}`
-})
+  const dragging = refresherPhase.value === 'pulling' || refresherPhase.value === 'ready';
+  const height = dragging ? pullDistance.value : 0;
+  const transition = dragging ? 'none' : 'height 0.2s ease';
+  return `height: ${Math.round(height)}px; transition: ${transition}`;
+});
 
 function clearCompleteHold(): void {
   if (completeHoldTimer !== null) {
-    clearTimeout(completeHoldTimer)
-    completeHoldTimer = null
+    clearTimeout(completeHoldTimer);
+    completeHoldTimer = null;
   }
 }
 
 /** Reset to the first page and query. `animate` locks the native refresher. */
 function startRefresh(animate: boolean): void {
-  if (isLoading.value) return
-  clearCompleteHold()
-  pageNo.value = props.defaultPageNo
-  noMore.value = false
-  phase.value = 'refresh'
-  isLoading.value = true
-  loadMorePhase.value = 'loading'
-  refresherPhase.value = 'refreshing'
-  if (animate && props.refresherEnabled) refresherTriggered.value = true
-  emit('query', props.defaultPageNo, props.defaultPageSize)
+  if (isLoading.value) return;
+  clearCompleteHold();
+  pageNo.value = props.defaultPageNo;
+  noMore.value = false;
+  phase.value = 'refresh';
+  isLoading.value = true;
+  loadMorePhase.value = 'loading';
+  refresherPhase.value = 'refreshing';
+  if (animate && props.refresherEnabled) refresherTriggered.value = true;
+  emit('query', props.defaultPageNo, props.defaultPageSize);
 }
 
 /** Query the next page (scrolltolower / footer tap). */
 function startLoadMore(): void {
   if (isLoading.value || noMore.value || !isLoadMoreEnabled.value || !hasLoaded.value) {
-    return
+    return;
   }
-  phase.value = 'loadMore'
-  pageNo.value += 1
-  isLoading.value = true
-  loadMorePhase.value = 'loading'
-  emit('query', pageNo.value, props.defaultPageSize)
+  phase.value = 'loadMore';
+  pageNo.value += 1;
+  isLoading.value = true;
+  loadMorePhase.value = 'loading';
+  emit('query', pageNo.value, props.defaultPageSize);
 }
 
 /** Re-emit the page that just failed without incrementing again. */
 function retryLoadMore(): void {
-  if (isLoading.value) return
-  phase.value = 'loadMore'
-  isLoading.value = true
-  loadMorePhase.value = 'loading'
-  emit('query', pageNo.value, props.defaultPageSize)
+  if (isLoading.value) return;
+  phase.value = 'loadMore';
+  isLoading.value = true;
+  loadMorePhase.value = 'loading';
+  emit('query', pageNo.value, props.defaultPageSize);
 }
 
 function applyResult(data: unknown[], success: boolean, noMoreExplicit?: boolean): void {
-  if (!isLoading.value) return
-  isLoading.value = false
+  if (!isLoading.value) return;
+  isLoading.value = false;
   if (!success) {
-    failedPhase.value = phase.value
+    failedPhase.value = phase.value;
     if (phase.value === 'loadMore' || props.modelValue.length === 0) {
-      loadMorePhase.value = 'fail'
+      loadMorePhase.value = 'fail';
     } else {
-      loadMorePhase.value = 'default'
+      loadMorePhase.value = 'default';
     }
-    collapseRefresher()
-    return
+    collapseRefresher();
+    return;
   }
-  const base = phase.value === 'refresh' ? [] : props.modelValue
-  emit('update:modelValue', base.concat(data))
-  noMore.value = noMoreExplicit ?? data.length < props.defaultPageSize
-  hasLoaded.value = true
-  loadMorePhase.value = noMore.value ? 'noMore' : 'default'
-  endRefreshAnimation()
+  const base = phase.value === 'refresh' ? [] : props.modelValue;
+  emit('update:modelValue', base.concat(data));
+  noMore.value = noMoreExplicit ?? data.length < props.defaultPageSize;
+  hasLoaded.value = true;
+  loadMorePhase.value = noMore.value ? 'noMore' : 'default';
+  endRefreshAnimation();
 }
 
 /** Collapse the refresher immediately (a failure never holds the success text). */
 function collapseRefresher(): void {
-  clearCompleteHold()
-  refresherTriggered.value = false
-  refresherPhase.value = 'idle'
+  clearCompleteHold();
+  refresherTriggered.value = false;
+  refresherPhase.value = 'idle';
 }
 
 /**
@@ -340,103 +337,103 @@ function collapseRefresher(): void {
  * cleared on unmount / next refresh).
  */
 function endRefreshAnimation(): void {
-  if (phase.value !== 'refresh' || !refresherTriggered.value || props.refresherCompleteDuration <= 0) {
-    collapseRefresher()
-    return
+  if (
+    phase.value !== 'refresh' ||
+    !refresherTriggered.value ||
+    props.refresherCompleteDuration <= 0
+  ) {
+    collapseRefresher();
+    return;
   }
-  refresherPhase.value = 'complete'
+  refresherPhase.value = 'complete';
   completeHoldTimer = setTimeout(() => {
-    completeHoldTimer = null
-    refresherTriggered.value = false
-    refresherPhase.value = 'idle'
-  }, props.refresherCompleteDuration)
+    completeHoldTimer = null;
+    refresherTriggered.value = false;
+    refresherPhase.value = 'idle';
+  }, props.refresherCompleteDuration);
 }
 
 function onRefresherPulling(event: { detail?: { dy?: number } }): void {
-  if (refresherTriggered.value || isLoading.value) return
-  const dy = Math.max(0, event.detail?.dy ?? 0)
-  refresherPhase.value = dy >= props.refresherThreshold ? 'ready' : 'pulling'
+  if (refresherTriggered.value || isLoading.value) return;
+  const dy = Math.max(0, event.detail?.dy ?? 0);
+  refresherPhase.value = dy >= props.refresherThreshold ? 'ready' : 'pulling';
 }
 
 function onRefresherRefresh(): void {
-  if (!props.refresherEnabled) return
+  if (!props.refresherEnabled) return;
   if (isLoading.value) {
     /* A query is already in flight — collapse the gesture, never stack. */
-    refresherTriggered.value = false
-    return
+    refresherTriggered.value = false;
+    return;
   }
-  startRefresh(false)
+  startRefresh(false);
   /* The gesture already owns the pull animation; locking `triggered` keeps
    * the slot mounted in its loading state until `complete*` collapses it. */
-  refresherTriggered.value = true
+  refresherTriggered.value = true;
 }
 
 function onRefresherSettled(): void {
-  if (!refresherTriggered.value) refresherPhase.value = 'idle'
+  if (!refresherTriggered.value) refresherPhase.value = 'idle';
 }
 
 function onScrollToLower(): void {
-  startLoadMore()
+  startLoadMore();
 }
 
 function onFooterTap(): void {
-  if (isLoading.value) return
+  if (isLoading.value) return;
   if (loadMorePhase.value === 'fail') {
-    if (failedPhase.value === 'refresh') startRefresh(false)
-    else retryLoadMore()
-    return
+    if (failedPhase.value === 'refresh') startRefresh(false);
+    else retryLoadMore();
+    return;
   }
-  if (!noMore.value) startLoadMore()
+  if (!noMore.value) startLoadMore();
 }
 
 function onScroll(event: unknown): void {
-  emit('scroll', event)
+  emit('scroll', event);
 }
 
 /** Browser fallback pull update: drive the phase + inline height together. */
 function onSimulatedPull(distance: number): void {
-  if (isLoading.value) return
-  pullDistance.value = distance
+  if (isLoading.value) return;
+  pullDistance.value = distance;
   refresherPhase.value =
-    distance <= 0
-      ? 'idle'
-      : distance >= props.refresherThreshold
-        ? 'ready'
-        : 'pulling'
+    distance <= 0 ? 'idle' : distance >= props.refresherThreshold ? 'ready' : 'pulling';
 }
 
 /** Trigger a refresh with the refresher animation (z-paging `refresh`). */
 function refresh(): void {
-  startRefresh(true)
+  startRefresh(true);
 }
 
 /** Trigger a refresh without the refresher animation (z-paging `reload`). */
 function reload(): void {
-  startRefresh(false)
+  startRefresh(false);
 }
 
 /** Report a finished query; a non-array `data` (or `success=false`) fails it. */
 function complete(data: unknown[] | false | null | undefined, success = true): void {
-  const ok = success && Array.isArray(data)
-  applyResult(ok ? (data as unknown[]) : [], ok)
+  const ok = success && Array.isArray(data);
+  applyResult(ok ? (data as unknown[]) : [], ok);
 }
 
 /** Report with an explicit total; the sequence ends once the list reaches it. */
 function completeByTotal(data: unknown[], total: number): void {
-  const base = phase.value === 'refresh' ? 0 : props.modelValue.length
-  applyResult(data, true, base + data.length >= total)
+  const base = phase.value === 'refresh' ? 0 : props.modelValue.length;
+  applyResult(data, true, base + data.length >= total);
 }
 
 /** Report with an explicit no-more flag. */
 function completeByNoMore(data: unknown[], isNoMore: boolean): void {
-  applyResult(data, true, isNoMore)
+  applyResult(data, true, isNoMore);
 }
 
 onMounted(() => {
-  if (props.auto) startRefresh(false)
-  if (!isBrowserHost) return
-  const el = scrollEl.value
-  if (!(el instanceof HTMLElement)) return
+  if (props.auto) startRefresh(false);
+  if (!isBrowserHost) return;
+  const el = scrollEl.value;
+  if (!(el instanceof HTMLElement)) return;
   disposeGesture = createBrowserPagingGesture(el, {
     isRefresherEnabled: () => props.refresherEnabled,
     refresherThreshold: () => props.refresherThreshold,
@@ -445,16 +442,16 @@ onMounted(() => {
     onPull: onSimulatedPull,
     onRefreshArm: onRefresherRefresh,
     onReachBottom: onScrollToLower,
-  })
-})
+  });
+});
 
 onBeforeUnmount(() => {
-  clearCompleteHold()
-  disposeGesture?.()
-  disposeGesture = null
-})
+  clearCompleteHold();
+  disposeGesture?.();
+  disposeGesture = null;
+});
 
-defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore })
+defineExpose({ refresh, reload, complete, completeByTotal, completeByNoMore });
 </script>
 
 <template>

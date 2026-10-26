@@ -18,10 +18,10 @@ uni-app 运行在无 `document`、无 `:root` 的小程序与原生 App 上，we
 
 `themeVars` 会在根节点上写入内联 CSS 变量，因此改单个色槽不需要额外样式表。键支持两种写法：
 
-| 写法 | 结果变量 |
-| --- | --- |
-| `'--sn-mp-color-action-primary'` | 原样使用 |
-| `'buttonPrimaryBgColor'` | `--sn-mp-button-primary-bg-color`（自动加前缀并转 kebab） |
+| 写法                             | 结果变量                                                  |
+| -------------------------------- | --------------------------------------------------------- |
+| `'--sn-mp-color-action-primary'` | 原样使用                                                  |
+| `'buttonPrimaryBgColor'`         | `--sn-mp-button-primary-bg-color`（自动加前缀并转 kebab） |
 
 第二种是为了兼容 wot-ui 文档里的写法，复制过来的片段可以直接用。
 
@@ -29,13 +29,13 @@ uni-app 运行在无 `document`、无 `:root` 的小程序与原生 App 上，we
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `skin` | `string` | `''` | Style Pack 标识（kebab-case）。`'default'` 或空 = 不加 skin class |
-| `theme` | `'light' \| 'dark'` | `'light'` | 子树主题模式 |
-| `themeVars` | `Record<string, string>` | `{}` | 子树级 CSS 变量覆盖 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义内联样式 |
+| 属性          | 类型                     | 默认值    | 说明                                                              |
+| ------------- | ------------------------ | --------- | ----------------------------------------------------------------- |
+| `skin`        | `string`                 | `''`      | Style Pack 标识（kebab-case）。`'default'` 或空 = 不加 skin class |
+| `theme`       | `'light' \| 'dark'`      | `'light'` | 子树主题模式                                                      |
+| `themeVars`   | `Record<string, string>` | `{}`      | 子树级 CSS 变量覆盖                                               |
+| `customClass` | `string`                 | `''`      | 根节点自定义类名                                                  |
+| `customStyle` | `string`                 | `''`      | 根节点自定义内联样式                                              |
 
 ## Events
 
@@ -43,18 +43,18 @@ uni-app 运行在无 `document`、无 `:root` 的小程序与原生 App 上，we
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明               |
+| --------- | ------------------ |
 | `default` | 需要继承配置的内容 |
 
 ## 主题变量
 
 本组件不消费颜色 token，而是**设置**它们：
 
-| 机制 | 影响的变量 |
-| --- | --- |
+| 机制           | 影响的变量                                                                                      |
+| -------------- | ----------------------------------------------------------------------------------------------- |
 | `theme="dark"` | `@snui/tokens-mp/styles` 中 `page.sn-theme-dark, .sn-theme-dark` 块声明的全部 `--sn-mp-color-*` |
-| `themeVars` | 调用方传入的任意键 |
+| `themeVars`    | 调用方传入的任意键                                                                              |
 
 ## 无障碍
 

@@ -39,73 +39,73 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnTabbar } from '@snui/uni/components/sn-tabbar/sn-tabbar.vue'
-import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
+import { SnTabbar } from '@snui/uni/components/sn-tabbar/sn-tabbar.vue';
+import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue';
 ```
 
 ## Props
 
 ### sn-tabbar
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| string` | `0` | Active index or item name |
-| `fixed` | `boolean` | `false` | Pin the bar to the bottom |
-| `bordered` | `boolean` | `false` | Hairline top border |
-| `safeAreaInsetBottom` | `boolean` | `false` | Bottom safe-area padding |
-| `shape` | `'default' \| 'round'` | `'default'` | Bar shape |
-| `activeColor` | `string` | `''` | Active label colour (empty = token default) |
-| `inactiveColor` | `string` | `''` | Inactive label colour (empty = token default) |
-| `placeholder` | `boolean` | `false` | Reserve the bar height in flow when fixed |
-| `zIndex` | `number` | `10` | Stacking level (written only when fixed) |
-| `beforeChange` | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook; `false` blocks the switch |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop                  | Type                                     | Default     | Description                                   |
+| --------------------- | ---------------------------------------- | ----------- | --------------------------------------------- |
+| `modelValue`          | `number \| string`                       | `0`         | Active index or item name                     |
+| `fixed`               | `boolean`                                | `false`     | Pin the bar to the bottom                     |
+| `bordered`            | `boolean`                                | `false`     | Hairline top border                           |
+| `safeAreaInsetBottom` | `boolean`                                | `false`     | Bottom safe-area padding                      |
+| `shape`               | `'default' \| 'round'`                   | `'default'` | Bar shape                                     |
+| `activeColor`         | `string`                                 | `''`        | Active label colour (empty = token default)   |
+| `inactiveColor`       | `string`                                 | `''`        | Inactive label colour (empty = token default) |
+| `placeholder`         | `boolean`                                | `false`     | Reserve the bar height in flow when fixed     |
+| `zIndex`              | `number`                                 | `10`        | Stacking level (written only when fixed)      |
+| `beforeChange`        | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook; `false` blocks the switch          |
+| `customClass`         | `string`                                 | `''`        | Extra class on the root node                  |
+| `customStyle`         | `string`                                 | `''`        | Inline style on the root node                 |
 
 ### sn-tabbar-item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | `''` | Tab label |
-| `name` | `number \| string` | `undefined` | Unique value; falls back to the item index |
-| `icon` | `string` | `''` | Icon name (registered via `registerSnIcons()`) |
-| `iconPrefix` | `string` | `''` | Iconfont class prefix |
-| `cssIcon` | `boolean \| string` | `false` | Render a font icon; a string is the class prefix |
-| `value` | `number \| string` | `undefined` | Badge value |
-| `isDot` | `boolean` | `false` | Render a text-less dot badge |
-| `max` | `number` | `99` | Badge ceiling; above it renders `{max}+` |
-| `customClass` | `string` | `''` | Extra class on the item root |
-| `customStyle` | `string` | `''` | Inline style on the item root |
+| Prop          | Type                | Default     | Description                                      |
+| ------------- | ------------------- | ----------- | ------------------------------------------------ |
+| `title`       | `string`            | `''`        | Tab label                                        |
+| `name`        | `number \| string`  | `undefined` | Unique value; falls back to the item index       |
+| `icon`        | `string`            | `''`        | Icon name (registered via `registerSnIcons()`)   |
+| `iconPrefix`  | `string`            | `''`        | Iconfont class prefix                            |
+| `cssIcon`     | `boolean \| string` | `false`     | Render a font icon; a string is the class prefix |
+| `value`       | `number \| string`  | `undefined` | Badge value                                      |
+| `isDot`       | `boolean`           | `false`     | Render a text-less dot badge                     |
+| `max`         | `number`            | `99`        | Badge ceiling; above it renders `{max}+`         |
+| `customClass` | `string`            | `''`        | Extra class on the item root                     |
+| `customStyle` | `string`            | `''`        | Inline style on the item root                    |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event               | Description          | Payload                     |
+| ------------------- | -------------------- | --------------------------- |
 | `update:modelValue` | Active value changed | `(value: number \| string)` |
-| `change` | Active value changed | `({ value })` |
+| `change`            | Active value changed | `({ value })`               |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` (tabbar) | TabbarItem list |
-| `default` (item) | Whole item content; scope `{ active }` |
-| `icon` (item) | Icon area; scope `{ active }` |
+| Slot               | Description                            |
+| ------------------ | -------------------------------------- |
+| `default` (tabbar) | TabbarItem list                        |
+| `default` (item)   | Whole item content; scope `{ active }` |
+| `icon` (item)      | Icon area; scope `{ active }`          |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | Bar background |
-| `--sn-mp-color-border-subtle` | Top hairline |
-| `--sn-mp-color-text-secondary` | Inactive label |
-| `--sn-mp-color-action-primary` | Active label |
-| `--sn-mp-color-feedback-danger` | Badge fill |
-| `--sn-mp-color-text-on-primary` | Badge text |
-| `--sn-mp-icon-size-large` | Font-icon glyph size |
-| `--sn-mp-font-size-xs` | Label / badge size |
-| `--sn-mp-radius-full` / `--sn-mp-spacing-1` | Pill radius / icon gap |
-| `--sn-mp-shadow-md` | `round` shape elevation |
+| Variable                                    | Purpose                 |
+| ------------------------------------------- | ----------------------- |
+| `--sn-mp-color-background-surface`          | Bar background          |
+| `--sn-mp-color-border-subtle`               | Top hairline            |
+| `--sn-mp-color-text-secondary`              | Inactive label          |
+| `--sn-mp-color-action-primary`              | Active label            |
+| `--sn-mp-color-feedback-danger`             | Badge fill              |
+| `--sn-mp-color-text-on-primary`             | Badge text              |
+| `--sn-mp-icon-size-large`                   | Font-icon glyph size    |
+| `--sn-mp-font-size-xs`                      | Label / badge size      |
+| `--sn-mp-radius-full` / `--sn-mp-spacing-1` | Pill radius / icon gap  |
+| `--sn-mp-shadow-md`                         | `round` shape elevation |
 
 ## Accessibility
 
@@ -119,7 +119,6 @@ import { SnTabbarItem } from '@snui/uni/components/sn-tabbar/sn-tabbar-item.vue'
 Every colour in `sn-tabbar` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: background and top hairline flip to the dark tokens, the active / inactive labels keep the brand and secondary text colours, and the badge red stays recognisable.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

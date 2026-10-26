@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnSwitch — basic v-model. */
-import { ref } from 'vue'
-import { SnSwitch } from '@snui/vue-web'
-const on = ref(false)
+import { ref } from 'vue';
+import { SnSwitch } from '@snui/vue-web';
+const on = ref(false);
 </script>
 
 <template>
@@ -13,6 +13,13 @@ const on = ref(false)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
-.demo-log { font-size: 13px; color: var(--vp-c-text-2); }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-log {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

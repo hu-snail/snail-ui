@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnCascader — custom fields. */
-import { ref } from 'vue'
-import { SnCascader } from '@snui/vue-web'
-const value = ref<(string | number)[]>([])
+import { ref } from 'vue';
+import { SnCascader } from '@snui/vue-web';
+const value = ref<(string | number)[]>([]);
 const options = [
   {
     name: 'Frontend',
@@ -17,7 +17,7 @@ const options = [
     id: 'be',
     subs: [{ name: 'Node', id: 'node' }],
   },
-]
+];
 </script>
 
 <template>
@@ -28,6 +28,6 @@ const options = [
     value-field="id"
     children-field="subs"
     placeholder="Custom field"
-    style="width: 240px;"
+    style="width: 240px"
   />
 </template>

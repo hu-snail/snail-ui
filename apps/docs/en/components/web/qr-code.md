@@ -43,20 +43,20 @@ colors, size, a center icon, and image download.
 
 ### SnQrCode Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| value | `string` | `''` | Text encoded into the code |
-| error-correction-level | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'` | ~7% / 15% / 25% / 30% recoverable codewords |
-| size | `number` | `100` | Whole box size (padding included, px) |
-| padding | `number \| string` | `12` | Inner padding (number → px) |
-| color | `string` | `'#000'` | Dark-module color |
-| background-color | `string` | `'#FFF'` | Light-module / box color |
-| icon-src | `string` | `undefined` | Center icon url |
-| icon-size | `number` | `40` | Center icon size (px) |
-| icon-background-color | `string` | `'#FFF'` | Icon plate color |
-| icon-border-radius | `number` | `4` | Icon plate radius (px) |
-| type | `'canvas' \| 'svg'` | `'canvas'` | Render target |
-| show-toolbar | `boolean` | `true` | Reveal the floating download toolbar on hover/focus |
+| Prop                   | Type                       | Default     | Notes                                               |
+| ---------------------- | -------------------------- | ----------- | --------------------------------------------------- |
+| value                  | `string`                   | `''`        | Text encoded into the code                          |
+| error-correction-level | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'`       | ~7% / 15% / 25% / 30% recoverable codewords         |
+| size                   | `number`                   | `100`       | Whole box size (padding included, px)               |
+| padding                | `number \| string`         | `12`        | Inner padding (number → px)                         |
+| color                  | `string`                   | `'#000'`    | Dark-module color                                   |
+| background-color       | `string`                   | `'#FFF'`    | Light-module / box color                            |
+| icon-src               | `string`                   | `undefined` | Center icon url                                     |
+| icon-size              | `number`                   | `40`        | Center icon size (px)                               |
+| icon-background-color  | `string`                   | `'#FFF'`    | Icon plate color                                    |
+| icon-border-radius     | `number`                   | `4`         | Icon plate radius (px)                              |
+| type                   | `'canvas' \| 'svg'`        | `'canvas'`  | Render target                                       |
+| show-toolbar           | `boolean`                  | `true`      | Reveal the floating download toolbar on hover/focus |
 
 ### Encoding notes
 

@@ -28,52 +28,52 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| visible | boolean | false | Visibility (`v-model:visible`) |
-| type | 'primary' \| 'success' \| 'warning' \| 'danger' | 'danger' | Semantic type (fill + default glyph) |
-| message | string \| number | '' | Message text; `\n` renders a line break |
-| duration | number | 3000 | Dwell time in ms; `0` keeps it open |
-| position | 'top' \| 'bottom' | 'top' | Anchor of the banner |
-| color | string | '' | Text color override |
-| background | string | '' | Background color override |
-| zIndex | number | 99 | Stacking level |
-| safeHeight | number \| string | — | Extra top offset (bare number = px) |
-| closable | boolean | false | Show the close button |
-| variant | 'filled' \| 'floating' | 'filled' | Visual shape |
-| selector | string | '' | Instance id (parity only) |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop        | Type                                            | Default  | Description                             |
+| ----------- | ----------------------------------------------- | -------- | --------------------------------------- |
+| visible     | boolean                                         | false    | Visibility (`v-model:visible`)          |
+| type        | 'primary' \| 'success' \| 'warning' \| 'danger' | 'danger' | Semantic type (fill + default glyph)    |
+| message     | string \| number                                | ''       | Message text; `\n` renders a line break |
+| duration    | number                                          | 3000     | Dwell time in ms; `0` keeps it open     |
+| position    | 'top' \| 'bottom'                               | 'top'    | Anchor of the banner                    |
+| color       | string                                          | ''       | Text color override                     |
+| background  | string                                          | ''       | Background color override               |
+| zIndex      | number                                          | 99       | Stacking level                          |
+| safeHeight  | number \| string                                | —        | Extra top offset (bare number = px)     |
+| closable    | boolean                                         | false    | Show the close button                   |
+| variant     | 'filled' \| 'floating'                          | 'filled' | Visual shape                            |
+| selector    | string                                          | ''       | Instance id (parity only)               |
+| customClass | string                                          | ''       | Custom class for the root node          |
+| customStyle | string                                          | ''       | Custom inline style for the root node   |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event          | Description                                         | Payload |
+| -------------- | --------------------------------------------------- | ------- |
 | update:visible | `v-model` sync (also fires on auto-dismiss / close) | boolean |
-| click | Banner body tapped | Event |
-| opened | Banner finished appearing | — |
-| closed | Banner finished leaving (node unmounted) | — |
+| click          | Banner body tapped                                  | Event   |
+| opened         | Banner finished appearing                           | —       |
+| closed         | Banner finished leaving (node unmounted)            | —       |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                      |
+| ------- | ------------------------------------------------ |
 | default | Custom notification content (replaces `message`) |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-action-primary | `type="primary"` fill |
-| --sn-mp-color-feedback-success` / `-warning` / `-danger | Other fills / floating icon colors |
-| --sn-mp-color-text-on-primary | Filled variant text |
-| --sn-mp-color-text-primary | Floating variant text |
-| --sn-mp-color-background-elevated | Floating card surface |
-| --sn-mp-shadow-md | Floating card shadow |
-| --sn-mp-font-size-md | Message size |
-| --sn-mp-font-line-height-normal | Message line height |
-| --sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-5 | Padding and icon gap |
-| --sn-mp-radius-lg | Floating card corners |
+| Variable                                                  | Purpose                            |
+| --------------------------------------------------------- | ---------------------------------- |
+| --sn-mp-color-action-primary                              | `type="primary"` fill              |
+| --sn-mp-color-feedback-success`/`-warning`/`-danger       | Other fills / floating icon colors |
+| --sn-mp-color-text-on-primary                             | Filled variant text                |
+| --sn-mp-color-text-primary                                | Floating variant text              |
+| --sn-mp-color-background-elevated                         | Floating card surface              |
+| --sn-mp-shadow-md                                         | Floating card shadow               |
+| --sn-mp-font-size-md                                      | Message size                       |
+| --sn-mp-font-line-height-normal                           | Message line height                |
+| --sn-mp-spacing-3`/`--sn-mp-spacing-4`/`--sn-mp-spacing-5 | Padding and icon gap               |
+| --sn-mp-radius-lg                                         | Floating card corners              |
 
 ## Accessibility
 
@@ -84,7 +84,6 @@
 ## Dark mode
 
 The fills and text colors all come from semantic tokens (`--sn-mp-color-action-primary` / `--sn-mp-color-feedback-*` / `--sn-mp-color-text-*` / `--sn-mp-color-background-elevated`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A literal passed through `background` / `color` does not flip with the theme — prefer `var(--sn-mp-*)` colors in dark mode.
 

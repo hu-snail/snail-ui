@@ -191,17 +191,15 @@ export const snWebAliasMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-web-font-line-height-tight', '--aui-font-line-height-tight'],
   ['--sn-web-font-line-height-normal', '--aui-font-line-height-normal'],
   ['--sn-web-font-line-height-loose', '--aui-font-line-height-loose'],
-] as const
+] as const;
 
 /** Render the alias layer as CSS `:root { ... }` block. */
 export function renderSnWebStyles(): string {
-  const body = snWebAliasMap
-    .map(([alias, base]) => `  ${alias}: var(${base});`)
-    .join('\n')
-  return `:root {\n${body}\n}\n`
+  const body = snWebAliasMap.map(([alias, base]) => `  ${alias}: var(${base});`).join('\n');
+  return `:root {\n${body}\n}\n`;
 }
 
 /** List all `--sn-web-*` alias names. */
 export function listSnWebAliases(): ReadonlyArray<string> {
-  return snWebAliasMap.map(([a]) => a)
+  return snWebAliasMap.map(([a]) => a);
 }

@@ -5,17 +5,17 @@
  * Shows: a custom rotating glyph, plus how `rotate` toggles the animation
  * on that slot (the built-in spinner is unaffected by `rotate`).
  */
-import { ref } from 'vue'
-import { SnLoading } from '@snui/vue-web'
-import { LoaderCircle, RefreshCw } from 'lucide-vue-next'
+import { ref } from 'vue';
+import { SnLoading } from '@snui/vue-web';
+import { LoaderCircle, RefreshCw } from 'lucide-vue-next';
 
-const rotate = ref(true)
+const rotate = ref(true);
 </script>
 
 <template>
   <div class="ldg-icon">
     <label class="ldg-icon__toggle">
-      <input v-model="rotate" type="checkbox">
+      <input v-model="rotate" type="checkbox" />
       rotate
     </label>
 

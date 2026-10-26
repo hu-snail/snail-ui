@@ -107,29 +107,29 @@ loading / empty states and a simplified built-in pagination bar.
 
 ### SnDataTable Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| columns | `DataTableColumn[]` | `[]` | Column list (base / selection / expand / index) |
-| data | `object[]` | `[]` | Row records |
-| row-key | `(row) => string \| number` | — | Row key resolver (falls back to `row.key`) |
-| row-props | `(row, index) => HTMLAttributes` | — | Extra tr attributes |
-| row-class-name | `string \| (row, index) => string` | — | tr class |
-| striped | `boolean` | `false` | Zebra stripes |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | Scale (th/td padding 8/12/12px) |
-| bordered | `boolean` | `true` | Outer frame border |
-| bottom-bordered | `boolean` | `true` | Last-row bottom border (ineffective while bordered) |
-| single-line | `boolean` | `true` | Hide column separators |
-| single-column | `boolean` | `false` | Hide row separators |
-| loading | `boolean` | `false` | Loading mask (blocks checking / paging) |
-| scroll-x | `number \| string` | — | Inner table min-width (horizontal scroll) |
-| max-height | `number \| string` | — | Body max-height (sticky header, fixed layout) |
-| summary | `(pageData) => SummaryRow \| SummaryRow[]` | — | Summary rows (value + colSpan) |
-| summary-placement | `'top' \| 'bottom'` | `'bottom'` | Summary position |
-| checked-row-keys | `Array<string \| number>` | — | Checked keys (v-model:checked-row-keys) |
-| default-checked-row-keys | `Array<string \| number>` | `[]` | Uncontrolled initial checked keys |
-| expanded-row-keys | `Array<string \| number>` | — | Expanded keys (v-model:expanded-row-keys) |
-| default-expanded-row-keys | `Array<string \| number>` | `[]` | Uncontrolled initial expanded keys |
-| pagination | `false \| object` | `false` | Simplified pagination config (see below) |
+| Prop                      | Type                                       | Default    | Notes                                               |
+| ------------------------- | ------------------------------------------ | ---------- | --------------------------------------------------- |
+| columns                   | `DataTableColumn[]`                        | `[]`       | Column list (base / selection / expand / index)     |
+| data                      | `object[]`                                 | `[]`       | Row records                                         |
+| row-key                   | `(row) => string \| number`                | —          | Row key resolver (falls back to `row.key`)          |
+| row-props                 | `(row, index) => HTMLAttributes`           | —          | Extra tr attributes                                 |
+| row-class-name            | `string \| (row, index) => string`         | —          | tr class                                            |
+| striped                   | `boolean`                                  | `false`    | Zebra stripes                                       |
+| size                      | `'small' \| 'medium' \| 'large'`           | `'medium'` | Scale (th/td padding 8/12/12px)                     |
+| bordered                  | `boolean`                                  | `true`     | Outer frame border                                  |
+| bottom-bordered           | `boolean`                                  | `true`     | Last-row bottom border (ineffective while bordered) |
+| single-line               | `boolean`                                  | `true`     | Hide column separators                              |
+| single-column             | `boolean`                                  | `false`    | Hide row separators                                 |
+| loading                   | `boolean`                                  | `false`    | Loading mask (blocks checking / paging)             |
+| scroll-x                  | `number \| string`                         | —          | Inner table min-width (horizontal scroll)           |
+| max-height                | `number \| string`                         | —          | Body max-height (sticky header, fixed layout)       |
+| summary                   | `(pageData) => SummaryRow \| SummaryRow[]` | —          | Summary rows (value + colSpan)                      |
+| summary-placement         | `'top' \| 'bottom'`                        | `'bottom'` | Summary position                                    |
+| checked-row-keys          | `Array<string \| number>`                  | —          | Checked keys (v-model:checked-row-keys)             |
+| default-checked-row-keys  | `Array<string \| number>`                  | `[]`       | Uncontrolled initial checked keys                   |
+| expanded-row-keys         | `Array<string \| number>`                  | —          | Expanded keys (v-model:expanded-row-keys)           |
+| default-expanded-row-keys | `Array<string \| number>`                  | `[]`       | Uncontrolled initial expanded keys                  |
+| pagination                | `false \| object`                          | `false`    | Simplified pagination config (see below)            |
 
 ### DataTableColumn
 
@@ -156,19 +156,19 @@ total prefix); SnPagination is a future marker (AUI-WEB-DATA-008).
 
 ### Events
 
-| Event | Parameters | Notes |
-| --- | --- | --- |
-| update:checked-row-keys | `(keys, rows, { row, action })` | action ∈ check / uncheck / checkAll / uncheckAll |
-| update:expanded-row-keys | `(keys)` | Expand changed |
-| update:filters | `(filters, column)` | Filter committed |
-| update:sorter | `(DataTableSortState \| null)` | Header click cycles descend → ascend → false |
-| update:page | `(page)` | Page changed |
-| update:page-size | `(pageSize)` | Page size changed |
+| Event                    | Parameters                      | Notes                                            |
+| ------------------------ | ------------------------------- | ------------------------------------------------ |
+| update:checked-row-keys  | `(keys, rows, { row, action })` | action ∈ check / uncheck / checkAll / uncheckAll |
+| update:expanded-row-keys | `(keys)`                        | Expand changed                                   |
+| update:filters           | `(filters, column)`             | Filter committed                                 |
+| update:sorter            | `(DataTableSortState \| null)`  | Header click cycles descend → ascend → false     |
+| update:page              | `(page)`                        | Page changed                                     |
+| update:page-size         | `(pageSize)`                    | Page size changed                                |
 
 ### Slots
 
-| Name | Notes |
-| --- | --- |
+| Name  | Notes                            |
+| ----- | -------------------------------- |
 | empty | Replaces the default empty state |
 
 See the component `ai-description.md` for the full contract.

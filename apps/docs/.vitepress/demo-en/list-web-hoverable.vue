@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnList — hoverable 悬浮高亮 + clickable 指针光标。 */
-import { ref } from 'vue'
-import { SnList, SnListItem } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnList, SnListItem } from '@snui/vue-web';
 
-const picked = ref('')
+const picked = ref('');
 </script>
 
 <template>
@@ -14,14 +14,15 @@ const picked = ref('')
         <template #suffix>{{ picked === `Item ${n}` ? 'Selected' : 'Click to try' }}</template>
       </SnListItem>
     </SnList>
-    <p class="list-demo__state">Last clicked:<code>{{ picked || '—' }}</code></p>
+    <p class="list-demo__state">
+      Last clicked:<code>{{ picked || '—' }}</code>
+    </p>
   </div>
 </template>
 
 <style scoped>
 .list-demo {
   width: 100%;
-
 }
 .list-demo__state {
   margin: 12px 0 0;

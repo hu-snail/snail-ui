@@ -13,12 +13,12 @@
 /** Object form of one candidate option. */
 export interface SnMentionOption {
   /** Display label. */
-  label: string
+  label: string;
   /** Text committed on selection. Defaults to `label`. */
-  value?: string
+  value?: string;
   /** Disable just this option (renders disabled, not selectable). */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 /** Anything accepted in the `options` prop array. */
-export type SnMentionRawOption = string | SnMentionOption
+export type SnMentionRawOption = string | SnMentionOption;

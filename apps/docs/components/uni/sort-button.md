@@ -22,21 +22,21 @@ allowReset 把 0 纳入循环；descFirst 首次点击进入降序；line 加下
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `1 \| 0 \| -1` | `0` | 当前排序方向 |
-| `title` | `string` | `''` | 按钮文案 |
-| `allowReset` | `boolean` | `false` | 循环是否包含重置态 |
-| `descFirst` | `boolean` | `false` | 优先切换到降序 |
-| `line` | `boolean` | `false` | 显示下划线 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                          | 类型           | 默认值  | 说明                    |
+| ----------------------------- | -------------- | ------- | ----------------------- |
+| `modelValue`                  | `1 \| 0 \| -1` | `0`     | 当前排序方向            |
+| `title`                       | `string`       | `''`    | 按钮文案                |
+| `allowReset`                  | `boolean`      | `false` | 循环是否包含重置态      |
+| `descFirst`                   | `boolean`      | `false` | 优先切换到降序          |
+| `line`                        | `boolean`      | `false` | 显示下划线              |
+| `customClass` / `customStyle` | `string`       | `''`    | 根节点自定义类名 / 样式 |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 方向变化时 | `(value: 1 \| 0 \| -1)` |
-| `change` | 方向变化时（同 tick） | `{ value }` |
+| 事件名              | 说明                  | 参数                    |
+| ------------------- | --------------------- | ----------------------- |
+| `update:modelValue` | 方向变化时            | `(value: 1 \| 0 \| -1)` |
+| `change`            | 方向变化时（同 tick） | `{ value }`             |
 
 ## Slots
 
@@ -44,14 +44,14 @@ allowReset 把 0 纳入循环；descFirst 首次点击进入降序；line 加下
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-text-secondary`` | 未激活文案 |
-| ``--sn-mp-color-text-tertiary`` | 未激活箭头 |
-| ``--sn-mp-color-action-primary`` | 激活文案 / 箭头 / 下划线 |
-| ``--sn-mp-color-border-default`` | `line` 下划线 |
-| ``--sn-mp-radius-md`` | 圆角 |
-| ``--sn-mp-font-size-md`` | 文案字号 |
+| 变量                           | 用途                     |
+| ------------------------------ | ------------------------ |
+| `--sn-mp-color-text-secondary` | 未激活文案               |
+| `--sn-mp-color-text-tertiary`  | 未激活箭头               |
+| `--sn-mp-color-action-primary` | 激活文案 / 箭头 / 下划线 |
+| `--sn-mp-color-border-default` | `line` 下划线            |
+| `--sn-mp-radius-md`            | 圆角                     |
+| `--sn-mp-font-size-md`         | 文案字号                 |
 
 ## 无障碍
 
@@ -60,4 +60,3 @@ allowReset 把 0 纳入循环；descFirst 首次点击进入降序；line 加下
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

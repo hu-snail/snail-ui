@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnCascader — filterable. */
-import { ref } from 'vue'
-import { SnCascader } from '@snui/vue-web'
-const value = ref<(string | number)[]>([])
+import { ref } from 'vue';
+import { SnCascader } from '@snui/vue-web';
+const value = ref<(string | number)[]>([]);
 const options = [
   {
     label: 'Zhejiang',
@@ -15,11 +15,19 @@ const options = [
   {
     label: 'Guangdong',
     value: 'gd',
-    children: [{ label: 'Shenzhen', value: 'sz', children: [{ label: 'Nanshan District', value: 'ns' }] }],
+    children: [
+      { label: 'Shenzhen', value: 'sz', children: [{ label: 'Nanshan District', value: 'ns' }] },
+    ],
   },
-]
+];
 </script>
 
 <template>
-  <SnCascader v-model="value" :options="options" filterable placeholder="Type to filter by path (e.g. Xihu)" style="width: 280px;" />
+  <SnCascader
+    v-model="value"
+    :options="options"
+    filterable
+    placeholder="Type to filter by path (e.g. Xihu)"
+    style="width: 280px"
+  />
 </template>

@@ -19,44 +19,44 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { SnSteps, SnStep } from '@snui/vue-web';
 ```
 
 ## SnSteps Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `current` | `number` | `undefined` | Active step index (1-based, `v-model:current`). |
-| `status` | `'process' \| 'finish' \| 'error' \| 'wait'` | `'process'` | Status applied to the step at `current`. |
-| `size` | `'small' \| 'medium'` | `'medium'` | Indicator size. |
-| `vertical` | `boolean` | `false` | Stack steps vertically. |
-| `contentPlacement` | `'right' \| 'bottom'` | `'right'` | Title position relative to the indicator (horizontal only). |
+| Name               | Type                                         | Default     | Description                                                 |
+| ------------------ | -------------------------------------------- | ----------- | ----------------------------------------------------------- |
+| `current`          | `number`                                     | `undefined` | Active step index (1-based, `v-model:current`).             |
+| `status`           | `'process' \| 'finish' \| 'error' \| 'wait'` | `'process'` | Status applied to the step at `current`.                    |
+| `size`             | `'small' \| 'medium'`                        | `'medium'`  | Indicator size.                                             |
+| `vertical`         | `boolean`                                    | `false`     | Stack steps vertically.                                     |
+| `contentPlacement` | `'right' \| 'bottom'`                        | `'right'`   | Title position relative to the indicator (horizontal only). |
 
 ## SnStep Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `status` | `'process' \| 'finish' \| 'error' \| 'wait'` | `undefined` | Explicit status; wins over derivation from `current`. |
-| `title` | `string` | `''` | Step title. |
-| `description` | `string` | `''` | Step description. |
-| `disabled` | `boolean` | `false` | Disable click + dim the step. |
+| Name          | Type                                         | Default     | Description                                           |
+| ------------- | -------------------------------------------- | ----------- | ----------------------------------------------------- |
+| `status`      | `'process' \| 'finish' \| 'error' \| 'wait'` | `undefined` | Explicit status; wins over derivation from `current`. |
+| `title`       | `string`                                     | `''`        | Step title.                                           |
+| `description` | `string`                                     | `''`        | Step description.                                     |
+| `disabled`    | `boolean`                                    | `false`     | Disable click + dim the step.                         |
 
 ## Events
 
-| Event | Payload | When |
-|---|---|---|
+| Event            | Payload             | When                                              |
+| ---------------- | ------------------- | ------------------------------------------------- |
 | `update:current` | `(current: number)` | A clickable step was clicked (`v-model:current`). |
 
 ## Slots
 
-| Component | Slot | Description |
-|---|---|---|
-| `SnSteps` | `default` | Sequence of `<SnStep>` children. |
+| Component | Slot          | Description                                                       |
+| --------- | ------------- | ----------------------------------------------------------------- |
+| `SnSteps` | `default`     | Sequence of `<SnStep>` children.                                  |
 | `SnSteps` | `finish-icon` | Custom icon for finished steps (replaces the default check mark). |
-| `SnSteps` | `error-icon` | Custom icon for errored steps (replaces the default cross). |
-| `SnStep` | `default` | Step body — overrides the `description` prop. |
-| `SnStep` | `icon` | Indicator content — overrides index / status icon. |
-| `SnStep` | `title` | Step title — overrides the `title` prop. |
+| `SnSteps` | `error-icon`  | Custom icon for errored steps (replaces the default cross).       |
+| `SnStep`  | `default`     | Step body — overrides the `description` prop.                     |
+| `SnStep`  | `icon`        | Indicator content — overrides index / status icon.                |
+| `SnStep`  | `title`       | Step title — overrides the `title` prop.                          |
 
 ## Status derivation
 
@@ -80,14 +80,14 @@ import { SnSteps, SnStep } from '@snui/vue-web'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Action color | `--sn-web-color-action-primary` | Process/finish indicator + connector |
-| Danger color | `--sn-web-color-feedback-danger` | Error indicator + title |
-| Border | `--sn-web-color-border-default` | Wait indicator + inactive connector |
-| Text primary | `--sn-web-color-text-primary` | Default title text |
-| Text secondary | `--sn-web-color-text-secondary` | Wait title, descriptions, index |
-| Text on primary | `--sn-web-color-text-on-primary` | Index / icon on filled indicators |
+| Token           | CSS Variable                     | Purpose                              |
+| --------------- | -------------------------------- | ------------------------------------ |
+| Action color    | `--sn-web-color-action-primary`  | Process/finish indicator + connector |
+| Danger color    | `--sn-web-color-feedback-danger` | Error indicator + title              |
+| Border          | `--sn-web-color-border-default`  | Wait indicator + inactive connector  |
+| Text primary    | `--sn-web-color-text-primary`    | Default title text                   |
+| Text secondary  | `--sn-web-color-text-secondary`  | Wait title, descriptions, index      |
+| Text on primary | `--sn-web-color-text-on-primary` | Index / icon on filled indicators    |
 
 ## Accessibility
 

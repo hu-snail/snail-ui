@@ -1,9 +1,11 @@
 # 0003 — 模板生态：新增 `@snui/templates` 包（按需加载 + props 配置）
 
 ## Status
+
 Accepted（Human 于 v3.2 任务中确认包名、`web/` + `uni/` 目录结构、Sn- 前缀命名与统一版本号）
 
 ## Date
+
 2026-10-03
 
 ## Context
@@ -41,11 +43,11 @@ ADR-0001 确定了 Component First 底座：`@snui/vue-web` / `@snui/uni` 提供
 
 ## Options
 
-| 方案 | 说明 | 取舍 |
-|---|---|---|
-| A. 放进 `@snui/vue-web` / `@snui/uni` | 模板与原子组件同包 | ❌ 破坏按需加载；原子组件与页面成品生命周期混淆；违反 §58 |
-| B. 每个模板独立包 | `@snui/template-ai-chat` 等 | ❌ 包数量爆炸、版本漂移、跨模板共享契约（消息 / 流式）无从安放 |
-| C. 单包 `@snui/templates` + 子路径导出 | 一个包，`@snui/templates/web/chat` 等子路径 | ✅ 见 Decision |
+| 方案                                   | 说明                                        | 取舍                                                           |
+| -------------------------------------- | ------------------------------------------- | -------------------------------------------------------------- |
+| A. 放进 `@snui/vue-web` / `@snui/uni`  | 模板与原子组件同包                          | ❌ 破坏按需加载；原子组件与页面成品生命周期混淆；违反 §58      |
+| B. 每个模板独立包                      | `@snui/template-ai-chat` 等                 | ❌ 包数量爆炸、版本漂移、跨模板共享契约（消息 / 流式）无从安放 |
+| C. 单包 `@snui/templates` + 子路径导出 | 一个包，`@snui/templates/web/chat` 等子路径 | ✅ 见 Decision                                                 |
 
 ## Decision
 
@@ -153,7 +155,7 @@ ADR-0001 确定了 Component First 底座：`@snui/vue-web` / `@snui/uni` 提供
 2. **两个页面模板都是组装页**：
    - `SnAiChat` = 消息列表模板 + 输入框模板 + 引擎；
    - `SnAiAssistant` = 消息列表模板 + 输入框模板 + 模型配置模板（抽屉）+ 引擎。
-   助手不再包含 `SnAiChat`。
+     助手不再包含 `SnAiChat`。
 3. **引擎作为公开子路径**：`@snui/templates/web/turn-queue`，使用方可以拿零件 + 引擎
    自己组装页面，行为与两个页面模板一致（同一个实现）。
 

@@ -63,18 +63,18 @@
  *   - 列表容器 — 由宿主用 `<view>` 组织
  */
 
-import { computed, onBeforeUnmount, ref, useSlots } from 'vue'
+import { computed, onBeforeUnmount, ref, useSlots } from 'vue';
 
-defineOptions({ name: 'SnSwipeAction' })
+defineOptions({ name: 'SnSwipeAction' });
 
 /** Swipe state. Mirrors `wd-swipe-action` `v-model`. */
-type SwipeActionStatus = 'left' | 'close' | 'right'
+type SwipeActionStatus = 'left' | 'close' | 'right';
 
 /** Why a close was requested — forwarded to `before-close`. */
-type SwipeActionReason = 'click' | 'swipe' | 'other'
+type SwipeActionReason = 'click' | 'swipe' | 'other';
 
 /** Where the row currently sits. */
-type SwipeActionPosition = 'left' | 'right'
+type SwipeActionPosition = 'left' | 'right';
 
 /**
  * Close guard. Return `true` (or a promise of it) to allow the close;
@@ -83,26 +83,26 @@ type SwipeActionPosition = 'left' | 'right'
 type SwipeActionBeforeClose = (
   reason: SwipeActionReason,
   position: SwipeActionPosition,
-) => boolean | Promise<boolean>
+) => boolean | Promise<boolean>;
 
 /** Row open / close animation length in ms. */
-const DEFAULT_DURATION = 200
+const DEFAULT_DURATION = 200;
 
 /** Design-px width used when the action area cannot be measured. */
-const FALLBACK_ACTION_WIDTH = 88
+const FALLBACK_ACTION_WIDTH = 88;
 
 const props = withDefaults(
   defineProps<{
     /** Current swipe state (v-model): `left` / `close` / `right`. */
-    modelValue?: SwipeActionStatus
+    modelValue?: SwipeActionStatus;
     /** Disable swiping — the row stays closed. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Close guard; `false` (or a promise of it) blocks the close. */
-    beforeClose?: SwipeActionBeforeClose
+    beforeClose?: SwipeActionBeforeClose;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 'close',
@@ -110,67 +110,67 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Row content (the area that slides). */
-  default?(): unknown
+  default?(): unknown;
   /** Left action area — revealed by swiping right. */
-  left?(): unknown
+  left?(): unknown;
   /** Right action area — revealed by swiping left. */
-  right?(): unknown
-}>()
+  right?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: SwipeActionStatus): void
-  (e: 'click', payload: { reason: SwipeActionReason, position: SwipeActionPosition }): void
-}>()
+  (e: 'update:modelValue', value: SwipeActionStatus): void;
+  (e: 'click', payload: { reason: SwipeActionReason; position: SwipeActionPosition }): void;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Current open side (`close` = at rest). */
-const status = ref<SwipeActionStatus>(props.modelValue)
+const status = ref<SwipeActionStatus>(props.modelValue);
 /** Live drag distance in design px (negative = leftwards). */
-const dragOffset = ref(0)
+const dragOffset = ref(0);
 /** A gesture is in flight. */
-const isDragging = ref(false)
+const isDragging = ref(false);
 /** Measured open distance per side, in design px. */
-const openDistance = ref<{ left: number, right: number }>({
+const openDistance = ref<{ left: number; right: number }>({
   left: FALLBACK_ACTION_WIDTH,
   right: FALLBACK_ACTION_WIDTH,
-})
+});
 
 /** Action-area nodes, used by the DOM measurement fallback. */
-const leftActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null)
-const rightActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null)
+const leftActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null);
+const rightActionsRef = ref<{ getBoundingClientRect?: () => { width: number } } | null>(null);
 
 /** Single pending settle timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 /** Guards against a stale leg finishing after a newer one started. */
-let generation = 0
+let generation = 0;
 
 /** Gesture origin. */
-let startX = 0
-let startY = 0
+let startX = 0;
+let startY = 0;
 /** The gesture was recognised as horizontal and is being tracked. */
-let tracking = false
+let tracking = false;
 /** The gesture was rejected as a vertical scroll. */
-let rejected = false
+let rejected = false;
 
 /** Which sides have an action area rendered. */
-const hasLeft = computed(() => slots.left !== undefined)
-const hasRight = computed(() => slots.right !== undefined)
+const hasLeft = computed(() => slots.left !== undefined);
+const hasRight = computed(() => slots.right !== undefined);
 
 /** `true` while the settle transition runs. */
-const isAnimating = ref(false)
+const isAnimating = ref(false);
 
 /** Whether an action area is exposed. */
-const isOpen = computed(() => status.value !== 'close')
+const isOpen = computed(() => status.value !== 'close');
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
@@ -182,14 +182,14 @@ function clearTimer(): void {
  * is guarded — a failure just means "try the next one".
  */
 function measureSide(side: SwipeActionPosition): void {
-  const fallbackNode = side === 'left' ? leftActionsRef.value : rightActionsRef.value
+  const fallbackNode = side === 'left' ? leftActionsRef.value : rightActionsRef.value;
   // (1) DOM node — available in H5 and in the docs preview.
   if (fallbackNode && typeof fallbackNode.getBoundingClientRect === 'function') {
     try {
-      const width = fallbackNode.getBoundingClientRect().width
+      const width = fallbackNode.getBoundingClientRect().width;
       if (width > 0) {
-        openDistance.value = { ...openDistance.value, [side]: width }
-        return
+        openDistance.value = { ...openDistance.value, [side]: width };
+        return;
       }
     } catch {
       // Fall through to the next strategy.
@@ -199,31 +199,31 @@ function measureSide(side: SwipeActionPosition): void {
   const host = globalThis as {
     uni?: {
       createSelectorQuery?: () => {
-        in?: (component: unknown) => unknown
+        in?: (component: unknown) => unknown;
         select?: (selector: string) => {
           boundingClientRect?: (cb: (rect: { width?: number } | null) => void) => {
-            exec?: (cb?: () => void) => void
-          }
-        }
-        exec?: (cb?: () => void) => void
-      }
-    }
-  }
-  const queryFactory = host.uni?.createSelectorQuery
-  if (typeof queryFactory !== 'function') return
+            exec?: (cb?: () => void) => void;
+          };
+        };
+        exec?: (cb?: () => void) => void;
+      };
+    };
+  };
+  const queryFactory = host.uni?.createSelectorQuery;
+  if (typeof queryFactory !== 'function') return;
   try {
-    const query = queryFactory()
-    const selection = query.select?.(`.sn-swipe-action__actions--${side}`)
+    const query = queryFactory();
+    const selection = query.select?.(`.sn-swipe-action__actions--${side}`);
     const measured = selection?.boundingClientRect?.((rect) => {
-      const width = rect?.width
+      const width = rect?.width;
       if (typeof width === 'number' && width > 0) {
-        openDistance.value = { ...openDistance.value, [side]: width }
+        openDistance.value = { ...openDistance.value, [side]: width };
       }
-    })
+    });
     // `boundingClientRect` already returns the chainable node on most targets;
     // fall back to the query itself when it does not.
-    const chain = measured ?? query
-    chain.exec?.()
+    const chain = measured ?? query;
+    chain.exec?.();
   } catch {
     // Measurement is best-effort; the fallback width keeps the row usable.
   }
@@ -235,139 +235,136 @@ function measureSide(side: SwipeActionPosition): void {
  * `reason` decides what `before-close` receives; an absent guard always
  * allows the move.
  */
-async function settle(
-  next: SwipeActionStatus,
-  reason: SwipeActionReason,
-): Promise<boolean> {
-  if (next === status.value) return false
+async function settle(next: SwipeActionStatus, reason: SwipeActionReason): Promise<boolean> {
+  if (next === status.value) return false;
   if (next === 'close' && props.beforeClose) {
-    const position: SwipeActionPosition = status.value === 'left' ? 'left' : 'right'
-    let allowed = false
+    const position: SwipeActionPosition = status.value === 'left' ? 'left' : 'right';
+    let allowed = false;
     try {
-      allowed = await props.beforeClose(reason, position)
+      allowed = await props.beforeClose(reason, position);
     } catch {
       // A throwing guard is treated as a rejection: keep the row open.
-      allowed = false
+      allowed = false;
     }
-    if (!allowed) return false
+    if (!allowed) return false;
   }
-  clearTimer()
-  const token = ++generation
-  isDragging.value = false
-  dragOffset.value = 0
-  status.value = next
-  emit('update:modelValue', next)
-  isAnimating.value = true
+  clearTimer();
+  const token = ++generation;
+  isDragging.value = false;
+  dragOffset.value = 0;
+  status.value = next;
+  emit('update:modelValue', next);
+  isAnimating.value = true;
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    isAnimating.value = false
-  }, DEFAULT_DURATION)
-  return true
+    timer = null;
+    if (token !== generation) return;
+    isAnimating.value = false;
+  }, DEFAULT_DURATION);
+  return true;
 }
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Close the row imperatively (wd `close` method parity). */
 function close(
   reason: SwipeActionReason = 'other',
   position?: SwipeActionPosition,
 ): Promise<boolean> {
-  if (position !== undefined && status.value !== position) return Promise.resolve(false)
-  return settle('close', reason)
+  if (position !== undefined && status.value !== position) return Promise.resolve(false);
+  return settle('close', reason);
 }
 
-defineExpose({ close })
+defineExpose({ close });
 
 /** Read the first touch point out of a uni / DOM touch event. */
-function touchPoint(event: Event): { x: number, y: number } {
+function touchPoint(event: Event): { x: number; y: number } {
   const detail = event as unknown as {
-    touches?: Array<{ clientX?: number, clientY?: number }>
-    changedTouches?: Array<{ clientX?: number, clientY?: number }>
-  }
-  const list = detail.touches ?? detail.changedTouches
-  const point = list && list.length > 0 ? list[0] : undefined
+    touches?: Array<{ clientX?: number; clientY?: number }>;
+    changedTouches?: Array<{ clientX?: number; clientY?: number }>;
+  };
+  const list = detail.touches ?? detail.changedTouches;
+  const point = list && list.length > 0 ? list[0] : undefined;
   return {
     x: typeof point?.clientX === 'number' ? point.clientX : 0,
     y: typeof point?.clientY === 'number' ? point.clientY : 0,
-  }
+  };
 }
 
 /** Clamp a drag to the sides that actually have an action area. */
 function clampToAvailable(dx: number): number {
-  if (dx > 0 && !hasLeft.value) return 0
-  if (dx < 0 && !hasRight.value) return 0
-  const limit = dx > 0 ? openDistance.value.left : openDistance.value.right
-  return Math.min(Math.max(dx, -limit), limit)
+  if (dx > 0 && !hasLeft.value) return 0;
+  if (dx < 0 && !hasRight.value) return 0;
+  const limit = dx > 0 ? openDistance.value.left : openDistance.value.right;
+  return Math.min(Math.max(dx, -limit), limit);
 }
 
 function onTouchStart(event: Event): void {
-  if (props.disabled) return
-  if (!hasLeft.value && !hasRight.value) return
-  const point = touchPoint(event)
-  startX = point.x
-  startY = point.y
-  tracking = false
-  rejected = false
-  dragOffset.value = 0
-  isDragging.value = true
-  if (hasLeft.value) measureSide('left')
-  if (hasRight.value) measureSide('right')
+  if (props.disabled) return;
+  if (!hasLeft.value && !hasRight.value) return;
+  const point = touchPoint(event);
+  startX = point.x;
+  startY = point.y;
+  tracking = false;
+  rejected = false;
+  dragOffset.value = 0;
+  isDragging.value = true;
+  if (hasLeft.value) measureSide('left');
+  if (hasRight.value) measureSide('right');
 }
 
 function onTouchMove(event: Event): void {
-  if (!isDragging.value || props.disabled) return
-  const point = touchPoint(event)
-  const dx = point.x - startX
-  const dy = point.y - startY
-  if (rejected) return
+  if (!isDragging.value || props.disabled) return;
+  const point = touchPoint(event);
+  const dx = point.x - startX;
+  const dy = point.y - startY;
+  if (rejected) return;
   if (!tracking) {
     // Decide once: a mostly-vertical gesture belongs to the page scroll.
     if (Math.abs(dy) > Math.abs(dx)) {
-      rejected = true
-      isDragging.value = false
-      return
+      rejected = true;
+      isDragging.value = false;
+      return;
     }
-    if (Math.abs(dx) < 2) return
-    tracking = true
+    if (Math.abs(dx) < 2) return;
+    tracking = true;
   }
   // Keep the page from scrolling while the row follows the finger.
-  event.preventDefault()
-  dragOffset.value = clampToAvailable(dx)
+  event.preventDefault();
+  dragOffset.value = clampToAvailable(dx);
 }
 
 function onTouchEnd(): void {
-  if (!isDragging.value) return
-  isDragging.value = false
-  const travelled = dragOffset.value
-  dragOffset.value = 0
-  if (!tracking) return
+  if (!isDragging.value) return;
+  isDragging.value = false;
+  const travelled = dragOffset.value;
+  dragOffset.value = 0;
+  if (!tracking) return;
   if (travelled < 0 && hasRight.value) {
-    void settle('right', 'swipe')
-    return
+    void settle('right', 'swipe');
+    return;
   }
   if (travelled > 0 && hasLeft.value) {
-    void settle('left', 'swipe')
-    return
+    void settle('left', 'swipe');
+    return;
   }
-  void settle('close', 'swipe')
+  void settle('close', 'swipe');
 }
 
 /** `touchcancel` — a system gesture took the touch; settle closed. */
 function onTouchCancel(): void {
-  if (!isDragging.value) return
-  isDragging.value = false
-  dragOffset.value = 0
-  void settle('close', 'other')
+  if (!isDragging.value) return;
+  isDragging.value = false;
+  dragOffset.value = 0;
+  void settle('close', 'other');
 }
 
 /** Tap on the content area while the row is open — close and report it. */
 function onContentTap(): void {
-  if (status.value === 'close') return
-  const position: SwipeActionPosition = status.value === 'left' ? 'left' : 'right'
+  if (status.value === 'close') return;
+  const position: SwipeActionPosition = status.value === 'left' ? 'left' : 'right';
   void settle('close', 'click').then((closed) => {
-    if (closed) emit('click', { reason: 'click', position })
-  })
+    if (closed) emit('click', { reason: 'click', position });
+  });
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -381,20 +378,20 @@ const rootClass = computed(() => [
     'sn-swipe-action--disabled': props.disabled,
   },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => props.customStyle || undefined)
+const rootStyle = computed(() => props.customStyle || undefined);
 
 /** Distance the row sits from rest, in design px. */
 const offset = computed(() => {
-  if (isDragging.value) return dragOffset.value
-  if (status.value === 'left') return openDistance.value.left
-  if (status.value === 'right') return -openDistance.value.right
-  return 0
-})
+  if (isDragging.value) return dragOffset.value;
+  if (status.value === 'left') return openDistance.value.left;
+  if (status.value === 'right') return -openDistance.value.right;
+  return 0;
+});
 
 /** Content offset (`1 design px = 2rpx`). */
-const contentStyle = computed(() => `transform: translateX(${offset.value * 2}rpx)`)
+const contentStyle = computed(() => `transform: translateX(${offset.value * 2}rpx)`);
 </script>
 
 <template>

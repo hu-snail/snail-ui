@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnForm — labelPosition × labelWidth combinations. */
-import { reactive } from 'vue'
-import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web'
+import { reactive } from 'vue';
+import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web';
 
-const f1 = reactive({ a: '', b: '' })
-const f2 = reactive({ a: '', b: '' })
-const f3 = reactive({ a: '', b: '' })
+const f1 = reactive({ a: '', b: '' });
+const f2 = reactive({ a: '', b: '' });
+const f3 = reactive({ a: '', b: '' });
 </script>
 
 <template>
@@ -43,6 +43,16 @@ const f3 = reactive({ a: '', b: '' })
 </template>
 
 <style scoped>
-.sn-form-demo { display: flex; flex-direction: column; gap: 24px; max-width: 480px; }
-.sn-form-demo__title { margin: 0; font-size: 13px; font-weight: 600; color: var(--vp-c-text-1); }
+.sn-form-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 480px;
+}
+.sn-form-demo__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
 </style>

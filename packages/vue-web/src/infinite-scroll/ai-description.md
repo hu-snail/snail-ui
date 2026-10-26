@@ -18,17 +18,17 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnInfiniteScroll from '@snui/vue-web/src/infinite-scroll/SnInfiniteScroll.vue'
+import SnInfiniteScroll from '@snui/vue-web/src/infinite-scroll/SnInfiniteScroll.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `distance` | `number` | `0` | no | Bottom-distance threshold (px) that triggers `load`. |
-| `load` | `() => Promise<void> \| void` | `undefined` | no | Called when the container is scrolled within `distance` of the bottom; a pending promise blocks further triggers; rejections are swallowed. |
-| `scrollbarProps` | `Record<string, unknown>` | `undefined` | no | Extra attributes for the internal scroll container. |
-| `showLoading` | `boolean` | `true` | no | Render an inline-SVG spinner below the content while `load` is pending. |
+| Name             | Type                          | Default     | Required | Description                                                                                                                                 |
+| ---------------- | ----------------------------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `distance`       | `number`                      | `0`         | no       | Bottom-distance threshold (px) that triggers `load`.                                                                                        |
+| `load`           | `() => Promise<void> \| void` | `undefined` | no       | Called when the container is scrolled within `distance` of the bottom; a pending promise blocks further triggers; rejections are swallowed. |
+| `scrollbarProps` | `Record<string, unknown>`     | `undefined` | no       | Extra attributes for the internal scroll container.                                                                                         |
+| `showLoading`    | `boolean`                     | `true`      | no       | Render an inline-SVG spinner below the content while `load` is pending.                                                                     |
 
 ## Events
 
@@ -36,8 +36,8 @@ None. (The reference has no events either — pass `load` as a function prop.)
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description         |
+| --------- | ------------------- |
 | `default` | Scrollable content. |
 
 ## Divergences from the reference API
@@ -66,8 +66,8 @@ None. (The reference has no events either — pass `load` as a function prop.)
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
+| Token         | CSS Variable                   | Purpose       |
+| ------------- | ------------------------------ | ------------- |
 | Text tertiary | `--sn-web-color-text-tertiary` | Spinner color |
 
 ## Versioning

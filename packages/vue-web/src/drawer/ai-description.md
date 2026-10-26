@@ -37,46 +37,46 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { SnDrawer, SnDrawerContent } from '@snui/vue-web';
 ```
 
 ## SnDrawer Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `show` | `boolean` | `false` | Whether the drawer is open. |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | Edge the panel slides in from. |
-| `width` | `number \| string` | `undefined` | Panel width. **Only applies to `left` / `right`.** |
-| `height` | `number \| string` | `undefined` | Panel height. **Only applies to `top` / `bottom`.** |
-| `maskClosable` | `boolean` | `true` | Clicking the mask requests a close. |
-| `showMask` | `boolean \| 'transparent'` | `true` | Mask visibility. `'transparent'` keeps the mask mounted (still swallowing clicks) without painting it. |
-| `to` | `string \| HTMLElement` | `undefined` | Teleport target. `undefined` disables teleport (renders in place). |
-| `displayDirective` | `'if' \| 'show'` | `'if'` | `'if'` unmounts the panel when closed; `'show'` keeps it mounted and toggles `display`. |
-| `nativeScrollbar` | `boolean` | `true` | `false` adds the `--native-scrollbar` class hook for a custom scrollbar. See §112 markers. |
-| `defaultWidth` | `number \| string` | `251` | Resize starting width. Only consulted when `resizable` is on. |
-| `defaultHeight` | `number \| string` | `251` | Resize starting height. Only consulted when `resizable` is on. |
-| `resizable` | `boolean` | `false` | Enable pointer / keyboard edge resizing. |
-| `maxWidth` | `number` | `undefined` | Drag upper bound (px). |
-| `maxHeight` | `number` | `undefined` | Drag upper bound (px). |
-| `minWidth` | `number` | `undefined` | Drag lower bound (px). |
-| `minHeight` | `number` | `undefined` | Drag lower bound (px). |
-| `autoFocus` | `boolean` | `true` | Focus the first focusable node on open. |
-| `trapFocus` | `boolean` | `true` | Cycle Tab inside the panel. Force-disabled when `showMask` is `false`. |
-| `scrollbarProps` | `SnDrawerScrollbarProps` | `undefined` | Scroll-container subset: `trigger` / `xScrollable` / `onScroll`. |
-| `zIndex` | `number` | `undefined` | Stacking order of the overlay. |
-| `blockScroll` | `boolean` | `true` | Lock `<html>` scroll while open. |
-| `closeOnEsc` | `boolean` | `true` | Escape requests a close. |
-| `contentClass` | `string` | `undefined` | Extra class on the content wrapper. |
-| `contentStyle` | `string \| CSSProperties` | `undefined` | Extra style on the content wrapper. |
+| Name               | Type                                     | Default     | Description                                                                                            |
+| ------------------ | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------ |
+| `show`             | `boolean`                                | `false`     | Whether the drawer is open.                                                                            |
+| `placement`        | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'`   | Edge the panel slides in from.                                                                         |
+| `width`            | `number \| string`                       | `undefined` | Panel width. **Only applies to `left` / `right`.**                                                     |
+| `height`           | `number \| string`                       | `undefined` | Panel height. **Only applies to `top` / `bottom`.**                                                    |
+| `maskClosable`     | `boolean`                                | `true`      | Clicking the mask requests a close.                                                                    |
+| `showMask`         | `boolean \| 'transparent'`               | `true`      | Mask visibility. `'transparent'` keeps the mask mounted (still swallowing clicks) without painting it. |
+| `to`               | `string \| HTMLElement`                  | `undefined` | Teleport target. `undefined` disables teleport (renders in place).                                     |
+| `displayDirective` | `'if' \| 'show'`                         | `'if'`      | `'if'` unmounts the panel when closed; `'show'` keeps it mounted and toggles `display`.                |
+| `nativeScrollbar`  | `boolean`                                | `true`      | `false` adds the `--native-scrollbar` class hook for a custom scrollbar. See §112 markers.             |
+| `defaultWidth`     | `number \| string`                       | `251`       | Resize starting width. Only consulted when `resizable` is on.                                          |
+| `defaultHeight`    | `number \| string`                       | `251`       | Resize starting height. Only consulted when `resizable` is on.                                         |
+| `resizable`        | `boolean`                                | `false`     | Enable pointer / keyboard edge resizing.                                                               |
+| `maxWidth`         | `number`                                 | `undefined` | Drag upper bound (px).                                                                                 |
+| `maxHeight`        | `number`                                 | `undefined` | Drag upper bound (px).                                                                                 |
+| `minWidth`         | `number`                                 | `undefined` | Drag lower bound (px).                                                                                 |
+| `minHeight`        | `number`                                 | `undefined` | Drag lower bound (px).                                                                                 |
+| `autoFocus`        | `boolean`                                | `true`      | Focus the first focusable node on open.                                                                |
+| `trapFocus`        | `boolean`                                | `true`      | Cycle Tab inside the panel. Force-disabled when `showMask` is `false`.                                 |
+| `scrollbarProps`   | `SnDrawerScrollbarProps`                 | `undefined` | Scroll-container subset: `trigger` / `xScrollable` / `onScroll`.                                       |
+| `zIndex`           | `number`                                 | `undefined` | Stacking order of the overlay.                                                                         |
+| `blockScroll`      | `boolean`                                | `true`      | Lock `<html>` scroll while open.                                                                       |
+| `closeOnEsc`       | `boolean`                                | `true`      | Escape requests a close.                                                                               |
+| `contentClass`     | `string`                                 | `undefined` | Extra class on the content wrapper.                                                                    |
+| `contentStyle`     | `string \| CSSProperties`                | `undefined` | Extra style on the content wrapper.                                                                    |
 
 ## SnDrawer Callback Props
 
-| Name | Type | Description |
-|---|---|---|
-| `onMaskClick` | `(e: MouseEvent) => void` | Mask clicked. Fires before any close, and regardless of `maskClosable`. |
-| `onEsc` | `() => void` | Escape pressed. Fires before any close, and regardless of `closeOnEsc`. |
-| `onAfterEnter` | `() => void` | Enter transition finished. |
-| `onAfterLeave` | `() => void` | Leave transition finished. |
+| Name           | Type                      | Description                                                             |
+| -------------- | ------------------------- | ----------------------------------------------------------------------- |
+| `onMaskClick`  | `(e: MouseEvent) => void` | Mask clicked. Fires before any close, and regardless of `maskClosable`. |
+| `onEsc`        | `() => void`              | Escape pressed. Fires before any close, and regardless of `closeOnEsc`. |
+| `onAfterEnter` | `() => void`              | Enter transition finished.                                              |
+| `onAfterLeave` | `() => void`              | Leave transition finished.                                              |
 
 These four mirror their events 1:1 — Vue routes `mask-click` onto
 `onMaskClick` (and `esc` onto `onEsc`), so the emitter must not also invoke
@@ -84,18 +84,18 @@ the prop by hand, or the caller's handler runs twice.
 
 ## SnDrawer Events
 
-| Event | Payload | When |
-|---|---|---|
-| `update:show` | `boolean` | The drawer asks to open/close. |
-| `after-enter` | `()` | Enter transition finished. |
-| `after-leave` | `()` | Leave transition finished. |
-| `mask-click` | `MouseEvent` | Mask clicked. |
-| `esc` | `()` | Escape pressed. |
+| Event         | Payload      | When                           |
+| ------------- | ------------ | ------------------------------ |
+| `update:show` | `boolean`    | The drawer asks to open/close. |
+| `after-enter` | `()`         | Enter transition finished.     |
+| `after-leave` | `()`         | Leave transition finished.     |
+| `mask-click`  | `MouseEvent` | Mask clicked.                  |
+| `esc`         | `()`         | Escape pressed.                |
 
 ## SnDrawer Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                                                                                                                               |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `default` | The panel body — normally a `<SnDrawerContent>`. The caller must supply it; upstream `n-drawer` behaves the same way, rendering an empty panel otherwise. |
 
 ## Behaviour notes
@@ -110,7 +110,7 @@ the prop by hand, or the caller's handler runs twice.
   `'transparent'` stays mounted and still swallows clicks but paints
   nothing; `false` does not render at all. `mask-click` fires in the first
   two regardless of `maskClosable` — `maskClosable` only decides whether a
-  close is *requested*.
+  close is _requested_.
 - **Escape respects IME.** `closeOnEsc` gates the close, but an Escape
   pressed while `event.isComposing` is true (cancelling Chinese/Japanese
   composition) never closes — the same guard as upstream's
@@ -133,30 +133,30 @@ The panel's three rows: header (title + close), body and optional footer.
 
 ## SnDrawerContent Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `title` | `string` | `undefined` | Header title. |
-| `closable` | `boolean` | `false` | Render the header close button. Upstream declares it as a bare `Boolean`, so the default is falsy. |
-| `nativeScrollbar` | `boolean` | `true` | Adds the `--native-scrollbar` class hook to the body. |
-| `headerClass` / `headerStyle` | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the header. |
-| `bodyClass` / `bodyStyle` | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the body. |
-| `bodyContentClass` / `bodyContentStyle` | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the inner body content element. |
-| `footerClass` / `footerStyle` | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the footer. |
+| Name                                    | Type                                 | Default     | Description                                                                                        |
+| --------------------------------------- | ------------------------------------ | ----------- | -------------------------------------------------------------------------------------------------- |
+| `title`                                 | `string`                             | `undefined` | Header title.                                                                                      |
+| `closable`                              | `boolean`                            | `false`     | Render the header close button. Upstream declares it as a bare `Boolean`, so the default is falsy. |
+| `nativeScrollbar`                       | `boolean`                            | `true`      | Adds the `--native-scrollbar` class hook to the body.                                              |
+| `headerClass` / `headerStyle`           | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the header.                                                                 |
+| `bodyClass` / `bodyStyle`               | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the body.                                                                   |
+| `bodyContentClass` / `bodyContentStyle` | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the inner body content element.                                             |
+| `footerClass` / `footerStyle`           | `string` / `string \| CSSProperties` | `undefined` | Extra class / style on the footer.                                                                 |
 
 ## SnDrawerContent Events
 
-| Event | Payload | When |
-|---|---|---|
-| `close` | `()` | The close button was clicked. |
+| Event   | Payload | When                          |
+| ------- | ------- | ----------------------------- |
+| `close` | `()`    | The close button was clicked. |
 
 ## SnDrawerContent Slots
 
-| Name | Description |
-|---|---|
-| `default` | Body content. |
-| `header` | Header row — replaces `title`. |
-| `footer` | Footer row. Omitted ⇒ no footer element at all. |
-| `close` | Close button — replaces the built-in glyph. |
+| Name      | Description                                     |
+| --------- | ----------------------------------------------- |
+| `default` | Body content.                                   |
+| `header`  | Header row — replaces `title`.                  |
+| `footer`  | Footer row. Omitted ⇒ no footer element at all. |
+| `close`   | Close button — replaces the built-in glyph.     |
 
 ## SnDrawerContent Behaviour notes
 
@@ -196,29 +196,29 @@ The panel's three rows: header (title + close), body and optional footer.
 
 ## Tokens Consumed (end: web)
 
-| Token | Purpose |
-|---|---|
-| `--sn-web-drawer-color` | Panel background. |
-| `--sn-web-drawer-text-color` | Panel text. |
-| `--sn-web-drawer-title-text-color` | Header title text. |
-| `--sn-web-drawer-box-shadow` | Panel elevation. |
-| `--sn-web-drawer-line-height` | Panel line height. |
-| `--sn-web-drawer-radius` | Corner radius (applied to the sliding edge). |
-| `--sn-web-drawer-mask-color` | Mask fill. |
-| `--sn-web-drawer-header-padding` | Header padding. |
-| `--sn-web-drawer-body-padding` | Body padding. |
-| `--sn-web-drawer-footer-padding` | Footer padding. |
-| `--sn-web-drawer-title-font-size` | Title size. |
-| `--sn-web-drawer-title-font-weight` | Title weight. |
-| `--sn-web-drawer-header-border-bottom` | Header divider. |
-| `--sn-web-drawer-footer-border-top` | Footer divider. |
-| `--sn-web-drawer-close-size` | Close button box size. |
-| `--sn-web-drawer-close-icon-size` | Close glyph size. |
-| `--sn-web-drawer-close-icon-color` | Close glyph colour. |
-| `--sn-web-drawer-close-icon-color-hover` | Close glyph colour on hover. |
-| `--sn-web-drawer-close-color` | Close button background. |
-| `--sn-web-drawer-close-color-hover` | Close button background on hover. |
-| `--sn-web-focus-ring` | Close button `:focus-visible` ring. |
+| Token                                    | Purpose                                      |
+| ---------------------------------------- | -------------------------------------------- |
+| `--sn-web-drawer-color`                  | Panel background.                            |
+| `--sn-web-drawer-text-color`             | Panel text.                                  |
+| `--sn-web-drawer-title-text-color`       | Header title text.                           |
+| `--sn-web-drawer-box-shadow`             | Panel elevation.                             |
+| `--sn-web-drawer-line-height`            | Panel line height.                           |
+| `--sn-web-drawer-radius`                 | Corner radius (applied to the sliding edge). |
+| `--sn-web-drawer-mask-color`             | Mask fill.                                   |
+| `--sn-web-drawer-header-padding`         | Header padding.                              |
+| `--sn-web-drawer-body-padding`           | Body padding.                                |
+| `--sn-web-drawer-footer-padding`         | Footer padding.                              |
+| `--sn-web-drawer-title-font-size`        | Title size.                                  |
+| `--sn-web-drawer-title-font-weight`      | Title weight.                                |
+| `--sn-web-drawer-header-border-bottom`   | Header divider.                              |
+| `--sn-web-drawer-footer-border-top`      | Footer divider.                              |
+| `--sn-web-drawer-close-size`             | Close button box size.                       |
+| `--sn-web-drawer-close-icon-size`        | Close glyph size.                            |
+| `--sn-web-drawer-close-icon-color`       | Close glyph colour.                          |
+| `--sn-web-drawer-close-icon-color-hover` | Close glyph colour on hover.                 |
+| `--sn-web-drawer-close-color`            | Close button background.                     |
+| `--sn-web-drawer-close-color-hover`      | Close button background on hover.            |
+| `--sn-web-focus-ring`                    | Close button `:focus-visible` ring.          |
 
 The whole token surface lives in the stylesheets of both components, so
 neither emits **any** inline theme style — theming is done by overriding

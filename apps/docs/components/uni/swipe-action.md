@@ -30,40 +30,40 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `'left' \| 'close' \| 'right'` | `'close'` | 当前滑动状态（`v-model`） |
-| `disabled` | `boolean` | `false` | 是否禁用滑动 |
-| `beforeClose` | `(reason, position) => boolean \| Promise<boolean>` | — | 关闭前拦截函数，返回 `false` 阻止关闭 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
+| 属性          | 类型                                                | 默认值    | 说明                                  |
+| ------------- | --------------------------------------------------- | --------- | ------------------------------------- |
+| `modelValue`  | `'left' \| 'close' \| 'right'`                      | `'close'` | 当前滑动状态（`v-model`）             |
+| `disabled`    | `boolean`                                           | `false`   | 是否禁用滑动                          |
+| `beforeClose` | `(reason, position) => boolean \| Promise<boolean>` | —         | 关闭前拦截函数，返回 `false` 阻止关闭 |
+| `customClass` | `string`                                            | `''`      | 根节点自定义类名                      |
+| `customStyle` | `string`                                            | `''`      | 根节点自定义样式                      |
 
 ### beforeClose 参数
 
-| 参数 | 类型 | 说明 |
-| --- | --- | --- |
-| `reason` | `'click' \| 'swipe' \| 'other'` | 触发关闭的原因 |
-| `position` | `'left' \| 'right'` | 当前展开的一侧 |
+| 参数       | 类型                            | 说明           |
+| ---------- | ------------------------------- | -------------- |
+| `reason`   | `'click' \| 'swipe' \| 'other'` | 触发关闭的原因 |
+| `position` | `'left' \| 'right'`             | 当前展开的一侧 |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 滑动状态变化 | `('left' \| 'close' \| 'right')` |
-| `click` | 已展开时点击内容区并关闭 | `{ reason: 'click', position: 'left' \| 'right' }` |
+| 事件名              | 说明                     | 参数                                               |
+| ------------------- | ------------------------ | -------------------------------------------------- |
+| `update:modelValue` | 滑动状态变化             | `('left' \| 'close' \| 'right')`                   |
+| `click`             | 已展开时点击内容区并关闭 | `{ reason: 'click', position: 'left' \| 'right' }` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明                   |
+| --------- | ---------------------- |
 | `default` | 内容区（会滑动的部分） |
-| `left` | 左侧操作区（右滑露出） |
-| `right` | 右侧操作区（左滑露出） |
+| `left`    | 左侧操作区（右滑露出） |
+| `right`   | 右侧操作区（左滑露出） |
 
 ## 方法
 
-| 方法名 | 说明 |
-| --- | --- |
+| 方法名                      | 说明                                                        |
+| --------------------------- | ----------------------------------------------------------- |
 | `close(reason?, position?)` | 关闭已展开的操作区；被 `beforeClose` 拦下时 resolve `false` |
 
 ## 手势行为
@@ -74,11 +74,11 @@
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
+| 变量                                | 用途            |
+| ----------------------------------- | --------------- |
 | `--sn-mp-color-background-elevated` | 行 / 内容区底色 |
-| `--sn-mp-color-text-primary` | 内容文字 |
-| `--sn-mp-color-text-disabled` | 禁用态文字 |
+| `--sn-mp-color-text-primary`        | 内容文字        |
+| `--sn-mp-color-text-disabled`       | 禁用态文字      |
 
 ## 无障碍
 

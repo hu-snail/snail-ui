@@ -35,11 +35,11 @@ export default {
   extends: DefaultTheme,
   Layout,
   enhanceApp({ app }: { app: { component: (name: string, c: unknown) => void } }) {
-    app.component('StyleSwitcher', StyleSwitcher)
-    app.component('ThemeCopier', ThemeCopier)
-    app.component('Demo', Demo)
-    app.component('DemoLabFab', DemoLabFab)
-    app.component('DialogStage', DialogStage)
-    app.component('MpHome', MpHome)
+    app.component('StyleSwitcher', StyleSwitcher);
+    app.component('ThemeCopier', ThemeCopier);
+    app.component('Demo', Demo);
+    app.component('DemoLabFab', DemoLabFab);
+    app.component('DialogStage', DialogStage);
+    app.component('MpHome', MpHome);
   },
-}
+};

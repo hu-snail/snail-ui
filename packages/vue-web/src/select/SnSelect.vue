@@ -1,19 +1,22 @@
 <template>
   <div
     ref="rootRef"
-    :class="['sn-select', `sn-select--${size}`, {
-      'sn-select--multiple': multiple,
-      'sn-select--filterable': filterable,
-      'sn-select--tag': tag,
-      'sn-select--disabled': disabled,
-      'sn-select--readonly': readonly,
-      'sn-select--focused': isFocused,
-      'sn-select--active': isMenuOpen,
-      [`sn-select--status-${status}`]: status !== 'default',
-      'sn-select--empty': isSelectionEmpty,
-    },
-    customClass,
-  ]"
+    :class="[
+      'sn-select',
+      `sn-select--${size}`,
+      {
+        'sn-select--multiple': multiple,
+        'sn-select--filterable': filterable,
+        'sn-select--tag': tag,
+        'sn-select--disabled': disabled,
+        'sn-select--readonly': readonly,
+        'sn-select--focused': isFocused,
+        'sn-select--active': isMenuOpen,
+        [`sn-select--status-${status}`]: status !== 'default',
+        'sn-select--empty': isSelectionEmpty,
+      },
+      customClass,
+    ]"
     :data-snui-component="'select'"
     :data-size="size"
     :data-status="status"
@@ -41,11 +44,7 @@
     >
       <!-- Multiple: tag list -->
       <template v-if="multiple">
-        <span
-          v-for="item in visibleSelectedTags"
-          :key="String(item.value)"
-          class="sn-select__tag"
-        >
+        <span v-for="item in visibleSelectedTags" :key="String(item.value)" class="sn-select__tag">
           <span class="sn-select__tag-label">{{ item.label }}</span>
           <button
             v-if="!disabled && !readonly"
@@ -71,17 +70,15 @@
       <!-- Single: label text -->
       <span v-if="!multiple" class="sn-select__single-value">
         <template v-if="selectedLeafLabel !== null">{{ selectedLeafLabel }}</template>
-        <span
-          v-if="selectedLeafLabel === null"
-          class="sn-select__placeholder"
-        >{{ placeholder }}</span>
+        <span v-if="selectedLeafLabel === null" class="sn-select__placeholder">{{
+          placeholder
+        }}</span>
       </span>
 
       <!-- Multiple + empty: placeholder -->
-      <span
-        v-if="multiple && isSelectionEmpty"
-        class="sn-select__placeholder"
-      >{{ placeholder }}</span>
+      <span v-if="multiple && isSelectionEmpty" class="sn-select__placeholder">{{
+        placeholder
+      }}</span>
 
       <!-- Filterable internal search input -->
       <input
@@ -91,7 +88,9 @@
         type="text"
         class="sn-select__filter-input"
         :class="{ 'sn-select__filter-input--single-empty': !multiple && isSelectionEmpty }"
-        :placeholder="(!multiple && isSelectionEmpty) || multiple && isSelectionEmpty ? placeholder : ''"
+        :placeholder="
+          (!multiple && isSelectionEmpty) || (multiple && isSelectionEmpty) ? placeholder : ''
+        "
         :disabled="disabled"
         :readonly="readonly || !isMenuOpen"
         :aria-label="'Type to filter options'"
@@ -105,7 +104,7 @@
         @keydown="onTriggerKeyDown"
         @focus="onFocus"
         @blur="onBlur"
-      >
+      />
     </div>
 
     <!-- Suffix area: loading spinner | clear button | arrow -->
@@ -146,9 +145,13 @@
           v-if="isMenuOpen"
           :id="menuId"
           ref="menuRef"
-          :class="['sn-select-menu', `sn-select-menu--${placement}`, {
-            'sn-select-menu--tag': tag,
-          }]"
+          :class="[
+            'sn-select-menu',
+            `sn-select-menu--${placement}`,
+            {
+              'sn-select-menu--tag': tag,
+            },
+          ]"
           :style="menuStyle"
           role="listbox"
           :aria-label="ariaLabel || label || 'Options'"
@@ -240,20 +243,11 @@
  * declared below; CSS uses `--sn-web-select-*` aliases + `--sn-web-color-*`
  * fallbacks only.
  */
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-  toRef,
-  watch,
-} from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import SnOption from './SnOption.vue'
-import { useOverlayFollow } from '../_internal/use-overlay-follow'
-import { ChevronDownIcon, CloseIcon, LoadingIcon } from './sn-select-icons'
+import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, toRef, watch } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import SnOption from './SnOption.vue';
+import { useOverlayFollow } from '../_internal/use-overlay-follow';
+import { ChevronDownIcon, CloseIcon, LoadingIcon } from './sn-select-icons';
 import {
   defaultSelectFilter,
   SN_SELECT_MENU_KEY,
@@ -264,61 +258,61 @@ import {
   type SnSelectSize,
   type SnSelectStatus,
   type SnSelectValue,
-} from './sn-select-types'
+} from './sn-select-types';
 
-defineOptions({ name: 'SnSelect' })
+defineOptions({ name: 'SnSelect' });
 
 const props = withDefaults(
   defineProps<{
     /** Bound value: single value / null, or array when `multiple`. */
-    modelValue?: SnSelectValue | SnSelectValue[] | null
+    modelValue?: SnSelectValue | SnSelectValue[] | null;
     /** Allow selecting several values (tag-style display). */
-    multiple?: boolean
+    multiple?: boolean;
     /** Option list: object options or bare values. */
-    options?: SnSelectOptionInput[]
+    options?: SnSelectOptionInput[];
     /** Field remapping for object options (naive `label-field`). */
-    labelField?: string
+    labelField?: string;
     /** Field remapping for object options (naive `value-field`). */
-    valueField?: string
+    valueField?: string;
     /** Field remapping for group children (naive `children-field`). */
-    childrenField?: string
+    childrenField?: string;
     /** Placeholder text when empty. */
-    placeholder?: string
+    placeholder?: string;
     /** Show the clear (×) button when a value is present. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Enable the internal filter input. */
-    filterable?: boolean
+    filterable?: boolean;
     /** Custom filter predicate (replaces the default label match). */
-    filter?: SnSelectFilter | undefined
+    filter?: SnSelectFilter | undefined;
     /** Disables interaction. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — opens nothing, commits nothing. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. */
-    size?: SnSelectSize
+    size?: SnSelectSize;
     /** Validation-driven visual status. */
-    status?: SnSelectStatus
+    status?: SnSelectStatus;
     /**
      * Max visible tags before collapsing into `+N` (naive `max-tag-count`;
      * the `'responsive'` variant is simplified to a plain number).
      */
-    maxTagCount?: number | undefined
+    maxTagCount?: number | undefined;
     /** Tag visual style (naive `tag`) — pill tags for values + menu rows. */
-    tag?: boolean
+    tag?: boolean;
     /** Show the loading spinner in place of the arrow. */
-    loading?: boolean
+    loading?: boolean;
     /** Remote search mode: typing emits `search`, host drives options + loading. */
-    remote?: boolean
+    remote?: boolean;
     /** Accessible name for the trigger (fallback: `label`). */
-    ariaLabel?: string
+    ariaLabel?: string;
     /** Accessible label forwarded to the menu listbox. */
-    label?: string
+    label?: string;
     /** Empty-state text (overridden by the `empty` slot). */
-    emptyText?: string
+    emptyText?: string;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     modelValue: null,
@@ -345,94 +339,93 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync. */
-  (e: 'update:modelValue', value: SnSelectValue | SnSelectValue[] | null): void
+  (e: 'update:modelValue', value: SnSelectValue | SnSelectValue[] | null): void;
   /** naive-ui's `onUpdate:value` spelling. */
-  (e: 'update:value', value: SnSelectValue | SnSelectValue[] | null): void
+  (e: 'update:value', value: SnSelectValue | SnSelectValue[] | null): void;
   /** Selection committed (also fires for tag removal + clear). */
-  (e: 'change', value: SnSelectValue | SnSelectValue[] | null): void
+  (e: 'change', value: SnSelectValue | SnSelectValue[] | null): void;
   /** Filter query changed (`filterable`; every keystroke in `remote` too). */
-  (e: 'search', query: string): void
+  (e: 'search', query: string): void;
   /** Clear button activated. */
-  (e: 'clear'): void
+  (e: 'clear'): void;
   /** Trigger gained focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Trigger lost focus. */
-  (e: 'blur', event: FocusEvent): void
+  (e: 'blur', event: FocusEvent): void;
   /** Menu body scrolled to the bottom (naive `scroll`). */
-  (e: 'scroll', event: Event): void
-}>()
+  (e: 'scroll', event: Event): void;
+}>();
 
 defineSlots<{
   /** Dropdown top area (naive `header`). */
-  header?(): unknown
+  header?(): unknown;
   /** Empty state (naive `empty`). */
-  empty?(): unknown
+  empty?(): unknown;
   /** Dropdown bottom area (naive `action`). */
-  action?(): unknown
-}>()
+  action?(): unknown;
+}>();
 
 /* ─────────── Option normalization ─────────── */
 
-const MENU_MAX_HEIGHT = 260
+const MENU_MAX_HEIGHT = 260;
 
 /** Coerce a raw option entry into its label / value / disabled / children fields. */
 function readOptionFields(
   raw: SnSelectOptionInput,
   index: number,
 ): {
-  label: string
-  value: SnSelectValue
-  disabled: boolean
-  children: SnSelectOptionInput[] | undefined
+  label: string;
+  value: SnSelectValue;
+  disabled: boolean;
+  children: SnSelectOptionInput[] | undefined;
 } {
   if (typeof raw === 'string' || typeof raw === 'number' || typeof raw === 'boolean') {
-    return { label: String(raw), value: raw, disabled: false, children: undefined }
+    return { label: String(raw), value: raw, disabled: false, children: undefined };
   }
-  const obj = raw
-  const labelRaw: unknown = obj[props.labelField]
-  const valueRaw: unknown = obj[props.valueField]
-  const disabledRaw: unknown = obj['disabled']
-  const childrenRaw: unknown = obj[props.childrenField]
-  const children = Array.isArray(childrenRaw)
-    ? childrenRaw as SnSelectOptionInput[]
-    : undefined
-  const value: SnSelectValue = typeof valueRaw === 'string' || typeof valueRaw === 'number' || typeof valueRaw === 'boolean'
-    ? valueRaw
-    : index
+  const obj = raw;
+  const labelRaw: unknown = obj[props.labelField];
+  const valueRaw: unknown = obj[props.valueField];
+  const disabledRaw: unknown = obj['disabled'];
+  const childrenRaw: unknown = obj[props.childrenField];
+  const children = Array.isArray(childrenRaw) ? (childrenRaw as SnSelectOptionInput[]) : undefined;
+  const value: SnSelectValue =
+    typeof valueRaw === 'string' || typeof valueRaw === 'number' || typeof valueRaw === 'boolean'
+      ? valueRaw
+      : index;
   return {
     label: labelRaw === undefined || labelRaw === null ? String(value) : String(labelRaw),
     value,
     disabled: disabledRaw === true,
     children,
-  }
+  };
 }
 
 /** Normalize the `options` prop into leaf/group menu nodes (deterministic, pure). */
 const normalizedNodes = computed<SnSelectMenuNode[]>(() => {
-  const out: SnSelectMenuNode[] = []
+  const out: SnSelectMenuNode[] = [];
   props.options.forEach((raw, index) => {
-    const fields = readOptionFields(raw, index)
+    const fields = readOptionFields(raw, index);
     if (fields.children && fields.children.length > 0) {
       const children: SnSelectLeafOption[] = fields.children.map((childRaw, childIndex) => {
-        const child = readOptionFields(childRaw, childIndex)
+        const child = readOptionFields(childRaw, childIndex);
         return {
           kind: 'leaf',
           key: `${index}-${childIndex}`,
           label: child.label,
           value: child.value,
           disabled: child.disabled,
-        }
-      })
+        };
+      });
       out.push({
         kind: 'group',
         key: `g-${index}`,
         label: fields.label,
         children,
-      })
+      });
     } else {
       out.push({
         kind: 'leaf',
@@ -440,139 +433,139 @@ const normalizedNodes = computed<SnSelectMenuNode[]>(() => {
         label: fields.label,
         value: fields.value,
         disabled: fields.disabled,
-      })
+      });
     }
-  })
-  return out
-})
+  });
+  return out;
+});
 
 /** Flat selectable leaves (groups flattened, order preserved). */
 const flatLeaves = computed<SnSelectLeafOption[]>(() => {
-  const out: SnSelectLeafOption[] = []
+  const out: SnSelectLeafOption[] = [];
   for (const node of normalizedNodes.value) {
-    if (node.kind === 'group') out.push(...node.children)
-    else out.push(node)
+    if (node.kind === 'group') out.push(...node.children);
+    else out.push(node);
   }
-  return out
-})
+  return out;
+});
 
 /* ─────────── Selection state ─────────── */
 
 /** Current selection as an array view regardless of mode. */
 const selectedValues = computed<ReadonlyArray<SnSelectValue>>(() => {
   if (props.multiple) {
-    return Array.isArray(props.modelValue) ? props.modelValue : []
+    return Array.isArray(props.modelValue) ? props.modelValue : [];
   }
-  const single: SnSelectValue | null | SnSelectValue[] = props.modelValue
-  if (single === null || single === undefined || Array.isArray(single)) return []
-  return [single]
-})
+  const single: SnSelectValue | null | SnSelectValue[] = props.modelValue;
+  if (single === null || single === undefined || Array.isArray(single)) return [];
+  return [single];
+});
 
-const isSelectionEmpty = computed(() => selectedValues.value.length === 0)
+const isSelectionEmpty = computed(() => selectedValues.value.length === 0);
 
 /** Lookup from value -> label for tag display + single label. */
 const labelByValue = computed<Map<SnSelectValue, string>>(() => {
-  const map = new Map<SnSelectValue, string>()
+  const map = new Map<SnSelectValue, string>();
   for (const leaf of flatLeaves.value) {
-    if (!map.has(leaf.value)) map.set(leaf.value, leaf.label)
+    if (!map.has(leaf.value)) map.set(leaf.value, leaf.label);
   }
-  return map
-})
+  return map;
+});
 
 function labelFor(value: SnSelectValue): string {
-  return labelByValue.value.get(value) ?? String(value)
+  return labelByValue.value.get(value) ?? String(value);
 }
 
 /** Single-select display label (null → placeholder). */
 const selectedLeafLabel = computed<string | null>(() => {
-  if (props.multiple || isSelectionEmpty.value) return null
-  return labelFor(selectedValues.value[0] as SnSelectValue)
-})
+  if (props.multiple || isSelectionEmpty.value) return null;
+  return labelFor(selectedValues.value[0] as SnSelectValue);
+});
 
 /** Tags visible before `maxTagCount` collapses the rest. */
 const visibleSelectedTags = computed<Array<{ value: SnSelectValue; label: string }>>(() => {
-  if (!props.multiple) return []
-  const list = selectedValues.value.map(value => ({ value, label: labelFor(value) }))
-  if (props.maxTagCount === undefined || props.maxTagCount < 0) return list
-  return list.slice(0, props.maxTagCount)
-})
+  if (!props.multiple) return [];
+  const list = selectedValues.value.map((value) => ({ value, label: labelFor(value) }));
+  if (props.maxTagCount === undefined || props.maxTagCount < 0) return list;
+  return list.slice(0, props.maxTagCount);
+});
 
 const restTagCount = computed<number>(() => {
-  if (!props.multiple || props.maxTagCount === undefined || props.maxTagCount < 0) return 0
-  return Math.max(0, selectedValues.value.length - props.maxTagCount)
-})
+  if (!props.multiple || props.maxTagCount === undefined || props.maxTagCount < 0) return 0;
+  return Math.max(0, selectedValues.value.length - props.maxTagCount);
+});
 
 /* ─────────── Filter state ─────────── */
 
-const query = ref('')
-const filterInputRef = ref<HTMLInputElement | null>(null)
+const query = ref('');
+const filterInputRef = ref<HTMLInputElement | null>(null);
 
 /** Nodes filtered by the current query (groups with zero surviving children drop out). */
 const filteredNodes = computed<SnSelectMenuNode[]>(() => {
   // Remote mode: the host owns filtering (it swaps `options` on `search`);
   // the built-in filter must not hide rows it did not filter.
-  if (query.value === '' || props.remote) return normalizedNodes.value
-  const predicate: SnSelectFilter = props.filter ?? defaultSelectFilter
-  const out: SnSelectMenuNode[] = []
+  if (query.value === '' || props.remote) return normalizedNodes.value;
+  const predicate: SnSelectFilter = props.filter ?? defaultSelectFilter;
+  const out: SnSelectMenuNode[] = [];
   for (const node of normalizedNodes.value) {
     if (node.kind === 'group') {
-      const children = node.children.filter(child => predicate(query.value, child))
+      const children = node.children.filter((child) => predicate(query.value, child));
       if (children.length > 0) {
-        out.push({ ...node, children })
+        out.push({ ...node, children });
       }
     } else if (predicate(query.value, node)) {
-      out.push(node)
+      out.push(node);
     }
   }
-  return out
-})
+  return out;
+});
 
-const hasMenuContent = computed(() => filteredNodes.value.length > 0)
+const hasMenuContent = computed(() => filteredNodes.value.length > 0);
 
 /* ─────────── Open state ─────────── */
 
-const rootRef = ref<HTMLElement | null>(null)
-const menuRef = ref<HTMLElement | null>(null)
-const menuBodyRef = ref<HTMLElement | null>(null)
+const rootRef = ref<HTMLElement | null>(null);
+const menuRef = ref<HTMLElement | null>(null);
+const menuBodyRef = ref<HTMLElement | null>(null);
 
-const isMenuOpen = ref(false)
-const isFocused = ref(false)
-const pendingValue = ref<SnSelectValue | null>(null)
-const pendingIndex = ref(-1)
+const isMenuOpen = ref(false);
+const isFocused = ref(false);
+const pendingValue = ref<SnSelectValue | null>(null);
+const pendingIndex = ref(-1);
 
 /** Selectable (non-disabled) leaves within the current filtered view. */
 const selectableLeaves = computed<SnSelectLeafOption[]>(() => {
-  const out: SnSelectLeafOption[] = []
+  const out: SnSelectLeafOption[] = [];
   for (const node of filteredNodes.value) {
     if (node.kind === 'group') {
       for (const child of node.children) {
-        if (!child.disabled) out.push(child)
+        if (!child.disabled) out.push(child);
       }
     } else if (!node.disabled) {
-      out.push(node)
+      out.push(node);
     }
   }
-  return out
-})
+  return out;
+});
 
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
 /** Module-level counter so every SnSelect instance owns a unique menu id. */
-let selectInstanceSeed = 0
-const instanceId = ++selectInstanceSeed
-const menuId = `sn-select-menu-${instanceId}`
+let selectInstanceSeed = 0;
+const instanceId = ++selectInstanceSeed;
+const menuId = `sn-select-menu-${instanceId}`;
 
 /** DOM id for one option row (aria-activedescendant target). */
 function optionId(value: SnSelectValue): string {
-  const index = selectableLeaves.value.findIndex(o => o.value === value)
-  return index === -1 ? '' : `sn-select-option-${instanceId}-${index}`
+  const index = selectableLeaves.value.findIndex((o) => o.value === value);
+  return index === -1 ? '' : `sn-select-option-${instanceId}-${index}`;
 }
 
 const activeDescendant = computed<string | null>(() => {
-  if (!isMenuOpen.value || pendingValue.value === null) return null
-  const id = optionId(pendingValue.value)
-  return id === '' ? null : id
-})
+  if (!isMenuOpen.value || pendingValue.value === null) return null;
+  const id = optionId(pendingValue.value);
+  return id === '' ? null : id;
+});
 
 provide(SN_SELECT_MENU_KEY, {
   selectedValues,
@@ -583,216 +576,214 @@ provide(SN_SELECT_MENU_KEY, {
   isOptionSelected: (value: SnSelectValue) => selectedValues.value.includes(value),
   chooseOption,
   setPending: (value: SnSelectValue) => {
-    pendingValue.value = value
-    pendingIndex.value = selectableLeaves.value.findIndex(o => o.value === value)
+    pendingValue.value = value;
+    pendingIndex.value = selectableLeaves.value.findIndex((o) => o.value === value);
   },
-})
+});
 
 /* ─────────── Dropdown positioning (simplified popper) ─────────── */
 
-const MENU_VIEWPORT_GAP = 4
-const placement = ref<'bottom' | 'top'>('bottom')
-const menuStyle = ref<Record<string, string>>({})
+const MENU_VIEWPORT_GAP = 4;
+const placement = ref<'bottom' | 'top'>('bottom');
+const menuStyle = ref<Record<string, string>>({});
 const menuBodyStyle = computed<Record<string, string>>(() => ({
   'max-height': `${MENU_MAX_HEIGHT}px`,
-}))
+}));
 
 async function repositionMenu(): Promise<void> {
-  const root = rootRef.value
-  const menu = menuRef.value
-  if (!root || !menu) return
-  const rootRect = root.getBoundingClientRect()
+  const root = rootRef.value;
+  const menu = menuRef.value;
+  if (!root || !menu) return;
+  const rootRect = root.getBoundingClientRect();
   // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
   // transform (scale 0.92) does not distort — getBoundingClientRect would
   // measure the scaled panel while the enter transition is running.
-  const menuWidth = menu.offsetWidth
-  const menuHeight = menu.offsetHeight
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const menuWidth = menu.offsetWidth;
+  const menuHeight = menu.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
   // Width: at least the trigger width (naive behavior).
-  const width = Math.max(rootRect.width, menuWidth)
+  const width = Math.max(rootRect.width, menuWidth);
   const left = Math.min(
     Math.max(MENU_VIEWPORT_GAP, rootRect.left),
     Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
-  )
+  );
 
   // Bottom preferred; flip to top when the viewport lacks room below
   // but has room above.
-  const roomBelow = vh - rootRect.bottom
-  const roomAbove = rootRect.top
-  let useTop = false
-  if (roomBelow < menuHeight && roomAbove > roomBelow) useTop = true
-  placement.value = useTop ? 'top' : 'bottom'
+  const roomBelow = vh - rootRect.bottom;
+  const roomAbove = rootRect.top;
+  let useTop = false;
+  if (roomBelow < menuHeight && roomAbove > roomBelow) useTop = true;
+  placement.value = useTop ? 'top' : 'bottom';
 
-  const top = useTop
-    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight)
-    : rootRect.bottom
+  const top = useTop ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight) : rootRect.bottom;
 
   menuStyle.value = {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
     'min-width': `${Math.round(rootRect.width)}px`,
-  }
+  };
 }
 
 /* Scroll/resize follow: while the menu is open, any scroll (page or a nested
  * scrollable ancestor) or viewport resize re-runs repositionMenu so the
  * fixed-position menu stays glued to the trigger instead of detaching. */
-const followViewport = useOverlayFollow(rootRef, menuRef, repositionMenu, isMenuOpen)
+const followViewport = useOverlayFollow(rootRef, menuRef, repositionMenu, isMenuOpen);
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
 function onDocumentMouseDown(event: MouseEvent): void {
-  if (!isMenuOpen.value) return
-  const target = event.target as Node | null
-  if (!target) return
-  if (rootRef.value && rootRef.value.contains(target)) return
-  if (menuRef.value && menuRef.value.contains(target)) return
-  closeMenu()
+  if (!isMenuOpen.value) return;
+  const target = event.target as Node | null;
+  if (!target) return;
+  if (rootRef.value && rootRef.value.contains(target)) return;
+  if (menuRef.value && menuRef.value.contains(target)) return;
+  closeMenu();
 }
 
 /* ─────────── Open / close ─────────── */
 
 function openMenu(): void {
-  if (!isInteractive.value || isMenuOpen.value) return
-  isMenuOpen.value = true
-  pendingIndex.value = -1
-  pendingValue.value = null
+  if (!isInteractive.value || isMenuOpen.value) return;
+  isMenuOpen.value = true;
+  pendingIndex.value = -1;
+  pendingValue.value = null;
   void nextTick(() => {
-    void repositionMenu()
-    followViewport.start()
+    void repositionMenu();
+    followViewport.start();
     if (props.filterable) {
-      filterInputRef.value?.focus()
+      filterInputRef.value?.focus();
     }
-  })
+  });
 }
 
 function closeMenu(): void {
-  if (!isMenuOpen.value) return
-  isMenuOpen.value = false
-  followViewport.stop()
-  query.value = ''
-  pendingIndex.value = -1
-  pendingValue.value = null
+  if (!isMenuOpen.value) return;
+  isMenuOpen.value = false;
+  followViewport.stop();
+  query.value = '';
+  pendingIndex.value = -1;
+  pendingValue.value = null;
 }
 
 /* ─────────── Selection commit ─────────── */
 
 function emitChange(next: SnSelectValue | SnSelectValue[] | null): void {
-  emit('update:modelValue', next)
-  emit('update:value', next)
-  emit('change', next)
+  emit('update:modelValue', next);
+  emit('update:value', next);
+  emit('change', next);
 }
 
 function chooseOption(value: SnSelectValue): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   if (props.multiple) {
-    const current = Array.isArray(props.modelValue) ? [...props.modelValue] : []
-    const index = current.indexOf(value)
-    if (index === -1) current.push(value)
-    else current.splice(index, 1)
-    emitChange(current)
+    const current = Array.isArray(props.modelValue) ? [...props.modelValue] : [];
+    const index = current.indexOf(value);
+    if (index === -1) current.push(value);
+    else current.splice(index, 1);
+    emitChange(current);
   } else {
-    emitChange(value)
-    closeMenu()
-    rootRef.value?.focus()
+    emitChange(value);
+    closeMenu();
+    rootRef.value?.focus();
   }
 }
 
 function removeTag(value: SnSelectValue): void {
-  if (!props.multiple || !isInteractive.value) return
-  const current = Array.isArray(props.modelValue) ? [...props.modelValue] : []
-  const next = current.filter(v => v !== value)
-  emitChange(next)
+  if (!props.multiple || !isInteractive.value) return;
+  const current = Array.isArray(props.modelValue) ? [...props.modelValue] : [];
+  const next = current.filter((v) => v !== value);
+  emitChange(next);
 }
 
 function clearSelection(): void {
-  if (!isInteractive.value) return
-  emitChange(props.multiple ? [] : null)
-  emit('clear')
+  if (!isInteractive.value) return;
+  emitChange(props.multiple ? [] : null);
+  emit('clear');
 }
 
 /* ─────────── Keyboard ─────────── */
 
 function movePending(delta: 1 | -1): void {
-  const leaves = selectableLeaves.value
-  if (leaves.length === 0) return
-  let next = pendingIndex.value + delta
-  if (next < 0) next = leaves.length - 1
-  if (next >= leaves.length) next = 0
-  pendingIndex.value = next
-  const leaf = leaves[next]
+  const leaves = selectableLeaves.value;
+  if (leaves.length === 0) return;
+  let next = pendingIndex.value + delta;
+  if (next < 0) next = leaves.length - 1;
+  if (next >= leaves.length) next = 0;
+  pendingIndex.value = next;
+  const leaf = leaves[next];
   if (leaf) {
-    pendingValue.value = leaf.value
-    void scrollPendingIntoView(leaf.value)
+    pendingValue.value = leaf.value;
+    void scrollPendingIntoView(leaf.value);
   }
 }
 
 async function scrollPendingIntoView(value: SnSelectValue): Promise<void> {
-  await nextTick()
-  const body = menuBodyRef.value
-  if (!body) return
-  const row = body.querySelector(`[data-value="${CSS.escape(String(value))}"]`)
-  row?.scrollIntoView({ block: 'nearest' })
+  await nextTick();
+  const body = menuBodyRef.value;
+  if (!body) return;
+  const row = body.querySelector(`[data-value="${CSS.escape(String(value))}"]`);
+  row?.scrollIntoView({ block: 'nearest' });
 }
 
 function onTriggerKeyDown(event: KeyboardEvent): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   switch (event.key) {
     case 'Enter': {
-      event.preventDefault()
+      event.preventDefault();
       if (!isMenuOpen.value) {
-        openMenu()
-        return
+        openMenu();
+        return;
       }
       if (pendingValue.value !== null) {
-        chooseOption(pendingValue.value)
+        chooseOption(pendingValue.value);
       }
-      break
+      break;
     }
     case ' ':
     case 'Spacebar': {
       // Space opens the menu but must not scroll the page.
-      event.preventDefault()
-      if (!isMenuOpen.value) openMenu()
-      break
+      event.preventDefault();
+      if (!isMenuOpen.value) openMenu();
+      break;
     }
     case 'ArrowDown': {
-      event.preventDefault()
-      if (!isMenuOpen.value) openMenu()
-      movePending(1)
-      break
+      event.preventDefault();
+      if (!isMenuOpen.value) openMenu();
+      movePending(1);
+      break;
     }
     case 'ArrowUp': {
-      event.preventDefault()
-      if (!isMenuOpen.value) openMenu()
-      movePending(-1)
-      break
+      event.preventDefault();
+      if (!isMenuOpen.value) openMenu();
+      movePending(-1);
+      break;
     }
     case 'Escape': {
       if (isMenuOpen.value) {
-        event.preventDefault()
-        closeMenu()
+        event.preventDefault();
+        closeMenu();
       }
-      break
+      break;
     }
     case 'Backspace': {
       if (
-        props.multiple
-        && isMenuOpen.value
-        && query.value === ''
-        && selectedValues.value.length > 0
+        props.multiple &&
+        isMenuOpen.value &&
+        query.value === '' &&
+        selectedValues.value.length > 0
       ) {
-        event.preventDefault()
-        const last = selectedValues.value[selectedValues.value.length - 1]
-        if (last !== undefined) removeTag(last)
+        event.preventDefault();
+        const last = selectedValues.value[selectedValues.value.length - 1];
+        if (last !== undefined) removeTag(last);
       }
-      break
+      break;
     }
     default:
-      break
+      break;
   }
 }
 
@@ -801,66 +792,71 @@ function onTriggerKeyDown(event: KeyboardEvent): void {
 function onTriggerMouseDown(event: MouseEvent): void {
   // Keep focus on the trigger (or filter input) — never the text-selection
   // caret dance on the wrapper.
-  if (props.filterable && isMenuOpen.value) return
-  event.preventDefault()
+  if (props.filterable && isMenuOpen.value) return;
+  event.preventDefault();
 }
 
 function onTriggerClick(): void {
-  if (!isInteractive.value) return
-  if (isMenuOpen.value) closeMenu()
-  else openMenu()
+  if (!isInteractive.value) return;
+  if (isMenuOpen.value) closeMenu();
+  else openMenu();
 }
 
 function onFilterInput(): void {
-  emit('search', query.value)
-  pendingIndex.value = -1
-  pendingValue.value = null
+  emit('search', query.value);
+  pendingIndex.value = -1;
+  pendingValue.value = null;
 }
 
 function onFocus(event: FocusEvent): void {
-  isFocused.value = true
-  emit('focus', event)
+  isFocused.value = true;
+  emit('focus', event);
 }
 
 function onBlur(event: FocusEvent): void {
-  isFocused.value = false
-  emit('blur', event)
+  isFocused.value = false;
+  emit('blur', event);
 }
 
 /* ─────────── Menu scroll (bottom detection) ─────────── */
 
 function onMenuScroll(event: Event): void {
-  const body = menuBodyRef.value
-  if (!body) return
+  const body = menuBodyRef.value;
+  if (!body) return;
   // Naive's `scroll` fires on menu bottom reach only — one emit per scroll.
-  const nearBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 8
-  if (nearBottom) emit('scroll', event)
+  const nearBottom = body.scrollTop + body.clientHeight >= body.scrollHeight - 8;
+  if (nearBottom) emit('scroll', event);
 }
 
 /* ─────────── Listeners lifecycle (§41/§42) ─────────── */
 
 onMounted(() => {
-  document.addEventListener('mousedown', onDocumentMouseDown)
-})
+  document.addEventListener('mousedown', onDocumentMouseDown);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown)
-  followViewport.stop()
-})
+  document.removeEventListener('mousedown', onDocumentMouseDown);
+  followViewport.stop();
+});
 
-watch(() => props.options, () => {
-  // Options swapped (remote search) — re-measure the open menu.
-  if (isMenuOpen.value) void nextTick(() => void repositionMenu())
-})
+watch(
+  () => props.options,
+  () => {
+    // Options swapped (remote search) — re-measure the open menu.
+    if (isMenuOpen.value) void nextTick(() => void repositionMenu());
+  },
+);
 
 watch(isMenuOpen, (open) => {
-  if (open) void nextTick(() => void repositionMenu())
-})
+  if (open) void nextTick(() => void repositionMenu());
+});
 
 const wrapperStyle = computed(() => {
-  if (typeof props.customStyle === 'string') return props.customStyle
-  return Object.entries(props.customStyle ?? {}).map(([k, v]) => `${k}:${v}`).join(';')
-})
+  if (typeof props.customStyle === 'string') return props.customStyle;
+  return Object.entries(props.customStyle ?? {})
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';');
+});
 </script>
 
 <style scoped>
@@ -887,7 +883,9 @@ const wrapperStyle = computed(() => {
   background-color: var(--sn-web-select-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-select-text-color, var(--sn-web-color-text-primary));
   cursor: pointer;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
   outline: none;
 }
 
@@ -902,11 +900,26 @@ const wrapperStyle = computed(() => {
 }
 
 /* Sizes — height + font-size presets (mirror SnInput). */
-.sn-select--mini { --sn-web-select-height: 22px; font-size: 11px; }
-.sn-select--tiny { --sn-web-select-height: 24px; font-size: 12px; }
-.sn-select--small { --sn-web-select-height: 28px; font-size: 13px; }
-.sn-select--medium { --sn-web-select-height: 32px; font-size: 14px; }
-.sn-select--large { --sn-web-select-height: 40px; font-size: 15px; }
+.sn-select--mini {
+  --sn-web-select-height: 22px;
+  font-size: 11px;
+}
+.sn-select--tiny {
+  --sn-web-select-height: 24px;
+  font-size: 12px;
+}
+.sn-select--small {
+  --sn-web-select-height: 28px;
+  font-size: 13px;
+}
+.sn-select--medium {
+  --sn-web-select-height: 32px;
+  font-size: 14px;
+}
+.sn-select--large {
+  --sn-web-select-height: 40px;
+  font-size: 15px;
+}
 
 /* Multiple rows grow vertically with tags. */
 .sn-select--multiple .sn-select__selection {
@@ -938,10 +951,7 @@ const wrapperStyle = computed(() => {
   gap: 3px;
   height: calc(var(--sn-web-select-height, 32px) - 8px);
   padding: 0 var(--sn-web-select-tag-padding-x, 6px);
-  border-radius: var(
-    --sn-web-select-tag-radius,
-    var(--sn-web-select-radius, 6px)
-  );
+  border-radius: var(--sn-web-select-tag-radius, var(--sn-web-select-radius, 6px));
   background-color: var(--sn-web-select-tag-bg, var(--sn-web-color-background-soft));
   color: var(--sn-web-select-tag-text-color, var(--sn-web-color-text-primary));
   font-size: calc(1em - 1px);
@@ -967,7 +977,9 @@ const wrapperStyle = computed(() => {
   background: transparent;
   color: var(--sn-web-select-tag-close-color, var(--sn-web-color-text-tertiary));
   cursor: pointer;
-  transition: color 0.15s ease-out, background-color 0.15s ease-out;
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
 }
 
 .sn-select__tag-close:hover {
@@ -1059,8 +1071,12 @@ const wrapperStyle = computed(() => {
 }
 
 @keyframes sn-select-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Disabled / readonly */
@@ -1118,10 +1134,7 @@ const wrapperStyle = computed(() => {
   box-sizing: border-box;
   border: 1px solid var(--sn-web-select-menu-border-color, rgba(0, 0, 0, 0.06));
   border-radius: var(--sn-web-select-menu-radius, 3px);
-  background-color: var(
-    --sn-web-select-menu-bg,
-    var(--sn-web-color-background-elevated)
-  );
+  background-color: var(--sn-web-select-menu-bg, var(--sn-web-color-background-elevated));
   /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
   box-shadow: var(
     --sn-web-select-menu-shadow,
@@ -1186,17 +1199,12 @@ const wrapperStyle = computed(() => {
 .sn-select-menu__header:not(:empty),
 .sn-select-menu__action:not(:empty) {
   padding: 4px var(--sn-web-select-option-padding-x, 10px);
-  border-top: 1px solid var(
-    --sn-web-select-menu-divider-color,
-    var(--sn-web-color-border-subtle)
-  );
+  border-top: 1px solid var(--sn-web-select-menu-divider-color, var(--sn-web-color-border-subtle));
 }
 
 .sn-select-menu__header:not(:empty) {
   border-top: none;
-  border-bottom: 1px solid var(
-    --sn-web-select-menu-divider-color,
-    var(--sn-web-color-border-subtle)
-  );
+  border-bottom: 1px solid
+    var(--sn-web-select-menu-divider-color, var(--sn-web-color-border-subtle));
 }
 </style>

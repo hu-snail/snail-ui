@@ -34,16 +34,16 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `percentage` | `number` | `0` | Progress value, max 100 (out-of-range values are clamped) |
-| `hideText` | `boolean` | `false` | Hide the percentage text |
-| `color` | `string \| string[] \| SnProgressColor[]` | `''` | Fill color: solid / gradient stops / thresholds |
-| `status` | `'success' \| 'danger' \| 'warning' \| ''` | `''` | Status; takes precedence over `color` |
-| `duration` | `number` | `30` | Milliseconds per 1% of progress |
-| `percentPosition` | `{ type?: 'inner' \| 'outer'; align?: 'left' \| 'center' \| 'right' }` | `{ type: 'outer', align: 'right' }` | Percentage label placement |
-| `customClass` | `string` | `''` | Custom class for the root node |
-| `customStyle` | `string` | `''` | Custom inline style for the root node |
+| Prop              | Type                                                                   | Default                             | Description                                               |
+| ----------------- | ---------------------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------- |
+| `percentage`      | `number`                                                               | `0`                                 | Progress value, max 100 (out-of-range values are clamped) |
+| `hideText`        | `boolean`                                                              | `false`                             | Hide the percentage text                                  |
+| `color`           | `string \| string[] \| SnProgressColor[]`                              | `''`                                | Fill color: solid / gradient stops / thresholds           |
+| `status`          | `'success' \| 'danger' \| 'warning' \| ''`                             | `''`                                | Status; takes precedence over `color`                     |
+| `duration`        | `number`                                                               | `30`                                | Milliseconds per 1% of progress                           |
+| `percentPosition` | `{ type?: 'inner' \| 'outer'; align?: 'left' \| 'center' \| 'right' }` | `{ type: 'outer', align: 'right' }` | Percentage label placement                                |
+| `customClass`     | `string`                                                               | `''`                                | Custom class for the root node                            |
+| `customStyle`     | `string`                                                               | `''`                                | Custom inline style for the root node                     |
 
 `SnProgressColor` = `{ color: string; percentage?: number }`.
 
@@ -57,20 +57,20 @@ None.
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-action-primary` | Default fill color |
-| `--sn-mp-color-feedback-success` | `status="success"` fill |
-| `--sn-mp-color-feedback-warning` | `status="warning"` fill |
-| `--sn-mp-color-feedback-danger` | `status="danger"` fill |
-| `--sn-mp-color-background-subtle` | Track color |
-| `--sn-mp-color-text-secondary` | Outer label / inner label at 0% |
-| `--sn-mp-color-text-on-primary` | Inner label over the fill |
-| `--sn-mp-font-size-sm` | Label size |
-| `--sn-mp-font-line-height-normal` | Label line height |
-| `--sn-mp-spacing-3` | Label padding / margin |
-| `--sn-mp-radius-full` | Track and fill rounding |
-| `--sn-mp-radius-xs` | Corners under the Doodle skin |
+| Variable                          | Purpose                         |
+| --------------------------------- | ------------------------------- |
+| `--sn-mp-color-action-primary`    | Default fill color              |
+| `--sn-mp-color-feedback-success`  | `status="success"` fill         |
+| `--sn-mp-color-feedback-warning`  | `status="warning"` fill         |
+| `--sn-mp-color-feedback-danger`   | `status="danger"` fill          |
+| `--sn-mp-color-background-subtle` | Track color                     |
+| `--sn-mp-color-text-secondary`    | Outer label / inner label at 0% |
+| `--sn-mp-color-text-on-primary`   | Inner label over the fill       |
+| `--sn-mp-font-size-sm`            | Label size                      |
+| `--sn-mp-font-line-height-normal` | Label line height               |
+| `--sn-mp-spacing-3`               | Label padding / margin          |
+| `--sn-mp-radius-full`             | Track and fill rounding         |
+| `--sn-mp-radius-xs`               | Corners under the Doodle skin   |
 
 ## Accessibility
 
@@ -81,7 +81,6 @@ None.
 ## Dark mode
 
 The fill and track colors all come from semantic tokens (`--sn-mp-color-action-primary` / `--sn-mp-color-feedback-*` / `--sn-mp-color-background-subtle` / `--sn-mp-color-text-*`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A custom literal passed through `color` (e.g. `#5b8def`) does not flip with the theme — same behaviour as wot-ui. In dark mode prefer colors written as `var(--sn-mp-*)`.
 

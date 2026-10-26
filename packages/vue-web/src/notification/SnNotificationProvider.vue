@@ -41,18 +41,18 @@
  *   </SnNotificationProvider>
  */
 
-import { computed, provide, ref } from 'vue'
-import type { CSSProperties } from 'vue'
-import SnNotification from './SnNotification.vue'
-import { notificationApiInjectionKey } from './use-notification'
+import { computed, provide, ref } from 'vue';
+import type { CSSProperties } from 'vue';
+import SnNotification from './SnNotification.vue';
+import { notificationApiInjectionKey } from './use-notification';
 import type {
   NotificationApi,
   NotificationOptions,
   NotificationPlacement,
   NotificationReactive,
-} from './notification-types'
+} from './notification-types';
 
-defineOptions({ name: 'SnNotificationProvider' })
+defineOptions({ name: 'SnNotificationProvider' });
 
 const props = withDefaults(
   defineProps<{
@@ -60,27 +60,27 @@ const props = withDefaults(
      * Screen corner (or edge) anchoring the stack. Mirrors the reference
      * `placement` prop; defaults to 'top-right'.
      */
-    placement?: NotificationPlacement
+    placement?: NotificationPlacement;
     /**
      * Maximum number of cards on screen at once. Pushing beyond the cap
      * evicts the oldest card first.
      */
-    max?: number
+    max?: number;
     /**
      * Teleport target for the stack container. Mirrors the reference `to`
      * prop; defaults to 'body'.
      */
-    to?: string | HTMLElement
+    to?: string | HTMLElement;
     /**
      * Extra inline style for the stack container. Mirrors the reference
      * `containerStyle` prop.
      */
-    containerStyle?: string | CSSProperties
+    containerStyle?: string | CSSProperties;
     /**
      * Let the stack scroll internally when it outgrows the viewport.
      * Mirrors the reference `scrollable` prop.
      */
-    scrollable?: boolean
+    scrollable?: boolean;
   }>(),
   {
     placement: 'top-right',
@@ -88,43 +88,43 @@ const props = withDefaults(
     to: 'body',
     scrollable: false,
   },
-)
+);
 
 /** One entry in the stack: its options plus a stable transition key. */
 interface NotificationEntry {
-  key: number
-  options: NotificationOptions
+  key: number;
+  options: NotificationOptions;
 }
 
-const entries = ref<NotificationEntry[]>([])
-let seed = 0
+const entries = ref<NotificationEntry[]>([]);
+let seed = 0;
 
 function nextKey(): number {
-  seed += 1
-  return seed
+  seed += 1;
+  return seed;
 }
 
 /**
  * Options survive the removal of their entry so `onAfterLeave` can still
  * fire when the card's leave transition completes. Cleaned up per key.
  */
-const optionsByKey = new Map<number, NotificationOptions>()
+const optionsByKey = new Map<number, NotificationOptions>();
 
 /**
  * Remove an entry by key. Fires the entry's `onClose` callback; the card's
  * leave transition then plays, and `onAfterLeave` fires when it completes.
  */
 function destroyByKey(key: number): void {
-  const index = entries.value.findIndex((entry) => entry.key === key)
+  const index = entries.value.findIndex((entry) => entry.key === key);
   if (index === -1) {
-    return
+    return;
   }
-  entries.value.splice(index, 1)
-  optionsByKey.get(key)?.onClose?.()
+  entries.value.splice(index, 1);
+  optionsByKey.get(key)?.onClose?.();
 }
 
 function destroyEntry(entry: NotificationEntry): void {
-  destroyByKey(entry.key)
+  destroyByKey(entry.key);
 }
 
 /**
@@ -132,28 +132,29 @@ function destroyEntry(entry: NotificationEntry): void {
  * (`info()` / `success()` / …) — it wins over a conflicting `options.type`,
  * mirroring the reference API's per-type methods.
  */
-function create(options: NotificationOptions, forceType?: NotificationOptions['type']): NotificationReactive {
-  const resolved: NotificationOptions = forceType
-    ? { ...options, type: forceType }
-    : options
-  const key = nextKey()
-  entries.value.push({ key, options: resolved })
-  optionsByKey.set(key, resolved)
+function create(
+  options: NotificationOptions,
+  forceType?: NotificationOptions['type'],
+): NotificationReactive {
+  const resolved: NotificationOptions = forceType ? { ...options, type: forceType } : options;
+  const key = nextKey();
+  entries.value.push({ key, options: resolved });
+  optionsByKey.set(key, resolved);
 
   // Cap the stack: evict the oldest entries first (same policy as the
   // reference library's `max`).
-  const cap = props.max
+  const cap = props.max;
   if (Number.isFinite(cap) && entries.value.length > cap) {
-    const overflow = entries.value.length - cap
-    const evicted = entries.value.splice(0, overflow)
+    const overflow = entries.value.length - cap;
+    const evicted = entries.value.splice(0, overflow);
     for (const evictedEntry of evicted) {
-      optionsByKey.get(evictedEntry.key)?.onClose?.()
+      optionsByKey.get(evictedEntry.key)?.onClose?.();
     }
   }
 
   return {
     destroy: () => destroyByKey(key),
-  }
+  };
 }
 
 const api: NotificationApi = {
@@ -163,15 +164,15 @@ const api: NotificationApi = {
   warning: (options) => create(options, 'warning'),
   error: (options) => create(options, 'error'),
   destroyAll: () => {
-    const all = entries.value
-    entries.value = []
+    const all = entries.value;
+    entries.value = [];
     for (const entry of all) {
-      optionsByKey.get(entry.key)?.onClose?.()
+      optionsByKey.get(entry.key)?.onClose?.();
     }
   },
-}
+};
 
-provide(notificationApiInjectionKey, api)
+provide(notificationApiInjectionKey, api);
 
 /** Per-placement fixed positioning. */
 const PLACEMENT_STYLE: Record<NotificationPlacement, Record<string, string>> = {
@@ -201,41 +202,39 @@ const PLACEMENT_STYLE: Record<NotificationPlacement, Record<string, string>> = {
     bottom: 'var(--sn-web-notification-offset, 24px)',
     left: 'var(--sn-web-notification-offset, 24px)',
   },
-}
+};
 
 const containerStyle = computed(() => {
-  const style: Record<string, string> = { ...PLACEMENT_STYLE[props.placement] }
+  const style: Record<string, string> = { ...PLACEMENT_STYLE[props.placement] };
   // Bottom stacks must grow *upward*; top stacks grow downward.
-  style.flexDirection = props.placement.startsWith('bottom') ? 'column-reverse' : 'column'
-  return style
-})
+  style.flexDirection = props.placement.startsWith('bottom') ? 'column-reverse' : 'column';
+  return style;
+});
 
 /** Consumer-supplied extra container style (reference `containerStyle`). */
-const containerStyleProp = computed(() => props.containerStyle)
+const containerStyleProp = computed(() => props.containerStyle);
 
 /**
  * Enter/leave slide direction: 'down' for top placements (cards slide in
  * from above), 'up' for bottom ones (cards slide up from below).
  */
-const slideDirection = computed(() =>
-  props.placement.startsWith('bottom') ? 'up' : 'down',
-)
+const slideDirection = computed(() => (props.placement.startsWith('bottom') ? 'up' : 'down'));
 
 /** Map a transition-hook element back to its entry via `data-snui-key`. */
 function entryKeyOf(el: Element): number {
-  const raw = el.getAttribute('data-snui-key')
-  const key = raw === null ? Number.NaN : Number(raw)
-  return Number.isFinite(key) ? key : Number.NaN
+  const raw = el.getAttribute('data-snui-key');
+  const key = raw === null ? Number.NaN : Number(raw);
+  return Number.isFinite(key) ? key : Number.NaN;
 }
 
 function handleAfterEnter(el: Element): void {
-  optionsByKey.get(entryKeyOf(el))?.onAfterEnter?.()
+  optionsByKey.get(entryKeyOf(el))?.onAfterEnter?.();
 }
 
 function handleAfterLeave(el: Element): void {
-  const key = entryKeyOf(el)
-  optionsByKey.get(key)?.onAfterLeave?.()
-  optionsByKey.delete(key)
+  const key = entryKeyOf(el);
+  optionsByKey.get(key)?.onAfterLeave?.();
+  optionsByKey.delete(key);
 }
 </script>
 

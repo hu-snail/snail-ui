@@ -27,55 +27,45 @@
  *   <SnEmpty><template #extra><SnButton size="small">重试</SnButton></template></SnEmpty>
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnEmpty' })
+defineOptions({ name: 'SnEmpty' });
 
 const props = withDefaults(
   defineProps<{
     /** Description text; the `default` slot overrides it. */
-    description?: string
+    description?: string;
     /** Render the description line. */
-    showDescription?: boolean
+    showDescription?: boolean;
     /** Render the default glyph (or the `icon` slot). */
-    showIcon?: boolean
+    showIcon?: boolean;
     /** Visual scale of the glyph + description. */
-    size?: 'tiny' | 'small' | 'medium' | 'large' | 'huge'
+    size?: 'tiny' | 'small' | 'medium' | 'large' | 'huge';
   }>(),
   {
     showDescription: true,
     showIcon: true,
     size: 'medium',
   },
-)
+);
 
 defineSlots<{
   /** Replaces the description line. */
-  default?(): unknown
+  default?(): unknown;
   /** Additional content below the description (e.g. a retry button). */
-  extra?(): unknown
+  extra?(): unknown;
   /** Custom glyph — replaces the default inline SVG. */
-  icon?(): unknown
-}>()
+  icon?(): unknown;
+}>();
 
-const descriptionText = computed(() => props.description ?? '无数据')
+const descriptionText = computed(() => props.description ?? '无数据');
 </script>
 
 <template>
-  <div
-    data-snui-component="empty"
-    class="sn-empty"
-    :class="`sn-empty--${size}`"
-  >
+  <div data-snui-component="empty" class="sn-empty" :class="`sn-empty--${size}`">
     <div v-if="showIcon" class="sn-empty__icon" aria-hidden="true">
       <slot v-if="$slots.icon" name="icon" />
-      <svg
-        v-else
-        viewBox="0 0 28 28"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-      >
+      <svg v-else viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
         <path
           d="M26 7.5C26 11.0899 23.0899 14 19.5 14C15.9101 14 13 11.0899 13 7.5C13 3.91015 15.9101 1 19.5 1C23.0899 1 26 3.91015 26 7.5ZM16.8536 4.14645C16.6583 3.95118 16.3417 3.95118 16.1464 4.14645C15.9512 4.34171 15.9512 4.65829 16.1464 4.85355L18.7929 7.5L16.1464 10.1464C15.9512 10.3417 15.9512 10.6583 16.1464 10.8536C16.3417 11.0488 16.6583 11.0488 16.8536 10.8536L19.5 8.20711L22.1464 10.8536C22.3417 11.0488 22.6583 11.0488 22.8536 10.8536C23.0488 10.6583 23.0488 10.3417 22.8536 10.1464L20.2071 7.5L22.8536 4.85355C23.0488 4.65829 23.0488 4.34171 22.8536 4.14645C22.6583 3.95118 22.3417 3.95118 22.1464 4.14645L19.5 6.79289L16.8536 4.14645Z"
           fill="currentColor"

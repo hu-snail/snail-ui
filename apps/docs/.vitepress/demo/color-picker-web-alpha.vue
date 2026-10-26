@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnColorPicker — alpha. */
-import { ref } from 'vue'
-import { SnColorPicker } from '@snui/vue-web'
-const color = ref('#ff880080')
+import { ref } from 'vue';
+import { SnColorPicker } from '@snui/vue-web';
+const color = ref('#ff880080');
 </script>
 
 <template>
@@ -13,6 +13,14 @@ const color = ref('#ff880080')
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
-.demo-log { font-family: monospace; font-size: 13px; color: var(--vp-c-text-2); }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-log {
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

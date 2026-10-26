@@ -12,29 +12,29 @@ input when the value must be a valid CSS color.
 
 ## Props
 
-| Prop         | Type                                        | Default                    | Notes                                                     |
-| ------------ | ------------------------------------------- | -------------------------- | --------------------------------------------------------- |
-| modelValue   | `string \| null`                            | `null`                     | `v-model`. CSS color: `#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`, `rgb()`, `rgba()`, `hsl()`, `hsla()` (case-insensitive). Internal canonical form is lowercase `#rrggbb`. |
-| modes        | `('rgb' \| 'hsl' \| 'hex')[]`               | `['rgb', 'hex']`           | Panel-top tab set. The active tab decides the text-input format and the commit format. |
-| showAlpha    | `boolean`                                   | `false`                    | Adds the alpha rail; output becomes `rgba(...)` / `hsla(...)` / `#rrggbbaa` when alpha < 1. |
-| swatches     | `string[]`                                  | `[]`                       | Preset swatch row. Invalid entries are dropped; the aria-label / selected value is the normalized hex. |
-| size         | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`        | Trigger height + font preset.                              |
-| disabled     | `boolean`                                   | `false`                    | Blocks open / drag / clear.                                |
-| readonly     | `boolean`                                   | `false`                    | Visible but inert.                                         |
-| clearable    | `boolean`                                   | `false`                    | × button restores the default color `#000000` and emits `clear`. |
-| defaultShow  | `boolean`                                   | `false`                    | Opens the panel on mount.                                  |
-| placeholder  | `string`                                    | `'Please pick a color'`    | Empty-state text.                                          |
-| ariaLabel    | `string`                                    | `''`                       | Accessible name (fallback: `'Color picker'`).              |
-| customClass / customStyle | `string` / `string \| object`  | —                        | Root wrapper passthrough.                                  |
+| Prop                      | Type                                                 | Default                 | Notes                                                                                                                                                                   |
+| ------------------------- | ---------------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| modelValue                | `string \| null`                                     | `null`                  | `v-model`. CSS color: `#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`, `rgb()`, `rgba()`, `hsl()`, `hsla()` (case-insensitive). Internal canonical form is lowercase `#rrggbb`. |
+| modes                     | `('rgb' \| 'hsl' \| 'hex')[]`                        | `['rgb', 'hex']`        | Panel-top tab set. The active tab decides the text-input format and the commit format.                                                                                  |
+| showAlpha                 | `boolean`                                            | `false`                 | Adds the alpha rail; output becomes `rgba(...)` / `hsla(...)` / `#rrggbbaa` when alpha < 1.                                                                             |
+| swatches                  | `string[]`                                           | `[]`                    | Preset swatch row. Invalid entries are dropped; the aria-label / selected value is the normalized hex.                                                                  |
+| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`              | Trigger height + font preset.                                                                                                                                           |
+| disabled                  | `boolean`                                            | `false`                 | Blocks open / drag / clear.                                                                                                                                             |
+| readonly                  | `boolean`                                            | `false`                 | Visible but inert.                                                                                                                                                      |
+| clearable                 | `boolean`                                            | `false`                 | × button restores the default color `#000000` and emits `clear`.                                                                                                        |
+| defaultShow               | `boolean`                                            | `false`                 | Opens the panel on mount.                                                                                                                                               |
+| placeholder               | `string`                                             | `'Please pick a color'` | Empty-state text.                                                                                                                                                       |
+| ariaLabel                 | `string`                                             | `''`                    | Accessible name (fallback: `'Color picker'`).                                                                                                                           |
+| customClass / customStyle | `string` / `string \| object`                        | —                       | Root wrapper passthrough.                                                                                                                                               |
 
 ## Events
 
-| Event               | Payload                | Notes                                                        |
-| ------------------- | ---------------------- | ------------------------------------------------------------ |
-| update:modelValue   | `string \| null`       | Live while dragging (SV / hue / alpha) + on every commit.    |
-| change              | `string`               | Committed on pointer release, swatch click, valid input, keyboard step. |
-| clear               | —                      | Clear button activated (model already reset to `#000000`).   |
-| focus / blur        | `FocusEvent`           | From the trigger.                                             |
+| Event             | Payload          | Notes                                                                   |
+| ----------------- | ---------------- | ----------------------------------------------------------------------- |
+| update:modelValue | `string \| null` | Live while dragging (SV / hue / alpha) + on every commit.               |
+| change            | `string`         | Committed on pointer release, swatch click, valid input, keyboard step. |
+| clear             | —                | Clear button activated (model already reset to `#000000`).              |
+| focus / blur      | `FocusEvent`     | From the trigger.                                                       |
 
 ## Value contract
 

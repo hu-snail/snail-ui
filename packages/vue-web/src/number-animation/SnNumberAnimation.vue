@@ -37,26 +37,26 @@
  *   anim.value?.play()
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
 
-defineOptions({ name: 'SnNumberAnimation' })
+defineOptions({ name: 'SnNumberAnimation' });
 
 const props = withDefaults(
   defineProps<{
     /** Target value; the animation runs from `from` towards `to`. Mirrors n-number-animation `to`. */
-    to?: number
+    to?: number;
     /** Digits kept after the decimal point. Mirrors n-number-animation `precision`. */
-    precision?: number
+    precision?: number;
     /** Format the integer part with locale thousands separators. Mirrors n-number-animation `showSeparator`. */
-    showSeparator?: boolean
+    showSeparator?: boolean;
     /** BCP-47 locale for Intl.NumberFormat (separators + decimal mark). Mirrors n-number-animation `locale`. */
-    locale?: string | undefined
+    locale?: string | undefined;
     /** Start value. Mirrors n-number-animation `from`. */
-    from?: number
+    from?: number;
     /** Start / restart the animation. Mirrors n-number-animation `active`. */
-    active?: boolean
+    active?: boolean;
     /** Animation duration in ms (non-reactive, captured at setup). Mirrors n-number-animation `duration`. */
-    duration?: number
+    duration?: number;
   }>(),
   {
     to: 0,
@@ -67,33 +67,33 @@ const props = withDefaults(
     active: true,
     duration: 2000,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Animation reached `to`. Mirrors n-number-animation `onFinish`. */
-  (e: 'finish'): void
-}>()
+  (e: 'finish'): void;
+}>();
 
 /** Non-reactive by design — the reference destructures duration at setup. */
-const { duration } = props
+const { duration } = props;
 
-const displayedValue = ref(props.from)
-let animating = false
+const displayedValue = ref(props.from);
+let animating = false;
 /**
  * Tween epoch: incremented to supersede pending rAF chains (new animation
  * or unmount). Each tick checks it own epoch before continuing.
  */
-let tweenEpoch = 0
+let tweenEpoch = 0;
 
 /** Local `round(value, precision)` — lodash-es is not a dependency here. */
 function roundTo(value: number, precision: number): number {
-  const factor = 10 ** precision
-  return Math.round((value + Number.EPSILON) * factor) / factor
+  const factor = 10 ** precision;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
 }
 
 /** Same easing curve as the reference utils.ts: easeOutQuint. */
 function easeOut(t: number): number {
-  return 1 - (1 - t) ** 5
+  return 1 - (1 - t) ** 5;
 }
 
 function tween(
@@ -103,95 +103,101 @@ function tween(
   onUpdate: (value: number) => void,
   onFinish: () => void,
 ): void {
-  const startTime = performance.now()
-  const epoch = ++tweenEpoch
+  const startTime = performance.now();
+  const epoch = ++tweenEpoch;
   const tick = (): void => {
-    if (epoch !== tweenEpoch) return
-    const current = performance.now()
-    const elapsedTime = Math.min(current - startTime, durationMs)
-    const currentValue = from + (to - from) * easeOut(elapsedTime / durationMs)
+    if (epoch !== tweenEpoch) return;
+    const current = performance.now();
+    const elapsedTime = Math.min(current - startTime, durationMs);
+    const currentValue = from + (to - from) * easeOut(elapsedTime / durationMs);
     if (elapsedTime === durationMs) {
-      onFinish()
-      return
+      onFinish();
+      return;
     }
-    onUpdate(currentValue)
-    requestAnimationFrame(tick)
-  }
-  tick()
+    onUpdate(currentValue);
+    requestAnimationFrame(tick);
+  };
+  tick();
 }
 
 function handleUpdate(currentValue: number): void {
-  displayedValue.value = currentValue
+  displayedValue.value = currentValue;
 }
 
 function handleFinish(): void {
-  displayedValue.value = props.to
-  animating = false
-  emit('finish')
+  displayedValue.value = props.to;
+  animating = false;
+  emit('finish');
 }
 
 function animate(from: number = props.from, to: number = props.to): void {
-  animating = true
-  displayedValue.value = props.from
+  animating = true;
+  displayedValue.value = props.from;
   if (from !== to) {
-    tween(from, to, duration, handleUpdate, handleFinish)
+    tween(from, to, duration, handleUpdate, handleFinish);
   }
 }
 
 /** Replay the animation; ignored while one is already running. Mirrors the `play` instance method. */
 function play(): void {
-  if (animating) return
-  animate()
+  if (animating) return;
+  animate();
 }
 
 onMounted(() => {
   watchEffect(() => {
-    if (props.active) animate()
-  })
-})
+    if (props.active) animate();
+  });
+});
 
 onBeforeUnmount(() => {
   // Cancel any pending rAF chain (the reference leaves it running).
-  tweenEpoch++
-})
+  tweenEpoch++;
+});
 
-defineExpose({ play })
+defineExpose({ play });
 
 /**
  * Formatter cache — Intl.NumberFormat construction is too expensive to
  * repeat on every animation frame; behaviour is identical to constructing
  * per call.
  */
-const formatterCache = new Map<string, Intl.NumberFormat>()
+const formatterCache = new Map<string, Intl.NumberFormat>();
 
 function getNumberFormatter(locale: string | undefined): Intl.NumberFormat {
-  const key = locale ?? ''
-  let formatter = formatterCache.get(key)
+  const key = locale ?? '';
+  let formatter = formatterCache.get(key);
   if (!formatter) {
-    formatter = new Intl.NumberFormat(key === '' ? undefined : key)
-    formatterCache.set(key, formatter)
+    formatter = new Intl.NumberFormat(key === '' ? undefined : key);
+    formatterCache.set(key, formatter);
   }
-  return formatter
+  return formatter;
 }
 
-const formattedValue = computed<{ integer: string; decimal: string | undefined; decimalSeparator: string | undefined }>(() => {
-  const formatted: string = roundTo(displayedValue.value, props.precision).toFixed(props.precision)
-  const splitValue = formatted.split('.')
-  const formatter = getNumberFormatter(props.locale)
+const formattedValue = computed<{
+  integer: string;
+  decimal: string | undefined;
+  decimalSeparator: string | undefined;
+}>(() => {
+  const formatted: string = roundTo(displayedValue.value, props.precision).toFixed(props.precision);
+  const splitValue = formatted.split('.');
+  const formatter = getNumberFormatter(props.locale);
   const decimalSeparator = formatter
     .formatToParts(0.5)
-    .find(part => part.type === 'decimal')
-    ?.value
+    .find((part) => part.type === 'decimal')?.value;
   const integer = props.showSeparator
     ? formatter.format(Number(splitValue[0]))
-    : (splitValue[0] ?? '0')
-  const decimal = splitValue[1]
-  return { integer, decimal, decimalSeparator }
-})
+    : (splitValue[0] ?? '0');
+  const decimal = splitValue[1];
+  return { integer, decimal, decimalSeparator };
+});
 </script>
 
 <template>
-  <span data-snui-component="number-animation" class="sn-number-animation">{{ formattedValue.integer }}{{ formattedValue.decimal ? formattedValue.decimalSeparator : '' }}{{ formattedValue.decimal ?? '' }}</span>
+  <span data-snui-component="number-animation" class="sn-number-animation"
+    >{{ formattedValue.integer }}{{ formattedValue.decimal ? formattedValue.decimalSeparator : ''
+    }}{{ formattedValue.decimal ?? '' }}</span
+  >
 </template>
 
 <style scoped>

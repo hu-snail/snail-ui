@@ -47,61 +47,61 @@
  *   - 遮罩层 — 用 sn-overlay
  */
 
-import { computed, useSlots } from 'vue'
+import { computed, useSlots } from 'vue';
 
-defineOptions({ name: 'SnWatermark' })
+defineOptions({ name: 'SnWatermark' });
 
 /** Repeat layout. Mirrors `wd-watermark` `layout`. */
-type WatermarkLayout = 'grid' | 'staggered'
+type WatermarkLayout = 'grid' | 'staggered';
 
 /** Font style. Mirrors `wd-watermark` `font-style`. */
-type WatermarkFontStyle = 'normal' | 'italic' | 'oblique'
+type WatermarkFontStyle = 'normal' | 'italic' | 'oblique';
 
 /** Coverage canvas of the tiled grid, in rpx (a 750-wide design, ×2.67 height). */
-const CANVAS_RPX = 2000
+const CANVAS_RPX = 2000;
 
 const props = withDefaults(
   defineProps<{
     /** Watermark text. */
-    content?: string
+    content?: string;
     /** Watermark image source (network or base64). */
-    image?: string
+    image?: string;
     /** Image height in px (per the wd reference). */
-    imageHeight?: number
+    imageHeight?: number;
     /** Image width in px. */
-    imageWidth?: number
+    imageWidth?: number;
     /** Horizontal gutter between tiles, in px. */
-    gutterX?: number
+    gutterX?: number;
     /** Vertical gutter between tiles, in px. */
-    gutterY?: number
+    gutterY?: number;
     /** Tile width in px. */
-    width?: number
+    width?: number;
     /** Tile height in px. */
-    height?: number
+    height?: number;
     /** Cover the whole viewport instead of the parent box. */
-    fullScreen?: boolean
+    fullScreen?: boolean;
     /** Text color override (any CSS color value). */
-    color?: string
+    color?: string;
     /** Text size in px. */
-    size?: number
+    size?: number;
     /** Font style. */
-    fontStyle?: WatermarkFontStyle
+    fontStyle?: WatermarkFontStyle;
     /** Font weight. */
-    fontWeight?: string | number
+    fontWeight?: string | number;
     /** Font family. */
-    fontFamily?: string
+    fontFamily?: string;
     /** Rotation angle in degrees. */
-    rotate?: number
+    rotate?: number;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Opacity, 0–1. */
-    opacity?: number | undefined
+    opacity?: number | undefined;
     /** Repeat layout. */
-    layout?: WatermarkLayout
+    layout?: WatermarkLayout;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
   }>(),
   {
     content: '',
@@ -125,44 +125,44 @@ const props = withDefaults(
     customStyle: '',
     customClass: '',
   },
-)
+);
 
 defineSlots<{
   /** Custom tile content (replaces `content` / `image`). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Nothing to mark when `content`, `image` and the default slot are all empty. */
 const hasTileContent = computed(
   () => props.content !== '' || props.image !== '' || slots.default !== undefined,
-)
+);
 
 /** Tiles per row / per column, from the tile size + gutter. */
-const cols = computed(() => Math.max(1, Math.ceil(CANVAS_RPX / (props.width + props.gutterX))))
-const rows = computed(() => Math.max(1, Math.ceil(CANVAS_RPX / (props.height + props.gutterY))))
+const cols = computed(() => Math.max(1, Math.ceil(CANVAS_RPX / (props.width + props.gutterX))));
+const rows = computed(() => Math.max(1, Math.ceil(CANVAS_RPX / (props.height + props.gutterY))));
 
 /** Flat tile list, one entry per grid cell. */
 const tiles = computed(() => {
-  const list: Array<{ row: number; col: number; offset: boolean }> = []
+  const list: Array<{ row: number; col: number; offset: boolean }> = [];
   for (let row = 0; row < rows.value; row++) {
     for (let col = 0; col < cols.value; col++) {
-      list.push({ row, col, offset: props.layout === 'staggered' && row % 2 === 1 })
+      list.push({ row, col, offset: props.layout === 'staggered' && row % 2 === 1 });
     }
   }
-  return list
-})
+  return list;
+});
 
 const rootStyle = computed(() => {
-  const parts = [`z-index: ${props.zIndex}`]
-  if (props.opacity !== undefined) parts.push(`opacity: ${props.opacity}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [`z-index: ${props.zIndex}`];
+  if (props.opacity !== undefined) parts.push(`opacity: ${props.opacity}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 /** The rotated layer: covers more than the viewport so corners stay filled. */
-const layerStyle = computed(() => `transform: rotate(${props.rotate}deg)`)
+const layerStyle = computed(() => `transform: rotate(${props.rotate}deg)`);
 
 const tileStyle = computed(() => {
   const parts = [
@@ -170,9 +170,9 @@ const tileStyle = computed(() => {
     `height: ${props.height}px`,
     `margin-right: ${props.gutterX}px`,
     `margin-bottom: ${props.gutterY}px`,
-  ]
-  return parts.join('; ')
-})
+  ];
+  return parts.join('; ');
+});
 
 const textStyle = computed(() => {
   const parts = [
@@ -180,14 +180,12 @@ const textStyle = computed(() => {
     `font-style: ${props.fontStyle}`,
     `font-weight: ${props.fontWeight}`,
     `font-family: ${props.fontFamily}`,
-  ]
-  if (props.color) parts.push(`color: ${props.color}`)
-  return parts.join('; ')
-})
+  ];
+  if (props.color) parts.push(`color: ${props.color}`);
+  return parts.join('; ');
+});
 
-const imageStyle = computed(
-  () => `width: ${props.imageWidth}px; height: ${props.imageHeight}px`,
-)
+const imageStyle = computed(() => `width: ${props.imageWidth}px; height: ${props.imageHeight}px`);
 
 const rootClass = computed(() => [
   'sn-watermark',
@@ -196,7 +194,7 @@ const rootClass = computed(() => [
     'sn-watermark--staggered': props.layout === 'staggered',
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>

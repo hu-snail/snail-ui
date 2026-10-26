@@ -7,31 +7,31 @@
  * when its own prop is `undefined`, so an explicit per-cell prop still wins.
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Cell layout direction. */
-export type SnCellLayout = 'horizontal' | 'vertical'
+export type SnCellLayout = 'horizontal' | 'vertical';
 
 /** Right-hand value alignment. */
-export type SnCellValueAlign = 'left' | 'right' | 'center'
+export type SnCellValueAlign = 'left' | 'right' | 'center';
 
 /** Asterisk position for required cells. */
-export type SnCellAsteriskPosition = 'start' | 'end'
+export type SnCellAsteriskPosition = 'start' | 'end';
 
 /** Values a cell inherits from its group. */
 export interface SnCellGroupContext {
   /** Group-level border flag. */
-  border: Ref<boolean>
+  border: Ref<boolean>;
   /** Group-level title column width. */
-  titleWidth: Ref<string | number | undefined>
+  titleWidth: Ref<string | number | undefined>;
   /** Group-level vertical centering. */
-  center: Ref<boolean>
+  center: Ref<boolean>;
   /** Group-level layout. */
-  layout: Ref<SnCellLayout>
+  layout: Ref<SnCellLayout>;
   /** Group-level value alignment. */
-  valueAlign: Ref<SnCellValueAlign>
+  valueAlign: Ref<SnCellValueAlign>;
   /** Group-level card style flag. */
-  insert: Ref<boolean>
+  insert: Ref<boolean>;
 }
 
-export const SN_CELL_GROUP_KEY: InjectionKey<SnCellGroupContext> = Symbol('sn-cell-group')
+export const SN_CELL_GROUP_KEY: InjectionKey<SnCellGroupContext> = Symbol('sn-cell-group');

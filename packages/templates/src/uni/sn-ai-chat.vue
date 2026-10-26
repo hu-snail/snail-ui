@@ -16,10 +16,10 @@
  * Usage:
  *   <sn-ai-chat :messages="messages" :run="runTurn" @update:messages="onMessages" />
  */
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import SnButton from '@snui/uni/components/sn-button/sn-button.vue'
-import SnIcon from '@snui/uni/components/sn-icon/sn-icon.vue'
-import { SendIcon, StopIcon } from '../shared/icons'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import SnButton from '@snui/uni/components/sn-button/sn-button.vue';
+import SnIcon from '@snui/uni/components/sn-icon/sn-icon.vue';
+import { SendIcon, StopIcon } from '../shared/icons';
 import {
   applyStreamDelta,
   createAssistantMessage,
@@ -28,12 +28,12 @@ import {
   markDone,
   markError,
   nextId,
-} from '../shared/stream'
-import type { SnAiError, SnAiMessage, SnAiQueuedTurn } from '../shared/types'
-import type { SnAiStreamDelta } from '../shared/stream'
-import SnAiMessageRow from './sn-ai-message.vue'
+} from '../shared/stream';
+import type { SnAiError, SnAiMessage, SnAiQueuedTurn } from '../shared/types';
+import type { SnAiStreamDelta } from '../shared/stream';
+import SnAiMessageRow from './sn-ai-message.vue';
 
-defineOptions({ name: 'SnAiChat' })
+defineOptions({ name: 'SnAiChat' });
 
 /**
  * A host's turn runner — the same contract as the web page: it receives the
@@ -42,30 +42,30 @@ defineOptions({ name: 'SnAiChat' })
 export type SnAiRunTurn = (
   turn: SnAiQueuedTurn,
   context: {
-    signal: AbortSignal
-    emit: (delta: SnAiStreamDelta) => void
-    messageId: string
+    signal: AbortSignal;
+    emit: (delta: SnAiStreamDelta) => void;
+    messageId: string;
   },
-) => Promise<void>
+) => Promise<void>;
 
 const props = withDefaults(
   defineProps<{
     /** The transcript, oldest first. Use with `update:messages`. */
-    messages?: SnAiMessage[] | undefined
+    messages?: SnAiMessage[] | undefined;
     /** The host's turn runner. */
-    run?: SnAiRunTurn | undefined
+    run?: SnAiRunTurn | undefined;
     /** Page title. */
-    title?: string | undefined
+    title?: string | undefined;
     /** Prompt placeholder. */
-    placeholder?: string | undefined
+    placeholder?: string | undefined;
     /** Disable the whole page. */
-    disabled?: boolean | undefined
+    disabled?: boolean | undefined;
     /** Whether extra submissions queue up instead of being dropped. */
-    allowQueue?: boolean | undefined
+    allowQueue?: boolean | undefined;
     /** Show the header chrome. */
-    showHeader?: boolean | undefined
+    showHeader?: boolean | undefined;
     /** Loading state for history fetch. */
-    loading?: boolean | undefined
+    loading?: boolean | undefined;
   }>(),
   {
     messages: undefined,
@@ -77,25 +77,25 @@ const props = withDefaults(
     showHeader: true,
     loading: false,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:messages', messages: SnAiMessage[]): void
-  (e: 'turn-start', turn: SnAiQueuedTurn): void
-  (e: 'turn-end', payload: { turn: SnAiQueuedTurn; message: SnAiMessage }): void
-  (e: 'error', payload: { turn: SnAiQueuedTurn; error: SnAiError }): void
-  (e: 'retry', message: SnAiMessage): void
-}>()
+  (e: 'update:messages', messages: SnAiMessage[]): void;
+  (e: 'turn-start', turn: SnAiQueuedTurn): void;
+  (e: 'turn-end', payload: { turn: SnAiQueuedTurn; message: SnAiMessage }): void;
+  (e: 'error', payload: { turn: SnAiQueuedTurn; error: SnAiError }): void;
+  (e: 'retry', message: SnAiMessage): void;
+}>();
 
 /** Draft text bound to the composer. */
-const draft = ref('')
+const draft = ref('');
 /** Turns accepted but not yet dispatched. */
-const queue = ref<SnAiQueuedTurn[]>([])
+const queue = ref<SnAiQueuedTurn[]>([]);
 /** The turn currently in flight, if any. */
-const activeTurn = ref<SnAiQueuedTurn | null>(null)
-let controller: AbortController | null = null
+const activeTurn = ref<SnAiQueuedTurn | null>(null);
+let controller: AbortController | null = null;
 
-const localMessages = ref<SnAiMessage[]>([...(props.messages ?? [])])
+const localMessages = ref<SnAiMessage[]>([...(props.messages ?? [])]);
 
 /**
  * The transcript the page renders and folds into. Kept local so a host that
@@ -105,114 +105,114 @@ const localMessages = ref<SnAiMessage[]>([...(props.messages ?? [])])
 watch(
   () => props.messages,
   (next) => {
-    localMessages.value = [...(next ?? [])]
+    localMessages.value = [...(next ?? [])];
   },
-)
+);
 
-const messagesRef = computed<SnAiMessage[]>(() => localMessages.value)
-const isActive = computed(() => activeTurn.value !== null)
-const canSend = computed(() => draft.value.trim().length > 0)
+const messagesRef = computed<SnAiMessage[]>(() => localMessages.value);
+const isActive = computed(() => activeTurn.value !== null);
+const canSend = computed(() => draft.value.trim().length > 0);
 
 function setMessages(next: SnAiMessage[]): void {
-  emit('update:messages', next)
+  emit('update:messages', next);
 }
 
 function patchMessage(id: string, updater: (message: SnAiMessage) => SnAiMessage): void {
-  setMessages(messagesRef.value.map((message) => (message.id === id ? updater(message) : message)))
+  setMessages(messagesRef.value.map((message) => (message.id === id ? updater(message) : message)));
 }
 
 /** Normalize any thrown value into the structured error contract (§28). */
 function toStructuredError(caught: unknown): SnAiError {
   if (caught && typeof caught === 'object' && 'code' in caught && 'message' in caught) {
-    const shape = caught as { code: unknown; message: unknown }
-    return { code: String(shape.code), message: String(shape.message), retryable: true }
+    const shape = caught as { code: unknown; message: unknown };
+    return { code: String(shape.code), message: String(shape.message), retryable: true };
   }
   if (caught instanceof Error) {
-    return { code: 'TURN_FAILED', message: caught.message, retryable: true }
+    return { code: 'TURN_FAILED', message: caught.message, retryable: true };
   }
-  return { code: 'TURN_FAILED', message: '生成失败', retryable: true }
+  return { code: 'TURN_FAILED', message: '生成失败', retryable: true };
 }
 
 /** Run one queued turn end to end, then drain the queue. */
 async function dispatch(turn: SnAiQueuedTurn): Promise<void> {
-  const userMessage = createUserMessage(turn.text, turn.attachments)
-  const assistantMessage = createAssistantMessage({ modelId: turn.modelId })
+  const userMessage = createUserMessage(turn.text, turn.attachments);
+  const assistantMessage = createAssistantMessage({ modelId: turn.modelId });
 
-  activeTurn.value = turn
-  controller = new AbortController()
-  setMessages([...messagesRef.value, userMessage, assistantMessage])
-  emit('turn-start', turn)
+  activeTurn.value = turn;
+  controller = new AbortController();
+  setMessages([...messagesRef.value, userMessage, assistantMessage]);
+  emit('turn-start', turn);
 
-  const signal = controller.signal
+  const signal = controller.signal;
   try {
     if (!props.run) {
-      throw Object.assign(new Error('未配置运行器'), { code: 'NO_RUNNER' })
+      throw Object.assign(new Error('未配置运行器'), { code: 'NO_RUNNER' });
     }
     await props.run(turn, {
       signal,
       messageId: assistantMessage.id,
       emit: (delta) => {
-        patchMessage(assistantMessage.id, (message) => applyStreamDelta(message, delta))
+        patchMessage(assistantMessage.id, (message) => applyStreamDelta(message, delta));
       },
-    })
-    patchMessage(assistantMessage.id, markDone)
-    const settled = messagesRef.value.find((message) => message.id === assistantMessage.id)
-    if (settled) emit('turn-end', { turn, message: settled })
+    });
+    patchMessage(assistantMessage.id, markDone);
+    const settled = messagesRef.value.find((message) => message.id === assistantMessage.id);
+    if (settled) emit('turn-end', { turn, message: settled });
   } catch (caught) {
-    const aborted = signal.aborted || (caught instanceof Error && caught.name === 'AbortError')
+    const aborted = signal.aborted || (caught instanceof Error && caught.name === 'AbortError');
     if (aborted) {
-      patchMessage(assistantMessage.id, markAborted)
+      patchMessage(assistantMessage.id, markAborted);
     } else {
-      const error = toStructuredError(caught)
-      patchMessage(assistantMessage.id, (message) => markError(message, error))
-      emit('error', { turn, error })
+      const error = toStructuredError(caught);
+      patchMessage(assistantMessage.id, (message) => markError(message, error));
+      emit('error', { turn, error });
     }
-    const settled = messagesRef.value.find((message) => message.id === assistantMessage.id)
-    if (settled) emit('turn-end', { turn, message: settled })
+    const settled = messagesRef.value.find((message) => message.id === assistantMessage.id);
+    if (settled) emit('turn-end', { turn, message: settled });
   } finally {
-    controller = null
-    activeTurn.value = null
-    const [next, ...rest] = queue.value
-    queue.value = rest
-    if (next) void dispatch(next)
+    controller = null;
+    activeTurn.value = null;
+    const [next, ...rest] = queue.value;
+    queue.value = rest;
+    if (next) void dispatch(next);
   }
 }
 
 /** Accept the composed draft: run it now, or queue it behind the active turn. */
 function onSend(): void {
-  if (props.disabled || !canSend.value) return
+  if (props.disabled || !canSend.value) return;
   const turn: SnAiQueuedTurn = {
     id: nextId('sn-ai-turn'),
     text: draft.value.trim(),
     attachments: [],
     createdAt: Date.now(),
-  }
-  draft.value = ''
+  };
+  draft.value = '';
   if (isActive.value) {
-    if (props.allowQueue) queue.value = [...queue.value, turn]
-    return
+    if (props.allowQueue) queue.value = [...queue.value, turn];
+    return;
   }
-  void dispatch(turn)
+  void dispatch(turn);
 }
 
 /** Abort the in-flight turn. */
 function onStop(): void {
-  controller?.abort()
+  controller?.abort();
 }
 
 /** Retry a failed turn using the user text that preceded it. */
 function onRetry(message: SnAiMessage): void {
-  emit('retry', message)
-  const list = messagesRef.value
-  const index = list.findIndex((candidate) => candidate.id === message.id)
-  let text = ''
+  emit('retry', message);
+  const list = messagesRef.value;
+  const index = list.findIndex((candidate) => candidate.id === message.id);
+  let text = '';
   for (let i = index - 1; i >= 0; i -= 1) {
-    const candidate = list[i]
-    if (candidate?.role !== 'user') continue
-    const part = candidate.parts.find((p) => p.type === 'text')
+    const candidate = list[i];
+    if (candidate?.role !== 'user') continue;
+    const part = candidate.parts.find((p) => p.type === 'text');
     if (part?.type === 'text') {
-      text = part.text
-      break
+      text = part.text;
+      break;
     }
   }
   const turn: SnAiQueuedTurn = {
@@ -220,18 +220,18 @@ function onRetry(message: SnAiMessage): void {
     text,
     attachments: [],
     createdAt: Date.now(),
-  }
+  };
   if (isActive.value) {
-    if (props.allowQueue) queue.value = [...queue.value, turn]
-    return
+    if (props.allowQueue) queue.value = [...queue.value, turn];
+    return;
   }
-  void dispatch(turn)
+  void dispatch(turn);
 }
 
 onBeforeUnmount(() => {
-  controller?.abort()
-  controller = null
-})
+  controller?.abort();
+  controller = null;
+});
 </script>
 
 <template>
@@ -259,11 +259,7 @@ onBeforeUnmount(() => {
 
     <!-- Pending queue -->
     <view v-if="queue.length" class="sn-ai-chat__queue">
-      <text
-        v-for="(turn, index) in queue"
-        :key="turn.id"
-        class="sn-ai-chat__queue-item"
-      >
+      <text v-for="(turn, index) in queue" :key="turn.id" class="sn-ai-chat__queue-item">
         {{ index + 1 }}. {{ turn.text }}
       </text>
     </view>

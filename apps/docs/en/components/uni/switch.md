@@ -41,38 +41,38 @@ The four `*CssIcon` flags switch the same string from "registry icon name" to "C
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean \| string \| number` | `false` | Bound value, compared against `activeValue`. |
-| `disabled` | `boolean` | `false` | Disables and dims the rail. |
-| `inactiveActionIcon` | `string` | `''` | Knob icon while inactive (registry name). |
-| `activeActionIcon` | `string` | `''` | Knob icon while active. |
-| `activeIcon` | `string` | `''` | Rail icon while active; overrides `activeText`. |
-| `inactiveIcon` | `string` | `''` | Rail icon while inactive; overrides `inactiveText`. |
-| `classPrefix` | `string` | `'wd-icon'` | Icon class prefix (kept for wot-ui parity). |
-| `inactiveActionCssIcon` | `boolean \| string` | `false` | Treat `inactiveActionIcon` as a CSS class. |
-| `activeActionCssIcon` | `boolean \| string` | `false` | Treat `activeActionIcon` as a CSS class. |
-| `activeCssIcon` | `boolean \| string` | `false` | Treat `activeIcon` as a CSS class. |
-| `inactiveCssIcon` | `boolean \| string` | `false` | Treat `inactiveIcon` as a CSS class. |
-| `activeText` | `string` | `''` | Rail label while on. |
-| `inactiveText` | `string` | `''` | Rail label while off. |
-| `activeValue` | `boolean \| string \| number` | `true` | Value meaning "on" (strict equality). |
-| `inactiveValue` | `boolean \| string \| number` | `false` | Value meaning "off". |
-| `activeColor` | `string` | `''` | Active rail color (CSS color, inline override). |
-| `inactiveColor` | `string` | `''` | Inactive rail color. |
-| `size` | `string \| number` | — | Rail size; a number is treated as rpx. |
-| `shape` | `'round' \| 'square'` | `'round'` | Rail shape. |
-| `loading` | `boolean` | `false` | Spinner in the knob; blocks interaction. |
-| `beforeChange` | `() => boolean \| Promise<boolean>` | — | Pre-toggle hook; `false` vetoes. |
-| `customClass` | `string` | `''` | Class on the root node. |
-| `customStyle` | `string` | `''` | Inline style on the root node. |
+| Prop                    | Type                                | Default     | Description                                         |
+| ----------------------- | ----------------------------------- | ----------- | --------------------------------------------------- |
+| `modelValue`            | `boolean \| string \| number`       | `false`     | Bound value, compared against `activeValue`.        |
+| `disabled`              | `boolean`                           | `false`     | Disables and dims the rail.                         |
+| `inactiveActionIcon`    | `string`                            | `''`        | Knob icon while inactive (registry name).           |
+| `activeActionIcon`      | `string`                            | `''`        | Knob icon while active.                             |
+| `activeIcon`            | `string`                            | `''`        | Rail icon while active; overrides `activeText`.     |
+| `inactiveIcon`          | `string`                            | `''`        | Rail icon while inactive; overrides `inactiveText`. |
+| `classPrefix`           | `string`                            | `'wd-icon'` | Icon class prefix (kept for wot-ui parity).         |
+| `inactiveActionCssIcon` | `boolean \| string`                 | `false`     | Treat `inactiveActionIcon` as a CSS class.          |
+| `activeActionCssIcon`   | `boolean \| string`                 | `false`     | Treat `activeActionIcon` as a CSS class.            |
+| `activeCssIcon`         | `boolean \| string`                 | `false`     | Treat `activeIcon` as a CSS class.                  |
+| `inactiveCssIcon`       | `boolean \| string`                 | `false`     | Treat `inactiveIcon` as a CSS class.                |
+| `activeText`            | `string`                            | `''`        | Rail label while on.                                |
+| `inactiveText`          | `string`                            | `''`        | Rail label while off.                               |
+| `activeValue`           | `boolean \| string \| number`       | `true`      | Value meaning "on" (strict equality).               |
+| `inactiveValue`         | `boolean \| string \| number`       | `false`     | Value meaning "off".                                |
+| `activeColor`           | `string`                            | `''`        | Active rail color (CSS color, inline override).     |
+| `inactiveColor`         | `string`                            | `''`        | Inactive rail color.                                |
+| `size`                  | `string \| number`                  | —           | Rail size; a number is treated as rpx.              |
+| `shape`                 | `'round' \| 'square'`               | `'round'`   | Rail shape.                                         |
+| `loading`               | `boolean`                           | `false`     | Spinner in the knob; blocks interaction.            |
+| `beforeChange`          | `() => boolean \| Promise<boolean>` | —           | Pre-toggle hook; `false` vetoes.                    |
+| `customClass`           | `string`                            | `''`        | Class on the root node.                             |
+| `customStyle`           | `string`                            | `''`        | Inline style on the root node.                      |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Toggle accepted (post `beforeChange`) | `(value)` |
-| `change` | Fires together with `update:modelValue` | `(value)` |
+| Event               | Description                             | Payload   |
+| ------------------- | --------------------------------------- | --------- |
+| `update:modelValue` | Toggle accepted (post `beforeChange`)   | `(value)` |
+| `change`            | Fires together with `update:modelValue` | `(value)` |
 
 ## Slots
 
@@ -80,14 +80,14 @@ None. Rail content comes from `activeText` / `inactiveText` / the icon props.
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-control-unchecked` | Inactive rail |
-| `--sn-mp-color-action-primary` | Active rail + knob glyph |
-| `--sn-mp-color-control-knob` | Knob plate |
-| `--sn-mp-color-text-on-primary` | Rail label / rail icon |
+| Variable                              | Purpose                  |
+| ------------------------------------- | ------------------------ |
+| `--sn-mp-color-control-unchecked`     | Inactive rail            |
+| `--sn-mp-color-action-primary`        | Active rail + knob glyph |
+| `--sn-mp-color-control-knob`          | Knob plate               |
+| `--sn-mp-color-text-on-primary`       | Rail label / rail icon   |
 | `--sn-mp-radius-full` / `-sm` / `-xs` | Round vs square geometry |
-| `--sn-mp-color-border-subtle` | Loading spinner ring |
+| `--sn-mp-color-border-subtle`         | Loading spinner ring     |
 
 ## Accessibility
 
@@ -98,4 +98,3 @@ None. Rail content comes from `activeText` / `inactiveText` / the icon props.
 ## Dark mode
 
 Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` / `page.sn-theme-dark` flips the rail, knob plate and rail label (the brand token `--sn-mp-color-action-primary` keeps the same hue in both themes). Verify with:
-

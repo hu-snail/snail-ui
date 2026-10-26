@@ -18,225 +18,225 @@
 /** Shared strings used by several components. */
 export interface SnCommonLocale {
   /** Close affordance `aria-label` (dialog / alert / tag / notification…). */
-  close: string
+  close: string;
 }
 
 /** Localized strings for SnUpload. */
 export interface SnUploadLocale {
   /** Status label for a `pending` entry. */
-  pending: string
+  pending: string;
   /** Status label for an `uploading` entry. */
-  uploading: string
+  uploading: string;
   /** Status label for a `done` entry. */
-  done: string
+  done: string;
   /** Status label for an `error` entry. */
-  error: string
+  error: string;
   /** Compact trigger button text. */
-  clickToUpload: string
+  clickToUpload: string;
   /** Drop-area (`dragger`) title. */
-  draggerTitle: string
+  draggerTitle: string;
   /** Drop-area hint, rendered before the accept suffix. */
-  draggerHint: string
+  draggerHint: string;
   /** Accept suffix (`{accept}` is replaced with the `accept` attribute). */
-  draggerHintAccept: string
+  draggerHintAccept: string;
   /** Hidden native file input `aria-label`. */
-  inputAriaLabel: string
+  inputAriaLabel: string;
   /** Compact trigger button `aria-label`. */
-  triggerAriaLabel: string
+  triggerAriaLabel: string;
   /** Drop-area button `aria-label`. */
-  draggerAriaLabel: string
+  draggerAriaLabel: string;
   /** Preview affordance `aria-label` (`{name}` = file name). */
-  previewAriaLabel: string
+  previewAriaLabel: string;
   /** Remove affordance `aria-label` (`{name}` = file name). */
-  removeAriaLabel: string
+  removeAriaLabel: string;
   /** Determinate progress bar `aria-label` (`{name}` = file name). */
-  uploadingAriaLabel: string
+  uploadingAriaLabel: string;
 }
 
 /** Localized strings for SnLog. */
 export interface SnLogLocale {
   /** Loading indicator label. */
-  loading: string
+  loading: string;
 }
 
 /** Localized strings for the internal SnVideoControls bar + SnVideoPreview. */
 export interface SnVideoControlsLocale {
   /** Play button action label (announced before playing). */
-  play: string
+  play: string;
   /** Pause button action label (announced while playing). */
-  pause: string
+  pause: string;
   /** Mute button action label (announced while unmuted). */
-  mute: string
+  mute: string;
   /** Unmute button action label (announced while muted). */
-  unmute: string
+  unmute: string;
   /** Fullscreen button action label (announced while windowed). */
-  fullscreen: string
+  fullscreen: string;
   /** Exit-fullscreen button action label (announced while fullscreen). */
-  exitFullscreen: string
+  exitFullscreen: string;
   /** Control-bar toolbar `aria-label`. */
-  toolbar: string
+  toolbar: string;
   /** Timeline range input `aria-label`. */
-  timeline: string
+  timeline: string;
   /** Play overlay button `aria-label`. */
-  playVideo: string
+  playVideo: string;
   /** Zoom / preview overlay button `aria-label`. */
-  zoomIn: string
+  zoomIn: string;
 }
 
 /** Localized strings for SnDatePicker. */
 export interface SnDatePickerLocale {
   /** Panel weekday header labels — Monday-first (project grid convention). */
-  weekdays: readonly string[]
+  weekdays: readonly string[];
   /** Month cell labels (`1月` … `12月` in zhCN). */
-  months: readonly string[]
+  months: readonly string[];
   /** Panel header title, `{y}` / `{m}` are year / month placeholders. */
-  monthTitle: string
+  monthTitle: string;
   /** Year anchor header title, `{y}` is the year placeholder. */
-  yearTitle: string
+  yearTitle: string;
   /** Single-input placeholder. */
-  placeholder: string
+  placeholder: string;
   /** Range start placeholder. */
-  rangeStartPlaceholder: string
+  rangeStartPlaceholder: string;
   /** Range end placeholder. */
-  rangeEndPlaceholder: string
+  rangeEndPlaceholder: string;
   /** Range separator rendered between the two inputs. */
-  to: string
+  to: string;
   /** Datetime range: start time column label. */
-  startTime: string
+  startTime: string;
   /** Datetime range: end time column label. */
-  endTime: string
+  endTime: string;
   /** Datetime range confirm button. */
-  confirm: string
+  confirm: string;
   /** Hour column `aria-label`. */
-  hour: string
+  hour: string;
   /** Minute column `aria-label`. */
-  minute: string
+  minute: string;
   /** Second column `aria-label`. */
-  second: string
+  second: string;
 }
 
 /** Localized strings for SnPagination (also consumed by SnDataTable). */
 export interface SnPaginationLocale {
   /** Total counter text, `{total}` is the item count placeholder. */
-  total: string
+  total: string;
   /** Previous-page button `aria-label`. */
-  prevPage: string
+  prevPage: string;
   /** Next-page button `aria-label`. */
-  nextPage: string
+  nextPage: string;
   /** Simple-mode input status, `{total}` is the page count. */
-  currentPageStatus: string
+  currentPageStatus: string;
   /** Page-number button `aria-label`, `{page}` is the page number. */
-  page: string
+  page: string;
   /** Jump input `aria-label`. */
-  jumpAriaLabel: string
+  jumpAriaLabel: string;
   /** Per-page size select `aria-label`. */
-  perPage: string
+  perPage: string;
   /** `<nav>` `aria-label`. */
-  navigationAriaLabel: string
+  navigationAriaLabel: string;
   /** Jumper input visible label. */
-  jumpLabel: string
+  jumpLabel: string;
   /** Suffix after the page-size number (`{size} 条/页`). */
-  itemsPerPage: string
+  itemsPerPage: string;
 }
 
 /** Localized strings for SnCalendar. */
 export interface SnCalendarLocale {
   /** Header title, `{y}` / `{m}` are year / month placeholders. */
-  monthTitle: string
+  monthTitle: string;
   /** Weekday labels shown in the first grid row — Monday-first. */
-  weekdays: readonly string[]
+  weekdays: readonly string[];
   /** "Previous month" nav button `aria-label`. */
-  prevMonth: string
+  prevMonth: string;
   /** "Next month" nav button `aria-label`. */
-  nextMonth: string
+  nextMonth: string;
   /** The dates grid `aria-label`. */
-  gridLabel: string
+  gridLabel: string;
   /** "Today" action button label. */
-  today: string
+  today: string;
 }
 
 /** Localized strings for SnTransfer. */
 export interface SnTransferLocale {
   /** Select-all checkbox `aria-label`, `{title}` is the panel title. */
-  selectAll: string
+  selectAll: string;
   /** Filter input placeholder. */
-  searchPlaceholder: string
+  searchPlaceholder: string;
   /** Source filter input `aria-label`. */
-  filterSource: string
+  filterSource: string;
   /** Target filter input `aria-label`. */
-  filterTarget: string
+  filterTarget: string;
   /** Move-selected-right button `aria-label`. */
-  moveSelectedRight: string
+  moveSelectedRight: string;
   /** Move-all-right button `aria-label`. */
-  moveAllRight: string
+  moveAllRight: string;
   /** Move-selected-left button `aria-label`. */
-  moveSelectedLeft: string
+  moveSelectedLeft: string;
   /** Move-all-left button `aria-label`. */
-  moveAllLeft: string
+  moveAllLeft: string;
 }
 
 /** Localized strings for SnDataTable (pagination reuses SnPaginationLocale). */
 export interface SnDataTableLocale {
   /** Filter confirm button. */
-  confirm: string
+  confirm: string;
   /** Filter reset button. */
-  reset: string
+  reset: string;
 }
 
 /** Localized strings for SnTree. */
 export interface SnTreeLocale {
   /** Expanded row toggle `aria-label`. */
-  collapse: string
+  collapse: string;
   /** Collapsed row toggle `aria-label`. */
-  expand: string
+  expand: string;
 }
 
 /** Shared empty-state description (SnTree / SnDataTable default slots). */
 export interface SnEmptyLocale {
   /** Default empty description. */
-  description: string
+  description: string;
 }
 
 /** Localized strings for SnQrCode. */
 export interface SnQrCodeLocale {
   /** Download action `title` / `aria-label`. */
-  download: string
+  download: string;
 }
 
 /** Localized strings for SnHeatmap. */
 export interface SnHeatmapLocale {
   /** Leading indicator text (low end). */
-  less: string
+  less: string;
   /** Trailing indicator text (high end). */
-  more: string
+  more: string;
 }
 
 /** Localized strings for SnBackTop. */
 export interface SnBackTopLocale {
   /** The button `aria-label`. */
-  backToTop: string
+  backToTop: string;
 }
 
 /** Localized strings for SnDrawer. */
 export interface SnDrawerLocale {
   /** Vertical drawer drag handle `aria-label`. */
-  resizeVertical: string
+  resizeVertical: string;
   /** Horizontal drawer drag handle `aria-label`. */
-  resizeHorizontal: string
+  resizeHorizontal: string;
 }
 
 /** Localized strings for SnAvatarGroup. */
 export interface SnAvatarGroupLocale {
   /** Overflow indicator `aria-label`, `{count}` is the hidden avatar count. */
-  rest: string
+  rest: string;
 }
 
 /** Localized strings for SnPopconfirm. */
 export interface SnPopconfirmLocale {
   /** Default cancel button label (prop `negative-text` overrides). */
-  negativeText: string
+  negativeText: string;
   /** Default confirm button label (prop `positive-text` overrides). */
-  positiveText: string
+  positiveText: string;
 }
 
 /**
@@ -246,41 +246,41 @@ export interface SnPopconfirmLocale {
  */
 export interface SnLocale {
   /** Locale identifier, e.g. `'zh-CN'`. */
-  name: string
+  name: string;
   /** Strings shared by several components. */
-  Common: SnCommonLocale
+  Common: SnCommonLocale;
   /** SnUpload strings. */
-  Upload: SnUploadLocale
+  Upload: SnUploadLocale;
   /** SnLog strings. */
-  Log: SnLogLocale
+  Log: SnLogLocale;
   /** SnVideoControls / SnVideoPreview strings. */
-  VideoControls: SnVideoControlsLocale
+  VideoControls: SnVideoControlsLocale;
   /** SnDatePicker strings. */
-  DatePicker: SnDatePickerLocale
+  DatePicker: SnDatePickerLocale;
   /** SnPagination strings. */
-  Pagination: SnPaginationLocale
+  Pagination: SnPaginationLocale;
   /** SnCalendar strings. */
-  Calendar: SnCalendarLocale
+  Calendar: SnCalendarLocale;
   /** SnTransfer strings. */
-  Transfer: SnTransferLocale
+  Transfer: SnTransferLocale;
   /** SnDataTable strings. */
-  DataTable: SnDataTableLocale
+  DataTable: SnDataTableLocale;
   /** SnTree strings. */
-  Tree: SnTreeLocale
+  Tree: SnTreeLocale;
   /** Shared empty-state strings. */
-  Empty: SnEmptyLocale
+  Empty: SnEmptyLocale;
   /** SnQrCode strings. */
-  QrCode: SnQrCodeLocale
+  QrCode: SnQrCodeLocale;
   /** SnHeatmap strings. */
-  Heatmap: SnHeatmapLocale
+  Heatmap: SnHeatmapLocale;
   /** SnBackTop strings. */
-  BackTop: SnBackTopLocale
+  BackTop: SnBackTopLocale;
   /** SnDrawer strings. */
-  Drawer: SnDrawerLocale
+  Drawer: SnDrawerLocale;
   /** SnAvatarGroup strings. */
-  AvatarGroup: SnAvatarGroupLocale
+  AvatarGroup: SnAvatarGroupLocale;
   /** SnPopconfirm strings. */
-  Popconfirm: SnPopconfirmLocale
+  Popconfirm: SnPopconfirmLocale;
 }
 
 /** Built-in Chinese (Simplified) locale — values mirror the pre-locale UI. */
@@ -322,10 +322,7 @@ export const zhCN: SnLocale = {
   },
   DatePicker: {
     weekdays: ['一', '二', '三', '四', '五', '六', '日'],
-    months: [
-      '1月', '2月', '3月', '4月', '5月', '6月',
-      '7月', '8月', '9月', '10月', '11月', '12月',
-    ],
+    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
     monthTitle: '{y}年{m}月',
     yearTitle: '{y}年',
     placeholder: '请选择日期',
@@ -401,4 +398,4 @@ export const zhCN: SnLocale = {
     negativeText: '取消',
     positiveText: '确定',
   },
-}
+};

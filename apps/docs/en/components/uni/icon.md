@@ -14,8 +14,8 @@ Cross-end icon component for `@snui/uni`. Consumes plain SVG path data (an `Icon
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni'
-import { ChevronRight, Search, Settings } from '@snui/uni'
+import { SnIcon, type IconData } from '@snui/uni';
+import { ChevronRight, Search, Settings } from '@snui/uni';
 </script>
 
 <template>
@@ -30,20 +30,20 @@ Bundle result: only the three SVG path strings. The other ~19 built-in icons are
 > The shortcut icon data is re-exported from `@snui/uni` as named exports — each icon is its own ESM module, so `import { A, B, C }` 只把这三个 path 打包。The `SnIcon` component and the icon data are independent ESM modules; demos can import them from the same package or split paths for clarity:
 >
 > ```ts
-> import SnIcon from '@snui/uni'              // component
-> import { ChevronRight } from '@snui/uni'    // icon data
+> import SnIcon from '@snui/uni'; // component
+> import { ChevronRight } from '@snui/uni'; // icon data
 > ```
 
 ### 2. Custom IconData (copy from any lucide SVG)
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni'
+import { SnIcon, type IconData } from '@snui/uni';
 
 const MyFlag: IconData = {
   viewBox: '0 0 24 24',
   paths: ['M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z', 'M4 22V15'],
-}
+};
 </script>
 
 <template>
@@ -87,25 +87,25 @@ When `css-icon` receives a string, that class goes on the glyph node verbatim (n
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| icon | `IconData` | — | SVG path data object (alternative to `name`) |
-| size | `number \| string` | `32` | Icon size (rpx recommended) |
-| color | `string` | `'currentColor'` | Stroke color (inherits parent `color`) |
-| strokeWidth | `number \| string` | `2` | Stroke width in design units |
-| strokeWidthAbsolute | `boolean` | `false` | If true, stroke width is interpreted in absolute pixels rather than scaling with `size` |
-| name | `string` | `''` | Iconfont glyph name; renders `{classPrefix}-{name}` |
-| classPrefix | `string` | `'sn-icon'` | Iconfont class-name prefix |
-| cssIcon | `boolean \| string` | `false` | A string renders that class verbatim (no prefix); with the boolean form plus `name`, both class names are applied |
-| customClass | `string` | `''` | Extra class on the root node |
-| customStyle | `string \| Record<string,string>` | `''` | Inline style on the root node |
+| Name                | Type                              | Default          | Description                                                                                                       |
+| ------------------- | --------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| icon                | `IconData`                        | —                | SVG path data object (alternative to `name`)                                                                      |
+| size                | `number \| string`                | `32`             | Icon size (rpx recommended)                                                                                       |
+| color               | `string`                          | `'currentColor'` | Stroke color (inherits parent `color`)                                                                            |
+| strokeWidth         | `number \| string`                | `2`              | Stroke width in design units                                                                                      |
+| strokeWidthAbsolute | `boolean`                         | `false`          | If true, stroke width is interpreted in absolute pixels rather than scaling with `size`                           |
+| name                | `string`                          | `''`             | Iconfont glyph name; renders `{classPrefix}-{name}`                                                               |
+| classPrefix         | `string`                          | `'sn-icon'`      | Iconfont class-name prefix                                                                                        |
+| cssIcon             | `boolean \| string`               | `false`          | A string renders that class verbatim (no prefix); with the boolean form plus `name`, both class names are applied |
+| customClass         | `string`                          | `''`             | Extra class on the root node                                                                                      |
+| customStyle         | `string \| Record<string,string>` | `''`             | Inline style on the root node                                                                                     |
 
 `IconData` interface:
 
 ```ts
 interface IconData {
-  viewBox?: string      // default '0 0 24 24'
-  paths: string[]       // one or more SVG <path d="...">
+  viewBox?: string; // default '0 0 24 24'
+  paths: string[]; // one or more SVG <path d="...">
 }
 ```
 
@@ -117,12 +117,12 @@ To add more icons, create one file per icon under `components/sn-icon/icons/` (e
 
 ## Cross-platform rendering
 
-| Platform | Behavior |
-| --- | --- |
-| H5 | Inline SVG, browser-native rendering |
+| Platform           | Behavior                                                             |
+| ------------------ | -------------------------------------------------------------------- |
+| H5                 | Inline SVG, browser-native rendering                                 |
 | WeChat miniprogram | SVG compiles to an `image` tag (not pixel-perfect on every platform) |
-| App (uni-app x) | Native SVG via Webview layer |
-| Douyin / Alipay | SVG support varies by platform; usually renders |
+| App (uni-app x)    | Native SVG via Webview layer                                         |
+| Douyin / Alipay    | SVG support varies by platform; usually renders                      |
 
 ## Accessibility
 

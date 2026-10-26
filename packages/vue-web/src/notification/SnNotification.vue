@@ -53,40 +53,40 @@
  *   <SnNotification type="success" title="已保存" content="配置已生效" />
  */
 
-import { computed, onBeforeUnmount, onMounted, useSlots } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import type { IconComponent } from '../icon/sn-icon-registry'
-import type { NotificationType } from './notification-types'
+import { computed, onBeforeUnmount, onMounted, useSlots } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { CircleAlert, CircleCheck, Info, TriangleAlert, X } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import type { IconComponent } from '../icon/sn-icon-registry';
+import type { NotificationType } from './notification-types';
 
-defineOptions({ name: 'SnNotification' })
+defineOptions({ name: 'SnNotification' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Semantic type — drives the built-in icon + colour. */
-    type?: NotificationType | undefined
+    type?: NotificationType | undefined;
     /** Bold heading line. */
-    title?: string | undefined
+    title?: string | undefined;
     /** Primary body text. Replaced by the default slot. */
-    content?: string | undefined
+    content?: string | undefined;
     /** Secondary body text under `content`. */
-    description?: string | undefined
+    description?: string | undefined;
     /** Small footer-left caption. */
-    meta?: string | undefined
+    meta?: string | undefined;
     /** Leading avatar render function (from the API options). */
-    avatar?: (() => unknown) | undefined
+    avatar?: (() => unknown) | undefined;
     /** Footer render function (from the API options). */
-    footer?: (() => unknown) | undefined
+    footer?: (() => unknown) | undefined;
     /** Auto-destroy delay in ms. `<= 0` disables the countdown. */
-    duration?: number | undefined
+    duration?: number | undefined;
     /** Render the close button. */
-    closable?: boolean | undefined
+    closable?: boolean | undefined;
     /** Pause the countdown while hovered. */
-    keepAliveOnHover?: boolean | undefined
+    keepAliveOnHover?: boolean | undefined;
   }>(),
   {
     type: 'default',
@@ -100,14 +100,14 @@ const props = withDefaults(
     closable: true,
     keepAliveOnHover: true,
   },
-)
+);
 
 const emit = defineEmits<{
   /** The card must be removed (close button clicked or countdown expired). */
-  (e: 'destroy'): void
-}>()
+  (e: 'destroy'): void;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /**
  * Same glyph table as the reference library's icon render map. `'default'`
@@ -119,14 +119,14 @@ const ICON_BY_TYPE: Record<Exclude<NotificationType, 'default'>, IconComponent> 
   success: CircleCheck as IconComponent,
   warning: TriangleAlert as IconComponent,
   error: CircleAlert as IconComponent,
-}
+};
 
 const iconComponent = computed<IconComponent | null>(() => {
   if (props.type === 'default') {
-    return null
+    return null;
   }
-  return ICON_BY_TYPE[props.type]
-})
+  return ICON_BY_TYPE[props.type];
+});
 
 /**
  * `error` / `warning` cards are announced assertively (`role="alert"`);
@@ -134,49 +134,49 @@ const iconComponent = computed<IconComponent | null>(() => {
  */
 const cardRole = computed(() =>
   props.type === 'error' || props.type === 'warning' ? 'alert' : 'status',
-)
+);
 
 /* ── duration countdown + keepAliveOnHover pause ──────────────────────────
  * The countdown tracks *remaining* time instead of a fixed delay so a hover
  * pause mid-flight resumes where it stopped. `startedAt` anchors the elapsed
  * measurement at (re)start time. */
 
-let timer: ReturnType<typeof setTimeout> | null = null
-let remaining = props.duration
-let startedAt = 0
+let timer: ReturnType<typeof setTimeout> | null = null;
+let remaining = props.duration;
+let startedAt = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 function startTimer(): void {
-  clearTimer()
+  clearTimer();
   if (!(props.duration > 0)) {
-    return
+    return;
   }
-  startedAt = Date.now()
+  startedAt = Date.now();
   timer = setTimeout(() => {
-    timer = null
-    emit('destroy')
-  }, remaining)
+    timer = null;
+    emit('destroy');
+  }, remaining);
 }
 
 /** Freeze the countdown; called on `mouseenter` when keepAliveOnHover. */
 function pauseTimer(): void {
   if (timer === null) {
-    return
+    return;
   }
-  clearTimer()
-  const elapsed = Date.now() - startedAt
-  remaining = Math.max(0, remaining - elapsed)
+  clearTimer();
+  const elapsed = Date.now() - startedAt;
+  remaining = Math.max(0, remaining - elapsed);
 }
 
 function handleEnter(): void {
   if (props.keepAliveOnHover) {
-    pauseTimer()
+    pauseTimer();
   }
 }
 
@@ -185,22 +185,22 @@ function handleLeave(): void {
   // full pause-and-resume cycle `remaining` may already be 0, which makes the
   // resumed timer a no-op that fires immediately — intended.
   if (props.keepAliveOnHover && props.duration > 0) {
-    startTimer()
+    startTimer();
   }
 }
 
 function handleCloseClick(): void {
-  clearTimer()
-  emit('destroy')
+  clearTimer();
+  emit('destroy');
 }
 
 onMounted(() => {
-  startTimer()
-})
+  startTimer();
+});
 
 onBeforeUnmount(() => {
-  clearTimer()
-})
+  clearTimer();
+});
 </script>
 
 <template>
@@ -309,7 +309,10 @@ onBeforeUnmount(() => {
 }
 
 .sn-notification--warning .sn-notification__icon {
-  color: var(--sn-web-notification-icon-color-warning, var(--sn-web-color-feedback-warning, #f0a020));
+  color: var(
+    --sn-web-notification-icon-color-warning,
+    var(--sn-web-color-feedback-warning, #f0a020)
+  );
 }
 
 .sn-notification--error .sn-notification__icon {

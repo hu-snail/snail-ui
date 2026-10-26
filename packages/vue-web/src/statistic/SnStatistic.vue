@@ -29,34 +29,34 @@
  *   </SnStatistic>
  */
 
-defineOptions({ name: 'SnStatistic' })
+defineOptions({ name: 'SnStatistic' });
 
 withDefaults(
   defineProps<{
     /** Label shown above the value. Mirrors n-statistic `label`. */
-    label?: string | undefined
+    label?: string | undefined;
     /** Statistic value; when set it takes precedence over the default slot. Mirrors n-statistic `value`. */
-    value?: string | number | undefined
+    value?: string | number | undefined;
     /** Render digits with equal widths (font-variant-numeric: tabular-nums). Mirrors n-statistic `tabularNums`. */
-    tabularNums?: boolean
+    tabularNums?: boolean;
   }>(),
   {
     label: undefined,
     value: undefined,
     tabularNums: false,
   },
-)
+);
 
 defineSlots<{
   /** Value content — used only when `value` is not passed. Mirrors n-statistic `default`. */
-  default?(): unknown
+  default?(): unknown;
   /** Label — used only when `label` is not passed. Mirrors n-statistic `label`. */
-  label?(): unknown
+  label?(): unknown;
   /** Prefix rendered before the value content. Mirrors n-statistic `prefix`. */
-  prefix?(): unknown
+  prefix?(): unknown;
   /** Suffix rendered after the value content. Mirrors n-statistic `suffix`. */
-  suffix?(): unknown
-}>()
+  suffix?(): unknown;
+}>();
 </script>
 
 <template>

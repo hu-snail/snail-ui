@@ -2,11 +2,11 @@
 /**
  * tabs-web-bar-width — pinning the active bar to a fixed width.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs } from '@snui/vue-web';
 
-const natural = ref('a')
-const pinned = ref('a')
+const natural = ref('a');
+const pinned = ref('a');
 </script>
 
 <template>

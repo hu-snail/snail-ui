@@ -87,7 +87,11 @@ function emitTheme(): void {
   for (const file of tokenSources) {
     const css: string = readFileSync(file, 'utf8');
     const result = transformCss(css, 'tokens', relative(distDir, file));
-    parts.push(`/* ---- source: ${relative(resolve(pkgRoot, '../..'), file)} ---- */`, result.css, '');
+    parts.push(
+      `/* ---- source: ${relative(resolve(pkgRoot, '../..'), file)} ---- */`,
+      result.css,
+      '',
+    );
   }
   mkdirSync(join(distDir, 'theme'), { recursive: true });
   writeFileSync(join(distDir, 'theme', 'index.css'), `${parts.join('\n')}\n`);
@@ -139,7 +143,9 @@ function emitReport(counts: { uvueCount: number; tsCount: number }): void {
     lines.push(`### ${file}`, '');
     for (const issue of issues) {
       const at: string = issue.line !== undefined ? ` (line ${issue.line})` : '';
-      lines.push(`- ${KIND_LABELS[issue.kind]} — \`${issue.kind}\`${at}: ${issue.detail.replace(/\n/g, ' ')}`);
+      lines.push(
+        `- ${KIND_LABELS[issue.kind]} — \`${issue.kind}\`${at}: ${issue.detail.replace(/\n/g, ' ')}`,
+      );
     }
     lines.push('');
   }
@@ -166,7 +172,15 @@ function main(): void {
   emitTheme();
   emitReport(counts);
   const dropped: number = outcomes.reduce(
-    (acc, o) => acc + o.issues.filter((i) => i.kind.startsWith('pseudo') || i.kind === 'combinator-unsupported' || i.kind === 'attribute-selector' || i.kind === 'tag-only-selector').length,
+    (acc, o) =>
+      acc +
+      o.issues.filter(
+        (i) =>
+          i.kind.startsWith('pseudo') ||
+          i.kind === 'combinator-unsupported' ||
+          i.kind === 'attribute-selector' ||
+          i.kind === 'tag-only-selector',
+      ).length,
     0,
   );
   console.log(

@@ -4,10 +4,10 @@
  * (and description) under the indicator row. Common for onboarding /
  * feature-intro flows where each step needs a wider caption.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>

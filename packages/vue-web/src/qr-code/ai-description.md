@@ -24,25 +24,25 @@ EC-level boosting while the version holds.
 ## Import
 
 ```ts
-import SnQrCode from '@snui/vue-web/src/qr-code/SnQrCode.vue'
+import SnQrCode from '@snui/vue-web/src/qr-code/SnQrCode.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `value` | `string` | `''` | no | Text encoded into the QR code (`undefined` renders the `-` payload, like the reference). |
-| `errorCorrectionLevel` | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'` | no | ~7% / 15% / 25% / 30% recoverable codewords. |
-| `size` | `number` | `100` | no | Square side length in px (padding included). |
-| `padding` | `number \| string` | `12` | no | Inner padding around the code; number → px. |
-| `color` | `string` | theme (`--sn-web-color-text-primary`) | no | Dark-module color (any CSS color). |
-| `backgroundColor` | `string` | theme (`--sn-web-color-background-surface`) | no | Light-module / box background color. |
-| `iconSrc` | `string` | — | no | Center icon image url. |
-| `iconSize` | `number` | `40` | no | Center icon size in px. |
-| `iconBackgroundColor` | `string` | theme (`--sn-web-color-background-surface`) | no | Icon backing plate color. |
-| `iconBorderRadius` | `number` | `4` | no | Icon backing plate radius in px. |
-| `type` | `'canvas' \| 'svg'` | `'canvas'` | no | Render target. |
-| `showToolbar` | `boolean` | `true` | no | Reveal the floating download toolbar on hover/focus. |
+| Name                   | Type                       | Default                                     | Required | Description                                                                              |
+| ---------------------- | -------------------------- | ------------------------------------------- | -------- | ---------------------------------------------------------------------------------------- |
+| `value`                | `string`                   | `''`                                        | no       | Text encoded into the QR code (`undefined` renders the `-` payload, like the reference). |
+| `errorCorrectionLevel` | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'`                                       | no       | ~7% / 15% / 25% / 30% recoverable codewords.                                             |
+| `size`                 | `number`                   | `100`                                       | no       | Square side length in px (padding included).                                             |
+| `padding`              | `number \| string`         | `12`                                        | no       | Inner padding around the code; number → px.                                              |
+| `color`                | `string`                   | theme (`--sn-web-color-text-primary`)       | no       | Dark-module color (any CSS color).                                                       |
+| `backgroundColor`      | `string`                   | theme (`--sn-web-color-background-surface`) | no       | Light-module / box background color.                                                     |
+| `iconSrc`              | `string`                   | —                                           | no       | Center icon image url.                                                                   |
+| `iconSize`             | `number`                   | `40`                                        | no       | Center icon size in px.                                                                  |
+| `iconBackgroundColor`  | `string`                   | theme (`--sn-web-color-background-surface`) | no       | Icon backing plate color.                                                                |
+| `iconBorderRadius`     | `number`                   | `4`                                         | no       | Icon backing plate radius in px.                                                         |
+| `type`                 | `'canvas' \| 'svg'`        | `'canvas'`                                  | no       | Render target.                                                                           |
+| `showToolbar`          | `boolean`                  | `true`                                      | no       | Reveal the floating download toolbar on hover/focus.                                     |
 
 ## Events
 
@@ -75,12 +75,12 @@ None.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary` | Toolbar border (mixed with surface) |
-| Text secondary | `--sn-web-color-text-secondary` | Toolbar icon color |
-| Text primary (+ color-mix 4.7%) | `--sn-web-color-text-primary` | Toolbar button hover (mixed with surface) |
-| Background elevated | `--sn-web-color-background-elevated` | Toolbar surface |
+| Token                           | CSS Variable                         | Purpose                                   |
+| ------------------------------- | ------------------------------------ | ----------------------------------------- |
+| Text primary (+ color-mix 12%)  | `--sn-web-color-text-primary`        | Toolbar border (mixed with surface)       |
+| Text secondary                  | `--sn-web-color-text-secondary`      | Toolbar icon color                        |
+| Text primary (+ color-mix 4.7%) | `--sn-web-color-text-primary`        | Toolbar button hover (mixed with surface) |
+| Background elevated             | `--sn-web-color-background-elevated` | Toolbar surface                           |
 
 The QR foreground/background colors are user props (theme-independent), as in
 the reference.

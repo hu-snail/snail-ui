@@ -2,17 +2,21 @@
 /**
  * Demo: SnPopover — click trigger and manual trigger with v-model:show.
  */
-import { ref } from 'vue'
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnPopover } from '@snui/vue-web';
 
-const controlledShow = ref(false)
+const controlledShow = ref(false);
 </script>
 
 <template>
   <div class="popover-trigger-demo">
     <section class="popover-trigger-demo__block">
       <h4 class="popover-trigger-demo__title">click 触发（点击切换，点击外部关闭）</h4>
-      <SnPopover trigger="click" header="操作面板" content="点击触发元素切换显示；点击气泡以外区域自动关闭。">
+      <SnPopover
+        trigger="click"
+        header="操作面板"
+        content="点击触发元素切换显示；点击气泡以外区域自动关闭。"
+      >
         <SnButton>点我切换</SnButton>
       </SnPopover>
     </section>

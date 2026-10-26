@@ -4,13 +4,16 @@
 **状态**：Active（supersedes PRD v3.0）  
 **架构依据**：ADR-0001（Component First）+ ADR-0002（Style Pack + AI Layer）  
 **重大变更（vs v3.0）**：
+
 1. 端定位拆分：**Web 端面向 PC 桌面**，**uni 端面向移动触屏**。两端不再要求 API 同名同形，而是各自按场景优化。
 2. Token 命名空间拆分：`--sn-web-*`（PC 端消费）与 `--sn-mp-*`（移动端消费）双别名。底层 `--aui-*` 仍统一。
 3. Style Pack 跨端共用：Pack 只描述 Token + 皮肤 CSS 覆盖，与端无关。
 
 **端独立性原则（最高优先级）**：
+
 > 每个端从**开发到打包发布完全独立**，包括源代码、构建产物、类型定义、npm 包安装方式、消费方式。
 > 未来新增端（如 React 版本 `@snui/react-web`）按完全相同的扩展模式新增：
+>
 > - 独立源码目录 + 独立构建产物
 > - 独立的 Token 别名包（如 `@snui/tokens-react`）
 > - 独立的组件代码（不跨端复用 0 行组件源码）
@@ -58,22 +61,22 @@ End-aware          Web 与 uni 端定位不同 → API 不同 → Token 别名�
 
 ### 1.1 目标用户
 
-| 端 | 用户 | 场景 |
-|---|---|---|
-| Web (PC) | Vue 3 后台 / 工具 / SaaS 开发者 | 管理后台、CRM、低代码工具、IDE-like 应用 |
-| uni (移动) | uni-app 多端开发者 | 电商、内容、O2O、企业内部 App |
-| AI | Cursor / Claude Code / Mavis | 通过 Skill + MCP 读组件、产出代码 |
-| 设计 / 产品 | 设计师 / PM | 在文档站切换风格包，对照最终 UI |
+| 端          | 用户                            | 场景                                     |
+| ----------- | ------------------------------- | ---------------------------------------- |
+| Web (PC)    | Vue 3 后台 / 工具 / SaaS 开发者 | 管理后台、CRM、低代码工具、IDE-like 应用 |
+| uni (移动)  | uni-app 多端开发者              | 电商、内容、O2O、企业内部 App            |
+| AI          | Cursor / Claude Code / Mavis    | 通过 Skill + MCP 读组件、产出代码        |
+| 设计 / 产品 | 设计师 / PM                     | 在文档站切换风格包，对照最终 UI          |
 
 ### 1.2 核心价值
 
-| 维度 | Web (PC) | uni (移动) |
-|---|---|---|
-| 组件易用 | `<SnButton type="primary">` 一行 import | `<sn-button type="primary">` easycom |
-| 场景定位 | 信息密度、键盘操作、桌面分辨率 | 触屏交互、移动端体验、平台原生感 |
-| Token 命名 | `--sn-web-color-action-primary` | `--sn-mp-color-action-primary` |
-| 风格替换 | Style Pack 系统（Token + 皮肤 CSS + 资源） | 同一套 Pack 系统 |
-| AI 友好 | Skill + MCP Server + ai-meta | 同一套 AI 层 |
+| 维度       | Web (PC)                                   | uni (移动)                           |
+| ---------- | ------------------------------------------ | ------------------------------------ |
+| 组件易用   | `<SnButton type="primary">` 一行 import    | `<sn-button type="primary">` easycom |
+| 场景定位   | 信息密度、键盘操作、桌面分辨率             | 触屏交互、移动端体验、平台原生感     |
+| Token 命名 | `--sn-web-color-action-primary`            | `--sn-mp-color-action-primary`       |
+| 风格替换   | Style Pack 系统（Token + 皮肤 CSS + 资源） | 同一套 Pack 系统                     |
+| AI 友好    | Skill + MCP Server + ai-meta               | 同一套 AI 层                         |
 
 ---
 
@@ -96,6 +99,7 @@ snail-aui/
 ```
 
 依赖方向：
+
 ```
 @snui/tokens (统一底层)
    ├── @snui/tokens-web  (生成 --sn-web-* 别名层)
@@ -119,6 +123,7 @@ snail-aui/
 **典型应用**：管理后台、CRM、ERP、IDE-like、低代码工具、数据可视化、文档协作。
 
 **特征**：
+
 - 信息密度高，单屏多区域
 - 鼠标 + 键盘混合操作
 - 分辨率 1280×720+，自适应到 4K
@@ -127,6 +132,7 @@ snail-aui/
 - Token 偏向小尺寸（紧凑）+ 微阴影 + 圆角适中（4-8px）
 
 **Web 端组件路线图**：
+
 - 基础：Button / Icon / Text / ConfigProvider
 - 表单：Form / FormItem / Input / Textarea / InputNumber / Select / DatePicker / TimePicker / Cascader / TreeSelect
 - 数据：Table / Tree / VirtualList / DataPicker / Pagination / FilterPanel
@@ -139,6 +145,7 @@ snail-aui/
 **典型应用**：电商、O2O、内容平台、企业内部移动 App、工具类小程序。
 
 **特征**：
+
 - 单列流式布局
 - 纯触屏操作（含手势）
 - 分辨率 320-414 宽度优先
@@ -147,6 +154,7 @@ snail-aui/
 - Token 偏向大尺寸（舒适）+ 无阴影 / 微阴影 + 大圆角（8-16px）
 
 **uni 端组件路线图**：
+
 - 基础：sn-button / sn-icon / sn-config-provider / sn-cell
 - 表单：sn-input / sn-form / sn-search / sn-switch / sn-checkbox / sn-radio / sn-slider / sn-picker / sn-stepper
 - 反馈：sn-dialog / sn-action-sheet / sn-toast / sn-notify / sn-loading / sn-empty / sn-skeleton
@@ -157,6 +165,7 @@ snail-aui/
 ### 3.3 共享层（少量）
 
 只有**最基础的几个组件**在两端同名同 API（因为他们一致）：
+
 - Button / sn-button（基础交互）
 - ConfigProvider / sn-config-provider（全局配置 + skin）
 - Icon / sn-icon（图标）
@@ -203,11 +212,11 @@ uni 端组件 CSS：
 
 ### 4.3 主题
 
-| 主题 | Web | uni |
-|---|---|---|
-| 浅色 | `--sn-web-theme-light` | `--sn-mp-theme-light` |
-| 暗色 | `--sn-web-theme-dark` | `--sn-mp-theme-dark` |
-| 移动品牌主题 | — | `--sn-mp-theme-taobao` / `douyin` |
+| 主题         | Web                    | uni                               |
+| ------------ | ---------------------- | --------------------------------- |
+| 浅色         | `--sn-web-theme-light` | `--sn-mp-theme-light`             |
+| 暗色         | `--sn-web-theme-dark`  | `--sn-mp-theme-dark`              |
+| 移动品牌主题 | —                      | `--sn-mp-theme-taobao` / `douyin` |
 
 ---
 
@@ -223,14 +232,14 @@ snCssVars({
   end: 'web',
   theme: iosPack.theme,
   style: iosPack.style,
-})
+});
 
 // uni 端应用 iOS Pack
 snCssVars({
   end: 'mp',
   theme: iosPack.theme,
   style: iosPack.style,
-})
+});
 ```
 
 Pack 在 `StylePackDefinition` 中标注可用端（`end: 'web' | 'mp' | 'both'`），默认 `'both'`。`mp-taobao`、`mp-douyin` 只在移动端可用。
@@ -240,6 +249,7 @@ Pack 在 `StylePackDefinition` 中标注可用端（`end: 'web' | 'mp' | 'both'`
 ## 6. AI Layer（不变）
 
 `@snui/ai` 三类产物跨端共用：
+
 - Skill 文件：标注组件按 `end` 分类
 - MCP Server：list / get 工具按 `end` 过滤
 - ai-meta.json：聚合 components / tokens / stylePacks（含 `end` 字段）
@@ -248,23 +258,23 @@ Pack 在 `StylePackDefinition` 中标注可用端（`end: 'web' | 'mp' | 'both'`
 
 ## 7. 里程碑（v3.1）
 
-| 里程碑 | 时间 | 交付 |
-|---|---|---|
-| M0 | 2026-10 | ADR-0001 + PRD v2.0 + Button demo ✅ |
-| M0.5 | 2026-10 | ADR-0002 + PRD v3.0 ✅ |
-| **M0.6** | 2026-10 | **PRD v3.1 + 双端拆分定位 + Token 双命名空间**（本次） |
-| M1 | 2026-11 | @snui/tokens-web + @snui/tokens-mp + Web/uni 端组件 M1（~40 个，按各自场景） |
-| M2 | 2026-12 | Style Pack 默认 3 Pack + AI Layer + StyleSwitcher / ThemeCopier |
-| M3 | 2027 Q1 | 移动端专项风格包（mp-taobao / mp-douyin）+ 高保真原型 |
-| M4 | 2027 Q2 | P2 组件 + VSCode 插件 + 视觉回归 |
+| 里程碑   | 时间    | 交付                                                                         |
+| -------- | ------- | ---------------------------------------------------------------------------- |
+| M0       | 2026-10 | ADR-0001 + PRD v2.0 + Button demo ✅                                         |
+| M0.5     | 2026-10 | ADR-0002 + PRD v3.0 ✅                                                       |
+| **M0.6** | 2026-10 | **PRD v3.1 + 双端拆分定位 + Token 双命名空间**（本次）                       |
+| M1       | 2026-11 | @snui/tokens-web + @snui/tokens-mp + Web/uni 端组件 M1（~40 个，按各自场景） |
+| M2       | 2026-12 | Style Pack 默认 3 Pack + AI Layer + StyleSwitcher / ThemeCopier              |
+| M3       | 2027 Q1 | 移动端专项风格包（mp-taobao / mp-douyin）+ 高保真原型                        |
+| M4       | 2027 Q2 | P2 组件 + VSCode 插件 + 视觉回归                                             |
 
 ---
 
 ## 8. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.2 | 2026-09 | Schema-driven 架构（Superseded） |
-| v2.0 | 2026-10-03 | 传统 Vue 组件库（Superseded） |
-| v3.0 | 2026-10-03 | Style Pack + AI Layer（Superseded） |
+| 版本     | 日期       | 变更                                          |
+| -------- | ---------- | --------------------------------------------- |
+| v1.2     | 2026-09    | Schema-driven 架构（Superseded）              |
+| v2.0     | 2026-10-03 | 传统 Vue 组件库（Superseded）                 |
+| v3.0     | 2026-10-03 | Style Pack + AI Layer（Superseded）           |
 | **v3.1** | 2026-10-03 | **双端定位拆分 + Token 双命名空间（Active）** |

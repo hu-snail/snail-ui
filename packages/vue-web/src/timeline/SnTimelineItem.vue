@@ -26,57 +26,57 @@
  *   <SnTimelineItem line-type="dashed" content="等待中" />
  */
 
-import { computed, inject } from 'vue'
+import { computed, inject } from 'vue';
 import {
   SN_TIMELINE_INJECTION_KEY,
   type SnTimelineLineType,
   type SnTimelineItemType,
-} from './timeline-context'
+} from './timeline-context';
 
-defineOptions({ name: 'SnTimelineItem' })
+defineOptions({ name: 'SnTimelineItem' });
 
 const props = withDefaults(
   defineProps<{
     /** Meta line under the content; the `footer` slot overrides it. */
-    time?: string | number
+    time?: string | number;
     /** Entry title; the `header` slot overrides it. */
-    title?: string
+    title?: string;
     /** Entry body text; the `default` slot overrides it. */
-    content?: string
+    content?: string;
     /** Custom node color (any CSS color) — overrides the type color. */
-    color?: string
+    color?: string;
     /** Rail segment style after this node. */
-    lineType?: SnTimelineLineType
+    lineType?: SnTimelineLineType;
     /** Semantic node color. */
-    type?: SnTimelineItemType
+    type?: SnTimelineItemType;
   }>(),
   {
     lineType: 'default',
     type: 'default',
   },
-)
+);
 
 defineSlots<{
   /** Entry body content. */
-  default?(): unknown
+  default?(): unknown;
   /** Custom node icon — replaces the circle node. */
-  icon?(): unknown
+  icon?(): unknown;
   /** Meta line — overrides the `time` prop. */
-  footer?(): unknown
+  footer?(): unknown;
   /** Entry title — overrides the `title` prop. */
-  header?(): unknown
-}>()
+  header?(): unknown;
+}>();
 
-const timeline = inject(SN_TIMELINE_INJECTION_KEY, undefined)
-const horizontal = computed(() => timeline?.horizontal.value ?? false)
+const timeline = inject(SN_TIMELINE_INJECTION_KEY, undefined);
+const horizontal = computed(() => timeline?.horizontal.value ?? false);
 
 const nodeStyle = computed<Record<string, string> | undefined>(() => {
-  return props.color ? { borderColor: props.color } : undefined
-})
+  return props.color ? { borderColor: props.color } : undefined;
+});
 
 const iconStyle = computed<Record<string, string> | undefined>(() => {
-  return props.color ? { color: props.color } : undefined
-})
+  return props.color ? { color: props.color } : undefined;
+});
 </script>
 
 <template>
@@ -90,18 +90,10 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
   >
     <div class="sn-timeline-item__timeline" aria-hidden="true">
       <div class="sn-timeline-item__line" />
-      <div
-        v-if="$slots.icon"
-        class="sn-timeline-item__icon"
-        :style="iconStyle"
-      >
+      <div v-if="$slots.icon" class="sn-timeline-item__icon" :style="iconStyle">
         <slot name="icon" />
       </div>
-      <div
-        v-else
-        class="sn-timeline-item__circle"
-        :style="nodeStyle"
-      />
+      <div v-else class="sn-timeline-item__circle" :style="nodeStyle" />
     </div>
     <div class="sn-timeline-item__content">
       <div v-if="title || $slots.header" class="sn-timeline-item__title">

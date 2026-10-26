@@ -14,51 +14,51 @@
  * emoji icons — inline SVG only).
  */
 
-import { computed, useSlots } from 'vue'
+import { computed, useSlots } from 'vue';
 
-defineOptions({ name: 'SnDynamicInput' })
+defineOptions({ name: 'SnDynamicInput' });
 
 /**
  * One row value. Primitives render the built-in input; objects go to the
  * scoped default slot. `null` is the naive-ui default created value (the
  * `preset` factory's default), meaningful for slot-rendered rows.
  */
-type DynamicInputValue = string | number | Record<string, unknown> | null
+type DynamicInputValue = string | number | Record<string, unknown> | null;
 
 /** Factory producing the initial value of a newly inserted row. */
-type DynamicInputPreset = () => DynamicInputValue
+type DynamicInputPreset = () => DynamicInputValue;
 
 const props = withDefaults(
   defineProps<{
     /** Bound array of row values. Each row edits exactly one entry in place. */
-    modelValue?: DynamicInputValue[]
+    modelValue?: DynamicInputValue[];
     /**
      * Factory creating the value of a newly inserted row. Defaults to
      * naive-ui semantics (`null`); pass e.g. `() => ''` for text rows.
      */
-    preset?: DynamicInputPreset
+    preset?: DynamicInputPreset;
     /** Lower bound on the row count. The − button hides at the bound. */
-    min?: number
+    min?: number;
     /** Upper bound on the row count. The + button hides at the bound. */
-    max?: number
+    max?: number;
     /** Disables every row input and the row action buttons. */
-    disabled?: boolean
+    disabled?: boolean;
     /**
      * Read-only rows — values are visible but not editable and the
      * structural − / + actions are not rendered (row set is frozen).
      */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. Drives the built-in input height + font-size. */
-    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large'
+    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large';
     /** Visual status, cascaded to every built-in row input. */
-    status?: 'default' | 'error' | 'warning'
+    status?: 'default' | 'error' | 'warning';
     /**
      * New-row post-processor, invoked after `preset` produced the draft
      * value (naive-ui's `on-create`, reshaped to refine the preset result).
      * Receives the draft value + the insertion index; the return value
      * becomes the new row.
      */
-    onCreate?: (value: DynamicInputValue, index: number) => DynamicInputValue
+    onCreate?: (value: DynamicInputValue, index: number) => DynamicInputValue;
   }>(),
   {
     modelValue: () => [],
@@ -69,42 +69,40 @@ const props = withDefaults(
     size: 'medium',
     status: 'default',
   },
-)
+);
 
 const emit = defineEmits<{
   /**
    * v-model sync — always the full new array (item edit, insert, remove,
    * empty-state create).
    */
-  (e: 'update:modelValue', value: DynamicInputValue[]): void
-}>()
+  (e: 'update:modelValue', value: DynamicInputValue[]): void;
+}>();
 
 defineSlots<{
   /**
    * Custom row renderer, scoped `{ value, index }`. Takes priority over the
    * built-in input for every row — mutate via `update:modelValue`.
    */
-  default?(props: { value: DynamicInputValue; index: number }): unknown
-}>()
+  default?(props: { value: DynamicInputValue; index: number }): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Working copy of the bound array — never mutated in place. */
-const rows = computed<DynamicInputValue[]>(() => props.modelValue ?? [])
+const rows = computed<DynamicInputValue[]>(() => props.modelValue ?? []);
 
 /** − hidden at the `min` floor. */
-const canRemove = computed(() => rows.value.length > props.min)
+const canRemove = computed(() => rows.value.length > props.min);
 
 /** + hidden at the `max` ceiling. */
-const canInsert = computed(() =>
-  props.max === undefined ? true : rows.value.length < props.max,
-)
+const canInsert = computed(() => (props.max === undefined ? true : rows.value.length < props.max));
 
 /** Insert / remove handlers double-guard with this (silent no-op clicks). */
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
 /** The scoped default slot wins over the built-in input (naive parity). */
-const useSlot = computed(() => slots.default !== undefined)
+const useSlot = computed(() => slots.default !== undefined);
 
 const classList = computed(() => [
   'sn-dynamic-input',
@@ -114,13 +112,13 @@ const classList = computed(() => [
     'sn-dynamic-input--readonly': props.readonly,
     [`sn-dynamic-input--status-${props.status}`]: props.status !== 'default',
   },
-])
+]);
 
 /** New-row value: preset draft → onCreate refinement. */
 function createRowValue(index: number): DynamicInputValue {
-  const draft = props.preset()
-  if (props.onCreate) return props.onCreate(draft, index)
-  return draft
+  const draft = props.preset();
+  if (props.onCreate) return props.onCreate(draft, index);
+  return draft;
 }
 
 /**
@@ -128,24 +126,24 @@ function createRowValue(index: number): DynamicInputValue {
  * references still see a change.
  */
 function commit(next: DynamicInputValue[]): void {
-  emit('update:modelValue', next)
+  emit('update:modelValue', next);
 }
 
 /** Insert a new row after `index` (−1 appends for the empty-state button). */
 function insertRow(index: number): void {
-  if (!isInteractive.value || !canInsert.value) return
-  const next = Array.from(rows.value)
-  const at = index + 1
-  next.splice(at, 0, createRowValue(at))
-  commit(next)
+  if (!isInteractive.value || !canInsert.value) return;
+  const next = Array.from(rows.value);
+  const at = index + 1;
+  next.splice(at, 0, createRowValue(at));
+  commit(next);
 }
 
 /** Remove the row at `index`; respects the `min` floor. */
 function removeRow(index: number): void {
-  if (!isInteractive.value || !canRemove.value) return
-  const next = Array.from(rows.value)
-  next.splice(index, 1)
-  commit(next)
+  if (!isInteractive.value || !canRemove.value) return;
+  const next = Array.from(rows.value);
+  next.splice(index, 1);
+  commit(next);
 }
 
 /**
@@ -156,23 +154,23 @@ function removeRow(index: number): void {
 function onRowInput(index: number, event: Event): void {
   // Guard: readonly / disabled rows must never commit — setValue-style
   // programmatic edits and some IME/paste paths still fire native input.
-  if (!isInteractive.value) return
-  const target = event.target as HTMLInputElement
-  const raw = target.value
-  const current = rows.value[index]
-  const next = Array.from(rows.value)
+  if (!isInteractive.value) return;
+  const target = event.target as HTMLInputElement;
+  const raw = target.value;
+  const current = rows.value[index];
+  const next = Array.from(rows.value);
   if (typeof current === 'number' && raw.trim() !== '' && Number.isFinite(Number(raw))) {
-    next[index] = Number(raw)
+    next[index] = Number(raw);
   } else {
-    next[index] = raw
+    next[index] = raw;
   }
-  commit(next)
+  commit(next);
 }
 
 /** Display string for the built-in input. */
 function displayValue(row: DynamicInputValue): string | number {
-  if (typeof row === 'number') return row
-  return String(row ?? '')
+  if (typeof row === 'number') return row;
+  return String(row ?? '');
 }
 </script>
 
@@ -191,7 +189,19 @@ function displayValue(row: DynamicInputValue): string | number {
       aria-label="Add"
       @click="insertRow(-1)"
     >
-      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+      <svg
+        viewBox="0 0 24 24"
+        width="12"
+        height="12"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        aria-hidden="true"
+      >
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
       <span class="sn-dynamic-input__create-text">Add</span>
     </button>
 
@@ -224,7 +234,18 @@ function displayValue(row: DynamicInputValue): string | number {
           :aria-label="`Remove row ${index + 1}`"
           @click="removeRow(index)"
         >
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          <svg
+            viewBox="0 0 24 24"
+            width="12"
+            height="12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
         </button>
         <button
           v-if="canInsert"
@@ -234,7 +255,19 @@ function displayValue(row: DynamicInputValue): string | number {
           :aria-label="`Add row after ${index + 1}`"
           @click="insertRow(index)"
         >
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+          <svg
+            viewBox="0 0 24 24"
+            width="12"
+            height="12"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
         </button>
       </div>
     </div>
@@ -264,7 +297,9 @@ function displayValue(row: DynamicInputValue): string | number {
   cursor: pointer;
   padding: 0 var(--sn-web-input-padding-x, 10px);
   font: inherit;
-  transition: color 0.15s ease-out, border-color 0.15s ease-out;
+  transition:
+    color 0.15s ease-out,
+    border-color 0.15s ease-out;
 }
 
 .sn-dynamic-input__create:hover:not(:disabled) {
@@ -277,11 +312,26 @@ function displayValue(row: DynamicInputValue): string | number {
   cursor: not-allowed;
 }
 
-.sn-dynamic-input--mini .sn-dynamic-input__create { height: 22px; font-size: 11px; }
-.sn-dynamic-input--tiny .sn-dynamic-input__create { height: 24px; font-size: 12px; }
-.sn-dynamic-input--small .sn-dynamic-input__create { height: 28px; font-size: 13px; }
-.sn-dynamic-input--medium .sn-dynamic-input__create { height: 32px; font-size: 14px; }
-.sn-dynamic-input--large .sn-dynamic-input__create { height: 40px; font-size: 15px; }
+.sn-dynamic-input--mini .sn-dynamic-input__create {
+  height: 22px;
+  font-size: 11px;
+}
+.sn-dynamic-input--tiny .sn-dynamic-input__create {
+  height: 24px;
+  font-size: 12px;
+}
+.sn-dynamic-input--small .sn-dynamic-input__create {
+  height: 28px;
+  font-size: 13px;
+}
+.sn-dynamic-input--medium .sn-dynamic-input__create {
+  height: 32px;
+  font-size: 14px;
+}
+.sn-dynamic-input--large .sn-dynamic-input__create {
+  height: 40px;
+  font-size: 15px;
+}
 
 /* Rows */
 .sn-dynamic-input__item {
@@ -302,7 +352,9 @@ function displayValue(row: DynamicInputValue): string | number {
   font: inherit;
   padding: 0 var(--sn-web-input-padding-x, 10px);
   outline: none;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
 }
 
 .sn-dynamic-input__input::placeholder {
@@ -314,11 +366,26 @@ function displayValue(row: DynamicInputValue): string | number {
   box-shadow: 0 0 0 3px var(--sn-web-focus-ring);
 }
 
-.sn-dynamic-input--mini .sn-dynamic-input__input { height: 22px; font-size: 11px; }
-.sn-dynamic-input--tiny .sn-dynamic-input__input { height: 24px; font-size: 12px; }
-.sn-dynamic-input--small .sn-dynamic-input__input { height: 28px; font-size: 13px; }
-.sn-dynamic-input--medium .sn-dynamic-input__input { height: 32px; font-size: 14px; }
-.sn-dynamic-input--large .sn-dynamic-input__input { height: 40px; font-size: 15px; }
+.sn-dynamic-input--mini .sn-dynamic-input__input {
+  height: 22px;
+  font-size: 11px;
+}
+.sn-dynamic-input--tiny .sn-dynamic-input__input {
+  height: 24px;
+  font-size: 12px;
+}
+.sn-dynamic-input--small .sn-dynamic-input__input {
+  height: 28px;
+  font-size: 13px;
+}
+.sn-dynamic-input--medium .sn-dynamic-input__input {
+  height: 32px;
+  font-size: 14px;
+}
+.sn-dynamic-input--large .sn-dynamic-input__input {
+  height: 40px;
+  font-size: 15px;
+}
 
 /* Status cascade — status color wins over the focus border. */
 .sn-dynamic-input--status-error .sn-dynamic-input__input {
@@ -360,7 +427,9 @@ function displayValue(row: DynamicInputValue): string | number {
   color: var(--sn-web-color-text-secondary);
   cursor: pointer;
   padding: 0;
-  transition: color 0.15s ease-out, border-color 0.15s ease-out,
+  transition:
+    color 0.15s ease-out,
+    border-color 0.15s ease-out,
     background-color 0.15s ease-out;
 }
 

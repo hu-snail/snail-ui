@@ -46,29 +46,18 @@
  *   </SnFloatButtonGroup>
  */
 
-import {
-  computed,
-  markRaw,
-  onBeforeUnmount,
-  onMounted,
-  provide,
-  ref,
-  watch,
-} from 'vue'
-import type { ComputedRef, CSSProperties } from 'vue'
-import { Plus } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import SnFloatButton from './SnFloatButton.vue'
-import type {
-  SnFloatButtonGroupDirection,
-  SnFloatButtonPlacement,
-} from './SnFloatButton.vue'
-import type { IconComponent } from '../icon/sn-icon-registry'
+import { computed, markRaw, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
+import type { ComputedRef, CSSProperties } from 'vue';
+import { Plus } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import SnFloatButton from './SnFloatButton.vue';
+import type { SnFloatButtonGroupDirection, SnFloatButtonPlacement } from './SnFloatButton.vue';
+import type { IconComponent } from '../icon/sn-icon-registry';
 
-defineOptions({ name: 'SnFloatButtonGroup' })
+defineOptions({ name: 'SnFloatButtonGroup' });
 
-type SnFloatButtonGroupShape = 'circle' | 'square'
-type SnFloatButtonGroupPlacement = SnFloatButtonPlacement
+type SnFloatButtonGroupShape = 'circle' | 'square';
+type SnFloatButtonGroupPlacement = SnFloatButtonPlacement;
 
 /**
  * Shape contract handed down to every child `SnFloatButton` through
@@ -77,54 +66,54 @@ type SnFloatButtonGroupPlacement = SnFloatButtonPlacement
  */
 interface SnFloatButtonGroupContext {
   /** Group-level shape; overrides each child's own `shape` prop. */
-  shape: ComputedRef<SnFloatButtonGroupShape>
+  shape: ComputedRef<SnFloatButtonGroupShape>;
 }
 
 /** Injection key shared with `SnFloatButton` (string key, like SnCollapse). */
-const FLOAT_BUTTON_GROUP_KEY = 'sn-float-button-group'
+const FLOAT_BUTTON_GROUP_KEY = 'sn-float-button-group';
 
 /** Distance from the viewport edge that `placement` falls back to. */
-const DEFAULT_OFFSET = '24px'
+const DEFAULT_OFFSET = '24px';
 
 /** Size passed to the trigger glyph. */
-const TRIGGER_ICON_SIZE = 18
+const TRIGGER_ICON_SIZE = 18;
 
 const props = withDefaults(
   defineProps<{
     /** Shape handed to every child; overrides each child's own `shape` prop. */
-    shape?: SnFloatButtonGroupShape
+    shape?: SnFloatButtonGroupShape;
     /** Controlled open state (`v-model:open`). Uncontrolled when omitted. */
-    open?: boolean
+    open?: boolean;
     /** Gesture that opens the stack. */
-    trigger?: 'click' | 'hover'
+    trigger?: 'click' | 'hover';
     /** Fixed corner of the group (and therefore of its children). */
-    placement?: SnFloatButtonGroupPlacement
+    placement?: SnFloatButtonGroupPlacement;
     /**
      * Which way the stack opens from the trigger. `'auto'` (default) derives it
      * from `placement` — the stack always grows towards the viewport centre, so
      * a bottom-corner group opens upwards and a left-edge group opens
      * rightwards. Set it explicitly to override.
      */
-    direction?: SnFloatButtonGroupDirection
+    direction?: SnFloatButtonGroupDirection;
     /** Explicit distance from the viewport right edge; overrides `placement`. */
-    right?: number | string
+    right?: number | string;
     /** Explicit distance from the viewport bottom edge; overrides `placement`. */
-    bottom?: number | string
+    bottom?: number | string;
     /** Explicit distance from the viewport top edge; overrides `placement`. */
-    top?: number | string
+    top?: number | string;
     /** Explicit distance from the viewport left edge; overrides `placement`. */
-    left?: number | string
+    left?: number | string;
     /** Stacking order of the fixed root. */
-    zIndex?: number
+    zIndex?: number;
     /**
      * `false` pins the group to its nearest positioned ancestor instead of the
      * viewport (or to `container` when one is given).
      */
-    fixed?: boolean
+    fixed?: boolean;
     /** Explicit positioning context (selector or element) for `fixed: false`. */
-    container?: string | HTMLElement | undefined
+    container?: string | HTMLElement | undefined;
     /** Vertical gap between the stacked children (and to the trigger). */
-    gap?: number
+    gap?: number;
     /**
      * Trigger glyph component. Rotated 45° while open.
      *
@@ -134,13 +123,13 @@ const props = withDefaults(
      * a *factory* and call the icon component itself. `resolvedTriggerIcon`
      * applies the `Plus` fallback instead.
      */
-    triggerIcon?: IconComponent | undefined
+    triggerIcon?: IconComponent | undefined;
     /**
      * Sets the trigger's native `title` and accessible name. The explicit
      * `| undefined` is required by `exactOptionalPropertyTypes` because the
      * value is forwarded to the child `SnFloatButton` in the template.
      */
-    triggerTooltip?: string | undefined
+    triggerTooltip?: string | undefined;
   }>(),
   {
     shape: 'circle',
@@ -158,54 +147,52 @@ const props = withDefaults(
      */
     open: undefined as any,
   },
-)
+);
 
 const emit = defineEmits<{
   /** The open state changed (`v-model:open`). */
-  (e: 'update:open', value: boolean): void
+  (e: 'update:open', value: boolean): void;
   /** The open state changed (event-style alias). */
-  (e: 'openChange', value: boolean): void
-}>()
+  (e: 'openChange', value: boolean): void;
+}>();
 
 defineSlots<{
   /** The `SnFloatButton` children — stacked above the trigger. */
-  default?(): unknown
+  default?(): unknown;
   /** Replaces the built-in trigger button entirely. */
-  trigger?(): unknown
-}>()
+  trigger?(): unknown;
+}>();
 
 // ---------- Open state ----------
 
 /** Uncontrolled open state, used while the `open` prop is omitted. */
-const uncontrolledOpen = ref(false)
+const uncontrolledOpen = ref(false);
 
 /** Effective open state: the `open` prop wins when provided. */
-const mergedOpen = computed(() =>
-  props.open === undefined ? uncontrolledOpen.value : props.open,
-)
+const mergedOpen = computed(() => (props.open === undefined ? uncontrolledOpen.value : props.open));
 
 function setOpen(value: boolean): void {
-  const changed = value !== mergedOpen.value
-  if (props.open === undefined) uncontrolledOpen.value = value
-  if (!changed) return
-  emit('update:open', value)
-  emit('openChange', value)
+  const changed = value !== mergedOpen.value;
+  if (props.open === undefined) uncontrolledOpen.value = value;
+  if (!changed) return;
+  emit('update:open', value);
+  emit('openChange', value);
 }
 
 function toggle(): void {
-  setOpen(!mergedOpen.value)
+  setOpen(!mergedOpen.value);
 }
 
 // ---------- Provide (shape + "the group owns positioning") ----------
 
-const groupShape = computed<SnFloatButtonGroupShape>(() => props.shape)
+const groupShape = computed<SnFloatButtonGroupShape>(() => props.shape);
 
-provide<SnFloatButtonGroupContext>(FLOAT_BUTTON_GROUP_KEY, { shape: groupShape })
+provide<SnFloatButtonGroupContext>(FLOAT_BUTTON_GROUP_KEY, { shape: groupShape });
 
 // ---------- Positioning (8 anchors, shared model with SnFloatButton) ----------
 
 function formatLength(value: string | number): string {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 /**
@@ -214,54 +201,55 @@ function formatLength(value: string | number): string {
  * other one via `50%` + a `translate`.
  */
 interface ResolvedGroupPlacement {
-  style: CSSProperties
-  translateX: string
-  translateY: string
+  style: CSSProperties;
+  translateX: string;
+  translateY: string;
 }
 
 function resolveGroupPlacement(): ResolvedGroupPlacement {
   const style: CSSProperties = {
     position: props.fixed ? 'fixed' : 'absolute',
     zIndex: props.zIndex,
-  }
+  };
 
-  if (props.top !== undefined) style.top = formatLength(props.top)
-  if (props.bottom !== undefined) style.bottom = formatLength(props.bottom)
-  if (props.left !== undefined) style.left = formatLength(props.left)
-  if (props.right !== undefined) style.right = formatLength(props.right)
+  if (props.top !== undefined) style.top = formatLength(props.top);
+  if (props.bottom !== undefined) style.bottom = formatLength(props.bottom);
+  if (props.left !== undefined) style.left = formatLength(props.left);
+  if (props.right !== undefined) style.right = formatLength(props.right);
 
-  const hasVertical = props.top !== undefined || props.bottom !== undefined
-  const hasHorizontal = props.left !== undefined || props.right !== undefined
+  const hasVertical = props.top !== undefined || props.bottom !== undefined;
+  const hasHorizontal = props.left !== undefined || props.right !== undefined;
 
-  const placement = props.placement
-  const isTop = placement === 'top-left' || placement === 'top-right' || placement === 'top'
+  const placement = props.placement;
+  const isTop = placement === 'top-left' || placement === 'top-right' || placement === 'top';
   const isBottom =
-    placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom'
-  const isLeft = placement === 'top-left' || placement === 'bottom-left' || placement === 'left'
-  const isRight = placement === 'top-right' || placement === 'bottom-right' || placement === 'right'
+    placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom';
+  const isLeft = placement === 'top-left' || placement === 'bottom-left' || placement === 'left';
+  const isRight =
+    placement === 'top-right' || placement === 'bottom-right' || placement === 'right';
 
-  const centreHorizontally = placement === 'top' || placement === 'bottom'
-  const centreVertically = placement === 'left' || placement === 'right'
+  const centreHorizontally = placement === 'top' || placement === 'bottom';
+  const centreVertically = placement === 'left' || placement === 'right';
 
   if (!hasVertical) {
-    if (isTop) style.top = DEFAULT_OFFSET
-    else if (isBottom) style.bottom = DEFAULT_OFFSET
-    else if (centreVertically) style.top = '50%'
+    if (isTop) style.top = DEFAULT_OFFSET;
+    else if (isBottom) style.bottom = DEFAULT_OFFSET;
+    else if (centreVertically) style.top = '50%';
   }
   if (!hasHorizontal) {
-    if (isLeft) style.left = DEFAULT_OFFSET
-    else if (isRight) style.right = DEFAULT_OFFSET
-    else if (centreHorizontally) style.left = '50%'
+    if (isLeft) style.left = DEFAULT_OFFSET;
+    else if (isRight) style.right = DEFAULT_OFFSET;
+    else if (centreHorizontally) style.left = '50%';
   }
 
   return {
     style,
     translateX: !hasHorizontal && centreHorizontally ? '-50%' : '0',
     translateY: !hasVertical && centreVertically ? '-50%' : '0',
-  }
+  };
 }
 
-const resolvedGroupPlacement = computed<ResolvedGroupPlacement>(() => resolveGroupPlacement())
+const resolvedGroupPlacement = computed<ResolvedGroupPlacement>(() => resolveGroupPlacement());
 
 /**
  * Which way the stack grows. `'auto'` reads the anchor: the stack always
@@ -272,33 +260,33 @@ const resolvedDirection = computed<'up' | 'down' | 'left' | 'right'>(() => {
   // `direction` is optional and deliberately has no `withDefaults` entry (a
   // union of literals would be inferred as a prop *factory* by the SFC
   // compiler), so `undefined` means "derive from the anchor".
-  const wanted = props.direction
-  if (wanted !== undefined && wanted !== 'auto') return wanted
+  const wanted = props.direction;
+  if (wanted !== undefined && wanted !== 'auto') return wanted;
 
-  const placement = props.placement
-  if (placement === 'top-left' || placement === 'top-right' || placement === 'top') return 'down'
+  const placement = props.placement;
+  if (placement === 'top-left' || placement === 'top-right' || placement === 'top') return 'down';
   if (placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom') {
-    return 'up'
+    return 'up';
   }
-  if (placement === 'left') return 'right'
-  return 'left'
-})
+  if (placement === 'left') return 'right';
+  return 'left';
+});
 
 /** Vertical stacks put the trigger last (below the stack) when opening up. */
 const isVerticalStack = computed(
   () => resolvedDirection.value === 'up' || resolvedDirection.value === 'down',
-)
+);
 
 /** Root: anchor + the gap between the stack and the trigger. */
 const rootStyle = computed<CSSProperties>(() => {
-  const { style, translateX, translateY } = resolvedGroupPlacement.value
-  const base: CSSProperties = { ...style, rowGap: `${props.gap}px` }
-  if (translateX === '0' && translateY === '0') return base
-  return { ...base, transform: `translate(${translateX}, ${translateY})` }
-})
+  const { style, translateX, translateY } = resolvedGroupPlacement.value;
+  const base: CSSProperties = { ...style, rowGap: `${props.gap}px` };
+  if (translateX === '0' && translateY === '0') return base;
+  return { ...base, transform: `translate(${translateX}, ${translateY})` };
+});
 
 /** Stack of children: the same gap applies between the children themselves. */
-const itemsStyle = computed<CSSProperties>(() => ({ gap: `${props.gap}px` }))
+const itemsStyle = computed<CSSProperties>(() => ({ gap: `${props.gap}px` }));
 
 const rootClass = computed(() => [
   'sn-float-button-group',
@@ -308,43 +296,41 @@ const rootClass = computed(() => [
     'sn-float-button-group--open': mergedOpen.value,
     'sn-float-button-group--vertical': isVerticalStack.value,
   },
-])
+]);
 
 // ---------- Trigger ----------
 
 /** Resolved trigger glyph. `markRaw` keeps the component out of the proxy. */
-const resolvedTriggerIcon = computed<IconComponent>(() =>
-  markRaw(props.triggerIcon ?? Plus),
-)
+const resolvedTriggerIcon = computed<IconComponent>(() => markRaw(props.triggerIcon ?? Plus));
 
 function handleTriggerClick(): void {
-  toggle()
+  toggle();
 }
 
 function handleGroupMouseEnter(): void {
-  if (props.trigger !== 'hover') return
-  setOpen(true)
+  if (props.trigger !== 'hover') return;
+  setOpen(true);
 }
 
 function handleGroupMouseLeave(): void {
-  if (props.trigger !== 'hover') return
-  setOpen(false)
+  if (props.trigger !== 'hover') return;
+  setOpen(false);
 }
 
 // ---------- Hover dismiss guard ----------
 
-const rootRef = ref<HTMLElement | null>(null)
+const rootRef = ref<HTMLElement | null>(null);
 
 function isPointerInsideGroup(event: MouseEvent): boolean {
-  const root = rootRef.value
-  if (!root) return false
-  const rect = root.getBoundingClientRect()
+  const root = rootRef.value;
+  if (!root) return false;
+  const rect = root.getBoundingClientRect();
   return (
     event.clientX >= rect.left &&
     event.clientX <= rect.right &&
     event.clientY >= rect.top &&
     event.clientY <= rect.bottom
-  )
+  );
 }
 
 /* ---------- Container mounting (§41) ---------- */
@@ -355,40 +341,40 @@ function isPointerInsideGroup(event: MouseEvent): boolean {
  * appends the root to the container and restores it on unmount. `rootRef`
  * already exists for the hover guard, so nothing extra needs disposal.
  */
-let containerHost: { parent: Node; placeholder: Comment } | null = null
+let containerHost: { parent: Node; placeholder: Comment } | null = null;
 
 function resolveContainer(target: string | HTMLElement | undefined): HTMLElement | null {
-  if (target === undefined) return null
-  if (typeof target !== 'string') return target
-  if (typeof document === 'undefined') return null
-  return document.querySelector<HTMLElement>(target)
+  if (target === undefined) return null;
+  if (typeof target !== 'string') return target;
+  if (typeof document === 'undefined') return null;
+  return document.querySelector<HTMLElement>(target);
 }
 
 onMounted(() => {
-  if (props.fixed) return
-  const container = resolveContainer(props.container)
-  const root = rootRef.value
-  const parent = root?.parentNode
-  if (!container || !root || !parent) return
-  const placeholder = document.createComment('sn-float-button-group')
-  parent.insertBefore(placeholder, root)
-  container.appendChild(root)
-  containerHost = { parent, placeholder }
-})
+  if (props.fixed) return;
+  const container = resolveContainer(props.container);
+  const root = rootRef.value;
+  const parent = root?.parentNode;
+  if (!container || !root || !parent) return;
+  const placeholder = document.createComment('sn-float-button-group');
+  parent.insertBefore(placeholder, root);
+  container.appendChild(root);
+  containerHost = { parent, placeholder };
+});
 
 function handleDocumentMouseMove(event: MouseEvent): void {
-  if (isPointerInsideGroup(event)) return
-  setOpen(false)
+  if (isPointerInsideGroup(event)) return;
+  setOpen(false);
 }
 function bindHoverGuard(): void {
   // SSR guard (§SSR): the immediate hover watch calls unbind on the server.
-  if (typeof document === 'undefined') return
-  document.addEventListener('mousemove', handleDocumentMouseMove)
+  if (typeof document === 'undefined') return;
+  document.addEventListener('mousemove', handleDocumentMouseMove);
 }
 
 function unbindHoverGuard(): void {
-  if (typeof document === 'undefined') return
-  document.removeEventListener('mousemove', handleDocumentMouseMove)
+  if (typeof document === 'undefined') return;
+  document.removeEventListener('mousemove', handleDocumentMouseMove);
 }
 
 // Only while an open hover-triggered stack exists does the document listener
@@ -396,13 +382,13 @@ function unbindHoverGuard(): void {
 watch(
   () => mergedOpen.value && props.trigger === 'hover',
   (active) => {
-    if (active) bindHoverGuard()
-    else unbindHoverGuard()
+    if (active) bindHoverGuard();
+    else unbindHoverGuard();
   },
   { immediate: true },
-)
+);
 
-onBeforeUnmount(unbindHoverGuard)
+onBeforeUnmount(unbindHoverGuard);
 </script>
 
 <template>

@@ -30,36 +30,33 @@
  *   </SnAffix>
  */
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
-defineOptions({ name: 'SnAffix' })
+defineOptions({ name: 'SnAffix' });
 
 /** Anything the affix can listen to for scroll events. */
-export type SnAffixScrollTarget = Window | Document | HTMLElement
+export type SnAffixScrollTarget = Window | Document | HTMLElement;
 
 const props = withDefaults(
   defineProps<{
     /** Scroll container to observe. Defaults to `document`. */
-    listenTo?:
-      | string
-      | SnAffixScrollTarget
-      | (() => HTMLElement | Document)
+    listenTo?: string | SnAffixScrollTarget | (() => HTMLElement | Document);
     /** Offset from the viewport top when stuck. */
-    top?: number
+    top?: number;
     /** Offset from the viewport bottom when stuck. */
-    bottom?: number
+    bottom?: number;
     /** Scroll threshold that starts top-sticking. Falls back to `top`. */
-    triggerTop?: number
+    triggerTop?: number;
     /** Scroll threshold that starts bottom-sticking. Falls back to `bottom`. */
-    triggerBottom?: number
+    triggerBottom?: number;
     /** `fixed` removes the element from flow; `absolute` keeps it in flow. */
-    position?: 'fixed' | 'absolute'
+    position?: 'fixed' | 'absolute';
     /** @deprecated Use `triggerTop` instead. Mirrors n-affix `offsetTop`. */
-    offsetTop?: number
+    offsetTop?: number;
     /** @deprecated Use `triggerBottom` instead. Mirrors n-affix `offsetBottom`. */
-    offsetBottom?: number
+    offsetBottom?: number;
     /** @deprecated Use `listenTo` instead. Mirrors n-affix `target`. */
-    target?: () => HTMLElement
+    target?: () => HTMLElement;
   }>(),
   {
     listenTo: undefined as any,
@@ -73,12 +70,12 @@ const props = withDefaults(
     offsetBottom: undefined as any,
     target: undefined as any,
   },
-)
+);
 
 defineSlots<{
   /** The element to affix. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 // ---------- Deprecation warnings (mirrors n-affix dev warnings) ----------
 
@@ -91,64 +88,58 @@ if (
   console.warn(
     '[SnAffix] `target` / `offset-top` / `offset-bottom` are deprecated; ' +
       'use `listen-to` / `trigger-top` / `trigger-bottom` instead.',
-  )
+  );
 }
 
 // ---------- State ----------
 
-const selfRef = ref<Element | null>(null)
-const stickToTop = ref(false)
-const stickToBottom = ref(false)
+const selfRef = ref<Element | null>(null);
+const stickToTop = ref(false);
+const stickToBottom = ref(false);
 /** Scroll positions at which each direction stops being affixed. Recorded
  *  when affixing starts, so the element un-affixes exactly at the point it
  *  affixed — this is the hysteresis that prevents boundary jitter. */
-const topAffixedTriggerScrollTop = ref<number | null>(null)
-const bottomAffixedTriggerScrollTop = ref<number | null>(null)
+const topAffixedTriggerScrollTop = ref<number | null>(null);
+const bottomAffixedTriggerScrollTop = ref<number | null>(null);
 
 /** Exposed for testing / programmatic checks (mirrors n-affix `affixed`). */
-const affixed = computed(() => stickToTop.value || stickToBottom.value)
+const affixed = computed(() => stickToTop.value || stickToBottom.value);
 
 /** Threshold at which top-sticking begins. */
-const mergedTriggerTop = computed(
-  () => props.triggerTop ?? props.offsetTop ?? props.top,
-)
+const mergedTriggerTop = computed(() => props.triggerTop ?? props.offsetTop ?? props.top);
 /** Offset applied while stuck to the top. */
-const mergedTop = computed(
-  () => props.top ?? props.triggerTop ?? props.offsetTop,
-)
+const mergedTop = computed(() => props.top ?? props.triggerTop ?? props.offsetTop);
 /** Offset applied while stuck to the bottom. */
-const mergedBottom = computed(
-  () => props.bottom ?? props.triggerBottom ?? props.offsetBottom,
-)
+const mergedBottom = computed(() => props.bottom ?? props.triggerBottom ?? props.offsetBottom);
 /** Threshold at which bottom-sticking begins. */
 const mergedTriggerBottom = computed(
   () => props.triggerBottom ?? props.offsetBottom ?? props.bottom,
-)
+);
 
-let scrollTarget: SnAffixScrollTarget | null = null
+let scrollTarget: SnAffixScrollTarget | null = null;
 
 // ---------- Geometry helpers (mirrors n-affix utils.ts) ----------
 
 function getScrollTop(target: SnAffixScrollTarget): number {
-  return target instanceof HTMLElement ? target.scrollTop : window.scrollY
+  return target instanceof HTMLElement ? target.scrollTop : window.scrollY;
 }
 
 function getRect(target: SnAffixScrollTarget): { top: number; bottom: number } {
   return target instanceof HTMLElement
     ? target.getBoundingClientRect()
-    : { top: 0, bottom: window.innerHeight }
+    : { top: 0, bottom: window.innerHeight };
 }
 
 function resolveScrollTarget(): SnAffixScrollTarget | null {
-  const { target: getTarget, listenTo } = props
+  const { target: getTarget, listenTo } = props;
   // `target` is the deprecated spelling of `listenTo`.
-  if (getTarget) return getTarget()
-  if (typeof listenTo === 'function') return listenTo()
+  if (getTarget) return getTarget();
+  if (typeof listenTo === 'function') return listenTo();
   if (typeof listenTo === 'string') {
-    return (document.querySelector(listenTo) as HTMLElement | null) ?? null
+    return (document.querySelector(listenTo) as HTMLElement | null) ?? null;
   }
-  if (listenTo) return listenTo
-  return document
+  if (listenTo) return listenTo;
+  return document;
 }
 
 // ---------- Scroll handling ----------
@@ -161,66 +152,63 @@ function resolveScrollTarget(): SnAffixScrollTarget | null {
  * matches n-affix. Scroll events on `document` do fire in browsers, so no
  * separate `window` listener is needed.
  */
-let frameHandle: number | null = null
+let frameHandle: number | null = null;
 
 function handleScroll(): void {
-  if (frameHandle !== null) return
+  if (frameHandle !== null) return;
   frameHandle = requestAnimationFrame(() => {
-    frameHandle = null
-    measure()
-  })
+    frameHandle = null;
+    measure();
+  });
 }
 
 function measure(): void {
-  const selfEl = selfRef.value
-  if (!scrollTarget || !selfEl) return
+  const selfEl = selfRef.value;
+  if (!scrollTarget || !selfEl) return;
 
-  const scrollTop = getScrollTop(scrollTarget)
+  const scrollTop = getScrollTop(scrollTarget);
 
   // Already affixed: only un-affix once the scroll position crosses back
   // over the recorded trigger point.
   if (affixed.value) {
-    if (
-      topAffixedTriggerScrollTop.value !== null &&
-      scrollTop < topAffixedTriggerScrollTop.value
-    ) {
-      stickToTop.value = false
-      topAffixedTriggerScrollTop.value = null
+    if (topAffixedTriggerScrollTop.value !== null && scrollTop < topAffixedTriggerScrollTop.value) {
+      stickToTop.value = false;
+      topAffixedTriggerScrollTop.value = null;
     }
     if (
       bottomAffixedTriggerScrollTop.value !== null &&
       scrollTop > bottomAffixedTriggerScrollTop.value
     ) {
-      stickToBottom.value = false
-      bottomAffixedTriggerScrollTop.value = null
+      stickToBottom.value = false;
+      bottomAffixedTriggerScrollTop.value = null;
     }
-    return
+    return;
   }
 
-  const containerRect = getRect(scrollTarget)
-  const affixRect = selfEl.getBoundingClientRect()
-  const pxToTop = affixRect.top - containerRect.top
-  const pxToBottom = containerRect.bottom - affixRect.bottom
+  const containerRect = getRect(scrollTarget);
+  const affixRect = selfEl.getBoundingClientRect();
+  const pxToTop = affixRect.top - containerRect.top;
+  const pxToBottom = containerRect.bottom - affixRect.bottom;
 
-  const triggerTop = mergedTriggerTop.value
-  const triggerBottom = mergedTriggerBottom.value
+  const triggerTop = mergedTriggerTop.value;
+  const triggerBottom = mergedTriggerBottom.value;
 
   if (triggerTop !== undefined && pxToTop <= triggerTop) {
-    stickToTop.value = true
+    stickToTop.value = true;
     // Remember where to release: the scroll position offset by how far
     // past the threshold we already were.
-    topAffixedTriggerScrollTop.value = scrollTop - (triggerTop - pxToTop)
+    topAffixedTriggerScrollTop.value = scrollTop - (triggerTop - pxToTop);
   } else {
-    stickToTop.value = false
-    topAffixedTriggerScrollTop.value = null
+    stickToTop.value = false;
+    topAffixedTriggerScrollTop.value = null;
   }
 
   if (triggerBottom !== undefined && pxToBottom <= triggerBottom) {
-    stickToBottom.value = true
-    bottomAffixedTriggerScrollTop.value = scrollTop + triggerBottom - pxToBottom
+    stickToBottom.value = true;
+    bottomAffixedTriggerScrollTop.value = scrollTop + triggerBottom - pxToBottom;
   } else {
-    stickToBottom.value = false
-    bottomAffixedTriggerScrollTop.value = null
+    stickToBottom.value = false;
+    bottomAffixedTriggerScrollTop.value = null;
   }
 }
 
@@ -228,48 +216,44 @@ function measure(): void {
 
 function cleanup(): void {
   if (frameHandle !== null) {
-    cancelAnimationFrame(frameHandle)
-    frameHandle = null
+    cancelAnimationFrame(frameHandle);
+    frameHandle = null;
   }
   if (scrollTarget) {
-    scrollTarget.removeEventListener('scroll', handleScroll)
-    scrollTarget = null
+    scrollTarget.removeEventListener('scroll', handleScroll);
+    scrollTarget = null;
   }
 }
 
 function init(): void {
-  scrollTarget = resolveScrollTarget()
-  if (!scrollTarget) return
-  scrollTarget.addEventListener('scroll', handleScroll)
-  measure()
+  scrollTarget = resolveScrollTarget();
+  if (!scrollTarget) return;
+  scrollTarget.addEventListener('scroll', handleScroll);
+  measure();
 }
 
-onMounted(init)
+onMounted(init);
 // Per AGENTS.md §41 + §82, every listener registered here is removed on
 // unmount so a long-lived page cannot leak scroll handlers.
-onBeforeUnmount(cleanup)
+onBeforeUnmount(cleanup);
 
 /** Positioning applied only while actually stuck. */
 const mergedStyle = computed(() => {
-  const style: Record<string, string> = {}
-  if (
-    stickToTop.value &&
-    mergedTriggerTop.value !== undefined &&
-    mergedTop.value !== undefined
-  ) {
-    style.top = `${mergedTop.value}px`
+  const style: Record<string, string> = {};
+  if (stickToTop.value && mergedTriggerTop.value !== undefined && mergedTop.value !== undefined) {
+    style.top = `${mergedTop.value}px`;
   }
   if (
     stickToBottom.value &&
     mergedTriggerBottom.value !== undefined &&
     mergedBottom.value !== undefined
   ) {
-    style.bottom = `${mergedBottom.value}px`
+    style.bottom = `${mergedBottom.value}px`;
   }
-  return style
-})
+  return style;
+});
 
-defineExpose({ affixed })
+defineExpose({ affixed });
 </script>
 
 <template>

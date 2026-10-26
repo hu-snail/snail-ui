@@ -4,17 +4,17 @@
  * `icon` slot replace the default graphic, and `delay` defers the spinner so a
  * fast request never flashes.
  */
-import { ref } from 'vue'
-import { SnButton, SnLoading } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnLoading } from '@snui/vue-web';
 
-const fast = ref(false)
-const slow = ref(false)
+const fast = ref(false);
+const slow = ref(false);
 
 function run(target: typeof fast, ms: number): void {
-  target.value = true
+  target.value = true;
   window.setTimeout(() => {
-    target.value = false
-  }, ms)
+    target.value = false;
+  }, ms);
 }
 </script>
 

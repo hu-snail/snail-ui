@@ -60,77 +60,77 @@ Multi-line textarea via `type="textarea"`. See input-slots for an inline bio exa
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `''` | v-model value; `type="number"` coerces to number. |
-| `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | Native input type; textarea renders multi-line. |
-| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | Height / font-size. |
-| `placeholder` | `string` | `''` | Placeholder text. |
-| `placeholderStyle` | `string` | `''` | Inline CSS injected into `::placeholder` pseudo-element. |
-| `placeholderClass` | `string` | `''` | Extra class on placeholder pseudo-element. |
-| `disabled` | `boolean` | `false` | Disabled + aria-disabled. |
-| `readonly` | `boolean` | `false` | Read-only. |
-| `required` | `boolean` | `false` | aria-required="true". |
-| `ariaLabel` | `string` | — | Accessible name. |
-| `maxlength` | `number` | — | Forwarded. |
-| `minlength` | `number` | — | Forwarded. |
-| `showCount` | `boolean` | `false` | Show current / max counter. |
-| `showWordLimit` | `boolean` | `false` | Alias for `showCount`. |
-| `clearable` | `boolean` | `false` | Show × button. |
-| `clearTrigger` | `'always' \| 'focus'` | `'always'` | When × shows: `focus` only on focus. |
-| `focusWhenClear` | `boolean` | `true` | Auto-refocus after × click. |
-| `showPassword` | `boolean` | `false` | Eye toggle on `type='password'`. |
-| `prefixIcon` | `string` | `''` | Front icon name (resolved via SnIcon). |
-| `suffixIcon` | `string` | `''` | Tail icon name. |
-| `cssIcon` | `boolean \| string` | `false` | `true` treats prefix/suffix icon as CSS class (bypass SnIcon). |
-| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | Border color + aria-invalid. |
-| `min` / `max` / `step` | `number` | — | Numeric bounds. |
-| `rows` | `number` | `3` | Textarea rows. |
-| `border` | `'all' \| 'bottom' \| 'none'` | `'all'` | Border mode. `all` four sides, `bottom` only bottom (inline form row), `none` no border. |
-| `bordered` *(deprecated)* | `boolean` | `true` | Alias: `true === 'all'`, `false === 'none'`. |
-| `bg` | `'surface' \| 'transparent' \| 'soft'` | `'surface'` | Background tone. |
-| `customBg` | `string` | `''` | Inline `background-color` override. |
-| `radius` | `'default' \| 'pill' \| 'square'` | `'default'` | Radius preset. |
-| `alignRight` | `boolean` | `false` | Right-align value (amount fields). |
-| `compact` | `boolean` | `false` | Strip padding + bg so input nests inside FormItem. |
-| `focus` | `boolean` | `false` | Auto-focus on mount. |
-| `inputmode` | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'` | Soft-keyboard hint. |
-| `customInputClass` | `string` | `''` | Inner `<input>` / `<textarea>` extra class. |
-| `customClass` | `string` | `''` | Root extra class. |
-| `customStyle` | `string \| Record<string,string>` | `''` | Root inline style. |
+| Prop                      | Type                                                                                                                                              | Default     | Description                                                                              |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| `modelValue`              | `string \| number`                                                                                                                                | `''`        | v-model value; `type="number"` coerces to number.                                        |
+| `type`                    | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'`    | Native input type; textarea renders multi-line.                                          |
+| `size`                    | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`                                                                                              | `'medium'`  | Height / font-size.                                                                      |
+| `placeholder`             | `string`                                                                                                                                          | `''`        | Placeholder text.                                                                        |
+| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | Inline CSS injected into `::placeholder` pseudo-element.                                 |
+| `placeholderClass`        | `string`                                                                                                                                          | `''`        | Extra class on placeholder pseudo-element.                                               |
+| `disabled`                | `boolean`                                                                                                                                         | `false`     | Disabled + aria-disabled.                                                                |
+| `readonly`                | `boolean`                                                                                                                                         | `false`     | Read-only.                                                                               |
+| `required`                | `boolean`                                                                                                                                         | `false`     | aria-required="true".                                                                    |
+| `ariaLabel`               | `string`                                                                                                                                          | —           | Accessible name.                                                                         |
+| `maxlength`               | `number`                                                                                                                                          | —           | Forwarded.                                                                               |
+| `minlength`               | `number`                                                                                                                                          | —           | Forwarded.                                                                               |
+| `showCount`               | `boolean`                                                                                                                                         | `false`     | Show current / max counter.                                                              |
+| `showWordLimit`           | `boolean`                                                                                                                                         | `false`     | Alias for `showCount`.                                                                   |
+| `clearable`               | `boolean`                                                                                                                                         | `false`     | Show × button.                                                                           |
+| `clearTrigger`            | `'always' \| 'focus'`                                                                                                                             | `'always'`  | When × shows: `focus` only on focus.                                                     |
+| `focusWhenClear`          | `boolean`                                                                                                                                         | `true`      | Auto-refocus after × click.                                                              |
+| `showPassword`            | `boolean`                                                                                                                                         | `false`     | Eye toggle on `type='password'`.                                                         |
+| `prefixIcon`              | `string`                                                                                                                                          | `''`        | Front icon name (resolved via SnIcon).                                                   |
+| `suffixIcon`              | `string`                                                                                                                                          | `''`        | Tail icon name.                                                                          |
+| `cssIcon`                 | `boolean \| string`                                                                                                                               | `false`     | `true` treats prefix/suffix icon as CSS class (bypass SnIcon).                           |
+| `status`                  | `'default' \| 'error' \| 'warning'`                                                                                                               | `'default'` | Border color + aria-invalid.                                                             |
+| `min` / `max` / `step`    | `number`                                                                                                                                          | —           | Numeric bounds.                                                                          |
+| `rows`                    | `number`                                                                                                                                          | `3`         | Textarea rows.                                                                           |
+| `border`                  | `'all' \| 'bottom' \| 'none'`                                                                                                                     | `'all'`     | Border mode. `all` four sides, `bottom` only bottom (inline form row), `none` no border. |
+| `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | Alias: `true === 'all'`, `false === 'none'`.                                             |
+| `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | Background tone.                                                                         |
+| `customBg`                | `string`                                                                                                                                          | `''`        | Inline `background-color` override.                                                      |
+| `radius`                  | `'default' \| 'pill' \| 'square'`                                                                                                                 | `'default'` | Radius preset.                                                                           |
+| `alignRight`              | `boolean`                                                                                                                                         | `false`     | Right-align value (amount fields).                                                       |
+| `compact`                 | `boolean`                                                                                                                                         | `false`     | Strip padding + bg so input nests inside FormItem.                                       |
+| `focus`                   | `boolean`                                                                                                                                         | `false`     | Auto-focus on mount.                                                                     |
+| `inputmode`               | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'`                                                             | `'text'`    | Soft-keyboard hint.                                                                      |
+| `customInputClass`        | `string`                                                                                                                                          | `''`        | Inner `<input>` / `<textarea>` extra class.                                              |
+| `customClass`             | `string`                                                                                                                                          | `''`        | Root extra class.                                                                        |
+| `customStyle`             | `string \| Record<string,string>`                                                                                                                 | `''`        | Root inline style.                                                                       |
 
 ## Events
 
-| Event | Payload | Notes |
-| --- | --- | --- |
-| `update:modelValue` | `(value)` | v-model sync. |
-| `input` | `(value, event)` | Native input. |
-| `change` | `(value, event)` | Native change. |
-| `focus` | `(event: FocusEvent)` | Native focus. |
-| `blur` | `(event: FocusEvent)` | Native blur. |
-| `clear` | — | × button click. |
-| `click` | `(event: MouseEvent)` | Root click (e.g. for embedded popup). |
-| `clickPrefixIcon` | `(event: MouseEvent)` | Click on prefixIcon region. |
-| `clickSuffixIcon` | `(event: MouseEvent)` | Click on suffixIcon region. |
-| `confirm` | `(value: string \| number)` | Enter on single-line input. |
+| Event               | Payload                     | Notes                                 |
+| ------------------- | --------------------------- | ------------------------------------- |
+| `update:modelValue` | `(value)`                   | v-model sync.                         |
+| `input`             | `(value, event)`            | Native input.                         |
+| `change`            | `(value, event)`            | Native change.                        |
+| `focus`             | `(event: FocusEvent)`       | Native focus.                         |
+| `blur`              | `(event: FocusEvent)`       | Native blur.                          |
+| `clear`             | —                           | × button click.                       |
+| `click`             | `(event: MouseEvent)`       | Root click (e.g. for embedded popup). |
+| `clickPrefixIcon`   | `(event: MouseEvent)`       | Click on prefixIcon region.           |
+| `clickSuffixIcon`   | `(event: MouseEvent)`       | Click on suffixIcon region.           |
+| `confirm`           | `(value: string \| number)` | Enter on single-line input.           |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `prefix` | Left of input. Overrides `prefixIcon`. |
-| `suffix` | Right of input. Overrides `suffixIcon`. |
-| `clear-icon` | Custom × button content. |
-| `count` | Custom counter (receives `{ current, max }`). |
+| Slot         | Description                                   |
+| ------------ | --------------------------------------------- |
+| `prefix`     | Left of input. Overrides `prefixIcon`.        |
+| `suffix`     | Right of input. Overrides `suffixIcon`.       |
+| `clear-icon` | Custom × button content.                      |
+| `count`      | Custom counter (receives `{ current, max }`). |
 
 ## Accessibility
 
-| Attribute | Value |
-| --- | --- |
-| `aria-invalid` | `props.status === 'error'`. |
-| `aria-required` | `props.required`. |
-| `aria-disabled` | `props.disabled`. |
-| Focus animation | border-color + outer ring, 0.18s ease-out; error/warning paints own soft outer ring. |
+| Attribute         | Value                                                                                      |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| `aria-invalid`    | `props.status === 'error'`.                                                                |
+| `aria-required`   | `props.required`.                                                                          |
+| `aria-disabled`   | `props.disabled`.                                                                          |
+| Focus animation   | border-color + outer ring, 0.18s ease-out; error/warning paints own soft outer ring.       |
 | Placeholder color | Distinct from input text (`--sn-web-input-placeholder-color` resolves to `text-tertiary`). |
 
 ## Source

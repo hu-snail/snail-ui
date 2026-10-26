@@ -11,8 +11,8 @@
 `<SnDivider />` 即用，组件根据父容器自动撑开：
 
 ```ts
-import { SnDivider } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnDivider } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 ```html
@@ -25,18 +25,18 @@ import '@snui/tokens-web/styles'
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | 方向 |
-| `dashed` | `boolean` | `false` | 虚线 |
-| `color` | `string` | — | 自定义颜色（任意 CSS 颜色值）|
-| `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'` | 垂直外边距（仅 horizontal 生效）|
+| 名称         | 类型                             | 默认值         | 说明                             |
+| ------------ | -------------------------------- | -------------- | -------------------------------- |
+| `direction`  | `'horizontal' \| 'vertical'`     | `'horizontal'` | 方向                             |
+| `dashed`     | `boolean`                        | `false`        | 虚线                             |
+| `color`      | `string`                         | —              | 自定义颜色（任意 CSS 颜色值）    |
+| `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'`     | 垂直外边距（仅 horizontal 生效） |
 
 ### Slots
 
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 中间文字（仅 horizontal 方向渲染）|
+| 名称      | 说明                               |
+| --------- | ---------------------------------- |
+| `default` | 中间文字（仅 horizontal 方向渲染） |
 
 ## 无障碍
 

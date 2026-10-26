@@ -5,8 +5,8 @@
  * 把排队中、思考中、流式输出、已完成、失败、已停止六种状态一次性摆出来，
  * 便于对照每种状态下消息模块渲染的差异（等待行 / 光标 / 错误卡片 / 停止提示）。
  */
-import { SnAiChat } from '@snui/templates-src/web/index'
-import type { SnAiMessage } from '@snui/templates-src/shared/types'
+import { SnAiChat } from '@snui/templates-src/web/index';
+import type { SnAiMessage } from '@snui/templates-src/shared/types';
 
 const messages: SnAiMessage[] = [
   {
@@ -67,7 +67,7 @@ const messages: SnAiMessage[] = [
     status: 'aborted',
     parts: [{ type: 'text', text: '这份文档主要讲了三件事，首先是' }],
   },
-]
+];
 </script>
 
 <template>

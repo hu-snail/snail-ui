@@ -5,20 +5,20 @@
  * Shows: `loading` prop + `positiveButtonProps.disabled` interplay. The host
  * keeps the dialog mounted until the promise resolves, then closes it.
  */
-import { ref } from 'vue'
-import { SnButton, SnDialog } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDialog } from '@snui/vue-web';
 
-const open = ref(false)
-const loading = ref(false)
-const done = ref('—')
+const open = ref(false);
+const loading = ref(false);
+const done = ref('—');
 
 async function confirm(): Promise<void> {
-  loading.value = true
-  done.value = 'Submitting…'
-  await new Promise((resolve) => setTimeout(resolve, 1400))
-  loading.value = false
-  done.value = 'Done'
-  open.value = false
+  loading.value = true;
+  done.value = 'Submitting…';
+  await new Promise((resolve) => setTimeout(resolve, 1400));
+  loading.value = false;
+  done.value = 'Done';
+  open.value = false;
 }
 </script>
 

@@ -24,30 +24,30 @@
  *   <SnAvatar icon="User" />
  */
 
-import { computed, ref, watch } from 'vue'
-import type { CSSProperties } from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
+import { computed, ref, watch } from 'vue';
+import type { CSSProperties } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
 
-defineOptions({ name: 'SnAvatar' })
+defineOptions({ name: 'SnAvatar' });
 
 const props = withDefaults(
   defineProps<{
     /** Pixel size, or a named scale. Mirrors n-avatar `size`. */
-    size?: number | 'small' | 'medium' | 'large'
+    size?: number | 'small' | 'medium' | 'large';
     /** Image URL. */
-    src?: string | undefined
+    src?: string | undefined;
     /** Background color (any CSS color value). Mirrors n-avatar `color`. */
-    color?: string | undefined
+    color?: string | undefined;
     /** Image fit inside the box. Mirrors n-avatar `objectFit`. */
-    objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down'
+    objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
     /** Pill-shaped corners. Mirrors n-avatar `round`. */
-    round?: boolean
+    round?: boolean;
     /** Circular. Mirrors n-avatar `circle`. */
-    circle?: boolean
+    circle?: boolean;
     /** Text thumbnail shown when there is no image. */
-    fallbackText?: string | undefined
+    fallbackText?: string | undefined;
     /** SnIcon registry name for the placeholder glyph. */
-    icon?: string | undefined
+    icon?: string | undefined;
   }>(),
   {
     size: 'medium',
@@ -59,50 +59,48 @@ const props = withDefaults(
     fallbackText: undefined,
     icon: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Image failed to load — also switches to the fallback content.
    * Mirrors n-avatar `onError`. */
-  (e: 'error', event: Event): void
-}>()
+  (e: 'error', event: Event): void;
+}>();
 
 defineSlots<{
   /** Custom avatar content — shown when there is no image. */
-  default?(): unknown
+  default?(): unknown;
   /** Placeholder glyph — replaces `icon` / the builtin person SVG. */
-  icon?(): unknown
-}>()
+  icon?(): unknown;
+}>();
 
-const hasLoadError = ref(false)
+const hasLoadError = ref(false);
 
 // A new src must clear the previous failure, or a retried URL stays hidden.
 watch(
   () => props.src,
   () => {
-    hasLoadError.value = false
+    hasLoadError.value = false;
   },
-)
+);
 
 function handleImageError(event: Event): void {
-  hasLoadError.value = true
-  emit('error', event)
+  hasLoadError.value = true;
+  emit('error', event);
 }
 
-const hasImage = computed(
-  () => props.src !== undefined && props.src !== '' && !hasLoadError.value,
-)
+const hasImage = computed(() => props.src !== undefined && props.src !== '' && !hasLoadError.value);
 
 const rootStyle = computed<CSSProperties | undefined>(() => {
-  if (props.color === undefined && typeof props.size !== 'number') return undefined
-  const style: CSSProperties = {}
-  if (props.color !== undefined) style.background = props.color
+  if (props.color === undefined && typeof props.size !== 'number') return undefined;
+  const style: CSSProperties = {};
+  if (props.color !== undefined) style.background = props.color;
   if (typeof props.size === 'number') {
-    style.width = `${props.size}px`
-    style.height = `${props.size}px`
+    style.width = `${props.size}px`;
+    style.height = `${props.size}px`;
   }
-  return style
-})
+  return style;
+});
 </script>
 
 <template>

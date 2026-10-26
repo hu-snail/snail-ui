@@ -22,15 +22,15 @@ Typography (n-text / n-title / n-paragraph aligned). Six-color types, depth scal
 
 ### SnText Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| type | `'default'\|'primary'\|'info'\|'success'\|'warning'\|'error'` | `'default'` | Color semantics |
-| depth | `'1'\|'2'\|'3'` | — | Secondary scale (default type) |
-| strong / italic | `boolean` | `false` | Bold / italic |
-| underline / delete | `boolean` | `false` | Underline / strikethrough (stackable) |
-| code | `boolean` | `false` | Inline code background |
-| disabled | `boolean` | `false` | Disabled color |
-| tag | `'span'\|'p'\|'blockquote'` | `'span'` | Rendered element |
+| Prop               | Type                                                          | Default     | Notes                                 |
+| ------------------ | ------------------------------------------------------------- | ----------- | ------------------------------------- |
+| type               | `'default'\|'primary'\|'info'\|'success'\|'warning'\|'error'` | `'default'` | Color semantics                       |
+| depth              | `'1'\|'2'\|'3'`                                               | —           | Secondary scale (default type)        |
+| strong / italic    | `boolean`                                                     | `false`     | Bold / italic                         |
+| underline / delete | `boolean`                                                     | `false`     | Underline / strikethrough (stackable) |
+| code               | `boolean`                                                     | `false`     | Inline code background                |
+| disabled           | `boolean`                                                     | `false`     | Disabled color                        |
+| tag                | `'span'\|'p'\|'blockquote'`                                   | `'span'`    | Rendered element                      |
 
 ### SnTitle / SnParagraph
 

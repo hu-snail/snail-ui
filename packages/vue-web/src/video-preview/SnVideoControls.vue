@@ -40,27 +40,27 @@
  * `--sn-web-*` token aliases only (px units).
  */
 
-import { computed, ref } from 'vue'
-import { Maximize, Minimize, Pause, Play, Volume2, VolumeX } from 'lucide-vue-next'
-import { useLocale } from '../locales/use-locale'
-import SnIcon from '../icon/SnIcon.vue'
+import { computed, ref } from 'vue';
+import { Maximize, Minimize, Pause, Play, Volume2, VolumeX } from 'lucide-vue-next';
+import { useLocale } from '../locales/use-locale';
+import SnIcon from '../icon/SnIcon.vue';
 
-defineOptions({ name: 'SnVideoControls' })
+defineOptions({ name: 'SnVideoControls' });
 
 const props = withDefaults(
   defineProps<{
     /** Mirrors the media element's playing state. */
-    isPlaying?: boolean | undefined
+    isPlaying?: boolean | undefined;
     /** Current playback position in seconds. */
-    currentTime?: number | undefined
+    currentTime?: number | undefined;
     /** Total duration in seconds; `0` / non-finite means "unknown yet". */
-    duration?: number | undefined
+    duration?: number | undefined;
     /** Whether the media element is currently muted. */
-    isMuted?: boolean | undefined
+    isMuted?: boolean | undefined;
     /** Whether a fullscreen element owned by the parent is active. */
-    isFullscreen?: boolean | undefined
+    isFullscreen?: boolean | undefined;
     /** Whether the Fullscreen API is available; false hides the button. */
-    canFullscreen?: boolean | undefined
+    canFullscreen?: boolean | undefined;
   }>(),
   {
     isPlaying: false,
@@ -70,95 +70,106 @@ const props = withDefaults(
     isFullscreen: false,
     canFullscreen: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Toggle play / pause. */
-  (e: 'toggle-play'): void
+  (e: 'toggle-play'): void;
   /** Toggle mute / unmute. */
-  (e: 'toggle-mute'): void
+  (e: 'toggle-mute'): void;
   /** The user picked a new position (seconds). */
-  (e: 'seek', time: number): void
+  (e: 'seek', time: number): void;
   /** Toggle fullscreen. Only emitted while `canFullscreen`. */
-  (e: 'toggle-fullscreen'): void
-}>()
+  (e: 'toggle-fullscreen'): void;
+}>();
 
 /* ── Time display ───────────────────────────────────────────────────────── */
 
 /** `mm:ss` (minutes keep counting past 59 for long media). */
 function formatTime(seconds: number): string {
-  if (!Number.isFinite(seconds) || seconds <= 0) return '00:00'
-  const total = Math.floor(seconds)
-  const minutes = Math.floor(total / 60)
-  const rest = total % 60
-  return `${String(minutes).padStart(2, '0')}:${String(rest).padStart(2, '0')}`
+  if (!Number.isFinite(seconds) || seconds <= 0) return '00:00';
+  const total = Math.floor(seconds);
+  const minutes = Math.floor(total / 60);
+  const rest = total % 60;
+  return `${String(minutes).padStart(2, '0')}:${String(rest).padStart(2, '0')}`;
 }
 
-const currentText = computed(() => formatTime(props.currentTime))
-const totalText = computed(() => formatTime(props.duration))
+const currentText = computed(() => formatTime(props.currentTime));
+const totalText = computed(() => formatTime(props.duration));
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 /** Locale namespace for control labels / aria (naive-ui i18n). */
-const controlsLocale = computed(() => locale.value.VideoControls)
+const controlsLocale = computed(() => locale.value.VideoControls);
 
-const playLabel = computed(() => (props.isPlaying ? controlsLocale.value.pause : controlsLocale.value.play))
-const muteLabel = computed(() => (props.isMuted ? controlsLocale.value.unmute : controlsLocale.value.mute))
-const fullscreenLabel = computed(() => (props.isFullscreen ? controlsLocale.value.exitFullscreen : controlsLocale.value.fullscreen))
+const playLabel = computed(() =>
+  props.isPlaying ? controlsLocale.value.pause : controlsLocale.value.play,
+);
+const muteLabel = computed(() =>
+  props.isMuted ? controlsLocale.value.unmute : controlsLocale.value.mute,
+);
+const fullscreenLabel = computed(() =>
+  props.isFullscreen ? controlsLocale.value.exitFullscreen : controlsLocale.value.fullscreen,
+);
 
 /* ── Timeline ───────────────────────────────────────────────────────────── */
 
 /** Local override while scrubbing; `null` means "follow `currentTime`". */
-const scrubValue = ref<number | null>(null)
+const scrubValue = ref<number | null>(null);
 
 const maxTime = computed(() =>
   Number.isFinite(props.duration) && props.duration > 0 ? props.duration : 0,
-)
+);
 
 const timelineValue = computed(() => {
-  const raw = scrubValue.value ?? props.currentTime
-  const max = maxTime.value
-  if (!Number.isFinite(raw) || raw <= 0) return 0
-  return max > 0 ? Math.min(raw, max) : raw
-})
+  const raw = scrubValue.value ?? props.currentTime;
+  const max = maxTime.value;
+  if (!Number.isFinite(raw) || raw <= 0) return 0;
+  return max > 0 ? Math.min(raw, max) : raw;
+});
 
-const timelineValueText = computed(() => `${currentText.value} / ${totalText.value}`)
+const timelineValueText = computed(() => `${currentText.value} / ${totalText.value}`);
 
 /** Narrow an event target to a finite number coming from the range input. */
 function readRangeValue(target: EventTarget | null): number | null {
-  if (!(target instanceof HTMLInputElement)) return null
-  const value = Number(target.value)
-  return Number.isFinite(value) ? value : null
+  if (!(target instanceof HTMLInputElement)) return null;
+  const value = Number(target.value);
+  return Number.isFinite(value) ? value : null;
 }
 
 function handleTimelineInput(event: Event): void {
-  const value = readRangeValue(event.target)
-  if (value === null) return
-  scrubValue.value = value
-  emit('seek', value)
+  const value = readRangeValue(event.target);
+  if (value === null) return;
+  scrubValue.value = value;
+  emit('seek', value);
 }
 
 /** Drag / keyboard interaction finished — hand the thumb back to `currentTime`. */
 function handleTimelineChange(): void {
-  scrubValue.value = null
+  scrubValue.value = null;
 }
 
 function handleTogglePlay(): void {
-  emit('toggle-play')
+  emit('toggle-play');
 }
 
 function handleToggleMute(): void {
-  emit('toggle-mute')
+  emit('toggle-mute');
 }
 
 function handleToggleFullscreen(): void {
-  if (!props.canFullscreen) return
-  emit('toggle-fullscreen')
+  if (!props.canFullscreen) return;
+  emit('toggle-fullscreen');
 }
 </script>
 
 <template>
-  <div data-snui-component="video-controls" class="sn-video-controls" role="toolbar" :aria-label="controlsLocale.toolbar">
+  <div
+    data-snui-component="video-controls"
+    class="sn-video-controls"
+    role="toolbar"
+    :aria-label="controlsLocale.toolbar"
+  >
     <button
       type="button"
       class="sn-video-controls__button sn-video-controls__play"
@@ -216,8 +227,7 @@ function handleToggleFullscreen(): void {
   gap: var(--sn-web-spacing-8, 8px);
   box-sizing: border-box;
   width: 100%;
-  padding: var(--sn-web-video-controls-padding-y, 6px)
-    var(--sn-web-video-controls-padding-x, 8px);
+  padding: var(--sn-web-video-controls-padding-y, 6px) var(--sn-web-video-controls-padding-x, 8px);
   color: var(--sn-web-video-controls-color, var(--sn-web-color-text-on-primary, #ffffff));
   /* 8-digit hex: `rgba()` is rejected by token-check even inside a fallback. */
   background: var(--sn-web-video-controls-bg, #000000a6);

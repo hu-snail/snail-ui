@@ -30,62 +30,62 @@
  * back to inline rendering (which is also the narrow-viewport behaviour).
  */
 
-import { reactive } from 'vue'
+import { reactive } from 'vue';
 
 export interface DockEntry {
   /** Demo file basename, e.g. `tag-mp-basic`. Unique per page. */
-  name: string
+  name: string;
   /** Short label for the dock's section switcher. */
-  label: string
+  label: string;
   /** Optional one-line description shown under the preview. */
-  description: string
+  description: string;
 }
 
 export interface DockState {
   /** Whether the dock should render at all (uni page + wide viewport + open). */
-  open: boolean
+  open: boolean;
   /** Name of the demo currently shown in the dock. Empty = none. */
-  active: string
+  active: string;
   /** Every demo on the current page, in mount order (= document order). */
-  entries: DockEntry[]
+  entries: DockEntry[];
 }
 
 export const dockState = reactive<DockState>({
   open: false,
   active: '',
   entries: [],
-})
+});
 
 /** Register a demo with the dock. Idempotent per name. */
 export function registerDemo(entry: DockEntry): void {
-  const existing = dockState.entries.find((e) => e.name === entry.name)
+  const existing = dockState.entries.find((e) => e.name === entry.name);
   if (existing !== undefined) {
-    existing.label = entry.label
-    existing.description = entry.description
-    return
+    existing.label = entry.label;
+    existing.description = entry.description;
+    return;
   }
-  dockState.entries.push({ ...entry })
+  dockState.entries.push({ ...entry });
   // First demo on the page claims the preview slot; later ones only take it
   // over when the reader picks them.
-  if (dockState.active === '') dockState.active = entry.name
+  if (dockState.active === '') dockState.active = entry.name;
 }
 
 /** Unregister a demo (route change or unmount). */
 export function unregisterDemo(name: string): void {
-  dockState.entries = dockState.entries.filter((e) => e.name !== name)
+  dockState.entries = dockState.entries.filter((e) => e.name !== name);
   if (dockState.active === name) {
-    dockState.active = dockState.entries[0]?.name ?? ''
+    dockState.active = dockState.entries[0]?.name ?? '';
   }
 }
 
 /** Pick which demo the dock shows. */
 export function setActive(name: string): void {
-  dockState.active = name
+  dockState.active = name;
 }
 
 /** Open / close the dock (the close button and the viewport guard use this). */
 export function setDockOpen(open: boolean): void {
-  dockState.open = open
+  dockState.open = open;
 }
 
 /**
@@ -93,8 +93,8 @@ export function setDockOpen(open: boolean): void {
  * previous page's demo list (which would leave stale section tabs behind).
  */
 export function resetDock(): void {
-  dockState.entries = []
-  dockState.active = ''
+  dockState.entries = [];
+  dockState.active = '';
 }
 
 /* ── Inline preview claim ────────────────────────────────────────────────
@@ -106,15 +106,15 @@ export function resetDock(): void {
  * section, in order) — and the other sections point up to it. The claim is
  * per-route and self-healing: a new path re-seeds it on the next claim.
  */
-const inlineClaim: { path: string; owner: string } = { path: '', owner: '' }
+const inlineClaim: { path: string; owner: string } = { path: '', owner: '' };
 
 export function claimInlinePreview(name: string, path: string): boolean {
   if (inlineClaim.path !== path) {
-    inlineClaim.path = path
-    inlineClaim.owner = ''
+    inlineClaim.path = path;
+    inlineClaim.owner = '';
   }
-  if (inlineClaim.owner === '') inlineClaim.owner = name
-  return inlineClaim.owner === name
+  if (inlineClaim.owner === '') inlineClaim.owner = name;
+  return inlineClaim.owner === name;
 }
 
 /**
@@ -122,5 +122,5 @@ export function claimInlinePreview(name: string, path: string): boolean {
  * (`/components/uni/paging.html` → `paging`, same for `/en/…`).
  */
 export function uniCompFromRoute(path: string): string {
-  return path.match(/\/components\/uni\/([^/.]+)/)?.[1] ?? ''
+  return path.match(/\/components\/uni\/([^/.]+)/)?.[1] ?? '';
 }

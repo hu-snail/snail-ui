@@ -1,12 +1,17 @@
 <template>
   <div
     ref="rootRef"
-    :class="['sn-color-picker', `sn-color-picker--${size}`, {
-      'sn-color-picker--disabled': disabled,
-      'sn-color-picker--readonly': readonly,
-      'sn-color-picker--focused': isFocused,
-      'sn-color-picker--active': isPanelOpen,
-    }, customClass]"
+    :class="[
+      'sn-color-picker',
+      `sn-color-picker--${size}`,
+      {
+        'sn-color-picker--disabled': disabled,
+        'sn-color-picker--readonly': readonly,
+        'sn-color-picker--focused': isFocused,
+        'sn-color-picker--active': isPanelOpen,
+      },
+      customClass,
+    ]"
     :data-snui-component="'color-picker'"
     :data-size="size"
     :style="wrapperStyle || undefined"
@@ -81,7 +86,9 @@
               role="tab"
               :aria-selected="mode === activeMode ? 'true' : 'false'"
               @click="setActiveMode(mode)"
-            >{{ mode.toUpperCase() }}</button>
+            >
+              {{ mode.toUpperCase() }}
+            </button>
           </div>
 
           <!-- SV square -->
@@ -100,7 +107,11 @@
               aria-valuemax="100"
               :aria-valuetext="`S ${Math.round(draft.s)}%, V ${Math.round(draft.v)}%`"
               :tabindex="isInteractive ? 0 : -1"
-              :style="{ left: `${draft.s}%`, top: `${100 - draft.v}%`, backgroundColor: previewColor }"
+              :style="{
+                left: `${draft.s}%`,
+                top: `${100 - draft.v}%`,
+                backgroundColor: previewColor,
+              }"
               @keydown="onHandleKeyDown($event, 'sv')"
             />
           </div>
@@ -161,7 +172,7 @@
               spellcheck="false"
               @keydown.enter.prevent="commitInput"
               @blur="commitInput"
-            >
+            />
           </div>
 
           <!-- Swatches -->
@@ -219,17 +230,10 @@
  * Swatch/preview colors are DATA (bound inline styles from the value /
  * swatches props), not stylesheet styling — allowed by the task brief.
  */
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import { ChevronDownIcon, CloseIcon } from './sn-color-picker-icons'
-import { useOverlayFollow } from '../_internal/use-overlay-follow'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import { ChevronDownIcon, CloseIcon } from './sn-color-picker-icons';
+import { useOverlayFollow } from '../_internal/use-overlay-follow';
 import {
   clamp,
   formatHsl,
@@ -246,40 +250,40 @@ import {
   type Hsva,
   type SnColorPickerMode,
   type SnColorPickerSize,
-} from './sn-color-picker-types'
+} from './sn-color-picker-types';
 
-defineOptions({ name: 'SnColorPicker' })
+defineOptions({ name: 'SnColorPicker' });
 
-const DEFAULT_COLOR = '#000000'
+const DEFAULT_COLOR = '#000000';
 
 const props = withDefaults(
   defineProps<{
     /** Bound value: CSS color string, or null when empty. */
-    modelValue?: string | null
+    modelValue?: string | null;
     /** Edit modes offered as panel tabs. */
-    modes?: SnColorPickerMode[]
+    modes?: SnColorPickerMode[];
     /** Alpha rail + rgba/hsla output. */
-    showAlpha?: boolean
+    showAlpha?: boolean;
     /** Preset swatch row (hex strings; invalid entries are dropped). */
-    swatches?: string[]
+    swatches?: string[];
     /** Visual size preset. */
-    size?: SnColorPickerSize
+    size?: SnColorPickerSize;
     /** Disables interaction. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — opens nothing, commits nothing. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Clear restores the default color (#000000) and emits `clear`. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Open the panel immediately on mount. */
-    defaultShow?: boolean
+    defaultShow?: boolean;
     /** Empty-state text. */
-    placeholder?: string
+    placeholder?: string;
     /** Accessible name for the trigger (fallback: 'Color picker'). */
-    ariaLabel?: string
+    ariaLabel?: string;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     modelValue: null,
@@ -296,429 +300,437 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — live while dragging + on every commit. */
-  (e: 'update:modelValue', value: string | null): void
+  (e: 'update:modelValue', value: string | null): void;
   /** Value committed (pointer release, swatch, input, keyboard). */
-  (e: 'change', value: string): void
+  (e: 'change', value: string): void;
   /** Clear button activated (modelValue already reset to the default). */
-  (e: 'clear'): void
+  (e: 'clear'): void;
   /** Trigger gained focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Trigger lost focus. */
-  (e: 'blur', event: FocusEvent): void
-}>()
+  (e: 'blur', event: FocusEvent): void;
+}>();
 
 /* ─────────── Instance ids ─────────── */
 
-let colorPickerInstanceSeed = 0
-const instanceId = ++colorPickerInstanceSeed
-const panelId = `sn-color-picker-panel-${instanceId}`
+let colorPickerInstanceSeed = 0;
+const instanceId = ++colorPickerInstanceSeed;
+const panelId = `sn-color-picker-panel-${instanceId}`;
 
 /* ─────────── State ─────────── */
 
-const rootRef = ref<HTMLElement | null>(null)
-const panelRef = ref<HTMLElement | null>(null)
-const svRef = ref<HTMLElement | null>(null)
-const hueRef = ref<HTMLElement | null>(null)
-const alphaRef = ref<HTMLElement | null>(null)
-const inputRef = ref<HTMLInputElement | null>(null)
+const rootRef = ref<HTMLElement | null>(null);
+const panelRef = ref<HTMLElement | null>(null);
+const svRef = ref<HTMLElement | null>(null);
+const hueRef = ref<HTMLElement | null>(null);
+const alphaRef = ref<HTMLElement | null>(null);
+const inputRef = ref<HTMLInputElement | null>(null);
 
-const isPanelOpen = ref(false)
-const isFocused = ref(false)
-const activeMode = ref<SnColorPickerMode>('rgb')
+const isPanelOpen = ref(false);
+const isFocused = ref(false);
+const activeMode = ref<SnColorPickerMode>('rgb');
 /** Panel working color — HSV space (hue/sat/value/alpha). */
-const draft = ref<Hsva>({ h: 0, s: 0, v: 0, a: 1 })
+const draft = ref<Hsva>({ h: 0, s: 0, v: 0, a: 1 });
 /** Mode text input buffer (committed on Enter / blur when parseable). */
-const inputText = ref('')
+const inputText = ref('');
 
-const isInteractive = computed(() => !props.disabled && !props.readonly)
-const hasModelValue = computed(() => props.modelValue !== null && props.modelValue !== '')
+const isInteractive = computed(() => !props.disabled && !props.readonly);
+const hasModelValue = computed(() => props.modelValue !== null && props.modelValue !== '');
 
 /** Mode tabs actually rendered (dedup, keep prop order). */
 const visibleModes = computed<SnColorPickerMode[]>(() => {
-  const seen = new Set<string>()
+  const seen = new Set<string>();
   return props.modes.filter((mode) => {
-    if (seen.has(mode)) return false
-    seen.add(mode)
-    return true
-  })
-})
+    if (seen.has(mode)) return false;
+    seen.add(mode);
+    return true;
+  });
+});
 
 /** Swatches normalized: invalid entries dropped, css + hex kept. */
 const normalizedSwatches = computed<Array<{ value: string; css: string }>>(() => {
-  const out: Array<{ value: string; css: string }> = []
+  const out: Array<{ value: string; css: string }> = [];
   for (const raw of props.swatches) {
-    const parsed = parseColor(raw)
-    if (parsed) out.push({ value: rgbToHex(parsed.r, parsed.g, parsed.b), css: raw })
+    const parsed = parseColor(raw);
+    if (parsed) out.push({ value: rgbToHex(parsed.r, parsed.g, parsed.b), css: raw });
   }
-  return out
-})
+  return out;
+});
 
 /* ─────────── Color derivation ─────────── */
 
-const draftRgb = computed(() => hsvToRgb(draft.value.h, draft.value.s, draft.value.v))
+const draftRgb = computed(() => hsvToRgb(draft.value.h, draft.value.s, draft.value.v));
 const draftHsl = computed(() => {
-  const hsl = rgbToHsl(draftRgb.value.r, draftRgb.value.g, draftRgb.value.b)
-  return { ...hsl, a: draft.value.a }
-})
+  const hsl = rgbToHsl(draftRgb.value.r, draftRgb.value.g, draftRgb.value.b);
+  return { ...hsl, a: draft.value.a };
+});
 
 /** Panel handle/preview color — opaque (the alpha rail shows alpha). */
-const previewColor = computed(() => rgbToHex(draftRgb.value.r, draftRgb.value.g, draftRgb.value.b))
+const previewColor = computed(() => rgbToHex(draftRgb.value.r, draftRgb.value.g, draftRgb.value.b));
 
 /** Format the draft per active mode + showAlpha. */
 function formatDraft(mode: SnColorPickerMode): string {
-  const { r, g, b } = draftRgb.value
-  const a = draft.value.a
-  const useA = props.showAlpha && a < 1
-  if (mode === 'hex') return useA ? rgbaToHex(r, g, b, a) : rgbToHex(r, g, b)
-  if (mode === 'rgb') return useA ? formatRgba(r, g, b, a) : formatRgb(r, g, b)
-  const hsl = draftHsl.value
-  return useA ? formatHsla(hsl.h, hsl.s, hsl.l, a) : formatHsl(hsl.h, hsl.s, hsl.l)
+  const { r, g, b } = draftRgb.value;
+  const a = draft.value.a;
+  const useA = props.showAlpha && a < 1;
+  if (mode === 'hex') return useA ? rgbaToHex(r, g, b, a) : rgbToHex(r, g, b);
+  if (mode === 'rgb') return useA ? formatRgba(r, g, b, a) : formatRgb(r, g, b);
+  const hsl = draftHsl.value;
+  return useA ? formatHsla(hsl.h, hsl.s, hsl.l, a) : formatHsl(hsl.h, hsl.s, hsl.l);
 }
 
 /** Model value normalized for the trigger display. */
 const displayValue = computed<string>(() => {
-  if (!hasModelValue.value) return ''
-  const parsed = parseColor(props.modelValue ?? '')
-  if (!parsed) return props.modelValue ?? ''
+  if (!hasModelValue.value) return '';
+  const parsed = parseColor(props.modelValue ?? '');
+  if (!parsed) return props.modelValue ?? '';
   return props.showAlpha
     ? rgbaToHex(parsed.r, parsed.g, parsed.b, parsed.a)
-    : rgbToHex(parsed.r, parsed.g, parsed.b)
-})
+    : rgbToHex(parsed.r, parsed.g, parsed.b);
+});
 
 /** Trigger swatch background — the bound color, or the default when empty. */
 const triggerSwatchColor = computed<string>(() => {
   if (hasModelValue.value) {
-    const parsed = parseColor(props.modelValue ?? '')
-    if (parsed) return rgbaToHex(parsed.r, parsed.g, parsed.b, parsed.a)
+    const parsed = parseColor(props.modelValue ?? '');
+    if (parsed) return rgbaToHex(parsed.r, parsed.g, parsed.b, parsed.a);
   }
-  return DEFAULT_COLOR
-})
+  return DEFAULT_COLOR;
+});
 
 const wrapperStyle = computed(() => {
-  if (typeof props.customStyle === 'string') return props.customStyle
-  return Object.entries(props.customStyle ?? {}).map(([k, v]) => `${k}:${v}`).join(';')
-})
+  if (typeof props.customStyle === 'string') return props.customStyle;
+  return Object.entries(props.customStyle ?? {})
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';');
+});
 
 /** Alpha rail: current color fading to transparent (checker via CSS). */
 const alphaRailStyle = computed(() => ({
   backgroundImage: `linear-gradient(to right, ${rgbaToHex(draftRgb.value.r, draftRgb.value.g, draftRgb.value.b, 0)}, ${rgbToHex(draftRgb.value.r, draftRgb.value.g, draftRgb.value.b)})`,
-}))
+}));
 
 /* ─────────── Draft <-> model sync ─────────── */
 
 /** Initialize the draft + input from the bound value (null → default). */
 function initDraftFromModel(): void {
-  const parsed = parseColor(props.modelValue ?? '')
-  const base = parsed ?? parseColor(DEFAULT_COLOR)
-  if (!base) return
-  const hsv = rgbToHsv(base.r, base.g, base.b)
-  draft.value = { ...hsv, a: props.showAlpha ? base.a : 1 }
-  inputText.value = formatDraft(activeMode.value)
+  const parsed = parseColor(props.modelValue ?? '');
+  const base = parsed ?? parseColor(DEFAULT_COLOR);
+  if (!base) return;
+  const hsv = rgbToHsv(base.r, base.g, base.b);
+  draft.value = { ...hsv, a: props.showAlpha ? base.a : 1 };
+  inputText.value = formatDraft(activeMode.value);
 }
 
 /* ─────────── Commit ─────────── */
 
 /** Live sync (dragging) — no `change` event. */
 function emitLive(): void {
-  emit('update:modelValue', formatDraft(activeMode.value))
+  emit('update:modelValue', formatDraft(activeMode.value));
 }
 
 /** Committed change — syncs v-model and fires `change`. */
 function emitChange(): void {
-  inputText.value = formatDraft(activeMode.value)
-  const value = formatDraft(activeMode.value)
-  emit('update:modelValue', value)
-  emit('change', value)
+  inputText.value = formatDraft(activeMode.value);
+  const value = formatDraft(activeMode.value);
+  emit('update:modelValue', value);
+  emit('change', value);
 }
 
 /* ─────────── Panel positioning (simplified popper) ─────────── */
 
-const PANEL_VIEWPORT_GAP = 4
-const placement = ref<'bottom' | 'top'>('bottom')
-const panelStyle = ref<Record<string, string>>({})
+const PANEL_VIEWPORT_GAP = 4;
+const placement = ref<'bottom' | 'top'>('bottom');
+const panelStyle = ref<Record<string, string>>({});
 
 function repositionPanel(): void {
-  const root = rootRef.value
-  const panel = panelRef.value
-  if (!root || !panel) return
-  const rootRect = root.getBoundingClientRect()
+  const root = rootRef.value;
+  const panel = panelRef.value;
+  if (!root || !panel) return;
+  const rootRect = root.getBoundingClientRect();
   // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
   // transform (scale 0.92) does not distort — getBoundingClientRect would
   // measure the scaled panel while the enter transition is running.
-  const panelWidth = panel.offsetWidth
-  const panelHeight = panel.offsetHeight
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const panelWidth = panel.offsetWidth;
+  const panelHeight = panel.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
-  const width = Math.max(rootRect.width, panelWidth)
+  const width = Math.max(rootRect.width, panelWidth);
   const left = Math.min(
     Math.max(PANEL_VIEWPORT_GAP, rootRect.left),
     Math.max(PANEL_VIEWPORT_GAP, vw - width - PANEL_VIEWPORT_GAP),
-  )
-  const roomBelow = vh - rootRect.bottom
-  const roomAbove = rootRect.top
-  const useTop = roomBelow < panelHeight && roomAbove > roomBelow
-  placement.value = useTop ? 'top' : 'bottom'
-  const top = useTop
-    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight)
-    : rootRect.bottom
+  );
+  const roomBelow = vh - rootRect.bottom;
+  const roomAbove = rootRect.top;
+  const useTop = roomBelow < panelHeight && roomAbove > roomBelow;
+  placement.value = useTop ? 'top' : 'bottom';
+  const top = useTop ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight) : rootRect.bottom;
 
   panelStyle.value = {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
     'min-width': `${Math.round(rootRect.width)}px`,
-  }
+  };
 }
 
 /* Scroll/resize follow: while the panel is open, any scroll (page or a
  * nested scrollable ancestor) or viewport resize re-runs repositionPanel so
  * the fixed-position panel stays glued to the trigger instead of detaching. */
-const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen)
+const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen);
 
 /* ─────────── Pointer drag (document listeners, §41/§42) ─────────── */
 
-type DragTarget = 'sv' | 'hue' | 'alpha'
+type DragTarget = 'sv' | 'hue' | 'alpha';
 
 interface DragState {
-  target: DragTarget
-  el: HTMLElement
+  target: DragTarget;
+  el: HTMLElement;
 }
 
-let dragState: DragState | null = null
+let dragState: DragState | null = null;
 
 function railRatio(el: HTMLElement, event: PointerEvent): number {
-  const rect = el.getBoundingClientRect()
-  if (rect.width <= 0) return 0
-  return clamp((event.clientX - rect.left) / rect.width, 0, 1)
+  const rect = el.getBoundingClientRect();
+  if (rect.width <= 0) return 0;
+  return clamp((event.clientX - rect.left) / rect.width, 0, 1);
 }
 
 function svApply(el: HTMLElement, event: PointerEvent): void {
-  const rect = el.getBoundingClientRect()
-  const x = rect.width > 0 ? clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100) : 0
-  const y = rect.height > 0 ? clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100) : 0
-  draft.value.s = x
-  draft.value.v = 100 - y
-  emitLive()
+  const rect = el.getBoundingClientRect();
+  const x = rect.width > 0 ? clamp(((event.clientX - rect.left) / rect.width) * 100, 0, 100) : 0;
+  const y = rect.height > 0 ? clamp(((event.clientY - rect.top) / rect.height) * 100, 0, 100) : 0;
+  draft.value.s = x;
+  draft.value.v = 100 - y;
+  emitLive();
 }
 
 function onDocumentPointerMove(event: PointerEvent): void {
-  if (!dragState) return
-  if (dragState.target === 'sv') svApply(dragState.el, event)
-  else if (dragState.target === 'hue') draft.value.h = railRatio(dragState.el, event) * 360
-  else draft.value.a = railRatio(dragState.el, event)
-  emitLive()
+  if (!dragState) return;
+  if (dragState.target === 'sv') svApply(dragState.el, event);
+  else if (dragState.target === 'hue') draft.value.h = railRatio(dragState.el, event) * 360;
+  else draft.value.a = railRatio(dragState.el, event);
+  emitLive();
 }
 
 function onDocumentPointerUp(): void {
-  if (!dragState) return
-  dragState = null
-  emitChange()
+  if (!dragState) return;
+  dragState = null;
+  emitChange();
 }
 
 function startDrag(target: DragTarget, el: HTMLElement | null, event: PointerEvent): void {
-  if (!isInteractive.value || !el) return
-  event.preventDefault()
-  dragState = { target, el }
-  onDocumentPointerMove(event)
+  if (!isInteractive.value || !el) return;
+  event.preventDefault();
+  dragState = { target, el };
+  onDocumentPointerMove(event);
 }
 
 function onSvPointerDown(event: PointerEvent): void {
-  startDrag('sv', svRef.value, event)
+  startDrag('sv', svRef.value, event);
 }
 
 function onHuePointerDown(event: PointerEvent): void {
-  startDrag('hue', hueRef.value, event)
+  startDrag('hue', hueRef.value, event);
 }
 
 function onAlphaPointerDown(event: PointerEvent): void {
-  startDrag('alpha', alphaRef.value, event)
+  startDrag('alpha', alphaRef.value, event);
 }
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
 function onDocumentMouseDown(event: MouseEvent): void {
-  if (!isPanelOpen.value) return
-  const target = event.target as Node | null
-  if (!target) return
-  if (rootRef.value && rootRef.value.contains(target)) return
-  if (panelRef.value && panelRef.value.contains(target)) return
-  closePanel()
+  if (!isPanelOpen.value) return;
+  const target = event.target as Node | null;
+  if (!target) return;
+  if (rootRef.value && rootRef.value.contains(target)) return;
+  if (panelRef.value && panelRef.value.contains(target)) return;
+  closePanel();
 }
 
 /* ─────────── Open / close ─────────── */
 
 function openPanel(): void {
-  if (!isInteractive.value || isPanelOpen.value) return
-  isPanelOpen.value = true
+  if (!isInteractive.value || isPanelOpen.value) return;
+  isPanelOpen.value = true;
   if (!visibleModes.value.includes(activeMode.value)) {
-    activeMode.value = visibleModes.value[0] ?? 'rgb'
+    activeMode.value = visibleModes.value[0] ?? 'rgb';
   }
-  initDraftFromModel()
+  initDraftFromModel();
   void nextTick(() => {
-    repositionPanel()
-    followViewport.start()
-    inputRef.value?.focus()
-  })
+    repositionPanel();
+    followViewport.start();
+    inputRef.value?.focus();
+  });
 }
 
 function closePanel(): void {
-  if (!isPanelOpen.value) return
-  isPanelOpen.value = false
-  followViewport.stop()
-  dragState = null
+  if (!isPanelOpen.value) return;
+  isPanelOpen.value = false;
+  followViewport.stop();
+  dragState = null;
 }
 
 /* ─────────── Interaction handlers ─────────── */
 
 function setActiveMode(mode: SnColorPickerMode): void {
-  if (!isInteractive.value || activeMode.value === mode) return
-  activeMode.value = mode
-  inputText.value = formatDraft(mode)
+  if (!isInteractive.value || activeMode.value === mode) return;
+  activeMode.value = mode;
+  inputText.value = formatDraft(mode);
 }
 
 function selectSwatch(value: string): void {
-  if (!isInteractive.value) return
-  const parsed = parseColor(value)
-  if (!parsed) return
-  const hsv = rgbToHsv(parsed.r, parsed.g, parsed.b)
-  draft.value = { ...hsv, a: parsed.a }
-  emitChange()
+  if (!isInteractive.value) return;
+  const parsed = parseColor(value);
+  if (!parsed) return;
+  const hsv = rgbToHsv(parsed.r, parsed.g, parsed.b);
+  draft.value = { ...hsv, a: parsed.a };
+  emitChange();
 }
 
 /** Enter/blur on the mode input — apply when parseable (and changed), revert otherwise. */
 function commitInput(): void {
-  if (!isInteractive.value) return
-  const parsed = parseColor(inputText.value)
+  if (!isInteractive.value) return;
+  const parsed = parseColor(inputText.value);
   if (parsed) {
-    const hsv = rgbToHsv(parsed.r, parsed.g, parsed.b)
-    const next: Hsva = { ...hsv, a: parsed.a }
+    const hsv = rgbToHsv(parsed.r, parsed.g, parsed.b);
+    const next: Hsva = { ...hsv, a: parsed.a };
     const unchanged =
-      next.h === draft.value.h && next.s === draft.value.s &&
-      next.v === draft.value.v && next.a === draft.value.a
+      next.h === draft.value.h &&
+      next.s === draft.value.s &&
+      next.v === draft.value.v &&
+      next.a === draft.value.a;
     if (unchanged) {
       // No-op confirm must not re-emit (SnTimePicker's Enter semantics).
-      inputText.value = formatDraft(activeMode.value)
-      return
+      inputText.value = formatDraft(activeMode.value);
+      return;
     }
-    draft.value = next
-    emitChange()
+    draft.value = next;
+    emitChange();
   } else {
-    inputText.value = formatDraft(activeMode.value)
+    inputText.value = formatDraft(activeMode.value);
   }
 }
 
 function clearValue(): void {
-  if (!isInteractive.value) return
-  emit('update:modelValue', DEFAULT_COLOR)
-  emit('change', DEFAULT_COLOR)
-  emit('clear')
-  closePanel()
+  if (!isInteractive.value) return;
+  emit('update:modelValue', DEFAULT_COLOR);
+  emit('change', DEFAULT_COLOR);
+  emit('clear');
+  closePanel();
 }
 
 /* ─────────── Keyboard (panel handles) ─────────── */
 
 /** Arrow step for hue / saturation / value (±1, Shift ±10) and alpha (±0.01). */
 function onHandleKeyDown(event: KeyboardEvent, target: 'sv' | 'h' | 'a'): void {
-  if (!isInteractive.value) return
-  const step = event.shiftKey ? 10 : 1
-  let handled = true
+  if (!isInteractive.value) return;
+  const step = event.shiftKey ? 10 : 1;
+  let handled = true;
   switch (event.key) {
     case 'ArrowLeft':
     case 'ArrowDown':
-      if (target === 'sv') draft.value.s = clamp(draft.value.s - step, 0, 100)
-      else if (target === 'h') draft.value.h = clamp(draft.value.h - step, 0, 360)
-      else draft.value.a = clamp(draft.value.a - step / 100, 0, 1)
-      break
+      if (target === 'sv') draft.value.s = clamp(draft.value.s - step, 0, 100);
+      else if (target === 'h') draft.value.h = clamp(draft.value.h - step, 0, 360);
+      else draft.value.a = clamp(draft.value.a - step / 100, 0, 1);
+      break;
     case 'ArrowRight':
     case 'ArrowUp':
-      if (target === 'sv') draft.value.s = clamp(draft.value.s + step, 0, 100)
-      else if (target === 'h') draft.value.h = clamp(draft.value.h + step, 0, 360)
-      else draft.value.a = clamp(draft.value.a + step / 100, 0, 1)
-      break
+      if (target === 'sv') draft.value.s = clamp(draft.value.s + step, 0, 100);
+      else if (target === 'h') draft.value.h = clamp(draft.value.h + step, 0, 360);
+      else draft.value.a = clamp(draft.value.a + step / 100, 0, 1);
+      break;
     default:
-      handled = false
+      handled = false;
   }
-  if (!handled) return
-  event.preventDefault()
-  emitChange()
+  if (!handled) return;
+  event.preventDefault();
+  emitChange();
 }
 
 /* ─────────── Trigger events ─────────── */
 
 function onTriggerMouseDown(event: MouseEvent): void {
-  event.preventDefault()
+  event.preventDefault();
 }
 
 function onTriggerClick(): void {
-  if (!isInteractive.value) return
-  if (isPanelOpen.value) closePanel()
-  else openPanel()
+  if (!isInteractive.value) return;
+  if (isPanelOpen.value) closePanel();
+  else openPanel();
 }
 
 function onTriggerKeyDown(event: KeyboardEvent): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   switch (event.key) {
     case 'Enter':
     case ' ':
     case 'Spacebar':
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      else closePanel()
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      else closePanel();
+      break;
     case 'Escape':
       if (isPanelOpen.value) {
-        event.preventDefault()
-        closePanel()
+        event.preventDefault();
+        closePanel();
       }
-      break
+      break;
     default:
-      break
+      break;
   }
 }
 
 function onFocus(event: FocusEvent): void {
-  isFocused.value = true
-  emit('focus', event)
+  isFocused.value = true;
+  emit('focus', event);
 }
 
 function onBlur(event: FocusEvent): void {
-  isFocused.value = false
-  emit('blur', event)
+  isFocused.value = false;
+  emit('blur', event);
 }
 
 /* ─────────── Lifecycle (§41/§42) ─────────── */
 
 onMounted(() => {
-  document.addEventListener('mousedown', onDocumentMouseDown)
-  document.addEventListener('pointermove', onDocumentPointerMove)
-  document.addEventListener('pointerup', onDocumentPointerUp)
-  if (props.defaultShow) openPanel()
-})
+  document.addEventListener('mousedown', onDocumentMouseDown);
+  document.addEventListener('pointermove', onDocumentPointerMove);
+  document.addEventListener('pointerup', onDocumentPointerUp);
+  if (props.defaultShow) openPanel();
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown)
-  document.removeEventListener('pointermove', onDocumentPointerMove)
-  document.removeEventListener('pointerup', onDocumentPointerUp)
-  followViewport.stop()
-})
+  document.removeEventListener('mousedown', onDocumentMouseDown);
+  document.removeEventListener('pointermove', onDocumentPointerMove);
+  document.removeEventListener('pointerup', onDocumentPointerUp);
+  followViewport.stop();
+});
 
-watch(() => props.modelValue, () => {
-  // External value change while open — keep the panel in sync.
-  if (isPanelOpen.value) initDraftFromModel()
-})
+watch(
+  () => props.modelValue,
+  () => {
+    // External value change while open — keep the panel in sync.
+    if (isPanelOpen.value) initDraftFromModel();
+  },
+);
 
-watch(() => [props.modes, props.showAlpha], () => {
-  // Modes / alpha surface changed under an open panel — re-clamp the tab.
-  if (isPanelOpen.value && !visibleModes.value.includes(activeMode.value)) {
-    activeMode.value = visibleModes.value[0] ?? 'rgb'
-    inputText.value = formatDraft(activeMode.value)
-  }
-})
+watch(
+  () => [props.modes, props.showAlpha],
+  () => {
+    // Modes / alpha surface changed under an open panel — re-clamp the tab.
+    if (isPanelOpen.value && !visibleModes.value.includes(activeMode.value)) {
+      activeMode.value = visibleModes.value[0] ?? 'rgb';
+      inputText.value = formatDraft(activeMode.value);
+    }
+  },
+);
 </script>
 
 <style scoped>
@@ -745,7 +757,9 @@ watch(() => [props.modes, props.showAlpha], () => {
   background-color: var(--sn-web-color-picker-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-color-picker-text-color, var(--sn-web-color-text-primary));
   cursor: pointer;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
   outline: none;
 }
 
@@ -760,11 +774,26 @@ watch(() => [props.modes, props.showAlpha], () => {
 }
 
 /* Sizes */
-.sn-color-picker--mini { --sn-web-color-picker-height: 22px; font-size: 11px; }
-.sn-color-picker--tiny { --sn-web-color-picker-height: 24px; font-size: 12px; }
-.sn-color-picker--small { --sn-web-color-picker-height: 28px; font-size: 13px; }
-.sn-color-picker--medium { --sn-web-color-picker-height: 32px; font-size: 14px; }
-.sn-color-picker--large { --sn-web-color-picker-height: 40px; font-size: 15px; }
+.sn-color-picker--mini {
+  --sn-web-color-picker-height: 22px;
+  font-size: 11px;
+}
+.sn-color-picker--tiny {
+  --sn-web-color-picker-height: 24px;
+  font-size: 12px;
+}
+.sn-color-picker--small {
+  --sn-web-color-picker-height: 28px;
+  font-size: 13px;
+}
+.sn-color-picker--medium {
+  --sn-web-color-picker-height: 32px;
+  font-size: 14px;
+}
+.sn-color-picker--large {
+  --sn-web-color-picker-height: 40px;
+  font-size: 15px;
+}
 
 .sn-color-picker__trigger-swatch {
   flex: none;
@@ -928,7 +957,10 @@ watch(() => [props.modes, props.showAlpha], () => {
 
 .sn-color-picker-panel__mode--active {
   color: var(--sn-web-color-picker-mode-color-active, var(--sn-web-color-action-primary));
-  background-color: var(--sn-web-color-picker-mode-bg-active, var(--sn-web-color-action-primary-soft));
+  background-color: var(
+    --sn-web-color-picker-mode-bg-active,
+    var(--sn-web-color-action-primary-soft)
+  );
 }
 
 /* SV square */

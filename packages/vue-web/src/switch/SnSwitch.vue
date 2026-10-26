@@ -11,39 +11,39 @@
  * on/off rail state, so `string` / `number` payloads work 1:1.
  */
 
-import { computed, useSlots } from 'vue'
+import { computed, useSlots } from 'vue';
 
-defineOptions({ name: 'SnSwitch' })
+defineOptions({ name: 'SnSwitch' });
 
 interface SwitchRailStyleContext {
-  checked: boolean
+  checked: boolean;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Bound value compared against `checkedValue` / `uncheckedValue`. */
-    modelValue?: boolean | string | number
+    modelValue?: boolean | string | number;
     /** Value emitted when the switch is on. Compared by strict equality. */
-    checkedValue?: boolean | string | number
+    checkedValue?: boolean | string | number;
     /** Value emitted when the switch is off. */
-    uncheckedValue?: boolean | string | number
+    uncheckedValue?: boolean | string | number;
     /** Visual size preset. Drives rail width / height / knob size. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Disables interaction + dims the rail. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — renders normally but does not toggle. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Shows a spinner in the knob and blocks interaction while pending. */
-    loading?: boolean
+    loading?: boolean;
     /** Accessible name for the switch element. */
-    ariaLabel?: string
+    ariaLabel?: string;
     /**
      * Custom rail style. Called with `{ checked }` on every render; the
      * returned style object is merged onto the rail element.
      */
-    railStyle?: (info: SwitchRailStyleContext) => Record<string, string>
+    railStyle?: (info: SwitchRailStyleContext) => Record<string, string>;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
   }>(),
   {
     modelValue: false,
@@ -56,52 +56,48 @@ const props = withDefaults(
     ariaLabel: '',
     customClass: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync. Payload is `checkedValue` / `uncheckedValue`. */
-  (e: 'update:modelValue', value: boolean | string | number): void
+  (e: 'update:modelValue', value: boolean | string | number): void;
   /** Fired after a successful toggle. Payload is the new value. */
-  (e: 'change', value: boolean | string | number): void
-}>()
+  (e: 'change', value: boolean | string | number): void;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 defineSlots<{
   /** Content shown inside the rail when checked. */
-  checked?(): unknown
+  checked?(): unknown;
   /** Content shown inside the rail when unchecked. */
-  unchecked?(): unknown
+  unchecked?(): unknown;
   /** Replaces the default loading spinner inside the knob. */
-  'loading-icon'?(): unknown
-}>()
+  'loading-icon'?(): unknown;
+}>();
 
 /** Whether the current modelValue equals `checkedValue`. */
-const isChecked = computed(
-  () => props.modelValue === props.checkedValue,
-)
+const isChecked = computed(() => props.modelValue === props.checkedValue);
 
 /** Blocks toggling: disabled, readonly or pending load. */
-const isBlocked = computed(
-  () => props.disabled || props.readonly || props.loading,
-)
+const isBlocked = computed(() => props.disabled || props.readonly || props.loading);
 
 function toggle(): void {
-  if (isBlocked.value) return
-  const next = isChecked.value ? props.uncheckedValue : props.checkedValue
-  emit('update:modelValue', next)
-  emit('change', next)
+  if (isBlocked.value) return;
+  const next = isChecked.value ? props.uncheckedValue : props.checkedValue;
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 function onClick(): void {
-  toggle()
+  toggle();
 }
 
 function onKeydown(event: KeyboardEvent): void {
   // role="switch" activation keys per WAI-ARIA authoring practices.
-  if (event.key !== 'Enter' && event.key !== ' ') return
-  event.preventDefault()
-  toggle()
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  toggle();
 }
 
 const classList = computed(() => [
@@ -114,11 +110,11 @@ const classList = computed(() => [
     'sn-switch--loading': props.loading,
   },
   props.customClass,
-])
+]);
 
 const railStyleValue = computed(() =>
   props.railStyle ? props.railStyle({ checked: isChecked.value }) : undefined,
-)
+);
 </script>
 
 <template>
@@ -140,18 +136,18 @@ const railStyleValue = computed(() =>
       <span
         v-if="!isChecked && (slots.unchecked || false)"
         class="sn-switch__label sn-switch__label--unchecked"
-      ><slot name="unchecked" /></span>
+        ><slot name="unchecked"
+      /></span>
       <span
         v-if="isChecked && (slots.checked || false)"
         class="sn-switch__label sn-switch__label--checked"
-      ><slot name="checked" /></span>
+        ><slot name="checked"
+      /></span>
     </span>
     <span class="sn-switch__knob">
-      <span
-        v-if="loading"
-        class="sn-switch__loading"
-        role="presentation"
-      ><slot name="loading-icon" /></span>
+      <span v-if="loading" class="sn-switch__loading" role="presentation"
+        ><slot name="loading-icon"
+      /></span>
     </span>
   </button>
 </template>
@@ -189,10 +185,7 @@ const railStyleValue = computed(() =>
 }
 
 .sn-switch--checked .sn-switch__rail {
-  background-color: var(
-    --sn-web-switch-bg-checked,
-    var(--sn-web-color-action-primary)
-  );
+  background-color: var(--sn-web-switch-bg-checked, var(--sn-web-color-action-primary));
 }
 
 /* Sizes */
@@ -278,8 +271,12 @@ const railStyleValue = computed(() =>
 }
 
 @keyframes sn-switch-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Focus ring on the rail, mirroring the design-system focus halo. */

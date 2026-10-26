@@ -95,7 +95,11 @@ export interface RuntimeLike {
 }
 
 /** Helper for emitting a typed AUIError context-relative. */
-export function createContextError(message: string, ctx: { schema?: UISchema }, source: 'schema' | 'runtime' | 'binding' | 'action' | 'component' | 'platform'): {
+export function createContextError(
+  message: string,
+  ctx: { schema?: UISchema },
+  source: 'schema' | 'runtime' | 'binding' | 'action' | 'component' | 'platform',
+): {
   code: string;
   message: string;
   source: 'schema' | 'runtime' | 'binding' | 'action' | 'component' | 'platform';

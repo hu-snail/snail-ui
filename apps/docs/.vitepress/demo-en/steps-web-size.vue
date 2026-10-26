@@ -2,10 +2,10 @@
 /**
  * steps-web-size — the two size tiers side by side.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>

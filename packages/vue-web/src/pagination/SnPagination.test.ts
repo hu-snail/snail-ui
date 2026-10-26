@@ -1,179 +1,172 @@
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import { defineComponent, h } from 'vue'
-import SnPagination from './SnPagination.vue'
-import SnSelect from '../select/SnSelect.vue'
+import { describe, it, expect } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { defineComponent, h } from 'vue';
+import SnPagination from './SnPagination.vue';
+import SnSelect from '../select/SnSelect.vue';
 
 /** Mount SnPagination through a wrapper component, mirroring real usage. */
-function mountPagination(
-  props: Record<string, unknown> = {},
-  slots: Record<string, unknown> = {},
-) {
+function mountPagination(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
   return mount(
     defineComponent({
       components: { SnPagination },
       setup() {
-        return () => h(SnPagination, props as never, slots as never)
+        return () => h(SnPagination, props as never, slots as never);
       },
     }),
-  )
+  );
 }
 
 describe('SnPagination (AUI-WEB-NAV-009)', () => {
   describe('rendering', () => {
     it('renders the component marker + navigation role', () => {
-      const w = mountPagination({ itemCount: 97 })
-      const root = w.find('.sn-pagination')
-      expect(root.attributes('data-snui-component')).toBe('pagination')
-      expect(root.attributes('role')).toBe('navigation')
-      expect(root.attributes('aria-label')).toBe('Pagination')
-    })
+      const w = mountPagination({ itemCount: 97 });
+      const root = w.find('.sn-pagination');
+      expect(root.attributes('data-snui-component')).toBe('pagination');
+      expect(root.attributes('role')).toBe('navigation');
+      expect(root.attributes('aria-label')).toBe('Pagination');
+    });
 
     it('derives the page count from itemCount / pageSize', () => {
-      const w = mountPagination({ itemCount: 97, pageSize: 10 })
+      const w = mountPagination({ itemCount: 97, pageSize: 10 });
       // 97 items / 10 per page = 10 pages
-      const buttons = w.findAll('.sn-pagination__item')
-      expect(buttons.length).toBeGreaterThanOrEqual(10)
-    })
+      const buttons = w.findAll('.sn-pagination__item');
+      expect(buttons.length).toBeGreaterThanOrEqual(10);
+    });
 
     it('honors pageCount over itemCount', () => {
-      const w = mountPagination({ itemCount: 97, pageCount: 3 })
-      const buttons = w.findAll('.sn-pagination__item')
+      const w = mountPagination({ itemCount: 97, pageCount: 3 });
+      const buttons = w.findAll('.sn-pagination__item');
       // 3 pages + prev + next = 5 items
-      expect(buttons.length).toBe(5)
-    })
+      expect(buttons.length).toBe(5);
+    });
 
     it('renders all pages without ellipsis when pageCount <= pageSlot', () => {
-      const w = mountPagination({ itemCount: 90, pageSlot: 9 })
+      const w = mountPagination({ itemCount: 90, pageSlot: 9 });
       // 9 pages + prev + next = 11
-      expect(w.findAll('.sn-pagination__page-item').length).toBe(11)
-      expect(w.find('.sn-pagination__ellipsis').exists()).toBe(false)
-    })
+      expect(w.findAll('.sn-pagination__page-item').length).toBe(11);
+      expect(w.find('.sn-pagination__ellipsis').exists()).toBe(false);
+    });
 
     it('collapses into first / last / neighborhood + ellipsis when pages > pageSlot', () => {
-      const w = mountPagination({ itemCount: 200, pageSlot: 9 })
+      const w = mountPagination({ itemCount: 200, pageSlot: 9 });
       // 200 items / 10 per page = 20 pages > 9 → ellipsis
-      expect(w.find('.sn-pagination__ellipsis').exists()).toBe(true)
-      const texts = w.findAll('.sn-pagination__item').map((b) => b.text())
-      expect(texts).toContain('1')
-      expect(texts).toContain('20')
-    })
+      expect(w.find('.sn-pagination__ellipsis').exists()).toBe(true);
+      const texts = w.findAll('.sn-pagination__item').map((b) => b.text());
+      expect(texts).toContain('1');
+      expect(texts).toContain('20');
+    });
 
     it('renders the current page with aria-current="page"', () => {
-      const w = mountPagination({ page: 3, pageCount: 10 })
-      const active = w.find('.sn-pagination__item--active')
-      expect(active.text()).toBe('3')
-      expect(active.attributes('aria-current')).toBe('page')
-    })
+      const w = mountPagination({ page: 3, pageCount: 10 });
+      const active = w.find('.sn-pagination__item--active');
+      expect(active.text()).toBe('3');
+      expect(active.attributes('aria-current')).toBe('page');
+    });
 
     it('renders prev / next with Chinese aria-labels and lucide icons', () => {
-      const w = mountPagination({ itemCount: 100 })
-      const prev = w.findAll('.sn-pagination__item')[0]
-      const next = w.findAll('.sn-pagination__item').at(-1) as ReturnType<
-        typeof w.find
-      >
-      expect(prev.attributes('aria-label')).toBe('上一页')
-      expect(next.attributes('aria-label')).toBe('下一页')
-      expect(w.find('svg').exists()).toBe(true)
-    })
-  })
+      const w = mountPagination({ itemCount: 100 });
+      const prev = w.findAll('.sn-pagination__item')[0];
+      const next = w.findAll('.sn-pagination__item').at(-1) as ReturnType<typeof w.find>;
+      expect(prev.attributes('aria-label')).toBe('上一页');
+      expect(next.attributes('aria-label')).toBe('下一页');
+      expect(w.find('svg').exists()).toBe(true);
+    });
+  });
 
   describe('uncontrolled page (defaultPage)', () => {
     it('seeds internal state from defaultPage and advances on next click', async () => {
-      const w = mountPagination({ itemCount: 100, defaultPage: 2 })
-      const next = w.findAll('.sn-pagination__item').at(-1) as ReturnType<
-        typeof w.find
-      >
-      expect(next.attributes('aria-label')).toBe('下一页')
-      await next.trigger('click')
-      const emitted = w.findComponent(SnPagination).emitted('update:page')
-      expect(emitted?.[0]).toEqual([3])
-      const active = w.find('.sn-pagination__item--active')
-      expect(active.text()).toBe('3')
-    })
+      const w = mountPagination({ itemCount: 100, defaultPage: 2 });
+      const next = w.findAll('.sn-pagination__item').at(-1) as ReturnType<typeof w.find>;
+      expect(next.attributes('aria-label')).toBe('下一页');
+      await next.trigger('click');
+      const emitted = w.findComponent(SnPagination).emitted('update:page');
+      expect(emitted?.[0]).toEqual([3]);
+      const active = w.find('.sn-pagination__item--active');
+      expect(active.text()).toBe('3');
+    });
 
     it('clamps the merged page into [1, pageCount]', () => {
-      const w = mountPagination({ page: 99, pageCount: 5 })
-      const active = w.find('.sn-pagination__item--active')
-      expect(active.text()).toBe('5')
-    })
-  })
+      const w = mountPagination({ page: 99, pageCount: 5 });
+      const active = w.find('.sn-pagination__item--active');
+      expect(active.text()).toBe('5');
+    });
+  });
 
   describe('controlled page', () => {
     it('emits update:page and does not move until the prop changes', async () => {
-      const w = mountPagination({ page: 1, pageCount: 10 })
-      const page3 = w.findAll('.sn-pagination__item').find((b) => b.text() === '3')
-      await page3?.trigger('click')
-      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([3])
+      const w = mountPagination({ page: 1, pageCount: 10 });
+      const page3 = w.findAll('.sn-pagination__item').find((b) => b.text() === '3');
+      await page3?.trigger('click');
+      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([3]);
       // Controlled — the active page stays on prop value 1 until parent syncs.
-      expect(w.find('.sn-pagination__item--active').text()).toBe('1')
-    })
-  })
+      expect(w.find('.sn-pagination__item--active').text()).toBe('1');
+    });
+  });
 
   describe('disabled', () => {
     it('disables page buttons and prev/next', () => {
-      const w = mountPagination({ itemCount: 100, disabled: true })
-      const buttons = w.findAll('.sn-pagination__item')
+      const w = mountPagination({ itemCount: 100, disabled: true });
+      const buttons = w.findAll('.sn-pagination__item');
       for (const b of buttons) {
-        expect(b.attributes('disabled')).toBeDefined()
+        expect(b.attributes('disabled')).toBeDefined();
       }
-    })
-  })
+    });
+  });
 
   describe('showTotal', () => {
     it('renders the total item count when showTotal is set', () => {
-      const w = mountPagination({ itemCount: 97, showTotal: true })
-      expect(w.find('.sn-pagination__total').text()).toBe('共 97 条')
-    })
+      const w = mountPagination({ itemCount: 97, showTotal: true });
+      expect(w.find('.sn-pagination__total').text()).toBe('共 97 条');
+    });
 
     it('omits the total when showTotal is false', () => {
-      const w = mountPagination({ itemCount: 97 })
-      expect(w.find('.sn-pagination__total').exists()).toBe(false)
-    })
-  })
+      const w = mountPagination({ itemCount: 97 });
+      expect(w.find('.sn-pagination__total').exists()).toBe(false);
+    });
+  });
 
   describe('simple mode', () => {
     it('renders only prev / input / page count / next', () => {
-      const w = mountPagination({ itemCount: 100, simple: true })
-      expect(w.find('.sn-pagination__simple').exists()).toBe(true)
-      expect(w.find('.sn-pagination__pages').exists()).toBe(false)
-      expect(w.find('.sn-pagination__simple-separator').text()).toContain('/ 10')
-    })
+      const w = mountPagination({ itemCount: 100, simple: true });
+      expect(w.find('.sn-pagination__simple').exists()).toBe(true);
+      expect(w.find('.sn-pagination__pages').exists()).toBe(false);
+      expect(w.find('.sn-pagination__simple-separator').text()).toContain('/ 10');
+    });
 
     it('advances via the next button', async () => {
-      const w = mountPagination({ itemCount: 100, simple: true })
-      const buttons = w.findAll('.sn-pagination__item')
-      await buttons[buttons.length - 1].trigger('click')
-      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([2])
-    })
-  })
+      const w = mountPagination({ itemCount: 100, simple: true });
+      const buttons = w.findAll('.sn-pagination__item');
+      await buttons[buttons.length - 1].trigger('click');
+      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([2]);
+    });
+  });
 
   describe('quick jumper', () => {
     it('renders the jumper input only when showQuickJumper is set', () => {
-      const w = mountPagination({ itemCount: 100 })
-      expect(w.find('.sn-pagination__jumper').exists()).toBe(false)
-      const w2 = mountPagination({ itemCount: 100, showQuickJumper: true })
-      expect(w2.find('.sn-pagination__jumper').exists()).toBe(true)
-    })
+      const w = mountPagination({ itemCount: 100 });
+      expect(w.find('.sn-pagination__jumper').exists()).toBe(false);
+      const w2 = mountPagination({ itemCount: 100, showQuickJumper: true });
+      expect(w2.find('.sn-pagination__jumper').exists()).toBe(true);
+    });
 
     it('jumps to the entered page on Enter (confirm)', async () => {
-      const w = mountPagination({ itemCount: 100, showQuickJumper: true })
-      const input = w.find('.sn-pagination__jumper-input input')
-      await input.setValue('5')
+      const w = mountPagination({ itemCount: 100, showQuickJumper: true });
+      const input = w.find('.sn-pagination__jumper-input input');
+      await input.setValue('5');
       // SnInput emits `confirm` on Enter; the `.enter` trigger modifier does
       // not set `key` under happy-dom, so pass it explicitly.
-      await input.trigger('keydown', { key: 'Enter' })
-      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([5])
-    })
+      await input.trigger('keydown', { key: 'Enter' });
+      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([5]);
+    });
 
     it('clamps an out-of-range jumper value into the page count', async () => {
-      const w = mountPagination({ itemCount: 100, showQuickJumper: true })
-      const input = w.find('.sn-pagination__jumper-input input')
-      await input.setValue('999')
-      await input.trigger('keydown', { key: 'Enter' })
-      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([10])
-    })
-  })
+      const w = mountPagination({ itemCount: 100, showQuickJumper: true });
+      const input = w.find('.sn-pagination__jumper-input input');
+      await input.setValue('999');
+      await input.trigger('keydown', { key: 'Enter' });
+      expect(w.findComponent(SnPagination).emitted('update:page')?.[0]).toEqual([10]);
+    });
+  });
 
   describe('size picker', () => {
     it('renders the size select when showSizePicker is set', () => {
@@ -181,42 +174,42 @@ describe('SnPagination (AUI-WEB-NAV-009)', () => {
         itemCount: 100,
         showSizePicker: true,
         pageSizes: [10, 20, 50],
-      })
-      expect(w.find('.sn-pagination__size-select').exists()).toBe(true)
-      expect(w.find('.sn-pagination__size-select').text()).toContain('10 / 页')
-    })
+      });
+      expect(w.find('.sn-pagination__size-select').exists()).toBe(true);
+      expect(w.find('.sn-pagination__size-select').text()).toContain('10 / 页');
+    });
 
     it('emits update:pageSize when a size option is chosen', async () => {
       const w = mountPagination({
         itemCount: 100,
         showSizePicker: true,
         pageSizes: [10, 20, 50],
-      })
+      });
       // The dropdown menu is teleported to body — drive the wiring through
       // the SnSelect component's public update:modelValue event instead.
-      await w.findComponent(SnSelect).vm.$emit('update:modelValue', 20)
-      const emitted = w.findComponent(SnPagination).emitted('update:pageSize')
-      expect(emitted?.[0]).toEqual([20])
-    })
-  })
+      await w.findComponent(SnSelect).vm.$emit('update:modelValue', 20);
+      const emitted = w.findComponent(SnPagination).emitted('update:pageSize');
+      expect(emitted?.[0]).toEqual([20]);
+    });
+  });
 
   describe('slots', () => {
     it('renders the label slot with the { page } payload', () => {
       const w = mountPagination(
         { pageCount: 3 },
         { label: ({ page }: { page: number }) => `第${page}页` },
-      )
-      const texts = w.findAll('.sn-pagination__item').map((b) => b.text())
-      expect(texts).toContain('第2页')
-    })
+      );
+      const texts = w.findAll('.sn-pagination__item').map((b) => b.text());
+      expect(texts).toContain('第2页');
+    });
 
     it('renders prefix / suffix slots around the pager', () => {
       const w = mountPagination(
         { itemCount: 50 },
         { prefix: () => 'PREFIX', suffix: () => 'SUFFIX' },
-      )
-      expect(w.find('.sn-pagination__prefix').text()).toBe('PREFIX')
-      expect(w.find('.sn-pagination__suffix').text()).toBe('SUFFIX')
-    })
-  })
-})
+      );
+      expect(w.find('.sn-pagination__prefix').text()).toBe('PREFIX');
+      expect(w.find('.sn-pagination__suffix').text()).toBe('SUFFIX');
+    });
+  });
+});

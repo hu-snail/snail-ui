@@ -38,42 +38,42 @@
 
 以下 wd-qr-code 属性**未声明**（CONTRIBUTING §2.2：不实现的能力不出现）：
 
-| 属性 | 原因 |
-| --- | --- |
+| 属性                                                                                                                        | 原因                                                                                                                                                             |
+| --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `logo` / `logo-width` / `logo-height` / `logo-background-color` / `logo-radius` / `logo-border-color` / `logo-border-width` | 往 uni canvas 画图片需要 `uni.getImageInfo`（或 `downloadFile`）后再 `drawImage`，能力与异步时序各端不一致；若某端静默失败还会破坏二维码按纠错级别预留的容量预算 |
-| `background-image` | 同上（解码 → 绘制 → 导出链路） |
+| `background-image`                                                                                                          | 同上（解码 → 绘制 → 导出链路）                                                                                                                                   |
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `text` | `string` | `''` | 二维码内容 |
-| `size` | `number` | `200` | 画布边长，设计稿 px（钳制 40-1000） |
-| `correctLevel` | `'L' \| 'M' \| 'Q' \| 'H'` | `'H'` | 纠错级别 |
-| `colorDark` | `string` | `''` | 深色区域颜色；`''` 表示码自身的深色 |
-| `colorLight` | `string` | `''` | 浅色区域 + 静区颜色 |
-| `margin` | `number` | `0` | 静区宽度，设计稿 px |
-| `dotType` | `'square' \| 'dots' \| 'rounded' \| 'liquid'` | `'square'` | 码点类型 |
-| `dotScale` | `number` | `1` | 码点填充比例（钳制 0.4-1） |
-| `enableGradient` | `boolean` | `false` | 是否启用渐变 |
-| `gradientColor` | `string` | `''` | 渐变结束色；`''` 回落到 `colorDark` |
-| `gradientColors` | `string[]` | `[]` | 多色渐变（2 色以上），优先于 `gradientColor` |
-| `gradientDirection` | `'diagonal' \| 'horizontal' \| 'vertical' \| number` | `'diagonal'` | 渐变方向；数字为角度 |
-| `canvasId` | `string` | `''` | Canvas ID；`''` 时按实例自动生成 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
+| 属性                | 类型                                                 | 默认值       | 说明                                         |
+| ------------------- | ---------------------------------------------------- | ------------ | -------------------------------------------- |
+| `text`              | `string`                                             | `''`         | 二维码内容                                   |
+| `size`              | `number`                                             | `200`        | 画布边长，设计稿 px（钳制 40-1000）          |
+| `correctLevel`      | `'L' \| 'M' \| 'Q' \| 'H'`                           | `'H'`        | 纠错级别                                     |
+| `colorDark`         | `string`                                             | `''`         | 深色区域颜色；`''` 表示码自身的深色          |
+| `colorLight`        | `string`                                             | `''`         | 浅色区域 + 静区颜色                          |
+| `margin`            | `number`                                             | `0`          | 静区宽度，设计稿 px                          |
+| `dotType`           | `'square' \| 'dots' \| 'rounded' \| 'liquid'`        | `'square'`   | 码点类型                                     |
+| `dotScale`          | `number`                                             | `1`          | 码点填充比例（钳制 0.4-1）                   |
+| `enableGradient`    | `boolean`                                            | `false`      | 是否启用渐变                                 |
+| `gradientColor`     | `string`                                             | `''`         | 渐变结束色；`''` 回落到 `colorDark`          |
+| `gradientColors`    | `string[]`                                           | `[]`         | 多色渐变（2 色以上），优先于 `gradientColor` |
+| `gradientDirection` | `'diagonal' \| 'horizontal' \| 'vertical' \| number` | `'diagonal'` | 渐变方向；数字为角度                         |
+| `canvasId`          | `string`                                             | `''`         | Canvas ID；`''` 时按实例自动生成             |
+| `customClass`       | `string`                                             | `''`         | 根节点自定义类名                             |
+| `customStyle`       | `string`                                             | `''`         | 根节点自定义样式                             |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `click` | 点击组件时触发 | `Event` |
+| 事件名  | 说明                             | 参数      |
+| ------- | -------------------------------- | --------- |
+| `click` | 点击组件时触发                   | `Event`   |
 | `error` | 编码失败或画布上下文不可用时触发 | `unknown` |
 
 ## 方法
 
-| 方法名 | 返回值 | 说明 |
-| --- | --- | --- |
+| 方法名        | 返回值            | 说明                                   |
+| ------------- | ----------------- | -------------------------------------- |
 | `exportImage` | `Promise<string>` | 导出二维码图片，resolve 为临时文件路径 |
 
 ## Slots
@@ -82,15 +82,15 @@
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-border-subtle` | 二维码外框 |
+| 变量                                | 用途                  |
+| ----------------------------------- | --------------------- |
+| `--sn-mp-color-border-subtle`       | 二维码外框            |
 | `--sn-mp-color-background-elevated` | 根底盘 / 失败面板底色 |
-| `--sn-mp-radius-md` | 根节点与失败面板圆角 |
-| `--sn-mp-spacing-4` | 失败面板内边距 |
-| `--sn-mp-color-feedback-danger` | 编码失败文案颜色 |
-| `--sn-mp-font-size-sm` | 编码失败文案字号 |
-| `--sn-mp-font-line-height-normal` | 编码失败文案行高 |
+| `--sn-mp-radius-md`                 | 根节点与失败面板圆角  |
+| `--sn-mp-spacing-4`                 | 失败面板内边距        |
+| `--sn-mp-color-feedback-danger`     | 编码失败文案颜色      |
+| `--sn-mp-font-size-sm`              | 编码失败文案字号      |
+| `--sn-mp-font-line-height-normal`   | 编码失败文案行高      |
 
 ## 无障碍
 

@@ -416,13 +416,13 @@ TypeScript Strict Mode
 必须：
 
 ```ts
-strict: true
+strict: true;
 ```
 
 禁止：
 
 ```ts
-any
+any;
 ```
 
 除非存在明确技术原因并添加注释。
@@ -430,7 +430,7 @@ any
 优先：
 
 ```ts
-unknown
+unknown;
 ```
 
 然后通过：
@@ -479,8 +479,8 @@ Utility Type
 
 ```ts
 interface ComponentDefinition {
-  name: string
-  version: string
+  name: string;
+  version: string;
 }
 ```
 
@@ -508,7 +508,7 @@ Public API 必须：
 例如：
 
 ```ts
-runtime._internalState
+runtime._internalState;
 ```
 
 禁止作为公共 API。
@@ -642,7 +642,7 @@ Phase 1 使用：
 允许封装：
 
 ```ts
-ReactiveAdapter
+ReactiveAdapter;
 ```
 
 不允许：
@@ -737,13 +737,13 @@ Schema → HTTP
 绝对禁止：
 
 ```js
-eval()
+eval();
 ```
 
 以及：
 
 ```js
-new Function()
+new Function();
 ```
 
 也禁止通过其他方式绕过这一限制。
@@ -806,10 +806,10 @@ Zod Schema
 
 ```ts
 const ButtonSchema = z.object({
-  disabled: z.boolean().optional()
-})
+  disabled: z.boolean().optional(),
+});
 
-type ButtonProps = z.infer<typeof ButtonSchema>
+type ButtonProps = z.infer<typeof ButtonSchema>;
 ```
 
 ---
@@ -864,20 +864,20 @@ normalize(schema)
 
 ```ts
 interface AUIError {
-  code: string
-  path?: string
-  message: string
-  hint?: string
-  source?: string
-  severity: "info" | "warning" | "error" | "fatal"
-  cause?: unknown
+  code: string;
+  path?: string;
+  message: string;
+  hint?: string;
+  source?: string;
+  severity: 'info' | 'warning' | 'error' | 'fatal';
+  cause?: unknown;
 }
 ```
 
 禁止只：
 
 ```ts
-throw new Error("Something went wrong")
+throw new Error('Something went wrong');
 ```
 
 用于核心 Runtime。
@@ -1074,8 +1074,8 @@ camelCase
 例如：
 
 ```ts
-runtimeContext
-componentRegistry
+runtimeContext;
+componentRegistry;
 ```
 
 常量：
@@ -1087,7 +1087,7 @@ UPPER_SNAKE_CASE
 例如：
 
 ```ts
-DEFAULT_TIMEOUT
+DEFAULT_TIMEOUT;
 ```
 
 ---
@@ -1175,10 +1175,7 @@ AbortSignal
 例如：
 
 ```ts
-async function execute(
-  context: ActionContext,
-  signal: AbortSignal
-) {}
+async function execute(context: ActionContext, signal: AbortSignal) {}
 ```
 
 组件卸载时不得继续执行无效任务。
@@ -1222,13 +1219,13 @@ window.addEventListener(...)
 必须：
 
 ```ts
-const handler = () => {}
+const handler = () => {};
 
-window.addEventListener("resize", handler)
+window.addEventListener('resize', handler);
 
 return () => {
-  window.removeEventListener("resize", handler)
-}
+  window.removeEventListener('resize', handler);
+};
 ```
 
 ---
@@ -1877,9 +1874,9 @@ private key
 禁止：
 
 ```ts
-console.log(user)
-console.log(token)
-console.log(request)
+console.log(user);
+console.log(token);
+console.log(request);
 ```
 
 生产代码必须：
@@ -1956,7 +1953,7 @@ Trade-off
 
 ```ts
 // increment count
-count++
+count++;
 ```
 
 没有价值。
@@ -2969,7 +2966,7 @@ TypeScript 严格模式必须开启：
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noUnusedPrivateClassMembers": true  // TS 5.x
+    "noUnusedPrivateClassMembers": true // TS 5.x
   }
 }
 ```
@@ -3045,21 +3042,21 @@ pnpm turbo run typecheck
 
 #101 ~ #108 是对 #1 ~ #100 的代码质量与流程纪律强化：
 
-| 规则 | 对应原编号 |
-| --- | --- |
-| #101 禁止回退 | §93 Stop-the-Line 延伸 |
-| #102 任务后评审 | §88 Review Agent + §94 Agent 输出标准 |
-| #103 Bug 记录 | §47 Bug 修复标准 + §75 AI Context 标准 |
-| #104 避免重复造轮子 | §57 Dependency 原则 |
-| #105 代码质量高标准 | §92 Merge Gate |
-| #106 不写废代码 | §11 禁止无意义重构 + §69 Documentation |
-| #107 无未用变量 / 方法 | §46 测试原则（Behavior > Implementation Detail） |
-| #108 无未用 import / export | §12 TypeScript 标准 + §13 TypeScript 类型原则 |
+| 规则                        | 对应原编号                                       |
+| --------------------------- | ------------------------------------------------ |
+| #101 禁止回退               | §93 Stop-the-Line 延伸                           |
+| #102 任务后评审             | §88 Review Agent + §94 Agent 输出标准            |
+| #103 Bug 记录               | §47 Bug 修复标准 + §75 AI Context 标准           |
+| #104 避免重复造轮子         | §57 Dependency 原则                              |
+| #105 代码质量高标准         | §92 Merge Gate                                   |
+| #106 不写废代码             | §11 禁止无意义重构 + §69 Documentation           |
+| #107 无未用变量 / 方法      | §46 测试原则（Behavior > Implementation Detail） |
+| #108 无未用 import / export | §12 TypeScript 标准 + §13 TypeScript 类型原则    |
 
 # 109.b 任务节奏强制
 
-| 规则 | 对应原编号 |
-| --- | --- |
+| 规则                       | 对应原编号                     |
+| -------------------------- | ------------------------------ |
 | 任务完成立即 commit + push | §56 任务完成立即 Commit + Push |
 
 ---
@@ -3133,19 +3130,19 @@ c. id.includes('/packages/uni/dist/')             — 直接 file fetch（vite d
 每个 uni-end demo 文件（`apps/docs/.vitepress/demo/*-mp-*.vue`）必须从 `@snui/uni-src/components/<comp>/<comp>.vue` import 组件本体 + types / shortcut data / registry，**禁止**：
 
 ```ts
-import { SnInput } from '@snui/uni'                       // ❌ dist 入口
-import { registerSnIcons } from '@snui/uni'              // ❌
-import type { FormRule } from '@snui/uni'                // ❌
-import { ChevronRight } from '@snui/uni'                 // ❌ shortcut data
+import { SnInput } from '@snui/uni'; // ❌ dist 入口
+import { registerSnIcons } from '@snui/uni'; // ❌
+import type { FormRule } from '@snui/uni'; // ❌
+import { ChevronRight } from '@snui/uni'; // ❌ shortcut data
 ```
 
 正确写法：
 
 ```ts
-import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'           // ✓
-import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry'  // ✓
-import type { FormRule } from '@snui/uni-src/components/sn-form/sn-form-types'  // ✓
-import { ChevronRight } from '@snui/uni-src/components/sn-icon/sn-icon-set'    // ✓
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'; // ✓
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry'; // ✓
+import type { FormRule } from '@snui/uni-src/components/sn-form/sn-form-types'; // ✓
+import { ChevronRight } from '@snui/uni-src/components/sn-icon/sn-icon-set'; // ✓
 ```
 
 **为什么强制 source import**：
@@ -3175,10 +3172,10 @@ grep -l "from '@snui/uni'" apps/docs/.vitepress/demo/*-mp-*.vue
 
 snail-aui 的 `@snui/vue-web` 与 `@snui/uni` 在 API surface 上**不共用一份参考库**：
 
-| 端（package） | 参考库 | 文档地址 |
-|---|---|---|
-| `@snui/vue-web`（web 浏览器端） | **naive-ui** | https://www.naiveui.com/zh-CN/light/components/{button,input,form,...} |
-| `@snui/uni`（uni-app 小程序/H5/App 端） | **wot-ui** | https://wot-ui.cn/component/{input,button,form,...}.html |
+| 端（package）                           | 参考库       | 文档地址                                                               |
+| --------------------------------------- | ------------ | ---------------------------------------------------------------------- |
+| `@snui/vue-web`（web 浏览器端）         | **naive-ui** | https://www.naiveui.com/zh-CN/light/components/{button,input,form,...} |
+| `@snui/uni`（uni-app 小程序/H5/App 端） | **wot-ui**   | https://wot-ui.cn/component/{input,button,form,...}.html               |
 
 **每写一个组件的 prop / event / slot，都必须 1:1 对齐参考库同名列出的属性**（同名 ≠ 类型相同；类型 / 默认值 / 受控语义都按参考库约定走）。
 
@@ -3218,12 +3215,12 @@ snail-aui 的 `@snui/vue-web` 与 `@snui/uni` 在 API surface 上**不共用一�
 
 ```ts
 // wot-ui wd-button:
-type: 'primary' | 'success' | 'warning' | 'danger' | 'info'  // 5 档 + 1 default
-variant: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'
+type: 'primary' | 'success' | 'warning' | 'danger' | 'info'; // 5 档 + 1 default
+variant: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
 
 // naive-ui n-button:
-type: 'default' | 'primary' | 'tertiary' | 'info' | 'success' | 'warning' | 'error'
-attrType: 'button' | 'submit' | 'reset'
+type: 'default' | 'primary' | 'tertiary' | 'info' | 'success' | 'warning' | 'error';
+attrType: 'button' | 'submit' | 'reset';
 ```
 
 ### c. 旧的别名 prop 必须保留 + 标注 `@deprecated`，不要破坏现有用户代码
@@ -3232,14 +3229,14 @@ attrType: 'button' | 'submit' | 'reset'
 
 ### d. 测试必须覆盖参考库的每个非平凡 prop
 
-| 参考库 prop | 测试必含 | 备注 |
-|---|---|---|
-| `border: 'all' \| 'bottom' \| 'none'` | 3 个 class 渲染 + `bordered` alias | 跨端通用 |
-| `variant: 'plain' \| 'soft' \| 'dashed' \| 'subtle' \| 'text'` | 5 个 class 渲染 | 仅 uni |
-| `attrType: 'button' \| 'submit' \| 'reset'` | type 属性转发 | 仅 web |
-| `loadingColor` | inline style 转发 | 仅 uni |
-| `iconPlacement: 'left' \| 'right'` | 右对齐 class | 仅 web |
-| `openType: 'share' \| ...` | open-type 属性转发 | 仅 uni（uni-app MP only） |
+| 参考库 prop                                                    | 测试必含                           | 备注                      |
+| -------------------------------------------------------------- | ---------------------------------- | ------------------------- |
+| `border: 'all' \| 'bottom' \| 'none'`                          | 3 个 class 渲染 + `bordered` alias | 跨端通用                  |
+| `variant: 'plain' \| 'soft' \| 'dashed' \| 'subtle' \| 'text'` | 5 个 class 渲染                    | 仅 uni                    |
+| `attrType: 'button' \| 'submit' \| 'reset'`                    | type 属性转发                      | 仅 web                    |
+| `loadingColor`                                                 | inline style 转发                  | 仅 uni                    |
+| `iconPlacement: 'left' \| 'right'`                             | 右对齐 class                       | 仅 web                    |
+| `openType: 'share' \| ...`                                     | open-type 属性转发                 | 仅 uni（uni-app MP only） |
 
 每个组件完成时 test 覆盖率（含对齐比例）写入 §94 Task Completion Report 的 `Tests` 行。
 
@@ -3279,19 +3276,19 @@ grep -n "attrType=\|attr-type=\|tag=\|focusable=\|showIcon=\|icon-placement=\|se
 
 某些 prop 仅在某一端的 runtime 下有意义：
 
-| prop | 仅在哪端 | 备注 |
-|---|---|---|
-| `open-type`, `hover-class`, `hover-start-time`, `hover-stay-time`, `form-type` | uni（uni-app MP runtime） | 不要搬到 web |
-| `cursor`, `selection-start`, `selection-end`, `placeholder-style`, `placeholder-class`（uni MP native attr 形态）, `confirm-type`, `hold-keyboard`, `adjust-position`, `always-embed` | uni（uni-app MP runtime） | 不要搬到 web |
-| `attrType`, `tag` (`'button' \| 'a' \| 'div' \| 'span'`), `focusable`, `iconPlacement`, `showIcon`, `color`, `secondary`, `tertiary`, `quaternary`, `strong`, `ghost`, `dashed`, `circle`, `tertiary` | web | 不要搬到 uni |
-| `attrType` legacy alias `htmlType` | web | 仅作 back-compat alias |
+| prop                                                                                                                                                                                                  | 仅在哪端                  | 备注                   |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ---------------------- |
+| `open-type`, `hover-class`, `hover-start-time`, `hover-stay-time`, `form-type`                                                                                                                        | uni（uni-app MP runtime） | 不要搬到 web           |
+| `cursor`, `selection-start`, `selection-end`, `placeholder-style`, `placeholder-class`（uni MP native attr 形态）, `confirm-type`, `hold-keyboard`, `adjust-position`, `always-embed`                 | uni（uni-app MP runtime） | 不要搬到 web           |
+| `attrType`, `tag` (`'button' \| 'a' \| 'div' \| 'span'`), `focusable`, `iconPlacement`, `showIcon`, `color`, `secondary`, `tertiary`, `quaternary`, `strong`, `ghost`, `dashed`, `circle`, `tertiary` | web                       | 不要搬到 uni           |
+| `attrType` legacy alias `htmlType`                                                                                                                                                                    | web                       | 仅作 back-compat alias |
 
 跨端**通用**部分（type / size / disabled / placeholder / clearable 等基础受控 props）必须 1:1 对齐；任一端漏补都需要补齐，缺口是设计 bug，不是可选优化。
 
 ### 112.3a 登记的 additive 能力（uni 端）
 
-| 能力 | 组件 | 行为 |
-|---|---|---|
+| 能力                                | 组件                                                                                          | 行为                                                                                                                                                                                                                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 桌面 H5 鼠标拖拽 + 滚轮（additive） | `sn-picker-view` / `sn-datetime-picker-view`（`sn-picker` / `sn-datetime-picker` 弹层内同享） | H5 宿主（`typeof document !== 'undefined'`）在触摸之外额外支持鼠标拖动滚轮与 wheel 逐行滚动；实现于 `packages/uni/src/components/sn-picker-view/sn-picker-view-drag.ts` 的 `bindMouseGestures`，组件根节点携带 `data-snui-mouse-gesture` 供 docs 预览桥识别跳过。参考库无此能力，属 AUI 追加 |
 
 ## 112.4 机器可读规格（`.ai/reference/`）
@@ -3324,8 +3321,8 @@ diff。现在 wot-ui 的完整 API 面已抓取入库：
 
 个别组件的参考库由 Human 显式指定（产品决策，§99），登记如下：
 
-| 组件 | 参考库 | 依据 |
-| --- | --- | --- |
+| 组件        | 参考库                                | 依据                                                                                                                                                                                                                                    |
+| ----------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sn-paging` | z-paging（https://z-paging.zxlee.cn） | Human 指令（2026-10-25）：高性能、轻量化对标 z-paging 的分页容器。wot-ui spec 无对应容器组件（仅 `wd-loading` / `wd-loadmore`，二者仍是内嵌指示器的参考）；prop 命名 / 默认文案对齐 z-paging 子集，wot-ui / naive-ui 独有 prop 不得混入 |
 
 ## 112.5 uni 端暗色模式契约
@@ -3368,11 +3365,13 @@ prop；`skin`（Style Pack）是 AUI 追加能力，不替代 `theme`。
 ```
 
 emoji 不允许出现在：
+
 - 组件 SFC 模板内（`<button>{{ 🙈 }}</button>` ← Stop-the-Line §93）
 - demo `<Demo name="..." />` 引用源里的 icon slot / inline text
 - docs markdown 里"装饰性"的图标
 
 emoji 允许出现在：
+
 - 文档正文中文描述用 emoji 提高可读性（如 `💡 Tips:` 前缀），**不**渲染为 UI 节点
 - 代码注释里说明规则的引用（如本节）
 - 测试 mock data 字符串（HTML attribute value 里用作占位符）— 但推荐改成普通 ASCII
@@ -3383,12 +3382,13 @@ emoji 允许出现在：
 
 ```ts
 // packages/vue-web/src/icon/sn-input-icons.ts
-export const EyeIcon: IconComponent     // SVG <path> from MDI / Lucide
-export const EyeOffIcon: IconComponent  // 同上
-export const XIcon: IconComponent       // 同上
+export const EyeIcon: IconComponent; // SVG <path> from MDI / Lucide
+export const EyeOffIcon: IconComponent; // 同上
+export const XIcon: IconComponent; // 同上
 ```
 
 原则：
+
 - 任何**用户能看到的 UI 图标**走 SnIcon 组件 + IconComponent 数据
 - `IconComponent` 通过 `registerSnIcons({...})` 注册；包内置核心图标不依赖消费者手动注册
 - 消费者可以自由用 `registerSnIcons({ ChevronRight: ChevronRight, ... })` 覆盖或扩展
@@ -3491,12 +3491,12 @@ parity with xxx / aligned with xxx / same as xxx
 
 ## 114.3 正确写法
 
-| 场景 | ❌ 禁止 | ✅ 正确 |
-| --- | --- | --- |
-| 导语 | 本组件对标 naive-ui 的 Drawer | 抽屉用于从屏幕侧边滑出承载辅助内容 |
+| 场景       | ❌ 禁止                            | ✅ 正确                                  |
+| ---------- | ---------------------------------- | ---------------------------------------- |
+| 导语       | 本组件对标 naive-ui 的 Drawer      | 抽屉用于从屏幕侧边滑出承载辅助内容       |
 | props 说明 | 与 naive-ui 保持一致的 `resizable` | `resizable` 控制是否允许拖拽边缘调整宽高 |
-| 迁移提示 | 从 Element Plus 迁移请参考… | 删除该段，或改写为能力对比说明 |
-| demo 标题 | naive-ui 风格的多层抽屉 | 多层嵌套抽屉 |
+| 迁移提示   | 从 Element Plus 迁移请参考…        | 删除该段，或改写为能力对比说明           |
+| demo 标题  | naive-ui 风格的多层抽屉            | 多层嵌套抽屉                             |
 
 ## 114.4 内部元信息例外（不进用户文档）
 
@@ -3632,13 +3632,13 @@ packages/uni-x    转换器 + 锚定补丁 → dist/components/*.uvue（npm 发�
 
 **CSS**：
 
-| 规则 | 原因 |
-| --- | --- |
-| 只用 class 选择器（复合 `.a.b` 允许）；后代选择器最多两段且目标必须单 class | App 端仅 class 选择器；两段式会被管线降级为 CSS 变量上下文注入，其余直接删除并上报 |
-| 禁伪类（`:hover/:active/:focus/:nth-child`）与伪元素（`::before/::after`） | App 端不支持；按压态一律 `hover-class`，分隔线用真实元素，交错样式用 v-for index class |
-| 文字必须显式写在 `<text>` 内；**不依赖样式继承** | App 端文本不继承容器样式；裸文本会被自动包 `<text>` 且无样式 |
-| 皮肤 / 主题差异走 CSS 变量（`--sn-mp-*`），禁止新增 `.snui-skin-xxx` 后代选择器覆盖 | 后代选择器在 App 端无法表达（skin 变量化是 ADR-0004 既定方向） |
-| `cursor` / `user-select` / `outline` 等允许存在但会被剥离 | 不得让布局依赖它们 |
+| 规则                                                                                | 原因                                                                                   |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| 只用 class 选择器（复合 `.a.b` 允许）；后代选择器最多两段且目标必须单 class         | App 端仅 class 选择器；两段式会被管线降级为 CSS 变量上下文注入，其余直接删除并上报     |
+| 禁伪类（`:hover/:active/:focus/:nth-child`）与伪元素（`::before/::after`）          | App 端不支持；按压态一律 `hover-class`，分隔线用真实元素，交错样式用 v-for index class |
+| 文字必须显式写在 `<text>` 内；**不依赖样式继承**                                    | App 端文本不继承容器样式；裸文本会被自动包 `<text>` 且无样式                           |
+| 皮肤 / 主题差异走 CSS 变量（`--sn-mp-*`），禁止新增 `.snui-skin-xxx` 后代选择器覆盖 | 后代选择器在 App 端无法表达（skin 变量化是 ADR-0004 既定方向）                         |
+| `cursor` / `user-select` / `outline` 等允许存在但会被剥离                           | 不得让布局依赖它们                                                                     |
 
 **模板**：
 

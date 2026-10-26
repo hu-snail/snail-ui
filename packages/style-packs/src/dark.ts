@@ -1,4 +1,4 @@
-import type { StylePackDefinition } from './types.js'
+import type { StylePackDefinition } from './types.js';
 
 /**
  * dark Pack — low-saturation dark theme.
@@ -53,6 +53,6 @@ export const darkPack: StylePackDefinition = {
       card: { radius: '8px', shadow: '0 1px 3px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.4)' },
     },
   },
-}
+};
 
-export default darkPack
+export default darkPack;

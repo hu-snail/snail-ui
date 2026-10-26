@@ -55,4 +55,10 @@ export { applyPatches, PATCHES } from './patches.ts';
 export { transformScript } from './script.ts';
 export { parseSfc } from './sfc.ts';
 export { transformTemplate } from './template.ts';
-export type { CssMode, CssTransformResult, IssueKind, TextTransformResult, TransformIssue } from './types.ts';
+export type {
+  CssMode,
+  CssTransformResult,
+  IssueKind,
+  TextTransformResult,
+  TransformIssue,
+} from './types.ts';

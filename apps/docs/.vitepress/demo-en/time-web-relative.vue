@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTime — relative distance to a base time, built-in zh-CN wording. */
-import { SnTime } from '@snui/vue-web'
+import { SnTime } from '@snui/vue-web';
 </script>
 
 <template>

@@ -22,31 +22,31 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| color | string | '' | Text color override |
-| type | 'default' \| 'primary' \| 'success' \| 'warning' \| 'error' | 'default' | Semantic text theme |
-| startVal | number | 0 | Start value |
-| endVal | number | 2024 | End value |
-| duration | number | 3000 | Tween duration in ms |
-| autoStart | boolean | true | Start automatically |
-| decimals | number | 0 | Decimal places to keep |
-| decimal | string | '.' | Decimal separator |
-| separator | string | ',' | Thousands separator |
-| prefix | string | '' | Text before the number |
-| suffix | string | '' | Text after the number |
-| useEasing | boolean | true | Use the easing curve |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop        | Type                                                        | Default   | Description                           |
+| ----------- | ----------------------------------------------------------- | --------- | ------------------------------------- |
+| color       | string                                                      | ''        | Text color override                   |
+| type        | 'default' \| 'primary' \| 'success' \| 'warning' \| 'error' | 'default' | Semantic text theme                   |
+| startVal    | number                                                      | 0         | Start value                           |
+| endVal      | number                                                      | 2024      | End value                             |
+| duration    | number                                                      | 3000      | Tween duration in ms                  |
+| autoStart   | boolean                                                     | true      | Start automatically                   |
+| decimals    | number                                                      | 0         | Decimal places to keep                |
+| decimal     | string                                                      | '.'       | Decimal separator                     |
+| separator   | string                                                      | ','       | Thousands separator                   |
+| prefix      | string                                                      | ''        | Text before the number                |
+| suffix      | string                                                      | ''        | Text after the number                 |
+| useEasing   | boolean                                                     | true      | Use the easing curve                  |
+| customClass | string                                                      | ''        | Custom class for the root node        |
+| customStyle | string                                                      | ''        | Custom inline style for the root node |
 
 Exposed methods: `start()` / `pause()` / `reset()`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| mounted | Component mounted (parity with the reference) | — |
-| finish | The tween reached `endVal` | — |
+| Event   | Description                                   | Payload |
+| ------- | --------------------------------------------- | ------- |
+| mounted | Component mounted (parity with the reference) | —       |
+| finish  | The tween reached `endVal`                    | —       |
 
 ## Slots
 
@@ -54,13 +54,13 @@ None.
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-text-primary | `type="default"` text |
-| --sn-mp-color-action-primary | `type="primary"` text |
-| --sn-mp-color-feedback-success` / `-warning` / `-danger | `type="success"` / `warning` / `error` text |
-| --sn-mp-font-size-md | Text size |
-| --sn-mp-font-line-height-normal | Text line height |
+| Variable                                            | Purpose                                     |
+| --------------------------------------------------- | ------------------------------------------- |
+| --sn-mp-color-text-primary                          | `type="default"` text                       |
+| --sn-mp-color-action-primary                        | `type="primary"` text                       |
+| --sn-mp-color-feedback-success`/`-warning`/`-danger | `type="success"` / `warning` / `error` text |
+| --sn-mp-font-size-md                                | Text size                                   |
+| --sn-mp-font-line-height-normal                     | Text line height                            |
 
 ## Accessibility
 
@@ -69,7 +69,6 @@ None.
 ## Dark mode
 
 All five type colors come from semantic tokens (`--sn-mp-color-text-primary` / `--sn-mp-color-action-primary` / `--sn-mp-color-feedback-*`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A literal passed through `color` does not flip with the theme — prefer `var(--sn-mp-*)` colors in dark mode.
 

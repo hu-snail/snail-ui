@@ -11,25 +11,29 @@
  *
  * 每个格子用 `fixed: false` 钉在自己的小舞台上，四格互不干扰。
  */
-import { Bell, MessageSquare, Star } from 'lucide-vue-next'
-import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web'
-import type { SnFloatButtonGroupDirection, SnFloatButtonPlacement } from '@snui/vue-web'
+import { Bell, MessageSquare, Star } from 'lucide-vue-next';
+import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web';
+import type { SnFloatButtonGroupDirection, SnFloatButtonPlacement } from '@snui/vue-web';
 
-type OpenDirection = Exclude<SnFloatButtonGroupDirection, 'auto'>
+type OpenDirection = Exclude<SnFloatButtonGroupDirection, 'auto'>;
 
 interface Scenario {
-  direction: OpenDirection
+  direction: OpenDirection;
   /** The anchor that pairs naturally with this direction. */
-  placement: SnFloatButtonPlacement
-  note: string
+  placement: SnFloatButtonPlacement;
+  note: string;
 }
 
 const scenarios: Scenario[] = [
-  { direction: 'up', placement: 'bottom-right', note: 'Default: fans upward from the bottom-right' },
+  {
+    direction: 'up',
+    placement: 'bottom-right',
+    note: 'Default: fans upward from the bottom-right',
+  },
   { direction: 'down', placement: 'top-right', note: 'Expands downward' },
   { direction: 'left', placement: 'bottom-right', note: 'Expands to the left' },
   { direction: 'right', placement: 'bottom-left', note: 'Expands to the right' },
-]
+];
 </script>
 
 <template>
@@ -56,8 +60,9 @@ const scenarios: Scenario[] = [
       </div>
     </div>
     <p class="direction-demo__hint">
-      Click the <code>+</code> in each cell to see the expansion direction;<code>direction</code> when omitted, follows
-      <code>placement</code> auto-selecting, always expanding toward the viewport center.
+      Click the <code>+</code> in each cell to see the expansion direction;<code>direction</code>
+      when omitted, follows <code>placement</code> auto-selecting, always expanding toward the
+      viewport center.
     </p>
   </div>
 </template>

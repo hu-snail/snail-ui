@@ -25,28 +25,25 @@
  *   </SnSteps>
  */
 
-import { provide, toRef } from 'vue'
-import {
-  snStepsInjectionKey,
-  type SnStepsContext,
-} from './sn-steps-context'
+import { provide, toRef } from 'vue';
+import { snStepsInjectionKey, type SnStepsContext } from './sn-steps-context';
 
-defineOptions({ name: 'SnSteps' })
+defineOptions({ name: 'SnSteps' });
 
 const props = withDefaults(
   defineProps<{
     /** Index of the current (active) step. 1-based, mirrors n-steps. */
-    current?: number
+    current?: number;
     /** Status applied to the current step. Falls back to each step's own
      * `status` prop, then 'process'. Mirrors n-steps `status`. */
-    status?: 'process' | 'finish' | 'error' | 'wait'
+    status?: 'process' | 'finish' | 'error' | 'wait';
     /** Visual size of the indicators. Mirrors n-steps `size`. */
-    size?: 'small' | 'medium'
+    size?: 'small' | 'medium';
     /** Lay the steps out vertically. Mirrors n-steps `vertical`. */
-    vertical?: boolean
+    vertical?: boolean;
     /** Where the title sits relative to the indicator (horizontal only).
      * Mirrors n-steps `contentPlacement`. */
-    contentPlacement?: 'right' | 'bottom'
+    contentPlacement?: 'right' | 'bottom';
   }>(),
   {
     current: undefined as any,
@@ -55,24 +52,24 @@ const props = withDefaults(
     vertical: false,
     contentPlacement: 'right',
   },
-)
+);
 
 const emit = defineEmits<{
   /** Current step changed (click on a clickable step). `v-model:current`. */
-  (e: 'update:current', current: number): void
-}>()
+  (e: 'update:current', current: number): void;
+}>();
 
 /** Monotonic counter backing `registerStep()`. Reset per SnSteps instance. */
-let stepCounter = 0
+let stepCounter = 0;
 
 defineSlots<{
   /** A sequence of `<SnStep>` children. */
-  default?(): unknown
+  default?(): unknown;
   /** Custom icon shown on finished steps (replaces the default check mark). */
-  'finish-icon'?(): unknown
+  'finish-icon'?(): unknown;
   /** Custom icon shown on errored steps (replaces the default cross). */
-  'error-icon'?(): unknown
-}>()
+  'error-icon'?(): unknown;
+}>();
 
 const ctx: SnStepsContext = {
   current: toRef(props, 'current'),
@@ -88,16 +85,16 @@ const ctx: SnStepsContext = {
    * does not need to be a direct template child to be counted correctly.
    */
   registerStep: () => {
-    stepCounter += 1
-    return stepCounter
+    stepCounter += 1;
+    return stepCounter;
   },
-}
+};
 
-provide(snStepsInjectionKey, ctx)
+provide(snStepsInjectionKey, ctx);
 
 // Referenced in the template via $slots so vue-tsc keeps this file as a
 // Vue SFC and emits compiled JS into dist (see SnDivider for the same note).
-void ctx
+void ctx;
 </script>
 
 <template>

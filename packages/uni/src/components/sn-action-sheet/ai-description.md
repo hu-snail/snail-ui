@@ -30,63 +30,63 @@ be added to the wd-action-sheet parity list.
 ```
 
 ```ts
-import { SnActionSheet } from '@snui/uni'
+import { SnActionSheet } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `modelValue` | `boolean` | `false` | no | Visibility (v-model). |
-| `actions` | `SnActionSheetAction[]` | `[]` | no | List rows. |
-| `panels` | `Array<Panel \| Panel[]>` | `[]` | no | Grid cells; a nested array is multiple rows. |
-| `title` | `string` | `''` | no | Title above the list. |
-| `cancelText` | `string` | `''` | no | Cancel label; empty hides the button. |
-| `closeOnClickAction` | `boolean` | `true` | no | Close after a row / cell is selected. |
-| `closeOnClickModal` | `boolean` | `true` | no | Close on scrim tap. |
-| `duration` | `number` | `200` | no | Animation duration in ms. |
-| `zIndex` | `number` | `10` | no | Stacking level. |
-| `lazyRender` | `boolean` | `true` | no | Defer content rendering until first open. |
-| `safeAreaInsetBottom` | `boolean` | `true` | no | Pad the sheet for the device safe area. |
-| `customTitleClass` | `string` | `''` | no | Custom class for the title area. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the panel. |
+| Name                  | Type                      | Default | Required | Description                                  |
+| --------------------- | ------------------------- | ------- | -------- | -------------------------------------------- |
+| `modelValue`          | `boolean`                 | `false` | no       | Visibility (v-model).                        |
+| `actions`             | `SnActionSheetAction[]`   | `[]`    | no       | List rows.                                   |
+| `panels`              | `Array<Panel \| Panel[]>` | `[]`    | no       | Grid cells; a nested array is multiple rows. |
+| `title`               | `string`                  | `''`    | no       | Title above the list.                        |
+| `cancelText`          | `string`                  | `''`    | no       | Cancel label; empty hides the button.        |
+| `closeOnClickAction`  | `boolean`                 | `true`  | no       | Close after a row / cell is selected.        |
+| `closeOnClickModal`   | `boolean`                 | `true`  | no       | Close on scrim tap.                          |
+| `duration`            | `number`                  | `200`   | no       | Animation duration in ms.                    |
+| `zIndex`              | `number`                  | `10`    | no       | Stacking level.                              |
+| `lazyRender`          | `boolean`                 | `true`  | no       | Defer content rendering until first open.    |
+| `safeAreaInsetBottom` | `boolean`                 | `true`  | no       | Pad the sheet for the device safe area.      |
+| `customTitleClass`    | `string`                  | `''`    | no       | Custom class for the title area.             |
+| `customClass`         | `string`                  | `''`    | no       | Custom class for the root node.              |
+| `customStyle`         | `string`                  | `''`    | no       | Custom inline style for the panel.           |
 
 `SnActionSheetAction` = `{ name?, description?, color?, icon?, disabled? }`.
 `SnActionSheetPanel` = `{ title?, name?, icon? }`.
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `update:modelValue` | `boolean` | v-model sync. |
-| `select` | `{ item, index }` or `{ item, rowIndex, colIndex }` | Row / cell tapped. |
-| `cancel` | — | Cancel tapped. |
-| `close` | — | Panel closed (forwarded from `sn-popup`). |
-| `click-modal` | — | Scrim tapped (forwarded from `sn-popup`). |
-| `enter` / `after-enter` / `leave` / `after-leave` | — | Animation legs (forwarded). |
+| Event                                             | Payload                                             | Description                               |
+| ------------------------------------------------- | --------------------------------------------------- | ----------------------------------------- |
+| `update:modelValue`                               | `boolean`                                           | v-model sync.                             |
+| `select`                                          | `{ item, index }` or `{ item, rowIndex, colIndex }` | Row / cell tapped.                        |
+| `cancel`                                          | —                                                   | Cancel tapped.                            |
+| `close`                                           | —                                                   | Panel closed (forwarded from `sn-popup`). |
+| `click-modal`                                     | —                                                   | Scrim tapped (forwarded from `sn-popup`). |
+| `enter` / `after-enter` / `leave` / `after-leave` | —                                                   | Animation legs (forwarded).               |
 
 ## Slots
 
-| Slot | Description |
-|---|---|
+| Slot      | Description                               |
+| --------- | ----------------------------------------- |
 | `default` | Content above the list, inside the panel. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-mp-color-text-primary` | Row labels |
-| Text secondary | `--sn-mp-color-text-secondary` | Title + grid captions |
-| Text tertiary | `--sn-mp-color-text-tertiary` | Row descriptions |
-| Text disabled | `--sn-mp-color-text-disabled` | Disabled rows |
-| Action primary | `--sn-mp-color-action-primary` | Grid icons |
-| Background elevated | `--sn-mp-color-background-elevated` | Cancel button |
-| Background subtle | `--sn-mp-color-background-subtle` | Gap strip |
-| Border subtle | `--sn-mp-color-border-subtle` | Row separators |
-| Font size SM / LG | `--sn-mp-font-size-sm` / `-lg` | Captions / row labels |
-| Line height normal | `--sn-mp-font-line-height-normal` | All text |
-| Spacing 2–5 | `--sn-mp-spacing-2` … `-5` | Padding + gaps |
+| Token               | CSS Variable                        | Purpose               |
+| ------------------- | ----------------------------------- | --------------------- |
+| Text primary        | `--sn-mp-color-text-primary`        | Row labels            |
+| Text secondary      | `--sn-mp-color-text-secondary`      | Title + grid captions |
+| Text tertiary       | `--sn-mp-color-text-tertiary`       | Row descriptions      |
+| Text disabled       | `--sn-mp-color-text-disabled`       | Disabled rows         |
+| Action primary      | `--sn-mp-color-action-primary`      | Grid icons            |
+| Background elevated | `--sn-mp-color-background-elevated` | Cancel button         |
+| Background subtle   | `--sn-mp-color-background-subtle`   | Gap strip             |
+| Border subtle       | `--sn-mp-color-border-subtle`       | Row separators        |
+| Font size SM / LG   | `--sn-mp-font-size-sm` / `-lg`      | Captions / row labels |
+| Line height normal  | `--sn-mp-font-line-height-normal`   | All text              |
+| Spacing 2–5         | `--sn-mp-spacing-2` … `-5`          | Padding + gaps        |
 
 ## Accessibility
 

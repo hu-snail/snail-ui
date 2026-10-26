@@ -22,16 +22,16 @@ Teleport three-column (H/M/S) panel with 12-hour mode and full keyboard support.
 
 ### SnTimePicker Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `number \| null` | `null` | ms timestamp (local TZ; date part preserved) |
-| format | `'HH:mm' \| 'HH:mm:ss'` | `'HH:mm:ss'` | Drives column count |
-| placeholder | `string` | — | Placeholder |
-| clearable | `boolean` | `false` | Clear button |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size |
-| status | `'default'\|'error'\|'warning'` | `'default'` | Status |
-| use12Hours | `boolean` | `false` | 12-hour + AM/PM |
+| Prop                | Type                                         | Default      | Notes                                        |
+| ------------------- | -------------------------------------------- | ------------ | -------------------------------------------- |
+| modelValue          | `number \| null`                             | `null`       | ms timestamp (local TZ; date part preserved) |
+| format              | `'HH:mm' \| 'HH:mm:ss'`                      | `'HH:mm:ss'` | Drives column count                          |
+| placeholder         | `string`                                     | —            | Placeholder                                  |
+| clearable           | `boolean`                                    | `false`      | Clear button                                 |
+| disabled / readonly | `boolean`                                    | `false`      | Disabled / read-only                         |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`   | Size                                         |
+| status              | `'default'\|'error'\|'warning'`              | `'default'`  | Status                                       |
+| use12Hours          | `boolean`                                    | `false`      | 12-hour + AM/PM                              |
 
 Keyboard: ArrowUp/Down steps the active column (immediate commit), Tab/Shift+Tab switch columns, Enter confirms, Esc closes. ARIA: combobox trigger + per-column listbox.
 

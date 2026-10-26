@@ -28,12 +28,12 @@
  * template: a consumer that mounts two templates then loads it once, because
  * both entry chunks import the same module.
  */
-import { existsSync, readFileSync, rmSync } from 'node:fs'
-import { dirname, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { existsSync, readFileSync, rmSync } from 'node:fs';
+import { dirname, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const root = resolve(__dirname, '..')
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = resolve(__dirname, '..');
 
 /**
  * Token layers concatenated into `dist/styles/tokens.css`, in cascade order:
@@ -46,106 +46,106 @@ const TOKEN_SOURCES = [
   resolve(root, '../tokens/styles/index.css'),
   resolve(root, '../tokens-web/styles/index.css'),
   resolve(root, '../tokens-mp/styles/index.css'),
-]
+];
 
-const TOKENS_FILE = 'styles/tokens.css'
+const TOKENS_FILE = 'styles/tokens.css';
 
 /** `@import` cannot survive being placed after sibling rules. */
 function stripAtImports(css) {
   return css
     .split('\n')
     .filter((line) => !/^\s*@import\b/i.test(line))
-    .join('\n')
+    .join('\n');
 }
 
 function readTokens() {
   return TOKEN_SOURCES.filter((file) => existsSync(file))
     .map((file) => stripAtImports(readFileSync(file, 'utf8')))
-    .join('\n')
+    .join('\n');
 }
 
 /** CSS Vite attributed to one chunk; the container differs across versions. */
 function cssOf(chunk) {
-  const meta = chunk.viteMetadata
-  if (!meta) return new Set()
-  const set = typeof meta.get === 'function' ? meta.get('importedCss') : meta.importedCss
-  return set ?? new Set()
+  const meta = chunk.viteMetadata;
+  if (!meta) return new Set();
+  const set = typeof meta.get === 'function' ? meta.get('importedCss') : meta.importedCss;
+  return set ?? new Set();
 }
 
 /** Depth-first over a chunk's static imports, collecting CSS dependencies first. */
 function collectCss(bundle, chunk, seen, out) {
-  if (seen.has(chunk.fileName)) return out
-  seen.add(chunk.fileName)
+  if (seen.has(chunk.fileName)) return out;
+  seen.add(chunk.fileName);
   for (const name of chunk.imports) {
-    const dep = bundle[name]
-    if (dep && dep.type === 'chunk') collectCss(bundle, dep, seen, out)
+    const dep = bundle[name];
+    if (dep && dep.type === 'chunk') collectCss(bundle, dep, seen, out);
   }
-  for (const file of cssOf(chunk)) if (!out.includes(file)) out.push(file)
-  return out
+  for (const file of cssOf(chunk)) if (!out.includes(file)) out.push(file);
+  return out;
 }
 
 /** Module specifier for a file inside the bundle, relative to its importer. */
 function specifier(fromFile, target) {
-  const rel = relative(dirname(fromFile), target).split('\\').join('/')
-  return rel.startsWith('.') ? rel : `./${rel}`
+  const rel = relative(dirname(fromFile), target).split('\\').join('/');
+  return rel.startsWith('.') ? rel : `./${rel}`;
 }
 
 /** `web/chat.js` → `web-chat.css`. */
 function styleFileName(entryFileName) {
-  return `styles/${entryFileName.replace(/\.js$/, '').replace(/\//g, '-')}.css`
+  return `styles/${entryFileName.replace(/\.js$/, '').replace(/\//g, '-')}.css`;
 }
 
 export function templateStyles() {
-  let outDir = 'dist'
+  let outDir = 'dist';
 
   return {
     name: 'snui-templates-styles',
     apply: 'build',
 
     configResolved(config) {
-      outDir = config.build.outDir
+      outDir = config.build.outDir;
     },
 
     buildStart() {
       // `emptyOutDir: false` keeps vite-tsc output around, so stale CSS from an
       // earlier build would otherwise survive and be shipped.
-      rmSync(resolve(root, outDir, 'styles'), { recursive: true, force: true })
+      rmSync(resolve(root, outDir, 'styles'), { recursive: true, force: true });
     },
 
     generateBundle(_options, bundle) {
-      const tokens = readTokens()
-      if (tokens) this.emitFile({ type: 'asset', fileName: TOKENS_FILE, source: tokens })
+      const tokens = readTokens();
+      if (tokens) this.emitFile({ type: 'asset', fileName: TOKENS_FILE, source: tokens });
 
       // Anything an entry did not lay claim to is an aggregation input; it is
       // dropped, so the shipped CSS is the token layer plus one file per
       // template and nothing else.
-      const kept = new Set([TOKENS_FILE])
+      const kept = new Set([TOKENS_FILE]);
 
       for (const chunk of Object.values(bundle)) {
-        if (chunk.type !== 'chunk' || !chunk.isEntry) continue
+        if (chunk.type !== 'chunk' || !chunk.isEntry) continue;
 
-        const cssFiles = collectCss(bundle, chunk, new Set(), [])
-        if (!cssFiles.length) continue
+        const cssFiles = collectCss(bundle, chunk, new Set(), []);
+        if (!cssFiles.length) continue;
 
-        const fileName = styleFileName(chunk.fileName)
-        kept.add(fileName)
+        const fileName = styleFileName(chunk.fileName);
+        kept.add(fileName);
         this.emitFile({
           type: 'asset',
           fileName,
           source: cssFiles.map((file) => bundle[file].source).join('\n'),
-        })
+        });
 
         const injected = [TOKENS_FILE, fileName]
           .map((target) => `import ${JSON.stringify(specifier(chunk.fileName, target))};`)
-          .join('\n')
-        chunk.code = `${chunk.code}\n${injected}\n`
+          .join('\n');
+        chunk.code = `${chunk.code}\n${injected}\n`;
       }
 
       for (const [fileName, item] of Object.entries(bundle)) {
         if (item.type === 'asset' && fileName.endsWith('.css') && !kept.has(fileName)) {
-          delete bundle[fileName]
+          delete bundle[fileName];
         }
       }
     },
-  }
+  };
 }

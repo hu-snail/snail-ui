@@ -1,17 +1,17 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — bordered / bottom-bordered / single-line / single-column. */
-import { SnDataTable } from '@snui/vue-web'
+import { SnDataTable } from '@snui/vue-web';
 const columns = [
   { title: 'Name', key: 'name' },
   { title: 'Age', key: 'age' },
   { title: 'Address', key: 'address' },
-]
+];
 
 const data = [
   { key: 0, name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park' },
   { key: 1, name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park' },
   { key: 2, name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park' },
-]
+];
 </script>
 
 <template>
@@ -28,6 +28,5 @@ const data = [
   display: flex;
   flex-direction: column;
   gap: 24px;
-
 }
 </style>

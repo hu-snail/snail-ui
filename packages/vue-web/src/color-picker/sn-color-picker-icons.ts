@@ -7,8 +7,8 @@
  * Per AGENTS.md §113: emoji-as-UI-icon is forbidden. Every glyph ships
  * here as a Vue functional component.
  */
-import { defineComponent, h } from 'vue'
-import type { IconComponent } from '../icon/sn-icon-registry'
+import { defineComponent, h } from 'vue';
+import type { IconComponent } from '../icon/sn-icon-registry';
 
 function svgIconMulti(paths: string[], viewBox = '0 0 24 24'): IconComponent {
   return defineComponent({
@@ -29,12 +29,12 @@ function svgIconMulti(paths: string[], viewBox = '0 0 24 24'): IconComponent {
           'aria-hidden': 'true',
         },
         paths.map((d) => h('path', { d })),
-      )
+      );
     },
-  }) as unknown as IconComponent
+  }) as unknown as IconComponent;
 }
 
 /** Chevron-down — trigger arrow (rotates 180° while open). */
-export const ChevronDownIcon: IconComponent = svgIconMulti(['m6 9 6 6 6-6'])
+export const ChevronDownIcon: IconComponent = svgIconMulti(['m6 9 6 6 6-6']);
 /** X — clear button glyph. */
-export const CloseIcon: IconComponent = svgIconMulti(['M18 6 6 18', 'M6 6 18 18'])
+export const CloseIcon: IconComponent = svgIconMulti(['M18 6 6 18', 'M6 6 18 18']);

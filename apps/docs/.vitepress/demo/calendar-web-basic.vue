@@ -1,20 +1,20 @@
 <script setup lang="ts">
 /** Demo: SnCalendar — basic month view with v-model:value, custom cells, disabled dates. */
-import { ref } from 'vue'
-import { SnCalendar } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnCalendar } from '@snui/vue-web';
 
-const value = ref<number>(Date.now() + 24 * 3600_000)
+const value = ref<number>(Date.now() + 24 * 3600_000);
 
 // Disable yesterday, like the reference basic demo.
 function isDateDisabled(ts: number): boolean {
-  const start = new Date(ts)
-  const today = new Date()
-  const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1)
+  const start = new Date(ts);
+  const today = new Date();
+  const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
   return (
-    start.getFullYear() === yesterday.getFullYear()
-    && start.getMonth() === yesterday.getMonth()
-    && start.getDate() === yesterday.getDate()
-  )
+    start.getFullYear() === yesterday.getFullYear() &&
+    start.getMonth() === yesterday.getMonth() &&
+    start.getDate() === yesterday.getDate()
+  );
 }
 </script>
 
@@ -25,9 +25,7 @@ function isDateDisabled(ts: number): boolean {
         <div class="sn-demo-cell">{{ year }}-{{ month }}-{{ date }}</div>
       </template>
     </SnCalendar>
-    <p class="sn-demo-value">
-      当前选中时间戳：{{ value }}
-    </p>
+    <p class="sn-demo-value">当前选中时间戳：{{ value }}</p>
   </div>
 </template>
 

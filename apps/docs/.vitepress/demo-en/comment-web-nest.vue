@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnComment — 嵌套评论：回复通过 default 插槽放进父评论内容区，缩进跟随父头像。 */
-import { SnComment } from '@snui/vue-web'
+import { SnComment } from '@snui/vue-web';
 </script>
 
 <template>
@@ -55,6 +55,10 @@ import { SnComment } from '@snui/vue-web'
 }
 
 .action:hover {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 2%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
 }
 </style>

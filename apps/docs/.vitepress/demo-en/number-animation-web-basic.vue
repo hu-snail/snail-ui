@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /** Demo: SnNumberAnimation — basic tween inside SnStatistic, replay via play(). */
-import { ref } from 'vue'
-import { SnButton, SnNumberAnimation, SnStatistic } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnNumberAnimation, SnStatistic } from '@snui/vue-web';
 
-const animationRef = ref<{ play: () => void } | null>(null)
+const animationRef = ref<{ play: () => void } | null>(null);
 
 function handlePlay(): void {
-  animationRef.value?.play()
+  animationRef.value?.play();
 }
 </script>
 

@@ -19,41 +19,41 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnCollapse, SnCollapseItem } from '@snui/vue-web'
+import { SnCollapse, SnCollapseItem } from '@snui/vue-web';
 ```
 
 ## SnCollapse Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `expandedNames` | `Array<string \| number>` | `[]` | Expanded names (controlled). |
-| `defaultExpandedNames` | `Array<string \| number>` | `[]` | Initial expanded names (uncontrolled). |
-| `accordion` | `boolean` | `false` | Restrict to one expanded item at a time. |
-| `arrowPlacement` | `'left' \| 'right'` | `'left'` | Caret position. |
-| `trigger` | `'click' \| 'hover'` | `'click'` | Header interaction mode. |
+| Name                   | Type                      | Default   | Description                              |
+| ---------------------- | ------------------------- | --------- | ---------------------------------------- |
+| `expandedNames`        | `Array<string \| number>` | `[]`      | Expanded names (controlled).             |
+| `defaultExpandedNames` | `Array<string \| number>` | `[]`      | Initial expanded names (uncontrolled).   |
+| `accordion`            | `boolean`                 | `false`   | Restrict to one expanded item at a time. |
+| `arrowPlacement`       | `'left' \| 'right'`       | `'left'`  | Caret position.                          |
+| `trigger`              | `'click' \| 'hover'`      | `'click'` | Header interaction mode.                 |
 
 ## SnCollapseItem Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `name` | `string \| number` | `''` | Unique identifier within parent SnCollapse. Required for toggling. |
-| `title` | `string` | `''` | Header label. |
-| `disabled` | `boolean` | `false` | Disable toggle. |
-| `arrow` | `string \| boolean` | `''` | Per-item arrow override (true/false/'left'/'right'). |
+| Name       | Type                | Default | Description                                                        |
+| ---------- | ------------------- | ------- | ------------------------------------------------------------------ |
+| `name`     | `string \| number`  | `''`    | Unique identifier within parent SnCollapse. Required for toggling. |
+| `title`    | `string`            | `''`    | Header label.                                                      |
+| `disabled` | `boolean`           | `false` | Disable toggle.                                                    |
+| `arrow`    | `string \| boolean` | `''`    | Per-item arrow override (true/false/'left'/'right').               |
 
 ## Events
 
-| Event | Payload | When |
-|---|---|---|
-| `update:expandedNames` | `(names: Array<string \| number>)` | Any item toggled / `v-model:expanded-names` sync. |
-| `itemHeaderClick` | `(name: string \| number)` | Header clicked (mirror of n-collapse `onItemHeaderClick`). |
+| Event                  | Payload                            | When                                                       |
+| ---------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `update:expandedNames` | `(names: Array<string \| number>)` | Any item toggled / `v-model:expanded-names` sync.          |
+| `itemHeaderClick`      | `(name: string \| number)`         | Header clicked (mirror of n-collapse `onItemHeaderClick`). |
 
 ## Slots
 
-| Component | Slot | Description |
-|---|---|---|
-| `SnCollapse` | `default` | Sequence of `<SnCollapseItem>` children. |
-| `SnCollapseItem` | `default` | Body content (revealed when expanded). |
+| Component        | Slot      | Description                              |
+| ---------------- | --------- | ---------------------------------------- |
+| `SnCollapse`     | `default` | Sequence of `<SnCollapseItem>` children. |
+| `SnCollapseItem` | `default` | Body content (revealed when expanded).   |
 
 ## §112 future markers
 
@@ -63,10 +63,10 @@ import { SnCollapse, SnCollapseItem } from '@snui/vue-web'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background surface | `--sn-web-color-background-surface` | Item background |
-| Text primary | `--sn-web-color-text-primary` | Header + body text |
+| Token              | CSS Variable                        | Purpose            |
+| ------------------ | ----------------------------------- | ------------------ |
+| Background surface | `--sn-web-color-background-surface` | Item background    |
+| Text primary       | `--sn-web-color-text-primary`       | Header + body text |
 
 ## Accessibility
 

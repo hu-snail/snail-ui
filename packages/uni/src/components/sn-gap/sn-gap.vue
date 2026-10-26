@@ -42,9 +42,9 @@
  *   - 布局间距体系 — 用 flex / grid 容器样式
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnGap' })
+defineOptions({ name: 'SnGap' });
 
 // Reference: wot-ui wd-gap Attributes
 //   (https://wot-ui.cn/component/gap.html)
@@ -52,15 +52,15 @@ defineOptions({ name: 'SnGap' })
 const props = withDefaults(
   defineProps<{
     /** 间隔槽高度：数字按 px，字符串原样转发（如 `20rpx`）。 */
-    height?: string | number
+    height?: string | number;
     /** 背景颜色（内联覆盖，默认透明）。 */
-    bgColor?: string
+    bgColor?: string;
     /** 是否开启底部安全区适配（叠加 `env(safe-area-inset-bottom)`）。 */
-    safeAreaBottom?: boolean
+    safeAreaBottom?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义 inline style。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     height: 14,
@@ -69,27 +69,27 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 /** Numeric heights are px (upstream contract); strings pass through. */
 const resolvedHeight = computed<string>(() =>
   typeof props.height === 'number' ? `${props.height}px` : props.height,
-)
+);
 
 const rootClass = computed(() => [
   'sn-gap',
   props.safeAreaBottom ? 'sn-gap--safe-area' : '',
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = [`height: ${resolvedHeight.value}`]
+  const parts: string[] = [`height: ${resolvedHeight.value}`];
   if (props.bgColor && props.bgColor !== 'transparent') {
-    parts.push(`background-color: ${props.bgColor}`)
+    parts.push(`background-color: ${props.bgColor}`);
   }
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 </script>
 
 <template>

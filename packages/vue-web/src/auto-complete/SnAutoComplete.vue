@@ -17,54 +17,45 @@
  * `role="option"` children.
  */
 
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  useId,
-  useSlots,
-  watch,
-} from 'vue'
-import { XIcon } from '../icon/sn-input-icons'
-import SnIcon from '../icon/SnIcon.vue'
-import { useOverlayFollow } from '../_internal/use-overlay-follow'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useSlots, watch } from 'vue';
+import { XIcon } from '../icon/sn-input-icons';
+import SnIcon from '../icon/SnIcon.vue';
+import { useOverlayFollow } from '../_internal/use-overlay-follow';
 import {
   type SnAutoCompleteGetShow,
   type SnAutoCompleteOptionLabel,
   type SnAutoCompleteRawOption,
-} from './sn-auto-complete-types'
+} from './sn-auto-complete-types';
 
-defineOptions({ name: 'SnAutoComplete' })
+defineOptions({ name: 'SnAutoComplete' });
 
 const props = withDefaults(
   defineProps<{
     /** Bound value (`v-model`). */
-    modelValue?: string
+    modelValue?: string;
     /** Static candidate list. Ignored when `getShow` is provided. */
-    options?: SnAutoCompleteRawOption[]
+    options?: SnAutoCompleteRawOption[];
     /** Placeholder text. */
-    placeholder?: string
+    placeholder?: string;
     /** Show the clear (×) button when the field has a non-empty value. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Disables interaction (typing, selecting, clearing). */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — value visible, not editable, no dropdown. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. */
-    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large'
+    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large';
     /** Visual status. Drives border color. */
-    status?: 'default' | 'error' | 'warning'
+    status?: 'default' | 'error' | 'warning';
     /** Blur the input after an option is selected (naive `blur-after-select`). */
-    blurAfterSelect?: boolean
+    blurAfterSelect?: boolean;
     /**
      * Dynamically compute the candidate list from the current value
      * (naive `get-show`). Wins over the static `options` prop.
      */
-    getShow?: SnAutoCompleteGetShow
+    getShow?: SnAutoCompleteGetShow;
     /** Native ARIA label. */
-    ariaLabel?: string
+    ariaLabel?: string;
   }>(),
   {
     modelValue: '',
@@ -78,31 +69,31 @@ const props = withDefaults(
     blurAfterSelect: false,
     ariaLabel: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync. Fired on every keystroke and on selection / clear. */
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string): void;
   /** Naive `on-update:value` alias — same payload as update:modelValue. */
-  (e: 'update:value', value: string): void
+  (e: 'update:value', value: string): void;
   /** Value committed (selection / clear). */
-  (e: 'change', value: string): void
+  (e: 'change', value: string): void;
   /** An option was picked from the dropdown (click or Enter). */
-  (e: 'select', value: string): void
+  (e: 'select', value: string): void;
   /** Native focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Native blur. */
-  (e: 'blur', event: FocusEvent): void
+  (e: 'blur', event: FocusEvent): void;
   /** Every input keystroke (naive `on-input`). */
-  (e: 'search', value: string): void
-}>()
+  (e: 'search', value: string): void;
+}>();
 
 defineSlots<{
   /** Empty-state content for the dropdown (default: "no data" text). */
-  empty?(): unknown
-}>()
+  empty?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /* ------------------------------------------------------------------ *
  * Option normalization
@@ -111,29 +102,29 @@ const slots = useSlots()
 /** A normalized candidate ready for rendering / selection. */
 interface NormalizedOption {
   /** Flat display text (segments joined with a space). */
-  text: string
+  text: string;
   /** Value committed on selection. */
-  value: string
+  value: string;
   /** Label segments — each matched independently for highlight. */
-  segments: string[]
-  disabled: boolean
+  segments: string[];
+  disabled: boolean;
   /** Stable DOM id for aria-activedescendant. */
-  id: string
+  id: string;
 }
 
-let optionIdSeed = 0
+let optionIdSeed = 0;
 
 function toSegments(label: SnAutoCompleteOptionLabel | undefined, fallback: string): string[] {
-  if (label === undefined || label === null) return [fallback]
+  if (label === undefined || label === null) return [fallback];
   if (Array.isArray(label)) {
-    const flat = label.filter((s) => typeof s === 'string' && s.length > 0)
-    return flat.length > 0 ? flat : [fallback]
+    const flat = label.filter((s) => typeof s === 'string' && s.length > 0);
+    return flat.length > 0 ? flat : [fallback];
   }
-  return [String(label)]
+  return [String(label)];
 }
 
 function normalizeOption(raw: SnAutoCompleteRawOption): NormalizedOption | null {
-  const idx = optionIdSeed++
+  const idx = optionIdSeed++;
   if (typeof raw === 'string') {
     return {
       text: raw,
@@ -141,18 +132,18 @@ function normalizeOption(raw: SnAutoCompleteRawOption): NormalizedOption | null 
       segments: [raw],
       disabled: false,
       id: `sn-auto-complete-option-${idx}`,
-    }
+    };
   }
-  if (raw === null || raw === undefined) return null
-  const segments = toSegments(raw.label, raw.value ?? '')
-  const text = segments.join(' ')
+  if (raw === null || raw === undefined) return null;
+  const segments = toSegments(raw.label, raw.value ?? '');
+  const text = segments.join(' ');
   return {
     text,
     value: raw.value !== undefined && raw.value !== null ? String(raw.value) : text,
     segments,
     disabled: raw.disabled === true,
     id: `sn-auto-complete-option-${idx}`,
-  }
+  };
 }
 
 /**
@@ -160,146 +151,138 @@ function normalizeOption(raw: SnAutoCompleteRawOption): NormalizedOption | null 
  * (naive semantics — when getShow is provided, options is ignored).
  */
 const activeOptions = computed<NormalizedOption[]>(() => {
-  const rawList = props.getShow !== undefined
-    ? props.getShow(props.modelValue)
-    : props.options
-  return rawList
-    .map(normalizeOption)
-    .filter((o): o is NormalizedOption => o !== null)
-})
+  const rawList = props.getShow !== undefined ? props.getShow(props.modelValue) : props.options;
+  return rawList.map(normalizeOption).filter((o): o is NormalizedOption => o !== null);
+});
 
 /* ------------------------------------------------------------------ *
  * Open / highlight state
  * ------------------------------------------------------------------ */
 
-const isFocused = ref(false)
+const isFocused = ref(false);
 /** Dropdown visibility — only meaningful while focused (naive shows on input/focus). */
-const isMenuOpen = ref(false)
+const isMenuOpen = ref(false);
 /** Index of the keyboard-highlighted option (-1 = none). */
-const activeIndex = ref(-1)
+const activeIndex = ref(-1);
 
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
 /** Open the dropdown and reset the highlight. */
 function openMenu(): void {
-  if (!isInteractive.value) return
-  isMenuOpen.value = true
-  activeIndex.value = -1
+  if (!isInteractive.value) return;
+  isMenuOpen.value = true;
+  activeIndex.value = -1;
   void nextTick(() => {
-    repositionMenu()
-    followViewport.start()
-  })
+    repositionMenu();
+    followViewport.start();
+  });
 }
 
 function closeMenu(): void {
-  isMenuOpen.value = false
-  followViewport.stop()
-  activeIndex.value = -1
+  isMenuOpen.value = false;
+  followViewport.stop();
+  activeIndex.value = -1;
 }
 
-const showMenu = computed(() =>
-  isMenuOpen.value && activeOptions.value.length > 0,
-)
+const showMenu = computed(() => isMenuOpen.value && activeOptions.value.length > 0);
 
 /** Show the empty slot / text when open with zero candidates. */
-const showEmpty = computed(() =>
-  isMenuOpen.value && activeOptions.value.length === 0,
-)
+const showEmpty = computed(() => isMenuOpen.value && activeOptions.value.length === 0);
 
 /** Currently highlighted option (or null). */
 const activeOption = computed<NormalizedOption | null>(() => {
-  const i = activeIndex.value
-  if (i < 0 || i >= activeOptions.value.length) return null
-  const found: NormalizedOption | undefined = activeOptions.value[i]
-  return found ?? null
-})
+  const i = activeIndex.value;
+  if (i < 0 || i >= activeOptions.value.length) return null;
+  const found: NormalizedOption | undefined = activeOptions.value[i];
+  return found ?? null;
+});
 
 /** aria-activedescendant on the input — points at the highlighted option. */
 const ariaActiveDescendant = computed<string | undefined>(() =>
   activeOption.value !== null ? activeOption.value.id : undefined,
-)
+);
 
 /** Reset the highlight whenever the candidate list changes underneath. */
 watch(activeOptions, () => {
-  activeIndex.value = -1
-})
+  activeIndex.value = -1;
+});
 
 /* ------------------------------------------------------------------ *
  * Input handling
  * ------------------------------------------------------------------ */
 
 function emitValue(next: string): void {
-  emit('update:modelValue', next)
-  emit('update:value', next)
+  emit('update:modelValue', next);
+  emit('update:value', next);
 }
 
 function onInput(event: Event): void {
-  if (!isInteractive.value) return
-  const target = event.target as HTMLInputElement
-  emitValue(target.value)
-  emit('search', target.value)
-  openMenu()
+  if (!isInteractive.value) return;
+  const target = event.target as HTMLInputElement;
+  emitValue(target.value);
+  emit('search', target.value);
+  openMenu();
 }
 
 function onFocus(event: FocusEvent): void {
-  if (props.disabled) return
-  isFocused.value = true
-  emit('focus', event)
-  openMenu()
+  if (props.disabled) return;
+  isFocused.value = true;
+  emit('focus', event);
+  openMenu();
 }
 
 function onBlur(event: FocusEvent): void {
-  isFocused.value = false
-  closeMenu()
-  emit('blur', event)
+  isFocused.value = false;
+  closeMenu();
+  emit('blur', event);
 }
 
 function onClear(event: MouseEvent): void {
-  if (!isInteractive.value) return
-  event.stopPropagation()
-  emitValue('')
-  emit('change', '')
-  openMenu()
+  if (!isInteractive.value) return;
+  event.stopPropagation();
+  emitValue('');
+  emit('change', '');
+  openMenu();
 }
 
-const clearVisible = computed(() =>
-  props.clearable && isInteractive.value && props.modelValue.length > 0,
-)
+const clearVisible = computed(
+  () => props.clearable && isInteractive.value && props.modelValue.length > 0,
+);
 
 /* ------------------------------------------------------------------ *
  * Keyboard navigation — ArrowUp/Down highlight, Enter selects, Esc closes
  * ------------------------------------------------------------------ */
 
 function isSelectableIndex(i: number): boolean {
-  if (i < 0 || i >= activeOptions.value.length) return false
-  const candidate: NormalizedOption | undefined = activeOptions.value[i]
-  return candidate !== undefined && !candidate.disabled
+  if (i < 0 || i >= activeOptions.value.length) return false;
+  const candidate: NormalizedOption | undefined = activeOptions.value[i];
+  return candidate !== undefined && !candidate.disabled;
 }
 
 function onKeydown(event: KeyboardEvent): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-    if (!showMenu.value) return
-    event.preventDefault()
-    const count = activeOptions.value.length
-    if (count === 0) return
+    if (!showMenu.value) return;
+    event.preventDefault();
+    const count = activeOptions.value.length;
+    if (count === 0) return;
     // Step by 1, skipping disabled options; wrap around at both ends.
-    const dir = event.key === 'ArrowDown' ? 1 : -1
+    const dir = event.key === 'ArrowDown' ? 1 : -1;
     // Start "before the list" for ArrowUp so none(-1) wraps to the last
     // option, mirroring naive's menu behavior.
-    let i = dir === 1 ? activeIndex.value : (activeIndex.value < 0 ? count : activeIndex.value)
+    let i = dir === 1 ? activeIndex.value : activeIndex.value < 0 ? count : activeIndex.value;
     for (let step = 0; step < count; step++) {
-      i = (i + dir + count) % count
-      if (isSelectableIndex(i)) break
+      i = (i + dir + count) % count;
+      if (isSelectableIndex(i)) break;
     }
-    if (isSelectableIndex(i)) activeIndex.value = i
+    if (isSelectableIndex(i)) activeIndex.value = i;
   } else if (event.key === 'Enter') {
-    if (!showMenu.value || activeOption.value === null) return
-    event.preventDefault()
-    selectOption(activeOption.value)
+    if (!showMenu.value || activeOption.value === null) return;
+    event.preventDefault();
+    selectOption(activeOption.value);
   } else if (event.key === 'Escape') {
-    if (isMenuOpen.value) event.preventDefault()
-    closeMenu()
+    if (isMenuOpen.value) event.preventDefault();
+    closeMenu();
   }
 }
 
@@ -307,25 +290,25 @@ function onKeydown(event: KeyboardEvent): void {
  * Selection
  * ------------------------------------------------------------------ */
 
-const inputId = useId()
-const inputEl = ref<HTMLInputElement | null>(null)
+const inputId = useId();
+const inputEl = ref<HTMLInputElement | null>(null);
 
 function selectOption(option: NormalizedOption): void {
-  if (option.disabled) return
-  emitValue(option.value)
-  emit('change', option.value)
-  emit('select', option.value)
-  closeMenu()
+  if (option.disabled) return;
+  emitValue(option.value);
+  emit('change', option.value);
+  emit('select', option.value);
+  closeMenu();
   if (props.blurAfterSelect) {
     nextTick(() => {
-      inputEl.value?.blur()
-    })
+      inputEl.value?.blur();
+    });
   }
 }
 
 /** Hover moves the highlight too (naive behavior). */
 function onOptionEnter(i: number): void {
-  if (isSelectableIndex(i)) activeIndex.value = i
+  if (isSelectableIndex(i)) activeIndex.value = i;
 }
 
 /* ------------------------------------------------------------------ *
@@ -334,25 +317,25 @@ function onOptionEnter(i: number): void {
  * ------------------------------------------------------------------ */
 
 function onDocumentPointerdown(event: PointerEvent): void {
-  const target = event.target as Node | null
-  if (target === null) return
-  const root = rootEl.value
-  if (root !== null && root.contains(target)) return
-  closeMenu()
+  const target = event.target as Node | null;
+  if (target === null) return;
+  const root = rootEl.value;
+  if (root !== null && root.contains(target)) return;
+  closeMenu();
 }
 
-const rootEl = ref<HTMLElement | null>(null)
+const rootEl = ref<HTMLElement | null>(null);
 
 // Document-level listener must bind client-only (§SSR): setup also runs on
 // the server where `document` does not exist. onBeforeUnmount is skipped by
 // Vue on the server, so the pair stays balanced.
 onMounted(() => {
-  document.addEventListener('pointerdown', onDocumentPointerdown)
-})
+  document.addEventListener('pointerdown', onDocumentPointerdown);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', onDocumentPointerdown)
-})
+  document.removeEventListener('pointerdown', onDocumentPointerdown);
+});
 
 /* ------------------------------------------------------------------ *
  * Panel placement + scroll follow — the dropdown is absolutely positioned
@@ -362,21 +345,21 @@ onBeforeUnmount(() => {
  * room, so placement is re-derived on scroll/resize while open).
  * ------------------------------------------------------------------ */
 
-const menuEl = ref<HTMLElement | null>(null)
-const isFlipped = ref(false)
+const menuEl = ref<HTMLElement | null>(null);
+const isFlipped = ref(false);
 
 function repositionMenu(): void {
-  const root = rootEl.value
-  const menu = menuEl.value
-  if (root === null || menu === null) return
-  const rootRect = root.getBoundingClientRect()
-  const roomBelow = window.innerHeight - rootRect.bottom
-  const roomAbove = rootRect.top
-  isFlipped.value = roomBelow < menu.offsetHeight && roomAbove > roomBelow
+  const root = rootEl.value;
+  const menu = menuEl.value;
+  if (root === null || menu === null) return;
+  const rootRect = root.getBoundingClientRect();
+  const roomBelow = window.innerHeight - rootRect.bottom;
+  const roomAbove = rootRect.top;
+  isFlipped.value = roomBelow < menu.offsetHeight && roomAbove > roomBelow;
 }
 
 /** Scroll/resize follow while the dropdown is open (useOverlayFollow). */
-const followViewport = useOverlayFollow(rootEl, menuEl, repositionMenu, isMenuOpen)
+const followViewport = useOverlayFollow(rootEl, menuEl, repositionMenu, isMenuOpen);
 
 /* ------------------------------------------------------------------ *
  * Highlight — naive's nested-label highlight semantics, simplified to
@@ -385,8 +368,8 @@ const followViewport = useOverlayFollow(rootEl, menuEl, repositionMenu, isMenuOp
 
 /** One renderable chunk of a segment: matched (highlighted) or plain. */
 interface LabelChunk {
-  text: string
-  matched: boolean
+  text: string;
+  matched: boolean;
 }
 
 /**
@@ -394,44 +377,40 @@ interface LabelChunk {
  * Containment match (case-sensitive), simplified from naive's matcher.
  */
 function splitSegment(segment: string, query: string): LabelChunk[] {
-  if (query.length === 0) return [{ text: segment, matched: false }]
-  const chunks: LabelChunk[] = []
-  let rest = segment
+  if (query.length === 0) return [{ text: segment, matched: false }];
+  const chunks: LabelChunk[] = [];
+  let rest = segment;
   while (rest.length > 0) {
-    const hit = rest.indexOf(query)
+    const hit = rest.indexOf(query);
     if (hit < 0) {
-      chunks.push({ text: rest, matched: false })
-      break
+      chunks.push({ text: rest, matched: false });
+      break;
     }
-    if (hit > 0) chunks.push({ text: rest.slice(0, hit), matched: false })
-    chunks.push({ text: query, matched: true })
-    rest = rest.slice(hit + query.length)
+    if (hit > 0) chunks.push({ text: rest.slice(0, hit), matched: false });
+    chunks.push({ text: query, matched: true });
+    rest = rest.slice(hit + query.length);
   }
-  return chunks
+  return chunks;
 }
 
 /**
  * Highlight query — the value the user typed. Uses the current modelValue
  * (the input text) so both `options` and `getShow` flows highlight.
  */
-const highlightQuery = computed(() => props.modelValue)
+const highlightQuery = computed(() => props.modelValue);
 
 const renderedOptions = computed(() =>
   activeOptions.value.map((option) => ({
     ...option,
-    chunkedSegments: option.segments.map(
-      (segment) => splitSegment(segment, highlightQuery.value),
-    ),
+    chunkedSegments: option.segments.map((segment) => splitSegment(segment, highlightQuery.value)),
   })),
-)
+);
 
 /* ------------------------------------------------------------------ *
  * ARIA / classes
  * ------------------------------------------------------------------ */
 
-const ariaInvalid = computed(() =>
-  props.status === 'error' ? 'true' : undefined,
-)
+const ariaInvalid = computed(() => (props.status === 'error' ? 'true' : undefined));
 
 const classList = computed(() => [
   'sn-auto-complete',
@@ -443,11 +422,10 @@ const classList = computed(() => [
     'sn-auto-complete--with-clear': clearVisible.value,
     'sn-auto-complete--menu-open': isMenuOpen.value,
   },
-])
+]);
 
 // useId import lives in the <script setup> block above.
 </script>
-
 
 <template>
   <div
@@ -478,7 +456,7 @@ const classList = computed(() => [
       @focus="onFocus"
       @blur="onBlur"
       @keydown="onKeydown"
-    >
+    />
 
     <span v-if="clearVisible" class="sn-auto-complete__clear">
       <button
@@ -526,8 +504,13 @@ const classList = computed(() => [
                 v-for="(chunk, ci) in chunks"
                 :key="ci"
                 :class="chunk.matched ? 'sn-auto-complete__option-hl' : ''"
-              >{{ chunk.text }}</span>
-              <span v-if="si < option.chunkedSegments.length - 1" class="sn-auto-complete__option-sep">&nbsp;</span>
+                >{{ chunk.text }}</span
+              >
+              <span
+                v-if="si < option.chunkedSegments.length - 1"
+                class="sn-auto-complete__option-sep"
+                >&nbsp;</span
+              >
             </template>
           </div>
         </template>
@@ -542,27 +525,57 @@ const classList = computed(() => [
   align-items: center;
   position: relative;
   padding: 0 var(--sn-web-auto-complete-padding-x, var(--sn-web-input-padding-x, 10px));
-  border: 1px solid var(--sn-web-auto-complete-border-color, var(--sn-web-input-border-color, var(--sn-web-color-border-subtle)));
+  border: 1px solid
+    var(
+      --sn-web-auto-complete-border-color,
+      var(--sn-web-input-border-color, var(--sn-web-color-border-subtle))
+    );
   border-radius: var(--sn-web-auto-complete-radius, var(--sn-web-input-radius, 6px));
-  background-color: var(--sn-web-auto-complete-bg, var(--sn-web-input-bg, var(--sn-web-color-background-surface)));
-  color: var(--sn-web-auto-complete-text-color, var(--sn-web-input-text-color, var(--sn-web-color-text-primary)));
+  background-color: var(
+    --sn-web-auto-complete-bg,
+    var(--sn-web-input-bg, var(--sn-web-color-background-surface))
+  );
+  color: var(
+    --sn-web-auto-complete-text-color,
+    var(--sn-web-input-text-color, var(--sn-web-color-text-primary))
+  );
   font-family: inherit;
   line-height: 1;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
   box-sizing: border-box;
 }
 
 .sn-auto-complete:focus-within {
-  border-color: var(--sn-web-auto-complete-border-color-focus, var(--sn-web-input-border-color-focus, var(--sn-web-color-action-primary)));
+  border-color: var(
+    --sn-web-auto-complete-border-color-focus,
+    var(--sn-web-input-border-color-focus, var(--sn-web-color-action-primary))
+  );
   box-shadow: 0 0 0 3px var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15));
 }
 
 /* Sizes — mirror SnInput presets. */
-.sn-auto-complete--mini { height: 22px; font-size: 11px; }
-.sn-auto-complete--tiny { height: 24px; font-size: 12px; }
-.sn-auto-complete--small { height: 28px; font-size: 13px; }
-.sn-auto-complete--medium { height: 32px; font-size: 14px; }
-.sn-auto-complete--large { height: 40px; font-size: 15px; }
+.sn-auto-complete--mini {
+  height: 22px;
+  font-size: 11px;
+}
+.sn-auto-complete--tiny {
+  height: 24px;
+  font-size: 12px;
+}
+.sn-auto-complete--small {
+  height: 28px;
+  font-size: 13px;
+}
+.sn-auto-complete--medium {
+  height: 32px;
+  font-size: 14px;
+}
+.sn-auto-complete--large {
+  height: 40px;
+  font-size: 15px;
+}
 
 /* Status */
 .sn-auto-complete--status-error {
@@ -606,7 +619,10 @@ const classList = computed(() => [
 }
 
 .sn-auto-complete__native::placeholder {
-  color: var(--sn-web-auto-complete-placeholder-color, var(--sn-web-input-placeholder-color, var(--sn-web-color-text-tertiary)));
+  color: var(
+    --sn-web-auto-complete-placeholder-color,
+    var(--sn-web-input-placeholder-color, var(--sn-web-color-text-tertiary))
+  );
   opacity: 1;
 }
 
@@ -707,7 +723,10 @@ const classList = computed(() => [
 
 .sn-auto-complete__option:hover,
 .sn-auto-complete__option--active {
-  background-color: var(--sn-web-auto-complete-option-bg-active, var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04)));
+  background-color: var(
+    --sn-web-auto-complete-option-bg-active,
+    var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.04))
+  );
   color: var(--sn-web-auto-complete-option-text-color-active, var(--sn-web-color-action-primary));
 }
 

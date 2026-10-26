@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: SnLink — type colors, underline, disabled, custom tag and icon slot. */
-import { ExternalLink, FileText } from 'lucide-vue-next'
-import { SnLink } from '@snui/vue-web'
+import { ExternalLink, FileText } from 'lucide-vue-next';
+import { SnLink } from '@snui/vue-web';
 </script>
 
 <template>

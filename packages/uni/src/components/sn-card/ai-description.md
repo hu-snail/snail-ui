@@ -26,38 +26,38 @@ be added to the wd-card parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnCard } from '@snui/uni'
+import { SnCard } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `title` | `string` | `''` | no | Card title. Rendered in title region; ignored when `title` slot is provided. |
-| `type` | `string` | `''` | no | Card type. `'rectangle'` applies the rectangle (大格) visual. |
-| `customTitleClass` | `string` | `''` | no | Custom class for the title region. |
-| `customContentClass` | `string` | `''` | no | Custom class for the content region. |
-| `customFooterClass` | `string` | `''` | no | Custom class for the footer region. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
+| Name                 | Type     | Default | Required | Description                                                                  |
+| -------------------- | -------- | ------- | -------- | ---------------------------------------------------------------------------- |
+| `title`              | `string` | `''`    | no       | Card title. Rendered in title region; ignored when `title` slot is provided. |
+| `type`               | `string` | `''`    | no       | Card type. `'rectangle'` applies the rectangle (大格) visual.                |
+| `customTitleClass`   | `string` | `''`    | no       | Custom class for the title region.                                           |
+| `customContentClass` | `string` | `''`    | no       | Custom class for the content region.                                         |
+| `customFooterClass`  | `string` | `''`    | no       | Custom class for the footer region.                                          |
+| `customClass`        | `string` | `''`    | no       | Custom class for the root node.                                              |
+| `customStyle`        | `string` | `''`    | no       | Custom inline style for the root node.                                       |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                       |
+| --------- | ------------------------------------------------- |
 | `default` | Card content (rendered between title and footer). |
-| `title` | Custom title region. Overrides the `title` prop. |
-| `footer` | Bottom action area. Omitted when no slot content. |
+| `title`   | Custom title region. Overrides the `title` prop.  |
+| `footer`  | Bottom action area. Omitted when no slot content. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Card padding | `--sn-mp-card-padding` | Default inner padding |
-| Card radius | `--sn-mp-card-radius` | Border radius |
-| Border default | `--sn-mp-color-border-default` | Footer divider line |
-| Text primary | `--sn-mp-color-text-primary` | Title + body text color |
-| Background surface | `--sn-mp-color-background-surface` | Card background |
+| Token              | CSS Variable                       | Purpose                 |
+| ------------------ | ---------------------------------- | ----------------------- |
+| Card padding       | `--sn-mp-card-padding`             | Default inner padding   |
+| Card radius        | `--sn-mp-card-radius`              | Border radius           |
+| Border default     | `--sn-mp-color-border-default`     | Footer divider line     |
+| Text primary       | `--sn-mp-color-text-primary`       | Title + body text color |
+| Background surface | `--sn-mp-color-background-surface` | Card background         |
 
 ## Accessibility
 

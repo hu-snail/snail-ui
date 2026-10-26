@@ -46,45 +46,45 @@ All four hooks are "return false to veto": `before-choose` runs before the picke
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `fileList` | `UploadFileItem[]` | `[]` | File list (`v-model:file-list`) |
-| `action` / `header` / `formData` / `name` | `string` / `Record` / `Record` / `string` | `''` / `{}` / `{}` / `'file'` | `uni.uploadFile` parameters |
-| `multiple` | `boolean` | `false` | Allow picking several files |
-| `disabled` | `boolean` | `false` | Blocks picking and row actions |
-| `limit` | `number` | `0` | Max file count (`0` = unconstrained) |
-| `showLimitNum` | `boolean` | `true` | Render the `current / limit` counter |
-| `maxSize` | `number` | `Number.MAX_VALUE` | Per-file byte ceiling |
-| `sourceType` / `sizeType` | `UploadSourceType[]` / `UploadSizeType[]` | `['album','camera']` / `['original','compressed']` | Picker options |
-| `beforeUpload` / `beforeChoose` / `beforeRemove` / `beforePreview` | function | `undefined` | Veto / transform hooks |
-| `buildFormData` | `(file) => Record` | `undefined` | Custom multipart builder |
-| `accept` | `'image' \| 'video' \| 'media' \| 'file' \| 'all'` | `'image'` | Picker API selection |
-| `imageMode` | `'scaleToFill' \| 'aspectFit' \| 'aspectFill' \| 'widthFix'` | `'aspectFit'` | Preview fit mode |
-| `customEvokeClass` / `customPreviewClass` | `string` | `''` | Tile classes |
-| `autoUpload` | `boolean` | `true` | Upload right after picking |
-| `uploadMethod` | `(file) => Promise<response>` | `undefined` | Custom transfer implementation |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                                                               | Type                                                         | Default                                            | Description                          |
+| ------------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------- | ------------------------------------ |
+| `fileList`                                                         | `UploadFileItem[]`                                           | `[]`                                               | File list (`v-model:file-list`)      |
+| `action` / `header` / `formData` / `name`                          | `string` / `Record` / `Record` / `string`                    | `''` / `{}` / `{}` / `'file'`                      | `uni.uploadFile` parameters          |
+| `multiple`                                                         | `boolean`                                                    | `false`                                            | Allow picking several files          |
+| `disabled`                                                         | `boolean`                                                    | `false`                                            | Blocks picking and row actions       |
+| `limit`                                                            | `number`                                                     | `0`                                                | Max file count (`0` = unconstrained) |
+| `showLimitNum`                                                     | `boolean`                                                    | `true`                                             | Render the `current / limit` counter |
+| `maxSize`                                                          | `number`                                                     | `Number.MAX_VALUE`                                 | Per-file byte ceiling                |
+| `sourceType` / `sizeType`                                          | `UploadSourceType[]` / `UploadSizeType[]`                    | `['album','camera']` / `['original','compressed']` | Picker options                       |
+| `beforeUpload` / `beforeChoose` / `beforeRemove` / `beforePreview` | function                                                     | `undefined`                                        | Veto / transform hooks               |
+| `buildFormData`                                                    | `(file) => Record`                                           | `undefined`                                        | Custom multipart builder             |
+| `accept`                                                           | `'image' \| 'video' \| 'media' \| 'file' \| 'all'`           | `'image'`                                          | Picker API selection                 |
+| `imageMode`                                                        | `'scaleToFill' \| 'aspectFit' \| 'aspectFill' \| 'widthFix'` | `'aspectFit'`                                      | Preview fit mode                     |
+| `customEvokeClass` / `customPreviewClass`                          | `string`                                                     | `''`                                               | Tile classes                         |
+| `autoUpload`                                                       | `boolean`                                                    | `true`                                             | Upload right after picking           |
+| `uploadMethod`                                                     | `(file) => Promise<response>`                                | `undefined`                                        | Custom transfer implementation       |
+| `customClass` / `customStyle`                                      | `string`                                                     | `''`                                               | Root class / inline style            |
 
 > **Not implemented**: `reupload`, `extension`, `compressed` / `maxDuration` (video post-processing), `loadingType` / `loadingColor` / `loadingSize`, `statusKey`, `successStatus`, `onPreviewFail` and the `preview-cover` slot.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:fileList` | List changed | `(list: UploadFileItem[])` |
-| `change` | List changed (same tick) | `{ fileList }` |
-| `remove` | A file was removed | `{ file, fileList }` |
-| `success` / `fail` | Transfer finished | `{ file, response \| error }` |
-| `progress` | Reserved for byte-level progress | `{ file, percent }` |
-| `oversize` | A file exceeded `maxSize` | `{ file, maxSize }` |
-| `chooseerror` | The picker failed (or the runtime is absent) | `(error)` |
+| Event              | Description                                  | Payload                       |
+| ------------------ | -------------------------------------------- | ----------------------------- |
+| `update:fileList`  | List changed                                 | `(list: UploadFileItem[])`    |
+| `change`           | List changed (same tick)                     | `{ fileList }`                |
+| `remove`           | A file was removed                           | `{ file, fileList }`          |
+| `success` / `fail` | Transfer finished                            | `{ file, response \| error }` |
+| `progress`         | Reserved for byte-level progress             | `{ file, percent }`           |
+| `oversize`         | A file exceeded `maxSize`                    | `{ file, maxSize }`           |
+| `chooseerror`      | The picker failed (or the runtime is absent) | `(error)`                     |
 
 ## Exposed API
 
-| Member | Signature | Description |
-| --- | --- | --- |
+| Member   | Signature             | Description                        |
+| -------- | --------------------- | ---------------------------------- |
 | `submit` | `() => Promise<void>` | Upload every pending / failed file |
-| `abort` | `(task?) => void` | Abort one task, or all of them |
+| `abort`  | `(task?) => void`     | Abort one task, or all of them     |
 
 ## Slots
 
@@ -92,16 +92,16 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-soft`` | File tile fill |
-| ``--sn-mp-color-background-sunken`` | Empty thumb |
-| ``--sn-mp-color-background-overlay`` | Progress scrim / remove plate |
-| ``--sn-mp-color-border-default`` | Picker tile dashes |
-| ``--sn-mp-color-feedback-danger`` | Failed tile border |
-| ``--sn-mp-color-text-tertiary`` | Picker glyph + counter |
-| ``--sn-mp-color-text-on-primary`` | Progress / remove glyph |
-| ``--sn-mp-radius-lg` / `-md`` | Tile / remove corners |
+| Token                              | Purpose                       |
+| ---------------------------------- | ----------------------------- |
+| `--sn-mp-color-background-soft`    | File tile fill                |
+| `--sn-mp-color-background-sunken`  | Empty thumb                   |
+| `--sn-mp-color-background-overlay` | Progress scrim / remove plate |
+| `--sn-mp-color-border-default`     | Picker tile dashes            |
+| `--sn-mp-color-feedback-danger`    | Failed tile border            |
+| `--sn-mp-color-text-tertiary`      | Picker glyph + counter        |
+| `--sn-mp-color-text-on-primary`    | Progress / remove glyph       |
+| ``--sn-mp-radius-lg` / `-md``      | Tile / remove corners         |
 
 ## Accessibility
 
@@ -112,4 +112,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

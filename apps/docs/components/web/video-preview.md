@@ -39,55 +39,55 @@
 
 ### SnVideoPreview Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| src | `string` | — | 视频地址（必填） |
-| poster | `string` | `undefined` | 播放前显示的封面（`background` 下不生效） |
-| preview-src | `string` | `undefined` | 浮层内使用的大尺寸地址，缺省回退到 `src` |
-| width | `string \| number` | `320` | 媒体框宽度（数字按 px）；`background` 下不生效 |
-| height | `string \| number` | `undefined` | 媒体框高度（数字按 px） |
-| aspect-ratio | `string` | `undefined` | 媒体框宽高比，如 `'16 / 9'`；仅在未显式给出 height 时生效 |
-| object-fit | `'contain' \| 'cover' \| 'fill'` | `'cover'` | 视频在媒体框内的适应方式；`background` 下强制 `'cover'` |
-| controls | `boolean` | `true` | **渲染我们自己的美化控制条**（播放 / 暂停、静音、进度条、时间、全屏）。注意：它**不再**指定浏览器原生控件 |
-| native-controls | `boolean` | `false` | 渲染浏览器原生 `controls` 属性。原生控件**无法美化**、不同浏览器 / 系统表现不一致，仅作逃生舱；与 `controls` 可同时为真 |
-| background | `boolean` | `false` | 装饰性横幅 / 背景视频模式：强制关闭 `controls` 与 `native-controls`，强制 `muted` + `autoplay` + `loop` + `object-fit: cover`，媒体框绝对定位铺满父容器，视频 `aria-hidden` 且不接收指针事件 |
-| autoplay | `boolean` | `false` | 挂载后自动播放（浏览器策略要求静音，见「兼容性说明」） |
-| loop | `boolean` | `false` | 循环播放 |
-| muted | `boolean` | `false` | 静音播放 |
-| preload | `'none' \| 'metadata' \| 'auto'` | `'metadata'` | 预加载策略 |
-| preview-disabled | `boolean` | `false` | 禁用浮层：不渲染放大入口，`showPreview()` 变为空操作（`background` 下同样禁用） |
-| show-toolbar | `boolean` | `true` | 是否渲染右上角放大入口（hover / focus 时显现；`background` 下不渲染） |
-| close-on-mask-click | `boolean` | `true` | 点击遮罩是否关闭浮层 |
-| title | `string` | `undefined` | 浮层标题，同时作为无障碍名称的兜底 |
-| alt | `string` | `undefined` | 视频无障碍说明，优先级高于 `title` |
+| 名称                | 类型                             | 默认值       | 说明                                                                                                                                                                                         |
+| ------------------- | -------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| src                 | `string`                         | —            | 视频地址（必填）                                                                                                                                                                             |
+| poster              | `string`                         | `undefined`  | 播放前显示的封面（`background` 下不生效）                                                                                                                                                    |
+| preview-src         | `string`                         | `undefined`  | 浮层内使用的大尺寸地址，缺省回退到 `src`                                                                                                                                                     |
+| width               | `string \| number`               | `320`        | 媒体框宽度（数字按 px）；`background` 下不生效                                                                                                                                               |
+| height              | `string \| number`               | `undefined`  | 媒体框高度（数字按 px）                                                                                                                                                                      |
+| aspect-ratio        | `string`                         | `undefined`  | 媒体框宽高比，如 `'16 / 9'`；仅在未显式给出 height 时生效                                                                                                                                    |
+| object-fit          | `'contain' \| 'cover' \| 'fill'` | `'cover'`    | 视频在媒体框内的适应方式；`background` 下强制 `'cover'`                                                                                                                                      |
+| controls            | `boolean`                        | `true`       | **渲染我们自己的美化控制条**（播放 / 暂停、静音、进度条、时间、全屏）。注意：它**不再**指定浏览器原生控件                                                                                    |
+| native-controls     | `boolean`                        | `false`      | 渲染浏览器原生 `controls` 属性。原生控件**无法美化**、不同浏览器 / 系统表现不一致，仅作逃生舱；与 `controls` 可同时为真                                                                      |
+| background          | `boolean`                        | `false`      | 装饰性横幅 / 背景视频模式：强制关闭 `controls` 与 `native-controls`，强制 `muted` + `autoplay` + `loop` + `object-fit: cover`，媒体框绝对定位铺满父容器，视频 `aria-hidden` 且不接收指针事件 |
+| autoplay            | `boolean`                        | `false`      | 挂载后自动播放（浏览器策略要求静音，见「兼容性说明」）                                                                                                                                       |
+| loop                | `boolean`                        | `false`      | 循环播放                                                                                                                                                                                     |
+| muted               | `boolean`                        | `false`      | 静音播放                                                                                                                                                                                     |
+| preload             | `'none' \| 'metadata' \| 'auto'` | `'metadata'` | 预加载策略                                                                                                                                                                                   |
+| preview-disabled    | `boolean`                        | `false`      | 禁用浮层：不渲染放大入口，`showPreview()` 变为空操作（`background` 下同样禁用）                                                                                                              |
+| show-toolbar        | `boolean`                        | `true`       | 是否渲染右上角放大入口（hover / focus 时显现；`background` 下不渲染）                                                                                                                        |
+| close-on-mask-click | `boolean`                        | `true`       | 点击遮罩是否关闭浮层                                                                                                                                                                         |
+| title               | `string`                         | `undefined`  | 浮层标题，同时作为无障碍名称的兜底                                                                                                                                                           |
+| alt                 | `string`                         | `undefined`  | 视频无障碍说明，优先级高于 `title`                                                                                                                                                           |
 
 ### SnVideoPreview Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| play | `()` | 内联播放开始 |
-| pause | `()` | 内联播放暂停 |
-| ended | `()` | 内联播放结束 |
-| error | `(event: Event)` | 视频加载或解码失败 |
-| preview | `()` | 预览浮层打开 |
-| close | `()` | 预览浮层关闭（Esc / 遮罩 / 关闭按钮 / closePreview()） |
+| 名称    | 参数             | 说明                                                   |
+| ------- | ---------------- | ------------------------------------------------------ |
+| play    | `()`             | 内联播放开始                                           |
+| pause   | `()`             | 内联播放暂停                                           |
+| ended   | `()`             | 内联播放结束                                           |
+| error   | `(event: Event)` | 视频加载或解码失败                                     |
+| preview | `()`             | 预览浮层打开                                           |
+| close   | `()`             | 预览浮层关闭（Esc / 遮罩 / 关闭按钮 / closePreview()） |
 
 ### SnVideoPreview Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| placeholder | `()` | 无封面或尚未播放时替换封面区域（`background` 下不渲染） |
-| play-icon | `()` | 替换居中的播放图标（默认 SnIcon + lucide Play） |
-| toolbar | `{ showPreview: () => void }` | 替换右上角放大入口，调用 `showPreview` 打开浮层 |
+| 名称        | 参数                          | 说明                                                    |
+| ----------- | ----------------------------- | ------------------------------------------------------- |
+| placeholder | `()`                          | 无封面或尚未播放时替换封面区域（`background` 下不渲染） |
+| play-icon   | `()`                          | 替换居中的播放图标（默认 SnIcon + lucide Play）         |
+| toolbar     | `{ showPreview: () => void }` | 替换右上角放大入口，调用 `showPreview` 打开浮层         |
 
 ### SnVideoPreview Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
-| play | `() => void` | 开始内联播放 |
-| pause | `() => void` | 暂停内联播放 |
-| showPreview | `() => void` | 打开全屏预览浮层（`preview-disabled` / `background` 时为空操作） |
-| closePreview | `() => void` | 关闭全屏预览浮层 |
+| 名称         | 类型         | 说明                                                             |
+| ------------ | ------------ | ---------------------------------------------------------------- |
+| play         | `() => void` | 开始内联播放                                                     |
+| pause        | `() => void` | 暂停内联播放                                                     |
+| showPreview  | `() => void` | 打开全屏预览浮层（`preview-disabled` / `background` 时为空操作） |
+| closePreview | `() => void` | 关闭全屏预览浮层                                                 |
 
 ### 自定义控制条
 
@@ -127,12 +127,12 @@
 
 控制条样式全部来自组件级 `--sn-web-video-preview-*` / `--sn-web-video-controls-*` 变量，每个都有字面量兜底，可逐实例覆盖：
 
-| Token | 用途 |
-| --- | --- |
-| `--sn-web-video-preview-radius` / `--sn-web-video-preview-bg` | 媒体框圆角与底色 |
-| `--sn-web-video-preview-mask-bg` / `--sn-web-video-preview-play-*` | 封面遮罩与居中播放按钮 |
-| `--sn-web-video-preview-toolbar-*` | 右上角放大入口 |
-| `--sn-web-video-preview-controls-z-index` | 自定义控制条层级 |
-| `--sn-web-video-controls-bg` / `--sn-web-video-controls-color` | 控制条底色与文字颜色 |
-| `--sn-web-video-controls-timeline-bg` / `--sn-web-video-controls-thumb-bg` | 进度条轨道与滑块 |
-| `--sn-web-video-preview-overlay-*` | 预览浮层遮罩、标题、关闭按钮、尺寸 |
+| Token                                                                      | 用途                               |
+| -------------------------------------------------------------------------- | ---------------------------------- |
+| `--sn-web-video-preview-radius` / `--sn-web-video-preview-bg`              | 媒体框圆角与底色                   |
+| `--sn-web-video-preview-mask-bg` / `--sn-web-video-preview-play-*`         | 封面遮罩与居中播放按钮             |
+| `--sn-web-video-preview-toolbar-*`                                         | 右上角放大入口                     |
+| `--sn-web-video-preview-controls-z-index`                                  | 自定义控制条层级                   |
+| `--sn-web-video-controls-bg` / `--sn-web-video-controls-color`             | 控制条底色与文字颜色               |
+| `--sn-web-video-controls-timeline-bg` / `--sn-web-video-controls-thumb-bg` | 进度条轨道与滑块                   |
+| `--sn-web-video-preview-overlay-*`                                         | 预览浮层遮罩、标题、关闭按钮、尺寸 |

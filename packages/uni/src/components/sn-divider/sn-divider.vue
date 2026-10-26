@@ -30,33 +30,33 @@
  *   - 装饰图标 / 动画
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnDivider' })
+defineOptions({ name: 'SnDivider' });
 
 const props = withDefaults(
   defineProps<{
     /** Axis: horizontal (full-width line) or vertical (inline line). */
-    direction?: 'horizontal' | 'vertical'
+    direction?: 'horizontal' | 'vertical';
     /** Dashed instead of solid. */
-    dashed?: boolean
+    dashed?: boolean;
     /** Hairline (0.5px-like thin line) — mobile common. Default true. */
-    hairline?: boolean
+    hairline?: boolean;
     /** Optional color override (CSS color value). */
-    color?: string
+    color?: string;
     /** Vertical margin (only for horizontal direction). */
-    marginSize?: 'small' | 'medium' | 'large'
+    marginSize?: 'small' | 'medium' | 'large';
     /** Content position along the line (`wd-divider` `content-position`). */
-    contentPosition?: 'left' | 'center' | 'right'
+    contentPosition?: 'left' | 'center' | 'right';
     /**
      * Vertical separator (`wd-divider` `vertical`). Equivalent to
      * `direction: 'vertical'`; either one renders the vertical variant.
      */
-    vertical?: boolean
+    vertical?: boolean;
     /** Extra class on the root node (`wd-divider` `custom-class`). */
-    customClass?: string
+    customClass?: string;
     /** Extra inline style on the root node (`wd-divider` `custom-style`). */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     direction: 'horizontal',
@@ -69,19 +69,19 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Optional text shown on the horizontal line (e.g. "OR"). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** `vertical` and `direction: 'vertical'` are the same axis. */
-const isVertical = computed(() => props.vertical || props.direction === 'vertical')
+const isVertical = computed(() => props.vertical || props.direction === 'vertical');
 
 const orientation = computed<'horizontal' | 'vertical'>(() =>
-  (isVertical.value ? 'vertical' : 'horizontal'),
-)
+  isVertical.value ? 'vertical' : 'horizontal',
+);
 
 /**
  * Root `:style` — the dashed/colour border declarations plus `customStyle`.
@@ -92,11 +92,10 @@ const rootStyle = computed(() => {
   const border: Record<string, string> = {
     borderTopStyle: props.dashed ? 'dashed' : 'solid',
     borderLeftStyle: props.dashed ? 'dashed' : 'solid',
-  }
-  if (props.color) border.borderColor = props.color
-  return [border, props.customStyle]
-})
-
+  };
+  if (props.color) border.borderColor = props.color;
+  return [border, props.customStyle];
+});
 </script>
 
 <template>

@@ -12,29 +12,29 @@ snail-aui v3.1 是面向 **Vue 3（Web 端，PC 桌面）** + **uni-app（移动
 
 ## 两端差异
 
-| 维度 | Web 端（PC 桌面） | uni 端（移动触屏） |
-|---|---|---|
-| 典型应用 | 管理后台、CRM、ERP、IDE-like、低代码平台 | 邮箱/内容/O2O、企业 App |
-| 操作方式 | 鼠标 + 键盘 | 触屏 + 手势 |
-| 分辨率 | 1280×720+，自适应 4K | 320-414 宽优先 |
-| 组件清单 | 信息密度型（Table / Tree / Pagination / Cascader / DatePicker ...） | 流式布局型（List / PullRefresh / swiper / sticky-tabs / lazy-image ...） |
-| 命名空间 | SnButton / SnForm / SnTable ... | sn-button / sn-list / sn-grid ... |
-| Token 别名 | `var(--sn-web-*)` | `var(--sn-mp-*)` |
-| 尺寸单位 | px | rpx（自动转换）|
-| API 风格 | Web 端配置驱动 | uni 端事件驱动 |
+| 维度       | Web 端（PC 桌面）                                                   | uni 端（移动触屏）                                                       |
+| ---------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 典型应用   | 管理后台、CRM、ERP、IDE-like、低代码平台                            | 邮箱/内容/O2O、企业 App                                                  |
+| 操作方式   | 鼠标 + 键盘                                                         | 触屏 + 手势                                                              |
+| 分辨率     | 1280×720+，自适应 4K                                                | 320-414 宽优先                                                           |
+| 组件清单   | 信息密度型（Table / Tree / Pagination / Cascader / DatePicker ...） | 流式布局型（List / PullRefresh / swiper / sticky-tabs / lazy-image ...） |
+| 命名空间   | SnButton / SnForm / SnTable ...                                     | sn-button / sn-list / sn-grid ...                                        |
+| Token 别名 | `var(--sn-web-*)`                                                   | `var(--sn-mp-*)`                                                         |
+| 尺寸单位   | px                                                                  | rpx（自动转换）                                                          |
+| API 风格   | Web 端配置驱动                                                      | uni 端事件驱动                                                           |
 
 **少量共享**：Button / ConfigProvider / Icon 是两端的最低公约数组件。
 
 ## 跨端共用层
 
-| 共用 | 怎么区分端 |
-|---|---|
-| `@snui/tokens` 统一底层 | 输出 `--aui-*` 原始层（端无关）|
-| `@snui/style-packs` | 每个 Pack 标注 `end: web / mp / both` |
-| `@snui/ai` Skill + MCP | 工具输出按 `end` 过滤 |
-| `@snui/ai` ai-meta.json | components 数组按 end 分组 |
-| `@snui/cli` | resolver 按端、token-check 按端 |
-| `@snui/docs` | 左侧导航 Web / uni 两个分组 |
+| 共用                    | 怎么区分端                            |
+| ----------------------- | ------------------------------------- |
+| `@snui/tokens` 统一底层 | 输出 `--aui-*` 原始层（端无关）       |
+| `@snui/style-packs`     | 每个 Pack 标注 `end: web / mp / both` |
+| `@snui/ai` Skill + MCP  | 工具输出按 `end` 过滤                 |
+| `@snui/ai` ai-meta.json | components 数组按 end 分组            |
+| `@snui/cli`             | resolver 按端、token-check 按端       |
+| `@snui/docs`            | 左侧导航 Web / uni 两个分组           |
 
 ## 30 秒看懂
 

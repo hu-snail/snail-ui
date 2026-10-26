@@ -7,30 +7,30 @@
  * by tabs would also work, but Symbol avoids cross-version collisions).
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Vertical anchoring of the layout root. Mirrors naive-ui `position`. */
-export type SnLayoutPosition = 'static' | 'absolute'
+export type SnLayoutPosition = 'static' | 'absolute';
 
 /** Style value accepted by the layout style-passthrough props. */
-export type SnLayoutStyleValue = string | Record<string, string>
+export type SnLayoutStyleValue = string | Record<string, string>;
 
 /** Context provided by SnLayout into Header / Content / Footer / Sider. */
 export interface SnLayoutContext {
   /** Whether the layout arranges children in a row (sider present). */
-  hasSider: Ref<boolean>
+  hasSider: Ref<boolean>;
   /** Layout root positioning mode. */
-  position: Ref<SnLayoutPosition>
+  position: Ref<SnLayoutPosition>;
   /** Style passthrough applied to SnLayoutContent. */
-  contentStyle: Ref<SnLayoutStyleValue | undefined>
+  contentStyle: Ref<SnLayoutStyleValue | undefined>;
   /** Style passthrough applied to SnLayoutHeader. */
-  headerStyle: Ref<SnLayoutStyleValue | undefined>
+  headerStyle: Ref<SnLayoutStyleValue | undefined>;
   /** Style passthrough applied to SnLayoutFooter. */
-  footerStyle: Ref<SnLayoutStyleValue | undefined>
+  footerStyle: Ref<SnLayoutStyleValue | undefined>;
   /** Style passthrough applied to SnLayoutSider. */
-  siderStyle: Ref<SnLayoutStyleValue | undefined>
+  siderStyle: Ref<SnLayoutStyleValue | undefined>;
   /** Whether the child is registered inside a layout. */
-  isInsideLayout: true
+  isInsideLayout: true;
 }
 
-export const SN_LAYOUT_KEY: InjectionKey<SnLayoutContext> = Symbol('sn-layout')
+export const SN_LAYOUT_KEY: InjectionKey<SnLayoutContext> = Symbol('sn-layout');

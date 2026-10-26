@@ -37,70 +37,65 @@
  * `--sn-web-color-*` only (0 color literals).
  */
 
-import { computed, onBeforeUnmount, reactive, ref } from 'vue'
-import type { ComponentPublicInstance } from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import { useLocale } from '../locales/use-locale'
-import {
-  CloseIcon,
-  EyeIcon,
-  LoadingIcon,
-  UploadIcon,
-} from './sn-upload-icons'
+import { computed, onBeforeUnmount, reactive, ref } from 'vue';
+import type { ComponentPublicInstance } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import { useLocale } from '../locales/use-locale';
+import { CloseIcon, EyeIcon, LoadingIcon, UploadIcon } from './sn-upload-icons';
 import type {
   SnUploadBeforeUpload,
   SnUploadCustomRequest,
   SnUploadFile,
   SnUploadListType,
   SnUploadPreviewHandler,
-} from './sn-upload-types'
+} from './sn-upload-types';
 
-defineOptions({ name: 'SnUpload' })
+defineOptions({ name: 'SnUpload' });
 
 const props = withDefaults(
   defineProps<{
     /** Allow picking / dropping several files at once. */
-    multiple?: boolean
+    multiple?: boolean;
     /** `accept` attribute forwarded to the hidden file input. */
-    accept?: string
+    accept?: string;
     /** Disables interaction — no trigger, no drops, no removes. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — files visible, no adding / removing. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Max file count — the trigger hides once reached. */
-    max?: number
+    max?: number;
     /** Show the file list (default true). */
-    showFileList?: boolean
+    showFileList?: boolean;
     /** List rendering style: rows, or rows with objectURL thumbnails. */
-    listType?: SnUploadListType
+    listType?: SnUploadListType;
     /**
      * Custom upload driver. Resolve → done, reject → error. Without it no
      * network request is made — the component only maintains local state.
      */
-    customRequest?: SnUploadCustomRequest | undefined
+    customRequest?: SnUploadCustomRequest | undefined;
     /** Auto-upload on accept (default true). false → pending until submit(). */
-    defaultUpload?: boolean
+    defaultUpload?: boolean;
     /** Per-file gate; false (or a throw) keeps the file out of the list. */
-    onBeforeUpload?: SnUploadBeforeUpload | undefined
+    onBeforeUpload?: SnUploadBeforeUpload | undefined;
     /**
      * Render a full dashed drop area instead of the compact trigger button.
      * Additive divergence — n-upload has no `dragger`. The accept path is
      * identical (click opens the picker, drops anywhere on the root land in
      * the list).
      */
-    dragger?: boolean
+    dragger?: boolean;
     /**
      * Render a determinate progress bar on `uploading` entries that carry a
      * `percentage` (written by the `customRequest` driver). Entries without
      * one keep the indeterminate spinner.
      */
-    showProgress?: boolean
+    showProgress?: boolean;
     /**
      * Called when an entry's preview affordance is activated (mirrors
      * n-upload `onPreview`). The `preview` event fires as well, so a host
      * can use either the prop or `@preview`.
      */
-    onPreview?: SnUploadPreviewHandler | undefined
+    onPreview?: SnUploadPreviewHandler | undefined;
   }>(),
   {
     multiple: false,
@@ -116,72 +111,70 @@ const props = withDefaults(
     showProgress: true,
     onPreview: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Optional controlled mirror of the internal list (fires on every mutation). */
-  (e: 'update:fileList', value: SnUploadFile[]): void
+  (e: 'update:fileList', value: SnUploadFile[]): void;
   /** The file list changed (add / status move / remove). */
-  (e: 'change', fileList: SnUploadFile[]): void
+  (e: 'change', fileList: SnUploadFile[]): void;
   /** A file was removed from the list. */
-  (e: 'remove', file: SnUploadFile): void
+  (e: 'remove', file: SnUploadFile): void;
   /** An entry's preview affordance was activated (`onPreview` also fires). */
-  (e: 'preview', file: SnUploadFile): void
-}>()
+  (e: 'preview', file: SnUploadFile): void;
+}>();
 defineSlots<{
   /** Custom trigger content (replaces the default button body). */
-  trigger?(): unknown
-}>()
+  trigger?(): unknown;
+}>();
 
 /* ─────────── Locale ─────────── */
 
-const locale = useLocale()
+const locale = useLocale();
 
 /** `Upload` namespace of the active locale (labels + aria strings). */
-const uploadLocale = computed(() => locale.value.Upload)
+const uploadLocale = computed(() => locale.value.Upload);
 
 /**
  * Drop-area hint: base text plus the accept suffix. The suffix carries an
  * `{accept}` placeholder the locale author controls the wording of.
  */
 const draggerHintText = computed(() => {
-  const hint = uploadLocale.value.draggerHint
-  if (!props.accept) return hint
-  return hint + uploadLocale.value.draggerHintAccept.replace('{accept}', props.accept)
-})
+  const hint = uploadLocale.value.draggerHint;
+  if (!props.accept) return hint;
+  return hint + uploadLocale.value.draggerHintAccept.replace('{accept}', props.accept);
+});
 
 /* ─────────── State ─────────── */
 
 /** Internal (uncontrolled) file list — the single source of truth. */
-const fileList = ref<SnUploadFile[]>([])
+const fileList = ref<SnUploadFile[]>([]);
 
-const isDragging = ref(false)
+const isDragging = ref(false);
 
 /** Module-level seed → unique stable ids across every instance. */
-let uploadFileSeed = 0
+let uploadFileSeed = 0;
 
 /** Hidden native input + trigger button refs. */
-const inputRef = ref<HTMLInputElement | null>(null)
+const inputRef = ref<HTMLInputElement | null>(null);
 
 /** Template ref binder — VNodeRef-compatible function form (vue-tsc). */
 function setInputRef(el: Element | ComponentPublicInstance | null): void {
-  inputRef.value = el as HTMLInputElement | null
+  inputRef.value = el as HTMLInputElement | null;
 }
 
 /** Status label per state-machine status (uploading draws a spinner). */
 function statusText(status: SnUploadFile['status']): string {
   // Upload locale keys mirror the status union 1:1.
-  return uploadLocale.value[status]
+  return uploadLocale.value[status];
 }
 
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
-const isAtMax = computed(() =>
-  props.max !== undefined && fileList.value.length >= props.max,
-)
+const isAtMax = computed(() => props.max !== undefined && fileList.value.length >= props.max);
 
 /** The trigger renders only when interactive and below the max cap. */
-const triggerVisible = computed(() => isInteractive.value && !isAtMax.value)
+const triggerVisible = computed(() => isInteractive.value && !isAtMax.value);
 
 /**
  * Whether an entry offers a preview affordance: it has an objectURL
@@ -189,7 +182,7 @@ const triggerVisible = computed(() => isInteractive.value && !isAtMax.value)
  * render no affordance at all.
  */
 function isPreviewable(file: SnUploadFile): boolean {
-  return isInteractive.value && (props.onPreview !== undefined || file.url !== undefined)
+  return isInteractive.value && (props.onPreview !== undefined || file.url !== undefined);
 }
 
 /**
@@ -200,26 +193,26 @@ function isPreviewable(file: SnUploadFile): boolean {
  * so calling the prop directly as well would invoke it twice.
  */
 function previewFile(file: SnUploadFile): void {
-  emit('preview', file)
+  emit('preview', file);
 }
 
 /** Clamped 0–100 progress, or `undefined` when the entry has no value yet. */
 function clampedPercentage(file: SnUploadFile): number | undefined {
-  const value = file.percentage
-  if (typeof value !== 'number' || Number.isNaN(value)) return undefined
-  return Math.min(100, Math.max(0, Math.round(value)))
+  const value = file.percentage;
+  if (typeof value !== 'number' || Number.isNaN(value)) return undefined;
+  return Math.min(100, Math.max(0, Math.round(value)));
 }
 
 /** Whether an uploading entry draws the determinate bar instead of a spinner. */
 function showsProgressBar(file: SnUploadFile): boolean {
-  return props.showProgress && file.status === 'uploading' && clampedPercentage(file) !== undefined
+  return props.showProgress && file.status === 'uploading' && clampedPercentage(file) !== undefined;
 }
 
 /* ─────────── Helpers ─────────── */
 
 function emitListChange(): void {
-  emit('update:fileList', [...fileList.value])
-  emit('change', [...fileList.value])
+  emit('update:fileList', [...fileList.value]);
+  emit('change', [...fileList.value]);
 }
 
 /**
@@ -227,29 +220,29 @@ function emitListChange(): void {
  * (`previewAriaLabel` / `removeAriaLabel` / `uploadingAriaLabel`).
  */
 function withFileName(template: string, name: string): string {
-  return template.replace('{name}', name)
+  return template.replace('{name}', name);
 }
 
 /** Format bytes into a compact human string (B / KB / MB / GB). */
 function formatFileSize(bytes: number): string {
-  if (!Number.isFinite(bytes) || bytes < 0) return ''
-  if (bytes < 1024) return `${bytes} B`
-  const units = ['KB', 'MB', 'GB', 'TB']
-  let value = bytes
-  let unitIndex = -1
+  if (!Number.isFinite(bytes) || bytes < 0) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  const units = ['KB', 'MB', 'GB', 'TB'];
+  let value = bytes;
+  let unitIndex = -1;
   do {
-    value /= 1024
-    unitIndex++
-  } while (value >= 1024 && unitIndex < units.length - 1)
-  const text = value >= 10 ? String(Math.round(value)) : value.toFixed(1)
-  return `${text} ${units[unitIndex]}`
+    value /= 1024;
+    unitIndex++;
+  } while (value >= 1024 && unitIndex < units.length - 1);
+  const text = value >= 10 ? String(Math.round(value)) : value.toFixed(1);
+  return `${text} ${units[unitIndex]}`;
 }
 
 /** Revoke a thumbnail objectURL and drop the reference (§41). */
 function revokeUrl(file: SnUploadFile): void {
   if (file.url !== undefined) {
-    URL.revokeObjectURL(file.url)
-    file.url = undefined
+    URL.revokeObjectURL(file.url);
+    file.url = undefined;
   }
 }
 
@@ -269,7 +262,7 @@ function createEntry(file: File): SnUploadFile {
     file,
     status: 'pending',
     url: props.listType === 'image' ? URL.createObjectURL(file) : undefined,
-  })
+  });
 }
 
 /**
@@ -277,96 +270,96 @@ function createEntry(file: File): SnUploadFile {
  * cascade events, and start the upload when defaultUpload is on.
  */
 async function acceptFiles(rawFiles: File[]): Promise<void> {
-  if (!isInteractive.value || rawFiles.length === 0) return
+  if (!isInteractive.value || rawFiles.length === 0) return;
 
-  let candidates = props.multiple ? rawFiles : rawFiles.slice(0, 1)
+  let candidates = props.multiple ? rawFiles : rawFiles.slice(0, 1);
   if (props.max !== undefined) {
-    const room = Math.max(0, props.max - fileList.value.length)
-    candidates = candidates.slice(0, room)
+    const room = Math.max(0, props.max - fileList.value.length);
+    candidates = candidates.slice(0, room);
   }
-  if (candidates.length === 0) return
+  if (candidates.length === 0) return;
 
-  const gate = props.onBeforeUpload
+  const gate = props.onBeforeUpload;
   for (const raw of candidates) {
     // Build the entry once — the gate may mutate nothing but must see the
     // same object the list will hold; reject revokes its thumbnail (§41).
-    const entry = createEntry(raw)
+    const entry = createEntry(raw);
     if (gate) {
-      let allowed: boolean
+      let allowed: boolean;
       try {
-        allowed = await gate(entry)
+        allowed = await gate(entry);
       } catch {
-        allowed = false
+        allowed = false;
       }
       if (allowed === false) {
-        revokeUrl(entry)
-        continue
+        revokeUrl(entry);
+        continue;
       }
     }
 
-    fileList.value.push(entry)
-    emitListChange()
-    if (props.defaultUpload) await startUpload(entry)
+    fileList.value.push(entry);
+    emitListChange();
+    if (props.defaultUpload) await startUpload(entry);
   }
 }
 
 function onInputChange(event: Event): void {
-  const input = event.target as HTMLInputElement
-  const files = Array.from(input.files ?? [])
-  void acceptFiles(files)
+  const input = event.target as HTMLInputElement;
+  const files = Array.from(input.files ?? []);
+  void acceptFiles(files);
   // Reset so picking the same file again re-fires `change`.
-  input.value = ''
+  input.value = '';
 }
 
 function openPicker(): void {
-  if (!triggerVisible.value) return
-  inputRef.value?.click()
+  if (!triggerVisible.value) return;
+  inputRef.value?.click();
 }
 
 /* ─────────── Drag & drop ─────────── */
 
 function onDragOver(event: DragEvent): void {
-  if (!isInteractive.value) return
-  event.preventDefault()
-  isDragging.value = true
+  if (!isInteractive.value) return;
+  event.preventDefault();
+  isDragging.value = true;
 }
 
 function onDragLeave(): void {
-  isDragging.value = false
+  isDragging.value = false;
 }
 
 function onDrop(event: DragEvent): void {
-  isDragging.value = false
-  if (!isInteractive.value) return
-  event.preventDefault()
-  const files = Array.from(event.dataTransfer?.files ?? [])
-  void acceptFiles(files)
+  isDragging.value = false;
+  if (!isInteractive.value) return;
+  event.preventDefault();
+  const files = Array.from(event.dataTransfer?.files ?? []);
+  void acceptFiles(files);
 }
 
 /* ─────────── Status machine ─────────── */
 
 /** Drive one entry through uploading → done | error. */
 async function startUpload(entry: SnUploadFile): Promise<void> {
-  if (entry.status !== 'pending') return
-  const request = props.customRequest
+  if (entry.status !== 'pending') return;
+  const request = props.customRequest;
   if (!request) {
     // No driver → no network request; local state only.
-    entry.status = 'done'
-    emitListChange()
-    return
+    entry.status = 'done';
+    emitListChange();
+    return;
   }
-  entry.status = 'uploading'
-  emitListChange()
+  entry.status = 'uploading';
+  emitListChange();
   try {
-    await request(entry, [...fileList.value])
+    await request(entry, [...fileList.value]);
     if (entry.status === 'uploading') {
-      entry.status = 'done'
-      emitListChange()
+      entry.status = 'done';
+      emitListChange();
     }
   } catch {
     if (entry.status === 'uploading') {
-      entry.status = 'error'
-      emitListChange()
+      entry.status = 'error';
+      emitListChange();
     }
   }
 }
@@ -376,32 +369,32 @@ async function startUpload(entry: SnUploadFile): Promise<void> {
  * optional entry id; without it every pending entry starts.
  */
 async function submit(fileId?: string): Promise<void> {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   const targets = fileList.value.filter(
-    f => f.status === 'pending' && (fileId === undefined || f.id === fileId),
-  )
-  for (const entry of targets) await startUpload(entry)
+    (f) => f.status === 'pending' && (fileId === undefined || f.id === fileId),
+  );
+  for (const entry of targets) await startUpload(entry);
 }
 
 /* ─────────── Remove ─────────── */
 
 function removeFile(file: SnUploadFile): void {
-  if (!isInteractive.value) return
-  const index = fileList.value.indexOf(file)
-  if (index === -1) return
-  revokeUrl(file)
-  fileList.value.splice(index, 1)
-  emit('remove', file)
-  emitListChange()
+  if (!isInteractive.value) return;
+  const index = fileList.value.indexOf(file);
+  if (index === -1) return;
+  revokeUrl(file);
+  fileList.value.splice(index, 1);
+  emit('remove', file);
+  emitListChange();
 }
 
 /* ─────────── Dispose (§41) ─────────── */
 
 onBeforeUnmount(() => {
-  for (const file of fileList.value) revokeUrl(file)
-})
+  for (const file of fileList.value) revokeUrl(file);
+});
 
-defineExpose({ submit })
+defineExpose({ submit });
 </script>
 
 <template>
@@ -427,7 +420,7 @@ defineExpose({ submit })
       :disabled="disabled"
       :aria-label="uploadLocale.inputAriaLabel"
       @change="onInputChange"
-    >
+    />
 
     <button
       v-if="triggerVisible && dragger"
@@ -458,10 +451,7 @@ defineExpose({ submit })
       </slot>
     </button>
 
-    <ul
-      v-if="showFileList && fileList.length > 0"
-      class="sn-upload__list"
-    >
+    <ul v-if="showFileList && fileList.length > 0" class="sn-upload__list">
       <li
         v-for="file in fileList"
         :key="file.id"
@@ -474,7 +464,7 @@ defineExpose({ submit })
           class="sn-upload__thumb"
           :src="file.url"
           :alt="file.name"
-        >
+        />
         <button
           v-if="isPreviewable(file)"
           type="button"
@@ -587,7 +577,9 @@ defineExpose({ submit })
   font: inherit;
   font-size: var(--sn-web-upload-font-size, 14px);
   cursor: pointer;
-  transition: border-color 0.15s ease-out, color 0.15s ease-out;
+  transition:
+    border-color 0.15s ease-out,
+    color 0.15s ease-out;
 }
 
 .sn-upload__trigger:hover {
@@ -666,8 +658,12 @@ defineExpose({ submit })
 }
 
 @keyframes sn-upload-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .sn-upload__spin {
@@ -707,8 +703,7 @@ defineExpose({ submit })
   width: 100%;
   min-height: var(--sn-web-upload-dragger-height, 140px);
   padding: var(--sn-web-upload-dragger-padding, 16px 20px);
-  border: 1px dashed
-    var(--sn-web-upload-dragger-border-color, var(--sn-web-color-border-default));
+  border: 1px dashed var(--sn-web-upload-dragger-border-color, var(--sn-web-color-border-default));
   border-radius: var(--sn-web-upload-radius, 6px);
   background-color: var(--sn-web-upload-dragger-bg, var(--sn-web-color-background-subtle));
   color: var(--sn-web-upload-text-color, var(--sn-web-color-text-primary));

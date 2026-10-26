@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnTreeSelect — custom fields. */
-import { ref } from 'vue'
-import { SnTreeSelect } from '@snui/vue-web'
-const value = ref<string | null>(null)
+import { ref } from 'vue';
+import { SnTreeSelect } from '@snui/vue-web';
+const value = ref<string | null>(null);
 const options = [
   {
     title: '部门',
@@ -12,7 +12,7 @@ const options = [
       { title: '设计组', key: 'design' },
     ],
   },
-]
+];
 </script>
 
 <template>
@@ -22,6 +22,6 @@ const options = [
     label-field="title"
     key-field="key"
     placeholder="自定义字段"
-    style="width: 240px;"
+    style="width: 240px"
   />
 </template>

@@ -3,7 +3,7 @@
  * Demo: SnButton (Web) — block & round.
  * Per AUI-DOCS-016: imports the real @snui/vue-web SnButton.
  */
-import { SnButton } from '@snui/vue-web'
+import { SnButton } from '@snui/vue-web';
 </script>
 
 <template>

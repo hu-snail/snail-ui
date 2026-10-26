@@ -26,18 +26,18 @@
 
 ### SnTreeSelect Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `SnTreeSelectValue \| SnTreeSelectValue[]` | — | 单值或 multiple 数组 |
-| multiple | `boolean` | `false` | 多选（勾选独立不级联） |
-| options | `SnTreeSelectOptionInput[]` | `[]` | 树形选项 |
-| defaultExpandAll | `boolean` | `false` | 初始全展开 |
-| placeholder | `string` | — | 占位 |
-| clearable | `boolean` | `false` | 清空按钮 |
-| filterable | `boolean` | `false` | label 匹配 + 展开祖先 |
-| disabled / readonly | `boolean` | `false` | 禁用 / 只读 |
-| size / status | 同其它表单组件 | `'medium'` / `'default'` | 尺寸 / 校验状态 |
-| labelField / keyField / childrenField | `string` | — | 字段映射（原始 `key` 字段优先） |
+| Prop                                  | 类型                                       | 默认值                   | 说明                            |
+| ------------------------------------- | ------------------------------------------ | ------------------------ | ------------------------------- |
+| modelValue                            | `SnTreeSelectValue \| SnTreeSelectValue[]` | —                        | 单值或 multiple 数组            |
+| multiple                              | `boolean`                                  | `false`                  | 多选（勾选独立不级联）          |
+| options                               | `SnTreeSelectOptionInput[]`                | `[]`                     | 树形选项                        |
+| defaultExpandAll                      | `boolean`                                  | `false`                  | 初始全展开                      |
+| placeholder                           | `string`                                   | —                        | 占位                            |
+| clearable                             | `boolean`                                  | `false`                  | 清空按钮                        |
+| filterable                            | `boolean`                                  | `false`                  | label 匹配 + 展开祖先           |
+| disabled / readonly                   | `boolean`                                  | `false`                  | 禁用 / 只读                     |
+| size / status                         | 同其它表单组件                             | `'medium'` / `'default'` | 尺寸 / 校验状态                 |
+| labelField / keyField / childrenField | `string`                                   | —                        | 字段映射（原始 `key` 字段优先） |
 
 事件：`update:modelValue` / `change` / `clear` / `focus` / `blur`；Slot：`empty`。键盘：ArrowUp/Down 移动、ArrowLeft 收起/跳父、ArrowRight 展开/下钻、Enter 选中、Esc 关闭。aria：tree + treeitem（aria-level/expanded/selected）。
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTime — custom format strings (date-fns token subset). */
-import { SnTime } from '@snui/vue-web'
+import { SnTime } from '@snui/vue-web';
 </script>
 
 <template>

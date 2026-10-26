@@ -2,7 +2,7 @@
 /**
  * alert-web-basic — the minimal alert: type + title + body.
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>

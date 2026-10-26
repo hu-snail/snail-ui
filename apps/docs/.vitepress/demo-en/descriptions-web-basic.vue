@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDescriptions — 默认三列 key/value 明细表。 */
-import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web'
+import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web';
 </script>
 
 <template>

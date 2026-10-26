@@ -53,7 +53,7 @@ const bindings = resolveEnvironment({
   style: MODERN_STYLE,
   density: COMFORTABLE_DENSITY,
   instanceOverrides: { '--sn-web-button-radius': '0px' },
-})
+});
 ```
 
 按依赖顺序：Primitive 先，Semantic 后，Component 最后。Instance overrides 顶优先级。
@@ -61,21 +61,21 @@ const bindings = resolveEnvironment({
 ## snCssVars + 端参数
 
 ```ts
-import { snCssVars } from '@snui/tokens'
+import { snCssVars } from '@snui/tokens';
 
 // Web 端（输出 --sn-web-* 别名）
 const webCss = snCssVars({
   end: 'web',
   theme: DARK_THEME,
   style: MODERN_STYLE,
-})
+});
 
 // uni 端（输出 --sn-mp-* 别名 + rpx）
 const mpCss = snCssVars({
   end: 'mp',
   theme: DARK_THEME,
   style: MODERN_STYLE,
-})
+});
 ```
 
 ## 全局 vs 实例

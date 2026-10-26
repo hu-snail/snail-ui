@@ -39,49 +39,49 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| text | string \| string[] | '' | 通知栏文案（字符串或按条） |
-| type | 'warning' \| 'info' \| 'danger' | 'warning' | 类型（底色 + 兜底图标） |
-| prefix | string | '' | 左侧图标名（sn-icon 注册表） |
-| scrollable | boolean | true | 是否开启滚动播放 |
-| delay | number | 1 | 滚动动画初始延时（秒） |
-| speed | number | 50 | 滚动速度（px/s） |
-| closable | boolean | false | 是否显示关闭按钮 |
-| wrapable | boolean | false | 是否换行展示（仅 `scrollable=false` 生效） |
-| color | string | '' | 文字和图标颜色 |
-| backgroundColor | string | '' | 背景颜色 |
-| direction | 'horizontal' \| 'vertical' | 'horizontal' | 滚动方向 |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
+| 属性            | 类型                            | 默认值       | 说明                                       |
+| --------------- | ------------------------------- | ------------ | ------------------------------------------ |
+| text            | string \| string[]              | ''           | 通知栏文案（字符串或按条）                 |
+| type            | 'warning' \| 'info' \| 'danger' | 'warning'    | 类型（底色 + 兜底图标）                    |
+| prefix          | string                          | ''           | 左侧图标名（sn-icon 注册表）               |
+| scrollable      | boolean                         | true         | 是否开启滚动播放                           |
+| delay           | number                          | 1            | 滚动动画初始延时（秒）                     |
+| speed           | number                          | 50           | 滚动速度（px/s）                           |
+| closable        | boolean                         | false        | 是否显示关闭按钮                           |
+| wrapable        | boolean                         | false        | 是否换行展示（仅 `scrollable=false` 生效） |
+| color           | string                          | ''           | 文字和图标颜色                             |
+| backgroundColor | string                          | ''           | 背景颜色                                   |
+| direction       | 'horizontal' \| 'vertical'      | 'horizontal' | 滚动方向                                   |
+| customClass     | string                          | ''           | 根节点自定义类名                           |
+| customStyle     | string                          | ''           | 根节点自定义样式                           |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| close | 点击关闭按钮（条本身会隐藏） | — |
-| next | 纵向模式切换到下一条 | index: number |
-| click | 点击内容区 | `{ text, index }` |
+| 事件名 | 说明                         | 参数              |
+| ------ | ---------------------------- | ----------------- |
+| close  | 点击关闭按钮（条本身会隐藏） | —                 |
+| next   | 纵向模式切换到下一条         | index: number     |
+| click  | 点击内容区                   | `{ text, index }` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
-| prefix | 自定义前置内容；传入 `prefix` 属性时该插槽不生效 |
-| suffix | 自定义后置内容；会覆盖默认关闭图标 |
+| 插槽名  | 说明                                                     |
+| ------- | -------------------------------------------------------- |
+| prefix  | 自定义前置内容；传入 `prefix` 属性时该插槽不生效         |
+| suffix  | 自定义后置内容；会覆盖默认关闭图标                       |
 | default | 自定义通知文本内容；仅在 `direction="horizontal"` 时生效 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-feedback-warning` / `-warning-soft | `type="warning"` 色调 |
-| --sn-mp-color-feedback-info | `type="info"` 前景色 |
-| --sn-mp-color-background-subtle | `type="info"` 底色 |
-| --sn-mp-color-feedback-danger` / `-danger-soft | `type="danger"` 色调 |
-| --sn-mp-font-size-md | 文案字号 |
-| --sn-mp-font-line-height-normal | 文案行高 |
-| --sn-mp-spacing-3` / `--sn-mp-spacing-4 | 内边距与图标间距 |
+| 变量                                           | 用途                  |
+| ---------------------------------------------- | --------------------- |
+| --sn-mp-color-feedback-warning`/`-warning-soft | `type="warning"` 色调 |
+| --sn-mp-color-feedback-info                    | `type="info"` 前景色  |
+| --sn-mp-color-background-subtle                | `type="info"` 底色    |
+| --sn-mp-color-feedback-danger`/`-danger-soft   | `type="danger"` 色调  |
+| --sn-mp-font-size-md                           | 文案字号              |
+| --sn-mp-font-line-height-normal                | 文案行高              |
+| --sn-mp-spacing-3`/`--sn-mp-spacing-4          | 内边距与图标间距      |
 
 ## 无障碍
 
@@ -92,7 +92,6 @@
 ## 暗色模式
 
 三种类型的底色与前景色全部来自语义色 token（`--sn-mp-color-feedback-*` / `--sn-mp-color-background-subtle`），这些都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 > 若通过 `color` / `backgroundColor` 传了自定义色值，该值不会随主题翻转 —— 暗色下请改用 `var(--sn-mp-*)` 形式。
 

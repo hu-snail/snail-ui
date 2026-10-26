@@ -25,17 +25,17 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `type` | `'circular' \| 'spinner' \| 'dots' \| 'wave'` | `'circular'` | 加载指示器类型 |
-| `color` | `string` | `''` | 加载指示器颜色 |
-| `size` | `number \| string` | `''` | 基准尺寸；数字按 rpx，字符串原样透传 |
-| `text` | `string` | `''` | 加载文案 |
-| `direction` | `'vertical' \| 'horizontal'` | `'vertical'` | 排列方向 |
-| `inheritColor` | `boolean` | `false` | 是否继承父元素颜色 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
-| `customSpinnerClass` | `string` | `''` | 加载器区域自定义类名 |
+| 属性                 | 类型                                          | 默认值       | 说明                                 |
+| -------------------- | --------------------------------------------- | ------------ | ------------------------------------ |
+| `type`               | `'circular' \| 'spinner' \| 'dots' \| 'wave'` | `'circular'` | 加载指示器类型                       |
+| `color`              | `string`                                      | `''`         | 加载指示器颜色                       |
+| `size`               | `number \| string`                            | `''`         | 基准尺寸；数字按 rpx，字符串原样透传 |
+| `text`               | `string`                                      | `''`         | 加载文案                             |
+| `direction`          | `'vertical' \| 'horizontal'`                  | `'vertical'` | 排列方向                             |
+| `inheritColor`       | `boolean`                                     | `false`      | 是否继承父元素颜色                   |
+| `customClass`        | `string`                                      | `''`         | 根节点自定义类名                     |
+| `customStyle`        | `string`                                      | `''`         | 根节点自定义样式                     |
+| `customSpinnerClass` | `string`                                      | `''`         | 加载器区域自定义类名                 |
 
 ## Events
 
@@ -43,20 +43,20 @@
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明                        |
+| --------- | --------------------------- |
 | `default` | 加载文案内容（覆盖 `text`） |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-action-primary` | 默认加载器颜色 |
-| `--sn-mp-color-text-secondary` | 文案颜色 |
-| `--sn-mp-font-size-md` | 文案字号 |
-| `--sn-mp-font-line-height-normal` | 文案行高 |
-| `--sn-mp-spacing-3` | 加载器与文案间距 / 横向外边距 |
-| `--sn-mp-radius-xs` | Doodle 皮肤下的条形圆角 |
+| 变量                              | 用途                          |
+| --------------------------------- | ----------------------------- |
+| `--sn-mp-color-action-primary`    | 默认加载器颜色                |
+| `--sn-mp-color-text-secondary`    | 文案颜色                      |
+| `--sn-mp-font-size-md`            | 文案字号                      |
+| `--sn-mp-font-line-height-normal` | 文案行高                      |
+| `--sn-mp-spacing-3`               | 加载器与文案间距 / 横向外边距 |
+| `--sn-mp-radius-xs`               | Doodle 皮肤下的条形圆角       |
 
 ## 无障碍
 
@@ -67,7 +67,6 @@
 ## 暗色模式
 
 加载器与文案颜色分别走 `--sn-mp-color-action-primary` / `--sn-mp-color-text-secondary`，两者都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

@@ -28,36 +28,36 @@ cascade 模式下 columns 传树形结构，组件按已选路径推导后续列
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `Array<string \| number>` | `[]` | 各列选中值 |
-| `columns` | `Array<Array<string \| number \| object>>` | `[]` | 列数据；`cascade` 时传选项树 |
-| `itemHeight` | `number` | `44` | 单项高度（px 设计值） |
-| `visibleItemCount` | `number` | `6` | 可见项数量 |
-| `valueKey` / `labelKey` / `childrenKey` | `string` | `'value'` / `'label'` / `'children'` | 选项字段名 |
-| `immediateChange` | `boolean` | `false` | 拖动过程中立即触发 change |
-| `cascade` | `boolean` | `false` | 把 columns 当树处理 |
-| `disabled` | `boolean` | `false` | 禁用滚轮 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                                    | 类型                                       | 默认值                               | 说明                         |
+| --------------------------------------- | ------------------------------------------ | ------------------------------------ | ---------------------------- |
+| `modelValue`                            | `Array<string \| number>`                  | `[]`                                 | 各列选中值                   |
+| `columns`                               | `Array<Array<string \| number \| object>>` | `[]`                                 | 列数据；`cascade` 时传选项树 |
+| `itemHeight`                            | `number`                                   | `44`                                 | 单项高度（px 设计值）        |
+| `visibleItemCount`                      | `number`                                   | `6`                                  | 可见项数量                   |
+| `valueKey` / `labelKey` / `childrenKey` | `string`                                   | `'value'` / `'label'` / `'children'` | 选项字段名                   |
+| `immediateChange`                       | `boolean`                                  | `false`                              | 拖动过程中立即触发 change    |
+| `cascade`                               | `boolean`                                  | `false`                              | 把 columns 当树处理          |
+| `disabled`                              | `boolean`                                  | `false`                              | 禁用滚轮                     |
+| `customClass` / `customStyle`           | `string`                                   | `''`                                 | 根节点自定义类名 / 样式      |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 选中值变化时 | `(value: Array)` |
-| `change` | 选中值确定（或 immediateChange 时每次移动） | `PickerViewChangePayload` |
-| `pickstart` / `pickend` | 触摸拖动开始 / 结束 | — |
+| 事件名                  | 说明                                        | 参数                      |
+| ----------------------- | ------------------------------------------- | ------------------------- |
+| `update:modelValue`     | 选中值变化时                                | `(value: Array)`          |
+| `change`                | 选中值确定（或 immediateChange 时每次移动） | `PickerViewChangePayload` |
+| `pickstart` / `pickend` | 触摸拖动开始 / 结束                         | —                         |
 
 ## Exposed API
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
-| `getSelectedValues` | `() => Array` | 当前各列值 |
-| `getSelectedOptions` | `() => Array` | 当前各列原始选项 |
-| `getSelectedLabels` | `() => string[]` | 当前各列文案 |
-| `getSelectedIndex` / `getColumnIndex` | `() => number[]` | 当前各列行号 |
-| `getColumnsData` / `getColumnData` | `(index?) => Array` | 归一化后的列数据 |
-| `resetColumns` | `() => void` | 各列复位到第一个可选行 |
+| 成员                                  | 签名                | 说明                   |
+| ------------------------------------- | ------------------- | ---------------------- |
+| `getSelectedValues`                   | `() => Array`       | 当前各列值             |
+| `getSelectedOptions`                  | `() => Array`       | 当前各列原始选项       |
+| `getSelectedLabels`                   | `() => string[]`    | 当前各列文案           |
+| `getSelectedIndex` / `getColumnIndex` | `() => number[]`    | 当前各列行号           |
+| `getColumnsData` / `getColumnData`    | `(index?) => Array` | 归一化后的列数据       |
+| `resetColumns`                        | `() => void`        | 各列复位到第一个可选行 |
 
 ## Slots
 
@@ -65,14 +65,14 @@ cascade 模式下 columns 传树形结构，组件按已选路径推导后续列
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | 滚轮底色 |
+| 变量                                                        | 用途                     |
+| ----------------------------------------------------------- | ------------------------ |
+| `--sn-mp-color-background-elevated`                         | 滚轮底色                 |
 | ``--sn-mp-color-text-primary` / `-secondary` / `-disabled`` | 选中 / 普通 / 禁用行文字 |
-| ``--sn-mp-color-border-subtle`` | 选中指示线 |
-| ``--sn-mp-font-size-md`` | 行文字字号 |
-| ``--sn-mp-font-weight-semibold`` | 选中行字重 |
-| ``--sn-mp-spacing-2` / `-3`` | 指示线内缩 / 行内边距 |
+| `--sn-mp-color-border-subtle`                               | 选中指示线               |
+| `--sn-mp-font-size-md`                                      | 行文字字号               |
+| `--sn-mp-font-weight-semibold`                              | 选中行字重               |
+| ``--sn-mp-spacing-2` / `-3``                                | 指示线内缩 / 行内边距    |
 
 ## 无障碍
 
@@ -86,4 +86,3 @@ H5 端在触摸之外支持桌面输入：按住鼠标左键上下拖动滚轮�
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

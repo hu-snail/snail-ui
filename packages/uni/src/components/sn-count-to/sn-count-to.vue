@@ -29,46 +29,46 @@
  *   - 进度条 — 用 sn-progress / sn-circle
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
-defineOptions({ name: 'SnCountTo' })
+defineOptions({ name: 'SnCountTo' });
 
 /** Text theme. Mirrors `wd-count-to` `type`. */
-type CountToType = 'default' | 'primary' | 'success' | 'warning' | 'error'
+type CountToType = 'default' | 'primary' | 'success' | 'warning' | 'error';
 
 /** Frame interval in ms — ~60fps, safe on every uni target. */
-const FRAME_MS = 16
+const FRAME_MS = 16;
 
 const props = withDefaults(
   defineProps<{
     /** Text color override (any CSS color value). */
-    color?: string
+    color?: string;
     /** Semantic text theme; `default` uses the body text token. */
-    type?: CountToType
+    type?: CountToType;
     /** Start value. */
-    startVal?: number
+    startVal?: number;
     /** End value. */
-    endVal?: number
+    endVal?: number;
     /** Tween duration in ms. */
-    duration?: number
+    duration?: number;
     /** Start the animation on mount / on value change. */
-    autoStart?: boolean
+    autoStart?: boolean;
     /** Decimal places to keep (>= 0). */
-    decimals?: number
+    decimals?: number;
     /** Decimal separator character. */
-    decimal?: string
+    decimal?: string;
     /** Thousands separator character. */
-    separator?: string
+    separator?: string;
     /** Text before the number. */
-    prefix?: string
+    prefix?: string;
     /** Text after the number. */
-    suffix?: string
+    suffix?: string;
     /** Use cubic ease-out instead of a linear ramp. */
-    useEasing?: boolean
+    useEasing?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     color: '',
@@ -86,111 +86,104 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'mounted'): void
-  (e: 'finish'): void
-}>()
+  (e: 'mounted'): void;
+  (e: 'finish'): void;
+}>();
 
 /** Currently displayed value. */
-const current = ref(props.startVal)
+const current = ref(props.startVal);
 /** Interval handle (the only disposable resource, §41). */
-let timer: ReturnType<typeof setInterval> | null = null
+let timer: ReturnType<typeof setInterval> | null = null;
 /** Animation start timestamp. */
-let startedAt = 0
+let startedAt = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearInterval(timer)
-    timer = null
+    clearInterval(timer);
+    timer = null;
   }
 }
 
 /** Cubic ease-out — mirrors the reference's `useEasing` curve. */
 function easeOutCubic(t: number): number {
-  return 1 - (1 - t) ** 3
+  return 1 - (1 - t) ** 3;
 }
 
 /** Format the displayed value with separators and the configured decimals. */
 const displayValue = computed(() => {
-  const fixed = current.value.toFixed(Math.max(0, Math.round(props.decimals)))
-  const [integerPart = '0', fractionPart] = fixed.split('.')
-  const withSeparator = integerPart.replace(
-    /\B(?=(\d{3})+(?!\d))/g,
-    props.separator,
-  )
-  return fractionPart ? `${withSeparator}${props.decimal}${fractionPart}` : withSeparator
-})
+  const fixed = current.value.toFixed(Math.max(0, Math.round(props.decimals)));
+  const [integerPart = '0', fractionPart] = fixed.split('.');
+  const withSeparator = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, props.separator);
+  return fractionPart ? `${withSeparator}${props.decimal}${fractionPart}` : withSeparator;
+});
 
 /** Full rendered text: prefix + number + suffix. */
-const displayText = computed(() => `${props.prefix}${displayValue.value}${props.suffix}`)
+const displayText = computed(() => `${props.prefix}${displayValue.value}${props.suffix}`);
 
 function step(): void {
-  const now = Date.now()
-  const elapsed = now - startedAt
-  const progress = props.duration <= 0 ? 1 : Math.min(1, elapsed / props.duration)
-  const eased = props.useEasing ? easeOutCubic(progress) : progress
-  const from = props.startVal
-  const to = props.endVal
-  current.value = from + (to - from) * eased
+  const now = Date.now();
+  const elapsed = now - startedAt;
+  const progress = props.duration <= 0 ? 1 : Math.min(1, elapsed / props.duration);
+  const eased = props.useEasing ? easeOutCubic(progress) : progress;
+  const from = props.startVal;
+  const to = props.endVal;
+  current.value = from + (to - from) * eased;
 
   if (progress >= 1) {
-    current.value = to
-    clearTimer()
-    emit('finish')
+    current.value = to;
+    clearTimer();
+    emit('finish');
   }
 }
 
 /** Start (or restart) the tween from the current value. */
 function start(): void {
-  clearTimer()
+  clearTimer();
   if (props.duration <= 0 || props.startVal === props.endVal) {
-    current.value = props.endVal
-    emit('finish')
-    return
+    current.value = props.endVal;
+    emit('finish');
+    return;
   }
-  startedAt = Date.now()
-  timer = setInterval(step, FRAME_MS)
+  startedAt = Date.now();
+  timer = setInterval(step, FRAME_MS);
 }
 
 /** Pause the tween at the current value. */
 function pause(): void {
-  clearTimer()
+  clearTimer();
 }
 
 /** Reset to `startVal` without animating. */
 function reset(): void {
-  clearTimer()
-  current.value = props.startVal
+  clearTimer();
+  current.value = props.startVal;
 }
 
 watch(
   () => [props.startVal, props.endVal, props.duration],
   () => {
-    current.value = props.startVal
-    if (props.autoStart) start()
-    else clearTimer()
+    current.value = props.startVal;
+    if (props.autoStart) start();
+    else clearTimer();
   },
   { immediate: true },
-)
+);
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
-defineExpose({ start, pause, reset })
+defineExpose({ start, pause, reset });
 
-const rootClass = computed(() => [
-  'sn-count-to',
-  `sn-count-to--${props.type}`,
-  props.customClass,
-])
+const rootClass = computed(() => ['sn-count-to', `sn-count-to--${props.type}`, props.customClass]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.color) parts.push(`color: ${props.color}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.color) parts.push(`color: ${props.color}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 </script>
 
 <template>

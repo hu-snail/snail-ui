@@ -31,12 +31,12 @@
  * `--sn-web-*` token aliases only (px units).
  */
 
-import { computed, inject, ref } from 'vue'
-import type { CSSProperties } from 'vue'
-import { SN_LAYOUT_KEY } from './sn-layout-types'
-import type { SnLayoutPosition, SnLayoutStyleValue } from './sn-layout-types'
+import { computed, inject, ref } from 'vue';
+import type { CSSProperties } from 'vue';
+import { SN_LAYOUT_KEY } from './sn-layout-types';
+import type { SnLayoutPosition, SnLayoutStyleValue } from './sn-layout-types';
 
-defineOptions({ name: 'SnLayoutSider' })
+defineOptions({ name: 'SnLayoutSider' });
 
 // Reference: naive-ui layoutSiderProps
 //   (https://github.com/tusen-ai/naive-ui/blob/main/src/layout/src/LayoutSider.tsx)
@@ -46,32 +46,32 @@ const props = withDefaults(
   defineProps<{
     /** Sider width (px, or any CSS length). Default 272. Mirrors
      * n-layout-sider `width`. */
-    width?: number | string
+    width?: number | string;
     /** Width (px) when collapsed. Default 64. Mirrors n-layout-sider
      * `collapsed-width`. */
-    collapsedWidth?: number
+    collapsedWidth?: number;
     /** Controlled collapsed state (v-model:collapsed). When omitted the
      * sider manages its own state seeded by `defaultCollapsed` (mirrors
      * naive's `collapsed: undefined` + `default-collapsed` model). */
-    collapsed?: boolean | undefined
+    collapsed?: boolean | undefined;
     /** Uncontrolled initial collapsed state. Default false. */
-    defaultCollapsed?: boolean
+    defaultCollapsed?: boolean;
     /** Collapse animation mode: 'transform' keeps the inner DOM and slides
      * it out; 'width' animates the layout width. Default 'transform'.
      * Mirrors n-layout-sider `collapse-mode`. */
-    collapseMode?: 'transform' | 'width'
+    collapseMode?: 'transform' | 'width';
     /** Show the built-in collapse trigger. Mirrors n-layout-sider
      * `show-trigger` (boolean | 'arrow-circle' | 'bar'); every truthy value
      * renders the same built-in arrow trigger. Default false. */
-    showTrigger?: boolean | 'arrow-circle' | 'bar'
+    showTrigger?: boolean | 'arrow-circle' | 'bar';
     /** Show the 1px divider on the content-facing edge. Default false
      * (matches naive's Boolean shorthand). */
-    bordered?: boolean
+    bordered?: boolean;
     /** Place the sider on the right side of the layout row. Default false. */
-    reverse?: boolean
+    reverse?: boolean;
     /** Absolute positioning inside the nearest positioned ancestor (the
      * SnLayout root). Mirrors n-layout-sider `position`. Default 'static'. */
-    position?: SnLayoutPosition
+    position?: SnLayoutPosition;
   }>(),
   {
     width: 272,
@@ -87,49 +87,49 @@ const props = withDefaults(
     reverse: false,
     position: 'static',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model:collapsed sync — fired by the built-in trigger click. */
-  (e: 'update:collapsed', collapsed: boolean): void
-}>()
+  (e: 'update:collapsed', collapsed: boolean): void;
+}>();
 
 defineSlots<{
   /** Sider body (menus, panels…). Rendered inside the scrollable content. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const layout = inject(SN_LAYOUT_KEY, null)
+const layout = inject(SN_LAYOUT_KEY, null);
 
 /* ─────────── collapsed state (controlled + uncontrolled) ─────────── */
-const uncontrolledCollapsed = ref(props.defaultCollapsed)
-const isCollapsed = computed(() => props.collapsed ?? uncontrolledCollapsed.value)
+const uncontrolledCollapsed = ref(props.defaultCollapsed);
+const isCollapsed = computed(() => props.collapsed ?? uncontrolledCollapsed.value);
 
 function handleTriggerClick(): void {
-  const next = !isCollapsed.value
-  uncontrolledCollapsed.value = next
-  emit('update:collapsed', next)
+  const next = !isCollapsed.value;
+  uncontrolledCollapsed.value = next;
+  emit('update:collapsed', next);
 }
 
 /* ─────────── width resolution ─────────── */
 /** px string for width; non-numeric CSS lengths pass through unchanged. */
 const widthCss = computed<string>(() => {
-  const n = Number(props.width)
-  if (Number.isFinite(n) && n >= 0) return `${n}px`
-  if (typeof props.width === 'string' && props.width.length > 0) return props.width
-  return '272px'
-})
+  const n = Number(props.width);
+  if (Number.isFinite(n) && n >= 0) return `${n}px`;
+  if (typeof props.width === 'string' && props.width.length > 0) return props.width;
+  return '272px';
+});
 
 /** Numeric width (needed for the transform shift); null for %-style. */
 const widthNum = computed<number | null>(() => {
-  const n = Number(props.width)
-  return Number.isFinite(n) && n > 0 ? n : null
-})
+  const n = Number(props.width);
+  return Number.isFinite(n) && n > 0 ? n : null;
+});
 
 const collapsedWidthPx = computed<number>(() => {
-  const n = Number(props.collapsedWidth)
-  return Number.isFinite(n) && n >= 0 ? n : 64
-})
+  const n = Number(props.collapsedWidth);
+  return Number.isFinite(n) && n >= 0 ? n : 64;
+});
 
 /* ─────────── root box style ───────────
  * width stays declared; max-width clamps to collapsedWidth when collapsed
@@ -140,23 +140,21 @@ const rootStyle = computed<CSSProperties>(() => {
     maxWidth: isCollapsed.value ? `${collapsedWidthPx.value}px` : widthCss.value,
     transition: 'max-width 0.2s ease',
     overflow: 'hidden',
-  }
+  };
   if (props.position === 'absolute') {
-    style.position = 'absolute'
-    style.top = '0'
-    style.bottom = '0'
+    style.position = 'absolute';
+    style.top = '0';
+    style.bottom = '0';
     if (props.reverse) {
-      style.right = '0'
+      style.right = '0';
     } else {
-      style.left = '0'
+      style.left = '0';
     }
   }
-  return style
-})
+  return style;
+});
 
-const injectedSiderStyle = computed<SnLayoutStyleValue | undefined>(
-  () => layout?.siderStyle.value,
-)
+const injectedSiderStyle = computed<SnLayoutStyleValue | undefined>(() => layout?.siderStyle.value);
 
 /* ─────────── inner content style ───────────
  * transform mode: min-width preserves the DOM layout; the collapsed strip
@@ -166,36 +164,36 @@ const contentStyle = computed<CSSProperties>(() => {
     height: '100%',
     boxSizing: 'border-box',
     overflowY: 'auto',
-  }
+  };
   if (props.collapseMode === 'transform') {
-    style.minWidth = widthCss.value
-    const shift = collapsedShiftCss.value
+    style.minWidth = widthCss.value;
+    const shift = collapsedShiftCss.value;
     if (shift !== null) {
-      style.transform = isCollapsed.value ? shift : 'translateX(0px)'
-      style.transition = 'transform 0.2s ease'
+      style.transform = isCollapsed.value ? shift : 'translateX(0px)';
+      style.transition = 'transform 0.2s ease';
     }
   }
-  return style
-})
+  return style;
+});
 
 /** Slide distance: ∓(width - collapsedWidth). Left placement slides left
  * (right strip visible); reverse slides right (left strip visible). */
 const collapsedShiftCss = computed<string | null>(() => {
-  if (props.collapseMode !== 'transform') return null
-  const w = widthNum.value
-  if (w === null) return null
-  const distance = w - collapsedWidthPx.value
-  return `translateX(${props.reverse ? distance : -distance}px)`
-})
+  if (props.collapseMode !== 'transform') return null;
+  const w = widthNum.value;
+  if (w === null) return null;
+  const distance = w - collapsedWidthPx.value;
+  return `translateX(${props.reverse ? distance : -distance}px)`;
+});
 
 /* ─────────── trigger arrow orientation ───────────
  * The arrow points toward the space the sider expands into: flipped when
  * (collapsed XOR reverse). */
-const arrowFlipped = computed(() => isCollapsed.value !== props.reverse)
+const arrowFlipped = computed(() => isCollapsed.value !== props.reverse);
 const arrowStyle = computed<CSSProperties>(() => ({
   transform: arrowFlipped.value ? 'rotate(180deg)' : 'rotate(0deg)',
   transition: 'transform 0.2s ease',
-}))
+}));
 </script>
 
 <template>
@@ -216,9 +214,9 @@ const arrowStyle = computed<CSSProperties>(() => ({
       v-if="showTrigger"
       type="button"
       class="sn-layout-sider__trigger"
-      :class="reverse
-        ? 'sn-layout-sider__trigger--left-edge'
-        : 'sn-layout-sider__trigger--right-edge'"
+      :class="
+        reverse ? 'sn-layout-sider__trigger--left-edge' : 'sn-layout-sider__trigger--right-edge'
+      "
       :aria-expanded="!isCollapsed"
       aria-label="Toggle sidebar"
       @click="handleTriggerClick"

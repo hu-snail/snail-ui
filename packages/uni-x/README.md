@@ -27,12 +27,12 @@ pnpm -F @snui/uni-x typecheck
 
 ## 转换规则
 
-| 层 | 规则 |
-| --- | --- |
-| CSS | 仅保留 class 选择器；两段式后代规则 `.a .b` 降级为 CSS 变量上下文注入（`.a { --snx-b-p: v }` + `.b { p: var(--snx-b-p, base) }`）；伪类/伪元素/属性选择器/深后代/兄弟组合删除并上报；`cursor` 等无原生等价属性剥离；`@keyframes` 体不碰 |
-| 模板 | 裸文本包 `<text>`；`@tap` → `@click`；`data-*` 剥离（uni-x 产物） |
-| 脚本 | `preventDefault()` / `stopImmediatePropagation()` 转可选调用；未被消费的 `defineSlots()` 剥离 |
-| 主题 | tokens 的 `:root` / `page` 选择器重写为 `.sn-theme-root` class 挂载 |
+| 层   | 规则                                                                                                                                                                                                                                    |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CSS  | 仅保留 class 选择器；两段式后代规则 `.a .b` 降级为 CSS 变量上下文注入（`.a { --snx-b-p: v }` + `.b { p: var(--snx-b-p, base) }`）；伪类/伪元素/属性选择器/深后代/兄弟组合删除并上报；`cursor` 等无原生等价属性剥离；`@keyframes` 体不碰 |
+| 模板 | 裸文本包 `<text>`；`@tap` → `@click`；`data-*` 剥离（uni-x 产物）                                                                                                                                                                       |
+| 脚本 | `preventDefault()` / `stopImmediatePropagation()` 转可选调用；未被消费的 `defineSlots()` 剥离                                                                                                                                           |
+| 主题 | tokens 的 `:root` / `page` 选择器重写为 `.sn-theme-root` class 挂载                                                                                                                                                                     |
 
 转换是纯函数且幂等——**幂等性本身被用作合规检查**：对已是 ucss 子集的输入，
 `transformCss` 输出恒等于输入。

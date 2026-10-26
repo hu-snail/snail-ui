@@ -46,10 +46,7 @@ type ASTNode =
   | { kind: 'ternary'; test: ASTNode; consequent: ASTNode; alternate: ASTNode };
 
 type BinaryOp =
-  | '+' | '-' | '*' | '/' | '%'
-  | '===' | '!==' | '==' | '!='
-  | '<' | '>' | '<=' | '>='
-  | '&&' | '||';
+  '+' | '-' | '*' | '/' | '%' | '===' | '!==' | '==' | '!=' | '<' | '>' | '<=' | '>=' | '&&' | '||';
 
 /** Token kinds. */
 type Token =
@@ -60,11 +57,29 @@ type Token =
   | { kind: 'eof' };
 
 const PUNCT_TOKENS = [
-  '===', '!==', '==', '!=',
-  '<=', '>=', '<', '>',
-  '&&', '||',
-  '+', '-', '*', '/', '%',
-  '?', ':', '(', ')', '.', '[', ']', '!',
+  '===',
+  '!==',
+  '==',
+  '!=',
+  '<=',
+  '>=',
+  '<',
+  '>',
+  '&&',
+  '||',
+  '+',
+  '-',
+  '*',
+  '/',
+  '%',
+  '?',
+  ':',
+  '(',
+  ')',
+  '.',
+  '[',
+  ']',
+  '!',
 ] as const;
 
 function tokenize(src: string): Token[] {
@@ -200,8 +215,17 @@ function parseExpression(tokens: Token[], expr: string): ASTNode {
     let left = parseAdditive();
     while (peek().kind === 'punct') {
       const op = (peek() as { kind: 'punct'; value: string }).value;
-      if (op !== '===' && op !== '!==' && op !== '==' && op !== '!='
-        && op !== '<' && op !== '>' && op !== '<=' && op !== '>=') break;
+      if (
+        op !== '===' &&
+        op !== '!==' &&
+        op !== '==' &&
+        op !== '!=' &&
+        op !== '<' &&
+        op !== '>' &&
+        op !== '<=' &&
+        op !== '>='
+      )
+        break;
       consume();
       const right = parseAdditive();
       left = { kind: 'binary', op: op as BinaryOp, left, right };
@@ -261,7 +285,10 @@ function parseExpression(tokens: Token[], expr: string): ASTNode {
       if (t.value === 'null') return { kind: 'literal', value: null };
       // Path access?
       const segments: string[] = [t.value];
-      while (peek().kind === 'punct' && (peek() as { kind: 'punct'; value: string }).value === '.') {
+      while (
+        peek().kind === 'punct' &&
+        (peek() as { kind: 'punct'; value: string }).value === '.'
+      ) {
         consume();
         const next = peek();
         if (next.kind !== 'ident') throw exprError(`Expected identifier after "."`, expr);
@@ -326,22 +353,38 @@ function evaluate(node: ASTNode, ctx: BindingContext): unknown {
       const l = evaluate(node.left, ctx);
       const r = evaluate(node.right, ctx);
       switch (node.op) {
-        case '+': return (l as number) + (r as number);
-        case '-': return (l as number) - (r as number);
-        case '*': return (l as number) * (r as number);
-        case '/': return (l as number) / (r as number);
-        case '%': return (l as number) % (r as number);
-        case '===': return l === r;
-        case '!==': return l !== r;
-        case '==': return l == r; // eslint-disable-line eqeqeq
-        case '!=': return l != r; // eslint-disable-line eqeqeq
-        case '<': return (l as number) < (r as number);
-        case '>': return (l as number) > (r as number);
-        case '<=': return (l as number) <= (r as number);
-        case '>=': return (l as number) >= (r as number);
-        case '&&': return l && r;
-        case '||': return l || r;
-        default: return undefined;
+        case '+':
+          return (l as number) + (r as number);
+        case '-':
+          return (l as number) - (r as number);
+        case '*':
+          return (l as number) * (r as number);
+        case '/':
+          return (l as number) / (r as number);
+        case '%':
+          return (l as number) % (r as number);
+        case '===':
+          return l === r;
+        case '!==':
+          return l !== r;
+        case '==':
+          return l == r; // eslint-disable-line eqeqeq
+        case '!=':
+          return l != r; // eslint-disable-line eqeqeq
+        case '<':
+          return (l as number) < (r as number);
+        case '>':
+          return (l as number) > (r as number);
+        case '<=':
+          return (l as number) <= (r as number);
+        case '>=':
+          return (l as number) >= (r as number);
+        case '&&':
+          return l && r;
+        case '||':
+          return l || r;
+        default:
+          return undefined;
       }
     }
     case 'ternary': {

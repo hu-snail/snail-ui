@@ -20,25 +20,25 @@
 
 ### SnCalendar Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| value | `number \| null` | `undefined` | 选中日期（毫秒时间戳），支持 `v-model:value` |
-| default-value | `number \| null` | `null` | 非受控默认选中日期，同时决定初始面板月份 |
+| 名称             | 类型                                   | 默认值      | 说明                                         |
+| ---------------- | -------------------------------------- | ----------- | -------------------------------------------- |
+| value            | `number \| null`                       | `undefined` | 选中日期（毫秒时间戳），支持 `v-model:value` |
+| default-value    | `number \| null`                       | `null`      | 非受控默认选中日期，同时决定初始面板月份     |
 | is-date-disabled | `(ts: number) => boolean \| undefined` | `undefined` | 返回 true 时该日期禁用，入参为当日零点时间戳 |
 
 ### SnCalendar Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| update:value | `(value: number, time: { year, month, date })` | 选中日期变化；`month` 从 1 开始 |
-| panel-change | `(info: { year, month })` | 面板年月切换（上一月 / 下一月 / 今天按钮、点击跨月单元格）；`month` 从 1 开始 |
+| 名称         | 参数                                           | 说明                                                                          |
+| ------------ | ---------------------------------------------- | ----------------------------------------------------------------------------- |
+| update:value | `(value: number, time: { year, month, date })` | 选中日期变化；`month` 从 1 开始                                               |
+| panel-change | `(info: { year, month })`                      | 面板年月切换（上一月 / 下一月 / 今天按钮、点击跨月单元格）；`month` 从 1 开始 |
 
 ### SnCalendar Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数                    | 说明                                     |
+| ------- | ----------------------- | ---------------------------------------- |
 | default | `{ year, month, date }` | 自定义日期单元格内容，渲染在日期数字下方 |
-| header | `{ year, month }` | 自定义头部标题 |
+| header  | `{ year, month }`       | 自定义头部标题                           |
 
 ### 行为说明
 

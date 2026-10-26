@@ -1,7 +1,7 @@
 // list_components stub for M0.5 (AUI-AI-002).
 // Real implementation will scan component ai-description.md files.
 
-import type { AiMcpTool, ListComponentsInput, ListComponentsOutput } from '../types.js'
+import type { AiMcpTool, ListComponentsInput, ListComponentsOutput } from '../types.js';
 
 export const listComponents: AiMcpTool<ListComponentsInput, ListComponentsOutput> = {
   name: 'list_components',
@@ -22,7 +22,7 @@ export const listComponents: AiMcpTool<ListComponentsInput, ListComponentsOutput
             importPath: "import { SnConfigProvider } from '@snui/vue-web'",
           },
         ],
-      }
+      };
     }
     return {
       components: [
@@ -37,6 +37,6 @@ export const listComponents: AiMcpTool<ListComponentsInput, ListComponentsOutput
           importPath: '<sn-config-provider>',
         },
       ],
-    }
+    };
   },
-}
+};

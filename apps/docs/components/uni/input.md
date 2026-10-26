@@ -80,88 +80,88 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `''` | 双向绑定值。 |
-| `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | 原生 input type。 |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | rpx 高度 / 字号。 |
-| `placeholder` | `string` | `''` | 占位符。 |
-| `placeholderStyle` | `string` | `''` | 行内 CSS 注入 `::placeholder` 伪元素。 |
-| `placeholderClass` | `string` | `''` | 占位符上的额外 class。 |
-| `disabled` | `boolean` | `false` | 禁用。 |
-| `readonly` | `boolean` | `false` | 只读。 |
-| `required` | `boolean` | `false` | aria-required。 |
-| `maxlength` | `number` | — | 原生 maxlength。 |
-| `minlength` | `number` | — | 原生 minlength。 |
-| `showCount` | `boolean` | `false` | 计数。 |
-| `showWordLimit` | `boolean` | `false` | `showCount` 的别名。 |
-| `clearable` | `boolean` | `false` | × 清除按钮。 |
-| `clearTrigger` | `'always' \| 'focus'` | `'always'` | × 按钮显示时机。 |
-| `focusWhenClear` | `boolean` | `true` | × 点击后自动 refocus（uni 端为 placeholder，软键盘被收起）。 |
-| `showPassword` | `boolean` | `false` | `type='password'` 时显示眼睛切换。 |
-| `prefixIcon` | `string` | `''` | 前置图标名（SnIcon 解析）。 |
-| `suffixIcon` | `string` | `''` | 后置图标名。 |
-| `iconPrefix` | `string` | `''` | 前置图标 CSS class 名（绕过 SnIcon 注册）。 |
-| `iconSuffix` | `string` | `''` | 后置图标 CSS class 名。 |
-| `cssIcon` | `boolean \| string` | `false` | `true` 把 prefixIcon/suffixIcon 当 CSS class 名渲染。 |
-| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | 边框 + aria-invalid。 |
-| `min` / `max` / `step` | `number` | — | 数字输入限定。 |
-| `rows` | `number` | `3` | textarea 行数。 |
-| `border` | `'all' \| 'bottom' \| 'none'` | `'all'` | 边框模式（2rpx）。 |
-| `bordered` *(deprecated)* | `boolean` | `true` | 别名：true/false ↔ 'all'/'none'。 |
-| `bg` | `'surface' \| 'transparent' \| 'soft'` | `'surface'` | 背景色调。 |
-| `customBg` | `string` | `''` | 内联背景色覆盖。 |
-| `radius` | `'default' \| 'pill' \| 'square'` | `'default'` | 圆角预设。 |
-| `alignRight` | `boolean` | `false` | 字段值右对齐。 |
-| `compact` | `boolean` | `false` | 紧凑布局。 |
-| `focus` | `boolean` | `false` | 挂载即 focus。 |
-| `inputmode` | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'` | 软键盘提示。 |
-| `customInputClass` | `string` | `''` | 内层 `<input>` / `<textarea>` class。 |
-| `customClass` | `string` | `''` | 根 class。 |
-| `customStyle` | `string \| Record<string,string>` | `''` | 根 inline style。 |
-| `error` | `boolean` | `false` | 错误态：`sn-input--error` class + `aria-invalid`（等价于 `status="error"` 的视觉）。 |
+| Prop                      | Type                                                                                                                                              | Default     | Description                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------ |
+| `modelValue`              | `string \| number`                                                                                                                                | `''`        | 双向绑定值。                                                                         |
+| `type`                    | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'`    | 原生 input type。                                                                    |
+| `size`                    | `'small' \| 'medium' \| 'large'`                                                                                                                  | `'medium'`  | rpx 高度 / 字号。                                                                    |
+| `placeholder`             | `string`                                                                                                                                          | `''`        | 占位符。                                                                             |
+| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | 行内 CSS 注入 `::placeholder` 伪元素。                                               |
+| `placeholderClass`        | `string`                                                                                                                                          | `''`        | 占位符上的额外 class。                                                               |
+| `disabled`                | `boolean`                                                                                                                                         | `false`     | 禁用。                                                                               |
+| `readonly`                | `boolean`                                                                                                                                         | `false`     | 只读。                                                                               |
+| `required`                | `boolean`                                                                                                                                         | `false`     | aria-required。                                                                      |
+| `maxlength`               | `number`                                                                                                                                          | —           | 原生 maxlength。                                                                     |
+| `minlength`               | `number`                                                                                                                                          | —           | 原生 minlength。                                                                     |
+| `showCount`               | `boolean`                                                                                                                                         | `false`     | 计数。                                                                               |
+| `showWordLimit`           | `boolean`                                                                                                                                         | `false`     | `showCount` 的别名。                                                                 |
+| `clearable`               | `boolean`                                                                                                                                         | `false`     | × 清除按钮。                                                                         |
+| `clearTrigger`            | `'always' \| 'focus'`                                                                                                                             | `'always'`  | × 按钮显示时机。                                                                     |
+| `focusWhenClear`          | `boolean`                                                                                                                                         | `true`      | × 点击后自动 refocus（uni 端为 placeholder，软键盘被收起）。                         |
+| `showPassword`            | `boolean`                                                                                                                                         | `false`     | `type='password'` 时显示眼睛切换。                                                   |
+| `prefixIcon`              | `string`                                                                                                                                          | `''`        | 前置图标名（SnIcon 解析）。                                                          |
+| `suffixIcon`              | `string`                                                                                                                                          | `''`        | 后置图标名。                                                                         |
+| `iconPrefix`              | `string`                                                                                                                                          | `''`        | 前置图标 CSS class 名（绕过 SnIcon 注册）。                                          |
+| `iconSuffix`              | `string`                                                                                                                                          | `''`        | 后置图标 CSS class 名。                                                              |
+| `cssIcon`                 | `boolean \| string`                                                                                                                               | `false`     | `true` 把 prefixIcon/suffixIcon 当 CSS class 名渲染。                                |
+| `status`                  | `'default' \| 'error' \| 'warning'`                                                                                                               | `'default'` | 边框 + aria-invalid。                                                                |
+| `min` / `max` / `step`    | `number`                                                                                                                                          | —           | 数字输入限定。                                                                       |
+| `rows`                    | `number`                                                                                                                                          | `3`         | textarea 行数。                                                                      |
+| `border`                  | `'all' \| 'bottom' \| 'none'`                                                                                                                     | `'all'`     | 边框模式（2rpx）。                                                                   |
+| `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | 别名：true/false ↔ 'all'/'none'。                                                    |
+| `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | 背景色调。                                                                           |
+| `customBg`                | `string`                                                                                                                                          | `''`        | 内联背景色覆盖。                                                                     |
+| `radius`                  | `'default' \| 'pill' \| 'square'`                                                                                                                 | `'default'` | 圆角预设。                                                                           |
+| `alignRight`              | `boolean`                                                                                                                                         | `false`     | 字段值右对齐。                                                                       |
+| `compact`                 | `boolean`                                                                                                                                         | `false`     | 紧凑布局。                                                                           |
+| `focus`                   | `boolean`                                                                                                                                         | `false`     | 挂载即 focus。                                                                       |
+| `inputmode`               | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'`                                                             | `'text'`    | 软键盘提示。                                                                         |
+| `customInputClass`        | `string`                                                                                                                                          | `''`        | 内层 `<input>` / `<textarea>` class。                                                |
+| `customClass`             | `string`                                                                                                                                          | `''`        | 根 class。                                                                           |
+| `customStyle`             | `string \| Record<string,string>`                                                                                                                 | `''`        | 根 inline style。                                                                    |
+| `error`                   | `boolean`                                                                                                                                         | `false`     | 错误态：`sn-input--error` class + `aria-invalid`（等价于 `status="error"` 的视觉）。 |
 
 ### MP-only runtime attrs（uni-app 编译期透传）
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `confirmType` | `'send' \| 'search' \| 'next' \| 'go' \| 'done'` | `'done'` | 软键盘 confirm 按钮文案。 |
-| `holdKeyboard` | `boolean` | `false` | 失焦后保持软键盘。 |
-| `adjustPosition` | `boolean` | `true` | 键盘遮挡时自动滚动页面。 |
-| `alwaysEmbed` | `boolean` | `false` | input 始终嵌入（不会因 detach 卸载）。 |
-| `cursor` | `number` | `-1` | 初始光标位置。`-1` 表示不设置。 |
-| `selectionStart` | `number` | `-1` | 初始选区起点。 |
-| `selectionEnd` | `number` | `-1` | 初始选区终点。 |
-| `cursorSpacing` | `number` | `0` | 光标与软键盘之间的距离。 |
-| `confirmHold` | `boolean` | `false` | 点击键盘 confirm 按钮后保持键盘不收起。 |
-| `ignoreCompositionEvent` | `boolean` | `true` | 忽略输入法合成事件（`false` 时合成期间也会触发 input）。 |
-| `enableNative` | `boolean` | `true` | 支付宝小程序启用原生输入框。 |
+| Prop                     | Type                                             | Default  | Description                                              |
+| ------------------------ | ------------------------------------------------ | -------- | -------------------------------------------------------- |
+| `confirmType`            | `'send' \| 'search' \| 'next' \| 'go' \| 'done'` | `'done'` | 软键盘 confirm 按钮文案。                                |
+| `holdKeyboard`           | `boolean`                                        | `false`  | 失焦后保持软键盘。                                       |
+| `adjustPosition`         | `boolean`                                        | `true`   | 键盘遮挡时自动滚动页面。                                 |
+| `alwaysEmbed`            | `boolean`                                        | `false`  | input 始终嵌入（不会因 detach 卸载）。                   |
+| `cursor`                 | `number`                                         | `-1`     | 初始光标位置。`-1` 表示不设置。                          |
+| `selectionStart`         | `number`                                         | `-1`     | 初始选区起点。                                           |
+| `selectionEnd`           | `number`                                         | `-1`     | 初始选区终点。                                           |
+| `cursorSpacing`          | `number`                                         | `0`      | 光标与软键盘之间的距离。                                 |
+| `confirmHold`            | `boolean`                                        | `false`  | 点击键盘 confirm 按钮后保持键盘不收起。                  |
+| `ignoreCompositionEvent` | `boolean`                                        | `true`   | 忽略输入法合成事件（`false` 时合成期间也会触发 input）。 |
+| `enableNative`           | `boolean`                                        | `true`   | 支付宝小程序启用原生输入框。                             |
 
 ## Events
 
-| Event id | Payload | Notes |
-| --- | --- | --- |
-| `update:modelValue` | `(value: string \| number)` | v-model 同步。 |
-| `input` | `(value, event: Event)` | 原生 input 事件。 |
-| `change` | `(value, event: Event)` | 原生 change。 |
-| `focus` | `(event: Event)` | 获得焦点。 |
-| `blur` | `(event: Event)` | 失去焦点。 |
-| `clear` | — | × 清除按钮触发。 |
-| `click` | `(event: Event)` | 整个 root 点击。 |
-| `clickPrefixIcon` | `(event: Event)` | 点击 prefixIcon 区域。 |
-| `clickSuffixIcon` | `(event: Event)` | 点击 suffixIcon 区域。 |
-| `confirm` | `(value: string \| number)` | 软键盘 confirm / textarea confirm。 |
+| Event id            | Payload                     | Notes                               |
+| ------------------- | --------------------------- | ----------------------------------- |
+| `update:modelValue` | `(value: string \| number)` | v-model 同步。                      |
+| `input`             | `(value, event: Event)`     | 原生 input 事件。                   |
+| `change`            | `(value, event: Event)`     | 原生 change。                       |
+| `focus`             | `(event: Event)`            | 获得焦点。                          |
+| `blur`              | `(event: Event)`            | 失去焦点。                          |
+| `clear`             | —                           | × 清除按钮触发。                    |
+| `click`             | `(event: Event)`            | 整个 root 点击。                    |
+| `clickPrefixIcon`   | `(event: Event)`            | 点击 prefixIcon 区域。              |
+| `clickSuffixIcon`   | `(event: Event)`            | 点击 suffixIcon 区域。              |
+| `confirm`           | `(value: string \| number)` | 软键盘 confirm / textarea confirm。 |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `prefix` | 输入框左侧。 |
-| `suffix` | 输入框右侧。 |
+| Slot          | Description                                |
+| ------------- | ------------------------------------------ |
+| `prefix`      | 输入框左侧。                               |
+| `suffix`      | 输入框右侧。                               |
 | `prefix-icon` | SnIcon 自定义前置内容（替代 prefixIcon）。 |
-| `suffix-icon` | SnIcon 自定义后置内容。 |
-| `clear-icon` | 自定义 × 按钮内容。 |
-| `count` | 自定义计数（接收 `{ current, max }`）。 |
+| `suffix-icon` | SnIcon 自定义后置内容。                    |
+| `clear-icon`  | 自定义 × 按钮内容。                        |
+| `count`       | 自定义计数（接收 `{ current, max }`）。    |
 
 ## Source
 

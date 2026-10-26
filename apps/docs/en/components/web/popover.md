@@ -56,68 +56,68 @@ The `#header` / `#content` slots accept icons, paragraphs and buttons, and take 
 
 ### Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| show | `boolean` | `undefined` | Show state; `undefined` = uncontrolled mode driven by internal state. |
-| default-show | `boolean` | `false` | Initial state for uncontrolled mode. |
-| trigger | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'hover'` | Opening gesture; `'manual'` is driven by `show` only. |
-| placement | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'` | Requested side; can flip when space runs out. |
-| delay | `number \| [number, number]` | `100` | Open debounce (ms); the array's second item overrides the close delay. |
-| duration | `number` | `100` | Close debounce (ms). |
-| show-arrow | `boolean` | `false` | Render the arrow pointing at the trigger. |
-| arrow | `boolean` | `true` | Boolean alias of `show-arrow`; the arrow needs both to be true. |
-| arrow-point-to-center | `boolean` | `false` | Aim the arrow at the bubble centre instead of the trigger edge. |
-| arrow-class | `string` | `undefined` | Class on the arrow element. |
-| arrow-style | `CSSProperties` | `undefined` | Inline style on the arrow element. |
-| header | `string` | `''` | Title text; overridden by the `#header` slot. |
-| content | `string` | `''` | Body text; overridden by the `#content` slot. |
-| disabled | `boolean` | `false` | Suppress showing entirely. |
-| raw | `boolean` | `false` | Strip built-in card styling so the caller paints the bubble. |
-| animated | `boolean` | `true` | Enter / leave animation on or off. |
-| overlap | `boolean` | `false` | Bubble overlaps the trigger instead of sitting beside it. |
-| scrollable | `boolean` | `false` | Scroll the body inside the bubble once it exceeds the height cap. |
-| display-directive | `'if' \| 'show'` | `'if'` | `'if'` unmounts on hide; `'show'` keeps the node and toggles `display`. |
-| flip | `boolean` | `true` | Flip to the opposite side when space runs out. |
-| keep-alive-on-hover | `boolean` | `true` | Keep open while the pointer is inside the bubble (hover trigger). |
-| width | `number \| 'trigger'` | `undefined` | Width; `'trigger'` matches the trigger, a number sets a fixed px width (the 280px card cap still applies). |
-| to | `string \| HTMLElement \| false` | `'body'` | Teleport target; `false` renders it inline. |
-| z-index | `number` | `undefined` | Explicit stacking order. |
-| content-class | `string` | `undefined` | Class on the body section. |
-| content-style | `CSSProperties` | `undefined` | Inline style on the body section. |
-| on-clickoutside | `(e: MouseEvent) => void` | `undefined` | Called when a click lands outside the bubble and its trigger. |
+| Prop                  | Type                                                                                                                                                                 | Default     | Notes                                                                                                      |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------- |
+| show                  | `boolean`                                                                                                                                                            | `undefined` | Show state; `undefined` = uncontrolled mode driven by internal state.                                      |
+| default-show          | `boolean`                                                                                                                                                            | `false`     | Initial state for uncontrolled mode.                                                                       |
+| trigger               | `'hover' \| 'click' \| 'focus' \| 'manual'`                                                                                                                          | `'hover'`   | Opening gesture; `'manual'` is driven by `show` only.                                                      |
+| placement             | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'`     | Requested side; can flip when space runs out.                                                              |
+| delay                 | `number \| [number, number]`                                                                                                                                         | `100`       | Open debounce (ms); the array's second item overrides the close delay.                                     |
+| duration              | `number`                                                                                                                                                             | `100`       | Close debounce (ms).                                                                                       |
+| show-arrow            | `boolean`                                                                                                                                                            | `false`     | Render the arrow pointing at the trigger.                                                                  |
+| arrow                 | `boolean`                                                                                                                                                            | `true`      | Boolean alias of `show-arrow`; the arrow needs both to be true.                                            |
+| arrow-point-to-center | `boolean`                                                                                                                                                            | `false`     | Aim the arrow at the bubble centre instead of the trigger edge.                                            |
+| arrow-class           | `string`                                                                                                                                                             | `undefined` | Class on the arrow element.                                                                                |
+| arrow-style           | `CSSProperties`                                                                                                                                                      | `undefined` | Inline style on the arrow element.                                                                         |
+| header                | `string`                                                                                                                                                             | `''`        | Title text; overridden by the `#header` slot.                                                              |
+| content               | `string`                                                                                                                                                             | `''`        | Body text; overridden by the `#content` slot.                                                              |
+| disabled              | `boolean`                                                                                                                                                            | `false`     | Suppress showing entirely.                                                                                 |
+| raw                   | `boolean`                                                                                                                                                            | `false`     | Strip built-in card styling so the caller paints the bubble.                                               |
+| animated              | `boolean`                                                                                                                                                            | `true`      | Enter / leave animation on or off.                                                                         |
+| overlap               | `boolean`                                                                                                                                                            | `false`     | Bubble overlaps the trigger instead of sitting beside it.                                                  |
+| scrollable            | `boolean`                                                                                                                                                            | `false`     | Scroll the body inside the bubble once it exceeds the height cap.                                          |
+| display-directive     | `'if' \| 'show'`                                                                                                                                                     | `'if'`      | `'if'` unmounts on hide; `'show'` keeps the node and toggles `display`.                                    |
+| flip                  | `boolean`                                                                                                                                                            | `true`      | Flip to the opposite side when space runs out.                                                             |
+| keep-alive-on-hover   | `boolean`                                                                                                                                                            | `true`      | Keep open while the pointer is inside the bubble (hover trigger).                                          |
+| width                 | `number \| 'trigger'`                                                                                                                                                | `undefined` | Width; `'trigger'` matches the trigger, a number sets a fixed px width (the 280px card cap still applies). |
+| to                    | `string \| HTMLElement \| false`                                                                                                                                     | `'body'`    | Teleport target; `false` renders it inline.                                                                |
+| z-index               | `number`                                                                                                                                                             | `undefined` | Explicit stacking order.                                                                                   |
+| content-class         | `string`                                                                                                                                                             | `undefined` | Class on the body section.                                                                                 |
+| content-style         | `CSSProperties`                                                                                                                                                      | `undefined` | Inline style on the body section.                                                                          |
+| on-clickoutside       | `(e: MouseEvent) => void`                                                                                                                                            | `undefined` | Called when a click lands outside the bubble and its trigger.                                              |
 
 ### Events
 
-| Name | Payload | Notes |
-| --- | --- | --- |
+| Name          | Payload   | Notes                                          |
+| ------------- | --------- | ---------------------------------------------- |
 | `update:show` | `boolean` | Show state changed; pairs with `v-model:show`. |
-| `show` | `()` | Fired when the bubble appears. |
-| `hide` | `()` | Fired when the bubble hides. |
+| `show`        | `()`      | Fired when the bubble appears.                 |
+| `hide`        | `()`      | Fired when the bubble hides.                   |
 
 ### Slots
 
-| Slot | Notes |
-| --- | --- |
+| Slot    | Notes                                                     |
+| ------- | --------------------------------------------------------- |
 | default | Trigger element — the visible node the bubble anchors to. |
-| header | Title content — overrides the `header` prop. |
-| content | Body content — overrides the `content` prop. |
+| header  | Title content — overrides the `header` prop.              |
+| content | Body content — overrides the `content` prop.              |
 
 ### Methods
 
-| Name | Type | Notes |
-| --- | --- | --- |
-| `show` | `() => void` | Programmatic show, still bound by `disabled`. |
-| `hide` | `() => void` | Programmatic hide. |
+| Name      | Type            | Notes                                                      |
+| --------- | --------------- | ---------------------------------------------------------- |
+| `show`    | `() => void`    | Programmatic show, still bound by `disabled`.              |
+| `hide`    | `() => void`    | Programmatic hide.                                         |
 | `isShown` | `() => boolean` | Read the effective show state (controlled + uncontrolled). |
 
 ## Tokens
 
-| Token | CSS variable | Purpose |
-| --- | --- | --- |
-| Background surface | `--sn-web-color-background-surface` | Card + arrow fill |
-| Border subtle | `--sn-web-color-border-subtle` | Card + arrow border |
-| Card shadow | `--sn-web-card-shadow` | Card elevation |
-| Text primary | `--sn-web-color-text-primary` | Header + body text |
+| Token              | CSS variable                        | Purpose             |
+| ------------------ | ----------------------------------- | ------------------- |
+| Background surface | `--sn-web-color-background-surface` | Card + arrow fill   |
+| Border subtle      | `--sn-web-color-border-subtle`      | Card + arrow border |
+| Card shadow        | `--sn-web-card-shadow`              | Card elevation      |
+| Text primary       | `--sn-web-color-text-primary`       | Header + body text  |
 
 ## Accessibility
 
@@ -128,10 +128,10 @@ The `#header` / `#content` slots accept icons, paragraphs and buttons, and take 
 
 ## AI Patch Boundary
 
-| Safe for AI to generate | Requires human review |
-| --- | --- |
-| `content` / `header` copy and static `placement`, `trigger`, `show-arrow` display params | Controlled `show` binding (`v-model:show` wires page state) |
-| `content-class` / `content-style` style hooks (existing tokens only) | `on-clickoutside` and imperative `show()` / `hide()` call sites |
-| Static composition in docs and demos | Nesting complex interactive components inside the bubble |
+| Safe for AI to generate                                                                  | Requires human review                                           |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `content` / `header` copy and static `placement`, `trigger`, `show-arrow` display params | Controlled `show` binding (`v-model:show` wires page state)     |
+| `content-class` / `content-style` style hooks (existing tokens only)                     | `on-clickoutside` and imperative `show()` / `hide()` call sites |
+| Static composition in docs and demos                                                     | Nesting complex interactive components inside the bubble        |
 
 See the component `ai-description.md` for the full contract.

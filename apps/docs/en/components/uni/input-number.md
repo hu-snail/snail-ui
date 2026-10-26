@@ -31,40 +31,40 @@ Four themes (default / outline / outline-split / primary), plus round, disabled 
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| string` | `0` | Bound value |
-| `min` | `number` | `1` | Lower bound |
-| `max` | `number` | `Number.MAX_SAFE_INTEGER` | Upper bound |
-| `step` | `number` | `1` | Increment / decrement step |
-| `stepStrictly` | `boolean` | `false` | Snap every value onto the step grid |
-| `precision` | `number \| string` | `0` | Decimal places kept after a commit |
-| `disabled` | `boolean` | `false` | Disables the whole stepper |
-| `disableInput` | `boolean` | `false` | Disables the field only |
-| `disableMinus` | `boolean` | `false` | Disables the minus button only |
-| `disablePlus` | `boolean` | `false` | Disables the plus button only |
-| `withoutInput` | `boolean` | `false` | Hide the field, buttons only |
-| `inputWidth` | `number \| string` | `undefined` | Field width; a number is an rpx design value |
-| `allowNull` | `boolean` | `false` | Allow the field to hold an empty string |
-| `placeholder` | `string` | `''` | Placeholder for an empty field |
-| `adjustPosition` | `boolean` | `true` | Auto-scroll when the keyboard covers the field |
-| `beforeChange` | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook for every commit |
-| `longPress` | `boolean` | `false` | Repeat the step while a button is held |
-| `immediateChange` | `boolean` | `true` | Commit while typing; `false` commits on blur |
-| `updateOnInit` | `boolean` | `true` | Emit a corrected value on mount |
-| `inputType` | `'number' \| 'digit'` | `'digit'` | Native keyboard type |
-| `theme` | `'default' \| 'outline' \| 'outline-split' \| 'primary'` | `'default'` | Visual theme |
-| `round` | `boolean` | `false` | Fully rounded action buttons |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                          | Type                                                     | Default                   | Description                                    |
+| ----------------------------- | -------------------------------------------------------- | ------------------------- | ---------------------------------------------- |
+| `modelValue`                  | `number \| string`                                       | `0`                       | Bound value                                    |
+| `min`                         | `number`                                                 | `1`                       | Lower bound                                    |
+| `max`                         | `number`                                                 | `Number.MAX_SAFE_INTEGER` | Upper bound                                    |
+| `step`                        | `number`                                                 | `1`                       | Increment / decrement step                     |
+| `stepStrictly`                | `boolean`                                                | `false`                   | Snap every value onto the step grid            |
+| `precision`                   | `number \| string`                                       | `0`                       | Decimal places kept after a commit             |
+| `disabled`                    | `boolean`                                                | `false`                   | Disables the whole stepper                     |
+| `disableInput`                | `boolean`                                                | `false`                   | Disables the field only                        |
+| `disableMinus`                | `boolean`                                                | `false`                   | Disables the minus button only                 |
+| `disablePlus`                 | `boolean`                                                | `false`                   | Disables the plus button only                  |
+| `withoutInput`                | `boolean`                                                | `false`                   | Hide the field, buttons only                   |
+| `inputWidth`                  | `number \| string`                                       | `undefined`               | Field width; a number is an rpx design value   |
+| `allowNull`                   | `boolean`                                                | `false`                   | Allow the field to hold an empty string        |
+| `placeholder`                 | `string`                                                 | `''`                      | Placeholder for an empty field                 |
+| `adjustPosition`              | `boolean`                                                | `true`                    | Auto-scroll when the keyboard covers the field |
+| `beforeChange`                | `(value) => boolean \| Promise<boolean>`                 | `undefined`               | Veto hook for every commit                     |
+| `longPress`                   | `boolean`                                                | `false`                   | Repeat the step while a button is held         |
+| `immediateChange`             | `boolean`                                                | `true`                    | Commit while typing; `false` commits on blur   |
+| `updateOnInit`                | `boolean`                                                | `true`                    | Emit a corrected value on mount                |
+| `inputType`                   | `'number' \| 'digit'`                                    | `'digit'`                 | Native keyboard type                           |
+| `theme`                       | `'default' \| 'outline' \| 'outline-split' \| 'primary'` | `'default'`               | Visual theme                                   |
+| `round`                       | `boolean`                                                | `false`                   | Fully rounded action buttons                   |
+| `customClass` / `customStyle` | `string`                                                 | `''`                      | Root class / inline style                      |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Value committed | `(value: number \| string)` |
-| `change` | Value committed (same tick) | `{ value }` |
-| `focus` | Field focused | `{ value, height }` |
-| `blur` | Field blurred | `{ value }` |
+| Event               | Description                 | Payload                     |
+| ------------------- | --------------------------- | --------------------------- |
+| `update:modelValue` | Value committed             | `(value: number \| string)` |
+| `change`            | Value committed (same tick) | `{ value }`                 |
+| `focus`             | Field focused               | `{ value, height }`         |
+| `blur`              | Field blurred               | `{ value }`                 |
 
 ## Slots
 
@@ -72,15 +72,15 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-soft`` | Stepper surface |
-| ``--sn-mp-color-background-elevated`` | Action-button plate |
+| Token                                                       | Purpose                    |
+| ----------------------------------------------------------- | -------------------------- |
+| `--sn-mp-color-background-soft`                             | Stepper surface            |
+| `--sn-mp-color-background-elevated`                         | Action-button plate        |
 | ``--sn-mp-color-text-primary` / `-secondary` / `-disabled`` | Value / buttons / disabled |
-| ``--sn-mp-color-action-primary` / `-soft`` | `primary` theme fills |
-| ``--sn-mp-color-text-on-primary`` | `primary` plus glyph |
-| ``--sn-mp-color-border-default` / `-subtle`` | `outline` border / divider |
-| ``--sn-mp-radius-md` / `-sm` / `-full`` | Corner presets |
+| ``--sn-mp-color-action-primary` / `-soft``                  | `primary` theme fills      |
+| `--sn-mp-color-text-on-primary`                             | `primary` plus glyph       |
+| ``--sn-mp-color-border-default` / `-subtle``                | `outline` border / divider |
+| ``--sn-mp-radius-md` / `-sm` / `-full``                     | Corner presets             |
 
 ## Accessibility
 
@@ -91,4 +91,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

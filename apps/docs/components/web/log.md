@@ -44,30 +44,30 @@
 
 ### SnLog Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| log | `string` | `undefined` | 日志内容，按 `\n` 分行；非空时优先于 `lines` |
-| lines | `string[]` | `[]` | 按行传入日志内容 |
-| trim | `boolean` | `false` | 是否去掉每行首尾空白 |
-| loading | `boolean` | `false` | 是否显示加载中 |
-| font-size | `number` | `14` | 文字大小 |
-| line-height | `number` | `1.25` | 行高（无单位倍数） |
-| rows | `number` | `15` | 可视行数，决定容器高度 |
-| offset-top | `number` | `0` | 顶部触边判定容差（px） |
-| offset-bottom | `number` | `0` | 底部触边判定容差（px） |
+| 名称          | 类型       | 默认值      | 说明                                         |
+| ------------- | ---------- | ----------- | -------------------------------------------- |
+| log           | `string`   | `undefined` | 日志内容，按 `\n` 分行；非空时优先于 `lines` |
+| lines         | `string[]` | `[]`        | 按行传入日志内容                             |
+| trim          | `boolean`  | `false`     | 是否去掉每行首尾空白                         |
+| loading       | `boolean`  | `false`     | 是否显示加载中                               |
+| font-size     | `number`   | `14`        | 文字大小                                     |
+| line-height   | `number`   | `1.25`      | 行高（无单位倍数）                           |
+| rows          | `number`   | `15`        | 可视行数，决定容器高度                       |
+| offset-top    | `number`   | `0`         | 顶部触边判定容差（px）                       |
+| offset-bottom | `number`   | `0`         | 底部触边判定容差（px）                       |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| reach-top | — | 滚动到顶部（容差内） |
-| reach-bottom | — | 滚动到底部（容差内） |
+| 名称         | 参数                | 说明                            |
+| ------------ | ------------------- | ------------------------------- |
+| reach-top    | —                   | 滚动到顶部（容差内）            |
+| reach-bottom | —                   | 滚动到底部（容差内）            |
 | require-more | `'top' \| 'bottom'` | 越过顶部 / 底部容差，可重复触发 |
 
 ### Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
+| 名称     | 类型                                                                          | 说明                                        |
+| -------- | ----------------------------------------------------------------------------- | ------------------------------------------- |
 | scrollTo | `(options: { top?: number, position?: 'top' \| 'bottom', silent?: boolean })` | 滚动到指定偏移或命名位置；`silent` 抑制事件 |
 
 完整契约见组件 `ai-description.md`。

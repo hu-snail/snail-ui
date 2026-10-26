@@ -45,50 +45,50 @@ src（图片）→ alt（失败时）→ text → icon（SVG）→ 字体图标�
 如需显式 import：
 
 ```ts
-import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue'
+import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `src` | `string` | `''` | 图片地址；失败时按 `alt` → 文字 → 图标 回退 |
-| `text` | `string` | `''` | 文本内容（首字母 / 短标签） |
-| `icon` | `string` | `''` | 图标名（经 `registerSnIcons()` 注册） |
-| `iconPrefix` | `string` | `''` | 字体图标类名前缀，`cssIcon` 开启时使用 |
-| `cssIcon` | `boolean \| string` | `false` | 渲染字体图标；字符串值直接作为 class 前缀 |
-| `size` | `string \| number` | `'normal'` | 预设尺寸或自定义长度；数字按 px |
-| `shape` | `'round' \| 'square'` | `'round'` | 头像形状 |
-| `bgColor` | `string` | `''` | 背景色（内联覆盖） |
-| `color` | `string` | `''` | 文字 / 图标颜色（内联覆盖） |
-| `alt` | `string` | `''` | 图片加载失败时的占位文本 |
-| `mode` | `string` | `'aspectFill'` | 图片填充模式，同 uni-app `<image>` 的 mode |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型                  | 默认值         | 说明                                        |
+| ------------- | --------------------- | -------------- | ------------------------------------------- |
+| `src`         | `string`              | `''`           | 图片地址；失败时按 `alt` → 文字 → 图标 回退 |
+| `text`        | `string`              | `''`           | 文本内容（首字母 / 短标签）                 |
+| `icon`        | `string`              | `''`           | 图标名（经 `registerSnIcons()` 注册）       |
+| `iconPrefix`  | `string`              | `''`           | 字体图标类名前缀，`cssIcon` 开启时使用      |
+| `cssIcon`     | `boolean \| string`   | `false`        | 渲染字体图标；字符串值直接作为 class 前缀   |
+| `size`        | `string \| number`    | `'normal'`     | 预设尺寸或自定义长度；数字按 px             |
+| `shape`       | `'round' \| 'square'` | `'round'`      | 头像形状                                    |
+| `bgColor`     | `string`              | `''`           | 背景色（内联覆盖）                          |
+| `color`       | `string`              | `''`           | 文字 / 图标颜色（内联覆盖）                 |
+| `alt`         | `string`              | `''`           | 图片加载失败时的占位文本                    |
+| `mode`        | `string`              | `'aspectFill'` | 图片填充模式，同 uni-app `<image>` 的 mode  |
+| `customClass` | `string`              | `''`           | 根节点自定义类名                            |
+| `customStyle` | `string`              | `''`           | 根节点自定义 inline style                   |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `click` | 点击头像时触发 | `(event: Event)` |
+| 事件名  | 说明                                       | 参数             |
+| ------- | ------------------------------------------ | ---------------- |
+| `click` | 点击头像时触发                             | `(event: Event)` |
 | `error` | 图片加载失败时触发（此时回退层已经在渲染） | `(event: Event)` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明                               |
+| --------- | ---------------------------------- |
 | `default` | 完全自定义内容，覆盖所有内置内容层 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-subtle` | 默认占位底色 |
-| `--sn-mp-color-text-secondary` | 默认首字母颜色 |
-| `--sn-mp-color-text-primary` | Doodle 皮肤描边 |
-| `--sn-mp-font-size-{xs,md,lg,xl}` | 首字母字号，随预设尺寸缩放 |
-| `--sn-mp-font-weight-{semibold,bold}` | 首字母字重 |
-| `--sn-mp-radius-{md,full}` | `square` 与 `round` 形状 |
+| 变量                                  | 用途                       |
+| ------------------------------------- | -------------------------- |
+| `--sn-mp-color-background-subtle`     | 默认占位底色               |
+| `--sn-mp-color-text-secondary`        | 默认首字母颜色             |
+| `--sn-mp-color-text-primary`          | Doodle 皮肤描边            |
+| `--sn-mp-font-size-{xs,md,lg,xl}`     | 首字母字号，随预设尺寸缩放 |
+| `--sn-mp-font-weight-{semibold,bold}` | 首字母字重                 |
+| `--sn-mp-radius-{md,full}`            | `square` 与 `round` 形状   |
 
 ## 无障碍
 
@@ -104,7 +104,6 @@ import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue'
 - `bgColor` / `color` 内联覆盖原样生效；这类覆盖请使用 `var(--sn-mp-*)` 才能在暗色下同步。
 
 用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnComment — avatar / author / datetime / content / actions 完整评论场景。 */
-import { SnComment } from '@snui/vue-web'
+import { SnComment } from '@snui/vue-web';
 </script>
 
 <template>
@@ -46,6 +46,10 @@ import { SnComment } from '@snui/vue-web'
 }
 
 .action:hover {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 2%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
 }
 </style>

@@ -39,14 +39,14 @@
 
 ### SnTime Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| time | `number \| Date` | `undefined`（取挂载时刻） | 要渲染的时间 |
-| to | `number \| Date` | `undefined`（取挂载时刻） | relative 的基准时间 |
-| type | `'relative' \| 'date' \| 'datetime'` | `'datetime'` | 渲染类型 |
-| unix | `boolean` | `false` | 输入按 unix 秒级时间戳解析 |
-| format | `string` | `undefined` | 自定义格式（支持 yyyy yy MMMM MMM MM M dd d EEEE EEE HH H hh h mm m ss s SSS a 与 '…' 字面量） |
-| text | `boolean` | `false` | 渲染纯文本节点而非 `<time>` 元素 |
-| time-zone | `string` | `undefined` | IANA 时区，仅影响格式化输出 |
+| Prop      | 类型                                 | 默认值                    | 说明                                                                                           |
+| --------- | ------------------------------------ | ------------------------- | ---------------------------------------------------------------------------------------------- |
+| time      | `number \| Date`                     | `undefined`（取挂载时刻） | 要渲染的时间                                                                                   |
+| to        | `number \| Date`                     | `undefined`（取挂载时刻） | relative 的基准时间                                                                            |
+| type      | `'relative' \| 'date' \| 'datetime'` | `'datetime'`              | 渲染类型                                                                                       |
+| unix      | `boolean`                            | `false`                   | 输入按 unix 秒级时间戳解析                                                                     |
+| format    | `string`                             | `undefined`               | 自定义格式（支持 yyyy yy MMMM MMM MM M dd d EEEE EEE HH H hh h mm m ss s SSS a 与 '…' 字面量） |
+| text      | `boolean`                            | `false`                   | 渲染纯文本节点而非 `<time>` 元素                                                               |
+| time-zone | `string`                             | `undefined`               | IANA 时区，仅影响格式化输出                                                                    |
 
 无事件、无插槽。与 naive 的差异：不依赖 date-fns（format 为常用 token 子集）、相对时间文案内置中文（formatDistanceStrict 等价算法），详见组件 `ai-description.md`。

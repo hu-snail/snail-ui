@@ -9,9 +9,9 @@
 wd-video-preview 用 `open` / `close` 方法，并把 `on-open` / `on-close` 声明成 **props**（回调）而不是事件。本组件两种都支持：
 
 ```ts
-const video = ref()
-video.value.open({ src, poster, title })
-video.value.close()
+const video = ref();
+video.value.open({ src, poster, title });
+video.value.close();
 ```
 
 ```vue
@@ -36,30 +36,30 @@ video.value.close()
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `selector` | `string` | `''` | 实例标识（对齐参考 API；渲染为 `data-selector`） |
-| `zIndex` | `number` | `1000` | 预览层级 |
-| `fullScreen` | `boolean` | `false` | 是否全屏预览 |
-| `closePosition` | `'left-top' \| 'right-top'` | `'left-top'` | 关闭按钮位置 |
-| `onOpen` | `() => void` | `undefined` | 组件打开时的回调（参考 API 的回调 prop） |
-| `onClose` | `() => void` | `undefined` | 组件关闭时的回调（参考 API 的回调 prop） |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
+| 属性            | 类型                        | 默认值       | 说明                                             |
+| --------------- | --------------------------- | ------------ | ------------------------------------------------ |
+| `selector`      | `string`                    | `''`         | 实例标识（对齐参考 API；渲染为 `data-selector`） |
+| `zIndex`        | `number`                    | `1000`       | 预览层级                                         |
+| `fullScreen`    | `boolean`                   | `false`      | 是否全屏预览                                     |
+| `closePosition` | `'left-top' \| 'right-top'` | `'left-top'` | 关闭按钮位置                                     |
+| `onOpen`        | `() => void`                | `undefined`  | 组件打开时的回调（参考 API 的回调 prop）         |
+| `onClose`       | `() => void`                | `undefined`  | 组件关闭时的回调（参考 API 的回调 prop）         |
+| `customClass`   | `string`                    | `''`         | 根节点自定义类名                                 |
+| `customStyle`   | `string`                    | `''`         | 根节点自定义样式                                 |
 
 ## 方法
 
-| 方法名 | 参数 | 说明 |
-| --- | --- | --- |
-| `open` | `{ src, poster?, title?, autoplay? }` | 载入视频并显示预览层 |
-| `close` | — | 关闭预览层并卸载视频源 |
+| 方法名  | 参数                                  | 说明                   |
+| ------- | ------------------------------------- | ---------------------- |
+| `open`  | `{ src, poster?, title?, autoplay? }` | 载入视频并显示预览层   |
+| `close` | —                                     | 关闭预览层并卸载视频源 |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `open` | 打开预览时触发（等价于 `onOpen` prop） | — |
-| `close` | 关闭预览时触发（等价于 `onClose` prop） | — |
+| 事件名  | 说明                                    | 参数 |
+| ------- | --------------------------------------- | ---- |
+| `open`  | 打开预览时触发（等价于 `onOpen` prop）  | —    |
+| `close` | 关闭预览时触发（等价于 `onClose` prop） | —    |
 
 ## Slots
 
@@ -67,15 +67,15 @@ video.value.close()
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | 预览遮罩 / 标题栏 / 关闭按钮底盘 |
-| `--sn-mp-color-text-on-primary` | 标题与关闭图标颜色 |
-| `--sn-mp-font-size-md` | 标题字号 |
-| `--sn-mp-font-weight-medium` | 标题字重 |
-| `--sn-mp-font-line-height-normal` | 标题行高 |
-| `--sn-mp-radius-full` | 关闭按钮圆角 |
-| `--sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-12` | 标题栏内边距 / 关闭按钮内缩 |
+| 变量                                                             | 用途                             |
+| ---------------------------------------------------------------- | -------------------------------- |
+| `--sn-mp-color-background-overlay`                               | 预览遮罩 / 标题栏 / 关闭按钮底盘 |
+| `--sn-mp-color-text-on-primary`                                  | 标题与关闭图标颜色               |
+| `--sn-mp-font-size-md`                                           | 标题字号                         |
+| `--sn-mp-font-weight-medium`                                     | 标题字重                         |
+| `--sn-mp-font-line-height-normal`                                | 标题行高                         |
+| `--sn-mp-radius-full`                                            | 关闭按钮圆角                     |
+| `--sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-12` | 标题栏内边距 / 关闭按钮内缩      |
 
 ## 无障碍
 

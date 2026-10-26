@@ -23,37 +23,37 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `coverColor` | `string` | `'#C5C5C5'` | 封面颜色（`coverImg` 优先） |
-| `coverImg` | `string` | `''` | 封面图片 |
-| `ratio` | `number` | `0.8` | 刮开比例阈值（0-1） |
-| `scratchRadius` | `number` | `10` | 刮擦半径（px） |
-| `watermarkText` | `string` | `''` | 封面水印文字 |
-| `watermarkSize` | `number` | `14` | 水印字号（px） |
-| `watermarkColor` | `string` | `'rgba(0,0,0,0.1)'` | 水印颜色 |
-| `title` | `string` | `''` | 封面标题文字 |
-| `titleSize` | `number` | `24` | 标题字号（px） |
-| `titleColor` | `string` | `'rgba(0,0,0,0.8)'` | 标题颜色 |
-| `customClass` | `string` | `undefined` | 根节点自定义类名 |
-| `customStyle` | `string` | `undefined` | 根节点自定义样式（至少提供 width / height） |
+| 名称             | 类型     | 默认值              | 说明                                        |
+| ---------------- | -------- | ------------------- | ------------------------------------------- |
+| `coverColor`     | `string` | `'#C5C5C5'`         | 封面颜色（`coverImg` 优先）                 |
+| `coverImg`       | `string` | `''`                | 封面图片                                    |
+| `ratio`          | `number` | `0.8`               | 刮开比例阈值（0-1）                         |
+| `scratchRadius`  | `number` | `10`                | 刮擦半径（px）                              |
+| `watermarkText`  | `string` | `''`                | 封面水印文字                                |
+| `watermarkSize`  | `number` | `14`                | 水印字号（px）                              |
+| `watermarkColor` | `string` | `'rgba(0,0,0,0.1)'` | 水印颜色                                    |
+| `title`          | `string` | `''`                | 封面标题文字                                |
+| `titleSize`      | `number` | `24`                | 标题字号（px）                              |
+| `titleColor`     | `string` | `'rgba(0,0,0,0.8)'` | 标题颜色                                    |
+| `customClass`    | `string` | `undefined`         | 根节点自定义类名                            |
+| `customStyle`    | `string` | `undefined`         | 根节点自定义样式（至少提供 width / height） |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `open` | — | 刮开比例超过 `ratio` 时触发（一次性） |
+| 名称   | 参数 | 说明                                  |
+| ------ | ---- | ------------------------------------- |
+| `open` | —    | 刮开比例超过 `ratio` 时触发（一次性） |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | — | 刮层下方的奖品内容 |
+| 名称      | 参数 | 说明               |
+| --------- | ---- | ------------------ |
+| `default` | —    | 刮层下方的奖品内容 |
 
 ### Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
+| 名称    | 类型         | 说明                   |
+| ------- | ------------ | ---------------------- |
 | `reset` | `() => void` | 重绘封面，恢复可刮状态 |
 
 ## 暗色模式

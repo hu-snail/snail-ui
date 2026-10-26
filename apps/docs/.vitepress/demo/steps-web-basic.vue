@@ -3,10 +3,10 @@
  * steps-web-basic — SnSteps default horizontal layout. Status is derived
  * from `current`: step 1 finished, step 2 in progress, step 3 waiting.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(2)
+const current = ref(2);
 </script>
 
 <template>
@@ -16,7 +16,9 @@ const current = ref(2)
       <SnStep title="确认订单" description="核对商品与金额" />
       <SnStep title="提交完成" description="等待系统处理" />
     </SnSteps>
-    <p class="steps-demo__state">current：<code>{{ current }}</code></p>
+    <p class="steps-demo__state">
+      current：<code>{{ current }}</code>
+    </p>
   </div>
 </template>
 

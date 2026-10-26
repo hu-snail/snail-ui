@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnEquation — basic LaTeX rendering (mirrors n-equation basic). */
-import { SnEquation } from '@snui/vue-web'
+import { SnEquation } from '@snui/vue-web';
 
-const equation = '\\displaystyle= \\frac{k(k+1)}{2}+k+1'
+const equation = '\\displaystyle= \\frac{k(k+1)}{2}+k+1';
 </script>
 
 <template>

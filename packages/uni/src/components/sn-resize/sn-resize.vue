@@ -36,24 +36,24 @@
  *   - 滚动位置 — 用 `sn-sticky` / `sn-backtop`
  */
 
-import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
 
-defineOptions({ name: 'SnResize' })
+defineOptions({ name: 'SnResize' });
 
 /** Box reported by the `resize` event. Mirrors wd-resize's payload. */
 interface SnResizeRect {
   /** Width in px. */
-  width: number
+  width: number;
   /** Height in px. */
-  height: number
+  height: number;
   /** Distance from the viewport top (px). */
-  top: number
+  top: number;
   /** Distance from the viewport left (px). */
-  left: number
+  left: number;
   /** Distance from the viewport bottom (px). */
-  bottom: number
+  bottom: number;
   /** Distance from the viewport right (px). */
-  right: number
+  right: number;
 }
 
 const props = withDefaults(
@@ -61,27 +61,27 @@ const props = withDefaults(
     /* ── wot-ui `wd-resize` 1:1 surface ─────────────────────────────────── */
 
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 内层容器自定义类名（实际被测量的节点）。 */
-    customContainerClass?: string
+    customContainerClass?: string;
   }>(),
   {
     customStyle: '',
     customClass: '',
     customContainerClass: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'resize', rect: SnResizeRect): void
-}>()
+  (e: 'resize', rect: SnResizeRect): void;
+}>();
 
 defineSlots<{
   /** 需要监听尺寸的内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /**
  * Poll interval in ms.
@@ -90,28 +90,23 @@ defineSlots<{
  * a layout shift is visible before the next paint settles, while staying cheap:
  * `boundingClientRect` is a native call, not a layout thrash.
  */
-const POLL_INTERVAL_MS = 100
+const POLL_INTERVAL_MS = 100;
 
-const instance = getCurrentInstance()
-const containerId = computed(() => `sn-resize-${instance?.uid ?? 0}`)
+const instance = getCurrentInstance();
+const containerId = computed(() => `sn-resize-${instance?.uid ?? 0}`);
 
 /** Last reported box — used to suppress no-op emissions. */
-let last: SnResizeRect | null = null
-let timer: ReturnType<typeof setInterval> | null = null
+let last: SnResizeRect | null = null;
+let timer: ReturnType<typeof setInterval> | null = null;
 
 /** `uni.createSelectorQuery` only exists on a uni runtime (H5 / MP / App). */
 function getUni(): Record<string, unknown> | null {
-  const g = globalThis as { uni?: Record<string, unknown> }
-  return g.uni ?? null
+  const g = globalThis as { uni?: Record<string, unknown> };
+  return g.uni ?? null;
 }
 
 function sameRect(a: SnResizeRect, b: SnResizeRect): boolean {
-  return (
-    a.width === b.width &&
-    a.height === b.height &&
-    a.top === b.top &&
-    a.left === b.left
-  )
+  return a.width === b.width && a.height === b.height && a.top === b.top && a.left === b.left;
 }
 
 /**
@@ -121,25 +116,27 @@ function sameRect(a: SnResizeRect, b: SnResizeRect): boolean {
  * wrappers on one page never measure each other.
  */
 function measure(): void {
-  const uni = getUni()
-  if (uni === null) return
+  const uni = getUni();
+  if (uni === null) return;
   const createSelectorQuery = uni.createSelectorQuery as
     | (() => {
-        in: (component: unknown) => unknown
-        select: (selector: string) => { boundingClientRect: (cb: (rect: unknown) => void) => { exec: () => void } }
+        in: (component: unknown) => unknown;
+        select: (selector: string) => {
+          boundingClientRect: (cb: (rect: unknown) => void) => { exec: () => void };
+        };
       })
-    | undefined
-  if (typeof createSelectorQuery !== 'function') return
+    | undefined;
+  if (typeof createSelectorQuery !== 'function') return;
 
-  const query = createSelectorQuery()
+  const query = createSelectorQuery();
   // `.in(instance)` pins the query to this component; without it a page-level
   // `#id` lookup would be ambiguous when several instances exist.
-  const scoped = typeof query.in === 'function' ? (query.in(instance) as typeof query) : query
+  const scoped = typeof query.in === 'function' ? (query.in(instance) as typeof query) : query;
   scoped
     .select(`#${containerId.value}`)
     .boundingClientRect((rect) => {
-      if (rect === null || rect === undefined) return
-      const r = rect as Partial<SnResizeRect>
+      if (rect === null || rect === undefined) return;
+      const r = rect as Partial<SnResizeRect>;
       const next: SnResizeRect = {
         width: Math.round(r.width ?? 0),
         height: Math.round(r.height ?? 0),
@@ -147,29 +144,29 @@ function measure(): void {
         left: Math.round(r.left ?? 0),
         bottom: Math.round(r.bottom ?? 0),
         right: Math.round(r.right ?? 0),
-      }
-      if (last !== null && sameRect(last, next)) return
-      last = next
-      emit('resize', next)
+      };
+      if (last !== null && sameRect(last, next)) return;
+      last = next;
+      emit('resize', next);
     })
-    .exec()
+    .exec();
 }
 
 onMounted(() => {
   // First measurement is deferred one tick: on MP the node may not be laid out
   // yet when `onMounted` runs.
-  setTimeout(measure, 0)
-  timer = setInterval(measure, POLL_INTERVAL_MS)
-})
+  setTimeout(measure, 0);
+  timer = setInterval(measure, POLL_INTERVAL_MS);
+});
 
 onBeforeUnmount(() => {
   // §41: the poll is the only resource this component owns.
-  if (timer !== null) clearInterval(timer)
-  timer = null
-  last = null
-})
+  if (timer !== null) clearInterval(timer);
+  timer = null;
+  last = null;
+});
 
-const rootStyle = computed(() => props.customStyle || undefined)
+const rootStyle = computed(() => props.customStyle || undefined);
 </script>
 
 <template>

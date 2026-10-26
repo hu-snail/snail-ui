@@ -5,16 +5,16 @@
  * Shows: `size` driving the default height while `text` / `circle` /
  * `round` decide the shape, and `animated` turning the shimmer off.
  */
-import { ref } from 'vue'
-import { SnSkeleton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSkeleton } from '@snui/vue-web';
 
-const animated = ref(true)
+const animated = ref(true);
 </script>
 
 <template>
   <div class="sk-size">
     <label class="sk-size__toggle">
-      <input v-model="animated" type="checkbox">
+      <input v-model="animated" type="checkbox" />
       animated
     </label>
 

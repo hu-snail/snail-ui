@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  defineComponentContract,
-  type ComponentContract,
-} from './component-contract.js';
+import { defineComponentContract, type ComponentContract } from './component-contract.js';
 
 /**
  * AUI Input — official component contract.
@@ -109,13 +106,7 @@ export const InputAccessibility = {
  * Input capabilities — which platform triggers this component responds to.
  * Renderer maps these to DOM events on the underlying `<input>` element.
  */
-export const InputCapabilities = [
-  'input',
-  'change',
-  'focus',
-  'blur',
-  'keyboard-tab',
-] as const;
+export const InputCapabilities = ['input', 'change', 'focus', 'blur', 'keyboard-tab'] as const;
 
 /**
  * AI Patch Boundary — what AI may modify vs must not modify.

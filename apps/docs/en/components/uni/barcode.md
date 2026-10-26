@@ -23,25 +23,25 @@ Currently `format="EAN13"` (full L/G/R tables and the leading-digit parity templ
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | `string` | `''` | Content (12 or 13 digits) |
-| `format` | `'EAN13'` | `'EAN13'` | Barcode format |
-| `showText` | `boolean` | `true` | Show the text under the bars |
-| `textPosition` | `'bottom' \| 'top'` | `'bottom'` | Text position |
-| `lineColor` | `string` | `undefined` | Bar color (text token) |
-| `moduleWidth` | `number` | `2` | Module width (px) |
-| `height` | `string` | `'120rpx'` | Bar area height |
-| `fontSize` | `string` | `'22rpx'` | Text font size |
-| `customClass` | `string` | `undefined` | Root custom class |
-| `customStyle` | `string` | `undefined` | Root custom style |
+| Name           | Type                | Default     | Description                  |
+| -------------- | ------------------- | ----------- | ---------------------------- |
+| `text`         | `string`            | `''`        | Content (12 or 13 digits)    |
+| `format`       | `'EAN13'`           | `'EAN13'`   | Barcode format               |
+| `showText`     | `boolean`           | `true`      | Show the text under the bars |
+| `textPosition` | `'bottom' \| 'top'` | `'bottom'`  | Text position                |
+| `lineColor`    | `string`            | `undefined` | Bar color (text token)       |
+| `moduleWidth`  | `number`            | `2`         | Module width (px)            |
+| `height`       | `string`            | `'120rpx'`  | Bar area height              |
+| `fontSize`     | `string`            | `'22rpx'`   | Text font size               |
+| `customClass`  | `string`            | `undefined` | Root custom class            |
+| `customStyle`  | `string`            | `undefined` | Root custom style            |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `error` | `(error: SnBarcodeEncodeError)` | Encoding failed (`BARCODE_TEXT_INVALID` / `BARCODE_CHECKSUM_INVALID` / `BARCODE_FORMAT_UNSUPPORTED`) |
-| `rendered` | `(encoded: SnBarcodeEncoded)` | Encoding succeeded |
+| Name       | Payload                         | Description                                                                                          |
+| ---------- | ------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `error`    | `(error: SnBarcodeEncodeError)` | Encoding failed (`BARCODE_TEXT_INVALID` / `BARCODE_CHECKSUM_INVALID` / `BARCODE_FORMAT_UNSUPPORTED`) |
+| `rendered` | `(encoded: SnBarcodeEncoded)`   | Encoding succeeded                                                                                   |
 
 ## Dark mode
 

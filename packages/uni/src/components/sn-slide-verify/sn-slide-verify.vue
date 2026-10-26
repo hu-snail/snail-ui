@@ -46,32 +46,32 @@
  *   - 服务端票据校验 — 由宿主在 `success` 里完成
  */
 
-import { computed, markRaw, onMounted, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { Check as CheckIcon, ChevronRight as ChevronRightIcon } from '../sn-icon/sn-icon-set'
+import { computed, markRaw, onMounted, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { Check as CheckIcon, ChevronRight as ChevronRightIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnSlideVerify' })
+defineOptions({ name: 'SnSlideVerify' });
 
 /** Verified state. */
-type VerifyState = 'idle' | 'dragging' | 'success' | 'fail'
+type VerifyState = 'idle' | 'dragging' | 'success' | 'fail';
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-slide-verify` 1:1 surface (documented omissions) ─────── */
 
     /** Pixels of slack at the right edge. */
-    tolerance?: number
+    tolerance?: number;
     /** Hint text. Empty = built-in copy. */
-    text?: string
+    text?: string;
     /** Success text. Empty = built-in copy. */
-    successText?: string
+    successText?: string;
     /** Disables dragging. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Track background color (CSS color). Empty = token default. */
-    backgroundColor?: string
+    backgroundColor?: string;
     /** Track background color once verified (CSS color). Empty = token default. */
-    activeBackgroundColor?: string
+    activeBackgroundColor?: string;
     /*
      * Icon props — wot-ui `wd-slide-verify` parity, wired like `sn-button`:
      * a name resolves through the iconfont convention (`classPrefix-name`),
@@ -79,21 +79,21 @@ const props = withDefaults(
      * name keeps the built-in SVG glyphs below.
      */
     /** Handle glyph name (iconfont). Default `double-right` upstream. */
-    icon?: string
+    icon?: string;
     /** Success glyph name (iconfont). Default `check-circle-fill` upstream. */
-    successIcon?: string
+    successIcon?: string;
     /** Iconfont class-name prefix. */
-    iconPrefix?: string
+    iconPrefix?: string;
     /** Render the name as a bare CSS class (`true` = also apply the raw name). */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** Handle glyph size — a bare number is rpx. */
-    iconSize?: number | string
+    iconSize?: number | string;
     /** Success glyph size — a bare number is rpx. */
-    successIconSize?: number | string
+    successIconSize?: number | string;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     tolerance: 10,
@@ -111,111 +111,109 @@ const props = withDefaults(
     successIconSize: 28,
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'success'): void
-  (e: 'fail'): void
-}>()
+  (e: 'success'): void;
+  (e: 'fail'): void;
+}>();
 
 /** Built-in SVG glyphs used when the name props are empty. */
-const handleIcon: IconData = markRaw(ChevronRightIcon)
-const defaultSuccessIcon: IconData = markRaw(CheckIcon)
+const handleIcon: IconData = markRaw(ChevronRightIcon);
+const defaultSuccessIcon: IconData = markRaw(CheckIcon);
 
 /** Size handed to sn-icon (a bare number is an rpx design value → `size`). */
-const handleIconSize = computed(() => props.iconSize)
-const successIconSizeValue = computed(() => props.successIconSize)
+const handleIconSize = computed(() => props.iconSize);
+const successIconSizeValue = computed(() => props.successIconSize);
 
 /* ── Geometry ──────────────────────────────────────────────────────────── */
 
 /** Track width in px, measured on mount / `init()`. */
-const trackWidth = ref(0)
+const trackWidth = ref(0);
 /** Button width in px design units — fixed so the maths is stable. */
-const BUTTON_SIZE = 44
+const BUTTON_SIZE = 44;
 
 const trackRef = ref<{
-  getBoundingClientRect?: () => { width: number, left: number }
-} | null>(null)
+  getBoundingClientRect?: () => { width: number; left: number };
+} | null>(null);
 
 function init(): void {
-  const el = trackRef.value
-  if (!el || typeof el.getBoundingClientRect !== 'function') return
-  trackWidth.value = el.getBoundingClientRect().width
+  const el = trackRef.value;
+  if (!el || typeof el.getBoundingClientRect !== 'function') return;
+  trackWidth.value = el.getBoundingClientRect().width;
 }
 
-onMounted(init)
+onMounted(init);
 
 /* ── Drag ──────────────────────────────────────────────────────────────── */
 
-const state = ref<VerifyState>('idle')
+const state = ref<VerifyState>('idle');
 /** Travel distance in px design units. */
-const offset = ref(0)
-let dragStartX = 0
+const offset = ref(0);
+let dragStartX = 0;
 /** Max travel: track width minus the button. */
-const maxOffset = computed(() => Math.max(trackWidth.value - BUTTON_SIZE, 0))
+const maxOffset = computed(() => Math.max(trackWidth.value - BUTTON_SIZE, 0));
 
 function touchX(event: Event): number {
   const detail = event as unknown as {
-    touches?: Array<{ clientX?: number, pageX?: number }>
-    changedTouches?: Array<{ clientX?: number, pageX?: number }>
-    detail?: { x?: number }
-  }
-  const list = detail.touches ?? detail.changedTouches
-  const point = list && list.length > 0 ? list[0] : undefined
-  if (point && typeof point.clientX === 'number') return point.clientX
-  if (point && typeof point.pageX === 'number') return point.pageX
-  if (detail.detail && typeof detail.detail.x === 'number') return detail.detail.x
-  return 0
+    touches?: Array<{ clientX?: number; pageX?: number }>;
+    changedTouches?: Array<{ clientX?: number; pageX?: number }>;
+    detail?: { x?: number };
+  };
+  const list = detail.touches ?? detail.changedTouches;
+  const point = list && list.length > 0 ? list[0] : undefined;
+  if (point && typeof point.clientX === 'number') return point.clientX;
+  if (point && typeof point.pageX === 'number') return point.pageX;
+  if (detail.detail && typeof detail.detail.x === 'number') return detail.detail.x;
+  return 0;
 }
 
 function clamp(value: number, min: number, max: number): number {
-  return Math.min(Math.max(value, min), max)
+  return Math.min(Math.max(value, min), max);
 }
 
 function onTouchStart(event: Event): void {
-  if (props.disabled || state.value === 'success') return
-  dragStartX = touchX(event)
-  state.value = 'dragging'
+  if (props.disabled || state.value === 'success') return;
+  dragStartX = touchX(event);
+  state.value = 'dragging';
 }
 
 function onTouchMove(event: Event): void {
-  if (props.disabled || state.value !== 'dragging') return
-  event.preventDefault()
-  const delta = touchX(event) - dragStartX
-  offset.value = clamp(delta, 0, maxOffset.value)
+  if (props.disabled || state.value !== 'dragging') return;
+  event.preventDefault();
+  const delta = touchX(event) - dragStartX;
+  offset.value = clamp(delta, 0, maxOffset.value);
 }
 
 function onTouchEnd(): void {
-  if (state.value !== 'dragging') return
-  const reached = maxOffset.value > 0
-    ? offset.value >= maxOffset.value - props.tolerance
-    : false
+  if (state.value !== 'dragging') return;
+  const reached = maxOffset.value > 0 ? offset.value >= maxOffset.value - props.tolerance : false;
   if (reached) {
-    offset.value = maxOffset.value
-    state.value = 'success'
-    emit('success')
-    return
+    offset.value = maxOffset.value;
+    state.value = 'success';
+    emit('success');
+    return;
   }
-  offset.value = 0
-  state.value = 'fail'
-  emit('fail')
+  offset.value = 0;
+  state.value = 'fail';
+  emit('fail');
   // Snap back to idle so the gesture can be retried without a prop change.
-  state.value = 'idle'
+  state.value = 'idle';
 }
 
 function onTouchCancel(): void {
-  if (state.value !== 'dragging') return
-  offset.value = 0
-  state.value = 'idle'
+  if (state.value !== 'dragging') return;
+  offset.value = 0;
+  state.value = 'idle';
 }
 
 /** Public imperative API (wd-slide-verify parity). */
 function reset(): void {
-  offset.value = 0
-  state.value = 'idle'
+  offset.value = 0;
+  state.value = 'idle';
 }
 
-defineExpose({ init, reset })
+defineExpose({ init, reset });
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
@@ -227,26 +225,26 @@ const rootClass = computed(() => [
     'sn-slide-verify--disabled': props.disabled,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const vars: string[] = []
-  if (props.backgroundColor) vars.push(`--sn-slide-verify-track-bg: ${props.backgroundColor}`)
+  const vars: string[] = [];
+  if (props.backgroundColor) vars.push(`--sn-slide-verify-track-bg: ${props.backgroundColor}`);
   if (props.activeBackgroundColor) {
-    vars.push(`--sn-slide-verify-track-active-bg: ${props.activeBackgroundColor}`)
+    vars.push(`--sn-slide-verify-track-active-bg: ${props.activeBackgroundColor}`);
   }
-  const base = vars.join('; ')
-  if (!props.customStyle) return base
-  return base ? `${base}; ${props.customStyle}` : props.customStyle
-})
+  const base = vars.join('; ');
+  if (!props.customStyle) return base;
+  return base ? `${base}; ${props.customStyle}` : props.customStyle;
+});
 
 /** rpx offset for the handle (`1px design = 2rpx`). */
-const handleStyle = computed(() => `transform: translateX(${offset.value * 2}rpx)`)
+const handleStyle = computed(() => `transform: translateX(${offset.value * 2}rpx)`);
 
 const hintText = computed(() => {
-  if (state.value === 'success') return props.successText || '验证通过'
-  return props.text || '向右拖动滑块'
-})
+  if (state.value === 'success') return props.successText || '验证通过';
+  return props.text || '向右拖动滑块';
+});
 </script>
 
 <template>
@@ -265,7 +263,10 @@ const hintText = computed(() => {
       <text class="sn-slide-verify__text">{{ hintText }}</text>
 
       <view
-        :class="['sn-slide-verify__handle', { 'sn-slide-verify__handle--success': state === 'success' }]"
+        :class="[
+          'sn-slide-verify__handle',
+          { 'sn-slide-verify__handle--success': state === 'success' },
+        ]"
         :style="handleStyle"
         role="button"
         :aria-label="hintText"
@@ -324,7 +325,10 @@ const hintText = computed(() => {
 }
 
 .sn-slide-verify--success .sn-slide-verify__track {
-  background-color: var(--sn-slide-verify-track-active-bg, var(--sn-mp-color-feedback-success-soft));
+  background-color: var(
+    --sn-slide-verify-track-active-bg,
+    var(--sn-mp-color-feedback-success-soft)
+  );
 }
 
 .sn-slide-verify__text {

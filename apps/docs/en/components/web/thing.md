@@ -23,29 +23,29 @@ content / footer / action areas.
 
 ### SnThing Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| title | `string` | `undefined` | Title; `header` slot overrides |
-| title-extra | `string` | `undefined` | Header trailing content; `header-extra` slot overrides |
-| description | `string` | `undefined` | Description; `description` slot overrides |
-| content | `string` | `undefined` | Body; `default` slot overrides |
-| content-indented | `boolean` | `false` | Move the avatar out and indent the content column |
-| description-class | `string` | `undefined` | Description class |
-| description-style | `string \| CSSProperties` | `undefined` | Description style |
-| content-class | `string` | `undefined` | Content class |
-| content-style | `string \| CSSProperties` | `undefined` | Content style |
+| Name              | Type                      | Default     | Notes                                                  |
+| ----------------- | ------------------------- | ----------- | ------------------------------------------------------ |
+| title             | `string`                  | `undefined` | Title; `header` slot overrides                         |
+| title-extra       | `string`                  | `undefined` | Header trailing content; `header-extra` slot overrides |
+| description       | `string`                  | `undefined` | Description; `description` slot overrides              |
+| content           | `string`                  | `undefined` | Body; `default` slot overrides                         |
+| content-indented  | `boolean`                 | `false`     | Move the avatar out and indent the content column      |
+| description-class | `string`                  | `undefined` | Description class                                      |
+| description-style | `string \| CSSProperties` | `undefined` | Description style                                      |
+| content-class     | `string`                  | `undefined` | Content class                                          |
+| content-style     | `string \| CSSProperties` | `undefined` | Content style                                          |
 
 ### SnThing Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | Content body |
-| avatar | `()` | Avatar area |
-| header | `()` | Header, overrides `title` |
-| header-extra | `()` | Header trailing, overrides `title-extra` |
-| description | `()` | Description, overrides `description` |
-| footer | `()` | Footer area |
-| action | `()` | Action area (button row) |
+| Name         | Params | Notes                                    |
+| ------------ | ------ | ---------------------------------------- |
+| default      | `()`   | Content body                             |
+| avatar       | `()`   | Avatar area                              |
+| header       | `()`   | Header, overrides `title`                |
+| header-extra | `()`   | Header trailing, overrides `title-extra` |
+| description  | `()`   | Description, overrides `description`     |
+| footer       | `()`   | Footer area                              |
+| action       | `()`   | Action area (button row)                 |
 
 By default the avatar sits beside the header column; with
 `content-indented` it leads the whole block instead.

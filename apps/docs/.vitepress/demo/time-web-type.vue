@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTime — type="date" / type="datetime". */
-import { SnTime } from '@snui/vue-web'
+import { SnTime } from '@snui/vue-web';
 </script>
 
 <template>

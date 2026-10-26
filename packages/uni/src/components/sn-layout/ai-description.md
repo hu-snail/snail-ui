@@ -25,28 +25,28 @@ gutter so first and last columns stay flush with the container.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnLayout } from '@snui/uni/components/sn-layout/sn-layout.vue'
-import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue'
+import { SnLayout } from '@snui/uni/components/sn-layout/sn-layout.vue';
+import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue';
 ```
 
 ## Props — sn-layout
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `gutter` | `number` | `0` | Column gutter in px. |
-| `justify` | `'start' \| 'center' \| 'end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'start'` | Main-axis alignment. |
-| `align` | `'top' \| 'middle' \| 'bottom'` | `'top'` | Cross-axis alignment. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name          | Type                                                                                  | Default   | Description           |
+| ------------- | ------------------------------------------------------------------------------------- | --------- | --------------------- |
+| `gutter`      | `number`                                                                              | `0`       | Column gutter in px.  |
+| `justify`     | `'start' \| 'center' \| 'end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'start'` | Main-axis alignment.  |
+| `align`       | `'top' \| 'middle' \| 'bottom'`                                                       | `'top'`   | Cross-axis alignment. |
+| `customClass` | `string`                                                                              | `''`      | Root forwarding.      |
+| `customStyle` | `string`                                                                              | `''`      | Root forwarding.      |
 
 ## Props — sn-col
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `span` | `number` | `24` | Column width in 24ths (clamped to 1…24). |
-| `offset` | `number` | `0` | Left offset in 24ths. |
-| `customClass` | `string` | `''` | Column root forwarding. |
-| `customStyle` | `string` | `''` | Column root forwarding. |
+| Name          | Type     | Default | Description                              |
+| ------------- | -------- | ------- | ---------------------------------------- |
+| `span`        | `number` | `24`    | Column width in 24ths (clamped to 1…24). |
+| `offset`      | `number` | `0`     | Left offset in 24ths.                    |
+| `customClass` | `string` | `''`    | Column root forwarding.                  |
+| `customStyle` | `string` | `''`    | Column root forwarding.                  |
 
 ## Events
 
@@ -55,10 +55,10 @@ renders state, it does not own business transitions).
 
 ## Slots
 
-| Name | Scope | Description |
-|---|---|---|
-| `default (layout)` | — | Column list. |
-| `default (col)` | — | Column content. |
+| Name               | Scope | Description     |
+| ------------------ | ----- | --------------- |
+| `default (layout)` | —     | Column list.    |
+| `default (col)`    | —     | Column content. |
 
 ## Tokens Consumed (end: mp)
 

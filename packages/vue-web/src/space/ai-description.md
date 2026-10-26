@@ -20,26 +20,26 @@ here MUST also be added to the n-space parity list.
 ## Import
 
 ```ts
-import SnSpace from '@snui/vue-web/src/space/SnSpace.vue'
+import SnSpace from '@snui/vue-web/src/space/SnSpace.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `vertical` | `boolean` | `false` | Stack children in a column. Vertical layout always `nowrap` (n-space semantics). |
-| `size` | `number \| 'small' \| 'medium' \| 'large' \| [number, number]` | `'medium'` | Gap between children. Tuple is `[horizontal, vertical]` px → `column-gap` / `row-gap`. Invalid values fall back to medium. |
-| `wrap` | `boolean` | `true` | Allow horizontal children to wrap. `vertical` forces `nowrap` regardless. |
-| `justify` | `'start' \| 'end' \| 'center' \| 'space-around' \| 'space-between' \| 'space-evenly' \| 'flex-start' \| 'flex-end'` | `'start'` | Main-axis distribution. `'start'`/`'end'` normalize to `flex-start`/`flex-end` (n-space semantics). |
-| `align` | `'stretch' \| 'baseline' \| 'start' \| 'end' \| 'center' \| 'flex-start' \| 'flex-end'` | — | Cross-axis alignment. Unset → CSS `normal` (no `align-items` emitted). |
-| `inline` | `boolean` | `false` | Render as `inline-flex`. |
-| `customClass` | `string` | `''` | Extra class appended to the container (snail extension). |
-| `customStyle` | `string \| Record<string, string>` | `''` | Inline style appended to the container (snail extension). |
+| Name          | Type                                                                                                                | Default    | Description                                                                                                                |
+| ------------- | ------------------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `vertical`    | `boolean`                                                                                                           | `false`    | Stack children in a column. Vertical layout always `nowrap` (n-space semantics).                                           |
+| `size`        | `number \| 'small' \| 'medium' \| 'large' \| [number, number]`                                                      | `'medium'` | Gap between children. Tuple is `[horizontal, vertical]` px → `column-gap` / `row-gap`. Invalid values fall back to medium. |
+| `wrap`        | `boolean`                                                                                                           | `true`     | Allow horizontal children to wrap. `vertical` forces `nowrap` regardless.                                                  |
+| `justify`     | `'start' \| 'end' \| 'center' \| 'space-around' \| 'space-between' \| 'space-evenly' \| 'flex-start' \| 'flex-end'` | `'start'`  | Main-axis distribution. `'start'`/`'end'` normalize to `flex-start`/`flex-end` (n-space semantics).                        |
+| `align`       | `'stretch' \| 'baseline' \| 'start' \| 'end' \| 'center' \| 'flex-start' \| 'flex-end'`                             | —          | Cross-axis alignment. Unset → CSS `normal` (no `align-items` emitted).                                                     |
+| `inline`      | `boolean`                                                                                                           | `false`    | Render as `inline-flex`.                                                                                                   |
+| `customClass` | `string`                                                                                                            | `''`       | Extra class appended to the container (snail extension).                                                                   |
+| `customStyle` | `string \| Record<string, string>`                                                                                  | `''`       | Inline style appended to the container (snail extension).                                                                  |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                      |
+| --------- | ------------------------------------------------ |
 | `default` | Direct children are spaced by the container gap. |
 
 ## §112 future markers

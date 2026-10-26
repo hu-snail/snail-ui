@@ -27,26 +27,26 @@
  *   - 响应式断点 — uni 端无统一断点，由宿主媒体查询处理
  */
 
-import { computed, inject } from 'vue'
-import { SN_LAYOUT_KEY } from './sn-layout-types'
+import { computed, inject } from 'vue';
+import { SN_LAYOUT_KEY } from './sn-layout-types';
 
-defineOptions({ name: 'SnCol' })
+defineOptions({ name: 'SnCol' });
 
 /** Total columns in the grid. */
-const GRID_COLUMNS = 24
+const GRID_COLUMNS = 24;
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-col` 1:1 surface ────────────────────────────────────── */
 
     /** 列元素宽度（栅格占据的列数，共 24 列）。 */
-    span?: number
+    span?: number;
     /** 列元素偏移距离（栅格左侧的间隔列数）。 */
-    offset?: number
+    offset?: number;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     span: 24,
@@ -54,41 +54,37 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 列内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const layout = inject(SN_LAYOUT_KEY, null)
+const layout = inject(SN_LAYOUT_KEY, null);
 
 /** Clamp span into 1…24 so a typo cannot produce an invisible column. */
-const clampedSpan = computed(() => Math.min(Math.max(1, props.span), GRID_COLUMNS))
-const clampedOffset = computed(() => Math.min(Math.max(0, props.offset), GRID_COLUMNS - 1))
+const clampedSpan = computed(() => Math.min(Math.max(1, props.span), GRID_COLUMNS));
+const clampedOffset = computed(() => Math.min(Math.max(0, props.offset), GRID_COLUMNS - 1));
 
-const rootClass = computed(() => ['sn-col', props.customClass])
+const rootClass = computed(() => ['sn-col', props.customClass]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  const gutter = layout?.gutter.value ?? 0
-  if (gutter > 0) parts.push(`padding-left: ${gutter / 2}px`, `padding-right: ${gutter / 2}px`)
-  parts.push(`flex: 0 0 ${(clampedSpan.value / GRID_COLUMNS) * 100}%`)
-  parts.push(`max-width: ${(clampedSpan.value / GRID_COLUMNS) * 100}%`)
+  const parts: string[] = [];
+  const gutter = layout?.gutter.value ?? 0;
+  if (gutter > 0) parts.push(`padding-left: ${gutter / 2}px`, `padding-right: ${gutter / 2}px`);
+  parts.push(`flex: 0 0 ${(clampedSpan.value / GRID_COLUMNS) * 100}%`);
+  parts.push(`max-width: ${(clampedSpan.value / GRID_COLUMNS) * 100}%`);
   if (clampedOffset.value > 0) {
-    parts.push(`margin-left: ${(clampedOffset.value / GRID_COLUMNS) * 100}%`)
+    parts.push(`margin-left: ${(clampedOffset.value / GRID_COLUMNS) * 100}%`);
   }
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 </script>
 
 <template>
-  <view
-    data-snui-component="col"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="col" :class="rootClass" :style="rootStyle">
     <slot />
   </view>
 </template>

@@ -3,16 +3,16 @@
  * Demo: SnMarquee — 通知栏形态：左侧标签 + 中间跑马灯 + 右侧播放 / 暂停。
  * `playing` 受控播放暂停，`pauseOnHover`（默认开启）负责悬停暂停。
  */
-import { ref } from 'vue'
-import { SnButton, SnMarquee } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnMarquee } from '@snui/vue-web';
 
-const playing = ref(true)
+const playing = ref(true);
 
 const notices = [
   'System maintenance this Friday at 22:00, expected to take 2 hours.',
   'The new design spec has been released; please align your business lines.',
   'The monthly traffic report is ready — view it on the data dashboard.',
-]
+];
 </script>
 
 <template>
@@ -36,7 +36,8 @@ const notices = [
     </div>
 
     <p class="notice-demo__hint">
-      Hovering over the scrolling area pauses it (pause-on-hover); the button on the right pauses / resumes via the playing prop.
+      Hovering over the scrolling area pauses it (pause-on-hover); the button on the right pauses /
+      resumes via the playing prop.
     </p>
   </div>
 </template>

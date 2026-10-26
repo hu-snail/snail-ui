@@ -13,13 +13,7 @@
  * as 「未实现」 instead of shipping a half-working grid (CONTRIBUTING §9).
  */
 export type CalendarType =
-  | 'date'
-  | 'dates'
-  | 'datetime'
-  | 'month'
-  | 'daterange'
-  | 'datetimerange'
-  | 'monthrange'
+  'date' | 'dates' | 'datetime' | 'month' | 'daterange' | 'datetimerange' | 'monthrange';
 
 /** Cell state reported by `formatter` / consumed by the CSS. */
 export type CalendarDayType =
@@ -31,29 +25,29 @@ export type CalendarDayType =
   | 'current'
   | 'multiple-middle'
   | 'multiple-selected'
-  | ''
+  | '';
 
 /** Payload handed to the `formatter` hook. */
 export interface CalendarDayItem {
   /** 13-digit timestamp of the cell (local midnight). */
-  date: number
+  date: number;
   /** Cell state. */
-  type: CalendarDayType
+  type: CalendarDayType;
   /** Text rendered inside the cell. */
-  text: string
+  text: string;
   /** Caption above the day number. */
-  topInfo: string
+  topInfo: string;
   /** Caption below the day number. */
-  bottomInfo: string
+  bottomInfo: string;
   /** Whether the cell is disabled. */
-  disabled: boolean
+  disabled: boolean;
 }
 
 /** `formatter` return: any subset of the cell fields. */
-export type CalendarFormatter = (day: CalendarDayItem) => Partial<CalendarDayItem> | undefined
+export type CalendarFormatter = (day: CalendarDayItem) => Partial<CalendarDayItem> | undefined;
 
 /** Time filter — receives `['hour', 'minute', 'second']` style values. */
-export type CalendarTimeFilter = (type: 'hour' | 'minute' | 'second', values: number[]) => number[]
+export type CalendarTimeFilter = (type: 'hour' | 'minute' | 'second', values: number[]) => number[];
 
 /** Calendar value: single timestamp, timestamp list, or nothing. */
-export type CalendarValue = number | number[] | null
+export type CalendarValue = number | number[] | null;

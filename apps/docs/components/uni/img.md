@@ -28,50 +28,50 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| src | string | '' | 图片链接 |
-| previewSrc | string | '' | 预览图片链接（默认取 `src`） |
-| width | string \| number | '' | 宽度（数字按 rpx） |
-| height | string \| number | '' | 高度（数字按 rpx） |
-| mode | ImageMode | 'scaleToFill' | 填充模式（uni `<image mode>` 集合） |
-| round | boolean | false | 是否显示为圆形 |
-| radius | string \| number | '' | 圆角大小（数字按 rpx） |
-| lazyLoad | boolean | false | 是否开启图片懒加载 |
-| enablePreview | boolean | false | 是否支持点击预览（调用 `uni.previewImage`） |
-| showMenuByLongpress | boolean | false | 长按显示识别小程序码菜单（仅微信小程序） |
-| showLoading | boolean | true | 是否展示默认加载态 |
-| showError | boolean | true | 是否展示默认失败态 |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
-| customImage | string | '' | 内部 `<image>` 自定义类名 |
+| 属性                | 类型             | 默认值        | 说明                                        |
+| ------------------- | ---------------- | ------------- | ------------------------------------------- |
+| src                 | string           | ''            | 图片链接                                    |
+| previewSrc          | string           | ''            | 预览图片链接（默认取 `src`）                |
+| width               | string \| number | ''            | 宽度（数字按 rpx）                          |
+| height              | string \| number | ''            | 高度（数字按 rpx）                          |
+| mode                | ImageMode        | 'scaleToFill' | 填充模式（uni `<image mode>` 集合）         |
+| round               | boolean          | false         | 是否显示为圆形                              |
+| radius              | string \| number | ''            | 圆角大小（数字按 rpx）                      |
+| lazyLoad            | boolean          | false         | 是否开启图片懒加载                          |
+| enablePreview       | boolean          | false         | 是否支持点击预览（调用 `uni.previewImage`） |
+| showMenuByLongpress | boolean          | false         | 长按显示识别小程序码菜单（仅微信小程序）    |
+| showLoading         | boolean          | true          | 是否展示默认加载态                          |
+| showError           | boolean          | true          | 是否展示默认失败态                          |
+| customClass         | string           | ''            | 根节点自定义类名                            |
+| customStyle         | string           | ''            | 根节点自定义样式                            |
+| customImage         | string           | ''            | 内部 `<image>` 自定义类名                   |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| click | 点击图片 | Event |
-| load | 图片加载完成 | Event |
-| error | 图片加载失败 | Event |
+| 事件名 | 说明         | 参数  |
+| ------ | ------------ | ----- |
+| click  | 点击图片     | Event |
+| load   | 图片加载完成 | Event |
+| error  | 图片加载失败 | Event |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明         |
+| ------- | ------------ |
 | loading | 自定义加载态 |
-| error | 自定义失败态 |
+| error   | 自定义失败态 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
+| 变量                            | 用途             |
+| ------------------------------- | ---------------- |
 | --sn-mp-color-background-subtle | 加载中的占位底盘 |
-| --sn-mp-color-border-default | 加载圈轨道 |
-| --sn-mp-color-action-primary | 加载圈进度头 |
-| --sn-mp-color-text-tertiary | 失败文案 |
-| --sn-mp-font-size-sm | 失败文案字号 |
-| --sn-mp-font-line-height-normal | 失败文案行高 |
-| --sn-mp-radius-full | `round` 圆形 |
+| --sn-mp-color-border-default    | 加载圈轨道       |
+| --sn-mp-color-action-primary    | 加载圈进度头     |
+| --sn-mp-color-text-tertiary     | 失败文案         |
+| --sn-mp-font-size-sm            | 失败文案字号     |
+| --sn-mp-font-line-height-normal | 失败文案行高     |
+| --sn-mp-radius-full             | `round` 圆形     |
 
 ## 无障碍
 
@@ -81,7 +81,6 @@
 ## 暗色模式
 
 占位底盘、加载圈与失败文案颜色全部来自语义色 token（`--sn-mp-color-background-subtle` / `--sn-mp-color-border-default` / `--sn-mp-color-action-primary` / `--sn-mp-color-text-tertiary`），都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

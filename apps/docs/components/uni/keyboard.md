@@ -27,38 +27,38 @@ mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `visible` | `boolean` | `false` | 键盘显隐（`v-model:visible`） |
-| `modelValue` | `string` | `''` | 当前输入值 |
-| `title` | `string` | `''` | 键盘标题 |
-| `mode` | `'default' \| 'custom' \| 'car'` | `'default'` | 布局预设 |
-| `zIndex` | `number` | `100` | 层级 |
-| `maxlength` | `number` | `Infinity` | 最大输入长度 |
-| `showDeleteKey` | `boolean` | `true` | 是否显示删除键 |
-| `randomKeyOrder` | `boolean` | `false` | 随机排序数字键 |
-| `closeText` / `deleteText` | `string` | `''` | 关闭 / 删除文案 |
-| `closeButtonLoading` | `boolean` | `false` | 关闭按钮加载态 |
-| `modal` / `hideOnClickOutside` / `lockScroll` | `boolean` | `false` / `true` / `true` | 遮罩行为 |
-| `safeAreaInsetBottom` | `boolean` | `true` | 底部安全区留白 |
-| `extraKey` | `string \| string[]` | `undefined` | 额外按键 |
-| `carLang` | `'zh' \| 'en'` | `'zh'` | 车牌语言（`v-model:car-lang`） |
-| `autoSwitchLang` | `boolean` | `false` | 选省份后自动切字母 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
-| `rootPortal` | `boolean` | `false` | 脱离页面渲染——**声明但未实现**（小程序无 portal 宿主，透传给 `sn-popup`）|
+| 属性                                          | 类型                             | 默认值                    | 说明                                                                      |
+| --------------------------------------------- | -------------------------------- | ------------------------- | ------------------------------------------------------------------------- |
+| `visible`                                     | `boolean`                        | `false`                   | 键盘显隐（`v-model:visible`）                                             |
+| `modelValue`                                  | `string`                         | `''`                      | 当前输入值                                                                |
+| `title`                                       | `string`                         | `''`                      | 键盘标题                                                                  |
+| `mode`                                        | `'default' \| 'custom' \| 'car'` | `'default'`               | 布局预设                                                                  |
+| `zIndex`                                      | `number`                         | `100`                     | 层级                                                                      |
+| `maxlength`                                   | `number`                         | `Infinity`                | 最大输入长度                                                              |
+| `showDeleteKey`                               | `boolean`                        | `true`                    | 是否显示删除键                                                            |
+| `randomKeyOrder`                              | `boolean`                        | `false`                   | 随机排序数字键                                                            |
+| `closeText` / `deleteText`                    | `string`                         | `''`                      | 关闭 / 删除文案                                                           |
+| `closeButtonLoading`                          | `boolean`                        | `false`                   | 关闭按钮加载态                                                            |
+| `modal` / `hideOnClickOutside` / `lockScroll` | `boolean`                        | `false` / `true` / `true` | 遮罩行为                                                                  |
+| `safeAreaInsetBottom`                         | `boolean`                        | `true`                    | 底部安全区留白                                                            |
+| `extraKey`                                    | `string \| string[]`             | `undefined`               | 额外按键                                                                  |
+| `carLang`                                     | `'zh' \| 'en'`                   | `'zh'`                    | 车牌语言（`v-model:car-lang`）                                            |
+| `autoSwitchLang`                              | `boolean`                        | `false`                   | 选省份后自动切字母                                                        |
+| `customClass` / `customStyle`                 | `string`                         | `''`                      | 根节点自定义类名 / 样式                                                   |
+| `rootPortal`                                  | `boolean`                        | `false`                   | 脱离页面渲染——**声明但未实现**（小程序无 portal 宿主，透传给 `sn-popup`） |
 
 > **未实现**：`root-portal`——声明并透传给 `sn-popup`，但 uni-app 小程序没有 portal 宿主，因此没有视觉变化。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 值变化时 | `(value: string)` |
-| `update:visible` | 显隐变化时 | `(value: boolean)` |
-| `update:carLang` | 车牌语言变化时 | `(lang: 'zh' \| 'en')` |
-| `input` | 点击字符键时 | `(key: string)` |
-| `delete` | 点击删除键时 | — |
-| `close` | 键盘关闭时 | — |
+| 事件名              | 说明           | 参数                   |
+| ------------------- | -------------- | ---------------------- |
+| `update:modelValue` | 值变化时       | `(value: string)`      |
+| `update:visible`    | 显隐变化时     | `(value: boolean)`     |
+| `update:carLang`    | 车牌语言变化时 | `(lang: 'zh' \| 'en')` |
+| `input`             | 点击字符键时   | `(key: string)`        |
+| `delete`            | 点击删除键时   | —                      |
+| `close`             | 键盘关闭时     | —                      |
 
 ## Slots
 
@@ -66,14 +66,14 @@ mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | 键盘底色 |
-| ``--sn-mp-color-background-soft`` | 按键底板 |
-| ``--sn-mp-color-background-sunken`` | custom 模式删除键 |
-| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary`` | 按键与头部文字 |
-| ``--sn-mp-radius-md`` | 按键圆角 |
-| ``--sn-mp-font-size-md` / `-sm` / `-xl`` | 文案字号 |
+| 变量                                                        | 用途              |
+| ----------------------------------------------------------- | ----------------- |
+| `--sn-mp-color-background-elevated`                         | 键盘底色          |
+| `--sn-mp-color-background-soft`                             | 按键底板          |
+| `--sn-mp-color-background-sunken`                           | custom 模式删除键 |
+| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary`` | 按键与头部文字    |
+| `--sn-mp-radius-md`                                         | 按键圆角          |
+| ``--sn-mp-font-size-md` / `-sm` / `-xl``                    | 文案字号          |
 
 ## 无障碍
 
@@ -84,4 +84,3 @@ mode="car" 出车牌键盘，autoSwitchLang 在选中省份后自动切字母；
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

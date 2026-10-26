@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnImage — render-toolbar keeps prev/next and adds custom actions. */
-import { h, ref } from 'vue'
-import { SnButton, SnIcon, SnImage } from '@snui/vue-web'
-import { Clipboard, ExternalLink } from 'lucide-vue-next'
+import { h, ref } from 'vue';
+import { SnButton, SnIcon, SnImage } from '@snui/vue-web';
+import { Clipboard, ExternalLink } from 'lucide-vue-next';
 
-const url = 'https://picsum.photos/id/1060/1200/800'
-const copied = ref(false)
+const url = 'https://picsum.photos/id/1060/1200/800';
+const copied = ref(false);
 
 function renderToolbar({ nodes }: { nodes: Record<string, unknown> }): unknown {
   return [
@@ -30,18 +30,20 @@ function renderToolbar({ nodes }: { nodes: Record<string, unknown> }): unknown {
         style: { marginLeft: '8px' },
         onClick: async () => {
           try {
-            await navigator.clipboard.writeText(url)
-            copied.value = true
-            window.setTimeout(() => { copied.value = false }, 1500)
+            await navigator.clipboard.writeText(url);
+            copied.value = true;
+            window.setTimeout(() => {
+              copied.value = false;
+            }, 1500);
           } catch {
-            copied.value = false
+            copied.value = false;
           }
         },
       },
       { icon: () => h(SnIcon, { icon: Clipboard, size: 14 }) },
     ),
     nodes.close,
-  ]
+  ];
 }
 </script>
 
@@ -53,6 +55,14 @@ function renderToolbar({ nodes }: { nodes: Record<string, unknown> }): unknown {
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
-.copied { color: var(--sn-web-color-feedback-success); font-size: 12px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+.copied {
+  color: var(--sn-web-color-feedback-success);
+  font-size: 12px;
+}
 </style>

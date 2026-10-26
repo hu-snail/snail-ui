@@ -7,75 +7,75 @@
  * splitter container and percent sizes stay exact. Size (percent width or
  * height) is owned by the parent splitter through the injection context.
  */
-import { computed, inject, onBeforeUnmount } from 'vue'
-import { SN_SPLITTER_INJECTION_KEY } from './splitter-context'
-import type { SnSplitterBoundaryAria } from './splitter-context'
-import type { SnSplitterPanelPublicProps } from './splitter-context'
+import { computed, inject, onBeforeUnmount } from 'vue';
+import { SN_SPLITTER_INJECTION_KEY } from './splitter-context';
+import type { SnSplitterBoundaryAria } from './splitter-context';
+import type { SnSplitterPanelPublicProps } from './splitter-context';
 
-defineOptions({ name: 'SnSplitterPanel', inheritAttrs: false })
+defineOptions({ name: 'SnSplitterPanel', inheritAttrs: false });
 
-const props = defineProps<SnSplitterPanelPublicProps>()
+const props = defineProps<SnSplitterPanelPublicProps>();
 
 const emit = defineEmits<{
   /** v-model:collapsed sync (collapse snap / expand restore / host change). */
-  (e: 'update:collapsed', collapsed: boolean): void
-}>()
+  (e: 'update:collapsed', collapsed: boolean): void;
+}>();
 
 defineSlots<{
   /** Panel content. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const api = inject(SN_SPLITTER_INJECTION_KEY)
+const api = inject(SN_SPLITTER_INJECTION_KEY);
 
-let panelId = -1
-let unregister: (() => void) | null = null
+let panelId = -1;
+let unregister: (() => void) | null = null;
 if (api) {
   const registration = api.registerPanel({
     props,
     emitCollapsed: (next: boolean) => {
-      emit('update:collapsed', next)
+      emit('update:collapsed', next);
     },
-  })
-  panelId = registration.id
-  unregister = registration.unregister
+  });
+  panelId = registration.id;
+  unregister = registration.unregister;
   onBeforeUnmount(() => {
-    unregister?.()
-  })
+    unregister?.();
+  });
 }
 
-const entry = computed(() => (api ? api.getEntry(panelId) : undefined))
-const panelIndex = computed(() => (api ? api.indexOfPanel(panelId) : -1))
+const entry = computed(() => (api ? api.getEntry(panelId) : undefined));
+const panelIndex = computed(() => (api ? api.indexOfPanel(panelId) : -1));
 
 /** Every panel after the first renders the divider above its own body. */
-const dividerVisible = computed(() => panelIndex.value > 0)
+const dividerVisible = computed(() => panelIndex.value > 0);
 
 const bodyStyle = computed<Record<string, string> | undefined>(() => {
-  const current = entry.value
-  if (!current) return undefined
+  const current = entry.value;
+  if (!current) return undefined;
   return api?.direction.value === 'vertical'
     ? { height: `${current.size}%` }
-    : { width: `${current.size}%` }
-})
+    : { width: `${current.size}%` };
+});
 
 const dividerAria = computed<SnSplitterBoundaryAria | null>(() =>
   api && dividerVisible.value ? api.getBoundaryAria(panelIndex.value) : null,
-)
-const isDividerDisabled = computed(() => api?.isDisabled.value ?? false)
+);
+const isDividerDisabled = computed(() => api?.isDisabled.value ?? false);
 const dividerOrientation = computed(() =>
   api?.direction.value === 'vertical' ? 'horizontal' : 'vertical',
-)
+);
 
 function onDividerPointerDown(event: PointerEvent): void {
-  api?.onDividerPointerDown(panelIndex.value, event)
+  api?.onDividerPointerDown(panelIndex.value, event);
 }
 
 function onDividerKeydown(event: KeyboardEvent): void {
-  api?.onDividerKeydown(panelIndex.value, event)
+  api?.onDividerKeydown(panelIndex.value, event);
 }
 
 function onDividerDblClick(): void {
-  api?.onDividerDblClick(panelIndex.value)
+  api?.onDividerDblClick(panelIndex.value);
 }
 </script>
 
@@ -131,10 +131,7 @@ function onDividerDblClick(): void {
 .sn-splitter__divider-line {
   width: var(--sn-web-splitter-divider-line-size, 2px);
   height: 100%;
-  background-color: var(
-    --sn-web-splitter-divider-line-color,
-    var(--sn-web-color-border-default)
-  );
+  background-color: var(--sn-web-splitter-divider-line-color, var(--sn-web-color-border-default));
   transition: background-color 0.15s ease;
 }
 

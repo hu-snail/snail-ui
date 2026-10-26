@@ -1,16 +1,16 @@
 <script setup lang="ts">
 /** Demo: SnInput — prefixIcon / suffixIcon via registry + cssIcon mode. */
-import { ref } from 'vue'
-import { SnInput } from '@snui/vue-web'
-import { Search, AtSign, ChevronRight } from 'lucide-vue-next'
-import { registerSnIcons } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnInput } from '@snui/vue-web';
+import { Search, AtSign, ChevronRight } from 'lucide-vue-next';
+import { registerSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ Search, AtSign, ChevronRight })
+registerSnIcons({ Search, AtSign, ChevronRight });
 
-const q = ref('')
-const handle = ref('')
-const url = ref('')
-const cssClick = ref('')
+const q = ref('');
+const handle = ref('');
+const url = ref('');
+const cssClick = ref('');
 </script>
 
 <template>
@@ -28,7 +28,12 @@ const cssClick = ref('')
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
 :deep(.my-icon-glossary) {
   display: inline-flex;
   width: 14px;

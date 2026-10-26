@@ -1,16 +1,16 @@
 <script setup lang="ts">
 /** Demo: SnQrCode — size controlled by stepper buttons. */
-import { ref } from 'vue'
-import { SnButton, SnQrCode } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnQrCode } from '@snui/vue-web';
 
-const size = ref(110)
+const size = ref(110);
 
 function add(): void {
-  size.value = Math.min(220, size.value + 10)
+  size.value = Math.min(220, size.value + 10);
 }
 
 function minus(): void {
-  size.value = Math.max(40, size.value - 10)
+  size.value = Math.max(40, size.value - 10);
 }
 </script>
 
@@ -25,6 +25,15 @@ function minus(): void {
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
-.demo-row { display: flex; gap: 8px; align-items: center; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+.demo-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 </style>

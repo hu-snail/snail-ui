@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnPageHeader — back + title/subtitle + extra + footer with body content. */
-import { SnButton, SnPageHeader } from '@snui/vue-web'
+import { SnButton, SnPageHeader } from '@snui/vue-web';
 
 function goBack(): void {
   // 业务层处理跳转；演示中仅打印。
   // eslint-disable-next-line no-console
-  console.log('[page-header-demo] back clicked')
+  console.log('[page-header-demo] back clicked');
 }
 </script>
 

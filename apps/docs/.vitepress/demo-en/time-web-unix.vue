@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTime — unix timestamps (seconds) via the unix prop. */
-import { SnTime } from '@snui/vue-web'
+import { SnTime } from '@snui/vue-web';
 </script>
 
 <template>

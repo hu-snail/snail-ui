@@ -6,6 +6,6 @@
  * the page actually mounted.
  */
 
-export { default as SnAiChat } from './sn-ai-chat.vue'
-export { default as SnAiMessage } from './sn-ai-message.vue'
-export type { SnAiRunTurn } from './sn-ai-chat.vue'
+export { default as SnAiChat } from './sn-ai-chat.vue';
+export { default as SnAiMessage } from './sn-ai-message.vue';
+export type { SnAiRunTurn } from './sn-ai-chat.vue';

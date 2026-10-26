@@ -24,60 +24,60 @@ added to the wd-search parity list.
 ```
 
 ```ts
-import SnSearch from '@snui/uni-src/components/sn-search/sn-search.vue'
+import SnSearch from '@snui/uni-src/components/sn-search/sn-search.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `modelValue` | `string` | `''` | no | v-model query text. |
-| `customInputClass` | `string` | `''` | no | Class on the inner `<input>`. |
-| `placeholder` | `string` | `'搜索'` | no | Placeholder text (wd-search default). |
-| `cancelTxt` | `string` | `'取消'` | no | Right-hand cancel text. |
-| `variant` | `'plain' \| 'filled' \| 'light'` | `'plain'` | no | Visual variant. |
-| `hideCancel` | `boolean` | `false` | no | Hide the cancel text. |
-| `disabled` | `boolean` | `false` | no | Blocks input / search / cancel / clear. |
-| `maxlength` | `number \| string` | `-1` | no | Max length; `-1` = unlimited. |
-| `placeholderLeft` | `boolean` | `false` | no | Left-align the placeholder (default is centered). |
-| `focus` | `boolean` | `false` | no | Focus on mount. |
-| `focusWhenClear` | `boolean` | `false` | no | Declared for parity; re-focus is a no-op on uni-end. |
-| `placeholderStyle` | `string` | `''` | no | Inline style for the placeholder. |
-| `placeholderClass` | `string` | `''` | no | Class on the placeholder. |
-| `customClass` | `string` | `''` | no | Class on the root node. |
-| `customStyle` | `string` | `''` | no | Inline style on the root node. |
+| Name               | Type                             | Default   | Required | Description                                          |
+| ------------------ | -------------------------------- | --------- | -------- | ---------------------------------------------------- |
+| `modelValue`       | `string`                         | `''`      | no       | v-model query text.                                  |
+| `customInputClass` | `string`                         | `''`      | no       | Class on the inner `<input>`.                        |
+| `placeholder`      | `string`                         | `'搜索'`  | no       | Placeholder text (wd-search default).                |
+| `cancelTxt`        | `string`                         | `'取消'`  | no       | Right-hand cancel text.                              |
+| `variant`          | `'plain' \| 'filled' \| 'light'` | `'plain'` | no       | Visual variant.                                      |
+| `hideCancel`       | `boolean`                        | `false`   | no       | Hide the cancel text.                                |
+| `disabled`         | `boolean`                        | `false`   | no       | Blocks input / search / cancel / clear.              |
+| `maxlength`        | `number \| string`               | `-1`      | no       | Max length; `-1` = unlimited.                        |
+| `placeholderLeft`  | `boolean`                        | `false`   | no       | Left-align the placeholder (default is centered).    |
+| `focus`            | `boolean`                        | `false`   | no       | Focus on mount.                                      |
+| `focusWhenClear`   | `boolean`                        | `false`   | no       | Declared for parity; re-focus is a no-op on uni-end. |
+| `placeholderStyle` | `string`                         | `''`      | no       | Inline style for the placeholder.                    |
+| `placeholderClass` | `string`                         | `''`      | no       | Class on the placeholder.                            |
+| `customClass`      | `string`                         | `''`      | no       | Class on the root node.                              |
+| `customStyle`      | `string`                         | `''`      | no       | Inline style on the root node.                       |
 
 ## Events
 
-| Name | Payload | When |
-|---|---|---|
-| `update:modelValue` | `(value: string)` | Every keystroke. |
-| `change` | `(value: string)` | Value changed (alias of `update:modelValue`). |
-| `search` | `(value: string)` | Soft-keyboard confirm / search tapped. |
-| `cancel` | `(value: string)` | Right-hand cancel text tapped. |
-| `clear` | `()` | × button tapped. |
-| `focus` / `blur` | `(event: Event)` | Native focus / blur. |
-| `click` | `(event: Event)` | Root tapped **while disabled** (the only way to observe the block). |
+| Name                | Payload           | When                                                                |
+| ------------------- | ----------------- | ------------------------------------------------------------------- |
+| `update:modelValue` | `(value: string)` | Every keystroke.                                                    |
+| `change`            | `(value: string)` | Value changed (alias of `update:modelValue`).                       |
+| `search`            | `(value: string)` | Soft-keyboard confirm / search tapped.                              |
+| `cancel`            | `(value: string)` | Right-hand cancel text tapped.                                      |
+| `clear`             | `()`              | × button tapped.                                                    |
+| `focus` / `blur`    | `(event: Event)`  | Native focus / blur.                                                |
+| `click`             | `(event: Event)`  | Root tapped **while disabled** (the only way to observe the block). |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `prefix` | Content before the field. |
+| Name           | Description                                   |
+| -------------- | --------------------------------------------- |
+| `prefix`       | Content before the field.                     |
 | `input-suffix` | Content inside the field, right of the input. |
-| `suffix` | Content after the cancel text. |
+| `suffix`       | Content after the cancel text.                |
 
 ## Tokens Consumed (end: mp)
 
-| Token | Purpose |
-|---|---|
-| `--sn-mp-color-input-bg` | Field background (`plain`) |
-| `--sn-mp-color-input-text` | Input text |
-| `--sn-mp-color-input-placeholder` | Placeholder |
-| `--sn-mp-color-input-border` / `-focus` | Field border |
+| Token                                       | Purpose                     |
+| ------------------------------------------- | --------------------------- |
+| `--sn-mp-color-input-bg`                    | Field background (`plain`)  |
+| `--sn-mp-color-input-text`                  | Input text                  |
+| `--sn-mp-color-input-placeholder`           | Placeholder                 |
+| `--sn-mp-color-input-border` / `-focus`     | Field border                |
 | `--sn-mp-color-background-soft` / `-subtle` | `filled` / `light` surfaces |
-| `--sn-mp-color-action-primary` | Cancel text + focus ring |
-| `--sn-mp-radius-full` | Pill field |
+| `--sn-mp-color-action-primary`              | Cancel text + focus ring    |
+| `--sn-mp-radius-full`                       | Pill field                  |
 
 ## Accessibility
 

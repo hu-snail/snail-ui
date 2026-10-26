@@ -7,17 +7,17 @@
  *   - `masonry=false` 关掉多列布局，退化为普通单列竖向堆叠；
  *   - `row-gap` 由每个子项的 `margin-bottom` 提供（这里用 12）。
  */
-import { ref } from 'vue'
-import { SnCard, SnWaterfall } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnCard, SnWaterfall } from '@snui/vue-web';
 
 interface CardItem {
-  id: number
-  title: string
-  desc: string
-  coverHeight: number
-  tags: string[]
-  from: string
-  to: string
+  id: number;
+  title: string;
+  desc: string;
+  coverHeight: number;
+  tags: string[];
+  from: string;
+  to: string;
 }
 
 const cards: CardItem[] = [
@@ -75,11 +75,11 @@ const cards: CardItem[] = [
     from: '#52c41a',
     to: '#95de64',
   },
-]
+];
 
-const columnOptions = [2, 3, 4]
-const columns = ref(3)
-const masonry = ref(true)
+const columnOptions = [2, 3, 4];
+const columns = ref(3);
+const masonry = ref(true);
 </script>
 
 <template>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /** Demo: SnCode — line-number gutter aligned with the code rows. */
-import { SnCode } from '@snui/vue-web'
+import { SnCode } from '@snui/vue-web';
 
 const jsonCode = `{
   "service": "gateway",
   "port": 8080,
   "routes": ["/api", "/docs"],
   "verbose": false
-}`
+}`;
 </script>
 
 <template>

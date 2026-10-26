@@ -42,57 +42,57 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | Visibility (`v-model`) |
-| `transition` | `'fade' \| 'fade-up' \| 'fade-down' \| 'fade-left' \| 'fade-right' \| 'slide-up' \| 'slide-down' \| 'slide-left' \| 'slide-right' \| 'zoom-in' \| 'zoom-out'` | `''` | Animation name; empty derives one from `position` |
-| `closable` | `boolean` | `false` | Show the close button |
-| `position` | `'center' \| 'top' \| 'right' \| 'bottom' \| 'left'` | `'center'` | Panel anchor |
-| `closeOnClickModal` | `boolean` | `true` | Scrim tap closes the popup |
-| `duration` | `number \| boolean \| Record<string, number>` | `300` | Animation duration; `false` disables, an object sets enter / leave separately |
-| `modal` | `boolean` | `true` | Render the scrim |
-| `zIndex` | `number` | `10` | Stacking level |
-| `hideWhenClose` | `boolean` | `true` | Remove the node on close |
-| `modalStyle` | `string` | `''` | Inline style for the scrim |
-| `safeAreaInsetBottom` | `boolean` | `false` | Pad the bottom sheet for the device safe area |
-| `lazyRender` | `boolean` | `true` | Defer panel content rendering |
-| `lockScroll` | `boolean` | `true` | Lock background scroll |
-| `round` | `boolean` | `false` | Rounded corners, adapted to the anchor |
-| `customClass` | `string` | `''` | Custom class for the root node |
-| `customStyle` | `string` | `''` | Custom style for the panel |
+| Prop                  | Type                                                                                                                                                          | Default    | Description                                                                   |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------- |
+| `modelValue`          | `boolean`                                                                                                                                                     | `false`    | Visibility (`v-model`)                                                        |
+| `transition`          | `'fade' \| 'fade-up' \| 'fade-down' \| 'fade-left' \| 'fade-right' \| 'slide-up' \| 'slide-down' \| 'slide-left' \| 'slide-right' \| 'zoom-in' \| 'zoom-out'` | `''`       | Animation name; empty derives one from `position`                             |
+| `closable`            | `boolean`                                                                                                                                                     | `false`    | Show the close button                                                         |
+| `position`            | `'center' \| 'top' \| 'right' \| 'bottom' \| 'left'`                                                                                                          | `'center'` | Panel anchor                                                                  |
+| `closeOnClickModal`   | `boolean`                                                                                                                                                     | `true`     | Scrim tap closes the popup                                                    |
+| `duration`            | `number \| boolean \| Record<string, number>`                                                                                                                 | `300`      | Animation duration; `false` disables, an object sets enter / leave separately |
+| `modal`               | `boolean`                                                                                                                                                     | `true`     | Render the scrim                                                              |
+| `zIndex`              | `number`                                                                                                                                                      | `10`       | Stacking level                                                                |
+| `hideWhenClose`       | `boolean`                                                                                                                                                     | `true`     | Remove the node on close                                                      |
+| `modalStyle`          | `string`                                                                                                                                                      | `''`       | Inline style for the scrim                                                    |
+| `safeAreaInsetBottom` | `boolean`                                                                                                                                                     | `false`    | Pad the bottom sheet for the device safe area                                 |
+| `lazyRender`          | `boolean`                                                                                                                                                     | `true`     | Defer panel content rendering                                                 |
+| `lockScroll`          | `boolean`                                                                                                                                                     | `true`     | Lock background scroll                                                        |
+| `round`               | `boolean`                                                                                                                                                     | `false`    | Rounded corners, adapted to the anchor                                        |
+| `customClass`         | `string`                                                                                                                                                      | `''`       | Custom class for the root node                                                |
+| `customStyle`         | `string`                                                                                                                                                      | `''`       | Custom style for the panel                                                    |
 
 > **Not implemented:** `root-portal` (escaping the page tree to fix a broken `fixed`). uni-app miniprogram has no portal host, so a popup cannot be reparented to the page root — avoid `sn-popup` inside a transformed ancestor.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event               | Description                                                         | Payload            |
+| ------------------- | ------------------------------------------------------------------- | ------------------ |
 | `update:modelValue` | Emitted when the component closes itself (close button / scrim tap) | `(value: boolean)` |
-| `close` | The user closed the popup | — |
-| `click-modal` | Scrim tapped (fires even when `closeOnClickModal` is `false`) | — |
-| `before-enter` | Before the enter animation | — |
-| `enter` | Enter animation started | — |
-| `after-enter` | Enter animation finished | — |
-| `before-leave` | Before the leave animation | — |
-| `leave` | Leave animation started | — |
-| `after-leave` | Leave animation finished | — |
+| `close`             | The user closed the popup                                           | —                  |
+| `click-modal`       | Scrim tapped (fires even when `closeOnClickModal` is `false`)       | —                  |
+| `before-enter`      | Before the enter animation                                          | —                  |
+| `enter`             | Enter animation started                                             | —                  |
+| `after-enter`       | Enter animation finished                                            | —                  |
+| `before-leave`      | Before the leave animation                                          | —                  |
+| `leave`             | Leave animation started                                             | —                  |
+| `after-leave`       | Leave animation finished                                            | —                  |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                                                           |
+| --------- | --------------------------------------------------------------------- |
 | `default` | Panel content (rendered after the first open when `lazyRender` is on) |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | Scrim color |
-| `--sn-mp-color-background-elevated` | Panel background |
-| `--sn-mp-color-text-primary` | Panel text |
-| `--sn-mp-color-text-secondary` | Close-button glyph |
-| `--sn-mp-radius-xl` | `round` corners |
-| `--sn-mp-font-line-height-normal` | Panel line height |
+| Variable                            | Purpose            |
+| ----------------------------------- | ------------------ |
+| `--sn-mp-color-background-overlay`  | Scrim color        |
+| `--sn-mp-color-background-elevated` | Panel background   |
+| `--sn-mp-color-text-primary`        | Panel text         |
+| `--sn-mp-color-text-secondary`      | Close-button glyph |
+| `--sn-mp-radius-xl`                 | `round` corners    |
+| `--sn-mp-font-line-height-normal`   | Panel line height  |
 
 ## Accessibility
 
@@ -104,7 +104,6 @@
 ## Dark mode
 
 The scrim and panel use `--sn-mp-color-background-overlay` / `--sn-mp-color-background-elevated`, both overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

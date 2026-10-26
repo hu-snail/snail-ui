@@ -38,44 +38,44 @@
 
 ### SnDescriptions Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| title | `string` | `undefined` | 表格上方的标题，`header` 插槽可覆盖 |
-| column | `number` | `3` | 网格总列数 |
-| label-placement | `'left' \| 'top'` | `'top'` | label 相对内容的位置 |
-| label-align | `'left' \| 'right' \| 'center'` | `'left'` | label 对齐方式 |
-| separator | `string` | `':'` | 行内分隔符，仅 `label-placement="left"` 且非 bordered 时生效 |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（字号 + 单元格内边距） |
-| bordered | `boolean` | `false` | 是否显示描边网格 |
-| label-class | `string` | `undefined` | 应用到所有 label 单元格 / 行内 label 的类名 |
-| label-style | `string \| CSSProperties` | `undefined` | 应用到所有 label 单元格 / 行内 label 的样式 |
-| content-class | `string` | `undefined` | 应用到所有内容单元格 / 行内内容的类名 |
-| content-style | `string \| CSSProperties` | `undefined` | 应用到所有内容单元格 / 行内内容的样式 |
+| 名称            | 类型                             | 默认值      | 说明                                                         |
+| --------------- | -------------------------------- | ----------- | ------------------------------------------------------------ |
+| title           | `string`                         | `undefined` | 表格上方的标题，`header` 插槽可覆盖                          |
+| column          | `number`                         | `3`         | 网格总列数                                                   |
+| label-placement | `'left' \| 'top'`                | `'top'`     | label 相对内容的位置                                         |
+| label-align     | `'left' \| 'right' \| 'center'`  | `'left'`    | label 对齐方式                                               |
+| separator       | `string`                         | `':'`       | 行内分隔符，仅 `label-placement="left"` 且非 bordered 时生效 |
+| size            | `'small' \| 'medium' \| 'large'` | `'medium'`  | 尺寸（字号 + 单元格内边距）                                  |
+| bordered        | `boolean`                        | `false`     | 是否显示描边网格                                             |
+| label-class     | `string`                         | `undefined` | 应用到所有 label 单元格 / 行内 label 的类名                  |
+| label-style     | `string \| CSSProperties`        | `undefined` | 应用到所有 label 单元格 / 行内 label 的样式                  |
+| content-class   | `string`                         | `undefined` | 应用到所有内容单元格 / 行内内容的类名                        |
+| content-style   | `string \| CSSProperties`        | `undefined` | 应用到所有内容单元格 / 行内内容的样式                        |
 
 ### SnDescriptions Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数 | 说明                          |
+| ------- | ---- | ----------------------------- |
 | default | `()` | `SnDescriptionsItem` 条目列表 |
-| header | `()` | 标题内容，覆盖 `title` |
+| header  | `()` | 标题内容，覆盖 `title`        |
 
 ### SnDescriptionsItem Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| label | `string` | `undefined` | 条目 label 文本，`label` 插槽可覆盖 |
-| span | `number` | `1` | 条目占据的列数 |
-| label-class | `string` | `undefined` | 条目级 label 类名 |
-| label-style | `string \| CSSProperties` | `undefined` | 条目级 label 样式 |
-| content-class | `string` | `undefined` | 条目级内容类名 |
-| content-style | `string \| CSSProperties` | `undefined` | 条目级内容样式 |
+| 名称          | 类型                      | 默认值      | 说明                                |
+| ------------- | ------------------------- | ----------- | ----------------------------------- |
+| label         | `string`                  | `undefined` | 条目 label 文本，`label` 插槽可覆盖 |
+| span          | `number`                  | `1`         | 条目占据的列数                      |
+| label-class   | `string`                  | `undefined` | 条目级 label 类名                   |
+| label-style   | `string \| CSSProperties` | `undefined` | 条目级 label 样式                   |
+| content-class | `string`                  | `undefined` | 条目级内容类名                      |
+| content-style | `string \| CSSProperties` | `undefined` | 条目级内容样式                      |
 
 ### SnDescriptionsItem Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | `()` | 条目内容 |
-| label | `()` | 条目 label，覆盖 `label` |
+| 名称    | 参数 | 说明                     |
+| ------- | ---- | ------------------------ |
+| default | `()` | 条目内容                 |
+| label   | `()` | 条目 label，覆盖 `label` |
 
 布局规则：网格按 `column * 2` 条物理轨道展开；每行最后一个条目自动撑满剩余轨道；`label-placement="top"` 会输出一行隐藏的定宽辅助行。
 

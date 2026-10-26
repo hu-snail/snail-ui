@@ -332,24 +332,24 @@ Continue
 
 # 8. 总体 WBS
 
-| Domain | WBS | 主要内容 | 优先级 |
-|---|---|---|---|
-| Foundation | AUI-FOUNDATION | Monorepo / CI / AI 工程基础 | P0 |
-| Protocol | AUI-PROTOCOL | UI Protocol | P0 |
-| Schema | AUI-SCHEMA | Zod Schema / Validation | P0 |
-| Runtime | AUI-RUNTIME | Runtime / Context / Lifecycle | P0 |
-| Reactive | AUI-REACTIVE | Vue Reactivity Adapter | P0 |
-| Binding | AUI-BINDING | State / Computed / Event Binding | P0 |
-| Token | AUI-TOKEN | Theme / Style / Density | P0 |
-| Contract | AUI-CONTRACT | Component Contract | P0 |
-| Web | AUI-WEB | Vue 3 Renderer | P0 |
-| Uni | AUI-UNI | uni-app UI Library | P0 |
-| Template | AUI-TEMPLATE | Template System | P0 |
-| AI | AUI-AI | AI Engine | P0 |
-| Studio | AUI-STUDIO | Studio MVP | P0 |
-| Ecosystem | AUI-ECOSYSTEM | Package / Plugin | P1 |
-| Testing | AUI-TEST | 全链路测试 | P0 |
-| Release | AUI-RELEASE | RC / Release | P0 |
+| Domain     | WBS            | 主要内容                         | 优先级 |
+| ---------- | -------------- | -------------------------------- | ------ |
+| Foundation | AUI-FOUNDATION | Monorepo / CI / AI 工程基础      | P0     |
+| Protocol   | AUI-PROTOCOL   | UI Protocol                      | P0     |
+| Schema     | AUI-SCHEMA     | Zod Schema / Validation          | P0     |
+| Runtime    | AUI-RUNTIME    | Runtime / Context / Lifecycle    | P0     |
+| Reactive   | AUI-REACTIVE   | Vue Reactivity Adapter           | P0     |
+| Binding    | AUI-BINDING    | State / Computed / Event Binding | P0     |
+| Token      | AUI-TOKEN      | Theme / Style / Density          | P0     |
+| Contract   | AUI-CONTRACT   | Component Contract               | P0     |
+| Web        | AUI-WEB        | Vue 3 Renderer                   | P0     |
+| Uni        | AUI-UNI        | uni-app UI Library               | P0     |
+| Template   | AUI-TEMPLATE   | Template System                  | P0     |
+| AI         | AUI-AI         | AI Engine                        | P0     |
+| Studio     | AUI-STUDIO     | Studio MVP                       | P0     |
+| Ecosystem  | AUI-ECOSYSTEM  | Package / Plugin                 | P1     |
+| Testing    | AUI-TEST       | 全链路测试                       | P0     |
+| Release    | AUI-RELEASE    | RC / Release                     | P0     |
 
 ---
 
@@ -486,12 +486,12 @@ AI-RULES.md
 
 ```ts
 interface UISchema {
-  version: string
-  id?: string
-  root: UINode
-  state?: UIStateSchema
-  actions?: UIAction[]
-  metadata?: Record<string, unknown>
+  version: string;
+  id?: string;
+  root: UINode;
+  state?: UIStateSchema;
+  actions?: UIAction[];
+  metadata?: Record<string, unknown>;
 }
 ```
 
@@ -503,15 +503,15 @@ interface UISchema {
 
 ```ts
 interface UINode {
-  id: string
-  type: string
-  props?: Record<string, unknown>
-  children?: UINode[]
-  bindings?: Record<string, UIBinding>
-  events?: Record<string, UIEventBinding>
-  style?: UIStyle
-  accessibility?: UIAccessibility
-  capability?: UICapability
+  id: string;
+  type: string;
+  props?: Record<string, unknown>;
+  children?: UINode[];
+  bindings?: Record<string, UIBinding>;
+  events?: Record<string, UIEventBinding>;
+  style?: UIStyle;
+  accessibility?: UIAccessibility;
+  capability?: UICapability;
 }
 ```
 
@@ -546,9 +546,9 @@ new Function
 
 ```ts
 interface UIAction {
-  id: string
-  type: string
-  params?: unknown
+  id: string;
+  type: string;
+  params?: unknown;
 }
 ```
 
@@ -710,7 +710,7 @@ Breaking Change
 建立：
 
 ```ts
-AUIRuntime
+AUIRuntime;
 ```
 
 职责：
@@ -783,7 +783,7 @@ dispose()
 统一：
 
 ```ts
-AUIError
+AUIError;
 ```
 
 错误结构：
@@ -808,10 +808,10 @@ cause
 
 ```ts
 interface ReactiveAdapter {
-  createState<T>(value: T): ReactiveValue<T>
-  computed<T>(getter: () => T): ReactiveValue<T>
-  effect(fn: () => void): StopHandle
-  dispose(): void
+  createState<T>(value: T): ReactiveValue<T>;
+  computed<T>(getter: () => T): ReactiveValue<T>;
+  effect(fn: () => void): StopHandle;
+  dispose(): void;
 }
 ```
 
@@ -860,20 +860,13 @@ dispose
 实现：
 
 ```ts
-resolve(
-  binding,
-  context
-)
+resolve(binding, context);
 ```
 
 以及：
 
 ```ts
-set(
-  binding,
-  value,
-  context
-)
+set(binding, value, context);
 ```
 
 ---
@@ -1055,11 +1048,11 @@ DOM
 实现：
 
 ```ts
-register()
-resolve()
-has()
-remove()
-list()
+register();
+resolve();
+has();
+remove();
+list();
 ```
 
 ---
@@ -1252,12 +1245,12 @@ App 根据环境进入兼容性验证。
 实现：
 
 ```ts
-register()
-resolve()
-execute()
-remove()
-has()
-list()
+register();
+resolve();
+execute();
+remove();
+has();
+list();
 ```
 
 ---
@@ -1267,10 +1260,7 @@ list()
 统一：
 
 ```ts
-type ActionHandler = (
-  context: ActionContext,
-  params: unknown
-) => Promise<ActionResult>
+type ActionHandler = (context: ActionContext, params: unknown) => Promise<ActionResult>;
 ```
 
 ---
@@ -1600,7 +1590,7 @@ AI 不允许直接修改 Runtime 内部状态。
 支持：
 
 ```ts
-runtime.inspect()
+runtime.inspect();
 ```
 
 获取：

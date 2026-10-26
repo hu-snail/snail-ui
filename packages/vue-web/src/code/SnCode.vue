@@ -33,26 +33,26 @@
  *   <SnCode code="const x = 1" inline />
  */
 
-import { computed, useSlots } from 'vue'
+import { computed, useSlots } from 'vue';
 
-defineOptions({ name: 'SnCode' })
+defineOptions({ name: 'SnCode' });
 
 const props = withDefaults(
   defineProps<{
     /** Source code text. Mirrors n-code `code`. */
-    code?: string
+    code?: string;
     /** Highlighter language. Only `json` tokenizes (built-in); others render plain. Mirrors n-code `language`. */
-    language?: string | undefined
+    language?: string | undefined;
     /** Trim the displayed code on the highlighted path. Mirrors n-code `trim`. */
-    trim?: boolean
+    trim?: boolean;
     /** Inline (single-line) rendering without the pre wrapper. Mirrors n-code `inline`. */
-    inline?: boolean
+    inline?: boolean;
     /** Soft-wrap overflowing lines. Mirrors n-code `word-wrap`. */
-    wordWrap?: boolean
+    wordWrap?: boolean;
     /** Show the line-number gutter (ignored when inline or word-wrap). Mirrors n-code `show-line-numbers`. */
-    showLineNumbers?: boolean
+    showLineNumbers?: boolean;
     /** Decode `code` as a URI component before display. Mirrors n-code `uri`. */
-    uri?: boolean
+    uri?: boolean;
   }>(),
   {
     code: '',
@@ -63,63 +63,61 @@ const props = withDefaults(
     showLineNumbers: false,
     uri: false,
   },
-)
+);
 
 defineSlots<{
   /** Custom code content; replaces the rendered code (the gutter still follows `code`). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** One lexical segment of the displayed code. `type: null` renders plain text. */
 interface SnCodeSegment {
-  text: string
-  type: 'key' | 'string' | 'number' | 'keyword' | 'punct' | null
+  text: string;
+  type: 'key' | 'string' | 'number' | 'keyword' | 'punct' | null;
 }
 
-const slots = useSlots()
+const slots = useSlots();
 
 const mergedShowLineNumbers = computed(
   () => props.showLineNumbers && !props.inline && !props.wordWrap,
-)
+);
 
 function decodeUri(value: string): string {
   try {
-    return decodeURIComponent(value)
+    return decodeURIComponent(value);
   } catch {
-    return value
+    return value;
   }
 }
 
-const decodedCode = computed(() =>
-  props.uri ? decodeUri(props.code) : props.code,
-)
+const decodedCode = computed(() => (props.uri ? decodeUri(props.code) : props.code));
 
-const isJsonHighlighted = computed(() => props.language === 'json')
+const isJsonHighlighted = computed(() => props.language === 'json');
 
 /** The text actually displayed. Plain mode stays raw (reference no-hljs branch). */
 const displayedCode = computed(() => {
-  if (!isJsonHighlighted.value) return decodedCode.value
-  return props.trim ? decodedCode.value.trim() : decodedCode.value
-})
+  if (!isJsonHighlighted.value) return decodedCode.value;
+  return props.trim ? decodedCode.value.trim() : decodedCode.value;
+});
 
 const segments = computed<SnCodeSegment[]>(() => {
   if (!isJsonHighlighted.value) {
-    return [{ text: displayedCode.value, type: null }]
+    return [{ text: displayedCode.value, type: null }];
   }
-  return tokenizeJson(displayedCode.value)
-})
+  return tokenizeJson(displayedCode.value);
+});
 
 const lineNumbers = computed(() => {
   // Slot mode: the reference still derives the gutter from the raw `code` prop.
-  const source = slots.default ? props.code : displayedCode.value
-  const lineCount = source.split('\n').length
-  const numbers: string[] = []
-  for (let i = 1; i <= lineCount; i += 1) numbers.push(String(i))
-  return numbers.join('\n')
-})
+  const source = slots.default ? props.code : displayedCode.value;
+  const lineCount = source.split('\n').length;
+  const numbers: string[] = [];
+  for (let i = 1; i <= lineCount; i += 1) numbers.push(String(i));
+  return numbers.join('\n');
+});
 
 function isDigit(char: string): boolean {
-  return char >= '0' && char <= '9'
+  return char >= '0' && char <= '9';
 }
 
 /**
@@ -128,78 +126,78 @@ function isDigit(char: string): boolean {
  * numbers, keywords and punctuation get their own token class.
  */
 function tokenizeJson(source: string): SnCodeSegment[] {
-  const segments: SnCodeSegment[] = []
-  let plain = ''
-  let i = 0
+  const segments: SnCodeSegment[] = [];
+  let plain = '';
+  let i = 0;
 
   const flushPlain = (): void => {
     if (plain !== '') {
-      segments.push({ text: plain, type: null })
-      plain = ''
+      segments.push({ text: plain, type: null });
+      plain = '';
     }
-  }
+  };
 
   while (i < source.length) {
     // charAt keeps the element type `string` under noUncheckedIndexedAccess.
-    const char = source.charAt(i)
+    const char = source.charAt(i);
 
     if (char === '"') {
-      let end = i + 1
+      let end = i + 1;
       while (end < source.length) {
         if (source.charAt(end) === '\\') {
-          end += 2
-          continue
+          end += 2;
+          continue;
         }
         if (source.charAt(end) === '"') {
-          end += 1
-          break
+          end += 1;
+          break;
         }
-        end += 1
+        end += 1;
       }
-      const literal = source.slice(i, end)
-      let look = end
-      while (look < source.length && /\s/.test(source.charAt(look))) look += 1
-      flushPlain()
-      segments.push({ text: literal, type: source.charAt(look) === ':' ? 'key' : 'string' })
-      i = end
-      continue
+      const literal = source.slice(i, end);
+      let look = end;
+      while (look < source.length && /\s/.test(source.charAt(look))) look += 1;
+      flushPlain();
+      segments.push({ text: literal, type: source.charAt(look) === ':' ? 'key' : 'string' });
+      i = end;
+      continue;
     }
 
     if (isDigit(char) || (char === '-' && isDigit(source.charAt(i + 1)))) {
-      let end = i + 1
-      while (end < source.length && /[0-9+.\-eE]/.test(source.charAt(end))) end += 1
-      flushPlain()
-      segments.push({ text: source.slice(i, end), type: 'number' })
-      i = end
-      continue
+      let end = i + 1;
+      while (end < source.length && /[0-9+.\-eE]/.test(source.charAt(end))) end += 1;
+      flushPlain();
+      segments.push({ text: source.slice(i, end), type: 'number' });
+      i = end;
+      continue;
     }
 
     if (/[A-Za-z]/.test(char)) {
-      let end = i + 1
-      while (end < source.length && /[A-Za-z0-9_$]/.test(source.charAt(end))) end += 1
-      const word = source.slice(i, end)
-      flushPlain()
+      let end = i + 1;
+      while (end < source.length && /[A-Za-z0-9_$]/.test(source.charAt(end))) end += 1;
+      const word = source.slice(i, end);
+      flushPlain();
       segments.push({
         text: word,
         type: word === 'true' || word === 'false' || word === 'null' ? 'keyword' : null,
-      })
-      i = end
-      continue
+      });
+      i = end;
+      continue;
     }
 
     if ('{}[],:'.includes(char)) {
-      flushPlain()
-      segments.push({ text: char, type: 'punct' })
-      i += 1
-      continue
+      flushPlain();
+      segments.push({ text: char, type: 'punct' });
+      i += 1;
+      continue;
     }
 
-    plain += char
-    i += 1
+    plain += char;
+    i += 1;
   }
 
-  flushPlain()
-  return segments
+  flushPlain();
+  return segments;
 }
 </script>
 
@@ -213,10 +211,22 @@ function tokenizeJson(source: string): SnCodeSegment[] {
       mergedShowLineNumbers ? 'sn-code--show-line-numbers' : '',
     ]"
   >
-    <pre v-if="mergedShowLineNumbers" class="sn-code__line-numbers" aria-hidden="true">{{ lineNumbers }}</pre>
+    <pre v-if="mergedShowLineNumbers" class="sn-code__line-numbers" aria-hidden="true">{{
+      lineNumbers
+    }}</pre>
     <slot>
-      <pre v-if="!inline" class="sn-code__code"><template v-for="(segment, index) in segments" :key="index"><span v-if="segment.type" :class="`sn-code__tok sn-code__tok--${segment.type}`">{{ segment.text }}</span><template v-else>{{ segment.text }}</template></template></pre>
-      <template v-else><template v-for="(segment, index) in segments" :key="index"><span v-if="segment.type" :class="`sn-code__tok sn-code__tok--${segment.type}`">{{ segment.text }}</span><template v-else>{{ segment.text }}</template></template></template>
+      <pre
+        v-if="!inline"
+        class="sn-code__code"
+      ><template v-for="(segment, index) in segments" :key="index"><span v-if="segment.type" :class="`sn-code__tok sn-code__tok--${segment.type}`">{{ segment.text }}</span><template v-else>{{ segment.text }}</template></template></pre>
+      <template v-else
+        ><template v-for="(segment, index) in segments" :key="index"
+          ><span v-if="segment.type" :class="`sn-code__tok sn-code__tok--${segment.type}`">{{
+            segment.text
+          }}</span
+          ><template v-else>{{ segment.text }}</template></template
+        ></template
+      >
     </slot>
   </code>
 </template>
@@ -238,8 +248,13 @@ function tokenizeJson(source: string): SnCodeSegment[] {
   box-sizing: border-box;
   padding: 12px 16px;
   line-height: 1.7;
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.5%, var(--sn-web-color-background-surface));
-  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.5%,
+    var(--sn-web-color-background-surface)
+  );
+  border: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: 3px;
 }
 

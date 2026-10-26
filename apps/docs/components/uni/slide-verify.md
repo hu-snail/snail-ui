@@ -22,51 +22,51 @@ text / successText 覆盖内置文案；backgroundColor / activeBackgroundColor 
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `tolerance` | `number` | `10` | 右边缘容差（px） |
-| `text` / `successText` | `string` | `''` | 提示 / 成功文案（空 = 内置） |
-| `disabled` | `boolean` | `false` | 禁用拖动 |
-| `backgroundColor` / `activeBackgroundColor` | `string` | `''` | 轨道颜色 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                                        | 类型      | 默认值  | 说明                         |
+| ------------------------------------------- | --------- | ------- | ---------------------------- |
+| `tolerance`                                 | `number`  | `10`    | 右边缘容差（px）             |
+| `text` / `successText`                      | `string`  | `''`    | 提示 / 成功文案（空 = 内置） |
+| `disabled`                                  | `boolean` | `false` | 禁用拖动                     |
+| `backgroundColor` / `activeBackgroundColor` | `string`  | `''`    | 轨道颜色                     |
+| `customClass` / `customStyle`               | `string`  | `''`    | 根节点自定义类名 / 样式      |
 
 > **未实现**：拼图背景（需要 canvas），以及自由图标 prop（`icon` / `successIcon` / `iconPrefix` / `cssIcon` / `iconSize` / `successIconSize`）——两个字形固定，通过 `icon` / `success-icon` 插槽替换。本实现只校验「距离」，因此它是一个「证明你是人」的手势，不是机器人过滤器。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `success` | 滑块到达末端时 | — |
-| `fail` | 未到末端即松手时 | — |
+| 事件名    | 说明             | 参数 |
+| --------- | ---------------- | ---- |
+| `success` | 滑块到达末端时   | —    |
+| `fail`    | 未到末端即松手时 | —    |
 
 ## Exposed API
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
-| `init` | `() => void` | 重新测量轨道宽度 |
+| 成员    | 签名         | 说明             |
+| ------- | ------------ | ---------------- |
+| `init`  | `() => void` | 重新测量轨道宽度 |
 | `reset` | `() => void` | 把滑块复位到起点 |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
-| `text` | 自定义提示文字 |
+| 插槽名         | 说明               |
+| -------------- | ------------------ |
+| `text`         | 自定义提示文字     |
 | `success-text` | 自定义成功提示文字 |
-| `icon` | 自定义滑块图标 |
-| `success-icon` | 自定义成功图标 |
+| `icon`         | 自定义滑块图标     |
+| `success-icon` | 自定义成功图标     |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-soft`` | 轨道底色 |
-| ``--sn-mp-color-feedback-success-soft`` | 通过后轨道底色 |
-| ``--sn-mp-color-feedback-success`` | 通过文案与滑块图标 |
-| ``--sn-mp-color-background-elevated`` | 滑块底板 |
-| ``--sn-mp-color-action-primary`` | 未验证滑块图标 |
-| ``--sn-mp-color-text-tertiary`` | 提示文案 |
-| ``--sn-mp-radius-md`` | 轨道 / 滑块圆角 |
-| ``--sn-mp-shadow-sm`` | 滑块阴影 |
+| 变量                                  | 用途               |
+| ------------------------------------- | ------------------ |
+| `--sn-mp-color-background-soft`       | 轨道底色           |
+| `--sn-mp-color-feedback-success-soft` | 通过后轨道底色     |
+| `--sn-mp-color-feedback-success`      | 通过文案与滑块图标 |
+| `--sn-mp-color-background-elevated`   | 滑块底板           |
+| `--sn-mp-color-action-primary`        | 未验证滑块图标     |
+| `--sn-mp-color-text-tertiary`         | 提示文案           |
+| `--sn-mp-radius-md`                   | 轨道 / 滑块圆角    |
+| `--sn-mp-shadow-sm`                   | 滑块阴影           |
 
 ## 无障碍
 
@@ -77,4 +77,3 @@ text / successText 覆盖内置文案；backgroundColor / activeBackgroundColor 
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

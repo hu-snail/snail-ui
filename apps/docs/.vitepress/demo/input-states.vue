@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnInput — disabled / readonly / required. */
-import { SnInput } from '@snui/vue-web'
+import { SnInput } from '@snui/vue-web';
 </script>
 
 <template>
@@ -12,5 +12,10 @@ import { SnInput } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
 </style>

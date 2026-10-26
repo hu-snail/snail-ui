@@ -29,7 +29,10 @@ export const UIEventBindingSchema = z
     action: z
       .string()
       .min(1, 'action id must be a non-empty identifier')
-      .regex(/^[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*$/, 'action id must be a dotted lowercase identifier'),
+      .regex(
+        /^[a-z][a-z0-9_-]*(\.[a-z][a-z0-9_-]*)*$/,
+        'action id must be a dotted lowercase identifier',
+      ),
   })
   .strict();
 

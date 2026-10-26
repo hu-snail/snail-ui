@@ -30,54 +30,54 @@ added to the wd-notice-bar parity list.
 ```
 
 ```ts
-import { SnNoticeBar } from '@snui/uni'
+import { SnNoticeBar } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `text` | string | string[] | '' | no | Notice text (a string, or lines). |
-| `type` | 'warning' | 'info' | 'danger' | 'warning' | no | Semantic type — tint + fallback glyph. |
-| `prefix` | string | '' | no | Leading icon name (sn-icon registry). |
-| `scrollable` | boolean | true | no | Enable the marquee. |
-| `delay` | number | 1 | no | Delay before the marquee starts, in seconds. |
-| `speed` | number | 50 | no | Marquee speed in px per second. |
-| `closable` | boolean | false | no | Show the close button. |
-| `wrapable` | boolean | false | no | Wrap long text (only when `scrollable` is false). |
-| `color` | string | '' | no | Text / icon color override. |
-| `backgroundColor` | string | '' | no | Background color override. |
-| `direction` | 'horizontal' | 'vertical' | 'horizontal' | no | Scroll axis. |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name              | Type         | Default    | Required     | Description                                       |
+| ----------------- | ------------ | ---------- | ------------ | ------------------------------------------------- |
+| `text`            | string       | string[]   | ''           | no                                                | Notice text (a string, or lines). |
+| `type`            | 'warning'    | 'info'     | 'danger'     | 'warning'                                         | no                                | Semantic type — tint + fallback glyph. |
+| `prefix`          | string       | ''         | no           | Leading icon name (sn-icon registry).             |
+| `scrollable`      | boolean      | true       | no           | Enable the marquee.                               |
+| `delay`           | number       | 1          | no           | Delay before the marquee starts, in seconds.      |
+| `speed`           | number       | 50         | no           | Marquee speed in px per second.                   |
+| `closable`        | boolean      | false      | no           | Show the close button.                            |
+| `wrapable`        | boolean      | false      | no           | Wrap long text (only when `scrollable` is false). |
+| `color`           | string       | ''         | no           | Text / icon color override.                       |
+| `backgroundColor` | string       | ''         | no           | Background color override.                        |
+| `direction`       | 'horizontal' | 'vertical' | 'horizontal' | no                                                | Scroll axis.                      |
+| `customClass`     | string       | ''         | no           | Custom class for the root node.                   |
+| `customStyle`     | string       | ''         | no           | Custom inline style for the root node.            |
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `close` | — | Close button tapped (the strip hides itself). |
-| `next` | index: number | Vertical mode advanced to the next line. |
-| `click` | { text, index } | Content area tapped. |
+| Event   | Payload         | Description                                   |
+| ------- | --------------- | --------------------------------------------- |
+| `close` | —               | Close button tapped (the strip hides itself). |
+| `next`  | index: number   | Vertical mode advanced to the next line.      |
+| `click` | { text, index } | Content area tapped.                          |
 
 ## Slots
 
-| Slot | Description |
-|---|---|
-| `prefix` | Custom leading content; overrides `prefix`. |
-| `suffix` | Custom trailing content; overrides the close button. |
-| `default` | Custom notice text (horizontal direction only). |
+| Slot      | Description                                          |
+| --------- | ---------------------------------------------------- |
+| `prefix`  | Custom leading content; overrides `prefix`.          |
+| `suffix`  | Custom trailing content; overrides the close button. |
+| `default` | Custom notice text (horizontal direction only).      |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Feedback warning / warning soft | `--sn-mp-color-feedback-warning / -soft` | `type="warning"` tint |
-| Feedback info | `--sn-mp-color-feedback-info` | `type="info"` foreground |
-| Background subtle | `--sn-mp-color-background-subtle` | `type="info"` tint |
-| Feedback danger / danger soft | `--sn-mp-color-feedback-danger / -soft` | `type="danger"` tint |
-| Font size MD | `--sn-mp-font-size-md` | Text size |
-| Line height normal | `--sn-mp-font-line-height-normal` | Text line height |
-| Spacing 3 / 4 | `--sn-mp-spacing-3 / -4` | Padding + icon gap |
+| Token                           | CSS Variable                             | Purpose                  |
+| ------------------------------- | ---------------------------------------- | ------------------------ |
+| Feedback warning / warning soft | `--sn-mp-color-feedback-warning / -soft` | `type="warning"` tint    |
+| Feedback info                   | `--sn-mp-color-feedback-info`            | `type="info"` foreground |
+| Background subtle               | `--sn-mp-color-background-subtle`        | `type="info"` tint       |
+| Feedback danger / danger soft   | `--sn-mp-color-feedback-danger / -soft`  | `type="danger"` tint     |
+| Font size MD                    | `--sn-mp-font-size-md`                   | Text size                |
+| Line height normal              | `--sn-mp-font-line-height-normal`        | Text line height         |
+| Spacing 3 / 4                   | `--sn-mp-spacing-3 / -4`                 | Padding + icon gap       |
 
 ## Accessibility
 

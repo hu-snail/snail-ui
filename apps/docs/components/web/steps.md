@@ -64,44 +64,44 @@
 
 ### SnSteps Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `current` | `number` | `undefined` | 当前所处的步骤索引。 |
-| `status` | `'process' \| 'finish' \| 'error' \| 'wait'` | `'process'` | 当前步骤的状态。 |
-| `size` | `'small' \| 'medium'` | `'medium'` | 尺寸。 |
-| `vertical` | `boolean` | `false` | 是否纵向排列。 |
-| `contentPlacement` | `'right' \| 'bottom'` | `'right'` | 标题与描述的位置，仅在横向模式下生效。 |
+| 名称               | 类型                                         | 默认值      | 说明                                   |
+| ------------------ | -------------------------------------------- | ----------- | -------------------------------------- |
+| `current`          | `number`                                     | `undefined` | 当前所处的步骤索引。                   |
+| `status`           | `'process' \| 'finish' \| 'error' \| 'wait'` | `'process'` | 当前步骤的状态。                       |
+| `size`             | `'small' \| 'medium'`                        | `'medium'`  | 尺寸。                                 |
+| `vertical`         | `boolean`                                    | `false`     | 是否纵向排列。                         |
+| `contentPlacement` | `'right' \| 'bottom'`                        | `'right'`   | 标题与描述的位置，仅在横向模式下生效。 |
 
 ### SnSteps Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称             | 参数     | 说明                                     |
+| ---------------- | -------- | ---------------------------------------- |
 | `update:current` | `number` | 当前步骤变化。提供监听后步骤可点击切换。 |
 
 ### SnSteps Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 步骤列表。 |
+| 名称          | 参数 | 说明                 |
+| ------------- | ---- | -------------------- |
+| `default`     | `()` | 步骤列表。           |
 | `finish-icon` | `()` | 完成状态使用的图标。 |
-| `error-icon` | `()` | 错误状态使用的图标。 |
+| `error-icon`  | `()` | 错误状态使用的图标。 |
 
 ### SnStep Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `title` | `string` | `''` | 节点标题。 |
-| `description` | `string` | `''` | 节点描述。 |
-| `status` | `'process' \| 'finish' \| 'error' \| 'wait'` | `undefined` | 节点状态，覆盖父级推导结果。 |
-| `disabled` | `boolean` | `false` | 是否禁止点击。 |
+| 名称          | 类型                                         | 默认值      | 说明                         |
+| ------------- | -------------------------------------------- | ----------- | ---------------------------- |
+| `title`       | `string`                                     | `''`        | 节点标题。                   |
+| `description` | `string`                                     | `''`        | 节点描述。                   |
+| `status`      | `'process' \| 'finish' \| 'error' \| 'wait'` | `undefined` | 节点状态，覆盖父级推导结果。 |
+| `disabled`    | `boolean`                                    | `false`     | 是否禁止点击。               |
 
 ### SnStep Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 步骤正文，替代 `description`。 |
-| `icon` | `()` | 指示器内容，替代序号或状态图标。 |
-| `title` | `()` | 步骤标题，替代 `title`。 |
+| 名称      | 参数 | 说明                             |
+| --------- | ---- | -------------------------------- |
+| `default` | `()` | 步骤正文，替代 `description`。   |
+| `icon`    | `()` | 指示器内容，替代序号或状态图标。 |
+| `title`   | `()` | 步骤标题，替代 `title`。         |
 
 ## 状态解析顺序
 

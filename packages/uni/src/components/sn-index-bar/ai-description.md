@@ -24,49 +24,49 @@ or measured offset is needed on any uni target.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnIndexBar } from '@snui/uni/components/sn-index-bar/sn-index-bar.vue'
-import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor.vue'
+import { SnIndexBar } from '@snui/uni/components/sn-index-bar/sn-index-bar.vue';
+import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor.vue';
 ```
 
 ## Props — sn-index-bar
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `sticky` | `boolean` | `false` | Pin the index bar. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name          | Type      | Default | Description        |
+| ------------- | --------- | ------- | ------------------ |
+| `sticky`      | `boolean` | `false` | Pin the index bar. |
+| `customClass` | `string`  | `''`    | Root forwarding.   |
+| `customStyle` | `string`  | `''`    | Root forwarding.   |
 
 ## Props — sn-index-anchor
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `index` | `string \| number` | `''` | Index character(s). |
-| `customClass` | `string` | `''` | Anchor root forwarding. |
-| `customStyle` | `string` | `''` | Anchor root forwarding. |
+| Name          | Type               | Default | Description             |
+| ------------- | ------------------ | ------- | ----------------------- |
+| `index`       | `string \| number` | `''`    | Index character(s).     |
+| `customClass` | `string`           | `''`    | Anchor root forwarding. |
+| `customStyle` | `string`           | `''`    | Anchor root forwarding. |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
+| Name     | Payload     | Description           |
+| -------- | ----------- | --------------------- |
 | `change` | `{ index }` | Active index changed. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default (index-bar)` | Anchor list. |
-| `default (anchor)` | Entries under that index. |
+| Name                  | Description               |
+| --------------------- | ------------------------- |
+| `default (index-bar)` | Anchor list.              |
+| `default (anchor)`    | Entries under that index. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Surface | `--sn-mp-color-background-surface`, `--sn-mp-color-background-soft` | List and heading surface |
-| Active heading | `--sn-mp-color-action-primary-soft` | Active group heading |
-| Text | `--sn-mp-color-text-secondary` | Entries and headings |
-| Action primary | `--sn-mp-color-action-primary` | Active entry fill and heading |
-| Text on primary | `--sn-mp-color-text-on-primary` | Active entry label |
-| Font / radius / spacing | `--sn-mp-font-size-xs`, `--sn-mp-radius-full`, `--sn-mp-spacing-1` | Entry geometry |
+| Token                   | CSS Variable                                                        | Purpose                       |
+| ----------------------- | ------------------------------------------------------------------- | ----------------------------- |
+| Surface                 | `--sn-mp-color-background-surface`, `--sn-mp-color-background-soft` | List and heading surface      |
+| Active heading          | `--sn-mp-color-action-primary-soft`                                 | Active group heading          |
+| Text                    | `--sn-mp-color-text-secondary`                                      | Entries and headings          |
+| Action primary          | `--sn-mp-color-action-primary`                                      | Active entry fill and heading |
+| Text on primary         | `--sn-mp-color-text-on-primary`                                     | Active entry label            |
+| Font / radius / spacing | `--sn-mp-font-size-xs`, `--sn-mp-radius-full`, `--sn-mp-spacing-1`  | Entry geometry                |
 
 ## Accessibility
 

@@ -7,33 +7,33 @@
  */
 
 /** Where the panel sits relative to the highlighted element. */
-export type TourPlacement = 'auto' | 'top' | 'bottom' | 'left' | 'right'
+export type TourPlacement = 'auto' | 'top' | 'bottom' | 'left' | 'right';
 
 /** What to do when a step's target selector resolves to nothing. */
-export type TourMissingStrategy = 'skip' | 'stop' | 'hide'
+export type TourMissingStrategy = 'skip' | 'stop' | 'hide';
 
 /** One guided step. */
 export interface TourStep {
   /** Selector of the element to highlight (`#id` / `.class`). */
-  element?: string
+  element?: string;
   /** Step copy. Rendered as rich text. */
-  content?: string
+  content?: string;
   /** Per-step override of the highlight padding. */
-  padding?: number
+  padding?: number;
   /** Per-step override of the panel offset. */
-  offset?: number
+  offset?: number;
   /** Force a placement instead of letting the panel auto-pick one. */
-  placement?: TourPlacement
+  placement?: TourPlacement;
 }
 
 /** Payload shared by the `prev` / `next` events. */
 export interface TourNavPayload {
   /** Step index the navigation started from. */
-  prevCurrent: number
+  prevCurrent: number;
   /** Step index after the navigation. */
-  current: number
+  current: number;
   /** Total step count. */
-  total: number
+  total: number;
   /** True when the tour is at the first step (the "in top" state). */
-  isElementInTop: boolean
+  isElementInTop: boolean;
 }

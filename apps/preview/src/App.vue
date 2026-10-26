@@ -6,15 +6,15 @@
  * No runtime schema interpretation; just plain Vue SFC usage.
  */
 
-import { ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton } from '@snui/vue-web';
 
-const count = ref(0)
-const isDark = ref(false)
+const count = ref(0);
+const isDark = ref(false);
 
 function toggleTheme(): void {
-  isDark.value = !isDark.value
-  document.documentElement.dataset.theme = isDark.value ? 'dark' : ''
+  isDark.value = !isDark.value;
+  document.documentElement.dataset.theme = isDark.value ? 'dark' : '';
 }
 </script>
 
@@ -74,7 +74,9 @@ function toggleTheme(): void {
   color: var(--sn-color-text-primary);
   background: var(--sn-color-background-surface);
 }
-body { margin: 0; }
+body {
+  margin: 0;
+}
 .page {
   max-width: 880px;
   margin: 0 auto;

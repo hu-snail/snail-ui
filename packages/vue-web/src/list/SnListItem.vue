@@ -24,22 +24,22 @@
  *   </SnList>
  */
 
-import { inject, ref } from 'vue'
-import { SN_LIST_INJECTION_KEY } from './list-context'
+import { inject, ref } from 'vue';
+import { SN_LIST_INJECTION_KEY } from './list-context';
 
-defineOptions({ name: 'SnListItem' })
+defineOptions({ name: 'SnListItem' });
 
 defineSlots<{
   /** Row main content. */
-  default?(): unknown
+  default?(): unknown;
   /** Leading content (avatar, index…). */
-  prefix?(): unknown
+  prefix?(): unknown;
   /** Trailing content (actions, meta…). */
-  suffix?(): unknown
-}>()
+  suffix?(): unknown;
+}>();
 
-const list = inject(SN_LIST_INJECTION_KEY, undefined)
-const showDivider = list ? list.showDivider : ref(true)
+const list = inject(SN_LIST_INJECTION_KEY, undefined);
+const showDivider = list ? list.showDivider : ref(true);
 </script>
 
 <template>
@@ -108,7 +108,11 @@ const showDivider = list ? list.showDivider : ref(true)
 }
 
 .sn-list--show-divider .sn-list-item:not(:last-child) .sn-list-item__divider {
-  background-color: color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
+  background-color: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 6%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-list--hoverable .sn-list-item {
@@ -117,7 +121,11 @@ const showDivider = list ? list.showDivider : ref(true)
 
 /* Row hover mirrors naive hoverColor rgb(243,243,245) ≈ 4.7% ink on white. */
 .sn-list--hoverable .sn-list-item:hover {
-  background-color: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
+  background-color: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.7%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-list--hoverable .sn-list-item:hover .sn-list-item__divider {

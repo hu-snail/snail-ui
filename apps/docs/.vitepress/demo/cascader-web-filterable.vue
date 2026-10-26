@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnCascader — filterable. */
-import { ref } from 'vue'
-import { SnCascader } from '@snui/vue-web'
-const value = ref<(string | number)[]>([])
+import { ref } from 'vue';
+import { SnCascader } from '@snui/vue-web';
+const value = ref<(string | number)[]>([]);
 const options = [
   {
     label: '浙江',
@@ -17,9 +17,15 @@ const options = [
     value: 'gd',
     children: [{ label: '深圳', value: 'sz', children: [{ label: '南山区', value: 'ns' }] }],
   },
-]
+];
 </script>
 
 <template>
-  <SnCascader v-model="value" :options="options" filterable placeholder="输入路径过滤（如 西湖）" style="width: 280px;" />
+  <SnCascader
+    v-model="value"
+    :options="options"
+    filterable
+    placeholder="输入路径过滤（如 西湖）"
+    style="width: 280px"
+  />
 </template>

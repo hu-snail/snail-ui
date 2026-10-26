@@ -13,28 +13,28 @@ affordance matters.
 
 ## Props
 
-| Prop         | Type                                        | Default                | Notes                                                     |
-| ------------ | ------------------------------------------- | ---------------------- | --------------------------------------------------------- |
-| modelValue   | `number \| [number, number] \| null`        | `null`                 | `v-model`. Millisecond timestamps, local timezone. Range types bind `[start, end]`. |
-| type         | `'date' \| 'datetime' \| 'month' \| 'year' \| 'daterange' \| 'datetimerange'` | `'date'` | Panel + value mode. `*range` types are range modes. |
-| format       | `string`                                    | per-type default       | Lowercase tokens only: `yyyy yy MM M dd d HH H mm m ss s`. **Uppercase `YYYY-MM-DD` is NOT supported** (documented deviation). |
-| placeholder  | `string \| [string, string]`                | `'请选择日期'` / `['开始日期','结束日期']` | Range modes accept a `[start, end]` pair. |
-| clearable    | `boolean`                                   | `false`                | Shows × button when a value exists.                       |
-| disabled     | `boolean`                                   | `false`                | Blocks open / select / clear.                             |
-| readonly     | `boolean`                                   | `false`                | Visible but inert.                                        |
-| size         | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`    | Trigger height + font preset.                             |
-| status       | `'default' \| 'error' \| 'warning'`         | `'default'`            | Border color + `aria-invalid`.                            |
-| ariaLabel    | `string`                                    | `''`                   | Accessible name (fallback: `'Date picker'`).              |
-| customClass / customStyle | `string` / `string \| object`  | —                      | Root wrapper passthrough.                                 |
+| Prop                      | Type                                                                          | Default                                    | Notes                                                                                                                          |
+| ------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| modelValue                | `number \| [number, number] \| null`                                          | `null`                                     | `v-model`. Millisecond timestamps, local timezone. Range types bind `[start, end]`.                                            |
+| type                      | `'date' \| 'datetime' \| 'month' \| 'year' \| 'daterange' \| 'datetimerange'` | `'date'`                                   | Panel + value mode. `*range` types are range modes.                                                                            |
+| format                    | `string`                                                                      | per-type default                           | Lowercase tokens only: `yyyy yy MM M dd d HH H mm m ss s`. **Uppercase `YYYY-MM-DD` is NOT supported** (documented deviation). |
+| placeholder               | `string \| [string, string]`                                                  | `'请选择日期'` / `['开始日期','结束日期']` | Range modes accept a `[start, end]` pair.                                                                                      |
+| clearable                 | `boolean`                                                                     | `false`                                    | Shows × button when a value exists.                                                                                            |
+| disabled                  | `boolean`                                                                     | `false`                                    | Blocks open / select / clear.                                                                                                  |
+| readonly                  | `boolean`                                                                     | `false`                                    | Visible but inert.                                                                                                             |
+| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`                          | `'medium'`                                 | Trigger height + font preset.                                                                                                  |
+| status                    | `'default' \| 'error' \| 'warning'`                                           | `'default'`                                | Border color + `aria-invalid`.                                                                                                 |
+| ariaLabel                 | `string`                                                                      | `''`                                       | Accessible name (fallback: `'Date picker'`).                                                                                   |
+| customClass / customStyle | `string` / `string \| object`                                                 | —                                          | Root wrapper passthrough.                                                                                                      |
 
 ## Events
 
-| Event               | Payload                                       | When                                        |
-| ------------------- | --------------------------------------------- | ------------------------------------------- |
-| `update:modelValue` | `(value: number \| [number, number] \| null)` | Any committed pick, 确认, or clear.           |
-| `change`            | same                                          | Fires alongside `update:modelValue`.        |
-| `clear`             | —                                             | Cleared via the × button.                   |
-| `focus` / `blur`    | `(FocusEvent)`                                | Trigger focus change.                       |
+| Event               | Payload                                       | When                                 |
+| ------------------- | --------------------------------------------- | ------------------------------------ |
+| `update:modelValue` | `(value: number \| [number, number] \| null)` | Any committed pick, 确认, or clear.  |
+| `change`            | same                                          | Fires alongside `update:modelValue`. |
+| `clear`             | —                                             | Cleared via the × button.            |
+| `focus` / `blur`    | `(FocusEvent)`                                | Trigger focus change.                |
 
 ## Value semantics
 

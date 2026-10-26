@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: SnInput — every supported `type` variant. */
-import { reactive } from 'vue'
-import { SnInput } from '@snui/vue-web'
+import { reactive } from 'vue';
+import { SnInput } from '@snui/vue-web';
 
 const form = reactive({
   text: '',
@@ -11,7 +11,7 @@ const form = reactive({
   tel: '',
   url: '',
   search: '',
-})
+});
 </script>
 
 <template>
@@ -27,5 +27,10 @@ const form = reactive({
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
 </style>

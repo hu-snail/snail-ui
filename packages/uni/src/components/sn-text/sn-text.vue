@@ -49,19 +49,19 @@
  *   - 链接跳转 — 由外层元素承载
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnText' })
+defineOptions({ name: 'SnText' });
 
 /** Text processing modes. Mirrors `wd-text` `mode`. */
-type TextMode = 'text' | 'date' | 'phone' | 'name' | 'price'
+type TextMode = 'text' | 'date' | 'phone' | 'name' | 'price';
 
 /** Text decoration. Mirrors `wd-text` `decoration`. */
-type TextDecoration = 'none' | 'underline' | 'line-through' | 'overline'
+type TextDecoration = 'none' | 'underline' | 'line-through' | 'overline';
 
 /** Minimal shape of the uni-app runtime global used by the `call` prop. */
 interface UniRuntime {
-  makePhoneCall?: (options: { phoneNumber: string }) => void
+  makePhoneCall?: (options: { phoneNumber: string }) => void;
 }
 
 /**
@@ -71,7 +71,7 @@ interface UniRuntime {
  * component touches is `makePhoneCall`, so that is the whole contract.
  */
 function readUniRuntime(): UniRuntime | undefined {
-  return (globalThis as { uni?: UniRuntime }).uni
+  return (globalThis as { uni?: UniRuntime }).uni;
 }
 
 // Reference: wot-ui wd-text Attributes
@@ -80,35 +80,35 @@ function readUniRuntime(): UniRuntime | undefined {
 const props = withDefaults(
   defineProps<{
     /** 主题类型：default / primary / success / warning / error。 */
-    type?: 'default' | 'primary' | 'success' | 'warning' | 'error'
+    type?: 'default' | 'primary' | 'success' | 'warning' | 'error';
     /** 文本内容（`default` slot 优先）。 */
-    text?: string | number
+    text?: string | number;
     /** 字体大小（原样转发，可写 `28rpx` / `14px`）。 */
-    size?: string
+    size?: string;
     /** 文本处理模式：text / date / phone / name / price。 */
-    mode?: TextMode
+    mode?: TextMode;
     /** 文本装饰：none / underline / line-through / overline。 */
-    decoration?: TextDecoration
+    decoration?: TextDecoration;
     /** `mode="phone"` 时点击文本是否拨号。 */
-    call?: boolean
+    call?: boolean;
     /** 是否粗体。 */
-    bold?: boolean
+    bold?: boolean;
     /** 是否脱敏，仅在 `mode` 为 phone / name 时生效。 */
-    format?: boolean
+    format?: boolean;
     /** 文本颜色（内联覆盖 `type`）。 */
-    color?: string
+    color?: string;
     /** 前缀内容（`prefix` slot 优先）。 */
-    prefix?: string
+    prefix?: string;
     /** 后缀内容（`suffix` slot 优先）。 */
-    suffix?: string
+    suffix?: string;
     /** 展示行数，超出后显示省略号。 */
-    lines?: number
+    lines?: number;
     /** 文本行高（原样转发）。 */
-    lineHeight?: string
+    lineHeight?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义 inline style。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     type: 'default',
@@ -127,79 +127,79 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 点击文本时触发。 */
-  (e: 'click', event: Event): void
-}>()
+  (e: 'click', event: Event): void;
+}>();
 
 defineSlots<{
   /** 文本内容（优先于 `text` prop）。 */
-  default?(): unknown
+  default?(): unknown;
   /** 前缀内容（优先于 `prefix` prop）。 */
-  prefix?(): unknown
+  prefix?(): unknown;
   /** 后缀内容（优先于 `suffix` prop）。 */
-  suffix?(): unknown
-}>()
+  suffix?(): unknown;
+}>();
 
 /** Keep the first 3 and last 4 digits; the middle run becomes `*`. */
 function maskPhone(raw: string): string {
-  const digits = raw.replace(/\s/g, '')
-  if (digits.length < 8) return digits
-  const head = digits.slice(0, 3)
-  const tail = digits.slice(-4)
-  return `${head}${'*'.repeat(digits.length - 7)}${tail}`
+  const digits = raw.replace(/\s/g, '');
+  if (digits.length < 8) return digits;
+  const head = digits.slice(0, 3);
+  const tail = digits.slice(-4);
+  return `${head}${'*'.repeat(digits.length - 7)}${tail}`;
 }
 
 /** Keep the first character; the rest becomes `*`. */
 function maskName(raw: string): string {
-  const chars = Array.from(raw.trim())
-  if (chars.length <= 1) return chars.join('')
-  return `${chars[0]}${'*'.repeat(chars.length - 1)}`
+  const chars = Array.from(raw.trim());
+  if (chars.length <= 1) return chars.join('');
+  return `${chars[0]}${'*'.repeat(chars.length - 1)}`;
 }
 
 /** Group the integer part with thousands separators, keep 2 decimals. */
 function formatPrice(raw: string): string {
-  const value = Number(raw.replace(/[^\d.-]/g, ''))
-  if (!Number.isFinite(value)) return raw
-  const [intPart = '0', decPart = '00'] = Math.abs(value).toFixed(2).split('.')
-  const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  return `${value < 0 ? '-' : ''}${grouped}.${decPart}`
+  const value = Number(raw.replace(/[^\d.-]/g, ''));
+  if (!Number.isFinite(value)) return raw;
+  const [intPart = '0', decPart = '00'] = Math.abs(value).toFixed(2).split('.');
+  const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return `${value < 0 ? '-' : ''}${grouped}.${decPart}`;
 }
 
 /** Normalise to `YYYY-MM-DD`; unparsable input passes through untouched. */
 function formatDate(raw: string): string {
-  const parsed = new Date(raw)
-  if (Number.isNaN(parsed.getTime())) return raw
-  const year = parsed.getFullYear()
-  const month = String(parsed.getMonth() + 1).padStart(2, '0')
-  const day = String(parsed.getDate()).padStart(2, '0')
-  return `${year}-${month}-${day}`
+  const parsed = new Date(raw);
+  if (Number.isNaN(parsed.getTime())) return raw;
+  const year = parsed.getFullYear();
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
 
 /** The display string after `mode` + `format` are applied. */
 const displayText = computed<string>(() => {
-  const raw = String(props.text ?? '')
-  if (!raw) return ''
+  const raw = String(props.text ?? '');
+  if (!raw) return '';
   switch (props.mode) {
     case 'phone':
-      return props.format ? maskPhone(raw) : raw
+      return props.format ? maskPhone(raw) : raw;
     case 'name':
-      return props.format ? maskName(raw) : raw
+      return props.format ? maskName(raw) : raw;
     case 'price':
-      return formatPrice(raw)
+      return formatPrice(raw);
     case 'date':
-      return formatDate(raw)
+      return formatDate(raw);
     default:
-      return raw
+      return raw;
   }
-})
+});
 
 /** True when a tap should dial — phone mode, `call` on, digits available. */
 const canCall = computed<boolean>(
   () => props.mode === 'phone' && props.call && displayText.value.length > 0,
-)
+);
 
 const rootClass = computed(() => [
   'sn-text',
@@ -211,24 +211,24 @@ const rootClass = computed(() => [
     'sn-text--call': canCall.value,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.size) parts.push(`font-size: ${props.size}`)
-  if (props.lineHeight) parts.push(`line-height: ${props.lineHeight}`)
-  if (props.color) parts.push(`color: ${props.color}`)
-  if (props.lines > 0) parts.push(`-webkit-line-clamp: ${props.lines}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.size) parts.push(`font-size: ${props.size}`);
+  if (props.lineHeight) parts.push(`line-height: ${props.lineHeight}`);
+  if (props.color) parts.push(`color: ${props.color}`);
+  if (props.lines > 0) parts.push(`-webkit-line-clamp: ${props.lines}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 function onTap(event: Event): void {
-  const runtime = readUniRuntime()
+  const runtime = readUniRuntime();
   if (canCall.value && runtime?.makePhoneCall) {
-    runtime.makePhoneCall({ phoneNumber: String(props.text ?? '').replace(/\s/g, '') })
+    runtime.makePhoneCall({ phoneNumber: String(props.text ?? '').replace(/\s/g, '') });
   }
-  emit('click', event)
+  emit('click', event);
 }
 </script>
 

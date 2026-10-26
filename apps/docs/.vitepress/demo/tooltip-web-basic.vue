@@ -6,7 +6,7 @@
  * 舞台（stage）。舞台内用 grid 让触发器之间保持等距，避免不同
  * placement 的触发器挤在一起看不出方位差异。
  */
-import { SnTooltip } from '@snui/vue-web'
+import { SnTooltip } from '@snui/vue-web';
 </script>
 
 <template>
@@ -103,7 +103,9 @@ import { SnTooltip } from '@snui/vue-web'
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-demo__btn:hover {
   border-color: var(--vp-c-brand-1);

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnColorPicker — modes tabs. */
-import { ref } from 'vue'
-import { SnColorPicker } from '@snui/vue-web'
-const color = ref('#2080f0')
+import { ref } from 'vue';
+import { SnColorPicker } from '@snui/vue-web';
+const color = ref('#2080f0');
 </script>
 
 <template>

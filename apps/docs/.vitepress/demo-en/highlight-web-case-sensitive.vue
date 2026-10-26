@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnHighlight — case-sensitive matching. */
-import { SnHighlight } from '@snui/vue-web'
+import { SnHighlight } from '@snui/vue-web';
 
-const text = 'Snail AUI is written entirely in TypeScript and integrates seamlessly with your TypeScript projects'
-const patterns = ['Snail AUI', 'typeScript']
+const text =
+  'Snail AUI is written entirely in TypeScript and integrates seamlessly with your TypeScript projects';
+const patterns = ['Snail AUI', 'typeScript'];
 </script>
 
 <template>
@@ -12,7 +13,8 @@ const patterns = ['Snail AUI', 'typeScript']
       <SnHighlight :text="text" :patterns="patterns" :case-sensitive="true" />
     </p>
     <p class="sn-demo__hint sn-demo__hint--muted">
-      Comparison: with case-insensitivity, <SnHighlight :text="text" :patterns="patterns" /> both spellings match.
+      Comparison: with case-insensitivity, <SnHighlight :text="text" :patterns="patterns" /> both
+      spellings match.
     </p>
   </div>
 </template>

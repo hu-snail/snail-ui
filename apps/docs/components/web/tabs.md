@@ -92,73 +92,73 @@
 
 ### SnTabs Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `value` | `string \| number` | `undefined` | 受控模式下的选中值。 |
-| `defaultValue` | `string \| number` | `undefined` | 非受控模式下的初始值。 |
-| `type` | `'bar' \| 'line' \| 'card' \| 'segment' \| 'chrome'` | `'bar'` | 标签样式。`chrome` 为追加式偏离（谷歌浏览器风格）。 |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸。 |
-| `placement` | `'left' \| 'right' \| 'top' \| 'bottom' \| 'start' \| 'end'` | `'top'` | 标签条位置。 |
-| `trigger` | `'click' \| 'hover'` | `'click'` | 激活标签的手势。 |
-| `closable` | `boolean` | `false` | 是否允许关闭标签（所有样式均渲染关闭位，视觉上为 `card` / `chrome` 设计）。 |
-| `addable` | `boolean \| { disabled?: boolean }` | `false` | 是否允许新增标签（同上，`chrome` 下表现为浏览器标签行末尾的圆形 `+`）。 |
-| `animated` | `boolean` | `false` | 切换面板时是否使用动画。 |
-| `justifyContent` | `'space-between' \| 'space-around' \| 'space-evenly' \| 'start' \| 'center' \| 'end'` | `undefined` | 标签条主轴排列方式。 |
-| `tabsPadding` | `number` | `0` | 标签栏起止方向的内边距。 |
-| `barWidth` | `number` | `undefined` | 标签条固定宽度（px）。省略时跟随标签自身宽度。 |
-| `centerActiveTab` | `boolean` | `false` | 是否让活动标签滚动到标签条中心。 |
-| `showScrollButton` | `boolean` | `false` | 是否显示滚动按钮。 |
-| `tabClass` | `string` | `undefined` | 每个标签的类名。 |
-| `tabStyle` | `string \| Record<string, string>` | `undefined` | 每个标签的样式。 |
-| `addTabClass` | `string` | `undefined` | 新增按钮的类名。 |
-| `addTabStyle` | `string \| Record<string, string>` | `undefined` | 新增按钮的样式。 |
-| `paneClass` | `string` | `undefined` | 面板的类名。 |
-| `paneStyle` | `string \| Record<string, string>` | `undefined` | 面板的样式。 |
-| `paneWrapperClass` | `string` | `undefined` | 面板容器的类名。 |
-| `paneWrapperStyle` | `string \| Record<string, string>` | `undefined` | 面板容器的样式。 |
-| `onBeforeLeave` | `(name, oldName) => boolean \| Promise<boolean>` | `undefined` | 切换前的守卫，返回 `false` 阻止切换。 |
+| 名称               | 类型                                                                                  | 默认值      | 说明                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------- |
+| `value`            | `string \| number`                                                                    | `undefined` | 受控模式下的选中值。                                                        |
+| `defaultValue`     | `string \| number`                                                                    | `undefined` | 非受控模式下的初始值。                                                      |
+| `type`             | `'bar' \| 'line' \| 'card' \| 'segment' \| 'chrome'`                                  | `'bar'`     | 标签样式。`chrome` 为追加式偏离（谷歌浏览器风格）。                         |
+| `size`             | `'small' \| 'medium' \| 'large'`                                                      | `'medium'`  | 尺寸。                                                                      |
+| `placement`        | `'left' \| 'right' \| 'top' \| 'bottom' \| 'start' \| 'end'`                          | `'top'`     | 标签条位置。                                                                |
+| `trigger`          | `'click' \| 'hover'`                                                                  | `'click'`   | 激活标签的手势。                                                            |
+| `closable`         | `boolean`                                                                             | `false`     | 是否允许关闭标签（所有样式均渲染关闭位，视觉上为 `card` / `chrome` 设计）。 |
+| `addable`          | `boolean \| { disabled?: boolean }`                                                   | `false`     | 是否允许新增标签（同上，`chrome` 下表现为浏览器标签行末尾的圆形 `+`）。     |
+| `animated`         | `boolean`                                                                             | `false`     | 切换面板时是否使用动画。                                                    |
+| `justifyContent`   | `'space-between' \| 'space-around' \| 'space-evenly' \| 'start' \| 'center' \| 'end'` | `undefined` | 标签条主轴排列方式。                                                        |
+| `tabsPadding`      | `number`                                                                              | `0`         | 标签栏起止方向的内边距。                                                    |
+| `barWidth`         | `number`                                                                              | `undefined` | 标签条固定宽度（px）。省略时跟随标签自身宽度。                              |
+| `centerActiveTab`  | `boolean`                                                                             | `false`     | 是否让活动标签滚动到标签条中心。                                            |
+| `showScrollButton` | `boolean`                                                                             | `false`     | 是否显示滚动按钮。                                                          |
+| `tabClass`         | `string`                                                                              | `undefined` | 每个标签的类名。                                                            |
+| `tabStyle`         | `string \| Record<string, string>`                                                    | `undefined` | 每个标签的样式。                                                            |
+| `addTabClass`      | `string`                                                                              | `undefined` | 新增按钮的类名。                                                            |
+| `addTabStyle`      | `string \| Record<string, string>`                                                    | `undefined` | 新增按钮的样式。                                                            |
+| `paneClass`        | `string`                                                                              | `undefined` | 面板的类名。                                                                |
+| `paneStyle`        | `string \| Record<string, string>`                                                    | `undefined` | 面板的样式。                                                                |
+| `paneWrapperClass` | `string`                                                                              | `undefined` | 面板容器的类名。                                                            |
+| `paneWrapperStyle` | `string \| Record<string, string>`                                                    | `undefined` | 面板容器的样式。                                                            |
+| `onBeforeLeave`    | `(name, oldName) => boolean \| Promise<boolean>`                                      | `undefined` | 切换前的守卫，返回 `false` 阻止切换。                                       |
 
 ### SnTabs Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `update:value` | `string \| number` | 选中值变化。 |
-| `close` | `string \| number` | 标签的关闭按钮被点击。 |
-| `add` | `()` | 新增按钮被点击。 |
+| 名称           | 参数               | 说明                   |
+| -------------- | ------------------ | ---------------------- |
+| `update:value` | `string \| number` | 选中值变化。           |
+| `close`        | `string \| number` | 标签的关闭按钮被点击。 |
+| `add`          | `()`               | 新增按钮被点击。       |
 
 ### SnTabs Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 标签面板列表。 |
-| `prefix` | `()` | 标签序列之前的内容。 |
-| `suffix` | `()` | 标签序列之后的内容。 |
+| 名称      | 参数 | 说明                 |
+| --------- | ---- | -------------------- |
+| `default` | `()` | 标签面板列表。       |
+| `prefix`  | `()` | 标签序列之前的内容。 |
+| `suffix`  | `()` | 标签序列之后的内容。 |
 
 ### SnTabPane Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `name` | `string \| number` | — | 面板唯一标识，必填。 |
-| `tab` | `string \| number` | `undefined` | 标签上显示的文字。 |
-| `disabled` | `boolean` | `false` | 是否禁用该标签。 |
-| `closable` | `boolean` | `undefined` | 覆盖父级的 `closable`。 |
-| `displayDirective` | `'if' \| 'show' \| 'show:lazy'` | `'if'` | 面板留存策略。 |
+| 名称               | 类型                            | 默认值      | 说明                    |
+| ------------------ | ------------------------------- | ----------- | ----------------------- |
+| `name`             | `string \| number`              | —           | 面板唯一标识，必填。    |
+| `tab`              | `string \| number`              | `undefined` | 标签上显示的文字。      |
+| `disabled`         | `boolean`                       | `false`     | 是否禁用该标签。        |
+| `closable`         | `boolean`                       | `undefined` | 覆盖父级的 `closable`。 |
+| `displayDirective` | `'if' \| 'show' \| 'show:lazy'` | `'if'`      | 面板留存策略。          |
 
 ### SnTabPane Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称      | 参数 | 说明       |
+| --------- | ---- | ---------- |
 | `default` | `()` | 面板内容。 |
 
 ## 面板留存
 
 `displayDirective` 控制切走的面板是否保留：
 
-| 值 | 行为 |
-| --- | --- |
-| `'if'` | 切走后卸载，回来时重新挂载。面板内状态会丢失。 |
-| `'show'` | 保留节点，仅切换显示。面板内状态（滚动位置、输入内容）得以保留。 |
-| `'show:lazy'` | 首次显示后才保留节点 —— 兼顾懒挂载与状态保留。 |
+| 值            | 行为                                                             |
+| ------------- | ---------------------------------------------------------------- |
+| `'if'`        | 切走后卸载，回来时重新挂载。面板内状态会丢失。                   |
+| `'show'`      | 保留节点，仅切换显示。面板内状态（滚动位置、输入内容）得以保留。 |
+| `'show:lazy'` | 首次显示后才保留节点 —— 兼顾懒挂载与状态保留。                   |
 
 ## 切换守卫
 

@@ -12,16 +12,18 @@
  * prerender skips it entirely and the real component mounts client-side.
  */
 
-import { ref } from 'vue'
-import { SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton } from '@snui/vue-web';
 
-const loading = ref(false)
-const lastClicked = ref<string | null>(null)
+const loading = ref(false);
+const lastClicked = ref<string | null>(null);
 
 function trigger(label: string): void {
-  lastClicked.value = label
-  loading.value = true
-  setTimeout(() => { loading.value = false }, 800)
+  lastClicked.value = label;
+  loading.value = true;
+  setTimeout(() => {
+    loading.value = false;
+  }, 800);
 }
 </script>
 

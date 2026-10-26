@@ -18,26 +18,26 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnProgress from '@snui/vue-web/src/progress/SnProgress.vue'
+import SnProgress from '@snui/vue-web/src/progress/SnProgress.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `type` | `'line' \| 'circle' \| 'multiple-circle'` | `'line'` | no | Progress bar shape. |
-| `percentage` | `number \| number[]` | `0` | no | Value(s) in percent, clamped to 0–100. Array form for `multiple-circle`. |
-| `height` | `number \| string` | `undefined` | no | Line rail height; number = px, string passes through. Falls back to 8px. |
-| `borderRadius` | `number \| string` | `undefined` | no | Line rail corner radius. |
-| `fillBorderRadius` | `number \| string` | `undefined` | no | Line fill radius; falls back to `borderRadius`. |
-| `strokeWidth` | `number` | `6` | no | Circle ring stroke width (px). |
-| `indicatorPlacement` | `'inside' \| 'outside' \| 'top'` | `'outside'` | no | Indicator placement for `type='line'`. |
-| `color` | `string \| { color, stop? }[] \| (percentage) => string` | `undefined` | no | Fill color: solid, gradient stops, or resolver function. Overrides `status`. |
-| `railColor` | `string \| { color, stop? }[]` | `undefined` | no | Rail color. |
-| `showIndicator` | `boolean` | `true` | no | Render the indicator text / glyph. |
-| `status` | `'default' \| 'success' \| 'error' \| 'info' \| 'warning'` | `'default'` | no | Status — drives the default fill color and circle glyph. |
-| `processing` | `boolean` | `false` | no | Animated striped fill (line) / pulsing arc (circle). |
-| `offsetDegree` | `number` | `0` | no | Circle start-angle offset in degrees (0 = 12 o'clock). |
+| Name                 | Type                                                       | Default     | Required | Description                                                                  |
+| -------------------- | ---------------------------------------------------------- | ----------- | -------- | ---------------------------------------------------------------------------- |
+| `type`               | `'line' \| 'circle' \| 'multiple-circle'`                  | `'line'`    | no       | Progress bar shape.                                                          |
+| `percentage`         | `number \| number[]`                                       | `0`         | no       | Value(s) in percent, clamped to 0–100. Array form for `multiple-circle`.     |
+| `height`             | `number \| string`                                         | `undefined` | no       | Line rail height; number = px, string passes through. Falls back to 8px.     |
+| `borderRadius`       | `number \| string`                                         | `undefined` | no       | Line rail corner radius.                                                     |
+| `fillBorderRadius`   | `number \| string`                                         | `undefined` | no       | Line fill radius; falls back to `borderRadius`.                              |
+| `strokeWidth`        | `number`                                                   | `6`         | no       | Circle ring stroke width (px).                                               |
+| `indicatorPlacement` | `'inside' \| 'outside' \| 'top'`                           | `'outside'` | no       | Indicator placement for `type='line'`.                                       |
+| `color`              | `string \| { color, stop? }[] \| (percentage) => string`   | `undefined` | no       | Fill color: solid, gradient stops, or resolver function. Overrides `status`. |
+| `railColor`          | `string \| { color, stop? }[]`                             | `undefined` | no       | Rail color.                                                                  |
+| `showIndicator`      | `boolean`                                                  | `true`      | no       | Render the indicator text / glyph.                                           |
+| `status`             | `'default' \| 'success' \| 'error' \| 'info' \| 'warning'` | `'default'` | no       | Status — drives the default fill color and circle glyph.                     |
+| `processing`         | `boolean`                                                  | `false`     | no       | Animated striped fill (line) / pulsing arc (circle).                         |
+| `offsetDegree`       | `number`                                                   | `0`         | no       | Circle start-angle offset in degrees (0 = 12 o'clock).                       |
 
 ## Events
 
@@ -45,10 +45,10 @@ None.
 
 ## Slots
 
-| Name | Scope | Description |
-|---|---|---|
-| `default` | `{ percentage }` | Custom indicator content. |
-| `icon` | — | Custom glyph for the circle success / error state. |
+| Name      | Scope            | Description                                        |
+| --------- | ---------------- | -------------------------------------------------- |
+| `default` | `{ percentage }` | Custom indicator content.                          |
+| `icon`    | —                | Custom glyph for the circle success / error state. |
 
 ## Divergences from the reference API
 
@@ -76,13 +76,13 @@ None.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Action primary | `--sn-web-color-action-primary` | Default fill |
-| Feedback success / danger / info / warning | `--sn-web-color-feedback-*` | Status fills + circle glyphs |
-| Background subtle | `--sn-web-color-background-subtle` | Rail color |
-| Text secondary | `--sn-web-color-text-secondary` | Indicator text |
-| Text on primary | `--sn-web-color-text-on-primary` | Indicator inside the fill |
+| Token                                      | CSS Variable                       | Purpose                      |
+| ------------------------------------------ | ---------------------------------- | ---------------------------- |
+| Action primary                             | `--sn-web-color-action-primary`    | Default fill                 |
+| Feedback success / danger / info / warning | `--sn-web-color-feedback-*`        | Status fills + circle glyphs |
+| Background subtle                          | `--sn-web-color-background-subtle` | Rail color                   |
+| Text secondary                             | `--sn-web-color-text-secondary`    | Indicator text               |
+| Text on primary                            | `--sn-web-color-text-on-primary`   | Indicator inside the fill    |
 
 ## Versioning
 

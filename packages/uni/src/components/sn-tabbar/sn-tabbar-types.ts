@@ -6,30 +6,30 @@
  * `sn-radio-types.ts` pattern so both pairs stay symmetric.
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Value shared by the bar's selection and each item's `name`. */
-export type SnTabbarValue = number | string
+export type SnTabbarValue = number | string;
 
 /** Bar shape — mirrors `wd-tabbar` `shape`. */
-export type SnTabbarShape = 'default' | 'round'
+export type SnTabbarShape = 'default' | 'round';
 
 /** Context injected by `SnTabbar` into child `SnTabbarItem` instances. */
 export interface SnTabbarContext {
   /** Currently selected value (index when the item has no `name`). */
-  activeValue: Ref<SnTabbarValue>
+  activeValue: Ref<SnTabbarValue>;
   /** Whether `value` is the current selection. */
-  isActive: (value: SnTabbarValue) => boolean
+  isActive: (value: SnTabbarValue) => boolean;
   /** Request a switch; the bar runs `beforeChange` before committing. */
-  select: (value: SnTabbarValue) => void
+  select: (value: SnTabbarValue) => void;
   /** Assign the next slot index to a freshly mounted item. */
-  nextIndex: () => number
+  nextIndex: () => number;
   /** Active label colour (empty string = token default). */
-  activeColor: Ref<string>
+  activeColor: Ref<string>;
   /** Inactive label colour (empty string = token default). */
-  inactiveColor: Ref<string>
+  inactiveColor: Ref<string>;
   /** Bar shape inherited by every item. */
-  shape: Ref<SnTabbarShape>
+  shape: Ref<SnTabbarShape>;
 }
 
-export const SN_TABBAR_KEY: InjectionKey<SnTabbarContext> = Symbol('sn-tabbar')
+export const SN_TABBAR_KEY: InjectionKey<SnTabbarContext> = Symbol('sn-tabbar');

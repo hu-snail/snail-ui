@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnCarousel — e-commerce product cards, 3 per view with gaps. */
-import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
+import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
 
 /** 自包含渐变占位图（SVG data URI），demo 不依赖外网图片源。 */
 function ph(from: string, to: string, w = 800, h = 400): string {
@@ -11,20 +11,30 @@ function ph(from: string, to: string, w = 800, h = 400): string {
     `<circle cx="${w * 0.78}" cy="${h * 0.28}" r="${h * 0.3}" fill="rgba(255,255,255,0.16)"/>`,
     `<circle cx="${w * 0.2}" cy="${h * 0.82}" r="${h * 0.24}" fill="rgba(255,255,255,0.12)"/>`,
     '</svg>',
-  ]
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(parts.join(''))}`
+  ];
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(parts.join(''))}`;
 }
 
 const products = [
-  { id: 1, name: 'Lightweight down jacket', price: '¥329', img: ph('#69b1ff', '#0958d9', 400, 300) },
+  {
+    id: 1,
+    name: 'Lightweight down jacket',
+    price: '¥329',
+    img: ph('#69b1ff', '#0958d9', 400, 300),
+  },
   { id: 2, name: 'Trail hiking shoes', price: '¥459', img: ph('#5cdbd3', '#08979c', 400, 300) },
   { id: 3, name: 'Camping folding chair', price: '¥129', img: ph('#95de64', '#389e0d', 400, 300) },
   { id: 4, name: 'Titanium water cup', price: '¥199', img: ph('#ffd666', '#d48806', 400, 300) },
   { id: 5, name: 'Outdoor backpack', price: '¥289', img: ph('#ff85c0', '#c41d7f', 400, 300) },
   { id: 6, name: 'Quick-dry sun hoodie', price: '¥159', img: ph('#85a5ff', '#1d39c4', 400, 300) },
   { id: 7, name: 'Camp headlamp', price: '¥89', img: ph('#ff9c6e', '#d4380d', 400, 300) },
-  { id: 8, name: 'Portable charcoal grill', price: '¥349', img: ph('#b37feb', '#531dab', 400, 300) },
-]
+  {
+    id: 8,
+    name: 'Portable charcoal grill',
+    price: '¥349',
+    img: ph('#b37feb', '#531dab', 400, 300),
+  },
+];
 </script>
 
 <template>
@@ -38,7 +48,7 @@ const products = [
   >
     <SnCarouselItem v-for="p in products" :key="p.id">
       <div class="product-card">
-        <img class="product-img" :src="p.img" :alt="p.name">
+        <img class="product-img" :src="p.img" :alt="p.name" />
         <div class="product-name">{{ p.name }}</div>
         <div class="product-price">{{ p.price }}</div>
       </div>

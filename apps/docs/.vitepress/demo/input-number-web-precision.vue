@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnInputNumber — precision. */
-import { ref } from 'vue'
-import { SnInputNumber } from '@snui/vue-web'
-const price = ref(12.3456)
+import { ref } from 'vue';
+import { SnInputNumber } from '@snui/vue-web';
+const price = ref(12.3456);
 </script>
 
 <template>
@@ -13,7 +13,16 @@ const price = ref(12.3456)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
-.demo-field { width: 160px; }
-.demo-log { font-size: 13px; color: var(--vp-c-text-2); }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-field {
+  width: 160px;
+}
+.demo-log {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

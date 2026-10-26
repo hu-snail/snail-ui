@@ -96,9 +96,10 @@
   --aui-font-line-height-normal: 1.5;
   --aui-font-line-height-loose: 1.8;
   /* Primitive — font family (mirrors PRIMITIVE_TOKENS.font.family) */
-  --aui-font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --aui-font-family-serif: Georgia, "Times New Roman", serif;
-  --aui-font-family-mono: "SF Mono", Monaco, Menlo, Consolas, monospace;
+  --aui-font-family-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --aui-font-family-serif: Georgia, 'Times New Roman', serif;
+  --aui-font-family-mono: 'SF Mono', Monaco, Menlo, Consolas, monospace;
   /* Semantic — font family / size bindings. Override these (e.g. via
      <SnConfigProvider :font="..."> or a global stylesheet) to re-skin
      typography without touching components. */
@@ -249,7 +250,7 @@
   /* Component tokens — card */
   --aui-card-padding: 24px;
   --aui-card-radius: 8px;
-  --aui-card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --aui-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
 
   /* Sn-* component aliases — card */
   --sn-card-padding: var(--aui-card-padding);
@@ -317,7 +318,9 @@
   --aui-dialog-text-color: var(--aui-color-text-secondary);
   --aui-dialog-title-text-color: var(--aui-color-text-primary);
   /* Upstream n-dialog panel shadow: three soft layers, max 28px blur. */
-  --aui-dialog-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  --aui-dialog-box-shadow:
+    0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05);
   --aui-dialog-border: 1px solid var(--aui-color-border-default);
   --aui-dialog-radius: var(--aui-radius-card);
   --aui-dialog-padding: var(--aui-spacing-5);
@@ -418,10 +421,9 @@
   --sn-drawer-close-color: var(--aui-drawer-close-color);
   --sn-drawer-close-color-hover: var(--aui-drawer-close-color-hover);
   --sn-drawer-mask-color: var(--aui-drawer-mask-color);
-
 }
 
-[data-theme="dark"],
+[data-theme='dark'],
 .dark {
   --aui-color-text-primary: #fafafa;
   --aui-color-text-secondary: #a1a1aa;

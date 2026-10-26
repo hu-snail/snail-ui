@@ -25,17 +25,17 @@ Defaults to the `circular` ring; `type` switches between the four shapes.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `type` | `'circular' \| 'spinner' \| 'dots' \| 'wave'` | `'circular'` | Spinner shape |
-| `color` | `string` | `''` | Spinner color |
-| `size` | `number \| string` | `''` | Base size; a number is rpx, a string passes through |
-| `text` | `string` | `''` | Loading label |
-| `direction` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction |
-| `inheritColor` | `boolean` | `false` | Inherit the parent's color |
-| `customClass` | `string` | `''` | Custom class for the root node |
-| `customStyle` | `string` | `''` | Custom inline style for the root node |
-| `customSpinnerClass` | `string` | `''` | Custom class for the spinner box |
+| Prop                 | Type                                          | Default      | Description                                         |
+| -------------------- | --------------------------------------------- | ------------ | --------------------------------------------------- |
+| `type`               | `'circular' \| 'spinner' \| 'dots' \| 'wave'` | `'circular'` | Spinner shape                                       |
+| `color`              | `string`                                      | `''`         | Spinner color                                       |
+| `size`               | `number \| string`                            | `''`         | Base size; a number is rpx, a string passes through |
+| `text`               | `string`                                      | `''`         | Loading label                                       |
+| `direction`          | `'vertical' \| 'horizontal'`                  | `'vertical'` | Layout direction                                    |
+| `inheritColor`       | `boolean`                                     | `false`      | Inherit the parent's color                          |
+| `customClass`        | `string`                                      | `''`         | Custom class for the root node                      |
+| `customStyle`        | `string`                                      | `''`         | Custom inline style for the root node               |
+| `customSpinnerClass` | `string`                                      | `''`         | Custom class for the spinner box                    |
 
 ## Events
 
@@ -43,20 +43,20 @@ None — `sn-loading` is purely presentational.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                              |
+| --------- | ---------------------------------------- |
 | `default` | Loading label content (overrides `text`) |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-action-primary` | Default spinner color |
-| `--sn-mp-color-text-secondary` | Label color |
-| `--sn-mp-font-size-md` | Label size |
-| `--sn-mp-font-line-height-normal` | Label line height |
-| `--sn-mp-spacing-3` | Spinner ↔ label gap / horizontal margin |
-| `--sn-mp-radius-xs` | Bar corners under the Doodle skin |
+| Variable                          | Purpose                                 |
+| --------------------------------- | --------------------------------------- |
+| `--sn-mp-color-action-primary`    | Default spinner color                   |
+| `--sn-mp-color-text-secondary`    | Label color                             |
+| `--sn-mp-font-size-md`            | Label size                              |
+| `--sn-mp-font-line-height-normal` | Label line height                       |
+| `--sn-mp-spacing-3`               | Spinner ↔ label gap / horizontal margin |
+| `--sn-mp-radius-xs`               | Bar corners under the Doodle skin       |
 
 ## Accessibility
 
@@ -67,7 +67,6 @@ None — `sn-loading` is purely presentational.
 ## Dark mode
 
 The spinner and label use `--sn-mp-color-action-primary` / `--sn-mp-color-text-secondary`, both overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

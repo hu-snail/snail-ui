@@ -1,15 +1,15 @@
 <script setup lang="ts">
 /** Demo: SnInput — prefix / suffix / clear-icon / count slots. */
-import { ref } from 'vue'
-import { SnIcon, SnInput } from '@snui/vue-web'
-import { ChevronRight, Search, X } from 'lucide-vue-next'
-import { registerSnIcons } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnIcon, SnInput } from '@snui/vue-web';
+import { ChevronRight, Search, X } from 'lucide-vue-next';
+import { registerSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ ChevronRight, Search, X })
+registerSnIcons({ ChevronRight, Search, X });
 
-const search = ref('')
-const url = ref('')
-const bio = ref('Hi, I am using @snui/vue-web.')
+const search = ref('');
+const url = ref('');
+const bio = ref('Hi, I am using @snui/vue-web.');
 </script>
 
 <template>
@@ -36,5 +36,10 @@ const bio = ref('Hi, I am using @snui/vue-web.')
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
 </style>

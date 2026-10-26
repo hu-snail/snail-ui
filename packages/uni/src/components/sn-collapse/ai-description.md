@@ -24,69 +24,69 @@ body with a CSS line clamp, so no height measurement is needed.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnCollapse } from '@snui/uni/components/sn-collapse/sn-collapse.vue'
-import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-item.vue'
+import { SnCollapse } from '@snui/uni/components/sn-collapse/sn-collapse.vue';
+import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-item.vue';
 ```
 
 ## Props — sn-collapse
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `modelValue` | `string \| string[] \| boolean` | `[]` | Bound value; the shape follows the active mode. |
-| `accordion` | `boolean` | `false` | Mode switches. |
-| `viewmore` | `boolean` | `false` | Mode switches. |
-| `lineNum` | `number` | `2` | Collapsed line count in view-more mode. |
-| `useMoreSlot` | `boolean` | `false` | More-slot hooks. |
-| `customMoreSlotClass` | `string` | `''` | More-slot hooks. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name                  | Type                            | Default | Description                                     |
+| --------------------- | ------------------------------- | ------- | ----------------------------------------------- |
+| `modelValue`          | `string \| string[] \| boolean` | `[]`    | Bound value; the shape follows the active mode. |
+| `accordion`           | `boolean`                       | `false` | Mode switches.                                  |
+| `viewmore`            | `boolean`                       | `false` | Mode switches.                                  |
+| `lineNum`             | `number`                        | `2`     | Collapsed line count in view-more mode.         |
+| `useMoreSlot`         | `boolean`                       | `false` | More-slot hooks.                                |
+| `customMoreSlotClass` | `string`                        | `''`    | More-slot hooks.                                |
+| `customClass`         | `string`                        | `''`    | Root forwarding.                                |
+| `customStyle`         | `string`                        | `''`    | Root forwarding.                                |
 
 ## Props — sn-collapse-item
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `name` | `string` | `''` | Panel identity and heading. |
-| `title` | `string` | `''` | Panel identity and heading. |
-| `disabled` | `boolean` | `false` | Block the toggle. |
-| `beforeExpend` | `(name) => boolean \| Promise<boolean>` | `undefined` | Open veto; runs only when opening. |
-| `border` | `boolean` | `true` | Divider and body forwarding. |
-| `customBodyClass` | `string` | `''` | Divider and body forwarding. |
-| `customBodyStyle` | `string` | `''` | Divider and body forwarding. |
-| `customClass` | `string` | `''` | Panel root forwarding. |
-| `customStyle` | `string` | `''` | Panel root forwarding. |
+| Name              | Type                                    | Default     | Description                        |
+| ----------------- | --------------------------------------- | ----------- | ---------------------------------- |
+| `name`            | `string`                                | `''`        | Panel identity and heading.        |
+| `title`           | `string`                                | `''`        | Panel identity and heading.        |
+| `disabled`        | `boolean`                               | `false`     | Block the toggle.                  |
+| `beforeExpend`    | `(name) => boolean \| Promise<boolean>` | `undefined` | Open veto; runs only when opening. |
+| `border`          | `boolean`                               | `true`      | Divider and body forwarding.       |
+| `customBodyClass` | `string`                                | `''`        | Divider and body forwarding.       |
+| `customBodyStyle` | `string`                                | `''`        | Divider and body forwarding.       |
+| `customClass`     | `string`                                | `''`        | Panel root forwarding.             |
+| `customStyle`     | `string`                                | `''`        | Panel root forwarding.             |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:modelValue` | bound value | Bound value changed. |
-| `change` | `{ value }` | Bound value changed. |
-| `change (item)` | `{ name, expanded }` | One panel changed state. |
+| Name                | Payload              | Description              |
+| ------------------- | -------------------- | ------------------------ |
+| `update:modelValue` | bound value          | Bound value changed.     |
+| `change`            | `{ value }`          | Bound value changed.     |
+| `change (item)`     | `{ name, expanded }` | One panel changed state. |
 
 ## Methods
 
-| Name | Signature | Description |
-|---|---|---|
+| Name        | Signature                                                    | Description                              |
+| ----------- | ------------------------------------------------------------ | ---------------------------------------- |
 | `toggleAll` | `(options?: { expanded?: boolean; skipDisabled?: boolean })` | Open all / close all / flip every panel. |
 
 ## Slots
 
-| Name | Scope | Description |
-|---|---|---|
-| `default (collapse)` | — | Panel list. |
-| `more (collapse)` | `{ expanded }` | Custom expand / collapse control. |
-| `title (item)` | `{ expanded, disabled, isFirst }` | Custom heading. |
-| `default (item)` | — | Panel content. |
+| Name                 | Scope                             | Description                       |
+| -------------------- | --------------------------------- | --------------------------------- |
+| `default (collapse)` | —                                 | Panel list.                       |
+| `more (collapse)`    | `{ expanded }`                    | Custom expand / collapse control. |
+| `title (item)`       | `{ expanded, disabled, isFirst }` | Custom heading.                   |
+| `default (item)`     | —                                 | Panel content.                    |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Surface / feedback | `--sn-mp-color-background-surface`, `--sn-mp-color-background-soft` | Panel surface and header feedback |
-| Divider | `--sn-mp-color-border-subtle` | Panel divider |
-| Text | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary` | Heading and body |
-| Action primary | `--sn-mp-color-action-primary` | Expand / collapse label |
-| Font / spacing | `--sn-mp-font-size-md`, `--sn-mp-font-line-height-normal`, `--sn-mp-spacing-4` | Body typography and padding |
+| Token              | CSS Variable                                                                   | Purpose                           |
+| ------------------ | ------------------------------------------------------------------------------ | --------------------------------- |
+| Surface / feedback | `--sn-mp-color-background-surface`, `--sn-mp-color-background-soft`            | Panel surface and header feedback |
+| Divider            | `--sn-mp-color-border-subtle`                                                  | Panel divider                     |
+| Text               | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`                   | Heading and body                  |
+| Action primary     | `--sn-mp-color-action-primary`                                                 | Expand / collapse label           |
+| Font / spacing     | `--sn-mp-font-size-md`, `--sn-mp-font-line-height-normal`, `--sn-mp-spacing-4` | Body typography and padding       |
 
 ## Accessibility
 

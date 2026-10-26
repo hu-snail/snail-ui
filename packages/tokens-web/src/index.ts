@@ -13,4 +13,4 @@
  * ```
  */
 
-export { snWebAliasMap, renderSnWebStyles, listSnWebAliases } from './variables.js'
+export { snWebAliasMap, renderSnWebStyles, listSnWebAliases } from './variables.js';

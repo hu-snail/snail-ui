@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process'
+import { execFileSync } from 'node:child_process';
 
 /**
  * "Edit this page" base URL for the docs chrome (see
@@ -22,28 +22,28 @@ import { execFileSync } from 'node:child_process'
  * `themeConfig.editBase`, so no git call ever reaches the browser.
  */
 
-const REPO = 'hu-snail/snail-ui'
+const REPO = 'hu-snail/snail-ui';
 
 /** Repo-root-relative directory the docs are published from. */
-const DOCS_ROOT = 'apps/docs/'
+const DOCS_ROOT = 'apps/docs/';
 
 function detectRef(): string {
-  const override = process.env.SNUI_DOCS_EDIT_REF?.trim()
-  if (override) return override
+  const override = process.env.SNUI_DOCS_EDIT_REF?.trim();
+  if (override) return override;
 
   try {
     const ref = execFileSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim()
+    }).trim();
     // `HEAD` is a detached checkout (typical in CI), not a usable ref.
-    if (ref && ref !== 'HEAD') return ref
+    if (ref && ref !== 'HEAD') return ref;
   } catch {
     // Not a git checkout — fall through to the default branch.
   }
 
-  return 'main'
+  return 'main';
 }
 
 /** `page.relativePath` is appended to this. */
-export const EDIT_BASE = `https://github.com/${REPO}/edit/${detectRef()}/${DOCS_ROOT}`
+export const EDIT_BASE = `https://github.com/${REPO}/edit/${detectRef()}/${DOCS_ROOT}`;

@@ -55,34 +55,34 @@
  *   - 页面滚动容器 — 由宿主组织
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
-defineOptions({ name: 'SnFloatingPanel' })
+defineOptions({ name: 'SnFloatingPanel' });
 
 /** Snap-animation length in ms (wd `duration`). */
-const DEFAULT_DURATION = 300
+const DEFAULT_DURATION = 300;
 
 /** Height used when nothing else is available, in design px. */
-const FALLBACK_HEIGHT = 100
+const FALLBACK_HEIGHT = 100;
 
 const props = withDefaults(
   defineProps<{
     /** Panel height in design px (v-model:height). */
-    height?: number
+    height?: number;
     /** Snap points in design px; empty = free positioning. */
-    anchors?: number[]
+    anchors?: number[];
     /** Snap animation duration in ms; 0 disables the animation. */
-    duration?: number
+    duration?: number;
     /** Let the content area drag the panel too, not only the handle. */
-    contentDraggable?: boolean
+    contentDraggable?: boolean;
     /** Pad the panel for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Render the scrollbar of the content area. */
-    showScrollbar?: boolean
+    showScrollbar?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     height: 0,
@@ -94,17 +94,17 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Panel content (scrolls inside the panel). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:height', value: number): void
-  (e: 'height-change', payload: { height: number }): void
-}>()
+  (e: 'update:height', value: number): void;
+  (e: 'height-change', payload: { height: number }): void;
+}>();
 
 /**
  * Resolve the wd default anchor set: `[100, windowHeight * 0.6]`.
@@ -114,163 +114,163 @@ const emit = defineEmits<{
  */
 function defaultAnchors(): number[] {
   const host = globalThis as {
-    uni?: { getSystemInfoSync?: () => { windowHeight?: number } }
-  }
-  const windowHeight = host.uni?.getSystemInfoSync?.()?.windowHeight
+    uni?: { getSystemInfoSync?: () => { windowHeight?: number } };
+  };
+  const windowHeight = host.uni?.getSystemInfoSync?.()?.windowHeight;
   if (typeof windowHeight === 'number' && windowHeight > 0) {
-    return [FALLBACK_HEIGHT, windowHeight * 0.6]
+    return [FALLBACK_HEIGHT, windowHeight * 0.6];
   }
-  return [FALLBACK_HEIGHT]
+  return [FALLBACK_HEIGHT];
 }
 
 /** Anchors in design px, ascending. An explicit list always wins. */
 const anchorList = computed<number[]>(() => {
-  const source = props.anchors.length > 0 ? props.anchors : defaultAnchors()
-  return [...source].filter((value) => Number.isFinite(value) && value >= 0).sort((a, b) => a - b)
-})
+  const source = props.anchors.length > 0 ? props.anchors : defaultAnchors();
+  return [...source].filter((value) => Number.isFinite(value) && value >= 0).sort((a, b) => a - b);
+});
 
 /** Height currently rendered, in design px. */
-const currentHeight = ref(resolveInitialHeight())
+const currentHeight = ref(resolveInitialHeight());
 
 /** Resolve the starting height: the prop, else the first anchor. */
 function resolveInitialHeight(): number {
-  if (props.height > 0) return props.height
-  const first = anchorList.value[0]
-  return first ?? FALLBACK_HEIGHT
+  if (props.height > 0) return props.height;
+  const first = anchorList.value[0];
+  return first ?? FALLBACK_HEIGHT;
 }
 
 /** A gesture is in flight. */
-const isDragging = ref(false)
+const isDragging = ref(false);
 /** `true` while the snap transition runs. */
-const isAnimating = ref(false)
+const isAnimating = ref(false);
 
 /** Single pending settle timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 /** Guards against a stale leg finishing after a newer one started. */
-let generation = 0
+let generation = 0;
 
 /** Gesture origin. */
-let startY = 0
+let startY = 0;
 /** Height when the gesture started. */
-let startHeight = 0
+let startHeight = 0;
 /** The gesture was recognised as a vertical drag. */
-let tracking = false
+let tracking = false;
 /** The gesture was rejected (horizontal / a tap). */
-let rejected = false
+let rejected = false;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 /** Keep the consumer in sync while the finger moves. */
 function applyHeight(next: number): void {
-  const clamped = Math.max(next, 0)
-  if (clamped === currentHeight.value) return
-  currentHeight.value = clamped
-  emit('update:height', clamped)
+  const clamped = Math.max(next, 0);
+  if (clamped === currentHeight.value) return;
+  currentHeight.value = clamped;
+  emit('update:height', clamped);
 }
 
 /** Nearest anchor to `value` (falls back to the value itself with no anchors). */
 function nearestAnchor(value: number): number {
-  const list = anchorList.value
-  if (list.length === 0) return value
-  let best = list[0] as number
+  const list = anchorList.value;
+  if (list.length === 0) return value;
+  let best = list[0] as number;
   for (const anchor of list) {
-    if (Math.abs(anchor - value) < Math.abs(best - value)) best = anchor
+    if (Math.abs(anchor - value) < Math.abs(best - value)) best = anchor;
   }
-  return best
+  return best;
 }
 
 /** Snap to `next` and report the settled height once the animation ends. */
 function settle(next: number): void {
-  clearTimer()
-  const token = ++generation
-  isDragging.value = false
-  isAnimating.value = props.duration > 0
-  applyHeight(next)
+  clearTimer();
+  const token = ++generation;
+  isDragging.value = false;
+  isAnimating.value = props.duration > 0;
+  applyHeight(next);
   if (props.duration <= 0) {
-    isAnimating.value = false
-    emit('height-change', { height: currentHeight.value })
-    return
+    isAnimating.value = false;
+    emit('height-change', { height: currentHeight.value });
+    return;
   }
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    isAnimating.value = false
-    emit('height-change', { height: currentHeight.value })
-  }, props.duration)
+    timer = null;
+    if (token !== generation) return;
+    isAnimating.value = false;
+    emit('height-change', { height: currentHeight.value });
+  }, props.duration);
 }
 
 watch(
   () => props.height,
   (value) => {
     // A drag in flight owns the height until it settles.
-    if (isDragging.value) return
-    if (typeof value !== 'number' || value < 0) return
-    if (value === currentHeight.value) return
-    currentHeight.value = value
+    if (isDragging.value) return;
+    if (typeof value !== 'number' || value < 0) return;
+    if (value === currentHeight.value) return;
+    currentHeight.value = value;
   },
-)
+);
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Read the vertical position out of a uni / DOM touch event. */
 function touchY(event: Event): number {
   const detail = event as unknown as {
-    touches?: Array<{ clientY?: number, pageY?: number }>
-    changedTouches?: Array<{ clientY?: number, pageY?: number }>
-  }
-  const list = detail.touches ?? detail.changedTouches
-  const point = list && list.length > 0 ? list[0] : undefined
-  if (typeof point?.clientY === 'number') return point.clientY
-  if (typeof point?.pageY === 'number') return point.pageY
-  return 0
+    touches?: Array<{ clientY?: number; pageY?: number }>;
+    changedTouches?: Array<{ clientY?: number; pageY?: number }>;
+  };
+  const list = detail.touches ?? detail.changedTouches;
+  const point = list && list.length > 0 ? list[0] : undefined;
+  if (typeof point?.clientY === 'number') return point.clientY;
+  if (typeof point?.pageY === 'number') return point.pageY;
+  return 0;
 }
 
 function onTouchStart(event: Event): void {
-  startY = touchY(event)
-  startHeight = currentHeight.value
-  tracking = false
-  rejected = false
-  isDragging.value = true
+  startY = touchY(event);
+  startHeight = currentHeight.value;
+  tracking = false;
+  rejected = false;
+  isDragging.value = true;
   // Interrupt a running snap so the finger takes over immediately.
-  clearTimer()
-  generation += 1
-  isAnimating.value = false
+  clearTimer();
+  generation += 1;
+  isAnimating.value = false;
 }
 
 function onTouchMove(event: Event): void {
-  if (!isDragging.value) return
-  const dy = touchY(event) - startY
-  if (rejected) return
+  if (!isDragging.value) return;
+  const dy = touchY(event) - startY;
+  if (rejected) return;
   if (!tracking) {
-    if (Math.abs(dy) < 2) return
-    tracking = true
+    if (Math.abs(dy) < 2) return;
+    tracking = true;
   }
   // Dragging up (negative dy) grows the panel.
-  event.preventDefault()
-  applyHeight(startHeight - dy)
+  event.preventDefault();
+  applyHeight(startHeight - dy);
 }
 
 function onTouchEnd(): void {
-  if (!isDragging.value) return
-  isDragging.value = false
+  if (!isDragging.value) return;
+  isDragging.value = false;
   if (!tracking) {
     // A tap on the handle: keep the current height, just end the gesture.
-    settle(currentHeight.value)
-    return
+    settle(currentHeight.value);
+    return;
   }
-  settle(nearestAnchor(currentHeight.value))
+  settle(nearestAnchor(currentHeight.value));
 }
 
 /** `touchcancel` — settle where the finger left the panel. */
 function onTouchCancel(): void {
-  if (!isDragging.value) return
-  isDragging.value = false
-  settle(nearestAnchor(currentHeight.value))
+  if (!isDragging.value) return;
+  isDragging.value = false;
+  settle(nearestAnchor(currentHeight.value));
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -283,28 +283,24 @@ const rootClass = computed(() => [
     'sn-floating-panel--safe-bottom': props.safeAreaInsetBottom,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
   const base = [
     `height: ${currentHeight.value * 2}rpx`,
     `--sn-floating-panel-duration: ${props.duration}ms`,
-  ].join('; ')
-  return props.customStyle ? `${base}; ${props.customStyle}` : base
-})
+  ].join('; ');
+  return props.customStyle ? `${base}; ${props.customStyle}` : base;
+});
 
 const contentClass = computed(() => [
   'sn-floating-panel__content',
   { 'sn-floating-panel__content--hidden-scrollbar': !props.showScrollbar },
-])
+]);
 </script>
 
 <template>
-  <view
-    data-snui-component="floating-panel"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="floating-panel" :class="rootClass" :style="rootStyle">
     <view
       class="sn-floating-panel__handle"
       role="separator"

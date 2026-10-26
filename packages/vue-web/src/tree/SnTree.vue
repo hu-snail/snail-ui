@@ -40,9 +40,9 @@
  *   <SnTree :data="data" multiple v-model:selected-keys="selected" />
  */
 
-import { computed, ref } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import type { VNodeChild } from 'vue'
+import { computed, ref } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import type { VNodeChild } from 'vue';
 import type {
   SnTreeCheckAction,
   SnTreeExpandAction,
@@ -52,55 +52,55 @@ import type {
   SnTreeRenderSidePart,
   SnTreeSelectAction,
   SnTreeNode,
-} from './sn-tree-types'
+} from './sn-tree-types';
 
-defineOptions({ name: 'SnTree' })
+defineOptions({ name: 'SnTree' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Tree node data. Mirrors n-tree `data`. */
-    data?: SnTreeOption[]
+    data?: SnTreeOption[];
     /** Field name of the node key. Mirrors n-tree `key-field`. */
-    keyField?: string
+    keyField?: string;
     /** Field name of the node label. Mirrors n-tree `label-field`. */
-    labelField?: string
+    labelField?: string;
     /** Field name of the child list. Mirrors n-tree `children-field`. */
-    childrenField?: string
+    childrenField?: string;
     /** Uncontrolled initially expanded keys. Mirrors n-tree `default-expanded-keys`. */
-    defaultExpandedKeys?: SnTreeKey[]
+    defaultExpandedKeys?: SnTreeKey[];
     /** Controlled expanded keys — `undefined` keeps it uncontrolled. Mirrors n-tree `expanded-keys`. */
-    expandedKeys?: SnTreeKey[] | undefined
+    expandedKeys?: SnTreeKey[] | undefined;
     /** Expand every non-leaf node initially. Mirrors n-tree `default-expand-all`. */
-    defaultExpandAll?: boolean
+    defaultExpandAll?: boolean;
     /** Allow selecting nodes by click. Mirrors n-tree `selectable`. */
-    selectable?: boolean
+    selectable?: boolean;
     /** Controlled selected keys — `undefined` keeps it uncontrolled. Mirrors n-tree `selected-keys`. */
-    selectedKeys?: SnTreeKey[] | undefined
+    selectedKeys?: SnTreeKey[] | undefined;
     /** Uncontrolled initially selected keys. Mirrors n-tree `default-selected-keys`. */
-    defaultSelectedKeys?: SnTreeKey[]
+    defaultSelectedKeys?: SnTreeKey[];
     /** Allow multiple selected nodes. Mirrors n-tree `multiple`. */
-    multiple?: boolean
+    multiple?: boolean;
     /** Clicking a selected node deselects it. Mirrors n-tree `cancelable`. */
-    cancelable?: boolean
+    cancelable?: boolean;
     /** Render a checkbox per node. Mirrors n-tree `checkable`. */
-    checkable?: boolean
+    checkable?: boolean;
     /** Controlled checked keys — `undefined` keeps it uncontrolled. Mirrors n-tree `checked-keys`. */
-    checkedKeys?: SnTreeKey[] | undefined
+    checkedKeys?: SnTreeKey[] | undefined;
     /** Uncontrolled initially checked keys. Mirrors n-tree `default-checked-keys`. */
-    defaultCheckedKeys?: SnTreeKey[]
+    defaultCheckedKeys?: SnTreeKey[];
     /** Checkboxes cascade to children; parents show indeterminate state. Mirrors n-tree `cascade`. */
-    cascade?: boolean
+    cascade?: boolean;
     /** Hover/selected background spans the whole node row. Mirrors n-tree `block-line`. */
-    blockLine?: boolean
+    blockLine?: boolean;
     /** Per-level indent width in px. Mirrors n-tree `indent`. */
-    indent?: number
+    indent?: number;
     /** Node prefix render fn. Mirrors n-tree `render-prefix`. */
-    renderPrefix?: SnTreeRenderSidePart | undefined
+    renderPrefix?: SnTreeRenderSidePart | undefined;
     /** Node suffix render fn. Mirrors n-tree `render-suffix`. */
-    renderSuffix?: SnTreeRenderSidePart | undefined
+    renderSuffix?: SnTreeRenderSidePart | undefined;
   }>(),
   {
     data: () => [],
@@ -124,7 +124,7 @@ const props = withDefaults(
     renderPrefix: undefined,
     renderSuffix: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Expansion changed — mirrors n-tree `on-update:expanded-keys`. */
@@ -132,41 +132,41 @@ const emit = defineEmits<{
     e: 'update:expandedKeys',
     keys: SnTreeKey[],
     options: Array<SnTreeOption | null>,
-    meta: { node: SnTreeOption | null, action: SnTreeExpandAction },
-  ): void
+    meta: { node: SnTreeOption | null; action: SnTreeExpandAction },
+  ): void;
   /** Selection changed — mirrors n-tree `on-update:selected-keys`. */
   (
     e: 'update:selectedKeys',
     keys: SnTreeKey[],
     options: Array<SnTreeOption | null>,
-    meta: { node: SnTreeOption | null, action: SnTreeSelectAction },
-  ): void
+    meta: { node: SnTreeOption | null; action: SnTreeSelectAction },
+  ): void;
   /** Checking changed — mirrors n-tree `on-update:checked-keys`. */
   (
     e: 'update:checkedKeys',
     keys: SnTreeKey[],
     options: Array<SnTreeOption | null>,
-    meta: { node: SnTreeOption | null, action: SnTreeCheckAction },
-  ): void
-}>()
+    meta: { node: SnTreeOption | null; action: SnTreeCheckAction },
+  ): void;
+}>();
 
 defineSlots<{
   /** Rendered when `data` produces no rows. */
-  empty?(): unknown
-}>()
+  empty?(): unknown;
+}>();
 
 /** Prefix for auto-generated keys on nodes missing the key field. */
-const AUTO_KEY_PREFIX = '__sn_auto__'
+const AUTO_KEY_PREFIX = '__sn_auto__';
 
 function childrenOf(option: SnTreeOption): SnTreeOption[] {
-  const raw = option[props.childrenField]
-  return Array.isArray(raw) ? (raw as SnTreeOption[]) : []
+  const raw = option[props.childrenField];
+  return Array.isArray(raw) ? (raw as SnTreeOption[]) : [];
 }
 
 /** Flatten `data` into nodeMap + rootKeys + per-node descendants. */
 const normalized = computed<SnTreeNormalizedData>(() => {
-  const nodeMap = new Map<SnTreeKey, SnTreeNode>()
-  const rootKeys: SnTreeKey[] = []
+  const nodeMap = new Map<SnTreeKey, SnTreeNode>();
+  const rootKeys: SnTreeKey[] = [];
   const walk = (
     options: SnTreeOption[],
     level: number,
@@ -174,14 +174,14 @@ const normalized = computed<SnTreeNormalizedData>(() => {
     parentPath: string,
   ): void => {
     options.forEach((option, index) => {
-      const rawKey: unknown = option[props.keyField]
-      const ownPath = `${parentPath}/${index}`
-      const key: SnTreeKey
-        = typeof rawKey === 'string' || typeof rawKey === 'number'
+      const rawKey: unknown = option[props.keyField];
+      const ownPath = `${parentPath}/${index}`;
+      const key: SnTreeKey =
+        typeof rawKey === 'string' || typeof rawKey === 'number'
           ? rawKey
-          : `${AUTO_KEY_PREFIX}${ownPath}`
-      const rawLabel: unknown = option[props.labelField]
-      const childOptions = childrenOf(option)
+          : `${AUTO_KEY_PREFIX}${ownPath}`;
+      const rawLabel: unknown = option[props.labelField];
+      const childOptions = childrenOf(option);
       const node: SnTreeNode = {
         key,
         option,
@@ -192,82 +192,73 @@ const normalized = computed<SnTreeNormalizedData>(() => {
         isLeaf: option.isLeaf === true || childOptions.length === 0,
         disabled: option.disabled === true,
         checkboxDisabled: option.checkboxDisabled === true,
-      }
-      nodeMap.set(key, node)
+      };
+      nodeMap.set(key, node);
       if (parentKey === null) {
-        rootKeys.push(key)
+        rootKeys.push(key);
+      } else {
+        nodeMap.get(parentKey)?.childKeys.push(key);
       }
-      else {
-        nodeMap.get(parentKey)?.childKeys.push(key)
-      }
-      walk(childOptions, level + 1, key, ownPath)
-    })
-  }
-  walk(props.data, 0, null, '')
+      walk(childOptions, level + 1, key, ownPath);
+    });
+  };
+  walk(props.data, 0, null, '');
 
-  const descendants = new Map<SnTreeKey, SnTreeKey[]>()
+  const descendants = new Map<SnTreeKey, SnTreeKey[]>();
   for (const [key, node] of nodeMap) {
-    const acc: SnTreeKey[] = []
-    const stack: SnTreeKey[] = [...node.childKeys]
+    const acc: SnTreeKey[] = [];
+    const stack: SnTreeKey[] = [...node.childKeys];
     while (stack.length > 0) {
-      const current = stack.pop()
-      if (current === undefined) break
-      acc.push(current)
-      const childKeys = nodeMap.get(current)?.childKeys
-      if (childKeys !== undefined) stack.push(...childKeys)
+      const current = stack.pop();
+      if (current === undefined) break;
+      acc.push(current);
+      const childKeys = nodeMap.get(current)?.childKeys;
+      if (childKeys !== undefined) stack.push(...childKeys);
     }
-    descendants.set(key, acc)
+    descendants.set(key, acc);
   }
-  return { nodeMap, rootKeys, descendants }
-})
+  return { nodeMap, rootKeys, descendants };
+});
 
 function allNonLeafKeys(): SnTreeKey[] {
-  const keys: SnTreeKey[] = []
+  const keys: SnTreeKey[] = [];
   for (const [key, node] of normalized.value.nodeMap) {
-    if (!node.isLeaf) keys.push(key)
+    if (!node.isLeaf) keys.push(key);
   }
-  return keys
+  return keys;
 }
 
 const uncontrolledExpandedKeys = ref<Set<SnTreeKey>>(
-  props.defaultExpandAll
-    ? new Set(allNonLeafKeys())
-    : new Set(props.defaultExpandedKeys),
-)
-const uncontrolledSelectedKeys = ref<Set<SnTreeKey>>(
-  new Set(props.defaultSelectedKeys),
-)
+  props.defaultExpandAll ? new Set(allNonLeafKeys()) : new Set(props.defaultExpandedKeys),
+);
+const uncontrolledSelectedKeys = ref<Set<SnTreeKey>>(new Set(props.defaultSelectedKeys));
 const uncontrolledCheckedKeys = ref<Set<SnTreeKey>>(
   expandForCascade(new Set(props.defaultCheckedKeys)),
-)
+);
 
 /** Expand a key set with each key's descendants (cascade normalization). */
 function expandForCascade(source: Set<SnTreeKey>): Set<SnTreeKey> {
-  if (!props.cascade) return source
-  const expandedInput = new Set(source)
+  if (!props.cascade) return source;
+  const expandedInput = new Set(source);
   for (const key of source) {
     for (const descendant of normalized.value.descendants.get(key) ?? []) {
-      expandedInput.add(descendant)
+      expandedInput.add(descendant);
     }
   }
-  return expandedInput
+  return expandedInput;
 }
 
 /** Resolved indent width — `exactOptionalPropertyTypes` keeps the optional
  * prop `number | undefined` in type space, so the default is re-applied here. */
-const indentWidth = computed(() => props.indent ?? 24)
+const indentWidth = computed(() => props.indent ?? 24);
 
 const expandedSet = computed<Set<SnTreeKey>>(() =>
-  props.expandedKeys === undefined
-    ? uncontrolledExpandedKeys.value
-    : new Set(props.expandedKeys),
-)
+  props.expandedKeys === undefined ? uncontrolledExpandedKeys.value : new Set(props.expandedKeys),
+);
 
 const selectedSet = computed<Set<SnTreeKey>>(() =>
-  props.selectedKeys === undefined
-    ? uncontrolledSelectedKeys.value
-    : new Set(props.selectedKeys),
-)
+  props.selectedKeys === undefined ? uncontrolledSelectedKeys.value : new Set(props.selectedKeys),
+);
 
 /**
  * Raw checked keys. The uncontrolled set is stored in "expanded" form
@@ -276,78 +267,76 @@ const selectedSet = computed<Set<SnTreeKey>>(() =>
  * its whole subtree, mirroring treemate behavior.
  */
 const checkedSet = computed<Set<SnTreeKey>>(() => {
-  if (props.checkedKeys === undefined) return uncontrolledCheckedKeys.value
-  return expandForCascade(new Set(props.checkedKeys))
-})
+  if (props.checkedKeys === undefined) return uncontrolledCheckedKeys.value;
+  return expandForCascade(new Set(props.checkedKeys));
+});
 
 /** Keys that a cascade check/uncheck on `key` touches (skips disabled). */
 function checkableTargets(key: SnTreeKey): SnTreeKey[] {
-  const { nodeMap, descendants } = normalized.value
-  if (!nodeMap.has(key)) return []
-  const all: SnTreeKey[] = [key, ...(descendants.get(key) ?? [])]
+  const { nodeMap, descendants } = normalized.value;
+  if (!nodeMap.has(key)) return [];
+  const all: SnTreeKey[] = [key, ...(descendants.get(key) ?? [])];
   return all.filter((target) => {
-    const node = nodeMap.get(target)
-    return node !== undefined && !node.disabled && !node.checkboxDisabled
-  })
+    const node = nodeMap.get(target);
+    return node !== undefined && !node.disabled && !node.checkboxDisabled;
+  });
 }
 
 function resolveCheckedState(
   node: SnTreeNode,
   checked: Set<SnTreeKey>,
-): { checked: boolean, indeterminate: boolean } {
-  if (!props.checkable) return { checked: false, indeterminate: false }
-  if (!props.cascade) return { checked: checked.has(node.key), indeterminate: false }
-  const targets = checkableTargets(node.key)
-  if (targets.length > 0 && targets.every(target => checked.has(target))) {
-    return { checked: true, indeterminate: false }
+): { checked: boolean; indeterminate: boolean } {
+  if (!props.checkable) return { checked: false, indeterminate: false };
+  if (!props.cascade) return { checked: checked.has(node.key), indeterminate: false };
+  const targets = checkableTargets(node.key);
+  if (targets.length > 0 && targets.every((target) => checked.has(target))) {
+    return { checked: true, indeterminate: false };
   }
-  return { checked: false, indeterminate: targets.some(target => checked.has(target)) }
+  return { checked: false, indeterminate: targets.some((target) => checked.has(target)) };
 }
 
 function keysToOptions(keys: SnTreeKey[]): Array<SnTreeOption | null> {
-  const { nodeMap } = normalized.value
-  return keys.map(key => nodeMap.get(key)?.option ?? null)
+  const { nodeMap } = normalized.value;
+  return keys.map((key) => nodeMap.get(key)?.option ?? null);
 }
 
-function resolveSidePart(
-  part: string | (() => VNodeChild) | undefined,
-): VNodeChild {
-  if (typeof part === 'function') return part()
-  if (typeof part === 'string') return part
-  return null
+function resolveSidePart(part: string | (() => VNodeChild) | undefined): VNodeChild {
+  if (typeof part === 'function') return part();
+  if (typeof part === 'string') return part;
+  return null;
 }
 
 /** One visible row per currently rendered node (depth-first). */
 interface SnTreeRow {
-  node: SnTreeNode
-  nonLeaf: boolean
-  expanded: boolean
-  selected: boolean
-  checked: boolean
-  indeterminate: boolean
-  checkboxDisabled: boolean
-  prefixNode: VNodeChild
-  suffixNode: VNodeChild
+  node: SnTreeNode;
+  nonLeaf: boolean;
+  expanded: boolean;
+  selected: boolean;
+  checked: boolean;
+  indeterminate: boolean;
+  checkboxDisabled: boolean;
+  prefixNode: VNodeChild;
+  suffixNode: VNodeChild;
 }
 
 const rows = computed<SnTreeRow[]>(() => {
-  const { nodeMap, rootKeys } = normalized.value
-  const expandedKeysSet = expandedSet.value
-  const selectedKeysSet = selectedSet.value
-  const checkedKeysSet = checkedSet.value
-  const result: SnTreeRow[] = []
+  const { nodeMap, rootKeys } = normalized.value;
+  const expandedKeysSet = expandedSet.value;
+  const selectedKeysSet = selectedSet.value;
+  const checkedKeysSet = checkedSet.value;
+  const result: SnTreeRow[] = [];
   const visit = (keys: SnTreeKey[]): void => {
     for (const key of keys) {
-      const node = nodeMap.get(key)
-      if (node === undefined) continue
-      const isExpanded = !node.isLeaf && expandedKeysSet.has(key)
-      const checkedState = resolveCheckedState(node, checkedKeysSet)
-      const isSelected = selectedKeysSet.has(key)
+      const node = nodeMap.get(key);
+      if (node === undefined) continue;
+      const isExpanded = !node.isLeaf && expandedKeysSet.has(key);
+      const checkedState = resolveCheckedState(node, checkedKeysSet);
+      const isSelected = selectedKeysSet.has(key);
       const info = {
         option: node.option,
         checked: checkedState.checked,
         selected: isSelected,
-      }
+      };
       result.push({
         node,
         nonLeaf: !node.isLeaf,
@@ -362,96 +351,93 @@ const rows = computed<SnTreeRow[]>(() => {
         suffixNode: props.renderSuffix
           ? props.renderSuffix(info)
           : resolveSidePart(node.option.suffix),
-      })
-      if (isExpanded) visit(node.childKeys)
+      });
+      if (isExpanded) visit(node.childKeys);
     }
-  }
-  visit(rootKeys)
-  return result
-})
+  };
+  visit(rootKeys);
+  return result;
+});
 
 function handleSwitcherClick(row: SnTreeRow): void {
-  const node = row.node
-  if (!row.nonLeaf || node.disabled) return
-  const wasExpanded = expandedSet.value.has(node.key)
-  const next = new Set(expandedSet.value)
-  const action: SnTreeExpandAction = wasExpanded ? 'collapse' : 'expand'
-  if (wasExpanded) next.delete(node.key)
-  else next.add(node.key)
-  if (props.expandedKeys === undefined) uncontrolledExpandedKeys.value = next
+  const node = row.node;
+  if (!row.nonLeaf || node.disabled) return;
+  const wasExpanded = expandedSet.value.has(node.key);
+  const next = new Set(expandedSet.value);
+  const action: SnTreeExpandAction = wasExpanded ? 'collapse' : 'expand';
+  if (wasExpanded) next.delete(node.key);
+  else next.add(node.key);
+  if (props.expandedKeys === undefined) uncontrolledExpandedKeys.value = next;
   emit('update:expandedKeys', [...next], keysToOptions([...next]), {
     node: node.option,
     action,
-  })
+  });
 }
 
 function handleNodeClick(row: SnTreeRow): void {
-  if (!props.selectable) return
-  const node = row.node
-  if (node.disabled) return
-  const wasSelected = selectedSet.value.has(node.key)
-  const next = new Set(selectedSet.value)
-  let action: SnTreeSelectAction
+  if (!props.selectable) return;
+  const node = row.node;
+  if (node.disabled) return;
+  const wasSelected = selectedSet.value.has(node.key);
+  const next = new Set(selectedSet.value);
+  let action: SnTreeSelectAction;
   if (props.multiple) {
     if (wasSelected) {
-      next.delete(node.key)
-      action = 'unselect'
+      next.delete(node.key);
+      action = 'unselect';
+    } else {
+      next.add(node.key);
+      action = 'select';
     }
-    else {
-      next.add(node.key)
-      action = 'select'
-    }
-  }
-  else {
+  } else {
     if (wasSelected && props.cancelable) {
-      next.delete(node.key)
-      action = 'unselect'
-    }
-    else {
-      next.clear()
-      next.add(node.key)
-      action = 'select'
+      next.delete(node.key);
+      action = 'unselect';
+    } else {
+      next.clear();
+      next.add(node.key);
+      action = 'select';
     }
   }
-  if (props.selectedKeys === undefined) uncontrolledSelectedKeys.value = next
+  if (props.selectedKeys === undefined) uncontrolledSelectedKeys.value = next;
   emit('update:selectedKeys', [...next], keysToOptions([...next]), {
     node: node.option,
     action,
-  })
+  });
 }
 
 function handleCheckboxClick(row: SnTreeRow): void {
-  if (!props.checkable) return
-  const node = row.node
-  if (node.disabled || node.checkboxDisabled) return
-  const nextChecked = !row.checked
-  const mutated = new Set(checkedSet.value)
-  const targets = props.cascade ? checkableTargets(node.key) : [node.key]
+  if (!props.checkable) return;
+  const node = row.node;
+  if (node.disabled || node.checkboxDisabled) return;
+  const nextChecked = !row.checked;
+  const mutated = new Set(checkedSet.value);
+  const targets = props.cascade ? checkableTargets(node.key) : [node.key];
   for (const target of targets) {
-    if (nextChecked) mutated.add(target)
-    else mutated.delete(target)
+    if (nextChecked) mutated.add(target);
+    else mutated.delete(target);
   }
-  if (props.checkedKeys === undefined) uncontrolledCheckedKeys.value = mutated
+  if (props.checkedKeys === undefined) uncontrolledCheckedKeys.value = mutated;
   const displayed: SnTreeKey[] = props.cascade
     ? displayedCascadeCheckedKeys(mutated)
-    : [...mutated]
+    : [...mutated];
   emit('update:checkedKeys', displayed, keysToOptions(displayed), {
     node: node.option,
     action: nextChecked ? 'check' : 'uncheck',
-  })
+  });
 }
 
 /** Keys whose cascade targets are all checked (emitted shape). */
 function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
-  const { nodeMap } = normalized.value
-  const out: SnTreeKey[] = []
+  const { nodeMap } = normalized.value;
+  const out: SnTreeKey[] = [];
   for (const [key] of nodeMap) {
-    const targets = checkableTargets(key)
-    if (targets.length > 0 && targets.every(target => raw.has(target))) {
-      out.push(key)
+    const targets = checkableTargets(key);
+    if (targets.length > 0 && targets.every((target) => raw.has(target))) {
+      out.push(key);
     }
   }
-  return out
+  return out;
 }
 </script>
 
@@ -462,11 +448,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
     :class="{ 'sn-tree--block-line': blockLine }"
     role="tree"
   >
-    <div
-      v-for="row in rows"
-      :key="row.node.key"
-      class="sn-tree__node-wrapper"
-    >
+    <div v-for="row in rows" :key="row.node.key" class="sn-tree__node-wrapper">
       <div
         class="sn-tree__node"
         :class="[
@@ -523,18 +505,11 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
           :style="{ width: `${indentWidth}px` }"
           role="checkbox"
           :aria-checked="row.indeterminate ? 'mixed' : row.checked ? 'true' : 'false'"
-          :aria-disabled="(row.node.disabled || row.checkboxDisabled) || undefined"
+          :aria-disabled="row.node.disabled || row.checkboxDisabled || undefined"
           @click.stop="handleCheckboxClick(row)"
         >
           <svg class="sn-tree__checkbox-box" viewBox="0 0 14 14" aria-hidden="true">
-            <rect
-              class="sn-tree__checkbox-frame"
-              x="1"
-              y="1"
-              width="12"
-              height="12"
-              rx="2"
-            />
+            <rect class="sn-tree__checkbox-frame" x="1" y="1" width="12" height="12" rx="2" />
             <path class="sn-tree__checkbox-check" d="M3.2 7.3 5.9 10 10.8 4.5" />
             <path class="sn-tree__checkbox-dash" d="M3.5 7H10.5" />
           </svg>
@@ -649,7 +624,9 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
     var(--sn-web-color-text-primary) 12%,
     var(--sn-web-color-background-surface)
   );
-  transition: fill 0.15s ease, stroke 0.15s ease;
+  transition:
+    fill 0.15s ease,
+    stroke 0.15s ease;
 }
 
 .sn-tree__checkbox-check,
@@ -676,7 +653,10 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   visibility: visible;
 }
 
-.sn-tree__checkbox:hover:not(.sn-tree__checkbox--disabled):not(.sn-tree__checkbox--checked):not(.sn-tree__checkbox--indeterminate) .sn-tree__checkbox-frame {
+.sn-tree__checkbox:hover:not(.sn-tree__checkbox--disabled):not(.sn-tree__checkbox--checked):not(
+    .sn-tree__checkbox--indeterminate
+  )
+  .sn-tree__checkbox-frame {
   stroke: var(--sn-web-color-action-primary);
 }
 
@@ -696,7 +676,9 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
   padding: 0 6px 0 4px;
   border-radius: 2px;
   user-select: none;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 .sn-tree__node--selectable .sn-tree__node-content {
@@ -724,8 +706,14 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 
 /* Hover / pressed / selected — default: backgrounds on the content part. */
 
-.sn-tree:not(.sn-tree--block-line) .sn-tree__node:not(.sn-tree__node--disabled) .sn-tree__node-content:hover {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
+.sn-tree:not(.sn-tree--block-line)
+  .sn-tree__node:not(.sn-tree__node--disabled)
+  .sn-tree__node-content:hover {
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.7%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-tree:not(.sn-tree--block-line) .sn-tree__node--selectable .sn-tree__node-content:active {
@@ -733,17 +721,17 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 }
 
 .sn-tree:not(.sn-tree--block-line) .sn-tree__node-content--selected {
-  background: color-mix(
-    in srgb,
-    var(--sn-web-color-action-primary) 10%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--sn-web-color-action-primary) 10%, transparent);
 }
 
 /* Hover / pressed / selected — block-line: backgrounds on the whole row. */
 
 .sn-tree--block-line .sn-tree__node:not(.sn-tree__node--disabled):hover {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.7%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-tree--block-line .sn-tree__node--selectable:not(.sn-tree__node--selected):active {
@@ -751,11 +739,7 @@ function displayedCascadeCheckedKeys(raw: Set<SnTreeKey>): SnTreeKey[] {
 }
 
 .sn-tree--block-line .sn-tree__node--selected {
-  background: color-mix(
-    in srgb,
-    var(--sn-web-color-action-primary) 10%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--sn-web-color-action-primary) 10%, transparent);
 }
 
 /* ---------- Empty state ---------- */

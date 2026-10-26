@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnDynamicTags — add flow keyboard. */
-import { ref } from 'vue'
-import { SnDynamicTags } from '@snui/vue-web'
-const tags = ref<string[]>([])
+import { ref } from 'vue';
+import { SnDynamicTags } from '@snui/vue-web';
+const tags = ref<string[]>([]);
 </script>
 
 <template>
@@ -13,6 +13,14 @@ const tags = ref<string[]>([])
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
-.demo-log { font-size: 13px; color: var(--vp-c-text-2); }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.demo-log {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

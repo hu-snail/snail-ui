@@ -26,25 +26,25 @@
 
 ### SnRadio / SnRadioButton Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| checkedValue | `SnRadioValue \| null` | `null` | 该项代表的值（naive 的 `value`） |
-| modelValue | `SnRadioValue \| null` | `null` | 独立绑定；组内取组值 |
-| label | `string` | `''` | 文案（label slot 优先） |
-| name | `string` | — | 原生 radio name（组提供） |
-| disabled | `boolean` | `false` | 禁用（组级 OR） |
-| readonly | `boolean` | `false` | 只读视觉态 |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| status | `'default'\|'error'\|'warning'` | `'default'` | 校验状态 |
+| Prop         | 类型                                         | 默认值      | 说明                             |
+| ------------ | -------------------------------------------- | ----------- | -------------------------------- |
+| checkedValue | `SnRadioValue \| null`                       | `null`      | 该项代表的值（naive 的 `value`） |
+| modelValue   | `SnRadioValue \| null`                       | `null`      | 独立绑定；组内取组值             |
+| label        | `string`                                     | `''`        | 文案（label slot 优先）          |
+| name         | `string`                                     | —           | 原生 radio name（组提供）        |
+| disabled     | `boolean`                                    | `false`     | 禁用（组级 OR）                  |
+| readonly     | `boolean`                                    | `false`     | 只读视觉态                       |
+| size         | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`  | 尺寸                             |
+| status       | `'default'\|'error'\|'warning'`              | `'default'` | 校验状态                         |
 
 ### SnRadioGroup Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `SnRadioValue \| null` | `null` | v-model |
-| options | `Array<SnRadioOption \| SnRadioValue>` | `[]` | 声明式选项 |
-| name | `string` | — | 共享原生 name |
-| button | `boolean` | `false` | 子项渲染为按钮形态 |
-| disabled / size / status | — | — | 组级级联 |
+| Prop                     | 类型                                   | 默认值  | 说明               |
+| ------------------------ | -------------------------------------- | ------- | ------------------ |
+| modelValue               | `SnRadioValue \| null`                 | `null`  | v-model            |
+| options                  | `Array<SnRadioOption \| SnRadioValue>` | `[]`    | 声明式选项         |
+| name                     | `string`                               | —       | 共享原生 name      |
+| button                   | `boolean`                              | `false` | 子项渲染为按钮形态 |
+| disabled / size / status | —                                      | —       | 组级级联           |
 
 完整契约见组件 `ai-description.md`。

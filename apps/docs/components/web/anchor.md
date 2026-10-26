@@ -45,36 +45,36 @@
 
 ### SnAnchor Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `type` | `'rail' \| 'block'` | `'rail'` | 风格。`'rail'` 为轨道风格，`'block'` 为块状风格。 |
-| `showRail` | `boolean` | `true` | 是否展示侧面的轨道。 |
-| `showBackground` | `boolean` | `true` | 是否展示链接的背景。 |
-| `bound` | `number` | `12` | 触发锚点切换的偏移量。 |
-| `ignoreGap` | `boolean` | `false` | 设为 `true` 时导航显示在准确的 `href` 区域。 |
-| `internalScrollable` | `boolean` | `false` | 是否由锚点自身承载滚动。 |
-| `offsetTarget` | `string \| HTMLElement \| (() => HTMLElement)` | `document` | 计算偏移位置所相对的元素。 |
-| `affix` | `boolean` | `false` | 是否像 `SnAffix` 一样展示。为 `true` 时额外接受 `SnAffix` 的 props。 |
-| `listenTo` | `string \| HTMLElement \| Document \| Window \| (() => HTMLElement)` | `document` | 需要监听滚动的元素。 |
-| `top` | `number` | `undefined` | 触发顶部固定后的 CSS `top`。 |
-| `bottom` | `number` | `undefined` | 触发底部固定后的 CSS `bottom`。 |
-| `triggerTop` | `number` | `undefined` | 触发顶部固定时与目标元素顶部的距离。 |
-| `triggerBottom` | `number` | `undefined` | 触发底部固定时与目标元素底部的距离。 |
-| `offsetTop` | `number` | `undefined` | 顶部偏移量。 |
-| `offsetBottom` | `number` | `undefined` | 底部偏移量。 |
+| 名称                 | 类型                                                                 | 默认值      | 说明                                                                 |
+| -------------------- | -------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------- |
+| `type`               | `'rail' \| 'block'`                                                  | `'rail'`    | 风格。`'rail'` 为轨道风格，`'block'` 为块状风格。                    |
+| `showRail`           | `boolean`                                                            | `true`      | 是否展示侧面的轨道。                                                 |
+| `showBackground`     | `boolean`                                                            | `true`      | 是否展示链接的背景。                                                 |
+| `bound`              | `number`                                                             | `12`        | 触发锚点切换的偏移量。                                               |
+| `ignoreGap`          | `boolean`                                                            | `false`     | 设为 `true` 时导航显示在准确的 `href` 区域。                         |
+| `internalScrollable` | `boolean`                                                            | `false`     | 是否由锚点自身承载滚动。                                             |
+| `offsetTarget`       | `string \| HTMLElement \| (() => HTMLElement)`                       | `document`  | 计算偏移位置所相对的元素。                                           |
+| `affix`              | `boolean`                                                            | `false`     | 是否像 `SnAffix` 一样展示。为 `true` 时额外接受 `SnAffix` 的 props。 |
+| `listenTo`           | `string \| HTMLElement \| Document \| Window \| (() => HTMLElement)` | `document`  | 需要监听滚动的元素。                                                 |
+| `top`                | `number`                                                             | `undefined` | 触发顶部固定后的 CSS `top`。                                         |
+| `bottom`             | `number`                                                             | `undefined` | 触发底部固定后的 CSS `bottom`。                                      |
+| `triggerTop`         | `number`                                                             | `undefined` | 触发顶部固定时与目标元素顶部的距离。                                 |
+| `triggerBottom`      | `number`                                                             | `undefined` | 触发底部固定时与目标元素底部的距离。                                 |
+| `offsetTop`          | `number`                                                             | `undefined` | 顶部偏移量。                                                         |
+| `offsetBottom`       | `number`                                                             | `undefined` | 底部偏移量。                                                         |
 
 ### SnAnchorLink Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `title` | `string` | `''` | 链接文字。 |
-| `href` | `string` | `undefined` | 目标锚点，形如 `#section-id`。 |
+| 名称    | 类型     | 默认值      | 说明                           |
+| ------- | -------- | ----------- | ------------------------------ |
+| `title` | `string` | `''`        | 链接文字。                     |
+| `href`  | `string` | `undefined` | 目标锚点，形如 `#section-id`。 |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 锚点链接列表。 |
+| 名称                      | 参数 | 说明                 |
+| ------------------------- | ---- | -------------------- |
+| `default`                 | `()` | 锚点链接列表。       |
 | `sub` / `default`（Link） | `()` | 链接内的自定义内容。 |
 
 ## 高亮判定

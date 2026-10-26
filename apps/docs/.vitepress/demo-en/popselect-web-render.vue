@@ -11,34 +11,30 @@
  * run outside this SFC's template scope, so they inline their styles and use
  * `--sn-web-*` tokens for colour.
  */
-import { computed, h, ref, type VNodeChild } from 'vue'
-import { Bug, FileText, GitBranch } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnIcon, SnPopselect } from '@snui/vue-web'
+import { computed, h, ref, type VNodeChild } from 'vue';
+import { Bug, FileText, GitBranch } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnIcon, SnPopselect } from '@snui/vue-web';
 import type {
   SnPopselectLeafOption,
   SnPopselectRenderOption,
   SnPopselectValue,
   SnSelectOptionInput,
-} from '@snui/vue-web'
+} from '@snui/vue-web';
 
-registerSnIcons({ Bug, FileText, GitBranch })
+registerSnIcons({ Bug, FileText, GitBranch });
 
 /** Registry names keep the render callables data-driven. */
 const iconNameOf: Record<string, string> = {
   demand: 'FileText',
   bug: 'Bug',
   iteration: 'GitBranch',
-}
+};
 
 const renderLabel = (option: SnPopselectLeafOption): VNodeChild =>
-  h(
-    'span',
-    { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
-    [
-      h(SnIcon, { name: iconNameOf[String(option.value)] ?? 'FileText', size: 14 }),
-      h('span', null, option.label),
-    ],
-  )
+  h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } }, [
+    h(SnIcon, { name: iconNameOf[String(option.value)] ?? 'FileText', size: 14 }),
+    h('span', null, option.label),
+  ]);
 
 const renderOption: SnPopselectRenderOption = (info) =>
   h(
@@ -60,33 +56,35 @@ const renderOption: SnPopselectRenderOption = (info) =>
         info.selected ? 'Enabled' : 'Not enabled',
       ),
     ],
-  )
+  );
 
 const typeOptions: SnSelectOptionInput[] = [
   { label: 'Backlog', value: 'demand' },
   { label: 'Bug pool', value: 'bug' },
   { label: 'Sprint tasks', value: 'iteration' },
-]
+];
 
 const labelOf: Record<string, string> = {
   demand: 'Backlog',
   bug: 'Bug pool',
   iteration: 'Sprint tasks',
-}
+};
 
-const typeValue = ref<SnPopselectValue>('bug')
+const typeValue = ref<SnPopselectValue>('bug');
 const typeLabel = computed(() =>
-  typeValue.value === null ? 'Not selected' : labelOf[String(typeValue.value)] ?? String(typeValue.value),
-)
+  typeValue.value === null
+    ? 'Not selected'
+    : (labelOf[String(typeValue.value)] ?? String(typeValue.value)),
+);
 
 const flagOptions: SnSelectOptionInput[] = [
   { label: 'New navigation', value: 'newNav' },
   { label: 'Experimental editor', value: 'editor' },
   { label: 'Canary reports', value: 'report' },
-]
+];
 
-const flagValue = ref<SnPopselectValue>(['newNav'])
-const flagCount = computed(() => (Array.isArray(flagValue.value) ? flagValue.value.length : 0))
+const flagValue = ref<SnPopselectValue>(['newNav']);
+const flagCount = computed(() => (Array.isArray(flagValue.value) ? flagValue.value.length : 0));
 </script>
 
 <template>
@@ -106,7 +104,9 @@ const flagCount = computed(() => (Array.isArray(flagValue.value) ? flagValue.val
     </section>
 
     <section class="popselect-render-demo__block">
-      <h4 class="popselect-render-demo__title">render-option: wrap the whole row and append a status</h4>
+      <h4 class="popselect-render-demo__title">
+        render-option: wrap the whole row and append a status
+      </h4>
       <div class="popselect-render-demo__row">
         <SnPopselect
           v-model:value="flagValue"
@@ -121,7 +121,10 @@ const flagCount = computed(() => (Array.isArray(flagValue.value) ? flagValue.val
     </section>
 
     <p class="popselect-render-demo__hint">
-      render-label only replaces the row label; the primary-color text and checkmark of the selected state are still drawn by the component. render-option receives the row's default node, so you can append status-aware text like the example above. The two are mutually exclusive: when both are passed, only render-option takes effect.
+      render-label only replaces the row label; the primary-color text and checkmark of the selected
+      state are still drawn by the component. render-option receives the row's default node, so you
+      can append status-aware text like the example above. The two are mutually exclusive: when both
+      are passed, only render-option takes effect.
     </p>
   </div>
 </template>

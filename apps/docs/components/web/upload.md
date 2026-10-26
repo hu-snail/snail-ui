@@ -49,28 +49,28 @@
 
 ### SnUpload Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| multiple | `boolean` | `false` | 多文件 |
-| accept | `string` | — | 原生 accept |
-| disabled / readonly | `boolean` | `false` | 禁用 / 只读 |
-| max | `number` | — | 文件数上限（到界隐藏触发） |
-| showFileList | `boolean` | `true` | 显示文件列表 |
-| listType | `'text'\|'image'` | `'text'` | 列表形态 |
-| dragger | `boolean` | `false` | 虚线拖放区替代紧凑触发按钮（追加式偏离，见 ai-description.md） |
-| customRequest | `(file, fileList) => Promise` | — | 自定义上传（未传不发网络请求直接 done） |
-| showProgress | `boolean` | `true` | 上传中且带 `percentage` 时渲染确定性进度条 |
-| defaultUpload | `boolean` | `true` | false 时只入列等手动 submit |
-| beforeUpload | `(file) => boolean \| Promise` | — | 拒绝则不入列 |
-| onPreview | `(file) => void` | — | 点击预览回调（与 `@preview` 等价） |
+| Prop                | 类型                           | 默认值   | 说明                                                           |
+| ------------------- | ------------------------------ | -------- | -------------------------------------------------------------- |
+| multiple            | `boolean`                      | `false`  | 多文件                                                         |
+| accept              | `string`                       | —        | 原生 accept                                                    |
+| disabled / readonly | `boolean`                      | `false`  | 禁用 / 只读                                                    |
+| max                 | `number`                       | —        | 文件数上限（到界隐藏触发）                                     |
+| showFileList        | `boolean`                      | `true`   | 显示文件列表                                                   |
+| listType            | `'text'\|'image'`              | `'text'` | 列表形态                                                       |
+| dragger             | `boolean`                      | `false`  | 虚线拖放区替代紧凑触发按钮（追加式偏离，见 ai-description.md） |
+| customRequest       | `(file, fileList) => Promise`  | —        | 自定义上传（未传不发网络请求直接 done）                        |
+| showProgress        | `boolean`                      | `true`   | 上传中且带 `percentage` 时渲染确定性进度条                     |
+| defaultUpload       | `boolean`                      | `true`   | false 时只入列等手动 submit                                    |
+| beforeUpload        | `(file) => boolean \| Promise` | —        | 拒绝则不入列                                                   |
+| onPreview           | `(file) => void`               | —        | 点击预览回调（与 `@preview` 等价）                             |
 
 ### SnUploadFile
 
-| 字段 | 类型 | 说明 |
-| --- | --- | --- |
-| id / name / size / type / file / status | — | 条目基础信息与状态机状态 |
-| url | `string \| undefined` | `listType='image'` 的 objectURL 缩略图（移除 / 卸载时回收） |
-| percentage | `number \| undefined` | 上传进度百分比，由 customRequest 写入 |
+| 字段                                    | 类型                  | 说明                                                        |
+| --------------------------------------- | --------------------- | ----------------------------------------------------------- |
+| id / name / size / type / file / status | —                     | 条目基础信息与状态机状态                                    |
+| url                                     | `string \| undefined` | `listType='image'` 的 objectURL 缩略图（移除 / 卸载时回收） |
+| percentage                              | `number \| undefined` | 上传进度百分比，由 customRequest 写入                       |
 
 事件：`change(fileList)` / `remove(file)` / `preview(file)`；defineExpose：`submit()`。状态机：pending → uploading → done / error。分片 / 目录上传为 out-of-scope（见 ai-description.md）。
 

@@ -24,32 +24,32 @@ dot indicators. A step's state is explicit `status` or derived from `active`
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnSteps } from '@snui/uni/components/sn-steps/sn-steps.vue'
-import { SnStep } from '@snui/uni/components/sn-steps/sn-step.vue'
+import { SnSteps } from '@snui/uni/components/sn-steps/sn-steps.vue';
+import { SnStep } from '@snui/uni/components/sn-steps/sn-step.vue';
 ```
 
 ## Props — sn-steps
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `active` | `number` | `0` | Active step index. |
-| `vertical` | `boolean` | `false` | Layout and indicator style. |
-| `dot` | `boolean` | `false` | Layout and indicator style. |
-| `space` | `string` | `''` | Custom step spacing. |
+| Name          | Type      | Default | Description                            |
+| ------------- | --------- | ------- | -------------------------------------- |
+| `active`      | `number`  | `0`     | Active step index.                     |
+| `vertical`    | `boolean` | `false` | Layout and indicator style.            |
+| `dot`         | `boolean` | `false` | Layout and indicator style.            |
+| `space`       | `string`  | `''`    | Custom step spacing.                   |
 | `alignCenter` | `boolean` | `false` | Centre horizontally (horizontal only). |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| `customClass` | `string`  | `''`    | Root forwarding.                       |
+| `customStyle` | `string`  | `''`    | Root forwarding.                       |
 
 ## Props — sn-step
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `title` | `string` | `''` | Step content. |
-| `description` | `string` | `''` | Step content. |
-| `icon` | `string` | `''` | Step content. |
-| `status` | `'finished' \| 'process' \| 'error' \| 'wait'` | `undefined` | Explicit state; derived from `active` when omitted. |
-| `customClass` | `string` | `''` | Step root forwarding. |
-| `customStyle` | `string` | `''` | Step root forwarding. |
+| Name          | Type                                           | Default     | Description                                         |
+| ------------- | ---------------------------------------------- | ----------- | --------------------------------------------------- |
+| `title`       | `string`                                       | `''`        | Step content.                                       |
+| `description` | `string`                                       | `''`        | Step content.                                       |
+| `icon`        | `string`                                       | `''`        | Step content.                                       |
+| `status`      | `'finished' \| 'process' \| 'error' \| 'wait'` | `undefined` | Explicit state; derived from `active` when omitted. |
+| `customClass` | `string`                                       | `''`        | Step root forwarding.                               |
+| `customStyle` | `string`                                       | `''`        | Step root forwarding.                               |
 
 ## Events
 
@@ -58,22 +58,22 @@ renders state, it does not own business transitions).
 
 ## Slots
 
-| Name | Scope | Description |
-|---|---|---|
-| `default (steps)` | — | Step list. |
-| `icon` | — | Custom step parts. |
-| `title` | — | Custom step parts. |
-| `description (step)` | — | Custom step parts. |
+| Name                 | Scope | Description        |
+| -------------------- | ----- | ------------------ |
+| `default (steps)`    | —     | Step list.         |
+| `icon`               | —     | Custom step parts. |
+| `title`              | —     | Custom step parts. |
+| `description (step)` | —     | Custom step parts. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Surface / border | `--sn-mp-color-background-surface`, `--sn-mp-color-border-default`, `--sn-mp-color-border-subtle` | Indicators and connectors |
-| Text | `--sn-mp-color-text-secondary` | Wait / finished labels |
-| Active | `--sn-mp-color-action-primary`, `--sn-mp-color-text-on-primary` | Process / finished indicators |
-| Error | `--sn-mp-color-feedback-danger` | Error indicator and title |
-| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-full`, `--sn-mp-spacing-3` | Label and indicator geometry |
+| Token                   | CSS Variable                                                                                      | Purpose                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------- |
+| Surface / border        | `--sn-mp-color-background-surface`, `--sn-mp-color-border-default`, `--sn-mp-color-border-subtle` | Indicators and connectors     |
+| Text                    | `--sn-mp-color-text-secondary`                                                                    | Wait / finished labels        |
+| Active                  | `--sn-mp-color-action-primary`, `--sn-mp-color-text-on-primary`                                   | Process / finished indicators |
+| Error                   | `--sn-mp-color-feedback-danger`                                                                   | Error indicator and title     |
+| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-full`, `--sn-mp-spacing-3`                                | Label and indicator geometry  |
 
 ## Accessibility
 

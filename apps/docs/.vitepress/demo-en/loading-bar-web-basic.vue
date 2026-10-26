@@ -5,40 +5,40 @@
  * The API must be captured inside a descendant of the provider, so the
  * trigger lives in an inline child component.
  */
-import { defineComponent, h, onBeforeUnmount } from 'vue'
-import { SnButton, SnLoadingBarProvider, useLoadingBar } from '@snui/vue-web'
+import { defineComponent, h, onBeforeUnmount } from 'vue';
+import { SnButton, SnLoadingBarProvider, useLoadingBar } from '@snui/vue-web';
 
 const LoadingBarTrigger = defineComponent({
   name: 'LoadingBarTrigger',
   setup() {
-    const loadingBar = useLoadingBar()
-    let timer: ReturnType<typeof setTimeout> | undefined
+    const loadingBar = useLoadingBar();
+    let timer: ReturnType<typeof setTimeout> | undefined;
 
     const startLoading = (): void => {
-      loadingBar.start()
-      timer = setTimeout(() => loadingBar.finish(), 2000)
-    }
+      loadingBar.start();
+      timer = setTimeout(() => loadingBar.finish(), 2000);
+    };
 
     const finishNow = (): void => {
-      clearTimeout(timer)
-      loadingBar.finish()
-    }
+      clearTimeout(timer);
+      loadingBar.finish();
+    };
 
     const startFailing = (): void => {
-      loadingBar.start()
-      timer = setTimeout(() => loadingBar.error(), 1200)
-    }
+      loadingBar.start();
+      timer = setTimeout(() => loadingBar.error(), 1200);
+    };
 
-    onBeforeUnmount(() => clearTimeout(timer))
+    onBeforeUnmount(() => clearTimeout(timer));
 
     return () =>
       h('div', { class: 'loading-bar-basic__row' }, [
         h(SnButton, { type: 'primary', onClick: startLoading }, () => 'Start loading'),
         h(SnButton, { onClick: finishNow }, () => 'Finish now'),
         h(SnButton, { onClick: startFailing }, () => 'Simulate error'),
-      ])
+      ]);
   },
-})
+});
 </script>
 
 <template>

@@ -30,28 +30,28 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `height` | `number` | `0` | 面板高度（设计稿 px，`v-model:height`） |
-| `anchors` | `number[]` | `[]` | 吸附点（设计稿 px）；不设置时用默认 `[100, 视口高度 * 0.6]` |
-| `duration` | `number` | `300` | 吸附动画时长（ms）；`0` 关闭动画 |
-| `contentDraggable` | `boolean` | `true` | 是否允许拖拽内容区 |
-| `safeAreaInsetBottom` | `boolean` | `false` | 是否适配底部安全区 |
-| `showScrollbar` | `boolean` | `true` | 是否显示内容区滚动条 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
+| 属性                  | 类型       | 默认值  | 说明                                                        |
+| --------------------- | ---------- | ------- | ----------------------------------------------------------- |
+| `height`              | `number`   | `0`     | 面板高度（设计稿 px，`v-model:height`）                     |
+| `anchors`             | `number[]` | `[]`    | 吸附点（设计稿 px）；不设置时用默认 `[100, 视口高度 * 0.6]` |
+| `duration`            | `number`   | `300`   | 吸附动画时长（ms）；`0` 关闭动画                            |
+| `contentDraggable`    | `boolean`  | `true`  | 是否允许拖拽内容区                                          |
+| `safeAreaInsetBottom` | `boolean`  | `false` | 是否适配底部安全区                                          |
+| `showScrollbar`       | `boolean`  | `true`  | 是否显示内容区滚动条                                        |
+| `customClass`         | `string`   | `''`    | 根节点自定义类名                                            |
+| `customStyle`         | `string`   | `''`    | 根节点自定义样式                                            |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:height` | 高度变化（拖动中连续触发，吸附时再触发一次） | `(height: number)` |
-| `heightChange` | 拖动结束且吸附完成时触发（每次手势一次） | `{ height: number }` |
+| 事件名          | 说明                                         | 参数                 |
+| --------------- | -------------------------------------------- | -------------------- |
+| `update:height` | 高度变化（拖动中连续触发，吸附时再触发一次） | `(height: number)`   |
+| `heightChange`  | 拖动结束且吸附完成时触发（每次手势一次）     | `{ height: number }` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明                       |
+| --------- | -------------------------- |
 | `default` | 面板内容（在面板内部滚动） |
 
 ## 手势与吸附
@@ -68,15 +68,15 @@
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-elevated` | 面板底色 |
-| `--sn-mp-color-text-primary` | 面板文字 |
-| `--sn-mp-color-border-default` | 把手横条（静止） |
-| `--sn-mp-color-action-primary` | 把手横条（拖动中） |
-| `--sn-mp-shadow-lg` | 面板阴影 |
+| 变量                                        | 用途                |
+| ------------------------------------------- | ------------------- |
+| `--sn-mp-color-background-elevated`         | 面板底色            |
+| `--sn-mp-color-text-primary`                | 面板文字            |
+| `--sn-mp-color-border-default`              | 把手横条（静止）    |
+| `--sn-mp-color-action-primary`              | 把手横条（拖动中）  |
+| `--sn-mp-shadow-lg`                         | 面板阴影            |
 | `--sn-mp-radius-xl` / `--sn-mp-radius-full` | 面板圆角 / 把手圆角 |
-| `--sn-mp-spacing-4` | 内容区内边距 |
+| `--sn-mp-spacing-4`                         | 内容区内边距        |
 
 ## 无障碍
 

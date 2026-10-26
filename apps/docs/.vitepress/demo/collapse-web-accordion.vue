@@ -2,18 +2,14 @@
 /**
  * collapse-web-accordion — 手风琴（一次只一个展开）+ arrowPlacement='right'
  */
-import { ref } from 'vue'
-import { SnCollapse, SnCollapseItem } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnCollapse, SnCollapseItem } from '@snui/vue-web';
 
-const open = ref<Array<string | number>>(['1'])
+const open = ref<Array<string | number>>(['1']);
 </script>
 
 <template>
-  <SnCollapse
-    v-model:expanded-names="open"
-    :accordion="true"
-    arrow-placement="right"
-  >
+  <SnCollapse v-model:expanded-names="open" :accordion="true" arrow-placement="right">
     <SnCollapseItem title="Step 1 · 引入" name="1">
       <code>pnpm add @snui/vue-web @snui/tokens-web</code>
     </SnCollapseItem>

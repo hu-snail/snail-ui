@@ -27,50 +27,50 @@ Types and the rules-engine live in sibling modules
 
 ## sn-form props
 
-| Prop          | Type                                    | Default     | Notes                                                                |
-| ------------- | --------------------------------------- | ----------- | -------------------------------------------------------------------- |
-| model         | `Record<string, unknown>`               | (required)  | Reactive model.                                                       |
-| rules         | `FormRules`                             | `{}`         | Per-field rules keyed by `prop`.                                      |
-| showMessage   | `boolean`                               | `true`       | Show the inline `.sn-form-item__message`.                             |
-| statusIcon    | `boolean`                               | `false`      | Status glyph before the message; item-level `statusIcon` overrides it. |
-| labelPosition | `'left' \| 'right' \| 'top'`           | `'right'`    | Inherited by all child sn-form-items.                                |
-| labelWidth    | `number \| string`                       | `'auto'`     | Width for left/right labels.                                         |
-| disabled      | `boolean`                               | `false`      | Disables the entire form.                                            |
-| schema        | `Record<string, unknown> \| undefined`  | `undefined`  | Form-level schema (`wd-form` parity). Stored on the context; rules still come from `rules`. |
-| titleWidth    | `number \| string \| undefined`         | `undefined`  | Left title column width (`wd-form` `title-width`); folded into the inherited `labelWidth`. |
-| layout        | `'horizontal' \| 'vertical'`            | `'horizontal'` | Cell layout inherited by every child sn-form-item. |
+| Prop          | Type                                   | Default        | Notes                                                                                       |
+| ------------- | -------------------------------------- | -------------- | ------------------------------------------------------------------------------------------- |
+| model         | `Record<string, unknown>`              | (required)     | Reactive model.                                                                             |
+| rules         | `FormRules`                            | `{}`           | Per-field rules keyed by `prop`.                                                            |
+| showMessage   | `boolean`                              | `true`         | Show the inline `.sn-form-item__message`.                                                   |
+| statusIcon    | `boolean`                              | `false`        | Status glyph before the message; item-level `statusIcon` overrides it.                      |
+| labelPosition | `'left' \| 'right' \| 'top'`           | `'right'`      | Inherited by all child sn-form-items.                                                       |
+| labelWidth    | `number \| string`                     | `'auto'`       | Width for left/right labels.                                                                |
+| disabled      | `boolean`                              | `false`        | Disables the entire form.                                                                   |
+| schema        | `Record<string, unknown> \| undefined` | `undefined`    | Form-level schema (`wd-form` parity). Stored on the context; rules still come from `rules`. |
+| titleWidth    | `number \| string \| undefined`        | `undefined`    | Left title column width (`wd-form` `title-width`); folded into the inherited `labelWidth`.  |
+| layout        | `'horizontal' \| 'vertical'`           | `'horizontal'` | Cell layout inherited by every child sn-form-item.                                          |
 
 ## sn-form events
 
-| Event     | Payload                              | When                                |
-| --------- | ------------------------------------ | ----------------------------------- |
-| validate  | `{ valid: boolean, errors: … }`     | After every full-form validate().   |
-| reset     | —                                    | After `resetFields()`.              |
-| submit    | `{ valid: boolean }`                | After `submit()` resolves the form.  |
+| Event    | Payload                         | When                                |
+| -------- | ------------------------------- | ----------------------------------- |
+| validate | `{ valid: boolean, errors: … }` | After every full-form validate().   |
+| reset    | —                               | After `resetFields()`.              |
+| submit   | `{ valid: boolean }`            | After `submit()` resolves the form. |
 
 ## sn-form exposed methods
 
 ```ts
-const formRef = ref<InstanceType<typeof SnForm> | null>(null)
-await formRef.value?.validate()
-await formRef.value?.validateField('email')
-formRef.value?.resetFields()
-formRef.value?.clearValidate()
-formRef.value?.submit()
+const formRef = ref<InstanceType<typeof SnForm> | null>(null);
+await formRef.value?.validate();
+await formRef.value?.validateField('email');
+formRef.value?.resetFields();
+formRef.value?.clearValidate();
+formRef.value?.submit();
 ```
 
 ## sn-form-item props
 
-| Prop           | Type                   | Default       | Notes                                                |
-| -------------- | ---------------------- | ------------- | ---------------------------------------------------- |
-| prop           | `string`               | —             | Dot-path into form model. Required to participate.   |
-| label          | `string`               | —             | Visible label.                                       |
-| required       | `boolean`              | `false`       | Renders `*` marker.                                  |
-| rules          | `FormRule[]`           | —             | Item-local rules merged with form rules.             |
-| showMessage    | `boolean`              | inherited     | Override form-level showMessage.                      |
-| labelWidth     | `number \| string`    | inherited     | Per-item override.                                   |
-| labelPosition  | `'left' \| 'right' \| 'top'` | inherited | Per-item override.                                   |
-| ariaLabel      | `string`               | —             | Accessible name override.                            |
+| Prop          | Type                         | Default   | Notes                                              |
+| ------------- | ---------------------------- | --------- | -------------------------------------------------- |
+| prop          | `string`                     | —         | Dot-path into form model. Required to participate. |
+| label         | `string`                     | —         | Visible label.                                     |
+| required      | `boolean`                    | `false`   | Renders `*` marker.                                |
+| rules         | `FormRule[]`                 | —         | Item-local rules merged with form rules.           |
+| showMessage   | `boolean`                    | inherited | Override form-level showMessage.                   |
+| labelWidth    | `number \| string`           | inherited | Per-item override.                                 |
+| labelPosition | `'left' \| 'right' \| 'top'` | inherited | Per-item override.                                 |
+| ariaLabel     | `string`                     | —         | Accessible name override.                          |
 
 ## Form rules
 
@@ -84,7 +84,7 @@ type FormRule =
   | { minLength: number; maxLength: number; message: string }
   | { min: number; max: number; message: string }
   | { validator: (value) => boolean | string; message: string }
-  | { asyncValidator: (value) => Promise<boolean | string>; message: string }
+  | { asyncValidator: (value) => Promise<boolean | string>; message: string };
 ```
 
 The first failing rule's `message` is shown. Async rules are awaited.

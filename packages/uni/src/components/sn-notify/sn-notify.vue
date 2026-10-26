@@ -42,61 +42,61 @@
  *   - 居中确认框 — 用 sn-dialog
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnNotify' })
+defineOptions({ name: 'SnNotify' });
 
 /** Semantic type. Mirrors `wd-notify` `type`. */
-type NotifyType = 'primary' | 'success' | 'warning' | 'danger'
+type NotifyType = 'primary' | 'success' | 'warning' | 'danger';
 
 /** Anchor. Mirrors `wd-notify` `position`. */
-type NotifyPosition = 'top' | 'bottom'
+type NotifyPosition = 'top' | 'bottom';
 
 /** Visual shape. Mirrors `wd-notify` `variant`. */
-type NotifyVariant = 'filled' | 'floating'
+type NotifyVariant = 'filled' | 'floating';
 
 /** Leave transition length, kept in sync with the CSS below. */
-const LEAVE_MS = 300
+const LEAVE_MS = 300;
 
 const props = withDefaults(
   defineProps<{
     /** Whether the notification is visible (v-model:visible). */
-    visible?: boolean
+    visible?: boolean;
     /** Semantic type — drives the fill color and the default icon. */
-    type?: NotifyType
+    type?: NotifyType;
     /** Message text; `\n` renders as a line break. */
-    message?: string | number
+    message?: string | number;
     /** Auto-dismiss delay in ms; `0` keeps the notification open. */
-    duration?: number
+    duration?: number;
     /** Anchor of the banner. */
-    position?: NotifyPosition
+    position?: NotifyPosition;
     /** Text color override (any CSS color value). */
-    color?: string
+    color?: string;
     /** Background color override (any CSS color value). */
-    background?: string
+    background?: string;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Extra top offset in px (or any CSS length) — accounts for a custom nav bar. */
-    safeHeight?: number | string | undefined
+    safeHeight?: number | string | undefined;
     /** Show the close button. */
-    closable?: boolean
+    closable?: boolean;
     /** Visual shape: edge-to-edge bar or a floating rounded card. */
-    variant?: NotifyVariant
+    variant?: NotifyVariant;
     /** Instance id used by the function API (parity only, no effect here). */
-    selector?: string
+    selector?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the layer cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     visible: false,
@@ -115,107 +115,105 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Custom notification content (replaces `message`). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:visible', value: boolean): void
-  (e: 'click', event: Event): void
-  (e: 'opened'): void
-  (e: 'closed'): void
-}>()
+  (e: 'update:visible', value: boolean): void;
+  (e: 'click', event: Event): void;
+  (e: 'opened'): void;
+  (e: 'closed'): void;
+}>();
 
 /** Node present in the tree. */
-const isMounted = ref(props.visible)
+const isMounted = ref(props.visible);
 /** Target visible state — drives the slide transition. */
-const isShown = ref(props.visible)
+const isShown = ref(props.visible);
 
 /** Auto-dismiss timer (cleared on close / unmount, §41). */
-let dismissTimer: ReturnType<typeof setTimeout> | null = null
+let dismissTimer: ReturnType<typeof setTimeout> | null = null;
 /** Leave-transition timer. */
-let leaveTimer: ReturnType<typeof setTimeout> | null = null
+let leaveTimer: ReturnType<typeof setTimeout> | null = null;
 
 function clearDismissTimer(): void {
   if (dismissTimer !== null) {
-    clearTimeout(dismissTimer)
-    dismissTimer = null
+    clearTimeout(dismissTimer);
+    dismissTimer = null;
   }
 }
 
 function clearLeaveTimer(): void {
   if (leaveTimer !== null) {
-    clearTimeout(leaveTimer)
-    leaveTimer = null
+    clearTimeout(leaveTimer);
+    leaveTimer = null;
   }
 }
 
 function clearAllTimers(): void {
-  clearDismissTimer()
-  clearLeaveTimer()
+  clearDismissTimer();
+  clearLeaveTimer();
 }
 
 /** Status glyph for the semantic type; `primary` has no built-in glyph. */
 const statusIcon = computed<IconData | null>(() =>
   props.type === 'primary' ? null : resolveFeedbackIcon(props.type),
-)
+);
 
 /** Message split on `\n` so line breaks survive on every uni target. */
-const messageLines = computed(() =>
-  String(props.message ?? '').split('\n'),
-)
+const messageLines = computed(() => String(props.message ?? '').split('\n'));
 
 /** Safe height as a CSS length (bare number = px, per the wd reference). */
 const safeHeightStyle = computed(() => {
-  if (props.safeHeight === undefined || props.safeHeight === '') return ''
+  if (props.safeHeight === undefined || props.safeHeight === '') return '';
   return typeof props.safeHeight === 'number'
     ? `padding-top: ${props.safeHeight}px`
-    : `padding-top: ${props.safeHeight}`
-})
+    : `padding-top: ${props.safeHeight}`;
+});
 
 function show(): void {
-  clearAllTimers()
-  isMounted.value = true
-  isShown.value = true
-  emit('opened')
+  clearAllTimers();
+  isMounted.value = true;
+  isShown.value = true;
+  emit('opened');
   if (props.duration > 0) {
     dismissTimer = setTimeout(() => {
-      dismissTimer = null
-      emit('update:visible', false)
-    }, props.duration)
+      dismissTimer = null;
+      emit('update:visible', false);
+    }, props.duration);
   }
 }
 
 function hide(): void {
-  clearAllTimers()
-  isShown.value = false
+  clearAllTimers();
+  isShown.value = false;
   leaveTimer = setTimeout(() => {
-    leaveTimer = null
-    isMounted.value = false
-    emit('closed')
-  }, LEAVE_MS)
+    leaveTimer = null;
+    isMounted.value = false;
+    emit('closed');
+  }, LEAVE_MS);
 }
 
 watch(
   () => props.visible,
   (value) => {
-    if (value) show()
-    else hide()
+    if (value) show();
+    else hide();
   },
-)
+);
 
-onBeforeUnmount(clearAllTimers)
+onBeforeUnmount(clearAllTimers);
 
 function onTap(event: Event): void {
-  emit('click', event)
+  emit('click', event);
 }
 
 function onCloseTap(event: Event): void {
-  event.stopPropagation()
-  emit('update:visible', false)
+  event.stopPropagation();
+  emit('update:visible', false);
 }
 
 const rootClass = computed(() => [
@@ -225,42 +223,30 @@ const rootClass = computed(() => [
   `sn-notify--${props.type}`,
   { 'sn-notify--shown': isShown.value },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts = [`z-index: ${props.zIndex}`]
-  if (safeHeightStyle.value) parts.push(safeHeightStyle.value)
-  if (props.background) parts.push(`background-color: ${props.background}`)
-  if (props.color) parts.push(`color: ${props.color}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [`z-index: ${props.zIndex}`];
+  if (safeHeightStyle.value) parts.push(safeHeightStyle.value);
+  if (props.background) parts.push(`background-color: ${props.background}`);
+  if (props.color) parts.push(`color: ${props.color}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 </script>
 
 <template>
-  <view
-    v-if="isMounted"
-    data-snui-component="notify"
-    :class="rootClass"
-    :style="rootStyle"
-  >
-    <view
-      class="sn-notify__body"
-      role="alert"
-      aria-live="assertive"
-      @tap="onTap"
-    >
+  <view v-if="isMounted" data-snui-component="notify" :class="rootClass" :style="rootStyle">
+    <view class="sn-notify__body" role="alert" aria-live="assertive" @tap="onTap">
       <view v-if="statusIcon" class="sn-notify__icon" aria-hidden="true">
         <SnIcon :icon="statusIcon" :size="18" />
       </view>
 
       <view class="sn-notify__content">
         <slot>
-          <text
-            v-for="(line, index) in messageLines"
-            :key="index"
-            class="sn-notify__line"
-          >{{ line }}</text>
+          <text v-for="(line, index) in messageLines" :key="index" class="sn-notify__line">{{
+            line
+          }}</text>
         </slot>
       </view>
 

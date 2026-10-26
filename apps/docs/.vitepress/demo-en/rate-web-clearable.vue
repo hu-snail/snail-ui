@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnRate — clearable. */
-import { ref } from 'vue'
-import { SnRate } from '@snui/vue-web'
-const value = ref(3)
+import { ref } from 'vue';
+import { SnRate } from '@snui/vue-web';
+const value = ref(3);
 </script>
 
 <template>
@@ -13,6 +13,13 @@ const value = ref(3)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
-.demo-log { font-size: 13px; color: var(--vp-c-text-2); }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-log {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

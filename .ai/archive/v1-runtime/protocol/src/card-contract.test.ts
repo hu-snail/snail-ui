@@ -37,9 +37,7 @@ describe('@snui/protocol — CardContract', () => {
     });
 
     it('rejects unknown extra fields (strict)', () => {
-      expect(
-        CardPropsSchema.safeParse({ title: 'x', sneaky: 1 }).success,
-      ).toBe(false);
+      expect(CardPropsSchema.safeParse({ title: 'x', sneaky: 1 }).success).toBe(false);
     });
   });
 

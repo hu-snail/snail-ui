@@ -23,36 +23,36 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `rows` | `number` | `3` | 行数（≥3） |
-| `cols` | `number` | `3` | 列数（≥3） |
-| `prizes` | `SnLuckyPrize[]` | `[]` | 奖品列表（沿周长排列，`{ name, img?, color? }`） |
-| `gutter` | `string` | `'8rpx'` | 格子间距 |
-| `cellHeight` | `string` | `'120rpx'` | 格子高度 |
-| `speed` | `number` | `60` | 循环高亮步进间隔（ms） |
-| `customClass` | `string` | `undefined` | 根节点自定义类名 |
-| `customStyle` | `string` | `undefined` | 根节点自定义样式 |
+| 名称          | 类型             | 默认值      | 说明                                             |
+| ------------- | ---------------- | ----------- | ------------------------------------------------ |
+| `rows`        | `number`         | `3`         | 行数（≥3）                                       |
+| `cols`        | `number`         | `3`         | 列数（≥3）                                       |
+| `prizes`      | `SnLuckyPrize[]` | `[]`        | 奖品列表（沿周长排列，`{ name, img?, color? }`） |
+| `gutter`      | `string`         | `'8rpx'`    | 格子间距                                         |
+| `cellHeight`  | `string`         | `'120rpx'`  | 格子高度                                         |
+| `speed`       | `number`         | `60`        | 循环高亮步进间隔（ms）                           |
+| `customClass` | `string`         | `undefined` | 根节点自定义类名                                 |
+| `customStyle` | `string`         | `undefined` | 根节点自定义样式                                 |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `start` | — | `play()` 开始时触发 |
-| `end` | `(index: number)` | 落定，中奖奖品索引 |
+| 名称    | 参数              | 说明                |
+| ------- | ----------------- | ------------------- |
+| `start` | —                 | `play()` 开始时触发 |
+| `end`   | `(index: number)` | 落定，中奖奖品索引  |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `prize` | `{ item, index, isActive }` | 自定义奖品格 |
-| `button` | `{ isPlaying }` | 自定义中间按钮 |
+| 名称     | 参数                        | 说明           |
+| -------- | --------------------------- | -------------- |
+| `prize`  | `{ item, index, isActive }` | 自定义奖品格   |
+| `button` | `{ isPlaying }`             | 自定义中间按钮 |
 
 ### Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
-| `play` | `() => void` | 开始循环高亮 |
+| 名称   | 类型                      | 说明                                 |
+| ------ | ------------------------- | ------------------------------------ |
+| `play` | `() => void`              | 开始循环高亮                         |
 | `stop` | `(index: number) => void` | 减速停止到指定索引（未 play 时忽略） |
 
 ## 暗色模式

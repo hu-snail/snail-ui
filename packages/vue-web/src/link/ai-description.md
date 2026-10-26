@@ -18,33 +18,33 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnLink from '@snui/vue-web/src/link/SnLink.vue'
+import SnLink from '@snui/vue-web/src/link/SnLink.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `href` | `string` | `undefined` | no | Navigation target (only rendered on `tag='a'`). |
-| `target` | `string` | `undefined` | no | Browsing context (`_blank`, …). |
-| `rel` | `string` | `undefined` | no | Relationship metadata for the target. |
-| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | no | Visual type — drives the text color. |
-| `disabled` | `boolean` | `false` | no | Blocks clicks + navigation, sets `aria-disabled="true"`. |
-| `underline` | `boolean` | `false` | no | `true` underlines permanently; `false` underlines on hover only. |
-| `tag` | `string` | `'a'` | no | Element to render as the root. |
+| Name        | Type                                                                    | Default     | Required | Description                                                      |
+| ----------- | ----------------------------------------------------------------------- | ----------- | -------- | ---------------------------------------------------------------- |
+| `href`      | `string`                                                                | `undefined` | no       | Navigation target (only rendered on `tag='a'`).                  |
+| `target`    | `string`                                                                | `undefined` | no       | Browsing context (`_blank`, …).                                  |
+| `rel`       | `string`                                                                | `undefined` | no       | Relationship metadata for the target.                            |
+| `type`      | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | no       | Visual type — drives the text color.                             |
+| `disabled`  | `boolean`                                                               | `false`     | no       | Blocks clicks + navigation, sets `aria-disabled="true"`.         |
+| `underline` | `boolean`                                                               | `false`     | no       | `true` underlines permanently; `false` underlines on hover only. |
+| `tag`       | `string`                                                                | `'a'`       | no       | Element to render as the root.                                   |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
+| Name    | Payload               | Description                                       |
+| ------- | --------------------- | ------------------------------------------------- |
 | `click` | `(event: MouseEvent)` | Fired on activation; suppressed while `disabled`. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Link text. |
-| `icon` | Leading icon. |
+| Name      | Description   |
+| --------- | ------------- |
+| `default` | Link text.    |
+| `icon`    | Leading icon. |
 
 ## Divergences from the reference API
 
@@ -67,12 +67,12 @@ import SnLink from '@snui/vue-web/src/link/SnLink.vue'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Default type color |
-| Action primary (+ hover) | `--sn-web-color-action-primary(-hover)` | Primary type color |
-| Feedback info / success / warning | `--sn-web-color-feedback-*` | Matching type colors |
-| Feedback danger (+ hover) | `--sn-web-color-feedback-danger(-hover)` | Error type color |
+| Token                             | CSS Variable                             | Purpose              |
+| --------------------------------- | ---------------------------------------- | -------------------- |
+| Text primary                      | `--sn-web-color-text-primary`            | Default type color   |
+| Action primary (+ hover)          | `--sn-web-color-action-primary(-hover)`  | Primary type color   |
+| Feedback info / success / warning | `--sn-web-color-feedback-*`              | Matching type colors |
+| Feedback danger (+ hover)         | `--sn-web-color-feedback-danger(-hover)` | Error type color     |
 
 ## Versioning
 

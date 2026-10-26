@@ -24,7 +24,7 @@ styles/index.cssr.ts}).
 ## Import
 
 ```ts
-import SnDataTable from '@snui/vue-web/src/data-table/SnDataTable.vue'
+import SnDataTable from '@snui/vue-web/src/data-table/SnDataTable.vue';
 import type {
   DataTableColumn,
   DataTableColumns,
@@ -34,36 +34,36 @@ import type {
   DataTableSortState,
   DataTableFilterState,
   DataTableCreateSummary,
-} from '@snui/vue-web/src/data-table/sn-data-table-types'
+} from '@snui/vue-web/src/data-table/sn-data-table-types';
 // or
-import { SnDataTable } from '@snui/vue-web'
+import { SnDataTable } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `columns` | `DataTableColumns` | `[]` | no | Column list (base / selection / expand / index). |
-| `data` | `DataTableRowData[]` | `[]` | no | Row records. |
-| `rowKey` | `(row) => DataTableRowKey` | — | no | Row key resolver (falls back to `row.key`). |
-| `rowProps` | `(row, index) => HTMLAttributes` | — | no | Extra tr attributes. |
-| `rowClassName` | `string \| (row, index) => string` | — | no | tr class. |
-| `striped` | `boolean` | `false` | no | Zebra stripes on odd page rows. |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Table scale (padding 8/12/12 px). |
-| `bordered` | `boolean` | `true` | no | Outer frame border. |
-| `bottomBordered` | `boolean` | `true` | no | Last-row bottom border; ineffective while bordered. |
-| `singleLine` | `boolean` | `true` | no | Hide column separators. |
-| `singleColumn` | `boolean` | `false` | no | Hide row separators. |
-| `loading` | `boolean` | `false` | no | Dim body + centered spinner; blocks checking/paging. |
-| `scrollX` | `number \| string` | — | no | Inner table min-width → horizontal scroll. |
-| `maxHeight` | `number \| string` | — | no | Scroll container max-height → sticky header + fixed layout. |
-| `summary` | `DataTableCreateSummary` | — | no | Summary rows (`value` + `colSpan`). |
-| `summaryPlacement` | `'top' \| 'bottom'` | `'bottom'` | no | Summary position. |
-| `checkedRowKeys` | `DataTableRowKey[]` | — | no | Checked keys (v-model:checked-row-keys). |
-| `defaultCheckedRowKeys` | `DataTableRowKey[]` | `[]` | no | Uncontrolled initial checked keys. |
-| `expandedRowKeys` | `DataTableRowKey[]` | — | no | Expanded keys (v-model:expanded-row-keys). |
-| `defaultExpandedRowKeys` | `DataTableRowKey[]` | `[]` | no | Uncontrolled initial expanded keys. |
-| `pagination` | `false \| DataTablePagination` | `false` | no | false disables; object renders the simplified bar. |
+| Name                     | Type                               | Default    | Required | Description                                                 |
+| ------------------------ | ---------------------------------- | ---------- | -------- | ----------------------------------------------------------- |
+| `columns`                | `DataTableColumns`                 | `[]`       | no       | Column list (base / selection / expand / index).            |
+| `data`                   | `DataTableRowData[]`               | `[]`       | no       | Row records.                                                |
+| `rowKey`                 | `(row) => DataTableRowKey`         | —          | no       | Row key resolver (falls back to `row.key`).                 |
+| `rowProps`               | `(row, index) => HTMLAttributes`   | —          | no       | Extra tr attributes.                                        |
+| `rowClassName`           | `string \| (row, index) => string` | —          | no       | tr class.                                                   |
+| `striped`                | `boolean`                          | `false`    | no       | Zebra stripes on odd page rows.                             |
+| `size`                   | `'small' \| 'medium' \| 'large'`   | `'medium'` | no       | Table scale (padding 8/12/12 px).                           |
+| `bordered`               | `boolean`                          | `true`     | no       | Outer frame border.                                         |
+| `bottomBordered`         | `boolean`                          | `true`     | no       | Last-row bottom border; ineffective while bordered.         |
+| `singleLine`             | `boolean`                          | `true`     | no       | Hide column separators.                                     |
+| `singleColumn`           | `boolean`                          | `false`    | no       | Hide row separators.                                        |
+| `loading`                | `boolean`                          | `false`    | no       | Dim body + centered spinner; blocks checking/paging.        |
+| `scrollX`                | `number \| string`                 | —          | no       | Inner table min-width → horizontal scroll.                  |
+| `maxHeight`              | `number \| string`                 | —          | no       | Scroll container max-height → sticky header + fixed layout. |
+| `summary`                | `DataTableCreateSummary`           | —          | no       | Summary rows (`value` + `colSpan`).                         |
+| `summaryPlacement`       | `'top' \| 'bottom'`                | `'bottom'` | no       | Summary position.                                           |
+| `checkedRowKeys`         | `DataTableRowKey[]`                | —          | no       | Checked keys (v-model:checked-row-keys).                    |
+| `defaultCheckedRowKeys`  | `DataTableRowKey[]`                | `[]`       | no       | Uncontrolled initial checked keys.                          |
+| `expandedRowKeys`        | `DataTableRowKey[]`                | —          | no       | Expanded keys (v-model:expanded-row-keys).                  |
+| `defaultExpandedRowKeys` | `DataTableRowKey[]`                | `[]`       | no       | Uncontrolled initial expanded keys.                         |
+| `pagination`             | `false \| DataTablePagination`     | `false`    | no       | false disables; object renders the simplified bar.          |
 
 ### Column contract (DataTableColumn)
 
@@ -83,19 +83,19 @@ Special columns: `{ type: 'selection', multiple?, disabled?(row) }`,
 
 ## Events
 
-| Name | Parameters | Description |
-|---|---|---|
-| `update:checkedRowKeys` | `(keys, rows, { row, action })` | Selection changed; action ∈ check / uncheck / checkAll / uncheckAll. |
-| `update:expandedRowKeys` | `(keys)` | Expand state changed. |
-| `update:filters` | `(filters, column)` | Filter state committed. |
-| `update:sorter` | `(DataTableSortState \| null)` | Header sort click; order cycles descend → ascend → false. |
-| `update:page` | `(page)` | Pagination page changed. |
-| `update:pageSize` | `(pageSize)` | Pagination size changed. |
+| Name                     | Parameters                      | Description                                                          |
+| ------------------------ | ------------------------------- | -------------------------------------------------------------------- |
+| `update:checkedRowKeys`  | `(keys, rows, { row, action })` | Selection changed; action ∈ check / uncheck / checkAll / uncheckAll. |
+| `update:expandedRowKeys` | `(keys)`                        | Expand state changed.                                                |
+| `update:filters`         | `(filters, column)`             | Filter state committed.                                              |
+| `update:sorter`          | `(DataTableSortState \| null)`  | Header sort click; order cycles descend → ascend → false.            |
+| `update:page`            | `(page)`                        | Pagination page changed.                                             |
+| `update:pageSize`        | `(pageSize)`                    | Pagination size changed.                                             |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name    | Description                                                  |
+| ------- | ------------------------------------------------------------ |
 | `empty` | Replaces the default 无数据 empty state (inline svg + text). |
 
 ## Divergences from the reference API
@@ -136,14 +136,14 @@ render-filter-menu hooks, CSV export, exposed methods
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background surface / elevated | `--sn-web-color-background-*` | td / filter-menu surfaces |
-| Text primary / secondary / tertiary / on-primary | `--sn-web-color-text-*` | th / td / icons / checkbox glyph |
-| Text primary + surface via color-mix | — | Grid lines 6% (hairline), outer frame / control borders 12%, th bg 2%, hover 3%, striped 2% |
-| Action primary (+hover) | `--sn-web-color-action-primary(-hover)` | Active sort/filter icons, checked box, pagination active, spinner |
-| Focus ring | `--sn-web-focus-ring` | Checkbox / expand trigger focus outline |
-| Card shadow | `--sn-web-card-shadow` | Filter menu elevation |
+| Token                                            | CSS Variable                            | Purpose                                                                                     |
+| ------------------------------------------------ | --------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Background surface / elevated                    | `--sn-web-color-background-*`           | td / filter-menu surfaces                                                                   |
+| Text primary / secondary / tertiary / on-primary | `--sn-web-color-text-*`                 | th / td / icons / checkbox glyph                                                            |
+| Text primary + surface via color-mix             | —                                       | Grid lines 6% (hairline), outer frame / control borders 12%, th bg 2%, hover 3%, striped 2% |
+| Action primary (+hover)                          | `--sn-web-color-action-primary(-hover)` | Active sort/filter icons, checked box, pagination active, spinner                           |
+| Focus ring                                       | `--sn-web-focus-ring`                   | Checkbox / expand trigger focus outline                                                     |
+| Card shadow                                      | `--sn-web-card-shadow`                  | Filter menu elevation                                                                       |
 
 ## Versioning
 

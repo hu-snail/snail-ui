@@ -48,23 +48,23 @@
 
 ### SnHeatmap Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| data | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | 数据源；范围内缺失日期补 0，范围外日期留空 |
-| loading-data | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | 加载中展示的数据 |
-| active-colors | `string[]` | `undefined` | 自定义色阶（从浅到深），优先于内置色系 |
-| minimum-color | `string` | `undefined` | 自定义最小档颜色 |
-| color-theme | `'green' \| 'blue' \| 'orange' \| 'purple' \| 'red'` | `undefined` | 内置色系 |
-| fill-calendar-leading | `boolean` | `false` | 数据首日之前的空白格填 0（默认留空） |
-| first-day-of-week | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6` | `0` | 周开始日，0 = 周一 |
-| loading | `boolean` | `false` | 加载态；无 loading-data 时展示 7 × 53 骨架 |
-| show-color-indicator | `boolean` | `true` | 底部颜色指示器 |
-| show-week-labels | `boolean` | `true` | 左侧周标签 |
-| show-month-labels | `boolean` | `true` | 顶部月份标签 |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（格子 10 / 11 / 12px） |
-| tooltip | `boolean \| SnHeatmapTooltipConfig` | `false` | 每格悬浮提示（SnTooltip 包裹，`false` 不渲染任何浮层）；`true` 用默认内容「YYYY-MM-DD：数值」，对象形式透传 `placement`（默认 `'top'`）/ `showArrow`（默认 `true`）/ `delay`（默认 `100`）/ `style` / `class` |
-| x-gap | `number \| string` | `undefined` | 覆写垂直（行）方向间距（border-spacing 第二值，同参考实现） |
-| y-gap | `number \| string` | `undefined` | 覆写水平（列）方向间距（border-spacing 第一值，同参考实现） |
+| 名称                  | 类型                                                   | 默认值      | 说明                                                                                                                                                                                                          |
+| --------------------- | ------------------------------------------------------ | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| data                  | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | 数据源；范围内缺失日期补 0，范围外日期留空                                                                                                                                                                    |
+| loading-data          | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | 加载中展示的数据                                                                                                                                                                                              |
+| active-colors         | `string[]`                                             | `undefined` | 自定义色阶（从浅到深），优先于内置色系                                                                                                                                                                        |
+| minimum-color         | `string`                                               | `undefined` | 自定义最小档颜色                                                                                                                                                                                              |
+| color-theme           | `'green' \| 'blue' \| 'orange' \| 'purple' \| 'red'`   | `undefined` | 内置色系                                                                                                                                                                                                      |
+| fill-calendar-leading | `boolean`                                              | `false`     | 数据首日之前的空白格填 0（默认留空）                                                                                                                                                                          |
+| first-day-of-week     | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6`                      | `0`         | 周开始日，0 = 周一                                                                                                                                                                                            |
+| loading               | `boolean`                                              | `false`     | 加载态；无 loading-data 时展示 7 × 53 骨架                                                                                                                                                                    |
+| show-color-indicator  | `boolean`                                              | `true`      | 底部颜色指示器                                                                                                                                                                                                |
+| show-week-labels      | `boolean`                                              | `true`      | 左侧周标签                                                                                                                                                                                                    |
+| show-month-labels     | `boolean`                                              | `true`      | 顶部月份标签                                                                                                                                                                                                  |
+| size                  | `'small' \| 'medium' \| 'large'`                       | `'medium'`  | 尺寸（格子 10 / 11 / 12px）                                                                                                                                                                                   |
+| tooltip               | `boolean \| SnHeatmapTooltipConfig`                    | `false`     | 每格悬浮提示（SnTooltip 包裹，`false` 不渲染任何浮层）；`true` 用默认内容「YYYY-MM-DD：数值」，对象形式透传 `placement`（默认 `'top'`）/ `showArrow`（默认 `true`）/ `delay`（默认 `100`）/ `style` / `class` |
+| x-gap                 | `number \| string`                                     | `undefined` | 覆写垂直（行）方向间距（border-spacing 第二值，同参考实现）                                                                                                                                                   |
+| y-gap                 | `number \| string`                                     | `undefined` | 覆写水平（列）方向间距（border-spacing 第一值，同参考实现）                                                                                                                                                   |
 
 ### SnHeatmap Events
 
@@ -72,13 +72,13 @@
 
 ### SnHeatmap Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| footer | — | 底部左侧信息区 |
-| indicator | — | 整块替换右侧指示器 |
-| indicator-leading-text | — | 指示器起始文本（默认「少」） |
-| indicator-trailing-text | — | 指示器结束文本（默认「多」） |
-| tooltip | 格子数据对象 `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }` | 自定义每格悬浮内容（同 n-heatmap `DayRect`，`dayOfWeek` 0 = 周日） |
+| 名称                    | 参数                                                                      | 说明                                                               |
+| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| footer                  | —                                                                         | 底部左侧信息区                                                     |
+| indicator               | —                                                                         | 整块替换右侧指示器                                                 |
+| indicator-leading-text  | —                                                                         | 指示器起始文本（默认「少」）                                       |
+| indicator-trailing-text | —                                                                         | 指示器结束文本（默认「多」）                                       |
+| tooltip                 | 格子数据对象 `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }` | 自定义每格悬浮内容（同 n-heatmap `DayRect`，`dayOfWeek` 0 = 周日） |
 
 ### 行为说明
 

@@ -45,129 +45,128 @@
  *   - 轮播内容为复杂卡片 — 用 `<swiper>` 原生元素自建
  */
 
-import { computed } from 'vue'
-import SnImg from '../sn-img/sn-img.vue'
+import { computed } from 'vue';
+import SnImg from '../sn-img/sn-img.vue';
 
-defineOptions({ name: 'SnSwiper' })
+defineOptions({ name: 'SnSwiper' });
 
 /** Scroll axis. Mirrors `wd-swiper` `direction`. */
-type SwiperDirection = 'horizontal' | 'vertical'
+type SwiperDirection = 'horizontal' | 'vertical';
 
 /** Indicator anchor. Mirrors `wd-swiper` `indicator-position`. */
 type SwiperIndicatorPosition =
-  | 'left' | 'top-left' | 'top' | 'top-right'
-  | 'bottom-left' | 'bottom' | 'bottom-right' | 'right'
+  'left' | 'top-left' | 'top' | 'top-right' | 'bottom-left' | 'bottom' | 'bottom-right' | 'right';
 
 /** Image crop mode (uni `<image mode>`), forwarded to sn-img. */
-type SwiperImageMode = 'scaleToFill' | 'aspectFit' | 'aspectFill' | 'widthFix' | 'heightFix'
+type SwiperImageMode = 'scaleToFill' | 'aspectFit' | 'aspectFill' | 'widthFix' | 'heightFix';
 
 /** Indicator style. Mirrors `wd-swiper` `indicator.type`. */
-type SwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction'
+type SwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction';
 
 /** One slide object. Mirrors the `SwiperItem` row group of the wd table. */
 export interface SnSwiperItem {
   /** Image / video URL. */
-  value?: string
+  value?: string;
   /** Poster for video items (rendered as the image). */
-  poster?: string
+  poster?: string;
   /** Caption rendered over the slide. */
-  text?: string
+  text?: string;
   /** Resource kind; `video` degrades to its poster (see header). */
-  type?: 'image' | 'video'
+  type?: 'image' | 'video';
 }
 
 /** Indicator config. Mirrors `wd-swiper` `indicator`. */
 export interface SnSwiperIndicator {
   /** Indicator style. */
-  type?: SwiperIndicatorType
+  type?: SwiperIndicatorType;
   /** Hide the indicator below this slide count. */
-  minShowNum?: number
+  minShowNum?: number;
   /** Show the prev / next arrows. */
-  showControls?: boolean
+  showControls?: boolean;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Autoplay. */
-    autoplay?: boolean
+    autoplay?: boolean;
     /** Current slide index (v-model:current). */
-    current?: number
+    current?: number;
     /** Scroll axis. */
-    direction?: SwiperDirection
+    direction?: SwiperDirection;
     /** Slides visible at once. */
-    displayMultipleItems?: number
+    displayMultipleItems?: number;
     /** Slide transition duration in ms. */
-    duration?: number
+    duration?: number;
     /** Easing name (parity; the native swiper uses a fixed ease). */
-    easingFunction?: string
+    easingFunction?: string;
     /** Height of the carousel — a bare number is treated as rpx. */
-    height?: string | number
+    height?: string | number;
     /** Autoplay interval in ms. */
-    interval?: number
+    interval?: number;
     /** Slide data: strings or `SwiperItem` objects. */
-    list?: Array<string | SnSwiperItem>
+    list?: Array<string | SnSwiperItem>;
     /** Loop the slides. */
-    loop?: boolean
+    loop?: boolean;
     /** Loop video items (declared for parity; video degrades to its poster). */
-    videoLoop?: boolean
+    videoLoop?: boolean;
     /** Mute video items (declared for parity; video degrades to its poster). */
-    muted?: boolean
+    muted?: boolean;
     /** Autoplay video items (declared for parity; see header). */
-    autoplayVideo?: boolean
+    autoplayVideo?: boolean;
     /** Stop the previous slide's video on change (parity; see header). */
-    stopPreviousVideo?: boolean
+    stopPreviousVideo?: boolean;
     /** Pause autoplay while a video plays (parity; see header). */
-    stopAutoplayWhenVideoPlay?: boolean
+    stopAutoplayWhenVideoPlay?: boolean;
     /**
      * Auto-size the container to the slide height. Alipay-only upstream; the
      * value is forwarded to the native `<swiper>` and ignored elsewhere.
      * `''` (default) leaves the height to the `height` prop.
      */
-    adjustHeight?: 'first' | 'current' | 'highest' | ''
+    adjustHeight?: 'first' | 'current' | 'highest' | '';
     /** Force `adjustHeight` to apply in vertical mode (Alipay-only upstream). */
-    adjustVerticalHeight?: boolean
+    adjustVerticalHeight?: boolean;
     /** Next-slide inset — a bare number is treated as rpx. */
-    nextMargin?: string | number
+    nextMargin?: string | number;
     /** Indicator anchor. */
-    indicatorPosition?: SwiperIndicatorPosition
+    indicatorPosition?: SwiperIndicatorPosition;
     /** Previous-slide inset — a bare number is treated as rpx. */
-    previousMargin?: string | number
+    previousMargin?: string | number;
     /** Corner radius — a bare number is treated as rpx. */
-    radius?: string | number
+    radius?: string | number;
     /** Snap the insets to the first / last slide. */
-    snapToEdge?: boolean
+    snapToEdge?: boolean;
     /** Indicator config; `false` hides it. */
-    indicator?: boolean | SnSwiperIndicator
+    indicator?: boolean | SnSwiperIndicator;
     /** Image crop mode forwarded to sn-img. */
-    imageMode?: SwiperImageMode
+    imageMode?: SwiperImageMode;
     /** Long-press shows the miniprogram QR menu. */
-    showMenuByLongpress?: boolean
+    showMenuByLongpress?: boolean;
     /** Field name holding the image URL in an item object. */
-    valueKey?: string
+    valueKey?: string;
     /** Field name holding the caption in an item object. */
-    textKey?: string
+    textKey?: string;
     /** Custom class for the indicator node. */
-    customIndicatorClass?: string
+    customIndicatorClass?: string;
     /** Custom class for the image node. */
-    customImageClass?: string
+    customImageClass?: string;
     /** Custom class for the prev-slide image (parity; no peek slides rendered). */
-    customPrevImageClass?: string
+    customPrevImageClass?: string;
     /** Custom class for the next-slide image (parity; no peek slides rendered). */
-    customNextImageClass?: string
+    customNextImageClass?: string;
     /** Custom class for each slide. */
-    customItemClass?: string
+    customItemClass?: string;
     /** Custom class for the prev slide (parity; no peek slides rendered). */
-    customPrevClass?: string
+    customPrevClass?: string;
     /** Custom class for the next slide (parity; no peek slides rendered). */
-    customNextClass?: string
+    customNextClass?: string;
     /** Custom class for the caption node. */
-    customTextClass?: string
+    customTextClass?: string;
     /** Custom inline style for the caption node. */
-    customTextStyle?: string
+    customTextStyle?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     autoplay: true,
@@ -209,54 +208,54 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'click', payload: { index: number; item: string | SnSwiperItem }): void
-  (e: 'change', payload: { current: number; source: string }): void
-  (e: 'animationfinish', payload: { current: number; source: string }): void
-  (e: 'update:current', value: number): void
-}>()
+  (e: 'click', payload: { index: number; item: string | SnSwiperItem }): void;
+  (e: 'change', payload: { current: number; source: string }): void;
+  (e: 'animationfinish', payload: { current: number; source: string }): void;
+  (e: 'update:current', value: number): void;
+}>();
 
 /** Resolve a numeric-or-string length (bare number = rpx). */
 function toLength(value: string | number | undefined, fallback?: number): string | undefined {
   if (value === undefined || value === '') {
-    return fallback === undefined ? undefined : `${fallback}rpx`
+    return fallback === undefined ? undefined : `${fallback}rpx`;
   }
-  return typeof value === 'number' ? `${value}rpx` : value
+  return typeof value === 'number' ? `${value}rpx` : value;
 }
 
 /** One slide normalised to `{ src, text }`. */
 interface NormalisedSlide {
-  src: string
-  text: string
-  raw: string | SnSwiperItem
+  src: string;
+  text: string;
+  raw: string | SnSwiperItem;
 }
 
 /** Slides normalised from either the string form or the object form. */
 const slides = computed<NormalisedSlide[]>(() =>
   props.list.map((entry) => {
-    if (typeof entry === 'string') return { src: entry, text: '', raw: entry }
-    const record = entry as unknown as Record<string, string | undefined>
+    if (typeof entry === 'string') return { src: entry, text: '', raw: entry };
+    const record = entry as unknown as Record<string, string | undefined>;
     return {
       // `valueKey` lets an app reuse its own field name; `poster` is the video
       // fallback documented in the file header.
       src: record[props.valueKey] ?? record.poster ?? '',
       text: record[props.textKey] ?? '',
       raw: entry,
-    }
+    };
   }),
-)
+);
 
 /**
  * Non-undefined views of the props the template forwards into sn-img props or
  * reads arithmetically. `withDefaults` narrows at runtime, but a bare prop
  * identifier in the template still types as `T | undefined`.
  */
-const imageModeValue = computed(() => props.imageMode)
-const showMenuValue = computed(() => props.showMenuByLongpress)
-const imageClassValue = computed(() => props.customImageClass)
-const currentIndex = computed(() => props.current)
+const imageModeValue = computed(() => props.imageMode);
+const showMenuValue = computed(() => props.showMenuByLongpress);
+const imageClassValue = computed(() => props.customImageClass);
+const currentIndex = computed(() => props.current);
 
 /*
  * Video / adjust-height parity props. Declared so a wd-swiper config type-
@@ -264,98 +263,90 @@ const currentIndex = computed(() => props.current)
  * understands them (Alipay for the adjust-height pair, no vendor for the
  * video pair — video items degrade to their poster, see the file header).
  */
-const adjustHeightValue = computed(() => (props.adjustHeight === '' ? undefined : props.adjustHeight))
-const adjustVerticalHeightValue = computed(() => props.adjustVerticalHeight)
-const videoLoopValue = computed(() => props.videoLoop)
-const mutedValue = computed(() => props.muted)
-const autoplayVideoValue = computed(() => props.autoplayVideo)
-const stopPreviousVideoValue = computed(() => props.stopPreviousVideo)
-const stopAutoplayWhenVideoPlayValue = computed(() => props.stopAutoplayWhenVideoPlay)
+const adjustHeightValue = computed(() =>
+  props.adjustHeight === '' ? undefined : props.adjustHeight,
+);
+const adjustVerticalHeightValue = computed(() => props.adjustVerticalHeight);
+const videoLoopValue = computed(() => props.videoLoop);
+const mutedValue = computed(() => props.muted);
+const autoplayVideoValue = computed(() => props.autoplayVideo);
+const stopPreviousVideoValue = computed(() => props.stopPreviousVideo);
+const stopAutoplayWhenVideoPlayValue = computed(() => props.stopAutoplayWhenVideoPlay);
 
-const heightStyle = computed(() => toLength(props.height, 192))
-const radiusStyle = computed(() => toLength(props.radius))
-const previousMarginStyle = computed(() => toLength(props.previousMargin, 0))
-const nextMarginStyle = computed(() => toLength(props.nextMargin, 0))
+const heightStyle = computed(() => toLength(props.height, 192));
+const radiusStyle = computed(() => toLength(props.radius));
+const previousMarginStyle = computed(() => toLength(props.previousMargin, 0));
+const nextMarginStyle = computed(() => toLength(props.nextMargin, 0));
 
 /** Resolved indicator config. */
 const indicatorConfig = computed<SnSwiperIndicator>(() => {
-  if (props.indicator === false) return {}
-  if (props.indicator === true) return {}
-  return props.indicator
-})
+  if (props.indicator === false) return {};
+  if (props.indicator === true) return {};
+  return props.indicator;
+});
 
 const showsIndicator = computed(() => {
-  if (props.indicator === false) return false
-  const minShowNum = indicatorConfig.value.minShowNum ?? 2
-  return slides.value.length >= minShowNum
-})
+  if (props.indicator === false) return false;
+  const minShowNum = indicatorConfig.value.minShowNum ?? 2;
+  return slides.value.length >= minShowNum;
+});
 
-const indicatorType = computed<SwiperIndicatorType>(
-  () => indicatorConfig.value.type ?? 'dots',
-)
+const indicatorType = computed<SwiperIndicatorType>(() => indicatorConfig.value.type ?? 'dots');
 
 const showsControls = computed(
   () => indicatorConfig.value.showControls === true && slides.value.length > 1,
-)
+);
 
-const rootClass = computed(() => [
-  'sn-swiper',
-  `sn-swiper--${props.direction}`,
-  props.customClass,
-])
+const rootClass = computed(() => ['sn-swiper', `sn-swiper--${props.direction}`, props.customClass]);
 
 const rootStyle = computed(() => {
-  const parts = [`height: ${heightStyle.value}`]
-  if (radiusStyle.value) parts.push(`border-radius: ${radiusStyle.value}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [`height: ${heightStyle.value}`];
+  if (radiusStyle.value) parts.push(`border-radius: ${radiusStyle.value}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 const swiperStyle = computed(() => {
-  const parts: string[] = []
+  const parts: string[] = [];
   if (previousMarginStyle.value && previousMarginStyle.value !== '0rpx') {
-    parts.push(`--sn-swiper-previous-margin: ${previousMarginStyle.value}`)
+    parts.push(`--sn-swiper-previous-margin: ${previousMarginStyle.value}`);
   }
   if (nextMarginStyle.value && nextMarginStyle.value !== '0rpx') {
-    parts.push(`--sn-swiper-next-margin: ${nextMarginStyle.value}`)
+    parts.push(`--sn-swiper-next-margin: ${nextMarginStyle.value}`);
   }
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 /** uni swiper's `easing-function` accepts a fixed name set; anything else is dropped. */
 const easingFunction = computed(() =>
   props.easingFunction === 'default' ? undefined : props.easingFunction,
-)
+);
 
 const indicatorClass = computed(() => [
   'sn-swiper__indicator',
   `sn-swiper__indicator--${indicatorType.value}`,
   `sn-swiper__indicator--${props.indicatorPosition}`,
   props.customIndicatorClass,
-])
+]);
 
-const textStyle = computed(() => (props.customTextStyle ? props.customTextStyle : undefined))
+const textStyle = computed(() => (props.customTextStyle ? props.customTextStyle : undefined));
 
 function onSwiperChange(event: { detail: { current: number; source: string } }): void {
-  emit('update:current', event.detail.current)
-  emit('change', { current: event.detail.current, source: event.detail.source })
+  emit('update:current', event.detail.current);
+  emit('change', { current: event.detail.current, source: event.detail.source });
 }
 
 function onAnimationFinish(event: { detail: { current: number; source: string } }): void {
-  emit('animationfinish', { current: event.detail.current, source: event.detail.source })
+  emit('animationfinish', { current: event.detail.current, source: event.detail.source });
 }
 
 function onSlideTap(slide: NormalisedSlide, index: number): void {
-  emit('click', { index, item: slide.raw })
+  emit('click', { index, item: slide.raw });
 }
 </script>
 
 <template>
-  <view
-    data-snui-component="swiper"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="swiper" :class="rootClass" :style="rootStyle">
     <swiper
       class="sn-swiper__native"
       :style="swiperStyle"

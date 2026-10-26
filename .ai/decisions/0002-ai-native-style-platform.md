@@ -1,9 +1,11 @@
 # 0002 — AI-Native Style Platform：风格包三层结构 + AI 生态层
 
 ## Status
+
 Proposed（待 Human Gate 审批后转 Accepted）
 
 ## Date
+
 2026-10-03
 
 ## Context
@@ -35,6 +37,7 @@ ADR-0001 建立了 Component First / Token First 底座。当前状态：
 纯 Token 覆盖只能改颜色、圆角、间距，做不出视觉人格（visual personality）。
 
 同时，uni-app 小程序端（WXSS）**不支持**：
+
 - `:root {}` CSS 变量作用域（只能在 page 或组件 scoped 中声明）
 - `[data-theme="dark"]` 属性选择器
 - `@layer`
@@ -110,28 +113,28 @@ ADR-0001 建立了 Component First / Token First 底座。当前状态：
 
 ### 地基任务（M1 前）
 
-| ID | 任务 |
-|---|---|
+| ID            | 任务                                                       |
+| ------------- | ---------------------------------------------------------- |
 | AUI-FOUND-001 | Token 命名对齐：统一 `--sn-*` 变量名与 `@snui/tokens` 输出 |
-| AUI-FOUND-002 | 重建 ComponentPreview.vue（移除 schema renderer） |
-| AUI-FOUND-003 | ConfigProvider 双端 `skin` prop |
-| AUI-FOUND-004 | 组件根元素暴露 `data-skin` 皮肤钩子 |
+| AUI-FOUND-002 | 重建 ComponentPreview.vue（移除 schema renderer）          |
+| AUI-FOUND-003 | ConfigProvider 双端 `skin` prop                            |
+| AUI-FOUND-004 | 组件根元素暴露 `data-skin` 皮肤钩子                        |
 
 ### M2 任务
 
-| ID | 任务 |
-|---|---|
-| AUI-PACK-001 | StylePackDefinition 类型 + 包骨架 |
-| AUI-PACK-002 | default Pack（Token 层） |
-| AUI-PACK-003 | dark Pack（Token 层） |
-| AUI-PACK-004 | ios Pack（Token 层） |
-| AUI-PACK-005 | doodle Pack（Token + 皮肤 CSS） |
-| AUI-PACK-006 | sticky-note Pack（Token + 皮肤 CSS） |
-| AUI-PACK-007 | taobao Pack（Token + 皮肤 CSS） |
+| ID           | 任务                                   |
+| ------------ | -------------------------------------- |
+| AUI-PACK-001 | StylePackDefinition 类型 + 包骨架      |
+| AUI-PACK-002 | default Pack（Token 层）               |
+| AUI-PACK-003 | dark Pack（Token 层）                  |
+| AUI-PACK-004 | ios Pack（Token 层）                   |
+| AUI-PACK-005 | doodle Pack（Token + 皮肤 CSS）        |
+| AUI-PACK-006 | sticky-note Pack（Token + 皮肤 CSS）   |
+| AUI-PACK-007 | taobao Pack（Token + 皮肤 CSS）        |
 | AUI-PACK-008 | douyin Pack（Token + 皮肤 CSS + 资源） |
-| AUI-AI-001 | Skill 文件 |
-| AUI-AI-002 | MCP Server |
-| AUI-AI-003 | ai-meta.json 生成器 |
+| AUI-AI-001   | Skill 文件                             |
+| AUI-AI-002   | MCP Server                             |
+| AUI-AI-003   | ai-meta.json 生成器                    |
 
 ### 不变
 

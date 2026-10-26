@@ -36,104 +36,104 @@
  *   <SnCalendar :is-date-disabled="(ts) => ts < Date.now()" @panel-change="onPanelChange" />
  */
 
-import { computed, ref } from 'vue'
+import { computed, ref } from 'vue';
 import {
   buildCalendarCells,
   panelInfoOf,
   startOfMonth,
   addMonths,
   weekdayIndexOf,
-} from './date-grid'
-import { useLocale } from '../locales/use-locale'
-import type { SnCalendarCell, SnCalendarDateItem } from './date-grid'
+} from './date-grid';
+import { useLocale } from '../locales/use-locale';
+import type { SnCalendarCell, SnCalendarDateItem } from './date-grid';
 
-defineOptions({ name: 'SnCalendar' })
+defineOptions({ name: 'SnCalendar' });
 
 const props = withDefaults(
   defineProps<{
     /** Selected date (millisecond timestamp), v-model:value. Mirrors n-calendar `value`. */
-    value?: number | null | undefined
+    value?: number | null | undefined;
     /** Uncontrolled initial selection (millisecond timestamp); also anchors the first panel month. Mirrors n-calendar `defaultValue`. */
-    defaultValue?: number | null | undefined
+    defaultValue?: number | null | undefined;
     /** Return true to disable the date (receives the cell's local-midnight timestamp). Mirrors n-calendar `isDateDisabled`. */
-    isDateDisabled?: ((date: number) => boolean | undefined) | undefined
+    isDateDisabled?: ((date: number) => boolean | undefined) | undefined;
   }>(),
   {
     value: undefined,
     defaultValue: null,
     isDateDisabled: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Selection changed: (timestamp, { year, month: 1-based, date }). Mirrors n-calendar `on-update:value`. */
-  (e: 'update:value', value: number, time: SnCalendarDateItem): void
+  (e: 'update:value', value: number, time: SnCalendarDateItem): void;
   /** Panel year/month switched. Mirrors n-calendar `on-panel-change` (month is 1-based). */
-  (e: 'panel-change', info: { year: number; month: number }): void
-}>()
+  (e: 'panel-change', info: { year: number; month: number }): void;
+}>();
 
 defineSlots<{
   /** Custom content under the day number, per cell. Mirrors n-calendar `default`. */
-  default?(props: { year: number; month: number; date: number }): unknown
+  default?(props: { year: number; month: number; date: number }): unknown;
   /** Custom header title. Mirrors n-calendar `header`. */
-  header?(props: { year: number; month: number }): unknown
-}>()
+  header?(props: { year: number; month: number }): unknown;
+}>();
 
 // Captured once at setup, exactly like the reference (`const now = Date.now()`).
-const now = Date.now()
+const now = Date.now();
 
-const uncontrolledValue = ref<number | null>(props.defaultValue ?? null)
+const uncontrolledValue = ref<number | null>(props.defaultValue ?? null);
 const mergedValue = computed(() =>
   props.value !== undefined ? props.value : uncontrolledValue.value,
-)
+);
 
-const monthTs = ref(startOfMonth(props.defaultValue ?? now))
+const monthTs = ref(startOfMonth(props.defaultValue ?? now));
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
-const calendarLocale = computed(() => locale.value.Calendar)
+const locale = useLocale();
+const calendarLocale = computed(() => locale.value.Calendar);
 const viewCells = computed(() =>
   buildCalendarCells(monthTs.value, mergedValue.value, now, props.isDateDisabled).map((cell) => ({
     ...cell,
     weekdayLabel: calendarLocale.value.weekdays[weekdayIndexOf(cell.ts)] ?? cell.weekdayLabel,
   })),
-)
+);
 
-const panelYear = computed(() => panelInfoOf(monthTs.value).year)
-const panelMonth = computed(() => panelInfoOf(monthTs.value).month)
+const panelYear = computed(() => panelInfoOf(monthTs.value).year);
+const panelMonth = computed(() => panelInfoOf(monthTs.value).month);
 
 /** Localized header title ('2026年3月' under zhCN). */
 const calendarMonthTitle = computed(() =>
   calendarLocale.value.monthTitle
     .replace('{y}', String(panelYear.value))
     .replace('{m}', String(panelMonth.value)),
-)
+);
 
 function selectCell(cell: SnCalendarCell): void {
-  if (cell.disabled) return
+  if (cell.disabled) return;
   // The reference re-anchors the panel to the clicked date's month, and
   // reports a panel change only for out-of-month cells.
-  monthTs.value = startOfMonth(cell.ts)
+  monthTs.value = startOfMonth(cell.ts);
   if (!cell.inCurrentMonth) {
-    emit('panel-change', panelInfoOf(monthTs.value))
+    emit('panel-change', panelInfoOf(monthTs.value));
   }
-  const time: SnCalendarDateItem = { year: cell.year, month: cell.month, date: cell.date }
-  uncontrolledValue.value = cell.ts
-  emit('update:value', cell.ts, time)
+  const time: SnCalendarDateItem = { year: cell.year, month: cell.month, date: cell.date };
+  uncontrolledValue.value = cell.ts;
+  emit('update:value', cell.ts, time);
 }
 
 function shiftMonth(delta: number): void {
-  monthTs.value = addMonths(monthTs.value, delta)
-  emit('panel-change', panelInfoOf(monthTs.value))
+  monthTs.value = addMonths(monthTs.value, delta);
+  emit('panel-change', panelInfoOf(monthTs.value));
 }
 
 function goToday(): void {
-  const before = panelInfoOf(monthTs.value)
-  monthTs.value = startOfMonth(now)
-  const after = panelInfoOf(monthTs.value)
+  const before = panelInfoOf(monthTs.value);
+  monthTs.value = startOfMonth(now);
+  const after = panelInfoOf(monthTs.value);
   // The reference fires onPanelChange only when the month actually changes.
   if (before.year !== after.year || before.month !== after.month) {
-    emit('panel-change', after)
+    emit('panel-change', after);
   }
 }
 </script>
@@ -153,18 +153,36 @@ function goToday(): void {
           :aria-label="calendarLocale.prevMonth"
           @click="shiftMonth(-1)"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
             <path d="m15 18-6-6 6-6" />
           </svg>
         </button>
-        <button type="button" class="sn-calendar__btn" @click="goToday">{{ calendarLocale.today }}</button>
+        <button type="button" class="sn-calendar__btn" @click="goToday">
+          {{ calendarLocale.today }}
+        </button>
         <button
           type="button"
           class="sn-calendar__btn sn-calendar__btn--icon"
           :aria-label="calendarLocale.nextMonth"
           @click="shiftMonth(1)"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
             <path d="m9 18 6-6-6-6" />
           </svg>
         </button>
@@ -189,7 +207,9 @@ function goToday(): void {
       >
         <div class="sn-calendar__date">
           <span class="sn-calendar__date-num" :title="cell.iso">{{ cell.date }}</span>
-          <span v-if="index < 7" class="sn-calendar__date-week" :title="cell.iso">{{ cell.weekdayLabel }}</span>
+          <span v-if="index < 7" class="sn-calendar__date-week" :title="cell.iso">{{
+            cell.weekdayLabel
+          }}</span>
         </div>
         <slot name="default" :year="cell.year" :month="cell.month" :date="cell.date" />
         <div class="sn-calendar__bar" />

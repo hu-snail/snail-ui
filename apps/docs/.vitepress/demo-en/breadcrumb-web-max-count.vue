@@ -12,7 +12,7 @@
  * snail-aui extension: a declarative cap on long breadcrumb trails
  * (no dropdown wiring needed on the middle item).
  */
-import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
+import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web';
 </script>
 
 <template>

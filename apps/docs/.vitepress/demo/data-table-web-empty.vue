@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — empty state with default and slotted content. */
-import { SnDataTable } from '@snui/vue-web'
+import { SnDataTable } from '@snui/vue-web';
 const columns = [
   { title: 'Name', key: 'name' },
   { title: 'Age', key: 'age' },
-]
+];
 
-const emptyData: Array<Record<string, unknown>> = []
+const emptyData: Array<Record<string, unknown>> = [];
 </script>
 
 <template>
@@ -25,7 +25,6 @@ const emptyData: Array<Record<string, unknown>> = []
   display: flex;
   flex-direction: column;
   gap: 24px;
-
 }
 .sn-demo-empty {
   padding: 48px 0;

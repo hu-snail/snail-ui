@@ -37,30 +37,30 @@
 如需显式 import：
 
 ```ts
-import { SnDivider } from '@snui/uni'
+import { SnDivider } from '@snui/uni';
 ```
 
 ## API
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | 方向 |
-| `dashed` | `boolean` | `false` | 虚线 |
-| `hairline` | `boolean` | `true` | 细线（1rpx）|
-| `color` | `string` | — | 自定义颜色 |
-| `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'` | 垂直外边距（仅 horizontal）|
-| `contentPosition` | `'left' \| 'center' \| 'right'` | `'center'` | 文字位置（仅 horizontal 带文字时生效）|
-| `vertical` | `boolean` | `false` | 垂直分割线（与 `direction="vertical"` 等价）|
-| `customClass` | `string` | `''` | 根节点 class |
-| `customStyle` | `string \| Record<string,string>` | `''` | 根节点 inline style |
+| 名称              | 类型                              | 默认值         | 说明                                         |
+| ----------------- | --------------------------------- | -------------- | -------------------------------------------- |
+| `direction`       | `'horizontal' \| 'vertical'`      | `'horizontal'` | 方向                                         |
+| `dashed`          | `boolean`                         | `false`        | 虚线                                         |
+| `hairline`        | `boolean`                         | `true`         | 细线（1rpx）                                 |
+| `color`           | `string`                          | —              | 自定义颜色                                   |
+| `marginSize`      | `'small' \| 'medium' \| 'large'`  | `'medium'`     | 垂直外边距（仅 horizontal）                  |
+| `contentPosition` | `'left' \| 'center' \| 'right'`   | `'center'`     | 文字位置（仅 horizontal 带文字时生效）       |
+| `vertical`        | `boolean`                         | `false`        | 垂直分割线（与 `direction="vertical"` 等价） |
+| `customClass`     | `string`                          | `''`           | 根节点 class                                 |
+| `customStyle`     | `string \| Record<string,string>` | `''`           | 根节点 inline style                          |
 
 ### Slots
 
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 中间文字（仅 horizontal 渲染）|
+| 名称      | 说明                           |
+| --------- | ------------------------------ |
+| `default` | 中间文字（仅 horizontal 渲染） |
 
 ## 相关
 

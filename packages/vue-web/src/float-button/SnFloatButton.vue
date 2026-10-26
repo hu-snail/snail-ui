@@ -40,15 +40,15 @@
  *   <SnFloatButton type="primary" badge="5" shape="square" description="消息" />
  */
 
-import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
-import type { ComputedRef, CSSProperties } from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import type { IconComponent } from '../icon/sn-icon-registry'
+import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
+import type { ComputedRef, CSSProperties } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import type { IconComponent } from '../icon/sn-icon-registry';
 
-defineOptions({ name: 'SnFloatButton' })
+defineOptions({ name: 'SnFloatButton' });
 
-type SnFloatButtonType = 'default' | 'primary'
-type SnFloatButtonShape = 'circle' | 'square'
+type SnFloatButtonType = 'default' | 'primary';
+type SnFloatButtonShape = 'circle' | 'square';
 
 /**
  * Where a floating button (or its group) pins. Four corners plus the four
@@ -56,21 +56,14 @@ type SnFloatButtonShape = 'circle' | 'square'
  * values centre the box on that edge.
  */
 export type SnFloatButtonPlacement =
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right'
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
+  'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top' | 'right' | 'bottom' | 'left';
 
 /**
  * Where an opened group stack grows from its trigger. `'auto'` derives it from
  * the trigger's own placement (the stack opens towards the viewport centre),
  * which is what keeps a bottom-corner group opening upwards.
  */
-export type SnFloatButtonGroupDirection = 'auto' | 'up' | 'down' | 'left' | 'right'
+export type SnFloatButtonGroupDirection = 'auto' | 'up' | 'down' | 'left' | 'right';
 
 /**
  * Contract handed down by `<SnFloatButtonGroup>` through provide/inject.
@@ -78,69 +71,69 @@ export type SnFloatButtonGroupDirection = 'auto' | 'up' | 'down' | 'left' | 'rig
  */
 interface SnFloatButtonGroupContext {
   /** Group-level shape; overrides the child's own `shape` prop. */
-  shape: ComputedRef<SnFloatButtonShape>
+  shape: ComputedRef<SnFloatButtonShape>;
 }
 
 /** Injection key shared with `SnFloatButtonGroup` (string key, like SnCollapse). */
-const FLOAT_BUTTON_GROUP_KEY = 'sn-float-button-group'
+const FLOAT_BUTTON_GROUP_KEY = 'sn-float-button-group';
 
 /** Distance from the viewport edge that `placement` falls back to. */
-const DEFAULT_OFFSET = '24px'
+const DEFAULT_OFFSET = '24px';
 
 const props = withDefaults(
   defineProps<{
     /** Filled color: surface background (`'default'`) or brand fill (`'primary'`). */
-    type?: SnFloatButtonType
+    type?: SnFloatButtonType;
     /** `'circle'` (default) or `'square'` — square stacks the icon above a `description` line. */
-    shape?: SnFloatButtonShape
+    shape?: SnFloatButtonShape;
     /** Lucide-style icon component; the `icon` slot overrides it. */
-    icon?: IconComponent | undefined
+    icon?: IconComponent | undefined;
     /** Pixel / CSS size forwarded to the embedded SnIcon. */
-    iconSize?: number | string
+    iconSize?: number | string;
     /** Text under the icon. Rendered for `shape="square"` only; the `description` slot overrides it. */
-    description?: string
+    description?: string;
     /**
      * Sets the native `title` and the accessible name on the root. No tooltip
      * component is used. The explicit `| undefined` is required by
      * `exactOptionalPropertyTypes` for props forwarded into the template.
      */
-    tooltip?: string | undefined
+    tooltip?: string | undefined;
     /** Count bubble; hidden when `undefined`, `0` or `''`. */
-    badge?: number | string
+    badge?: number | string;
     /** Render a dot instead of the count (used when there is no number to show). */
-    badgeDot?: boolean
+    badgeDot?: boolean;
     /** When set, the root renders `<a href>` instead of `<button type="button">`. */
-    href?: string
+    href?: string;
     /** Native link target. Only meaningful together with `href`. */
-    target?: '_blank' | '_self' | '_parent' | '_top'
+    target?: '_blank' | '_self' | '_parent' | '_top';
     /** Disabled state — no `click` event, `aria-disabled` on the root. */
-    disabled?: boolean
+    disabled?: boolean;
     /** `v-if` the whole button. */
-    visible?: boolean
+    visible?: boolean;
     /** Fixed corner. Ignored inside `<SnFloatButtonGroup>` — the group positions its children. */
-    placement?: SnFloatButtonPlacement
+    placement?: SnFloatButtonPlacement;
     /** Explicit distance from the viewport right edge; overrides `placement`. */
-    right?: number | string
+    right?: number | string;
     /** Explicit distance from the viewport bottom edge; overrides `placement`. */
-    bottom?: number | string
+    bottom?: number | string;
     /** Explicit distance from the viewport top edge; overrides `placement`. */
-    top?: number | string
+    top?: number | string;
     /** Explicit distance from the viewport left edge; overrides `placement`. */
-    left?: number | string
+    left?: number | string;
     /** Stacking order of the fixed root. Ignored inside a group. */
-    zIndex?: number
+    zIndex?: number;
     /**
      * `false` pins the button to its nearest positioned ancestor instead of
      * the viewport — drop it into a `position: relative` hero/section (or set
      * `container`) when the button belongs to that block, not to the page.
      */
-    fixed?: boolean
+    fixed?: boolean;
     /**
      * Explicit positioning context (selector or element) for `fixed: false`.
      * When omitted the root only switches to `position: absolute`, so the
      * offset resolves against the nearest positioned ancestor.
      */
-    container?: string | HTMLElement | undefined
+    container?: string | HTMLElement | undefined;
   }>(),
   {
     type: 'default',
@@ -154,46 +147,43 @@ const props = withDefaults(
     fixed: true,
     container: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Native click. Not emitted when `disabled`. */
-  (e: 'click', event: MouseEvent): void
-}>()
+  (e: 'click', event: MouseEvent): void;
+}>();
 
 defineSlots<{
   /** Replaces the icon. */
-  icon?(): unknown
+  icon?(): unknown;
   /** Replaces the whole inner content (icon + description). */
-  default?(): unknown
+  default?(): unknown;
   /** Replaces the `description` text. */
-  description?(): unknown
-}>()
+  description?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 // ---------- Group context ----------
 
 /** Non-null while rendered inside a `<SnFloatButtonGroup>`. */
-const floatButtonGroup = inject<SnFloatButtonGroupContext | null>(
-  FLOAT_BUTTON_GROUP_KEY,
-  null,
-)
+const floatButtonGroup = inject<SnFloatButtonGroupContext | null>(FLOAT_BUTTON_GROUP_KEY, null);
 
 /** Root element — the handle `container` mounting moves and restores. */
-const rootRef = ref<HTMLElement | null>(null)
+const rootRef = ref<HTMLElement | null>(null);
 
 /** Whether the parent group owns the fixed position. */
-const inGroup = computed(() => floatButtonGroup !== null)
+const inGroup = computed(() => floatButtonGroup !== null);
 
 /** Effective shape: the group wins over the child's own prop. */
 const resolvedShape = computed<SnFloatButtonShape>(
   () => floatButtonGroup?.shape.value ?? props.shape,
-)
+);
 
 // ---------- Rendering state ----------
 
-const isLink = computed(() => Boolean(props.href))
+const isLink = computed(() => Boolean(props.href));
 
 /**
  * Resolved icon component, or `undefined` when none was passed.
@@ -203,32 +193,32 @@ const isLink = computed(() => Boolean(props.href))
  */
 const resolvedIcon = computed<IconComponent | undefined>(() =>
   props.icon ? markRaw(props.icon) : undefined,
-)
+);
 
 /** The description line is a square-shape feature. An empty string counts as absent. */
 const hasDescription = computed(
   () => resolvedShape.value === 'square' && Boolean(props.description || slots.description),
-)
+);
 
 /** `0` and `''` are "no count" — mirrors Ant Design Vue `Badge` truthiness. */
 const hasBadgeValue = computed(
   () => props.badge !== undefined && props.badge !== 0 && props.badge !== '',
-)
+);
 
-const showBadge = computed(() => hasBadgeValue.value || props.badgeDot)
-const isDotBadge = computed(() => props.badgeDot && !hasBadgeValue.value)
+const showBadge = computed(() => hasBadgeValue.value || props.badgeDot);
+const isDotBadge = computed(() => props.badgeDot && !hasBadgeValue.value);
 
 /**
  * Accessible name for the icon-only button. Falls back to `description` for
  * square buttons without a tooltip; a plain button with neither stays unnamed
  * (the consumer should pass `tooltip`).
  */
-const accessibleLabel = computed(() => props.tooltip ?? props.description)
+const accessibleLabel = computed(() => props.tooltip ?? props.description);
 
 // ---------- Positioning ----------
 
 function formatLength(value: string | number): string {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 /**
@@ -243,19 +233,19 @@ function formatLength(value: string | number): string {
  * Explicit `top` / `bottom` / `left` / `right` always win over the preset.
  */
 interface ResolvedPlacement {
-  style: CSSProperties
+  style: CSSProperties;
   /** Axis-aligned centring needs a translate; `0` otherwise. */
-  translateX: string
-  translateY: string
+  translateX: string;
+  translateY: string;
 }
 
 function resolvePlacement(
   placement: SnFloatButtonPlacement,
   offsets: {
-    top?: number | string | undefined
-    bottom?: number | string | undefined
-    left?: number | string | undefined
-    right?: number | string | undefined
+    top?: number | string | undefined;
+    bottom?: number | string | undefined;
+    left?: number | string | undefined;
+    right?: number | string | undefined;
   },
   fixed: boolean,
   zIndex: number,
@@ -263,39 +253,41 @@ function resolvePlacement(
   const style: CSSProperties = {
     position: fixed ? 'fixed' : 'absolute',
     zIndex,
-  }
+  };
 
-  if (offsets.top !== undefined) style.top = formatLength(offsets.top)
-  if (offsets.bottom !== undefined) style.bottom = formatLength(offsets.bottom)
-  if (offsets.left !== undefined) style.left = formatLength(offsets.left)
-  if (offsets.right !== undefined) style.right = formatLength(offsets.right)
+  if (offsets.top !== undefined) style.top = formatLength(offsets.top);
+  if (offsets.bottom !== undefined) style.bottom = formatLength(offsets.bottom);
+  if (offsets.left !== undefined) style.left = formatLength(offsets.left);
+  if (offsets.right !== undefined) style.right = formatLength(offsets.right);
 
-  const hasVertical = offsets.top !== undefined || offsets.bottom !== undefined
-  const hasHorizontal = offsets.left !== undefined || offsets.right !== undefined
+  const hasVertical = offsets.top !== undefined || offsets.bottom !== undefined;
+  const hasHorizontal = offsets.left !== undefined || offsets.right !== undefined;
 
-  const isTop = placement === 'top-left' || placement === 'top-right' || placement === 'top'
-  const isBottom = placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom'
-  const isLeft = placement === 'top-left' || placement === 'bottom-left' || placement === 'left'
-  const isRight = placement === 'top-right' || placement === 'bottom-right' || placement === 'right'
+  const isTop = placement === 'top-left' || placement === 'top-right' || placement === 'top';
+  const isBottom =
+    placement === 'bottom-left' || placement === 'bottom-right' || placement === 'bottom';
+  const isLeft = placement === 'top-left' || placement === 'bottom-left' || placement === 'left';
+  const isRight =
+    placement === 'top-right' || placement === 'bottom-right' || placement === 'right';
 
   /** Edge-midpoint anchors centre on the perpendicular axis. */
-  const centreHorizontally = placement === 'top' || placement === 'bottom'
-  const centreVertically = placement === 'left' || placement === 'right'
+  const centreHorizontally = placement === 'top' || placement === 'bottom';
+  const centreVertically = placement === 'left' || placement === 'right';
 
   if (!hasVertical) {
-    if (isTop) style.top = DEFAULT_OFFSET
-    else if (isBottom) style.bottom = DEFAULT_OFFSET
+    if (isTop) style.top = DEFAULT_OFFSET;
+    else if (isBottom) style.bottom = DEFAULT_OFFSET;
     else if (centreVertically) {
       // Left/right edge: centre on the vertical axis.
-      style.top = '50%'
+      style.top = '50%';
     }
   }
   if (!hasHorizontal) {
-    if (isLeft) style.left = DEFAULT_OFFSET
-    else if (isRight) style.right = DEFAULT_OFFSET
+    if (isLeft) style.left = DEFAULT_OFFSET;
+    else if (isRight) style.right = DEFAULT_OFFSET;
     else if (centreHorizontally) {
       // Top/bottom edge: centre on the horizontal axis.
-      style.left = '50%'
+      style.left = '50%';
     }
   }
 
@@ -303,25 +295,25 @@ function resolvePlacement(
     style,
     translateX: !hasHorizontal && centreHorizontally ? '-50%' : '0',
     translateY: !hasVertical && centreVertically ? '-50%' : '0',
-  }
+  };
 }
 
 /** Corner style for the standalone case (empty inside a group). */
 const resolvedPlacement = computed<ResolvedPlacement>(() => {
-  if (inGroup.value) return { style: {}, translateX: '0', translateY: '0' }
+  if (inGroup.value) return { style: {}, translateX: '0', translateY: '0' };
   return resolvePlacement(
     props.placement,
     { top: props.top, bottom: props.bottom, left: props.left, right: props.right },
     props.fixed,
     props.zIndex,
-  )
-})
+  );
+});
 
 const rootStyle = computed<CSSProperties>(() => {
-  const { style, translateX, translateY } = resolvedPlacement.value
-  if (translateX === '0' && translateY === '0') return style
-  return { ...style, transform: `translate(${translateX}, ${translateY})` }
-})
+  const { style, translateX, translateY } = resolvedPlacement.value;
+  if (translateX === '0' && translateY === '0') return style;
+  return { ...style, transform: `translate(${translateX}, ${translateY})` };
+});
 
 /* ---------- Container mounting (§41) ---------- */
 
@@ -332,35 +324,35 @@ const rootStyle = computed<CSSProperties>(() => {
  * the root to the container, and on unmount puts the root back. No listener
  * or observer is created, so there is nothing else to dispose.
  */
-let containerHost: { parent: Node; placeholder: Comment } | null = null
+let containerHost: { parent: Node; placeholder: Comment } | null = null;
 
 function resolveContainer(target: string | HTMLElement | undefined): HTMLElement | null {
-  if (target === undefined) return null
-  if (typeof target !== 'string') return target
-  if (typeof document === 'undefined') return null
-  return document.querySelector<HTMLElement>(target)
+  if (target === undefined) return null;
+  if (typeof target !== 'string') return target;
+  if (typeof document === 'undefined') return null;
+  return document.querySelector<HTMLElement>(target);
 }
 
 onMounted(() => {
-  if (props.fixed || inGroup.value) return
-  const container = resolveContainer(props.container)
-  const root = rootRef.value
-  const parent = root?.parentNode
-  if (!container || !root || !parent) return
-  const placeholder = document.createComment('sn-float-button')
-  parent.insertBefore(placeholder, root)
-  container.appendChild(root)
-  containerHost = { parent, placeholder }
-})
+  if (props.fixed || inGroup.value) return;
+  const container = resolveContainer(props.container);
+  const root = rootRef.value;
+  const parent = root?.parentNode;
+  if (!container || !root || !parent) return;
+  const placeholder = document.createComment('sn-float-button');
+  parent.insertBefore(placeholder, root);
+  container.appendChild(root);
+  containerHost = { parent, placeholder };
+});
 
 onBeforeUnmount(() => {
-  const host = containerHost
-  if (!host) return
-  const root = rootRef.value
-  if (root) host.parent.insertBefore(root, host.placeholder)
-  host.placeholder.remove()
-  containerHost = null
-})
+  const host = containerHost;
+  if (!host) return;
+  const root = rootRef.value;
+  if (root) host.parent.insertBefore(root, host.placeholder);
+  host.placeholder.remove();
+  containerHost = null;
+});
 
 const rootClass = computed(() => [
   'sn-float-button',
@@ -371,18 +363,18 @@ const rootClass = computed(() => [
     'sn-float-button--link': isLink.value,
     'sn-float-button--disabled': props.disabled,
   },
-])
+]);
 
 // ---------- Interaction ----------
 
 function handleClick(event: MouseEvent): void {
   if (props.disabled) {
     // `<a aria-disabled>` still navigates on its own; suppress it explicitly.
-    event.preventDefault()
-    event.stopPropagation()
-    return
+    event.preventDefault();
+    event.stopPropagation();
+    return;
   }
-  emit('click', event)
+  emit('click', event);
 }
 </script>
 
@@ -445,7 +437,10 @@ function handleClick(event: MouseEvent): void {
   font-size: var(--sn-web-font-size-sm, 12px);
   line-height: var(--sn-web-font-line-height-tight, 1.2);
   cursor: pointer;
-  box-shadow: var(--sn-web-shadow-md, 0 4px 12px color-mix(in srgb, var(--sn-web-color-text-primary, #1f2329) 12%, transparent));
+  box-shadow: var(
+    --sn-web-shadow-md,
+    0 4px 12px color-mix(in srgb, var(--sn-web-color-text-primary, #1f2329) 12%, transparent)
+  );
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease,
@@ -512,7 +507,10 @@ function handleClick(event: MouseEvent): void {
   position: static;
   flex: 0 0 auto;
   width: var(--sn-web-float-button-size, 40px);
-  box-shadow: var(--sn-web-shadow-sm, 0 2px 8px color-mix(in srgb, var(--sn-web-color-text-primary, #1f2329) 12%, transparent));
+  box-shadow: var(
+    --sn-web-shadow-sm,
+    0 2px 8px color-mix(in srgb, var(--sn-web-color-text-primary, #1f2329) 12%, transparent)
+  );
 }
 
 /* A square child is the one that genuinely wants the stack's width, because

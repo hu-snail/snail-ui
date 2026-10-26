@@ -25,34 +25,34 @@
  *   <SnTag checkable v-model:checked="on">可选中</SnTag>
  */
 
-import { ref } from 'vue'
-import { useLocale } from '../locales/use-locale'
+import { ref } from 'vue';
+import { useLocale } from '../locales/use-locale';
 
-defineOptions({ name: 'SnTag' })
+defineOptions({ name: 'SnTag' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Semantic type — drives colors. Mirrors n-tag `type`. */
-    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
+    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error';
     /** Tag scale. Mirrors n-tag `size`. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Pill-shaped corners. Mirrors n-tag `round`. */
-    round?: boolean
+    round?: boolean;
     /** Render the close button. Mirrors n-tag `closable`. */
-    closable?: boolean
+    closable?: boolean;
     /** Disabled interactions (no toggle, no close). Mirrors n-tag `disabled`. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Draw the surrounding border. Mirrors n-tag `bordered`. */
-    bordered?: boolean
+    bordered?: boolean;
     /** Custom background color (any CSS color value); overrides the type background. */
-    color?: string | undefined
+    color?: string | undefined;
     /** Click toggles the checked state. Mirrors n-tag `checkable`. */
-    checkable?: boolean
+    checkable?: boolean;
     /** Checked state (v-model:checked). Mirrors n-tag `checked`. */
-    checked?: boolean
+    checked?: boolean;
   }>(),
   {
     type: 'default',
@@ -65,33 +65,33 @@ const props = withDefaults(
     checkable: false,
     checked: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Close button clicked; the tag hides itself afterwards. Mirrors n-tag `onClose`. */
-  (e: 'close'): void
+  (e: 'close'): void;
   /** Checkable toggle — supports v-model:checked. Mirrors n-tag `on-update:checked`. */
-  (e: 'update:checked', checked: boolean): void
-}>()
+  (e: 'update:checked', checked: boolean): void;
+}>();
 
 defineSlots<{
   /** Tag label. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const visible = ref(true)
+const visible = ref(true);
 
 function handleCloseClick(event: MouseEvent): void {
-  if (props.disabled) return
+  if (props.disabled) return;
   // The close button must not trigger the checkable toggle bubbling on the root.
-  event.stopPropagation()
-  emit('close')
-  visible.value = false
+  event.stopPropagation();
+  emit('close');
+  visible.value = false;
 }
 
 function toggleChecked(): void {
-  if (!props.checkable || props.disabled) return
-  emit('update:checked', !props.checked)
+  if (!props.checkable || props.disabled) return;
+  emit('update:checked', !props.checked);
 }
 </script>
 

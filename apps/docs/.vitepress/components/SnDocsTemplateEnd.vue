@@ -13,21 +13,21 @@
  * its entries.
  */
 
-import { computed } from 'vue'
-import { useRoute } from 'vitepress'
-import { SnRadioGroup } from '@snui/vue-web'
-import type { SnRadioOption, SnRadioValue } from '@snui/vue-web'
-import { WEB_ONLY_ROUTES, useTemplateEnd, type TemplateEnd } from '../utils/template-end'
+import { computed } from 'vue';
+import { useRoute } from 'vitepress';
+import { SnRadioGroup } from '@snui/vue-web';
+import type { SnRadioOption, SnRadioValue } from '@snui/vue-web';
+import { WEB_ONLY_ROUTES, useTemplateEnd, type TemplateEnd } from '../utils/template-end';
 
-const { end, setEnd } = useTemplateEnd()
-const route = useRoute()
+const { end, setEnd } = useTemplateEnd();
+const route = useRoute();
 
 const options: SnRadioOption[] = [
   { label: 'Web', value: 'web' },
   { label: 'uni-app', value: 'uni' },
-]
+];
 
-const isEn = computed(() => route.path === '/en' || route.path.startsWith('/en/'))
+const isEn = computed(() => route.path === '/en' || route.path.startsWith('/en/'));
 
 /**
  * True while reading a web-only page with the uni-app filter on — its sidebar
@@ -38,10 +38,10 @@ const offEnd = computed(
   () =>
     end.value === 'uni' &&
     WEB_ONLY_ROUTES.some((path) => route.path === path || route.path === `${path}.html`),
-)
+);
 
 function onChange(value: SnRadioValue): void {
-  if (value === 'web' || value === 'uni') setEnd(value as TemplateEnd)
+  if (value === 'web' || value === 'uni') setEnd(value as TemplateEnd);
 }
 </script>
 

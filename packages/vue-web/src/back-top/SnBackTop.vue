@@ -34,43 +34,39 @@
  *   <SnBackTop :right="40" :bottom="40" :visibility-height="200" />
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { ChevronsUp } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { ChevronsUp } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
 
-defineOptions({ name: 'SnBackTop' })
+defineOptions({ name: 'SnBackTop' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Controlled visibility. When omitted the component manages it
      *  itself from the scroll position (`v-model:show`). */
-    show?: boolean
+    show?: boolean;
     /** Distance from the viewport right edge. */
-    right?: string | number
+    right?: string | number;
     /** Distance from the viewport bottom edge. */
-    bottom?: string | number
+    bottom?: string | number;
     /** Element to render the button into. Accepted for API parity. */
-    to?: HTMLElement | string
+    to?: HTMLElement | string;
     /** Scroll distance after which the button appears. */
-    visibilityHeight?: number
+    visibilityHeight?: number;
     /** Scroll container. Auto-detected when omitted. */
-    listenTo?:
-      | string
-      | HTMLElement
-      | Document
-      | (() => HTMLElement | Document)
+    listenTo?: string | HTMLElement | Document | (() => HTMLElement | Document);
     /** @deprecated Use `listenTo` instead. Mirrors n-back-top `target`. */
-    target?: () => HTMLElement
+    target?: () => HTMLElement;
     /** Called with the new visibility (mirrors `onUpdate:show`). */
-    onUpdateShow?: (value: boolean) => void
+    onUpdateShow?: (value: boolean) => void;
     /** @deprecated Use `onUpdate:show` instead. Mirrors n-back-top `onShow`. */
-    onShow?: () => void
+    onShow?: () => void;
     /** @deprecated Use `onUpdate:show` instead. Mirrors n-back-top `onHide`. */
-    onHide?: () => void
+    onHide?: () => void;
   }>(),
   {
     show: undefined as any,
@@ -84,91 +80,85 @@ const props = withDefaults(
     onShow: undefined as any,
     onHide: undefined as any,
   },
-)
+);
 
 defineSlots<{
   /** Custom button content — replaces the built-in arrow icon. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 // ---------- Deprecation warnings (mirrors n-back-top dev warnings) ----------
 
-if (
-  props.target !== undefined ||
-  props.onShow !== undefined ||
-  props.onHide !== undefined
-) {
+if (props.target !== undefined || props.onShow !== undefined || props.onHide !== undefined) {
   // eslint-disable-next-line no-console
   console.warn(
     '[SnBackTop] `target` / `on-show` / `on-hide` are deprecated; use ' +
       '`listen-to` / `on-update:show` instead.',
-  )
+  );
 }
 
 // ---------- State ----------
 
 /** Inner element that is always rendered so the scroll container can be
  *  detected from its ancestors — mirrors n-back-top's placeholder. */
-const placeholderRef = ref<HTMLElement | null>(null)
+const placeholderRef = ref<HTMLElement | null>(null);
 
 /** Uncontrolled visibility, driven by the scroll position. */
-const uncontrolledShow = ref(false)
+const uncontrolledShow = ref(false);
 
 /** Effective visibility: `show` prop wins when provided. */
-const mergedShow = computed(() =>
-  props.show === undefined ? uncontrolledShow.value : props.show,
-)
+const mergedShow = computed(() => (props.show === undefined ? uncontrolledShow.value : props.show));
 
 /** Whether the first geometry pass has completed. Guards `update:show` so
  *  it does not fire for the initial state. */
-let domInfoReady = false
+let domInfoReady = false;
 
-let scrollElement: HTMLElement | Document | null = null
-let listenerRegistered = false
+let scrollElement: HTMLElement | Document | null = null;
+let listenerRegistered = false;
 
 // ---------- Positioning ----------
 
 function formatLength(value: string | number): string {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 const style = computed(() => ({
   right: formatLength(props.right),
   bottom: formatLength(props.bottom),
-}))
+}));
 
 // ---------- Scroll container resolution ----------
 
 function isScrollable(el: HTMLElement): boolean {
-  const style = window.getComputedStyle(el)
-  return /(auto|scroll|overlay)/.test(style.overflowY)
+  const style = window.getComputedStyle(el);
+  return /(auto|scroll|overlay)/.test(style.overflowY);
 }
 
 /** Walk up from the placeholder to the first scrollable ancestor. */
 function getScrollParent(el: HTMLElement | null): HTMLElement | Document | null {
-  let node: HTMLElement | null = el?.parentElement ?? null
+  let node: HTMLElement | null = el?.parentElement ?? null;
   while (node) {
     if (node === document.body || node === document.documentElement) {
-      return document
+      return document;
     }
-    if (isScrollable(node)) return node
-    node = node.parentElement
+    if (isScrollable(node)) return node;
+    node = node.parentElement;
   }
-  return document
+  return document;
 }
 
 function resolveScrollElement(): HTMLElement | Document | null {
   // `target` is the deprecated spelling of `listenTo`.
-  if (props.target) return props.target()
+  if (props.target) return props.target();
 
-  const { listenTo } = props
-  if (typeof listenTo === 'function') return listenTo()
+  const { listenTo } = props;
+  if (typeof listenTo === 'function') return listenTo();
   if (typeof listenTo === 'string') {
-    return document.querySelector<HTMLElement>(listenTo)
+    return document.querySelector<HTMLElement>(listenTo);
   }
-  if (listenTo) return listenTo
+  if (listenTo) return listenTo;
 
-  return getScrollParent(placeholderRef.value)
+  return getScrollParent(placeholderRef.value);
 }
 
 // ---------- Scroll handling ----------
@@ -182,80 +172,85 @@ function resolveScrollElement(): HTMLElement | Document | null {
  * Mirrors naive-ui's own `isDocument()` helper.
  */
 function isDocumentLike(el: unknown): el is Document {
-  return (el as Node | null)?.nodeName === '#document'
+  return (el as Node | null)?.nodeName === '#document';
 }
 
 function readScrollTop(): number {
-  if (!scrollElement) return 0
+  if (!scrollElement) return 0;
   return isDocumentLike(scrollElement)
     ? document.documentElement.scrollTop || window.scrollY
-    : scrollElement.scrollTop
+    : scrollElement.scrollTop;
 }
 
 function handleScroll(): void {
-  const scrollTop = readScrollTop()
-  const next = scrollTop >= props.visibilityHeight
-  uncontrolledShow.value = next
+  const scrollTop = readScrollTop();
+  const next = scrollTop >= props.visibilityHeight;
+  uncontrolledShow.value = next;
   if (!domInfoReady) {
     // Defer so the initial measurement does not emit `update:show`.
     void Promise.resolve().then(() => {
-      domInfoReady = true
-    })
+      domInfoReady = true;
+    });
   }
 }
 
 /** Resolve the element that actually scrolls back to the top. */
 function resolveScrollTarget(): HTMLElement | null {
-  return isDocumentLike(scrollElement) ? document.documentElement : scrollElement
+  return isDocumentLike(scrollElement) ? document.documentElement : scrollElement;
 }
 
 function handleClick(): void {
-  resolveScrollTarget()?.scrollTo({ top: 0, behavior: 'smooth' })
+  resolveScrollTarget()?.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ---------- Controlled-mode sync ----------
 
 watch(mergedShow, (value) => {
-  if (!domInfoReady) return
-  props.onUpdateShow?.(value)
+  if (!domInfoReady) return;
+  props.onUpdateShow?.(value);
   // Deprecated callbacks mirror n-back-top: `onShow` fires on becoming
   // visible, `onHide` on every change (matching the upstream quirk).
-  if (value) props.onShow?.()
-  props.onHide?.()
-})
+  if (value) props.onShow?.();
+  props.onHide?.();
+});
 
 // ---------- Lifecycle ----------
 
 function init(): void {
-  if (listenerRegistered) return
-  listenerRegistered = true
+  if (listenerRegistered) return;
+  listenerRegistered = true;
 
-  scrollElement = resolveScrollElement()
-  if (!scrollElement) return
+  scrollElement = resolveScrollElement();
+  if (!scrollElement) return;
 
-  scrollElement.addEventListener('scroll', handleScroll)
-  handleScroll()
+  scrollElement.addEventListener('scroll', handleScroll);
+  handleScroll();
 }
 
-onMounted(init)
+onMounted(init);
 // Per AGENTS.md §41 + §82 the scroll listener is always removed on unmount.
 onBeforeUnmount(() => {
-  if (!listenerRegistered || !scrollElement) return
-  scrollElement.removeEventListener('scroll', handleScroll)
-  scrollElement = null
-  listenerRegistered = false
-})
+  if (!listenerRegistered || !scrollElement) return;
+  scrollElement.removeEventListener('scroll', handleScroll);
+  scrollElement = null;
+  listenerRegistered = false;
+});
 
 defineExpose({
   /** Programmatically scroll the container back to the top. */
   scrollToTop: handleClick,
-})
+});
 </script>
 
 <template>
   <!-- Placeholder: never visible, but gives us a DOM anchor for detecting
        the nearest scrollable ancestor (mirrors n-back-top). -->
-  <div ref="placeholderRef" class="sn-back-top-placeholder" style="display: none" aria-hidden="true" />
+  <div
+    ref="placeholderRef"
+    class="sn-back-top-placeholder"
+    style="display: none"
+    aria-hidden="true"
+  />
 
   <Transition name="sn-back-top-fade">
     <button

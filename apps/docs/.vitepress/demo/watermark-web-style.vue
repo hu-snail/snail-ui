@@ -6,19 +6,19 @@
  * Note: `fontColor` is painted into a canvas tile, so it stays a real CSS
  * colour value; the surrounding chrome uses `--sn-web-*` tokens.
  */
-import { ref } from 'vue'
-import { SnWatermark } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnWatermark } from '@snui/vue-web';
 
-const fontSize = ref(14)
-const rotate = ref(-24)
-const opacity = ref(0.5)
-const fontColor = ref('rgba(14, 128, 235, 0.32)')
+const fontSize = ref(14);
+const rotate = ref(-24);
+const opacity = ref(0.5);
+const fontColor = ref('rgba(14, 128, 235, 0.32)');
 
 const colorPresets = [
   { label: '品牌蓝', value: 'rgba(14, 128, 235, 0.32)' },
   { label: '中性灰', value: 'rgba(96, 98, 122, 0.34)' },
   { label: '警示红', value: 'rgba(208, 48, 80, 0.3)' },
-]
+];
 </script>
 
 <template>
@@ -70,8 +70,8 @@ const colorPresets = [
       <div class="watermark-style-demo__panel">
         <h5>样式定制预览</h5>
         <p>
-          字号、行高、旋转、透明度与字色都可以实时调整；瓦片尺寸固定为
-          200 × 120，文字始终以瓦片中心旋转。
+          字号、行高、旋转、透明度与字色都可以实时调整；瓦片尺寸固定为 200 ×
+          120，文字始终以瓦片中心旋转。
         </p>
       </div>
     </SnWatermark>

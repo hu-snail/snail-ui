@@ -27,28 +27,28 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| content | string | '' | 水印文字内容 |
-| image | string | '' | 水印图片地址 |
-| imageHeight | number | 100 | 图片高度（px） |
-| imageWidth | number | 100 | 图片宽度（px） |
-| gutterX | number | 0 | X 轴间距（px） |
-| gutterY | number | 0 | Y 轴间距（px） |
-| width | number | 100 | 单个瓦片宽度（px） |
-| height | number | 100 | 单个瓦片高度（px） |
-| fullScreen | boolean | true | 是否铺满整个视口 |
-| color | string | '' | 水印文字颜色 |
-| size | number | 14 | 水印文字大小（px） |
-| fontStyle | 'normal' \| 'italic' \| 'oblique' | 'normal' | 水印字体样式 |
-| fontWeight | string \| number | 'normal' | 水印字体粗细 |
-| fontFamily | string | 'PingFang SC' | 水印字体系列 |
-| rotate | number | -25 | 水印旋转角度 |
-| zIndex | number | 1100 | 水印层级 |
-| opacity | number | — | 水印透明度，0–1 |
-| layout | 'grid' \| 'staggered' | 'grid' | 水印布局 |
-| customStyle | string | '' | 自定义根节点样式 |
-| customClass | string | '' | 自定义根节点样式类 |
+| 属性        | 类型                              | 默认值        | 说明               |
+| ----------- | --------------------------------- | ------------- | ------------------ |
+| content     | string                            | ''            | 水印文字内容       |
+| image       | string                            | ''            | 水印图片地址       |
+| imageHeight | number                            | 100           | 图片高度（px）     |
+| imageWidth  | number                            | 100           | 图片宽度（px）     |
+| gutterX     | number                            | 0             | X 轴间距（px）     |
+| gutterY     | number                            | 0             | Y 轴间距（px）     |
+| width       | number                            | 100           | 单个瓦片宽度（px） |
+| height      | number                            | 100           | 单个瓦片高度（px） |
+| fullScreen  | boolean                           | true          | 是否铺满整个视口   |
+| color       | string                            | ''            | 水印文字颜色       |
+| size        | number                            | 14            | 水印文字大小（px） |
+| fontStyle   | 'normal' \| 'italic' \| 'oblique' | 'normal'      | 水印字体样式       |
+| fontWeight  | string \| number                  | 'normal'      | 水印字体粗细       |
+| fontFamily  | string                            | 'PingFang SC' | 水印字体系列       |
+| rotate      | number                            | -25           | 水印旋转角度       |
+| zIndex      | number                            | 1100          | 水印层级           |
+| opacity     | number                            | —             | 水印透明度，0–1    |
+| layout      | 'grid' \| 'staggered'             | 'grid'        | 水印布局           |
+| customStyle | string                            | ''            | 自定义根节点样式   |
+| customClass | string                            | ''            | 自定义根节点样式类 |
 
 ## Events
 
@@ -56,15 +56,15 @@
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                                       |
+| ------- | ------------------------------------------ |
 | default | 自定义瓦片内容（替代 `content` / `image`） |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-text-disabled | 默认水印墨色 |
+| 变量                           | 用途         |
+| ------------------------------ | ------------ |
+| --sn-mp-color-text-disabled    | 默认水印墨色 |
 | --sn-mp-font-line-height-tight | 瓦片文字行高 |
 
 ## 无障碍
@@ -74,7 +74,6 @@
 ## 暗色模式
 
 默认墨色走 `--sn-mp-color-text-disabled`，该变量在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 > 若通过 `color` 传了自定义色值，该值不会随主题翻转 —— 暗色下请改用 `var(--sn-mp-*)` 形式。
 

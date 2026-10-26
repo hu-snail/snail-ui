@@ -31,36 +31,36 @@
 如需显式 import：
 
 ```ts
-import { SnTour } from '@snui/uni/components/sn-tour/sn-tour.vue'
+import { SnTour } from '@snui/uni/components/sn-tour/sn-tour.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | 是否显示引导组件 |
-| `steps` | `TourStep[]` | `[]` | 引导步骤列表 |
-| `current` | `number` | `0` | 当前步骤索引 |
-| `mask` | `boolean` | `true` | 是否显示蒙版 |
-| `maskColor` | `string` | `''` | 蒙版颜色（内联覆盖） |
-| `offset` | `number` | `20` | 面板与高亮区域的间距（未实现，见下） |
-| `duration` | `number` | `300` | 动画时长（ms） |
-| `borderRadius` | `number` | `4` | 高亮区域圆角 |
-| `padding` | `number` | `8` | 高亮区域内边距（未实现，见下） |
-| `prevText` | `string` | `'上一步'` | 上一步按钮文案 |
-| `nextText` | `string` | `'下一步'` | 下一步按钮文案 |
-| `skipText` | `string` | `'跳过'` | 跳过按钮文案 |
-| `finishText` | `string` | `'完成'` | 完成按钮文案 |
-| `bottomSafetyOffset` | `number` | `100` | 底部安全偏移量（未实现，见下） |
-| `topSafetyOffset` | `number` | `0` | 顶部安全偏移量（未实现，见下） |
-| `customNav` | `boolean` | `false` | 自定义导航栏模式（未实现，见下） |
-| `clickMaskNext` | `boolean` | `false` | 点击遮罩层是否进入下一步 |
-| `highlightStyle` | `Record<string, string>` | `{}` | 默认高亮区域样式（未实现，见下） |
-| `zIndex` | `number` | `undefined` | 层级 |
-| `showTourButtons` | `boolean` | `true` | 是否显示引导按钮 |
-| `missingStrategy` | `'skip' \| 'stop' \| 'hide'` | `'stop'` | 目标缺失策略（未实现，见下） |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性                 | 类型                         | 默认值      | 说明                                 |
+| -------------------- | ---------------------------- | ----------- | ------------------------------------ |
+| `modelValue`         | `boolean`                    | `false`     | 是否显示引导组件                     |
+| `steps`              | `TourStep[]`                 | `[]`        | 引导步骤列表                         |
+| `current`            | `number`                     | `0`         | 当前步骤索引                         |
+| `mask`               | `boolean`                    | `true`      | 是否显示蒙版                         |
+| `maskColor`          | `string`                     | `''`        | 蒙版颜色（内联覆盖）                 |
+| `offset`             | `number`                     | `20`        | 面板与高亮区域的间距（未实现，见下） |
+| `duration`           | `number`                     | `300`       | 动画时长（ms）                       |
+| `borderRadius`       | `number`                     | `4`         | 高亮区域圆角                         |
+| `padding`            | `number`                     | `8`         | 高亮区域内边距（未实现，见下）       |
+| `prevText`           | `string`                     | `'上一步'`  | 上一步按钮文案                       |
+| `nextText`           | `string`                     | `'下一步'`  | 下一步按钮文案                       |
+| `skipText`           | `string`                     | `'跳过'`    | 跳过按钮文案                         |
+| `finishText`         | `string`                     | `'完成'`    | 完成按钮文案                         |
+| `bottomSafetyOffset` | `number`                     | `100`       | 底部安全偏移量（未实现，见下）       |
+| `topSafetyOffset`    | `number`                     | `0`         | 顶部安全偏移量（未实现，见下）       |
+| `customNav`          | `boolean`                    | `false`     | 自定义导航栏模式（未实现，见下）     |
+| `clickMaskNext`      | `boolean`                    | `false`     | 点击遮罩层是否进入下一步             |
+| `highlightStyle`     | `Record<string, string>`     | `{}`        | 默认高亮区域样式（未实现，见下）     |
+| `zIndex`             | `number`                     | `undefined` | 层级                                 |
+| `showTourButtons`    | `boolean`                    | `true`      | 是否显示引导按钮                     |
+| `missingStrategy`    | `'skip' \| 'stop' \| 'hide'` | `'stop'`    | 目标缺失策略（未实现，见下）         |
+| `customClass`        | `string`                     | `''`        | 根节点自定义类名                     |
+| `customStyle`        | `string`                     | `''`        | 根节点自定义 inline style            |
 
 `TourStep` 结构：`{ element?: string, content?: string, padding?: number, offset?: number, placement?: 'auto' | 'top' | 'bottom' | 'left' | 'right' }`。
 
@@ -68,41 +68,41 @@ import { SnTour } from '@snui/uni/components/sn-tour/sn-tour.vue'
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 显隐状态变化时触发 | `(value: boolean)` |
-| `update:current` | 当前步骤变化时触发 | `(value: number)` |
-| `change` | 当前步骤变化时触发 | `({ current })` |
-| `prev` | 点击上一步时触发 | `({ prevCurrent, current, total, isElementInTop })` |
-| `next` | 点击下一步时触发 | `({ prevCurrent, current, total, isElementInTop })` |
-| `finish` | 点击完成时触发 | `({ current, total })` |
-| `skip` | 点击跳过时触发 | `({ current, total })` |
-| `error` | 目标元素查询失败时触发 | `({ message, element })` |
+| 事件名              | 说明                   | 参数                                                |
+| ------------------- | ---------------------- | --------------------------------------------------- |
+| `update:modelValue` | 显隐状态变化时触发     | `(value: boolean)`                                  |
+| `update:current`    | 当前步骤变化时触发     | `(value: number)`                                   |
+| `change`            | 当前步骤变化时触发     | `({ current })`                                     |
+| `prev`              | 点击上一步时触发       | `({ prevCurrent, current, total, isElementInTop })` |
+| `next`              | 点击下一步时触发       | `({ prevCurrent, current, total, isElementInTop })` |
+| `finish`            | 点击完成时触发         | `({ current, total })`                              |
+| `skip`              | 点击跳过时触发         | `({ current, total })`                              |
+| `error`             | 目标元素查询失败时触发 | `({ message, element })`                            |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明                                              |
+| --------- | ------------------------------------------------- |
 | `default` | 自定义面板内容，作用域 `{ step, current, total }` |
-| `footer` | 自定义底部操作区，作用域同上 |
+| `footer`  | 自定义底部操作区，作用域同上                      |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | 蒙版底色 |
-| `--sn-mp-color-background-elevated` | 面板底色 |
-| `--sn-mp-color-background-surface` | 按钮底色 |
-| `--sn-mp-color-border-default` | 次要按钮描边 |
-| `--sn-mp-color-text-primary` | 正文与次要按钮文字色 |
-| `--sn-mp-color-text-secondary` | 跳过按钮文字色 |
-| `--sn-mp-color-text-tertiary` | 进度文字色 |
-| `--sn-mp-color-action-primary` | 主按钮底色 |
-| `--sn-mp-color-text-on-primary` | 主按钮文字色 |
-| `--sn-mp-shadow-lg` | 面板投影 |
-| `--sn-mp-font-size-md` / `--sn-mp-font-size-sm` | 正文 / 按钮字号 |
-| `--sn-mp-radius-md` | 按钮圆角 |
-| `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 面板间距 / 面板内边距 |
+| 变量                                            | 用途                  |
+| ----------------------------------------------- | --------------------- |
+| `--sn-mp-color-background-overlay`              | 蒙版底色              |
+| `--sn-mp-color-background-elevated`             | 面板底色              |
+| `--sn-mp-color-background-surface`              | 按钮底色              |
+| `--sn-mp-color-border-default`                  | 次要按钮描边          |
+| `--sn-mp-color-text-primary`                    | 正文与次要按钮文字色  |
+| `--sn-mp-color-text-secondary`                  | 跳过按钮文字色        |
+| `--sn-mp-color-text-tertiary`                   | 进度文字色            |
+| `--sn-mp-color-action-primary`                  | 主按钮底色            |
+| `--sn-mp-color-text-on-primary`                 | 主按钮文字色          |
+| `--sn-mp-shadow-lg`                             | 面板投影              |
+| `--sn-mp-font-size-md` / `--sn-mp-font-size-sm` | 正文 / 按钮字号       |
+| `--sn-mp-radius-md`                             | 按钮圆角              |
+| `--sn-mp-spacing-3` / `--sn-mp-spacing-4`       | 面板间距 / 面板内边距 |
 
 ## 无障碍
 
@@ -116,7 +116,6 @@ import { SnTour } from '@snui/uni/components/sn-tour/sn-tour.vue'
 `sn-tour` 的全部颜色来自 `--sn-mp-color-*`，没有浅色 `var()` 兜底，因此在 `.sn-theme-dark` 下自动适配：面板底色切到暗色 elevated 表面，蒙版在暗色下保持半透明近黑，主按钮保持主色填充与白色文字。
 
 用 sn-config-provider 的 theme 设为 dark 包裹即可验证：
-
 
 ## 相关
 

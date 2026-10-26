@@ -19,39 +19,39 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `show` | `boolean` | `false` | 是否展示遮罩层 |
-| `duration` | `number \| boolean \| Record<string, number>` | `300` | 动画时长；`false` 关闭动画，对象可分别设置 enter / leave |
-| `lockScroll` | `boolean` | `true` | 是否锁定背景滚动 |
-| `zIndex` | `number` | `10` | 层级 |
-| `customStyle` | `string` | `''` | 根节点样式 |
-| `customClass` | `string` | `''` | 根节点样式类名 |
+| 属性          | 类型                                          | 默认值  | 说明                                                     |
+| ------------- | --------------------------------------------- | ------- | -------------------------------------------------------- |
+| `show`        | `boolean`                                     | `false` | 是否展示遮罩层                                           |
+| `duration`    | `number \| boolean \| Record<string, number>` | `300`   | 动画时长；`false` 关闭动画，对象可分别设置 enter / leave |
+| `lockScroll`  | `boolean`                                     | `true`  | 是否锁定背景滚动                                         |
+| `zIndex`      | `number`                                      | `10`    | 层级                                                     |
+| `customStyle` | `string`                                      | `''`    | 根节点样式                                               |
+| `customClass` | `string`                                      | `''`    | 根节点样式类名                                           |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `click` | 点击遮罩层时触发 | `(event: Event)` |
-| `before-enter` | 进入动画开始前触发 | — |
-| `enter` | 进入动画开始时触发 | — |
-| `after-enter` | 进入动画结束后触发 | — |
-| `before-leave` | 离开动画开始前触发 | — |
-| `leave` | 离开动画开始时触发 | — |
-| `after-leave` | 离开动画结束后触发 | — |
+| 事件名         | 说明               | 参数             |
+| -------------- | ------------------ | ---------------- |
+| `click`        | 点击遮罩层时触发   | `(event: Event)` |
+| `before-enter` | 进入动画开始前触发 | —                |
+| `enter`        | 进入动画开始时触发 | —                |
+| `after-enter`  | 进入动画结束后触发 | —                |
+| `before-leave` | 离开动画开始前触发 | —                |
+| `leave`        | 离开动画开始时触发 | —                |
+| `after-leave`  | 离开动画结束后触发 | —                |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明                   |
+| --------- | ---------------------- |
 | `default` | 遮罩层内容（居中显示） |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
+| 变量                               | 用途              |
+| ---------------------------------- | ----------------- |
 | `--sn-mp-color-background-overlay` | 遮罩底色（scrim） |
-| `--sn-mp-color-text-on-primary` | 遮罩内内容文字色 |
+| `--sn-mp-color-text-on-primary`    | 遮罩内内容文字色  |
 
 ## 无障碍
 
@@ -62,7 +62,6 @@
 ## 暗色模式
 
 遮罩底色走 `--sn-mp-color-background-overlay`，该变量在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里已覆盖（暗色下为更深的近黑），因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

@@ -1,19 +1,14 @@
 <script setup lang="ts">
 /** Demo: SnPagination — basic paging + total count + quick jumper. */
-import { ref } from 'vue'
-import { SnPagination } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnPagination } from '@snui/vue-web';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>
   <div class="pagination-demo">
-    <SnPagination
-      v-model:page="current"
-      :item-count="97"
-      show-total
-      show-quick-jumper
-    />
+    <SnPagination v-model:page="current" :item-count="97" show-total show-quick-jumper />
     <p class="pagination-demo__hint">Page {{ current }} (controlled via v-model:page)</p>
   </div>
 </template>

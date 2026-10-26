@@ -6,10 +6,10 @@
  * visibility state. `undefined` from `inject` means the content was rendered
  * outside a drawer, which is a usage error.
  */
-export const SN_DRAWER_INJECTION_KEY = 'sn-drawer-api'
+export const SN_DRAWER_INJECTION_KEY = 'sn-drawer-api';
 
 /** What `SnDrawer` exposes to a descendant `SnDrawerContent`. */
 export interface SnDrawerApi {
   /** Ask the parent drawer to change visibility. */
-  doUpdateShow: (show: boolean) => void
+  doUpdateShow: (show: boolean) => void;
 }

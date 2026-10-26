@@ -33,17 +33,17 @@
 如需显式 import：
 
 ```ts
-import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue'
+import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `zIndex` | `number` | `1` | 层级 |
-| `offsetTop` | `number` | `0` | 吸顶距离（px） |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型     | 默认值 | 说明                      |
+| ------------- | -------- | ------ | ------------------------- |
+| `zIndex`      | `number` | `1`    | 层级                      |
+| `offsetTop`   | `number` | `0`    | 吸顶距离（px）            |
+| `customClass` | `string` | `''`   | 根节点自定义类名          |
+| `customStyle` | `string` | `''`   | 根节点自定义 inline style |
 
 ## Events
 
@@ -51,14 +51,14 @@ import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue'
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明           |
+| --------- | -------------- |
 | `default` | 需要吸顶的内容 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
+| 变量                               | 用途                         |
+| ---------------------------------- | ---------------------------- |
 | `--sn-mp-color-background-surface` | 吸顶容器底色（避免内容透出） |
 
 ## 无障碍
@@ -72,7 +72,6 @@ import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue'
 `sn-sticky` 只消费 `--sn-mp-color-background-surface` 一个颜色令牌，没有浅色 `var()` 兜底，因此在 `.sn-theme-dark` 下底色自动切换为暗色表面，吸顶时不会透出下层亮色内容。
 
 用 sn-config-provider 的 theme 设为 dark 包裹即可验证：
-
 
 ## 相关
 

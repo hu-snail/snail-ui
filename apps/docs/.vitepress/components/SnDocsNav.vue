@@ -18,32 +18,35 @@
  * Active route detection uses vitepress's `useRoute()` to set SnMenu v-model.
  */
 
-import { computed } from 'vue'
-import { useData, useRoute, useRouter } from 'vitepress'
-import { Moon, Search, Snail, Sun } from 'lucide-vue-next'
-import { SnButton, SnConfigProvider, SnIcon, SnMenu } from '@snui/vue-web'
-import type { SnMenuOption } from '@snui/vue-web'
-import SnDocsSidebarToggle from './SnDocsSidebarToggle.vue'
-import { useSidebarCollapse } from '../utils/sidebar-collapse'
+import { computed } from 'vue';
+import { useData, useRoute, useRouter } from 'vitepress';
+import { Moon, Search, Snail, Sun } from 'lucide-vue-next';
+import { SnButton, SnConfigProvider, SnIcon, SnMenu } from '@snui/vue-web';
+import type { SnMenuOption } from '@snui/vue-web';
+import SnDocsSidebarToggle from './SnDocsSidebarToggle.vue';
+import { useSidebarCollapse } from '../utils/sidebar-collapse';
 
-interface NavItem { text: string; link: string }
+interface NavItem {
+  text: string;
+  link: string;
+}
 
 const props = withDefaults(
   defineProps<{
     /** Top-nav links (mirrors vitepress `themeConfig.nav`). */
-    items?: NavItem[]
+    items?: NavItem[];
   }>(),
   {
     items: () => [],
   },
-)
+);
 
-const route = useRoute()
-const router = useRouter()
-const { isDark } = useData()
+const route = useRoute();
+const router = useRouter();
+const { isDark } = useData();
 
 /** Sidebar state — the navbar hosts the expand control while collapsed. */
-const { collapsed } = useSidebarCollapse()
+const { collapsed } = useSidebarCollapse();
 
 /** Map nav items → SnMenu options. Active state is derived from useRoute(). */
 const menuOptions = computed<SnMenuOption[]>(() =>
@@ -52,48 +55,53 @@ const menuOptions = computed<SnMenuOption[]>(() =>
     label: it.text,
     href: it.link,
   })),
-)
+);
 
 /** Active key = longest matching nav link prefix. */
 const activeKey = computed<string | null>(() => {
-  const path = route.path
-  let best: string | null = null
+  const path = route.path;
+  let best: string | null = null;
   for (const it of props.items ?? []) {
     if (path === it.link || path.startsWith(`${it.link}/`) || path === `${it.link}.html`) {
-      if (best === null || it.link.length > best.length) best = it.link
+      if (best === null || it.link.length > best.length) best = it.link;
     }
   }
-  return best
-})
+  return best;
+});
 
 /** Toggle dark mode by inverting the reactive `isDark` ref from vitepress.
  * Vitepress handles persistence (localStorage) + `<html class="dark">` for us,
  * so we just flip the boolean. */
 function toggleTheme(): void {
-  isDark.value = !isDark.value
+  isDark.value = !isDark.value;
 }
 
 function openSearch(): void {
   // Trigger vitepress's built-in search modal via keyboard shortcut handler.
-  const event = new KeyboardEvent('keydown', { key: 'k', metaKey: true, ctrlKey: true, bubbles: true })
-  window.dispatchEvent(event)
+  const event = new KeyboardEvent('keydown', {
+    key: 'k',
+    metaKey: true,
+    ctrlKey: true,
+    bubbles: true,
+  });
+  window.dispatchEvent(event);
 }
 
 /** Locale switch — the docs site ships a zh root locale plus an `/en/` locale. */
-const isEn = computed<boolean>(() => route.path === '/en' || route.path.startsWith('/en/'))
+const isEn = computed<boolean>(() => route.path === '/en' || route.path.startsWith('/en/'));
 
 /** Counterpart URL of the current page in the other locale. */
 const localeSwitchHref = computed<string>(() => {
-  const clean = route.path.replace(/\.html$/, '').replace(/\/+$/, '') || '/'
-  const inEn = clean === '/en' || clean.startsWith('/en/')
-  const bare = inEn ? clean.slice('/en'.length) || '/' : clean
-  if (isEn.value) return bare === '/' ? '/' : bare
-  return bare === '/' ? '/en/' : `/en${bare}`
-})
+  const clean = route.path.replace(/\.html$/, '').replace(/\/+$/, '') || '/';
+  const inEn = clean === '/en' || clean.startsWith('/en/');
+  const bare = inEn ? clean.slice('/en'.length) || '/' : clean;
+  if (isEn.value) return bare === '/' ? '/' : bare;
+  return bare === '/' ? '/en/' : `/en${bare}`;
+});
 
 /** Show the *target* locale — the usual switcher convention. */
-const localeSwitchLabel = computed<string>(() => (isEn.value ? '中文' : 'EN'))
-const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' : 'Switch to English'))
+const localeSwitchLabel = computed<string>(() => (isEn.value ? '中文' : 'EN'));
+const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' : 'Switch to English'));
 
 /**
  * Switch locale through VitePress's client router instead of letting the
@@ -113,13 +121,14 @@ const localeSwitchAria = computed<string>(() => (isEn.value ? '切换到中文' 
  * to the browser so "open in new tab" keeps working.
  */
 function onLocaleClick(event: MouseEvent): void {
-  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0)
+    return;
   // VitePress's delegated listener (capture phase on `window`) runs first once
   // the app has hydrated and already called `preventDefault()` + `router.go()`.
   // Skip in that case to avoid a second, redundant page-module fetch.
-  if (event.defaultPrevented) return
-  event.preventDefault()
-  void router.go(localeSwitchHref.value)
+  if (event.defaultPrevented) return;
+  event.preventDefault();
+  void router.go(localeSwitchHref.value);
 }
 </script>
 
@@ -140,7 +149,13 @@ function onLocaleClick(event: MouseEvent): void {
         />
       </div>
       <div class="sn-docs-nav__actions">
-        <SnButton class="sn-docs-nav__action sn-docs-nav__search" variant="ghost" size="small" aria-label="Search docs" @click="openSearch">
+        <SnButton
+          class="sn-docs-nav__action sn-docs-nav__search"
+          variant="ghost"
+          size="small"
+          aria-label="Search docs"
+          @click="openSearch"
+        >
           <SnIcon class="sn-docs-nav__action-icon" :icon="Search" />
           <span class="sn-docs-nav__search-label">{{ isEn ? 'Search docs' : '搜索文档' }}</span>
           <span class="sn-docs-nav__kbd" aria-hidden="true">⌘K</span>
@@ -156,7 +171,13 @@ function onLocaleClick(event: MouseEvent): void {
         >
           {{ localeSwitchLabel }}
         </SnButton>
-        <SnButton class="sn-docs-nav__action" variant="ghost" size="small" aria-label="Toggle theme" @click="toggleTheme">
+        <SnButton
+          class="sn-docs-nav__action"
+          variant="ghost"
+          size="small"
+          aria-label="Toggle theme"
+          @click="toggleTheme"
+        >
           <SnIcon class="sn-docs-nav__action-icon" :icon="isDark ? Sun : Moon" />
         </SnButton>
       </div>
@@ -230,7 +251,8 @@ function onLocaleClick(event: MouseEvent): void {
   line-height: 32px;
   color: var(--sn-web-color-text-secondary);
 }
-.sn-docs-nav__menu :deep(.sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active)) {
+.sn-docs-nav__menu
+  :deep(.sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active)) {
   background: var(--sn-web-color-background-subtle);
   color: var(--sn-web-color-text-primary);
 }

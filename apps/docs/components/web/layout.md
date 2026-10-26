@@ -18,22 +18,22 @@
 
 ### SnLayout Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| hasSider | `boolean` | `false` | 横向编排（含 Sider） |
-| position | `'static'\|'absolute'` | `'static'` | absolute 时铺满父容器 |
-| contentStyle / headerStyle / footerStyle / siderStyle | `StyleValue` | — | 四路样式透传（snail 扩展） |
+| Prop                                                  | 类型                   | 默认值     | 说明                       |
+| ----------------------------------------------------- | ---------------------- | ---------- | -------------------------- |
+| hasSider                                              | `boolean`              | `false`    | 横向编排（含 Sider）       |
+| position                                              | `'static'\|'absolute'` | `'static'` | absolute 时铺满父容器      |
+| contentStyle / headerStyle / footerStyle / siderStyle | `StyleValue`           | —          | 四路样式透传（snail 扩展） |
 
 ### SnLayoutSider Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| width | `number` | `272` | 展开宽度 |
-| collapsedWidth | `number` | `64` | 折叠宽度 |
-| collapsed | `boolean \| undefined` | — | v-model:collapsed（受控/非受控） |
-| collapseMode | `'transform'\|'width'` | `'transform'` | transform 平移保 DOM / width 重排 |
-| showTrigger | `boolean` | `false` | 内置折叠触发器 |
-| bordered / reverse | `boolean` | `false` | 边框 / 右侧栏 |
+| Prop               | 类型                   | 默认值        | 说明                              |
+| ------------------ | ---------------------- | ------------- | --------------------------------- |
+| width              | `number`               | `272`         | 展开宽度                          |
+| collapsedWidth     | `number`               | `64`          | 折叠宽度                          |
+| collapsed          | `boolean \| undefined` | —             | v-model:collapsed（受控/非受控）  |
+| collapseMode       | `'transform'\|'width'` | `'transform'` | transform 平移保 DOM / width 重排 |
+| showTrigger        | `boolean`              | `false`       | 内置折叠触发器                    |
+| bordered / reverse | `boolean`              | `false`       | 边框 / 右侧栏                     |
 
 事件：`update:collapsed`。Header 高 64 / Footer 高 40（token 可调）。
 

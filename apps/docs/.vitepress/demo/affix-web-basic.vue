@@ -2,10 +2,10 @@
 /**
  * affix-web-basic — a toolbar pinned to the top of a scrollable container.
  */
-import { ref } from 'vue'
-import { SnAffix, SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAffix, SnButton } from '@snui/vue-web';
 
-const scrollRef = ref<HTMLElement | null>(null)
+const scrollRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>

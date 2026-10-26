@@ -80,87 +80,87 @@ Cross-end controlled input for uni-app (H5 / WeChat MP / App). Geometry in rpx, 
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `''` | v-model value. |
-| `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | Native input type. |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | rpx height / font-size. |
-| `placeholder` | `string` | `''` | Placeholder text. |
-| `placeholderStyle` | `string` | `''` | Inline CSS injected into `::placeholder`. |
-| `placeholderClass` | `string` | `''` | Extra class on placeholder. |
-| `disabled` | `boolean` | `false` | Disabled. |
-| `readonly` | `boolean` | `false` | Read-only. |
-| `required` | `boolean` | `false` | aria-required. |
-| `maxlength` / `minlength` | `number` | — | Forwarded. |
-| `showCount` | `boolean` | `false` | Show counter. |
-| `showWordLimit` | `boolean` | `false` | `showCount` alias. |
-| `clearable` | `boolean` | `false` | × button. |
-| `clearTrigger` | `'always' \| 'focus'` | `'always'` | × button visibility trigger. |
-| `focusWhenClear` | `boolean` | `true` | Auto-refocus after × click (uni-side placeholder — soft-keyboard dismissal). |
-| `showPassword` | `boolean` | `false` | Eye toggle on `type='password'`. |
-| `prefixIcon` | `string` | `''` | Front icon name (resolved via SnIcon). |
-| `suffixIcon` | `string` | `''` | Tail icon name. |
-| `iconPrefix` | `string` | `''` | Front icon CSS class (bypass SnIcon). |
-| `iconSuffix` | `string` | `''` | Tail icon CSS class. |
-| `cssIcon` | `boolean \| string` | `false` | `true` treats prefix/suffix icon as CSS class. |
-| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | Border + aria-invalid. |
-| `min` / `max` / `step` | `number` | — | Numeric bounds. |
-| `rows` | `number` | `3` | Textarea rows. |
-| `border` | `'all' \| 'bottom' \| 'none'` | `'all'` | Border mode (2rpx). |
-| `bordered` *(deprecated)* | `boolean` | `true` | Alias: `true / false` ↔ `'all' / 'none'`. |
-| `bg` | `'surface' \| 'transparent' \| 'soft'` | `'surface'` | Background tone. |
-| `customBg` | `string` | `''` | Inline bg override. |
-| `radius` | `'default' \| 'pill' \| 'square'` | `'default'` | Radius preset. |
-| `alignRight` | `boolean` | `false` | Right-align value. |
-| `compact` | `boolean` | `false` | Compact layout. |
-| `focus` | `boolean` | `false` | Auto-focus on mount. |
-| `inputmode` | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'` | Soft-keyboard hint. |
-| `customInputClass` | `string` | `''` | Inner `<input>` / `<textarea>` class. |
-| `customClass` | `string` | `''` | Root class. |
-| `customStyle` | `string \| Record<string,string>` | `''` | Root inline style. |
-| `error` | `boolean` | `false` | Error chrome: `sn-input--error` class + `aria-invalid` (same visual as `status="error"`). |
+| Prop                      | Type                                                                                                                                              | Default     | Description                                                                               |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------- |
+| `modelValue`              | `string \| number`                                                                                                                                | `''`        | v-model value.                                                                            |
+| `type`                    | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'`    | Native input type.                                                                        |
+| `size`                    | `'small' \| 'medium' \| 'large'`                                                                                                                  | `'medium'`  | rpx height / font-size.                                                                   |
+| `placeholder`             | `string`                                                                                                                                          | `''`        | Placeholder text.                                                                         |
+| `placeholderStyle`        | `string`                                                                                                                                          | `''`        | Inline CSS injected into `::placeholder`.                                                 |
+| `placeholderClass`        | `string`                                                                                                                                          | `''`        | Extra class on placeholder.                                                               |
+| `disabled`                | `boolean`                                                                                                                                         | `false`     | Disabled.                                                                                 |
+| `readonly`                | `boolean`                                                                                                                                         | `false`     | Read-only.                                                                                |
+| `required`                | `boolean`                                                                                                                                         | `false`     | aria-required.                                                                            |
+| `maxlength` / `minlength` | `number`                                                                                                                                          | —           | Forwarded.                                                                                |
+| `showCount`               | `boolean`                                                                                                                                         | `false`     | Show counter.                                                                             |
+| `showWordLimit`           | `boolean`                                                                                                                                         | `false`     | `showCount` alias.                                                                        |
+| `clearable`               | `boolean`                                                                                                                                         | `false`     | × button.                                                                                 |
+| `clearTrigger`            | `'always' \| 'focus'`                                                                                                                             | `'always'`  | × button visibility trigger.                                                              |
+| `focusWhenClear`          | `boolean`                                                                                                                                         | `true`      | Auto-refocus after × click (uni-side placeholder — soft-keyboard dismissal).              |
+| `showPassword`            | `boolean`                                                                                                                                         | `false`     | Eye toggle on `type='password'`.                                                          |
+| `prefixIcon`              | `string`                                                                                                                                          | `''`        | Front icon name (resolved via SnIcon).                                                    |
+| `suffixIcon`              | `string`                                                                                                                                          | `''`        | Tail icon name.                                                                           |
+| `iconPrefix`              | `string`                                                                                                                                          | `''`        | Front icon CSS class (bypass SnIcon).                                                     |
+| `iconSuffix`              | `string`                                                                                                                                          | `''`        | Tail icon CSS class.                                                                      |
+| `cssIcon`                 | `boolean \| string`                                                                                                                               | `false`     | `true` treats prefix/suffix icon as CSS class.                                            |
+| `status`                  | `'default' \| 'error' \| 'warning'`                                                                                                               | `'default'` | Border + aria-invalid.                                                                    |
+| `min` / `max` / `step`    | `number`                                                                                                                                          | —           | Numeric bounds.                                                                           |
+| `rows`                    | `number`                                                                                                                                          | `3`         | Textarea rows.                                                                            |
+| `border`                  | `'all' \| 'bottom' \| 'none'`                                                                                                                     | `'all'`     | Border mode (2rpx).                                                                       |
+| `bordered` _(deprecated)_ | `boolean`                                                                                                                                         | `true`      | Alias: `true / false` ↔ `'all' / 'none'`.                                                 |
+| `bg`                      | `'surface' \| 'transparent' \| 'soft'`                                                                                                            | `'surface'` | Background tone.                                                                          |
+| `customBg`                | `string`                                                                                                                                          | `''`        | Inline bg override.                                                                       |
+| `radius`                  | `'default' \| 'pill' \| 'square'`                                                                                                                 | `'default'` | Radius preset.                                                                            |
+| `alignRight`              | `boolean`                                                                                                                                         | `false`     | Right-align value.                                                                        |
+| `compact`                 | `boolean`                                                                                                                                         | `false`     | Compact layout.                                                                           |
+| `focus`                   | `boolean`                                                                                                                                         | `false`     | Auto-focus on mount.                                                                      |
+| `inputmode`               | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'`                                                             | `'text'`    | Soft-keyboard hint.                                                                       |
+| `customInputClass`        | `string`                                                                                                                                          | `''`        | Inner `<input>` / `<textarea>` class.                                                     |
+| `customClass`             | `string`                                                                                                                                          | `''`        | Root class.                                                                               |
+| `customStyle`             | `string \| Record<string,string>`                                                                                                                 | `''`        | Root inline style.                                                                        |
+| `error`                   | `boolean`                                                                                                                                         | `false`     | Error chrome: `sn-input--error` class + `aria-invalid` (same visual as `status="error"`). |
 
 ### MP-only runtime attrs (uni-app compile-time passthrough)
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `confirmType` | `'send' \| 'search' \| 'next' \| 'go' \| 'done'` | `'done'` | Soft-keyboard confirm button label. |
-| `holdKeyboard` | `boolean` | `false` | Keep keyboard up after field blurs. |
-| `adjustPosition` | `boolean` | `true` | Auto-scroll page when keyboard covers field. |
-| `alwaysEmbed` | `boolean` | `false` | Input stays mounted even when detached. |
-| `cursor` | `number` | `-1` | Initial caret position. `-1` means unset. |
-| `selectionStart` | `number` | `-1` | Initial selection range start. |
-| `selectionEnd` | `number` | `-1` | Initial selection range end. |
-| `cursorSpacing` | `number` | `0` | Gap between the caret and the soft keyboard. |
-| `confirmHold` | `boolean` | `false` | Keep the keyboard up after the confirm key. |
-| `ignoreCompositionEvent` | `boolean` | `true` | Ignore IME composition events (`false` also fires `input` mid-composition). |
-| `enableNative` | `boolean` | `true` | Alipay MP: use the native input widget. |
+| Prop                     | Type                                             | Default  | Description                                                                 |
+| ------------------------ | ------------------------------------------------ | -------- | --------------------------------------------------------------------------- |
+| `confirmType`            | `'send' \| 'search' \| 'next' \| 'go' \| 'done'` | `'done'` | Soft-keyboard confirm button label.                                         |
+| `holdKeyboard`           | `boolean`                                        | `false`  | Keep keyboard up after field blurs.                                         |
+| `adjustPosition`         | `boolean`                                        | `true`   | Auto-scroll page when keyboard covers field.                                |
+| `alwaysEmbed`            | `boolean`                                        | `false`  | Input stays mounted even when detached.                                     |
+| `cursor`                 | `number`                                         | `-1`     | Initial caret position. `-1` means unset.                                   |
+| `selectionStart`         | `number`                                         | `-1`     | Initial selection range start.                                              |
+| `selectionEnd`           | `number`                                         | `-1`     | Initial selection range end.                                                |
+| `cursorSpacing`          | `number`                                         | `0`      | Gap between the caret and the soft keyboard.                                |
+| `confirmHold`            | `boolean`                                        | `false`  | Keep the keyboard up after the confirm key.                                 |
+| `ignoreCompositionEvent` | `boolean`                                        | `true`   | Ignore IME composition events (`false` also fires `input` mid-composition). |
+| `enableNative`           | `boolean`                                        | `true`   | Alipay MP: use the native input widget.                                     |
 
 ## Events
 
-| Event | Payload | Notes |
-| --- | --- | --- |
-| `update:modelValue` | `(value)` | v-model sync. |
-| `input` | `(value, event)` | Native input. |
-| `change` | `(value, event)` | Native change. |
-| `focus` | `(event)` | Native focus. |
-| `blur` | `(event)` | Native blur. |
-| `clear` | — | × button click. |
-| `click` | `(event)` | Root click. |
-| `clickPrefixIcon` | `(event)` | Click on prefix icon region. |
-| `clickSuffixIcon` | `(event)` | Click on suffix icon region. |
-| `confirm` | `(value)` | Soft-keyboard confirm / textarea confirm. |
+| Event               | Payload          | Notes                                     |
+| ------------------- | ---------------- | ----------------------------------------- |
+| `update:modelValue` | `(value)`        | v-model sync.                             |
+| `input`             | `(value, event)` | Native input.                             |
+| `change`            | `(value, event)` | Native change.                            |
+| `focus`             | `(event)`        | Native focus.                             |
+| `blur`              | `(event)`        | Native blur.                              |
+| `clear`             | —                | × button click.                           |
+| `click`             | `(event)`        | Root click.                               |
+| `clickPrefixIcon`   | `(event)`        | Click on prefix icon region.              |
+| `clickSuffixIcon`   | `(event)`        | Click on suffix icon region.              |
+| `confirm`           | `(value)`        | Soft-keyboard confirm / textarea confirm. |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `prefix` | Left of input. |
-| `suffix` | Right of input. |
+| Slot          | Description                                           |
+| ------------- | ----------------------------------------------------- |
+| `prefix`      | Left of input.                                        |
+| `suffix`      | Right of input.                                       |
 | `prefix-icon` | Custom SnIcon front content (overrides `prefixIcon`). |
-| `suffix-icon` | Custom SnIcon tail content. |
-| `clear-icon` | Custom × button content. |
-| `count` | Custom counter (receives `{ current, max }`). |
+| `suffix-icon` | Custom SnIcon tail content.                           |
+| `clear-icon`  | Custom × button content.                              |
+| `count`       | Custom counter (receives `{ current, max }`).         |
 
 ## Source
 

@@ -32,7 +32,7 @@
  *   - 懒加载 / 大图裁剪 — 用 sn-img
  */
 
-defineOptions({ name: 'SnCard' })
+defineOptions({ name: 'SnCard' });
 
 // Reference: wot-ui wd-card Attributes
 //   (https://wot-ui.cn/component/card.html)
@@ -42,19 +42,19 @@ defineOptions({ name: 'SnCard' })
 const props = withDefaults(
   defineProps<{
     /** Card title. Rendered in the title region; can be empty. */
-    title?: string
+    title?: string;
     /** Card type. 'rectangle' adds the rectangle (大格) visual style. */
-    type?: string
+    type?: string;
     /** Custom class for the title region. */
-    customTitleClass?: string
+    customTitleClass?: string;
     /** Custom class for the content region. */
-    customContentClass?: string
+    customContentClass?: string;
     /** Custom class for the footer region. */
-    customFooterClass?: string
+    customFooterClass?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     title: '',
@@ -65,44 +65,31 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Card body content (rendered between title and footer). */
-  default?(): unknown
+  default?(): unknown;
   /** Card title region (overrides `title` prop). */
-  title?(): unknown
+  title?(): unknown;
   /** Bottom action area. */
-  footer?(): unknown
-}>()
+  footer?(): unknown;
+}>();
 </script>
 
 <template>
   <view
-    :class="[
-      'sn-card',
-      type === 'rectangle' ? 'sn-card--rectangle' : '',
-      customClass,
-    ]"
+    :class="['sn-card', type === 'rectangle' ? 'sn-card--rectangle' : '', customClass]"
     :style="customStyle"
     role="region"
   >
-    <view
-      v-if="$slots.title || title"
-      :class="['sn-card__title', customTitleClass]"
-    >
+    <view v-if="$slots.title || title" :class="['sn-card__title', customTitleClass]">
       <slot name="title">{{ title }}</slot>
     </view>
-    <view
-      v-if="$slots.default"
-      :class="['sn-card__content', customContentClass]"
-    >
+    <view v-if="$slots.default" :class="['sn-card__content', customContentClass]">
       <slot />
     </view>
-    <view
-      v-if="$slots.footer"
-      :class="['sn-card__footer', customFooterClass]"
-    >
+    <view v-if="$slots.footer" :class="['sn-card__footer', customFooterClass]">
       <slot name="footer" />
     </view>
   </view>

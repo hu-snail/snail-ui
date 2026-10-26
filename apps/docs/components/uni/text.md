@@ -14,13 +14,13 @@
 
 <Demo name="text-mp-mode" description="phone / name 脱敏、price 千分位、date 归一化、call 拨号。" />
 
-| 模式 | 输入 → 输出 |
-| --- | --- |
-| `text` | `'raw'` → `'raw'` |
+| 模式    | 输入 → 输出                                                      |
+| ------- | ---------------------------------------------------------------- |
+| `text`  | `'raw'` → `'raw'`                                                |
 | `phone` | `'13800138000'` → `'13800138000'`；加 `format` → `'138****8000'` |
-| `name` | `'张三丰'` → `'张三丰'`；加 `format` → `'张**'` |
-| `price` | `'1288.5'` → `'1,288.50'`；`'-99'` → `'-99.00'` |
-| `date` | `'2024-03-05T10:00:00'` → `'2024-03-05'` |
+| `name`  | `'张三丰'` → `'张三丰'`；加 `format` → `'张**'`                  |
+| `price` | `'1288.5'` → `'1,288.50'`；`'-99'` → `'-99.00'`                  |
+| `date`  | `'2024-03-05T10:00:00'` → `'2024-03-05'`                         |
 
 无法解析的 `date` 输入会原样透出 —— 展示组件不应因无法识别的数据抛错。
 
@@ -49,42 +49,42 @@
 如需显式 import：
 
 ```ts
-import { SnText } from '@snui/uni/components/sn-text/sn-text.vue'
+import { SnText } from '@snui/uni/components/sn-text/sn-text.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `type` | `'default' \| 'primary' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义色 |
-| `text` | `string \| number` | `''` | 文本内容；default 插槽优先 |
-| `size` | `string` | `''` | 字体大小，原样转发（`'28rpx'` / `'14px'`） |
-| `mode` | `'text' \| 'date' \| 'phone' \| 'name' \| 'price'` | `'text'` | 文本处理模式 |
-| `decoration` | `'none' \| 'underline' \| 'line-through' \| 'overline'` | `'none'` | 文本装饰 |
-| `call` | `boolean` | `false` | `mode="phone"` 时点击是否拨号 |
-| `bold` | `boolean` | `false` | 是否粗体 |
-| `format` | `boolean` | `false` | 是否脱敏（仅 phone / name 生效） |
-| `color` | `string` | `''` | 文本颜色（内联覆盖） |
-| `prefix` | `string` | `''` | 前缀内容（`prefix` 插槽优先） |
-| `suffix` | `string` | `''` | 后缀内容（`suffix` 插槽优先） |
-| `lines` | `number` | `0` | 展示行数，超出显示省略号；`0` 表示不截断 |
-| `lineHeight` | `string` | `''` | 文本行高，原样转发 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型                                                          | 默认值      | 说明                                       |
+| ------------- | ------------------------------------------------------------- | ----------- | ------------------------------------------ |
+| `type`        | `'default' \| 'primary' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义色                                     |
+| `text`        | `string \| number`                                            | `''`        | 文本内容；default 插槽优先                 |
+| `size`        | `string`                                                      | `''`        | 字体大小，原样转发（`'28rpx'` / `'14px'`） |
+| `mode`        | `'text' \| 'date' \| 'phone' \| 'name' \| 'price'`            | `'text'`    | 文本处理模式                               |
+| `decoration`  | `'none' \| 'underline' \| 'line-through' \| 'overline'`       | `'none'`    | 文本装饰                                   |
+| `call`        | `boolean`                                                     | `false`     | `mode="phone"` 时点击是否拨号              |
+| `bold`        | `boolean`                                                     | `false`     | 是否粗体                                   |
+| `format`      | `boolean`                                                     | `false`     | 是否脱敏（仅 phone / name 生效）           |
+| `color`       | `string`                                                      | `''`        | 文本颜色（内联覆盖）                       |
+| `prefix`      | `string`                                                      | `''`        | 前缀内容（`prefix` 插槽优先）              |
+| `suffix`      | `string`                                                      | `''`        | 后缀内容（`suffix` 插槽优先）              |
+| `lines`       | `number`                                                      | `0`         | 展示行数，超出显示省略号；`0` 表示不截断   |
+| `lineHeight`  | `string`                                                      | `''`        | 文本行高，原样转发                         |
+| `customClass` | `string`                                                      | `''`        | 根节点自定义类名                           |
+| `customStyle` | `string`                                                      | `''`        | 根节点自定义 inline style                  |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名  | 说明                                            | 参数             |
+| ------- | ----------------------------------------------- | ---------------- |
 | `click` | 点击文本时触发；`call` 开启时与拨号动作同时发生 | `(event: Event)` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
-| `default` | 文本内容，覆盖 `text` |
-| `prefix` | 文本前的内容，覆盖 `prefix` |
-| `suffix` | 文本后的内容，覆盖 `suffix` |
+| 插槽名    | 说明                        |
+| --------- | --------------------------- |
+| `default` | 文本内容，覆盖 `text`       |
+| `prefix`  | 文本前的内容，覆盖 `prefix` |
+| `suffix`  | 文本后的内容，覆盖 `suffix` |
 
 ## 拨号契约
 
@@ -92,16 +92,16 @@ import { SnText } from '@snui/uni/components/sn-text/sn-text.vue'
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-text-primary` | `default` 类型颜色 |
-| `--sn-mp-color-action-primary` | `primary` 类型 |
-| `--sn-mp-color-feedback-success` | `success` 类型 |
-| `--sn-mp-color-feedback-warning` | `warning` 类型 |
-| `--sn-mp-color-feedback-danger` | `error` 类型 |
-| `--sn-mp-font-size-md` | 默认正文字号 |
-| `--sn-mp-font-line-height-normal` | 默认行高 |
-| `--sn-mp-font-weight-bold` | `bold` 与 Doodle 皮肤强调 |
+| 变量                              | 用途                      |
+| --------------------------------- | ------------------------- |
+| `--sn-mp-color-text-primary`      | `default` 类型颜色        |
+| `--sn-mp-color-action-primary`    | `primary` 类型            |
+| `--sn-mp-color-feedback-success`  | `success` 类型            |
+| `--sn-mp-color-feedback-warning`  | `warning` 类型            |
+| `--sn-mp-color-feedback-danger`   | `error` 类型              |
+| `--sn-mp-font-size-md`            | 默认正文字号              |
+| `--sn-mp-font-line-height-normal` | 默认行高                  |
+| `--sn-mp-font-weight-bold`        | `bold` 与 Doodle 皮肤强调 |
 
 ## 无障碍
 
@@ -118,7 +118,6 @@ import { SnText } from '@snui/uni/components/sn-text/sn-text.vue'
 - `color` 内联覆盖原样生效；需要跟随主题时请传 `var(--sn-mp-*)`。
 
 用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

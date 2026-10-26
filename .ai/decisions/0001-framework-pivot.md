@@ -1,14 +1,17 @@
 # 0001 — Framework Pivot: Schema-Runtime → Traditional UI Component Library
 
 ## Status
+
 Accepted
 
 ## Date
+
 2026-10-03
 
 ## Context
 
 snail-aui v1.x 通过 35 个任务交付了一套 "Schema First / Runtime First / Renderer" 三段式框架：
+
 - `@snui/protocol` —— UISchema / UINode / UIBinding / UIAction / ComponentContract 的 Zod 定义
 - `@snui/schema` —— Validator + Normalizer + Version
 - `@snui/runtime` —— schema 解释器 / 上下文 / 生命周期 / 错误系统
@@ -86,6 +89,7 @@ PRD v1.2 第 0.1 节明确说明：
 ## Consequences
 
 ### 必须执行（Phase 0 架构反转）
+
 - AUI-REV-001 重写 PRD v2.0
 - AUI-REV-002 重写 Master Plan v4.0
 - AUI-REV-003 重写 WBS v2.0
@@ -98,12 +102,15 @@ PRD v1.2 第 0.1 节明确说明：
 - AUI-DEMO-001 第一个组件 `Button` 端到端跑通（web + uni + docs）
 
 ### 后续执行（Phase 1 组件批量）
+
 - AUI-CORE-001~020 按 wot-ui 体系补 20+ 核心组件（基础 / 导航 / 录入 / 反馈 / 展示）
 
 ### 文档同步
+
 - `dev-docs/AUI-PRD-v1.2.md` 标记为 Superseded by PRD v2.0
 - `dev-docs/AUI-Master-Plan-v3.0.md` 标记为 Superseded by Master Plan v4.0
 - `dev-docs/AUI-WBS-v1.0.md` 标记为 Superseded by WBS v2.0
 
 ### 反转锁定
+
 本次决策为单向门（one-way door）。Phase 1 之后任何 "回滚到 schema-driven" 的提议必须由用户明确提交新 ADR 才能评估。

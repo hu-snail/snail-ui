@@ -2,15 +2,15 @@
 /**
  * tabs-web-display-directive — whether a hidden pane stays mounted.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs, SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs, SnButton } from '@snui/vue-web';
 
-const directive = ref<'if' | 'show'>('if')
-const active = ref('a')
-const mountCount = ref(0)
+const directive = ref<'if' | 'show'>('if');
+const active = ref('a');
+const mountCount = ref(0);
 
 function onPaneMount(): void {
-  mountCount.value += 1
+  mountCount.value += 1;
 }
 </script>
 
@@ -38,17 +38,16 @@ function onPaneMount(): void {
     </div>
 
     <SnTabs v-model:value="active" type="line">
-      <SnTabPane name="a" tab="Panel A" display-directive="show">
-        Content of panel A
-      </SnTabPane>
+      <SnTabPane name="a" tab="Panel A" display-directive="show"> Content of panel A </SnTabPane>
       <SnTabPane :name="'b'" tab="Panel B" :display-directive="directive">
         <span>Content of panel B (switch tabs to watch the mount count change)</span>
       </SnTabPane>
     </SnTabs>
 
     <p class="tabs-dd__hint">
-      <code>if</code> unmounts the panel when you switch away and remounts on return (the count increases);
-      <code>show</code> keep-alive only toggles visibility — state inside the panel is preserved.
+      <code>if</code> unmounts the panel when you switch away and remounts on return (the count
+      increases); <code>show</code> keep-alive only toggles visibility — state inside the panel is
+      preserved.
     </p>
   </div>
 </template>

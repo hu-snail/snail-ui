@@ -14,40 +14,40 @@ Web 端树形选择组件，对标 naive-ui `n-tree-select` 1:1。位于 `packag
 
 ## Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number \| null \| Array<string \| number>` | `null` | 绑定值（`v-model`）；多选模式为数组 |
-| `multiple` | `boolean` | `false` | 多选模式（tag 回显、菜单不关、勾选独立） |
-| `checkable` | `boolean` | `false` | `multiple` 的别名（多选复选模式合一） |
-| `options` | `{ label, key \| value, disabled?, children? }[]` | `[]` | 树形选项；`key` 缺省读 `value` 字段，仍缺省用下标 |
-| `defaultExpandAll` | `boolean` | `false` | 首次渲染展开全部父节点 |
-| `placeholder` | `string` | `'Please select'` | 空值占位文案 |
-| `clearable` | `boolean` | `false` | 有值时显示清空按钮 |
-| `filterable` | `boolean` | `false` | 启用内置过滤输入（按 label 匹配，命中自动展开祖先） |
-| `disabled` | `boolean` | `false` | 禁用（不弹面板、不可清空） |
-| `readonly` | `boolean` | `false` | 只读（不弹面板） |
-| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸 |
-| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | 视觉状态（边框色 + `aria-invalid`） |
-| `labelField` | `string` | `'label'` | label 字段名 |
-| `keyField` | `string` | `'key'` | key 字段名（缺省回退 `value` 字段） |
-| `childrenField` | `string` | `'children'` | 子节点字段名 |
-| `ariaLabel` | `string` | `''` | 无障碍标签 |
-| `emptyText` | `string` | `'No data'` | 空状态文案（`empty` slot 优先） |
-| `customClass` / `customStyle` | `string` / `string \| object` | `''` | 根节点透传 |
+| Prop                          | 类型                                                  | 默认值            | 说明                                                |
+| ----------------------------- | ----------------------------------------------------- | ----------------- | --------------------------------------------------- |
+| `modelValue`                  | `string \| number \| null \| Array<string \| number>` | `null`            | 绑定值（`v-model`）；多选模式为数组                 |
+| `multiple`                    | `boolean`                                             | `false`           | 多选模式（tag 回显、菜单不关、勾选独立）            |
+| `checkable`                   | `boolean`                                             | `false`           | `multiple` 的别名（多选复选模式合一）               |
+| `options`                     | `{ label, key \| value, disabled?, children? }[]`     | `[]`              | 树形选项；`key` 缺省读 `value` 字段，仍缺省用下标   |
+| `defaultExpandAll`            | `boolean`                                             | `false`           | 首次渲染展开全部父节点                              |
+| `placeholder`                 | `string`                                              | `'Please select'` | 空值占位文案                                        |
+| `clearable`                   | `boolean`                                             | `false`           | 有值时显示清空按钮                                  |
+| `filterable`                  | `boolean`                                             | `false`           | 启用内置过滤输入（按 label 匹配，命中自动展开祖先） |
+| `disabled`                    | `boolean`                                             | `false`           | 禁用（不弹面板、不可清空）                          |
+| `readonly`                    | `boolean`                                             | `false`           | 只读（不弹面板）                                    |
+| `size`                        | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`  | `'medium'`        | 尺寸                                                |
+| `status`                      | `'default' \| 'error' \| 'warning'`                   | `'default'`       | 视觉状态（边框色 + `aria-invalid`）                 |
+| `labelField`                  | `string`                                              | `'label'`         | label 字段名                                        |
+| `keyField`                    | `string`                                              | `'key'`           | key 字段名（缺省回退 `value` 字段）                 |
+| `childrenField`               | `string`                                              | `'children'`      | 子节点字段名                                        |
+| `ariaLabel`                   | `string`                                              | `''`              | 无障碍标签                                          |
+| `emptyText`                   | `string`                                              | `'No data'`       | 空状态文案（`empty` slot 优先）                     |
+| `customClass` / `customStyle` | `string` / `string \| object`                         | `''`              | 根节点透传                                          |
 
 ## Events
 
-| 事件 | Payload | 触发时机 |
-| --- | --- | --- |
+| 事件                | Payload                    | 触发时机                        |
+| ------------------- | -------------------------- | ------------------------------- |
 | `update:modelValue` | `value \| value[] \| null` | 选中 / 取消选中 / 删 tag / 清空 |
-| `change` | 同上 | 同上 |
-| `clear` | — | 清空按钮激活 |
-| `focus` / `blur` | `FocusEvent` | 触发器焦点变化 |
+| `change`            | 同上                       | 同上                            |
+| `clear`             | —                          | 清空按钮激活                    |
+| `focus` / `blur`    | `FocusEvent`               | 触发器焦点变化                  |
 
 ## Slots
 
-| Slot | 说明 |
-| --- | --- |
+| Slot    | 说明                            |
+| ------- | ------------------------------- |
 | `empty` | 无选项 / 过滤无命中时的面板内容 |
 
 ## 交互语义
@@ -62,10 +62,10 @@ Web 端树形选择组件，对标 naive-ui `n-tree-select` 1:1。位于 `packag
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import SnTreeSelect from '@/tree-select/SnTreeSelect.vue'
+import { ref } from 'vue';
+import SnTreeSelect from '@/tree-select/SnTreeSelect.vue';
 
-const value = ref(null)
+const value = ref(null);
 const options = [
   {
     label: 'Fruits',
@@ -76,7 +76,7 @@ const options = [
     ],
   },
   { label: 'Milk', key: 'milk' },
-]
+];
 </script>
 
 <template>
@@ -86,28 +86,28 @@ const options = [
 
 ## Tokens
 
-| Token | 默认值 | 用途 |
-| --- | --- | --- |
-| `--sn-web-tree-select-height` | `22–40px`（按 size） | 触发器高度 |
-| `--sn-web-tree-select-radius` | `6px` | 圆角 |
-| `--sn-web-tree-select-border-color` / `-focus` | border-default / action-primary | 边框色 |
-| `--sn-web-tree-select-bg` / `-text-color` / `-placeholder-color` | surface / text-primary / text-tertiary | 触发器底色/文字/占位 |
-| `--sn-web-tree-select-focus-ring` | `--sn-web-focus-ring` | 焦点环 |
-| `--sn-web-tree-select-tag-bg` / `-text-color` | background-subtle / text-primary | tag 胶囊 |
-| `--sn-web-tree-select-tag-close-color` / `-hover` / `-bg-hover` | text-tertiary / text-primary / rgba | tag 删除按钮 |
-| `--sn-web-tree-select-clear-color` / `-hover` / `-bg-hover` | 同上 | 清空按钮 |
-| `--sn-web-tree-select-arrow-color` | text-tertiary | 下拉箭头 |
-| `--sn-web-tree-select-bg-disabled` / `-text-color-disabled` / `-border-color-disabled` | subtle / text-disabled / border-subtle | 禁用态 |
-| `--sn-web-tree-select-menu-bg` / `-border-color` / `-radius` / `-z-index` | elevated / border-default / 6px / `1000` | 面板外观 |
-| `--sn-web-tree-select-menu-max-height` | `260px` | 面板最大高度（内部滚动） |
-| `--sn-web-tree-select-menu-shadow` | 双层 rgba 阴影 | 面板阴影 |
-| `--sn-web-tree-select-node-min-height` / `-font-size` / `-text-color` | `30px` / `14px` / text-primary | 节点行 |
-| `--sn-web-tree-select-node-padding-x` / `-indent` | `10px` / `16px` | 节点水平内边距 / 每级缩进 |
-| `--sn-web-tree-select-node-bg-hover` | `rgba(0,0,0,0.045)` | 高亮行底色 |
-| `--sn-web-tree-select-node-bg-selected` / `-text-color-selected` / `-selected-bar-color` | rgba / action-primary / action-primary | 选中行 |
-| `--sn-web-tree-select-node-text-color-disabled` | text-disabled | 禁用节点文字 |
-| `--sn-web-tree-select-switcher-color` / `-hover` / `-radius` | text-tertiary / text-primary / `4px` | 展开箭头 |
-| `--sn-web-tree-select-empty-color` / `-padding-y` | text-tertiary / `12px` | 空状态 |
+| Token                                                                                    | 默认值                                   | 用途                      |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------- |
+| `--sn-web-tree-select-height`                                                            | `22–40px`（按 size）                     | 触发器高度                |
+| `--sn-web-tree-select-radius`                                                            | `6px`                                    | 圆角                      |
+| `--sn-web-tree-select-border-color` / `-focus`                                           | border-default / action-primary          | 边框色                    |
+| `--sn-web-tree-select-bg` / `-text-color` / `-placeholder-color`                         | surface / text-primary / text-tertiary   | 触发器底色/文字/占位      |
+| `--sn-web-tree-select-focus-ring`                                                        | `--sn-web-focus-ring`                    | 焦点环                    |
+| `--sn-web-tree-select-tag-bg` / `-text-color`                                            | background-subtle / text-primary         | tag 胶囊                  |
+| `--sn-web-tree-select-tag-close-color` / `-hover` / `-bg-hover`                          | text-tertiary / text-primary / rgba      | tag 删除按钮              |
+| `--sn-web-tree-select-clear-color` / `-hover` / `-bg-hover`                              | 同上                                     | 清空按钮                  |
+| `--sn-web-tree-select-arrow-color`                                                       | text-tertiary                            | 下拉箭头                  |
+| `--sn-web-tree-select-bg-disabled` / `-text-color-disabled` / `-border-color-disabled`   | subtle / text-disabled / border-subtle   | 禁用态                    |
+| `--sn-web-tree-select-menu-bg` / `-border-color` / `-radius` / `-z-index`                | elevated / border-default / 6px / `1000` | 面板外观                  |
+| `--sn-web-tree-select-menu-max-height`                                                   | `260px`                                  | 面板最大高度（内部滚动）  |
+| `--sn-web-tree-select-menu-shadow`                                                       | 双层 rgba 阴影                           | 面板阴影                  |
+| `--sn-web-tree-select-node-min-height` / `-font-size` / `-text-color`                    | `30px` / `14px` / text-primary           | 节点行                    |
+| `--sn-web-tree-select-node-padding-x` / `-indent`                                        | `10px` / `16px`                          | 节点水平内边距 / 每级缩进 |
+| `--sn-web-tree-select-node-bg-hover`                                                     | `rgba(0,0,0,0.045)`                      | 高亮行底色                |
+| `--sn-web-tree-select-node-bg-selected` / `-text-color-selected` / `-selected-bar-color` | rgba / action-primary / action-primary   | 选中行                    |
+| `--sn-web-tree-select-node-text-color-disabled`                                          | text-disabled                            | 禁用节点文字              |
+| `--sn-web-tree-select-switcher-color` / `-hover` / `-radius`                             | text-tertiary / text-primary / `4px`     | 展开箭头                  |
+| `--sn-web-tree-select-empty-color` / `-padding-y`                                        | text-tertiary / `12px`                   | 空状态                    |
 
 ## Accessibility
 

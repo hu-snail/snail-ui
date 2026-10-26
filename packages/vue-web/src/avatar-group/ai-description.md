@@ -18,16 +18,16 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnAvatarGroup from '@snui/vue-web/src/avatar-group/SnAvatarGroup.vue'
+import SnAvatarGroup from '@snui/vue-web/src/avatar-group/SnAvatarGroup.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `maxOptions` | `{ max: number; onExpand?: () => void } \| number` | `undefined` | no | Overflow control. With `max: n` the group shows `n − 1` avatars plus a `+k` summary (`k = total − n + 1`). Clicking the summary calls `onExpand`. |
-| `size` | `number \| 'small' \| 'medium' \| 'large'` | `'medium'` | no | Size of the overflow summary avatar. |
-| `sizeBehavior` | `'tightening' \| 'shrink'` | `'tightening'` | no | `tightening` overlaps avatars (−10px margin); `shrink` scales each following avatar down slightly. |
+| Name           | Type                                               | Default        | Required | Description                                                                                                                                       |
+| -------------- | -------------------------------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `maxOptions`   | `{ max: number; onExpand?: () => void } \| number` | `undefined`    | no       | Overflow control. With `max: n` the group shows `n − 1` avatars plus a `+k` summary (`k = total − n + 1`). Clicking the summary calls `onExpand`. |
+| `size`         | `number \| 'small' \| 'medium' \| 'large'`         | `'medium'`     | no       | Size of the overflow summary avatar.                                                                                                              |
+| `sizeBehavior` | `'tightening' \| 'shrink'`                         | `'tightening'` | no       | `tightening` overlaps avatars (−10px margin); `shrink` scales each following avatar down slightly.                                                |
 
 ## Events
 
@@ -35,8 +35,8 @@ None (the expand callback arrives through `maxOptions.onExpand`).
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                                                         |
+| --------- | ----------------------------------------------------------------------------------- |
 | `default` | Avatar list — render `SnAvatar` elements (fragments / nested arrays are flattened). |
 
 ## Divergences from the reference API
@@ -60,12 +60,12 @@ None (the expand callback arrives through `maxOptions.onExpand`).
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
+| Token              | CSS Variable                        | Purpose                                |
+| ------------------ | ----------------------------------- | -------------------------------------- |
 | Background surface | `--sn-web-color-background-surface` | Avatar outline in the tightening stack |
-| Background subtle | `--sn-web-color-background-subtle` | Summary avatar background |
-| Text secondary | `--sn-web-color-text-secondary` | Summary avatar text |
-| Focus ring | `--sn-web-focus-ring` | Keyboard focus on the expand button |
+| Background subtle  | `--sn-web-color-background-subtle`  | Summary avatar background              |
+| Text secondary     | `--sn-web-color-text-secondary`     | Summary avatar text                    |
+| Focus ring         | `--sn-web-focus-ring`               | Keyboard focus on the expand button    |
 
 ## Versioning
 

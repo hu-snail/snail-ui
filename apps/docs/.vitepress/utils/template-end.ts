@@ -17,9 +17,9 @@
  * persisted in localStorage so the choice survives navigation and reloads.
  */
 
-import { onMounted, ref, watch, type Ref } from 'vue'
+import { onMounted, ref, watch, type Ref } from 'vue';
 
-export type TemplateEnd = 'web' | 'uni'
+export type TemplateEnd = 'web' | 'uni';
 
 /**
  * Template pages that exist only on the web end, i.e. the sidebar entries the
@@ -31,25 +31,25 @@ export const WEB_ONLY_ROUTES: readonly string[] = [
   '/templates/ai/assistant',
   '/templates/ai/prompt',
   '/templates/ai/model-config',
-]
+];
 
-const STORAGE_KEY = 'sn-docs-template-end'
-const HTML_ATTR = 'data-sn-template-end'
+const STORAGE_KEY = 'sn-docs-template-end';
+const HTML_ATTR = 'data-sn-template-end';
 
-const end = ref<TemplateEnd>('web')
+const end = ref<TemplateEnd>('web');
 
 function applyToHtml(value: TemplateEnd): void {
-  if (typeof document === 'undefined') return
-  document.documentElement.setAttribute(HTML_ATTR, value)
+  if (typeof document === 'undefined') return;
+  document.documentElement.setAttribute(HTML_ATTR, value);
 }
 
 function readStored(): TemplateEnd | null {
-  if (typeof window === 'undefined') return null
+  if (typeof window === 'undefined') return null;
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    return stored === 'web' || stored === 'uni' ? stored : null
+    const stored = window.localStorage.getItem(STORAGE_KEY);
+    return stored === 'web' || stored === 'uni' ? stored : null;
   } catch {
-    return null
+    return null;
   }
 }
 
@@ -58,23 +58,23 @@ function readStored(): TemplateEnd | null {
 // entries first. The reactive value itself is only restored in `onMounted`:
 // keeping the first render deterministic ('web') avoids a hydration mismatch
 // on the capsule, which is diffed against the server-rendered markup.
-const stored = readStored()
-if (stored) applyToHtml(stored)
+const stored = readStored();
+if (stored) applyToHtml(stored);
 
 watch(end, (value) => {
-  applyToHtml(value)
-  if (typeof window === 'undefined') return
+  applyToHtml(value);
+  if (typeof window === 'undefined') return;
   try {
-    window.localStorage.setItem(STORAGE_KEY, value)
+    window.localStorage.setItem(STORAGE_KEY, value);
   } catch {
     // Storage can be unavailable (private mode, blocked cookies). The filter
     // still works for the current session, so this is intentionally silent.
   }
-})
+});
 
 export interface TemplateEndFilter {
-  end: Ref<TemplateEnd>
-  setEnd: (value: TemplateEnd) => void
+  end: Ref<TemplateEnd>;
+  setEnd: (value: TemplateEnd) => void;
 }
 
 export function useTemplateEnd(): TemplateEndFilter {
@@ -83,14 +83,14 @@ export function useTemplateEnd(): TemplateEndFilter {
     // server-rendered markup; the stored end is applied once, here. The
     // attribute is re-asserted because vitepress can replace <html> on a full
     // page load.
-    if (stored) end.value = stored
-    applyToHtml(end.value)
-  })
+    if (stored) end.value = stored;
+    applyToHtml(end.value);
+  });
 
   return {
     end,
     setEnd: (value: TemplateEnd) => {
-      end.value = value
+      end.value = value;
     },
-  }
+  };
 }

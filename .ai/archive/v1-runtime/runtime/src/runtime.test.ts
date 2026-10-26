@@ -1,7 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import type { UISchema } from '@snui/protocol';
 import { LIGHT_THEME, MODERN_STYLE, COMFORTABLE_DENSITY } from '@snui/tokens';
-import { createRuntime, type RuntimeComponentRegistry, type RuntimeActionRegistry, isAUIError } from './index.js';
+import {
+  createRuntime,
+  type RuntimeComponentRegistry,
+  type RuntimeActionRegistry,
+  isAUIError,
+} from './index.js';
 import type { PlatformAdapter } from './platform.js';
 
 const VALID_SCHEMA: UISchema = {
@@ -79,7 +84,9 @@ describe('@snui/runtime — AUIRuntime', () => {
       platform: PLATFORM,
     });
     r.mount({});
-    expect(() => r.mount({})).toThrow(expect.objectContaining({ code: 'AUI_RUNTIME_ALREADY_MOUNTED' }));
+    expect(() => r.mount({})).toThrow(
+      expect.objectContaining({ code: 'AUI_RUNTIME_ALREADY_MOUNTED' }),
+    );
   });
 
   it('rejects mount after dispose', () => {

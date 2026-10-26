@@ -54,73 +54,73 @@
 
 ### SnImage Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| src | `string` | `undefined` | 图片来源 |
-| alt | `string` | `undefined` | 图片说明，同时作为 alt 与 aria-label |
-| width | `string \| number` | `undefined` | 缩略图宽度（数字按 px） |
-| height | `string \| number` | `undefined` | 缩略图高度（数字按 px） |
-| object-fit | `'fill' \| 'contain' \| 'cover' \| 'none' \| 'scale-down'` | `'fill'` | 缩略图在容器内的适应方式 |
-| fallback-src | `string` | `undefined` | 缩略图加载失败时显示的图片地址 |
-| preview-src | `string` | `undefined` | 预览大图地址，缺省回退到 `src` |
-| img-props | `ImgHTMLAttributes` | `undefined` | 转发到内部 img 元素上的额外属性 |
-| previewed-img-props | `ImgHTMLAttributes` | `undefined` | 预览大图 img 元素上的属性与样式 |
-| lazy | `boolean` | `false` | 进入视口后再加载；单独使用为原生懒加载 |
-| intersection-observer-options | `{ root?, rootMargin?, threshold? }` | `undefined` | 懒加载改用 IntersectionObserver 时的配置，`root` 支持元素或选择器 |
-| preview-disabled | `boolean` | `false` | 禁用单击预览 |
-| show-toolbar | `boolean` | `true` | 预览时是否显示底部工具栏 |
-| show-toolbar-tooltip | `boolean` | `false` | 工具栏按钮显示原生 title 提示 |
-| keep-drag-offset | `boolean` | `false` | 拖拽松手后保留偏移（默认回弹居中或钳制在视口内） |
-| render-toolbar | `(props: { nodes }) => VNodeChild` | `undefined` | 自定义工具栏渲染函数，nodes 含 prev / next / rotateCounterclockwise / rotateClockwise / resizeToOriginalSize / zoomOut / zoomIn / download / close |
+| 名称                          | 类型                                                       | 默认值      | 说明                                                                                                                                               |
+| ----------------------------- | ---------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| src                           | `string`                                                   | `undefined` | 图片来源                                                                                                                                           |
+| alt                           | `string`                                                   | `undefined` | 图片说明，同时作为 alt 与 aria-label                                                                                                               |
+| width                         | `string \| number`                                         | `undefined` | 缩略图宽度（数字按 px）                                                                                                                            |
+| height                        | `string \| number`                                         | `undefined` | 缩略图高度（数字按 px）                                                                                                                            |
+| object-fit                    | `'fill' \| 'contain' \| 'cover' \| 'none' \| 'scale-down'` | `'fill'`    | 缩略图在容器内的适应方式                                                                                                                           |
+| fallback-src                  | `string`                                                   | `undefined` | 缩略图加载失败时显示的图片地址                                                                                                                     |
+| preview-src                   | `string`                                                   | `undefined` | 预览大图地址，缺省回退到 `src`                                                                                                                     |
+| img-props                     | `ImgHTMLAttributes`                                        | `undefined` | 转发到内部 img 元素上的额外属性                                                                                                                    |
+| previewed-img-props           | `ImgHTMLAttributes`                                        | `undefined` | 预览大图 img 元素上的属性与样式                                                                                                                    |
+| lazy                          | `boolean`                                                  | `false`     | 进入视口后再加载；单独使用为原生懒加载                                                                                                             |
+| intersection-observer-options | `{ root?, rootMargin?, threshold? }`                       | `undefined` | 懒加载改用 IntersectionObserver 时的配置，`root` 支持元素或选择器                                                                                  |
+| preview-disabled              | `boolean`                                                  | `false`     | 禁用单击预览                                                                                                                                       |
+| show-toolbar                  | `boolean`                                                  | `true`      | 预览时是否显示底部工具栏                                                                                                                           |
+| show-toolbar-tooltip          | `boolean`                                                  | `false`     | 工具栏按钮显示原生 title 提示                                                                                                                      |
+| keep-drag-offset              | `boolean`                                                  | `false`     | 拖拽松手后保留偏移（默认回弹居中或钳制在视口内）                                                                                                   |
+| render-toolbar                | `(props: { nodes }) => VNodeChild`                         | `undefined` | 自定义工具栏渲染函数，nodes 含 prev / next / rotateCounterclockwise / rotateClockwise / resizeToOriginalSize / zoomOut / zoomIn / download / close |
 
 ### SnImage Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| load | `(event: Event)` | 缩略图加载完成 |
+| 名称  | 参数             | 说明                       |
+| ----- | ---------------- | -------------------------- |
+| load  | `(event: Event)` | 缩略图加载完成             |
 | error | `(event: Event)` | 缩略图加载失败（回退之后） |
 
 ### SnImage Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| error | `()` | 加载失败时的占位内容 |
+| 名称        | 参数 | 说明                       |
+| ----------- | ---- | -------------------------- |
+| error       | `()` | 加载失败时的占位内容       |
 | placeholder | `()` | 图片未加载完成时的占位内容 |
 
 ### SnImage Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
+| 名称        | 类型         | 说明             |
+| ----------- | ------------ | ---------------- |
 | showPreview | `() => void` | 手动打开大图预览 |
-| click | `() => void` | 同 showPreview |
+| click       | `() => void` | 同 showPreview   |
 
 ### SnImageGroup Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| src-list | `string[]` | `undefined` | 独立图片列表，预览直接浏览该列表（忽略成员图片） |
-| current | `number` | `undefined` | 当前预览下标，支持 v-model:current |
-| default-current | `number` | `0` | 非受控时的初始下标 |
-| show | `boolean` | `undefined` | 预览显示状态，支持 v-model:show |
-| default-show | `boolean` | `false` | 非受控时的初始显示状态 |
-| show-toolbar | `boolean` | `true` | 预览时是否显示底部工具栏 |
-| show-toolbar-tooltip | `boolean` | `false` | 工具栏按钮显示原生 title 提示 |
-| keep-drag-offset | `boolean` | `false` | 拖拽松手后保留偏移 |
-| render-toolbar | `(props: { nodes }) => VNodeChild` | `undefined` | 自定义工具栏渲染函数 |
+| 名称                 | 类型                               | 默认值      | 说明                                             |
+| -------------------- | ---------------------------------- | ----------- | ------------------------------------------------ |
+| src-list             | `string[]`                         | `undefined` | 独立图片列表，预览直接浏览该列表（忽略成员图片） |
+| current              | `number`                           | `undefined` | 当前预览下标，支持 v-model:current               |
+| default-current      | `number`                           | `0`         | 非受控时的初始下标                               |
+| show                 | `boolean`                          | `undefined` | 预览显示状态，支持 v-model:show                  |
+| default-show         | `boolean`                          | `false`     | 非受控时的初始显示状态                           |
+| show-toolbar         | `boolean`                          | `true`      | 预览时是否显示底部工具栏                         |
+| show-toolbar-tooltip | `boolean`                          | `false`     | 工具栏按钮显示原生 title 提示                    |
+| keep-drag-offset     | `boolean`                          | `false`     | 拖拽松手后保留偏移                               |
+| render-toolbar       | `(props: { nodes }) => VNodeChild` | `undefined` | 自定义工具栏渲染函数                             |
 
 ### SnImageGroup Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| update:current | `(value: number)` | 预览下标变化（v-model:current） |
-| update:show | `(value: boolean)` | 预览显示状态变化（v-model:show） |
-| preview-next | `()` | 点击下一张 |
-| preview-prev | `()` | 点击上一张 |
+| 名称           | 参数               | 说明                             |
+| -------------- | ------------------ | -------------------------------- |
+| update:current | `(value: number)`  | 预览下标变化（v-model:current）  |
+| update:show    | `(value: boolean)` | 预览显示状态变化（v-model:show） |
+| preview-next   | `()`               | 点击下一张                       |
+| preview-prev   | `()`               | 点击上一张                       |
 
 ### SnImageGroup Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数 | 说明         |
+| ------- | ---- | ------------ |
 | default | `()` | 组内图片内容 |
 
 ### 键盘与交互

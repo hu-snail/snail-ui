@@ -4,13 +4,13 @@
  * Per AUI-DOCS-016: imports the real @snui/vue-web SnMarquee.
  * 默认 12 秒一轮、24px 间距、鼠标悬停暂停。
  */
-import { SnMarquee } from '@snui/vue-web'
+import { SnMarquee } from '@snui/vue-web';
 
 const notices = [
   '公告：本周五 22:00 - 24:00 进行系统维护，期间服务不可用。',
   '组件库文档已更新，新增跑马灯 / 评论等组件。',
   '全员大会下周一 10:00 在多功能厅举行，请准时参加。',
-]
+];
 </script>
 
 <template>

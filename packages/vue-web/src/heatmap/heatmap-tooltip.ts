@@ -14,45 +14,45 @@
  * `content-class`, i.e. the popover body).
  */
 
-import type { CSSProperties } from 'vue'
-import type { SnTooltipPlacement } from '../tooltip/SnTooltip.vue'
+import type { CSSProperties } from 'vue';
+import type { SnTooltipPlacement } from '../tooltip/SnTooltip.vue';
 
 /** Per-cell tooltip options (a `TooltipProps` subset, all optional). */
 export interface SnHeatmapTooltipConfig {
   /** Popover placement. Default `'top'` (like the reference hover tooltip). */
-  placement?: SnTooltipPlacement
+  placement?: SnTooltipPlacement;
   /** Show the popover arrow. Mirrors `TooltipProps.showArrow`; maps onto the SnTooltip arrow prop. Default `true`. */
-  showArrow?: boolean
+  showArrow?: boolean;
   /** Open/close delay in ms (SnTooltip `delay`). Default `100`. */
-  delay?: number | [number, number]
+  delay?: number | [number, number];
   /** Inline style on the popover body (SnTooltip `content-style`). */
-  style?: CSSProperties
+  style?: CSSProperties;
   /** Class on the popover body (SnTooltip `content-class`). */
-  class?: string
+  class?: string;
 }
 
 /** Tooltip slot parameter: 1:1 with the reference `DayRect` (`interface.ts`). */
 export interface SnHeatmapTooltipDay {
   /** Millisecond timestamp carried through from the data item. */
-  timestamp: number
+  timestamp: number;
   /** Raw activity count (gap-filled cells are `0`). */
-  value: number | null | undefined
+  value: number | null | undefined;
   /** Resolved cell color: the custom palette entry or the level's CSS variable. */
-  color: string
+  color: string;
   /** Day of week, `0 = Sunday` (the reference `date-fns` convention). */
-  dayOfWeek: number
+  dayOfWeek: number;
   /** Weekday row, 0 = first row (relative to `firstDayOfWeek`). */
-  rowIndex: number
+  rowIndex: number;
   /** Week column index. */
-  colIndex: number
+  colIndex: number;
 }
 
 /** Local `YYYY-MM-DD` for the default tooltip content (the reference uses `toLocaleDateString()`, the docs contract pins the ISO-style zh format). */
 export function formatHeatmapDate(timestamp: number): string {
-  const d = new Date(timestamp)
-  const month = String(d.getMonth() + 1).padStart(2, '0')
-  const date = String(d.getDate()).padStart(2, '0')
-  return `${d.getFullYear()}-${month}-${date}`
+  const d = new Date(timestamp);
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const date = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${month}-${date}`;
 }
 
 /**
@@ -63,8 +63,6 @@ export function formatHeatmapDate(timestamp: number): string {
 export function defaultTooltipContent(
   day: Pick<SnHeatmapTooltipDay, 'timestamp' | 'value'>,
 ): string {
-  const date = formatHeatmapDate(day.timestamp)
-  return day.value !== null && day.value !== undefined
-    ? `${date}：${day.value}`
-    : date
+  const date = formatHeatmapDate(day.timestamp);
+  return day.value !== null && day.value !== undefined ? `${date}：${day.value}` : date;
 }

@@ -18,20 +18,20 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnHighlight from '@snui/vue-web/src/highlight/SnHighlight.vue'
+import SnHighlight from '@snui/vue-web/src/highlight/SnHighlight.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `text` | `string` | `undefined` | no | Full text to render. |
-| `patterns` | `string[]` | `[]` | no | Substrings to highlight. |
-| `highlightTag` | `string` | `'mark'` | no | HTML element used for matched fragments. |
-| `caseSensitive` | `boolean` | `false` | no | Case-sensitive matching. |
-| `autoEscape` | `boolean` | `true` | no | Escape regex metacharacters in `patterns` so they match literally. |
-| `highlightClass` | `string` | `undefined` | no | Extra class merged onto matched fragments. |
-| `highlightStyle` | `CSSProperties \| string` | `undefined` | no | Inline style merged onto matched fragments. |
+| Name             | Type                      | Default     | Required | Description                                                        |
+| ---------------- | ------------------------- | ----------- | -------- | ------------------------------------------------------------------ |
+| `text`           | `string`                  | `undefined` | no       | Full text to render.                                               |
+| `patterns`       | `string[]`                | `[]`        | no       | Substrings to highlight.                                           |
+| `highlightTag`   | `string`                  | `'mark'`    | no       | HTML element used for matched fragments.                           |
+| `caseSensitive`  | `boolean`                 | `false`     | no       | Case-sensitive matching.                                           |
+| `autoEscape`     | `boolean`                 | `true`      | no       | Escape regex metacharacters in `patterns` so they match literally. |
+| `highlightClass` | `string`                  | `undefined` | no       | Extra class merged onto matched fragments.                         |
+| `highlightStyle` | `CSSProperties \| string` | `undefined` | no       | Inline style merged onto matched fragments.                        |
 
 ## Divergences from the reference API
 

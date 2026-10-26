@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTree — empty data state with the empty slot. */
-import { SnTree } from '@snui/vue-web'
+import { SnTree } from '@snui/vue-web';
 </script>
 
 <template>
@@ -15,6 +15,13 @@ import { SnTree } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 24px; max-width: 320px; }
-.sn-demo__empty { color: var(--sn-web-color-text-tertiary); }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 320px;
+}
+.sn-demo__empty {
+  color: var(--sn-web-color-text-tertiary);
+}
 </style>

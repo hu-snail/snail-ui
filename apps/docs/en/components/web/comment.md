@@ -29,24 +29,24 @@ nested replies.
 
 ### SnComment Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| author | `string` | `undefined` | Author name; `author` slot overrides |
-| avatar | `string` | `undefined` | Avatar image URL (rendered 32px circle); `avatar` slot overrides |
-| content | `string` | `undefined` | Comment body; `content` slot overrides |
-| datetime | `string` | `undefined` | Datetime text; `datetime` slot overrides |
-| align | `'left' \| 'right' \| { datetime?: 'left' \| 'right'; actions?: 'left' \| 'right' }` | `'left'` | Alignment of the datetime and actions rows: the string form applies to both, the object form overrides each (missing keys fall back to `left`) |
+| Name     | Type                                                                                 | Default     | Notes                                                                                                                                          |
+| -------- | ------------------------------------------------------------------------------------ | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| author   | `string`                                                                             | `undefined` | Author name; `author` slot overrides                                                                                                           |
+| avatar   | `string`                                                                             | `undefined` | Avatar image URL (rendered 32px circle); `avatar` slot overrides                                                                               |
+| content  | `string`                                                                             | `undefined` | Comment body; `content` slot overrides                                                                                                         |
+| datetime | `string`                                                                             | `undefined` | Datetime text; `datetime` slot overrides                                                                                                       |
+| align    | `'left' \| 'right' \| { datetime?: 'left' \| 'right'; actions?: 'left' \| 'right' }` | `'left'`    | Alignment of the datetime and actions rows: the string form applies to both, the object form overrides each (missing keys fall back to `left`) |
 
 ### SnComment Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| avatar | `()` | Avatar area, overrides `avatar` |
-| author | `()` | Author area, overrides `author` |
-| datetime | `()` | Datetime area, overrides `datetime` |
-| content | `()` | Content area, overrides `content` |
-| actions | `()` | Actions row (usually plain spans) |
-| default | `()` | Nested `<SnComment>` replies |
+| Name     | Params | Notes                               |
+| -------- | ------ | ----------------------------------- |
+| avatar   | `()`   | Avatar area, overrides `avatar`     |
+| author   | `()`   | Author area, overrides `author`     |
+| datetime | `()`   | Datetime area, overrides `datetime` |
+| content  | `()`   | Content area, overrides `content`   |
+| actions  | `()`   | Actions row (usually plain spans)   |
+| default  | `()`   | Nested `<SnComment>` replies        |
 
 The DOM structure matches Arco: avatar column + main column (first row
 author + datetime, second row content, third row actions); nested replies

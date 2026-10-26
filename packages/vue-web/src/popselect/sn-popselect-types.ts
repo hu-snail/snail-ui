@@ -9,34 +9,34 @@
  * (install.ts / index.ts / resolver.ts) is touched.
  */
 
-import type { VNodeChild } from 'vue'
-import type { SnSelectValue, SnSelectOptionInput } from '../select/sn-select-types'
+import type { VNodeChild } from 'vue';
+import type { SnSelectValue, SnSelectOptionInput } from '../select/sn-select-types';
 
-export type { SnSelectValue, SnSelectOptionInput }
+export type { SnSelectValue, SnSelectOptionInput };
 
 /** Value accepted / emitted by `value` / `update:value`. */
-export type SnPopselectValue = SnSelectValue | SnSelectValue[] | null
+export type SnPopselectValue = SnSelectValue | SnSelectValue[] | null;
 
 /** Normalized selectable row. */
 export interface SnPopselectLeafOption {
-  kind: 'leaf'
+  kind: 'leaf';
   /** Stable per-render key (index-based, guarantees uniqueness). */
-  key: string
-  label: string
-  value: SnSelectValue
-  disabled: boolean
+  key: string;
+  label: string;
+  value: SnSelectValue;
+  disabled: boolean;
 }
 
 /** Normalized group header (non-selectable). */
 export interface SnPopselectGroupOption {
-  kind: 'group'
-  key: string
-  label: string
-  children: SnPopselectLeafOption[]
+  kind: 'group';
+  key: string;
+  label: string;
+  children: SnPopselectLeafOption[];
 }
 
 /** A node in the normalized menu tree. */
-export type SnPopselectMenuNode = SnPopselectLeafOption | SnPopselectGroupOption
+export type SnPopselectMenuNode = SnPopselectLeafOption | SnPopselectGroupOption;
 
 /**
  * naive `render-label` signature. Receives the normalized leaf (label /
@@ -45,52 +45,55 @@ export type SnPopselectMenuNode = SnPopselectLeafOption | SnPopselectGroupOption
 export type SnPopselectRenderLabel = (
   option: SnPopselectLeafOption,
   selected: boolean,
-) => VNodeChild
+) => VNodeChild;
 
 /**
  * naive `render-option` signature — wraps the default rendered node.
  */
 export type SnPopselectRenderOption = (info: {
-  node: VNodeChild
-  option: SnPopselectLeafOption
-  selected: boolean
-}) => VNodeChild
+  node: VNodeChild;
+  option: SnPopselectLeafOption;
+  selected: boolean;
+}) => VNodeChild;
 
 /** Flat row model for the template: a group header or a selectable leaf. */
 export interface SnPopselectRowGroup {
-  kind: 'group'
-  key: string
-  label: string
+  kind: 'group';
+  key: string;
+  label: string;
 }
 export interface SnPopselectRowLeaf {
-  kind: 'leaf'
-  key: string
-  leaf: SnPopselectLeafOption
+  kind: 'leaf';
+  key: string;
+  leaf: SnPopselectLeafOption;
 }
-export type SnPopselectRow = SnPopselectRowGroup | SnPopselectRowLeaf
+export type SnPopselectRow = SnPopselectRowGroup | SnPopselectRowLeaf;
 
 /** Coerce one raw entry into its label / value / disabled fields. */
-function readOptionFields(raw: SnSelectOptionInput, index: number): {
-  label: string
-  value: SnSelectValue
-  disabled: boolean
+function readOptionFields(
+  raw: SnSelectOptionInput,
+  index: number,
+): {
+  label: string;
+  value: SnSelectValue;
+  disabled: boolean;
 } {
   if (typeof raw === 'string' || typeof raw === 'number' || typeof raw === 'boolean') {
-    return { label: String(raw), value: raw, disabled: false }
+    return { label: String(raw), value: raw, disabled: false };
   }
-  const obj = raw
-  const labelRaw: unknown = obj['label']
-  const valueRaw: unknown = obj['value']
-  const disabledRaw: unknown = obj['disabled']
-  const value: SnSelectValue
-    = typeof valueRaw === 'string' || typeof valueRaw === 'number' || typeof valueRaw === 'boolean'
+  const obj = raw;
+  const labelRaw: unknown = obj['label'];
+  const valueRaw: unknown = obj['value'];
+  const disabledRaw: unknown = obj['disabled'];
+  const value: SnSelectValue =
+    typeof valueRaw === 'string' || typeof valueRaw === 'number' || typeof valueRaw === 'boolean'
       ? valueRaw
-      : index
+      : index;
   return {
     label: labelRaw === undefined || labelRaw === null ? String(value) : String(labelRaw),
     value,
     disabled: disabledRaw === true,
-  }
+  };
 }
 
 /**
@@ -101,18 +104,18 @@ function readOptionFields(raw: SnSelectOptionInput, index: number): {
 export function normalizePopselectOptions(
   options: readonly SnSelectOptionInput[],
 ): SnPopselectMenuNode[] {
-  const out: SnPopselectMenuNode[] = []
+  const out: SnPopselectMenuNode[] = [];
   options.forEach((raw, index) => {
     if (typeof raw === 'string' || typeof raw === 'number' || typeof raw === 'boolean') {
       out.push({
         kind: 'leaf',
         key: `${index}`,
         ...readOptionFields(raw, index),
-      })
-      return
+      });
+      return;
     }
-    const childrenRaw: unknown = raw['children']
-    const fields = readOptionFields(raw, index)
+    const childrenRaw: unknown = raw['children'];
+    const fields = readOptionFields(raw, index);
     if (Array.isArray(childrenRaw) && childrenRaw.length > 0) {
       out.push({
         kind: 'group',
@@ -123,27 +126,26 @@ export function normalizePopselectOptions(
           key: `${index}-${childIndex}`,
           ...readOptionFields(childRaw, childIndex),
         })),
-      })
-      return
+      });
+      return;
     }
-    out.push({ kind: 'leaf', key: `${index}`, ...fields })
-  })
-  return out
+    out.push({ kind: 'leaf', key: `${index}`, ...fields });
+  });
+  return out;
 }
 
 /** Flatten menu nodes into rows for rendering (groups become headers). */
 export function toPopselectRows(nodes: readonly SnPopselectMenuNode[]): SnPopselectRow[] {
-  const rows: SnPopselectRow[] = []
+  const rows: SnPopselectRow[] = [];
   for (const node of nodes) {
     if (node.kind === 'group') {
-      rows.push({ kind: 'group', key: `row-${node.key}`, label: node.label })
+      rows.push({ kind: 'group', key: `row-${node.key}`, label: node.label });
       for (const leaf of node.children) {
-        rows.push({ kind: 'leaf', key: `row-${leaf.key}`, leaf })
+        rows.push({ kind: 'leaf', key: `row-${leaf.key}`, leaf });
       }
-    }
-    else {
-      rows.push({ kind: 'leaf', key: `row-${node.key}`, leaf: node })
+    } else {
+      rows.push({ kind: 'leaf', key: `row-${node.key}`, leaf: node });
     }
   }
-  return rows
+  return rows;
 }

@@ -10,7 +10,7 @@
 
 ```ts
 // my-brand/styles/skin.ts
-import type { StylePackDefinition } from '@snui/style-packs'
+import type { StylePackDefinition } from '@snui/style-packs';
 
 export const myBrandPack: StylePackDefinition = {
   name: 'my-brand',
@@ -49,19 +49,19 @@ export const myBrandPack: StylePackDefinition = {
 
   // 皮肤 CSS 层 — 可选，覆盖组件视觉人格
   skinCss: '/packs/my-brand.skin.css',
-}
+};
 ```
 
 皮肤 CSS 例子：
 
 ```css
 /* my-brand/public/packs/my-brand.skin.css */
-.snui-skin-my-brand [data-snui-component="button"] {
+.snui-skin-my-brand [data-snui-component='button'] {
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
-.snui-skin-my-brand [data-snui-component="card"] {
+.snui-skin-my-brand [data-snui-component='card'] {
   border-top: 3px solid #ff5722;
 }
 ```
@@ -91,25 +91,25 @@ pnpm snui pack validate
 ### Web 端
 
 ```ts
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-web/styles'
-import { myBrandPack } from './styles/my-brand'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-web/styles';
+import { myBrandPack } from './styles/my-brand';
 
-const el = document.createElement('style')
+const el = document.createElement('style');
 el.textContent = snCssVars({
   end: 'web',
   theme: myBrandPack.theme,
   style: myBrandPack.style,
   density: myBrandPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 
 // 同时加载皮肤 CSS
 if (myBrandPack.skinCss) {
-  const link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = myBrandPack.skinCss
-  document.head.appendChild(link)
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = myBrandPack.skinCss;
+  document.head.appendChild(link);
 }
 ```
 

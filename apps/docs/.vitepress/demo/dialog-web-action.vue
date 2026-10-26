@@ -5,16 +5,16 @@
  * Shows: the `action` slot. The slot receives no payload; the host owns the
  * buttons entirely, including their types and layout.
  */
-import { ref } from 'vue'
-import { SnButton, SnDialog } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDialog } from '@snui/vue-web';
 
 // Closed on load — a dialog must not appear before the reader asks for it.
-const open = ref(false)
-const picked = ref('—')
+const open = ref(false);
+const picked = ref('—');
 
 function pick(choice: string): void {
-  picked.value = choice
-  open.value = false
+  picked.value = choice;
+  open.value = false;
 }
 </script>
 

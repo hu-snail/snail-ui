@@ -45,7 +45,9 @@ npx @snui/ai
 
 ```ts
 // Input
-{ end: 'web' | 'mp' | 'both' }
+{
+  end: 'web' | 'mp' | 'both';
+}
 
 // Output
 {
@@ -63,17 +65,17 @@ npx @snui/ai
       description: '主要交互按钮（uni 端）',
       importPath: 'easycom 自动注册，无需 import',
     },
-  ]
+  ];
 }
 ```
 
 **`end` 过滤规则**：
 
-| 输入 `end` | 返回 |
-|---|---|
-| `'web'` | `component.end === 'web'` |
-| `'mp'` | `component.end === 'mp'` |
-| `'both'` | 全部组件（Web + mp） |
+| 输入 `end` | 返回                      |
+| ---------- | ------------------------- |
+| `'web'`    | `component.end === 'web'` |
+| `'mp'`     | `component.end === 'mp'`  |
+| `'both'`   | 全部组件（Web + mp）      |
 
 > 跨端组件（`end: 'both'`）在两种 end 查询下都返回，但 importPath 按查询端给出。
 

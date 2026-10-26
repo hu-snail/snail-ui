@@ -5,11 +5,11 @@
  * Shows: the `to` prop. The drawer is teleported into the dashed box
  * instead of `body`, so it is clipped by that box rather than the viewport.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const host = ref<HTMLElement | null>(null)
-const open = ref(false)
+const host = ref<HTMLElement | null>(null);
+const open = ref(false);
 </script>
 
 <template>
@@ -19,13 +19,7 @@ const open = ref(false)
     <div ref="host" class="drw-target__host">
       <span class="drw-target__cap">Drawer mount container (to)</span>
 
-      <SnDrawer
-        v-if="host"
-        v-model:show="open"
-        :to="host"
-        placement="right"
-        :width="280"
-      >
+      <SnDrawer v-if="host" v-model:show="open" :to="host" placement="right" :width="280">
         <SnDrawerContent title="Scoped drawer" closable @close="open = false">
           <p>This drawer is confined to the dashed box; it does not fill the viewport.</p>
           <p>Fits embedded preview canvases, local editors, and similar cases.</p>

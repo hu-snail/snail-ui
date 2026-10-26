@@ -1,23 +1,23 @@
 <script setup lang="ts">
 /** Demo: SnVirtualList — scroll / update:scrollTop 实时回显 + overscan 预渲染对照。 */
-import { reactive } from 'vue'
-import { SnVirtualList } from '@snui/vue-web'
+import { reactive } from 'vue';
+import { SnVirtualList } from '@snui/vue-web';
 
 /** 本地造 1000 条数据。 */
 const items = Array.from({ length: 1000 }, (_, i) => ({
   value: i,
   label: `第 ${i + 1} 行`,
-}))
+}));
 
 /** 两组滚动回显：native scroll 计数 + rAF 节流后的 scrollTop。 */
 const readouts = reactive({
   plain: { scrollTop: 0, scrollCount: 0 },
   buffered: { scrollTop: 0, scrollCount: 0 },
-})
+});
 
 function onScrollTop(key: 'plain' | 'buffered', next: number): void {
-  readouts[key].scrollTop = next
-  readouts[key].scrollCount += 1
+  readouts[key].scrollTop = next;
+  readouts[key].scrollCount += 1;
 }
 </script>
 
@@ -39,7 +39,8 @@ function onScrollTop(key: 'plain' | 'buffered', next: number): void {
           </template>
         </SnVirtualList>
         <p class="virtual-list-demo__hint">
-          scrollTop {{ readouts.plain.scrollTop }}px · scroll 事件 {{ readouts.plain.scrollCount }} 次
+          scrollTop {{ readouts.plain.scrollTop }}px · scroll 事件
+          {{ readouts.plain.scrollCount }} 次
         </p>
       </section>
       <section class="virtual-list-demo__block">
@@ -57,12 +58,14 @@ function onScrollTop(key: 'plain' | 'buffered', next: number): void {
           </template>
         </SnVirtualList>
         <p class="virtual-list-demo__hint">
-          scrollTop {{ readouts.buffered.scrollTop }}px · scroll 事件 {{ readouts.buffered.scrollCount }} 次
+          scrollTop {{ readouts.buffered.scrollTop }}px · scroll 事件
+          {{ readouts.buffered.scrollCount }} 次
         </p>
       </section>
     </div>
     <p class="virtual-list-demo__hint virtual-list-demo__hint--note">
-      scroll 为原生高频事件，update:scrollTop 经 rAF 节流后提交；overscan 越大，快速滚动时白屏概率越低。
+      scroll 为原生高频事件，update:scrollTop 经 rAF 节流后提交；overscan
+      越大，快速滚动时白屏概率越低。
     </p>
   </div>
 </template>

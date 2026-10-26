@@ -30,40 +30,40 @@ Put the row content in the default slot and the actions in `right` / `left`. `v-
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `'left' \| 'close' \| 'right'` | `'close'` | Current swipe state (`v-model`) |
-| `disabled` | `boolean` | `false` | Disable swiping |
-| `beforeClose` | `(reason, position) => boolean \| Promise<boolean>` | — | Close guard; `false` blocks the close |
-| `customClass` | `string` | `''` | Root class |
-| `customStyle` | `string` | `''` | Root inline style |
+| Prop          | Type                                                | Default   | Description                           |
+| ------------- | --------------------------------------------------- | --------- | ------------------------------------- |
+| `modelValue`  | `'left' \| 'close' \| 'right'`                      | `'close'` | Current swipe state (`v-model`)       |
+| `disabled`    | `boolean`                                           | `false`   | Disable swiping                       |
+| `beforeClose` | `(reason, position) => boolean \| Promise<boolean>` | —         | Close guard; `false` blocks the close |
+| `customClass` | `string`                                            | `''`      | Root class                            |
+| `customStyle` | `string`                                            | `''`      | Root inline style                     |
 
 ### beforeClose arguments
 
-| Argument | Type | Description |
-| --- | --- | --- |
-| `reason` | `'click' \| 'swipe' \| 'other'` | What triggered the close |
-| `position` | `'left' \| 'right'` | Which side is currently open |
+| Argument   | Type                            | Description                  |
+| ---------- | ------------------------------- | ---------------------------- |
+| `reason`   | `'click' \| 'swipe' \| 'other'` | What triggered the close     |
+| `position` | `'left' \| 'right'`             | Which side is currently open |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Swipe state changed | `('left' \| 'close' \| 'right')` |
-| `click` | The open content area was tapped and closed | `{ reason: 'click', position: 'left' \| 'right' }` |
+| Event               | Description                                 | Payload                                            |
+| ------------------- | ------------------------------------------- | -------------------------------------------------- |
+| `update:modelValue` | Swipe state changed                         | `('left' \| 'close' \| 'right')`                   |
+| `click`             | The open content area was tapped and closed | `{ reason: 'click', position: 'left' \| 'right' }` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` | Row content (the area that slides) |
-| `left` | Left action area (revealed by swiping right) |
-| `right` | Right action area (revealed by swiping left) |
+| Slot      | Description                                  |
+| --------- | -------------------------------------------- |
+| `default` | Row content (the area that slides)           |
+| `left`    | Left action area (revealed by swiping right) |
+| `right`   | Right action area (revealed by swiping left) |
 
 ## Methods
 
-| Method | Description |
-| --- | --- |
+| Method                      | Description                                                        |
+| --------------------------- | ------------------------------------------------------------------ |
 | `close(reason?, position?)` | Close the open row; resolves `false` when `beforeClose` blocked it |
 
 ## Gesture behaviour
@@ -74,11 +74,11 @@ Put the row content in the default slot and the actions in `right` / `left`. `v-
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
+| Variable                            | Purpose                  |
+| ----------------------------------- | ------------------------ |
 | `--sn-mp-color-background-elevated` | Row / content background |
-| `--sn-mp-color-text-primary` | Content text |
-| `--sn-mp-color-text-disabled` | Disabled text |
+| `--sn-mp-color-text-primary`        | Content text             |
+| `--sn-mp-color-text-disabled`       | Disabled text            |
 
 ## Accessibility
 

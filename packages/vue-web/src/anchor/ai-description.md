@@ -19,50 +19,50 @@ and `n-anchor-link`
 ## Import
 
 ```ts
-import { SnAnchor, SnAnchorLink } from '@snui/vue-web'
+import { SnAnchor, SnAnchorLink } from '@snui/vue-web';
 ```
 
 ## SnAnchor Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `type` | `'block' \| 'rail'` | `'rail'` | `rail` renders the vertical rail with a sliding bar; `block` is a plain list. |
-| `showRail` | `boolean` | `true` | Show the rail. Ignored when `type` is `block`. |
-| `showBackground` | `boolean` | `true` | Draw the highlight behind the active link. |
-| `bound` | `number` | `12` | Distance from the scroll-target top at which a section becomes active. |
-| `internalScrollable` | `boolean` | `false` | Accepted for API parity; content renders in normal flow (see future markers). |
-| `ignoreGap` | `boolean` | `false` | Keep the previous link active while a section is scrolled out of view. |
-| `offsetTarget` | `string \| Window \| Document \| HTMLElement \| (() => HTMLElement)` | `document` | Element used to measure section offsets. |
-| `affix` | `boolean` | `false` | Wrap the anchor in `SnAffix` so it stays in view. |
-| `listenTo` | `string \| HTMLElement \| Document \| (() => HTMLElement \| Document)` | `undefined` | Forwarded to `SnAffix` when `affix` is true. |
-| `top` / `bottom` | `number` | `undefined` | Forwarded to `SnAffix` when `affix` is true. |
-| `triggerTop` / `triggerBottom` | `number` | `undefined` | Forwarded to `SnAffix` when `affix` is true. |
-| `offsetTop` / `offsetBottom` | `number` | `undefined` | **@deprecated** — forwarded to `SnAffix`. |
+| Name                           | Type                                                                   | Default     | Description                                                                   |
+| ------------------------------ | ---------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------- |
+| `type`                         | `'block' \| 'rail'`                                                    | `'rail'`    | `rail` renders the vertical rail with a sliding bar; `block` is a plain list. |
+| `showRail`                     | `boolean`                                                              | `true`      | Show the rail. Ignored when `type` is `block`.                                |
+| `showBackground`               | `boolean`                                                              | `true`      | Draw the highlight behind the active link.                                    |
+| `bound`                        | `number`                                                               | `12`        | Distance from the scroll-target top at which a section becomes active.        |
+| `internalScrollable`           | `boolean`                                                              | `false`     | Accepted for API parity; content renders in normal flow (see future markers). |
+| `ignoreGap`                    | `boolean`                                                              | `false`     | Keep the previous link active while a section is scrolled out of view.        |
+| `offsetTarget`                 | `string \| Window \| Document \| HTMLElement \| (() => HTMLElement)`   | `document`  | Element used to measure section offsets.                                      |
+| `affix`                        | `boolean`                                                              | `false`     | Wrap the anchor in `SnAffix` so it stays in view.                             |
+| `listenTo`                     | `string \| HTMLElement \| Document \| (() => HTMLElement \| Document)` | `undefined` | Forwarded to `SnAffix` when `affix` is true.                                  |
+| `top` / `bottom`               | `number`                                                               | `undefined` | Forwarded to `SnAffix` when `affix` is true.                                  |
+| `triggerTop` / `triggerBottom` | `number`                                                               | `undefined` | Forwarded to `SnAffix` when `affix` is true.                                  |
+| `offsetTop` / `offsetBottom`   | `number`                                                               | `undefined` | **@deprecated** — forwarded to `SnAffix`.                                     |
 
 ## SnAnchorLink Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `title` | `string` | `''` | Link label. |
-| `href` | `string` | `undefined` | Target section id, e.g. `#intro`. |
+| Name    | Type     | Default     | Description                       |
+| ------- | -------- | ----------- | --------------------------------- |
+| `title` | `string` | `''`        | Link label.                       |
+| `href`  | `string` | `undefined` | Target section id, e.g. `#intro`. |
 
 ## SnAnchor Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description              |
+| --------- | ------------------------ |
 | `default` | `SnAnchorLink` children. |
 
 ## SnAnchorLink Slots
 
-| Name | Description |
-|---|---|
-| `title` | Link label — overrides the `title` prop. |
+| Name      | Description                                    |
+| --------- | ---------------------------------------------- |
+| `title`   | Link label — overrides the `title` prop.       |
 | `default` | Nested `SnAnchorLink` children (sub-sections). |
 
 ## Exposed
 
-| Component | Name | Type | Description |
-|---|---|---|---|
+| Component  | Name       | Type                     | Description                                      |
+| ---------- | ---------- | ------------------------ | ------------------------------------------------ |
 | `SnAnchor` | `scrollTo` | `(href: string) => void` | Scroll to and activate the link matching `href`. |
 
 ## Behaviour
@@ -100,14 +100,14 @@ import { SnAnchor, SnAnchorLink } from '@snui/vue-web'
 
 ## Tokens Consumed (end: web)
 
-| Token | Use |
-|---|---|
-| `--sn-web-color-border-default` | Rail track. |
-| `--sn-web-color-action-primary` | Active rail bar, active/hovered link text. |
-| `--sn-web-color-action-primary-hover` | Link text on hover. |
-| `--sn-web-color-text-secondary` | Inactive link text. |
-| `--sn-web-color-background-surface-hover` | Active-link highlight. |
-| `--sn-web-focus-ring` | Keyboard focus outline. |
+| Token                                     | Use                                        |
+| ----------------------------------------- | ------------------------------------------ |
+| `--sn-web-color-border-default`           | Rail track.                                |
+| `--sn-web-color-action-primary`           | Active rail bar, active/hovered link text. |
+| `--sn-web-color-action-primary-hover`     | Link text on hover.                        |
+| `--sn-web-color-text-secondary`           | Inactive link text.                        |
+| `--sn-web-color-background-surface-hover` | Active-link highlight.                     |
+| `--sn-web-focus-ring`                     | Keyboard focus outline.                    |
 
 ## Accessibility
 

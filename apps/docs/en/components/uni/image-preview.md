@@ -44,56 +44,56 @@ The `images` / `startPosition` passed to `open(options)` override the prop value
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `selector` | `string` | `''` | Selector whose matched elements open the viewer |
-| `images` | `string[]` | `[]` | Image URLs |
-| `startPosition` | `number` | `0` | Index shown first |
-| `showIndex` | `boolean` | `true` | Show the counter |
-| `loop` | `boolean` | `true` | Loop from the last image to the first |
-| `closeable` | `boolean` | `true` | Render the close button |
-| `closeIcon` | `string` | `'close'` | Close glyph (sn-icon registry name; unknown names fall back to the built-in X) |
-| `closeIconPosition` | `'top-left' \| 'top-right'` | `'top-right'` | Close-button anchor |
-| `closeOnClick` | `boolean` | `true` | Tapping the image or scrim closes the viewer |
-| `showMenuByLongpress` | `boolean` | `true` | Long-press shows the miniprogram QR menu |
-| `zIndex` | `number` | `1000` | Stacking level |
-| `customClass` | `string` | `''` | Custom class for the viewer root |
-| `customStyle` | `string` | `''` | Custom inline style for the viewer root |
+| Prop                  | Type                        | Default       | Description                                                                    |
+| --------------------- | --------------------------- | ------------- | ------------------------------------------------------------------------------ |
+| `selector`            | `string`                    | `''`          | Selector whose matched elements open the viewer                                |
+| `images`              | `string[]`                  | `[]`          | Image URLs                                                                     |
+| `startPosition`       | `number`                    | `0`           | Index shown first                                                              |
+| `showIndex`           | `boolean`                   | `true`        | Show the counter                                                               |
+| `loop`                | `boolean`                   | `true`        | Loop from the last image to the first                                          |
+| `closeable`           | `boolean`                   | `true`        | Render the close button                                                        |
+| `closeIcon`           | `string`                    | `'close'`     | Close glyph (sn-icon registry name; unknown names fall back to the built-in X) |
+| `closeIconPosition`   | `'top-left' \| 'top-right'` | `'top-right'` | Close-button anchor                                                            |
+| `closeOnClick`        | `boolean`                   | `true`        | Tapping the image or scrim closes the viewer                                   |
+| `showMenuByLongpress` | `boolean`                   | `true`        | Long-press shows the miniprogram QR menu                                       |
+| `zIndex`              | `number`                    | `1000`        | Stacking level                                                                 |
+| `customClass`         | `string`                    | `''`          | Custom class for the viewer root                                               |
+| `customStyle`         | `string`                    | `''`          | Custom inline style for the viewer root                                        |
 
 ## Methods
 
-| Method | Parameters | Description |
-| --- | --- | --- |
-| `open` | `options?: { images?, startPosition? }` | Show the viewer; options override the props for this session |
-| `close` | — | Hide the viewer |
-| `setActive` | `index: number` | Jump to an index (clamped to the list) |
+| Method      | Parameters                              | Description                                                  |
+| ----------- | --------------------------------------- | ------------------------------------------------------------ |
+| `open`      | `options?: { images?, startPosition? }` | Show the viewer; options override the props for this session |
+| `close`     | —                                       | Hide the viewer                                              |
+| `setActive` | `index: number`                         | Jump to an index (clamped to the list)                       |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `open` | The viewer opened | — |
-| `close` | The viewer closed | — |
-| `change` | The active image changed | `{ index }` |
+| Event        | Description                        | Payload     |
+| ------------ | ---------------------------------- | ----------- |
+| `open`       | The viewer opened                  | —           |
+| `close`      | The viewer closed                  | —           |
+| `change`     | The active image changed           | `{ index }` |
 | `long-press` | The current image was long-pressed | `{ image }` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` | Footer content, receives `{ current }`; also stands in for the whole stage when `images` is empty |
-| `indicator` | Replaces the built-in counter, receives `{ current, total }` |
+| Slot        | Description                                                                                       |
+| ----------- | ------------------------------------------------------------------------------------------------- |
+| `default`   | Footer content, receives `{ current }`; also stands in for the whole stage when `images` is empty |
+| `indicator` | Replaces the built-in counter, receives `{ current, total }`                                      |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | Counter pill / close-button plate |
-| `--sn-mp-color-text-on-primary` | Counter and close-glyph color |
-| `--sn-mp-font-size-md` | Counter text size |
-| `--sn-mp-font-weight-medium` | Counter weight |
-| `--sn-mp-font-line-height-normal` | Counter line height |
-| `--sn-mp-radius-full` | Counter pill / close-button corners |
+| Variable                                                                              | Purpose                                                         |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `--sn-mp-color-background-overlay`                                                    | Counter pill / close-button plate                               |
+| `--sn-mp-color-text-on-primary`                                                       | Counter and close-glyph color                                   |
+| `--sn-mp-font-size-md`                                                                | Counter text size                                               |
+| `--sn-mp-font-weight-medium`                                                          | Counter weight                                                  |
+| `--sn-mp-font-line-height-normal`                                                     | Counter line height                                             |
+| `--sn-mp-radius-full`                                                                 | Counter pill / close-button corners                             |
 | `--sn-mp-spacing-1` / `--sn-mp-spacing-4` / `--sn-mp-spacing-5` / `--sn-mp-spacing-8` | Counter padding / close inset / footer padding / counter offset |
 
 ## Accessibility

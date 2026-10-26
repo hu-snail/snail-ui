@@ -20,93 +20,93 @@
  *   - 校验信息展示 — 用 sn-form-item
  */
 
-import { computed, markRaw, ref, useSlots } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
+import { computed, markRaw, ref, useSlots } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 
-defineOptions({ name: 'SnTextarea' })
+defineOptions({ name: 'SnTextarea' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-textarea` 1:1 surface ───────────────────────────────── */
 
     /** Bound value (v-model). Numbers are rendered as their string form. */
-    modelValue?: string | number
+    modelValue?: string | number;
     /** Placeholder text. wd-textarea defaults to `请输入...`. */
-    placeholder?: string
+    placeholder?: string;
     /** Inline style declarations for the placeholder pseudo-element. */
-    placeholderStyle?: string
+    placeholderStyle?: string;
     /** Class applied to the placeholder pseudo-element (uni-app MP). */
-    placeholderClass?: string
+    placeholderClass?: string;
     /** Disables interaction. Native `disabled` attribute is set. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — value is visible but not editable. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Max character length. `-1` means unlimited (wd-textarea default). */
-    maxlength?: number
+    maxlength?: number;
     /** Show the × clear button. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Front icon name, resolved through the sn-icon registry. */
-    prefixIcon?: string
+    prefixIcon?: string;
     /** Front icon CSS class (bypasses the sn-icon registry). */
-    iconPrefix?: string
+    iconPrefix?: string;
     /** When `true`, `prefixIcon` is treated as a CSS class name. */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** Show the running `current / max` counter. Requires `maxlength`. */
-    showWordLimit?: boolean
+    showWordLimit?: boolean;
     /** When the clear button is shown: `always` or only while focused. */
-    clearTrigger?: 'always' | 'focus'
+    clearTrigger?: 'always' | 'focus';
     /** Refocus the field after the clear button is tapped. */
-    focusWhenClear?: boolean
+    focusWhenClear?: boolean;
     /** Error state — red border + `aria-invalid`. */
-    error?: boolean
+    error?: boolean;
     /** Focus the field on mount. */
-    focus?: boolean
+    focus?: boolean;
     /** Auto-focus + raise the soft keyboard on mount. */
-    autoFocus?: boolean
+    autoFocus?: boolean;
     /** Grow the field height with its content. */
-    autoHeight?: boolean
+    autoHeight?: boolean;
     /** Fixed-position mode — prevents the field from being pushed by the keyboard. */
-    fixed?: boolean
+    fixed?: boolean;
     /** Distance kept between the caret and the soft keyboard (px). */
-    cursorSpacing?: number
+    cursorSpacing?: number;
     /** Initial caret position. `-1` means "unset". */
-    cursor?: number
+    cursor?: number;
     /** Soft-keyboard confirm button label. */
-    confirmType?: 'send' | 'search' | 'next' | 'go' | 'done' | undefined
+    confirmType?: 'send' | 'search' | 'next' | 'go' | 'done' | undefined;
     /** Keep the keyboard up when the confirm button is tapped. */
-    confirmHold?: boolean
+    confirmHold?: boolean;
     /** Show the "完成" toolbar above the soft keyboard. */
-    showConfirmBar?: boolean
+    showConfirmBar?: boolean;
     /** Initial selection range start. Pairs with `selectionEnd`. */
-    selectionStart?: number
+    selectionStart?: number;
     /** Initial selection range end. Pairs with `selectionStart`. */
-    selectionEnd?: number
+    selectionEnd?: number;
     /** Auto-scroll the page when the keyboard covers the field. */
-    adjustPosition?: boolean
+    adjustPosition?: boolean;
     /** Drop the iOS default inner padding. */
-    disableDefaultPadding?: boolean
+    disableDefaultPadding?: boolean;
     /** Keep the keyboard up when the page is tapped while focused. */
-    holdKeyboard?: boolean
+    holdKeyboard?: boolean;
     /** Ignore composition events; `false` emits `input` mid-composition. */
-    ignoreCompositionEvent?: boolean
+    ignoreCompositionEvent?: boolean;
     /** Soft-keyboard type hint. */
-    inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url'
+    inputmode?: 'none' | 'text' | 'decimal' | 'numeric' | 'tel' | 'search' | 'email' | 'url';
     /** Alipay MP: use the native textarea (avoids the keyboard push-up jump). */
-    enableNative?: boolean
+    enableNative?: boolean;
     /**
      * Compact layout — strips the default padding / background so the field
      * nests inside a form row. `undefined` lets `sn-form-item` decide.
      */
-    compact?: boolean | undefined
+    compact?: boolean | undefined;
     /** Class on the inner native `<textarea>`. */
-    customTextareaClass?: string
+    customTextareaClass?: string;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: '',
@@ -146,104 +146,104 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — fired on every keystroke. */
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string): void;
   /** Native input event. */
-  (e: 'input', value: string, event: Event): void
+  (e: 'input', value: string, event: Event): void;
   /** Value committed (native change / blur). */
-  (e: 'change', value: string, event: Event): void
+  (e: 'change', value: string, event: Event): void;
   /** Focused. */
-  (e: 'focus', event: Event): void
+  (e: 'focus', event: Event): void;
   /** Blurred. */
-  (e: 'blur', event: Event): void
+  (e: 'blur', event: Event): void;
   /** The × clear button was tapped. */
-  (e: 'clear'): void
+  (e: 'clear'): void;
   /** Line count changed (native `linechange`). */
-  (e: 'linechange', event: Event): void
+  (e: 'linechange', event: Event): void;
   /** Soft-keyboard confirm button tapped. */
-  (e: 'confirm', value: string): void
+  (e: 'confirm', value: string): void;
   /** Soft-keyboard height changed. */
-  (e: 'keyboardheightchange', event: Event): void
+  (e: 'keyboardheightchange', event: Event): void;
   /** Root node tapped. */
-  (e: 'click', event: Event): void
-}>()
+  (e: 'click', event: Event): void;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** DOM-bound value — always a string. */
 const nativeValue = computed<string>(() =>
   props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue),
-)
+);
 
-const isFocused = ref(false)
+const isFocused = ref(false);
 
 /** Whether the clear button is visible right now. */
 const clearVisible = computed(() => {
-  if (!props.clearable || props.disabled || props.readonly) return false
-  if (nativeValue.value.length === 0) return false
-  if (props.clearTrigger === 'focus') return isFocused.value
-  return true
-})
+  if (!props.clearable || props.disabled || props.readonly) return false;
+  if (nativeValue.value.length === 0) return false;
+  if (props.clearTrigger === 'focus') return isFocused.value;
+  return true;
+});
 
-const currentLength = computed(() => nativeValue.value.length)
+const currentLength = computed(() => nativeValue.value.length);
 /** `-1` is wd-textarea's "unlimited" sentinel — never render it as a bound. */
-const hasLimit = computed(() => props.maxlength > 0)
-const counterVisible = computed(() => props.showWordLimit && hasLimit.value)
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const hasLimit = computed(() => props.maxlength > 0);
+const counterVisible = computed(() => props.showWordLimit && hasLimit.value);
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
 /** Front icon — `prefixIcon` (registry) wins over `iconPrefix` (CSS class). */
 const prefixIconData = computed<IconData | null>(() => {
-  if (!props.prefixIcon || props.cssIcon) return null
-  const icon = resolveIconByName(props.prefixIcon)
-  return icon ? markRaw(icon) : null
-})
+  if (!props.prefixIcon || props.cssIcon) return null;
+  const icon = resolveIconByName(props.prefixIcon);
+  return icon ? markRaw(icon) : null;
+});
 /** Default × glyph for the clear button. */
-const defaultClearIcon = markRaw(XIcon)
+const defaultClearIcon = markRaw(XIcon);
 
 function onInput(event: Event): void {
-  if (!isInteractive.value) return
-  const target = event.target as HTMLTextAreaElement
-  emit('update:modelValue', target.value)
-  emit('input', target.value, event)
+  if (!isInteractive.value) return;
+  const target = event.target as HTMLTextAreaElement;
+  emit('update:modelValue', target.value);
+  emit('input', target.value, event);
 }
 
 function onChange(event: Event): void {
-  if (!isInteractive.value) return
-  const target = event.target as HTMLTextAreaElement
-  emit('change', target.value, event)
+  if (!isInteractive.value) return;
+  const target = event.target as HTMLTextAreaElement;
+  emit('change', target.value, event);
 }
 
 function onFocus(event: Event): void {
-  isFocused.value = true
-  emit('focus', event)
+  isFocused.value = true;
+  emit('focus', event);
 }
 
 function onBlur(event: Event): void {
-  isFocused.value = false
-  emit('blur', event)
+  isFocused.value = false;
+  emit('blur', event);
 }
 
 function onConfirm(event: Event): void {
-  if (!isInteractive.value) return
-  emit('confirm', nativeValue.value)
-  void event
+  if (!isInteractive.value) return;
+  emit('confirm', nativeValue.value);
+  void event;
 }
 
 function onLineChange(event: Event): void {
-  emit('linechange', event)
+  emit('linechange', event);
 }
 
 function onKeyboardHeightChange(event: Event): void {
-  emit('keyboardheightchange', event)
+  emit('keyboardheightchange', event);
 }
 
 function onClear(): void {
-  if (!isInteractive.value) return
-  emit('update:modelValue', '')
-  emit('clear')
+  if (!isInteractive.value) return;
+  emit('update:modelValue', '');
+  emit('clear');
   /* `focusWhenClear` is declared for wd-textarea parity, but re-focusing is a
    * no-op on uni-end: the soft keyboard is dismissed on blur in MP
    * environments. Consumers that need it call .focus() from their own ref in
@@ -251,7 +251,7 @@ function onClear(): void {
 }
 
 function onClickRoot(event: Event): void {
-  emit('click', event)
+  emit('click', event);
 }
 
 const classList = computed(() => [
@@ -267,9 +267,9 @@ const classList = computed(() => [
     'sn-textarea--with-clear': clearVisible.value,
   },
   props.customClass,
-])
+]);
 
-const wrapperStyle = computed(() => props.customStyle || undefined)
+const wrapperStyle = computed(() => props.customStyle || undefined);
 
 /**
  * uni-app MP-only native textarea attributes.（MP 端模板不支持 v-bind="obj"
@@ -294,7 +294,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
       <SnIcon v-if="prefixIconData" :icon="prefixIconData" :size="32" />
       <view
         v-else-if="!slots.prefix && (prefixIcon || iconPrefix)"
-        :class="cssIcon || iconPrefix ? (iconPrefix || prefixIcon) : 'sn-textarea__icon-glyph'"
+        :class="cssIcon || iconPrefix ? iconPrefix || prefixIcon : 'sn-textarea__icon-glyph'"
       />
     </view>
 
@@ -327,7 +327,9 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
       :enable-native="enableNative"
       :confirm-type="confirmType"
       :cursor="cursor !== undefined && cursor >= 0 ? cursor : undefined"
-      :selection-start="selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined"
+      :selection-start="
+        selectionStart !== undefined && selectionStart >= 0 ? selectionStart : undefined
+      "
       :selection-end="selectionEnd !== undefined && selectionEnd >= 0 ? selectionEnd : undefined"
       @input="onInput"
       @change="onChange"
@@ -338,10 +340,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
       @keyboardheightchange="onKeyboardHeightChange"
     />
 
-    <view
-      v-if="clearVisible || counterVisible"
-      class="sn-textarea__footer"
-    >
+    <view v-if="clearVisible || counterVisible" class="sn-textarea__footer">
       <view v-if="counterVisible" class="sn-textarea__count" aria-live="polite">
         <slot name="count" :current="currentLength" :max="maxlength">
           {{ currentLength }} / {{ maxlength }}
@@ -379,7 +378,9 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
   color: var(--sn-mp-color-input-text);
   font-family: inherit;
   box-sizing: border-box;
-  transition: border-color 0.18s ease-out, background-color 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    background-color 0.18s ease-out;
 }
 
 .sn-textarea:focus-within {

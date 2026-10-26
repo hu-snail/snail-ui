@@ -34,73 +34,73 @@
  *   - 轻提示 — 用 sn-toast
  */
 
-import { computed, markRaw } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import SnPopup from '../sn-popup/sn-popup.vue'
+import { computed, markRaw } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import SnPopup from '../sn-popup/sn-popup.vue';
 
-defineOptions({ name: 'SnActionSheet' })
+defineOptions({ name: 'SnActionSheet' });
 
 /** One list row. Mirrors the `Action` row group of the wd reference table. */
 export interface SnActionSheetAction {
   /** Row label. */
-  name?: string
+  name?: string;
   /** Secondary description shown under the label. */
-  description?: string
+  description?: string;
   /** Text color override for this row. */
-  color?: string
+  color?: string;
   /** Icon name (sn-icon registry) or image URL. */
-  icon?: string
+  icon?: string;
   /** Disable the row — taps are ignored. */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 /** One grid cell. Mirrors the `Panel` row group of the wd reference table. */
 export interface SnActionSheetPanel {
   /** Cell label. */
-  title?: string
+  title?: string;
   /** Cell identifier echoed back through `select`. */
-  name?: string
+  name?: string;
   /** Icon name (sn-icon registry) or image URL. */
-  icon?: string
+  icon?: string;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Whether the sheet is visible (v-model). */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** List rows. */
-    actions?: SnActionSheetAction[]
+    actions?: SnActionSheetAction[];
     /** Grid cells; a nested array is treated as multiple rows. */
-    panels?: Array<SnActionSheetPanel | SnActionSheetPanel[]>
+    panels?: Array<SnActionSheetPanel | SnActionSheetPanel[]>;
     /** Title text above the list. */
-    title?: string
+    title?: string;
     /** Cancel button label. An empty string hides the cancel button. */
-    cancelText?: string
+    cancelText?: string;
     /** Close the sheet after a row / cell is selected. */
-    closeOnClickAction?: boolean
+    closeOnClickAction?: boolean;
     /** Close the sheet when the scrim is tapped. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Animation duration in ms. */
-    duration?: number
+    duration?: number;
     /** Stacking level of the sheet. */
-    zIndex?: number
+    zIndex?: number;
     /** Defer panel content rendering until the sheet is first opened. */
-    lazyRender?: boolean
+    lazyRender?: boolean;
     /** Pad the bottom sheet for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Custom class for the title area. */
-    customTitleClass?: string
+    customTitleClass?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the panel. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the layer cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: false,
@@ -119,66 +119,69 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Content above the list, inside the panel. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'select', payload: {
-    item: SnActionSheetAction | SnActionSheetPanel
-    index?: number
-    rowIndex?: number
-    colIndex?: number
-  }): void
-  (e: 'cancel'): void
-  (e: 'close'): void
-  (e: 'click-modal'): void
-  (e: 'enter'): void
-  (e: 'after-enter'): void
-  (e: 'leave'): void
-  (e: 'after-leave'): void
-}>()
+  (e: 'update:modelValue', value: boolean): void;
+  (
+    e: 'select',
+    payload: {
+      item: SnActionSheetAction | SnActionSheetPanel;
+      index?: number;
+      rowIndex?: number;
+      colIndex?: number;
+    },
+  ): void;
+  (e: 'cancel'): void;
+  (e: 'close'): void;
+  (e: 'click-modal'): void;
+  (e: 'enter'): void;
+  (e: 'after-enter'): void;
+  (e: 'leave'): void;
+  (e: 'after-leave'): void;
+}>();
 
 const visible = computed<boolean>({
   get: () => props.modelValue,
   set: (value: boolean) => emit('update:modelValue', value),
-})
+});
 
 /** Looks like an image source rather than a registry icon name. */
 function isImageSource(value: string): boolean {
-  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value)
+  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
 }
 
 /** Grid normalised to rows — a flat `Panel[]` becomes a single row. */
 const panelRows = computed<SnActionSheetPanel[][]>(() => {
-  const rows: SnActionSheetPanel[][] = []
-  let current: SnActionSheetPanel[] = []
+  const rows: SnActionSheetPanel[][] = [];
+  let current: SnActionSheetPanel[] = [];
   for (const entry of props.panels) {
     if (Array.isArray(entry)) {
-      if (current.length > 0) rows.push(current)
-      current = []
-      rows.push(entry)
+      if (current.length > 0) rows.push(current);
+      current = [];
+      rows.push(entry);
     } else {
-      current.push(entry)
+      current.push(entry);
     }
   }
-  if (current.length > 0) rows.push(current)
-  return rows
-})
+  if (current.length > 0) rows.push(current);
+  return rows;
+});
 
 /** Registry icon data for a row / cell, or `null` when it is an image URL. */
 function resolveRowIcon(icon: string | undefined): IconData | null {
-  if (!icon) return null
-  const data = resolveIconByName(icon)
-  return data ? markRaw(data) : null
+  if (!icon) return null;
+  const data = resolveIconByName(icon);
+  return data ? markRaw(data) : null;
 }
 
 function rowIconIsImage(icon: string | undefined): boolean {
-  return Boolean(icon) && isImageSource(icon as string)
+  return Boolean(icon) && isImageSource(icon as string);
 }
 
 /**
@@ -186,38 +189,38 @@ function rowIconIsImage(icon: string | undefined): boolean {
  * runtime but the template still sees `Row[] | undefined`, so a computed keeps
  * the `v-for` / `.length` access type-safe under `strict`.
  */
-const actionList = computed(() => props.actions)
+const actionList = computed(() => props.actions);
 
 /** Should the cancel button render? Empty label hides it. */
-const showsCancel = computed(() => props.cancelText !== '')
+const showsCancel = computed(() => props.cancelText !== '');
 
 function close(): void {
-  emit('update:modelValue', false)
+  emit('update:modelValue', false);
 }
 
 function onActionTap(action: SnActionSheetAction, index: number): void {
-  if (action.disabled) return
-  emit('select', { item: action, index })
-  if (props.closeOnClickAction) close()
+  if (action.disabled) return;
+  emit('select', { item: action, index });
+  if (props.closeOnClickAction) close();
 }
 
 function onPanelTap(panel: SnActionSheetPanel, rowIndex: number, colIndex: number): void {
-  emit('select', { item: panel, rowIndex, colIndex })
-  if (props.closeOnClickAction) close()
+  emit('select', { item: panel, rowIndex, colIndex });
+  if (props.closeOnClickAction) close();
 }
 
 function onCancelTap(): void {
-  emit('cancel')
-  close()
+  emit('cancel');
+  close();
 }
 
 function onPopupClose(): void {
-  emit('close')
+  emit('close');
 }
 
-const popupClass = computed(() => ['sn-action-sheet', props.customClass].filter(Boolean).join(' '))
+const popupClass = computed(() => ['sn-action-sheet', props.customClass].filter(Boolean).join(' '));
 
-const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleClass])
+const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleClass]);
 </script>
 
 <template>
@@ -301,12 +304,7 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
 
       <view v-if="showsCancel" class="sn-action-sheet__gap" />
 
-      <view
-        v-if="showsCancel"
-        class="sn-action-sheet__cancel"
-        role="button"
-        @tap="onCancelTap"
-      >
+      <view v-if="showsCancel" class="sn-action-sheet__cancel" role="button" @tap="onCancelTap">
         <text class="sn-action-sheet__cancel-text">{{ cancelText }}</text>
       </view>
     </view>

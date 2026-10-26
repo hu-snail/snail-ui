@@ -5,10 +5,10 @@
  * Shows: the `right` / `bottom` offsets. The columns share one scroll
  * container so the four corners are directly comparable.
  */
-import { ref } from 'vue'
-import { SnBackTop } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnBackTop } from '@snui/vue-web';
 
-const scrollRef = ref<HTMLElement | null>(null)
+const scrollRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>

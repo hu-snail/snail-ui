@@ -9,9 +9,9 @@ It is composed from `sn-popup` (scrim / stacking / scroll lock / animation) wrap
 wd-video-preview exposes `open` / `close` methods and declares `on-open` / `on-close` as **props** (callbacks) rather than events. This port supports both:
 
 ```ts
-const video = ref()
-video.value.open({ src, poster, title })
-video.value.close()
+const video = ref();
+video.value.open({ src, poster, title });
+video.value.close();
 ```
 
 ```vue
@@ -36,30 +36,30 @@ video.value.close()
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `selector` | `string` | `''` | Instance identifier (parity; rendered as `data-selector`) |
-| `zIndex` | `number` | `1000` | Stacking level |
-| `fullScreen` | `boolean` | `false` | Fill the viewport instead of the centred stage |
-| `closePosition` | `'left-top' \| 'right-top'` | `'left-top'` | Close-button anchor |
-| `onOpen` | `() => void` | `undefined` | Called after the layer opened (reference callback prop) |
-| `onClose` | `() => void` | `undefined` | Called after the layer closed (reference callback prop) |
-| `customClass` | `string` | `''` | Custom class for the layer root |
-| `customStyle` | `string` | `''` | Custom inline style for the layer root |
+| Prop            | Type                        | Default      | Description                                               |
+| --------------- | --------------------------- | ------------ | --------------------------------------------------------- |
+| `selector`      | `string`                    | `''`         | Instance identifier (parity; rendered as `data-selector`) |
+| `zIndex`        | `number`                    | `1000`       | Stacking level                                            |
+| `fullScreen`    | `boolean`                   | `false`      | Fill the viewport instead of the centred stage            |
+| `closePosition` | `'left-top' \| 'right-top'` | `'left-top'` | Close-button anchor                                       |
+| `onOpen`        | `() => void`                | `undefined`  | Called after the layer opened (reference callback prop)   |
+| `onClose`       | `() => void`                | `undefined`  | Called after the layer closed (reference callback prop)   |
+| `customClass`   | `string`                    | `''`         | Custom class for the layer root                           |
+| `customStyle`   | `string`                    | `''`         | Custom inline style for the layer root                    |
 
 ## Methods
 
-| Method | Parameters | Description |
-| --- | --- | --- |
-| `open` | `{ src, poster?, title?, autoplay? }` | Load the video and show the layer |
-| `close` | — | Hide the layer and unload the source |
+| Method  | Parameters                            | Description                          |
+| ------- | ------------------------------------- | ------------------------------------ |
+| `open`  | `{ src, poster?, title?, autoplay? }` | Load the video and show the layer    |
+| `close` | —                                     | Hide the layer and unload the source |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `open` | The layer opened (equivalent to the `onOpen` prop) | — |
-| `close` | The layer closed (equivalent to the `onClose` prop) | — |
+| Event   | Description                                         | Payload |
+| ------- | --------------------------------------------------- | ------- |
+| `open`  | The layer opened (equivalent to the `onOpen` prop)  | —       |
+| `close` | The layer closed (equivalent to the `onClose` prop) | —       |
 
 ## Slots
 
@@ -67,15 +67,15 @@ None.
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | Layer scrim / title bar / close-button plate |
-| `--sn-mp-color-text-on-primary` | Title and close-glyph color |
-| `--sn-mp-font-size-md` | Title text size |
-| `--sn-mp-font-weight-medium` | Title weight |
-| `--sn-mp-font-line-height-normal` | Title line height |
-| `--sn-mp-radius-full` | Close-button corners |
-| `--sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-12` | Bar padding / close inset |
+| Variable                                                         | Purpose                                      |
+| ---------------------------------------------------------------- | -------------------------------------------- |
+| `--sn-mp-color-background-overlay`                               | Layer scrim / title bar / close-button plate |
+| `--sn-mp-color-text-on-primary`                                  | Title and close-glyph color                  |
+| `--sn-mp-font-size-md`                                           | Title text size                              |
+| `--sn-mp-font-weight-medium`                                     | Title weight                                 |
+| `--sn-mp-font-line-height-normal`                                | Title line height                            |
+| `--sn-mp-radius-full`                                            | Close-button corners                         |
+| `--sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-12` | Bar padding / close inset                    |
 
 ## Accessibility
 

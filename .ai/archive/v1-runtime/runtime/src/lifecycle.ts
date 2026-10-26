@@ -15,12 +15,7 @@
 import { createAUIError, type AUIError } from './error.js';
 
 export type LifecyclePhase =
-  | 'created'
-  | 'mounted'
-  | 'updating'
-  | 'updated'
-  | 'unmounting'
-  | 'disposed';
+  'created' | 'mounted' | 'updating' | 'updated' | 'unmounting' | 'disposed';
 
 const VALID_TRANSITIONS: Readonly<Record<LifecyclePhase, readonly LifecyclePhase[]>> = {
   created: ['mounted', 'unmounting', 'disposed'],

@@ -11,15 +11,15 @@
 
 ### 1.1 环境要求
 
-| 工具 | 版本 |
-|---|---|
-| Node.js | ≥ 20 |
-| pnpm | ≥ 10 |
-| TypeScript | 5.x strict |
-| Turbo | 2.x |
-| ESLint | 9.x flat config |
-| Prettier | 3.x |
-| Vitest | 2.x |
+| 工具       | 版本            |
+| ---------- | --------------- |
+| Node.js    | ≥ 20            |
+| pnpm       | ≥ 10            |
+| TypeScript | 5.x strict      |
+| Turbo      | 2.x             |
+| ESLint     | 9.x flat config |
+| Prettier   | 3.x             |
+| Vitest     | 2.x             |
 
 ### 1.2 首次克隆后
 
@@ -66,10 +66,10 @@ pnpm --filter @snui/tokens test
 
 ### 3.1 端包清单
 
-| 端 | 包 | 别名 Token 包 | 路径 |
-|---|---|---|---|
-| Web (PC) | `@snui/vue-web` | `@snui/tokens-web` | `packages/vue-web/` + `packages/tokens-web/` |
-| uni (移动) | `@snui/uni` | `@snui/tokens-mp` | `packages/uni/` + `packages/tokens-mp/` |
+| 端           | 包                | 别名 Token 包        | 路径                                             |
+| ------------ | ----------------- | -------------------- | ------------------------------------------------ |
+| Web (PC)     | `@snui/vue-web`   | `@snui/tokens-web`   | `packages/vue-web/` + `packages/tokens-web/`     |
+| uni (移动)   | `@snui/uni`       | `@snui/tokens-mp`    | `packages/uni/` + `packages/tokens-mp/`          |
 | React (未来) | `@snui/react-web` | `@snui/tokens-react` | `packages/react-web/` + `packages/tokens-react/` |
 
 ### 3.2 端独立约束
@@ -89,14 +89,14 @@ pnpm --filter @snui/tokens test
 export const snWebAliasMap: ReadonlyArray<[string, string]> = [
   ['--sn-web-color-action-primary', '--aui-color-action-primary'],
   // ...
-]
+];
 
 // packages/tokens-mp/src/variables.ts
 export const snMpAliasMap: ReadonlyArray<[string, string]> = [
   ['--sn-mp-color-action-primary', '--aui-color-action-primary'],
   // 注意：rpx 转换在这里完成
   // ...
-]
+];
 ```
 
 ### 3.4 组件消费 Token
@@ -115,7 +115,7 @@ uni 端组件 CSS：
 ```css
 .sn-button {
   background-color: var(--sn-mp-color-action-primary);
-  border-radius: var(--sn-mp-button-radius);  /* 转 rpx */
+  border-radius: var(--sn-mp-button-radius); /* 转 rpx */
 }
 ```
 
@@ -159,7 +159,8 @@ touch packages/uni/src/components/sn-{name}/ai-description.md
 
 ```md
 <!-- SnButton ai-description.md -->
-end: web   ← 或 'mp'
+
+end: web ← 或 'mp'
 
 # SnButton — ...
 ```
@@ -203,13 +204,13 @@ touch apps/docs/en/components/uni/{name}.md
 
 ```ts
 // 跨端 Pack
-end: 'both'
+end: 'both';
 
 // 仅 Web
-end: 'web'
+end: 'web';
 
 // 仅 uni
-end: 'mp'
+end: 'mp';
 ```
 
 ### Step 3. 创建 Pack 文件
@@ -294,26 +295,26 @@ M1 阶段（FOUND-005~008）。当前 `@snui/tokens` 只输出 `--aui-*`；M1 �
 
 ## 9. 文档说明
 
-| 文件 | 用途 |
-|---|---|
-| `dev-docs/SNUI-PRD-v3.1.md` | 产品需求（Active）|
-| `dev-docs/SNUI-Architecture-v3.1.md` | 整体架构（Active）|
-| `dev-docs/SNUI-Master-Plan-v5.1.md` | 里程碑规划（Active）|
-| `dev-docs/SNUI-WBS-v3.1.md` | 工作分解（Active）|
-| `dev-docs/Spec-01-Token-StylePack.md` | Token + Style Pack（Active）|
-| `dev-docs/Spec-02-Component.md` | 组件规范（Active）|
-| `dev-docs/Spec-03-AI-Layer.md` | AI Layer（Active）|
-| `dev-docs/Spec-04-Prototype-App.md` | 原型与应用产出（Active）|
-| `dev-docs/Spec-05-Docs-StyleSwitcher.md` | 文档站规范（Active）|
-| `.ai/decisions/0002-ai-native-style-platform.md` | ADR-0002 |
-| `.ai/decisions/0002-AGENTS-revision.md` | AGENTS.md 修订清单 |
+| 文件                                             | 用途                         |
+| ------------------------------------------------ | ---------------------------- |
+| `dev-docs/SNUI-PRD-v3.1.md`                      | 产品需求（Active）           |
+| `dev-docs/SNUI-Architecture-v3.1.md`             | 整体架构（Active）           |
+| `dev-docs/SNUI-Master-Plan-v5.1.md`              | 里程碑规划（Active）         |
+| `dev-docs/SNUI-WBS-v3.1.md`                      | 工作分解（Active）           |
+| `dev-docs/Spec-01-Token-StylePack.md`            | Token + Style Pack（Active） |
+| `dev-docs/Spec-02-Component.md`                  | 组件规范（Active）           |
+| `dev-docs/Spec-03-AI-Layer.md`                   | AI Layer（Active）           |
+| `dev-docs/Spec-04-Prototype-App.md`              | 原型与应用产出（Active）     |
+| `dev-docs/Spec-05-Docs-StyleSwitcher.md`         | 文档站规范（Active）         |
+| `.ai/decisions/0002-ai-native-style-platform.md` | ADR-0002                     |
+| `.ai/decisions/0002-AGENTS-revision.md`          | AGENTS.md 修订清单           |
 
 ---
 
 ## 10. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.0 | 2026-09 | Schema-Runtime 时代 |
-| v3.0 | 2026-10-03 | 组件 + Style Pack + AI Layer |
+| 版本     | 日期       | 变更                                                            |
+| -------- | ---------- | --------------------------------------------------------------- |
+| v1.0     | 2026-09    | Schema-Runtime 时代                                             |
+| v3.0     | 2026-10-03 | 组件 + Style Pack + AI Layer                                    |
 | **v3.1** | 2026-10-03 | **Web / uni 端独立 + 双 Token 别名层 + 端独立性约束（Active）** |

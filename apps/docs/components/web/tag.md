@@ -22,17 +22,17 @@
 
 ### SnTag Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| type | 六色同 Text | `'default'` | 颜色语义 |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸（22/28/34px） |
-| closable | `boolean` | `false` | 关闭按钮 |
-| disabled | `boolean` | `false` | 禁用 |
-| bordered | `boolean` | `true` | 边框 |
-| round | `boolean` | `false` | 胶囊 |
-| color | `string` | — | 自定义背景（覆盖 type） |
-| checkable | `boolean` | `false` | 可选中 |
-| checked | `boolean` | `false` | v-model:checked |
+| Prop      | 类型                         | 默认值      | 说明                    |
+| --------- | ---------------------------- | ----------- | ----------------------- |
+| type      | 六色同 Text                  | `'default'` | 颜色语义                |
+| size      | `'small'\|'medium'\|'large'` | `'medium'`  | 尺寸（22/28/34px）      |
+| closable  | `boolean`                    | `false`     | 关闭按钮                |
+| disabled  | `boolean`                    | `false`     | 禁用                    |
+| bordered  | `boolean`                    | `true`      | 边框                    |
+| round     | `boolean`                    | `false`     | 胶囊                    |
+| color     | `string`                     | —           | 自定义背景（覆盖 type） |
+| checkable | `boolean`                    | `false`     | 可选中                  |
+| checked   | `boolean`                    | `false`     | v-model:checked         |
 
 事件：`close` / `update:checked`；Slots：`default`。checkable 时 `role="button"` + `aria-pressed`，Enter/Space 切换。
 

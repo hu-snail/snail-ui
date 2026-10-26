@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnInput — customClass / customStyle / customInputClass + placeholderStyle. */
-import { ref } from 'vue'
-import { SnInput } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnInput } from '@snui/vue-web';
 
-const a = ref('')
-const b = ref('')
-const c = ref('')
+const a = ref('');
+const b = ref('');
+const c = ref('');
 </script>
 
 <template>
@@ -26,7 +26,12 @@ const c = ref('')
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
 :deep(.my-input-root) {
   --sn-web-color-action-primary: #8b5cf6;
 }

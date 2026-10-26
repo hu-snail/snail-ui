@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnDatePicker — clearable / disabled / readonly. */
-import { ref } from 'vue'
-import { SnDatePicker } from '@snui/vue-web'
-const value = ref<number | null>(Date.now())
+import { ref } from 'vue';
+import { SnDatePicker } from '@snui/vue-web';
+const value = ref<number | null>(Date.now());
 </script>
 
 <template>
@@ -14,5 +14,10 @@ const value = ref<number | null>(Date.now())
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.demo-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
 </style>

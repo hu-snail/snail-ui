@@ -16,18 +16,18 @@ Lucky-draw wheel. Sectors are stacked half-discs rotated by 360/n; the host deci
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `prizeList` | `SnDialerPrize[]` | `[]` | no | Prizes `{ id, name, img?, color? }` (2-12). |
-| `turns` | `number` | `5` | no | Rotation turns. |
-| `duration` | `number` | `3` | no | Duration (seconds). |
-| `size` | `string` | `'600rpx'` | no | Wheel diameter. |
-| `prizeBgColors` | `string[]` | `['#FFF0A3','#FFFCE6']` | no | Alternating sector colors. |
-| `borderColor` | `string` | `'#FFD752'` | no | Wheel border color. |
-| `fontSize` | `string` | `'24rpx'` | no | Prize name font size. |
-| `color` | `string` | text token | no | Prize name color. |
-| `customClass` | `string` | `''` | no | Root custom class. |
-| `customStyle` | `string` | `''` | no | Root custom style. |
+| Name            | Type              | Default                 | Required | Description                                 |
+| --------------- | ----------------- | ----------------------- | -------- | ------------------------------------------- |
+| `prizeList`     | `SnDialerPrize[]` | `[]`                    | no       | Prizes `{ id, name, img?, color? }` (2-12). |
+| `turns`         | `number`          | `5`                     | no       | Rotation turns.                             |
+| `duration`      | `number`          | `3`                     | no       | Duration (seconds).                         |
+| `size`          | `string`          | `'600rpx'`              | no       | Wheel diameter.                             |
+| `prizeBgColors` | `string[]`        | `['#FFF0A3','#FFFCE6']` | no       | Alternating sector colors.                  |
+| `borderColor`   | `string`          | `'#FFD752'`             | no       | Wheel border color.                         |
+| `fontSize`      | `string`          | `'24rpx'`               | no       | Prize name font size.                       |
+| `color`         | `string`          | text token              | no       | Prize name color.                           |
+| `customClass`   | `string`          | `''`                    | no       | Root custom class.                          |
+| `customStyle`   | `string`          | `''`                    | no       | Root custom style.                          |
 
 ## Events
 

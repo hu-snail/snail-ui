@@ -13,10 +13,10 @@
  * is enough; no random / timestamp component is needed.
  */
 
-let seed = 0
+let seed = 0;
 
 /** Return the next id in the sequence. */
 export function nextUid(): number {
-  seed += 1
-  return seed
+  seed += 1;
+  return seed;
 }

@@ -6,8 +6,8 @@
  *   - M2 will add: bin entry, real MCP wire (stdio/sse), @vue/compiler-sfc integration
  */
 
-export { SKILL_VERSION, SKILL_CONTENT, loadSkill, SKILL_PATH } from './skill/skill.js'
-export { createMcpServer, type McpServerStub } from './mcp/server.js'
+export { SKILL_VERSION, SKILL_CONTENT, loadSkill, SKILL_PATH } from './skill/skill.js';
+export { createMcpServer, type McpServerStub } from './mcp/server.js';
 export type {
   AiMcpTool,
   ListComponentsInput,
@@ -19,5 +19,5 @@ export type {
   StylePackInfo,
   RenderPreviewInput,
   RenderPreviewOutput,
-} from './mcp/types.js'
-export { buildAiMeta, type AiMeta } from './meta/aggregator.js'
+} from './mcp/types.js';
+export { buildAiMeta, type AiMeta } from './meta/aggregator.js';

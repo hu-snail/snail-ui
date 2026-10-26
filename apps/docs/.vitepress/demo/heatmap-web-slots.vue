@@ -1,22 +1,22 @@
 <script setup lang="ts">
 /** Demo: SnHeatmap — footer / indicator / indicator-text slots and hover hints. */
-import { ref } from 'vue'
-import { SnHeatmap } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnHeatmap } from '@snui/vue-web';
 
 /** Deterministic pseudo-random data over the last ~20 weeks. */
 function buildData() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const out: Array<{ timestamp: number; value: number }> = []
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const out: Array<{ timestamp: number; value: number }> = [];
   for (let i = 139; i >= 0; i -= 1) {
-    const ts = today.getTime() - i * 86_400_000
-    const seed = Math.abs(Math.sin(ts / 86_400_000 + 2.7))
-    out.push({ timestamp: ts, value: Math.floor(seed * 12) })
+    const ts = today.getTime() - i * 86_400_000;
+    const seed = Math.abs(Math.sin(ts / 86_400_000 + 2.7));
+    out.push({ timestamp: ts, value: Math.floor(seed * 12) });
   }
-  return out
+  return out;
 }
 
-const data = ref(buildData())
+const data = ref(buildData());
 </script>
 
 <template>
@@ -37,7 +37,9 @@ const data = ref(buildData())
         </template>
       </SnHeatmap>
     </div>
-    <p class="sn-demo__tip">上：footer + 指示器文本插槽 + tooltip 悬浮提示；下：indicator 插槽整块替换。</p>
+    <p class="sn-demo__tip">
+      上：footer + 指示器文本插槽 + tooltip 悬浮提示；下：indicator 插槽整块替换。
+    </p>
   </div>
 </template>
 

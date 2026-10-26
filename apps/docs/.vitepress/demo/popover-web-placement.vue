@@ -2,35 +2,43 @@
 /**
  * Demo: SnPopover — 12-way placement grid driving one controlled instance.
  */
-import { nextTick, ref } from 'vue'
-import { SnButton, SnPopover, type SnPopoverPlacement } from '@snui/vue-web'
+import { nextTick, ref } from 'vue';
+import { SnButton, SnPopover, type SnPopoverPlacement } from '@snui/vue-web';
 
 const placements: SnPopoverPlacement[] = [
-  'top-start', 'top', 'top-end',
-  'right-start', 'right', 'right-end',
-  'bottom-start', 'bottom', 'bottom-end',
-  'left-start', 'left', 'left-end',
-]
+  'top-start',
+  'top',
+  'top-end',
+  'right-start',
+  'right',
+  'right-end',
+  'bottom-start',
+  'bottom',
+  'bottom-end',
+  'left-start',
+  'left',
+  'left-end',
+];
 
-const show = ref(false)
-const placement = ref<SnPopoverPlacement>('top')
-const active = ref<SnPopoverPlacement | null>(null)
+const show = ref(false);
+const placement = ref<SnPopoverPlacement>('top');
+const active = ref<SnPopoverPlacement | null>(null);
 
 async function toggleAt(p: SnPopoverPlacement): Promise<void> {
   // 再次点击当前方位时收起。
   if (show.value && active.value === p) {
-    show.value = false
-    active.value = null
-    return
+    show.value = false;
+    active.value = null;
+    return;
   }
   // 已打开时先收起再重开，让气泡按新方位重新定位。
   if (show.value) {
-    show.value = false
-    await nextTick()
+    show.value = false;
+    await nextTick();
   }
-  placement.value = p
-  active.value = p
-  show.value = true
+  placement.value = p;
+  active.value = p;
+  show.value = true;
 }
 </script>
 
@@ -62,7 +70,8 @@ async function toggleAt(p: SnPopoverPlacement): Promise<void> {
     </div>
 
     <p class="popover-placement-demo__hint">
-      十二个方位：上 / 右 / 下 / 左四个主方向各带 start、居中、end 三种对齐；空间不足时自动翻转到对侧。再次点击当前方位可收起气泡。
+      十二个方位：上 / 右 / 下 / 左四个主方向各带 start、居中、end
+      三种对齐；空间不足时自动翻转到对侧。再次点击当前方位可收起气泡。
     </p>
   </div>
 </template>

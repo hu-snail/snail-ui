@@ -3,16 +3,16 @@
  * Demo: SnMarquee — 通知栏形态：左侧标签 + 中间跑马灯 + 右侧播放 / 暂停。
  * `playing` 受控播放暂停，`pauseOnHover`（默认开启）负责悬停暂停。
  */
-import { ref } from 'vue'
-import { SnButton, SnMarquee } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnMarquee } from '@snui/vue-web';
 
-const playing = ref(true)
+const playing = ref(true);
 
 const notices = [
   '系统将于本周五 22:00 例行维护，预计 2 小时。',
   '新版设计规范已发布，请各业务线对齐。',
   '本月流量报告已生成，可在数据看板查看。',
-]
+];
 </script>
 
 <template>

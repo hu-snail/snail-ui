@@ -6,7 +6,7 @@
  * 说明。所有卡片共用同一套 stage 内边距，避免「有的气泡能展开、
  * 有的被裁掉」。
  */
-import { SnTooltip } from '@snui/vue-web'
+import { SnTooltip } from '@snui/vue-web';
 </script>
 
 <template>
@@ -21,7 +21,9 @@ import { SnTooltip } from '@snui/vue-web'
           <button class="tt-appear__btn" type="button">Hover</button>
         </SnTooltip>
       </div>
-      <p class="tt-appear__desc">The arrow is on by default and points to the center of the trigger.</p>
+      <p class="tt-appear__desc">
+        The arrow is on by default and points to the center of the trigger.
+      </p>
     </article>
 
     <article class="tt-appear__card">
@@ -51,7 +53,9 @@ import { SnTooltip } from '@snui/vue-web'
           <button class="tt-appear__btn" type="button">Hover</button>
         </SnTooltip>
       </div>
-      <p class="tt-appear__desc">Points to the trigger by default; when enabled it points to the popover's own center.</p>
+      <p class="tt-appear__desc">
+        Points to the trigger by default; when enabled it points to the popover's own center.
+      </p>
     </article>
 
     <article class="tt-appear__card">
@@ -68,7 +72,9 @@ import { SnTooltip } from '@snui/vue-web'
           <button class="tt-appear__btn" type="button">Hover</button>
         </SnTooltip>
       </div>
-      <p class="tt-appear__desc">Customize <code>arrowClass</code> to change the arrow's size and color.</p>
+      <p class="tt-appear__desc">
+        Customize <code>arrowClass</code> to change the arrow's size and color.
+      </p>
     </article>
 
     <article class="tt-appear__card">
@@ -100,7 +106,9 @@ import { SnTooltip } from '@snui/vue-web'
           </button>
         </SnTooltip>
       </div>
-      <p class="tt-appear__desc">The popover width follows the trigger — good for hints aligned within a column.</p>
+      <p class="tt-appear__desc">
+        The popover width follows the trigger — good for hints aligned within a column.
+      </p>
     </article>
 
     <article class="tt-appear__card">
@@ -113,7 +121,9 @@ import { SnTooltip } from '@snui/vue-web'
           <button class="tt-appear__btn" type="button">Hover</button>
         </SnTooltip>
       </div>
-      <p class="tt-appear__desc">Disables the enter/leave animation — good for high-frequency or screenshot scenarios.</p>
+      <p class="tt-appear__desc">
+        Disables the enter/leave animation — good for high-frequency or screenshot scenarios.
+      </p>
     </article>
   </div>
 </template>
@@ -163,7 +173,9 @@ import { SnTooltip } from '@snui/vue-web'
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-appear__btn--wide {
   min-width: 200px;

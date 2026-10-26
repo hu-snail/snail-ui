@@ -34,42 +34,42 @@ and `@back` updates real state.
 
 All props are optional.
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| title | `string` | `undefined` | Title text; the `title` slot wins |
-| subtitle | `string` | `undefined` | Subtitle; the `subtitle` slot wins |
-| extra | `string` | `undefined` | Right-side extra text; the `extra` slot wins |
+| Name     | Type     | Default     | Description                                  |
+| -------- | -------- | ----------- | -------------------------------------------- |
+| title    | `string` | `undefined` | Title text; the `title` slot wins            |
+| subtitle | `string` | `undefined` | Subtitle; the `subtitle` slot wins           |
+| extra    | `string` | `undefined` | Right-side extra text; the `extra` slot wins |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
+| Name | Payload               | Description                              |
+| ---- | --------------------- | ---------------------------------------- |
 | back | `(event: MouseEvent)` | Fired when the back control is activated |
 
 ### Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
-| header | — | Replaces the whole header row |
-| back | — | Replaces the back control entirely |
-| icon | — | Replaces the back glyph (default: inline chevron-left SVG) |
-| title | — | Title content, used only when `title` is not passed |
-| subtitle | — | Subtitle content, used only when `subtitle` is not passed |
-| extra | — | Right-side action content, used only when `extra` is not passed |
-| footer | — | Bottom area (top-border separator) |
-| default | — | Body content between header and footer |
+| Name     | Scope | Description                                                     |
+| -------- | ----- | --------------------------------------------------------------- |
+| header   | —     | Replaces the whole header row                                   |
+| back     | —     | Replaces the back control entirely                              |
+| icon     | —     | Replaces the back glyph (default: inline chevron-left SVG)      |
+| title    | —     | Title content, used only when `title` is not passed             |
+| subtitle | —     | Subtitle content, used only when `subtitle` is not passed       |
+| extra    | —     | Right-side action content, used only when `extra` is not passed |
+| footer   | —     | Bottom area (top-border separator)                              |
+| default  | —     | Body content between header and footer                          |
 
 ## Tokens
 
-| Token | Purpose |
-| --- | --- |
-| `--sn-web-color-text-primary` | Title color |
-| `--sn-web-color-text-secondary` | Back glyph / extra / footer color |
-| `--sn-web-color-text-tertiary` | Subtitle color |
-| `--sn-web-color-action-primary` | Back control hover color |
-| `--sn-web-color-background-subtle` | Back button hover background |
-| `--sn-web-color-border-subtle` | Footer separator |
-| `--sn-web-focus-ring` | Back button focus outline |
+| Token                              | Purpose                           |
+| ---------------------------------- | --------------------------------- |
+| `--sn-web-color-text-primary`      | Title color                       |
+| `--sn-web-color-text-secondary`    | Back glyph / extra / footer color |
+| `--sn-web-color-text-tertiary`     | Subtitle color                    |
+| `--sn-web-color-action-primary`    | Back control hover color          |
+| `--sn-web-color-background-subtle` | Back button hover background      |
+| `--sn-web-color-border-subtle`     | Footer separator                  |
+| `--sn-web-focus-ring`              | Back button focus outline         |
 
 ## Accessibility
 

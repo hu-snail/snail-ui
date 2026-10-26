@@ -32,52 +32,52 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| active | boolean | false | 是否激活（`v-model:active`） |
-| type | 'primary' \| 'success' \| 'info' \| 'warning' \| 'danger' | 'primary' | 悬浮按钮类型 |
-| position | FabPosition | 'right-bottom' | 悬浮按钮位置（8 个预设） |
-| draggable | boolean | false | 按钮能否拖动 |
-| direction | 'top' \| 'right' \| 'bottom' \| 'left' | 'top' | 菜单弹出方向 |
-| disabled | boolean | false | 是否禁用 |
-| inactiveIcon | string | 'plus' | 未展开时的图标 |
-| activeIcon | string | 'close' | 展开时的图标 |
-| zIndex | number | 99 | 自定义悬浮按钮层级 |
-| gap | SnFabGap | `{ top: 16, right: 16, bottom: 16, left: 16 }` | 与可视区域边缘的间距 |
-| expandable | boolean | true | 点击时是否展开菜单；`false` 时抛 `click` |
-| top | number | — | 距顶部间距（覆盖 `gap.top`） |
-| bottom | number | — | 距底部间距（覆盖 `gap.bottom`） |
-| left | number | — | 距左边间距（覆盖 `gap.left`） |
-| right | number | — | 距右边间距（覆盖 `gap.right`） |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
+| 属性         | 类型                                                      | 默认值                                         | 说明                                     |
+| ------------ | --------------------------------------------------------- | ---------------------------------------------- | ---------------------------------------- |
+| active       | boolean                                                   | false                                          | 是否激活（`v-model:active`）             |
+| type         | 'primary' \| 'success' \| 'info' \| 'warning' \| 'danger' | 'primary'                                      | 悬浮按钮类型                             |
+| position     | FabPosition                                               | 'right-bottom'                                 | 悬浮按钮位置（8 个预设）                 |
+| draggable    | boolean                                                   | false                                          | 按钮能否拖动                             |
+| direction    | 'top' \| 'right' \| 'bottom' \| 'left'                    | 'top'                                          | 菜单弹出方向                             |
+| disabled     | boolean                                                   | false                                          | 是否禁用                                 |
+| inactiveIcon | string                                                    | 'plus'                                         | 未展开时的图标                           |
+| activeIcon   | string                                                    | 'close'                                        | 展开时的图标                             |
+| zIndex       | number                                                    | 99                                             | 自定义悬浮按钮层级                       |
+| gap          | SnFabGap                                                  | `{ top: 16, right: 16, bottom: 16, left: 16 }` | 与可视区域边缘的间距                     |
+| expandable   | boolean                                                   | true                                           | 点击时是否展开菜单；`false` 时抛 `click` |
+| top          | number                                                    | —                                              | 距顶部间距（覆盖 `gap.top`）             |
+| bottom       | number                                                    | —                                              | 距底部间距（覆盖 `gap.bottom`）          |
+| left         | number                                                    | —                                              | 距左边间距（覆盖 `gap.left`）            |
+| right        | number                                                    | —                                              | 距右边间距（覆盖 `gap.right`）           |
+| customClass  | string                                                    | ''                                             | 根节点自定义类名                         |
+| customStyle  | string                                                    | ''                                             | 根节点自定义样式                         |
 
 `SnFabGap` = `{ top?, right?, bottom?, left? }`（px）；`FabPosition` = `"left-top" | "right-top" | "left-bottom" | "right-bottom" | "left-center" | "right-center" | "top-center" | "bottom-center"`。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| update:active | 菜单展开 / 收起 | boolean |
-| click | `expandable=false` 时点击触发 | — |
+| 事件名        | 说明                          | 参数    |
+| ------------- | ----------------------------- | ------- |
+| update:active | 菜单展开 / 收起               | boolean |
+| click         | `expandable=false` 时点击触发 | —       |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                               |
+| ------- | ---------------------------------- |
 | default | 动作按钮区域内容（展开后的菜单项） |
-| trigger | 触发器插槽，完全自定义点击锚点 |
+| trigger | 触发器插槽，完全自定义点击锚点     |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-action-primary | `type="primary"` 填充 |
-| --sn-mp-color-feedback-success` / `-info` / `-warning` / `-danger | 其余类型填充 |
-| --sn-mp-color-text-on-primary | 触发按钮图标色 |
-| --sn-mp-shadow-lg | 触发按钮投影 |
-| --sn-mp-radius-full | 触发按钮形状 |
-| --sn-mp-spacing-2` / `--sn-mp-spacing-3 | 菜单间距与根容器间距 |
+| 变量                                                        | 用途                  |
+| ----------------------------------------------------------- | --------------------- |
+| --sn-mp-color-action-primary                                | `type="primary"` 填充 |
+| --sn-mp-color-feedback-success`/`-info`/`-warning`/`-danger | 其余类型填充          |
+| --sn-mp-color-text-on-primary                               | 触发按钮图标色        |
+| --sn-mp-shadow-lg                                           | 触发按钮投影          |
+| --sn-mp-radius-full                                         | 触发按钮形状          |
+| --sn-mp-spacing-2`/`--sn-mp-spacing-3                       | 菜单间距与根容器间距  |
 
 ## 无障碍
 

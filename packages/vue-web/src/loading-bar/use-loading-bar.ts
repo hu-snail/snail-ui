@@ -21,18 +21,16 @@
  *   </SnLoadingBarProvider>
  */
 
-import { inject } from 'vue'
-import type { InjectionKey } from 'vue'
-import type { LoadingBarApi } from './loading-bar-types'
+import { inject } from 'vue';
+import type { InjectionKey } from 'vue';
+import type { LoadingBarApi } from './loading-bar-types';
 
 /**
  * Provide/inject key for the loading bar API. Exported so tests and custom
  * providers can interact with the same contract; normal consumers should use
  * `useLoadingBar()` instead of injecting this key directly.
  */
-export const loadingBarApiInjectionKey: InjectionKey<LoadingBarApi> = Symbol(
-  'sn-loading-bar-api',
-)
+export const loadingBarApiInjectionKey: InjectionKey<LoadingBarApi> = Symbol('sn-loading-bar-api');
 
 /** API returned when no provider is mounted — every call is a safe no-op. */
 function createNoopLoadingBarApi(): LoadingBarApi {
@@ -40,7 +38,7 @@ function createNoopLoadingBarApi(): LoadingBarApi {
     start: () => {},
     finish: () => {},
     error: () => {},
-  }
+  };
 }
 
 /**
@@ -52,9 +50,9 @@ function createNoopLoadingBarApi(): LoadingBarApi {
  * `PROVIDER_MISSING` console warning (see divergence note above).
  */
 export function useLoadingBar(): LoadingBarApi {
-  const api = inject(loadingBarApiInjectionKey)
+  const api = inject(loadingBarApiInjectionKey);
   if (api) {
-    return api
+    return api;
   }
   console.warn(
     '[SNUI:PROVIDER_MISSING] useLoadingBar() was called without a <SnLoadingBarProvider> ancestor — returning a no-op API. Wrap your app (or the subtree that needs the loading bar) in <SnLoadingBarProvider>.',
@@ -63,6 +61,6 @@ export function useLoadingBar(): LoadingBarApi {
       component: 'SnLoadingBarProvider',
       composable: 'useLoadingBar',
     },
-  )
-  return createNoopLoadingBarApi()
+  );
+  return createNoopLoadingBarApi();
 }

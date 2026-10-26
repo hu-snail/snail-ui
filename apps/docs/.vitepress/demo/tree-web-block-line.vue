@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnTree — block-line hover/selected background spans the whole row. */
-import { ref } from 'vue'
-import { SnTree } from '@snui/vue-web'
-import type { SnTreeOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTree } from '@snui/vue-web';
+import type { SnTreeOption } from '@snui/vue-web';
 
-const selected = ref<string[]>([])
+const selected = ref<string[]>([]);
 
 const data: SnTreeOption[] = [
   {
@@ -20,7 +20,7 @@ const data: SnTreeOption[] = [
     label: '第二季度',
     children: [{ key: '2-1', label: '四月' }],
   },
-]
+];
 </script>
 
 <template>
@@ -35,5 +35,7 @@ const data: SnTreeOption[] = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 320px; }
+.sn-demo {
+  max-width: 320px;
+}
 </style>

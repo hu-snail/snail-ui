@@ -16,9 +16,9 @@
 
 对话框被拆成两层，`SnDialog` 只负责其中一层：
 
-| 层 | 职责 | 本库 |
-|---|---|---|
-| **卡片** | 标题 / 正文 / 按钮 / 类型图标 | ✅ `SnDialog` |
+| 层       | 职责                                      | 本库           |
+| -------- | ----------------------------------------- | -------------- |
+| **卡片** | 标题 / 正文 / 按钮 / 类型图标             | ✅ `SnDialog`  |
 | **遮罩** | mask、teleport、焦点陷阱、`width`、滚动锁 | ⏳ 独立 WBS 项 |
 
 所以 `SnDialog` 自身：
@@ -77,47 +77,47 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `show` | `boolean \| undefined` | `undefined` | 是否显示。`undefined` 为不受控模式。 |
-| `type` | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，决定图标与强调色。 || `title` | `string` | `undefined` | 标题文字。 |
-| `content` | `string` | `undefined` | 正文文字。 |
-| `icon` | `Component` | `undefined` | 自定义类型图标，仍受 `showIcon` 约束。 |
-| `iconPlacement` | `'left' \| 'top'` | `'left'` | 图标位置。`top` 时标题、正文、按钮行全部居中。 |
-| `closable` | `boolean` | `true` | 是否显示关闭按钮。 |
-| `closeFocusable` | `boolean` | `false` | 关闭按钮是否进入 tab 序。`false` 时 `tabindex="-1"`。 |
-| `showIcon` | `boolean` | `true` | 是否显示类型图标。 |
-| `bordered` | `boolean` | `false` | 是否显示边框。 |
-| `loading` | `boolean` | `false` | 确认按钮是否进入加载态（同时 disabled）。 |
-| `positiveText` | `string` | `undefined` | 确认按钮文字。 |
-| `negativeText` | `string` | `undefined` | 取消按钮文字。 |
-| `positiveButtonProps` | `object` | `undefined` | 透传给确认按钮的属性。 |
-| `negativeButtonProps` | `object` | `undefined` | 透传给取消按钮的属性。 |
-| `titleClass` | `string` | `undefined` | 标题行类名。 |
-| `titleStyle` | `string \| object` | `undefined` | 标题行样式。 |
-| `contentClass` | `string` | `undefined` | 正文行类名。 |
-| `contentStyle` | `string \| object` | `undefined` | 正文行样式。 |
-| `actionClass` | `string` | `undefined` | 按钮行类名。 |
-| `actionStyle` | `string \| object` | `undefined` | 按钮行样式。 |
+| 名称                  | 类型                                                       | 默认值      | 说明                                                  |
+| --------------------- | ---------------------------------------------------------- | ----------- | ----------------------------------------------------- |
+| `show`                | `boolean \| undefined`                                     | `undefined` | 是否显示。`undefined` 为不受控模式。                  |
+| `type`                | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，决定图标与强调色。                          |     | `title` | `string` | `undefined` | 标题文字。 |
+| `content`             | `string`                                                   | `undefined` | 正文文字。                                            |
+| `icon`                | `Component`                                                | `undefined` | 自定义类型图标，仍受 `showIcon` 约束。                |
+| `iconPlacement`       | `'left' \| 'top'`                                          | `'left'`    | 图标位置。`top` 时标题、正文、按钮行全部居中。        |
+| `closable`            | `boolean`                                                  | `true`      | 是否显示关闭按钮。                                    |
+| `closeFocusable`      | `boolean`                                                  | `false`     | 关闭按钮是否进入 tab 序。`false` 时 `tabindex="-1"`。 |
+| `showIcon`            | `boolean`                                                  | `true`      | 是否显示类型图标。                                    |
+| `bordered`            | `boolean`                                                  | `false`     | 是否显示边框。                                        |
+| `loading`             | `boolean`                                                  | `false`     | 确认按钮是否进入加载态（同时 disabled）。             |
+| `positiveText`        | `string`                                                   | `undefined` | 确认按钮文字。                                        |
+| `negativeText`        | `string`                                                   | `undefined` | 取消按钮文字。                                        |
+| `positiveButtonProps` | `object`                                                   | `undefined` | 透传给确认按钮的属性。                                |
+| `negativeButtonProps` | `object`                                                   | `undefined` | 透传给取消按钮的属性。                                |
+| `titleClass`          | `string`                                                   | `undefined` | 标题行类名。                                          |
+| `titleStyle`          | `string \| object`                                         | `undefined` | 标题行样式。                                          |
+| `contentClass`        | `string`                                                   | `undefined` | 正文行类名。                                          |
+| `contentStyle`        | `string \| object`                                         | `undefined` | 正文行样式。                                          |
+| `actionClass`         | `string`                                                   | `undefined` | 按钮行类名。                                          |
+| `actionStyle`         | `string \| object`                                         | `undefined` | 按钮行样式。                                          |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称             | 参数         | 说明             |
+| ---------------- | ------------ | ---------------- |
 | `positive-click` | `MouseEvent` | 确认按钮被点击。 |
 | `negative-click` | `MouseEvent` | 取消按钮被点击。 |
-| `close` | `()` | 关闭按钮被点击。 |
-| `update:show` | `boolean` | 显示状态变化。 |
+| `close`          | `()`         | 关闭按钮被点击。 |
+| `update:show`    | `boolean`    | 显示状态变化。   |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 正文内容，替代 `content`。 |
-| `header` | `()` | 标题行，替代 `title`。 |
-| `icon` | `()` | 类型图标，替代内置图形。**仍受 `showIcon` 约束。** |
-| `action` | `()` | 按钮行，完全替代内置按钮。 |
-| `close` | `()` | 关闭按钮，替代内置图形。 |
+| 名称      | 参数 | 说明                                               |
+| --------- | ---- | -------------------------------------------------- |
+| `default` | `()` | 正文内容，替代 `content`。                         |
+| `header`  | `()` | 标题行，替代 `title`。                             |
+| `icon`    | `()` | 类型图标，替代内置图形。**仍受 `showIcon` 约束。** |
+| `action`  | `()` | 按钮行，完全替代内置按钮。                         |
+| `close`   | `()` | 关闭按钮，替代内置图形。                           |
 
 ## 按钮行的出现规则
 

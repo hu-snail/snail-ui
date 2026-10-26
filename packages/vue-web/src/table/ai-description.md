@@ -21,21 +21,21 @@ src/table/src/Table.tsx + src/table/src/styles/index.cssr.ts).
 ## Import
 
 ```ts
-import SnTable from '@snui/vue-web/src/table/SnTable.vue'
+import SnTable from '@snui/vue-web/src/table/SnTable.vue';
 // or
-import { SnTable } from '@snui/vue-web'
+import { SnTable } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `bordered` | `boolean` | `true` | no | Draw the surrounding border (full radius). |
-| `bottomBordered` | `boolean` | `true` | no | Keep the last row's bottom border; ineffective while `bordered` is true (naive semantics). |
-| `singleColumn` | `boolean` | `false` | no | Remove the row separators (cell bottom borders). |
-| `singleLine` | `boolean` | `true` | no | Remove the column separators (cell right borders). |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Table scale (th/td padding 6/12/12 px, font-size 14/14/15 px). |
-| `striped` | `boolean` | `false` | no | Zebra stripes on even tbody rows. |
+| Name             | Type                             | Default    | Required | Description                                                                                |
+| ---------------- | -------------------------------- | ---------- | -------- | ------------------------------------------------------------------------------------------ |
+| `bordered`       | `boolean`                        | `true`     | no       | Draw the surrounding border (full radius).                                                 |
+| `bottomBordered` | `boolean`                        | `true`     | no       | Keep the last row's bottom border; ineffective while `bordered` is true (naive semantics). |
+| `singleColumn`   | `boolean`                        | `false`    | no       | Remove the row separators (cell bottom borders).                                           |
+| `singleLine`     | `boolean`                        | `true`     | no       | Remove the column separators (cell right borders).                                         |
+| `size`           | `'small' \| 'medium' \| 'large'` | `'medium'` | no       | Table scale (th/td padding 6/12/12 px, font-size 14/14/15 px).                             |
+| `striped`        | `boolean`                        | `false`    | no       | Zebra stripes on even tbody rows.                                                          |
 
 ## Events
 
@@ -43,8 +43,8 @@ None.
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                                                |
+| --------- | -------------------------------------------------------------------------- |
 | `default` | Full table markup (thead / tbody / tr / th / td) authored by the consumer. |
 
 ## Divergences from the reference API
@@ -64,11 +64,11 @@ None.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background surface | `--sn-web-color-background-surface` | td / table background |
-| Text primary / secondary | `--sn-web-color-text-*` | th / td text |
-| Text primary + surface via color-mix | — | Grid lines 6% (hairline), outer border 12%, th bg 2%, striped 2% |
+| Token                                | CSS Variable                        | Purpose                                                          |
+| ------------------------------------ | ----------------------------------- | ---------------------------------------------------------------- |
+| Background surface                   | `--sn-web-color-background-surface` | td / table background                                            |
+| Text primary / secondary             | `--sn-web-color-text-*`             | th / td text                                                     |
+| Text primary + surface via color-mix | —                                   | Grid lines 6% (hairline), outer border 12%, th bg 2%, striped 2% |
 
 ## Versioning
 

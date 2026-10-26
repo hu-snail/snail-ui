@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnComment — align 属性控制 datetime / actions 行的对齐（左 / 右 / 对象形态）。 */
-import { SnComment } from '@snui/vue-web'
+import { SnComment } from '@snui/vue-web';
 </script>
 
 <template>
@@ -23,7 +23,7 @@ import { SnComment } from '@snui/vue-web'
       author="巴尔扎克"
       avatar="https://picsum.photos/id/1025/64/64"
       datetime="1 小时前"
-      content="align=&quot;right&quot; 时作者留在左边，datetime 与 actions 一起靠到右缘。"
+      content='align="right" 时作者留在左边，datetime 与 actions 一起靠到右缘。'
       align="right"
     >
       <template #actions>
@@ -32,7 +32,9 @@ import { SnComment } from '@snui/vue-web'
       </template>
     </SnComment>
 
-    <p class="comment-align-demo__label">:align=&quot;{ actions: 'right' }&quot;（仅 actions 靠右）</p>
+    <p class="comment-align-demo__label">
+      :align=&quot;{ actions: 'right' }&quot;（仅 actions 靠右）
+    </p>
     <SnComment
       author="巴尔扎克"
       avatar="https://picsum.photos/id/1025/64/64"
@@ -75,6 +77,10 @@ import { SnComment } from '@snui/vue-web'
 }
 
 .action:hover {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 2%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
 }
 </style>

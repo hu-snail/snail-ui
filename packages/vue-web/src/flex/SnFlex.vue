@@ -29,60 +29,49 @@
  *   <SnFlex justify="space-between" align="center" expand>...</SnFlex>
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnFlex' })
+defineOptions({ name: 'SnFlex' });
 
 /** Gap preset, mirroring n-flex `size` presets (theme gaps: 8/12/16 px). */
-export type SnFlexGapPreset = 'small' | 'medium' | 'large'
+export type SnFlexGapPreset = 'small' | 'medium' | 'large';
 
 /**
  * Gap value: px number, preset, or `[horizontal, vertical]` px tuple —
  * same value domain as n-flex `size`.
  */
-export type SnFlexGap = number | SnFlexGapPreset | [number, number]
+export type SnFlexGap = number | SnFlexGapPreset | [number, number];
 
 /** Mirrors n-flex `justify` (FlexJustify) values. */
 export type SnFlexJustify =
-  | 'start'
-  | 'end'
-  | 'center'
-  | 'space-around'
-  | 'space-between'
-  | 'space-evenly'
+  'start' | 'end' | 'center' | 'space-around' | 'space-between' | 'space-evenly';
 
 /** Mirrors n-flex `align` (FlexAlign) values. */
 export type SnFlexAlign =
-  | 'stretch'
-  | 'baseline'
-  | 'start'
-  | 'end'
-  | 'center'
-  | 'flex-start'
-  | 'flex-end'
+  'stretch' | 'baseline' | 'start' | 'end' | 'center' | 'flex-start' | 'flex-end';
 
 // Reference: naive-ui flexProps
 //   (https://github.com/tusen-ai/naive-ui/blob/main/src/flex/src/Flex.tsx)
 const props = withDefaults(
   defineProps<{
     /** Stack children vertically (column). Default false (row). */
-    vertical?: boolean
+    vertical?: boolean;
     /** Gap between children: px number, preset, or [horizontal, vertical] tuple. Default 'medium'. */
-    gap?: SnFlexGap
+    gap?: SnFlexGap;
     /** Let horizontal children wrap across lines. Default true. */
-    wrap?: boolean
+    wrap?: boolean;
     /** Main-axis distribution, passed through as-is (like n-flex). Default 'start'. */
-    justify?: SnFlexJustify
+    justify?: SnFlexJustify;
     /** Cross-axis alignment. Default undefined (CSS 'normal', like n-flex). */
-    align?: SnFlexAlign
+    align?: SnFlexAlign;
     /** Render as inline-flex. Default false. */
-    inline?: boolean
+    inline?: boolean;
     /** Grow direct children to fill the free main-axis space (snail extension). Default false. */
-    expand?: boolean
+    expand?: boolean;
     /** Extra class appended to the container (snail extension). Default ''. */
-    customClass?: string
+    customClass?: string;
     /** Inline style appended to the container (snail extension). Default ''. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     vertical: false,
@@ -96,22 +85,22 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Direct children are flex items of the container. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Preset fallbacks (px) — mirror the n-flex theme gap tokens. */
 const GAP_PRESET_FALLBACK: Record<SnFlexGapPreset, number> = {
   small: 8,
   medium: 12,
   large: 16,
-}
+};
 
 const isGapPreset = (value: unknown): value is SnFlexGapPreset =>
-  value === 'small' || value === 'medium' || value === 'large'
+  value === 'small' || value === 'medium' || value === 'large';
 
 /**
  * Resolve a single gap element to a CSS length. Presets map to
@@ -122,26 +111,26 @@ const isGapPreset = (value: unknown): value is SnFlexGapPreset =>
  */
 const resolveGapValue = (value: number | SnFlexGapPreset): string => {
   if (isGapPreset(value)) {
-    return `var(--sn-web-space-gap-${value}, ${GAP_PRESET_FALLBACK[value]}px)`
+    return `var(--sn-web-space-gap-${value}, ${GAP_PRESET_FALLBACK[value]}px)`;
   }
-  const n = Number(value)
-  if (Number.isFinite(n)) return `${n}px`
-  return `var(--sn-web-space-gap-medium, ${GAP_PRESET_FALLBACK.medium}px)`
-}
+  const n = Number(value);
+  if (Number.isFinite(n)) return `${n}px`;
+  return `var(--sn-web-space-gap-medium, ${GAP_PRESET_FALLBACK.medium}px)`;
+};
 
 const gapStyle = computed<{ rowGap: string; columnGap: string }>(() => {
-  const gap = props.gap
+  const gap = props.gap;
   // Tuple is [horizontal, vertical] → column-gap / row-gap (n-flex `size`).
   if (Array.isArray(gap)) {
-    const [horizontal, vertical] = gap
+    const [horizontal, vertical] = gap;
     return {
       columnGap: resolveGapValue(horizontal),
       rowGap: resolveGapValue(vertical),
-    }
+    };
   }
-  const resolved = resolveGapValue(gap)
-  return { columnGap: resolved, rowGap: resolved }
-})
+  const resolved = resolveGapValue(gap);
+  return { columnGap: resolved, rowGap: resolved };
+});
 
 const containerStyle = computed<Record<string, string>>(() => {
   const style: Record<string, string> = {
@@ -155,10 +144,10 @@ const containerStyle = computed<Record<string, string>>(() => {
     flexWrap: !props.wrap || props.vertical ? 'nowrap' : 'wrap',
     rowGap: gapStyle.value.rowGap,
     columnGap: gapStyle.value.columnGap,
-  }
-  if (props.align) style.alignItems = props.align
-  return style
-})
+  };
+  if (props.align) style.alignItems = props.align;
+  return style;
+});
 
 const classList = computed(() => [
   'sn-flex',
@@ -169,14 +158,14 @@ const classList = computed(() => [
     'sn-flex--nowrap': !props.wrap,
   },
   props.customClass,
-])
+]);
 
 const extraStyle = computed<string | Record<string, string> | undefined>(() => {
   if (typeof props.customStyle === 'string') {
-    return props.customStyle === '' ? undefined : props.customStyle
+    return props.customStyle === '' ? undefined : props.customStyle;
   }
-  return props.customStyle
-})
+  return props.customStyle;
+});
 </script>
 
 <template>

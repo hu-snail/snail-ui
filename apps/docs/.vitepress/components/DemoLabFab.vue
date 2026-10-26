@@ -18,38 +18,38 @@
  *   - Theme Editor is FAB-unique (not exposed in StyleSwitcher / ThemeCopier)
  */
 
-import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vitepress'
-import { Beaker, Palette, Code2, X, Check, RotateCcw } from 'lucide-vue-next'
-import { allPacks, getPack } from '@snui/style-packs'
-import { snCssVars } from '@snui/tokens'
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vitepress';
+import { Beaker, Palette, Code2, X, Check, RotateCcw } from 'lucide-vue-next';
+import { allPacks, getPack } from '@snui/style-packs';
+import { snCssVars } from '@snui/tokens';
 
-type Tab = 'style' | 'theme' | 'preview'
+type Tab = 'style' | 'theme' | 'preview';
 
 interface TokenDef {
   /** CSS variable name. */
-  name: string
+  name: string;
   /** Human-readable label shown in the editor. */
-  label: string
+  label: string;
   /** Input kind: 'color' (color picker) or 'text' (free-form CSS value). */
-  type: 'color' | 'text'
+  type: 'color' | 'text';
   /** Group header inside the editor. */
-  group: 'color' | 'shape'
+  group: 'color' | 'shape';
 }
 
-const route = useRoute()
-const open = ref(false)
-const tab = ref<Tab>('style')
-const activePack = ref<string>('default')
+const route = useRoute();
+const open = ref(false);
+const tab = ref<Tab>('style');
+const activePack = ref<string>('default');
 
-const showFab = computed(() => route.path.startsWith('/components/'))
+const showFab = computed(() => route.path.startsWith('/components/'));
 
 // ─── Style Pack list ──────────────────────────────────────────────────────
 const PACKS = allPacks.map((p) => ({
   name: p.name,
   label: p.label,
   description: p.description ?? '',
-}))
+}));
 
 // ─── Theme: token editor + copyable snippet ──────────────────────────────
 const THEMABLE_TOKENS: TokenDef[] = [
@@ -62,7 +62,7 @@ const THEMABLE_TOKENS: TokenDef[] = [
   { name: '--sn-button-radius', label: '按钮圆角', type: 'text', group: 'shape' },
   { name: '--sn-button-shadow', label: '按钮阴影', type: 'text', group: 'shape' },
   { name: '--sn-input-radius', label: '输入框圆角', type: 'text', group: 'shape' },
-]
+];
 
 /**
  * User override map: token name → user-supplied CSS value.
@@ -70,7 +70,7 @@ const THEMABLE_TOKENS: TokenDef[] = [
  * or when switching packs the user can still see their changes
  * layered on top).
  */
-const userOverrides = ref<Record<string, string>>({})
+const userOverrides = ref<Record<string, string>>({});
 
 /**
  * Read the current resolved CSS variable from `:root` (or `:host`).
@@ -78,15 +78,15 @@ const userOverrides = ref<Record<string, string>>({})
  * CSS was injected).
  */
 function readCurrentToken(name: string): string {
-  if (typeof window === 'undefined') return ''
-  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+  if (typeof window === 'undefined') return '';
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
 /**
  * Display value: prefer user override, fall back to current resolved value.
  */
 function displayValue(name: string): string {
-  return userOverrides.value[name] ?? readCurrentToken(name)
+  return userOverrides.value[name] ?? readCurrentToken(name);
 }
 
 /**
@@ -98,23 +98,29 @@ function displayValue(name: string): string {
  * conversion. We use a hidden div + getComputedStyle for resolution.
  */
 function normalizeColor(value: string): string | null {
-  if (!value) return null
-  if (/^#[0-9a-f]{6}$/i.test(value.trim())) return value.trim()
-  if (typeof document === 'undefined') return null
-  const probe = document.createElement('div')
-  probe.style.color = value
-  document.body.appendChild(probe)
-  const resolved = getComputedStyle(probe).color
-  document.body.removeChild(probe)
+  if (!value) return null;
+  if (/^#[0-9a-f]{6}$/i.test(value.trim())) return value.trim();
+  if (typeof document === 'undefined') return null;
+  const probe = document.createElement('div');
+  probe.style.color = value;
+  document.body.appendChild(probe);
+  const resolved = getComputedStyle(probe).color;
+  document.body.removeChild(probe);
   // resolved is `rgb(r, g, b)` or `rgba(r, g, b, a)`
-  const m = resolved.match(/rgba?\(([^)]+)\)/)
-  if (!m) return null
-  const parts = m[1].split(',').map((s) => s.trim())
-  if (parts.length < 3) return null
-  const r = parseInt(parts[0] || '0', 10).toString(16).padStart(2, '0')
-  const g = parseInt(parts[1] || '0', 10).toString(16).padStart(2, '0')
-  const b = parseInt(parts[2] || '0', 10).toString(16).padStart(2, '0')
-  return `#${r}${g}${b}`
+  const m = resolved.match(/rgba?\(([^)]+)\)/);
+  if (!m) return null;
+  const parts = m[1].split(',').map((s) => s.trim());
+  if (parts.length < 3) return null;
+  const r = parseInt(parts[0] || '0', 10)
+    .toString(16)
+    .padStart(2, '0');
+  const g = parseInt(parts[1] || '0', 10)
+    .toString(16)
+    .padStart(2, '0');
+  const b = parseInt(parts[2] || '0', 10)
+    .toString(16)
+    .padStart(2, '0');
+  return `#${r}${g}${b}`;
 }
 
 /**
@@ -130,13 +136,13 @@ function normalizeColor(value: string): string | null {
  * edits land on the variables that components actually consume.
  */
 function setToken(name: string, value: string): void {
-  userOverrides.value = { ...userOverrides.value, [name]: value }
-  refreshStyle()
+  userOverrides.value = { ...userOverrides.value, [name]: value };
+  refreshStyle();
 }
 
 function resetOverrides(): void {
-  userOverrides.value = {}
-  refreshStyle()
+  userOverrides.value = {};
+  refreshStyle();
 }
 
 /**
@@ -146,165 +152,170 @@ function resetOverrides(): void {
  */
 function expandAliasNames(name: string): string[] {
   if (name.startsWith('--sn-')) {
-    const rest = name.slice('--sn-'.length)
-    return [
-      `--sn-${rest}`,
-      `--sn-web-${rest}`,
-      `--sn-mp-${rest}`,
-    ]
+    const rest = name.slice('--sn-'.length);
+    return [`--sn-${rest}`, `--sn-web-${rest}`, `--sn-mp-${rest}`];
   }
-  return [name]
+  return [name];
 }
 
 // ─── Style injection (pack CSS + user overrides) ─────────────────────────
-let styleEl: HTMLStyleElement | null = null
+let styleEl: HTMLStyleElement | null = null;
 
 function ensureStyleEl(): HTMLStyleElement {
-  let el = document.getElementById('snui-docs-pack') as HTMLStyleElement | null
+  let el = document.getElementById('snui-docs-pack') as HTMLStyleElement | null;
   if (!el) {
-    el = document.createElement('style')
-    el.id = 'snui-docs-pack'
-    document.head.appendChild(el)
+    el = document.createElement('style');
+    el.id = 'snui-docs-pack';
+    document.head.appendChild(el);
   }
-  styleEl = el
-  return el
+  styleEl = el;
+  return el;
 }
 
 function refreshStyle(): void {
-  const pack = getPack(activePack.value)
-  if (!pack) return
-  const el = ensureStyleEl()
+  const pack = getPack(activePack.value);
+  if (!pack) return;
+  const el = ensureStyleEl();
   let css = snCssVars({
     theme: pack.theme,
     style: pack.style,
     density: pack.density,
-  })
-  const overrideEntries = Object.entries(userOverrides.value)
+  });
+  const overrideEntries = Object.entries(userOverrides.value);
   if (overrideEntries.length) {
-    const lines: string[] = []
+    const lines: string[] = [];
     for (const [name, value] of overrideEntries) {
       for (const alias of expandAliasNames(name)) {
-        lines.push(`  ${alias}: ${value};`)
+        lines.push(`  ${alias}: ${value};`);
       }
     }
-    css += `\n:root {\n${lines.join('\n')}\n}\n`
+    css += `\n:root {\n${lines.join('\n')}\n}\n`;
   }
-  el.textContent = css
+  el.textContent = css;
 }
 
 function applyPack(name: string): void {
-  activePack.value = name
-  const pack = getPack(name)
-  if (!pack) return
-  refreshStyle()
+  activePack.value = name;
+  const pack = getPack(name);
+  if (!pack) return;
+  refreshStyle();
   // Skin class: component packages ship `.snui-skin-{name}` overrides
   // (see @snui/vue-web/src/button/SnButton.vue Doodle skin block, etc.).
   // Toggling here is what makes components visually re-theme live.
   document.body.classList.forEach((c) => {
-    if (c.startsWith('snui-skin-')) document.body.classList.remove(c)
-  })
-  if (name !== 'default') document.body.classList.add(`snui-skin-${name}`)
+    if (c.startsWith('snui-skin-')) document.body.classList.remove(c);
+  });
+  if (name !== 'default') document.body.classList.add(`snui-skin-${name}`);
 }
 
 // ─── Copyable snippet for the active pack ────────────────────────────────
-const snippet = ref('')
-const copied = ref(false)
+const snippet = ref('');
+const copied = ref(false);
 function buildSnippet(name: string): string {
-  const pack = getPack(name) ?? allPacks[0]
-  if (!pack) return ''
-  const header = `import { snCssVars } from '@snui/tokens'\nimport { ${name}Pack } from '@snui/style-packs/${name}'\n`
-  const callParts: string[] = []
-  if (pack.theme) callParts.push('theme: ' + name + 'Pack.theme')
-  if (pack.style) callParts.push('style: ' + name + 'Pack.style')
-  if (pack.density) callParts.push('density: ' + name + 'Pack.density')
-  const call = 'snCssVars({\n  ' + callParts.join(',\n  ') + ',\n})'
+  const pack = getPack(name) ?? allPacks[0];
+  if (!pack) return '';
+  const header = `import { snCssVars } from '@snui/tokens'\nimport { ${name}Pack } from '@snui/style-packs/${name}'\n`;
+  const callParts: string[] = [];
+  if (pack.theme) callParts.push('theme: ' + name + 'Pack.theme');
+  if (pack.style) callParts.push('style: ' + name + 'Pack.style');
+  if (pack.density) callParts.push('density: ' + name + 'Pack.density');
+  const call = 'snCssVars({\n  ' + callParts.join(',\n  ') + ',\n})';
   return `${header}
 const el = document.createElement('style')
 el.textContent = ${call}
 document.head.appendChild(el)
-`
+`;
 }
-watch(activePack, () => {
-  snippet.value = buildSnippet(activePack.value)
-  copied.value = false
-  // Refresh display values so the editor reflects the new pack's defaults.
-  // (Don't clobber userOverrides — those stay applied on top.)
-}, { immediate: true })
+watch(
+  activePack,
+  () => {
+    snippet.value = buildSnippet(activePack.value);
+    copied.value = false;
+    // Refresh display values so the editor reflects the new pack's defaults.
+    // (Don't clobber userOverrides — those stay applied on top.)
+  },
+  { immediate: true },
+);
 
 async function copySnippet(): Promise<void> {
   try {
-    await navigator.clipboard.writeText(snippet.value)
-    copied.value = true
-    setTimeout(() => { copied.value = false }, 1400)
+    await navigator.clipboard.writeText(snippet.value);
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 1400);
   } catch {
-    const ta = document.createElement('textarea')
-    ta.value = snippet.value
-    document.body.appendChild(ta)
-    ta.select()
-    try { document.execCommand('copy') } finally { document.body.removeChild(ta) }
-    copied.value = true
-    setTimeout(() => { copied.value = false }, 1400)
+    const ta = document.createElement('textarea');
+    ta.value = snippet.value;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+    } finally {
+      document.body.removeChild(ta);
+    }
+    copied.value = true;
+    setTimeout(() => {
+      copied.value = false;
+    }, 1400);
   }
 }
 
 // ─── Demo preview ─────────────────────────────────────────────────────────
 interface DemoMap {
-  [k: string]: () => Promise<unknown>
+  [k: string]: () => Promise<unknown>;
 }
-const demoMap = import.meta.glob<unknown>('../demo/*.vue') as DemoMap
+const demoMap = import.meta.glob<unknown>('../demo/*.vue') as DemoMap;
 const allDemos = computed<string[]>(() => {
   return Object.keys(demoMap)
     .map((k) => {
-      const m = k.match(/\/([^/]+)\.vue$/)
-      return m ? m[1] : ''
+      const m = k.match(/\/([^/]+)\.vue$/);
+      return m ? m[1] : '';
     })
     .filter(Boolean)
-    .sort()
-})
+    .sort();
+});
 
-const previewName = ref<string>('')
-watch(allDemos, (list) => {
-  if (!previewName.value && list.length) previewName.value = list[0] || ''
-}, { immediate: true })
-const previewKey = computed(() => previewName.value)
+const previewName = ref<string>('');
+watch(
+  allDemos,
+  (list) => {
+    if (!previewName.value && list.length) previewName.value = list[0] || '';
+  },
+  { immediate: true },
+);
+const previewKey = computed(() => previewName.value);
 
-watch(() => route.path, () => {
-  open.value = false
-})
+watch(
+  () => route.path,
+  () => {
+    open.value = false;
+  },
+);
 
 onMounted(() => {
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') open.value = false
-  })
-})
+    if (e.key === 'Escape') open.value = false;
+  });
+});
 
 const tokenGroups = computed(() => {
-  const groups: Record<string, TokenDef[]> = { color: [], shape: [] }
-  for (const t of THEMABLE_TOKENS) groups[t.group].push(t)
-  return groups
-})
+  const groups: Record<string, TokenDef[]> = { color: [], shape: [] };
+  for (const t of THEMABLE_TOKENS) groups[t.group].push(t);
+  return groups;
+});
 </script>
 
 <template>
   <Teleport to="body">
-    <div
-      v-if="showFab"
-      class="sn-lab-fab"
-      :data-pack="activePack"
-      :class="{ 'is-open': open }"
-    >
+    <div v-if="showFab" class="sn-lab-fab" :data-pack="activePack" :class="{ 'is-open': open }">
       <div v-if="open" class="sn-lab-fab__panel" role="dialog" aria-label="Demo Lab">
         <div class="sn-lab-fab__header">
           <span class="sn-lab-fab__title">
             <Beaker :size="14" />
             Demo Lab
           </span>
-          <button
-            type="button"
-            class="sn-lab-fab__close"
-            aria-label="关闭"
-            @click="open = false"
-          >
+          <button type="button" class="sn-lab-fab__close" aria-label="关闭" @click="open = false">
             <X :size="14" />
           </button>
         </div>
@@ -388,15 +399,15 @@ const tokenGroups = computed(() => {
               </div>
             </div>
 
-            <div v-for="(tokens, groupName) in tokenGroups" :key="groupName" class="sn-lab-fab__token-group">
+            <div
+              v-for="(tokens, groupName) in tokenGroups"
+              :key="groupName"
+              class="sn-lab-fab__token-group"
+            >
               <div class="sn-lab-fab__token-group-label">
                 {{ groupName === 'color' ? '颜色' : '形状' }}
               </div>
-              <div
-                v-for="t in tokens"
-                :key="t.name"
-                class="sn-lab-fab__token-row"
-              >
+              <div v-for="t in tokens" :key="t.name" class="sn-lab-fab__token-row">
                 <label class="sn-lab-fab__token-label" :title="t.name">{{ t.label }}</label>
                 <div class="sn-lab-fab__token-control">
                   <span
@@ -482,14 +493,14 @@ const tokenGroups = computed(() => {
   --sn-fab-border-w: 1px;
   --sn-fab-border-c: var(--vp-c-divider);
   --sn-fab-radius: 12px;
-  --sn-fab-shadow: 0 8px 24px rgba(0, 0, 0, 0.10), 0 2px 6px rgba(0, 0, 0, 0.05);
+  --sn-fab-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.05);
   --sn-fab-bg: var(--vp-c-bg-elv, #ffffff);
   --sn-fab-fg: var(--vp-c-text-1);
   --sn-fab-accent: var(--vp-c-brand-1);
   --sn-fab-accent-soft: var(--vp-c-bg-soft);
   --sn-fab-trigger-bg: var(--vp-c-bg-elv, #ffffff);
   --sn-fab-trigger-fg: var(--vp-c-text-1);
-  --sn-fab-trigger-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --sn-fab-trigger-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   --sn-fab-tilt: 0deg;
 
   position: fixed;
@@ -500,37 +511,37 @@ const tokenGroups = computed(() => {
 }
 
 /* iOS — flat borderless, larger radius, no shadow. */
-.sn-lab-fab[data-pack="ios"] {
+.sn-lab-fab[data-pack='ios'] {
   --sn-fab-border-w: 0.5px;
   --sn-fab-border-c: rgba(0, 0, 0, 0.12);
   --sn-fab-radius: 14px;
   --sn-fab-shadow: 0 0 0 rgba(0, 0, 0, 0);
   --sn-fab-bg: rgba(255, 255, 255, 0.96);
-  --sn-fab-trigger-bg: var(--sn-color-action-primary, #007AFF);
+  --sn-fab-trigger-bg: var(--sn-color-action-primary, #007aff);
   --sn-fab-trigger-fg: #ffffff;
-  --sn-fab-trigger-shadow: 0 4px 12px rgba(0, 122, 255, 0.30);
+  --sn-fab-trigger-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
   --sn-fab-tilt: 0deg;
 }
 
 /* Doodle — sticker: thick ink border, hard offset shadow, wavy corners,
    paper-cream body, tilted slightly. */
-.sn-lab-fab[data-pack="doodle"] {
+.sn-lab-fab[data-pack='doodle'] {
   --sn-fab-border-w: 2.5px;
   --sn-fab-border-c: #1a1a1a;
   --sn-fab-radius: 22px 6px / 6px 22px;
   --sn-fab-shadow: 6px 6px 0 #1a1a1a;
-  --sn-fab-bg: var(--vp-c-bg-elv, #FFFBEB);
+  --sn-fab-bg: var(--vp-c-bg-elv, #fffbeb);
   --sn-fab-fg: #1a1a1a;
-  --sn-fab-accent: #FF6B9D;
-  --sn-fab-accent-soft: #FFF8E7;
-  --sn-fab-trigger-bg: #FFD93D;
+  --sn-fab-accent: #ff6b9d;
+  --sn-fab-accent-soft: #fff8e7;
+  --sn-fab-trigger-bg: #ffd93d;
   --sn-fab-trigger-fg: #1a1a1a;
   --sn-fab-trigger-shadow: 4px 4px 0 #1a1a1a;
   --sn-fab-tilt: 0.6deg;
 }
 
 /* Dark — low-saturation dark surface, soft shadow, no tilt. */
-.sn-lab-fab[data-pack="dark"] {
+.sn-lab-fab[data-pack='dark'] {
   --sn-fab-border-w: 1px;
   --sn-fab-border-c: rgba(255, 255, 255, 0.08);
   --sn-fab-radius: 12px;
@@ -559,11 +570,15 @@ const tokenGroups = computed(() => {
   cursor: pointer;
   box-shadow: var(--sn-fab-trigger-shadow);
   transform: rotate(calc(var(--sn-fab-tilt) * -2));
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s, color 0.18s;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s,
+    color 0.18s;
 }
 .sn-lab-fab__trigger:hover {
   transform: rotate(0deg) translate(-1px, -1px);
-  box-shadow: calc(var(--sn-fab-trigger-shadow) + 2px 2px 0 rgba(0,0,0,0.1));
+  box-shadow: calc(var(--sn-fab-trigger-shadow) + 2px 2px 0 rgba(0, 0, 0, 0.1));
 }
 .sn-lab-fab__trigger:active {
   transform: translate(2px, 2px);
@@ -596,7 +611,7 @@ const tokenGroups = computed(() => {
 /* Optional paper-grain only when in doodle mode (uses pack signal,
    not a hand-coded selector, so it follows whichever pack is active
    — currently only doodle opts in). */
-.sn-lab-fab[data-pack="doodle"] .sn-lab-fab__panel::before {
+.sn-lab-fab[data-pack='doodle'] .sn-lab-fab__panel::before {
   content: '';
   position: absolute;
   inset: 0;
@@ -667,7 +682,9 @@ const tokenGroups = computed(() => {
   font-weight: 500;
   cursor: pointer;
   opacity: 0.6;
-  transition: opacity 0.15s, background 0.15s;
+  transition:
+    opacity 0.15s,
+    background 0.15s;
 }
 .sn-lab-fab__tab:hover {
   opacity: 1;
@@ -845,7 +862,9 @@ const tokenGroups = computed(() => {
     linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%),
     linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%);
   background-size: 8px 8px;
-  background-position: 0 0, 4px 4px;
+  background-position:
+    0 0,
+    4px 4px;
 }
 .sn-lab-fab__color-picker::-webkit-color-swatch-wrapper {
   padding: 2px;
@@ -940,7 +959,9 @@ const tokenGroups = computed(() => {
   font-family: var(--vp-font-family-mono);
   cursor: pointer;
   opacity: 0.7;
-  transition: opacity 0.12s, background 0.12s;
+  transition:
+    opacity 0.12s,
+    background 0.12s;
 }
 .sn-lab-fab__demo-pill:hover {
   opacity: 1;

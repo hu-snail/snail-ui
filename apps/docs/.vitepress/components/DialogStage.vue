@@ -26,19 +26,19 @@
  *   </DialogStage>
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
 interface Props {
   /** Visibility. Use with `v-model:show`. */
-  show?: boolean
+  show?: boolean;
   /** Close on `Esc`. */
-  closeOnEsc?: boolean
+  closeOnEsc?: boolean;
   /** Close on mask click. */
-  maskClosable?: boolean
+  maskClosable?: boolean;
   /** Teleport target. Defaults to `body`. */
-  to?: string
+  to?: string;
   /** Stacking order. Sits above the VitePress nav by default. */
-  zIndex?: number
+  zIndex?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -47,64 +47,64 @@ const props = withDefaults(defineProps<Props>(), {
   maskClosable: true,
   to: 'body',
   zIndex: 2000,
-})
+});
 
 const emit = defineEmits<{
-  'update:show': [value: boolean]
+  'update:show': [value: boolean];
   /** Fired after the mask or `Esc` closed the dialog. */
-  close: []
-}>()
+  close: [];
+}>();
 
-const containerStyle = computed(() => ({ zIndex: String(props.zIndex) }))
+const containerStyle = computed(() => ({ zIndex: String(props.zIndex) }));
 
 /**
  * Same scroll-lock contract as SnDrawer: remember whatever `<html>` had, put
  * it back on close *and* on unmount so a hot-reload cannot strand the page.
  */
-const isLocked = ref(false)
-let memoizedOverflow: string | null = null
+const isLocked = ref(false);
+let memoizedOverflow: string | null = null;
 
 function lockScroll(): void {
-  if (typeof document === 'undefined' || isLocked.value) return
-  memoizedOverflow = document.documentElement.style.overflow
-  document.documentElement.style.overflow = 'hidden'
-  isLocked.value = true
+  if (typeof document === 'undefined' || isLocked.value) return;
+  memoizedOverflow = document.documentElement.style.overflow;
+  document.documentElement.style.overflow = 'hidden';
+  isLocked.value = true;
 }
 
 function unlockScroll(): void {
-  if (typeof document === 'undefined' || !isLocked.value) return
-  document.documentElement.style.overflow = memoizedOverflow ?? ''
-  memoizedOverflow = null
-  isLocked.value = false
+  if (typeof document === 'undefined' || !isLocked.value) return;
+  document.documentElement.style.overflow = memoizedOverflow ?? '';
+  memoizedOverflow = null;
+  isLocked.value = false;
 }
 
 watch(
   () => props.show,
   (value) => {
-    if (value) lockScroll()
-    else unlockScroll()
+    if (value) lockScroll();
+    else unlockScroll();
   },
   { immediate: true },
-)
+);
 
-onBeforeUnmount(unlockScroll)
+onBeforeUnmount(unlockScroll);
 
 function requestClose(): void {
-  emit('update:show', false)
-  emit('close')
+  emit('update:show', false);
+  emit('close');
 }
 
 function handleMaskClick(): void {
-  if (props.maskClosable) requestClose()
+  if (props.maskClosable) requestClose();
 }
 
 function handleKeydown(event: KeyboardEvent): void {
-  if (!props.closeOnEsc) return
+  if (!props.closeOnEsc) return;
   // Mirrors the drawer: a keydown that belongs to an IME composition is not a
   // dismissal gesture.
-  if (event.key !== 'Escape' || event.isComposing) return
-  event.stopPropagation()
-  requestClose()
+  if (event.key !== 'Escape' || event.isComposing) return;
+  event.stopPropagation();
+  requestClose();
 }
 </script>
 
@@ -118,20 +118,11 @@ function handleKeydown(event: KeyboardEvent): void {
       @keydown="handleKeydown"
     >
       <Transition name="dlg-stage-fade">
-        <div
-          v-if="show"
-          aria-hidden="true"
-          class="dlg-stage__mask"
-          @click="handleMaskClick"
-        />
+        <div v-if="show" aria-hidden="true" class="dlg-stage__mask" @click="handleMaskClick" />
       </Transition>
 
       <Transition name="dlg-stage-pop">
-        <div
-          v-if="show"
-          class="dlg-stage__panel"
-          role="none"
-        >
+        <div v-if="show" class="dlg-stage__panel" role="none">
           <slot />
         </div>
       </Transition>

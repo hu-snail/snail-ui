@@ -26,17 +26,17 @@
 
 ### SnAutoComplete Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `string` | `''` | v-model |
-| options | `Array<string \| SnAutoCompleteOption>` | `[]` | 候选（label 可为数组按段高亮） |
-| placeholder | `string` | — | 占位文案 |
-| clearable | `boolean` | `false` | 清空按钮 |
-| disabled / readonly | `boolean` | `false` | 禁用 / 只读 |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| status | `'default'\|'error'\|'warning'` | `'default'` | 校验状态 |
-| blurAfterSelect | `boolean` | `false` | 选中候选后失焦 |
-| getShow | `(value: string) => SnAutoCompleteRawOption[]` | — | 动态候选 |
+| Prop                | 类型                                           | 默认值      | 说明                           |
+| ------------------- | ---------------------------------------------- | ----------- | ------------------------------ |
+| modelValue          | `string`                                       | `''`        | v-model                        |
+| options             | `Array<string \| SnAutoCompleteOption>`        | `[]`        | 候选（label 可为数组按段高亮） |
+| placeholder         | `string`                                       | —           | 占位文案                       |
+| clearable           | `boolean`                                      | `false`     | 清空按钮                       |
+| disabled / readonly | `boolean`                                      | `false`     | 禁用 / 只读                    |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'`   | `'medium'`  | 尺寸                           |
+| status              | `'default'\|'error'\|'warning'`                | `'default'` | 校验状态                       |
+| blurAfterSelect     | `boolean`                                      | `false`     | 选中候选后失焦                 |
+| getShow             | `(value: string) => SnAutoCompleteRawOption[]` | —           | 动态候选                       |
 
 事件：`update:modelValue` / `change` / `select` / `focus` / `blur` / `search`；Slot：`empty`。aria：combobox + listbox + aria-activedescendant。
 

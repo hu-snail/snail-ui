@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnList — bordered 外边框 + show-divider 关闭分割线。 */
-import { SnList, SnListItem } from '@snui/vue-web'
+import { SnList, SnListItem } from '@snui/vue-web';
 </script>
 
 <template>
@@ -27,6 +27,5 @@ import { SnList, SnListItem } from '@snui/vue-web'
   flex-direction: column;
   gap: 24px;
   width: 100%;
-
 }
 </style>

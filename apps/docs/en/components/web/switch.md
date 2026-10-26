@@ -26,16 +26,16 @@
 
 ### SnSwitch Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `boolean \| string \| number` | `false` | v-model |
-| checkedValue | `boolean \| string \| number` | `true` | Checked value |
-| uncheckedValue | `boolean \| string \| number` | `false` | Unchecked value |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | Size |
-| disabled | `boolean` | `false` | Disabled |
-| readonly | `boolean` | `false` | Read-only |
-| loading | `boolean` | `false` | Loading (blocks toggling) |
-| railStyle | `(info: { checked: boolean }) => StyleValue` | — | Rail style function |
+| Prop           | Type                                         | Default    | Notes                     |
+| -------------- | -------------------------------------------- | ---------- | ------------------------- |
+| modelValue     | `boolean \| string \| number`                | `false`    | v-model                   |
+| checkedValue   | `boolean \| string \| number`                | `true`     | Checked value             |
+| uncheckedValue | `boolean \| string \| number`                | `false`    | Unchecked value           |
+| size           | `'small'\|'medium'\|'large'`                 | `'medium'` | Size                      |
+| disabled       | `boolean`                                    | `false`    | Disabled                  |
+| readonly       | `boolean`                                    | `false`    | Read-only                 |
+| loading        | `boolean`                                    | `false`    | Loading (blocks toggling) |
+| railStyle      | `(info: { checked: boolean }) => StyleValue` | —          | Rail style function       |
 
 ### Slots
 

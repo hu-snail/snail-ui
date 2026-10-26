@@ -11,16 +11,14 @@
  * Use cases: dashboard sidebars that the user can fold away to reclaim
  * horizontal space.
  */
-import { ref } from 'vue'
-import { markRaw } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import type { SnMenuOption } from '@snui/vue-web'
-import {
-  LayoutGrid, Sun, Lightbulb,
-} from 'lucide-vue-next'
+import { ref } from 'vue';
+import { markRaw } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import type { SnMenuOption } from '@snui/vue-web';
+import { LayoutGrid, Sun, Lightbulb } from 'lucide-vue-next';
 
-const active = ref<string | number | null>('m1-2')
-const collapsed = ref(true)
+const active = ref<string | number | null>('m1-2');
+const collapsed = ref(true);
 
 const items: SnMenuOption[] = [
   {
@@ -49,7 +47,7 @@ const items: SnMenuOption[] = [
     label: 'Navigation 3',
     icon: markRaw(Lightbulb),
   },
-]
+];
 </script>
 
 <template>

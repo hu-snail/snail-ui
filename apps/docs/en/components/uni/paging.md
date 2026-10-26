@@ -43,7 +43,7 @@ the page size or the total is reached.
 function query(pageNo: number, pageSize: number): void {
   fetchPage(pageNo, pageSize)
     .then(({ rows, total }) => paging.value.completeByTotal(rows, total))
-    .catch(() => paging.value.complete(false))
+    .catch(() => paging.value.complete(false));
 }
 ```
 
@@ -68,70 +68,70 @@ function query(pageNo: number, pageSize: number): void {
 
 sn-paging targets different scroll/render pipelines per runtime:
 
-| | Built-in scroll-view | Page scroll | uni-app x native rendering |
-| --- | --- | --- | --- |
-| Description | The component owns its scroll container — the default, simplest shape | The list rides the page scroll (use-page-scroll idea) for long mixed content | On App, `@snui/uni-x` transforms the component into uvue output running on a native rendering engine |
-| Gestures | Native refresher + bottom events; browser previews fall back to touch simulation | Page-level refresh is owned by the host page | Native refresher with events dispatched from the uts layer |
-| Best for | Most list pages (recommended default) | Screens sharing one scroll with other content | Maximum-performance App lists |
-| Status | Supported | Planned | Supported (see the uni-app x guide's device checklist) |
+|             | Built-in scroll-view                                                             | Page scroll                                                                  | uni-app x native rendering                                                                           |
+| ----------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Description | The component owns its scroll container — the default, simplest shape            | The list rides the page scroll (use-page-scroll idea) for long mixed content | On App, `@snui/uni-x` transforms the component into uvue output running on a native rendering engine |
+| Gestures    | Native refresher + bottom events; browser previews fall back to touch simulation | Page-level refresh is owned by the host page                                 | Native refresher with events dispatched from the uts layer                                           |
+| Best for    | Most list pages (recommended default)                                            | Screens sharing one scroll with other content                                | Maximum-performance App lists                                                                        |
+| Status      | Supported                                                                        | Planned                                                                      | Supported (see the uni-app x guide's device checklist)                                               |
 
 ## API
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `v-model` | `unknown[]` | `[]` | Aggregated list, rendered through the default slot |
-| `auto` | `boolean` | `true` | Fire the first `query` after mount |
-| `defaultPageNo` | `number` | `1` | First page number |
-| `defaultPageSize` | `number` | `10` | Page size; a shorter returned page stops the sequence |
-| `refresherEnabled` | `boolean` | `true` | Enable the pull-to-refresh gesture |
-| `refresherThreshold` | `number` | `45` | Arming pull distance (px, scroll-view contract) |
-| `refresherDefaultText` | `string` | `继续下拉刷新` | Refresher text below the threshold |
-| `refresherPullingText` | `string` | `松开立即刷新` | Refresher text past the threshold |
-| `refresherRefreshingText` | `string` | `正在刷新...` | Text while the refresh query is in flight |
-| `refresherCompleteText` | `string` | `刷新成功` | Text held after a successful refresh |
-| `refresherCompleteDuration` | `number` | `500` | Success-text hold in ms; `0` skips the hold |
-| `loadMoreEnabled` | `boolean` | `true` | Enable auto load-more on scroll-to-bottom |
-| `lowerThreshold` | `number` | `50` | Distance from the bottom that fires load-more (px) |
-| `loadMoreDefaultText` | `string` | `点击加载更多` | Idle footer text; tap loads the next page |
-| `loadMoreLoadingText` | `string` | `正在加载中...` | Footer text while loading |
-| `loadMoreNoMoreText` | `string` | `没有更多了` | Footer text once everything is loaded |
-| `loadMoreFailText` | `string` | `加载失败，点击重试` | Footer text after a failure |
-| `emptyText` | `string` | `暂无数据` | Built-in empty view text |
-| `safeAreaInsetBottom` | `boolean` | `false` | Pad the container bottom for the device safe area |
-| `customClass` | `string` | `''` | Root class forwarding |
-| `customStyle` | `string` | `''` | Root style forwarding |
+| Name                        | Type        | Default              | Description                                           |
+| --------------------------- | ----------- | -------------------- | ----------------------------------------------------- |
+| `v-model`                   | `unknown[]` | `[]`                 | Aggregated list, rendered through the default slot    |
+| `auto`                      | `boolean`   | `true`               | Fire the first `query` after mount                    |
+| `defaultPageNo`             | `number`    | `1`                  | First page number                                     |
+| `defaultPageSize`           | `number`    | `10`                 | Page size; a shorter returned page stops the sequence |
+| `refresherEnabled`          | `boolean`   | `true`               | Enable the pull-to-refresh gesture                    |
+| `refresherThreshold`        | `number`    | `45`                 | Arming pull distance (px, scroll-view contract)       |
+| `refresherDefaultText`      | `string`    | `继续下拉刷新`       | Refresher text below the threshold                    |
+| `refresherPullingText`      | `string`    | `松开立即刷新`       | Refresher text past the threshold                     |
+| `refresherRefreshingText`   | `string`    | `正在刷新...`        | Text while the refresh query is in flight             |
+| `refresherCompleteText`     | `string`    | `刷新成功`           | Text held after a successful refresh                  |
+| `refresherCompleteDuration` | `number`    | `500`                | Success-text hold in ms; `0` skips the hold           |
+| `loadMoreEnabled`           | `boolean`   | `true`               | Enable auto load-more on scroll-to-bottom             |
+| `lowerThreshold`            | `number`    | `50`                 | Distance from the bottom that fires load-more (px)    |
+| `loadMoreDefaultText`       | `string`    | `点击加载更多`       | Idle footer text; tap loads the next page             |
+| `loadMoreLoadingText`       | `string`    | `正在加载中...`      | Footer text while loading                             |
+| `loadMoreNoMoreText`        | `string`    | `没有更多了`         | Footer text once everything is loaded                 |
+| `loadMoreFailText`          | `string`    | `加载失败，点击重试` | Footer text after a failure                           |
+| `emptyText`                 | `string`    | `暂无数据`           | Built-in empty view text                              |
+| `safeAreaInsetBottom`       | `boolean`   | `false`              | Pad the container bottom for the device safe area     |
+| `customClass`               | `string`    | `''`                 | Root class forwarding                                 |
+| `customStyle`               | `string`    | `''`                 | Root style forwarding                                 |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `query` | `(pageNo: number, pageSize: number)` | Every query (first load / pull / bottom / retry); the host must answer via `complete*` |
-| `update:modelValue` | `(list: unknown[])` | v-model update with the aggregated list |
-| `scroll` | `event` | scroll-view scroll passthrough (pairs with sn-backtop's `scroll-top`) |
+| Name                | Payload                              | Description                                                                            |
+| ------------------- | ------------------------------------ | -------------------------------------------------------------------------------------- |
+| `query`             | `(pageNo: number, pageSize: number)` | Every query (first load / pull / bottom / retry); the host must answer via `complete*` |
+| `update:modelValue` | `(list: unknown[])`                  | v-model update with the aggregated list                                                |
+| `scroll`            | `event`                              | scroll-view scroll passthrough (pairs with sn-backtop's `scroll-top`)                  |
 
 ### Slots
 
-| Name | Description |
-| --- | --- |
-| — | List rows; render the bound v-model array here |
-| `top` | Fixed above the scroll area; does not scroll with the list |
-| `bottom` | Fixed below the scroll area; does not scroll with the list |
-| `empty` | Custom empty view |
-| `refresher` | Custom refresher content (icon + text by default) |
+| Name        | Description                                                |
+| ----------- | ---------------------------------------------------------- |
+| —           | List rows; render the bound v-model array here             |
+| `top`       | Fixed above the scroll area; does not scroll with the list |
+| `bottom`    | Fixed below the scroll area; does not scroll with the list |
+| `empty`     | Custom empty view                                          |
+| `refresher` | Custom refresher content (icon + text by default)          |
 
 ### Methods
 
 Called through a `ref`:
 
-| Name | Type | Description |
-| --- | --- | --- |
-| `refresh` | `() => void` | Refresh with the refresher animation (page resets to the first) |
-| `reload` | `() => void` | Refresh without the animation |
-| `complete` | `(data, success?) => void` | Report a page; non-array `data` or `success=false` fails it |
-| `completeByTotal` | `(data, total) => void` | Stop by total count |
-| `completeByNoMore` | `(data, noMore) => void` | Stop by explicit flag |
+| Name               | Type                       | Description                                                     |
+| ------------------ | -------------------------- | --------------------------------------------------------------- |
+| `refresh`          | `() => void`               | Refresh with the refresher animation (page resets to the first) |
+| `reload`           | `() => void`               | Refresh without the animation                                   |
+| `complete`         | `(data, success?) => void` | Report a page; non-array `data` or `success=false` fails it     |
+| `completeByTotal`  | `(data, total) => void`    | Stop by total count                                             |
+| `completeByNoMore` | `(data, noMore) => void`   | Stop by explicit flag                                           |
 
 ## Dark mode
 

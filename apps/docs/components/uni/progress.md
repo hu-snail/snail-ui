@@ -34,16 +34,16 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `percentage` | `number` | `0` | 进度数值，最大值 100（越界截断） |
-| `hideText` | `boolean` | `false` | 是否隐藏进度文字 |
-| `color` | `string \| string[] \| SnProgressColor[]` | `''` | 进度条颜色：纯色 / 渐变色标 / 阈值色 |
-| `status` | `'success' \| 'danger' \| 'warning' \| ''` | `''` | 进度条状态，优先级高于 `color` |
-| `duration` | `number` | `30` | 进度增加 1% 所需毫秒数 |
-| `percentPosition` | `{ type?: 'inner' \| 'outer'; align?: 'left' \| 'center' \| 'right' }` | `{ type: 'outer', align: 'right' }` | 百分比显示位置配置 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
+| 属性              | 类型                                                                   | 默认值                              | 说明                                 |
+| ----------------- | ---------------------------------------------------------------------- | ----------------------------------- | ------------------------------------ |
+| `percentage`      | `number`                                                               | `0`                                 | 进度数值，最大值 100（越界截断）     |
+| `hideText`        | `boolean`                                                              | `false`                             | 是否隐藏进度文字                     |
+| `color`           | `string \| string[] \| SnProgressColor[]`                              | `''`                                | 进度条颜色：纯色 / 渐变色标 / 阈值色 |
+| `status`          | `'success' \| 'danger' \| 'warning' \| ''`                             | `''`                                | 进度条状态，优先级高于 `color`       |
+| `duration`        | `number`                                                               | `30`                                | 进度增加 1% 所需毫秒数               |
+| `percentPosition` | `{ type?: 'inner' \| 'outer'; align?: 'left' \| 'center' \| 'right' }` | `{ type: 'outer', align: 'right' }` | 百分比显示位置配置                   |
+| `customClass`     | `string`                                                               | `''`                                | 根节点自定义类名                     |
+| `customStyle`     | `string`                                                               | `''`                                | 根节点自定义样式                     |
 
 `SnProgressColor` = `{ color: string; percentage?: number }`。
 
@@ -57,20 +57,20 @@
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-action-primary` | 默认填充色 |
-| `--sn-mp-color-feedback-success` | `status="success"` 填充色 |
-| `--sn-mp-color-feedback-warning` | `status="warning"` 填充色 |
-| `--sn-mp-color-feedback-danger` | `status="danger"` 填充色 |
-| `--sn-mp-color-background-subtle` | 轨道底色 |
-| `--sn-mp-color-text-secondary` | 外置文案 / 0% 时内嵌文案颜色 |
-| `--sn-mp-color-text-on-primary` | 填充区内的内嵌文案颜色 |
-| `--sn-mp-font-size-sm` | 文案字号 |
-| `--sn-mp-font-line-height-normal` | 文案行高 |
-| `--sn-mp-spacing-3` | 文案内边距 / 外边距 |
-| `--sn-mp-radius-full` | 轨道与填充圆角 |
-| `--sn-mp-radius-xs` | Doodle 皮肤下的圆角 |
+| 变量                              | 用途                         |
+| --------------------------------- | ---------------------------- |
+| `--sn-mp-color-action-primary`    | 默认填充色                   |
+| `--sn-mp-color-feedback-success`  | `status="success"` 填充色    |
+| `--sn-mp-color-feedback-warning`  | `status="warning"` 填充色    |
+| `--sn-mp-color-feedback-danger`   | `status="danger"` 填充色     |
+| `--sn-mp-color-background-subtle` | 轨道底色                     |
+| `--sn-mp-color-text-secondary`    | 外置文案 / 0% 时内嵌文案颜色 |
+| `--sn-mp-color-text-on-primary`   | 填充区内的内嵌文案颜色       |
+| `--sn-mp-font-size-sm`            | 文案字号                     |
+| `--sn-mp-font-line-height-normal` | 文案行高                     |
+| `--sn-mp-spacing-3`               | 文案内边距 / 外边距          |
+| `--sn-mp-radius-full`             | 轨道与填充圆角               |
+| `--sn-mp-radius-xs`               | Doodle 皮肤下的圆角          |
 
 ## 无障碍
 
@@ -81,7 +81,6 @@
 ## 暗色模式
 
 填充色与轨道色全部来自语义色 token（`--sn-mp-color-action-primary` / `--sn-mp-color-feedback-*` / `--sn-mp-color-background-subtle` / `--sn-mp-color-text-*`），这些都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 > 如果通过 `color` 传了自定义色值（如 `#5b8def`），该值不会随主题翻转 —— 这与 wot-ui 行为一致，暗色下请改用 `var(--sn-mp-*)` 形式的颜色。
 

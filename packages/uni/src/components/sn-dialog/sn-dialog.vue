@@ -41,121 +41,121 @@
  *   - 通用弹层 / 位置动画 — 用 sn-popup
  *   - 轻提示（无按钮）— 用 sn-toast / sn-notify
  */
-import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback'
+import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
 
-import { computed, markRaw, ref, watch } from 'vue'
-import SnButton from '../sn-button/sn-button.vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
-import SnInput from '../sn-input/sn-input.vue'
-import SnPopup from '../sn-popup/sn-popup.vue'
-import SnTextarea from '../sn-textarea/sn-textarea.vue'
+import { computed, markRaw, ref, watch } from 'vue';
+import SnButton from '../sn-button/sn-button.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
+import SnInput from '../sn-input/sn-input.vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
+import SnTextarea from '../sn-textarea/sn-textarea.vue';
 
-defineOptions({ name: 'SnDialog' })
+defineOptions({ name: 'SnDialog' });
 
 /** Dialog flavour. Mirrors `wd-dialog` `type`. */
-type DialogType = 'alert' | 'confirm' | 'prompt'
+type DialogType = 'alert' | 'confirm' | 'prompt';
 
 /** Button style. Mirrors `wd-dialog` `theme`. */
-type DialogTheme = 'button' | 'text'
+type DialogTheme = 'button' | 'text';
 
 /** Action button arrangement. Mirrors `wd-dialog` `action-layout`. */
-type DialogActionLayout = 'horizontal' | 'vertical'
+type DialogActionLayout = 'horizontal' | 'vertical';
 
 /**
  * Button option. Mirrors `wd-dialog` `confirm-button-props` /
  * `cancel-button-props`: a string is the button label, an object is spread
  * onto the inner sn-button, `null` hides the button.
  */
-type DialogButtonOption = string | Record<string, unknown> | null
+type DialogButtonOption = string | Record<string, unknown> | null;
 
 /** One custom action row (`wd-dialog` `actions` entry). */
 interface DialogAction {
   /** Button label. */
-  name?: string
+  name?: string;
   /** Button text color. */
-  color?: string
+  color?: string;
   /** Disable the row. */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 /** `confirm` payload — `inputValue` is only meaningful for `type="prompt"`. */
 interface DialogConfirmPayload {
-  action: 'confirm'
-  inputValue: string | number
+  action: 'confirm';
+  inputValue: string | number;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Whether the dialog is visible (v-model). Component-form counterpart of `useDialog().show()`. */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** Title text. */
-    title?: string
+    title?: string;
     /** Message body text. */
-    msg?: string
+    msg?: string;
     /** Dialog flavour: `alert` (one button), `confirm` (two), `prompt` (two + input). */
-    type?: DialogType
+    type?: DialogType;
     /** Button style: filled buttons or borderless text buttons. */
-    theme?: DialogTheme
+    theme?: DialogTheme;
     /** Stacking level of the dialog. */
-    zIndex?: number
+    zIndex?: number;
     /** Defer body rendering until the dialog is first opened. */
-    lazyRender?: boolean
+    lazyRender?: boolean;
     /** Full-width image above the body. */
-    headerImage?: string
+    headerImage?: string;
     /** Status icon: `success` / `info` / `warning` / `danger`, or a registry icon name. */
-    icon?: string
+    icon?: string;
     /** Status icon color (any CSS color value). */
-    iconColor?: string
+    iconColor?: string;
     /** Props forwarded to the inner sn-icon. */
-    iconProps?: Record<string, unknown>
+    iconProps?: Record<string, unknown>;
     /** Initial value of the prompt input. */
-    inputValue?: string | number
+    inputValue?: string | number;
     /** Props forwarded to the inner sn-input (prompt mode). */
-    inputProps?: Record<string, unknown>
+    inputProps?: Record<string, unknown>;
     /** When non-empty, prompt mode renders sn-textarea instead of sn-input. */
-    textareaProps?: Record<string, unknown>
+    textareaProps?: Record<string, unknown>;
     /** Regexp the prompt value must match. */
-    inputPattern?: RegExp | undefined
+    inputPattern?: RegExp | undefined;
     /** Function validator — return `true`, or a message / `false` on failure. */
-    inputValidate?: ((inputValue: string | number) => boolean | string) | undefined
+    inputValidate?: ((inputValue: string | number) => boolean | string) | undefined;
     /** Fallback message shown when prompt validation fails. */
-    inputError?: string
+    inputError?: string;
     /** Show the validation message under the input. */
-    showErr?: boolean
+    showErr?: boolean;
     /** Action button arrangement. */
-    actionLayout?: DialogActionLayout
+    actionLayout?: DialogActionLayout;
     /** Show the cancel button. Defaults to `false` for `alert`, `true` otherwise. */
-    showCancelButton?: boolean | undefined
+    showCancelButton?: boolean | undefined;
     /** Confirm button label. */
-    confirmButtonText?: string
+    confirmButtonText?: string;
     /** Cancel button label. */
-    cancelButtonText?: string
+    cancelButtonText?: string;
     /** Confirm button option (label / extra props / `null` to hide). */
-    confirmButtonProps?: DialogButtonOption
+    confirmButtonProps?: DialogButtonOption;
     /** Cancel button option (label / extra props / `null` to hide). */
-    cancelButtonProps?: DialogButtonOption | undefined
+    cancelButtonProps?: DialogButtonOption | undefined;
     /** Custom action rows; when set they replace the confirm / cancel buttons. */
-    actions?: DialogAction[]
+    actions?: DialogAction[];
     /** Close when the scrim is tapped. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Show the close button in the top-right corner. */
-    showClose?: boolean
+    showClose?: boolean;
     /** Guard before confirming — return `false` (or resolve `false`) to veto. */
-    beforeConfirm?: (() => boolean | Promise<boolean>) | undefined
+    beforeConfirm?: (() => boolean | Promise<boolean>) | undefined;
     /** Instance id used by the function API (parity only, no effect here). */
-    selector?: string
+    selector?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the panel. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the layer cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: false,
@@ -191,35 +191,39 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Custom header area, above everything else. */
-  header?(): unknown
+  header?(): unknown;
   /** Custom image area (replaces `headerImage`). */
-  image?(): unknown
+  image?(): unknown;
   /** Custom title area. Replaces the icon + title block. */
-  title?(props: { icon: IconData | null; title: string; iconProps: Record<string, unknown> }): unknown
+  title?(props: {
+    icon: IconData | null;
+    title: string;
+    iconProps: Record<string, unknown>;
+  }): unknown;
   /** Custom body area. Replaces `msg` and the prompt field. */
   default?(props: {
-    msg: string
-    type: DialogType
-    inputValue: string | number
-    showErr: boolean
-    inputError: string
-  }): unknown
+    msg: string;
+    type: DialogType;
+    inputValue: string | number;
+    showErr: boolean;
+    inputError: string;
+  }): unknown;
   /** Custom action area. Replaces the button row. */
-  actions?(props: { confirm: () => void; cancel: () => void; close: () => void }): unknown
-}>()
+  actions?(props: { confirm: () => void; cancel: () => void; close: () => void }): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'update:inputValue', value: string | number): void
-  (e: 'confirm', payload: DialogConfirmPayload): void
-  (e: 'cancel'): void
-  (e: 'close'): void
-  (e: 'select', payload: { item: DialogAction; index: number }): void
-}>()
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'update:inputValue', value: string | number): void;
+  (e: 'confirm', payload: DialogConfirmPayload): void;
+  (e: 'cancel'): void;
+  (e: 'close'): void;
+  (e: 'select', payload: { item: DialogAction; index: number }): void;
+}>();
 
 /**
  * Status glyphs come from the shared feedback icon table
@@ -231,30 +235,33 @@ const emit = defineEmits<{
 const visible = computed<boolean>({
   get: () => props.modelValue,
   set: (value: boolean) => emit('update:modelValue', value),
-})
+});
 
 /** Prompt value, kept in sync with the `inputValue` prop. */
-const currentInput = ref<string | number>(props.inputValue)
-watch(() => props.inputValue, (value) => {
-  currentInput.value = value
-})
+const currentInput = ref<string | number>(props.inputValue);
+watch(
+  () => props.inputValue,
+  (value) => {
+    currentInput.value = value;
+  },
+);
 
 /** Validation message currently displayed. */
-const currentInputError = ref('')
+const currentInputError = ref('');
 /** A confirm guard is running (blocks double taps). */
-const isConfirming = ref(false)
+const isConfirming = ref(false);
 
 const statusIcon = computed<IconData | null>(() => {
-  if (!props.icon) return null
-  const registry = resolveIconByName(props.icon)
-  if (registry) return markRaw(registry)
-  return resolveFeedbackIcon(props.icon)
-})
+  if (!props.icon) return null;
+  const registry = resolveIconByName(props.icon);
+  if (registry) return markRaw(registry);
+  return resolveFeedbackIcon(props.icon);
+});
 
-const iconStyle = computed(() => (props.iconColor ? `color: ${props.iconColor}` : undefined))
+const iconStyle = computed(() => (props.iconColor ? `color: ${props.iconColor}` : undefined));
 
 /** Cancel button visibility — `alert` hides it unless overridden. */
-const showsCancel = computed(() => props.showCancelButton ?? props.type !== 'alert')
+const showsCancel = computed(() => props.showCancelButton ?? props.type !== 'alert');
 
 /** Resolve a button option into `{ label, props, visible }`. */
 function resolveButtonOption(
@@ -262,85 +269,85 @@ function resolveButtonOption(
   fallbackLabel: string,
   visible: boolean,
 ): { label: string; attrs: Record<string, unknown>; visible: boolean } {
-  if (option === null) return { label: '', attrs: {}, visible: false }
-  if (typeof option === 'string') return { label: option || fallbackLabel, attrs: {}, visible }
-  return { label: fallbackLabel, attrs: option ?? {}, visible }
+  if (option === null) return { label: '', attrs: {}, visible: false };
+  if (typeof option === 'string') return { label: option || fallbackLabel, attrs: {}, visible };
+  return { label: fallbackLabel, attrs: option ?? {}, visible };
 }
 
 const confirmButton = computed(() =>
   resolveButtonOption(props.confirmButtonProps, props.confirmButtonText || '确定', true),
-)
+);
 const cancelButton = computed(() =>
   resolveButtonOption(props.cancelButtonProps, props.cancelButtonText || '取消', showsCancel.value),
-)
+);
 
 /** Prompt mode renders the multi-line field when `textareaProps` is populated. */
-const usesTextarea = computed(() => Object.keys(props.textareaProps).length > 0)
+const usesTextarea = computed(() => Object.keys(props.textareaProps).length > 0);
 
 /** Run the prompt validators. Returns `true` when the value is acceptable. */
 function validateInput(): boolean {
-  const value = currentInput.value
+  const value = currentInput.value;
   if (props.inputPattern && !props.inputPattern.test(String(value))) {
-    currentInputError.value = props.inputError
-    return false
+    currentInputError.value = props.inputError;
+    return false;
   }
   if (props.inputValidate) {
-    const result = props.inputValidate(value)
+    const result = props.inputValidate(value);
     if (result !== true) {
-      currentInputError.value = typeof result === 'string' ? result : props.inputError
-      return false
+      currentInputError.value = typeof result === 'string' ? result : props.inputError;
+      return false;
     }
   }
-  currentInputError.value = ''
-  return true
+  currentInputError.value = '';
+  return true;
 }
 
 function onInputChange(value: string | number): void {
-  currentInput.value = value
-  emit('update:inputValue', value)
+  currentInput.value = value;
+  emit('update:inputValue', value);
   // Clear a stale validation message as soon as the user edits the value.
-  if (currentInputError.value) currentInputError.value = ''
+  if (currentInputError.value) currentInputError.value = '';
 }
 
 /** Close request: sync v-model + emit `close`. */
 function requestClose(): void {
-  emit('update:modelValue', false)
-  emit('close')
+  emit('update:modelValue', false);
+  emit('close');
 }
 
 async function handleConfirm(): Promise<void> {
-  if (isConfirming.value) return
-  if (props.type === 'prompt' && !validateInput()) return
+  if (isConfirming.value) return;
+  if (props.type === 'prompt' && !validateInput()) return;
   if (props.beforeConfirm) {
-    isConfirming.value = true
-    let allowed = false
+    isConfirming.value = true;
+    let allowed = false;
     try {
-      allowed = await props.beforeConfirm()
+      allowed = await props.beforeConfirm();
     } finally {
-      isConfirming.value = false
+      isConfirming.value = false;
     }
-    if (!allowed) return
+    if (!allowed) return;
   }
-  emit('confirm', { action: 'confirm', inputValue: currentInput.value })
-  requestClose()
+  emit('confirm', { action: 'confirm', inputValue: currentInput.value });
+  requestClose();
 }
 
 function handleCancel(): void {
-  emit('cancel')
-  requestClose()
+  emit('cancel');
+  requestClose();
 }
 
 function onCloseTap(): void {
-  requestClose()
+  requestClose();
 }
 
 function onActionTap(item: DialogAction, index: number): void {
-  if (item.disabled) return
-  emit('select', { item, index })
-  requestClose()
+  if (item.disabled) return;
+  emit('select', { item, index });
+  requestClose();
 }
 
-const popupClass = computed(() => ['sn-dialog', props.customClass].filter(Boolean).join(' '))
+const popupClass = computed(() => ['sn-dialog', props.customClass].filter(Boolean).join(' '));
 
 /**
  * Non-undefined views of the props the template forwards into child props /
@@ -348,23 +355,20 @@ const popupClass = computed(() => ['sn-dialog', props.customClass].filter(Boolea
  * types a bare prop identifier as `T | undefined`; passing that into a child
  * prop declared `T` trips `exactOptionalPropertyTypes`.
  */
-const titleText = computed(() => props.title)
-const msgText = computed(() => props.msg)
-const dialogType = computed(() => props.type)
-const showsError = computed(() => props.showErr)
-const iconPropsValue = computed(() => props.iconProps)
-const actionList = computed(() => props.actions)
+const titleText = computed(() => props.title);
+const msgText = computed(() => props.msg);
+const dialogType = computed(() => props.type);
+const showsError = computed(() => props.showErr);
+const iconPropsValue = computed(() => props.iconProps);
+const actionList = computed(() => props.actions);
 
-const bodyClass = computed(() => [
-  'sn-dialog__body',
-  `sn-dialog__body--${props.type}`,
-])
+const bodyClass = computed(() => ['sn-dialog__body', `sn-dialog__body--${props.type}`]);
 
 const actionsClass = computed(() => [
   'sn-dialog__actions',
   `sn-dialog__actions--${props.actionLayout}`,
   { 'sn-dialog__actions--text': props.theme === 'text' },
-])
+]);
 </script>
 
 <template>
@@ -401,12 +405,7 @@ const actionsClass = computed(() => [
       <slot name="image" />
 
       <view v-if="statusIcon" class="sn-dialog__icon" :style="iconStyle">
-        <slot
-          name="title"
-          :icon="statusIcon"
-          :title="titleText"
-          :icon-props="iconPropsValue"
-        >
+        <slot name="title" :icon="statusIcon" :title="titleText" :icon-props="iconPropsValue">
           <SnIcon :icon="statusIcon" :size="88" v-bind="iconProps" />
         </slot>
       </view>
@@ -445,12 +444,7 @@ const actionsClass = computed(() => [
       </slot>
 
       <view :class="actionsClass">
-        <slot
-          name="actions"
-          :confirm="handleConfirm"
-          :cancel="handleCancel"
-          :close="onCloseTap"
-        >
+        <slot name="actions" :confirm="handleConfirm" :cancel="handleCancel" :close="onCloseTap">
           <template v-if="actionList.length > 0">
             <view
               v-for="(item, index) in actionList"

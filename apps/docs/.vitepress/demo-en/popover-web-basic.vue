@@ -2,7 +2,7 @@
 /**
  * Demo: SnPopover — hover trigger, header + content, arrow and placements.
  */
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { SnButton, SnPopover } from '@snui/vue-web';
 </script>
 
 <template>
@@ -10,7 +10,10 @@ import { SnButton, SnPopover } from '@snui/vue-web'
     <section class="popover-demo__block">
       <h4 class="popover-demo__title">Header + content (hover trigger)</h4>
       <div class="popover-demo__row">
-        <SnPopover header="Export data" content="Export the current table view as a CSV file, including all visible columns and filters.">
+        <SnPopover
+          header="Export data"
+          content="Export the current table view as a CSV file, including all visible columns and filters."
+        >
           <SnButton>Hover for details</SnButton>
         </SnPopover>
         <SnPopover
@@ -47,7 +50,7 @@ import { SnButton, SnPopover } from '@snui/vue-web'
       <div class="popover-demo__row">
         <SnPopover
           header="Same width as trigger"
-          content="With width=&quot;trigger&quot;, the popover width matches the trigger."
+          content='With width="trigger", the popover width matches the trigger.'
           width="trigger"
         >
           <SnButton>width="trigger"</SnButton>

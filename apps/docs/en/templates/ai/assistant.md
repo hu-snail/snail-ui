@@ -6,7 +6,7 @@ The whole AI suite **assembled** into one page: the transcript comes from the me
 
 ## When to use
 
-- You need a ready-made AI page: it must chat *and* let the user switch models and tune parameters
+- You need a ready-made AI page: it must chat _and_ let the user switch models and tune parameters
 - You do not want to assemble "chat page + model-config panel + drawer + the vendor list they share" yourself
 - Model config should appear as a drawer that does not interrupt the conversation (instead of a separate settings page)
 - You need your own header buttons (history, share, clear), which the `header-actions` slot provides
@@ -16,12 +16,12 @@ The whole AI suite **assembled** into one page: the transcript comes from the me
 
 The assistant is not a new monolith: it is the pieces below put together. Both page templates share the scheduling engine, so an assembled page queues, aborts and streams exactly the way they do:
 
-| Region | Comes from | Import separately |
-| --- | --- | --- |
-| Transcript | The message-list template | `@snui/templates/web/message-list` |
-| Input area | The composer template | `@snui/templates/web/prompt` |
-| Model config (drawer) | The model-config template | `@snui/templates/web/model-config` |
-| Scheduling · queue · stream folding · abort | The turn engine | `@snui/templates/web/turn-queue` |
+| Region                                      | Comes from                | Import separately                  |
+| ------------------------------------------- | ------------------------- | ---------------------------------- |
+| Transcript                                  | The message-list template | `@snui/templates/web/message-list` |
+| Input area                                  | The composer template     | `@snui/templates/web/prompt`       |
+| Model config (drawer)                       | The model-config template | `@snui/templates/web/model-config` |
+| Scheduling · queue · stream folding · abort | The turn engine           | `@snui/templates/web/turn-queue`   |
 
 `SnAiChat` is the same parts minus the drawer.
 
@@ -31,25 +31,25 @@ Styles are emitted **per template**: importing one template brings its own JS an
 
 ```ts
 // 1) Import only the template you use: its JS and its own styles come with it
-import { SnAiAssistant } from '@snui/templates/web/assistant'
+import { SnAiAssistant } from '@snui/templates/web/assistant';
 
 // 2) Import the shared token layer once at the app entry
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) When you want to control code splitting yourself, import a single template's stylesheet
-import '@snui/templates/styles/web-assistant.css'
+import '@snui/templates/styles/web-assistant.css';
 ```
 
 The per-template stylesheets (all under `@snui/templates/styles/`):
 
-| File | Template |
-| --- | --- |
-| `web-assistant.css` | `@snui/templates/web/assistant` |
-| `web-chat.css` | `@snui/templates/web/chat` |
-| `web-prompt.css` | `@snui/templates/web/prompt` |
+| File                   | Template                           |
+| ---------------------- | ---------------------------------- |
+| `web-assistant.css`    | `@snui/templates/web/assistant`    |
+| `web-chat.css`         | `@snui/templates/web/chat`         |
+| `web-prompt.css`       | `@snui/templates/web/prompt`       |
 | `web-message-list.css` | `@snui/templates/web/message-list` |
 | `web-model-config.css` | `@snui/templates/web/model-config` |
-| `uni-chat.css` | `@snui/templates/uni/chat` |
+| `uni-chat.css`         | `@snui/templates/uni/chat`         |
 | `uni-message-list.css` | `@snui/templates/uni/message-list` |
 
 Importing `web-assistant.css` does **not** pull the other templates' rules; the shared token layer exists once (step 2), so a second template does not download it again.
@@ -60,17 +60,17 @@ The smallest working version: chatting comes from `SnAiChat`, and the model-conf
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiAssistant } from '@snui/templates/web/assistant'
-import type { SnAiRunTurn } from '@snui/templates/web/chat'
-import type { SnAiMessage, SnAiVendor } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiAssistant } from '@snui/templates/web/assistant';
+import type { SnAiRunTurn } from '@snui/templates/web/chat';
+import type { SnAiMessage, SnAiVendor } from '@snui/templates/web';
 
-const messages = ref<SnAiMessage[]>([])
-const vendors = ref<SnAiVendor[]>([])
+const messages = ref<SnAiMessage[]>([]);
+const vendors = ref<SnAiVendor[]>([]);
 
 const run: SnAiRunTurn = async (turn, { emit }) => {
-  emit({ type: 'text', text: `You said: ${turn.text}` })
-}
+  emit({ type: 'text', text: `You said: ${turn.text}` });
+};
 </script>
 
 <template>
@@ -92,22 +92,22 @@ This wires three things at once: real streaming chat, editing vendors and models
 
 ```vue
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { SnAiAssistant } from '@snui/templates/web/assistant'
-import { SnButton } from '@snui/vue-web'
-import type { SnAiRunTurn } from '@snui/templates/web/chat'
-import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '@snui/templates/web'
+import { computed, ref } from 'vue';
+import { SnAiAssistant } from '@snui/templates/web/assistant';
+import { SnButton } from '@snui/vue-web';
+import type { SnAiRunTurn } from '@snui/templates/web/chat';
+import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '@snui/templates/web';
 
-const messages = ref<SnAiMessage[]>([])
-const vendors = ref<SnAiVendor[]>([])
-const activeVendorId = ref<string | undefined>(undefined)
-const activeModelId = ref<string | undefined>(undefined)
-const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true })
+const messages = ref<SnAiMessage[]>([]);
+const vendors = ref<SnAiVendor[]>([]);
+const activeVendorId = ref<string | undefined>(undefined);
+const activeModelId = ref<string | undefined>(undefined);
+const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true });
 /** The host owns the drawer state, e.g. to mirror it into the URL or analytics. */
-const configOpen = ref(false)
+const configOpen = ref(false);
 
 /** The composer's model picker and the drawer share one vendor list. */
-const models = computed(() => vendors.value.flatMap((vendor) => vendor.models ?? []))
+const models = computed(() => vendors.value.flatMap((vendor) => vendor.models ?? []));
 
 const run: SnAiRunTurn = async (turn, { signal, emit }) => {
   const response = await fetch('/api/chat', {
@@ -122,20 +122,20 @@ const run: SnAiRunTurn = async (turn, { signal, emit }) => {
     }),
     // Stop in the drawer and page unmount both abort it.
     signal,
-  })
-  const reader = response.body!.getReader()
-  const decoder = new TextDecoder()
+  });
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
   for (;;) {
-    const { value, done } = await reader.read()
-    if (done) break
-    emit({ type: 'text', text: decoder.decode(value, { stream: true }) })
+    const { value, done } = await reader.read();
+    if (done) break;
+    emit({ type: 'text', text: decoder.decode(value, { stream: true }) });
   }
-}
+};
 
 /** The host really verifies the endpoint and credential; this only marks the card as testing. */
-const testingVendorId = ref<string | undefined>(undefined)
+const testingVendorId = ref<string | undefined>(undefined);
 function onTestConnection({ vendorId }: { vendorId: string }): void {
-  testingVendorId.value = vendorId
+  testingVendorId.value = vendorId;
 }
 </script>
 
@@ -183,47 +183,47 @@ It inherits every `SnAiChat` prop and event unchanged: `messages`, `run`, `agent
 
 Beyond those, this template adds only the members below:
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `showModelConfig` | `boolean` | `true` | Show the header "model config" entry point and the drawer |
-| `modelConfigTitle` | `string` | `'模型配置'` | Drawer heading, also the entry button's accessible name |
-| `modelConfigWidth` | `number \| string` | `420` | Drawer width; a number is treated as px |
-| `modelConfigOpen` | `boolean \| undefined` | `undefined` | Controlled drawer visibility; the template remembers it when unset |
-| `activeVendorId` | `string \| undefined` | `undefined` | Vendor passed to the model config |
-| `activeModelId` | `string \| undefined` | `undefined` | Model passed to the model config |
-| `params` | `SnAiModelParams \| undefined` | `undefined` | Generation parameters passed to the model config |
-| `editableModels` | `boolean` | `true` | Offer add / edit / delete affordances inside the drawer |
-| `vendors` | `SnAiVendor[] \| undefined` | `undefined` | Configured vendors. The drawer and the composer's model picker share this one list |
+| Name               | Type                           | Default      | Description                                                                        |
+| ------------------ | ------------------------------ | ------------ | ---------------------------------------------------------------------------------- |
+| `showModelConfig`  | `boolean`                      | `true`       | Show the header "model config" entry point and the drawer                          |
+| `modelConfigTitle` | `string`                       | `'模型配置'` | Drawer heading, also the entry button's accessible name                            |
+| `modelConfigWidth` | `number \| string`             | `420`        | Drawer width; a number is treated as px                                            |
+| `modelConfigOpen`  | `boolean \| undefined`         | `undefined`  | Controlled drawer visibility; the template remembers it when unset                 |
+| `activeVendorId`   | `string \| undefined`          | `undefined`  | Vendor passed to the model config                                                  |
+| `activeModelId`    | `string \| undefined`          | `undefined`  | Model passed to the model config                                                   |
+| `params`           | `SnAiModelParams \| undefined` | `undefined`  | Generation parameters passed to the model config                                   |
+| `editableModels`   | `boolean`                      | `true`       | Offer add / edit / delete affordances inside the drawer                            |
+| `vendors`          | `SnAiVendor[] \| undefined`    | `undefined`  | Configured vendors. The drawer and the composer's model picker share this one list |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `update:modelConfigOpen` | `boolean` | Drawer visibility changed |
-| `update:vendors` | `SnAiVendor[]` | A vendor or one of its models changed in the drawer |
-| `update:activeVendorId` | `string` | The drawer switched vendors |
-| `update:activeModelId` | `string` | The drawer switched the active model |
-| `update:params` | `SnAiModelParams` | Generation parameters changed in the drawer |
-| `test-connection` | `{ vendorId }` | Ask the host to verify this vendor's endpoint and credential |
+| Name                     | Payload           | Description                                                  |
+| ------------------------ | ----------------- | ------------------------------------------------------------ |
+| `update:modelConfigOpen` | `boolean`         | Drawer visibility changed                                    |
+| `update:vendors`         | `SnAiVendor[]`    | A vendor or one of its models changed in the drawer          |
+| `update:activeVendorId`  | `string`          | The drawer switched vendors                                  |
+| `update:activeModelId`   | `string`          | The drawer switched the active model                         |
+| `update:params`          | `SnAiModelParams` | Generation parameters changed in the drawer                  |
+| `test-connection`        | `{ vendorId }`    | Ask the host to verify this vendor's endpoint and credential |
 
 Both the prop and the event match the model config template (`params` / `update:params`), so `v-model:params` works and the same handler can be handed to `SnModelConfig` unchanged.
 
 ### Slots
 
-| Name | Props | Description |
-| --- | --- | --- |
-| `header-actions` | — | Custom actions on the right of the header, rendered after the model config button |
-| `model-config` | `{ close }` | Replace the drawer body; `close()` closes the drawer through the same state |
-| `transcript` | `{ messages, empty }` | Forwarded from `SnAiChat`, replaces the whole transcript area |
-| `toolbar` | — | Forwarded from `SnAiChat`, extra controls in the composer toolbar |
+| Name             | Props                 | Description                                                                       |
+| ---------------- | --------------------- | --------------------------------------------------------------------------------- |
+| `header-actions` | —                     | Custom actions on the right of the header, rendered after the model config button |
+| `model-config`   | `{ close }`           | Replace the drawer body; `close()` closes the drawer through the same state       |
+| `transcript`     | `{ messages, empty }` | Forwarded from `SnAiChat`, replaces the whole transcript area                     |
+| `toolbar`        | —                     | Forwarded from `SnAiChat`, extra controls in the composer toolbar                 |
 
 ### Type exports
 
-| Name | From | Description |
-| --- | --- | --- |
-| `SnAiAssistant` | `@snui/templates/web/assistant` | The template component itself. |
-| `SnAiRunTurn` | `@snui/templates/web/chat` | The runner signature. |
-| `SnAiMessage` / `SnAiVendor` / `SnAiModelParams` and friends | `@snui/templates` | Shared contract types so a host can build data. |
+| Name                                                         | From                            | Description                                     |
+| ------------------------------------------------------------ | ------------------------------- | ----------------------------------------------- |
+| `SnAiAssistant`                                              | `@snui/templates/web/assistant` | The template component itself.                  |
+| `SnAiRunTurn`                                                | `@snui/templates/web/chat`      | The runner signature.                           |
+| `SnAiMessage` / `SnAiVendor` / `SnAiModelParams` and friends | `@snui/templates`               | Shared contract types so a host can build data. |
 
 ## Theme and token customisation
 

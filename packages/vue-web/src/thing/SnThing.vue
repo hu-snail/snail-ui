@@ -26,62 +26,61 @@
  *   </SnThing>
  */
 
-import type { CSSProperties } from 'vue'
-import { useSlots } from 'vue'
+import type { CSSProperties } from 'vue';
+import { useSlots } from 'vue';
 
-defineOptions({ name: 'SnThing' })
+defineOptions({ name: 'SnThing' });
 
-const slots = useSlots()
+const slots = useSlots();
 
 const props = withDefaults(
   defineProps<{
     /** Title text; the `header` slot overrides it. */
-    title?: string
+    title?: string;
     /** Extra content at the far end of the header row. */
-    titleExtra?: string
+    titleExtra?: string;
     /** Description text; the `description` slot overrides it. */
-    description?: string
+    description?: string;
     /** Content text; the `default` slot overrides it. */
-    content?: string
+    content?: string;
     /** Indent the whole content column under the header instead of the
      * avatar (requires the `avatar` slot to matter). */
-    contentIndented?: boolean
+    contentIndented?: boolean;
     /** Class applied to the description block. */
-    descriptionClass?: string
+    descriptionClass?: string;
     /** Style applied to the description block. */
-    descriptionStyle?: string | CSSProperties
+    descriptionStyle?: string | CSSProperties;
     /** Class applied to the content block. */
-    contentClass?: string
+    contentClass?: string;
     /** Style applied to the content block. */
-    contentStyle?: string | CSSProperties
+    contentStyle?: string | CSSProperties;
   }>(),
   {
     contentIndented: false,
   },
-)
+);
 
 defineSlots<{
   /** Content body. */
-  default?(): unknown
+  default?(): unknown;
   /** Avatar (rendered beside the header, or leading when indented). */
-  avatar?(): unknown
+  avatar?(): unknown;
   /** Header content — overrides the `title` prop. */
-  header?(): unknown
+  header?(): unknown;
   /** Header trailing content — overrides `title-extra`. */
-  'header-extra'?(): unknown
+  'header-extra'?(): unknown;
   /** Description — overrides the `description` prop. */
-  description?(): unknown
+  description?(): unknown;
   /** Footer area. */
-  footer?(): unknown
+  footer?(): unknown;
   /** Action area (buttons row). */
-  action?(): unknown
-}>()
+  action?(): unknown;
+}>();
 
 const hasHeaderArea = (): boolean =>
-  Boolean(slots.header || props.title || slots['header-extra'] || props.titleExtra)
+  Boolean(slots.header || props.title || slots['header-extra'] || props.titleExtra);
 
-const hasDescriptionArea = (): boolean =>
-  Boolean(slots.description || props.description)
+const hasDescriptionArea = (): boolean => Boolean(slots.description || props.description);
 </script>
 
 <template>

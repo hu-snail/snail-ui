@@ -3,12 +3,12 @@
  * drawer-web-content — SnDrawerContent's three rows, including custom slots
  * and the rule that an absent `footer` slot renders no footer at all.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const showFull = ref(false)
-const showNoFooter = ref(false)
-const showBare = ref(false)
+const showFull = ref(false);
+const showNoFooter = ref(false);
+const showBare = ref(false);
 </script>
 
 <template>

@@ -5,20 +5,20 @@
  * Each type gets its own trigger; the dialog opens as a real modal so the
  * icon / colour delta is judged at panel size rather than in a cramped card.
  */
-import { ref } from 'vue'
-import { SnButton, SnDialog } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDialog } from '@snui/vue-web';
 
-const types = ['default', 'info', 'success', 'warning', 'error'] as const
-type DialogType = (typeof types)[number]
+const types = ['default', 'info', 'success', 'warning', 'error'] as const;
+type DialogType = (typeof types)[number];
 
-const open = ref(false)
-const active = ref<DialogType>('info')
-const topIcon = ref(false)
+const open = ref(false);
+const active = ref<DialogType>('info');
+const topIcon = ref(false);
 
 function show(type: DialogType, iconTop = false): void {
-  active.value = type
-  topIcon.value = iconTop
-  open.value = true
+  active.value = type;
+  topIcon.value = iconTop;
+  open.value = true;
 }
 </script>
 
@@ -28,7 +28,9 @@ function show(type: DialogType, iconTop = false): void {
       <SnButton v-for="type in types" :key="type" size="small" @click="show(type)">
         {{ type }}
       </SnButton>
-      <SnButton size="small" @click="show('success', true)">icon-placement=&quot;top&quot;</SnButton>
+      <SnButton size="small" @click="show('success', true)"
+        >icon-placement=&quot;top&quot;</SnButton
+      >
     </div>
 
     <DialogStage v-model:show="open">

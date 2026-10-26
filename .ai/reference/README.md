@@ -24,16 +24,17 @@ With the spec checked in:
 ```jsonc
 {
   "button": {
-    "component": "button",          // upstream page slug
-    "title": "Button 按钮",          // upstream h1
-    "attributes": [                 // the "Attributes / 参数" table
-      { "name": "type", "desc": "…", "type": "string", "default": "primary" }
+    "component": "button", // upstream page slug
+    "title": "Button 按钮", // upstream h1
+    "attributes": [
+      // the "Attributes / 参数" table
+      { "name": "type", "desc": "…", "type": "string", "default": "primary" },
     ],
-    "events":   [{ "name": "click", "desc": "…", "params": "MouseEvent" }],
-    "slots":    [{ "name": "default", "desc": "…" }],
-    "cssVars":  [{ "name": "--wot-button-color", "default": "…", "desc": "…" }],
-    "enums":    [{ "heads": ["属性", "说明"], "rows": [["share", "触发用户转发"]] }]
-  }
+    "events": [{ "name": "click", "desc": "…", "params": "MouseEvent" }],
+    "slots": [{ "name": "default", "desc": "…" }],
+    "cssVars": [{ "name": "--wot-button-color", "default": "…", "desc": "…" }],
+    "enums": [{ "heads": ["属性", "说明"], "rows": [["share", "触发用户转发"]] }],
+  },
 }
 ```
 

@@ -31,90 +31,90 @@
  *   </SnCarousel>
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
-import { carouselContextKey } from './SnCarousel.vue'
-import type { SnCarouselContext } from './SnCarousel.vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue';
+import { carouselContextKey } from './SnCarousel.vue';
+import type { SnCarouselContext } from './SnCarousel.vue';
 
-defineOptions({ name: 'SnCarouselItem' })
+defineOptions({ name: 'SnCarouselItem' });
 
 const props = defineProps<{
   /** Caption line rendered in the bottom gradient overlay. */
-  title?: string
+  title?: string;
   /** Secondary caption line under the title. */
-  description?: string
-}>()
+  description?: string;
+}>();
 
 defineSlots<{
   default?: (props: {
-    isPrev: boolean
-    isNext: boolean
-    isActive: boolean
-    index: number
-  }) => unknown
+    isPrev: boolean;
+    isNext: boolean;
+    isActive: boolean;
+    index: number;
+  }) => unknown;
   /** Replaces the `title` / `description` text inside the caption overlay. */
-  caption?: () => unknown
-}>()
+  caption?: () => unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 function useCarouselContextOrThrow(): SnCarouselContext {
-  const ctx = inject(carouselContextKey)
+  const ctx = inject(carouselContextKey);
   if (!ctx) {
     // naive `useCarouselContext` throws the same way.
-    throw new Error('[snui] `sn-carousel-item` must be placed inside `sn-carousel`.')
+    throw new Error('[snui] `sn-carousel-item` must be placed inside `sn-carousel`.');
   }
-  return ctx
+  return ctx;
 }
 
-const context: SnCarouselContext = useCarouselContextOrThrow()
+const context: SnCarouselContext = useCarouselContextOrThrow();
 
-const selfElRef = ref<HTMLElement | null>(null)
+const selfElRef = ref<HTMLElement | null>(null);
 
 /** Real index of this slide within the (possibly clone-extended) list. */
 const index = computed<number>(() => {
-  const el = selfElRef.value
-  return el ? context.getSlideIndex(el) : -1
-})
+  const el = selfElRef.value;
+  return el ? context.getSlideIndex(el) : -1;
+});
 
-const isPrev = computed<boolean>(() => context.isPrev(index.value))
-const isNext = computed<boolean>(() => context.isNext(index.value))
-const isActive = computed<boolean>(() => context.isActive(index.value))
-const style = computed(() => context.getSlideStyle(index.value))
+const isPrev = computed<boolean>(() => context.isPrev(index.value));
+const isNext = computed<boolean>(() => context.isNext(index.value));
+const isActive = computed<boolean>(() => context.isActive(index.value));
+const style = computed(() => context.getSlideStyle(index.value));
 
 /** The bottom gradient overlay renders when any caption source exists. */
 const hasCaption = computed<boolean>(() =>
   Boolean(props.title || props.description || slots.caption),
-)
+);
 
 /**
  * Pause native `<video>` elements inside this slide. Pause on an already
  * paused element is a no-op (spec), so there is no state tracking here.
  */
 function pauseSlideVideos(): void {
-  const root = selfElRef.value
-  if (!root) return
-  const videos = root.querySelectorAll('video')
+  const root = selfElRef.value;
+  if (!root) return;
+  const videos = root.querySelectorAll('video');
   for (const video of videos) {
-    video.pause()
+    video.pause();
   }
 }
 
 // Off-screen slides must not keep playing their video banners.
 watch(isActive, (active) => {
-  if (!active) pauseSlideVideos()
-})
+  if (!active) pauseSlideVideos();
+});
 
 onMounted(() => {
-  context.addSlide(selfElRef.value ?? undefined)
-})
+  context.addSlide(selfElRef.value ?? undefined);
+});
 
 onBeforeUnmount(() => {
-  context.removeSlide(selfElRef.value ?? undefined)
-  pauseSlideVideos()
-})
+  context.removeSlide(selfElRef.value ?? undefined);
+  pauseSlideVideos();
+});
 
 function handleClick(event: MouseEvent): void {
-  context.onCarouselItemClick(index.value, event)
+  context.onCarouselItemClick(index.value, event);
 }
 </script>
 

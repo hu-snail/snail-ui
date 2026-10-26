@@ -18,25 +18,25 @@ AI 对话的输入区：多行输入、附件面板、智能体 / 权限 / 模�
 
 ```ts
 // 1) 只导入用到的那个模板：它的 JS 和它自己的样式会一起被带上
-import { SnAiPrompt } from '@snui/templates/web/prompt'
+import { SnAiPrompt } from '@snui/templates/web/prompt';
 
 // 2) 共享 token 层在应用入口导入一次
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) 需要自己控制代码分割时，也可以单独引某个模板的样式文件
-import '@snui/templates/styles/web-prompt.css'
+import '@snui/templates/styles/web-prompt.css';
 ```
 
 每个模板的样式文件（都在 `@snui/templates/styles/` 下）：
 
-| 文件 | 对应模板 |
-| --- | --- |
-| `web-prompt.css` | `@snui/templates/web/prompt` |
-| `web-chat.css` | `@snui/templates/web/chat` |
-| `web-assistant.css` | `@snui/templates/web/assistant` |
+| 文件                   | 对应模板                           |
+| ---------------------- | ---------------------------------- |
+| `web-prompt.css`       | `@snui/templates/web/prompt`       |
+| `web-chat.css`         | `@snui/templates/web/chat`         |
+| `web-assistant.css`    | `@snui/templates/web/assistant`    |
 | `web-message-list.css` | `@snui/templates/web/message-list` |
 | `web-model-config.css` | `@snui/templates/web/model-config` |
-| `uni-chat.css` | `@snui/templates/uni/chat` |
+| `uni-chat.css`         | `@snui/templates/uni/chat`         |
 | `uni-message-list.css` | `@snui/templates/uni/message-list` |
 
 引 `web-prompt.css` **不会**带上对话页、消息列表、模型配置等其他模板的规则；共享的 token 层只有一份（第 2 步），再引第二个模板时不会重复下载。
@@ -47,20 +47,20 @@ import '@snui/templates/styles/web-prompt.css'
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiPrompt } from '@snui/templates/web/prompt'
-import type { SnAiQueuedTurn } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiPrompt } from '@snui/templates/web/prompt';
+import type { SnAiQueuedTurn } from '@snui/templates/web';
 
-const draft = ref('')
-const active = ref(false)
+const draft = ref('');
+const active = ref(false);
 
 function onSend(turn: SnAiQueuedTurn): void {
-  active.value = true
-  console.info('本轮输入：', turn.text, turn.attachments)
+  active.value = true;
+  console.info('本轮输入：', turn.text, turn.attachments);
   // 你自己的转录区这里开始消费这一轮
   setTimeout(() => {
-    active.value = false
-  }, 1200)
+    active.value = false;
+  }, 1200);
 }
 </script>
 
@@ -77,37 +77,37 @@ function onSend(turn: SnAiQueuedTurn): void {
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiPrompt } from '@snui/templates/web/prompt'
-import { SnAiMessageList } from '@snui/templates/web/message-list'
-import type { SnAiAttachment, SnAiMessage, SnAiQueuedTurn } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiPrompt } from '@snui/templates/web/prompt';
+import { SnAiMessageList } from '@snui/templates/web/message-list';
+import type { SnAiAttachment, SnAiMessage, SnAiQueuedTurn } from '@snui/templates/web';
 
-const draft = ref('')
-const messages = ref<SnAiMessage[]>([])
-const queue = ref<SnAiQueuedTurn[]>([])
-const active = ref(false)
-const controller = ref<AbortController | null>(null)
+const draft = ref('');
+const messages = ref<SnAiMessage[]>([]);
+const queue = ref<SnAiQueuedTurn[]>([]);
+const active = ref(false);
+const controller = ref<AbortController | null>(null);
 
-const attachments = ref<SnAiAttachment[]>([])
+const attachments = ref<SnAiAttachment[]>([]);
 
 async function consume(turn: SnAiQueuedTurn): Promise<void> {
   // 1) 先把用户这一轮写进转录，界面立刻有反馈
   messages.value = [
     ...messages.value,
     { id: turn.id, role: 'user', parts: [{ type: 'text', text: turn.text }], status: 'done' },
-  ]
+  ];
 
   // 2) 流式接收答案
-  const abort = new AbortController()
-  controller.value = abort
-  active.value = true
+  const abort = new AbortController();
+  controller.value = abort;
+  active.value = true;
   const reply: SnAiMessage = {
     id: `${turn.id}-reply`,
     role: 'assistant',
     parts: [{ type: 'text', text: '' }],
     status: 'streaming',
-  }
-  messages.value = [...messages.value, reply]
+  };
+  messages.value = [...messages.value, reply];
 
   try {
     const response = await fetch('/api/chat', {
@@ -115,40 +115,45 @@ async function consume(turn: SnAiQueuedTurn): Promise<void> {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ prompt: turn.text, modelId: turn.modelId }),
       signal: abort.signal,
-    })
-    const reader = response.body!.getReader()
-    const decoder = new TextDecoder()
+    });
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
     for (;;) {
-      const { value, done } = await reader.read()
-      if (done) break
-      reply.parts = [{ type: 'text', text: (reply.parts[0] as { text: string }).text + decoder.decode(value, { stream: true }) }]
-      messages.value = [...messages.value]
+      const { value, done } = await reader.read();
+      if (done) break;
+      reply.parts = [
+        { type: 'text', text: (reply.parts[0] as { text: string }).text + decoder.decode(value, { stream: true }) },
+      ];
+      messages.value = [...messages.value];
     }
-    reply.status = 'done'
+    reply.status = 'done';
   } catch (error) {
-    reply.status = abort.signal.aborted ? 'aborted' : 'error'
-    if (!abort.signal.aborted) console.warn('这一轮失败了：', error)
+    reply.status = abort.signal.aborted ? 'aborted' : 'error';
+    if (!abort.signal.aborted) console.warn('这一轮失败了：', error);
   } finally {
-    active.value = false
-    controller.value = null
+    active.value = false;
+    controller.value = null;
     // 3) 下一条排队项开始运行
-    const next = queue.value.shift()
-    if (next) void consume(next)
+    const next = queue.value.shift();
+    if (next) void consume(next);
   }
 }
 
 function onSend(turn: SnAiQueuedTurn): void {
-  if (active.value) queue.value = [...queue.value, turn]
-  else void consume(turn)
+  if (active.value) queue.value = [...queue.value, turn];
+  else void consume(turn);
 }
 
 function onRemoveQueued(id: string): void {
-  queue.value = queue.value.filter((turn) => turn.id !== id)
+  queue.value = queue.value.filter((turn) => turn.id !== id);
 }
 
 function onAttach(files: File[]): void {
   // 上传属于宿主机职责：传完把结果写回 attachments，失败时把 status 置为 'error'。
-  console.info('待上传：', files.map((file) => file.name))
+  console.info(
+    '待上传：',
+    files.map((file) => file.name),
+  );
 }
 </script>
 
@@ -183,68 +188,68 @@ function onAttach(files: File[]): void {
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string` | `undefined` | 输入内容。配合 `v-model` 使用。 |
-| `attachments` | `SnAiAttachment[]` | `undefined` | 当前已附加的文件。 |
-| `agents` | `SnAiAgent[]` | `undefined` | 智能体选择器的候选项。 |
-| `agentId` | `string` | `undefined` | 当前选中的智能体。 |
-| `permissions` | `SnAiPermissionOption[]` | `undefined` | 权限选项；不传时使用内置四个标准档位。 |
-| `permission` | `SnAiPermission` | `undefined` | 当前选中的权限范围。 |
-| `models` | `SnAiModel[]` | `undefined` | 模型选择器的候选项。 |
-| `modelId` | `string` | `undefined` | 当前选中的模型。 |
-| `thinkingLevel` | `SnAiThinkingLevel` | `undefined` | 思考程度档位。 |
-| `active` | `boolean` | `undefined` | 是否有一轮正在运行；决定按钮显示发送还是停止。 |
-| `queued` | `SnAiQueuedTurn[]` | `undefined` | 待发送队列。 |
-| `disabled` | `boolean` | `false` | 禁用整个输入区。 |
-| `placeholder` | `string` | `'输入消息，Enter 发送，Shift + Enter 换行'` | 输入框占位文案。 |
-| `maxlength` | `number` | `undefined` | 输入长度上限。 |
-| `accept` | `string` | `undefined` | 文件选择器的类型过滤。 |
-| `showThinking` | `boolean` | `true` | 是否提供思考程度控件。 |
-| `showQueue` | `boolean` | `true` | 是否渲染待发送队列。 |
-| `rows` | `number` | `3` | 输入框初始行数。 |
+| 名称            | 类型                     | 默认值                                       | 说明                                           |
+| --------------- | ------------------------ | -------------------------------------------- | ---------------------------------------------- |
+| `modelValue`    | `string`                 | `undefined`                                  | 输入内容。配合 `v-model` 使用。                |
+| `attachments`   | `SnAiAttachment[]`       | `undefined`                                  | 当前已附加的文件。                             |
+| `agents`        | `SnAiAgent[]`            | `undefined`                                  | 智能体选择器的候选项。                         |
+| `agentId`       | `string`                 | `undefined`                                  | 当前选中的智能体。                             |
+| `permissions`   | `SnAiPermissionOption[]` | `undefined`                                  | 权限选项；不传时使用内置四个标准档位。         |
+| `permission`    | `SnAiPermission`         | `undefined`                                  | 当前选中的权限范围。                           |
+| `models`        | `SnAiModel[]`            | `undefined`                                  | 模型选择器的候选项。                           |
+| `modelId`       | `string`                 | `undefined`                                  | 当前选中的模型。                               |
+| `thinkingLevel` | `SnAiThinkingLevel`      | `undefined`                                  | 思考程度档位。                                 |
+| `active`        | `boolean`                | `undefined`                                  | 是否有一轮正在运行；决定按钮显示发送还是停止。 |
+| `queued`        | `SnAiQueuedTurn[]`       | `undefined`                                  | 待发送队列。                                   |
+| `disabled`      | `boolean`                | `false`                                      | 禁用整个输入区。                               |
+| `placeholder`   | `string`                 | `'输入消息，Enter 发送，Shift + Enter 换行'` | 输入框占位文案。                               |
+| `maxlength`     | `number`                 | `undefined`                                  | 输入长度上限。                                 |
+| `accept`        | `string`                 | `undefined`                                  | 文件选择器的类型过滤。                         |
+| `showThinking`  | `boolean`                | `true`                                       | 是否提供思考程度控件。                         |
+| `showQueue`     | `boolean`                | `true`                                       | 是否渲染待发送队列。                           |
+| `rows`          | `number`                 | `3`                                          | 输入框初始行数。                               |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `update:modelValue` | `string` | 输入内容变化。 |
-| `update:attachments` | `SnAiAttachment[]` | 附件增删。 |
-| `update:agentId` | `string` | 切换智能体。 |
-| `update:permission` | `SnAiPermission` | 切换权限范围。 |
-| `update:modelId` | `string` | 切换模型。 |
-| `update:thinkingLevel` | `SnAiThinkingLevel` | 切换思考程度。 |
-| `send` | `SnAiQueuedTurn` | 一轮输入已组装完成，可以运行。 |
-| `stop` | — | 停止正在运行的一轮。 |
-| `remove-queued` | `string` | 移除队列中的某一项。 |
-| `attach` | `File[]` | 用户选择或粘贴了文件；上传由宿主机负责。 |
+| 名称                   | 参数                | 说明                                     |
+| ---------------------- | ------------------- | ---------------------------------------- |
+| `update:modelValue`    | `string`            | 输入内容变化。                           |
+| `update:attachments`   | `SnAiAttachment[]`  | 附件增删。                               |
+| `update:agentId`       | `string`            | 切换智能体。                             |
+| `update:permission`    | `SnAiPermission`    | 切换权限范围。                           |
+| `update:modelId`       | `string`            | 切换模型。                               |
+| `update:thinkingLevel` | `SnAiThinkingLevel` | 切换思考程度。                           |
+| `send`                 | `SnAiQueuedTurn`    | 一轮输入已组装完成，可以运行。           |
+| `stop`                 | —                   | 停止正在运行的一轮。                     |
+| `remove-queued`        | `string`            | 移除队列中的某一项。                     |
+| `attach`               | `File[]`            | 用户选择或粘贴了文件；上传由宿主机负责。 |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `toolbar` | — | 工具条中的额外控件。 |
-| `queue` | `{ turns, remove }` | 自定义排队行的渲染。 |
-| `hint` | — | 输入区下方的提示行。 |
+| 名称      | 参数                | 说明                 |
+| --------- | ------------------- | -------------------- |
+| `toolbar` | —                   | 工具条中的额外控件。 |
+| `queue`   | `{ turns, remove }` | 自定义排队行的渲染。 |
+| `hint`    | —                   | 输入区下方的提示行。 |
 
 ### 类型导出
 
-| 名称 | 来源 | 说明 |
-| --- | --- | --- |
-| `SnAiPrompt` | `@snui/templates/web/prompt` | 模板组件本体。 |
-| `SnAiQueuedTurn` / `SnAiAttachment` / `SnAiModel` 等 | `@snui/templates` | 共享契约类型，供宿主机构造数据。 |
+| 名称                                                 | 来源                         | 说明                             |
+| ---------------------------------------------------- | ---------------------------- | -------------------------------- |
+| `SnAiPrompt`                                         | `@snui/templates/web/prompt` | 模板组件本体。                   |
+| `SnAiQueuedTurn` / `SnAiAttachment` / `SnAiModel` 等 | `@snui/templates`            | 共享契约类型，供宿主机构造数据。 |
 
 ### 交互约定
 
-| 行为 | 约定 |
-| --- | --- |
-| 发送 | `Enter` 发送；`Shift + Enter` 换行 |
-| 中文输入 | 输入法候选期间的 `Enter` 不会触发发送 |
-| 发送可用性 | 输入框有内容，或已附加至少一个附件 |
-| 运行中 | 发送按钮变为停止按钮，点击触发 `stop` |
-| 思考程度 | 所选模型不支持推理时，该控件不渲染 |
-| 附件 | 通过面板选择，或直接把图片 / 文件粘贴进输入框；两者都走同一个 `attach` 事件交给宿主机上传 |
-| 附件预览 | 点击附件前面的缩略图 / 图标预览：图片打开灯箱，其它文件在新标签页打开；需要宿主机在 `SnAiAttachment.url` 上给出地址 |
+| 行为       | 约定                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| 发送       | `Enter` 发送；`Shift + Enter` 换行                                                                                  |
+| 中文输入   | 输入法候选期间的 `Enter` 不会触发发送                                                                               |
+| 发送可用性 | 输入框有内容，或已附加至少一个附件                                                                                  |
+| 运行中     | 发送按钮变为停止按钮，点击触发 `stop`                                                                               |
+| 思考程度   | 所选模型不支持推理时，该控件不渲染                                                                                  |
+| 附件       | 通过面板选择，或直接把图片 / 文件粘贴进输入框；两者都走同一个 `attach` 事件交给宿主机上传                           |
+| 附件预览   | 点击附件前面的缩略图 / 图标预览：图片打开灯箱，其它文件在新标签页打开；需要宿主机在 `SnAiAttachment.url` 上给出地址 |
 
 ## 主题与 token 定制
 
@@ -266,7 +271,6 @@ function onAttach(files: File[]): void {
   --sn-web-spacing-3: 12px;
 }
 ```
-
 
 ## 无障碍
 

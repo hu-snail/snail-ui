@@ -5,16 +5,17 @@
  * Shows: omitting `listen-to` entirely. The button walks up from its own
  * position to find the nearest scrollable ancestor, so no ref is needed.
  */
-import { ref } from 'vue'
-import { SnBackTop } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnBackTop } from '@snui/vue-web';
 
-const canvasRef = ref<HTMLElement | null>(null)
+const canvasRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>
   <div class="bt-target">
     <p class="bt-target__hint">
-      The container below does not pass <code>listen-to</code> — the button walks up to the nearest scrollable ancestor by itself.
+      The container below does not pass <code>listen-to</code> — the button walks up to the nearest
+      scrollable ancestor by itself.
     </p>
 
     <div ref="canvasRef" class="bt-target__canvas">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnLink — the six semantic `type` colors side by side. */
-import { SnLink } from '@snui/vue-web'
+import { SnLink } from '@snui/vue-web';
 
 const types = [
   { value: 'default', label: 'default — 正文默认色' },
@@ -9,16 +9,12 @@ const types = [
   { value: 'success', label: 'success — 成功 / 完成' },
   { value: 'warning', label: 'warning — 警告 / 待确认' },
   { value: 'error', label: 'error — 危险 / 失败' },
-] as const
+] as const;
 </script>
 
 <template>
   <div class="link-type-demo">
-    <section
-      v-for="item in types"
-      :key="item.value"
-      class="link-type-demo__row"
-    >
+    <section v-for="item in types" :key="item.value" class="link-type-demo__row">
       <span class="link-type-demo__label">{{ item.label }}</span>
       <SnLink :type="item.value" :href="`#link-type-${item.value}`" underline>
         {{ item.value }} 链接

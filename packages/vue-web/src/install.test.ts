@@ -7,13 +7,13 @@
  * unknown custom element for consumers relying on global registration.
  */
 
-import { describe, expect, it, vi } from 'vitest'
-import { SnUI } from './install'
-import type { SnUIOptions } from './install'
-import * as indexExports from './index'
+import { describe, expect, it, vi } from 'vitest';
+import { SnUI } from './install';
+import type { SnUIOptions } from './install';
+import * as indexExports from './index';
 
 /** `SnUI` is the plugin itself, not a component; the others are non-components. */
-const NON_COMPONENT_EXPORTS = new Set(['SnUI'])
+const NON_COMPONENT_EXPORTS = new Set(['SnUI']);
 
 function exportedComponents(): string[] {
   return Object.keys(indexExports)
@@ -23,56 +23,59 @@ function exportedComponents(): string[] {
         !NON_COMPONENT_EXPORTS.has(name) &&
         indexExports[name as keyof typeof indexExports],
     )
-    .sort()
+    .sort();
 }
 
-function createFakeApp(): { component: ReturnType<typeof vi.fn>; registered: Map<string, unknown> } {
-  const registered = new Map<string, unknown>()
+function createFakeApp(): {
+  component: ReturnType<typeof vi.fn>;
+  registered: Map<string, unknown>;
+} {
+  const registered = new Map<string, unknown>();
   return {
     registered,
     component: vi.fn((name: string, value: unknown) => {
-      registered.set(name, value)
+      registered.set(name, value);
     }),
-  }
+  };
 }
 
 describe('SnUI install', () => {
   describe('install', () => {
     it('should register every exported component', () => {
-      const app = createFakeApp()
+      const app = createFakeApp();
 
-      SnUI.install(app as never)
+      SnUI.install(app as never);
 
-      expect([...app.registered.keys()].sort()).toEqual(exportedComponents())
-    })
+      expect([...app.registered.keys()].sort()).toEqual(exportedComponents());
+    });
 
     it('should register each component under its own name', () => {
-      const app = createFakeApp()
+      const app = createFakeApp();
 
-      SnUI.install(app as never)
+      SnUI.install(app as never);
 
-      expect(app.registered.get('SnButton')).toBe(indexExports.SnButton)
-      expect(app.registered.get('SnAlert')).toBe(indexExports.SnAlert)
-      expect(app.registered.get('SnAffix')).toBe(indexExports.SnAffix)
-      expect(app.registered.get('SnBackTop')).toBe(indexExports.SnBackTop)
-    })
+      expect(app.registered.get('SnButton')).toBe(indexExports.SnButton);
+      expect(app.registered.get('SnAlert')).toBe(indexExports.SnAlert);
+      expect(app.registered.get('SnAffix')).toBe(indexExports.SnAffix);
+      expect(app.registered.get('SnBackTop')).toBe(indexExports.SnBackTop);
+    });
 
     it('should skip excluded components', () => {
-      const app = createFakeApp()
+      const app = createFakeApp();
 
-      SnUI.install(app as never, { exclude: ['SnButton', 'SnAlert'] } satisfies SnUIOptions)
+      SnUI.install(app as never, { exclude: ['SnButton', 'SnAlert'] } satisfies SnUIOptions);
 
-      expect(app.registered.has('SnButton')).toBe(false)
-      expect(app.registered.has('SnAlert')).toBe(false)
-      expect(app.registered.has('SnDivider')).toBe(true)
-    })
+      expect(app.registered.has('SnButton')).toBe(false);
+      expect(app.registered.has('SnAlert')).toBe(false);
+      expect(app.registered.has('SnDivider')).toBe(true);
+    });
 
     it('should register everything when no options are given', () => {
-      const app = createFakeApp()
+      const app = createFakeApp();
 
-      SnUI.install(app as never, undefined)
+      SnUI.install(app as never, undefined);
 
-      expect(app.registered.size).toBe(exportedComponents().length)
-    })
-  })
-})
+      expect(app.registered.size).toBe(exportedComponents().length);
+    });
+  });
+});

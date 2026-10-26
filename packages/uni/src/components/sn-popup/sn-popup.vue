@@ -41,65 +41,73 @@
  *   - 页面级路由跳转 — 由宿主 AppBridge 决定
  */
 
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnPopup' })
+defineOptions({ name: 'SnPopup' });
 
 /** Popup anchor. Mirrors `wd-popup` `position`. */
-type PopupPosition = 'center' | 'top' | 'right' | 'bottom' | 'left'
+type PopupPosition = 'center' | 'top' | 'right' | 'bottom' | 'left';
 
 /** Animation name. Subset of the `wd-transition` names that wd-popup accepts. */
 type PopupTransition =
-  | 'fade' | 'fade-up' | 'fade-down' | 'fade-left' | 'fade-right'
-  | 'slide-up' | 'slide-down' | 'slide-left' | 'slide-right'
-  | 'zoom-in' | 'zoom-out'
+  | 'fade'
+  | 'fade-up'
+  | 'fade-down'
+  | 'fade-left'
+  | 'fade-right'
+  | 'slide-up'
+  | 'slide-down'
+  | 'slide-left'
+  | 'slide-right'
+  | 'zoom-in'
+  | 'zoom-out';
 
 /** `wd-popup` `duration`: number of ms, `false` = no animation, record = per-leg. */
-type PopupDuration = number | boolean | Record<string, number>
+type PopupDuration = number | boolean | Record<string, number>;
 
-const DEFAULT_DURATION = 300
+const DEFAULT_DURATION = 300;
 
 const props = withDefaults(
   defineProps<{
     /** Whether the popup is visible (v-model). */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** Animation name; empty falls back to the default for `position`. */
-    transition?: PopupTransition | ''
+    transition?: PopupTransition | '';
     /** Show the close button in the panel's top-right corner. */
-    closable?: boolean
+    closable?: boolean;
     /** Anchor of the panel. */
-    position?: PopupPosition
+    position?: PopupPosition;
     /** Tapping the scrim closes the popup (emits `click-modal` either way). */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Animation duration in ms. `false` = no animation, record = per-leg. */
-    duration?: PopupDuration
+    duration?: PopupDuration;
     /** Render the scrim. */
-    modal?: boolean
+    modal?: boolean;
     /** Stacking level of the root node. */
-    zIndex?: number
+    zIndex?: number;
     /** Remove the node from the tree once the leave animation finished. */
-    hideWhenClose?: boolean
+    hideWhenClose?: boolean;
     /** Inline style for the scrim. */
-    modalStyle?: string
+    modalStyle?: string;
     /** Pad the bottom sheet for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Defer panel content rendering until the popup is first opened. */
-    lazyRender?: boolean
+    lazyRender?: boolean;
     /** Intercept touchmove on the scrim so the page behind cannot scroll. */
-    lockScroll?: boolean
+    lockScroll?: boolean;
     /** Rounded corners, adapted to `position`. */
-    round?: boolean
+    round?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the panel. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the layer cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: false,
@@ -120,49 +128,49 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Panel content. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'close'): void
-  (e: 'click-modal'): void
-  (e: 'before-enter'): void
-  (e: 'enter'): void
-  (e: 'after-enter'): void
-  (e: 'before-leave'): void
-  (e: 'leave'): void
-  (e: 'after-leave'): void
-}>()
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'close'): void;
+  (e: 'click-modal'): void;
+  (e: 'before-enter'): void;
+  (e: 'enter'): void;
+  (e: 'after-enter'): void;
+  (e: 'before-leave'): void;
+  (e: 'leave'): void;
+  (e: 'after-leave'): void;
+}>();
 
 /** Resolve the duration for one animation leg. */
 function resolveDuration(value: PopupDuration, leg: 'enter' | 'leave'): number {
-  if (value === false) return 0
-  if (value === true) return DEFAULT_DURATION
-  if (typeof value === 'number') return value
-  const legValue = value[leg] ?? value.enter ?? value.leave
-  return typeof legValue === 'number' ? legValue : DEFAULT_DURATION
+  if (value === false) return 0;
+  if (value === true) return DEFAULT_DURATION;
+  if (typeof value === 'number') return value;
+  const legValue = value[leg] ?? value.enter ?? value.leave;
+  return typeof legValue === 'number' ? legValue : DEFAULT_DURATION;
 }
 
 /** Node present in the tree. */
-const isMounted = ref(props.modelValue)
+const isMounted = ref(props.modelValue);
 /**
  * Panel content has been rendered at least once. `lazyRender` defers the very
  * first render until the popup is shown; already-open on mount counts as
  * shown, so an eager (`lazyRender: false`) popup renders straight away.
  */
-const hasRendered = ref(props.modelValue || !props.lazyRender)
+const hasRendered = ref(props.modelValue || !props.lazyRender);
 /** Animation leg currently playing. `none` = at rest. */
-const phase = ref<'none' | 'enter' | 'leave'>('none')
+const phase = ref<'none' | 'enter' | 'leave'>('none');
 /** Duration of the current leg (exposed to CSS as a custom property). */
-const durationMs = ref(resolveDuration(props.duration, 'enter'))
+const durationMs = ref(resolveDuration(props.duration, 'enter'));
 
 /** Single pending animation timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 
 /**
  * Animation generation. `enter()` awaits a tick before emitting `enter`, so a
@@ -171,112 +179,116 @@ let timer: ReturnType<typeof setTimeout> | null = null
  * and `after-leave` would never fire. Every leg bumps the token and drops its
  * result when a newer leg has started.
  */
-let generation = 0
+let generation = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 /** Default animation for a position, mirroring the geometry of the anchor. */
 function defaultTransition(): PopupTransition {
   switch (props.position) {
-    case 'bottom': return 'slide-up'
-    case 'top': return 'slide-down'
-    case 'left': return 'slide-right'
-    case 'right': return 'slide-left'
-    default: return 'fade'
+    case 'bottom':
+      return 'slide-up';
+    case 'top':
+      return 'slide-down';
+    case 'left':
+      return 'slide-right';
+    case 'right':
+      return 'slide-left';
+    default:
+      return 'fade';
   }
 }
 
-const animationName = computed<PopupTransition>(
-  () => props.transition || defaultTransition(),
-)
+const animationName = computed<PopupTransition>(() => props.transition || defaultTransition());
 
 async function enter(): Promise<void> {
-  clearTimer()
-  const token = ++generation
-  emit('before-enter')
-  durationMs.value = resolveDuration(props.duration, 'enter')
-  isMounted.value = true
-  hasRendered.value = true
-  phase.value = 'enter'
-  await nextTick()
+  clearTimer();
+  const token = ++generation;
+  emit('before-enter');
+  durationMs.value = resolveDuration(props.duration, 'enter');
+  isMounted.value = true;
+  hasRendered.value = true;
+  phase.value = 'enter';
+  await nextTick();
   // A leave started while we were waiting for the tick — abandon this leg.
-  if (token !== generation) return
-  emit('enter')
+  if (token !== generation) return;
+  emit('enter');
   if (durationMs.value <= 0) {
-    phase.value = 'none'
-    emit('after-enter')
-    return
+    phase.value = 'none';
+    emit('after-enter');
+    return;
   }
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    phase.value = 'none'
-    emit('after-enter')
-  }, durationMs.value)
+    timer = null;
+    if (token !== generation) return;
+    phase.value = 'none';
+    emit('after-enter');
+  }, durationMs.value);
 }
 
 function leave(): void {
-  clearTimer()
-  const token = ++generation
-  emit('before-leave')
-  durationMs.value = resolveDuration(props.duration, 'leave')
-  phase.value = 'leave'
-  emit('leave')
-  if (durationMs.value <= 0) finishLeave()
-  else timer = setTimeout(() => {
-    if (token !== generation) return
-    finishLeave()
-  }, durationMs.value)
+  clearTimer();
+  const token = ++generation;
+  emit('before-leave');
+  durationMs.value = resolveDuration(props.duration, 'leave');
+  phase.value = 'leave';
+  emit('leave');
+  if (durationMs.value <= 0) finishLeave();
+  else
+    timer = setTimeout(() => {
+      if (token !== generation) return;
+      finishLeave();
+    }, durationMs.value);
 }
 
 function finishLeave(): void {
-  timer = null
-  phase.value = 'none'
-  if (props.hideWhenClose) isMounted.value = false
-  emit('after-leave')
+  timer = null;
+  phase.value = 'none';
+  if (props.hideWhenClose) isMounted.value = false;
+  emit('after-leave');
 }
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (value) void enter()
-    else leave()
+    if (value) void enter();
+    else leave();
   },
-)
+);
 
 onMounted(() => {
   // Already-open on first paint: render at rest, no enter events — the popup
   // was never "entered" from the consumer's point of view.
   if (props.modelValue) {
-    isMounted.value = true
-    hasRendered.value = true
+    isMounted.value = true;
+    hasRendered.value = true;
   }
-})
+});
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Close requests coming from inside the component (close button / scrim). */
 function requestClose(): void {
-  emit('update:modelValue', false)
-  emit('close')
+  emit('update:modelValue', false);
+  emit('close');
 }
 
 function onModalTap(): void {
-  emit('click-modal')
-  if (props.closeOnClickModal) requestClose()
+  emit('click-modal');
+  if (props.closeOnClickModal) requestClose();
 }
 
 function onCloseTap(event: Event): void {
   // The close button sits inside the panel — stop the tap from reaching the
   // panel's own handlers (there are none today, but the containment keeps
   // the intent explicit for future ones).
-  event.stopPropagation()
-  requestClose()
+  event.stopPropagation();
+  requestClose();
 }
 
 /**
@@ -284,9 +296,9 @@ function onCloseTap(event: Event): void {
  * `catchtouchmove`: the event neither bubbles to the page nor scrolls it.
  */
 function onTouchMove(event: Event): void {
-  if (!props.lockScroll) return
-  event.preventDefault()
-  event.stopPropagation()
+  if (!props.lockScroll) return;
+  event.preventDefault();
+  event.stopPropagation();
 }
 
 const rootClass = computed(() => [
@@ -300,24 +312,20 @@ const rootClass = computed(() => [
     'sn-popup--hidden': phase.value === 'none' && !props.modelValue && isMounted.value,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() =>
-  [`z-index: ${props.zIndex}`, `--sn-popup-duration: ${durationMs.value}ms`].join('; '))
+  [`z-index: ${props.zIndex}`, `--sn-popup-duration: ${durationMs.value}ms`].join('; '),
+);
 
 /** `custom-style` styles the panel itself (mirrors wd-popup `custom-style`). */
-const panelStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const panelStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 
-const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefined))
+const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefined));
 </script>
 
 <template>
-  <view
-    v-if="isMounted"
-    data-snui-component="popup"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view v-if="isMounted" data-snui-component="popup" :class="rootClass" :style="rootStyle">
     <view
       v-if="modal"
       class="sn-popup__modal"
@@ -327,12 +335,7 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
       @touchmove="onTouchMove"
     />
 
-    <view
-      class="sn-popup__panel"
-      :style="panelStyle"
-      role="dialog"
-      aria-modal="true"
-    >
+    <view class="sn-popup__panel" :style="panelStyle" role="dialog" aria-modal="true">
       <view
         v-if="closable"
         class="sn-popup__close"
@@ -480,17 +483,39 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
  * without duplicating every keyframe.
  */
 
-.sn-popup--anim-fade .sn-popup__panel { animation-name: sn-popup-fade; }
-.sn-popup--anim-fade-up .sn-popup__panel { animation-name: sn-popup-fade-up; }
-.sn-popup--anim-fade-down .sn-popup__panel { animation-name: sn-popup-fade-down; }
-.sn-popup--anim-fade-left .sn-popup__panel { animation-name: sn-popup-fade-left; }
-.sn-popup--anim-fade-right .sn-popup__panel { animation-name: sn-popup-fade-right; }
-.sn-popup--anim-slide-up .sn-popup__panel { animation-name: sn-popup-slide-up; }
-.sn-popup--anim-slide-down .sn-popup__panel { animation-name: sn-popup-slide-down; }
-.sn-popup--anim-slide-left .sn-popup__panel { animation-name: sn-popup-slide-left; }
-.sn-popup--anim-slide-right .sn-popup__panel { animation-name: sn-popup-slide-right; }
-.sn-popup--anim-zoom-in .sn-popup__panel { animation-name: sn-popup-zoom-in; }
-.sn-popup--anim-zoom-out .sn-popup__panel { animation-name: sn-popup-zoom-out; }
+.sn-popup--anim-fade .sn-popup__panel {
+  animation-name: sn-popup-fade;
+}
+.sn-popup--anim-fade-up .sn-popup__panel {
+  animation-name: sn-popup-fade-up;
+}
+.sn-popup--anim-fade-down .sn-popup__panel {
+  animation-name: sn-popup-fade-down;
+}
+.sn-popup--anim-fade-left .sn-popup__panel {
+  animation-name: sn-popup-fade-left;
+}
+.sn-popup--anim-fade-right .sn-popup__panel {
+  animation-name: sn-popup-fade-right;
+}
+.sn-popup--anim-slide-up .sn-popup__panel {
+  animation-name: sn-popup-slide-up;
+}
+.sn-popup--anim-slide-down .sn-popup__panel {
+  animation-name: sn-popup-slide-down;
+}
+.sn-popup--anim-slide-left .sn-popup__panel {
+  animation-name: sn-popup-slide-left;
+}
+.sn-popup--anim-slide-right .sn-popup__panel {
+  animation-name: sn-popup-slide-right;
+}
+.sn-popup--anim-zoom-in .sn-popup__panel {
+  animation-name: sn-popup-zoom-in;
+}
+.sn-popup--anim-zoom-out .sn-popup__panel {
+  animation-name: sn-popup-zoom-out;
+}
 
 .sn-popup--leaving .sn-popup__panel,
 .sn-popup--leaving .sn-popup__modal {
@@ -508,47 +533,103 @@ const modalStyle = computed(() => (props.modalStyle ? props.modalStyle : undefin
 }
 
 @keyframes sn-popup-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes sn-popup-fade-up {
-  from { opacity: 0; transform: translateY(24rpx); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes sn-popup-fade-down {
-  from { opacity: 0; transform: translateY(-24rpx); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes sn-popup-fade-left {
-  from { opacity: 0; transform: translateX(24rpx); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes sn-popup-fade-right {
-  from { opacity: 0; transform: translateX(-24rpx); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes sn-popup-slide-up {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 @keyframes sn-popup-slide-down {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 @keyframes sn-popup-slide-left {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 @keyframes sn-popup-slide-right {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 @keyframes sn-popup-zoom-in {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 @keyframes sn-popup-zoom-out {
-  from { opacity: 0; transform: scale(1.2); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>

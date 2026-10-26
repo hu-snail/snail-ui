@@ -14,8 +14,8 @@
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni'
-import { ChevronRight, Search, Settings } from '@snui/uni'
+import { SnIcon, type IconData } from '@snui/uni';
+import { ChevronRight, Search, Settings } from '@snui/uni';
 </script>
 
 <template>
@@ -30,20 +30,20 @@ import { ChevronRight, Search, Settings } from '@snui/uni'
 > 内置 icon data 在 `@snui/uni` 主入口 named export —— `@snui/uni` 把每个图标数据单独 re-export，bundler 静态分析 `import { A, B, C }` 只打包这三个 path。`SnIcon` 组件本体和 icon data 是两个独立的 ESM 模块，所以 demo 文件也可以拆开 import 路径更清晰：
 >
 > ```ts
-> import SnIcon from '@snui/uni'              // 组件
-> import { ChevronRight } from '@snui/uni'    // icon data
+> import SnIcon from '@snui/uni'; // 组件
+> import { ChevronRight } from '@snui/uni'; // icon data
 > ```
 
 ### 方式 2：自定义 IconData（拷贝 lucide 任意 SVG）
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni'
+import { SnIcon, type IconData } from '@snui/uni';
 
 const MyFlag: IconData = {
   viewBox: '0 0 24 24',
   paths: ['M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z', 'M4 22V15'],
-}
+};
 </script>
 
 <template>
@@ -87,25 +87,25 @@ SVG path 从 https://lucide.dev/icons 复制，ISC 协议可商用。
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| icon | `IconData` | — | SVG path 数据对象（与 `name` 二选一） |
-| size | `number \| string` | `32` | 图标尺寸（推荐 rpx） |
-| color | `string` | `'currentColor'` | 描边颜色（继承父元素 color） |
-| strokeWidth | `number \| string` | `2` | 描边宽度 |
-| strokeWidthAbsolute | `boolean` | `false` | 描边按绝对像素 |
-| name | `string` | `''` | iconfont 字形名，渲染 `{classPrefix}-{name}` |
-| classPrefix | `string` | `'sn-icon'` | iconfont 类名前缀 |
-| cssIcon | `boolean \| string` | `false` | 传字符串时该 class 原样渲染（不加前缀）；布尔值 + name 时两种类名同时挂 |
-| customClass | `string` | `''` | 根节点追加类名 |
-| customStyle | `string \| Record<string,string>` | `''` | 根节点内联样式 |
+| 名称                | 类型                              | 默认值           | 说明                                                                    |
+| ------------------- | --------------------------------- | ---------------- | ----------------------------------------------------------------------- |
+| icon                | `IconData`                        | —                | SVG path 数据对象（与 `name` 二选一）                                   |
+| size                | `number \| string`                | `32`             | 图标尺寸（推荐 rpx）                                                    |
+| color               | `string`                          | `'currentColor'` | 描边颜色（继承父元素 color）                                            |
+| strokeWidth         | `number \| string`                | `2`              | 描边宽度                                                                |
+| strokeWidthAbsolute | `boolean`                         | `false`          | 描边按绝对像素                                                          |
+| name                | `string`                          | `''`             | iconfont 字形名，渲染 `{classPrefix}-{name}`                            |
+| classPrefix         | `string`                          | `'sn-icon'`      | iconfont 类名前缀                                                       |
+| cssIcon             | `boolean \| string`               | `false`          | 传字符串时该 class 原样渲染（不加前缀）；布尔值 + name 时两种类名同时挂 |
+| customClass         | `string`                          | `''`             | 根节点追加类名                                                          |
+| customStyle         | `string \| Record<string,string>` | `''`             | 根节点内联样式                                                          |
 
 `IconData` 接口：
 
 ```ts
 interface IconData {
-  viewBox?: string      // 默认 '0 0 24 24'
-  paths: string[]       // 一或多条 SVG <path d="...">
+  viewBox?: string; // 默认 '0 0 24 24'
+  paths: string[]; // 一或多条 SVG <path d="...">
 }
 ```
 
@@ -117,12 +117,12 @@ interface IconData {
 
 ## 跨端渲染
 
-| 端 | 行为 |
-| --- | --- |
-| H5 | inline SVG，浏览器原生渲染 |
-| 微信小程序 | SVG 编译为 image 标签（部分平台非像素完美） |
-| App (uni-app x) | 原生 SVG，Webview 层 |
-| 抖音 / 支付宝 | 各家 SVG 兼容性不同，通常能渲染 |
+| 端              | 行为                                        |
+| --------------- | ------------------------------------------- |
+| H5              | inline SVG，浏览器原生渲染                  |
+| 微信小程序      | SVG 编译为 image 标签（部分平台非像素完美） |
+| App (uni-app x) | 原生 SVG，Webview 层                        |
+| 抖音 / 支付宝   | 各家 SVG 兼容性不同，通常能渲染             |
 
 ## 无障碍
 

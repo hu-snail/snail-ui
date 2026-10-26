@@ -5,11 +5,11 @@
  * 两种受控写法各一个区块，每个区块都把当前 show 值回显在触发器旁，
  * 这样「受控」这件事本身是可见的，而不是只读代码去猜。
  */
-import { ref } from 'vue'
-import { SnTooltip } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTooltip } from '@snui/vue-web';
 
-const controlledOpen = ref(false)
-const clickOpen = ref(false)
+const controlledOpen = ref(false);
+const clickOpen = ref(false);
 </script>
 
 <template>
@@ -20,7 +20,8 @@ const clickOpen = ref(false)
         <h4 class="tt-ctl__title">Controlled + hover</h4>
       </header>
       <p class="tt-ctl__hint">
-        Hovering still requests the show, but the final state belongs to the parent's <code>show</code> binding.
+        Hovering still requests the show, but the final state belongs to the parent's
+        <code>show</code> binding.
       </p>
       <div class="tt-ctl__stage">
         <SnTooltip v-model:show="controlledOpen" content="Controlled display state">
@@ -38,7 +39,8 @@ const clickOpen = ref(false)
         <h4 class="tt-ctl__title">Click to toggle</h4>
       </header>
       <p class="tt-ctl__hint">
-        Click the trigger to toggle; clicking anywhere outside the trigger and popover closes it automatically.
+        Click the trigger to toggle; clicking anywhere outside the trigger and popover closes it
+        automatically.
       </p>
       <div class="tt-ctl__stage">
         <SnTooltip
@@ -116,7 +118,9 @@ const clickOpen = ref(false)
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-ctl__btn:hover {
   border-color: var(--vp-c-brand-1);

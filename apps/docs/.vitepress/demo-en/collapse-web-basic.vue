@@ -2,10 +2,10 @@
 /**
  * collapse-web-basic — SnCollapse + SnCollapseItem 默认 multi-expand
  */
-import { ref } from 'vue'
-import { SnCollapse, SnCollapseItem } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnCollapse, SnCollapseItem } from '@snui/vue-web';
 
-const open = ref<Array<string | number>>(['1'])
+const open = ref<Array<string | number>>(['1']);
 </script>
 
 <template>
@@ -16,9 +16,7 @@ const open = ref<Array<string | number>>(['1'])
     <SnCollapseItem title="Architecture" name="2">
       pnpm workspace + dual-platform alias packages (@snui/vue-web / @snui/uni).
     </SnCollapseItem>
-    <SnCollapseItem title="FAQ" name="3">
-      FAQs and troubleshooting.
-    </SnCollapseItem>
+    <SnCollapseItem title="FAQ" name="3"> FAQs and troubleshooting. </SnCollapseItem>
     <SnCollapseItem title="Changelog" name="4" disabled>
       Future plans / Roadmap (disabled demo).
     </SnCollapseItem>

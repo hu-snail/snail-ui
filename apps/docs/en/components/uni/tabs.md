@@ -39,77 +39,77 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnTabs } from '@snui/uni/components/sn-tabs/sn-tabs.vue'
-import { SnTab } from '@snui/uni/components/sn-tabs/sn-tab.vue'
+import { SnTabs } from '@snui/uni/components/sn-tabs/sn-tabs.vue';
+import { SnTab } from '@snui/uni/components/sn-tabs/sn-tab.vue';
 ```
 
 ## Props
 
 ### sn-tabs
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| string` | `0` | Active index or name |
-| `slidableNum` | `number` | `6` | Tab count that turns on scrolling |
-| `mapNum` | `number` | `10` | Navigation-map threshold (not implemented, see note) |
-| `mapTitle` | `string` | `''` | Navigation-map title (not implemented, see note) |
-| `sticky` | `boolean` | `false` | Pin the strip |
-| `offsetTop` | `number` | `0` | Sticky offset in px |
-| `swipeable` | `boolean` | `false` | Enable swipe-to-switch |
-| `lineTheme` | `'normal' \| 'text' \| 'underline' \| 'dot'` | `'normal'` | Active-bar style |
-| `lineWidth` | `number \| string` | `undefined` | Bar width (numbers are px) |
-| `lineHeight` | `number \| string` | `undefined` | Bar height (numbers are px) |
-| `color` | `string` | `''` | Active label colour override |
-| `inactiveColor` | `string` | `''` | Inactive label colour override |
-| `animated` | `boolean` | `false` | Animate the switch |
-| `duration` | `number` | `300` | Animation duration in ms |
-| `slidable` | `'auto' \| 'always'` | `'auto'` | Scroll-navigation mode |
-| `showScrollbar` | `boolean` | `false` | Show the scrollbar while scrolling |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop            | Type                                         | Default     | Description                                          |
+| --------------- | -------------------------------------------- | ----------- | ---------------------------------------------------- |
+| `modelValue`    | `number \| string`                           | `0`         | Active index or name                                 |
+| `slidableNum`   | `number`                                     | `6`         | Tab count that turns on scrolling                    |
+| `mapNum`        | `number`                                     | `10`        | Navigation-map threshold (not implemented, see note) |
+| `mapTitle`      | `string`                                     | `''`        | Navigation-map title (not implemented, see note)     |
+| `sticky`        | `boolean`                                    | `false`     | Pin the strip                                        |
+| `offsetTop`     | `number`                                     | `0`         | Sticky offset in px                                  |
+| `swipeable`     | `boolean`                                    | `false`     | Enable swipe-to-switch                               |
+| `lineTheme`     | `'normal' \| 'text' \| 'underline' \| 'dot'` | `'normal'`  | Active-bar style                                     |
+| `lineWidth`     | `number \| string`                           | `undefined` | Bar width (numbers are px)                           |
+| `lineHeight`    | `number \| string`                           | `undefined` | Bar height (numbers are px)                          |
+| `color`         | `string`                                     | `''`        | Active label colour override                         |
+| `inactiveColor` | `string`                                     | `''`        | Inactive label colour override                       |
+| `animated`      | `boolean`                                    | `false`     | Animate the switch                                   |
+| `duration`      | `number`                                     | `300`       | Animation duration in ms                             |
+| `slidable`      | `'auto' \| 'always'`                         | `'auto'`    | Scroll-navigation mode                               |
+| `showScrollbar` | `boolean`                                    | `false`     | Show the scrollbar while scrolling                   |
+| `customClass`   | `string`                                     | `''`        | Extra class on the root node                         |
+| `customStyle`   | `string`                                     | `''`        | Inline style on the root node                        |
 
 ### sn-tab
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | `number \| string` | `undefined` | Unique value; falls back to the index |
-| `title` | `string` | `''` | Tab title |
-| `disabled` | `boolean` | `false` | Disable the tab |
-| `lazy` | `boolean` | `true` | Defer content until first activation |
-| `customClass` | `string` | `''` | Extra class on the pane root |
-| `customStyle` | `string` | `''` | Inline style on the pane root |
+| Prop          | Type               | Default     | Description                           |
+| ------------- | ------------------ | ----------- | ------------------------------------- |
+| `name`        | `number \| string` | `undefined` | Unique value; falls back to the index |
+| `title`       | `string`           | `''`        | Tab title                             |
+| `disabled`    | `boolean`          | `false`     | Disable the tab                       |
+| `lazy`        | `boolean`          | `true`      | Defer content until first activation  |
+| `customClass` | `string`           | `''`        | Extra class on the pane root          |
+| `customStyle` | `string`           | `''`        | Inline style on the pane root         |
 
 > **Not implemented**: `mapNum` / `mapTitle` drive wot-ui's navigation-map overlay, which needs per-tab width measurement plus a floating panel. The props stay in the surface for contract parity, but the uni implementation renders no map; use `slidable="always"` with your own `scroll-view` when you need it.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Active item changed | `(value: number \| string)` |
-| `change` | Active item changed | `({ index, name })` |
-| `click` | Tab title tapped (including the active one) | `({ index, name })` |
-| `disabled` | Disabled tab tapped | `({ index, name })` |
+| Event               | Description                                 | Payload                     |
+| ------------------- | ------------------------------------------- | --------------------------- |
+| `update:modelValue` | Active item changed                         | `(value: number \| string)` |
+| `change`            | Active item changed                         | `({ index, name })`         |
+| `click`             | Tab title tapped (including the active one) | `({ index, name })`         |
+| `disabled`          | Disabled tab tapped                         | `({ index, name })`         |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot             | Description                  |
+| ---------------- | ---------------------------- |
 | `default` (tabs) | Tab list (`sn-tab` children) |
-| `default` (tab) | Panel content |
+| `default` (tab)  | Panel content                |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | Strip and panel background |
-| `--sn-mp-color-text-secondary` | Inactive label |
-| `--sn-mp-color-text-disabled` | Disabled label |
-| `--sn-mp-color-action-primary` | Active label and active bar |
-| `--sn-mp-color-text-primary` | Panel body text |
-| `--sn-mp-font-size-md` | Label size |
-| `--sn-mp-font-weight-medium` | Active label weight |
+| Variable                                  | Purpose                     |
+| ----------------------------------------- | --------------------------- |
+| `--sn-mp-color-background-surface`        | Strip and panel background  |
+| `--sn-mp-color-text-secondary`            | Inactive label              |
+| `--sn-mp-color-text-disabled`             | Disabled label              |
+| `--sn-mp-color-action-primary`            | Active label and active bar |
+| `--sn-mp-color-text-primary`              | Panel body text             |
+| `--sn-mp-font-size-md`                    | Label size                  |
+| `--sn-mp-font-weight-medium`              | Active label weight         |
 | `--sn-mp-spacing-2` / `--sn-mp-spacing-4` | Strip padding / tab padding |
-| `--sn-mp-radius-full` | Dot bar radius |
+| `--sn-mp-radius-full`                     | Dot bar radius              |
 
 ## Accessibility
 
@@ -123,7 +123,6 @@ import { SnTab } from '@snui/uni/components/sn-tabs/sn-tab.vue'
 Every colour in `sn-tabs` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the strip and panel backgrounds flip to the dark surface, inactive labels move to the dark secondary text colour, and the active item keeps the brand hue.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

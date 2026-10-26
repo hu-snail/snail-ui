@@ -19,7 +19,8 @@ const NO_WRAP_TAGS = new Set(['text', 'textarea', 'input', 'image']);
 const OPEN_TAG_RE = /^<([a-zA-Z][\w-]*)((?:"[^"]*"|'[^']*'|[^>"'])*)>/;
 const CLOSE_TAG_RE = /^<\/\s*([\w-]+)\s*>/;
 const TAP_RE = /@tap(?=[.=\s])/g;
-const DATA_ATTR_RE = /(\s)(?::)?data-[A-Za-z0-9_.-]+(?:="[^"]*"|='[^']*'|=[^\s"'<>/`]+|(?=[\s/<>]))/g;
+const DATA_ATTR_RE =
+  /(\s)(?::)?data-[A-Za-z0-9_.-]+(?:="[^"]*"|='[^']*'|=[^\s"'<>/`]+|(?=[\s/<>]))/g;
 
 interface OpenTag {
   raw: string;
@@ -117,7 +118,11 @@ export function transformTemplate(src: string, file: string): TextTransformResul
     });
   }
   if (renamedTap > 0) {
-    issues.push({ file, kind: 'template-attr', detail: `${renamedTap} @tap binding(s) renamed to @click` });
+    issues.push({
+      file,
+      kind: 'template-attr',
+      detail: `${renamedTap} @tap binding(s) renamed to @click`,
+    });
   }
   if (strippedDataAttrs > 0) {
     issues.push({

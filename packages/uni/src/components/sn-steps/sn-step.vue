@@ -25,30 +25,30 @@
  *   - 步骤间流转 — 由宿主驱动
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { Check, X } from '../sn-icon/sn-icon-set'
-import { nextUid } from '../../utils/uid'
-import { SN_STEPS_KEY, type SnStepStatus } from './sn-steps-types'
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Check, X } from '../sn-icon/sn-icon-set';
+import { nextUid } from '../../utils/uid';
+import { SN_STEPS_KEY, type SnStepStatus } from './sn-steps-types';
 
-defineOptions({ name: 'SnStep' })
+defineOptions({ name: 'SnStep' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-step` 1:1 surface ───────────────────────────────────── */
 
     /** 步骤标题，不传时显示默认文案。 */
-    title?: string
+    title?: string;
     /** 步骤描述。 */
-    description?: string
+    description?: string;
     /** 步骤图标名（经 `registerSnIcons()` 注册）。 */
-    icon?: string
+    icon?: string;
     /** 步骤状态：finished / process / error / wait（不传时由 active 推导）。 */
-    status?: SnStepStatus | undefined
+    status?: SnStepStatus | undefined;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     title: '',
@@ -58,54 +58,54 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 自定义步骤图标。 */
-  icon?(): unknown
+  icon?(): unknown;
   /** 自定义步骤标题。 */
-  title?(): unknown
+  title?(): unknown;
   /** 自定义步骤描述。 */
-  description?(): unknown
-}>()
+  description?(): unknown;
+}>();
 
-const steps = inject(SN_STEPS_KEY, null)
+const steps = inject(SN_STEPS_KEY, null);
 
-const uid = nextUid()
+const uid = nextUid();
 
 /** Index inside the container; `-1` until the mount hook has run. */
-const stepIndex = ref(-1)
+const stepIndex = ref(-1);
 
 /** Resolved status: explicit prop wins, otherwise derived from `active`. */
 const resolvedStatus = computed<SnStepStatus>(() => {
-  if (props.status) return props.status
-  const active = steps?.active.value ?? 0
-  if (stepIndex.value < 0) return 'wait'
-  if (stepIndex.value < active) return 'finished'
-  if (stepIndex.value === active) return 'process'
-  return 'wait'
-})
+  if (props.status) return props.status;
+  const active = steps?.active.value ?? 0;
+  if (stepIndex.value < 0) return 'wait';
+  if (stepIndex.value < active) return 'finished';
+  if (stepIndex.value === active) return 'process';
+  return 'wait';
+});
 
 const isLast = computed(() => {
-  const count = steps?.stepCount.value ?? 0
-  return stepIndex.value >= 0 && stepIndex.value === count - 1
-})
+  const count = steps?.stepCount.value ?? 0;
+  return stepIndex.value >= 0 && stepIndex.value === count - 1;
+});
 
-const isVertical = computed(() => steps?.vertical.value ?? false)
-const isDot = computed(() => steps?.dot.value ?? false)
+const isVertical = computed(() => steps?.vertical.value ?? false);
+const isDot = computed(() => steps?.dot.value ?? false);
 
 /** Gap between the indicator and the next one — `space` overrides the default. */
 const itemStyle = computed(() => {
-  const space = steps?.space.value ?? ''
-  if (!space) return undefined
-  return isVertical.value ? `padding-bottom: ${space}` : `width: ${space}`
-})
+  const space = steps?.space.value ?? '';
+  if (!space) return undefined;
+  return isVertical.value ? `padding-bottom: ${space}` : `width: ${space}`;
+});
 
 onMounted(() => {
-  if (!steps) return
-  stepIndex.value = steps.registerStep(uid)
-})
-onBeforeUnmount(() => steps?.unregisterStep(uid))
+  if (!steps) return;
+  stepIndex.value = steps.registerStep(uid);
+});
+onBeforeUnmount(() => steps?.unregisterStep(uid));
 
 const rootClass = computed(() => [
   'sn-step',
@@ -117,7 +117,7 @@ const rootClass = computed(() => [
     'sn-step--dot': isDot.value,
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>
@@ -133,7 +133,10 @@ const rootClass = computed(() => [
         <slot name="icon">
           <SnIcon v-if="resolvedStatus === 'finished' && !icon" :icon="Check" :size="24" />
           <SnIcon v-else-if="resolvedStatus === 'error' && !icon" :icon="X" :size="24" />
-          <text v-else-if="resolvedStatus === 'wait' || resolvedStatus === 'process'" class="sn-step__number">
+          <text
+            v-else-if="resolvedStatus === 'wait' || resolvedStatus === 'process'"
+            class="sn-step__number"
+          >
             {{ stepIndex + 1 }}
           </text>
         </slot>

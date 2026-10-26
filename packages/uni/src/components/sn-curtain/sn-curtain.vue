@@ -51,60 +51,54 @@
  *   - 图片预览 / 缩放 — 用 sn-img
  */
 
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnCurtain' })
+defineOptions({ name: 'SnCurtain' });
 
 /** Where the close button sits. Mirrors `wd-curtain` `close-position`. */
 type CurtainClosePosition =
-  | 'inset'
-  | 'top'
-  | 'bottom'
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right'
+  'inset' | 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
 
 /** Leave leg length in ms (the node stays mounted until it elapses). */
-const DEFAULT_DURATION = 300
+const DEFAULT_DURATION = 300;
 
 const props = withDefaults(
   defineProps<{
     /** Whether the curtain is shown (v-model). */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** Image URL — must be a network / package path, not a base64 blob. */
-    src?: string
+    src?: string;
     /** Image width in design px; 0 = fit the screen width. */
-    width?: number
+    width?: number;
     /** Page path to open when the image is tapped. */
-    to?: string
+    to?: string;
     /** Where the close button sits. */
-    closePosition?: CurtainClosePosition
+    closePosition?: CurtainClosePosition;
     /** Close the curtain when the scrim is tapped. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Close the curtain when the image is tapped. */
-    closeOnClick?: boolean
+    closeOnClick?: boolean;
     /** Remove the node from the tree once the leave animation finished. */
-    hideWhenClose?: boolean
+    hideWhenClose?: boolean;
     /** Stacking level of the curtain. */
-    zIndex?: number
+    zIndex?: number;
     /** Extra class on the close button. */
-    customCloseClass?: string
+    customCloseClass?: string;
     /** Extra inline style on the close button. */
-    customCloseStyle?: string
+    customCloseStyle?: string;
     /** Show the WeChat long-press menu on the image (WeChat only). */
-    showMenuByLongpress?: boolean
+    showMenuByLongpress?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for `wd-curtain` parity, NOT implemented — miniprogram has no
      * portal host, so the curtain cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: false,
@@ -123,95 +117,95 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Custom close button; replaces the built-in glyph. */
-  close?(): unknown
-}>()
+  close?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'click'): void
-  (e: 'close'): void
-  (e: 'closed'): void
-  (e: 'click-modal'): void
-  (e: 'before-enter'): void
-  (e: 'enter'): void
-  (e: 'after-enter'): void
-  (e: 'before-leave'): void
-  (e: 'leave'): void
-  (e: 'after-leave'): void
-  (e: 'load', event: Event): void
-  (e: 'error'): void
-}>()
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'click'): void;
+  (e: 'close'): void;
+  (e: 'closed'): void;
+  (e: 'click-modal'): void;
+  (e: 'before-enter'): void;
+  (e: 'enter'): void;
+  (e: 'after-enter'): void;
+  (e: 'before-leave'): void;
+  (e: 'leave'): void;
+  (e: 'after-leave'): void;
+  (e: 'load', event: Event): void;
+  (e: 'error'): void;
+}>();
 
 /** Node present in the tree. */
-const isMounted = ref(props.modelValue)
+const isMounted = ref(props.modelValue);
 /** Target visible state — drives the fade transition. */
-const isShown = ref(props.modelValue)
+const isShown = ref(props.modelValue);
 /** The image failed to load — the curtain stays hidden even when `modelValue`. */
-const hasError = ref(false)
+const hasError = ref(false);
 
 /** Single pending transition timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 /** Guards against a stale leg finishing after a newer one started. */
-let generation = 0
+let generation = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 async function enter(): Promise<void> {
-  if (hasError.value) return
-  clearTimer()
-  const token = ++generation
-  emit('before-enter')
-  isMounted.value = true
+  if (hasError.value) return;
+  clearTimer();
+  const token = ++generation;
+  emit('before-enter');
+  isMounted.value = true;
   // One tick so the hidden style is committed before the shown class lands.
-  await nextTick()
-  if (token !== generation) return
-  isShown.value = true
-  emit('enter')
+  await nextTick();
+  if (token !== generation) return;
+  isShown.value = true;
+  emit('enter');
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    emit('after-enter')
-  }, DEFAULT_DURATION)
+    timer = null;
+    if (token !== generation) return;
+    emit('after-enter');
+  }, DEFAULT_DURATION);
 }
 
 function leave(): void {
-  clearTimer()
-  const token = ++generation
-  emit('before-leave')
-  isShown.value = false
-  emit('leave')
+  clearTimer();
+  const token = ++generation;
+  emit('before-leave');
+  isShown.value = false;
+  emit('leave');
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    if (props.hideWhenClose) isMounted.value = false
-    emit('after-leave')
-    emit('closed')
-  }, DEFAULT_DURATION)
+    timer = null;
+    if (token !== generation) return;
+    if (props.hideWhenClose) isMounted.value = false;
+    emit('after-leave');
+    emit('closed');
+  }, DEFAULT_DURATION);
 }
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (value) void enter()
-    else leave()
+    if (value) void enter();
+    else leave();
   },
-)
+);
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Close requests coming from inside the component. */
 function requestClose(): void {
-  emit('update:modelValue', false)
-  emit('close')
+  emit('update:modelValue', false);
+  emit('close');
 }
 
 /**
@@ -222,18 +216,18 @@ function requestClose(): void {
  * page path) is swallowed — `click` still fires so the host can react.
  */
 function navigateTo(): void {
-  if (!props.to) return
+  if (!props.to) return;
   const host = globalThis as {
-    uni?: { navigateTo?: (options: { url: string }) => unknown }
-  }
-  const navigate = host.uni?.navigateTo
-  if (typeof navigate !== 'function') return
+    uni?: { navigateTo?: (options: { url: string }) => unknown };
+  };
+  const navigate = host.uni?.navigateTo;
+  if (typeof navigate !== 'function') return;
   try {
-    const result = navigate({ url: props.to })
+    const result = navigate({ url: props.to });
     // Newer runtimes return a promise; a rejection must not surface as an
     // unhandled rejection (AGENTS.md §39).
     if (result && typeof (result as Promise<unknown>).catch === 'function') {
-      void (result as Promise<unknown>).catch(() => undefined)
+      void (result as Promise<unknown>).catch(() => undefined);
     }
   } catch {
     // An unregistered page path throws synchronously on some targets.
@@ -241,31 +235,31 @@ function navigateTo(): void {
 }
 
 function onImageTap(): void {
-  emit('click')
-  navigateTo()
-  if (props.closeOnClick) requestClose()
+  emit('click');
+  navigateTo();
+  if (props.closeOnClick) requestClose();
 }
 
 function onModalTap(): void {
-  emit('click-modal')
-  if (props.closeOnClickModal) requestClose()
+  emit('click-modal');
+  if (props.closeOnClickModal) requestClose();
 }
 
 function onCloseTap(event: Event): void {
-  event.stopPropagation()
-  requestClose()
+  event.stopPropagation();
+  requestClose();
 }
 
 function onImageLoad(event: Event): void {
-  emit('load', event)
+  emit('load', event);
 }
 
 function onImageError(): void {
-  hasError.value = true
-  emit('error')
+  hasError.value = true;
+  emit('error');
   // A broken image must not keep a blank curtain on screen (wd-curtain does
   // the same: the curtain is not shown once the image failed).
-  if (isMounted.value) leave()
+  if (isMounted.value) leave();
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -276,12 +270,12 @@ const rootClass = computed(() => [
     'sn-curtain--shown': isShown.value,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const base = `z-index: ${props.zIndex}`
-  return props.customStyle ? `${base}; ${props.customStyle}` : base
-})
+  const base = `z-index: ${props.zIndex}`;
+  return props.customStyle ? `${base}; ${props.customStyle}` : base;
+});
 
 /**
  * Image width: `width` in design px (×2 for rpx), or nothing when the image
@@ -289,22 +283,22 @@ const rootStyle = computed(() => {
  * `width: 100%`, so the layout mode is assertable as a class.
  */
 const imageStyle = computed(() => {
-  if (props.width > 0) return `width: ${props.width * 2}rpx`
-  return undefined
-})
+  if (props.width > 0) return `width: ${props.width * 2}rpx`;
+  return undefined;
+});
 
 const imageClass = computed(() => [
   'sn-curtain__image',
   { 'sn-curtain__image--full': props.width <= 0 },
-])
+]);
 
 const closeClass = computed(() => [
   'sn-curtain__close',
   `sn-curtain__close--${props.closePosition}`,
   props.customCloseClass,
-])
+]);
 
-const closeStyle = computed(() => props.customCloseStyle || undefined)
+const closeStyle = computed(() => props.customCloseStyle || undefined);
 </script>
 
 <template>
@@ -316,11 +310,7 @@ const closeStyle = computed(() => props.customCloseStyle || undefined)
     role="dialog"
     aria-modal="true"
   >
-    <view
-      class="sn-curtain__modal"
-      aria-hidden="true"
-      @tap="onModalTap"
-    />
+    <view class="sn-curtain__modal" aria-hidden="true" @tap="onModalTap" />
 
     <view class="sn-curtain__body">
       <image

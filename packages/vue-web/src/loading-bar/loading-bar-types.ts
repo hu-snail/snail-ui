@@ -10,13 +10,13 @@
  * prop shape.
  */
 
-import type { StyleValue } from 'vue'
+import type { StyleValue } from 'vue';
 
 /**
  * Visual state of the bar. `'default'` is the primary action colour;
  * `'error'` switches the bar to the danger colour for the finishing sprint.
  */
-export type LoadingBarStatus = 'default' | 'error'
+export type LoadingBarStatus = 'default' | 'error';
 
 /** API injected by `<SnLoadingBarProvider>` via `useLoadingBar()`. */
 export interface LoadingBarApi {
@@ -25,17 +25,17 @@ export interface LoadingBarApi {
    * towards (but never reaches) 100% until `finish()` / `error()`.
    * Calling `start()` again while already loading is a no-op.
    */
-  start(): void
+  start(): void;
   /**
    * Sprint to 100% with the default colour, then fade out and reset.
    * No-op when no loading is in progress.
    */
-  finish(): void
+  finish(): void;
   /**
    * Sprint to 100% with the danger colour, then fade out and reset.
    * No-op when no loading is in progress.
    */
-  error(): void
+  error(): void;
 }
 
 /**
@@ -44,6 +44,6 @@ export interface LoadingBarApi {
  * default colour, `error` applies to the error sprint.
  */
 export interface LoadingBarStyles {
-  loading?: StyleValue | undefined
-  error?: StyleValue | undefined
+  loading?: StyleValue | undefined;
+  error?: StyleValue | undefined;
 }

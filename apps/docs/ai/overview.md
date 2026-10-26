@@ -26,12 +26,12 @@ AI Skill 是一份结构化的**行为契约**，不是 API 文档。它告诉 A
 
 MCP（Model Context Protocol）让任何支持 MCP 的 AI 客户端（Cursor / Claude Desktop / Mavis）直接调用工具。所有工具都带 `end` 过滤：
 
-| 工具 | 输入 | 输出 | end 过滤 |
-|---|---|---|---|
-| `list_components` | `{ end: 'web' \| 'mp' \| 'both' }` | 组件列表 | ✅ 按 end 返回 |
-| `get_component_meta` | `{ name, end }` | Props / Events / Slots / Tokens / A11y | ✅ 验证组件 end |
-| `get_style_pack` | `{ name, end? }` | Pack + 粘贴就绪的 `snCssVars` 片段 | ✅ 验证 pack.end |
-| `render_preview` | `{ vueCode, packName?, end }` | 沙箱预览 URL（M3 实装） | ✅ 选端沙箱 |
+| 工具                 | 输入                               | 输出                                   | end 过滤         |
+| -------------------- | ---------------------------------- | -------------------------------------- | ---------------- |
+| `list_components`    | `{ end: 'web' \| 'mp' \| 'both' }` | 组件列表                               | ✅ 按 end 返回   |
+| `get_component_meta` | `{ name, end }`                    | Props / Events / Slots / Tokens / A11y | ✅ 验证组件 end  |
+| `get_style_pack`     | `{ name, end? }`                   | Pack + 粘贴就绪的 `snCssVars` 片段     | ✅ 验证 pack.end |
+| `render_preview`     | `{ vueCode, packName?, end }`      | 沙箱预览 URL（M3 实装）                | ✅ 选端沙箱      |
 
 启动方式：
 
@@ -136,8 +136,8 @@ AI 调用 MCP render_preview({ vueCode, end: <目标端> })（M3 沙箱验证）
 ```vue
 <!-- ❌ 错误：同时 import vue-web 和 uni -->
 <script setup>
-import { SnButton } from '@snui/vue-web'  // Web 端
-import snButton from '@snui/uni/sn-button' // uni 端
+import { SnButton } from '@snui/vue-web'; // Web 端
+import snButton from '@snui/uni/sn-button'; // uni 端
 </script>
 ```
 
@@ -146,12 +146,14 @@ import snButton from '@snui/uni/sn-button' // uni 端
 ```vue
 <!-- Web 端代码（apps/web/src/pages/Home.vue）-->
 <script setup lang="ts">
-import { SnButton, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnButton, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 </script>
 
 <style scoped>
-.button { padding: var(--sn-web-spacing-inset-md); }
+.button {
+  padding: var(--sn-web-spacing-inset-md);
+}
 </style>
 ```
 
@@ -159,11 +161,13 @@ import '@snui/tokens-web/styles'
 <!-- uni 端代码（apps/uni/src/pages/home/home.vue）-->
 <script setup lang="ts">
 // easycom 自动注册 sn-button / sn-card
-import '@snui/tokens-mp/styles'
+import '@snui/tokens-mp/styles';
 </script>
 
 <style scoped>
-.button { padding: var(--sn-mp-spacing-inset-md); }
+.button {
+  padding: var(--sn-mp-spacing-inset-md);
+}
 </style>
 ```
 

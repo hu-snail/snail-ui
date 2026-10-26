@@ -43,65 +43,65 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue'
+import { SnTag } from '@snui/uni/components/sn-tag/sn-tag.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `size` | `'small' \| 'medium' \| 'large' \| 'extra-large' \| 'default'` | `'default'` | Tag scale; drives padding and font size |
-| `type` | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'volcano' \| 'lightblue' \| 'cyan' \| 'pink' \| 'purple'` | `'default'` | Semantic colour |
-| `icon` | `string` | `''` | Left icon name (registered via `registerSnIcons()`) |
-| `iconPrefix` | `string` | `''` | Iconfont class prefix, used when `cssIcon` is on |
-| `cssIcon` | `boolean \| string` | `false` | Render a font icon; a string value is the class prefix |
-| `closable` | `boolean` | `false` | Render the close button |
-| `dynamic` | `boolean` | `false` | Render the inline "new tag" input |
-| `color` | `string` | `''` | Inline text-colour override |
-| `bgColor` | `string` | `''` | Inline background + border-colour override |
-| `round` | `boolean` | `false` | Pill shape |
-| `mark` | `boolean` | `false` | Marker shape (asymmetric corners) |
-| `variant` | `'light' \| 'dark' \| 'plain' \| 'dashed' \| 'text'` | `'dark'` | Fill / border treatment |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type                                                                                                                       | Default     | Description                                            |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
+| `size`        | `'small' \| 'medium' \| 'large' \| 'extra-large' \| 'default'`                                                             | `'default'` | Tag scale; drives padding and font size                |
+| `type`        | `'default' \| 'primary' \| 'success' \| 'warning' \| 'danger' \| 'volcano' \| 'lightblue' \| 'cyan' \| 'pink' \| 'purple'` | `'default'` | Semantic colour                                        |
+| `icon`        | `string`                                                                                                                   | `''`        | Left icon name (registered via `registerSnIcons()`)    |
+| `iconPrefix`  | `string`                                                                                                                   | `''`        | Iconfont class prefix, used when `cssIcon` is on       |
+| `cssIcon`     | `boolean \| string`                                                                                                        | `false`     | Render a font icon; a string value is the class prefix |
+| `closable`    | `boolean`                                                                                                                  | `false`     | Render the close button                                |
+| `dynamic`     | `boolean`                                                                                                                  | `false`     | Render the inline "new tag" input                      |
+| `color`       | `string`                                                                                                                   | `''`        | Inline text-colour override                            |
+| `bgColor`     | `string`                                                                                                                   | `''`        | Inline background + border-colour override             |
+| `round`       | `boolean`                                                                                                                  | `false`     | Pill shape                                             |
+| `mark`        | `boolean`                                                                                                                  | `false`     | Marker shape (asymmetric corners)                      |
+| `variant`     | `'light' \| 'dark' \| 'plain' \| 'dashed' \| 'text'`                                                                       | `'dark'`    | Fill / border treatment                                |
+| `customClass` | `string`                                                                                                                   | `''`        | Extra class on the root node                           |
+| `customStyle` | `string`                                                                                                                   | `''`        | Inline style on the root node                          |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `click` | Tapped anywhere on the tag | `(event: Event)` |
-| `close` | Close button tapped (does not bubble into `click`) | `(event: Event)` |
-| `confirm` | Inline input confirmed | `({ value: string })` |
+| Event     | Description                                        | Payload               |
+| --------- | -------------------------------------------------- | --------------------- |
+| `click`   | Tapped anywhere on the tag                         | `(event: Event)`      |
+| `close`   | Close button tapped (does not bubble into `click`) | `(event: Event)`      |
+| `confirm` | Inline input confirmed                             | `({ value: string })` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` | Tag label |
-| `icon` | Custom icon; overrides the `icon` prop |
-| `add` | Custom "new tag" content, rendered when `dynamic` is true |
+| Slot      | Description                                               |
+| --------- | --------------------------------------------------------- |
+| `default` | Tag label                                                 |
+| `icon`    | Custom icon; overrides the `icon` prop                    |
+| `add`     | Custom "new tag" content, rendered when `dynamic` is true |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-action-primary` / `--sn-mp-color-action-primary-soft` | `primary` fill and tint |
-| `--sn-mp-color-feedback-success` / `-soft` | `success` type |
-| `--sn-mp-color-feedback-warning` / `-soft` | `warning` type |
-| `--sn-mp-color-feedback-danger` / `-soft` | `danger` type |
-| `--sn-mp-color-feedback-info` | `default` type fill |
-| `--sn-mp-color-volcano` / `-soft` | `volcano` type |
-| `--sn-mp-color-lightblue` / `-soft` | `lightblue` type |
-| `--sn-mp-color-cyan` / `-soft` | `cyan` type |
-| `--sn-mp-color-pink` / `-soft` | `pink` type |
-| `--sn-mp-color-purple` / `-soft` | `purple` type |
-| `--sn-mp-color-background-subtle` | `default` type tint |
-| `--sn-mp-color-text-on-primary` | Label colour on a solid fill |
-| `--sn-mp-color-text-secondary` | `default` type label colour |
-| `--sn-mp-font-size-{xs,sm,md,lg}` | Font size per size step |
-| `--sn-mp-font-weight-bold` | Doodle skin weight |
-| `--sn-mp-radius-{sm,md,lg,full}` | Corner / pill / marker shape |
-| `--sn-mp-spacing-1` | Icon-to-label gap |
+| Variable                                                             | Purpose                      |
+| -------------------------------------------------------------------- | ---------------------------- |
+| `--sn-mp-color-action-primary` / `--sn-mp-color-action-primary-soft` | `primary` fill and tint      |
+| `--sn-mp-color-feedback-success` / `-soft`                           | `success` type               |
+| `--sn-mp-color-feedback-warning` / `-soft`                           | `warning` type               |
+| `--sn-mp-color-feedback-danger` / `-soft`                            | `danger` type                |
+| `--sn-mp-color-feedback-info`                                        | `default` type fill          |
+| `--sn-mp-color-volcano` / `-soft`                                    | `volcano` type               |
+| `--sn-mp-color-lightblue` / `-soft`                                  | `lightblue` type             |
+| `--sn-mp-color-cyan` / `-soft`                                       | `cyan` type                  |
+| `--sn-mp-color-pink` / `-soft`                                       | `pink` type                  |
+| `--sn-mp-color-purple` / `-soft`                                     | `purple` type                |
+| `--sn-mp-color-background-subtle`                                    | `default` type tint          |
+| `--sn-mp-color-text-on-primary`                                      | Label colour on a solid fill |
+| `--sn-mp-color-text-secondary`                                       | `default` type label colour  |
+| `--sn-mp-font-size-{xs,sm,md,lg}`                                    | Font size per size step      |
+| `--sn-mp-font-weight-bold`                                           | Doodle skin weight           |
+| `--sn-mp-radius-{sm,md,lg,full}`                                     | Corner / pill / marker shape |
+| `--sn-mp-spacing-1`                                                  | Icon-to-label gap            |
 
 ## Accessibility
 
@@ -119,7 +119,6 @@ Every colour in `sn-tag` comes from `--sn-mp-color-*` with no light `var()` fall
 - The bordered variants (`plain` / `dashed` / `text`) use the semantic hue directly, which remains recognisable in dark mode.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

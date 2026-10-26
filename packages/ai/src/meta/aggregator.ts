@@ -6,24 +6,24 @@
  * consume for one-shot context loading. Stub for v0.1.0.
  */
 
-import { allPacks } from '@snui/style-packs'
+import { allPacks } from '@snui/style-packs';
 
 export interface AiMeta {
-  version: string
-  generated: string
+  version: string;
+  generated: string;
   web: {
-    library: string
-    components: ReadonlyArray<{ name: string; description: string; importPath: string }>
-  }
+    library: string;
+    components: ReadonlyArray<{ name: string; description: string; importPath: string }>;
+  };
   uni: {
-    library: string
-    components: ReadonlyArray<{ name: string; description: string; importPath: string }>
-  }
-  stylePacks: ReadonlyArray<{ name: string; label: string; description: string }>
+    library: string;
+    components: ReadonlyArray<{ name: string; description: string; importPath: string }>;
+  };
+  stylePacks: ReadonlyArray<{ name: string; label: string; description: string }>;
   tokens: {
-    semantic: ReadonlyArray<string>
-    component: ReadonlyArray<string>
-  }
+    semantic: ReadonlyArray<string>;
+    component: ReadonlyArray<string>;
+  };
 }
 
 export function buildAiMeta(now: Date = new Date()): AiMeta {
@@ -33,15 +33,27 @@ export function buildAiMeta(now: Date = new Date()): AiMeta {
     web: {
       library: '@snui/vue-web',
       components: [
-        { name: 'SnButton', description: '主要交互按钮', importPath: "import { SnButton } from '@snui/vue-web'" },
-        { name: 'SnConfigProvider', description: '全局配置 + skin 切换', importPath: "import { SnConfigProvider } from '@snui/vue-web'" },
+        {
+          name: 'SnButton',
+          description: '主要交互按钮',
+          importPath: "import { SnButton } from '@snui/vue-web'",
+        },
+        {
+          name: 'SnConfigProvider',
+          description: '全局配置 + skin 切换',
+          importPath: "import { SnConfigProvider } from '@snui/vue-web'",
+        },
       ],
     },
     uni: {
       library: '@snui/uni',
       components: [
         { name: 'sn-button', description: 'uni-app 端主要交互按钮', importPath: '<sn-button>' },
-        { name: 'sn-config-provider', description: 'uni-app 端全局配置 + skin 切换', importPath: '<sn-config-provider>' },
+        {
+          name: 'sn-config-provider',
+          description: 'uni-app 端全局配置 + skin 切换',
+          importPath: '<sn-config-provider>',
+        },
       ],
     },
     stylePacks: allPacks.map((p) => ({
@@ -74,5 +86,5 @@ export function buildAiMeta(now: Date = new Date()): AiMeta {
         '--sn-card-shadow',
       ],
     },
-  }
+  };
 }

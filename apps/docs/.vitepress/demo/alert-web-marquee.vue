@@ -6,13 +6,13 @@
  * has no marquee prop; the scrolling track lives in the default slot, which
  * keeps the dismissal, icon and border behaviour untouched.
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 
 const notices = [
   '线路维护通知：10 月 20 日 02:00–04:00 期间「数据同步」服务将短暂不可用。',
   '安全提醒：检测到你的账号在新设备登录，如非本人操作请立即修改密码。',
   '版本发布：v3.1 已上线，本次更新包含 12 项体验优化与 4 项缺陷修复。',
-].join('　　·　　')
+].join('　　·　　');
 </script>
 
 <template>
@@ -64,8 +64,12 @@ const notices = [
   animation-play-state: paused;
 }
 @keyframes alert-marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
 }
 .alert-marquee__hint {
   margin: 0;
@@ -73,6 +77,8 @@ const notices = [
   color: var(--sn-web-color-text-secondary);
 }
 @media (prefers-reduced-motion: reduce) {
-  .alert-marquee__track { animation: none; }
+  .alert-marquee__track {
+    animation: none;
+  }
 }
 </style>

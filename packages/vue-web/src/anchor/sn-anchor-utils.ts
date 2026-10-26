@@ -6,7 +6,7 @@
  * without caring whether the target is the document or a nested container.
  */
 
-export type OffsetTarget = Window | Document | HTMLElement
+export type OffsetTarget = Window | Document | HTMLElement;
 
 /**
  * The target's identity for offset purposes.
@@ -16,7 +16,7 @@ export type OffsetTarget = Window | Document | HTMLElement
  * the guard SnBackTop uses.
  */
 export function isDocumentLike(el: unknown): el is Document {
-  return (el as Node | null)?.nodeName === '#document'
+  return (el as Node | null)?.nodeName === '#document';
 }
 
 /**
@@ -30,14 +30,11 @@ export function getOffset(
   el: HTMLElement,
   scrollTarget: OffsetTarget,
 ): { top: number; height: number } {
-  const { top: elTop, height } = el.getBoundingClientRect()
-  const isElementTarget =
-    scrollTarget instanceof HTMLElement && !isDocumentLike(scrollTarget)
-  const scrollTargetTop = isElementTarget
-    ? scrollTarget.getBoundingClientRect().top
-    : 0
+  const { top: elTop, height } = el.getBoundingClientRect();
+  const isElementTarget = scrollTarget instanceof HTMLElement && !isDocumentLike(scrollTarget);
+  const scrollTargetTop = isElementTarget ? scrollTarget.getBoundingClientRect().top : 0;
   return {
     top: elTop - scrollTargetTop,
     height,
-  }
+  };
 }

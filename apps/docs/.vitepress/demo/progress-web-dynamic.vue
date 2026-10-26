@@ -4,61 +4,61 @@
  * auto-play timer. The timer is disposed in `onUnmounted` so navigating away
  * never leaves an interval running.
  */
-import { computed, onUnmounted, ref } from 'vue'
-import { SnButton, SnIcon, SnProgress, registerSnIcons } from '@snui/vue-web'
-import { Minus, Pause, Play, Plus, RotateCcw, SlidersHorizontal } from 'lucide-vue-next'
+import { computed, onUnmounted, ref } from 'vue';
+import { SnButton, SnIcon, SnProgress, registerSnIcons } from '@snui/vue-web';
+import { Minus, Pause, Play, Plus, RotateCcw, SlidersHorizontal } from 'lucide-vue-next';
 
-registerSnIcons({ Minus, Pause, Play, Plus, RotateCcw, SlidersHorizontal })
+registerSnIcons({ Minus, Pause, Play, Plus, RotateCcw, SlidersHorizontal });
 
-const percentage = ref(45)
-const autoPlaying = ref(false)
-let timer: ReturnType<typeof setInterval> | null = null
+const percentage = ref(45);
+const autoPlaying = ref(false);
+let timer: ReturnType<typeof setInterval> | null = null;
 
 const status = computed(() => {
-  if (percentage.value >= 100) return 'success'
-  if (percentage.value === 0) return 'error'
-  return 'default'
-})
+  if (percentage.value >= 100) return 'success';
+  if (percentage.value === 0) return 'error';
+  return 'default';
+});
 
 const statusLabel = computed(() => {
-  if (percentage.value >= 100) return '已达成'
-  if (percentage.value === 0) return '未开始'
-  return '进行中'
-})
+  if (percentage.value >= 100) return '已达成';
+  if (percentage.value === 0) return '未开始';
+  return '进行中';
+});
 
 function clamp(value: number): number {
-  return Math.min(100, Math.max(0, Math.round(value)))
+  return Math.min(100, Math.max(0, Math.round(value)));
 }
 
 function step(delta: number): void {
-  percentage.value = clamp(percentage.value + delta)
+  percentage.value = clamp(percentage.value + delta);
 }
 
 function stopTimer(): void {
   if (timer !== null) {
-    clearInterval(timer)
-    timer = null
+    clearInterval(timer);
+    timer = null;
   }
-  autoPlaying.value = false
+  autoPlaying.value = false;
 }
 
 function toggleAutoPlay(): void {
   if (autoPlaying.value) {
-    stopTimer()
-    return
+    stopTimer();
+    return;
   }
-  autoPlaying.value = true
+  autoPlaying.value = true;
   timer = setInterval(() => {
-    percentage.value = percentage.value >= 100 ? 0 : clamp(percentage.value + 2)
-  }, 120)
+    percentage.value = percentage.value >= 100 ? 0 : clamp(percentage.value + 2);
+  }, 120);
 }
 
 function reset(): void {
-  stopTimer()
-  percentage.value = 0
+  stopTimer();
+  percentage.value = 0;
 }
 
-onUnmounted(stopTimer)
+onUnmounted(stopTimer);
 </script>
 
 <template>

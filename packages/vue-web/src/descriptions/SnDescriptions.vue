@@ -39,38 +39,38 @@
  *   </SnDescriptions>
  */
 
-import type { CSSProperties, VNode, VNodeChild } from 'vue'
-import { Fragment, computed, isVNode, useSlots } from 'vue'
-import SnDescriptionsItem from './SnDescriptionsItem.vue'
+import type { CSSProperties, VNode, VNodeChild } from 'vue';
+import { Fragment, computed, isVNode, useSlots } from 'vue';
+import SnDescriptionsItem from './SnDescriptionsItem.vue';
 
-defineOptions({ name: 'SnDescriptions' })
+defineOptions({ name: 'SnDescriptions' });
 
-const slots = useSlots()
+const slots = useSlots();
 
 const props = withDefaults(
   defineProps<{
     /** Title above the table; the `header` slot overrides it. */
-    title?: string
+    title?: string;
     /** Total number of logical columns the grid is laid out with. */
-    column?: number
+    column?: number;
     /** Where labels sit relative to their content. */
-    labelPlacement?: 'left' | 'top'
+    labelPlacement?: 'left' | 'top';
     /** Label text alignment (applies to the th cells). */
-    labelAlign?: 'left' | 'right' | 'center'
+    labelAlign?: 'left' | 'right' | 'center';
     /** Separator between inline label and content (`left` + no border). */
-    separator?: string
+    separator?: string;
     /** Font scale. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Draw the bordered grid (outlined cells + tinted label background). */
-    bordered?: boolean
+    bordered?: boolean;
     /** Class applied to every rendered label cell / span. */
-    labelClass?: string
+    labelClass?: string;
     /** Style applied to every rendered label cell / span. */
-    labelStyle?: string | CSSProperties
+    labelStyle?: string | CSSProperties;
     /** Class applied to every rendered content cell / span. */
-    contentClass?: string
+    contentClass?: string;
     /** Style applied to every rendered content cell / span. */
-    contentStyle?: string | CSSProperties
+    contentStyle?: string | CSSProperties;
   }>(),
   {
     column: 3,
@@ -80,114 +80,114 @@ const props = withDefaults(
     size: 'medium',
     bordered: false,
   },
-)
+);
 
 defineSlots<{
   /** `<SnDescriptionsItem>` entries. */
-  default?(): unknown
+  default?(): unknown;
   /** Header content — overrides the `title` prop. */
-  header?(): unknown
-}>()
+  header?(): unknown;
+}>();
 
 /** Functional fragment: renders a captured array of slot vnodes. */
-const VNodes = (props: { nodes: VNodeChild[] }): VNodeChild => props.nodes
+const VNodes = (props: { nodes: VNodeChild[] }): VNodeChild => props.nodes;
 
 /** Normalized data read from one `<SnDescriptionsItem>` vnode. */
 interface DescriptionsItemData {
-  label: VNodeChild[]
-  content: VNodeChild[]
-  span: number
-  labelStyle: string | CSSProperties | undefined
-  contentStyle: string | CSSProperties | undefined
-  labelClass: string | undefined
-  contentClass: string | undefined
+  label: VNodeChild[];
+  content: VNodeChild[];
+  span: number;
+  labelStyle: string | CSSProperties | undefined;
+  contentStyle: string | CSSProperties | undefined;
+  labelClass: string | undefined;
+  contentClass: string | undefined;
 }
 
 /** One logical table row: label row + content row (`top` placement) or a
  * single mixed row (`left` placement). */
 interface DescriptionsRowData {
   /** th cells — the label row of a `top` placement row. */
-  header: DescriptionsCellData[]
+  header: DescriptionsCellData[];
   /** td cells — the content row of a `top` placement row. */
-  content: DescriptionsCellData[]
+  content: DescriptionsCellData[];
   /** All cells in document order — a `left` placement row. */
-  cells: DescriptionsCellData[]
+  cells: DescriptionsCellData[];
 }
 
 /** One physical table cell to render. */
 interface DescriptionsCellData {
-  tag: 'th' | 'td'
-  colspan: number
-  label: VNodeChild[]
-  content: VNodeChild[]
+  tag: 'th' | 'td';
+  colspan: number;
+  label: VNodeChild[];
+  content: VNodeChild[];
   /** `left` placement without border: label/content inline in one td. */
-  combined: boolean
-  labelStyle: string | CSSProperties | undefined
-  contentStyle: string | CSSProperties | undefined
-  labelClass: string | undefined
-  contentClass: string | undefined
+  combined: boolean;
+  labelStyle: string | CSSProperties | undefined;
+  contentStyle: string | CSSProperties | undefined;
+  labelClass: string | undefined;
+  contentClass: string | undefined;
 }
 
 function flattenSlotChildren(children: unknown): VNodeChild[] {
-  const out: VNodeChild[] = []
+  const out: VNodeChild[] = [];
   const walk = (input: unknown): void => {
     if (Array.isArray(input)) {
-      input.forEach(walk)
-      return
+      input.forEach(walk);
+      return;
     }
     if (input === null || input === undefined || typeof input === 'boolean') {
-      return
+      return;
     }
     // Template v-for wraps repeated items in Fragment vnodes; recurse so
     // data-driven item lists work (the reference drops fragments).
     if (isVNode(input) && input.type === Fragment) {
-      walk(input.children)
-      return
+      walk(input.children);
+      return;
     }
-    out.push(input as VNodeChild)
-  }
-  walk(children)
-  return out
+    out.push(input as VNodeChild);
+  };
+  walk(children);
+  return out;
 }
 
 function readSlotChildren(vnode: VNode, slotName?: 'label'): VNodeChild[] {
-  const children = vnode.children
+  const children = vnode.children;
   if (typeof children === 'string') {
-    return slotName ? [] : [children]
+    return slotName ? [] : [children];
   }
   if (children === null) {
-    return []
+    return [];
   }
-  const slotFns = children as Record<string, (() => unknown) | undefined>
-  const fn = slotName ? slotFns[slotName] : slotFns.default
-  return fn ? flattenSlotChildren(fn()) : []
+  const slotFns = children as Record<string, (() => unknown) | undefined>;
+  const fn = slotName ? slotFns[slotName] : slotFns.default;
+  return fn ? flattenSlotChildren(fn()) : [];
 }
 
 /** Comment/text placeholder vnodes carry a symbol type — not visible. */
 function hasRenderableContent(nodes: VNodeChild[]): boolean {
   return nodes.some((node) => {
-    if (typeof node === 'string') return node.length > 0
-    if (isVNode(node)) return typeof node.type !== 'symbol'
-    return false
-  })
+    if (typeof node === 'string') return node.length > 0;
+    if (isVNode(node)) return typeof node.type !== 'symbol';
+    return false;
+  });
 }
 
 function collectItems(): DescriptionsItemData[] {
-  const slot = slots.default
-  if (!slot) return []
-  const flattened = flattenSlotChildren(slot())
-  const items: DescriptionsItemData[] = []
+  const slot = slots.default;
+  if (!slot) return [];
+  const flattened = flattenSlotChildren(slot());
+  const items: DescriptionsItemData[] = [];
   for (const child of flattened) {
     if (isVNode(child) && child.type === SnDescriptionsItem) {
       const vnodeProps = (child.props ?? {}) as {
-        label?: string
-        span?: number
-        labelStyle?: string | CSSProperties
-        contentStyle?: string | CSSProperties
-        labelClass?: string
-        contentClass?: string
-      }
-      const labelSlot = readSlotChildren(child, 'label')
+        label?: string;
+        span?: number;
+        labelStyle?: string | CSSProperties;
+        contentStyle?: string | CSSProperties;
+        labelClass?: string;
+        contentClass?: string;
+      };
+      const labelSlot = readSlotChildren(child, 'label');
       items.push({
         label: hasRenderableContent(labelSlot)
           ? labelSlot
@@ -200,16 +200,16 @@ function collectItems(): DescriptionsItemData[] {
         contentStyle: vnodeProps.contentStyle,
         labelClass: vnodeProps.labelClass,
         contentClass: vnodeProps.contentClass,
-      })
+      });
     }
   }
-  return items
+  return items;
 }
 
 const columnCount = computed(() => {
-  const value = props.column
-  return typeof value === 'number' && value > 0 ? Math.floor(value) : 1
-})
+  const value = props.column;
+  return typeof value === 'number' && value > 0 ? Math.floor(value) : 1;
+});
 
 /**
  * Row layout walk — a direct port of the reference algorithm: entries
@@ -218,27 +218,24 @@ const columnCount = computed(() => {
  * last entry of a row stretches to fill the remaining tracks.
  */
 function buildRows(): DescriptionsRowData[] {
-  const column = columnCount.value
-  const items = collectItems()
-  const rows: DescriptionsRowData[] = []
-  let row: DescriptionsCellData[] = []
-  let secondRow: DescriptionsCellData[] = []
-  let span = 0
-  const left = props.labelPlacement === 'left'
+  const column = columnCount.value;
+  const items = collectItems();
+  const rows: DescriptionsRowData[] = [];
+  let row: DescriptionsCellData[] = [];
+  let secondRow: DescriptionsCellData[] = [];
+  let span = 0;
+  const left = props.labelPlacement === 'left';
 
   items.forEach((item, index) => {
-    const isLast = items.length - 1 === index
-    const itemSpan = item.span
-    const memorizedSpan = span
-    span += itemSpan
-    const labelStyle = item.labelStyle ?? props.labelStyle
-    const contentStyle = item.contentStyle ?? props.contentStyle
-    const labelClass = [props.labelClass, item.labelClass]
-      .filter(Boolean)
-      .join(' ') || undefined
-    const contentClass = [props.contentClass, item.contentClass]
-      .filter(Boolean)
-      .join(' ') || undefined
+    const isLast = items.length - 1 === index;
+    const itemSpan = item.span;
+    const memorizedSpan = span;
+    span += itemSpan;
+    const labelStyle = item.labelStyle ?? props.labelStyle;
+    const contentStyle = item.contentStyle ?? props.contentStyle;
+    const labelClass = [props.labelClass, item.labelClass].filter(Boolean).join(' ') || undefined;
+    const contentClass =
+      [props.contentClass, item.contentClass].filter(Boolean).join(' ') || undefined;
 
     if (left) {
       if (props.bordered) {
@@ -252,12 +249,10 @@ function buildRows(): DescriptionsRowData[] {
           contentStyle: undefined,
           labelClass,
           contentClass: undefined,
-        })
+        });
         row.push({
           tag: 'td',
-          colspan: isLast
-            ? (column - memorizedSpan) * 2 + 1
-            : itemSpan * 2 - 1,
+          colspan: isLast ? (column - memorizedSpan) * 2 + 1 : itemSpan * 2 - 1,
           label: [],
           content: item.content,
           combined: false,
@@ -265,7 +260,7 @@ function buildRows(): DescriptionsRowData[] {
           contentStyle,
           labelClass: undefined,
           contentClass,
-        })
+        });
       } else {
         row.push({
           tag: 'td',
@@ -277,10 +272,10 @@ function buildRows(): DescriptionsRowData[] {
           contentStyle,
           labelClass,
           contentClass,
-        })
+        });
       }
     } else {
-      const colspan = isLast ? (column - memorizedSpan) * 2 : itemSpan * 2
+      const colspan = isLast ? (column - memorizedSpan) * 2 : itemSpan * 2;
       row.push({
         tag: 'th',
         colspan,
@@ -291,7 +286,7 @@ function buildRows(): DescriptionsRowData[] {
         contentStyle: undefined,
         labelClass,
         contentClass: undefined,
-      })
+      });
       secondRow.push({
         tag: 'td',
         colspan,
@@ -302,29 +297,29 @@ function buildRows(): DescriptionsRowData[] {
         contentStyle,
         labelClass: undefined,
         contentClass,
-      })
+      });
     }
 
     if (span >= column || isLast) {
-      span = 0
+      span = 0;
       if (left && row.length) {
-        rows.push({ header: [], content: [], cells: row })
-        row = []
+        rows.push({ header: [], content: [], cells: row });
+        row = [];
       }
       if (!left && row.length) {
-        rows.push({ header: row, content: secondRow, cells: [] })
-        row = []
-        secondRow = []
+        rows.push({ header: row, content: secondRow, cells: [] });
+        row = [];
+        secondRow = [];
       }
     }
-  })
-  return rows
+  });
+  return rows;
 }
 
 const headerNodes = (): VNodeChild[] => {
-  const slot = slots.header
-  return slot ? flattenSlotChildren(slot()) : []
-}
+  const slot = slots.header;
+  return slot ? flattenSlotChildren(slot()) : [];
+};
 </script>
 
 <template>
@@ -412,10 +407,7 @@ const headerNodes = (): VNodeChild[] => {
                     :style="cell.labelStyle"
                   >
                     <VNodes :nodes="cell.label" />
-                    <span
-                      v-if="separator"
-                      class="sn-descriptions__separator"
-                    >{{ separator }}</span>
+                    <span v-if="separator" class="sn-descriptions__separator">{{ separator }}</span>
                   </span>
                   <span
                     class="sn-descriptions__content"
@@ -607,7 +599,8 @@ const headerNodes = (): VNodeChild[] => {
   border-radius: 3px;
   overflow: hidden;
   background: var(--sn-web-color-background-surface);
-  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
+  border: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 
 .sn-descriptions--bordered .sn-descriptions__table-header {
@@ -620,13 +613,19 @@ const headerNodes = (): VNodeChild[] => {
   );
 }
 
-.sn-descriptions--bordered .sn-descriptions__table-row:not(:last-child) .sn-descriptions__table-header,
-.sn-descriptions--bordered .sn-descriptions__table-row:not(:last-child) .sn-descriptions__table-content {
-  border-bottom: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
+.sn-descriptions--bordered
+  .sn-descriptions__table-row:not(:last-child)
+  .sn-descriptions__table-header,
+.sn-descriptions--bordered
+  .sn-descriptions__table-row:not(:last-child)
+  .sn-descriptions__table-content {
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 
 .sn-descriptions--bordered .sn-descriptions__table-header:not(:last-child),
 .sn-descriptions--bordered .sn-descriptions__table-content:not(:last-child) {
-  border-right: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
+  border-right: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 </style>

@@ -31,41 +31,41 @@ pending ──submit/startUpload──▶ uploading ──resolve──▶ done
 
 ## Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `multiple` | `boolean` | `false` | 允许一次选择 / 拖入多个文件 |
-| `accept` | `string` | `''` | 透传给隐藏 file input 的 `accept`；空串不输出属性 |
-| `disabled` | `boolean` | `false` | 禁用：无触发按钮、忽略拖放、无移除按钮 |
-| `readonly` | `boolean` | `false` | 只读：文件可见，不可增删（视觉不加 disabled 灰） |
-| `max` | `number` | — | 文件数上限；到达后隐藏触发按钮并丢弃超额文件 |
-| `showFileList` | `boolean` | `true` | 是否渲染文件列表 |
-| `listType` | `'text' \| 'image'` | `'text'` | `image` 形态每项渲染 objectURL 缩略图 |
-| `customRequest` | `(file, fileList) => Promise<void>` | — | 自定义上传驱动；resolve → `done`，reject → `error`；未传则不发网络请求 |
-| `defaultUpload` | `boolean` | `true` | `false` 时文件只入列（pending），等 `submit()` 手动上传 |
-| `onBeforeUpload` | `(file) => boolean \| Promise<boolean>` | — | 单文件闸门；返回 / resolve `false`（或 throw）则该文件不入列 |
-| `dragger` | `boolean` | `false` | 整块虚线拖放区替代紧凑触发按钮（追加式偏离，见「与上游的差异」） |
-| `showProgress` | `boolean` | `true` | 上传中且条目带 `percentage` 时渲染确定性进度条，否则退回转圈 |
-| `onPreview` | `(file: SnUploadFile) => void` | — | 点击预览回调（镜像上游 `onPreview`）；与 `@preview` 同一处理函数，只调用一次 |
+| Prop             | 类型                                    | 默认值   | 说明                                                                         |
+| ---------------- | --------------------------------------- | -------- | ---------------------------------------------------------------------------- |
+| `multiple`       | `boolean`                               | `false`  | 允许一次选择 / 拖入多个文件                                                  |
+| `accept`         | `string`                                | `''`     | 透传给隐藏 file input 的 `accept`；空串不输出属性                            |
+| `disabled`       | `boolean`                               | `false`  | 禁用：无触发按钮、忽略拖放、无移除按钮                                       |
+| `readonly`       | `boolean`                               | `false`  | 只读：文件可见，不可增删（视觉不加 disabled 灰）                             |
+| `max`            | `number`                                | —        | 文件数上限；到达后隐藏触发按钮并丢弃超额文件                                 |
+| `showFileList`   | `boolean`                               | `true`   | 是否渲染文件列表                                                             |
+| `listType`       | `'text' \| 'image'`                     | `'text'` | `image` 形态每项渲染 objectURL 缩略图                                        |
+| `customRequest`  | `(file, fileList) => Promise<void>`     | —        | 自定义上传驱动；resolve → `done`，reject → `error`；未传则不发网络请求       |
+| `defaultUpload`  | `boolean`                               | `true`   | `false` 时文件只入列（pending），等 `submit()` 手动上传                      |
+| `onBeforeUpload` | `(file) => boolean \| Promise<boolean>` | —        | 单文件闸门；返回 / resolve `false`（或 throw）则该文件不入列                 |
+| `dragger`        | `boolean`                               | `false`  | 整块虚线拖放区替代紧凑触发按钮（追加式偏离，见「与上游的差异」）             |
+| `showProgress`   | `boolean`                               | `true`   | 上传中且条目带 `percentage` 时渲染确定性进度条，否则退回转圈                 |
+| `onPreview`      | `(file: SnUploadFile) => void`          | —        | 点击预览回调（镜像上游 `onPreview`）；与 `@preview` 同一处理函数，只调用一次 |
 
 ## Events
 
-| 事件 | Payload | 触发时机 |
-| --- | --- | --- |
-| `update:fileList` | `SnUploadFile[]` | 列表任何变更（可选拿来做受控镜像） |
-| `change` | `SnUploadFile[]` | 同上 |
-| `remove` | `SnUploadFile` | 某文件被移除 |
-| `preview` | `SnUploadFile` | 条目预览入口被激活（名称或眼镜按钮） |
+| 事件              | Payload          | 触发时机                             |
+| ----------------- | ---------------- | ------------------------------------ |
+| `update:fileList` | `SnUploadFile[]` | 列表任何变更（可选拿来做受控镜像）   |
+| `change`          | `SnUploadFile[]` | 同上                                 |
+| `remove`          | `SnUploadFile`   | 某文件被移除                         |
+| `preview`         | `SnUploadFile`   | 条目预览入口被激活（名称或眼镜按钮） |
 
 ## Slots
 
-| Slot | 说明 |
-| --- | --- |
+| Slot      | 说明                                              |
+| --------- | ------------------------------------------------- |
 | `trigger` | 自定义触发按钮内容（替换默认「图标 + 点击上传」） |
 
 ## Methods（defineExpose）
 
-| 方法 | 说明 |
-| --- | --- |
+| 方法                                     | 说明                                                 |
+| ---------------------------------------- | ---------------------------------------------------- |
 | `submit(fileId?: string): Promise<void>` | 手动上传：不传 id flush 全部 pending；传 id 只传该条 |
 
 ## 交互语义
@@ -88,6 +88,7 @@ pending ──submit/startUpload──▶ uploading ──resolve──▶ done
 ## objectURL 生命周期（§41 dispose）
 
 `listType: 'image'` 时每个文件入列即 `URL.createObjectURL`；
+
 - 移除该文件 → 立即 `revokeObjectURL`
 - 组件卸载（onBeforeUnmount）→ 逐条 revoke 所有剩余 objectURL
 
@@ -104,48 +105,42 @@ options 对象，避免破坏已发布 API；驱动通过写入条目 `percentag
 
 全部走 `--sn-web-upload-*` 别名，回退 `--sn-web-color-*`：
 
-| Token | 回退 | 用途 |
-| --- | --- | --- |
-| `--sn-web-upload-gap` | `8px` | 触发器与列表间距 |
-| `--sn-web-upload-radius` | `6px` | 拖放高亮 / 列表项圆角 |
-| `--sn-web-upload-font-size` | `14px` | 列表字号 |
-| `--sn-web-upload-drag-border-color` | `action-primary` | 拖放高亮描边 |
-| `--sn-web-upload-drag-bg` | `background-subtle` | 拖放高亮背景 |
-| `--sn-web-upload-trigger-height` / `-padding-x` / `-radius` | `32px` / `14px` / `6px` | 触发按钮几何 |
-| `--sn-web-upload-trigger-border-color` / `-hover` | `border-default` / `action-primary` | 触发按钮边框 |
-| `--sn-web-upload-trigger-color` / `-hover` | `text-primary` / `action-primary` | 触发按钮前景 |
-| `--sn-web-upload-item-height` / `-padding-x` / `-gap` / `-bg` | `30px` / `8px` / `4px` / `background-subtle` | 列表项 |
-| `--sn-web-upload-name-color` / `--sn-web-upload-size-color` | `text-primary` / `text-tertiary` | 文件名 / 大小 |
-| `--sn-web-upload-status-color`(-`uploading`/-`done`/-`error`) | `text-tertiary` / `action-primary` / `feedback-success` / `feedback-danger` | 状态文本 |
-| `--sn-web-upload-thumb-size` / `-radius` / `-bg` | `36px` / `4px` / `background-overlay` | 缩略图 |
-| `--sn-web-upload-remove-color` / `-hover` | `text-tertiary` / `text-primary` | 移除按钮 |
-| `--sn-web-focus-ring` | — | 触发按钮 focus 光圈 |
+| Token                                                         | 回退                                                                        | 用途                  |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------- |
+| `--sn-web-upload-gap`                                         | `8px`                                                                       | 触发器与列表间距      |
+| `--sn-web-upload-radius`                                      | `6px`                                                                       | 拖放高亮 / 列表项圆角 |
+| `--sn-web-upload-font-size`                                   | `14px`                                                                      | 列表字号              |
+| `--sn-web-upload-drag-border-color`                           | `action-primary`                                                            | 拖放高亮描边          |
+| `--sn-web-upload-drag-bg`                                     | `background-subtle`                                                         | 拖放高亮背景          |
+| `--sn-web-upload-trigger-height` / `-padding-x` / `-radius`   | `32px` / `14px` / `6px`                                                     | 触发按钮几何          |
+| `--sn-web-upload-trigger-border-color` / `-hover`             | `border-default` / `action-primary`                                         | 触发按钮边框          |
+| `--sn-web-upload-trigger-color` / `-hover`                    | `text-primary` / `action-primary`                                           | 触发按钮前景          |
+| `--sn-web-upload-item-height` / `-padding-x` / `-gap` / `-bg` | `30px` / `8px` / `4px` / `background-subtle`                                | 列表项                |
+| `--sn-web-upload-name-color` / `--sn-web-upload-size-color`   | `text-primary` / `text-tertiary`                                            | 文件名 / 大小         |
+| `--sn-web-upload-status-color`(-`uploading`/-`done`/-`error`) | `text-tertiary` / `action-primary` / `feedback-success` / `feedback-danger` | 状态文本              |
+| `--sn-web-upload-thumb-size` / `-radius` / `-bg`              | `36px` / `4px` / `background-overlay`                                       | 缩略图                |
+| `--sn-web-upload-remove-color` / `-hover`                     | `text-tertiary` / `text-primary`                                            | 移除按钮              |
+| `--sn-web-focus-ring`                                         | —                                                                           | 触发按钮 focus 光圈   |
 
 ## 基本用法
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import SnUpload from '@/upload/SnUpload.vue'
-import type { SnUploadFile } from '@/upload/sn-upload-types'
+import { ref } from 'vue';
+import SnUpload from '@/upload/SnUpload.vue';
+import type { SnUploadFile } from '@/upload/sn-upload-types';
 
-const fileList = ref<SnUploadFile[]>([])
+const fileList = ref<SnUploadFile[]>([]);
 
 async function upload(file: SnUploadFile): Promise<void> {
-  const body = new FormData()
-  body.append('file', file.file)
-  await fetch('/api/upload', { method: 'POST', body })
+  const body = new FormData();
+  body.append('file', file.file);
+  await fetch('/api/upload', { method: 'POST', body });
 }
 </script>
 
 <template>
-  <SnUpload
-    v-model:file-list="fileList"
-    multiple
-    :max="5"
-    list-type="image"
-    :custom-request="upload"
-  />
+  <SnUpload v-model:file-list="fileList" multiple :max="5" list-type="image" :custom-request="upload" />
 </template>
 ```
 

@@ -3,7 +3,7 @@
  * anchor-web-variants — type="block" (no rail), showRail=false, and an
  * affixed anchor that sticks while the page scrolls.
  */
-import { SnAnchor, SnAnchorLink } from '@snui/vue-web'
+import { SnAnchor, SnAnchorLink } from '@snui/vue-web';
 </script>
 
 <template>

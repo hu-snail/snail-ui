@@ -32,24 +32,24 @@ Primitive   →  Semantic   →  Component   →  --aui-* 原始层（统一）
 
 Token 系统有三个独立维度：
 
-| 轴 | 改什么 | 禁止改 |
-|---|---|---|
-| **Theme** | 颜色 | 圆角、间距、尺寸 |
-| **Style** | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
-| **Density** | 间距 + 尺寸 + 字号 | 颜色、圆角 |
+| 轴          | 改什么                        | 禁止改           |
+| ----------- | ----------------------------- | ---------------- |
+| **Theme**   | 颜色                          | 圆角、间距、尺寸 |
+| **Style**   | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
+| **Density** | 间距 + 尺寸 + 字号            | 颜色、圆角       |
 
 切换 Theme 不影响组件形状；切换 Style 不影响颜色；切换 Density 不影响颜色或圆角。
 
 ## 默认值
 
-| Token | 默认 |
-|---|---|
-| `--aui-color-action-primary` | `#1677ff` |
-| `--aui-color-text-primary` | `#18181b` |
-| `--aui-color-background-surface` | `#ffffff` |
-| `--aui-button-radius` | `6px` → Web `--sn-web-button-radius: 6px` / uni `--sn-mp-button-radius: 24rpx` |
-| `--aui-button-height-medium` | `36px` → Web `36px` / uni `72rpx` |
-| `--aui-card-shadow` | `0 1px 3px rgba(0,0,0,0.08)` |
+| Token                            | 默认                                                                           |
+| -------------------------------- | ------------------------------------------------------------------------------ |
+| `--aui-color-action-primary`     | `#1677ff`                                                                      |
+| `--aui-color-text-primary`       | `#18181b`                                                                      |
+| `--aui-color-background-surface` | `#ffffff`                                                                      |
+| `--aui-button-radius`            | `6px` → Web `--sn-web-button-radius: 6px` / uni `--sn-mp-button-radius: 24rpx` |
+| `--aui-button-height-medium`     | `36px` → Web `36px` / uni `72rpx`                                              |
+| `--aui-card-shadow`              | `0 1px 3px rgba(0,0,0,0.08)`                                                   |
 
 切换暗色主题：颜色变化，圆角间距不变。
 切换 iOS 风格：圆角变大、阴影消失，颜色不变。
@@ -58,13 +58,13 @@ Token 系统有三个独立维度：
 
 不同端可有不同 Component Token 字段：
 
-| 字段 | Web（`--sn-web-*`） | uni（`--sn-mp-*`） |
-|---|---|---|
-| `button-radius` | ✅ 6px | ✅ 24rpx |
-| `table-row-height` | ✅ 32px | ❌（Web 桌面专属）|
-| `list-item-height` | ❌ | ✅ 88rpx |
-| `dropdown-item-padding` | ✅ 8px 16px | ❌ |
-| `sidebar-item-height` | ❌ | ✅ 100rpx |
+| 字段                    | Web（`--sn-web-*`） | uni（`--sn-mp-*`） |
+| ----------------------- | ------------------- | ------------------ |
+| `button-radius`         | ✅ 6px              | ✅ 24rpx           |
+| `table-row-height`      | ✅ 32px             | ❌（Web 桌面专属） |
+| `list-item-height`      | ❌                  | ✅ 88rpx           |
+| `dropdown-item-padding` | ✅ 8px 16px         | ❌                 |
+| `sidebar-item-height`   | ❌                  | ✅ 100rpx          |
 
 ## 下一步
 

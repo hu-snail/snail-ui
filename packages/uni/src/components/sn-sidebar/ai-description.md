@@ -23,58 +23,58 @@ single-value `v-model`; entries read it through `provide`/`inject`.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnSidebar } from '@snui/uni/components/sn-sidebar/sn-sidebar.vue'
-import { SnSidebarItem } from '@snui/uni/components/sn-sidebar/sn-sidebar-item.vue'
+import { SnSidebar } from '@snui/uni/components/sn-sidebar/sn-sidebar.vue';
+import { SnSidebarItem } from '@snui/uni/components/sn-sidebar/sn-sidebar-item.vue';
 ```
 
 ## Props — sn-sidebar
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `modelValue` | `string \| number` | `0` | Active value. |
-| `beforeChange` | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name           | Type                                     | Default     | Description      |
+| -------------- | ---------------------------------------- | ----------- | ---------------- |
+| `modelValue`   | `string \| number`                       | `0`         | Active value.    |
+| `beforeChange` | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook.       |
+| `customClass`  | `string`                                 | `''`        | Root forwarding. |
+| `customStyle`  | `string`                                 | `''`        | Root forwarding. |
 
 ## Props — sn-sidebar-item
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `label` | `string` | `''` | Entry title. |
-| `value` | `string \| number` | `undefined` | Entry value; falls back to `label`. |
-| `badge` | `string \| number` | `undefined` | Badge rendering. |
-| `isDot` | `boolean` | `false` | Badge rendering. |
-| `max` | `number` | `99` | Badge rendering. |
-| `icon` | `string` | `''` | Icon resolution. |
-| `iconPrefix` | `string` | `''` | Icon resolution. |
-| `cssIcon` | `boolean \| string` | `false` | Icon resolution. |
-| `disabled` | `boolean` | `false` | Disable this entry. |
-| `customClass` | `string` | `''` | Entry root forwarding. |
-| `customStyle` | `string` | `''` | Entry root forwarding. |
+| Name          | Type                | Default     | Description                         |
+| ------------- | ------------------- | ----------- | ----------------------------------- |
+| `label`       | `string`            | `''`        | Entry title.                        |
+| `value`       | `string \| number`  | `undefined` | Entry value; falls back to `label`. |
+| `badge`       | `string \| number`  | `undefined` | Badge rendering.                    |
+| `isDot`       | `boolean`           | `false`     | Badge rendering.                    |
+| `max`         | `number`            | `99`        | Badge rendering.                    |
+| `icon`        | `string`            | `''`        | Icon resolution.                    |
+| `iconPrefix`  | `string`            | `''`        | Icon resolution.                    |
+| `cssIcon`     | `boolean \| string` | `false`     | Icon resolution.                    |
+| `disabled`    | `boolean`           | `false`     | Disable this entry.                 |
+| `customClass` | `string`            | `''`        | Entry root forwarding.              |
+| `customStyle` | `string`            | `''`        | Entry root forwarding.              |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:modelValue` | `string \| number` | Active value changed. |
-| `change` | `{ value, label }` | Active entry switched. |
+| Name                | Payload            | Description            |
+| ------------------- | ------------------ | ---------------------- |
+| `update:modelValue` | `string \| number` | Active value changed.  |
+| `change`            | `{ value, label }` | Active entry switched. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default (sidebar)` | SidebarItem list. |
-| `icon (item)` | Custom icon content. |
+| Name                | Description          |
+| ------------------- | -------------------- |
+| `default (sidebar)` | SidebarItem list.    |
+| `icon (item)`       | Custom icon content. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Track / active surface | `--sn-mp-color-background-soft`, `--sn-mp-color-background-surface` | Sidebar and active entry |
-| Text | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-disabled` | Inactive / disabled labels |
-| Action primary | `--sn-mp-color-action-primary` | Active label and indicator |
-| Badge | `--sn-mp-color-feedback-danger`, `--sn-mp-color-text-on-primary` | Badge fill and text |
-| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-xs`, `--sn-mp-spacing-3` | Label and entry geometry |
+| Token                   | CSS Variable                                                        | Purpose                    |
+| ----------------------- | ------------------------------------------------------------------- | -------------------------- |
+| Track / active surface  | `--sn-mp-color-background-soft`, `--sn-mp-color-background-surface` | Sidebar and active entry   |
+| Text                    | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-disabled`       | Inactive / disabled labels |
+| Action primary          | `--sn-mp-color-action-primary`                                      | Active label and indicator |
+| Badge                   | `--sn-mp-color-feedback-danger`, `--sn-mp-color-text-on-primary`    | Badge fill and text        |
+| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-xs`, `--sn-mp-spacing-3`    | Label and entry geometry   |
 
 ## Accessibility
 

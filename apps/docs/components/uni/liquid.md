@@ -19,35 +19,35 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `percent` | `number` | `0` | 进度百分比（0-100，超出自动夹取） |
-| `size` | `string` | `'160rpx'` | 球体尺寸（rpx / px） |
-| `duration` | `number` | `500` | 水位过渡时长（ms），0 立即到位 |
-| `outline` | `boolean` | `false` | 是否显示外圈描边 |
-| `radius` | `string` | `'50%'` | 圆角 |
-| `waveColor` | `string` | `undefined` | 波浪颜色，默认主色 token |
-| `innerColor` | `string` | `undefined` | 水面以上背景色，默认主色浅 token |
-| `customClass` | `string` | `undefined` | 根节点自定义类名 |
-| `customStyle` | `string` | `undefined` | 根节点自定义样式 |
+| 名称          | 类型      | 默认值      | 说明                              |
+| ------------- | --------- | ----------- | --------------------------------- |
+| `percent`     | `number`  | `0`         | 进度百分比（0-100，超出自动夹取） |
+| `size`        | `string`  | `'160rpx'`  | 球体尺寸（rpx / px）              |
+| `duration`    | `number`  | `500`       | 水位过渡时长（ms），0 立即到位    |
+| `outline`     | `boolean` | `false`     | 是否显示外圈描边                  |
+| `radius`      | `string`  | `'50%'`     | 圆角                              |
+| `waveColor`   | `string`  | `undefined` | 波浪颜色，默认主色 token          |
+| `innerColor`  | `string`  | `undefined` | 水面以上背景色，默认主色浅 token  |
+| `customClass` | `string`  | `undefined` | 根节点自定义类名                  |
+| `customStyle` | `string`  | `undefined` | 根节点自定义样式                  |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称             | 参数              | 说明                                     |
+| ---------------- | ----------------- | ---------------------------------------- |
 | `update:current` | `(value: number)` | 过渡中的水位值（配合 `v-model:current`） |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | — | 球心自定义内容，默认渲染 `current%` |
+| 名称      | 参数 | 说明                                |
+| --------- | ---- | ----------------------------------- |
+| `default` | —    | 球心自定义内容，默认渲染 `current%` |
 
 ### Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
-| — | — | 组件无对外方法 |
+| 名称 | 类型 | 说明           |
+| ---- | ---- | -------------- |
+| —    | —    | 组件无对外方法 |
 
 ## 暗色模式
 

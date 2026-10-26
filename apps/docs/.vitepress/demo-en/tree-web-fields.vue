@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnTree — keyField / labelField / childrenField remapping. */
-import { ref } from 'vue'
-import { SnTree } from '@snui/vue-web'
-import type { SnTreeOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTree } from '@snui/vue-web';
+import type { SnTreeOption } from '@snui/vue-web';
 
-const selected = ref<(string | number)[]>([])
+const selected = ref<(string | number)[]>([]);
 
 const data: SnTreeOption[] = [
   {
@@ -16,7 +16,7 @@ const data: SnTreeOption[] = [
     ],
   },
   { id: 2, title: 'South China region' },
-]
+];
 </script>
 
 <template>
@@ -33,5 +33,7 @@ const data: SnTreeOption[] = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 320px; }
+.sn-demo {
+  max-width: 320px;
+}
 </style>

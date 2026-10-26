@@ -42,20 +42,20 @@
 
 ### SnQrCode Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| value | `string` | `''` | 二维码内容 |
-| error-correction-level | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'` | 纠错级别：L 约 7%、M 约 15%、Q 约 25%、H 约 30% 可恢复 |
-| size | `number` | `100` | 二维码整体尺寸（含 padding，单位 px） |
-| padding | `number \| string` | `12` | 二维码内边距（数字按 px） |
-| color | `string` | `'#000'` | 深色模块颜色 |
-| background-color | `string` | `'#FFF'` | 浅色模块与底色 |
-| icon-src | `string` | `undefined` | 中心图标地址 |
-| icon-size | `number` | `40` | 中心图标尺寸（px） |
-| icon-background-color | `string` | `'#FFF'` | 图标衬底颜色 |
-| icon-border-radius | `number` | `4` | 图标衬底圆角（px） |
-| type | `'canvas' \| 'svg'` | `'canvas'` | 渲染目标 |
-| show-toolbar | `boolean` | `true` | 悬停/聚焦时显示浮动下载工具条 |
+| 名称                   | 类型                       | 默认值      | 说明                                                   |
+| ---------------------- | -------------------------- | ----------- | ------------------------------------------------------ |
+| value                  | `string`                   | `''`        | 二维码内容                                             |
+| error-correction-level | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'`       | 纠错级别：L 约 7%、M 约 15%、Q 约 25%、H 约 30% 可恢复 |
+| size                   | `number`                   | `100`       | 二维码整体尺寸（含 padding，单位 px）                  |
+| padding                | `number \| string`         | `12`        | 二维码内边距（数字按 px）                              |
+| color                  | `string`                   | `'#000'`    | 深色模块颜色                                           |
+| background-color       | `string`                   | `'#FFF'`    | 浅色模块与底色                                         |
+| icon-src               | `string`                   | `undefined` | 中心图标地址                                           |
+| icon-size              | `number`                   | `40`        | 中心图标尺寸（px）                                     |
+| icon-background-color  | `string`                   | `'#FFF'`    | 图标衬底颜色                                           |
+| icon-border-radius     | `number`                   | `4`         | 图标衬底圆角（px）                                     |
+| type                   | `'canvas' \| 'svg'`        | `'canvas'`  | 渲染目标                                               |
+| show-toolbar           | `boolean`                  | `true`      | 悬停/聚焦时显示浮动下载工具条                          |
 
 ### 编码说明
 

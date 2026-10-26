@@ -228,18 +228,18 @@ Ecosystem Foundation
 
 # 6. 总体时间表
 
-| 阶段 | 周期 | 核心结果 |
-|---|---:|---|
-| Phase 0 | 2～3 天 | 工程环境 |
-| Phase 1 | 7～10 天 | AUI Core |
-| Phase 2 | 4～6 天 | Web Components |
-| Phase 3 | 5～7 天 | Uni |
-| Phase 4 | 4～6 天 | Template |
-| Phase 5 | 7～10 天 | AI Engine |
-| Phase 6 | 10～14 天 | Studio MVP |
-| Phase 7 | 5～7 天 | Ecosystem |
-| Phase 8 | 3～5 天 | Release |
-| Stabilization | 5～7 天 | RC |
+| 阶段          |      周期 | 核心结果       |
+| ------------- | --------: | -------------- |
+| Phase 0       |   2～3 天 | 工程环境       |
+| Phase 1       |  7～10 天 | AUI Core       |
+| Phase 2       |   4～6 天 | Web Components |
+| Phase 3       |   5～7 天 | Uni            |
+| Phase 4       |   4～6 天 | Template       |
+| Phase 5       |  7～10 天 | AI Engine      |
+| Phase 6       | 10～14 天 | Studio MVP     |
+| Phase 7       |   5～7 天 | Ecosystem      |
+| Phase 8       |   3～5 天 | Release        |
+| Stabilization |   5～7 天 | RC             |
 
 目标：
 
@@ -2304,20 +2304,20 @@ Week 13～14
 
 # 85. 最终 Milestone
 
-| Milestone | 目标 |
-|---|---|
-| M0 | AI 开发环境 |
-| M1 | Protocol |
-| M2 | Schema |
-| M3 | Runtime |
-| M4 | Web |
-| M5 | Uni |
-| M6 | Template |
-| M7 | AI |
-| M8 | Studio |
-| M9 | Ecosystem |
-| M10 | RC |
-| M11 | v0.1 |
+| Milestone | 目标        |
+| --------- | ----------- |
+| M0        | AI 开发环境 |
+| M1        | Protocol    |
+| M2        | Schema      |
+| M3        | Runtime     |
+| M4        | Web         |
+| M5        | Uni         |
+| M6        | Template    |
+| M7        | AI          |
+| M8        | Studio      |
+| M9        | Ecosystem   |
+| M10       | RC          |
+| M11       | v0.1        |
 
 ---
 

@@ -75,63 +75,63 @@
  *   </section>
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import type { CSSProperties } from 'vue'
-import { Maximize, Play } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import SnVideoControls from './SnVideoControls.vue'
-import SnVideoPreviewOverlay from './SnVideoPreviewOverlay.vue'
+import { computed, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import type { CSSProperties } from 'vue';
+import { Maximize, Play } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import SnVideoControls from './SnVideoControls.vue';
+import SnVideoPreviewOverlay from './SnVideoPreviewOverlay.vue';
 
-defineOptions({ name: 'SnVideoPreview' })
+defineOptions({ name: 'SnVideoPreview' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Video source. Required. */
-    src: string
+    src: string;
     /** Poster shown before playback starts. Ignored while `background`. */
-    poster?: string | undefined
+    poster?: string | undefined;
     /** Dedicated (larger) overlay url; falls back to `src`. */
-    previewSrc?: string | undefined
+    previewSrc?: string | undefined;
     /** Box width (number → px). Ignored while `background` (fills the parent). */
-    width?: string | number
+    width?: string | number;
     /** Box height (number → px). Explicit `undefined` keeps the ratio. */
-    height?: string | number | undefined
+    height?: string | number | undefined;
     /** Box aspect ratio applied when no explicit `height` is given, e.g. `'16 / 9'`. */
-    aspectRatio?: string | undefined
+    aspectRatio?: string | undefined;
     /** How the video fits its box. Forced to `'cover'` while `background`. */
-    objectFit?: 'contain' | 'cover' | 'fill'
+    objectFit?: 'contain' | 'cover' | 'fill';
     /** Render OUR custom, beautified control bar (never the native one). */
-    controls?: boolean
+    controls?: boolean;
     /** Render the browser's own `controls` attribute (unstylable, UA-drawn). */
-    nativeControls?: boolean
+    nativeControls?: boolean;
     /**
      * Decorative banner / section-background mode: no controls at all, forced
      * `muted` + `autoplay` + `loop` + `cover`, fills the positioned parent and
      * the video is `aria-hidden` + `pointer-events: none`.
      */
-    background?: boolean
+    background?: boolean;
     /** Start inline playback on mount (browsers require `muted` for this). */
-    autoplay?: boolean
+    autoplay?: boolean;
     /** Loop inline playback. */
-    loop?: boolean
+    loop?: boolean;
     /** Mute inline playback. */
-    muted?: boolean
+    muted?: boolean;
     /** Preload strategy. */
-    preload?: 'none' | 'metadata' | 'auto'
+    preload?: 'none' | 'metadata' | 'auto';
     /** Disable the overlay: no toolbar affordance, `showPreview()` is a no-op. */
-    previewDisabled?: boolean
+    previewDisabled?: boolean;
     /** Render the top-right overlay affordance. */
-    showToolbar?: boolean
+    showToolbar?: boolean;
     /** Close the overlay when its mask is clicked. */
-    closeOnMaskClick?: boolean
+    closeOnMaskClick?: boolean;
     /** Overlay header text, and the accessible name of the video. */
-    title?: string | undefined
+    title?: string | undefined;
     /** Accessible description of the video; takes precedence over `title`. */
-    alt?: string | undefined
+    alt?: string | undefined;
   }>(),
   {
     poster: undefined,
@@ -153,55 +153,53 @@ const props = withDefaults(
     title: undefined,
     alt: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Inline playback started. */
-  (e: 'play'): void
+  (e: 'play'): void;
   /** Inline playback paused. */
-  (e: 'pause'): void
+  (e: 'pause'): void;
   /** Inline playback reached the end. */
-  (e: 'ended'): void
+  (e: 'ended'): void;
   /** The video element failed to load or decode. */
-  (e: 'error', event: Event): void
+  (e: 'error', event: Event): void;
   /** The overlay was opened. */
-  (e: 'preview'): void
+  (e: 'preview'): void;
   /** The overlay was closed (ESC / mask / close button / `closePreview()`). */
-  (e: 'close'): void
-}>()
+  (e: 'close'): void;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 defineSlots<{
   /** Replaces the poster area while there is no poster and/or the video has not started. */
-  placeholder?(): unknown
+  placeholder?(): unknown;
   /** Replaces the centered play glyph. */
-  'play-icon'?(): unknown
+  'play-icon'?(): unknown;
   /** Replaces the top-right overlay affordance; receives the open trigger. */
-  toolbar?(props: { showPreview: () => void }): unknown
-}>()
+  toolbar?(props: { showPreview: () => void }): unknown;
+}>();
 
 /* ── Effective media flags (background mode overrides the props) ─────────── */
 
 /** A decorative banner never shows player chrome — from either source. */
-const hasControls = computed(() => !props.background && props.controls)
-const hasNativeControls = computed(() => !props.background && props.nativeControls)
-const isAutoplay = computed(() => props.background || props.autoplay)
-const isLoop = computed(() => props.background || props.loop)
+const hasControls = computed(() => !props.background && props.controls);
+const hasNativeControls = computed(() => !props.background && props.nativeControls);
+const isAutoplay = computed(() => props.background || props.autoplay);
+const isLoop = computed(() => props.background || props.loop);
 /** Forced on for `background` and for `autoplay`: browsers only autoplay muted. */
-const isMuted = computed(() => props.background || props.muted || props.autoplay)
-const effectiveObjectFit = computed(() => (props.background ? 'cover' : props.objectFit))
+const isMuted = computed(() => props.background || props.muted || props.autoplay);
+const effectiveObjectFit = computed(() => (props.background ? 'cover' : props.objectFit));
 
 /** `aria-hidden` drops the video for AT; a scrim would only cover a banner. */
-const isPosterVisible = computed(() => !props.background && props.poster !== undefined)
-const isPreviewAvailable = computed(
-  () => !props.background && !props.previewDisabled,
-)
+const isPosterVisible = computed(() => !props.background && props.poster !== undefined);
+const isPreviewAvailable = computed(() => !props.background && !props.previewDisabled);
 
 /* ── Layout ─────────────────────────────────────────────────────────────── */
 
 function toCssSize(value: string | number): string {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 /**
@@ -210,44 +208,44 @@ function toCssSize(value: string | number): string {
  * shorthands (happy-dom's drops it), so the four longhands are the portable
  * way to write `inset: 0` from JS.
  */
-const ROOT_INSET_STYLE: CSSProperties = { top: '0', right: '0', bottom: '0', left: '0' }
+const ROOT_INSET_STYLE: CSSProperties = { top: '0', right: '0', bottom: '0', left: '0' };
 
 const rootStyle = computed<CSSProperties>(() => {
   // `background` drops into a positioned hero section: it fills that parent and
   // paints behind the hero's own content without any wrapper markup.
   if (props.background) {
-    return { position: 'absolute', ...ROOT_INSET_STYLE, zIndex: 0 }
+    return { position: 'absolute', ...ROOT_INSET_STYLE, zIndex: 0 };
   }
-  const style: CSSProperties = { width: toCssSize(props.width) }
-  if (props.height !== undefined) style.height = toCssSize(props.height)
-  else if (props.aspectRatio) style.aspectRatio = props.aspectRatio
-  return style
-})
+  const style: CSSProperties = { width: toCssSize(props.width) };
+  if (props.height !== undefined) style.height = toCssSize(props.height);
+  else if (props.aspectRatio) style.aspectRatio = props.aspectRatio;
+  return style;
+});
 
 const videoStyle = computed<CSSProperties>(() => {
-  const style: CSSProperties = { objectFit: effectiveObjectFit.value }
-  if (props.background) style.pointerEvents = 'none'
-  return style
-})
+  const style: CSSProperties = { objectFit: effectiveObjectFit.value };
+  if (props.background) style.pointerEvents = 'none';
+  return style;
+});
 
 /* ── State ──────────────────────────────────────────────────────────────── */
 
-const videoRef = ref<HTMLVideoElement | null>(null)
-const previewButtonRef = ref<HTMLButtonElement | null>(null)
-const isPlaying = ref(false)
-const loaded = ref(false)
-const previewShow = ref(false)
+const videoRef = ref<HTMLVideoElement | null>(null);
+const previewButtonRef = ref<HTMLButtonElement | null>(null);
+const isPlaying = ref(false);
+const loaded = ref(false);
+const previewShow = ref(false);
 
 /* Custom control bar state (fed by the media element's own events). */
-const currentTime = ref(0)
-const duration = ref(0)
-const isMutedState = ref(props.muted)
-const isFullscreen = ref(false)
+const currentTime = ref(0);
+const duration = ref(0);
+const isMutedState = ref(props.muted);
+const isFullscreen = ref(false);
 /** Feature detection: absent in happy-dom and in some embedded WebViews. */
-const canFullscreen = ref(false)
+const canFullscreen = ref(false);
 
-const mergedPreviewSrc = computed(() => props.previewSrc || props.src)
-const mediaLabel = computed(() => props.alt || props.title)
+const mergedPreviewSrc = computed(() => props.previewSrc || props.src);
+const mediaLabel = computed(() => props.alt || props.title);
 
 const isPlaceholderVisible = computed(
   () =>
@@ -255,52 +253,52 @@ const isPlaceholderVisible = computed(
     !props.background &&
     !isPlaying.value &&
     (!props.poster || !loaded.value),
-)
+);
 
 /** Mirror `props.muted` into local state so the bar reflects prop updates. */
 watch(
   () => props.muted,
   (value) => {
-    if (!isMuted.value) isMutedState.value = value
+    if (!isMuted.value) isMutedState.value = value;
   },
-)
+);
 
 watch(isMuted, (value) => {
-  if (value) isMutedState.value = true
-})
+  if (value) isMutedState.value = true;
+});
 
 /* ── Media helpers (guarded: no media engine in happy-dom, play() may reject) ── */
 
 /** `HTMLMediaElement.play()` may be missing (test env) or reject (autoplay policy). */
 function attemptPlay(): void {
-  const el = videoRef.value
-  if (!el || typeof el.play !== 'function') return
-  isPlaying.value = true
-  const result: unknown = el.play()
+  const el = videoRef.value;
+  if (!el || typeof el.play !== 'function') return;
+  isPlaying.value = true;
+  const result: unknown = el.play();
   if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
     void (result as Promise<unknown>).catch(() => {
       // Playback refused — fall back to the poster state.
-      isPlaying.value = false
-    })
+      isPlaying.value = false;
+    });
   }
 }
 
 /** Pause inline playback; also exposed for manual control. */
 function pause(): void {
-  const el = videoRef.value
-  if (!el) return
-  if (typeof el.pause === 'function') el.pause()
-  isPlaying.value = false
+  const el = videoRef.value;
+  if (!el) return;
+  if (typeof el.pause === 'function') el.pause();
+  isPlaying.value = false;
 }
 
 /** Start inline playback; also exposed for manual control. */
 function play(): void {
-  attemptPlay()
+  attemptPlay();
 }
 
 function togglePlay(): void {
-  if (isPlaying.value) pause()
-  else attemptPlay()
+  if (isPlaying.value) pause();
+  else attemptPlay();
 }
 
 /**
@@ -309,10 +307,10 @@ function togglePlay(): void {
  * default (no audio at all in `background` mode).
  */
 function syncMuted(): void {
-  const el = videoRef.value
-  if (!el) return
-  if (el.muted !== isMuted.value) el.muted = isMuted.value
-  isMutedState.value = el.muted
+  const el = videoRef.value;
+  if (!el) return;
+  if (el.muted !== isMuted.value) el.muted = isMuted.value;
+  isMutedState.value = el.muted;
 }
 
 /**
@@ -321,8 +319,8 @@ function syncMuted(): void {
  * must mirror the element rather than the prop.
  */
 function syncMutedStateFromElement(): void {
-  const el = videoRef.value
-  if (el) isMutedState.value = el.muted
+  const el = videoRef.value;
+  if (el) isMutedState.value = el.muted;
 }
 
 /**
@@ -331,88 +329,82 @@ function syncMutedStateFromElement(): void {
  * player chrome at all.
  */
 function handleVideoClick(): void {
-  if (hasControls.value || hasNativeControls.value) return
-  togglePlay()
+  if (hasControls.value || hasNativeControls.value) return;
+  togglePlay();
 }
 
 function handlePlayButtonClick(): void {
-  attemptPlay()
+  attemptPlay();
 }
 
 function handleVideoPlay(): void {
-  isPlaying.value = true
-  loaded.value = true
+  isPlaying.value = true;
+  loaded.value = true;
   // Mirror what the element actually does (it fires `play` on autoplay too).
-  syncMutedStateFromElement()
-  emit('play')
+  syncMutedStateFromElement();
+  emit('play');
 }
 
 function handleVideoPause(): void {
-
-  isPlaying.value = false
-  emit('pause')
+  isPlaying.value = false;
+  emit('pause');
 }
 
 function handleVideoEnded(): void {
-  isPlaying.value = false
-  emit('ended')
+  isPlaying.value = false;
+  emit('ended');
 }
 
 function handleVideoError(event: Event): void {
-  loaded.value = true
-  emit('error', event)
+  loaded.value = true;
+  emit('error', event);
 }
 
 function handleLoadedData(): void {
-  loaded.value = true
+  loaded.value = true;
 }
 
 /* ── Custom bar bridge (bar → media element) ────────────────────────────── */
 
 function handleBarTogglePlay(): void {
-  togglePlay()
+  togglePlay();
 }
 
 function handleBarToggleMute(): void {
-  const el = videoRef.value
-  const next = !isMutedState.value
-  if (el) el.muted = next
-  isMutedState.value = el ? el.muted : next
+  const el = videoRef.value;
+  const next = !isMutedState.value;
+  if (el) el.muted = next;
+  isMutedState.value = el ? el.muted : next;
 }
 
 function handleBarSeek(time: number): void {
-  const el = videoRef.value
-  if (!el) return
-  el.currentTime = time
-  currentTime.value = time
+  const el = videoRef.value;
+  if (!el) return;
+  el.currentTime = time;
+  currentTime.value = time;
 }
 
 /* ── Element listeners (§41: every one is removed on unmount) ───────────── */
 
-const MEDIA_EVENTS = [
-  'timeupdate',
-  'loadedmetadata',
-  'durationchange',
-  'volumechange',
-] as const
+const MEDIA_EVENTS = ['timeupdate', 'loadedmetadata', 'durationchange', 'volumechange'] as const;
 
 function handleTimeUpdate(): void {
-  const el = videoRef.value
-  if (el) currentTime.value = el.currentTime
+  const el = videoRef.value;
+  if (el) currentTime.value = el.currentTime;
 }
 
 function handleLoadedMetadata(): void {
-  const el = videoRef.value
-  if (el) duration.value = el.duration
+  const el = videoRef.value;
+  if (el) duration.value = el.duration;
 }
 
 function handleDurationChange(): void {
-  const el = videoRef.value
-  if (el && Number.isFinite(el.duration)) duration.value = el.duration
+  const el = videoRef.value;
+  if (el && Number.isFinite(el.duration)) duration.value = el.duration;
 }
 
 function handleVolumeChange(): void {
-  syncMutedStateFromElement()
+  syncMutedStateFromElement();
 }
 
 const mediaListeners: Record<(typeof MEDIA_EVENTS)[number], () => void> = {
@@ -420,22 +412,22 @@ const mediaListeners: Record<(typeof MEDIA_EVENTS)[number], () => void> = {
   loadedmetadata: handleLoadedMetadata,
   durationchange: handleDurationChange,
   volumechange: handleVolumeChange,
-}
+};
 
-let listenedVideo: HTMLVideoElement | null = null
+let listenedVideo: HTMLVideoElement | null = null;
 
 function attachVideoListeners(): void {
-  const el = videoRef.value
-  if (!el) return
-  for (const name of MEDIA_EVENTS) el.addEventListener(name, mediaListeners[name])
-  listenedVideo = el
+  const el = videoRef.value;
+  if (!el) return;
+  for (const name of MEDIA_EVENTS) el.addEventListener(name, mediaListeners[name]);
+  listenedVideo = el;
 }
 
 function detachVideoListeners(): void {
-  const el = listenedVideo
-  if (!el) return
-  for (const name of MEDIA_EVENTS) el.removeEventListener(name, mediaListeners[name])
-  listenedVideo = null
+  const el = listenedVideo;
+  if (!el) return;
+  for (const name of MEDIA_EVENTS) el.removeEventListener(name, mediaListeners[name]);
+  listenedVideo = null;
 }
 
 /* ── Fullscreen (feature-detected; owns its own document listener) ──────── */
@@ -447,100 +439,100 @@ function detachVideoListeners(): void {
  * button is worse than offering none.
  */
 function supportsFullscreen(el: HTMLVideoElement): boolean {
-  const request: unknown = (el as unknown as { requestFullscreen?: unknown }).requestFullscreen
-  const exit: unknown = (document as unknown as { exitFullscreen?: unknown }).exitFullscreen
+  const request: unknown = (el as unknown as { requestFullscreen?: unknown }).requestFullscreen;
+  const exit: unknown = (document as unknown as { exitFullscreen?: unknown }).exitFullscreen;
   return (
     typeof request === 'function' &&
     typeof exit === 'function' &&
     Object.prototype.hasOwnProperty.call(document, 'fullscreenElement')
-  )
+  );
 }
 
 function isVideoFullscreen(el: HTMLVideoElement | null): boolean {
-  if (!el) return false
-  return document.fullscreenElement === el
+  if (!el) return false;
+  return document.fullscreenElement === el;
 }
 
 function handleFullscreenChange(): void {
-  isFullscreen.value = isVideoFullscreen(videoRef.value)
+  isFullscreen.value = isVideoFullscreen(videoRef.value);
 }
 
 function toggleFullscreen(): void {
-  const el = videoRef.value
-  if (!el || !canFullscreen.value) return
-  const doc = document as unknown as { exitFullscreen: () => Promise<void> | void }
+  const el = videoRef.value;
+  if (!el || !canFullscreen.value) return;
+  const doc = document as unknown as { exitFullscreen: () => Promise<void> | void };
   if (isVideoFullscreen(el)) {
-    void doc.exitFullscreen()
-    return
+    void doc.exitFullscreen();
+    return;
   }
   const request = (el as unknown as { requestFullscreen: () => Promise<void> | void })
-    .requestFullscreen
-  const result: unknown = request.call(el)
+    .requestFullscreen;
+  const result: unknown = request.call(el);
   if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
     void (result as Promise<unknown>).catch(() => {
       // Rejected (permissions / gesture) — stay inline, no UI state change.
-    })
+    });
   }
 }
 
 onMounted(() => {
-  const el = videoRef.value
+  const el = videoRef.value;
   if (el) {
-    canFullscreen.value = supportsFullscreen(el)
+    canFullscreen.value = supportsFullscreen(el);
     // Autoplay+muted fallback: the attribute alone is not enough everywhere.
-    if (isAutoplay.value) syncMuted()
+    if (isAutoplay.value) syncMuted();
   }
   if (canFullscreen.value && typeof document !== 'undefined') {
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
   }
-  attachVideoListeners()
-})
+  attachVideoListeners();
+});
 
 onBeforeUnmount(() => {
   if (typeof document !== 'undefined') {
-    document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }
-  detachVideoListeners()
+  detachVideoListeners();
   // The overlay owns its own listeners and removes them on its own unmount.
-  const el = videoRef.value
-  if (!el) return
-  if (typeof el.pause === 'function') el.pause()
-  el.removeAttribute('src')
-  if (typeof el.load === 'function') el.load()
-})
+  const el = videoRef.value;
+  if (!el) return;
+  if (typeof el.pause === 'function') el.pause();
+  el.removeAttribute('src');
+  if (typeof el.load === 'function') el.load();
+});
 
 /* ── Overlay ────────────────────────────────────────────────────────────── */
 
 /** Return focus to the affordance that opened the overlay. */
 function focusPreviewTrigger(): void {
-  const el = previewButtonRef.value
-  if (el && typeof el.focus === 'function') el.focus()
+  const el = previewButtonRef.value;
+  if (el && typeof el.focus === 'function') el.focus();
 }
 
 /** Open the overlay (also exposed for manual control, as in SnImage). */
 function showPreview(): void {
-  if (props.previewDisabled || props.background) return
-  previewShow.value = true
-  emit('preview')
+  if (props.previewDisabled || props.background) return;
+  previewShow.value = true;
+  emit('preview');
 }
 
 /** Close the overlay (also exposed for manual control). */
 function closePreview(): void {
-  if (!previewShow.value) return
-  previewShow.value = false
-  emit('close')
-  focusPreviewTrigger()
+  if (!previewShow.value) return;
+  previewShow.value = false;
+  emit('close');
+  focusPreviewTrigger();
 }
 
 /** Overlay closed from inside (ESC / mask / close button). */
 function handleOverlayClose(): void {
-  previewShow.value = false
-  emit('close')
-  focusPreviewTrigger()
+  previewShow.value = false;
+  emit('close');
+  focusPreviewTrigger();
 }
 
 function handleOverlayUpdateShow(value: boolean): void {
-  previewShow.value = value
+  previewShow.value = value;
 }
 
 defineExpose({
@@ -552,7 +544,7 @@ defineExpose({
   showPreview,
   /** Close the full-screen preview overlay. */
   closePreview,
-})
+});
 </script>
 
 <template>
@@ -606,10 +598,7 @@ defineExpose({
       </button>
     </div>
 
-    <div
-      v-if="showToolbar && isPreviewAvailable"
-      class="sn-video-preview__toolbar"
-    >
+    <div v-if="showToolbar && isPreviewAvailable" class="sn-video-preview__toolbar">
       <slot name="toolbar" :show-preview="showPreview">
         <button
           ref="previewButtonRef"
@@ -701,7 +690,10 @@ defineExpose({
   overflow: hidden;
   pointer-events: none;
   color: var(--sn-web-video-preview-placeholder-color, var(--sn-web-color-text-tertiary, #8a8a8a));
-  background: var(--sn-web-video-preview-placeholder-bg, var(--sn-web-color-background-subtle, #f5f5f5));
+  background: var(
+    --sn-web-video-preview-placeholder-bg,
+    var(--sn-web-color-background-subtle, #f5f5f5)
+  );
   font-size: var(--sn-web-font-size-sm, 13px);
   line-height: var(--sn-web-font-line-height-normal, 1.6);
 }

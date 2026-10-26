@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnQrCode — canvas vs svg render targets (both stay crisp). */
-import { ref } from 'vue'
-import { SnQrCode } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnQrCode } from '@snui/vue-web';
 
-const text = ref('雨淋湿了天空')
+const text = ref('雨淋湿了天空');
 </script>
 
 <template>
@@ -14,5 +14,9 @@ const text = ref('雨淋湿了天空')
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: flex-start; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
 </style>

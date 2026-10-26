@@ -10,7 +10,7 @@ Wrap the content that should stay pinned; it stays visible while the scroll cont
 
 ## Custom offset and stacking level
 
- sets the sticky distance and  sets the level against neighbouring sticky elements:
+sets the sticky distance and sets the level against neighbouring sticky elements:
 
 <Demo name="sticky-mp-offset" description="offset-top=24 sticks 24px from the top; z-index=20 sets the stacking level." />
 
@@ -33,17 +33,17 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue'
+import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `zIndex` | `number` | `1` | Stacking level |
-| `offsetTop` | `number` | `0` | Sticky offset in px |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type     | Default | Description                   |
+| ------------- | -------- | ------- | ----------------------------- |
+| `zIndex`      | `number` | `1`     | Stacking level                |
+| `offsetTop`   | `number` | `0`     | Sticky offset in px           |
+| `customClass` | `string` | `''`    | Extra class on the root node  |
+| `customStyle` | `string` | `''`    | Inline style on the root node |
 
 ## Events
 
@@ -51,14 +51,14 @@ None. `sn-sticky` is pure CSS (`position: sticky`): it registers no scroll liste
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description    |
+| --------- | -------------- |
 | `default` | Content to pin |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
+| Variable                           | Purpose                                             |
+| ---------------------------------- | --------------------------------------------------- |
 | `--sn-mp-color-background-surface` | Sticky surface (keeps content from showing through) |
 
 ## Accessibility
@@ -72,7 +72,6 @@ None. `sn-sticky` is pure CSS (`position: sticky`): it registers no scroll liste
 `sn-sticky` consumes exactly one colour token, `--sn-mp-color-background-surface`, with no light `var()` fallback, so the surface flips to the dark background automatically under `.sn-theme-dark` and no light content shows through while pinned.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

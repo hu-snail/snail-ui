@@ -37,52 +37,52 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | 是否显示（`v-model`） |
-| `src` | `string` | `''` | 幕帘图片地址（网络地址 / 包内路径） |
-| `width` | `number` | `0` | 图片宽度（设计稿 px）；`0` 铺满屏宽 |
-| `to` | `string` | `''` | 点击图片跳转的页面路径 |
-| `closePosition` | `'inset' \| 'top' \| 'bottom' \| 'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'inset'` | 关闭按钮位置 |
-| `closeOnClickModal` | `boolean` | `false` | 点击遮罩是否关闭 |
-| `closeOnClick` | `boolean` | `true` | 点击图片是否关闭 |
-| `hideWhenClose` | `boolean` | `true` | 关闭后是否移除节点 |
-| `zIndex` | `number` | `10` | 层级 |
-| `customCloseClass` | `string` | `''` | 关闭按钮自定义类名 |
-| `customCloseStyle` | `string` | `''` | 关闭按钮自定义样式 |
-| `showMenuByLongpress` | `boolean` | `false` | 长按图片显示识别菜单（仅微信小程序） |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
-| `rootPortal` | `boolean` | `false` | **未实现**（小程序无 portal 宿主） |
+| 属性                  | 类型                                                                                           | 默认值    | 说明                                 |
+| --------------------- | ---------------------------------------------------------------------------------------------- | --------- | ------------------------------------ |
+| `modelValue`          | `boolean`                                                                                      | `false`   | 是否显示（`v-model`）                |
+| `src`                 | `string`                                                                                       | `''`      | 幕帘图片地址（网络地址 / 包内路径）  |
+| `width`               | `number`                                                                                       | `0`       | 图片宽度（设计稿 px）；`0` 铺满屏宽  |
+| `to`                  | `string`                                                                                       | `''`      | 点击图片跳转的页面路径               |
+| `closePosition`       | `'inset' \| 'top' \| 'bottom' \| 'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'inset'` | 关闭按钮位置                         |
+| `closeOnClickModal`   | `boolean`                                                                                      | `false`   | 点击遮罩是否关闭                     |
+| `closeOnClick`        | `boolean`                                                                                      | `true`    | 点击图片是否关闭                     |
+| `hideWhenClose`       | `boolean`                                                                                      | `true`    | 关闭后是否移除节点                   |
+| `zIndex`              | `number`                                                                                       | `10`      | 层级                                 |
+| `customCloseClass`    | `string`                                                                                       | `''`      | 关闭按钮自定义类名                   |
+| `customCloseStyle`    | `string`                                                                                       | `''`      | 关闭按钮自定义样式                   |
+| `showMenuByLongpress` | `boolean`                                                                                      | `false`   | 长按图片显示识别菜单（仅微信小程序） |
+| `customClass`         | `string`                                                                                       | `''`      | 根节点自定义类名                     |
+| `customStyle`         | `string`                                                                                       | `''`      | 根节点自定义样式                     |
+| `rootPortal`          | `boolean`                                                                                      | `false`   | **未实现**（小程序无 portal 宿主）   |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 显隐变化 | `(value: boolean)` |
-| `click` | 点击幕帘图片 | — |
-| `close` | 请求关闭（图片 / 遮罩 / 关闭按钮） | — |
-| `closed` | 离开动画结束 | — |
-| `click-modal` | 点击遮罩 | — |
-| `before-enter` / `enter` / `after-enter` | 进入动画三阶段 | — |
-| `before-leave` / `leave` / `after-leave` | 离开动画三阶段 | — |
-| `load` | 图片加载完成 | `(event: Event)` |
-| `error` | 图片加载失败（幕帘自动隐藏） | — |
+| 事件名                                   | 说明                               | 参数               |
+| ---------------------------------------- | ---------------------------------- | ------------------ |
+| `update:modelValue`                      | 显隐变化                           | `(value: boolean)` |
+| `click`                                  | 点击幕帘图片                       | —                  |
+| `close`                                  | 请求关闭（图片 / 遮罩 / 关闭按钮） | —                  |
+| `closed`                                 | 离开动画结束                       | —                  |
+| `click-modal`                            | 点击遮罩                           | —                  |
+| `before-enter` / `enter` / `after-enter` | 进入动画三阶段                     | —                  |
+| `before-leave` / `leave` / `after-leave` | 离开动画三阶段                     | —                  |
+| `load`                                   | 图片加载完成                       | `(event: Event)`   |
+| `error`                                  | 图片加载失败（幕帘自动隐藏）       | —                  |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                         |
+| ------- | ---------------------------- |
 | `close` | 自定义关闭按钮，替换内置图标 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | 全屏遮罩 |
-| `--sn-mp-color-background-elevated` | 关闭按钮底色 |
-| `--sn-mp-color-text-secondary` | 关闭按钮图标 |
-| `--sn-mp-color-border-default` | 关闭按钮描边 |
+| 变量                                        | 用途                    |
+| ------------------------------------------- | ----------------------- |
+| `--sn-mp-color-background-overlay`          | 全屏遮罩                |
+| `--sn-mp-color-background-elevated`         | 关闭按钮底色            |
+| `--sn-mp-color-text-secondary`              | 关闭按钮图标            |
+| `--sn-mp-color-border-default`              | 关闭按钮描边            |
 | `--sn-mp-radius-md` / `--sn-mp-radius-full` | 图片圆角 / 关闭按钮圆形 |
 
 ## 无障碍

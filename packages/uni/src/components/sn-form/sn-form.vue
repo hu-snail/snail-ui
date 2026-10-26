@@ -13,62 +13,62 @@
  * sn-form-validator.ts.
  */
 
-import { computed, onBeforeUnmount, provide, reactive } from 'vue'
+import { computed, onBeforeUnmount, provide, reactive } from 'vue';
 import {
   FORM_CONTEXT_KEY,
   type FormItemHandle,
   type FormItemState,
   type FormRules,
   setByPath,
-} from './sn-form-types'
+} from './sn-form-types';
 
-defineOptions({ name: 'SnForm' })
+defineOptions({ name: 'SnForm' });
 
 const props = withDefaults(
   defineProps<{
-    model: Record<string, unknown>
-    rules?: FormRules
-    showMessage?: boolean
-    statusIcon?: boolean
-    labelPosition?: 'left' | 'right' | 'top'
-    labelWidth?: number | string
-    disabled?: boolean
+    model: Record<string, unknown>;
+    rules?: FormRules;
+    showMessage?: boolean;
+    statusIcon?: boolean;
+    labelPosition?: 'left' | 'right' | 'top';
+    labelWidth?: number | string;
+    disabled?: boolean;
 
     /* ── wot-ui `wd-form` 1:1 parity props ─────────────────────────────── */
 
     /** When to fire field-level validation. */
-    validateTrigger?: 'blur' | 'change'
+    validateTrigger?: 'blur' | 'change';
     /** Reset every field's error state when the model is mutated externally. */
-    resetOnChange?: boolean
+    resetOnChange?: boolean;
     /** Error display strategy: inline message / toast / silent. */
-    errorType?: 'message' | 'toast' | 'none'
+    errorType?: 'message' | 'toast' | 'none';
     /** Add a hairline divider under every FormItem. */
-    border?: boolean
+    border?: boolean;
     /** Vertically center every FormItem's control column. */
-    center?: boolean
+    center?: boolean;
     /** Default size for descendant FormItems. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Right-align the field value column (Cell-style menus). */
-    valueAlign?: 'left' | 'right'
+    valueAlign?: 'left' | 'right';
     /** Asterisk position for required fields. */
-    asteriskPosition?: 'left' | 'right'
+    asteriskPosition?: 'left' | 'right';
     /** Hide the asterisk on required fields. */
-    hideAsterisk?: boolean
+    hideAsterisk?: boolean;
     /** Truncate long labels with ellipsis. */
-    ellipsis?: boolean
+    ellipsis?: boolean;
     /**
      * Form-level validation schema (`wd-form` `schema`). Declared for parity;
      * rules are still supplied through `rules` / per-item `rules`, so this
      * object is stored on the context and never interpreted here.
      */
-    schema?: Record<string, unknown> | undefined
+    schema?: Record<string, unknown> | undefined;
     /** Left title column width (`wd-form` `title-width`). Inherited by items. */
-    titleWidth?: number | string | undefined
+    titleWidth?: number | string | undefined;
     /**
      * Cell layout (`wd-form` `layout`): `horizontal` puts label and control
      * side by side, `vertical` stacks them. Inherited by items.
      */
-    layout?: 'horizontal' | 'vertical'
+    layout?: 'horizontal' | 'vertical';
   }>(),
   {
     rules: () => ({}),
@@ -91,17 +91,17 @@ const props = withDefaults(
     titleWidth: undefined,
     layout: 'horizontal',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'validate', payload: { valid: boolean; errors: Record<string, string> }): void
-  (e: 'reset'): void
-  (e: 'submit', payload: { valid: boolean }): void
-}>()
+  (e: 'validate', payload: { valid: boolean; errors: Record<string, string> }): void;
+  (e: 'reset'): void;
+  (e: 'submit', payload: { valid: boolean }): void;
+}>();
 
 defineSlots<{
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const ctx = reactive({
   model: props.model,
@@ -126,108 +126,108 @@ const ctx = reactive({
   schema: props.schema,
   titleWidth: props.titleWidth,
   layout: props.layout,
-})
+});
 
-ctx.model = props.model
-ctx.rules = props.rules
-ctx.showMessage = props.showMessage
-ctx.labelPosition = props.labelPosition
+ctx.model = props.model;
+ctx.rules = props.rules;
+ctx.showMessage = props.showMessage;
+ctx.labelPosition = props.labelPosition;
 /* `title-width` is wd-form's name for the label column width; folding it into
  * `labelWidth` is what lets every descendant FormItem inherit it without a
  * second inheritance channel. */
-ctx.labelWidth = props.titleWidth ?? props.labelWidth
-ctx.disabled = props.disabled
-ctx.validateTrigger = props.validateTrigger
-ctx.resetOnChange = props.resetOnChange
-ctx.errorType = props.errorType
-ctx.size = props.size
-ctx.valueAlign = props.valueAlign
-ctx.asteriskPosition = props.asteriskPosition
-ctx.hideAsterisk = props.hideAsterisk
-ctx.ellipsis = props.ellipsis
-ctx.border = props.border
-ctx.center = props.center
-ctx.schema = props.schema
-ctx.titleWidth = props.titleWidth
-ctx.layout = props.layout
+ctx.labelWidth = props.titleWidth ?? props.labelWidth;
+ctx.disabled = props.disabled;
+ctx.validateTrigger = props.validateTrigger;
+ctx.resetOnChange = props.resetOnChange;
+ctx.errorType = props.errorType;
+ctx.size = props.size;
+ctx.valueAlign = props.valueAlign;
+ctx.asteriskPosition = props.asteriskPosition;
+ctx.hideAsterisk = props.hideAsterisk;
+ctx.ellipsis = props.ellipsis;
+ctx.border = props.border;
+ctx.center = props.center;
+ctx.schema = props.schema;
+ctx.titleWidth = props.titleWidth;
+ctx.layout = props.layout;
 
-provide(FORM_CONTEXT_KEY, ctx)
+provide(FORM_CONTEXT_KEY, ctx);
 
-const items = new Map<string, FormItemHandle>()
-let registryOrder: string[] = []
+const items = new Map<string, FormItemHandle>();
+let registryOrder: string[] = [];
 
-const initialValues = new Map<string, unknown>()
+const initialValues = new Map<string, unknown>();
 for (const key of Object.keys(props.model)) {
-  initialValues.set(key, deepClone(props.model[key]))
+  initialValues.set(key, deepClone(props.model[key]));
 }
 
 function registerItem(handle: FormItemHandle): void {
-  items.set(handle.prop, handle)
-  if (!registryOrder.includes(handle.prop)) registryOrder.push(handle.prop)
+  items.set(handle.prop, handle);
+  if (!registryOrder.includes(handle.prop)) registryOrder.push(handle.prop);
   if (!initialValues.has(handle.prop)) {
-    initialValues.set(handle.prop, deepClone(ctx.model[handle.prop]))
+    initialValues.set(handle.prop, deepClone(ctx.model[handle.prop]));
   }
 }
 
 function unregisterItem(prop: string): void {
-  items.delete(prop)
-  registryOrder = registryOrder.filter((p) => p !== prop)
+  items.delete(prop);
+  registryOrder = registryOrder.filter((p) => p !== prop);
 }
 
-provide('sn-form-api' as never, { registerItem, unregisterItem } as never)
+provide('sn-form-api' as never, { registerItem, unregisterItem } as never);
 
 async function validate(): Promise<boolean> {
-  const errors: Record<string, string> = {}
-  let valid = true
+  const errors: Record<string, string> = {};
+  let valid = true;
   for (const prop of registryOrder) {
-    const handle = items.get(prop)
-    if (!handle) continue
-    const ok = await handle.validate()
+    const handle = items.get(prop);
+    if (!handle) continue;
+    const ok = await handle.validate();
     if (!ok) {
-      valid = false
-      const state = (handle as FormItemHandle & { state?: FormItemState }).state
-      if (state) errors[prop] = state.message.value
+      valid = false;
+      const state = (handle as FormItemHandle & { state?: FormItemState }).state;
+      if (state) errors[prop] = state.message.value;
     }
   }
-  emit('validate', { valid, errors })
-  return valid
+  emit('validate', { valid, errors });
+  return valid;
 }
 
 async function validateField(prop: string | string[]): Promise<boolean> {
-  const props = Array.isArray(prop) ? prop : [prop]
-  let valid = true
+  const props = Array.isArray(prop) ? prop : [prop];
+  let valid = true;
   for (const p of props) {
-    const handle = items.get(p)
-    if (!handle) continue
-    const ok = await handle.validate()
-    if (!ok) valid = false
+    const handle = items.get(p);
+    if (!handle) continue;
+    const ok = await handle.validate();
+    if (!ok) valid = false;
   }
-  return valid
+  return valid;
 }
 
 function resetFields(): void {
   for (const [prop, value] of initialValues) {
-    setByPath(ctx.model, prop, value as never)
+    setByPath(ctx.model, prop, value as never);
   }
   for (const handle of items.values()) {
-    handle.resetField()
+    handle.resetField();
   }
-  emit('reset')
+  emit('reset');
 }
 
 function clearValidate(prop?: string | string[]): void {
   if (!prop) {
-    for (const handle of items.values()) handle.clearValidate()
-    return
+    for (const handle of items.values()) handle.clearValidate();
+    return;
   }
-  const targets = Array.isArray(prop) ? prop : [prop]
+  const targets = Array.isArray(prop) ? prop : [prop];
   for (const p of targets) {
-    items.get(p)?.clearValidate()
+    items.get(p)?.clearValidate();
   }
 }
 
 function submit(): void {
-  void validate().then((valid) => emit('submit', { valid }))
+  void validate().then((valid) => emit('submit', { valid }));
 }
 
 const classes = computed(() => [
@@ -243,7 +243,7 @@ const classes = computed(() => [
     'sn-form--hide-asterisk': props.hideAsterisk,
     'sn-form--ellipsis': props.ellipsis,
   },
-])
+]);
 
 defineExpose({
   validate,
@@ -253,23 +253,23 @@ defineExpose({
   registerItem,
   unregisterItem,
   submit,
-})
+});
 
 onBeforeUnmount(() => {
-  items.clear()
-  registryOrder = []
-  initialValues.clear()
-})
+  items.clear();
+  registryOrder = [];
+  initialValues.clear();
+});
 
 function deepClone<T>(value: T): T {
-  if (value === null || value === undefined) return value
-  if (typeof value !== 'object') return value
-  if (Array.isArray(value)) return value.map(deepClone) as unknown as T
-  const out: Record<string, unknown> = {}
+  if (value === null || value === undefined) return value;
+  if (typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map(deepClone) as unknown as T;
+  const out: Record<string, unknown> = {};
   for (const k of Object.keys(value as Record<string, unknown>)) {
-    out[k] = deepClone((value as Record<string, unknown>)[k])
+    out[k] = deepClone((value as Record<string, unknown>)[k]);
   }
-  return out as unknown as T
+  return out as unknown as T;
 }
 </script>
 
@@ -307,9 +307,15 @@ function deepClone<T>(value: T): T {
 }
 
 /* Form-level size hint. */
-.sn-form--size-small { font-size: 24rpx; }
-.sn-form--size-medium { font-size: 28rpx; }
-.sn-form--size-large { font-size: 32rpx; }
+.sn-form--size-small {
+  font-size: 24rpx;
+}
+.sn-form--size-medium {
+  font-size: 28rpx;
+}
+.sn-form--size-large {
+  font-size: 32rpx;
+}
 
 /* Cell layout — `vertical` stacks the label above the control in every
  * descendant FormItem, `horizontal` keeps the two columns side by side. */

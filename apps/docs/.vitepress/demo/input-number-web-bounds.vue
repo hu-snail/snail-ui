@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnInputNumber — bounds / step / stepStrictly. */
-import { ref } from 'vue'
-import { SnInputNumber } from '@snui/vue-web'
-const a = ref(10)
-const b = ref(25)
+import { ref } from 'vue';
+import { SnInputNumber } from '@snui/vue-web';
+const a = ref(10);
+const b = ref(25);
 </script>
 
 <template>
@@ -14,6 +14,13 @@ const b = ref(25)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
-.demo-field { width: 160px; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.demo-field {
+  width: 160px;
+}
 </style>

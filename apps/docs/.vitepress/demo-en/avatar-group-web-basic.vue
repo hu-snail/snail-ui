@@ -1,14 +1,14 @@
 <script setup lang="ts">
 /** Demo: SnAvatarGroup — tightening overlap, shrink scaling, and maxOptions overflow. */
-import { ref } from 'vue'
-import { SnAvatar, SnAvatarGroup } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAvatar, SnAvatarGroup } from '@snui/vue-web';
 
-const members = ['Zhang', 'Li', 'Wang', 'Zhao', 'Liu', 'Chen']
+const members = ['Zhang', 'Li', 'Wang', 'Zhao', 'Liu', 'Chen'];
 
-const expandedCount = ref<number | null>(null)
+const expandedCount = ref<number | null>(null);
 
 function handleExpand(rest: number): void {
-  expandedCount.value = rest
+  expandedCount.value = rest;
 }
 </script>
 

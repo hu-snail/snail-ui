@@ -2,7 +2,7 @@
 /**
  * loading-web-basic — the five built-in size tiers plus a numeric size.
  */
-import { SnLoading } from '@snui/vue-web'
+import { SnLoading } from '@snui/vue-web';
 </script>
 
 <template>

@@ -28,20 +28,20 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `position` | `'fixed' \| 'absolute'` | `'fixed'` | 吸附时使用的 CSS 定位方式。 |
-| `top` | `number` | `undefined` | 触发顶部固定后的 CSS `top`。未设定时使用 `triggerTop`。 |
-| `bottom` | `number` | `undefined` | 触发底部固定后的 CSS `bottom`。未设定时使用 `triggerBottom`。 |
-| `triggerTop` | `number` | `undefined` | 触发顶部固定时与目标元素顶部的距离。未设定时使用 `top`。 |
-| `triggerBottom` | `number` | `undefined` | 触发底部固定时与目标元素底部的距离。未设定时使用 `bottom`。 |
-| `listenTo` | `string \| HTMLElement \| Document \| Window \| (() => HTMLElement)` | `document` | 需要监听滚动的元素。 |
-| `target` | `() => HTMLElement \| undefined` | `undefined` | 计算偏移基准的目标元素。 |
+| 名称            | 类型                                                                 | 默认值      | 说明                                                          |
+| --------------- | -------------------------------------------------------------------- | ----------- | ------------------------------------------------------------- |
+| `position`      | `'fixed' \| 'absolute'`                                              | `'fixed'`   | 吸附时使用的 CSS 定位方式。                                   |
+| `top`           | `number`                                                             | `undefined` | 触发顶部固定后的 CSS `top`。未设定时使用 `triggerTop`。       |
+| `bottom`        | `number`                                                             | `undefined` | 触发底部固定后的 CSS `bottom`。未设定时使用 `triggerBottom`。 |
+| `triggerTop`    | `number`                                                             | `undefined` | 触发顶部固定时与目标元素顶部的距离。未设定时使用 `top`。      |
+| `triggerBottom` | `number`                                                             | `undefined` | 触发底部固定时与目标元素底部的距离。未设定时使用 `bottom`。   |
+| `listenTo`      | `string \| HTMLElement \| Document \| Window \| (() => HTMLElement)` | `document`  | 需要监听滚动的元素。                                          |
+| `target`        | `() => HTMLElement \| undefined`                                     | `undefined` | 计算偏移基准的目标元素。                                      |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称      | 参数 | 说明             |
+| --------- | ---- | ---------------- |
 | `default` | `()` | 需要吸附的内容。 |
 
 ## 触发与释放

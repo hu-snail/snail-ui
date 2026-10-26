@@ -31,41 +31,41 @@
  *   - 栅格布局 — 用 sn-layout / sn-col
  */
 
-import { computed, provide, toRef } from 'vue'
-import { SN_GRID_KEY, type SnGridDirection } from './sn-grid-types'
+import { computed, provide, toRef } from 'vue';
+import { SN_GRID_KEY, type SnGridDirection } from './sn-grid-types';
 
-defineOptions({ name: 'SnGrid' })
+defineOptions({ name: 'SnGrid' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-grid` 1:1 surface ───────────────────────────────────── */
 
     /** 列数。 */
-    column?: number
+    column?: number;
     /** 是否显示边框。 */
-    border?: boolean
+    border?: boolean;
     /** 格子之间的间距，默认单位为 px。 */
-    gutter?: number
+    gutter?: number;
     /** 是否将格子固定为正方形。 */
-    square?: boolean
+    square?: boolean;
     /** 是否开启格子点击反馈。 */
-    clickable?: boolean
+    clickable?: boolean;
     /** 背景颜色设置（内联覆盖，空 = 令牌默认）。 */
-    bgColor?: string
+    bgColor?: string;
     /** 指定 grid-item 按下去的样式类。 */
-    hoverClass?: string
+    hoverClass?: string;
     /** 是否将格子内容居中显示。 */
-    center?: boolean
+    center?: boolean;
     /** 格子内容排列的方向：horizontal / vertical。 */
-    direction?: SnGridDirection
+    direction?: SnGridDirection;
     /** 是否调换图标和文本的位置。 */
-    reverse?: boolean
+    reverse?: boolean;
     /** 图标大小，默认单位为 px。 */
-    iconSize?: string
+    iconSize?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     column: 3,
@@ -82,12 +82,12 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 宫格内容（sn-grid-item 列表）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 provide(SN_GRID_KEY, {
   column: toRef(props, 'column'),
@@ -99,7 +99,7 @@ provide(SN_GRID_KEY, {
   direction: toRef(props, 'direction'),
   reverse: toRef(props, 'reverse'),
   iconSize: toRef(props, 'iconSize'),
-})
+});
 
 const rootClass = computed(() => [
   'sn-grid',
@@ -109,24 +109,19 @@ const rootClass = computed(() => [
     'sn-grid--square': props.square,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.gutter > 0) parts.push(`padding: ${props.gutter / 2}px`)
-  if (props.bgColor) parts.push(`background-color: ${props.bgColor}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.gutter > 0) parts.push(`padding: ${props.gutter / 2}px`);
+  if (props.bgColor) parts.push(`background-color: ${props.bgColor}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 </script>
 
 <template>
-  <view
-    data-snui-component="grid"
-    :class="rootClass"
-    :style="rootStyle"
-    role="list"
-  >
+  <view data-snui-component="grid" :class="rootClass" :style="rootStyle" role="list">
     <slot />
   </view>
 </template>

@@ -66,28 +66,28 @@
  *   <SnWaterfall :min-column-width="200">…</SnWaterfall>
  */
 
-import type { VNodeChild } from 'vue'
-import { Comment, Fragment, computed, isVNode, useSlots } from 'vue'
+import type { VNodeChild } from 'vue';
+import { Comment, Fragment, computed, isVNode, useSlots } from 'vue';
 
-defineOptions({ name: 'SnWaterfall' })
+defineOptions({ name: 'SnWaterfall' });
 
 const props = withDefaults(
   defineProps<{
     /** Logical column count (integer ≥ 1), applied as `column-count`.
      *  Ignored when `minColumnWidth` is set, and when `masonry` is off. */
-    columns?: number
+    columns?: number;
     /** Minimum column width. When set the container uses `column-width`
      *  instead of `column-count`, so the column count follows the
      *  available width (responsive mode) and `columns` is ignored. */
-    minColumnWidth?: number | string
+    minColumnWidth?: number | string;
     /** Gap between columns (number → px). */
-    columnGap?: number | string
+    columnGap?: number | string;
     /** Gap between items (number → px); applied as the bottom margin of
      *  each item box. */
-    rowGap?: number | string
+    rowGap?: number | string;
     /** Convenience "off" switch: `false` renders a plain vertical stack
      *  (single column, no multi-column layout). */
-    masonry?: boolean
+    masonry?: boolean;
   }>(),
   {
     columns: 3,
@@ -95,64 +95,62 @@ const props = withDefaults(
     rowGap: 16,
     masonry: true,
   },
-)
+);
 
 defineSlots<{
   /** Items — each direct child becomes one `.sn-waterfall__item` box. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Functional fragment: renders a captured array of slot vnodes. */
-const VNodes = (props: { nodes: VNodeChild[] }): VNodeChild => props.nodes
+const VNodes = (props: { nodes: VNodeChild[] }): VNodeChild => props.nodes;
 
 /** Number → px, string → passthrough (`'12rem'`, `'2vw'`, …). */
 function formatLength(value: string | number): string {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 function flattenSlotChildren(children: unknown): VNodeChild[] {
-  const out: VNodeChild[] = []
+  const out: VNodeChild[] = [];
   const walk = (input: unknown): void => {
     if (Array.isArray(input)) {
-      input.forEach(walk)
-      return
+      input.forEach(walk);
+      return;
     }
     if (input === null || input === undefined || typeof input === 'boolean') {
-      return
+      return;
     }
     // `<template v-for>` compiles to a Fragment vnode holding the repeated
     // items; recurse so data-driven item lists work.
     if (isVNode(input) && input.type === Fragment) {
-      walk(input.children)
-      return
+      walk(input.children);
+      return;
     }
     // A `v-if="false"` inside the slot leaves a Comment placeholder behind;
     // it must not become an item box (each box carries a `row-gap` margin,
     // so an empty box punches a hole into its column).
     if (isVNode(input) && input.type === Comment) {
-      return
+      return;
     }
-    out.push(input as VNodeChild)
-  }
-  walk(children)
-  return out
+    out.push(input as VNodeChild);
+  };
+  walk(children);
+  return out;
 }
 
 /** One item box per flattened slot child, in slot order. */
 function resolveItems(): VNodeChild[] {
-  const slot = slots.default
-  return slot ? flattenSlotChildren(slot()) : []
+  const slot = slots.default;
+  return slot ? flattenSlotChildren(slot()) : [];
 }
 
 /** `columns` coerced to an integer ≥ 1 (`column-count` must be ≥ 1). */
 const columnCount = computed(() => {
-  const value = props.columns
-  return typeof value === 'number' && Number.isFinite(value) && value >= 1
-    ? Math.floor(value)
-    : 1
-})
+  const value = props.columns;
+  return typeof value === 'number' && Number.isFinite(value) && value >= 1 ? Math.floor(value) : 1;
+});
 
 /** The gaps are always exposed; the column geometry only in masonry mode.
  *  Anything derived from a prop is inlined so the static rule set stays in
@@ -161,16 +159,16 @@ function rootStyle(): Record<string, string> {
   const style: Record<string, string> = {
     '--sn-waterfall-column-gap': formatLength(props.columnGap),
     '--sn-waterfall-row-gap': formatLength(props.rowGap),
-  }
-  if (!props.masonry) return style
+  };
+  if (!props.masonry) return style;
 
-  const minWidth = props.minColumnWidth
+  const minWidth = props.minColumnWidth;
   if (minWidth === undefined || minWidth === '') {
-    style.columnCount = String(columnCount.value)
+    style.columnCount = String(columnCount.value);
   } else {
-    style.columnWidth = formatLength(minWidth)
+    style.columnWidth = formatLength(minWidth);
   }
-  return style
+  return style;
 }
 </script>
 

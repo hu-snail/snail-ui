@@ -12,23 +12,23 @@
  */
 
 /** Value type selectable inside SnCascader — tree values are string | number. */
-export type SnCascaderValue = string | number
+export type SnCascaderValue = string | number;
 
 /** Visual size preset (AUI convention adds `mini` below the tiny grade). */
-export type SnCascaderSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large'
+export type SnCascaderSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
 
 /** Validation-driven visual status. */
-export type SnCascaderStatus = 'default' | 'error' | 'warning'
+export type SnCascaderStatus = 'default' | 'error' | 'warning';
 
 /** How hovering / clicking a parent node expands the next column. */
-export type SnCascaderExpandTrigger = 'click' | 'hover'
+export type SnCascaderExpandTrigger = 'click' | 'hover';
 
 /**
  * Raw entry accepted by the `options` prop: an object whose fields are read
  * through `labelField` / `valueField` / `childrenField`.
  */
 export interface SnCascaderOptionInput {
-  [key: string]: unknown
+  [key: string]: unknown;
 }
 
 /**
@@ -37,34 +37,34 @@ export interface SnCascaderOptionInput {
  */
 export interface SnCascaderNode {
   /** Stable per-render key (index path, guarantees uniqueness). */
-  key: string
+  key: string;
   /** Display label. */
-  label: string
+  label: string;
   /** Committed value (falls back to the sibling index when missing). */
-  value: SnCascaderValue
+  value: SnCascaderValue;
   /** Node-level disabled — cannot be chosen, cannot expand children. */
-  disabled: boolean
+  disabled: boolean;
   /** True when the node has no children (selectable row). */
-  isLeaf: boolean
+  isLeaf: boolean;
   /** Depth in the tree (0 = root level) — drives the active column index. */
-  depth: number
+  depth: number;
   /** Values from root to self inclusive (what selection commits). */
-  pathValues: SnCascaderValue[]
+  pathValues: SnCascaderValue[];
   /** Labels from root to self inclusive (what the trigger displays). */
-  pathLabels: string[]
+  pathLabels: string[];
   /** Normalized children (empty array for leaves). */
-  children: SnCascaderNode[]
+  children: SnCascaderNode[];
 }
 
 /** Field remapping bundle consumed by the normalizer. */
 export interface SnCascaderFields {
-  labelField: string
-  valueField: string
-  childrenField: string
+  labelField: string;
+  valueField: string;
+  childrenField: string;
 }
 
 function isOptionObject(raw: unknown): raw is SnCascaderOptionInput {
-  return typeof raw === 'object' && raw !== null && !Array.isArray(raw)
+  return typeof raw === 'object' && raw !== null && !Array.isArray(raw);
 }
 
 function normalizeLevel(
@@ -75,22 +75,20 @@ function normalizeLevel(
   parentLabels: string[],
   parentKey: string,
 ): SnCascaderNode[] {
-  const nodes: SnCascaderNode[] = []
+  const nodes: SnCascaderNode[] = [];
   rawList.forEach((raw, index) => {
-    const labelRaw: unknown = raw[fields.labelField]
-    const valueRaw: unknown = raw[fields.valueField]
-    const disabledRaw: unknown = raw['disabled']
-    const childrenRaw: unknown = raw[fields.childrenField]
-    const value: SnCascaderValue
-      = typeof valueRaw === 'string' || typeof valueRaw === 'number' ? valueRaw : index
-    const label = typeof labelRaw === 'string' && labelRaw !== '' ? labelRaw : String(value)
-    const key = parentKey === '' ? String(index) : `${parentKey}-${index}`
-    const pathValues = [...parentValues, value]
-    const pathLabels = [...parentLabels, label]
-    const childRawList = Array.isArray(childrenRaw)
-      ? childrenRaw.filter(isOptionObject)
-      : []
-    const children = normalizeLevel(childRawList, fields, depth + 1, pathValues, pathLabels, key)
+    const labelRaw: unknown = raw[fields.labelField];
+    const valueRaw: unknown = raw[fields.valueField];
+    const disabledRaw: unknown = raw['disabled'];
+    const childrenRaw: unknown = raw[fields.childrenField];
+    const value: SnCascaderValue =
+      typeof valueRaw === 'string' || typeof valueRaw === 'number' ? valueRaw : index;
+    const label = typeof labelRaw === 'string' && labelRaw !== '' ? labelRaw : String(value);
+    const key = parentKey === '' ? String(index) : `${parentKey}-${index}`;
+    const pathValues = [...parentValues, value];
+    const pathLabels = [...parentLabels, label];
+    const childRawList = Array.isArray(childrenRaw) ? childrenRaw.filter(isOptionObject) : [];
+    const children = normalizeLevel(childRawList, fields, depth + 1, pathValues, pathLabels, key);
     nodes.push({
       key,
       label,
@@ -101,9 +99,9 @@ function normalizeLevel(
       pathValues,
       pathLabels,
       children,
-    })
-  })
-  return nodes
+    });
+  });
+  return nodes;
 }
 
 /**
@@ -114,14 +112,7 @@ export function normalizeCascaderOptions(
   options: ReadonlyArray<SnCascaderOptionInput>,
   fields: SnCascaderFields,
 ): SnCascaderNode[] {
-  return normalizeLevel(
-    options.filter(isOptionObject),
-    fields,
-    0,
-    [],
-    [],
-    '',
-  )
+  return normalizeLevel(options.filter(isOptionObject), fields, 0, [], [], '');
 }
 
 /**
@@ -133,25 +124,25 @@ export function findPathByValues(
   nodes: ReadonlyArray<SnCascaderNode>,
   values: ReadonlyArray<SnCascaderValue>,
 ): SnCascaderNode[] | null {
-  if (values.length === 0) return null
-  const first = values[0]
-  if (first === undefined) return null
-  const head = nodes.find(node => node.value === first)
-  if (head === undefined) return null
-  if (values.length === 1) return head.isLeaf ? [head] : null
-  if (head.isLeaf) return null
-  const rest = findPathByValues(head.children, values.slice(1))
-  return rest === null ? null : [head, ...rest]
+  if (values.length === 0) return null;
+  const first = values[0];
+  if (first === undefined) return null;
+  const head = nodes.find((node) => node.value === first);
+  if (head === undefined) return null;
+  if (values.length === 1) return head.isLeaf ? [head] : null;
+  if (head.isLeaf) return null;
+  const rest = findPathByValues(head.children, values.slice(1));
+  return rest === null ? null : [head, ...rest];
 }
 
 /** Collect every selectable leaf under `nodes`, depth-first, order preserved. */
 export function collectCascaderLeaves(nodes: ReadonlyArray<SnCascaderNode>): SnCascaderNode[] {
-  const out: SnCascaderNode[] = []
+  const out: SnCascaderNode[] = [];
   for (const node of nodes) {
-    if (node.isLeaf) out.push(node)
-    else out.push(...collectCascaderLeaves(node.children))
+    if (node.isLeaf) out.push(node);
+    else out.push(...collectCascaderLeaves(node.children));
   }
-  return out
+  return out;
 }
 
 /**
@@ -159,12 +150,12 @@ export function collectCascaderLeaves(nodes: ReadonlyArray<SnCascaderNode>): SnC
  * `"0-1-2"` → `["0", "0-1", "0-1-2"]` — the expanded-columns spine.
  */
 export function keyChainOf(key: string): string[] {
-  const parts = key.split('-')
-  const chain: string[] = []
+  const parts = key.split('-');
+  const chain: string[] = [];
   for (let i = 1; i <= parts.length; i += 1) {
-    chain.push(parts.slice(0, i).join('-'))
+    chain.push(parts.slice(0, i).join('-'));
   }
-  return chain
+  return chain;
 }
 
 /**
@@ -173,6 +164,6 @@ export function keyChainOf(key: string): string[] {
  * therefore keeps every leaf below it. Kept exported for tests.
  */
 export function defaultCascaderFilter(pattern: string, pathText: string): boolean {
-  if (pattern === '') return true
-  return pathText.toLowerCase().includes(pattern.toLowerCase())
+  if (pattern === '') return true;
+  return pathText.toLowerCase().includes(pattern.toLowerCase());
 }

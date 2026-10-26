@@ -42,41 +42,41 @@
  *   <SnMarquee vertical :height="40" direction="up">本周更新公告</SnMarquee>
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-type SnMarqueeDirection = 'left' | 'right' | 'up' | 'down'
+type SnMarqueeDirection = 'left' | 'right' | 'up' | 'down';
 
 /** Seconds for one full pass when `duration` is omitted or unusable. */
-const DEFAULT_DURATION = 12
+const DEFAULT_DURATION = 12;
 /** Gap between two copies when `gap` is omitted. */
-const DEFAULT_GAP = 24
+const DEFAULT_GAP = 24;
 /** Two copies are the minimum that can hand over without a visible seam. */
-const MIN_COPIES = 2
+const MIN_COPIES = 2;
 
-defineOptions({ name: 'SnMarquee' })
+defineOptions({ name: 'SnMarquee' });
 
 const props = withDefaults(
   defineProps<{
     /** Direction the content travels. */
-    direction?: SnMarqueeDirection
+    direction?: SnMarqueeDirection;
     /** Seconds for one full pass of the track. Non-positive / non-finite
      *  values fall back to the default so the animation stays valid. */
-    duration?: number
+    duration?: number;
     /** How many copies of the slot content are rendered. Coerced to an
      *  integer ≥ 2 — a single copy has nothing to hand over to. */
-    repeat?: number
+    repeat?: number;
     /** Distance kept between two copies. Number → px. */
-    gap?: number | string
+    gap?: number | string;
     /** Pause the animation while the pointer hovers the marquee. */
-    pauseOnHover?: boolean
+    pauseOnHover?: boolean;
     /** Whether the ticker runs. `false` freezes it in place. */
-    playing?: boolean
+    playing?: boolean;
     /** Shorthand for a vertical ticker: behaves as `direction="up"` unless
      *  `direction` already is `'up'` / `'down'`. */
-    vertical?: boolean
+    vertical?: boolean;
     /** Box height. Number → px. Recommended for a vertical marquee so the
      *  viewport has a fixed height to clip against. */
-    height?: number | string
+    height?: number | string;
   }>(),
   {
     direction: 'left',
@@ -87,12 +87,12 @@ const props = withDefaults(
     playing: true,
     vertical: false,
   },
-)
+);
 
 defineSlots<{
   /** ONE copy of the ticker content; the component duplicates it. */
-  default(): unknown
-}>()
+  default(): unknown;
+}>();
 
 // ---------- Derived configuration ----------
 
@@ -100,52 +100,52 @@ defineSlots<{
  *  explicit vertical `direction` always wins. */
 const resolvedDirection = computed<SnMarqueeDirection>(() => {
   if (props.vertical && props.direction !== 'up' && props.direction !== 'down') {
-    return 'up'
+    return 'up';
   }
-  return props.direction
-})
+  return props.direction;
+});
 
 const isVertical = computed(
   () => resolvedDirection.value === 'up' || resolvedDirection.value === 'down',
-)
+);
 
 /** Copies actually rendered: an integer ≥ 2 (a fractional or out-of-range
  *  `repeat` would break the `100% / repeat` seam arithmetic). */
 const copyCount = computed(() => {
-  const requested = Math.floor(Number(props.repeat))
-  return Number.isFinite(requested) ? Math.max(MIN_COPIES, requested) : MIN_COPIES
-})
+  const requested = Math.floor(Number(props.repeat));
+  return Number.isFinite(requested) ? Math.max(MIN_COPIES, requested) : MIN_COPIES;
+});
 
 /** Seconds per pass, guarded so `animation-duration` is never invalid. */
 const durationSeconds = computed(() => {
-  const value = Number(props.duration)
-  return Number.isFinite(value) && value > 0 ? value : DEFAULT_DURATION
-})
+  const value = Number(props.duration);
+  return Number.isFinite(value) && value > 0 ? value : DEFAULT_DURATION;
+});
 
 function formatLength(value: string | number): string {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
-const gapLength = computed(() => formatLength(props.gap))
+const gapLength = computed(() => formatLength(props.gap));
 
 /** One pass = one copy box (content + its trailing gap) = `100% / repeat` of
  *  the track. Used by every `sn-marquee-*` keyframe. */
-const shiftPercent = computed(() => `${-100 / copyCount.value}%`)
+const shiftPercent = computed(() => `${-100 / copyCount.value}%`);
 
 const rootStyle = computed<Record<string, string>>(() => {
   const style: Record<string, string> = {
     '--sn-marquee-duration': `${durationSeconds.value}s`,
     '--sn-marquee-shift': shiftPercent.value,
-  }
-  if (props.height !== undefined) style.height = formatLength(props.height)
-  return style
-})
+  };
+  if (props.height !== undefined) style.height = formatLength(props.height);
+  return style;
+});
 
 /** Trailing padding keeps the seam gap: the last copy ends with the same gap
  *  that separates every other pair. */
 const copyStyle = computed<Record<string, string>>(() =>
   isVertical.value ? { paddingBottom: gapLength.value } : { paddingRight: gapLength.value },
-)
+);
 
 const rootClass = computed(() => [
   `sn-marquee--${resolvedDirection.value}`,
@@ -154,7 +154,7 @@ const rootClass = computed(() => [
     'sn-marquee--paused': !props.playing,
     'sn-marquee--pause-on-hover': props.pauseOnHover,
   },
-])
+]);
 </script>
 
 <template>

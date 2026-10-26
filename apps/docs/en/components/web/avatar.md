@@ -18,16 +18,16 @@ Avatar (n-avatar aligned). Image / text / icon with automatic fallback.
 
 ### SnAvatar Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| src | `string` | — | Image source |
-| size | `number \| 'small'\|'medium'\|'large'` | `'medium'` | Size (28/34/40px) |
-| round | `boolean` | `false` | Rounded |
-| circle | `boolean` | `false` | Circular |
-| color | `string` | — | Background (fallbackText/icon) |
-| objectFit | `'cover'\|'contain'\|'fill'\|'none'\|'scale-down'` | `'cover'` | Image fit |
-| fallbackText | `string` | — | Text fallback |
-| icon | `string` | — | SnIcon registry name |
+| Prop         | Type                                               | Default    | Notes                          |
+| ------------ | -------------------------------------------------- | ---------- | ------------------------------ |
+| src          | `string`                                           | —          | Image source                   |
+| size         | `number \| 'small'\|'medium'\|'large'`             | `'medium'` | Size (28/34/40px)              |
+| round        | `boolean`                                          | `false`    | Rounded                        |
+| circle       | `boolean`                                          | `false`    | Circular                       |
+| color        | `string`                                           | —          | Background (fallbackText/icon) |
+| objectFit    | `'cover'\|'contain'\|'fill'\|'none'\|'scale-down'` | `'cover'`  | Image fit                      |
+| fallbackText | `string`                                           | —          | Text fallback                  |
+| icon         | `string`                                           | —          | SnIcon registry name           |
 
 Events: `error`; Slots: `default` (highest priority). Fallback chain: slot → fallbackText → icon → built-in SVG.
 

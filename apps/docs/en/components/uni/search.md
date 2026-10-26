@@ -34,58 +34,58 @@ Cross-end search field for uni-app (H5 / WeChat MP / App). easycom auto-registra
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string` | `''` | Bound query text. |
-| `customInputClass` | `string` | `''` | Class on the inner `<input>`. |
-| `placeholder` | `string` | `'搜索'` | Placeholder text. |
-| `cancelTxt` | `string` | `'取消'` | Right-hand cancel text. |
-| `variant` | `'plain' \| 'filled' \| 'light'` | `'plain'` | Visual variant. |
-| `hideCancel` | `boolean` | `false` | Hide the cancel text. |
-| `disabled` | `boolean` | `false` | Blocks every interaction event. |
-| `maxlength` | `number \| string` | `-1` | Max length; `-1` = unlimited. |
-| `placeholderLeft` | `boolean` | `false` | Left-align the placeholder (default is centered). |
-| `focus` | `boolean` | `false` | Focus on mount. |
-| `focusWhenClear` | `boolean` | `false` | Re-focus after clear (no-op on uni-end). |
-| `placeholderStyle` | `string` | `''` | Inline style for the placeholder. |
-| `placeholderClass` | `string` | `''` | Class on the placeholder. |
-| `customClass` | `string` | `''` | Class on the root node. |
-| `customStyle` | `string` | `''` | Inline style on the root node. |
+| Prop               | Type                             | Default   | Description                                       |
+| ------------------ | -------------------------------- | --------- | ------------------------------------------------- |
+| `modelValue`       | `string`                         | `''`      | Bound query text.                                 |
+| `customInputClass` | `string`                         | `''`      | Class on the inner `<input>`.                     |
+| `placeholder`      | `string`                         | `'搜索'`  | Placeholder text.                                 |
+| `cancelTxt`        | `string`                         | `'取消'`  | Right-hand cancel text.                           |
+| `variant`          | `'plain' \| 'filled' \| 'light'` | `'plain'` | Visual variant.                                   |
+| `hideCancel`       | `boolean`                        | `false`   | Hide the cancel text.                             |
+| `disabled`         | `boolean`                        | `false`   | Blocks every interaction event.                   |
+| `maxlength`        | `number \| string`               | `-1`      | Max length; `-1` = unlimited.                     |
+| `placeholderLeft`  | `boolean`                        | `false`   | Left-align the placeholder (default is centered). |
+| `focus`            | `boolean`                        | `false`   | Focus on mount.                                   |
+| `focusWhenClear`   | `boolean`                        | `false`   | Re-focus after clear (no-op on uni-end).          |
+| `placeholderStyle` | `string`                         | `''`      | Inline style for the placeholder.                 |
+| `placeholderClass` | `string`                         | `''`      | Class on the placeholder.                         |
+| `customClass`      | `string`                         | `''`      | Class on the root node.                           |
+| `customStyle`      | `string`                         | `''`      | Inline style on the root node.                    |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Input sync | `(value: string)` |
-| `change` | Content changed (alias of `update:modelValue`) | `(value: string)` |
-| `search` | Soft-keyboard search key | `(value: string)` |
-| `cancel` | Right-hand cancel text tapped | `(value: string)` |
-| `clear` | × button tapped | — |
-| `focus` / `blur` | Focus / blur | `(event: Event)` |
-| `click` | Root tapped while disabled | `(event: Event)` |
+| Event               | Description                                    | Payload           |
+| ------------------- | ---------------------------------------------- | ----------------- |
+| `update:modelValue` | Input sync                                     | `(value: string)` |
+| `change`            | Content changed (alias of `update:modelValue`) | `(value: string)` |
+| `search`            | Soft-keyboard search key                       | `(value: string)` |
+| `cancel`            | Right-hand cancel text tapped                  | `(value: string)` |
+| `clear`             | × button tapped                                | —                 |
+| `focus` / `blur`    | Focus / blur                                   | `(event: Event)`  |
+| `click`             | Root tapped while disabled                     | `(event: Event)`  |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `prefix` | Content before the field. |
+| Slot           | Description                                   |
+| -------------- | --------------------------------------------- |
+| `prefix`       | Content before the field.                     |
 | `input-suffix` | Content inside the field, right of the input. |
-| `suffix` | Content after the cancel text. |
+| `suffix`       | Content after the cancel text.                |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-input-bg` | `plain` field background |
-| `--sn-mp-color-input-text` | Input text |
-| `--sn-mp-color-input-placeholder` | Placeholder |
-| `--sn-mp-color-input-border` | Idle border |
-| `--sn-mp-color-input-border-focus` | Focus border |
-| `--sn-mp-color-background-soft` | `filled` surface |
-| `--sn-mp-color-background-subtle` | `light` surface |
-| `--sn-mp-color-action-primary` | Cancel text color |
-| `--sn-mp-color-text-secondary` | Search / clear glyphs |
-| `--sn-mp-radius-full` | Pill radius |
+| Variable                           | Purpose                  |
+| ---------------------------------- | ------------------------ |
+| `--sn-mp-color-input-bg`           | `plain` field background |
+| `--sn-mp-color-input-text`         | Input text               |
+| `--sn-mp-color-input-placeholder`  | Placeholder              |
+| `--sn-mp-color-input-border`       | Idle border              |
+| `--sn-mp-color-input-border-focus` | Focus border             |
+| `--sn-mp-color-background-soft`    | `filled` surface         |
+| `--sn-mp-color-background-subtle`  | `light` surface          |
+| `--sn-mp-color-action-primary`     | Cancel text color        |
+| `--sn-mp-color-text-secondary`     | Search / clear glyphs    |
+| `--sn-mp-radius-full`              | Pill radius              |
 
 ## Accessibility
 
@@ -97,4 +97,3 @@ Cross-end search field for uni-app (H5 / WeChat MP / App). easycom auto-registra
 ## Dark mode
 
 Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` / `page.sn-theme-dark` flips the field background, border, placeholder and cancel text. Verify with:
-

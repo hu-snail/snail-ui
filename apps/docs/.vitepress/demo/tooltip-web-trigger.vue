@@ -6,7 +6,7 @@
  * 中间是触发器，底部一句行为说明。这样四张卡片横向对照时，读者
  * 能直接看出 hover / click / focus / manual 的差异。
  */
-import { SnTooltip } from '@snui/vue-web'
+import { SnTooltip } from '@snui/vue-web';
 
 const cases = [
   {
@@ -37,16 +37,12 @@ const cases = [
     content: '只由 show 控制，不响应手势',
     btn: '手动控制',
   },
-] as const
+] as const;
 </script>
 
 <template>
   <div class="tt-trigger">
-    <article
-      v-for="c in cases"
-      :key="c.trigger"
-      class="tt-trigger__card"
-    >
+    <article v-for="c in cases" :key="c.trigger" class="tt-trigger__card">
       <header class="tt-trigger__head">
         <code class="tt-trigger__prop">trigger="{{ c.trigger }}"</code>
         <span class="tt-trigger__name">{{ c.label }}</span>
@@ -110,7 +106,9 @@ const cases = [
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-trigger__btn:hover {
   border-color: var(--vp-c-brand-1);

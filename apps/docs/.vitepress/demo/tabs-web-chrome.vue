@@ -7,52 +7,45 @@
  * affordance is revealed on hover / on the active tab (like a browser), and
  * the trailing `+` appends a tab.
  */
-import { ref } from 'vue'
-import { SnTabs, SnTabPane } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabs, SnTabPane } from '@snui/vue-web';
 
 interface BrowserTab {
-  name: string
-  label: string
-  url: string
+  name: string;
+  label: string;
+  url: string;
 }
 
-const active = ref<string>('docs')
+const active = ref<string>('docs');
 
 const tabs = ref<BrowserTab[]>([
   { name: 'docs', label: '组件文档', url: 'snui.dev/components/web/tabs' },
   { name: 'design', label: '设计稿', url: 'Figma · UI Kit v3.1' },
   { name: 'issues', label: 'Issues', url: '12 个待处理' },
   { name: 'repo', label: '仓库', url: 'github.com/snail-aui' },
-])
+]);
 
 function onClose(name: string | number): void {
-  const index = tabs.value.findIndex((tab) => tab.name === name)
-  if (index === -1) return
-  const removingActive = active.value === name
-  tabs.value.splice(index, 1)
-  if (!removingActive) return
-  const next = tabs.value[Math.min(index, tabs.value.length - 1)]
-  active.value = next ? next.name : ''
+  const index = tabs.value.findIndex((tab) => tab.name === name);
+  if (index === -1) return;
+  const removingActive = active.value === name;
+  tabs.value.splice(index, 1);
+  if (!removingActive) return;
+  const next = tabs.value[Math.min(index, tabs.value.length - 1)];
+  active.value = next ? next.name : '';
 }
 
 function onAdd(): void {
-  const index = tabs.value.length + 1
-  const name = `tab-${index}`
-  tabs.value.push({ name, label: `新标签 ${index}`, url: 'about:blank' })
-  active.value = name
+  const index = tabs.value.length + 1;
+  const name = `tab-${index}`;
+  tabs.value.push({ name, label: `新标签 ${index}`, url: 'about:blank' });
+  active.value = name;
 }
 </script>
 
 <template>
   <div class="tabs-demo">
-    <SnTabs
-      v-model:value="active"
-      type="chrome"
-      closable
-      addable
-      @close="onClose"
-      @add="onAdd"
-    >
+    <SnTabs v-model:value="active" type="chrome" closable addable @close="onClose" @add="onAdd">
       <SnTabPane v-for="tab in tabs" :key="tab.name" :name="tab.name" :tab="tab.label">
         <div class="tabs-demo__page">
           <span class="tabs-demo__page-title">{{ tab.label }}</span>

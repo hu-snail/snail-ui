@@ -46,53 +46,53 @@
 
 ## SnForm Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `model` | `Record<string, unknown>` | (required) | Reactive model. |
-| `rules` | `FormRules` | `{}` | Per-prop validation rules. |
-| `showMessage` | `boolean` | `true` | Show inline error / warning. |
-| `statusIcon` | `boolean` | `false` | Shows a status glyph (`!` / `✓`) before the validation message; an item may override it. |
-| `labelPosition` | `'left' \| 'right' \| 'top'` | `'right'` | Label position. |
-| `labelWidth` | `number \| string` | `'auto'` | Label column width. |
-| `disabled` | `boolean` | `false` | Disable whole form. |
-| `validateTrigger` | `'blur' \| 'change'` | `'blur'` | Field validation trigger. |
-| `resetOnChange` | `boolean` | `true` | Clear field errors when model changes. |
-| `errorType` | `'message' \| 'toast' \| 'none'` | `'message'` | Error display strategy. |
-| `border` | `boolean` | `false` | Add rpx divider between FormItems. |
-| `center` | `boolean` | `false` | Vertically center every FormItem. |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Default FormItem size. |
-| `valueAlign` | `'left' \| 'right'` | `'left'` | Default value alignment. |
-| `asteriskPosition` | `'left' \| 'right'` | `'left'` | Where `*` sits. |
-| `hideAsterisk` | `boolean` | `false` | Hide required marker. |
-| `ellipsis` | `boolean` | `false` | Truncate long labels. |
-| `schema` | `Record<string, unknown> \| undefined` | `undefined` | Form-level schema (wd-form parity); stored on the context, rules still come from `rules`. |
-| `titleWidth` | `number \| string \| undefined` | `undefined` | Left title column width (wd-form `title-width`); folded into the inherited `labelWidth`. |
-| `layout` | `'horizontal' \| 'vertical'` | `'horizontal'` | Cell layout inherited by every FormItem. |
+| Prop               | Type                                   | Default        | Description                                                                               |
+| ------------------ | -------------------------------------- | -------------- | ----------------------------------------------------------------------------------------- |
+| `model`            | `Record<string, unknown>`              | (required)     | Reactive model.                                                                           |
+| `rules`            | `FormRules`                            | `{}`           | Per-prop validation rules.                                                                |
+| `showMessage`      | `boolean`                              | `true`         | Show inline error / warning.                                                              |
+| `statusIcon`       | `boolean`                              | `false`        | Shows a status glyph (`!` / `✓`) before the validation message; an item may override it.  |
+| `labelPosition`    | `'left' \| 'right' \| 'top'`           | `'right'`      | Label position.                                                                           |
+| `labelWidth`       | `number \| string`                     | `'auto'`       | Label column width.                                                                       |
+| `disabled`         | `boolean`                              | `false`        | Disable whole form.                                                                       |
+| `validateTrigger`  | `'blur' \| 'change'`                   | `'blur'`       | Field validation trigger.                                                                 |
+| `resetOnChange`    | `boolean`                              | `true`         | Clear field errors when model changes.                                                    |
+| `errorType`        | `'message' \| 'toast' \| 'none'`       | `'message'`    | Error display strategy.                                                                   |
+| `border`           | `boolean`                              | `false`        | Add rpx divider between FormItems.                                                        |
+| `center`           | `boolean`                              | `false`        | Vertically center every FormItem.                                                         |
+| `size`             | `'small' \| 'medium' \| 'large'`       | `'medium'`     | Default FormItem size.                                                                    |
+| `valueAlign`       | `'left' \| 'right'`                    | `'left'`       | Default value alignment.                                                                  |
+| `asteriskPosition` | `'left' \| 'right'`                    | `'left'`       | Where `*` sits.                                                                           |
+| `hideAsterisk`     | `boolean`                              | `false`        | Hide required marker.                                                                     |
+| `ellipsis`         | `boolean`                              | `false`        | Truncate long labels.                                                                     |
+| `schema`           | `Record<string, unknown> \| undefined` | `undefined`    | Form-level schema (wd-form parity); stored on the context, rules still come from `rules`. |
+| `titleWidth`       | `number \| string \| undefined`        | `undefined`    | Left title column width (wd-form `title-width`); folded into the inherited `labelWidth`.  |
+| `layout`           | `'horizontal' \| 'vertical'`           | `'horizontal'` | Cell layout inherited by every FormItem.                                                  |
 
 ## SnFormItem Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `prop` | `string` | — | Dot-path into model. |
-| `label` | `string` | — | Visible label. |
-| `required` | `boolean` | `false` | Render `*` marker. |
-| `rules` | `FormRule[]` | — | Item-local rules. |
-| `labelWidth` | `number \| string` | inherited | Override form-level. |
-| `labelPosition` | `'left' \| 'right' \| 'top'` | inherited | Override form-level. |
-| `iconData` | `IconData` | — | Frozen `{ viewBox, paths }`. |
-| `iconName` | `string` | — | Resolved via `registerSnIcons`. |
-| `iconSize` | `number \| string` | `32` | rpx / px size. |
-| `size` | `'small' \| 'medium' \| 'large'` | inherited | Override form-level size. |
-| `valueAlign` | `'left' \| 'right'` | inherited | Override form-level valueAlign. |
-| `asteriskPosition` | `'left' \| 'right'` | inherited | Override form-level asteriskPosition. |
-| `hideAsterisk` | `boolean` | inherited | Override form-level hideAsterisk. |
-| `ellipsis` | `boolean` | inherited | Override form-level ellipsis. |
-| `border` | `boolean` | inherited | Bottom divider below this item. |
-| `center` | `boolean` | inherited | Center this item vertically. |
-| `clickable` | `boolean` | `false` | Whole row clickable + emits `click`. |
-| `isLink` | `boolean` | `false` | Show right arrow. |
-| `placeholder` | `string` | `''` | Placeholder when no default slot. |
-| `description` | `string` | `''` | Helper text below field. |
+| Prop               | Type                             | Default   | Description                           |
+| ------------------ | -------------------------------- | --------- | ------------------------------------- |
+| `prop`             | `string`                         | —         | Dot-path into model.                  |
+| `label`            | `string`                         | —         | Visible label.                        |
+| `required`         | `boolean`                        | `false`   | Render `*` marker.                    |
+| `rules`            | `FormRule[]`                     | —         | Item-local rules.                     |
+| `labelWidth`       | `number \| string`               | inherited | Override form-level.                  |
+| `labelPosition`    | `'left' \| 'right' \| 'top'`     | inherited | Override form-level.                  |
+| `iconData`         | `IconData`                       | —         | Frozen `{ viewBox, paths }`.          |
+| `iconName`         | `string`                         | —         | Resolved via `registerSnIcons`.       |
+| `iconSize`         | `number \| string`               | `32`      | rpx / px size.                        |
+| `size`             | `'small' \| 'medium' \| 'large'` | inherited | Override form-level size.             |
+| `valueAlign`       | `'left' \| 'right'`              | inherited | Override form-level valueAlign.       |
+| `asteriskPosition` | `'left' \| 'right'`              | inherited | Override form-level asteriskPosition. |
+| `hideAsterisk`     | `boolean`                        | inherited | Override form-level hideAsterisk.     |
+| `ellipsis`         | `boolean`                        | inherited | Override form-level ellipsis.         |
+| `border`           | `boolean`                        | inherited | Bottom divider below this item.       |
+| `center`           | `boolean`                        | inherited | Center this item vertically.          |
+| `clickable`        | `boolean`                        | `false`   | Whole row clickable + emits `click`.  |
+| `isLink`           | `boolean`                        | `false`   | Show right arrow.                     |
+| `placeholder`      | `string`                         | `''`      | Placeholder when no default slot.     |
+| `description`      | `string`                         | `''`      | Helper text below field.              |
 
 > Props marked `inherited` fall back to parent `SnForm` via provide / inject.
 
@@ -106,7 +106,7 @@ type FormRule =
   | { minLength: number; maxLength: number; message: string }
   | { min: number; max: number; message: string }
   | { validator: (value) => boolean | string; message: string }
-  | { asyncValidator: (value) => Promise<boolean | string>; message: string }
+  | { asyncValidator: (value) => Promise<boolean | string>; message: string };
 ```
 
 First failing rule's `message` is shown. Async rules awaited.
@@ -114,26 +114,26 @@ First failing rule's `message` is shown. Async rules awaited.
 ## SnForm Exposed API
 
 ```ts
-const formRef = ref<InstanceType<typeof SnForm> | null>(null)
-await formRef.value?.validate()
-await formRef.value?.validateField('email')
-formRef.value?.resetFields()
-formRef.value?.clearValidate()
+const formRef = ref<InstanceType<typeof SnForm> | null>(null);
+await formRef.value?.validate();
+await formRef.value?.validateField('email');
+formRef.value?.resetFields();
+formRef.value?.clearValidate();
 ```
 
 ## SnFormItem Events
 
-| Event | Payload | When |
-| --- | --- | --- |
+| Event   | Payload   | When                                    |
+| ------- | --------- | --------------------------------------- |
 | `click` | `(event)` | Row click (only when `clickable=true`). |
 
 ## SnForm Events
 
-| Event | Payload | When |
-| --- | --- | --- |
-| `validate` | `{ valid, errors }` | After every full validate(). |
-| `reset` | — | After resetFields(). |
-| `submit` | `{ valid }` | After form submit + validate. |
+| Event      | Payload             | When                          |
+| ---------- | ------------------- | ----------------------------- |
+| `validate` | `{ valid, errors }` | After every full validate().  |
+| `reset`    | —                   | After resetFields().          |
+| `submit`   | `{ valid }`         | After form submit + validate. |
 
 ## Source
 

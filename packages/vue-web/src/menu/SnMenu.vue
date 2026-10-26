@@ -44,30 +44,30 @@
  *   { [label-field], [key-field], [children-field], ... }  (with remap)
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { ChevronRight, ChevronDown } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import SnTooltip from '../tooltip/SnTooltip.vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { ChevronRight, ChevronDown } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import SnTooltip from '../tooltip/SnTooltip.vue';
 
-defineOptions({ name: 'SnMenu' })
+defineOptions({ name: 'SnMenu' });
 
 /** SnMenu option shape — default field names. When consumers pass a tree
  * that doesn't match (e.g. their API returns `title` instead of `label`),
  * they set `label-field="title"` etc. on the menu to remap. */
 export interface SnMenuOption {
-  key: string | number
-  label: string
+  key: string | number;
+  label: string;
   /** Optional nested children (vertical mode only). */
-  children?: SnMenuOption[]
+  children?: SnMenuOption[];
   /** Disable interaction. */
-  disabled?: boolean
+  disabled?: boolean;
   /** Optional href for navigation. When provided, item renders as <a>.
    * `undefined` is allowed for the default-valued optional field so the
    * normalize step can write back `undefined` without TS complaining under
    * `exactOptionalPropertyTypes`. */
-  href?: string | undefined
+  href?: string | undefined;
   /** Optional icon component reference (markRaw Component or functional). */
-  icon?: unknown
+  icon?: unknown;
 }
 
 // Reference: naive-ui menuProps
@@ -89,56 +89,56 @@ const props = withDefaults(
      *                    you want.
      *                    AUI extension beyond n-menu — naive-ui doesn't
      *                    ship a popButton mode. */
-    mode?: 'vertical' | 'horizontal' | 'popButton'
+    mode?: 'vertical' | 'horizontal' | 'popButton';
     /** Which item is the always-visible trigger in popButton mode.
      * Defaults to the last item in `options`. AUI extension. */
-    triggerKey?: string | number
+    triggerKey?: string | number;
     /** Menu options tree. Mirrors n-menu `options`. */
-    options?: SnMenuOption[]
+    options?: SnMenuOption[];
     /** Selected key. Mirrors n-menu `value`. */
-    value?: string | number | null
+    value?: string | number | null;
     /** Default selected key. Mirrors n-menu `defaultValue`. Default null. */
-    defaultValue?: string | number | null
+    defaultValue?: string | number | null;
     /** Expanded submenu keys. Mirrors n-menu `expandedKeys`. */
-    expandedKeys?: Array<string | number>
+    expandedKeys?: Array<string | number>;
     /** Default expanded keys. Mirrors n-menu `defaultExpandedKeys`. */
-    defaultExpandedKeys?: Array<string | number>
+    defaultExpandedKeys?: Array<string | number>;
     /** Whether to expand all submenus by default. Mirrors n-menu `defaultExpandAll`. */
-    defaultExpandAll?: boolean
+    defaultExpandAll?: boolean;
     /** Restrict to single expanded submenu. Mirrors n-menu `accordion`. */
-    accordion?: boolean
+    accordion?: boolean;
     /** Indent per level (px). Mirrors n-menu `indent`. Default 32. */
-    indent?: number
+    indent?: number;
     /** Dark backdrop variant — colors flip for use on color-background navbars.
      * Mirrors n-menu `inverted`. Default false. */
-    inverted?: boolean
+    inverted?: boolean;
     /** Field name used to read each node's `key`. Mirrors n-menu `key-field`. */
-    keyField?: string
+    keyField?: string;
     /** Field name used to read each node's `label`. Mirrors n-menu `label-field`. */
-    labelField?: string
+    labelField?: string;
     /** Field name used to read each node's children array. Mirrors n-menu `children-field`. */
-    childrenField?: string
+    childrenField?: string;
     /** Whether the menu is rendered in collapsed (icon-only) form. Mirrors
      * n-menu `collapsed`. Submenus in collapsed mode open via a hover
      * popover anchored to the right of the parent item. Default false. */
-    collapsed?: boolean
+    collapsed?: boolean;
     /** Width (px) of the collapsed bar. Mirrors n-menu `collapsed-width`.
      * Default 48 (matches Element Plus). */
-    collapsedWidth?: number
+    collapsedWidth?: number;
     /** Icon size (px) used in collapsed mode. Mirrors n-menu
      * `collapsed-icon-size`. Default 24. */
-    collapsedIconSize?: number
+    collapsedIconSize?: number;
     /** Icon size (px) used in normal mode. Mirrors n-menu `icon-size`.
      * Default 20. */
-    iconSize?: number
+    iconSize?: number;
     /** Popover placement for submenus in collapsed mode. Mirrors n-menu
      * `dropdown-placement`. Default 'right-start' (popover opens to the
      * right of the bar, top-aligned with the hovered item — matches
      * Element Plus and naive-ui default). */
-    dropdownPlacement?: 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom'
+    dropdownPlacement?: 'right-start' | 'right' | 'right-end' | 'bottom-start' | 'bottom';
     /** Field name used to read each node's `disabled` flag. Mirrors n-menu
      * `disabled-field`. Default 'disabled'. */
-    disabledField?: string
+    disabledField?: string;
     /** Viewport breakpoint below which the menu auto-collapses. Mirrors
      * Element Plus `el-menu` `breakpoint`. When the window inner-width is
      * strictly less than the threshold, the menu collapses and emits
@@ -155,12 +155,12 @@ const props = withDefaults(
      *
      * On SSR / non-browser environments the resize listener is not
      * installed and the prop is a no-op. */
-    breakpoint?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number
+    breakpoint?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | number;
     /** Initial collapsed state for the responsive-collapse path (i.e.
      * when `breakpoint` is set). When `breakpoint` is unset this prop is
      * ignored — uncontrolled initial state is whatever `collapsed` is at
      * mount. Default false. */
-    defaultCollapsed?: boolean
+    defaultCollapsed?: boolean;
   }>(),
   {
     mode: 'vertical',
@@ -185,18 +185,18 @@ const props = withDefaults(
     triggerKey: '',
     defaultCollapsed: false,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:value', value: string | number | null): void
-  (e: 'update:expandedKeys', keys: Array<string | number>): void
+  (e: 'update:value', value: string | number | null): void;
+  (e: 'update:expandedKeys', keys: Array<string | number>): void;
   /** Fired when a leaf item is clicked (n-menu `onUpdateValue`). */
-  (e: 'select', value: string | number | null, item: SnMenuOption): void
+  (e: 'select', value: string | number | null, item: SnMenuOption): void;
   /** Fired when collapsed state flips (v-model:collapsed). The
    * responsive-breakpoint path emits this when window inner-width crosses
    * the threshold; the consumer can also drive `collapsed` directly. */
-  (e: 'update:collapsed', collapsed: boolean): void
-}>()
+  (e: 'update:collapsed', collapsed: boolean): void;
+}>();
 
 /* ─────────── Tree remapping (key-field / label-field / children-field) ───────
  * Consumers frequently have an API payload that uses different field names
@@ -204,35 +204,36 @@ const emit = defineEmits<{
  * them to reshape the tree, we expose n-menu's field-remap props. Internally
  * we normalize on read; the consumer's original object is unchanged. */
 interface RawNode {
-  [k: string]: unknown
+  [k: string]: unknown;
 }
 function readKey(raw: RawNode): string | number {
-  const v = raw[props.keyField]
-  return (typeof v === 'string' || typeof v === 'number') ? v : ''
+  const v = raw[props.keyField];
+  return typeof v === 'string' || typeof v === 'number' ? v : '';
 }
 function readLabel(raw: RawNode): string {
-  const v = raw[props.labelField]
-  return typeof v === 'string' ? v : ''
+  const v = raw[props.labelField];
+  return typeof v === 'string' ? v : '';
 }
 function readChildren(raw: RawNode): RawNode[] | undefined {
-  const v = raw[props.childrenField]
-  return Array.isArray(v) ? (v as RawNode[]) : undefined
+  const v = raw[props.childrenField];
+  return Array.isArray(v) ? (v as RawNode[]) : undefined;
 }
 function normalize(raw: RawNode): SnMenuOption {
-  const children = readChildren(raw)
+  const children = readChildren(raw);
   const out: SnMenuOption = {
     key: readKey(raw),
     label: readLabel(raw),
-    disabled: typeof raw[props.disabledField] === 'boolean' ? raw[props.disabledField] as boolean : false,
+    disabled:
+      typeof raw[props.disabledField] === 'boolean' ? (raw[props.disabledField] as boolean) : false,
     href: typeof raw['href'] === 'string' ? raw['href'] : undefined,
     icon: raw['icon'],
-  }
-  if (children) out.children = children.map((c) => normalize(c))
-  return out
+  };
+  if (children) out.children = children.map((c) => normalize(c));
+  return out;
 }
 const normalizedOptions = computed<SnMenuOption[]>(() =>
   (props.options ?? []).map((o) => normalize(o as unknown as RawNode)),
-)
+);
 
 /* ─────────── Reactive state ─────────── */
 
@@ -243,23 +244,29 @@ const normalizedOptions = computed<SnMenuOption[]>(() =>
  *      receives `update:collapsed` events so they can persist the state.
  *   3. `defaultCollapsed` (uncontrolled initial). */
 const breakpointPx = computed<number | undefined>(() => {
-  if (props.breakpoint === undefined) return undefined
-  if (typeof props.breakpoint === 'number') return props.breakpoint
+  if (props.breakpoint === undefined) return undefined;
+  if (typeof props.breakpoint === 'number') return props.breakpoint;
   switch (props.breakpoint) {
-    case 'xs': return 480
-    case 'sm': return 768
-    case 'md': return 992
-    case 'lg': return 1200
-    case 'xl': return 1920
-    default: return undefined
+    case 'xs':
+      return 480;
+    case 'sm':
+      return 768;
+    case 'md':
+      return 992;
+    case 'lg':
+      return 1200;
+    case 'xl':
+      return 1920;
+    default:
+      return undefined;
   }
-})
+});
 
 /** Internal collapsed flag driven by the breakpoint listener. Starts at
  * `defaultCollapsed` and flips on resize. We expose `effectiveCollapsed`
  * (not this directly) to callers so the controlled `collapsed` prop still
  * wins when present. */
-const breakpointCollapsed = ref<boolean>(props.defaultCollapsed)
+const breakpointCollapsed = ref<boolean>(props.defaultCollapsed);
 
 /** `collapsed` is treated as controlled when the consumer passes it (any
  * value, true or false — `false` is explicit). We can't distinguish
@@ -270,118 +277,115 @@ const breakpointCollapsed = ref<boolean>(props.defaultCollapsed)
  * resets. */
 const effectiveCollapsed = computed<boolean>(() => {
   // Always honor the explicit prop first.
-  if (props.collapsed) return true
+  if (props.collapsed) return true;
   // When breakpoint is set, auto-collapse mirrors the resize listener.
-  if (breakpointPx.value !== undefined) return breakpointCollapsed.value
+  if (breakpointPx.value !== undefined) return breakpointCollapsed.value;
   // No breakpoint, prop is false → not collapsed.
-  return false
-})
+  return false;
+});
 
 /** Install / remove the resize listener once `breakpointPx` becomes known.
  * Guarded for SSR / non-browser environments (no `window`). The listener
  * is idempotent: re-installing on the same instance is a no-op. */
-let resizeHandler: (() => void) | null = null
+let resizeHandler: (() => void) | null = null;
 function installResizeListener(): void {
-  if (typeof window === 'undefined') return
-  if (resizeHandler) return
+  if (typeof window === 'undefined') return;
+  if (resizeHandler) return;
   resizeHandler = () => {
-    const threshold = breakpointPx.value
-    if (threshold === undefined) return
-    const shouldCollapse = window.innerWidth < threshold
+    const threshold = breakpointPx.value;
+    if (threshold === undefined) return;
+    const shouldCollapse = window.innerWidth < threshold;
     if (breakpointCollapsed.value !== shouldCollapse) {
-      breakpointCollapsed.value = shouldCollapse
+      breakpointCollapsed.value = shouldCollapse;
       // Notify consumer so they can mirror via v-model:collapsed.
-      emit('update:collapsed', shouldCollapse)
+      emit('update:collapsed', shouldCollapse);
     }
-  }
-  window.addEventListener('resize', resizeHandler)
+  };
+  window.addEventListener('resize', resizeHandler);
   // Synchronously evaluate the current viewport on install so we collapse
   // immediately when the page first loads narrower than the threshold
   // (without waiting for the user to resize).
-  resizeHandler()
+  resizeHandler();
 }
 function uninstallResizeListener(): void {
   if (resizeHandler && typeof window !== 'undefined') {
-    window.removeEventListener('resize', resizeHandler)
+    window.removeEventListener('resize', resizeHandler);
   }
-  resizeHandler = null
+  resizeHandler = null;
 }
 
 onMounted(() => {
-  if (breakpointPx.value !== undefined) installResizeListener()
-})
+  if (breakpointPx.value !== undefined) installResizeListener();
+});
 onBeforeUnmount(() => {
-  uninstallResizeListener()
-})
+  uninstallResizeListener();
+});
 // React to breakpoint prop changing at runtime (rare but supported).
 watch(breakpointPx, (px) => {
-  uninstallResizeListener()
-  if (px !== undefined) installResizeListener()
-})
+  uninstallResizeListener();
+  if (px !== undefined) installResizeListener();
+});
 
 /** Reactive view of the current value. Falls back to `defaultValue`. */
 const currentValue = computed<string | number | null>(() => {
-  return props.value !== null ? props.value : props.defaultValue
-})
+  return props.value !== null ? props.value : props.defaultValue;
+});
 
 /** Reactive view of expanded keys. Falls back to defaultExpandAll. */
 const currentExpanded = computed<Set<string | number>>(() => {
-  if (props.expandedKeys.length) return new Set(props.expandedKeys)
-  if (props.defaultExpandedKeys.length) return new Set(props.defaultExpandedKeys)
+  if (props.expandedKeys.length) return new Set(props.expandedKeys);
+  if (props.defaultExpandedKeys.length) return new Set(props.defaultExpandedKeys);
   if (props.defaultExpandAll) {
-    const all = new Set<string | number>()
+    const all = new Set<string | number>();
     const walk = (opts: SnMenuOption[]): void => {
       for (const o of opts) {
         if (o.children && o.children.length) {
-          all.add(o.key)
-          walk(o.children)
+          all.add(o.key);
+          walk(o.children);
         }
       }
-    }
-    walk(normalizedOptions.value)
-    return all
+    };
+    walk(normalizedOptions.value);
+    return all;
   }
-  return new Set<string | number>()
-})
+  return new Set<string | number>();
+});
 
 function isActive(key: string | number): boolean {
-  return currentValue.value === key
+  return currentValue.value === key;
 }
 function isExpanded(key: string | number): boolean {
-  return currentExpanded.value.has(key)
+  return currentExpanded.value.has(key);
 }
 function selectOption(opt: SnMenuOption): void {
-  if (opt.disabled) return
-  emit('update:value', opt.key)
-  emit('select', opt.key, opt)
+  if (opt.disabled) return;
+  emit('update:value', opt.key);
+  emit('select', opt.key, opt);
 }
 function toggleGroup(key: string | number): void {
-  const next = new Set(currentExpanded.value)
+  const next = new Set(currentExpanded.value);
   if (next.has(key)) {
-    next.delete(key)
-  }
-  else {
+    next.delete(key);
+  } else {
     if (props.accordion) {
       // Close other top-level groups
       for (const o of normalizedOptions.value) {
         if (o.children && o.children.length && o.key !== key) {
-          next.delete(o.key)
+          next.delete(o.key);
         }
       }
     }
-    next.add(key)
+    next.add(key);
   }
-  emit('update:expandedKeys', Array.from(next))
+  emit('update:expandedKeys', Array.from(next));
 }
 
 /** Pick render tag: <a> when href is provided, <button> otherwise. */
 function isLink(opt: SnMenuOption): boolean {
-  return typeof opt.href === 'string' && opt.href.length > 0
+  return typeof opt.href === 'string' && opt.href.length > 0;
 }
 function indentStyleForLevel(level: number): Record<string, string> {
-  return props.mode === 'vertical' && level > 0
-    ? { paddingLeft: `${props.indent * level}px` }
-    : {}
+  return props.mode === 'vertical' && level > 0 ? { paddingLeft: `${props.indent * level}px` } : {};
 }
 
 /* ─────────── popButton state ─────────── */
@@ -390,33 +394,33 @@ function indentStyleForLevel(level: number): Record<string, string> {
  * in `normalizedOptions`. Populated lazily because the options array is
  * the source of truth. */
 const popTriggerKey = computed<string | number>(() => {
-  if (props.triggerKey !== '' && props.triggerKey !== undefined) return props.triggerKey
-  const opts = normalizedOptions.value
-  return opts[opts.length - 1]?.key ?? ''
-})
+  if (props.triggerKey !== '' && props.triggerKey !== undefined) return props.triggerKey;
+  const opts = normalizedOptions.value;
+  return opts[opts.length - 1]?.key ?? '';
+});
 
 /** Items other than the trigger (rendered above the trigger, hidden until hover). */
 const popExpandedItems = computed<SnMenuOption[]>(() => {
-  const opts = normalizedOptions.value
-  const tk = popTriggerKey.value
-  return opts.filter((o) => o.key !== tk)
-})
+  const opts = normalizedOptions.value;
+  const tk = popTriggerKey.value;
+  return opts.filter((o) => o.key !== tk);
+});
 
 /** Hover state — true while the user is over the menu root or any item. */
-const popHovering = ref(false)
+const popHovering = ref(false);
 
 /* Provide / consume hover so each leaf <button>'s mouseenter keeps the
  * menu expanded even when the cursor crosses the gap between items. */
 function onRootMouseEnter(): void {
-  if (props.mode === 'popButton') popHovering.value = true
+  if (props.mode === 'popButton') popHovering.value = true;
 }
 function onRootMouseLeave(): void {
-  if (props.mode === 'popButton') popHovering.value = false
+  if (props.mode === 'popButton') popHovering.value = false;
 }
 
 /** Is this item the always-visible popButton trigger? */
 function isPopTrigger(item: SnMenuOption): boolean {
-  return item.key === popTriggerKey.value
+  return item.key === popTriggerKey.value;
 }
 </script>
 
@@ -430,7 +434,11 @@ function isPopTrigger(item: SnMenuOption): boolean {
       mode === 'popButton' && popHovering ? 'sn-menu--popButton-open' : '',
     ]"
     :role="mode === 'horizontal' ? 'menubar' : 'menu'"
-    :style="effectiveCollapsed && mode === 'vertical' ? `--sn-menu-collapsed-width: ${collapsedWidth}px; --sn-menu-icon-size: ${collapsedIconSize}px;` : `--sn-menu-icon-size: ${iconSize}px;`"
+    :style="
+      effectiveCollapsed && mode === 'vertical'
+        ? `--sn-menu-collapsed-width: ${collapsedWidth}px; --sn-menu-icon-size: ${collapsedIconSize}px;`
+        : `--sn-menu-icon-size: ${iconSize}px;`
+    "
     @mouseenter="onRootMouseEnter"
     @mouseleave="onRootMouseLeave"
   >
@@ -459,7 +467,8 @@ function isPopTrigger(item: SnMenuOption): boolean {
             :is="isLink(item) ? 'a' : 'button'"
             :class="[
               'sn-menu-item sn-menu-item--group',
-              { 'sn-menu-item--active': isActive(item.key),
+              {
+                'sn-menu-item--active': isActive(item.key),
                 'sn-menu-item--disabled': item.disabled,
                 'sn-menu-item--expanded': !effectiveCollapsed && isExpanded(item.key),
                 'sn-menu-item--inverted': inverted,
@@ -478,10 +487,7 @@ function isPopTrigger(item: SnMenuOption): boolean {
               <component :is="item.icon" />
             </span>
             <span class="sn-menu-item__label">{{ item.label }}</span>
-            <span
-              class="sn-menu-item__caret"
-              aria-hidden="true"
-            >
+            <span class="sn-menu-item__caret" aria-hidden="true">
               <SnIcon :icon="isExpanded(item.key) ? ChevronDown : ChevronRight" :size="14" />
             </span>
           </component>
@@ -519,7 +525,8 @@ function isPopTrigger(item: SnMenuOption): boolean {
               :type="isLink(child) ? undefined : 'button'"
               :class="[
                 'sn-menu-item sn-menu-item--popover-leaf',
-                { 'sn-menu-item--active': isActive(child.key),
+                {
+                  'sn-menu-item--active': isActive(child.key),
                   'sn-menu-item--disabled': child.disabled,
                   'sn-menu-item--inverted': inverted,
                 },
@@ -550,7 +557,8 @@ function isPopTrigger(item: SnMenuOption): boolean {
               :type="isLink(child) ? undefined : 'button'"
               :class="[
                 'sn-menu-item sn-menu-item--leaf',
-                { 'sn-menu-item--active': isActive(child.key),
+                {
+                  'sn-menu-item--active': isActive(child.key),
                   'sn-menu-item--disabled': child.disabled,
                   'sn-menu-item--inverted': inverted,
                 },
@@ -578,7 +586,8 @@ function isPopTrigger(item: SnMenuOption): boolean {
             :is="isLink(item) ? 'a' : 'button'"
             :class="[
               'sn-menu-item sn-menu-item--popButton',
-              { 'sn-menu-item--active': isActive(item.key),
+              {
+                'sn-menu-item--active': isActive(item.key),
                 'sn-menu-item--disabled': item.disabled,
                 'sn-menu-item--inverted': inverted,
               },
@@ -601,11 +610,11 @@ function isPopTrigger(item: SnMenuOption): boolean {
           v-else-if="!(mode === 'popButton' && !isPopTrigger(item))"
           :class="[
             'sn-menu-item',
-            { 'sn-menu-item--active': isActive(item.key),
+            {
+              'sn-menu-item--active': isActive(item.key),
               'sn-menu-item--disabled': item.disabled,
               'sn-menu-item--inverted': inverted,
-              'sn-menu-item--popButton-trigger':
-                mode === 'popButton' && isPopTrigger(item),
+              'sn-menu-item--popButton-trigger': mode === 'popButton' && isPopTrigger(item),
             },
           ]"
           :type="isLink(item) ? undefined : 'button'"
@@ -658,7 +667,9 @@ function isPopTrigger(item: SnMenuOption): boolean {
   color: var(--sn-web-color-text-primary);
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
   text-decoration: none;
 }
 /* Force vertical items to be full-width of their list so the active
@@ -802,11 +813,21 @@ function isPopTrigger(item: SnMenuOption): boolean {
   pointer-events: auto;
   transform: translateY(0) scale(1);
 }
-.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(2) { transition-delay: 0ms; }
-.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(3) { transition-delay: 0.04s; }
-.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(4) { transition-delay: 0.08s; }
-.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(5) { transition-delay: 0.12s; }
-.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(n+6) { transition-delay: 0.16s; }
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(2) {
+  transition-delay: 0ms;
+}
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(3) {
+  transition-delay: 0.04s;
+}
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(4) {
+  transition-delay: 0.08s;
+}
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(5) {
+  transition-delay: 0.12s;
+}
+.sn-menu--popButton.sn-menu--popButton-open .sn-menu-item--popButton:nth-child(n + 6) {
+  transition-delay: 0.16s;
+}
 
 /* Hide groups in popButton — flatten to leaves per the doc-roadmap. */
 .sn-menu--popButton .sn-menu-item--group {
@@ -941,7 +962,9 @@ function isPopTrigger(item: SnMenuOption): boolean {
 .sn-menu--inverted .sn-menu-submenu-popover .sn-menu-item {
   color: var(--sn-web-color-text-primary, #1f2937);
 }
-.sn-menu--inverted .sn-menu-submenu-popover .sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active) {
+.sn-menu--inverted
+  .sn-menu-submenu-popover
+  .sn-menu-item:hover:not(.sn-menu-item--disabled):not(.sn-menu-item--active) {
   background: rgba(0, 0, 0, 0.04);
   color: var(--sn-web-color-text-primary, #1f2937);
 }

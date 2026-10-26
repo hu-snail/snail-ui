@@ -49,60 +49,60 @@
 
 ### SnFloatButton Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `type` | `'default' \| 'primary'` | `'default'` | 填充色：默认表面色 / 品牌色。 |
-| `shape` | `'circle' \| 'square'` | `'circle'` | 方形时图标上方会多一行 `description` 文字。 |
-| `icon` | `IconComponent`（lucide 组件） | `undefined` | 图标组件，`icon` 插槽可覆盖。 |
-| `iconSize` | `number \| string` | `18` | 传给内部 `SnIcon` 的尺寸。 |
-| `description` | `string` | `undefined` | 图标下方的文字，仅 `shape="square"` 时渲染。 |
-| `tooltip` | `string` | `undefined` | 同时设置原生 `title` 与无障碍名称（`aria-label`），不渲染 tooltip 组件。 |
-| `badge` | `number \| string` | `undefined` | 数量徽标；`undefined`、`0`、`''` 时不显示。 |
-| `badgeDot` | `boolean` | `false` | 显示小红点；同时给了数量时数量优先。 |
-| `href` | `string` | `undefined` | 传入后根元素渲染为 `<a href>`，否则为 `<button type="button">`。 |
-| `target` | `'_blank' \| '_self' \| '_parent' \| '_top'` | `undefined` | 原生链接打开方式，仅在 `href` 下有意义。 |
-| `disabled` | `boolean` | `false` | 禁用：不触发 `click`，根元素带 `aria-disabled="true"`。 |
-| `visible` | `boolean` | `true` | 是否渲染整个按钮（`v-if`）。 |
-| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom-right'` | 8 个定位锚点（四角 + 四边中点）；在按钮组内会被忽略。 |
-| `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | 显式偏移，覆盖 `placement` 对应的轴。 |
-| `zIndex` | `number` | `1000` | 固定定位的层级；在按钮组内会被忽略。 |
-| `fixed` | `boolean` | `true` | `false` 时不再固定到视口，改为钉在最近的定位祖先（或 `container`）内。 |
-| `container` | `string \| HTMLElement` | `undefined` | `fixed: false` 时的定位上下文：选择器或元素。 |
+| 名称                                | 类型                                                                                                     | 默认值           | 说明                                                                     |
+| ----------------------------------- | -------------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------ |
+| `type`                              | `'default' \| 'primary'`                                                                                 | `'default'`      | 填充色：默认表面色 / 品牌色。                                            |
+| `shape`                             | `'circle' \| 'square'`                                                                                   | `'circle'`       | 方形时图标上方会多一行 `description` 文字。                              |
+| `icon`                              | `IconComponent`（lucide 组件）                                                                           | `undefined`      | 图标组件，`icon` 插槽可覆盖。                                            |
+| `iconSize`                          | `number \| string`                                                                                       | `18`             | 传给内部 `SnIcon` 的尺寸。                                               |
+| `description`                       | `string`                                                                                                 | `undefined`      | 图标下方的文字，仅 `shape="square"` 时渲染。                             |
+| `tooltip`                           | `string`                                                                                                 | `undefined`      | 同时设置原生 `title` 与无障碍名称（`aria-label`），不渲染 tooltip 组件。 |
+| `badge`                             | `number \| string`                                                                                       | `undefined`      | 数量徽标；`undefined`、`0`、`''` 时不显示。                              |
+| `badgeDot`                          | `boolean`                                                                                                | `false`          | 显示小红点；同时给了数量时数量优先。                                     |
+| `href`                              | `string`                                                                                                 | `undefined`      | 传入后根元素渲染为 `<a href>`，否则为 `<button type="button">`。         |
+| `target`                            | `'_blank' \| '_self' \| '_parent' \| '_top'`                                                             | `undefined`      | 原生链接打开方式，仅在 `href` 下有意义。                                 |
+| `disabled`                          | `boolean`                                                                                                | `false`          | 禁用：不触发 `click`，根元素带 `aria-disabled="true"`。                  |
+| `visible`                           | `boolean`                                                                                                | `true`           | 是否渲染整个按钮（`v-if`）。                                             |
+| `placement`                         | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom-right'` | 8 个定位锚点（四角 + 四边中点）；在按钮组内会被忽略。                    |
+| `right` / `bottom` / `top` / `left` | `number \| string`                                                                                       | `undefined`      | 显式偏移，覆盖 `placement` 对应的轴。                                    |
+| `zIndex`                            | `number`                                                                                                 | `1000`           | 固定定位的层级；在按钮组内会被忽略。                                     |
+| `fixed`                             | `boolean`                                                                                                | `true`           | `false` 时不再固定到视口，改为钉在最近的定位祖先（或 `container`）内。   |
+| `container`                         | `string \| HTMLElement`                                                                                  | `undefined`      | `fixed: false` 时的定位上下文：选择器或元素。                            |
 
 ### SnFloatButtonGroup Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `shape` | `'circle' \| 'square'` | `'circle'` | 下发给所有子按钮，覆盖子按钮自己的 `shape`。 |
-| `open` | `boolean` | `undefined` | 受控展开状态（`v-model:open`）。不传即为非受控。 |
-| `trigger` | `'click' \| 'hover'` | `'click'` | 展开手势。 |
-| `placement` | 同 `SnFloatButton`（8 个锚点） | `'bottom-right'` | 整个按钮组的定位锚点。 |
-| `direction` | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'` | 堆栈展开方向；`auto` 按 `placement` 推导，永远朝视口中心展开。 |
-| `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | 显式偏移，覆盖 `placement`（默认 `right` / `bottom` 为 24）。 |
-| `zIndex` | `number` | `1000` | 固定定位的层级。 |
-| `fixed` | `boolean` | `true` | 同上：`false` 时整组钉在定位上下文内。 |
-| `container` | `string \| HTMLElement` | `undefined` | `fixed: false` 时的定位上下文。 |
-| `gap` | `number` | `12` | 子按钮之间（以及到触发器）的垂直间距。 |
-| `triggerIcon` | `IconComponent`（lucide 组件） | lucide `Plus` | 触发器图标，展开时旋转 45°。 |
-| `triggerTooltip` | `string` | `undefined` | 同时设置触发器的原生 `title` 与无障碍名称。 |
+| 名称                                | 类型                                            | 默认值           | 说明                                                           |
+| ----------------------------------- | ----------------------------------------------- | ---------------- | -------------------------------------------------------------- |
+| `shape`                             | `'circle' \| 'square'`                          | `'circle'`       | 下发给所有子按钮，覆盖子按钮自己的 `shape`。                   |
+| `open`                              | `boolean`                                       | `undefined`      | 受控展开状态（`v-model:open`）。不传即为非受控。               |
+| `trigger`                           | `'click' \| 'hover'`                            | `'click'`        | 展开手势。                                                     |
+| `placement`                         | 同 `SnFloatButton`（8 个锚点）                  | `'bottom-right'` | 整个按钮组的定位锚点。                                         |
+| `direction`                         | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'`         | 堆栈展开方向；`auto` 按 `placement` 推导，永远朝视口中心展开。 |
+| `right` / `bottom` / `top` / `left` | `number \| string`                              | `undefined`      | 显式偏移，覆盖 `placement`（默认 `right` / `bottom` 为 24）。  |
+| `zIndex`                            | `number`                                        | `1000`           | 固定定位的层级。                                               |
+| `fixed`                             | `boolean`                                       | `true`           | 同上：`false` 时整组钉在定位上下文内。                         |
+| `container`                         | `string \| HTMLElement`                         | `undefined`      | `fixed: false` 时的定位上下文。                                |
+| `gap`                               | `number`                                        | `12`             | 子按钮之间（以及到触发器）的垂直间距。                         |
+| `triggerIcon`                       | `IconComponent`（lucide 组件）                  | lucide `Plus`    | 触发器图标，展开时旋转 45°。                                   |
+| `triggerTooltip`                    | `string`                                        | `undefined`      | 同时设置触发器的原生 `title` 与无障碍名称。                    |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `click`（SnFloatButton） | `MouseEvent` | 原生点击；`disabled` 时不触发。 |
-| `update:open`（SnFloatButtonGroup） | `boolean` | 展开状态变化（`v-model:open`），仅在状态真的改变时触发。 |
-| `openChange`（SnFloatButtonGroup） | `boolean` | `update:open` 的事件式别名。 |
+| 名称                                | 参数         | 说明                                                     |
+| ----------------------------------- | ------------ | -------------------------------------------------------- |
+| `click`（SnFloatButton）            | `MouseEvent` | 原生点击；`disabled` 时不触发。                          |
+| `update:open`（SnFloatButtonGroup） | `boolean`    | 展开状态变化（`v-model:open`），仅在状态真的改变时触发。 |
+| `openChange`（SnFloatButtonGroup）  | `boolean`    | `update:open` 的事件式别名。                             |
 
 ### Slots
 
-| 名称 | 组件 | 参数 | 说明 |
-| --- | --- | --- | --- |
-| `icon` | SnFloatButton | `()` | 替换图标。 |
-| `description` | SnFloatButton | `()` | 替换 `description` 文字。 |
-| `default` | SnFloatButton | `()` | 替换整个内部内容（图标 + 文字）。 |
-| `default` | SnFloatButtonGroup | `()` | 堆叠的 `SnFloatButton` 子按钮。 |
-| `trigger` | SnFloatButtonGroup | `()` | 完全替换内建触发器。 |
+| 名称          | 组件               | 参数 | 说明                              |
+| ------------- | ------------------ | ---- | --------------------------------- |
+| `icon`        | SnFloatButton      | `()` | 替换图标。                        |
+| `description` | SnFloatButton      | `()` | 替换 `description` 文字。         |
+| `default`     | SnFloatButton      | `()` | 替换整个内部内容（图标 + 文字）。 |
+| `default`     | SnFloatButtonGroup | `()` | 堆叠的 `SnFloatButton` 子按钮。   |
+| `trigger`     | SnFloatButtonGroup | `()` | 完全替换内建触发器。              |
 
 ## 定位
 

@@ -8,65 +8,65 @@
  * 与轨迹日志放在内层子组件，通过作用域插槽把状态与触发入口交回模板。
  * 定时器统一登记，组件卸载时全部清理。
  */
-import { defineComponent, onBeforeUnmount, ref } from 'vue'
-import { SnButton, SnLoadingBarProvider, useLoadingBar } from '@snui/vue-web'
+import { defineComponent, onBeforeUnmount, ref } from 'vue';
+import { SnButton, SnLoadingBarProvider, useLoadingBar } from '@snui/vue-web';
 
 /** 只有这两种收尾方式，顺序推进由内部定时器驱动。 */
-type FlowKind = 'finish' | 'error'
+type FlowKind = 'finish' | 'error';
 
 const FlowTrigger = defineComponent({
   name: 'LoadingBarFlowTrigger',
   setup(_props, { slots }) {
-    const loadingBar = useLoadingBar()
-    const steps = ref<string[]>([])
-    const running = ref(false)
-    const timers: ReturnType<typeof setTimeout>[] = []
+    const loadingBar = useLoadingBar();
+    const steps = ref<string[]>([]);
+    const running = ref(false);
+    const timers: ReturnType<typeof setTimeout>[] = [];
 
     const later = (delay: number, task: () => void): void => {
-      timers.push(setTimeout(task, delay))
-    }
+      timers.push(setTimeout(task, delay));
+    };
 
     const log = (text: string): void => {
-      steps.value = [...steps.value, text]
-    }
+      steps.value = [...steps.value, text];
+    };
 
     const run = (kind: FlowKind): void => {
-      steps.value = []
-      running.value = true
+      steps.value = [];
+      running.value = true;
 
-      loadingBar.start()
-      log('start() — bar appears; width grows fast, then slow')
+      loadingBar.start();
+      log('start() — bar appears; width grows fast, then slow');
 
       later(500, () => {
-        log('Increasing… width approaches but never reaches the end on its own')
-      })
+        log('Increasing… width approaches but never reaches the end on its own');
+      });
 
       later(1200, () => {
         if (kind === 'finish') {
-          loadingBar.finish()
-          log('finish() — sprints to 100% in the default color')
+          loadingBar.finish();
+          log('finish() — sprints to 100% in the default color');
         } else {
-          loadingBar.error()
-          log('error() — switches to danger color, then sprints to 100%')
+          loadingBar.error();
+          log('error() — switches to danger color, then sprints to 100%');
         }
-      })
+      });
 
       later(2100, () => {
-        log('Fade-out done; progress reset to 0 and ready to trigger again')
-        running.value = false
-      })
-    }
+        log('Fade-out done; progress reset to 0 and ready to trigger again');
+        running.value = false;
+      });
+    };
 
     onBeforeUnmount(() => {
       for (const timer of timers) {
-        clearTimeout(timer)
+        clearTimeout(timer);
       }
-      timers.length = 0
-    })
+      timers.length = 0;
+    });
 
-    return () => slots.default?.({ steps: steps.value, run, running: running.value })
+    return () => slots.default?.({ steps: steps.value, run, running: running.value });
   },
-})
+});
 </script>
 
 <template>
@@ -83,7 +83,8 @@ const FlowTrigger = defineComponent({
         </div>
 
         <p class="lbf__hint">
-          The bar is fixed to the top of the viewport (mounted on body); after triggering, watch the very top of the page.
+          The bar is fixed to the top of the viewport (mounted on body); after triggering, watch the
+          very top of the page.
         </p>
 
         <div class="lbf__panel">

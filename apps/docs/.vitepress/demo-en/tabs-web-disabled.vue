@@ -2,10 +2,10 @@
 /**
  * tabs-web-disabled — individual panes locked out of interaction.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs } from '@snui/vue-web';
 
-const active = ref('a')
+const active = ref('a');
 </script>
 
 <template>
@@ -19,7 +19,8 @@ const active = ref('a')
     </SnTabs>
 
     <p class="tabs-dis__hint">
-      Disabled tabs carry <code>aria-disabled="true"</code>, and is excluded from the keyboard tab order. Currently selected:<code>{{ active }}</code>
+      Disabled tabs carry <code>aria-disabled="true"</code>, and is excluded from the keyboard tab
+      order. Currently selected:<code>{{ active }}</code>
     </p>
   </div>
 </template>

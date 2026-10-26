@@ -10,23 +10,23 @@
  */
 
 /** Option label — a plain string, or nested segments (each segment is matched independently). */
-export type SnAutoCompleteOptionLabel = string | string[]
+export type SnAutoCompleteOptionLabel = string | string[];
 
 /** Object form of one candidate option. */
 export interface SnAutoCompleteOption {
   /** Display label; string or nested segments. */
-  label?: SnAutoCompleteOptionLabel
+  label?: SnAutoCompleteOptionLabel;
   /** Value committed on selection. Defaults to the joined label. */
-  value?: string
+  value?: string;
   /** Disable just this option (renders disabled, not selectable). */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 /** Anything accepted in the `options` prop array. */
-export type SnAutoCompleteRawOption = string | SnAutoCompleteOption
+export type SnAutoCompleteRawOption = string | SnAutoCompleteOption;
 
 /**
  * `getShow` — dynamically computes the candidate list from the current
  * input value (naive-ui `get-show`). Overrides the static `options` prop.
  */
-export type SnAutoCompleteGetShow = (value: string) => SnAutoCompleteRawOption[]
+export type SnAutoCompleteGetShow = (value: string) => SnAutoCompleteRawOption[];

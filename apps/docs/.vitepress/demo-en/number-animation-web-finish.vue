@@ -1,18 +1,18 @@
 <script setup lang="ts">
 /** Demo: SnNumberAnimation — finish event fires when the tween reaches `to`. */
-import { ref } from 'vue'
-import { SnButton, SnNumberAnimation, SnStatistic } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnNumberAnimation, SnStatistic } from '@snui/vue-web';
 
-const animationRef = ref<{ play: () => void } | null>(null)
-const finished = ref(false)
+const animationRef = ref<{ play: () => void } | null>(null);
+const finished = ref(false);
 
 function handlePlay(): void {
-  finished.value = false
-  animationRef.value?.play()
+  finished.value = false;
+  animationRef.value?.play();
 }
 
 function handleFinish(): void {
-  finished.value = true
+  finished.value = true;
 }
 </script>
 

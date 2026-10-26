@@ -25,7 +25,7 @@
  *   - 校验信息展示 — 用 sn-form-item
  */
 
-import { computed, provide, toRef } from 'vue'
+import { computed, provide, toRef } from 'vue';
 import {
   SN_RADIO_GROUP_KEY,
   type SnRadioDirection,
@@ -33,36 +33,36 @@ import {
   type SnRadioPlacement,
   type SnRadioType,
   type SnRadioValue,
-} from './sn-radio-types'
+} from './sn-radio-types';
 
-defineOptions({ name: 'SnRadioGroup' })
+defineOptions({ name: 'SnRadioGroup' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-radio-group` 1:1 surface ────────────────────────────── */
 
     /** Currently selected value; matched against each child's `value`. */
-    modelValue?: SnRadioModelValue
+    modelValue?: SnRadioModelValue;
     /** Shape preset inherited by every child. */
-    type?: SnRadioType
+    type?: SnRadioType;
     /** Checked color inherited by every child (empty = token default). */
-    checkedColor?: string
+    checkedColor?: string;
     /** Unchecked color inherited by every child (empty = token default). */
-    uncheckedColor?: string
+    uncheckedColor?: string;
     /** Disables every child. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Makes every child read-only. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Marker position inherited by every child. */
-    placement?: SnRadioPlacement
+    placement?: SnRadioPlacement;
     /** Layout direction of the children. */
-    direction?: SnRadioDirection
+    direction?: SnRadioDirection;
     /** Allow tapping the selected radio again to clear the selection. */
-    allowUncheck?: boolean
+    allowUncheck?: boolean;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: undefined,
@@ -77,18 +77,18 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — fires with the newly selected value. */
-  (e: 'update:modelValue', value: SnRadioModelValue): void
+  (e: 'update:modelValue', value: SnRadioModelValue): void;
   /** Selection changed (alias of `update:modelValue`, wd-radio-group parity). */
-  (e: 'change', value: SnRadioModelValue): void
-}>()
+  (e: 'change', value: SnRadioModelValue): void;
+}>();
 
 /** Whether `value` is the current selection. */
 function isChecked(value: SnRadioValue): boolean {
-  return props.modelValue === value
+  return props.modelValue === value;
 }
 
 /**
@@ -96,18 +96,18 @@ function isChecked(value: SnRadioValue): boolean {
  * tapped radio is already selected (wd-radio-group's documented behaviour).
  */
 function select(value: SnRadioValue): void {
-  if (props.disabled || props.readonly) return
+  if (props.disabled || props.readonly) return;
   if (isChecked(value)) {
-    if (!props.allowUncheck) return
-    commit(undefined)
-    return
+    if (!props.allowUncheck) return;
+    commit(undefined);
+    return;
   }
-  commit(value)
+  commit(value);
 }
 
 function commit(value: SnRadioModelValue): void {
-  emit('update:modelValue', value)
-  emit('change', value)
+  emit('update:modelValue', value);
+  emit('change', value);
 }
 
 provide(SN_RADIO_GROUP_KEY, {
@@ -120,10 +120,10 @@ provide(SN_RADIO_GROUP_KEY, {
   groupUncheckedColor: toRef(props, 'uncheckedColor'),
   groupPlacement: toRef(props, 'placement'),
   groupDirection: toRef(props, 'direction'),
-})
+});
 
 /** Public imperative API — host pages can drive the group from code (§14). */
-defineExpose({ select, isChecked })
+defineExpose({ select, isChecked });
 
 const classList = computed(() => [
   'sn-radio-group',
@@ -133,9 +133,9 @@ const classList = computed(() => [
     'sn-radio-group--readonly': props.readonly,
   },
   props.customClass,
-])
+]);
 
-const wrapperStyle = computed(() => props.customStyle || undefined)
+const wrapperStyle = computed(() => props.customStyle || undefined);
 </script>
 
 <template>

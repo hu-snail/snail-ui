@@ -4,8 +4,8 @@
  * Typed icon prop gives consumers the full lucide / iconify / @vicons
  * tree-shake benefits without manually wrapping each glyph in <SnIcon>.
  */
-import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
-import { Home, ChevronRight, Settings, FileText } from 'lucide-vue-next'
+import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web';
+import { Home, ChevronRight, Settings, FileText } from 'lucide-vue-next';
 </script>
 
 <template>
@@ -21,7 +21,9 @@ import { Home, ChevronRight, Settings, FileText } from 'lucide-vue-next'
     <SnBreadcrumb>
       <SnBreadcrumbItem variant="chip" :icon="Home" href="/">Home</SnBreadcrumbItem>
       <SnBreadcrumbItem variant="chip" :icon="Settings" href="/settings">Settings</SnBreadcrumbItem>
-      <SnBreadcrumbItem variant="chip" :icon="ChevronRight" :show-separator="false">Profile</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="chip" :icon="ChevronRight" :show-separator="false"
+        >Profile</SnBreadcrumbItem
+      >
     </SnBreadcrumb>
   </div>
 </template>

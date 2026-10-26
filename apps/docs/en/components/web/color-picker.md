@@ -26,16 +26,16 @@ Color picker. SV drag panel + hue / alpha rails + RGB / HSL / HEX modes + swatch
 
 ### SnColorPicker Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `string` | `null` (renders `#000000`) | Accepts hex / rgb() / hsl(); normalized to lowercase hex |
-| modes | `('rgb'\|'hsl'\|'hex')[]` | `['rgb','hex']` | Panel mode tabs |
-| showAlpha | `boolean` | `false` | Alpha rail (8-digit hex / rgba when < 1) |
-| swatches | `string[]` | — | Preset swatches |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| clearable | `boolean` | `false` | Reset to default color and emit clear |
-| defaultShow | `boolean` | `false` | Open panel initially |
+| Prop                | Type                                         | Default                    | Notes                                                    |
+| ------------------- | -------------------------------------------- | -------------------------- | -------------------------------------------------------- |
+| modelValue          | `string`                                     | `null` (renders `#000000`) | Accepts hex / rgb() / hsl(); normalized to lowercase hex |
+| modes               | `('rgb'\|'hsl'\|'hex')[]`                    | `['rgb','hex']`            | Panel mode tabs                                          |
+| showAlpha           | `boolean`                                    | `false`                    | Alpha rail (8-digit hex / rgba when < 1)                 |
+| swatches            | `string[]`                                   | —                          | Preset swatches                                          |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`                 | Size                                                     |
+| disabled / readonly | `boolean`                                    | `false`                    | Disabled / read-only                                     |
+| clearable           | `boolean`                                    | `false`                    | Reset to default color and emit clear                    |
+| defaultShow         | `boolean`                                    | `false`                    | Open panel initially                                     |
 
 Events: `update:modelValue` (live during drag) / `change` (on release) / `clear` / `focus` / `blur`. Keyboard: handle arrows step h/s/v ±1 (Shift ±10), alpha ±0.01 (Shift ±0.1). Output format follows the active mode tab.
 

@@ -11,69 +11,77 @@
  * bridge only. No schema validation; no business logic.
  */
 
-import { computed, markRaw } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
+import { computed, markRaw } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 
-defineOptions({ name: 'SnButton' })
+defineOptions({ name: 'SnButton' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-button` 1:1 surface ─────────────────────────────────── */
 
     /** Visual variant. Drives background / border / text color. */
-    type?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info'
+    type?: 'primary' | 'default' | 'success' | 'warning' | 'danger' | 'info';
     /** Size preset. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Block (full-width) layout — common on mobile. */
-    block?: boolean
+    block?: boolean;
     /** Pill shape. */
-    round?: boolean
+    round?: boolean;
     /** Disabled. Skips click. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Loading. Shows spinner. Skips click. */
-    loading?: boolean
+    loading?: boolean;
     /** Show hairline border (default type only). */
-    hairline?: boolean
+    hairline?: boolean;
     /** Tap feedback (active state opacity). */
-    feedback?: boolean
+    feedback?: boolean;
     /**
      * Plain / low-key style. Drives the variant — for wot-ui parity this
      * maps to `variant: 'plain'` automatically when `type === 'primary'`.
      */
-    plain?: boolean
+    plain?: boolean;
     /** wot-ui style variant. Mirrors `wd-button variant`. */
-    variant?: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'
+    variant?: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text';
     /** Cell-style preset. Mirrors wd-button cell. */
-    cell?: 'hover' | 'fill' | 'menu' | undefined
+    cell?: 'hover' | 'fill' | 'menu' | undefined;
     /** Custom loading spinner color. */
-    loadingColor?: string
+    loadingColor?: string;
     /** Custom loading spinner size (rpx). */
-    loadingSize?: number | string
+    loadingSize?: number | string;
     /** Open-type routing hint — uni-app MP only. */
     openType?:
-      | 'share' | 'feedback' | 'launchApp' | 'contact' | 'getUserInfo'
-      | 'openSetting' | 'lifestyle' | 'livePlayer' | 'favorite'
-      | 'chooseAvatar' | 'weRunGroup'
+      | 'share'
+      | 'feedback'
+      | 'launchApp'
+      | 'contact'
+      | 'getUserInfo'
+      | 'openSetting'
+      | 'lifestyle'
+      | 'livePlayer'
+      | 'favorite'
+      | 'chooseAvatar'
+      | 'weRunGroup';
     /** Override the hover class (uni-app MP). */
-    hoverClass?: string
+    hoverClass?: string;
     /** Hover start time (ms, uni-app MP). */
-    hoverStartTime?: number
+    hoverStartTime?: number;
     /** Hover stay time (ms, uni-app MP). */
-    hoverStayTime?: number
+    hoverStayTime?: number;
     /** Form submission type. */
-    formType?: 'submit' | 'reset' | undefined
+    formType?: 'submit' | 'reset' | undefined;
     /** Class on the root element. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root element. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
     /** Custom background color override. */
-    bgColor?: string
+    bgColor?: string;
     /** Custom text/border color override. */
-    color?: string
+    color?: string;
     /** Accessible label override. */
-    ariaLabel?: string
+    ariaLabel?: string;
 
     /* ── icon handling (mirror of web) ─────────────────────────────────── */
 
@@ -81,25 +89,25 @@ const props = withDefaults(
      * Icon data (frozen `{ viewBox, paths }` object) to render before the
      * default slot.
      */
-    iconData?: IconData
+    iconData?: IconData;
     /**
      * Icon name resolved via the sn-icon registry (populated by
      * `registerSnIcons()` at app bootstrap).
      */
-    iconName?: string
+    iconName?: string;
     /** rpx / pixel size forwarded to the embedded sn-icon. Default 32. */
-    iconSize?: number | string
+    iconSize?: number | string;
     /**
      * Iconfont glyph name — wot-ui's `icon` prop (`wd-button icon="check"`).
      *
      * Distinct from `iconName` (SVG registry lookup): this resolves through the
      * iconfont class convention, which is what wot-ui's docs teach.
      */
-    icon?: string
+    icon?: string;
     /** Class-name prefix for the iconfont glyph. Mirrors wot-ui `class-prefix`. */
-    classPrefix?: string
+    classPrefix?: string;
     /** CSS icon class (or `true` to also apply the raw name). Mirrors `css-icon`. */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /**
      * Loading indicator config — mirrors wot-ui `loading-props`.
      *
@@ -107,32 +115,34 @@ const props = withDefaults(
      * fields this component understands are applied to the spinner, the rest
      * are ignored so a config written for wot-ui still type-checks.
      */
-    loadingProps?: {
-      color?: string
-      size?: number | string
-      text?: string
-      [key: string]: unknown
-    } | undefined
+    loadingProps?:
+      | {
+          color?: string;
+          size?: number | string;
+          text?: string;
+          [key: string]: unknown;
+        }
+      | undefined;
     /** Prevent the press state from bubbling to ancestors (uni-app MP). */
-    hoverStopPropagation?: boolean
+    hoverStopPropagation?: boolean;
     /** `open-type=contact` session language: `zh_CN` / `zh_TW` / `en`. */
-    lang?: 'zh_CN' | 'zh_TW' | 'en' | ''
+    lang?: 'zh_CN' | 'zh_TW' | 'en' | '';
     /** `open-type=contact` session source. */
-    sessionFrom?: string
+    sessionFrom?: string;
     /** `open-type=contact` message card title. */
-    sendMessageTitle?: string
+    sendMessageTitle?: string;
     /** `open-type=contact` message card path. */
-    sendMessagePath?: string
+    sendMessagePath?: string;
     /** `open-type=contact` message card image. */
-    sendMessageImg?: string
+    sendMessageImg?: string;
     /** `open-type=launchApp` launch parameters. */
-    appParameter?: string
+    appParameter?: string;
     /** `open-type=contact` — show the session message card. */
-    showMessageCard?: boolean
+    showMessageCard?: boolean;
     /** Unique button identifier. */
-    buttonId?: string
+    buttonId?: string;
     /** Alipay authorization scope (`open-type=getAuthorize`). */
-    scope?: 'phoneNumber' | 'userInfo' | ''
+    scope?: 'phoneNumber' | 'userInfo' | '';
   }>(),
   {
     type: 'default',
@@ -172,7 +182,7 @@ const props = withDefaults(
     buttonId: '',
     scope: '',
   },
-)
+);
 
 /**
  * Resolved icon data: prefer explicit `iconData`, fall back to registry
@@ -180,9 +190,9 @@ const props = withDefaults(
  * renders the default spinner / nothing instead).
  */
 const resolvedIconData = computed<IconData | null>(() => {
-  const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null)
-  return icon ? markRaw(icon) : null
-})
+  const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null);
+  return icon ? markRaw(icon) : null;
+});
 
 /**
  * Loading spinner appearance.
@@ -193,26 +203,26 @@ const resolvedIconData = computed<IconData | null>(() => {
  * wd-button.
  */
 const spinnerColor = computed<string>(() => {
-  if (props.loadingColor !== '') return props.loadingColor
-  const fromProps = props.loadingProps?.color
-  return typeof fromProps === 'string' ? fromProps : ''
-})
+  if (props.loadingColor !== '') return props.loadingColor;
+  const fromProps = props.loadingProps?.color;
+  return typeof fromProps === 'string' ? fromProps : '';
+});
 
 const spinnerSize = computed<number | string>(() => {
-  if (props.loadingSize !== 32) return props.loadingSize
-  const fromProps = props.loadingProps?.size
-  if (typeof fromProps === 'number' || typeof fromProps === 'string') return fromProps
-  return props.loadingSize
-})
+  if (props.loadingSize !== 32) return props.loadingSize;
+  const fromProps = props.loadingProps?.size;
+  if (typeof fromProps === 'number' || typeof fromProps === 'string') return fromProps;
+  return props.loadingSize;
+});
 const emit = defineEmits<{
-  (e: 'click', event: Event): void
-}>()
+  (e: 'click', event: Event): void;
+}>();
 
 defineSlots<{
-  default(): unknown
-  icon(): unknown
-  loading(): unknown
-}>()
+  default(): unknown;
+  icon(): unknown;
+  loading(): unknown;
+}>();
 
 const classList = computed(() => [
   'sn-button',
@@ -232,24 +242,27 @@ const classList = computed(() => [
     'sn-button--cell-menu': props.cell === 'menu',
   },
   props.customClass,
-])
+]);
 
 const wrapperStyle = computed(() => {
-  let style = ''
-  if (props.bgColor) style += `background-color: ${props.bgColor};`
-  if (props.color) style += `color: ${props.color};border-color: ${props.color};`
-  if (typeof props.customStyle === 'string') style += props.customStyle
-  else if (props.customStyle) style += Object.entries(props.customStyle).map(([k, v]) => `${k}:${v}`).join(';')
-  return style || undefined
-})
+  let style = '';
+  if (props.bgColor) style += `background-color: ${props.bgColor};`;
+  if (props.color) style += `color: ${props.color};border-color: ${props.color};`;
+  if (typeof props.customStyle === 'string') style += props.customStyle;
+  else if (props.customStyle)
+    style += Object.entries(props.customStyle)
+      .map(([k, v]) => `${k}:${v}`)
+      .join(';');
+  return style || undefined;
+});
 
 function onTap(event: Event): void {
   if (props.disabled || props.loading) {
-    event.preventDefault()
-    event.stopImmediatePropagation()
-    return
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    return;
   }
-  emit('click', event)
+  emit('click', event);
 }
 </script>
 
@@ -283,11 +296,7 @@ function onTap(event: Event): void {
         Icon precedence: SVG data (`iconData` / registry `iconName`) first,
         then the wot-ui iconfont API (`icon` + `class-prefix` + `css-icon`).
       -->
-      <SnIcon
-        v-if="resolvedIconData"
-        :icon="resolvedIconData"
-        :size="iconSize ?? 32"
-      />
+      <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="iconSize ?? 32" />
       <SnIcon
         v-else-if="icon"
         :name="icon"
@@ -328,7 +337,11 @@ function onTap(event: Event): void {
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
-  transition: opacity 0.15s, background-color 0.15s, border-color 0.15s, color 0.15s;
+  transition:
+    opacity 0.15s,
+    background-color 0.15s,
+    border-color 0.15s,
+    color 0.15s;
   /* uni-app uses rpx for cross-device sizing; rpx is a typography/geometry unit,
      not a color, so hardcoded rpx values are allowed per Spec-01 §3.1. */
   box-sizing: border-box;
@@ -471,7 +484,9 @@ function onTap(event: Event): void {
   border-radius: 50%;
 }
 @keyframes sn-button-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Doodle skin — see packages/vue-web/src/button/SnButton.vue for full

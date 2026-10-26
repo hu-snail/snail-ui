@@ -6,17 +6,17 @@
  * highlight waits until a section crosses the top boundary; with it, the
  * highlight follows the exact href region the reader is inside.
  */
-import { ref } from 'vue'
-import { SnAnchor, SnAnchorLink } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAnchor, SnAnchorLink } from '@snui/vue-web';
 
-const gapRef = ref<HTMLElement | null>(null)
-const exactRef = ref<HTMLElement | null>(null)
+const gapRef = ref<HTMLElement | null>(null);
+const exactRef = ref<HTMLElement | null>(null);
 
 const sections = [
   { id: 'gap-a', title: 'Chapter 1' },
   { id: 'gap-b', title: 'Chapter 2' },
   { id: 'gap-c', title: 'Chapter 3' },
-]
+];
 </script>
 
 <template>
@@ -24,12 +24,7 @@ const sections = [
     <div class="anchor-gap__col">
       <span class="anchor-gap__cap">ignoreGap=false (default)</span>
       <SnAnchor :offset-target="() => gapRef as HTMLElement" :bound="12">
-        <SnAnchorLink
-          v-for="s in sections"
-          :key="s.id"
-          :title="s.title"
-          :href="`#${s.id}`"
-        />
+        <SnAnchorLink v-for="s in sections" :key="s.id" :title="s.title" :href="`#${s.id}`" />
       </SnAnchor>
       <div ref="gapRef" class="anchor-gap__scroller">
         <section v-for="s in sections" :id="s.id" :key="s.id" class="anchor-gap__section">
@@ -42,12 +37,7 @@ const sections = [
     <div class="anchor-gap__col">
       <span class="anchor-gap__cap">ignoreGap=true</span>
       <SnAnchor :offset-target="() => exactRef as HTMLElement" :bound="12" ignore-gap>
-        <SnAnchorLink
-          v-for="s in sections"
-          :key="s.id"
-          :title="s.title"
-          :href="`#${s.id}`"
-        />
+        <SnAnchorLink v-for="s in sections" :key="s.id" :title="s.title" :href="`#${s.id}`" />
       </SnAnchor>
       <div ref="exactRef" class="anchor-gap__scroller">
         <section v-for="s in sections" :id="s.id" :key="s.id" class="anchor-gap__section">

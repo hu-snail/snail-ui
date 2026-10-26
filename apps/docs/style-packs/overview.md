@@ -10,11 +10,11 @@ Style Pack 是 snail-aui 的**风格一等公民**。它把 **Token 覆盖 + 皮
 
 仅靠修改 Token 变量（颜色 / 圆角 / 间距）做不出涂鸦、便签、抖音 这种**视觉人格**——手绘边框、手写字体、霓虹发光必须靠 CSS 实现。所以 Style Pack 由三层组成：
 
-| 层 | 内容 | 必须 |
-|---|---|---|
-| **Token 层** | 颜色 / 圆角 / 间距覆盖（`snCssVars({ end })`）| ✅ 所有 Pack |
+| 层              | 内容                                                 | 必须                                 |
+| --------------- | ---------------------------------------------------- | ------------------------------------ |
+| **Token 层**    | 颜色 / 圆角 / 间距覆盖（`snCssVars({ end })`）       | ✅ 所有 Pack                         |
 | **皮肤 CSS 层** | `.snui-skin-{name}` 作用域 CSS（字体 / 装饰 / 特效） | 仅需要视觉人格的 Pack（涂鸦 / 抖音） |
-| **资源层** | 字体 / 纹理 / SVG | 仅个别 Pack（抖音 / 淘宝） |
+| **资源层**      | 字体 / 纹理 / SVG                                    | 仅个别 Pack（抖音 / 淘宝）           |
 
 **硬约束**：皮肤 CSS 只能操作视觉层（颜色、阴影、字体、动画、伪元素），不能修改组件 DOM / Props / 行为。
 
@@ -22,15 +22,15 @@ Style Pack 是 snail-aui 的**风格一等公民**。它把 **Token 覆盖 + 皮
 
 ## 官方 Pack 路线图
 
-| Pack | 视觉特征 | 层 | `end` | 交付 |
-|---|---|---|---|---|
-| `default` | 6px 圆角，微妙阴影，蓝色 | Token | `both` | M2 ✅ |
-| `dark` | 低饱和度暗色 | Token | `both` | M2 ✅ |
-| `ios` | 大圆角，无阴影，苹果蓝 | Token | `both` | M2 ✅ |
-| `doodle` | 手绘边框，手写字体，黑白 | Token + 皮肤 CSS | `both` | M3 |
-| `sticky-note` | 暖黄背景，倾斜阴影 | Token + 皮肤 CSS | `both` | M3 |
-| `mp-taobao` | 橙红主色，圆润圆角 | Token + 皮肤 CSS | `mp` | M4 |
-| `mp-douyin` | 深色底，红青主色，霓虹 glow | Token + 皮肤 CSS + 资源 | `mp` | M4 |
+| Pack          | 视觉特征                    | 层                      | `end`  | 交付  |
+| ------------- | --------------------------- | ----------------------- | ------ | ----- |
+| `default`     | 6px 圆角，微妙阴影，蓝色    | Token                   | `both` | M2 ✅ |
+| `dark`        | 低饱和度暗色                | Token                   | `both` | M2 ✅ |
+| `ios`         | 大圆角，无阴影，苹果蓝      | Token                   | `both` | M2 ✅ |
+| `doodle`      | 手绘边框，手写字体，黑白    | Token + 皮肤 CSS        | `both` | M3    |
+| `sticky-note` | 暖黄背景，倾斜阴影          | Token + 皮肤 CSS        | `both` | M3    |
+| `mp-taobao`   | 橙红主色，圆润圆角          | Token + 皮肤 CSS        | `mp`   | M4    |
+| `mp-douyin`   | 深色底，红青主色，霓虹 glow | Token + 皮肤 CSS + 资源 | `mp`   | M4    |
 
 > **端约束**：`mp-taobao` / `mp-douyin` 在 Web 端不可用——它们针对移动端密集布局 / rpx 单位设计。文档站 StyleSwitcher 与 MCP `get_style_pack` 会自动按 `end` 过滤。
 
@@ -42,18 +42,18 @@ Style Pack 是 snail-aui 的**风格一等公民**。它把 **Token 覆盖 + 皮
 
 ```ts
 // @snui/vue-web 项目
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-web/styles'  // 引入 --sn-web-* 别名层
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-web/styles'; // 引入 --sn-web-* 别名层
+import { iosPack } from '@snui/style-packs/ios';
 
-const el = document.createElement('style')
+const el = document.createElement('style');
 el.textContent = snCssVars({
-  end: 'web',           // ← 端标识，决定输出 --sn-web-* 别名
+  end: 'web', // ← 端标识，决定输出 --sn-web-* 别名
   theme: iosPack.theme,
   style: iosPack.style,
   density: iosPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 ```
 
 或通过 ConfigProvider：
@@ -71,16 +71,16 @@ ConfigProvider 内部把 `skin="ios"` 写到 `document.body.classList`，皮肤 
 
 ```ts
 // @snui/uni 项目
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-mp/styles'   // 引入 --sn-mp-* 别名层（rpx 单位）
-import { doodlePack } from '@snui/style-packs/doodle'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-mp/styles'; // 引入 --sn-mp-* 别名层（rpx 单位）
+import { doodlePack } from '@snui/style-packs/doodle';
 
 const cssText = snCssVars({
-  end: 'mp',            // ← 端标识，输出 --sn-mp-* 别名 + rpx 转换
+  end: 'mp', // ← 端标识，输出 --sn-mp-* 别名 + rpx 转换
   theme: doodlePack.theme,
   style: doodlePack.style,
   density: doodlePack.density,
-})
+});
 // uni 端无 document.head，通过 ConfigProvider 注入
 ```
 
@@ -103,9 +103,9 @@ Web 端组件（`@snui/vue-web`）写 CSS 时用 `var(--sn-web-*)`，uni 端组�
 
 文档站右上角的 **StyleSwitcher** 列出所有官方 Pack，点击即时切换页面内所有组件的 Token 变量。
 
-| 页面 | StyleSwitcher 列出 |
-|---|---|
-| `/guide/web/{...}` | `end: 'web' \| 'both'` 的 Pack（default / dark / ios / doodle / sticky-note） |
+| 页面               | StyleSwitcher 列出                                                                                   |
+| ------------------ | ---------------------------------------------------------------------------------------------------- |
+| `/guide/web/{...}` | `end: 'web' \| 'both'` 的 Pack（default / dark / ios / doodle / sticky-note）                        |
 | `/guide/uni/{...}` | `end: 'mp' \| 'both'` 的 Pack（default / dark / ios / doodle / sticky-note / mp-taobao / mp-douyin） |
 
 每个组件页还有 **StylePackPreview** 横向展示该组件在不同 Pack 下的渲染效果。
@@ -119,7 +119,7 @@ Web 端组件（`@snui/vue-web`）写 CSS 时用 `var(--sn-web-*)`，uni 端组�
 发布你自己的 Pack：
 
 ```ts
-import type { StylePackDefinition } from '@snui/style-packs'
+import type { StylePackDefinition } from '@snui/style-packs';
 
 const myPack: StylePackDefinition = {
   name: 'my-brand',
@@ -135,8 +135,8 @@ const myPack: StylePackDefinition = {
     component: { button: { radius: '8px' } },
   },
 
-  skinCss: '/packs/my-brand.skin.css',  // 可选
-}
+  skinCss: '/packs/my-brand.skin.css', // 可选
+};
 ```
 
 校验合法性：

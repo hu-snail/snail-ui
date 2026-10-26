@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnUpload — image list. */
-import { SnUpload } from '@snui/vue-web'
+import { SnUpload } from '@snui/vue-web';
 </script>
 
 <template>

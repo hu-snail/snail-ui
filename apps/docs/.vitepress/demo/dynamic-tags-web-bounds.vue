@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnDynamicTags — max / closable. */
-import { ref } from 'vue'
-import { SnDynamicTags } from '@snui/vue-web'
-const a = ref(['上限一', '上限二', '上限三'])
-const b = ref(['不可删'])
+import { ref } from 'vue';
+import { SnDynamicTags } from '@snui/vue-web';
+const a = ref(['上限一', '上限二', '上限三']);
+const b = ref(['不可删']);
 </script>
 
 <template>
@@ -14,5 +14,10 @@ const b = ref(['不可删'])
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
 </style>

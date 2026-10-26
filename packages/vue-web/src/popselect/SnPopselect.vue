@@ -56,10 +56,10 @@ import {
   watch,
   type PropType,
   type VNodeChild,
-} from 'vue'
-import { Check } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import type { IconComponent } from '../icon/sn-icon-registry'
+} from 'vue';
+import { Check } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import type { IconComponent } from '../icon/sn-icon-registry';
 import {
   normalizePopselectOptions,
   toPopselectRows,
@@ -70,15 +70,23 @@ import {
   type SnPopselectValue,
   type SnSelectOptionInput,
   type SnSelectValue,
-} from './sn-popselect-types'
+} from './sn-popselect-types';
 
-defineOptions({ name: 'SnPopselect' })
+defineOptions({ name: 'SnPopselect' });
 
 export type SnPopselectPlacement =
-  | 'top-start' | 'top' | 'top-end'
-  | 'right-start' | 'right' | 'right-end'
-  | 'bottom-start' | 'bottom' | 'bottom-end'
-  | 'left-start' | 'left' | 'left-end'
+  | 'top-start'
+  | 'top'
+  | 'top-end'
+  | 'right-start'
+  | 'right'
+  | 'right-end'
+  | 'bottom-start'
+  | 'bottom'
+  | 'bottom-end'
+  | 'left-start'
+  | 'left'
+  | 'left-end';
 
 /**
  * Internal functional renderer for the `renderLabel` / `renderOption`
@@ -91,9 +99,9 @@ const RenderVNode = defineComponent({
     render: { type: Function as PropType<() => VNodeChild>, required: true },
   },
   setup(renderProps) {
-    return () => renderProps.render()
+    return () => renderProps.render();
   },
-})
+});
 
 const props = withDefaults(
   defineProps<{
@@ -101,45 +109,45 @@ const props = withDefaults(
      * Option list — bare values or `{ label, value, disabled, children }`
      * records. Mirrors n-popselect `options`.
      */
-    options?: SnSelectOptionInput[]
+    options?: SnSelectOptionInput[];
     /**
      * Selected value(s). When `undefined`, falls back to uncontrolled
      * mode. Mirrors n-popselect `value`.
      */
-    value?: SnPopselectValue | undefined
+    value?: SnPopselectValue | undefined;
     /**
      * Initial value for uncontrolled mode. Mirrors n-popselect
      * `defaultValue`. Default: `[]` when `multiple`, else `null`.
      */
-    defaultValue?: SnPopselectValue | undefined
+    defaultValue?: SnPopselectValue | undefined;
     /** Toggle / multi-select mode. Mirrors n-popselect `multiple`. */
-    multiple?: boolean
+    multiple?: boolean;
     /**
      * What gesture opens the menu. Mirrors n-popselect `trigger`.
      * Default 'click'.
      */
-    trigger?: 'click' | 'hover' | 'manual' | 'focus'
+    trigger?: 'click' | 'hover' | 'manual' | 'focus';
     /**
      * Where to render the menu relative to the trigger. Mirrors
      * n-popselect `placement`. Default 'bottom'.
      */
-    placement?: SnPopselectPlacement
+    placement?: SnPopselectPlacement;
     /**
      * Cap the menu height and scroll overflowing rows. Mirrors
      * n-popselect `scrollable`. Default false.
      */
-    scrollable?: boolean
+    scrollable?: boolean;
     /** Custom row label renderer. Mirrors n-popselect `renderLabel`. */
-    renderLabel?: SnPopselectRenderLabel | undefined
+    renderLabel?: SnPopselectRenderLabel | undefined;
     /** Wrapper for the whole default row. Mirrors n-popselect `renderOption`. */
-    renderOption?: SnPopselectRenderOption | undefined
+    renderOption?: SnPopselectRenderOption | undefined;
     /** Attributes spread onto the listbox element. */
-    menuProps?: Record<string, unknown> | undefined
+    menuProps?: Record<string, unknown> | undefined;
     /**
      * Whether the menu is shown. When `undefined`, falls back to
      * uncontrolled mode. Mirrors n-popselect `show`.
      */
-    show?: boolean | undefined
+    show?: boolean | undefined;
   }>(),
   {
     options: () => [],
@@ -154,298 +162,310 @@ const props = withDefaults(
     menuProps: undefined,
     show: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Fired when the selection changes (v-model:value). */
-  (e: 'update:value', value: SnPopselectValue): void
+  (e: 'update:value', value: SnPopselectValue): void;
   /** Fired when show state changes (v-model:show). */
-  (e: 'update:show', show: boolean): void
-}>()
+  (e: 'update:show', show: boolean): void;
+}>();
 
 defineSlots<{
   /** Trigger element (the visible target, e.g. a button). */
-  default(): unknown
-}>()
+  default(): unknown;
+}>();
 
 /* ─────────── Internal show state ─────────── */
 
-const uncontrolledShow = ref<boolean>(false)
-const isShowControlled = computed(() => props.show !== undefined)
+const uncontrolledShow = ref<boolean>(false);
+const isShowControlled = computed(() => props.show !== undefined);
 const visible = computed<boolean>(() =>
   isShowControlled.value ? (props.show as boolean) : uncontrolledShow.value,
-)
+);
 
 function setVisible(next: boolean): void {
   if (isShowControlled.value) {
-    if (visible.value !== next) emit('update:show', next)
-  }
-  else {
-    uncontrolledShow.value = next
+    if (visible.value !== next) emit('update:show', next);
+  } else {
+    uncontrolledShow.value = next;
   }
 }
 
 /* ─────────── Value state ─────────── */
 
-const uncontrolledValue = ref<SnPopselectValue>(
-  props.defaultValue ?? (props.multiple ? [] : null),
-)
-const isValueControlled = computed(() => props.value !== undefined)
+const uncontrolledValue = ref<SnPopselectValue>(props.defaultValue ?? (props.multiple ? [] : null));
+const isValueControlled = computed(() => props.value !== undefined);
 const currentValue = computed<SnPopselectValue>(() =>
   isValueControlled.value ? (props.value as SnPopselectValue) : uncontrolledValue.value,
-)
+);
 
 /** Current selection as an array view regardless of mode. */
 const selectedValues = computed<ReadonlyArray<SnSelectValue>>(() => {
-  const v = currentValue.value
-  if (props.multiple) return Array.isArray(v) ? v : []
-  if (v === null || v === undefined || Array.isArray(v)) return []
-  return [v]
-})
+  const v = currentValue.value;
+  if (props.multiple) return Array.isArray(v) ? v : [];
+  if (v === null || v === undefined || Array.isArray(v)) return [];
+  return [v];
+});
 
 function isOptionSelected(value: SnSelectValue): boolean {
-  return selectedValues.value.includes(value)
+  return selectedValues.value.includes(value);
 }
 
 function commitValue(next: SnPopselectValue): void {
   // Always notify listeners; only the uncontrolled ref is written here —
   // the parent mirrors the prop in controlled mode.
-  emit('update:value', next)
-  if (!isValueControlled.value) uncontrolledValue.value = next
+  emit('update:value', next);
+  if (!isValueControlled.value) uncontrolledValue.value = next;
 }
 
 /* ─────────── Options ─────────── */
 
-const menuNodes = computed(() => normalizePopselectOptions(props.options))
-const menuRows = computed<SnPopselectRow[]>(() => toPopselectRows(menuNodes.value))
+const menuNodes = computed(() => normalizePopselectOptions(props.options));
+const menuRows = computed<SnPopselectRow[]>(() => toPopselectRows(menuNodes.value));
 
 /** Flat selectable leaves (groups flattened, order preserved). */
 const flatLeaves = computed<SnPopselectLeafOption[]>(() => {
-  const out: SnPopselectLeafOption[] = []
+  const out: SnPopselectLeafOption[] = [];
   for (const node of menuNodes.value) {
-    if (node.kind === 'group') out.push(...node.children)
-    else out.push(node)
+    if (node.kind === 'group') out.push(...node.children);
+    else out.push(node);
   }
-  return out
-})
+  return out;
+});
 
 /** Rows a keyboard pass may land on (disabled rows are skipped). */
-const selectableLeaves = computed(() => flatLeaves.value.filter((l) => !l.disabled))
+const selectableLeaves = computed(() => flatLeaves.value.filter((l) => !l.disabled));
 
 /* ─────────── Selection commit ─────────── */
 
 function chooseLeaf(leaf: SnPopselectLeafOption): void {
-  if (leaf.disabled) return
+  if (leaf.disabled) return;
   if (props.multiple) {
-    const current = selectedValues.value.slice()
-    const index = current.indexOf(leaf.value)
-    if (index >= 0) current.splice(index, 1)
-    else current.push(leaf.value)
-    commitValue(current)
+    const current = selectedValues.value.slice();
+    const index = current.indexOf(leaf.value);
+    if (index >= 0) current.splice(index, 1);
+    else current.push(leaf.value);
+    commitValue(current);
     // Multiple mode keeps the bubble open for further toggling.
-  }
-  else {
-    commitValue(leaf.value)
+  } else {
+    commitValue(leaf.value);
     // Single selection closes on commit (naive behaviour).
-    setVisible(false)
+    setVisible(false);
   }
 }
 
 /* ─────────── Keyboard (↑ ↓ Enter Esc) ─────────── */
 
-const pendingValue = ref<SnSelectValue | null>(null)
-const menuBodyRef = ref<HTMLElement | null>(null)
+const pendingValue = ref<SnSelectValue | null>(null);
+const menuBodyRef = ref<HTMLElement | null>(null);
 
 function optionDomId(leaf: SnPopselectLeafOption): string {
-  return `sn-popselect-option-${leaf.key}`
+  return `sn-popselect-option-${leaf.key}`;
 }
 
 const activeDescendant = computed<string | null>(() => {
-  if (pendingValue.value === null) return null
-  const leaf = flatLeaves.value.find((l) => l.value === pendingValue.value)
-  return leaf ? optionDomId(leaf) : null
-})
+  if (pendingValue.value === null) return null;
+  const leaf = flatLeaves.value.find((l) => l.value === pendingValue.value);
+  return leaf ? optionDomId(leaf) : null;
+});
 
 /** Seed the highlight: the selected leaf if any, else the first row. */
 function initPending(): void {
-  const firstSelected = selectableLeaves.value.find((l) => isOptionSelected(l.value))
-  pendingValue.value = (firstSelected ?? selectableLeaves.value[0])?.value ?? null
+  const firstSelected = selectableLeaves.value.find((l) => isOptionSelected(l.value));
+  pendingValue.value = (firstSelected ?? selectableLeaves.value[0])?.value ?? null;
 }
 
 function movePending(delta: 1 | -1): void {
-  const leaves = selectableLeaves.value
-  if (leaves.length === 0) return
-  const currentIndex = pendingValue.value === null
-    ? -1
-    : leaves.findIndex((l) => l.value === pendingValue.value)
-  let next = currentIndex + delta
-  if (next < 0) next = leaves.length - 1
-  if (next >= leaves.length) next = 0
-  const leaf = leaves[next]
+  const leaves = selectableLeaves.value;
+  if (leaves.length === 0) return;
+  const currentIndex =
+    pendingValue.value === null ? -1 : leaves.findIndex((l) => l.value === pendingValue.value);
+  let next = currentIndex + delta;
+  if (next < 0) next = leaves.length - 1;
+  if (next >= leaves.length) next = 0;
+  const leaf = leaves[next];
   if (leaf) {
-    pendingValue.value = leaf.value
-    void scrollPendingIntoView(leaf)
+    pendingValue.value = leaf.value;
+    void scrollPendingIntoView(leaf);
   }
 }
 
 async function scrollPendingIntoView(leaf: SnPopselectLeafOption): Promise<void> {
-  await nextTick()
-  const body = menuBodyRef.value
-  if (!body) return
-  const row = body.querySelector(`[data-value="${CSS.escape(String(leaf.value))}"]`)
-  if (row && typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'nearest' })
+  await nextTick();
+  const body = menuBodyRef.value;
+  if (!body) return;
+  const row = body.querySelector(`[data-value="${CSS.escape(String(leaf.value))}"]`);
+  if (row && typeof row.scrollIntoView === 'function') row.scrollIntoView({ block: 'nearest' });
 }
 
 function onDocumentKeydown(e: KeyboardEvent): void {
-  if (!visible.value) return
+  if (!visible.value) return;
   // Never steal keys while the user is typing in an editable field.
-  const target = e.target as HTMLElement | null
+  const target = e.target as HTMLElement | null;
   if (
-    target
-    && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
-  ) return
+    target &&
+    (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)
+  )
+    return;
   switch (e.key) {
     case 'ArrowDown':
-      e.preventDefault()
-      movePending(1)
-      break
+      e.preventDefault();
+      movePending(1);
+      break;
     case 'ArrowUp':
-      e.preventDefault()
-      movePending(-1)
-      break
+      e.preventDefault();
+      movePending(-1);
+      break;
     case 'Enter': {
-      const pending = flatLeaves.value.find((l) => l.value === pendingValue.value)
+      const pending = flatLeaves.value.find((l) => l.value === pendingValue.value);
       if (pending) {
-        e.preventDefault()
-        chooseLeaf(pending)
+        e.preventDefault();
+        chooseLeaf(pending);
       }
-      break
+      break;
     }
     case 'Escape':
-      e.preventDefault()
-      setVisible(false)
-      break
+      e.preventDefault();
+      setVisible(false);
+      break;
     default:
-      break
+      break;
   }
 }
 
-watch(visible, (v) => {
-  // SSR guard (§SSR): the immediate pass runs during server render where
-  // window / document do not exist; listeners are client-only.
-  if (typeof window === 'undefined') return
-  if (v) document.addEventListener('keydown', onDocumentKeydown)
-  else document.removeEventListener('keydown', onDocumentKeydown)
-  // A controlled menu can mount already visible — the listener must
-  // attach on that first pass too.
-}, { immediate: true })
+watch(
+  visible,
+  (v) => {
+    // SSR guard (§SSR): the immediate pass runs during server render where
+    // window / document do not exist; listeners are client-only.
+    if (typeof window === 'undefined') return;
+    if (v) document.addEventListener('keydown', onDocumentKeydown);
+    else document.removeEventListener('keydown', onDocumentKeydown);
+    // A controlled menu can mount already visible — the listener must
+    // attach on that first pass too.
+  },
+  { immediate: true },
+);
 
 /* ─────────── Delay timers (hover / focus triggers) ─────────── */
 
-let openTimer: ReturnType<typeof setTimeout> | null = null
-let closeTimer: ReturnType<typeof setTimeout> | null = null
+let openTimer: ReturnType<typeof setTimeout> | null = null;
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
 function clearTimers(): void {
-  if (openTimer) { clearTimeout(openTimer); openTimer = null }
-  if (closeTimer) { clearTimeout(closeTimer); closeTimer = null }
+  if (openTimer) {
+    clearTimeout(openTimer);
+    openTimer = null;
+  }
+  if (closeTimer) {
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  }
 }
 function scheduleOpen(): void {
-  clearTimers()
-  openTimer = setTimeout(() => setVisible(true), 100)
+  clearTimers();
+  openTimer = setTimeout(() => setVisible(true), 100);
 }
 function scheduleClose(): void {
-  clearTimers()
-  closeTimer = setTimeout(() => setVisible(false), 100)
+  clearTimers();
+  closeTimer = setTimeout(() => setVisible(false), 100);
 }
 
 /* ─────────── Trigger event wiring ─────────── */
 
-const triggerEl = ref<HTMLElement | null>(null)
-const popoverEl = ref<HTMLElement | null>(null)
+const triggerEl = ref<HTMLElement | null>(null);
+const popoverEl = ref<HTMLElement | null>(null);
 
 function onTriggerMouseEnter(): void {
-  if (props.trigger !== 'hover') return
-  scheduleOpen()
+  if (props.trigger !== 'hover') return;
+  scheduleOpen();
 }
 function onTriggerMouseLeave(e: MouseEvent): void {
-  if (props.trigger !== 'hover') return
-  const to = e.relatedTarget as Node | null
-  if (to && popoverEl.value && popoverEl.value.contains(to)) return
-  scheduleClose()
+  if (props.trigger !== 'hover') return;
+  const to = e.relatedTarget as Node | null;
+  if (to && popoverEl.value && popoverEl.value.contains(to)) return;
+  scheduleClose();
 }
 function onTriggerClick(): void {
-  if (props.trigger !== 'click') return
-  setVisible(!visible.value)
+  if (props.trigger !== 'click') return;
+  setVisible(!visible.value);
 }
 function onTriggerFocus(): void {
-  if (props.trigger !== 'focus') return
-  scheduleOpen()
+  if (props.trigger !== 'focus') return;
+  scheduleOpen();
 }
 function onTriggerBlur(e: FocusEvent): void {
-  if (props.trigger !== 'focus') return
-  const to = e.relatedTarget as Node | null
-  if (to && popoverEl.value && popoverEl.value.contains(to)) return
-  scheduleClose()
+  if (props.trigger !== 'focus') return;
+  const to = e.relatedTarget as Node | null;
+  if (to && popoverEl.value && popoverEl.value.contains(to)) return;
+  scheduleClose();
 }
 
 /* Hover bridge — the menu is reachable without closing. */
 function onPopoverMouseEnter(): void {
-  if (props.trigger !== 'hover') return
-  clearTimers()
+  if (props.trigger !== 'hover') return;
+  clearTimers();
 }
 function onPopoverMouseLeave(e: MouseEvent): void {
-  if (props.trigger !== 'hover') return
-  const to = e.relatedTarget as Node | null
-  if (to && triggerEl.value && triggerEl.value.contains(to)) return
-  scheduleClose()
+  if (props.trigger !== 'hover') return;
+  const to = e.relatedTarget as Node | null;
+  if (to && triggerEl.value && triggerEl.value.contains(to)) return;
+  scheduleClose();
 }
 
 /* ─────────── Positioning + boundary detection ─────────── */
 
 /** Gap between the trigger and the menu panel (menu-style, no arrow). */
-const PANEL_GAP = 4
+const PANEL_GAP = 4;
 
 interface PositionRect {
-  top: number
-  left: number
-  width: number
-  height: number
-  right: number
-  bottom: number
+  top: number;
+  left: number;
+  width: number;
+  height: number;
+  right: number;
+  bottom: number;
 }
 
-const popoverStyle = ref<Record<string, string>>({})
-const resolvedSide = ref<'top' | 'right' | 'bottom' | 'left'>('bottom')
+const popoverStyle = ref<Record<string, string>>({});
+const resolvedSide = ref<'top' | 'right' | 'bottom' | 'left'>('bottom');
 
 async function recompute(): Promise<void> {
-  if (!visible.value) return
-  await nextTick()
-  const trig = triggerEl.value
-  const pop = popoverEl.value
-  if (!trig || !pop) return
+  if (!visible.value) return;
+  await nextTick();
+  const trig = triggerEl.value;
+  const pop = popoverEl.value;
+  if (!trig || !pop) return;
 
-  const trigRect = trig.getBoundingClientRect()
-  const popRect = pop.getBoundingClientRect()
+  const trigRect = trig.getBoundingClientRect();
+  const popRect = pop.getBoundingClientRect();
   const trigBox: PositionRect = {
-    top: trigRect.top, left: trigRect.left,
-    width: trigRect.width, height: trigRect.height,
-    right: trigRect.right, bottom: trigRect.bottom,
-  }
+    top: trigRect.top,
+    left: trigRect.left,
+    width: trigRect.width,
+    height: trigRect.height,
+    right: trigRect.right,
+    bottom: trigRect.bottom,
+  };
   const popBox: PositionRect = {
-    top: popRect.top, left: popRect.left,
-    width: popRect.width, height: popRect.height,
-    right: popRect.right, bottom: popRect.bottom,
-  }
-  const vw = window.innerWidth
-  const vh = window.innerHeight
-  const margin = 8
+    top: popRect.top,
+    left: popRect.left,
+    width: popRect.width,
+    height: popRect.height,
+    right: popRect.right,
+    bottom: popRect.bottom,
+  };
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const margin = 8;
 
-  const [sideRaw, alignRaw = 'center'] = props.placement.split('-')
-  const side = sideRaw as 'top' | 'right' | 'bottom' | 'left'
-  const align = alignRaw as 'start' | 'center' | 'end'
+  const [sideRaw, alignRaw = 'center'] = props.placement.split('-');
+  const side = sideRaw as 'top' | 'right' | 'bottom' | 'left';
+  const align = alignRaw as 'start' | 'center' | 'end';
 
   function clampWithin(value: number, size: number, limit: number): number {
-    const max = Math.min(value, limit - size - margin)
-    return Math.max(margin, max)
+    const max = Math.min(value, limit - size - margin);
+    return Math.max(margin, max);
   }
 
   function rectFor(
@@ -455,41 +475,58 @@ async function recompute(): Promise<void> {
     strict = true,
   ): PositionRect | null {
     const out: PositionRect = {
-      top: 0, left: 0,
-      width: pop.width, height: pop.height,
-      right: 0, bottom: 0,
-    }
+      top: 0,
+      left: 0,
+      width: pop.width,
+      height: pop.height,
+      right: 0,
+      bottom: 0,
+    };
     switch (sideChoice) {
-      case 'top': out.top = trigger.top - pop.height - PANEL_GAP; break
-      case 'bottom': out.top = trigger.bottom + PANEL_GAP; break
-      case 'left': out.left = trigger.left - pop.width - PANEL_GAP; break
-      case 'right': out.left = trigger.right + PANEL_GAP; break
+      case 'top':
+        out.top = trigger.top - pop.height - PANEL_GAP;
+        break;
+      case 'bottom':
+        out.top = trigger.bottom + PANEL_GAP;
+        break;
+      case 'left':
+        out.left = trigger.left - pop.width - PANEL_GAP;
+        break;
+      case 'right':
+        out.left = trigger.right + PANEL_GAP;
+        break;
     }
     const place = (raw: number, size: number, limit: number): number =>
-      strict ? raw : clampWithin(raw, size, limit)
+      strict ? raw : clampWithin(raw, size, limit);
     if (sideChoice === 'top' || sideChoice === 'bottom') {
       switch (align) {
-        case 'start': out.left = place(trigger.left, pop.width, vw); break
-        case 'end': out.left = place(trigger.right - pop.width, pop.width, vw); break
+        case 'start':
+          out.left = place(trigger.left, pop.width, vw);
+          break;
+        case 'end':
+          out.left = place(trigger.right - pop.width, pop.width, vw);
+          break;
         default:
-          out.left = place(trigger.left + trigger.width / 2 - pop.width / 2, pop.width, vw)
+          out.left = place(trigger.left + trigger.width / 2 - pop.width / 2, pop.width, vw);
       }
-    }
-    else {
+    } else {
       switch (align) {
-        case 'start': out.top = place(trigger.top, pop.height, vh); break
-        case 'end': out.top = place(trigger.bottom - pop.height, pop.height, vh); break
+        case 'start':
+          out.top = place(trigger.top, pop.height, vh);
+          break;
+        case 'end':
+          out.top = place(trigger.bottom - pop.height, pop.height, vh);
+          break;
         default:
-          out.top = place(trigger.top + trigger.height / 2 - pop.height / 2, pop.height, vh)
+          out.top = place(trigger.top + trigger.height / 2 - pop.height / 2, pop.height, vh);
       }
     }
     if (sideChoice === 'top' || sideChoice === 'bottom') {
-      if (out.top < margin || out.top + pop.height > vh - margin) return null
+      if (out.top < margin || out.top + pop.height > vh - margin) return null;
+    } else {
+      if (out.left < margin || out.left + pop.width > vw - margin) return null;
     }
-    else {
-      if (out.left < margin || out.left + pop.width > vw - margin) return null
-    }
-    return out
+    return out;
   }
 
   function fitsCrossAxis(
@@ -499,128 +536,140 @@ async function recompute(): Promise<void> {
     height: number,
   ): boolean {
     if (sideChoice === 'top' || sideChoice === 'bottom') {
-      return rect.left >= margin && rect.left + rect.width <= width - margin
+      return rect.left >= margin && rect.left + rect.width <= width - margin;
     }
-    return rect.top >= margin && rect.top + rect.height <= height - margin
+    return rect.top >= margin && rect.top + rect.height <= height - margin;
   }
 
   const opposite: Record<typeof side, typeof side> = {
-    top: 'bottom', bottom: 'top', left: 'right', right: 'left',
-  }
-  let finalSide = side
-  let r = rectFor(side, trigBox, popBox)
+    top: 'bottom',
+    bottom: 'top',
+    left: 'right',
+    right: 'left',
+  };
+  let finalSide = side;
+  let r = rectFor(side, trigBox, popBox);
   if (!r) {
-    const flipped = rectFor(opposite[side], trigBox, popBox)
+    const flipped = rectFor(opposite[side], trigBox, popBox);
     if (flipped) {
-      r = flipped
-      finalSide = opposite[side]
+      r = flipped;
+      finalSide = opposite[side];
     }
   }
   if (!r || !fitsCrossAxis(finalSide, r, vw, vh)) {
-    r = rectFor(finalSide, trigBox, popBox, false)!
+    r = rectFor(finalSide, trigBox, popBox, false)!;
   }
-  resolvedSide.value = finalSide
+  resolvedSide.value = finalSide;
 
   popoverStyle.value = {
     position: 'fixed',
     top: `${r.top}px`,
     left: `${r.left}px`,
-  }
+  };
 }
 
 /* Reposition on show and on scroll/resize while open. */
-let resizeObserver: ResizeObserver | null = null
-watch(visible, async (v) => {
-  // SSR guard (§SSR): the immediate pass runs during server render where
-  // window / document do not exist; listeners are client-only.
-  if (typeof window === 'undefined') return
-  if (v) {
-    // Seed the keyboard highlight — covers both gesture opens and
-    // controlled consumers that mount already visible.
-    initPending()
-    await recompute()
-    if (!resizeObserver && typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver(() => { void recompute() })
-      resizeObserver.observe(document.body)
+let resizeObserver: ResizeObserver | null = null;
+watch(
+  visible,
+  async (v) => {
+    // SSR guard (§SSR): the immediate pass runs during server render where
+    // window / document do not exist; listeners are client-only.
+    if (typeof window === 'undefined') return;
+    if (v) {
+      // Seed the keyboard highlight — covers both gesture opens and
+      // controlled consumers that mount already visible.
+      initPending();
+      await recompute();
+      if (!resizeObserver && typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver(() => {
+          void recompute();
+        });
+        resizeObserver.observe(document.body);
+      }
+      window.addEventListener('scroll', onScrollOrResize, true);
+      window.addEventListener('resize', onScrollOrResize);
+    } else {
+      window.removeEventListener('scroll', onScrollOrResize, true);
+      window.removeEventListener('resize', onScrollOrResize);
     }
-    window.addEventListener('scroll', onScrollOrResize, true)
-    window.addEventListener('resize', onScrollOrResize)
-  }
-  else {
-    window.removeEventListener('scroll', onScrollOrResize, true)
-    window.removeEventListener('resize', onScrollOrResize)
-  }
-}, { immediate: true })
+  },
+  { immediate: true },
+);
 function onScrollOrResize(): void {
-  void recompute()
+  void recompute();
 }
 
 /* ─────────── Outside-click dismiss (click trigger) ─────────── */
 
 function onDocumentMouseDown(e: MouseEvent): void {
-  if (props.trigger !== 'click' || !visible.value) return
-  const t = e.target as Node | null
-  if (!t) return
-  if (triggerEl.value && triggerEl.value.contains(t)) return
-  if (popoverEl.value && popoverEl.value.contains(t)) return
-  setVisible(false)
+  if (props.trigger !== 'click' || !visible.value) return;
+  const t = e.target as Node | null;
+  if (!t) return;
+  if (triggerEl.value && triggerEl.value.contains(t)) return;
+  if (popoverEl.value && popoverEl.value.contains(t)) return;
+  setVisible(false);
 }
 
-watch(visible, (v) => {
-  // SSR guard (§SSR): the immediate pass runs during server render where
-  // window / document do not exist; listeners are client-only.
-  if (typeof window === 'undefined') return
-  if (props.trigger !== 'click') return
-  if (v) document.addEventListener('mousedown', onDocumentMouseDown)
-  else document.removeEventListener('mousedown', onDocumentMouseDown)
-}, { immediate: true })
+watch(
+  visible,
+  (v) => {
+    // SSR guard (§SSR): the immediate pass runs during server render where
+    // window / document do not exist; listeners are client-only.
+    if (typeof window === 'undefined') return;
+    if (props.trigger !== 'click') return;
+    if (v) document.addEventListener('mousedown', onDocumentMouseDown);
+    else document.removeEventListener('mousedown', onDocumentMouseDown);
+  },
+  { immediate: true },
+);
 
 /* ─────────── Cleanup (§41/§42) ─────────── */
 
 onBeforeUnmount(() => {
-  clearTimers()
-  document.removeEventListener('keydown', onDocumentKeydown)
-  document.removeEventListener('mousedown', onDocumentMouseDown)
-  window.removeEventListener('scroll', onScrollOrResize, true)
-  window.removeEventListener('resize', onScrollOrResize)
+  clearTimers();
+  document.removeEventListener('keydown', onDocumentKeydown);
+  document.removeEventListener('mousedown', onDocumentMouseDown);
+  window.removeEventListener('scroll', onScrollOrResize, true);
+  window.removeEventListener('resize', onScrollOrResize);
   if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
+    resizeObserver.disconnect();
+    resizeObserver = null;
   }
-})
+});
 
 /* When controlled show flips true via the parent, recompute. */
-watch(() => props.show, (s) => {
-  if (s === undefined) return
-  if (s && !visible.value) {
-    clearTimers()
-    setVisible(true)
-  }
-})
+watch(
+  () => props.show,
+  (s) => {
+    if (s === undefined) return;
+    if (s && !visible.value) {
+      clearTimers();
+      setVisible(true);
+    }
+  },
+);
 
 const popoverPlacementClass = computed<string[]>(() => {
-  const requested = `sn-popselect--${props.placement}`
-  const resolved = `sn-popselect--${resolvedSide.value}`
-  return requested === resolved ? [requested] : [requested, resolved]
-})
+  const requested = `sn-popselect--${props.placement}`;
+  const resolved = `sn-popselect--${resolvedSide.value}`;
+  return requested === resolved ? [requested] : [requested, resolved];
+});
 
 /** Default label node handed to `renderOption`. */
-function defaultOptionNode(
-  leaf: SnPopselectLeafOption,
-  selected: boolean,
-): VNodeChild {
-  if (props.renderLabel) return props.renderLabel(leaf, selected)
-  return h('span', { class: 'sn-popselect-option__label' }, leaf.label)
+function defaultOptionNode(leaf: SnPopselectLeafOption, selected: boolean): VNodeChild {
+  if (props.renderLabel) return props.renderLabel(leaf, selected);
+  return h('span', { class: 'sn-popselect-option__label' }, leaf.label);
 }
 
 function rowSelected(leaf: SnPopselectLeafOption): boolean {
-  return isOptionSelected(leaf.value)
+  return isOptionSelected(leaf.value);
 }
 
 /** Built-in check glyph for selected rows (§113: SnIcon, no emoji). */
-const CheckIcon = markRaw(Check) as IconComponent
+const CheckIcon = markRaw(Check) as IconComponent;
 
-const shouldRenderPopover = computed(() => visible.value)
+const shouldRenderPopover = computed(() => visible.value);
 
 // Expose imperative API for parents that prefer ref-based control.
 defineExpose({
@@ -630,7 +679,7 @@ defineExpose({
   hide: () => setVisible(false),
   /** Read current effective show state (controlled + uncontrolled). */
   isShown: () => visible.value,
-})
+});
 </script>
 
 <template>
@@ -653,10 +702,7 @@ defineExpose({
       v-if="shouldRenderPopover"
       ref="popoverEl"
       class="sn-popselect"
-      :class="[
-        popoverPlacementClass,
-        scrollable && 'sn-popselect--scrollable',
-      ]"
+      :class="[popoverPlacementClass, scrollable && 'sn-popselect--scrollable']"
       :style="popoverStyle"
       data-snui-component="popselect"
       @mouseenter="onPopoverMouseEnter"
@@ -694,11 +740,14 @@ defineExpose({
             <component
               :is="RenderVNode"
               v-if="renderOption"
-              :render="() => renderOption!({
-                node: defaultOptionNode(row.leaf, rowSelected(row.leaf)),
-                option: row.leaf,
-                selected: rowSelected(row.leaf),
-              })"
+              :render="
+                () =>
+                  renderOption!({
+                    node: defaultOptionNode(row.leaf, rowSelected(row.leaf)),
+                    option: row.leaf,
+                    selected: rowSelected(row.leaf),
+                  })
+              "
             />
             <component
               :is="RenderVNode"
@@ -815,7 +864,13 @@ defineExpose({
 }
 
 @keyframes sn-popselect-in {
-  from { opacity: 0; transform: scale(0.98); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>

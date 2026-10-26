@@ -22,10 +22,10 @@ LaTeX 数学公式渲染。内置 KaTeX，开箱即用，支持 displayMode / �
 
 ### SnEquation Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| value | `string` | `''` | LaTeX 表达式 |
-| katex | `SnEquationKatex` | `undefined` | 自定义 KaTeX 渲染器；默认使用内置 katex |
+| Prop         | 类型                      | 默认值      | 说明                                                                                                 |
+| ------------ | ------------------------- | ----------- | ---------------------------------------------------------------------------------------------------- |
+| value        | `string`                  | `''`        | LaTeX 表达式                                                                                         |
+| katex        | `SnEquationKatex`         | `undefined` | 自定义 KaTeX 渲染器；默认使用内置 katex                                                              |
 | katexOptions | `Record<string, unknown>` | `undefined` | 透传给 `renderToString` 的选项（如 `displayMode` / `macros` / `fleqn`），`throwOnError` 默认 `false` |
 
 无事件、无插槽。渲染节点的标签与 class 从 KaTeX 输出中提取（行内 `span.katex`、行间 `span.katex-display`），并携带 `data-snui-component="equation"`。

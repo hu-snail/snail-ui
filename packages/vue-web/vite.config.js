@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { fileURLToPath, URL } from 'node:url'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { fileURLToPath, URL } from 'node:url';
 
 /**
  * vite build config for @snui/vue-web (active build, replaces vue-tsc).
@@ -71,8 +71,8 @@ export default defineConfig({
           // `vue-web.css` for the shared chunk), but we want a single
           // canonical barrel at dist/styles/index.css. Force all CSS to
           // that path; non-CSS assets fall through to assets/[name][ext].
-          if (info.name && info.name.endsWith('.css')) return 'styles/index.css'
-          return 'assets/[name][extname]'
+          if (info.name && info.name.endsWith('.css')) return 'styles/index.css';
+          return 'assets/[name][extname]';
         },
       },
     },
@@ -82,4 +82,4 @@ export default defineConfig({
       '@snui/tokens': fileURLToPath(new URL('../tokens/src/index.ts', import.meta.url)),
     },
   },
-})
+});

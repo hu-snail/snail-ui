@@ -1,16 +1,16 @@
 <script setup lang="ts">
 /** Demo: SnQrCode — error correction level switching. */
-import { ref } from 'vue'
-import { SnQrCode, SnRadioButton, SnRadioGroup } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnQrCode, SnRadioButton, SnRadioGroup } from '@snui/vue-web';
 
 const LEVELS = [
   { value: 'L', label: 'L' },
   { value: 'M', label: 'M' },
   { value: 'Q', label: 'Q' },
   { value: 'H', label: 'H' },
-] as const
+] as const;
 
-const errorCorrectionLevel = ref<'L' | 'M' | 'Q' | 'H'>('M')
+const errorCorrectionLevel = ref<'L' | 'M' | 'Q' | 'H'>('M');
 </script>
 
 <template>
@@ -20,11 +20,7 @@ const errorCorrectionLevel = ref<'L' | 'M' | 'Q' | 'H'>('M')
       :error-correction-level="errorCorrectionLevel"
     />
     <SnRadioGroup v-model="errorCorrectionLevel">
-      <SnRadioButton
-        v-for="level in LEVELS"
-        :key="level.value"
-        :checked-value="level.value"
-      >
+      <SnRadioButton v-for="level in LEVELS" :key="level.value" :checked-value="level.value">
         {{ level.label }}
       </SnRadioButton>
     </SnRadioGroup>
@@ -32,5 +28,10 @@ const errorCorrectionLevel = ref<'L' | 'M' | 'Q' | 'H'>('M')
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
 </style>

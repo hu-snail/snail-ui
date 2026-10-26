@@ -22,14 +22,14 @@ Dropdown menu (n-dropdown aligned). Click / hover triggers, six placements with 
 
 ### SnDropdown Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| options | `SnDropdownOption[]` | `[]` | {label, key, disabled?, icon?, children?}; type:'divider' renders a separator |
-| trigger | `'click'\|'hover'` | `'hover'` | Trigger mode |
-| placement | bottom/top ± start/end (6) | `'bottom'` | Popup placement (flip keeps the suffix) |
-| disabled | `boolean` | `false` | Disabled |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | Size |
-| show | `boolean` | — | Controlled (v-model:show) |
+| Prop      | Type                         | Default    | Notes                                                                         |
+| --------- | ---------------------------- | ---------- | ----------------------------------------------------------------------------- |
+| options   | `SnDropdownOption[]`         | `[]`       | {label, key, disabled?, icon?, children?}; type:'divider' renders a separator |
+| trigger   | `'click'\|'hover'`           | `'hover'`  | Trigger mode                                                                  |
+| placement | bottom/top ± start/end (6)   | `'bottom'` | Popup placement (flip keeps the suffix)                                       |
+| disabled  | `boolean`                    | `false`    | Disabled                                                                      |
+| size      | `'small'\|'medium'\|'large'` | `'medium'` | Size                                                                          |
+| show      | `boolean`                    | —          | Controlled (v-model:show)                                                     |
 
 Events: `update:show` / `select(key, option)` / `clickoutside`. Keyboard: Enter/Space/ArrowDown open, ArrowUp/Down highlight, ArrowRight/Left enter/exit submenu, Esc close. ARIA: menu/menuitem/separator.
 

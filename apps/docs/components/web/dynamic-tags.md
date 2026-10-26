@@ -26,15 +26,15 @@
 
 ### SnDynamicTags Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `Array<string \| number>` | `[]` | v-model，变更 emit 整个新数组 |
-| closable | `boolean` | `true` | tag 可删除 |
-| disabled / readonly | `boolean` | `false` | 禁用 / 只读 |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| max | `number` | — | 上限（到界隐藏添加） |
-| trigger | `'click'\|'focus'` | `'click'` | 打开输入的触发方式 |
-| placeholder | `string` | — | 内嵌输入占位 |
+| Prop                | 类型                         | 默认值     | 说明                          |
+| ------------------- | ---------------------------- | ---------- | ----------------------------- |
+| modelValue          | `Array<string \| number>`    | `[]`       | v-model，变更 emit 整个新数组 |
+| closable            | `boolean`                    | `true`     | tag 可删除                    |
+| disabled / readonly | `boolean`                    | `false`    | 禁用 / 只读                   |
+| size                | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸                          |
+| max                 | `number`                     | —          | 上限（到界隐藏添加）          |
+| trigger             | `'click'\|'focus'`           | `'click'`  | 打开输入的触发方式            |
+| placeholder         | `string`                     | —          | 内嵌输入占位                  |
 
 事件：`update:modelValue` / `change` / `add` / `remove` / `click`（点 tag）；Slots：`input` / `tag`（scoped `{ label, index }`）/ `trigger` / `empty`。
 

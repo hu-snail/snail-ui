@@ -30,32 +30,32 @@
  *   - 键盘本体 — 用 sn-keyboard（`focused` 与它的 visible 联动）
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnPasswordInput' })
+defineOptions({ name: 'SnPasswordInput' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-password-input` 1:1 surface ──────────────────────────── */
 
     /** Current value (`v-model`). */
-    modelValue?: string
+    modelValue?: string;
     /** Mask the characters as dots. */
-    mask?: boolean
+    mask?: boolean;
     /** Helper text below the boxes. */
-    info?: string
+    info?: string;
     /** Error text below the boxes (takes precedence over `info`). */
-    errorInfo?: string
+    errorInfo?: string;
     /** Gap between boxes. A number is treated as an rpx design value. */
-    gutter?: number | string
+    gutter?: number | string;
     /** Number of boxes. */
-    length?: number
+    length?: number;
     /** Whether the field is focused (shows the caret). */
-    focused?: boolean
+    focused?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: '',
@@ -68,46 +68,46 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-  (e: 'change', value: string): void
-  (e: 'focus', event: Event): void
-  (e: 'blur', event: Event): void
-}>()
+  (e: 'update:modelValue', value: string): void;
+  (e: 'change', value: string): void;
+  (e: 'focus', event: Event): void;
+  (e: 'blur', event: Event): void;
+}>();
 
-const boxCount = computed(() => Math.max(Math.floor(props.length), 1))
+const boxCount = computed(() => Math.max(Math.floor(props.length), 1));
 
 /** Characters to render, clamped to `length`. */
 const chars = computed<string[]>(() => {
-  const raw = props.modelValue.slice(0, boxCount.value)
-  return raw.split('')
-})
+  const raw = props.modelValue.slice(0, boxCount.value);
+  return raw.split('');
+});
 
 /** What a filled box shows. */
 function displayAt(index: number): string {
-  const char = chars.value[index]
-  if (char === undefined) return ''
-  return props.mask ? '•' : char
+  const char = chars.value[index];
+  if (char === undefined) return '';
+  return props.mask ? '•' : char;
 }
 
 /** Index of the box the caret sits in (the first empty box). */
-const caretIndex = computed(() => (chars.value.length >= boxCount.value ? -1 : chars.value.length))
+const caretIndex = computed(() => (chars.value.length >= boxCount.value ? -1 : chars.value.length));
 
 function onInput(event: Event): void {
-  const raw = (event.target as HTMLInputElement).value
-  const next = raw.slice(0, boxCount.value)
-  emit('update:modelValue', next)
-  emit('change', next)
+  const raw = (event.target as HTMLInputElement).value;
+  const next = raw.slice(0, boxCount.value);
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 function onFocus(event: Event): void {
-  emit('focus', event)
+  emit('focus', event);
 }
 
 function onBlur(event: Event): void {
-  emit('blur', event)
+  emit('blur', event);
 }
 
 const rootClass = computed(() => [
@@ -118,29 +118,29 @@ const rootClass = computed(() => [
     'sn-password-input--error': props.errorInfo !== '',
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const vars: string[] = []
+  const vars: string[] = [];
   if (props.gutter !== 0 && props.gutter !== '') {
-    const gap = typeof props.gutter === 'number' ? `${props.gutter * 2}rpx` : props.gutter
-    vars.push(`--sn-password-input-gap: ${gap}`)
+    const gap = typeof props.gutter === 'number' ? `${props.gutter * 2}rpx` : props.gutter;
+    vars.push(`--sn-password-input-gap: ${gap}`);
   }
-  const base = vars.join('; ')
-  if (!props.customStyle) return base
-  return base ? `${base}; ${props.customStyle}` : props.customStyle
-})
+  const base = vars.join('; ');
+  if (!props.customStyle) return base;
+  return base ? `${base}; ${props.customStyle}` : props.customStyle;
+});
 
-const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props.info))
+const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props.info));
 </script>
 
 <template>
-  <view
-    :class="rootClass"
-    :style="rootStyle"
-    :data-snui-component="'password-input'"
-  >
-    <view class="sn-password-input__boxes" role="group" :aria-label="'password, ' + chars.length + ' of ' + boxCount">
+  <view :class="rootClass" :style="rootStyle" :data-snui-component="'password-input'">
+    <view
+      class="sn-password-input__boxes"
+      role="group"
+      :aria-label="'password, ' + chars.length + ' of ' + boxCount"
+    >
       <view
         v-for="index in boxCount"
         :key="index"
@@ -154,7 +154,9 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
         ]"
         :aria-label="`digit ${index}`"
       >
-        <text v-if="index - 1 < chars.length" class="sn-password-input__char">{{ displayAt(index - 1) }}</text>
+        <text v-if="index - 1 < chars.length" class="sn-password-input__char">{{
+          displayAt(index - 1)
+        }}</text>
         <view
           v-else-if="focused && caretIndex === index - 1"
           class="sn-password-input__caret"
@@ -174,9 +176,15 @@ const message = computed(() => (props.errorInfo !== '' ? props.errorInfo : props
       @input="onInput"
       @focus="onFocus"
       @blur="onBlur"
-    >
+    />
 
-    <text v-if="message" :class="['sn-password-input__message', { 'sn-password-input__message--error': errorInfo !== '' }]">
+    <text
+      v-if="message"
+      :class="[
+        'sn-password-input__message',
+        { 'sn-password-input__message--error': errorInfo !== '' },
+      ]"
+    >
       {{ message }}
     </text>
   </view>

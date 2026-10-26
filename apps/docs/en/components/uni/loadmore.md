@@ -26,41 +26,41 @@ The three `*-text` props override the defaults; the `loading` / `finished` / `er
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| state | '' \| 'loading' \| 'finished' \| 'error' | '' | Load state; an empty string renders nothing |
-| loadingText | string | 'Loading…' | Loading text |
-| finishedText | string | 'All loaded' | Finished text |
-| errorText | string | 'Load failed' | Error text |
-| loadingProps | Record<string, unknown> | `{}` | Props forwarded to the inner `sn-loading` |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop         | Type                                     | Default       | Description                                 |
+| ------------ | ---------------------------------------- | ------------- | ------------------------------------------- |
+| state        | '' \| 'loading' \| 'finished' \| 'error' | ''            | Load state; an empty string renders nothing |
+| loadingText  | string                                   | 'Loading…'    | Loading text                                |
+| finishedText | string                                   | 'All loaded'  | Finished text                               |
+| errorText    | string                                   | 'Load failed' | Error text                                  |
+| loadingProps | Record<string, unknown>                  | `{}`          | Props forwarded to the inner `sn-loading`   |
+| customClass  | string                                   | ''            | Custom class for the root node              |
+| customStyle  | string                                   | ''            | Custom inline style for the root node       |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| reload | Tapped while `state="error"` | — |
+| Event  | Description                  | Payload |
+| ------ | ---------------------------- | ------- |
+| reload | Tapped while `state="error"` | —       |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| loading | Custom loading content |
+| Slot     | Description             |
+| -------- | ----------------------- |
+| loading  | Custom loading content  |
 | finished | Custom finished content |
-| error | Custom error content |
+| error    | Custom error content    |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-text-secondary | Loading text |
-| --sn-mp-color-text-tertiary | Finished text |
-| --sn-mp-color-feedback-danger | Error text |
-| --sn-mp-color-action-primary | Retry hint |
-| --sn-mp-font-size-sm | Footer text size |
+| Variable                        | Purpose            |
+| ------------------------------- | ------------------ |
+| --sn-mp-color-text-secondary    | Loading text       |
+| --sn-mp-color-text-tertiary     | Finished text      |
+| --sn-mp-color-feedback-danger   | Error text         |
+| --sn-mp-color-action-primary    | Retry hint         |
+| --sn-mp-font-size-sm            | Footer text size   |
 | --sn-mp-font-line-height-normal | Footer line height |
-| --sn-mp-spacing-2` / `-4` / `-5 | Padding and gaps |
+| --sn-mp-spacing-2`/`-4`/`-5     | Padding and gaps   |
 
 ## Accessibility
 
@@ -70,7 +70,6 @@ The three `*-text` props override the defaults; the `loading` / `finished` / `er
 ## Dark mode
 
 The text colors come from semantic tokens (`--sn-mp-color-text-secondary` / `-tertiary` / `--sn-mp-color-feedback-danger` / `--sn-mp-color-action-primary`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

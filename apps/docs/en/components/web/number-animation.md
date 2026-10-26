@@ -32,26 +32,26 @@ Animated number (n-number-animation aligned): tweens a number from `from` to `to
 
 ### SnNumberAnimation Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| from | `number` | `0` | Start value |
-| to | `number` | `0` | Target value |
-| precision | `number` | `0` | Decimal digits |
-| show-separator | `boolean` | `false` | Group the integer part |
-| locale | `string` | `undefined` | BCP-47 locale (defaults to the runtime locale) |
-| active | `boolean` | `true` | Play the animation (restarts from `from`) |
-| duration | `number` | `2000` | Animation duration in ms (non-reactive) |
+| Prop           | Type      | Default     | Notes                                          |
+| -------------- | --------- | ----------- | ---------------------------------------------- |
+| from           | `number`  | `0`         | Start value                                    |
+| to             | `number`  | `0`         | Target value                                   |
+| precision      | `number`  | `0`         | Decimal digits                                 |
+| show-separator | `boolean` | `false`     | Group the integer part                         |
+| locale         | `string`  | `undefined` | BCP-47 locale (defaults to the runtime locale) |
+| active         | `boolean` | `true`      | Play the animation (restarts from `from`)      |
+| duration       | `number`  | `2000`      | Animation duration in ms (non-reactive)        |
 
 ### SnNumberAnimation Events
 
-| Event | Parameters | Notes |
-| --- | --- | --- |
-| finish | — | The animation reached `to` |
+| Event  | Parameters | Notes                      |
+| ------ | ---------- | -------------------------- |
+| finish | —          | The animation reached `to` |
 
 ### SnNumberAnimation Methods
 
-| Method | Parameters | Notes |
-| --- | --- | --- |
-| play | — | Replay; ignored while running |
+| Method | Parameters | Notes                         |
+| ------ | ---------- | ----------------------------- |
+| play   | —          | Replay; ignored while running |
 
 See the component `ai-description.md` for the full contract.

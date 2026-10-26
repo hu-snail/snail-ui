@@ -18,25 +18,25 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnEmpty from '@snui/vue-web/src/empty/SnEmpty.vue'
+import SnEmpty from '@snui/vue-web/src/empty/SnEmpty.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `description` | `string` | `undefined` | no | Description text; falls back to `无数据` (`default` slot overrides). |
-| `show-description` | `boolean` | `true` | no | Render the description line. |
-| `show-icon` | `boolean` | `true` | no | Render the glyph (default inline SVG or `icon` slot). |
-| `size` | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | no | Glyph + description scale (icon 28/34/40/46/52 px). |
+| Name               | Type                                                 | Default     | Required | Description                                                          |
+| ------------------ | ---------------------------------------------------- | ----------- | -------- | -------------------------------------------------------------------- |
+| `description`      | `string`                                             | `undefined` | no       | Description text; falls back to `无数据` (`default` slot overrides). |
+| `show-description` | `boolean`                                            | `true`      | no       | Render the description line.                                         |
+| `show-icon`        | `boolean`                                            | `true`      | no       | Render the glyph (default inline SVG or `icon` slot).                |
+| `size`             | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'`  | no       | Glyph + description scale (icon 28/34/40/46/52 px).                  |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Replaces the description line. |
-| `extra` | Additional content below the description (retry button, hint…). |
-| `icon` | Custom glyph — replaces the default inline SVG. |
+| Name      | Description                                                     |
+| --------- | --------------------------------------------------------------- |
+| `default` | Replaces the description line.                                  |
+| `extra`   | Additional content below the description (retry button, hint…). |
+| `icon`    | Custom glyph — replaces the default inline SVG.                 |
 
 ## Events
 
@@ -56,10 +56,10 @@ None — pure display component.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text disabled | `--sn-web-color-text-disabled` | Glyph + description |
-| Text secondary | `--sn-web-color-text-secondary` | Extra area text |
+| Token          | CSS Variable                    | Purpose             |
+| -------------- | ------------------------------- | ------------------- |
+| Text disabled  | `--sn-web-color-text-disabled`  | Glyph + description |
+| Text secondary | `--sn-web-color-text-secondary` | Extra area text     |
 
 ## Versioning
 

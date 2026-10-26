@@ -3,7 +3,7 @@
  * Demo: SnAvatarGroup — `sizeBehavior="shrink"` scales each following avatar
  * down, while the default `tightening` overlaps them with a negative margin.
  */
-import { SnAvatar, SnAvatarGroup } from '@snui/vue-web'
+import { SnAvatar, SnAvatarGroup } from '@snui/vue-web';
 
 const members = [
   { id: 1, label: '张', color: 'var(--sn-web-color-action-primary)' },
@@ -12,7 +12,7 @@ const members = [
   { id: 4, label: '赵', color: 'var(--sn-web-color-feedback-info)' },
   { id: 5, label: '刘', color: 'var(--sn-web-color-feedback-danger)' },
   { id: 6, label: '陈', color: 'var(--sn-web-color-text-tertiary)' },
-]
+];
 </script>
 
 <template>

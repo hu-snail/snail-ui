@@ -14,27 +14,27 @@
  *   <SnParagraph spacing="tight" depth="3">紧凑说明文字</SnParagraph>
  */
 
-import { computed } from 'vue'
-import SnText from './SnText.vue'
+import { computed } from 'vue';
+import SnText from './SnText.vue';
 
-defineOptions({ name: 'SnParagraph' })
+defineOptions({ name: 'SnParagraph' });
 
 const props = withDefaults(
   defineProps<{
     /** Line-height scale: tight 1.4 / base 1.6 / loose 1.8. */
-    spacing?: 'tight' | 'base' | 'loose'
+    spacing?: 'tight' | 'base' | 'loose';
     /** Semantic type — drives the text color. Mirrors n-paragraph `type`. */
-    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
+    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error';
     /** Gray scale — only applied for type="default". Mirrors n-paragraph `depth`. */
-    depth?: '1' | '2' | '3' | undefined
+    depth?: '1' | '2' | '3' | undefined;
     /** Bolder text. Mirrors n-paragraph `strong`. */
-    strong?: boolean
+    strong?: boolean;
     /** Italic text. Mirrors n-paragraph `italic`. */
-    italic?: boolean
+    italic?: boolean;
     /** Underlined text. Mirrors n-paragraph `underline`. */
-    underline?: boolean
+    underline?: boolean;
     /** Strike-through text. Mirrors n-paragraph `delete`. */
-    delete?: boolean
+    delete?: boolean;
   }>(),
   {
     spacing: 'base',
@@ -45,12 +45,12 @@ const props = withDefaults(
     underline: false,
     delete: false,
   },
-)
+);
 
 defineSlots<{
   /** Paragraph content. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 // `delete` cannot be referenced bare in a template expression (JS keyword),
 // so the forwarded props are built here.
@@ -61,7 +61,7 @@ const forwardedProps = computed(() => ({
   italic: props.italic,
   underline: props.underline,
   delete: props.delete,
-}))
+}));
 </script>
 
 <template>

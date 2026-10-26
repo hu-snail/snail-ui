@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnFlex — vertical & alignment. */
-import { SnFlex, SnButton } from '@snui/vue-web'
+import { SnFlex, SnButton } from '@snui/vue-web';
 </script>
 
 <template>
@@ -25,7 +25,19 @@ import { SnFlex, SnButton } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 12px; align-items: stretch; flex-wrap: wrap; }
-.box { border: 1px dashed var(--vp-c-border); border-radius: 6px; padding: 8px; }
-.wide { flex: 1; min-width: 200px; }
+.demo-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.box {
+  border: 1px dashed var(--vp-c-border);
+  border-radius: 6px;
+  padding: 8px;
+}
+.wide {
+  flex: 1;
+  min-width: 200px;
+}
 </style>

@@ -18,25 +18,25 @@ Styles are emitted **per template**: importing one template brings its own JS an
 
 ```ts
 // 1) Import only the template you use: its JS and its own styles come with it
-import { SnModelConfig } from '@snui/templates/web/model-config'
+import { SnModelConfig } from '@snui/templates/web/model-config';
 
 // 2) Import the shared token layer once at the app entry
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) When you want to control code splitting yourself, import a single template's stylesheet
-import '@snui/templates/styles/web-model-config.css'
+import '@snui/templates/styles/web-model-config.css';
 ```
 
 The per-template stylesheets (all under `@snui/templates/styles/`):
 
-| File | Template |
-| --- | --- |
+| File                   | Template                           |
+| ---------------------- | ---------------------------------- |
 | `web-model-config.css` | `@snui/templates/web/model-config` |
-| `web-assistant.css` | `@snui/templates/web/assistant` |
-| `web-chat.css` | `@snui/templates/web/chat` |
-| `web-prompt.css` | `@snui/templates/web/prompt` |
+| `web-assistant.css`    | `@snui/templates/web/assistant`    |
+| `web-chat.css`         | `@snui/templates/web/chat`         |
+| `web-prompt.css`       | `@snui/templates/web/prompt`       |
 | `web-message-list.css` | `@snui/templates/web/message-list` |
-| `uni-chat.css` | `@snui/templates/uni/chat` |
+| `uni-chat.css`         | `@snui/templates/uni/chat`         |
 | `uni-message-list.css` | `@snui/templates/uni/message-list` |
 
 Importing `web-model-config.css` does **not** pull the chat page, composer or message list rules; the shared token layer exists once (step 2), so a second template does not download it again.
@@ -47,9 +47,9 @@ The smallest working version: one vendor, one model, default parameters.
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnModelConfig } from '@snui/templates/web/model-config'
-import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnModelConfig } from '@snui/templates/web/model-config';
+import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web';
 
 const vendors = ref<SnAiVendor[]>([
   {
@@ -59,10 +59,10 @@ const vendors = ref<SnAiVendor[]>([
     hasCredential: true,
     models: [{ id: 'deep', name: 'Deep', vendorId: 'v-gateway', supportsThinking: true }],
   },
-])
-const activeVendorId = ref('v-gateway')
-const activeModelId = ref('deep')
-const params = ref<SnAiModelParams>({ temperature: 0.7, topP: 1, maxTokens: 4096, stream: true })
+]);
+const activeVendorId = ref('v-gateway');
+const activeModelId = ref('deep');
+const params = ref<SnAiModelParams>({ temperature: 0.7, topP: 1, maxTokens: 4096, stream: true });
 </script>
 
 <template>
@@ -81,33 +81,33 @@ In real use the panel's output feeds the chat request: the host performs the rea
 
 ```vue
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { SnModelConfig } from '@snui/templates/web/model-config'
-import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web'
+import { computed, onMounted, ref } from 'vue';
+import { SnModelConfig } from '@snui/templates/web/model-config';
+import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web';
 
-const vendors = ref<SnAiVendor[]>([])
-const activeVendorId = ref<string | undefined>(undefined)
-const activeModelId = ref<string | undefined>(undefined)
-const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true })
-const search = ref('')
+const vendors = ref<SnAiVendor[]>([]);
+const activeVendorId = ref<string | undefined>(undefined);
+const activeModelId = ref<string | undefined>(undefined);
+const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true });
+const search = ref('');
 /** The vendor under connection test: the panel renders a loading state on that card. */
-const testingVendorId = ref<string | undefined>(undefined)
+const testingVendorId = ref<string | undefined>(undefined);
 
-const activeVendor = computed(() => vendors.value.find((item) => item.id === activeVendorId.value))
+const activeVendor = computed(() => vendors.value.find((item) => item.id === activeVendorId.value));
 
 onMounted(async () => {
-  const response = await fetch('/api/model-config')
+  const response = await fetch('/api/model-config');
   const data = (await response.json()) as {
-    vendors: SnAiVendor[]
-    activeVendorId?: string
-    activeModelId?: string
-    params?: SnAiModelParams
-  }
-  vendors.value = data.vendors
-  activeVendorId.value = data.activeVendorId ?? data.vendors[0]?.id
-  activeModelId.value = data.activeModelId ?? data.vendors[0]?.models?.[0]?.id
-  params.value = data.params ?? { temperature: 0.7, stream: true }
-})
+    vendors: SnAiVendor[];
+    activeVendorId?: string;
+    activeModelId?: string;
+    params?: SnAiModelParams;
+  };
+  vendors.value = data.vendors;
+  activeVendorId.value = data.activeVendorId ?? data.vendors[0]?.id;
+  activeModelId.value = data.activeModelId ?? data.vendors[0]?.models?.[0]?.id;
+  params.value = data.params ?? { temperature: 0.7, stream: true };
+});
 
 /** Persist: write back whenever a vendor, the active model or the parameters change. */
 async function persist(): Promise<void> {
@@ -120,29 +120,27 @@ async function persist(): Promise<void> {
       activeModelId: activeModelId.value,
       params: params.value,
     }),
-  })
+  });
 }
 
 /** Connection test: the panel only reports the intent, the host does the real probe. */
 async function onTestConnection({ vendorId }: { vendorId: string }): Promise<void> {
-  const vendor = vendors.value.find((item) => item.id === vendorId)
-  if (!vendor) return
-  testingVendorId.value = vendorId
+  const vendor = vendors.value.find((item) => item.id === vendorId);
+  if (!vendor) return;
+  testingVendorId.value = vendorId;
   try {
     const response = await fetch('/api/model-config/test', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ baseUrl: vendor.baseUrl }),
-    })
+    });
     // Only the configured / not-configured state is written back; the credential never leaves the host.
     if (response.ok) {
-      vendors.value = vendors.value.map((item) =>
-        item.id === vendorId ? { ...item, hasCredential: true } : item,
-      )
+      vendors.value = vendors.value.map((item) => (item.id === vendorId ? { ...item, hasCredential: true } : item));
     }
   } finally {
-    testingVendorId.value = undefined
-    void persist()
+    testingVendorId.value = undefined;
+    void persist();
   }
 }
 
@@ -156,7 +154,7 @@ function chatBody(prompt: string): string {
     maxTokens: params.value.maxTokens,
     thinkingLevel: params.value.thinkingLevel,
     stream: params.value.stream,
-  })
+  });
 }
 </script>
 
@@ -206,52 +204,52 @@ The demo really adds vendors, edits the endpoint and credential, adds and remove
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `vendors` | `SnAiVendor[]` | `undefined` | Configured vendors, each with its models. |
-| `activeVendorId` | `string` | `undefined` | Currently selected vendor. |
-| `activeModelId` | `string` | `undefined` | Currently active model. |
-| `params` | `SnAiModelParams` | `undefined` | Generation parameters. |
-| `editable` | `boolean` | `true` | Offer add / edit / delete affordances. |
-| `title` | `string` | `'模型配置'` | Page heading. |
-| `searchable` | `boolean` | `true` | Offer the model search box. |
-| `testingVendorId` | `string` | `undefined` | The vendor under connection test; its card shows a loading state. |
-| `search` | `string` | `undefined` | Model search query. |
+| Name              | Type              | Default      | Description                                                       |
+| ----------------- | ----------------- | ------------ | ----------------------------------------------------------------- |
+| `vendors`         | `SnAiVendor[]`    | `undefined`  | Configured vendors, each with its models.                         |
+| `activeVendorId`  | `string`          | `undefined`  | Currently selected vendor.                                        |
+| `activeModelId`   | `string`          | `undefined`  | Currently active model.                                           |
+| `params`          | `SnAiModelParams` | `undefined`  | Generation parameters.                                            |
+| `editable`        | `boolean`         | `true`       | Offer add / edit / delete affordances.                            |
+| `title`           | `string`          | `'模型配置'` | Page heading.                                                     |
+| `searchable`      | `boolean`         | `true`       | Offer the model search box.                                       |
+| `testingVendorId` | `string`          | `undefined`  | The vendor under connection test; its card shows a loading state. |
+| `search`          | `string`          | `undefined`  | Model search query.                                               |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `update:vendors` | `SnAiVendor[]` | A vendor or one of its models changed. |
-| `update:activeVendorId` | `string` | Vendor changed. |
-| `update:activeModelId` | `string` | Active model changed. |
-| `update:params` | `SnAiModelParams` | Generation parameters changed. |
-| `update:search` | `string` | Search query changed. |
-| `test-connection` | `{ vendorId }` | Ask the host to verify this vendor's endpoint and credential. |
+| Name                    | Payload           | Description                                                   |
+| ----------------------- | ----------------- | ------------------------------------------------------------- |
+| `update:vendors`        | `SnAiVendor[]`    | A vendor or one of its models changed.                        |
+| `update:activeVendorId` | `string`          | Vendor changed.                                               |
+| `update:activeModelId`  | `string`          | Active model changed.                                         |
+| `update:params`         | `SnAiModelParams` | Generation parameters changed.                                |
+| `update:search`         | `string`          | Search query changed.                                         |
+| `test-connection`       | `{ vendorId }`    | Ask the host to verify this vendor's endpoint and credential. |
 
 ### Slots
 
-| Name | Props | Description |
-| --- | --- | --- |
+| Name           | Props        | Description                         |
+| -------------- | ------------ | ----------------------------------- |
 | `vendor-extra` | `{ vendor }` | Append content under a vendor card. |
-| `params-extra` | `{ params }` | Append a parameter row. |
+| `params-extra` | `{ params }` | Append a parameter row.             |
 
 ### Type exports
 
-| Name | From | Description |
-| --- | --- | --- |
-| `SnModelConfig` | `@snui/templates/web/model-config` | The template component itself. |
-| `SnAiVendor` / `SnAiModel` / `SnAiModelParams` and friends | `@snui/templates` | Shared contract types so a host can build data. |
+| Name                                                       | From                               | Description                                     |
+| ---------------------------------------------------------- | ---------------------------------- | ----------------------------------------------- |
+| `SnModelConfig`                                            | `@snui/templates/web/model-config` | The template component itself.                  |
+| `SnAiVendor` / `SnAiModel` / `SnAiModelParams` and friends | `@snui/templates`                  | Shared contract types so a host can build data. |
 
 ### Parameter panel
 
-| Parameter | Range | Default | Description |
-| --- | --- | --- | --- |
-| Temperature | 0 – 2, step 0.1 | 0.7 | Higher means more divergent output. |
-| Top P | 0 – 1, step 0.01 | 1 | Nucleus sampling threshold. |
-| Max output | tokens | 4096 | Length cap for a single answer. |
-| Reasoning tier | five tiers (`off` / `low` / `medium` / `high` / `max`) | `off` | Shows "当前模型不支持" when the picked model cannot reason. |
-| Streaming | on / off | on | Whether the answer arrives incrementally. |
+| Parameter      | Range                                                  | Default | Description                                                 |
+| -------------- | ------------------------------------------------------ | ------- | ----------------------------------------------------------- |
+| Temperature    | 0 – 2, step 0.1                                        | 0.7     | Higher means more divergent output.                         |
+| Top P          | 0 – 1, step 0.01                                       | 1       | Nucleus sampling threshold.                                 |
+| Max output     | tokens                                                 | 4096    | Length cap for a single answer.                             |
+| Reasoning tier | five tiers (`off` / `low` / `medium` / `high` / `max`) | `off`   | Shows "当前模型不支持" when the picked model cannot reason. |
+| Streaming      | on / off                                               | on      | Whether the answer arrives incrementally.                   |
 
 Parameter defaults only apply when the matching field is absent from `params`; the host's `params` and the panel stay in sync both ways.
 

@@ -60,43 +60,43 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `title` | `string` | `''` | 标题。 |
-| `type` | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动配色与默认图标。 |
-| `showIcon` | `boolean` | `true` | 是否显示前置类型图标。 |
-| `bordered` | `boolean` | `true` | 是否绘制外边框。 |
-| `closable` | `boolean` | `false` | 是否渲染关闭按钮。 |
-| `onClose` | `() => unknown` | `undefined` | 点击关闭时调用；返回 `false`（或 Promise\<false\>）可**拦截**关闭。 |
-| `onAfterLeave` | `() => void` | `undefined` | 离场过渡结束后调用。 |
-| `onAfterHide` | `() => void` | `undefined` | **@deprecated**，请使用 `onAfterLeave`。 |
+| 名称           | 类型                                                       | 默认值      | 说明                                                                |
+| -------------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------------------- |
+| `title`        | `string`                                                   | `''`        | 标题。                                                              |
+| `type`         | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动配色与默认图标。                                      |
+| `showIcon`     | `boolean`                                                  | `true`      | 是否显示前置类型图标。                                              |
+| `bordered`     | `boolean`                                                  | `true`      | 是否绘制外边框。                                                    |
+| `closable`     | `boolean`                                                  | `false`     | 是否渲染关闭按钮。                                                  |
+| `onClose`      | `() => unknown`                                            | `undefined` | 点击关闭时调用；返回 `false`（或 Promise\<false\>）可**拦截**关闭。 |
+| `onAfterLeave` | `() => void`                                               | `undefined` | 离场过渡结束后调用。                                                |
+| `onAfterHide`  | `() => void`                                               | `undefined` | **@deprecated**，请使用 `onAfterLeave`。                            |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称         | 参数 | 说明                                                   |
+| ------------ | ---- | ------------------------------------------------------ |
 | `closeClick` | `()` | 关闭按钮被点击（在 `onClose` 拦截判定 resolve 之前）。 |
-| `leave` | `()` | 离场过渡结束，节点已移除。 |
+| `leave`      | `()` | 离场过渡结束，节点已移除。                             |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 正文内容。 |
-| `icon` | `()` | 自定义图标，替代内置类型图标。仍受 `showIcon` 约束。 |
-| `header` | `()` | 自定义标题，替代 `title` prop。 |
+| 名称      | 参数 | 说明                                                 |
+| --------- | ---- | ---------------------------------------------------- |
+| `default` | `()` | 正文内容。                                           |
+| `icon`    | `()` | 自定义图标，替代内置类型图标。仍受 `showIcon` 约束。 |
+| `header`  | `()` | 自定义标题，替代 `title` prop。                      |
 
 ## 类型与图标
 
 `type` 决定底色、文字色与默认图标：
 
-| `type` | 默认图标 | 用途 |
-| --- | --- | --- |
-| `default` | 无 | 中性提示 |
-| `info` | `Info` | 一般说明 |
-| `success` | `Check` | 操作成功确认 |
+| `type`    | 默认图标        | 用途             |
+| --------- | --------------- | ---------------- |
+| `default` | 无              | 中性提示         |
+| `info`    | `Info`          | 一般说明         |
+| `success` | `Check`         | 操作成功确认     |
 | `warning` | `AlertTriangle` | 需要注意但不阻塞 |
-| `error` | `CircleAlert` | 错误 / 失败 |
+| `error`   | `CircleAlert`   | 错误 / 失败      |
 
 `showIcon` 默认 `true`；`type="default"` 时没有内置图标，显式传 `showIcon` 也不会渲染。
 
@@ -106,8 +106,8 @@
 
 ```ts
 function onClose() {
-  if (saving.value) return false // 保存中，先别关
-  return true
+  if (saving.value) return false; // 保存中，先别关
+  return true;
 }
 ```
 

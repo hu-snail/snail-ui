@@ -22,23 +22,23 @@ Boxed PIN field: `length` sets the box count, `mask` toggles the dots and `focus
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string` | `''` | Current value |
-| `mask` | `boolean` | `true` | Render dots instead of characters |
-| `info` / `errorInfo` | `string` | `''` | Helper / error text (error wins) |
-| `gutter` | `number \| string` | `0` | Gap between boxes |
-| `length` | `number` | `6` | Number of boxes |
-| `focused` | `boolean` | `true` | Show the caret in the first empty box |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                          | Type               | Default | Description                           |
+| ----------------------------- | ------------------ | ------- | ------------------------------------- |
+| `modelValue`                  | `string`           | `''`    | Current value                         |
+| `mask`                        | `boolean`          | `true`  | Render dots instead of characters     |
+| `info` / `errorInfo`          | `string`           | `''`    | Helper / error text (error wins)      |
+| `gutter`                      | `number \| string` | `0`     | Gap between boxes                     |
+| `length`                      | `number`           | `6`     | Number of boxes                       |
+| `focused`                     | `boolean`          | `true`  | Show the caret in the first empty box |
+| `customClass` / `customStyle` | `string`           | `''`    | Root class / inline style             |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Value changed | `(value: string)` |
-| `change` | Value changed (same tick) | `(value: string)` |
-| `focus` / `blur` | Native field focus / blur | `(event: Event)` |
+| Event               | Description               | Payload           |
+| ------------------- | ------------------------- | ----------------- |
+| `update:modelValue` | Value changed             | `(value: string)` |
+| `change`            | Value changed (same tick) | `(value: string)` |
+| `focus` / `blur`    | Native field focus / blur | `(event: Event)`  |
 
 ## Slots
 
@@ -46,14 +46,14 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
+| Token                                                              | Purpose                                |
+| ------------------------------------------------------------------ | -------------------------------------- |
 | ``--sn-mp-color-input-bg` / `-border` / `-border-focus` / `-text`` | Box surface, border, focus ring, glyph |
-| ``--sn-mp-color-feedback-danger`` | Error border + message |
-| ``--sn-mp-color-action-primary`` | Caret |
-| ``--sn-mp-color-text-tertiary`` | Helper text |
-| ``--sn-mp-radius-md`` | Box corners |
-| ``--sn-mp-font-size-xl` / `-sm`` | Glyph / message size |
+| `--sn-mp-color-feedback-danger`                                    | Error border + message                 |
+| `--sn-mp-color-action-primary`                                     | Caret                                  |
+| `--sn-mp-color-text-tertiary`                                      | Helper text                            |
+| `--sn-mp-radius-md`                                                | Box corners                            |
+| ``--sn-mp-font-size-xl` / `-sm``                                   | Glyph / message size                   |
 
 ## Accessibility
 
@@ -64,4 +64,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

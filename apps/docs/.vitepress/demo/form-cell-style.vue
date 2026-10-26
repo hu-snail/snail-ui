@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /** Demo: SnForm + SnFormItem — form-level size / valueAlign / asteriskPosition / hideAsterisk cascade. */
-import { reactive } from 'vue'
-import { SnForm, SnFormItem, SnInput } from '@snui/vue-web'
+import { reactive } from 'vue';
+import { SnForm, SnFormItem, SnInput } from '@snui/vue-web';
 
-const a = reactive({ a: '', b: '', c: '' })
-const b = reactive({ a: '', b: '', c: '' })
-const c = reactive({ a: '', b: '', c: '' })
-const d = reactive({ a: '', b: '', c: '' })
+const a = reactive({ a: '', b: '', c: '' });
+const b = reactive({ a: '', b: '', c: '' });
+const c = reactive({ a: '', b: '', c: '' });
+const d = reactive({ a: '', b: '', c: '' });
 </script>
 
 <template>
@@ -62,6 +62,15 @@ const d = reactive({ a: '', b: '', c: '' })
 </template>
 
 <style scoped>
-.sn-demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
-.sn-demo-grid section h4 { margin: 0 0 12px; font-size: 13px; font-weight: 600; color: var(--vp-c-text-2); }
+.sn-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
+.sn-demo-grid section h4 {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+}
 </style>

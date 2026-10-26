@@ -17,26 +17,16 @@
 ## 基础用法
 
 ```ts
-import { ref } from 'vue'
-import { SnCollapse, SnCollapseItem } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { ref } from 'vue';
+import { SnCollapse, SnCollapseItem } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 ```html
-<SnCollapse
-  v-model:expanded-names="open"
-  :accordion="false"
-  arrow-placement="left"
->
-  <SnCollapseItem title="概览" name="1">
-    端云一组功能、组件清单、Token 用法。
-  </SnCollapseItem>
-  <SnCollapseItem title="架构" name="2">
-    pnpm workspace + 双端别名包。
-  </SnCollapseItem>
-  <SnCollapseItem title="FAQ" name="faq">
-    常见问题。
-  </SnCollapseItem>
+<SnCollapse v-model:expanded-names="open" :accordion="false" arrow-placement="left">
+  <SnCollapseItem title="概览" name="1"> 端云一组功能、组件清单、Token 用法。 </SnCollapseItem>
+  <SnCollapseItem title="架构" name="2"> pnpm workspace + 双端别名包。 </SnCollapseItem>
+  <SnCollapseItem title="FAQ" name="faq"> 常见问题。 </SnCollapseItem>
 </SnCollapse>
 ```
 
@@ -44,39 +34,39 @@ import '@snui/tokens-web/styles'
 
 ### SnCollapse Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `expandedNames` | `Array<string \| number>` | `[]` | 受控展开 name 列表 |
-| `defaultExpandedNames` | `Array<string \| number>` | `[]` | 非受控初始展开 |
-| `accordion` | `boolean` | `false` | 一次只展开一个 |
-| `arrowPlacement` | `'left' \| 'right'` | `'left'` | 箭头位置 |
-| `trigger` | `'click' \| 'hover'` | `'click'` | 展开触发方式 |
-| `bordered` | `boolean` | `false` | 卡片化外框（共享分隔线） |
-| `displayDirective` | `'show' \| 'if'` | `'if'` | 折叠区切换策略（'show'=常驻 DOM toggle display；'if'=v-if unmount） |
+| 名称                   | 类型                      | 默认值    | 说明                                                                |
+| ---------------------- | ------------------------- | --------- | ------------------------------------------------------------------- |
+| `expandedNames`        | `Array<string \| number>` | `[]`      | 受控展开 name 列表                                                  |
+| `defaultExpandedNames` | `Array<string \| number>` | `[]`      | 非受控初始展开                                                      |
+| `accordion`            | `boolean`                 | `false`   | 一次只展开一个                                                      |
+| `arrowPlacement`       | `'left' \| 'right'`       | `'left'`  | 箭头位置                                                            |
+| `trigger`              | `'click' \| 'hover'`      | `'click'` | 展开触发方式                                                        |
+| `bordered`             | `boolean`                 | `false`   | 卡片化外框（共享分隔线）                                            |
+| `displayDirective`     | `'show' \| 'if'`          | `'if'`    | 折叠区切换策略（'show'=常驻 DOM toggle display；'if'=v-if unmount） |
 
 ### SnCollapse Props Events
 
-| 名称 | 载荷 | 触发时机 |
-| --- | --- | --- |
+| 名称                   | 载荷                               | 触发时机            |
+| ---------------------- | ---------------------------------- | ------------------- |
 | `update:expandedNames` | `(names: Array<string \| number>)` | 展开变化（v-model） |
-| `itemHeaderClick` | `(name: string \| number)` | 任意 header 点击 |
+| `itemHeaderClick`      | `(name: string \| number)`         | 任意 header 点击    |
 
 ### SnCollapseItem Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `name` | `string \| number` | `''` | 唯一标识（accordion 时去重） |
-| `title` | `string` | `''` | 标题文本 |
-| `disabled` | `boolean` | `false` | 禁用展开 |
-| `arrow` | `string \| boolean` | `''` | 自定义箭头（true 显示默认 ▸ / 字符串覆盖） |
+| 名称       | 类型                | 默认值  | 说明                                       |
+| ---------- | ------------------- | ------- | ------------------------------------------ |
+| `name`     | `string \| number`  | `''`    | 唯一标识（accordion 时去重）               |
+| `title`    | `string`            | `''`    | 标题文本                                   |
+| `disabled` | `boolean`           | `false` | 禁用展开                                   |
+| `arrow`    | `string \| boolean` | `''`    | 自定义箭头（true 显示默认 ▸ / 字符串覆盖） |
 
 ### SnCollapseItem Slots
 
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 折叠内容 |
-| `header` | 覆盖 `title` prop（高级用法） |
-| `header-extra` | 头部右侧追加内容 |
+| 名称           | 说明                          |
+| -------------- | ----------------------------- |
+| `default`      | 折叠内容                      |
+| `header`       | 覆盖 `title` prop（高级用法） |
+| `header-extra` | 头部右侧追加内容              |
 
 ## 无障碍
 

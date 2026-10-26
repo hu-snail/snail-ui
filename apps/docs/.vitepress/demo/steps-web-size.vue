@@ -2,10 +2,10 @@
 /**
  * steps-web-size — the two size tiers side by side.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>
@@ -28,9 +28,7 @@ const current = ref(1)
       </SnSteps>
     </div>
 
-    <p class="steps-size__hint">
-      <code>size</code> 同时影响指示器直径、标题字号与节点间距。
-    </p>
+    <p class="steps-size__hint"><code>size</code> 同时影响指示器直径、标题字号与节点间距。</p>
   </div>
 </template>
 

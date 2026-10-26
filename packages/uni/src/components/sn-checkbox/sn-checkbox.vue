@@ -26,9 +26,9 @@
  *   - 校验信息展示 — 用 sn-form-item
  */
 
-import { computed, inject, markRaw, onBeforeUnmount, onMounted } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { Check as CheckIcon, Minus as MinusIcon } from '../sn-icon/sn-icon-set'
+import { computed, inject, markRaw, onBeforeUnmount, onMounted } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Check as CheckIcon, Minus as MinusIcon } from '../sn-icon/sn-icon-set';
 import {
   SN_CHECKBOX_GROUP_KEY,
   type SnCheckboxDirection,
@@ -37,48 +37,48 @@ import {
   type SnCheckboxSize,
   type SnCheckboxType,
   type SnCheckboxValue,
-} from './sn-checkbox-types'
+} from './sn-checkbox-types';
 
-defineOptions({ name: 'SnCheckbox' })
+defineOptions({ name: 'SnCheckbox' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-checkbox` 1:1 surface ───────────────────────────────── */
 
     /** Bound value when used standalone. Ignored inside a group. */
-    modelValue?: SnCheckboxValue
+    modelValue?: SnCheckboxValue;
     /** Identity inside `sn-checkbox-group` (also the standalone value). */
-    name?: SnCheckboxValue
+    name?: SnCheckboxValue;
     /** Shape preset. Inherits from the group when not set. */
-    type?: SnCheckboxType | undefined
+    type?: SnCheckboxType | undefined;
     /** Checked color. Inherits from the group when not set. */
-    checkedColor?: string | undefined
+    checkedColor?: string | undefined;
     /** Unchecked color. Inherits from the group when not set. */
-    uncheckedColor?: string | undefined
+    uncheckedColor?: string | undefined;
     /** Disables this option. Inherits from the group when not set. */
-    disabled?: boolean | undefined
+    disabled?: boolean | undefined;
     /** Read-only. Inherits from the group when not set. */
-    readonly?: boolean | undefined
+    readonly?: boolean | undefined;
     /** Half-checked state (highest visual priority, wd-checkbox parity). */
-    indeterminate?: boolean
+    indeterminate?: boolean;
     /** Value emitted when checked (standalone mode). */
-    trueValue?: SnCheckboxValue
+    trueValue?: SnCheckboxValue;
     /** Value emitted when unchecked (standalone mode). */
-    falseValue?: SnCheckboxValue
+    falseValue?: SnCheckboxValue;
     /** Size preset. Inherits from the group when not set. */
-    size?: SnCheckboxSize
+    size?: SnCheckboxSize;
     /** Tick position. Inherits from the group when not set. */
-    placement?: SnCheckboxPlacement | undefined
+    placement?: SnCheckboxPlacement | undefined;
     /** Layout direction (only meaningful inside a group). */
-    direction?: SnCheckboxDirection | undefined
+    direction?: SnCheckboxDirection | undefined;
     /** Max width of the label text (CSS length). */
-    maxWidth?: string
+    maxWidth?: string;
     /** Class on the label text node. */
-    customLabelClass?: string
+    customLabelClass?: string;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: false,
@@ -99,85 +99,83 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** Standalone: the bound value changed. */
-  (e: 'update:modelValue', value: SnCheckboxValue): void
+  (e: 'update:modelValue', value: SnCheckboxValue): void;
   /** Value changed — payload carries the new value either way. */
-  (e: 'change', value: SnCheckboxValue): void
-}>()
+  (e: 'change', value: SnCheckboxValue): void;
+}>();
 
-const group = inject<SnCheckboxGroupContext | null>(SN_CHECKBOX_GROUP_KEY, null)
+const group = inject<SnCheckboxGroupContext | null>(SN_CHECKBOX_GROUP_KEY, null);
 
 /** Inside a group the group owns the selection; standalone compares v-model. */
 const isChecked = computed<boolean>(() => {
-  if (group) return group.isChecked(props.name)
-  return props.modelValue === props.trueValue
-})
+  if (group) return group.isChecked(props.name);
+  return props.modelValue === props.trueValue;
+});
 
 /** Effective prop resolution — own value wins, then the group, then default. */
 function resolve<T>(own: T | undefined, fromGroup: T | undefined, fallback: T): T {
-  return own !== undefined ? own : fromGroup !== undefined ? fromGroup : fallback
+  return own !== undefined ? own : fromGroup !== undefined ? fromGroup : fallback;
 }
 
 const effectiveType = computed<SnCheckboxType>(() =>
   resolve(props.type, group?.groupType.value, 'circle'),
-)
+);
 const effectivePlacement = computed<SnCheckboxPlacement>(() =>
   resolve(props.placement, group?.groupPlacement.value, 'left'),
-)
+);
 const effectiveSize = computed<SnCheckboxSize>(() =>
   resolve(props.size, group?.groupSize.value, undefined),
-)
+);
 const effectiveDirection = computed<SnCheckboxDirection>(() =>
   resolve(props.direction, group?.groupDirection.value, 'vertical'),
-)
+);
 const effectiveCheckedColor = computed<string>(() =>
   resolve(props.checkedColor, group?.groupCheckedColor.value, ''),
-)
+);
 const effectiveUncheckedColor = computed<string>(() =>
   resolve(props.uncheckedColor, group?.groupUncheckedColor.value, ''),
-)
+);
 const isDisabled = computed<boolean>(() =>
   resolve(props.disabled, group?.groupDisabled.value, false),
-)
+);
 const isReadonly = computed<boolean>(() =>
   resolve(props.readonly, group?.groupReadonly.value, false),
-)
+);
 /** Every blocking state in one place — the tap handler and aria read this. */
-const isBlocked = computed(() => isDisabled.value || isReadonly.value)
+const isBlocked = computed(() => isDisabled.value || isReadonly.value);
 
 /** Tick glyphs (never emoji, §113). `markRaw` keeps SnIcon from proxying. */
-const checkIcon = markRaw(CheckIcon)
-const indeterminateIcon = markRaw(MinusIcon)
+const checkIcon = markRaw(CheckIcon);
+const indeterminateIcon = markRaw(MinusIcon);
 
 /**
  * Colour overrides arrive as user-supplied CSS colors (like wot-ui's
  * `checked-color`), so they are applied inline on top of the token defaults.
  */
 const iconStyle = computed(() => {
-  const checked = props.indeterminate || isChecked.value
+  const checked = props.indeterminate || isChecked.value;
   if (checked) {
     return effectiveCheckedColor.value
       ? { backgroundColor: effectiveCheckedColor.value, borderColor: effectiveCheckedColor.value }
-      : undefined
+      : undefined;
   }
-  return effectiveUncheckedColor.value
-    ? { borderColor: effectiveUncheckedColor.value }
-    : undefined
-})
+  return effectiveUncheckedColor.value ? { borderColor: effectiveUncheckedColor.value } : undefined;
+});
 
 function onToggle(): void {
-  if (isBlocked.value) return
+  if (isBlocked.value) return;
   if (group) {
-    group.toggle(props.name, !isChecked.value)
-    emit('change', props.name)
-    return
+    group.toggle(props.name, !isChecked.value);
+    emit('change', props.name);
+    return;
   }
-  const next = isChecked.value ? props.falseValue : props.trueValue
-  emit('update:modelValue', next)
-  emit('change', next)
+  const next = isChecked.value ? props.falseValue : props.trueValue;
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 /**
@@ -186,12 +184,12 @@ function onToggle(): void {
  * cleanup (§41 — no leaked entries after a list re-render).
  */
 onMounted(() => {
-  group?.registerChild({ name: props.name, isDisabled: () => isDisabled.value })
-})
+  group?.registerChild({ name: props.name, isDisabled: () => isDisabled.value });
+});
 
 onBeforeUnmount(() => {
-  group?.unregisterChild(props.name)
-})
+  group?.unregisterChild(props.name);
+});
 
 const classList = computed(() => [
   'sn-checkbox',
@@ -206,12 +204,10 @@ const classList = computed(() => [
     'sn-checkbox--horizontal': effectiveDirection.value === 'horizontal',
   },
   props.customClass,
-])
+]);
 
-const wrapperStyle = computed(() => props.customStyle || undefined)
-const labelStyle = computed(() =>
-  props.maxWidth ? { maxWidth: props.maxWidth } : undefined,
-)
+const wrapperStyle = computed(() => props.customStyle || undefined);
+const labelStyle = computed(() => (props.maxWidth ? { maxWidth: props.maxWidth } : undefined));
 </script>
 
 <template>
@@ -294,7 +290,9 @@ const labelStyle = computed(() =>
   color: var(--sn-mp-color-text-on-primary);
   background-color: transparent;
   box-sizing: border-box;
-  transition: background-color 0.18s ease-out, border-color 0.18s ease-out;
+  transition:
+    background-color 0.18s ease-out,
+    border-color 0.18s ease-out;
 }
 
 .sn-checkbox--large .sn-checkbox__icon {

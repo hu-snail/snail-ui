@@ -36,92 +36,86 @@
  *   </SnTabs>
  */
 
-import { computed, nextTick, onMounted, provide, ref, toRef, watch } from 'vue'
-import { Plus } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
+import { computed, nextTick, onMounted, provide, ref, toRef, watch } from 'vue';
+import { Plus } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
 
-defineOptions({ name: 'SnTabs' })
+defineOptions({ name: 'SnTabs' });
 
 // Reference: naive-ui tabsProps
 const props = withDefaults(
   defineProps<{
     /** Currently active pane name (controlled, `v-model:value`). */
-    value?: string | number
+    value?: string | number;
     /** Initial active pane name (uncontrolled). */
-    defaultValue?: string | number
+    defaultValue?: string | number;
     /** Whether tabs activate on click or hover. Mirrors n-tabs `trigger`. */
-    trigger?: 'click' | 'hover'
+    trigger?: 'click' | 'hover';
     /**
      * Tab visual style. Mirrors n-tabs `type` (default `'bar'`) and adds
      * `'chrome'` — a browser-style tab strip. `'chrome'` is an additive
      * divergence from the reference, which has no browser chrome; it is
      * tuned for the horizontal placements (top / bottom).
      */
-    type?: 'line' | 'card' | 'bar' | 'segment' | 'chrome'
+    type?: 'line' | 'card' | 'bar' | 'segment' | 'chrome';
     /** Tab strip size. Mirrors n-tabs `size`. Default 'medium'. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Where the tab strip sits relative to the panes. Mirrors n-tabs
      * `placement`. Deprecated `start` / `end` aliases map to left/right. */
-    placement?: 'top' | 'right' | 'bottom' | 'left' | 'start' | 'end'
+    placement?: 'top' | 'right' | 'bottom' | 'left' | 'start' | 'end';
     /** Show a close button on each tab. Mirrors n-tabs `closable`. */
-    closable?: boolean
+    closable?: boolean;
     /** Show a trailing "+" tab. `true`, or a config object. Mirrors
      * n-tabs `addable` — we support the simple boolean + `{ disabled }`
      * object shape; the object form also accepts `disabled`. */
-    addable?: boolean | { disabled?: boolean }
+    addable?: boolean | { disabled?: boolean };
     /** Animate the pane height on switch. Mirrors n-tabs `animated`. */
-    animated?: boolean
+    animated?: boolean;
     /** Distribute tab strip items along the main axis. Mirrors
      * n-tabs `justifyContent`. */
-    justifyContent?:
-      | 'space-between'
-      | 'space-around'
-      | 'space-evenly'
-      | 'center'
-      | 'start'
-      | 'end'
+    justifyContent?: 'space-between' | 'space-around' | 'space-evenly' | 'center' | 'start' | 'end';
     /** Extra padding (px) around the tab strip. Mirrors n-tabs
      * `tabsPadding`. Default 0. */
-    tabsPadding?: number
+    tabsPadding?: number;
     /** Show the scroll buttons when the strip overflows. Mirrors
      * n-tabs `showScrollButton`. */
-    showScrollButton?: boolean
+    showScrollButton?: boolean;
     /** Per-tab inline style. Mirrors n-tabs `tabStyle`. */
-    tabStyle?: string | Record<string, string>
+    tabStyle?: string | Record<string, string>;
     /** Per-tab class. Mirrors n-tabs `tabClass`. */
-    tabClass?: string
+    tabClass?: string;
     /** Add-tab inline style. Mirrors n-tabs `addTabStyle`. */
-    addTabStyle?: string | Record<string, string>
+    addTabStyle?: string | Record<string, string>;
     /** Add-tab class. Mirrors n-tabs `addTabClass`. */
-    addTabClass?: string
+    addTabClass?: string;
     /** Class applied to every pane wrapper. Mirrors n-tabs `paneClass`. */
-    paneClass?: string
+    paneClass?: string;
     /** Inline style applied to every pane wrapper. Mirrors n-tabs
      * `paneStyle`. */
-    paneStyle?: string | Record<string, string>
+    paneStyle?: string | Record<string, string>;
     /**
      * Fixed width for the active bar, in px. When omitted the bar matches
      * the active tab's own width. Mirrors n-tabs `barWidth`.
      */
-    barWidth?: number
+    barWidth?: number;
     /**
      * Keep the active tab scrolled to the centre of the strip. Mirrors
      * n-tabs `centerActiveTab`. Only meaningful when the strip overflows.
      */
-    centerActiveTab?: boolean
+    centerActiveTab?: boolean;
     /** Class on the pane wrapper element. Mirrors n-tabs
      * `paneWrapperClass`. */
-    paneWrapperClass?: string
+    paneWrapperClass?: string;
     /** Style on the pane wrapper element. Mirrors n-tabs
      * `paneWrapperStyle`. */
-    paneWrapperStyle?: string | Record<string, string>
+    paneWrapperStyle?: string | Record<string, string>;
     /** Guard fired before switching tabs; return false (or a promise
      * resolving to false) to block the switch. Mirrors n-tabs
      * `onBeforeLeave`. */
     onBeforeLeave?: (
       name: string | number,
       oldName: string | number | null,
-    ) => boolean | Promise<boolean>
+    ) => boolean | Promise<boolean>;
   }>(),
   {
     // Optional props whose natural `undefined` is the intended default are
@@ -138,115 +132,115 @@ const props = withDefaults(
     showScrollButton: false,
     centerActiveTab: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Active pane changed (`v-model:value`). */
-  (e: 'update:value', value: string | number): void
+  (e: 'update:value', value: string | number): void;
   /** Close button clicked on a tab. Mirrors n-tabs `onClose`. */
-  (e: 'close', name: string | number): void
+  (e: 'close', name: string | number): void;
   /** Add tab clicked. Mirrors n-tabs `onAdd`. */
-  (e: 'add'): void
-}>()
+  (e: 'add'): void;
+}>();
 
 defineSlots<{
   /** Sequence of `<SnTabPane>` children. */
-  default?(): unknown
+  default?(): unknown;
   /** Content placed before the tab strip. Mirrors n-tabs `prefix`. */
-  prefix?(): unknown
+  prefix?(): unknown;
   /** Content placed after the tab strip. Mirrors n-tabs `suffix`. */
-  suffix?(): unknown
-}>()
+  suffix?(): unknown;
+}>();
 
 /** Pane registry — each SnTabPane pushes its own descriptor here so the
  *  tab strip can render labels without the parent walking the vnode tree. */
 interface SnTabPaneDescriptor {
-  name: string | number
-  tab: string
-  disabled: boolean
-  closable?: boolean
+  name: string | number;
+  tab: string;
+  disabled: boolean;
+  closable?: boolean;
 }
 
-const panes = ref<SnTabPaneDescriptor[]>([])
+const panes = ref<SnTabPaneDescriptor[]>([]);
 
 function registerPane(descriptor: SnTabPaneDescriptor): void {
-  const existing = panes.value.findIndex((p) => p.name === descriptor.name)
-  if (existing >= 0) panes.value.splice(existing, 1, descriptor)
-  else panes.value.push(descriptor)
+  const existing = panes.value.findIndex((p) => p.name === descriptor.name);
+  if (existing >= 0) panes.value.splice(existing, 1, descriptor);
+  else panes.value.push(descriptor);
 }
 
 function unregisterPane(name: string | number): void {
-  const idx = panes.value.findIndex((p) => p.name === name)
-  if (idx >= 0) panes.value.splice(idx, 1)
+  const idx = panes.value.findIndex((p) => p.name === name);
+  if (idx >= 0) panes.value.splice(idx, 1);
 }
 
 /** Uncontrolled fallback value — only read when `value` prop is absent. */
-const innerValue = ref<string | number | null>(props.defaultValue ?? null)
+const innerValue = ref<string | number | null>(props.defaultValue ?? null);
 
 /** Effective active value: the prop wins when provided. */
 const activeValue = computed<string | number | null>(() => {
-  if (props.value !== undefined) return props.value
-  return innerValue.value
-})
+  if (props.value !== undefined) return props.value;
+  return innerValue.value;
+});
 
 /** The first non-disabled pane becomes the default when nothing is set, so
  *  a bare `<SnTabs>` still shows content (matches n-tabs behaviour). */
 watch(
   panes,
   (list) => {
-    if (activeValue.value !== null && activeValue.value !== undefined) return
-    const first = list.find((p) => !p.disabled)
-    if (first) innerValue.value = first.name
+    if (activeValue.value !== null && activeValue.value !== undefined) return;
+    const first = list.find((p) => !p.disabled);
+    if (first) innerValue.value = first.name;
   },
   { immediate: true, deep: true },
-)
+);
 
 /** Normalize deprecated `start` / `end` placement aliases to left/right. */
 const mergedPlacement = computed<'top' | 'right' | 'bottom' | 'left'>(() => {
-  if (props.placement === 'start') return 'left'
-  if (props.placement === 'end') return 'right'
-  return props.placement
-})
+  if (props.placement === 'start') return 'left';
+  if (props.placement === 'end') return 'right';
+  return props.placement;
+});
 
-const isVertical = computed(() => (
-  mergedPlacement.value === 'left' || mergedPlacement.value === 'right'
-))
+const isVertical = computed(
+  () => mergedPlacement.value === 'left' || mergedPlacement.value === 'right',
+);
 
 async function activateTab(name: string | number): Promise<void> {
-  const pane = panes.value.find((p) => p.name === name)
-  if (pane?.disabled) return
-  if (name === activeValue.value) return
+  const pane = panes.value.find((p) => p.name === name);
+  if (pane?.disabled) return;
+  if (name === activeValue.value) return;
   if (props.onBeforeLeave) {
-    const allowed = await props.onBeforeLeave(name, activeValue.value)
-    if (!allowed) return
+    const allowed = await props.onBeforeLeave(name, activeValue.value);
+    if (!allowed) return;
   }
-  if (props.value === undefined) innerValue.value = name
-  emit('update:value', name)
+  if (props.value === undefined) innerValue.value = name;
+  emit('update:value', name);
 }
 
 function handleTabClick(name: string | number): void {
-  if (props.trigger !== 'click') return
-  void activateTab(name)
+  if (props.trigger !== 'click') return;
+  void activateTab(name);
 }
 
 function handleTabMouseenter(name: string | number): void {
-  if (props.trigger !== 'hover') return
-  void activateTab(name)
+  if (props.trigger !== 'hover') return;
+  void activateTab(name);
 }
 
 /* ── Active-bar geometry (`barWidth` + `centerActiveTab`) ────────────────
  * The bar is drawn by a dedicated element rather than a `::after` on the
  * active tab, because `barWidth` decouples the bar's width from the tab's
  * own width and `centerActiveTab` needs a measurable box to scroll to. */
-const navEl = ref<HTMLElement | null>(null)
+const navEl = ref<HTMLElement | null>(null);
 
 /** The active tab's element, used to size and position the bar. */
 function activeTabEl(): HTMLElement | null {
-  const nav = navEl.value
-  if (!nav) return null
-  const index = panes.value.findIndex((p) => p.name === activeValue.value)
-  if (index < 0) return null
-  return (nav.querySelectorAll<HTMLElement>('.sn-tabs__tab')[index]) ?? null
+  const nav = navEl.value;
+  if (!nav) return null;
+  const index = panes.value.findIndex((p) => p.name === activeValue.value);
+  if (index < 0) return null;
+  return nav.querySelectorAll<HTMLElement>('.sn-tabs__tab')[index] ?? null;
 }
 
 /**
@@ -256,68 +250,68 @@ function activeTabEl(): HTMLElement | null {
  * tab needs centring.
  */
 const barStyle = computed<Record<string, string> | undefined>(() => {
-  if (props.barWidth === undefined) return undefined
-  return { width: `${props.barWidth}px`, maxWidth: '100%' }
-})
+  if (props.barWidth === undefined) return undefined;
+  return { width: `${props.barWidth}px`, maxWidth: '100%' };
+});
 
 /** Scroll the active tab to the middle of the strip. */
 async function centerActiveTab(): Promise<void> {
-  if (!props.centerActiveTab) return
-  await nextTick()
-  const nav = navEl.value
-  const tab = activeTabEl()
-  if (!nav || !tab) return
-  const target = tab.offsetLeft - (nav.clientWidth - tab.offsetWidth) / 2
-  nav.scrollTo({ left: Math.max(0, target), behavior: 'smooth' })
+  if (!props.centerActiveTab) return;
+  await nextTick();
+  const nav = navEl.value;
+  const tab = activeTabEl();
+  if (!nav || !tab) return;
+  const target = tab.offsetLeft - (nav.clientWidth - tab.offsetWidth) / 2;
+  nav.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
 }
 
 watch(activeValue, () => {
-  void centerActiveTab()
-})
+  void centerActiveTab();
+});
 // `immediate` on the watcher above would run during setup, before `navEl`
 // has a DOM node. Mount is the earliest point the strip can be measured.
 onMounted(() => {
-  void centerActiveTab()
-})
+  void centerActiveTab();
+});
 
 function handleClose(name: string | number, event: MouseEvent): void {
-  event.stopPropagation()
-  emit('close', name)
+  event.stopPropagation();
+  emit('close', name);
 }
 
 function handleAdd(): void {
-  if (typeof props.addable === 'object' && props.addable?.disabled) return
-  emit('add')
+  if (typeof props.addable === 'object' && props.addable?.disabled) return;
+  emit('add');
 }
 
 /** Style binding helpers — a prop may be a string or a record. */
 function toStyleBinding(style: string | Record<string, string> | undefined) {
-  return style
+  return style;
 }
 
 /** Whether the tabs container should expose the "+" affordance. */
-const addDisabled = computed(() => (
-  typeof props.addable === 'object' ? Boolean(props.addable.disabled) : false
-))
+const addDisabled = computed(() =>
+  typeof props.addable === 'object' ? Boolean(props.addable.disabled) : false,
+);
 
 /** Whether a given pane should show its close affordance: the per-pane
  *  override wins, otherwise the parent `closable` flag applies. Computed in
  *  script (rather than inline in the template) so the `??` fallback stays
  *  obvious and testable. */
 function isPaneClosable(pane: SnTabPaneDescriptor): boolean {
-  return pane.closable ?? props.closable
+  return pane.closable ?? props.closable;
 }
 
 /* ─────────── Injection surface for SnTabPane ─────────── */
 
-provide('sn-tabs-active-value', activeValue)
-provide('sn-tabs-type', toRef(props, 'type'))
-provide('sn-tabs-placement', mergedPlacement)
-provide('sn-tabs-pane-class', toRef(props, 'paneClass'))
-provide('sn-tabs-pane-style', toRef(props, 'paneStyle'))
-provide('sn-tabs-register-pane', registerPane)
-provide('sn-tabs-unregister-pane', unregisterPane)
-provide('sn-tabs-animated', toRef(props, 'animated'))
+provide('sn-tabs-active-value', activeValue);
+provide('sn-tabs-type', toRef(props, 'type'));
+provide('sn-tabs-placement', mergedPlacement);
+provide('sn-tabs-pane-class', toRef(props, 'paneClass'));
+provide('sn-tabs-pane-style', toRef(props, 'paneStyle'));
+provide('sn-tabs-register-pane', registerPane);
+provide('sn-tabs-unregister-pane', unregisterPane);
+provide('sn-tabs-animated', toRef(props, 'animated'));
 </script>
 
 <template>
@@ -364,7 +358,8 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
           role="button"
           aria-label="Close tab"
           @click="handleClose(pane.name, $event)"
-        >×</span>
+          >×</span
+        >
       </button>
       <button
         v-if="addable"
@@ -381,11 +376,7 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
       <slot name="suffix" />
     </div>
 
-    <div
-      class="sn-tabs__panes"
-      :class="paneWrapperClass"
-      :style="toStyleBinding(paneWrapperStyle)"
-    >
+    <div class="sn-tabs__panes" :class="paneWrapperClass" :style="toStyleBinding(paneWrapperStyle)">
       <slot />
     </div>
   </div>
@@ -442,7 +433,9 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
   font-size: 14px;
   line-height: 1.5;
   padding: 8px 14px;
-  transition: color 0.2s var(--sn-web-bezier-ease), background-color 0.2s var(--sn-web-bezier-ease);
+  transition:
+    color 0.2s var(--sn-web-bezier-ease),
+    background-color 0.2s var(--sn-web-bezier-ease);
   white-space: nowrap;
 }
 .sn-tabs__tab:hover:not(.sn-tabs__tab--disabled) {
@@ -628,8 +621,7 @@ provide('sn-tabs-animated', toRef(props, 'animated'))
   font-size: 13px;
 }
 
-.sn-tabs--chrome
-  .sn-tabs__tab:hover:not(.sn-tabs__tab--disabled):not(.sn-tabs__tab--active) {
+.sn-tabs--chrome .sn-tabs__tab:hover:not(.sn-tabs__tab--disabled):not(.sn-tabs__tab--active) {
   background: color-mix(in srgb, var(--sn-web-color-text-primary) 6%, transparent);
 }
 

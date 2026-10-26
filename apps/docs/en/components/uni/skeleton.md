@@ -32,14 +32,14 @@ All three shapes (string / string array / boolean map) act on the root node the 
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| theme | 'text' \| 'avatar' \| 'paragraph' \| 'image' | 'text' | Preset layout (used when `rowCol` is empty) |
-| rowCol | (number \| SnSkeletonCol[])[] | [] | Per-row layout |
-| loading | boolean | true | Show the skeleton; `false` renders the default slot |
-| animation | '' \| 'gradient' \| 'flashed' | '' | Shimmer kind |
-| customClass | string \| string[] \| Record<string, boolean> | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop        | Type                                          | Default | Description                                         |
+| ----------- | --------------------------------------------- | ------- | --------------------------------------------------- |
+| theme       | 'text' \| 'avatar' \| 'paragraph' \| 'image'  | 'text'  | Preset layout (used when `rowCol` is empty)         |
+| rowCol      | (number \| SnSkeletonCol[])[]                 | []      | Per-row layout                                      |
+| loading     | boolean                                       | true    | Show the skeleton; `false` renders the default slot |
+| animation   | '' \| 'gradient' \| 'flashed'                 | ''      | Shimmer kind                                        |
+| customClass | string \| string[] \| Record<string, boolean> | ''      | Custom class for the root node                      |
+| customStyle | string                                        | ''      | Custom inline style for the root node               |
 
 `SnSkeletonCol` = `{ type?, size?, width?, height?, margin?, borderRadius?, backgroundColor? }`.
 
@@ -49,19 +49,19 @@ None — the component is presentational.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                    |
+| ------- | ---------------------------------------------- |
 | default | Real content, rendered once `loading` is false |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-background-subtle | Placeholder fill / gradient base |
-| --sn-mp-color-background-elevated | Gradient highlight |
-| --sn-mp-color-border-default | Doodle skin outline |
-| --sn-mp-radius-sm` / `-md` / `-lg` / `-full | Placeholder corners |
-| --sn-mp-spacing-3 | Row and column gap |
+| Variable                              | Purpose                          |
+| ------------------------------------- | -------------------------------- |
+| --sn-mp-color-background-subtle       | Placeholder fill / gradient base |
+| --sn-mp-color-background-elevated     | Gradient highlight               |
+| --sn-mp-color-border-default          | Doodle skin outline              |
+| --sn-mp-radius-sm`/`-md`/`-lg`/`-full | Placeholder corners              |
+| --sn-mp-spacing-3                     | Row and column gap               |
 
 ## Accessibility
 
@@ -71,7 +71,6 @@ None — the component is presentational.
 ## Dark mode
 
 The placeholder fill and highlight use `--sn-mp-color-background-subtle` / `--sn-mp-color-background-elevated`, both overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A literal passed through a column `backgroundColor` does not flip with the theme — prefer `var(--sn-mp-*)` colors in dark mode.
 

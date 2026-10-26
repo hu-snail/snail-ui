@@ -7,46 +7,46 @@
  * invariants are worth pinning down.
  */
 
-import { describe, expect, it } from 'vitest'
-import { PUBLIC_COMPONENTS, SnUIResolver } from './resolver'
-import * as indexExports from './index'
+import { describe, expect, it } from 'vitest';
+import { PUBLIC_COMPONENTS, SnUIResolver } from './resolver';
+import * as indexExports from './index';
 
 describe('SnUIResolver', () => {
   describe('resolve', () => {
     it('should resolve a shipped component to the library entry', () => {
-      const resolver = SnUIResolver()
-      const result = resolver.resolve('SnButton')
+      const resolver = SnUIResolver();
+      const result = resolver.resolve('SnButton');
 
       expect(result).toEqual({
         name: 'default',
         from: '@snui/vue-web',
         sideEffects: '@snui/vue-web/styles',
-      })
-    })
+      });
+    });
 
     it('should honour a custom library option', () => {
-      const resolver = SnUIResolver({ library: 'my-aliased-snui' })
-      const result = resolver.resolve('SnButton')
+      const resolver = SnUIResolver({ library: 'my-aliased-snui' });
+      const result = resolver.resolve('SnButton');
 
-      expect(result?.from).toBe('my-aliased-snui')
-      expect(result?.sideEffects).toBe('my-aliased-snui/styles')
-    })
+      expect(result?.from).toBe('my-aliased-snui');
+      expect(result?.sideEffects).toBe('my-aliased-snui/styles');
+    });
 
     it('should return undefined for an unknown component', () => {
-      const resolver = SnUIResolver()
+      const resolver = SnUIResolver();
 
-      expect(resolver.resolve('SnNotAThing')).toBeUndefined()
-      expect(resolver.resolve('NButton')).toBeUndefined()
-    })
+      expect(resolver.resolve('SnNotAThing')).toBeUndefined();
+      expect(resolver.resolve('NButton')).toBeUndefined();
+    });
 
     it('should report itself as a component resolver', () => {
-      expect(SnUIResolver().type).toBe('component')
-    })
-  })
+      expect(SnUIResolver().type).toBe('component');
+    });
+  });
 
   describe('PUBLIC_COMPONENTS', () => {
     /** `SnUI` is the install plugin, not a component — it is legitimately absent. */
-    const NON_COMPONENT_EXPORTS = new Set(['SnUI'])
+    const NON_COMPONENT_EXPORTS = new Set(['SnUI']);
 
     it('should match the Sn* component value exports of the package entry', () => {
       // Every exported `Sn*` component must be auto-importable, and the
@@ -58,21 +58,21 @@ describe('SnUIResolver', () => {
             !NON_COMPONENT_EXPORTS.has(name) &&
             indexExports[name as keyof typeof indexExports],
         )
-        .sort()
+        .sort();
 
-      expect([...PUBLIC_COMPONENTS].sort()).toEqual(exported)
-    })
+      expect([...PUBLIC_COMPONENTS].sort()).toEqual(exported);
+    });
 
     it('should resolve every listed component', () => {
-      const resolver = SnUIResolver()
+      const resolver = SnUIResolver();
 
       for (const name of PUBLIC_COMPONENTS) {
-        expect(resolver.resolve(name), `${name} should resolve`).toBeDefined()
+        expect(resolver.resolve(name), `${name} should resolve`).toBeDefined();
       }
-    })
+    });
 
     it('should not contain duplicates', () => {
-      expect(new Set(PUBLIC_COMPONENTS).size).toBe(PUBLIC_COMPONENTS.length)
-    })
-  })
-})
+      expect(new Set(PUBLIC_COMPONENTS).size).toBe(PUBLIC_COMPONENTS.length);
+    });
+  });
+});

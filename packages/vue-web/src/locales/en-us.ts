@@ -4,7 +4,7 @@
  * conventions.
  */
 
-import type { SnLocale } from './zh-cn'
+import type { SnLocale } from './zh-cn';
 
 /** Built-in English (US) locale. */
 export const enUS: SnLocale = {
@@ -45,10 +45,7 @@ export const enUS: SnLocale = {
   },
   DatePicker: {
     weekdays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
-    months: [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ],
+    months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     monthTitle: '{m} {y}',
     yearTitle: '{y}',
     placeholder: 'Select date',
@@ -124,4 +121,4 @@ export const enUS: SnLocale = {
     negativeText: 'Cancel',
     positiveText: 'Confirm',
   },
-}
+};

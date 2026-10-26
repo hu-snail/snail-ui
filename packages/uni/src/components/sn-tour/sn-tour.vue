@@ -36,61 +36,61 @@
  *   - 引导进度持久化 — 由宿主处理
  */
 
-import { computed, ref, watch } from 'vue'
-import type { TourMissingStrategy, TourNavPayload, TourStep } from './sn-tour-types'
+import { computed, ref, watch } from 'vue';
+import type { TourMissingStrategy, TourNavPayload, TourStep } from './sn-tour-types';
 
-defineOptions({ name: 'SnTour' })
+defineOptions({ name: 'SnTour' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-tour` 1:1 surface ───────────────────────────────────── */
 
     /** 是否显示引导组件。 */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** 引导步骤列表。 */
-    steps?: TourStep[]
+    steps?: TourStep[];
     /** 当前步骤索引。 */
-    current?: number
+    current?: number;
     /** 是否显示蒙版。 */
-    mask?: boolean
+    mask?: boolean;
     /** 蒙版颜色（内联覆盖，空 = 令牌默认）。 */
-    maskColor?: string
+    maskColor?: string;
     /** 引导面板与高亮区域的间距。 */
-    offset?: number
+    offset?: number;
     /** 动画时长，单位毫秒。 */
-    duration?: number
+    duration?: number;
     /** 高亮区域圆角。 */
-    borderRadius?: number
+    borderRadius?: number;
     /** 高亮区域内边距。 */
-    padding?: number
+    padding?: number;
     /** 上一步按钮文案。 */
-    prevText?: string
+    prevText?: string;
     /** 下一步按钮文案。 */
-    nextText?: string
+    nextText?: string;
     /** 跳过按钮文案。 */
-    skipText?: string
+    skipText?: string;
     /** 完成按钮文案。 */
-    finishText?: string
+    finishText?: string;
     /** 底部安全偏移量，用于滚动计算。 */
-    bottomSafetyOffset?: number
+    bottomSafetyOffset?: number;
     /** 顶部安全偏移量，用于滚动计算。 */
-    topSafetyOffset?: number
+    topSafetyOffset?: number;
     /** 是否启用自定义导航栏模式。 */
-    customNav?: boolean
+    customNav?: boolean;
     /** 点击遮罩层是否进入下一步。 */
-    clickMaskNext?: boolean
+    clickMaskNext?: boolean;
     /** 默认高亮区域样式。 */
-    highlightStyle?: Record<string, string>
+    highlightStyle?: Record<string, string>;
     /** 层级。 */
-    zIndex?: number | undefined
+    zIndex?: number | undefined;
     /** 是否显示引导按钮。 */
-    showTourButtons?: boolean
+    showTourButtons?: boolean;
     /** 目标元素缺失时的处理策略：skip / stop / hide。 */
-    missingStrategy?: TourMissingStrategy
+    missingStrategy?: TourMissingStrategy;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: false,
@@ -117,75 +117,75 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 显隐状态变化时触发。 */
-  (e: 'update:modelValue', value: boolean): void
+  (e: 'update:modelValue', value: boolean): void;
   /** 当前步骤变化时触发。 */
-  (e: 'update:current', value: number): void
+  (e: 'update:current', value: number): void;
   /** 当前步骤变化时触发。 */
-  (e: 'change', payload: { current: number }): void
+  (e: 'change', payload: { current: number }): void;
   /** 点击上一步时触发。 */
-  (e: 'prev', payload: TourNavPayload): void
+  (e: 'prev', payload: TourNavPayload): void;
   /** 点击下一步时触发。 */
-  (e: 'next', payload: TourNavPayload): void
+  (e: 'next', payload: TourNavPayload): void;
   /** 点击完成时触发。 */
-  (e: 'finish', payload: { current: number; total: number }): void
+  (e: 'finish', payload: { current: number; total: number }): void;
   /** 点击跳过时触发。 */
-  (e: 'skip', payload: { current: number; total: number }): void
+  (e: 'skip', payload: { current: number; total: number }): void;
   /** 目标元素查询失败时触发。 */
-  (e: 'error', payload: { message: string; element: string }): void
-}>()
+  (e: 'error', payload: { message: string; element: string }): void;
+}>();
 
 defineSlots<{
   /** 自定义引导面板内容，作用域给出当前步骤。 */
-  default?(scope: { step: TourStep | undefined; current: number; total: number }): unknown
+  default?(scope: { step: TourStep | undefined; current: number; total: number }): unknown;
   /** 自定义底部操作区，作用域同上。 */
-  footer?(scope: { step: TourStep | undefined; current: number; total: number }): unknown
-}>()
+  footer?(scope: { step: TourStep | undefined; current: number; total: number }): unknown;
+}>();
 
 /** Total step count — guards every index computation below. */
-const total = computed(() => props.steps.length)
+const total = computed(() => props.steps.length);
 
 /** Open state: uncontrolled fallback + controlled sync. */
-const innerVisible = ref(props.modelValue)
+const innerVisible = ref(props.modelValue);
 watch(
   () => props.modelValue,
   (next) => {
-    innerVisible.value = next
+    innerVisible.value = next;
   },
-)
+);
 
 /** Step cursor: uncontrolled fallback + controlled sync. */
-const innerCurrent = ref(props.current)
+const innerCurrent = ref(props.current);
 watch(
   () => props.current,
   (next) => {
-    innerCurrent.value = next
+    innerCurrent.value = next;
   },
-)
+);
 
 /** Clamped cursor so a stale index never renders an empty panel. */
 const currentIndex = computed(() => {
-  if (total.value === 0) return 0
-  return Math.min(Math.max(0, innerCurrent.value), total.value - 1)
-})
+  if (total.value === 0) return 0;
+  return Math.min(Math.max(0, innerCurrent.value), total.value - 1);
+});
 
-const currentStep = computed<TourStep | undefined>(() => props.steps[currentIndex.value])
+const currentStep = computed<TourStep | undefined>(() => props.steps[currentIndex.value]);
 
-const isLastStep = computed(() => currentIndex.value >= total.value - 1)
+const isLastStep = computed(() => currentIndex.value >= total.value - 1);
 
 function setVisible(value: boolean): void {
-  innerVisible.value = value
-  emit('update:modelValue', value)
+  innerVisible.value = value;
+  emit('update:modelValue', value);
 }
 
 function setCurrent(next: number): void {
-  if (next === currentIndex.value) return
-  innerCurrent.value = next
-  emit('update:current', next)
-  emit('change', { current: next })
+  if (next === currentIndex.value) return;
+  innerCurrent.value = next;
+  emit('update:current', next);
+  emit('change', { current: next });
 }
 
 /** Shared `prev` / `next` payload. */
@@ -195,45 +195,45 @@ function navPayload(prevCurrent: number): TourNavPayload {
     current: currentIndex.value,
     total: total.value,
     isElementInTop: currentIndex.value === 0,
-  }
+  };
 }
 
 /** Step back; a no-op on the first step (wd-tour parity). */
 function handlePrev(): void {
-  if (currentIndex.value === 0) return
-  const previous = currentIndex.value
-  setCurrent(currentIndex.value - 1)
-  emit('prev', navPayload(previous))
+  if (currentIndex.value === 0) return;
+  const previous = currentIndex.value;
+  setCurrent(currentIndex.value - 1);
+  emit('prev', navPayload(previous));
 }
 
 /** Step forward; on the last step this finishes instead. */
 function handleNext(): void {
   if (isLastStep.value) {
-    handleFinish()
-    return
+    handleFinish();
+    return;
   }
-  const previous = currentIndex.value
-  setCurrent(currentIndex.value + 1)
-  emit('next', navPayload(previous))
+  const previous = currentIndex.value;
+  setCurrent(currentIndex.value + 1);
+  emit('next', navPayload(previous));
 }
 
 function handleFinish(): void {
-  emit('finish', { current: currentIndex.value, total: total.value })
-  setVisible(false)
+  emit('finish', { current: currentIndex.value, total: total.value });
+  setVisible(false);
 }
 
 function handleSkip(): void {
-  emit('skip', { current: currentIndex.value, total: total.value })
-  setVisible(false)
+  emit('skip', { current: currentIndex.value, total: total.value });
+  setVisible(false);
 }
 
 /** Mask tap — opt-in step advance, never a close. */
 function onMaskTap(): void {
-  if (props.clickMaskNext) handleNext()
+  if (props.clickMaskNext) handleNext();
 }
 
 /** Public imperative API — mirrors wd-tour's exposed methods (§14). */
-defineExpose({ handlePrev, handleNext, handleFinish, handleSkip })
+defineExpose({ handlePrev, handleNext, handleFinish, handleSkip });
 
 const rootClass = computed(() => [
   'sn-tour',
@@ -241,24 +241,24 @@ const rootClass = computed(() => [
     'sn-tour--mask': props.mask,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.zIndex !== undefined) parts.push(`z-index: ${props.zIndex}`)
-  if (props.duration !== 300) parts.push(`--snui-tour-duration: ${props.duration}ms`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.zIndex !== undefined) parts.push(`z-index: ${props.zIndex}`);
+  if (props.duration !== 300) parts.push(`--snui-tour-duration: ${props.duration}ms`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 const maskStyle = computed(() =>
   props.maskColor ? `background-color: ${props.maskColor}` : undefined,
-)
+);
 
 const panelStyle = computed(() => {
-  const parts = [`--snui-tour-radius: ${props.borderRadius}px`]
-  return parts.join('; ')
-})
+  const parts = [`--snui-tour-radius: ${props.borderRadius}px`];
+  return parts.join('; ');
+});
 </script>
 
 <template>

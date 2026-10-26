@@ -2,16 +2,16 @@
 /**
  * Demo: SnPopover — delay / duration timing control (open & close debounce).
  */
-import { ref } from 'vue'
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnPopover } from '@snui/vue-web';
 
-const defaultEvent = ref('(not triggered yet)')
-const slowOpenEvent = ref('(not triggered yet)')
-const asymmetricEvent = ref('(not triggered yet)')
+const defaultEvent = ref('(not triggered yet)');
+const slowOpenEvent = ref('(not triggered yet)');
+const asymmetricEvent = ref('(not triggered yet)');
 
 function stamp(kind: 'show' | 'hide'): string {
-  const time = new Date().toLocaleTimeString('zh-CN', { hour12: false })
-  return `${kind} @ ${time}`
+  const time = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+  return `${kind} @ ${time}`;
 }
 </script>
 
@@ -51,7 +51,9 @@ function stamp(kind: 'show' | 'hide'): string {
     </section>
 
     <section class="popover-delay-demo__block">
-      <h4 class="popover-delay-demo__title">Asymmetric delay [200, 800] (delay array + duration)</h4>
+      <h4 class="popover-delay-demo__title">
+        Asymmetric delay [200, 800] (delay array + duration)
+      </h4>
       <div class="popover-delay-demo__row">
         <SnPopover
           header="Fast open, slow close"

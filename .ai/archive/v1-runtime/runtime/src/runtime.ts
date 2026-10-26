@@ -210,12 +210,14 @@ export function createRuntime(input: CreateRuntimeInput): AUIRuntime {
       tracker.transition(next);
     } catch (cause) {
       const err = cause as AUIError;
-      throw err.code ? err : createAUIError({
-        code: 'AUI_RUNTIME_TRANSITION_FAILED',
-        message: `Runtime transition failed: ${(cause as Error)?.message ?? cause}`,
-        source: 'runtime',
-        cause,
-      });
+      throw err.code
+        ? err
+        : createAUIError({
+            code: 'AUI_RUNTIME_TRANSITION_FAILED',
+            message: `Runtime transition failed: ${(cause as Error)?.message ?? cause}`,
+            source: 'runtime',
+            cause,
+          });
     }
   }
 

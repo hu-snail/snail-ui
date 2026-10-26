@@ -14,24 +14,22 @@
  * `--sn-web-*` token aliases only (px units).
  */
 
-import { computed, inject } from 'vue'
-import type { CSSProperties } from 'vue'
-import { SN_LAYOUT_KEY } from './sn-layout-types'
-import type { SnLayoutStyleValue } from './sn-layout-types'
+import { computed, inject } from 'vue';
+import type { CSSProperties } from 'vue';
+import { SN_LAYOUT_KEY } from './sn-layout-types';
+import type { SnLayoutStyleValue } from './sn-layout-types';
 
-defineOptions({ name: 'SnLayoutContent' })
+defineOptions({ name: 'SnLayoutContent' });
 
-const layout = inject(SN_LAYOUT_KEY, null)
+const layout = inject(SN_LAYOUT_KEY, null);
 
 const baseStyle = computed<CSSProperties>(() => ({
   flex: '1 1 auto',
   minHeight: '0',
   overflowY: 'auto',
-}))
+}));
 
-const injectedStyle = computed<SnLayoutStyleValue | undefined>(
-  () => layout?.contentStyle.value,
-)
+const injectedStyle = computed<SnLayoutStyleValue | undefined>(() => layout?.contentStyle.value);
 </script>
 
 <template>

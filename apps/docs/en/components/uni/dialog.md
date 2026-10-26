@@ -36,81 +36,81 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | Visibility (`v-model`) |
-| `title` | `string` | `''` | Title text |
-| `msg` | `string` | `''` | Message body |
-| `type` | `'alert' \| 'confirm' \| 'prompt'` | `'alert'` | Dialog flavour |
-| `theme` | `'button' \| 'text'` | `'button'` | Button style |
-| `zIndex` | `number` | `99` | Stacking level |
-| `lazyRender` | `boolean` | `true` | Defer body rendering until first open |
-| `headerImage` | `string` | `''` | Full-width image above the body |
-| `icon` | `string` | `''` | Status icon: `success` / `info` / `warning` / `danger`, or a custom name |
-| `iconColor` | `string` | `''` | Icon color |
-| `iconProps` | `Record<string, unknown>` | `{}` | Props forwarded to the inner `sn-icon` |
-| `inputValue` | `string \| number` | `''` | Initial prompt value (also `v-model:input-value`) |
-| `inputProps` | `Record<string, unknown>` | `{}` | Props forwarded to `sn-input` in prompt mode |
-| `textareaProps` | `Record<string, unknown>` | `{}` | When non-empty, prompt mode renders `sn-textarea` |
-| `inputPattern` | `RegExp` | — | Regexp the prompt value must match |
-| `inputValidate` | `(value) => boolean \| string` | — | Function validator; a string return is the error message |
-| `inputError` | `string` | `''` | Fallback error message |
-| `showErr` | `boolean` | `false` | Show the validation message |
-| `actionLayout` | `'horizontal' \| 'vertical'` | `'horizontal'` | Button arrangement |
-| `showCancelButton` | `boolean` | — | Defaults to `false` for `alert`, `true` otherwise |
-| `confirmButtonText` | `string` | `''` | Confirm label (falls back to 确定) |
-| `cancelButtonText` | `string` | `''` | Cancel label (falls back to 取消) |
-| `confirmButtonProps` | `string \| object \| null` | `{}` | Confirm button option — string is the label, object is spread onto `sn-button`, `null` hides it |
-| `cancelButtonProps` | `string \| object \| null` | — | Cancel button option, same grammar |
-| `actions` | `DialogAction[]` | `[]` | Custom action rows; takes precedence over the default buttons |
-| `closeOnClickModal` | `boolean` | `false` | Close on scrim tap |
-| `showClose` | `boolean` | `false` | Show the top-right close button |
-| `beforeConfirm` | `() => boolean \| Promise<boolean>` | — | Guard before confirming |
-| `selector` | `string` | `''` | Instance id (parity only; inert in the component form) |
-| `customClass` | `string` | `''` | Custom class for the root node |
-| `customStyle` | `string` | `''` | Custom inline style for the panel |
+| Prop                 | Type                                | Default        | Description                                                                                     |
+| -------------------- | ----------------------------------- | -------------- | ----------------------------------------------------------------------------------------------- |
+| `modelValue`         | `boolean`                           | `false`        | Visibility (`v-model`)                                                                          |
+| `title`              | `string`                            | `''`           | Title text                                                                                      |
+| `msg`                | `string`                            | `''`           | Message body                                                                                    |
+| `type`               | `'alert' \| 'confirm' \| 'prompt'`  | `'alert'`      | Dialog flavour                                                                                  |
+| `theme`              | `'button' \| 'text'`                | `'button'`     | Button style                                                                                    |
+| `zIndex`             | `number`                            | `99`           | Stacking level                                                                                  |
+| `lazyRender`         | `boolean`                           | `true`         | Defer body rendering until first open                                                           |
+| `headerImage`        | `string`                            | `''`           | Full-width image above the body                                                                 |
+| `icon`               | `string`                            | `''`           | Status icon: `success` / `info` / `warning` / `danger`, or a custom name                        |
+| `iconColor`          | `string`                            | `''`           | Icon color                                                                                      |
+| `iconProps`          | `Record<string, unknown>`           | `{}`           | Props forwarded to the inner `sn-icon`                                                          |
+| `inputValue`         | `string \| number`                  | `''`           | Initial prompt value (also `v-model:input-value`)                                               |
+| `inputProps`         | `Record<string, unknown>`           | `{}`           | Props forwarded to `sn-input` in prompt mode                                                    |
+| `textareaProps`      | `Record<string, unknown>`           | `{}`           | When non-empty, prompt mode renders `sn-textarea`                                               |
+| `inputPattern`       | `RegExp`                            | —              | Regexp the prompt value must match                                                              |
+| `inputValidate`      | `(value) => boolean \| string`      | —              | Function validator; a string return is the error message                                        |
+| `inputError`         | `string`                            | `''`           | Fallback error message                                                                          |
+| `showErr`            | `boolean`                           | `false`        | Show the validation message                                                                     |
+| `actionLayout`       | `'horizontal' \| 'vertical'`        | `'horizontal'` | Button arrangement                                                                              |
+| `showCancelButton`   | `boolean`                           | —              | Defaults to `false` for `alert`, `true` otherwise                                               |
+| `confirmButtonText`  | `string`                            | `''`           | Confirm label (falls back to 确定)                                                              |
+| `cancelButtonText`   | `string`                            | `''`           | Cancel label (falls back to 取消)                                                               |
+| `confirmButtonProps` | `string \| object \| null`          | `{}`           | Confirm button option — string is the label, object is spread onto `sn-button`, `null` hides it |
+| `cancelButtonProps`  | `string \| object \| null`          | —              | Cancel button option, same grammar                                                              |
+| `actions`            | `DialogAction[]`                    | `[]`           | Custom action rows; takes precedence over the default buttons                                   |
+| `closeOnClickModal`  | `boolean`                           | `false`        | Close on scrim tap                                                                              |
+| `showClose`          | `boolean`                           | `false`        | Show the top-right close button                                                                 |
+| `beforeConfirm`      | `() => boolean \| Promise<boolean>` | —              | Guard before confirming                                                                         |
+| `selector`           | `string`                            | `''`           | Instance id (parity only; inert in the component form)                                          |
+| `customClass`        | `string`                            | `''`           | Custom class for the root node                                                                  |
+| `customStyle`        | `string`                            | `''`           | Custom inline style for the panel                                                               |
 
 `DialogAction` = `{ name?: string; color?: string; disabled?: boolean }`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | `v-model` sync | `boolean` |
-| `update:inputValue` | Prompt value changed | `string \| number` |
-| `confirm` | Confirmed (after validation + `beforeConfirm`) | `{ action: 'confirm', inputValue }` |
-| `cancel` | Cancelled | — |
-| `close` | Dialog closed (confirm / cancel / close button / scrim) | — |
-| `select` | A custom action row was tapped | `{ item, index }` |
+| Event               | Description                                             | Payload                             |
+| ------------------- | ------------------------------------------------------- | ----------------------------------- |
+| `update:modelValue` | `v-model` sync                                          | `boolean`                           |
+| `update:inputValue` | Prompt value changed                                    | `string \| number`                  |
+| `confirm`           | Confirmed (after validation + `beforeConfirm`)          | `{ action: 'confirm', inputValue }` |
+| `cancel`            | Cancelled                                               | —                                   |
+| `close`             | Dialog closed (confirm / cancel / close button / scrim) | —                                   |
+| `select`            | A custom action row was tapped                          | `{ item, index }`                   |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `header` | Custom header area |
-| `image` | Custom image area (replaces `headerImage`) |
-| `title` | Custom title area. Slot props: `{ icon, title, iconProps }` |
+| Slot      | Description                                                               |
+| --------- | ------------------------------------------------------------------------- |
+| `header`  | Custom header area                                                        |
+| `image`   | Custom image area (replaces `headerImage`)                                |
+| `title`   | Custom title area. Slot props: `{ icon, title, iconProps }`               |
 | `default` | Custom body. Slot props: `{ msg, type, inputValue, showErr, inputError }` |
-| `actions` | Custom action area. Slot props: `{ confirm, cancel, close }` |
+| `actions` | Custom action area. Slot props: `{ confirm, cancel, close }`              |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-text-primary` | Title + body base color |
-| `--sn-mp-color-text-secondary` | Message text |
-| `--sn-mp-color-text-tertiary` | Close icon |
-| `--sn-mp-color-action-primary` | Default status icon color |
-| `--sn-mp-color-feedback-danger` | Validation message |
-| `--sn-mp-color-border-subtle` | Custom action row separator |
-| `--sn-mp-font-size-xl` | Title size |
-| `--sn-mp-font-size-md` | Body / action row size |
-| `--sn-mp-font-size-sm` | Validation message size |
-| `--sn-mp-font-line-height-tight` | Title line height |
-| `--sn-mp-font-line-height-normal` | Body line height |
-| `--sn-mp-font-weight-medium` | Title / emphasised row weight |
-| `--sn-mp-spacing-1` … `--sn-mp-spacing-6` | Internal rhythm |
-| `--sn-mp-radius-lg` | Header image corners |
+| Variable                                  | Purpose                       |
+| ----------------------------------------- | ----------------------------- |
+| `--sn-mp-color-text-primary`              | Title + body base color       |
+| `--sn-mp-color-text-secondary`            | Message text                  |
+| `--sn-mp-color-text-tertiary`             | Close icon                    |
+| `--sn-mp-color-action-primary`            | Default status icon color     |
+| `--sn-mp-color-feedback-danger`           | Validation message            |
+| `--sn-mp-color-border-subtle`             | Custom action row separator   |
+| `--sn-mp-font-size-xl`                    | Title size                    |
+| `--sn-mp-font-size-md`                    | Body / action row size        |
+| `--sn-mp-font-size-sm`                    | Validation message size       |
+| `--sn-mp-font-line-height-tight`          | Title line height             |
+| `--sn-mp-font-line-height-normal`         | Body line height              |
+| `--sn-mp-font-weight-medium`              | Title / emphasised row weight |
+| `--sn-mp-spacing-1` … `--sn-mp-spacing-6` | Internal rhythm               |
+| `--sn-mp-radius-lg`                       | Header image corners          |
 
 ## Accessibility
 
@@ -122,7 +122,6 @@
 ## Dark mode
 
 The panel surface, text and status colors all come from semantic tokens (`--sn-mp-color-background-elevated` / `--sn-mp-color-text-*` / `--sn-mp-color-feedback-*`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A literal passed through `iconColor` (e.g. `#5b8def`) does not flip with the theme — prefer colors written as `var(--sn-mp-*)` in dark mode.
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — cell render fn (tag-style status via h()). */
-import { h } from 'vue'
-import { SnDataTable } from '@snui/vue-web'
+import { h } from 'vue';
+import { SnDataTable } from '@snui/vue-web';
 
 const columns = [
   { title: 'Name', key: 'name' },
@@ -14,7 +14,9 @@ const columns = [
         {
           class: 'sn-demo-tag',
           style: {
-            color: row.online ? 'var(--sn-web-color-feedback-success)' : 'var(--sn-web-color-text-tertiary)',
+            color: row.online
+              ? 'var(--sn-web-color-feedback-success)'
+              : 'var(--sn-web-color-text-tertiary)',
             borderColor: row.online
               ? 'var(--sn-web-color-feedback-success)'
               : 'color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface))',
@@ -23,13 +25,13 @@ const columns = [
         row.online ? 'Online' : 'Offline',
       ),
   },
-]
+];
 
 const data = [
   { key: 0, name: 'John Brown', online: true },
   { key: 1, name: 'Jim Green', online: false },
   { key: 2, name: 'Joe Black', online: true },
-]
+];
 </script>
 
 <template>

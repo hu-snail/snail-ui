@@ -9,43 +9,43 @@
  * entry the component handed it, which is exactly what a host driver does.
  * Every interval is cleared on unmount (AGENTS.md §41).
  */
-import { onBeforeUnmount, ref } from 'vue'
-import { SnButton, SnUpload } from '@snui/vue-web'
-import type { SnUploadFile } from '@snui/vue-web'
+import { onBeforeUnmount, ref } from 'vue';
+import { SnButton, SnUpload } from '@snui/vue-web';
+import type { SnUploadFile } from '@snui/vue-web';
 
-const files = ref<SnUploadFile[]>([])
-const previewed = ref<SnUploadFile | null>(null)
+const files = ref<SnUploadFile[]>([]);
+const previewed = ref<SnUploadFile | null>(null);
 
 /** Pending simulated-upload intervals, cleared on unmount. */
-const timers = new Set<number>()
+const timers = new Set<number>();
 
 function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
 /** Simulated driver: resolves at 100%, rejects for `*.err` files. */
 function simulateUpload(file: SnUploadFile): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    let value = 0
+    let value = 0;
     const id = window.setInterval(() => {
-      value = Math.min(100, value + 6 + Math.round(Math.random() * 14))
-      file.percentage = value
-      if (value < 100) return
-      window.clearInterval(id)
-      timers.delete(id)
-      if (file.name.toLowerCase().endsWith('.err')) reject(new Error('upload failed'))
-      else resolve()
-    }, 140)
-    timers.add(id)
-  })
+      value = Math.min(100, value + 6 + Math.round(Math.random() * 14));
+      file.percentage = value;
+      if (value < 100) return;
+      window.clearInterval(id);
+      timers.delete(id);
+      if (file.name.toLowerCase().endsWith('.err')) reject(new Error('upload failed'));
+      else resolve();
+    }, 140);
+    timers.add(id);
+  });
 }
 
 onBeforeUnmount(() => {
-  timers.forEach((id) => window.clearInterval(id))
-  timers.clear()
-})
+  timers.forEach((id) => window.clearInterval(id));
+  timers.clear();
+});
 </script>
 
 <template>
@@ -64,12 +64,7 @@ onBeforeUnmount(() => {
         Selected {{ files.length }} ·
         {{ files.filter((file) => file.status === 'uploading').length }} uploading
       </span>
-      <SnButton
-        v-if="previewed"
-        text
-        size="small"
-        @click="previewed = null"
-      >
+      <SnButton v-if="previewed" text size="small" @click="previewed = null">
         Close preview
       </SnButton>
     </div>
@@ -80,15 +75,19 @@ onBeforeUnmount(() => {
         class="upload-demo__thumb"
         :src="previewed.url"
         :alt="previewed.name"
-      >
+      />
       <div class="upload-demo__meta">
         <strong>{{ previewed.name }}</strong>
-        <span>{{ formatSize(previewed.size) }} · {{ previewed.status }} · {{ previewed.percentage ?? 0 }}%</span>
+        <span
+          >{{ formatSize(previewed.size) }} · {{ previewed.status }} ·
+          {{ previewed.percentage ?? 0 }}%</span
+        >
       </div>
     </div>
 
     <p class="upload-demo__hint">
-      Click an item name or the eye icon on the right to preview; names ending in <code>.err</code> demonstrate failed uploads.
+      Click an item name or the eye icon on the right to preview; names ending in
+      <code>.err</code> demonstrate failed uploads.
     </p>
   </div>
 </template>

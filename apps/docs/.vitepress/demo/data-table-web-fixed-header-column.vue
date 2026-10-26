@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — scroll-x with sticky left/right fixed columns. */
-import { SnDataTable } from '@snui/vue-web'
+import { SnDataTable } from '@snui/vue-web';
 
 const columns = [
   { title: 'Name', key: 'name', width: 150, fixed: 'left' as const },
@@ -10,7 +10,7 @@ const columns = [
   { title: 'Column 3', key: 'c3', width: 160 },
   { title: 'Column 4', key: 'c4', width: 160 },
   { title: 'Address', key: 'address', width: 200, fixed: 'right' as const },
-]
+];
 
 const data = Array.from({ length: 8 }).map((_, index) => ({
   key: index,
@@ -21,19 +21,13 @@ const data = Array.from({ length: 8 }).map((_, index) => ({
   c3: `数据 ${index}-3`,
   c4: `数据 ${index}-4`,
   address: `London, Park Lane no. ${index}`,
-}))
+}));
 </script>
 
 <template>
   <div class="sn-demo">
-    <SnDataTable
-      :columns="columns"
-      :data="data"
-      :scroll-x="1090"
-      :max-height="240"
-    />
+    <SnDataTable :columns="columns" :data="data" :scroll-x="1090" :max-height="240" />
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

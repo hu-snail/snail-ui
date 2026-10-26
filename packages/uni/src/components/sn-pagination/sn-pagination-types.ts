@@ -9,11 +9,11 @@
 /** Scope handed to `prev` / `size` / `next` / `message`. */
 export interface PaginationSlotScope {
   /** Current page (already clamped into range). */
-  modelValue: number
+  modelValue: number;
   /** Resolved page count (`total` + `pageSize` wins over `totalPage`). */
-  totalPageNum: number
+  totalPageNum: number;
   /** Total record count as passed in. */
-  total: number
+  total: number;
   /** Page size as passed in. */
-  pageSize: number
+  pageSize: number;
 }

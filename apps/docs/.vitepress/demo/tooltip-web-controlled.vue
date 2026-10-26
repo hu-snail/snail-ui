@@ -5,11 +5,11 @@
  * 两种受控写法各一个区块，每个区块都把当前 show 值回显在触发器旁，
  * 这样「受控」这件事本身是可见的，而不是只读代码去猜。
  */
-import { ref } from 'vue'
-import { SnTooltip } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTooltip } from '@snui/vue-web';
 
-const controlledOpen = ref(false)
-const clickOpen = ref(false)
+const controlledOpen = ref(false);
+const clickOpen = ref(false);
 </script>
 
 <template>
@@ -19,9 +19,7 @@ const clickOpen = ref(false)
         <code class="tt-ctl__prop">v-model:show</code>
         <h4 class="tt-ctl__title">受控 + hover</h4>
       </header>
-      <p class="tt-ctl__hint">
-        悬停仍然会请求显示，但最终状态由父组件的 <code>show</code> 决定。
-      </p>
+      <p class="tt-ctl__hint">悬停仍然会请求显示，但最终状态由父组件的 <code>show</code> 决定。</p>
       <div class="tt-ctl__stage">
         <SnTooltip v-model:show="controlledOpen" content="受控显示状态">
           <button class="tt-ctl__btn" type="button">hover me</button>
@@ -37,9 +35,7 @@ const clickOpen = ref(false)
         <code class="tt-ctl__prop">trigger="click"</code>
         <h4 class="tt-ctl__title">点击切换</h4>
       </header>
-      <p class="tt-ctl__hint">
-        点击触发器切换，点击触发器与气泡之外的任意位置自动关闭。
-      </p>
+      <p class="tt-ctl__hint">点击触发器切换，点击触发器与气泡之外的任意位置自动关闭。</p>
       <div class="tt-ctl__stage">
         <SnTooltip
           v-model:show="clickOpen"
@@ -116,7 +112,9 @@ const clickOpen = ref(false)
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-ctl__btn:hover {
   border-color: var(--vp-c-brand-1);

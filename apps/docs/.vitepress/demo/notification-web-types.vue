@@ -7,27 +7,27 @@
  * 放在内层子组件里，并通过作用域插槽把调用入口交回本组件模板。
  * 图标走 lucide + registerSnIcons + SnIcon（禁止 emoji）。
  */
-import { defineComponent } from 'vue'
-import { CircleAlert, CircleCheck, Info, TriangleAlert } from 'lucide-vue-next'
+import { defineComponent } from 'vue';
+import { CircleAlert, CircleCheck, Info, TriangleAlert } from 'lucide-vue-next';
 import {
   registerSnIcons,
   SnButton,
   SnIcon,
   SnNotificationProvider,
   useNotification,
-} from '@snui/vue-web'
+} from '@snui/vue-web';
 
-registerSnIcons({ Info, CircleCheck, TriangleAlert, CircleAlert })
+registerSnIcons({ Info, CircleCheck, TriangleAlert, CircleAlert });
 
-type SemanticType = 'info' | 'success' | 'warning' | 'error'
+type SemanticType = 'info' | 'success' | 'warning' | 'error';
 
 interface TypeScenario {
-  type: SemanticType
-  label: string
-  iconName: string
-  summary: string
-  title: string
-  content: string
+  type: SemanticType;
+  label: string;
+  iconName: string;
+  summary: string;
+  title: string;
+  content: string;
 }
 
 const SCENARIOS: TypeScenario[] = [
@@ -63,24 +63,24 @@ const SCENARIOS: TypeScenario[] = [
     title: '同步失败',
     content: '连接超时，请检查网络后重试。',
   },
-]
+];
 
 const TypesTrigger = defineComponent({
   name: 'NotificationTypesTrigger',
   setup(_props, { slots }) {
-    const notification = useNotification()
+    const notification = useNotification();
 
     const notify = (scenario: TypeScenario): void => {
       notification[scenario.type]({
         title: scenario.title,
         content: scenario.content,
         meta: '刚刚',
-      })
-    }
+      });
+    };
 
-    return () => slots.default?.({ notify })
+    return () => slots.default?.({ notify });
   },
-})
+});
 </script>
 
 <template>

@@ -22,7 +22,7 @@
  * See: https://lucide.dev/guide/packages/lucide-vue-next
  */
 
-import type { FunctionalComponent } from 'vue'
+import type { FunctionalComponent } from 'vue';
 
 /**
  * Icon component contract — every prop is optional because not every
@@ -42,15 +42,15 @@ import type { FunctionalComponent } from 'vue'
  * doesn't declare. Extra `defaultClass` lands via the `<span>` wrapper.
  */
 export interface IconComponentProps {
-  size?: number | string | undefined
-  color?: string | undefined
-  strokeWidth?: number | string | undefined
-  absoluteStrokeWidth?: boolean | undefined
-  defaultClass?: string | undefined
-  [key: string]: unknown
+  size?: number | string | undefined;
+  color?: string | undefined;
+  strokeWidth?: number | string | undefined;
+  absoluteStrokeWidth?: boolean | undefined;
+  defaultClass?: string | undefined;
+  [key: string]: unknown;
 }
 
-export type IconComponent = FunctionalComponent<Record<string, unknown>>
+export type IconComponent = FunctionalComponent<Record<string, unknown>>;
 
 /**
  * Module-level registry. Plain object so `Object.create(null)` keeps the
@@ -66,7 +66,7 @@ export type IconComponent = FunctionalComponent<Record<string, unknown>>
  * implementation to a `provide` / `inject` key on the root app instance
  * (the public API does not need to change).
  */
-const iconRegistry: Record<string, IconComponent> = Object.create(null)
+const iconRegistry: Record<string, IconComponent> = Object.create(null);
 
 /**
  * Register icon components for lookup by string name. Call this once
@@ -77,7 +77,7 @@ const iconRegistry: Record<string, IconComponent> = Object.create(null)
  */
 export function registerSnIcons(map: Record<string, IconComponent>): void {
   for (const key in map) {
-    iconRegistry[key] = map[key]!
+    iconRegistry[key] = map[key]!;
   }
 }
 
@@ -87,7 +87,7 @@ export function registerSnIcons(map: Record<string, IconComponent>): void {
  */
 export function clearSnIcons(): void {
   for (const key in iconRegistry) {
-    delete iconRegistry[key]
+    delete iconRegistry[key];
   }
 }
 
@@ -97,5 +97,5 @@ export function clearSnIcons(): void {
  * can implement their own resolution logic.
  */
 export function resolveIconByName(name: string): IconComponent | undefined {
-  return iconRegistry[name]
+  return iconRegistry[name];
 }

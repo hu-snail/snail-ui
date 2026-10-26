@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnVirtualList — 1000 行固定行高虚拟滚动。 */
-import { SnVirtualList } from '@snui/vue-web'
+import { SnVirtualList } from '@snui/vue-web';
 
 const items = Array.from({ length: 1000 }, (_, i) => ({
   value: i,
   label: `第 ${i + 1} 行`,
-}))
+}));
 </script>
 
 <template>

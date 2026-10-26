@@ -7,7 +7,7 @@
 如需显式 import：
 
 ```ts
-import { SnButton } from '@snui/uni'
+import { SnButton } from '@snui/uni';
 ```
 
 > easycom 是 uni-app 生态的官方按需注册系统。**Web 端没有 easycom**，必须显式 import（`import { SnButton } from '@snui/vue-web'`）。
@@ -66,14 +66,14 @@ import { SnButton } from '@snui/uni'
 
 `open-type` 之外，微信 / 支付宝还要求一组配套属性。组件把它们原样透传到根节点：H5 预览里没有平台能力，属性挂上但不触发行为；小程序运行时读到同一个属性才走平台 API。
 
-| 属性 | 归属 |
-| --- | --- |
-| `session-from` / `send-message-title` / `send-message-path` / `send-message-img` / `show-message-card` | `open-type="contact"` 客服会话卡片 |
-| `app-parameter` | `open-type="launchApp"` 拉起 App 时携带的参数 |
-| `lang` | 客服会话语言：`zh_CN` / `zh_TW` / `en` |
-| `button-id` | 客服消息定位用的唯一标识 |
-| `scope` | 支付宝授权范围（`phoneNumber` / `userInfo`） |
-| `hover-stop-propagation` | 通用：按下态不冒泡到祖先节点 |
+| 属性                                                                                                   | 归属                                          |
+| ------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
+| `session-from` / `send-message-title` / `send-message-path` / `send-message-img` / `show-message-card` | `open-type="contact"` 客服会话卡片            |
+| `app-parameter`                                                                                        | `open-type="launchApp"` 拉起 App 时携带的参数 |
+| `lang`                                                                                                 | 客服会话语言：`zh_CN` / `zh_TW` / `en`        |
+| `button-id`                                                                                            | 客服消息定位用的唯一标识                      |
+| `scope`                                                                                                | 支付宝授权范围（`phoneNumber` / `userInfo`）  |
+| `hover-stop-propagation`                                                                               | 通用：按下态不冒泡到祖先节点                  |
 
 <Demo name="button-mp-mp-open-type" description="open-type 扩展参数透传：contact 会话配置、lang 三档、app-parameter、scope、hover-stop-propagation。" />
 
@@ -91,72 +91,72 @@ import { SnButton } from '@snui/uni'
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `type` | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `'default'` | 按钮语义类型。 |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 按钮尺寸。 |
-| `block` | `boolean` | `false` | 块级。 |
-| `round` | `boolean` | `false` | 胶囊形。 |
-| `disabled` | `boolean` | `false` | 禁用。 |
-| `loading` | `boolean` | `false` | 加载中（spinner + 阻止 click）。 |
-| `hairline` | `boolean` | `true` | 显示细边框（default 类型）。 |
-| `feedback` | `boolean` | `true` | 点击反馈（active 透明度）。 |
-| `plain` | `boolean` | `false` | 低强调度样式（v1: 等价 `variant='plain'`）。 |
-| `variant` | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'` | `'base'` | 视觉变体：填充、描边、虚线、浅填充、极淡灰底、纯文字。 |
-| `cell` | `'hover' \| 'fill' \| 'menu'` | — | Cell 列表化样式。 |
-| `loadingColor` | `string` | `''` | 自定义 spinner 颜色。 |
-| `loadingSize` | `number \| string` | `32` | spinner rpx / px 尺寸。 |
-| `hoverClass` | `string` | `'sn-button--feedback'` | 触摸反馈 class。 |
-| `hoverStartTime` | `number` | `0` | 按住多久触发 hoverClass。 |
-| `hoverStayTime` | `number` | `70` | 松手后多久撤销 hoverClass。 |
-| `openType` | `'share' \| 'feedback' \| 'launchApp' \| 'contact' \| 'getUserInfo' \| 'openSetting' \| 'lifestyle' \| 'livePlayer' \| 'favorite' \| 'chooseAvatar' \| 'weRunGroup'` | — | 微信小程序 open-type 透传。 |
-| `formType` | `'submit' \| 'reset'` | — | 表单提交类型。 |
-| `bgColor` | `string` | `''` | 内联 `background-color` 覆盖。 |
-| `color` | `string` | `''` | 内联 `color` + `border-color` 覆盖。 |
-| `customClass` | `string` | `''` | 根元素额外 class。 |
-| `customStyle` | `string \| Record<string,string>` | `''` | 根元素内联样式。 |
-| `iconData` | `IconData` | — | frozen `{ viewBox, paths }`。 |
-| `iconName` | `string` | — | 通过 `registerSnIcons` 解析。 |
-| `iconSize` | `number \| string` | `32` | rpx / px 尺寸。 |
-| `icon` | `string` | `''` | 字体图标名（iconfont 路径），拼成 `{classPrefix}-{icon}`。 |
-| `classPrefix` | `string` | `'sn-icon'` | 字体图标类名前缀。 |
-| `cssIcon` | `boolean \| string` | `false` | 字符串时该值直接当类前缀；布尔 + `icon` 时两种类名同时挂。 |
-| `loadingProps` | `{ color?, size?, text?, … }` | — | wot-ui `loading-props` 对象写法；扁平 `loadingColor` / `loadingSize` 优先。 |
-| `hoverStopPropagation` | `boolean` | `false` | 按下态不冒泡到祖先节点。 |
-| `lang` | `'zh_CN' \| 'zh_TW' \| 'en' \| ''` | `''` | `open-type=contact` 会话语言。 |
-| `sessionFrom` | `string` | `''` | `open-type=contact` 会话来源。 |
-| `sendMessageTitle` | `string` | `''` | `open-type=contact` 消息卡片标题。 |
-| `sendMessagePath` | `string` | `''` | `open-type=contact` 消息卡片路径。 |
-| `sendMessageImg` | `string` | `''` | `open-type=contact` 消息卡片图片。 |
-| `appParameter` | `string` | `''` | `open-type=launchApp` 携带参数。 |
-| `showMessageCard` | `boolean` | `false` | `open-type=contact` 是否展示会话卡片。 |
-| `buttonId` | `string` | `''` | 客服消息定位用的唯一标识。 |
-| `scope` | `'phoneNumber' \| 'userInfo' \| ''` | `''` | 支付宝授权范围。 |
-| `ariaLabel` | `string` | — | 无障碍标签。 |
+| 名称                   | 类型                                                                                                                                                                 | 默认值                  | 说明                                                                        |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | --------------------------------------------------------------------------- |
+| `type`                 | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger' \| 'info'`                                                                                             | `'default'`             | 按钮语义类型。                                                              |
+| `size`                 | `'small' \| 'medium' \| 'large'`                                                                                                                                     | `'medium'`              | 按钮尺寸。                                                                  |
+| `block`                | `boolean`                                                                                                                                                            | `false`                 | 块级。                                                                      |
+| `round`                | `boolean`                                                                                                                                                            | `false`                 | 胶囊形。                                                                    |
+| `disabled`             | `boolean`                                                                                                                                                            | `false`                 | 禁用。                                                                      |
+| `loading`              | `boolean`                                                                                                                                                            | `false`                 | 加载中（spinner + 阻止 click）。                                            |
+| `hairline`             | `boolean`                                                                                                                                                            | `true`                  | 显示细边框（default 类型）。                                                |
+| `feedback`             | `boolean`                                                                                                                                                            | `true`                  | 点击反馈（active 透明度）。                                                 |
+| `plain`                | `boolean`                                                                                                                                                            | `false`                 | 低强调度样式（v1: 等价 `variant='plain'`）。                                |
+| `variant`              | `'base' \| 'plain' \| 'dashed' \| 'soft' \| 'subtle' \| 'text'`                                                                                                      | `'base'`                | 视觉变体：填充、描边、虚线、浅填充、极淡灰底、纯文字。                      |
+| `cell`                 | `'hover' \| 'fill' \| 'menu'`                                                                                                                                        | —                       | Cell 列表化样式。                                                           |
+| `loadingColor`         | `string`                                                                                                                                                             | `''`                    | 自定义 spinner 颜色。                                                       |
+| `loadingSize`          | `number \| string`                                                                                                                                                   | `32`                    | spinner rpx / px 尺寸。                                                     |
+| `hoverClass`           | `string`                                                                                                                                                             | `'sn-button--feedback'` | 触摸反馈 class。                                                            |
+| `hoverStartTime`       | `number`                                                                                                                                                             | `0`                     | 按住多久触发 hoverClass。                                                   |
+| `hoverStayTime`        | `number`                                                                                                                                                             | `70`                    | 松手后多久撤销 hoverClass。                                                 |
+| `openType`             | `'share' \| 'feedback' \| 'launchApp' \| 'contact' \| 'getUserInfo' \| 'openSetting' \| 'lifestyle' \| 'livePlayer' \| 'favorite' \| 'chooseAvatar' \| 'weRunGroup'` | —                       | 微信小程序 open-type 透传。                                                 |
+| `formType`             | `'submit' \| 'reset'`                                                                                                                                                | —                       | 表单提交类型。                                                              |
+| `bgColor`              | `string`                                                                                                                                                             | `''`                    | 内联 `background-color` 覆盖。                                              |
+| `color`                | `string`                                                                                                                                                             | `''`                    | 内联 `color` + `border-color` 覆盖。                                        |
+| `customClass`          | `string`                                                                                                                                                             | `''`                    | 根元素额外 class。                                                          |
+| `customStyle`          | `string \| Record<string,string>`                                                                                                                                    | `''`                    | 根元素内联样式。                                                            |
+| `iconData`             | `IconData`                                                                                                                                                           | —                       | frozen `{ viewBox, paths }`。                                               |
+| `iconName`             | `string`                                                                                                                                                             | —                       | 通过 `registerSnIcons` 解析。                                               |
+| `iconSize`             | `number \| string`                                                                                                                                                   | `32`                    | rpx / px 尺寸。                                                             |
+| `icon`                 | `string`                                                                                                                                                             | `''`                    | 字体图标名（iconfont 路径），拼成 `{classPrefix}-{icon}`。                  |
+| `classPrefix`          | `string`                                                                                                                                                             | `'sn-icon'`             | 字体图标类名前缀。                                                          |
+| `cssIcon`              | `boolean \| string`                                                                                                                                                  | `false`                 | 字符串时该值直接当类前缀；布尔 + `icon` 时两种类名同时挂。                  |
+| `loadingProps`         | `{ color?, size?, text?, … }`                                                                                                                                        | —                       | wot-ui `loading-props` 对象写法；扁平 `loadingColor` / `loadingSize` 优先。 |
+| `hoverStopPropagation` | `boolean`                                                                                                                                                            | `false`                 | 按下态不冒泡到祖先节点。                                                    |
+| `lang`                 | `'zh_CN' \| 'zh_TW' \| 'en' \| ''`                                                                                                                                   | `''`                    | `open-type=contact` 会话语言。                                              |
+| `sessionFrom`          | `string`                                                                                                                                                             | `''`                    | `open-type=contact` 会话来源。                                              |
+| `sendMessageTitle`     | `string`                                                                                                                                                             | `''`                    | `open-type=contact` 消息卡片标题。                                          |
+| `sendMessagePath`      | `string`                                                                                                                                                             | `''`                    | `open-type=contact` 消息卡片路径。                                          |
+| `sendMessageImg`       | `string`                                                                                                                                                             | `''`                    | `open-type=contact` 消息卡片图片。                                          |
+| `appParameter`         | `string`                                                                                                                                                             | `''`                    | `open-type=launchApp` 携带参数。                                            |
+| `showMessageCard`      | `boolean`                                                                                                                                                            | `false`                 | `open-type=contact` 是否展示会话卡片。                                      |
+| `buttonId`             | `string`                                                                                                                                                             | `''`                    | 客服消息定位用的唯一标识。                                                  |
+| `scope`                | `'phoneNumber' \| 'userInfo' \| ''`                                                                                                                                  | `''`                    | 支付宝授权范围。                                                            |
+| `ariaLabel`            | `string`                                                                                                                                                             | —                       | 无障碍标签。                                                                |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数             | 说明                                  |
+| ------- | ---------------- | ------------------------------------- |
 | `click` | `(event: Event)` | 点击按钮触发（移动端用 `tap` 事件）。 |
 
 ### Slots
 
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 按钮内容。 |
-| `icon` | 自定义图标。 |
+| 名称      | 说明             |
+| --------- | ---------------- |
+| `default` | 按钮内容。       |
+| `icon`    | 自定义图标。     |
 | `loading` | 自定义加载图标。 |
 
 ## 跨平台行为
 
-| 端 | 行为 |
-| --- | --- |
-| H5 | 渲染为 `<button>`，触摸事件触发 click |
-| 微信小程序 | 编译为原生 view，自动注册 tap；支持 `open-type` |
-| 支付宝小程序 | 同上 |
-| App（uni-app x） | 原生渲染，触摸反馈 |
-| 抖音小程序 | 同微信小程序 |
+| 端               | 行为                                            |
+| ---------------- | ----------------------------------------------- |
+| H5               | 渲染为 `<button>`，触摸事件触发 click           |
+| 微信小程序       | 编译为原生 view，自动注册 tap；支持 `open-type` |
+| 支付宝小程序     | 同上                                            |
+| App（uni-app x） | 原生渲染，触摸反馈                              |
+| 抖音小程序       | 同微信小程序                                    |
 
 > 跨平台一致性由 uni-app 保证，组件源码不变。
 

@@ -5,14 +5,14 @@
  * 卡片由 `v-for` 数据驱动（组件会递归展开 slot 里的 Fragment），高度
  * 各不相同；CSS 多列布局让每一列各自打包，矮列不会在旁边留出空洞。
  */
-import { SnWaterfall } from '@snui/vue-web'
+import { SnWaterfall } from '@snui/vue-web';
 
 interface Tile {
-  id: number
-  title: string
-  height: number
-  from: string
-  to: string
+  id: number;
+  title: string;
+  height: number;
+  from: string;
+  to: string;
 }
 
 const tiles: Tile[] = [
@@ -24,7 +24,7 @@ const tiles: Tile[] = [
   { id: 6, title: 'Settings', height: 104, from: '#52c41a', to: '#95de64' },
   { id: 7, title: 'Order list', height: 168, from: '#f5222d', to: '#ff7875' },
   { id: 8, title: 'Detail page', height: 132, from: '#2f54eb', to: '#85a5ff' },
-]
+];
 </script>
 
 <template>

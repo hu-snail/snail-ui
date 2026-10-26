@@ -8,8 +8,8 @@
 
 ```vue
 <script setup lang="ts">
-import { ChevronRight } from 'lucide-vue-next'
-import { SnIcon } from '@snui/vue-web'
+import { ChevronRight } from 'lucide-vue-next';
+import { SnIcon } from '@snui/vue-web';
 </script>
 
 <template>
@@ -25,10 +25,10 @@ import { SnIcon } from '@snui/vue-web'
 
 ```vue
 <script setup lang="ts">
-import { ChevronRight, Settings, Search } from 'lucide-vue-next'
-import { registerSnIcons } from '@snui/vue-web'
+import { ChevronRight, Settings, Search } from 'lucide-vue-next';
+import { registerSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ ChevronRight, Settings, Search })
+registerSnIcons({ ChevronRight, Settings, Search });
 </script>
 
 <template>
@@ -54,25 +54,25 @@ registerSnIcons({ ChevronRight, Settings, Search })
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| icon | `Component` | — | 直接传入图标组件（推荐） |
-| name | `string` | — | 从注册表查图标（需要先 `registerSnIcons`） |
-| size | `number \| string` | `16` | 图标尺寸（px 或 CSS 长度） |
-| color | `string` | `'currentColor'` | 描边颜色 |
-| strokeWidth | `number \| string` | `2` | 描边宽度 |
-| strokeWidthAbsolute | `boolean` | `false` | true: 描边按绝对像素（不随 size 缩放） |
-| defaultClass | `string` | — | 传给内层 SVG 的 class |
+| 名称                | 类型               | 默认值           | 说明                                       |
+| ------------------- | ------------------ | ---------------- | ------------------------------------------ |
+| icon                | `Component`        | —                | 直接传入图标组件（推荐）                   |
+| name                | `string`           | —                | 从注册表查图标（需要先 `registerSnIcons`） |
+| size                | `number \| string` | `16`             | 图标尺寸（px 或 CSS 长度）                 |
+| color               | `string`           | `'currentColor'` | 描边颜色                                   |
+| strokeWidth         | `number \| string` | `2`              | 描边宽度                                   |
+| strokeWidthAbsolute | `boolean`          | `false`          | true: 描边按绝对像素（不随 size 缩放）     |
+| defaultClass        | `string`           | —                | 传给内层 SVG 的 class                      |
 
 `icon` 与 `name` 同时传入时 `icon` 优先；都不传则渲染占位符（开发态提示「icon not registered」）。
 
 ### 注册表 API
 
 ```ts
-import { registerSnIcons, clearSnIcons } from '@snui/vue-web'
+import { registerSnIcons, clearSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ ChevronRight, Settings, Search })
-clearSnIcons()  // 清空（测试用）
+registerSnIcons({ ChevronRight, Settings, Search });
+clearSnIcons(); // 清空（测试用）
 ```
 
 ## 无障碍

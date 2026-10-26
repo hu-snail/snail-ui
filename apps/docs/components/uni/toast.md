@@ -31,55 +31,55 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | boolean | false | 是否显示（`v-model`） |
-| msg | string | '' | 提示文案 |
-| duration | number | 2000 | 持续时间（ms）；`0` 表示不自动关闭 |
-| direction | 'horizontal' \| 'vertical' | 'horizontal' | 排版方向 |
-| iconName | '' \| 'success' \| 'error' \| 'warning' \| 'loading' \| 'info' | '' | 图标类型 |
-| iconSize | number \| string | — | 图标大小（数字按 rpx） |
-| loadingType | 'circular' \| 'spinner' \| 'dots' \| 'wave' | 'circular' | `iconName="loading"` 时的加载形态 |
-| loadingColor | string | '' | 加载图标颜色 |
-| loadingSize | number \| string | — | 加载图标大小（数字按 rpx） |
-| iconColor | string | '' | 状态图标颜色 |
-| position | 'top' \| 'middle-top' \| 'middle' \| 'bottom' | 'middle' | 提示位置 |
-| zIndex | number | 100 | 层级 |
-| cover | boolean | false | 是否显示阻断式透明遮罩 |
-| iconClass | string | '' | 图标节点自定义类名（对齐用） |
-| classPrefix | string | 'wd-icon' | 图标类名前缀（对齐用，无效果） |
-| cssIcon | boolean \| string | false | CSS 图标模式（对齐用，无效果） |
-| selector | string | '' | 唯一标识（对齐用） |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 提示框自定义样式 |
+| 属性         | 类型                                                           | 默认值       | 说明                               |
+| ------------ | -------------------------------------------------------------- | ------------ | ---------------------------------- |
+| modelValue   | boolean                                                        | false        | 是否显示（`v-model`）              |
+| msg          | string                                                         | ''           | 提示文案                           |
+| duration     | number                                                         | 2000         | 持续时间（ms）；`0` 表示不自动关闭 |
+| direction    | 'horizontal' \| 'vertical'                                     | 'horizontal' | 排版方向                           |
+| iconName     | '' \| 'success' \| 'error' \| 'warning' \| 'loading' \| 'info' | ''           | 图标类型                           |
+| iconSize     | number \| string                                               | —            | 图标大小（数字按 rpx）             |
+| loadingType  | 'circular' \| 'spinner' \| 'dots' \| 'wave'                    | 'circular'   | `iconName="loading"` 时的加载形态  |
+| loadingColor | string                                                         | ''           | 加载图标颜色                       |
+| loadingSize  | number \| string                                               | —            | 加载图标大小（数字按 rpx）         |
+| iconColor    | string                                                         | ''           | 状态图标颜色                       |
+| position     | 'top' \| 'middle-top' \| 'middle' \| 'bottom'                  | 'middle'     | 提示位置                           |
+| zIndex       | number                                                         | 100          | 层级                               |
+| cover        | boolean                                                        | false        | 是否显示阻断式透明遮罩             |
+| iconClass    | string                                                         | ''           | 图标节点自定义类名（对齐用）       |
+| classPrefix  | string                                                         | 'wd-icon'    | 图标类名前缀（对齐用，无效果）     |
+| cssIcon      | boolean \| string                                              | false        | CSS 图标模式（对齐用，无效果）     |
+| selector     | string                                                         | ''           | 唯一标识（对齐用）                 |
+| customClass  | string                                                         | ''           | 根节点自定义类名                   |
+| customStyle  | string                                                         | ''           | 提示框自定义样式                   |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名            | 说明                                 | 参数    |
+| ----------------- | ------------------------------------ | ------- |
 | update:modelValue | `v-model` 同步（自动关闭时也会触发） | boolean |
-| opened | 完全展示后 | — |
-| closed | 完全关闭后（淡出结束） | — |
-| click | 点击提示框 | — |
+| opened            | 完全展示后                           | —       |
+| closed            | 完全关闭后（淡出结束）               | —       |
+| click             | 点击提示框                           | —       |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                         |
+| ------- | ---------------------------- |
 | default | 自定义文案内容（替代 `msg`） |
-| icon | 自定义图标区域 |
+| icon    | 自定义图标区域               |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-text-on-primary | 提示文案 |
-| --sn-mp-color-background-sunken | 提示框背景 |
-| --sn-mp-color-background-overlay | `cover` 遮罩 |
-| --sn-mp-font-size-md | 文案字号 |
-| --sn-mp-font-line-height-normal | 文案行高 |
-| --sn-mp-spacing-3` / `--sn-mp-spacing-5` / `--sn-mp-spacing-6 | 内边距与图标间距 |
-| --sn-mp-radius-lg | 提示框圆角 |
+| 变量                                                      | 用途             |
+| --------------------------------------------------------- | ---------------- |
+| --sn-mp-color-text-on-primary                             | 提示文案         |
+| --sn-mp-color-background-sunken                           | 提示框背景       |
+| --sn-mp-color-background-overlay                          | `cover` 遮罩     |
+| --sn-mp-font-size-md                                      | 文案字号         |
+| --sn-mp-font-line-height-normal                           | 文案行高         |
+| --sn-mp-spacing-3`/`--sn-mp-spacing-5`/`--sn-mp-spacing-6 | 内边距与图标间距 |
+| --sn-mp-radius-lg                                         | 提示框圆角       |
 
 ## 无障碍
 
@@ -90,7 +90,6 @@
 ## 暗色模式
 
 提示框背景走 `--sn-mp-color-background-sunken`、文案走 `--sn-mp-color-text-on-primary`，两者都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

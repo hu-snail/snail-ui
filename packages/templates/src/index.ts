@@ -8,4 +8,4 @@
  * importing either end.
  */
 
-export * from './shared/index'
+export * from './shared/index';

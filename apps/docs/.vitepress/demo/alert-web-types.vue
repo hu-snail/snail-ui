@@ -2,7 +2,7 @@
 /**
  * alert-web-types — shows all five semantic types side by side.
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnTimePicker — format HH:mm. */
-import { ref } from 'vue'
-import { SnTimePicker } from '@snui/vue-web'
-const value = ref<number | null>(new Date().setHours(14, 0, 0, 0))
+import { ref } from 'vue';
+import { SnTimePicker } from '@snui/vue-web';
+const value = ref<number | null>(new Date().setHours(14, 0, 0, 0));
 </script>
 
 <template>
@@ -13,5 +13,9 @@ const value = ref<number | null>(new Date().setHours(14, 0, 0, 0))
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
 </style>

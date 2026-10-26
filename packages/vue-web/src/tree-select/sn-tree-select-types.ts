@@ -11,19 +11,19 @@
  */
 
 /** Value type selectable inside SnTreeSelect — naive tree keys are string | number. */
-export type SnTreeSelectValue = string | number
+export type SnTreeSelectValue = string | number;
 
 /** Visual size preset (AUI convention adds `mini` below naive's `tiny`). */
-export type SnTreeSelectSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large'
+export type SnTreeSelectSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
 
 /** Validation-driven visual status. */
-export type SnTreeSelectStatus = 'default' | 'error' | 'warning'
+export type SnTreeSelectStatus = 'default' | 'error' | 'warning';
 
 /**
  * Raw entry accepted by the `options` prop: an object whose fields are read
  * through `labelField` / `keyField` (fallback `value`) / `childrenField`.
  */
-export type SnTreeSelectOptionInput = Record<string, unknown>
+export type SnTreeSelectOptionInput = Record<string, unknown>;
 
 /**
  * A normalized tree node (deterministic, pure output of normalization).
@@ -32,23 +32,23 @@ export type SnTreeSelectOptionInput = Record<string, unknown>
  */
 export interface SnTreeSelectNode {
   /** Stable per-render key (path-based, guarantees uniqueness). */
-  key: string
+  key: string;
   /** Display label. */
-  label: string
+  label: string;
   /** Committed value. */
-  value: SnTreeSelectValue
+  value: SnTreeSelectValue;
   /** Node-level disabled (selection + toggling blocked, children still render). */
-  disabled: boolean
+  disabled: boolean;
   /** Depth in the tree (0 = root level) — drives indent. */
-  depth: number
+  depth: number;
   /** Normalized children (undefined / empty for leaves). */
-  children: SnTreeSelectNode[] | undefined
+  children: SnTreeSelectNode[] | undefined;
   /** Keys of ancestor nodes (root-first, excluding self). */
-  parentKeys: string[]
+  parentKeys: string[];
 }
 
 /** Default filter — case-insensitive substring match on the label. */
 export function defaultTreeSelectFilter(pattern: string, label: string): boolean {
-  if (pattern === '') return true
-  return label.toLowerCase().includes(pattern.toLowerCase())
+  if (pattern === '') return true;
+  return label.toLowerCase().includes(pattern.toLowerCase());
 }

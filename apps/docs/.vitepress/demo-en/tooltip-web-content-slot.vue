@@ -5,7 +5,7 @@
  * 每个用例一个区块，说明它和默认 `content` prop 的差别：插槽里
  * 可以放多行、`<code>`、行内强调等任意 Vue 内容。
  */
-import { SnTooltip } from '@snui/vue-web'
+import { SnTooltip } from '@snui/vue-web';
 </script>
 
 <template>
@@ -13,7 +13,8 @@ import { SnTooltip } from '@snui/vue-web'
     <section class="tt-slot__section">
       <h4 class="tt-slot__title">Multiline + code</h4>
       <p class="tt-slot__hint">
-        Default <code>content</code> prop only accepts plain text; use a slot for multi-line or inline markup.
+        Default <code>content</code> prop only accepts plain text; use a slot for multi-line or
+        inline markup.
       </p>
       <div class="tt-slot__stage">
         <SnTooltip placement="top">
@@ -44,7 +45,8 @@ import { SnTooltip } from '@snui/vue-web'
     <section class="tt-slot__section">
       <h4 class="tt-slot__title">Paired with :delay="[200, 0]"</h4>
       <p class="tt-slot__hint">
-        200ms open delay and no close delay — good for dense layouts the pointer tends to sweep across.
+        200ms open delay and no close delay — good for dense layouts the pointer tends to sweep
+        across.
       </p>
       <div class="tt-slot__stage">
         <SnTooltip placement="bottom-start" :delay="[200, 0]">
@@ -103,7 +105,9 @@ import { SnTooltip } from '@snui/vue-web'
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-slot__btn:hover {
   border-color: var(--vp-c-brand-1);

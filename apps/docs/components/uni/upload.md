@@ -46,45 +46,45 @@ disabled 锁掉选择与删除；accept 切换选择器（image / video / file�
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `fileList` | `UploadFileItem[]` | `[]` | 文件列表（`v-model:file-list`） |
-| `action` / `header` / `formData` / `name` | `string` / `Record` / `Record` / `string` | `''` / `{}` / `{}` / `'file'` | `uni.uploadFile` 参数 |
-| `multiple` | `boolean` | `false` | 是否支持多选 |
-| `disabled` | `boolean` | `false` | 禁用选择与行操作 |
-| `limit` | `number` | `0` | 最大文件数（0 不限制） |
-| `showLimitNum` | `boolean` | `true` | 显示 `current / limit` 计数 |
-| `maxSize` | `number` | `Number.MAX_VALUE` | 单文件字节上限 |
-| `sourceType` / `sizeType` | `UploadSourceType[]` / `UploadSizeType[]` | `['album','camera']` / `['original','compressed']` | 选择器选项 |
-| `beforeUpload` / `beforeChoose` / `beforeRemove` / `beforePreview` | function | `undefined` | 前置钩子 |
-| `buildFormData` | `(file) => Record` | `undefined` | 自定义 multipart 构建 |
-| `accept` | `'image' \| 'video' \| 'media' \| 'file' \| 'all'` | `'image'` | 选择器 API 选择 |
-| `imageMode` | `'scaleToFill' \| 'aspectFit' \| 'aspectFill' \| 'widthFix'` | `'aspectFit'` | 预览填充模式 |
-| `customEvokeClass` / `customPreviewClass` | `string` | `''` | 瓦片自定义类名 |
-| `autoUpload` | `boolean` | `true` | 选择后自动上传 |
-| `uploadMethod` | `(file) => Promise<response>` | `undefined` | 自定义传输实现 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                                                               | 类型                                                         | 默认值                                             | 说明                            |
+| ------------------------------------------------------------------ | ------------------------------------------------------------ | -------------------------------------------------- | ------------------------------- |
+| `fileList`                                                         | `UploadFileItem[]`                                           | `[]`                                               | 文件列表（`v-model:file-list`） |
+| `action` / `header` / `formData` / `name`                          | `string` / `Record` / `Record` / `string`                    | `''` / `{}` / `{}` / `'file'`                      | `uni.uploadFile` 参数           |
+| `multiple`                                                         | `boolean`                                                    | `false`                                            | 是否支持多选                    |
+| `disabled`                                                         | `boolean`                                                    | `false`                                            | 禁用选择与行操作                |
+| `limit`                                                            | `number`                                                     | `0`                                                | 最大文件数（0 不限制）          |
+| `showLimitNum`                                                     | `boolean`                                                    | `true`                                             | 显示 `current / limit` 计数     |
+| `maxSize`                                                          | `number`                                                     | `Number.MAX_VALUE`                                 | 单文件字节上限                  |
+| `sourceType` / `sizeType`                                          | `UploadSourceType[]` / `UploadSizeType[]`                    | `['album','camera']` / `['original','compressed']` | 选择器选项                      |
+| `beforeUpload` / `beforeChoose` / `beforeRemove` / `beforePreview` | function                                                     | `undefined`                                        | 前置钩子                        |
+| `buildFormData`                                                    | `(file) => Record`                                           | `undefined`                                        | 自定义 multipart 构建           |
+| `accept`                                                           | `'image' \| 'video' \| 'media' \| 'file' \| 'all'`           | `'image'`                                          | 选择器 API 选择                 |
+| `imageMode`                                                        | `'scaleToFill' \| 'aspectFit' \| 'aspectFill' \| 'widthFix'` | `'aspectFit'`                                      | 预览填充模式                    |
+| `customEvokeClass` / `customPreviewClass`                          | `string`                                                     | `''`                                               | 瓦片自定义类名                  |
+| `autoUpload`                                                       | `boolean`                                                    | `true`                                             | 选择后自动上传                  |
+| `uploadMethod`                                                     | `(file) => Promise<response>`                                | `undefined`                                        | 自定义传输实现                  |
+| `customClass` / `customStyle`                                      | `string`                                                     | `''`                                               | 根节点自定义类名 / 样式         |
 
 > **未实现**：`reupload`、`extension`、`compressed` / `maxDuration`（视频后处理）、`loadingType` / `loadingColor` / `loadingSize`、`statusKey`、`successStatus`、`onPreviewFail`，以及 `preview-cover` 插槽。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:fileList` | 列表变化时 | `(list: UploadFileItem[])` |
-| `change` | 列表变化时（同 tick） | `{ fileList }` |
-| `remove` | 移除文件时 | `{ file, fileList }` |
-| `success` / `fail` | 传输结束时 | `{ file, response \| error }` |
-| `progress` | 预留给字节级进度 | `{ file, percent }` |
-| `oversize` | 文件超过 maxSize 时 | `{ file, maxSize }` |
-| `chooseerror` | 选择器失败（或运行时缺失）时 | `(error)` |
+| 事件名             | 说明                         | 参数                          |
+| ------------------ | ---------------------------- | ----------------------------- |
+| `update:fileList`  | 列表变化时                   | `(list: UploadFileItem[])`    |
+| `change`           | 列表变化时（同 tick）        | `{ fileList }`                |
+| `remove`           | 移除文件时                   | `{ file, fileList }`          |
+| `success` / `fail` | 传输结束时                   | `{ file, response \| error }` |
+| `progress`         | 预留给字节级进度             | `{ file, percent }`           |
+| `oversize`         | 文件超过 maxSize 时          | `{ file, maxSize }`           |
+| `chooseerror`      | 选择器失败（或运行时缺失）时 | `(error)`                     |
 
 ## Exposed API
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
+| 成员     | 签名                  | 说明                         |
+| -------- | --------------------- | ---------------------------- |
 | `submit` | `() => Promise<void>` | 上传所有 pending / fail 文件 |
-| `abort` | `(task?) => void` | 中止单个或全部任务 |
+| `abort`  | `(task?) => void`     | 中止单个或全部任务           |
 
 ## Slots
 
@@ -92,16 +92,16 @@ disabled 锁掉选择与删除；accept 切换选择器（image / video / file�
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-soft`` | 文件瓦片底色 |
-| ``--sn-mp-color-background-sunken`` | 空缩略图 |
-| ``--sn-mp-color-background-overlay`` | 进度遮罩 / 删除底板 |
-| ``--sn-mp-color-border-default`` | 选择瓦片虚线 |
-| ``--sn-mp-color-feedback-danger`` | 失败瓦片描边 |
-| ``--sn-mp-color-text-tertiary`` | 选择图标与计数 |
-| ``--sn-mp-color-text-on-primary`` | 进度 / 删除图标 |
-| ``--sn-mp-radius-lg` / `-md`` | 瓦片 / 删除按钮圆角 |
+| 变量                               | 用途                |
+| ---------------------------------- | ------------------- |
+| `--sn-mp-color-background-soft`    | 文件瓦片底色        |
+| `--sn-mp-color-background-sunken`  | 空缩略图            |
+| `--sn-mp-color-background-overlay` | 进度遮罩 / 删除底板 |
+| `--sn-mp-color-border-default`     | 选择瓦片虚线        |
+| `--sn-mp-color-feedback-danger`    | 失败瓦片描边        |
+| `--sn-mp-color-text-tertiary`      | 选择图标与计数      |
+| `--sn-mp-color-text-on-primary`    | 进度 / 删除图标     |
+| ``--sn-mp-radius-lg` / `-md``      | 瓦片 / 删除按钮圆角 |
 
 ## 无障碍
 
@@ -112,4 +112,3 @@ disabled 锁掉选择与删除；accept 切换选择器（image / video / file�
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

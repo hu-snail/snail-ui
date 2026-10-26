@@ -20,30 +20,30 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnCalendar from '@snui/vue-web/src/calendar/SnCalendar.vue'
+import SnCalendar from '@snui/vue-web/src/calendar/SnCalendar.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `value` | `number \| null` | `undefined` | no | Selected date (millisecond timestamp), v-model:value. |
-| `default-value` | `number \| null` | `null` | no | Uncontrolled initial selection; also anchors the first panel month. |
-| `is-date-disabled` | `(ts: number) => boolean \| undefined` | `undefined` | no | Return true to disable a date (receives the cell's local-midnight timestamp). |
+| Name               | Type                                   | Default     | Required | Description                                                                   |
+| ------------------ | -------------------------------------- | ----------- | -------- | ----------------------------------------------------------------------------- |
+| `value`            | `number \| null`                       | `undefined` | no       | Selected date (millisecond timestamp), v-model:value.                         |
+| `default-value`    | `number \| null`                       | `null`      | no       | Uncontrolled initial selection; also anchors the first panel month.           |
+| `is-date-disabled` | `(ts: number) => boolean \| undefined` | `undefined` | no       | Return true to disable a date (receives the cell's local-midnight timestamp). |
 
 ## Events
 
-| Name | Parameters | Description |
-|---|---|---|
-| `update:value` | `(value: number, time: { year, month, date })` | Selection changed; `month` is 1-based. Supports v-model:value. |
-| `panel-change` | `(info: { year, month })` | Panel year/month switched (month is 1-based); fired by the prev / next / today buttons and by clicking an out-of-month cell. |
+| Name           | Parameters                                     | Description                                                                                                                  |
+| -------------- | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `update:value` | `(value: number, time: { year, month, date })` | Selection changed; `month` is 1-based. Supports v-model:value.                                                               |
+| `panel-change` | `(info: { year, month })`                      | Panel year/month switched (month is 1-based); fired by the prev / next / today buttons and by clicking an out-of-month cell. |
 
 ## Slots
 
-| Name | Parameters | Description |
-|---|---|---|
+| Name      | Parameters              | Description                                                         |
+| --------- | ----------------------- | ------------------------------------------------------------------- |
 | `default` | `{ year, month, date }` | Custom content under the day number, per cell (`month` is 1-based). |
-| `header` | `{ year, month }` | Custom header title. |
+| `header`  | `{ year, month }`       | Custom header title.                                                |
 
 ## Structure
 
@@ -77,13 +77,13 @@ import SnCalendar from '@snui/vue-web/src/calendar/SnCalendar.vue'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary / secondary / disabled / on-primary | `--sn-web-color-text-*` | Title, body, grayed cells, today circle |
-| Action primary | `--sn-web-color-action-primary` | Today circle, selection bar |
-| Background surface | `--sn-web-color-background-surface` | Button + cell base surface |
-| Text primary + surface via color-mix | — | Grid lines / button outlines 6%, cell hover 4.7%, button hover 2% |
-| Focus ring | `--sn-web-focus-ring` | Button `:focus-visible` outline |
+| Token                                            | CSS Variable                        | Purpose                                                           |
+| ------------------------------------------------ | ----------------------------------- | ----------------------------------------------------------------- |
+| Text primary / secondary / disabled / on-primary | `--sn-web-color-text-*`             | Title, body, grayed cells, today circle                           |
+| Action primary                                   | `--sn-web-color-action-primary`     | Today circle, selection bar                                       |
+| Background surface                               | `--sn-web-color-background-surface` | Button + cell base surface                                        |
+| Text primary + surface via color-mix             | —                                   | Grid lines / button outlines 6%, cell hover 4.7%, button hover 2% |
+| Focus ring                                       | `--sn-web-focus-ring`               | Button `:focus-visible` outline                                   |
 
 ## Versioning
 

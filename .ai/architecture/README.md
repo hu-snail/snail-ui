@@ -4,14 +4,14 @@ Architecture decision records and module-level architecture docs consumed by AI 
 
 ## Layout
 
-| File | Purpose |
-| --- | --- |
+| File          | Purpose                                                                        |
+| ------------- | ------------------------------------------------------------------------------ |
 | `protocol.md` | AUI Protocol freeze — UISchema / UINode / Binding / Action / A11y / Capability |
-| `runtime.md` | Runtime architecture — lifecycle, state, registry, error, inspection |
-| `renderer.md` | Renderer contract — Vue Web (Phase 2), Uni (Phase 3), future React/Flutter |
-| `state.md` | State / binding / action boundary, external state bridge |
-| `tokens.md` | Token cascade — Primitive → Semantic → Component, Theme/Style/Density axes |
-| `studio.md` | Studio MVP architecture — Canvas, Inspector, Patch, AI loop |
+| `runtime.md`  | Runtime architecture — lifecycle, state, registry, error, inspection           |
+| `renderer.md` | Renderer contract — Vue Web (Phase 2), Uni (Phase 3), future React/Flutter     |
+| `state.md`    | State / binding / action boundary, external state bridge                       |
+| `tokens.md`   | Token cascade — Primitive → Semantic → Component, Theme/Style/Density axes     |
+| `studio.md`   | Studio MVP architecture — Canvas, Inspector, Patch, AI loop                    |
 
 ## Authoring rules
 

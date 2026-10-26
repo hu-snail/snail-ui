@@ -8,35 +8,31 @@
  *   Pack must NOT modify component DOM, props, or behavior — only visual layer.
  */
 
-import type {
-  ThemeDefinition,
-  StyleDefinition,
-  DensityDefinition,
-} from '@snui/tokens'
+import type { ThemeDefinition, StyleDefinition, DensityDefinition } from '@snui/tokens';
 
 export interface StylePackDefinition {
   /** kebab-case unique identifier. */
-  name: string
+  name: string;
   /** Human-readable label. */
-  label: string
+  label: string;
   /** Description (consumed by docs + MCP). */
-  description?: string
+  description?: string;
 
   // --- Token layer ---
-  theme?: ThemeDefinition
-  style: StyleDefinition
-  density?: DensityDefinition
+  theme?: ThemeDefinition;
+  style: StyleDefinition;
+  density?: DensityDefinition;
 
   // --- Skin CSS layer ---
   /** Path to a CSS file containing .snui-skin-{name} scoped rules. */
-  skinCss?: string
+  skinCss?: string;
 
   // --- Resource layer ---
   /** URLs to extra resources (fonts, textures) to preload. */
-  resources?: ReadonlyArray<string>
+  resources?: ReadonlyArray<string>;
 
   /** Preview thumbnail path (consumed by docs site). */
-  previewImage?: string
+  previewImage?: string;
 }
 
-export type { ThemeDefinition, StyleDefinition, DensityDefinition }
+export type { ThemeDefinition, StyleDefinition, DensityDefinition };

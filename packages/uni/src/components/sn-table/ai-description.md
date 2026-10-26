@@ -53,68 +53,68 @@ column order is DOM order and the container is not mutated mid-render (the
 ```
 
 ```ts
-import { SnTable, SnTableColumn } from '@snui/uni'
+import { SnTable, SnTableColumn } from '@snui/uni';
 ```
 
 ## Props — `sn-table`
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `data` | `Record<string, unknown>[]` | `[]` | yes (in practice) | Table rows. |
-| `border` | `boolean` | `true` | no | Draw cell borders. |
-| `stripe` | `boolean` | `true` | no | Zebra-stripe body rows. |
-| `height` | `string \| number` | `undefined` | no | Max height (bare number = design px). Turns on vertical scrolling. |
-| `showHeader` | `boolean` | `true` | no | Render the header row. |
-| `ellipsis` | `boolean` | `false` | no | Clamp cell text to two lines. |
-| `index` | `boolean \| SnTableIndexConfig` | `false` | no | Ordinal column; an object customises `label` / `width` / `align`. |
-| `fixedHeader` | `boolean` | `true` | no | Pin the header row while scrolling vertically. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
+| Name          | Type                            | Default     | Required          | Description                                                        |
+| ------------- | ------------------------------- | ----------- | ----------------- | ------------------------------------------------------------------ |
+| `data`        | `Record<string, unknown>[]`     | `[]`        | yes (in practice) | Table rows.                                                        |
+| `border`      | `boolean`                       | `true`      | no                | Draw cell borders.                                                 |
+| `stripe`      | `boolean`                       | `true`      | no                | Zebra-stripe body rows.                                            |
+| `height`      | `string \| number`              | `undefined` | no                | Max height (bare number = design px). Turns on vertical scrolling. |
+| `showHeader`  | `boolean`                       | `true`      | no                | Render the header row.                                             |
+| `ellipsis`    | `boolean`                       | `false`     | no                | Clamp cell text to two lines.                                      |
+| `index`       | `boolean \| SnTableIndexConfig` | `false`     | no                | Ordinal column; an object customises `label` / `width` / `align`.  |
+| `fixedHeader` | `boolean`                       | `true`      | no                | Pin the header row while scrolling vertically.                     |
+| `customClass` | `string`                        | `''`        | no                | Custom class for the root node.                                    |
+| `customStyle` | `string`                        | `''`        | no                | Custom inline style for the root node.                             |
 
 ## Props — `sn-table-column`
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `prop` | `string` | `''` | yes (in practice) | Data field name. |
-| `label` | `string` | `''` | yes (in practice) | Header label. |
-| `width` | `string \| number` | `100` | no | Column width (bare number = design px). |
-| `sortable` | `boolean` | `false` | no | Header tap cycles asc → desc → none. |
-| `fixed` | `boolean` | `false` | no | Pin the column to the left edge. |
-| `align` | `'left' \| 'center' \| 'right'` | `'left'` | no | Content alignment. |
+| Name       | Type                            | Default  | Required          | Description                             |
+| ---------- | ------------------------------- | -------- | ----------------- | --------------------------------------- |
+| `prop`     | `string`                        | `''`     | yes (in practice) | Data field name.                        |
+| `label`    | `string`                        | `''`     | yes (in practice) | Header label.                           |
+| `width`    | `string \| number`              | `100`    | no                | Column width (bare number = design px). |
+| `sortable` | `boolean`                       | `false`  | no                | Header tap cycles asc → desc → none.    |
+| `fixed`    | `boolean`                       | `false`  | no                | Pin the column to the left edge.        |
+| `align`    | `'left' \| 'center' \| 'right'` | `'left'` | no                | Content alignment.                      |
 
 ## Events — `sn-table`
 
-| Name | Payload | Description |
-|---|---|---|
+| Name          | Payload                  | Description                                                          |
+| ------------- | ------------------------ | -------------------------------------------------------------------- |
 | `sort-method` | `{ prop, label, order }` | A sortable header was tapped. The component does not reorder `data`. |
-| `row-click` | `{ rowIndex, row }` | A body row was tapped. |
+| `row-click`   | `{ rowIndex, row }`      | A body row was tapped.                                               |
 
 ## Slots
 
-| Slot | Component | Description |
-|---|---|---|
-| `default` | `sn-table` | Column declarations (`sn-table-column` children). |
-| `empty` | `sn-table` | Replaces the built-in "暂无数据" row. |
-| `value` | `sn-table-column` | Custom cell content, receives `{ row, index }`. |
+| Slot      | Component         | Description                                       |
+| --------- | ----------------- | ------------------------------------------------- |
+| `default` | `sn-table`        | Column declarations (`sn-table-column` children). |
+| `empty`   | `sn-table`        | Replaces the built-in "暂无数据" row.             |
+| `value`   | `sn-table-column` | Custom cell content, receives `{ row, index }`.   |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background elevated | `--sn-mp-color-background-elevated` | Table surface |
-| Background subtle | `--sn-mp-color-background-subtle` | Header row |
-| Background soft | `--sn-mp-color-background-soft` | Stripe row |
-| Border subtle | `--sn-mp-color-border-subtle` | Cell borders |
-| Text primary | `--sn-mp-color-text-primary` | Body text |
-| Text secondary | `--sn-mp-color-text-secondary` | Header text |
-| Text tertiary | `--sn-mp-color-text-tertiary` | Empty-state text |
-| Text disabled | `--sn-mp-color-text-disabled` | Idle sort arrow |
-| Action primary | `--sn-mp-color-action-primary` | Active sort arrow |
-| Font size SM | `--sn-mp-font-size-sm` | Cell text |
-| Font weight semibold | `--sn-mp-font-weight-semibold` | Header text |
-| Line height normal | `--sn-mp-font-line-height-normal` | Cell line height |
-| Spacing 1 / 3 / 4 / 10 | `--sn-mp-spacing-*` | Header gap, cell padding, empty padding |
-| Radius LG | `--sn-mp-radius-lg` | Table corners |
+| Token                  | CSS Variable                        | Purpose                                 |
+| ---------------------- | ----------------------------------- | --------------------------------------- |
+| Background elevated    | `--sn-mp-color-background-elevated` | Table surface                           |
+| Background subtle      | `--sn-mp-color-background-subtle`   | Header row                              |
+| Background soft        | `--sn-mp-color-background-soft`     | Stripe row                              |
+| Border subtle          | `--sn-mp-color-border-subtle`       | Cell borders                            |
+| Text primary           | `--sn-mp-color-text-primary`        | Body text                               |
+| Text secondary         | `--sn-mp-color-text-secondary`      | Header text                             |
+| Text tertiary          | `--sn-mp-color-text-tertiary`       | Empty-state text                        |
+| Text disabled          | `--sn-mp-color-text-disabled`       | Idle sort arrow                         |
+| Action primary         | `--sn-mp-color-action-primary`      | Active sort arrow                       |
+| Font size SM           | `--sn-mp-font-size-sm`              | Cell text                               |
+| Font weight semibold   | `--sn-mp-font-weight-semibold`      | Header text                             |
+| Line height normal     | `--sn-mp-font-line-height-normal`   | Cell line height                        |
+| Spacing 1 / 3 / 4 / 10 | `--sn-mp-spacing-*`                 | Header gap, cell padding, empty padding |
+| Radius LG              | `--sn-mp-radius-lg`                 | Table corners                           |
 
 ## Accessibility
 

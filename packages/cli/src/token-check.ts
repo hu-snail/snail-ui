@@ -16,39 +16,35 @@
  *   const aliasIssues  = await scanWrongEndAliases({ sourceDir: 'packages/uni/src', end: 'mp' })
  */
 
-import { readdir, readFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-export type End = 'web' | 'mp'
+export type End = 'web' | 'mp';
 
 export interface TokenCheckOptions {
   /** Source directory to scan recursively for .vue files. */
-  sourceDir: string
+  sourceDir: string;
   /** Glob basename filter. Default: matches `*.vue`. */
-  fileGlob?: string
+  fileGlob?: string;
 }
 
-export type IssueSeverity = 'error' | 'warning'
+export type IssueSeverity = 'error' | 'warning';
 
 export type IssueRule =
-  | 'hex-literal'
-  | 'rgb-literal'
-  | 'hsl-literal'
-  | 'keyword-fallback'
-  | 'wrong-end-alias'
+  'hex-literal' | 'rgb-literal' | 'hsl-literal' | 'keyword-fallback' | 'wrong-end-alias';
 
 export interface TokenIssue {
-  file: string
-  line: number
-  column: number
-  rule: IssueRule
-  snippet: string
-  message: string
+  file: string;
+  line: number;
+  column: number;
+  rule: IssueRule;
+  snippet: string;
+  message: string;
 }
 
-const HEX_RE = /#[0-9a-fA-F]{3,8}\b/g
-const RGB_RE = /\brgba?\s*\(/g
-const HSL_RE = /\bhsla?\s*\(/g
+const HEX_RE = /#[0-9a-fA-F]{3,8}\b/g;
+const RGB_RE = /\brgba?\s*\(/g;
+const HSL_RE = /\bhsla?\s*\(/g;
 
 /** End-specific forbidden alias prefixes. */
 const FORBIDDEN_PREFIXES: Readonly<Record<End, ReadonlyArray<string>>> = {
@@ -56,27 +52,27 @@ const FORBIDDEN_PREFIXES: Readonly<Record<End, ReadonlyArray<string>>> = {
   web: ['--sn-mp-', '--aui-'],
   // MP components must use --sn-mp-* only; never --sn-web-* or --aui-*
   mp: ['--sn-web-', '--aui-'],
-}
+};
 
 /** Run all configured scanners against a single file. */
 export async function scanFile(filePath: string, end?: End): Promise<TokenIssue[]> {
-  const content = await readFile(filePath, 'utf-8')
-  const issues: TokenIssue[] = []
-  const lines = content.split('\n')
+  const content = await readFile(filePath, 'utf-8');
+  const issues: TokenIssue[] = [];
+  const lines = content.split('\n');
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i] ?? ''
-    const trimmed = line.trim()
-    if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) continue
+    const line = lines[i] ?? '';
+    const trimmed = line.trim();
+    if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) continue;
     // only scan lines that look like CSS rules
-    if (!/color\s*:|background|border|fill|stroke|box-shadow|text-shadow/.test(trimmed)) continue
+    if (!/color\s*:|background|border|fill|stroke|box-shadow|text-shadow/.test(trimmed)) continue;
 
     // (1) color literals
-    HEX_RE.lastIndex = 0
-    let m: RegExpExecArray | null
+    HEX_RE.lastIndex = 0;
+    let m: RegExpExecArray | null;
     while ((m = HEX_RE.exec(line)) !== null) {
-      const before = line.slice(Math.max(0, m.index - 8), m.index).toLowerCase()
-      if (before.includes(',')) continue // inside var(...) fallback
+      const before = line.slice(Math.max(0, m.index - 8), m.index).toLowerCase();
+      if (before.includes(',')) continue; // inside var(...) fallback
       issues.push({
         file: filePath,
         line: i + 1,
@@ -84,9 +80,9 @@ export async function scanFile(filePath: string, end?: End): Promise<TokenIssue[
         rule: 'hex-literal',
         snippet: trimmed.slice(0, 80),
         message: `hex color literal "${m[0]}" not allowed — use var(--sn-*-*) tokens`,
-      })
+      });
     }
-    RGB_RE.lastIndex = 0
+    RGB_RE.lastIndex = 0;
     while ((m = RGB_RE.exec(line)) !== null) {
       issues.push({
         file: filePath,
@@ -95,9 +91,9 @@ export async function scanFile(filePath: string, end?: End): Promise<TokenIssue[
         rule: 'rgb-literal',
         snippet: trimmed.slice(0, 80),
         message: 'rgb()/rgba() literal not allowed — use var(--sn-*-*) tokens',
-      })
+      });
     }
-    HSL_RE.lastIndex = 0
+    HSL_RE.lastIndex = 0;
     while ((m = HSL_RE.exec(line)) !== null) {
       issues.push({
         file: filePath,
@@ -106,23 +102,23 @@ export async function scanFile(filePath: string, end?: End): Promise<TokenIssue[
         rule: 'hsl-literal',
         snippet: trimmed.slice(0, 80),
         message: 'hsl()/hsla() literal not allowed — use var(--sn-*-*) tokens',
-      })
+      });
     }
   }
 
   // (2) wrong-end alias references (whole-file scan, not per-line filter)
   if (end) {
-    const forbidden = FORBIDDEN_PREFIXES[end]
+    const forbidden = FORBIDDEN_PREFIXES[end];
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i] ?? ''
-      const trimmed = line.trim()
-      if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) continue
+      const line = lines[i] ?? '';
+      const trimmed = line.trim();
+      if (trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('*')) continue;
       // match every complete alias name on this line
-      const aliasMatches = line.matchAll(/--(?:sn-(?:web|mp)-|aui-)[a-z0-9-]+/gi)
+      const aliasMatches = line.matchAll(/--(?:sn-(?:web|mp)-|aui-)[a-z0-9-]+/gi);
       for (const m of aliasMatches) {
-        const alias = m[0]
-        const ok = forbidden.some((p) => alias.startsWith(p))
-        if (!ok) continue
+        const alias = m[0];
+        const ok = forbidden.some((p) => alias.startsWith(p));
+        if (!ok) continue;
         issues.push({
           file: filePath,
           line: i + 1,
@@ -130,62 +126,61 @@ export async function scanFile(filePath: string, end?: End): Promise<TokenIssue[
           rule: 'wrong-end-alias',
           snippet: trimmed.slice(0, 80),
           message: `alias "${alias}" is not allowed for end "${end}" — use ${end === 'web' ? '--sn-web-*' : '--sn-mp-*'} aliases only`,
-        })
+        });
       }
     }
   }
 
-  return issues
+  return issues;
 }
 
 export async function scanColorLiterals(options: TokenCheckOptions): Promise<TokenIssue[]> {
-  return scanAll(options)
+  return scanAll(options);
 }
 
 export async function scanWrongEndAliases(
   options: TokenCheckOptions,
   end: End,
 ): Promise<TokenIssue[]> {
-  return scanAll(options, end)
+  return scanAll(options, end);
 }
 
 async function scanAll(options: TokenCheckOptions, end?: End): Promise<TokenIssue[]> {
-  const out: TokenIssue[] = []
-  const stack: string[] = [options.sourceDir]
+  const out: TokenIssue[] = [];
+  const stack: string[] = [options.sourceDir];
   while (stack.length) {
-    const dir = stack.pop()!
-    const entries = await readdir(dir, { withFileTypes: true })
+    const dir = stack.pop()!;
+    const entries = await readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
-      const full = join(dir, entry.name)
+      const full = join(dir, entry.name);
       if (entry.isDirectory()) {
-        if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name.startsWith('.')) continue
-        stack.push(full)
+        if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name.startsWith('.'))
+          continue;
+        stack.push(full);
       } else if (entry.isFile() && full.endsWith('.vue')) {
-        const fileIssues = await scanFile(full, end)
-        out.push(...fileIssues)
+        const fileIssues = await scanFile(full, end);
+        out.push(...fileIssues);
       }
     }
   }
-  return out
+  return out;
 }
 
 /** Run scan and print a summary. Returns exit code (0 = clean, 1 = issues). */
 export async function runTokenCheck(options: TokenCheckOptions, end?: End): Promise<number> {
-  const issues = await scanAll(options, end)
+  const issues = await scanAll(options, end);
   if (issues.length === 0) {
-     
     console.log(
       end
         ? `✓ @snui/cli token-check (end=${end}): no violations in ${options.sourceDir}`
         : `✓ @snui/cli token-check: no violations in ${options.sourceDir}`,
-    )
-    return 0
+    );
+    return 0;
   }
   for (const i of issues) {
-     
-    console.error(`✗ ${i.file}:${i.line}:${i.column}  ${i.rule}  ${i.message}`)
-     
-    console.error(`    ${i.snippet}`)
+    console.error(`✗ ${i.file}:${i.line}:${i.column}  ${i.rule}  ${i.message}`);
+
+    console.error(`    ${i.snippet}`);
   }
-  return 1
+  return 1;
 }

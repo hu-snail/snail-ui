@@ -30,7 +30,6 @@ With `mode="menu"` the `content` prop is an option array. Tapping a row emits `m
 
 <Demo name="popover-mp-placement" description="top / right-start (no arrow) / disabled." />
 
-
 ## Image icons / content slot / node classes
 
 - a menu row's `iconClass` is either an `sn-icon` registry name or an image source (values starting with `http` / `//` / `/` / `./` render as `<image>`)
@@ -41,68 +40,68 @@ With `mode="menu"` the `content` prop is an option array. Tapping a row emits `m
 <Demo name="popover-mp-slot" description="image icons in menu mode; content slot body; custom-arrow / custom-pop classes; offset and custom-style." />
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | Whether the bubble is shown (`v-model`) |
-| `content` | `string \| SnPopoverMenuItem[]` | `''` | A string in `normal` mode, an option array in `menu` mode |
-| `mode` | `'normal' \| 'menu'` | `'normal'` | Display mode |
-| `placement` | 12-direction union | `'bottom'` | Bubble anchor |
-| `offset` | `number \| number[] \| { x?, y? }` | `0` | Offset in design px |
-| `visibleArrow` | `boolean` | `true` | Render the arrow |
-| `disabled` | `boolean` | `false` | Disable the trigger |
-| `showClose` | `boolean` | `false` | Render a close button |
-| `customClass` | `string` | `''` | Root class |
-| `customStyle` | `string` | `''` | Root inline style |
-| `customArrow` | `string` | `''` | Extra class on the arrow node |
-| `customPop` | `string` | `''` | Extra class on the bubble node |
-| `rootPortal` | `boolean` | `false` | **Not implemented** (no portal host on miniprogram) |
+| Prop           | Type                               | Default    | Description                                               |
+| -------------- | ---------------------------------- | ---------- | --------------------------------------------------------- |
+| `modelValue`   | `boolean`                          | `false`    | Whether the bubble is shown (`v-model`)                   |
+| `content`      | `string \| SnPopoverMenuItem[]`    | `''`       | A string in `normal` mode, an option array in `menu` mode |
+| `mode`         | `'normal' \| 'menu'`               | `'normal'` | Display mode                                              |
+| `placement`    | 12-direction union                 | `'bottom'` | Bubble anchor                                             |
+| `offset`       | `number \| number[] \| { x?, y? }` | `0`        | Offset in design px                                       |
+| `visibleArrow` | `boolean`                          | `true`     | Render the arrow                                          |
+| `disabled`     | `boolean`                          | `false`    | Disable the trigger                                       |
+| `showClose`    | `boolean`                          | `false`    | Render a close button                                     |
+| `customClass`  | `string`                           | `''`       | Root class                                                |
+| `customStyle`  | `string`                           | `''`       | Root inline style                                         |
+| `customArrow`  | `string`                           | `''`       | Extra class on the arrow node                             |
+| `customPop`    | `string`                           | `''`       | Extra class on the bubble node                            |
+| `rootPortal`   | `boolean`                          | `false`    | **Not implemented** (no portal host on miniprogram)       |
 
 ### SnPopoverMenuItem
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `content` | `string` | Row label |
-| `iconClass` | `string` | `sn-icon` registry name, or an image URL |
-| `disabled` | `boolean` | Disable the row |
+| Field       | Type      | Description                              |
+| ----------- | --------- | ---------------------------------------- |
+| `content`   | `string`  | Row label                                |
+| `iconClass` | `string`  | `sn-icon` registry name, or an image URL |
+| `disabled`  | `boolean` | Disable the row                          |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Visibility changed | `(value: boolean)` |
-| `open` | Bubble shown | — |
-| `close` | Bubble hidden | — |
-| `change` | Visibility changed | `{ show: boolean }` |
-| `menuclick` | A `menu` row was tapped | `{ item: SnPopoverMenuItem, index: number }` |
+| Event               | Description             | Payload                                      |
+| ------------------- | ----------------------- | -------------------------------------------- |
+| `update:modelValue` | Visibility changed      | `(value: boolean)`                           |
+| `open`              | Bubble shown            | —                                            |
+| `close`             | Bubble hidden           | —                                            |
+| `change`            | Visibility changed      | `{ show: boolean }`                          |
+| `menuclick`         | A `menu` row was tapped | `{ item: SnPopoverMenuItem, index: number }` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` | Trigger content |
+| Slot      | Description                                          |
+| --------- | ---------------------------------------------------- |
+| `default` | Trigger content                                      |
 | `content` | Custom bubble body; replaces `content` in both modes |
 
 ## Methods
 
-| Method | Description |
-| --- | --- |
-| `open()` | Show the bubble |
-| `close()` | Hide the bubble |
+| Method             | Description         |
+| ------------------ | ------------------- |
+| `open()`           | Show the bubble     |
+| `close()`          | Hide the bubble     |
 | `updatePosition()` | Compatibility no-op |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-elevated` | Bubble background |
-| `--sn-mp-color-text-primary` | Bubble / row text |
-| `--sn-mp-color-text-secondary` | Row icon |
-| `--sn-mp-color-text-disabled` | Disabled row |
-| `--sn-mp-color-border-subtle` | Bubble and arrow outline |
-| `--sn-mp-shadow-md` | Bubble shadow |
-| `--sn-mp-radius-md` | Bubble corners |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Padding and gaps |
-| `--sn-mp-font-size-sm` | Bubble font size |
+| Variable                                                        | Purpose                  |
+| --------------------------------------------------------------- | ------------------------ |
+| `--sn-mp-color-background-elevated`                             | Bubble background        |
+| `--sn-mp-color-text-primary`                                    | Bubble / row text        |
+| `--sn-mp-color-text-secondary`                                  | Row icon                 |
+| `--sn-mp-color-text-disabled`                                   | Disabled row             |
+| `--sn-mp-color-border-subtle`                                   | Bubble and arrow outline |
+| `--sn-mp-shadow-md`                                             | Bubble shadow            |
+| `--sn-mp-radius-md`                                             | Bubble corners           |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Padding and gaps         |
+| `--sn-mp-font-size-sm`                                          | Bubble font size         |
 
 ## Accessibility
 

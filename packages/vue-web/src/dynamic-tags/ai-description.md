@@ -13,35 +13,35 @@ Web 端动态标签组件，对标 naive-ui `n-dynamic-tags` 1:1。位于
 
 ## Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `(string \| number)[]` | `[]` | `v-model`；变更时 emit 完整数组 |
-| `closable` | `boolean` | `true` | 每个 tag 是否带 × 删除按钮 |
-| `disabled` | `boolean` | `false` | 禁用：无触发按钮、无删除按钮 |
-| `readonly` | `boolean` | `false` | 只读：同上，视觉不加 disabled 灰 |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（字号 + 胶囊高度） |
-| `max` | `number` | — | 标签上限；到上限隐藏添加按钮、拒绝追加 |
-| `trigger` | `'click' \| 'focus'` | `'click'` | `focus` 时点击组件任意处打开输入框 |
-| `placeholder` | `string` | `''` | 内嵌输入框占位（简化 `inputProps`） |
+| Prop          | 类型                             | 默认值     | 说明                                   |
+| ------------- | -------------------------------- | ---------- | -------------------------------------- |
+| `modelValue`  | `(string \| number)[]`           | `[]`       | `v-model`；变更时 emit 完整数组        |
+| `closable`    | `boolean`                        | `true`     | 每个 tag 是否带 × 删除按钮             |
+| `disabled`    | `boolean`                        | `false`    | 禁用：无触发按钮、无删除按钮           |
+| `readonly`    | `boolean`                        | `false`    | 只读：同上，视觉不加 disabled 灰       |
+| `size`        | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（字号 + 胶囊高度）                |
+| `max`         | `number`                         | —          | 标签上限；到上限隐藏添加按钮、拒绝追加 |
+| `trigger`     | `'click' \| 'focus'`             | `'click'`  | `focus` 时点击组件任意处打开输入框     |
+| `placeholder` | `string`                         | `''`       | 内嵌输入框占位（简化 `inputProps`）    |
 
 ## Events
 
-| 事件 | Payload | 触发时机 |
-| --- | --- | --- |
-| `update:modelValue` | `Array<string \| number>` | 任何增删，完整数组 |
-| `change` | `Array<string \| number>` | 同上（naive `on-change`） |
-| `add` | `string \| number` | 追加一个 tag |
-| `remove` | `string \| number` | 删除一个 tag |
-| `click` | `(value, MouseEvent)` | 点击 tag 本体 |
+| 事件                | Payload                   | 触发时机                  |
+| ------------------- | ------------------------- | ------------------------- |
+| `update:modelValue` | `Array<string \| number>` | 任何增删，完整数组        |
+| `change`            | `Array<string \| number>` | 同上（naive `on-change`） |
+| `add`               | `string \| number`        | 追加一个 tag              |
+| `remove`            | `string \| number`        | 删除一个 tag              |
+| `click`             | `(value, MouseEvent)`     | 点击 tag 本体             |
 
 ## Slots
 
-| Slot | Scoped | 说明 |
-| --- | --- | --- |
-| `tag` | `{ label, index }` | 自定义 tag 渲染 |
-| `input` | `{ value, placeholder, confirm, cancel, setValue }` | 自定义内嵌输入框 |
-| `trigger` | — | 自定义添加触发按钮内容 |
-| `empty` | — | 无 tag 时的空态 |
+| Slot      | Scoped                                              | 说明                   |
+| --------- | --------------------------------------------------- | ---------------------- |
+| `tag`     | `{ label, index }`                                  | 自定义 tag 渲染        |
+| `input`   | `{ value, placeholder, confirm, cancel, setValue }` | 自定义内嵌输入框       |
+| `trigger` | —                                                   | 自定义添加触发按钮内容 |
+| `empty`   | —                                                   | 无 tag 时的空态        |
 
 ## 交互语义
 
@@ -56,27 +56,27 @@ Web 端动态标签组件，对标 naive-ui `n-dynamic-tags` 1:1。位于
 
 全部走 `--sn-web-dynamic-tags-*` 别名，回退 `--sn-web-color-*`：
 
-| Token | 回退 | 用途 |
-| --- | --- | --- |
-| `--sn-web-dynamic-tags-gap` | `6px` | tag 间距 |
-| `--sn-web-dynamic-tags-tag-padding-x` | `8px` | tag 水平内边距 |
-| `--sn-web-dynamic-tags-tag-radius` | `999px` | 胶囊圆角 |
-| `--sn-web-dynamic-tags-tag-bg` | `background-soft` | tag 背景 |
-| `--sn-web-dynamic-tags-tag-bg-hover` | `background-overlay` | tag hover 背景 |
-| `--sn-web-dynamic-tags-close-color` / `-hover` | `text-tertiary` / `text-primary` | × 按钮 |
-| `--sn-web-dynamic-tags-trigger-border-color` / `-hover` | `border-default` / `action-primary` | 触发按钮边框 |
-| `--sn-web-dynamic-tags-trigger-color` / `-hover` | `text-secondary` / `action-primary` | 触发按钮前景 |
-| `--sn-web-dynamic-tags-input-border-color` | `action-primary` | 输入框边框 |
-| `--sn-web-focus-ring` | — | 触发按钮 focus 光圈 |
+| Token                                                   | 回退                                | 用途                |
+| ------------------------------------------------------- | ----------------------------------- | ------------------- |
+| `--sn-web-dynamic-tags-gap`                             | `6px`                               | tag 间距            |
+| `--sn-web-dynamic-tags-tag-padding-x`                   | `8px`                               | tag 水平内边距      |
+| `--sn-web-dynamic-tags-tag-radius`                      | `999px`                             | 胶囊圆角            |
+| `--sn-web-dynamic-tags-tag-bg`                          | `background-soft`                   | tag 背景            |
+| `--sn-web-dynamic-tags-tag-bg-hover`                    | `background-overlay`                | tag hover 背景      |
+| `--sn-web-dynamic-tags-close-color` / `-hover`          | `text-tertiary` / `text-primary`    | × 按钮              |
+| `--sn-web-dynamic-tags-trigger-border-color` / `-hover` | `border-default` / `action-primary` | 触发按钮边框        |
+| `--sn-web-dynamic-tags-trigger-color` / `-hover`        | `text-secondary` / `action-primary` | 触发按钮前景        |
+| `--sn-web-dynamic-tags-input-border-color`              | `action-primary`                    | 输入框边框          |
+| `--sn-web-focus-ring`                                   | —                                   | 触发按钮 focus 光圈 |
 
 ## 基本用法
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import SnDynamicTags from '@/dynamic-tags/SnDynamicTags.vue'
+import { ref } from 'vue';
+import SnDynamicTags from '@/dynamic-tags/SnDynamicTags.vue';
 
-const tags = ref<Array<string | number>>(['vue', 'naive-ui'])
+const tags = ref<Array<string | number>>(['vue', 'naive-ui']);
 </script>
 
 <template>

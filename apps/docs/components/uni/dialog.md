@@ -36,81 +36,81 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | 是否显示（`v-model`） |
-| `title` | `string` | `''` | 标题 |
-| `msg` | `string` | `''` | 消息内容 |
-| `type` | `'alert' \| 'confirm' \| 'prompt'` | `'alert'` | 弹框类型 |
-| `theme` | `'button' \| 'text'` | `'button'` | 按钮风格 |
-| `zIndex` | `number` | `99` | 弹窗层级 |
-| `lazyRender` | `boolean` | `true` | 弹层内容懒渲染 |
-| `headerImage` | `string` | `''` | 顶部通栏图片地址 |
-| `icon` | `string` | `''` | 状态图标：`success` / `info` / `warning` / `danger`，或自定义图标名 |
-| `iconColor` | `string` | `''` | 图标颜色 |
-| `iconProps` | `Record<string, unknown>` | `{}` | 透传给内部 `sn-icon` 的属性 |
-| `inputValue` | `string \| number` | `''` | Prompt 输入框初始值（也支持 `v-model:input-value`） |
-| `inputProps` | `Record<string, unknown>` | `{}` | Prompt 模式下透传给 `sn-input` 的属性 |
-| `textareaProps` | `Record<string, unknown>` | `{}` | 非空时 prompt 模式改为渲染 `sn-textarea` |
-| `inputPattern` | `RegExp` | — | Prompt 输入正则校验规则 |
-| `inputValidate` | `(value) => boolean \| string` | — | Prompt 函数校验规则，返回字符串即错误文案 |
-| `inputError` | `string` | `''` | 校验失败时的兜底提示文案 |
-| `showErr` | `boolean` | `false` | 是否展示错误信息 |
-| `actionLayout` | `'horizontal' \| 'vertical'` | `'horizontal'` | 操作按钮排列方式 |
-| `showCancelButton` | `boolean` | — | 是否显示取消按钮；`alert` 默认 `false`，其余默认 `true` |
-| `confirmButtonText` | `string` | `''` | 确认按钮文案（缺省为「确定」） |
-| `cancelButtonText` | `string` | `''` | 取消按钮文案（缺省为「取消」） |
-| `confirmButtonProps` | `string \| object \| null` | `{}` | 确认按钮高级配置；字符串为文案，对象透传给 `sn-button`，`null` 隐藏 |
-| `cancelButtonProps` | `string \| object \| null` | — | 取消按钮高级配置，语法同上 |
-| `actions` | `DialogAction[]` | `[]` | 自定义操作按钮数组，优先级高于确认 / 取消按钮 |
-| `closeOnClickModal` | `boolean` | `false` | 是否支持点击遮罩关闭 |
-| `showClose` | `boolean` | `false` | 是否显示右上角关闭按钮 |
-| `beforeConfirm` | `() => boolean \| Promise<boolean>` | — | 确认前拦截函数 |
-| `selector` | `string` | `''` | 唯一标识（仅为 API 对齐保留，组件式下无效果） |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 面板自定义样式 |
+| 属性                 | 类型                                | 默认值         | 说明                                                                |
+| -------------------- | ----------------------------------- | -------------- | ------------------------------------------------------------------- |
+| `modelValue`         | `boolean`                           | `false`        | 是否显示（`v-model`）                                               |
+| `title`              | `string`                            | `''`           | 标题                                                                |
+| `msg`                | `string`                            | `''`           | 消息内容                                                            |
+| `type`               | `'alert' \| 'confirm' \| 'prompt'`  | `'alert'`      | 弹框类型                                                            |
+| `theme`              | `'button' \| 'text'`                | `'button'`     | 按钮风格                                                            |
+| `zIndex`             | `number`                            | `99`           | 弹窗层级                                                            |
+| `lazyRender`         | `boolean`                           | `true`         | 弹层内容懒渲染                                                      |
+| `headerImage`        | `string`                            | `''`           | 顶部通栏图片地址                                                    |
+| `icon`               | `string`                            | `''`           | 状态图标：`success` / `info` / `warning` / `danger`，或自定义图标名 |
+| `iconColor`          | `string`                            | `''`           | 图标颜色                                                            |
+| `iconProps`          | `Record<string, unknown>`           | `{}`           | 透传给内部 `sn-icon` 的属性                                         |
+| `inputValue`         | `string \| number`                  | `''`           | Prompt 输入框初始值（也支持 `v-model:input-value`）                 |
+| `inputProps`         | `Record<string, unknown>`           | `{}`           | Prompt 模式下透传给 `sn-input` 的属性                               |
+| `textareaProps`      | `Record<string, unknown>`           | `{}`           | 非空时 prompt 模式改为渲染 `sn-textarea`                            |
+| `inputPattern`       | `RegExp`                            | —              | Prompt 输入正则校验规则                                             |
+| `inputValidate`      | `(value) => boolean \| string`      | —              | Prompt 函数校验规则，返回字符串即错误文案                           |
+| `inputError`         | `string`                            | `''`           | 校验失败时的兜底提示文案                                            |
+| `showErr`            | `boolean`                           | `false`        | 是否展示错误信息                                                    |
+| `actionLayout`       | `'horizontal' \| 'vertical'`        | `'horizontal'` | 操作按钮排列方式                                                    |
+| `showCancelButton`   | `boolean`                           | —              | 是否显示取消按钮；`alert` 默认 `false`，其余默认 `true`             |
+| `confirmButtonText`  | `string`                            | `''`           | 确认按钮文案（缺省为「确定」）                                      |
+| `cancelButtonText`   | `string`                            | `''`           | 取消按钮文案（缺省为「取消」）                                      |
+| `confirmButtonProps` | `string \| object \| null`          | `{}`           | 确认按钮高级配置；字符串为文案，对象透传给 `sn-button`，`null` 隐藏 |
+| `cancelButtonProps`  | `string \| object \| null`          | —              | 取消按钮高级配置，语法同上                                          |
+| `actions`            | `DialogAction[]`                    | `[]`           | 自定义操作按钮数组，优先级高于确认 / 取消按钮                       |
+| `closeOnClickModal`  | `boolean`                           | `false`        | 是否支持点击遮罩关闭                                                |
+| `showClose`          | `boolean`                           | `false`        | 是否显示右上角关闭按钮                                              |
+| `beforeConfirm`      | `() => boolean \| Promise<boolean>` | —              | 确认前拦截函数                                                      |
+| `selector`           | `string`                            | `''`           | 唯一标识（仅为 API 对齐保留，组件式下无效果）                       |
+| `customClass`        | `string`                            | `''`           | 根节点自定义类名                                                    |
+| `customStyle`        | `string`                            | `''`           | 面板自定义样式                                                      |
 
 `DialogAction` = `{ name?: string; color?: string; disabled?: boolean }`。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | `v-model` 同步 | `boolean` |
-| `update:inputValue` | Prompt 输入变化 | `string \| number` |
-| `confirm` | 确认（校验 + `beforeConfirm` 通过后） | `{ action: 'confirm', inputValue }` |
-| `cancel` | 取消 | — |
-| `close` | 弹框关闭（确认 / 取消 / 关闭按钮 / 遮罩） | — |
-| `select` | 点击自定义操作行 | `{ item, index }` |
+| 事件名              | 说明                                      | 参数                                |
+| ------------------- | ----------------------------------------- | ----------------------------------- |
+| `update:modelValue` | `v-model` 同步                            | `boolean`                           |
+| `update:inputValue` | Prompt 输入变化                           | `string \| number`                  |
+| `confirm`           | 确认（校验 + `beforeConfirm` 通过后）     | `{ action: 'confirm', inputValue }` |
+| `cancel`            | 取消                                      | —                                   |
+| `close`             | 弹框关闭（确认 / 取消 / 关闭按钮 / 遮罩） | —                                   |
+| `select`            | 点击自定义操作行                          | `{ item, index }`                   |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
-| `header` | 自定义头部区域 |
-| `image` | 自定义图片区域（替代 `headerImage`） |
-| `title` | 自定义标题区域，插槽 props：`{ icon, title, iconProps }` |
+| 插槽名    | 说明                                                                         |
+| --------- | ---------------------------------------------------------------------------- |
+| `header`  | 自定义头部区域                                                               |
+| `image`   | 自定义图片区域（替代 `headerImage`）                                         |
+| `title`   | 自定义标题区域，插槽 props：`{ icon, title, iconProps }`                     |
 | `default` | 自定义内容区域，插槽 props：`{ msg, type, inputValue, showErr, inputError }` |
-| `actions` | 自定义操作区，插槽 props：`{ confirm, cancel, close }` |
+| `actions` | 自定义操作区，插槽 props：`{ confirm, cancel, close }`                       |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-text-primary` | 标题与正文基础色 |
-| `--sn-mp-color-text-secondary` | 消息内容 |
-| `--sn-mp-color-text-tertiary` | 关闭图标 |
-| `--sn-mp-color-action-primary` | 默认状态图标颜色 |
-| `--sn-mp-color-feedback-danger` | 校验错误文案 |
-| `--sn-mp-color-border-subtle` | 自定义操作行分隔线 |
-| `--sn-mp-font-size-xl` | 标题字号 |
-| `--sn-mp-font-size-md` | 正文 / 操作行字号 |
-| `--sn-mp-font-size-sm` | 校验文案字号 |
-| `--sn-mp-font-line-height-tight` | 标题行高 |
-| `--sn-mp-font-line-height-normal` | 正文行高 |
-| `--sn-mp-font-weight-medium` | 标题 / 强调操作行字重 |
-| `--sn-mp-spacing-1` … `--sn-mp-spacing-6` | 内部间距节奏 |
-| `--sn-mp-radius-lg` | 通栏图圆角 |
+| 变量                                      | 用途                  |
+| ----------------------------------------- | --------------------- |
+| `--sn-mp-color-text-primary`              | 标题与正文基础色      |
+| `--sn-mp-color-text-secondary`            | 消息内容              |
+| `--sn-mp-color-text-tertiary`             | 关闭图标              |
+| `--sn-mp-color-action-primary`            | 默认状态图标颜色      |
+| `--sn-mp-color-feedback-danger`           | 校验错误文案          |
+| `--sn-mp-color-border-subtle`             | 自定义操作行分隔线    |
+| `--sn-mp-font-size-xl`                    | 标题字号              |
+| `--sn-mp-font-size-md`                    | 正文 / 操作行字号     |
+| `--sn-mp-font-size-sm`                    | 校验文案字号          |
+| `--sn-mp-font-line-height-tight`          | 标题行高              |
+| `--sn-mp-font-line-height-normal`         | 正文行高              |
+| `--sn-mp-font-weight-medium`              | 标题 / 强调操作行字重 |
+| `--sn-mp-spacing-1` … `--sn-mp-spacing-6` | 内部间距节奏          |
+| `--sn-mp-radius-lg`                       | 通栏图圆角            |
 
 ## 无障碍
 
@@ -122,7 +122,6 @@
 ## 暗色模式
 
 面板背景、文字与状态色全部来自语义色 token（`--sn-mp-color-background-elevated` / `--sn-mp-color-text-*` / `--sn-mp-color-feedback-*`），这些都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 > 若通过 `iconColor` 传了自定义色值（如 `#5b8def`），该值不会随主题翻转 —— 暗色下请改用 `var(--sn-mp-*)` 形式的颜色。
 

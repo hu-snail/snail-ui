@@ -27,7 +27,7 @@
  *   - 校验信息展示 — 用 sn-form-item
  */
 
-import { computed, provide, toRef } from 'vue'
+import { computed, provide, toRef } from 'vue';
 import {
   SN_CHECKBOX_GROUP_KEY,
   type SnCheckboxChild,
@@ -36,40 +36,40 @@ import {
   type SnCheckboxSize,
   type SnCheckboxType,
   type SnCheckboxValue,
-} from './sn-checkbox-types'
+} from './sn-checkbox-types';
 
-defineOptions({ name: 'SnCheckboxGroup' })
+defineOptions({ name: 'SnCheckboxGroup' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-checkbox-group` 1:1 surface ─────────────────────────── */
 
     /** Selected values (v-model array). */
-    modelValue?: SnCheckboxValue[]
+    modelValue?: SnCheckboxValue[];
     /** Shape preset inherited by every child. */
-    type?: SnCheckboxType
+    type?: SnCheckboxType;
     /** Checked color inherited by every child (empty = token default). */
-    checkedColor?: string
+    checkedColor?: string;
     /** Unchecked color inherited by every child (empty = token default). */
-    uncheckedColor?: string
+    uncheckedColor?: string;
     /** Disables every child. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Makes every child read-only. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Minimum number of selected values; `0` means unconstrained. */
-    min?: number
+    min?: number;
     /** Maximum number of selected values; `0` means unconstrained. */
-    max?: number
+    max?: number;
     /** Size preset inherited by every child. */
-    size?: SnCheckboxSize
+    size?: SnCheckboxSize;
     /** Tick position inherited by every child. */
-    placement?: SnCheckboxPlacement
+    placement?: SnCheckboxPlacement;
     /** Layout direction of the children. */
-    direction?: SnCheckboxDirection
+    direction?: SnCheckboxDirection;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: () => [],
@@ -86,20 +86,20 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — fires with the full next selection array. */
-  (e: 'update:modelValue', value: SnCheckboxValue[]): void
+  (e: 'update:modelValue', value: SnCheckboxValue[]): void;
   /** Selection changed (alias of `update:modelValue`, wd-checkbox-group parity). */
-  (e: 'change', value: SnCheckboxValue[]): void
-}>()
+  (e: 'change', value: SnCheckboxValue[]): void;
+}>();
 
-const selection = computed<SnCheckboxValue[]>(() => props.modelValue ?? [])
+const selection = computed<SnCheckboxValue[]>(() => props.modelValue ?? []);
 
 /** Whether `name` is currently selected. */
 function isChecked(name: SnCheckboxValue): boolean {
-  return selection.value.includes(name)
+  return selection.value.includes(name);
 }
 
 /**
@@ -110,22 +110,22 @@ function isChecked(name: SnCheckboxValue): boolean {
  * `min` keeps the last required entry selected.
  */
 function toggle(name: SnCheckboxValue, nextChecked: boolean): void {
-  if (props.disabled || props.readonly) return
-  const current = selection.value
+  if (props.disabled || props.readonly) return;
+  const current = selection.value;
   if (nextChecked) {
-    if (current.includes(name)) return
-    if (props.max > 0 && current.length >= props.max) return
-    commit([...current, name])
-    return
+    if (current.includes(name)) return;
+    if (props.max > 0 && current.length >= props.max) return;
+    commit([...current, name]);
+    return;
   }
-  if (!current.includes(name)) return
-  if (props.min > 0 && current.length <= props.min) return
-  commit(current.filter(v => v !== name))
+  if (!current.includes(name)) return;
+  if (props.min > 0 && current.length <= props.min) return;
+  commit(current.filter((v) => v !== name));
 }
 
 function commit(next: SnCheckboxValue[]): void {
-  emit('update:modelValue', next)
-  emit('change', next)
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 /**
@@ -133,14 +133,14 @@ function commit(next: SnCheckboxValue[]): void {
  * options and honour `skipDisabled` without inspecting the DOM. Children
  * register on mount and unregister on unmount (§41: no leaks).
  */
-const children = new Map<SnCheckboxValue, SnCheckboxChild>()
+const children = new Map<SnCheckboxValue, SnCheckboxChild>();
 
 function registerChild(child: SnCheckboxChild): void {
-  children.set(child.name, child)
+  children.set(child.name, child);
 }
 
 function unregisterChild(name: SnCheckboxValue): void {
-  children.delete(name)
+  children.delete(name);
 }
 
 provide(SN_CHECKBOX_GROUP_KEY, {
@@ -156,7 +156,7 @@ provide(SN_CHECKBOX_GROUP_KEY, {
   groupDirection: toRef(props, 'direction'),
   registerChild,
   unregisterChild,
-})
+});
 
 /**
  * Select / deselect every registered child at once — mirrors
@@ -164,28 +164,24 @@ provide(SN_CHECKBOX_GROUP_KEY, {
  * `skipDisabled` leaves disabled children untouched.
  */
 function toggleAll(checked: boolean, skipDisabled = false): void {
-  if (props.disabled || props.readonly) return
-  const eligible = [...children.values()].filter(
-    child => !(skipDisabled && child.isDisabled()),
-  )
+  if (props.disabled || props.readonly) return;
+  const eligible = [...children.values()].filter((child) => !(skipDisabled && child.isDisabled()));
   if (checked) {
-    const next = [...selection.value]
+    const next = [...selection.value];
     for (const child of eligible) {
-      if (props.max > 0 && next.length >= props.max) break
-      if (!next.includes(child.name)) next.push(child.name)
+      if (props.max > 0 && next.length >= props.max) break;
+      if (!next.includes(child.name)) next.push(child.name);
     }
-    commit(next)
-    return
+    commit(next);
+    return;
   }
-  const kept = selection.value.filter(
-    value => !eligible.some(child => child.name === value),
-  )
-  const floor = props.min > 0 ? props.min : 0
-  if (kept.length >= floor) commit(kept)
+  const kept = selection.value.filter((value) => !eligible.some((child) => child.name === value));
+  const floor = props.min > 0 ? props.min : 0;
+  if (kept.length >= floor) commit(kept);
 }
 
 /** Public imperative API — host pages drive the group without internals (§14). */
-defineExpose({ toggle, toggleAll, isChecked })
+defineExpose({ toggle, toggleAll, isChecked });
 
 const classList = computed(() => [
   'sn-checkbox-group',
@@ -195,9 +191,9 @@ const classList = computed(() => [
     'sn-checkbox-group--readonly': props.readonly,
   },
   props.customClass,
-])
+]);
 
-const wrapperStyle = computed(() => props.customStyle || undefined)
+const wrapperStyle = computed(() => props.customStyle || undefined);
 </script>
 
 <template>

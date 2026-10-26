@@ -26,20 +26,20 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| modelValue | number | 0 | Progress, 0–100 (clamped) |
-| size | number \| string | 120 | Ring diameter (bare number = rpx) |
-| color | string \| Record<string, string> | '' | Solid color, or a `{ offset: color }` gradient map |
-| layerColor | string | '' | Track color |
-| fill | string | '' | Inner disc color; empty renders a hollow ring |
-| speed | number | 50 | Animation speed in percent per second; `0` disables the transition |
-| text | string | '' | Centre text; empty shows the rounded percentage |
-| strokeWidth | number \| string | 18 | Ring thickness (bare number = rpx) |
-| strokeLinecap | 'butt' \| 'round' \| 'square' | 'round' | Stroke cap (parity only; inert) |
-| clockwise | boolean | true | Sweep clockwise or counter-clockwise |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop          | Type                             | Default | Description                                                        |
+| ------------- | -------------------------------- | ------- | ------------------------------------------------------------------ |
+| modelValue    | number                           | 0       | Progress, 0–100 (clamped)                                          |
+| size          | number \| string                 | 120     | Ring diameter (bare number = rpx)                                  |
+| color         | string \| Record<string, string> | ''      | Solid color, or a `{ offset: color }` gradient map                 |
+| layerColor    | string                           | ''      | Track color                                                        |
+| fill          | string                           | ''      | Inner disc color; empty renders a hollow ring                      |
+| speed         | number                           | 50      | Animation speed in percent per second; `0` disables the transition |
+| text          | string                           | ''      | Centre text; empty shows the rounded percentage                    |
+| strokeWidth   | number \| string                 | 18      | Ring thickness (bare number = rpx)                                 |
+| strokeLinecap | 'butt' \| 'round' \| 'square'    | 'round' | Stroke cap (parity only; inert)                                    |
+| clockwise     | boolean                          | true    | Sweep clockwise or counter-clockwise                               |
+| customClass   | string                           | ''      | Custom class for the root node                                     |
+| customStyle   | string                           | ''      | Custom inline style for the root node                              |
 
 ## Events
 
@@ -47,20 +47,20 @@ None — the component is presentational.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                              |
+| ------- | -------------------------------------------------------- |
 | default | Custom centre content (replaces `text` / the percentage) |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-action-primary | Default sweep color |
-| --sn-mp-color-background-subtle | Track color |
-| --sn-mp-color-text-primary | Centre text |
-| --sn-mp-font-size-lg | Centre text size |
-| --sn-mp-font-weight-medium | Centre text weight |
-| --sn-mp-font-line-height-tight | Centre text line height |
+| Variable                        | Purpose                 |
+| ------------------------------- | ----------------------- |
+| --sn-mp-color-action-primary    | Default sweep color     |
+| --sn-mp-color-background-subtle | Track color             |
+| --sn-mp-color-text-primary      | Centre text             |
+| --sn-mp-font-size-lg            | Centre text size        |
+| --sn-mp-font-weight-medium      | Centre text weight      |
+| --sn-mp-font-line-height-tight  | Centre text line height |
 
 ## Accessibility
 
@@ -72,7 +72,6 @@ None — the component is presentational.
 ## Dark mode
 
 The track and text colors come from semantic tokens (`--sn-mp-color-background-subtle` / `--sn-mp-color-text-primary`) and the default sweep uses `--sn-mp-color-action-primary`; all are overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A literal passed through `color` / `layerColor` / `fill` does not flip with the theme — prefer `var(--sn-mp-*)` colors in dark mode.
 

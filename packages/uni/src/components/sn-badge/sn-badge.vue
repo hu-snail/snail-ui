@@ -36,14 +36,14 @@
  *   - 点击 / 路由 — 由外层元素承载
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnBadge' })
+defineOptions({ name: 'SnBadge' });
 
 /** Numeric offsets are px; strings pass through so `rpx` stays usable. */
 function addUnit(value: string | number | undefined): string | undefined {
-  if (value === undefined || value === '') return undefined
-  return typeof value === 'number' ? `${value}px` : value
+  if (value === undefined || value === '') return undefined;
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 // Reference: wot-ui wd-badge Attributes
@@ -52,34 +52,34 @@ function addUnit(value: string | number | undefined): string | undefined {
 const props = withDefaults(
   defineProps<{
     /** 显示值（数字或字符串）。数字超出 `max` 时显示 `{max}+`。 */
-    value?: string | number | undefined
+    value?: string | number | undefined;
     /** 最大值，超过后显示 `{max}+`，仅当 `value` 为数字时生效。 */
-    max?: number | undefined
+    max?: number | undefined;
     /** 为正时，角标向下偏移对应像素。 */
-    top?: string | number | undefined
+    top?: string | number | undefined;
     /** 为正时，角标向左偏移对应像素。 */
-    right?: string | number | undefined
+    right?: string | number | undefined;
     /** 红色点状标注（不显示数值）。 */
-    isDot?: boolean
+    isDot?: boolean;
     /** 隐藏角标（内容照常渲染）。 */
-    hidden?: boolean
+    hidden?: boolean;
     /**
      * 类型：primary / success / warning / danger / info。
      * 不设置时用危险色（红）—— 默认角标为红色。
      */
-    type?: 'primary' | 'success' | 'warning' | 'danger' | 'info' | undefined
+    type?: 'primary' | 'success' | 'warning' | 'danger' | 'info' | undefined;
     /** 背景色（内联覆盖 `type`）。 */
-    bgColor?: string
+    bgColor?: string;
     /** 是否显示 `0`（默认 `0` 不渲染角标）。 */
-    showZero?: boolean
+    showZero?: boolean;
     /** 徽标形状：circle / square / bubble。 */
-    shape?: 'circle' | 'square' | 'bubble'
+    shape?: 'circle' | 'square' | 'bubble';
     /** 是否显示描边（与背景同宽的一道分隔环）。 */
-    border?: boolean
+    border?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义 inline style。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     value: undefined,
@@ -95,12 +95,12 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 徽标包裹的内容（图标 / 头像 / 文本）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /**
  * Whether the numeric / text badge is rendered at all.
@@ -109,46 +109,46 @@ defineSlots<{
  * unless `showZero` is on, and `hidden` wins over everything.
  */
 const isVisible = computed<boolean>(() => {
-  if (props.hidden) return false
-  if (props.isDot) return true
-  if (props.value === undefined || props.value === '') return false
-  if (props.value === 0 && !props.showZero) return false
-  return true
-})
+  if (props.hidden) return false;
+  if (props.isDot) return true;
+  if (props.value === undefined || props.value === '') return false;
+  if (props.value === 0 && !props.showZero) return false;
+  return true;
+});
 
 /** Text inside the badge — applies the `max` overflow rule for numbers. */
 const displayValue = computed<string>(() => {
-  const { value, max } = props
+  const { value, max } = props;
   if (typeof value === 'number' && typeof max === 'number' && value > max) {
-    return `${max}+`
+    return `${max}+`;
   }
-  return String(value ?? '')
-})
+  return String(value ?? '');
+});
 
 const rootClass = computed(() => [
   'sn-badge',
   props.isDot ? 'sn-badge--dot' : '',
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 
 const markerClass = computed(() => [
   'sn-badge__marker',
   props.type ? `sn-badge__marker--${props.type}` : '',
   `sn-badge__marker--${props.shape}`,
   props.border ? 'sn-badge__marker--border' : '',
-])
+]);
 
 const markerStyle = computed(() => {
-  const parts: string[] = []
-  if (props.bgColor) parts.push(`background-color: ${props.bgColor}`)
-  const top = addUnit(props.top)
-  const right = addUnit(props.right)
-  if (top !== undefined) parts.push(`top: ${top}`)
-  if (right !== undefined) parts.push(`right: ${right}`)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.bgColor) parts.push(`background-color: ${props.bgColor}`);
+  const top = addUnit(props.top);
+  const right = addUnit(props.right);
+  if (top !== undefined) parts.push(`top: ${top}`);
+  if (right !== undefined) parts.push(`right: ${right}`);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 </script>
 
 <template>

@@ -29,7 +29,6 @@
 
 <Demo name="tooltip-mp-config" description="无箭头 / 带关闭按钮 + offset / 禁用三种状态。" />
 
-
 ## 多行内容与 content 插槽
 
 `content` 传数组时每条渲染成一行（对象取 `label` / `text` / `content` / `name` 之一）；`content` 插槽完全替换气泡正文，可放任意结构：
@@ -37,56 +36,56 @@
 <Demo name="tooltip-mp-content" description="数组 content 渲染多行；content 插槽自定义气泡结构；offset 的 [x, y] 与 { x, y } 两种写法。" />
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | 是否显示（`v-model`） |
-| `content` | `string \| Array<Record<string, unknown> \| string>` | `''` | 提示文案；数组按行渲染（取 `label` / `text` / `content` / `name` 字段，或直接是字符串） |
-| `placement` | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \| 'left' \| 'left-start' \| 'left-end' \| 'right' \| 'right-start' \| 'right-end'` | `'bottom'` | 提示位置 |
-| `offset` | `number \| number[] \| { x?, y? }` | `0` | 与触发器的间距（设计稿 px） |
-| `visibleArrow` | `boolean` | `true` | 是否显示箭头 |
-| `disabled` | `boolean` | `false` | 是否禁用 |
-| `showClose` | `boolean` | `false` | 是否显示关闭按钮 |
-| `customArrow` | `string` | `''` | 箭头节点自定义类名 |
-| `customPop` | `string` | `''` | 气泡节点自定义类名 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
-| `rootPortal` | `boolean` | `false` | **未实现**（小程序无 portal 宿主） |
+| 属性           | 类型                                                                                                                                                                 | 默认值     | 说明                                                                                    |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------- |
+| `modelValue`   | `boolean`                                                                                                                                                            | `false`    | 是否显示（`v-model`）                                                                   |
+| `content`      | `string \| Array<Record<string, unknown> \| string>`                                                                                                                 | `''`       | 提示文案；数组按行渲染（取 `label` / `text` / `content` / `name` 字段，或直接是字符串） |
+| `placement`    | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \| 'left' \| 'left-start' \| 'left-end' \| 'right' \| 'right-start' \| 'right-end'` | `'bottom'` | 提示位置                                                                                |
+| `offset`       | `number \| number[] \| { x?, y? }`                                                                                                                                   | `0`        | 与触发器的间距（设计稿 px）                                                             |
+| `visibleArrow` | `boolean`                                                                                                                                                            | `true`     | 是否显示箭头                                                                            |
+| `disabled`     | `boolean`                                                                                                                                                            | `false`    | 是否禁用                                                                                |
+| `showClose`    | `boolean`                                                                                                                                                            | `false`    | 是否显示关闭按钮                                                                        |
+| `customArrow`  | `string`                                                                                                                                                             | `''`       | 箭头节点自定义类名                                                                      |
+| `customPop`    | `string`                                                                                                                                                             | `''`       | 气泡节点自定义类名                                                                      |
+| `customClass`  | `string`                                                                                                                                                             | `''`       | 根节点自定义类名                                                                        |
+| `customStyle`  | `string`                                                                                                                                                             | `''`       | 根节点自定义样式                                                                        |
+| `rootPortal`   | `boolean`                                                                                                                                                            | `false`    | **未实现**（小程序无 portal 宿主）                                                      |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 显隐变化 | `(value: boolean)` |
-| `open` | 提示层显示时触发 | — |
-| `close` | 提示层关闭时触发 | — |
-| `change` | 显隐状态变化时触发 | `{ show: boolean }` |
+| 事件名              | 说明               | 参数                |
+| ------------------- | ------------------ | ------------------- |
+| `update:modelValue` | 显隐变化           | `(value: boolean)`  |
+| `open`              | 提示层显示时触发   | —                   |
+| `close`             | 提示层关闭时触发   | —                   |
+| `change`            | 显隐状态变化时触发 | `{ show: boolean }` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
-| `default` | 触发提示层的目标内容 |
+| 插槽名    | 说明                               |
+| --------- | ---------------------------------- |
+| `default` | 触发提示层的目标内容               |
 | `content` | 自定义提示层内容，会替换 `content` |
 
 ## 方法
 
-| 方法名 | 说明 |
-| --- | --- |
-| `open()` | 打开提示层 |
-| `close()` | 关闭提示层 |
+| 方法名             | 说明                 |
+| ------------------ | -------------------- |
+| `open()`           | 打开提示层           |
+| `close()`          | 关闭提示层           |
 | `updatePosition()` | 兼容占位，无实际操作 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-text-primary` | 气泡底色（反向表面，暗色下自动翻转） |
-| `--sn-mp-color-background-elevated` | 气泡文字色 / 关闭图标色 |
-| `--sn-mp-shadow-md` | 气泡阴影 |
-| `--sn-mp-radius-md` | 气泡圆角 |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 气泡内边距与间距 |
-| `--sn-mp-font-size-sm` | 气泡字号 |
-| `--sn-mp-font-line-height-normal` | 气泡行高 |
+| 变量                                                            | 用途                                 |
+| --------------------------------------------------------------- | ------------------------------------ |
+| `--sn-mp-color-text-primary`                                    | 气泡底色（反向表面，暗色下自动翻转） |
+| `--sn-mp-color-background-elevated`                             | 气泡文字色 / 关闭图标色              |
+| `--sn-mp-shadow-md`                                             | 气泡阴影                             |
+| `--sn-mp-radius-md`                                             | 气泡圆角                             |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 气泡内边距与间距                     |
+| `--sn-mp-font-size-sm`                                          | 气泡字号                             |
+| `--sn-mp-font-line-height-normal`                               | 气泡行高                             |
 
 ## 无障碍
 

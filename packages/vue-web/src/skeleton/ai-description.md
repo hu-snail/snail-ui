@@ -24,7 +24,7 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnSkeleton } from '@snui/vue-web'
+import { SnSkeleton } from '@snui/vue-web';
 ```
 
 ## Usage
@@ -46,17 +46,17 @@ import { SnSkeleton } from '@snui/vue-web'
 
 ## Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | `boolean` | `false` | Inline-block with a `-0.125em` baseline shift |
-| `round` | `boolean` | `false` | Pill ends (`4096px`) |
-| `circle` | `boolean` | `false` | Square footprint + `border-radius: 50%` |
-| `height` | `string \| number` | `undefined` | Number is px; CSS lengths pass through |
-| `width` | `string \| number` | `undefined` | Number is px; CSS lengths pass through |
-| `size` | `'small' \| 'medium' \| 'large'` | `undefined` | Height tier, used when no explicit size is given |
-| `repeat` | `number` | `1` | Number of sibling blocks |
-| `animated` | `boolean` | `true` | Run the shimmer animation |
-| `sharp` | `boolean` | `true` | Keep square corners; `false` reads the token radius |
+| Name       | Type                             | Default     | Description                                         |
+| ---------- | -------------------------------- | ----------- | --------------------------------------------------- |
+| `text`     | `boolean`                        | `false`     | Inline-block with a `-0.125em` baseline shift       |
+| `round`    | `boolean`                        | `false`     | Pill ends (`4096px`)                                |
+| `circle`   | `boolean`                        | `false`     | Square footprint + `border-radius: 50%`             |
+| `height`   | `string \| number`               | `undefined` | Number is px; CSS lengths pass through              |
+| `width`    | `string \| number`               | `undefined` | Number is px; CSS lengths pass through              |
+| `size`     | `'small' \| 'medium' \| 'large'` | `undefined` | Height tier, used when no explicit size is given    |
+| `repeat`   | `number`                         | `1`         | Number of sibling blocks                            |
+| `animated` | `boolean`                        | `true`      | Run the shimmer animation                           |
+| `sharp`    | `boolean`                        | `true`      | Keep square corners; `false` reads the token radius |
 
 ### Size resolution
 
@@ -77,12 +77,12 @@ stylesheet, else the `--sn-web-skeleton-radius` token.
 
 ## Tokens
 
-| Token | Description |
-| --- | --- |
-| `--sn-web-skeleton-color` | Base fill colour |
-| `--sn-web-skeleton-color-end` | Shimmer peak colour |
-| `--sn-web-skeleton-radius` | Radius used when `sharp` is off |
-| `--sn-web-skeleton-height-small` / `-medium` / `-large` | Size tier heights |
+| Token                                                   | Description                     |
+| ------------------------------------------------------- | ------------------------------- |
+| `--sn-web-skeleton-color`                               | Base fill colour                |
+| `--sn-web-skeleton-color-end`                           | Shimmer peak colour             |
+| `--sn-web-skeleton-radius`                              | Radius used when `sharp` is off |
+| `--sn-web-skeleton-height-small` / `-medium` / `-large` | Size tier heights               |
 
 ## Accessibility
 

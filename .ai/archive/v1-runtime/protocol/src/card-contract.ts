@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  defineComponentContract,
-  type ComponentContract,
-} from './component-contract.js';
+import { defineComponentContract, type ComponentContract } from './component-contract.js';
 
 /**
  * AUI Card — official component contract.

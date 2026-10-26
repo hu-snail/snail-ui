@@ -10,8 +10,8 @@
  * viewport-pinned mode is demonstrated on its own in the 定位 section, in a
  * bordered stage that mimics a browser window.
  */
-import { FileText, Plus, Search } from 'lucide-vue-next'
-import { SnFloatButton } from '@snui/vue-web'
+import { FileText, Plus, Search } from 'lucide-vue-next';
+import { SnFloatButton } from '@snui/vue-web';
 </script>
 
 <template>

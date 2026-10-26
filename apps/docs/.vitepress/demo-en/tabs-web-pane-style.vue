@@ -2,10 +2,10 @@
 /**
  * tabs-web-pane-style — styling hooks for slots, tabs and panes.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs } from '@snui/vue-web';
 
-const active = ref('a')
+const active = ref('a');
 </script>
 
 <template>

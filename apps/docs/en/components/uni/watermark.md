@@ -27,28 +27,28 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| content | string | '' | Watermark text |
-| image | string | '' | Watermark image source |
-| imageHeight | number | 100 | Image height (px) |
-| imageWidth | number | 100 | Image width (px) |
-| gutterX | number | 0 | Horizontal gutter (px) |
-| gutterY | number | 0 | Vertical gutter (px) |
-| width | number | 100 | Tile width (px) |
-| height | number | 100 | Tile height (px) |
-| fullScreen | boolean | true | Cover the whole viewport |
-| color | string | '' | Text color override |
-| size | number | 14 | Text size (px) |
-| fontStyle | 'normal' \| 'italic' \| 'oblique' | 'normal' | Font style |
-| fontWeight | string \| number | 'normal' | Font weight |
-| fontFamily | string | 'PingFang SC' | Font family |
-| rotate | number | -25 | Rotation angle in degrees |
-| zIndex | number | 1100 | Stacking level |
-| opacity | number | — | Opacity, 0–1 |
-| layout | 'grid' \| 'staggered' | 'grid' | Repeat layout |
-| customStyle | string | '' | Custom inline style for the root node |
-| customClass | string | '' | Custom class for the root node |
+| Prop        | Type                              | Default       | Description                           |
+| ----------- | --------------------------------- | ------------- | ------------------------------------- |
+| content     | string                            | ''            | Watermark text                        |
+| image       | string                            | ''            | Watermark image source                |
+| imageHeight | number                            | 100           | Image height (px)                     |
+| imageWidth  | number                            | 100           | Image width (px)                      |
+| gutterX     | number                            | 0             | Horizontal gutter (px)                |
+| gutterY     | number                            | 0             | Vertical gutter (px)                  |
+| width       | number                            | 100           | Tile width (px)                       |
+| height      | number                            | 100           | Tile height (px)                      |
+| fullScreen  | boolean                           | true          | Cover the whole viewport              |
+| color       | string                            | ''            | Text color override                   |
+| size        | number                            | 14            | Text size (px)                        |
+| fontStyle   | 'normal' \| 'italic' \| 'oblique' | 'normal'      | Font style                            |
+| fontWeight  | string \| number                  | 'normal'      | Font weight                           |
+| fontFamily  | string                            | 'PingFang SC' | Font family                           |
+| rotate      | number                            | -25           | Rotation angle in degrees             |
+| zIndex      | number                            | 1100          | Stacking level                        |
+| opacity     | number                            | —             | Opacity, 0–1                          |
+| layout      | 'grid' \| 'staggered'             | 'grid'        | Repeat layout                         |
+| customStyle | string                            | ''            | Custom inline style for the root node |
+| customClass | string                            | ''            | Custom class for the root node        |
 
 ## Events
 
@@ -56,15 +56,15 @@ None.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                        |
+| ------- | -------------------------------------------------- |
 | default | Custom tile content (replaces `content` / `image`) |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-text-disabled | Default watermark ink |
+| Variable                       | Purpose               |
+| ------------------------------ | --------------------- |
+| --sn-mp-color-text-disabled    | Default watermark ink |
 | --sn-mp-font-line-height-tight | Tile text line height |
 
 ## Accessibility
@@ -74,7 +74,6 @@ None.
 ## Dark mode
 
 The default ink uses `--sn-mp-color-text-disabled`, overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A literal passed through `color` does not flip with the theme — prefer `var(--sn-mp-*)` colors in dark mode.
 

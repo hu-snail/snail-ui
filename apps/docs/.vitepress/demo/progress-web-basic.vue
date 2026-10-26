@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnProgress — line variants with indicator placement, statuses, processing and custom indicator. */
-import { SnProgress } from '@snui/vue-web'
+import { SnProgress } from '@snui/vue-web';
 </script>
 
 <template>
@@ -25,9 +25,7 @@ import { SnProgress } from '@snui/vue-web'
       <h4>处理中与自定义指示器</h4>
       <SnProgress :percentage="66" processing />
       <SnProgress :percentage="42">
-        <template #default="{ percentage }">
-          已完成 {{ percentage }} 项
-        </template>
+        <template #default="{ percentage }"> 已完成 {{ percentage }} 项 </template>
       </SnProgress>
     </section>
   </div>

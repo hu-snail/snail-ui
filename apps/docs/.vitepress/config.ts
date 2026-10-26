@@ -1,15 +1,15 @@
-import { defineConfig } from 'vitepress'
-import { fileURLToPath, URL } from 'node:url'
-import type { Options as MiniSearchOptions } from 'minisearch'
-import { rawDocSource } from './utils/raw-doc-source'
-import { demoGrid } from './utils/demo-grid'
-import { EDIT_BASE } from './utils/edit-link'
+import { defineConfig } from 'vitepress';
+import { fileURLToPath, URL } from 'node:url';
+import type { Options as MiniSearchOptions } from 'minisearch';
+import { rawDocSource } from './utils/raw-doc-source';
+import { demoGrid } from './utils/demo-grid';
+import { EDIT_BASE } from './utils/edit-link';
 
 /**
  * uni-demo 部署站（docs 预览 iframe 的目标，见 utils/uni-demo-base.ts）。
  * 本地联调：UNI_DEMO_PREVIEW_BASE=http://localhost:5173 pnpm dev
  */
-const UNI_DEMO_BASE = process.env.UNI_DEMO_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui/'
+const UNI_DEMO_BASE = process.env.UNI_DEMO_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui/';
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -33,7 +33,7 @@ const nav = [
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
   { text: '模板', link: '/templates/overview' },
-]
+];
 
 const sidebar = {
   '/guide/': [
@@ -190,9 +190,7 @@ const sidebar = {
   '/components/uni/': [
     {
       text: 'Overview 总览',
-      items: [
-        { text: '组件总览'.trim(), link: '/components/uni/overview' },
-      ],
+      items: [{ text: '组件总览'.trim(), link: '/components/uni/overview' }],
     },
     {
       text: 'Basic 基础组件',
@@ -257,7 +255,10 @@ const sidebar = {
         { text: 'sn-calendar 日历选择器'.trim(), link: '/components/uni/calendar' },
         { text: 'sn-calendar-view 日历面板'.trim(), link: '/components/uni/calendar-view' },
         { text: 'sn-datetime-picker 时间选择器'.trim(), link: '/components/uni/datetime-picker' },
-        { text: 'sn-datetime-picker-view 时间选择器视图'.trim(), link: '/components/uni/datetime-picker-view' },
+        {
+          text: 'sn-datetime-picker-view 时间选择器视图'.trim(),
+          link: '/components/uni/datetime-picker-view',
+        },
         { text: 'sn-upload 上传'.trim(), link: '/components/uni/upload' },
         { text: 'sn-sort-button 排序按钮'.trim(), link: '/components/uni/sort-button' },
         { text: 'sn-signature 签名'.trim(), link: '/components/uni/signature' },
@@ -354,9 +355,7 @@ const sidebar = {
   '/templates/': [
     {
       text: '概览',
-      items: [
-        { text: '模板总览', link: '/templates/overview' },
-      ],
+      items: [{ text: '模板总览', link: '/templates/overview' }],
     },
     {
       text: 'AI 套件',
@@ -369,7 +368,7 @@ const sidebar = {
       ],
     },
   ],
-}
+};
 
 const enNav = [
   { text: 'Guide', link: '/en/guide/web/intro' },
@@ -379,7 +378,7 @@ const enNav = [
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
   { text: 'Templates', link: '/en/templates/overview' },
-]
+];
 
 const enSidebar = {
   '/en/guide/': [
@@ -515,9 +514,7 @@ const enSidebar = {
   '/en/components/uni/': [
     {
       text: 'Overview',
-      items: [
-        { text: 'Component Overview', link: '/en/components/uni/overview' },
-      ],
+      items: [{ text: 'Component Overview', link: '/en/components/uni/overview' }],
     },
     {
       text: 'Basic',
@@ -676,9 +673,7 @@ const enSidebar = {
   '/en/templates/': [
     {
       text: 'Overview',
-      items: [
-        { text: 'Templates overview', link: '/en/templates/overview' },
-      ],
+      items: [{ text: 'Templates overview', link: '/en/templates/overview' }],
     },
     {
       text: 'AI Suite',
@@ -691,11 +686,12 @@ const enSidebar = {
       ],
     },
   ],
-}
+};
 
 export default defineConfig({
   title: 'snail-aui — AI-Native UI 框架生态',
-  description: 'Vue 3 + uni-app 多端 AI-Native UI 框架生态。Component First / Token First / Style Pack First / AI Native。',
+  description:
+    'Vue 3 + uni-app 多端 AI-Native UI 框架生态。Component First / Token First / Style Pack First / AI Native。',
   ignoreDeadLinks: true,
 
   /**
@@ -786,23 +782,25 @@ export default defineConfig({
         },
         miniSearch: {
           tokenize: ((text: string): string[] => {
-            const lowered = text.toLowerCase()
-            const tokens: string[] = []
-            for (const word of lowered.split(/[\s\u2000-\u206f\u2e00-\u2e7f\\'!"#$%&()*+,\-./:;<=>?@[\]^`{|}~]+/g)) {
-              if (word) tokens.push(word)
+            const lowered = text.toLowerCase();
+            const tokens: string[] = [];
+            for (const word of lowered.split(
+              /[\s\u2000-\u206f\u2e00-\u2e7f\\'!"#$%&()*+,\-./:;<=>?@[\]^`{|}~]+/g,
+            )) {
+              if (word) tokens.push(word);
             }
-            const chars = [...lowered]
+            const chars = [...lowered];
             for (let i = 0; i < chars.length; i++) {
-              const ch = chars[i] ?? ''
+              const ch = chars[i] ?? '';
               if (/[\u4e00-\u9fff\u3400-\u4dbf]/.test(ch)) {
-                tokens.push(ch)
-                const next = chars[i + 1] ?? ''
+                tokens.push(ch);
+                const next = chars[i + 1] ?? '';
                 if (/[\u4e00-\u9fff]/.test(next)) {
-                  tokens.push(ch + next)
+                  tokens.push(ch + next);
                 }
               }
             }
-            return tokens
+            return tokens;
           }) as MiniSearchOptions['tokenize'],
           searchOptions: {
             fuzzy: 0.2,
@@ -822,8 +820,8 @@ export default defineConfig({
   // ./utils/demo-grid.ts.
   markdown: {
     config: (md) => {
-      rawDocSource(md)
-      demoGrid(md)
+      rawDocSource(md);
+      demoGrid(md);
     },
   },
 
@@ -839,8 +837,12 @@ export default defineConfig({
       // uni demo 不再由 docs 编译 —— 其源码单源于 apps/uni-demo，预览走部署站
       // iframe（ADR-0005），故 @snui/uni-src 别名与 rpx 转换插件已退役。
       alias: {
-        '@snui/vue-web-src': fileURLToPath(new URL('../../../packages/vue-web/src', import.meta.url)),
-        '@snui/templates-src': fileURLToPath(new URL('../../../packages/templates/src', import.meta.url)),
+        '@snui/vue-web-src': fileURLToPath(
+          new URL('../../../packages/vue-web/src', import.meta.url),
+        ),
+        '@snui/templates-src': fileURLToPath(
+          new URL('../../../packages/templates/src', import.meta.url),
+        ),
       },
     },
     ssr: {
@@ -863,22 +865,20 @@ export default defineConfig({
     // the JS). The browser is the source of truth that proves the dist is
     // usable.
     optimizeDeps: {
-      include: [
-        '@snui/tokens',
-        '@snui/style-packs',
-        'lucide-vue-next',
-        'vue',
-      ],
+      include: ['@snui/tokens', '@snui/style-packs', 'lucide-vue-next', 'vue'],
     },
   },
 
   head: [
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
-    ['link', {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
-    }],
+    [
+      'link',
+      {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap',
+      },
+    ],
   ],
 
   locales: {
@@ -922,4 +922,4 @@ export default defineConfig({
    * The same provider config has been added to `themeConfig.search` above
    * so both root and en locales inherit a working search.
    */
-})
+});

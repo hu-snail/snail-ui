@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnWatermark — tiled text watermark over wrapped content with cross / rotate / opacity. */
-import { SnWatermark } from '@snui/vue-web'
+import { SnWatermark } from '@snui/vue-web';
 </script>
 
 <template>
@@ -17,13 +17,23 @@ import { SnWatermark } from '@snui/vue-web'
       <div class="watermark-demo__content">
         <h4>Quarterly business analysis</h4>
         <p>
-          This page is for authorized personnel only. The watermark layer is purely decorative and does not affect content selection, copying or interaction; multi-line copy is passed as an array, tiles laid out on a width / height grid by default.
+          This page is for authorized personnel only. The watermark layer is purely decorative and
+          does not affect content selection, copying or interaction; multi-line copy is passed as an
+          array, tiles laid out on a width / height grid by default.
         </p>
-        <p>With cross enabled, adjacent tiles are offset by half a tile, creating a staggered layout.</p>
+        <p>
+          With cross enabled, adjacent tiles are offset by half a tile, creating a staggered layout.
+        </p>
       </div>
     </SnWatermark>
 
-    <SnWatermark content="CROSS" :cross="true" :rotate="-30" :opacity="0.4" font-color="rgba(14, 128, 235, 0.3)">
+    <SnWatermark
+      content="CROSS"
+      :cross="true"
+      :rotate="-30"
+      :opacity="0.4"
+      font-color="rgba(14, 128, 235, 0.3)"
+    >
       <div class="watermark-demo__content watermark-demo__content--short">
         <h4>Staggered tiles</h4>
         <p>cross = true: adjacent watermarks in the same row are offset by half a tile.</p>

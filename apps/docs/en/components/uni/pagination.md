@@ -31,57 +31,57 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnPagination } from '@snui/uni/components/sn-pagination/sn-pagination.vue'
+import { SnPagination } from '@snui/uni/components/sn-pagination/sn-pagination.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `number` | `1` | Current page |
-| `totalPage` | `number` | `1` | Page count (overridden when `total` is given) |
-| `total` | `number` | `0` | Total records (takes precedence over `totalPage`) |
-| `pageSize` | `number` | `10` | Records per page |
-| `prevText` | `string` | `''` | Previous button label |
-| `nextText` | `string` | `''` | Next button label |
-| `showIcon` | `boolean` | `false` | Show the step icons |
-| `showMessage` | `boolean` | `false` | Show the text counter |
-| `buttonVariant` | `'base' \| 'plain' \| 'dashed' \| 'text'` | `'text'` | Button look |
-| `hideIfOnePage` | `boolean` | `false` | Hide when there is a single page |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop            | Type                                      | Default  | Description                                       |
+| --------------- | ----------------------------------------- | -------- | ------------------------------------------------- |
+| `modelValue`    | `number`                                  | `1`      | Current page                                      |
+| `totalPage`     | `number`                                  | `1`      | Page count (overridden when `total` is given)     |
+| `total`         | `number`                                  | `0`      | Total records (takes precedence over `totalPage`) |
+| `pageSize`      | `number`                                  | `10`     | Records per page                                  |
+| `prevText`      | `string`                                  | `''`     | Previous button label                             |
+| `nextText`      | `string`                                  | `''`     | Next button label                                 |
+| `showIcon`      | `boolean`                                 | `false`  | Show the step icons                               |
+| `showMessage`   | `boolean`                                 | `false`  | Show the text counter                             |
+| `buttonVariant` | `'base' \| 'plain' \| 'dashed' \| 'text'` | `'text'` | Button look                                       |
+| `hideIfOnePage` | `boolean`                                 | `false`  | Hide when there is a single page                  |
+| `customClass`   | `string`                                  | `''`     | Extra class on the root node                      |
+| `customStyle`   | `string`                                  | `''`     | Inline style on the root node                     |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event               | Description  | Payload           |
+| ------------------- | ------------ | ----------------- |
 | `update:modelValue` | Page changed | `(value: number)` |
-| `change` | Page changed | `({ value })` |
+| `change`            | Page changed | `({ value })`     |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `prev` | Custom previous button; scope `{ modelValue, totalPageNum, total, pageSize }` |
-| `size` | Custom page-list area; same scope |
-| `next` | Custom next button; same scope |
-| `message` | Custom counter, rendered when `showMessage` is true |
+| Slot      | Description                                                                   |
+| --------- | ----------------------------------------------------------------------------- |
+| `prev`    | Custom previous button; scope `{ modelValue, totalPageNum, total, pageSize }` |
+| `size`    | Custom page-list area; same scope                                             |
+| `next`    | Custom next button; same scope                                                |
+| `message` | Custom counter, rendered when `showMessage` is true                           |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | `base` variant button fill |
-| `--sn-mp-color-background-soft` | Active item hover state |
-| `--sn-mp-color-border-default` | `base` variant border |
-| `--sn-mp-color-text-secondary` | Page label |
-| `--sn-mp-color-text-tertiary` | Ellipsis and counter text |
-| `--sn-mp-color-text-disabled` | Disabled prev / next |
-| `--sn-mp-color-action-primary` | Active page fill and button labels |
-| `--sn-mp-color-text-on-primary` | Active page label |
-| `--sn-mp-font-size-sm` / `--sn-mp-font-size-xs` | Button / counter sizes |
-| `--sn-mp-font-weight-medium` | Active page weight |
-| `--sn-mp-radius-sm` | Button radius |
+| Variable                                        | Purpose                            |
+| ----------------------------------------------- | ---------------------------------- |
+| `--sn-mp-color-background-surface`              | `base` variant button fill         |
+| `--sn-mp-color-background-soft`                 | Active item hover state            |
+| `--sn-mp-color-border-default`                  | `base` variant border              |
+| `--sn-mp-color-text-secondary`                  | Page label                         |
+| `--sn-mp-color-text-tertiary`                   | Ellipsis and counter text          |
+| `--sn-mp-color-text-disabled`                   | Disabled prev / next               |
+| `--sn-mp-color-action-primary`                  | Active page fill and button labels |
+| `--sn-mp-color-text-on-primary`                 | Active page label                  |
+| `--sn-mp-font-size-sm` / `--sn-mp-font-size-xs` | Button / counter sizes             |
+| `--sn-mp-font-weight-medium`                    | Active page weight                 |
+| `--sn-mp-radius-sm`                             | Button radius                      |
 
 ## Accessibility
 
@@ -96,7 +96,6 @@ import { SnPagination } from '@snui/uni/components/sn-pagination/sn-pagination.v
 Every colour in `sn-pagination` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: borders flip to the dark border token, page labels move to the dark secondary text colour, and the active page keeps the brand fill with white text.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

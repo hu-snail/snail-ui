@@ -27,60 +27,60 @@ added to the wd-tooltip parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnTooltip } from '@snui/uni'
+import { SnTooltip } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `modelValue` | `boolean` | `false` | no | Whether the bubble is shown (`v-model`). |
-| `content` | `string \| Array<Record<string, unknown> \| string>` | `''` | no | Bubble text; an array renders one line per entry (`label` / `text` / `content` / `name` key, or a plain string). |
-| `placement` | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \| 'left' \| 'left-start' \| 'left-end' \| 'right' \| 'right-start' \| 'right-end'` | `'bottom'` | no | Bubble anchor. |
-| `offset` | `number \| number[] \| { x?, y? }` | `0` | no | Gap between trigger and bubble, in design px. Published as `--sn-tooltip-offset-x` / `-y`. |
-| `visibleArrow` | `boolean` | `true` | no | Render the arrow pointing at the trigger. |
-| `disabled` | `boolean` | `false` | no | Disables the trigger — taps are ignored and the bubble stays closed. |
-| `showClose` | `boolean` | `false` | no | Render a close button inside the bubble. |
-| `customArrow` | `string` | `''` | no | Extra class on the arrow node. |
-| `customPop` | `string` | `''` | no | Extra class on the bubble node. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
-| `rootPortal` | `boolean` | `false` | no | **Not implemented** — declared for parity; miniprogram has no portal host. |
+| Name           | Type                                                                                                                                                                 | Default    | Required | Description                                                                                                      |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------- |
+| `modelValue`   | `boolean`                                                                                                                                                            | `false`    | no       | Whether the bubble is shown (`v-model`).                                                                         |
+| `content`      | `string \| Array<Record<string, unknown> \| string>`                                                                                                                 | `''`       | no       | Bubble text; an array renders one line per entry (`label` / `text` / `content` / `name` key, or a plain string). |
+| `placement`    | `'top' \| 'top-start' \| 'top-end' \| 'bottom' \| 'bottom-start' \| 'bottom-end' \| 'left' \| 'left-start' \| 'left-end' \| 'right' \| 'right-start' \| 'right-end'` | `'bottom'` | no       | Bubble anchor.                                                                                                   |
+| `offset`       | `number \| number[] \| { x?, y? }`                                                                                                                                   | `0`        | no       | Gap between trigger and bubble, in design px. Published as `--sn-tooltip-offset-x` / `-y`.                       |
+| `visibleArrow` | `boolean`                                                                                                                                                            | `true`     | no       | Render the arrow pointing at the trigger.                                                                        |
+| `disabled`     | `boolean`                                                                                                                                                            | `false`    | no       | Disables the trigger — taps are ignored and the bubble stays closed.                                             |
+| `showClose`    | `boolean`                                                                                                                                                            | `false`    | no       | Render a close button inside the bubble.                                                                         |
+| `customArrow`  | `string`                                                                                                                                                             | `''`       | no       | Extra class on the arrow node.                                                                                   |
+| `customPop`    | `string`                                                                                                                                                             | `''`       | no       | Extra class on the bubble node.                                                                                  |
+| `customClass`  | `string`                                                                                                                                                             | `''`       | no       | Custom class for the root node.                                                                                  |
+| `customStyle`  | `string`                                                                                                                                                             | `''`       | no       | Custom inline style for the root node.                                                                           |
+| `rootPortal`   | `boolean`                                                                                                                                                            | `false`    | no       | **Not implemented** — declared for parity; miniprogram has no portal host.                                       |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:modelValue` | `boolean` | Visibility changed. |
-| `open` | — | Bubble shown. |
-| `close` | — | Bubble hidden. |
-| `change` | `{ show: boolean }` | Visibility changed (single listener for both legs). |
+| Name                | Payload             | Description                                         |
+| ------------------- | ------------------- | --------------------------------------------------- |
+| `update:modelValue` | `boolean`           | Visibility changed.                                 |
+| `open`              | —                   | Bubble shown.                                       |
+| `close`             | —                   | Bubble hidden.                                      |
+| `change`            | `{ show: boolean }` | Visibility changed (single listener for both legs). |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                         |
+| --------- | --------------------------------------------------- |
 | `default` | Trigger content (the element the bubble points at). |
-| `content` | Custom bubble body; replaces `content`. |
+| `content` | Custom bubble body; replaces `content`.             |
 
 ## Exposed Methods
 
-| Name | Description |
-|---|---|
-| `open()` | Show the bubble and emit `update:modelValue`. |
-| `close()` | Hide the bubble and emit `update:modelValue`. |
+| Name               | Description                                    |
+| ------------------ | ---------------------------------------------- |
+| `open()`           | Show the bubble and emit `update:modelValue`.  |
+| `close()`          | Hide the bubble and emit `update:modelValue`.  |
 | `updatePosition()` | Compatibility no-op — placement is CSS-driven. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Inverted surface | `--sn-mp-color-text-primary` | Bubble background (flips in dark mode) |
-| Inverted text | `--sn-mp-color-background-elevated` | Bubble text / close glyph |
-| Elevation | `--sn-mp-shadow-md` | Bubble shadow |
-| Radius | `--sn-mp-radius-md` | Bubble corners |
-| Spacing | `--sn-mp-spacing-2/3/4` | Bubble padding / gaps |
-| Typography | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal` | Bubble text |
+| Token            | CSS Variable                                              | Purpose                                |
+| ---------------- | --------------------------------------------------------- | -------------------------------------- |
+| Inverted surface | `--sn-mp-color-text-primary`                              | Bubble background (flips in dark mode) |
+| Inverted text    | `--sn-mp-color-background-elevated`                       | Bubble text / close glyph              |
+| Elevation        | `--sn-mp-shadow-md`                                       | Bubble shadow                          |
+| Radius           | `--sn-mp-radius-md`                                       | Bubble corners                         |
+| Spacing          | `--sn-mp-spacing-2/3/4`                                   | Bubble padding / gaps                  |
+| Typography       | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal` | Bubble text                            |
 
 ## Accessibility
 

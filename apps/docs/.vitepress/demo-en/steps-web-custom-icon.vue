@@ -5,11 +5,11 @@
  * Shows: the `finish-icon` and `error-icon` slots on SnSteps, plus the
  * per-step `icon` slot that overrides a single indicator.
  */
-import { ref } from 'vue'
-import { SnIcon, SnStep, SnSteps } from '@snui/vue-web'
-import { Flag, Rocket, ThumbsUp, Zap } from 'lucide-vue-next'
+import { ref } from 'vue';
+import { SnIcon, SnStep, SnSteps } from '@snui/vue-web';
+import { Flag, Rocket, ThumbsUp, Zap } from 'lucide-vue-next';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>
@@ -43,12 +43,17 @@ const current = ref(1)
             <SnIcon :icon="Rocket" size="14" />
           </template>
         </SnStep>
-        <SnStep title="Finalize" description="No icon provided; falls back to the built-in rendering" />
+        <SnStep
+          title="Finalize"
+          description="No icon provided; falls back to the built-in rendering"
+        />
       </SnSteps>
     </div>
 
     <p class="steps-icon__hint">
-      <code>finish-icon</code> / <code>error-icon</code> are defined on the parent <code>SnSteps</code> applies to all sub-steps;<code>icon</code> slot only overrides that one step.
+      <code>finish-icon</code> / <code>error-icon</code> are defined on the parent
+      <code>SnSteps</code> applies to all sub-steps;<code>icon</code> slot only overrides that one
+      step.
     </p>
   </div>
 </template>

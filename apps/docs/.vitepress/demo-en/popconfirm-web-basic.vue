@@ -2,24 +2,24 @@
 /**
  * Demo: SnPopconfirm — default texts, custom texts, custom icon and veto.
  */
-import { ref } from 'vue'
-import { CircleCheck } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnIcon, SnPopconfirm } from '@snui/vue-web'
+import { ref } from 'vue';
+import { CircleCheck } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnIcon, SnPopconfirm } from '@snui/vue-web';
 
-registerSnIcons({ CircleCheck })
+registerSnIcons({ CircleCheck });
 
-const result = ref('')
+const result = ref('');
 
 function onPositive() {
-  result.value = 'Confirmed'
+  result.value = 'Confirmed';
 }
 function onNegative() {
-  result.value = 'Cancelled'
+  result.value = 'Cancelled';
 }
 function onVetoPositive() {
   // 返回 false 阻止关闭（例如校验未通过时）。
-  result.value = 'Confirm intercepted; popover stays open'
-  return false
+  result.value = 'Confirm intercepted; popover stays open';
+  return false;
 }
 </script>
 
@@ -55,7 +55,10 @@ function onVetoPositive() {
           </template>
           <SnButton>Custom icon (#icon slot)</SnButton>
         </SnPopconfirm>
-        <SnPopconfirm content="Clicking 'Confirm' is intercepted by the callback, so the popover stays open." @positive-click="onVetoPositive">
+        <SnPopconfirm
+          content="Clicking 'Confirm' is intercepted by the callback, so the popover stays open."
+          @positive-click="onVetoPositive"
+        >
           <SnButton>Return false to block closing</SnButton>
         </SnPopconfirm>
       </div>

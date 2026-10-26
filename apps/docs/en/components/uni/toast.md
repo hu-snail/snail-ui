@@ -31,55 +31,55 @@ Centred and horizontal by default; auto-closes after `duration` ms. `duration=0`
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| modelValue | boolean | false | Visibility (`v-model`) |
-| msg | string | '' | Message text |
-| duration | number | 2000 | Delay in ms; `0` keeps it open |
-| direction | 'horizontal' \| 'vertical' | 'horizontal' | Layout direction |
-| iconName | '' \| 'success' \| 'error' \| 'warning' \| 'loading' \| 'info' | '' | Icon kind |
-| iconSize | number \| string | — | Icon size (bare number = rpx) |
-| loadingType | 'circular' \| 'spinner' \| 'dots' \| 'wave' | 'circular' | Spinner shape for `iconName="loading"` |
-| loadingColor | string | '' | Spinner color |
-| loadingSize | number \| string | — | Spinner size (bare number = rpx) |
-| iconColor | string | '' | Status glyph color |
-| position | 'top' \| 'middle-top' \| 'middle' \| 'bottom' | 'middle' | Anchor of the toast box |
-| zIndex | number | 100 | Stacking level |
-| cover | boolean | false | Render a blocking transparent scrim |
-| iconClass | string | '' | Custom class for the icon node (parity) |
-| classPrefix | string | 'wd-icon' | Icon class prefix (parity; inert) |
-| cssIcon | boolean \| string | false | CSS-icon mode (parity; inert) |
-| selector | string | '' | Instance id (parity only) |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the toast box |
+| Prop         | Type                                                           | Default      | Description                             |
+| ------------ | -------------------------------------------------------------- | ------------ | --------------------------------------- |
+| modelValue   | boolean                                                        | false        | Visibility (`v-model`)                  |
+| msg          | string                                                         | ''           | Message text                            |
+| duration     | number                                                         | 2000         | Delay in ms; `0` keeps it open          |
+| direction    | 'horizontal' \| 'vertical'                                     | 'horizontal' | Layout direction                        |
+| iconName     | '' \| 'success' \| 'error' \| 'warning' \| 'loading' \| 'info' | ''           | Icon kind                               |
+| iconSize     | number \| string                                               | —            | Icon size (bare number = rpx)           |
+| loadingType  | 'circular' \| 'spinner' \| 'dots' \| 'wave'                    | 'circular'   | Spinner shape for `iconName="loading"`  |
+| loadingColor | string                                                         | ''           | Spinner color                           |
+| loadingSize  | number \| string                                               | —            | Spinner size (bare number = rpx)        |
+| iconColor    | string                                                         | ''           | Status glyph color                      |
+| position     | 'top' \| 'middle-top' \| 'middle' \| 'bottom'                  | 'middle'     | Anchor of the toast box                 |
+| zIndex       | number                                                         | 100          | Stacking level                          |
+| cover        | boolean                                                        | false        | Render a blocking transparent scrim     |
+| iconClass    | string                                                         | ''           | Custom class for the icon node (parity) |
+| classPrefix  | string                                                         | 'wd-icon'    | Icon class prefix (parity; inert)       |
+| cssIcon      | boolean \| string                                              | false        | CSS-icon mode (parity; inert)           |
+| selector     | string                                                         | ''           | Instance id (parity only)               |
+| customClass  | string                                                         | ''           | Custom class for the root node          |
+| customStyle  | string                                                         | ''           | Custom inline style for the toast box   |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event             | Description                               | Payload |
+| ----------------- | ----------------------------------------- | ------- |
 | update:modelValue | `v-model` sync (also fires on auto-close) | boolean |
-| opened | Toast finished appearing | — |
-| closed | Toast finished closing (after the fade) | — |
-| click | Toast box tapped | — |
+| opened            | Toast finished appearing                  | —       |
+| closed            | Toast finished closing (after the fade)   | —       |
+| click             | Toast box tapped                          | —       |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                             |
+| ------- | --------------------------------------- |
 | default | Custom message content (replaces `msg`) |
-| icon | Custom icon area |
+| icon    | Custom icon area                        |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-text-on-primary | Toast text |
-| --sn-mp-color-background-sunken | Toast surface |
-| --sn-mp-color-background-overlay | `cover` scrim |
-| --sn-mp-font-size-md | Message size |
-| --sn-mp-font-line-height-normal | Message line height |
-| --sn-mp-spacing-3` / `--sn-mp-spacing-5` / `--sn-mp-spacing-6 | Padding and icon gap |
-| --sn-mp-radius-lg | Toast box corners |
+| Variable                                                  | Purpose              |
+| --------------------------------------------------------- | -------------------- |
+| --sn-mp-color-text-on-primary                             | Toast text           |
+| --sn-mp-color-background-sunken                           | Toast surface        |
+| --sn-mp-color-background-overlay                          | `cover` scrim        |
+| --sn-mp-font-size-md                                      | Message size         |
+| --sn-mp-font-line-height-normal                           | Message line height  |
+| --sn-mp-spacing-3`/`--sn-mp-spacing-5`/`--sn-mp-spacing-6 | Padding and icon gap |
+| --sn-mp-radius-lg                                         | Toast box corners    |
 
 ## Accessibility
 
@@ -90,7 +90,6 @@ Centred and horizontal by default; auto-closes after `duration` ms. `duration=0`
 ## Dark mode
 
 The toast surface uses `--sn-mp-color-background-sunken` and the text uses `--sn-mp-color-text-on-primary`; both are overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

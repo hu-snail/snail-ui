@@ -26,44 +26,44 @@ added to the wd-overlay parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnOverlay } from '@snui/uni'
+import { SnOverlay } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `show` | `boolean` | `false` | no | Whether the overlay is shown. |
-| `duration` | `number \| boolean \| Record<string, number>` | `300` | no | Animation duration; `false` disables, a record sets enter / leave separately. |
-| `lockScroll` | `boolean` | `true` | no | Intercept `touchmove` so the page behind cannot scroll. |
-| `zIndex` | `number` | `10` | no | Stacking level. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
+| Name          | Type                                          | Default | Required | Description                                                                   |
+| ------------- | --------------------------------------------- | ------- | -------- | ----------------------------------------------------------------------------- |
+| `show`        | `boolean`                                     | `false` | no       | Whether the overlay is shown.                                                 |
+| `duration`    | `number \| boolean \| Record<string, number>` | `300`   | no       | Animation duration; `false` disables, a record sets enter / leave separately. |
+| `lockScroll`  | `boolean`                                     | `true`  | no       | Intercept `touchmove` so the page behind cannot scroll.                       |
+| `zIndex`      | `number`                                      | `10`    | no       | Stacking level.                                                               |
+| `customStyle` | `string`                                      | `''`    | no       | Custom inline style for the root node.                                        |
+| `customClass` | `string`                                      | `''`    | no       | Custom class for the root node.                                               |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `click` | `Event` | Overlay tapped. |
-| `before-enter` | — | Enter animation about to start. |
-| `enter` | — | Enter animation started. |
-| `after-enter` | — | Enter animation finished. |
-| `before-leave` | — | Leave animation about to start. |
-| `leave` | — | Leave animation started. |
-| `after-leave` | — | Leave animation finished (node removed). |
+| Name           | Payload | Description                              |
+| -------------- | ------- | ---------------------------------------- |
+| `click`        | `Event` | Overlay tapped.                          |
+| `before-enter` | —       | Enter animation about to start.          |
+| `enter`        | —       | Enter animation started.                 |
+| `after-enter`  | —       | Enter animation finished.                |
+| `before-leave` | —       | Leave animation about to start.          |
+| `leave`        | —       | Leave animation started.                 |
+| `after-leave`  | —       | Leave animation finished (node removed). |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                     |
+| --------- | ----------------------------------------------- |
 | `default` | Content rendered on top of the scrim (centred). |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Scrim | `--sn-mp-color-background-overlay` | Overlay background (dark-mode aware) |
-| Text on primary | `--sn-mp-color-text-on-primary` | Content text color over the scrim |
+| Token           | CSS Variable                       | Purpose                              |
+| --------------- | ---------------------------------- | ------------------------------------ |
+| Scrim           | `--sn-mp-color-background-overlay` | Overlay background (dark-mode aware) |
+| Text on primary | `--sn-mp-color-text-on-primary`    | Content text color over the scrim    |
 
 ## Accessibility
 

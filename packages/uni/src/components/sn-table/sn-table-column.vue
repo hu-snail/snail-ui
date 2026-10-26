@@ -32,33 +32,33 @@
  *   - 排序算法 — `sort-method` 交给宿主
  */
 
-import { getCurrentInstance, inject, onBeforeUnmount, onMounted, ref, useSlots } from 'vue'
+import { getCurrentInstance, inject, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
 import {
   SN_TABLE_KEY,
   type SnTableAlign,
   type SnTableRow,
   type SnTableSortOrder,
-} from './sn-table-types'
+} from './sn-table-types';
 
-defineOptions({ name: 'SnTableColumn' })
+defineOptions({ name: 'SnTableColumn' });
 
 /** Default column width in design px (mirrors `wd-table-column` `width`). */
-const DEFAULT_COLUMN_WIDTH = 100
+const DEFAULT_COLUMN_WIDTH = 100;
 
 const props = withDefaults(
   defineProps<{
     /** Data field name (required in practice; `''` renders an empty column). */
-    prop?: string
+    prop?: string;
     /** Header label. */
-    label?: string
+    label?: string;
     /** Column width — a bare number is design px. */
-    width?: string | number
+    width?: string | number;
     /** Tapping the header cycles asc → desc → none. */
-    sortable?: boolean
+    sortable?: boolean;
     /** Pin the column to the left edge while the body scrolls horizontally. */
-    fixed?: boolean
+    fixed?: boolean;
     /** Content alignment. */
-    align?: SnTableAlign
+    align?: SnTableAlign;
   }>(),
   {
     prop: '',
@@ -68,25 +68,25 @@ const props = withDefaults(
     fixed: false,
     align: 'left',
   },
-)
+);
 
 defineSlots<{
   /** Custom cell content; the slot receives `{ row, index }`. */
-  value?(props: { row: SnTableRow; index: number }): unknown
-}>()
+  value?(props: { row: SnTableRow; index: number }): unknown;
+}>();
 
-const slots = useSlots()
-const instance = getCurrentInstance()
-const table = inject(SN_TABLE_KEY, null)
+const slots = useSlots();
+const instance = getCurrentInstance();
+const table = inject(SN_TABLE_KEY, null);
 
 /** Sort order this column is currently in (driven by the container). */
-const sortOrder = ref<SnTableSortOrder>('none')
+const sortOrder = ref<SnTableSortOrder>('none');
 
 /** Stable registration id — the instance uid never collides across columns. */
-const uid = instance?.uid ?? 0
+const uid = instance?.uid ?? 0;
 
 onMounted(() => {
-  if (table === null) return
+  if (table === null) return;
   table.registerColumn({
     uid,
     getColumn: () => ({
@@ -99,19 +99,18 @@ onMounted(() => {
       sortOrder: sortOrder.value,
     }),
     setSortOrder: (order: SnTableSortOrder) => {
-      sortOrder.value = order
+      sortOrder.value = order;
     },
     getValueSlot: () =>
       slots.value as unknown as
-        | ((props: { row: SnTableRow; index: number }) => unknown)
-        | undefined,
-  })
-})
+        ((props: { row: SnTableRow; index: number }) => unknown) | undefined,
+  });
+});
 
 onBeforeUnmount(() => {
   // §41: drop the registration so a removed column stops occupying a slot.
-  table?.unregisterColumn(uid)
-})
+  table?.unregisterColumn(uid);
+});
 </script>
 
 <template>

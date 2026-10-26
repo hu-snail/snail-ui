@@ -12,10 +12,10 @@ AI Skill (`snail-ui.skill.md`) is a structured behavior contract, **not** API do
 
 When AI receives a task, it must first determine the target end:
 
-| Keywords | Target end |
-|---|---|
-| PC / desktop / web / browser / Vue 3 | `web` |
-| mobile / miniprogram / wechat / alipay / H5 / uni-app / uniapp | `mp` |
+| Keywords                                                       | Target end |
+| -------------------------------------------------------------- | ---------- |
+| PC / desktop / web / browser / Vue 3                           | `web`      |
+| mobile / miniprogram / wechat / alipay / H5 / uni-app / uniapp | `mp`       |
 
 If ambiguous, ask "Is this for Web (PC) or uni (mobile)?". **Never default to Web.**
 
@@ -24,8 +24,8 @@ If ambiguous, ask "Is this for Web (PC) or uni (mobile)?". **Never default to We
 **Web (`@snui/vue-web`)**:
 
 ```ts
-import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 - All `Sn-` prefix, PascalCase imports
@@ -63,10 +63,10 @@ import '@snui/tokens-web/styles'
 
 Per-end:
 
-| End | Only allowed Token |
-|---|---|
+| End                       | Only allowed Token                 |
+| ------------------------- | ---------------------------------- |
 | **Web** (`@snui/vue-web`) | `var(--sn-web-*)` alias layer (px) |
-| **uni** (`@snui/uni`) | `var(--sn-mp-*)` alias layer (rpx) |
+| **uni** (`@snui/uni`)     | `var(--sn-mp-*)` alias layer (rpx) |
 
 Forbidden:
 
@@ -85,9 +85,9 @@ Only allowed fallback values: `transparent` / `inherit` / `currentColor`.
 
 ```vue
 <script setup lang="ts">
-import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-import { ref } from 'vue'
+import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
+import { ref } from 'vue';
 // only snail-aui + Vue core
 // no axios/pinia/router (use setTimeout to simulate async in prototype)
 </script>
@@ -104,7 +104,9 @@ import { ref } from 'vue'
 
 <style scoped>
 /* only var(--sn-web-*), no literal colors */
-.page { padding: var(--sn-web-spacing-inset-lg); }
+.page {
+  padding: var(--sn-web-spacing-inset-lg);
+}
 </style>
 ```
 
@@ -113,8 +115,8 @@ import { ref } from 'vue'
 ```vue
 <!-- easycom auto-registers sn-button / sn-input / sn-form / sn-card -->
 <script setup lang="ts">
-import '@snui/tokens-mp/styles'
-import { ref } from 'vue'
+import '@snui/tokens-mp/styles';
+import { ref } from 'vue';
 </script>
 
 <template>
@@ -128,7 +130,9 @@ import { ref } from 'vue'
 
 <style scoped>
 /* only var(--sn-mp-*), auto rpx */
-.page { padding: var(--sn-mp-spacing-inset-lg); }
+.page {
+  padding: var(--sn-mp-spacing-inset-lg);
+}
 </style>
 ```
 
@@ -150,11 +154,11 @@ import { ref } from 'vue'
 Skill is exported from `@snui/ai/skill`:
 
 ```ts
-import { SKILL_VERSION, SKILL_CONTENT, loadSkill } from '@snui/ai/skill'
+import { SKILL_VERSION, SKILL_CONTENT, loadSkill } from '@snui/ai/skill';
 
-const text = loadSkill()
+const text = loadSkill();
 // prepend to AI prompt
-const prompt = `${SKILL_CONTENT}\n\n## User request\n${userInput}`
+const prompt = `${SKILL_CONTENT}\n\n## User request\n${userInput}`;
 ```
 
 ---

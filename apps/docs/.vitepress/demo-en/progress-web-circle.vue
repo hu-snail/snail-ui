@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnProgress — circle with status glyphs and multiple-circle with legend. */
-import { SnProgress } from '@snui/vue-web'
+import { SnProgress } from '@snui/vue-web';
 </script>
 
 <template>

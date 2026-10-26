@@ -8,9 +8,9 @@
  * untouched, the group's own `value` is not part of the selection model, and a
  * disabled leaf inside a group is skipped by the keyboard highlight.
  */
-import { computed, ref } from 'vue'
-import { SnButton, SnPopselect } from '@snui/vue-web'
-import type { SnPopselectValue, SnSelectOptionInput } from '@snui/vue-web'
+import { computed, ref } from 'vue';
+import { SnButton, SnPopselect } from '@snui/vue-web';
+import type { SnPopselectValue, SnSelectOptionInput } from '@snui/vue-web';
 
 const options: SnSelectOptionInput[] = [
   '全部任务',
@@ -38,10 +38,10 @@ const options: SnSelectOptionInput[] = [
       { label: '登录设备', value: 'devices' },
     ],
   },
-]
+];
 
 const labelOf: Record<string, string> = {
-  '全部任务': '全部任务',
+  全部任务: '全部任务',
   theme: '主题外观',
   locale: '界面语言',
   timezone: '时区',
@@ -50,13 +50,13 @@ const labelOf: Record<string, string> = {
   sms: '短信（禁用）',
   twoFactor: '两步验证',
   devices: '登录设备',
-}
+};
 
-const selected = ref<SnPopselectValue>('inbox')
+const selected = ref<SnPopselectValue>('inbox');
 
 const selectedLabel = computed(() =>
-  selected.value === null ? '未选择' : labelOf[String(selected.value)] ?? String(selected.value),
-)
+  selected.value === null ? '未选择' : (labelOf[String(selected.value)] ?? String(selected.value)),
+);
 </script>
 
 <template>
@@ -69,7 +69,8 @@ const selectedLabel = computed(() =>
     </div>
 
     <p class="popselect-groups-demo__hint">
-      分组标题只作为视觉分隔，不可选中、也不会进入键盘高亮序列；组内「短信」为禁用项，↑ / ↓ 会直接跳过它。裸值（「全部任务」）与分组可以混排，顺序与 options 声明一致。
+      分组标题只作为视觉分隔，不可选中、也不会进入键盘高亮序列；组内「短信」为禁用项，↑ / ↓
+      会直接跳过它。裸值（「全部任务」）与分组可以混排，顺序与 options 声明一致。
     </p>
   </div>
 </template>

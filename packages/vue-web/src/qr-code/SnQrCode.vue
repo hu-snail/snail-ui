@@ -34,41 +34,41 @@
  *   <SnQrCode value="…" type="svg" :size="140" color="#18a058" />
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watch, type CSSProperties } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { encode } from './sn-qr-core'
+import { computed, onBeforeUnmount, onMounted, ref, watch, type CSSProperties } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { encode } from './sn-qr-core';
 
-defineOptions({ name: 'SnQrCode' })
+defineOptions({ name: 'SnQrCode' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Text content encoded into the QR code. Mirrors n-qr-code `value`. */
-    value?: string
+    value?: string;
     /** Error correction level: ~7% (L), 15% (M), 25% (Q), 30% (H). Mirrors n-qr-code `error-correction-level`. */
-    errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H'
+    errorCorrectionLevel?: 'L' | 'M' | 'Q' | 'H';
     /** Square side length in px (padding included). Mirrors n-qr-code `size`. */
-    size?: number
+    size?: number;
     /** Inner padding around the code; number → px. Mirrors n-qr-code `padding`. */
-    padding?: number | string
+    padding?: number | string;
     /** Dark-module color (any CSS color). Mirrors n-qr-code `color`. */
-    color?: string | undefined
+    color?: string | undefined;
     /** Light-module / box background color. Mirrors n-qr-code `background-color`. */
-    backgroundColor?: string | undefined
+    backgroundColor?: string | undefined;
     /** Center icon image url. Mirrors n-qr-code `icon-src`. */
-    iconSrc?: string | undefined
+    iconSrc?: string | undefined;
     /** Center icon size in px. Mirrors n-qr-code `icon-size`. */
-    iconSize?: number
+    iconSize?: number;
     /** Icon backing plate color. Mirrors n-qr-code `icon-background-color`. */
-    iconBackgroundColor?: string | undefined
+    iconBackgroundColor?: string | undefined;
     /** Icon backing plate radius in px. Mirrors n-qr-code `icon-border-radius`. */
-    iconBorderRadius?: number
+    iconBorderRadius?: number;
     /** Render target. Mirrors n-qr-code `type`. */
-    type?: 'canvas' | 'svg'
+    type?: 'canvas' | 'svg';
     /** Local addition: reveal the floating download toolbar on hover/focus. */
-    showToolbar?: boolean
+    showToolbar?: boolean;
   }>(),
   {
     value: '',
@@ -84,9 +84,9 @@ const props = withDefaults(
     type: 'canvas',
     showToolbar: true,
   },
-)
+);
 
-const canvasRef = ref<HTMLCanvasElement | null>(null)
+const canvasRef = ref<HTMLCanvasElement | null>(null);
 
 /**
  * Canvas 2D cannot resolve `var()` — resolve the theme color through a
@@ -99,179 +99,196 @@ function resolvePaintColor(
   cssVar: string,
   namedFallback: string,
 ): string {
-  if (value) return value
+  if (value) return value;
   if (typeof document !== 'undefined' && typeof getComputedStyle === 'function') {
-    const probe = document.createElement('span')
-    probe.style.color = cssVar
-    document.body.appendChild(probe)
-    const computed = getComputedStyle(probe).color
-    probe.remove()
-    if (computed && !computed.includes('var(')) return computed
+    const probe = document.createElement('span');
+    probe.style.color = cssVar;
+    document.body.appendChild(probe);
+    const computed = getComputedStyle(probe).color;
+    probe.remove();
+    if (computed && !computed.includes('var(')) return computed;
   }
-  return namedFallback
+  return namedFallback;
 }
 
 const paintColor = computed(() =>
   resolvePaintColor(props.color, 'var(--sn-web-color-text-primary)', 'black'),
-)
+);
 const paintBackgroundColor = computed(() =>
   resolvePaintColor(props.backgroundColor, 'var(--sn-web-color-background-surface)', 'white'),
-)
+);
 const paintIconBackgroundColor = computed(() =>
   resolvePaintColor(props.iconBackgroundColor, 'var(--sn-web-color-background-surface)', 'white'),
-)
+);
 
 /** Undefined value falls back to '-', mirroring the reference component. */
-const encodeValue = computed(() => props.value ?? '-')
+const encodeValue = computed(() => props.value ?? '-');
 
-const matrix = computed(() => encode(encodeValue.value, props.errorCorrectionLevel))
+const matrix = computed(() => encode(encodeValue.value, props.errorCorrectionLevel));
 
 const ariaLabel = computed(() =>
   encodeValue.value === '' ? '二维码' : `二维码：${encodeValue.value}`,
-)
+);
 
 /* ── Canvas painting ──────────────────────────────────────────────────────
  * happy-dom (and some headless hosts) return null from getContext — every
  * drawing call is guarded and the component degrades to an empty canvas. */
 
-const loadedIconRef = ref<HTMLImageElement | null>(null)
-let iconLoadGeneration = 0
+const loadedIconRef = ref<HTMLImageElement | null>(null);
+let iconLoadGeneration = 0;
 
 function drawCanvas(): void {
-  const canvas = canvasRef.value
-  if (!canvas) return
+  const canvas = canvasRef.value;
+  if (!canvas) return;
   const dpr =
-    typeof window !== 'undefined' && window.devicePixelRatio > 0
-      ? window.devicePixelRatio
-      : 1
-  const canvasWidth = props.size * dpr
-  canvas.width = canvasWidth
-  canvas.height = canvasWidth
-  const ctx = canvas.getContext('2d')
-  if (!ctx) return
-  const scale = canvasWidth / matrix.value.size
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+    typeof window !== 'undefined' && window.devicePixelRatio > 0 ? window.devicePixelRatio : 1;
+  const canvasWidth = props.size * dpr;
+  canvas.width = canvasWidth;
+  canvas.height = canvasWidth;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const scale = canvasWidth / matrix.value.size;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let y = 0; y < matrix.value.size; y++) {
     for (let x = 0; x < matrix.value.size; x++) {
-      ctx.fillStyle = matrix.value.getModule(x, y) ? paintColor.value : paintBackgroundColor.value
-      const startX = Math.floor(x * scale)
-      const startY = Math.floor(y * scale)
-      ctx.fillRect(startX, startY, Math.ceil((x + 1) * scale) - startX, Math.ceil((y + 1) * scale) - startY)
+      ctx.fillStyle = matrix.value.getModule(x, y) ? paintColor.value : paintBackgroundColor.value;
+      const startX = Math.floor(x * scale);
+      const startY = Math.floor(y * scale);
+      ctx.fillRect(
+        startX,
+        startY,
+        Math.ceil((x + 1) * scale) - startX,
+        Math.ceil((y + 1) * scale) - startY,
+      );
     }
   }
-  const icon = loadedIconRef.value
+  const icon = loadedIconRef.value;
   if (props.iconSrc && icon) {
-    const plateSize = props.iconSize * dpr
-    const centerX = (canvas.width - plateSize) / 2
-    const centerY = (canvas.height - plateSize) / 2
-    ctx.fillStyle = paintIconBackgroundColor.value
+    const plateSize = props.iconSize * dpr;
+    const centerX = (canvas.width - plateSize) / 2;
+    const centerY = (canvas.height - plateSize) / 2;
+    ctx.fillStyle = paintIconBackgroundColor.value;
     if (typeof ctx.roundRect === 'function') {
-      ctx.beginPath()
-      ctx.roundRect(centerX, centerY, plateSize, plateSize, props.iconBorderRadius * dpr)
-      ctx.fill()
+      ctx.beginPath();
+      ctx.roundRect(centerX, centerY, plateSize, plateSize, props.iconBorderRadius * dpr);
+      ctx.fill();
     } else {
-      ctx.fillRect(centerX, centerY, plateSize, plateSize)
+      ctx.fillRect(centerX, centerY, plateSize, plateSize);
     }
-    const aspectRatio = icon.naturalWidth && icon.naturalHeight ? icon.naturalWidth / icon.naturalHeight : 1
-    const drawWidth = aspectRatio >= 1 ? plateSize : plateSize * aspectRatio
-    const drawHeight = aspectRatio <= 1 ? plateSize : plateSize / aspectRatio
-    ctx.drawImage(icon, centerX + (plateSize - drawWidth) / 2, centerY + (plateSize - drawHeight) / 2, drawWidth, drawHeight)
+    const aspectRatio =
+      icon.naturalWidth && icon.naturalHeight ? icon.naturalWidth / icon.naturalHeight : 1;
+    const drawWidth = aspectRatio >= 1 ? plateSize : plateSize * aspectRatio;
+    const drawHeight = aspectRatio <= 1 ? plateSize : plateSize / aspectRatio;
+    ctx.drawImage(
+      icon,
+      centerX + (plateSize - drawWidth) / 2,
+      centerY + (plateSize - drawHeight) / 2,
+      drawWidth,
+      drawHeight,
+    );
   }
 }
 
 watch(
-  () => [matrix.value, props.size, paintColor.value, paintBackgroundColor.value, props.type, loadedIconRef.value],
+  () => [
+    matrix.value,
+    props.size,
+    paintColor.value,
+    paintBackgroundColor.value,
+    props.type,
+    loadedIconRef.value,
+  ],
   () => {
-    if (props.type === 'canvas') drawCanvas()
+    if (props.type === 'canvas') drawCanvas();
   },
   { immediate: true },
-)
+);
 
 onMounted(() => {
   // The immediate watcher runs during setup when canvasRef is still null —
   // the first paint must happen after mount.
-  if (props.type === 'canvas') drawCanvas()
-  if (props.type !== 'canvas' || !props.iconSrc) return
-  if (typeof Image === 'undefined') return
-  const generation = ++iconLoadGeneration
-  const img = new Image()
+  if (props.type === 'canvas') drawCanvas();
+  if (props.type !== 'canvas' || !props.iconSrc) return;
+  if (typeof Image === 'undefined') return;
+  const generation = ++iconLoadGeneration;
+  const img = new Image();
   img.onload = () => {
-    if (generation !== iconLoadGeneration) return
-    loadedIconRef.value = img
-  }
-  img.src = props.iconSrc
-})
+    if (generation !== iconLoadGeneration) return;
+    loadedIconRef.value = img;
+  };
+  img.src = props.iconSrc;
+});
 
 watch(
   () => props.iconSrc,
   () => {
-    iconLoadGeneration++
-    loadedIconRef.value = null
+    iconLoadGeneration++;
+    loadedIconRef.value = null;
   },
-)
+);
 
 onBeforeUnmount(() => {
-  iconLoadGeneration++
-})
+  iconLoadGeneration++;
+});
 
 /* ── SVG rendering ──────────────────────────────────────────────────────── */
 
 /** Horizontal run-length merged dark-module path (`M x y h w v1 H x z`). */
 const svgPath = computed(() => {
-  const ops: string[] = []
-  const size = matrix.value.size
+  const ops: string[] = [];
+  const size = matrix.value.size;
   for (let y = 0; y < size; y++) {
-    let runStart: number | null = null
+    let runStart: number | null = null;
     for (let x = 0; x < size; x++) {
-      const dark = matrix.value.getModule(x, y)
+      const dark = matrix.value.getModule(x, y);
       if (dark && runStart === null) {
-        runStart = x
+        runStart = x;
       } else if (!dark && runStart !== null) {
-        ops.push(`M${runStart} ${y}h${x - runStart}v1H${runStart}z`)
-        runStart = null
+        ops.push(`M${runStart} ${y}h${x - runStart}v1H${runStart}z`);
+        runStart = null;
       }
       if (x === size - 1 && runStart !== null) {
-        ops.push(`M${runStart} ${y}h${x + 1 - runStart}v1H${runStart}z`)
+        ops.push(`M${runStart} ${y}h${x + 1 - runStart}v1H${runStart}z`);
       }
     }
   }
-  return ops.join('')
-})
+  return ops.join('');
+});
 
 /* ── Download (toolbar) ─────────────────────────────────────────────────── */
 
 function triggerDownload(href: string, filename: string): void {
-  if (typeof document === 'undefined') return
-  const anchor = document.createElement('a')
-  anchor.href = href
-  anchor.download = filename
-  document.body.appendChild(anchor)
-  anchor.click()
-  document.body.removeChild(anchor)
+  if (typeof document === 'undefined') return;
+  const anchor = document.createElement('a');
+  anchor.href = href;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
 }
 
 function handleDownload(): void {
   if (props.type === 'canvas' && canvasRef.value) {
-    let url: string | undefined
+    let url: string | undefined;
     try {
-      url = canvasRef.value.toDataURL('image/png')
+      url = canvasRef.value.toDataURL('image/png');
     } catch {
       // Headless hosts may not implement toDataURL — degrade to the SVG
       // payload below instead of failing the click silently.
-      url = undefined
+      url = undefined;
     }
     if (url) {
-      triggerDownload(url, 'qrcode.png')
-      return
+      triggerDownload(url, 'qrcode.png');
+      return;
     }
   }
-  const size = matrix.value.size
+  const size = matrix.value.size;
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges">` +
     `<rect width="${size}" height="${size}" fill="${paintBackgroundColor.value}"/>` +
     `<path d="${svgPath.value}" fill="${paintColor.value}"/>` +
-    `</svg>`
-  triggerDownload(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`, 'qrcode.svg')
+    `</svg>`;
+  triggerDownload(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`, 'qrcode.svg');
 }
 
 const rootStyle = computed<CSSProperties>(() => ({
@@ -279,7 +296,7 @@ const rootStyle = computed<CSSProperties>(() => ({
   height: `${props.size}px`,
   padding: typeof props.padding === 'number' ? `${props.padding}px` : props.padding,
   backgroundColor: paintBackgroundColor.value,
-}))
+}));
 </script>
 
 <template>
@@ -353,7 +370,8 @@ const rootStyle = computed<CSSProperties>(() => ({
   display: flex;
   align-items: center;
   padding: 2px;
-  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
+  border: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: 3px;
   background: var(--sn-web-color-background-elevated);
   opacity: 0;
@@ -381,7 +399,11 @@ const rootStyle = computed<CSSProperties>(() => ({
 }
 
 .sn-qr-code__toolbar-button:hover {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.7%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-qr-code__toolbar-button svg {

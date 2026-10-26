@@ -1,4 +1,4 @@
-import type { StylePackDefinition } from './types.js'
+import type { StylePackDefinition } from './types.js';
 
 /**
  * default Pack — Modern / Comfortable.
@@ -33,6 +33,6 @@ export const defaultPack: StylePackDefinition = {
   density: {
     name: 'comfortable',
   },
-}
+};
 
-export default defaultPack
+export default defaultPack;

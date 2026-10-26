@@ -29,8 +29,8 @@
  * Without the drawer — the composer only:
  *   <SnAiAssistant :run="run" :show-model-config="false" />
  */
-import { computed, ref } from 'vue'
-import { SnButton, SnConfigProvider, SnDrawer, SnDrawerContent, SnIcon } from '@snui/vue-web'
+import { computed, ref } from 'vue';
+import { SnButton, SnConfigProvider, SnDrawer, SnDrawerContent, SnIcon } from '@snui/vue-web';
 import type {
   SnAiAgent,
   SnAiError,
@@ -42,77 +42,77 @@ import type {
   SnAiQueuedTurn,
   SnAiThinkingLevel,
   SnAiVendor,
-} from '../shared/types'
-import { ModelIcon } from '../shared/icons'
-import type { SnAiRunTurn } from './use-ai-turn-queue'
-import { useAiTurnQueue } from './use-ai-turn-queue'
-import { toIconComponent } from './icon-adapter'
-import SnAiMessageList from './SnAiMessageList.vue'
-import SnAiPrompt from './SnAiPrompt.vue'
-import SnModelConfig from './SnModelConfig.vue'
+} from '../shared/types';
+import { ModelIcon } from '../shared/icons';
+import type { SnAiRunTurn } from './use-ai-turn-queue';
+import { useAiTurnQueue } from './use-ai-turn-queue';
+import { toIconComponent } from './icon-adapter';
+import SnAiMessageList from './SnAiMessageList.vue';
+import SnAiPrompt from './SnAiPrompt.vue';
+import SnModelConfig from './SnModelConfig.vue';
 
-defineOptions({ name: 'SnAiAssistant' })
+defineOptions({ name: 'SnAiAssistant' });
 
 /** Re-exported so a host can type its runner from this template too. */
-export type { SnAiRunTurn }
+export type { SnAiRunTurn };
 
 const props = withDefaults(
   defineProps<{
     /* ── Conversation (same names and semantics as SnAiChat) ─────────────── */
     /** The transcript, oldest first. Use with `update:messages`. */
-    messages?: SnAiMessage[]
+    messages?: SnAiMessage[];
     /** The host's turn runner. */
-    run?: SnAiRunTurn | undefined
+    run?: SnAiRunTurn | undefined;
     /** Agents offered by the composer's agent selector. */
-    agents?: SnAiAgent[] | undefined
+    agents?: SnAiAgent[] | undefined;
     /** Permission scopes offered by the composer. */
-    permissions?: SnAiPermissionOption[] | undefined
+    permissions?: SnAiPermissionOption[] | undefined;
     /** Models offered by the composer's model picker. */
-    models?: SnAiModel[] | undefined
+    models?: SnAiModel[] | undefined;
     /** Active skin (maps to the Style Pack system). */
-    theme?: string | undefined
+    theme?: string | undefined;
     /** Page title shown in the header. */
-    title?: string
+    title?: string;
     /** Subtitle shown under the title. */
-    subtitle?: string | undefined
+    subtitle?: string | undefined;
     /** Disable the whole page. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Whether more than one turn may wait in the queue. */
-    allowQueue?: boolean
+    allowQueue?: boolean;
     /** Show the header chrome. */
-    showHeader?: boolean
+    showHeader?: boolean;
     /** Loading state for history fetch. */
-    loading?: boolean
+    loading?: boolean;
     /** Persist the selected model / agent between turns. */
-    rememberSelection?: boolean
+    rememberSelection?: boolean;
     /* ── Model configuration (this template's own) ──────────────────────── */
     /**
      * Configured providers. Declared here because both the drawer and the
      * composer's model picker read the same list.
      */
-    vendors?: SnAiVendor[] | undefined
+    vendors?: SnAiVendor[] | undefined;
     /** Show the header entry point and the drawer that hosts model config. */
-    showModelConfig?: boolean
+    showModelConfig?: boolean;
     /** Drawer heading. */
-    modelConfigTitle?: string
+    modelConfigTitle?: string;
     /** Drawer width; a number is px. */
-    modelConfigWidth?: number | string
+    modelConfigWidth?: number | string;
     /** Provider selected in the drawer. */
-    activeVendorId?: string | undefined
+    activeVendorId?: string | undefined;
     /** Model selected in the drawer. */
-    activeModelId?: string | undefined
+    activeModelId?: string | undefined;
     /** Provider currently being connection-tested (renders its spinner). */
-    testingVendorId?: string | undefined
+    testingVendorId?: string | undefined;
     /**
      * Generation parameters shown in the drawer. Named to mirror
      * `SnModelConfig` (`params` / `update:params`), so `v-model:params` works
      * here and one handler can be handed to either component.
      */
-    params?: SnAiModelParams | undefined
+    params?: SnAiModelParams | undefined;
     /** Offer add / edit / delete affordances inside the drawer. */
-    editableModels?: boolean
+    editableModels?: boolean;
     /** Controlled drawer visibility; leave undefined to let the template own it. */
-    modelConfigOpen?: boolean | undefined
+    modelConfigOpen?: boolean | undefined;
   }>(),
   {
     messages: () => [],
@@ -137,25 +137,25 @@ const props = withDefaults(
     editableModels: true,
     modelConfigOpen: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /* ── Conversation (same as SnAiChat) ─────────────────────────────────── */
-  (e: 'update:messages', messages: SnAiMessage[]): void
-  (e: 'turn-start', turn: SnAiQueuedTurn): void
-  (e: 'turn-end', payload: { turn: SnAiQueuedTurn; message: SnAiMessage }): void
-  (e: 'error', payload: { turn: SnAiQueuedTurn; error: SnAiError }): void
-  (e: 'retry', message: SnAiMessage): void
-  (e: 'update:modelId', modelId: string): void
-  (e: 'update:agentId', agentId: string): void
+  (e: 'update:messages', messages: SnAiMessage[]): void;
+  (e: 'turn-start', turn: SnAiQueuedTurn): void;
+  (e: 'turn-end', payload: { turn: SnAiQueuedTurn; message: SnAiMessage }): void;
+  (e: 'error', payload: { turn: SnAiQueuedTurn; error: SnAiError }): void;
+  (e: 'retry', message: SnAiMessage): void;
+  (e: 'update:modelId', modelId: string): void;
+  (e: 'update:agentId', agentId: string): void;
   /* ── Model configuration ────────────────────────────────────────────── */
-  (e: 'update:vendors', vendors: SnAiVendor[]): void
-  (e: 'update:activeVendorId', id: string): void
-  (e: 'update:activeModelId', id: string): void
-  (e: 'update:params', params: SnAiModelParams): void
-  (e: 'test-connection', payload: { vendorId: string }): void
-  (e: 'update:modelConfigOpen', open: boolean): void
-}>()
+  (e: 'update:vendors', vendors: SnAiVendor[]): void;
+  (e: 'update:activeVendorId', id: string): void;
+  (e: 'update:activeModelId', id: string): void;
+  (e: 'update:params', params: SnAiModelParams): void;
+  (e: 'test-connection', payload: { vendorId: string }): void;
+  (e: 'update:modelConfigOpen', open: boolean): void;
+}>();
 
 const {
   messages,
@@ -187,16 +187,16 @@ const {
     onModelChange: (id) => emit('update:modelId', id),
     onAgentChange: (id) => emit('update:agentId', id),
   },
-})
+});
 
 /* Permission and reasoning are pure view state, so they are set outright
  * instead of through the engine's reporting hooks. */
 function setPermission(next: SnAiPermission): void {
-  permission.value = next
+  permission.value = next;
 }
 
 function setThinkingLevel(next: SnAiThinkingLevel): void {
-  thinkingLevel.value = next
+  thinkingLevel.value = next;
 }
 
 /* ── Model-config drawer ─────────────────────────────────────────────────── */
@@ -205,22 +205,22 @@ function setThinkingLevel(next: SnAiThinkingLevel): void {
  * Uncontrolled by default: the template remembers the drawer state itself and
  * reports it, and a `modelConfigOpen` prop takes over when the host binds it.
  */
-const internalOpen = ref(false)
-const isOpen = computed(() => props.modelConfigOpen ?? internalOpen.value)
+const internalOpen = ref(false);
+const isOpen = computed(() => props.modelConfigOpen ?? internalOpen.value);
 
 function setOpen(next: boolean): void {
-  internalOpen.value = next
-  emit('update:modelConfigOpen', next)
+  internalOpen.value = next;
+  emit('update:modelConfigOpen', next);
 }
 
 /**
  * `SnDrawer` / `SnDrawerContent` take non-optional values, so the defaults are
  * resolved here instead of being handed straight through.
  */
-const drawerTitle = computed<string>(() => props.modelConfigTitle ?? '模型配置')
-const drawerWidth = computed<number | string>(() => props.modelConfigWidth ?? 420)
+const drawerTitle = computed<string>(() => props.modelConfigTitle ?? '模型配置');
+const drawerWidth = computed<number | string>(() => props.modelConfigWidth ?? 420);
 
-const modelConfigIcon = toIconComponent(ModelIcon)
+const modelConfigIcon = toIconComponent(ModelIcon);
 </script>
 
 <template>

@@ -33,80 +33,80 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnGrid } from '@snui/uni/components/sn-grid/sn-grid.vue'
-import { SnGridItem } from '@snui/uni/components/sn-grid/sn-grid-item.vue'
+import { SnGrid } from '@snui/uni/components/sn-grid/sn-grid.vue';
+import { SnGridItem } from '@snui/uni/components/sn-grid/sn-grid-item.vue';
 ```
 
 ## Props
 
 ### sn-grid
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `column` | `number` | `3` | Column count |
-| `border` | `boolean` | `false` | Draw the inner rules |
-| `gutter` | `number` | `0` | Cell gutter in px |
-| `square` | `boolean` | `false` | Force square cells |
-| `clickable` | `boolean` | `false` | Enable tap feedback on every cell |
-| `bgColor` | `string` | `''` | Background colour override |
-| `hoverClass` | `string` | `'sn-grid-item__content--hover'` | Pressed-state class |
-| `center` | `boolean` | `true` | Centre the cell content |
-| `direction` | `'horizontal' \| 'vertical'` | `'vertical'` | Cell content flow |
-| `reverse` | `boolean` | `false` | Swap icon and label |
-| `iconSize` | `string` | `'28px'` | Icon size (px by default) |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type                         | Default                          | Description                       |
+| ------------- | ---------------------------- | -------------------------------- | --------------------------------- |
+| `column`      | `number`                     | `3`                              | Column count                      |
+| `border`      | `boolean`                    | `false`                          | Draw the inner rules              |
+| `gutter`      | `number`                     | `0`                              | Cell gutter in px                 |
+| `square`      | `boolean`                    | `false`                          | Force square cells                |
+| `clickable`   | `boolean`                    | `false`                          | Enable tap feedback on every cell |
+| `bgColor`     | `string`                     | `''`                             | Background colour override        |
+| `hoverClass`  | `string`                     | `'sn-grid-item__content--hover'` | Pressed-state class               |
+| `center`      | `boolean`                    | `true`                           | Centre the cell content           |
+| `direction`   | `'horizontal' \| 'vertical'` | `'vertical'`                     | Cell content flow                 |
+| `reverse`     | `boolean`                    | `false`                          | Swap icon and label               |
+| `iconSize`    | `string`                     | `'28px'`                         | Icon size (px by default)         |
+| `customClass` | `string`                     | `''`                             | Extra class on the root node      |
+| `customStyle` | `string`                     | `''`                             | Inline style on the root node     |
 
 ### sn-grid-item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | `string` | `''` | Cell label |
-| `ellipsis` | `boolean` | `false` | Truncate overflowing text |
-| `icon` | `string` | `''` | Icon name (registered via `registerSnIcons()`) |
-| `iconColor` | `string` | `''` | Icon colour override |
-| `iconPrefix` | `string` | `''` | Iconfont class prefix |
-| `cssIcon` | `boolean \| string` | `false` | Render a font icon |
-| `isDot` | `boolean` | `false` | Render a dot badge on the icon |
-| `value` | `string \| number` | `undefined` | Badge value |
-| `max` | `number` | `99` | Badge ceiling; above it renders `{max}+` |
-| `url` | `string` | `''` | Target path (forwarded through `click` only) |
-| `linkType` | `'navigateTo' \| 'switchTab' \| 'reLaunch' \| 'redirectTo'` | `'navigateTo'` | Navigation mode (forwarded through `click` only) |
-| `customClass` | `string` | `''` | Extra class on the cell root |
-| `customStyle` | `string` | `''` | Inline style on the cell root |
+| Prop          | Type                                                        | Default        | Description                                      |
+| ------------- | ----------------------------------------------------------- | -------------- | ------------------------------------------------ |
+| `text`        | `string`                                                    | `''`           | Cell label                                       |
+| `ellipsis`    | `boolean`                                                   | `false`        | Truncate overflowing text                        |
+| `icon`        | `string`                                                    | `''`           | Icon name (registered via `registerSnIcons()`)   |
+| `iconColor`   | `string`                                                    | `''`           | Icon colour override                             |
+| `iconPrefix`  | `string`                                                    | `''`           | Iconfont class prefix                            |
+| `cssIcon`     | `boolean \| string`                                         | `false`        | Render a font icon                               |
+| `isDot`       | `boolean`                                                   | `false`        | Render a dot badge on the icon                   |
+| `value`       | `string \| number`                                          | `undefined`    | Badge value                                      |
+| `max`         | `number`                                                    | `99`           | Badge ceiling; above it renders `{max}+`         |
+| `url`         | `string`                                                    | `''`           | Target path (forwarded through `click` only)     |
+| `linkType`    | `'navigateTo' \| 'switchTab' \| 'reLaunch' \| 'redirectTo'` | `'navigateTo'` | Navigation mode (forwarded through `click` only) |
+| `customClass` | `string`                                                    | `''`           | Extra class on the cell root                     |
+| `customStyle` | `string`                                                    | `''`           | Inline style on the cell root                    |
 
 > **Routing**: `url` / `linkType` are forwarded through `click` only — the component never navigates by itself, because routing belongs to the host AppBridge capability (AGENTS.md §60).
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event   | Description                                        | Payload               |
+| ------- | -------------------------------------------------- | --------------------- |
 | `click` | Cell tapped while `clickable` or when `url` is set | `({ url, linkType })` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot             | Description                            |
+| ---------------- | -------------------------------------- |
 | `default` (grid) | Grid content (`sn-grid-item` children) |
-| `default` (item) | Custom cell content |
-| `icon` (item) | Icon area |
-| `text` (item) | Text area |
+| `default` (item) | Custom cell content                    |
+| `icon` (item)    | Icon area                              |
+| `text` (item)    | Text area                              |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | Grid surface |
-| `--sn-mp-color-background-soft` | Tap feedback fill |
-| `--sn-mp-color-border-subtle` | Inner rules |
-| `--sn-mp-color-text-secondary` | Icon colour |
-| `--sn-mp-color-text-primary` | Label colour |
-| `--sn-mp-color-feedback-danger` | Badge fill |
-| `--sn-mp-color-text-on-primary` | Badge text |
-| `--sn-mp-font-size-md` / `--sn-mp-font-size-xs` | Label / badge size |
-| `--sn-mp-font-line-height-tight` | Label line height |
-| `--sn-mp-radius-full` | Badge radius |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-4` | Cell padding / vertical padding |
+| Variable                                        | Purpose                         |
+| ----------------------------------------------- | ------------------------------- |
+| `--sn-mp-color-background-surface`              | Grid surface                    |
+| `--sn-mp-color-background-soft`                 | Tap feedback fill               |
+| `--sn-mp-color-border-subtle`                   | Inner rules                     |
+| `--sn-mp-color-text-secondary`                  | Icon colour                     |
+| `--sn-mp-color-text-primary`                    | Label colour                    |
+| `--sn-mp-color-feedback-danger`                 | Badge fill                      |
+| `--sn-mp-color-text-on-primary`                 | Badge text                      |
+| `--sn-mp-font-size-md` / `--sn-mp-font-size-xs` | Label / badge size              |
+| `--sn-mp-font-line-height-tight`                | Label line height               |
+| `--sn-mp-radius-full`                           | Badge radius                    |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-4`       | Cell padding / vertical padding |
 
 ## Accessibility
 
@@ -120,7 +120,6 @@ import { SnGridItem } from '@snui/uni/components/sn-grid/sn-grid-item.vue'
 Every colour in `sn-grid` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the grid surface flips to the dark surface, inner rules use the dark border token, icons move to the dark secondary text and labels to the dark primary text, and badges keep the danger hue.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

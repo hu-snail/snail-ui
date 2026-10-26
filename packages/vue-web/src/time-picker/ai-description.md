@@ -12,27 +12,27 @@ when the value must be an exact timestamp without typos.
 
 ## Props
 
-| Prop         | Type                                        | Default                | Notes                                                     |
-| ------------ | ------------------------------------------- | ---------------------- | --------------------------------------------------------- |
-| modelValue   | `number \| null`                            | `null`                 | `v-model`. Millisecond timestamp; the time-of-day part is edited, the date part is preserved (local timezone). |
-| format       | `'HH:mm' \| 'HH:mm:ss'`                     | `'HH:mm:ss'`           | Display format + panel column count. `HH:mm` is minute-precision: commits normalize seconds to `0`. |
-| placeholder  | `string`                                    | `'Please select time'` | Empty-state text.                                         |
-| clearable    | `boolean`                                   | `false`                | Shows × button when a value exists.                       |
-| disabled     | `boolean`                                   | `false`                | Blocks open / select / clear.                             |
-| readonly     | `boolean`                                   | `false`                | Visible but inert.                                        |
-| size         | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`    | Trigger height + font preset.                             |
-| status       | `'default' \| 'error' \| 'warning'`         | `'default'`            | Border color + `aria-invalid`.                            |
-| use12Hours   | `boolean`                                   | `false`                | 12-hour faces (12, 1 … 11, clock order) plus an AM/PM column. |
-| ariaLabel    | `string`                                    | `''`                   | Accessible name (fallback: `'Time picker'`).              |
-| customClass / customStyle | `string` / `string \| object`  | —                      | Root wrapper passthrough.                                 |
+| Prop                      | Type                                                 | Default                | Notes                                                                                                          |
+| ------------------------- | ---------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------- |
+| modelValue                | `number \| null`                                     | `null`                 | `v-model`. Millisecond timestamp; the time-of-day part is edited, the date part is preserved (local timezone). |
+| format                    | `'HH:mm' \| 'HH:mm:ss'`                              | `'HH:mm:ss'`           | Display format + panel column count. `HH:mm` is minute-precision: commits normalize seconds to `0`.            |
+| placeholder               | `string`                                             | `'Please select time'` | Empty-state text.                                                                                              |
+| clearable                 | `boolean`                                            | `false`                | Shows × button when a value exists.                                                                            |
+| disabled                  | `boolean`                                            | `false`                | Blocks open / select / clear.                                                                                  |
+| readonly                  | `boolean`                                            | `false`                | Visible but inert.                                                                                             |
+| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`             | Trigger height + font preset.                                                                                  |
+| status                    | `'default' \| 'error' \| 'warning'`                  | `'default'`            | Border color + `aria-invalid`.                                                                                 |
+| use12Hours                | `boolean`                                            | `false`                | 12-hour faces (12, 1 … 11, clock order) plus an AM/PM column.                                                  |
+| ariaLabel                 | `string`                                             | `''`                   | Accessible name (fallback: `'Time picker'`).                                                                   |
+| customClass / customStyle | `string` / `string \| object`                        | —                      | Root wrapper passthrough.                                                                                      |
 
 ## Events
 
-| Event               | Payload               | When                                                  |
-| ------------------- | --------------------- | ----------------------------------------------------- |
+| Event               | Payload                   | When                                                     |
+| ------------------- | ------------------------- | -------------------------------------------------------- |
 | `update:modelValue` | `(value: number \| null)` | Any cell click, any keyboard step, Enter confirm, clear. |
-| `change`            | `(value: number \| null)` | Same — fires alongside `update:modelValue`.           |
-| `focus` / `blur`    | `(FocusEvent)`        | Trigger focus change.                                  |
+| `change`            | `(value: number \| null)` | Same — fires alongside `update:modelValue`.              |
+| `focus` / `blur`    | `(FocusEvent)`            | Trigger focus change.                                    |
 
 ## Value semantics
 
@@ -75,23 +75,23 @@ directly and keeps the panel open.
 All styling resolves through `--sn-web-time-picker-*` aliases with
 `--sn-web-color-*` fallbacks:
 
-| Token                                                 | Default                                | Purpose                 |
-| ----------------------------------------------------- | -------------------------------------- | ----------------------- |
-| `--sn-web-time-picker-height`                         | `22–40px` (per size)                   | Trigger height          |
-| `--sn-web-time-picker-radius`                         | `6px`                                  | Corner radius           |
-| `--sn-web-time-picker-border-color`                   | `--sn-web-color-border-default`        | Trigger border          |
-| `--sn-web-time-picker-border-color-focus`             | `--sn-web-color-action-primary`        | Open/focus border       |
-| `--sn-web-time-picker-bg`                             | `--sn-web-color-background-surface`    | Trigger background      |
-| `--sn-web-time-picker-text-color`                     | `--sn-web-color-text-primary`          | Value text              |
-| `--sn-web-time-picker-placeholder-color`              | `--sn-web-color-text-tertiary`         | Placeholder text        |
-| `--sn-web-time-picker-panel-bg`                       | `--sn-web-color-background-elevated`   | Panel fill              |
-| `--sn-web-time-picker-panel-height`                   | `224px`                                | Column viewport height  |
-| `--sn-web-time-picker-col-width`                      | `56px`                                 | Column width            |
-| `--sn-web-time-picker-col-bg-active`                  | `--sn-web-color-background-subtle`     | Active column tint      |
-| `--sn-web-time-picker-item-bg-hover`                  | `--sn-web-color-background-subtle`     | Cell hover fill         |
-| `--sn-web-time-picker-item-bg-selected`               | `--sn-web-color-action-primary`        | Selected cell fill      |
-| `--sn-web-time-picker-item-text-color-selected`       | `--sn-web-color-text-on-primary`       | Selected cell text      |
-| `--sn-web-time-picker-panel-z-index`                  | `1000`                                 | Panel stacking          |
+| Token                                           | Default                              | Purpose                |
+| ----------------------------------------------- | ------------------------------------ | ---------------------- |
+| `--sn-web-time-picker-height`                   | `22–40px` (per size)                 | Trigger height         |
+| `--sn-web-time-picker-radius`                   | `6px`                                | Corner radius          |
+| `--sn-web-time-picker-border-color`             | `--sn-web-color-border-default`      | Trigger border         |
+| `--sn-web-time-picker-border-color-focus`       | `--sn-web-color-action-primary`      | Open/focus border      |
+| `--sn-web-time-picker-bg`                       | `--sn-web-color-background-surface`  | Trigger background     |
+| `--sn-web-time-picker-text-color`               | `--sn-web-color-text-primary`        | Value text             |
+| `--sn-web-time-picker-placeholder-color`        | `--sn-web-color-text-tertiary`       | Placeholder text       |
+| `--sn-web-time-picker-panel-bg`                 | `--sn-web-color-background-elevated` | Panel fill             |
+| `--sn-web-time-picker-panel-height`             | `224px`                              | Column viewport height |
+| `--sn-web-time-picker-col-width`                | `56px`                               | Column width           |
+| `--sn-web-time-picker-col-bg-active`            | `--sn-web-color-background-subtle`   | Active column tint     |
+| `--sn-web-time-picker-item-bg-hover`            | `--sn-web-color-background-subtle`   | Cell hover fill        |
+| `--sn-web-time-picker-item-bg-selected`         | `--sn-web-color-action-primary`      | Selected cell fill     |
+| `--sn-web-time-picker-item-text-color-selected` | `--sn-web-color-text-on-primary`     | Selected cell text     |
+| `--sn-web-time-picker-panel-z-index`            | `1000`                               | Panel stacking         |
 
 ## Accessibility
 

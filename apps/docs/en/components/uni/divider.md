@@ -37,29 +37,29 @@ Conforms to easycom — **no import needed in templates**:
 Explicit import (when easycom is disabled):
 
 ```ts
-import { SnDivider } from '@snui/uni'
+import { SnDivider } from '@snui/uni';
 ```
 
 ## API
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | Axis |
-| `dashed` | `boolean` | `false` | Dashed border |
-| `hairline` | `boolean` | `true` | 1rpx hairline |
-| `color` | `string` | — | Custom color |
-| `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'` | Vertical margin (horizontal only) |
-| `contentPosition` | `'left' \| 'center' \| 'right'` | `'center'` | Text position (horizontal with text only) |
-| `vertical` | `boolean` | `false` | Vertical divider (same as `direction="vertical"`) |
-| `customClass` | `string` | `''` | Root class |
-| `customStyle` | `string \| Record<string,string>` | `''` | Root inline style |
+| Name              | Type                              | Default        | Description                                       |
+| ----------------- | --------------------------------- | -------------- | ------------------------------------------------- |
+| `direction`       | `'horizontal' \| 'vertical'`      | `'horizontal'` | Axis                                              |
+| `dashed`          | `boolean`                         | `false`        | Dashed border                                     |
+| `hairline`        | `boolean`                         | `true`         | 1rpx hairline                                     |
+| `color`           | `string`                          | —              | Custom color                                      |
+| `marginSize`      | `'small' \| 'medium' \| 'large'`  | `'medium'`     | Vertical margin (horizontal only)                 |
+| `contentPosition` | `'left' \| 'center' \| 'right'`   | `'center'`     | Text position (horizontal with text only)         |
+| `vertical`        | `boolean`                         | `false`        | Vertical divider (same as `direction="vertical"`) |
+| `customClass`     | `string`                          | `''`           | Root class                                        |
+| `customStyle`     | `string \| Record<string,string>` | `''`           | Root inline style                                 |
 
 ### Slots
 
-| Name | Description |
-| --- | --- |
+| Name      | Description                        |
+| --------- | ---------------------------------- |
 | `default` | Text on the line (horizontal only) |
 
 ## Related

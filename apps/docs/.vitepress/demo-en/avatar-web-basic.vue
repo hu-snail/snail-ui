@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnAvatar — basic + sizes. */
-import { SnAvatar } from '@snui/vue-web'
+import { SnAvatar } from '@snui/vue-web';
 </script>
 
 <template>
@@ -13,5 +13,9 @@ import { SnAvatar } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
 </style>

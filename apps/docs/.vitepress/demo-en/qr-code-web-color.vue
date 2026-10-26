@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnQrCode — foreground / background colors. */
-import { ref } from 'vue'
-import { SnColorPicker, SnFlex, SnQrCode } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnColorPicker, SnFlex, SnQrCode } from '@snui/vue-web';
 
-const color = ref('#225a95')
+const color = ref('#225a95');
 </script>
 
 <template>
@@ -20,5 +20,9 @@ const color = ref('#225a95')
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 24px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 </style>

@@ -5,28 +5,23 @@
  * Shows: `affix` turning the anchor into a sticky element. The nav column
  * stays in place as the long body scrolls past it.
  */
-import { SnAnchor, SnAnchorLink } from '@snui/vue-web'
+import { SnAnchor, SnAnchorLink } from '@snui/vue-web';
 
 const sections = [
   { id: 'afx-intro', title: '概述' },
   { id: 'afx-api', title: '接口' },
   { id: 'afx-faq', title: '常见问题' },
-]
+];
 
 /** Pad each section so there is enough scroll distance to observe. */
-const paragraphs = Array.from({ length: 8 }, (_, i) => i + 1)
+const paragraphs = Array.from({ length: 8 }, (_, i) => i + 1);
 </script>
 
 <template>
   <div class="anchor-afx">
     <div class="anchor-afx__nav">
       <SnAnchor affix :bound="12" :offset-top="12">
-        <SnAnchorLink
-          v-for="s in sections"
-          :key="s.id"
-          :title="s.title"
-          :href="`#${s.id}`"
-        />
+        <SnAnchorLink v-for="s in sections" :key="s.id" :title="s.title" :href="`#${s.id}`" />
       </SnAnchor>
     </div>
 

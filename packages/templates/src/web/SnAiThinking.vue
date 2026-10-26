@@ -18,59 +18,59 @@
  * Usage:
  *   <SnAiThinking :part="thinkingPart" />
  */
-import { computed } from 'vue'
-import { SnIcon } from '@snui/vue-web'
-import { ChevronDownIcon, ChevronRightIcon, ClockIcon } from '../shared/icons'
-import { toIconComponent } from './icon-adapter'
-import { formatThinkingDuration } from '../shared/stream'
-import type { SnAiThinkingPart } from '../shared/types'
+import { computed } from 'vue';
+import { SnIcon } from '@snui/vue-web';
+import { ChevronDownIcon, ChevronRightIcon, ClockIcon } from '../shared/icons';
+import { toIconComponent } from './icon-adapter';
+import { formatThinkingDuration } from '../shared/stream';
+import type { SnAiThinkingPart } from '../shared/types';
 
-defineOptions({ name: 'SnAiThinking' })
+defineOptions({ name: 'SnAiThinking' });
 
 const props = withDefaults(
   defineProps<{
     /** The reasoning block to render. */
-    part: SnAiThinkingPart
+    part: SnAiThinkingPart;
     /**
      * Whether the body is expanded. `undefined` = auto: open while the block
      * is still streaming, collapsed once it has closed.
      */
-    expanded?: boolean | undefined
+    expanded?: boolean | undefined;
     /** Force the block collapsed regardless of state. */
-    defaultCollapsed?: boolean
+    defaultCollapsed?: boolean;
   }>(),
   {
     expanded: undefined,
     defaultCollapsed: false,
   },
-)
+);
 
 /** Whether the body is visible. Auto mode follows the streaming state. */
 const isExpanded = computed(() => {
-  if (props.defaultCollapsed) return false
-  if (props.expanded !== undefined) return props.expanded
-  return !props.part.done
-})
+  if (props.defaultCollapsed) return false;
+  if (props.expanded !== undefined) return props.expanded;
+  return !props.part.done;
+});
 
 const chevron = computed(() =>
   isExpanded.value ? toIconComponent(ChevronDownIcon) : toIconComponent(ChevronRightIcon),
-)
-const clock = toIconComponent(ClockIcon)
+);
+const clock = toIconComponent(ClockIcon);
 
 /** Header text: live label while streaming, duration once closed. */
 const headerLabel = computed(() => {
-  if (!props.part.done) return '思考中'
-  const duration = formatThinkingDuration(props.part.durationMs)
-  return duration ? `已思考 ${duration}` : '思考过程'
-})
+  if (!props.part.done) return '思考中';
+  const duration = formatThinkingDuration(props.part.durationMs);
+  return duration ? `已思考 ${duration}` : '思考过程';
+});
 
 const emit = defineEmits<{
   /** Fired when the user toggles the disclosure. */
-  (e: 'toggle', expanded: boolean): void
-}>()
+  (e: 'toggle', expanded: boolean): void;
+}>();
 
 function onToggle(): void {
-  emit('toggle', !isExpanded.value)
+  emit('toggle', !isExpanded.value);
 }
 </script>
 

@@ -8,7 +8,16 @@ describe('@snui/protocol — UIEventBindingSchema', () => {
   });
 
   it('accepts every documented trigger', () => {
-    const triggers = ['click', 'change', 'input', 'submit', 'focus', 'blur', 'mount', 'unmount'] as const;
+    const triggers = [
+      'click',
+      'change',
+      'input',
+      'submit',
+      'focus',
+      'blur',
+      'mount',
+      'unmount',
+    ] as const;
     for (const trigger of triggers) {
       expect(UIEventBindingSchema.safeParse({ trigger, action: 'a.b' }).success).toBe(true);
     }
@@ -19,11 +28,15 @@ describe('@snui/protocol — UIEventBindingSchema', () => {
   });
 
   it('rejects an action id with uppercase letters', () => {
-    expect(UIEventBindingSchema.safeParse({ trigger: 'click', action: 'User.Login' }).success).toBe(false);
+    expect(UIEventBindingSchema.safeParse({ trigger: 'click', action: 'User.Login' }).success).toBe(
+      false,
+    );
   });
 
   it('rejects an action id starting with a digit', () => {
-    expect(UIEventBindingSchema.safeParse({ trigger: 'click', action: '1click' }).success).toBe(false);
+    expect(UIEventBindingSchema.safeParse({ trigger: 'click', action: '1click' }).success).toBe(
+      false,
+    );
   });
 
   it('rejects an unknown trigger', () => {

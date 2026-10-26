@@ -5,7 +5,7 @@
  * Shows: bare boxes at explicit `width` / `height`, the three `size` tiers,
  * and a `repeat` row built from them.
  */
-import { SnSkeleton } from '@snui/vue-web'
+import { SnSkeleton } from '@snui/vue-web';
 </script>
 
 <template>

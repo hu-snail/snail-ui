@@ -25,11 +25,7 @@ export {
   type CreateAUIErrorInput,
 } from './error.js';
 
-export {
-  type PlatformAdapter,
-  type PlatformId,
-  type PlatformCapabilities,
-} from './platform.js';
+export { type PlatformAdapter, type PlatformId, type PlatformCapabilities } from './platform.js';
 
 export {
   createLifecycleTracker,
@@ -74,11 +70,7 @@ export {
   type CompiledExpression,
 } from './expression.js';
 
-export {
-  resolveBinding,
-  type ResolvedBinding,
-  type BindingResolveOptions,
-} from './binding.js';
+export { resolveBinding, type ResolvedBinding, type BindingResolveOptions } from './binding.js';
 
 export {
   matchEventBindings,

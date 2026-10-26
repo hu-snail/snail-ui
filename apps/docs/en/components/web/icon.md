@@ -8,8 +8,8 @@ Wrapper component for [lucide-vue-next](https://lucide.dev/guide/packages/lucide
 
 ```vue
 <script setup lang="ts">
-import { ChevronRight } from 'lucide-vue-next'
-import { SnIcon } from '@snui/vue-web'
+import { ChevronRight } from 'lucide-vue-next';
+import { SnIcon } from '@snui/vue-web';
 </script>
 
 <template>
@@ -25,10 +25,10 @@ Useful when the server returns icon names as strings (permission / nav).
 
 ```vue
 <script setup lang="ts">
-import { ChevronRight, Settings, Search } from 'lucide-vue-next'
-import { registerSnIcons } from '@snui/vue-web'
+import { ChevronRight, Settings, Search } from 'lucide-vue-next';
+import { registerSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ ChevronRight, Settings, Search })
+registerSnIcons({ ChevronRight, Settings, Search });
 </script>
 
 <template>
@@ -54,25 +54,25 @@ The registry is a plain object literal, so the static `import { A, B, C }` line 
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| icon | `Component` | — | Pass the icon component directly (recommended) |
-| name | `string` | — | Look up an icon previously registered via `registerSnIcons()` |
-| size | `number \| string` | `16` | Icon size in px or any CSS length |
-| color | `string` | `'currentColor'` | Stroke color (inherits parent `color`) |
-| strokeWidth | `number \| string` | `2` | Stroke width in design units |
-| strokeWidthAbsolute | `boolean` | `false` | If true, stroke width is interpreted in absolute pixels rather than scaling with `size` |
-| defaultClass | `string` | — | Class forwarded to the inner SVG |
+| Name                | Type               | Default          | Description                                                                             |
+| ------------------- | ------------------ | ---------------- | --------------------------------------------------------------------------------------- |
+| icon                | `Component`        | —                | Pass the icon component directly (recommended)                                          |
+| name                | `string`           | —                | Look up an icon previously registered via `registerSnIcons()`                           |
+| size                | `number \| string` | `16`             | Icon size in px or any CSS length                                                       |
+| color               | `string`           | `'currentColor'` | Stroke color (inherits parent `color`)                                                  |
+| strokeWidth         | `number \| string` | `2`              | Stroke width in design units                                                            |
+| strokeWidthAbsolute | `boolean`          | `false`          | If true, stroke width is interpreted in absolute pixels rather than scaling with `size` |
+| defaultClass        | `string`           | —                | Class forwarded to the inner SVG                                                        |
 
 When both `icon` and `name` are passed, `icon` wins. When neither resolves, a placeholder is rendered (development hint: "icon not registered").
 
 ### Registry API
 
 ```ts
-import { registerSnIcons, clearSnIcons } from '@snui/vue-web'
+import { registerSnIcons, clearSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ ChevronRight, Settings, Search })
-clearSnIcons()  // clear (tests)
+registerSnIcons({ ChevronRight, Settings, Search });
+clearSnIcons(); // clear (tests)
 ```
 
 ## Accessibility

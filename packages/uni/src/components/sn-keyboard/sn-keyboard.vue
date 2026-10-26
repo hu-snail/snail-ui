@@ -36,64 +36,64 @@
  *   - 车牌业务校验 — 由宿主处理
  */
 
-import { computed, ref, watch } from 'vue'
-import SnPopup from '../sn-popup/sn-popup.vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
-import type { CarKeyboardLang, KeyboardKey, KeyboardMode } from './sn-keyboard-types'
+import { computed, ref, watch } from 'vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
+import type { CarKeyboardLang, KeyboardKey, KeyboardMode } from './sn-keyboard-types';
 
-defineOptions({ name: 'SnKeyboard' })
+defineOptions({ name: 'SnKeyboard' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-keyboard` 1:1 surface ───────────────────────────────── */
 
     /** Visibility (`v-model:visible`). */
-    visible?: boolean
+    visible?: boolean;
     /** Current value (`v-model`). */
-    modelValue?: string
+    modelValue?: string;
     /** Keyboard title. */
-    title?: string
+    title?: string;
     /** Layout preset. */
-    mode?: KeyboardMode
+    mode?: KeyboardMode;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Maximum value length. */
-    maxlength?: number
+    maxlength?: number;
     /** Render the delete key (default / car layouts). */
-    showDeleteKey?: boolean
+    showDeleteKey?: boolean;
     /** Shuffle the digit keys. */
-    randomKeyOrder?: boolean
+    randomKeyOrder?: boolean;
     /** Close button label (header, or the custom-mode action column). */
-    closeText?: string
+    closeText?: string;
     /** Delete key label. */
-    deleteText?: string
+    deleteText?: string;
     /** Show a spinner in the close button while pending. */
-    closeButtonLoading?: boolean
+    closeButtonLoading?: boolean;
     /** Render an opaque scrim. */
-    modal?: boolean
+    modal?: boolean;
     /** Tapping outside the panel closes the keyboard. */
-    hideOnClickOutside?: boolean
+    hideOnClickOutside?: boolean;
     /** Intercept touchmove on the scrim so the page behind cannot scroll. */
-    lockScroll?: boolean
+    lockScroll?: boolean;
     /** Pad the keyboard for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Extra key(s) appended to the digit grid. */
-    extraKey?: string | string[] | undefined
+    extraKey?: string | string[] | undefined;
     /** Car-plate language (`v-model:car-lang`, `mode: 'car'`). */
-    carLang?: CarKeyboardLang
+    carLang?: CarKeyboardLang;
     /** Auto-switch the car language once the province is picked. */
-    autoSwitchLang?: boolean
+    autoSwitchLang?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the panel. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the panel cannot leave the page's document flow. Forwarded to
      * `sn-popup`, which declares the same parity-only prop.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     visible: false,
@@ -118,119 +118,192 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-  (e: 'update:visible', value: boolean): void
-  (e: 'update:carLang', value: CarKeyboardLang): void
-  (e: 'input', key: string): void
-  (e: 'delete'): void
-  (e: 'close'): void
-}>()
+  (e: 'update:modelValue', value: string): void;
+  (e: 'update:visible', value: boolean): void;
+  (e: 'update:carLang', value: CarKeyboardLang): void;
+  (e: 'input', key: string): void;
+  (e: 'delete'): void;
+  (e: 'close'): void;
+}>();
 
 /* ── Key data ──────────────────────────────────────────────────────────── */
 
-const DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+const DIGITS = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 /** Extra keys normalized to an array. */
 const extraKeys = computed<string[]>(() => {
-  const value = props.extraKey
-  if (value === undefined) return []
-  return Array.isArray(value) ? value : [value]
-})
+  const value = props.extraKey;
+  if (value === undefined) return [];
+  return Array.isArray(value) ? value : [value];
+});
 
 /** Digit rows for the default / custom layouts (3 columns). */
 const digitRows = computed<KeyboardKey[][]>(() => {
-  let digits = [...DIGITS]
-  if (props.randomKeyOrder) digits = shuffle(digits)
-  const extra = extraKeys.value
+  let digits = [...DIGITS];
+  if (props.randomKeyOrder) digits = shuffle(digits);
+  const extra = extraKeys.value;
   const bottom: KeyboardKey[] = [
     { text: extra[0] ?? '', value: extra[0] ?? '' },
     { text: '0', value: '0' },
     { text: '', value: '__delete__' },
-  ]
-  const rows: KeyboardKey[][] = []
+  ];
+  const rows: KeyboardKey[][] = [];
   for (let i = 0; i < digits.length; i += 3) {
-    rows.push(digits.slice(i, i + 3).map(digit => ({ text: digit, value: digit })))
+    rows.push(digits.slice(i, i + 3).map((digit) => ({ text: digit, value: digit })));
   }
-  rows.push(bottom)
-  return rows
-})
+  rows.push(bottom);
+  return rows;
+});
 
 /** Deterministic Fisher-Yates — the seed is the render index, not Math.random. */
 function shuffle(items: string[]): string[] {
-  const list = [...items]
+  const list = [...items];
   for (let i = list.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(((i + 1) * 7919) % (i + 1))
-    const a = list[i]
-    const b = list[j]
+    const j = Math.floor(((i + 1) * 7919) % (i + 1));
+    const a = list[i];
+    const b = list[j];
     if (a !== undefined && b !== undefined) {
-      list[i] = b
-      list[j] = a
+      list[i] = b;
+      list[j] = a;
     }
   }
-  return list
+  return list;
 }
 
 /** Car-plate keys per language. */
-const CAR_ZH = ['京', '沪', '粤', '津', '冀', '晋', '蒙', '辽', '吉', '黑', '苏', '浙', '皖', '闽', '赣', '鲁', '豫', '鄂', '湘', '桂', '琼', '川', '贵', '云', '陕', '甘', '青', '宁', '新', '渝', '藏', '使', '领', '警', '学', '港', '澳']
-const CAR_EN = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+const CAR_ZH = [
+  '京',
+  '沪',
+  '粤',
+  '津',
+  '冀',
+  '晋',
+  '蒙',
+  '辽',
+  '吉',
+  '黑',
+  '苏',
+  '浙',
+  '皖',
+  '闽',
+  '赣',
+  '鲁',
+  '豫',
+  '鄂',
+  '湘',
+  '桂',
+  '琼',
+  '川',
+  '贵',
+  '云',
+  '陕',
+  '甘',
+  '青',
+  '宁',
+  '新',
+  '渝',
+  '藏',
+  '使',
+  '领',
+  '警',
+  '学',
+  '港',
+  '澳',
+];
+const CAR_EN = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '0',
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+];
 
-const carKeys = computed<string[]>(() => (props.carLang === 'zh' ? CAR_ZH : CAR_EN))
+const carKeys = computed<string[]>(() => (props.carLang === 'zh' ? CAR_ZH : CAR_EN));
 
-const rootClass = computed(() => [
-  'sn-keyboard',
-  `sn-keyboard--${props.mode}`,
-  props.customClass,
-].filter(Boolean).join(' '))
+const rootClass = computed(() =>
+  ['sn-keyboard', `sn-keyboard--${props.mode}`, props.customClass].filter(Boolean).join(' '),
+);
 
 /** sn-popup takes a string, so the class list is joined here. */
-const popupClass = computed(() => [
-  'sn-keyboard-popup',
-  `sn-keyboard-popup--${props.mode}`,
-  props.customClass,
-].filter(Boolean).join(' '))
+const popupClass = computed(() =>
+  ['sn-keyboard-popup', `sn-keyboard-popup--${props.mode}`, props.customClass]
+    .filter(Boolean)
+    .join(' '),
+);
 
-const rootStyle = computed(() => props.customStyle)
+const rootStyle = computed(() => props.customStyle);
 
 /* ── Interaction ───────────────────────────────────────────────────────── */
 
 function close(): void {
-  emit('update:visible', false)
-  emit('close')
+  emit('update:visible', false);
+  emit('close');
 }
 
 function writeValue(next: string): void {
-  emit('update:modelValue', next)
+  emit('update:modelValue', next);
 }
 
 function onKeyTap(key: KeyboardKey): void {
   if (key.value === '__delete__') {
-    onDelete()
-    return
+    onDelete();
+    return;
   }
-  if (key.value === '') return
-  if (props.modelValue.length >= props.maxlength) return
-  emit('input', key.value)
-  writeValue(props.modelValue + key.value)
+  if (key.value === '') return;
+  if (props.modelValue.length >= props.maxlength) return;
+  emit('input', key.value);
+  writeValue(props.modelValue + key.value);
 }
 
 function onDelete(): void {
-  if (props.modelValue.length === 0) return
-  emit('delete')
-  writeValue(props.modelValue.slice(0, -1))
+  if (props.modelValue.length === 0) return;
+  emit('delete');
+  writeValue(props.modelValue.slice(0, -1));
 }
 
 function onScrimTap(): void {
-  if (!props.hideOnClickOutside) return
-  close()
+  if (!props.hideOnClickOutside) return;
+  close();
 }
 
 function onTouchMove(event: Event): void {
-  if (!props.lockScroll) return
-  event.preventDefault()
-  event.stopPropagation()
+  if (!props.lockScroll) return;
+  event.preventDefault();
+  event.stopPropagation();
 }
 
 /* ── Car language switch ───────────────────────────────────────────────── */
@@ -242,20 +315,20 @@ function onTouchMove(event: Event): void {
 watch(
   () => props.modelValue,
   (value) => {
-    if (props.mode !== 'car' || !props.autoSwitchLang) return
-    if (props.carLang !== 'zh') return
-    if (value.length !== 1) return
-    emit('update:carLang', 'en')
+    if (props.mode !== 'car' || !props.autoSwitchLang) return;
+    if (props.carLang !== 'zh') return;
+    if (value.length !== 1) return;
+    emit('update:carLang', 'en');
   },
-)
+);
 
 /** Manual language toggle (header button). */
 function toggleLang(): void {
-  emit('update:carLang', props.carLang === 'zh' ? 'en' : 'zh')
+  emit('update:carLang', props.carLang === 'zh' ? 'en' : 'zh');
 }
 
-const closeLabel = computed(() => props.closeText || '完成')
-const deleteLabel = computed(() => props.deleteText || '删除')
+const closeLabel = computed(() => props.closeText || '完成');
+const deleteLabel = computed(() => props.deleteText || '删除');
 </script>
 
 <template>
@@ -272,11 +345,7 @@ const deleteLabel = computed(() => props.deleteText || '删除')
     @update:model-value="emit('update:visible', $event)"
     @click-modal="onScrimTap"
   >
-    <view
-      :class="rootClass"
-      :data-snui-component="'keyboard'"
-      @touchmove="onTouchMove"
-    >
+    <view :class="rootClass" :data-snui-component="'keyboard'" @touchmove="onTouchMove">
       <view class="sn-keyboard__header">
         <text class="sn-keyboard__title">{{ props.title }}</text>
         <view
@@ -285,7 +354,8 @@ const deleteLabel = computed(() => props.deleteText || '删除')
           role="button"
           aria-label="switch language"
           @tap="toggleLang"
-        >{{ props.carLang === 'zh' ? 'EN' : '中' }}</view>
+          >{{ props.carLang === 'zh' ? 'EN' : '中' }}</view
+        >
         <view
           class="sn-keyboard__close"
           role="button"
@@ -301,11 +371,7 @@ const deleteLabel = computed(() => props.deleteText || '删除')
       <!-- Default / custom: numeric grid -->
       <view v-if="props.mode !== 'car'" class="sn-keyboard__grid">
         <view class="sn-keyboard__keys">
-          <view
-            v-for="(row, rowIndex) in digitRows"
-            :key="rowIndex"
-            class="sn-keyboard__row"
-          >
+          <view v-for="(row, rowIndex) in digitRows" :key="rowIndex" class="sn-keyboard__row">
             <view
               v-for="key in row"
               :key="`${rowIndex}-${key.text}`"
@@ -337,7 +403,8 @@ const deleteLabel = computed(() => props.deleteText || '删除')
             role="button"
             :aria-label="closeLabel"
             @tap="close"
-          >{{ closeLabel }}</view>
+            >{{ closeLabel }}</view
+          >
           <view
             v-if="props.showDeleteKey"
             class="sn-keyboard__aside-key sn-keyboard__aside-key--delete"
@@ -359,7 +426,8 @@ const deleteLabel = computed(() => props.deleteText || '删除')
           role="button"
           :aria-label="key"
           @tap="onKeyTap({ text: key, value: key })"
-        >{{ key }}</view>
+          >{{ key }}</view
+        >
         <view
           v-if="props.showDeleteKey"
           class="sn-keyboard__key sn-keyboard__key--car sn-keyboard__key--delete"

@@ -3,19 +3,15 @@
  * anchor-web-basic — a rail anchor tracking three sections in a scroll
  * container. Clicking a link scrolls to its section.
  */
-import { ref } from 'vue'
-import { SnAnchor, SnAnchorLink } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAnchor, SnAnchorLink } from '@snui/vue-web';
 
-const scrollRef = ref<HTMLElement | null>(null)
+const scrollRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>
   <div class="anchor-demo">
-    <SnAnchor
-      class="anchor-demo__nav"
-      :bound="12"
-      :offset-target="() => scrollRef as HTMLElement"
-    >
+    <SnAnchor class="anchor-demo__nav" :bound="12" :offset-target="() => scrollRef as HTMLElement">
       <SnAnchorLink title="简介" href="#anchor-demo-intro" />
       <SnAnchorLink title="安装" href="#anchor-demo-install" />
       <SnAnchorLink title="用法" href="#anchor-demo-usage" />

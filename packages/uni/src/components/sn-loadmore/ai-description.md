@@ -29,46 +29,46 @@ added to the wd-loadmore parity list.
 ```
 
 ```ts
-import { SnLoadmore } from '@snui/uni'
+import { SnLoadmore } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `state` | '' | 'loading' | 'finished' | 'error' | '' | no | Current load state; empty renders nothing. |
-| `loadingText` | string | '正在努力加载中...' | no | Loading text. |
-| `finishedText` | string | '已加载完毕' | no | Finished text. |
-| `errorText` | string | '加载失败' | no | Error text. |
-| `loadingProps` | Record<string, unknown> | {} | no | Props forwarded to the inner sn-loading. |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name           | Type                    | Default             | Required   | Description                              |
+| -------------- | ----------------------- | ------------------- | ---------- | ---------------------------------------- |
+| `state`        | ''                      | 'loading'           | 'finished' | 'error'                                  | ''  | no  | Current load state; empty renders nothing. |
+| `loadingText`  | string                  | '正在努力加载中...' | no         | Loading text.                            |
+| `finishedText` | string                  | '已加载完毕'        | no         | Finished text.                           |
+| `errorText`    | string                  | '加载失败'          | no         | Error text.                              |
+| `loadingProps` | Record<string, unknown> | {}                  | no         | Props forwarded to the inner sn-loading. |
+| `customClass`  | string                  | ''                  | no         | Custom class for the root node.          |
+| `customStyle`  | string                  | ''                  | no         | Custom inline style for the root node.   |
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `reload` | — | Error state tapped (host should retry the request). |
+| Event    | Payload | Description                                         |
+| -------- | ------- | --------------------------------------------------- |
+| `reload` | —       | Error state tapped (host should retry the request). |
 
 ## Slots
 
-| Slot | Description |
-|---|---|
-| `loading` | Custom loading content. |
+| Slot       | Description              |
+| ---------- | ------------------------ |
+| `loading`  | Custom loading content.  |
 | `finished` | Custom finished content. |
-| `error` | Custom error content. |
+| `error`    | Custom error content.    |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text secondary | `--sn-mp-color-text-secondary` | Loading text |
-| Text tertiary | `--sn-mp-color-text-tertiary` | Finished text |
-| Feedback danger | `--sn-mp-color-feedback-danger` | Error text |
-| Action primary | `--sn-mp-color-action-primary` | Retry hint |
-| Font size SM | `--sn-mp-font-size-sm` | Footer text size |
+| Token              | CSS Variable                      | Purpose            |
+| ------------------ | --------------------------------- | ------------------ |
+| Text secondary     | `--sn-mp-color-text-secondary`    | Loading text       |
+| Text tertiary      | `--sn-mp-color-text-tertiary`     | Finished text      |
+| Feedback danger    | `--sn-mp-color-feedback-danger`   | Error text         |
+| Action primary     | `--sn-mp-color-action-primary`    | Retry hint         |
+| Font size SM       | `--sn-mp-font-size-sm`            | Footer text size   |
 | Line height normal | `--sn-mp-font-line-height-normal` | Footer line height |
-| Spacing 2 / 4 / 5 | `--sn-mp-spacing-2 …` | Padding + gap |
+| Spacing 2 / 4 / 5  | `--sn-mp-spacing-2 …`             | Padding + gap      |
 
 ## Accessibility
 

@@ -18,16 +18,16 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnStatistic from '@snui/vue-web/src/statistic/SnStatistic.vue'
+import SnStatistic from '@snui/vue-web/src/statistic/SnStatistic.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `label` | `string` | — | no | Label shown above the value. |
-| `value` | `string \| number` | — | no | Statistic value; takes precedence over the default slot. `0` is a valid value. |
-| `tabularNums` | `boolean` | `false` | no | Render digits with equal widths (`font-variant-numeric: tabular-nums`). |
+| Name          | Type               | Default | Required | Description                                                                    |
+| ------------- | ------------------ | ------- | -------- | ------------------------------------------------------------------------------ |
+| `label`       | `string`           | —       | no       | Label shown above the value.                                                   |
+| `value`       | `string \| number` | —       | no       | Statistic value; takes precedence over the default slot. `0` is a valid value. |
+| `tabularNums` | `boolean`          | `false` | no       | Render digits with equal widths (`font-variant-numeric: tabular-nums`).        |
 
 ## Events
 
@@ -35,12 +35,12 @@ None.
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                           |
+| --------- | ----------------------------------------------------- |
 | `default` | Value content — used only when `value` is not passed. |
-| `label` | Label — used only when `label` is not passed. |
-| `prefix` | Prefix rendered before the value content. |
-| `suffix` | Suffix rendered after the value content. |
+| `label`   | Label — used only when `label` is not passed.         |
+| `prefix`  | Prefix rendered before the value content.             |
+| `suffix`  | Suffix rendered after the value content.              |
 
 ## Divergences from the reference API
 
@@ -56,9 +56,9 @@ None.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text tertiary | `--sn-web-color-text-tertiary` | Label color |
+| Token          | CSS Variable                    | Purpose                       |
+| -------------- | ------------------------------- | ----------------------------- |
+| Text tertiary  | `--sn-web-color-text-tertiary`  | Label color                   |
 | Text secondary | `--sn-web-color-text-secondary` | Value / prefix / suffix color |
 
 ## Versioning

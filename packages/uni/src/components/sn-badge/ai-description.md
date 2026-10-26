@@ -22,26 +22,26 @@ caller, so the marker never drifts when the host changes size.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue'
+import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `value` | `string \| number` | `undefined` | no | Displayed value. A number over `max` renders `{max}+`. |
-| `max` | `number` | `undefined` | no | Overflow threshold, applied to numeric values only. |
-| `top` | `string \| number` | `undefined` | no | Vertical nudge from the default anchor. A number is px. |
-| `right` | `string \| number` | `undefined` | no | Horizontal nudge from the default anchor. A number is px. |
-| `isDot` | `boolean` | `false` | no | Render a small dot instead of a number. |
-| `hidden` | `boolean` | `false` | no | Hide the marker; the wrapped content still renders. |
-| `type` | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `undefined` | no | Marker colour. Unset falls back to danger red. |
-| `bgColor` | `string` | `''` | no | Inline background override for the marker. |
-| `showZero` | `boolean` | `false` | no | Render a `0` value (suppressed by default). |
-| `shape` | `'circle' \| 'square' \| 'bubble'` | `'circle'` | no | Marker outline. |
-| `border` | `boolean` | `false` | no | Draw a separating ring in the page background colour. |
-| `customClass` | `string` | `''` | no | Extra class on the root node. |
-| `customStyle` | `string` | `''` | no | Inline style on the root node. |
+| Name          | Type                                                        | Default     | Required | Description                                               |
+| ------------- | ----------------------------------------------------------- | ----------- | -------- | --------------------------------------------------------- |
+| `value`       | `string \| number`                                          | `undefined` | no       | Displayed value. A number over `max` renders `{max}+`.    |
+| `max`         | `number`                                                    | `undefined` | no       | Overflow threshold, applied to numeric values only.       |
+| `top`         | `string \| number`                                          | `undefined` | no       | Vertical nudge from the default anchor. A number is px.   |
+| `right`       | `string \| number`                                          | `undefined` | no       | Horizontal nudge from the default anchor. A number is px. |
+| `isDot`       | `boolean`                                                   | `false`     | no       | Render a small dot instead of a number.                   |
+| `hidden`      | `boolean`                                                   | `false`     | no       | Hide the marker; the wrapped content still renders.       |
+| `type`        | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `undefined` | no       | Marker colour. Unset falls back to danger red.            |
+| `bgColor`     | `string`                                                    | `''`        | no       | Inline background override for the marker.                |
+| `showZero`    | `boolean`                                                   | `false`     | no       | Render a `0` value (suppressed by default).               |
+| `shape`       | `'circle' \| 'square' \| 'bubble'`                          | `'circle'`  | no       | Marker outline.                                           |
+| `border`      | `boolean`                                                   | `false`     | no       | Draw a separating ring in the page background colour.     |
+| `customClass` | `string`                                                    | `''`        | no       | Extra class on the root node.                             |
+| `customStyle` | `string`                                                    | `''`        | no       | Inline style on the root node.                            |
 
 ## Events
 
@@ -49,8 +49,8 @@ None. The badge is decoration; taps belong to the wrapped content.
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                                   |
+| --------- | ------------------------------------------------------------- |
 | `default` | The content the marker is anchored to (icon / avatar / text). |
 
 ## Visibility rules
@@ -62,15 +62,15 @@ None. The badge is decoration; taps belong to the wrapped content.
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Action primary | `--sn-mp-color-action-primary` | `primary` marker fill |
-| Feedback success / warning / danger / info | `--sn-mp-color-feedback-{success,warning,danger,info}` | The other four marker fills |
-| Text on primary | `--sn-mp-color-text-on-primary` | Marker label |
-| Background surface | `--sn-mp-color-background-surface` | `border` ring colour |
-| Text primary | `--sn-mp-color-text-primary` | Doodle skin outline |
-| Font size / weight | `--sn-mp-font-size-xs`, `--sn-mp-font-weight-{medium,bold}` | Label typography |
-| Radius | `--sn-mp-radius-{sm,lg,full}` | Marker shape |
+| Token                                      | CSS Variable                                                | Purpose                     |
+| ------------------------------------------ | ----------------------------------------------------------- | --------------------------- |
+| Action primary                             | `--sn-mp-color-action-primary`                              | `primary` marker fill       |
+| Feedback success / warning / danger / info | `--sn-mp-color-feedback-{success,warning,danger,info}`      | The other four marker fills |
+| Text on primary                            | `--sn-mp-color-text-on-primary`                             | Marker label                |
+| Background surface                         | `--sn-mp-color-background-surface`                          | `border` ring colour        |
+| Text primary                               | `--sn-mp-color-text-primary`                                | Doodle skin outline         |
+| Font size / weight                         | `--sn-mp-font-size-xs`, `--sn-mp-font-weight-{medium,bold}` | Label typography            |
+| Radius                                     | `--sn-mp-radius-{sm,lg,full}`                               | Marker shape                |
 
 ## Accessibility
 

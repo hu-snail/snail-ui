@@ -18,20 +18,20 @@
 
 ### SnStatistic Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| label | `string` | `undefined` | 数值上方的标签 |
-| value | `string \| number` | `undefined` | 统计值；传入时优先于 default 插槽，`0` 是合法值 |
-| tabular-nums | `boolean` | `false` | 数字等宽（font-variant-numeric: tabular-nums） |
+| Prop         | 类型               | 默认值      | 说明                                            |
+| ------------ | ------------------ | ----------- | ----------------------------------------------- |
+| label        | `string`           | `undefined` | 数值上方的标签                                  |
+| value        | `string \| number` | `undefined` | 统计值；传入时优先于 default 插槽，`0` 是合法值 |
+| tabular-nums | `boolean`          | `false`     | 数字等宽（font-variant-numeric: tabular-nums）  |
 
 ### SnStatistic Slots
 
-| Slot | 说明 |
-| --- | --- |
+| Slot    | 说明                            |
+| ------- | ------------------------------- |
 | default | 值内容（仅未传 `value` 时生效） |
-| label | 标签（仅未传 `label` 时生效） |
-| prefix | 值前缀 |
-| suffix | 值后缀 |
+| label   | 标签（仅未传 `label` 时生效）   |
+| prefix  | 值前缀                          |
+| suffix  | 值后缀                          |
 
 无事件。度量对齐 naive cssr：label 14px / 数值 24px / 值区 margin-top 4px / 前后缀间距 4px。
 

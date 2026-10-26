@@ -1,50 +1,48 @@
 <script setup lang="ts">
 /** Demo: SnHeatmap — basic contribution grid with toggles for labels / indicator / loading. */
-import { computed, ref } from 'vue'
-import { SnHeatmap } from '@snui/vue-web'
+import { computed, ref } from 'vue';
+import { SnHeatmap } from '@snui/vue-web';
 
-const showWeekLabels = ref(true)
-const showMonthLabels = ref(true)
-const showColorIndicator = ref(true)
-const loading = ref(false)
+const showWeekLabels = ref(true);
+const showMonthLabels = ref(true);
+const showColorIndicator = ref(true);
+const loading = ref(false);
 
 // Deterministic pseudo-random year of activity (seeded LCG, weekend dips).
-function generateYearData(): { timestamp: number, value: number }[] {
-  const out: { timestamp: number, value: number }[] = []
-  const end = new Date()
-  const start = new Date(end.getFullYear() - 1, end.getMonth(), end.getDate())
-  let seed = 42
+function generateYearData(): { timestamp: number; value: number }[] {
+  const out: { timestamp: number; value: number }[] = [];
+  const end = new Date();
+  const start = new Date(end.getFullYear() - 1, end.getMonth(), end.getDate());
+  let seed = 42;
   const next = () => {
-    seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648
-    return seed / 2_147_483_648
-  }
+    seed = (seed * 1_103_515_245 + 12_345) % 2_147_483_648;
+    return seed / 2_147_483_648;
+  };
   for (let ts = start.getTime(); ts <= end.getTime(); ts += 86_400_000) {
-    const day = new Date(ts).getDay()
-    const weekend = day === 0 || day === 6
-    const value = next() < (weekend ? 0.7 : 0.25) ? 0 : Math.floor(next() ** 2 * 12) + 1
-    out.push({ timestamp: ts, value })
+    const day = new Date(ts).getDay();
+    const weekend = day === 0 || day === 6;
+    const value = next() < (weekend ? 0.7 : 0.25) ? 0 : Math.floor(next() ** 2 * 12) + 1;
+    out.push({ timestamp: ts, value });
   }
-  return out
+  return out;
 }
 
-const data = computed(generateYearData)
+const data = computed(generateYearData);
 </script>
 
 <template>
   <div class="sn-demo">
     <div class="sn-demo-controls">
       <label class="sn-demo-control">
-        <input v-model="showWeekLabels" type="checkbox"> Week labels
+        <input v-model="showWeekLabels" type="checkbox" /> Week labels
       </label>
       <label class="sn-demo-control">
-        <input v-model="showMonthLabels" type="checkbox"> Month labels
+        <input v-model="showMonthLabels" type="checkbox" /> Month labels
       </label>
       <label class="sn-demo-control">
-        <input v-model="showColorIndicator" type="checkbox"> Color legend
+        <input v-model="showColorIndicator" type="checkbox" /> Color legend
       </label>
-      <label class="sn-demo-control">
-        <input v-model="loading" type="checkbox"> Loading
-      </label>
+      <label class="sn-demo-control"> <input v-model="loading" type="checkbox" /> Loading </label>
     </div>
     <div class="sn-demo-scroll">
       <SnHeatmap

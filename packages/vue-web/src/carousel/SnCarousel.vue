@@ -4,29 +4,29 @@
  * (Mirrors naive-ui `CarouselContext.ts` and the module-level
  * `globalDragging` flag in `Carousel.tsx`.)
  */
-import type { ComputedRef, InjectionKey } from 'vue'
+import type { ComputedRef, InjectionKey } from 'vue';
 
 /** Scoped-slot payload for the `arrow` slot (mirrors naive interface.ts). */
 export interface CarouselArrowSlotProps {
-  total: number
-  currentIndex: number
-  to: (index: number) => void
-  prev: () => void
-  next: () => void
-  isPrevDisabled: () => boolean
-  isNextDisabled: () => boolean
+  total: number;
+  currentIndex: number;
+  to: (index: number) => void;
+  prev: () => void;
+  next: () => void;
+  isPrevDisabled: () => boolean;
+  isNextDisabled: () => boolean;
 }
 
 /** Scoped-slot payload for the `dots` slot (mirrors naive interface.ts). */
 export interface CarouselDotSlotProps {
-  total: number
-  currentIndex: number
-  to: (index: number) => void
+  total: number;
+  currentIndex: number;
+  to: (index: number) => void;
 }
 
 export interface SlideSize {
-  width: number
-  height: number
+  width: number;
+  height: number;
 }
 
 /**
@@ -34,32 +34,30 @@ export interface SlideSize {
  * (1:1 with naive `CarouselContextValue`).
  */
 export interface SnCarouselContext {
-  currentIndexRef: ComputedRef<number>
-  to: (index: number) => void
-  prev: () => void
-  next: () => void
-  isVertical: () => boolean
-  isHorizontal: () => boolean
-  isPrev: (slideOrIndex: HTMLElement | number) => boolean
-  isNext: (slideOrIndex: HTMLElement | number) => boolean
-  isActive: (slideOrIndex: HTMLElement | number) => boolean
-  isPrevDisabled: () => boolean
-  isNextDisabled: () => boolean
-  getSlideIndex: (slideOrIndex?: HTMLElement | number) => number
+  currentIndexRef: ComputedRef<number>;
+  to: (index: number) => void;
+  prev: () => void;
+  next: () => void;
+  isVertical: () => boolean;
+  isHorizontal: () => boolean;
+  isPrev: (slideOrIndex: HTMLElement | number) => boolean;
+  isNext: (slideOrIndex: HTMLElement | number) => boolean;
+  isActive: (slideOrIndex: HTMLElement | number) => boolean;
+  isPrevDisabled: () => boolean;
+  isNextDisabled: () => boolean;
+  getSlideIndex: (slideOrIndex?: HTMLElement | number) => number;
   getSlideStyle: (
     slideOrIndex: HTMLElement | number,
-  ) => string | Record<string, string | number> | undefined
-  addSlide: (slide?: HTMLElement) => void
-  removeSlide: (slide?: HTMLElement) => void
-  onCarouselItemClick: (index: number, event: MouseEvent) => void
+  ) => string | Record<string, string | number> | undefined;
+  addSlide: (slide?: HTMLElement) => void;
+  removeSlide: (slide?: HTMLElement) => void;
+  onCarouselItemClick: (index: number, event: MouseEvent) => void;
 }
 
-export const carouselContextKey: InjectionKey<SnCarouselContext> = Symbol(
-  'sn-carousel-methods',
-)
+export const carouselContextKey: InjectionKey<SnCarouselContext> = Symbol('sn-carousel-methods');
 
 /** Only one carousel is allowed to trigger touch globally (naive parity). */
-let globalDragging = false
+let globalDragging = false;
 </script>
 
 <script setup lang="ts">
@@ -130,9 +128,15 @@ import {
   useSlots,
   watch,
   watchEffect,
-} from 'vue'
-import type { ComponentPublicInstance, CSSProperties, StyleValue, TransitionProps, VNode } from 'vue'
-import SnCarouselItem from './SnCarouselItem.vue'
+} from 'vue';
+import type {
+  ComponentPublicInstance,
+  CSSProperties,
+  StyleValue,
+  TransitionProps,
+  VNode,
+} from 'vue';
+import SnCarouselItem from './SnCarouselItem.vue';
 import {
   clampValue,
   computeAutoLastTranslate,
@@ -151,63 +155,63 @@ import {
   resolveKeyboardAction,
   resolveSpeed,
   resolveWheelDirection,
-} from './carousel-utils'
+} from './carousel-utils';
 
-defineOptions({ name: 'SnCarousel' })
+defineOptions({ name: 'SnCarousel' });
 
 const props = withDefaults(
   defineProps<{
     /** Auto-advance between slides. Pauses while hovered. */
-    autoplay?: boolean
+    autoplay?: boolean;
     /** Centre the active slide (for slides-per-view / auto layouts). */
-    centeredSlides?: boolean
+    centeredSlides?: boolean;
     /** Controlled current display index (`v-model:current-index`). */
-    currentIndex?: number | undefined
+    currentIndex?: number | undefined;
     /** Initial display index (uncontrolled). */
-    defaultIndex?: number
+    defaultIndex?: number;
     /** Scroll axis. */
-    direction?: 'horizontal' | 'vertical'
+    direction?: 'horizontal' | 'vertical';
     /** Where indicator dots sit. */
-    dotPlacement?: 'top' | 'bottom' | 'left' | 'right'
+    dotPlacement?: 'top' | 'bottom' | 'left' | 'right';
     /** Indicator dots shape. */
-    dotType?: 'dot' | 'line'
+    dotType?: 'dot' | 'line';
     /** Drag with the mouse to switch slides. */
-    draggable?: boolean
+    draggable?: boolean;
     /** Transition effect between slides. */
-    effect?: 'slide' | 'fade' | 'card' | 'custom'
+    effect?: 'slide' | 'fade' | 'card' | 'custom';
     /** Autoplay interval in ms. */
-    interval?: number
+    interval?: number;
     /** Wrap around at both ends. */
-    loop?: boolean
+    loop?: boolean;
     /** Switch slides with the mouse wheel. */
-    mousewheel?: boolean
+    mousewheel?: boolean;
     /** Inline style override for the next slide (card mode). */
-    nextSlideStyle?: CSSProperties | string
+    nextSlideStyle?: CSSProperties | string;
     /** Inline style override for the previous slide (card mode). */
-    prevSlideStyle?: CSSProperties | string
+    prevSlideStyle?: CSSProperties | string;
     /** Slides per view: fixed number or 'auto' (measured from the DOM). */
-    slidesPerView?: number | 'auto'
+    slidesPerView?: number | 'auto';
     /** Space (px) between slides. */
-    spaceBetween?: number
+    spaceBetween?: number;
     /** Show built-in prev/next arrow buttons. */
-    showArrow?: boolean
+    showArrow?: boolean;
     /** Show indicator dots. */
-    showDots?: boolean
+    showDots?: boolean;
     /** Drag with touch to switch slides. */
-    touchable?: boolean
+    touchable?: boolean;
     /** Slide/fade/card transition duration + easing. */
     transitionStyle?: {
-      transitionDuration?: string
-      transitionTimingFunction?: string
-    }
+      transitionDuration?: string;
+      transitionTimingFunction?: string;
+    };
     /** Vue `<Transition>` props, for `effect='custom'`. */
-    transitionProps?: TransitionProps
+    transitionProps?: TransitionProps;
     /** How indicator dots activate. */
-    trigger?: 'click' | 'hover'
+    trigger?: 'click' | 'hover';
     /** Arrow keys switch slides while a dot is focused. */
-    keyboard?: boolean
+    keyboard?: boolean;
     /** Secondary callback channel for index changes (naive parity). */
-    onUpdateCurrentIndex?: (currentIndex: number, lastIndex: number) => void
+    onUpdateCurrentIndex?: (currentIndex: number, lastIndex: number) => void;
   }>(),
   {
     // `currentIndex` / `prevSlideStyle` / `nextSlideStyle` / `transitionProps`
@@ -233,364 +237,357 @@ const props = withDefaults(
     trigger: 'click',
     keyboard: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Active display index changed, with the previous display index. */
-  (e: 'update:currentIndex', currentIndex: number, lastIndex: number): void
-}>()
+  (e: 'update:currentIndex', currentIndex: number, lastIndex: number): void;
+}>();
 
 defineSlots<{
   /** Sequence of `<SnCarouselItem>` children. */
-  default?: () => unknown
+  default?: () => unknown;
   /** Custom arrow buttons; falls back to the built-in pair. */
-  arrow?: (props: CarouselArrowSlotProps) => unknown
+  arrow?: (props: CarouselArrowSlotProps) => unknown;
   /** Custom indicator dots; falls back to the built-in dots. */
-  dots?: (props: CarouselDotSlotProps) => unknown
-}>()
+  dots?: (props: CarouselDotSlotProps) => unknown;
+}>();
 
 /* ────────────────────────── DOM refs ────────────────────────── */
 
-const selfElRef = ref<HTMLElement | null>(null)
-const slidesElRef = ref<HTMLElement | null>(null)
-const slideElsRef = ref<HTMLElement[]>([])
+const selfElRef = ref<HTMLElement | null>(null);
+const slidesElRef = ref<HTMLElement | null>(null);
+const slideElsRef = ref<HTMLElement[]>([]);
 
 /* ────────────────────────── computed states ────────────────────────── */
 
-const isVertical = computed(() => props.direction === 'vertical')
-const sizeAxis = computed<'width' | 'height'>(() => (isVertical.value ? 'height' : 'width'))
-const spaceAxis = computed<'right' | 'bottom'>(() => (isVertical.value ? 'bottom' : 'right'))
+const isVertical = computed(() => props.direction === 'vertical');
+const sizeAxis = computed<'width' | 'height'>(() => (isVertical.value ? 'height' : 'width'));
+const spaceAxis = computed<'right' | 'bottom'>(() => (isVertical.value ? 'bottom' : 'right'));
 /** Only the sequential slide effect lays slides out on a flex track. */
-const sequenceLayout = computed(() => props.effect === 'slide')
+const sequenceLayout = computed(() => props.effect === 'slide');
 const duplicatedable = computed(() =>
   isDuplicatedable(props.loop, props.slidesPerView, props.effect),
-)
+);
 /** `effect='custom'` hands transition control to the user. */
-const userWantsControl = computed(() => props.effect === 'custom')
+const userWantsControl = computed(() => props.effect === 'custom');
 /** Slides-per-view used to derive the total view count. */
 const displaySlidesPerView = computed<number | 'auto'>(() =>
   !sequenceLayout.value || props.centeredSlides ? 1 : props.slidesPerView,
-)
+);
 /** Slides-per-view used to derive each slide's size. */
 const realSlidesPerView = computed<number | 'auto'>(() =>
   userWantsControl.value ? 1 : props.slidesPerView,
-)
+);
 const autoSlideSize = computed(
   () =>
-    displaySlidesPerView.value === 'auto'
-    || (props.slidesPerView === 'auto' && props.centeredSlides),
-)
+    displaySlidesPerView.value === 'auto' ||
+    (props.slidesPerView === 'auto' && props.centeredSlides),
+);
 
 /* ────────────────────────── carousel size ────────────────────────── */
 
-const perViewSizeRef = ref<SlideSize>({ width: 0, height: 0 })
+const perViewSizeRef = ref<SlideSize>({ width: 0, height: 0 });
 /** Bumped by slide resizes so `slideSizes` re-measures in auto mode. */
-const slideSizesTrigger = ref(0)
+const slideSizesTrigger = ref(0);
 
 function calculateSize(element: HTMLElement, innerOnly?: boolean): SlideSize {
-  let { offsetWidth: width, offsetHeight: height } = element
+  let { offsetWidth: width, offsetHeight: height } = element;
   if (innerOnly) {
-    const style = getComputedStyle(element)
+    const style = getComputedStyle(element);
     // happy-dom returns '' for unset paddings — coerce NaN away.
-    width -= Number.parseFloat(style.getPropertyValue('padding-left')) || 0
-    width -= Number.parseFloat(style.getPropertyValue('padding-right')) || 0
-    height -= Number.parseFloat(style.getPropertyValue('padding-top')) || 0
-    height -= Number.parseFloat(style.getPropertyValue('padding-bottom')) || 0
+    width -= Number.parseFloat(style.getPropertyValue('padding-left')) || 0;
+    width -= Number.parseFloat(style.getPropertyValue('padding-right')) || 0;
+    height -= Number.parseFloat(style.getPropertyValue('padding-top')) || 0;
+    height -= Number.parseFloat(style.getPropertyValue('padding-bottom')) || 0;
   }
-  return { width, height }
+  return { width, height };
 }
 
 const slideSizes = computed<SlideSize[]>(() => {
-  const slidesEls = slideElsRef.value
-  if (!slidesEls.length) return []
+  const slidesEls = slideElsRef.value;
+  if (!slidesEls.length) return [];
   // Touch the trigger so auto-mode re-measures when a slide resizes.
-  void slideSizesTrigger.value
+  void slideSizesTrigger.value;
   if (autoSlideSize.value) {
-    return slidesEls.map((el) => calculateSize(el))
+    return slidesEls.map((el) => calculateSize(el));
   }
-  const axis = sizeAxis.value
-  const slidesPerView = realSlidesPerView.value
-  const perViewSize = perViewSizeRef.value
-  let axisSize = perViewSize[axis]
+  const axis = sizeAxis.value;
+  const slidesPerView = realSlidesPerView.value;
+  const perViewSize = perViewSizeRef.value;
+  let axisSize = perViewSize[axis];
   if (slidesPerView !== 'auto') {
-    axisSize = computeSlideAxisSize(axisSize, slidesPerView, props.spaceBetween)
+    axisSize = computeSlideAxisSize(axisSize, slidesPerView, props.spaceBetween);
   }
-  const slideSize: SlideSize = { ...perViewSize, [axis]: axisSize }
-  return slidesEls.map(() => slideSize)
-})
+  const slideSize: SlideSize = { ...perViewSize, [axis]: axisSize };
+  return slidesEls.map(() => slideSize);
+});
 
 const slideTranslates = computed<number[]>(() => {
-  const sizes = slideSizes.value
-  if (!sizes.length) return []
-  const axis = sizeAxis.value
+  const sizes = slideSizes.value;
+  if (!sizes.length) return [];
+  const axis = sizeAxis.value;
   return computeSlideTranslates(
     sizes.map((size) => size[axis]),
     perViewSizeRef.value[axis],
     props.spaceBetween,
     props.centeredSlides,
-  )
-})
+  );
+});
 
 /* ────────────────────────── total views ────────────────────────── */
 
 const totalView = computed<number>(() => {
-  const slidesPerView = displaySlidesPerView.value
-  const totalSlides = slideElsRef.value.length
+  const slidesPerView = displaySlidesPerView.value;
+  const totalSlides = slideElsRef.value.length;
   if (slidesPerView !== 'auto') {
-    return computeTotalView(totalSlides, slidesPerView)
+    return computeTotalView(totalSlides, slidesPerView);
   }
-  const sizes = slideSizes.value
-  if (!sizes.length) return totalSlides
-  const axis = sizeAxis.value
+  const sizes = slideSizes.value;
+  if (!sizes.length) return totalSlides;
+  const axis = sizeAxis.value;
   return computeAutoTotalView(
     sizes.map((size) => size[axis]),
     slideTranslates.value,
     perViewSizeRef.value[axis],
-  )
-})
+  );
+});
 
 const displayTotalView = computed<number>(() =>
   getDisplayTotalView(totalView.value, duplicatedable.value),
-)
+);
 
 /** 0-based indexes for the dots v-for (avoids template index arithmetic). */
 const dotIndexes = computed<number[]>(() =>
   Array.from({ length: Math.max(displayTotalView.value, 0) }, (_, i) => i),
-)
+);
 
 /* ────────────────────────── styles ────────────────────────── */
 
-const TRANSITION_PROPERTIES = ['transitionDuration', 'transitionTimingFunction'] as const
+const TRANSITION_PROPERTIES = ['transitionDuration', 'transitionTimingFunction'] as const;
 interface TransitionStyle {
-  transitionDuration?: string
-  transitionTimingFunction?: string
+  transitionDuration?: string;
+  transitionTimingFunction?: string;
 }
 
-const isMountedRef = ref(false)
+const isMountedRef = ref(false);
 
 function keepTransitionStyle(style: TransitionStyle): TransitionStyle {
-  const result: TransitionStyle = {}
+  const result: TransitionStyle = {};
   for (const key of TRANSITION_PROPERTIES) {
-    const value = style[key]
-    if (value !== undefined) result[key] = value
+    const value = style[key];
+    if (value !== undefined) result[key] = value;
   }
-  return result
+  return result;
 }
 
 const transitionStyleRef = computed<TransitionStyle>(() =>
   keepTransitionStyle(props.transitionStyle ?? {}),
-)
+);
 
 /** Transition duration in ms; 0 for user-controlled (custom) mode. */
 const speedMs = computed(() =>
   userWantsControl.value ? 0 : resolveSpeed(transitionStyleRef.value.transitionDuration),
-)
+);
 
 const slideStyles = computed<Record<string, string | number>[]>(() => {
-  const slidesEls = slideElsRef.value
-  if (!slidesEls.length) return []
-  const useComputedSize = !(autoSlideSize.value || realSlidesPerView.value === 1)
+  const slidesEls = slideElsRef.value;
+  if (!slidesEls.length) return [];
+  const useComputedSize = !(autoSlideSize.value || realSlidesPerView.value === 1);
   const getSlideSize = (index: number): Record<string, string> => {
     if (useComputedSize) {
-      const axis = sizeAxis.value
-      const size = slideSizes.value[index]
-      return size ? { [axis]: `${size[axis]}px` } : {}
+      const axis = sizeAxis.value;
+      const size = slideSizes.value[index];
+      return size ? { [axis]: `${size[axis]}px` } : {};
     }
-    return {}
-  }
+    return {};
+  };
   if (userWantsControl.value) {
     // Custom mode centres every slide; offsets are the user's concern.
-    return slidesEls.map((_, i) => getSlideSize(i))
+    return slidesEls.map((_, i) => getSlideSize(i));
   }
-  const { effect, spaceBetween } = props
-  const axis = spaceAxis.value
+  const { effect, spaceBetween } = props;
+  const axis = spaceAxis.value;
   return slidesEls.reduce<Record<string, string | number>[]>((styles, _, i) => {
     const style: Record<string, string | number> = {
       ...getSlideSize(i),
       [`margin-${axis}`]: `${spaceBetween}px`,
-    }
+    };
     if (isMountedRef.value && (effect === 'fade' || effect === 'card')) {
-      Object.assign(style, transitionStyleRef.value)
+      Object.assign(style, transitionStyleRef.value);
     }
-    styles.push(style)
-    return styles
-  }, [])
-})
+    styles.push(style);
+    return styles;
+  }, []);
+});
 
 /* ────────────────────────── index state ────────────────────────── */
 
 /** Divergence vs naive: initialized in display space so `default-index`
  *  takes effect (naive collapses it to 0 through an empty list, see
  *  header note). */
-const uncontrolledDisplayIndex = ref<number>(props.defaultIndex)
+const uncontrolledDisplayIndex = ref<number>(props.defaultIndex);
 
 const mergedDisplayIndex = computed<number>(() =>
   props.currentIndex !== undefined ? props.currentIndex : uncontrolledDisplayIndex.value,
-)
+);
 
 const realIndex = computed<number>(() =>
   getRealIndex(mergedDisplayIndex.value, duplicatedable.value),
-)
+);
 
 /* ────────────────────────── real-index methods ────────────────────────── */
 
 function toRealIndex(index: number): void {
-  const clamped = clampValue(index, 0, totalView.value - 1)
-  const displayIndex = getDisplayIndex(clamped, totalView.value, duplicatedable.value)
-  const lastDisplayIndex = mergedDisplayIndex.value
+  const clamped = clampValue(index, 0, totalView.value - 1);
+  const displayIndex = getDisplayIndex(clamped, totalView.value, duplicatedable.value);
+  const lastDisplayIndex = mergedDisplayIndex.value;
   if (displayIndex !== mergedDisplayIndex.value) {
-    uncontrolledDisplayIndex.value = displayIndex
-    emit('update:currentIndex', displayIndex, lastDisplayIndex)
-    props.onUpdateCurrentIndex?.(displayIndex, lastDisplayIndex)
+    uncontrolledDisplayIndex.value = displayIndex;
+    emit('update:currentIndex', displayIndex, lastDisplayIndex);
+    props.onUpdateCurrentIndex?.(displayIndex, lastDisplayIndex);
   }
 }
 
 function getRealPrevIndex(index: number = realIndex.value): number | null {
-  return getPrevIndex(index, totalView.value, props.loop)
+  return getPrevIndex(index, totalView.value, props.loop);
 }
 
 function getRealNextIndex(index: number = realIndex.value): number | null {
-  return getNextIndex(index, totalView.value, props.loop)
+  return getNextIndex(index, totalView.value, props.loop);
 }
 
 function isRealPrev(slideOrIndex: HTMLElement | number): boolean {
-  const index = getSlideIndex(slideOrIndex)
-  return index !== -1 && getRealPrevIndex() === index && totalView.value > 1
+  const index = getSlideIndex(slideOrIndex);
+  return index !== -1 && getRealPrevIndex() === index && totalView.value > 1;
 }
 
 function isRealNext(slideOrIndex: HTMLElement | number): boolean {
-  const index = getSlideIndex(slideOrIndex)
-  return index !== -1 && getRealNextIndex() === index && totalView.value > 1
+  const index = getSlideIndex(slideOrIndex);
+  return index !== -1 && getRealNextIndex() === index && totalView.value > 1;
 }
 
 function isRealActive(slideOrIndex: HTMLElement | number): boolean {
-  return realIndex.value === getSlideIndex(slideOrIndex)
+  return realIndex.value === getSlideIndex(slideOrIndex);
 }
 
 function isPrevDisabled(): boolean {
-  return getRealPrevIndex() === null
+  return getRealPrevIndex() === null;
 }
 
 function isNextDisabled(): boolean {
-  return getRealNextIndex() === null
+  return getRealNextIndex() === null;
 }
 
 /* ────────────────────────── to / prev / next ────────────────────────── */
 
 /** Direction of the last prev()/next() call, for the clone-jump mapping. */
-let expectedTransitionDirection = 0
+let expectedTransitionDirection = 0;
 
 function to(index: number): void {
-  const targetRealIndex = clampValue(
-    getRealIndex(index, duplicatedable.value),
-    0,
-    totalView.value,
-  )
+  const targetRealIndex = clampValue(getRealIndex(index, duplicatedable.value), 0, totalView.value);
   if (index !== mergedDisplayIndex.value || targetRealIndex !== realIndex.value) {
-    toRealIndex(targetRealIndex)
+    toRealIndex(targetRealIndex);
   }
 }
 
 function prev(): void {
-  const prevIndex = getRealPrevIndex()
+  const prevIndex = getRealPrevIndex();
   if (prevIndex !== null) {
-    expectedTransitionDirection = -1
-    toRealIndex(prevIndex)
+    expectedTransitionDirection = -1;
+    toRealIndex(prevIndex);
   }
 }
 
 function next(): void {
-  const nextIndex = getRealNextIndex()
+  const nextIndex = getRealNextIndex();
   if (nextIndex !== null) {
-    expectedTransitionDirection = 1
-    toRealIndex(nextIndex)
+    expectedTransitionDirection = 1;
+    toRealIndex(nextIndex);
   }
 }
 
 /** Context-channel prev/next: skip while a clone jump is animating. */
 function prevIfSlideTransitionEnd(): void {
-  if (!inTransition || !duplicatedable.value) prev()
+  if (!inTransition || !duplicatedable.value) prev();
 }
 
 function nextIfSlideTransitionEnd(): void {
-  if (!inTransition || !duplicatedable.value) next()
+  if (!inTransition || !duplicatedable.value) next();
 }
 
 /* ────────────────────────── track translation ────────────────────────── */
 
-let inTransition = false
+let inTransition = false;
 /** Translate of the track before the current move — the drag base. */
-let previousTranslate = 0
-const translateStyle = ref<Record<string, string>>({})
+let previousTranslate = 0;
+const translateStyle = ref<Record<string, string>>({});
 
 function updateTranslate(translate: number, durationMs = 0): void {
   const style: Record<string, string> = {
-    transform: isVertical.value
-      ? `translateY(${-translate}px)`
-      : `translateX(${-translate}px)`,
+    transform: isVertical.value ? `translateY(${-translate}px)` : `translateX(${-translate}px)`,
     transitionDuration: `${durationMs}ms`,
-  }
-  const timingFunction = transitionStyleRef.value.transitionTimingFunction
+  };
+  const timingFunction = transitionStyleRef.value.transitionTimingFunction;
   if (timingFunction !== undefined) {
-    style.transitionTimingFunction = timingFunction
+    style.transitionTimingFunction = timingFunction;
   }
-  translateStyle.value = style
+  translateStyle.value = style;
 }
 
 /** Translate for the last view (brings the final slide flush). */
 function getLastViewTranslate(): number {
   if (displaySlidesPerView.value === 'auto') {
-    const axis = sizeAxis.value
+    const axis = sizeAxis.value;
     return computeAutoLastTranslate(
       slideSizes.value.map((size) => size[axis]),
       slideTranslates.value,
       perViewSizeRef.value[axis],
-    )
+    );
   }
-  return slideTranslates.value[totalView.value - 1] ?? 0
+  return slideTranslates.value[totalView.value - 1] ?? 0;
 }
 
 function getTranslate(index: number): number {
   if (index >= totalView.value - 1) {
-    return getLastViewTranslate()
+    return getLastViewTranslate();
   }
-  return slideTranslates.value[index] ?? 0
+  return slideTranslates.value[index] ?? 0;
 }
 
 function translateTo(index: number, durationMs: number): void {
-  const translate = getTranslate(index)
+  const translate = getTranslate(index);
   if (translate !== previousTranslate && durationMs > 0) {
-    inTransition = true
+    inTransition = true;
   }
-  previousTranslate = getTranslate(realIndex.value)
-  updateTranslate(translate, durationMs)
+  previousTranslate = getTranslate(realIndex.value);
+  updateTranslate(translate, durationMs);
 }
 
 function fixTranslate(durationMs = 0): void {
   if (sequenceLayout.value) {
-    translateTo(realIndex.value, durationMs)
-  }
-  else if (previousTranslate !== 0) {
+    translateTo(realIndex.value, durationMs);
+  } else if (previousTranslate !== 0) {
     if (!inTransition && durationMs > 0) {
-      inTransition = true
+      inTransition = true;
     }
-    previousTranslate = 0
-    updateTranslate(0, durationMs)
+    previousTranslate = 0;
+    updateTranslate(0, durationMs);
   }
 }
 
 /* ────────────────────────── slide registry ────────────────────────── */
 
 function addSlide(slide?: HTMLElement): void {
-  if (!slide) return
-  slideElsRef.value.push(slide)
+  if (!slide) return;
+  slideElsRef.value.push(slide);
 }
 
 function removeSlide(slide?: HTMLElement): void {
-  if (!slide) return
-  const index = slideElsRef.value.indexOf(slide)
+  if (!slide) return;
+  const index = slideElsRef.value.indexOf(slide);
   if (index !== -1) {
-    slideElsRef.value.splice(index, 1)
+    slideElsRef.value.splice(index, 1);
   }
 }
 
@@ -599,52 +596,53 @@ function getSlideIndex(slideOrIndex?: HTMLElement | number): number {
     ? slideOrIndex
     : slideOrIndex
       ? slideElsRef.value.indexOf(slideOrIndex)
-      : -1
+      : -1;
 }
 
 function getSlideStyle(
   slideOrIndex: HTMLElement | number,
 ): string | Record<string, string | number> | undefined {
-  const index = getSlideIndex(slideOrIndex)
+  const index = getSlideIndex(slideOrIndex);
   if (index !== -1) {
     const styles: Array<string | CSSProperties | Record<string, string | number>> = [
       slideStyles.value[index] ?? {},
-    ]
+    ];
     if (isRealPrev(index)) {
-      styles.push(props.prevSlideStyle ?? '')
+      styles.push(props.prevSlideStyle ?? '');
     }
     if (isRealNext(index)) {
-      styles.push(props.nextSlideStyle ?? '')
+      styles.push(props.nextSlideStyle ?? '');
     }
     // normalizeStyle narrows to `string | CSSProperties`; the caller
     // contract (naive parity) is the wider record shape.
-    return normalizeStyle(styles as StyleValue) as string | Record<string, string | number> | undefined
+    return normalizeStyle(styles as StyleValue) as
+      string | Record<string, string | number> | undefined;
   }
-  return undefined
+  return undefined;
 }
 
 /* ────────────────────────── drag ────────────────────────── */
 
-let dragStartX = 0
-let dragStartY = 0
-let dragOffset = 0
-let dragStartTime = 0
-let dragging = false
-let isEffectiveDrag = false
+let dragStartX = 0;
+let dragStartY = 0;
+let dragOffset = 0;
+let dragStartTime = 0;
+let dragging = false;
+let isEffectiveDrag = false;
 
 function isTouchEvent(event: MouseEvent | TouchEvent): event is TouchEvent {
-  return typeof TouchEvent !== 'undefined' && event instanceof TouchEvent
+  return typeof TouchEvent !== 'undefined' && event instanceof TouchEvent;
 }
 
 function onCarouselItemClick(index: number, event: MouseEvent): void {
-  let allowClick = !inTransition && !dragging && !isEffectiveDrag
+  let allowClick = !inTransition && !dragging && !isEffectiveDrag;
   if (props.effect === 'card' && allowClick && !isRealActive(index)) {
-    to(index)
-    allowClick = false
+    to(index);
+    allowClick = false;
   }
   if (!allowClick) {
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
   }
 }
 
@@ -655,245 +653,236 @@ function onCarouselItemClick(index: number, event: MouseEvent): void {
  * navigation is unaffected — it listens for `click`, not for drag start.
  * (Beyond naive, which preventDefaults every mouse drag start.)
  */
-const NO_DRAG_SELECTOR
-  = 'video, audio, a, button, input, textarea, select, [contenteditable], [data-no-drag]'
+const NO_DRAG_SELECTOR =
+  'video, audio, a, button, input, textarea, select, [contenteditable], [data-no-drag]';
 
 function handleTouchstart(event: MouseEvent | TouchEvent): void {
-  if (globalDragging) return
-  const slidesEl = slidesElRef.value
-  const target = event.target
+  if (globalDragging) return;
+  const slidesEl = slidesElRef.value;
+  const target = event.target;
   if (!slidesEl || !(target instanceof Node) || !slidesEl.contains(target)) {
-    return
+    return;
   }
   if (target instanceof Element && target.closest(NO_DRAG_SELECTOR)) {
-    return
+    return;
   }
-  globalDragging = true
-  dragging = true
-  isEffectiveDrag = false
-  dragStartTime = Date.now()
-  stopAutoplay()
+  globalDragging = true;
+  dragging = true;
+  isEffectiveDrag = false;
+  dragStartTime = Date.now();
+  stopAutoplay();
   if (event.type !== 'touchstart' && !(event.target as HTMLElement).isContentEditable) {
-    event.preventDefault()
+    event.preventDefault();
   }
-  const point = isTouchEvent(event) ? event.touches[0] : event
-  if (!point) return
-  dragStartX = point.clientX
-  dragStartY = point.clientY
+  const point = isTouchEvent(event) ? event.touches[0] : event;
+  if (!point) return;
+  dragStartX = point.clientX;
+  dragStartY = point.clientY;
   if (props.touchable) {
-    document.addEventListener('touchmove', handleTouchmove, { passive: false })
-    document.addEventListener('touchend', handleTouchend)
-    document.addEventListener('touchcancel', handleTouchend)
+    document.addEventListener('touchmove', handleTouchmove, { passive: false });
+    document.addEventListener('touchend', handleTouchend);
+    document.addEventListener('touchcancel', handleTouchend);
   }
   if (props.draggable) {
-    document.addEventListener('mousemove', handleTouchmove)
-    document.addEventListener('mouseup', handleTouchend)
+    document.addEventListener('mousemove', handleTouchmove);
+    document.addEventListener('mouseup', handleTouchend);
   }
 }
 
 function handleTouchmove(event: MouseEvent | TouchEvent): void {
-  const axis = sizeAxis.value
-  const point = isTouchEvent(event) ? event.touches[0] : event
-  if (!point) return
-  const offset = isVertical.value
-    ? point.clientY - dragStartY
-    : point.clientX - dragStartX
-  const perViewSize = perViewSizeRef.value[axis]
-  dragOffset = clampValue(offset, -perViewSize, perViewSize)
+  const axis = sizeAxis.value;
+  const point = isTouchEvent(event) ? event.touches[0] : event;
+  if (!point) return;
+  const offset = isVertical.value ? point.clientY - dragStartY : point.clientX - dragStartX;
+  const perViewSize = perViewSizeRef.value[axis];
+  dragOffset = clampValue(offset, -perViewSize, perViewSize);
   if (event.cancelable) {
-    event.preventDefault()
+    event.preventDefault();
   }
   if (sequenceLayout.value) {
-    updateTranslate(previousTranslate - dragOffset, 0)
+    updateTranslate(previousTranslate - dragOffset, 0);
   }
 }
 
 function handleTouchend(): void {
-  const currentRealIndex = realIndex.value
-  let targetIndex: number | null = currentRealIndex
+  const currentRealIndex = realIndex.value;
+  let targetIndex: number | null = currentRealIndex;
   if (!inTransition && dragOffset !== 0 && sequenceLayout.value) {
-    const currentTranslate = previousTranslate - dragOffset
+    const currentTranslate = previousTranslate - dragOffset;
     const translates = [
       ...slideTranslates.value.slice(0, totalView.value - 1),
       getLastViewTranslate(),
-    ]
-    targetIndex = findNearestTranslateIndex(translates, currentTranslate)
+    ];
+    targetIndex = findNearestTranslateIndex(translates, currentTranslate);
   }
   if (targetIndex === currentRealIndex) {
-    const timeElapsed = Date.now() - dragStartTime
+    const timeElapsed = Date.now() - dragStartTime;
     const flick = resolveFlickDirection(
       dragOffset,
       perViewSizeRef.value[sizeAxis.value],
       timeElapsed,
-    )
+    );
     if (flick === -1) {
-      prev()
-    }
-    else if (flick === 1) {
-      next()
+      prev();
+    } else if (flick === 1) {
+      next();
     }
   }
   if (targetIndex !== null && targetIndex !== currentRealIndex) {
-    isEffectiveDrag = true
-    toRealIndex(targetIndex)
+    isEffectiveDrag = true;
+    toRealIndex(targetIndex);
     void nextTick(() => {
-      if (
-        !duplicatedable.value
-        || uncontrolledDisplayIndex.value !== mergedDisplayIndex.value
-      ) {
-        fixTranslate(speedMs.value)
+      if (!duplicatedable.value || uncontrolledDisplayIndex.value !== mergedDisplayIndex.value) {
+        fixTranslate(speedMs.value);
       }
-    })
+    });
+  } else {
+    fixTranslate(speedMs.value);
   }
-  else {
-    fixTranslate(speedMs.value)
-  }
-  resetDragStatus()
-  resetAutoplay()
+  resetDragStatus();
+  resetAutoplay();
 }
 
 function resetDragStatus(): void {
   if (dragging) {
-    globalDragging = false
+    globalDragging = false;
   }
-  dragging = false
-  dragStartX = 0
-  dragStartY = 0
-  dragOffset = 0
-  dragStartTime = 0
-  document.removeEventListener('touchmove', handleTouchmove)
-  document.removeEventListener('touchend', handleTouchend)
-  document.removeEventListener('touchcancel', handleTouchend)
-  document.removeEventListener('mousemove', handleTouchmove)
-  document.removeEventListener('mouseup', handleTouchend)
+  dragging = false;
+  dragStartX = 0;
+  dragStartY = 0;
+  dragOffset = 0;
+  dragStartTime = 0;
+  document.removeEventListener('touchmove', handleTouchmove);
+  document.removeEventListener('touchend', handleTouchend);
+  document.removeEventListener('touchcancel', handleTouchend);
+  document.removeEventListener('mousemove', handleTouchmove);
+  document.removeEventListener('mouseup', handleTouchend);
 }
 
 /* ────────────────────────── slide events ────────────────────────── */
 
 function onSlidesTouchstart(event: TouchEvent): void {
-  if (props.touchable) handleTouchstart(event)
+  if (props.touchable) handleTouchstart(event);
 }
 
 function onSlidesMousedown(event: MouseEvent): void {
-  if (props.draggable) handleTouchstart(event)
+  if (props.draggable) handleTouchstart(event);
 }
 
 function onSlidesWheel(event: WheelEvent): void {
-  if (props.mousewheel) handleMousewheel(event)
+  if (props.mousewheel) handleMousewheel(event);
 }
 
 function handleTransitionEnd(): void {
   if (sequenceLayout.value && inTransition) {
     // Snap from a clone back onto the real slide without a transition.
-    translateTo(realIndex.value, 0)
-  }
-  else {
-    resetAutoplay()
+    translateTo(realIndex.value, 0);
+  } else {
+    resetAutoplay();
   }
   if (sequenceLayout.value) {
-    translateStyle.value.transitionDuration = '0ms'
+    translateStyle.value.transitionDuration = '0ms';
   }
-  inTransition = false
+  inTransition = false;
 }
 
 /* ────────────────────────── mousewheel ────────────────────────── */
 
 function handleMousewheel(event: WheelEvent): void {
-  event.preventDefault()
-  if (inTransition) return
+  event.preventDefault();
+  if (inTransition) return;
   const direction = resolveWheelDirection(
     event.deltaX,
     event.deltaY,
     event.shiftKey,
     isVertical.value,
-  )
+  );
   if (direction === 1 && !isNextDisabled()) {
-    next()
-  }
-  else if (direction === -1 && !isPrevDisabled()) {
-    prev()
+    next();
+  } else if (direction === -1 && !isPrevDisabled()) {
+    prev();
   }
 }
 
 /* ────────────────────────── autoplay ────────────────────────── */
 
-let autoplayTimer: number | null = null
+let autoplayTimer: number | null = null;
 
 function stopAutoplay(): void {
   if (autoplayTimer !== null) {
-    window.clearInterval(autoplayTimer)
-    autoplayTimer = null
+    window.clearInterval(autoplayTimer);
+    autoplayTimer = null;
   }
 }
 
 function resetAutoplay(): void {
-  stopAutoplay()
-  const disabled = !props.autoplay || displayTotalView.value < 2
+  stopAutoplay();
+  const disabled = !props.autoplay || displayTotalView.value < 2;
   if (!disabled) {
-    autoplayTimer = window.setInterval(next, props.interval)
+    autoplayTimer = window.setInterval(next, props.interval);
   }
 }
 
 function handleMouseenter(): void {
   if (props.autoplay) {
-    stopAutoplay()
+    stopAutoplay();
   }
 }
 
 function handleMouseleave(): void {
   if (props.autoplay) {
-    resetAutoplay()
+    resetAutoplay();
   }
 }
 
 /* ────────────────────────── resize ────────────────────────── */
 
-let resizeObserver: ResizeObserver | null = null
+let resizeObserver: ResizeObserver | null = null;
 
 function handleResize(): void {
-  const el = selfElRef.value
+  const el = selfElRef.value;
   if (el) {
-    perViewSizeRef.value = calculateSize(el, true)
+    perViewSizeRef.value = calculateSize(el, true);
   }
-  resetAutoplay()
+  resetAutoplay();
 }
 
 /* ────────────────────────── lifecycle ────────────────────────── */
 
 onMounted(() => {
-  handleResize()
+  handleResize();
   // Re-establish the timer when autoplay / interval / total view change.
-  watchEffect(resetAutoplay)
+  watchEffect(resetAutoplay);
   if (typeof ResizeObserver !== 'undefined' && selfElRef.value) {
-    resizeObserver = new ResizeObserver(() => handleResize())
-    resizeObserver.observe(selfElRef.value)
+    resizeObserver = new ResizeObserver(() => handleResize());
+    resizeObserver.observe(selfElRef.value);
   }
   requestAnimationFrame(() => {
-    isMountedRef.value = true
-  })
-})
+    isMountedRef.value = true;
+  });
+});
 
 onBeforeUnmount(() => {
   if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
+    resizeObserver.disconnect();
+    resizeObserver = null;
   }
-  resetDragStatus()
-  stopAutoplay()
-})
+  resetDragStatus();
+  stopAutoplay();
+});
 
 /**
  * Keep the slide registry in DOM order after the slot children reorder
  * (naive performs the equivalent sort in `onUpdated` against vnodes).
  */
 onUpdated(() => {
-  const container = slidesElRef.value
-  if (!container) return
-  const slideEls = slideElsRef.value
-  if (slideEls.length < 2) return
-  const domOrder = Array.from(container.getElementsByClassName('sn-carousel__slide'))
-  slideEls.sort((a, b) => domOrder.indexOf(a) - domOrder.indexOf(b))
-})
+  const container = slidesElRef.value;
+  if (!container) return;
+  const slideEls = slideElsRef.value;
+  if (slideEls.length < 2) return;
+  const domOrder = Array.from(container.getElementsByClassName('sn-carousel__slide'));
+  slideEls.sort((a, b) => domOrder.indexOf(a) - domOrder.indexOf(b));
+});
 
 /* ────────────────────────── watches ────────────────────────── */
 
@@ -901,104 +890,103 @@ watch(
   realIndex,
   (nextRealIndex, lastRealIndex) => {
     if (nextRealIndex === lastRealIndex) {
-      expectedTransitionDirection = 0
-      return
+      expectedTransitionDirection = 0;
+      return;
     }
-    resetAutoplay()
+    resetAutoplay();
     if (sequenceLayout.value) {
-      let target = nextRealIndex
+      let target = nextRealIndex;
       if (duplicatedable.value) {
-        const length = totalView.value
+        const length = totalView.value;
         // Map clone-landing indexes back onto the first/last originals so
         // the animation ends on a clone, then transitionend snaps it.
         if (
-          expectedTransitionDirection === -1
-          && lastRealIndex === 1
-          && nextRealIndex === length - 2
+          expectedTransitionDirection === -1 &&
+          lastRealIndex === 1 &&
+          nextRealIndex === length - 2
         ) {
-          target = 0
-        }
-        else if (
-          expectedTransitionDirection === 1
-          && lastRealIndex === length - 2
-          && nextRealIndex === 1
+          target = 0;
+        } else if (
+          expectedTransitionDirection === 1 &&
+          lastRealIndex === length - 2 &&
+          nextRealIndex === 1
         ) {
-          target = length - 1
+          target = length - 1;
         }
       }
-      translateTo(target, speedMs.value)
+      translateTo(target, speedMs.value);
+    } else {
+      fixTranslate();
     }
-    else {
-      fixTranslate()
-    }
-    expectedTransitionDirection = 0
+    expectedTransitionDirection = 0;
   },
   { immediate: true },
-)
+);
 
 watch([duplicatedable, displaySlidesPerView], () => {
   void nextTick(() => {
-    toRealIndex(realIndex.value)
-  })
-})
+    toRealIndex(realIndex.value);
+  });
+});
 
-watch(slideTranslates, () => {
-  if (sequenceLayout.value) {
-    fixTranslate()
-  }
-}, { deep: true })
+watch(
+  slideTranslates,
+  () => {
+    if (sequenceLayout.value) {
+      fixTranslate();
+    }
+  },
+  { deep: true },
+);
 
 watch(sequenceLayout, (value) => {
   if (!value) {
-    inTransition = false
+    inTransition = false;
     // Modes without a track reset the wrapper position.
-    previousTranslate = 0
-    updateTranslate(0)
+    previousTranslate = 0;
+    updateTranslate(0);
+  } else {
+    fixTranslate();
   }
-  else {
-    fixTranslate()
-  }
-})
+});
 
 /* ────────────────────────── slide vnodes ────────────────────────── */
 
-const slots = useSlots()
+const slots = useSlots();
 
 function isCarouselItem(vnode: VNode): boolean {
-  const type = vnode.type as { name?: string } | null | undefined
-  return typeof type === 'object' && type !== null && type.name === 'SnCarouselItem'
+  const type = vnode.type as { name?: string } | null | undefined;
+  return typeof type === 'object' && type !== null && type.name === 'SnCarouselItem';
 }
 
 /** Flatten arrays / fragments, dropping comments and nulls. */
 function flattenVNodes(vnodes: VNode[], result: VNode[] = []): VNode[] {
   for (const vnode of vnodes) {
     if (Array.isArray(vnode)) {
-      flattenVNodes(vnode as VNode[], result)
-      continue
+      flattenVNodes(vnode as VNode[], result);
+      continue;
     }
-    if (vnode === null || typeof vnode === 'string' || typeof vnode === 'number') continue
+    if (vnode === null || typeof vnode === 'string' || typeof vnode === 'number') continue;
     if (vnode.type === Fragment) {
-      const children = vnode.children
+      const children = vnode.children;
       if (Array.isArray(children)) {
-        flattenVNodes(children as VNode[], result)
+        flattenVNodes(children as VNode[], result);
       }
-      continue
+      continue;
     }
-    if (vnode.type === Comment) continue
-    result.push(vnode)
+    if (vnode.type === Comment) continue;
+    result.push(vnode);
   }
-  return result
+  return result;
 }
 
 const rawSlideVNodes = computed<VNode[]>(() => {
-  const children = slots.default ? flattenVNodes(slots.default()) : []
-  const items = children.filter(isCarouselItem)
-  if (items.length) return items
+  const children = slots.default ? flattenVNodes(slots.default()) : [];
+  const items = children.filter(isCarouselItem);
+  if (items.length) return items;
   // Bare children are wrapped in items automatically (naive parity).
-  return children.map(child =>
-    h(SnCarouselItem, null, { default: () => cloneVNode(child) }),
-  )
-})
+  return children.map((child) => h(SnCarouselItem, null, { default: () => cloneVNode(child) }));
+});
 
 /**
  * Final render list: originals with normalized keys, plus one clone of the
@@ -1008,8 +996,8 @@ const rawSlideVNodes = computed<VNode[]>(() => {
 const slideVNodes = computed<VNode[]>(() => {
   const base = rawSlideVNodes.value.map((vnode, i) =>
     vnode.key == null ? cloneVNode(vnode, { key: i }) : vnode,
-  )
-  if (!duplicatedable.value || base.length <= 1) return base
+  );
+  if (!duplicatedable.value || base.length <= 1) return base;
   return [
     cloneVNode(base[base.length - 1]!, {
       key: `sn-carousel-item-duplicate-${base.length - 1}-prepend`,
@@ -1018,14 +1006,14 @@ const slideVNodes = computed<VNode[]>(() => {
     cloneVNode(base[0]!, {
       key: 'sn-carousel-item-duplicate-0-append',
     }),
-  ]
-})
+  ];
+});
 
 /** Stable diff key for a rendered slide (users may omit keys). */
 function slideKeyOf(vnode: VNode, index: number): string | number {
-  const key = vnode.key
-  if (typeof key === 'string' || typeof key === 'number') return key
-  return `sn-carousel-slide-${index}`
+  const key = vnode.key;
+  if (typeof key === 'string' || typeof key === 'number') return key;
+  return `sn-carousel-slide-${index}`;
 }
 
 /* ────────────────────────── provide / expose ────────────────────────── */
@@ -1047,7 +1035,7 @@ provide(carouselContextKey, {
   addSlide,
   removeSlide,
   onCarouselItemClick,
-})
+});
 
 const arrowSlotProps = computed<CarouselArrowSlotProps>(() => ({
   total: displayTotalView.value,
@@ -1057,67 +1045,66 @@ const arrowSlotProps = computed<CarouselArrowSlotProps>(() => ({
   next: nextIfSlideTransitionEnd,
   isPrevDisabled,
   isNextDisabled,
-}))
+}));
 
 const dotSlotProps = computed<CarouselDotSlotProps>(() => ({
   total: displayTotalView.value,
   currentIndex: mergedDisplayIndex.value,
   to,
-}))
+}));
 
 defineExpose({
   getCurrentIndex: () => mergedDisplayIndex.value,
   to,
   prev,
   next,
-})
+});
 
 /* ────────────────────────── dots ────────────────────────── */
 
-const dotEls = ref<HTMLElement[]>([])
+const dotEls = ref<HTMLElement[]>([]);
 
 function setDotEl(index: number, el: Element | ComponentPublicInstance | null): void {
   if (el instanceof HTMLElement) {
-    dotEls.value[index] = el
+    dotEls.value[index] = el;
   }
 }
 
 function focusDot(index: number): void {
-  dotEls.value[index]?.focus()
+  dotEls.value[index]?.focus();
 }
 
 function handleDotClick(index: number): void {
   if (props.trigger === 'click') {
-    to(index)
+    to(index);
   }
 }
 
 function handleDotMouseenter(index: number): void {
   if (props.trigger === 'hover') {
-    to(index)
+    to(index);
   }
 }
 
 function handleDotKeydown(event: KeyboardEvent, index: number): void {
   if (event.key === 'Enter' || event.key === ' ') {
-    event.preventDefault()
-    to(index)
-    return
+    event.preventDefault();
+    to(index);
+    return;
   }
-  if (!props.keyboard) return
-  if (event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return
-  const nodeName = document.activeElement?.nodeName.toLowerCase()
-  if (nodeName === 'input' || nodeName === 'textarea') return
-  const action = resolveKeyboardAction(event.code, isVertical.value)
-  if (!action) return
-  event.preventDefault()
+  if (!props.keyboard) return;
+  if (event.shiftKey || event.altKey || event.ctrlKey || event.metaKey) return;
+  const nodeName = document.activeElement?.nodeName.toLowerCase();
+  if (nodeName === 'input' || nodeName === 'textarea') return;
+  const action = resolveKeyboardAction(event.code, isVertical.value);
+  if (!action) return;
+  event.preventDefault();
   if (action === 'next' && !isNextDisabled()) {
-    next()
-    focusDot(mergedDisplayIndex.value)
-  }
-  else if (action === 'prev' && !isPrevDisabled()) {
-    prev()
-    focusDot(mergedDisplayIndex.value)
+    next();
+    focusDot(mergedDisplayIndex.value);
+  } else if (action === 'prev' && !isPrevDisabled()) {
+    prev();
+    focusDot(mergedDisplayIndex.value);
   }
 }
 </script>
@@ -1148,22 +1135,14 @@ function handleDotKeydown(event: KeyboardEvent, index: number): void {
       @wheel="onSlidesWheel"
     >
       <template v-if="userWantsControl">
-        <div
-          v-for="(slide, i) in slideVNodes"
-          :key="slideKeyOf(slide, i)"
-          :style="slideStyles[i]"
-        >
+        <div v-for="(slide, i) in slideVNodes" :key="slideKeyOf(slide, i)" :style="slideStyles[i]">
           <Transition v-bind="transitionProps">
             <component :is="slide" v-show="mergedDisplayIndex === i" />
           </Transition>
         </div>
       </template>
       <template v-else>
-        <component
-          :is="slide"
-          v-for="(slide, i) in slideVNodes"
-          :key="slideKeyOf(slide, i)"
-        />
+        <component :is="slide" v-for="(slide, i) in slideVNodes" :key="slideKeyOf(slide, i)" />
       </template>
     </div>
 

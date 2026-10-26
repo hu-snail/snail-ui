@@ -50,13 +50,13 @@
 
 `SnNotificationProvider` 的 props：
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `placement` | `'top' \| 'top-right' \| 'top-left' \| 'bottom' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | 通知堆叠方位。`bottom` 系列自下而上生长（新通知出现在下方）。 |
-| `max` | `number` | `Infinity` | 同时存在的最大通知数，超出时移除最先加入的一条。 |
-| `to` | `string \| HTMLElement` | `'body'` | 堆叠容器的 Teleport 挂载目标。 |
-| `container-style` | `string \| CSSProperties` | `undefined` | 附加到堆叠容器上的内联样式。 |
-| `scrollable` | `boolean` | `false` | 通知过多时容器内部滚动（最大高度为视口高度减去上下偏移）。 |
+| 名称              | 类型                                                                                | 默认值        | 说明                                                          |
+| ----------------- | ----------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------- |
+| `placement`       | `'top' \| 'top-right' \| 'top-left' \| 'bottom' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | 通知堆叠方位。`bottom` 系列自下而上生长（新通知出现在下方）。 |
+| `max`             | `number`                                                                            | `Infinity`    | 同时存在的最大通知数，超出时移除最先加入的一条。              |
+| `to`              | `string \| HTMLElement`                                                             | `'body'`      | 堆叠容器的 Teleport 挂载目标。                                |
+| `container-style` | `string \| CSSProperties`                                                           | `undefined`   | 附加到堆叠容器上的内联样式。                                  |
+| `scrollable`      | `boolean`                                                                           | `false`       | 通知过多时容器内部滚动（最大高度为视口高度减去上下偏移）。    |
 
 Provider 的默认插槽承载触发区（见下方 Slots）。
 
@@ -64,41 +64,41 @@ Provider 的默认插槽承载触发区（见下方 Slots）。
 
 `create()` 与四个快捷方法统一接收该对象：
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `type` | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动内置图标与配色；`'default'` 不渲染图标。 |
-| `title` | `string` | `undefined` | 标题行（加粗）。 |
-| `content` | `string` | `undefined` | 正文。 |
-| `description` | `string` | `undefined` | 正文下方的次级说明文字。 |
-| `meta` | `string` | `undefined` | 底部小字备注（如时间戳）。 |
-| `avatar` | `() => VNodeChild` | `undefined` | 头部头像渲染函数。 |
-| `footer` | `() => VNodeChild` | `undefined` | 底部操作区渲染函数。 |
-| `duration` | `number` | `3000` | 自动关闭延时（ms）；`0` 或负数表示不自动关闭。 |
-| `closable` | `boolean` | `true` | 是否渲染右上角关闭按钮。 |
-| `keepAliveOnHover` | `boolean` | `true` | 指针悬停在通知上时暂停 `duration` 倒计时，移开后以剩余时间继续。 |
-| `onClose` | `() => void` | `undefined` | 通知被关闭时调用（关闭按钮 / 倒计时到期 / `destroy()` / `destroyAll()` / `max` 挤出）。 |
-| `onAfterEnter` | `() => void` | `undefined` | 进场过渡结束后调用。 |
-| `onAfterLeave` | `() => void` | `undefined` | 离场过渡结束后调用。 |
+| 属性               | 类型                                                       | 默认值      | 说明                                                                                    |
+| ------------------ | ---------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------- |
+| `type`             | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动内置图标与配色；`'default'` 不渲染图标。                                  |
+| `title`            | `string`                                                   | `undefined` | 标题行（加粗）。                                                                        |
+| `content`          | `string`                                                   | `undefined` | 正文。                                                                                  |
+| `description`      | `string`                                                   | `undefined` | 正文下方的次级说明文字。                                                                |
+| `meta`             | `string`                                                   | `undefined` | 底部小字备注（如时间戳）。                                                              |
+| `avatar`           | `() => VNodeChild`                                         | `undefined` | 头部头像渲染函数。                                                                      |
+| `footer`           | `() => VNodeChild`                                         | `undefined` | 底部操作区渲染函数。                                                                    |
+| `duration`         | `number`                                                   | `3000`      | 自动关闭延时（ms）；`0` 或负数表示不自动关闭。                                          |
+| `closable`         | `boolean`                                                  | `true`      | 是否渲染右上角关闭按钮。                                                                |
+| `keepAliveOnHover` | `boolean`                                                  | `true`      | 指针悬停在通知上时暂停 `duration` 倒计时，移开后以剩余时间继续。                        |
+| `onClose`          | `() => void`                                               | `undefined` | 通知被关闭时调用（关闭按钮 / 倒计时到期 / `destroy()` / `destroyAll()` / `max` 挤出）。 |
+| `onAfterEnter`     | `() => void`                                               | `undefined` | 进场过渡结束后调用。                                                                    |
+| `onAfterLeave`     | `() => void`                                               | `undefined` | 离场过渡结束后调用。                                                                    |
 
 ### NotificationReactive
 
 每条通知返回的句柄：
 
-| 方法 | 签名 | 说明 |
-| --- | --- | --- |
+| 方法      | 签名         | 说明                                                                             |
+| --------- | ------------ | -------------------------------------------------------------------------------- |
 | `destroy` | `() => void` | 关闭该条通知：触发其 `onClose`，随后播放离场过渡并移除。已移除后再调用为空操作。 |
 
 ### Slots
 
 `SnNotification` 是实际渲染的通知卡片，由 Provider 内部批量渲染；需要完全自绘堆叠时也可直接使用该组件：
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 正文内容，替代 `content`。 |
-| `header` | `()` | 标题，替代 `title`。 |
-| `icon` | `()` | 自定义类型图标，替代内置图标。 |
-| `footer` | `()` | 底部操作区，替代 `footer` 渲染函数。 |
-| `avatar` | `()` | 头部头像，替代 `avatar` 渲染函数。 |
+| 名称      | 参数 | 说明                                 |
+| --------- | ---- | ------------------------------------ |
+| `default` | `()` | 正文内容，替代 `content`。           |
+| `header`  | `()` | 标题，替代 `title`。                 |
+| `icon`    | `()` | 自定义类型图标，替代内置图标。       |
+| `footer`  | `()` | 底部操作区，替代 `footer` 渲染函数。 |
+| `avatar`  | `()` | 头部头像，替代 `avatar` 渲染函数。   |
 
 `SnNotificationProvider` 的 `default` 插槽承载触发区，`useNotification()` 必须在它的后代组件中调用。
 
@@ -106,14 +106,14 @@ Provider 的默认插槽承载触发区（见下方 Slots）。
 
 在 `SnNotificationProvider` **后代组件**的 `setup` 中调用 `useNotification()`，返回 `NotificationApi`：
 
-| 方法 | 签名 | 说明 |
-| --- | --- | --- |
-| `create` | `(options: NotificationOptions) => NotificationReactive` | 推入一条通知，`type` 按 `options.type`（缺省 `'default'`）。 |
-| `info` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'info'`。 |
-| `success` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'success'`。 |
-| `warning` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'warning'`。 |
-| `error` | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'error'`。 |
-| `destroyAll` | `() => void` | 移除当前全部通知，逐条触发各自的 `onClose`。 |
+| 方法         | 签名                                                     | 说明                                                         |
+| ------------ | -------------------------------------------------------- | ------------------------------------------------------------ |
+| `create`     | `(options: NotificationOptions) => NotificationReactive` | 推入一条通知，`type` 按 `options.type`（缺省 `'default'`）。 |
+| `info`       | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'info'`。                       |
+| `success`    | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'success'`。                    |
+| `warning`    | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'warning'`。                    |
+| `error`      | `(options: NotificationOptions) => NotificationReactive` | 等价于 `create`，强制 `type: 'error'`。                      |
+| `destroyAll` | `() => void`                                             | 移除当前全部通知，逐条触发各自的 `onClose`。                 |
 
 四个快捷方法会覆盖 `options.type`。未挂载 Provider 时调用 `useNotification()` 不会抛错：控制台输出一条包含 `PROVIDER_MISSING` 结构化代码的警告，并返回安全的 no-op API（所有方法均无副作用，句柄的 `destroy()` 同样为空操作）。
 
@@ -121,17 +121,17 @@ Provider 的默认插槽承载触发区（见下方 Slots）。
 
 组件没有专属必填 token，配色直接消费语义 token；以下 `--sn-web-notification-*` 变量提供尺寸 / 层级覆盖（未定义时使用内置回退值）：
 
-| Token | 回退值 | 说明 |
-| --- | --- | --- |
-| `--sn-web-notification-width` | `330px` | 单条通知宽度 |
-| `--sn-web-notification-padding` | `14px 16px` | 通知内边距 |
-| `--sn-web-notification-gap` | `8px` | 通知间距 |
-| `--sn-web-notification-offset` | `24px` | 距屏幕边缘距离 |
-| `--sn-web-notification-z-index` | `6000` | 堆叠容器层级 |
-| `--sn-web-notification-icon-color-info` | info 色 | `info` 图标颜色 |
-| `--sn-web-notification-icon-color-success` | info 色 | `success` 图标颜色 |
-| `--sn-web-notification-icon-color-warning` | warning 色 | `warning` 图标颜色 |
-| `--sn-web-notification-icon-color-error` | danger 色 | `error` 图标颜色 |
+| Token                                      | 回退值      | 说明               |
+| ------------------------------------------ | ----------- | ------------------ |
+| `--sn-web-notification-width`              | `330px`     | 单条通知宽度       |
+| `--sn-web-notification-padding`            | `14px 16px` | 通知内边距         |
+| `--sn-web-notification-gap`                | `8px`       | 通知间距           |
+| `--sn-web-notification-offset`             | `24px`      | 距屏幕边缘距离     |
+| `--sn-web-notification-z-index`            | `6000`      | 堆叠容器层级       |
+| `--sn-web-notification-icon-color-info`    | info 色     | `info` 图标颜色    |
+| `--sn-web-notification-icon-color-success` | info 色     | `success` 图标颜色 |
+| `--sn-web-notification-icon-color-warning` | warning 色  | `warning` 图标颜色 |
+| `--sn-web-notification-icon-color-error`   | danger 色   | `error` 图标颜色   |
 
 同时消费：`--sn-web-color-background-elevated`（卡片底色）、`--sn-web-color-text-primary` / `-secondary` / `-tertiary`（标题正文 / 说明 / 备注与关闭按钮）、`--sn-web-color-feedback-info` / `-warning` / `-danger`（类型图标色）、`--sn-web-color-border-subtle`（卡片描边）、`--sn-web-color-background-subtle`（关闭按钮悬停底色）、`--sn-web-card-radius` / `--sn-web-card-shadow`（圆角与投影）、`--sn-web-icon-size-small` / `-medium`（图标尺寸）、`--sn-web-button-radius`（关闭按钮圆角）、`--sn-web-focus-ring`（关闭按钮焦点环）。
 
@@ -145,14 +145,14 @@ Provider 的默认插槽承载触发区（见下方 Slots）。
 
 ## AI Patch Boundary
 
-| 字段 | AI 可直接修改 | 说明 |
-| --- | --- | --- |
-| `type` / `title` / `content` / `description` / `meta` | 是 | 纯数据字段，可由 AI 生成的 Patch 安全设置 |
-| `duration` / `closable` / `keepAliveOnHover` | 是 | 行为开关，改动仅影响单条通知展示 |
-| `placement` / `max` / `scrollable` | 是 | 堆叠容器级配置，纯展示语义 |
-| `avatar` / `footer` / `header` / `icon` 插槽 | 否，需人工确认 | 涉及渲染函数 / VNode，Patch 无法静态校验 |
-| `onClose` / `onAfterEnter` / `onAfterLeave` | 否，需人工确认 | 业务副作用回调，需 Review 调用逻辑 |
-| `to` / `container-style` | 否，需人工确认 | 影响全局挂载点与层叠上下文 |
+| 字段                                                  | AI 可直接修改  | 说明                                      |
+| ----------------------------------------------------- | -------------- | ----------------------------------------- |
+| `type` / `title` / `content` / `description` / `meta` | 是             | 纯数据字段，可由 AI 生成的 Patch 安全设置 |
+| `duration` / `closable` / `keepAliveOnHover`          | 是             | 行为开关，改动仅影响单条通知展示          |
+| `placement` / `max` / `scrollable`                    | 是             | 堆叠容器级配置，纯展示语义                |
+| `avatar` / `footer` / `header` / `icon` 插槽          | 否，需人工确认 | 涉及渲染函数 / VNode，Patch 无法静态校验  |
+| `onClose` / `onAfterEnter` / `onAfterLeave`           | 否，需人工确认 | 业务副作用回调，需 Review 调用逻辑        |
+| `to` / `container-style`                              | 否，需人工确认 | 影响全局挂载点与层叠上下文                |
 
 ## 已知取舍
 

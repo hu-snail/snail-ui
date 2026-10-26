@@ -10,51 +10,51 @@
  * resolver.ts) is touched.
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Value type selectable inside SnSelect — mirrors naive-ui SelectOption value. */
-export type SnSelectValue = string | number | boolean
+export type SnSelectValue = string | number | boolean;
 
 /** Visual size preset (AUI convention adds `mini` below naive's `tiny`). */
-export type SnSelectSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large'
+export type SnSelectSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
 
 /** Validation-driven visual status. */
-export type SnSelectStatus = 'default' | 'error' | 'warning'
+export type SnSelectStatus = 'default' | 'error' | 'warning';
 
 /**
  * Raw entry accepted by the `options` prop: either a bare value
  * (`'a'` / `1` / `true`) or an object whose fields are read through
  * `labelField` / `valueField` / `childrenField`.
  */
-export type SnSelectOptionInput = SnSelectValue | Record<string, unknown>
+export type SnSelectOptionInput = SnSelectValue | Record<string, unknown>;
 
 /** Normalized leaf option (selectable row). */
 export interface SnSelectLeafOption {
-  kind: 'leaf'
+  kind: 'leaf';
   /** Stable per-render key (index-based, guarantees uniqueness). */
-  key: string
-  label: string
-  value: SnSelectValue
-  disabled: boolean
+  key: string;
+  label: string;
+  value: SnSelectValue;
+  disabled: boolean;
 }
 
 /** Normalized group node (non-selectable header + child leaves). */
 export interface SnSelectGroupOption {
-  kind: 'group'
-  key: string
-  label: string
-  children: SnSelectLeafOption[]
+  kind: 'group';
+  key: string;
+  label: string;
+  children: SnSelectLeafOption[];
 }
 
 /** A node in the normalized menu tree. */
-export type SnSelectMenuNode = SnSelectLeafOption | SnSelectGroupOption
+export type SnSelectMenuNode = SnSelectLeafOption | SnSelectGroupOption;
 
 /**
  * Custom filter for `filterable` mode. Receives the raw query text and
  * each normalized leaf; return true to keep the leaf visible.
  * Mirrors naive-ui's `filter` prop signature.
  */
-export type SnSelectFilter = (pattern: string, option: SnSelectLeafOption) => boolean
+export type SnSelectFilter = (pattern: string, option: SnSelectLeafOption) => boolean;
 
 /**
  * Menu context injected by SnSelect into SnOption rows (internal).
@@ -63,32 +63,31 @@ export type SnSelectFilter = (pattern: string, option: SnSelectLeafOption) => bo
  */
 export interface SnSelectMenuContext {
   /** Values currently selected (single selection still uses a 1-length view). */
-  selectedValues: Ref<ReadonlyArray<SnSelectValue>>
+  selectedValues: Ref<ReadonlyArray<SnSelectValue>>;
   /** Keyboard / hover highlight target (`aria-activedescendant` source). */
-  pendingValue: Ref<SnSelectValue | null>
+  pendingValue: Ref<SnSelectValue | null>;
   /** Select-level disabled flag. */
-  menuDisabled: Ref<boolean>
+  menuDisabled: Ref<boolean>;
   /** Select size preset — rows shrink with the trigger. */
-  menuSize: Ref<SnSelectSize>
+  menuSize: Ref<SnSelectSize>;
   /** Stable DOM id for one row (drives aria-activedescendant). */
-  optionId: (value: SnSelectValue) => string
+  optionId: (value: SnSelectValue) => string;
   /** Row membership test against `selectedValues`. */
-  isOptionSelected: (value: SnSelectValue) => boolean
+  isOptionSelected: (value: SnSelectValue) => boolean;
   /** Commit a row selection (click or Enter). */
-  chooseOption: (value: SnSelectValue) => void
+  chooseOption: (value: SnSelectValue) => void;
   /** Move the highlight to a row (hover). */
-  setPending: (value: SnSelectValue) => void
+  setPending: (value: SnSelectValue) => void;
 }
 
 /** Injection key for the select menu context (internal). */
-export const SN_SELECT_MENU_KEY: InjectionKey<SnSelectMenuContext>
-  = Symbol('sn-select-menu')
+export const SN_SELECT_MENU_KEY: InjectionKey<SnSelectMenuContext> = Symbol('sn-select-menu');
 
 /**
  * Default filter — case-insensitive substring match on the label.
  * Kept exported for tests and for consumers that want to compose on it.
  */
 export function defaultSelectFilter(pattern: string, option: SnSelectLeafOption): boolean {
-  if (pattern === '') return true
-  return option.label.toLowerCase().includes(pattern.toLowerCase())
+  if (pattern === '') return true;
+  return option.label.toLowerCase().includes(pattern.toLowerCase());
 }

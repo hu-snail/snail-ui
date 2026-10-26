@@ -14,15 +14,15 @@
 
 ### 1.1 环境要求
 
-| 工具 | 版本 | 说明 |
-|---|---|---|
-| Node.js | ≥ 20.0.0 | `engines` 字段强制 |
-| pnpm | ≥ 10.0.0 | workspace 管理 |
-| TypeScript | 5.x strict | `tsconfig.base.json` 共享配置 |
-| Turbo | 2.x | Monorepo 并行构建，使用 `tasks`（非 `pipeline`）|
-| ESLint | 9.x flat config | 根目录 `eslint.config.js`，非 `.eslintrc` |
-| Prettier | 3.x | 根目录 `.prettierrc` |
-| Vitest | 2.x | 自动发现 `packages/*/src/**/*.{test,spec}.ts` |
+| 工具       | 版本            | 说明                                             |
+| ---------- | --------------- | ------------------------------------------------ |
+| Node.js    | ≥ 20.0.0        | `engines` 字段强制                               |
+| pnpm       | ≥ 10.0.0        | workspace 管理                                   |
+| TypeScript | 5.x strict      | `tsconfig.base.json` 共享配置                    |
+| Turbo      | 2.x             | Monorepo 并行构建，使用 `tasks`（非 `pipeline`） |
+| ESLint     | 9.x flat config | 根目录 `eslint.config.js`，非 `.eslintrc`        |
+| Prettier   | 3.x             | 根目录 `.prettierrc`                             |
+| Vitest     | 2.x             | 自动发现 `packages/*/src/**/*.{test,spec}.ts`    |
 
 ### 1.2 首次克隆后
 
@@ -146,6 +146,7 @@ touch packages/uni/src/components/sn-foo/ai-description.md
 ### Step 4. 写组件实现
 
 按 Spec-02 规范实现：
+
 - Props / Events / Slots 完整声明
 - 只用 `var(--sn-*)` 变量
 - A11y 属性完整
@@ -164,6 +165,7 @@ Token 变更属于 Public API，需要 Human Gate 审批。
 ### Step 6. 写测试
 
 按 Spec-02 §4 写单元测试，确保：
+
 - Props / Events / Slots / A11y 全覆盖
 - `disabled` / `loading` 等边界状态覆盖
 
@@ -216,6 +218,7 @@ touch packages/style-packs/src/{name}.ts
 ### Step 3. 实现 Pack
 
 参考 Spec-01 §2.3 规范和 `ios.ts` 实现：
+
 - `name`：kebab-case
 - `style.component` 只覆盖 `ComponentTokens` 已声明字段
 - `theme` 只覆盖颜色
@@ -225,7 +228,7 @@ touch packages/style-packs/src/{name}.ts
 
 ```ts
 // packages/style-packs/src/index.ts
-export { fooBarPack } from './foo-bar.js'
+export { fooBarPack } from './foo-bar.js';
 ```
 
 ```json
@@ -257,6 +260,7 @@ pnpm build       # 0 error（turbo run build）
 ```
 
 组件相关额外：
+
 - `pnpm snui pack validate`（新增或修改 Style Pack 时）
 
 ### 6.2 PR 要求
@@ -270,6 +274,7 @@ pnpm build       # 0 error（turbo run build）
 ### 6.3 Human Gate 触发条件
 
 以下情况必须等 Human 审批后再合并：
+
 - Token 变量名变更（Public API）
 - Package 边界变更
 - 新增外部依赖
@@ -307,27 +312,27 @@ node dist/bin/mcp-server.js   # 手动运行
 
 ## 8. 文档说明
 
-| 文件 | 用途 |
-|---|---|
-| `AGENTS.md` | AI Agent 执行标准（最高优先级） |
-| `AI-RULES.md` | 快速参考（链接到最新文档） |
-| `dev-docs/SNUI-PRD-v3.0.md` | 产品需求 |
-| `dev-docs/SNUI-Architecture-v3.0.md` | 整体架构 |
-| `dev-docs/SNUI-Master-Plan-v5.0.md` | 里程碑规划 |
-| `dev-docs/SNUI-WBS-v3.0.md` | 工作分解（Task 索引）|
-| `dev-docs/Spec-01-Token-StylePack.md` | Token + Style Pack 规范 |
-| `dev-docs/Spec-02-Component.md` | 组件开发规范 |
-| `dev-docs/Spec-03-AI-Layer.md` | AI Layer 规范 |
-| `dev-docs/Spec-04-Prototype-App.md` | 原型与应用产出规范 |
-| `dev-docs/Spec-05-Docs-StyleSwitcher.md` | 文档站规范 |
-| `.ai/decisions/` | 架构决策记录（ADR）|
+| 文件                                     | 用途                            |
+| ---------------------------------------- | ------------------------------- |
+| `AGENTS.md`                              | AI Agent 执行标准（最高优先级） |
+| `AI-RULES.md`                            | 快速参考（链接到最新文档）      |
+| `dev-docs/SNUI-PRD-v3.0.md`              | 产品需求                        |
+| `dev-docs/SNUI-Architecture-v3.0.md`     | 整体架构                        |
+| `dev-docs/SNUI-Master-Plan-v5.0.md`      | 里程碑规划                      |
+| `dev-docs/SNUI-WBS-v3.0.md`              | 工作分解（Task 索引）           |
+| `dev-docs/Spec-01-Token-StylePack.md`    | Token + Style Pack 规范         |
+| `dev-docs/Spec-02-Component.md`          | 组件开发规范                    |
+| `dev-docs/Spec-03-AI-Layer.md`           | AI Layer 规范                   |
+| `dev-docs/Spec-04-Prototype-App.md`      | 原型与应用产出规范              |
+| `dev-docs/Spec-05-Docs-StyleSwitcher.md` | 文档站规范                      |
+| `.ai/decisions/`                         | 架构决策记录（ADR）             |
 
 ---
 
 ## 9. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.0 | 2026-09 | 初始版本（Schema-Runtime 时代） |
-| v2.0 | 2026-10-03 | Component First 重写 |
+| 版本 | 日期       | 变更                            |
+| ---- | ---------- | ------------------------------- |
+| v1.0 | 2026-09    | 初始版本（Schema-Runtime 时代） |
+| v2.0 | 2026-10-03 | Component First 重写            |
 | v3.0 | 2026-10-03 | 新增 Style Pack + AI Layer 流程 |

@@ -1,34 +1,34 @@
 <script setup lang="ts">
 /** Demo: SnForm — resetFields / clearValidate / programmatic
  *  validate() / validateField(). */
-import { reactive, ref } from 'vue'
-import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web'
-import type { FormRule } from '@snui/vue-web'
+import { reactive, ref } from 'vue';
+import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web';
+import type { FormRule } from '@snui/vue-web';
 
-const form = reactive({ email: '', password: '' })
-const formRef = ref<InstanceType<typeof SnForm> | null>(null)
+const form = reactive({ email: '', password: '' });
+const formRef = ref<InstanceType<typeof SnForm> | null>(null);
 
 const rules: Record<string, FormRule[]> = {
   email: [{ required: true, message: 'Email is required' }],
   password: [{ required: true, minLength: 6, message: 'Min 6 chars' }],
-}
+};
 
 async function onSubmit(payload: { valid: boolean }): Promise<void> {
   // eslint-disable-next-line no-console
-  console.log('submit', payload)
+  console.log('submit', payload);
 }
 
 async function runValidate(): Promise<void> {
-  await formRef.value?.validate()
+  await formRef.value?.validate();
 }
 function runReset(): void {
-  formRef.value?.resetFields()
+  formRef.value?.resetFields();
 }
 function runClear(): void {
-  formRef.value?.clearValidate()
+  formRef.value?.clearValidate();
 }
 async function runValidateEmail(): Promise<void> {
-  await formRef.value?.validateField('email')
+  await formRef.value?.validateField('email');
 }
 </script>
 
@@ -61,6 +61,13 @@ async function runValidateEmail(): Promise<void> {
 </template>
 
 <style scoped>
-.sn-form-demo { max-width: 480px; }
-.sn-form-demo__actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.sn-form-demo {
+  max-width: 480px;
+}
+.sn-form-demo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
 </style>

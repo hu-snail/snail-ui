@@ -7,24 +7,19 @@
  * with the container edge.
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Main-axis alignment — mirrors the row half of `wd-layout` `justify`. */
 export type SnLayoutJustify =
-  | 'start'
-  | 'center'
-  | 'end'
-  | 'space-between'
-  | 'space-around'
-  | 'space-evenly'
+  'start' | 'center' | 'end' | 'space-between' | 'space-around' | 'space-evenly';
 
 /** Cross-axis alignment — mirrors the row half of `wd-layout` `align`. */
-export type SnLayoutAlign = 'top' | 'middle' | 'bottom'
+export type SnLayoutAlign = 'top' | 'middle' | 'bottom';
 
 /** Context injected by `SnLayout` into child `SnCol` instances. */
 export interface SnLayoutContext {
   /** Gutter in px (0 = no gutter). */
-  gutter: Ref<number>
+  gutter: Ref<number>;
 }
 
-export const SN_LAYOUT_KEY: InjectionKey<SnLayoutContext> = Symbol('sn-layout')
+export const SN_LAYOUT_KEY: InjectionKey<SnLayoutContext> = Symbol('sn-layout');

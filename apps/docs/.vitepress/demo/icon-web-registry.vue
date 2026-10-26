@@ -10,14 +10,14 @@
  * line below and only those four icons end up in the production
  * chunk — even though the registry is keyed by string.
  */
-import { Bell, ChevronRight, Search, User } from 'lucide-vue-next'
-import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue'
+import { Bell, ChevronRight, Search, User } from 'lucide-vue-next';
+import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue';
 // `registerSnIcons` lives in a separate module because Vue SFCs don't
 // expose non-default named exports from `<script setup>` blocks. The
 // runtime module-level registry is shared across all SnIcon consumers.
-import { registerSnIcons } from '@snui/vue-web-src/icon/sn-icon-registry'
+import { registerSnIcons } from '@snui/vue-web-src/icon/sn-icon-registry';
 
-registerSnIcons({ Bell, ChevronRight, Search, User })
+registerSnIcons({ Bell, ChevronRight, Search, User });
 </script>
 
 <template>

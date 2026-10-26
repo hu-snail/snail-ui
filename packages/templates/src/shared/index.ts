@@ -27,7 +27,7 @@ export type {
   SnAiThinkingPart,
   SnAiToolPart,
   SnAiVendor,
-} from './types'
+} from './types';
 
 export {
   DEFAULT_PERMISSION_OPTIONS,
@@ -49,10 +49,10 @@ export {
   nextId,
   resetIdSequence,
   thinkingBudget,
-} from './stream'
-export type { SnAiStreamDelta } from './stream'
+} from './stream';
+export type { SnAiStreamDelta } from './stream';
 
-export type { SnIconData } from './icons'
+export type { SnIconData } from './icons';
 export {
   AgentIcon,
   CheckIcon,
@@ -78,4 +78,4 @@ export {
   TrashIcon,
   UserIcon,
   WarningIcon,
-} from './icons'
+} from './icons';

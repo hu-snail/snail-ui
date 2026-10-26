@@ -33,66 +33,66 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnSidebar } from '@snui/uni/components/sn-sidebar/sn-sidebar.vue'
-import { SnSidebarItem } from '@snui/uni/components/sn-sidebar/sn-sidebar-item.vue'
+import { SnSidebar } from '@snui/uni/components/sn-sidebar/sn-sidebar.vue';
+import { SnSidebarItem } from '@snui/uni/components/sn-sidebar/sn-sidebar-item.vue';
 ```
 
 ## Props
 
 ### sn-sidebar
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `0` | Active value |
+| Prop           | Type                                     | Default     | Description                          |
+| -------------- | ---------------------------------------- | ----------- | ------------------------------------ |
+| `modelValue`   | `string \| number`                       | `0`         | Active value                         |
 | `beforeChange` | `(value) => boolean \| Promise<boolean>` | `undefined` | Veto hook; `false` blocks the switch |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| `customClass`  | `string`                                 | `''`        | Extra class on the root node         |
+| `customStyle`  | `string`                                 | `''`        | Inline style on the root node        |
 
 ### sn-sidebar-item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `label` | `string` | `''` | Entry title |
-| `value` | `string \| number` | `undefined` | Entry value (falls back to `label`) |
-| `badge` | `string \| number` | `undefined` | Badge value |
-| `icon` | `string` | `''` | Icon name (registered via `registerSnIcons()`) |
-| `iconPrefix` | `string` | `''` | Iconfont class prefix |
-| `cssIcon` | `boolean \| string` | `false` | Render a font icon; a string is the class prefix |
-| `isDot` | `boolean` | `false` | Render a text-less dot badge |
-| `max` | `number` | `99` | Badge ceiling; above it renders `{max}+` |
-| `disabled` | `boolean` | `false` | Disable this entry |
-| `customClass` | `string` | `''` | Extra class on the entry root |
-| `customStyle` | `string` | `''` | Inline style on the entry root |
+| Prop          | Type                | Default     | Description                                      |
+| ------------- | ------------------- | ----------- | ------------------------------------------------ |
+| `label`       | `string`            | `''`        | Entry title                                      |
+| `value`       | `string \| number`  | `undefined` | Entry value (falls back to `label`)              |
+| `badge`       | `string \| number`  | `undefined` | Badge value                                      |
+| `icon`        | `string`            | `''`        | Icon name (registered via `registerSnIcons()`)   |
+| `iconPrefix`  | `string`            | `''`        | Iconfont class prefix                            |
+| `cssIcon`     | `boolean \| string` | `false`     | Render a font icon; a string is the class prefix |
+| `isDot`       | `boolean`           | `false`     | Render a text-less dot badge                     |
+| `max`         | `number`            | `99`        | Badge ceiling; above it renders `{max}+`         |
+| `disabled`    | `boolean`           | `false`     | Disable this entry                               |
+| `customClass` | `string`            | `''`        | Extra class on the entry root                    |
+| `customStyle` | `string`            | `''`        | Inline style on the entry root                   |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Active value changed | `(value: string \| number)` |
-| `change` | Active entry switched | `({ value, label })` |
+| Event               | Description           | Payload                     |
+| ------------------- | --------------------- | --------------------------- |
+| `update:modelValue` | Active value changed  | `(value: string \| number)` |
+| `change`            | Active entry switched | `({ value, label })`        |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` (sidebar) | SidebarItem list |
-| `icon` (item) | Custom icon content |
+| Slot                | Description         |
+| ------------------- | ------------------- |
+| `default` (sidebar) | SidebarItem list    |
+| `icon` (item)       | Custom icon content |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-soft` | Sidebar track |
-| `--sn-mp-color-background-surface` | Active entry surface |
-| `--sn-mp-color-text-secondary` | Inactive label |
-| `--sn-mp-color-text-disabled` | Disabled label |
-| `--sn-mp-color-action-primary` | Active label and left indicator |
-| `--sn-mp-color-feedback-danger` | Badge fill |
-| `--sn-mp-color-text-on-primary` | Badge text |
-| `--sn-mp-font-size-md` | Entry label size |
-| `--sn-mp-font-weight-medium` | Active label weight |
-| `--sn-mp-radius-xs` / `--sn-mp-radius-full` | Indicator / badge radius |
-| `--sn-mp-spacing-3` | Entry padding |
+| Variable                                    | Purpose                         |
+| ------------------------------------------- | ------------------------------- |
+| `--sn-mp-color-background-soft`             | Sidebar track                   |
+| `--sn-mp-color-background-surface`          | Active entry surface            |
+| `--sn-mp-color-text-secondary`              | Inactive label                  |
+| `--sn-mp-color-text-disabled`               | Disabled label                  |
+| `--sn-mp-color-action-primary`              | Active label and left indicator |
+| `--sn-mp-color-feedback-danger`             | Badge fill                      |
+| `--sn-mp-color-text-on-primary`             | Badge text                      |
+| `--sn-mp-font-size-md`                      | Entry label size                |
+| `--sn-mp-font-weight-medium`                | Active label weight             |
+| `--sn-mp-radius-xs` / `--sn-mp-radius-full` | Indicator / badge radius        |
+| `--sn-mp-spacing-3`                         | Entry padding                   |
 
 ## Accessibility
 
@@ -106,7 +106,6 @@ import { SnSidebarItem } from '@snui/uni/components/sn-sidebar/sn-sidebar-item.v
 Every colour in `sn-sidebar` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the track flips to the dark soft surface, the active entry to the dark surface colour, and the active label plus indicator keep the brand hue.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

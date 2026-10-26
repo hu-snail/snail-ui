@@ -24,24 +24,24 @@
  *   </SnSteps>
  */
 
-import { computed, inject } from 'vue'
-import { Check, X } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import { snStepsInjectionKey } from './sn-steps-context'
+import { computed, inject } from 'vue';
+import { Check, X } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import { snStepsInjectionKey } from './sn-steps-context';
 
-defineOptions({ name: 'SnStep' })
+defineOptions({ name: 'SnStep' });
 
 const props = withDefaults(
   defineProps<{
     /** Explicit status override. When omitted the status is derived from
      * the parent `SnSteps` `current` index. Mirrors n-step `status`. */
-    status?: 'process' | 'finish' | 'error' | 'wait'
+    status?: 'process' | 'finish' | 'error' | 'wait';
     /** Step title text. Mirrors n-step `title`. */
-    title?: string
+    title?: string;
     /** Step description text. Mirrors n-step `description`. */
-    description?: string
+    description?: string;
     /** Disable interaction (no click, dimmed). Mirrors n-step `disabled`. */
-    disabled?: boolean
+    disabled?: boolean;
   }>(),
   {
     status: undefined as any,
@@ -49,49 +49,47 @@ const props = withDefaults(
     description: '',
     disabled: false,
   },
-)
+);
 
 defineSlots<{
   /** Step body — overrides the `description` prop when provided. */
-  default?(): unknown
+  default?(): unknown;
   /** Indicator content — overrides the index number / status icon. */
-  icon?(): unknown
+  icon?(): unknown;
   /** Step title — overrides the `title` prop. */
-  title?(): unknown
-}>()
+  title?(): unknown;
+}>();
 
-const injected = inject(snStepsInjectionKey, null)
+const injected = inject(snStepsInjectionKey, null);
 
 if (!injected) {
-  throw new Error(
-    '[snui] SnStep must be placed inside SnSteps (missing sn-steps context).',
-  )
+  throw new Error('[snui] SnStep must be placed inside SnSteps (missing sn-steps context).');
 }
 
 // Re-bind after the guard: TS does not preserve the null-narrowing of
 // `injected` inside the closures below, so `steps` is a fresh non-null const.
-const steps = injected
+const steps = injected;
 
 /**
  * Ordinal position of this step. SnStep children register in mount order
  * via a parent-provided counter, matching n-steps' `internalIndex`.
  */
-const internalIndex = steps.registerStep()
+const internalIndex = steps.registerStep();
 
 const mergedStatus = computed<'process' | 'finish' | 'error' | 'wait'>(() => {
-  if (props.status) return props.status
-  const current = steps.current.value
-  if (current === undefined) return 'process'
-  if (internalIndex < current) return 'finish'
-  if (internalIndex === current) return steps.status.value || 'process'
-  return 'wait'
-})
+  if (props.status) return props.status;
+  const current = steps.current.value;
+  if (current === undefined) return 'process';
+  if (internalIndex < current) return 'finish';
+  if (internalIndex === current) return steps.status.value || 'process';
+  return 'wait';
+});
 
-const isClickable = computed(() => !props.disabled && !!steps.current.value)
+const isClickable = computed(() => !props.disabled && !!steps.current.value);
 
 function handleClick() {
-  if (props.disabled) return
-  steps.onStepClick(internalIndex)
+  if (props.disabled) return;
+  steps.onStepClick(internalIndex);
 }
 </script>
 

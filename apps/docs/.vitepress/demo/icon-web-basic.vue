@@ -7,8 +7,8 @@
  * statically analyzes the named imports below and only those four
  * icons end up in the production bundle.
  */
-import { Camera, Heart, Settings, Trash } from 'lucide-vue-next'
-import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue'
+import { Camera, Heart, Settings, Trash } from 'lucide-vue-next';
+import SnIcon from '@snui/vue-web-src/icon/SnIcon.vue';
 </script>
 
 <template>

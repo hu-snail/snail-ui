@@ -5,14 +5,14 @@
  * Shows: `resizable` + `defaultWidth` + `minWidth` / `maxWidth`. The host
  * owns the committed size and receives it via `update:width`.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const open = ref(false)
-const width = ref(360)
+const open = ref(false);
+const width = ref(360);
 
 function onUpdateWidth(next: number): void {
-  width.value = next
+  width.value = next;
 }
 </script>
 
@@ -20,7 +20,9 @@ function onUpdateWidth(next: number): void {
   <div class="drw-resizable">
     <div class="drw-resizable__bar">
       <SnButton type="primary" @click="open = true">打开可调整宽度的抽屉</SnButton>
-      <span class="drw-resizable__readout">当前宽度：<code>{{ width }}px</code></span>
+      <span class="drw-resizable__readout"
+        >当前宽度：<code>{{ width }}px</code></span
+      >
     </div>
 
     <SnDrawer

@@ -30,25 +30,25 @@ added to the wd-circle parity list.
 ```
 
 ```ts
-import { SnCircle } from '@snui/uni'
+import { SnCircle } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `modelValue` | number | 0 | no | Progress, 0–100 (clamped). |
-| `size` | number | string | 120 | no | Ring diameter (bare number = rpx). |
-| `color` | string | Record<string, string> | '' | no | Solid color, or a `{ offset: color }` gradient map. |
-| `layerColor` | string | '' | no | Track color. |
-| `fill` | string | '' | no | Inner disc color; empty renders a hollow ring. |
-| `speed` | number | 50 | no | Animation speed in percent per second; `0` disables it. |
-| `text` | string | '' | no | Centre text; empty shows the rounded percentage. |
-| `strokeWidth` | number | string | 18 | no | Ring thickness (bare number = rpx). |
-| `strokeLinecap` | 'butt' | 'round' | 'square' | 'round' | no | Stroke cap (parity only). |
-| `clockwise` | boolean | true | no | Sweep clockwise or counter-clockwise. |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name            | Type    | Default                | Required | Description                                             |
+| --------------- | ------- | ---------------------- | -------- | ------------------------------------------------------- |
+| `modelValue`    | number  | 0                      | no       | Progress, 0–100 (clamped).                              |
+| `size`          | number  | string                 | 120      | no                                                      | Ring diameter (bare number = rpx).                  |
+| `color`         | string  | Record<string, string> | ''       | no                                                      | Solid color, or a `{ offset: color }` gradient map. |
+| `layerColor`    | string  | ''                     | no       | Track color.                                            |
+| `fill`          | string  | ''                     | no       | Inner disc color; empty renders a hollow ring.          |
+| `speed`         | number  | 50                     | no       | Animation speed in percent per second; `0` disables it. |
+| `text`          | string  | ''                     | no       | Centre text; empty shows the rounded percentage.        |
+| `strokeWidth`   | number  | string                 | 18       | no                                                      | Ring thickness (bare number = rpx).                 |
+| `strokeLinecap` | 'butt'  | 'round'                | 'square' | 'round'                                                 | no                                                  | Stroke cap (parity only). |
+| `clockwise`     | boolean | true                   | no       | Sweep clockwise or counter-clockwise.                   |
+| `customClass`   | string  | ''                     | no       | Custom class for the root node.                         |
+| `customStyle`   | string  | ''                     | no       | Custom inline style for the root node.                  |
 
 ## Events
 
@@ -56,20 +56,20 @@ None — the component is presentational.
 
 ## Slots
 
-| Slot | Description |
-|---|---|
+| Slot      | Description                                               |
+| --------- | --------------------------------------------------------- |
 | `default` | Custom centre content (replaces `text` / the percentage). |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Action primary | `--sn-mp-color-action-primary` | Default sweep color |
-| Background subtle | `--sn-mp-color-background-subtle` | Track ring |
-| Text primary | `--sn-mp-color-text-primary` | Centre text |
-| Font size LG | `--sn-mp-font-size-lg` | Centre text size |
-| Font weight medium | `--sn-mp-font-weight-medium` | Centre text weight |
-| Line height tight | `--sn-mp-font-line-height-tight` | Centre text line height |
+| Token              | CSS Variable                      | Purpose                 |
+| ------------------ | --------------------------------- | ----------------------- |
+| Action primary     | `--sn-mp-color-action-primary`    | Default sweep color     |
+| Background subtle  | `--sn-mp-color-background-subtle` | Track ring              |
+| Text primary       | `--sn-mp-color-text-primary`      | Centre text             |
+| Font size LG       | `--sn-mp-font-size-lg`            | Centre text size        |
+| Font weight medium | `--sn-mp-font-weight-medium`      | Centre text weight      |
+| Line height tight  | `--sn-mp-font-line-height-tight`  | Centre text line height |
 
 ## Accessibility
 

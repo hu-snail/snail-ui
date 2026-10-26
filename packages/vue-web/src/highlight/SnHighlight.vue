@@ -25,27 +25,27 @@
  *   <SnHighlight text="…" :patterns="['…']" highlight-tag="span" highlight-style="text-decoration: underline" />
  */
 
-import { computed } from 'vue'
-import type { CSSProperties } from 'vue'
+import { computed } from 'vue';
+import type { CSSProperties } from 'vue';
 
-defineOptions({ name: 'SnHighlight' })
+defineOptions({ name: 'SnHighlight' });
 
 const props = withDefaults(
   defineProps<{
     /** Full text to render. Mirrors n-highlight `text`. */
-    text?: string | undefined
+    text?: string | undefined;
     /** Substrings to highlight; matched fragments render inside `highlight-tag`. Mirrors n-highlight `patterns`. */
-    patterns?: string[]
+    patterns?: string[];
     /** HTML element used for matched fragments. Mirrors n-highlight `highlight-tag`. */
-    highlightTag?: string
+    highlightTag?: string;
     /** Case-sensitive matching. Mirrors n-highlight `case-sensitive`. */
-    caseSensitive?: boolean
+    caseSensitive?: boolean;
     /** Escape regex metacharacters in `patterns` so they match literally. Mirrors n-highlight `auto-escape`. */
-    autoEscape?: boolean
+    autoEscape?: boolean;
     /** Extra class merged onto matched fragments. Mirrors n-highlight `highlight-class`. */
-    highlightClass?: string | undefined
+    highlightClass?: string | undefined;
     /** Inline style (object or string) merged onto matched fragments. Mirrors n-highlight `highlight-style`. */
-    highlightStyle?: CSSProperties | string | undefined
+    highlightStyle?: CSSProperties | string | undefined;
   }>(),
   {
     text: undefined,
@@ -56,16 +56,16 @@ const props = withDefaults(
     highlightClass: undefined,
     highlightStyle: undefined,
   },
-)
+);
 
 /** One fragment of the segmented text; matched fragments become marks. */
 interface SnHighlightSegment {
-  text: string
-  isMatch: boolean
+  text: string;
+  isMatch: boolean;
 }
 
 function escapeRegExp(text: string): string {
-  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 /**
@@ -75,40 +75,36 @@ function escapeRegExp(text: string): string {
  */
 function splitAndMarkByRegex(str: string, regex: RegExp): SnHighlightSegment[] {
   if (!regex.global) {
-    throw new Error(
-      'splitAndMarkByRegex requires a global regex (with "g" flag)',
-    )
+    throw new Error('splitAndMarkByRegex requires a global regex (with "g" flag)');
   }
 
-  const result: SnHighlightSegment[] = []
-  let lastIndex = 0
+  const result: SnHighlightSegment[] = [];
+  let lastIndex = 0;
   for (const match of str.matchAll(regex)) {
-    const index = match.index
+    const index = match.index;
     if (index > lastIndex) {
-      result.push({ text: str.slice(lastIndex, index), isMatch: false })
+      result.push({ text: str.slice(lastIndex, index), isMatch: false });
     }
-    result.push({ text: match[0], isMatch: true })
-    lastIndex = index + match[0].length
+    result.push({ text: match[0], isMatch: true });
+    lastIndex = index + match[0].length;
   }
   if (lastIndex < str.length) {
-    result.push({ text: str.slice(lastIndex), isMatch: false })
+    result.push({ text: str.slice(lastIndex), isMatch: false });
   }
-  return result
+  return result;
 }
 
 const segments = computed<SnHighlightSegment[]>(() => {
-  const { patterns, text } = props
+  const { patterns, text } = props;
   // Reference behavior: no patterns or no text → the text renders plain.
   if (patterns.length === 0 || !text) {
-    return [{ text: text ?? '', isMatch: false }]
+    return [{ text: text ?? '', isMatch: false }];
   }
 
-  const pattern = patterns
-    .map((word) => (props.autoEscape ? escapeRegExp(word) : word))
-    .join('|')
-  const regex = new RegExp(`(${pattern})`, props.caseSensitive ? 'g' : 'gi')
-  return splitAndMarkByRegex(text, regex)
-})
+  const pattern = patterns.map((word) => (props.autoEscape ? escapeRegExp(word) : word)).join('|');
+  const regex = new RegExp(`(${pattern})`, props.caseSensitive ? 'g' : 'gi');
+  return splitAndMarkByRegex(text, regex);
+});
 </script>
 
 <template>
@@ -120,7 +116,8 @@ const segments = computed<SnHighlightSegment[]>(() => {
         class="sn-highlight__mark"
         :class="highlightClass"
         :style="highlightStyle"
-      >{{ segment.text }}</component>
+        >{{ segment.text }}</component
+      >
       <template v-else>{{ segment.text }}</template>
     </template>
   </span>

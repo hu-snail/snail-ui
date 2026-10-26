@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — scroll-x horizontal scrolling container. */
-import { SnDataTable } from '@snui/vue-web'
+import { SnDataTable } from '@snui/vue-web';
 
 const columns = [
   { title: 'Name', key: 'name', width: 150 },
@@ -8,7 +8,7 @@ const columns = [
   { title: 'Column B', key: 'b', width: 200 },
   { title: 'Column C', key: 'c', width: 200 },
   { title: 'Address', key: 'address', width: 260 },
-]
+];
 
 const data = Array.from({ length: 5 }).map((_, index) => ({
   key: index,
@@ -17,7 +17,7 @@ const data = Array.from({ length: 5 }).map((_, index) => ({
   b: `B-${index}`,
   c: `C-${index}`,
   address: `London, Park Lane no. ${index}`,
-}))
+}));
 </script>
 
 <template>
@@ -26,5 +26,4 @@ const data = Array.from({ length: 5 }).map((_, index) => ({
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
