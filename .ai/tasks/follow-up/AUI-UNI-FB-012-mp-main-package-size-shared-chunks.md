@@ -1,40 +1,49 @@
-# AUI-UNI-FB-012 — MP 主包体积：跨分包共享组件 chunk 留主包（2.93MB > 2MB）
+# AUI-UNI-FB-012 — MP 包体"超限"复盘：AppleDouble 垃圾污染测量，真实主包 0.86MB 达标
 
-- 状态：OPEN
+- 状态：CLOSED（结论：无体积问题；保留 `._` 清理与分包护栏）
 - 工程：`apps/uni-demo`（ADR-0005）
-- 类型：小程序发布链路 / 构建优化
+- 类型：测量方法复盘 / 构建产物卫生
 
-## 现场
+## 现场（错误结论，留档防止复发）
 
-`pnpm build:mp-weixin` 产物可在微信开发者工具导入运行，但**上传被包体限制拦截**：
+首轮验收报告称"主包 2.93MB 超微信 2MB 限制"，并据此设计了组件闭包按分包
+复制方案（未实施即推翻）。
 
-- 主包（app + common + `node-modules/` 组件 chunk）≈ **2.93MB** > 微信主包 2MB。
-- 11 个分包均 ≤ 1.45MB ✓（demo 源按 `pages/<sub>/demos/` 物理归包 +
-  `optimization.subPackages` 已生效）。
+## 根因：测量脚本把 AppleDouble 垃圾算进了包体
 
-超限部分 = `node-modules/` 下组件库 chunk ≈ 2.61MB。
+- 本仓库位于非原生卷（exFAT 类）：每写入一个文件，macOS 伴生一个 4KB 的
+  `._x` AppleDouble 元数据文件。MP 产物 dist 中实测 **2327~3400 个 `._`
+  文件 ≈ 9MB**。
+- 首轮统计命令的过滤条件 `grep -v "^\._"` 只能排除路径**开头**的 `._`，
+  嵌套在目录内的 `node-modules/.../._sn-input.js` 全部漏网。
+- 排除 `._` 后的真实体积：**主包 0.86MB**（app 根文件 205KB + 组件库四件套
+  571KB + common 99KB + 首页 26KB），最大分包 0.18MB，整包 1.76MB ——
+  全部远低于微信限制（主包/单分包 2MB，总包 30MB）。
 
-## 根因
+## 仍然保留的两个措施
 
-- 91 个组件中 **84 个只被单一分包使用**，7 个跨多分包
-  （sn-icon ×8、sn-button ×9、sn-form / sn-input / sn-tag / sn-switch / sn-tabs）。
-- uni 的 `optimization.subPackages` 只下沉「分包目录内文件」；node_modules
-  路径的组件 chunk 一律输出到主包 `node-modules/`，不做按引用下沉。
-- 微信规则：跨分包共享的代码必须放主包 → 7 个共享组件 chunk 无法下沉，但
-  84 个单分包组件本可以（uni 无此机制）。
+1. **`scripts/clean-dist-junk.mjs`**（挂入 build:h5 / build:mp-weixin）：
+   构建后删除 dist 内全部 `._` 文件。这不是测量问题——微信开发者工具会把
+   dist 里的垃圾一并打包上传，必须清理；CI（Linux）不会产生，脚本幂等。
+2. **分包切分护栏**（`SUBPACKAGE_MAX_COMPS = 14`，form → form/form-2）：
+   真实体积下非必需，但组件数继续增长时保持每个分包远离 2MB 红线，成本为零。
 
-## 修法方向（按推荐序）
+## wot-ui 消费模式对齐说明（"别人用这个库主包会不会满"）
 
-1. **组件闭包按分包复制 + 按导入方解析**：gen-pages 为每个分包复制其 demo
-   所需组件的源码闭包（含组件内部相互引用，tokens 走 npm 包不动）到
-   `pages/<sub>/vendor/`；vite alias 用 customResolver 按 importer 所在分包
-   解析到该分包副本。demo 源保持 `@snui/uni-src` 写法不变（docs 用法面板
-   不受影响）。预期主包 < 1MB。工作量 ≈ 一个任务，需回归双端构建。
-2. 缩减 MP demo 覆盖（产品决策）：低频组件不进 MP 演示包。
-3. 等待 uni 官方优化器支持 node_modules chunk 按引用下沉（不可控）。
+不会。库侧机制与 wot-design-uni 一致：
 
-## Regression
+- `@snui/uni` 的 exports 暴露 `./components/*`（源码 .vue），消费者在
+  `pages.json` 配一条 easycom 规则即可按需编译：
 
-方案 1 落地后验收：`build:h5` 与 `build:mp-weixin` 全过、主包 ≤ 2MB、
-docs `loadDemoUsage` 对全部 351 个 demo 仍能取到源码、抽查 3 个分包页面在
-开发者工具正常渲染。
+  ```json
+  "easycom": { "custom": { "^sn-(.*)": "@snui/uni/components/sn-$1/sn-$1.vue" } }
+  ```
+
+- easycom 只编译**实际用到的组件**；全量 91 个组件的四件套也只有 ~0.6MB，
+  用多少算多少，主包不构成压力。
+- 跨分包共享的组件 chunk 由 uni 编译进主包 common（本量级 < 1MB）。
+
+## 教训
+
+1. 卷会生成 AppleDouble 垃圾时，任何包体统计必须按 basename 过滤 `._*`。
+2. 包体结论以微信开发者工具/上传校验为准，脚本统计只作参考。

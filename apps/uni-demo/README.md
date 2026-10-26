@@ -42,15 +42,32 @@ uni 端（`@snui/uni`）组件 demo 的**唯一事实源**与真实运行时演�
 3. 工具内上传 → 微信后台提交审核。
 4. 自动化上传（`miniprogram-ci`）登记为 follow-up，需要上传私钥。
 
-### 分包与体积
+### 分包与体积（实测）
 
 - demo 源按 docs 总览分组物理放入 `src/pages/<sub>/demos/`，组件 chunk 随
-  文件位置归入对应 subPackage；`optimization.subPackages` 开启分包优化。
+  文件位置归入对应 subPackage；`optimization.subPackages` 开启。
 - 单分包组件数上限 `SUBPACKAGE_MAX_COMPS`（`scripts/subpackages.mjs`）控制
-  切分，form 组 23 个重组件实测 2.6MB，超过 2MB 的组自动拆分。
-- **已知边界**：跨分包共享的组件库 chunk（7 个组件 + 公共运行时）留在主包；
-  主包体积贴近微信 2MB 上限时，需登记的 follow-up（组件闭包按分包复制 +
-  按导入方解析）进一步优化，详见 `.ai/tasks/follow-up/`。
+  切分（>14 个组件的组自动拆分），保持每个分包远离 2MB 红线。
+- **真实体积（排除 macOS `._` 元数据垃圾）**：主包 **0.86MB**、最大分包
+  0.18MB、整包 1.76MB，全部远低于微信限制（主包/单分包 2MB，总包 30MB）。
+- `clean-dist-junk.mjs` 已挂入双端构建：非原生卷（exFAT 等）会给每个产物
+  文件伴生 4KB 的 `._` 垃圾（实测 3400 个 / 9MB），微信开发者工具会照单
+  打包上传，构建后必须清理。复盘见 `AUI-UNI-FB-012`。
+
+## 作为 UI 库消费（easycom，wot-ui 同款模式）
+
+终端用户 `npm i @snui/uni` 后在 `pages.json` 配置一条 easycom 规则即可：
+
+```json
+"easycom": {
+  "custom": { "^sn-(.*)": "@snui/uni/components/sn-$1/sn-$1.vue" }
+}
+```
+
+- easycom 按需编译：只打包**实际用到的组件**（全量 91 组件四件套也仅
+  ~0.6MB），普通业务工程的主包没有压力。
+- 组件源码以 .vue 形式随包分发，由项目侧 uni 编译器按目标端编译，
+  与 wot-design-uni 的分发模型一致。
 
 ## 目录结构
 

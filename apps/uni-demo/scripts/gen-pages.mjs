@@ -341,8 +341,6 @@ ${modules}
     writeFileSync(`${pagesDir}${sub.root}/${comp.key}.vue`, vue);
   }
 }
-
-// ── 生成 demos-manifest.json（docs 消费） ──────────────────────────────────
 const manifest = {
   note: '由 apps/uni-demo/scripts/gen-pages.mjs 生成，勿手改',
   components: Object.fromEntries(

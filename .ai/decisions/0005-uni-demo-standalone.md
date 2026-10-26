@@ -67,9 +67,13 @@ apps/docs（组件文档）
   （sn-table 自定义单元格）→ `#ifdef MP` 降级文本单元格；
   原生元素 `v-bind="mpNativeAttrs"` → 显式逐条属性。
 - **分包**：demo 源按 docs 总览分组物理放入 `pages/<sub>/demos/`；单分包
-  组件数 > 14 自动切分（form 2.6MB → form / form-2）；`optimization.subPackages`
-  开启。**已知边界**：跨分包共享的 7 个组件 chunk 留主包，主包 2.93MB 超微信
-  上传限制 → AUI-UNI-FB-012（组件闭包按分包复制方案已登记）。
+  组件数 > 14 自动切分（form → form / form-2）；`optimization.subPackages`
+  开启。**实测包体**（排除 AppleDouble 垃圾后）：主包 0.86MB、最大分包
+  0.18MB、整包 1.76MB，全部达标；非原生卷的 `._` 垃圾由 clean-dist-junk
+  在构建后清理（曾污染首轮测量，复盘见 AUI-UNI-FB-012）。
+- **消费模式（wot-ui 对齐）**：`@snui/uni` exports 暴露 `./components/*`
+  源码 .vue，消费者以 easycom 规则按需引入；easycom 只编译实际用到的组件，
+  全量四件套 ~0.6MB，业务工程主包无压力。
 - **不进根 turbo 门禁**：uni-demo 脚本名非标准（build:h5 / build:mp-weixin），
   工程自身构建成功为验收，避免全仓 CI 被双端编译拖慢。
 - **双语**：en 影子迁为 `<name>.en.vue`，docs 代码面板按站点语言取用；
@@ -81,7 +85,7 @@ apps/docs（组件文档）
   docs 删减约 900 行 shim/转换代码与 713 个 demo 文件，预览从「浏览器近似」
   升级为「真实 uni 运行时」。
 - 负向 / 待办：
-  1. MP 主包 2.93MB 超上传限制（工具内可运行）→ FB-012；
+  1. 非原生卷的 `._` 元数据垃圾会污染 dist 上传包（构建后自动清理）；
   2. 2 个浏览器 API demo 暂缺 → FB-013；
   3. docs 预览依赖 uni-demo 部署站可用性（Pages 挂了 docs 预览跟着挂；
      本地联调用 UNI_DEMO_PREVIEW_BASE 指向本地 dev）；
