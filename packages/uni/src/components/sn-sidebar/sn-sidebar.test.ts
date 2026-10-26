@@ -118,6 +118,14 @@ describe('sn-sidebar', () => {
       expect(beforeChange).toHaveBeenCalledWith(1);
     });
 
+    it('does not commit when a sync beforeChange returns false', async () => {
+      const beforeChange = vi.fn(() => false);
+      const wrapper = mountSidebar({ modelValue: 0, beforeChange });
+      await wrapper.findAll('.sn-sidebar-item')[1]!.trigger('tap');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')).toBeUndefined();
+    });
+
     it('does not commit when beforeChange resolves false', async () => {
       const beforeChange = vi.fn(async () => false);
       const wrapper = mountSidebar({ modelValue: 0, beforeChange });
@@ -224,5 +232,92 @@ describe('sn-sidebar-item', () => {
     const wrapper = mount(SnSidebarItem, { props: { label: 'orphan', value: 1 } });
     await wrapper.trigger('tap');
     expect(wrapper.classes()).not.toContain('sn-sidebar-item--active');
+  });
+
+  describe('sn-sidebar extras', () => {
+    it('commits a selection through the exposed select() method', async () => {
+      const wrapper = mountSidebar({ modelValue: 0 });
+      const sidebar = wrapper.findComponent(SnSidebar).vm as unknown as {
+        select: (value: number, label: string) => Promise<void>;
+      };
+      await sidebar.select(2, 'Done');
+      expect(wrapper.findComponent(SnSidebar).emitted('update:modelValue')?.at(-1)).toEqual([2]);
+      expect(wrapper.findComponent(SnSidebar).emitted('change')?.at(-1)).toEqual([
+        { value: 2, label: 'Done' },
+      ]);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findAll('.sn-sidebar-item')[2]!.classes()).toContain('sn-sidebar-item--active');
+    });
+
+    it('emits one update per tap in a quick item-to-item sequence', async () => {
+      const wrapper = mountSidebar({ modelValue: 0 });
+      const items = wrapper.findAll('.sn-sidebar-item');
+      await items[1]!.trigger('tap');
+      await items[2]!.trigger('tap');
+      const values = wrapper
+        .findComponent(SnSidebar)
+        .emitted('update:modelValue')
+        ?.map((args) => args[0]);
+      expect(values).toEqual([1, 2]);
+    });
+
+    it('labels each item with its text', () => {
+      const items = mountSidebar({ modelValue: 1 }).findAll('.sn-sidebar-item');
+      expect(items[1]!.attributes('aria-label')).toBe('Todo');
+    });
+  });
+});
+
+describe('sn-sidebar-item extras', () => {
+  it('renders a string badge verbatim', () => {
+    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, badge: 'New' }]);
+    expect(wrapper.find('.sn-sidebar-item__badge-text').text()).toBe('New');
+  });
+
+  it('renders no badge for an empty-string badge', () => {
+    const wrapper = mountSidebar({}, [{ label: 'A', value: 0, badge: '' }]);
+    expect(wrapper.find('.sn-sidebar-item__badge').exists()).toBe(false);
+  });
+
+  it('marks a disabled item with the disabled class', () => {
+    const wrapper = mountSidebar({}, [
+      { label: 'A', value: 0 },
+      { label: 'B', value: 1, disabled: true },
+    ]);
+    expect(wrapper.findAll('.sn-sidebar-item')[1]!.classes()).toContain(
+      'sn-sidebar-item--disabled',
+    );
+  });
+
+  it('forwards customClass and customStyle on the item', () => {
+    const wrapper = mountSidebar({}, [
+      { label: 'A', value: 0, customClass: 'my-item', customStyle: 'margin: 2px;' },
+    ]);
+    expect(wrapper.find('.sn-sidebar-item').classes()).toContain('my-item');
+    expect(wrapper.find('.sn-sidebar-item').attributes('style')).toContain('margin: 2px');
+  });
+
+  it('replaces the icon area through the icon slot', () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnSidebar,
+            {},
+            {
+              default: () => [
+                h(
+                  SnSidebarItem,
+                  { label: 'A', value: 0, icon: 'Star' },
+                  { icon: () => h('text', { class: 'custom-icon' }, 'X') },
+                ),
+              ],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Harness);
+    expect(wrapper.find('.custom-icon').exists()).toBe(true);
+    expect(wrapper.find('.sn-sidebar-item__icon.sn-icon').exists()).toBe(false);
   });
 });

@@ -93,7 +93,9 @@ watch(
   { immediate: true },
 );
 
-const shouldRender = computed(() => hasRendered.value && (active.value || !props.lazy));
+// The latch alone decides rendering: once a pane has been shown it stays
+// mounted (hidden by `v-show`), so switching tabs never drops its state.
+const shouldRender = computed(() => hasRendered.value);
 
 onMounted(() => {
   if (!tabs) return;

@@ -9,7 +9,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { defineComponent, h } from 'vue';
+import { defineComponent, h, ref } from 'vue';
 import SnIndexBar from './sn-index-bar.vue';
 import SnIndexAnchor from './sn-index-anchor.vue';
 
@@ -91,6 +91,98 @@ describe('sn-index-bar', () => {
     });
   });
 
+  describe('dynamic anchors', () => {
+    /** Harness whose anchor list is driven by a ref. */
+    function mountDynamic(letters: () => string[]) {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnIndexBar, {}, {
+              default: () =>
+                letters().map((letter) =>
+                  h(SnIndexAnchor, { index: letter }, { default: () => `items ${letter}` }),
+                ),
+            });
+        },
+      });
+      return mount(Harness);
+    }
+
+    it('drops the sidebar entry and the highlight when the active anchor unmounts', async () => {
+      const letters = ref(['A', 'B', 'C']);
+      const wrapper = mountDynamic(() => letters.value);
+      await wrapper.vm.$nextTick();
+      await wrapper.findAll('.sn-index-bar__index')[2]!.trigger('tap');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findAll('.sn-index-bar__index--active')).toHaveLength(1);
+      letters.value = ['A', 'B'];
+      await wrapper.vm.$nextTick();
+      const entries = wrapper.findAll('.sn-index-bar__index');
+      expect(entries).toHaveLength(2);
+      // The highlight falls back to the first surviving anchor.
+      expect(entries[0]!.classes()).toContain('sn-index-bar__index--active');
+    });
+
+    it('renders an empty sidebar once every anchor has gone', async () => {
+      const letters = ref(['A']);
+      const wrapper = mountDynamic(() => letters.value);
+      await wrapper.vm.$nextTick();
+      letters.value = [];
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findAll('.sn-index-bar__index')).toHaveLength(0);
+      expect(wrapper.find('.sn-index-bar__index--active').exists()).toBe(false);
+    });
+
+    it('keeps the highlight when an unrelated anchor unmounts', async () => {
+      const letters = ref(['A', 'B', 'C']);
+      const wrapper = mountDynamic(() => letters.value);
+      await wrapper.vm.$nextTick();
+      await wrapper.findAll('.sn-index-bar__index')[1]!.trigger('tap');
+      await wrapper.vm.$nextTick();
+      letters.value = ['A', 'B'];
+      await wrapper.vm.$nextTick();
+      const entries = wrapper.findAll('.sn-index-bar__index');
+      expect(entries).toHaveLength(2);
+      expect(entries[1]!.classes()).toContain('sn-index-bar__index--active');
+    });
+  });
+
+  describe('imperative + value types', () => {
+    it('jumps through the exposed scrollTo', async () => {
+      const wrapper = mountBar();
+      await wrapper.vm.$nextTick();
+      const vm = wrapper.findComponent(SnIndexBar).vm as unknown as {
+        scrollTo: (index: string) => void;
+      };
+      vm.scrollTo('C');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnIndexBar).emitted('change')?.at(-1)).toEqual([{ index: 'C' }]);
+      expect(wrapper.findAll('.sn-index-bar__index')[2]!.classes()).toContain(
+        'sn-index-bar__index--active',
+      );
+    });
+
+    it('supports numeric index anchors', async () => {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnIndexBar, {}, {
+              default: () => [
+                h(SnIndexAnchor, { index: 1 }),
+                h(SnIndexAnchor, { index: 2 }),
+              ],
+            });
+        },
+      });
+      const wrapper = mount(Harness);
+      await wrapper.vm.$nextTick();
+      const entries = wrapper.findAll('.sn-index-bar__index');
+      expect(entries.map((node) => node.text())).toEqual(['1', '2']);
+      await entries[1]!.trigger('tap');
+      expect(wrapper.findComponent(SnIndexBar).emitted('change')?.at(-1)).toEqual([{ index: 2 }]);
+    });
+  });
+
   describe('layout / accessibility', () => {
     it('adds the sticky class', () => {
       expect(mountBar({ sticky: true }).find('.sn-index-bar').classes()).toContain(
@@ -117,6 +209,7 @@ describe('sn-index-bar', () => {
       expect(entries[0]!.attributes('role')).toBe('tab');
       expect(entries[0]!.attributes('aria-selected')).toBe('true');
       expect(entries[1]!.attributes('aria-selected')).toBe('false');
+      expect(entries[1]!.attributes('aria-label')).toBe('B');
     });
   });
 });

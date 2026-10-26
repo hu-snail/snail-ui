@@ -289,4 +289,101 @@ describe('sn-floating-panel', () => {
       expect(mount(SnFloatingPanel).attributes('data-snui-component')).toBe('floating-panel');
     });
   });
+
+  describe('extras', () => {
+    /*
+     * Untestable in happy-dom:
+     *   - real panel geometry: `happy-dom` drops `rpx` lengths and performs no
+     *     layout, so the visual `height` transition and the safe-area padding
+     *     cannot be measured; the height model is asserted through
+     *     `aria-valuenow` instead.
+     */
+
+    it('does not keep the animating class when duration is 0', async () => {
+      const w = mount(SnFloatingPanel, { props: { height: 200, anchors: [200, 400], duration: 0 } });
+      await drag(w, -100);
+      expect(w.classes()).not.toContain('sn-floating-panel--animating');
+      expect(w.emitted('height-change')).toHaveLength(1);
+    });
+
+    it('ignores a negative height coming from the host', async () => {
+      const w = mount(SnFloatingPanel, { props: { height: 200 } });
+      await w.setProps({ height: -50 });
+      expect(heightOf(w)).toBe('200');
+    });
+
+    it('lets an in-flight drag win over an external height write', async () => {
+      const w = mount(SnFloatingPanel, {
+        props: { height: 200, anchors: [200, 400], duration: 0 },
+      });
+      const handle = w.find('.sn-floating-panel__handle');
+      await handle.trigger('touchstart', { touches: [{ clientY: 400 }] });
+      await handle.trigger('touchmove', { touches: [{ clientY: 290 }] });
+      await w.setProps({ height: 999 });
+      await handle.trigger('touchend');
+      await flushPromises();
+      // The drag owns the height until it settles: 200 - (-110) = 310 → snaps
+      // to 400, never 999 (nor the equidistant-tie 200).
+      const emitted = w.emitted('update:height') ?? [];
+      expect(emitted[emitted.length - 1]).toEqual([400]);
+    });
+
+    it('falls back to pageY when a touch carries no clientY', async () => {
+      const w = mount(SnFloatingPanel, {
+        props: { height: 200, anchors: [200, 400], duration: 0 },
+      });
+      const handle = w.find('.sn-floating-panel__handle');
+      await handle.trigger('touchstart', { touches: [{ pageY: 400 }] });
+      await handle.trigger('touchmove', { touches: [{ pageY: 290 }] });
+      await handle.trigger('touchend');
+      await flushPromises();
+      // If pageY were dropped, dy would be 0 and the panel would never leave
+      // the 200 anchor; snapping to 400 proves the pageY read.
+      const emitted = w.emitted('update:height') ?? [];
+      expect(emitted[emitted.length - 1]).toEqual([400]);
+    });
+
+    it('emits height-change for a plain tap on the handle without moving', async () => {
+      const w = mount(SnFloatingPanel, { props: { height: 200, duration: 0 } });
+      const handle = w.find('.sn-floating-panel__handle');
+      await handle.trigger('touchstart', { touches: [{ clientY: 400 }] });
+      await handle.trigger('touchend');
+      await flushPromises();
+      expect(w.emitted('update:height')).toBeUndefined();
+      expect(w.emitted('height-change')?.[0]).toEqual([{ height: 200 }]);
+    });
+
+    it('ignores a touchcancel with no gesture in flight', async () => {
+      const w = mount(SnFloatingPanel, { props: { height: 200, duration: 0 } });
+      await w.find('.sn-floating-panel__handle').trigger('touchcancel');
+      await flushPromises();
+      expect(w.emitted('update:height')).toBeUndefined();
+      expect(w.emitted('height-change')).toBeUndefined();
+    });
+
+    it('keeps the scrollbar visible by default', () => {
+      const w = mount(SnFloatingPanel, { props: { height: 200 } });
+      expect(w.find('.sn-floating-panel__content').classes()).not.toContain(
+        'sn-floating-panel__content--hidden-scrollbar',
+      );
+    });
+
+    it('prefers explicit anchors over the uni viewport defaults', () => {
+      (globalThis as { uni?: unknown }).uni = {
+        getSystemInfoSync: () => ({ windowHeight: 800 }),
+      };
+      const w = mount(SnFloatingPanel, { props: { anchors: [150, 400] } });
+      expect(heightOf(w)).toBe('150');
+      delete (globalThis as { uni?: unknown }).uni;
+    });
+
+    it('marks the root as dragging while the finger is down', async () => {
+      const w = mount(SnFloatingPanel, { props: { height: 200, duration: 0 } });
+      const handle = w.find('.sn-floating-panel__handle');
+      await handle.trigger('touchstart', { touches: [{ clientY: 400 }] });
+      expect(w.classes()).toContain('sn-floating-panel--dragging');
+      await handle.trigger('touchend');
+      expect(w.classes()).not.toContain('sn-floating-panel--dragging');
+    });
+  });
 });

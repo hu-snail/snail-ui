@@ -143,4 +143,39 @@ describe('sn-backtop', () => {
       expect(mount(SnBacktop, { props: { text: '顶部' } }).attributes('aria-label')).toBe('顶部');
     });
   });
+
+  describe('threshold dynamics', () => {
+    it('flips visibility when the host scrollTop crosses the threshold', async () => {
+      const wrapper = mount(SnBacktop, { props: { scrollTop: 0, top: 300 } });
+      expect(wrapper.classes()).not.toContain('sn-backtop--visible');
+      await wrapper.setProps({ scrollTop: 600 });
+      expect(wrapper.classes()).toContain('sn-backtop--visible');
+      expect(wrapper.attributes('aria-hidden')).toBe('false');
+      await wrapper.setProps({ scrollTop: 10 });
+      expect(wrapper.classes()).not.toContain('sn-backtop--visible');
+      expect(wrapper.attributes('aria-hidden')).toBe('true');
+    });
+
+    it('ignores a tap after scrolling back above the threshold', async () => {
+      const wrapper = mount(SnBacktop, { props: { scrollTop: 500, top: 300 } });
+      await wrapper.trigger('tap');
+      expect(wrapper.emitted('click')).toHaveLength(1);
+      await wrapper.setProps({ scrollTop: 50 });
+      await wrapper.trigger('tap');
+      expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+
+    it('passes the default 100ms duration to pageScrollTo', async () => {
+      const pageScrollTo = vi.fn();
+      (globalThis as { uni?: unknown }).uni = { pageScrollTo };
+      const wrapper = mount(SnBacktop, { props: { scrollTop: 500 } });
+      await wrapper.trigger('tap');
+      expect(pageScrollTo).toHaveBeenCalledWith({ scrollTop: 0, duration: 100 });
+    });
+
+    it('keeps the upward rotation on the default icon', () => {
+      const wrapper = mount(SnBacktop, { props: { scrollTop: 500 } });
+      expect(wrapper.find('.sn-backtop__icon').attributes('style')).toContain('rotate(-90deg)');
+    });
+  });
 });

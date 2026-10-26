@@ -213,5 +213,121 @@ describe('sn-segmented', () => {
       expect(calls).toHaveLength(1);
       delete (globalThis as { uni?: unknown }).uni;
     });
+
+    it('survives a host whose vibrateShort throws', async () => {
+      (globalThis as { uni?: unknown }).uni = {
+        vibrateShort: () => {
+          throw new Error('unsupported');
+        },
+      };
+      const wrapper = mount(SnSegmented, {
+        props: { options: OPTIONS, vibrateShort: true, modelValue: 'Day' },
+      });
+      await wrapper.findAll('.sn-segmented__item')[1]!.trigger('tap');
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['Week']);
+      delete (globalThis as { uni?: unknown }).uni;
+    });
+  });
+
+  describe('wot-ui value alias', () => {
+    it('emits update:value alongside update:modelValue', async () => {
+      const wrapper = mount(SnSegmented, { props: { options: OPTIONS, modelValue: 'Day' } });
+      await wrapper.findAll('.sn-segmented__item')[2]!.trigger('tap');
+      expect(wrapper.emitted('update:value')?.at(-1)).toEqual(['Month']);
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['Month']);
+    });
+
+    it('prefers the value alias over modelValue when both are given', () => {
+      const wrapper = mount(SnSegmented, {
+        props: { options: OPTIONS, value: 'Month', modelValue: 'Day' },
+      });
+      expect(wrapper.findAll('.sn-segmented__item')[2]!.classes()).toContain(
+        'sn-segmented__item--active',
+      );
+    });
+
+    it('switching writes both spellings with the same payload', async () => {
+      const wrapper = mount(SnSegmented, { props: { options: OPTIONS, value: 'Day' } });
+      await wrapper.findAll('.sn-segmented__item')[1]!.trigger('tap');
+      expect(wrapper.emitted('update:value')).toHaveLength(1);
+      expect(wrapper.emitted('update:modelValue')).toHaveLength(1);
+      expect(wrapper.emitted('update:value')?.[0]).toEqual(wrapper.emitted('update:modelValue')?.[0]);
+    });
+  });
+
+  describe('option payload', () => {
+    it('hands the payload back through the change event', async () => {
+      const wrapper = mount(SnSegmented, {
+        props: {
+          options: [
+            { value: 'a', label: 'A', payload: { id: 7 } },
+            { value: 'b', label: 'B' },
+          ],
+          modelValue: 'b',
+        },
+      });
+      await wrapper.findAll('.sn-segmented__item')[0]!.trigger('tap');
+      const emitted = wrapper.emitted('change')?.at(-1)?.[0] as { payload?: unknown };
+      expect(emitted.payload).toEqual({ id: 7 });
+    });
+
+    it('exposes the payload through the label slot scope', () => {
+      const wrapper = mount(SnSegmented, {
+        props: { options: [{ value: 'a', label: 'A', payload: 'extra' }] },
+        slots: {
+          label: `<template #label="{ option }"><text class="payload-label">{{ option.payload }}</text></template>`,
+        },
+      });
+      expect(wrapper.find('.payload-label').text()).toBe('extra');
+    });
+  });
+
+  describe('edge cases', () => {
+    it('renders nothing without options and does not crash', () => {
+      const wrapper = mount(SnSegmented, { props: { options: [] } });
+      expect(wrapper.findAll('.sn-segmented__item')).toHaveLength(0);
+    });
+
+    it('suppresses click for a single disabled option too', async () => {
+      const wrapper = mount(SnSegmented, {
+        props: {
+          options: [
+            { value: 'a', label: 'A' },
+            { value: 'b', label: 'B', disabled: true },
+          ],
+          modelValue: 'a',
+        },
+      });
+      await wrapper.findAll('.sn-segmented__item')[1]!.trigger('tap');
+      expect(wrapper.emitted('click')).toBeUndefined();
+      expect(wrapper.emitted('change')).toBeUndefined();
+    });
+
+    it('emits the raw number for numeric options', async () => {
+      const wrapper = mount(SnSegmented, { props: { options: [10, 20], modelValue: 20 } });
+      expect(wrapper.findAll('.sn-segmented__item')[1]!.classes()).toContain(
+        'sn-segmented__item--active',
+      );
+      await wrapper.findAll('.sn-segmented__item')[0]!.trigger('tap');
+      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([10]);
+    });
+
+    it('keeps both events in order during rapid switching', async () => {
+      const wrapper = mount(SnSegmented, { props: { options: OPTIONS, modelValue: 'Day' } });
+      const items = wrapper.findAll('.sn-segmented__item');
+      await items[1]!.trigger('tap');
+      await items[2]!.trigger('tap');
+      expect(wrapper.emitted('update:modelValue')?.map((args) => args[0])).toEqual([
+        'Week',
+        'Month',
+      ]);
+    });
+
+    it('keeps the slider hidden in the outline theme even with a selection', () => {
+      const wrapper = mount(SnSegmented, {
+        props: { options: OPTIONS, theme: 'outline', modelValue: 'Week' },
+      });
+      expect(wrapper.find('.sn-segmented__slider').exists()).toBe(false);
+    });
   });
 });

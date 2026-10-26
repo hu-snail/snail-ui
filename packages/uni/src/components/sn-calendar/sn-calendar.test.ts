@@ -209,5 +209,137 @@ describe('sn-calendar', () => {
       await w.find('.sn-popup__modal').trigger('tap');
       expect(w.emitted('update:visible')).toBeUndefined();
     });
+
+    it('forwards switchMode controls into the sheet', () => {
+      expect(
+        mountCalendar({ switchMode: 'month' }).find('.sn-calendar-view__controls').exists(),
+      ).toBe(true);
+    });
+
+    it('forwards rangePrompt through to the panel hint', () => {
+      const w = mountCalendar({
+        type: 'daterange',
+        maxRange: 7,
+        rangePrompt: 'keep it short',
+      });
+      expect(w.find('.sn-calendar-view__hint').text()).toBe('keep it short');
+    });
+
+    it('forwards firstDayOfWeek to the panel headers', () => {
+      const w = mountCalendar({ firstDayOfWeek: 1 });
+      expect(w.findAll('.sn-calendar-view__week').map((t) => t.text())[0]).toBe('一');
+    });
+  });
+
+  describe('slots', () => {
+    it('renders content in the confirm-left slot', () => {
+      const w = mount(SnCalendar, {
+        props: { visible: true, minDate: new Date(2024, 5, 1).getTime() },
+        slots: { 'confirm-left': '<text class="left-slot">reset</text>' },
+      });
+      expect(w.find('.left-slot').text()).toBe('reset');
+      expect(w.find('.sn-calendar__footer-left').text()).toBe('reset');
+    });
+
+    it('renders content in the confirm-right slot', () => {
+      const w = mount(SnCalendar, {
+        props: { visible: true, minDate: new Date(2024, 5, 1).getTime() },
+        slots: { 'confirm-right': '<text class="right-slot">filter</text>' },
+      });
+      expect(w.find('.right-slot').text()).toBe('filter');
+      expect(w.find('.sn-calendar__footer-right').text()).toBe('filter');
+    });
+  });
+
+  describe('forwarded classes', () => {
+    it('lands customClass on the popup root', () => {
+      const w = mountCalendar({ customClass: 'my-sheet' });
+      expect(w.find('.my-sheet').exists()).toBe(true);
+      expect(w.find('.my-sheet').classes()).toContain('sn-calendar-popup');
+    });
+
+    it('lands customStyle on the popup panel', () => {
+      const w = mountCalendar({ customStyle: 'margin: 4px;' });
+      expect(w.find('.sn-popup__panel').attributes('style')).toContain('margin: 4px');
+    });
+
+    it('lands customViewClass on the panel root', () => {
+      const w = mountCalendar({ customViewClass: 'my-view' });
+      expect(w.find('.sn-calendar-view').classes()).toContain('my-view');
+    });
+  });
+
+  describe('accessibility', () => {
+    it('marks the cancel and confirm actions as buttons with labels', () => {
+      const w = mountCalendar({ confirmText: 'OK' });
+      expect(w.find('.sn-calendar__cancel').attributes('role')).toBe('button');
+      expect(w.find('.sn-calendar__cancel').attributes('aria-label')).toBe('cancel');
+      expect(w.find('.sn-calendar__confirm').attributes('role')).toBe('button');
+      expect(w.find('.sn-calendar__confirm').attributes('aria-label')).toBe('OK');
+    });
+
+    it('marks shortcut chips as labelled buttons', () => {
+      const w = mountCalendar({ shortcuts: [{ text: 'Today', days: 0 }] });
+      const chip = w.find('.sn-calendar__shortcut');
+      expect(chip.attributes('role')).toBe('button');
+      expect(chip.attributes('aria-label')).toBe('Today');
+    });
+  });
+
+  describe('draft sync', () => {
+    it('follows an external modelValue change while open (deferred mode)', async () => {
+      const w = mountCalendar({ modelValue: JUNE_15 });
+      expect(w.find('.sn-calendar-view__day--selected').text()).toBe('15');
+      await w.setProps({ modelValue: new Date(2024, 5, 20).getTime() });
+      expect(w.find('.sn-calendar-view__day--selected').text()).toBe('20');
+    });
+
+    it('resets the draft back to the model when the sheet reopens', async () => {
+      const w = mountCalendar({ modelValue: JUNE_15 });
+      await dayCells(w)[4]?.trigger('tap');
+      await w.setProps({ visible: false });
+      await w.setProps({ visible: true });
+      expect(w.find('.sn-calendar-view__day--selected').text()).toBe('15');
+    });
+
+    it('reflects the committed model directly in immediateChange mode', async () => {
+      const w = mountCalendar({ immediateChange: true, modelValue: JUNE_15 });
+      await dayCells(w)[19]?.trigger('tap');
+      await w.setProps({ modelValue: new Date(2024, 5, 20).getTime() });
+      expect(w.find('.sn-calendar-view__day--selected').text()).toBe('20');
+    });
+  });
+
+  describe('beforeConfirm (async)', () => {
+    it('proceeds when an async beforeConfirm resolves true', async () => {
+      const w = mountCalendar({ beforeConfirm: async () => true });
+      await dayCells(w)[9]?.trigger('tap');
+      await w.find('.sn-calendar__confirm').trigger('tap');
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(w.emitted('confirm')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+  });
+
+  describe('shortcuts (extra types)', () => {
+    it('wraps the shortcut value in a single-item list for the dates type', async () => {
+      const w = mountCalendar({
+        type: 'dates',
+        shortcuts: [{ text: 'Fixed', value: JUNE_15 }],
+      });
+      await w.find('.sn-calendar__shortcut').trigger('tap');
+      await w.find('.sn-calendar__confirm').trigger('tap');
+      expect(w.emitted('update:modelValue')?.[0]?.[0]).toEqual([JUNE_15]);
+    });
+
+    it('writes the draft immediately in immediateChange mode', async () => {
+      const w = mountCalendar({
+        immediateChange: true,
+        shortcuts: [{ text: 'Fixed', value: JUNE_15 }],
+      });
+      await w.find('.sn-calendar__shortcut').trigger('tap');
+      expect(w.emitted('update:modelValue')?.[0]?.[0]).toBe(JUNE_15);
+    });
   });
 });

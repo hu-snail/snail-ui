@@ -226,5 +226,86 @@ describe('sn-pagination', () => {
       const wrapper = mount(SnPagination, { props: { totalPage: 20, modelValue: 10 } });
       expect(wrapper.find('.sn-pagination__ellipsis').attributes('aria-hidden')).toBe('true');
     });
+
+    it('labels the prev / next buttons, honouring the custom texts', () => {
+      const custom = mount(SnPagination, {
+        props: { totalPage: 3, modelValue: 2, prevText: 'Prev', nextText: 'Next' },
+      });
+      expect(custom.find('.sn-pagination__prev').attributes('aria-label')).toBe('Prev');
+      expect(custom.find('.sn-pagination__next').attributes('aria-label')).toBe('Next');
+      const fallback = mount(SnPagination, { props: { totalPage: 3, modelValue: 2 } });
+      expect(fallback.find('.sn-pagination__prev').attributes('aria-label')).toBe('Previous page');
+      expect(fallback.find('.sn-pagination__next').attributes('aria-label')).toBe('Next page');
+    });
+
+    it('labels each page button with its number', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 3, modelValue: 1 } });
+      expect(wrapper.findAll('.sn-pagination__page')[1]!.attributes('aria-label')).toBe('Page 2');
+    });
+  });
+
+  describe('window shape', () => {
+    it('renders the exact centred window for a mid run', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 20, modelValue: 10 } });
+      const texts = wrapper.findAll('.sn-pagination__pages').map((node) => node.text())[0] ?? '';
+      expect(texts).toBe('1…89101112…20');
+    });
+
+    it('keeps pages 1-4 without a left ellipsis near the start', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 20, modelValue: 2 } });
+      const texts = wrapper.findAll('.sn-pagination__pages').map((node) => node.text())[0] ?? '';
+      expect(texts).toBe('1234…20');
+    });
+
+    it('derives a single page when total is under pageSize', () => {
+      const wrapper = mount(SnPagination, {
+        props: { total: 5, pageSize: 10, modelValue: 1, showMessage: true },
+      });
+      expect(wrapper.find('.sn-pagination__message-text').text()).toBe('1 / 1');
+    });
+
+    it('guards against a zero pageSize without crashing', () => {
+      const wrapper = mount(SnPagination, {
+        props: { total: 95, pageSize: 0, modelValue: 1, showMessage: true },
+      });
+      expect(wrapper.find('.sn-pagination__message-text').text()).toBe('1 / 95');
+    });
+  });
+
+  describe('prev / next / message slots', () => {
+    it('replaces the prev and next buttons through their slots', () => {
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 3, modelValue: 2 },
+        slots: {
+          prev: '<text class="custom-prev">‹ back</text>',
+          next: '<text class="custom-next">fwd ›</text>',
+        },
+      });
+      expect(wrapper.find('.custom-prev').exists()).toBe(true);
+      expect(wrapper.find('.custom-next').exists()).toBe(true);
+      expect(wrapper.find('.sn-pagination__prev').text()).toBe('‹ back');
+      expect(wrapper.find('.sn-pagination__next').text()).toBe('fwd ›');
+    });
+
+    it('exposes the scope to the message slot', () => {
+      const wrapper = mount(SnPagination, {
+        props: { total: 45, pageSize: 10, modelValue: 2, showMessage: true },
+        slots: {
+          message:
+            '<template #message="{ modelValue, totalPageNum, total, pageSize }"><text class="custom-msg">{{ modelValue }}/{{ totalPageNum }}/{{ total }}/{{ pageSize }}</text></template>',
+        },
+      });
+      expect(wrapper.find('.custom-msg').text()).toBe('2/5/45/10');
+    });
+
+    it('keeps prev / next working while a size slot is in use', async () => {
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 3, modelValue: 1 },
+        slots: { size: '<text class="custom-size">pages</text>' },
+      });
+      await wrapper.find('.sn-pagination__next').trigger('tap');
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([2]);
+      expect(wrapper.find('.custom-size').exists()).toBe(true);
+    });
   });
 });

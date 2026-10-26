@@ -154,4 +154,104 @@ describe('sn-fab', () => {
     });
     expect(wrapper.attributes('style')).toContain('translate(50px, 30px)');
   });
+
+  it('keeps the drag offset after release when no viewport is available', async () => {
+    const wrapper = mount(SnFab, { props: { draggable: true } });
+    const trigger = wrapper.find('.sn-fab__trigger');
+    await trigger.trigger('touchstart', { touches: [{ clientX: 10, clientY: 10 }] });
+    await trigger.trigger('touchmove', { touches: [{ clientX: 60, clientY: 40 }] });
+    await trigger.trigger('touchend');
+    expect(wrapper.attributes('style')).toContain('translate(50px, 30px)');
+  });
+
+  it('clamps the drag inside the uni viewport on release', async () => {
+    (globalThis as { uni?: unknown }).uni = {
+      getSystemInfoSync: () => ({ windowWidth: 400, windowHeight: 800 }),
+    };
+    const wrapper = mount(SnFab, { props: { draggable: true } });
+    const trigger = wrapper.find('.sn-fab__trigger');
+    await trigger.trigger('touchstart', { touches: [{ clientX: 0, clientY: 0 }] });
+    await trigger.trigger('touchmove', { touches: [{ clientX: 1000, clientY: 50 }] });
+    await trigger.trigger('touchend');
+    // maxX = 400 - 16 - 16 = 368; maxY = 800 - 32 = 768, so Y stays at 50.
+    expect(wrapper.attributes('style')).toContain('translate(368px, 50px)');
+    delete (globalThis as { uni?: unknown }).uni;
+  });
+
+  it('clamps a drag past the top-left corner symmetrically', async () => {
+    (globalThis as { uni?: unknown }).uni = {
+      getSystemInfoSync: () => ({ windowWidth: 400, windowHeight: 800 }),
+    };
+    const wrapper = mount(SnFab, { props: { draggable: true } });
+    const trigger = wrapper.find('.sn-fab__trigger');
+    await trigger.trigger('touchstart', { touches: [{ clientX: 0, clientY: 0 }] });
+    await trigger.trigger('touchmove', { touches: [{ clientX: -1000, clientY: -1000 }] });
+    await trigger.trigger('touchend');
+    expect(wrapper.attributes('style')).toContain('translate(-368px, -768px)');
+    delete (globalThis as { uni?: unknown }).uni;
+  });
+
+  it('still toggles after a drag gesture', async () => {
+    const wrapper = mount(SnFab, { props: { draggable: true } });
+    const trigger = wrapper.find('.sn-fab__trigger');
+    await trigger.trigger('touchstart', { touches: [{ clientX: 10, clientY: 10 }] });
+    await trigger.trigger('touchmove', { touches: [{ clientX: 60, clientY: 40 }] });
+    await trigger.trigger('touchend');
+    await trigger.trigger('tap');
+    expect(wrapper.emitted('update:active')?.[0]).toEqual([true]);
+  });
+
+  it('survives a viewport probe that throws', async () => {
+    (globalThis as { uni?: unknown }).uni = {
+      getSystemInfoSync: () => {
+        throw new Error('unsupported');
+      },
+    };
+    const wrapper = mount(SnFab, { props: { draggable: true } });
+    const trigger = wrapper.find('.sn-fab__trigger');
+    await trigger.trigger('touchstart', { touches: [{ clientX: 0, clientY: 0 }] });
+    await trigger.trigger('touchmove', { touches: [{ clientX: 100, clientY: 100 }] });
+    await trigger.trigger('touchend');
+    expect(wrapper.attributes('style')).toContain('translate(100px, 100px)');
+    delete (globalThis as { uni?: unknown }).uni;
+  });
+
+  it('swaps the trigger icon and the expanded state with active', async () => {
+    const wrapper = mount(SnFab, { props: { active: false } });
+    expect(wrapper.find('.sn-fab__trigger').attributes('aria-expanded')).toBe('false');
+    await wrapper.setProps({ active: true });
+    expect(wrapper.find('.sn-fab__trigger').attributes('aria-expanded')).toBe('true');
+    expect(wrapper.find('.sn-fab__trigger').classes()).toContain('sn-fab__trigger--active');
+    expect(wrapper.find('.sn-fab__trigger svg').exists()).toBe(true);
+  });
+
+  it('resolves a registry icon name for the trigger', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Star } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Star });
+    const wrapper = mount(SnFab, { props: { inactiveIcon: 'Star', activeIcon: 'Star' } });
+    expect(wrapper.find('.sn-fab__trigger svg').exists()).toBe(true);
+    clearSnIcons();
+  });
+
+  it('falls back to the built-in plus / close pair for unknown icon names', () => {
+    const wrapper = mount(SnFab, { props: { inactiveIcon: 'no-such-icon' } });
+    expect(wrapper.find('.sn-fab__trigger svg').exists()).toBe(true);
+  });
+
+  it('anchors bottom-center with the horizontal centring transform', () => {
+    const wrapper = mount(SnFab, { props: { position: 'bottom-center' } });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style).toContain('bottom: 16px');
+    expect(style).toContain('translateX(-50%)');
+  });
+
+  it('writes the default 99 z-index', () => {
+    expect(mount(SnFab).attributes('style')).toContain('z-index: 99');
+  });
+
+  it('lays the menu out to the left when direction is left', () => {
+    const wrapper = mount(SnFab, { props: { direction: 'left' } });
+    expect(wrapper.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--left');
+  });
 });

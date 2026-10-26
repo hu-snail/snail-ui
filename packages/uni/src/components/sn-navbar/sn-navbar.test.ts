@@ -185,5 +185,66 @@ describe('sn-navbar', () => {
       expect(wrapper.find('.sn-navbar__left').attributes('role')).toBe('button');
       expect(wrapper.find('.sn-navbar__right').attributes('role')).toBe('button');
     });
+
+    it('names the side zones from the text, with spoken fallbacks', () => {
+      const custom = mount(SnNavbar, { props: { leftText: 'Back', rightText: 'More' } });
+      expect(custom.find('.sn-navbar__left').attributes('aria-label')).toBe('Back');
+      expect(custom.find('.sn-navbar__right').attributes('aria-label')).toBe('More');
+      const arrowOnly = mount(SnNavbar, { props: { leftArrow: true } });
+      expect(arrowOnly.find('.sn-navbar__left').attributes('aria-label')).toBe('Back');
+    });
+  });
+
+  describe('slots (left / right)', () => {
+    it('renders the left slot and reveals the zone without leftText or arrow', () => {
+      const wrapper = mount(SnNavbar, {
+        props: { title: 'Home' },
+        slots: { left: '<text class="custom-left">menu</text>' },
+      });
+      expect(wrapper.find('.custom-left').exists()).toBe(true);
+      expect(wrapper.find('.sn-navbar__left').exists()).toBe(true);
+    });
+
+    it('renders the right slot and reveals the zone without rightText', () => {
+      const wrapper = mount(SnNavbar, {
+        props: { title: 'Home' },
+        slots: { right: '<text class="custom-right">search</text>' },
+      });
+      expect(wrapper.find('.custom-right').exists()).toBe(true);
+      expect(wrapper.find('.sn-navbar__right').exists()).toBe(true);
+    });
+
+    it('emits click-left from the slot-filled left zone', async () => {
+      const wrapper = mount(SnNavbar, {
+        slots: { left: '<text class="custom-left">menu</text>' },
+      });
+      await wrapper.find('.sn-navbar__left').trigger('tap');
+      expect(wrapper.emitted('click-left')).toHaveLength(1);
+    });
+
+    it('does not emit click-left from the capsule zone', async () => {
+      const wrapper = mount(SnNavbar, {
+        props: { leftArrow: true },
+        slots: { capsule: '<text>cap</text>' },
+      });
+      await wrapper.find('.sn-navbar__capsule').trigger('tap');
+      expect(wrapper.emitted('back-home')).toHaveLength(1);
+      expect(wrapper.emitted('click-left')).toBeUndefined();
+    });
+  });
+
+  describe('state classes', () => {
+    it('flags the disabled sides on the root', () => {
+      const wrapper = mount(SnNavbar, {
+        props: { leftText: 'Back', rightText: 'More', leftDisabled: true, rightDisabled: true },
+      });
+      expect(wrapper.find('.sn-navbar').classes()).toContain('sn-navbar--left-disabled');
+      expect(wrapper.find('.sn-navbar').classes()).toContain('sn-navbar--right-disabled');
+    });
+
+    it('writes no z-index while unfixed', () => {
+      const wrapper = mount(SnNavbar, { props: { zIndex: 42 } });
+      expect(wrapper.find('.sn-navbar').attributes('style')).toBeUndefined();
+    });
   });
 });

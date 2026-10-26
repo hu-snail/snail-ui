@@ -323,4 +323,269 @@ describe('sn-calendar-view', () => {
     expect(dayCells(w)).toHaveLength(30);
     expect(w.findAll('.sn-calendar-view__month')).toHaveLength(1);
   });
+
+  /*
+   * Untestable in happy-dom:
+   *   - `pickstart` / `pickend` are declared parity events with no trigger
+   *     path in this build (no time roller is rendered), so there is no
+   *     behaviour to assert.
+   *   - Actual scrolling driven by `scroll-into-view` is native scroll-view
+   *     behaviour; only the attribute hand-off is asserted here.
+   */
+
+  describe('calendar math', () => {
+    it('renders 29 days for a leap-year February', () => {
+      const w = mountView({
+        minDate: new Date(2024, 1, 1).getTime(),
+        maxDate: new Date(2024, 1, 29).getTime(),
+      });
+      expect(dayCells(w)).toHaveLength(29);
+    });
+
+    it('renders 28 days for a non-leap February', () => {
+      const w = mountView({
+        minDate: new Date(2023, 1, 1).getTime(),
+        maxDate: new Date(2023, 1, 28).getTime(),
+      });
+      expect(dayCells(w)).toHaveLength(28);
+    });
+
+    it('spans blocks across a year boundary', () => {
+      const w = mountView({
+        minDate: new Date(2023, 11, 1).getTime(),
+        maxDate: new Date(2024, 1, 29).getTime(),
+      });
+      const titles = w.findAll('.sn-calendar-view__month-title').map((t) => t.text());
+      expect(titles).toEqual(['2023 年 12 月', '2024 年 1 月', '2024 年 2 月']);
+    });
+
+    it('offsets the grid by firstDayOfWeek', () => {
+      // June 1st 2024 is a Saturday; a Monday-first grid pads 5 fillers.
+      const w = mountView({ firstDayOfWeek: 1 });
+      const cells = w.findAll('.sn-calendar-view__day');
+      const firstReal = cells.findIndex((cell) => !cell.classes().includes('sn-calendar-view__day--filler'));
+      expect(firstReal).toBe(5);
+      expect(cells[firstReal]?.text()).toBe('1');
+    });
+
+    it('rings today with the today class', () => {
+      const today = new Date();
+      const first = new Date(today.getFullYear(), today.getMonth(), 1).getTime();
+      const last = new Date(today.getFullYear(), today.getMonth() + 1, 0).getTime();
+      const w = mountView({ minDate: first, maxDate: last });
+      const marked = w.findAll('.sn-calendar-view__day--today');
+      expect(marked).toHaveLength(1);
+      expect(marked[0]?.text()).toBe(String(today.getDate()));
+    });
+  });
+
+  describe('range extras', () => {
+    it('marks a range that crosses the month boundary', () => {
+      const w = mountView({
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 5, 30).getTime(),
+        type: 'daterange',
+        modelValue: [new Date(2024, 4, 28).getTime(), new Date(2024, 5, 3).getTime()],
+      });
+      const blocks = w.findAll('.sn-calendar-view__month');
+      expect(blocks[0]?.find('.sn-calendar-view__day--start').text()).toBe('28');
+      expect(blocks[1]?.find('.sn-calendar-view__day--end').text()).toBe('3');
+    });
+
+    it('accepts a span exactly equal to maxRange', async () => {
+      const w = mountView({
+        type: 'daterange',
+        maxRange: 3,
+        modelValue: [new Date(2024, 5, 1).getTime()],
+      });
+      await dayCells(w)[2]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number[];
+      expect(new Date(value[0] ?? 0).getDate()).toBe(1);
+      expect(new Date(value[1] ?? 0).getDate()).toBe(3);
+    });
+
+    it('ignores re-tapping the pending start when allowSameDay is off (regression)', async () => {
+      const w = mountView({
+        type: 'daterange',
+        modelValue: [new Date(2024, 5, 10).getTime()],
+      });
+      await dayCells(w)[9]?.trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('restarts the range when the second endpoint is re-tapped', async () => {
+      const w = mountView({
+        type: 'daterange',
+        modelValue: [new Date(2024, 5, 5).getTime(), new Date(2024, 5, 20).getTime()],
+      });
+      await dayCells(w)[19]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number[];
+      expect(value).toHaveLength(1);
+      expect(new Date(value[0] ?? 0).getDate()).toBe(20);
+    });
+  });
+
+  describe('defaultTime parsing', () => {
+    it('accepts the array form and uses the first entry', async () => {
+      const w = mountView({ defaultTime: ['08:15:30', '20:00:00'] });
+      await dayCells(w)[10]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      const d = new Date(value);
+      expect(d.getHours()).toBe(8);
+      expect(d.getMinutes()).toBe(15);
+      expect(d.getSeconds()).toBe(30);
+    });
+
+    it('parses an hour:minute pair without seconds', async () => {
+      const w = mountView({ defaultTime: '09:30' });
+      await dayCells(w)[10]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      const d = new Date(value);
+      expect(d.getHours()).toBe(9);
+      expect(d.getMinutes()).toBe(30);
+      expect(d.getSeconds()).toBe(0);
+    });
+
+    it('falls back to midnight for an unparseable defaultTime', async () => {
+      const w = mountView({ defaultTime: 'whenever' });
+      await dayCells(w)[10]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      const d = new Date(value);
+      expect(d.getHours()).toBe(0);
+      expect(d.getMinutes()).toBe(0);
+    });
+  });
+
+  describe('type surface', () => {
+    it('marks the month type selection on the first of the month', () => {
+      const w = mountView({ type: 'month', modelValue: new Date(2024, 5, 1).getTime() });
+      const selected = w.findAll('.sn-calendar-view__day--selected');
+      expect(selected).toHaveLength(1);
+      expect(selected[0]?.text()).toBe('1');
+    });
+
+    it('flags the datetime type with the is-datetime class', () => {
+      expect(mountView({ type: 'datetime' }).classes()).toContain('sn-calendar-view--is-datetime');
+    });
+
+    it('sorts a multiple selection ascending after adding an earlier day', async () => {
+      const w = mountView({
+        type: 'dates',
+        modelValue: [new Date(2024, 5, 10).getTime()],
+      });
+      await dayCells(w)[4]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number[];
+      expect(new Date(value[0] ?? 0).getDate()).toBe(5);
+      expect(new Date(value[1] ?? 0).getDate()).toBe(10);
+    });
+  });
+
+  describe('accessibility', () => {
+    it('exposes the day number as the accessible name and keeps cells focusable', () => {
+      const w = mountView();
+      const cell = dayCells(w)[14];
+      expect(cell?.attributes('role')).toBe('button');
+      expect(cell?.attributes('aria-label')).toBe('15');
+      expect(cell?.attributes('tabindex')).toBe('0');
+    });
+
+    it('marks disabled and filler cells inert', () => {
+      const w = mountView({
+        minDate: new Date(2024, 5, 10).getTime(),
+        maxDate: new Date(2024, 5, 30).getTime(),
+      });
+      const disabled = w.findAll('.sn-calendar-view__day--disabled')[0];
+      expect(disabled?.attributes('aria-disabled')).toBe('true');
+      expect(disabled?.attributes('tabindex')).toBe('-1');
+      const filler = w.find('.sn-calendar-view__day--filler');
+      expect(filler.attributes('aria-label')).toBe('');
+      expect(filler.attributes('tabindex')).toBe('-1');
+    });
+
+    it('labels the root group with the type', () => {
+      expect(mountView({ type: 'daterange' }).attributes('role')).toBe('group');
+      expect(mountView({ type: 'daterange' }).attributes('aria-label')).toBe('daterange');
+    });
+  });
+
+  describe('navigation extras', () => {
+    it('targets the active month through scroll-into-view', async () => {
+      const w = mountView({
+        switchMode: 'month',
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-into-view')).toBe(
+        'sn-calendar-view-month-2024-05',
+      );
+      await w.find('.sn-calendar-view__control--next').trigger('tap');
+      expect(w.find('.sn-calendar-view__panel').attributes('scroll-into-view')).toBe(
+        'sn-calendar-view-month-2024-06',
+      );
+    });
+
+    it('stays on the first month when prev is tapped at the boundary', async () => {
+      const w = mountView({
+        switchMode: 'month',
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      await w.find('.sn-calendar-view__control--prev').trigger('tap');
+      expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 5 月');
+    });
+
+    it('returns to the previous month with the prev control', async () => {
+      const w = mountView({
+        switchMode: 'month',
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      await w.find('.sn-calendar-view__control--next').trigger('tap');
+      await w.find('.sn-calendar-view__control--prev').trigger('tap');
+      expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 5 月');
+    });
+
+    it('jumps a whole year with the next-year control', async () => {
+      const w = mountView({
+        switchMode: 'year-month',
+        minDate: new Date(2023, 0, 1).getTime(),
+        maxDate: new Date(2025, 11, 31).getTime(),
+      });
+      await w.find('.sn-calendar-view__control--next-year').trigger('tap');
+      expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 1 月');
+    });
+
+    it('keeps the current month when the next-year target is out of bounds', async () => {
+      const w = mountView({
+        switchMode: 'year-month',
+        minDate: new Date(2024, 4, 1).getTime(),
+        maxDate: new Date(2024, 6, 31).getTime(),
+      });
+      await w.find('.sn-calendar-view__control--next-year').trigger('tap');
+      expect(w.find('.sn-calendar-view__month-title').text()).toBe('2024 年 5 月');
+    });
+
+    it('exposes jumpToToday to move the active month to today', async () => {
+      const today = new Date();
+      const w = mountView({
+        switchMode: 'month',
+        minDate: new Date(today.getFullYear(), today.getMonth() - 1, 1).getTime(),
+        maxDate: new Date(today.getFullYear(), today.getMonth() + 1, 0).getTime(),
+      });
+      const vm = w.vm as unknown as { jumpToToday(): void };
+      vm.jumpToToday();
+      await w.vm.$nextTick();
+      expect(w.find('.sn-calendar-view__month-title').text()).toBe(
+        `${today.getFullYear()} 年 ${today.getMonth() + 1} 月`,
+      );
+    });
+  });
+
+  describe('root forwarding', () => {
+    it('forwards customClass and customStyle on the root', () => {
+      const w = mountView({ customClass: 'my-view', customStyle: 'margin: 8px;' });
+      expect(w.classes()).toContain('my-view');
+      expect(w.attributes('style')).toContain('margin: 8px');
+    });
+  });
 });

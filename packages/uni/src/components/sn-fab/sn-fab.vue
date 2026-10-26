@@ -278,7 +278,14 @@ function onTouchEnd(): void {
   const host = globalThis as {
     uni?: { getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } };
   };
-  const info = host.uni?.getSystemInfoSync?.();
+  let info: { windowWidth?: number; windowHeight?: number } | undefined;
+  try {
+    info = host.uni?.getSystemInfoSync?.();
+  } catch {
+    // A host that rejects the probe must not break the gesture (same stance as
+    // `vibrateShort` above) — the offset simply stays unclamped.
+    info = undefined;
+  }
   const viewportW = info?.windowWidth;
   const viewportH = info?.windowHeight;
   if (typeof viewportW !== 'number' || typeof viewportH !== 'number') return;

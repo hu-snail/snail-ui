@@ -310,3 +310,208 @@ describe('sn-tab', () => {
     expect(wrapper.find('.sn-tab').classes()).toContain('my-pane');
   });
 });
+
+describe('sn-tabs swipeable', () => {
+  /** Mount a tabs body primed for swipe tests. */
+  function mountSwipeable(props: Record<string, unknown> = {}) {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnTabs, { modelValue: 1, ...props }, {
+            default: () => [
+              h(SnTab, { title: 'A' }),
+              h(SnTab, { title: 'B' }),
+              h(SnTab, { title: 'C' }),
+            ],
+          });
+      },
+    });
+    return mount(Harness);
+  }
+
+  it('advances to the next pane on a left swipe past the threshold', async () => {
+    const wrapper = mountSwipeable({ swipeable: true });
+    const body = wrapper.find('.sn-tabs__body');
+    await body.trigger('touchstart', { touches: [{ clientX: 200 }] });
+    await body.trigger('touchend', { changedTouches: [{ clientX: 140 }] });
+    expect(wrapper.findComponent(SnTabs).emitted('update:modelValue')?.at(-1)).toEqual([2]);
+  });
+
+  it('steps back on a right swipe past the threshold', async () => {
+    const wrapper = mountSwipeable({ swipeable: true });
+    const body = wrapper.find('.sn-tabs__body');
+    await body.trigger('touchstart', { touches: [{ clientX: 140 }] });
+    await body.trigger('touchend', { changedTouches: [{ clientX: 200 }] });
+    expect(wrapper.findComponent(SnTabs).emitted('update:modelValue')?.at(-1)).toEqual([0]);
+  });
+
+  it('ignores a swipe shorter than the threshold', async () => {
+    const wrapper = mountSwipeable({ swipeable: true });
+    const body = wrapper.find('.sn-tabs__body');
+    await body.trigger('touchstart', { touches: [{ clientX: 200 }] });
+    await body.trigger('touchend', { changedTouches: [{ clientX: 180 }] });
+    expect(wrapper.findComponent(SnTabs).emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('ignores swipes while swipeable is off', async () => {
+    const wrapper = mountSwipeable();
+    const body = wrapper.find('.sn-tabs__body');
+    await body.trigger('touchstart', { touches: [{ clientX: 200 }] });
+    await body.trigger('touchend', { changedTouches: [{ clientX: 100 }] });
+    expect(wrapper.findComponent(SnTabs).emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('does not swipe past the first pane', async () => {
+    const wrapper = mountSwipeable({ swipeable: true, modelValue: 0 });
+    const body = wrapper.find('.sn-tabs__body');
+    await body.trigger('touchstart', { touches: [{ clientX: 200 }] });
+    await body.trigger('touchend', { changedTouches: [{ clientX: 300 }] });
+    expect(wrapper.findComponent(SnTabs).emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('does not swipe past the last pane', async () => {
+    const wrapper = mountSwipeable({ swipeable: true, modelValue: 2 });
+    const body = wrapper.find('.sn-tabs__body');
+    await body.trigger('touchstart', { touches: [{ clientX: 200 }] });
+    await body.trigger('touchend', { changedTouches: [{ clientX: 100 }] });
+    expect(wrapper.findComponent(SnTabs).emitted('update:modelValue')).toBeUndefined();
+  });
+});
+
+describe('sn-tabs extras', () => {
+  it('applies color to the active title and inactiveColor to the rest', async () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabs,
+            { modelValue: 0, color: 'rgb(1, 2, 3)', inactiveColor: 'rgb(4, 5, 6)' },
+            {
+              default: () => [h(SnTab, { title: 'A' }), h(SnTab, { title: 'B' })],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    const titles = wrapper.findAll('.sn-tabs__title');
+    expect(titles[0]!.attributes('style')).toContain('color: rgb(1, 2, 3)');
+    expect(titles[1]!.attributes('style')).toContain('color: rgb(4, 5, 6)');
+  });
+
+  it('writes the animation duration CSS var only when animated', () => {
+    const animated = mountTabs({ animated: true, duration: 450 });
+    expect(animated.find('.sn-tabs').classes()).toContain('sn-tabs--animated');
+    expect(animated.find('.sn-tabs').attributes('style')).toContain(
+      '--snui-tabs-duration: 450ms',
+    );
+    expect(mountTabs({ duration: 450 }).find('.sn-tabs').attributes('style')).toBeUndefined();
+  });
+
+  it('forwards showScrollbar onto the nav strip', () => {
+    expect(mountTabs({ showScrollbar: true }).find('.sn-tabs__nav').attributes('show-scrollbar')).toBe(
+      'true',
+    );
+    expect(mountTabs().find('.sn-tabs__nav').attributes('show-scrollbar')).toBe('false');
+  });
+
+  it('labels each nav item with its title', async () => {
+    const wrapper = mountTabs();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll('.sn-tabs__item')[1]!.attributes('aria-label')).toBe('Pane 1');
+  });
+
+  it('emits change with the string name of a named pane', async () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabs,
+            { modelValue: 'a' },
+            {
+              default: () => [
+                h(SnTab, { title: 'A', name: 'a' }),
+                h(SnTab, { title: 'B', name: 'b' }),
+              ],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    await wrapper.findAll('.sn-tabs__item')[1]!.trigger('tap');
+    expect(wrapper.findComponent(SnTabs).emitted('change')?.at(-1)).toEqual([
+      { index: 1, name: 'b' },
+    ]);
+    expect(wrapper.findComponent(SnTabs).emitted('update:modelValue')?.at(-1)).toEqual(['b']);
+  });
+
+  it('does not emit click for a disabled pane tap', async () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabs,
+            { modelValue: 0 },
+            {
+              default: () => [h(SnTab, { title: 'A' }), h(SnTab, { title: 'B', disabled: true })],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    await wrapper.findAll('.sn-tabs__item')[1]!.trigger('tap');
+    expect(wrapper.findComponent(SnTabs).emitted('disabled')?.[0]).toEqual([
+      { index: 1, name: undefined },
+    ]);
+    expect(wrapper.findComponent(SnTabs).emitted('click')).toBeUndefined();
+  });
+
+  it('drives the selection through the exposed setActive', async () => {
+    const wrapper = mountTabs();
+    await wrapper.vm.$nextTick();
+    const vm = wrapper.findComponent(SnTabs).vm as unknown as {
+      setActive: (value: number) => void;
+      activeIndex: number;
+    };
+    vm.setActive(2);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll('.sn-tabs__item')[2]!.classes()).toContain('sn-tabs__item--active');
+    expect(vm.activeIndex).toBe(2);
+  });
+
+  it('keeps a lazily rendered pane mounted but hidden after switching away', async () => {
+    const value = ref(0);
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabs,
+            { modelValue: value.value },
+            {
+              default: () => [
+                h(SnTab, { title: 'A' }, { default: () => 'first' }),
+                h(SnTab, { title: 'B' }, { default: () => 'second' }),
+              ],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    value.value = 1;
+    await wrapper.vm.$nextTick();
+    value.value = 0;
+    await wrapper.vm.$nextTick();
+    const panes = wrapper.findAll('.sn-tab');
+    expect(panes[1]!.text()).toBe('second');
+    expect(panes[1]!.attributes('style')).toContain('display: none');
+  });
+
+  it('accepts the map parity props without side effects', async () => {
+    const wrapper = mountTabs({ mapNum: 3, mapTitle: 'All tabs' });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll('.sn-tabs__item')).toHaveLength(3);
+  });
+});

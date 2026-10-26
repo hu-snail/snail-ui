@@ -330,4 +330,111 @@ describe('sn-tabbar-item', () => {
     await wrapper.trigger('tap');
     expect(wrapper.classes()).not.toContain('sn-tabbar-item--active');
   });
+
+  describe('sn-tabbar extras', () => {
+    it('commits a selection through the exposed select() method', async () => {
+      const wrapper = mountBar({ modelValue: 0 });
+      const bar = wrapper.findComponent(SnTabbar).vm as unknown as {
+        select: (value: number) => Promise<void>;
+      };
+      await bar.select(2);
+      expect(wrapper.findComponent(SnTabbar).emitted('update:modelValue')?.at(-1)).toEqual([2]);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findAll('.sn-tabbar-item')[2]!.classes()).toContain('sn-tabbar-item--active');
+    });
+
+    it('does not commit when a sync beforeChange returns false', async () => {
+      const beforeChange = vi.fn(() => false);
+      const wrapper = mountBar({ modelValue: 0, beforeChange });
+      await wrapper.findAll('.sn-tabbar-item')[1]!.trigger('tap');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.findComponent(SnTabbar).emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('marks the placeholder as decorative', () => {
+      const wrapper = mountBar({ fixed: true, placeholder: true });
+      expect(wrapper.find('.sn-tabbar__placeholder').attributes('aria-hidden')).toBe('true');
+    });
+
+    it('applies inactiveColor to non-active item titles', () => {
+      const wrapper = mountBar({ modelValue: 0, inactiveColor: 'rgb(7, 8, 9)' });
+      const items = wrapper.findAll('.sn-tabbar-item');
+      expect(items[0]!.find('.sn-tabbar-item__title').attributes('style')).toBeUndefined();
+      expect(items[1]!.find('.sn-tabbar-item__title').attributes('style')).toContain(
+        'color: rgb(7, 8, 9)',
+      );
+    });
+
+    it('applies activeColor over inactiveColor per item state', () => {
+      const wrapper = mountBar({
+        modelValue: 0,
+        activeColor: 'rgb(1, 2, 3)',
+        inactiveColor: 'rgb(7, 8, 9)',
+      });
+      const titles = wrapper.findAll('.sn-tabbar-item__title');
+      expect(titles[0]!.attributes('style')).toContain('color: rgb(1, 2, 3)');
+      expect(titles[1]!.attributes('style')).toContain('color: rgb(7, 8, 9)');
+    });
+  });
+});
+
+describe('sn-tabbar-item extras', () => {
+  it('renders a string badge verbatim', () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabbar,
+            {},
+            {
+              default: () => [h(SnTabbarItem, { title: 'A', value: 'New' })],
+            },
+          );
+      },
+    });
+    expect(mount(Harness).find('.sn-tabbar-item__badge-text').text()).toBe('New');
+  });
+
+  it('replaces the whole item through the default slot and the icon slot scope', () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabbar,
+            { modelValue: 0 },
+            {
+              default: () => [
+                h(
+                  SnTabbarItem,
+                  { title: 'A', icon: 'Home' },
+                  {
+                    icon: ({ active }: { active: boolean }) =>
+                      h('text', { class: 'slot-icon' }, String(active)),
+                  },
+                ),
+              ],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Harness);
+    expect(wrapper.find('.slot-icon').text()).toBe('true');
+    expect(wrapper.find('.sn-tabbar-item__icon .sn-icon').exists()).toBe(false);
+  });
+
+  it('forwards customClass on the item', () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnTabbar,
+            {},
+            {
+              default: () => [h(SnTabbarItem, { title: 'A', customClass: 'my-item' })],
+            },
+          );
+      },
+    });
+    expect(mount(Harness).find('.sn-tabbar-item').classes()).toContain('my-item');
+  });
 });

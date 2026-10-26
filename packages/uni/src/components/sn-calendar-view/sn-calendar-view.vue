@@ -370,6 +370,9 @@ function onCellTap(cell: Cell): void {
       return;
     }
     const [from, to] = date < start ? [date, start] : [start, date];
+    // A zero-length range is only legal when `allowSameDay` is set — otherwise
+    // re-tapping the pending start must not close the range on itself.
+    if (!props.allowSameDay && from === to) return;
     if (props.maxRange > 0 && spanDays(from, to) > props.maxRange) return;
     commitValue([from, to]);
     return;
