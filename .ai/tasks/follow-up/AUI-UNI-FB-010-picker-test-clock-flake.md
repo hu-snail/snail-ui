@@ -18,6 +18,14 @@
 - 给 `SnPickerView` / `SnDatetimePickerView` 暴露测试用时钟注入（与引擎 `now` option 贯通），或
 - 既有 `await column.trigger('touchstart'/'touchend')` 用例在两事件之间显式 `vi.advanceTimersByTime` / 冻结 `Date.now`。
 
+## 追记（ADR-0005，2026-10-26）
+
+MP 兼容改造移除了 `sn-picker-view` / `sn-datetime-picker-view` 模板中的
+`v-memo`（MP 编译器不支持，见 ADR-0005）。渲染路径变重后，本 flake 在全量
+合并跑下的出现频率上升（同一负载下 2/3 复现；单文件跑稳定通过）。不影响
+正确性判定（动量投影逻辑未动），但优先级建议提高——按上面第二/三条方向
+做时钟注入是根治路径。
+
 ## Regression
 
 修复时先在负载下复现（合并跑 4 文件循环 ≥10 次），再验证 0 失败。
