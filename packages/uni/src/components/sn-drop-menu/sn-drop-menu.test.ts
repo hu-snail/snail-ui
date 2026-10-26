@@ -125,6 +125,43 @@ describe('sn-drop-menu', () => {
       expect(style).toContain('height: 300px');
       expect(style).toContain('padding: 2px');
     });
+
+    it('renders the bar arrow and the selected check as SVG glyphs', async () => {
+      const w = mount(SnDropMenu, {
+        props: { options, modelValue: 'price-asc', duration: 0 },
+      });
+      expect(w.find('.sn-drop-menu__arrow svg').exists()).toBe(true);
+      await w.find('.sn-drop-menu__bar').trigger('tap');
+      await flushAll();
+      expect(w.find('.sn-drop-menu__option-check svg').exists()).toBe(true);
+    });
+
+    it('falls back to the built-in glyphs for an unknown icon name', async () => {
+      const w = mount(SnDropMenu, {
+        props: { options, modelValue: 'price-asc', duration: 0, icon: 'nope', iconName: 'nope' },
+      });
+      expect(w.find('.sn-drop-menu__arrow svg').exists()).toBe(true);
+      await w.find('.sn-drop-menu__bar').trigger('tap');
+      await flushAll();
+      expect(w.find('.sn-drop-menu__option-check svg').exists()).toBe(true);
+    });
+
+    it('forwards iconSize to the arrow icon', () => {
+      const w = mount(SnDropMenu, { props: { iconSize: 24 } });
+      // The arrow is the first (and only) SnIcon while the panel is closed.
+      expect(w.findComponent({ name: 'SnIcon' }).props('size')).toBe(24);
+    });
+
+    it('replaces the option list with the default slot', async () => {
+      const w = mount(SnDropMenu, {
+        props: { options, duration: 0 },
+        slots: { default: '<text class="slot-panel">自定义面板</text>' },
+      });
+      await w.find('.sn-drop-menu__bar').trigger('tap');
+      await flushAll();
+      expect(w.find('.slot-panel').exists()).toBe(true);
+      expect(w.findAll('.sn-drop-menu__option')).toHaveLength(0);
+    });
   });
 
   describe('field keys', () => {
@@ -266,6 +303,78 @@ describe('sn-drop-menu', () => {
       expect(beforeToggle).toHaveBeenCalledWith({ status: false });
       expect(w.emitted('close')).toBeUndefined();
       expect(w.classes()).toContain('sn-drop-menu--open');
+    });
+
+    it('treats a throwing guard as a rejection', async () => {
+      const beforeToggle = vi.fn(() => {
+        throw new Error('guard exploded');
+      });
+      const w = mount(SnDropMenu, { props: { options, duration: 0, beforeToggle } });
+      await w.find('.sn-drop-menu__bar').trigger('tap');
+      await flushAll();
+      expect(beforeToggle).toHaveBeenCalledWith({ status: true });
+      expect(w.emitted('open')).toBeUndefined();
+      expect(w.find('.sn-drop-menu__popup').exists()).toBe(false);
+    });
+  });
+
+  describe('imperative api', () => {
+    it('opens and closes through the exposed methods', async () => {
+      const w = mount(SnDropMenu, { props: { options, duration: 0 } });
+      const vm = w.vm as unknown as { open(): void; close(): void; getShowPop(): boolean };
+      vm.open();
+      await flushAll();
+      expect(vm.getShowPop()).toBe(true);
+      expect(w.emitted('open')).toHaveLength(1);
+
+      vm.close();
+      await flushAll();
+      expect(vm.getShowPop()).toBe(false);
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.find('.sn-drop-menu__popup').exists()).toBe(false);
+    });
+
+    it('is idempotent when open / close repeat the current state', async () => {
+      const w = mount(SnDropMenu, { props: { options, duration: 0 } });
+      const vm = w.vm as unknown as { open(): void; close(): void };
+      vm.open();
+      await flushAll();
+      vm.open();
+      await flushAll();
+      // Repeating open must not replay open / opened.
+      expect(w.emitted('open')).toHaveLength(1);
+      expect(w.emitted('opened')).toHaveLength(1);
+
+      vm.close();
+      await flushAll();
+      vm.close();
+      await flushAll();
+      // Repeating close must not replay close / closed.
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.emitted('closed')).toHaveLength(1);
+    });
+
+    it('survives rapid open / close / open taps without a stale unmount', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnDropMenu, { props: { options, duration: 200 } });
+        await w.find('.sn-drop-menu__bar').trigger('tap');
+        await flushAll();
+        await w.find('.sn-drop-menu__bar').trigger('tap');
+        await flushAll();
+        await w.find('.sn-drop-menu__bar').trigger('tap');
+        await flushAll();
+        // The closing leg was superseded by the re-open: `closed` never fires,
+        // the panel outlives one duration, and the final open leg completes.
+        vi.advanceTimersByTime(200);
+        await w.vm.$nextTick();
+        expect(w.emitted('closed')).toBeUndefined();
+        expect(w.find('.sn-drop-menu__popup').exists()).toBe(true);
+        expect(w.classes()).toContain('sn-drop-menu--open');
+        expect(w.emitted('opened')).toHaveLength(1);
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 

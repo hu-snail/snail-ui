@@ -39,6 +39,19 @@ describe('sn-tooltip', () => {
       expect(lines[1]!.text()).toBe('第二行');
     });
 
+    it('renders object rows through the alternate text keys and skips label-less rows', () => {
+      const w = mount(SnTooltip, {
+        props: { modelValue: true, content: [{ text: '甲' }, { name: '乙' }, { other: 1 }, '丙'] },
+      });
+      const lines = w.findAll('.sn-tooltip__line');
+      expect(lines.map((line) => line.text())).toEqual(['甲', '乙', '丙']);
+    });
+
+    it('renders no lines for empty string content', () => {
+      const w = mount(SnTooltip, { props: { modelValue: true, content: '' } });
+      expect(w.findAll('.sn-tooltip__line')).toHaveLength(0);
+    });
+
     it('lets the content slot replace the content prop', () => {
       const w = mount(SnTooltip, {
         props: { modelValue: true, content: 'prop 文案' },
@@ -166,6 +179,49 @@ describe('sn-tooltip', () => {
       vm.close();
       expect(w.emitted('update:modelValue')?.[1]).toEqual([false]);
     });
+
+    it('does not replay open / change when v-model syncs after the trigger tap', async () => {
+      const w = mount(SnTooltip, { props: { modelValue: false } });
+      await w.find('.sn-tooltip__trigger').trigger('tap');
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([true]);
+      // The v-model sync arrives while the enter leg from the tap is still
+      // running — open / change must fire exactly once.
+      await w.setProps({ modelValue: true });
+      await w.vm.$nextTick();
+      expect(w.emitted('open')).toHaveLength(1);
+      expect(w.emitted('change')).toHaveLength(1);
+      expect(w.emitted('change')?.[0]).toEqual([{ show: true }]);
+    });
+
+    it('does not replay close / change when v-model syncs after an internal close', async () => {
+      const w = mount(SnTooltip, { props: { modelValue: true, showClose: true } });
+      await w.find('.sn-tooltip__close').trigger('tap');
+      await w.setProps({ modelValue: false });
+      await w.vm.$nextTick();
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.emitted('change')).toHaveLength(1);
+      expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
+    });
+
+    it('re-opens cleanly while the fade-out leg is still pending', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnTooltip, { props: { modelValue: true } });
+        await w.setProps({ modelValue: false });
+        await w.setProps({ modelValue: true });
+        await flushPromises();
+        // The re-open supersedes the pending leave timer: the bubble stays
+        // mounted and shown past the fade-out length.
+        vi.advanceTimersByTime(150);
+        await w.vm.$nextTick();
+        expect(w.find('.sn-tooltip__pop').exists()).toBe(true);
+        expect(w.classes()).toContain('sn-tooltip--shown');
+        expect(w.emitted('close')).toHaveLength(1);
+        expect(w.emitted('open')).toHaveLength(1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 
   describe('timers', () => {
@@ -217,6 +273,18 @@ describe('sn-tooltip', () => {
     it('tags the root for the docs / AI component map', () => {
       const w = mount(SnTooltip);
       expect(w.attributes('data-snui-component')).toBe('tooltip');
+    });
+
+    it('labels the close button for assistive tech', () => {
+      const w = mount(SnTooltip, { props: { modelValue: true, showClose: true } });
+      const close = w.find('.sn-tooltip__close');
+      expect(close.attributes('role')).toBe('button');
+      expect(close.attributes('aria-label')).toBe('close');
+    });
+
+    it('accepts the rootPortal parity prop without breaking the render', () => {
+      const w = mount(SnTooltip, { props: { modelValue: true, rootPortal: true } });
+      expect(w.find('.sn-tooltip__pop').exists()).toBe(true);
     });
   });
 });

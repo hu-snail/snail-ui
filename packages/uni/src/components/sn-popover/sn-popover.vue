@@ -161,6 +161,8 @@ const isShown = ref(props.modelValue);
 let timer: ReturnType<typeof setTimeout> | null = null;
 /** Guards against a stale leg finishing after a newer one started. */
 let generation = 0;
+/** Animation leg currently playing. `none` = at rest. */
+let phase: 'none' | 'enter' | 'leave' = 'none';
 
 function clearTimer(): void {
   if (timer !== null) {
@@ -170,6 +172,10 @@ function clearTimer(): void {
 }
 
 async function enter(): Promise<void> {
+  // One open per hidden→shown transition: without this guard the v-model sync
+  // that follows the trigger tap re-runs enter() and emits open / change twice.
+  if (phase === 'enter' || isShown.value) return;
+  phase = 'enter';
   clearTimer();
   const token = ++generation;
   isMounted.value = true;
@@ -179,9 +185,15 @@ async function enter(): Promise<void> {
   isShown.value = true;
   emit('open');
   emit('change', { show: true });
+  phase = 'none';
 }
 
 function leave(): void {
+  // One close per shown→hidden transition: a leave already in flight (the
+  // v-model sync arriving after an internal close), or a bubble that is
+  // neither shown nor mounted, has nothing to tear down.
+  if (phase === 'leave' || (!isShown.value && !isMounted.value)) return;
+  phase = 'leave';
   clearTimer();
   const token = ++generation;
   isShown.value = false;
@@ -191,6 +203,7 @@ function leave(): void {
     timer = null;
     if (token !== generation) return;
     isMounted.value = false;
+    phase = 'none';
   }, ANIMATION_DURATION);
 }
 

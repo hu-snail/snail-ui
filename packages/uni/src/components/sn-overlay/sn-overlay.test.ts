@@ -144,4 +144,80 @@ describe('sn-overlay', () => {
     const wrapper = mount(SnOverlay, { props: { show: true } });
     expect(wrapper.attributes('data-snui-component')).toBe('overlay');
   });
+
+  it('renders an already-shown overlay on first paint without replaying the enter legs', () => {
+    const wrapper = mount(SnOverlay, { props: { show: true } });
+    expect(wrapper.find('.sn-overlay').exists()).toBe(true);
+    expect(wrapper.emitted('before-enter')).toBeUndefined();
+    expect(wrapper.emitted('enter')).toBeUndefined();
+    expect(wrapper.emitted('after-enter')).toBeUndefined();
+  });
+
+  it('treats duration=true as the 300ms default', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnOverlay, { props: { show: true, duration: true } });
+      await wrapper.setProps({ show: false });
+      // The node must survive past shorter guesses but go after the default.
+      vi.advanceTimersByTime(299);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-overlay').exists()).toBe(true);
+      vi.advanceTimersByTime(1);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-leave')).toHaveLength(1);
+      expect(wrapper.find('.sn-overlay').exists()).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('recovers when the overlay is re-shown during the leave window', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnOverlay, { props: { show: true, duration: 200 } });
+      await wrapper.setProps({ show: false });
+      await wrapper.setProps({ show: true });
+      // The re-show clears the pending leave timer, so `after-leave` never
+      // fires and the enter leg plays out in full instead.
+      vi.advanceTimersByTime(200);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-leave')).toBeUndefined();
+      expect(wrapper.emitted('enter')).toHaveLength(1);
+      expect(wrapper.find('.sn-overlay').exists()).toBe(true);
+      vi.advanceTimersByTime(200);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-enter')).toHaveLength(1);
+      expect(wrapper.find('.sn-overlay').exists()).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('switches the transition duration between the legs of a duration record', async () => {
+    const wrapper = mount(SnOverlay, {
+      props: { show: true, duration: { enter: 100, leave: 250 } },
+    });
+    expect(wrapper.attributes('style') ?? '').toContain('transition-duration: 100ms');
+    await wrapper.setProps({ show: false });
+    // The node survives the leave window on real timers, so the leave leg's
+    // duration is observable on the root style.
+    expect(wrapper.attributes('style') ?? '').toContain('transition-duration: 250ms');
+  });
+
+  it('falls back to the only leg of a single-leg duration record', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnOverlay, { props: { show: false, duration: { leave: 120 } } });
+      await wrapper.setProps({ show: true });
+      // Drain the enter leg's tick so its timer is scheduled before advancing.
+      await wrapper.vm.$nextTick();
+      // No `enter` key — the enter leg borrows the `leave` value.
+      vi.advanceTimersByTime(119);
+      expect(wrapper.emitted('after-enter')).toBeUndefined();
+      vi.advanceTimersByTime(1);
+      expect(wrapper.emitted('after-enter')).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });

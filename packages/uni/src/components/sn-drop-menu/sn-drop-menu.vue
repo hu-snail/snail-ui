@@ -247,7 +247,9 @@ const checkIcon = computed<IconData>(() => resolveIcon(props.iconName) ?? CheckI
 const arrowSize = computed(() => props.iconSize);
 
 async function open(): Promise<void> {
-  if (props.disabled) return;
+  // Idempotent: repeating open (e.g. an extra imperative call while the panel
+  // is already shown) must not replay open / opened.
+  if (props.disabled || isOpen.value) return;
   const allowed = await guard(true);
   if (!allowed) return;
   clearTimer();
@@ -266,6 +268,9 @@ async function open(): Promise<void> {
 }
 
 async function close(): Promise<void> {
+  // Idempotent counterpart of open(): a close while already closed (or while
+  // a close leg is still running) must not replay close / closed.
+  if (!isOpen.value) return;
   const allowed = await guard(false);
   if (!allowed) return;
   clearTimer();

@@ -12,6 +12,8 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnActionSheet from './sn-action-sheet.vue';
+import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry';
+import { Search } from '../sn-icon/sn-icon-set';
 
 const actions = [
   { name: '分享给朋友', description: '发送到聊天' },
@@ -136,5 +138,168 @@ describe('sn-action-sheet', () => {
     });
     // Not registered in this test — falls back to no icon node at all.
     expect(wrapper.find('.sn-action-sheet__action-icon').exists()).toBe(false);
+  });
+
+  it('renders the registered icon SVG on an action row once the name resolves', () => {
+    registerSnIcons({ Search });
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions: [{ name: '搜索', icon: 'Search' }] },
+    });
+    expect(wrapper.find('.sn-action-sheet__action-icon svg').exists()).toBe(true);
+    clearSnIcons();
+  });
+
+  it('renders the registered icon SVG on a panel cell once the name resolves', () => {
+    registerSnIcons({ Search });
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, panels: [{ title: '搜索', icon: 'Search' }] },
+    });
+    expect(wrapper.find('.sn-action-sheet__panel-icon svg').exists()).toBe(true);
+    clearSnIcons();
+  });
+
+  it('renders an action icon as an image when the value is an image URL', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: {
+        modelValue: true,
+        actions: [{ name: '微信', icon: 'https://example.com/wechat.png' }],
+      },
+    });
+    const icon = wrapper.find('.sn-action-sheet__action-icon');
+    expect(icon.exists()).toBe(true);
+    expect(icon.attributes('src')).toBe('https://example.com/wechat.png');
+  });
+
+  it('renders a panel icon as an image when the value is an image URL', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: {
+        modelValue: true,
+        panels: [{ title: '相册', icon: '/static/album.png' }],
+      },
+    });
+    const icon = wrapper.find('.sn-action-sheet__panel-icon');
+    expect(icon.exists()).toBe(true);
+    expect(icon.attributes('src')).toBe('/static/album.png');
+  });
+
+  it('renders default slot content above the list', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions },
+      slots: { default: '<text class="slot-body">自定义内容</text>' },
+    });
+    expect(wrapper.find('.slot-body').exists()).toBe(true);
+    // Slot content sits inside the panel, above the action rows.
+    const body = wrapper.find('.sn-action-sheet__body');
+    expect(body.text()).toContain('自定义内容');
+  });
+
+  it('marks enabled rows and the cancel button as buttons for assistive tech', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions, cancelText: '取消' },
+    });
+    const rows = wrapper.findAll('.sn-action-sheet__action');
+    expect(rows[0]!.attributes('role')).toBe('button');
+    expect(rows[0]!.attributes('aria-disabled')).toBe('false');
+    expect(wrapper.find('.sn-action-sheet__cancel').attributes('role')).toBe('button');
+  });
+
+  it('colors a row through its color option', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions: [{ name: '删除', color: 'red' }] },
+    });
+    expect(wrapper.find('.sn-action-sheet__action').attributes('style') ?? '').toContain(
+      'color: red',
+    );
+  });
+
+  it('reports the flat grid coordinates of a tapped panel cell', async () => {
+    const panels = [{ title: '微信', name: 'wechat' }, { title: '朋友圈', name: 'moments' }];
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, panels, closeOnClickAction: false },
+    });
+    await wrapper.findAll('.sn-action-sheet__panel')[1]!.trigger('tap');
+    expect(wrapper.emitted('select')?.[0]).toEqual([
+      { item: panels[1], rowIndex: 0, colIndex: 1 },
+    ]);
+    // closeOnClickAction: false — the sheet stays open.
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('renders neither list when actions and panels are both empty', () => {
+    const wrapper = mount(SnActionSheet, { props: { modelValue: true, cancelText: '取消' } });
+    expect(wrapper.find('.sn-action-sheet__actions').exists()).toBe(false);
+    expect(wrapper.find('.sn-action-sheet__panels').exists()).toBe(false);
+    expect(wrapper.find('.sn-action-sheet__cancel').exists()).toBe(true);
+  });
+
+  it('forwards the popup animation legs (enter / leave)', async () => {
+    const wrapper = mount(SnActionSheet, {
+      // `duration: 0` short-circuits both legs — the sheet only accepts a number.
+      props: { modelValue: false, actions, duration: 0 },
+    });
+    await wrapper.setProps({ modelValue: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('enter')).toHaveLength(1);
+    expect(wrapper.emitted('after-enter')).toHaveLength(1);
+
+    await wrapper.setProps({ modelValue: false });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('leave')).toHaveLength(1);
+    expect(wrapper.emitted('after-leave')).toHaveLength(1);
+  });
+
+  it('emits click-modal when the scrim is tapped', async () => {
+    const wrapper = mount(SnActionSheet, { props: { modelValue: true, actions } });
+    await wrapper.find('.sn-popup__modal').trigger('tap');
+    expect(wrapper.emitted('click-modal')).toHaveLength(1);
+  });
+
+  it('forwards zIndex and duration to the popup layer', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions, zIndex: 77, duration: 150 },
+    });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style).toContain('z-index: 77');
+    expect(style).toContain('--sn-popup-duration: 150ms');
+  });
+
+  it('pads the bottom safe area by default and drops the padding when opted out', () => {
+    const padded = mount(SnActionSheet, { props: { modelValue: true, actions } });
+    expect(padded.classes()).toContain('sn-popup--safe-bottom');
+
+    const unpadded = mount(SnActionSheet, {
+      props: { modelValue: true, actions, safeAreaInsetBottom: false },
+    });
+    expect(unpadded.classes()).not.toContain('sn-popup--safe-bottom');
+  });
+
+  it('accepts the rootPortal parity prop without breaking the render', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions, rootPortal: true },
+    });
+    expect(wrapper.find('.sn-action-sheet__body').exists()).toBe(true);
+  });
+
+  it('marks panel cells as buttons for assistive tech', () => {
+    const panels = [{ title: '微信', name: 'wechat' }];
+    const wrapper = mount(SnActionSheet, { props: { modelValue: true, panels } });
+    expect(wrapper.find('.sn-action-sheet__panel').attributes('role')).toBe('button');
+  });
+
+  it('closes the sheet after a panel cell tap by default', async () => {
+    const panels = [{ title: '微信', name: 'wechat' }];
+    const wrapper = mount(SnActionSheet, { props: { modelValue: true, panels } });
+    await wrapper.find('.sn-action-sheet__panel').trigger('tap');
+    expect(wrapper.emitted('select')?.[0]).toEqual([
+      { item: panels[0], rowIndex: 0, colIndex: 0 },
+    ]);
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('forwards lazyRender to the popup layer', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions, lazyRender: false },
+    });
+    expect(wrapper.findComponent({ name: 'SnPopup' }).props('lazyRender')).toBe(false);
   });
 });

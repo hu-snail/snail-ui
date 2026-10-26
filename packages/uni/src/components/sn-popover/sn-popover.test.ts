@@ -83,6 +83,25 @@ describe('sn-popover', () => {
       expect(style).toContain('--sn-popover-offset-x: 5px');
       expect(style).toContain('--sn-popover-offset-y: 1px');
     });
+
+    it('accepts a number offset and applies it to both axes', () => {
+      const w = mount(SnPopover, { props: { offset: 4 } });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-popover-offset-x: 4px');
+      expect(style).toContain('--sn-popover-offset-y: 4px');
+    });
+
+    it('accepts an array offset', () => {
+      const w = mount(SnPopover, { props: { offset: [3, 7] } });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-popover-offset-x: 3px');
+      expect(style).toContain('--sn-popover-offset-y: 7px');
+    });
+
+    it('accepts the rootPortal parity prop without breaking the render', () => {
+      const w = mount(SnPopover, { props: { modelValue: true, rootPortal: true } });
+      expect(w.find('.sn-popover__pop').exists()).toBe(true);
+    });
   });
 
   describe('arrow', () => {
@@ -163,6 +182,57 @@ describe('sn-popover', () => {
       vm.close();
       expect(w.emitted('update:modelValue')?.[1]).toEqual([false]);
     });
+
+    it('blocks v-model opens while disabled', async () => {
+      const w = mount(SnPopover, { props: { modelValue: false, disabled: true } });
+      await w.setProps({ modelValue: true });
+      await flushPromises();
+      expect(w.emitted('open')).toBeUndefined();
+      expect(w.find('.sn-popover__pop').exists()).toBe(false);
+    });
+
+    it('does not replay open / change when v-model syncs after the trigger tap', async () => {
+      const w = mount(SnPopover, { props: { modelValue: false } });
+      await w.find('.sn-popover__trigger').trigger('tap');
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([true]);
+      // The v-model sync arrives while the enter leg from the tap is still
+      // running — open / change must fire exactly once.
+      await w.setProps({ modelValue: true });
+      await flushPromises();
+      expect(w.emitted('open')).toHaveLength(1);
+      expect(w.emitted('change')).toHaveLength(1);
+      expect(w.emitted('change')?.[0]).toEqual([{ show: true }]);
+    });
+
+    it('does not replay close / change when v-model syncs after an internal close', async () => {
+      const w = mount(SnPopover, { props: { modelValue: true, showClose: true } });
+      await w.find('.sn-popover__close').trigger('tap');
+      await w.setProps({ modelValue: false });
+      await flushPromises();
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.emitted('change')).toHaveLength(1);
+      expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
+    });
+
+    it('re-opens cleanly while the fade-out leg is still pending', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnPopover, { props: { modelValue: true } });
+        await w.setProps({ modelValue: false });
+        await w.setProps({ modelValue: true });
+        await flushPromises();
+        // The re-open supersedes the pending leave timer: the bubble stays
+        // mounted and shown past the fade-out length.
+        vi.advanceTimersByTime(150);
+        await w.vm.$nextTick();
+        expect(w.find('.sn-popover__pop').exists()).toBe(true);
+        expect(w.classes()).toContain('sn-popover--shown');
+        expect(w.emitted('close')).toHaveLength(1);
+        expect(w.emitted('open')).toHaveLength(1);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
   });
 
   describe('timers', () => {
@@ -216,6 +286,13 @@ describe('sn-popover', () => {
 
     it('tags the root for the docs / AI component map', () => {
       expect(mount(SnPopover).attributes('data-snui-component')).toBe('popover');
+    });
+
+    it('labels the close button for assistive tech', () => {
+      const w = mount(SnPopover, { props: { modelValue: true, showClose: true } });
+      const close = w.find('.sn-popover__close');
+      expect(close.attributes('role')).toBe('button');
+      expect(close.attributes('aria-label')).toBe('close');
     });
   });
 });

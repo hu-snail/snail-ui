@@ -229,4 +229,107 @@ describe('sn-popup', () => {
       vi.useRealTimers();
     }
   });
+
+  it('renders an already-open popup on first paint without replaying the enter legs', () => {
+    const wrapper = mount(SnPopup, { props: { modelValue: true } });
+    expect(wrapper.find('.sn-popup__panel').exists()).toBe(true);
+    expect(wrapper.emitted('before-enter')).toBeUndefined();
+    expect(wrapper.emitted('enter')).toBeUndefined();
+    expect(wrapper.emitted('after-enter')).toBeUndefined();
+  });
+
+  it('treats duration=true as the 300ms default', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnPopup, { props: { modelValue: true, duration: true } });
+      await wrapper.setProps({ modelValue: false });
+      vi.advanceTimersByTime(299);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-popup').exists()).toBe(true);
+      vi.advanceTimersByTime(1);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-leave')).toHaveLength(1);
+      expect(wrapper.find('.sn-popup').exists()).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('uses the per-leg leave duration from a duration record', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mount(SnPopup, {
+        props: { modelValue: true, duration: { enter: 100, leave: 250 } },
+      });
+      await wrapper.setProps({ modelValue: false });
+      vi.advanceTimersByTime(100);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-leave')).toBeUndefined();
+      vi.advanceTimersByTime(150);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('after-leave')).toHaveLength(1);
+      expect(wrapper.find('.sn-popup').exists()).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('re-shows cleanly after closing with hideWhenClose=false', async () => {
+    const wrapper = mount(SnPopup, {
+      props: { modelValue: true, hideWhenClose: false, duration: false },
+      slots: { default: '<text>panel body</text>' },
+    });
+    await wrapper.setProps({ modelValue: false });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.classes()).toContain('sn-popup--hidden');
+
+    await wrapper.setProps({ modelValue: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.classes()).not.toContain('sn-popup--hidden');
+    expect(wrapper.find('.sn-popup__panel').exists()).toBe(true);
+    expect(wrapper.text()).toContain('panel body');
+  });
+
+  it('hides the scrim from assistive tech', () => {
+    const wrapper = mount(SnPopup, { props: { modelValue: true } });
+    expect(wrapper.find('.sn-popup__modal').attributes('aria-hidden')).toBe('true');
+  });
+
+  it('labels the close button for assistive tech', () => {
+    const wrapper = mount(SnPopup, { props: { modelValue: true, closable: true } });
+    expect(wrapper.find('.sn-popup__close').attributes('aria-label')).toBe('close');
+  });
+
+  it('tags the root for the docs / AI component map', () => {
+    const wrapper = mount(SnPopup, { props: { modelValue: true } });
+    expect(wrapper.attributes('data-snui-component')).toBe('popup');
+  });
+
+  it('maps the top and left anchors to their default slide animations', () => {
+    const top = mount(SnPopup, { props: { modelValue: true, position: 'top' } });
+    expect(top.classes()).toContain('sn-popup--anim-slide-down');
+
+    const left = mount(SnPopup, { props: { modelValue: true, position: 'left' } });
+    expect(left.classes()).toContain('sn-popup--anim-slide-right');
+  });
+
+  it('applies the anim class for every supported transition name', () => {
+    const names = [
+      'fade',
+      'fade-up',
+      'fade-down',
+      'fade-left',
+      'fade-right',
+      'slide-up',
+      'slide-down',
+      'slide-left',
+      'slide-right',
+      'zoom-in',
+      'zoom-out',
+    ] as const;
+    for (const name of names) {
+      const wrapper = mount(SnPopup, { props: { modelValue: true, transition: name } });
+      expect(wrapper.classes()).toContain(`sn-popup--anim-${name}`);
+    }
+  });
 });
