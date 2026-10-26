@@ -122,9 +122,15 @@ importers:
       '@dcloudio/uni-mp-weixin':
         specifier: 3.0.0-5030320261023001
         version: 3.0.0-5030320261023001(@vueuse/core@12.8.2(typescript@5.9.3))(postcss@8.5.28)(rollup@4.64.0)(vue@3.5.43(typescript@5.9.3))
+      '@snui/style-packs':
+        specifier: workspace:*
+        version: link:../../packages/style-packs
       '@snui/templates':
         specifier: workspace:*
         version: link:../../packages/templates
+      '@snui/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
       '@snui/uni':
         specifier: workspace:*
         version: link:../../packages/uni
