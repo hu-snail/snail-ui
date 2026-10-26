@@ -17,5 +17,19 @@ export default defineConfig({
     exclude: ['**/node_modules/**', '**/dist/**', '**/._*'],
     environment: 'happy-dom',
     reporters: ['default'],
+    coverage: {
+      provider: 'v8',
+      include: ['src/components/**/*.{ts,vue}'],
+      // Type-only modules and registration side-effect files carry no runtime
+      // branches worth counting; the mp host shims are exercised via components.
+      exclude: [
+        'src/components/**/*-types.ts',
+        'src/components/**/sn-icon-registry.ts',
+        'src/**/*.{test,spec}.ts',
+        'src/**/._*',
+      ],
+      reporter: ['text', 'text-summary', 'lcov'],
+      reportsDirectory: 'coverage',
+    },
   },
 });
