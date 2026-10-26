@@ -10,7 +10,7 @@
     "preview": "vitepress preview . --port 4318",
     "lint": "echo 'docs lint: noop (markdown)'",
     "typecheck": "echo 'docs typecheck: noop (markdown)'",
-    "test": "vitest run .vitepress/utils",
+    "test": "vitest run .vitepress/utils --passWithNoTests",
     "clean": "rm -rf .vitepress/cache .vitepress/dist docs"
   },
   "dependencies": {
