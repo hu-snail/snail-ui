@@ -18,7 +18,9 @@
     "@dcloudio/uni-components": "3.0.0-5030320261023001",
     "@dcloudio/uni-h5": "3.0.0-5030320261023001",
     "@dcloudio/uni-mp-weixin": "3.0.0-5030320261023001",
+    "@snui/style-packs": "workspace:*",
     "@snui/templates": "workspace:*",
+    "@snui/tokens": "workspace:*",
     "@snui/uni": "workspace:*",
     "vue": "^3.5.43"
   },

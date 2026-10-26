@@ -29,13 +29,25 @@ const props = withDefaults(
   { brand: false, titleZh: '', titleEn: '' },
 );
 
-const { lang, isDark, t, toggleLang, toggleTheme, applyNavBar, setNavTitle } = useDemoUi();
+const {
+  lang,
+  isDark,
+  stylePack,
+  stylePackLabel,
+  stylePackVars,
+  t,
+  toggleLang,
+  toggleTheme,
+  chooseStylePack,
+  applyNavBar,
+  setNavTitle,
+} = useDemoUi();
 
 // lucide.dev — ISC license（ Redistribution 说明见 sn-icon-set.ts 头注）
 const GlobeIcon: IconData = {
   viewBox: '0 0 24 24',
   paths: [
-    '<circle cx="12" cy="12" r="10" />',
+    'M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20',
     'M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20',
     'M2 12h20',
   ],
@@ -43,7 +55,7 @@ const GlobeIcon: IconData = {
 const SunIcon: IconData = {
   viewBox: '0 0 24 24',
   paths: [
-    '<circle cx="12" cy="12" r="4" />',
+    'M12 8a4 4 0 1 0 0 8 4 4 0 1 0 0-8',
     'M12 2v2',
     'M12 20v2',
     'm4.93 4.93 1.41 1.41',
@@ -82,7 +94,11 @@ watch(
 </script>
 
 <template>
-  <view class="demo-shell" :class="{ 'demo-shell--dark': isDark, dark: isDark }">
+  <view
+    class="demo-shell"
+    :class="{ 'demo-shell--dark': isDark, dark: isDark }"
+    :style="stylePackVars"
+  >
     <!-- 渐变弥散背景：radial 色块自带柔边，随呼吸动画缓慢起伏 -->
     <view class="demo-shell__blobs" aria-hidden="true">
       <view class="demo-shell__blob demo-shell__blob--1" />
@@ -98,6 +114,17 @@ watch(
         </text>
       </view>
       <view class="demo-shell__actions">
+        <view
+          class="demo-shell__btn"
+          role="button"
+          :aria-label="t('切换风格', 'Switch style pack')"
+          @tap="chooseStylePack"
+        >
+          <SnIcon :icon="PaletteIcon" :size="16" />
+          <text v-if="stylePack !== 'default'" class="demo-shell__btn-text">
+            {{ stylePackLabel }}
+          </text>
+        </view>
         <view class="demo-shell__btn" role="button" :aria-label="langLabel" @tap="toggleLang">
           <SnIcon :icon="GlobeIcon" :size="16" />
           <text class="demo-shell__btn-text">{{ lang === 'zh' ? 'EN' : '中' }}</text>
