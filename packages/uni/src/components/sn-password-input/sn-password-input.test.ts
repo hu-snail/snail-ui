@@ -8,6 +8,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { h, ref } from 'vue';
 import SnPasswordInput from './sn-password-input.vue';
 
 describe('sn-password-input', () => {
@@ -123,4 +124,108 @@ describe('sn-password-input', () => {
       expect(w.attributes('style')).toContain('--sn-password-input-gap: 6px');
     });
   });
+
+  /* ── Extended coverage: bounds, a11y, v-model flow, forwarding ── */
+
+  it('renders at least one box when length is 0', () => {
+    expect(mount(SnPasswordInput, { props: { length: 0 } }).findAll('.sn-password-input__box')).toHaveLength(1);
+  });
+
+  it('shows the caret by default (focused defaults to true)', () => {
+    expect(mount(SnPasswordInput).find('.sn-password-input__caret').exists()).toBe(true);
+  });
+
+  it('omits the gap custom property when gutter is 0', () => {
+    const w = mount(SnPasswordInput);
+    expect(w.attributes('style') ?? '').not.toContain('--sn-password-input-gap');
+  });
+
+  it('keeps the native input numeric with the box-count maxlength', () => {
+    const w = mount(SnPasswordInput, { props: { length: 4 } });
+    const input = w.find('.sn-password-input__native');
+    expect(input.attributes('maxlength')).toBe('4');
+    expect(input.attributes('inputmode')).toBe('numeric');
+    expect(input.attributes('aria-label')).toBe('password');
+  });
+
+  it('labels the box group with the fill progress', () => {
+    const w = mount(SnPasswordInput, { props: { modelValue: '12', length: 5 } });
+    expect(w.find('.sn-password-input__boxes').attributes('aria-label')).toBe('password, 2 of 5');
+  });
+
+  it('labels each box with its digit position', () => {
+    const w = mount(SnPasswordInput, { props: { length: 3 } });
+    const boxes = w.findAll('.sn-password-input__box');
+    expect(boxes[0]?.attributes('aria-label')).toBe('digit 1');
+    expect(boxes[2]?.attributes('aria-label')).toBe('digit 3');
+  });
+
+  it('sits the caret in the first box while empty', () => {
+    const w = mount(SnPasswordInput, { props: { modelValue: '' } });
+    expect(w.findAll('.sn-password-input__box')[0]?.classes()).toContain(
+      'sn-password-input__box--active',
+    );
+  });
+
+  it('emits one update per keystroke and tracks the caret under v-model', async () => {
+    const Host = {
+      setup() {
+        const model = ref('');
+        return () =>
+          h(SnPasswordInput, {
+            modelValue: model.value,
+            'onUpdate:modelValue': (v: string) => {
+              model.value = v;
+            },
+          });
+      },
+    };
+    const wrapper = mount(Host);
+    const input = wrapper.find('.sn-password-input__native');
+    await input.setValue('1');
+    await input.setValue('12');
+    await input.setValue('123');
+    const emitted = wrapper.findComponent(SnPasswordInput).emitted('update:modelValue') ?? [];
+    expect(emitted.map((e) => e[0])).toEqual(['1', '12', '123']);
+    expect(wrapper.findAll('.sn-password-input__box--filled')).toHaveLength(3);
+  });
+
+  it('emits the truncated value in change as well', async () => {
+    const w = mount(SnPasswordInput, { props: { length: 2 } });
+    await w.find('.sn-password-input__native').setValue('987');
+    expect(w.emitted('change')?.[0]).toEqual(['98']);
+  });
+
+  it('clamps the masked rendering of an overlong model value', () => {
+    const w = mount(SnPasswordInput, { props: { modelValue: '1234567890', length: 4 } });
+    expect(w.findAll('.sn-password-input__char').map((c) => c.text())).toEqual([
+      '•',
+      '•',
+      '•',
+      '•',
+    ]);
+    // the native input still shows the bound value; clamping happens on input
+    expect((w.find('.sn-password-input__native').element as HTMLInputElement).value).toBe(
+      '1234567890',
+    );
+  });
+
+  it('merges customStyle after the gap variable and applies customClass', () => {
+    const w = mount(SnPasswordInput, {
+      props: { gutter: '4px', customStyle: 'margin: 4px;', customClass: 'my-pin' },
+    });
+    const style = w.attributes('style') ?? '';
+    expect(style).toContain('--sn-password-input-gap: 4px');
+    expect(style).toContain('margin: 4px');
+    expect(w.classes()).toContain('my-pin');
+  });
+
+  it('marks the wrapper data component', () => {
+    expect(mount(SnPasswordInput).attributes('data-snui-component')).toBe('password-input');
+  });
+
+  /* Untestable in happy-dom: the soft-keyboard linkage (`focused` ↔ sn-keyboard
+   * visible) and the hidden native input's real focus behavior — `:focus` maps
+   * to the HTMLElement.focus DOM slot in plain Vue, so no attribute or focus
+   * change is observable here. The focus/blur re-emit path is covered above. */
 });

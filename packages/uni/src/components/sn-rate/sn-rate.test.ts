@@ -171,4 +171,79 @@ describe('sn-rate', () => {
       expect(w.find('.icon-star').exists()).toBe(true);
     });
   });
+
+  /* ── Extended coverage: bounds, a11y details, style forwarding ── */
+
+  it('renders at least one item when num is 0', () => {
+    expect(mount(SnRate, { props: { num: 0 } }).findAll('.sn-rate__item')).toHaveLength(1);
+  });
+
+  it('renders every item empty for a negative score', () => {
+    const w = mount(SnRate, { props: { modelValue: -2 } });
+    expect(glyphs(w).active).toHaveLength(0);
+    expect(w.attributes('aria-valuenow')).toBe('0');
+  });
+
+  it('carries the half score into aria-valuenow', () => {
+    expect(mount(SnRate, { props: { modelValue: 2.5 } }).attributes('aria-valuenow')).toBe('2.5');
+  });
+
+  it('marks filled items aria-pressed="true" and empty items "false"', () => {
+    const w = mount(SnRate, { props: { modelValue: 2 } });
+    const items = w.findAll('.sn-rate__item');
+    expect(items[0]?.attributes('aria-pressed')).toBe('true');
+    expect(items[1]?.attributes('aria-pressed')).toBe('true');
+    expect(items[2]?.attributes('aria-pressed')).toBe('false');
+  });
+
+  it('labels each item and exposes aria-disabled / aria-readonly', () => {
+    const w = mount(SnRate, { props: { disabled: true, readonly: true } });
+    expect(w.findAll('.sn-rate__item')[2]?.attributes('aria-label')).toBe('rate 3');
+    expect(w.attributes('aria-disabled')).toBe('true');
+    expect(w.attributes('aria-readonly')).toBe('true');
+  });
+
+  it('falls back to the last array color for icons beyond the palette', () => {
+    const w = mount(SnRate, {
+      props: { modelValue: 4, activeColor: ['rgb(1, 1, 1)', 'rgb(2, 2, 2)'] },
+    });
+    const active = glyphs(w).active;
+    expect(active[2]?.attributes('style')).toContain('rgb(2, 2, 2)');
+    expect(active[3]?.attributes('style')).toContain('rgb(2, 2, 2)');
+  });
+
+  it('forwards a string space value as the gap custom property', () => {
+    const w = mount(SnRate, { props: { space: '8px' } });
+    expect(w.attributes('style')).toContain('--sn-rate-item-space: 8px');
+  });
+
+  it('merges customStyle after the generated custom properties', () => {
+    const w = mount(SnRate, { props: { color: 'rgb(1, 2, 3)', customStyle: 'margin: 4px;' } });
+    const style = w.attributes('style') ?? '';
+    expect(style).toContain('--sn-rate-inactive-color: rgb(1, 2, 3)');
+    expect(style).toContain('margin: 4px');
+  });
+
+  it('omits the style attribute when no style props are set', () => {
+    expect(mount(SnRate).attributes('style') ?? '').toBe('');
+  });
+
+  it('sizes the glyphs through the size prop', () => {
+    const w = mount(SnRate, { props: { size: 48 } });
+    const iconBox = w.find('.sn-rate__glyph .sn-icon');
+    expect(iconBox.exists()).toBe(true);
+    expect(iconBox.attributes('style')).toContain('width: 48px');
+  });
+
+  it('renders the active class glyph in css icon mode', () => {
+    const w = mount(SnRate, {
+      props: { modelValue: 1, cssIcon: true, icon: 'icon-star', activeIcon: 'icon-star-on' },
+    });
+    expect(w.find('.sn-rate__glyph--active .icon-star-on').exists()).toBe(true);
+  });
+
+  it('falls back to the bundled star for unregistered icon names', () => {
+    const w = mount(SnRate, { props: { icon: 'definitely-not-registered' } });
+    expect(w.find('.sn-rate__glyph--inactive svg').exists()).toBe(true);
+  });
 });

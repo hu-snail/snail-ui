@@ -4,7 +4,7 @@
  * Mirror of packages/vue-web/src/form/SnForm.test.ts. Same coverage.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, nextTick, reactive, ref } from 'vue';
 import SnForm from './sn-form.vue';
@@ -510,5 +510,445 @@ describe('SnForm statusIcon', () => {
     await wrapper.findComponent(SnForm).vm.validate();
     await nextTick();
     expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(1);
+  });
+});
+
+describe('sn-form (extended: events, rules matrix, message gating)', () => {
+  const makeHost = (
+    formProps: Record<string, unknown>,
+    itemProps: Record<string, unknown> = { prop: 'email', label: 'Email' },
+  ) => {
+    const model = reactive({ email: '', password: '' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, ...formProps },
+            {
+              default: () => [
+                h(SnFormItem, itemProps, {
+                  default: () =>
+                    h(SnInput, {
+                      modelValue: model.email,
+                      'onUpdate:modelValue': (v: string) => {
+                        model.email = v;
+                      },
+                    }),
+                }),
+                h(SnFormItem, { prop: 'password', label: 'Password' }),
+              ],
+            },
+          );
+      },
+    });
+    return { wrapper: mount(Host), model };
+  };
+
+  it('emits validate with the per-prop error map', async () => {
+    const { wrapper } = makeHost({
+      rules: {
+        email: [{ required: true, message: 'Email required' } as FormRule],
+        password: [{ required: true, message: 'Password required' } as FormRule],
+      },
+    });
+    const form = wrapper.findComponent(SnForm);
+    const valid = await form.vm.validate();
+    await nextTick();
+    expect(valid).toBe(false);
+    const payload = form.emitted('validate')?.at(-1)?.[0] as {
+      valid: boolean;
+      errors: Record<string, string>;
+    };
+    expect(payload.valid).toBe(false);
+    expect(payload.errors).toEqual({
+      email: 'Email required',
+      password: 'Password required',
+    });
+  });
+
+  it('emits submit with the aggregate valid flag', async () => {
+    const { wrapper } = makeHost({
+      rules: { email: [{ required: true, message: 'Email required' } as FormRule] },
+    });
+    const form = wrapper.findComponent(SnForm);
+    form.vm.submit();
+    await vi.waitFor(() => {
+      expect(form.emitted('submit')?.at(-1)).toEqual([{ valid: false }]);
+    });
+  });
+
+  it('emits submit with valid=true when every field passes', async () => {
+    const { wrapper } = makeHost({ rules: {} });
+    const form = wrapper.findComponent(SnForm);
+    form.vm.submit();
+    await vi.waitFor(() => {
+      expect(form.emitted('submit')?.at(-1)).toEqual([{ valid: true }]);
+    });
+  });
+
+  it('emits reset when resetFields runs', () => {
+    const { wrapper } = makeHost({});
+    wrapper.findComponent(SnForm).vm.resetFields();
+    expect(wrapper.findComponent(SnForm).emitted('reset')).toHaveLength(1);
+  });
+
+  it('validateField accepts an array of props', async () => {
+    const { wrapper } = makeHost({
+      rules: {
+        email: [{ required: true, message: 'Email required' } as FormRule],
+        password: [{ required: true, message: 'Password required' } as FormRule],
+      },
+    });
+    const ok = await wrapper.findComponent(SnForm).vm.validateField(['email', 'password']);
+    expect(ok).toBe(false);
+    const items = wrapper.findAllComponents(SnFormItem);
+    expect(items[0]!.attributes('data-status')).toBe('error');
+    expect(items[1]!.attributes('data-status')).toBe('error');
+  });
+
+  it('validateField reports valid for an unregistered prop', async () => {
+    const { wrapper } = makeHost({});
+    const ok = await wrapper.findComponent(SnForm).vm.validateField('nonexistent');
+    expect(ok).toBe(true);
+  });
+
+  it('clearValidate targets a single prop without touching the other', async () => {
+    const { wrapper } = makeHost({
+      rules: {
+        email: [{ required: true, message: 'Email required' } as FormRule],
+        password: [{ required: true, message: 'Password required' } as FormRule],
+      },
+    });
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    wrapper.findComponent(SnForm).vm.clearValidate('email');
+    await nextTick();
+    const items = wrapper.findAllComponents(SnFormItem);
+    expect(items[0]!.attributes('data-status')).toBe('default');
+    expect(items[1]!.attributes('data-status')).toBe('error');
+  });
+
+  it('clearValidate accepts a prop array', async () => {
+    const { wrapper } = makeHost({
+      rules: {
+        email: [{ required: true, message: 'Email required' } as FormRule],
+        password: [{ required: true, message: 'Password required' } as FormRule],
+      },
+    });
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    wrapper.findComponent(SnForm).vm.clearValidate(['email', 'password']);
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__message')).toHaveLength(0);
+  });
+
+  it('validates a nested dotted prop path', async () => {
+    const model = reactive({ profile: { name: '' } });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules: { 'profile.name': [{ required: true, message: 'Name required' }] } },
+            { default: () => h(SnFormItem, { prop: 'profile.name', label: 'Name' }) },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    const form = wrapper.findComponent(SnForm);
+    expect(await form.vm.validate()).toBe(false);
+    model.profile.name = 'Ada';
+    expect(await form.vm.validate()).toBe(true);
+  });
+
+  it('honours the pattern rule', async () => {
+    const model = reactive({ email: 'abc' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules: { email: [{ pattern: /^\d+$/, message: 'Digits only' }] } },
+            { default: () => h(SnFormItem, { prop: 'email' }) },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false);
+    model.email = '123';
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(true);
+  });
+
+  it('honours the min/max numeric rule', async () => {
+    const model = reactive<{ qty: number | string }>({ qty: 1 });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules: { qty: [{ min: 5, max: 10, message: 'Between 5 and 10' }] } },
+            { default: () => h(SnFormItem, { prop: 'qty' }) },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false);
+    model.qty = 7;
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(true);
+    model.qty = 99;
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false);
+  });
+
+  it('honours the url type rule', async () => {
+    const model = reactive({ email: 'not a url' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules: { email: [{ type: 'url', message: 'Bad url' }] } },
+            { default: () => h(SnFormItem, { prop: 'email' }) },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false);
+    model.email = 'https://aui.dev';
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(true);
+  });
+
+  it('merges item-level rules with form rules (item rules evaluate first)', async () => {
+    const model = reactive({ email: '' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules: { email: [{ type: 'email', message: 'Bad email' }] } },
+            {
+              default: () =>
+                h(SnFormItem, { prop: 'email', rules: [{ required: true, message: 'Required' }] }),
+            },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    // both rules would fail for '', the item-level required fires first
+    const form = wrapper.findComponent(SnForm);
+    await form.vm.validate();
+    await nextTick();
+    expect(wrapper.find('.sn-form-item__message').text()).toBe('Required');
+    // a valid email passes both rules
+    model.email = 'a@b.com';
+    expect(await form.vm.validate()).toBe(true);
+  });
+
+  it('uses a custom string returned by the validator as the message', async () => {
+    const model = reactive({ email: 'x' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            {
+              model,
+              rules: {
+                email: [
+                  { validator: (v) => (v === 'ok' ? true : 'custom message'), message: 'fallback' },
+                ],
+              },
+            },
+            { default: () => h(SnFormItem, { prop: 'email' }) },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    expect(wrapper.find('.sn-form-item__message').text()).toBe('custom message');
+  });
+
+  it('hides messages when the form-level showMessage is false (regression)', async () => {
+    const { wrapper } = makeHost({
+      showMessage: false,
+      rules: { email: [{ required: true, message: 'Email required' } as FormRule] },
+    });
+    const form = wrapper.findComponent(SnForm);
+    // validation still runs and still fails — only the display is gated
+    expect(await form.vm.validate()).toBe(false);
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__message')).toHaveLength(0);
+    expect(wrapper.findAllComponents(SnFormItem)[0]!.attributes('data-status')).toBe('error');
+  });
+
+  it('lets the item-level showMessage override the form-level flag', async () => {
+    const { wrapper } = makeHost(
+      {
+        showMessage: false,
+        rules: { email: [{ required: true, message: 'Email required' } as FormRule] },
+      },
+      { prop: 'email', label: 'Email', showMessage: true },
+    );
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__message')).toHaveLength(1);
+  });
+
+  it('hides messages when errorType is none', async () => {
+    const { wrapper } = makeHost({
+      errorType: 'none',
+      rules: { email: [{ required: true, message: 'Email required' } as FormRule] },
+    });
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false);
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__message')).toHaveLength(0);
+  });
+
+  it('applies the form-level label position class', () => {
+    const { wrapper } = makeHost({ labelPosition: 'top' });
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--top');
+  });
+
+  it('lets the item override the label position', () => {
+    const { wrapper } = makeHost({ labelPosition: 'top' }, { prop: 'email', labelPosition: 'left' });
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--left');
+  });
+
+  it('applies the disabled class from the form', () => {
+    const { wrapper } = makeHost({ disabled: true });
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--disabled');
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--disabled');
+  });
+
+  it('centers items from the form-level center flag', () => {
+    const { wrapper } = makeHost({ center: true });
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--center');
+  });
+
+  it('adds a border at the item level while the form has none', () => {
+    const { wrapper } = makeHost({}, { prop: 'email', border: true });
+    expect(wrapper.find('.sn-form').classes()).not.toContain('sn-form--border');
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--border');
+  });
+
+  it('accepts a string labelWidth verbatim', () => {
+    const { wrapper } = makeHost({ labelWidth: '120px' });
+    const style = wrapper.find('.sn-form-item').attributes('style') ?? '';
+    expect(style).toContain('120px');
+  });
+
+  it('marks static items without a prop', () => {
+    const model = reactive({});
+    const Host = defineComponent({
+      setup() {
+        return () => h(SnForm, { model }, { default: () => h(SnFormItem, { label: 'Info' }) });
+      },
+    });
+    const wrapper = mount(Host);
+    expect(wrapper.find('.sn-form-item').attributes('data-snui-component')).toBe(
+      'form-item-static',
+    );
+  });
+
+  it('stops validating an item after it unmounts', async () => {
+    const model = reactive({ email: '', password: 'fine' });
+    const showEmail = ref(true);
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            {
+              model,
+              rules: {
+                email: [{ required: true, message: 'Email required' } as FormRule],
+                password: [{ required: true, message: 'Password required' } as FormRule],
+              },
+            },
+            {
+              default: () => [
+                showEmail.value
+                  ? h(SnFormItem, { prop: 'email', label: 'Email' })
+                  : null,
+                h(SnFormItem, { prop: 'password', label: 'Password' }),
+              ],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    // email is empty → fails while mounted
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false);
+    showEmail.value = false;
+    await nextTick();
+    // only the passing password item remains registered
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(true);
+  });
+
+  it('labels the error message assertive and renders the error slot', async () => {
+    const { wrapper } = makeHost(
+      { rules: { email: [{ required: true, message: 'Email required' } as FormRule] } },
+      { prop: 'email' },
+    );
+    const form = wrapper.findComponent(SnForm);
+    await form.vm.validate();
+    await nextTick();
+    const msg = wrapper.find('.sn-form-item__message');
+    expect(msg.attributes('aria-live')).toBe('assertive');
+    expect(msg.text()).toBe('Email required');
+  });
+
+  it('overrides the message text with the error slot', async () => {
+    const model = reactive({ email: '' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, rules: { email: [{ required: true, message: 'Email required' }] } },
+            {
+              default: () =>
+                h(SnFormItem, { prop: 'email' }, { error: () => h('text', 'custom error view') }),
+            },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    expect(wrapper.find('.sn-form-item__message').text()).toBe('custom error view');
+  });
+
+  it('overrides the label text with the label slot', () => {
+    const model = reactive({ email: '' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(SnForm, { model }, { default: () => h(SnFormItem, { prop: 'email', label: 'Prop' }, { label: () => 'Slotted' }) });
+      },
+    });
+    const wrapper = mount(Host);
+    expect(wrapper.find('.sn-form-item__label').text()).toBe('Slotted');
+  });
+
+  it('resolves the label icon through the registry by name', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Star } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Star });
+    const model = reactive({ email: '' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model },
+            { default: () => h(SnFormItem, { prop: 'email', label: 'Email', iconName: 'Star' }) },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    expect(wrapper.find('.sn-form-item__icon').exists()).toBe(true);
+    clearSnIcons();
   });
 });

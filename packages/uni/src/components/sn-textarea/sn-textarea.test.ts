@@ -313,4 +313,116 @@ describe('sn-textarea', () => {
       expect(wrapper.emitted('click')).toHaveLength(1);
     });
   });
+
+  /* ── Extended coverage: a11y, icon fallbacks, guards, slot params ── */
+
+  it('binds aria-label to the placeholder text', () => {
+    const wrapper = mount(SnTextarea, { props: { placeholder: 'Say something' } });
+    expect(wrapper.find('textarea').attributes('aria-label')).toBe('Say something');
+  });
+
+  it('forwards the focus binding without breaking the native element', async () => {
+    /* Untestable in happy-dom as an attribute: `focus` exists as a method on
+     * HTMLElement, so Vue's runtime-dom patches `:focus` as a DOM property
+     * instead of an attribute. On uni-app MP / uni-h5 targets it is the
+     * native auto-focus prop. Assert it at least binds cleanly. */
+    const wrapper = mount(SnTextarea, { props: { focus: true } });
+    expect(wrapper.find('textarea').exists()).toBe(true);
+    expect(mount(SnTextarea).find('textarea').attributes('focus')).toBeUndefined();
+    await wrapper.find('textarea').trigger('focus');
+    expect(wrapper.emitted('focus')).toHaveLength(1);
+  });
+
+  it('marks the wrapper data component and status', () => {
+    const ok = mount(SnTextarea);
+    expect(ok.attributes('data-snui-component')).toBe('textarea');
+    expect(ok.attributes('data-status')).toBe('default');
+    const bad = mount(SnTextarea, { props: { error: true } });
+    expect(bad.attributes('data-status')).toBe('error');
+  });
+
+  it('hides the clear button while readonly', () => {
+    const wrapper = mount(SnTextarea, {
+      props: { clearable: true, readonly: true, modelValue: 'x' },
+    });
+    expect(wrapper.find('.sn-textarea__clear').exists()).toBe(false);
+  });
+
+  it('does not emit change or confirm while disabled', async () => {
+    const wrapper = mount(SnTextarea, { props: { disabled: true, modelValue: 'x' } });
+    await wrapper.find('textarea').trigger('change');
+    await wrapper.find('textarea').trigger('confirm');
+    expect(wrapper.emitted('change')).toBeUndefined();
+    expect(wrapper.emitted('confirm')).toBeUndefined();
+  });
+
+  it('labels the clear button and keeps it in the tab order', () => {
+    const wrapper = mount(SnTextarea, { props: { clearable: true, modelValue: 'x' } });
+    const btn = wrapper.find('.sn-textarea__clear-btn');
+    expect(btn.attributes('aria-label')).toBe('Clear textarea');
+    expect(btn.attributes('tabindex')).toBe('0');
+  });
+
+  it('exposes aria-live=polite on the counter', () => {
+    const wrapper = mount(SnTextarea, {
+      props: { showWordLimit: true, maxlength: 10, modelValue: 'ab' },
+    });
+    expect(wrapper.find('.sn-textarea__count').attributes('aria-live')).toBe('polite');
+  });
+
+  it('shows the exact current/max counter text at the maxlength boundary', () => {
+    const wrapper = mount(SnTextarea, {
+      props: { showWordLimit: true, maxlength: 4, modelValue: 'abcd' },
+    });
+    expect(wrapper.find('.sn-textarea__count').text()).toBe('4 / 4');
+  });
+
+  it('passes current and max to the count slot params', () => {
+    const wrapper = mount(SnTextarea, {
+      props: { showWordLimit: true, maxlength: 10, modelValue: 'abc' },
+      slots: {
+        count:
+          '<template #count="params"><view data-testid="count">{{ params.current }}/{{ params.max }}</view></template>',
+      },
+    });
+    expect(wrapper.find('[data-testid="count"]').text()).toBe('3/10');
+  });
+
+  it('renders the clear-icon slot instead of the default glyph', () => {
+    const wrapper = mount(SnTextarea, {
+      props: { clearable: true, modelValue: 'x' },
+      slots: { 'clear-icon': '<view data-testid="clear-x">X</view>' },
+    });
+    expect(wrapper.find('[data-testid="clear-x"]').exists()).toBe(true);
+  });
+
+  it('renders iconPrefix as a CSS class on the prefix glyph', () => {
+    const wrapper = mount(SnTextarea, { props: { iconPrefix: 'icon-note' } });
+    expect(wrapper.find('.sn-textarea__prefix .icon-note').exists()).toBe(true);
+  });
+
+  it('renders prefixIcon as a CSS class in cssIcon mode', () => {
+    const wrapper = mount(SnTextarea, { props: { cssIcon: true, prefixIcon: 'icon-tag' } });
+    expect(wrapper.find('.sn-textarea__prefix .icon-tag').exists()).toBe(true);
+    expect(wrapper.find('.sn-textarea__icon-glyph').exists()).toBe(false);
+  });
+
+  it('falls back to the glyph placeholder for an unregistered prefixIcon', () => {
+    const wrapper = mount(SnTextarea, { props: { prefixIcon: 'definitely-not-registered' } });
+    expect(wrapper.find('.sn-textarea__icon-glyph').exists()).toBe(true);
+    expect(wrapper.find('.sn-textarea__prefix .sn-icon').exists()).toBe(false);
+  });
+
+  it('keeps the footer hidden when neither counter nor clear applies', () => {
+    const wrapper = mount(SnTextarea, { props: { modelValue: 'x' } });
+    expect(wrapper.find('.sn-textarea__footer').exists()).toBe(false);
+  });
+
+  it('shows the footer for the counter alone without clearable', () => {
+    const wrapper = mount(SnTextarea, {
+      props: { showWordLimit: true, maxlength: 10, modelValue: 'x' },
+    });
+    expect(wrapper.find('.sn-textarea__footer').exists()).toBe(true);
+    expect(wrapper.find('.sn-textarea__clear').exists()).toBe(false);
+  });
 });

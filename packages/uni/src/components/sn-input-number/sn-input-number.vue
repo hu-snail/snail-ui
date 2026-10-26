@@ -146,8 +146,11 @@ const precisionValue = computed(() => {
   return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 0;
 });
 
-/** Current value as a number (`''` → `NaN` when `allowNull`). */
+/** Current value as a number. `''` / `null` (the `allowNull` unset state) → `NaN`. */
 const numericValue = computed<number>(() => {
+  // `Number('') === 0` would masquerade the unset state as a real 0 and make
+  // `updateOnInit` overwrite a deliberate empty with `min` — guard it out.
+  if (props.modelValue === '' || props.modelValue === null) return Number.NaN;
   const parsed = Number(props.modelValue);
   return Number.isFinite(parsed) ? parsed : Number.NaN;
 });
@@ -169,12 +172,6 @@ function normalize(raw: number): number {
     if (next < props.min) next = props.min;
   }
   return round(next);
-}
-
-function currentOrMin(): number {
-  const current = numericValue.value;
-  if (Number.isFinite(current)) return current;
-  return props.allowNull ? props.min : props.min;
 }
 
 /** Can the value move by `direction`? */

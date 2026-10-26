@@ -14,6 +14,27 @@ function mountNumber(props: Record<string, unknown> = {}) {
   return mount(SnInputNumber, { props: { modelValue: 5, min: 0, max: 10, ...props } });
 }
 
+/**
+ * Mount with a live v-model: emitted updates flow back into `modelValue`,
+ * mirroring how a real parent consumes the component.
+ */
+function mountVModel(props: Record<string, unknown> = {}) {
+  let current: number | string = (props.modelValue as number | string) ?? 0;
+  const w = mount(SnInputNumber, {
+    props: {
+      min: 0,
+      max: 10,
+      ...props,
+      modelValue: current,
+      'onUpdate:modelValue': (v: number | string) => {
+        current = v;
+        w.setProps({ modelValue: v });
+      },
+    },
+  });
+  return w;
+}
+
 const lastValue = (w: ReturnType<typeof mountNumber>): unknown =>
   w.emitted('update:modelValue')?.at(-1)?.[0];
 
@@ -284,6 +305,213 @@ describe('sn-input-number', () => {
       await w.find('.sn-input-number__plus').trigger('touchstart');
       await vi.advanceTimersByTimeAsync(400);
       expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+  });
+
+  /* ── Extended coverage: presentation props, a11y, coercion edges ── */
+
+  describe('presentation props', () => {
+    it('passes a string inputWidth through verbatim', () => {
+      const w = mountNumber({ inputWidth: '50%' });
+      expect(w.find('.sn-input-number__field').attributes('style')).toContain('50%');
+    });
+
+    /* Untestable in happy-dom: numeric inputWidth expands to `NNNrpx`, an
+     * invalid CSS length that happy-dom's parser drops, so no style attribute
+     * survives to assert on. The expansion is verified by review. */
+
+    it('omits the field width when inputWidth is unset', () => {
+      const w = mountNumber();
+      expect(w.find('.sn-input-number__field').attributes('style')).toBeUndefined();
+    });
+
+    it('forwards inputType to the native field', () => {
+      expect(mountNumber({ inputType: 'number' }).find('input').attributes('type')).toBe('number');
+      expect(mountNumber().find('input').attributes('type')).toBe('digit');
+    });
+
+    it('forwards adjustPosition', () => {
+      const w = mountNumber({ adjustPosition: false });
+      expect(w.find('input').attributes('adjust-position')).toBe('false');
+    });
+
+    it('applies customClass and customStyle to the root', () => {
+      const w = mountNumber({ customClass: 'qty-x', customStyle: 'margin: 2px;' });
+      expect(w.classes()).toContain('qty-x');
+      expect(w.attributes('style')).toContain('margin: 2px');
+    });
+
+    it('applies the outline-split theme class', () => {
+      expect(mountNumber({ theme: 'outline-split' }).classes()).toContain(
+        'sn-input-number--outline-split',
+      );
+    });
+  });
+
+  describe('accessibility', () => {
+    it('exposes a group role with the disabled state', () => {
+      const w = mountNumber({ disabled: true });
+      expect(w.attributes('role')).toBe('group');
+      expect(w.attributes('aria-disabled')).toBe('true');
+      expect(w.find('.sn-input-number__field').attributes('aria-label')).toBe('number input');
+    });
+
+    it('labels the stepper buttons for assistive tech', () => {
+      const w = mountNumber();
+      expect(w.find('.sn-input-number__minus').attributes('aria-label')).toBe('decrease');
+      expect(w.find('.sn-input-number__plus').attributes('aria-label')).toBe('increase');
+      expect(w.find('.sn-input-number__minus').attributes('role')).toBe('button');
+      expect(w.find('.sn-input-number__plus').attributes('role')).toBe('button');
+    });
+
+    it('disables the plus button semantics at the max bound', () => {
+      const w = mountNumber({ modelValue: 10, max: 10 });
+      const plus = w.find('.sn-input-number__plus');
+      expect(plus.attributes('aria-disabled')).toBe('true');
+      expect(plus.attributes('tabindex')).toBe('-1');
+    });
+
+    it('uses the placeholder as the field accessible name', () => {
+      const w = mountNumber({ placeholder: '库存' });
+      expect(w.find('.sn-input-number__field').attributes('aria-label')).toBe('库存');
+    });
+  });
+
+  describe('value normalization edges', () => {
+    it('clamps below min on mount when updateOnInit is on', () => {
+      const w = mountNumber({ modelValue: -5, min: 0 });
+      expect(lastValue(w)).toBe(0);
+    });
+
+    it('snaps a mount value onto the step grid when stepStrictly is on', () => {
+      const w = mountNumber({ modelValue: 3, min: 0, max: 10, step: 2, stepStrictly: true });
+      expect(lastValue(w)).toBe(4);
+    });
+
+    it('honours a string precision prop', async () => {
+      const w = mountNumber({ modelValue: 1.234, precision: '2' });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await Promise.resolve();
+      expect(lastValue(w)).toBe(2.23);
+    });
+
+    it('rounds a typed decimal on blur when precision is 0', async () => {
+      const w = mountNumber({ modelValue: 5 });
+      const field = w.find('.sn-input-number__field');
+      await field.setValue('6.6');
+      await field.trigger('blur');
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(lastValue(w)).toBe(7);
+    });
+
+    it('avoids 0.1 + 0.2 floating-point drift with precision', async () => {
+      const w = mountNumber({ modelValue: 0.1, step: 0.2, precision: 1 });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await Promise.resolve();
+      expect(lastValue(w)).toBe(0.3);
+    });
+
+    it('steps down from min after an allowNull clear', async () => {
+      const w = mountVModel({ modelValue: 5, min: 2, max: 10, allowNull: true });
+      await w.find('.sn-input-number__field').setValue('');
+      await Promise.resolve();
+      expect(w.props('modelValue')).toBe('');
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await Promise.resolve();
+      // unset state → base falls back to min, then +step
+      expect(w.props('modelValue')).toBe(3);
+    });
+
+    it('keeps both stepper buttons live from the unset allowNull state', async () => {
+      const w = mountVModel({ modelValue: 5, min: 2, max: 10, allowNull: true });
+      await w.find('.sn-input-number__field').setValue('');
+      await Promise.resolve();
+      await w.setProps({ modelValue: '' });
+      expect(w.find('.sn-input-number__minus').attributes('aria-disabled')).toBeUndefined();
+      expect(w.find('.sn-input-number__plus').attributes('aria-disabled')).toBeUndefined();
+      await w.find('.sn-input-number__minus').trigger('tap');
+      await Promise.resolve();
+      // unset → base min, minus clamps back onto min
+      expect(w.props('modelValue')).toBe(2);
+    });
+
+    it('does not double-commit when the typed value is committed again on blur', async () => {
+      const w = mountVModel({ modelValue: 5 });
+      const field = w.find('.sn-input-number__field');
+      await field.setValue('7');
+      await Promise.resolve();
+      const afterInput = w.emitted('update:modelValue')?.length ?? 0;
+      await field.trigger('blur');
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(w.emitted('update:modelValue')?.length ?? 0).toBe(afterInput);
+    });
+
+    it('shows the raw draft in the field while typing out of range', async () => {
+      const w = mountNumber({ modelValue: 5, max: 10 });
+      const field = w.find('.sn-input-number__field');
+      await field.setValue('99');
+      expect((field.element as HTMLInputElement).value).toBe('99');
+      await field.trigger('blur');
+      await Promise.resolve();
+      await Promise.resolve();
+      // clamped and re-rendered from the committed model
+      expect((w.find('.sn-input-number__field').element as HTMLInputElement).value).toBe('5');
+    });
+
+    it('vets the normalized (clamped) value through beforeChange', async () => {
+      const beforeChange = vi.fn(() => true);
+      const w = mountNumber({ modelValue: 9, max: 10, beforeChange });
+      await w.find('.sn-input-number__plus').trigger('tap');
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(beforeChange).toHaveBeenCalledWith(10);
+      expect(lastValue(w)).toBe(10);
+    });
+
+    it('accumulates rapid taps under v-model', async () => {
+      const w = mountVModel({ modelValue: 0, min: 0, max: 10 });
+      const plus = w.find('.sn-input-number__plus');
+      await plus.trigger('tap');
+      await plus.trigger('tap');
+      await plus.trigger('tap');
+      await Promise.resolve();
+      expect(w.emitted('update:modelValue')).toHaveLength(3);
+      expect(w.props('modelValue')).toBe(3);
+    });
+  });
+
+  describe('long press bounds', () => {
+    it('stops repeating when the held press reaches max', async () => {
+      vi.useFakeTimers();
+      const w = mountVModel({ modelValue: 9, min: 0, max: 10, longPress: true });
+      await w.find('.sn-input-number__plus').trigger('touchstart');
+      await vi.advanceTimersByTimeAsync(600);
+      // only the single step to the bound, then the timer self-clears
+      const values = (w.emitted('update:modelValue') ?? []).map((e) => e[0]);
+      expect(values).toEqual([10]);
+      await w.find('.sn-input-number__plus').trigger('touchcancel');
+      await vi.advanceTimersByTimeAsync(400);
+      expect(w.emitted('update:modelValue')).toHaveLength(1);
+    });
+  });
+
+  describe('allowNull regression (Number("") === 0)', () => {
+    it('does not overwrite a deliberate empty value on mount', () => {
+      const w = mount(SnInputNumber, {
+        props: { modelValue: '', allowNull: true, min: 2, max: 10 },
+      });
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('does not overwrite the empty value on blur either', async () => {
+      const w = mountVModel({ modelValue: '', min: 2, max: 10, allowNull: true });
+      await w.find('.sn-input-number__field').trigger('blur');
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.props('modelValue')).toBe('');
     });
   });
 });

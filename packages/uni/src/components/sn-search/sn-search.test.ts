@@ -201,4 +201,62 @@ describe('sn-search', () => {
       expect(wrapper.find('input').classes()).toContain('my-input');
     });
   });
+
+  /* ── Extended coverage: defaults, a11y wiring, v-model clear flow ── */
+
+  it('defaults maxlength to unlimited (-1)', () => {
+    expect(mount(SnSearch).find('input').attributes('maxlength')).toBe('-1');
+  });
+
+  it('marks the wrapper data component and variant', () => {
+    const wrapper = mount(SnSearch, { props: { variant: 'filled' } });
+    expect(wrapper.attributes('data-snui-component')).toBe('search');
+    expect(wrapper.attributes('data-variant')).toBe('filled');
+  });
+
+  it('binds the input accessible name to the placeholder', () => {
+    const wrapper = mount(SnSearch, { props: { placeholder: 'Find items' } });
+    expect(wrapper.find('input').attributes('aria-label')).toBe('Find items');
+  });
+
+  it('sets aria-disabled on the input while disabled', () => {
+    expect(mount(SnSearch, { props: { disabled: true } }).find('input').attributes('aria-disabled')).toBe(
+      'true',
+    );
+  });
+
+  it('labels the clear button and keeps it in the tab order', () => {
+    const wrapper = mount(SnSearch, { props: { modelValue: 'x' } });
+    const btn = wrapper.find('.sn-search__clear-btn');
+    expect(btn.attributes('aria-label')).toBe('Clear search');
+    expect(btn.attributes('tabindex')).toBe('0');
+  });
+
+  it('adds the with-clear class while the clear button is visible', () => {
+    const wrapper = mount(SnSearch, { props: { modelValue: 'x' } });
+    expect(wrapper.classes()).toContain('sn-search--with-clear');
+  });
+
+  it('emits an empty string when cleared to empty by typing', async () => {
+    const wrapper = mount(SnSearch, { props: { modelValue: 'abc' } });
+    await wrapper.find('input').setValue('');
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual(['']);
+    expect(wrapper.emitted('change')?.at(-1)).toEqual(['']);
+  });
+
+  it('hides the clear button after the value clears under v-model', async () => {
+    const wrapper = mount(SnSearch, { props: { modelValue: 'abc' } });
+    await wrapper.find('.sn-search__clear-btn').trigger('tap');
+    await wrapper.setProps({ modelValue: '' });
+    expect(wrapper.find('.sn-search__clear').exists()).toBe(false);
+    expect(wrapper.classes()).not.toContain('sn-search--with-clear');
+  });
+
+  it('carries the native event in the disabled-click payload', async () => {
+    const wrapper = mount(SnSearch, { props: { disabled: true } });
+    await wrapper.trigger('click');
+    const args = wrapper.emitted('click')?.at(-1);
+    expect(args).toHaveLength(1);
+    expect(args?.[0]).toBeInstanceOf(Event);
+  });
 });

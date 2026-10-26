@@ -196,6 +196,19 @@ const railIconClass = computed(() => {
 });
 
 /**
+ * Registry-mode rail icon — `activeIcon` / `inactiveIcon` without the matching
+ * `*CssIcon` flag resolve through the sn-icon registry (same contract as the
+ * knob icons). Without this the rail would hide its text and show nothing.
+ */
+const railIcon = computed<IconData | null>(() => {
+  const name = isChecked.value ? props.activeIcon : props.inactiveIcon;
+  const cssMode = isChecked.value ? props.activeCssIcon : props.inactiveCssIcon;
+  if (!name || cssMode) return null;
+  const icon = resolveIconByName(name);
+  return icon ? markRaw(icon) : null;
+});
+
+/**
  * Rail colors — `activeColor` / `inactiveColor` are user CSS colors applied
  * inline on top of the `--sn-mp-*` token defaults (wd-switch parity).
  * `size` accepts a raw CSS length or a number interpreted as rpx design units.
@@ -275,6 +288,9 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
           :class="['sn-switch__rail-icon', railIconClass]"
           aria-hidden="true"
         />
+        <view v-else-if="railIcon" class="sn-switch__rail-icon" aria-hidden="true">
+          <SnIcon :icon="railIcon" :size="24" />
+        </view>
 
         <view class="sn-switch__action">
           <view v-if="loading || isPending" class="sn-switch__spinner" aria-hidden="true" />

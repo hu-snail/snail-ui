@@ -299,9 +299,10 @@ function onTrackTap(event: Event): void {
     const toStart = Math.abs(raw - current[0]);
     const toEnd = Math.abs(raw - current[1]);
     dragKnob.value = toStart <= toEnd ? 0 : 1;
+    // applyValue already emits update:modelValue + change with the new pair —
+    // a second change here would re-emit the stale pre-tap pair.
     applyValue(raw);
     dragKnob.value = null;
-    emit('change', props.range ? [pair.value[0], pair.value[1]] : pair.value[1]);
     return;
   }
   applyValue(raw);

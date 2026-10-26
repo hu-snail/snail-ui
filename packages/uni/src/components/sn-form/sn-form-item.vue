@@ -31,7 +31,12 @@ const props = withDefaults(
     label?: string;
     required?: boolean;
     rules?: FormRule[];
-    showMessage?: boolean;
+    /**
+     * Show the validation message. `undefined` inherits the form-level
+     * `showMessage` (withDefaults must not fill this — an explicit default
+     * would shadow the form flag and make it dead).
+     */
+    showMessage?: boolean | undefined;
     /**
      * Render a status glyph before the validation message.
      *
@@ -79,7 +84,6 @@ const props = withDefaults(
     description?: string;
   }>(),
   {
-    showMessage: true,
     required: false,
     iconSize: 32,
     /* Inheritance-resolving booleans default to `undefined` so the
@@ -90,6 +94,7 @@ const props = withDefaults(
     center: undefined,
     ellipsis: undefined,
     statusIcon: undefined,
+    showMessage: undefined,
     clickable: false,
     isLink: false,
     placeholder: '',
@@ -198,8 +203,11 @@ onBeforeUnmount(() => {
 });
 
 const showMsg = computed(() => {
-  if (!ctx) return props.showMessage && message.value.length > 0;
-  const flag = props.showMessage !== undefined ? props.showMessage : ctx.showMessage;
+  // The form-level `showMessage` / `errorType` flags stay live: an item that
+  // does not pass its own flag inherits the form, and `errorType: 'none'`
+  // suppresses inline messages entirely.
+  if ((ctx?.errorType ?? 'message') === 'none') return false;
+  const flag = resolveBool(props.showMessage, ctx?.showMessage, true);
   return flag && message.value.length > 0;
 });
 
@@ -218,7 +226,6 @@ const showStatusIcon = computed<boolean>(() => {
   return flag && message.value.length > 0;
 });
 
-/** Glyph for the current validation state. */
 /** Glyph for the current validation state. */
 const statusGlyph = computed<string>(() => {
   // `status` is three-state here (no `success` state is produced by the

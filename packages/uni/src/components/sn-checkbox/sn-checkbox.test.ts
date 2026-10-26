@@ -9,7 +9,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { h, defineComponent, ref } from 'vue';
+import { h, defineComponent, ref, nextTick } from 'vue';
 import SnCheckbox from './sn-checkbox.vue';
 import SnCheckboxGroup from './sn-checkbox-group.vue';
 
@@ -172,6 +172,169 @@ describe('sn-checkbox', () => {
       expect(wrapper.classes()).toContain('my-cb');
       expect(wrapper.attributes('style')).toContain('margin: 4px');
     });
+  });
+
+  /* ── Extended coverage: a11y details, rapid toggling, group wiring ── */
+
+  it('stays in the tab order while interactive', () => {
+    expect(mount(SnCheckbox).attributes('tabindex')).toBe('0');
+  });
+
+  it('marks the wrapper data component and shape', () => {
+    const wrapper = mount(SnCheckbox, { props: { type: 'square' } });
+    expect(wrapper.attributes('data-snui-component')).toBe('checkbox');
+    expect(wrapper.attributes('data-type')).toBe('square');
+  });
+
+  it('keeps aria-checked="mixed" when checked and indeterminate', () => {
+    const wrapper = mount(SnCheckbox, { props: { modelValue: true, indeterminate: true } });
+    expect(wrapper.attributes('aria-checked')).toBe('mixed');
+  });
+
+  it('flips the value on every tap under v-model', async () => {
+    const Host = defineComponent({
+      setup() {
+        const model = ref<boolean>(false);
+        return () =>
+          h(SnCheckbox, {
+            modelValue: model.value,
+            'onUpdate:modelValue': (v: boolean) => {
+              model.value = v;
+            },
+          });
+      },
+    });
+    const wrapper = mount(Host);
+    const box = wrapper.findComponent(SnCheckbox);
+    await box.trigger('tap');
+    await box.trigger('tap');
+    await box.trigger('tap');
+    const values = (wrapper.findComponent(SnCheckbox).emitted('update:modelValue') ?? []).map(
+      (e) => e[0],
+    );
+    expect(values).toEqual([true, false, true]);
+  });
+
+  it('omits the icon inline style when no color override is set', () => {
+    const wrapper = mount(SnCheckbox);
+    expect(wrapper.find('.sn-checkbox__icon').attributes('style')).toBeUndefined();
+  });
+});
+
+describe('sn-checkbox-group (extended)', () => {
+  it('emits change with the child name through a real tap', async () => {
+    const wrapper = mountGroup({ modelValue: [] }, [{ name: 'a', label: 'A' }]);
+    await wrapper.findAllComponents(SnCheckbox)[0]!.trigger('tap');
+    const group = wrapper.findComponent(SnCheckboxGroup);
+    expect(group.emitted('change')?.at(-1)).toEqual([['a']]);
+  });
+
+  it('carries the child name as the child change payload', async () => {
+    const wrapper = mountGroup({ modelValue: [] }, [{ name: 'a', label: 'A' }]);
+    const child = wrapper.findAllComponents(SnCheckbox)[0]!;
+    await child.trigger('tap');
+    expect(child.emitted('change')?.at(-1)).toEqual(['a']);
+  });
+
+  it('applies the group checkedColor to a selected child icon', () => {
+    const wrapper = mountGroup(
+      { modelValue: ['a'], checkedColor: 'rgb(10, 20, 30)' },
+      [{ name: 'a', label: 'A' }],
+    );
+    expect(wrapper.findComponent(SnCheckbox).find('.sn-checkbox__icon').attributes('style')).toContain(
+      'background-color: rgb(10, 20, 30)',
+    );
+  });
+
+  it('applies the group uncheckedColor to an unselected child icon', () => {
+    const wrapper = mountGroup(
+      { modelValue: [], uncheckedColor: 'rgb(3, 4, 5)' },
+      [{ name: 'a', label: 'A' }],
+    );
+    expect(wrapper.findComponent(SnCheckbox).find('.sn-checkbox__icon').attributes('style')).toContain(
+      'border-color: rgb(3, 4, 5)',
+    );
+  });
+
+  it('removes a group-blocked child from the tab order', () => {
+    const wrapper = mountGroup({ modelValue: [], disabled: true }, [{ name: 'a', label: 'A' }]);
+    expect(wrapper.findComponent(SnCheckbox).attributes('tabindex')).toBe('-1');
+  });
+
+  it('blocks selecting beyond max through a real tap', async () => {
+    const wrapper = mountGroup({ modelValue: ['a'], max: 1 }, [
+      { name: 'a', label: 'A' },
+      { name: 'b', label: 'B' },
+    ]);
+    await wrapper.findAllComponents(SnCheckbox)[1]!.trigger('tap');
+    expect(wrapper.findComponent(SnCheckboxGroup).emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('blocks deselecting below min through a real tap', async () => {
+    const wrapper = mountGroup({ modelValue: ['a'], min: 1 }, [{ name: 'a', label: 'A' }]);
+    await wrapper.findAllComponents(SnCheckbox)[0]!.trigger('tap');
+    expect(wrapper.findComponent(SnCheckboxGroup).emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('caps toggleAll(true) at max', async () => {
+    const wrapper = mountGroup({ modelValue: [], max: 1 }, [
+      { name: 'a', label: 'A' },
+      { name: 'b', label: 'B' },
+    ]);
+    const vm = wrapper.findComponent(SnCheckboxGroup).vm as unknown as {
+      toggleAll: (checked: boolean, skipDisabled?: boolean) => void;
+    };
+    vm.toggleAll(true);
+    await nextTick();
+    expect(wrapper.findComponent(SnCheckboxGroup).emitted('update:modelValue')?.at(-1)).toEqual([
+      ['a'],
+    ]);
+  });
+
+  it('keeps the min floor when toggleAll(false) would drop below it', async () => {
+    const wrapper = mountGroup({ modelValue: ['a', 'b'], min: 1 }, [
+      { name: 'a', label: 'A' },
+      { name: 'b', label: 'B' },
+    ]);
+    const vm = wrapper.findComponent(SnCheckboxGroup).vm as unknown as {
+      toggleAll: (checked: boolean, skipDisabled?: boolean) => void;
+    };
+    vm.toggleAll(false);
+    await nextTick();
+    expect(wrapper.findComponent(SnCheckboxGroup).emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('is a no-op to toggleAll on a disabled group', async () => {
+    const wrapper = mountGroup({ modelValue: [], disabled: true }, [{ name: 'a', label: 'A' }]);
+    const vm = wrapper.findComponent(SnCheckboxGroup).vm as unknown as {
+      toggleAll: (checked: boolean) => void;
+    };
+    vm.toggleAll(true);
+    await nextTick();
+    expect(wrapper.findComponent(SnCheckboxGroup).emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('drops unmounted children from the toggleAll registry', async () => {
+    const names = ref(['a', 'b']);
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(SnCheckboxGroup, { modelValue: [] }, () =>
+            names.value.map((n) => h(SnCheckbox, { name: n }, () => n)),
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    names.value = ['a'];
+    await nextTick();
+    const vm = wrapper.findComponent(SnCheckboxGroup).vm as unknown as {
+      toggleAll: (checked: boolean) => void;
+    };
+    vm.toggleAll(true);
+    await nextTick();
+    expect(wrapper.findComponent(SnCheckboxGroup).emitted('update:modelValue')?.at(-1)).toEqual([
+      ['a'],
+    ]);
   });
 });
 

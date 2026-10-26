@@ -290,4 +290,244 @@ describe('sn-upload', () => {
       expect(runtime.previewImage).not.toHaveBeenCalled();
     });
   });
+
+  /* ── Extended coverage: retries, transforms, payloads, progress wiring ── */
+
+  describe('retry + payloads', () => {
+    it('re-uploads a failed file on the next submit', async () => {
+      const uploadMethod = vi
+        .fn<(f: UploadFileItem) => Promise<string | Record<string, unknown>>>()
+        .mockRejectedValueOnce(new Error('network down'))
+        .mockResolvedValueOnce({ ok: true });
+      const w = mountUpload({
+        fileList: [{ uid: 1, url: 'a.png', status: 'pending' }],
+        uploadMethod,
+      });
+      const vm = w.vm as unknown as { submit(): Promise<void> };
+      await vm.submit();
+      expect(lastList(w).at(-1)?.status).toBe('fail');
+      await vm.submit();
+      expect(lastList(w).at(-1)?.status).toBe('success');
+      expect(uploadMethod).toHaveBeenCalledTimes(2);
+    });
+
+    it('transforms the chosen file when beforeUpload returns an object', async () => {
+      installRuntime({
+        chooseImage: vi.fn((options: { success?: (r: { tempFiles: unknown[] }) => void }) => {
+          options.success?.({ tempFiles: [{ path: 'raw.png', size: 10, name: 'raw' }] });
+        }),
+      });
+      const w = mountUpload({
+        autoUpload: false,
+        beforeUpload: (file: UploadFileItem) => ({ ...file, name: 'renamed.png' }),
+      });
+      await w.find('.sn-upload__evoke').trigger('tap');
+      await vi.waitFor(() => expect(lastList(w)).toHaveLength(1));
+      expect(lastList(w)[0]?.name).toBe('renamed.png');
+      expect(lastList(w)[0]?.url).toBe('raw.png');
+    });
+
+    it('honours an async beforeUpload veto', async () => {
+      installRuntime({
+        chooseImage: vi.fn((options: { success?: (r: { tempFiles: unknown[] }) => void }) => {
+          options.success?.({ tempFiles: [{ path: 'a.png', size: 1 }] });
+        }),
+      });
+      const w = mountUpload({ autoUpload: false, beforeUpload: async () => false });
+      await w.find('.sn-upload__evoke').trigger('tap');
+      await vi.waitFor(() => expect(scope.uni?.chooseImage).toHaveBeenCalled());
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(w.emitted('update:fileList')).toBeUndefined();
+    });
+
+    it('carries the rejected file and ceiling in the oversize payload', async () => {
+      installRuntime({
+        chooseImage: vi.fn((options: { success?: (r: { tempFiles: unknown[] }) => void }) => {
+          options.success?.({ tempFiles: [{ path: 'big.png', size: 9000 }] });
+        }),
+      });
+      const w = mountUpload({ maxSize: 1000, autoUpload: false });
+      await w.find('.sn-upload__evoke').trigger('tap');
+      await vi.waitFor(() => expect(w.emitted('oversize')).toHaveLength(1));
+      const payload = w.emitted('oversize')?.[0]?.[0] as { file: UploadFileItem; maxSize: number };
+      expect(payload.file.url).toBe('big.png');
+      expect(payload.maxSize).toBe(1000);
+    });
+
+    it('carries the removed file and the remaining list in the remove payload', async () => {
+      const w = mountUpload({
+        fileList: [
+          { uid: 1, url: 'a.png' },
+          { uid: 2, url: 'b.png' },
+        ],
+      });
+      await w.findAll('.sn-upload__remove')[0]?.trigger('tap');
+      const payload = w.emitted('remove')?.[0]?.[0] as {
+        file: UploadFileItem;
+        fileList: UploadFileItem[];
+      };
+      expect(payload.file.uid).toBe(1);
+      expect(payload.fileList.map((f) => f.uid)).toEqual([2]);
+    });
+
+    it('emits chooseerror through the runtime fail callback', async () => {
+      installRuntime({
+        chooseImage: vi.fn((options: { fail?: (e: unknown) => void }) => {
+          options.fail?.(new Error('permission denied'));
+        }),
+      });
+      const w = mountUpload();
+      await w.find('.sn-upload__evoke').trigger('tap');
+      await Promise.resolve();
+      expect(w.emitted('chooseerror')).toHaveLength(1);
+    });
+
+    it('auto-uploads right after choosing', async () => {
+      const uploadMethod = vi.fn(async () => 'done');
+      installRuntime({
+        chooseImage: vi.fn((options: { success?: (r: { tempFiles: unknown[] }) => void }) => {
+          options.success?.({ tempFiles: [{ path: 'a.png', size: 1 }] });
+        }),
+      });
+      const w = mountUpload({ uploadMethod });
+      await w.find('.sn-upload__evoke').trigger('tap');
+      await vi.waitFor(() => expect(w.emitted('success')).toHaveLength(1));
+      expect(uploadMethod).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing on submit while disabled', async () => {
+      const uploadMethod = vi.fn(async () => 'done');
+      const w = mountUpload({
+        disabled: true,
+        fileList: [{ uid: 1, url: 'a.png', status: 'pending' }],
+        uploadMethod,
+      });
+      const vm = w.vm as unknown as { submit(): Promise<void> };
+      await vm.submit();
+      expect(uploadMethod).not.toHaveBeenCalled();
+    });
+
+    it('reports live progress from the runtime task (regression: percent stuck at 0)', async () => {
+      let report: ((r: { progress: number }) => void) | undefined;
+      installRuntime({
+        uploadFile: vi.fn(() => ({
+          abort: vi.fn(),
+          onProgressUpdate: (cb: (r: { progress: number }) => void) => {
+            report = cb;
+          },
+        })),
+      });
+      const w = mountUpload({
+        fileList: [{ uid: 1, url: 'a.png', status: 'pending' }],
+        action: '/api/upload',
+      });
+      const vm = w.vm as unknown as { submit(): Promise<void> };
+      const submitting = vm.submit();
+      await vi.waitFor(() => expect(report).toBeDefined());
+      report?.({ progress: 55.4 });
+      await vi.waitFor(() => expect(w.emitted('progress')).toHaveLength(1));
+      const payload = w.emitted('progress')?.[0]?.[0] as { file: UploadFileItem; percent: number };
+      expect(payload.percent).toBe(55);
+      expect(payload.file.percent).toBe(55);
+      expect(w.find('.sn-upload__progress').text()).toBe('55%');
+      await submitting;
+    });
+
+    it('aborts one task through abort(task) and all through abort()', async () => {
+      const abortOne = vi.fn();
+      const task = { abort: abortOne };
+      installRuntime({ uploadFile: vi.fn(() => task) });
+      const w = mountUpload({
+        fileList: [{ uid: 1, url: 'a.png', status: 'pending' }],
+        action: '/api/upload',
+      });
+      const vm = w.vm as unknown as {
+        submit(): Promise<void>;
+        abort(t?: unknown): void;
+      };
+      await vm.submit();
+      vm.abort(task);
+      expect(abortOne).toHaveBeenCalledTimes(1);
+      vm.abort();
+      expect(abortOne).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('presentation (extended)', () => {
+    it('assigns monotonically increasing uids after the existing list', async () => {
+      installRuntime({
+        chooseImage: vi.fn((options: { success?: (r: { tempFiles: unknown[] }) => void }) => {
+          options.success?.({ tempFiles: [{ path: 'n.png', size: 1 }] });
+        }),
+      });
+      const w = mountUpload({ fileList: [{ uid: 5, url: 'old.png' }], autoUpload: false });
+      await w.find('.sn-upload__evoke').trigger('tap');
+      await vi.waitFor(() => expect(lastList(w)).toHaveLength(2));
+      expect(lastList(w)[1]?.uid).toBe(6);
+    });
+
+    it('requests one file per tap unless multiple is set', async () => {
+      const singleRuntime = installRuntime();
+      const single = mountUpload();
+      await single.find('.sn-upload__evoke').trigger('tap');
+      const singleOptions = singleRuntime.chooseImage?.mock.calls[0]?.[0] as { count: number };
+      expect(singleOptions.count).toBe(1);
+
+      const multiRuntime = installRuntime();
+      const multi = mountUpload({ multiple: true, limit: 5 });
+      await multi.find('.sn-upload__evoke').trigger('tap');
+      const multiOptions = multiRuntime.chooseImage?.mock.calls[0]?.[0] as { count: number };
+      expect(multiOptions.count).toBe(5);
+    });
+
+    it('forwards imageMode to the thumbnail', () => {
+      const w = mountUpload({
+        fileList: [{ uid: 1, url: 'a.png' }],
+        imageMode: 'aspectFill',
+      });
+      expect(w.find('.sn-upload__thumb').attributes('mode')).toBe('aspectFill');
+    });
+
+    it('renders an empty thumb for a file without a url', () => {
+      const w = mountUpload({ fileList: [{ uid: 1 }] });
+      expect(w.find('.sn-upload__thumb--empty').exists()).toBe(true);
+      expect(w.find('image.sn-upload__thumb').exists()).toBe(false);
+    });
+
+    it('labels the picker and remove buttons for assistive tech', () => {
+      const w = mountUpload({ fileList: [{ uid: 1, url: 'a.png', name: 'photo' }] });
+      expect(w.find('.sn-upload__evoke').attributes('aria-label')).toBe('choose file');
+      expect(w.find('.sn-upload__remove').attributes('aria-label')).toBe('remove photo');
+      expect(w.find('.sn-upload__evoke').attributes('role')).toBe('button');
+    });
+
+    it('applies custom classes and style', () => {
+      const w = mountUpload({
+        customClass: 'my-upload',
+        customStyle: 'padding: 4px;',
+        customEvokeClass: 'my-evoke',
+        customPreviewClass: 'my-preview',
+        fileList: [{ uid: 1, url: 'a.png' }],
+      });
+      expect(w.classes()).toContain('my-upload');
+      expect(w.attributes('style')).toContain('padding: 4px');
+      expect(w.find('.sn-upload__evoke').classes()).toContain('my-evoke');
+      expect(w.find('.sn-upload__file').classes()).toContain('my-preview');
+    });
+
+    it('reflects an externally replaced fileList', async () => {
+      const w = mountUpload({ fileList: [{ uid: 1, url: 'a.png' }] });
+      await w.setProps({ fileList: [{ uid: 9, url: 'new.png' }] });
+      expect(w.findAll('.sn-upload__file')).toHaveLength(1);
+      expect(w.find('.sn-upload__thumb').attributes('src')).toBe('new.png');
+    });
+
+    it('marks the root as a labelled group', () => {
+      const w = mountUpload();
+      expect(w.attributes('role')).toBe('group');
+      expect(w.attributes('aria-label')).toBe('upload');
+      expect(w.attributes('data-snui-component')).toBe('upload');
+    });
+  });
 });

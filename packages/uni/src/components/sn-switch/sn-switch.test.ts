@@ -8,6 +8,7 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { h, ref } from 'vue';
 import SnSwitch from './sn-switch.vue';
 
 describe('sn-switch', () => {
@@ -245,5 +246,110 @@ describe('sn-switch', () => {
       expect(wrapper.attributes('class-prefix')).toBeUndefined();
       expect(wrapper.attributes('classPrefix')).toBeUndefined();
     });
+  });
+
+  /* ── Extended coverage: pending guard, rapid toggling, rail icons ── */
+
+  it('marks the wrapper data component', () => {
+    expect(mount(SnSwitch).attributes('data-snui-component')).toBe('switch');
+  });
+
+  it('omits aria-disabled while enabled', () => {
+    expect(mount(SnSwitch).attributes('aria-disabled')).toBeUndefined();
+  });
+
+  it('shows the pending state and ignores taps until beforeChange settles', async () => {
+    let resolvePending: ((allowed: boolean) => void) | undefined;
+    const beforeChange = vi.fn(
+      () =>
+        new Promise<boolean>((resolve) => {
+          resolvePending = resolve;
+        }),
+    );
+    const wrapper = mount(SnSwitch, { props: { beforeChange } });
+    await wrapper.trigger('tap');
+    expect(wrapper.classes()).toContain('sn-switch--loading');
+
+    // a second tap while pending must not queue a second toggle
+    await wrapper.trigger('tap');
+    resolvePending?.(true);
+    await vi.waitFor(() => {
+      expect(wrapper.emitted('update:modelValue')).toHaveLength(1);
+    });
+    expect(wrapper.classes()).not.toContain('sn-switch--loading');
+  });
+
+  it('releases the pending state when the parent clears loading', async () => {
+    const beforeChange = () => new Promise<boolean>(() => undefined); // never settles
+    const wrapper = mount(SnSwitch, { props: { beforeChange } });
+    await wrapper.trigger('tap');
+    expect(wrapper.classes()).toContain('sn-switch--loading');
+    await wrapper.setProps({ loading: true });
+    await wrapper.setProps({ loading: false });
+    expect(wrapper.classes()).not.toContain('sn-switch--loading');
+    wrapper.unmount();
+  });
+
+  it('flips on every tap under v-model', async () => {
+    const Host = {
+      setup() {
+        const model = ref<boolean>(false);
+        return () =>
+          h(SnSwitch, {
+            modelValue: model.value,
+            'onUpdate:modelValue': (v: boolean) => {
+              model.value = v;
+            },
+          });
+      },
+    };
+    const wrapper = mount(Host);
+    await wrapper.trigger('tap');
+    await wrapper.trigger('tap');
+    await wrapper.trigger('tap');
+    expect(wrapper.classes()).toContain('sn-switch--checked');
+    const emitted = wrapper.findComponent(SnSwitch).emitted('update:modelValue') ?? [];
+    expect(emitted.map((e) => e[0])).toEqual([true, false, true]);
+  });
+
+  it('renders the inactive registry action icon while off', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Star } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Star });
+    const wrapper = mount(SnSwitch, {
+      props: { modelValue: false, inactiveActionIcon: 'Star' },
+    });
+    expect(wrapper.find('.sn-switch__action .sn-icon').exists()).toBe(true);
+    clearSnIcons();
+  });
+
+  it('renders the active registry rail icon (regression: rail icon used to vanish)', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Star } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Star });
+    const wrapper = mount(SnSwitch, {
+      props: { modelValue: true, activeText: 'ON', activeIcon: 'Star' },
+    });
+    expect(wrapper.find('.sn-switch__rail-icon .sn-icon').exists()).toBe(true);
+    expect(wrapper.find('.sn-switch__rail-text').exists()).toBe(false);
+    clearSnIcons();
+  });
+
+  it('renders the inactive registry rail icon while off', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Star } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Star });
+    const wrapper = mount(SnSwitch, {
+      props: { modelValue: false, inactiveText: 'OFF', inactiveIcon: 'Star' },
+    });
+    expect(wrapper.find('.sn-switch__rail-icon .sn-icon').exists()).toBe(true);
+    clearSnIcons();
+  });
+
+  it('falls back to the text when a rail icon name is not registered', async () => {
+    const wrapper = mount(SnSwitch, {
+      props: { modelValue: true, activeText: 'ON', activeIcon: 'not-registered' },
+    });
+    expect(wrapper.find('.sn-switch__rail-icon').exists()).toBe(false);
   });
 });

@@ -76,9 +76,11 @@ interface ChosenFile {
   name?: string;
 }
 
-/** Upload task handle (only `abort` is used here). */
+/** Upload task handle (only `abort` + progress reporting are used here). */
 interface UploadTask {
   abort?: () => void;
+  /** uni.uploadFile tasks report progress 0–100 through this callback. */
+  onProgressUpdate?: (callback: (result: { progress: number }) => void) => void;
 }
 
 /** Minimal shape of the runtime API this component touches. */
@@ -412,7 +414,17 @@ async function startUpload(uid: number): Promise<void> {
       emit('fail', { file: failed ?? file, error });
     },
   });
-  if (task) tasks.set(uid, task);
+  if (task) {
+    tasks.set(uid, task);
+    // The declared `progress` contract is only live when the runtime task
+    // actually reports progress; without this wiring the percent mask would
+    // stay pinned at 0% for the whole transfer.
+    task.onProgressUpdate?.((result) => {
+      const percent = Math.max(0, Math.min(100, Math.round(result.progress)));
+      const current = patchFile(uid, { percent });
+      emit('progress', { file: current ?? file, percent });
+    });
+  }
 }
 
 /** Public imperative API (wd-upload parity): start every pending upload. */

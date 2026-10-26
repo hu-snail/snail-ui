@@ -25,7 +25,7 @@
  * DOM bridge only. Validation rules live on `sn-form-item`.
  */
 
-import { computed, markRaw, nextTick, ref, useSlots } from 'vue';
+import { computed, markRaw, nextTick, onMounted, ref, useSlots } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Eye, EyeOff, X as XIcon } from '../sn-icon/sn-icon-set';
@@ -283,6 +283,15 @@ let snInputUid = 0;
 const inputId = `sn-input-${++snInputUid}`;
 const slots = useSlots();
 
+/** Native `<input>` / `<textarea>` — only one exists at a time (v-if / v-else). */
+const nativeEl = ref<HTMLInputElement | HTMLTextAreaElement | null>(null);
+
+// uni 的 input 组件 `focus` prop 语义：挂载后自动聚焦。H5 / 测试环境通过真实
+// .focus() 实现；MP 编译目标由 uni 运行时按同名 prop 处理。
+onMounted(() => {
+  if (props.focus) nativeEl.value?.focus();
+});
+
 /** DOM-bound value (always string). */
 const nativeValue = computed<string>(() =>
   props.modelValue === null || props.modelValue === undefined ? '' : String(props.modelValue),
@@ -466,6 +475,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 
     <textarea
       v-if="isTextarea"
+      ref="nativeEl"
       :id="inputId"
       :class="['sn-input__native', placeholderClass, customInputClass]"
       :value="nativeValue"
@@ -501,6 +511,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 
     <input
       v-else
+      ref="nativeEl"
       :id="inputId"
       :class="['sn-input__native', placeholderClass, customInputClass]"
       :type="effectivePasswordType"

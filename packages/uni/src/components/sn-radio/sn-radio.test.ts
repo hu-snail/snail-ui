@@ -315,4 +315,107 @@ describe('sn-radio', () => {
       expect(wrapper.attributes('style')).toContain('margin: 4px');
     });
   });
+
+  /* ── Extended coverage: standalone tap, inheritance edges, a11y details ── */
+
+  it('still emits change when tapped outside any group', async () => {
+    const wrapper = mount(SnRadio, { props: { value: 'solo' }, slots: { default: 'Solo' } });
+    await wrapper.trigger('tap');
+    expect(wrapper.emitted('change')?.at(-1)).toEqual(['solo']);
+    expect(wrapper.attributes('aria-checked')).toBe('false');
+  });
+
+  it('marks the wrapper data component and shape', () => {
+    const wrapper = mount(SnRadio, { props: { type: 'dot' } });
+    expect(wrapper.attributes('data-snui-component')).toBe('radio');
+    expect(wrapper.attributes('data-type')).toBe('dot');
+  });
+
+  it('keeps the radio in the tab order while interactive', () => {
+    expect(mount(SnRadio).attributes('tabindex')).toBe('0');
+  });
+
+  it('renders the check glyph inside the button-shape dot while checked', () => {
+    const wrapper = mountGroup({ modelValue: 'a', type: 'button' }, [{ value: 'a', label: 'A' }]);
+    const radio = wrapper.findComponent(SnRadio);
+    expect(radio.find('.sn-radio__dot .sn-icon').exists()).toBe(true);
+  });
+
+  it('applies the group uncheckedColor to an unselected child marker', () => {
+    const wrapper = mountGroup(
+      { modelValue: 'b', uncheckedColor: 'rgb(5, 6, 7)' },
+      [
+        { value: 'a', label: 'A' },
+        { value: 'b', label: 'B' },
+      ],
+    );
+    expect(
+      wrapper.findAllComponents(SnRadio)[0]!.find('.sn-radio__marker').attributes('style'),
+    ).toContain('border-color: rgb(5, 6, 7)');
+  });
+
+  it('lets a child stay disabled while the group is enabled', () => {
+    const wrapper = mountGroup({ modelValue: undefined }, [
+      { value: 'a', label: 'A', disabled: true },
+      { value: 'b', label: 'B' },
+    ]);
+    const radios = wrapper.findAllComponents(SnRadio);
+    expect(radios[0]!.classes()).toContain('sn-radio--disabled');
+    expect(radios[1]!.classes()).not.toContain('sn-radio--disabled');
+    expect(radios[0]!.attributes('tabindex')).toBe('-1');
+    expect(radios[1]!.attributes('tabindex')).toBe('0');
+  });
+
+  it('matches boolean values strictly', async () => {
+    const wrapper = mountGroup({ modelValue: undefined }, [
+      { value: true, label: 'Yes' },
+      { value: false, label: 'No' },
+    ]);
+    await wrapper.findAllComponents(SnRadio)[0]!.trigger('tap');
+    const group = wrapper.findComponent(SnRadioGroup);
+    expect(group.emitted('update:modelValue')?.at(-1)).toEqual([true]);
+    const radios = wrapper.findAllComponents(SnRadio);
+    expect(radios[0]!.attributes('aria-checked')).toBe('true');
+    expect(radios[1]!.attributes('aria-checked')).toBe('false');
+  });
+
+  it('emits change alongside update:modelValue from imperative select', () => {
+    const wrapper = mount(SnRadioGroup, { props: { modelValue: 'a' } });
+    const vm = wrapper.vm as unknown as { select: (v: string) => void };
+    vm.select('b');
+    expect(wrapper.emitted('change')?.at(-1)).toEqual(['b']);
+  });
+
+  it('blocks imperative select while readonly', () => {
+    const wrapper = mount(SnRadioGroup, { props: { readonly: true } });
+    const vm = wrapper.vm as unknown as { select: (v: string) => void };
+    vm.select('a');
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('re-selects after an allowUncheck clear', async () => {
+    const model = ref<RadioValue>('a');
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnRadioGroup,
+            {
+              modelValue: model.value,
+              allowUncheck: true,
+              'onUpdate:modelValue': (v: RadioValue) => {
+                model.value = v;
+              },
+            },
+            () => [h(SnRadio, { value: 'a' }, () => 'A')],
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    const radio = wrapper.findComponent(SnRadio);
+    await radio.trigger('tap');
+    expect(model.value).toBeUndefined();
+    await radio.trigger('tap');
+    expect(model.value).toBe('a');
+  });
 });

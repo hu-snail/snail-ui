@@ -274,4 +274,138 @@ describe('sn-slider', () => {
       }).not.toThrow();
     });
   });
+
+  /* ── Extended coverage: tap-to-jump, payloads, a11y, snap precision ── */
+
+  describe('tap to jump', () => {
+    it('jumps the single knob to the tapped position', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 0, step: 10 } });
+      withTrackBox(w);
+      await w.find('.sn-slider__track').trigger('tap', { detail: { x: 47 } });
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([50]);
+      expect(w.emitted('change')?.[0]).toEqual([50]);
+    });
+
+    it('jumps the nearest range knob to the tapped position', async () => {
+      const w = mount(SnSlider, { props: { modelValue: [20, 60], range: true } });
+      withTrackBox(w);
+      await w.find('.sn-slider__track').trigger('tap', { detail: { x: 80 } });
+      // nearest knob is the end (60) → it moves to 80
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([[20, 80]]);
+    });
+
+    it('emits change exactly once per range tap (regression: stale duplicate)', async () => {
+      const w = mount(SnSlider, { props: { modelValue: [20, 60], range: true } });
+      withTrackBox(w);
+      await w.find('.sn-slider__track').trigger('tap', { detail: { x: 80 } });
+      const changes = w.emitted('change') ?? [];
+      expect(changes).toHaveLength(1);
+      expect(changes[0]).toEqual([[20, 80]]);
+    });
+
+    it('does not emit on a track tap while disabled', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 20, disabled: true } });
+      withTrackBox(w);
+      await w.find('.sn-slider__track').trigger('tap', { detail: { x: 80 } });
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+  });
+
+  describe('event payloads', () => {
+    it('carries the model value in dragstart / dragmove / dragend payloads', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 20 } });
+      withTrackBox(w);
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 20 }] });
+      await w.find('.sn-slider__track').trigger('touchmove', { touches: [{ clientX: 50 }] });
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 50 }] });
+      expect(w.emitted('dragstart')?.[0]).toEqual([{ value: 20 }]);
+      expect(w.emitted('dragmove')?.[0]).toEqual([{ value: 20 }]);
+      expect(w.emitted('dragend')?.[0]).toEqual([{ value: 20 }]);
+    });
+
+    it('emits update:modelValue and change with the committed drag value', async () => {
+      const w = mount(SnSlider, { props: { modelValue: 0, step: 10 } });
+      withTrackBox(w);
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 0 }] });
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 50 }] });
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([50]);
+      expect(w.emitted('change')?.[0]).toEqual([50]);
+    });
+
+    it('snaps 0.1-step drags without floating-point drift', async () => {
+      const w = mount(SnSlider, {
+        props: { modelValue: 0, min: 0, max: 1, step: 0.1 },
+      });
+      withTrackBox(w);
+      await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientX: 0 }] });
+      await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 30 }] });
+      expect(lastValue(w)).toBe(0.3);
+    });
+  });
+
+  describe('a11y + forwarding', () => {
+    it('exposes the knob as a labelled button in the tab order', () => {
+      const w = mount(SnSlider, { props: { modelValue: 40 } });
+      const knob = w.find('.sn-slider__knob');
+      expect(knob.attributes('role')).toBe('button');
+      expect(knob.attributes('aria-label')).toBe('slider knob 40');
+      expect(knob.attributes('tabindex')).toBe('0');
+    });
+
+    it('drops both knobs from the tab order while disabled', () => {
+      const w = mount(SnSlider, { props: { modelValue: [20, 60], range: true, disabled: true } });
+      const knobs = w.findAll('.sn-slider__knob');
+      expect(knobs).toHaveLength(2);
+      for (const knob of knobs) {
+        expect(knob.attributes('tabindex')).toBe('-1');
+      }
+      expect(w.find('.sn-slider__track').attributes('aria-disabled')).toBe('true');
+      expect(w.attributes('aria-disabled')).toBe('true');
+    });
+
+    it('hides the extreme captions in vertical mode', () => {
+      const w = mount(SnSlider, { props: { showExtremeValue: true, vertical: true } });
+      expect(w.findAll('.sn-slider__extreme')).toHaveLength(0);
+    });
+
+    it('forwards customClass and customStyle', () => {
+      const w = mount(SnSlider, {
+        props: { customClass: 'my-slider', customStyle: 'margin: 4px;' },
+      });
+      expect(w.classes()).toContain('my-slider');
+      expect(w.attributes('style')).toContain('margin: 4px');
+    });
+  });
+
+  describe('marks (extended)', () => {
+    it('activates marks inside the selected range', () => {
+      const w = mount(SnSlider, {
+        props: {
+          modelValue: [20, 60],
+          range: true,
+          marks: { 0: 'a', 30: 'b', 50: 'c', 100: 'd' },
+        },
+      });
+      const marks = w.findAll('.sn-slider__mark');
+      expect(marks[0]?.classes()).not.toContain('sn-slider__mark--active');
+      expect(marks[1]?.classes()).toContain('sn-slider__mark--active');
+      expect(marks[2]?.classes()).toContain('sn-slider__mark--active');
+      expect(marks[3]?.classes()).not.toContain('sn-slider__mark--active');
+    });
+
+    it('drops non-finite array marks', () => {
+      const w = mount(SnSlider, {
+        props: {
+          modelValue: 30,
+          marks: [
+            { value: Number.NaN, label: 'bad' },
+            { value: 50, label: 'ok' },
+          ],
+        },
+      });
+      const marks = w.findAll('.sn-slider__mark');
+      expect(marks).toHaveLength(1);
+      expect(marks[0]?.text()).toBe('ok');
+    });
+  });
 });
