@@ -514,7 +514,7 @@ defineExpose({ submit });
         >
           <span
             class="sn-upload__progress-fill"
-            :style="{ width: `${clampedPercentage(file)}%` }"
+            :style="{ transform: `scaleX(${clampedPercentage(file)! / 100})` }"
           />
         </span>
       </li>
@@ -756,10 +756,14 @@ defineExpose({ submit });
 
 .sn-upload__progress-fill {
   display: block;
+  width: 100%;
   height: 100%;
   border-radius: inherit;
   background-color: var(--sn-web-upload-progress-fill, var(--sn-web-color-action-primary));
-  transition: width 0.2s linear;
+  /* Fill via scaleX from the left edge — transform animates on the
+   * compositor, animating `width` re-layouts every frame. */
+  transform-origin: left;
+  transition: transform 0.2s linear;
 }
 
 /* ---------- Click-to-preview affordances ---------- */

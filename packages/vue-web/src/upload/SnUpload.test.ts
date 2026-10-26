@@ -401,7 +401,9 @@ describe('SnUpload', () => {
     const bar = wrapper.get('.sn-upload__progress');
     expect(bar.attributes('role')).toBe('progressbar');
     expect(bar.attributes('aria-valuenow')).toBe('40');
-    expect(wrapper.get('.sn-upload__progress-fill').attributes('style')).toContain('width: 40%');
+    expect(wrapper.get('.sn-upload__progress-fill').attributes('style')).toContain(
+      'transform: scaleX(0.4)',
+    );
   });
 
   it('clamps a percentage outside 0–100', async () => {

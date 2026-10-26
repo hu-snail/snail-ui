@@ -15,3 +15,26 @@
 
 @import '@snui/tokens/styles/index.css';
 @import '@snui/tokens-web/styles/index.css';
+
+/* ── Reduced motion ────────────────────────────────────────────────────────
+ * Users who ask the OS for reduced motion get near-instant animation across
+ * every component in one place — per-component `@media` guards (SnLoading,
+ * SnMarquee, SnGrid, …) stay as they add component-specific behaviour such
+ * as hiding a decorative element entirely.
+ *
+ * Durations collapse to 0.01ms instead of `animation: none` so fill-mode
+ * states still land on their final frame, and `transitionend` still fires —
+ * Vue <Transition> and transition-dependent logic keep working. The
+ * `!important` here is the sanctioned exception to the no-!important rule:
+ * without it every scoped component transition would outrank this block.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
