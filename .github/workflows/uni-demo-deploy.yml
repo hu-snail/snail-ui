@@ -1,0 +1,79 @@
+name: uni-demo deploy
+
+# uni 端演示站（apps/uni-demo）的 H5 产物独立部署到 GitHub Pages。
+# docs 组件文档的 uni 预览 iframe 指向该站点（ADR-0005）。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/uni-demo/**'
+      - 'packages/uni/**'
+      - 'packages/templates/**'
+      - 'packages/tokens/**'
+      - 'packages/tokens-mp/**'
+      - '.github/workflows/uni-demo-deploy.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: uni-demo-pages
+  cancel-in-progress: true
+
+env:
+  PNPM_VERSION: '10'
+  # GitHub Pages 项目站：https://<owner>.github.io/<repo>/
+  UNI_H5_BASE: /snail-ui/
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # demo 源经 @snui/uni-src 别名引用组件库源码；App.vue 另引入
+      # '@snui/uni/styles'（dist 产物），需先构建组件库及其 token 依赖。
+      - name: Build @snui/uni (with deps)
+        run: pnpm --filter @snui/uni... run build
+
+      - name: Build uni-demo H5
+        run: pnpm --filter @snui/uni-demo run build:h5
+
+      - name: Disable Jekyll
+        run: touch apps/uni-demo/dist/build/h5/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/uni-demo/dist/build/h5
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

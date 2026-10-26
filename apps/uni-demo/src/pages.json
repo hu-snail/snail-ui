@@ -1,0 +1,619 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "snui 组件演示"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/basic",
+      "pages": [
+        {
+          "path": "avatar",
+          "style": {
+            "navigationBarTitleText": "头像"
+          }
+        },
+        {
+          "path": "badge",
+          "style": {
+            "navigationBarTitleText": "徽标"
+          }
+        },
+        {
+          "path": "button",
+          "style": {
+            "navigationBarTitleText": "按钮"
+          }
+        },
+        {
+          "path": "cell",
+          "style": {
+            "navigationBarTitleText": "单元格"
+          }
+        },
+        {
+          "path": "config-provider",
+          "style": {
+            "navigationBarTitleText": "全局配置"
+          }
+        },
+        {
+          "path": "divider",
+          "style": {
+            "navigationBarTitleText": "分割线"
+          }
+        },
+        {
+          "path": "fab",
+          "style": {
+            "navigationBarTitleText": "悬浮按钮"
+          }
+        },
+        {
+          "path": "gap",
+          "style": {
+            "navigationBarTitleText": "间隔槽"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/basic-2",
+      "pages": [
+        {
+          "path": "icon",
+          "style": {
+            "navigationBarTitleText": "图标"
+          }
+        },
+        {
+          "path": "layout",
+          "style": {
+            "navigationBarTitleText": "布局"
+          }
+        },
+        {
+          "path": "resize",
+          "style": {
+            "navigationBarTitleText": "监听元素尺寸"
+          }
+        },
+        {
+          "path": "root-portal",
+          "style": {
+            "navigationBarTitleText": "根节点传送"
+          }
+        },
+        {
+          "path": "tag",
+          "style": {
+            "navigationBarTitleText": "标签"
+          }
+        },
+        {
+          "path": "text",
+          "style": {
+            "navigationBarTitleText": "文本"
+          }
+        },
+        {
+          "path": "transition",
+          "style": {
+            "navigationBarTitleText": "动画"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/navigation",
+      "pages": [
+        {
+          "path": "backtop",
+          "style": {
+            "navigationBarTitleText": "回到顶部"
+          }
+        },
+        {
+          "path": "collapse",
+          "style": {
+            "navigationBarTitleText": "折叠面板"
+          }
+        },
+        {
+          "path": "drop-menu",
+          "style": {
+            "navigationBarTitleText": "下拉菜单"
+          }
+        },
+        {
+          "path": "grid",
+          "style": {
+            "navigationBarTitleText": "宫格"
+          }
+        },
+        {
+          "path": "index-bar",
+          "style": {
+            "navigationBarTitleText": "索引栏"
+          }
+        },
+        {
+          "path": "navbar",
+          "style": {
+            "navigationBarTitleText": "导航栏"
+          }
+        },
+        {
+          "path": "pagination",
+          "style": {
+            "navigationBarTitleText": "分页"
+          }
+        },
+        {
+          "path": "popover",
+          "style": {
+            "navigationBarTitleText": "气泡"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/navigation-2",
+      "pages": [
+        {
+          "path": "segmented",
+          "style": {
+            "navigationBarTitleText": "分段器"
+          }
+        },
+        {
+          "path": "sidebar",
+          "style": {
+            "navigationBarTitleText": "侧边导航"
+          }
+        },
+        {
+          "path": "steps",
+          "style": {
+            "navigationBarTitleText": "步骤条"
+          }
+        },
+        {
+          "path": "sticky",
+          "style": {
+            "navigationBarTitleText": "粘性布局"
+          }
+        },
+        {
+          "path": "tabbar",
+          "style": {
+            "navigationBarTitleText": "标签栏"
+          }
+        },
+        {
+          "path": "tabs",
+          "style": {
+            "navigationBarTitleText": "标签页"
+          }
+        },
+        {
+          "path": "tooltip",
+          "style": {
+            "navigationBarTitleText": "文字提示"
+          }
+        },
+        {
+          "path": "tour",
+          "style": {
+            "navigationBarTitleText": "漫游"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/form",
+      "pages": [
+        {
+          "path": "calendar",
+          "style": {
+            "navigationBarTitleText": "日历选择器"
+          }
+        },
+        {
+          "path": "calendar-view",
+          "style": {
+            "navigationBarTitleText": "日历面板"
+          }
+        },
+        {
+          "path": "cascader",
+          "style": {
+            "navigationBarTitleText": "级联选择器"
+          }
+        },
+        {
+          "path": "checkbox",
+          "style": {
+            "navigationBarTitleText": "复选框"
+          }
+        },
+        {
+          "path": "datetime-picker",
+          "style": {
+            "navigationBarTitleText": "时间选择器"
+          }
+        },
+        {
+          "path": "datetime-picker-view",
+          "style": {
+            "navigationBarTitleText": "时间选择器视图"
+          }
+        },
+        {
+          "path": "form",
+          "style": {
+            "navigationBarTitleText": "表单"
+          }
+        },
+        {
+          "path": "input",
+          "style": {
+            "navigationBarTitleText": "输入框"
+          }
+        },
+        {
+          "path": "input-number",
+          "style": {
+            "navigationBarTitleText": "计数器"
+          }
+        },
+        {
+          "path": "keyboard",
+          "style": {
+            "navigationBarTitleText": "虚拟键盘"
+          }
+        },
+        {
+          "path": "password-input",
+          "style": {
+            "navigationBarTitleText": "密码输入框"
+          }
+        },
+        {
+          "path": "picker",
+          "style": {
+            "navigationBarTitleText": "选择器"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/form-2",
+      "pages": [
+        {
+          "path": "picker-view",
+          "style": {
+            "navigationBarTitleText": "选择器视图"
+          }
+        },
+        {
+          "path": "radio",
+          "style": {
+            "navigationBarTitleText": "单选框"
+          }
+        },
+        {
+          "path": "rate",
+          "style": {
+            "navigationBarTitleText": "评分"
+          }
+        },
+        {
+          "path": "search",
+          "style": {
+            "navigationBarTitleText": "搜索框"
+          }
+        },
+        {
+          "path": "select-picker",
+          "style": {
+            "navigationBarTitleText": "单复选选择器"
+          }
+        },
+        {
+          "path": "signature",
+          "style": {
+            "navigationBarTitleText": "签名"
+          }
+        },
+        {
+          "path": "slide-verify",
+          "style": {
+            "navigationBarTitleText": "滑动验证"
+          }
+        },
+        {
+          "path": "slider",
+          "style": {
+            "navigationBarTitleText": "滑块"
+          }
+        },
+        {
+          "path": "sort-button",
+          "style": {
+            "navigationBarTitleText": "排序按钮"
+          }
+        },
+        {
+          "path": "switch",
+          "style": {
+            "navigationBarTitleText": "开关"
+          }
+        },
+        {
+          "path": "textarea",
+          "style": {
+            "navigationBarTitleText": "文本域"
+          }
+        },
+        {
+          "path": "upload",
+          "style": {
+            "navigationBarTitleText": "上传"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/feedback",
+      "pages": [
+        {
+          "path": "action-sheet",
+          "style": {
+            "navigationBarTitleText": "动作面板"
+          }
+        },
+        {
+          "path": "circle",
+          "style": {
+            "navigationBarTitleText": "环形进度条"
+          }
+        },
+        {
+          "path": "curtain",
+          "style": {
+            "navigationBarTitleText": "幕帘"
+          }
+        },
+        {
+          "path": "dialog",
+          "style": {
+            "navigationBarTitleText": "弹框"
+          }
+        },
+        {
+          "path": "empty",
+          "style": {
+            "navigationBarTitleText": "缺省提示"
+          }
+        },
+        {
+          "path": "floating-panel",
+          "style": {
+            "navigationBarTitleText": "浮动面板"
+          }
+        },
+        {
+          "path": "loading",
+          "style": {
+            "navigationBarTitleText": "加载指示器"
+          }
+        },
+        {
+          "path": "loadmore",
+          "style": {
+            "navigationBarTitleText": "加载更多"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/feedback-2",
+      "pages": [
+        {
+          "path": "notice-bar",
+          "style": {
+            "navigationBarTitleText": "通知栏"
+          }
+        },
+        {
+          "path": "notify",
+          "style": {
+            "navigationBarTitleText": "消息通知"
+          }
+        },
+        {
+          "path": "overlay",
+          "style": {
+            "navigationBarTitleText": "遮罩层"
+          }
+        },
+        {
+          "path": "popup",
+          "style": {
+            "navigationBarTitleText": "弹出层"
+          }
+        },
+        {
+          "path": "progress",
+          "style": {
+            "navigationBarTitleText": "进度条"
+          }
+        },
+        {
+          "path": "skeleton",
+          "style": {
+            "navigationBarTitleText": "骨架屏"
+          }
+        },
+        {
+          "path": "swipe-action",
+          "style": {
+            "navigationBarTitleText": "滑动操作"
+          }
+        },
+        {
+          "path": "toast",
+          "style": {
+            "navigationBarTitleText": "轻提示"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/display",
+      "pages": [
+        {
+          "path": "card",
+          "style": {
+            "navigationBarTitleText": "卡片"
+          }
+        },
+        {
+          "path": "count-down",
+          "style": {
+            "navigationBarTitleText": "倒计时"
+          }
+        },
+        {
+          "path": "count-to",
+          "style": {
+            "navigationBarTitleText": "数字滚动"
+          }
+        },
+        {
+          "path": "image-preview",
+          "style": {
+            "navigationBarTitleText": "图片预览"
+          }
+        },
+        {
+          "path": "img",
+          "style": {
+            "navigationBarTitleText": "图片"
+          }
+        },
+        {
+          "path": "img-cropper",
+          "style": {
+            "navigationBarTitleText": "图片裁剪"
+          }
+        },
+        {
+          "path": "qr-code",
+          "style": {
+            "navigationBarTitleText": "二维码"
+          }
+        },
+        {
+          "path": "swiper",
+          "style": {
+            "navigationBarTitleText": "轮播"
+          }
+        },
+        {
+          "path": "table",
+          "style": {
+            "navigationBarTitleText": "表格"
+          }
+        },
+        {
+          "path": "video-preview",
+          "style": {
+            "navigationBarTitleText": "视频预览"
+          }
+        },
+        {
+          "path": "watermark",
+          "style": {
+            "navigationBarTitleText": "水印"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/business",
+      "pages": [
+        {
+          "path": "barcode",
+          "style": {
+            "navigationBarTitleText": "条形码"
+          }
+        },
+        {
+          "path": "dialer",
+          "style": {
+            "navigationBarTitleText": "大转盘"
+          }
+        },
+        {
+          "path": "liquid",
+          "style": {
+            "navigationBarTitleText": "水波进度球"
+          }
+        },
+        {
+          "path": "lucky",
+          "style": {
+            "navigationBarTitleText": "抽奖九宫格"
+          }
+        },
+        {
+          "path": "scratchcard",
+          "style": {
+            "navigationBarTitleText": "刮刮乐"
+          }
+        },
+        {
+          "path": "typing",
+          "style": {
+            "navigationBarTitleText": "输入中"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/more",
+      "pages": [
+        {
+          "path": "ai-chat",
+          "style": {
+            "navigationBarTitleText": "ai-chat"
+          }
+        },
+        {
+          "path": "ai-message-list",
+          "style": {
+            "navigationBarTitleText": "ai-message-list"
+          }
+        },
+        {
+          "path": "paging",
+          "style": {
+            "navigationBarTitleText": "paging"
+          }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "snui",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#F7F7F7"
+  }
+}
