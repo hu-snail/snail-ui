@@ -114,11 +114,10 @@ function pickSource(base: string): string | undefined {
 /** Raw source of a demo, preferring the English shadow when `isEn`. */
 export function loadDemoSource(name: string, isEn: boolean): string {
   if (isMpDemoName(name)) {
-    const uniBase = `/uni-demo/src/pages`;
-    const en = isEn ? pickSource(`${uniBase}/*/demos/${name}.en.vue`) : undefined;
-    return (
-      en ?? pickSource(`${uniBase}/*/demos/${name}.vue`) ?? `// Demo source not found: ${name}`
-    );
+    // uni demo 位于 uni-demo 的分包 demos 目录（pages/<sub>/demos/）。
+    // 后缀匹配不带分包段：glob key 里 <sub> 是具体目录名，字面 `*` 匹配不上。
+    const en = isEn ? pickSource(`/demos/${name}.en.vue`) : undefined;
+    return en ?? pickSource(`/demos/${name}.vue`) ?? `// Demo source not found: ${name}`;
   }
   const en = isEn ? pickSource(`/demo-en/${name}.vue`) : undefined;
   return en ?? pickSource(`/demo/${name}.vue`) ?? `// Demo source not found: ${name}`;
