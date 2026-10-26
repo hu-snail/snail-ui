@@ -204,5 +204,79 @@ describe('sn-text', () => {
       expect(w.classes()).toContain('my-text');
       expect(w.attributes('style')).toContain('margin: 4px');
     });
+
+    it('marks the root with the component tag', () => {
+      const w = mount(SnText, { props: { text: 'x' } });
+      expect(w.attributes('data-snui-component')).toBe('text');
+    });
+  });
+
+  describe('mode edge cases', () => {
+    it('passes non-numeric price text through untouched instead of rendering 0.00', () => {
+      const w = mount(SnText, { props: { text: 'abc', mode: 'price' } });
+      expect(w.text()).toBe('abc');
+    });
+
+    it('strips currency symbols before grouping a price', () => {
+      const w = mount(SnText, { props: { text: '¥1288', mode: 'price' } });
+      expect(w.text()).toBe('1,288.00');
+    });
+
+    it('renders a numeric text prop through price mode', () => {
+      const w = mount(SnText, { props: { text: 1288.5, mode: 'price' } });
+      expect(w.text()).toBe('1,288.50');
+    });
+
+    it('masks a spaced phone number the same as a bare one', () => {
+      const w = mount(SnText, {
+        props: { text: '138 0013 8000', mode: 'phone', format: true },
+      });
+      expect(w.text()).toBe('138****8000');
+    });
+
+    it('leaves a phone number shorter than 8 digits unmasked', () => {
+      const w = mount(SnText, { props: { text: '12345', mode: 'phone', format: true } });
+      expect(w.text()).toBe('12345');
+    });
+
+    it('leaves a single-character name unmasked', () => {
+      const w = mount(SnText, { props: { text: ' A ', mode: 'name', format: true } });
+      expect(w.text()).toBe('A');
+    });
+  });
+
+  describe('call edge cases', () => {
+    it('strips whitespace from the dialled number', async () => {
+      const calls: string[] = [];
+      (globalThis as { uni?: PhoneCallSpy }).uni = {
+        makePhoneCall: ({ phoneNumber }) => calls.push(phoneNumber),
+      };
+      const w = mount(SnText, {
+        props: { text: '138 0013 8000', mode: 'phone', call: true },
+      });
+      await w.trigger('tap');
+      expect(calls).toEqual(['13800138000']);
+    });
+
+    it('does not dial or take link semantics when the text is empty', () => {
+      const calls: string[] = [];
+      (globalThis as { uni?: PhoneCallSpy }).uni = {
+        makePhoneCall: ({ phoneNumber }) => calls.push(phoneNumber),
+      };
+      const w = mount(SnText, { props: { text: '', mode: 'phone', call: true } });
+      expect(w.attributes('role')).toBeUndefined();
+      expect(w.classes()).not.toContain('sn-text--call');
+      return w.trigger('tap').then(() => {
+        expect(calls).toEqual([]);
+      });
+    });
+  });
+
+  describe('clamping edge cases', () => {
+    it('adds no clamp for a non-positive lines value', () => {
+      const w = mount(SnText, { props: { text: 'x', lines: -1 } });
+      expect(w.classes()).not.toContain('sn-text--clamped');
+      expect(w.attributes('style')).toBeUndefined();
+    });
   });
 });

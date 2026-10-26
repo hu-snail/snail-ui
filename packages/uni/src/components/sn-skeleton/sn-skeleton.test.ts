@@ -133,4 +133,83 @@ describe('sn-skeleton', () => {
     const wrapper = mount(SnSkeleton, { props: { customStyle: 'margin: 8px' } });
     expect(wrapper.attributes('style')).toContain('margin: 8px');
   });
+
+  describe('accessibility', () => {
+    it('announces the loading state politely', () => {
+      const wrapper = mount(SnSkeleton);
+      expect(wrapper.attributes('aria-live')).toBe('polite');
+      expect(wrapper.attributes('aria-label')).toBe('loading');
+      expect(wrapper.attributes('data-snui-component')).toBe('skeleton');
+    });
+
+    it('hides placeholder blocks from assistive tech', () => {
+      const wrapper = mount(SnSkeleton, { props: { theme: 'avatar' } });
+      for (const col of wrapper.findAll('.sn-skeleton__col')) {
+        expect(col.attributes('aria-hidden')).toBe('true');
+      }
+    });
+  });
+
+  describe('rowCol edge cases', () => {
+    it('mixes numeric and descriptor rows in one layout', () => {
+      const wrapper = mount(SnSkeleton, {
+        props: {
+          rowCol: [2, [{ type: 'rect', size: '50%' }], 1],
+        },
+      });
+      expect(wrapper.findAll('.sn-skeleton__row')).toHaveLength(3);
+      const rows = wrapper.findAll('.sn-skeleton__row');
+      expect(rows[0]!.findAll('.sn-skeleton__col')).toHaveLength(2);
+      expect(rows[1]!.findAll('.sn-skeleton__col')).toHaveLength(1);
+      expect(rows[2]!.findAll('.sn-skeleton__col')).toHaveLength(1);
+    });
+
+    it('collapses a zero or negative numeric row to a single column', () => {
+      const zero = mount(SnSkeleton, { props: { rowCol: [0] } });
+      expect(zero.findAll('.sn-skeleton__col')).toHaveLength(1);
+
+      const negative = mount(SnSkeleton, { props: { rowCol: [-4] } });
+      expect(negative.findAll('.sn-skeleton__col')).toHaveLength(1);
+    });
+
+    it('rounds a fractional column count', () => {
+      const wrapper = mount(SnSkeleton, { props: { rowCol: [2.6] } });
+      expect(wrapper.findAll('.sn-skeleton__col')).toHaveLength(3);
+    });
+
+    it('falls back to one text column for an empty descriptor row', () => {
+      const wrapper = mount(SnSkeleton, { props: { rowCol: [[]] } });
+      const cols = wrapper.findAll('.sn-skeleton__col');
+      expect(cols).toHaveLength(1);
+      expect(cols[0]!.classes()).toContain('sn-skeleton__col--text');
+    });
+
+    it('defaults a typeless descriptor to the text shape', () => {
+      const wrapper = mount(SnSkeleton, { props: { rowCol: [[{}]] } });
+      expect(wrapper.find('.sn-skeleton__col').classes()).toContain('sn-skeleton__col--text');
+    });
+
+    it('applies the borderRadius override to a column', () => {
+      const wrapper = mount(SnSkeleton, {
+        props: { rowCol: [[{ type: 'rect', borderRadius: '12px' }]] },
+      });
+      expect(wrapper.find('.sn-skeleton__col').attributes('style')).toContain(
+        'border-radius: 12px',
+      );
+    });
+  });
+
+  describe('loading transitions', () => {
+    it('swaps placeholders for content reactively', async () => {
+      const wrapper = mount(SnSkeleton, {
+        slots: { default: '<text>content</text>' },
+      });
+      expect(wrapper.find('.sn-skeleton').exists()).toBe(true);
+      expect(wrapper.text()).not.toContain('content');
+
+      await wrapper.setProps({ loading: false });
+      expect(wrapper.find('.sn-skeleton').exists()).toBe(false);
+      expect(wrapper.text()).toContain('content');
+    });
+  });
 });

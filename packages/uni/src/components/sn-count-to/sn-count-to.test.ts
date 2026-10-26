@@ -160,4 +160,141 @@ describe('sn-count-to', () => {
     wrapper.unmount();
     expect(() => vi.advanceTimersByTime(60_000)).not.toThrow();
   });
+
+  describe('mounted event', () => {
+    it('emits mounted exactly once after mount', () => {
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 0, endVal: 100, autoStart: false },
+      });
+      expect(wrapper.emitted('mounted')).toHaveLength(1);
+    });
+  });
+
+  describe('finish semantics', () => {
+    it('emits finish exactly once even when time advances far past the end', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 0, endVal: 100, duration: 100 },
+      });
+      vi.advanceTimersByTime(60_000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('finish')).toHaveLength(1);
+      expect(wrapper.find('.sn-count-to__text').text()).toBe('100');
+    });
+
+    it('emits finish immediately when startVal equals endVal', () => {
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 5, endVal: 5 },
+      });
+      expect(wrapper.emitted('finish')).toHaveLength(1);
+      expect(wrapper.find('.sn-count-to__text').text()).toBe('5');
+    });
+  });
+
+  describe('value boundaries', () => {
+    it('animates down to a negative endVal and formats the grouping', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 0, endVal: -1000, duration: 100, useEasing: false },
+      });
+      vi.advanceTimersByTime(200);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('finish')).toHaveLength(1);
+      expect(wrapper.find('.sn-count-to__text').text()).toBe('-1,000');
+    });
+
+    it('clamps negative decimals to an integer display', () => {
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 12.3456, endVal: 12.3456, decimals: -2, autoStart: false },
+      });
+      expect(wrapper.find('.sn-count-to__text').text()).toBe('12');
+    });
+  });
+
+  describe('tween curve', () => {
+    it('runs ease-out ahead of the linear ramp at mid-flight', async () => {
+      vi.useFakeTimers();
+      const eased = mount(SnCountTo, {
+        props: { startVal: 0, endVal: 100, duration: 100, useEasing: true, autoStart: false },
+      });
+      (eased.vm as unknown as { start: () => void }).start();
+      vi.advanceTimersByTime(48); // 3 frames → progress 0.48
+      await eased.vm.$nextTick();
+      const easedValue = Number(eased.find('.sn-count-to__text').text());
+      // ease-out cubic at 0.48 ≈ 0.859 → ~86; linear would sit at 48.
+      expect(easedValue).toBeGreaterThan(60);
+
+      const linear = mount(SnCountTo, {
+        props: { startVal: 0, endVal: 100, duration: 100, useEasing: false, autoStart: false },
+      });
+      (linear.vm as unknown as { start: () => void }).start();
+      vi.advanceTimersByTime(48);
+      await linear.vm.$nextTick();
+      expect(Number(linear.find('.sn-count-to__text').text())).toBe(48);
+    });
+
+    it('resumes from the paused value instead of restarting at startVal', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 0, endVal: 1000, duration: 1000, useEasing: false, autoStart: false },
+      });
+      const controls = wrapper.vm as unknown as {
+        start: () => void;
+        pause: () => void;
+      };
+      controls.start();
+      vi.advanceTimersByTime(500);
+      await wrapper.vm.$nextTick();
+      controls.pause();
+      const paused = Number(wrapper.find('.sn-count-to__text').text());
+      expect(paused).toBeGreaterThan(400);
+
+      controls.start();
+      vi.advanceTimersByTime(16);
+      await wrapper.vm.$nextTick();
+      const resumed = Number(wrapper.find('.sn-count-to__text').text());
+      // A restart-from-startVal bug would drop the value back to ~16.
+      expect(resumed).toBeGreaterThanOrEqual(paused);
+    });
+  });
+
+  describe('value-change restart', () => {
+    it('restarts from the new startVal when endVal changes mid-flight', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 0, endVal: 100, duration: 1000, useEasing: false },
+      });
+      vi.advanceTimersByTime(100);
+      await wrapper.vm.$nextTick();
+      await wrapper.setProps({ endVal: 200 });
+      expect(wrapper.find('.sn-count-to__text').text()).toBe('0');
+
+      vi.advanceTimersByTime(1500);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-count-to__text').text()).toBe('200');
+      expect(wrapper.emitted('finish')).toHaveLength(1);
+    });
+  });
+
+  describe('accessibility', () => {
+    it('announces politely and marks the component tag', () => {
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 1, endVal: 1, autoStart: false },
+      });
+      expect(wrapper.attributes('aria-live')).toBe('polite');
+      expect(wrapper.attributes('data-snui-component')).toBe('count-to');
+    });
+  });
+
+  describe('unmount cleanup', () => {
+    it('emits no further finish after unmount', () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountTo, {
+        props: { startVal: 0, endVal: 1000, duration: 5000 },
+      });
+      wrapper.unmount();
+      vi.advanceTimersByTime(60_000);
+      expect(wrapper.emitted('finish')).toBeUndefined();
+    });
+  });
 });

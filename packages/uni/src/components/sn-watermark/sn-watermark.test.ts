@@ -1,6 +1,11 @@
 /**
  * sn-watermark unit tests — uni-end watermark layer (wd-watermark parity).
  *
+ * Untestable in happy-dom: the painted result of the rotated layer (tile
+ * overlap, offset margins, pointer-events pass-through) — happy-dom does no
+ * layout paint, so tile geometry is asserted through the inline styles and
+ * node counts instead.
+ *
  * Tests verify observable behaviour, not internals (AGENTS.md §46):
  *   - `content` / `image` / the default slot each render a tile; no content
  *     means no node at all
@@ -127,5 +132,66 @@ describe('sn-watermark', () => {
     });
     expect(wrapper.classes()).toContain('my-watermark');
     expect(wrapper.attributes('style')).toContain('margin: 8px');
+  });
+
+  describe('tile count matrix', () => {
+    it('tiles the 2000rpx canvas exactly by tile size and gutters', () => {
+      // cols = ceil(2000 / (100 + 100)) = 10, rows = ceil(2000 / 100) = 20.
+      const wrapper = mount(SnWatermark, {
+        props: { content: 'x', width: 100, height: 100, gutterX: 100, gutterY: 0 },
+      });
+      expect(wrapper.findAll('.sn-watermark__tile')).toHaveLength(200);
+    });
+
+    it('collapses to a single tile when the tile box exceeds the canvas', () => {
+      const wrapper = mount(SnWatermark, {
+        props: { content: 'x', width: 5000, height: 5000 },
+      });
+      expect(wrapper.findAll('.sn-watermark__tile')).toHaveLength(1);
+    });
+
+    it('marks the root with the component tag', () => {
+      const wrapper = mount(SnWatermark, { props: { content: 'x' } });
+      expect(wrapper.attributes('data-snui-component')).toBe('watermark');
+    });
+  });
+
+  describe('content precedence', () => {
+    it('renders the image over the content text when both are set', () => {
+      const wrapper = mount(SnWatermark, {
+        props: { content: 'text', image: 'https://x/w.png' },
+      });
+      expect(wrapper.find('.sn-watermark__image').exists()).toBe(true);
+      expect(wrapper.find('.sn-watermark__text').exists()).toBe(false);
+    });
+
+    it('renders the slot over image and content', () => {
+      const wrapper = mount(SnWatermark, {
+        props: { content: 'text', image: 'https://x/w.png' },
+        slots: { default: '<text class="custom-tile">S</text>' },
+      });
+      expect(wrapper.find('.custom-tile').exists()).toBe(true);
+      expect(wrapper.find('.sn-watermark__image').exists()).toBe(false);
+      expect(wrapper.find('.sn-watermark__text').exists()).toBe(false);
+    });
+
+    it('requests aspect-fit scaling on the watermark image', () => {
+      const wrapper = mount(SnWatermark, { props: { image: 'https://x/w.png' } });
+      expect(wrapper.find('.sn-watermark__image').attributes('mode')).toBe('aspectFit');
+    });
+  });
+
+  describe('defaults', () => {
+    it('rotates the layer -25deg by default', () => {
+      const wrapper = mount(SnWatermark, { props: { content: 'x' } });
+      expect(wrapper.find('.sn-watermark__layer').attributes('style')).toContain(
+        'transform: rotate(-25deg)',
+      );
+    });
+
+    it('stacks above page content by default', () => {
+      const wrapper = mount(SnWatermark, { props: { content: 'x' } });
+      expect(wrapper.attributes('style')).toContain('z-index: 1100');
+    });
   });
 });

@@ -161,7 +161,11 @@ function maskName(raw: string): string {
 
 /** Group the integer part with thousands separators, keep 2 decimals. */
 function formatPrice(raw: string): string {
-  const value = Number(raw.replace(/[^\d.-]/g, ''));
+  // `Number('')` is 0, so a fully non-numeric input must be rejected before
+  // the numeric parse or 'abc' would silently render as '0.00'.
+  const cleaned = raw.replace(/[^\d.-]/g, '');
+  if (!cleaned) return raw;
+  const value = Number(cleaned);
   if (!Number.isFinite(value)) return raw;
   const [intPart = '0', decPart = '00'] = Math.abs(value).toFixed(2).split('.');
   const grouped = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');

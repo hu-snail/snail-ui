@@ -29,7 +29,7 @@
  *   - 进度条 — 用 sn-progress / sn-circle
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 defineOptions({ name: 'SnCountTo' });
 
@@ -99,6 +99,8 @@ const current = ref(props.startVal);
 let timer: ReturnType<typeof setInterval> | null = null;
 /** Animation start timestamp. */
 let startedAt = 0;
+/** Value the running tween started from — the paused value on resume. */
+let fromValue = props.startVal;
 
 function clearTimer(): void {
   if (timer !== null) {
@@ -128,7 +130,7 @@ function step(): void {
   const elapsed = now - startedAt;
   const progress = props.duration <= 0 ? 1 : Math.min(1, elapsed / props.duration);
   const eased = props.useEasing ? easeOutCubic(progress) : progress;
-  const from = props.startVal;
+  const from = fromValue;
   const to = props.endVal;
   current.value = from + (to - from) * eased;
 
@@ -148,6 +150,7 @@ function start(): void {
     return;
   }
   startedAt = Date.now();
+  fromValue = current.value;
   timer = setInterval(step, FRAME_MS);
 }
 
@@ -166,12 +169,14 @@ watch(
   () => [props.startVal, props.endVal, props.duration],
   () => {
     current.value = props.startVal;
+    fromValue = props.startVal;
     if (props.autoStart) start();
     else clearTimer();
   },
   { immediate: true },
 );
 
+onMounted(() => emit('mounted'));
 onBeforeUnmount(clearTimer);
 
 defineExpose({ start, pause, reset });

@@ -139,4 +139,148 @@ describe('sn-count-down', () => {
     wrapper.unmount();
     expect(() => vi.advanceTimersByTime(60_000)).not.toThrow();
   });
+
+  describe('finish semantics', () => {
+    it('emits finish exactly once even when time keeps advancing past zero', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 2000 } });
+      vi.advanceTimersByTime(30_000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('finish')).toHaveLength(1);
+      expect(wrapper.find('.sn-count-down__text').text()).toBe('00:00:00');
+    });
+
+    it('stops emitting change once finished', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 1000 } });
+      vi.advanceTimersByTime(1000);
+      await wrapper.vm.$nextTick();
+      const changesAfterFinish = wrapper.emitted('change')?.length ?? 0;
+      vi.advanceTimersByTime(30_000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('change')).toHaveLength(changesAfterFinish);
+    });
+  });
+
+  describe('change payload', () => {
+    it('carries the full time breakdown on every tick', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 3_723_000 } });
+      vi.advanceTimersByTime(1000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('change')?.[0]?.[0]).toEqual({
+        total: 3_722_000,
+        days: 0,
+        hours: 1,
+        minutes: 2,
+        seconds: 2,
+        milliseconds: 0,
+      });
+    });
+  });
+
+  describe('boundary inputs', () => {
+    it('renders zero and never ticks or finishes for time = 0', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 0 } });
+      vi.advanceTimersByTime(5000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-count-down__text').text()).toBe('00:00:00');
+      expect(wrapper.emitted('change')).toBeUndefined();
+      expect(wrapper.emitted('finish')).toBeUndefined();
+    });
+
+    it('clamps a negative time to zero without crashing', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: -5000 } });
+      vi.advanceTimersByTime(5000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-count-down__text').text()).toBe('00:00:00');
+      expect(wrapper.emitted('finish')).toBeUndefined();
+    });
+  });
+
+  describe('prop-driven restart', () => {
+    it('restarts from the new full time when the time prop changes', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 3000 } });
+      vi.advanceTimersByTime(1000);
+      await wrapper.vm.$nextTick();
+      await wrapper.setProps({ time: 6000 });
+      expect(wrapper.find('.sn-count-down__text').text()).toBe('00:00:06');
+
+      vi.advanceTimersByTime(1000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('change')?.at(-1)?.[0]).toMatchObject({ total: 5000 });
+    });
+
+    it('restarts when the millisecond prop flips', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 3000 } });
+      vi.advanceTimersByTime(1000);
+      await wrapper.vm.$nextTick();
+      await wrapper.setProps({ millisecond: true });
+      expect(wrapper.find('.sn-count-down__text').text()).toBe('00:00:03');
+
+      // The new sub-second interval ticks per 16ms step.
+      vi.advanceTimersByTime(16);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('change')?.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('pause / resume cycle', () => {
+    it('resumes from the paused remainder, not the original start', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 5000, autoStart: false } });
+      const controls = wrapper.vm as unknown as {
+        start: () => void;
+        pause: () => void;
+      };
+      controls.start();
+      vi.advanceTimersByTime(2000);
+      await wrapper.vm.$nextTick();
+      controls.pause();
+      controls.start();
+      vi.advanceTimersByTime(1000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('change')?.at(-1)?.[0]).toMatchObject({ total: 2000 });
+    });
+
+    it('stops ticking after reset when autoStart is off', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 3000, autoStart: false } });
+      (wrapper.vm as unknown as { reset: () => void }).reset();
+      vi.advanceTimersByTime(5000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('change')).toBeUndefined();
+      expect(wrapper.find('.sn-count-down__text').text()).toBe('00:00:03');
+    });
+  });
+
+  describe('accessibility', () => {
+    it('marks the root with the component tag', () => {
+      const wrapper = mount(SnCountDown, { props: { time: 1000, autoStart: false } });
+      expect(wrapper.attributes('data-snui-component')).toBe('count-down');
+    });
+
+    it('keeps aria-label in sync with the remaining time', async () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 2000 } });
+      vi.advanceTimersByTime(1000);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.attributes('aria-label')).toBe('00:00:01');
+    });
+  });
+
+  describe('unmount cleanup', () => {
+    it('emits no further change or finish after unmount', () => {
+      vi.useFakeTimers();
+      const wrapper = mount(SnCountDown, { props: { time: 2000 } });
+      wrapper.unmount();
+      vi.advanceTimersByTime(60_000);
+      expect(wrapper.emitted('change')).toBeUndefined();
+      expect(wrapper.emitted('finish')).toBeUndefined();
+    });
+  });
 });

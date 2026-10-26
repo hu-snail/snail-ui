@@ -1,6 +1,11 @@
 /**
  * sn-circle unit tests — uni-end circular progress ring (wd-circle parity).
  *
+ * Untestable in happy-dom: the actual ring visuals (conic-gradient sweep,
+ * radial-gradient band mask, scaleX flip) — happy-dom has no paint pipeline,
+ * so the sweep/color/duration custom properties they consume are asserted on
+ * the inline styles instead.
+ *
  * Tests verify observable behaviour, not internals (AGENTS.md §46):
  *   - `modelValue` clamps to 0–100 and lands on `aria-valuenow`
  *   - the centre text defaults to the rounded percentage and `text` overrides it
@@ -132,5 +137,71 @@ describe('sn-circle', () => {
     });
     expect(wrapper.classes()).toContain('my-circle');
     expect(wrapper.attributes('style')).toContain('margin: 8px');
+  });
+
+  it('marks the root with the component tag', () => {
+    const wrapper = mount(SnCircle, {});
+    expect(wrapper.attributes('data-snui-component')).toBe('circle');
+  });
+
+  it('keeps decorative layers out of the accessibility tree', () => {
+    const wrapper = mount(SnCircle, { props: { modelValue: 40, fill: 'rebeccapurple' } });
+    expect(wrapper.find('.sn-circle__track').attributes('aria-hidden')).toBe('true');
+    expect(wrapper.find('.sn-circle__arc').attributes('aria-hidden')).toBe('true');
+    expect(wrapper.find('.sn-circle__fill').attributes('aria-hidden')).toBe('true');
+  });
+
+  it('exposes the default centre text through aria-label', () => {
+    const wrapper = mount(SnCircle, { props: { modelValue: 42.6 } });
+    expect(wrapper.attributes('aria-label')).toBe('43%');
+  });
+
+  it('clamps a NaN value to 0', () => {
+    const wrapper = mount(SnCircle, { props: { modelValue: Number.NaN } });
+    expect(wrapper.attributes('aria-valuenow')).toBe('0');
+    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain('--sn-circle-sweep: 0deg');
+  });
+
+  it('updates the sweep reactively when modelValue changes', async () => {
+    const wrapper = mount(SnCircle, { props: { modelValue: 0 } });
+    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain('--sn-circle-sweep: 0deg');
+    await wrapper.setProps({ modelValue: 50 });
+    expect(wrapper.attributes('aria-valuenow')).toBe('50');
+    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain('--sn-circle-sweep: 180deg');
+    expect(wrapper.find('.sn-circle__text').text()).toBe('50%');
+  });
+
+  it('treats a negative speed as no animation', () => {
+    const wrapper = mount(SnCircle, { props: { modelValue: 50, speed: -5 } });
+    expect(wrapper.attributes('style')).toContain('--sn-circle-duration: 0ms');
+    expect(wrapper.classes()).not.toContain('sn-circle--animated');
+  });
+
+  it('accepts stroke-linecap for API parity without changing the sweep', () => {
+    const cap = mount(SnCircle, { props: { modelValue: 25, strokeLinecap: 'square' } });
+    expect(cap.classes()).not.toContain('sn-circle--line-cap-square');
+    expect(cap.find('.sn-circle__arc').attributes('style')).toContain('--sn-circle-sweep: 90deg');
+  });
+
+  it('falls back to the solid sweep for an empty gradient map', () => {
+    const wrapper = mount(SnCircle, { props: { modelValue: 25, color: {} } });
+    expect(wrapper.classes()).not.toContain('sn-circle--gradient');
+    expect(wrapper.find('.sn-circle__arc').attributes('style')).toContain(
+      '--sn-circle-color: var(--sn-mp-color-action-primary)',
+    );
+  });
+
+  it('appends a percent sign to numeric gradient offsets', () => {
+    const wrapper = mount(SnCircle, {
+      props: { modelValue: 25, color: { '0': 'rebeccapurple', '50%': 'darkorange' } },
+    });
+    const style = wrapper.find('.sn-circle__arc').attributes('style') ?? '';
+    expect(style).toContain('rebeccapurple 0%');
+    expect(style).toContain('darkorange 50%');
+  });
+
+  it('passes a string strokeWidth through verbatim', () => {
+    const wrapper = mount(SnCircle, { props: { strokeWidth: '6px' } });
+    expect(wrapper.attributes('style')).toContain('--sn-circle-width: 6px');
   });
 });

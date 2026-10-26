@@ -25,8 +25,10 @@
  *   - 步骤间流转 — 由宿主驱动
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import { Check, X } from '../sn-icon/sn-icon-set';
 import { nextUid } from '../../utils/uid';
 import { SN_STEPS_KEY, type SnStepStatus } from './sn-steps-types';
@@ -94,6 +96,13 @@ const isLast = computed(() => {
 const isVertical = computed(() => steps?.vertical.value ?? false);
 const isDot = computed(() => steps?.dot.value ?? false);
 
+/** Registry-resolved icon data for the `icon` prop (null when unset/unknown). */
+const iconData = computed<IconData | null>(() => {
+  if (!props.icon) return null;
+  const resolved = resolveIconByName(props.icon);
+  return resolved ? markRaw(resolved) : null;
+});
+
 /** Gap between the indicator and the next one — `space` overrides the default. */
 const itemStyle = computed(() => {
   const space = steps?.space.value ?? '';
@@ -131,8 +140,11 @@ const rootClass = computed(() => [
     <view class="sn-step__header">
       <view class="sn-step__indicator">
         <slot name="icon">
-          <SnIcon v-if="resolvedStatus === 'finished' && !icon" :icon="Check" :size="24" />
-          <SnIcon v-else-if="resolvedStatus === 'error' && !icon" :icon="X" :size="24" />
+          <!-- A registered `icon` name wins; unregistered names fall through to
+               the builtin status glyphs so the indicator is never blank. -->
+          <SnIcon v-if="iconData" :icon="iconData" :size="24" />
+          <SnIcon v-else-if="resolvedStatus === 'finished'" :icon="Check" :size="24" />
+          <SnIcon v-else-if="resolvedStatus === 'error'" :icon="X" :size="24" />
           <text
             v-else-if="resolvedStatus === 'wait' || resolvedStatus === 'process'"
             class="sn-step__number"

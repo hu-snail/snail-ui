@@ -120,4 +120,106 @@ describe('sn-progress', () => {
     expect(wrapper.classes()).toContain('my-progress');
     expect(wrapper.attributes('style')).toContain('margin: 8px');
   });
+
+  it('marks the root with the component tag', () => {
+    const wrapper = mount(SnProgress, { props: { percentage: 20 } });
+    expect(wrapper.attributes('data-snui-component')).toBe('progress');
+  });
+
+  it('exposes the label text through aria-label', () => {
+    const wrapper = mount(SnProgress, { props: { percentage: 42.6 } });
+    expect(wrapper.attributes('aria-label')).toBe('43%');
+  });
+
+  describe('percentage edge cases', () => {
+    it('clamps a NaN percentage to 0', () => {
+      const wrapper = mount(SnProgress, { props: { percentage: Number.NaN } });
+      expect(wrapper.attributes('aria-valuenow')).toBe('0');
+      expect(wrapper.find('.sn-progress__fill').attributes('style')).toContain('width: 0%');
+    });
+
+    it('renders the 100% endpoint without clamping artifacts', () => {
+      const wrapper = mount(SnProgress, { props: { percentage: 100 } });
+      expect(wrapper.attributes('aria-valuenow')).toBe('100');
+      expect(wrapper.classes()).not.toContain('sn-progress--zero');
+    });
+  });
+
+  describe('zero inner label', () => {
+    it('keeps a tinted minimum fill so an inner label stays visible at 0%', () => {
+      const wrapper = mount(SnProgress, {
+        props: { percentage: 0, percentPosition: { type: 'inner' } },
+      });
+      const style = wrapper.find('.sn-progress__fill').attributes('style') ?? '';
+      expect(style).toContain('var(--sn-mp-color-background-soft)');
+      expect(style).not.toContain('var(--sn-mp-color-action-primary)');
+    });
+
+    it('uses the primary fill once progress advances', () => {
+      const wrapper = mount(SnProgress, {
+        props: { percentage: 10, percentPosition: { type: 'inner' } },
+      });
+      const style = wrapper.find('.sn-progress__fill').attributes('style') ?? '';
+      expect(style).toContain('var(--sn-mp-color-action-primary)');
+      expect(style).not.toContain('var(--sn-mp-color-background-soft)');
+    });
+  });
+
+  describe('threshold color edge cases', () => {
+    it('falls back to the default fill below the lowest threshold', () => {
+      const wrapper = mount(SnProgress, {
+        props: { percentage: 10, color: [{ color: 'darkorange', percentage: 50 }] },
+      });
+      const style = wrapper.find('.sn-progress__fill').attributes('style') ?? '';
+      expect(style).not.toContain('darkorange');
+      expect(style).toContain('var(--sn-mp-color-action-primary)');
+    });
+
+    it('applies a threshold entry without a percentage at any value', () => {
+      const wrapper = mount(SnProgress, { props: { percentage: 5, color: [{ color: 'red' }] } });
+      expect(wrapper.find('.sn-progress__fill').attributes('style')).toContain('red');
+    });
+
+    it('prefers the later entry on an equal threshold bound', () => {
+      const wrapper = mount(SnProgress, {
+        props: {
+          percentage: 60,
+          color: [
+            { color: 'gold', percentage: 50 },
+            { color: 'olive', percentage: 50 },
+          ],
+        },
+      });
+      const style = wrapper.find('.sn-progress__fill').attributes('style') ?? '';
+      expect(style).toContain('olive');
+      expect(style).not.toContain('gold');
+    });
+
+    it('ignores an empty color list and uses the default fill', () => {
+      const wrapper = mount(SnProgress, { props: { percentage: 40, color: [] } });
+      const style = wrapper.find('.sn-progress__fill').attributes('style') ?? '';
+      expect(style).toContain('var(--sn-mp-color-action-primary)');
+    });
+  });
+
+  describe('duration edge cases', () => {
+    it('collapses a zero or negative duration to an instant transition', () => {
+      const zero = mount(SnProgress, { props: { percentage: 40, duration: 0 } });
+      expect(zero.find('.sn-progress__fill').attributes('style')).toContain(
+        'transition-duration: 0ms',
+      );
+
+      const negative = mount(SnProgress, { props: { percentage: 40, duration: -10 } });
+      expect(negative.find('.sn-progress__fill').attributes('style')).toContain(
+        'transition-duration: 0ms',
+      );
+    });
+
+    it('treats a NaN duration as zero', () => {
+      const wrapper = mount(SnProgress, { props: { percentage: 40, duration: Number.NaN } });
+      expect(wrapper.find('.sn-progress__fill').attributes('style')).toContain(
+        'transition-duration: 0ms',
+      );
+    });
+  });
 });

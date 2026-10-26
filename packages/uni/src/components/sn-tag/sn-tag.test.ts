@@ -153,5 +153,85 @@ describe('sn-tag', () => {
       expect(w.text()).toContain('add-slot');
       expect(w.text()).not.toContain('body');
     });
+
+    it('emits confirm with an empty value when confirmed without typing', async () => {
+      const w = mount(SnTag, { props: { dynamic: true } });
+      await w.find('.sn-tag__input').trigger('confirm');
+      expect(w.emitted('confirm')?.[0]).toEqual([{ value: '' }]);
+    });
+
+    it('emits one confirm per interaction, preserving typed order', async () => {
+      const w = mount(SnTag, { props: { dynamic: true } });
+      const input = w.find('.sn-tag__input');
+      await input.setValue('a');
+      await input.trigger('confirm');
+      await input.setValue('b');
+      await input.trigger('confirm');
+      expect(w.emitted('confirm')).toEqual([[{ value: 'a' }], [{ value: 'b' }]]);
+    });
+
+    it('renders input and close button together in dynamic + closable mode', () => {
+      const w = mount(SnTag, { props: { dynamic: true, closable: true } });
+      expect(w.find('.sn-tag__input').exists()).toBe(true);
+      expect(w.find('.sn-tag__close').exists()).toBe(true);
+    });
+  });
+
+  describe('accessibility', () => {
+    it('exposes the root as an interactive button element', () => {
+      const w = mount(SnTag);
+      expect(w.attributes('role')).toBe('button');
+      expect(w.attributes('data-snui-component')).toBe('tag');
+    });
+
+    it('labels the close button for assistive tech', () => {
+      const w = mount(SnTag, { props: { closable: true } });
+      const close = w.find('.sn-tag__close');
+      expect(close.attributes('role')).toBe('button');
+      expect(close.attributes('aria-label')).toBe('Close');
+    });
+
+    it('hides the css font icon from assistive tech', () => {
+      const w = mount(SnTag, { props: { icon: 'star', cssIcon: true } });
+      expect(w.find('.sn-tag__icon').attributes('aria-hidden')).toBe('true');
+    });
+  });
+
+  describe('slots', () => {
+    it('renders the icon slot over the resolved icon prop', () => {
+      registerSnIcons({ Check });
+      const w = mount(SnTag, {
+        props: { icon: 'Check' },
+        slots: { icon: '<text class="custom-icon">I</text>' },
+      });
+      expect(w.find('.custom-icon').exists()).toBe(true);
+      expect(w.find('.sn-tag__icon').exists()).toBe(false);
+      clearSnIcons();
+    });
+
+    it('renders default slot content alongside closable', () => {
+      const w = mount(SnTag, { props: { closable: true }, slots: { default: 'label' } });
+      expect(w.text()).toContain('label');
+      expect(w.find('.sn-tag__close').exists()).toBe(true);
+    });
+  });
+
+  describe('css icon fallbacks', () => {
+    it('falls back to the bare icon name when cssIcon is on but no prefix exists', () => {
+      const w = mount(SnTag, { props: { icon: 'star', cssIcon: true } });
+      expect(w.find('.star').exists()).toBe(true);
+    });
+
+    it('renders no icon element when cssIcon is enabled without an icon name', () => {
+      const w = mount(SnTag, { props: { cssIcon: true } });
+      expect(w.find('.sn-tag__icon').exists()).toBe(false);
+    });
+  });
+
+  describe('inline style overrides', () => {
+    it('leaves the root style attribute unset without color overrides', () => {
+      const w = mount(SnTag);
+      expect(w.attributes('style')).toBeUndefined();
+    });
   });
 });
