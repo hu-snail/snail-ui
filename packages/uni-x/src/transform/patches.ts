@@ -43,8 +43,8 @@ export const PATCHES: Record<string, SourcePatch[]> = {
 
   'sn-icon/sn-icon.vue': [
     {
-      anchor: `  return style
-})
+      anchor: `  return style;
+});
 </script>`,
       replacement: `  return style
 })
@@ -82,11 +82,7 @@ const iconDataUrl = computed<string | undefined>(() => {
       stroke-linejoin="round"
       focusable="false"
     >
-      <path
-        v-for="(d, i) in icon.paths"
-        :key="i"
-        :d="d"
-      />
+      <path v-for="(d, i) in icon.paths" :key="i" :d="d" />
     </svg>`,
       replacement: `    <!-- uni-app x App: inline <svg> is not a built-in element — rasterize via <image>. -->
     <image v-else-if="icon" class="sn-icon__svg-img" :src="iconDataUrl" mode="aspectFit" />`,
@@ -166,27 +162,27 @@ const iconDataUrl = computed<string | undefined>(() => {
       note: 'status-icon [data-status] attribute selector → status modifier class',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status="error"] {',
+      anchor: '.sn-form-item__status-icon[data-status=\'error\'] {',
       replacement: '.sn-form-item__status-icon--error {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status="warning"] {',
+      anchor: '.sn-form-item__status-icon[data-status=\'warning\'] {',
       replacement: '.sn-form-item__status-icon--warning {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status="success"] {',
+      anchor: '.sn-form-item__status-icon[data-status=\'success\'] {',
       replacement: '.sn-form-item__status-icon--success {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__message[data-status="error"] {',
+      anchor: '.sn-form-item__message[data-status=\'error\'] {',
       replacement: '.sn-form-item__message--error {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__message[data-status="warning"] {',
+      anchor: '.sn-form-item__message[data-status=\'warning\'] {',
       replacement: '.sn-form-item__message--warning {',
       note: 'attribute selector rewritten',
     },
@@ -207,52 +203,80 @@ const iconDataUrl = computed<string | undefined>(() => {
       note: 'nth-child delays → per-index modifier class',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(1) { animation-delay: 0s; opacity: 1; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(1) {
+  animation-delay: 0s;
+  opacity: 1;
+}`,
       replacement: '.sn-loading__spinner-bar--1 { animation-delay: 0s; opacity: 1; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(2) { animation-delay: 0.1s; opacity: 0.875; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(2) {
+  animation-delay: 0.1s;
+  opacity: 0.875;
+}`,
       replacement: '.sn-loading__spinner-bar--2 { animation-delay: 0.1s; opacity: 0.875; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(3) { animation-delay: 0.2s; opacity: 0.75; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(3) {
+  animation-delay: 0.2s;
+  opacity: 0.75;
+}`,
       replacement: '.sn-loading__spinner-bar--3 { animation-delay: 0.2s; opacity: 0.75; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(4) { animation-delay: 0.3s; opacity: 0.625; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(4) {
+  animation-delay: 0.3s;
+  opacity: 0.625;
+}`,
       replacement: '.sn-loading__spinner-bar--4 { animation-delay: 0.3s; opacity: 0.625; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(5) { animation-delay: 0.4s; opacity: 0.5; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(5) {
+  animation-delay: 0.4s;
+  opacity: 0.5;
+}`,
       replacement: '.sn-loading__spinner-bar--5 { animation-delay: 0.4s; opacity: 0.5; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(6) { animation-delay: 0.5s; opacity: 0.375; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(6) {
+  animation-delay: 0.5s;
+  opacity: 0.375;
+}`,
       replacement: '.sn-loading__spinner-bar--6 { animation-delay: 0.5s; opacity: 0.375; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(7) { animation-delay: 0.6s; opacity: 0.25; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(7) {
+  animation-delay: 0.6s;
+  opacity: 0.25;
+}`,
       replacement: '.sn-loading__spinner-bar--7 { animation-delay: 0.6s; opacity: 0.25; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__spinner-bar:nth-child(8) { animation-delay: 0.7s; opacity: 0.125; }',
+      anchor: `.sn-loading__spinner-bar:nth-child(8) {
+  animation-delay: 0.7s;
+  opacity: 0.125;
+}`,
       replacement: '.sn-loading__spinner-bar--8 { animation-delay: 0.7s; opacity: 0.125; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__dot:nth-child(2) { animation-delay: 0.15s; }',
+      anchor: `.sn-loading__dot:nth-child(2) {
+  animation-delay: 0.15s;
+}`,
       replacement: '.sn-loading__dot--2 { animation-delay: 0.15s; }',
       note: 'nth-child rewritten',
     },
     {
-      anchor: '.sn-loading__dot:nth-child(3) { animation-delay: 0.3s; }',
+      anchor: `.sn-loading__dot:nth-child(3) {
+  animation-delay: 0.3s;
+}`,
       replacement: '.sn-loading__dot--3 { animation-delay: 0.3s; }',
       note: 'nth-child rewritten',
     },
@@ -260,10 +284,10 @@ const iconDataUrl = computed<string | undefined>(() => {
 
   'sn-picker-view/sn-picker-view-drag.ts': [
     {
-      anchor: `    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
-    document.addEventListener('mouseleave', onLeaveWindow)
-    window.addEventListener('blur', onBlur)`,
+      anchor: `    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('mouseleave', onLeaveWindow);
+    window.addEventListener('blur', onBlur);`,
       replacement: `    // #ifdef H5
     document.addEventListener('mousemove', onMove)
     document.addEventListener('mouseup', onUp)
@@ -273,10 +297,10 @@ const iconDataUrl = computed<string | undefined>(() => {
       note: 'desktop H5 mouse listeners gated behind #ifdef H5 (no DOM on App)',
     },
     {
-      anchor: `      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
-      document.removeEventListener('mouseleave', onLeaveWindow)
-      window.removeEventListener('blur', onBlur)`,
+      anchor: `      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('mouseleave', onLeaveWindow);
+      window.removeEventListener('blur', onBlur);`,
       replacement: `      // #ifdef H5
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup', onUp)
@@ -290,12 +314,12 @@ const iconDataUrl = computed<string | undefined>(() => {
   'sn-qr-code/sn-qr-code.vue': [
     {
       anchor: `interface UniHost {
-  createCanvasContext?: (id: string, component?: unknown) => CanvasLike
-  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void
+  createCanvasContext?: (id: string, component?: unknown) => CanvasLike;
+  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void;
 }`,
       replacement: `interface UniHost {
-  createCanvasContext?: (id: string, component?: unknown) => CanvasLike
-  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void
+  createCanvasContext?: (id: string, component?: unknown) => CanvasLike;
+  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void;
   /** uni-app x only: device pixel ratio source for canvas bitmap sizing. */
   getDeviceInfo?: () => unknown
 }`,
@@ -303,7 +327,7 @@ const iconDataUrl = computed<string | undefined>(() => {
     },
     {
       anchor: `  /** uni canvas only: flush the command queue to the native canvas. */
-  draw?: (reserve?: boolean, callback?: () => void) => void
+  draw?: (reserve?: boolean, callback?: () => void) => void;
 }`,
       replacement: `  /** uni canvas only: flush the command queue to the native canvas. */
   draw?: (reserve?: boolean, callback?: () => void) => void
@@ -338,11 +362,11 @@ function getSurface(): CanvasLike | null {`,
       note: 'uni-app x canvas bitmap sizing + DPR scale added (official sample pattern)',
     },
     {
-      anchor: `      const context = domCanvas.getContext?.('2d')
+      anchor: `      const context = domCanvas.getContext?.('2d');
       if (context !== null && typeof context === 'object') {
-        surface = context as CanvasLike
-        surfaceCanvasId = canvasIdValue.value
-        return surface
+        surface = context as CanvasLike;
+        surfaceCanvasId = canvasIdValue.value;
+        return surface;
       }`,
       replacement: `      const context = domCanvas.getContext?.('2d')
       if (context !== null && typeof context === 'object') {
@@ -354,7 +378,7 @@ function getSurface(): CanvasLike | null {`,
       note: 'element-context path (uni-app x template ref = UniCanvasElement) applies bitmap sizing',
     },
     {
-      anchor: `    const toTempFilePath = getUni()?.canvasToTempFilePath
+      anchor: `    const toTempFilePath = getUni()?.canvasToTempFilePath;
     if (typeof toTempFilePath !== 'function') {`,
       replacement: `    // uni-app x: export straight from the 2d context (canvasToTempFilePath is
     // legacy-only there); on this path the promise resolves to a data URL.
@@ -375,7 +399,7 @@ function getSurface(): CanvasLike | null {`,
         return
       }
     }
-    const toTempFilePath = getUni()?.canvasToTempFilePath
+    const toTempFilePath = getUni()?.canvasToTempFilePath;
     if (typeof toTempFilePath !== 'function') {`,
       note: 'exportImage prefers ctx.toDataURL (uni-app x); legacy canvasToTempFilePath stays as fallback',
     },
