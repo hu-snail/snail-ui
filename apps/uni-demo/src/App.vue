@@ -98,14 +98,16 @@ page {
   --demo-blob-3: radial-gradient(closest-side, rgba(255, 122, 89, 0.22), transparent);
 }
 
-/* 玻璃卡：透明渐变 + 圆角 + 描边；backdrop-filter 渐进增强（不支持时降级为半透明底）。 */
+/* 玻璃卡：透明渐变 + 圆角 + 描边。
+ * 注意：这里刻意**不用** backdrop-filter——它会为 position: fixed 的后代
+ * 创建 containing block，把弹窗类 demo（calendar / popup / dialog …）钉在
+ * 卡片坐标系里，配合 overflow 裁切显示不全。玻璃感由透明渐变 + 描边 + 柔影
+ * 承担；需要真实毛玻璃的容器（搜索框）单独加 blur。 */
 .demo-glass {
   background: var(--demo-card-bg);
   border: 1px solid var(--demo-card-border);
   border-radius: 24rpx;
   box-shadow: var(--demo-card-shadow);
-  backdrop-filter: blur(24rpx);
-  -webkit-backdrop-filter: blur(24rpx);
 }
 
 @keyframes demo-fade-in {
@@ -115,7 +117,9 @@ page {
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    /* none 而非 translateY(0)：动画结束后的 fill 保留值若带 transform，
+     * 会把 .home 变成 fixed 弹窗的 containing block。 */
+    transform: none;
   }
 }
 
