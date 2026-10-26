@@ -290,7 +290,7 @@ ${modules}
 
 .module {
   margin-bottom: 24rpx;
-  overflow: hidden;
+  /* 不裁切：弹窗类 demo 的 fixed 弹层要铺满视口（弹窗不能困在卡片内）。 */
 }
 
 .module__head {
