@@ -37,43 +37,46 @@
  * the fallback is automatic.
  */
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useData, useRoute, withBase } from 'vitepress'
-import PhoneFrame from './PhoneFrame.vue'
-import { dockState, setDockOpen, uniCompFromRoute, type DockEntry } from '../utils/demo-dock'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useData, useRoute } from 'vitepress';
+import PhoneFrame from './PhoneFrame.vue';
+import { dockState, setDockOpen, uniCompFromRoute, type DockEntry } from '../utils/demo-dock';
+import { uniDemoPageUrl } from '../utils/uni-demo-base';
+import demoManifest from '../../../uni-demo/src/demos-manifest.json';
 
-const { lang } = useData()
-const route = useRoute()
-const isEn = computed(() => lang.value === 'en-US')
+const { lang } = useData();
+const route = useRoute();
+const isEn = computed(() => lang.value === 'en-US');
 
 /**
  * Only uni-app component pages get the dock: web demos are not phone-shaped,
  * and the guide / theme / AI pages have no demos at all.
  */
 const isDockRoute = computed(() => {
-  const path = route.path
+  const path = route.path;
   return (
     (path.startsWith('/components/uni/') || path.startsWith('/en/components/uni/')) &&
     !path.endsWith('/')
-  )
-})
+  );
+});
 
-const entries = computed<DockEntry[]>(() => dockState.entries)
+const entries = computed<DockEntry[]>(() => dockState.entries);
 
 /**
- * The dock shows the standalone preview route for the page's component — one
- * iframe instead of stacked demo bodies. Scenario switching and the in-frame
- * back button live in MpPreview.vue; rendering here would fight the docs
- * layout for gestures and fixed layers. The overview page previews its
- * directory (the home view), not a component scenario list.
+ * The dock shows the deployed uni-demo page for the page's component — one
+ * iframe on the real uni runtime; that page stacks every scenario of the
+ * component with its own module titles. The overview page previews the
+ * deployed home directory. (ADR-0005: uni demo 单一事实源在 apps/uni-demo。)
  */
+interface DemoManifestEntry {
+  page: string;
+}
+
 const dockPreviewUrl = computed(() => {
-  const comp = uniCompFromRoute(route.path)
-  if (comp === '') return ''
-  return withBase(
-    comp === 'overview' ? '/preview-mp?home=1' : `/preview-mp?comp=${comp}`,
-  )
-})
+  const comp = uniCompFromRoute(route.path);
+  const entry = (demoManifest.components as Record<string, DemoManifestEntry>)[comp];
+  return uniDemoPageUrl(entry?.page ?? 'pages/index/index');
+});
 
 /**
  * Navigation title for the device chrome — the page's own `<h1>`, which is
@@ -84,14 +87,14 @@ const dockPreviewUrl = computed(() => {
  * pages updates the bar. DOM scraping remains as a fallback because the
  * fallback 404 / bare pages have no frontmatter title.
  */
-const { page } = useData()
+const { page } = useData();
 
 const pageTitle = computed<string>(() => {
-  const fromData = page.value.title?.trim() ?? ''
-  if (fromData !== '') return fromData
-  const h1 = document.querySelector('.vp-doc h1')
-  return h1?.textContent?.replace(/[#\u200b]/g, '').trim() ?? ''
-})
+  const fromData = page.value.title?.trim() ?? '';
+  if (fromData !== '') return fromData;
+  const h1 = document.querySelector('.vp-doc h1');
+  return h1?.textContent?.replace(/[#\u200b]/g, '').trim() ?? '';
+});
 
 const t = computed(() =>
   isEn.value
@@ -101,54 +104,49 @@ const t = computed(() =>
     : {
         empty: '本页暂无预览',
       },
-)
-
+);
 
 /**
  * Track the viewport width so the dock only claims layout space when there is
  * actually room for it. `matchMedia` is cheaper and more reliable than a
  * resize listener, and it is available in every browser VitePress targets.
  */
-const wideEnough = ref(false)
-let mq: MediaQueryList | null = null
-let onMqChange: ((e: MediaQueryListEvent) => void) | null = null
+const wideEnough = ref(false);
+let mq: MediaQueryList | null = null;
+let onMqChange: ((e: MediaQueryListEvent) => void) | null = null;
 
 onMounted(() => {
-  mq = window.matchMedia('(min-width: 1200px)')
+  mq = window.matchMedia('(min-width: 1200px)');
   const apply = (matches: boolean): void => {
-    wideEnough.value = matches
+    wideEnough.value = matches;
     // Wide again on a uni route: re-open so the dock claims the demos.
     // Narrow: close it — `Demo.vue` then falls back to inline rendering.
     // Opening the dock on a narrow viewport used to hide every demo (the
     // panel is not rendered below 1200px, so the inline slot only showed the
     // "moved to the panel" note). The re-open keeps a window that grows past
     // 1200px after mount from staying closed until the route changes.
-    if (matches && isDockRoute.value) setDockOpen(true)
-    if (!matches) setDockOpen(false)
-  }
-  apply(mq.matches)
-  onMqChange = (e: MediaQueryListEvent) => apply(e.matches)
-  mq.addEventListener('change', onMqChange)
-})
+    if (matches && isDockRoute.value) setDockOpen(true);
+    if (!matches) setDockOpen(false);
+  };
+  apply(mq.matches);
+  onMqChange = (e: MediaQueryListEvent) => apply(e.matches);
+  mq.addEventListener('change', onMqChange);
+});
 
 onBeforeUnmount(() => {
-  if (mq !== null && onMqChange !== null) mq.removeEventListener('change', onMqChange)
-  mq = null
-  onMqChange = null
-  setDockOpen(false)
-})
+  if (mq !== null && onMqChange !== null) mq.removeEventListener('change', onMqChange);
+  mq = null;
+  onMqChange = null;
+  setDockOpen(false);
+});
 
 /** The dock is live when the route qualifies, there is room, and it is open. */
-const visible = computed(() => isDockRoute.value && wideEnough.value && dockState.open)
+const visible = computed(() => isDockRoute.value && wideEnough.value && dockState.open);
 </script>
 
 <template>
   <Teleport to="body">
-    <aside
-      v-if="visible"
-      class="sn-dock"
-      aria-label="Component preview"
-    >
+    <aside v-if="visible" class="sn-dock" aria-label="Component preview">
       <!--
         One device, one iframe: the standalone preview route renders every
         scenario of the page's component with its own browsing context
@@ -159,15 +157,10 @@ const visible = computed(() => isDockRoute.value && wideEnough.value && dockStat
       -->
       <div class="sn-dock__body">
         <PhoneFrame v-if="entries.length > 0 && dockPreviewUrl !== ''">
-          <iframe
-            class="sn-dock__frame"
-            :src="dockPreviewUrl"
-            :title="pageTitle"
-          />
+          <iframe class="sn-dock__frame" :src="dockPreviewUrl" :title="pageTitle" />
         </PhoneFrame>
         <p v-else class="sn-dock__empty">{{ t.empty }}</p>
       </div>
-
     </aside>
   </Teleport>
 </template>

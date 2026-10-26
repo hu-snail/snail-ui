@@ -1,7 +1,6 @@
 import DefaultTheme from 'vitepress/theme';
 import './custom.css';
 import '@snui/vue-web/styles';
-import '@snui/uni/styles';
 import StyleSwitcher from '../components/StyleSwitcher.vue';
 import ThemeCopier from '../components/ThemeCopier.vue';
 import Demo from '../components/Demo.vue';
@@ -15,7 +14,8 @@ import Layout from './Layout.vue';
  * Per AUI-PRD-v3.1 + ADR-0002 + Spec-05 §5 + AUI-DOCS-016/018:
  *   - StyleSwitcher: global Style Pack switcher (按 end 过滤, AUI-DOCS-010)
  *   - ThemeCopier:   paste-ready snCssVars() snippet (按 end, AUI-DOCS-011)
- *   - Demo:          per-component live render via demo/<name>.vue
+ *   - Demo:          web demos render live via demo/<name>.vue; uni demos
+ *                    preview the deployed uni-demo site in an iframe (ADR-0005)
  *   - DemoLabFab:    global FAB → Style + Theme + Preview (AUI-DOCS-018)
  *   - DialogStage:   modal overlay shell for the dialog demos (docs-only;
  *                    the library's overlay belongs to the future provider)
@@ -23,7 +23,7 @@ import Layout from './Layout.vue';
  * Custom Layout.vue mounts DemoLabFab into the doc-after slot; the FAB itself
  * only renders when route.path starts with `/components/`.
  *
- * Per-component demo files import from the package main entry
+ * Per-component web demo files import from the package main entry
  * (`import { SnButton } from '@snui/vue-web'`), which resolves to the
  * vite-built dist/index.js. This end-to-end exercises the published dist —
  * if a demo renders, the dist is verified to be consumable.
@@ -31,7 +31,6 @@ import Layout from './Layout.vue';
  * @snui/tokens + @snui/style-packs are statically imported by StyleSwitcher +
  * ThemeCopier + DemoLabFab, so vite auto-discovers them for optimizeDeps.
  */
-import { installUniPreviewShims } from '../utils/uni-preview-shims'
 export default {
   extends: DefaultTheme,
   Layout,
@@ -42,8 +41,5 @@ export default {
     app.component('DemoLabFab', DemoLabFab)
     app.component('DialogStage', DialogStage)
     app.component('MpHome', MpHome)
-    // Teach the preview to emit uni-app's `tap` gesture and apply
-    // `hover-class`; without it every uni demo is inert (see the shim docs).
-    installUniPreviewShims()
   },
 }

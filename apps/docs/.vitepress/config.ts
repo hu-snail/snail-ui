@@ -1,10 +1,15 @@
 import { defineConfig } from 'vitepress'
 import { fileURLToPath, URL } from 'node:url'
 import type { Options as MiniSearchOptions } from 'minisearch'
-import { rpxTransform } from './utils/rpx-transform'
 import { rawDocSource } from './utils/raw-doc-source'
 import { demoGrid } from './utils/demo-grid'
 import { EDIT_BASE } from './utils/edit-link'
+
+/**
+ * uni-demo 部署站（docs 预览 iframe 的目标，见 utils/uni-demo-base.ts）。
+ * 本地联调：UNI_DEMO_PREVIEW_BASE=http://localhost:5173 pnpm dev
+ */
+const UNI_DEMO_BASE = process.env.UNI_DEMO_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui/'
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -824,26 +829,16 @@ export default defineConfig({
 
   vite: {
     build: { target: 'es2022' },
-    plugins: [
-      // Convert uni-app `rpx` units → `px` so uni-end component styles
-      // (SnButton / SnDivider) render correctly in the browser preview.
-      // See ./utils/rpx-transform.ts for rationale + scope.
-      rpxTransform(),
-    ],
+    define: {
+      // 构建期注入 uni-demo 部署站地址（hash 路由），客户端代码不读 process.env。
+      __UNI_DEMO_BASE__: JSON.stringify(UNI_DEMO_BASE),
+    },
     resolve: {
-      // Per AUI-DOCS-016: when SnButton / SnDivider in uni-side use `<view>`
-      // (uni-app cross-end element) in the template, the dist build loses the
-      // `data-v-xxx` scope-id attribute on the rendered element because
-      // vite lib-mode SFC compilation doesn't emit `withScopeId(scopeId, fn)`
-      // wrapping. Without the data-v-xxx attribute the scoped CSS selectors
-      // (`<hash>[data-v-...]`) never match and the demo renders unstyled.
-      //
-      // Workaround: docs-side demos import directly from `packages/uni/src/...`
-      // so vite + @vitejs/plugin-vue recompile the SFC per-request and
-      // correctly inject the scopeId attribute. The dist build is still the
-      // canonical artifact; this alias only affects docs demos.
+      // Web demo 源直接引用包源码，vite + @vitejs/plugin-vue 按请求重编译 SFC
+      // 并注入 scopeId，保证 scoped CSS 命中（dist 产物仍是发布事实源）。
+      // uni demo 不再由 docs 编译 —— 其源码单源于 apps/uni-demo，预览走部署站
+      // iframe（ADR-0005），故 @snui/uni-src 别名与 rpx 转换插件已退役。
       alias: {
-        '@snui/uni-src': fileURLToPath(new URL('../../../packages/uni/src', import.meta.url)),
         '@snui/vue-web-src': fileURLToPath(new URL('../../../packages/vue-web/src', import.meta.url)),
         '@snui/templates-src': fileURLToPath(new URL('../../../packages/templates/src', import.meta.url)),
       },

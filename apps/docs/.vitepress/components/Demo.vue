@@ -27,21 +27,29 @@
  *   <Demo name="divider-mp" description="基本分割线" />
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { ChevronRight, ChevronDown, Check, Copy } from 'lucide-vue-next'
-import { SnIcon } from '@snui/vue-web'
-import PhoneFrame from './PhoneFrame.vue'
-import { dockState, claimInlinePreview, uniCompFromRoute, registerDemo, unregisterDemo } from '../utils/demo-dock'
-import { loadDemoComponent, loadDemoSource } from '../utils/demo-loader'
-import { useData, useRoute, withBase } from 'vitepress'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { ChevronRight, ChevronDown, Check, Copy } from 'lucide-vue-next';
+import { SnIcon } from '@snui/vue-web';
+import PhoneFrame from './PhoneFrame.vue';
+import {
+  dockState,
+  claimInlinePreview,
+  uniCompFromRoute,
+  registerDemo,
+  unregisterDemo,
+} from '../utils/demo-dock';
+import { dedent, loadDemoComponent, loadDemoSource, loadDemoUsage } from '../utils/demo-loader';
+import { uniDemoPageUrl } from '../utils/uni-demo-base';
+import demoManifest from '../../../uni-demo/src/demos-manifest.json';
+import { useData, useRoute } from 'vitepress';
 
 interface Props {
   /** Demo file basename (without .vue) under apps/docs/.vitepress/demo/. */
-  name: string
+  name: string;
   /** Optional description shown above the demo (rendered as plain text). */
-  description?: string
+  description?: string;
   /** Hide the wrapping card chrome (used inside docs prose). */
-  bare?: boolean
+  bare?: boolean;
   /**
    * Render inside the mobile device shell (PhoneFrame).
    *
@@ -50,14 +58,14 @@ interface Props {
    * plain card. Set `false` to opt a mobile demo out of the frame (e.g. when
    * the demo itself renders a full-bleed modal), or `true` to force it.
    */
-  phone?: boolean
+  phone?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   description: '',
   bare: false,
   phone: undefined,
-})
+});
 
 /**
  * Whether this demo runs on the uni-app (mobile) end.
@@ -71,9 +79,7 @@ const props = withDefaults(defineProps<Props>(), {
  * Pages therefore need no extra markup: the frame decision rides on the demo
  * file name alone.
  */
-const isMobileDemo = computed(
-  () => props.phone ?? /(^|-)mp(-|$)/.test(props.name),
-)
+const isMobileDemo = computed(() => props.phone ?? /(^|-)mp(-|$)/.test(props.name));
 
 // ─── Preview dock integration ────────────────────────────────────────────
 //
@@ -97,16 +103,16 @@ const isMobileDemo = computed(
  * Only the active demo is actually mounted in the dock, so this flag says
  * "don't render inline", not "render in the dock".
  */
-const inDock = computed(() => isMobileDemo.value && dockState.open)
+const inDock = computed(() => isMobileDemo.value && dockState.open);
 
 /** Section label: the demo's own description, else its file name. */
 const dockLabel = computed(() => {
-  const d = props.description.trim()
-  if (d === '') return props.name
+  const d = props.description.trim();
+  if (d === '') return props.name;
   // Section switchers are narrow; keep the first clause of a long description.
-  const head = d.split(/[：:，,。.]/)[0] ?? d
-  return head.length > 14 ? `${head.slice(0, 14)}…` : head
-})
+  const head = d.split(/[：:，,。.]/)[0] ?? d;
+  return head.length > 14 ? `${head.slice(0, 14)}…` : head;
+});
 
 /**
  * Seed `open` synchronously for the first demo on a uni page.
@@ -126,63 +132,71 @@ if (
   window.matchMedia('(min-width: 1200px)').matches &&
   /\/components\/uni\//.test(window.location.pathname)
 ) {
-  dockState.open = true
+  dockState.open = true;
 }
 
-
 onMounted(() => {
-  if (!isMobileDemo.value) return
+  if (!isMobileDemo.value) return;
   registerDemo({
     name: props.name,
     label: dockLabel.value,
     description: props.description,
-  })
-})
+  });
+});
 
 onBeforeUnmount(() => {
-  if (isMobileDemo.value) unregisterDemo(props.name)
-})
+  if (isMobileDemo.value) unregisterDemo(props.name);
+});
 
 // Dynamic import of demo file (async chunk split).
 //
 // 双语机制(naive-ui 官网同构):英文站点优先加载 `demo-en/<name>.vue`
 // 影子文件(渲染 + 代码面板都用它);不存在时回退中文 demo。影子文件是
 // 普通源码,保持 demo「可复制即真实用法」的教学价值;md 页零改动。
-const { lang } = useData()
-const isEn = computed(() => lang.value === 'en-US')
+const { lang } = useData();
+const isEn = computed(() => lang.value === 'en-US');
 
 /**
- * uni demos render through the standalone preview route inside an iframe: the
- * frame gives the demo its own browsing context (gestures, fixed layers and
- * page scrolling behave like a real app screen) and its own history, so the
- * in-frame back button returns to the overview without touching the docs
- * route. The scenario stack itself lives in MpPreview.vue.
+ * uni demos render the deployed uni-demo site inside an iframe: the frame
+ * gives the demo its own browsing context (gestures, fixed layers and page
+ * scrolling behave like a real app screen) on the real uni runtime, and the
+ * component page there stacks every scenario. Docs no longer compiles uni
+ * demos — see ADR-0005.
  *
  * ONE frame per page: a browsing context is expensive, so the first mobile
  * demo of the route claims the only inline frame (it already stacks every
  * scenario of the component, in document order) and the later sections point
  * up to it — that claim is what fixed "the preview loads forever" pages.
  */
-const route = useRoute()
-const ownsInlineFrame = ref(false)
+const route = useRoute();
+const ownsInlineFrame = ref(false);
 watch(
   () => route.path,
   () => {
-    ownsInlineFrame.value =
-      isMobileDemo.value && claimInlinePreview(props.name, route.path)
+    ownsInlineFrame.value = isMobileDemo.value && claimInlinePreview(props.name, route.path);
   },
   { immediate: true },
-)
+);
+
+/**
+ * uni demo 预览 = 部署的 uni-demo H5 站（ADR-0005，hash 路由）。组件页一帧
+ * 聚合该组件全部场景；组件不在清单（无 uni demo 或非组件路由）时回退首页
+ * 目录。
+ */
+interface DemoManifestEntry {
+  page: string;
+}
 
 const mpPreviewUrl = computed(() => {
-  const comp = uniCompFromRoute(route.path)
-  return withBase(comp === '' ? '/preview-mp?home=1' : `/preview-mp?comp=${comp}`)
-})
+  const comp = uniCompFromRoute(route.path);
+  const entry = (demoManifest.components as Record<string, DemoManifestEntry>)[comp];
+  return uniDemoPageUrl(entry?.page ?? 'pages/index/index');
+});
 
 // Async demo component, resolved through the shared loader so `DemoDock` and
 // this component can never disagree about which file a name maps to (English
 // shadow vs Chinese demo) or how a failed chunk load degrades.
-const AsyncDemo = computed(() => loadDemoComponent(props.name, isEn.value))
+const AsyncDemo = computed(() => loadDemoComponent(props.name, isEn.value));
 
 /** 双语 chrome 文案(复制 / 展开代码),跟随站点语言。 */
 const t = computed(() =>
@@ -196,6 +210,8 @@ const t = computed(() =>
         inPanel: 'Live preview is in the panel on the right',
         inFrame: 'Live preview is in the phone frame above (all scenarios)',
         codeTabs: 'Code sections',
+        missing:
+          'Usage code for this scenario is being migrated to the uni-demo workspace (browser-API demos) and will return shortly.',
       }
     : {
         copy: '复制',
@@ -206,14 +222,14 @@ const t = computed(() =>
         inPanel: '实时预览已移至右侧预览面板',
         inFrame: '实时预览见上方手机框（含全部场景）',
         codeTabs: '代码分区',
+        missing: '该场景用法源码整理中（依赖浏览器 API 的 demo 正在向 uni-demo 迁移）。',
       },
-)
+);
 
 // Raw source of the demo file, for the code panel. Delegated to the shared
 // loader so the panel always shows the same file that was rendered (English
 // shadow when the site is English, Chinese demo otherwise).
-const source = computed<string>(() => loadDemoSource(props.name, isEn.value))
-
+const source = computed<string>(() => loadDemoSource(props.name, isEn.value));
 
 /**
  * Code panel visibility.
@@ -227,9 +243,9 @@ const source = computed<string>(() => loadDemoSource(props.name, isEn.value))
  * The value is computed once at setup; the toolbar still toggles it freely
  * afterwards.
  */
-const codeOpen = ref(dockState.open && /(^|-)mp(-|$)/.test(props.name))
+const codeOpen = ref(dockState.open && /(^|-)mp(-|$)/.test(props.name));
 function toggleCode() {
-  codeOpen.value = !codeOpen.value
+  codeOpen.value = !codeOpen.value;
 }
 
 // ─── Code sections (vue / ts / css) ──────────────────────────────────────
@@ -238,30 +254,11 @@ function toggleCode() {
 // contents without their wrappers. `template` is labelled `vue` because that
 // is the part a reader pastes into a page; `script` is `ts`; `style` is `css`.
 
-type SectionLang = 'vue' | 'ts' | 'css'
+type SectionLang = 'vue' | 'ts' | 'css';
 
 interface CodeSection {
-  lang: SectionLang
-  code: string
-}
-
-/**
- * Strip the indentation a block body inherits from the SFC wrapper.
- *
- * Demo sources are written one level deep inside `<template>` / `<script>`, so
- * the raw body carries 2-4 leading spaces on every line. Shiki renders those
- * verbatim, which pushes every line right inside an already-narrow panel.
- */
-function dedent(input: string): string {
-  const lines = input.replace(/^\n+/, '').replace(/\s+$/, '').split('\n')
-  let min = Number.POSITIVE_INFINITY
-  for (const line of lines) {
-    if (line.trim() === '') continue
-    const indent = line.match(/^ */)?.[0].length ?? 0
-    if (indent < min) min = indent
-  }
-  if (!Number.isFinite(min) || min === 0) return lines.join('\n')
-  return lines.map((line) => line.slice(min)).join('\n')
+  lang: SectionLang;
+  code: string;
 }
 
 /**
@@ -272,93 +269,95 @@ function dedent(input: string): string {
  * would cut the markup at the first inner slot.
  */
 function extractSections(src: string): CodeSection[] {
-  const sections: CodeSection[] = []
+  const sections: CodeSection[] = [];
 
-  const template = src.match(/<template[^>]*>([\s\S]*)<\/template>/)
-  const templateCode = template?.[1]?.trim() ? dedent(template[1]) : ''
-  if (templateCode !== '') sections.push({ lang: 'vue', code: templateCode })
+  const template = src.match(/<template[^>]*>([\s\S]*)<\/template>/);
+  const templateCode = template?.[1]?.trim() ? dedent(template[1]) : '';
+  if (templateCode !== '') sections.push({ lang: 'vue', code: templateCode });
 
   // A file may carry both `<script setup>` and a plain `<script>`; join them
   // so the `ts` tab shows everything the demo actually runs.
   const scriptCode = dedent(
-    [...src.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)]
-      .map((m) => m[1] ?? '')
-      .join('\n'),
-  )
-  if (scriptCode.trim() !== '') sections.push({ lang: 'ts', code: scriptCode })
+    [...src.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1] ?? '').join('\n'),
+  );
+  if (scriptCode.trim() !== '') sections.push({ lang: 'ts', code: scriptCode });
 
   // Same for styles: a demo can ship a scoped block plus an unscoped one.
   const styleCode = dedent(
-    [...src.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)]
-      .map((m) => m[1] ?? '')
-      .join('\n'),
-  )
-  if (styleCode.trim() !== '') sections.push({ lang: 'css', code: styleCode })
+    [...src.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1] ?? '').join('\n'),
+  );
+  if (styleCode.trim() !== '') sections.push({ lang: 'css', code: styleCode });
 
-  return sections
+  return sections;
 }
 
-const sections = computed<CodeSection[]>(() => extractSections(source.value))
+/**
+ * 代码分区：uni demo → 用法源码（模板去壳 + 脚本去 import，见 demo-loader，
+ * css 不展示）；web demo → 完整 SFC 分区（vue/ts/css）。两者共用代码面板。
+ */
+const sections = computed<CodeSection[]>(() =>
+  isMobileDemo.value ? loadDemoUsage(props.name, isEn.value) : extractSections(source.value),
+);
 
 /** Active tab. Falls back to the first section when the demo has no `vue`. */
-const activeTab = ref<SectionLang>('vue')
+const activeTab = ref<SectionLang>('vue');
 
 const activeSection = computed<CodeSection | undefined>(
   () => sections.value.find((s) => s.lang === activeTab.value) ?? sections.value[0],
-)
+);
 
 /**
  * Keep the active tab valid across page/demo changes: a demo without a style
  * block must not leave the panel pointing at an empty `css` tab.
  */
 watch(sections, (list) => {
-  if (list.length === 0) return
+  if (list.length === 0) return;
   if (!list.some((s) => s.lang === activeTab.value)) {
-    activeTab.value = list[0]!.lang
+    activeTab.value = list[0]!.lang;
   }
-})
+});
 
 // Toolbar: copy-to-clipboard. Copies the *visible* tab, not the whole SFC —
 // that is what the reader is looking at when they hit the button.
-const copied = ref(false)
+const copied = ref(false);
 async function copyCode(): Promise<void> {
   try {
-    await navigator.clipboard.writeText(activeSection.value?.code ?? '')
-    copied.value = true
+    await navigator.clipboard.writeText(activeSection.value?.code ?? '');
+    copied.value = true;
     setTimeout(() => {
-      copied.value = false
-    }, 1500)
+      copied.value = false;
+    }, 1500);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error('[Demo] copy failed', err)
+    console.error('[Demo] copy failed', err);
   }
 }
 
 // Syntax-highlighted HTML (Shiki). Each tab is highlighted with the grammar
 // that matches its content, so a `ts` tab gets real TS token colors instead of
 // Vue-directive noise from the SFC grammar.
-import { createHighlighter } from 'shiki'
-const highlighted = ref('')
+import { createHighlighter } from 'shiki';
+const highlighted = ref('');
 const highlighterPromise = createHighlighter({
   themes: ['github-light', 'github-dark'],
   langs: ['vue', 'ts', 'css'],
-})
+});
 watch(
   [() => codeOpen.value, () => activeSection.value],
   async ([open, section]) => {
     if (!open || section === undefined) {
-      highlighted.value = ''
-      return
+      highlighted.value = '';
+      return;
     }
-    const hl = await highlighterPromise
+    const hl = await highlighterPromise;
     highlighted.value = hl.codeToHtml(section.code, {
       lang: section.lang,
       themes: { light: 'github-light', dark: 'github-dark' },
       defaultColor: false,
-    })
+    });
   },
   { immediate: true },
-)
+);
 </script>
 
 <template>
@@ -426,7 +425,11 @@ watch(
       </button>
     </div>
 
-    <div v-show="codeOpen" class="sn-demo__code">
+    <div v-if="codeOpen && sections.length === 0" class="sn-demo__missing">
+      {{ t.missing }}
+    </div>
+
+    <div v-show="codeOpen && sections.length > 0" class="sn-demo__code">
       <div class="sn-demo__code-head">
         <div class="sn-demo__tabs" role="tablist" :aria-label="t.codeTabs">
           <button
@@ -465,7 +468,10 @@ watch(
       </div>
 
       <div class="sn-demo__code-body" v-html="highlighted || ''" />
-      <pre v-if="!highlighted" class="sn-demo__code-fallback"><code>{{ activeSection?.code ?? '' }}</code></pre>
+      <pre
+        v-if="!highlighted"
+        class="sn-demo__code-fallback"
+      ><code>{{ activeSection?.code ?? '' }}</code></pre>
     </div>
   </div>
 </template>
@@ -553,6 +559,17 @@ watch(
   border-radius: 4px;
 }
 
+/* 用法源码暂缺提示（浏览器 API demo 迁移期，见 ADR-0005）。 */
+.sn-demo__missing {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px dashed var(--vp-c-divider);
+  border-radius: 8px;
+  color: var(--vp-c-text-3);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
 /* Collapse row — only while the code block is hidden. */
 .sn-demo__toolbar {
   display: flex;
@@ -576,7 +593,9 @@ watch(
   color: var(--vp-c-text-2);
   font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 .sn-demo__action:hover {
   background: var(--vp-c-bg-soft);
@@ -627,7 +646,9 @@ watch(
   font-weight: 500;
   line-height: 22px;
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 
 .sn-demo__tab:hover {
@@ -666,7 +687,9 @@ watch(
   background: transparent;
   color: var(--vp-c-text-3);
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 
 .sn-demo__icon-btn:hover {

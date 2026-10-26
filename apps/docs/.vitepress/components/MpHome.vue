@@ -2,14 +2,13 @@
 /**
  * MpHome — the overview page's simulator embed.
  *
- * The overview is no longer a demo file: it is the preview route's home view
- * (`/preview-mp?home=1`, rendered by MpOverview inside MpPreview). The doc
- * page embeds it through the same iframe every other uni preview uses — one
- * browsing context, the shared dark-mode mirror, and no demo-code panel (a
- * directory is content, not a copyable example).
+ * The iframe points at the deployed uni-demo site's home directory (the
+ * component index of the real uni runtime, ADR-0005). One browsing context,
+ * shared dark-mode mirror, and no demo-code panel (a directory is content,
+ * not a copyable example).
  */
-import { withBase } from 'vitepress'
-import PhoneFrame from './PhoneFrame.vue'
+import PhoneFrame from './PhoneFrame.vue';
+import { uniDemoPageUrl } from '../utils/uni-demo-base';
 </script>
 
 <template>
@@ -18,7 +17,7 @@ import PhoneFrame from './PhoneFrame.vue'
       <PhoneFrame :height="760">
         <iframe
           class="mp-home__frame"
-          :src="withBase('/preview-mp?home=1')"
+          :src="uniDemoPageUrl('pages/index/index')"
           title="uni component overview"
           loading="lazy"
         />
