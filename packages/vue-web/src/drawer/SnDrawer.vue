@@ -60,28 +60,20 @@
  *   <SnDrawer v-model:show="open" placement="bottom" :height="300">…</SnDrawer>
  */
 
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  provide,
-  ref,
-  watch,
-  type CSSProperties,
-} from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { SN_DRAWER_INJECTION_KEY, type SnDrawerApi } from './drawer-context'
+import { computed, nextTick, onBeforeUnmount, provide, ref, watch, type CSSProperties } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { SN_DRAWER_INJECTION_KEY, type SnDrawerApi } from './drawer-context';
 
-defineOptions({ name: 'SnDrawer' })
+defineOptions({ name: 'SnDrawer' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 /** `n-drawer` placement values. */
-export type SnDrawerPlacement = 'left' | 'right' | 'top' | 'bottom'
+export type SnDrawerPlacement = 'left' | 'right' | 'top' | 'bottom';
 
 /** `n-drawer` displayDirective values. */
-export type SnDrawerDisplayDirective = 'if' | 'show'
+export type SnDrawerDisplayDirective = 'if' | 'show';
 
 /**
  * Subset of upstream's `ScrollbarProps` that has an effect on the native
@@ -90,98 +82,98 @@ export type SnDrawerDisplayDirective = 'if' | 'show'
  */
 export interface SnDrawerScrollbarProps {
   /** When the scrollbar should be visible. Mirrors Scrollbar `trigger`. */
-  trigger?: 'hover' | 'none'
+  trigger?: 'hover' | 'none';
   /** Allow horizontal scrolling. Mirrors Scrollbar `xScrollable`. */
-  xScrollable?: boolean
+  xScrollable?: boolean;
   /** Fired on container scroll. Mirrors Scrollbar `onScroll`. */
-  onScroll?: (e: Event) => void
+  onScroll?: (e: Event) => void;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Visibility. Mirrors n-drawer `show`. */
-    show?: boolean
+    show?: boolean;
     /** Panel width. Applies to `left`/`right`. Number is px. */
-    width?: number | string
+    width?: number | string;
     /** Panel height. Applies to `top`/`bottom`. Number is px. */
-    height?: number | string
+    height?: number | string;
     /** Which edge the panel slides in from. */
-    placement?: SnDrawerPlacement
+    placement?: SnDrawerPlacement;
     /** Close the drawer when the mask is clicked. */
-    maskClosable?: boolean
+    maskClosable?: boolean;
     /** Render the mask; `'transparent'` keeps it clickable but invisible. */
-    showMask?: boolean | 'transparent'
+    showMask?: boolean | 'transparent';
     /** Teleport target. Mirrors n-drawer `to`. */
-    to?: string | HTMLElement
+    to?: string | HTMLElement;
     /** `'if'` unmounts after leaving; `'show'` keeps the node. */
-    displayDirective?: SnDrawerDisplayDirective
+    displayDirective?: SnDrawerDisplayDirective;
     /**
      * Accepted for API parity. Upstream swaps to a virtual scrollbar when
      * `false`; this version renders the native container either way but
      * still applies the `--native-scrollbar` class hook. See §112 markers.
      */
-    nativeScrollbar?: boolean
+    nativeScrollbar?: boolean;
     /**
      * Fallback size used before any drag resize happens, and as the initial
      * value when neither `width` nor `height` is set. Number is px.
      * Mirrors n-drawer `defaultWidth` / `defaultHeight` (both 251 upstream).
      */
-    defaultWidth?: number | string
+    defaultWidth?: number | string;
     /** Vertical counterpart of `defaultWidth`. See above. */
-    defaultHeight?: number | string
+    defaultHeight?: number | string;
     /**
      * Let the user drag the inner edge to resize the panel. Upstream emits
      * `update:width` / `update:height` on drag, which the host binds back so
      * it owns the resulting size. Mirrors n-drawer `resizable`. Default false.
      */
-    resizable?: boolean
+    resizable?: boolean;
     /** Upper drag bound, in px. Only meaningful with `resizable`. */
-    maxWidth?: number
+    maxWidth?: number;
     /** Upper drag bound, in px. Only meaningful with `resizable`. */
-    maxHeight?: number
+    maxHeight?: number;
     /** Lower drag bound, in px. Only meaningful with `resizable`. */
-    minWidth?: number
+    minWidth?: number;
     /** Lower drag bound, in px. Only meaningful with `resizable`. */
-    minHeight?: number
+    minHeight?: number;
     /**
      * Focus the first focusable element inside the panel once it opens.
      * Mirrors n-drawer `autoFocus`. Default true.
      */
-    autoFocus?: boolean
+    autoFocus?: boolean;
     /**
      * Cycle Tab / Shift+Tab inside the panel so focus cannot escape to the
      * page behind the mask. Mirrors n-drawer `trapFocus`. Default true;
      * upstream force-disables it when `showMask` is `false`.
      */
-    trapFocus?: boolean
+    trapFocus?: boolean;
     /**
      * Passed through to the scroll container. Upstream models a full virtual
      * scrollbar (`ScrollbarProps`); this version applies the scroll-related
      * subset (`trigger` / `xScrollable` / `onScroll`) and ignores the rest.
      */
-    scrollbarProps?: SnDrawerScrollbarProps
+    scrollbarProps?: SnDrawerScrollbarProps;
     /** Stacking order of the overlay. */
-    zIndex?: number
+    zIndex?: number;
     /**
      * Called on mask click (fires before the close). Delivered through the
      * `mask-click` emit — Vue maps `mask-click` onto this prop name, so do not
      * call it manually after emitting or the handler runs twice.
      */
-    onMaskClick?: (e: MouseEvent) => void
+    onMaskClick?: (e: MouseEvent) => void;
     /** Extra class on the scroll container. */
-    contentClass?: string
+    contentClass?: string;
     /** Extra style on the scroll container. */
-    contentStyle?: string | CSSProperties
+    contentStyle?: string | CSSProperties;
     /** Called on Escape (fires before the close). */
-    onEsc?: () => void
+    onEsc?: () => void;
     /** Close the drawer when Escape is pressed. */
-    closeOnEsc?: boolean
+    closeOnEsc?: boolean;
     /** Lock `<html>` scroll while open. */
-    blockScroll?: boolean
+    blockScroll?: boolean;
     /** Called after the enter transition finishes. */
-    onAfterEnter?: () => void
+    onAfterEnter?: () => void;
     /** Called after the leave transition finishes. */
-    onAfterLeave?: () => void
+    onAfterLeave?: () => void;
   }>(),
   {
     show: false,
@@ -213,93 +205,87 @@ const props = withDefaults(
     onAfterEnter: undefined as any,
     onAfterLeave: undefined as any,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Visibility changed. Mirrors n-drawer `onUpdate:show`. */
-  (e: 'update:show', value: boolean): void
+  (e: 'update:show', value: boolean): void;
   /** Enter transition finished. */
-  (e: 'after-enter'): void
+  (e: 'after-enter'): void;
   /** Leave transition finished. */
-  (e: 'after-leave'): void
+  (e: 'after-leave'): void;
   /** Mask clicked. */
-  (e: 'mask-click', event: MouseEvent): void
+  (e: 'mask-click', event: MouseEvent): void;
   /** Escape pressed. */
-  (e: 'esc'): void
+  (e: 'esc'): void;
   /** Drag-resize produced a new width. Mirrors n-drawer `onUpdateWidth`. */
-  (e: 'update:width', value: number): void
+  (e: 'update:width', value: number): void;
   /** Drag-resize produced a new height. Mirrors n-drawer `onUpdateHeight`. */
-  (e: 'update:height', value: number): void
-}>()
+  (e: 'update:height', value: number): void;
+}>();
 
 const slots = defineSlots<{
   /** Drawer content. Usually a `<SnDrawerContent>`. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /**
  * Kept mounted while the leave transition plays, so the exit animation has a
  * host. Mirrors upstream's `displayedRef` + `watchEffect(props.show)`.
  */
-const displayed = ref(props.show === true)
+const displayed = ref(props.show === true);
 
 watch(
   () => props.show,
   (value) => {
-    if (value) displayed.value = true
+    if (value) displayed.value = true;
   },
-)
+);
 
-const isVertical = computed(
-  () => props.placement === 'top' || props.placement === 'bottom',
-)
+const isVertical = computed(() => props.placement === 'top' || props.placement === 'bottom');
 
 /* ── Resize state ─────────────────────────────────────────────────────────
  * The host owns the committed size (it receives `update:width` /
  * `update:height`). While a drag is in flight we keep the live value locally
  * so the panel follows the pointer without waiting for a parent re-render.
  * `null` means "no drag yet" — the prop (or `defaultWidth` fallback) wins. */
-const dragSize = ref<number | null>(null)
+const dragSize = ref<number | null>(null);
 
 /** Committed size for the current axis, resolved from prop → default → none. */
 const resolvedSize = computed<number | string | undefined>(() => {
-  if (dragSize.value !== null) return dragSize.value
-  const propValue = isVertical.value ? props.height : props.width
-  if (propValue !== undefined) return propValue
+  if (dragSize.value !== null) return dragSize.value;
+  const propValue = isVertical.value ? props.height : props.width;
+  if (propValue !== undefined) return propValue;
   // `defaultWidth` / `defaultHeight` are the resize gesture's starting point.
   // Upstream only consults them when resizing is enabled — an unresizable
   // drawer with no explicit size must fall through to the stylesheet.
-  if (!props.resizable) return undefined
-  return isVertical.value ? props.defaultHeight : props.defaultWidth
-})
+  if (!props.resizable) return undefined;
+  return isVertical.value ? props.defaultHeight : props.defaultWidth;
+});
 
 /** `width` only participates for horizontal placements — same as upstream. */
-const styleWidth = computed(() =>
-  isVertical.value ? '' : formatLength(resolvedSize.value),
-)
+const styleWidth = computed(() => (isVertical.value ? '' : formatLength(resolvedSize.value)));
 
 /** `height` only participates for vertical placements — same as upstream. */
-const styleHeight = computed(() =>
-  isVertical.value ? formatLength(resolvedSize.value) : '',
-)
+const styleHeight = computed(() => (isVertical.value ? formatLength(resolvedSize.value) : ''));
 
 const mergedBodyStyle = computed(() => ({
   width: styleWidth.value,
   height: styleHeight.value,
-}))
+}));
 
 /** `'if'` → v-if semantics; `'show'` → keeps the node through `displayed`. */
 const shouldRender = computed(
   () => props.displayDirective === 'show' || displayed.value || props.show === true,
-)
+);
 
-const maskVisible = computed(() => props.show === true)
+const maskVisible = computed(() => props.show === true);
 
-const isInvisibleMask = computed(() => props.showMask === 'transparent')
+const isInvisibleMask = computed(() => props.showMask === 'transparent');
 
 const containerStyle = computed(() =>
   props.zIndex === undefined ? undefined : { zIndex: props.zIndex },
-)
+);
 
 /**
  * A number is a px length; a string is passed through untouched. An absent
@@ -307,68 +293,68 @@ const containerStyle = computed(() =>
  * inline declaration.
  */
 function formatLength(value: number | string | undefined): string {
-  if (value === undefined || value === '') return ''
-  return typeof value === 'number' ? `${value}px` : value
+  if (value === undefined || value === '') return '';
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 function doUpdateShow(show: boolean): void {
-  emit('update:show', show)
+  emit('update:show', show);
 }
 
 // Exposed to a descendant `<SnDrawerContent>` so its close button can ask
 // this drawer to hide — the same contract as upstream's `drawerInjectionKey`.
-provide<SnDrawerApi>(SN_DRAWER_INJECTION_KEY, { doUpdateShow })
+provide<SnDrawerApi>(SN_DRAWER_INJECTION_KEY, { doUpdateShow });
 
 // `emit('mask-click', e)` already routes into an `onMaskClick` prop (Vue maps
 // `foo-bar` -> `onFooBar`), so the prop must NOT be invoked manually here —
 // doing both fires the caller's handler twice.
 function handleMaskClick(e: MouseEvent): void {
   if (props.maskClosable) {
-    doUpdateShow(false)
+    doUpdateShow(false);
   }
-  emit('mask-click', e)
+  emit('mask-click', e);
 }
 
 function handleEsc(e: KeyboardEvent): void {
-  emit('esc')
+  emit('esc');
   // `isComposing` guard: an Escape pressed to cancel IME composition must not
   // dismiss the drawer (upstream uses `useIsComposing` for the same reason).
   if (props.show === true && props.closeOnEsc && !e.isComposing) {
-    doUpdateShow(false)
+    doUpdateShow(false);
   }
 }
 
 function handleAfterEnter(): void {
-  emit('after-enter')
+  emit('after-enter');
 }
 
 function handleAfterLeave(): void {
-  displayed.value = false
-  emit('after-leave')
+  displayed.value = false;
+  emit('after-leave');
 }
 
 // ── Scroll lock ──────────────────────────────────────────────────────────
 // Lock <html> while open and restore the *previous* inline value on release,
 // so a pre-existing `overflow: hidden` set by the host is not clobbered.
 
-let memoizedHtmlOverflow: string | null = null
-let isScrollLocked = false
+let memoizedHtmlOverflow: string | null = null;
+let isScrollLocked = false;
 
 watch(
   () => props.blockScroll === true && props.show === true,
   (shouldLock) => {
-    if (typeof document === 'undefined') return
+    if (typeof document === 'undefined') return;
     if (shouldLock && !isScrollLocked) {
-      memoizedHtmlOverflow = document.documentElement.style.overflow
-      document.documentElement.style.overflow = 'hidden'
-      isScrollLocked = true
+      memoizedHtmlOverflow = document.documentElement.style.overflow;
+      document.documentElement.style.overflow = 'hidden';
+      isScrollLocked = true;
     } else if (!shouldLock && isScrollLocked) {
-      document.documentElement.style.overflow = memoizedHtmlOverflow ?? ''
-      isScrollLocked = false
+      document.documentElement.style.overflow = memoizedHtmlOverflow ?? '';
+      isScrollLocked = false;
     }
   },
   { immediate: true },
-)
+);
 
 /* ── Drag resize ──────────────────────────────────────────────────────────
  * Enabled by `resizable`. The handle sits on the inner edge of the panel
@@ -376,101 +362,98 @@ watch(
  * pair for `top` / `bottom`). Pointer events are attached to the handle and
  * to `document` for the duration of the drag, so the pointer may leave the
  * panel without losing the gesture. */
-const panelEl = ref<HTMLElement | null>(null)
-const isDragging = ref(false)
+const panelEl = ref<HTMLElement | null>(null);
+const isDragging = ref(false);
 
 /** In-flight drag origin: pointer position and panel size at pointerdown. */
-let dragOrigin: { pointer: number; size: number } | null = null
+let dragOrigin: { pointer: number; size: number } | null = null;
 
 /** Clamp a candidate size into the configured min / max bounds. */
 function clampSize(size: number): number {
-  const min = isVertical.value ? props.minHeight : props.minWidth
-  const max = isVertical.value ? props.maxHeight : props.maxWidth
-  let out = size
+  const min = isVertical.value ? props.minHeight : props.minWidth;
+  const max = isVertical.value ? props.maxHeight : props.maxWidth;
+  let out = size;
   if (isVertical.value) {
-    if (typeof min === 'number') out = Math.max(min, out)
-    if (typeof max === 'number') out = Math.min(max, out)
+    if (typeof min === 'number') out = Math.max(min, out);
+    if (typeof max === 'number') out = Math.min(max, out);
+  } else {
+    if (typeof min === 'number') out = Math.max(min, out);
+    if (typeof max === 'number') out = Math.min(max, out);
   }
-  else {
-    if (typeof min === 'number') out = Math.max(min, out)
-    if (typeof max === 'number') out = Math.min(max, out)
-  }
-  return out
+  return out;
 }
 
 function onDragMove(e: PointerEvent): void {
-  if (!dragOrigin) return
-  const pointer = isVertical.value ? e.clientY : e.clientX
+  if (!dragOrigin) return;
+  const pointer = isVertical.value ? e.clientY : e.clientX;
   // Which direction grows the panel depends on which edge it is anchored to.
-  const growsWithPointer
-    = props.placement === 'right' || props.placement === 'bottom'
-  const delta = growsWithPointer
-    ? dragOrigin.pointer - pointer
-    : pointer - dragOrigin.pointer
-  dragSize.value = clampSize(dragOrigin.size + delta)
+  const growsWithPointer = props.placement === 'right' || props.placement === 'bottom';
+  const delta = growsWithPointer ? dragOrigin.pointer - pointer : pointer - dragOrigin.pointer;
+  dragSize.value = clampSize(dragOrigin.size + delta);
 }
 
 function onDragEnd(): void {
-  if (!dragOrigin) return
-  dragOrigin = null
-  isDragging.value = false
-  document.removeEventListener('pointermove', onDragMove)
-  document.removeEventListener('pointerup', onDragEnd)
-  document.removeEventListener('pointercancel', onDragEnd)
+  if (!dragOrigin) return;
+  dragOrigin = null;
+  isDragging.value = false;
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', onDragEnd);
+  document.removeEventListener('pointercancel', onDragEnd);
   // Commit to the host — it owns the authoritative size.
-  const size = dragSize.value
+  const size = dragSize.value;
   if (typeof size === 'number') {
-    if (isVertical.value) emit('update:height', size)
-    else emit('update:width', size)
+    if (isVertical.value) emit('update:height', size);
+    else emit('update:width', size);
   }
 }
 
 function onDragStart(e: PointerEvent): void {
-  if (!props.resizable) return
-  const panel = panelEl.value
-  if (!panel) return
-  const rect = panel.getBoundingClientRect()
+  if (!props.resizable) return;
+  const panel = panelEl.value;
+  if (!panel) return;
+  const rect = panel.getBoundingClientRect();
   dragOrigin = {
     pointer: isVertical.value ? e.clientY : e.clientX,
     size: isVertical.value ? rect.height : rect.width,
-  }
-  isDragging.value = true
-  document.addEventListener('pointermove', onDragMove)
-  document.addEventListener('pointerup', onDragEnd)
-  document.addEventListener('pointercancel', onDragEnd)
+  };
+  isDragging.value = true;
+  document.addEventListener('pointermove', onDragMove);
+  document.addEventListener('pointerup', onDragEnd);
+  document.addEventListener('pointercancel', onDragEnd);
 }
 
 /** Keyboard resize: arrow keys nudge by 16px, Home/End jump to min/max. */
 function onDragKeydown(e: KeyboardEvent): void {
-  if (!props.resizable) return
-  const panel = panelEl.value
-  if (!panel) return
+  if (!props.resizable) return;
+  const panel = panelEl.value;
+  if (!panel) return;
   // Prefer the resolved size over a measurement: the panel may be mid-layout
   // (or, in a test environment, have a zeroed rect) while the committed size
   // is already known.
-  const current = typeof resolvedSize.value === 'number'
-    ? resolvedSize.value
-    : (() => {
-        const rect = panel.getBoundingClientRect()
-        return isVertical.value ? rect.height : rect.width
-      })()
-  const step = 16
-  const growKey = isVertical.value ? 'ArrowDown' : 'ArrowRight'
-  const shrinkKey = isVertical.value ? 'ArrowUp' : 'ArrowLeft'
-  let next: number | null = null
-  if (e.key === growKey) next = current + step
-  else if (e.key === shrinkKey) next = current - step
-  else if (e.key === 'Home') next = clampSize(0)
+  const current =
+    typeof resolvedSize.value === 'number'
+      ? resolvedSize.value
+      : (() => {
+          const rect = panel.getBoundingClientRect();
+          return isVertical.value ? rect.height : rect.width;
+        })();
+  const step = 16;
+  const growKey = isVertical.value ? 'ArrowDown' : 'ArrowRight';
+  const shrinkKey = isVertical.value ? 'ArrowUp' : 'ArrowLeft';
+  let next: number | null = null;
+  if (e.key === growKey) next = current + step;
+  else if (e.key === shrinkKey) next = current - step;
+  else if (e.key === 'Home') next = clampSize(0);
   else if (e.key === 'End') {
-    const bound = isVertical.value ? props.maxHeight : props.maxWidth
-    if (typeof bound === 'number') next = bound
+    const bound = isVertical.value ? props.maxHeight : props.maxWidth;
+    if (typeof bound === 'number') next = bound;
   }
-  if (next === null) return
-  e.preventDefault()
-  const size = clampSize(next)
-  dragSize.value = size
-  if (isVertical.value) emit('update:height', size)
-  else emit('update:width', size)
+  if (next === null) return;
+  e.preventDefault();
+  const size = clampSize(next);
+  dragSize.value = size;
+  if (isVertical.value) emit('update:height', size);
+  else emit('update:width', size);
 }
 
 /* ── Focus management ─────────────────────────────────────────────────────
@@ -486,97 +469,84 @@ const FOCUSABLE_SELECTOR = [
   'select:not([disabled])',
   'textarea:not([disabled])',
   '[tabindex]:not([tabindex="-1"])',
-].join(',')
+].join(',');
 
-const isTrapFocusEnabled = computed(
-  () => props.trapFocus && props.showMask !== false,
-)
+const isTrapFocusEnabled = computed(() => props.trapFocus && props.showMask !== false);
 
 function focusableNodes(): HTMLElement[] {
-  const panel = panelEl.value
-  if (!panel) return []
-  return Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR))
-    .filter((el) => el.offsetParent !== null || el === document.activeElement)
+  const panel = panelEl.value;
+  if (!panel) return [];
+  return Array.from(panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+    (el) => el.offsetParent !== null || el === document.activeElement,
+  );
 }
 
 /** Remember what had focus before opening so it can be restored on close. */
-let previouslyFocused: HTMLElement | null = null
+let previouslyFocused: HTMLElement | null = null;
 
 function handlePanelKeydown(e: KeyboardEvent): void {
   if (e.key === 'Escape') {
-    handleEsc(e)
-    return
+    handleEsc(e);
+    return;
   }
-  if (e.key !== 'Tab' || !isTrapFocusEnabled.value) return
-  const nodes = focusableNodes()
-  const first = nodes[0]
-  const last = nodes[nodes.length - 1]
+  if (e.key !== 'Tab' || !isTrapFocusEnabled.value) return;
+  const nodes = focusableNodes();
+  const first = nodes[0];
+  const last = nodes[nodes.length - 1];
   if (!first || !last) {
     // Nothing focusable inside — hold focus on the panel itself.
-    e.preventDefault()
-    return
+    e.preventDefault();
+    return;
   }
-  const active = document.activeElement
+  const active = document.activeElement;
   if (e.shiftKey) {
     if (active === first || active === panelEl.value) {
-      e.preventDefault()
-      last.focus()
+      e.preventDefault();
+      last.focus();
     }
-  }
-  else if (active === last) {
-    e.preventDefault()
-    first.focus()
+  } else if (active === last) {
+    e.preventDefault();
+    first.focus();
   }
 }
 
 watch(
   () => props.show,
   async (open) => {
-    if (typeof document === 'undefined') return
+    if (typeof document === 'undefined') return;
     if (open) {
       if (props.autoFocus) {
-        previouslyFocused = document.activeElement as HTMLElement | null
-        await nextTick()
-        const [first] = focusableNodes()
+        previouslyFocused = document.activeElement as HTMLElement | null;
+        await nextTick();
+        const [first] = focusableNodes();
         // Fall back to the panel itself so the trap has an anchor even when
         // the drawer carries no interactive content.
-        ;(first ?? panelEl.value)?.focus()
+        (first ?? panelEl.value)?.focus();
       }
-    }
-    else if (previouslyFocused) {
-      previouslyFocused.focus?.()
-      previouslyFocused = null
+    } else if (previouslyFocused) {
+      previouslyFocused.focus?.();
+      previouslyFocused = null;
     }
   },
-)
+);
 
 onBeforeUnmount(() => {
   if (isScrollLocked && typeof document !== 'undefined') {
-    document.documentElement.style.overflow = memoizedHtmlOverflow ?? ''
-    isScrollLocked = false
+    document.documentElement.style.overflow = memoizedHtmlOverflow ?? '';
+    isScrollLocked = false;
   }
   // A drag in flight outlives the component otherwise — the document
   // listeners would keep firing against a detached panel.
-  document.removeEventListener('pointermove', onDragMove)
-  document.removeEventListener('pointerup', onDragEnd)
-  document.removeEventListener('pointercancel', onDragEnd)
-})
+  document.removeEventListener('pointermove', onDragMove);
+  document.removeEventListener('pointerup', onDragEnd);
+  document.removeEventListener('pointercancel', onDragEnd);
+});
 </script>
 
 <template>
   <Teleport :to="to ?? 'body'">
-    <div
-      v-show="show === true"
-      class="sn-drawer-container"
-      :style="containerStyle"
-      role="none"
-    >
-      <div
-        v-if="shouldRender"
-        class="sn-drawer-viewport"
-        role="none"
-        @keydown="handlePanelKeydown"
-      >
+    <div v-show="show === true" class="sn-drawer-container" :style="containerStyle" role="none">
+      <div v-if="shouldRender" class="sn-drawer-viewport" role="none" @keydown="handlePanelKeydown">
         <Transition name="sn-fade" appear>
           <div
             v-if="showMask !== false && maskVisible"
@@ -615,7 +585,9 @@ onBeforeUnmount(() => {
               :class="`sn-drawer__resize-handle--${placement}`"
               role="separator"
               :aria-orientation="isVertical ? 'horizontal' : 'vertical'"
-              :aria-label="isVertical ? locale.Drawer.resizeVertical : locale.Drawer.resizeHorizontal"
+              :aria-label="
+                isVertical ? locale.Drawer.resizeVertical : locale.Drawer.resizeHorizontal
+              "
               :tabindex="0"
               @pointerdown="onDragStart"
               @keydown="onDragKeydown"
@@ -737,8 +709,12 @@ onBeforeUnmount(() => {
   width: 12px;
   cursor: col-resize;
 }
-.sn-drawer__resize-handle--left { right: -6px; }
-.sn-drawer__resize-handle--right { left: -6px; }
+.sn-drawer__resize-handle--left {
+  right: -6px;
+}
+.sn-drawer__resize-handle--right {
+  left: -6px;
+}
 
 .sn-drawer__resize-handle--left::after,
 .sn-drawer__resize-handle--right::after {
@@ -754,8 +730,12 @@ onBeforeUnmount(() => {
   height: 12px;
   cursor: row-resize;
 }
-.sn-drawer__resize-handle--top { bottom: -6px; }
-.sn-drawer__resize-handle--bottom { top: -6px; }
+.sn-drawer__resize-handle--top {
+  bottom: -6px;
+}
+.sn-drawer__resize-handle--bottom {
+  top: -6px;
+}
 
 .sn-drawer__resize-handle--top::after,
 .sn-drawer__resize-handle--bottom::after {

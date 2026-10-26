@@ -2,35 +2,43 @@
 /**
  * Demo: SnPopover — 12-way placement grid driving one controlled instance.
  */
-import { nextTick, ref } from 'vue'
-import { SnButton, SnPopover, type SnPopoverPlacement } from '@snui/vue-web'
+import { nextTick, ref } from 'vue';
+import { SnButton, SnPopover, type SnPopoverPlacement } from '@snui/vue-web';
 
 const placements: SnPopoverPlacement[] = [
-  'top-start', 'top', 'top-end',
-  'right-start', 'right', 'right-end',
-  'bottom-start', 'bottom', 'bottom-end',
-  'left-start', 'left', 'left-end',
-]
+  'top-start',
+  'top',
+  'top-end',
+  'right-start',
+  'right',
+  'right-end',
+  'bottom-start',
+  'bottom',
+  'bottom-end',
+  'left-start',
+  'left',
+  'left-end',
+];
 
-const show = ref(false)
-const placement = ref<SnPopoverPlacement>('top')
-const active = ref<SnPopoverPlacement | null>(null)
+const show = ref(false);
+const placement = ref<SnPopoverPlacement>('top');
+const active = ref<SnPopoverPlacement | null>(null);
 
 async function toggleAt(p: SnPopoverPlacement): Promise<void> {
   // 再次点击当前方位时收起。
   if (show.value && active.value === p) {
-    show.value = false
-    active.value = null
-    return
+    show.value = false;
+    active.value = null;
+    return;
   }
   // 已打开时先收起再重开，让气泡按新方位重新定位。
   if (show.value) {
-    show.value = false
-    await nextTick()
+    show.value = false;
+    await nextTick();
   }
-  placement.value = p
-  active.value = p
-  show.value = true
+  placement.value = p;
+  active.value = p;
+  show.value = true;
 }
 </script>
 
@@ -62,7 +70,9 @@ async function toggleAt(p: SnPopoverPlacement): Promise<void> {
     </div>
 
     <p class="popover-placement-demo__hint">
-      Twelve placements: top / right / bottom / left each offer start, center and end alignment; the bubble flips to the opposite side automatically when space is tight. Click the current placement again to dismiss it.
+      Twelve placements: top / right / bottom / left each offer start, center and end alignment; the
+      bubble flips to the opposite side automatically when space is tight. Click the current
+      placement again to dismiss it.
     </p>
   </div>
 </template>

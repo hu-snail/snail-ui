@@ -30,16 +30,16 @@
 
 ### SnDatePicker Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| type | `'date'\|'datetime'\|'month'\|'year'\|'daterange'\|'datetimerange'` | `'date'` | 模式（range 值为数组） |
-| modelValue | `number \| [number, number] \| null` | `null` | 毫秒时间戳（range 为 `[start, end]`） |
-| format | `string` | 按模式 | 小写 token（yyyy/yy/MM/M/dd/d/HH/H/mm/m/ss/s） |
-| placeholder | `string \| [string, string]` | — | 占位（range 双占位） |
-| clearable | `boolean` | `false` | 清空按钮 |
-| disabled / readonly | `boolean` | `false` | 禁用 / 只读 |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| status | `'default'\|'error'\|'warning'` | `'default'` | 校验状态 |
+| Prop                | 类型                                                                | 默认值      | 说明                                           |
+| ------------------- | ------------------------------------------------------------------- | ----------- | ---------------------------------------------- |
+| type                | `'date'\|'datetime'\|'month'\|'year'\|'daterange'\|'datetimerange'` | `'date'`    | 模式（range 值为数组）                         |
+| modelValue          | `number \| [number, number] \| null`                                | `null`      | 毫秒时间戳（range 为 `[start, end]`）          |
+| format              | `string`                                                            | 按模式      | 小写 token（yyyy/yy/MM/M/dd/d/HH/H/mm/m/ss/s） |
+| placeholder         | `string \| [string, string]`                                        | —           | 占位（range 双占位）                           |
+| clearable           | `boolean`                                                           | `false`     | 清空按钮                                       |
+| disabled / readonly | `boolean`                                                           | `false`     | 禁用 / 只读                                    |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'`                        | `'medium'`  | 尺寸                                           |
+| status              | `'default'\|'error'\|'warning'`                                     | `'default'` | 校验状态                                       |
 
 事件：`update:modelValue` / `change` / `clear` / `focus` / `blur`。键盘：Arrow 移动、PageUp/PageDown 翻月（年）、Enter 选取/确认、Esc 关闭、Space 打开。aria：grid/gridcell + aria-selected。date/month/year 点击即提交；datetime 族需确认。周一起始，面板文案 zh-CN。
 

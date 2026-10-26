@@ -27,15 +27,15 @@ mode and built-in JSON token colors.
 
 ### SnCode Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| code | `string` | `''` | Source text |
-| language | `string` | `undefined` | `json` tokenizes via the built-in highlighter; others render plain |
-| trim | `boolean` | `true` | Trim whitespace on the highlighted path |
-| inline | `boolean` | `false` | Inline rendering (no pre wrapper) |
-| word-wrap | `boolean` | `false` | Soft-wrap long lines |
-| show-line-numbers | `boolean` | `false` | Line-number gutter (off when inline / word-wrap) |
-| uri | `boolean` | `false` | Decode `code` as a URI component |
+| Prop              | Type      | Default     | Notes                                                              |
+| ----------------- | --------- | ----------- | ------------------------------------------------------------------ |
+| code              | `string`  | `''`        | Source text                                                        |
+| language          | `string`  | `undefined` | `json` tokenizes via the built-in highlighter; others render plain |
+| trim              | `boolean` | `true`      | Trim whitespace on the highlighted path                            |
+| inline            | `boolean` | `false`     | Inline rendering (no pre wrapper)                                  |
+| word-wrap         | `boolean` | `false`     | Soft-wrap long lines                                               |
+| show-line-numbers | `boolean` | `false`     | Line-number gutter (off when inline / word-wrap)                   |
+| uri               | `boolean` | `false`     | Decode `code` as a URI component                                   |
 
 Slots: `default` (custom code content). See the component `ai-description.md`
 for the full contract.

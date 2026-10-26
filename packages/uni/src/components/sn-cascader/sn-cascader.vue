@@ -41,70 +41,70 @@
  *   - 弹层定位 / 动画 — 用 sn-popup
  */
 
-import { computed, ref, watch } from 'vue'
-import SnPopup from '../sn-popup/sn-popup.vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { Check as CheckIcon } from '../sn-icon/sn-icon-set'
+import { computed, ref, watch } from 'vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Check as CheckIcon } from '../sn-icon/sn-icon-set';
 import type {
   CascaderConfirmPayload,
   CascaderLazyLoad,
   CascaderOption,
   CascaderValue,
-} from './sn-cascader-types'
+} from './sn-cascader-types';
 
-defineOptions({ name: 'SnCascader' })
+defineOptions({ name: 'SnCascader' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-cascader` 1:1 surface ───────────────────────────────── */
 
     /** Selected value — a leaf value, or a path array in lazy mode. */
-    modelValue?: CascaderValue | CascaderValue[] | undefined
+    modelValue?: CascaderValue | CascaderValue[] | undefined;
     /** Sheet visibility (`v-model:visible`). */
-    visible?: boolean
+    visible?: boolean;
     /** Option tree. */
-    options?: CascaderOption[]
+    options?: CascaderOption[];
     /** Toolbar title. */
-    title?: string
+    title?: string;
     /** Veto hook for confirm. */
-    beforeConfirm?: ((payload: CascaderConfirmPayload) => boolean | Promise<boolean>) | undefined
+    beforeConfirm?: ((payload: CascaderConfirmPayload) => boolean | Promise<boolean>) | undefined;
     /** Allow confirming any level, not just leaves. */
-    checkStrictly?: boolean
+    checkStrictly?: boolean;
     /** Confirm button label (only rendered in `checkStrictly` / lazy mode). */
-    confirmText?: string
+    confirmText?: string;
     /** Option key holding the value. */
-    valueKey?: string
+    valueKey?: string;
     /** Option key holding the text. */
-    textKey?: string
+    textKey?: string;
     /** Option key holding the children. */
-    childrenKey?: string
+    childrenKey?: string;
     /** Option key holding the tip. */
-    tipKey?: string
+    tipKey?: string;
     /** Option key marking a leaf in lazy mode. */
-    isLeafKey?: string
+    isLeafKey?: string;
     /** Lazy-load hook. */
-    lazyLoad?: CascaderLazyLoad | undefined
+    lazyLoad?: CascaderLazyLoad | undefined;
     /** Tapping the mask closes the sheet. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Pad the sheet for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Width of the active indicator bar. A number is an rpx design value. */
-    lineWidth?: number | string | undefined
+    lineWidth?: number | string | undefined;
     /** Height of the active indicator bar. A number is an rpx design value. */
-    lineHeight?: number | string | undefined
+    lineHeight?: number | string | undefined;
     /** Indicator placement style. */
-    lineTheme?: 'normal' | 'text' | 'underline' | 'dot'
+    lineTheme?: 'normal' | 'text' | 'underline' | 'dot';
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the sheet. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the layer cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -130,238 +130,242 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: CascaderValue | CascaderValue[]): void
-  (e: 'update:visible', value: boolean): void
-  (e: 'confirm', payload: CascaderConfirmPayload): void
-  (e: 'close'): void
-}>()
+  (e: 'update:modelValue', value: CascaderValue | CascaderValue[]): void;
+  (e: 'update:visible', value: boolean): void;
+  (e: 'confirm', payload: CascaderConfirmPayload): void;
+  (e: 'close'): void;
+}>();
 
 /* ── Node accessors ────────────────────────────────────────────────────── */
 
 function readString(raw: CascaderOption, key: string): string {
-  const value = raw[key]
-  return value === undefined || value === null ? '' : String(value)
+  const value = raw[key];
+  return value === undefined || value === null ? '' : String(value);
 }
 
 function nodeValue(raw: CascaderOption): CascaderValue {
-  const value = raw[props.valueKey]
-  if (typeof value === 'string' || typeof value === 'number') return value
-  return readString(raw, props.textKey)
+  const value = raw[props.valueKey];
+  if (typeof value === 'string' || typeof value === 'number') return value;
+  return readString(raw, props.textKey);
 }
 
 function nodeText(raw: CascaderOption): string {
-  return readString(raw, props.textKey)
+  return readString(raw, props.textKey);
 }
 
 function nodeTip(raw: CascaderOption): string {
-  return readString(raw, props.tipKey)
+  return readString(raw, props.tipKey);
 }
 
 function nodeChildren(raw: CascaderOption): CascaderOption[] {
-  const value = raw[props.childrenKey]
-  return Array.isArray(value) ? (value as CascaderOption[]) : []
+  const value = raw[props.childrenKey];
+  return Array.isArray(value) ? (value as CascaderOption[]) : [];
 }
 
 function isLeafNode(raw: CascaderOption): boolean {
-  if (props.lazyLoad) return raw[props.isLeafKey] === true
-  return nodeChildren(raw).length === 0
+  if (props.lazyLoad) return raw[props.isLeafKey] === true;
+  return nodeChildren(raw).length === 0;
 }
 
 /* ── Tab state ─────────────────────────────────────────────────────────── */
 
 /** Options shown per tab. Tab 0 is the root list. */
-const tabs = ref<CascaderOption[][]>([props.options])
+const tabs = ref<CascaderOption[][]>([props.options]);
 /** Selected node per tab. */
-const selectedPath = ref<CascaderOption[]>([])
+const selectedPath = ref<CascaderOption[]>([]);
 /** Active tab index. */
-const activeTab = ref(0)
+const activeTab = ref(0);
 /** Loading flags per tab. */
-const loadingTab = ref<number | null>(null)
+const loadingTab = ref<number | null>(null);
 
 /** Generation token so a stale lazy-load resolve is dropped (§39). */
-let requestToken = 0
+let requestToken = 0;
 
 /** Seed the tabs from `modelValue` when it is a path array. */
 function seedFromValue(): void {
-  const value = props.modelValue
-  tabs.value = [props.options]
-  selectedPath.value = []
-  activeTab.value = 0
-  if (!Array.isArray(value) || value.length === 0) return
-  let level = props.options
-  const path: CascaderOption[] = []
+  const value = props.modelValue;
+  tabs.value = [props.options];
+  selectedPath.value = [];
+  activeTab.value = 0;
+  if (!Array.isArray(value) || value.length === 0) return;
+  let level = props.options;
+  const path: CascaderOption[] = [];
   for (const wanted of value) {
-    const found = level.find(option => nodeValue(option) === wanted)
-    if (!found) break
-    path.push(found)
-    const children = nodeChildren(found)
-    if (children.length === 0) break
-    level = children
-    tabs.value.push(children)
+    const found = level.find((option) => nodeValue(option) === wanted);
+    if (!found) break;
+    path.push(found);
+    const children = nodeChildren(found);
+    if (children.length === 0) break;
+    level = children;
+    tabs.value.push(children);
   }
-  selectedPath.value = path
-  activeTab.value = path.length
+  selectedPath.value = path;
+  activeTab.value = path.length;
 }
 
 watch(
   () => props.visible,
   (value) => {
     if (!value) {
-      requestToken += 1
-      loadingTab.value = null
-      return
+      requestToken += 1;
+      loadingTab.value = null;
+      return;
     }
-    seedFromValue()
+    seedFromValue();
   },
   { immediate: true },
-)
+);
 
 watch(
   () => props.options,
   () => {
-    if (props.visible) seedFromValue()
+    if (props.visible) seedFromValue();
   },
   { deep: true },
-)
+);
 
 /** Can the current selection be confirmed? */
 const canConfirm = computed(() => {
-  if (props.lazyLoad) return selectedPath.value.length > 0
-  if (props.checkStrictly) return selectedPath.value.length > 0
-  const last = selectedPath.value[selectedPath.value.length - 1]
-  return last !== undefined && isLeafNode(last)
-})
+  if (props.lazyLoad) return selectedPath.value.length > 0;
+  if (props.checkStrictly) return selectedPath.value.length > 0;
+  const last = selectedPath.value[selectedPath.value.length - 1];
+  return last !== undefined && isLeafNode(last);
+});
 
 /** Value written on confirm. */
 const currentValue = computed<CascaderValue | CascaderValue[]>(() => {
-  if (props.lazyLoad) return selectedPath.value.map(nodeValue)
-  const last = selectedPath.value[selectedPath.value.length - 1]
-  return last ? nodeValue(last) : ''
-})
+  if (props.lazyLoad) return selectedPath.value.map(nodeValue);
+  const last = selectedPath.value[selectedPath.value.length - 1];
+  return last ? nodeValue(last) : '';
+});
 
 /** Emit a leaf confirmation immediately (static mode, not strict). */
 function confirmStatic(): void {
-  emit('update:modelValue', currentValue.value)
+  emit('update:modelValue', currentValue.value);
   emit('confirm', {
     value: currentValue.value,
     selectedOptions: selectedPath.value.slice(),
-  })
-  emit('update:visible', false)
+  });
+  emit('update:visible', false);
 }
 
 function commitSelection(): void {
-  if (!canConfirm.value) return
+  if (!canConfirm.value) return;
   if (!props.checkStrictly && !props.lazyLoad) {
-    confirmStatic()
-    return
+    confirmStatic();
+    return;
   }
-  emit('update:modelValue', currentValue.value)
+  emit('update:modelValue', currentValue.value);
   emit('confirm', {
     value: currentValue.value,
     selectedOptions: selectedPath.value.slice(),
-  })
-  emit('update:visible', false)
+  });
+  emit('update:visible', false);
 }
 
 async function onConfirm(): Promise<void> {
-  if (!canConfirm.value) return
+  if (!canConfirm.value) return;
   if (props.beforeConfirm) {
     const verdict = await props.beforeConfirm({
       value: currentValue.value,
       selectedOptions: selectedPath.value.slice(),
-    })
-    if (verdict === false) return
+    });
+    if (verdict === false) return;
   }
-  commitSelection()
+  commitSelection();
 }
 
 /* ── Interaction ───────────────────────────────────────────────────────── */
 
 function truncate(level: number): void {
-  tabs.value = tabs.value.slice(0, level + 1)
-  selectedPath.value = selectedPath.value.slice(0, level)
+  tabs.value = tabs.value.slice(0, level + 1);
+  selectedPath.value = selectedPath.value.slice(0, level);
 }
 
 function onOptionTap(tabIndex: number, option: CascaderOption): void {
-  if (option.disabled === true) return
-  truncate(tabIndex)
-  selectedPath.value = [...selectedPath.value.slice(0, tabIndex), option]
-  activeTab.value = tabIndex
+  if (option.disabled === true) return;
+  truncate(tabIndex);
+  selectedPath.value = [...selectedPath.value.slice(0, tabIndex), option];
+  activeTab.value = tabIndex;
 
   if (isLeafNode(option)) {
-    if (!props.checkStrictly && !props.lazyLoad) confirmStatic()
-    return
+    if (!props.checkStrictly && !props.lazyLoad) confirmStatic();
+    return;
   }
 
-  const children = nodeChildren(option)
+  const children = nodeChildren(option);
   if (children.length > 0) {
-    tabs.value = [...tabs.value.slice(0, tabIndex + 1), children]
-    activeTab.value = tabIndex + 1
-    return
+    tabs.value = [...tabs.value.slice(0, tabIndex + 1), children];
+    activeTab.value = tabIndex + 1;
+    return;
   }
 
-  if (!props.lazyLoad) return
-  requestLazy(tabIndex, option)
+  if (!props.lazyLoad) return;
+  requestLazy(tabIndex, option);
 }
 
 function requestLazy(tabIndex: number, option: CascaderOption): void {
-  const lazyLoad = props.lazyLoad
-  if (!lazyLoad) return
-  requestToken += 1
-  const token = requestToken
-  loadingTab.value = tabIndex
+  const lazyLoad = props.lazyLoad;
+  if (!lazyLoad) return;
+  requestToken += 1;
+  const token = requestToken;
+  loadingTab.value = tabIndex;
   lazyLoad(option, tabIndex, (children) => {
-    if (token !== requestToken) return
-    loadingTab.value = null
-    if (!Array.isArray(children) || children.length === 0) return
-    tabs.value = [...tabs.value.slice(0, tabIndex + 1), children]
-    activeTab.value = tabIndex + 1
-  })
+    if (token !== requestToken) return;
+    loadingTab.value = null;
+    if (!Array.isArray(children) || children.length === 0) return;
+    tabs.value = [...tabs.value.slice(0, tabIndex + 1), children];
+    activeTab.value = tabIndex + 1;
+  });
 }
 
 function onTabTap(tabIndex: number): void {
-  activeTab.value = tabIndex
+  activeTab.value = tabIndex;
 }
 
 function onCancel(): void {
-  emit('close')
-  emit('update:visible', false)
+  emit('close');
+  emit('update:visible', false);
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
-const popupClass = computed(() => ['sn-cascader-popup', props.customClass].filter(Boolean).join(' '))
+const popupClass = computed(() =>
+  ['sn-cascader-popup', props.customClass].filter(Boolean).join(' '),
+);
 
-const rootStyle = computed(() => props.customStyle)
+const rootStyle = computed(() => props.customStyle);
 
 const indicatorStyle = computed(() => {
-  const vars: string[] = []
+  const vars: string[] = [];
   if (props.lineWidth !== undefined) {
-    const width = typeof props.lineWidth === 'number' ? `${props.lineWidth * 2}rpx` : props.lineWidth
-    vars.push(`--sn-cascader-line-width: ${width}`)
+    const width =
+      typeof props.lineWidth === 'number' ? `${props.lineWidth * 2}rpx` : props.lineWidth;
+    vars.push(`--sn-cascader-line-width: ${width}`);
   }
   if (props.lineHeight !== undefined) {
-    const height = typeof props.lineHeight === 'number' ? `${props.lineHeight * 2}rpx` : props.lineHeight
-    vars.push(`--sn-cascader-line-height: ${height}`)
+    const height =
+      typeof props.lineHeight === 'number' ? `${props.lineHeight * 2}rpx` : props.lineHeight;
+    vars.push(`--sn-cascader-line-height: ${height}`);
   }
-  return vars.join('; ') || undefined
-})
+  return vars.join('; ') || undefined;
+});
 
 function isSelected(tabIndex: number, option: CascaderOption): boolean {
-  const selected = selectedPath.value[tabIndex]
-  if (!selected) return false
-  return nodeValue(selected) === nodeValue(option)
+  const selected = selectedPath.value[tabIndex];
+  if (!selected) return false;
+  return nodeValue(selected) === nodeValue(option);
 }
 
 /** Tabs actually rendered: the visible tab list plus one pending tab. */
-const tabCount = computed(() => tabs.value.length)
+const tabCount = computed(() => tabs.value.length);
 
 function tabTitle(index: number): string {
-  const selected = selectedPath.value[index]
-  return selected ? nodeText(selected) : ''
+  const selected = selectedPath.value[index];
+  return selected ? nodeText(selected) : '';
 }
 </script>
 
@@ -384,16 +388,22 @@ function tabTitle(index: number): string {
           role="button"
           aria-label="cancel"
           @tap="onCancel"
-        >取消</view>
+          >取消</view
+        >
         <text v-if="props.title" class="sn-cascader__title">{{ props.title }}</text>
         <view
           v-if="props.checkStrictly || props.lazyLoad"
-          :class="['sn-cascader__action', 'sn-cascader__confirm', { 'sn-cascader__confirm--disabled': !canConfirm }]"
+          :class="[
+            'sn-cascader__action',
+            'sn-cascader__confirm',
+            { 'sn-cascader__confirm--disabled': !canConfirm },
+          ]"
           role="button"
           :aria-label="props.confirmText"
           :aria-disabled="canConfirm ? undefined : 'true'"
           @tap="onConfirm"
-        >{{ props.confirmText }}</view>
+          >{{ props.confirmText }}</view
+        >
         <view v-else class="sn-cascader__action sn-cascader__placeholder" aria-hidden="true" />
       </view>
 
@@ -424,7 +434,12 @@ function tabTitle(index: number): string {
           class="sn-cascader__panel"
           scroll-y
         >
-          <view v-if="loadingTab === tabIndex" class="sn-cascader__loading" role="status" aria-live="polite">
+          <view
+            v-if="loadingTab === tabIndex"
+            class="sn-cascader__loading"
+            role="status"
+            aria-live="polite"
+          >
             <text class="sn-cascader__loading-text">loading</text>
           </view>
 
@@ -445,7 +460,9 @@ function tabTitle(index: number): string {
           >
             <view class="sn-cascader__option-main">
               <text class="sn-cascader__option-text">{{ nodeText(option) }}</text>
-              <text v-if="nodeTip(option)" class="sn-cascader__option-tip">{{ nodeTip(option) }}</text>
+              <text v-if="nodeTip(option)" class="sn-cascader__option-tip">{{
+                nodeTip(option)
+              }}</text>
             </view>
             <view v-if="isSelected(tabIndex, option)" class="sn-cascader__check" aria-hidden="true">
               <SnIcon :icon="CheckIcon" :size="28" />

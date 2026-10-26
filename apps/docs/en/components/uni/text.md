@@ -14,13 +14,13 @@ Five semantic colours, bold, three decorations:
 
 <Demo name="text-mp-mode" description="phone / name masking, price grouping, date normalisation, call dialling." />
 
-| Mode | Input → Output |
-| --- | --- |
-| `text` | `'raw'` → `'raw'` |
+| Mode    | Input → Output                                                     |
+| ------- | ------------------------------------------------------------------ |
+| `text`  | `'raw'` → `'raw'`                                                  |
 | `phone` | `'13800138000'` → `'13800138000'`; with `format` → `'138****8000'` |
-| `name` | `'张三丰'` → `'张三丰'`; with `format` → `'张**'` |
-| `price` | `'1288.5'` → `'1,288.50'`; `'-99'` → `'-99.00'` |
-| `date` | `'2024-03-05T10:00:00'` → `'2024-03-05'` |
+| `name`  | `'张三丰'` → `'张三丰'`; with `format` → `'张**'`                  |
+| `price` | `'1288.5'` → `'1,288.50'`; `'-99'` → `'-99.00'`                    |
+| `date`  | `'2024-03-05T10:00:00'` → `'2024-03-05'`                           |
 
 Unparsable `date` input passes through untouched — a display component must not throw on data it does not recognise.
 
@@ -49,42 +49,42 @@ Unparsable `date` input passes through untouched — a display component must no
 For an explicit import:
 
 ```ts
-import { SnText } from '@snui/uni/components/sn-text/sn-text.vue'
+import { SnText } from '@snui/uni/components/sn-text/sn-text.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `type` | `'default' \| 'primary' \| 'success' \| 'warning' \| 'error'` | `'default'` | Semantic colour |
-| `text` | `string \| number` | `''` | Text content; the default slot wins |
-| `size` | `string` | `''` | Font size, used verbatim (`'28rpx'` / `'14px'`) |
-| `mode` | `'text' \| 'date' \| 'phone' \| 'name' \| 'price'` | `'text'` | Display transform |
-| `decoration` | `'none' \| 'underline' \| 'line-through' \| 'overline'` | `'none'` | Text decoration |
-| `call` | `boolean` | `false` | Dial on tap (`mode="phone"` only) |
-| `bold` | `boolean` | `false` | Bold weight |
-| `format` | `boolean` | `false` | Mask the value (only meaningful for phone / name) |
-| `color` | `string` | `''` | Inline colour override |
-| `prefix` | `string` | `''` | Content before the text (the `prefix` slot wins) |
-| `suffix` | `string` | `''` | Content after the text (the `suffix` slot wins) |
-| `lines` | `number` | `0` | Max rendered lines; overflow gets an ellipsis. `0` = no clamp |
-| `lineHeight` | `string` | `''` | Line height, used verbatim |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type                                                          | Default     | Description                                                   |
+| ------------- | ------------------------------------------------------------- | ----------- | ------------------------------------------------------------- |
+| `type`        | `'default' \| 'primary' \| 'success' \| 'warning' \| 'error'` | `'default'` | Semantic colour                                               |
+| `text`        | `string \| number`                                            | `''`        | Text content; the default slot wins                           |
+| `size`        | `string`                                                      | `''`        | Font size, used verbatim (`'28rpx'` / `'14px'`)               |
+| `mode`        | `'text' \| 'date' \| 'phone' \| 'name' \| 'price'`            | `'text'`    | Display transform                                             |
+| `decoration`  | `'none' \| 'underline' \| 'line-through' \| 'overline'`       | `'none'`    | Text decoration                                               |
+| `call`        | `boolean`                                                     | `false`     | Dial on tap (`mode="phone"` only)                             |
+| `bold`        | `boolean`                                                     | `false`     | Bold weight                                                   |
+| `format`      | `boolean`                                                     | `false`     | Mask the value (only meaningful for phone / name)             |
+| `color`       | `string`                                                      | `''`        | Inline colour override                                        |
+| `prefix`      | `string`                                                      | `''`        | Content before the text (the `prefix` slot wins)              |
+| `suffix`      | `string`                                                      | `''`        | Content after the text (the `suffix` slot wins)               |
+| `lines`       | `number`                                                      | `0`         | Max rendered lines; overflow gets an ellipsis. `0` = no clamp |
+| `lineHeight`  | `string`                                                      | `''`        | Line height, used verbatim                                    |
+| `customClass` | `string`                                                      | `''`        | Extra class on the root node                                  |
+| `customStyle` | `string`                                                      | `''`        | Inline style on the root node                                 |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event   | Description                                                 | Payload          |
+| ------- | ----------------------------------------------------------- | ---------------- |
 | `click` | Tapped; emitted alongside the dial action when `call` is on | `(event: Event)` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` | Text content; overrides `text` |
-| `prefix` | Content before the text; overrides `prefix` |
-| `suffix` | Content after the text; overrides `suffix` |
+| Slot      | Description                                 |
+| --------- | ------------------------------------------- |
+| `default` | Text content; overrides `text`              |
+| `prefix`  | Content before the text; overrides `prefix` |
+| `suffix`  | Content after the text; overrides `suffix`  |
 
 ## `call` contract
 
@@ -92,16 +92,16 @@ import { SnText } from '@snui/uni/components/sn-text/sn-text.vue'
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-text-primary` | `default` type colour |
-| `--sn-mp-color-action-primary` | `primary` type |
-| `--sn-mp-color-feedback-success` | `success` type |
-| `--sn-mp-color-feedback-warning` | `warning` type |
-| `--sn-mp-color-feedback-danger` | `error` type |
-| `--sn-mp-font-size-md` | Default body size |
-| `--sn-mp-font-line-height-normal` | Default line height |
-| `--sn-mp-font-weight-bold` | `bold` and Doodle skin emphasis |
+| Variable                          | Purpose                         |
+| --------------------------------- | ------------------------------- |
+| `--sn-mp-color-text-primary`      | `default` type colour           |
+| `--sn-mp-color-action-primary`    | `primary` type                  |
+| `--sn-mp-color-feedback-success`  | `success` type                  |
+| `--sn-mp-color-feedback-warning`  | `warning` type                  |
+| `--sn-mp-color-feedback-danger`   | `error` type                    |
+| `--sn-mp-font-size-md`            | Default body size               |
+| `--sn-mp-font-line-height-normal` | Default line height             |
+| `--sn-mp-font-weight-bold`        | `bold` and Doodle skin emphasis |
 
 ## Accessibility
 
@@ -118,7 +118,6 @@ Every colour in `sn-text` comes from `--sn-mp-color-*` with no light fallback:
 - `color` overrides apply verbatim; use `var(--sn-mp-*)` when the value should track the theme.
 
 Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

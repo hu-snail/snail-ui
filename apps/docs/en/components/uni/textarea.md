@@ -45,80 +45,80 @@ Cross-end multi-line text input for uni-app (H5 / WeChat MP / App). easycom auto
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `''` | Bound value; numbers render as strings. |
-| `placeholder` | `string` | `'请输入...'` | Placeholder text. |
-| `placeholderStyle` | `string` | `''` | Inline style for the placeholder. |
-| `placeholderClass` | `string` | `''` | Class on the placeholder. |
-| `disabled` | `boolean` | `false` | Native `disabled` + blocks every emit. |
-| `readonly` | `boolean` | `false` | Visible but not editable; blocks emits. |
-| `maxlength` | `number` | `-1` | Max length; `-1` means unlimited. |
-| `clearable` | `boolean` | `false` | Show the × clear button. |
-| `prefixIcon` | `string` | `''` | Front icon name (sn-icon registry). |
-| `iconPrefix` | `string` | `''` | Front icon CSS class. |
-| `cssIcon` | `boolean \| string` | `false` | Treat `prefixIcon` as a CSS class. |
-| `showWordLimit` | `boolean` | `false` | Show the counter; needs `maxlength > 0`. |
-| `clearTrigger` | `'always' \| 'focus'` | `'always'` | When the × button is visible. |
-| `focusWhenClear` | `boolean` | `true` | Re-focus after clear (no-op on uni-end; the soft keyboard is dismissed). |
-| `error` | `boolean` | `false` | Error state (red border + `aria-invalid`). |
-| `focus` | `boolean` | `false` | Focus on mount. |
-| `autoFocus` | `boolean` | `false` | Auto-focus and raise the soft keyboard. |
-| `autoHeight` | `boolean` | `false` | Grow with content. |
-| `fixed` | `boolean` | `false` | Fixed-position mode. |
-| `cursorSpacing` | `number` | `0` | Caret-to-keyboard distance (px). |
-| `cursor` | `number` | `-1` | Initial caret position; `-1` = unset. |
-| `confirmType` | `'send' \| 'search' \| 'next' \| 'go' \| 'done'` | — | Soft-keyboard confirm label. |
-| `confirmHold` | `boolean` | `false` | Keep the keyboard when confirm is tapped. |
-| `showConfirmBar` | `boolean` | `true` | Show the toolbar above the keyboard. |
-| `selectionStart` / `selectionEnd` | `number` | `-1` | Initial selection range. |
-| `adjustPosition` | `boolean` | `true` | Auto-scroll when the keyboard covers the field. |
-| `disableDefaultPadding` | `boolean` | `false` | Drop the iOS default inner padding. |
-| `holdKeyboard` | `boolean` | `false` | Keep the keyboard when the page is tapped. |
-| `ignoreCompositionEvent` | `boolean` | `true` | `false` emits `input` mid-composition. |
-| `inputmode` | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'` | Soft-keyboard type hint. |
-| `enableNative` | `boolean` | `true` | Alipay MP native textarea. |
-| `compact` | `boolean` | — | Compact mode (left to sn-form-item when unset). |
-| `customTextareaClass` | `string` | `''` | Class on the inner `<textarea>`. |
-| `customClass` | `string` | `''` | Class on the root node. |
-| `customStyle` | `string` | `''` | Inline style on the root node. |
+| Prop                              | Type                                                                                  | Default       | Description                                                              |
+| --------------------------------- | ------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------------ |
+| `modelValue`                      | `string \| number`                                                                    | `''`          | Bound value; numbers render as strings.                                  |
+| `placeholder`                     | `string`                                                                              | `'请输入...'` | Placeholder text.                                                        |
+| `placeholderStyle`                | `string`                                                                              | `''`          | Inline style for the placeholder.                                        |
+| `placeholderClass`                | `string`                                                                              | `''`          | Class on the placeholder.                                                |
+| `disabled`                        | `boolean`                                                                             | `false`       | Native `disabled` + blocks every emit.                                   |
+| `readonly`                        | `boolean`                                                                             | `false`       | Visible but not editable; blocks emits.                                  |
+| `maxlength`                       | `number`                                                                              | `-1`          | Max length; `-1` means unlimited.                                        |
+| `clearable`                       | `boolean`                                                                             | `false`       | Show the × clear button.                                                 |
+| `prefixIcon`                      | `string`                                                                              | `''`          | Front icon name (sn-icon registry).                                      |
+| `iconPrefix`                      | `string`                                                                              | `''`          | Front icon CSS class.                                                    |
+| `cssIcon`                         | `boolean \| string`                                                                   | `false`       | Treat `prefixIcon` as a CSS class.                                       |
+| `showWordLimit`                   | `boolean`                                                                             | `false`       | Show the counter; needs `maxlength > 0`.                                 |
+| `clearTrigger`                    | `'always' \| 'focus'`                                                                 | `'always'`    | When the × button is visible.                                            |
+| `focusWhenClear`                  | `boolean`                                                                             | `true`        | Re-focus after clear (no-op on uni-end; the soft keyboard is dismissed). |
+| `error`                           | `boolean`                                                                             | `false`       | Error state (red border + `aria-invalid`).                               |
+| `focus`                           | `boolean`                                                                             | `false`       | Focus on mount.                                                          |
+| `autoFocus`                       | `boolean`                                                                             | `false`       | Auto-focus and raise the soft keyboard.                                  |
+| `autoHeight`                      | `boolean`                                                                             | `false`       | Grow with content.                                                       |
+| `fixed`                           | `boolean`                                                                             | `false`       | Fixed-position mode.                                                     |
+| `cursorSpacing`                   | `number`                                                                              | `0`           | Caret-to-keyboard distance (px).                                         |
+| `cursor`                          | `number`                                                                              | `-1`          | Initial caret position; `-1` = unset.                                    |
+| `confirmType`                     | `'send' \| 'search' \| 'next' \| 'go' \| 'done'`                                      | —             | Soft-keyboard confirm label.                                             |
+| `confirmHold`                     | `boolean`                                                                             | `false`       | Keep the keyboard when confirm is tapped.                                |
+| `showConfirmBar`                  | `boolean`                                                                             | `true`        | Show the toolbar above the keyboard.                                     |
+| `selectionStart` / `selectionEnd` | `number`                                                                              | `-1`          | Initial selection range.                                                 |
+| `adjustPosition`                  | `boolean`                                                                             | `true`        | Auto-scroll when the keyboard covers the field.                          |
+| `disableDefaultPadding`           | `boolean`                                                                             | `false`       | Drop the iOS default inner padding.                                      |
+| `holdKeyboard`                    | `boolean`                                                                             | `false`       | Keep the keyboard when the page is tapped.                               |
+| `ignoreCompositionEvent`          | `boolean`                                                                             | `true`        | `false` emits `input` mid-composition.                                   |
+| `inputmode`                       | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'`      | Soft-keyboard type hint.                                                 |
+| `enableNative`                    | `boolean`                                                                             | `true`        | Alipay MP native textarea.                                               |
+| `compact`                         | `boolean`                                                                             | —             | Compact mode (left to sn-form-item when unset).                          |
+| `customTextareaClass`             | `string`                                                                              | `''`          | Class on the inner `<textarea>`.                                         |
+| `customClass`                     | `string`                                                                              | `''`          | Class on the root node.                                                  |
+| `customStyle`                     | `string`                                                                              | `''`          | Inline style on the root node.                                           |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | v-model sync, every keystroke | `(value: string)` |
-| `input` | Native input | `(value: string, event: Event)` |
-| `change` | Native change | `(value: string, event: Event)` |
-| `focus` / `blur` | Focus / blur | `(event: Event)` |
-| `clear` | × button tapped | — |
-| `linechange` | Native line-count change | `(event: Event)` |
-| `confirm` | Soft-keyboard confirm | `(value: string)` |
-| `keyboardheightchange` | Keyboard height changed | `(event: Event)` |
-| `click` | Root tapped | `(event: Event)` |
+| Event                  | Description                   | Payload                         |
+| ---------------------- | ----------------------------- | ------------------------------- |
+| `update:modelValue`    | v-model sync, every keystroke | `(value: string)`               |
+| `input`                | Native input                  | `(value: string, event: Event)` |
+| `change`               | Native change                 | `(value: string, event: Event)` |
+| `focus` / `blur`       | Focus / blur                  | `(event: Event)`                |
+| `clear`                | × button tapped               | —                               |
+| `linechange`           | Native line-count change      | `(event: Event)`                |
+| `confirm`              | Soft-keyboard confirm         | `(value: string)`               |
+| `keyboardheightchange` | Keyboard height changed       | `(event: Event)`                |
+| `click`                | Root tapped                   | `(event: Event)`                |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `prefix` | Content above the field (icon / custom node). |
-| `count` | Custom counter, scoped `{ current, max }`. |
-| `clear-icon` | Custom × glyph. |
+| Slot         | Description                                   |
+| ------------ | --------------------------------------------- |
+| `prefix`     | Content above the field (icon / custom node). |
+| `count`      | Custom counter, scoped `{ current, max }`.    |
+| `clear-icon` | Custom × glyph.                               |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-input-bg` | Field background |
-| `--sn-mp-color-input-text` | Text color |
-| `--sn-mp-color-input-placeholder` | Placeholder |
-| `--sn-mp-color-input-border` | Idle border |
-| `--sn-mp-color-input-border-focus` | Focus border |
-| `--sn-mp-color-feedback-danger` | Error border |
-| `--sn-mp-color-text-tertiary` | Counter text |
-| `--sn-mp-color-background-soft` | × button plate |
-| `--sn-mp-input-padding-x` | Horizontal padding |
-| `--sn-mp-input-radius` | Corner radius |
+| Variable                                                   | Purpose                 |
+| ---------------------------------------------------------- | ----------------------- |
+| `--sn-mp-color-input-bg`                                   | Field background        |
+| `--sn-mp-color-input-text`                                 | Text color              |
+| `--sn-mp-color-input-placeholder`                          | Placeholder             |
+| `--sn-mp-color-input-border`                               | Idle border             |
+| `--sn-mp-color-input-border-focus`                         | Focus border            |
+| `--sn-mp-color-feedback-danger`                            | Error border            |
+| `--sn-mp-color-text-tertiary`                              | Counter text            |
+| `--sn-mp-color-background-soft`                            | × button plate          |
+| `--sn-mp-input-padding-x`                                  | Horizontal padding      |
+| `--sn-mp-input-radius`                                     | Corner radius           |
 | `--sn-mp-font-size-md` / `--sn-mp-font-line-height-normal` | Body size / line height |
 
 ## Accessibility
@@ -131,4 +131,3 @@ Cross-end multi-line text input for uni-app (H5 / WeChat MP / App). easycom auto
 ## Dark mode
 
 Every color resolves through a `--sn-mp-color-*` token with **no** light-only fallback, so `.sn-theme-dark` (or `page.sn-theme-dark`) flips the background, text, border and placeholder automatically. Verify with sn-config-provider 的 theme 设为 dark:
-

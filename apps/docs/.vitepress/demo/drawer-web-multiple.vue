@@ -5,11 +5,11 @@
  * Shows: independent state per drawer, stacking order, and that closing an
  * inner drawer leaves the outer one open.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const outer = ref(false)
-const inner = ref(false)
+const outer = ref(false);
+const inner = ref(false);
 </script>
 
 <template>

@@ -20,60 +20,60 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnTooltip } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnTooltip } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `show` | `boolean \| undefined` | `undefined` | Controlled visibility. `undefined` means uncontrolled. |
-| `defaultShow` | `boolean` | `false` | Initial visibility in uncontrolled mode. |
-| `trigger` | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'hover'` | Gesture that opens the popover. `'manual'` ignores gestures entirely. |
-| `placement` | `'top-start' \| 'top' \| … \| 'left-end'` | `'top'` | Twelve-way placement relative to the trigger. |
-| `content` | `string` | `''` | Popover text. |
-| `delay` | `number \| [number, number]` | `100` | Open delay in ms. A tuple's second item overrides `duration`. |
-| `duration` | `number` | `100` | Close delay in ms. |
-| `arrow` | `boolean` | `true` | Draw the directional arrow. |
-| `arrowPointToCenter` | `boolean` | `false` | Aim the arrow at the popover centre instead of the trigger edge. |
-| `arrowClass` / `arrowStyle` | `string` / `CSSProperties` | `undefined` | Arrow element class / style. |
-| `contentClass` / `contentStyle` | `string` / `CSSProperties` | `undefined` | Body element class / style. |
-| `displayDirective` | `'if' \| 'show'` | `'if'` | `'if'` unmounts on hide; `'show'` retains the node and toggles `display`. |
-| `animated` | `boolean` | `true` | Animate the enter / leave. |
-| `raw` | `boolean` | `false` | Drop the built-in bubble styling. |
-| `scrollable` | `boolean` | `false` | Let the body scroll past its max height. |
-| `flip` | `boolean` | `true` | Flip to the opposite side when the chosen one does not fit. |
-| `overlap` | `boolean` | `false` | Overlap the trigger instead of sitting beside it. |
-| `keepAliveOnHover` | `boolean` | `true` | Keep open while the pointer is inside the bubble (hover trigger). |
-| `width` | `number \| 'trigger'` | `undefined` | Fixed width, or match the trigger's width. |
-| `to` | `string \| HTMLElement \| false` | `'body'` | Teleport target. `false` renders in place. |
-| `zIndex` | `number` | `undefined` | Explicit stacking order. |
-| `disabled` | `boolean` | `false` | Suppress showing entirely. |
-| `wrapped` | `boolean` | `true` | Wrap the trigger in a structural `<span>` that owns the pointer listeners. **Local addition** — set `false` when the slot is already a focusable element. |
-| `onClickoutside` | `(e: MouseEvent) => void` | `undefined` | Called when a click lands outside popover and trigger. |
+| Name                            | Type                                        | Default     | Description                                                                                                                                               |
+| ------------------------------- | ------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `show`                          | `boolean \| undefined`                      | `undefined` | Controlled visibility. `undefined` means uncontrolled.                                                                                                    |
+| `defaultShow`                   | `boolean`                                   | `false`     | Initial visibility in uncontrolled mode.                                                                                                                  |
+| `trigger`                       | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'hover'`   | Gesture that opens the popover. `'manual'` ignores gestures entirely.                                                                                     |
+| `placement`                     | `'top-start' \| 'top' \| … \| 'left-end'`   | `'top'`     | Twelve-way placement relative to the trigger.                                                                                                             |
+| `content`                       | `string`                                    | `''`        | Popover text.                                                                                                                                             |
+| `delay`                         | `number \| [number, number]`                | `100`       | Open delay in ms. A tuple's second item overrides `duration`.                                                                                             |
+| `duration`                      | `number`                                    | `100`       | Close delay in ms.                                                                                                                                        |
+| `arrow`                         | `boolean`                                   | `true`      | Draw the directional arrow.                                                                                                                               |
+| `arrowPointToCenter`            | `boolean`                                   | `false`     | Aim the arrow at the popover centre instead of the trigger edge.                                                                                          |
+| `arrowClass` / `arrowStyle`     | `string` / `CSSProperties`                  | `undefined` | Arrow element class / style.                                                                                                                              |
+| `contentClass` / `contentStyle` | `string` / `CSSProperties`                  | `undefined` | Body element class / style.                                                                                                                               |
+| `displayDirective`              | `'if' \| 'show'`                            | `'if'`      | `'if'` unmounts on hide; `'show'` retains the node and toggles `display`.                                                                                 |
+| `animated`                      | `boolean`                                   | `true`      | Animate the enter / leave.                                                                                                                                |
+| `raw`                           | `boolean`                                   | `false`     | Drop the built-in bubble styling.                                                                                                                         |
+| `scrollable`                    | `boolean`                                   | `false`     | Let the body scroll past its max height.                                                                                                                  |
+| `flip`                          | `boolean`                                   | `true`      | Flip to the opposite side when the chosen one does not fit.                                                                                               |
+| `overlap`                       | `boolean`                                   | `false`     | Overlap the trigger instead of sitting beside it.                                                                                                         |
+| `keepAliveOnHover`              | `boolean`                                   | `true`      | Keep open while the pointer is inside the bubble (hover trigger).                                                                                         |
+| `width`                         | `number \| 'trigger'`                       | `undefined` | Fixed width, or match the trigger's width.                                                                                                                |
+| `to`                            | `string \| HTMLElement \| false`            | `'body'`    | Teleport target. `false` renders in place.                                                                                                                |
+| `zIndex`                        | `number`                                    | `undefined` | Explicit stacking order.                                                                                                                                  |
+| `disabled`                      | `boolean`                                   | `false`     | Suppress showing entirely.                                                                                                                                |
+| `wrapped`                       | `boolean`                                   | `true`      | Wrap the trigger in a structural `<span>` that owns the pointer listeners. **Local addition** — set `false` when the slot is already a focusable element. |
+| `onClickoutside`                | `(e: MouseEvent) => void`                   | `undefined` | Called when a click lands outside popover and trigger.                                                                                                    |
 
 ## Events
 
-| Event | Payload | When |
-|---|---|---|
-| `update:show` | `boolean` | Visibility changed. |
-| `show` | `()` | The popover appeared. |
-| `hide` | `()` | The popover hid. |
+| Event         | Payload   | When                  |
+| ------------- | --------- | --------------------- |
+| `update:show` | `boolean` | Visibility changed.   |
+| `show`        | `()`      | The popover appeared. |
+| `hide`        | `()`      | The popover hid.      |
 
 ## Slots
 
-| Slot | Scope | Description |
-|---|---|---|
+| Slot      | Scope            | Description                                                          |
+| --------- | ---------------- | -------------------------------------------------------------------- |
 | `default` | `{ triggerRef }` | The trigger element. The scope is only useful with `wrapped: false`. |
-| `content` | `()` | Rich popover content, replacing the `content` prop. |
+| `content` | `()`             | Rich popover content, replacing the `content` prop.                  |
 
 ## Methods
 
-| Method | Type | Description |
-|---|---|---|
-| `show` | `() => void` | Imperative open (respects `disabled`). |
-| `hide` | `() => void` | Imperative close. |
+| Method    | Type            | Description                                                             |
+| --------- | --------------- | ----------------------------------------------------------------------- |
+| `show`    | `() => void`    | Imperative open (respects `disabled`).                                  |
+| `hide`    | `() => void`    | Imperative close.                                                       |
 | `isShown` | `() => boolean` | Read the effective visibility across controlled and uncontrolled modes. |
 
 ## Divergence — documented trade-offs
@@ -98,7 +98,7 @@ import '@snui/tokens-web/styles'
 
 ## Tokens Consumed (end: web)
 
-| Token | Purpose |
-|---|---|
-| `--sn-web-color-tooltip-background` | Bubble background. |
-| `--sn-web-color-text-on-primary` | Bubble text colour fallback. |
+| Token                               | Purpose                      |
+| ----------------------------------- | ---------------------------- |
+| `--sn-web-color-tooltip-background` | Bubble background.           |
+| `--sn-web-color-text-on-primary`    | Bubble text colour fallback. |

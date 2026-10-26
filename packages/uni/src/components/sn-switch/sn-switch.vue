@@ -23,82 +23,84 @@
  *   - 校验信息展示 — 用 sn-form-item
  */
 
-import { computed, markRaw, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import { Check as CheckIcon, X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, markRaw, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { Check as CheckIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnSwitch' })
+defineOptions({ name: 'SnSwitch' });
 
 /** Payload accepted by `v-model` / `activeValue` / `inactiveValue`. */
-type SnSwitchValue = boolean | string | number
+type SnSwitchValue = boolean | string | number;
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-switch` 1:1 surface ─────────────────────────────────── */
 
     /** Bound value — compared against `activeValue` / `inactiveValue`. */
-    modelValue?: SnSwitchValue
+    modelValue?: SnSwitchValue;
     /** Disables interaction and dims the rail. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Knob icon while inactive (registry-resolved via sn-icon). */
-    inactiveActionIcon?: string
+    inactiveActionIcon?: string;
     /** Knob icon while active (registry-resolved via sn-icon). */
-    activeActionIcon?: string
+    activeActionIcon?: string;
     /** Rail icon while active — overrides `activeText`. */
-    activeIcon?: string
+    activeIcon?: string;
     /** Rail icon while inactive — overrides `inactiveText`. */
-    inactiveIcon?: string
+    inactiveIcon?: string;
     /** CSS class prefix used for icon lookup (wd-switch parity, informational). */
-    classPrefix?: string
+    classPrefix?: string;
     /** When `true`, `inactiveActionIcon` is a CSS class name, not an icon name. */
-    inactiveActionCssIcon?: boolean | string
+    inactiveActionCssIcon?: boolean | string;
     /** When `true`, `activeActionIcon` is a CSS class name, not an icon name. */
-    activeActionCssIcon?: boolean | string
+    activeActionCssIcon?: boolean | string;
     /** When `true`, `activeIcon` is a CSS class name, not an icon name. */
-    activeCssIcon?: boolean | string
+    activeCssIcon?: boolean | string;
     /** When `true`, `inactiveIcon` is a CSS class name, not an icon name. */
-    inactiveCssIcon?: boolean | string
+    inactiveCssIcon?: boolean | string;
     /** Label shown inside the rail while active. */
-    activeText?: string
+    activeText?: string;
     /** Label shown inside the rail while inactive. */
-    inactiveText?: string
+    inactiveText?: string;
     /** Value that means "on". Compared by strict equality. */
-    activeValue?: SnSwitchValue
+    activeValue?: SnSwitchValue;
     /** Value that means "off". Compared by strict equality. */
-    inactiveValue?: SnSwitchValue
+    inactiveValue?: SnSwitchValue;
     /** Active rail color (user CSS color; falls back to the token default). */
-    activeColor?: string
+    activeColor?: string;
     /** Inactive rail color (user CSS color; falls back to the token default). */
-    inactiveColor?: string
+    inactiveColor?: string;
     /** Rail size — a number is treated as an rpx design value. */
-    size?: string | number | undefined
+    size?: string | number | undefined;
     /** Rail shape. */
-    shape?: 'round' | 'square'
+    shape?: 'round' | 'square';
     /** Shows a spinner in the knob and blocks interaction while pending. */
-    loading?: boolean
+    loading?: boolean;
     /**
      * Loading indicator config — mirrors wot-ui `loading-props`.
      *
      * Only `color` / `size` are consumed by this component's spinner; extra
      * keys are accepted so a config written for wd-switch still type-checks.
      */
-    loadingProps?: {
-      color?: string
-      size?: number | string
-      [key: string]: unknown
-    } | undefined
+    loadingProps?:
+      | {
+          color?: string;
+          size?: number | string;
+          [key: string]: unknown;
+        }
+      | undefined;
     /**
      * Async guard — return `false` (or resolve `false`) to veto the toggle.
      * wd-switch's `beforeChange` contract, used for confirm dialogs /
      * server-side permission checks.
      */
-    beforeChange?: (() => boolean | Promise<boolean>) | undefined
+    beforeChange?: (() => boolean | Promise<boolean>) | undefined;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: false,
@@ -126,32 +128,35 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — payload is `activeValue` / `inactiveValue`. */
-  (e: 'update:modelValue', value: SnSwitchValue): void
+  (e: 'update:modelValue', value: SnSwitchValue): void;
   /** Fired after a successful toggle (post `beforeChange`). */
-  (e: 'change', value: SnSwitchValue): void
-}>()
+  (e: 'change', value: SnSwitchValue): void;
+}>();
 
 /** Whether the bound value currently means "on". */
-const isChecked = computed(() => props.modelValue === props.activeValue)
+const isChecked = computed(() => props.modelValue === props.activeValue);
 
 /** Local pending flag so an async `beforeChange` cannot double-fire. */
-const isPending = ref(false)
+const isPending = ref(false);
 
 /** Blocks the toggle: disabled, pending, or a running `beforeChange`. */
-const isBlocked = computed(() => props.disabled || props.loading || isPending.value)
+const isBlocked = computed(() => props.disabled || props.loading || isPending.value);
 
 /** Keep the pending flag honest if the parent flips `loading` mid-flight. */
-watch(() => props.loading, (loading) => {
-  if (!loading) isPending.value = false
-})
+watch(
+  () => props.loading,
+  (loading) => {
+    if (!loading) isPending.value = false;
+  },
+);
 
 /** Knob / rail glyphs — always SnIcon, never emoji (§113). */
-const checkIcon = markRaw(CheckIcon)
-const closeIcon = markRaw(XIcon)
+const checkIcon = markRaw(CheckIcon);
+const closeIcon = markRaw(XIcon);
 /**
  * Knob glyph. wd-switch names its icons (`activeActionIcon` /
  * `inactiveActionIcon`) and resolves them through the icon registry; when
@@ -160,12 +165,12 @@ const closeIcon = markRaw(XIcon)
  * real SVG glyph rather than an emoji (§113).
  */
 const actionIcon = computed<IconData | null>(() => {
-  const name = isChecked.value ? props.activeActionIcon : props.inactiveActionIcon
-  const cssMode = isChecked.value ? props.activeActionCssIcon : props.inactiveActionCssIcon
-  if (!name || cssMode) return null
-  const icon = resolveIconByName(name)
-  return icon ? markRaw(icon) : null
-})
+  const name = isChecked.value ? props.activeActionIcon : props.inactiveActionIcon;
+  const cssMode = isChecked.value ? props.activeActionCssIcon : props.inactiveActionCssIcon;
+  if (!name || cssMode) return null;
+  const icon = resolveIconByName(name);
+  return icon ? markRaw(icon) : null;
+});
 
 /**
  * CSS-class mode knob glyph — when the matching `*CssIcon` flag is on, the
@@ -173,22 +178,22 @@ const actionIcon = computed<IconData | null>(() => {
  */
 const actionIconClass = computed(() => {
   if (isChecked.value) {
-    return props.activeActionCssIcon && props.activeActionIcon ? props.activeActionIcon : ''
+    return props.activeActionCssIcon && props.activeActionIcon ? props.activeActionIcon : '';
   }
-  return props.inactiveActionCssIcon && props.inactiveActionIcon ? props.inactiveActionIcon : ''
-})
+  return props.inactiveActionCssIcon && props.inactiveActionIcon ? props.inactiveActionIcon : '';
+});
 /** Rail label: text wins unless an icon (name or CSS class) replaces it. */
 const railText = computed(() => {
   if (isChecked.value) {
-    return props.activeIcon || props.activeCssIcon ? '' : props.activeText
+    return props.activeIcon || props.activeCssIcon ? '' : props.activeText;
   }
-  return props.inactiveIcon || props.inactiveCssIcon ? '' : props.inactiveText
-})
+  return props.inactiveIcon || props.inactiveCssIcon ? '' : props.inactiveText;
+});
 
 const railIconClass = computed(() => {
-  if (isChecked.value) return props.activeCssIcon ? props.activeIcon : ''
-  return props.inactiveCssIcon ? props.inactiveIcon : ''
-})
+  if (isChecked.value) return props.activeCssIcon ? props.activeIcon : '';
+  return props.inactiveCssIcon ? props.inactiveIcon : '';
+});
 
 /**
  * Rail colors — `activeColor` / `inactiveColor` are user CSS colors applied
@@ -196,16 +201,16 @@ const railIconClass = computed(() => {
  * `size` accepts a raw CSS length or a number interpreted as rpx design units.
  */
 const railStyle = computed(() => {
-  const style: Record<string, string> = {}
-  const color = isChecked.value ? props.activeColor : props.inactiveColor
-  if (color) style.backgroundColor = color
+  const style: Record<string, string> = {};
+  const color = isChecked.value ? props.activeColor : props.inactiveColor;
+  if (color) style.backgroundColor = color;
   if (props.size !== undefined) {
-    const length = typeof props.size === 'number' ? `${props.size}rpx` : props.size
-    style.width = length
-    style.height = `calc(${length} * 0.55)`
+    const length = typeof props.size === 'number' ? `${props.size}rpx` : props.size;
+    style.width = length;
+    style.height = `calc(${length} * 0.55)`;
   }
-  return Object.keys(style).length > 0 ? style : undefined
-})
+  return Object.keys(style).length > 0 ? style : undefined;
+});
 
 /**
  * Perform the toggle. `beforeChange` may be async; a rejected promise or a
@@ -213,26 +218,26 @@ const railStyle = computed(() => {
  * swallowed silently into a half-applied state).
  */
 async function toggle(): Promise<void> {
-  if (isBlocked.value) return
+  if (isBlocked.value) return;
   if (props.beforeChange) {
-    isPending.value = true
-    let allowed = false
+    isPending.value = true;
+    let allowed = false;
     try {
-      allowed = await props.beforeChange()
+      allowed = await props.beforeChange();
     } catch {
-      allowed = false
+      allowed = false;
     } finally {
-      isPending.value = false
+      isPending.value = false;
     }
-    if (!allowed) return
+    if (!allowed) return;
   }
-  const next = isChecked.value ? props.inactiveValue : props.activeValue
-  emit('update:modelValue', next)
-  emit('change', next)
+  const next = isChecked.value ? props.inactiveValue : props.activeValue;
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 function onTap(): void {
-  void toggle()
+  void toggle();
 }
 
 const classList = computed(() => [
@@ -245,9 +250,9 @@ const classList = computed(() => [
     'sn-switch--with-rail-text': railText.value.length > 0,
   },
   props.customClass,
-])
+]);
 
-const wrapperStyle = computed(() => props.customStyle || undefined)
+const wrapperStyle = computed(() => props.customStyle || undefined);
 </script>
 
 <template>
@@ -272,26 +277,14 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
         />
 
         <view class="sn-switch__action">
-          <view
-            v-if="loading || isPending"
-            class="sn-switch__spinner"
-            aria-hidden="true"
-          />
+          <view v-if="loading || isPending" class="sn-switch__spinner" aria-hidden="true" />
           <view
             v-else-if="actionIconClass"
             :class="['sn-switch__action-icon', actionIconClass]"
             aria-hidden="true"
           />
-          <SnIcon
-            v-else-if="actionIcon"
-            :icon="actionIcon"
-            :size="20"
-          />
-          <SnIcon
-            v-else
-            :icon="isChecked ? checkIcon : closeIcon"
-            :size="20"
-          />
+          <SnIcon v-else-if="actionIcon" :icon="actionIcon" :size="20" />
+          <SnIcon v-else :icon="isChecked ? checkIcon : closeIcon" :size="20" />
         </view>
       </view>
     </view>
@@ -372,7 +365,9 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
   background-color: var(--sn-mp-color-control-knob);
   color: var(--sn-mp-color-action-primary);
   box-sizing: border-box;
-  transition: transform 0.3s ease-out, color 0.3s ease-out;
+  transition:
+    transform 0.3s ease-out,
+    color 0.3s ease-out;
 }
 
 .sn-switch--round .sn-switch__action {

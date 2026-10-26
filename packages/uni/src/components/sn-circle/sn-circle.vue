@@ -47,39 +47,39 @@
  *   - 数字滚动 — 用 sn-count-to
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnCircle' })
+defineOptions({ name: 'SnCircle' });
 
 /** Line cap of the ring stroke. Mirrors `wd-circle` `stroke-linecap`. */
-type CircleLinecap = 'butt' | 'round' | 'square'
+type CircleLinecap = 'butt' | 'round' | 'square';
 
 const props = withDefaults(
   defineProps<{
     /** Current progress, 0–100 (out-of-range values are clamped). */
-    modelValue?: number
+    modelValue?: number;
     /** Ring diameter. A bare number is treated as rpx (750 design). */
-    size?: number | string
+    size?: number | string;
     /** Ring color: a solid CSS color, or a `{ offset: color }` gradient map. */
-    color?: string | Record<string, string>
+    color?: string | Record<string, string>;
     /** Track (unfilled) color. */
-    layerColor?: string
+    layerColor?: string;
     /** Filled disc color inside the ring; empty renders a hollow ring. */
-    fill?: string
+    fill?: string;
     /** Animation speed in percent per second; `0` disables the transition. */
-    speed?: number
+    speed?: number;
     /** Text shown in the middle; empty shows the rounded percentage. */
-    text?: string
+    text?: string;
     /** Ring thickness. A bare number is treated as rpx. */
-    strokeWidth?: number | string
+    strokeWidth?: number | string;
     /** Stroke cap (parity only — a conic sweep has no caps). */
-    strokeLinecap?: CircleLinecap
+    strokeLinecap?: CircleLinecap;
     /** Sweep clockwise (the default) or counter-clockwise. */
-    clockwise?: boolean
+    clockwise?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 0,
@@ -95,28 +95,28 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Custom centre content (replaces `text` / the percentage). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Clamped progress. */
 const clamped = computed(() => {
-  const value = Number(props.modelValue)
-  if (!Number.isFinite(value)) return 0
-  return Math.min(100, Math.max(0, value))
-})
+  const value = Number(props.modelValue);
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(100, Math.max(0, value));
+});
 
 /** Resolve a numeric-or-string length prop (bare number = rpx). */
 function toLength(value: number | string, fallbackRpx: number): string {
-  if (value === '') return `${fallbackRpx}rpx`
-  return typeof value === 'number' ? `${value}rpx` : value
+  if (value === '') return `${fallbackRpx}rpx`;
+  return typeof value === 'number' ? `${value}rpx` : value;
 }
 
-const ringSize = computed(() => toLength(props.size, 120))
-const ringWidth = computed(() => toLength(props.strokeWidth, 18))
+const ringSize = computed(() => toLength(props.size, 120));
+const ringWidth = computed(() => toLength(props.strokeWidth, 18));
 
 /**
  * Centre text. Mirrors wd-circle: `text` when provided, else the rounded
@@ -124,29 +124,29 @@ const ringWidth = computed(() => toLength(props.strokeWidth, 18))
  */
 const centerText = computed(() =>
   props.text !== '' ? props.text : `${Math.round(clamped.value)}%`,
-)
+);
 
 /** Gradient map normalised to a CSS stop list, or `null` for solid colors. */
 const gradientStops = computed<string | null>(() => {
-  if (typeof props.color !== 'object' || props.color === null) return null
-  const entries = Object.entries(props.color)
-  if (entries.length === 0) return null
+  if (typeof props.color !== 'object' || props.color === null) return null;
+  const entries = Object.entries(props.color);
+  if (entries.length === 0) return null;
   return entries
     .map(([offset, color]) => `${color} ${offset.endsWith('%') ? offset : `${offset}%`}`)
-    .join(', ')
-})
+    .join(', ');
+});
 
 /** Sweep angle in degrees. */
-const sweepDeg = computed(() => clamped.value * 3.6)
+const sweepDeg = computed(() => clamped.value * 3.6);
 
 /**
  * Transition duration in ms. `speed` is "percent per second", so moving over
  * the current value takes `percentage / speed` seconds.
  */
 const transitionMs = computed(() => {
-  if (props.speed <= 0) return 0
-  return Math.round((clamped.value / props.speed) * 1000)
-})
+  if (props.speed <= 0) return 0;
+  return Math.round((clamped.value / props.speed) * 1000);
+});
 
 const rootClass = computed(() => [
   'sn-circle',
@@ -156,39 +156,38 @@ const rootClass = computed(() => [
     'sn-circle--gradient': gradientStops.value !== null,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
   const parts = [
     `--sn-circle-size: ${ringSize.value}`,
     `--sn-circle-width: ${ringWidth.value}`,
     `--sn-circle-duration: ${transitionMs.value}ms`,
-  ]
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  ];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 /** Sweep + fill color as custom properties consumed by the stylesheet. */
 const arcStyle = computed(() => {
-  const parts = [`--sn-circle-sweep: ${sweepDeg.value}deg`]
+  const parts = [`--sn-circle-sweep: ${sweepDeg.value}deg`];
   if (gradientStops.value !== null) {
-    parts.push(`--sn-circle-stops: ${gradientStops.value}`)
+    parts.push(`--sn-circle-stops: ${gradientStops.value}`);
   } else {
-    const solid = typeof props.color === 'string' && props.color !== ''
-      ? props.color
-      : 'var(--sn-mp-color-action-primary)'
-    parts.push(`--sn-circle-color: ${solid}`)
+    const solid =
+      typeof props.color === 'string' && props.color !== ''
+        ? props.color
+        : 'var(--sn-mp-color-action-primary)';
+    parts.push(`--sn-circle-color: ${solid}`);
   }
-  return parts.join('; ')
-})
+  return parts.join('; ');
+});
 
 const trackStyle = computed(() =>
   props.layerColor ? `--sn-circle-layer: ${props.layerColor}` : undefined,
-)
+);
 
-const fillStyle = computed(() =>
-  props.fill ? `background-color: ${props.fill}` : undefined,
-)
+const fillStyle = computed(() => (props.fill ? `background-color: ${props.fill}` : undefined));
 </script>
 
 <template>

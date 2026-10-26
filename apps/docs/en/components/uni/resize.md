@@ -16,11 +16,11 @@ A host usually needs to recompute layout after its content grows (a longer list,
 
 ## Why polling instead of ResizeObserver
 
-| Target | `ResizeObserver` | `uni.createSelectorQuery` |
-| --- | --- | --- |
-| H5 | available | available |
-| WeChat / Alipay MP | **not available** | available |
-| App (uni-app x) | not guaranteed | available |
+| Target             | `ResizeObserver`  | `uni.createSelectorQuery` |
+| ------------------ | ----------------- | ------------------------- |
+| H5                 | available         | available                 |
+| WeChat / Alipay MP | **not available** | available                 |
+| App (uni-app x)    | not guaranteed    | available                 |
 
 The lowest common denominator is the selector query, so the component polls `uni.createSelectorQuery().boundingClientRect()` every 100 ms. That is also the only resource it owns, so unmounting is a single `clearInterval`.
 
@@ -28,22 +28,22 @@ An unchanged box is **not** re-emitted, so a host listening to `resize` never re
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `customStyle` | `string` | `''` | Inline style on the root node |
-| `customClass` | `string` | `''` | Class on the root node |
-| `customContainerClass` | `string` | `''` | Class on the measured inner node |
+| Prop                   | Type     | Default | Description                      |
+| ---------------------- | -------- | ------- | -------------------------------- |
+| `customStyle`          | `string` | `''`    | Inline style on the root node    |
+| `customClass`          | `string` | `''`    | Class on the root node           |
+| `customContainerClass` | `string` | `''`    | Class on the measured inner node |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event    | Description                                            | Payload                                                     |
+| -------- | ------------------------------------------------------ | ----------------------------------------------------------- |
 | `resize` | Fired on the first measurement and on every box change | `{ width, height, top, left, bottom, right }` (px, rounded) |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                    |
+| --------- | ------------------------------ |
 | `default` | Content whose size is observed |
 
 ## Theme variables

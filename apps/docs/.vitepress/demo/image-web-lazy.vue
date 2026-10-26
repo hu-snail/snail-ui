@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /** Demo: SnImage — native lazy + IntersectionObserver lazy inside a scroll box. */
-import { SnImage } from '@snui/vue-web'
+import { SnImage } from '@snui/vue-web';
 
 function svgTile(color: string): string {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="120" height="80" fill="${color}"/><circle cx="60" cy="40" r="18" fill="rgba(255,255,255,0.55)"/></svg>`
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="120" height="80" fill="${color}"/><circle cx="60" cy="40" r="18" fill="rgba(255,255,255,0.55)"/></svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#495057'].map(svgTile)
+const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#495057'].map(svgTile);
 </script>
 
 <template>
@@ -36,8 +36,17 @@ const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#49505
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 24px; max-width: 480px; }
-.hint { margin: 0; color: var(--sn-web-color-text-secondary); font-size: 13px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 480px;
+}
+.hint {
+  margin: 0;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 13px;
+}
 .scroll-box {
   display: flex;
   flex-direction: column;
@@ -45,7 +54,8 @@ const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#49505
   height: 200px;
   overflow: auto;
   padding: 4px;
-  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
+  border: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 12%, var(--sn-web-color-background-surface));
   border-radius: 3px;
 }
 .placeholder {
@@ -55,7 +65,11 @@ const lazyUrls = ['#205072', '#2d6a4f', '#7f5539', '#5a189a', '#9c3848', '#49505
   width: 120px;
   height: 80px;
   color: var(--sn-web-color-text-tertiary);
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.5%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.5%,
+    var(--sn-web-color-background-surface)
+  );
   border-radius: 3px;
   font-size: 12px;
 }

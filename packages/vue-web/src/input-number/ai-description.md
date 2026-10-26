@@ -8,36 +8,36 @@ Web 端数字输入组件，对标 naive-ui `n-input-number` 1:1。位于 `packa
 
 ## Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| null` | `null` | 绑定值；`null` 表示空字段 |
-| `min` | `number` | — | 下界，越界提交会 clamp |
-| `max` | `number` | — | 上界，越界提交会 clamp |
-| `step` | `number` | `1` | 步长（按钮 / 方向键 / PageUp·Down） |
-| `precision` | `number` | — | 提交值小数位（四舍五入） |
-| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸 |
-| `disabled` | `boolean` | `false` | 禁用（输入、按钮、清空全部失效） |
-| `readonly` | `boolean` | `false` | 只读 |
-| `placeholder` | `string` | `''` | 占位文案 |
-| `stepStrictly` | `boolean` | `false` | 提交值必须是 `step` 的整数倍（以 `min`，缺省 0 为基准 snap） |
-| `showButton` | `boolean` | `true` | 是否渲染 +/− 步进按钮 |
-| `buttonPlacement` | `'both' \| 'right'` | `'right'` | 按钮位置：`right` 尾部横排（− +）/ `both` 分置左右两端 |
-| `clearable` | `boolean` | `false` | 有值时显示清空按钮，点击提交 `null` |
-| `format` | `(value: number) => string \| number` | — | 展示格式化（如百分比） |
-| `parse` | `(input: string) => number \| null` | — | `format` 的反函数，解析用户输入 |
-| `validator` | `(value: number) => boolean` | — | 返回 `false` 拒绝提交（保留旧值） |
-| `border` | `'all' \| 'bottom' \| 'none'` | `'all'` | 边框形态 |
-| `bordered` | `boolean`（deprecated） | `true` | `false` → `border:'none'` 的别名 |
-| `ariaLabel` | `string` | — | 无障碍标签 |
+| Prop              | 类型                                                 | 默认值     | 说明                                                         |
+| ----------------- | ---------------------------------------------------- | ---------- | ------------------------------------------------------------ |
+| `modelValue`      | `number \| null`                                     | `null`     | 绑定值；`null` 表示空字段                                    |
+| `min`             | `number`                                             | —          | 下界，越界提交会 clamp                                       |
+| `max`             | `number`                                             | —          | 上界，越界提交会 clamp                                       |
+| `step`            | `number`                                             | `1`        | 步长（按钮 / 方向键 / PageUp·Down）                          |
+| `precision`       | `number`                                             | —          | 提交值小数位（四舍五入）                                     |
+| `size`            | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸                                                         |
+| `disabled`        | `boolean`                                            | `false`    | 禁用（输入、按钮、清空全部失效）                             |
+| `readonly`        | `boolean`                                            | `false`    | 只读                                                         |
+| `placeholder`     | `string`                                             | `''`       | 占位文案                                                     |
+| `stepStrictly`    | `boolean`                                            | `false`    | 提交值必须是 `step` 的整数倍（以 `min`，缺省 0 为基准 snap） |
+| `showButton`      | `boolean`                                            | `true`     | 是否渲染 +/− 步进按钮                                        |
+| `buttonPlacement` | `'both' \| 'right'`                                  | `'right'`  | 按钮位置：`right` 尾部横排（− +）/ `both` 分置左右两端       |
+| `clearable`       | `boolean`                                            | `false`    | 有值时显示清空按钮，点击提交 `null`                          |
+| `format`          | `(value: number) => string \| number`                | —          | 展示格式化（如百分比）                                       |
+| `parse`           | `(input: string) => number \| null`                  | —          | `format` 的反函数，解析用户输入                              |
+| `validator`       | `(value: number) => boolean`                         | —          | 返回 `false` 拒绝提交（保留旧值）                            |
+| `border`          | `'all' \| 'bottom' \| 'none'`                        | `'all'`    | 边框形态                                                     |
+| `bordered`        | `boolean`（deprecated）                              | `true`     | `false` → `border:'none'` 的别名                             |
+| `ariaLabel`       | `string`                                             | —          | 无障碍标签                                                   |
 
 ## Events
 
-| 事件 | Payload | 触发时机 |
-| --- | --- | --- |
-| `update:modelValue` | `number \| null` | 提交新值（步进 / change / blur / Enter / 清空） |
-| `change` | `number \| null` | 值实际变化时随 `update:modelValue` 一起发出 |
-| `input` | `number \| null` | 每次键入；payload 是 parse 后的结果（非法/空为 `null`） |
-| `focus` / `blur` | `FocusEvent` | 原生焦点事件 |
+| 事件                | Payload          | 触发时机                                                |
+| ------------------- | ---------------- | ------------------------------------------------------- |
+| `update:modelValue` | `number \| null` | 提交新值（步进 / change / blur / Enter / 清空）         |
+| `change`            | `number \| null` | 值实际变化时随 `update:modelValue` 一起发出             |
+| `input`             | `number \| null` | 每次键入；payload 是 parse 后的结果（非法/空为 `null`） |
+| `focus` / `blur`    | `FocusEvent`     | 原生焦点事件                                            |
 
 ## 交互语义
 
@@ -52,10 +52,10 @@ Web 端数字输入组件，对标 naive-ui `n-input-number` 1:1。位于 `packa
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import SnInputNumber from '@/input-number/SnInputNumber.vue'
+import { ref } from 'vue';
+import SnInputNumber from '@/input-number/SnInputNumber.vue';
 
-const amount = ref<number | null>(null)
+const amount = ref<number | null>(null);
 </script>
 
 <template>

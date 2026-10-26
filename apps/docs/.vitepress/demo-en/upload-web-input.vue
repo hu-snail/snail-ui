@@ -17,82 +17,82 @@
  * list is cleared together with the mirror (the component owns its list, so
  * there is nothing to clear from the outside).
  */
-import { computed, onBeforeUnmount, ref } from 'vue'
-import { SnButton, SnInput, SnProgress, SnUpload } from '@snui/vue-web'
-import type { SnUploadFile } from '@snui/vue-web'
+import { computed, onBeforeUnmount, ref } from 'vue';
+import { SnButton, SnInput, SnProgress, SnUpload } from '@snui/vue-web';
+import type { SnUploadFile } from '@snui/vue-web';
 
-const files = ref<SnUploadFile[]>([])
-const previewed = ref<SnUploadFile | null>(null)
-const previewOpen = ref(false)
-const uploadKey = ref(0)
-const timers = new Set<number>()
+const files = ref<SnUploadFile[]>([]);
+const previewed = ref<SnUploadFile | null>(null);
+const previewOpen = ref(false);
+const uploadKey = ref(0);
+const timers = new Set<number>();
 
 const summary = computed(() =>
   files.value.length > 0 ? files.value.map((file) => file.name).join(',') : '',
-)
+);
 
 const uploadingCount = computed(
   () => files.value.filter((file) => file.status === 'uploading').length,
-)
+);
 
-const totalSize = computed(() => files.value.reduce((sum, file) => sum + file.size, 0))
+const totalSize = computed(() => files.value.reduce((sum, file) => sum + file.size, 0));
 
 function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
 /** Bar percentage: the driver's live value, or the terminal state. */
 function percentageOf(file: SnUploadFile): number {
-  if (typeof file.percentage === 'number') return file.percentage
-  return file.status === 'done' ? 100 : 0
+  if (typeof file.percentage === 'number') return file.percentage;
+  return file.status === 'done' ? 100 : 0;
 }
 
 function statusOf(file: SnUploadFile): 'default' | 'success' | 'error' {
-  if (file.status === 'error') return 'error'
-  if (file.status === 'done') return 'success'
-  return 'default'
+  if (file.status === 'error') return 'error';
+  if (file.status === 'done') return 'success';
+  return 'default';
 }
 
 /** Simulated driver — writes `percentage` on the live reactive entry. */
 function simulateUpload(file: SnUploadFile): Promise<void> {
   return new Promise<void>((resolve) => {
-    let value = 0
+    let value = 0;
     const id = window.setInterval(() => {
-      value = Math.min(100, value + 10 + Math.round(Math.random() * 12))
-      file.percentage = value
-      if (value < 100) return
-      window.clearInterval(id)
-      timers.delete(id)
-      resolve()
-    }, 150)
-    timers.add(id)
-  })
+      value = Math.min(100, value + 10 + Math.round(Math.random() * 12));
+      file.percentage = value;
+      if (value < 100) return;
+      window.clearInterval(id);
+      timers.delete(id);
+      resolve();
+    }, 150);
+    timers.add(id);
+  });
 }
 
 function onChange(list: SnUploadFile[]): void {
-  files.value = list
+  files.value = list;
 }
 
 function openPreview(file: SnUploadFile): void {
-  previewed.value = file
-  previewOpen.value = true
+  previewed.value = file;
+  previewOpen.value = true;
 }
 
 function reset(): void {
-  timers.forEach((id) => window.clearInterval(id))
-  timers.clear()
-  files.value = []
-  previewOpen.value = false
-  previewed.value = null
-  uploadKey.value += 1
+  timers.forEach((id) => window.clearInterval(id));
+  timers.clear();
+  files.value = [];
+  previewOpen.value = false;
+  previewed.value = null;
+  uploadKey.value += 1;
 }
 
 onBeforeUnmount(() => {
-  timers.forEach((id) => window.clearInterval(id))
-  timers.clear()
-})
+  timers.forEach((id) => window.clearInterval(id));
+  timers.clear();
+});
 </script>
 
 <template>
@@ -146,7 +146,10 @@ onBeforeUnmount(() => {
         {{
           uploadingCount > 0
             ? `${uploadingCount} files uploading…`
-            : files.length > 0 ? `${files.length} files · ${formatSize(totalSize)}` : 'Click "Choose files" to start uploading' }}
+            : files.length > 0
+              ? `${files.length} files · ${formatSize(totalSize)}`
+              : 'Click "Choose files" to start uploading'
+        }}
       </span>
       <SnButton v-if="files.length > 0" text size="tiny" @click="reset">Reset</SnButton>
     </div>
@@ -165,7 +168,7 @@ onBeforeUnmount(() => {
             class="upload-input-demo__thumb"
             :src="previewed.url"
             :alt="previewed.name"
-          >
+          />
           <dl class="upload-input-demo__meta">
             <dt>Name</dt>
             <dd>{{ previewed?.name }}</dd>

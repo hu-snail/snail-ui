@@ -13,7 +13,7 @@
  * shadow (no blur), wavy asymmetric border-radius, sticker press
  * lift on hover.
  */
-import { SnButton, SnDivider } from '@snui/vue-web'
+import { SnButton, SnDivider } from '@snui/vue-web';
 </script>
 
 <template>
@@ -50,7 +50,7 @@ import { SnButton, SnDivider } from '@snui/vue-web'
   padding: 16px;
   border: 2.5px dashed #1a1a1a;
   border-radius: 16px 4px / 4px 16px;
-  background: #FFF8E7;
+  background: #fff8e7;
 }
 .sn-demo__group {
   display: flex;
@@ -74,7 +74,7 @@ import { SnButton, SnDivider } from '@snui/vue-web'
   border: 2px solid #1a1a1a;
   border-radius: 10px 2px / 2px 10px;
   font-weight: 700;
-  background: #FFFBEB;
+  background: #fffbeb;
   box-shadow: 2px 2px 0 #1a1a1a;
 }
 </style>

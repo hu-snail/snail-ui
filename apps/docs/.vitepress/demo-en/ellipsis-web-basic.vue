@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnEllipsis — single / multi-line clamping with overflow tooltip and click expand. */
-import { SnEllipsis } from '@snui/vue-web'
+import { SnEllipsis } from '@snui/vue-web';
 
 const longText =
   'This is a very long piece of description text used to demonstrate truncation: when the container is too narrow to hold the full content,' +
   'the overflow is replaced by an ellipsis; hover over the text to see the full content via Tooltip,' +
-  'overflow detection is computed from the actual size of the container, and no tooltip pops up for text that does not overflow.'
+  'overflow detection is computed from the actual size of the container, and no tooltip pops up for text that does not overflow.';
 </script>
 
 <template>

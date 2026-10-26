@@ -101,28 +101,28 @@ title: {Component} {组件中文名}
 
 ### Props
 
-| 名称 | 说明 | 类型 | 默认值 |
-|---|---|---|---|
+| 名称   | 说明     | 类型                     | 默认值      |
+| ------ | -------- | ------------------------ | ----------- |
 | `type` | 按钮类型 | `'primary' \| 'default'` | `'default'` |
 
 ### Events
 
-| 名称 | 说明 | 回调参数 |
-|---|---|---|
+| 名称    | 说明       | 回调参数                      |
+| ------- | ---------- | ----------------------------- |
 | `click` | 点击时触发 | `(event: MouseEvent) => void` |
 
 ### Slots
 
-| 名称 | 说明 |
-|---|---|
+| 名称      | 说明     |
+| --------- | -------- |
 | `default` | 按钮内容 |
 
 ### Tokens
 
-| CSS 变量 | 说明 |
-|---|---|
+| CSS 变量                    | 说明           |
+| --------------------------- | -------------- |
 | `--sn-color-action-primary` | primary 背景色 |
-| `--sn-radius-button` | 圆角 |
+| `--sn-radius-button`        | 圆角           |
 
 ## 风格预览
 
@@ -160,26 +160,26 @@ title: {Component} {组件中文名}
 ```vue
 <!-- apps/docs/.vitepress/components/StyleSwitcher.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import { snCssVars } from '@snui/tokens'
-import { allPacks } from '@snui/style-packs'
-import type { StylePackDefinition } from '@snui/style-packs'
+import { ref } from 'vue';
+import { snCssVars } from '@snui/tokens';
+import { allPacks } from '@snui/style-packs';
+import type { StylePackDefinition } from '@snui/style-packs';
 
-const activePack = ref<string>('default')
+const activePack = ref<string>('default');
 
 function applyPack(pack: StylePackDefinition) {
-  activePack.value = pack.name
-  let el = document.getElementById('snui-pack') as HTMLStyleElement | null
+  activePack.value = pack.name;
+  let el = document.getElementById('snui-pack') as HTMLStyleElement | null;
   if (!el) {
-    el = document.createElement('style')
-    el.id = 'snui-pack'
-    document.head.appendChild(el)
+    el = document.createElement('style');
+    el.id = 'snui-pack';
+    document.head.appendChild(el);
   }
   el.textContent = snCssVars({
     theme: pack.theme,
     style: pack.style,
     density: pack.density,
-  })
+  });
 }
 </script>
 ```
@@ -202,30 +202,30 @@ StyleSwitcher 切换 Pack 后，ComponentPreview 不需要任何代码变更—�
 
 ```ts
 // 粘贴到 main.ts
-import { snCssVars } from '@snui/tokens'
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import { iosPack } from '@snui/style-packs/ios';
 
-const el = document.createElement('style')
-el.id = 'snui-pack'
+const el = document.createElement('style');
+el.id = 'snui-pack';
 el.textContent = snCssVars({
   theme: iosPack.theme,
   style: iosPack.style,
   density: iosPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 ```
 
 **ConfigProvider 格式**（可选切换）：
 
 ```ts
 // 粘贴到需要主题覆盖的组件
-import { snCssVars } from '@snui/tokens'
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import { iosPack } from '@snui/style-packs/ios';
 
 const packCss = snCssVars({
   theme: iosPack.theme,
   style: iosPack.style,
-})
+});
 ```
 
 ### 4.3 实现约束
@@ -246,6 +246,7 @@ const packCss = snCssVars({
 ```
 
 功能：
+
 - 横向排列展示所有官方 Pack 下该组件的渲染效果
 - 每个 Pack 下方展示 Pack label
 - 点击任意 Pack 格子 → 切换全局 StyleSwitcher（两者响应式联动）
@@ -286,6 +287,6 @@ const packCss = snCssVars({
 
 ## 7. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
+| 版本 | 日期       | 变更               |
+| ---- | ---------- | ------------------ |
 | v1.0 | 2026-10-03 | 初始版本（Active） |

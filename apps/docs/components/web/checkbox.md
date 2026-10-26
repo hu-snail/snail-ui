@@ -30,26 +30,26 @@
 
 ### SnCheckbox Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `boolean` | `false` | v-model 绑定 |
-| label | `string` | `''` | 文案（label slot 优先） |
-| value | `SnCheckboxValue` | — | 在 group 中的取值 |
-| disabled | `boolean` | `false` | 禁用（group 级 OR） |
-| readonly | `boolean` | `false` | 只读 |
-| indeterminate | `boolean` | `false` | 半选态（aria-checked=mixed） |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| checkedValue | `SnCheckboxValue` | `true` | 选中时的值 |
-| uncheckedValue | `SnCheckboxValue` | `false` | 未选中时的值 |
-| status | `'default'\|'error'\|'warning'` | `'default'` | 校验状态 |
+| Prop           | 类型                                         | 默认值      | 说明                         |
+| -------------- | -------------------------------------------- | ----------- | ---------------------------- |
+| modelValue     | `boolean`                                    | `false`     | v-model 绑定                 |
+| label          | `string`                                     | `''`        | 文案（label slot 优先）      |
+| value          | `SnCheckboxValue`                            | —           | 在 group 中的取值            |
+| disabled       | `boolean`                                    | `false`     | 禁用（group 级 OR）          |
+| readonly       | `boolean`                                    | `false`     | 只读                         |
+| indeterminate  | `boolean`                                    | `false`     | 半选态（aria-checked=mixed） |
+| size           | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`  | 尺寸                         |
+| checkedValue   | `SnCheckboxValue`                            | `true`      | 选中时的值                   |
+| uncheckedValue | `SnCheckboxValue`                            | `false`     | 未选中时的值                 |
+| status         | `'default'\|'error'\|'warning'`              | `'default'` | 校验状态                     |
 
 ### SnCheckboxGroup Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `SnCheckboxValue[]` | `[]` | v-model 数组 |
-| options | `Array<SnCheckboxGroupOption \| SnCheckboxValue>` | `[]` | 声明式选项 |
-| disabled | `boolean` | `false` | 组级禁用 |
-| size | 同上 | `'medium'` | 组级尺寸 |
+| Prop       | 类型                                              | 默认值     | 说明         |
+| ---------- | ------------------------------------------------- | ---------- | ------------ |
+| modelValue | `SnCheckboxValue[]`                               | `[]`       | v-model 数组 |
+| options    | `Array<SnCheckboxGroupOption \| SnCheckboxValue>` | `[]`       | 声明式选项   |
+| disabled   | `boolean`                                         | `false`    | 组级禁用     |
+| size       | 同上                                              | `'medium'` | 组级尺寸     |
 
 完整契约见组件 `ai-description.md`。

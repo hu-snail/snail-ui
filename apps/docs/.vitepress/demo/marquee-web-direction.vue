@@ -3,14 +3,10 @@
  * Demo: SnMarquee — four directions (left / right / up / down).
  * 竖向跑马灯需要显式给盒子高度，否则没有可裁剪的视口。
  */
-import { SnMarquee } from '@snui/vue-web'
+import { SnMarquee } from '@snui/vue-web';
 
-const horizontal = '公告：本周五 22:00 - 24:00 系统维护，期间服务不可用。'
-const verticalItems = [
-  '新版本 0.1.0 已发布',
-  '新增跑马灯 / 评论组件',
-  '文档站支持中英文切换',
-]
+const horizontal = '公告：本周五 22:00 - 24:00 系统维护，期间服务不可用。';
+const verticalItems = ['新版本 0.1.0 已发布', '新增跑马灯 / 评论组件', '文档站支持中英文切换'];
 </script>
 
 <template>

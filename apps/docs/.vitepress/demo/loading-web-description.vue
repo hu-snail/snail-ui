@@ -4,10 +4,10 @@
  *
  * Shows: the `description` prop in both the bare and the wrapping form.
  */
-import { ref } from 'vue'
-import { SnButton, SnLoading } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnLoading } from '@snui/vue-web';
 
-const loading = ref(true)
+const loading = ref(true);
 </script>
 
 <template>

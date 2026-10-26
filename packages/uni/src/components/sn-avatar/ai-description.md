@@ -25,49 +25,49 @@ degrades instead of leaving a hole in the layout.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue'
+import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `src` | `string` | `''` | no | Image URL. Failure falls back to `alt` → `text` → `icon`. |
-| `text` | `string` | `''` | no | Initials / short label. |
-| `icon` | `string` | `''` | no | Icon name, resolved through `registerSnIcons()`. |
-| `iconPrefix` | `string` | `''` | no | Iconfont class prefix used when `cssIcon` is on. |
-| `cssIcon` | `boolean \| string` | `false` | no | Render a font icon instead of an SVG one. |
-| `size` | `string \| number` | `'normal'` | no | Preset (`large` / `medium` / `normal` / `small`) or a custom length. A number is px. |
-| `shape` | `'round' \| 'square'` | `'round'` | no | Outline. |
-| `bgColor` | `string` | `''` | no | Inline background override. |
-| `color` | `string` | `''` | no | Inline text / icon colour override. |
-| `alt` | `string` | `''` | no | Placeholder label used when the image fails. |
-| `mode` | `string` | `'aspectFill'` | no | uni-app `<image>` fill mode, forwarded verbatim. |
-| `customClass` | `string` | `''` | no | Extra class on the root node. |
-| `customStyle` | `string` | `''` | no | Inline style appended to the root node. |
+| Name          | Type                  | Default        | Required | Description                                                                          |
+| ------------- | --------------------- | -------------- | -------- | ------------------------------------------------------------------------------------ |
+| `src`         | `string`              | `''`           | no       | Image URL. Failure falls back to `alt` → `text` → `icon`.                            |
+| `text`        | `string`              | `''`           | no       | Initials / short label.                                                              |
+| `icon`        | `string`              | `''`           | no       | Icon name, resolved through `registerSnIcons()`.                                     |
+| `iconPrefix`  | `string`              | `''`           | no       | Iconfont class prefix used when `cssIcon` is on.                                     |
+| `cssIcon`     | `boolean \| string`   | `false`        | no       | Render a font icon instead of an SVG one.                                            |
+| `size`        | `string \| number`    | `'normal'`     | no       | Preset (`large` / `medium` / `normal` / `small`) or a custom length. A number is px. |
+| `shape`       | `'round' \| 'square'` | `'round'`      | no       | Outline.                                                                             |
+| `bgColor`     | `string`              | `''`           | no       | Inline background override.                                                          |
+| `color`       | `string`              | `''`           | no       | Inline text / icon colour override.                                                  |
+| `alt`         | `string`              | `''`           | no       | Placeholder label used when the image fails.                                         |
+| `mode`        | `string`              | `'aspectFill'` | no       | uni-app `<image>` fill mode, forwarded verbatim.                                     |
+| `customClass` | `string`              | `''`           | no       | Extra class on the root node.                                                        |
+| `customStyle` | `string`              | `''`           | no       | Inline style appended to the root node.                                              |
 
 ## Size presets
 
-| Preset | Diameter |
-|---|---|
-| `small` | 48rpx |
-| `normal` | 72rpx |
-| `medium` | 96rpx |
-| `large` | 112rpx |
+| Preset   | Diameter |
+| -------- | -------- |
+| `small`  | 48rpx    |
+| `normal` | 72rpx    |
+| `medium` | 96rpx    |
+| `large`  | 112rpx   |
 
 A non-preset string is used as-is (`'20%'`, `'64rpx'`); a number is read as px.
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `click` | `Event` | Tapped anywhere on the avatar. |
+| Name    | Payload | Description                                                         |
+| ------- | ------- | ------------------------------------------------------------------- |
+| `click` | `Event` | Tapped anywhere on the avatar.                                      |
 | `error` | `Event` | The image failed to load (the fallback layer is already rendering). |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                           |
+| --------- | ----------------------------------------------------- |
 | `default` | Fully custom content; overrides every built-in layer. |
 
 ## Fallback chain
@@ -81,14 +81,14 @@ instance gets a fresh load attempt instead of staying stuck on the fallback.
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background subtle | `--sn-mp-color-background-subtle` | Default placeholder fill |
-| Text secondary | `--sn-mp-color-text-secondary` | Default initials colour |
-| Text primary | `--sn-mp-color-text-primary` | Doodle skin outline |
-| Font size | `--sn-mp-font-size-{xs,md,lg,xl}` | Initials, scaled by preset |
-| Font weight | `--sn-mp-font-weight-{semibold,bold}` | Initials weight |
-| Radius | `--sn-mp-radius-{md,full}` | `square` vs `round` |
+| Token             | CSS Variable                          | Purpose                    |
+| ----------------- | ------------------------------------- | -------------------------- |
+| Background subtle | `--sn-mp-color-background-subtle`     | Default placeholder fill   |
+| Text secondary    | `--sn-mp-color-text-secondary`        | Default initials colour    |
+| Text primary      | `--sn-mp-color-text-primary`          | Doodle skin outline        |
+| Font size         | `--sn-mp-font-size-{xs,md,lg,xl}`     | Initials, scaled by preset |
+| Font weight       | `--sn-mp-font-weight-{semibold,bold}` | Initials weight            |
+| Radius            | `--sn-mp-radius-{md,full}`            | `square` vs `round`        |
 
 ## Accessibility
 

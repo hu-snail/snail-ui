@@ -56,68 +56,68 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| show | `boolean` | `undefined` | 是否显示。`undefined` 为不受控模式，由内部状态维护。 |
-| default-show | `boolean` | `false` | 不受控模式下的初始显示状态。 |
-| trigger | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'hover'` | 触发方式。`'manual'` 下只由 `show` 控制。 |
-| placement | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'` | 请求的弹出方位，空间不足时可翻转。 |
-| delay | `number \| [number, number]` | `100` | 打开延迟（ms）；传数组时第二项覆盖关闭延迟。 |
-| duration | `number` | `100` | 关闭延迟（ms）。 |
-| show-arrow | `boolean` | `false` | 是否显示指向触发元素的箭头。 |
-| arrow | `boolean` | `true` | `show-arrow` 的布尔别名，两者都为真时才渲染箭头。 |
-| arrow-point-to-center | `boolean` | `false` | 箭头是否指向气泡中心而非触发元素边缘。 |
-| arrow-class | `string` | `undefined` | 箭头元素的类名。 |
-| arrow-style | `CSSProperties` | `undefined` | 箭头元素的行内样式。 |
-| header | `string` | `''` | 标题区文本，可用 `#header` 插槽覆盖。 |
-| content | `string` | `''` | 正文文本，可用 `#content` 插槽覆盖。 |
-| disabled | `boolean` | `false` | 是否禁用弹出。 |
-| raw | `boolean` | `false` | 是否移除内置卡片样式，交由调用方绘制气泡外观。 |
-| animated | `boolean` | `true` | 是否使用进出场动画。 |
-| overlap | `boolean` | `false` | 是否覆盖触发元素而非并排显示。 |
-| scrollable | `boolean` | `false` | 正文超出高度上限时是否在内部滚动。 |
-| display-directive | `'if' \| 'show'` | `'if'` | `'if'` 关闭后卸载节点；`'show'` 保留节点并切换 `display`。 |
-| flip | `boolean` | `true` | 空间不足时是否自动翻转到对侧。 |
-| keep-alive-on-hover | `boolean` | `true` | `hover` 触发时，指针移入气泡是否保持显示。 |
-| width | `number \| 'trigger'` | `undefined` | 宽度。`'trigger'` 表示与触发元素等宽，数值为固定像素宽度（卡片自身 280px 的上限仍然生效）。 |
-| to | `string \| HTMLElement \| false` | `'body'` | 弹层挂载容器。`false` 表示原地渲染。 |
-| z-index | `number` | `undefined` | 显式层级。 |
-| content-class | `string` | `undefined` | 内容区域的类名。 |
-| content-style | `CSSProperties` | `undefined` | 内容区域的行内样式。 |
-| on-clickoutside | `(e: MouseEvent) => void` | `undefined` | 点击弹层与触发元素外部时调用。 |
+| 名称                  | 类型                                                                                                                                                                 | 默认值      | 说明                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------- |
+| show                  | `boolean`                                                                                                                                                            | `undefined` | 是否显示。`undefined` 为不受控模式，由内部状态维护。                                        |
+| default-show          | `boolean`                                                                                                                                                            | `false`     | 不受控模式下的初始显示状态。                                                                |
+| trigger               | `'hover' \| 'click' \| 'focus' \| 'manual'`                                                                                                                          | `'hover'`   | 触发方式。`'manual'` 下只由 `show` 控制。                                                   |
+| placement             | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'`     | 请求的弹出方位，空间不足时可翻转。                                                          |
+| delay                 | `number \| [number, number]`                                                                                                                                         | `100`       | 打开延迟（ms）；传数组时第二项覆盖关闭延迟。                                                |
+| duration              | `number`                                                                                                                                                             | `100`       | 关闭延迟（ms）。                                                                            |
+| show-arrow            | `boolean`                                                                                                                                                            | `false`     | 是否显示指向触发元素的箭头。                                                                |
+| arrow                 | `boolean`                                                                                                                                                            | `true`      | `show-arrow` 的布尔别名，两者都为真时才渲染箭头。                                           |
+| arrow-point-to-center | `boolean`                                                                                                                                                            | `false`     | 箭头是否指向气泡中心而非触发元素边缘。                                                      |
+| arrow-class           | `string`                                                                                                                                                             | `undefined` | 箭头元素的类名。                                                                            |
+| arrow-style           | `CSSProperties`                                                                                                                                                      | `undefined` | 箭头元素的行内样式。                                                                        |
+| header                | `string`                                                                                                                                                             | `''`        | 标题区文本，可用 `#header` 插槽覆盖。                                                       |
+| content               | `string`                                                                                                                                                             | `''`        | 正文文本，可用 `#content` 插槽覆盖。                                                        |
+| disabled              | `boolean`                                                                                                                                                            | `false`     | 是否禁用弹出。                                                                              |
+| raw                   | `boolean`                                                                                                                                                            | `false`     | 是否移除内置卡片样式，交由调用方绘制气泡外观。                                              |
+| animated              | `boolean`                                                                                                                                                            | `true`      | 是否使用进出场动画。                                                                        |
+| overlap               | `boolean`                                                                                                                                                            | `false`     | 是否覆盖触发元素而非并排显示。                                                              |
+| scrollable            | `boolean`                                                                                                                                                            | `false`     | 正文超出高度上限时是否在内部滚动。                                                          |
+| display-directive     | `'if' \| 'show'`                                                                                                                                                     | `'if'`      | `'if'` 关闭后卸载节点；`'show'` 保留节点并切换 `display`。                                  |
+| flip                  | `boolean`                                                                                                                                                            | `true`      | 空间不足时是否自动翻转到对侧。                                                              |
+| keep-alive-on-hover   | `boolean`                                                                                                                                                            | `true`      | `hover` 触发时，指针移入气泡是否保持显示。                                                  |
+| width                 | `number \| 'trigger'`                                                                                                                                                | `undefined` | 宽度。`'trigger'` 表示与触发元素等宽，数值为固定像素宽度（卡片自身 280px 的上限仍然生效）。 |
+| to                    | `string \| HTMLElement \| false`                                                                                                                                     | `'body'`    | 弹层挂载容器。`false` 表示原地渲染。                                                        |
+| z-index               | `number`                                                                                                                                                             | `undefined` | 显式层级。                                                                                  |
+| content-class         | `string`                                                                                                                                                             | `undefined` | 内容区域的类名。                                                                            |
+| content-style         | `CSSProperties`                                                                                                                                                      | `undefined` | 内容区域的行内样式。                                                                        |
+| on-clickoutside       | `(e: MouseEvent) => void`                                                                                                                                            | `undefined` | 点击弹层与触发元素外部时调用。                                                              |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称          | 参数      | 说明                                     |
+| ------------- | --------- | ---------------------------------------- |
 | `update:show` | `boolean` | 显示状态变化，配合 `v-model:show` 使用。 |
-| `show` | `()` | 弹层出现时触发。 |
-| `hide` | `()` | 弹层隐藏时触发。 |
+| `show`        | `()`      | 弹层出现时触发。                         |
+| `hide`        | `()`      | 弹层隐藏时触发。                         |
 
 ### Slots
 
-| 名称 | 说明 |
-| --- | --- |
+| 名称      | 说明                                   |
+| --------- | -------------------------------------- |
 | `default` | 触发元素，即弹出时锚定可见的目标节点。 |
-| `header` | 标题区内容，优先于 `header` prop。 |
-| `content` | 正文内容，优先于 `content` prop。 |
+| `header`  | 标题区内容，优先于 `header` prop。     |
+| `content` | 正文内容，优先于 `content` prop。      |
 
 ### Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
-| `show` | `() => void` | 命令式显示，受 `disabled` 约束。 |
-| `hide` | `() => void` | 命令式隐藏。 |
+| 名称      | 类型            | 说明                                       |
+| --------- | --------------- | ------------------------------------------ |
+| `show`    | `() => void`    | 命令式显示，受 `disabled` 约束。           |
+| `hide`    | `() => void`    | 命令式隐藏。                               |
 | `isShown` | `() => boolean` | 读取当前生效的显示状态（含受控与不受控）。 |
 
 ## Tokens
 
-| Token | CSS 变量 | 用途 |
-| --- | --- | --- |
+| Token      | CSS 变量                            | 用途           |
+| ---------- | ----------------------------------- | -------------- |
 | 背景表面色 | `--sn-web-color-background-surface` | 卡片与箭头填充 |
-| 弱边框色 | `--sn-web-color-border-subtle` | 卡片与箭头描边 |
-| 卡片阴影 | `--sn-web-card-shadow` | 卡片投影 |
-| 主文本色 | `--sn-web-color-text-primary` | 标题与正文文本 |
+| 弱边框色   | `--sn-web-color-border-subtle`      | 卡片与箭头描边 |
+| 卡片阴影   | `--sn-web-card-shadow`              | 卡片投影       |
+| 主文本色   | `--sn-web-color-text-primary`       | 标题与正文文本 |
 
 ## 无障碍
 
@@ -128,10 +128,10 @@
 
 ## AI Patch Boundary
 
-| 可安全由 AI 生成 | 需要人工确认 |
-| --- | --- |
-| `content` / `header` 文案与静态 `placement`、`trigger`、`show-arrow` 等展示参数 | `show` 的受控绑定（`v-model:show` 涉及页面状态流向） |
-| `content-class` / `content-style` 等样式挂点（需基于既有 token） | `on-clickoutside` / 命令式 `show()` / `hide()` 等事件与命令式调用逻辑 |
-| 文档、demo 中静态组合用法 | 在弹层内嵌套复杂交互组件（表单、表格）的方案 |
+| 可安全由 AI 生成                                                                | 需要人工确认                                                          |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `content` / `header` 文案与静态 `placement`、`trigger`、`show-arrow` 等展示参数 | `show` 的受控绑定（`v-model:show` 涉及页面状态流向）                  |
+| `content-class` / `content-style` 等样式挂点（需基于既有 token）                | `on-clickoutside` / 命令式 `show()` / `hide()` 等事件与命令式调用逻辑 |
+| 文档、demo 中静态组合用法                                                       | 在弹层内嵌套复杂交互组件（表单、表格）的方案                          |
 
 完整契约见组件 `ai-description.md`。

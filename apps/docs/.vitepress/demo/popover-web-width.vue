@@ -6,7 +6,7 @@
  * be compared side by side without hovering; clicking a trigger toggles its
  * own bubble, and `placement="right"` keeps the two panels from overlapping.
  */
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { SnButton, SnPopover } from '@snui/vue-web';
 </script>
 
 <template>
@@ -19,7 +19,7 @@ import { SnButton, SnPopover } from '@snui/vue-web'
         placement="right"
         show-arrow
         header="与触发器等宽"
-        content="width=&quot;trigger&quot; 让气泡横向尺寸跟随触发元素，适合承载与按钮同宽的短说明。"
+        content='width="trigger" 让气泡横向尺寸跟随触发元素，适合承载与按钮同宽的短说明。'
       >
         <SnButton>width=&quot;trigger&quot;</SnButton>
       </SnPopover>
@@ -38,7 +38,8 @@ import { SnButton, SnPopover } from '@snui/vue-web'
     </div>
 
     <p class="popover-width-demo__hint">
-      两个气泡默认展开以便对照，点击触发按钮可切换显示。宽度在气泡打开时计算：上例随触发元素宽度变化，下例固定 240px；卡片自身还有 280px 的宽度上限，超出视口时会沿交叉轴回收到可见区域内。
+      两个气泡默认展开以便对照，点击触发按钮可切换显示。宽度在气泡打开时计算：上例随触发元素宽度变化，下例固定
+      240px；卡片自身还有 280px 的宽度上限，超出视口时会沿交叉轴回收到可见区域内。
     </p>
   </div>
 </template>

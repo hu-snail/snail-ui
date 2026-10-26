@@ -34,22 +34,22 @@
  *   <SnTable bordered :single-line="false" striped>…</SnTable>
  */
 
-defineOptions({ name: 'SnTable' })
+defineOptions({ name: 'SnTable' });
 
 const props = withDefaults(
   defineProps<{
     /** Draw the surrounding border. Mirrors n-table `bordered`. */
-    bordered?: boolean
+    bordered?: boolean;
     /** Keep the bottom border of the last row (ignored when bordered). Mirrors n-table `bottom-bordered`. */
-    bottomBordered?: boolean
+    bottomBordered?: boolean;
     /** Remove the row separators (cell bottom borders). Mirrors n-table `single-column`. */
-    singleColumn?: boolean
+    singleColumn?: boolean;
     /** Remove the column separators (cell right borders). Mirrors n-table `single-line`. */
-    singleLine?: boolean
+    singleLine?: boolean;
     /** Table scale. Mirrors n-table `size`. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Zebra stripes on even tbody rows. Mirrors n-table `striped`. */
-    striped?: boolean
+    striped?: boolean;
   }>(),
   {
     bordered: true,
@@ -59,12 +59,12 @@ const props = withDefaults(
     size: 'medium',
     striped: false,
   },
-)
+);
 
 defineSlots<{
   /** Full table markup (thead / tbody / tr / th / td) authored by the consumer. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 </script>
 
 <template>

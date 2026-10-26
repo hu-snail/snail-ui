@@ -6,12 +6,12 @@
  * rejects inside `<script setup>`).
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /**
  * Field value type. A form model is a flat or nested record of these.
  */
-export type FormFieldValue = string | number | boolean | null | undefined
+export type FormFieldValue = string | number | boolean | null | undefined;
 
 /**
  * Rule kinds supported by the Phase 1 validator.
@@ -27,13 +27,13 @@ export type FormRule =
   | { minLength: number; maxLength: number; message: string }
   | { min: number; max: number; message: string }
   | { validator: (value: FormFieldValue) => boolean | string; message: string }
-  | { asyncValidator: (value: FormFieldValue) => Promise<boolean | string>; message: string }
+  | { asyncValidator: (value: FormFieldValue) => Promise<boolean | string>; message: string };
 
 /**
  * Map of field-name → rules[]. Keys must match the `prop` prop on the
  * SnFormItem that consumes them.
  */
-export type FormRules = Record<string, FormRule[]>
+export type FormRules = Record<string, FormRule[]>;
 
 /**
  * Validation context shared from SnForm → SnFormItem via provide/inject.
@@ -41,42 +41,42 @@ export type FormRules = Record<string, FormRule[]>
  */
 export interface FormContext {
   /** Reactive model the FormItem reads from (parent owns it). */
-  model: Record<string, unknown>
+  model: Record<string, unknown>;
   /** Resolved rules for the whole form. FormItem may merge its own rules on top. */
-  rules: FormRules
+  rules: FormRules;
   /** Show validation messages (false = silent, used for ARIA-only validation). */
-  showMessage: boolean
+  showMessage: boolean;
   /** Status icon shown next to the message (false = text only). */
-  statusIcon: boolean
+  statusIcon: boolean;
   /** Label position inherited from parent SnForm. */
-  labelPosition: 'left' | 'right' | 'top'
+  labelPosition: 'left' | 'right' | 'top';
   /** Label width inherited from parent SnForm. */
-  labelWidth: number | string
+  labelWidth: number | string;
   /** Form-wide disabled flag. */
-  disabled: boolean
+  disabled: boolean;
 
   /* ── wot-ui `wd-form` 1:1 parity fields ──────────────────────────────── */
 
   /** Validation trigger inherited from parent. */
-  validateTrigger: 'blur' | 'change'
+  validateTrigger: 'blur' | 'change';
   /** Reset-on-change inherited from parent. */
-  resetOnChange: boolean
+  resetOnChange: boolean;
   /** Error type inherited from parent. */
-  errorType: 'message' | 'toast' | 'none'
+  errorType: 'message' | 'toast' | 'none';
   /** Default size inherited from parent. */
-  size: 'small' | 'medium' | 'large'
+  size: 'small' | 'medium' | 'large';
   /** Default value-align inherited from parent. */
-  valueAlign: 'left' | 'right'
+  valueAlign: 'left' | 'right';
   /** Default asterisk position inherited from parent. */
-  asteriskPosition: 'left' | 'right'
+  asteriskPosition: 'left' | 'right';
   /** Default hide-asterisk inherited from parent. */
-  hideAsterisk: boolean
+  hideAsterisk: boolean;
   /** Default ellipsis inherited from parent. */
-  ellipsis: boolean
+  ellipsis: boolean;
   /** Default border-between-items inherited from parent. */
-  border: boolean
+  border: boolean;
   /** Default vertical-center inherited from parent. */
-  center: boolean
+  center: boolean;
 }
 
 /**
@@ -84,58 +84,62 @@ export interface FormContext {
  * `SnForm.validate()` can iterate without going through DOM lookups.
  */
 export interface FormItemHandle {
-  prop: string
+  prop: string;
   /** Run validation, return true if passes. Updates internal status. */
-  validate(): Promise<boolean>
+  validate(): Promise<boolean>;
   /** Reset the field value to its initial captured value. */
-  resetField(): void
+  resetField(): void;
   /** Clear any active error / warning status. */
-  clearValidate(): void
+  clearValidate(): void;
 }
 
 /**
  * Injection key for SnForm → SnFormItem.
  */
-export const FORM_CONTEXT_KEY: InjectionKey<FormContext> = Symbol('sn-form-context')
+export const FORM_CONTEXT_KEY: InjectionKey<FormContext> = Symbol('sn-form-context');
 
 /**
  * FormItem's reactive state surfaced to the parent. Form aggregates them
  * for imperative `validate()` / `resetFields()` calls.
  */
 export interface FormItemState {
-  status: Ref<'default' | 'error' | 'warning'>
-  message: Ref<string>
+  status: Ref<'default' | 'error' | 'warning'>;
+  message: Ref<string>;
   /** Read by Form to decide whether to bubble the field's status up. */
-  handle: FormItemHandle
+  handle: FormItemHandle;
 }
 
-export const FORM_ITEM_STATE_KEY: InjectionKey<FormItemState> = Symbol('sn-form-item-state')
+export const FORM_ITEM_STATE_KEY: InjectionKey<FormItemState> = Symbol('sn-form-item-state');
 
 /**
  * Helper: resolve a property path like 'user.email' on a model.
  * Returns undefined when any segment is missing.
  */
 export function getByPath(model: Record<string, unknown>, path: string): FormFieldValue {
-  const parts = path.split('.')
-  let cur: unknown = model
+  const parts = path.split('.');
+  let cur: unknown = model;
   for (const part of parts) {
-    if (cur === null || cur === undefined || typeof cur !== 'object') return undefined
-    cur = (cur as Record<string, unknown>)[part]
+    if (cur === null || cur === undefined || typeof cur !== 'object') return undefined;
+    cur = (cur as Record<string, unknown>)[part];
   }
-  return cur as FormFieldValue
+  return cur as FormFieldValue;
 }
 
-export function setByPath(model: Record<string, unknown>, path: string, value: FormFieldValue): void {
-  const parts = path.split('.')
-  if (parts.length === 0) return
-  let cur: Record<string, unknown> = model
+export function setByPath(
+  model: Record<string, unknown>,
+  path: string,
+  value: FormFieldValue,
+): void {
+  const parts = path.split('.');
+  if (parts.length === 0) return;
+  let cur: Record<string, unknown> = model;
   for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i]!
+    const part = parts[i]!;
     if (cur[part] === null || cur[part] === undefined || typeof cur[part] !== 'object') {
-      cur[part] = {}
+      cur[part] = {};
     }
-    cur = cur[part] as Record<string, unknown>
+    cur = cur[part] as Record<string, unknown>;
   }
-  const last = parts[parts.length - 1]!
-  cur[last] = value
+  const last = parts[parts.length - 1]!;
+  cur[last] = value;
 }

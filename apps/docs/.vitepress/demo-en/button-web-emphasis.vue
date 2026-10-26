@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Demo: SnButton (Web) — circle / strong / secondary / tertiary / quaternary. */
-import { SnButton } from '@snui/vue-web'
-import { Mail, Plus } from 'lucide-vue-next'
+import { SnButton } from '@snui/vue-web';
+import { Mail, Plus } from 'lucide-vue-next';
 </script>
 
 <template>
@@ -16,5 +16,10 @@ import { Mail, Plus } from 'lucide-vue-next'
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sn-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
 </style>

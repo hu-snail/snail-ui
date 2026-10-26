@@ -32,37 +32,37 @@ and double-clickable.
 
 ## SnSplitter props
 
-| Prop        | Type                        | Default        | Notes                                   |
-| ----------- | --------------------------- | -------------- | --------------------------------------- |
-| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | Split axis.                              |
-| `disabled`  | `boolean`                   | `false`        | Disables drag + keyboard; dividers become `aria-disabled` and untabbable. |
+| Prop        | Type                         | Default        | Notes                                                                     |
+| ----------- | ---------------------------- | -------------- | ------------------------------------------------------------------------- |
+| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | Split axis.                                                               |
+| `disabled`  | `boolean`                    | `false`        | Disables drag + keyboard; dividers become `aria-disabled` and untabbable. |
 
 ## SnSplitter events
 
-| Event    | Payload                                                    | When                                                          |
-| -------- | ---------------------------------------------------------- | ------------------------------------------------------------- |
-| `resize` | `{ before, after, beforeSize, afterSize }`                  | A gesture finished: drag end, keyboard commit, dblclick. `before`/`after` are the adjacent panels' percents (numbers); `beforeSize`/`afterSize` are `"N%"` strings. |
+| Event    | Payload                                    | When                                                                                                                                                                |
+| -------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `resize` | `{ before, after, beforeSize, afterSize }` | A gesture finished: drag end, keyboard commit, dblclick. `before`/`after` are the adjacent panels' percents (numbers); `beforeSize`/`afterSize` are `"N%"` strings. |
 
 ## SnSplitterPanel props
 
-| Prop           | Type                 | Default | Notes                                                                 |
-| -------------- | -------------------- | ------- | --------------------------------------------------------------------- |
-| `defaultSize`  | `number \| string`   | —       | Initial percent; unset panels share the remainder equally.             |
-| `minSize`      | `number \| string`   | `0`     | Lower drag / keyboard bound, percent.                                  |
-| `maxSize`      | `number \| string`   | `100`   | Upper drag / keyboard bound, percent.                                  |
-| `collapsible`  | `boolean`            | `false` | Enables snap-to-collapse when a drag pushes below `minSize`.           |
-| `collapsed`    | `boolean`            | `false` | `v-model:collapsed`. Collapsed size is 0.                              |
+| Prop          | Type               | Default | Notes                                                        |
+| ------------- | ------------------ | ------- | ------------------------------------------------------------ |
+| `defaultSize` | `number \| string` | —       | Initial percent; unset panels share the remainder equally.   |
+| `minSize`     | `number \| string` | `0`     | Lower drag / keyboard bound, percent.                        |
+| `maxSize`     | `number \| string` | `100`   | Upper drag / keyboard bound, percent.                        |
+| `collapsible` | `boolean`          | `false` | Enables snap-to-collapse when a drag pushes below `minSize`. |
+| `collapsed`   | `boolean`          | `false` | `v-model:collapsed`. Collapsed size is 0.                    |
 
 ## SnSplitterPanel events
 
-| Event               | Payload   | When                                                              |
-| ------------------- | --------- | ----------------------------------------------------------------- |
-| `update:collapsed`  | `boolean` | Collapse snap (drag below min), expand (dblclick / drag past 0).   |
+| Event              | Payload   | When                                                             |
+| ------------------ | --------- | ---------------------------------------------------------------- |
+| `update:collapsed` | `boolean` | Collapse snap (drag below min), expand (dblclick / drag past 0). |
 
 ## Slots
 
-| Slot     | On               | Notes          |
-| -------- | ---------------- | -------------- |
+| Slot      | On                | Notes          |
+| --------- | ----------------- | -------------- |
 | `default` | `SnSplitterPanel` | Panel content. |
 
 ## Interaction

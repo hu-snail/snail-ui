@@ -37,93 +37,96 @@
  *   - 弹层定位 / 动画 — 用 sn-popup
  */
 
-import { computed, ref, watch } from 'vue'
-import SnPopup from '../sn-popup/sn-popup.vue'
-import SnDatetimePickerView from '../sn-datetime-picker-view/sn-datetime-picker-view.vue'
-import type { DateTimeColumnType, DateTimeType } from '../sn-datetime-picker-view/sn-datetime-picker-view-utils'
+import { computed, ref, watch } from 'vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
+import SnDatetimePickerView from '../sn-datetime-picker-view/sn-datetime-picker-view.vue';
+import type {
+  DateTimeColumnType,
+  DateTimeType,
+} from '../sn-datetime-picker-view/sn-datetime-picker-view-utils';
 
 /**
  * Range-mode tab identifier handed to `displayFormatTabLabel`
  * (`wd-datetime-picker` `DatetimePickerDisplayFormatTabLabel`).
  */
-type DateTimeTab = 'start' | 'end'
+type DateTimeTab = 'start' | 'end';
 
-defineOptions({ name: 'SnDatetimePicker' })
+defineOptions({ name: 'SnDatetimePicker' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-datetime-picker` 1:1 surface ────────────────────────── */
 
     /** Bound value — a timestamp, or `HH:mm[:ss]` for `type: 'time'`. */
-    modelValue?: string | number | undefined
+    modelValue?: string | number | undefined;
     /** Sheet visibility (`v-model:visible`). */
-    visible?: boolean
+    visible?: boolean;
     /** Column set. */
-    type?: DateTimeType
+    type?: DateTimeType;
     /** Toolbar title. */
-    title?: string
+    title?: string;
     /** Cancel button label. */
-    cancelButtonText?: string
+    cancelButtonText?: string;
     /** Confirm button label. */
-    confirmButtonText?: string
+    confirmButtonText?: string;
     /** Tapping the mask closes the sheet. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Pad the sheet for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Row height in px design units. */
-    itemHeight?: number
+    itemHeight?: number;
     /** Number of visible rows. */
-    visibleItemCount?: number
+    visibleItemCount?: number;
     /** Option key holding the value (parity). */
-    valueKey?: string
+    valueKey?: string;
     /** Option key holding the label (parity). */
-    labelKey?: string
+    labelKey?: string;
     /** Minimum date (timestamp). */
-    minDate?: number | undefined
+    minDate?: number | undefined;
     /** Maximum date (timestamp). */
-    maxDate?: number | undefined
+    maxDate?: number | undefined;
     /** Minimum hour. */
-    minHour?: number
+    minHour?: number;
     /** Maximum hour. */
-    maxHour?: number
+    maxHour?: number;
     /** Minimum minute. */
-    minMinute?: number
+    minMinute?: number;
     /** Maximum minute. */
-    maxMinute?: number
+    maxMinute?: number;
     /** Show the seconds column. */
-    useSecond?: boolean
+    useSecond?: boolean;
     /** Minimum second. */
-    minSecond?: number
+    minSecond?: number;
     /** Maximum second. */
-    maxSecond?: number
+    maxSecond?: number;
     /** Custom label formatter. */
-    formatter?: ((type: DateTimeColumnType, value: number) => string) | undefined
+    formatter?: ((type: DateTimeColumnType, value: number) => string) | undefined;
     /** Filter which values appear in a column. */
-    filter?: ((type: DateTimeColumnType, values: number[]) => number[]) | undefined
+    filter?: ((type: DateTimeColumnType, values: number[]) => number[]) | undefined;
     /** Veto hook for confirm. */
-    beforeConfirm?: ((value: string | number) => boolean | Promise<boolean>) | undefined
+    beforeConfirm?: ((value: string | number) => boolean | Promise<boolean>) | undefined;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Write `v-model` on every roll instead of only on confirm. */
-    immediateChange?: boolean
+    immediateChange?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the sheet. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the layer cannot leave the page's document flow. Forwarded to
      * `sn-popup`, which declares the same parity-only prop.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
     /** Class forwarded to the roller body. */
-    customViewClass?: string
+    customViewClass?: string;
     /**
      * Range-mode tab label formatter (`display-format-tab-label`). Declared
      * for parity; this build ships the single-value mode only, so there are no
      * tabs and the hook never runs. Documented as 「未实现」.
      */
-    displayFormatTabLabel?: ((tab: DateTimeTab) => string) | undefined
+    displayFormatTabLabel?: ((tab: DateTimeTab) => string) | undefined;
   }>(),
   {
     modelValue: undefined,
@@ -158,82 +161,84 @@ const props = withDefaults(
     customViewClass: '',
     displayFormatTabLabel: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | number): void
-  (e: 'update:visible', value: boolean): void
-  (e: 'confirm', payload: { value: string | number }): void
-  (e: 'change', payload: { value: string | number }): void
-  (e: 'cancel'): void
-  (e: 'open'): void
-}>()
+  (e: 'update:modelValue', value: string | number): void;
+  (e: 'update:visible', value: boolean): void;
+  (e: 'confirm', payload: { value: string | number }): void;
+  (e: 'change', payload: { value: string | number }): void;
+  (e: 'cancel'): void;
+  (e: 'open'): void;
+}>();
 
 /** Draft value while the sheet is open. */
-const draft = ref<string | number | undefined>(props.modelValue)
+const draft = ref<string | number | undefined>(props.modelValue);
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (props.immediateChange) return
-    draft.value = value
+    if (props.immediateChange) return;
+    draft.value = value;
   },
-)
+);
 
 watch(
   () => props.visible,
   (value) => {
-    if (!value) return
-    draft.value = props.modelValue
-    emit('open')
+    if (!value) return;
+    draft.value = props.modelValue;
+    emit('open');
   },
-)
+);
 
 /** Value bound into the roller. */
 const viewValue = computed<string | number | undefined>(() =>
   props.immediateChange ? props.modelValue : draft.value,
-)
+);
 
 function onViewChange(payload: { value: string | number }): void {
   if (!props.immediateChange) {
-    draft.value = payload.value
-    emit('change', payload)
-    return
+    draft.value = payload.value;
+    emit('change', payload);
+    return;
   }
-  emit('update:modelValue', payload.value)
-  emit('change', payload)
+  emit('update:modelValue', payload.value);
+  emit('change', payload);
 }
 
 function requestClose(): void {
-  emit('update:visible', false)
+  emit('update:visible', false);
 }
 
 function onCancel(): void {
-  emit('cancel')
-  requestClose()
+  emit('cancel');
+  requestClose();
 }
 
 async function onConfirm(): Promise<void> {
-  const value = viewValue.value
+  const value = viewValue.value;
   if (value === undefined) {
-    requestClose()
-    return
+    requestClose();
+    return;
   }
   if (props.beforeConfirm) {
-    const verdict = await props.beforeConfirm(value)
-    if (verdict === false) return
+    const verdict = await props.beforeConfirm(value);
+    if (verdict === false) return;
   }
-  if (!props.immediateChange) emit('update:modelValue', value)
-  emit('confirm', { value })
-  requestClose()
+  if (!props.immediateChange) emit('update:modelValue', value);
+  emit('confirm', { value });
+  requestClose();
 }
 
-const popupClass = computed(() => ['sn-datetime-picker-popup', props.customClass].filter(Boolean).join(' '))
+const popupClass = computed(() =>
+  ['sn-datetime-picker-popup', props.customClass].filter(Boolean).join(' '),
+);
 
 /** Forwarded to sn-popup — a string, so `exactOptionalPropertyTypes` stays happy. */
-const rootStyle = computed(() => props.customStyle)
+const rootStyle = computed(() => props.customStyle);
 
-const viewClass = computed(() => props.customViewClass)
+const viewClass = computed(() => props.customViewClass);
 </script>
 
 <template>
@@ -256,14 +261,16 @@ const viewClass = computed(() => props.customViewClass)
           role="button"
           :aria-label="props.cancelButtonText"
           @tap="onCancel"
-        >{{ props.cancelButtonText }}</view>
+          >{{ props.cancelButtonText }}</view
+        >
         <text v-if="props.title" class="sn-datetime-picker__title">{{ props.title }}</text>
         <view
           class="sn-datetime-picker__action sn-datetime-picker__confirm"
           role="button"
           :aria-label="props.confirmButtonText"
           @tap="onConfirm"
-        >{{ props.confirmButtonText }}</view>
+          >{{ props.confirmButtonText }}</view
+        >
       </view>
 
       <SnDatetimePickerView

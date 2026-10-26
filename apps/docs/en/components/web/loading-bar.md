@@ -30,9 +30,9 @@ The same flow runs twice: `start()` → growing width → `finish()`, and `start
 
 `SnLoadingBarProvider` props:
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `to` | `string \| HTMLElement` | `'body'` | Teleport target for the bar element. |
+| Name                | Type                                           | Default     | Description                                                                                                   |
+| ------------------- | ---------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------- |
+| `to`                | `string \| HTMLElement`                        | `'body'`    | Teleport target for the bar element.                                                                          |
 | `loading-bar-style` | `{ loading?: StyleValue; error?: StyleValue }` | `undefined` | Custom inline styles for the bar: `loading` applies to the default-colour phase, `error` to the error sprint. |
 
 The provider's default slot carries the trigger area (see Slots below).
@@ -41,26 +41,26 @@ The provider's default slot carries the trigger area (see Slots below).
 
 The two fields of `loading-bar-style` from the table above:
 
-| Field | Type | Default | Description |
-| --- | --- | --- | --- |
+| Field     | Type         | Default     | Description                                                                                             |
+| --------- | ------------ | ----------- | ------------------------------------------------------------------------------------------------------- |
 | `loading` | `StyleValue` | `undefined` | Inline style merged during the default-colour phase, alongside the component's own width/opacity style. |
-| `error` | `StyleValue` | `undefined` | Inline style merged during the `error()` sprint. |
+| `error`   | `StyleValue` | `undefined` | Inline style merged during the `error()` sprint.                                                        |
 
 ### Slots
 
-| Name | Params | Description |
-| --- | --- | --- |
-| `default` | `()` | Carries the trigger area; `useLoadingBar()` must be called inside one of its descendants. |
+| Name      | Params | Description                                                                               |
+| --------- | ------ | ----------------------------------------------------------------------------------------- |
+| `default` | `()`   | Carries the trigger area; `useLoadingBar()` must be called inside one of its descendants. |
 
 ### Methods
 
 Call `useLoadingBar()` inside the `setup()` of a **descendant** of `SnLoadingBarProvider` to get a `LoadingBarApi`:
 
-| Method | Signature | Description |
-| --- | --- | --- |
-| `start` | `() => void` | Show the bar and grow its width fast-then-slow towards 90%, never completing on its own. Repeat calls while loading are no-ops. |
-| `finish` | `() => void` | Stop growing, sprint to 100% in the default colour, then fade out and reset to 0. A no-op when idle. |
-| `error` | `() => void` | Stop growing, switch to the danger colour, sprint to 100%, hold a moment longer, then fade out and reset. A no-op when idle. |
+| Method   | Signature    | Description                                                                                                                     |
+| -------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `start`  | `() => void` | Show the bar and grow its width fast-then-slow towards 90%, never completing on its own. Repeat calls while loading are no-ops. |
+| `finish` | `() => void` | Stop growing, sprint to 100% in the default colour, then fade out and reset to 0. A no-op when idle.                            |
+| `error`  | `() => void` | Stop growing, switch to the danger colour, sprint to 100%, hold a moment longer, then fade out and reset. A no-op when idle.    |
 
 Behaviour details:
 
@@ -73,10 +73,10 @@ Calling `useLoadingBar()` without a provider never throws: it logs a structured 
 
 ## Tokens
 
-| Token | Fallback | Description |
-| --- | --- | --- |
-| `--sn-web-loading-bar-height` | `2px` | Bar height |
-| `--sn-web-loading-bar-z-index` | `7000` | Bar z-index |
+| Token                          | Fallback | Description |
+| ------------------------------ | -------- | ----------- |
+| `--sn-web-loading-bar-height`  | `2px`    | Bar height  |
+| `--sn-web-loading-bar-z-index` | `7000`   | Bar z-index |
 
 Also consumed: `--sn-web-color-action-primary` (default colour), `--sn-web-color-feedback-danger` (error colour).
 
@@ -87,11 +87,11 @@ Also consumed: `--sn-web-color-action-primary` (default colour), `--sn-web-color
 
 ## AI Patch Boundary
 
-| Field | AI-safe to modify | Notes |
-| --- | --- | --- |
-| When `start` / `finish` / `error` are called | yes | Pure trigger semantics, no parameters |
-| `loading-bar-style` | no — needs human review | Inline style injection; review for visual consistency |
-| `to` | no — needs human review | Affects global mount point and stacking context |
+| Field                                        | AI-safe to modify       | Notes                                                 |
+| -------------------------------------------- | ----------------------- | ----------------------------------------------------- |
+| When `start` / `finish` / `error` are called | yes                     | Pure trigger semantics, no parameters                 |
+| `loading-bar-style`                          | no — needs human review | Inline style injection; review for visual consistency |
+| `to`                                         | no — needs human review | Affects global mount point and stacking context       |
 
 ## Known trade-offs
 

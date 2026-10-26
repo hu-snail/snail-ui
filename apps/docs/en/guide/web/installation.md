@@ -30,14 +30,14 @@ pnpm add @snui/schema @snui/protocol
 
 ## What's included where?
 
-| Package | Size | Includes |
-| --- | --- | --- |
-| `@snui/protocol` | ~25 KB | All Zod schemas + types |
-| `@snui/schema` | ~10 KB | Validator + Normalizer + Version |
-| `@snui/tokens` | ~15 KB | Primitive / Semantic / Component + resolver |
-| `@snui/runtime` | ~80 KB | AUIRuntime + Reactive + Binding + Action + AppBridge |
-| `@snui/vue-web` | ~10 KB (+ Vue) | Renderer + Button |
-| `@snui/uni` | ~5 KB | Renderer (Phase 3, placeholder for now) |
+| Package          | Size           | Includes                                             |
+| ---------------- | -------------- | ---------------------------------------------------- |
+| `@snui/protocol` | ~25 KB         | All Zod schemas + types                              |
+| `@snui/schema`   | ~10 KB         | Validator + Normalizer + Version                     |
+| `@snui/tokens`   | ~15 KB         | Primitive / Semantic / Component + resolver          |
+| `@snui/runtime`  | ~80 KB         | AUIRuntime + Reactive + Binding + Action + AppBridge |
+| `@snui/vue-web`  | ~10 KB (+ Vue) | Renderer + Button                                    |
+| `@snui/uni`      | ~5 KB          | Renderer (Phase 3, placeholder for now)              |
 
 ## Bundle example (web)
 
@@ -50,7 +50,7 @@ const registry = createComponentRegistry();
 registry.register('button', Button);
 
 const runtime = createRuntime({
-  schema: { /* your UISchema */ },
+  schema: {/* your UISchema */},
   registry,
   actionRegistry: createActionRegistry(),
   tokens: { theme: LIGHT_THEME, style: MODERN_STYLE, density: COMFORTABLE_DENSITY },

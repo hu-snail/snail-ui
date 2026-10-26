@@ -49,13 +49,13 @@ AI-friendly        每个组件配 ai-description，CLI 自动生成 llms.txt
 
 ### 1.2 核心价值
 
-| 维度 | 价值 |
-|---|---|
-| 易用 | `<SnButton type="primary">点我</SnButton>`，一行 import |
-| 一致 | web / uni 双端同名组件，token 共享 |
-| 轻量 | 按需加载，无用组件不打包 |
-| 主题 | CSS 变量驱动，暗色模式 / 品牌定制 |
-| AI 友好 | 每个组件有人类 + AI 双视图文档 |
+| 维度    | 价值                                                    |
+| ------- | ------------------------------------------------------- |
+| 易用    | `<SnButton type="primary">点我</SnButton>`，一行 import |
+| 一致    | web / uni 双端同名组件，token 共享                      |
+| 轻量    | 按需加载，无用组件不打包                                |
+| 主题    | CSS 变量驱动，暗色模式 / 品牌定制                       |
+| AI 友好 | 每个组件有人类 + AI 双视图文档                          |
 
 ---
 
@@ -99,6 +99,7 @@ snail-aui/
 ### 2.3 包公共 API 规范
 
 每个包必须：
+
 - ESM 优先（`"type": "module"`）
 - 同时提供 `types` + `import` exports
 - 公共 API 命名遵循 §5 命名约定
@@ -112,75 +113,75 @@ snail-aui/
 
 按用户使用场景分 6 类，每类按优先级 P0/P1/P2 排序：
 
-| 分类 | 组件 | 优先级 | 说明 |
-|---|---|---|---|
-| 基础 | Button | P0 | 按钮（type / size / disabled / loading / block / round） |
-| 基础 | Icon | P0 | 图标（name / size / color / rotate） |
-| 基础 | Text | P1 | 文本（type / size / color / weight / ellipsis） |
-| 基础 | Layout | P1 | Flex 布局（direction / justify / align / wrap） |
-| 基础 | Cell | P1 | 单元格（title / value / label / arrow / border） |
-| 基础 | Transition | P1 | 过渡动画（fade / slide-up / slide-down / zoom） |
-| 基础 | ConfigProvider | P0 | 全局配置（theme / locale / component map） |
-| 导航 | Navbar | P0 | 导航栏（title / left / right / fixed） |
-| 导航 | Tabbar | P0 | 标签栏（modelValue / items / safe-area） |
-| 导航 | Tabs | P1 | 标签页（modelValue / items / sticky） |
-| 导航 | Segmented | P2 | 分段器 |
-| 导航 | Pagination | P1 | 分页 |
-| 导航 | Backtop | P2 | 回到顶部 |
-| 导航 | Tour | P3 | 漫游引导 |
-| 录入 | Form | P0 | 表单（model / rules / validate） |
-| 录入 | Input | P0 | 输入框（v-model / type / clearable） |
-| 录入 | Textarea | P1 | 文本域 |
-| 录入 | InputNumber | P1 | 计数器 |
-| 录入 | Switch | P1 | 开关 |
-| 录入 | Checkbox | P1 | 复选框 |
-| 录入 | Radio | P1 | 单选框 |
-| 录入 | Slider | P1 | 滑块 |
-| 录入 | Rate | P2 | 评分 |
-| 录入 | Search | P1 | 搜索框 |
-| 录入 | Picker | P1 | 选择器（uni 强需求） |
-| 录入 | Calendar | P2 | 日历选择器 |
-| 录入 | DatetimePicker | P2 | 时间选择器 |
-| 录入 | Upload | P2 | 上传 |
-| 反馈 | Popup | P0 | 弹出层（v-model / position / overlay） |
-| 反馈 | Dialog | P0 | 弹框（show / title / content） |
-| 反馈 | Toast | P0 | 轻提示（show / message / type） |
-| 反馈 | Notify | P1 | 消息通知 |
-| 反馈 | Loading | P0 | 加载 |
-| 反馈 | Overlay | P1 | 遮罩层 |
-| 反馈 | ActionSheet | P1 | 动作面板 |
-| 反馈 | DropMenu | P2 | 下拉菜单 |
-| 反馈 | Popover | P2 | 气泡 |
-| 反馈 | Tooltip | P1 | 文字提示 |
-| 反馈 | Progress | P1 | 进度条 |
-| 反馈 | Circle | P2 | 环形进度条 |
-| 反馈 | Empty | P1 | 缺省提示 |
-| 反馈 | Skeleton | P1 | 骨架屏 |
-| 反馈 | SwipeAction | P2 | 滑动操作 |
-| 反馈 | NoticeBar | P2 | 通知栏 |
-| 反馈 | CountDown | P2 | 倒计时 |
-| 反馈 | Loadmore | P2 | 加载更多 |
-| 展示 | Avatar | P0 | 头像 |
-| 展示 | Badge | P1 | 徽标 |
-| 展示 | Tag | P1 | 标签 |
-| 展示 | Card | P1 | 卡片 |
-| 展示 | Divider | P1 | 分割线 |
-| 展示 | Grid | P1 | 宫格 |
-| 展示 | Collapse | P1 | 折叠面板 |
-| 展示 | Steps | P2 | 步骤条 |
-| 展示 | Sticky | P1 | 粘性布局 |
-| 展示 | Img | P1 | 图片（懒加载 / 占位） |
-| 展示 | ImagePreview | P1 | 图片预览 |
-| 展示 | Swiper | P0 | 轮播图 |
-| 展示 | Table | P2 | 表格 |
-| 展示 | Watermark | P2 | 水印 |
-| 展示 | QRCode | P2 | 二维码 |
-| 组合式 | useToast | P0 | 命令式 Toast |
-| 组合式 | useDialog | P0 | 命令式 Dialog |
-| 组合式 | useNotify | P1 | 命令式 Notify |
-| 组合式 | useCountDown | P2 | 倒计时 hook |
-| 组合式 | useImagePreview | P1 | 命令式图片预览 |
-| 组合式 | useConfigProvider | P1 | 配置上下文 |
+| 分类   | 组件              | 优先级 | 说明                                                     |
+| ------ | ----------------- | ------ | -------------------------------------------------------- |
+| 基础   | Button            | P0     | 按钮（type / size / disabled / loading / block / round） |
+| 基础   | Icon              | P0     | 图标（name / size / color / rotate）                     |
+| 基础   | Text              | P1     | 文本（type / size / color / weight / ellipsis）          |
+| 基础   | Layout            | P1     | Flex 布局（direction / justify / align / wrap）          |
+| 基础   | Cell              | P1     | 单元格（title / value / label / arrow / border）         |
+| 基础   | Transition        | P1     | 过渡动画（fade / slide-up / slide-down / zoom）          |
+| 基础   | ConfigProvider    | P0     | 全局配置（theme / locale / component map）               |
+| 导航   | Navbar            | P0     | 导航栏（title / left / right / fixed）                   |
+| 导航   | Tabbar            | P0     | 标签栏（modelValue / items / safe-area）                 |
+| 导航   | Tabs              | P1     | 标签页（modelValue / items / sticky）                    |
+| 导航   | Segmented         | P2     | 分段器                                                   |
+| 导航   | Pagination        | P1     | 分页                                                     |
+| 导航   | Backtop           | P2     | 回到顶部                                                 |
+| 导航   | Tour              | P3     | 漫游引导                                                 |
+| 录入   | Form              | P0     | 表单（model / rules / validate）                         |
+| 录入   | Input             | P0     | 输入框（v-model / type / clearable）                     |
+| 录入   | Textarea          | P1     | 文本域                                                   |
+| 录入   | InputNumber       | P1     | 计数器                                                   |
+| 录入   | Switch            | P1     | 开关                                                     |
+| 录入   | Checkbox          | P1     | 复选框                                                   |
+| 录入   | Radio             | P1     | 单选框                                                   |
+| 录入   | Slider            | P1     | 滑块                                                     |
+| 录入   | Rate              | P2     | 评分                                                     |
+| 录入   | Search            | P1     | 搜索框                                                   |
+| 录入   | Picker            | P1     | 选择器（uni 强需求）                                     |
+| 录入   | Calendar          | P2     | 日历选择器                                               |
+| 录入   | DatetimePicker    | P2     | 时间选择器                                               |
+| 录入   | Upload            | P2     | 上传                                                     |
+| 反馈   | Popup             | P0     | 弹出层（v-model / position / overlay）                   |
+| 反馈   | Dialog            | P0     | 弹框（show / title / content）                           |
+| 反馈   | Toast             | P0     | 轻提示（show / message / type）                          |
+| 反馈   | Notify            | P1     | 消息通知                                                 |
+| 反馈   | Loading           | P0     | 加载                                                     |
+| 反馈   | Overlay           | P1     | 遮罩层                                                   |
+| 反馈   | ActionSheet       | P1     | 动作面板                                                 |
+| 反馈   | DropMenu          | P2     | 下拉菜单                                                 |
+| 反馈   | Popover           | P2     | 气泡                                                     |
+| 反馈   | Tooltip           | P1     | 文字提示                                                 |
+| 反馈   | Progress          | P1     | 进度条                                                   |
+| 反馈   | Circle            | P2     | 环形进度条                                               |
+| 反馈   | Empty             | P1     | 缺省提示                                                 |
+| 反馈   | Skeleton          | P1     | 骨架屏                                                   |
+| 反馈   | SwipeAction       | P2     | 滑动操作                                                 |
+| 反馈   | NoticeBar         | P2     | 通知栏                                                   |
+| 反馈   | CountDown         | P2     | 倒计时                                                   |
+| 反馈   | Loadmore          | P2     | 加载更多                                                 |
+| 展示   | Avatar            | P0     | 头像                                                     |
+| 展示   | Badge             | P1     | 徽标                                                     |
+| 展示   | Tag               | P1     | 标签                                                     |
+| 展示   | Card              | P1     | 卡片                                                     |
+| 展示   | Divider           | P1     | 分割线                                                   |
+| 展示   | Grid              | P1     | 宫格                                                     |
+| 展示   | Collapse          | P1     | 折叠面板                                                 |
+| 展示   | Steps             | P2     | 步骤条                                                   |
+| 展示   | Sticky            | P1     | 粘性布局                                                 |
+| 展示   | Img               | P1     | 图片（懒加载 / 占位）                                    |
+| 展示   | ImagePreview      | P1     | 图片预览                                                 |
+| 展示   | Swiper            | P0     | 轮播图                                                   |
+| 展示   | Table             | P2     | 表格                                                     |
+| 展示   | Watermark         | P2     | 水印                                                     |
+| 展示   | QRCode            | P2     | 二维码                                                   |
+| 组合式 | useToast          | P0     | 命令式 Toast                                             |
+| 组合式 | useDialog         | P0     | 命令式 Dialog                                            |
+| 组合式 | useNotify         | P1     | 命令式 Notify                                            |
+| 组合式 | useCountDown      | P2     | 倒计时 hook                                              |
+| 组合式 | useImagePreview   | P1     | 命令式图片预览                                           |
+| 组合式 | useConfigProvider | P1     | 配置上下文                                               |
 
 **第一阶段交付**：P0 全量 + P1 全量（预估 35~40 个组件）
 **第二阶段交付**：P2 + P3
@@ -189,27 +190,21 @@ snail-aui/
 
 ```vue
 <script setup lang="ts">
-import { SnButton, SnConfigProvider } from '@snui/vue-web'
-import { ref } from 'vue'
+import { SnButton, SnConfigProvider } from '@snui/vue-web';
+import { ref } from 'vue';
 
-const theme = ref(null)
+const theme = ref(null);
 </script>
 
 <template>
   <SnConfigProvider :theme-overrides="theme">
-    <SnButton
-      type="primary"
-      size="medium"
-      :loading="isLoading"
-      @click="handleSubmit"
-    >
-      提交
-    </SnButton>
+    <SnButton type="primary" size="medium" :loading="isLoading" @click="handleSubmit"> 提交 </SnButton>
   </SnConfigProvider>
 </template>
 ```
 
 特征：
+
 - Composition API + `<script setup>`
 - 驼峰命名 props / events
 - v-model 双向绑定
@@ -222,26 +217,22 @@ const theme = ref(null)
 <!-- pages/index/index.vue -->
 <template>
   <view class="container">
-    <sn-button
-      type="primary"
-      size="medium"
-      :loading="loading"
-      @click="onSubmit"
-    >
-      提交
-    </sn-button>
+    <sn-button type="primary" size="medium" :loading="loading" @click="onSubmit"> 提交 </sn-button>
   </view>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-const loading = ref(false)
-const onSubmit = () => { /* ... */ }
+const loading = ref(false);
+const onSubmit = () => {
+  /* ... */
+};
 </script>
 ```
 
 特征：
+
 - easycom 自动注册（`components/sn-button/sn-button.vue`）
 - 移动端场景优化（safe-area / touch 反馈）
 - 跨端 capability 兜底（小程序不支持的特性降级）
@@ -249,19 +240,19 @@ const onSubmit = () => { /* ... */ }
 
 ### 3.4 命名规范
 
-| 对象 | 命名 | 示例 |
-|---|---|---|
-| 组件 | PascalCase + `Sn` 前缀 | `SnButton` |
-| uni 组件目录 | kebab-case + `sn-` 前缀 | `sn-button/` |
-| uni 组件文件 | kebab-case + `sn-` 前缀 | `sn-button.vue` |
-| props | camelCase | `modelValue`, `loadingIcon` |
-| events | camelCase + `on` 前缀（TypeScript 中） | `onClick`, `onUpdate:value` |
-| 事件名（Vue 中） | kebab-case | `@click`, `@update:value` |
-| slots | camelCase | `default`, `icon`, `loading` |
-| 类型 | PascalCase | `ButtonType`, `ButtonSize` |
-| 变量 | camelCase | `buttonRef`, `isLoading` |
-| 常量 | UPPER_SNAKE_CASE | `DEFAULT_LOADING_ICON` |
-| 文件 | kebab-case | `sn-button.vue`, `use-button.ts` |
+| 对象             | 命名                                   | 示例                             |
+| ---------------- | -------------------------------------- | -------------------------------- |
+| 组件             | PascalCase + `Sn` 前缀                 | `SnButton`                       |
+| uni 组件目录     | kebab-case + `sn-` 前缀                | `sn-button/`                     |
+| uni 组件文件     | kebab-case + `sn-` 前缀                | `sn-button.vue`                  |
+| props            | camelCase                              | `modelValue`, `loadingIcon`      |
+| events           | camelCase + `on` 前缀（TypeScript 中） | `onClick`, `onUpdate:value`      |
+| 事件名（Vue 中） | kebab-case                             | `@click`, `@update:value`        |
+| slots            | camelCase                              | `default`, `icon`, `loading`     |
+| 类型             | PascalCase                             | `ButtonType`, `ButtonSize`       |
+| 变量             | camelCase                              | `buttonRef`, `isLoading`         |
+| 常量             | UPPER_SNAKE_CASE                       | `DEFAULT_LOADING_ICON`           |
+| 文件             | kebab-case                             | `sn-button.vue`, `use-button.ts` |
 
 ### 3.5 每个组件的强制文件结构
 
@@ -278,6 +269,7 @@ packages/uni/src/components/sn-button/
 ```
 
 每个组件必须含：
+
 - Props（TypeScript interface）
 - Events（TypeScript type）
 - Slots（TypeScript type）
@@ -327,7 +319,7 @@ web 与 uni **共用同一套 CSS 变量名**（`--sn-*` 前缀），保证换�
   --sn-color-action-primary: #1677ff;
 }
 
-html[data-theme="dark"] {
+html[data-theme='dark'] {
   --sn-color-action-primary: #1668dc;
 }
 ```
@@ -336,10 +328,10 @@ html[data-theme="dark"] {
 
 ```ts
 // @snui/tokens
-export const primitiveTokens: Record<string, string>
-export const semanticTokens: Record<string, string | { light: string; dark: string }>
-export const componentTokens: Record<string, string | { light: string; dark: string }>
-export const cssVarName: (path: string) => string  // 'button.primary.bg' → '--sn-button-primary-bg'
+export const primitiveTokens: Record<string, string>;
+export const semanticTokens: Record<string, string | { light: string; dark: string }>;
+export const componentTokens: Record<string, string | { light: string; dark: string }>;
+export const cssVarName: (path: string) => string; // 'button.primary.bg' → '--sn-button-primary-bg'
 ```
 
 ---
@@ -350,27 +342,25 @@ export const cssVarName: (path: string) => string  // 'button.primary.bg' → '-
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import Components from 'unplugin-vue-components/vite'
-import { SnUIResolver } from '@snui/cli/resolver'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import Components from 'unplugin-vue-components/vite';
+import { SnUIResolver } from '@snui/cli/resolver';
 
 export default defineConfig({
   plugins: [
     vue(),
     Components({
-      resolvers: [
-        SnUIResolver({ library: '@snui/vue-web' })
-      ]
-    })
-  ]
-})
+      resolvers: [SnUIResolver({ library: '@snui/vue-web' })],
+    }),
+  ],
+});
 ```
 
 ### 5.2 显式 import 也支持
 
 ```ts
-import { SnButton } from '@snui/vue-web'
+import { SnButton } from '@snui/vue-web';
 ```
 
 ESM tree-shake 保证：未使用的组件不会进 bundle。
@@ -430,24 +420,24 @@ import { SnButton } from '@snui/vue-web'
 
 ### Props
 
-| 名称 | 说明 | 类型 | 默认值 |
-|---|---|---|---|
+| 名称 | 说明     | 类型                                            | 默认值      |
+| ---- | -------- | ----------------------------------------------- | ----------- |
 | type | 按钮类型 | `'primary' \| 'default' \| 'danger' \| 'ghost'` | `'default'` |
-| size | 按钮尺寸 | `'small' \| 'medium' \| 'large'` | `'medium'` |
-| ... | ... | ... | ... |
+| size | 按钮尺寸 | `'small' \| 'medium' \| 'large'`                | `'medium'`  |
+| ...  | ...      | ...                                             | ...         |
 
 ### Events
 
-| 名称 | 说明 | 回调参数 |
-|---|---|---|
+| 名称  | 说明           | 回调参数                      |
+| ----- | -------------- | ----------------------------- |
 | click | 点击按钮时触发 | `(event: MouseEvent) => void` |
 
 ### Slots
 
-| 名称 | 说明 |
-|---|---|
-| default | 按钮内容 |
-| icon | 自定义图标 |
+| 名称    | 说明       |
+| ------- | ---------- |
+| default | 按钮内容   |
+| icon    | 自定义图标 |
 ```
 
 ### 6.3 AI-friendly：llms.txt
@@ -474,13 +464,13 @@ AI 可直接读这个文件理解组件 API。
 
 ### 7.1 跨端支持
 
-| 平台 | 支持 |
-|---|---|
-| H5 | ✅ |
-| 微信小程序 | ✅ |
-| 支付宝小程序 | ✅ |
-| 抖音小程序 | ✅ |
-| App (Vue + uni-app x) | ✅ |
+| 平台                  | 支持 |
+| --------------------- | ---- |
+| H5                    | ✅   |
+| 微信小程序            | ✅   |
+| 支付宝小程序          | ✅   |
+| 抖音小程序            | ✅   |
+| App (Vue + uni-app x) | ✅   |
 
 ### 7.2 capability / fallback
 
@@ -488,10 +478,7 @@ web 端有的能力（如 `position: sticky`、`backdrop-filter`），小程序�
 
 ```vue
 <!-- SnPopup.vue -->
-<view
-  :class="['sn-popup', position]"
-  :style="popupStyle"
->
+<view :class="['sn-popup', position]" :style="popupStyle">
   <!-- 平台不支持 backdrop-filter 时降级为半透明黑色遮罩 -->
   <view v-if="hasBackdrop" class="sn-popup__overlay" :class="{ 'sn-popup__overlay--blur': supportsBackdropFilter }" />
   ...
@@ -541,36 +528,36 @@ pnpm snui new SnCard
 `vitest` + `@vue/test-utils`：
 
 ```ts
-import { mount } from '@vue/test-utils'
-import { SnButton } from '@snui/vue-web'
+import { mount } from '@vue/test-utils';
+import { SnButton } from '@snui/vue-web';
 
 describe('SnButton', () => {
   it('renders default slot', () => {
-    const wrapper = mount(SnButton, { slots: { default: 'Click me' } })
-    expect(wrapper.text()).toBe('Click me')
-  })
+    const wrapper = mount(SnButton, { slots: { default: 'Click me' } });
+    expect(wrapper.text()).toBe('Click me');
+  });
 
   it('emits click event', async () => {
-    const wrapper = mount(SnButton)
-    await wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toHaveLength(1)
-  })
+    const wrapper = mount(SnButton);
+    await wrapper.trigger('click');
+    expect(wrapper.emitted('click')).toHaveLength(1);
+  });
 
   it('disables click when loading', async () => {
-    const wrapper = mount(SnButton, { props: { loading: true } })
-    await wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toBeUndefined()
-  })
-})
+    const wrapper = mount(SnButton, { props: { loading: true } });
+    await wrapper.trigger('click');
+    expect(wrapper.emitted('click')).toBeUndefined();
+  });
+});
 ```
 
 ### 9.2 A11y 测试
 
 ```ts
 it('has accessible role', () => {
-  const wrapper = mount(SnButton, { props: { type: 'primary' } })
-  expect(wrapper.attributes('role')).toBe('button')
-})
+  const wrapper = mount(SnButton, { props: { type: 'primary' } });
+  expect(wrapper.attributes('role')).toBe('button');
+});
 ```
 
 ### 9.3 视觉回归（可选，Phase 2）
@@ -621,11 +608,11 @@ pnpm release             # 构建并发布
 
 v1.x schema-driven 用户（理论上存在）迁移路径：
 
-| v1 用法 | v2 等价物 |
-|---|---|
-| `<AUI :schema="..." />` | `<SnContainer>...children</SnContainer>` |
-| `createAuiRuntime(schema)` | Vue 组件树直接写 |
-| `ComponentContract` | 组件的 `ai-description.md`（自动生成） |
+| v1 用法                    | v2 等价物                                |
+| -------------------------- | ---------------------------------------- |
+| `<AUI :schema="..." />`    | `<SnContainer>...children</SnContainer>` |
+| `createAuiRuntime(schema)` | Vue 组件树直接写                         |
+| `ComponentContract`        | 组件的 `ai-description.md`（自动生成）   |
 
 不再提供 schema 解释器，强制迁移到 Vue SFC 写法。
 
@@ -645,12 +632,12 @@ v1.x schema-driven 用户（理论上存在）迁移路径：
 
 ## 13. 里程碑
 
-| 里程碑 | 时间 | 交付 |
-|---|---|---|
-| **M0** 架构反转 | 2026-10 | ADR-0001 + PRD v2.0 + 归档旧包 + Button demo |
-| **M1** 核心组件 | 2026-11 | P0 + P1 组件全量（35~40 个）+ docs 站 + cli |
+| 里程碑            | 时间    | 交付                                            |
+| ----------------- | ------- | ----------------------------------------------- |
+| **M0** 架构反转   | 2026-10 | ADR-0001 + PRD v2.0 + 归档旧包 + Button demo    |
+| **M1** 核心组件   | 2026-11 | P0 + P1 组件全量（35~40 个）+ docs 站 + cli     |
 | **M2** 主题与生态 | 2026-12 | 暗色模式 / 国际化 / VS Code 插件 / 模板 starter |
-| **M3** 长期 | 2027 | 剩余 P2 组件 / 视觉回归 / 性能优化 |
+| **M3** 长期       | 2027    | 剩余 P2 组件 / 视觉回归 / 性能优化              |
 
 ---
 
@@ -663,7 +650,7 @@ v1.x schema-driven 用户（理论上存在）迁移路径：
 
 ## 附录 B. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.2 | 2026-09 | 初始 PRD，schema-driven 架构 |
+| 版本 | 日期       | 变更                                              |
+| ---- | ---------- | ------------------------------------------------- |
+| v1.2 | 2026-09    | 初始 PRD，schema-driven 架构                      |
 | v2.0 | 2026-10-03 | 整体推翻，定位改为 AI-friendly 组件库（ADR-0001） |

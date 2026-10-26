@@ -18,33 +18,33 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnWatermark from '@snui/vue-web/src/watermark/SnWatermark.vue'
+import SnWatermark from '@snui/vue-web/src/watermark/SnWatermark.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `content` | `string \| string[]` | `undefined` | no | Watermark text; array items render as separate lines. |
-| `image` | `string` | `undefined` | no | Watermark image URL (drawn instead of text). |
-| `cross` | `boolean` | `false` | no | Stagger alternate tiles. |
-| `fullscreen` | `boolean` | `false` | no | Cover the viewport instead of the wrapper. |
-| `fontSize` | `number` | `16` | no | Text size (px). |
-| `lineHeight` | `number` | `16` | no | Text line height (px). |
-| `width` | `number` | `128` | no | Tile width (px). |
-| `height` | `number` | `64` | no | Tile height (px). |
-| `rotate` | `number` | `0` | no | Tile rotation (degrees). |
-| `x` | `number` | `0` | no | Tile x offset (px). |
-| `y` | `number` | `0` | no | Tile y offset (px). |
-| `zIndex` | `number` | `10` | no | Overlay stacking order. |
-| `opacity` | `number` | `0.5` | no | Overlay opacity (0–1). |
-| `fontFamily` | `string` | `undefined` | no | Text font family. |
-| `fontWeight` | `number \| string` | `undefined` | no | Text font weight. |
-| `fontStyle` | `'normal' \| 'italic' \| 'oblique'` | `undefined` | no | Text font style. |
-| `fontColor` | `string` | `undefined` | no | Text color. |
-| `background` | `string` | `undefined` | no | Tile background color. |
-| `grayscale` | `number` | `0` | no | CSS filter grayscale amount (0–1). |
-| `blend` | `CSSProperties['mixBlendMode']` | `undefined` | no | CSS mix-blend-mode on the overlay. |
+| Name         | Type                                | Default     | Required | Description                                           |
+| ------------ | ----------------------------------- | ----------- | -------- | ----------------------------------------------------- |
+| `content`    | `string \| string[]`                | `undefined` | no       | Watermark text; array items render as separate lines. |
+| `image`      | `string`                            | `undefined` | no       | Watermark image URL (drawn instead of text).          |
+| `cross`      | `boolean`                           | `false`     | no       | Stagger alternate tiles.                              |
+| `fullscreen` | `boolean`                           | `false`     | no       | Cover the viewport instead of the wrapper.            |
+| `fontSize`   | `number`                            | `16`        | no       | Text size (px).                                       |
+| `lineHeight` | `number`                            | `16`        | no       | Text line height (px).                                |
+| `width`      | `number`                            | `128`       | no       | Tile width (px).                                      |
+| `height`     | `number`                            | `64`        | no       | Tile height (px).                                     |
+| `rotate`     | `number`                            | `0`         | no       | Tile rotation (degrees).                              |
+| `x`          | `number`                            | `0`         | no       | Tile x offset (px).                                   |
+| `y`          | `number`                            | `0`         | no       | Tile y offset (px).                                   |
+| `zIndex`     | `number`                            | `10`        | no       | Overlay stacking order.                               |
+| `opacity`    | `number`                            | `0.5`       | no       | Overlay opacity (0–1).                                |
+| `fontFamily` | `string`                            | `undefined` | no       | Text font family.                                     |
+| `fontWeight` | `number \| string`                  | `undefined` | no       | Text font weight.                                     |
+| `fontStyle`  | `'normal' \| 'italic' \| 'oblique'` | `undefined` | no       | Text font style.                                      |
+| `fontColor`  | `string`                            | `undefined` | no       | Text color.                                           |
+| `background` | `string`                            | `undefined` | no       | Tile background color.                                |
+| `grayscale`  | `number`                            | `0`         | no       | CSS filter grayscale amount (0–1).                    |
+| `blend`      | `CSSProperties['mixBlendMode']`     | `undefined` | no       | CSS mix-blend-mode on the overlay.                    |
 
 ## Events
 
@@ -52,8 +52,8 @@ None.
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                                      |
+| --------- | ---------------------------------------------------------------- |
 | `default` | Content the watermark covers (ignored when `fullscreen` is set). |
 
 ## Implementation Notes

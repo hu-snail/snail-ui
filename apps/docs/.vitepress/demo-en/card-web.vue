@@ -11,16 +11,18 @@
  * an emoji glyph.
  */
 
-import { ref } from 'vue'
-import { SnButton, SnCard, SnIcon } from '@snui/vue-web'
-import { Check } from 'lucide-vue-next'
-import { markRaw } from 'vue'
+import { ref } from 'vue';
+import { SnButton, SnCard, SnIcon } from '@snui/vue-web';
+import { Check } from 'lucide-vue-next';
+import { markRaw } from 'vue';
 
-const ok = ref(false)
-const CheckIcon = markRaw(Check)
+const ok = ref(false);
+const CheckIcon = markRaw(Check);
 function handleOk(): void {
-  ok.value = true
-  setTimeout(() => { ok.value = false }, 1200)
+  ok.value = true;
+  setTimeout(() => {
+    ok.value = false;
+  }, 1200);
 }
 </script>
 
@@ -35,7 +37,12 @@ function handleOk(): void {
       <input class="sn-card__input" placeholder="V-AUI-1024" />
       <template #footer>
         <SnButton @click="handleOk">
-          <SnIcon v-if="ok" :icon="CheckIcon" :size="14" style="margin-right: 6px; vertical-align: -2px" />
+          <SnIcon
+            v-if="ok"
+            :icon="CheckIcon"
+            :size="14"
+            style="margin-right: 6px; vertical-align: -2px"
+          />
           {{ ok ? 'Applied' : 'Apply' }}
         </SnButton>
       </template>

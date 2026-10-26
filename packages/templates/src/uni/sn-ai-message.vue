@@ -19,9 +19,9 @@
  * Usage:
  *   <sn-ai-message :message="message" @retry="onRetry" />
  */
-import { computed, ref } from 'vue'
-import SnIcon from '@snui/uni/components/sn-icon/sn-icon.vue'
-import type { IconData } from '@snui/uni/components/sn-icon/sn-icon.vue'
+import { computed, ref } from 'vue';
+import SnIcon from '@snui/uni/components/sn-icon/sn-icon.vue';
+import type { IconData } from '@snui/uni/components/sn-icon/sn-icon.vue';
 import {
   CheckIcon,
   ChevronDownIcon,
@@ -32,96 +32,96 @@ import {
   RetryIcon,
   ToolIcon,
   WarningIcon,
-} from '../shared/icons'
-import { formatBytes, formatThinkingDuration } from '../shared/stream'
-import type { SnAiAttachment, SnAiMessage, SnAiThinkingPart, SnAiToolPart } from '../shared/types'
+} from '../shared/icons';
+import { formatBytes, formatThinkingDuration } from '../shared/stream';
+import type { SnAiAttachment, SnAiMessage, SnAiThinkingPart, SnAiToolPart } from '../shared/types';
 
-defineOptions({ name: 'SnAiMessage' })
+defineOptions({ name: 'SnAiMessage' });
 
 const props = withDefaults(
   defineProps<{
     /** The turn to render. */
-    message: SnAiMessage
+    message: SnAiMessage;
     /** Show reasoning blocks after the turn finishes. */
-    showThinking?: boolean | undefined
+    showThinking?: boolean | undefined;
   }>(),
   {
     showThinking: true,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'retry', message: SnAiMessage): void
-}>()
+  (e: 'retry', message: SnAiMessage): void;
+}>();
 
 /** Whether the reasoning body is expanded. */
-const thinkingOpen = ref(true)
+const thinkingOpen = ref(true);
 
-const isUser = computed(() => props.message.role === 'user')
-const isAssistant = computed(() => props.message.role === 'assistant')
-const isStreaming = computed(() => props.message.status === 'streaming')
-const isQueued = computed(() => props.message.status === 'queued')
-const isThinkingOnly = computed(() => props.message.status === 'thinking')
-const isAborted = computed(() => props.message.status === 'aborted')
-const isDone = computed(() => props.message.status === 'done')
+const isUser = computed(() => props.message.role === 'user');
+const isAssistant = computed(() => props.message.role === 'assistant');
+const isStreaming = computed(() => props.message.status === 'streaming');
+const isQueued = computed(() => props.message.status === 'queued');
+const isThinkingOnly = computed(() => props.message.status === 'thinking');
+const isAborted = computed(() => props.message.status === 'aborted');
+const isDone = computed(() => props.message.status === 'done');
 
 /** Body parts excluding the inline error, which renders separately. */
-const bodyParts = computed(() => props.message.parts.filter((part) => part.type !== 'error'))
-const errorParts = computed(() => props.message.parts.filter((part) => part.type === 'error'))
-const hasBody = computed(() => bodyParts.value.length > 0)
+const bodyParts = computed(() => props.message.parts.filter((part) => part.type !== 'error'));
+const errorParts = computed(() => props.message.parts.filter((part) => part.type === 'error'));
+const hasBody = computed(() => bodyParts.value.length > 0);
 
 /** The reasoning block, if any. */
 const thinking = computed<SnAiThinkingPart | undefined>(() => {
-  const part = bodyParts.value.find((candidate) => candidate.type === 'thinking')
-  return part?.type === 'thinking' ? part : undefined
-})
+  const part = bodyParts.value.find((candidate) => candidate.type === 'thinking');
+  return part?.type === 'thinking' ? part : undefined;
+});
 
 /** The answer text, if any. */
 const answer = computed<string>(() => {
-  const part = bodyParts.value.find((candidate) => candidate.type === 'text')
-  return part?.type === 'text' ? part.text : ''
-})
+  const part = bodyParts.value.find((candidate) => candidate.type === 'text');
+  return part?.type === 'text' ? part.text : '';
+});
 
 /** Tool rows. */
 const tools = computed<SnAiToolPart[]>(() =>
   bodyParts.value.filter((part): part is SnAiToolPart => part.type === 'tool'),
-)
+);
 
 /** Attachment chips echoed from a user turn. */
 const attachments = computed<SnAiAttachment[]>(() =>
   bodyParts.value.flatMap((part) => (part.type === 'attachment' ? [part.attachment] : [])),
-)
+);
 
 const thinkingLabel = computed(() => {
-  const part = thinking.value
-  if (!part) return ''
-  if (!part.done) return '思考中'
-  const duration = formatThinkingDuration(part.durationMs)
-  return duration ? `已思考 ${duration}` : '思考过程'
-})
+  const part = thinking.value;
+  if (!part) return '';
+  if (!part.done) return '思考中';
+  const duration = formatThinkingDuration(part.durationMs);
+  return duration ? `已思考 ${duration}` : '思考过程';
+});
 
 /** Whether a reasoning block should be visible at all. */
 const showThinkingBlock = computed(
   () => thinking.value !== undefined && (props.showThinking || isThinkingOnly.value),
-)
+);
 
 function attachmentIcon(attachment: SnAiAttachment): IconData {
-  return attachment.mime?.startsWith('image/') ? ImageIcon : FileIcon
+  return attachment.mime?.startsWith('image/') ? ImageIcon : FileIcon;
 }
 
 function attachmentMeta(attachment: SnAiAttachment): string {
-  const size = formatBytes(attachment.size)
-  return [attachment.mime ?? '', size].filter(Boolean).join(' · ')
+  const size = formatBytes(attachment.size);
+  return [attachment.mime ?? '', size].filter(Boolean).join(' · ');
 }
 
 function toolStatusLabel(status: SnAiToolPart['status']): string {
-  if (status === 'running') return '执行中'
-  if (status === 'error') return '执行失败'
-  return '已完成'
+  if (status === 'running') return '执行中';
+  if (status === 'error') return '执行失败';
+  return '已完成';
 }
 
 function onRetry(): void {
-  emit('retry', props.message)
+  emit('retry', props.message);
 }
 </script>
 
@@ -180,7 +180,11 @@ function onRetry(): void {
       </view>
 
       <!-- Answer text -->
-      <view v-if="answer" class="sn-ai-message__text-wrap" :class="{ 'sn-ai-message__text-wrap--user': isUser }">
+      <view
+        v-if="answer"
+        class="sn-ai-message__text-wrap"
+        :class="{ 'sn-ai-message__text-wrap--user': isUser }"
+      >
         <text class="sn-ai-message__text">{{ answer }}</text>
         <text v-if="isStreaming" class="sn-ai-message__caret">|</text>
       </view>
@@ -188,7 +192,9 @@ function onRetry(): void {
       <!-- Waiting lines -->
       <text v-if="isQueued" class="sn-ai-message__pending">排队中，等待上一条回复完成</text>
       <text v-else-if="isThinkingOnly && !hasBody" class="sn-ai-message__pending">正在思考…</text>
-      <text v-else-if="!hasBody && !errorParts.length" class="sn-ai-message__pending">等待输出…</text>
+      <text v-else-if="!hasBody && !errorParts.length" class="sn-ai-message__pending"
+        >等待输出…</text
+      >
 
       <!-- Aborted notice -->
       <text v-if="isAborted" class="sn-ai-message__notice">
@@ -203,7 +209,9 @@ function onRetry(): void {
       >
         <view class="sn-ai-message__error-head">
           <SnIcon :icon="WarningIcon" :size="14" />
-          <text class="sn-ai-message__error-title">{{ part.type === 'error' ? part.error.message : '' }}</text>
+          <text class="sn-ai-message__error-title">{{
+            part.type === 'error' ? part.error.message : ''
+          }}</text>
         </view>
         <text v-if="part.type === 'error' && part.error.code" class="sn-ai-message__error-code">
           {{ part.type === 'error' ? part.error.code : '' }}

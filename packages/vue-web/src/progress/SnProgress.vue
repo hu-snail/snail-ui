@@ -38,59 +38,59 @@
  *   <SnProgress :percentage="60" />
  *   <SnProgress type="circle" :percentage="75" status="success" />
  *   <SnProgress type="multiple-circle" :percentage="[20, 50, 86]" :color="['#0e80eb', '#85aa39', '#8f3c3c']" />
-*/
+ */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnProgress' })
+defineOptions({ name: 'SnProgress' });
 
-export type SnProgressType = 'line' | 'circle' | 'multiple-circle'
-export type SnProgressStatus = 'default' | 'success' | 'error' | 'info' | 'warning'
-export type SnProgressIndicatorPlacement = 'inside' | 'outside' | 'top'
+export type SnProgressType = 'line' | 'circle' | 'multiple-circle';
+export type SnProgressStatus = 'default' | 'success' | 'error' | 'info' | 'warning';
+export type SnProgressIndicatorPlacement = 'inside' | 'outside' | 'top';
 
 /** Gradient stop — mirrors the reference `{ color, stop }` shape. */
 export interface SnProgressGradientStop {
-  color: string
-  stop?: number
+  color: string;
+  stop?: number;
 }
 
-type ProgressColor = string | SnProgressGradientStop[] | ((percentage: number) => string)
+type ProgressColor = string | SnProgressGradientStop[] | ((percentage: number) => string);
 
 const props = withDefaults(
   defineProps<{
     /** Progress bar type. Mirrors n-progress `type`. Default 'line'. */
-    type?: SnProgressType
+    type?: SnProgressType;
     /**
      * Progress value(s) in percent, clamped to 0–100. Pass an array for
      * type='multiple-circle'. Mirrors n-progress `percentage`. Default 0.
      */
-    percentage?: number | number[]
+    percentage?: number | number[];
     /** Line rail height (px number or CSS length). Mirrors n-progress `height`. */
-    height?: number | string | undefined
+    height?: number | string | undefined;
     /** Line rail corner radius. Mirrors n-progress `borderRadius`. */
-    borderRadius?: number | string | undefined
+    borderRadius?: number | string | undefined;
     /** Line fill corner radius; falls back to `borderRadius`. Mirrors n-progress `fillBorderRadius`. */
-    fillBorderRadius?: number | string | undefined
+    fillBorderRadius?: number | string | undefined;
     /** Circle ring stroke width in px. Mirrors n-progress `strokeWidth`. Default 6. */
-    strokeWidth?: number
+    strokeWidth?: number;
     /**
      * Indicator placement for type='line': 'outside' (right of the rail,
      * default), 'inside' (inside the fill), 'top' (above the rail).
      * Mirrors n-progress `indicatorPlacement`.
      */
-    indicatorPlacement?: SnProgressIndicatorPlacement
+    indicatorPlacement?: SnProgressIndicatorPlacement;
     /** Fill color: solid, gradient stops, or `(percentage) => string`. Mirrors n-progress `color`. */
-    color?: ProgressColor | undefined
+    color?: ProgressColor | undefined;
     /** Rail color: solid or gradient stops. Mirrors n-progress `railColor`. */
-    railColor?: string | SnProgressGradientStop[] | undefined
+    railColor?: string | SnProgressGradientStop[] | undefined;
     /** Whether to render the indicator text. Mirrors n-progress `showIndicator`. Default true. */
-    showIndicator?: boolean
+    showIndicator?: boolean;
     /** Status — drives the default fill color. Mirrors n-progress `status`. Default 'default'. */
-    status?: SnProgressStatus
+    status?: SnProgressStatus;
     /** Animated striped fill (line) / pulsing arc (circle). Mirrors n-progress `processing`. Default false. */
-    processing?: boolean
+    processing?: boolean;
     /** Circle start-angle offset in degrees (0 = 12 o'clock). Mirrors n-progress `offsetDegree`. Default 0. */
-    offsetDegree?: number
+    offsetDegree?: number;
   }>(),
   {
     type: 'line',
@@ -107,15 +107,14 @@ const props = withDefaults(
     processing: false,
     offsetDegree: 0,
   },
-)
+);
 
 defineSlots<{
   /** Custom indicator content. Receives `{ percentage }`. Mirrors n-progress `default`. */
-  default?(scope: { percentage: number }): unknown
+  default?(scope: { percentage: number }): unknown;
   /** Custom glyph for the circle success / error state. Mirrors n-progress `icon`. */
-  icon?(): unknown
-}>()
-
+  icon?(): unknown;
+}>();
 
 /* ─────────── Status color mapping ─────────── */
 
@@ -125,41 +124,41 @@ const STATUS_TOKENS: Record<SnProgressStatus, string> = {
   error: 'var(--sn-web-color-feedback-danger)',
   info: 'var(--sn-web-color-feedback-info)',
   warning: 'var(--sn-web-color-feedback-warning)',
-}
+};
 
 /* ─────────── Value normalization ─────────── */
 
 function clamp(value: number): number {
-  if (Number.isNaN(value)) return 0
-  return Math.min(100, Math.max(0, value))
+  if (Number.isNaN(value)) return 0;
+  return Math.min(100, Math.max(0, value));
 }
 
 /** Values for the current type; a scalar percentage is a one-element list. */
 const percentageList = computed<number[]>(() => {
-  const raw = Array.isArray(props.percentage) ? props.percentage : [props.percentage]
-  return raw.map((value) => clamp(value))
-})
+  const raw = Array.isArray(props.percentage) ? props.percentage : [props.percentage];
+  return raw.map((value) => clamp(value));
+});
 
 /** First value — drives role="progressbar" ARIA attributes. */
-const primaryPercentage = computed(() => percentageList.value[0] ?? 0)
+const primaryPercentage = computed(() => percentageList.value[0] ?? 0);
 
 /* ─────────── Color resolution ─────────── */
 
 function stopsToGradient(stops: SnProgressGradientStop[]): string {
-  const sorted = [...stops].sort((a, b) => (a.stop ?? 0) - (b.stop ?? 0))
+  const sorted = [...stops].sort((a, b) => (a.stop ?? 0) - (b.stop ?? 0));
   const parts = sorted.map((stop, index) => {
-    const at = stop.stop ?? Math.round((index / Math.max(sorted.length - 1, 1)) * 100)
-    return `${stop.color} ${at}%`
-  })
-  return `linear-gradient(to right, ${parts.join(', ')})`
+    const at = stop.stop ?? Math.round((index / Math.max(sorted.length - 1, 1)) * 100);
+    return `${stop.color} ${at}%`;
+  });
+  return `linear-gradient(to right, ${parts.join(', ')})`;
 }
 
 /** Resolve a color-ish prop into a concrete CSS background value. */
 function resolveColor(color: ProgressColor | undefined, percentage: number): string | undefined {
-  if (color === undefined) return undefined
-  if (typeof color === 'function') return color(percentage)
-  if (Array.isArray(color)) return stopsToGradient(color)
-  return color
+  if (color === undefined) return undefined;
+  if (typeof color === 'function') return color(percentage);
+  if (Array.isArray(color)) return stopsToGradient(color);
+  return color;
 }
 
 /**
@@ -167,85 +166,87 @@ function resolveColor(color: ProgressColor | undefined, percentage: number): str
  * stops / functions resolve once and apply to every ring.
  */
 function resolveRingColor(index: number, percentage: number): string {
-  const color = props.color
-  if (color === undefined) return STATUS_TOKENS[props.status]
-  if (typeof color === 'string') return color
+  const color = props.color;
+  if (color === undefined) return STATUS_TOKENS[props.status];
+  if (typeof color === 'string') return color;
   if (Array.isArray(color)) {
     // Array of solid colors maps ring index → color; gradient stops and
     // functions resolve once and apply to every ring.
-    const first = color[0]
+    const first = color[0];
     if (typeof first === 'string') {
-      const ring = color as unknown as string[]
-      return ring[Math.min(index, ring.length - 1)] ?? STATUS_TOKENS[props.status]
+      const ring = color as unknown as string[];
+      return ring[Math.min(index, ring.length - 1)] ?? STATUS_TOKENS[props.status];
     }
-    return resolveColor(color, percentage) ?? STATUS_TOKENS[props.status]
+    return resolveColor(color, percentage) ?? STATUS_TOKENS[props.status];
   }
-  return resolveColor(color, percentage) ?? STATUS_TOKENS[props.status]
+  return resolveColor(color, percentage) ?? STATUS_TOKENS[props.status];
 }
 
-const lineFillColor = computed(() =>
-  resolveColor(props.color, primaryPercentage.value) ?? STATUS_TOKENS[props.status],
-)
+const lineFillColor = computed(
+  () => resolveColor(props.color, primaryPercentage.value) ?? STATUS_TOKENS[props.status],
+);
 
-const RAIL_FALLBACK = 'var(--sn-web-color-background-subtle)'
+const RAIL_FALLBACK = 'var(--sn-web-color-background-subtle)';
 
 const lineRailColor = computed<string>(() =>
   props.railColor === undefined
     ? RAIL_FALLBACK
     : (resolveColor(props.railColor, primaryPercentage.value) ?? RAIL_FALLBACK),
-)
+);
 
 const circleRailColor = computed<string>(() =>
   props.railColor === undefined
     ? RAIL_FALLBACK
     : (resolveColor(props.railColor, primaryPercentage.value) ?? RAIL_FALLBACK),
-)
+);
 
 /* ─────────── Geometry ─────────── */
 
-const CIRCLE_SIZE = 120
+const CIRCLE_SIZE = 120;
 /** Fixed gap between adjacent multiple-circle rings (px, viewBox units). */
-const RING_GAP = 2
+const RING_GAP = 2;
 
 const lineStyle = computed(() => {
-  const style: Record<string, string> = {}
-  style.height = typeof props.height === 'number' ? `${props.height}px` : (props.height ?? '8px')
-  const radius = typeof props.borderRadius === 'number' ? `${props.borderRadius}px` : props.borderRadius
-  if (radius !== undefined) style.borderRadius = radius
-  style.background = lineRailColor.value
-  return style
-})
+  const style: Record<string, string> = {};
+  style.height = typeof props.height === 'number' ? `${props.height}px` : (props.height ?? '8px');
+  const radius =
+    typeof props.borderRadius === 'number' ? `${props.borderRadius}px` : props.borderRadius;
+  if (radius !== undefined) style.borderRadius = radius;
+  style.background = lineRailColor.value;
+  return style;
+});
 
 const fillStyle = computed(() => {
   const style: Record<string, string> = {
     width: `${primaryPercentage.value}%`,
     background: lineFillColor.value,
-  }
-  const radius =
-    props.fillBorderRadius !== undefined ? props.fillBorderRadius : props.borderRadius
-  const radiusPx = typeof radius === 'number' ? `${radius}px` : radius
-  if (radiusPx !== undefined) style.borderRadius = radiusPx
-  return style
-})
+  };
+  const radius = props.fillBorderRadius !== undefined ? props.fillBorderRadius : props.borderRadius;
+  const radiusPx = typeof radius === 'number' ? `${radius}px` : radius;
+  if (radiusPx !== undefined) style.borderRadius = radiusPx;
+  return style;
+});
 
 /* Circle ring: circumference of the standard 120px ring. */
-const circleRadius = computed(() => CIRCLE_SIZE / 2 - props.strokeWidth / 2)
-const circleCircumference = computed(() => 2 * Math.PI * circleRadius.value)
+const circleRadius = computed(() => CIRCLE_SIZE / 2 - props.strokeWidth / 2);
+const circleCircumference = computed(() => 2 * Math.PI * circleRadius.value);
 
 function circleDashArray(percentage: number): string {
-  const filled = (circleCircumference.value * percentage) / 100
-  return `${filled.toFixed(2)} ${circleCircumference.value.toFixed(2)}`
+  const filled = (circleCircumference.value * percentage) / 100;
+  return `${filled.toFixed(2)} ${circleCircumference.value.toFixed(2)}`;
 }
 
 /* 0deg offset starts at 12 o'clock: the SVG dash origin sits at 3 o'clock,
  * so the base rotation is -90deg plus the user offset. */
-const circleRotation = computed(() => `rotate(${props.offsetDegree - 90} ${CIRCLE_SIZE / 2} ${CIRCLE_SIZE / 2})`)
+const circleRotation = computed(
+  () => `rotate(${props.offsetDegree - 90} ${CIRCLE_SIZE / 2} ${CIRCLE_SIZE / 2})`,
+);
 
 interface Ring {
-  percentage: number
-  radius: number
-  color: string
-  dashArray: string
+  percentage: number;
+  radius: number;
+  color: string;
+  dashArray: string;
 }
 
 const rings = computed<Ring[]>(() =>
@@ -255,14 +256,14 @@ const rings = computed<Ring[]>(() =>
     color: resolveRingColor(index, percentage),
     dashArray: circleDashArray(percentage),
   })),
-)
+);
 
 /* ─────────── Indicator helpers ─────────── */
 
-const hasIconState = computed(() => props.status === 'success' || props.status === 'error')
+const hasIconState = computed(() => props.status === 'success' || props.status === 'error');
 
 /** type='line' hides the indicator in favour of the status icon only on circle. */
-const lineIndicatorVisible = computed(() => props.showIndicator)
+const lineIndicatorVisible = computed(() => props.showIndicator);
 
 const rootClass = computed(() => [
   `sn-progress--${props.type}`,
@@ -270,26 +271,31 @@ const rootClass = computed(() => [
   {
     'sn-progress--processing': props.processing,
   },
-])
+]);
 
 const ariaAttributes = computed(() => {
   if (props.type === 'multiple-circle') {
     return {
       role: 'img',
       'aria-label': `Progress ${percentageList.value.map((p) => `${p}%`).join(', ')}`,
-    }
+    };
   }
   return {
     role: 'progressbar',
     'aria-valuemin': 0,
     'aria-valuemax': 100,
     'aria-valuenow': primaryPercentage.value,
-  }
-})
+  };
+});
 </script>
 
 <template>
-  <div data-snui-component="progress" class="sn-progress" :class="rootClass" v-bind="ariaAttributes">
+  <div
+    data-snui-component="progress"
+    class="sn-progress"
+    :class="rootClass"
+    v-bind="ariaAttributes"
+  >
     <!-- ── line ─────────────────────────────────────────────────────────── -->
     <template v-if="type === 'line'">
       <div
@@ -299,7 +305,11 @@ const ariaAttributes = computed(() => {
         <slot :percentage="primaryPercentage">{{ primaryPercentage }}%</slot>
       </div>
       <div class="sn-progress__line" :style="lineStyle">
-        <div class="sn-progress__line-fill" :class="{ 'sn-progress__line-fill--processing': processing }" :style="fillStyle">
+        <div
+          class="sn-progress__line-fill"
+          :class="{ 'sn-progress__line-fill--processing': processing }"
+          :style="fillStyle"
+        >
           <span
             v-if="indicatorPlacement === 'inside' && lineIndicatorVisible"
             class="sn-progress__line-indicator sn-progress__line-indicator--inside"
@@ -351,7 +361,11 @@ const ariaAttributes = computed(() => {
           </g>
         </svg>
         <div v-if="showIndicator" class="sn-progress__circle-indicator">
-          <span v-if="hasIconState" class="sn-progress__circle-status-icon" :class="`sn-progress__circle-status-icon--${status}`">
+          <span
+            v-if="hasIconState"
+            class="sn-progress__circle-status-icon"
+            :class="`sn-progress__circle-status-icon--${status}`"
+          >
             <!--
               Built-in status glyphs are inline SVGs (packages/vue-web does
               not depend on an icon package); the `icon` slot replaces them.
@@ -430,12 +444,12 @@ const ariaAttributes = computed(() => {
           </g>
         </svg>
         <div v-if="showIndicator" class="sn-progress__legend">
-          <span
-            v-for="(ring, index) in rings"
-            :key="index"
-            class="sn-progress__legend-item"
-          >
-            <span class="sn-progress__legend-dot" :style="{ background: ring.color }" aria-hidden="true" />
+          <span v-for="(ring, index) in rings" :key="index" class="sn-progress__legend-item">
+            <span
+              class="sn-progress__legend-dot"
+              :style="{ background: ring.color }"
+              aria-hidden="true"
+            />
             <span class="sn-progress__legend-text">
               <slot :percentage="ring.percentage">{{ ring.percentage }}%</slot>
             </span>
@@ -478,7 +492,9 @@ const ariaAttributes = computed(() => {
   height: 100%;
   overflow: hidden;
   border-radius: 6px;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* `processing` — animated diagonal stripes over the fill. */
@@ -543,7 +559,9 @@ const ariaAttributes = computed(() => {
 
 .sn-progress__circle-rail,
 .sn-progress__circle-fill {
-  transition: stroke-dasharray 0.3s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    stroke-dasharray 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    stroke 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* `processing` on circle types — pulse the fill arc. */

@@ -18,35 +18,35 @@
  * link element and the trailing separator `<span>`.
  */
 
-import { computed, inject, onMounted, onUnmounted, ref } from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import type { IconComponent } from '../icon/sn-icon-registry'
+import { computed, inject, onMounted, onUnmounted, ref } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import type { IconComponent } from '../icon/sn-icon-registry';
 
-defineOptions({ name: 'SnBreadcrumbItem' })
+defineOptions({ name: 'SnBreadcrumbItem' });
 
 const props = withDefaults(
   defineProps<{
     /** When set, renders as <a href>. Mirrors n-breadcrumb-item `href`. */
-    href?: string
+    href?: string;
     /** Whether the item is interactive (clickable / hover). Mirrors
      * n-breadcrumb-item `clickable`. Default true. */
-    clickable?: boolean
+    clickable?: boolean;
     /** Per-item separator override (falls back to parent SnBreadcrumb.separator).
      * Mirrors n-breadcrumb-item `separator`. */
-    separator?: string
+    separator?: string;
     /** Whether to render a trailing separator. Mirrors n-breadcrumb-item
      * `showSeparator`. Default true. */
-    showSeparator?: boolean
+    showSeparator?: boolean;
     /** Optional leading icon. SnIcon-wrapped (per AGENTS §113). */
-    icon?: IconComponent
+    icon?: IconComponent;
     /** Visual treatment. `plain` (default) = transparent, sits inline.
      * `chip` = filled background pill (each item rendered as a distinct
      * rounded chip, useful for compact trail in dashboards). `outlined`
      * = transparent background + thin border. AUI extension beyond
      * n-breadcrumb-item (naive-ui doesn't have a chip variant). */
-    variant?: 'plain' | 'chip' | 'outlined'
+    variant?: 'plain' | 'chip' | 'outlined';
     /** Click handler. Mirrors n-breadcrumb-item `onClick`. */
-    onClick?: (e: MouseEvent) => void
+    onClick?: (e: MouseEvent) => void;
   }>(),
   {
     href: '',
@@ -55,66 +55,66 @@ const props = withDefaults(
     showSeparator: true,
     variant: 'plain',
   },
-)
+);
 
 defineEmits<{
-  (e: 'click', event: MouseEvent): void
-}>()
+  (e: 'click', event: MouseEvent): void;
+}>();
 
 defineSlots<{
   /** Item label content. */
-  default?(): unknown
+  default?(): unknown;
   /** Per-item separator override slot. Takes precedence over the
    *  `separator` prop and over the parent SnBreadcrumb.separator. */
-  separator?(): unknown
-}>()
+  separator?(): unknown;
+}>();
 
-type SeparatorFn = () => string
-const getParentSeparator = inject<SeparatorFn>('sn-breadcrumb-separator', () => '/')
+type SeparatorFn = () => string;
+const getParentSeparator = inject<SeparatorFn>('sn-breadcrumb-separator', () => '/');
 
 /** Renders the item as <a> when href is set, otherwise <span>. Mirrors
  *  n-breadcrumb-item's htmlTagRef. */
-const htmlTag = computed<'a' | 'span'>(() => (props.href ? 'a' : 'span'))
+const htmlTag = computed<'a' | 'span'>(() => (props.href ? 'a' : 'span'));
 
 /* ─────────── aria-current: location ───────────
  * n-breadcrumb-item sets aria-current="location" when the browser URL
  * matches the item's href. We poll window.location on a ref so SPA route
  * changes also re-evaluate (component re-renders). SSR-safe — the ref is
  * only updated after onMounted runs (no `window` access during setup). */
-const currentHref = ref('')
+const currentHref = ref('');
 function syncLocation(): void {
-  if (typeof window !== 'undefined') currentHref.value = window.location.href
+  if (typeof window !== 'undefined') currentHref.value = window.location.href;
 }
 onMounted(() => {
-  syncLocation()
-  window.addEventListener('popstate', syncLocation)
-  window.addEventListener('snui:route-change', syncLocation)
-})
+  syncLocation();
+  window.addEventListener('popstate', syncLocation);
+  window.addEventListener('snui:route-change', syncLocation);
+});
 onUnmounted(() => {
-  if (typeof window === 'undefined') return
-  window.removeEventListener('popstate', syncLocation)
-  window.removeEventListener('snui:route-change', syncLocation)
-})
+  if (typeof window === 'undefined') return;
+  window.removeEventListener('popstate', syncLocation);
+  window.removeEventListener('snui:route-change', syncLocation);
+});
 
 const ariaCurrent = computed<'location' | null>(() => {
-  if (!props.href) return null
+  if (!props.href) return null;
   // Strip fragment + query for the comparison — naive-ui compares the
   // full URL but most apps treat the path as the canonical match.
   try {
-    const here = new URL(currentHref.value)
-    const there = new URL(props.href, currentHref.value || undefined)
-    if (here.pathname !== there.pathname) return null
+    const here = new URL(currentHref.value);
+    const there = new URL(props.href, currentHref.value || undefined);
+    if (here.pathname !== there.pathname) return null;
   } catch {
-    if (currentHref.value !== props.href) return null
+    if (currentHref.value !== props.href) return null;
   }
-  return 'location'
-})
+  return 'location';
+});
 
 /** Effective separator: item's `separator` prop > parent separator > '/'. */
-const effectiveSeparator = computed<string>(() => props.separator || getParentSeparator())
+const effectiveSeparator = computed<string>(() => props.separator || getParentSeparator());
 
 function handleClick(e: MouseEvent): void {
-  props.onClick?.(e)
+  props.onClick?.(e);
 }
 </script>
 
@@ -143,12 +143,7 @@ function handleClick(e: MouseEvent): void {
       :aria-current="ariaCurrent ?? undefined"
       @click="handleClick"
     >
-      <SnIcon
-        v-if="icon"
-        :icon="icon"
-        :size="14"
-        class="sn-breadcrumb-item__icon"
-      />
+      <SnIcon v-if="icon" :icon="icon" :size="14" class="sn-breadcrumb-item__icon" />
       <slot />
     </component>
     <span

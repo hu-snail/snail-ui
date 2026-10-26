@@ -22,16 +22,16 @@ Mention input. Typing `@` (customizable delimiter) opens a candidate panel; sele
 
 ### SnMention Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `string` | `''` | v-model |
-| options | `SnMentionRawOption[]` | `[]` | Candidates (string or {label, value?, disabled?}) |
-| delimiter | `string` | `'@'` | Trigger char (multi-char: last char triggers, full string written back) |
-| placeholder | `string` | — | Placeholder |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size |
-| status | `'default'\|'error'\|'warning'` | `'default'` | Status |
-| type | `'text'\|'textarea'` | `'text'` | Input variant (textarea with rows) |
+| Prop                | Type                                         | Default     | Notes                                                                   |
+| ------------------- | -------------------------------------------- | ----------- | ----------------------------------------------------------------------- |
+| modelValue          | `string`                                     | `''`        | v-model                                                                 |
+| options             | `SnMentionRawOption[]`                       | `[]`        | Candidates (string or {label, value?, disabled?})                       |
+| delimiter           | `string`                                     | `'@'`       | Trigger char (multi-char: last char triggers, full string written back) |
+| placeholder         | `string`                                     | —           | Placeholder                                                             |
+| disabled / readonly | `boolean`                                    | `false`     | Disabled / read-only                                                    |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`  | Size                                                                    |
+| status              | `'default'\|'error'\|'warning'`              | `'default'` | Status                                                                  |
+| type                | `'text'\|'textarea'`                         | `'text'`    | Input variant (textarea with rows)                                      |
 
 Events: `update:modelValue` / `change` / `select({label, value})` / `focus` / `blur`; Slot: `empty`. Keyboard: ArrowUp/Down highlight, Enter/Tab select, Esc close.
 

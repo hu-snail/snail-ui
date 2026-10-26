@@ -52,92 +52,90 @@
  *   - 底部动作面板 — 用 sn-action-sheet
  */
 
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { Check as CheckIcon, ChevronDown as ChevronDownIcon } from '../sn-icon/sn-icon-set'
+import { computed, nextTick, onBeforeUnmount, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { Check as CheckIcon, ChevronDown as ChevronDownIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnDropMenu' })
+defineOptions({ name: 'SnDropMenu' });
 
 /** Menu expansion direction. Mirrors `wd-drop-menu` `direction`. */
-type DropDirection = 'up' | 'down'
+type DropDirection = 'up' | 'down';
 
 /** One option row. Extra keys are allowed and reachable through the key props. */
 export interface SnDropMenuOption {
   /** Row label (field name configurable through `labelKey`). */
-  label?: string
+  label?: string;
   /** Row value echoed back through `v-model` (field name via `valueKey`). */
-  value?: string | number
+  value?: string | number;
   /** Secondary tip line (field name via `tipKey`). */
-  tip?: string
+  tip?: string;
   /** Disable the row — taps are ignored. */
-  disabled?: boolean
-  [key: string]: unknown
+  disabled?: boolean;
+  [key: string]: unknown;
 }
 
 /** `before-toggle` guard payload. */
 export interface SnDropMenuBeforeTogglePayload {
   /** The state the menu is about to enter. */
-  status: boolean
+  status: boolean;
 }
 
 /** `before-toggle` guard: `false` (or a promise of it) blocks the toggle. */
-type DropMenuBeforeToggle = (
-  payload: SnDropMenuBeforeTogglePayload,
-) => boolean | Promise<boolean>
+type DropMenuBeforeToggle = (payload: SnDropMenuBeforeTogglePayload) => boolean | Promise<boolean>;
 
 /** Leave-animation length when the panel unmounts after closing. */
-const DEFAULT_DURATION = 200
+const DEFAULT_DURATION = 200;
 
 const props = withDefaults(
   defineProps<{
     /** Current selected value (v-model). */
-    modelValue?: string | number
+    modelValue?: string | number;
     /** Option rows. */
-    options?: SnDropMenuOption[]
+    options?: SnDropMenuOption[];
     /** Menu expansion direction. */
-    direction?: DropDirection
+    direction?: DropDirection;
     /** Stacking level of the scrim + panel. */
-    zIndex?: number
+    zIndex?: number;
     /** Render the scrim behind the panel. */
-    modal?: boolean
+    modal?: boolean;
     /** Close the menu when the scrim is tapped. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Open / close animation duration in ms. */
-    duration?: number
+    duration?: number;
     /** Disable the whole menu — taps are ignored. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Icon name (sn-icon registry) of the selected row. */
-    iconName?: string
+    iconName?: string;
     /** Menu title; when set it replaces the selected option label in the bar. */
-    title?: string
+    title?: string;
     /** Icon name (sn-icon registry) of the bar's arrow. */
-    icon?: string
+    icon?: string;
     /** Size of the bar's arrow icon in design px. */
-    iconSize?: string | number
+    iconSize?: string | number;
     /** Guard called before the menu toggles; `false` blocks the toggle. */
-    beforeToggle?: DropMenuBeforeToggle
+    beforeToggle?: DropMenuBeforeToggle;
     /** Field name of the option value. */
-    valueKey?: string
+    valueKey?: string;
     /** Field name of the option label. */
-    labelKey?: string
+    labelKey?: string;
     /** Field name of the option tip. */
-    tipKey?: string
+    tipKey?: string;
     /** Custom class for the option list panel. */
-    customPopupClass?: string
+    customPopupClass?: string;
     /** Custom inline style for the option list panel. */
-    customPopupStyle?: string
+    customPopupStyle?: string;
     /** Height of the option list panel; empty = at most 80% of the viewport. */
-    popupHeight?: string
+    popupHeight?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for `wd-drop-menu` parity, NOT implemented — miniprogram has no
      * portal host, so the panel cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: '',
@@ -162,163 +160,169 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Custom panel body; replaces the option list. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | number): void
-  (e: 'change', payload: { value: string | number, selectedItem: SnDropMenuOption | undefined }): void
-  (e: 'open'): void
-  (e: 'opened'): void
-  (e: 'close'): void
-  (e: 'closed'): void
-}>()
+  (e: 'update:modelValue', value: string | number): void;
+  (
+    e: 'change',
+    payload: { value: string | number; selectedItem: SnDropMenuOption | undefined },
+  ): void;
+  (e: 'open'): void;
+  (e: 'opened'): void;
+  (e: 'close'): void;
+  (e: 'closed'): void;
+}>();
 
 /** Panel node present in the tree (survives the closing leg). */
-const isMounted = ref(false)
+const isMounted = ref(false);
 /** Target open state — drives the slide transition. */
-const isOpen = ref(false)
+const isOpen = ref(false);
 
 /** Single pending transition timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 /** Guards against a stale leg finishing after a newer one started. */
-let generation = 0
+let generation = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 /** Read an option field through the configured key. */
 function readKey(option: SnDropMenuOption, key: string): unknown {
-  return option[key]
+  return option[key];
 }
 
 /** Label of an option. */
 function optionLabel(option: SnDropMenuOption): string {
-  const value = readKey(option, props.labelKey)
-  return typeof value === 'string' ? value : String(value ?? '')
+  const value = readKey(option, props.labelKey);
+  return typeof value === 'string' ? value : String(value ?? '');
 }
 
 /** Value of an option. */
 function optionValue(option: SnDropMenuOption): string | number {
-  const value = readKey(option, props.valueKey)
-  return typeof value === 'number' || typeof value === 'string' ? value : ''
+  const value = readKey(option, props.valueKey);
+  return typeof value === 'number' || typeof value === 'string' ? value : '';
 }
 
 /** Tip of an option. */
 function optionTip(option: SnDropMenuOption): string {
-  const value = readKey(option, props.tipKey)
-  return typeof value === 'string' ? value : ''
+  const value = readKey(option, props.tipKey);
+  return typeof value === 'string' ? value : '';
 }
 
 const selectedItem = computed<SnDropMenuOption | undefined>(() =>
-  props.options.find((option) => optionValue(option) === props.modelValue))
+  props.options.find((option) => optionValue(option) === props.modelValue),
+);
 
 /** Bar label: `title` wins, then the selected option's label. */
-const barLabel = computed(() => props.title || (selectedItem.value ? optionLabel(selectedItem.value) : ''))
+const barLabel = computed(
+  () => props.title || (selectedItem.value ? optionLabel(selectedItem.value) : ''),
+);
 
 /** Bar label falls back to the placeholder when nothing is selected. */
-const hasSelection = computed(() => barLabel.value !== '')
+const hasSelection = computed(() => barLabel.value !== '');
 
 /** Registry icon data for a name, or `null` when it is not registered. */
 function resolveIcon(name: string): IconData | null {
   // The two glyphs this component needs ship with the default set; anything
   // else is looked up in the consumer registry.
-  if (name === 'check') return CheckIcon
-  if (name === 'caret-down') return ChevronDownIcon
-  return null
+  if (name === 'check') return CheckIcon;
+  if (name === 'caret-down') return ChevronDownIcon;
+  return null;
 }
 
-const arrowIcon = computed<IconData>(() => resolveIcon(props.icon) ?? ChevronDownIcon)
-const checkIcon = computed<IconData>(() => resolveIcon(props.iconName) ?? CheckIcon)
+const arrowIcon = computed<IconData>(() => resolveIcon(props.icon) ?? ChevronDownIcon);
+const checkIcon = computed<IconData>(() => resolveIcon(props.iconName) ?? CheckIcon);
 
 /** Arrow size — a plain number is design px (converted to rpx by uni). */
-const arrowSize = computed(() => props.iconSize)
+const arrowSize = computed(() => props.iconSize);
 
 async function open(): Promise<void> {
-  if (props.disabled) return
-  const allowed = await guard(true)
-  if (!allowed) return
-  clearTimer()
-  const token = ++generation
-  emit('open')
-  isMounted.value = true
+  if (props.disabled) return;
+  const allowed = await guard(true);
+  if (!allowed) return;
+  clearTimer();
+  const token = ++generation;
+  emit('open');
+  isMounted.value = true;
   // One tick so the collapsed style is committed before the open class lands.
-  await nextTick()
-  if (token !== generation) return
-  isOpen.value = true
+  await nextTick();
+  if (token !== generation) return;
+  isOpen.value = true;
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    emit('opened')
-  }, props.duration)
+    timer = null;
+    if (token !== generation) return;
+    emit('opened');
+  }, props.duration);
 }
 
 async function close(): Promise<void> {
-  const allowed = await guard(false)
-  if (!allowed) return
-  clearTimer()
-  const token = ++generation
-  emit('close')
-  isOpen.value = false
+  const allowed = await guard(false);
+  if (!allowed) return;
+  clearTimer();
+  const token = ++generation;
+  emit('close');
+  isOpen.value = false;
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    isMounted.value = false
-    emit('closed')
-  }, props.duration)
+    timer = null;
+    if (token !== generation) return;
+    isMounted.value = false;
+    emit('closed');
+  }, props.duration);
 }
 
 /** Run the `before-toggle` guard; a missing guard always allows. */
 async function guard(status: boolean): Promise<boolean> {
-  if (!props.beforeToggle) return true
+  if (!props.beforeToggle) return true;
   try {
-    return await props.beforeToggle({ status })
+    return await props.beforeToggle({ status });
   } catch {
     // A throwing guard is treated as a rejection — the safest default is to
     // keep the current state rather than toggle half-way.
-    return false
+    return false;
   }
 }
 
 async function toggle(): Promise<void> {
-  if (props.disabled) return
-  if (isOpen.value) await close()
-  else await open()
+  if (props.disabled) return;
+  if (isOpen.value) await close();
+  else await open();
 }
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Whether the menu is currently open (wd `getShowPop` parity). */
 function getShowPop(): boolean {
-  return isOpen.value
+  return isOpen.value;
 }
 
-defineExpose({ getShowPop, open, close, toggle })
+defineExpose({ getShowPop, open, close, toggle });
 
 function onBarTap(): void {
-  if (props.disabled) return
-  void toggle()
+  if (props.disabled) return;
+  void toggle();
 }
 
 function onOptionTap(option: SnDropMenuOption): void {
-  if (props.disabled || option.disabled) return
-  const value = optionValue(option)
-  emit('update:modelValue', value)
-  emit('change', { value, selectedItem: option })
-  void close()
+  if (props.disabled || option.disabled) return;
+  const value = optionValue(option);
+  emit('update:modelValue', value);
+  emit('change', { value, selectedItem: option });
+  void close();
 }
 
 function onModalTap(): void {
-  if (!props.closeOnClickModal) return
-  void close()
+  if (!props.closeOnClickModal) return;
+  void close();
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -331,29 +335,25 @@ const rootClass = computed(() => [
     'sn-drop-menu--disabled': props.disabled,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const base = `z-index: ${props.zIndex}; --sn-drop-menu-duration: ${props.duration}ms`
-  return props.customStyle ? `${base}; ${props.customStyle}` : base
-})
+  const base = `z-index: ${props.zIndex}; --sn-drop-menu-duration: ${props.duration}ms`;
+  return props.customStyle ? `${base}; ${props.customStyle}` : base;
+});
 
-const popupClass = computed(() => ['sn-drop-menu__popup', props.customPopupClass])
+const popupClass = computed(() => ['sn-drop-menu__popup', props.customPopupClass]);
 
 const popupStyle = computed(() => {
-  const style: string[] = []
-  if (props.popupHeight) style.push(`height: ${props.popupHeight}`)
-  if (props.customPopupStyle) style.push(props.customPopupStyle)
-  return style.length > 0 ? style.join('; ') : undefined
-})
+  const style: string[] = [];
+  if (props.popupHeight) style.push(`height: ${props.popupHeight}`);
+  if (props.customPopupStyle) style.push(props.customPopupStyle);
+  return style.length > 0 ? style.join('; ') : undefined;
+});
 </script>
 
 <template>
-  <view
-    data-snui-component="drop-menu"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="drop-menu" :class="rootClass" :style="rootStyle">
     <view
       class="sn-drop-menu__bar"
       role="button"
@@ -361,7 +361,10 @@ const popupStyle = computed(() => {
       :aria-disabled="props.disabled ? 'true' : undefined"
       @tap="onBarTap"
     >
-      <text class="sn-drop-menu__label" :class="{ 'sn-drop-menu__label--placeholder': !hasSelection }">
+      <text
+        class="sn-drop-menu__label"
+        :class="{ 'sn-drop-menu__label--placeholder': !hasSelection }"
+      >
         {{ hasSelection ? barLabel : '请选择' }}
       </text>
       <view class="sn-drop-menu__arrow" :class="{ 'sn-drop-menu__arrow--active': isOpen }">
@@ -397,10 +400,7 @@ const popupStyle = computed(() => {
                 {{ optionTip(option) }}
               </text>
             </view>
-            <view
-              v-if="optionValue(option) === modelValue"
-              class="sn-drop-menu__option-check"
-            >
+            <view v-if="optionValue(option) === modelValue" class="sn-drop-menu__option-check">
               <SnIcon :icon="checkIcon" :size="32" />
             </view>
           </view>

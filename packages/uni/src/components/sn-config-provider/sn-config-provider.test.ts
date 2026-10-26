@@ -9,41 +9,41 @@
  *   - `skin` still produces the `.snui-skin-*` class (existing contract)
  */
 
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import SnConfigProvider from './sn-config-provider.vue'
+import { describe, it, expect } from 'vitest';
+import { mount } from '@vue/test-utils';
+import SnConfigProvider from './sn-config-provider.vue';
 
 describe('sn-config-provider', () => {
   it('defaults to the light theme with no dark hook', () => {
-    const wrapper = mount(SnConfigProvider, { slots: { default: 'x' } })
-    expect(wrapper.classes()).not.toContain('sn-theme-dark')
-    expect(wrapper.attributes('data-snui-theme')).toBe('light')
-  })
+    const wrapper = mount(SnConfigProvider, { slots: { default: 'x' } });
+    expect(wrapper.classes()).not.toContain('sn-theme-dark');
+    expect(wrapper.attributes('data-snui-theme')).toBe('light');
+  });
 
   it('adds the dark theme hook when theme="dark"', () => {
     const wrapper = mount(SnConfigProvider, {
       props: { theme: 'dark' },
       slots: { default: 'x' },
-    })
-    expect(wrapper.classes()).toContain('sn-theme-dark')
-    expect(wrapper.attributes('data-snui-theme')).toBe('dark')
-  })
+    });
+    expect(wrapper.classes()).toContain('sn-theme-dark');
+    expect(wrapper.attributes('data-snui-theme')).toBe('dark');
+  });
 
   it('writes fully-qualified themeVars keys as inline custom properties', () => {
     const wrapper = mount(SnConfigProvider, {
       props: { themeVars: { '--sn-mp-color-action-primary': '#07c160' } },
       slots: { default: 'x' },
-    })
-    expect(wrapper.attributes('style')).toContain('--sn-mp-color-action-primary: #07c160')
-  })
+    });
+    expect(wrapper.attributes('style')).toContain('--sn-mp-color-action-primary: #07c160');
+  });
 
   it('converts wot-style camelCase themeVars keys to --sn-mp-* kebab names', () => {
     const wrapper = mount(SnConfigProvider, {
       props: { themeVars: { buttonPrimaryBgColor: '#07c160' } },
       slots: { default: 'x' },
-    })
-    expect(wrapper.attributes('style')).toContain('--sn-mp-button-primary-bg-color: #07c160')
-  })
+    });
+    expect(wrapper.attributes('style')).toContain('--sn-mp-button-primary-bg-color: #07c160');
+  });
 
   it('forwards customClass and customStyle to the root', () => {
     const wrapper = mount(SnConfigProvider, {
@@ -52,21 +52,21 @@ describe('sn-config-provider', () => {
       // rather than on the component.
       props: { customClass: 'my-provider', customStyle: 'padding: 8px' },
       slots: { default: 'x' },
-    })
-    expect(wrapper.classes()).toContain('my-provider')
-    expect(wrapper.attributes('style')).toContain('padding: 8px')
-  })
+    });
+    expect(wrapper.classes()).toContain('my-provider');
+    expect(wrapper.attributes('style')).toContain('padding: 8px');
+  });
 
   it('keeps the skin class contract (default skin emits nothing)', () => {
-    const plain = mount(SnConfigProvider, { props: { skin: 'default' }, slots: { default: 'x' } })
-    expect(plain.classes().some((c) => c.startsWith('snui-skin-'))).toBe(false)
+    const plain = mount(SnConfigProvider, { props: { skin: 'default' }, slots: { default: 'x' } });
+    expect(plain.classes().some((c) => c.startsWith('snui-skin-'))).toBe(false);
 
-    const doodle = mount(SnConfigProvider, { props: { skin: 'doodle' }, slots: { default: 'x' } })
-    expect(doodle.classes()).toContain('snui-skin-doodle')
-  })
+    const doodle = mount(SnConfigProvider, { props: { skin: 'doodle' }, slots: { default: 'x' } });
+    expect(doodle.classes()).toContain('snui-skin-doodle');
+  });
 
   it('renders slot content', () => {
-    const wrapper = mount(SnConfigProvider, { slots: { default: 'inside' } })
-    expect(wrapper.text()).toContain('inside')
-  })
-})
+    const wrapper = mount(SnConfigProvider, { slots: { default: 'inside' } });
+    expect(wrapper.text()).toContain('inside');
+  });
+});

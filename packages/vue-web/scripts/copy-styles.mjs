@@ -18,24 +18,31 @@
 // 'styles/index.css' in vite.config.js). This script runs after
 // `vite build` and PREPENDS the global tokens to the same file so
 // consumers get one barrel: `@snui/vue-web/styles` = tokens + components.
-import { copyFileSync, mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { createRequire } from 'node:module'
+import {
+  copyFileSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+  existsSync,
+} from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const root = resolve(__dirname, '..')
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = resolve(__dirname, '..');
 
 const sources = [
   resolve(root, '../tokens/styles/index.css'),
   resolve(root, '../tokens-web/styles/index.css'),
   resolve(root, 'src/styles/index.css'),
-]
+];
 
-const componentCss = resolve(root, 'dist/styles/index.css')
-const dst = componentCss
+const componentCss = resolve(root, 'dist/styles/index.css');
+const dst = componentCss;
 
-mkdirSync(dirname(dst), { recursive: true })
+mkdirSync(dirname(dst), { recursive: true });
 
 function stripAtImports(css) {
   // Drop @import rules + the line that contains them. They don't survive
@@ -44,30 +51,30 @@ function stripAtImports(css) {
   return css
     .split('\n')
     .filter((line) => !/^\s*@import\b/i.test(line))
-    .join('\n')
+    .join('\n');
 }
 
-let tokensBundle = ''
+let tokensBundle = '';
 for (const src of sources) {
   if (existsSync(src)) {
-    tokensBundle += stripAtImports(readFileSync(src, 'utf8')) + '\n'
+    tokensBundle += stripAtImports(readFileSync(src, 'utf8')) + '\n';
   }
 }
 
-let body = ''
+let body = '';
 if (existsSync(componentCss)) {
-  body = stripAtImports(readFileSync(componentCss, 'utf8'))
+  body = stripAtImports(readFileSync(componentCss, 'utf8'));
 }
 
 // Idempotent on repeated builds: only prepend tokens if not already there.
-const tokensSignature = tokensBundle.trim().slice(0, 80)
-let output = ''
+const tokensSignature = tokensBundle.trim().slice(0, 80);
+let output = '';
 if (tokensBundle && !body.startsWith(tokensSignature)) {
-  output = `${tokensBundle}\n${body}`
+  output = `${tokensBundle}\n${body}`;
 } else if (body) {
-  output = body
+  output = body;
 } else {
-  output = '/* No styles yet */\n'
+  output = '/* No styles yet */\n';
 }
 
 // Append KaTeX CSS + fonts (used by SnEquation). katex.min.css references
@@ -75,37 +82,37 @@ if (tokensBundle && !body.startsWith(tokensSignature)) {
 // next to the barrel at dist/styles/fonts/ and the CSS is appended verbatim.
 // Idempotent: guarded by a marker comment.
 function appendKatex(css) {
-  const marker = '/* KaTeX (SnEquation) */'
+  const marker = '/* KaTeX (SnEquation) */';
   if (css.includes(marker)) {
-    return css
+    return css;
   }
-  const req = createRequire(import.meta.url)
-  let katexDir
+  const req = createRequire(import.meta.url);
+  let katexDir;
   try {
-    katexDir = dirname(req.resolve('katex/package.json', { paths: [root] }))
+    katexDir = dirname(req.resolve('katex/package.json', { paths: [root] }));
   } catch {
-    return css // katex not installed — SnEquation falls back to 'no katex provided'
+    return css; // katex not installed — SnEquation falls back to 'no katex provided'
   }
-  const katexCssPath = resolve(katexDir, 'dist/katex.min.css')
+  const katexCssPath = resolve(katexDir, 'dist/katex.min.css');
   if (!existsSync(katexCssPath)) {
-    return css
+    return css;
   }
-  const fontsSrc = resolve(katexDir, 'dist/fonts')
+  const fontsSrc = resolve(katexDir, 'dist/fonts');
   if (existsSync(fontsSrc)) {
-    const fontsDst = resolve(dirname(dst), 'fonts')
-    mkdirSync(fontsDst, { recursive: true })
+    const fontsDst = resolve(dirname(dst), 'fonts');
+    mkdirSync(fontsDst, { recursive: true });
     for (const fontFile of readdirSync(fontsSrc)) {
-      copyFileSync(resolve(fontsSrc, fontFile), resolve(fontsDst, fontFile))
+      copyFileSync(resolve(fontsSrc, fontFile), resolve(fontsDst, fontFile));
     }
   }
-  return `${css}\n${marker}\n${readFileSync(katexCssPath, 'utf8')}\n`
+  return `${css}\n${marker}\n${readFileSync(katexCssPath, 'utf8')}\n`;
 }
 
-const hadBody = output !== '/* No styles yet */\n'
-const withKatex = appendKatex(output)
-writeFileSync(dst, withKatex, 'utf8')
+const hadBody = output !== '/* No styles yet */\n';
+const withKatex = appendKatex(output);
+writeFileSync(dst, withKatex, 'utf8');
 if (withKatex.includes('/* KaTeX (SnEquation) */')) {
-  console.log('✓ copy-styles:', dst, hadBody ? '(tokens + components + katex)' : '(katex only)')
+  console.log('✓ copy-styles:', dst, hadBody ? '(tokens + components + katex)' : '(katex only)');
 } else {
-  console.log('✓ copy-styles:', dst, hadBody ? '(tokens + components)' : '(empty placeholder)')
+  console.log('✓ copy-styles:', dst, hadBody ? '(tokens + components)' : '(empty placeholder)');
 }

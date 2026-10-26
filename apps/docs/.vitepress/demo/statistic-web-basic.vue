@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnStatistic — basic label + value with prefix / suffix and default slot. */
-import { Save } from 'lucide-vue-next'
-import { registerSnIcons, SnIcon, SnStatistic } from '@snui/vue-web'
+import { Save } from 'lucide-vue-next';
+import { registerSnIcons, SnIcon, SnStatistic } from '@snui/vue-web';
 
-registerSnIcons({ Save })
+registerSnIcons({ Save });
 </script>
 
 <template>
@@ -14,9 +14,7 @@ registerSnIcons({ Save })
       </template>
       <template #suffix>/ 100</template>
     </SnStatistic>
-    <SnStatistic label="活跃用户">
-      1,234,123
-    </SnStatistic>
+    <SnStatistic label="活跃用户"> 1,234,123 </SnStatistic>
   </div>
 </template>
 

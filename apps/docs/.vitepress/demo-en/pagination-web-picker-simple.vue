@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnPagination — 条数切换 + 页码省略 + 简洁模式 + 自定义页码插槽。 */
-import { SnPagination } from '@snui/vue-web'
+import { SnPagination } from '@snui/vue-web';
 </script>
 
 <template>

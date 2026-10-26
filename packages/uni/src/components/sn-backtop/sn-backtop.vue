@@ -34,38 +34,38 @@
  *   - 回到顶部动画曲线 — 交给宿主的 `pageScrollTo`
  */
 
-import { computed } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { ArrowRight } from '../sn-icon/sn-icon-set'
+import { computed } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { ArrowRight } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnBacktop' })
+defineOptions({ name: 'SnBacktop' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-backtop` 1:1 surface ────────────────────────────────── */
 
     /** 页面滚动距离（由宿主提供）。 */
-    scrollTop?: number
+    scrollTop?: number;
     /** 按钮文字。 */
-    text?: string
+    text?: string;
     /** 滚动距离超过该值时显示按钮，单位为 px。 */
-    top?: number
+    top?: number;
     /** 返回顶部滚动时间，单位为 ms。 */
-    duration?: number
+    duration?: number;
     /** 组件层级。 */
-    zIndex?: number
+    zIndex?: number;
     /** 自定义图标样式。 */
-    iconStyle?: string
+    iconStyle?: string;
     /** 按钮形状：circle / square。 */
-    shape?: 'circle' | 'square'
+    shape?: 'circle' | 'square';
     /** 距离屏幕底部的距离，单位为 px。 */
-    bottom?: number
+    bottom?: number;
     /** 距离屏幕右侧的距离，单位为 px。 */
-    right?: number
+    right?: number;
     /** 自定义根节点样式。 */
-    customStyle?: string
+    customStyle?: string;
     /** 自定义根节点样式类。 */
-    customClass?: string
+    customClass?: string;
   }>(),
   {
     scrollTop: 0,
@@ -80,20 +80,20 @@ const props = withDefaults(
     customStyle: '',
     customClass: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 点击按钮时触发（宿主也可自行调用 `pageScrollTo`）。 */
-  (e: 'click', event: Event): void
-}>()
+  (e: 'click', event: Event): void;
+}>();
 
 defineSlots<{
   /** 自定义按钮内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** The button is visible only past the threshold. */
-const isVisible = computed(() => props.scrollTop >= props.top)
+const isVisible = computed(() => props.scrollTop >= props.top);
 
 /**
  * Scroll the page back to the top.
@@ -104,22 +104,24 @@ const isVisible = computed(() => props.scrollTop >= props.top)
  * so the host can scroll its own `scroll-view`.
  */
 function scrollToTop(): void {
-  if (!isVisible.value) return
-  const uni = (globalThis as {
-    uni?: { pageScrollTo?: (opts: { scrollTop: number; duration: number }) => unknown }
-  }).uni
-  if (typeof uni?.pageScrollTo !== 'function') return
+  if (!isVisible.value) return;
+  const uni = (
+    globalThis as {
+      uni?: { pageScrollTo?: (opts: { scrollTop: number; duration: number }) => unknown };
+    }
+  ).uni;
+  if (typeof uni?.pageScrollTo !== 'function') return;
   try {
-    uni.pageScrollTo({ scrollTop: 0, duration: props.duration })
+    uni.pageScrollTo({ scrollTop: 0, duration: props.duration });
   } catch {
     /* A host that rejects the API must not break the tap handler. */
   }
 }
 
 function onTap(event: Event): void {
-  if (!isVisible.value) return
-  scrollToTop()
-  emit('click', event)
+  if (!isVisible.value) return;
+  scrollToTop();
+  emit('click', event);
 }
 
 const rootClass = computed(() => [
@@ -129,23 +131,23 @@ const rootClass = computed(() => [
     'sn-backtop--visible': isVisible.value,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
   const parts = [
     `bottom: ${props.bottom}px`,
     `right: ${props.right}px`,
     `z-index: ${props.zIndex}`,
-  ]
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  ];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 const iconStyleComputed = computed(() => {
   /* The default glyph points right; rotate it to point up. */
-  const base = 'transform: rotate(-90deg)'
-  return props.iconStyle ? `${base}; ${props.iconStyle}` : base
-})
+  const base = 'transform: rotate(-90deg)';
+  return props.iconStyle ? `${base}; ${props.iconStyle}` : base;
+});
 </script>
 
 <template>
@@ -182,7 +184,9 @@ const iconStyleComputed = computed(() => {
   box-shadow: var(--sn-mp-shadow-sm);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
 }
 
 .sn-backtop--circle {

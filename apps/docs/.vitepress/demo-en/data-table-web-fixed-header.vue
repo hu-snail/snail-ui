@@ -1,19 +1,19 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — max-height scroll container with sticky header. */
-import { SnDataTable } from '@snui/vue-web'
+import { SnDataTable } from '@snui/vue-web';
 
 const columns = [
   { title: 'Name', key: 'name' },
   { title: 'Age', key: 'age' },
   { title: 'Address', key: 'address' },
-]
+];
 
 const data = Array.from({ length: 20 }).map((_, index) => ({
   key: index,
   name: `Edward King ${index}`,
   age: 32,
   address: `London, Park Lane no. ${index}`,
-}))
+}));
 </script>
 
 <template>
@@ -22,5 +22,4 @@ const data = Array.from({ length: 20 }).map((_, index) => ({
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

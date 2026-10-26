@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnInputNumber — basic. */
-import { ref } from 'vue'
-import { SnInputNumber } from '@snui/vue-web'
-const value = ref<number | null>(5)
+import { ref } from 'vue';
+import { SnInputNumber } from '@snui/vue-web';
+const value = ref<number | null>(5);
 </script>
 
 <template>
@@ -13,7 +13,16 @@ const value = ref<number | null>(5)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
-.demo-field { width: 160px; }
-.demo-log { font-size: 13px; color: var(--vp-c-text-2); }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-field {
+  width: 160px;
+}
+.demo-log {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

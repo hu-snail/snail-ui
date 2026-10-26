@@ -38,70 +38,70 @@ The `#action` slot replaces the built-in button row; paired with `v-model:show` 
 
 ### Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| show | `boolean` | `undefined` | Show state; `undefined` = uncontrolled mode driven by internal state. |
-| default-show | `boolean` | `false` | Initial state for uncontrolled mode. |
-| trigger | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'click'` | Opening gesture; `'manual'` is driven by `show` only. |
-| placement | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'` | Requested side; can flip when space runs out. |
-| delay | `number \| [number, number]` | `100` | Open debounce (ms); the array's second item overrides the close delay. |
-| duration | `number` | `100` | Close debounce (ms). |
-| show-arrow | `boolean` | `false` | Render the arrow pointing at the trigger. |
-| arrow-point-to-center | `boolean` | `false` | Aim the arrow at the bubble centre instead of the trigger edge. |
-| arrow-class | `string` | `undefined` | Class on the arrow element. |
-| arrow-style | `CSSProperties` | `undefined` | Inline style on the arrow element. |
-| content | `string` | `''` | Confirmation message, between the icon and the action row. |
-| icon | `IconComponent` | `undefined` | Leading icon component; falls back to the built-in warning glyph. |
-| show-icon | `boolean` | `true` | Render the leading icon area. |
-| negative-text | `string` | `'取消'` | Cancel button label. |
-| positive-text | `string` | `'确定'` | Confirm button label. |
-| negative-button-props | `Record<string, unknown>` | `undefined` | Extra props forwarded to the cancel button. |
-| positive-button-props | `Record<string, unknown>` | `undefined` | Extra props forwarded to the confirm button. |
-| on-positive-click | `(e: MouseEvent) => boolean \| Promise<boolean> \| void` | `undefined` | Confirm callback; `false` (also when resolved asynchronously) vetoes closing, bindable as `@positive-click`. |
-| on-negative-click | `(e: MouseEvent) => boolean \| Promise<boolean> \| void` | `undefined` | Cancel callback with the same veto semantics, bindable as `@negative-click`. |
-| disabled | `boolean` | `false` | Suppress showing entirely. |
-| display-directive | `'if' \| 'show'` | `'if'` | `'if'` unmounts on hide; `'show'` keeps the node and toggles `display`. |
-| flip | `boolean` | `true` | Flip to the opposite side when space runs out. |
-| keep-alive-on-hover | `boolean` | `true` | Keep open while the pointer is inside the bubble. |
-| animated | `boolean` | `true` | Enter / leave animation on or off. |
-| width | `number \| 'trigger'` | `undefined` | Width; `'trigger'` matches the trigger, a number sets a fixed px width. |
-| to | `string \| HTMLElement \| false` | `'body'` | Teleport target; `false` renders it inline. |
-| z-index | `number` | `undefined` | Explicit stacking order. |
-| content-class | `string` | `undefined` | Class on the inner body. |
-| content-style | `CSSProperties` | `undefined` | Inline style on the inner body. |
-| on-clickoutside | `(e: MouseEvent) => void` | `undefined` | Called when a click lands outside the bubble and its trigger. |
+| Prop                  | Type                                                                                                                                                                 | Default     | Notes                                                                                                        |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------ |
+| show                  | `boolean`                                                                                                                                                            | `undefined` | Show state; `undefined` = uncontrolled mode driven by internal state.                                        |
+| default-show          | `boolean`                                                                                                                                                            | `false`     | Initial state for uncontrolled mode.                                                                         |
+| trigger               | `'hover' \| 'click' \| 'focus' \| 'manual'`                                                                                                                          | `'click'`   | Opening gesture; `'manual'` is driven by `show` only.                                                        |
+| placement             | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'`     | Requested side; can flip when space runs out.                                                                |
+| delay                 | `number \| [number, number]`                                                                                                                                         | `100`       | Open debounce (ms); the array's second item overrides the close delay.                                       |
+| duration              | `number`                                                                                                                                                             | `100`       | Close debounce (ms).                                                                                         |
+| show-arrow            | `boolean`                                                                                                                                                            | `false`     | Render the arrow pointing at the trigger.                                                                    |
+| arrow-point-to-center | `boolean`                                                                                                                                                            | `false`     | Aim the arrow at the bubble centre instead of the trigger edge.                                              |
+| arrow-class           | `string`                                                                                                                                                             | `undefined` | Class on the arrow element.                                                                                  |
+| arrow-style           | `CSSProperties`                                                                                                                                                      | `undefined` | Inline style on the arrow element.                                                                           |
+| content               | `string`                                                                                                                                                             | `''`        | Confirmation message, between the icon and the action row.                                                   |
+| icon                  | `IconComponent`                                                                                                                                                      | `undefined` | Leading icon component; falls back to the built-in warning glyph.                                            |
+| show-icon             | `boolean`                                                                                                                                                            | `true`      | Render the leading icon area.                                                                                |
+| negative-text         | `string`                                                                                                                                                             | `'取消'`    | Cancel button label.                                                                                         |
+| positive-text         | `string`                                                                                                                                                             | `'确定'`    | Confirm button label.                                                                                        |
+| negative-button-props | `Record<string, unknown>`                                                                                                                                            | `undefined` | Extra props forwarded to the cancel button.                                                                  |
+| positive-button-props | `Record<string, unknown>`                                                                                                                                            | `undefined` | Extra props forwarded to the confirm button.                                                                 |
+| on-positive-click     | `(e: MouseEvent) => boolean \| Promise<boolean> \| void`                                                                                                             | `undefined` | Confirm callback; `false` (also when resolved asynchronously) vetoes closing, bindable as `@positive-click`. |
+| on-negative-click     | `(e: MouseEvent) => boolean \| Promise<boolean> \| void`                                                                                                             | `undefined` | Cancel callback with the same veto semantics, bindable as `@negative-click`.                                 |
+| disabled              | `boolean`                                                                                                                                                            | `false`     | Suppress showing entirely.                                                                                   |
+| display-directive     | `'if' \| 'show'`                                                                                                                                                     | `'if'`      | `'if'` unmounts on hide; `'show'` keeps the node and toggles `display`.                                      |
+| flip                  | `boolean`                                                                                                                                                            | `true`      | Flip to the opposite side when space runs out.                                                               |
+| keep-alive-on-hover   | `boolean`                                                                                                                                                            | `true`      | Keep open while the pointer is inside the bubble.                                                            |
+| animated              | `boolean`                                                                                                                                                            | `true`      | Enter / leave animation on or off.                                                                           |
+| width                 | `number \| 'trigger'`                                                                                                                                                | `undefined` | Width; `'trigger'` matches the trigger, a number sets a fixed px width.                                      |
+| to                    | `string \| HTMLElement \| false`                                                                                                                                     | `'body'`    | Teleport target; `false` renders it inline.                                                                  |
+| z-index               | `number`                                                                                                                                                             | `undefined` | Explicit stacking order.                                                                                     |
+| content-class         | `string`                                                                                                                                                             | `undefined` | Class on the inner body.                                                                                     |
+| content-style         | `CSSProperties`                                                                                                                                                      | `undefined` | Inline style on the inner body.                                                                              |
+| on-clickoutside       | `(e: MouseEvent) => void`                                                                                                                                            | `undefined` | Called when a click lands outside the bubble and its trigger.                                                |
 
 ### Events
 
-| Name | Payload | Notes |
-| --- | --- | --- |
+| Name          | Payload   | Notes                                                                                                                                     |
+| ------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `update:show` | `boolean` | Show state changed, pairs with `v-model:show`; confirm / cancel callbacks go through the `on-positive-click` / `on-negative-click` props. |
 
 ### Slots
 
-| Slot | Notes |
-| --- | --- |
-| default | Trigger element — the visible node the bubble anchors to. |
-| icon | Leading icon area — replaces the built-in icon and the `icon` prop. |
-| action | Action row — replaces the built-in cancel / confirm buttons. |
+| Slot    | Notes                                                               |
+| ------- | ------------------------------------------------------------------- |
+| default | Trigger element — the visible node the bubble anchors to.           |
+| icon    | Leading icon area — replaces the built-in icon and the `icon` prop. |
+| action  | Action row — replaces the built-in cancel / confirm buttons.        |
 
 ### Methods
 
-| Name | Type | Notes |
-| --- | --- | --- |
-| `show` | `() => void` | Programmatic show, still bound by `disabled`. |
-| `hide` | `() => void` | Programmatic hide. |
+| Name      | Type            | Notes                                                      |
+| --------- | --------------- | ---------------------------------------------------------- |
+| `show`    | `() => void`    | Programmatic show, still bound by `disabled`.              |
+| `hide`    | `() => void`    | Programmatic hide.                                         |
 | `isShown` | `() => boolean` | Read the effective show state (controlled + uncontrolled). |
 
 ## Tokens
 
-| Token | CSS variable | Purpose |
-| --- | --- | --- |
-| Background surface | `--sn-web-color-background-surface` | Card + arrow fill |
-| Border subtle | `--sn-web-color-border-subtle` | Card + arrow border |
-| Card shadow | `--sn-web-card-shadow` | Card elevation |
-| Text primary | `--sn-web-color-text-primary` | Message text |
-| Feedback warning | `--sn-web-color-feedback-warning` | Default icon colour |
+| Token              | CSS variable                        | Purpose             |
+| ------------------ | ----------------------------------- | ------------------- |
+| Background surface | `--sn-web-color-background-surface` | Card + arrow fill   |
+| Border subtle      | `--sn-web-color-border-subtle`      | Card + arrow border |
+| Card shadow        | `--sn-web-card-shadow`              | Card elevation      |
+| Text primary       | `--sn-web-color-text-primary`       | Message text        |
+| Feedback warning   | `--sn-web-color-feedback-warning`   | Default icon colour |
 
 ## Accessibility
 
@@ -112,10 +112,10 @@ The `#action` slot replaces the built-in button row; paired with `v-model:show` 
 
 ## AI Patch Boundary
 
-| Safe for AI to generate | Requires human review |
-| --- | --- |
+| Safe for AI to generate                                                  | Requires human review                                                               |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | `content`, `positive-text` / `negative-text` copy and static `placement` | Business requests and close policy inside `on-positive-click` / `on-negative-click` |
-| `show-icon` / `icon` display switches | Failure rollback via returning `Promise<false>` |
-| Static composition in docs and demos | Controlled `v-model:show` binding and external state wiring |
+| `show-icon` / `icon` display switches                                    | Failure rollback via returning `Promise<false>`                                     |
+| Static composition in docs and demos                                     | Controlled `v-model:show` binding and external state wiring                         |
 
 See the component `ai-description.md` for the full contract.

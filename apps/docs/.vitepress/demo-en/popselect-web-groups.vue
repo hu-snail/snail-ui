@@ -8,9 +8,9 @@
  * untouched, the group's own `value` is not part of the selection model, and a
  * disabled leaf inside a group is skipped by the keyboard highlight.
  */
-import { computed, ref } from 'vue'
-import { SnButton, SnPopselect } from '@snui/vue-web'
-import type { SnPopselectValue, SnSelectOptionInput } from '@snui/vue-web'
+import { computed, ref } from 'vue';
+import { SnButton, SnPopselect } from '@snui/vue-web';
+import type { SnPopselectValue, SnSelectOptionInput } from '@snui/vue-web';
 
 const options: SnSelectOptionInput[] = [
   'All tasks',
@@ -38,7 +38,7 @@ const options: SnSelectOptionInput[] = [
       { label: 'Signed-in devices', value: 'devices' },
     ],
   },
-]
+];
 
 const labelOf: Record<string, string> = {
   'All tasks': 'All tasks',
@@ -50,13 +50,15 @@ const labelOf: Record<string, string> = {
   sms: 'SMS (disabled)',
   twoFactor: 'Two-factor auth',
   devices: 'Signed-in devices',
-}
+};
 
-const selected = ref<SnPopselectValue>('inbox')
+const selected = ref<SnPopselectValue>('inbox');
 
 const selectedLabel = computed(() =>
-  selected.value === null ? 'Not selected' : labelOf[String(selected.value)] ?? String(selected.value),
-)
+  selected.value === null
+    ? 'Not selected'
+    : (labelOf[String(selected.value)] ?? String(selected.value)),
+);
 </script>
 
 <template>
@@ -69,7 +71,9 @@ const selectedLabel = computed(() =>
     </div>
 
     <p class="popselect-groups-demo__hint">
-      Group headers are visual separators only: not selectable and skipped by keyboard highlight; "SMS" inside the group is disabled and ↑ / ↓ skips it. Bare values ("All tasks") can mix with groups, in the same order as declared in options.
+      Group headers are visual separators only: not selectable and skipped by keyboard highlight;
+      "SMS" inside the group is disabled and ↑ / ↓ skips it. Bare values ("All tasks") can mix with
+      groups, in the same order as declared in options.
     </p>
   </div>
 </template>

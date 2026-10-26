@@ -51,12 +51,7 @@ export const UICapabilitySchema = z
       .optional(),
 
     requires: z
-      .array(
-        z
-            .string()
-            .min(1, 'requires entry must be a non-empty identifier')
-            .max(64),
-      )
+      .array(z.string().min(1, 'requires entry must be a non-empty identifier').max(64))
       .min(1, 'requires array must have at least one entry')
       .optional(),
   })
@@ -68,8 +63,7 @@ export const UICapabilitySchema = z
       return Boolean(value.platform || value.framework || value.feature);
     },
     {
-      message:
-        'UICapability must declare at least one of platform, framework, or feature',
+      message: 'UICapability must declare at least one of platform, framework, or feature',
     },
   );
 

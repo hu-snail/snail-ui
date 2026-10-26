@@ -40,29 +40,29 @@
  *   - 错误页 / 404 页模板 — 用 templates 包
  */
 
-import { computed, markRaw } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
+import { computed, markRaw } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 
-defineOptions({ name: 'SnEmpty' })
+defineOptions({ name: 'SnEmpty' });
 
 const props = withDefaults(
   defineProps<{
     /** Icon name, registry key, image URL, or CSS class (see header). */
-    icon?: string
+    icon?: string;
     /** Iconfont class prefix, applied together with `icon`. */
-    iconPrefix?: string
+    iconPrefix?: string;
     /** CSS-icon mode: treat `icon` / `iconPrefix` as class names. */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** Icon / image size. A bare number is treated as rpx. */
-    iconSize?: number | string
+    iconSize?: number | string;
     /** Tip text under the glyph. */
-    tip?: string
+    tip?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     icon: 'empty',
@@ -73,14 +73,14 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Custom glyph area — replaces the icon / image resolution above. */
-  image?(): unknown
+  image?(): unknown;
   /** Content below the tip (e.g. a retry button). */
-  bottom?(): unknown
-}>()
+  bottom?(): unknown;
+}>();
 
 /**
  * Built-in glyph: a box with a slash — the "nothing here" mark. Inline SVG
@@ -88,52 +88,49 @@ defineSlots<{
  */
 const DEFAULT_GLYPH: IconData = markRaw({
   viewBox: '0 0 24 24',
-  paths: [
-    'M3 7.5 12 3l9 4.5v9L12 21 3 16.5Z',
-    'M3 7.5 12 12l9-4.5',
-    'M12 12v9',
-    'M4 20 20 4',
-  ],
-})
+  paths: ['M3 7.5 12 3l9 4.5v9L12 21 3 16.5Z', 'M3 7.5 12 12l9-4.5', 'M12 12v9', 'M4 20 20 4'],
+});
 
 /** Looks like an image source rather than an icon name. */
 function isImageSource(value: string): boolean {
-  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value)
+  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
 }
 
-const isImage = computed(() => Boolean(props.icon) && isImageSource(props.icon))
+const isImage = computed(() => Boolean(props.icon) && isImageSource(props.icon));
 
 /** CSS-icon mode is on (`true` or a non-empty class string). */
-const isCssIcon = computed(() => props.cssIcon === true || typeof props.cssIcon === 'string' && props.cssIcon !== '')
+const isCssIcon = computed(
+  () => props.cssIcon === true || (typeof props.cssIcon === 'string' && props.cssIcon !== ''),
+);
 
 /** Registry icon data for `icon`, or `undefined`. */
 const registryIcon = computed<IconData | null>(() => {
-  if (isImage.value || isCssIcon.value) return null
-  const icon = props.icon ? resolveIconByName(props.icon) : undefined
-  return icon ? markRaw(icon) : null
-})
+  if (isImage.value || isCssIcon.value) return null;
+  const icon = props.icon ? resolveIconByName(props.icon) : undefined;
+  return icon ? markRaw(icon) : null;
+});
 
 /** Render the built-in glyph when nothing else resolved. */
 const showsDefaultGlyph = computed(
   () => !isImage.value && !isCssIcon.value && registryIcon.value === null,
-)
+);
 
 /** CSS classes applied to the CSS-icon glyph node. */
-const cssIconClass = computed(() => [props.iconPrefix, props.icon].filter(Boolean))
+const cssIconClass = computed(() => [props.iconPrefix, props.icon].filter(Boolean));
 
 /** Resolved glyph size. A bare number is rpx; strings pass through. */
 const glyphSize = computed(() => {
-  if (props.iconSize === '' || props.iconSize === undefined) return undefined
-  return typeof props.iconSize === 'number' ? `${props.iconSize}rpx` : props.iconSize
-})
+  if (props.iconSize === '' || props.iconSize === undefined) return undefined;
+  return typeof props.iconSize === 'number' ? `${props.iconSize}rpx` : props.iconSize;
+});
 
 const glyphStyle = computed(() => {
-  if (!glyphSize.value) return undefined
-  return `width: ${glyphSize.value}; height: ${glyphSize.value}; font-size: ${glyphSize.value}`
-})
+  if (!glyphSize.value) return undefined;
+  return `width: ${glyphSize.value}; height: ${glyphSize.value}; font-size: ${glyphSize.value}`;
+});
 
-const rootClass = computed(() => ['sn-empty', props.customClass])
-const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const rootClass = computed(() => ['sn-empty', props.customClass]);
+const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 </script>
 
 <template>
@@ -146,27 +143,10 @@ const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefi
   >
     <view class="sn-empty__image" :style="glyphStyle" aria-hidden="true">
       <slot name="image">
-        <image
-          v-if="isImage"
-          class="sn-empty__img"
-          :src="icon"
-          mode="aspectFit"
-        />
-        <text
-          v-else-if="isCssIcon"
-          class="sn-empty__css-icon"
-          :class="cssIconClass"
-        />
-        <SnIcon
-          v-else-if="registryIcon"
-          :icon="registryIcon"
-          :size="glyphSize ?? 96"
-        />
-        <SnIcon
-          v-else-if="showsDefaultGlyph"
-          :icon="DEFAULT_GLYPH"
-          :size="glyphSize ?? 96"
-        />
+        <image v-if="isImage" class="sn-empty__img" :src="icon" mode="aspectFit" />
+        <text v-else-if="isCssIcon" class="sn-empty__css-icon" :class="cssIconClass" />
+        <SnIcon v-else-if="registryIcon" :icon="registryIcon" :size="glyphSize ?? 96" />
+        <SnIcon v-else-if="showsDefaultGlyph" :icon="DEFAULT_GLYPH" :size="glyphSize ?? 96" />
       </slot>
     </view>
 

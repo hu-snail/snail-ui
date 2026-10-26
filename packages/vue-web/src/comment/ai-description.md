@@ -23,29 +23,29 @@ the data-display batch plan, this component mirrors Arco Design Vue
 ## Import
 
 ```ts
-import SnComment from '@snui/vue-web/src/comment/SnComment.vue'
+import SnComment from '@snui/vue-web/src/comment/SnComment.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `author` | `string` | `undefined` | no | Author name; the `author` slot overrides it. |
-| `avatar` | `string` | `undefined` | no | Avatar image URL (rendered 32px circle); the `avatar` slot overrides it. |
-| `content` | `string` | `undefined` | no | Comment body; the `content` slot overrides it. |
-| `datetime` | `string` | `undefined` | no | Datetime text; the `datetime` slot overrides it. |
-| `align` | `'left' \| 'right' \| { datetime?: 'left' \| 'right'; actions?: 'left' \| 'right' }` | `'left'` | no | Row alignment. The string form applies to both the datetime row and the actions row; the object form overrides them separately (missing keys fall back to `left`). |
+| Name       | Type                                                                                 | Default     | Required | Description                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------ | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `author`   | `string`                                                                             | `undefined` | no       | Author name; the `author` slot overrides it.                                                                                                                       |
+| `avatar`   | `string`                                                                             | `undefined` | no       | Avatar image URL (rendered 32px circle); the `avatar` slot overrides it.                                                                                           |
+| `content`  | `string`                                                                             | `undefined` | no       | Comment body; the `content` slot overrides it.                                                                                                                     |
+| `datetime` | `string`                                                                             | `undefined` | no       | Datetime text; the `datetime` slot overrides it.                                                                                                                   |
+| `align`    | `'left' \| 'right' \| { datetime?: 'left' \| 'right'; actions?: 'left' \| 'right' }` | `'left'`    | no       | Row alignment. The string form applies to both the datetime row and the actions row; the object form overrides them separately (missing keys fall back to `left`). |
 
 ## Slots
 
-| Name | Params | Description |
-|---|---|---|
-| `avatar` | `()` | Avatar column content (overrides `avatar`). |
-| `author` | `()` | Author name (overrides `author`). |
-| `datetime` | `()` | Datetime text (overrides `datetime`). |
-| `content` | `()` | Comment body (overrides `content`). |
-| `actions` | `()` | Actions row (usually plain spans). |
-| `default` | `()` | Nested `<SnComment>` replies. |
+| Name       | Params | Description                                 |
+| ---------- | ------ | ------------------------------------------- |
+| `avatar`   | `()`   | Avatar column content (overrides `avatar`). |
+| `author`   | `()`   | Author name (overrides `author`).           |
+| `datetime` | `()`   | Datetime text (overrides `datetime`).       |
+| `content`  | `()`   | Comment body (overrides `content`).         |
+| `actions`  | `()`   | Actions row (usually plain spans).          |
+| `default`  | `()`   | Nested `<SnComment>` replies.               |
 
 ## Events
 
@@ -73,18 +73,18 @@ None — pure display component.
   indents them past the parent avatar. Sibling comments and the nested
   container get a 20px top margin (arco `@comment-margin-bottom`).
 - `align.right` makes the title row `display: flex; justify-content:
-  space-between` (author left, datetime right) and the actions row
+space-between` (author left, datetime right) and the actions row
   `justify-content: flex-end`.
 - An empty-string prop counts as absent (arco `hasPropOrSlot`
   truthiness), so it renders no area.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Comment body |
+| Token          | CSS Variable                    | Purpose          |
+| -------------- | ------------------------------- | ---------------- |
+| Text primary   | `--sn-web-color-text-primary`   | Comment body     |
 | Text secondary | `--sn-web-color-text-secondary` | Author + actions |
-| Text tertiary | `--sn-web-color-text-tertiary` | Datetime |
+| Text tertiary  | `--sn-web-color-text-tertiary`  | Datetime         |
 
 Metrics (px, mirroring arco `comment/style/index.less` + design tokens):
 avatar 32px circle, avatar margin-right 12px, author margin-right 8px,

@@ -21,46 +21,46 @@
  *   - 输入校验 — 用 sn-form-item
  */
 
-import { computed, markRaw, ref, useSlots } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { Search as SearchIcon, X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, markRaw, ref, useSlots } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Search as SearchIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnSearch' })
+defineOptions({ name: 'SnSearch' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-search` 1:1 surface ─────────────────────────────────── */
 
     /** Bound query text (v-model). */
-    modelValue?: string
+    modelValue?: string;
     /** Class on the inner native `<input>`. */
-    customInputClass?: string
+    customInputClass?: string;
     /** Placeholder text. wd-search defaults to `搜索`. */
-    placeholder?: string
+    placeholder?: string;
     /** Text of the right-hand cancel button. */
-    cancelTxt?: string
+    cancelTxt?: string;
     /** Visual variant: `plain` (bordered), `filled` (tinted) or `light`. */
-    variant?: 'plain' | 'filled' | 'light'
+    variant?: 'plain' | 'filled' | 'light';
     /** Hide the right-hand cancel text entirely. */
-    hideCancel?: boolean
+    hideCancel?: boolean;
     /** Disables interaction; a tap on the root still emits `click`. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Max character length. `-1` means unlimited. */
-    maxlength?: number | string
+    maxlength?: number | string;
     /** Left-align the placeholder instead of centering it. */
-    placeholderLeft?: boolean
+    placeholderLeft?: boolean;
     /** Focus the field on mount. */
-    focus?: boolean
+    focus?: boolean;
     /** Refocus the field after the clear button is tapped. */
-    focusWhenClear?: boolean
+    focusWhenClear?: boolean;
     /** Inline style declarations for the placeholder pseudo-element. */
-    placeholderStyle?: string
+    placeholderStyle?: string;
     /** Class applied to the placeholder pseudo-element. */
-    placeholderClass?: string
+    placeholderClass?: string;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: '',
@@ -79,89 +79,87 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — fired on every keystroke. */
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string): void;
   /** Value changed (alias of `update:modelValue` for form integration). */
-  (e: 'change', value: string): void
+  (e: 'change', value: string): void;
   /** Soft-keyboard confirm / search button tapped. */
-  (e: 'search', value: string): void
+  (e: 'search', value: string): void;
   /** Right-hand cancel button tapped. */
-  (e: 'cancel', value: string): void
+  (e: 'cancel', value: string): void;
   /** The × clear button was tapped. */
-  (e: 'clear'): void
+  (e: 'clear'): void;
   /** Field focused. */
-  (e: 'focus', event: Event): void
+  (e: 'focus', event: Event): void;
   /** Field blurred. */
-  (e: 'blur', event: Event): void
+  (e: 'blur', event: Event): void;
   /** Root tapped while `disabled` — the only way to observe the blocked state. */
-  (e: 'click', event: Event): void
-}>()
+  (e: 'click', event: Event): void;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
-const nativeValue = computed<string>(() => props.modelValue ?? '')
-const isFocused = ref(false)
-const isInteractive = computed(() => !props.disabled)
+const nativeValue = computed<string>(() => props.modelValue ?? '');
+const isFocused = ref(false);
+const isInteractive = computed(() => !props.disabled);
 
 /** The × button only exists while there is something to clear. */
-const clearVisible = computed(() =>
-  isInteractive.value && nativeValue.value.length > 0,
-)
+const clearVisible = computed(() => isInteractive.value && nativeValue.value.length > 0);
 
 /** Cancel text visibility — `hideCancel` wins, and it hides while disabled. */
-const cancelVisible = computed(() => !props.hideCancel && isInteractive.value)
+const cancelVisible = computed(() => !props.hideCancel && isInteractive.value);
 
 /**
  * Left search glyph / clear glyph — frozen `IconData` records from the
  * sn-icon shortcut set. `markRaw` keeps SnIcon from proxying them.
  */
-const searchIcon = markRaw(SearchIcon)
-const clearIcon = markRaw(XIcon)
+const searchIcon = markRaw(SearchIcon);
+const clearIcon = markRaw(XIcon);
 
 function onInput(event: Event): void {
-  if (!isInteractive.value) return
-  const target = event.target as HTMLInputElement
-  emit('update:modelValue', target.value)
-  emit('change', target.value)
+  if (!isInteractive.value) return;
+  const target = event.target as HTMLInputElement;
+  emit('update:modelValue', target.value);
+  emit('change', target.value);
 }
 
 function onFocus(event: Event): void {
-  isFocused.value = true
-  emit('focus', event)
+  isFocused.value = true;
+  emit('focus', event);
 }
 
 function onBlur(event: Event): void {
-  isFocused.value = false
-  emit('blur', event)
+  isFocused.value = false;
+  emit('blur', event);
 }
 
 function onSearch(event: Event): void {
-  if (!isInteractive.value) return
-  void event
-  emit('search', nativeValue.value)
+  if (!isInteractive.value) return;
+  void event;
+  emit('search', nativeValue.value);
 }
 
 function onClear(): void {
-  if (!isInteractive.value) return
-  emit('update:modelValue', '')
-  emit('change', '')
-  emit('clear')
+  if (!isInteractive.value) return;
+  emit('update:modelValue', '');
+  emit('change', '');
+  emit('clear');
   /* Re-focusing is a no-op on uni-end (the soft keyboard is dismissed on
    * blur); consumers that need it call .focus() from the `clear` listener on
    * their own ref. `focusWhenClear` stays declared for wd-search parity. */
 }
 
 function onCancel(): void {
-  if (!isInteractive.value) return
-  emit('cancel', nativeValue.value)
+  if (!isInteractive.value) return;
+  emit('cancel', nativeValue.value);
 }
 
 function onClickRoot(event: Event): void {
-  if (!props.disabled) return
-  emit('click', event)
+  if (!props.disabled) return;
+  emit('click', event);
 }
 
 const classList = computed(() => [
@@ -175,9 +173,9 @@ const classList = computed(() => [
     'sn-search--with-clear': clearVisible.value,
   },
   props.customClass,
-])
+]);
 
-const wrapperStyle = computed(() => props.customStyle || undefined)
+const wrapperStyle = computed(() => props.customStyle || undefined);
 </script>
 
 <template>
@@ -218,10 +216,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
         @confirm="onSearch"
       />
 
-      <view
-        v-if="slots['input-suffix']"
-        class="sn-search__input-suffix"
-      >
+      <view v-if="slots['input-suffix']" class="sn-search__input-suffix">
         <slot name="input-suffix" />
       </view>
 

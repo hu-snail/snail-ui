@@ -7,13 +7,13 @@
  * fallback. The header slot carries an SnIcon + bold title, the content slot
  * a paragraph plus an action row.
  */
-import { ref } from 'vue'
-import { BookOpen } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnIcon, SnPopover } from '@snui/vue-web'
+import { ref } from 'vue';
+import { BookOpen } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnIcon, SnPopover } from '@snui/vue-web';
 
-registerSnIcons({ BookOpen })
+registerSnIcons({ BookOpen });
 
-const dismissed = ref(false)
+const dismissed = ref(false);
 </script>
 
 <template>
@@ -35,7 +35,8 @@ const dismissed = ref(false)
 
       <template #content>
         <p class="popover-slots-demo__text">
-          Hold Shift to multi-select rows, press Delete to delete them in bulk; every action is written to the audit log.
+          Hold Shift to multi-select rows, press Delete to delete them in bulk; every action is
+          written to the audit log.
         </p>
         <div class="popover-slots-demo__actions">
           <SnButton size="tiny" @click="dismissed = true">
@@ -49,7 +50,9 @@ const dismissed = ref(false)
     </SnPopover>
 
     <p class="popover-slots-demo__hint">
-      When both the header / content props and the #header / #content slots are given, the slots render first and the props are only the fallback; a slot can hold icons, paragraphs, buttons — anything.
+      When both the header / content props and the #header / #content slots are given, the slots
+      render first and the props are only the fallback; a slot can hold icons, paragraphs, buttons —
+      anything.
     </p>
   </div>
 </template>

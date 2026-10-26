@@ -5,14 +5,14 @@ Style owns **shape personality**: radius, shadow, Component Token. Style never t
 ## Built-in defaults
 
 ```ts
-import { MODERN_STYLE } from '@snui/tokens'
+import { MODERN_STYLE } from '@snui/tokens';
 ```
 
-| Style | Personality |
-| --- | --- |
-| `MODERN_STYLE` | 6px radius, subtle shadow, flat |
-| `GLASS_STYLE` | (Phase 2) — 12px radius, floating shadow, glassmorphic |
-| `MINIMAL_STYLE` | (Phase 2) — 0 radius, no shadow, hairline border |
+| Style           | Personality                                            |
+| --------------- | ------------------------------------------------------ |
+| `MODERN_STYLE`  | 6px radius, subtle shadow, flat                        |
+| `GLASS_STYLE`   | (Phase 2) — 12px radius, floating shadow, glassmorphic |
+| `MINIMAL_STYLE` | (Phase 2) — 0 radius, no shadow, hairline border       |
 
 ## Per-end Style
 
@@ -26,7 +26,7 @@ Switching Style preserves Theme and Density.
 ## Custom Style
 
 ```ts
-import type { StyleDefinition } from '@snui/tokens'
+import type { StyleDefinition } from '@snui/tokens';
 
 const glass: StyleDefinition = {
   name: 'glass',
@@ -38,16 +38,16 @@ const glass: StyleDefinition = {
     button: { radius: 'var(--aui-radius-lg)' },
     card: { radius: 'var(--aui-radius-lg)' },
   },
-}
+};
 ```
 
 ## Forbidden
 
-| Don't | Why |
-| --- | --- |
-| Override color Tokens | Belongs to Theme |
-| Override spacing / size | Belongs to Density |
-| Couple with a specific Theme | Independent |
+| Don't                        | Why                |
+| ---------------------------- | ------------------ |
+| Override color Tokens        | Belongs to Theme   |
+| Override spacing / size      | Belongs to Density |
+| Couple with a specific Theme | Independent        |
 
 ## Where to next
 

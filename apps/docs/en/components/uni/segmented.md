@@ -37,53 +37,53 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue'
+import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `undefined` | Selected value |
-| `value` | `string \| number` | `undefined` | wot-ui's name for the selected value; wins over `modelValue` when both are passed |
-| `disabled` | `boolean` | `false` | Disable the whole control |
-| `options` | `string[] \| number[] \| SegmentedOption[]` | `[]` | Option list |
-| `theme` | `'card' \| 'outline'` | `'card'` | Visual theme |
-| `vibrateShort` | `boolean` | `false` | Short vibration on switch |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop           | Type                                        | Default     | Description                                                                       |
+| -------------- | ------------------------------------------- | ----------- | --------------------------------------------------------------------------------- |
+| `modelValue`   | `string \| number`                          | `undefined` | Selected value                                                                    |
+| `value`        | `string \| number`                          | `undefined` | wot-ui's name for the selected value; wins over `modelValue` when both are passed |
+| `disabled`     | `boolean`                                   | `false`     | Disable the whole control                                                         |
+| `options`      | `string[] \| number[] \| SegmentedOption[]` | `[]`        | Option list                                                                       |
+| `theme`        | `'card' \| 'outline'`                       | `'card'`    | Visual theme                                                                      |
+| `vibrateShort` | `boolean`                                   | `false`     | Short vibration on switch                                                         |
+| `customClass`  | `string`                                    | `''`        | Extra class on the root node                                                      |
+| `customStyle`  | `string`                                    | `''`        | Inline style on the root node                                                     |
 
 `SegmentedOption` shape: `{ value: string | number, label?: string, disabled?: boolean, payload?: unknown }`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Selected value changed | `(value: string \| number)` |
-| `change` | Option switched | `(option: SegmentedOption)` |
-| `click` | Option tapped (including the active one) | `(option: SegmentedOption)` |
+| Event               | Description                              | Payload                     |
+| ------------------- | ---------------------------------------- | --------------------------- |
+| `update:modelValue` | Selected value changed                   | `(value: string \| number)` |
+| `change`            | Option switched                          | `(option: SegmentedOption)` |
+| `click`             | Option tapped (including the active one) | `(option: SegmentedOption)` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                             |
+| ------- | --------------------------------------- |
 | `label` | Custom option label; scope `{ option }` |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-subtle` | `card` theme track |
-| `--sn-mp-color-background-surface` | Slider and card option surface |
-| `--sn-mp-color-border-default` | `outline` border and dividers |
-| `--sn-mp-color-text-secondary` | Inactive option label |
-| `--sn-mp-color-text-disabled` | Disabled option label |
-| `--sn-mp-color-action-primary` | Active label and `outline` fill |
-| `--sn-mp-color-text-on-primary` | `outline` active label |
-| `--sn-mp-font-size-md` | Option label size |
-| `--sn-mp-font-weight-medium` | Active label weight |
-| `--sn-mp-radius-md` / `--sn-mp-radius-sm` | Track / slider radius |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | Track padding / option padding |
+| Variable                                  | Purpose                         |
+| ----------------------------------------- | ------------------------------- |
+| `--sn-mp-color-background-subtle`         | `card` theme track              |
+| `--sn-mp-color-background-surface`        | Slider and card option surface  |
+| `--sn-mp-color-border-default`            | `outline` border and dividers   |
+| `--sn-mp-color-text-secondary`            | Inactive option label           |
+| `--sn-mp-color-text-disabled`             | Disabled option label           |
+| `--sn-mp-color-action-primary`            | Active label and `outline` fill |
+| `--sn-mp-color-text-on-primary`           | `outline` active label          |
+| `--sn-mp-font-size-md`                    | Option label size               |
+| `--sn-mp-font-weight-medium`              | Active label weight             |
+| `--sn-mp-radius-md` / `--sn-mp-radius-sm` | Track / slider radius           |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | Track padding / option padding  |
 
 ## Accessibility
 
@@ -97,7 +97,6 @@ import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue'
 Every colour in `sn-segmented` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the track flips to the dark subtle surface, the slider to the dark elevated surface, the active label keeps the brand hue, and the `outline` fill stays the same brand colour (still recognisable on a near-black page).
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

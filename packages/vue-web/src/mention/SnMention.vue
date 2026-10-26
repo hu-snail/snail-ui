@@ -28,51 +28,40 @@
  * `--sn-web-color-*` semantic fallbacks).
  */
 
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  useId,
-  watch,
-} from 'vue'
-import {
-  type SnMentionOption,
-  type SnMentionRawOption,
-} from './sn-mention-types'
-import { useOverlayFollow } from '../_internal/use-overlay-follow'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue';
+import { type SnMentionOption, type SnMentionRawOption } from './sn-mention-types';
+import { useOverlayFollow } from '../_internal/use-overlay-follow';
 
-defineOptions({ name: 'SnMention' })
+defineOptions({ name: 'SnMention' });
 
 const props = withDefaults(
   defineProps<{
     /** Bound value (`v-model`). */
-    modelValue?: string
+    modelValue?: string;
     /** Static candidate list. */
-    options?: SnMentionRawOption[]
+    options?: SnMentionRawOption[];
     /**
      * Trigger character(s). A string delimiter uses its last character as
      * the trigger char (n-mention semantics); an array accepts any of the
      * entries' last characters (each simplified to a single char).
      */
-    delimiter?: string | string[]
+    delimiter?: string | string[];
     /** Placeholder text. */
-    placeholder?: string
+    placeholder?: string;
     /** Disables interaction (typing, selecting). */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — value visible, not editable, no panel. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. */
-    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large'
+    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large';
     /** Visual status. Drives border color. */
-    status?: 'default' | 'error' | 'warning'
+    status?: 'default' | 'error' | 'warning';
     /** Input variant: single-line text or multi-line textarea. */
-    type?: 'text' | 'textarea'
+    type?: 'text' | 'textarea';
     /** Rows for `type="textarea"`. */
-    rows?: number
+    rows?: number;
     /** Native ARIA label. */
-    ariaLabel?: string
+    ariaLabel?: string;
   }>(),
   {
     modelValue: '',
@@ -87,25 +76,25 @@ const props = withDefaults(
     rows: 3,
     ariaLabel: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync. Fired on every keystroke and on selection. */
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string): void;
   /** Value committed (selection). */
-  (e: 'change', value: string): void
+  (e: 'change', value: string): void;
   /** An option was picked from the panel (click / Enter / Tab). */
-  (e: 'select', option: SnMentionOption): void
+  (e: 'select', option: SnMentionOption): void;
   /** Native focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Native blur. */
-  (e: 'blur', event: FocusEvent): void
-}>()
+  (e: 'blur', event: FocusEvent): void;
+}>();
 
 defineSlots<{
   /** Empty-state content for the panel (default: "No data" text). */
-  empty?(): unknown
-}>()
+  empty?(): unknown;
+}>();
 
 /* ------------------------------------------------------------------ *
  * Delimiter handling
@@ -116,25 +105,25 @@ defineSlots<{
  * character (n-mention keys off the char immediately before the caret).
  */
 const triggerChars = computed<string[]>(() => {
-  const raw = props.delimiter
-  const list = Array.isArray(raw) ? raw : [raw]
-  const chars: string[] = []
+  const raw = props.delimiter;
+  const list = Array.isArray(raw) ? raw : [raw];
+  const chars: string[] = [];
   for (const entry of list) {
-    if (entry.length === 0) continue
-    const char = entry[entry.length - 1]
-    if (char !== undefined && !chars.includes(char)) chars.push(char)
+    if (entry.length === 0) continue;
+    const char = entry[entry.length - 1];
+    if (char !== undefined && !chars.includes(char)) chars.push(char);
   }
-  return chars
-})
+  return chars;
+});
 
 /** The delimiter rendered back into the text on selection. */
 function delimiterFor(char: string): string {
-  const raw = props.delimiter
-  const list = Array.isArray(raw) ? raw : [raw]
+  const raw = props.delimiter;
+  const list = Array.isArray(raw) ? raw : [raw];
   for (const entry of list) {
-    if (entry.length > 0 && entry[entry.length - 1] === char) return entry
+    if (entry.length > 0 && entry[entry.length - 1] === char) return entry;
   }
-  return char
+  return char;
 }
 
 /* ------------------------------------------------------------------ *
@@ -144,54 +133,50 @@ function delimiterFor(char: string): string {
 /** A normalized candidate ready for rendering / selection. */
 interface NormalizedOption {
   /** Display label. */
-  label: string
+  label: string;
   /** Text committed on selection (without the delimiter). */
-  value: string
-  disabled: boolean
+  value: string;
+  disabled: boolean;
   /** Stable DOM id for aria-activedescendant. */
-  id: string
+  id: string;
 }
 
-let optionIdSeed = 0
+let optionIdSeed = 0;
 
 function normalizeOption(raw: SnMentionRawOption): NormalizedOption | null {
-  const idx = optionIdSeed++
+  const idx = optionIdSeed++;
   if (typeof raw === 'string') {
-    if (raw.length === 0) return null
+    if (raw.length === 0) return null;
     return {
       label: raw,
       value: raw,
       disabled: false,
       id: `sn-mention-option-${idx}`,
-    }
+    };
   }
-  if (raw === null || raw === undefined) return null
-  const label = raw.label
-  const value = raw.value !== undefined && raw.value !== null ? String(raw.value) : label
+  if (raw === null || raw === undefined) return null;
+  const label = raw.label;
+  const value = raw.value !== undefined && raw.value !== null ? String(raw.value) : label;
   return {
     label,
     value,
     disabled: raw.disabled === true,
     id: `sn-mention-option-${idx}`,
-  }
+  };
 }
 
 /** All normalized candidates (unfiltered). */
 const normalizedOptions = computed<NormalizedOption[]>(() =>
-  props.options
-    .map(normalizeOption)
-    .filter((o): o is NormalizedOption => o !== null),
-)
+  props.options.map(normalizeOption).filter((o): o is NormalizedOption => o !== null),
+);
 
 /** Options filtered by the current query (case-insensitive containment). */
 const filteredOptions = computed<NormalizedOption[]>(() => {
-  const query = triggerQuery.value
-  if (query.length === 0) return normalizedOptions.value
-  const lowered = query.toLowerCase()
-  return normalizedOptions.value.filter(
-    (option) => option.label.toLowerCase().includes(lowered),
-  )
-})
+  const query = triggerQuery.value;
+  if (query.length === 0) return normalizedOptions.value;
+  const lowered = query.toLowerCase();
+  return normalizedOptions.value.filter((option) => option.label.toLowerCase().includes(lowered));
+});
 
 /* ------------------------------------------------------------------ *
  * Trigger-word detection
@@ -200,15 +185,15 @@ const filteredOptions = computed<NormalizedOption[]>(() => {
 /** One active trigger occurrence found by scanning up to the caret. */
 interface TriggerState {
   /** The delimiter character that started this trigger. */
-  char: string
+  char: string;
   /** Start index of the delimiter in the current value. */
-  start: number
+  start: number;
   /** Text typed after the delimiter (up to the caret). */
-  query: string
+  query: string;
 }
 
-const inputId = useId()
-const inputEl = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
+const inputId = useId();
+const inputEl = ref<HTMLInputElement | HTMLTextAreaElement | null>(null);
 
 /**
  * Scan the value up to the caret for a trigger char followed by a
@@ -216,90 +201,86 @@ const inputEl = ref<HTMLInputElement | HTMLTextAreaElement | null>(null)
  * (or a whitespace before the caret) invalidates it.
  */
 function detectTrigger(): TriggerState | null {
-  const el = inputEl.value
-  if (el === null) return null
-  const value = el.value
-  const caret = el.selectionStart ?? value.length
-  const chars = triggerChars.value
-  if (chars.length === 0) return null
+  const el = inputEl.value;
+  if (el === null) return null;
+  const value = el.value;
+  const caret = el.selectionStart ?? value.length;
+  const chars = triggerChars.value;
+  if (chars.length === 0) return null;
   // Walk back from the caret; stop at the first whitespace.
-  let i = caret
+  let i = caret;
   while (i > 0) {
-    const prev = value[i - 1]
-    if (prev === undefined || /\s/.test(prev)) break
+    const prev = value[i - 1];
+    if (prev === undefined || /\s/.test(prev)) break;
     if (chars.includes(prev)) {
       // A trigger char is itself a word boundary — the word it starts
       // must not be preceded by another non-space char? n-mention accepts
       // it anywhere; we do too (e.g. "(@foo" triggers on '@').
-      return { char: prev, start: i - 1, query: value.slice(i, caret) }
+      return { char: prev, start: i - 1, query: value.slice(i, caret) };
     }
-    i -= 1
+    i -= 1;
   }
-  return null
+  return null;
 }
 
 /** Current trigger state (null = panel closed source). */
-const triggerState = ref<TriggerState | null>(null)
+const triggerState = ref<TriggerState | null>(null);
 /** Text typed after the delimiter while the trigger is active. */
-const triggerQuery = ref('')
+const triggerQuery = ref('');
 /** Panel visibility. */
-const isMenuOpen = ref(false)
+const isMenuOpen = ref(false);
 /** Index of the keyboard-highlighted option (-1 = none). */
-const activeIndex = ref(-1)
+const activeIndex = ref(-1);
 
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
-const showMenu = computed(() =>
-  isMenuOpen.value && filteredOptions.value.length > 0,
-)
+const showMenu = computed(() => isMenuOpen.value && filteredOptions.value.length > 0);
 
 /** Show the empty slot / text when open with zero candidates. */
-const showEmpty = computed(() =>
-  isMenuOpen.value && filteredOptions.value.length === 0,
-)
+const showEmpty = computed(() => isMenuOpen.value && filteredOptions.value.length === 0);
 
 /** Currently highlighted option (or null). */
 const activeOption = computed<NormalizedOption | null>(() => {
-  const i = activeIndex.value
-  if (i < 0 || i >= filteredOptions.value.length) return null
-  const found: NormalizedOption | undefined = filteredOptions.value[i]
-  return found ?? null
-})
+  const i = activeIndex.value;
+  if (i < 0 || i >= filteredOptions.value.length) return null;
+  const found: NormalizedOption | undefined = filteredOptions.value[i];
+  return found ?? null;
+});
 
 /** aria-activedescendant — points at the highlighted option. */
 const ariaActiveDescendant = computed<string | undefined>(() =>
   activeOption.value !== null ? activeOption.value.id : undefined,
-)
+);
 
 /** Reset the highlight whenever the candidate list changes underneath. */
 watch(filteredOptions, () => {
-  activeIndex.value = -1
-})
+  activeIndex.value = -1;
+});
 
 /** Re-detect the trigger from the DOM value + caret and sync panel state. */
 function refreshTrigger(): void {
   if (!isInteractive.value) {
-    triggerState.value = null
-    isMenuOpen.value = false
-    return
+    triggerState.value = null;
+    isMenuOpen.value = false;
+    return;
   }
-  const state = detectTrigger()
-  triggerState.value = state
+  const state = detectTrigger();
+  triggerState.value = state;
   if (state === null) {
-    isMenuOpen.value = false
-    triggerQuery.value = ''
+    isMenuOpen.value = false;
+    triggerQuery.value = '';
   } else {
-    triggerQuery.value = state.query
-    isMenuOpen.value = true
+    triggerQuery.value = state.query;
+    isMenuOpen.value = true;
   }
 }
 
 function closeMenu(): void {
-  isMenuOpen.value = false
-  followViewport.stop()
-  triggerState.value = null
-  triggerQuery.value = ''
-  activeIndex.value = -1
+  isMenuOpen.value = false;
+  followViewport.stop();
+  triggerState.value = null;
+  triggerQuery.value = '';
+  activeIndex.value = -1;
 }
 
 /* ------------------------------------------------------------------ *
@@ -307,93 +288,96 @@ function closeMenu(): void {
  * ------------------------------------------------------------------ */
 
 function emitValue(next: string): void {
-  emit('update:modelValue', next)
+  emit('update:modelValue', next);
 }
 
 function onInput(event: Event): void {
-  if (!isInteractive.value) return
-  const target = event.target as HTMLInputElement | HTMLTextAreaElement
+  if (!isInteractive.value) return;
+  const target = event.target as HTMLInputElement | HTMLTextAreaElement;
   // The DOM element is the source of truth for caret-aware filtering —
   // sync the model from the element, then detect the trigger word.
-  emitValue(target.value)
-  refreshTrigger()
+  emitValue(target.value);
+  refreshTrigger();
 }
 
 function onFocus(event: FocusEvent): void {
-  isFocused.value = true
-  if (props.disabled) return
-  emit('focus', event)
+  isFocused.value = true;
+  if (props.disabled) return;
+  emit('focus', event);
   // Right after a selection the input is programmatically (re)focused with
   // the caret moved past the inserted mention — that focus must not
   // re-detect the freshly inserted "@user" as a new trigger word.
   if (suppressFocusRefresh) {
-    suppressFocusRefresh = false
-    return
+    suppressFocusRefresh = false;
+    return;
   }
   // A focused field whose value already carries an open trigger word
   // (caret inside it) re-opens the panel.
-  refreshTrigger()
+  refreshTrigger();
 }
 
 function onBlur(event: FocusEvent): void {
-  isFocused.value = false
-  closeMenu()
-  emit('blur', event)
+  isFocused.value = false;
+  closeMenu();
+  emit('blur', event);
 }
 
 /** Skip the next model-watch re-detect after a selection committed. */
-let suppressModelWatch = false
+let suppressModelWatch = false;
 /** Skip the next focus-triggered refresh after a selection committed. */
-let suppressFocusRefresh = false
+let suppressFocusRefresh = false;
 
 /** Keep the internal state honest when the model changes from outside. */
-watch(() => props.modelValue, () => {
-  if (suppressModelWatch) {
-    suppressModelWatch = false
-    return
-  }
-  // nextTick: the DOM value binding (`:value`) must settle first so
-  // detectTrigger reads the same text the user sees.
-  void nextTick(() => {
-    if (isFocused.value) refreshTrigger()
-  })
-})
+watch(
+  () => props.modelValue,
+  () => {
+    if (suppressModelWatch) {
+      suppressModelWatch = false;
+      return;
+    }
+    // nextTick: the DOM value binding (`:value`) must settle first so
+    // detectTrigger reads the same text the user sees.
+    void nextTick(() => {
+      if (isFocused.value) refreshTrigger();
+    });
+  },
+);
 
-const isFocused = ref(false)
+const isFocused = ref(false);
 
 /* ------------------------------------------------------------------ *
  * Keyboard navigation
  * ------------------------------------------------------------------ */
 
 function isSelectableIndex(i: number): boolean {
-  if (i < 0 || i >= filteredOptions.value.length) return false
-  const candidate: NormalizedOption | undefined = filteredOptions.value[i]
-  return candidate !== undefined && !candidate.disabled
+  if (i < 0 || i >= filteredOptions.value.length) return false;
+  const candidate: NormalizedOption | undefined = filteredOptions.value[i];
+  return candidate !== undefined && !candidate.disabled;
 }
 
 function onKeydown(event: KeyboardEvent): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-    if (!showMenu.value) return
-    event.preventDefault()
-    const count = filteredOptions.value.length
-    if (count === 0) return
-    const dir = event.key === 'ArrowDown' ? 1 : -1
+    if (!showMenu.value) return;
+    event.preventDefault();
+    const count = filteredOptions.value.length;
+    if (count === 0) return;
+    const dir = event.key === 'ArrowDown' ? 1 : -1;
     // Start "before the list" for ArrowUp so none(-1) wraps to the last
     // option, mirroring naive's menu behavior.
-    let i = dir === 1 ? activeIndex.value : (activeIndex.value < 0 ? count : activeIndex.value)
+    let i = dir === 1 ? activeIndex.value : activeIndex.value < 0 ? count : activeIndex.value;
     for (let step = 0; step < count; step++) {
-      i = (i + dir + count) % count
-      if (isSelectableIndex(i)) break
+      i = (i + dir + count) % count;
+      if (isSelectableIndex(i)) break;
     }
-    if (isSelectableIndex(i)) activeIndex.value = i
+    if (isSelectableIndex(i)) activeIndex.value = i;
   } else if (event.key === 'Enter' || event.key === 'Tab') {
-    if (!showMenu.value || activeOption.value === null) return
-    event.preventDefault()
-    selectOption(activeOption.value)
+    if (!showMenu.value || activeOption.value === null) return;
+    event.preventDefault();
+    selectOption(activeOption.value);
   } else if (event.key === 'Escape') {
-    if (isMenuOpen.value) event.preventDefault()
-    closeMenu()
+    if (isMenuOpen.value) event.preventDefault();
+    closeMenu();
   }
 }
 
@@ -402,43 +386,43 @@ function onKeydown(event: KeyboardEvent): void {
  * ------------------------------------------------------------------ */
 
 function selectOption(option: NormalizedOption): void {
-  if (option.disabled) return
-  const el = inputEl.value
-  const state = triggerState.value
-  if (el === null || state === null) return
-  const value = el.value
-  const caret = el.selectionStart ?? value.length
+  if (option.disabled) return;
+  const el = inputEl.value;
+  const state = triggerState.value;
+  if (el === null || state === null) return;
+  const value = el.value;
+  const caret = el.selectionStart ?? value.length;
   // Replace from the delimiter through the caret (the typed query),
   // keeping any text after the caret intact.
-  const replacement = `${delimiterFor(state.char)}${option.value}`
-  const next = value.slice(0, state.start) + replacement + value.slice(caret)
+  const replacement = `${delimiterFor(state.char)}${option.value}`;
+  const next = value.slice(0, state.start) + replacement + value.slice(caret);
   // Mark this emit as self-originated so the model watcher does not
   // re-detect the freshly inserted "@user" as a new trigger word.
-  suppressModelWatch = true
-  emitValue(next)
-  emit('change', next)
-  emit('select', { label: option.label, value: option.value })
-  closeMenu()
+  suppressModelWatch = true;
+  emitValue(next);
+  emit('change', next);
+  emit('select', { label: option.label, value: option.value });
+  closeMenu();
   // Move the caret after the inserted mention and keep focus (naive keeps
   // the input focused so typing can continue). The focus event fires with
   // the caret still at the old position, so refresh-on-focus is
   // suppressed for this one tick.
   void nextTick(() => {
-    const focusEl = inputEl.value
-    if (focusEl === null) return
-    const pos = state.start + replacement.length
-    suppressFocusRefresh = true
-    focusEl.focus()
-    focusEl.setSelectionRange(pos, pos)
+    const focusEl = inputEl.value;
+    if (focusEl === null) return;
+    const pos = state.start + replacement.length;
+    suppressFocusRefresh = true;
+    focusEl.focus();
+    focusEl.setSelectionRange(pos, pos);
     // Belt and braces: if focus was already on the element (no focus event
     // fired), the suppress flag would leak — consume it explicitly.
-    if (suppressFocusRefresh) suppressFocusRefresh = false
-  })
+    if (suppressFocusRefresh) suppressFocusRefresh = false;
+  });
 }
 
 /** Hover moves the highlight too (naive behavior). */
 function onOptionEnter(i: number): void {
-  if (isSelectableIndex(i)) activeIndex.value = i
+  if (isSelectableIndex(i)) activeIndex.value = i;
 }
 
 /* ------------------------------------------------------------------ *
@@ -446,102 +430,98 @@ function onOptionEnter(i: number): void {
  * (same simplified strategy as SnSelect; no full popper)
  * ------------------------------------------------------------------ */
 
-const PANEL_VIEWPORT_GAP = 4
-const menuId = `${inputId}-menu`
-const menuEl = ref<HTMLElement | null>(null)
-const placement = ref<'bottom' | 'top'>('bottom')
-const menuStyle = ref<Record<string, string>>({})
+const PANEL_VIEWPORT_GAP = 4;
+const menuId = `${inputId}-menu`;
+const menuEl = ref<HTMLElement | null>(null);
+const placement = ref<'bottom' | 'top'>('bottom');
+const menuStyle = ref<Record<string, string>>({});
 
 function repositionMenu(): void {
-  const root = rootEl.value
-  const menu = menuEl.value
-  if (root === null || menu === null) return
-  const rootRect = root.getBoundingClientRect()
+  const root = rootEl.value;
+  const menu = menuEl.value;
+  if (root === null || menu === null) return;
+  const rootRect = root.getBoundingClientRect();
   // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
   // transform (scale 0.92) does not distort — getBoundingClientRect would
   // measure the scaled panel while the enter transition is running.
-  const menuWidth = menu.offsetWidth
-  const menuHeight = menu.offsetHeight
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const menuWidth = menu.offsetWidth;
+  const menuHeight = menu.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
-  const width = Math.max(rootRect.width, menuWidth)
+  const width = Math.max(rootRect.width, menuWidth);
   const left = Math.min(
     Math.max(PANEL_VIEWPORT_GAP, rootRect.left),
     Math.max(PANEL_VIEWPORT_GAP, vw - width - PANEL_VIEWPORT_GAP),
-  )
+  );
 
   // Bottom preferred; flip up when the viewport lacks room below but has
   // room above.
-  const roomBelow = vh - rootRect.bottom
-  const roomAbove = rootRect.top
-  const useTop = roomBelow < menuHeight && roomAbove > roomBelow
-  placement.value = useTop ? 'top' : 'bottom'
+  const roomBelow = vh - rootRect.bottom;
+  const roomAbove = rootRect.top;
+  const useTop = roomBelow < menuHeight && roomAbove > roomBelow;
+  placement.value = useTop ? 'top' : 'bottom';
 
-  const top = useTop
-    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - menuHeight)
-    : rootRect.bottom
+  const top = useTop ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - menuHeight) : rootRect.bottom;
 
   menuStyle.value = {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
     'min-width': `${Math.round(rootRect.width)}px`,
-  }
+  };
 }
 
 watch(isMenuOpen, (open) => {
   if (open) {
     void nextTick(() => {
-      repositionMenu()
-      followViewport.start()
-    })
+      repositionMenu();
+      followViewport.start();
+    });
   }
-})
+});
 
 watch(filteredOptions, () => {
-  if (isMenuOpen.value) void nextTick(() => repositionMenu())
-})
+  if (isMenuOpen.value) void nextTick(() => repositionMenu());
+});
 
 /* ------------------------------------------------------------------ *
  * Outside-click close — document listener with unmount cleanup
  * (AGENTS.md §42 / §82)
  * ------------------------------------------------------------------ */
 
-const rootEl = ref<HTMLElement | null>(null)
+const rootEl = ref<HTMLElement | null>(null);
 
 function onDocumentPointerdown(event: PointerEvent): void {
-  if (!isMenuOpen.value) return
-  const target = event.target as Node | null
-  if (target === null) return
-  if (rootEl.value !== null && rootEl.value.contains(target)) return
-  if (menuEl.value !== null && menuEl.value.contains(target)) return
-  closeMenu()
+  if (!isMenuOpen.value) return;
+  const target = event.target as Node | null;
+  if (target === null) return;
+  if (rootEl.value !== null && rootEl.value.contains(target)) return;
+  if (menuEl.value !== null && menuEl.value.contains(target)) return;
+  closeMenu();
 }
 
 onMounted(() => {
-  document.addEventListener('pointerdown', onDocumentPointerdown)
-})
+  document.addEventListener('pointerdown', onDocumentPointerdown);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', onDocumentPointerdown)
-  followViewport.stop()
-})
+  document.removeEventListener('pointerdown', onDocumentPointerdown);
+  followViewport.stop();
+});
 
 /* Scroll/resize follow: while the panel is open, any scroll (page or a
  * nested scrollable ancestor) or viewport resize re-runs repositionMenu so
  * the fixed-position panel stays glued to the input instead of detaching.
  * Declared after rootEl/menuEl exist; closeMenu/open-watch reference it at
  * call time. */
-const followViewport = useOverlayFollow(rootEl, menuEl, repositionMenu, isMenuOpen)
+const followViewport = useOverlayFollow(rootEl, menuEl, repositionMenu, isMenuOpen);
 
 /* ------------------------------------------------------------------ *
  * ARIA / classes
  * ------------------------------------------------------------------ */
 
-const ariaInvalid = computed(() =>
-  props.status === 'error' ? 'true' : undefined,
-)
+const ariaInvalid = computed(() => (props.status === 'error' ? 'true' : undefined));
 
 const classList = computed(() => [
   'sn-mention',
@@ -553,7 +533,7 @@ const classList = computed(() => [
     [`sn-mention--status-${props.status}`]: props.status !== 'default',
     'sn-mention--menu-open': isMenuOpen.value,
   },
-])
+]);
 </script>
 
 <template>
@@ -583,8 +563,14 @@ const classList = computed(() => [
       :aria-activedescendant="ariaActiveDescendant"
       autocomplete="off"
       @input="onInput"
-      @focus="isFocused = true; onFocus($event)"
-      @blur="isFocused = false; onBlur($event)"
+      @focus="
+        isFocused = true;
+        onFocus($event);
+      "
+      @blur="
+        isFocused = false;
+        onBlur($event);
+      "
       @keydown="onKeydown"
     />
     <input
@@ -606,10 +592,16 @@ const classList = computed(() => [
       :aria-activedescendant="ariaActiveDescendant"
       autocomplete="off"
       @input="onInput"
-      @focus="isFocused = true; onFocus($event)"
-      @blur="isFocused = false; onBlur($event)"
+      @focus="
+        isFocused = true;
+        onFocus($event);
+      "
+      @blur="
+        isFocused = false;
+        onBlur($event);
+      "
       @keydown="onKeydown"
-    >
+    />
 
     <!-- Candidate panel: Teleported to body, fixed positioning with
          viewport flip (placement class is informational; coords come from
@@ -642,7 +634,9 @@ const classList = computed(() => [
               @mouseenter="onOptionEnter(i)"
               @mousedown.prevent
               @click="selectOption(option)"
-            >{{ option.label }}</div>
+            >
+              {{ option.label }}
+            </div>
           </template>
         </div>
       </Transition>
@@ -662,13 +656,16 @@ const classList = computed(() => [
   color: var(--sn-web-mention-text-color, var(--sn-web-color-text-primary));
   font-family: inherit;
   line-height: 1;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
   box-sizing: border-box;
 }
 
 .sn-mention:focus-within {
   border-color: var(--sn-web-mention-border-color-focus, var(--sn-web-color-action-primary));
-  box-shadow: 0 0 0 3px var(--sn-web-mention-focus-ring, var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15)));
+  box-shadow: 0 0 0 3px
+    var(--sn-web-mention-focus-ring, var(--sn-web-focus-ring, rgba(22, 119, 255, 0.15)));
 }
 
 /* Textarea variant: align top, grow vertically. */
@@ -683,18 +680,43 @@ const classList = computed(() => [
 }
 
 /* Sizes — mirror SnInput presets. */
-.sn-mention--mini { height: 22px; font-size: 11px; }
-.sn-mention--tiny { height: 24px; font-size: 12px; }
-.sn-mention--small { height: 28px; font-size: 13px; }
-.sn-mention--medium { height: 32px; font-size: 14px; }
-.sn-mention--large { height: 40px; font-size: 15px; }
+.sn-mention--mini {
+  height: 22px;
+  font-size: 11px;
+}
+.sn-mention--tiny {
+  height: 24px;
+  font-size: 12px;
+}
+.sn-mention--small {
+  height: 28px;
+  font-size: 13px;
+}
+.sn-mention--medium {
+  height: 32px;
+  font-size: 14px;
+}
+.sn-mention--large {
+  height: 40px;
+  font-size: 15px;
+}
 
 /* Textarea sizes: height driven by rows, only font-size scales. */
-.sn-mention--textarea.sn-mention--mini { height: auto; }
-.sn-mention--textarea.sn-mention--tiny { height: auto; }
-.sn-mention--textarea.sn-mention--small { height: auto; }
-.sn-mention--textarea.sn-mention--medium { height: auto; }
-.sn-mention--textarea.sn-mention--large { height: auto; }
+.sn-mention--textarea.sn-mention--mini {
+  height: auto;
+}
+.sn-mention--textarea.sn-mention--tiny {
+  height: auto;
+}
+.sn-mention--textarea.sn-mention--small {
+  height: auto;
+}
+.sn-mention--textarea.sn-mention--medium {
+  height: auto;
+}
+.sn-mention--textarea.sn-mention--large {
+  height: auto;
+}
 
 /* Status */
 .sn-mention--status-error {
@@ -800,8 +822,7 @@ const classList = computed(() => [
 
 /* Options */
 .sn-mention__option {
-  padding: var(--sn-web-mention-option-padding-y, 6px)
-    var(--sn-web-mention-option-padding-x, 10px);
+  padding: var(--sn-web-mention-option-padding-y, 6px) var(--sn-web-mention-option-padding-x, 10px);
   font-size: inherit;
   line-height: 1.4;
   color: var(--sn-web-mention-option-text-color, var(--sn-web-color-text-primary));

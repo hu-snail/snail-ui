@@ -5,7 +5,7 @@
  * Note: `fontColor` is painted into a canvas tile, so it must be a real CSS
  * colour value (a `var(--sn-web-*)` string cannot be resolved by canvas).
  */
-import { SnWatermark } from '@snui/vue-web'
+import { SnWatermark } from '@snui/vue-web';
 </script>
 
 <template>
@@ -25,8 +25,8 @@ import { SnWatermark } from '@snui/vue-web'
         <div class="watermark-content-demo__panel">
           <h5>季度经营分析报告</h5>
           <p>
-            content 传入数组时，每一项渲染为一行，行距由 lineHeight 控制；
-            瓦片按 width / height 组成网格平铺，默认不交错。
+            content 传入数组时，每一项渲染为一行，行距由 lineHeight 控制； 瓦片按 width / height
+            组成网格平铺，默认不交错。
           </p>
           <p>水印层为纯装饰元素，不影响正文的选择、复制与点击交互。</p>
         </div>

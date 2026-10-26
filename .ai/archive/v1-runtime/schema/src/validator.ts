@@ -17,12 +17,7 @@ import { UISchemaSchema, type UISchema } from '@snui/protocol';
  * diverging from the Zod Source of Truth (AGENTS.md §25).
  */
 
-export type SchemaErrorSource =
-  | 'schema'
-  | 'component'
-  | 'binding'
-  | 'action'
-  | 'runtime';
+export type SchemaErrorSource = 'schema' | 'component' | 'binding' | 'action' | 'runtime';
 
 export type SchemaErrorSeverity = 'info' | 'warning' | 'error';
 

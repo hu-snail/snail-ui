@@ -28,46 +28,46 @@ An array `name` is joined into `sn-transition--<a>-<b>` (e.g. `["fade", "up"]` �
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| show | boolean | false | Whether the content is shown |
-| duration | number \| boolean \| Record<string, number> | 300 | Animation duration; `false` disables it, an object sets per-leg |
-| lazyRender | boolean | false | Defer the first render until `show` turns true |
-| name | TransitionName \| TransitionName[] | — | Animation name, or an array to combine several |
-| destroy | boolean | true | Hide with `display: none` after the leave animation |
-| enterClass | string | '' | Class on the enter start frame |
-| enterActiveClass | string | '' | Class while entering |
-| enterToClass | string | '' | Class on the enter end frame |
-| leaveClass | string | '' | Class on the leave start frame |
-| leaveActiveClass | string | '' | Class while leaving |
-| leaveToClass | string | '' | Class on the leave end frame |
-| disableTouchMove | boolean | false | Intercept touchmove so the page behind cannot scroll |
-| customStyle | string | '' | Custom inline style for the root node |
-| customClass | string | '' | Custom class for the root node |
+| Prop             | Type                                        | Default | Description                                                     |
+| ---------------- | ------------------------------------------- | ------- | --------------------------------------------------------------- |
+| show             | boolean                                     | false   | Whether the content is shown                                    |
+| duration         | number \| boolean \| Record<string, number> | 300     | Animation duration; `false` disables it, an object sets per-leg |
+| lazyRender       | boolean                                     | false   | Defer the first render until `show` turns true                  |
+| name             | TransitionName \| TransitionName[]          | —       | Animation name, or an array to combine several                  |
+| destroy          | boolean                                     | true    | Hide with `display: none` after the leave animation             |
+| enterClass       | string                                      | ''      | Class on the enter start frame                                  |
+| enterActiveClass | string                                      | ''      | Class while entering                                            |
+| enterToClass     | string                                      | ''      | Class on the enter end frame                                    |
+| leaveClass       | string                                      | ''      | Class on the leave start frame                                  |
+| leaveActiveClass | string                                      | ''      | Class while leaving                                             |
+| leaveToClass     | string                                      | ''      | Class on the leave end frame                                    |
+| disableTouchMove | boolean                                     | false   | Intercept touchmove so the page behind cannot scroll            |
+| customStyle      | string                                      | ''      | Custom inline style for the root node                           |
+| customClass      | string                                      | ''      | Custom class for the root node                                  |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| before-enter | Before entering | — |
-| enter | Entering | — |
-| after-enter | After entering | — |
-| before-leave | Before leaving | — |
-| leave | Leaving | — |
-| after-leave | After leaving | — |
-| click | Root tapped | Event |
+| Event        | Description     | Payload |
+| ------------ | --------------- | ------- |
+| before-enter | Before entering | —       |
+| enter        | Entering        | —       |
+| after-enter  | After entering  | —       |
+| before-leave | Before leaving  | —       |
+| leave        | Leaving         | —       |
+| after-leave  | After leaving   | —       |
+| click        | Root tapped     | Event   |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description            |
+| ------- | ---------------------- |
 | default | The content to animate |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| — | The animation only touches transform / opacity and consumes no color token |
+| Variable | Purpose                                                                    |
+| -------- | -------------------------------------------------------------------------- |
+| —        | The animation only touches transform / opacity and consumes no color token |
 
 ## Accessibility
 
@@ -77,7 +77,6 @@ An array `name` is joined into `sn-transition--<a>-<b>` (e.g. `["fade", "up"]` �
 ## Dark mode
 
 The animation only changes `transform` / `opacity` and consumes no color token, so nothing extra is needed in dark mode. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

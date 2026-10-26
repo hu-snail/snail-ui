@@ -11,8 +11,8 @@
 `<SnDivider />` is drop-in ready; the component auto-stretches to the parent container:
 
 ```ts
-import { SnDivider } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnDivider } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 ```html
@@ -25,17 +25,17 @@ import '@snui/tokens-web/styles'
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | Axis of the line |
-| `dashed` | `boolean` | `false` | Dashed border |
-| `color` | `string` | — | Custom color (any CSS color value) |
-| `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'` | Vertical margin (only for horizontal) |
+| Name         | Type                             | Default        | Description                           |
+| ------------ | -------------------------------- | -------------- | ------------------------------------- |
+| `direction`  | `'horizontal' \| 'vertical'`     | `'horizontal'` | Axis of the line                      |
+| `dashed`     | `boolean`                        | `false`        | Dashed border                         |
+| `color`      | `string`                         | —              | Custom color (any CSS color value)    |
+| `marginSize` | `'small' \| 'medium' \| 'large'` | `'medium'`     | Vertical margin (only for horizontal) |
 
 ### Slots
 
-| Name | Description |
-| --- | --- |
+| Name      | Description                        |
+| --------- | ---------------------------------- |
 | `default` | Text on the line (only horizontal) |
 
 ## Accessibility

@@ -7,21 +7,21 @@
  * button decides when to collapse it. The row also carries a "don't ask
  * again" checkbox, a common companion of a destructive confirmation.
  */
-import { ref } from 'vue'
-import { SnButton, SnCheckbox, SnPopconfirm } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnCheckbox, SnPopconfirm } from '@snui/vue-web';
 
-const show = ref(false)
-const dontAskAgain = ref(false)
-const log = ref('')
+const show = ref(false);
+const dontAskAgain = ref(false);
+const log = ref('');
 
 function cancel(): void {
-  show.value = false
-  log.value = 'Canceled, the document was not deleted'
+  show.value = false;
+  log.value = 'Canceled, the document was not deleted';
 }
 
 function confirm(): void {
-  show.value = false
-  log.value = dontAskAgain.value ? 'Deleted, and remembered not to show again' : 'Deleted'
+  show.value = false;
+  log.value = dontAskAgain.value ? 'Deleted, and remembered not to show again' : 'Deleted';
 }
 </script>
 
@@ -51,7 +51,9 @@ function confirm(): void {
     </div>
 
     <p class="popconfirm-action-demo__hint">
-      The #action slot replaces the built-in Cancel / OK button area entirely; the caller decides when to close: this example uses v-model:show and the custom buttons collapse the bubble themselves; the checkbox value can be submitted to the business in the confirm callback.
+      The #action slot replaces the built-in Cancel / OK button area entirely; the caller decides
+      when to close: this example uses v-model:show and the custom buttons collapse the bubble
+      themselves; the checkbox value can be submitted to the business in the confirm callback.
     </p>
   </div>
 </template>

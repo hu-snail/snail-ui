@@ -2,7 +2,7 @@
 /**
  * skeleton-web-basic — line, block, circle and paragraph shapes.
  */
-import { SnSkeleton } from '@snui/vue-web'
+import { SnSkeleton } from '@snui/vue-web';
 </script>
 
 <template>

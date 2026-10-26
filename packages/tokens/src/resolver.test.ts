@@ -66,8 +66,7 @@ describe('@snui/tokens — Resolver (Cascade)', () => {
         expect(value('--aui-color-border-default')).toBe('#27272a');
         // The accent stays blue in both themes, so text on it stays light.
         expect(value('--aui-color-text-on-primary')).toBe('#ffffff');
-      }
-      else {
+      } else {
         expect(value('--aui-color-text-primary')).toBe('var(--aui-color-gray-950)');
         expect(value('--aui-color-text-secondary')).toBe('var(--aui-color-gray-500)');
         expect(value('--aui-color-background-surface')).toBe('#ffffff');
@@ -122,7 +121,13 @@ describe('@snui/tokens — Resolver (Cascade)', () => {
       { color: { text: { primary: 'A' }, background: { surface: 'B' } } } as never,
       { name: 't', semantic: { text: { primary: 'Z' } } },
     );
-    expect((merged as { color: { text: { primary: string }; background: { surface: string } } }).color.text.primary).toBe('Z');
-    expect((merged as { color: { text: { primary: string }; background: { surface: string } } }).color.background.surface).toBe('B');
+    expect(
+      (merged as { color: { text: { primary: string }; background: { surface: string } } }).color
+        .text.primary,
+    ).toBe('Z');
+    expect(
+      (merged as { color: { text: { primary: string }; background: { surface: string } } }).color
+        .background.surface,
+    ).toBe('B');
   });
 });

@@ -26,20 +26,20 @@
  * a live browser, so `window` access below never runs in a non-DOM host.
  */
 
-import { onBeforeUnmount, type Ref } from 'vue'
+import { onBeforeUnmount, type Ref } from 'vue';
 
 /** How the host reports "the overlay is currently shown". */
-type EnabledSource = Ref<boolean> | (() => boolean)
+type EnabledSource = Ref<boolean> | (() => boolean);
 
 export interface OverlayFollowHandle {
   /** Begin re-triggering `repositionFn` on scroll/resize while shown. */
-  start: () => void
+  start: () => void;
   /** Stop following and release the listeners (idempotent). */
-  stop: () => void
+  stop: () => void;
 }
 
 function isEnabled(source: EnabledSource): boolean {
-  return typeof source === 'function' ? source() : source.value
+  return typeof source === 'function' ? source() : source.value;
 }
 
 export function useOverlayFollow(
@@ -52,57 +52,57 @@ export function useOverlayFollow(
   /** Whether the overlay is currently shown; frames while hidden are dropped. */
   enabled: EnabledSource,
 ): OverlayFollowHandle {
-  let isActive = false
-  let frameId: number | null = null
+  let isActive = false;
+  let frameId: number | null = null;
 
   function runFrame(): void {
-    frameId = null
+    frameId = null;
     // Closed (or mid-close): nothing to keep aligned. The refs are the
     // source of truth — panelRef nulls out when the v-if'd panel unmounts.
-    if (!isActive || !isEnabled(enabled)) return
-    if (triggerRef.value === null || panelRef.value === null) return
-    void repositionFn()
+    if (!isActive || !isEnabled(enabled)) return;
+    if (triggerRef.value === null || panelRef.value === null) return;
+    void repositionFn();
   }
 
   /** rAF throttle: coalesce a scroll burst into one reposition per frame. */
   function scheduleFollow(): void {
-    if (frameId !== null) return
-    frameId = requestAnimationFrame(runFrame)
+    if (frameId !== null) return;
+    frameId = requestAnimationFrame(runFrame);
   }
 
   function onWindowScroll(event: Event): void {
     // The panel's own scrollbar (menu body etc.) does not move the trigger;
     // skip it so internal scrolling cannot spam repositions.
-    if (event.target instanceof Node && panelRef.value?.contains(event.target)) return
-    scheduleFollow()
+    if (event.target instanceof Node && panelRef.value?.contains(event.target)) return;
+    scheduleFollow();
   }
 
   function onWindowResize(): void {
-    scheduleFollow()
+    scheduleFollow();
   }
 
   function start(): void {
-    if (isActive) return
-    isActive = true
-    window.addEventListener('scroll', onWindowScroll, { capture: true })
-    window.addEventListener('resize', onWindowResize)
+    if (isActive) return;
+    isActive = true;
+    window.addEventListener('scroll', onWindowScroll, { capture: true });
+    window.addEventListener('resize', onWindowResize);
   }
 
   function stop(): void {
-    if (!isActive) return
-    isActive = false
+    if (!isActive) return;
+    isActive = false;
     if (frameId !== null) {
-      cancelAnimationFrame(frameId)
-      frameId = null
+      cancelAnimationFrame(frameId);
+      frameId = null;
     }
     // Same capture flag as addEventListener — capture listeners only come
     // off when the options match.
-    window.removeEventListener('scroll', onWindowScroll, { capture: true })
-    window.removeEventListener('resize', onWindowResize)
+    window.removeEventListener('scroll', onWindowScroll, { capture: true });
+    window.removeEventListener('resize', onWindowResize);
   }
 
   // §82: the composable cleans up even if the host forgets to stop().
-  onBeforeUnmount(stop)
+  onBeforeUnmount(stop);
 
-  return { start, stop }
+  return { start, stop };
 }

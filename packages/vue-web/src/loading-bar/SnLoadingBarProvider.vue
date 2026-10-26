@@ -42,12 +42,12 @@
  *   </SnLoadingBarProvider>
  */
 
-import { computed, onBeforeUnmount, provide, ref } from 'vue'
-import SnLoadingBar from './SnLoadingBar.vue'
-import { loadingBarApiInjectionKey } from './use-loading-bar'
-import type { LoadingBarApi, LoadingBarStyles } from './loading-bar-types'
+import { computed, onBeforeUnmount, provide, ref } from 'vue';
+import SnLoadingBar from './SnLoadingBar.vue';
+import { loadingBarApiInjectionKey } from './use-loading-bar';
+import type { LoadingBarApi, LoadingBarStyles } from './loading-bar-types';
 
-defineOptions({ name: 'SnLoadingBarProvider' })
+defineOptions({ name: 'SnLoadingBarProvider' });
 
 const props = withDefaults(
   defineProps<{
@@ -55,128 +55,128 @@ const props = withDefaults(
      * Teleport target for the bar element. Mirrors the reference `to` prop;
      * defaults to 'body'.
      */
-    to?: string | HTMLElement
+    to?: string | HTMLElement;
     /**
      * Custom inline styles per visual state, mirroring the reference
      * `loadingBarStyle` prop.
      */
-    loadingBarStyle?: LoadingBarStyles
+    loadingBarStyle?: LoadingBarStyles;
   }>(),
   {
     to: 'body',
   },
-)
+);
 
 /** Bar lifecycle. `idle` is fully hidden; the rest are visible stages. */
-type Phase = 'idle' | 'loading' | 'finishing' | 'fading'
+type Phase = 'idle' | 'loading' | 'finishing' | 'fading';
 
-const phase = ref<Phase>('idle')
-const progress = ref(0)
-const isError = ref(false)
+const phase = ref<Phase>('idle');
+const progress = ref(0);
+const isError = ref(false);
 
 /**
  * Asymptote of the loading loop: fast initial steps, a decelerating tail.
  * The bar never reaches this on its own — only finish()/error() do.
  */
-const LOADING_CEILING = 90
+const LOADING_CEILING = 90;
 /** Per-frame approach factor: width += (ceiling - width) * factor. */
-const LOADING_FACTOR = 0.035
+const LOADING_FACTOR = 0.035;
 /** Finishing sprint duration; must match the CSS transition below. */
-const FINISH_MS = 260
+const FINISH_MS = 260;
 /** Extra time the error colour stays visible before fading. */
-const ERROR_HOLD_MS = 120
+const ERROR_HOLD_MS = 120;
 /** Fade duration; must match the CSS transition below. */
-const FADE_MS = 320
+const FADE_MS = 320;
 
-let rafId: number | null = null
-let finishTimer: ReturnType<typeof setTimeout> | null = null
-let fadeTimer: ReturnType<typeof setTimeout> | null = null
+let rafId: number | null = null;
+let finishTimer: ReturnType<typeof setTimeout> | null = null;
+let fadeTimer: ReturnType<typeof setTimeout> | null = null;
 
 function cancelRaf(): void {
   if (rafId !== null) {
-    cancelAnimationFrame(rafId)
-    rafId = null
+    cancelAnimationFrame(rafId);
+    rafId = null;
   }
 }
 
 function clearTimers(): void {
   if (finishTimer !== null) {
-    clearTimeout(finishTimer)
-    finishTimer = null
+    clearTimeout(finishTimer);
+    finishTimer = null;
   }
   if (fadeTimer !== null) {
-    clearTimeout(fadeTimer)
-    fadeTimer = null
+    clearTimeout(fadeTimer);
+    fadeTimer = null;
   }
 }
 
 /** One rAF step of the loading loop: decelerating approach to the ceiling. */
 function step(): void {
-  rafId = null
+  rafId = null;
   if (phase.value !== 'loading') {
-    return
+    return;
   }
   progress.value = Math.min(
     progress.value + (LOADING_CEILING - progress.value) * LOADING_FACTOR,
     LOADING_CEILING,
-  )
-  rafId = requestAnimationFrame(step)
+  );
+  rafId = requestAnimationFrame(step);
 }
 
 function start(): void {
   if (phase.value === 'loading') {
     // Already loading — keep the existing loop (mirrors the reference).
-    return
+    return;
   }
-  cancelRaf()
-  clearTimers()
-  isError.value = false
-  progress.value = 0
-  phase.value = 'loading'
-  rafId = requestAnimationFrame(step)
+  cancelRaf();
+  clearTimers();
+  isError.value = false;
+  progress.value = 0;
+  phase.value = 'loading';
+  rafId = requestAnimationFrame(step);
 }
 
 function sprintTo(status: 'default' | 'error'): void {
   if (phase.value === 'idle') {
     // Finishing without a start shows nothing (documented divergence).
-    return
+    return;
   }
-  cancelRaf()
-  clearTimers()
-  isError.value = status === 'error'
-  progress.value = 100
-  phase.value = 'finishing'
+  cancelRaf();
+  clearTimers();
+  isError.value = status === 'error';
+  progress.value = 100;
+  phase.value = 'finishing';
 
   // Sprint transition (FINISH_MS) plays first; the error colour is held a
   // beat longer so the failure state registers before the fade.
-  const delay = FINISH_MS + (status === 'error' ? ERROR_HOLD_MS : 0)
+  const delay = FINISH_MS + (status === 'error' ? ERROR_HOLD_MS : 0);
   finishTimer = setTimeout(() => {
-    finishTimer = null
-    fadeOut()
-  }, delay)
+    finishTimer = null;
+    fadeOut();
+  }, delay);
 }
 
 function fadeOut(): void {
-  phase.value = 'fading'
+  phase.value = 'fading';
   fadeTimer = setTimeout(() => {
-    fadeTimer = null
-    phase.value = 'idle'
-    progress.value = 0
-  }, FADE_MS)
+    fadeTimer = null;
+    phase.value = 'idle';
+    progress.value = 0;
+  }, FADE_MS);
 }
 
 const api: LoadingBarApi = {
   start,
   finish: () => sprintTo('default'),
   error: () => sprintTo('error'),
-}
+};
 
-provide(loadingBarApiInjectionKey, api)
+provide(loadingBarApiInjectionKey, api);
 
 onBeforeUnmount(() => {
-  cancelRaf()
-  clearTimers()
-})
+  cancelRaf();
+  clearTimers();
+});
 
 /**
  * Inline style driving the bar: width / opacity per phase, plus the
@@ -193,18 +193,16 @@ const barStyle = computed(() => ({
         : phase.value === 'fading'
           ? 'opacity 0.32s ease'
           : 'none',
-}))
+}));
 
 /** Merge the consumer's `loadingBarStyle` for the matching visual state. */
 const mergedBarStyle = computed(() => {
   if (phase.value === 'idle') {
-    return barStyle.value
+    return barStyle.value;
   }
-  const custom = isError.value
-    ? props.loadingBarStyle?.error
-    : props.loadingBarStyle?.loading
-  return custom ? [barStyle.value, custom] : barStyle.value
-})
+  const custom = isError.value ? props.loadingBarStyle?.error : props.loadingBarStyle?.loading;
+  return custom ? [barStyle.value, custom] : barStyle.value;
+});
 </script>
 
 <template>

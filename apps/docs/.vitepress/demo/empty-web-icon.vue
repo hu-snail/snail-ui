@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnEmpty — icon 槽位自定义图标 + extra 槽位放操作。 */
-import { Inbox } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnEmpty, SnIcon } from '@snui/vue-web'
+import { Inbox } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnEmpty, SnIcon } from '@snui/vue-web';
 
-registerSnIcons({ Inbox })
+registerSnIcons({ Inbox });
 </script>
 
 <template>

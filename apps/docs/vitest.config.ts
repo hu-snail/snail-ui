@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { defineConfig } from 'vitest/config';
 
 /**
  * Docs-side unit tests (the preview shims under `.vitepress/utils`).
@@ -14,4 +14,4 @@ export default defineConfig({
     environment: 'happy-dom',
     reporters: ['default'],
   },
-})
+});

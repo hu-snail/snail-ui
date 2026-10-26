@@ -22,51 +22,51 @@ Without a name the built-in SVG glyphs render; a name goes through the iconfont 
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `tolerance` | `number` | `10` | Pixels of slack at the right edge |
-| `text` / `successText` | `string` | `''` | Hint / success copy (empty = built-in) |
-| `disabled` | `boolean` | `false` | Blocks dragging |
-| `backgroundColor` / `activeBackgroundColor` | `string` | `''` | Track colors |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                                        | Type      | Default | Description                            |
+| ------------------------------------------- | --------- | ------- | -------------------------------------- |
+| `tolerance`                                 | `number`  | `10`    | Pixels of slack at the right edge      |
+| `text` / `successText`                      | `string`  | `''`    | Hint / success copy (empty = built-in) |
+| `disabled`                                  | `boolean` | `false` | Blocks dragging                        |
+| `backgroundColor` / `activeBackgroundColor` | `string`  | `''`    | Track colors                           |
+| `customClass` / `customStyle`               | `string`  | `''`    | Root class / inline style              |
 
 > **Not implemented**: The puzzle-piece background (needs canvas) and the free-form icon props (`icon` / `successIcon` / `iconPrefix` / `cssIcon` / `iconSize` / `successIconSize`) — the two glyphs are fixed and replaced through the `icon` / `success-icon` slots. This build verifies distance only, so it is a "confirm you are human" gesture, not a bot filter.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `success` | The handle reached the end | — |
-| `fail` | The handle was released short of the end | — |
+| Event     | Description                              | Payload |
+| --------- | ---------------------------------------- | ------- |
+| `success` | The handle reached the end               | —       |
+| `fail`    | The handle was released short of the end | —       |
 
 ## Exposed API
 
-| Member | Signature | Description |
-| --- | --- | --- |
-| `init` | `() => void` | Re-measure the track width |
+| Member  | Signature    | Description                    |
+| ------- | ------------ | ------------------------------ |
+| `init`  | `() => void` | Re-measure the track width     |
 | `reset` | `() => void` | Return the handle to the start |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `text` | Custom hint text |
+| Slot           | Description         |
+| -------------- | ------------------- |
+| `text`         | Custom hint text    |
 | `success-text` | Custom success text |
-| `icon` | Custom handle icon |
+| `icon`         | Custom handle icon  |
 | `success-icon` | Custom success icon |
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-soft`` | Track fill |
-| ``--sn-mp-color-feedback-success-soft`` | Verified track fill |
-| ``--sn-mp-color-feedback-success`` | Verified text + handle glyph |
-| ``--sn-mp-color-background-elevated`` | Handle plate |
-| ``--sn-mp-color-action-primary`` | Idle handle glyph |
-| ``--sn-mp-color-text-tertiary`` | Hint text |
-| ``--sn-mp-radius-md`` | Track + handle corners |
-| ``--sn-mp-shadow-sm`` | Handle shadow |
+| Token                                 | Purpose                      |
+| ------------------------------------- | ---------------------------- |
+| `--sn-mp-color-background-soft`       | Track fill                   |
+| `--sn-mp-color-feedback-success-soft` | Verified track fill          |
+| `--sn-mp-color-feedback-success`      | Verified text + handle glyph |
+| `--sn-mp-color-background-elevated`   | Handle plate                 |
+| `--sn-mp-color-action-primary`        | Idle handle glyph            |
+| `--sn-mp-color-text-tertiary`         | Hint text                    |
+| `--sn-mp-radius-md`                   | Track + handle corners       |
+| `--sn-mp-shadow-sm`                   | Handle shadow                |
 
 ## Accessibility
 
@@ -77,4 +77,3 @@ Without a name the built-in SVG glyphs render; a name goes through the iconfont 
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

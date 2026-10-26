@@ -11,18 +11,18 @@
  * 没有 viewport 固定定位 — 容器自带 `position: relative`，所以 demo
  * 里浮窗就停在卡片里；生产场景用同样的方式把 fab 嵌到你的面板/边栏里。
  */
-import { ref } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import { Lightbulb, Lightbulb as LightbulbOff, Plus } from 'lucide-vue-next'
+import { ref } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import { Lightbulb, Lightbulb as LightbulbOff, Plus } from 'lucide-vue-next';
 
-const active = ref<string | number | null>('ideas')
+const active = ref<string | number | null>('ideas');
 
 const items = [
-  { key: 'ideas',  label: 'Ideas',  icon: Lightbulb },
+  { key: 'ideas', label: 'Ideas', icon: Lightbulb },
   { key: 'camera', label: 'Camera', icon: LightbulbOff },
   // Last item is the always-visible trigger.
-  { key: 'new',    label: '新建',   icon: Plus },
-]
+  { key: 'new', label: '新建', icon: Plus },
+];
 </script>
 
 <template>

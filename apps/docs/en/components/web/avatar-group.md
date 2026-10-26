@@ -41,17 +41,17 @@ step, down to 0.7). `size` only styles the `+k` summary avatar.
 
 All props are optional.
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| maxOptions | `{ max: number; onExpand?: () => void } \| number` | `undefined` | Overflow control: with `max: n` the group shows `n − 1` avatars + a `+k` summary (k = total − n + 1); clicking calls `onExpand`, the number form has no click hook |
-| size | `number \| 'small' \| 'medium' \| 'large'` | `'medium'` | Summary avatar size; child avatars keep their own `SnAvatar` size |
-| sizeBehavior | `'tightening' \| 'shrink'` | `'tightening'` | `tightening` overlaps with a negative margin; `shrink` scales each avatar down (0.06 per step, min 0.7) |
+| Name         | Type                                               | Default        | Description                                                                                                                                                        |
+| ------------ | -------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| maxOptions   | `{ max: number; onExpand?: () => void } \| number` | `undefined`    | Overflow control: with `max: n` the group shows `n − 1` avatars + a `+k` summary (k = total − n + 1); clicking calls `onExpand`, the number form has no click hook |
+| size         | `number \| 'small' \| 'medium' \| 'large'`         | `'medium'`     | Summary avatar size; child avatars keep their own `SnAvatar` size                                                                                                  |
+| sizeBehavior | `'tightening' \| 'shrink'`                         | `'tightening'` | `tightening` overlaps with a negative margin; `shrink` scales each avatar down (0.06 per step, min 0.7)                                                            |
 
 ### Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
-| default | — | Avatar list — render `SnAvatar` elements (fragments and nested arrays are flattened, comment nodes are dropped) |
+| Name    | Scope | Description                                                                                                     |
+| ------- | ----- | --------------------------------------------------------------------------------------------------------------- |
+| default | —     | Avatar list — render `SnAvatar` elements (fragments and nested arrays are flattened, comment nodes are dropped) |
 
 No events (the expand callback arrives via `maxOptions.onExpand`). When the
 slotted count exceeds the cap, the `+k` summary renders as
@@ -60,12 +60,12 @@ static element.
 
 ## Tokens
 
-| Token | Purpose |
-| --- | --- |
+| Token                               | Purpose                                |
+| ----------------------------------- | -------------------------------------- |
 | `--sn-web-color-background-surface` | Avatar outline in the tightening stack |
-| `--sn-web-color-background-subtle` | Summary avatar background |
-| `--sn-web-color-text-secondary` | Summary avatar text |
-| `--sn-web-focus-ring` | Keyboard focus on the expand button |
+| `--sn-web-color-background-subtle`  | Summary avatar background              |
+| `--sn-web-color-text-secondary`     | Summary avatar text                    |
+| `--sn-web-focus-ring`               | Keyboard focus on the expand button    |
 
 ## Accessibility
 

@@ -22,15 +22,15 @@
 
 ### SnRate Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `number \| null` | `null` | v-model |
-| count | `number` | `5` | 星数 |
-| allowHalf | `boolean` | `false` | 半星 |
-| clearable | `boolean` | `false` | 点同值清零 |
-| readonly / disabled | `boolean` | `false` | 只读 / 禁用 |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| color | `string` | — | 选中色（写入 token 变量） |
+| Prop                | 类型                         | 默认值     | 说明                      |
+| ------------------- | ---------------------------- | ---------- | ------------------------- |
+| modelValue          | `number \| null`             | `null`     | v-model                   |
+| count               | `number`                     | `5`        | 星数                      |
+| allowHalf           | `boolean`                    | `false`    | 半星                      |
+| clearable           | `boolean`                    | `false`    | 点同值清零                |
+| readonly / disabled | `boolean`                    | `false`    | 只读 / 禁用               |
+| size                | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸                      |
+| color               | `string`                     | —          | 选中色（写入 token 变量） |
 
 `role="radiogroup"`，子星 `role="radio"`；ArrowLeft/Right ±1（allowHalf 时 ±0.5）。
 

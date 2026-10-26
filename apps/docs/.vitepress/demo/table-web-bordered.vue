@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTable — bordered frame vs borderless with bottom border. */
-import { SnTable } from '@snui/vue-web'
+import { SnTable } from '@snui/vue-web';
 </script>
 
 <template>
@@ -13,8 +13,14 @@ import { SnTable } from '@snui/vue-web'
         </tr>
       </thead>
       <tbody>
-        <tr><td>内容</td><td>内容</td></tr>
-        <tr><td>内容</td><td>内容</td></tr>
+        <tr>
+          <td>内容</td>
+          <td>内容</td>
+        </tr>
+        <tr>
+          <td>内容</td>
+          <td>内容</td>
+        </tr>
       </tbody>
     </SnTable>
 
@@ -26,8 +32,14 @@ import { SnTable } from '@snui/vue-web'
         </tr>
       </thead>
       <tbody>
-        <tr><td>内容</td><td>内容</td></tr>
-        <tr><td>内容</td><td>内容</td></tr>
+        <tr>
+          <td>内容</td>
+          <td>内容</td>
+        </tr>
+        <tr>
+          <td>内容</td>
+          <td>内容</td>
+        </tr>
       </tbody>
     </SnTable>
 
@@ -39,8 +51,14 @@ import { SnTable } from '@snui/vue-web'
         </tr>
       </thead>
       <tbody>
-        <tr><td>内容</td><td>内容</td></tr>
-        <tr><td>内容</td><td>内容</td></tr>
+        <tr>
+          <td>内容</td>
+          <td>内容</td>
+        </tr>
+        <tr>
+          <td>内容</td>
+          <td>内容</td>
+        </tr>
       </tbody>
     </SnTable>
   </div>

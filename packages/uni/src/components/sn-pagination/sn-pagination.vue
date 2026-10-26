@@ -32,44 +32,44 @@
  *   - 页码跳转输入 — 移动端不使用，交给宿主自定义 `size` 插槽
  */
 
-import { computed, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { ChevronLeft, ChevronRight } from '../sn-icon/sn-icon-set'
-import type { PaginationSlotScope } from './sn-pagination-types'
+import { computed, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { ChevronLeft, ChevronRight } from '../sn-icon/sn-icon-set';
+import type { PaginationSlotScope } from './sn-pagination-types';
 
-defineOptions({ name: 'SnPagination' })
+defineOptions({ name: 'SnPagination' });
 
 /** Buttons per side of the current page when the window is clamped. */
-const PAGE_WINDOW = 2
+const PAGE_WINDOW = 2;
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-pagination` 1:1 surface ─────────────────────────────── */
 
     /** 当前页码。 */
-    modelValue?: number
+    modelValue?: number;
     /** 总页数；传入 total 时优先根据 total 与 pageSize 计算。 */
-    totalPage?: number
+    totalPage?: number;
     /** 总数据条数。 */
-    total?: number
+    total?: number;
     /** 每页条数。 */
-    pageSize?: number
+    pageSize?: number;
     /** 上一页按钮文字；未设置时使用内置文案。 */
-    prevText?: string
+    prevText?: string;
     /** 下一页按钮文字；未设置时使用内置文案。 */
-    nextText?: string
+    nextText?: string;
     /** 是否展示翻页图标。 */
-    showIcon?: boolean
+    showIcon?: boolean;
     /** 是否展示文字提示。 */
-    showMessage?: boolean
+    showMessage?: boolean;
     /** 分页按钮风格：base / plain / dashed / text。 */
-    buttonVariant?: 'base' | 'plain' | 'dashed' | 'text'
+    buttonVariant?: 'base' | 'plain' | 'dashed' | 'text';
     /** 总页数只有一页时是否隐藏。 */
-    hideIfOnePage?: boolean
+    hideIfOnePage?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 1,
@@ -85,100 +85,98 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model 同步。 */
-  (e: 'update:modelValue', value: number): void
+  (e: 'update:modelValue', value: number): void;
   /** 页码变化时触发。 */
-  (e: 'change', payload: { value: number }): void
-}>()
+  (e: 'change', payload: { value: number }): void;
+}>();
 
 defineSlots<{
   /** 自定义上一页按钮，作用域 `{ modelValue, totalPageNum, total, pageSize }`。 */
-  prev?(scope: PaginationSlotScope): unknown
+  prev?(scope: PaginationSlotScope): unknown;
   /** 自定义中间页码区域，作用域同上。 */
-  size?(scope: PaginationSlotScope): unknown
+  size?(scope: PaginationSlotScope): unknown;
   /** 自定义下一页按钮，作用域同上。 */
-  next?(scope: PaginationSlotScope): unknown
+  next?(scope: PaginationSlotScope): unknown;
   /** 自定义底部提示信息，`showMessage` 为 true 时生效。 */
-  message?(scope: PaginationSlotScope): unknown
-}>()
+  message?(scope: PaginationSlotScope): unknown;
+}>();
 
 /** Derived page count: `total` + `pageSize` wins over `totalPage`. */
 const totalPageNum = computed<number>(() => {
   if (props.total > 0) {
-    return Math.max(1, Math.ceil(props.total / Math.max(1, props.pageSize)))
+    return Math.max(1, Math.ceil(props.total / Math.max(1, props.pageSize)));
   }
-  return Math.max(1, props.totalPage)
-})
+  return Math.max(1, props.totalPage);
+});
 
 /** Uncontrolled fallback + controlled sync — both modes stay in step. */
-const innerValue = ref(props.modelValue)
+const innerValue = ref(props.modelValue);
 watch(
   () => props.modelValue,
   (next) => {
-    innerValue.value = next
+    innerValue.value = next;
   },
-)
+);
 
 /** Clamp the model into range so a stale page never renders an empty window. */
 const currentPage = computed<number>(() =>
   Math.min(Math.max(1, innerValue.value), totalPageNum.value),
-)
+);
 
 /** True when the control is hidden because there is only one page. */
-const isHidden = computed(() => props.hideIfOnePage && totalPageNum.value === 1)
+const isHidden = computed(() => props.hideIfOnePage && totalPageNum.value === 1);
 
 /**
  * Visible page entries. `'ellipsis'` marks a gap; numbers are real pages.
  * The window is always contiguous and clamped to the ends.
  */
 const pageItems = computed<(number | 'ellipsis')[]>(() => {
-  const total = totalPageNum.value
-  const current = currentPage.value
-  const span = PAGE_WINDOW * 2 + 1
+  const total = totalPageNum.value;
+  const current = currentPage.value;
+  const span = PAGE_WINDOW * 2 + 1;
   if (total <= span) {
-    return Array.from({ length: total }, (_, i) => i + 1)
+    return Array.from({ length: total }, (_, i) => i + 1);
   }
-  const start = Math.max(2, current - PAGE_WINDOW)
-  const end = Math.min(total - 1, current + PAGE_WINDOW)
-  const items: (number | 'ellipsis')[] = [1]
-  if (start > 2) items.push('ellipsis')
-  for (let page = start; page <= end; page += 1) items.push(page)
-  if (end < total - 1) items.push('ellipsis')
-  items.push(total)
-  return items
-})
+  const start = Math.max(2, current - PAGE_WINDOW);
+  const end = Math.min(total - 1, current + PAGE_WINDOW);
+  const items: (number | 'ellipsis')[] = [1];
+  if (start > 2) items.push('ellipsis');
+  for (let page = start; page <= end; page += 1) items.push(page);
+  if (end < total - 1) items.push('ellipsis');
+  items.push(total);
+  return items;
+});
 
 const slotScope = computed<PaginationSlotScope>(() => ({
   modelValue: currentPage.value,
   totalPageNum: totalPageNum.value,
   total: props.total,
   pageSize: props.pageSize,
-}))
+}));
 
 /** Commit a page. Out-of-range targets are ignored, not clamped. */
 function goTo(page: number): void {
-  if (page < 1 || page > totalPageNum.value) return
-  if (page === currentPage.value) return
-  innerValue.value = page
-  emit('update:modelValue', page)
-  emit('change', { value: page })
+  if (page < 1 || page > totalPageNum.value) return;
+  if (page === currentPage.value) return;
+  innerValue.value = page;
+  emit('update:modelValue', page);
+  emit('change', { value: page });
 }
 
-const canPrev = computed(() => currentPage.value > 1)
-const canNext = computed(() => currentPage.value < totalPageNum.value)
+const canPrev = computed(() => currentPage.value > 1);
+const canNext = computed(() => currentPage.value < totalPageNum.value);
 
 const rootClass = computed(() => [
   'sn-pagination',
   `sn-pagination--${props.buttonVariant}`,
   props.customClass,
-])
+]);
 
-const messageText = computed(
-  () => `${currentPage.value} / ${totalPageNum.value}`,
-)
+const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}`);
 </script>
 
 <template>
@@ -222,11 +220,9 @@ const messageText = computed(
           :pageSize="slotScope.pageSize"
         >
           <template v-for="(item, index) in pageItems" :key="`${item}-${index}`">
-            <text
-              v-if="item === 'ellipsis'"
-              class="sn-pagination__ellipsis"
-              aria-hidden="true"
-            >…</text>
+            <text v-if="item === 'ellipsis'" class="sn-pagination__ellipsis" aria-hidden="true"
+              >…</text
+            >
             <view
               v-else
               class="sn-pagination__page"

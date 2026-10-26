@@ -4,11 +4,13 @@
  * Per AUI-DOCS-016: imports the real @snui/vue-web SnDivider.
  */
 
-import { ref } from 'vue'
-import { SnDivider, SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnDivider, SnButton } from '@snui/vue-web';
 
-const show = ref(true)
-function toggle(): void { show.value = !show.value }
+const show = ref(true);
+function toggle(): void {
+  show.value = !show.value;
+}
 </script>
 
 <template>

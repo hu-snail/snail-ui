@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnQrCode — basic canvas rendering. */
-import { SnQrCode } from '@snui/vue-web'
+import { SnQrCode } from '@snui/vue-web';
 </script>
 
 <template>
@@ -10,5 +10,9 @@ import { SnQrCode } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: flex-start; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
 </style>

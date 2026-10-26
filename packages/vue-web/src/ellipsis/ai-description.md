@@ -17,17 +17,17 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnEllipsis from '@snui/vue-web/src/ellipsis/SnEllipsis.vue'
+import SnEllipsis from '@snui/vue-web/src/ellipsis/SnEllipsis.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `expandTrigger` | `'click' \| 'none'` | `'none'` | no | Clicking the text toggles the expanded state. |
-| `lineClamp` | `number` | `1` | no | Row count before clamping; `1` = single line. |
-| `tooltip` | `boolean \| SnEllipsisTooltipOptions` | `true` | no | Show a tooltip with the full text when overflowing. Object form forwards SnTooltip props. |
-| `width` | `number \| 'screen'` | `undefined` | no | Box width; number = px, `'screen'` = 100vw. |
+| Name            | Type                                  | Default     | Required | Description                                                                               |
+| --------------- | ------------------------------------- | ----------- | -------- | ----------------------------------------------------------------------------------------- |
+| `expandTrigger` | `'click' \| 'none'`                   | `'none'`    | no       | Clicking the text toggles the expanded state.                                             |
+| `lineClamp`     | `number`                              | `1`         | no       | Row count before clamping; `1` = single line.                                             |
+| `tooltip`       | `boolean \| SnEllipsisTooltipOptions` | `true`      | no       | Show a tooltip with the full text when overflowing. Object form forwards SnTooltip props. |
+| `width`         | `number \| 'screen'`                  | `undefined` | no       | Box width; number = px, `'screen'` = 100vw.                                               |
 
 `SnEllipsisTooltipOptions` (documented subset of SnTooltip props):
 `content`, `placement`, `trigger`, `delay`, `duration`, `arrow`,
@@ -40,8 +40,8 @@ None.
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                     |
+| --------- | ------------------------------- |
 | `default` | Text content that gets clamped. |
 
 ## Divergences from the reference API

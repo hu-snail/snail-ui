@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnTree — option-level prefix/suffix vs tree-level render fns. */
-import { ref } from 'vue'
-import { SnTree } from '@snui/vue-web'
-import type { SnTreeOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTree } from '@snui/vue-web';
+import type { SnTreeOption } from '@snui/vue-web';
 
-const selected = ref<string[]>(['ts'])
+const selected = ref<string[]>(['ts']);
 
 const data: SnTreeOption[] = [
   {
@@ -21,12 +21,12 @@ const data: SnTreeOption[] = [
       { key: 'vue-2', label: 'App.vue', suffix: '根组件' },
     ],
   },
-]
+];
 
 const renderTreeData: SnTreeOption[] = [
   { key: 'docs', label: '文档', children: [{ key: 'docs-1', label: '需求说明' }] },
   { key: 'src', label: '源代码' },
-]
+];
 </script>
 
 <template>
@@ -42,11 +42,15 @@ const renderTreeData: SnTreeOption[] = [
     </section>
 
     <section class="sn-demo__section">
-      <p class="sn-demo__label">树级 render-prefix / render-suffix（收到 option / checked / selected）：</p>
+      <p class="sn-demo__label">
+        树级 render-prefix / render-suffix（收到 option / checked / selected）：
+      </p>
       <SnTree
         :data="renderTreeData"
         block-line
-        :render-prefix="({ option, selected: isSelected }) => (isSelected ? '● ' : '') + String(option.key)"
+        :render-prefix="
+          ({ option, selected: isSelected }) => (isSelected ? '● ' : '') + String(option.key)
+        "
         :render-suffix="({ checked }) => (checked ? '已勾选' : '未勾选')"
         :default-expanded-keys="['docs']"
       />
@@ -55,7 +59,19 @@ const renderTreeData: SnTreeOption[] = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 360px; display: flex; flex-direction: column; gap: 24px; }
-.sn-demo__section { display: flex; flex-direction: column; }
-.sn-demo__label { margin: 0 0 4px; font-size: 12px; color: var(--sn-web-color-text-tertiary); }
+.sn-demo {
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.sn-demo__section {
+  display: flex;
+  flex-direction: column;
+}
+.sn-demo__label {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--sn-web-color-text-tertiary);
+}
 </style>

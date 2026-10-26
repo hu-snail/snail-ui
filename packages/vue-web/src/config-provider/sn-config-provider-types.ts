@@ -21,9 +21,9 @@
  */
 export interface SnFontOverride {
   /** Body / default font stack (cascades to every component via `inherit`). */
-  body?: string
+  body?: string;
   /** Heading font stack, exposed as `--aui-font-family-heading`. */
-  heading?: string
+  heading?: string;
   /** Code / mono font stack, exposed as `--aui-font-family-code`. */
-  code?: string
+  code?: string;
 }

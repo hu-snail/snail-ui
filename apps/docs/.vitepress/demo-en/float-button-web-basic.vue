@@ -10,15 +10,16 @@
  * viewport-pinned mode is demonstrated on its own in the 定位 section, in a
  * bordered stage that mimics a browser window.
  */
-import { FileText, Plus, Search } from 'lucide-vue-next'
-import { SnFloatButton } from '@snui/vue-web'
+import { FileText, Plus, Search } from 'lucide-vue-next';
+import { SnFloatButton } from '@snui/vue-web';
 </script>
 
 <template>
   <div class="float-button-demo">
     <p class="float-button-demo__hint">
-      Bottom-right of the stage (positioned inside the module): a default circle (<code>tooltip</code>), brand-colored circle (<code>type="primary"</code>), a square with text (<code>shape="square"</code> +
-      <code>description</code>）。
+      Bottom-right of the stage (positioned inside the module): a default circle
+      (<code>tooltip</code>), brand-colored circle (<code>type="primary"</code>), a square with text
+      (<code>shape="square"</code> + <code>description</code>）。
     </p>
 
     <div class="float-button-demo__stage">

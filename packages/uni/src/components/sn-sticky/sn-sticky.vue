@@ -31,22 +31,22 @@
  *   - 层级冲突 — 用 `z-index` prop 调整
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnSticky' })
+defineOptions({ name: 'SnSticky' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-sticky` 1:1 surface ─────────────────────────────────── */
 
     /** 层级。 */
-    zIndex?: number
+    zIndex?: number;
     /** 吸顶距离（px）。 */
-    offsetTop?: number
+    offsetTop?: number;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     zIndex: 1,
@@ -54,31 +54,24 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 需要吸顶的内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const rootClass = computed(() => ['sn-sticky', props.customClass])
+const rootClass = computed(() => ['sn-sticky', props.customClass]);
 
 const rootStyle = computed(() => {
-  const parts = [
-    `top: ${props.offsetTop}px`,
-    `z-index: ${props.zIndex}`,
-  ]
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [`top: ${props.offsetTop}px`, `z-index: ${props.zIndex}`];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 </script>
 
 <template>
-  <view
-    data-snui-component="sticky"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="sticky" :class="rootClass" :style="rootStyle">
     <slot />
   </view>
 </template>

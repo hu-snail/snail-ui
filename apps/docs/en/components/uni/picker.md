@@ -27,34 +27,34 @@ Sheet picker: `v-model:visible` drives the sheet; rolling only updates the draft
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `Array<string \| number>` | `[]` | Confirmed value per column |
-| `visible` | `boolean` | `false` | Sheet visibility (`v-model:visible`) |
-| `columns` | `Array<Array<...>>` | `[]` | Columns, or the option tree in `cascade` mode |
-| `cascade` | `boolean` | `false` | Treat `columns` as a tree |
-| `title` | `string` | `''` | Toolbar title (empty = no title row) |
-| `cancelButtonText` / `confirmButtonText` | `string` | `'取消'` / `'确认'` | Toolbar labels |
-| `valueKey` / `labelKey` / `childrenKey` | `string` | `'value'` / `'label'` / `'children'` | Option keys |
-| `itemHeight` / `visibleItemCount` | `number` | `44` / `6` | Row geometry |
-| `beforeConfirm` | `({ value, selectedItems }) => boolean \| Promise<boolean>` | `undefined` | Veto hook for confirm |
-| `closeOnClickModal` | `boolean` | `true` | Mask tap closes |
-| `zIndex` | `number` | `15` | Stacking level |
-| `safeAreaInsetBottom` | `boolean` | `true` | Safe-area padding |
-| `immediateChange` | `boolean` | `false` | Write `v-model` on every roll |
-| `customClass` / `customStyle` / `customViewClass` | `string` | `''` | Root / sheet / roller classes |
+| Prop                                              | Type                                                        | Default                              | Description                                   |
+| ------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------ | --------------------------------------------- |
+| `modelValue`                                      | `Array<string \| number>`                                   | `[]`                                 | Confirmed value per column                    |
+| `visible`                                         | `boolean`                                                   | `false`                              | Sheet visibility (`v-model:visible`)          |
+| `columns`                                         | `Array<Array<...>>`                                         | `[]`                                 | Columns, or the option tree in `cascade` mode |
+| `cascade`                                         | `boolean`                                                   | `false`                              | Treat `columns` as a tree                     |
+| `title`                                           | `string`                                                    | `''`                                 | Toolbar title (empty = no title row)          |
+| `cancelButtonText` / `confirmButtonText`          | `string`                                                    | `'取消'` / `'确认'`                  | Toolbar labels                                |
+| `valueKey` / `labelKey` / `childrenKey`           | `string`                                                    | `'value'` / `'label'` / `'children'` | Option keys                                   |
+| `itemHeight` / `visibleItemCount`                 | `number`                                                    | `44` / `6`                           | Row geometry                                  |
+| `beforeConfirm`                                   | `({ value, selectedItems }) => boolean \| Promise<boolean>` | `undefined`                          | Veto hook for confirm                         |
+| `closeOnClickModal`                               | `boolean`                                                   | `true`                               | Mask tap closes                               |
+| `zIndex`                                          | `number`                                                    | `15`                                 | Stacking level                                |
+| `safeAreaInsetBottom`                             | `boolean`                                                   | `true`                               | Safe-area padding                             |
+| `immediateChange`                                 | `boolean`                                                   | `false`                              | Write `v-model` on every roll                 |
+| `customClass` / `customStyle` / `customViewClass` | `string`                                                    | `''`                                 | Root / sheet / roller classes                 |
 
 > **Not implemented**: `root-portal`: uni-app mini-programs have no portal host, so the sheet cannot be reparented to the page root (same divergence as `sn-popup`).
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Confirmed (or every roll with `immediateChange`) | `(value: Array)` |
-| `update:visible` | Sheet shown / hidden | `(value: boolean)` |
-| `confirm` | Confirm pressed and accepted | `{ value, selectedItems }` |
-| `cancel` | Cancel pressed | — |
-| `open` | Sheet opened | — |
+| Event               | Description                                      | Payload                    |
+| ------------------- | ------------------------------------------------ | -------------------------- |
+| `update:modelValue` | Confirmed (or every roll with `immediateChange`) | `(value: Array)`           |
+| `update:visible`    | Sheet shown / hidden                             | `(value: boolean)`         |
+| `confirm`           | Confirm pressed and accepted                     | `{ value, selectedItems }` |
+| `cancel`            | Cancel pressed                                   | —                          |
+| `open`              | Sheet opened                                     | —                          |
 
 ## Slots
 
@@ -62,14 +62,14 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | Sheet surface |
-| ``--sn-mp-color-border-subtle`` | Toolbar rule |
+| Token                                         | Purpose              |
+| --------------------------------------------- | -------------------- |
+| `--sn-mp-color-background-elevated`           | Sheet surface        |
+| `--sn-mp-color-border-subtle`                 | Toolbar rule         |
 | ``--sn-mp-color-text-primary` / `-secondary`` | Title / cancel label |
-| ``--sn-mp-color-action-primary`` | Confirm label |
-| ``--sn-mp-font-size-md`` | Toolbar text |
-| ``--sn-mp-spacing-2` / `-3` / `-4`` | Toolbar padding |
+| `--sn-mp-color-action-primary`                | Confirm label        |
+| `--sn-mp-font-size-md`                        | Toolbar text         |
+| ``--sn-mp-spacing-2` / `-3` / `-4``           | Toolbar padding      |
 
 ## Accessibility
 
@@ -83,4 +83,3 @@ Beyond touch, the H5 build accepts desktop input on the sheet roller: hold the l
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

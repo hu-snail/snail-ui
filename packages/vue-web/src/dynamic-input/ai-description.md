@@ -8,28 +8,28 @@ Web 端动态输入组件，对标 naive-ui `n-dynamic-input` 1:1。位于 `pack
 
 ## Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `Array<string \| number \| Record<string, unknown> \| null>` | `[]` | 绑定数组；每项一个独立值 |
-| `preset` | `() => DynamicInputValue` | `() => null` | 新行创建工厂（naive 默认 `null`；文本行传 `() => ''`） |
-| `min` | `number` | `0` | 行数下界；到界 − 按钮隐藏 |
-| `max` | `number` | — | 行数上界；到界 + 按钮隐藏 |
-| `disabled` | `boolean` | `false` | 禁用所有行输入与操作按钮 |
-| `readonly` | `boolean` | `false` | 行只读且不渲染 − / + 结构按钮 |
-| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（内置输入框高度/字号） |
-| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | 视觉状态，级联到每行内置输入框边框 |
-| `onCreate` | `(value: DynamicInputValue, index: number) => DynamicInputValue` | — | 新值后处理：在 `preset` 产出草稿后加工（对标 naive `on-create`） |
+| Prop         | 类型                                                             | 默认值       | 说明                                                             |
+| ------------ | ---------------------------------------------------------------- | ------------ | ---------------------------------------------------------------- |
+| `modelValue` | `Array<string \| number \| Record<string, unknown> \| null>`     | `[]`         | 绑定数组；每项一个独立值                                         |
+| `preset`     | `() => DynamicInputValue`                                        | `() => null` | 新行创建工厂（naive 默认 `null`；文本行传 `() => ''`）           |
+| `min`        | `number`                                                         | `0`          | 行数下界；到界 − 按钮隐藏                                        |
+| `max`        | `number`                                                         | —            | 行数上界；到界 + 按钮隐藏                                        |
+| `disabled`   | `boolean`                                                        | `false`      | 禁用所有行输入与操作按钮                                         |
+| `readonly`   | `boolean`                                                        | `false`      | 行只读且不渲染 − / + 结构按钮                                    |
+| `size`       | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`             | `'medium'`   | 尺寸（内置输入框高度/字号）                                      |
+| `status`     | `'default' \| 'error' \| 'warning'`                              | `'default'`  | 视觉状态，级联到每行内置输入框边框                               |
+| `onCreate`   | `(value: DynamicInputValue, index: number) => DynamicInputValue` | —            | 新值后处理：在 `preset` 产出草稿后加工（对标 naive `on-create`） |
 
 ## Events
 
-| 事件 | Payload | 触发时机 |
-| --- | --- | --- |
+| 事件                | Payload               | 触发时机                                                  |
+| ------------------- | --------------------- | --------------------------------------------------------- |
 | `update:modelValue` | `DynamicInputValue[]` | 任何变化——行编辑 / 删除 / 插入 / 空态创建；总是整个新数组 |
 
 ## Slots
 
-| Slot | Scope | 说明 |
-| --- | --- | --- |
+| Slot      | Scope              | 说明                                                                                          |
+| --------- | ------------------ | --------------------------------------------------------------------------------------------- |
 | `default` | `{ value, index }` | 自定义行渲染。提供后优先于内置输入框；对象值行必须用它渲染，编辑通过 `update:modelValue` 回写 |
 
 ## 交互语义
@@ -46,10 +46,10 @@ Web 端动态输入组件，对标 naive-ui `n-dynamic-input` 1:1。位于 `pack
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import SnDynamicInput from '@/dynamic-input/SnDynamicInput.vue'
+import { ref } from 'vue';
+import SnDynamicInput from '@/dynamic-input/SnDynamicInput.vue';
 
-const tags = ref<string[]>(['vue', 'vite'])
+const tags = ref<string[]>(['vue', 'vite']);
 </script>
 
 <template>
@@ -69,14 +69,14 @@ const tags = ref<string[]>(['vue', 'vite'])
 
 ## Token（`--sn-web-dynamic-input-*`）
 
-| Token | 用途 | 回退 |
-| --- | --- | --- |
-| `--sn-web-dynamic-input-row-gap` | 行间距 | `8px` |
-| `--sn-web-dynamic-input-action-gap` | 输入框与按钮组间距 | `6px` |
-| `--sn-web-dynamic-input-btn-size` | 行按钮尺寸 | `26px` |
-| `--sn-web-dynamic-input-border-color` | 行边框 / 按钮边框 | `--sn-web-color-border-default` |
-| `--sn-web-dynamic-input-bg` | 行输入背景 | `--sn-web-color-background-surface` |
-| `--sn-web-dynamic-input-text-color` | 行文本 | `--sn-web-color-text-primary` / `text-secondary` |
+| Token                                 | 用途               | 回退                                             |
+| ------------------------------------- | ------------------ | ------------------------------------------------ |
+| `--sn-web-dynamic-input-row-gap`      | 行间距             | `8px`                                            |
+| `--sn-web-dynamic-input-action-gap`   | 输入框与按钮组间距 | `6px`                                            |
+| `--sn-web-dynamic-input-btn-size`     | 行按钮尺寸         | `26px`                                           |
+| `--sn-web-dynamic-input-border-color` | 行边框 / 按钮边框  | `--sn-web-color-border-default`                  |
+| `--sn-web-dynamic-input-bg`           | 行输入背景         | `--sn-web-color-background-surface`              |
+| `--sn-web-dynamic-input-text-color`   | 行文本             | `--sn-web-color-text-primary` / `text-secondary` |
 
 高度 / 圆角 / 内边距复用 `--sn-web-input-*`（`--sn-web-input-radius` / `--sn-web-input-padding-x`）；焦点环复用 `--sn-web-focus-ring`。颜色全部 token 化，无硬编码 hex。
 

@@ -7,13 +7,13 @@
  * slot (own colour and size), or turning the area off with
  * `show-icon="false"` for pure-text confirmations.
  */
-import { ref } from 'vue'
-import { CircleAlert } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnIcon, SnPopconfirm } from '@snui/vue-web'
+import { ref } from 'vue';
+import { CircleAlert } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnIcon, SnPopconfirm } from '@snui/vue-web';
 
-registerSnIcons({ CircleAlert })
+registerSnIcons({ CircleAlert });
 
-const result = ref('')
+const result = ref('');
 </script>
 
 <template>
@@ -38,7 +38,11 @@ const result = ref('')
         @negative-click="result = '已取消删除'"
       >
         <template #icon>
-          <SnIcon :icon="CircleAlert" :size="20" color="var(--sn-web-color-feedback-danger, #d03050)" />
+          <SnIcon
+            :icon="CircleAlert"
+            :size="20"
+            color="var(--sn-web-color-feedback-danger, #d03050)"
+          />
         </template>
         <SnButton type="error">#icon 插槽（危险色）</SnButton>
       </SnPopconfirm>
@@ -56,7 +60,9 @@ const result = ref('')
 
     <p class="popconfirm-icon-demo__result">最近一次操作：{{ result || '（尚未操作）' }}</p>
     <p class="popconfirm-icon-demo__hint">
-      不传 icon 时使用内置警示图标；icon prop 接受任意图标组件并沿用警示色，需要自定义颜色或尺寸时改用 #icon 插槽，show-icon=false 则完全移除图标区。
+      不传 icon 时使用内置警示图标；icon prop
+      接受任意图标组件并沿用警示色，需要自定义颜色或尺寸时改用 #icon 插槽，show-icon=false
+      则完全移除图标区。
     </p>
   </div>
 </template>

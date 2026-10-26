@@ -49,28 +49,28 @@ Wrapping the uploader in a modal lets the user collect files first and commit th
 
 ### SnUpload Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| multiple | `boolean` | `false` | Multiple files |
-| accept | `string` | — | Native accept |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| max | `number` | — | File-count cap (hides trigger at limit) |
-| showFileList | `boolean` | `true` | Show the file list |
-| listType | `'text'\|'image'` | `'text'` | List variant |
-| dragger | `boolean` | `false` | Dashed drop area instead of the compact trigger (additive divergence, see ai-description.md) |
-| customRequest | `(file, fileList) => Promise` | — | Custom upload (absent → no network, immediate done) |
-| showProgress | `boolean` | `true` | Determinate bar for an uploading entry that carries `percentage` |
-| defaultUpload | `boolean` | `true` | false → list only, manual submit |
-| beforeUpload | `(file) => boolean \| Promise` | — | Reject to skip the list |
-| onPreview | `(file) => void` | — | Click-to-preview callback (same handler as `@preview`) |
+| Prop                | Type                           | Default  | Notes                                                                                        |
+| ------------------- | ------------------------------ | -------- | -------------------------------------------------------------------------------------------- |
+| multiple            | `boolean`                      | `false`  | Multiple files                                                                               |
+| accept              | `string`                       | —        | Native accept                                                                                |
+| disabled / readonly | `boolean`                      | `false`  | Disabled / read-only                                                                         |
+| max                 | `number`                       | —        | File-count cap (hides trigger at limit)                                                      |
+| showFileList        | `boolean`                      | `true`   | Show the file list                                                                           |
+| listType            | `'text'\|'image'`              | `'text'` | List variant                                                                                 |
+| dragger             | `boolean`                      | `false`  | Dashed drop area instead of the compact trigger (additive divergence, see ai-description.md) |
+| customRequest       | `(file, fileList) => Promise`  | —        | Custom upload (absent → no network, immediate done)                                          |
+| showProgress        | `boolean`                      | `true`   | Determinate bar for an uploading entry that carries `percentage`                             |
+| defaultUpload       | `boolean`                      | `true`   | false → list only, manual submit                                                             |
+| beforeUpload        | `(file) => boolean \| Promise` | —        | Reject to skip the list                                                                      |
+| onPreview           | `(file) => void`               | —        | Click-to-preview callback (same handler as `@preview`)                                       |
 
 ### SnUploadFile
 
-| Field | Type | Notes |
-| --- | --- | --- |
-| id / name / size / type / file / status | — | Entry identity and state-machine status |
-| url | `string \| undefined` | objectURL thumbnail for `listType='image'` (revoked on remove / unmount) |
-| percentage | `number \| undefined` | Upload progress, written by customRequest |
+| Field                                   | Type                  | Notes                                                                    |
+| --------------------------------------- | --------------------- | ------------------------------------------------------------------------ |
+| id / name / size / type / file / status | —                     | Entry identity and state-machine status                                  |
+| url                                     | `string \| undefined` | objectURL thumbnail for `listType='image'` (revoked on remove / unmount) |
+| percentage                              | `number \| undefined` | Upload progress, written by customRequest                                |
 
 Events: `change(fileList)` / `remove(file)` / `preview(file)`; defineExpose: `submit()`. State machine: pending → uploading → done / error. Directory/chunked upload stays out of scope (see ai-description.md).
 

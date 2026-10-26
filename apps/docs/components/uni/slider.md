@@ -22,33 +22,33 @@ range 双滑块返回 [start, end]；marks 支持对象形式；theme="capsule" 
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| number[]` | `0` | 当前值；`range` 模式为 `[start, end]` |
-| `min` / `max` | `number` | `0` / `100` | 最小 / 最大值 |
-| `step` | `number` | `1` | 步长 |
-| `range` | `boolean` | `false` | 双向滑块模式 |
-| `vertical` | `boolean` | `false` | 垂直展示 |
-| `theme` | `'default' \| 'capsule'` | `'default'` | 滑块风格 |
-| `disabled` | `boolean` | `false` | 禁用 |
-| `showExtremeValue` | `boolean` | `false` | 显示两端极值文案 |
-| `popoverVisible` | `'always' \| 'normal' \| 'never'` | `'normal'` | 气泡显示模式 |
-| `marks` | `SliderMarks` | `undefined` | 刻度标记（数组或 `{ value: label }`） |
-| `activeColor` / `inactiveColor` | `string` | `''` | 进度条激活 / 未激活颜色 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                            | 类型                              | 默认值      | 说明                                  |
+| ------------------------------- | --------------------------------- | ----------- | ------------------------------------- |
+| `modelValue`                    | `number \| number[]`              | `0`         | 当前值；`range` 模式为 `[start, end]` |
+| `min` / `max`                   | `number`                          | `0` / `100` | 最小 / 最大值                         |
+| `step`                          | `number`                          | `1`         | 步长                                  |
+| `range`                         | `boolean`                         | `false`     | 双向滑块模式                          |
+| `vertical`                      | `boolean`                         | `false`     | 垂直展示                              |
+| `theme`                         | `'default' \| 'capsule'`          | `'default'` | 滑块风格                              |
+| `disabled`                      | `boolean`                         | `false`     | 禁用                                  |
+| `showExtremeValue`              | `boolean`                         | `false`     | 显示两端极值文案                      |
+| `popoverVisible`                | `'always' \| 'normal' \| 'never'` | `'normal'`  | 气泡显示模式                          |
+| `marks`                         | `SliderMarks`                     | `undefined` | 刻度标记（数组或 `{ value: label }`） |
+| `activeColor` / `inactiveColor` | `string`                          | `''`        | 进度条激活 / 未激活颜色               |
+| `customClass` / `customStyle`   | `string`                          | `''`        | 根节点自定义类名 / 样式               |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 值变化时 | `(value: SliderValue)` |
-| `change` | 值变化时（同 tick） | `(value: SliderValue)` |
-| `dragstart` / `dragmove` / `dragend` | 拖动生命周期 | `{ value }` |
+| 事件名                               | 说明                | 参数                   |
+| ------------------------------------ | ------------------- | ---------------------- |
+| `update:modelValue`                  | 值变化时            | `(value: SliderValue)` |
+| `change`                             | 值变化时（同 tick） | `(value: SliderValue)` |
+| `dragstart` / `dragmove` / `dragend` | 拖动生命周期        | `{ value }`            |
 
 ## Exposed API
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
+| 成员         | 签名         | 说明                       |
+| ------------ | ------------ | -------------------------- |
 | `initSlider` | `() => void` | 布局变化后重新测量轨道长度 |
 
 ## Slots
@@ -57,17 +57,17 @@ range 双滑块返回 [start, end]；marks 支持对象形式；theme="capsule" 
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-sunken`` | 未激活轨道 |
-| ``--sn-mp-color-action-primary`` | 激活轨道 / 刻度 |
-| ``--sn-mp-color-background-elevated`` | 滑块底板 |
-| ``--sn-mp-color-text-primary`` | 气泡底色 |
-| ``--sn-mp-color-text-on-primary`` | 气泡文字 |
-| ``--sn-mp-color-text-tertiary`` | 极值 / 刻度文案 |
-| ``--sn-mp-color-border-default`` | 未激活刻度点 |
-| ``--sn-mp-radius-full`` | 轨道 / 滑块圆角 |
-| ``--sn-mp-shadow-sm`` | 滑块阴影 |
+| 变量                                | 用途            |
+| ----------------------------------- | --------------- |
+| `--sn-mp-color-background-sunken`   | 未激活轨道      |
+| `--sn-mp-color-action-primary`      | 激活轨道 / 刻度 |
+| `--sn-mp-color-background-elevated` | 滑块底板        |
+| `--sn-mp-color-text-primary`        | 气泡底色        |
+| `--sn-mp-color-text-on-primary`     | 气泡文字        |
+| `--sn-mp-color-text-tertiary`       | 极值 / 刻度文案 |
+| `--sn-mp-color-border-default`      | 未激活刻度点    |
+| `--sn-mp-radius-full`               | 轨道 / 滑块圆角 |
+| `--sn-mp-shadow-sm`                 | 滑块阴影        |
 
 ## 无障碍
 
@@ -77,4 +77,3 @@ range 双滑块返回 [start, end]；marks 支持对象形式；theme="capsule" 
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

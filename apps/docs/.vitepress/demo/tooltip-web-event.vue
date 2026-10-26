@@ -5,13 +5,13 @@
  * 左侧是事件回显日志，右侧是两个触发器 —— 用两栏布局把「操作区」
  * 与「结果区」分开，读者能立刻看出哪次操作产生了哪条日志。
  */
-import { ref } from 'vue'
-import { SnTooltip } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTooltip } from '@snui/vue-web';
 
-const log = ref<string[]>([])
+const log = ref<string[]>([]);
 
 function record(name: string): void {
-  log.value = [`${name} @ ${new Date().toLocaleTimeString()}`, ...log.value].slice(0, 5)
+  log.value = [`${name} @ ${new Date().toLocaleTimeString()}`, ...log.value].slice(0, 5);
 }
 </script>
 
@@ -104,7 +104,9 @@ function record(name: string): void {
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-event__btn:hover {
   border-color: var(--vp-c-brand-1);

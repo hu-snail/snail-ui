@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnImage — fallback-src shown when the source fails to load. */
-import { SnImage } from '@snui/vue-web'
+import { SnImage } from '@snui/vue-web';
 </script>
 
 <template>
@@ -15,5 +15,9 @@ import { SnImage } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: flex-start; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
 </style>

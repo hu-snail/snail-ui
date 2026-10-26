@@ -36,9 +36,7 @@ describe('@snui/vue-web — ButtonContract', () => {
     });
 
     it('accepts icon and text', () => {
-      expect(
-        ButtonPropsSchema.safeParse({ icon: 'check', text: 'Submit' }).success,
-      ).toBe(true);
+      expect(ButtonPropsSchema.safeParse({ icon: 'check', text: 'Submit' }).success).toBe(true);
     });
 
     it('rejects an unknown variant', () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTag — shapes. */
-import { SnTag } from '@snui/vue-web'
+import { SnTag } from '@snui/vue-web';
 </script>
 
 <template>
@@ -13,5 +13,9 @@ import { SnTag } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 8px; align-items: center; }
+.demo-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 </style>

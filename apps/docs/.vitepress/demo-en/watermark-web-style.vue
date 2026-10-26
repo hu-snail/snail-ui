@@ -6,19 +6,19 @@
  * Note: `fontColor` is painted into a canvas tile, so it stays a real CSS
  * colour value; the surrounding chrome uses `--sn-web-*` tokens.
  */
-import { ref } from 'vue'
-import { SnWatermark } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnWatermark } from '@snui/vue-web';
 
-const fontSize = ref(14)
-const rotate = ref(-24)
-const opacity = ref(0.5)
-const fontColor = ref('rgba(14, 128, 235, 0.32)')
+const fontSize = ref(14);
+const rotate = ref(-24);
+const opacity = ref(0.5);
+const fontColor = ref('rgba(14, 128, 235, 0.32)');
 
 const colorPresets = [
   { label: 'Brand blue', value: 'rgba(14, 128, 235, 0.32)' },
   { label: 'Neutral gray', value: 'rgba(96, 98, 122, 0.34)' },
   { label: 'Alert red', value: 'rgba(208, 48, 80, 0.3)' },
-]
+];
 </script>
 
 <template>
@@ -70,7 +70,8 @@ const colorPresets = [
       <div class="watermark-style-demo__panel">
         <h5>Style customization preview</h5>
         <p>
-          Font size, line height, rotation, opacity and color adjust live; tile size is fixed at 200 × 120, with text always rotated around the tile center.
+          Font size, line height, rotation, opacity and color adjust live; tile size is fixed at 200
+          × 120, with text always rotated around the tile center.
         </p>
       </div>
     </SnWatermark>

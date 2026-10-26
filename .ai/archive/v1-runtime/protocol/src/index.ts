@@ -25,12 +25,7 @@
  */
 export const AUI_PROTOCOL_VERSION = '0.1.0';
 
-export {
-  UISchemaSchema,
-  UI_SCHEMA_TYPE,
-  UI_SCHEMA_VERSION,
-  type UISchema,
-} from './ui-schema.js';
+export { UISchemaSchema, UI_SCHEMA_TYPE, UI_SCHEMA_VERSION, type UISchema } from './ui-schema.js';
 
 export { UINodeSchema, type UINode } from './ui-node.js';
 

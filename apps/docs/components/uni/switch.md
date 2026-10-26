@@ -41,38 +41,38 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean \| string \| number` | `false` | 绑定值，与 `activeValue` 比较。 |
-| `disabled` | `boolean` | `false` | 禁用并置灰。 |
-| `inactiveActionIcon` | `string` | `''` | 非激活态旋钮图标名（registry 解析）。 |
-| `activeActionIcon` | `string` | `''` | 激活态旋钮图标名。 |
-| `activeIcon` | `string` | `''` | 激活态轨道图标，设置后忽略 `activeText`。 |
-| `inactiveIcon` | `string` | `''` | 非激活态轨道图标，设置后忽略 `inactiveText`。 |
-| `classPrefix` | `string` | `'wd-icon'` | 图标类名前缀（为 wot-ui 对齐保留）。 |
-| `inactiveActionCssIcon` | `boolean \| string` | `false` | 把 `inactiveActionIcon` 当 CSS 类名。 |
-| `activeActionCssIcon` | `boolean \| string` | `false` | 把 `activeActionIcon` 当 CSS 类名。 |
-| `activeCssIcon` | `boolean \| string` | `false` | 把 `activeIcon` 当 CSS 类名。 |
-| `inactiveCssIcon` | `boolean \| string` | `false` | 把 `inactiveIcon` 当 CSS 类名。 |
-| `activeText` | `string` | `''` | 激活态轨道文案。 |
-| `inactiveText` | `string` | `''` | 非激活态轨道文案。 |
-| `activeValue` | `boolean \| string \| number` | `true` | 「开」的值（严格相等比较）。 |
-| `inactiveValue` | `boolean \| string \| number` | `false` | 「关」的值。 |
-| `activeColor` | `string` | `''` | 激活态轨道颜色（CSS 颜色，内联覆盖）。 |
-| `inactiveColor` | `string` | `''` | 非激活态轨道颜色。 |
-| `size` | `string \| number` | — | 轨道尺寸，数字按 rpx 处理。 |
-| `shape` | `'round' \| 'square'` | `'round'` | 轨道形状。 |
-| `loading` | `boolean` | `false` | 旋钮内显示 loading，阻断交互。 |
-| `beforeChange` | `() => boolean \| Promise<boolean>` | — | 切换前钩子，返回 `false` 拦截。 |
-| `customClass` | `string` | `''` | 根节点类名。 |
-| `customStyle` | `string` | `''` | 根节点 inline style。 |
+| 属性                    | 类型                                | 默认值      | 说明                                          |
+| ----------------------- | ----------------------------------- | ----------- | --------------------------------------------- |
+| `modelValue`            | `boolean \| string \| number`       | `false`     | 绑定值，与 `activeValue` 比较。               |
+| `disabled`              | `boolean`                           | `false`     | 禁用并置灰。                                  |
+| `inactiveActionIcon`    | `string`                            | `''`        | 非激活态旋钮图标名（registry 解析）。         |
+| `activeActionIcon`      | `string`                            | `''`        | 激活态旋钮图标名。                            |
+| `activeIcon`            | `string`                            | `''`        | 激活态轨道图标，设置后忽略 `activeText`。     |
+| `inactiveIcon`          | `string`                            | `''`        | 非激活态轨道图标，设置后忽略 `inactiveText`。 |
+| `classPrefix`           | `string`                            | `'wd-icon'` | 图标类名前缀（为 wot-ui 对齐保留）。          |
+| `inactiveActionCssIcon` | `boolean \| string`                 | `false`     | 把 `inactiveActionIcon` 当 CSS 类名。         |
+| `activeActionCssIcon`   | `boolean \| string`                 | `false`     | 把 `activeActionIcon` 当 CSS 类名。           |
+| `activeCssIcon`         | `boolean \| string`                 | `false`     | 把 `activeIcon` 当 CSS 类名。                 |
+| `inactiveCssIcon`       | `boolean \| string`                 | `false`     | 把 `inactiveIcon` 当 CSS 类名。               |
+| `activeText`            | `string`                            | `''`        | 激活态轨道文案。                              |
+| `inactiveText`          | `string`                            | `''`        | 非激活态轨道文案。                            |
+| `activeValue`           | `boolean \| string \| number`       | `true`      | 「开」的值（严格相等比较）。                  |
+| `inactiveValue`         | `boolean \| string \| number`       | `false`     | 「关」的值。                                  |
+| `activeColor`           | `string`                            | `''`        | 激活态轨道颜色（CSS 颜色，内联覆盖）。        |
+| `inactiveColor`         | `string`                            | `''`        | 非激活态轨道颜色。                            |
+| `size`                  | `string \| number`                  | —           | 轨道尺寸，数字按 rpx 处理。                   |
+| `shape`                 | `'round' \| 'square'`               | `'round'`   | 轨道形状。                                    |
+| `loading`               | `boolean`                           | `false`     | 旋钮内显示 loading，阻断交互。                |
+| `beforeChange`          | `() => boolean \| Promise<boolean>` | —           | 切换前钩子，返回 `false` 拦截。               |
+| `customClass`           | `string`                            | `''`        | 根节点类名。                                  |
+| `customStyle`           | `string`                            | `''`        | 根节点 inline style。                         |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名              | 说明                              | 参数      |
+| ------------------- | --------------------------------- | --------- |
 | `update:modelValue` | 切换成功（`beforeChange` 通过后） | `(value)` |
-| `change` | 与 `update:modelValue` 同时触发 | `(value)` |
+| `change`            | 与 `update:modelValue` 同时触发   | `(value)` |
 
 ## Slots
 
@@ -80,14 +80,14 @@
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-control-unchecked` | 非激活态轨道 |
-| `--sn-mp-color-action-primary` | 激活态轨道 + 旋钮图标 |
-| `--sn-mp-color-control-knob` | 旋钮底板 |
-| `--sn-mp-color-text-on-primary` | 轨道文案 / 轨道图标 |
-| `--sn-mp-radius-full` / `-sm` / `-xs` | 圆角 / 方角几何 |
-| `--sn-mp-color-border-subtle` | loading 转圈底环 |
+| 变量                                  | 用途                  |
+| ------------------------------------- | --------------------- |
+| `--sn-mp-color-control-unchecked`     | 非激活态轨道          |
+| `--sn-mp-color-action-primary`        | 激活态轨道 + 旋钮图标 |
+| `--sn-mp-color-control-knob`          | 旋钮底板              |
+| `--sn-mp-color-text-on-primary`       | 轨道文案 / 轨道图标   |
+| `--sn-mp-radius-full` / `-sm` / `-xs` | 圆角 / 方角几何       |
+| `--sn-mp-color-border-subtle`         | loading 转圈底环      |
 
 ## 无障碍
 
@@ -98,4 +98,3 @@
 ## 暗色模式
 
 所有颜色通过 `--sn-mp-color-*` 解析，无浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下轨道、旋钮底板、轨道文案颜色自动翻转（品牌色 `--sn-mp-color-action-primary` 在两种主题下保持同一品牌色相）。验证方式：
-

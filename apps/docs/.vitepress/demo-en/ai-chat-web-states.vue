@@ -5,8 +5,8 @@
  * 把排队中、思考中、流式输出、已完成、失败、已停止六种状态一次性摆出来，
  * 便于对照每种状态下消息模块渲染的差异（等待行 / 光标 / 错误卡片 / 停止提示）。
  */
-import { SnAiChat } from '@snui/templates-src/web/index'
-import type { SnAiMessage } from '@snui/templates-src/shared/types'
+import { SnAiChat } from '@snui/templates-src/web/index';
+import type { SnAiMessage } from '@snui/templates-src/shared/types';
 
 const messages: SnAiMessage[] = [
   {
@@ -25,7 +25,13 @@ const messages: SnAiMessage[] = [
     id: 'd3',
     role: 'assistant',
     status: 'thinking',
-    parts: [{ type: 'thinking', text: 'Read the full text first and pull out the key takeaways…', done: false }],
+    parts: [
+      {
+        type: 'thinking',
+        text: 'Read the full text first and pull out the key takeaways…',
+        done: false,
+      },
+    ],
   },
   {
     id: 'd4',
@@ -42,7 +48,10 @@ const messages: SnAiMessage[] = [
     status: 'done',
     parts: [
       { type: 'tool', name: 'search_docs', status: 'done', detail: '3 hits' },
-      { type: 'text', text: 'Conclusion: the template turns repeated page structure into installable units.' },
+      {
+        type: 'text',
+        text: 'Conclusion: the template turns repeated page structure into installable units.',
+      },
     ],
   },
   {
@@ -67,7 +76,7 @@ const messages: SnAiMessage[] = [
     status: 'aborted',
     parts: [{ type: 'text', text: 'This document mainly covers three things. First,' }],
   },
-]
+];
 </script>
 
 <template>

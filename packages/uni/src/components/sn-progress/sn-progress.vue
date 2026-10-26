@@ -35,18 +35,18 @@
  *   - 数值动画组件 — 用 sn-count-to
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnProgress' })
+defineOptions({ name: 'SnProgress' });
 
 /** Semantic status. Mirrors `wd-progress` `status`. */
-type ProgressStatus = '' | 'success' | 'danger' | 'warning'
+type ProgressStatus = '' | 'success' | 'danger' | 'warning';
 
 /** `percent-position.type`. Mirrors `wd-progress` `percent-position.type`. */
-type ProgressLabelType = 'inner' | 'outer'
+type ProgressLabelType = 'inner' | 'outer';
 
 /** `percent-position.align`. Mirrors `wd-progress` `percent-position.align`. */
-type ProgressLabelAlign = 'left' | 'center' | 'right'
+type ProgressLabelAlign = 'left' | 'center' | 'right';
 
 /**
  * Color threshold entry. Mirrors the `ProgressColor` row group in the wd
@@ -55,37 +55,37 @@ type ProgressLabelAlign = 'left' | 'center' | 'right'
  */
 export interface SnProgressColor {
   /** CSS color value. */
-  color: string
+  color: string;
   /** Lower bound (0–100) from which this color applies. */
-  percentage?: number
+  percentage?: number;
 }
 
 /** `percent-position` object. */
 export interface SnProgressPercentPosition {
   /** Where the percentage text sits: inside the fill or outside the bar. */
-  type?: ProgressLabelType
+  type?: ProgressLabelType;
   /** Horizontal alignment of the percentage text. */
-  align?: ProgressLabelAlign
+  align?: ProgressLabelAlign;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Progress value, 0–100 (values outside the range are clamped). */
-    percentage?: number
+    percentage?: number;
     /** Hide the percentage text. */
-    hideText?: boolean
+    hideText?: boolean;
     /** Fill color: solid string, gradient string[], or threshold entries. */
-    color?: string | string[] | SnProgressColor[]
+    color?: string | string[] | SnProgressColor[];
     /** Semantic status; overrides `color` when set. */
-    status?: ProgressStatus
+    status?: ProgressStatus;
     /** Milliseconds the bar takes to advance 1% (total = percentage × this). */
-    duration?: number
+    duration?: number;
     /** Percentage text placement + alignment. */
-    percentPosition?: SnProgressPercentPosition
+    percentPosition?: SnProgressPercentPosition;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     percentage: 0,
@@ -97,73 +97,75 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 /** Clamped progress value. Mirrors the reference's 0–100 bound. */
 const clampedPercentage = computed(() => {
-  const value = Number(props.percentage)
-  if (!Number.isFinite(value)) return 0
-  return Math.min(100, Math.max(0, value))
-})
+  const value = Number(props.percentage);
+  if (!Number.isFinite(value)) return 0;
+  return Math.min(100, Math.max(0, value));
+});
 
 /** Displayed label text. */
-const labelText = computed(() => `${Math.round(clampedPercentage.value)}%`)
+const labelText = computed(() => `${Math.round(clampedPercentage.value)}%`);
 
-const labelType = computed<ProgressLabelType>(() => props.percentPosition.type ?? 'outer')
-const labelAlign = computed<ProgressLabelAlign>(() => props.percentPosition.align ?? 'right')
+const labelType = computed<ProgressLabelType>(() => props.percentPosition.type ?? 'outer');
+const labelAlign = computed<ProgressLabelAlign>(() => props.percentPosition.align ?? 'right');
 
 /** Is this a list of `{ color, percentage }` threshold entries? */
 function isThresholdList(value: unknown): value is SnProgressColor[] {
-  return Array.isArray(value) && value.length > 0 && typeof value[0] === 'object' && value[0] !== null
+  return (
+    Array.isArray(value) && value.length > 0 && typeof value[0] === 'object' && value[0] !== null
+  );
 }
 
 /** Is this a gradient stop list (plain color strings)? */
 function isGradientList(value: unknown): value is string[] {
-  return Array.isArray(value) && value.length > 0 && typeof value[0] === 'string'
+  return Array.isArray(value) && value.length > 0 && typeof value[0] === 'string';
 }
 
 /** Threshold entry that applies at the current value, or `undefined`. */
 const activeThreshold = computed<SnProgressColor | undefined>(() => {
-  if (!isThresholdList(props.color)) return undefined
-  let match: SnProgressColor | undefined
+  if (!isThresholdList(props.color)) return undefined;
+  let match: SnProgressColor | undefined;
   for (const entry of props.color) {
-    const bound = entry.percentage ?? 0
+    const bound = entry.percentage ?? 0;
     if (clampedPercentage.value >= bound) {
-      if (!match || bound >= (match.percentage ?? 0)) match = entry
+      if (!match || bound >= (match.percentage ?? 0)) match = entry;
     }
   }
-  return match
-})
+  return match;
+});
 
 /** Inline style of the fill. */
 const fillStyle = computed(() => {
-  const parts: string[] = [`width: ${clampedPercentage.value}%`]
-  const isZeroInnerLabel = clampedPercentage.value === 0 && labelType.value === 'inner'
+  const parts: string[] = [`width: ${clampedPercentage.value}%`];
+  const isZeroInnerLabel = clampedPercentage.value === 0 && labelType.value === 'inner';
 
   if (props.status) {
     // Status wins over `color` — same precedence as the reference.
-    parts.push(`background-color: var(--sn-mp-color-feedback-${props.status})`)
+    parts.push(`background-color: var(--sn-mp-color-feedback-${props.status})`);
   } else if (activeThreshold.value) {
-    parts.push(`background-color: ${activeThreshold.value.color}`)
+    parts.push(`background-color: ${activeThreshold.value.color}`);
   } else if (isGradientList(props.color)) {
-    parts.push(`background-image: linear-gradient(90deg, ${props.color.join(', ')})`)
+    parts.push(`background-image: linear-gradient(90deg, ${props.color.join(', ')})`);
   } else if (typeof props.color === 'string' && props.color) {
-    parts.push(`background-color: ${props.color}`)
+    parts.push(`background-color: ${props.color}`);
   } else if (isZeroInnerLabel) {
     // 0% + inner label: a zero-width fill would clip the label, so the fill
     // keeps a tinted minimum (mirrors --wot-progress-inner-zero-bg).
-    parts.push('background-color: var(--sn-mp-color-background-soft)')
+    parts.push('background-color: var(--sn-mp-color-background-soft)');
   } else {
     // Default fill: the primary accent (mirrors --wot-progress-color).
-    parts.push('background-color: var(--sn-mp-color-action-primary)')
+    parts.push('background-color: var(--sn-mp-color-action-primary)');
   }
 
   // `duration` is "ms per 1%" — the whole transition is percentage × that.
-  const ms = Math.max(0, (Number(props.duration) || 0) * clampedPercentage.value)
-  parts.push(`transition-duration: ${ms}ms`)
+  const ms = Math.max(0, (Number(props.duration) || 0) * clampedPercentage.value);
+  parts.push(`transition-duration: ${ms}ms`);
 
-  return parts.join('; ')
-})
+  return parts.join('; ');
+});
 
 const rootClass = computed(() => [
   'sn-progress',
@@ -174,9 +176,9 @@ const rootClass = computed(() => [
     'sn-progress--zero': clampedPercentage.value === 0,
   },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 </script>
 
 <template>
@@ -195,14 +197,16 @@ const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefi
         <text
           v-if="!hideText && labelType === 'inner'"
           class="sn-progress__label sn-progress__label--inner"
-        >{{ labelText }}</text>
+          >{{ labelText }}</text
+        >
       </view>
     </view>
 
     <text
       v-if="!hideText && labelType === 'outer'"
       class="sn-progress__label sn-progress__label--outer"
-    >{{ labelText }}</text>
+      >{{ labelText }}</text
+    >
   </view>
 </template>
 

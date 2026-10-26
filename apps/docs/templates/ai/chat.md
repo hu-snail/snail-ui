@@ -18,27 +18,27 @@
 
 ```ts
 // 1) 只导入用到的那个模板：它的 JS 和它自己的样式会一起被带上
-import { SnAiChat } from '@snui/templates/web/chat'
+import { SnAiChat } from '@snui/templates/web/chat';
 
 // 2) 共享 token 层在应用入口导入一次
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) 需要自己控制代码分割时，也可以单独引某个模板的样式文件
-import '@snui/templates/styles/web-chat.css'
+import '@snui/templates/styles/web-chat.css';
 ```
 
 uni-app 端同理，只换个入口：
 
 ```ts
-import { SnAiChat } from '@snui/templates/uni/chat'
-import '@snui/templates/styles'
-import '@snui/templates/styles/uni-chat.css'
+import { SnAiChat } from '@snui/templates/uni/chat';
+import '@snui/templates/styles';
+import '@snui/templates/styles/uni-chat.css';
 ```
 
 每个模板的样式文件（都在 `@snui/templates/styles/` 下）：
 
-| 文件 | 对应模板 |
-| --- | --- |
+| 文件           | 对应模板                   |
+| -------------- | -------------------------- |
 | `web-chat.css` | `@snui/templates/web/chat` |
 | `uni-chat.css` | `@snui/templates/uni/chat` |
 
@@ -50,18 +50,18 @@ import '@snui/templates/styles/uni-chat.css'
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiChat } from '@snui/templates/web/chat'
-import type { SnAiRunTurn } from '@snui/templates/web/chat'
-import type { SnAiMessage } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiChat } from '@snui/templates/web/chat';
+import type { SnAiRunTurn } from '@snui/templates/web/chat';
+import type { SnAiMessage } from '@snui/templates/web';
 
-const messages = ref<SnAiMessage[]>([])
+const messages = ref<SnAiMessage[]>([]);
 
 const run: SnAiRunTurn = async (turn, { emit }) => {
-  emit({ type: 'thinking', text: '收到问题，先整理一下思路。' })
-  emit({ type: 'thinking-end', durationMs: 800 })
-  emit({ type: 'text', text: `你刚才说的是：${turn.text}` })
-}
+  emit({ type: 'thinking', text: '收到问题，先整理一下思路。' });
+  emit({ type: 'thinking-end', durationMs: 800 });
+  emit({ type: 'text', text: `你刚才说的是：${turn.text}` });
+};
 </script>
 
 <template>
@@ -77,32 +77,30 @@ const run: SnAiRunTurn = async (turn, { emit }) => {
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiChat } from '@snui/templates/web/chat'
-import type { SnAiRunTurn } from '@snui/templates/web/chat'
-import type { SnAiMessage } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiChat } from '@snui/templates/web/chat';
+import type { SnAiRunTurn } from '@snui/templates/web/chat';
+import type { SnAiMessage } from '@snui/templates/web';
 
 /** 后端 SSE 事件的形状。 */
 type BackendEvent =
-  | { type: 'reasoning'; text: string }
-  | { type: 'tool'; name: string }
-  | { type: 'text'; text: string }
+  { type: 'reasoning'; text: string } | { type: 'tool'; name: string } | { type: 'text'; text: string };
 
-const messages = ref<SnAiMessage[]>([])
+const messages = ref<SnAiMessage[]>([]);
 
 /** 把 `text/event-stream` 响应拆成一行一个 JSON 事件。 */
 async function* readSse(response: Response): AsyncGenerator<BackendEvent> {
-  const reader = response.body!.getReader()
-  const decoder = new TextDecoder()
-  let buffer = ''
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
   for (;;) {
-    const { value, done } = await reader.read()
-    if (done) break
-    buffer += decoder.decode(value, { stream: true })
-    const lines = buffer.split('\n')
-    buffer = lines.pop() ?? ''
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop() ?? '';
     for (const line of lines) {
-      if (line.startsWith('data: ')) yield JSON.parse(line.slice(6)) as BackendEvent
+      if (line.startsWith('data: ')) yield JSON.parse(line.slice(6)) as BackendEvent;
     }
   }
 }
@@ -122,17 +120,17 @@ const run: SnAiRunTurn = async (turn, { signal, emit }) => {
     }),
     // 用户点「停止」或页面卸载时触发：必须透传，否则请求会继续跑。
     signal,
-  })
+  });
 
   for await (const event of readSse(response)) {
-    if (event.type === 'reasoning') emit({ type: 'thinking', text: event.text })
-    else if (event.type === 'tool') emit({ type: 'tool', name: event.name, status: 'running' })
-    else emit({ type: 'text', text: event.text })
+    if (event.type === 'reasoning') emit({ type: 'thinking', text: event.text });
+    else if (event.type === 'tool') emit({ type: 'tool', name: event.name, status: 'running' });
+    else emit({ type: 'text', text: event.text });
   }
 
   // 声明思考块的耗时；不调用也可以，思考块会停留到本轮结束。
-  emit({ type: 'thinking-end', durationMs: 3200 })
-}
+  emit({ type: 'thinking-end', durationMs: 3200 });
+};
 </script>
 
 <template>
@@ -150,20 +148,20 @@ const run: SnAiRunTurn = async (turn, { signal, emit }) => {
 
 `run` 收到三样东西：
 
-| 成员 | 类型 | 说明 |
-| --- | --- | --- |
-| `turn` | `SnAiQueuedTurn` | 这一轮的输入：文本、附件，以及发送时选中的智能体 / 权限 / 模型 / 思考程度。 |
-| `signal` | `AbortSignal` | 用户点「停止」或页面卸载时触发，务必透传给请求。 |
-| `emit` | `(delta) => void` | 把流式增量交给模板折叠；返回后这一轮即结束。 |
-| `messageId` | `string` | 本轮对应的助手消息 id，便于把外部日志与转录对上。 |
+| 成员        | 类型              | 说明                                                                        |
+| ----------- | ----------------- | --------------------------------------------------------------------------- |
+| `turn`      | `SnAiQueuedTurn`  | 这一轮的输入：文本、附件，以及发送时选中的智能体 / 权限 / 模型 / 思考程度。 |
+| `signal`    | `AbortSignal`     | 用户点「停止」或页面卸载时触发，务必透传给请求。                            |
+| `emit`      | `(delta) => void` | 把流式增量交给模板折叠；返回后这一轮即结束。                                |
+| `messageId` | `string`          | 本轮对应的助手消息 id，便于把外部日志与转录对上。                           |
 
 流式增量的四种形态：
 
-| delta | 说明 |
-| --- | --- |
-| `{ type: 'thinking', text }` | 追加思考文本。答案开始后再次出现会另起一个思考块。 |
-| `{ type: 'thinking-end', durationMs? }` | 结束当前思考块，并记录耗时。 |
-| `{ type: 'text', text }` | 追加答案文本。 |
+| delta                                     | 说明                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| `{ type: 'thinking', text }`              | 追加思考文本。答案开始后再次出现会另起一个思考块。                  |
+| `{ type: 'thinking-end', durationMs? }`   | 结束当前思考块，并记录耗时。                                        |
+| `{ type: 'text', text }`                  | 追加答案文本。                                                      |
 | `{ type: 'tool', name, status, detail? }` | 记录一次工具调用；同名且状态为 `running` 的行会被后续状态就地更新。 |
 
 `emit` 抛出的错误不需要自己捕获：`run` 的 Promise 被拒绝时，本轮会转为失败状态并触发 `error` 事件。
@@ -192,50 +190,50 @@ uni 端与 Web 端共用消息契约，排版按移动端尺寸呈现：静态�
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `messages` | `SnAiMessage[]` | `[]` | 转录内容，按时间从旧到新。配合 `v-model:messages` 使用。 |
-| `run` | `SnAiRunTurn` | `undefined` | 运行一轮对话的函数。未传入时页面仍可渲染，但会以 `NO_RUNNER` 报错。 |
-| `agents` | `SnAiAgent[]` | `[]` | 输入框智能体选择器可选的智能体。 |
-| `permissions` | `SnAiPermissionOption[]` | `undefined` | 权限选项；不传时使用内置的四个标准档位。 |
-| `models` | `SnAiModel[]` | `[]` | 模型选择器可选的模型。 |
-| `vendors` | `SnAiVendor[]` | `[]` | 模型所属厂商，用于给模型补充来源信息。 |
-| `theme` | `string` | `'default'` | 风格包标识，映射到风格包体系（仅 Web 端）。 |
-| `title` | `string` | `'AI 助手'` | 页头标题。 |
-| `subtitle` | `string` | `undefined` | 页头副标题（仅 Web 端）。 |
-| `disabled` | `boolean` | `false` | 禁用整页。 |
-| `allowQueue` | `boolean` | `true` | 运行中再次发送是否进入排队；关闭后多余提交会被丢弃。 |
-| `showHeader` | `boolean` | `true` | 是否渲染页头。 |
-| `loading` | `boolean` | `false` | 历史记录加载中：Web 端在消息列表显示骨架行，uni 端显示「正在加载对话…」。 |
-| `rememberSelection` | `boolean` | `true` | 是否在轮次之间保留智能体 / 模型的选择（仅 Web 端）。 |
-| `placeholder` | `string` | `'输入消息'` | 输入框占位文案（仅 uni 端）。 |
+| 名称                | 类型                     | 默认值       | 说明                                                                      |
+| ------------------- | ------------------------ | ------------ | ------------------------------------------------------------------------- |
+| `messages`          | `SnAiMessage[]`          | `[]`         | 转录内容，按时间从旧到新。配合 `v-model:messages` 使用。                  |
+| `run`               | `SnAiRunTurn`            | `undefined`  | 运行一轮对话的函数。未传入时页面仍可渲染，但会以 `NO_RUNNER` 报错。       |
+| `agents`            | `SnAiAgent[]`            | `[]`         | 输入框智能体选择器可选的智能体。                                          |
+| `permissions`       | `SnAiPermissionOption[]` | `undefined`  | 权限选项；不传时使用内置的四个标准档位。                                  |
+| `models`            | `SnAiModel[]`            | `[]`         | 模型选择器可选的模型。                                                    |
+| `vendors`           | `SnAiVendor[]`           | `[]`         | 模型所属厂商，用于给模型补充来源信息。                                    |
+| `theme`             | `string`                 | `'default'`  | 风格包标识，映射到风格包体系（仅 Web 端）。                               |
+| `title`             | `string`                 | `'AI 助手'`  | 页头标题。                                                                |
+| `subtitle`          | `string`                 | `undefined`  | 页头副标题（仅 Web 端）。                                                 |
+| `disabled`          | `boolean`                | `false`      | 禁用整页。                                                                |
+| `allowQueue`        | `boolean`                | `true`       | 运行中再次发送是否进入排队；关闭后多余提交会被丢弃。                      |
+| `showHeader`        | `boolean`                | `true`       | 是否渲染页头。                                                            |
+| `loading`           | `boolean`                | `false`      | 历史记录加载中：Web 端在消息列表显示骨架行，uni 端显示「正在加载对话…」。 |
+| `rememberSelection` | `boolean`                | `true`       | 是否在轮次之间保留智能体 / 模型的选择（仅 Web 端）。                      |
+| `placeholder`       | `string`                 | `'输入消息'` | 输入框占位文案（仅 uni 端）。                                             |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `update:messages` | `SnAiMessage[]` | 转录变化（新增轮次、流式增量、状态变更）。 |
-| `turn-start` | `SnAiQueuedTurn` | 一轮开始运行。 |
-| `turn-end` | `{ turn, message }` | 一轮结束（正常、失败或被停止）。 |
-| `error` | `{ turn, error }` | 一轮失败，`error` 为结构化错误。 |
-| `retry` | `SnAiMessage` | 用户请求重试某条失败的消息。 |
-| `update:modelId` | `string` | 用户切换了模型（仅 Web 端）。 |
-| `update:agentId` | `string` | 用户切换了智能体（仅 Web 端）。 |
+| 名称              | 参数                | 说明                                       |
+| ----------------- | ------------------- | ------------------------------------------ |
+| `update:messages` | `SnAiMessage[]`     | 转录变化（新增轮次、流式增量、状态变更）。 |
+| `turn-start`      | `SnAiQueuedTurn`    | 一轮开始运行。                             |
+| `turn-end`        | `{ turn, message }` | 一轮结束（正常、失败或被停止）。           |
+| `error`           | `{ turn, error }`   | 一轮失败，`error` 为结构化错误。           |
+| `retry`           | `SnAiMessage`       | 用户请求重试某条失败的消息。               |
+| `update:modelId`  | `string`            | 用户切换了模型（仅 Web 端）。              |
+| `update:agentId`  | `string`            | 用户切换了智能体（仅 Web 端）。            |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `header-actions` | — | 页头右侧的操作区（仅 Web 端）。 |
-| `transcript` | `{ messages, empty }` | 替换整个转录区域（仅 Web 端）。 |
-| `toolbar` | — | 透传给输入框的额外工具条内容（仅 Web 端）。 |
+| 名称             | 参数                  | 说明                                        |
+| ---------------- | --------------------- | ------------------------------------------- |
+| `header-actions` | —                     | 页头右侧的操作区（仅 Web 端）。             |
+| `transcript`     | `{ messages, empty }` | 替换整个转录区域（仅 Web 端）。             |
+| `toolbar`        | —                     | 透传给输入框的额外工具条内容（仅 Web 端）。 |
 
 ### 类型导出
 
-| 名称 | 来源 | 说明 |
-| --- | --- | --- |
-| `SnAiRunTurn` | `@snui/templates/web/chat`、`@snui/templates/uni/chat` | 运行函数签名。 |
-| `SnAiMessage` / `SnAiQueuedTurn` / `SnAiError` 等 | `@snui/templates` | 共享契约类型，供宿主机构造数据。 |
+| 名称                                              | 来源                                                   | 说明                             |
+| ------------------------------------------------- | ------------------------------------------------------ | -------------------------------- |
+| `SnAiRunTurn`                                     | `@snui/templates/web/chat`、`@snui/templates/uni/chat` | 运行函数签名。                   |
+| `SnAiMessage` / `SnAiQueuedTurn` / `SnAiError` 等 | `@snui/templates`                                      | 共享契约类型，供宿主机构造数据。 |
 
 ## 主题与 token 定制
 
@@ -268,16 +266,16 @@ uni 端没有 `theme` prop：`--sn-mp-*` 别名层由 `@snui/tokens-mp` 提供�
 
 两端共用消息、流式增量与错误结构，差异只在排版与输入区能力：
 
-| 方面 | Web（`SnAiChat`） | uni-app（`SnAiChat`） |
-| --- | --- | --- |
-| 元素 | `<div>` / `<header>` / `<footer>` 等标准标签 | `<view>` / `<text>` / `<scroll-view scroll-y>` 等跨端元素 |
-| 单位 | px 级别的 `--sn-web-*` token | `--sn-mp-*` token，尺寸为 rpx，跨设备等比缩放 |
-| 页头 | 标题 + 副标题 + `header-actions` 插槽 | 只有标题，无副标题与插槽 |
-| 输入区 | 复用 `SnAiPrompt`：附件面板、智能体 / 权限 / 模型选择、思考程度、排队行管理 | 原生 `<input>` + 发送 / 停止按钮；`confirm-type="send"`，`@confirm` 触发发送 |
-| 排队 | 可逐条移除（`remove-queued`） | 只读展示队列条目，不可逐条移除 |
-| 选择项 | 暴露 `agents` / `permissions` / `models` / `vendors` / `rememberSelection` / `update:modelId` / `update:agentId` | 无选择器，因此也没有这些 props 与事件 |
-| 主题 | 支持 `theme` | 无 `theme`，以 `--sn-mp-*` token 覆盖为准 |
-| 契约 | `SnAiMessage` / 流式增量 / `SnAiError` 完全一致（来自 `@snui/templates` 的共享层） | 同左 |
+| 方面   | Web（`SnAiChat`）                                                                                                | uni-app（`SnAiChat`）                                                        |
+| ------ | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| 元素   | `<div>` / `<header>` / `<footer>` 等标准标签                                                                     | `<view>` / `<text>` / `<scroll-view scroll-y>` 等跨端元素                    |
+| 单位   | px 级别的 `--sn-web-*` token                                                                                     | `--sn-mp-*` token，尺寸为 rpx，跨设备等比缩放                                |
+| 页头   | 标题 + 副标题 + `header-actions` 插槽                                                                            | 只有标题，无副标题与插槽                                                     |
+| 输入区 | 复用 `SnAiPrompt`：附件面板、智能体 / 权限 / 模型选择、思考程度、排队行管理                                      | 原生 `<input>` + 发送 / 停止按钮；`confirm-type="send"`，`@confirm` 触发发送 |
+| 排队   | 可逐条移除（`remove-queued`）                                                                                    | 只读展示队列条目，不可逐条移除                                               |
+| 选择项 | 暴露 `agents` / `permissions` / `models` / `vendors` / `rememberSelection` / `update:modelId` / `update:agentId` | 无选择器，因此也没有这些 props 与事件                                        |
+| 主题   | 支持 `theme`                                                                                                     | 无 `theme`，以 `--sn-mp-*` token 覆盖为准                                    |
+| 契约   | `SnAiMessage` / 流式增量 / `SnAiError` 完全一致（来自 `@snui/templates` 的共享层）                               | 同左                                                                         |
 
 ## 无障碍
 

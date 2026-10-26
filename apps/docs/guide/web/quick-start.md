@@ -12,12 +12,12 @@ pnpm add @snui/vue-web
 
 ```ts
 // main.ts
-import { createApp } from 'vue'
-import App from './App.vue'
-import SnUI from '@snui/vue-web'
-import '@snui/vue-web/styles'
+import { createApp } from 'vue';
+import App from './App.vue';
+import SnUI from '@snui/vue-web';
+import '@snui/vue-web/styles';
 
-createApp(App).use(SnUI).mount('#app')
+createApp(App).use(SnUI).mount('#app');
 ```
 
 然后在任意 .vue 中：
@@ -38,10 +38,10 @@ pnpm add -D unplugin-vue-components
 
 ```ts
 // vite.config.ts
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import Components from 'unplugin-vue-components/vite'
-import { SnUIResolver } from '@snui/vue-web/resolver'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import Components from 'unplugin-vue-components/vite';
+import { SnUIResolver } from '@snui/vue-web/resolver';
 
 export default defineConfig({
   plugins: [
@@ -50,7 +50,7 @@ export default defineConfig({
       resolvers: [SnUIResolver()],
     }),
   ],
-})
+});
 ```
 
 模板里直接用：
@@ -66,19 +66,19 @@ export default defineConfig({
 ## 引入样式
 
 ```ts
-import '@snui/vue-web/styles'
+import '@snui/vue-web/styles';
 ```
 
 或单独引入 token CSS：
 
 ```ts
-import '@snui/tokens/styles'
+import '@snui/tokens/styles';
 ```
 
 ## 暗色模式
 
 ```html
-<html data-theme="dark">
+<html data-theme="dark"></html>
 ```
 
 CSS 变量自动切换。无需额外配置。

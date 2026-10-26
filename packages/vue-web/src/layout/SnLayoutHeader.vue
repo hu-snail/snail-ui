@@ -14,29 +14,27 @@
  * `--sn-web-*` token aliases only (px units).
  */
 
-import { computed, inject } from 'vue'
-import type { CSSProperties } from 'vue'
-import { SN_LAYOUT_KEY } from './sn-layout-types'
-import type { SnLayoutStyleValue } from './sn-layout-types'
+import { computed, inject } from 'vue';
+import type { CSSProperties } from 'vue';
+import { SN_LAYOUT_KEY } from './sn-layout-types';
+import type { SnLayoutStyleValue } from './sn-layout-types';
 
-defineOptions({ name: 'SnLayoutHeader' })
+defineOptions({ name: 'SnLayoutHeader' });
 
-const layout = inject(SN_LAYOUT_KEY, null)
+const layout = inject(SN_LAYOUT_KEY, null);
 
 /** Height token: override app-wide via :root { --sn-web-layout-header-height }.
  * NOTE: no space after the comma inside var() — happy-dom's CSSOM (test
  * env) drops `var(--x, 64px)` declarations; the two forms are equivalent
  * in browsers. */
-const HEADER_HEIGHT_TOKEN = 'var(--sn-web-layout-header-height,64px)'
+const HEADER_HEIGHT_TOKEN = 'var(--sn-web-layout-header-height,64px)';
 
 const baseStyle = computed<CSSProperties>(() => ({
   flex: '0 0 auto',
   height: HEADER_HEIGHT_TOKEN,
-}))
+}));
 
-const injectedStyle = computed<SnLayoutStyleValue | undefined>(
-  () => layout?.headerStyle.value,
-)
+const injectedStyle = computed<SnLayoutStyleValue | undefined>(() => layout?.headerStyle.value);
 </script>
 
 <template>

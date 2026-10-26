@@ -19,38 +19,38 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnAffix } from '@snui/vue-web'
+import { SnAffix } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `listenTo` | `string \| Window \| Document \| HTMLElement \| (() => HTMLElement)` | `document` | Scroll container to observe. |
-| `top` | `number` | `undefined` | Offset from the viewport top while stuck. |
-| `bottom` | `number` | `undefined` | Offset from the viewport bottom while stuck. |
-| `triggerTop` | `number` | `undefined` | Scroll threshold that starts top-sticking. Falls back to `top`. |
-| `triggerBottom` | `number` | `undefined` | Scroll threshold that starts bottom-sticking. Falls back to `bottom`. |
-| `position` | `'fixed' \| 'absolute'` | `'fixed'` | `fixed` removes the element from flow; `absolute` keeps it in flow. |
-| `offsetTop` | `number` | `undefined` | **@deprecated** — use `triggerTop`. |
-| `offsetBottom` | `number` | `undefined` | **@deprecated** — use `triggerBottom`. |
-| `target` | `() => HTMLElement` | `undefined` | **@deprecated** — use `listenTo`. |
+| Name            | Type                                                                 | Default     | Description                                                           |
+| --------------- | -------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------- |
+| `listenTo`      | `string \| Window \| Document \| HTMLElement \| (() => HTMLElement)` | `document`  | Scroll container to observe.                                          |
+| `top`           | `number`                                                             | `undefined` | Offset from the viewport top while stuck.                             |
+| `bottom`        | `number`                                                             | `undefined` | Offset from the viewport bottom while stuck.                          |
+| `triggerTop`    | `number`                                                             | `undefined` | Scroll threshold that starts top-sticking. Falls back to `top`.       |
+| `triggerBottom` | `number`                                                             | `undefined` | Scroll threshold that starts bottom-sticking. Falls back to `bottom`. |
+| `position`      | `'fixed' \| 'absolute'`                                              | `'fixed'`   | `fixed` removes the element from flow; `absolute` keeps it in flow.   |
+| `offsetTop`     | `number`                                                             | `undefined` | **@deprecated** — use `triggerTop`.                                   |
+| `offsetBottom`  | `number`                                                             | `undefined` | **@deprecated** — use `triggerBottom`.                                |
+| `target`        | `() => HTMLElement`                                                  | `undefined` | **@deprecated** — use `listenTo`.                                     |
 
-`triggerTop` vs `top`: the former is *when* sticking begins, the latter is
-*where* the element sits while stuck. Providing only one makes the other
+`triggerTop` vs `top`: the former is _when_ sticking begins, the latter is
+_where_ the element sits while stuck. Providing only one makes the other
 fall back to it, which is the common case (stick at the same offset you
 trigger at).
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description           |
+| --------- | --------------------- |
 | `default` | The element to affix. |
 
 ## Exposed
 
-| Name | Type | Description |
-|---|---|---|
+| Name      | Type                   | Description                             |
+| --------- | ---------------------- | --------------------------------------- |
 | `affixed` | `ComputedRef<boolean>` | Whether the element is currently stuck. |
 
 ## Behaviour
@@ -58,7 +58,7 @@ trigger at).
 - Scroll events are coalesced into one measurement per animation frame, so
   a fast scroll does not trigger a measurement per event.
 - Release is hysteretic: once affixed, the element stays affixed until the
-  scroll position crosses back over the *recorded trigger scroll position*
+  scroll position crosses back over the _recorded trigger scroll position_
   (captured when sticking began), not merely until the rect leaves the
   threshold. This prevents jitter at the boundary.
 - Both a top and a bottom condition may be active at once; the element is

@@ -26,16 +26,16 @@
 
 ### SnColorPicker Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `string` | `null`（渲染为 `#000000`） | 接受 hex / rgb() / hsl()；内部归一小写 hex |
-| modes | `('rgb'\|'hsl'\|'hex')[]` | `['rgb','hex']` | 面板模式 tab |
-| showAlpha | `boolean` | `false` | 透明度条（alpha<1 输出 8 位 hex / rgba） |
-| swatches | `string[]` | — | 预设色板 |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| disabled / readonly | `boolean` | `false` | 禁用 / 只读 |
-| clearable | `boolean` | `false` | 恢复默认色并 emit clear |
-| defaultShow | `boolean` | `false` | 初始打开面板 |
+| Prop                | 类型                                         | 默认值                     | 说明                                       |
+| ------------------- | -------------------------------------------- | -------------------------- | ------------------------------------------ |
+| modelValue          | `string`                                     | `null`（渲染为 `#000000`） | 接受 hex / rgb() / hsl()；内部归一小写 hex |
+| modes               | `('rgb'\|'hsl'\|'hex')[]`                    | `['rgb','hex']`            | 面板模式 tab                               |
+| showAlpha           | `boolean`                                    | `false`                    | 透明度条（alpha<1 输出 8 位 hex / rgba）   |
+| swatches            | `string[]`                                   | —                          | 预设色板                                   |
+| size                | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`                 | 尺寸                                       |
+| disabled / readonly | `boolean`                                    | `false`                    | 禁用 / 只读                                |
+| clearable           | `boolean`                                    | `false`                    | 恢复默认色并 emit clear                    |
+| defaultShow         | `boolean`                                    | `false`                    | 初始打开面板                               |
 
 事件：`update:modelValue`（拖拽实时）/ `change`（松手提交）/ `clear` / `focus` / `blur`。键盘：手柄 Arrow 微调 h/s/v ±1（Shift ±10）、alpha ±0.01（Shift ±0.1）。输出格式跟随激活 mode tab。
 

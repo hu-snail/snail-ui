@@ -1,11 +1,15 @@
 <script setup lang="ts">
 /** Demo: SnEmpty — size 五档尺寸。 */
-import { SnEmpty } from '@snui/vue-web'
+import { SnEmpty } from '@snui/vue-web';
 </script>
 
 <template>
   <div class="empty-demo">
-    <div v-for="size in (['tiny', 'small', 'medium', 'large', 'huge'] as const)" :key="size" class="empty-demo__cell">
+    <div
+      v-for="size in ['tiny', 'small', 'medium', 'large', 'huge'] as const"
+      :key="size"
+      class="empty-demo__cell"
+    >
       <SnEmpty :size="size" :description="size" />
     </div>
   </div>

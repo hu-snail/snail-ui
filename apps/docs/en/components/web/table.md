@@ -37,14 +37,14 @@ background and stripes. For data-driven tables use [DataTable](./data-table).
 
 ### SnTable Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| bordered | `boolean` | `true` | Outer frame border |
-| bottom-bordered | `boolean` | `true` | Bottom border (ineffective while bordered) |
-| single-column | `boolean` | `false` | No row separators |
-| single-line | `boolean` | `true` | No column separators |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | Table scale |
-| striped | `boolean` | `false` | Zebra stripes |
+| Prop            | Type                             | Default    | Notes                                      |
+| --------------- | -------------------------------- | ---------- | ------------------------------------------ |
+| bordered        | `boolean`                        | `true`     | Outer frame border                         |
+| bottom-bordered | `boolean`                        | `true`     | Bottom border (ineffective while bordered) |
+| single-column   | `boolean`                        | `false`    | No row separators                          |
+| single-line     | `boolean`                        | `true`     | No column separators                       |
+| size            | `'small' \| 'medium' \| 'large'` | `'medium'` | Table scale                                |
+| striped         | `boolean`                        | `false`    | Zebra stripes                              |
 
 Events: none; Slots: `default` (consumer-authored thead/tbody).
 

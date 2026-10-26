@@ -2,8 +2,8 @@
 /**
  * Demo: SnPopselect — multiple selection, scrollable menu, controlled value.
  */
-import { ref } from 'vue'
-import { SnButton, SnPopselect } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnPopselect } from '@snui/vue-web';
 
 const options = [
   '用户研究',
@@ -16,9 +16,9 @@ const options = [
   '需求评审',
   '设计走查',
   '上线复盘',
-]
+];
 
-const selected = ref<string[]>(['可用性测试', '数据分析'])
+const selected = ref<string[]>(['可用性测试', '数据分析']);
 </script>
 
 <template>
@@ -31,14 +31,10 @@ const selected = ref<string[]>(['可用性测试', '数据分析'])
         scrollable
         placement="bottom"
       >
-        <SnButton>
-          已选 {{ selected.length }} 项（点击编辑）
-        </SnButton>
+        <SnButton> 已选 {{ selected.length }} 项（点击编辑） </SnButton>
       </SnPopselect>
     </div>
-    <p class="popselect-multi-demo__state">
-      value = [{{ selected.join(', ') || '空' }}]
-    </p>
+    <p class="popselect-multi-demo__state">value = [{{ selected.join(', ') || '空' }}]</p>
     <p class="popselect-multi-demo__hint">
       multiple 模式下选择后菜单保持打开，可连续勾选 / 取消；scrollable 限制菜单高度并在超出时滚动。
     </p>

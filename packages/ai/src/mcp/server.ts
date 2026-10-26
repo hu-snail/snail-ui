@@ -12,17 +12,17 @@
  * render_preview tool explicitly refuses to compile user input.
  */
 
-import type { AiMcpTool } from './types.js'
-import { listComponents } from './tools/list-components.js'
-import { getComponentMeta } from './tools/get-component-meta.js'
-import { getStylePack } from './tools/get-style-pack.js'
-import { renderPreview } from './tools/render-preview.js'
+import type { AiMcpTool } from './types.js';
+import { listComponents } from './tools/list-components.js';
+import { getComponentMeta } from './tools/get-component-meta.js';
+import { getStylePack } from './tools/get-style-pack.js';
+import { renderPreview } from './tools/render-preview.js';
 
 export interface McpServerStub {
   /** All registered tools, keyed by name. */
-  readonly tools: Readonly<Record<string, AiMcpTool<unknown, unknown>>>
+  readonly tools: Readonly<Record<string, AiMcpTool<unknown, unknown>>>;
   /** Dispatch a tool call by name. Throws if name not registered. */
-  dispatch(name: string, input: unknown): Promise<unknown>
+  dispatch(name: string, input: unknown): Promise<unknown>;
 }
 
 export function createMcpServer(): McpServerStub {
@@ -31,19 +31,19 @@ export function createMcpServer(): McpServerStub {
     get_component_meta: getComponentMeta as AiMcpTool<unknown, unknown>,
     get_style_pack: getStylePack as AiMcpTool<unknown, unknown>,
     render_preview: renderPreview as AiMcpTool<unknown, unknown>,
-  }
+  };
 
   return {
     tools,
     async dispatch(name, input) {
-      const tool = tools[name]
+      const tool = tools[name];
       if (!tool) {
-        throw new Error(`unknown tool: ${name}`)
+        throw new Error(`unknown tool: ${name}`);
       }
-      return tool.handle(input)
+      return tool.handle(input);
     },
-  }
+  };
 }
 
-export type { AiMcpTool } from './types.js'
-export * from './types.js'
+export type { AiMcpTool } from './types.js';
+export * from './types.js';

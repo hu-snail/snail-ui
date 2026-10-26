@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnThing — content-indented 内容缩进到头像旁 + header-extra 槽位。 */
-import { SnAvatar, SnThing } from '@snui/vue-web'
+import { SnAvatar, SnThing } from '@snui/vue-web';
 </script>
 
 <template>

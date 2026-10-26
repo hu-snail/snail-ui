@@ -57,7 +57,10 @@ export function parseSfc(src: string): ParsedSfc {
 }
 
 /** Finds the matching root `</template>`; returns content/blockEnd offsets. */
-function findTemplateClose(src: string, from: number): { content: number; blockEnd: number } | null {
+function findTemplateClose(
+  src: string,
+  from: number,
+): { content: number; blockEnd: number } | null {
   TEMPLATE_INNER_RE.lastIndex = from;
   let depth = 1;
   let mm: RegExpExecArray | null = TEMPLATE_INNER_RE.exec(src);

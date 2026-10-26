@@ -18,34 +18,34 @@
 
 ```ts
 // 1) 只导入用到的那个模板：它的 JS 和它自己的样式会一起被带上
-import { SnAiMessageList, SnAiMessage } from '@snui/templates/web/message-list'
+import { SnAiMessageList, SnAiMessage } from '@snui/templates/web/message-list';
 
 // 2) 共享 token 层在应用入口导入一次
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) 需要自己控制代码分割时，也可以单独引某个模板的样式文件
-import '@snui/templates/styles/web-message-list.css'
+import '@snui/templates/styles/web-message-list.css';
 ```
 
 uni-app 端同理：
 
 ```ts
-import { SnAiMessage } from '@snui/templates/uni/message-list'
-import '@snui/templates/styles'
-import '@snui/templates/styles/uni-message-list.css'
+import { SnAiMessage } from '@snui/templates/uni/message-list';
+import '@snui/templates/styles';
+import '@snui/templates/styles/uni-message-list.css';
 ```
 
 每个模板的样式文件（都在 `@snui/templates/styles/` 下）：
 
-| 文件 | 对应模板 |
-| --- | --- |
+| 文件                   | 对应模板                           |
+| ---------------------- | ---------------------------------- |
 | `web-message-list.css` | `@snui/templates/web/message-list` |
 | `uni-message-list.css` | `@snui/templates/uni/message-list` |
-| `web-assistant.css` | `@snui/templates/web/assistant` |
-| `web-chat.css` | `@snui/templates/web/chat` |
-| `web-prompt.css` | `@snui/templates/web/prompt` |
+| `web-assistant.css`    | `@snui/templates/web/assistant`    |
+| `web-chat.css`         | `@snui/templates/web/chat`         |
+| `web-prompt.css`       | `@snui/templates/web/prompt`       |
 | `web-model-config.css` | `@snui/templates/web/model-config` |
-| `uni-chat.css` | `@snui/templates/uni/chat` |
+| `uni-chat.css`         | `@snui/templates/uni/chat`         |
 
 引 `web-message-list.css` **不会**带上输入框、对话页、模型配置等其他模板的规则；共享的 token 层只有一份（第 2 步），再引第二个模板时不会重复下载。
 
@@ -57,9 +57,9 @@ import '@snui/templates/styles/uni-message-list.css'
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiMessageList } from '@snui/templates/web/message-list'
-import type { SnAiMessage } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiMessageList } from '@snui/templates/web/message-list';
+import type { SnAiMessage } from '@snui/templates/web';
 
 const messages = ref<SnAiMessage[]>([
   {
@@ -78,10 +78,10 @@ const messages = ref<SnAiMessage[]>([
       { type: 'text', text: '文档共三节：定位、契约、接入。' },
     ],
   },
-])
+]);
 
 function onRetry(message: SnAiMessage): void {
-  console.info('请求重试：', message.id)
+  console.info('请求重试：', message.id);
 }
 </script>
 
@@ -96,18 +96,18 @@ function onRetry(message: SnAiMessage): void {
 
 ```vue
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
-import { SnAiMessageList, SnAiMessage as SnAiMessageRow } from '@snui/templates/web/message-list'
-import type { SnAiError, SnAiMessage, SnAiQueuedTurn } from '@snui/templates/web'
+import { computed, onBeforeUnmount, ref } from 'vue';
+import { SnAiMessageList, SnAiMessage as SnAiMessageRow } from '@snui/templates/web/message-list';
+import type { SnAiError, SnAiMessage, SnAiQueuedTurn } from '@snui/templates/web';
 
-const messages = ref<SnAiMessage[]>([])
-const running = ref(false)
-const quoted = ref<SnAiMessage | undefined>(undefined)
-let controller: AbortController | null = null
+const messages = ref<SnAiMessage[]>([]);
+const running = ref(false);
+const quoted = ref<SnAiMessage | undefined>(undefined);
+let controller: AbortController | null = null;
 
 /** 把一轮请求折进转录：思考块先长，答案随后。 */
 async function run(turn: SnAiQueuedTurn): Promise<void> {
-  const replyId = `${turn.id}-reply`
+  const replyId = `${turn.id}-reply`;
   messages.value = [
     ...messages.value,
     { id: turn.id, role: 'user', status: 'done', parts: [{ type: 'text', text: turn.text }] },
@@ -117,21 +117,21 @@ async function run(turn: SnAiQueuedTurn): Promise<void> {
       status: 'thinking',
       parts: [{ type: 'thinking', text: '', done: false }],
     },
-  ]
+  ];
 
-  const abort = new AbortController()
-  controller = abort
-  running.value = true
+  const abort = new AbortController();
+  controller = abort;
+  running.value = true;
 
   /** 找到本轮那条助手消息并就地更新（保持数组引用不变时也能触发重渲染）。 */
   function patch(update: (message: SnAiMessage) => void): void {
-    const next = [...messages.value]
-    const index = next.findIndex((message) => message.id === replyId)
-    if (index === -1) return
-    const copy = { ...next[index], parts: [...next[index].parts] }
-    update(copy)
-    next[index] = copy
-    messages.value = next
+    const next = [...messages.value];
+    const index = next.findIndex((message) => message.id === replyId);
+    if (index === -1) return;
+    const copy = { ...next[index], parts: [...next[index].parts] };
+    update(copy);
+    next[index] = copy;
+    messages.value = next;
   }
 
   try {
@@ -140,58 +140,58 @@ async function run(turn: SnAiQueuedTurn): Promise<void> {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ prompt: turn.text, modelId: turn.modelId }),
       signal: abort.signal,
-    })
-    const reader = response.body!.getReader()
-    const decoder = new TextDecoder()
+    });
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
     for (;;) {
-      const { value, done } = await reader.read()
-      if (done) break
-      const chunk = decoder.decode(value, { stream: true })
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
       patch((message) => {
-        const last = message.parts[message.parts.length - 1]
-        if (last?.type === 'text') last.text += chunk
-        else message.parts.push({ type: 'text', text: chunk })
-        message.status = 'streaming'
-      })
+        const last = message.parts[message.parts.length - 1];
+        if (last?.type === 'text') last.text += chunk;
+        else message.parts.push({ type: 'text', text: chunk });
+        message.status = 'streaming';
+      });
     }
     patch((message) => {
-      const thinking = message.parts.find((part) => part.type === 'thinking')
-      if (thinking?.type === 'thinking') thinking.done = true
-      message.status = 'done'
-    })
+      const thinking = message.parts.find((part) => part.type === 'thinking');
+      if (thinking?.type === 'thinking') thinking.done = true;
+      message.status = 'done';
+    });
   } catch (cause) {
     patch((message) => {
       if (abort.signal.aborted) {
-        message.status = 'aborted'
-        return
+        message.status = 'aborted';
+        return;
       }
-      const error: SnAiError = { code: 'REQUEST_FAILED', message: String(cause), retryable: true }
-      message.status = 'error'
-      message.error = error
-      message.parts.push({ type: 'error', error })
-    })
+      const error: SnAiError = { code: 'REQUEST_FAILED', message: String(cause), retryable: true };
+      message.status = 'error';
+      message.error = error;
+      message.parts.push({ type: 'error', error });
+    });
   } finally {
-    running.value = false
-    controller = null
+    running.value = false;
+    controller = null;
   }
 }
 
 /** 重试就是拿原来的那一轮再跑一次。 */
 function onRetry(message: SnAiMessage): void {
-  const index = messages.value.findIndex((item) => item.id === message.id)
-  const part = messages.value[index - 1]?.parts.find((item) => item.type === 'text')
-  messages.value = messages.value.filter((item) => item.id !== message.id)
+  const index = messages.value.findIndex((item) => item.id === message.id);
+  const part = messages.value[index - 1]?.parts.find((item) => item.type === 'text');
+  messages.value = messages.value.filter((item) => item.id !== message.id);
   if (part?.type === 'text') {
-    void run({ id: message.id, text: part.text, attachments: [], createdAt: Date.now() })
+    void run({ id: message.id, text: part.text, attachments: [], createdAt: Date.now() });
   }
 }
 
-onBeforeUnmount(() => controller?.abort())
+onBeforeUnmount(() => controller?.abort());
 
 const quotedText = computed(() => {
-  const part = quoted.value?.parts.find((item) => item.type === 'text')
-  return part?.type === 'text' ? part.text : ''
-})
+  const part = quoted.value?.parts.find((item) => item.type === 'text');
+  return part?.type === 'text' ? part.text : '';
+});
 </script>
 
 <template>
@@ -234,45 +234,45 @@ uni 端提供的是单条渲染器，展示思考折叠、工具行、附件行�
 
 `SnAiMessageList`：
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `messages` | `SnAiMessage[]` | `[]` | 转录内容，按时间从旧到新。 |
-| `loading` | `boolean` | `false` | 加载中，显示骨架行。 |
-| `loadingRows` | `number` | `3` | 骨架行数量。 |
-| `emptyText` | `string` | `'开始新的对话'` | 空状态主文案。 |
-| `emptyHint` | `string` | `'在下方输入框输入你的问题'` | 空状态副文案。 |
-| `autoScroll` | `boolean` | `true` | 是否自动跟随最新输出。 |
-| `showCopy` | `boolean` | `true` | 完成的消息是否提供复制。 |
-| `showThinking` | `boolean` | `true` | 生成结束后是否仍保留思考块。 |
-| `maxHeight` | `string` | `undefined` | 滚动区最大高度；不设时撑满父容器。 |
-| `stickThreshold` | `number` | `48` | 距底部多少像素内仍算「贴底」，超出后才不再自动跟随。 |
+| 名称             | 类型            | 默认值                       | 说明                                                 |
+| ---------------- | --------------- | ---------------------------- | ---------------------------------------------------- |
+| `messages`       | `SnAiMessage[]` | `[]`                         | 转录内容，按时间从旧到新。                           |
+| `loading`        | `boolean`       | `false`                      | 加载中，显示骨架行。                                 |
+| `loadingRows`    | `number`        | `3`                          | 骨架行数量。                                         |
+| `emptyText`      | `string`        | `'开始新的对话'`             | 空状态主文案。                                       |
+| `emptyHint`      | `string`        | `'在下方输入框输入你的问题'` | 空状态副文案。                                       |
+| `autoScroll`     | `boolean`       | `true`                       | 是否自动跟随最新输出。                               |
+| `showCopy`       | `boolean`       | `true`                       | 完成的消息是否提供复制。                             |
+| `showThinking`   | `boolean`       | `true`                       | 生成结束后是否仍保留思考块。                         |
+| `maxHeight`      | `string`        | `undefined`                  | 滚动区最大高度；不设时撑满父容器。                   |
+| `stickThreshold` | `number`        | `48`                         | 距底部多少像素内仍算「贴底」，超出后才不再自动跟随。 |
 
 单条 `SnAiMessage`：
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `message` | `SnAiMessage` | 必填 | 要渲染的消息。 |
-| `copied` | `boolean` | `false` | 复制按钮是否显示「已复制」。 |
-| `showThinking` | `boolean` | `true` | 是否保留思考块。 |
-| `showCopy` | `boolean` | `true` | 是否提供复制。 |
+| 名称           | 类型          | 默认值  | 说明                         |
+| -------------- | ------------- | ------- | ---------------------------- |
+| `message`      | `SnAiMessage` | 必填    | 要渲染的消息。               |
+| `copied`       | `boolean`     | `false` | 复制按钮是否显示「已复制」。 |
+| `showThinking` | `boolean`     | `true`  | 是否保留思考块。             |
+| `showCopy`     | `boolean`     | `true`  | 是否提供复制。               |
 
 `SnAiThinking`（思考块本体，可单独使用）：
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `part` | `SnAiThinkingPart` | 必填 | 要渲染的思考块。 |
-| `expanded` | `boolean` | `undefined` | 展开状态；`undefined` 表示自动——生成中展开、结束后收起。 |
-| `defaultCollapsed` | `boolean` | `false` | 强制收起，优先级高于 `expanded`。 |
+| 名称               | 类型               | 默认值      | 说明                                                     |
+| ------------------ | ------------------ | ----------- | -------------------------------------------------------- |
+| `part`             | `SnAiThinkingPart` | 必填        | 要渲染的思考块。                                         |
+| `expanded`         | `boolean`          | `undefined` | 展开状态；`undefined` 表示自动——生成中展开、结束后收起。 |
+| `defaultCollapsed` | `boolean`          | `false`     | 强制收起，优先级高于 `expanded`。                        |
 
 ### Events
 
 `SnAiMessageList`：
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `retry` | `SnAiMessage` | 用户点击了某条失败消息的重试。 |
-| `copy` | `SnAiMessage` | 用户复制了某条消息的答案。 |
-| `reach-bottom` | — | 用户滚动到了转录区底部。 |
+| 名称           | 参数          | 说明                           |
+| -------------- | ------------- | ------------------------------ |
+| `retry`        | `SnAiMessage` | 用户点击了某条失败消息的重试。 |
+| `copy`         | `SnAiMessage` | 用户复制了某条消息的答案。     |
+| `reach-bottom` | —             | 用户滚动到了转录区底部。       |
 
 单条 `SnAiMessage`：`retry`、`copy`（参数同上）。
 
@@ -280,46 +280,46 @@ uni 端提供的是单条渲染器，展示思考折叠、工具行、附件行�
 
 `SnAiMessageList`：
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `empty` | — | 自定义空状态。 |
+| 名称    | 参数 | 说明           |
+| ------- | ---- | -------------- |
+| `empty` | —    | 自定义空状态。 |
 
 单条 `SnAiMessage`：
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `avatar` | — | 替换头像区（不传时用角色默认头像）。 |
+| 名称     | 参数 | 说明                                 |
+| -------- | ---- | ------------------------------------ |
+| `avatar` | —    | 替换头像区（不传时用角色默认头像）。 |
 
 ### 类型导出
 
-| 名称 | 来源 | 说明 |
-| --- | --- | --- |
-| `SnAiMessageList` / `SnAiMessage` / `SnAiThinking` | `@snui/templates/web/message-list` | 列表、单条、思考块三个渲染器。 |
-| `SnAiMessage` / `SnAiMessagePart` / `SnAiThinkingPart` 等 | `@snui/templates` | 共享契约类型，供宿主机构造数据。 |
+| 名称                                                      | 来源                               | 说明                             |
+| --------------------------------------------------------- | ---------------------------------- | -------------------------------- |
+| `SnAiMessageList` / `SnAiMessage` / `SnAiThinking`        | `@snui/templates/web/message-list` | 列表、单条、思考块三个渲染器。   |
+| `SnAiMessage` / `SnAiMessagePart` / `SnAiThinkingPart` 等 | `@snui/templates`                  | 共享契约类型，供宿主机构造数据。 |
 
 ### 消息结构
 
 一条消息由若干「内容块」按顺序组成，渲染顺序与数组顺序一致：
 
-| 内容块 | 说明 |
-| --- | --- |
-| `thinking` | 思考过程。生成时展开并显示「思考中」，结束后收起并显示耗时。 |
-| `text` | 答案正文。流式输出时行尾显示光标。 |
-| `tool` | 工具调用行。`running` 显示转圈，`done` / `error` 显示结果状态。 |
-| `attachment` | 附件行，回显用户上传的文件。 |
-| `error` | 错误卡片，含错误码、提示与重试按钮。 |
+| 内容块       | 说明                                                            |
+| ------------ | --------------------------------------------------------------- |
+| `thinking`   | 思考过程。生成时展开并显示「思考中」，结束后收起并显示耗时。    |
+| `text`       | 答案正文。流式输出时行尾显示光标。                              |
+| `tool`       | 工具调用行。`running` 显示转圈，`done` / `error` 显示结果状态。 |
+| `attachment` | 附件行，回显用户上传的文件。                                    |
+| `error`      | 错误卡片，含错误码、提示与重试按钮。                            |
 
 一条消息的状态决定它整体呈现成什么样：
 
-| 状态 | 呈现 |
-| --- | --- |
-| `idle` | 用户 / 系统消息的静止状态，直接渲染正文。 |
-| `queued` | 显示「排队中，等待上一条回复完成」。 |
-| `thinking` | 思考块实时展开；尚无正文时显示「正在思考…」。 |
-| `streaming` | 正文逐字增长并带光标。 |
-| `done` | 完整正文，并提供复制。 |
-| `error` | 错误卡片替换正文尾部。 |
-| `aborted` | 保留已生成内容，并追加「已停止生成」提示。 |
+| 状态        | 呈现                                          |
+| ----------- | --------------------------------------------- |
+| `idle`      | 用户 / 系统消息的静止状态，直接渲染正文。     |
+| `queued`    | 显示「排队中，等待上一条回复完成」。          |
+| `thinking`  | 思考块实时展开；尚无正文时显示「正在思考…」。 |
+| `streaming` | 正文逐字增长并带光标。                        |
+| `done`      | 完整正文，并提供复制。                        |
+| `error`     | 错误卡片替换正文尾部。                        |
+| `aborted`   | 保留已生成内容，并追加「已停止生成」提示。    |
 
 ## 主题与 token 定制
 
@@ -354,17 +354,17 @@ uni 端覆盖 `--sn-mp-*`（尺寸 token 是 rpx）：
 
 两端内容块与状态语义完全一致，差异在结构与能力：
 
-| 方面 | Web（`SnAiMessageList` / `SnAiMessage`） | uni-app（`SnAiMessage`） |
-| --- | --- | --- |
-| 提供的东西 | 列表容器 + 单条渲染器 + 思考块，各自可单独使用 | 只有单条渲染器，列表由页面自己 `v-for` |
-| 元素 | `<div>` / `<ul>` / `<li>` 等标准标签 | `<view>` / `<text>` 等跨端元素 |
-| 单位 | px 级别的 `--sn-web-*` token | `--sn-mp-*` token，尺寸为 rpx |
-| 滚动 | 自带滚动区与「回到最新」按钮，`maxHeight` / `stickThreshold` 可调 | 不含滚动区，由 uni 对话页的 `<scroll-view scroll-y>` 负责 |
-| 空状态 | 有 `emptyText` / `emptyHint` / `empty` 插槽 | 无空状态（由 uni 对话页渲染） |
-| 复制 | `showCopy` + `copy` 事件 + `copied` 状态 | 无复制能力 |
-| 头像 | 有 `avatar` 插槽 | 无头像插槽 |
-| 图标 | 复用同一份路径数据，由 `SnIcon` 渲染 | 复用同一份路径数据，由 `sn-icon` 渲染 |
-| 契约 | `SnAiMessage` / 内容块 / 状态定义来自 `@snui/templates` 共享层 | 同左 |
+| 方面       | Web（`SnAiMessageList` / `SnAiMessage`）                          | uni-app（`SnAiMessage`）                                  |
+| ---------- | ----------------------------------------------------------------- | --------------------------------------------------------- |
+| 提供的东西 | 列表容器 + 单条渲染器 + 思考块，各自可单独使用                    | 只有单条渲染器，列表由页面自己 `v-for`                    |
+| 元素       | `<div>` / `<ul>` / `<li>` 等标准标签                              | `<view>` / `<text>` 等跨端元素                            |
+| 单位       | px 级别的 `--sn-web-*` token                                      | `--sn-mp-*` token，尺寸为 rpx                             |
+| 滚动       | 自带滚动区与「回到最新」按钮，`maxHeight` / `stickThreshold` 可调 | 不含滚动区，由 uni 对话页的 `<scroll-view scroll-y>` 负责 |
+| 空状态     | 有 `emptyText` / `emptyHint` / `empty` 插槽                       | 无空状态（由 uni 对话页渲染）                             |
+| 复制       | `showCopy` + `copy` 事件 + `copied` 状态                          | 无复制能力                                                |
+| 头像       | 有 `avatar` 插槽                                                  | 无头像插槽                                                |
+| 图标       | 复用同一份路径数据，由 `SnIcon` 渲染                              | 复用同一份路径数据，由 `sn-icon` 渲染                     |
+| 契约       | `SnAiMessage` / 内容块 / 状态定义来自 `@snui/templates` 共享层    | 同左                                                      |
 
 ## 无障碍
 

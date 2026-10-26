@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     transpile: ['@snui/vue-web'],
   },
   css: ['@snui/vue-web/styles'],
-})
+});
 ```
 
 ```vue

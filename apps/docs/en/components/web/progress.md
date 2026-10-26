@@ -65,28 +65,28 @@ end) and a legend is rendered below the rings.
 
 All props are optional.
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| type | `'line' \| 'circle' \| 'multiple-circle'` | `'line'` | Progress shape |
-| percentage | `number \| number[]` | `0` | Value(s), clamped to 0–100; array for multiple-circle |
-| height | `number \| string` | `undefined` | Line rail height; number = px |
-| borderRadius | `number \| string` | `undefined` | Line rail radius |
-| fillBorderRadius | `number \| string` | `undefined` | Line fill radius; falls back to `borderRadius` |
-| strokeWidth | `number` | `6` | Circle stroke width (px) |
-| indicatorPlacement | `'inside' \| 'outside' \| 'top'` | `'outside'` | Indicator placement (line only) |
-| color | `string \| { color: string; stop?: number }[] \| (percentage: number) => string` | `undefined` | Fill color: solid / gradient / function; overrides `status` |
-| railColor | `string \| { color: string; stop?: number }[]` | `undefined` | Rail color |
-| showIndicator | `boolean` | `true` | Render the indicator and the multiple-circle legend |
-| status | `'default' \| 'success' \| 'error' \| 'info' \| 'warning'` | `'default'` | Drives the default fill color and the circle glyph |
-| processing | `boolean` | `false` | Striped fill (line) / pulsing fill arc (circle) |
-| offsetDegree | `number` | `0` | Circle start-angle offset (0 = 12 o'clock) |
+| Name               | Type                                                                             | Default     | Description                                                 |
+| ------------------ | -------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------- |
+| type               | `'line' \| 'circle' \| 'multiple-circle'`                                        | `'line'`    | Progress shape                                              |
+| percentage         | `number \| number[]`                                                             | `0`         | Value(s), clamped to 0–100; array for multiple-circle       |
+| height             | `number \| string`                                                               | `undefined` | Line rail height; number = px                               |
+| borderRadius       | `number \| string`                                                               | `undefined` | Line rail radius                                            |
+| fillBorderRadius   | `number \| string`                                                               | `undefined` | Line fill radius; falls back to `borderRadius`              |
+| strokeWidth        | `number`                                                                         | `6`         | Circle stroke width (px)                                    |
+| indicatorPlacement | `'inside' \| 'outside' \| 'top'`                                                 | `'outside'` | Indicator placement (line only)                             |
+| color              | `string \| { color: string; stop?: number }[] \| (percentage: number) => string` | `undefined` | Fill color: solid / gradient / function; overrides `status` |
+| railColor          | `string \| { color: string; stop?: number }[]`                                   | `undefined` | Rail color                                                  |
+| showIndicator      | `boolean`                                                                        | `true`      | Render the indicator and the multiple-circle legend         |
+| status             | `'default' \| 'success' \| 'error' \| 'info' \| 'warning'`                       | `'default'` | Drives the default fill color and the circle glyph          |
+| processing         | `boolean`                                                                        | `false`     | Striped fill (line) / pulsing fill arc (circle)             |
+| offsetDegree       | `number`                                                                         | `0`         | Circle start-angle offset (0 = 12 o'clock)                  |
 
 ### Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
+| Name    | Scope                    | Description                                                  |
+| ------- | ------------------------ | ------------------------------------------------------------ |
 | default | `{ percentage: number }` | Custom indicator content; called per ring on multiple-circle |
-| icon | — | Custom circle success / error glyph |
+| icon    | —                        | Custom circle success / error glyph                          |
 
 No events.
 
@@ -97,13 +97,13 @@ gap 2px, indicator font 14px.
 
 ## Tokens
 
-| Token | Purpose |
-| --- | --- |
-| `--sn-web-color-action-primary` | Default fill |
-| `--sn-web-color-feedback-success / -danger / -info / -warning` | Status fills and glyphs |
-| `--sn-web-color-background-subtle` | Rail color |
-| `--sn-web-color-text-secondary` | Indicator text |
-| `--sn-web-color-text-on-primary` | Indicator inside the fill |
+| Token                                                          | Purpose                   |
+| -------------------------------------------------------------- | ------------------------- |
+| `--sn-web-color-action-primary`                                | Default fill              |
+| `--sn-web-color-feedback-success / -danger / -info / -warning` | Status fills and glyphs   |
+| `--sn-web-color-background-subtle`                             | Rail color                |
+| `--sn-web-color-text-secondary`                                | Indicator text            |
+| `--sn-web-color-text-on-primary`                               | Indicator inside the fill |
 
 ## Accessibility
 

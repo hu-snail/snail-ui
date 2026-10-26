@@ -5,11 +5,11 @@
  * the tabs and the end-of-strip icons after the trailing `+`, exactly like a
  * browser window's tab row.
  */
-import { ref } from 'vue'
-import { ArrowLeft, ArrowRight, RotateCw, Star } from 'lucide-vue-next'
-import { SnIcon, SnTabs, SnTabPane } from '@snui/vue-web'
+import { ref } from 'vue';
+import { ArrowLeft, ArrowRight, RotateCw, Star } from 'lucide-vue-next';
+import { SnIcon, SnTabs, SnTabPane } from '@snui/vue-web';
 
-const active = ref<string>('home')
+const active = ref<string>('home');
 </script>
 
 <template>

@@ -18,20 +18,20 @@ Scratch-to-reveal cover over slotted prize content. Real pointer erasing on elem
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `coverColor` | `string` | `'#C5C5C5'` | no | Cover color (`coverImg` wins). |
-| `coverImg` | `string` | `''` | no | Cover image. |
-| `ratio` | `number` | `0.8` | no | Reveal threshold (0-1). |
-| `scratchRadius` | `number` | `10` | no | Scratch radius (px). |
-| `watermarkText` | `string` | `''` | no | Cover watermark text. |
-| `watermarkSize` | `number` | `14` | no | Watermark font size (px). |
-| `watermarkColor` | `string` | `'rgba(0,0,0,0.1)'` | no | Watermark color. |
-| `title` | `string` | `''` | no | Cover title text. |
-| `titleSize` | `number` | `24` | no | Title font size (px). |
-| `titleColor` | `string` | `'rgba(0,0,0,0.8)'` | no | Title color. |
-| `customClass` | `string` | `''` | no | Root custom class. |
-| `customStyle` | `string` | `''` | no | Root custom style (provide width/height). |
+| Name             | Type     | Default             | Required | Description                               |
+| ---------------- | -------- | ------------------- | -------- | ----------------------------------------- |
+| `coverColor`     | `string` | `'#C5C5C5'`         | no       | Cover color (`coverImg` wins).            |
+| `coverImg`       | `string` | `''`                | no       | Cover image.                              |
+| `ratio`          | `number` | `0.8`               | no       | Reveal threshold (0-1).                   |
+| `scratchRadius`  | `number` | `10`                | no       | Scratch radius (px).                      |
+| `watermarkText`  | `string` | `''`                | no       | Cover watermark text.                     |
+| `watermarkSize`  | `number` | `14`                | no       | Watermark font size (px).                 |
+| `watermarkColor` | `string` | `'rgba(0,0,0,0.1)'` | no       | Watermark color.                          |
+| `title`          | `string` | `''`                | no       | Cover title text.                         |
+| `titleSize`      | `number` | `24`                | no       | Title font size (px).                     |
+| `titleColor`     | `string` | `'rgba(0,0,0,0.8)'` | no       | Title color.                              |
+| `customClass`    | `string` | `''`                | no       | Root custom class.                        |
+| `customStyle`    | `string` | `''`                | no       | Root custom style (provide width/height). |
 
 ## Events
 

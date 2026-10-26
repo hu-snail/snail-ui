@@ -28,52 +28,52 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| visible | boolean | false | 是否显示（`v-model:visible`） |
-| type | 'primary' \| 'success' \| 'warning' \| 'danger' | 'danger' | 类型（填充色 + 默认图标） |
-| message | string \| number | '' | 展示文案，`\n` 换行 |
-| duration | number | 3000 | 展示时长（ms），`0` 表示不消失 |
-| position | 'top' \| 'bottom' | 'top' | 弹出位置 |
-| color | string | '' | 字体颜色 |
-| background | string | '' | 背景颜色 |
-| zIndex | number | 99 | 层级 |
-| safeHeight | number \| string | — | 顶部额外偏移（数字按 px） |
-| closable | boolean | false | 是否显示关闭按钮 |
-| variant | 'filled' \| 'floating' | 'filled' | 展示形态 |
-| selector | string | '' | 唯一标识（对齐用） |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
+| 属性        | 类型                                            | 默认值   | 说明                           |
+| ----------- | ----------------------------------------------- | -------- | ------------------------------ |
+| visible     | boolean                                         | false    | 是否显示（`v-model:visible`）  |
+| type        | 'primary' \| 'success' \| 'warning' \| 'danger' | 'danger' | 类型（填充色 + 默认图标）      |
+| message     | string \| number                                | ''       | 展示文案，`\n` 换行            |
+| duration    | number                                          | 3000     | 展示时长（ms），`0` 表示不消失 |
+| position    | 'top' \| 'bottom'                               | 'top'    | 弹出位置                       |
+| color       | string                                          | ''       | 字体颜色                       |
+| background  | string                                          | ''       | 背景颜色                       |
+| zIndex      | number                                          | 99       | 层级                           |
+| safeHeight  | number \| string                                | —        | 顶部额外偏移（数字按 px）      |
+| closable    | boolean                                         | false    | 是否显示关闭按钮               |
+| variant     | 'filled' \| 'floating'                          | 'filled' | 展示形态                       |
+| selector    | string                                          | ''       | 唯一标识（对齐用）             |
+| customClass | string                                          | ''       | 根节点自定义类名               |
+| customStyle | string                                          | ''       | 根节点自定义样式               |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名         | 说明                                        | 参数    |
+| -------------- | ------------------------------------------- | ------- |
 | update:visible | `v-model` 同步（自动消失 / 关闭时也会触发） | boolean |
-| click | 点击条幅内容 | Event |
-| opened | 完全展示后 | — |
-| closed | 滑出结束、节点卸载后 | — |
+| click          | 点击条幅内容                                | Event   |
+| opened         | 完全展示后                                  | —       |
+| closed         | 滑出结束、节点卸载后                        | —       |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                             |
+| ------- | -------------------------------- |
 | default | 自定义通知内容（替代 `message`） |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-action-primary | `type="primary"` 填充色 |
-| --sn-mp-color-feedback-success` / `-warning` / `-danger | 其余类型的填充色 / floating 图标色 |
-| --sn-mp-color-text-on-primary | filled 形态文案 |
-| --sn-mp-color-text-primary | floating 形态文案 |
-| --sn-mp-color-background-elevated | floating 卡片背景 |
-| --sn-mp-shadow-md | floating 卡片阴影 |
-| --sn-mp-font-size-md | 文案字号 |
-| --sn-mp-font-line-height-normal | 文案行高 |
-| --sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-5 | 内边距与图标间距 |
-| --sn-mp-radius-lg | floating 卡片圆角 |
+| 变量                                                      | 用途                               |
+| --------------------------------------------------------- | ---------------------------------- |
+| --sn-mp-color-action-primary                              | `type="primary"` 填充色            |
+| --sn-mp-color-feedback-success`/`-warning`/`-danger       | 其余类型的填充色 / floating 图标色 |
+| --sn-mp-color-text-on-primary                             | filled 形态文案                    |
+| --sn-mp-color-text-primary                                | floating 形态文案                  |
+| --sn-mp-color-background-elevated                         | floating 卡片背景                  |
+| --sn-mp-shadow-md                                         | floating 卡片阴影                  |
+| --sn-mp-font-size-md                                      | 文案字号                           |
+| --sn-mp-font-line-height-normal                           | 文案行高                           |
+| --sn-mp-spacing-3`/`--sn-mp-spacing-4`/`--sn-mp-spacing-5 | 内边距与图标间距                   |
+| --sn-mp-radius-lg                                         | floating 卡片圆角                  |
 
 ## 无障碍
 
@@ -84,7 +84,6 @@
 ## 暗色模式
 
 填充色与文字色全部来自语义色 token（`--sn-mp-color-action-primary` / `--sn-mp-color-feedback-*` / `--sn-mp-color-text-*` / `--sn-mp-color-background-elevated`），这些都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 > 若通过 `background` / `color` 传了自定义色值，该值不会随主题翻转 —— 暗色下请改用 `var(--sn-mp-*)` 形式。
 

@@ -11,33 +11,33 @@ Use SnSwitch for binary on/off toggles. Custom `checkedValue` /
 
 ## Props
 
-| Prop           | Type                                    | Default  | Notes                                             |
-| -------------- | --------------------------------------- | -------- | ------------------------------------------------- |
-| modelValue     | `boolean \| string \| number`           | `false`  | Bound via `v-model`.                              |
-| checkedValue   | `boolean \| string \| number`           | `true`   | Value emitted when on. Compared by `===`.         |
-| uncheckedValue | `boolean \| string \| number`           | `false`  | Value emitted when off.                           |
-| size           | `'small' \| 'medium' \| 'large'`        | `'medium'` | Drives rail + knob dimensions.                  |
-| disabled       | `boolean`                               | `false`  | Blocks toggling, dims the rail, `aria-disabled`.  |
-| readonly       | `boolean`                               | `false`  | Blocks toggling, normal appearance, `aria-readonly`. |
-| loading        | `boolean`                               | `false`  | Shows a spinner in the knob, blocks toggling, `aria-busy`. |
-| ariaLabel      | `string`                                | `''`     | Accessible name.                                  |
-| railStyle      | `(info: { checked: boolean }) => Record<string, string>` | — | Custom inline style merged onto the rail. |
-| customClass    | `string`                                | `''`     | Class on the root wrapper.                        |
+| Prop           | Type                                                     | Default    | Notes                                                      |
+| -------------- | -------------------------------------------------------- | ---------- | ---------------------------------------------------------- |
+| modelValue     | `boolean \| string \| number`                            | `false`    | Bound via `v-model`.                                       |
+| checkedValue   | `boolean \| string \| number`                            | `true`     | Value emitted when on. Compared by `===`.                  |
+| uncheckedValue | `boolean \| string \| number`                            | `false`    | Value emitted when off.                                    |
+| size           | `'small' \| 'medium' \| 'large'`                         | `'medium'` | Drives rail + knob dimensions.                             |
+| disabled       | `boolean`                                                | `false`    | Blocks toggling, dims the rail, `aria-disabled`.           |
+| readonly       | `boolean`                                                | `false`    | Blocks toggling, normal appearance, `aria-readonly`.       |
+| loading        | `boolean`                                                | `false`    | Shows a spinner in the knob, blocks toggling, `aria-busy`. |
+| ariaLabel      | `string`                                                 | `''`       | Accessible name.                                           |
+| railStyle      | `(info: { checked: boolean }) => Record<string, string>` | —          | Custom inline style merged onto the rail.                  |
+| customClass    | `string`                                                 | `''`       | Class on the root wrapper.                                 |
 
 ## Events
 
-| Event                | Payload                                 | When                          |
-| -------------------- | --------------------------------------- | ----------------------------- |
-| `update:modelValue`  | `(value: boolean \| string \| number)`  | Toggle activated (v-model).   |
-| `change`             | `(value: boolean \| string \| number)`  | Toggle activated.             |
+| Event               | Payload                                | When                        |
+| ------------------- | -------------------------------------- | --------------------------- |
+| `update:modelValue` | `(value: boolean \| string \| number)` | Toggle activated (v-model). |
+| `change`            | `(value: boolean \| string \| number)` | Toggle activated.           |
 
 ## Slots
 
-| Slot            | Description                                        |
-| --------------- | -------------------------------------------------- |
-| `checked`       | Rail content shown while checked.                  |
-| `unchecked`     | Rail content shown while unchecked.                |
-| `loading-icon`  | Replaces the default loading spinner in the knob.  |
+| Slot           | Description                                       |
+| -------------- | ------------------------------------------------- |
+| `checked`      | Rail content shown while checked.                 |
+| `unchecked`    | Rail content shown while unchecked.               |
+| `loading-icon` | Replaces the default loading spinner in the knob. |
 
 ## Tokens
 
@@ -45,19 +45,19 @@ Visual properties resolve through `var(--sn-web-switch-*)` aliases with
 fallbacks to generic tokens. Override per-instance by setting them on a
 parent selector.
 
-| Token                                  | Default                              | Purpose            |
-| -------------------------------------- | ------------------------------------ | ------------------ |
-| `--sn-web-switch-bg`                   | dark soft fill                       | Rail (unchecked)   |
-| `--sn-web-switch-bg-checked`           | `--sn-web-color-action-primary`      | Rail (checked)     |
-| `--sn-web-switch-knob-bg`              | `--sn-web-color-background-surface`  | Knob fill          |
-| `--sn-web-switch-knob-shadow`          | rgba shadow                          | Knob elevation     |
-| `--sn-web-switch-rail-width(-sm/-lg)`  | `40px` / `34px` / `52px`             | Rail width         |
-| `--sn-web-switch-rail-height(-sm/-lg)` | `22px` / `18px` / `28px`             | Rail height        |
-| `--sn-web-switch-knob-size(-sm/-lg)`   | `18px` / `14px` / `24px`             | Knob diameter      |
-| `--sn-web-switch-label-color`          | `--sn-web-color-text-on-primary`     | Slot label text    |
-| `--sn-web-switch-loading-color`        | `--sn-web-color-action-primary`      | Spinner arc        |
-| `--sn-web-switch-disabled-opacity`     | `0.4`                                | Disabled dimming   |
-| `--sn-web-focus-ring`                  | rgba brand                           | Focus halo         |
+| Token                                  | Default                             | Purpose          |
+| -------------------------------------- | ----------------------------------- | ---------------- |
+| `--sn-web-switch-bg`                   | dark soft fill                      | Rail (unchecked) |
+| `--sn-web-switch-bg-checked`           | `--sn-web-color-action-primary`     | Rail (checked)   |
+| `--sn-web-switch-knob-bg`              | `--sn-web-color-background-surface` | Knob fill        |
+| `--sn-web-switch-knob-shadow`          | rgba shadow                         | Knob elevation   |
+| `--sn-web-switch-rail-width(-sm/-lg)`  | `40px` / `34px` / `52px`            | Rail width       |
+| `--sn-web-switch-rail-height(-sm/-lg)` | `22px` / `18px` / `28px`            | Rail height      |
+| `--sn-web-switch-knob-size(-sm/-lg)`   | `18px` / `14px` / `24px`            | Knob diameter    |
+| `--sn-web-switch-label-color`          | `--sn-web-color-text-on-primary`    | Slot label text  |
+| `--sn-web-switch-loading-color`        | `--sn-web-color-action-primary`     | Spinner arc      |
+| `--sn-web-switch-disabled-opacity`     | `0.4`                               | Disabled dimming |
+| `--sn-web-focus-ring`                  | rgba brand                          | Focus halo       |
 
 ## Accessibility
 

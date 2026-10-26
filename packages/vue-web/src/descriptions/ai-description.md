@@ -19,43 +19,43 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnDescriptions from '@snui/vue-web/src/descriptions/SnDescriptions.vue'
-import SnDescriptionsItem from '@snui/vue-web/src/descriptions/SnDescriptionsItem.vue'
+import SnDescriptions from '@snui/vue-web/src/descriptions/SnDescriptions.vue';
+import SnDescriptionsItem from '@snui/vue-web/src/descriptions/SnDescriptionsItem.vue';
 ```
 
 ## Props (SnDescriptions)
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `title` | `string` | `undefined` | no | Title above the table; the `header` slot overrides it. |
-| `column` | `number` | `3` | no | Total logical columns of the grid. |
-| `label-placement` | `'left' \| 'top'` | `'top'` | no | Where labels sit relative to content. |
-| `label-align` | `'left' \| 'right' \| 'center'` | `'left'` | no | Label text alignment. |
-| `separator` | `string` | `':'` | no | Inline separator (`left` + no border only). |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Font scale + cell padding. |
-| `bordered` | `boolean` | `false` | no | Bordered grid with tinted label cells. |
-| `label-class` | `string` | `undefined` | no | Class applied to every label cell/span. |
-| `label-style` | `string \| CSSProperties` | `undefined` | no | Style applied to every label cell/span. |
-| `content-class` | `string` | `undefined` | no | Class applied to every content cell/span. |
-| `content-style` | `string \| CSSProperties` | `undefined` | no | Style applied to every content cell/span. |
+| Name              | Type                             | Default     | Required | Description                                            |
+| ----------------- | -------------------------------- | ----------- | -------- | ------------------------------------------------------ |
+| `title`           | `string`                         | `undefined` | no       | Title above the table; the `header` slot overrides it. |
+| `column`          | `number`                         | `3`         | no       | Total logical columns of the grid.                     |
+| `label-placement` | `'left' \| 'top'`                | `'top'`     | no       | Where labels sit relative to content.                  |
+| `label-align`     | `'left' \| 'right' \| 'center'`  | `'left'`    | no       | Label text alignment.                                  |
+| `separator`       | `string`                         | `':'`       | no       | Inline separator (`left` + no border only).            |
+| `size`            | `'small' \| 'medium' \| 'large'` | `'medium'`  | no       | Font scale + cell padding.                             |
+| `bordered`        | `boolean`                        | `false`     | no       | Bordered grid with tinted label cells.                 |
+| `label-class`     | `string`                         | `undefined` | no       | Class applied to every label cell/span.                |
+| `label-style`     | `string \| CSSProperties`        | `undefined` | no       | Style applied to every label cell/span.                |
+| `content-class`   | `string`                         | `undefined` | no       | Class applied to every content cell/span.              |
+| `content-style`   | `string \| CSSProperties`        | `undefined` | no       | Style applied to every content cell/span.              |
 
 ## Props (SnDescriptionsItem)
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `label` | `string` | `undefined` | no | Label text (the `label` slot overrides it). |
-| `span` | `number` | `1` | no | Columns this entry occupies. |
-| `label-class` / `label-style` | `string` / `string \| CSSProperties` | `undefined` | no | Per-entry label overrides. |
-| `content-class` / `content-style` | `string` / `string \| CSSProperties` | `undefined` | no | Per-entry content overrides. |
+| Name                              | Type                                 | Default     | Required | Description                                 |
+| --------------------------------- | ------------------------------------ | ----------- | -------- | ------------------------------------------- |
+| `label`                           | `string`                             | `undefined` | no       | Label text (the `label` slot overrides it). |
+| `span`                            | `number`                             | `1`         | no       | Columns this entry occupies.                |
+| `label-class` / `label-style`     | `string` / `string \| CSSProperties` | `undefined` | no       | Per-entry label overrides.                  |
+| `content-class` / `content-style` | `string` / `string \| CSSProperties` | `undefined` | no       | Per-entry content overrides.                |
 
 ## Slots
 
-| Component | Name | Description |
-|---|---|---|
-| SnDescriptions | `default` | `<SnDescriptionsItem>` entries. |
-| SnDescriptions | `header` | Header content (overrides `title`). |
-| SnDescriptionsItem | `default` | Entry content. |
-| SnDescriptionsItem | `label` | Label content (overrides `label`). |
+| Component          | Name      | Description                         |
+| ------------------ | --------- | ----------------------------------- |
+| SnDescriptions     | `default` | `<SnDescriptionsItem>` entries.     |
+| SnDescriptions     | `header`  | Header content (overrides `title`). |
+| SnDescriptionsItem | `default` | Entry content.                      |
+| SnDescriptionsItem | `label`   | Label content (overrides `label`).  |
 
 ## Events
 
@@ -89,12 +89,12 @@ None — pure display component.
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Title / label text |
-| Text secondary | `--sn-web-color-text-secondary` | Content text |
-| Background surface / subtle | `--sn-web-color-background-*` | Bordered cell backgrounds |
-| Border subtle | `--sn-web-color-border-subtle` | Bordered grid lines |
+| Token                       | CSS Variable                    | Purpose                   |
+| --------------------------- | ------------------------------- | ------------------------- |
+| Text primary                | `--sn-web-color-text-primary`   | Title / label text        |
+| Text secondary              | `--sn-web-color-text-secondary` | Content text              |
+| Background surface / subtle | `--sn-web-color-background-*`   | Bordered cell backgrounds |
+| Border subtle               | `--sn-web-color-border-subtle`  | Bordered grid lines       |
 
 ## Versioning
 

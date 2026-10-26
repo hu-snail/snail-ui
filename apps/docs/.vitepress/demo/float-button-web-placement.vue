@@ -9,13 +9,13 @@
  * 四角：`top-left` / `top-right` / `bottom-left` / `bottom-right`
  * 四边中点：`top` / `right` / `bottom` / `left`（用 `50%` + translate 居中）
  */
-import { Bell } from 'lucide-vue-next'
-import { SnFloatButton } from '@snui/vue-web'
-import type { SnFloatButtonPlacement } from '@snui/vue-web'
+import { Bell } from 'lucide-vue-next';
+import { SnFloatButton } from '@snui/vue-web';
+import type { SnFloatButtonPlacement } from '@snui/vue-web';
 
 interface Anchor {
-  placement: SnFloatButtonPlacement
-  label: string
+  placement: SnFloatButtonPlacement;
+  label: string;
 }
 
 const anchors: Anchor[] = [
@@ -27,7 +27,7 @@ const anchors: Anchor[] = [
   { placement: 'bottom-left', label: 'bottom-left' },
   { placement: 'bottom', label: 'bottom' },
   { placement: 'bottom-right', label: 'bottom-right' },
-]
+];
 </script>
 
 <template>
@@ -46,8 +46,8 @@ const anchors: Anchor[] = [
       </div>
     </div>
     <p class="placement-demo__hint">
-      格子内是 <code>position: relative</code> 舞台 + <code>fixed: false</code>；
-      真实页面里省略 <code>fixed</code> 就是钉到视口对应位置。
+      格子内是 <code>position: relative</code> 舞台 + <code>fixed: false</code>； 真实页面里省略
+      <code>fixed</code> 就是钉到视口对应位置。
     </p>
   </div>
 </template>

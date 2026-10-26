@@ -20,18 +20,18 @@
  * offers "展开".
  */
 
-import { computed } from 'vue'
-import { ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next'
-import { SnButton, SnIcon } from '@snui/vue-web'
-import { useSidebarCollapse } from '../utils/sidebar-collapse'
+import { computed } from 'vue';
+import { ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-vue-next';
+import { SnButton, SnIcon } from '@snui/vue-web';
+import { useSidebarCollapse } from '../utils/sidebar-collapse';
 
 const props = withDefaults(defineProps<{ placement?: 'navbar' | 'handle' }>(), {
   placement: 'navbar',
-})
+});
 
-const { collapsed, toggle } = useSidebarCollapse()
+const { collapsed, toggle } = useSidebarCollapse();
 
-const label = computed<string>(() => (collapsed.value ? '展开左侧菜单' : '收起左侧菜单'))
+const label = computed<string>(() => (collapsed.value ? '展开左侧菜单' : '收起左侧菜单'));
 
 /** A narrow border tab reads better with a plain chevron than with the
  * panel glyphs used by the roomy navbar button. */
@@ -43,7 +43,7 @@ const icon = computed(() =>
     : collapsed.value
       ? PanelLeftOpen
       : PanelLeftClose,
-)
+);
 </script>
 
 <template>

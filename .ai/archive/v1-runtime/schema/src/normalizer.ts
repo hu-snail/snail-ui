@@ -42,7 +42,9 @@ function canonicalKeyOrder<T extends Record<string, unknown>>(input: T): T {
   const seen = new Set<string>();
   for (const key of SEMVER_KEYS) {
     if (key in input) {
-      out[key] = canonicalKeyOrder((input as Record<string, unknown>)[key as string] as Record<string, unknown>);
+      out[key] = canonicalKeyOrder(
+        (input as Record<string, unknown>)[key as string] as Record<string, unknown>,
+      );
       seen.add(key as string);
     }
   }
@@ -50,7 +52,9 @@ function canonicalKeyOrder<T extends Record<string, unknown>>(input: T): T {
     .filter((k) => !seen.has(k))
     .sort();
   for (const key of remaining) {
-    out[key] = canonicalKeyOrder((input as Record<string, unknown>)[key] as Record<string, unknown>);
+    out[key] = canonicalKeyOrder(
+      (input as Record<string, unknown>)[key] as Record<string, unknown>,
+    );
   }
   return out as T;
 }

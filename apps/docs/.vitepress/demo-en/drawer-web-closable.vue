@@ -5,11 +5,11 @@
  * Shows: `closable` on the content panel (built-in X), and the footer-only
  * variant where `closable` stays off and the footer owns the exit.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const plain = ref(false)
-const footerless = ref(false)
+const plain = ref(false);
+const footerless = ref(false);
 </script>
 
 <template>
@@ -30,7 +30,10 @@ const footerless = ref(false)
             <SnButton size="small" @click="footerless = false">Got it</SnButton>
           </div>
         </template>
-        <p><code>closable</code> defaults to <code>false</code>, so there is no button next to the title.</p>
+        <p>
+          <code>closable</code> defaults to <code>false</code>, so there is no button next to the
+          title.
+        </p>
         <p>Closing is left entirely to the footer actions.</p>
       </SnDrawerContent>
     </SnDrawer>

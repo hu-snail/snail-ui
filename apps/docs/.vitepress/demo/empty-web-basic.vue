@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnEmpty — 默认图标 + 无数据描述。 */
-import { SnEmpty } from '@snui/vue-web'
+import { SnEmpty } from '@snui/vue-web';
 </script>
 
 <template>

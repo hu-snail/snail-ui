@@ -30,78 +30,78 @@
 
 ## Props（sn-checkbox）
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number \| boolean` | `false` | 单独使用时的绑定值。 |
-| `name` | `string \| number \| boolean` | `''` | 组内唯一标识。 |
-| `type` | `'circle' \| 'square' \| 'button' \| 'dot'` | 继承父级（`'circle'`） | 形状。 |
-| `checkedColor` | `string` | 继承父级（`''`） | 选中颜色（CSS 颜色，内联覆盖）。 |
-| `uncheckedColor` | `string` | 继承父级（`''`） | 未选中颜色。 |
-| `disabled` | `boolean` | 继承父级（`false`） | 禁用当前项。 |
-| `readonly` | `boolean` | 继承父级（`false`） | 只读当前项。 |
-| `indeterminate` | `boolean` | `false` | 半选状态。 |
-| `trueValue` | `string \| number \| boolean` | `true` | 单独使用时的选中值。 |
-| `falseValue` | `string \| number \| boolean` | `false` | 单独使用时的非选中值。 |
-| `size` | `'large' \| undefined` | 继承父级 | 尺寸。 |
-| `placement` | `'left' \| 'right'` | 继承父级（`'left'`） | 勾选图标位置。 |
-| `direction` | `'horizontal' \| 'vertical'` | 继承父级（`'vertical'`） | 布局方向。 |
-| `maxWidth` | `string` | `''` | 文本最大宽度。 |
-| `customLabelClass` | `string` | `''` | label 自定义类名。 |
-| `customClass` | `string` | `''` | 根节点类名。 |
-| `customStyle` | `string` | `''` | 根节点 inline style。 |
+| 属性               | 类型                                        | 默认值                   | 说明                             |
+| ------------------ | ------------------------------------------- | ------------------------ | -------------------------------- |
+| `modelValue`       | `string \| number \| boolean`               | `false`                  | 单独使用时的绑定值。             |
+| `name`             | `string \| number \| boolean`               | `''`                     | 组内唯一标识。                   |
+| `type`             | `'circle' \| 'square' \| 'button' \| 'dot'` | 继承父级（`'circle'`）   | 形状。                           |
+| `checkedColor`     | `string`                                    | 继承父级（`''`）         | 选中颜色（CSS 颜色，内联覆盖）。 |
+| `uncheckedColor`   | `string`                                    | 继承父级（`''`）         | 未选中颜色。                     |
+| `disabled`         | `boolean`                                   | 继承父级（`false`）      | 禁用当前项。                     |
+| `readonly`         | `boolean`                                   | 继承父级（`false`）      | 只读当前项。                     |
+| `indeterminate`    | `boolean`                                   | `false`                  | 半选状态。                       |
+| `trueValue`        | `string \| number \| boolean`               | `true`                   | 单独使用时的选中值。             |
+| `falseValue`       | `string \| number \| boolean`               | `false`                  | 单独使用时的非选中值。           |
+| `size`             | `'large' \| undefined`                      | 继承父级                 | 尺寸。                           |
+| `placement`        | `'left' \| 'right'`                         | 继承父级（`'left'`）     | 勾选图标位置。                   |
+| `direction`        | `'horizontal' \| 'vertical'`                | 继承父级（`'vertical'`） | 布局方向。                       |
+| `maxWidth`         | `string`                                    | `''`                     | 文本最大宽度。                   |
+| `customLabelClass` | `string`                                    | `''`                     | label 自定义类名。               |
+| `customClass`      | `string`                                    | `''`                     | 根节点类名。                     |
+| `customStyle`      | `string`                                    | `''`                     | 根节点 inline style。            |
 
 ## Props（sn-checkbox-group）
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `Array<string \| number \| boolean>` | `[]` | 选中值数组。 |
-| `type` | `'circle' \| 'square' \| 'button' \| 'dot'` | `'circle'` | 子组件继承的形状。 |
-| `checkedColor` / `uncheckedColor` | `string` | `''` | 子组件继承的颜色。 |
-| `disabled` | `boolean` | `false` | 禁用全部选项。 |
-| `readonly` | `boolean` | `false` | 只读全部选项。 |
-| `min` | `number` | `0` | 最小可选数量，`0` 不限制。 |
-| `max` | `number` | `0` | 最大可选数量，`0` 不限制。 |
-| `size` | `'large' \| undefined` | `undefined` | 子组件继承的尺寸。 |
-| `placement` | `'left' \| 'right'` | `'left'` | 子组件继承的图标位置。 |
-| `direction` | `'horizontal' \| 'vertical'` | `'vertical'` | 子组件布局方向。 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点转发。 |
+| 属性                              | 类型                                        | 默认值       | 说明                       |
+| --------------------------------- | ------------------------------------------- | ------------ | -------------------------- |
+| `modelValue`                      | `Array<string \| number \| boolean>`        | `[]`         | 选中值数组。               |
+| `type`                            | `'circle' \| 'square' \| 'button' \| 'dot'` | `'circle'`   | 子组件继承的形状。         |
+| `checkedColor` / `uncheckedColor` | `string`                                    | `''`         | 子组件继承的颜色。         |
+| `disabled`                        | `boolean`                                   | `false`      | 禁用全部选项。             |
+| `readonly`                        | `boolean`                                   | `false`      | 只读全部选项。             |
+| `min`                             | `number`                                    | `0`          | 最小可选数量，`0` 不限制。 |
+| `max`                             | `number`                                    | `0`          | 最大可选数量，`0` 不限制。 |
+| `size`                            | `'large' \| undefined`                      | `undefined`  | 子组件继承的尺寸。         |
+| `placement`                       | `'left' \| 'right'`                         | `'left'`     | 子组件继承的图标位置。     |
+| `direction`                       | `'horizontal' \| 'vertical'`                | `'vertical'` | 子组件布局方向。           |
+| `customClass` / `customStyle`     | `string`                                    | `''`         | 根节点转发。               |
 
 ## Events
 
-| 事件名 | 组件 | 说明 | 参数 |
-| --- | --- | --- | --- |
-| `update:modelValue` | sn-checkbox | 单独使用时的绑定值变化 | `(value)` |
-| `change` | sn-checkbox | 切换（组内时载荷为 `name`） | `(value)` |
-| `update:modelValue` | sn-checkbox-group | 选中数组变化 | `(value: Array)` |
-| `change` | sn-checkbox-group | 与 `update:modelValue` 同时触发 | `(value: Array)` |
+| 事件名              | 组件              | 说明                            | 参数             |
+| ------------------- | ----------------- | ------------------------------- | ---------------- |
+| `update:modelValue` | sn-checkbox       | 单独使用时的绑定值变化          | `(value)`        |
+| `change`            | sn-checkbox       | 切换（组内时载荷为 `name`）     | `(value)`        |
+| `update:modelValue` | sn-checkbox-group | 选中数组变化                    | `(value: Array)` |
+| `change`            | sn-checkbox-group | 与 `update:modelValue` 同时触发 | `(value: Array)` |
 
 ## Exposed API（sn-checkbox-group）
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
-| `toggle` | `(name, nextChecked: boolean) => void` | 应用单项选中变化。 |
+| 成员        | 签名                                                 | 说明                        |
+| ----------- | ---------------------------------------------------- | --------------------------- |
+| `toggle`    | `(name, nextChecked: boolean) => void`               | 应用单项选中变化。          |
 | `toggleAll` | `(checked: boolean, skipDisabled?: boolean) => void` | 全选 / 全不选已注册的子项。 |
-| `isChecked` | `(name) => boolean` | 查询当前是否选中。 |
+| `isChecked` | `(name) => boolean`                                  | 查询当前是否选中。          |
 
 ## Slots
 
-| 插槽名 | 组件 | 说明 |
-| --- | --- | --- |
-| `default` | sn-checkbox | 文本内容。 |
-| `icon` | sn-checkbox | 自定义图标，作用域 `{ isChecked }`。 |
-| `default` | sn-checkbox-group | 子项列表。 |
+| 插槽名    | 组件              | 说明                                 |
+| --------- | ----------------- | ------------------------------------ |
+| `default` | sn-checkbox       | 文本内容。                           |
+| `icon`    | sn-checkbox       | 自定义图标，作用域 `{ isChecked }`。 |
+| `default` | sn-checkbox-group | 子项列表。                           |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-control-unchecked` | 未选中边框 / 圆环 |
-| `--sn-mp-color-action-primary` | 选中底板 / 按钮态选中边 |
-| `--sn-mp-color-action-primary-soft` | 按钮态选中底色 |
-| `--sn-mp-color-control-knob` | 勾选图标底板 |
-| `--sn-mp-color-text-on-primary` | 勾选图标描边 |
-| `--sn-mp-color-text-primary` | 文本颜色 |
-| `--sn-mp-color-background-soft` | 按钮态背景 |
+| 变量                                | 用途                    |
+| ----------------------------------- | ----------------------- |
+| `--sn-mp-color-control-unchecked`   | 未选中边框 / 圆环       |
+| `--sn-mp-color-action-primary`      | 选中底板 / 按钮态选中边 |
+| `--sn-mp-color-action-primary-soft` | 按钮态选中底色          |
+| `--sn-mp-color-control-knob`        | 勾选图标底板            |
+| `--sn-mp-color-text-on-primary`     | 勾选图标描边            |
+| `--sn-mp-color-text-primary`        | 文本颜色                |
+| `--sn-mp-color-background-soft`     | 按钮态背景              |
 
 ## 无障碍
 
@@ -113,4 +113,3 @@
 ## 暗色模式
 
 所有颜色通过 `--sn-mp-color-*` 解析，无浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下未选中边框、选中底板、按钮态底色、文本颜色自动翻转。验证方式：
-

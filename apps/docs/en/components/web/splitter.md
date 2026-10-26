@@ -18,21 +18,21 @@ Split panes (n-splitter aligned). Drag to resize, keyboard accessible, collapsib
 
 ### SnSplitter Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| direction | `'horizontal'\|'vertical'` | `'horizontal'` | Split direction |
-| disabled | `boolean` | `false` | Disable dragging |
+| Prop      | Type                       | Default        | Notes            |
+| --------- | -------------------------- | -------------- | ---------------- |
+| direction | `'horizontal'\|'vertical'` | `'horizontal'` | Split direction  |
+| disabled  | `boolean`                  | `false`        | Disable dragging |
 
 Events: `resize` (after drag/collapse settles).
 
 ### SnSplitterPanel Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| defaultSize | `number \| 'N%'` | — | Initial percent (unset = equal split) |
-| minSize / maxSize | `number \| 'N%'` | — | Drag bounds |
-| collapsible | `boolean` | `false` | Snap-collapse to 0 |
-| collapsed | `boolean \| undefined` | — | v-model:collapsed |
+| Prop              | Type                   | Default | Notes                                 |
+| ----------------- | ---------------------- | ------- | ------------------------------------- |
+| defaultSize       | `number \| 'N%'`       | —       | Initial percent (unset = equal split) |
+| minSize / maxSize | `number \| 'N%'`       | —       | Drag bounds                           |
+| collapsible       | `boolean`              | `false` | Snap-collapse to 0                    |
+| collapsed         | `boolean \| undefined` | —       | v-model:collapsed                     |
 
 divider `role="separator"`; Arrow ±2%, Home/End to bounds; double-click divider restores default.
 

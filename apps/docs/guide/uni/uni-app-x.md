@@ -43,7 +43,7 @@ pnpm add @snui/uni-x
 `.sn-theme-root` 上，`sn-config-provider` 会自动携带该 class）：
 
 ```css
-@import "@snui/uni-x/theme/index.css";
+@import '@snui/uni-x/theme/index.css';
 ```
 
 不使用 `sn-config-provider` 的页面，请在页面根节点加 `class="sn-theme-root"`。
@@ -59,15 +59,15 @@ pnpm add @snui/uni-x
 
 ## 当前状态
 
-| 项 | 状态 |
-| --- | --- |
-| 组件生成 | 全量 82 组件（95 个 `.uvue`）+ 29 个 ts 工具文件 |
-| 主题 / 暗色 | 已生成 class-only token 层 |
-| Style Pack（skin） | **已支持（变量注入）**：皮肤后代规则由管线降级为 `.snui-skin-*` 单类变量块（实测 59 个组件、1097 条注入、434 处消费）；仅 9 条 `:hover/:active` 交互态规则在 App 端不可表达被丢弃（登记于 PORTING-REPORT） |
-| sn-table | uvue App 端官方支持 `<component :is>`；本组件把插槽函数传给 `:is` 的形态待编译验证 |
-| sn-sticky | App 端降级为普通布局（蒸汽模式不支持 `position: sticky`，内置 sticky-section 仅限 list-view 内）；列表内吸顶请用 list-view + sticky-section |
-| canvas 组件 | 仅 sn-qr-code 实际使用 canvas——已适配 uni-app x 新 API（W3C 2d 上下文 + 位图 DPR 尺寸 + `toDataURL` 导出）；sn-signature / sn-watermark / sn-img-cropper 本就是无 canvas 设计（视图描边 / 视图平铺 / 几何上报由宿主光栅化），无需改动 |
-| 桌面 H5 鼠标手势（picker-view） | 已用 `#ifdef H5` 隔离，App 端仅触摸 |
+| 项                              | 状态                                                                                                                                                                                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 组件生成                        | 全量 82 组件（95 个 `.uvue`）+ 29 个 ts 工具文件                                                                                                                                                                                      |
+| 主题 / 暗色                     | 已生成 class-only token 层                                                                                                                                                                                                            |
+| Style Pack（skin）              | **已支持（变量注入）**：皮肤后代规则由管线降级为 `.snui-skin-*` 单类变量块（实测 59 个组件、1097 条注入、434 处消费）；仅 9 条 `:hover/:active` 交互态规则在 App 端不可表达被丢弃（登记于 PORTING-REPORT）                            |
+| sn-table                        | uvue App 端官方支持 `<component :is>`；本组件把插槽函数传给 `:is` 的形态待编译验证                                                                                                                                                    |
+| sn-sticky                       | App 端降级为普通布局（蒸汽模式不支持 `position: sticky`，内置 sticky-section 仅限 list-view 内）；列表内吸顶请用 list-view + sticky-section                                                                                           |
+| canvas 组件                     | 仅 sn-qr-code 实际使用 canvas——已适配 uni-app x 新 API（W3C 2d 上下文 + 位图 DPR 尺寸 + `toDataURL` 导出）；sn-signature / sn-watermark / sn-img-cropper 本就是无 canvas 设计（视图描边 / 视图平铺 / 几何上报由宿主光栅化），无需改动 |
+| 桌面 H5 鼠标手势（picker-view） | 已用 `#ifdef H5` 隔离，App 端仅触摸                                                                                                                                                                                                   |
 
 每条转换决定的明细（删除的规则、包的文本、重写的事件）见
 `packages/uni-x/PORTING-REPORT.md`。

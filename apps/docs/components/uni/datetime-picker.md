@@ -27,38 +27,38 @@ type="time" 写回 "HH:mm" 字符串；beforeConfirm 返回 false 时弹层不�
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `undefined` | 时间戳；`time` 类型为 `HH:mm[:ss]` |
-| `visible` | `boolean` | `false` | 弹层显隐 |
-| `type` | `DateTimeType` | `'datetime'` | 列集合 |
-| `title` | `string` | `''` | 弹层标题 |
-| `cancelButtonText` / `confirmButtonText` | `string` | `'取消'` / `'确认'` | 取消 / 确认文案 |
-| `closeOnClickModal` / `safeAreaInsetBottom` | `boolean` | `true` | 遮罩关闭 / 安全区 |
-| `itemHeight` / `visibleItemCount` | `number` | `44` / `6` | 行高 / 可见行数 |
-| `valueKey` / `labelKey` | `string` | `'value'` / `'label'` | 字段名（仅对齐） |
-| `minDate` / `maxDate` | `number` | `undefined` | 日期范围 |
-| `minHour` / `maxHour` / `minMinute` / `maxMinute` | `number` | `0` / `23` / `0` / `59` | `time` 类型边界 |
-| `useSecond` / `minSecond` / `maxSecond` | `boolean` / `number` / `number` | `false` / `0` / `59` | 秒列 |
-| `formatter` / `filter` | function | `undefined` | 列钩子 |
-| `beforeConfirm` | `(value) => boolean \| Promise<boolean>` | `undefined` | 确认前钩子 |
-| `zIndex` | `number` | `15` | 弹层层级 |
-| `immediateChange` | `boolean` | `false` | 滚动即写回 v-model |
-| `customClass` / `customStyle` / `customViewClass` | `string` | `''` | 根节点 / 弹层 / 滚轮类名 |
-| `rootPortal` | `boolean` | `false` | 脱离文档流渲染——**声明但未实现**（小程序无 portal 宿主，透传给 `sn-popup`）|
-| `displayFormatTabLabel` | `((tab) => string) \| undefined` | `undefined` | 区间 Tab 标签格式化——**声明但未实现**（本轮只实现单值模式）|
+| 属性                                              | 类型                                     | 默认值                  | 说明                                                                        |
+| ------------------------------------------------- | ---------------------------------------- | ----------------------- | --------------------------------------------------------------------------- |
+| `modelValue`                                      | `string \| number`                       | `undefined`             | 时间戳；`time` 类型为 `HH:mm[:ss]`                                          |
+| `visible`                                         | `boolean`                                | `false`                 | 弹层显隐                                                                    |
+| `type`                                            | `DateTimeType`                           | `'datetime'`            | 列集合                                                                      |
+| `title`                                           | `string`                                 | `''`                    | 弹层标题                                                                    |
+| `cancelButtonText` / `confirmButtonText`          | `string`                                 | `'取消'` / `'确认'`     | 取消 / 确认文案                                                             |
+| `closeOnClickModal` / `safeAreaInsetBottom`       | `boolean`                                | `true`                  | 遮罩关闭 / 安全区                                                           |
+| `itemHeight` / `visibleItemCount`                 | `number`                                 | `44` / `6`              | 行高 / 可见行数                                                             |
+| `valueKey` / `labelKey`                           | `string`                                 | `'value'` / `'label'`   | 字段名（仅对齐）                                                            |
+| `minDate` / `maxDate`                             | `number`                                 | `undefined`             | 日期范围                                                                    |
+| `minHour` / `maxHour` / `minMinute` / `maxMinute` | `number`                                 | `0` / `23` / `0` / `59` | `time` 类型边界                                                             |
+| `useSecond` / `minSecond` / `maxSecond`           | `boolean` / `number` / `number`          | `false` / `0` / `59`    | 秒列                                                                        |
+| `formatter` / `filter`                            | function                                 | `undefined`             | 列钩子                                                                      |
+| `beforeConfirm`                                   | `(value) => boolean \| Promise<boolean>` | `undefined`             | 确认前钩子                                                                  |
+| `zIndex`                                          | `number`                                 | `15`                    | 弹层层级                                                                    |
+| `immediateChange`                                 | `boolean`                                | `false`                 | 滚动即写回 v-model                                                          |
+| `customClass` / `customStyle` / `customViewClass` | `string`                                 | `''`                    | 根节点 / 弹层 / 滚轮类名                                                    |
+| `rootPortal`                                      | `boolean`                                | `false`                 | 脱离文档流渲染——**声明但未实现**（小程序无 portal 宿主，透传给 `sn-popup`） |
+| `displayFormatTabLabel`                           | `((tab) => string) \| undefined`         | `undefined`             | 区间 Tab 标签格式化——**声明但未实现**（本轮只实现单值模式）                 |
 
 > **未实现**：`root-portal`、`display-format-tab-label`，以及区间模式的 `toggle` 事件（本轮只实现单值模式）。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 确认时（`immediateChange` 时每次滚动） | `(value)` |
-| `update:visible` | 弹层显隐变化时 | `(value: boolean)` |
-| `confirm` | 确认并通过校验时 | `{ value }` |
-| `change` | 选中变化时 | `{ value }` |
-| `cancel` / `open` | 弹层生命周期 | — |
+| 事件名              | 说明                                   | 参数               |
+| ------------------- | -------------------------------------- | ------------------ |
+| `update:modelValue` | 确认时（`immediateChange` 时每次滚动） | `(value)`          |
+| `update:visible`    | 弹层显隐变化时                         | `(value: boolean)` |
+| `confirm`           | 确认并通过校验时                       | `{ value }`        |
+| `change`            | 选中变化时                             | `{ value }`        |
+| `cancel` / `open`   | 弹层生命周期                           | —                  |
 
 ## Slots
 
@@ -66,14 +66,14 @@ type="time" 写回 "HH:mm" 字符串；beforeConfirm 返回 false 时弹层不�
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | 弹层底色 |
-| ``--sn-mp-color-border-subtle`` | 工具栏分割线 |
+| 变量                                          | 用途            |
+| --------------------------------------------- | --------------- |
+| `--sn-mp-color-background-elevated`           | 弹层底色        |
+| `--sn-mp-color-border-subtle`                 | 工具栏分割线    |
 | ``--sn-mp-color-text-primary` / `-secondary`` | 标题 / 取消文案 |
-| ``--sn-mp-color-action-primary`` | 确认文案 |
-| ``--sn-mp-font-size-md`` | 工具栏字号 |
-| ``--sn-mp-spacing-2` / `-3` / `-4`` | 工具栏内边距 |
+| `--sn-mp-color-action-primary`                | 确认文案        |
+| `--sn-mp-font-size-md`                        | 工具栏字号      |
+| ``--sn-mp-spacing-2` / `-3` / `-4``           | 工具栏内边距    |
 
 ## 无障碍
 
@@ -87,4 +87,3 @@ H5 端在触摸之外支持桌面输入：弹层内的滚筒可按住鼠标左�
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

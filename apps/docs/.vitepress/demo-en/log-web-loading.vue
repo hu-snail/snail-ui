@@ -1,18 +1,18 @@
 <script setup lang="ts">
 /** Demo: SnLog — loading indicator pill. */
-import { ref } from 'vue'
-import { SnLog, SnSwitch } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnLog, SnSwitch } from '@snui/vue-web';
 
 function makeLog(): string {
-  const lines: string[] = []
+  const lines: string[] = [];
   for (let i = 0; i < 40; ++i) {
-    lines.push(Math.random().toString(16))
+    lines.push(Math.random().toString(16));
   }
-  return `${lines.join('\n')}\n`
+  return `${lines.join('\n')}\n`;
 }
 
-const loading = ref(false)
-const log = ref(makeLog())
+const loading = ref(false);
+const log = ref(makeLog());
 </script>
 
 <template>

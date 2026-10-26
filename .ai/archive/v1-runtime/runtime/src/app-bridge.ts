@@ -29,7 +29,10 @@ export interface StorageCapability {
 /** Notify contract — toast / dialog. */
 export type NotifyLevel = 'info' | 'success' | 'warning' | 'error';
 export interface NotifyCapability {
-  toast(message: string, opts?: { readonly level?: NotifyLevel; readonly durationMs?: number }): void;
+  toast(
+    message: string,
+    opts?: { readonly level?: NotifyLevel; readonly durationMs?: number },
+  ): void;
   dialog(input: {
     readonly title?: string;
     readonly message: string;

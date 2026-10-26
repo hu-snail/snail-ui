@@ -67,67 +67,67 @@
  *   - 扫码识别 — 由宿主调用 `uni.scanCode`
  */
 
-import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { encode, type SnQrEncoded } from './sn-qr-core'
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { encode, type SnQrEncoded } from './sn-qr-core';
 
-defineOptions({ name: 'SnQrCode' })
+defineOptions({ name: 'SnQrCode' });
 
 /** Error correction level. Mirrors `wd-qr-code` `correct-level`. */
-type QrCorrectLevel = 'L' | 'M' | 'Q' | 'H'
+type QrCorrectLevel = 'L' | 'M' | 'Q' | 'H';
 
 /** Module shape. Mirrors `wd-qr-code` `dot-type`. */
-type QrDotType = 'square' | 'dots' | 'rounded' | 'liquid'
+type QrDotType = 'square' | 'dots' | 'rounded' | 'liquid';
 
 /** Gradient direction. Mirrors `wd-qr-code` `gradient-direction`. */
-type QrGradientDirection = 'diagonal' | 'horizontal' | 'vertical'
+type QrGradientDirection = 'diagonal' | 'horizontal' | 'vertical';
 
 /** Canvas size bounds in design px — keeps the canvas sane. */
-const MIN_SIZE = 40
-const MAX_SIZE = 1000
+const MIN_SIZE = 40;
+const MAX_SIZE = 1000;
 
 /**
  * Canvas needs concrete colors, and a QR must stay dark-on-light to scan, so
  * these two are theme-independent by design (see the header). Named CSS colors
  * rather than hex literals — no token-check violation.
  */
-const CANVAS_DARK = 'black'
-const CANVAS_LIGHT = 'white'
+const CANVAS_DARK = 'black';
+const CANVAS_LIGHT = 'white';
 
 /** Design px → rpx (750 design width, 1px = 2rpx — CONTRIBUTING §2.4). */
-const RPX_PER_PX = 2
+const RPX_PER_PX = 2;
 
 const props = withDefaults(
   defineProps<{
     /** Payload encoded into the code. */
-    text?: string
+    text?: string;
     /** Canvas side length in design px (`wd-qr-code` `size`). */
-    size?: number
+    size?: number;
     /** Error correction level: L (~7%) / M (~15%) / Q (~25%) / H (~30%). */
-    correctLevel?: QrCorrectLevel
+    correctLevel?: QrCorrectLevel;
     /** Dark module color; `''` = the code's own dark color. */
-    colorDark?: string
+    colorDark?: string;
     /** Light module + quiet-zone color; `''` = the code's own light color. */
-    colorLight?: string
+    colorLight?: string;
     /** Quiet-zone width in design px, painted inside the canvas. */
-    margin?: number
+    margin?: number;
     /** Module shape. */
-    dotType?: QrDotType
+    dotType?: QrDotType;
     /** Module fill ratio inside its cell, `0.4`-`1`. */
-    dotScale?: number
+    dotScale?: number;
     /** Paint dark modules with a linear gradient. */
-    enableGradient?: boolean
+    enableGradient?: boolean;
     /** Gradient end color; `''` falls back to `colorDark`. */
-    gradientColor?: string
+    gradientColor?: string;
     /** Multi-stop gradient colors (2+); wins over `gradientColor`. */
-    gradientColors?: string[]
+    gradientColors?: string[];
     /** Gradient direction; a number is an angle in degrees. */
-    gradientDirection?: QrGradientDirection | number
+    gradientDirection?: QrGradientDirection | number;
     /** Canvas id; `''` = auto-generated per instance. */
-    canvasId?: string
+    canvasId?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     text: '',
@@ -146,63 +146,63 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'click', event: Event): void
-  (e: 'error', error: unknown): void
-}>()
+  (e: 'click', event: Event): void;
+  (e: 'error', error: unknown): void;
+}>();
 
-const instance = getCurrentInstance()
+const instance = getCurrentInstance();
 
 /** Unique canvas id per instance — two codes on one page must not collide. */
-const canvasIdValue = computed(() => props.canvasId || `sn-qr-code-${instance?.uid ?? 0}`)
+const canvasIdValue = computed(() => props.canvasId || `sn-qr-code-${instance?.uid ?? 0}`);
 
 /** Clamped canvas side length in design px. */
 const sizeValue = computed(() => {
-  if (!Number.isFinite(props.size)) return 200
-  return Math.min(MAX_SIZE, Math.max(MIN_SIZE, Math.round(props.size)))
-})
+  if (!Number.isFinite(props.size)) return 200;
+  return Math.min(MAX_SIZE, Math.max(MIN_SIZE, Math.round(props.size)));
+});
 
 /** Clamped quiet zone; never eats more than a third of the canvas. */
 const marginValue = computed(() => {
-  if (!Number.isFinite(props.margin) || props.margin <= 0) return 0
-  return Math.min(Math.floor(sizeValue.value / 3), Math.round(props.margin))
-})
+  if (!Number.isFinite(props.margin) || props.margin <= 0) return 0;
+  return Math.min(Math.floor(sizeValue.value / 3), Math.round(props.margin));
+});
 
 /** Clamped module fill ratio. */
 const dotScaleValue = computed(() => {
-  if (!Number.isFinite(props.dotScale)) return 1
-  return Math.min(1, Math.max(0.4, props.dotScale))
-})
+  if (!Number.isFinite(props.dotScale)) return 1;
+  return Math.min(1, Math.max(0.4, props.dotScale));
+});
 
 /** Encode result, or the failure that `error` reports. */
-const encoded = ref<SnQrEncoded | null>(null)
-const hasEncodeError = ref(false)
+const encoded = ref<SnQrEncoded | null>(null);
+const hasEncodeError = ref(false);
 
 function rebuild(): void {
   try {
-    encoded.value = encode(props.text, props.correctLevel)
-    hasEncodeError.value = false
+    encoded.value = encode(props.text, props.correctLevel);
+    hasEncodeError.value = false;
   } catch (error) {
-    encoded.value = null
-    hasEncodeError.value = true
-    emit('error', error)
+    encoded.value = null;
+    hasEncodeError.value = true;
+    emit('error', error);
   }
 }
 
-rebuild()
+rebuild();
 
 watch(
   () => [props.text, props.correctLevel],
   () => rebuild(),
-)
+);
 
 /* ── Canvas surface ─────────────────────────────────────────────────────── */
 
 /** Linear gradient handle, structurally shared by the uni and DOM canvases. */
 interface CanvasGradientLike {
-  addColorStop: (offset: number, color: string) => void
+  addColorStop: (offset: number, color: string) => void;
 }
 
 /**
@@ -212,127 +212,131 @@ interface CanvasGradientLike {
  * implements fewer methods than the DOM one; each use is feature-detected.
  */
 interface CanvasLike {
-  fillStyle: unknown
-  fillRect: (x: number, y: number, w: number, h: number) => void
-  beginPath?: () => void
-  arc?: (x: number, y: number, r: number, start: number, end: number) => void
-  fill?: () => void
-  scale?: (x: number, y: number) => void
-  roundRect?: (x: number, y: number, w: number, h: number, r: number) => void
-  createLinearGradient?: (x0: number, y0: number, x1: number, y1: number) => CanvasGradientLike
+  fillStyle: unknown;
+  fillRect: (x: number, y: number, w: number, h: number) => void;
+  beginPath?: () => void;
+  arc?: (x: number, y: number, r: number, start: number, end: number) => void;
+  fill?: () => void;
+  scale?: (x: number, y: number) => void;
+  roundRect?: (x: number, y: number, w: number, h: number, r: number) => void;
+  createLinearGradient?: (x0: number, y0: number, x1: number, y1: number) => CanvasGradientLike;
   /** uni canvas only: flush the command queue to the native canvas. */
-  draw?: (reserve?: boolean, callback?: () => void) => void
+  draw?: (reserve?: boolean, callback?: () => void) => void;
 }
 
 /** uni runtime subset this component touches. All lookups are guarded. */
 interface UniHost {
-  createCanvasContext?: (id: string, component?: unknown) => CanvasLike
-  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void
+  createCanvasContext?: (id: string, component?: unknown) => CanvasLike;
+  canvasToTempFilePath?: (options: Record<string, unknown>, component?: unknown) => void;
 }
 
 function getUni(): UniHost | null {
-  const host = globalThis as { uni?: UniHost }
-  return host.uni ?? null
+  const host = globalThis as { uni?: UniHost };
+  return host.uni ?? null;
 }
 
 /** Template ref on `<canvas>` — the H5 fallback surface. */
-const canvasEl = ref<unknown>(null)
+const canvasEl = ref<unknown>(null);
 
 /** Cached surface + the canvas id it belongs to (single resource, §41). */
-let surface: CanvasLike | null = null
-let surfaceCanvasId = ''
+let surface: CanvasLike | null = null;
+let surfaceCanvasId = '';
 
 /** Resolve the DOM canvas element, if this host rendered a real one. */
 function getDomCanvas(): { getContext?: (id: string) => unknown } | null {
-  const el = canvasEl.value
-  if (el === null || typeof el !== 'object') return null
-  const candidate = el as { getContext?: (id: string) => unknown }
-  return typeof candidate.getContext === 'function' ? candidate : null
+  const el = canvasEl.value;
+  if (el === null || typeof el !== 'object') return null;
+  const candidate = el as { getContext?: (id: string) => unknown };
+  return typeof candidate.getContext === 'function' ? candidate : null;
 }
 
 /** Acquire the drawing surface: uni context first, DOM canvas second. */
 function getSurface(): CanvasLike | null {
-  if (surface !== null && surfaceCanvasId === canvasIdValue.value) return surface
+  if (surface !== null && surfaceCanvasId === canvasIdValue.value) return surface;
 
-  const createCanvasContext = getUni()?.createCanvasContext
+  const createCanvasContext = getUni()?.createCanvasContext;
   if (typeof createCanvasContext === 'function') {
     try {
-      surface = createCanvasContext(canvasIdValue.value, instance)
-      surfaceCanvasId = canvasIdValue.value
-      return surface
+      surface = createCanvasContext(canvasIdValue.value, instance);
+      surfaceCanvasId = canvasIdValue.value;
+      return surface;
     } catch (error) {
-      emit('error', error)
+      emit('error', error);
     }
   }
 
-  const domCanvas = getDomCanvas()
+  const domCanvas = getDomCanvas();
   if (domCanvas !== null) {
     try {
-      const context = domCanvas.getContext?.('2d')
+      const context = domCanvas.getContext?.('2d');
       if (context !== null && typeof context === 'object') {
-        surface = context as CanvasLike
-        surfaceCanvasId = canvasIdValue.value
-        return surface
+        surface = context as CanvasLike;
+        surfaceCanvasId = canvasIdValue.value;
+        return surface;
       }
     } catch (error) {
-      emit('error', error)
+      emit('error', error);
     }
   }
 
-  return null
+  return null;
 }
 
 /* ── Painting ───────────────────────────────────────────────────────────── */
 
 /** Gradient stop colors: `gradientColors` (2+) wins over `gradientColor`. */
 const gradientStops = computed<string[]>(() => {
-  const colors = props.gradientColors.filter((color) => color !== '')
-  if (colors.length >= 2) return colors
-  const start = props.colorDark || CANVAS_DARK
-  const end = props.gradientColor || props.colorDark || CANVAS_DARK
-  return [start, end]
-})
+  const colors = props.gradientColors.filter((color) => color !== '');
+  if (colors.length >= 2) return colors;
+  const start = props.colorDark || CANVAS_DARK;
+  const end = props.gradientColor || props.colorDark || CANVAS_DARK;
+  return [start, end];
+});
 
 /** Gradient start / end points for the canvas, in canvas px. */
 function gradientPoints(size: number): { x0: number; y0: number; x1: number; y1: number } {
   if (typeof props.gradientDirection === 'number') {
-    const radians = (props.gradientDirection * Math.PI) / 180
-    const dx = Math.cos(radians) * size
-    const dy = Math.sin(radians) * size
+    const radians = (props.gradientDirection * Math.PI) / 180;
+    const dx = Math.cos(radians) * size;
+    const dy = Math.sin(radians) * size;
     return {
       x0: (size - dx) / 2,
       y0: (size - dy) / 2,
       x1: (size + dx) / 2,
       y1: (size + dy) / 2,
-    }
+    };
   }
-  if (props.gradientDirection === 'horizontal') return { x0: 0, y0: 0, x1: size, y1: 0 }
-  if (props.gradientDirection === 'vertical') return { x0: 0, y0: 0, x1: 0, y1: size }
-  return { x0: 0, y0: 0, x1: size, y1: size }
+  if (props.gradientDirection === 'horizontal') return { x0: 0, y0: 0, x1: size, y1: 0 };
+  if (props.gradientDirection === 'vertical') return { x0: 0, y0: 0, x1: 0, y1: size };
+  return { x0: 0, y0: 0, x1: size, y1: size };
 }
 
 /** Dark-module paint: a flat color, or a gradient when enabled + supported. */
 function resolveDarkPaint(ctx: CanvasLike, size: number): unknown {
-  const flat = props.colorDark || CANVAS_DARK
-  if (!props.enableGradient || typeof ctx.createLinearGradient !== 'function') return flat
-  const points = gradientPoints(size)
-  const gradient = ctx.createLinearGradient(points.x0, points.y0, points.x1, points.y1)
-  const stops = gradientStops.value
+  const flat = props.colorDark || CANVAS_DARK;
+  if (!props.enableGradient || typeof ctx.createLinearGradient !== 'function') return flat;
+  const points = gradientPoints(size);
+  const gradient = ctx.createLinearGradient(points.x0, points.y0, points.x1, points.y1);
+  const stops = gradientStops.value;
   stops.forEach((color, index) => {
-    gradient.addColorStop(stops.length === 1 ? 0 : index / (stops.length - 1), color)
-  })
-  return gradient
+    gradient.addColorStop(stops.length === 1 ? 0 : index / (stops.length - 1), color);
+  });
+  return gradient;
 }
 
 /** Fill a circle, degrading to a square when the canvas has no `arc`. */
 function paintCircle(ctx: CanvasLike, cx: number, cy: number, radius: number): void {
-  if (typeof ctx.beginPath !== 'function' || typeof ctx.arc !== 'function' || typeof ctx.fill !== 'function') {
-    ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2)
-    return
+  if (
+    typeof ctx.beginPath !== 'function' ||
+    typeof ctx.arc !== 'function' ||
+    typeof ctx.fill !== 'function'
+  ) {
+    ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+    return;
   }
-  ctx.beginPath()
-  ctx.arc(cx, cy, radius, 0, Math.PI * 2)
-  ctx.fill()
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 /**
@@ -352,45 +356,53 @@ function paintModule(
   matrix: SnQrEncoded,
 ): void {
   // Module coordinates → absolute canvas position (quiet zone included).
-  const left = margin + x * cell
-  const top = margin + y * cell
-  const scale = dotScaleValue.value
-  const inset = (cell * (1 - scale)) / 2
-  const side = cell * scale
-  const dotType = props.dotType
+  const left = margin + x * cell;
+  const top = margin + y * cell;
+  const scale = dotScaleValue.value;
+  const inset = (cell * (1 - scale)) / 2;
+  const side = cell * scale;
+  const dotType = props.dotType;
 
   if (dotType === 'square') {
-    ctx.fillRect(left + inset, top + inset, side, side)
-    return
+    ctx.fillRect(left + inset, top + inset, side, side);
+    return;
   }
 
   if (dotType === 'rounded') {
-    if (typeof ctx.roundRect === 'function' && typeof ctx.fill === 'function' && typeof ctx.beginPath === 'function') {
-      ctx.beginPath()
-      ctx.roundRect(left + inset, top + inset, side, side, Math.max(0, cell * 0.28 * scale))
-      ctx.fill()
-      return
+    if (
+      typeof ctx.roundRect === 'function' &&
+      typeof ctx.fill === 'function' &&
+      typeof ctx.beginPath === 'function'
+    ) {
+      ctx.beginPath();
+      ctx.roundRect(left + inset, top + inset, side, side, Math.max(0, cell * 0.28 * scale));
+      ctx.fill();
+      return;
     }
-    paintCircle(ctx, left + cell / 2, top + cell / 2, side / 2)
-    return
+    paintCircle(ctx, left + cell / 2, top + cell / 2, side / 2);
+    return;
   }
 
-  paintCircle(ctx, left + cell / 2, top + cell / 2, side / 2)
-  if (dotType !== 'liquid') return
+  paintCircle(ctx, left + cell / 2, top + cell / 2, side / 2);
+  if (dotType !== 'liquid') return;
 
   // liquid: bridge to dark neighbours so adjacent dots fuse into a blob.
-  const bridge = Math.max(1, Math.round(cell * 0.18))
-  if (matrix.getModule(x - 1, y)) ctx.fillRect(left - bridge, top + cell / 2 - bridge, bridge * 2, bridge * 2)
-  if (matrix.getModule(x + 1, y)) ctx.fillRect(left + cell - bridge, top + cell / 2 - bridge, bridge * 2, bridge * 2)
-  if (matrix.getModule(x, y - 1)) ctx.fillRect(left + cell / 2 - bridge, top - bridge, bridge * 2, bridge * 2)
-  if (matrix.getModule(x, y + 1)) ctx.fillRect(left + cell / 2 - bridge, top + cell - bridge, bridge * 2, bridge * 2)
+  const bridge = Math.max(1, Math.round(cell * 0.18));
+  if (matrix.getModule(x - 1, y))
+    ctx.fillRect(left - bridge, top + cell / 2 - bridge, bridge * 2, bridge * 2);
+  if (matrix.getModule(x + 1, y))
+    ctx.fillRect(left + cell - bridge, top + cell / 2 - bridge, bridge * 2, bridge * 2);
+  if (matrix.getModule(x, y - 1))
+    ctx.fillRect(left + cell / 2 - bridge, top - bridge, bridge * 2, bridge * 2);
+  if (matrix.getModule(x, y + 1))
+    ctx.fillRect(left + cell / 2 - bridge, top + cell - bridge, bridge * 2, bridge * 2);
 }
 
 /** Pixel ratio used for the H5 canvas (kept at 1 where `window` is absent). */
 function devicePixelRatio(): number {
-  const host = globalThis as { devicePixelRatio?: number }
-  const ratio = host.devicePixelRatio
-  return typeof ratio === 'number' && ratio > 0 ? ratio : 1
+  const host = globalThis as { devicePixelRatio?: number };
+  const ratio = host.devicePixelRatio;
+  return typeof ratio === 'number' && ratio > 0 ? ratio : 1;
 }
 
 /**
@@ -400,43 +412,43 @@ function devicePixelRatio(): number {
  * canvas element appears.
  */
 function paint(): boolean {
-  const matrix = encoded.value
-  if (matrix === null) return false
-  const ctx = getSurface()
-  if (ctx === null) return false
+  const matrix = encoded.value;
+  if (matrix === null) return false;
+  const ctx = getSurface();
+  if (ctx === null) return false;
 
-  const size = sizeValue.value
-  const margin = marginValue.value
-  const cell = Math.max(1, size - margin * 2) / matrix.size
+  const size = sizeValue.value;
+  const margin = marginValue.value;
+  const cell = Math.max(1, size - margin * 2) / matrix.size;
 
   // H5: size the backing store for the device pixel ratio (crisp modules).
-  const domCanvas = getDomCanvas() as { width?: number; height?: number } | null
+  const domCanvas = getDomCanvas() as { width?: number; height?: number } | null;
   if (domCanvas !== null && typeof domCanvas.width === 'number') {
-    const ratio = devicePixelRatio()
-    domCanvas.width = Math.round(size * ratio)
-    domCanvas.height = Math.round(size * ratio)
-    if (typeof ctx.scale === 'function') ctx.scale(ratio, ratio)
+    const ratio = devicePixelRatio();
+    domCanvas.width = Math.round(size * ratio);
+    domCanvas.height = Math.round(size * ratio);
+    if (typeof ctx.scale === 'function') ctx.scale(ratio, ratio);
   }
 
   // Quiet zone: an opaque light plate, so the code scans on any page surface.
-  ctx.fillStyle = props.colorLight || CANVAS_LIGHT
-  ctx.fillRect(0, 0, size, size)
+  ctx.fillStyle = props.colorLight || CANVAS_LIGHT;
+  ctx.fillRect(0, 0, size, size);
 
-  ctx.fillStyle = resolveDarkPaint(ctx, size)
+  ctx.fillStyle = resolveDarkPaint(ctx, size);
   for (let y = 0; y < matrix.size; y++) {
     for (let x = 0; x < matrix.size; x++) {
-      if (!matrix.getModule(x, y)) continue
-      paintModule(ctx, x, y, cell, margin, matrix)
+      if (!matrix.getModule(x, y)) continue;
+      paintModule(ctx, x, y, cell, margin, matrix);
     }
   }
 
   // uni canvas: flush the queued commands to the native surface.
-  if (typeof ctx.draw === 'function') ctx.draw()
-  return true
+  if (typeof ctx.draw === 'function') ctx.draw();
+  return true;
 }
 
 /** Pending deferred first paint (cleared on unmount, §41). */
-let retryTimer: ReturnType<typeof setTimeout> | null = null
+let retryTimer: ReturnType<typeof setTimeout> | null = null;
 
 /** Re-paint on every input that changes the picture. */
 watch(
@@ -455,35 +467,35 @@ watch(
   ],
   () => paint(),
   { deep: true },
-)
+);
 
 onMounted(() => {
   // First paint after mount: the template ref / native canvas only exists then.
   if (!paint()) {
     // H5 can mount the element a tick late — one deferred retry, no interval.
     retryTimer = setTimeout(() => {
-      retryTimer = null
-      paint()
-    }, 0)
+      retryTimer = null;
+      paint();
+    }, 0);
   }
-})
+});
 
 onBeforeUnmount(() => {
   // §41: the only owned resources are the surface handle and the retry timer.
-  if (retryTimer !== null) clearTimeout(retryTimer)
-  retryTimer = null
-  surface = null
-  surfaceCanvasId = ''
-  canvasEl.value = null
-})
+  if (retryTimer !== null) clearTimeout(retryTimer);
+  retryTimer = null;
+  surface = null;
+  surfaceCanvasId = '';
+  canvasEl.value = null;
+});
 
 /* ── Public method: exportImage ─────────────────────────────────────────── */
 
 /** Rejection payload of `exportImage` (structured, AGENTS.md §28). */
 interface QrExportError {
-  code: 'CAPABILITY_UNSUPPORTED' | 'EXPORT_FAILED'
-  message: string
-  cause?: unknown
+  code: 'CAPABILITY_UNSUPPORTED' | 'EXPORT_FAILED';
+  message: string;
+  cause?: unknown;
 }
 
 /**
@@ -495,13 +507,13 @@ interface QrExportError {
  */
 function exportImage(): Promise<string> {
   return new Promise<string>((resolve, reject) => {
-    const toTempFilePath = getUni()?.canvasToTempFilePath
+    const toTempFilePath = getUni()?.canvasToTempFilePath;
     if (typeof toTempFilePath !== 'function') {
       reject({
         code: 'CAPABILITY_UNSUPPORTED',
         message: 'uni.canvasToTempFilePath is not available on this host',
-      } satisfies QrExportError)
-      return
+      } satisfies QrExportError);
+      return;
     }
     try {
       toTempFilePath(
@@ -510,60 +522,56 @@ function exportImage(): Promise<string> {
           fileType: 'png',
           success: (result: { tempFilePath?: string }) => {
             if (typeof result?.tempFilePath === 'string') {
-              resolve(result.tempFilePath)
-              return
+              resolve(result.tempFilePath);
+              return;
             }
             reject({
               code: 'EXPORT_FAILED',
               message: 'canvasToTempFilePath returned no tempFilePath',
-            } satisfies QrExportError)
+            } satisfies QrExportError);
           },
           fail: (error: unknown) => {
             reject({
               code: 'EXPORT_FAILED',
               message: 'canvasToTempFilePath failed',
               cause: error,
-            } satisfies QrExportError)
+            } satisfies QrExportError);
           },
         },
         instance,
-      )
+      );
     } catch (error) {
       reject({
         code: 'EXPORT_FAILED',
         message: 'canvasToTempFilePath threw',
         cause: error,
-      } satisfies QrExportError)
+      } satisfies QrExportError);
     }
-  })
+  });
 }
 
-defineExpose({ exportImage })
+defineExpose({ exportImage });
 
 /* ── Presentation ───────────────────────────────────────────────────────── */
 
 function onTap(event: Event): void {
-  emit('click', event)
+  emit('click', event);
 }
 
-const rootClass = computed(() => [
-  'sn-qr-code',
-  `sn-qr-code--${props.dotType}`,
-  props.customClass,
-])
+const rootClass = computed(() => ['sn-qr-code', `sn-qr-code--${props.dotType}`, props.customClass]);
 
 const rootStyle = computed(() => {
-  const side = `${sizeValue.value * RPX_PER_PX}rpx`
-  const parts = [`width: ${side}`, `height: ${side}`]
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const side = `${sizeValue.value * RPX_PER_PX}rpx`;
+  const parts = [`width: ${side}`, `height: ${side}`];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 const canvasStyle = computed(
   () => `width: ${sizeValue.value * RPX_PER_PX}rpx; height: ${sizeValue.value * RPX_PER_PX}rpx`,
-)
+);
 
-const ariaLabel = computed(() => (props.text === '' ? 'QR code' : `QR code: ${props.text}`))
+const ariaLabel = computed(() => (props.text === '' ? 'QR code' : `QR code: ${props.text}`));
 </script>
 
 <template>

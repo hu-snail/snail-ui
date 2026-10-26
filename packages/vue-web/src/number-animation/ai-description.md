@@ -20,26 +20,26 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnNumberAnimation from '@snui/vue-web/src/number-animation/SnNumberAnimation.vue'
+import SnNumberAnimation from '@snui/vue-web/src/number-animation/SnNumberAnimation.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `from` | `number` | `0` | no | Start value. |
-| `to` | `number` | `0` | no | Target value; the animation runs towards it. |
-| `precision` | `number` | `0` | no | Digits kept after the decimal point. |
-| `showSeparator` | `boolean` | `false` | no | Format the integer part with locale thousands separators. |
-| `locale` | `string` | — | no | BCP-47 locale for `Intl.NumberFormat` (separators + decimal mark). |
-| `active` | `boolean` | `true` | no | Start / restart the animation. |
-| `duration` | `number` | `2000` | no | Animation duration in ms (non-reactive, captured at setup). |
+| Name            | Type      | Default | Required | Description                                                        |
+| --------------- | --------- | ------- | -------- | ------------------------------------------------------------------ |
+| `from`          | `number`  | `0`     | no       | Start value.                                                       |
+| `to`            | `number`  | `0`     | no       | Target value; the animation runs towards it.                       |
+| `precision`     | `number`  | `0`     | no       | Digits kept after the decimal point.                               |
+| `showSeparator` | `boolean` | `false` | no       | Format the integer part with locale thousands separators.          |
+| `locale`        | `string`  | —       | no       | BCP-47 locale for `Intl.NumberFormat` (separators + decimal mark). |
+| `active`        | `boolean` | `true`  | no       | Start / restart the animation.                                     |
+| `duration`      | `number`  | `2000`  | no       | Animation duration in ms (non-reactive, captured at setup).        |
 
 ## Events
 
-| Name | Parameters | Description |
-|---|---|---|
-| `finish` | — | Animation reached `to`. |
+| Name     | Parameters | Description             |
+| -------- | ---------- | ----------------------- |
+| `finish` | —          | Animation reached `to`. |
 
 ## Slots
 
@@ -47,13 +47,13 @@ None (renders formatted text only).
 
 ## Exposed Methods
 
-| Name | Parameters | Description |
-|---|---|---|
-| `play` | — | Replay the animation; ignored while one is already running. |
+| Name   | Parameters | Description                                                 |
+| ------ | ---------- | ----------------------------------------------------------- |
+| `play` | —          | Replay the animation; ignored while one is already running. |
 
 ## Divergences from the reference API
 
-- Default `duration` is 2000 (the reference *source*; its docs page still
+- Default `duration` is 2000 (the reference _source_; its docs page still
   says 3000 — source wins per AGENTS.md §112).
 - `locale` defaults to the runtime locale (naive falls back to its
   config-provider locale).

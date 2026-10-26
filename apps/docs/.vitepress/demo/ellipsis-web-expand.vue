@@ -3,12 +3,12 @@
  * Demo: SnEllipsis — `expandTrigger="click"` toggles the clamped text between
  * collapsed and expanded in place, without a tooltip round-trip.
  */
-import { SnEllipsis } from '@snui/vue-web'
+import { SnEllipsis } from '@snui/vue-web';
 
 const longText =
   '点击这段文字即可在截断与完整内容之间切换：收起时保留两行并在行尾显示省略号，' +
   '展开后显示全部内容且不再气泡提示；再次点击回到截断状态。' +
-  '状态完全由组件内部维护，不需要外部传入 expanded。'
+  '状态完全由组件内部维护，不需要外部传入 expanded。';
 </script>
 
 <template>

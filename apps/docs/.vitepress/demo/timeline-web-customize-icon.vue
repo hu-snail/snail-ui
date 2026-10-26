@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnTimeline — icon 槽位自定义节点图标（color 联动）。 */
-import { Coins } from 'lucide-vue-next'
-import { registerSnIcons, SnIcon, SnTimeline, SnTimelineItem } from '@snui/vue-web'
+import { Coins } from 'lucide-vue-next';
+import { registerSnIcons, SnIcon, SnTimeline, SnTimelineItem } from '@snui/vue-web';
 
-registerSnIcons({ Coins })
+registerSnIcons({ Coins });
 </script>
 
 <template>

@@ -12,7 +12,7 @@
  * Per AGENTS.md §23, this stub must NOT execute the input code in any form.
  */
 
-import type { AiMcpTool, RenderPreviewInput, RenderPreviewOutput } from '../types.js'
+import type { AiMcpTool, RenderPreviewInput, RenderPreviewOutput } from '../types.js';
 
 export const renderPreview: AiMcpTool<RenderPreviewInput, RenderPreviewOutput> = {
   name: 'render_preview',
@@ -22,7 +22,8 @@ export const renderPreview: AiMcpTool<RenderPreviewInput, RenderPreviewOutput> =
     return {
       url: '',
       success: false,
-      error: 'render_preview is not implemented yet (M3 phase, AUI-AI-004). See Spec-03 §3.2 for security constraints.',
-    }
+      error:
+        'render_preview is not implemented yet (M3 phase, AUI-AI-004). See Spec-03 §3.2 for security constraints.',
+    };
   },
-}
+};

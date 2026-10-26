@@ -18,15 +18,15 @@
 
 ### SnFlex Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| vertical | `boolean` | `false` | 纵向排布 |
-| gap | `number \| 'small'\|'medium'\|'large' \| [number, number]` | `'medium'` | 间距 |
-| justify | flex justify 值（直通） | `'start'` | 主轴 |
-| align | flex align 值 | — | 交叉轴 |
-| wrap | `boolean` | `true` | 换行 |
-| inline | `boolean` | `false` | 行内容器 |
-| expand | `boolean` | `false` | 子项 flex:1 撑满（snail 扩展） |
+| Prop     | 类型                                                       | 默认值     | 说明                           |
+| -------- | ---------------------------------------------------------- | ---------- | ------------------------------ |
+| vertical | `boolean`                                                  | `false`    | 纵向排布                       |
+| gap      | `number \| 'small'\|'medium'\|'large' \| [number, number]` | `'medium'` | 间距                           |
+| justify  | flex justify 值（直通）                                    | `'start'`  | 主轴                           |
+| align    | flex align 值                                              | —          | 交叉轴                         |
+| wrap     | `boolean`                                                  | `true`     | 换行                           |
+| inline   | `boolean`                                                  | `false`    | 行内容器                       |
+| expand   | `boolean`                                                  | `false`    | 子项 flex:1 撑满（snail 扩展） |
 
 与 Space 的区别：Flex 是通用 flex 原语（justify 直通、默认语义更"布局"），Space 是「组件间距」语义。
 

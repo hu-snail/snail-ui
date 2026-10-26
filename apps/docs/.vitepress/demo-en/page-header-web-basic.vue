@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnPageHeader — back + title/subtitle + extra + footer with body content. */
-import { SnButton, SnPageHeader } from '@snui/vue-web'
+import { SnButton, SnPageHeader } from '@snui/vue-web';
 
 function goBack(): void {
   // 业务层处理跳转；演示中仅打印。
   // eslint-disable-next-line no-console
-  console.log('[page-header-demo] back clicked')
+  console.log('[page-header-demo] back clicked');
 }
 </script>
 
@@ -19,11 +19,15 @@ function goBack(): void {
     >
       <div class="page-header-demo__body">
         <p>Below the header is the body content carried by the default slot.</p>
-        <p>extra accepts text (as in this demo) or any combination of actions via the #extra slot:</p>
+        <p>
+          extra accepts text (as in this demo) or any combination of actions via the #extra slot:
+        </p>
         <SnButton size="small">View logs</SnButton>
       </div>
       <template #footer>
-        <span class="page-header-demo__footer-text">Updated 2024-06-12 18:30 · auto-synced by the system</span>
+        <span class="page-header-demo__footer-text"
+          >Updated 2024-06-12 18:30 · auto-synced by the system</span
+        >
       </template>
     </SnPageHeader>
   </div>

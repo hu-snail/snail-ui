@@ -13,89 +13,89 @@
 
 export interface ListComponentsInput {
   /** Which library end to query. */
-  end: 'web' | 'uni'
+  end: 'web' | 'uni';
 }
 
 export interface ComponentSummary {
   /** PascalCase component name (Web) or kebab-case (Uni). */
-  name: string
+  name: string;
   /** One-line purpose. */
-  description: string
+  description: string;
   /** Import path snippet. */
-  importPath: string
+  importPath: string;
 }
 
 export interface ListComponentsOutput {
-  components: ReadonlyArray<ComponentSummary>
+  components: ReadonlyArray<ComponentSummary>;
 }
 
 export interface GetComponentMetaInput {
-  name: string
-  end: 'web' | 'uni'
+  name: string;
+  end: 'web' | 'uni';
 }
 
 export interface ComponentProp {
-  name: string
-  type: string
-  default: string
-  required: boolean
-  description: string
+  name: string;
+  type: string;
+  default: string;
+  required: boolean;
+  description: string;
 }
 
 export interface ComponentEvent {
-  name: string
-  payload: string
-  description: string
+  name: string;
+  payload: string;
+  description: string;
 }
 
 export interface ComponentSlot {
-  name: string
-  description: string
+  name: string;
+  description: string;
 }
 
 export interface ComponentToken {
-  cssVar: string
-  purpose: string
+  cssVar: string;
+  purpose: string;
 }
 
 export interface ComponentMeta {
-  name: string
-  description: string
-  importPath: string
-  props: ReadonlyArray<ComponentProp>
-  events: ReadonlyArray<ComponentEvent>
-  slots: ReadonlyArray<ComponentSlot>
-  tokens: ReadonlyArray<ComponentToken>
-  accessibility: string
+  name: string;
+  description: string;
+  importPath: string;
+  props: ReadonlyArray<ComponentProp>;
+  events: ReadonlyArray<ComponentEvent>;
+  slots: ReadonlyArray<ComponentSlot>;
+  tokens: ReadonlyArray<ComponentToken>;
+  accessibility: string;
 }
 
 export interface GetStylePackInput {
-  name: string
+  name: string;
 }
 
 export interface StylePackInfo {
-  name: string
-  label: string
-  description: string
+  name: string;
+  label: string;
+  description: string;
   /** Ready-to-paste snippet (consumed by docs site ThemeCopier). */
-  snippet: string
-  hasSkinCss: boolean
+  snippet: string;
+  hasSkinCss: boolean;
 }
 
 export interface RenderPreviewInput {
-  vueCode: string
-  packName?: string
+  vueCode: string;
+  packName?: string;
 }
 
 export interface RenderPreviewOutput {
-  url: string
-  success: boolean
-  error?: string
+  url: string;
+  success: boolean;
+  error?: string;
 }
 
 export interface AiMcpTool<I, O> {
-  readonly name: string
-  readonly description: string
-  readonly inputSchema: string
-  handle(input: I): Promise<O>
+  readonly name: string;
+  readonly description: string;
+  readonly inputSchema: string;
+  handle(input: I): Promise<O>;
 }

@@ -11,28 +11,28 @@
  */
 
 /** Wheel deltas below this many px (in the matched direction) are ignored. */
-export const WHEEL_RESPONSE_STEP = 10
+export const WHEEL_RESPONSE_STEP = 10;
 
 /** Flick velocity threshold from naive: px per ms. */
-export const FLICK_VELOCITY_THRESHOLD = 0.4
+export const FLICK_VELOCITY_THRESHOLD = 0.4;
 
 /* ────────────────────────── basic helpers ────────────────────────── */
 
 export function clampValue(value: number, min: number, max: number): number {
-  return value < min ? min : value > max ? max : value
+  return value < min ? min : value > max ? max : value;
 }
 
 /** `'300ms'` → 300, `1.5s` → 1500, numbers pass through, junk → 0. */
 export function resolveSpeed(value?: string | number): number {
-  if (value === undefined) return 0
-  if (typeof value === 'number') return value
-  const timeRE = /^((\d+)?\.?\d+?)(ms|s)?$/
-  const match = value.match(timeRE)
+  if (value === undefined) return 0;
+  if (typeof value === 'number') return value;
+  const timeRE = /^((\d+)?\.?\d+?)(ms|s)?$/;
+  const match = value.match(timeRE);
   if (match) {
-    const [, number, , unit = 'ms'] = match
-    return Number(number) * (unit === 'ms' ? 1 : 1000)
+    const [, number, , unit = 'ms'] = match;
+    return Number(number) * (unit === 'ms' ? 1 : 1000);
   }
-  return 0
+  return 0;
 }
 
 /* ─────────────────── loop index mapping (real index space) ───────────────────
@@ -47,50 +47,38 @@ export function resolveSpeed(value?: string | number): number {
 
 /** The rendered real index for a display index. */
 export function getRealIndex(current: number, duplicatedable?: boolean): number {
-  return !duplicatedable ? current : current + 1
+  return !duplicatedable ? current : current + 1;
 }
 
 /**
  * The display index for a real index. `length` is the total real view count.
  */
-export function getDisplayIndex(
-  current: number,
-  length: number,
-  duplicatedable: boolean,
-): number {
-  if (length === 1) return 0
+export function getDisplayIndex(current: number, length: number, duplicatedable: boolean): number {
+  if (length === 1) return 0;
   return !duplicatedable
     ? current
     : current === 0
       ? length - 3
       : current === length - 1
         ? 0
-        : current - 1
+        : current - 1;
 }
 
 /** Previous real index, or `null` when the edge is not wrappable. */
-export function getPrevIndex(
-  current: number,
-  length: number,
-  loop?: boolean,
-): number | null {
-  if (current < 0) return null
-  return current === 0 ? (loop ? length - 1 : null) : current - 1
+export function getPrevIndex(current: number, length: number, loop?: boolean): number | null {
+  if (current < 0) return null;
+  return current === 0 ? (loop ? length - 1 : null) : current - 1;
 }
 
 /** Next real index, or `null` when the edge is not wrappable. */
-export function getNextIndex(
-  current: number,
-  length: number,
-  loop?: boolean,
-): number | null {
-  if (current > length - 1) return null
-  return current === length - 1 ? (loop ? 0 : null) : current + 1
+export function getNextIndex(current: number, length: number, loop?: boolean): number | null {
+  if (current > length - 1) return null;
+  return current === length - 1 ? (loop ? 0 : null) : current + 1;
 }
 
 /** Number of dots: clone slots are subtracted in duplicated mode. */
 export function getDisplayTotalView(total: number, duplicatedable?: boolean): number {
-  return duplicatedable && total > 3 ? total - 2 : total
+  return duplicatedable && total > 3 ? total - 2 : total;
 }
 
 /**
@@ -103,14 +91,14 @@ export function isDuplicatedable(
   slidesPerView: number | 'auto',
   effect: 'slide' | 'fade' | 'card' | 'custom',
 ): boolean {
-  return loop && slidesPerView === 1 && effect === 'slide'
+  return loop && slidesPerView === 1 && effect === 'slide';
 }
 
 /* ────────────────────────── slides-per-view geometry ────────────────────────── */
 
 /** Total views (real) for a fixed slide count and slides-per-view. */
 export function computeTotalView(totalSlides: number, displaySlidesPerView: number): number {
-  return Math.max(totalSlides - displaySlidesPerView, 0) + 1
+  return Math.max(totalSlides - displaySlidesPerView, 0) + 1;
 }
 
 /**
@@ -123,9 +111,9 @@ export function computeSlideAxisSize(
   slidesPerView: number,
   spaceBetween: number,
 ): number {
-  const remaining = perViewAxisSize - (slidesPerView - 1) * spaceBetween
-  const percentage = 1 / Math.max(1, slidesPerView)
-  return remaining * percentage
+  const remaining = perViewAxisSize - (slidesPerView - 1) * spaceBetween;
+  const percentage = 1 / Math.max(1, slidesPerView);
+  return remaining * percentage;
 }
 
 /**
@@ -138,15 +126,15 @@ export function computeSlideTranslates(
   spaceBetween: number,
   centeredSlides: boolean,
 ): number[] {
-  let previousTranslate = 0
+  let previousTranslate = 0;
   return slideSizesAxis.map((slideSize) => {
-    let translate = previousTranslate
+    let translate = previousTranslate;
     if (centeredSlides) {
-      translate += (slideSize - perViewAxisSize) / 2
+      translate += (slideSize - perViewAxisSize) / 2;
     }
-    previousTranslate += slideSize + spaceBetween
-    return translate
-  })
+    previousTranslate += slideSize + spaceBetween;
+    return translate;
+  });
 }
 
 /**
@@ -159,15 +147,15 @@ export function computeAutoTotalView(
   translates: number[],
   perViewAxisSize: number,
 ): number {
-  const length = slideSizesAxis.length
-  if (length === 0) return 0
-  let lastViewSize = slideSizesAxis[length - 1]!
-  let i = length
+  const length = slideSizesAxis.length;
+  if (length === 0) return 0;
+  let lastViewSize = slideSizesAxis[length - 1]!;
+  let i = length;
   while (i > 1 && lastViewSize < perViewAxisSize) {
-    i -= 1
-    lastViewSize += (translates[i] ?? 0) - (translates[i - 1] ?? 0)
+    i -= 1;
+    lastViewSize += (translates[i] ?? 0) - (translates[i - 1] ?? 0);
   }
-  return clampValue(i + 1, 1, length)
+  return clampValue(i + 1, 1, length);
 }
 
 /**
@@ -179,11 +167,12 @@ export function computeAutoLastTranslate(
   translates: number[],
   perViewAxisSize: number,
 ): number {
-  const lastTranslate = translates[translates.length - 1]
-  const overallSize = lastTranslate === undefined
-    ? perViewAxisSize
-    : lastTranslate + (slideSizesAxis[slideSizesAxis.length - 1] ?? 0)
-  return overallSize - perViewAxisSize
+  const lastTranslate = translates[translates.length - 1];
+  const overallSize =
+    lastTranslate === undefined
+      ? perViewAxisSize
+      : lastTranslate + (slideSizesAxis[slideSizesAxis.length - 1] ?? 0);
+  return overallSize - perViewAxisSize;
 }
 
 /* ────────────────────────── drag release ────────────────────────── */
@@ -193,21 +182,18 @@ export function computeAutoLastTranslate(
  * across multiple pages). Walks forward while the distance shrinks —
  * mirrors naive's scan in `handleTouchend`.
  */
-export function findNearestTranslateIndex(
-  translates: number[],
-  currentTranslate: number,
-): number {
-  let prevOffset: number | null = null
-  let current = 0
+export function findNearestTranslateIndex(translates: number[], currentTranslate: number): number {
+  let prevOffset: number | null = null;
+  let current = 0;
   for (let i = 0; i < translates.length; i += 1) {
-    const offset = Math.abs((translates[i] ?? 0) - currentTranslate)
+    const offset = Math.abs((translates[i] ?? 0) - currentTranslate);
     if (prevOffset !== null && prevOffset < offset) {
-      break
+      break;
     }
-    prevOffset = offset
-    current = i
+    prevOffset = offset;
+    current = i;
   }
-  return current
+  return current;
 }
 
 /**
@@ -221,12 +207,12 @@ export function resolveFlickDirection(
   timeElapsed: number,
 ): -1 | 0 | 1 {
   if (dragOffset > perViewSize / 2 || dragOffset / timeElapsed > FLICK_VELOCITY_THRESHOLD) {
-    return -1
+    return -1;
   }
   if (dragOffset < -perViewSize / 2 || dragOffset / timeElapsed < -FLICK_VELOCITY_THRESHOLD) {
-    return 1
+    return 1;
   }
-  return 0
+  return 0;
 }
 
 /* ────────────────────────── wheel ────────────────────────── */
@@ -243,45 +229,42 @@ export function resolveWheelDirection(
   shiftKey: boolean,
   vertical: boolean,
 ): -1 | 0 | 1 {
-  let dx = deltaX
+  let dx = deltaX;
   if (shiftKey && !dx) {
-    dx = deltaY
+    dx = deltaY;
   }
-  const multiplier = (dx || deltaY) > 0 ? 1 : -1
-  const delta = vertical ? deltaY : dx
+  const multiplier = (dx || deltaY) > 0 ? 1 : -1;
+  const delta = vertical ? deltaY : dx;
   if (multiplier * delta >= WHEEL_RESPONSE_STEP) {
-    return multiplier === 1 ? 1 : -1
+    return multiplier === 1 ? 1 : -1;
   }
-  return 0
+  return 0;
 }
 
 /* ────────────────────────── keyboard (dots focus) ────────────────────────── */
 
-export type KeyboardSlideAction = 'prev' | 'next'
+export type KeyboardSlideAction = 'prev' | 'next';
 
 /**
  * Dots-focused arrow-key mapping (naive CarouselDots): PageUp always
  * means next and PageDown prev; ArrowUp/Down map to next/prev in vertical
  * direction, ArrowRight/Left in horizontal direction.
  */
-export function resolveKeyboardAction(
-  code: string,
-  vertical: boolean,
-): KeyboardSlideAction | null {
+export function resolveKeyboardAction(code: string, vertical: boolean): KeyboardSlideAction | null {
   switch (code) {
     case 'PageUp':
-      return 'next'
+      return 'next';
     case 'PageDown':
-      return 'prev'
+      return 'prev';
     case 'ArrowUp':
-      return vertical ? 'next' : null
+      return vertical ? 'next' : null;
     case 'ArrowDown':
-      return vertical ? 'prev' : null
+      return vertical ? 'prev' : null;
     case 'ArrowRight':
-      return vertical ? null : 'next'
+      return vertical ? null : 'next';
     case 'ArrowLeft':
-      return vertical ? null : 'prev'
+      return vertical ? null : 'prev';
     default:
-      return null
+      return null;
   }
 }

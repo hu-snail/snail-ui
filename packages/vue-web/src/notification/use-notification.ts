@@ -22,26 +22,25 @@
  *   </SnNotificationProvider>
  */
 
-import { inject } from 'vue'
-import type { InjectionKey } from 'vue'
-import type { NotificationApi, NotificationReactive } from './notification-types'
+import { inject } from 'vue';
+import type { InjectionKey } from 'vue';
+import type { NotificationApi, NotificationReactive } from './notification-types';
 
 /**
  * Provide/inject key for the notification API. Exported so tests and custom
  * providers can interact with the same contract; normal consumers should use
  * `useNotification()` instead of injecting this key directly.
  */
-export const notificationApiInjectionKey: InjectionKey<NotificationApi> = Symbol(
-  'sn-notification-api',
-)
+export const notificationApiInjectionKey: InjectionKey<NotificationApi> =
+  Symbol('sn-notification-api');
 
 /** Shared no-op handle — `destroy()` on an API-less notification does nothing. */
-const NOOP_REACTIVE: NotificationReactive = { destroy: () => {} }
+const NOOP_REACTIVE: NotificationReactive = { destroy: () => {} };
 
 /** API returned when no provider is mounted — every call is a safe no-op. */
 function createNoopNotificationApi(): NotificationApi {
   const noopCreate = (_options: Parameters<NotificationApi['create']>[0]): NotificationReactive =>
-    NOOP_REACTIVE
+    NOOP_REACTIVE;
   return {
     create: noopCreate,
     info: noopCreate,
@@ -49,7 +48,7 @@ function createNoopNotificationApi(): NotificationApi {
     warning: noopCreate,
     error: noopCreate,
     destroyAll: () => {},
-  }
+  };
 }
 
 /**
@@ -62,9 +61,9 @@ function createNoopNotificationApi(): NotificationApi {
  * `PROVIDER_MISSING` console warning (see divergence note above).
  */
 export function useNotification(): NotificationApi {
-  const api = inject(notificationApiInjectionKey)
+  const api = inject(notificationApiInjectionKey);
   if (api) {
-    return api
+    return api;
   }
   console.warn(
     '[SNUI:PROVIDER_MISSING] useNotification() was called without a <SnNotificationProvider> ancestor — returning a no-op API. Wrap your app (or the subtree that needs notifications) in <SnNotificationProvider>.',
@@ -73,6 +72,6 @@ export function useNotification(): NotificationApi {
       component: 'SnNotificationProvider',
       composable: 'useNotification',
     },
-  )
-  return createNoopNotificationApi()
+  );
+  return createNoopNotificationApi();
 }

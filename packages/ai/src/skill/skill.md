@@ -35,17 +35,17 @@
 如需切换风格（iOS / 暗色 / 涂鸦等）：
 
 ```ts
-import { snCssVars } from '@snui/tokens'
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import { iosPack } from '@snui/style-packs/ios';
 
-const el = document.createElement('style')
-el.id = 'snui-pack'
+const el = document.createElement('style');
+el.id = 'snui-pack';
 el.textContent = snCssVars({
   theme: iosPack.theme,
   style: iosPack.style,
   density: iosPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 ```
 
 不要手动覆盖 `--sn-*` CSS 变量值（应通过 Pack）。
@@ -56,8 +56,8 @@ document.head.appendChild(el)
 
 ```vue
 <script setup lang="ts">
-import { SnButton, SnInput } from '@snui/vue-web'
-import { ref } from 'vue'
+import { SnButton, SnInput } from '@snui/vue-web';
+import { ref } from 'vue';
 // 只 import snail-aui 组件和 Vue 核心
 // 不引入 axios / pinia / router（原型阶段用 setTimeout 模拟异步）
 </script>
@@ -70,7 +70,9 @@ import { ref } from 'vue'
 
 <style scoped>
 /* 只用 var(--sn-*) 变量，不写字面量颜色 */
-.page { padding: var(--sn-spacing-inset-lg); }
+.page {
+  padding: var(--sn-spacing-inset-lg);
+}
 </style>
 ```
 
@@ -97,12 +99,12 @@ import { ref } from 'vue'
 
 AI Agent 应优先通过 MCP 工具获取最新元数据：
 
-| 工具 | 用途 |
-|---|---|
-| `list_components` | 列出所有组件（先确认存在） |
-| `get_component_meta` | 获取单个组件的完整 Props / Events / Slots / Tokens |
-| `get_style_pack` | 获取 Style Pack 定义 + 完整 `snCssVars(...)` 代码片段 |
-| `render_preview` | 在沙箱中预览 SFC 渲染结果（render_preview 在 M3 阶段实装） |
+| 工具                 | 用途                                                       |
+| -------------------- | ---------------------------------------------------------- |
+| `list_components`    | 列出所有组件（先确认存在）                                 |
+| `get_component_meta` | 获取单个组件的完整 Props / Events / Slots / Tokens         |
+| `get_style_pack`     | 获取 Style Pack 定义 + 完整 `snCssVars(...)` 代码片段      |
+| `render_preview`     | 在沙箱中预览 SFC 渲染结果（render_preview 在 M3 阶段实装） |
 
 ## 9. 验证流程
 

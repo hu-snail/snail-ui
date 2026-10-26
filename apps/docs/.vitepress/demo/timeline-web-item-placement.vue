@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTimeline — item-placement：轨道在左 / 在右。 */
-import { SnTimeline, SnTimelineItem } from '@snui/vue-web'
+import { SnTimeline, SnTimelineItem } from '@snui/vue-web';
 </script>
 
 <template>

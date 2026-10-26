@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnColorPicker — swatches. */
-import { ref } from 'vue'
-import { SnColorPicker } from '@snui/vue-web'
-const color = ref('#f0a020')
+import { ref } from 'vue';
+import { SnColorPicker } from '@snui/vue-web';
+const color = ref('#f0a020');
 </script>
 
 <template>

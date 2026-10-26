@@ -53,7 +53,7 @@ const bindings = resolveEnvironment({
   style: MODERN_STYLE,
   density: COMFORTABLE_DENSITY,
   instanceOverrides: { '--sn-web-button-radius': '0px' },
-})
+});
 ```
 
 Dependency order: Primitive first, then Semantic, then Component. Instance overrides win.
@@ -61,21 +61,21 @@ Dependency order: Primitive first, then Semantic, then Component. Instance overr
 ## snCssVars + end parameter
 
 ```ts
-import { snCssVars } from '@snui/tokens'
+import { snCssVars } from '@snui/tokens';
 
 // Web (emits --sn-web-* aliases)
 const webCss = snCssVars({
   end: 'web',
   theme: DARK_THEME,
   style: MODERN_STYLE,
-})
+});
 
 // uni (emits --sn-mp-* aliases + rpx)
 const mpCss = snCssVars({
   end: 'mp',
   theme: DARK_THEME,
   style: MODERN_STYLE,
-})
+});
 ```
 
 ## Global vs Instance

@@ -28,26 +28,26 @@
 
 ### SnWaterfall Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| columns | `number` | `3` | 逻辑列数，输出为 `column-count`；会取整到 ≥ 1 的整数（小数向下取整，0 / NaN / Infinity 回退为 1）。设置 `min-column-width` 或 `masonry=false` 时忽略 |
-| min-column-width | `number \| string` | — | 最小列宽（数字→px，字符串原样）。设置后容器改用 `column-width` 而**不是** `column-count`，列数跟随可用宽度（响应式模式），此时 `columns` 被忽略 |
-| column-gap | `number \| string` | `16` | 列间距（数字→px），通过 `--sn-waterfall-column-gap` 输出为 `column-gap` |
-| row-gap | `number \| string` | `16` | 子项间距（数字→px），作为每个子项盒子的 `margin-bottom` 输出为 `--sn-waterfall-row-gap` |
-| masonry | `boolean` | `true` | 便捷关闭开关：`false` 时退化为普通单列竖向堆叠（不输出多列布局相关的 `column-count` / `column-width`） |
+| 名称             | 类型               | 默认值 | 说明                                                                                                                                                 |
+| ---------------- | ------------------ | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| columns          | `number`           | `3`    | 逻辑列数，输出为 `column-count`；会取整到 ≥ 1 的整数（小数向下取整，0 / NaN / Infinity 回退为 1）。设置 `min-column-width` 或 `masonry=false` 时忽略 |
+| min-column-width | `number \| string` | —      | 最小列宽（数字→px，字符串原样）。设置后容器改用 `column-width` 而**不是** `column-count`，列数跟随可用宽度（响应式模式），此时 `columns` 被忽略      |
+| column-gap       | `number \| string` | `16`   | 列间距（数字→px），通过 `--sn-waterfall-column-gap` 输出为 `column-gap`                                                                              |
+| row-gap          | `number \| string` | `16`   | 子项间距（数字→px），作为每个子项盒子的 `margin-bottom` 输出为 `--sn-waterfall-row-gap`                                                              |
+| masonry          | `boolean`          | `true` | 便捷关闭开关：`false` 时退化为普通单列竖向堆叠（不输出多列布局相关的 `column-count` / `column-width`）                                               |
 
 ### SnWaterfall Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数 | 说明                                                                                                    |
+| ------- | ---- | ------------------------------------------------------------------------------------------------------- |
 | default | `()` | 瀑布流子项；每个直接子节点（含 `<template v-for>` 展开出的每一项）对应一个 `.sn-waterfall__item` 包裹层 |
 
 ### 自定义属性（CSS 变量）
 
-| 名称 | 默认值 | 说明 |
-| --- | --- | --- |
+| 名称                        | 默认值 | 说明                         |
+| --------------------------- | ------ | ---------------------------- |
 | `--sn-waterfall-column-gap` | `16px` | 列间距，可覆盖 prop 单独调参 |
-| `--sn-waterfall-row-gap` | `16px` | 子项纵向间距 |
+| `--sn-waterfall-row-gap`    | `16px` | 子项纵向间距                 |
 
 ### 说明
 

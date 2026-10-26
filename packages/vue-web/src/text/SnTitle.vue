@@ -15,27 +15,27 @@
  *   <SnTitle :level="3" type="primary">重点章节</SnTitle>
  */
 
-import { computed } from 'vue'
-import SnText from './SnText.vue'
+import { computed } from 'vue';
+import SnText from './SnText.vue';
 
-defineOptions({ name: 'SnTitle' })
+defineOptions({ name: 'SnTitle' });
 
 const props = withDefaults(
   defineProps<{
     /** Heading level — renders <h1>…<h6> at the matching font size. Mirrors n-title `level`. */
-    level?: 1 | 2 | 3 | 4 | 5 | 6
+    level?: 1 | 2 | 3 | 4 | 5 | 6;
     /** Semantic type — drives the heading color. Mirrors n-title `type`. */
-    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
+    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error';
     /** Gray scale — only applied for type="default". Mirrors n-title `depth`. */
-    depth?: '1' | '2' | '3' | undefined
+    depth?: '1' | '2' | '3' | undefined;
     /** Bolder text. Mirrors n-title `strong`. */
-    strong?: boolean
+    strong?: boolean;
     /** Italic text. Mirrors n-title `italic`. */
-    italic?: boolean
+    italic?: boolean;
     /** Underlined text. Mirrors n-title `underline`. */
-    underline?: boolean
+    underline?: boolean;
     /** Strike-through text. Mirrors n-title `delete`. */
-    delete?: boolean
+    delete?: boolean;
   }>(),
   {
     level: 1,
@@ -46,16 +46,14 @@ const props = withDefaults(
     underline: false,
     delete: false,
   },
-)
+);
 
 defineSlots<{
   /** Heading content. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const headingTag = computed<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'>(
-  () => `h${props.level}`,
-)
+const headingTag = computed<'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'>(() => `h${props.level}`);
 
 // `delete` cannot be referenced bare in a template expression (JS keyword),
 // so the forwarded props are built here.
@@ -66,7 +64,7 @@ const forwardedProps = computed(() => ({
   italic: props.italic,
   underline: props.underline,
   delete: props.delete,
-}))
+}));
 </script>
 
 <template>

@@ -5,47 +5,39 @@
  * Shows: host-driven jumps that mirror what a link click does, so the
  * anchor's active tracking and the manual scroll stay in sync.
  */
-import { ref } from 'vue'
-import { SnAnchor, SnAnchorLink, SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAnchor, SnAnchorLink, SnButton } from '@snui/vue-web';
 
-const scrollRef = ref<HTMLElement | null>(null)
-const lastJump = ref('—')
+const scrollRef = ref<HTMLElement | null>(null);
+const lastJump = ref('—');
 
 const sections = [
   { id: 'sto-a', title: '节点 A' },
   { id: 'sto-b', title: '节点 B' },
   { id: 'sto-c', title: '节点 C' },
-]
+];
 
 function jumpTo(id: string): void {
-  lastJump.value = `#${id}`
-  const el = scrollRef.value?.querySelector(`#${id}`)
-  el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  lastJump.value = `#${id}`;
+  const el = scrollRef.value?.querySelector(`#${id}`);
+  el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 
 <template>
   <div class="anchor-sto">
     <div class="anchor-sto__bar">
-      <SnButton
-        v-for="s in sections"
-        :key="s.id"
-        size="small"
-        @click="jumpTo(s.id)"
-      >
+      <SnButton v-for="s in sections" :key="s.id" size="small" @click="jumpTo(s.id)">
         跳到 {{ s.title }}
       </SnButton>
-      <span class="anchor-sto__log">最近跳转：<code>{{ lastJump }}</code></span>
+      <span class="anchor-sto__log"
+        >最近跳转：<code>{{ lastJump }}</code></span
+      >
     </div>
 
     <div class="anchor-sto__body">
       <SnAnchor :offset-target="() => scrollRef as HTMLElement" :bound="12">
-        <SnAnchorLink
-          v-for="s in sections"
-          :key="s.id"
-          :title="s.title"
-          :href="`#${s.id}`"
-        />
+        <SnAnchorLink v-for="s in sections" :key="s.id" :title="s.title" :href="`#${s.id}`" />
       </SnAnchor>
 
       <div ref="scrollRef" class="anchor-sto__scroller">

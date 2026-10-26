@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTime — the same instant formatted in different IANA time zones. */
-import { SnTime } from '@snui/vue-web'
+import { SnTime } from '@snui/vue-web';
 </script>
 
 <template>

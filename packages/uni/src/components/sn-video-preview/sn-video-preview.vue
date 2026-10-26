@@ -50,46 +50,46 @@
  *   - 图片预览 — 用 sn-image-preview
  */
 
-import { computed, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
-import SnPopup from '../sn-popup/sn-popup.vue'
+import { computed, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
+import SnPopup from '../sn-popup/sn-popup.vue';
 
-defineOptions({ name: 'SnVideoPreview' })
+defineOptions({ name: 'SnVideoPreview' });
 
 /** Close-button anchor. Mirrors `wd-video-preview` `close-position`. */
-type VideoPreviewClosePosition = 'left-top' | 'right-top'
+type VideoPreviewClosePosition = 'left-top' | 'right-top';
 
 /** One video to play (mirrors the wd `VideoPreviewOptions` shape). */
 export interface SnVideoPreviewOptions {
   /** Video source URL. */
-  src: string
+  src: string;
   /** Poster shown before the first frame. */
-  poster?: string
+  poster?: string;
   /** Title rendered in the top bar. */
-  title?: string
+  title?: string;
   /** Autoplay on open. */
-  autoplay?: boolean
+  autoplay?: boolean;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Instance identifier (parity with the reference; useful for logs / telemetry). */
-    selector?: string
+    selector?: string;
     /** Stacking level of the layer. */
-    zIndex?: number
+    zIndex?: number;
     /** Fill the viewport with the video instead of the centred 16:9 stage. */
-    fullScreen?: boolean
+    fullScreen?: boolean;
     /** Close-button anchor. */
-    closePosition?: VideoPreviewClosePosition
+    closePosition?: VideoPreviewClosePosition;
     /** Called after the layer opened (reference `on-open` prop). */
-    onOpen?: (() => void) | undefined
+    onOpen?: (() => void) | undefined;
     /** Called after the layer closed (reference `on-close` prop). */
-    onClose?: (() => void) | undefined
+    onClose?: (() => void) | undefined;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     selector: '',
@@ -101,27 +101,27 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'open'): void
-  (e: 'close'): void
-}>()
+  (e: 'open'): void;
+  (e: 'close'): void;
+}>();
 
 /** Layer visibility. */
-const visible = ref(false)
+const visible = ref(false);
 
 /** Video currently loaded; `''` unloads the native element. */
-const src = ref('')
+const src = ref('');
 
 /** Poster of the current video. */
-const poster = ref('')
+const poster = ref('');
 
 /** Title rendered in the top bar. */
-const title = ref('')
+const title = ref('');
 
 /** Autoplay flag for the current video. */
-const autoplay = ref(false)
+const autoplay = ref(false);
 
 /**
  * Open the layer with a video (mirrors `wd-video-preview` `open`).
@@ -131,48 +131,48 @@ const autoplay = ref(false)
  * here as well would fire the host callback twice.
  */
 function open(options: SnVideoPreviewOptions): void {
-  src.value = options.src
-  poster.value = options.poster ?? ''
-  title.value = options.title ?? ''
-  autoplay.value = options.autoplay === true
-  visible.value = true
-  emit('open')
+  src.value = options.src;
+  poster.value = options.poster ?? '';
+  title.value = options.title ?? '';
+  autoplay.value = options.autoplay === true;
+  visible.value = true;
+  emit('open');
 }
 
 /** Close the layer (mirrors `wd-video-preview` `close`). */
 function close(): void {
-  if (!visible.value) return
-  visible.value = false
+  if (!visible.value) return;
+  visible.value = false;
   // Stop the platform decoder by unmounting the source, not by muting it.
-  src.value = ''
-  poster.value = ''
-  title.value = ''
-  autoplay.value = false
-  emit('close')
+  src.value = '';
+  poster.value = '';
+  title.value = '';
+  autoplay.value = false;
+  emit('close');
 }
 
-defineExpose({ open, close })
+defineExpose({ open, close });
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
 const closeButtonClass = computed(() => [
   'sn-video-preview__close',
   `sn-video-preview__close--${props.closePosition}`,
-])
+]);
 
 const rootClass = computed(() => [
   'sn-video-preview',
   { 'sn-video-preview--full-screen': props.fullScreen },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 
 /**
  * Non-undefined view of `zIndex` for the popup binding — a bare prop identifier
  * types as `number | undefined` under `exactOptionalPropertyTypes`.
  */
-const zIndexValue = computed(() => props.zIndex)
+const zIndexValue = computed(() => props.zIndex);
 
 /** Popup panel override: full-bleed, transparent, unpadded. */
 const PANEL_STYLE = [
@@ -182,19 +182,19 @@ const PANEL_STYLE = [
   'max-height: 100%',
   'padding: 0',
   'background-color: transparent',
-].join('; ')
+].join('; ');
 
 function onCloseTap(event: Event): void {
-  event.stopPropagation()
-  close()
+  event.stopPropagation();
+  close();
 }
 
 function onPopupModelUpdate(value: boolean): void {
   if (value) {
-    visible.value = true
-    return
+    visible.value = true;
+    return;
   }
-  close()
+  close();
 }
 </script>
 
@@ -231,12 +231,7 @@ function onPopupModelUpdate(value: boolean): void {
         <text v-if="title" class="sn-video-preview__title">{{ title }}</text>
       </view>
 
-      <view
-        :class="closeButtonClass"
-        role="button"
-        aria-label="close"
-        @tap="onCloseTap"
-      >
+      <view :class="closeButtonClass" role="button" aria-label="close" @tap="onCloseTap">
         <SnIcon :icon="XIcon" :size="32" />
       </view>
     </view>
@@ -285,7 +280,8 @@ function onPopupModelUpdate(value: boolean): void {
   display: flex;
   align-items: center;
   min-height: 88rpx;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-12) var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-12) var(--sn-mp-spacing-3)
+    var(--sn-mp-spacing-4);
   background-color: var(--sn-mp-color-background-overlay);
 }
 

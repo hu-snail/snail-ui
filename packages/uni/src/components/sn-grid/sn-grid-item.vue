@@ -25,44 +25,44 @@
  *   - 徽标本体 — 用 sn-badge（本组件内置了同一套角标渲染）
  */
 
-import { computed, inject, markRaw } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import { SN_GRID_KEY } from './sn-grid-types'
+import { computed, inject, markRaw } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { SN_GRID_KEY } from './sn-grid-types';
 
-defineOptions({ name: 'SnGridItem' })
+defineOptions({ name: 'SnGridItem' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-grid-item` 1:1 surface ──────────────────────────────── */
 
     /** 文字内容。 */
-    text?: string
+    text?: string;
     /** 是否超出隐藏显示省略号。 */
-    ellipsis?: boolean
+    ellipsis?: boolean;
     /** 图标名称（经 `registerSnIcons()` 注册）。 */
-    icon?: string
+    icon?: string;
     /** 图标颜色（内联覆盖）。 */
-    iconColor?: string
+    iconColor?: string;
     /** 图标类名前缀，`cssIcon` 打开时用于拼出字体图标 class。 */
-    iconPrefix?: string
+    iconPrefix?: string;
     /** CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。 */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** 是否显示图标右上角小红点。 */
-    isDot?: boolean
+    isDot?: boolean;
     /** 图标右上角徽标显示值。 */
-    value?: string | number | undefined
+    value?: string | number | undefined;
     /** 图标右上角徽标最大值，超过后显示 `{max}+`。 */
-    max?: number
+    max?: number;
     /** 点击后跳转的链接地址（仅随 `click` 透出）。 */
-    url?: string
+    url?: string;
     /** 页面跳转方式（仅随 `click` 透出）。 */
-    linkType?: 'navigateTo' | 'switchTab' | 'reLaunch' | 'redirectTo'
+    linkType?: 'navigateTo' | 'switchTab' | 'reLaunch' | 'redirectTo';
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     text: '',
@@ -79,58 +79,58 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 点击（或跳转）时触发；`url` / `linkType` 随 payload 透出。 */
-  (e: 'click', payload: { url: string; linkType: string }): void
-}>()
+  (e: 'click', payload: { url: string; linkType: string }): void;
+}>();
 
 defineSlots<{
   /** 自定义全部内容。 */
-  default?(): unknown
+  default?(): unknown;
   /** 图标位内容。 */
-  icon?(): unknown
+  icon?(): unknown;
   /** 文本位内容。 */
-  text?(): unknown
-}>()
+  text?(): unknown;
+}>();
 
-const grid = inject(SN_GRID_KEY, null)
+const grid = inject(SN_GRID_KEY, null);
 
 /** Share of the row this cell occupies. */
 const cellWidth = computed(() => {
-  const column = grid?.column.value ?? 3
-  return `${100 / Math.max(1, column)}%`
-})
+  const column = grid?.column.value ?? 3;
+  return `${100 / Math.max(1, column)}%`;
+});
 
 /** Gutter as symmetric padding (the grid supplies the outer half). */
 const gutterStyle = computed(() => {
-  const gutter = grid?.gutter.value ?? 0
-  if (gutter <= 0) return undefined
-  return `padding: ${gutter / 2}px`
-})
+  const gutter = grid?.gutter.value ?? 0;
+  if (gutter <= 0) return undefined;
+  return `padding: ${gutter / 2}px`;
+});
 
-const isClickable = computed(() => grid?.clickable.value ?? false)
+const isClickable = computed(() => grid?.clickable.value ?? false);
 
 const iconData = computed<IconData | null>(() => {
-  if (!props.icon) return null
-  const resolved = resolveIconByName(props.icon)
-  return resolved ? markRaw(resolved) : null
-})
+  if (!props.icon) return null;
+  const resolved = resolveIconByName(props.icon);
+  return resolved ? markRaw(resolved) : null;
+});
 
 /** Font-icon class list — mirrors sn-tag's `cssIcon` handling. */
 const cssIconClass = computed<string>(() => {
-  if (!props.icon || !props.cssIcon) return ''
-  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix
-  return prefix ? `${prefix}-${props.icon}` : props.icon
-})
+  if (!props.icon || !props.cssIcon) return '';
+  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix;
+  return prefix ? `${prefix}-${props.icon}` : props.icon;
+});
 
 /** Badge text: `{max}+` above the ceiling, dot mode renders no text. */
 const badgeText = computed<string>(() => {
-  if (props.isDot || props.value === undefined || props.value === '') return ''
-  if (typeof props.value === 'number' && props.value > props.max) return `${props.max}+`
-  return String(props.value)
-})
+  if (props.isDot || props.value === undefined || props.value === '') return '';
+  if (typeof props.value === 'number' && props.value > props.max) return `${props.max}+`;
+  return String(props.value);
+});
 
 const contentClass = computed(() => [
   'sn-grid-item__content',
@@ -140,13 +140,13 @@ const contentClass = computed(() => [
     'sn-grid-item__content--center': grid?.center.value ?? true,
     'sn-grid-item__content--square': grid?.square.value ?? false,
   },
-])
+]);
 
-const hoverClass = computed(() => grid?.hoverClass.value ?? '')
+const hoverClass = computed(() => grid?.hoverClass.value ?? '');
 
 function onTap(): void {
   if (props.url || isClickable.value) {
-    emit('click', { url: props.url, linkType: props.linkType })
+    emit('click', { url: props.url, linkType: props.linkType });
   }
 }
 
@@ -157,14 +157,14 @@ const rootClass = computed(() => [
     'sn-grid-item--square': grid?.square.value ?? false,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts = [`flex: 0 0 ${cellWidth.value}`, `max-width: ${cellWidth.value}`]
-  if (gutterStyle.value) parts.push(gutterStyle.value)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [`flex: 0 0 ${cellWidth.value}`, `max-width: ${cellWidth.value}`];
+  if (gutterStyle.value) parts.push(gutterStyle.value);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 </script>
 
 <template>
@@ -178,7 +178,10 @@ const rootStyle = computed(() => {
   >
     <view :class="contentClass">
       <slot>
-        <view class="sn-grid-item__icon-wrap" :class="{ 'sn-grid-item__icon-wrap--reverse': grid?.reverse.value }">
+        <view
+          class="sn-grid-item__icon-wrap"
+          :class="{ 'sn-grid-item__icon-wrap--reverse': grid?.reverse.value }"
+        >
           <slot name="icon">
             <SnIcon
               v-if="iconData"
@@ -207,7 +210,8 @@ const rootStyle = computed(() => {
             <text
               class="sn-grid-item__text"
               :class="{ 'sn-grid-item__text--ellipsis': ellipsis }"
-            >{{ text }}</text>
+              >{{ text }}</text
+            >
           </slot>
         </view>
       </slot>

@@ -5,12 +5,12 @@
  * Shows: `nativeScrollbar` with a long body, and the resulting three-band
  * layout (fixed header / scrolling body / fixed footer).
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const open = ref(false)
+const open = ref(false);
 
-const items = Array.from({ length: 40 }, (_, i) => `Setting ${i + 1}`)
+const items = Array.from({ length: 40 }, (_, i) => `Setting ${i + 1}`);
 </script>
 
 <template>

@@ -4,16 +4,16 @@
  * (label-field / key-field / children-field). Useful when consumer data
  * uses different naming than the SnMenuOption default (key/label/children).
  */
-import { ref } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import type { SnMenuOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import type { SnMenuOption } from '@snui/vue-web';
 
 /* This shape mirrors a typical REST API response. */
 interface ApiNavNode {
-  uid: number | string
-  title: string
-  link?: string
-  items?: ApiNavNode[]
+  uid: number | string;
+  title: string;
+  link?: string;
+  items?: ApiNavNode[];
 }
 
 const apiTree: ApiNavNode[] = [
@@ -27,15 +27,15 @@ const apiTree: ApiNavNode[] = [
     ],
   },
   { uid: 'styles', title: 'Style Packs', link: '/style-packs' },
-]
+];
 
-const active = ref<string | number | null>('web')
+const active = ref<string | number | null>('web');
 </script>
 
 <template>
   <SnMenu
     mode="vertical"
-    :options="(apiTree as unknown as SnMenuOption[])"
+    :options="apiTree as unknown as SnMenuOption[]"
     :key-field="'uid'"
     :label-field="'title'"
     :children-field="'items'"

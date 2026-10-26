@@ -34,12 +34,12 @@ packages/vue-web/src/{name}/
 
 ### 2.2 命名
 
-| 对象 | 命名 | 示例 |
-|---|---|---|
-| 目录 | camelCase | `button/` |
-| 组件文件 | PascalCase + `Sn` 前缀 | `SnButton.vue` |
-| 测试文件 | 与组件同名 | `SnButton.test.ts` |
-| AI 描述 | 固定名 | `ai-description.md` |
+| 对象     | 命名                   | 示例                |
+| -------- | ---------------------- | ------------------- |
+| 目录     | camelCase              | `button/`           |
+| 组件文件 | PascalCase + `Sn` 前缀 | `SnButton.vue`      |
+| 测试文件 | 与组件同名             | `SnButton.test.ts`  |
+| AI 描述  | 固定名                 | `ai-description.md` |
 
 ### 2.3 Token 消费
 
@@ -58,6 +58,7 @@ packages/vue-web/src/{name}/
 
 ```md
 <!-- ai-description.md SnButton -->
+
 end: web
 name: SnButton
 ...
@@ -78,11 +79,11 @@ packages/uni/src/components/sn-{name}/
 
 ### 3.2 命名
 
-| 对象 | 命名 | 示例 |
-|---|---|---|
-| 目录 | kebab-case + `sn-` 前缀 | `sn-button/` |
-| 组件文件 | kebab-case + `sn-` 前缀 | `sn-button.vue` |
-| 测试文件 | 与组件同名 | `sn-button.test.ts` |
+| 对象     | 命名                    | 示例                |
+| -------- | ----------------------- | ------------------- |
+| 目录     | kebab-case + `sn-` 前缀 | `sn-button/`        |
+| 组件文件 | kebab-case + `sn-` 前缀 | `sn-button.vue`     |
+| 测试文件 | 与组件同名              | `sn-button.test.ts` |
 
 ### 3.3 Token 消费
 
@@ -92,8 +93,8 @@ packages/uni/src/components/sn-{name}/
 /* uni 端 sn-button.vue */
 .sn-button {
   background-color: var(--sn-mp-color-action-primary);
-  border-radius: var(--sn-mp-button-radius);  /* 转换后 24rpx */
-  height: var(--sn-mp-button-height-medium);    /* 72rpx */
+  border-radius: var(--sn-mp-button-radius); /* 转换后 24rpx */
+  height: var(--sn-mp-button-height-medium); /* 72rpx */
 }
 ```
 
@@ -103,6 +104,7 @@ packages/uni/src/components/sn-{name}/
 
 ```md
 <!-- ai-description.md sn-button -->
+
 end: mp
 name: sn-button
 ...
@@ -218,7 +220,7 @@ React 组件 CSS 只能用 `var(--sn-react-*)`。
 
 ## 8. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.0 | 2026-10-03 | 初始版本 |
+| 版本     | 日期       | 变更                                                                             |
+| -------- | ---------- | -------------------------------------------------------------------------------- |
+| v1.0     | 2026-10-03 | 初始版本                                                                         |
 | **v1.1** | 2026-10-03 | **强化端独立性：0 行源代码跨端复用，每端独立包目录、构建、Token 别名（Active）** |

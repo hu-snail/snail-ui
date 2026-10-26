@@ -76,12 +76,7 @@ apps/docs/en/components/uni/
 
 ```vue
 <template>
-  <view
-    :class="rootClass"
-    :style="rootStyle"
-    role="…"
-    :aria-*="…"
-  >
+  <view :class="rootClass" :style="rootStyle" role="…" :aria-*="…">
     <slot />
   </view>
 </template>
@@ -126,28 +121,28 @@ apps/docs/en/components/uni/
 最小骨架：
 
 ```ts
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import SnName from './sn-name.vue'
+import { describe, it, expect } from 'vitest';
+import { mount } from '@vue/test-utils';
+import SnName from './sn-name.vue';
 
 describe('sn-name', () => {
   it('renders default slot content', () => {
-    const w = mount(SnName, { slots: { default: 'text' } })
-    expect(w.text()).toContain('text')
-  })
+    const w = mount(SnName, { slots: { default: 'text' } });
+    expect(w.text()).toContain('text');
+  });
 
   it('emits tap when tapped', async () => {
-    const w = mount(SnName, { slots: { default: 'x' } })
-    await w.trigger('tap')
-    expect(w.emitted('tap')).toHaveLength(1)
-  })
+    const w = mount(SnName, { slots: { default: 'x' } });
+    await w.trigger('tap');
+    expect(w.emitted('tap')).toHaveLength(1);
+  });
 
   it('does not emit when disabled', async () => {
-    const w = mount(SnName, { props: { disabled: true }, slots: { default: 'x' } })
-    await w.trigger('tap')
-    expect(w.emitted('tap')).toBeUndefined()
-  })
-})
+    const w = mount(SnName, { props: { disabled: true }, slots: { default: 'x' } });
+    await w.trigger('tap');
+    expect(w.emitted('tap')).toBeUndefined();
+  });
+});
 ```
 
 ---
@@ -157,9 +152,9 @@ describe('sn-name', () => {
 ### 4.1 必须从源码路径 import（§111.2）
 
 ```ts
-import SnName from '@snui/uni-src/components/sn-name/sn-name.vue'
-import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry'
-import type { X } from '@snui/uni-src/components/sn-name/sn-name-types'
+import SnName from '@snui/uni-src/components/sn-name/sn-name.vue';
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
+import type { X } from '@snui/uni-src/components/sn-name/sn-name-types';
 ```
 
 **禁止** `from '@snui/uni'`（dist 入口，scoped CSS 拿不到 rpx 转换）。
@@ -178,7 +173,7 @@ import type { X } from '@snui/uni-src/components/sn-name/sn-name-types'
 
 ```vue
 <script setup lang="ts">
-import SnName from '@snui/uni-src/components/sn-name/sn-name.vue'
+import SnName from '@snui/uni-src/components/sn-name/sn-name.vue';
 </script>
 
 <template>
@@ -238,8 +233,8 @@ type?: string | undefined
 
 <一句话说明 + easycom 注册说明 + rpx 单位说明>
 
-
 ## 基础用法
+
 <Demo name="<name>-mp-basic" description="…" />
 
 ## <各能力章节，每节一个 Demo>
@@ -247,8 +242,8 @@ type?: string | undefined
 ## Props
 
 | 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-…
+| ---- | ---- | ------ | ---- |
+| …    |
 
 ## Events
 

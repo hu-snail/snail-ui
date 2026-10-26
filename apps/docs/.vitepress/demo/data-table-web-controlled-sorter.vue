@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — controlled sortOrder via column.sortOrder. */
-import { ref } from 'vue'
-import { SnDataTable } from '@snui/vue-web'
-const sortOrder = ref<'ascend' | 'descend' | false>('ascend')
+import { ref } from 'vue';
+import { SnDataTable } from '@snui/vue-web';
+const sortOrder = ref<'ascend' | 'descend' | false>('ascend');
 
 const columns = [
   {
@@ -12,22 +12,22 @@ const columns = [
     sortOrder,
   },
   { title: 'Age', key: 'age' },
-]
+];
 
 const data = [
   { key: 0, name: 'John Brown', age: 32 },
   { key: 1, name: 'Jim Green', age: 42 },
   { key: 2, name: 'Joe Black', age: 32 },
-]
+];
 
 interface SortStateLike {
-  columnKey: string | number
-  order: 'ascend' | 'descend' | false
+  columnKey: string | number;
+  order: 'ascend' | 'descend' | false;
 }
 
 function handleSorter(state: SortStateLike | SortStateLike[] | null): void {
-  const single = Array.isArray(state) ? state[0] : state
-  sortOrder.value = single?.order ?? false
+  const single = Array.isArray(state) ? state[0] : state;
+  sortOrder.value = single?.order ?? false;
 }
 </script>
 
@@ -39,5 +39,9 @@ function handleSorter(state: SortStateLike | SortStateLike[] | null): void {
 </template>
 
 <style scoped>
-.sn-demo-tip { margin: 0 0 24px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
+.sn-demo-tip {
+  margin: 0 0 24px;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 14px;
+}
 </style>

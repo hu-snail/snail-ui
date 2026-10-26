@@ -7,31 +7,31 @@
  * every cell — wd-grid's documented "配置在 Grid 上，GridItem 继承" contract.
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Cell content flow direction. */
-export type SnGridDirection = 'horizontal' | 'vertical'
+export type SnGridDirection = 'horizontal' | 'vertical';
 
 /** Context injected by `SnGrid` into child `SnGridItem` instances. */
 export interface SnGridContext {
   /** Number of columns. */
-  column: Ref<number>
+  column: Ref<number>;
   /** Cell gutter in px (0 = no gutter). */
-  gutter: Ref<number>
+  gutter: Ref<number>;
   /** Force square cells. */
-  square: Ref<boolean>
+  square: Ref<boolean>;
   /** Enable tap feedback on every cell. */
-  clickable: Ref<boolean>
+  clickable: Ref<boolean>;
   /** `hover-class` name forwarded to every cell. */
-  hoverClass: Ref<string>
+  hoverClass: Ref<string>;
   /** Center cell content. */
-  center: Ref<boolean>
+  center: Ref<boolean>;
   /** Cell content flow direction. */
-  direction: Ref<SnGridDirection>
+  direction: Ref<SnGridDirection>;
   /** Swap icon and text. */
-  reverse: Ref<boolean>
+  reverse: Ref<boolean>;
   /** Icon size inherited by every cell. */
-  iconSize: Ref<string>
+  iconSize: Ref<string>;
 }
 
-export const SN_GRID_KEY: InjectionKey<SnGridContext> = Symbol('sn-grid')
+export const SN_GRID_KEY: InjectionKey<SnGridContext> = Symbol('sn-grid');

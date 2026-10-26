@@ -28,54 +28,54 @@ added to the wd-swipe-action parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnSwipeAction } from '@snui/uni'
+import { SnSwipeAction } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `modelValue` | `'left' \| 'close' \| 'right'` | `'close'` | no | Current swipe state (`v-model`). |
-| `disabled` | `boolean` | `false` | no | Disable swiping — the row stays closed. |
-| `beforeClose` | `(reason, position) => boolean \| Promise<boolean>` | — | no | Close guard; `false` blocks the close. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
+| Name          | Type                                                | Default   | Required | Description                             |
+| ------------- | --------------------------------------------------- | --------- | -------- | --------------------------------------- |
+| `modelValue`  | `'left' \| 'close' \| 'right'`                      | `'close'` | no       | Current swipe state (`v-model`).        |
+| `disabled`    | `boolean`                                           | `false`   | no       | Disable swiping — the row stays closed. |
+| `beforeClose` | `(reason, position) => boolean \| Promise<boolean>` | —         | no       | Close guard; `false` blocks the close.  |
+| `customClass` | `string`                                            | `''`      | no       | Custom class for the root node.         |
+| `customStyle` | `string`                                            | `''`      | no       | Custom inline style for the root node.  |
 
 ### `beforeClose` arguments
 
-| Argument | Type | Description |
-|---|---|---|
-| `reason` | `'click' \| 'swipe' \| 'other'` | What triggered the close. |
-| `position` | `'left' \| 'right'` | Which side is currently open. |
+| Argument   | Type                            | Description                   |
+| ---------- | ------------------------------- | ----------------------------- |
+| `reason`   | `'click' \| 'swipe' \| 'other'` | What triggered the close.     |
+| `position` | `'left' \| 'right'`             | Which side is currently open. |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:modelValue` | `'left' \| 'close' \| 'right'` | Swipe state changed. |
-| `click` | `{ reason: 'click', position: 'left' \| 'right' }` | The open row was tapped and closed. |
+| Name                | Payload                                            | Description                         |
+| ------------------- | -------------------------------------------------- | ----------------------------------- |
+| `update:modelValue` | `'left' \| 'close' \| 'right'`                     | Swipe state changed.                |
+| `click`             | `{ reason: 'click', position: 'left' \| 'right' }` | The open row was tapped and closed. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Row content (the area that slides). |
-| `left` | Left action area — revealed by swiping right. |
-| `right` | Right action area — revealed by swiping left. |
+| Name      | Description                                   |
+| --------- | --------------------------------------------- |
+| `default` | Row content (the area that slides).           |
+| `left`    | Left action area — revealed by swiping right. |
+| `right`   | Right action area — revealed by swiping left. |
 
 ## Exposed Methods
 
-| Name | Description |
-|---|---|
+| Name                        | Description                                                    |
+| --------------------------- | -------------------------------------------------------------- |
 | `close(reason?, position?)` | Close the row; resolves `false` when `beforeClose` blocked it. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Surface | `--sn-mp-color-background-elevated` | Row + content background |
-| Text | `--sn-mp-color-text-primary` | Content text |
-| Disabled text | `--sn-mp-color-text-disabled` | Disabled row text |
+| Token         | CSS Variable                        | Purpose                  |
+| ------------- | ----------------------------------- | ------------------------ |
+| Surface       | `--sn-mp-color-background-elevated` | Row + content background |
+| Text          | `--sn-mp-color-text-primary`        | Content text             |
+| Disabled text | `--sn-mp-color-text-disabled`       | Disabled row text        |
 
 ## Gestures
 

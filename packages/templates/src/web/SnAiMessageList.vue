@@ -22,37 +22,37 @@
  * Usage:
  *   <SnAiMessageList :messages="messages" @retry="onRetry" />
  */
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { SnEmpty, SnIcon } from '@snui/vue-web'
-import { ChevronDownIcon } from '../shared/icons'
-import type { SnAiMessage } from '../shared/types'
-import { toIconComponent } from './icon-adapter'
-import SnAiMessageRow from './SnAiMessage.vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { SnEmpty, SnIcon } from '@snui/vue-web';
+import { ChevronDownIcon } from '../shared/icons';
+import type { SnAiMessage } from '../shared/types';
+import { toIconComponent } from './icon-adapter';
+import SnAiMessageRow from './SnAiMessage.vue';
 
-defineOptions({ name: 'SnAiMessageList' })
+defineOptions({ name: 'SnAiMessageList' });
 
 const props = withDefaults(
   defineProps<{
     /** The transcript, oldest first. */
-    messages?: SnAiMessage[] | undefined
+    messages?: SnAiMessage[] | undefined;
     /** Show skeleton rows instead of the transcript. */
-    loading?: boolean | undefined
+    loading?: boolean | undefined;
     /** Number of skeleton rows while loading. */
-    loadingRows?: number | undefined
+    loadingRows?: number | undefined;
     /** Text shown when the transcript is empty. */
-    emptyText?: string | undefined
+    emptyText?: string | undefined;
     /** Secondary line shown under the empty text. */
-    emptyHint?: string | undefined
+    emptyHint?: string | undefined;
     /** Automatically follow new output. Default true. */
-    autoScroll?: boolean | undefined
+    autoScroll?: boolean | undefined;
     /** Show the copy affordance on finished assistant turns. */
-    showCopy?: boolean | undefined
+    showCopy?: boolean | undefined;
     /** Show reasoning blocks after a turn finishes. */
-    showThinking?: boolean | undefined
+    showThinking?: boolean | undefined;
     /** Max height of the scroll area. Defaults to filling the parent. */
-    maxHeight?: string | undefined
+    maxHeight?: string | undefined;
     /** Distance in px from the bottom that still counts as "pinned". */
-    stickThreshold?: number | undefined
+    stickThreshold?: number | undefined;
   }>(),
   {
     messages: () => [],
@@ -66,35 +66,35 @@ const props = withDefaults(
     maxHeight: undefined,
     stickThreshold: 48,
   },
-)
+);
 
 const emit = defineEmits<{
   /** A failed turn asked to be retried. */
-  (e: 'retry', message: SnAiMessage): void
+  (e: 'retry', message: SnAiMessage): void;
   /** A finished turn asked to be copied. */
-  (e: 'copy', message: SnAiMessage): void
+  (e: 'copy', message: SnAiMessage): void;
   /** The user reached the bottom of the transcript. */
-  (e: 'reach-bottom'): void
-}>()
+  (e: 'reach-bottom'): void;
+}>();
 
-const chevronIcon = toIconComponent(ChevronDownIcon)
+const chevronIcon = toIconComponent(ChevronDownIcon);
 
-const scrollRef = ref<HTMLElement | null>(null)
-const sentinelRef = ref<HTMLElement | null>(null)
+const scrollRef = ref<HTMLElement | null>(null);
+const sentinelRef = ref<HTMLElement | null>(null);
 
 /**
  * Whether the viewport is currently pinned to the bottom. Kept as a ref (not a
  * computed) because it is driven by the observer, and read by the scroll
  * watcher to decide whether a new message should yank the view down.
  */
-const isPinned = ref(true)
+const isPinned = ref(true);
 /** Whether the transcript overflows enough to offer the scroll-down button. */
-const isOverflowing = ref(false)
+const isOverflowing = ref(false);
 /** Set by the user's copy action; cleared on a timer so it reads as a flash. */
-const copiedId = ref<string>('')
+const copiedId = ref<string>('');
 
-let observer: IntersectionObserver | null = null
-let copiedTimer: ReturnType<typeof setTimeout> | null = null
+let observer: IntersectionObserver | null = null;
+let copiedTimer: ReturnType<typeof setTimeout> | null = null;
 
 /** Whether any message currently has output in flight. */
 const isStreaming = computed(() =>
@@ -104,104 +104,104 @@ const isStreaming = computed(() =>
       message.status === 'thinking' ||
       message.status === 'queued',
   ),
-)
+);
 
-const isEmpty = computed(() => !props.loading && (props.messages ?? []).length === 0)
+const isEmpty = computed(() => !props.loading && (props.messages ?? []).length === 0);
 
 /** Scroll the viewport to the bottom, immediately and smoothly on next tick. */
 function scrollToBottom(smooth = true): void {
-  const el = scrollRef.value
-  if (!el) return
-  el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' })
+  const el = scrollRef.value;
+  if (!el) return;
+  el.scrollTo({ top: el.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
 }
 
 /** Measure whether the content is taller than the viewport. */
 function measureOverflow(): void {
-  const el = scrollRef.value
-  if (!el) return
-  isOverflowing.value = el.scrollHeight - el.clientHeight > 4
+  const el = scrollRef.value;
+  if (!el) return;
+  isOverflowing.value = el.scrollHeight - el.clientHeight > 4;
 }
 
 function onRetry(message: SnAiMessage): void {
-  emit('retry', message)
+  emit('retry', message);
 }
 
 /** Copy a turn's answer text and flash the confirmation on that row. */
 async function onCopy(message: SnAiMessage): Promise<void> {
-  emit('copy', message)
+  emit('copy', message);
   const text = message.parts
     .filter((part) => part.type === 'text')
     .map((part) => (part.type === 'text' ? part.text : ''))
-    .join('\n')
+    .join('\n');
   try {
-    await navigator.clipboard.writeText(text)
+    await navigator.clipboard.writeText(text);
   } catch {
     // Clipboard access can be denied (insecure context / user gesture rules).
     // The emit above already told the host, so a failure here is not fatal.
   }
-  copiedId.value = message.id
-  if (copiedTimer !== null) clearTimeout(copiedTimer)
+  copiedId.value = message.id;
+  if (copiedTimer !== null) clearTimeout(copiedTimer);
   copiedTimer = setTimeout(() => {
-    copiedId.value = ''
-  }, 1500)
+    copiedId.value = '';
+  }, 1500);
 }
 
 function onScroll(): void {
-  measureOverflow()
+  measureOverflow();
 }
 
 onMounted(() => {
-  const sentinel = sentinelRef.value
-  const root = scrollRef.value
-  if (!sentinel || !root) return
+  const sentinel = sentinelRef.value;
+  const root = scrollRef.value;
+  if (!sentinel || !root) return;
   // The sentinel sits after the last row. While it is visible the reader is at
   // the bottom, so new output should keep following; once it scrolls out of
   // view the reader has moved away and the view must stay put.
   observer = new IntersectionObserver(
     (entries) => {
-      const entry = entries[0]
-      if (!entry) return
-      isPinned.value = entry.isIntersecting
-      if (entry.isIntersecting) emit('reach-bottom')
+      const entry = entries[0];
+      if (!entry) return;
+      isPinned.value = entry.isIntersecting;
+      if (entry.isIntersecting) emit('reach-bottom');
     },
     { root, threshold: 0 },
-  )
-  observer.observe(sentinel)
-  measureOverflow()
-})
+  );
+  observer.observe(sentinel);
+  measureOverflow();
+});
 
 onBeforeUnmount(() => {
-  observer?.disconnect()
-  observer = null
+  observer?.disconnect();
+  observer = null;
   if (copiedTimer !== null) {
-    clearTimeout(copiedTimer)
-    copiedTimer = null
+    clearTimeout(copiedTimer);
+    copiedTimer = null;
   }
-})
+});
 
 // Follow new output only while pinned. `nextTick` lets the DOM paint the new
 // row before measuring its height.
 watch(
   () => props.messages?.length,
   async () => {
-    if (!props.autoScroll || !isPinned.value) return
-    await nextTick()
-    scrollToBottom(false)
-    measureOverflow()
+    if (!props.autoScroll || !isPinned.value) return;
+    await nextTick();
+    scrollToBottom(false);
+    measureOverflow();
   },
-)
+);
 
 // Streaming text grows without changing the message count, so the last row's
 // content is watched too.
 watch(
   () => (props.messages ?? []).map((message) => message.updatedAt).join('|'),
   async () => {
-    if (!props.autoScroll || !isPinned.value) return
-    await nextTick()
-    scrollToBottom(false)
-    measureOverflow()
+    if (!props.autoScroll || !isPinned.value) return;
+    await nextTick();
+    scrollToBottom(false);
+    measureOverflow();
   },
-)
+);
 </script>
 
 <template>
@@ -214,11 +214,17 @@ watch(
     >
       <!-- Loading skeleton -->
       <template v-if="loading">
-        <div v-for="row in loadingRows" :key="`skeleton-${row}`" class="sn-ai-message-list__skeleton">
+        <div
+          v-for="row in loadingRows"
+          :key="`skeleton-${row}`"
+          class="sn-ai-message-list__skeleton"
+        >
           <span class="sn-ai-message-list__skeleton-avatar" />
           <span class="sn-ai-message-list__skeleton-lines">
             <span class="sn-ai-message-list__skeleton-line" />
-            <span class="sn-ai-message-list__skeleton-line sn-ai-message-list__skeleton-line--short" />
+            <span
+              class="sn-ai-message-list__skeleton-line sn-ai-message-list__skeleton-line--short"
+            />
           </span>
         </div>
       </template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnCheckboxGroup — options + slot paths. */
-import { ref } from 'vue'
-import { SnCheckbox, SnCheckboxGroup } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnCheckbox, SnCheckboxGroup } from '@snui/vue-web';
 
-const cities = ref<string[]>(['shanghai'])
+const cities = ref<string[]>(['shanghai']);
 </script>
 
 <template>
@@ -18,6 +18,17 @@ const cities = ref<string[]>(['shanghai'])
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-.demo-log { margin: 0; padding: 8px 12px; background: var(--vp-c-bg-soft); border-radius: 6px; font-size: 12px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.demo-log {
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--vp-c-bg-soft);
+  border-radius: 6px;
+  font-size: 12px;
+}
 </style>

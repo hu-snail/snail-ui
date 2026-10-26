@@ -3,12 +3,12 @@
  * Demo: SnProgress — `processing` animation next to the four status colours,
  * plus a custom circle glyph through the `icon` slot.
  */
-import { SnIcon, SnProgress, registerSnIcons } from '@snui/vue-web'
-import { Check, X } from 'lucide-vue-next'
+import { SnIcon, SnProgress, registerSnIcons } from '@snui/vue-web';
+import { Check, X } from 'lucide-vue-next';
 
-registerSnIcons({ Check, X })
+registerSnIcons({ Check, X });
 
-const statuses = ['success', 'error', 'warning', 'info'] as const
+const statuses = ['success', 'error', 'warning', 'info'] as const;
 </script>
 
 <template>
@@ -21,12 +21,7 @@ const statuses = ['success', 'error', 'warning', 'info'] as const
 
     <section class="progress-processing-demo__block">
       <h4>The four statuses (success / error / warning / info)</h4>
-      <SnProgress
-        v-for="status in statuses"
-        :key="status"
-        :percentage="62"
-        :status="status"
-      />
+      <SnProgress v-for="status in statuses" :key="status" :percentage="62" :status="status" />
     </section>
 
     <section class="progress-processing-demo__block">

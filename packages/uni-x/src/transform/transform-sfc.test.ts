@@ -7,7 +7,8 @@ import type { TransformIssue } from './types.ts';
 
 describe('parseSfc', () => {
   it('should split script/template/style blocks', () => {
-    const src = '<script setup lang="ts">\nconst a = 1\n</script>\n\n<template>\n  <view />\n</template>\n\n<style scoped>\n.a {\n  color: red;\n}\n</style>\n';
+    const src =
+      '<script setup lang="ts">\nconst a = 1\n</script>\n\n<template>\n  <view />\n</template>\n\n<style scoped>\n.a {\n  color: red;\n}\n</style>\n';
     const sfc = parseSfc(src);
     expect(sfc.blocks).toHaveLength(3);
     expect(sfc.blocks[0]?.tag).toBe('script');
@@ -18,7 +19,8 @@ describe('parseSfc', () => {
   });
 
   it('should handle nested template tags (slot templates) without breaking the root block', () => {
-    const src = '<template>\n  <view>\n    <template #icon>\n      <text>i</text>\n    </template>\n  </view>\n</template>\n';
+    const src =
+      '<template>\n  <view>\n    <template #icon>\n      <text>i</text>\n    </template>\n  </view>\n</template>\n';
     const sfc = parseSfc(src);
     expect(sfc.blocks).toHaveLength(1);
     expect(sfc.blocks[0]?.content).toContain('<template #icon>');
@@ -26,7 +28,8 @@ describe('parseSfc', () => {
   });
 
   it('should report stray content outside blocks instead of crashing', () => {
-    const src = '<style scoped>\n.a {\n  color: red;\n}\n</style>\n\n/* stray */\n.b {\n  color: blue;\n}\n';
+    const src =
+      '<style scoped>\n.a {\n  color: red;\n}\n</style>\n\n/* stray */\n.b {\n  color: blue;\n}\n';
     const sfc = parseSfc(src);
     expect(sfc.blocks).toHaveLength(1);
     expect(sfc.stray).toContain('stray');
@@ -35,7 +38,10 @@ describe('parseSfc', () => {
 
 describe('transformScript', () => {
   it('should convert DOM event calls to optional calls', () => {
-    const r = transformScript('function h(e: Event) {\n  e.preventDefault()\n  e.stopImmediatePropagation()\n}', 'f.ts');
+    const r = transformScript(
+      'function h(e: Event) {\n  e.preventDefault()\n  e.stopImmediatePropagation()\n}',
+      'f.ts',
+    );
     expect(r.code).toContain('e.preventDefault?.()');
     expect(r.code).toContain('e.stopImmediatePropagation?.()');
     expect(r.issues.some((i) => i.kind === 'script-guard')).toBe(true);
@@ -48,7 +54,7 @@ describe('transformScript', () => {
   });
 
   it('should keep a consumed defineSlots call and flag it', () => {
-    const r = transformScript("const slots = defineSlots<{\n  default(): unknown\n}>()\n", 'f.vue');
+    const r = transformScript('const slots = defineSlots<{\n  default(): unknown\n}>()\n', 'f.vue');
     expect(r.code).toContain('const slots = defineSlots');
     expect(r.issues.some((i) => i.kind === 'defineSlots-manual')).toBe(true);
   });

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnCarousel — vertical news ticker with autoplay. */
-import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
+import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
 
 const news = [
   { date: '10-19', title: '平台双十一活动规则公布，预售 10 月 24 日开启' },
@@ -8,7 +8,7 @@ const news = [
   { date: '10-17', title: '物流时效升级：长三角地区次日达全覆盖' },
   { date: '10-16', title: '开放平台新增 12 个 Webhook 事件订阅' },
   { date: '10-15', title: '秋季开发者沙龙报名开启，线下线上同步直播' },
-]
+];
 </script>
 
 <template>
@@ -19,7 +19,12 @@ const news = [
       autoplay
       :interval="3000"
       :show-dots="false"
-      style="height: 200px; border-radius: 8px; border: 1px solid var(--sn-web-color-border); background: var(--sn-web-color-background-surface)"
+      style="
+        height: 200px;
+        border-radius: 8px;
+        border: 1px solid var(--sn-web-color-border);
+        background: var(--sn-web-color-background-surface);
+      "
     >
       <SnCarouselItem v-for="(n, i) in news" :key="n.date">
         <div class="news-row" :class="{ 'news-row--first': i === 0 }">

@@ -6,21 +6,21 @@
  * useNotification() 必须在 Provider 后代组件的 setup 中调用，因此计数与
  * 触发逻辑放在内层子组件里，并通过作用域插槽把状态与调用入口交回模板。
  */
-import { defineComponent, ref } from 'vue'
-import { SnButton, SnNotificationProvider, useNotification } from '@snui/vue-web'
+import { defineComponent, ref } from 'vue';
+import { SnButton, SnNotificationProvider, useNotification } from '@snui/vue-web';
 
 /** 屏幕同时可见的最大条数 —— 与 Provider 的 max prop 保持一致。 */
-const MAX_ON_SCREEN = 3
+const MAX_ON_SCREEN = 3;
 
 const MaxTrigger = defineComponent({
   name: 'NotificationMaxTrigger',
   setup(_props, { slots }) {
-    const notification = useNotification()
-    const pushed = ref(0)
+    const notification = useNotification();
+    const pushed = ref(0);
 
     const push = (): void => {
-      pushed.value += 1
-      const index = pushed.value
+      pushed.value += 1;
+      const index = pushed.value;
       notification.success({
         title: `第 ${index} 条通知`,
         content:
@@ -28,17 +28,17 @@ const MaxTrigger = defineComponent({
             ? `屏幕上共 ${index} 条，还没到上限。`
             : `屏幕只保留最新的 ${MAX_ON_SCREEN} 条，第 ${index - MAX_ON_SCREEN} 条已被移除。`,
         duration: 0,
-      })
-    }
+      });
+    };
 
     const clearAll = (): void => {
-      pushed.value = 0
-      notification.destroyAll()
-    }
+      pushed.value = 0;
+      notification.destroyAll();
+    };
 
-    return () => slots.default?.({ pushed: pushed.value, push, clearAll })
+    return () => slots.default?.({ pushed: pushed.value, push, clearAll });
   },
-})
+});
 </script>
 
 <template>

@@ -7,10 +7,10 @@
  * surface is uni-shaped (view + rpx).
  */
 
-import { computed, inject, markRaw, onBeforeUnmount, onMounted, provide, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
+import { computed, inject, markRaw, onBeforeUnmount, onMounted, provide, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import {
   FORM_CONTEXT_KEY,
   FORM_ITEM_STATE_KEY,
@@ -20,18 +20,18 @@ import {
   type FormRule,
   getByPath,
   setByPath,
-} from './sn-form-types'
-import { validateValue } from './sn-form-validator'
+} from './sn-form-types';
+import { validateValue } from './sn-form-validator';
 
-defineOptions({ name: 'SnFormItem' })
+defineOptions({ name: 'SnFormItem' });
 
 const props = withDefaults(
   defineProps<{
-    prop?: string
-    label?: string
-    required?: boolean
-    rules?: FormRule[]
-    showMessage?: boolean
+    prop?: string;
+    label?: string;
+    required?: boolean;
+    rules?: FormRule[];
+    showMessage?: boolean;
     /**
      * Render a status glyph before the validation message.
      *
@@ -39,44 +39,44 @@ const props = withDefaults(
      * used. Declared here as well because an item may want the glyph without
      * turning it on for the whole form.
      */
-    statusIcon?: boolean | undefined
-    labelWidth?: number | string
-    labelPosition?: 'left' | 'right' | 'top'
-    ariaLabel?: string
+    statusIcon?: boolean | undefined;
+    labelWidth?: number | string;
+    labelPosition?: 'left' | 'right' | 'top';
+    ariaLabel?: string;
     /**
      * Optional icon data (frozen `{ viewBox, paths }`) rendered inline
      * with the label. Use `iconName` for the registry lookup path.
      */
-    iconData?: IconData
+    iconData?: IconData;
     /** Icon name resolved via the sn-icon registry. */
-    iconName?: string
+    iconName?: string;
     /** rpx / pixel size forwarded to the embedded sn-icon. Default 32. */
-    iconSize?: number | string
+    iconSize?: number | string;
 
     /* ── wot-ui `wd-form-item` 1:1 parity props ────────────────────────── */
 
     /** Item-level size — overrides the parent SnForm's size. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Right-align the field value within the cell. */
-    valueAlign?: 'left' | 'right'
+    valueAlign?: 'left' | 'right';
     /** Override the form-level asterisk position. */
-    asteriskPosition?: 'left' | 'right'
+    asteriskPosition?: 'left' | 'right';
     /** Override the form-level hide-asterisk flag. */
-    hideAsterisk?: boolean | undefined
+    hideAsterisk?: boolean | undefined;
     /** Truncate long labels with ellipsis. */
-    ellipsis?: boolean | undefined
+    ellipsis?: boolean | undefined;
     /** Add a horizontal divider below this item. */
-    border?: boolean | undefined
+    border?: boolean | undefined;
     /** Override the form-level vertical center flag. */
-    center?: boolean | undefined
+    center?: boolean | undefined;
     /** When true, the entire row is clickable and emits `click`. */
-    clickable?: boolean
+    clickable?: boolean;
     /** Show a right arrow to indicate navigation. */
-    isLink?: boolean
+    isLink?: boolean;
     /** Placeholder shown when no input slot is provided. */
-    placeholder?: string
+    placeholder?: string;
     /** Helper text shown below the field. */
-    description?: string
+    description?: string;
   }>(),
   {
     showMessage: true,
@@ -95,21 +95,21 @@ const props = withDefaults(
     placeholder: '',
     description: '',
   },
-)
+);
 
 const slots = defineSlots<{
-  default?(): unknown
-  label?(): unknown
-  error?(): unknown
-  description?(): unknown
-}>()
+  default?(): unknown;
+  label?(): unknown;
+  error?(): unknown;
+  description?(): unknown;
+}>();
 
-const ctx = inject(FORM_CONTEXT_KEY, null) as FormContext | null
+const ctx = inject(FORM_CONTEXT_KEY, null) as FormContext | null;
 
 const emit = defineEmits<{
   /** Fired when the row is clicked and `clickable` is true. */
-  (e: 'click', event: Event): void
-}>()
+  (e: 'click', event: Event): void;
+}>();
 
 /**
  * Resolve a boolean prop with `undefined`-aware inheritance semantics:
@@ -125,83 +125,83 @@ function resolveBool(
   ctxValue: boolean | undefined,
   fallback = false,
 ): boolean {
-  return propValue !== undefined ? propValue : ctxValue !== undefined ? ctxValue : fallback
+  return propValue !== undefined ? propValue : ctxValue !== undefined ? ctxValue : fallback;
 }
 
 function onRowClick(event: Event): void {
-  if (!props.clickable) return
-  emit('click', event)
+  if (!props.clickable) return;
+  emit('click', event);
 }
 
-const status = ref<'default' | 'error' | 'warning'>('default')
-const message = ref<string>('')
+const status = ref<'default' | 'error' | 'warning'>('default');
+const message = ref<string>('');
 
-let initialValue: unknown = undefined
+let initialValue: unknown = undefined;
 
 async function runValidation(): Promise<boolean> {
-  if (!ctx || !props.prop) return true
-  const rules = mergedRules()
-  const value = getByPath(ctx.model, props.prop)
-  const result = await validateValue(value, rules)
+  if (!ctx || !props.prop) return true;
+  const rules = mergedRules();
+  const value = getByPath(ctx.model, props.prop);
+  const result = await validateValue(value, rules);
   if (result === '') {
-    status.value = 'default'
-    message.value = ''
-    return true
+    status.value = 'default';
+    message.value = '';
+    return true;
   }
-  status.value = 'error'
-  message.value = result
-  return false
+  status.value = 'error';
+  message.value = result;
+  return false;
 }
 
 function mergedRules(): FormRule[] {
-  if (!ctx || !props.prop) return props.rules ?? []
-  const formRules = ctx.rules[props.prop] ?? []
-  return [...(props.rules ?? []), ...formRules]
+  if (!ctx || !props.prop) return props.rules ?? [];
+  const formRules = ctx.rules[props.prop] ?? [];
+  return [...(props.rules ?? []), ...formRules];
 }
 
 const handle: FormItemHandle & { state?: FormItemState } = {
   prop: props.prop ?? '',
   async validate() {
-    return runValidation()
+    return runValidation();
   },
   resetField() {
-    if (!ctx || !props.prop) return
-    setByPath(ctx.model, props.prop, initialValue as never)
-    status.value = 'default'
-    message.value = ''
+    if (!ctx || !props.prop) return;
+    setByPath(ctx.model, props.prop, initialValue as never);
+    status.value = 'default';
+    message.value = '';
   },
   clearValidate() {
-    status.value = 'default'
-    message.value = ''
+    status.value = 'default';
+    message.value = '';
   },
-}
+};
 
-const state: FormItemState = { status, message, handle }
-handle.state = state
-provide(FORM_ITEM_STATE_KEY, state)
+const state: FormItemState = { status, message, handle };
+handle.state = state;
+provide(FORM_ITEM_STATE_KEY, state);
 
 onMounted(() => {
-  if (!ctx || !props.prop) return
-  initialValue = deepClone(getByPath(ctx.model, props.prop))
-  const form = (inject('sn-form-api' as never, null) as {
-    registerItem?: (h: FormItemHandle) => void
-  } | null)
-  form?.registerItem?.(handle)
-})
+  if (!ctx || !props.prop) return;
+  initialValue = deepClone(getByPath(ctx.model, props.prop));
+  const form = inject('sn-form-api' as never, null) as {
+    registerItem?: (h: FormItemHandle) => void;
+  } | null;
+  form?.registerItem?.(handle);
+});
 
 onBeforeUnmount(() => {
-  if (!ctx || !props.prop) return
-  const form = (inject('sn-form-api' as never, null) as {
-    unregisterItem?: (prop: string) => void
-  } | null)
-  form?.unregisterItem?.(props.prop)
-})
+  if (!ctx || !props.prop) return;
+  const form = inject('sn-form-api' as never, null) as {
+    unregisterItem?: (prop: string) => void;
+  } | null;
+  form?.unregisterItem?.(props.prop);
+});
 
 const showMsg = computed(() => {
-  if (!ctx) return props.showMessage && message.value.length > 0
-  const flag = props.showMessage !== undefined ? props.showMessage : ctx.showMessage
-  return flag && message.value.length > 0
-})
+  if (!ctx) return props.showMessage && message.value.length > 0;
+  const flag = props.showMessage !== undefined ? props.showMessage : ctx.showMessage;
+  return flag && message.value.length > 0;
+});
 
 /**
  * Show a status glyph next to the message.
@@ -214,27 +214,27 @@ const showMsg = computed(() => {
  * stay usable without an icon pack loaded, and a text marker needs no font.
  */
 const showStatusIcon = computed<boolean>(() => {
-  const flag = props.statusIcon ?? ctx?.statusIcon ?? false
-  return flag && message.value.length > 0
-})
+  const flag = props.statusIcon ?? ctx?.statusIcon ?? false;
+  return flag && message.value.length > 0;
+});
 
 /** Glyph for the current validation state. */
 /** Glyph for the current validation state. */
 const statusGlyph = computed<string>(() => {
   // `status` is three-state here (no `success` state is produced by the
   // validator), so the glyph only needs to distinguish error from warning.
-  if (status.value === 'error') return '!'
-  if (status.value === 'warning') return '!'
-  return ''
-})
+  if (status.value === 'error') return '!';
+  if (status.value === 'warning') return '!';
+  return '';
+});
 
 /** Resolved icon data (uni). */
 const resolvedIconData = computed<IconData | null>(() => {
-  const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null)
-  return icon ? markRaw(icon) : null
-})
+  const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null);
+  return icon ? markRaw(icon) : null;
+});
 
-const hasIcon = computed(() => resolvedIconData.value !== null)
+const hasIcon = computed(() => resolvedIconData.value !== null);
 
 const classes = computed(() => [
   'sn-form-item',
@@ -254,32 +254,32 @@ const classes = computed(() => [
     'sn-form-item--clickable': !!props.clickable,
     'sn-form-item--is-link': !!props.isLink,
   },
-])
+]);
 
 const labelStyle = computed(() => {
-  const width = props.labelWidth ?? ctx?.labelWidth ?? 'auto'
+  const width = props.labelWidth ?? ctx?.labelWidth ?? 'auto';
   return width === 'auto'
     ? undefined
-    : { width: typeof width === 'number' ? `${width}rpx` : width }
-})
+    : { width: typeof width === 'number' ? `${width}rpx` : width };
+});
 
 const gridStyle = computed(() => {
-  const position = props.labelPosition ?? ctx?.labelPosition ?? 'right'
-  if (position === 'top') return undefined
-  const width = props.labelWidth ?? ctx?.labelWidth ?? 'auto'
-  const track = width === 'auto' ? 'auto' : typeof width === 'number' ? `${width}rpx` : width
-  return { gridTemplateColumns: `${track} 1fr` }
-})
+  const position = props.labelPosition ?? ctx?.labelPosition ?? 'right';
+  if (position === 'top') return undefined;
+  const width = props.labelWidth ?? ctx?.labelWidth ?? 'auto';
+  const track = width === 'auto' ? 'auto' : typeof width === 'number' ? `${width}rpx` : width;
+  return { gridTemplateColumns: `${track} 1fr` };
+});
 
 function deepClone<T>(value: T): T {
-  if (value === null || value === undefined) return value
-  if (typeof value !== 'object') return value
-  if (Array.isArray(value)) return value.map(deepClone) as unknown as T
-  const out: Record<string, unknown> = {}
+  if (value === null || value === undefined) return value;
+  if (typeof value !== 'object') return value;
+  if (Array.isArray(value)) return value.map(deepClone) as unknown as T;
+  const out: Record<string, unknown> = {};
   for (const k of Object.keys(value as Record<string, unknown>)) {
-    out[k] = deepClone((value as Record<string, unknown>)[k])
+    out[k] = deepClone((value as Record<string, unknown>)[k]);
   }
-  return out as unknown as T
+  return out as unknown as T;
 }
 </script>
 
@@ -310,12 +310,11 @@ function deepClone<T>(value: T): T {
 
     <view class="sn-form-item__control">
       <slot>
-        <text v-if="placeholder && !slots.default" class="sn-form-item__placeholder">{{ placeholder }}</text>
+        <text v-if="placeholder && !slots.default" class="sn-form-item__placeholder">{{
+          placeholder
+        }}</text>
       </slot>
-      <view
-        v-if="description || slots.description"
-        class="sn-form-item__description"
-      >
+      <view v-if="description || slots.description" class="sn-form-item__description">
         <slot name="description">{{ description }}</slot>
       </view>
       <view
@@ -333,7 +332,8 @@ function deepClone<T>(value: T): T {
           class="sn-form-item__status-icon"
           :data-status="status"
           aria-hidden="true"
-        >{{ statusGlyph }}</text>
+          >{{ statusGlyph }}</text
+        >
         <slot name="error">{{ message }}</slot>
       </view>
       <text v-if="isLink" class="sn-form-item__arrow">›</text>
@@ -352,9 +352,17 @@ function deepClone<T>(value: T): T {
   grid-template-columns: auto 1fr;
   align-items: center;
 }
-.sn-form-item--left .sn-form-item__label { grid-area: auto; text-align: left; }
-.sn-form-item--right .sn-form-item__label { grid-area: auto; text-align: right; }
-.sn-form-item--top { grid-template-areas: 'auto' 'auto'; }
+.sn-form-item--left .sn-form-item__label {
+  grid-area: auto;
+  text-align: left;
+}
+.sn-form-item--right .sn-form-item__label {
+  grid-area: auto;
+  text-align: right;
+}
+.sn-form-item--top {
+  grid-template-areas: 'auto' 'auto';
+}
 
 .sn-form-item__label {
   font-size: 26rpx;
@@ -388,10 +396,14 @@ function deepClone<T>(value: T): T {
 }
 
 /* Center the control column. */
-.sn-form-item--center { align-items: center; }
+.sn-form-item--center {
+  align-items: center;
+}
 
 /* Hide asterisk on required fields. */
-.sn-form-item--hide-asterisk .sn-form-item__required { display: none; }
+.sn-form-item--hide-asterisk .sn-form-item__required {
+  display: none;
+}
 
 /* Clickable row. */
 .sn-form-item--clickable {
@@ -408,12 +420,23 @@ function deepClone<T>(value: T): T {
 }
 
 /* Size variants — drives default font / line-height for the control. */
-.sn-form-item--size-small .sn-form-item__label { font-size: 24rpx; line-height: 56rpx; }
-.sn-form-item--size-medium .sn-form-item__label { font-size: 28rpx; line-height: 72rpx; }
-.sn-form-item--size-large .sn-form-item__label { font-size: 32rpx; line-height: 88rpx; }
+.sn-form-item--size-small .sn-form-item__label {
+  font-size: 24rpx;
+  line-height: 56rpx;
+}
+.sn-form-item--size-medium .sn-form-item__label {
+  font-size: 28rpx;
+  line-height: 72rpx;
+}
+.sn-form-item--size-large .sn-form-item__label {
+  font-size: 32rpx;
+  line-height: 88rpx;
+}
 
 /* Right-aligned value column. */
-.sn-form-item--value-align-right .sn-form-item__control { text-align: right; }
+.sn-form-item--value-align-right .sn-form-item__control {
+  text-align: right;
+}
 
 /* Placeholder for cell-style items without an input. */
 .sn-form-item__placeholder {
@@ -471,19 +494,19 @@ function deepClone<T>(value: T): T {
   color: var(--sn-mp-color-text-on-primary);
   background: var(--sn-mp-color-text-tertiary);
 }
-.sn-form-item__status-icon[data-status="error"] {
+.sn-form-item__status-icon[data-status='error'] {
   background: var(--sn-mp-color-feedback-danger);
 }
-.sn-form-item__status-icon[data-status="warning"] {
+.sn-form-item__status-icon[data-status='warning'] {
   background: var(--sn-mp-color-feedback-warning);
 }
-.sn-form-item__status-icon[data-status="success"] {
+.sn-form-item__status-icon[data-status='success'] {
   background: var(--sn-mp-color-feedback-success);
 }
-.sn-form-item__message[data-status="error"] {
+.sn-form-item__message[data-status='error'] {
   color: var(--sn-mp-color-feedback-danger);
 }
-.sn-form-item__message[data-status="warning"] {
+.sn-form-item__message[data-status='warning'] {
   color: var(--sn-mp-color-feedback-warning);
 }
 

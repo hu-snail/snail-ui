@@ -4,17 +4,17 @@
  * `icon` slot replace the default graphic, and `delay` defers the spinner so a
  * fast request never flashes.
  */
-import { ref } from 'vue'
-import { SnButton, SnLoading } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnLoading } from '@snui/vue-web';
 
-const fast = ref(false)
-const slow = ref(false)
+const fast = ref(false);
+const slow = ref(false);
 
 function run(target: typeof fast, ms: number): void {
-  target.value = true
+  target.value = true;
   window.setTimeout(() => {
-    target.value = false
-  }, ms)
+    target.value = false;
+  }, ms);
 }
 </script>
 
@@ -37,11 +37,15 @@ function run(target: typeof fast, ms: number): void {
     </div>
 
     <SnLoading :show="fast" :delay="400" description="200ms request">
-      <div class="loading-demo__content">The request finishes within the delay window, so the spinner never appears.</div>
+      <div class="loading-demo__content">
+        The request finishes within the delay window, so the spinner never appears.
+      </div>
     </SnLoading>
 
     <SnLoading :show="slow" :delay="400" description="2s request">
-      <div class="loading-demo__content">The spinner only fades in after the request exceeds 400ms.</div>
+      <div class="loading-demo__content">
+        The spinner only fades in after the request exceeds 400ms.
+      </div>
     </SnLoading>
   </div>
 </template>

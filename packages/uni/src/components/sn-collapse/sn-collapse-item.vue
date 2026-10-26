@@ -25,38 +25,35 @@
  *   - 内容排版 — 由使用方决定
  */
 
-import { computed, inject, onBeforeUnmount, onMounted } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { ChevronDown } from '../sn-icon/sn-icon-set'
-import {
-  SN_COLLAPSE_KEY,
-  type SnCollapseItemBeforeExpand,
-} from './sn-collapse-types'
+import { computed, inject, onBeforeUnmount, onMounted } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { ChevronDown } from '../sn-icon/sn-icon-set';
+import { SN_COLLAPSE_KEY, type SnCollapseItemBeforeExpand } from './sn-collapse-types';
 
-defineOptions({ name: 'SnCollapseItem' })
+defineOptions({ name: 'SnCollapseItem' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-collapse-item` 1:1 surface ──────────────────────────── */
 
     /** 折叠栏唯一标识符。 */
-    name?: string
+    name?: string;
     /** 折叠栏标题，支持 title 插槽覆盖。 */
-    title?: string
+    title?: string;
     /** 是否禁用该折叠栏。 */
-    disabled?: boolean
+    disabled?: boolean;
     /** 打开前拦截函数，接收 name，返回 boolean 或 Promise<boolean>。 */
-    beforeExpend?: SnCollapseItemBeforeExpand | undefined
+    beforeExpend?: SnCollapseItemBeforeExpand | undefined;
     /** 是否显示边框。 */
-    border?: boolean
+    border?: boolean;
     /** 折叠栏内容容器自定义类名。 */
-    customBodyClass?: string
+    customBodyClass?: string;
     /** 折叠栏内容容器自定义样式。 */
-    customBodyStyle?: string
+    customBodyStyle?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     name: '',
@@ -69,61 +66,61 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 展开状态变化时触发。 */
-  (e: 'change', payload: { name: string; expanded: boolean }): void
-}>()
+  (e: 'change', payload: { name: string; expanded: boolean }): void;
+}>();
 
 defineSlots<{
   /** 自定义标题区域，作用域 `{ expanded, disabled, isFirst }`。 */
-  title?(scope: { expanded: boolean; disabled: boolean; isFirst: boolean }): unknown
+  title?(scope: { expanded: boolean; disabled: boolean; isFirst: boolean }): unknown;
   /** 折叠栏内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const collapse = inject(SN_COLLAPSE_KEY, null)
+const collapse = inject(SN_COLLAPSE_KEY, null);
 
-const expanded = computed(() => collapse?.isExpanded(props.name) ?? false)
-const isViewmore = computed(() => collapse?.viewmore.value ?? false)
-const viewmoreExpanded = computed(() => collapse?.viewmoreExpanded.value ?? false)
+const expanded = computed(() => collapse?.isExpanded(props.name) ?? false);
+const isViewmore = computed(() => collapse?.viewmore.value ?? false);
+const viewmoreExpanded = computed(() => collapse?.viewmoreExpanded.value ?? false);
 
 /** In view-more mode the body is clamped to `lineNum` lines unless opened. */
 const bodyStyle = computed(() => {
-  const parts: string[] = []
+  const parts: string[] = [];
   if (isViewmore.value && !viewmoreExpanded.value) {
-    parts.push(`-webkit-line-clamp: ${collapse?.lineNum.value ?? 2}`)
+    parts.push(`-webkit-line-clamp: ${collapse?.lineNum.value ?? 2}`);
   }
-  if (props.customBodyStyle) parts.push(props.customBodyStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  if (props.customBodyStyle) parts.push(props.customBodyStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 /** Runs the veto hook, treating a rejection as "stay closed". */
 async function canExpand(): Promise<boolean> {
-  if (!props.beforeExpend) return true
+  if (!props.beforeExpend) return true;
   try {
-    return await props.beforeExpend(props.name)
+    return await props.beforeExpend(props.name);
   } catch {
-    return false
+    return false;
   }
 }
 
 async function onTap(): Promise<void> {
-  if (props.disabled || !collapse) return
+  if (props.disabled || !collapse) return;
   /* Collapsing never needs a veto — only opening does. */
-  if (!expanded.value && !(await canExpand())) return
-  collapse.toggle(props.name)
-  emit('change', { name: props.name, expanded: !expanded.value })
+  if (!expanded.value && !(await canExpand())) return;
+  collapse.toggle(props.name);
+  emit('change', { name: props.name, expanded: !expanded.value });
 }
 
 /* The container needs the name list for `toggleAll`; report it on mount. */
-onMounted(() => collapse?.registerName(props.name))
-onBeforeUnmount(() => collapse?.unregisterName(props.name))
+onMounted(() => collapse?.registerName(props.name));
+onBeforeUnmount(() => collapse?.unregisterName(props.name));
 
 /** Slot scope flags, narrowed to `boolean` for the template. */
-const isExpandedForSlot = computed<boolean>(() => expanded.value === true)
-const isDisabledForSlot = computed<boolean>(() => props.disabled === true)
+const isExpandedForSlot = computed<boolean>(() => expanded.value === true);
+const isDisabledForSlot = computed<boolean>(() => props.disabled === true);
 
 const rootClass = computed(() => [
   'sn-collapse-item',
@@ -133,15 +130,11 @@ const rootClass = computed(() => [
     'sn-collapse-item--border': props.border,
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>
-  <view
-    data-snui-component="collapse-item"
-    :class="rootClass"
-    :style="customStyle || undefined"
-  >
+  <view data-snui-component="collapse-item" :class="rootClass" :style="customStyle || undefined">
     <view
       class="sn-collapse-item__header"
       role="button"
@@ -151,7 +144,12 @@ const rootClass = computed(() => [
       @tap="onTap"
     >
       <view class="sn-collapse-item__title">
-        <slot name="title" :expanded="isExpandedForSlot" :disabled="isDisabledForSlot" :is-first="false">
+        <slot
+          name="title"
+          :expanded="isExpandedForSlot"
+          :disabled="isDisabledForSlot"
+          :is-first="false"
+        >
           <text class="sn-collapse-item__title-text">{{ title }}</text>
         </slot>
       </view>
@@ -166,7 +164,11 @@ const rootClass = computed(() => [
 
     <view
       v-show="isViewmore || expanded"
-      :class="['sn-collapse-item__body', { 'sn-collapse-item__body--clamped': isViewmore && !viewmoreExpanded }, customBodyClass]"
+      :class="[
+        'sn-collapse-item__body',
+        { 'sn-collapse-item__body--clamped': isViewmore && !viewmoreExpanded },
+        customBodyClass,
+      ]"
       :style="bodyStyle"
       role="region"
     >

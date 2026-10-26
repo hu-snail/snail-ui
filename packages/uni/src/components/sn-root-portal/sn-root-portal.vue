@@ -47,9 +47,9 @@
  *   - 遮罩与滚动锁定 — 用 `sn-overlay`
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnRootPortal' })
+defineOptions({ name: 'SnRootPortal' });
 
 const props = withDefaults(
   defineProps<{
@@ -62,22 +62,22 @@ const props = withDefaults(
      * teleport target the layer is the only thing a caller can style, so it
      * needs an escape hatch. Documented as additive.
      */
-    customClass?: string
+    customClass?: string;
     /** Extra inline style on the fixed layer. Additive, same reason. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 需要传送到页面根层的内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const rootStyle = computed(() => props.customStyle || undefined)
+const rootStyle = computed(() => props.customStyle || undefined);
 </script>
 
 <template>

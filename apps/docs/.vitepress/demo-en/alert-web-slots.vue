@@ -3,8 +3,8 @@
  * alert-web-slots — overrides the default rendering via the `header`,
  * `icon`, and `default` slots.
  */
-import { CircleAlert, Rocket } from 'lucide-vue-next'
-import { SnAlert, SnIcon } from '@snui/vue-web'
+import { CircleAlert, Rocket } from 'lucide-vue-next';
+import { SnAlert, SnIcon } from '@snui/vue-web';
 </script>
 
 <template>

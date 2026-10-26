@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  defineComponentContract,
-  type ComponentContract,
-} from './component-contract.js';
+import { defineComponentContract, type ComponentContract } from './component-contract.js';
 
 /**
  * AUI Form / FormItem — official component contracts.
@@ -58,9 +55,7 @@ export const FormFieldSchema = z
     required: z.boolean().optional(),
     rules: z.array(FormRuleSchema).optional(),
     placeholder: z.string().optional(),
-    type: z
-      .enum(['text', 'password', 'email', 'number', 'tel', 'url', 'search'])
-      .default('text'),
+    type: z.enum(['text', 'password', 'email', 'number', 'tel', 'url', 'search']).default('text'),
     disabled: z.boolean().default(false),
   })
   .strict();

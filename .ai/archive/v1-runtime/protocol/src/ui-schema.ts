@@ -19,9 +19,7 @@ import { UIActionSchema } from './ui-action.js';
 const SEMVER_RE = /^\d+\.\d+\.\d+(?:-[\w.]+)?(?:\+[\w.]+)?$/;
 
 export const UISchemaSchema = z.object({
-  version: z
-    .string()
-    .regex(SEMVER_RE, 'Schema version must be semver (e.g. 1.0.0 or 1.0.0-rc.1)'),
+  version: z.string().regex(SEMVER_RE, 'Schema version must be semver (e.g. 1.0.0 or 1.0.0-rc.1)'),
 
   id: z.string().min(1, 'Schema id must be a non-empty string').optional(),
 

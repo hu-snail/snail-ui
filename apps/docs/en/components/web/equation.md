@@ -23,10 +23,10 @@ the box, with displayMode / custom macros / renderer override support.
 
 ### SnEquation Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| value | `string` | `''` | LaTeX expression |
-| katex | `SnEquationKatex` | `undefined` | Custom katex-like renderer; the bundled katex is used by default |
+| Prop         | Type                      | Default     | Description                                                                                                         |
+| ------------ | ------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------- |
+| value        | `string`                  | `''`        | LaTeX expression                                                                                                    |
+| katex        | `SnEquationKatex`         | `undefined` | Custom katex-like renderer; the bundled katex is used by default                                                    |
 | katexOptions | `Record<string, unknown>` | `undefined` | Options forwarded to `renderToString` (e.g. `displayMode` / `macros` / `fleqn`); `throwOnError` defaults to `false` |
 
 No events, no slots. The rendered wrapper tag/class is extracted from the

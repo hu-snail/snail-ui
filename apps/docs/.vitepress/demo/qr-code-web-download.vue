@@ -1,25 +1,25 @@
 <script setup lang="ts">
 /** Demo: SnQrCode — download via the hover toolbar or an explicit button. */
-import { ref } from 'vue'
-import { SnButton, SnQrCode } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnQrCode } from '@snui/vue-web';
 
-const qrRoot = ref<HTMLElement | null>(null)
+const qrRoot = ref<HTMLElement | null>(null);
 
 function downloadManually(): void {
-  const canvas = qrRoot.value?.querySelector('canvas')
-  if (!canvas) return
-  let url: string
+  const canvas = qrRoot.value?.querySelector('canvas');
+  if (!canvas) return;
+  let url: string;
   try {
-    url = canvas.toDataURL('image/png')
+    url = canvas.toDataURL('image/png');
   } catch {
-    return
+    return;
   }
-  const anchor = document.createElement('a')
-  anchor.download = 'qrcode.png'
-  anchor.href = url
-  document.body.appendChild(anchor)
-  anchor.click()
-  document.body.removeChild(anchor)
+  const anchor = document.createElement('a');
+  anchor.download = 'qrcode.png';
+  anchor.href = url;
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
 }
 </script>
 
@@ -34,6 +34,15 @@ function downloadManually(): void {
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; }
-.hint { margin: 0; color: var(--sn-web-color-text-secondary); font-size: 13px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: flex-start;
+}
+.hint {
+  margin: 0;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 13px;
+}
 </style>

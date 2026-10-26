@@ -23,42 +23,42 @@ checkbox group for multi-select.
 
 ## Props — SnRadio / SnRadioButton
 
-| Prop           | Type                              | Default     | Notes                                                     |
-| -------------- | --------------------------------- | ----------- | --------------------------------------------------------- |
-| checkedValue   | `string \| number \| boolean`     | `null`      | naive-ui's `value`. Radio is checked when model equals it. |
-| modelValue     | `string \| number \| boolean \| null` | `null` | Standalone v-model (group's value wins inside a group).   |
-| label          | `string`                          | `''`        | Label text. `label` slot overrides.                       |
-| name           | `string`                          | —           | Native radio name. Group-provided name wins.              |
-| disabled       | `boolean`                         | `false`     | OR-ed with group's `disabled`.                            |
-| readonly       | `boolean`                         | `false`     | Visual only — does not block the native input.            |
-| size           | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | Falls back to group size.                    |
-| status         | `'default' \| 'error' \| 'warning'` | `'default'` | Falls back to group status. Drives aria-invalid.        |
-| ariaLabel      | `string`                          | —           | Accessible name override.                                 |
-| customClass    | `string`                          | `''`        | Class on the root.                                        |
-| customStyle    | `string \| Record<string,string>` | `''`        | Inline style on the root.                                 |
+| Prop         | Type                                                 | Default     | Notes                                                      |
+| ------------ | ---------------------------------------------------- | ----------- | ---------------------------------------------------------- |
+| checkedValue | `string \| number \| boolean`                        | `null`      | naive-ui's `value`. Radio is checked when model equals it. |
+| modelValue   | `string \| number \| boolean \| null`                | `null`      | Standalone v-model (group's value wins inside a group).    |
+| label        | `string`                                             | `''`        | Label text. `label` slot overrides.                        |
+| name         | `string`                                             | —           | Native radio name. Group-provided name wins.               |
+| disabled     | `boolean`                                            | `false`     | OR-ed with group's `disabled`.                             |
+| readonly     | `boolean`                                            | `false`     | Visual only — does not block the native input.             |
+| size         | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`  | Falls back to group size.                                  |
+| status       | `'default' \| 'error' \| 'warning'`                  | `'default'` | Falls back to group status. Drives aria-invalid.           |
+| ariaLabel    | `string`                                             | —           | Accessible name override.                                  |
+| customClass  | `string`                                             | `''`        | Class on the root.                                         |
+| customStyle  | `string \| Record<string,string>`                    | `''`        | Inline style on the root.                                  |
 
 ## Props — SnRadioGroup
 
-| Prop           | Type                              | Default     | Notes                                          |
-| -------------- | --------------------------------- | ----------- | ---------------------------------------------- |
-| modelValue     | `string \| number \| boolean \| null` | `null` | v-model.                                       |
-| options        | `Array<SnRadioOption \| value>`   | `[]`        | `{ label, value, disabled, readonly, size, status }` or plain values. Default slot wins. |
-| name           | `string`                          | —           | Shared native name (arrow-key navigation).     |
-| disabled       | `boolean`                         | `false`     | Disables every child.                          |
-| size           | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | Group size.                       |
-| status         | `'default' \| 'error' \| 'warning'` | `'default'` | Group status.                                 |
-| button         | `boolean`                         | `false`     | Render `options` as SnRadioButton children.    |
-| customClass / customStyle | `string` / `string \| Record<string,string>` | `''` | Root hooks.                        |
+| Prop                      | Type                                                 | Default     | Notes                                                                                    |
+| ------------------------- | ---------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------- |
+| modelValue                | `string \| number \| boolean \| null`                | `null`      | v-model.                                                                                 |
+| options                   | `Array<SnRadioOption \| value>`                      | `[]`        | `{ label, value, disabled, readonly, size, status }` or plain values. Default slot wins. |
+| name                      | `string`                                             | —           | Shared native name (arrow-key navigation).                                               |
+| disabled                  | `boolean`                                            | `false`     | Disables every child.                                                                    |
+| size                      | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`  | Group size.                                                                              |
+| status                    | `'default' \| 'error' \| 'warning'`                  | `'default'` | Group status.                                                                            |
+| button                    | `boolean`                                            | `false`     | Render `options` as SnRadioButton children.                                              |
+| customClass / customStyle | `string` / `string \| Record<string,string>`         | `''`        | Root hooks.                                                                              |
 
 ## Events
 
-| Event                | Payload                                | When                                   |
-| -------------------- | -------------------------------------- | -------------------------------------- |
-| `update:modelValue`  | `(value)`                              | Radio activated (v-model sync).        |
-| `change`             | `(value, event?: Event)`               | Radio activated (group re-emits).      |
-| `checked`            | `(value)`                              | Radio flipped to checked (children).   |
-| `update`             | `(value \| null, event: Event)`        | Native input event (children).         |
-| `focus` / `blur`     | `(event: FocusEvent)`                  | Native focus / blur (children).         |
+| Event               | Payload                         | When                                 |
+| ------------------- | ------------------------------- | ------------------------------------ |
+| `update:modelValue` | `(value)`                       | Radio activated (v-model sync).      |
+| `change`            | `(value, event?: Event)`        | Radio activated (group re-emits).    |
+| `checked`           | `(value)`                       | Radio flipped to checked (children). |
+| `update`            | `(value \| null, event: Event)` | Native input event (children).       |
+| `focus` / `blur`    | `(event: FocusEvent)`           | Native focus / blur (children).      |
 
 ## Slots
 
@@ -70,20 +70,20 @@ checkbox group for multi-select.
 All visuals resolve through `--sn-web-radio-*` / `--sn-web-radio-button-*`
 aliases with fallbacks to the generic `--sn-web-color-*` scale:
 
-| Token                                            | Purpose                       |
-| ------------------------------------------------ | ----------------------------- |
-| `--sn-web-radio-text-color`                      | Label text                    |
-| `--sn-web-radio-text-color-disabled`             | Disabled label text           |
-| `--sn-web-radio-border-color` / `-active` / `-focus` / `-disabled` | Dot border   |
-| `--sn-web-radio-dot-color` / `-disabled`         | Inner dot fill                |
-| `--sn-web-radio-bg` / `-disabled`                | Dot background                |
-| `--sn-web-radio-radius`                          | Dot radius                    |
-| `--sn-web-radio-group-gap`                       | Spacing between radios        |
-| `--sn-web-radio-button-bg` / `-active` / `-disabled` | Button background         |
-| `--sn-web-radio-button-text-color` / `-active` / `-disabled` | Button text   |
-| `--sn-web-radio-button-border-color` / `-active` / `-disabled` | Button border |
-| `--sn-web-radio-button-padding-x` / `-radius` / `-gap` | Button metrics         |
-| `--sn-web-focus-ring`                            | Focus halo                    |
+| Token                                                              | Purpose                |
+| ------------------------------------------------------------------ | ---------------------- |
+| `--sn-web-radio-text-color`                                        | Label text             |
+| `--sn-web-radio-text-color-disabled`                               | Disabled label text    |
+| `--sn-web-radio-border-color` / `-active` / `-focus` / `-disabled` | Dot border             |
+| `--sn-web-radio-dot-color` / `-disabled`                           | Inner dot fill         |
+| `--sn-web-radio-bg` / `-disabled`                                  | Dot background         |
+| `--sn-web-radio-radius`                                            | Dot radius             |
+| `--sn-web-radio-group-gap`                                         | Spacing between radios |
+| `--sn-web-radio-button-bg` / `-active` / `-disabled`               | Button background      |
+| `--sn-web-radio-button-text-color` / `-active` / `-disabled`       | Button text            |
+| `--sn-web-radio-button-border-color` / `-active` / `-disabled`     | Button border          |
+| `--sn-web-radio-button-padding-x` / `-radius` / `-gap`             | Button metrics         |
+| `--sn-web-focus-ring`                                              | Focus halo             |
 
 ## Accessibility
 

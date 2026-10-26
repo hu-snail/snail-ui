@@ -8,14 +8,14 @@ The iOS Pack is one of snail-aui's out-of-the-box packs. It is implemented entir
 
 ## Visual signature
 
-| Dimension | default | iOS |
-|---|---|---|
-| Radius (control) | 6px | 12px |
-| Radius (card) | 8px | 16px |
-| Shadow | subtle | none |
-| Border | 1px line | 0.5px line |
-| Primary | `#1677ff` (blue) | `#007AFF` (Apple blue) |
-| Button hover | `#4096ff` | `#3395FF` |
+| Dimension        | default          | iOS                    |
+| ---------------- | ---------------- | ---------------------- |
+| Radius (control) | 6px              | 12px                   |
+| Radius (card)    | 8px              | 16px                   |
+| Shadow           | subtle           | none                   |
+| Border           | 1px line         | 0.5px line             |
+| Primary          | `#1677ff` (blue) | `#007AFF` (Apple blue) |
+| Button hover     | `#4096ff`        | `#3395FF`              |
 
 ---
 
@@ -25,18 +25,18 @@ Direct `snCssVars()` call:
 
 ```ts
 // @snui/vue-web project
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-web/styles'
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-web/styles';
+import { iosPack } from '@snui/style-packs/ios';
 
-const el = document.createElement('style')
+const el = document.createElement('style');
 el.textContent = snCssVars({
   end: 'web',
   theme: iosPack.theme,
   style: iosPack.style,
   density: iosPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 ```
 
 Or via ConfigProvider:

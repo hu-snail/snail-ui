@@ -1,17 +1,17 @@
 <script setup lang="ts">
 /** Demo: SnCode — code prop updates reactively (loop debug). */
-import { onBeforeUnmount, ref } from 'vue'
-import { SnCode } from '@snui/vue-web'
+import { onBeforeUnmount, ref } from 'vue';
+import { SnCode } from '@snui/vue-web';
 
-const code = ref('')
+const code = ref('');
 
 const timer = window.setInterval(() => {
-  code.value = `Current: ${String(new Date())}`
-}, 1000)
+  code.value = `Current: ${String(new Date())}`;
+}, 1000);
 
 onBeforeUnmount(() => {
-  window.clearInterval(timer)
-})
+  window.clearInterval(timer);
+});
 </script>
 
 <template>

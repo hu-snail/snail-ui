@@ -22,15 +22,15 @@
 
 ### SnText Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| type | `'default'\|'primary'\|'info'\|'success'\|'warning'\|'error'` | `'default'` | 颜色语义 |
-| depth | `'1'\|'2'\|'3'` | — | 次级色阶（default 型） |
-| strong / italic | `boolean` | `false` | 粗体 / 斜体 |
-| underline / delete | `boolean` | `false` | 下划线 / 删除线（可叠加） |
-| code | `boolean` | `false` | 行内代码底色 |
-| disabled | `boolean` | `false` | 禁用色 |
-| tag | `'span'\|'p'\|'blockquote'` | `'span'` | 渲染元素 |
+| Prop               | 类型                                                          | 默认值      | 说明                      |
+| ------------------ | ------------------------------------------------------------- | ----------- | ------------------------- |
+| type               | `'default'\|'primary'\|'info'\|'success'\|'warning'\|'error'` | `'default'` | 颜色语义                  |
+| depth              | `'1'\|'2'\|'3'`                                               | —           | 次级色阶（default 型）    |
+| strong / italic    | `boolean`                                                     | `false`     | 粗体 / 斜体               |
+| underline / delete | `boolean`                                                     | `false`     | 下划线 / 删除线（可叠加） |
+| code               | `boolean`                                                     | `false`     | 行内代码底色              |
+| disabled           | `boolean`                                                     | `false`     | 禁用色                    |
+| tag                | `'span'\|'p'\|'blockquote'`                                   | `'span'`    | 渲染元素                  |
 
 ### SnTitle / SnParagraph
 

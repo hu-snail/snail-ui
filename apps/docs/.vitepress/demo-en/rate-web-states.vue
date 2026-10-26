@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnRate — readonly / disabled. */
-import { ref } from 'vue'
-import { SnRate } from '@snui/vue-web'
-const v = ref(4)
+import { ref } from 'vue';
+import { SnRate } from '@snui/vue-web';
+const v = ref(4);
 </script>
 
 <template>
@@ -13,5 +13,9 @@ const v = ref(4)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 24px; align-items: center; }
+.demo-row {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
 </style>

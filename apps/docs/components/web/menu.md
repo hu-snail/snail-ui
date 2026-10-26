@@ -29,17 +29,17 @@ prop 命名与语义遵循本库的双端契约。支持 `collapsed` icon-only �
 ## 基础用法
 
 ```ts
-import { ref } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import type { SnMenuOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import type { SnMenuOption } from '@snui/vue-web';
 
 const nav: SnMenuOption[] = [
   { key: '/guide', label: '指南', href: '/guide/web/intro' },
   { key: '/components/web', label: '组件 · Web', href: '/components/web/button' },
   { key: '/style-packs', label: '风格包', href: '/style-packs/overview' },
-]
+];
 
-const active = ref<string | null>(null)
+const active = ref<string | null>(null);
 ```
 
 ```html
@@ -63,41 +63,41 @@ const active = ref<string | null>(null)
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `mode` | `'horizontal' \| 'vertical' \| 'popButton'` | `'vertical'` | 展示模式。`vertical` 侧边栏、`horizontal` 顶导航、`popButton` 浮动按钮菜单：所有项渲染为圆形 icon 按钮，**默认只显示 trigger（options 最后一项，可用 `triggerKey` 覆盖）**，hover 整个 menu 区域后其余按钮淡入上滑展开，单项 hover 显示 `SnTooltip` 文字。组件不再自带 viewport 定位 —— 包一层 `position: relative` 父容器即可放在你想要的任何位置 |
-| `triggerKey` | `string \| number` | `''` | popButton 模式下指定哪个 item 是 trigger（默认最后一项）。`key` 必须匹配 `SnMenuOption.key` |
-| `options` | `SnMenuOption[]` | `[]` | 选项树（详见下文） |
-| `value` | `string \| number \| null` | `null` | 受控选中 key |
-| `defaultValue` | `string \| number \| null` | `null` | 非受控初始 key |
-| `expandedKeys` | `Array<string \| number>` | `[]` | 受控展开 key 列表（vertical） |
-| `defaultExpandedKeys` | `Array<string \| number>` | `[]` | 非受控初始展开列表 |
-| `defaultExpandAll` | `boolean` | `false` | 默认展开所有有子节点的组 |
-| `accordion` | `boolean` | `false` | 同时只允许一个 group 展开（手风琴） |
-| `indent` | `number` | `32` | 每层 indent 像素（vertical 模式） |
-| `inverted` | `boolean` | `false` | 深色背景变体（适合 gradient / dark surface 顶导航） |
-| `collapsed` | `boolean` | `false` | 折叠模式（vertical）：只显示 icon，子菜单 hover 弹出 popover |
-| `collapsedWidth` | `number` | `48` | 折叠模式容器宽度（px） |
-| `collapsedIconSize` | `number` | `24` | 折叠模式 icon 尺寸（px） |
-| `iconSize` | `number` | `20` | 正常模式 icon 尺寸（px） |
-| `dropdownPlacement` | `'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom'` | `'right-start'` | 折叠模式下子菜单 popover 位置 |
-| `keyField` | `string` | `'key'` | 树节点的 key 字段名（API 树 remap） |
-| `labelField` | `string` | `'label'` | 树节点的 label 字段名 |
-| `childrenField` | `string` | `'children'` | 树节点的 children 字段名 |
-| `disabledField` | `string` | `'disabled'` | 树节点的 disabled 字段名 |
-| `breakpoint` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number` | `undefined` | 视口宽度响应式断点。`undefined` 表示关闭。设置后：当 `window.innerWidth` 严格小于阈值时菜单自动折叠，并通过 `update:collapsed` 事件回写给消费者。命名断点对应像素值：`xs=480` / `sm=768` / `md=992` / `lg=1200` / `xl=1920`（px）；也可直接传像素数字。SSR / 非浏览器环境不安装 resize 监听 |
-| `defaultCollapsed` | `boolean` | `false` | 仅在 `breakpoint` 生效时使用 —— 视口宽度在初始测量时低于阈值时的初始折叠态（受控用 `collapsed` + `v-model:collapsed`） |
+| 名称                  | 类型                                                                    | 默认值          | 说明                                                                                                                                                                                                                                                                                                                                               |
+| --------------------- | ----------------------------------------------------------------------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `mode`                | `'horizontal' \| 'vertical' \| 'popButton'`                             | `'vertical'`    | 展示模式。`vertical` 侧边栏、`horizontal` 顶导航、`popButton` 浮动按钮菜单：所有项渲染为圆形 icon 按钮，**默认只显示 trigger（options 最后一项，可用 `triggerKey` 覆盖）**，hover 整个 menu 区域后其余按钮淡入上滑展开，单项 hover 显示 `SnTooltip` 文字。组件不再自带 viewport 定位 —— 包一层 `position: relative` 父容器即可放在你想要的任何位置 |
+| `triggerKey`          | `string \| number`                                                      | `''`            | popButton 模式下指定哪个 item 是 trigger（默认最后一项）。`key` 必须匹配 `SnMenuOption.key`                                                                                                                                                                                                                                                        |
+| `options`             | `SnMenuOption[]`                                                        | `[]`            | 选项树（详见下文）                                                                                                                                                                                                                                                                                                                                 |
+| `value`               | `string \| number \| null`                                              | `null`          | 受控选中 key                                                                                                                                                                                                                                                                                                                                       |
+| `defaultValue`        | `string \| number \| null`                                              | `null`          | 非受控初始 key                                                                                                                                                                                                                                                                                                                                     |
+| `expandedKeys`        | `Array<string \| number>`                                               | `[]`            | 受控展开 key 列表（vertical）                                                                                                                                                                                                                                                                                                                      |
+| `defaultExpandedKeys` | `Array<string \| number>`                                               | `[]`            | 非受控初始展开列表                                                                                                                                                                                                                                                                                                                                 |
+| `defaultExpandAll`    | `boolean`                                                               | `false`         | 默认展开所有有子节点的组                                                                                                                                                                                                                                                                                                                           |
+| `accordion`           | `boolean`                                                               | `false`         | 同时只允许一个 group 展开（手风琴）                                                                                                                                                                                                                                                                                                                |
+| `indent`              | `number`                                                                | `32`            | 每层 indent 像素（vertical 模式）                                                                                                                                                                                                                                                                                                                  |
+| `inverted`            | `boolean`                                                               | `false`         | 深色背景变体（适合 gradient / dark surface 顶导航）                                                                                                                                                                                                                                                                                                |
+| `collapsed`           | `boolean`                                                               | `false`         | 折叠模式（vertical）：只显示 icon，子菜单 hover 弹出 popover                                                                                                                                                                                                                                                                                       |
+| `collapsedWidth`      | `number`                                                                | `48`            | 折叠模式容器宽度（px）                                                                                                                                                                                                                                                                                                                             |
+| `collapsedIconSize`   | `number`                                                                | `24`            | 折叠模式 icon 尺寸（px）                                                                                                                                                                                                                                                                                                                           |
+| `iconSize`            | `number`                                                                | `20`            | 正常模式 icon 尺寸（px）                                                                                                                                                                                                                                                                                                                           |
+| `dropdownPlacement`   | `'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom'` | `'right-start'` | 折叠模式下子菜单 popover 位置                                                                                                                                                                                                                                                                                                                      |
+| `keyField`            | `string`                                                                | `'key'`         | 树节点的 key 字段名（API 树 remap）                                                                                                                                                                                                                                                                                                                |
+| `labelField`          | `string`                                                                | `'label'`       | 树节点的 label 字段名                                                                                                                                                                                                                                                                                                                              |
+| `childrenField`       | `string`                                                                | `'children'`    | 树节点的 children 字段名                                                                                                                                                                                                                                                                                                                           |
+| `disabledField`       | `string`                                                                | `'disabled'`    | 树节点的 disabled 字段名                                                                                                                                                                                                                                                                                                                           |
+| `breakpoint`          | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| number`                        | `undefined`     | 视口宽度响应式断点。`undefined` 表示关闭。设置后：当 `window.innerWidth` 严格小于阈值时菜单自动折叠，并通过 `update:collapsed` 事件回写给消费者。命名断点对应像素值：`xs=480` / `sm=768` / `md=992` / `lg=1200` / `xl=1920`（px）；也可直接传像素数字。SSR / 非浏览器环境不安装 resize 监听                                                        |
+| `defaultCollapsed`    | `boolean`                                                               | `false`         | 仅在 `breakpoint` 生效时使用 —— 视口宽度在初始测量时低于阈值时的初始折叠态（受控用 `collapsed` + `v-model:collapsed`）                                                                                                                                                                                                                             |
 
 ### SnMenuOption
 
 ```ts
 interface SnMenuOption {
-  key: string | number
-  label: string
-  children?: SnMenuOption[]       // vertical 模式生效
-  disabled?: boolean
-  href?: string                  // 传了就渲染为 <a>
-  icon?: Component               // 每项可选图标（SnIcon / lucide 等）
+  key: string | number;
+  label: string;
+  children?: SnMenuOption[]; // vertical 模式生效
+  disabled?: boolean;
+  href?: string; // 传了就渲染为 <a>
+  icon?: Component; // 每项可选图标（SnIcon / lucide 等）
 }
 ```
 
@@ -106,12 +106,12 @@ interface SnMenuOption {
 
 ### Events
 
-| 名称 | 载荷 | 触发时机 |
-| --- | --- | --- |
-| `update:value` | `(value: string \| number \| null)` | 选中变化（v-model） |
-| `update:expandedKeys` | `(keys: Array<string \| number>)` | 展开变化（v-model） |
-| `update:collapsed` | `(collapsed: boolean)` | 折叠态变化（v-model）。`breakpoint` 路径在 resize 跨越阈值时触发；消费者也可直接驱动 `collapsed` |
-| `select` | `(value, item: SnMenuOption)` | 点击叶子项 |
+| 名称                  | 载荷                                | 触发时机                                                                                         |
+| --------------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `update:value`        | `(value: string \| number \| null)` | 选中变化（v-model）                                                                              |
+| `update:expandedKeys` | `(keys: Array<string \| number>)`   | 展开变化（v-model）                                                                              |
+| `update:collapsed`    | `(collapsed: boolean)`              | 折叠态变化（v-model）。`breakpoint` 路径在 resize 跨越阈值时触发；消费者也可直接驱动 `collapsed` |
+| `select`              | `(value, item: SnMenuOption)`       | 点击叶子项                                                                                       |
 
 ## 无障碍
 

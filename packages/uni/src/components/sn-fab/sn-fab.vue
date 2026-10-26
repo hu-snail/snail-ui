@@ -36,75 +36,81 @@
  *   - 侧边栏菜单 — 用 sn-sidebar
  */
 
-import { computed, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import { Plus as PlusIcon, X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { Plus as PlusIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnFab' })
+defineOptions({ name: 'SnFab' });
 
 /** Color theme. Mirrors `wd-fab` `type`. */
-type FabType = 'primary' | 'success' | 'info' | 'warning' | 'danger'
+type FabType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
 
 /** Anchor preset. Mirrors `wd-fab` `position`. */
 type FabPosition =
-  | 'left-top' | 'right-top' | 'left-bottom' | 'right-bottom'
-  | 'left-center' | 'right-center' | 'top-center' | 'bottom-center'
+  | 'left-top'
+  | 'right-top'
+  | 'left-bottom'
+  | 'right-bottom'
+  | 'left-center'
+  | 'right-center'
+  | 'top-center'
+  | 'bottom-center';
 
 /** Menu expansion direction. Mirrors `wd-fab` `direction`. */
-type FabDirection = 'top' | 'right' | 'bottom' | 'left'
+type FabDirection = 'top' | 'right' | 'bottom' | 'left';
 
 /** Per-edge gap. Mirrors `wd-fab` `gap`. */
 export interface SnFabGap {
   /** Distance from the top edge. */
-  top?: number
+  top?: number;
   /** Distance from the right edge. */
-  right?: number
+  right?: number;
   /** Distance from the bottom edge. */
-  bottom?: number
+  bottom?: number;
   /** Distance from the left edge. */
-  left?: number
+  left?: number;
 }
 
-const DEFAULT_GAP: Required<SnFabGap> = { top: 16, right: 16, bottom: 16, left: 16 }
+const DEFAULT_GAP: Required<SnFabGap> = { top: 16, right: 16, bottom: 16, left: 16 };
 
 const props = withDefaults(
   defineProps<{
     /** Whether the menu is expanded (v-model:active). */
-    active?: boolean
+    active?: boolean;
     /** Color theme. */
-    type?: FabType
+    type?: FabType;
     /** Anchor preset. */
-    position?: FabPosition
+    position?: FabPosition;
     /** Allow dragging the trigger. */
-    draggable?: boolean
+    draggable?: boolean;
     /** Menu expansion direction. */
-    direction?: FabDirection
+    direction?: FabDirection;
     /** Disable the whole button. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Icon while collapsed (registry name). */
-    inactiveIcon?: string
+    inactiveIcon?: string;
     /** Icon while expanded (registry name). */
-    activeIcon?: string
+    activeIcon?: string;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Default gap from each screen edge. */
-    gap?: SnFabGap
+    gap?: SnFabGap;
     /** Expand the menu on tap; `false` emits `click` instead. */
-    expandable?: boolean
+    expandable?: boolean;
     /** Explicit distance from the top edge (overrides `gap.top`). */
-    top?: number | undefined
+    top?: number | undefined;
     /** Explicit distance from the bottom edge (overrides `gap.bottom`). */
-    bottom?: number | undefined
+    bottom?: number | undefined;
     /** Explicit distance from the left edge (overrides `gap.left`). */
-    left?: number | undefined
+    left?: number | undefined;
     /** Explicit distance from the right edge (overrides `gap.right`). */
-    right?: number | undefined
+    right?: number | undefined;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     active: false,
@@ -127,39 +133,39 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** The action items, rendered inside the expandable menu. */
-  default?(): unknown
+  default?(): unknown;
   /** Fully custom trigger content (replaces the icon). */
-  trigger?(): unknown
-}>()
+  trigger?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:active', value: boolean): void
-  (e: 'click'): void
-}>()
+  (e: 'update:active', value: boolean): void;
+  (e: 'click'): void;
+}>();
 
 /** Drag offset accumulated from the touch gesture. */
-const dragX = ref(0)
-const dragY = ref(0)
+const dragX = ref(0);
+const dragY = ref(0);
 /** Touch origin of the running gesture. */
-let startX = 0
-let startY = 0
-let startOffsetX = 0
-let startOffsetY = 0
+let startX = 0;
+let startY = 0;
+let startOffsetX = 0;
+let startOffsetY = 0;
 
 /** Resolve a trigger icon: the built-in pair, or a registry name. */
 function resolveTriggerIcon(name: string, expanded: boolean): IconData {
-  if (name === 'plus') return expanded ? XIcon : PlusIcon
-  if (name === 'close') return expanded ? XIcon : PlusIcon
-  return resolveIconByName(name) ?? (expanded ? XIcon : PlusIcon)
+  if (name === 'plus') return expanded ? XIcon : PlusIcon;
+  if (name === 'close') return expanded ? XIcon : PlusIcon;
+  return resolveIconByName(name) ?? (expanded ? XIcon : PlusIcon);
 }
 
 const triggerIcon = computed(() =>
   resolveTriggerIcon(props.active ? props.activeIcon : props.inactiveIcon, props.active),
-)
+);
 
 /** Resolved edge gaps (per-side props win over `gap`). */
 const resolvedGap = computed(() => ({
@@ -167,7 +173,7 @@ const resolvedGap = computed(() => ({
   right: props.right ?? props.gap.right ?? DEFAULT_GAP.right,
   bottom: props.bottom ?? props.gap.bottom ?? DEFAULT_GAP.bottom,
   left: props.left ?? props.gap.left ?? DEFAULT_GAP.left,
-}))
+}));
 
 /**
  * Anchor placement in px. One branch per `position` preset so the two
@@ -175,30 +181,30 @@ const resolvedGap = computed(() => ({
  * four conditionals to express the same thing.
  */
 const anchorStyle = computed(() => {
-  const gap = resolvedGap.value
-  const parts: string[] = []
+  const gap = resolvedGap.value;
+  const parts: string[] = [];
 
   // The presets come in two shapes: '<side>-<edge>' (left-top, right-center…)
   // and '<edge>-center' (top-center, bottom-center). Split once and branch on
   // which segment carries the edge keyword.
-  const [first, second] = props.position.split('-') as [string, string]
+  const [first, second] = props.position.split('-') as [string, string];
 
   if (first === 'top' || first === 'bottom') {
-    parts.push(`${first}: ${first === 'top' ? gap.top : gap.bottom}px`)
-    parts.push('left: 50%', 'transform: translateX(-50%)')
-    return parts.join('; ')
+    parts.push(`${first}: ${first === 'top' ? gap.top : gap.bottom}px`);
+    parts.push('left: 50%', 'transform: translateX(-50%)');
+    return parts.join('; ');
   }
 
   if (first === 'left' || first === 'right') {
-    parts.push(`${first}: ${first === 'left' ? gap.left : gap.right}px`)
+    parts.push(`${first}: ${first === 'left' ? gap.left : gap.right}px`);
   }
 
-  if (second === 'top') parts.push(`top: ${gap.top}px`)
-  else if (second === 'bottom') parts.push(`bottom: ${gap.bottom}px`)
-  else parts.push('top: 50%', 'transform: translateY(-50%)')
+  if (second === 'top') parts.push(`top: ${gap.top}px`);
+  else if (second === 'bottom') parts.push(`bottom: ${gap.bottom}px`);
+  else parts.push('top: 50%', 'transform: translateY(-50%)');
 
-  return parts.join('; ')
-})
+  return parts.join('; ');
+});
 
 const rootClass = computed(() => [
   'sn-fab',
@@ -209,91 +215,84 @@ const rootClass = computed(() => [
     'sn-fab--disabled': props.disabled,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts = [`z-index: ${props.zIndex}`]
-  const offset = dragStyle.value
-  if (offset) parts.push(offset)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [`z-index: ${props.zIndex}`];
+  const offset = dragStyle.value;
+  if (offset) parts.push(offset);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 const dragStyle = computed(() => {
-  if (!props.draggable) return ''
-  if (dragX.value === 0 && dragY.value === 0) return ''
-  return `transform: translate(${dragX.value}px, ${dragY.value}px)`
-})
+  if (!props.draggable) return '';
+  if (dragX.value === 0 && dragY.value === 0) return '';
+  return `transform: translate(${dragX.value}px, ${dragY.value}px)`;
+});
 
 const triggerClass = computed(() => [
   'sn-fab__trigger',
   `sn-fab__trigger--${props.type}`,
   { 'sn-fab__trigger--active': props.active },
-])
+]);
 
 const menuClass = computed(() => [
   'sn-fab__menu',
   `sn-fab__menu--${props.direction}`,
   { 'sn-fab__menu--open': props.active },
-])
+]);
 
 function toggle(): void {
-  if (props.disabled) return
+  if (props.disabled) return;
   if (!props.expandable) {
-    emit('click')
-    return
+    emit('click');
+    return;
   }
-  emit('update:active', !props.active)
+  emit('update:active', !props.active);
 }
 
 function onTouchStart(event: TouchEvent): void {
-  if (!props.draggable) return
-  const touch = event.touches[0]
-  if (!touch) return
-  startX = touch.clientX
-  startY = touch.clientY
-  startOffsetX = dragX.value
-  startOffsetY = dragY.value
+  if (!props.draggable) return;
+  const touch = event.touches[0];
+  if (!touch) return;
+  startX = touch.clientX;
+  startY = touch.clientY;
+  startOffsetX = dragX.value;
+  startOffsetY = dragY.value;
 }
 
 function onTouchMove(event: TouchEvent): void {
-  if (!props.draggable) return
-  const touch = event.touches[0]
-  if (!touch) return
-  dragX.value = startOffsetX + (touch.clientX - startX)
-  dragY.value = startOffsetY + (touch.clientY - startY)
+  if (!props.draggable) return;
+  const touch = event.touches[0];
+  if (!touch) return;
+  dragX.value = startOffsetX + (touch.clientX - startX);
+  dragY.value = startOffsetY + (touch.clientY - startY);
 }
 
 function onTouchEnd(): void {
-  if (!props.draggable) return
+  if (!props.draggable) return;
   // Clamp into the viewport with the same `gap` the anchor uses, so the
   // trigger can never be dragged fully off-screen. `uni.getSystemInfoSync()`
   // is the only cross-end viewport query; it is optional and guarded.
   const host = globalThis as {
-    uni?: { getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } }
-  }
-  const info = host.uni?.getSystemInfoSync?.()
-  const viewportW = info?.windowWidth
-  const viewportH = info?.windowHeight
-  if (typeof viewportW !== 'number' || typeof viewportH !== 'number') return
-  const gap = resolvedGap.value
-  const maxX = Math.max(0, viewportW - gap.left - gap.right)
-  const maxY = Math.max(0, viewportH - gap.top - gap.bottom)
-  dragX.value = Math.min(maxX, Math.max(-maxX, dragX.value))
-  dragY.value = Math.min(maxY, Math.max(-maxY, dragY.value))
+    uni?: { getSystemInfoSync?: () => { windowWidth?: number; windowHeight?: number } };
+  };
+  const info = host.uni?.getSystemInfoSync?.();
+  const viewportW = info?.windowWidth;
+  const viewportH = info?.windowHeight;
+  if (typeof viewportW !== 'number' || typeof viewportH !== 'number') return;
+  const gap = resolvedGap.value;
+  const maxX = Math.max(0, viewportW - gap.left - gap.right);
+  const maxY = Math.max(0, viewportH - gap.top - gap.bottom);
+  dragX.value = Math.min(maxX, Math.max(-maxX, dragX.value));
+  dragY.value = Math.min(maxY, Math.max(-maxY, dragY.value));
 }
 </script>
 
 <template>
-  <view
-    data-snui-component="fab"
-    :class="rootClass"
-    :style="`${rootStyle}; ${anchorStyle}`"
-  >
-    <view
-      :class="menuClass"
-      :aria-hidden="active ? 'false' : 'true'"
-    >
+  <view data-snui-component="fab" :class="rootClass" :style="`${rootStyle}; ${anchorStyle}`">
+    <view :class="menuClass" :aria-hidden="active ? 'false' : 'true'">
       <slot />
     </view>
 
@@ -338,7 +337,9 @@ function onTouchEnd(): void {
   border-radius: var(--sn-mp-radius-full);
   box-shadow: var(--sn-mp-shadow-lg);
   color: var(--sn-mp-color-text-on-primary);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .sn-fab__trigger--active {
@@ -374,7 +375,9 @@ function onTouchEnd(): void {
   gap: var(--sn-mp-spacing-2);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease, visibility 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
 }
 
 .sn-fab__menu--open {

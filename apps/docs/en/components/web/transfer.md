@@ -54,25 +54,25 @@ move buttons and search all inoperable, leaving the whole control read-only.
 
 ### Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| options | `Array<{ label: string; value: string \| number; disabled?: boolean }>` | `[]` | Transferable entries; `label` is used both as the default row text and for search matching. |
-| value | `Array<string \| number> \| undefined` | `undefined` | Selected values (the right panel data source). `undefined` means uncontrolled mode, seeded by `default-value`. |
-| default-value | `Array<string \| number>` | `[]` | Initial selection for uncontrolled mode. |
-| filterable | `boolean` | `false` | Show both filter inputs; matching is a contains check on `label`. |
-| source-filter-placeholder | `string \| undefined` | `undefined` | Source filter placeholder; falls back to `请搜索` when omitted. |
-| target-filter-placeholder | `string \| undefined` | `undefined` | Target filter placeholder; falls back to `请搜索` when omitted. |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | Row height and control scale. |
-| disabled | `boolean` | `false` | Disable every control (selection / move buttons / search). |
-| source-title | `string \| undefined` | `undefined` | Source panel title; falls back to `源` when omitted. |
-| target-title | `string \| undefined` | `undefined` | Target panel title; falls back to `目标` when omitted. |
-| render-source-label | `(data: { option }) => VNodeChild` | `undefined` | Source row renderer; renders `option.label` when omitted. |
-| render-target-label | `(data: { option }) => VNodeChild` | `undefined` | Target row renderer; renders `option.label` when omitted. |
+| Name                      | Type                                                                    | Default     | Notes                                                                                                          |
+| ------------------------- | ----------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
+| options                   | `Array<{ label: string; value: string \| number; disabled?: boolean }>` | `[]`        | Transferable entries; `label` is used both as the default row text and for search matching.                    |
+| value                     | `Array<string \| number> \| undefined`                                  | `undefined` | Selected values (the right panel data source). `undefined` means uncontrolled mode, seeded by `default-value`. |
+| default-value             | `Array<string \| number>`                                               | `[]`        | Initial selection for uncontrolled mode.                                                                       |
+| filterable                | `boolean`                                                               | `false`     | Show both filter inputs; matching is a contains check on `label`.                                              |
+| source-filter-placeholder | `string \| undefined`                                                   | `undefined` | Source filter placeholder; falls back to `请搜索` when omitted.                                                |
+| target-filter-placeholder | `string \| undefined`                                                   | `undefined` | Target filter placeholder; falls back to `请搜索` when omitted.                                                |
+| size                      | `'small' \| 'medium' \| 'large'`                                        | `'medium'`  | Row height and control scale.                                                                                  |
+| disabled                  | `boolean`                                                               | `false`     | Disable every control (selection / move buttons / search).                                                     |
+| source-title              | `string \| undefined`                                                   | `undefined` | Source panel title; falls back to `源` when omitted.                                                           |
+| target-title              | `string \| undefined`                                                   | `undefined` | Target panel title; falls back to `目标` when omitted.                                                         |
+| render-source-label       | `(data: { option }) => VNodeChild`                                      | `undefined` | Source row renderer; renders `option.label` when omitted.                                                      |
+| render-target-label       | `(data: { option }) => VNodeChild`                                      | `undefined` | Target row renderer; renders `option.label` when omitted.                                                      |
 
 ### Events
 
-| Name | Payload | Notes |
-| --- | --- | --- |
+| Name         | Payload                            | Notes                                                                 |
+| ------------ | ---------------------------------- | --------------------------------------------------------------------- |
 | update:value | `(value: Array<string \| number>)` | Selected values committed by a move operation, in target-panel order. |
 
 ### Slots
@@ -95,20 +95,20 @@ Behavior notes:
 
 ## Tokens
 
-| Token | CSS variable | Purpose |
-| --- | --- | --- |
-| Border default | `--sn-web-color-border-default` | Panel outline |
-| Border subtle | `--sn-web-color-border-subtle` | Header divider |
-| Background surface | `--sn-web-color-background-surface` | List panel fill |
-| Background subtle | `--sn-web-color-background-subtle` | Header fill and row hover |
-| Text primary | `--sn-web-color-text-primary` | Panel titles and row text |
-| Text tertiary | `--sn-web-color-text-tertiary` | Selected counts |
-| Text disabled | `--sn-web-color-text-disabled` | Disabled row text |
-| Input radius | `--sn-web-input-radius` | Panel radius (3px fallback) |
-| Button height small | `--sn-web-button-height-small` | Row height for `size="small"` |
-| Button height medium | `--sn-web-button-height-medium` | Row height for `size="medium"` |
-| Button height large | `--sn-web-button-height-large` | Row height for `size="large"` |
-| List height | `--sn-transfer-list-height` | Panel list height (default 200px) |
+| Token                | CSS variable                        | Purpose                           |
+| -------------------- | ----------------------------------- | --------------------------------- |
+| Border default       | `--sn-web-color-border-default`     | Panel outline                     |
+| Border subtle        | `--sn-web-color-border-subtle`      | Header divider                    |
+| Background surface   | `--sn-web-color-background-surface` | List panel fill                   |
+| Background subtle    | `--sn-web-color-background-subtle`  | Header fill and row hover         |
+| Text primary         | `--sn-web-color-text-primary`       | Panel titles and row text         |
+| Text tertiary        | `--sn-web-color-text-tertiary`      | Selected counts                   |
+| Text disabled        | `--sn-web-color-text-disabled`      | Disabled row text                 |
+| Input radius         | `--sn-web-input-radius`             | Panel radius (3px fallback)       |
+| Button height small  | `--sn-web-button-height-small`      | Row height for `size="small"`     |
+| Button height medium | `--sn-web-button-height-medium`     | Row height for `size="medium"`    |
+| Button height large  | `--sn-web-button-height-large`      | Row height for `size="large"`     |
+| List height          | `--sn-transfer-list-height`         | Panel list height (default 200px) |
 
 ## Accessibility
 
@@ -125,12 +125,12 @@ Behavior notes:
 
 ## AI Patch Boundary
 
-| Safe for AI to generate | Requires human review |
-| --- | --- |
-| `options` data and static combinations with `value` | Commit / rollback logic inside `update:value` listeners |
+| Safe for AI to generate                                       | Requires human review                                                           |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `options` data and static combinations with `value`           | Commit / rollback logic inside `update:value` listeners                         |
 | `source-title` / `target-title` / the two filter placeholders | How a controlled `v-model:value` couples with form validation and submit timing |
-| Display switches `filterable` / `size` / `disabled` | Interactive controls and async data inside custom row renderers |
-| Static composition used in docs and demos | Permission changes and batch API calls triggered by a move |
+| Display switches `filterable` / `size` / `disabled`           | Interactive controls and async data inside custom row renderers                 |
+| Static composition used in docs and demos                     | Permission changes and batch API calls triggered by a move                      |
 
 - AI-generated JSON Patches may only modify the prop data surface above and must
   not touch internal checkbox state, inject event handlers or slots.

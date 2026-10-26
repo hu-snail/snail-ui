@@ -1,11 +1,11 @@
 <script setup lang="ts">
 /** Demo: SnEllipsis — single / multi-line clamping with overflow tooltip and click expand. */
-import { SnEllipsis } from '@snui/vue-web'
+import { SnEllipsis } from '@snui/vue-web';
 
 const longText =
   '这是一段很长很长的说明文本，用于演示文本截断：当容器宽度不足以容纳全部内容时，' +
   '超出部分会被省略号替代；将鼠标悬浮在文本上即可通过 Tooltip 查看完整内容，' +
-  '溢出检测基于容器的实际尺寸自动计算，不会对未溢出的文本弹出气泡。'
+  '溢出检测基于容器的实际尺寸自动计算，不会对未溢出的文本弹出气泡。';
 </script>
 
 <template>

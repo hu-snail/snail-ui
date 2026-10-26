@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnEmpty — default icon + no-data description. */
-import { SnEmpty } from '@snui/vue-web'
+import { SnEmpty } from '@snui/vue-web';
 </script>
 
 <template>

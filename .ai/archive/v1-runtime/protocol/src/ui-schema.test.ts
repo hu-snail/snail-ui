@@ -27,7 +27,9 @@ describe('@snui/protocol — UISchemaSchema', () => {
 
   it('accepts pre-release and build-metadata semver', () => {
     expect(UISchemaSchema.safeParse({ ...minimalValid, version: '1.0.0-rc.1' }).success).toBe(true);
-    expect(UISchemaSchema.safeParse({ ...minimalValid, version: '1.0.0+build.7' }).success).toBe(true);
+    expect(UISchemaSchema.safeParse({ ...minimalValid, version: '1.0.0+build.7' }).success).toBe(
+      true,
+    );
   });
 
   it('rejects when version is missing', () => {

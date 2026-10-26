@@ -54,28 +54,28 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `size` | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge' \| number` | `'medium'` | 尺寸档或像素数值。 |
-| `show` | `boolean` | `true` | 是否显示 spinner。 |
-| `delay` | `number` | `undefined` | 延后多少毫秒显示；隐藏始终即时。 |
-| `rotate` | `boolean` | `true` | 是否旋转自定义 `icon` 内容。 |
-| `description` | `string` | `undefined` | spinner 下方的文字。 |
-| `contentClass` | `string` | `undefined` | 施加到被包裹内容上的类名。 |
-| `contentStyle` | `string \| Record<string, string \| number>` | `undefined` | 施加到被包裹内容上的样式。 |
-| `stroke` | `string` | `undefined` | 弧线颜色，默认取 `--sn-web-spin-color`。 |
-| `strokeWidth` | `number` | 按尺寸档推导 | 弧线粗细（SVG 单位）。 |
-| `scale` | `number` | `1` | 整体缩放系数。 |
-| `radius` | `number` | `100` | 弧线半径（设计单位）。 |
-| `spinning` | `boolean` | `undefined` | **@deprecated**，请使用 `show`。 |
+| 名称           | 类型                                                           | 默认值       | 说明                                     |
+| -------------- | -------------------------------------------------------------- | ------------ | ---------------------------------------- |
+| `size`         | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge' \| number` | `'medium'`   | 尺寸档或像素数值。                       |
+| `show`         | `boolean`                                                      | `true`       | 是否显示 spinner。                       |
+| `delay`        | `number`                                                       | `undefined`  | 延后多少毫秒显示；隐藏始终即时。         |
+| `rotate`       | `boolean`                                                      | `true`       | 是否旋转自定义 `icon` 内容。             |
+| `description`  | `string`                                                       | `undefined`  | spinner 下方的文字。                     |
+| `contentClass` | `string`                                                       | `undefined`  | 施加到被包裹内容上的类名。               |
+| `contentStyle` | `string \| Record<string, string \| number>`                   | `undefined`  | 施加到被包裹内容上的样式。               |
+| `stroke`       | `string`                                                       | `undefined`  | 弧线颜色，默认取 `--sn-web-spin-color`。 |
+| `strokeWidth`  | `number`                                                       | 按尺寸档推导 | 弧线粗细（SVG 单位）。                   |
+| `scale`        | `number`                                                       | `1`          | 整体缩放系数。                           |
+| `radius`       | `number`                                                       | `100`        | 弧线半径（设计单位）。                   |
+| `spinning`     | `boolean`                                                      | `undefined`  | **@deprecated**，请使用 `show`。         |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 被包裹的内容；存在时切换为遮罩模式。 |
-| `description` | `()` | 富文本说明，覆盖 `description` prop。 |
-| `icon` | `()` | 自定义 spinner 图形，替换内建 SVG 弧线。 |
+| 名称          | 参数 | 说明                                     |
+| ------------- | ---- | ---------------------------------------- |
+| `default`     | `()` | 被包裹的内容；存在时切换为遮罩模式。     |
+| `description` | `()` | 富文本说明，覆盖 `description` prop。    |
+| `icon`        | `()` | 自定义 spinner 图形，替换内建 SVG 弧线。 |
 
 ## 尺寸
 
@@ -116,14 +116,14 @@
 
 组件消费 `--sn-web-spin-*` token 别名：
 
-| Token | 说明 |
-| --- | --- |
-| `--sn-web-spin-size-tiny` / `-small` / `-medium` / `-large` / `-huge` | 五个尺寸档 |
-| `--sn-web-spin-color` | 弧线颜色 |
-| `--sn-web-spin-text-color` | `description` 文字颜色 |
-| `--sn-web-spin-font-size` | `description` 字号 |
-| `--sn-web-spin-description-gap` | spinner 与文字间距 |
-| `--sn-web-spin-opacity-spinning` | 激活时被包裹内容的透明度 |
+| Token                                                                 | 说明                     |
+| --------------------------------------------------------------------- | ------------------------ |
+| `--sn-web-spin-size-tiny` / `-small` / `-medium` / `-large` / `-huge` | 五个尺寸档               |
+| `--sn-web-spin-color`                                                 | 弧线颜色                 |
+| `--sn-web-spin-text-color`                                            | `description` 文字颜色   |
+| `--sn-web-spin-font-size`                                             | `description` 字号       |
+| `--sn-web-spin-description-gap`                                       | spinner 与文字间距       |
+| `--sn-web-spin-opacity-spinning`                                      | 激活时被包裹内容的透明度 |
 
 ## 已知取舍
 

@@ -18,7 +18,7 @@
  * Usage:
  *   <SnModelConfig :vendors="vendors" :params="params" @update:vendors="..." />
  */
-import { computed } from 'vue'
+import { computed } from 'vue';
 import {
   SnButton,
   SnEmpty,
@@ -28,7 +28,7 @@ import {
   SnSlider,
   SnSwitch,
   SnTag,
-} from '@snui/vue-web'
+} from '@snui/vue-web';
 import {
   CheckIcon,
   KeyIcon,
@@ -37,33 +37,33 @@ import {
   ServerIcon,
   ThinkingIcon,
   TrashIcon,
-} from '../shared/icons'
-import { THINKING_LEVELS, formatContextWindow, nextId, thinkingBudget } from '../shared/stream'
-import type { SnAiModel, SnAiModelParams, SnAiThinkingLevel, SnAiVendor } from '../shared/types'
-import { toIconComponent } from './icon-adapter'
+} from '../shared/icons';
+import { THINKING_LEVELS, formatContextWindow, nextId, thinkingBudget } from '../shared/stream';
+import type { SnAiModel, SnAiModelParams, SnAiThinkingLevel, SnAiVendor } from '../shared/types';
+import { toIconComponent } from './icon-adapter';
 
-defineOptions({ name: 'SnModelConfig' })
+defineOptions({ name: 'SnModelConfig' });
 
 const props = withDefaults(
   defineProps<{
     /** Configured providers. */
-    vendors?: SnAiVendor[] | undefined
+    vendors?: SnAiVendor[] | undefined;
     /** Currently selected provider id. */
-    activeVendorId?: string | undefined
+    activeVendorId?: string | undefined;
     /** Currently selected model id. */
-    activeModelId?: string | undefined
+    activeModelId?: string | undefined;
     /** Generation parameters for the selected model. */
-    params?: SnAiModelParams | undefined
+    params?: SnAiModelParams | undefined;
     /** Offer add / edit / delete affordances. */
-    editable?: boolean | undefined
+    editable?: boolean | undefined;
     /** Page heading. */
-    title?: string | undefined
+    title?: string | undefined;
     /** Filter the model list by name. */
-    searchable?: boolean | undefined
+    searchable?: boolean | undefined;
     /** Vendor currently being connection-tested (renders a spinner on it). */
-    testingVendorId?: string | undefined
+    testingVendorId?: string | undefined;
     /** Model-list filter text. */
-    search?: string | undefined
+    search?: string | undefined;
   }>(),
   {
     vendors: undefined,
@@ -76,17 +76,17 @@ const props = withDefaults(
     testingVendorId: undefined,
     search: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:vendors', vendors: SnAiVendor[]): void
-  (e: 'update:activeVendorId', id: string): void
-  (e: 'update:activeModelId', id: string): void
-  (e: 'update:params', params: SnAiModelParams): void
-  (e: 'update:search', value: string): void
+  (e: 'update:vendors', vendors: SnAiVendor[]): void;
+  (e: 'update:activeVendorId', id: string): void;
+  (e: 'update:activeModelId', id: string): void;
+  (e: 'update:params', params: SnAiModelParams): void;
+  (e: 'update:search', value: string): void;
   /** Ask the host to verify this provider's endpoint + credential. */
-  (e: 'test-connection', payload: { vendorId: string }): void
-}>()
+  (e: 'test-connection', payload: { vendorId: string }): void;
+}>();
 
 const icons = {
   server: toIconComponent(ServerIcon),
@@ -96,34 +96,34 @@ const icons = {
   trash: toIconComponent(TrashIcon),
   check: toIconComponent(CheckIcon),
   thinking: toIconComponent(ThinkingIcon),
-}
+};
 
-const vendors = computed<SnAiVendor[]>(() => props.vendors ?? [])
-const editable = computed(() => props.editable !== false)
+const vendors = computed<SnAiVendor[]>(() => props.vendors ?? []);
+const editable = computed(() => props.editable !== false);
 
 const activeVendor = computed(() =>
   vendors.value.find((vendor) => vendor.id === props.activeVendorId),
-)
+);
 
 /** Models of the selected vendor, filtered by `search` when searchable. */
 const visibleModels = computed<SnAiModel[]>(() => {
-  const all = activeVendor.value?.models ?? []
-  const query = (props.search ?? '').trim().toLowerCase()
-  if (!props.searchable || !query) return all
-  return all.filter((model) => model.name.toLowerCase().includes(query))
-})
+  const all = activeVendor.value?.models ?? [];
+  const query = (props.search ?? '').trim().toLowerCase();
+  if (!props.searchable || !query) return all;
+  return all.filter((model) => model.name.toLowerCase().includes(query));
+});
 
 const activeModel = computed(() =>
   (activeVendor.value?.models ?? []).find((model) => model.id === props.activeModelId),
-)
+);
 
 /** Parameters with defaults applied, so the panel always has concrete values. */
 interface ResolvedParams {
-  temperature: number
-  topP: number
-  maxTokens: number
-  thinkingLevel: SnAiThinkingLevel
-  stream: boolean
+  temperature: number;
+  topP: number;
+  maxTokens: number;
+  thinkingLevel: SnAiThinkingLevel;
+  stream: boolean;
 }
 
 const params = computed<ResolvedParams>(() => ({
@@ -132,18 +132,18 @@ const params = computed<ResolvedParams>(() => ({
   maxTokens: props.params?.maxTokens ?? 4096,
   thinkingLevel: props.params?.thinkingLevel ?? 'off',
   stream: props.params?.stream ?? true,
-}))
+}));
 
 /** The reasoning control is only meaningful for a reasoning-capable model. */
-const thinkingAvailable = computed(() => activeModel.value?.supportsThinking !== false)
+const thinkingAvailable = computed(() => activeModel.value?.supportsThinking !== false);
 
 const thinkingIndex = computed(() => {
-  const index = THINKING_LEVELS.indexOf(params.value.thinkingLevel ?? 'off')
-  return index < 0 ? 0 : index
-})
+  const index = THINKING_LEVELS.indexOf(params.value.thinkingLevel ?? 'off');
+  return index < 0 ? 0 : index;
+});
 
 const thinkingLabel = computed(() => {
-  const level: SnAiThinkingLevel = params.value.thinkingLevel ?? 'off'
+  const level: SnAiThinkingLevel = params.value.thinkingLevel ?? 'off';
 
   const labels: Record<SnAiThinkingLevel, string> = {
     off: '关闭',
@@ -151,10 +151,10 @@ const thinkingLabel = computed(() => {
     medium: '中等',
     high: '深入',
     max: '极限',
-  }
-  const budget = thinkingBudget(level)
-  return budget > 0 ? `${labels[level]} · ${budget} tokens` : labels[level]
-})
+  };
+  const budget = thinkingBudget(level);
+  return budget > 0 ? `${labels[level]} · ${budget} tokens` : labels[level];
+});
 
 /* ── Vendor mutations ────────────────────────────────────────────────────── */
 
@@ -162,11 +162,11 @@ function replaceVendor(next: SnAiVendor): void {
   emit(
     'update:vendors',
     vendors.value.map((vendor) => (vendor.id === next.id ? next : vendor)),
-  )
+  );
 }
 
 function addVendor(): void {
-  const id = nextId('sn-ai-vendor')
+  const id = nextId('sn-ai-vendor');
   const created: SnAiVendor = {
     id,
     name: '新厂商',
@@ -174,34 +174,34 @@ function addVendor(): void {
     models: [],
     custom: true,
     hasCredential: false,
-  }
-  emit('update:vendors', [...vendors.value, created])
-  emit('update:activeVendorId', id)
+  };
+  emit('update:vendors', [...vendors.value, created]);
+  emit('update:activeVendorId', id);
 }
 
 function removeVendor(id: string): void {
-  const remaining = vendors.value.filter((vendor) => vendor.id !== id)
-  emit('update:vendors', remaining)
+  const remaining = vendors.value.filter((vendor) => vendor.id !== id);
+  emit('update:vendors', remaining);
   if (props.activeVendorId === id) {
-    const next = remaining[0]
-    emit('update:activeVendorId', next ? next.id : '')
+    const next = remaining[0];
+    emit('update:activeVendorId', next ? next.id : '');
   }
 }
 
 function selectVendor(id: string): void {
-  emit('update:activeVendorId', id)
+  emit('update:activeVendorId', id);
 }
 
 function setName(value: string): void {
-  const vendor = activeVendor.value
-  if (!vendor) return
-  replaceVendor({ ...vendor, name: value })
+  const vendor = activeVendor.value;
+  if (!vendor) return;
+  replaceVendor({ ...vendor, name: value });
 }
 
 function setBaseUrl(value: string): void {
-  const vendor = activeVendor.value
-  if (!vendor) return
-  replaceVendor({ ...vendor, baseUrl: value })
+  const vendor = activeVendor.value;
+  if (!vendor) return;
+  replaceVendor({ ...vendor, baseUrl: value });
 }
 
 /**
@@ -209,16 +209,16 @@ function setBaseUrl(value: string): void {
  * already owns — it is never emitted on its own channel and never logged.
  */
 function setCredential(value: string): void {
-  const vendor = activeVendor.value
-  if (!vendor) return
-  replaceVendor({ ...vendor, hasCredential: value.length > 0 })
+  const vendor = activeVendor.value;
+  if (!vendor) return;
+  replaceVendor({ ...vendor, hasCredential: value.length > 0 });
 }
 
 /* ── Model mutations ─────────────────────────────────────────────────────── */
 
 function addModel(): void {
-  const vendor = activeVendor.value
-  if (!vendor) return
+  const vendor = activeVendor.value;
+  if (!vendor) return;
   const created: SnAiModel = {
     id: nextId('sn-ai-model'),
     name: '新模型',
@@ -227,40 +227,40 @@ function addModel(): void {
     supportsThinking: true,
     supportsVision: false,
     contextWindow: 128000,
-  }
-  replaceVendor({ ...vendor, models: [...(vendor.models ?? []), created] })
-  emit('update:activeModelId', created.id)
+  };
+  replaceVendor({ ...vendor, models: [...(vendor.models ?? []), created] });
+  emit('update:activeModelId', created.id);
 }
 
 function removeModel(modelId: string): void {
-  const vendor = activeVendor.value
-  if (!vendor) return
+  const vendor = activeVendor.value;
+  if (!vendor) return;
   replaceVendor({
     ...vendor,
     models: (vendor.models ?? []).filter((model) => model.id !== modelId),
-  })
-  if (props.activeModelId === modelId) emit('update:activeModelId', '')
+  });
+  if (props.activeModelId === modelId) emit('update:activeModelId', '');
 }
 
 function selectModel(modelId: string): void {
-  emit('update:activeModelId', modelId)
+  emit('update:activeModelId', modelId);
 }
 
 /* ── Parameter edits ─────────────────────────────────────────────────────── */
 
 function patchParams(patch: Partial<SnAiModelParams>): void {
-  emit('update:params', { ...props.params, ...patch })
+  emit('update:params', { ...props.params, ...patch });
 }
 
 function onThinkingInput(index: number): void {
-  const level = THINKING_LEVELS[index]
-  if (level) patchParams({ thinkingLevel: level })
+  const level = THINKING_LEVELS[index];
+  if (level) patchParams({ thinkingLevel: level });
 }
 
 /** Parse a numeric field, falling back to the current value on bad input. */
 function onMaxTokensInput(value: string): void {
-  const parsed = Number(value)
-  patchParams({ maxTokens: Number.isFinite(parsed) ? parsed : params.value.maxTokens })
+  const parsed = Number(value);
+  patchParams({ maxTokens: Number.isFinite(parsed) ? parsed : params.value.maxTokens });
 }
 </script>
 
@@ -589,7 +589,9 @@ function onMaxTokensInput(value: string): void {
   border-radius: var(--sn-web-radius-lg);
   background-color: var(--sn-web-color-background-surface);
   cursor: pointer;
-  transition: border-color 0.15s, background-color 0.15s;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
 }
 
 .sn-model-config__vendor:hover {

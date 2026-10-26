@@ -18,21 +18,21 @@
 
 ### SnSplitter Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
+| Prop      | 类型                       | 默认值         | 说明     |
+| --------- | -------------------------- | -------------- | -------- |
 | direction | `'horizontal'\|'vertical'` | `'horizontal'` | 分栏方向 |
-| disabled | `boolean` | `false` | 禁用拖拽 |
+| disabled  | `boolean`                  | `false`        | 禁用拖拽 |
 
 事件：`resize`（拖拽/折叠结束后 emit）。
 
 ### SnSplitterPanel Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| defaultSize | `number \| 'N%'` | — | 初始百分比（未设均分） |
-| minSize / maxSize | `number \| 'N%'` | — | 拖拽边界 |
-| collapsible | `boolean` | `false` | 可收起（snap 到 0） |
-| collapsed | `boolean \| undefined` | — | v-model:collapsed |
+| Prop              | 类型                   | 默认值  | 说明                   |
+| ----------------- | ---------------------- | ------- | ---------------------- |
+| defaultSize       | `number \| 'N%'`       | —       | 初始百分比（未设均分） |
+| minSize / maxSize | `number \| 'N%'`       | —       | 拖拽边界               |
+| collapsible       | `boolean`              | `false` | 可收起（snap 到 0）    |
+| collapsed         | `boolean \| undefined` | —       | v-model:collapsed      |
 
 divider `role="separator"`；键盘 Arrow ±2%、Home/End 到边界；双击 divider 恢复 default。
 

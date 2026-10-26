@@ -1,13 +1,18 @@
 <template>
   <div
     ref="rootRef"
-    :class="['sn-time-picker', `sn-time-picker--${size}`, {
-      'sn-time-picker--disabled': disabled,
-      'sn-time-picker--readonly': readonly,
-      'sn-time-picker--focused': isFocused,
-      'sn-time-picker--active': isPanelOpen,
-      [`sn-time-picker--status-${status}`]: status !== 'default',
-    }, customClass]"
+    :class="[
+      'sn-time-picker',
+      `sn-time-picker--${size}`,
+      {
+        'sn-time-picker--disabled': disabled,
+        'sn-time-picker--readonly': readonly,
+        'sn-time-picker--focused': isFocused,
+        'sn-time-picker--active': isPanelOpen,
+        [`sn-time-picker--status-${status}`]: status !== 'default',
+      },
+      customClass,
+    ]"
     :data-snui-component="'time-picker'"
     :data-size="size"
     :data-status="status"
@@ -90,7 +95,9 @@
               :data-column="col.key"
               :data-value="item.value"
               @click="onItemClick(col.key, item.value)"
-            >{{ item.label }}</div>
+            >
+              {{ item.label }}
+            </div>
           </div>
         </div>
       </Transition>
@@ -136,17 +143,10 @@
  * declared below; CSS uses `--sn-web-time-picker-*` aliases with
  * `--sn-web-color-*` fallbacks only.
  */
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import { ChevronDownIcon, CloseIcon } from './sn-time-picker-icons'
-import { useOverlayFollow } from '../_internal/use-overlay-follow'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import { ChevronDownIcon, CloseIcon } from './sn-time-picker-icons';
+import { useOverlayFollow } from '../_internal/use-overlay-follow';
 import {
   buildTimestamp,
   formatTimeOfDay,
@@ -161,36 +161,36 @@ import {
   type SnTimePickerFormat,
   type SnTimePickerSize,
   type SnTimePickerStatus,
-} from './sn-time-picker-types'
+} from './sn-time-picker-types';
 
-defineOptions({ name: 'SnTimePicker' })
+defineOptions({ name: 'SnTimePicker' });
 
 const props = withDefaults(
   defineProps<{
     /** Bound value: millisecond timestamp, or null when empty. */
-    modelValue?: number | null
+    modelValue?: number | null;
     /** Display format — also decides whether the seconds column renders. */
-    format?: SnTimePickerFormat
+    format?: SnTimePickerFormat;
     /** Placeholder text when empty. */
-    placeholder?: string
+    placeholder?: string;
     /** Show the clear (×) button when a value is present. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Disables interaction. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — opens nothing, commits nothing. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. */
-    size?: SnTimePickerSize
+    size?: SnTimePickerSize;
     /** Validation-driven visual status. */
-    status?: SnTimePickerStatus
+    status?: SnTimePickerStatus;
     /** 12-hour clock: hour faces 1–12 plus an AM/PM column. */
-    use12Hours?: boolean
+    use12Hours?: boolean;
     /** Accessible name for the trigger (fallback: 'Time picker'). */
-    ariaLabel?: string
+    ariaLabel?: string;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     modelValue: null,
@@ -206,56 +206,56 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — fires on every cell click and on Enter confirm. */
-  (e: 'update:modelValue', value: number | null): void
+  (e: 'update:modelValue', value: number | null): void;
   /** Value committed (also fires for clear). */
-  (e: 'change', value: number | null): void
+  (e: 'change', value: number | null): void;
   /** Trigger gained focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Trigger lost focus. */
-  (e: 'blur', event: FocusEvent): void
-}>()
+  (e: 'blur', event: FocusEvent): void;
+}>();
 
 /* ─────────── Panel column model ─────────── */
 
 /** Which column the keyboard is currently driving. */
-type SnTimePickerColumnKey = 'hour' | 'minute' | 'second' | 'period'
+type SnTimePickerColumnKey = 'hour' | 'minute' | 'second' | 'period';
 
 /** One selectable cell inside a column listbox. */
 interface SnTimePickerItem {
-  value: number
-  label: string
-  isSelected: boolean
-  id: string
+  value: number;
+  label: string;
+  isSelected: boolean;
+  id: string;
 }
 
 /** One scrollable column (role=listbox) of the panel. */
 interface SnTimePickerColumn {
-  key: SnTimePickerColumnKey
-  ariaLabel: string
-  items: SnTimePickerItem[]
+  key: SnTimePickerColumnKey;
+  ariaLabel: string;
+  items: SnTimePickerItem[];
 }
 
 /** Module-level counter so every instance owns unique DOM ids. */
-let timePickerInstanceSeed = 0
-const instanceId = ++timePickerInstanceSeed
-const panelId = `sn-time-picker-panel-${instanceId}`
+let timePickerInstanceSeed = 0;
+const instanceId = ++timePickerInstanceSeed;
+const panelId = `sn-time-picker-panel-${instanceId}`;
 
 function itemId(key: SnTimePickerColumnKey, value: number): string {
-  return `sn-time-picker-item-${instanceId}-${key}-${value}`
+  return `sn-time-picker-item-${instanceId}-${key}-${value}`;
 }
 
 /* ─────────── State ─────────── */
 
-const rootRef = ref<HTMLElement | null>(null)
-const panelRef = ref<HTMLElement | null>(null)
+const rootRef = ref<HTMLElement | null>(null);
+const panelRef = ref<HTMLElement | null>(null);
 
-const isPanelOpen = ref(false)
-const isFocused = ref(false)
-const activeColumn = ref<SnTimePickerColumnKey>('hour')
+const isPanelOpen = ref(false);
+const isFocused = ref(false);
+const activeColumn = ref<SnTimePickerColumnKey>('hour');
 /**
  * Draft parts shown in the panel. Re-initialized from `modelValue` on
  * every open; every interaction (cell click or keyboard step) mutates it
@@ -263,31 +263,33 @@ const activeColumn = ref<SnTimePickerColumnKey>('hour')
  * re-initializes from the bound value, so unconfirmed keyboard steps on
  * a null model are discarded.
  */
-const draft = ref<SnTimeParts>({ hour: 0, minute: 0, second: 0 })
+const draft = ref<SnTimeParts>({ hour: 0, minute: 0, second: 0 });
 
-const showSeconds = computed(() => props.format === 'HH:mm:ss')
-const isInteractive = computed(() => !props.disabled && !props.readonly)
-const hasValue = computed(() => props.modelValue !== null)
+const showSeconds = computed(() => props.format === 'HH:mm:ss');
+const isInteractive = computed(() => !props.disabled && !props.readonly);
+const hasValue = computed(() => props.modelValue !== null);
 
 /** Hour as shown in the hour column (1–12 face in 12-hour mode). */
 const currentHourFace = computed(() =>
   props.use12Hours ? to12Hour(draft.value.hour) : draft.value.hour,
-)
+);
 
 /* ─────────── Display ─────────── */
 
 const displayText = computed<string | null>(() => {
-  if (props.modelValue === null) return null
+  if (props.modelValue === null) return null;
   return formatTimeOfDay(getTimeParts(props.modelValue), {
     use12Hours: props.use12Hours,
     showSeconds: showSeconds.value,
-  })
-})
+  });
+});
 
 const wrapperStyle = computed(() => {
-  if (typeof props.customStyle === 'string') return props.customStyle
-  return Object.entries(props.customStyle ?? {}).map(([k, v]) => `${k}:${v}`).join(';')
-})
+  if (typeof props.customStyle === 'string') return props.customStyle;
+  return Object.entries(props.customStyle ?? {})
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';');
+});
 
 /* ─────────── Draft <-> model sync ─────────── */
 
@@ -297,14 +299,14 @@ const wrapperStyle = computed(() => {
  * (any commit normalizes seconds away — documented deviation).
  */
 function draftPartsFromModel(): SnTimeParts {
-  if (props.modelValue === null) return { hour: 0, minute: 0, second: 0 }
-  const parts = getTimeParts(props.modelValue)
-  if (!showSeconds.value) parts.second = 0
-  return parts
+  if (props.modelValue === null) return { hour: 0, minute: 0, second: 0 };
+  const parts = getTimeParts(props.modelValue);
+  if (!showSeconds.value) parts.second = 0;
+  return parts;
 }
 
 function partsEqual(a: SnTimeParts, b: SnTimeParts): boolean {
-  return a.hour === b.hour && a.minute === b.minute && a.second === b.second
+  return a.hour === b.hour && a.minute === b.minute && a.second === b.second;
 }
 
 /** Apply one column's raw cell value to the draft (12-hour aware). */
@@ -313,73 +315,71 @@ function setDraftValue(key: SnTimePickerColumnKey, value: number): void {
     case 'hour':
       // In 12-hour mode the cell is a face (1–12); the current period
       // decides which 24-hour hour it maps to.
-      draft.value.hour = props.use12Hours
-        ? to24Hour(value, isPMHour(draft.value.hour))
-        : value
-      break
+      draft.value.hour = props.use12Hours ? to24Hour(value, isPMHour(draft.value.hour)) : value;
+      break;
     case 'minute':
-      draft.value.minute = value
-      break
+      draft.value.minute = value;
+      break;
     case 'second':
-      draft.value.second = value
-      break
+      draft.value.second = value;
+      break;
     case 'period':
       // Keep the hour face, swap the half-of-day (12 AM <-> 12 PM).
-      draft.value.hour = to24Hour(to12Hour(draft.value.hour), value === 1)
-      break
+      draft.value.hour = to24Hour(to12Hour(draft.value.hour), value === 1);
+      break;
   }
 }
 
 /** Current cell value of a column (drives selection highlight + scroll). */
 function columnActiveValue(key: SnTimePickerColumnKey): number {
   switch (key) {
-    case 'hour': return currentHourFace.value
-    case 'minute': return draft.value.minute
-    case 'second': return draft.value.second
-    case 'period': return isPMHour(draft.value.hour) ? 1 : 0
+    case 'hour':
+      return currentHourFace.value;
+    case 'minute':
+      return draft.value.minute;
+    case 'second':
+      return draft.value.second;
+    case 'period':
+      return isPMHour(draft.value.hour) ? 1 : 0;
   }
 }
 
 /** Columns rendered this open — `format` decides seconds, `use12Hours` the period. */
 const visibleColumns = computed<SnTimePickerColumn[]>(() => {
-  const columns: SnTimePickerColumn[] = []
+  const columns: SnTimePickerColumn[] = [];
   // 12-hour faces render in clock order (12, 1 … 11) like the reference.
-  const hourValues = props.use12Hours
-    ? [12, ...rangeInclusive(1, 11)]
-    : rangeInclusive(0, 23)
+  const hourValues = props.use12Hours ? [12, ...rangeInclusive(1, 11)] : rangeInclusive(0, 23);
   columns.push({
     key: 'hour',
     ariaLabel: props.use12Hours ? 'Hour (12-hour clock)' : 'Hour',
-    items: hourValues.map(
-      value => ({
-        value,
-        label: pad2(value),
-        isSelected: currentHourFace.value === value,
-        id: itemId('hour', value),
-      }),
-    ),
-  })
+    items: hourValues.map((value) => ({
+      value,
+      label: pad2(value),
+      isSelected: currentHourFace.value === value,
+      id: itemId('hour', value),
+    })),
+  });
   columns.push({
     key: 'minute',
     ariaLabel: 'Minute',
-    items: rangeInclusive(0, 59).map(value => ({
+    items: rangeInclusive(0, 59).map((value) => ({
       value,
       label: pad2(value),
       isSelected: draft.value.minute === value,
       id: itemId('minute', value),
     })),
-  })
+  });
   if (showSeconds.value) {
     columns.push({
       key: 'second',
       ariaLabel: 'Second',
-      items: rangeInclusive(0, 59).map(value => ({
+      items: rangeInclusive(0, 59).map((value) => ({
         value,
         label: pad2(value),
         isSelected: draft.value.second === value,
         id: itemId('second', value),
       })),
-    })
+    });
   }
   if (props.use12Hours) {
     columns.push({
@@ -389,176 +389,174 @@ const visibleColumns = computed<SnTimePickerColumn[]>(() => {
         { value: 0, label: 'AM', isSelected: !isPMHour(draft.value.hour), id: itemId('period', 0) },
         { value: 1, label: 'PM', isSelected: isPMHour(draft.value.hour), id: itemId('period', 1) },
       ],
-    })
+    });
   }
-  return columns
-})
+  return columns;
+});
 
 /** aria-activedescendant target: the selected cell of the active column. */
 const activeDescendant = computed<string | null>(() => {
-  if (!isPanelOpen.value) return null
-  const column = visibleColumns.value.find(c => c.key === activeColumn.value)
-  const selected = column?.items.find(item => item.isSelected)
-  return selected?.id ?? null
-})
+  if (!isPanelOpen.value) return null;
+  const column = visibleColumns.value.find((c) => c.key === activeColumn.value);
+  const selected = column?.items.find((item) => item.isSelected);
+  return selected?.id ?? null;
+});
 
 /* ─────────── Panel positioning (simplified popper) ─────────── */
 
-const PANEL_VIEWPORT_GAP = 4
-const placement = ref<'bottom' | 'top'>('bottom')
-const panelStyle = ref<Record<string, string>>({})
+const PANEL_VIEWPORT_GAP = 4;
+const placement = ref<'bottom' | 'top'>('bottom');
+const panelStyle = ref<Record<string, string>>({});
 
 function repositionPanel(): void {
-  const root = rootRef.value
-  const panel = panelRef.value
-  if (!root || !panel) return
-  const rootRect = root.getBoundingClientRect()
+  const root = rootRef.value;
+  const panel = panelRef.value;
+  if (!root || !panel) return;
+  const rootRect = root.getBoundingClientRect();
   // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
   // transform (scale 0.92) does not distort — getBoundingClientRect would
   // measure the scaled panel while the enter transition is running.
-  const panelWidth = panel.offsetWidth
-  const panelHeight = panel.offsetHeight
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const panelWidth = panel.offsetWidth;
+  const panelHeight = panel.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
   // Width: at least the trigger width (naive behavior).
-  const width = Math.max(rootRect.width, panelWidth)
+  const width = Math.max(rootRect.width, panelWidth);
   const left = Math.min(
     Math.max(PANEL_VIEWPORT_GAP, rootRect.left),
     Math.max(PANEL_VIEWPORT_GAP, vw - width - PANEL_VIEWPORT_GAP),
-  )
+  );
 
   // Bottom preferred; flip to top when the viewport lacks room below
   // but has room above.
-  const roomBelow = vh - rootRect.bottom
-  const roomAbove = rootRect.top
-  const useTop = roomBelow < panelHeight && roomAbove > roomBelow
-  placement.value = useTop ? 'top' : 'bottom'
+  const roomBelow = vh - rootRect.bottom;
+  const roomAbove = rootRect.top;
+  const useTop = roomBelow < panelHeight && roomAbove > roomBelow;
+  placement.value = useTop ? 'top' : 'bottom';
 
-  const top = useTop
-    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight)
-    : rootRect.bottom
+  const top = useTop ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight) : rootRect.bottom;
 
   panelStyle.value = {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
     'min-width': `${Math.round(rootRect.width)}px`,
-  }
+  };
 }
 
 /* Scroll/resize follow: while the panel is open, any scroll (page or a
  * nested scrollable ancestor) or viewport resize re-runs repositionPanel so
  * the fixed-position panel stays glued to the trigger instead of detaching. */
-const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen)
+const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen);
 
 /* ─────────── Column scrolling ─────────── */
 
 /** Scroll one column so its cell for `value` is visible. */
 function scrollColumnTo(key: SnTimePickerColumnKey, value: number): void {
-  const panel = panelRef.value
-  if (!panel) return
+  const panel = panelRef.value;
+  if (!panel) return;
   // Columns render in visibleColumns order; DOM order matches.
-  const index = visibleColumns.value.findIndex(c => c.key === key)
-  const columnEl = panel.querySelectorAll<HTMLElement>('.sn-time-picker-col')[index]
+  const index = visibleColumns.value.findIndex((c) => c.key === key);
+  const columnEl = panel.querySelectorAll<HTMLElement>('.sn-time-picker-col')[index];
   columnEl
     ?.querySelector(`[data-value="${CSS.escape(String(value))}"]`)
-    ?.scrollIntoView({ block: 'nearest' })
+    ?.scrollIntoView({ block: 'nearest' });
 }
 
 function scrollAllColumnsIntoView(): void {
   for (const column of visibleColumns.value) {
-    scrollColumnTo(column.key, columnActiveValue(column.key))
+    scrollColumnTo(column.key, columnActiveValue(column.key));
   }
 }
 
 async function scrollActiveColumnIntoView(): Promise<void> {
-  await nextTick()
-  scrollColumnTo(activeColumn.value, columnActiveValue(activeColumn.value))
+  await nextTick();
+  scrollColumnTo(activeColumn.value, columnActiveValue(activeColumn.value));
 }
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
 function onDocumentMouseDown(event: MouseEvent): void {
-  if (!isPanelOpen.value) return
-  const target = event.target as Node | null
-  if (!target) return
-  if (rootRef.value && rootRef.value.contains(target)) return
-  if (panelRef.value && panelRef.value.contains(target)) return
-  closePanel()
+  if (!isPanelOpen.value) return;
+  const target = event.target as Node | null;
+  if (!target) return;
+  if (rootRef.value && rootRef.value.contains(target)) return;
+  if (panelRef.value && panelRef.value.contains(target)) return;
+  closePanel();
 }
 
 /* ─────────── Open / close ─────────── */
 
 function openPanel(): void {
-  if (!isInteractive.value || isPanelOpen.value) return
-  isPanelOpen.value = true
-  draft.value = draftPartsFromModel()
-  activeColumn.value = visibleColumns.value[0]?.key ?? 'hour'
+  if (!isInteractive.value || isPanelOpen.value) return;
+  isPanelOpen.value = true;
+  draft.value = draftPartsFromModel();
+  activeColumn.value = visibleColumns.value[0]?.key ?? 'hour';
   void nextTick(() => {
-    repositionPanel()
-    followViewport.start()
-    scrollAllColumnsIntoView()
-  })
+    repositionPanel();
+    followViewport.start();
+    scrollAllColumnsIntoView();
+  });
 }
 
 function closePanel(): void {
-  if (!isPanelOpen.value) return
-  isPanelOpen.value = false
-  followViewport.stop()
+  if (!isPanelOpen.value) return;
+  isPanelOpen.value = false;
+  followViewport.stop();
 }
 
 /* ─────────── Commit ─────────── */
 
 /** Commit the draft: keep the bound value's date, replace the time-of-day. */
 function commitDraft(): void {
-  const base = props.modelValue ?? Date.now()
-  const next = buildTimestamp(base, { ...draft.value })
-  emit('update:modelValue', next)
-  emit('change', next)
+  const base = props.modelValue ?? Date.now();
+  const next = buildTimestamp(base, { ...draft.value });
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 function clearValue(): void {
-  if (!isInteractive.value) return
-  emit('update:modelValue', null)
-  emit('change', null)
-  closePanel()
+  if (!isInteractive.value) return;
+  emit('update:modelValue', null);
+  emit('change', null);
+  closePanel();
 }
 
 /** Click semantics: apply + commit immediately; the panel stays open. */
 function onItemClick(key: SnTimePickerColumnKey, value: number): void {
-  if (!isInteractive.value) return
-  setDraftValue(key, value)
-  activeColumn.value = key
-  commitDraft()
+  if (!isInteractive.value) return;
+  setDraftValue(key, value);
+  activeColumn.value = key;
+  commitDraft();
 }
 
 /* ─────────── Keyboard ─────────── */
 
 function stepActive(delta: 1 | -1): void {
-  const key = activeColumn.value
+  const key = activeColumn.value;
   if (key === 'period') {
     // AM <-> PM is a two-state toggle, not a stepped range.
-    setDraftValue('period', isPMHour(draft.value.hour) ? 0 : 1)
+    setDraftValue('period', isPMHour(draft.value.hour) ? 0 : 1);
   } else {
-    const min = key === 'hour' && props.use12Hours ? 1 : 0
-    const max = key === 'hour' ? (props.use12Hours ? 12 : 23) : 59
-    const current = key === 'hour' ? currentHourFace.value : draft.value[key]
-    setDraftValue(key, wrapStep(current, delta, min, max))
+    const min = key === 'hour' && props.use12Hours ? 1 : 0;
+    const max = key === 'hour' ? (props.use12Hours ? 12 : 23) : 59;
+    const current = key === 'hour' ? currentHourFace.value : draft.value[key];
+    setDraftValue(key, wrapStep(current, delta, min, max));
   }
   // Keyboard steps commit immediately — same update-on-interact
   // semantics as a cell click.
-  commitDraft()
-  void scrollActiveColumnIntoView()
+  commitDraft();
+  void scrollActiveColumnIntoView();
 }
 
 function cycleActiveColumn(delta: 1 | -1): void {
-  const keys = visibleColumns.value.map(c => c.key)
-  const index = keys.indexOf(activeColumn.value)
-  const next = keys[(index + delta + keys.length) % keys.length] ?? keys[0]
+  const keys = visibleColumns.value.map((c) => c.key);
+  const index = keys.indexOf(activeColumn.value);
+  const next = keys[(index + delta + keys.length) % keys.length] ?? keys[0];
   if (next) {
-    activeColumn.value = next
-    void scrollActiveColumnIntoView()
+    activeColumn.value = next;
+    void scrollActiveColumnIntoView();
   }
 }
 
@@ -570,61 +568,61 @@ function cycleActiveColumn(delta: 1 | -1): void {
  */
 function confirmDraft(): void {
   if (props.modelValue === null || !partsEqual(draftPartsFromModel(), draft.value)) {
-    commitDraft()
+    commitDraft();
   }
-  closePanel()
+  closePanel();
 }
 
 function onTriggerKeyDown(event: KeyboardEvent): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   switch (event.key) {
     case 'Enter': {
-      event.preventDefault()
+      event.preventDefault();
       if (!isPanelOpen.value) {
-        openPanel()
-        return
+        openPanel();
+        return;
       }
-      confirmDraft()
-      break
+      confirmDraft();
+      break;
     }
     case ' ':
     case 'Spacebar': {
       // Space opens the panel but must not scroll the page.
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      break;
     }
     case 'ArrowDown': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      stepActive(1)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      stepActive(1);
+      break;
     }
     case 'ArrowUp': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      stepActive(-1)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      stepActive(-1);
+      break;
     }
     case 'Tab': {
       // While the panel is open, Tab cycles columns (Shift = backward)
       // instead of leaving the component — focus stays on the trigger.
       if (isPanelOpen.value) {
-        event.preventDefault()
-        cycleActiveColumn(event.shiftKey ? -1 : 1)
+        event.preventDefault();
+        cycleActiveColumn(event.shiftKey ? -1 : 1);
       }
-      break
+      break;
     }
     case 'Escape': {
       if (isPanelOpen.value) {
-        event.preventDefault()
+        event.preventDefault();
         // Draft is re-initialized on the next open, so closing discards it.
-        closePanel()
+        closePanel();
       }
-      break
+      break;
     }
     default:
-      break
+      break;
   }
 }
 
@@ -632,55 +630,61 @@ function onTriggerKeyDown(event: KeyboardEvent): void {
 
 function onTriggerMouseDown(event: MouseEvent): void {
   // Keep focus on the trigger — no text-selection caret on the wrapper.
-  event.preventDefault()
+  event.preventDefault();
 }
 
 function onTriggerClick(): void {
-  if (!isInteractive.value) return
-  if (isPanelOpen.value) closePanel()
-  else openPanel()
+  if (!isInteractive.value) return;
+  if (isPanelOpen.value) closePanel();
+  else openPanel();
 }
 
 function onFocus(event: FocusEvent): void {
-  isFocused.value = true
-  emit('focus', event)
+  isFocused.value = true;
+  emit('focus', event);
 }
 
 function onBlur(event: FocusEvent): void {
-  isFocused.value = false
-  emit('blur', event)
+  isFocused.value = false;
+  emit('blur', event);
 }
 
 /* ─────────── Listeners lifecycle (§41/§42) ─────────── */
 
 onMounted(() => {
-  document.addEventListener('mousedown', onDocumentMouseDown)
-})
+  document.addEventListener('mousedown', onDocumentMouseDown);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown)
-  followViewport.stop()
-})
+  document.removeEventListener('mousedown', onDocumentMouseDown);
+  followViewport.stop();
+});
 
-watch(() => props.modelValue, () => {
-  // External value change while open — keep the panel in sync.
-  if (isPanelOpen.value) {
-    draft.value = draftPartsFromModel()
-    void nextTick(() => scrollAllColumnsIntoView())
-  }
-})
-
-watch(() => [props.format, props.use12Hours], () => {
-  // Column layout changed under an open panel (e.g. format swapped) —
-  // re-clamp the active column and re-measure.
-  if (isPanelOpen.value) {
-    const keys = visibleColumns.value.map(c => c.key)
-    if (!keys.includes(activeColumn.value)) {
-      activeColumn.value = keys[0] ?? 'hour'
+watch(
+  () => props.modelValue,
+  () => {
+    // External value change while open — keep the panel in sync.
+    if (isPanelOpen.value) {
+      draft.value = draftPartsFromModel();
+      void nextTick(() => scrollAllColumnsIntoView());
     }
-    void nextTick(() => repositionPanel())
-  }
-})
+  },
+);
+
+watch(
+  () => [props.format, props.use12Hours],
+  () => {
+    // Column layout changed under an open panel (e.g. format swapped) —
+    // re-clamp the active column and re-measure.
+    if (isPanelOpen.value) {
+      const keys = visibleColumns.value.map((c) => c.key);
+      if (!keys.includes(activeColumn.value)) {
+        activeColumn.value = keys[0] ?? 'hour';
+      }
+      void nextTick(() => repositionPanel());
+    }
+  },
+);
 </script>
 
 <style scoped>
@@ -705,7 +709,9 @@ watch(() => [props.format, props.use12Hours], () => {
   background-color: var(--sn-web-time-picker-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-time-picker-text-color, var(--sn-web-color-text-primary));
   cursor: pointer;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
   outline: none;
 }
 
@@ -720,11 +726,26 @@ watch(() => [props.format, props.use12Hours], () => {
 }
 
 /* Sizes — height + font-size presets (mirror SnSelect / SnInput). */
-.sn-time-picker--mini { --sn-web-time-picker-height: 22px; font-size: 11px; }
-.sn-time-picker--tiny { --sn-web-time-picker-height: 24px; font-size: 12px; }
-.sn-time-picker--small { --sn-web-time-picker-height: 28px; font-size: 13px; }
-.sn-time-picker--medium { --sn-web-time-picker-height: 32px; font-size: 14px; }
-.sn-time-picker--large { --sn-web-time-picker-height: 40px; font-size: 15px; }
+.sn-time-picker--mini {
+  --sn-web-time-picker-height: 22px;
+  font-size: 11px;
+}
+.sn-time-picker--tiny {
+  --sn-web-time-picker-height: 24px;
+  font-size: 12px;
+}
+.sn-time-picker--small {
+  --sn-web-time-picker-height: 28px;
+  font-size: 13px;
+}
+.sn-time-picker--medium {
+  --sn-web-time-picker-height: 32px;
+  font-size: 14px;
+}
+.sn-time-picker--large {
+  --sn-web-time-picker-height: 40px;
+  font-size: 15px;
+}
 
 .sn-time-picker__value {
   overflow: hidden;
@@ -833,10 +854,7 @@ watch(() => [props.format, props.use12Hours], () => {
   box-sizing: border-box;
   border: 1px solid var(--sn-web-time-picker-panel-border-color, rgba(0, 0, 0, 0.06));
   border-radius: var(--sn-web-time-picker-panel-radius, 3px);
-  background-color: var(
-    --sn-web-time-picker-panel-bg,
-    var(--sn-web-color-background-elevated)
-  );
+  background-color: var(--sn-web-time-picker-panel-bg, var(--sn-web-color-background-elevated));
   /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
   box-shadow: var(
     --sn-web-time-picker-panel-shadow,
@@ -896,10 +914,7 @@ watch(() => [props.format, props.use12Hours], () => {
 }
 
 .sn-time-picker-col--active {
-  background-color: var(
-    --sn-web-time-picker-col-bg-active,
-    var(--sn-web-color-background-subtle)
-  );
+  background-color: var(--sn-web-time-picker-col-bg-active, var(--sn-web-color-background-subtle));
 }
 
 .sn-time-picker-item {
@@ -912,7 +927,9 @@ watch(() => [props.format, props.use12Hours], () => {
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.12s ease-out, color 0.12s ease-out;
+  transition:
+    background-color 0.12s ease-out,
+    color 0.12s ease-out;
 }
 
 .sn-time-picker-item:hover {
@@ -923,14 +940,8 @@ watch(() => [props.format, props.use12Hours], () => {
 }
 
 .sn-time-picker-item--selected {
-  background-color: var(
-    --sn-web-time-picker-item-bg-selected,
-    var(--sn-web-color-action-primary)
-  );
-  color: var(
-    --sn-web-time-picker-item-text-color-selected,
-    var(--sn-web-color-text-on-primary)
-  );
+  background-color: var(--sn-web-time-picker-item-bg-selected, var(--sn-web-color-action-primary));
+  color: var(--sn-web-time-picker-item-text-color-selected, var(--sn-web-color-text-on-primary));
 }
 
 .sn-time-picker-item--selected:hover {

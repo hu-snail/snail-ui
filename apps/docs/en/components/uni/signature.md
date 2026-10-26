@@ -33,39 +33,39 @@ These are declared for wd-signature parity: this build never rasterizes, so the 
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `penColor` | `string` | `''` | Stroke color (empty = token default) |
-| `lineWidth` | `number` | `3` | Stroke width (px design units) |
-| `confirmText` / `clearText` | `string` | `'确认'` / `'清空'` | Button labels |
-| `revokeText` / `restoreText` | `string` | `'撤回'` / `'恢复'` | Undo / redo labels |
-| `undoText` / `redoText` | `string` | `''` | Override the undo / redo labels |
-| `disabled` | `boolean` | `false` | Blocks drawing and buttons |
-| `height` / `width` | `string \| number` | `undefined` | Pad size; a number is an rpx design value |
-| `backgroundColor` | `string` | `''` | Pad background (empty = token default) |
-| `disableScroll` | `boolean` | `true` | Intercept `touchmove` while drawing |
-| `enableHistory` | `boolean` | `false` | Render undo / redo |
-| `step` | `number` | `1` | Strokes moved per undo / redo |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                          | Type               | Default             | Description                               |
+| ----------------------------- | ------------------ | ------------------- | ----------------------------------------- |
+| `penColor`                    | `string`           | `''`                | Stroke color (empty = token default)      |
+| `lineWidth`                   | `number`           | `3`                 | Stroke width (px design units)            |
+| `confirmText` / `clearText`   | `string`           | `'确认'` / `'清空'` | Button labels                             |
+| `revokeText` / `restoreText`  | `string`           | `'撤回'` / `'恢复'` | Undo / redo labels                        |
+| `undoText` / `redoText`       | `string`           | `''`                | Override the undo / redo labels           |
+| `disabled`                    | `boolean`          | `false`             | Blocks drawing and buttons                |
+| `height` / `width`            | `string \| number` | `undefined`         | Pad size; a number is an rpx design value |
+| `backgroundColor`             | `string`           | `''`                | Pad background (empty = token default)    |
+| `disableScroll`               | `boolean`          | `true`              | Intercept `touchmove` while drawing       |
+| `enableHistory`               | `boolean`          | `false`             | Render undo / redo                        |
+| `step`                        | `number`           | `1`                 | Strokes moved per undo / redo             |
+| `customClass` / `customStyle` | `string`           | `''`                | Root class / inline style                 |
 
 > **Not implemented**: `fileType` / `quality` / `exportScale` (image export needs `<canvas>`, outside the cross-end allowlist), `pressure` / `maxWidth` / `minWidth` / `minSpeed` (speed-based width sampling is unreliable across MP renderers).
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `start` / `end` / `signing` | Touch lifecycle | `(event: Event)` |
-| `confirm` | Confirm pressed | `SignatureResult` |
-| `clear` | Pad cleared | — |
+| Event                       | Description     | Payload           |
+| --------------------------- | --------------- | ----------------- |
+| `start` / `end` / `signing` | Touch lifecycle | `(event: Event)`  |
+| `confirm`                   | Confirm pressed | `SignatureResult` |
+| `clear`                     | Pad cleared     | —                 |
 
 ## Exposed API
 
-| Member | Signature | Description |
-| --- | --- | --- |
-| `confirm` | `() => void` | Emit the current geometry |
-| `clear` | `() => void` | Clear the pad |
-| `revoke` / `restore` | `() => void` | Undo / redo |
-| `init` | `() => void` | Drop the redo stack |
+| Member               | Signature    | Description               |
+| -------------------- | ------------ | ------------------------- |
+| `confirm`            | `() => void` | Emit the current geometry |
+| `clear`              | `() => void` | Clear the pad             |
+| `revoke` / `restore` | `() => void` | Undo / redo               |
+| `init`               | `() => void` | Drop the redo stack       |
 
 ## Slots
 
@@ -73,15 +73,15 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-surface`` | Pad background |
-| ``--sn-mp-color-border-default`` | Pad border |
-| ``--sn-mp-color-text-primary`` | Default pen color |
-| ``--sn-mp-color-background-soft`` | Secondary button fill |
-| ``--sn-mp-color-action-primary`` | Confirm button |
-| ``--sn-mp-color-text-on-primary`` | Confirm label |
-| ``--sn-mp-color-background-overlay`` | Disabled scrim |
+| Token                                   | Purpose                       |
+| --------------------------------------- | ----------------------------- |
+| `--sn-mp-color-background-surface`      | Pad background                |
+| `--sn-mp-color-border-default`          | Pad border                    |
+| `--sn-mp-color-text-primary`            | Default pen color             |
+| `--sn-mp-color-background-soft`         | Secondary button fill         |
+| `--sn-mp-color-action-primary`          | Confirm button                |
+| `--sn-mp-color-text-on-primary`         | Confirm label                 |
+| `--sn-mp-color-background-overlay`      | Disabled scrim                |
 | ``--sn-mp-radius-lg` / `-full` / `-md`` | Pad / stroke / button corners |
 
 ## Accessibility
@@ -94,4 +94,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

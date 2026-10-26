@@ -1,47 +1,60 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useData } from 'vitepress'
+import { computed } from 'vue';
+import { useData } from 'vitepress';
 
 /** 首页文案双语 —— 跟随站点语言（root=zh / /en/=en）。 */
-const { lang } = useData()
-const isEn = computed(() => lang.value === 'en-US')
-const t = computed(() => isEn.value
-  ? {
-      subtitleBefore: 'The AI-Native UI framework ecosystem for ',
-      strongWeb: 'Vue 3 (PC Web)',
-      middle: ' + ',
-      strongUni: 'uni-app (mobile)',
-      subtitleAfter: '. The Web end targets desktop, the uni end targets mobile — both ends are fully independent from development to packaging with zero shared source. A React end will follow the same pattern.',
-      cta: 'Get Started',
-      compSub: '6 semantic types · 5 sizes · 3 variants',
-      btnDefault: 'Default', btnPrimary: 'Primary', btnInfo: 'Info',
-      btnSuccess: 'Success', btnWarning: 'Warning', btnError: 'Error',
-      inputPlaceholder: 'Search components',
-      packSub: 'One style-pack system shared across ends',
-      packFoot: 'Token + skin CSS + assets in three layers; each pack is an independent npm package (end: web / mp / both).',
-      aiPrompt: 'Build a login page with snail-ui',
-      aiOut1: '→ Generates Button + Input + Card in 6 steps',
-      aiOut2: '→ MCP Server filters automatically by end',
-      endSub: 'Independent source, build and npm package per end',
-    }
-  : {
-      subtitleBefore: '面向 ',
-      strongWeb: 'Vue 3（PC Web）',
-      middle: ' + ',
-      strongUni: 'uni-app（移动）',
-      subtitleAfter: ' 的 AI-Native UI 框架生态。Web 端面向桌面，uni 端面向移动——两端从开发到打包完全独立，0 行源代码复用。未来 React 端按相同模式扩展。',
-      cta: '开始使用',
-      compSub: '6 语义类型 · 5 尺寸 · 3 变体',
-      btnDefault: '默认', btnPrimary: '主要', btnInfo: '信息',
-      btnSuccess: '成功', btnWarning: '警告', btnError: '危险',
-      inputPlaceholder: 'SnInput 搜索组件',
-      packSub: '跨端共用风格包系统',
-      packFoot: 'Token + 皮肤 CSS + 资源三层，每包独立 npm 包（end: web / mp / both）。',
-      aiPrompt: '用 snail-ui 做登录页',
-      aiOut1: '→ 6 步生成 Button + Input + Card',
-      aiOut2: '→ MCP Server 自动按 end 过滤',
-      endSub: '两端独立源代码 / 构建 / npm 包',
-    })
+const { lang } = useData();
+const isEn = computed(() => lang.value === 'en-US');
+const t = computed(() =>
+  isEn.value
+    ? {
+        subtitleBefore: 'The AI-Native UI framework ecosystem for ',
+        strongWeb: 'Vue 3 (PC Web)',
+        middle: ' + ',
+        strongUni: 'uni-app (mobile)',
+        subtitleAfter:
+          '. The Web end targets desktop, the uni end targets mobile — both ends are fully independent from development to packaging with zero shared source. A React end will follow the same pattern.',
+        cta: 'Get Started',
+        compSub: '6 semantic types · 5 sizes · 3 variants',
+        btnDefault: 'Default',
+        btnPrimary: 'Primary',
+        btnInfo: 'Info',
+        btnSuccess: 'Success',
+        btnWarning: 'Warning',
+        btnError: 'Error',
+        inputPlaceholder: 'Search components',
+        packSub: 'One style-pack system shared across ends',
+        packFoot:
+          'Token + skin CSS + assets in three layers; each pack is an independent npm package (end: web / mp / both).',
+        aiPrompt: 'Build a login page with snail-ui',
+        aiOut1: '→ Generates Button + Input + Card in 6 steps',
+        aiOut2: '→ MCP Server filters automatically by end',
+        endSub: 'Independent source, build and npm package per end',
+      }
+    : {
+        subtitleBefore: '面向 ',
+        strongWeb: 'Vue 3（PC Web）',
+        middle: ' + ',
+        strongUni: 'uni-app（移动）',
+        subtitleAfter:
+          ' 的 AI-Native UI 框架生态。Web 端面向桌面，uni 端面向移动——两端从开发到打包完全独立，0 行源代码复用。未来 React 端按相同模式扩展。',
+        cta: '开始使用',
+        compSub: '6 语义类型 · 5 尺寸 · 3 变体',
+        btnDefault: '默认',
+        btnPrimary: '主要',
+        btnInfo: '信息',
+        btnSuccess: '成功',
+        btnWarning: '警告',
+        btnError: '危险',
+        inputPlaceholder: 'SnInput 搜索组件',
+        packSub: '跨端共用风格包系统',
+        packFoot: 'Token + 皮肤 CSS + 资源三层，每包独立 npm 包（end: web / mp / both）。',
+        aiPrompt: '用 snail-ui 做登录页',
+        aiOut1: '→ 6 步生成 Button + Input + Card',
+        aiOut2: '→ MCP Server 自动按 end 过滤',
+        endSub: '两端独立源代码 / 构建 / npm 包',
+      },
+);
 /**
  * SnDocsHome — custom home page chrome, fully built from real
  * @snui/vue-web components (SnCard + SnGrid + SnButton + SnConfigProvider).
@@ -61,12 +74,12 @@ const t = computed(() => isEn.value
  * features all follow the active skin via CSS variables.
  */
 
-import { ArrowRight } from 'lucide-vue-next'
-import { SnButton, SnCard, SnConfigProvider, SnGrid, SnIcon, SnInput } from '@snui/vue-web'
+import { ArrowRight } from 'lucide-vue-next';
+import { SnButton, SnCard, SnConfigProvider, SnGrid, SnIcon, SnInput } from '@snui/vue-web';
 
 function openGithub(): void {
   if (typeof window !== 'undefined') {
-    window.open('https://github.com/hu-snail/snail-ui', '_blank', 'noopener')
+    window.open('https://github.com/hu-snail/snail-ui', '_blank', 'noopener');
   }
 }
 </script>
@@ -83,12 +96,14 @@ function openGithub(): void {
         </a>
 
         <h1 class="sn-home__title">
-          The Foundation for<br>
+          The Foundation for<br />
           your AI-Native Design System
         </h1>
 
         <p class="sn-home__subtitle">
-          {{ t.subtitleBefore }}<strong>{{ t.strongWeb }}</strong>{{ t.middle }}<strong>{{ t.strongUni }}</strong>{{ t.subtitleAfter }}
+          {{ t.subtitleBefore }}<strong>{{ t.strongWeb }}</strong
+          >{{ t.middle }}<strong>{{ t.strongUni }}</strong
+          >{{ t.subtitleAfter }}
         </p>
 
         <div class="sn-home__actions">
@@ -96,16 +111,13 @@ function openGithub(): void {
             {{ t.cta }}
             <SnIcon class="sn-home__cta-icon" :icon="ArrowRight" />
           </SnButton>
-          <SnButton variant="tertiary" size="large" @click="openGithub">
-            GitHub
-          </SnButton>
+          <SnButton variant="tertiary" size="large" @click="openGithub"> GitHub </SnButton>
         </div>
       </section>
 
       <!-- ─────────── Preview grid ─────────── -->
       <section class="sn-home__previews">
         <SnGrid :cols="4" :x-gap="20" :y-gap="20">
-
           <!-- Card 1 — Components -->
           <SnCard variant="outlined" size="large">
             <h3 class="sn-home-card__title">Components</h3>
@@ -173,7 +185,6 @@ function openGithub(): void {
               </div>
             </div>
           </SnCard>
-
         </SnGrid>
       </section>
     </div>
@@ -208,7 +219,9 @@ function openGithub(): void {
   font-weight: 500;
   text-decoration: none;
   margin-bottom: 24px;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 .sn-home__pill:hover {
   background: var(--sn-web-color-background-subtle);
@@ -267,7 +280,8 @@ function openGithub(): void {
   border-color: var(--sn-web-color-border-default);
   color: var(--sn-web-color-text-primary);
 }
-.sn-home__actions :deep(.sn-button--tertiary:hover:not(.sn-button--disabled):not(.sn-button--loading)) {
+.sn-home__actions
+  :deep(.sn-button--tertiary:hover:not(.sn-button--disabled):not(.sn-button--loading)) {
   background: var(--sn-web-color-background-subtle);
   border-color: var(--sn-web-color-border-default);
   color: var(--sn-web-color-text-primary);

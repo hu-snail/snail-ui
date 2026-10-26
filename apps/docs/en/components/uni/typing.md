@@ -19,14 +19,14 @@ Defaults to the "输入中" label plus 3 dots; the label can be emptied, and col
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `text` | `string` | `'输入中'` | Label next to the dots (empty = dots only) |
-| `dotCount` | `number` | `3` | Dot count (clamped to 1-5) |
-| `speed` | `number` | `350` | Pulse period per dot (ms) |
-| `activeDotColor` | `string` | `undefined` | Dot color (primary token) |
-| `customClass` | `string` | `undefined` | Root custom class |
-| `customStyle` | `string` | `undefined` | Root custom style |
+| Name             | Type     | Default     | Description                                |
+| ---------------- | -------- | ----------- | ------------------------------------------ |
+| `text`           | `string` | `'输入中'`  | Label next to the dots (empty = dots only) |
+| `dotCount`       | `number` | `3`         | Dot count (clamped to 1-5)                 |
+| `speed`          | `number` | `350`       | Pulse period per dot (ms)                  |
+| `activeDotColor` | `string` | `undefined` | Dot color (primary token)                  |
+| `customClass`    | `string` | `undefined` | Root custom class                          |
+| `customStyle`    | `string` | `undefined` | Root custom style                          |
 
 ## Dark mode
 

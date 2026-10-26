@@ -18,11 +18,11 @@ The layer is the only node this component can style (there is no teleport target
 
 The web end uses Vue's `<Teleport to="body">`. Mini programs have no `body`, native App has no document tree, and no single API reparents a node across all uni targets — inventing one would silently change rendering on some platforms. This component therefore guarantees only what is portable:
 
-| Guarantee | How |
-| --- | --- |
-| Content is not clipped by an ancestor | `position: fixed` layer with zero insets |
-| The layer never blocks the page | `pointer-events: none` on the layer, `auto` on its children |
-| Visibility is explicit | mount to show, unmount to hide (no boolean prop) |
+| Guarantee                             | How                                                         |
+| ------------------------------------- | ----------------------------------------------------------- |
+| Content is not clipped by an ancestor | `position: fixed` layer with zero insets                    |
+| The layer never blocks the page       | `pointer-events: none` on the layer, `auto` on its children |
+| Visibility is explicit                | mount to show, unmount to hide (no boolean prop)            |
 
 > **Not implemented**: true DOM reparenting (teleport). For a full overlay with mask, scroll lock and animation, use `sn-popup` / `sn-overlay` — that is the supported path on this end.
 
@@ -30,10 +30,10 @@ The web end uses Vue's `<Teleport to="body">`. Mini programs have no `body`, nat
 
 `wd-root-portal` declares none. Two additive AUI hooks exist because, without a teleport target, this layer is the only node a caller can style:
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `customClass` | `string` | `''` | Class on the fixed layer (additive) |
-| `customStyle` | `string` | `''` | Inline style on the fixed layer (additive) |
+| Prop          | Type     | Default | Description                                |
+| ------------- | -------- | ------- | ------------------------------------------ |
+| `customClass` | `string` | `''`    | Class on the fixed layer (additive)        |
+| `customStyle` | `string` | `''`    | Inline style on the fixed layer (additive) |
 
 ## Events
 
@@ -41,8 +41,8 @@ None.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                             |
+| --------- | --------------------------------------- |
 | `default` | Content rendered inside the fixed layer |
 
 ## Theme variables

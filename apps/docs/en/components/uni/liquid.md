@@ -18,29 +18,29 @@ The water level is driven by `percent` (clamped to 0-100); `v-model:current` exp
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `percent` | `number` | `0` | Progress percentage (clamped to 0-100) |
-| `size` | `string` | `'160rpx'` | Ball size |
-| `duration` | `number` | `500` | Level transition duration (ms); 0 = instant |
-| `outline` | `boolean` | `false` | Show the outer ring |
-| `radius` | `string` | `'50%'` | Corner radius |
-| `waveColor` | `string` | `undefined` | Wave color (primary token) |
-| `innerColor` | `string` | `undefined` | Background above the water (soft primary token) |
-| `customClass` | `string` | `undefined` | Root custom class |
-| `customStyle` | `string` | `undefined` | Root custom style |
+| Name          | Type      | Default     | Description                                     |
+| ------------- | --------- | ----------- | ----------------------------------------------- |
+| `percent`     | `number`  | `0`         | Progress percentage (clamped to 0-100)          |
+| `size`        | `string`  | `'160rpx'`  | Ball size                                       |
+| `duration`    | `number`  | `500`       | Level transition duration (ms); 0 = instant     |
+| `outline`     | `boolean` | `false`     | Show the outer ring                             |
+| `radius`      | `string`  | `'50%'`     | Corner radius                                   |
+| `waveColor`   | `string`  | `undefined` | Wave color (primary token)                      |
+| `innerColor`  | `string`  | `undefined` | Background above the water (soft primary token) |
+| `customClass` | `string`  | `undefined` | Root custom class                               |
+| `customStyle` | `string`  | `undefined` | Root custom style                               |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
+| Name             | Payload           | Description                                 |
+| ---------------- | ----------------- | ------------------------------------------- |
 | `update:current` | `(value: number)` | Transitioning level (for `v-model:current`) |
 
 ### Slots
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `default` | — | Center content; defaults to `current%` |
+| Name      | Payload | Description                            |
+| --------- | ------- | -------------------------------------- |
+| `default` | —       | Center content; defaults to `current%` |
 
 ## Dark mode
 

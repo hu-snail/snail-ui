@@ -6,20 +6,14 @@
  * placement 是 Provider 的 prop，切换后堆叠容器整体移动到新的角落；
  * bottom 系列自下而上生长（新通知出现在下方）。
  */
-import { defineComponent, ref } from 'vue'
-import { SnButton, SnNotificationProvider, useNotification } from '@snui/vue-web'
+import { defineComponent, ref } from 'vue';
+import { SnButton, SnNotificationProvider, useNotification } from '@snui/vue-web';
 
-type Placement =
-  | 'top'
-  | 'top-right'
-  | 'top-left'
-  | 'bottom'
-  | 'bottom-right'
-  | 'bottom-left'
+type Placement = 'top' | 'top-right' | 'top-left' | 'bottom' | 'bottom-right' | 'bottom-left';
 
 interface PlacementOption {
-  value: Placement
-  label: string
+  value: Placement;
+  label: string;
 }
 
 const PLACEMENTS: PlacementOption[] = [
@@ -29,9 +23,9 @@ const PLACEMENTS: PlacementOption[] = [
   { value: 'bottom', label: '下中' },
   { value: 'bottom-right', label: '右下' },
   { value: 'bottom-left', label: '左下' },
-]
+];
 
-const placement = ref<Placement>('top-right')
+const placement = ref<Placement>('top-right');
 
 const PlacementTrigger = defineComponent({
   name: 'NotificationPlacementTrigger',
@@ -43,26 +37,26 @@ const PlacementTrigger = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const notification = useNotification()
-    let pushed = 0
+    const notification = useNotification();
+    let pushed = 0;
 
     const push = (): void => {
-      pushed += 1
+      pushed += 1;
       notification.info({
         title: `第 ${pushed} 条通知`,
         content: `堆叠方位：${props.placement}`,
         meta: '切换方位后再触发，通知会出现在新的角落',
-      })
-    }
+      });
+    };
 
     const clearAll = (): void => {
-      pushed = 0
-      notification.destroyAll()
-    }
+      pushed = 0;
+      notification.destroyAll();
+    };
 
-    return () => slots.default?.({ push, clearAll })
+    return () => slots.default?.({ push, clearAll });
   },
-})
+});
 </script>
 
 <template>
@@ -89,7 +83,8 @@ const PlacementTrigger = defineComponent({
     </SnNotificationProvider>
 
     <p class="ntf-place__hint">
-      当前方位 <code>{{ placement }}</code>：通知容器整体吸附到该角落，已在屏的通知也会一起移动。
+      当前方位 <code>{{ placement }}</code
+      >：通知容器整体吸附到该角落，已在屏的通知也会一起移动。
     </p>
   </div>
 </template>

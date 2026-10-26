@@ -31,49 +31,49 @@
 如需显式 import：
 
 ```ts
-import { SnBacktop } from '@snui/uni/components/sn-backtop/sn-backtop.vue'
+import { SnBacktop } from '@snui/uni/components/sn-backtop/sn-backtop.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `scrollTop` | `number` | `0` | 页面滚动距离（由宿主提供） |
-| `text` | `string` | `''` | 按钮文字 |
-| `top` | `number` | `300` | 显示阈值（px） |
-| `duration` | `number` | `100` | 返回顶部滚动时长（ms） |
-| `zIndex` | `number` | `10` | 组件层级 |
-| `iconStyle` | `string` | `''` | 自定义图标样式（叠加在默认向上旋转之上） |
-| `shape` | `'circle' \| 'square'` | `'circle'` | 按钮形状 |
-| `bottom` | `number` | `100` | 距屏幕底部距离（px） |
-| `right` | `number` | `20` | 距屏幕右侧距离（px） |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
+| 属性          | 类型                   | 默认值     | 说明                                     |
+| ------------- | ---------------------- | ---------- | ---------------------------------------- |
+| `scrollTop`   | `number`               | `0`        | 页面滚动距离（由宿主提供）               |
+| `text`        | `string`               | `''`       | 按钮文字                                 |
+| `top`         | `number`               | `300`      | 显示阈值（px）                           |
+| `duration`    | `number`               | `100`      | 返回顶部滚动时长（ms）                   |
+| `zIndex`      | `number`               | `10`       | 组件层级                                 |
+| `iconStyle`   | `string`               | `''`       | 自定义图标样式（叠加在默认向上旋转之上） |
+| `shape`       | `'circle' \| 'square'` | `'circle'` | 按钮形状                                 |
+| `bottom`      | `number`               | `100`      | 距屏幕底部距离（px）                     |
+| `right`       | `number`               | `20`       | 距屏幕右侧距离（px）                     |
+| `customStyle` | `string`               | `''`       | 根节点自定义 inline style                |
+| `customClass` | `string`               | `''`       | 根节点自定义类名                         |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名  | 说明                                                 | 参数             |
+| ------- | ---------------------------------------------------- | ---------------- |
 | `click` | 点击按钮时触发（宿主可自行滚动自己的 `scroll-view`） | `(event: Event)` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明           |
+| --------- | -------------- |
 | `default` | 自定义按钮内容 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-surface` | 按钮底色 |
-| `--sn-mp-color-border-default` | 按钮描边 |
-| `--sn-mp-color-text-primary` | 图标与文字色 |
-| `--sn-mp-color-text-secondary` | 按钮文字色 |
-| `--sn-mp-shadow-sm` | 按钮投影 |
+| 变量                                        | 用途            |
+| ------------------------------------------- | --------------- |
+| `--sn-mp-color-background-surface`          | 按钮底色        |
+| `--sn-mp-color-border-default`              | 按钮描边        |
+| `--sn-mp-color-text-primary`                | 图标与文字色    |
+| `--sn-mp-color-text-secondary`              | 按钮文字色      |
+| `--sn-mp-shadow-sm`                         | 按钮投影        |
 | `--sn-mp-radius-full` / `--sn-mp-radius-md` | 圆形 / 方形圆角 |
-| `--sn-mp-font-size-xs` | 文字字号 |
-| `--sn-mp-spacing-1` | 图标与文字间距 |
+| `--sn-mp-font-size-xs`                      | 文字字号        |
+| `--sn-mp-spacing-1`                         | 图标与文字间距  |
 
 ## 无障碍
 
@@ -87,7 +87,6 @@ import { SnBacktop } from '@snui/uni/components/sn-backtop/sn-backtop.vue'
 `sn-backtop` 的全部颜色来自 `--sn-mp-color-*`，没有浅色 `var()` 兜底，因此在 `.sn-theme-dark` 下自动适配：按钮底色切到暗色表面，描边与投影使用暗色令牌，图标与文字转为暗色文本色。
 
 用 sn-config-provider 的 theme 设为 dark 包裹即可验证：
-
 
 ## 相关
 

@@ -46,53 +46,53 @@
 
 ## SnForm Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `model` | `Record<string, unknown>` | (required) | 响应式 model。 |
-| `rules` | `FormRules` | `{}` | 校验规则集。 |
-| `showMessage` | `boolean` | `true` | 显示错误信息。 |
-| `statusIcon` | `boolean` | `false` | 校验消息前显示状态图标（`!` / `✓`），表单项可单独覆盖。 |
-| `labelPosition` | `'left' \| 'right' \| 'top'` | `'right'` | label 位置。 |
-| `labelWidth` | `number \| string` | `'auto'` | label 列宽。 |
-| `disabled` | `boolean` | `false` | 整体禁用。 |
-| `validateTrigger` | `'blur' \| 'change'` | `'blur'` | 字段触发校验的时机。 |
-| `resetOnChange` | `boolean` | `true` | model 变更后自动清字段错误。 |
-| `errorType` | `'message' \| 'toast' \| 'none'` | `'message'` | 错误显示策略。 |
-| `border` | `boolean` | `false` | FormItem 之间加 rpx 分隔线。 |
-| `center` | `boolean` | `false` | FormItem 控制列垂直居中。 |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | FormItem 默认 size。 |
-| `valueAlign` | `'left' \| 'right'` | `'left'` | 默认字段值对齐。 |
-| `asteriskPosition` | `'left' \| 'right'` | `'left'` | `*` 位置。 |
-| `hideAsterisk` | `boolean` | `false` | 隐藏 required 标记。 |
-| `ellipsis` | `boolean` | `false` | 长 label 截断。 |
-| `schema` | `Record<string, unknown> \| undefined` | `undefined` | 表单级校验 schema（对齐 wd-form）；存入 context，规则仍走 `rules`。 |
-| `titleWidth` | `number \| string \| undefined` | `undefined` | 左侧标题列宽（对齐 wd-form `title-width`）；折叠进继承的 `labelWidth`。 |
-| `layout` | `'horizontal' \| 'vertical'` | `'horizontal'` | 单元格布局，被所有子 FormItem 继承。 |
+| Prop               | Type                                   | Default        | Description                                                             |
+| ------------------ | -------------------------------------- | -------------- | ----------------------------------------------------------------------- |
+| `model`            | `Record<string, unknown>`              | (required)     | 响应式 model。                                                          |
+| `rules`            | `FormRules`                            | `{}`           | 校验规则集。                                                            |
+| `showMessage`      | `boolean`                              | `true`         | 显示错误信息。                                                          |
+| `statusIcon`       | `boolean`                              | `false`        | 校验消息前显示状态图标（`!` / `✓`），表单项可单独覆盖。                 |
+| `labelPosition`    | `'left' \| 'right' \| 'top'`           | `'right'`      | label 位置。                                                            |
+| `labelWidth`       | `number \| string`                     | `'auto'`       | label 列宽。                                                            |
+| `disabled`         | `boolean`                              | `false`        | 整体禁用。                                                              |
+| `validateTrigger`  | `'blur' \| 'change'`                   | `'blur'`       | 字段触发校验的时机。                                                    |
+| `resetOnChange`    | `boolean`                              | `true`         | model 变更后自动清字段错误。                                            |
+| `errorType`        | `'message' \| 'toast' \| 'none'`       | `'message'`    | 错误显示策略。                                                          |
+| `border`           | `boolean`                              | `false`        | FormItem 之间加 rpx 分隔线。                                            |
+| `center`           | `boolean`                              | `false`        | FormItem 控制列垂直居中。                                               |
+| `size`             | `'small' \| 'medium' \| 'large'`       | `'medium'`     | FormItem 默认 size。                                                    |
+| `valueAlign`       | `'left' \| 'right'`                    | `'left'`       | 默认字段值对齐。                                                        |
+| `asteriskPosition` | `'left' \| 'right'`                    | `'left'`       | `*` 位置。                                                              |
+| `hideAsterisk`     | `boolean`                              | `false`        | 隐藏 required 标记。                                                    |
+| `ellipsis`         | `boolean`                              | `false`        | 长 label 截断。                                                         |
+| `schema`           | `Record<string, unknown> \| undefined` | `undefined`    | 表单级校验 schema（对齐 wd-form）；存入 context，规则仍走 `rules`。     |
+| `titleWidth`       | `number \| string \| undefined`        | `undefined`    | 左侧标题列宽（对齐 wd-form `title-width`）；折叠进继承的 `labelWidth`。 |
+| `layout`           | `'horizontal' \| 'vertical'`           | `'horizontal'` | 单元格布局，被所有子 FormItem 继承。                                    |
 
 ## SnFormItem Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `prop` | `string` | — | model dot-path。 |
-| `label` | `string` | — | label 文本。 |
-| `required` | `boolean` | `false` | `*` 标记。 |
-| `rules` | `FormRule[]` | — | item 本地规则。 |
-| `labelWidth` | `number \| string` | inherited | 覆盖 form 级。 |
-| `labelPosition` | `'left' \| 'right' \| 'top'` | inherited | 覆盖 form 级。 |
-| `iconData` | `IconData` | — | frozen `{ viewBox, paths }` 对象。 |
-| `iconName` | `string` | — | 通过 `registerSnIcons` 解析。 |
-| `iconSize` | `number \| string` | `32` | rpx / px 尺寸。 |
-| `size` | `'small' \| 'medium' \| 'large'` | inherited | 覆盖 form 级 size。 |
-| `valueAlign` | `'left' \| 'right'` | inherited | 覆盖 form 级 valueAlign。 |
-| `asteriskPosition` | `'left' \| 'right'` | inherited | 覆盖 form 级 asteriskPosition。 |
-| `hideAsterisk` | `boolean` | inherited | 覆盖 form 级 hideAsterisk。 |
-| `ellipsis` | `boolean` | inherited | 覆盖 form 级 ellipsis。 |
-| `border` | `boolean` | inherited | 自身加底部分隔线。 |
-| `center` | `boolean` | inherited | 自身垂直居中。 |
-| `clickable` | `boolean` | `false` | 整行可点 → 触发 `click` 事件。 |
-| `isLink` | `boolean` | `false` | 右侧显示 › 箭头。 |
-| `placeholder` | `string` | `''` | 未传 default slot 时显示的占位文本。 |
-| `description` | `string` | `''` | 字段下方辅助说明。 |
+| Prop               | Type                             | Default   | Description                          |
+| ------------------ | -------------------------------- | --------- | ------------------------------------ |
+| `prop`             | `string`                         | —         | model dot-path。                     |
+| `label`            | `string`                         | —         | label 文本。                         |
+| `required`         | `boolean`                        | `false`   | `*` 标记。                           |
+| `rules`            | `FormRule[]`                     | —         | item 本地规则。                      |
+| `labelWidth`       | `number \| string`               | inherited | 覆盖 form 级。                       |
+| `labelPosition`    | `'left' \| 'right' \| 'top'`     | inherited | 覆盖 form 级。                       |
+| `iconData`         | `IconData`                       | —         | frozen `{ viewBox, paths }` 对象。   |
+| `iconName`         | `string`                         | —         | 通过 `registerSnIcons` 解析。        |
+| `iconSize`         | `number \| string`               | `32`      | rpx / px 尺寸。                      |
+| `size`             | `'small' \| 'medium' \| 'large'` | inherited | 覆盖 form 级 size。                  |
+| `valueAlign`       | `'left' \| 'right'`              | inherited | 覆盖 form 级 valueAlign。            |
+| `asteriskPosition` | `'left' \| 'right'`              | inherited | 覆盖 form 级 asteriskPosition。      |
+| `hideAsterisk`     | `boolean`                        | inherited | 覆盖 form 级 hideAsterisk。          |
+| `ellipsis`         | `boolean`                        | inherited | 覆盖 form 级 ellipsis。              |
+| `border`           | `boolean`                        | inherited | 自身加底部分隔线。                   |
+| `center`           | `boolean`                        | inherited | 自身垂直居中。                       |
+| `clickable`        | `boolean`                        | `false`   | 整行可点 → 触发 `click` 事件。       |
+| `isLink`           | `boolean`                        | `false`   | 右侧显示 › 箭头。                    |
+| `placeholder`      | `string`                         | `''`      | 未传 default slot 时显示的占位文本。 |
+| `description`      | `string`                         | `''`      | 字段下方辅助说明。                   |
 
 > 标注 `inherited` 的 prop：未显式传入时从父级 `SnForm` 通过 `provide` / `inject` 继承。
 
@@ -108,32 +108,32 @@ type FormRule =
   | { minLength: number; maxLength: number; message: string }
   | { min: number; max: number; message: string }
   | { validator: (value) => boolean | string; message: string }
-  | { asyncValidator: (value) => Promise<boolean | string>; message: string }
+  | { asyncValidator: (value) => Promise<boolean | string>; message: string };
 ```
 
 ## SnForm Exposed API
 
 ```ts
-const formRef = ref<InstanceType<typeof SnForm> | null>(null)
-await formRef.value?.validate()
-await formRef.value?.validateField('email')
-formRef.value?.resetFields()
-formRef.value?.clearValidate()
+const formRef = ref<InstanceType<typeof SnForm> | null>(null);
+await formRef.value?.validate();
+await formRef.value?.validateField('email');
+formRef.value?.resetFields();
+formRef.value?.clearValidate();
 ```
 
 ## SnFormItem Events
 
-| Event | Payload | When |
-| --- | --- | --- |
+| Event   | Payload          | When                                 |
+| ------- | ---------------- | ------------------------------------ |
 | `click` | `(event: Event)` | 整行点击（仅 `clickable=true` 时）。 |
 
 ## SnForm Events
 
-| Event | Payload | When |
-| --- | --- | --- |
+| Event      | Payload             | When                         |
+| ---------- | ------------------- | ---------------------------- |
 | `validate` | `{ valid, errors }` | 每次全表 `validate()` 之后。 |
-| `reset` | — | `resetFields()` 后。 |
-| `submit` | `{ valid }` | 表单提交 + 校验完成。 |
+| `reset`    | —                   | `resetFields()` 后。         |
+| `submit`   | `{ valid }`         | 表单提交 + 校验完成。        |
 
 ## Source
 

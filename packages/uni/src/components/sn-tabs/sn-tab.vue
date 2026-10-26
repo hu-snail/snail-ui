@@ -35,28 +35,28 @@
  *   - 面板切换动画编排 — 由 sn-tabs 的 animated / duration 决定
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { nextUid } from '../../utils/uid'
-import { SN_TABS_KEY, type SnTabsValue } from './sn-tabs-types'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { nextUid } from '../../utils/uid';
+import { SN_TABS_KEY, type SnTabsValue } from './sn-tabs-types';
 
-defineOptions({ name: 'SnTab' })
+defineOptions({ name: 'SnTab' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-tab` 1:1 surface ────────────────────────────────────── */
 
     /** 标签唯一标识，默认取索引。 */
-    name?: SnTabsValue | undefined
+    name?: SnTabsValue | undefined;
     /** 标签标题。 */
-    title?: string
+    title?: string;
     /** 是否禁用。 */
-    disabled?: boolean
+    disabled?: boolean;
     /** 是否懒加载内容（首次激活后才渲染）。 */
-    lazy?: boolean
+    lazy?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     name: undefined,
@@ -66,46 +66,46 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 页签内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const tabs = inject(SN_TABS_KEY, null)
+const tabs = inject(SN_TABS_KEY, null);
 
 /** Stable registration id — keeps the unregister call unambiguous. */
-const uid = nextUid()
+const uid = nextUid();
 
 /** Index inside the container; `-1` until the mount hook has run. */
-const registrationIndex = ref(-1)
+const registrationIndex = ref(-1);
 
-const active = computed(() => tabs?.isActive(registrationIndex.value, props.name) ?? false)
+const active = computed(() => tabs?.isActive(registrationIndex.value, props.name) ?? false);
 
 /** One-way latch: once active, the content stays mounted (`lazy` contract). */
-const hasRendered = ref(!props.lazy || active.value)
+const hasRendered = ref(!props.lazy || active.value);
 watch(
   active,
   (isNowActive) => {
-    if (isNowActive) hasRendered.value = true
+    if (isNowActive) hasRendered.value = true;
   },
   { immediate: true },
-)
+);
 
-const shouldRender = computed(() => hasRendered.value && (active.value || !props.lazy))
+const shouldRender = computed(() => hasRendered.value && (active.value || !props.lazy));
 
 onMounted(() => {
-  if (!tabs) return
+  if (!tabs) return;
   registrationIndex.value = tabs.registerTab({
     uid,
     getName: () => props.name,
     getTitle: () => props.title,
     getDisabled: () => props.disabled,
-  })
-})
+  });
+});
 
-onBeforeUnmount(() => tabs?.unregisterTab(uid))
+onBeforeUnmount(() => tabs?.unregisterTab(uid));
 
 const rootClass = computed(() => [
   'sn-tab',
@@ -113,7 +113,7 @@ const rootClass = computed(() => [
     'sn-tab--active': active.value,
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>

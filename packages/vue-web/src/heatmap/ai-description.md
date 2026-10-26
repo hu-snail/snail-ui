@@ -21,28 +21,28 @@ component).
 ## Import
 
 ```ts
-import SnHeatmap from '@snui/vue-web/src/heatmap/SnHeatmap.vue'
+import SnHeatmap from '@snui/vue-web/src/heatmap/SnHeatmap.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `data` | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | no | Data source; gaps inside the range fill with 0, days before the range / after the last date render blank. |
-| `loading-data` | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | no | Data shown while loading. |
-| `active-colors` | `string[]` | `undefined` | no | Custom level colors (light → dark); overrides the built-in theme. |
-| `minimum-color` | `string` | `undefined` | no | Custom color for the minimum level (0 / empty scale base). |
-| `color-theme` | `'green' \| 'blue' \| 'orange' \| 'purple' \| 'red'` | `undefined` | no | Built-in color theme. |
-| `fill-calendar-leading` | `boolean` | `false` | no | Fill the leading blank week cells with 0 instead of blanks. |
-| `first-day-of-week` | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6` | `0` | no | Week start; `0 = Monday` … `6 = Sunday`. |
-| `loading` | `boolean` | `false` | no | Loading state; without `loading-data` renders a 7 × 53 skeleton. |
-| `show-color-indicator` | `boolean` | `true` | no | Show the bottom color indicator. |
-| `show-week-labels` | `boolean` | `true` | no | Show the left week labels. |
-| `show-month-labels` | `boolean` | `true` | no | Show the top month labels. |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Scale preset (rects 10 / 11 / 12 px, gaps 2 / 3 / 3 px). |
-| `tooltip` | `boolean \| SnHeatmapTooltipConfig` | `false` | no | Per-cell hover tooltip (SnTooltip wrap, lazy popover); `true` = default content `YYYY-MM-DD：value`, object = `TooltipProps` subset (`content` — bubble text when the `tooltip` slot is absent, `placement` default `'top'`, `showArrow` default `true`, `delay` default `100`, `style` / `class` on the popover body). |
-| `x-gap` | `number \| string` | `undefined` | no | Overrides the vertical (row) side of the grid spacing (second `border-spacing` value, like the reference cssr). |
-| `y-gap` | `number \| string` | `undefined` | no | Overrides the horizontal (column) side of the grid spacing (first `border-spacing` value, like the reference cssr). |
+| Name                    | Type                                                   | Default     | Required | Description                                                                                                                                                                                                                                                                                                             |
+| ----------------------- | ------------------------------------------------------ | ----------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data`                  | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | no       | Data source; gaps inside the range fill with 0, days before the range / after the last date render blank.                                                                                                                                                                                                               |
+| `loading-data`          | `Array<{ timestamp: number, value?: number \| null }>` | `undefined` | no       | Data shown while loading.                                                                                                                                                                                                                                                                                               |
+| `active-colors`         | `string[]`                                             | `undefined` | no       | Custom level colors (light → dark); overrides the built-in theme.                                                                                                                                                                                                                                                       |
+| `minimum-color`         | `string`                                               | `undefined` | no       | Custom color for the minimum level (0 / empty scale base).                                                                                                                                                                                                                                                              |
+| `color-theme`           | `'green' \| 'blue' \| 'orange' \| 'purple' \| 'red'`   | `undefined` | no       | Built-in color theme.                                                                                                                                                                                                                                                                                                   |
+| `fill-calendar-leading` | `boolean`                                              | `false`     | no       | Fill the leading blank week cells with 0 instead of blanks.                                                                                                                                                                                                                                                             |
+| `first-day-of-week`     | `0 \| 1 \| 2 \| 3 \| 4 \| 5 \| 6`                      | `0`         | no       | Week start; `0 = Monday` … `6 = Sunday`.                                                                                                                                                                                                                                                                                |
+| `loading`               | `boolean`                                              | `false`     | no       | Loading state; without `loading-data` renders a 7 × 53 skeleton.                                                                                                                                                                                                                                                        |
+| `show-color-indicator`  | `boolean`                                              | `true`      | no       | Show the bottom color indicator.                                                                                                                                                                                                                                                                                        |
+| `show-week-labels`      | `boolean`                                              | `true`      | no       | Show the left week labels.                                                                                                                                                                                                                                                                                              |
+| `show-month-labels`     | `boolean`                                              | `true`      | no       | Show the top month labels.                                                                                                                                                                                                                                                                                              |
+| `size`                  | `'small' \| 'medium' \| 'large'`                       | `'medium'`  | no       | Scale preset (rects 10 / 11 / 12 px, gaps 2 / 3 / 3 px).                                                                                                                                                                                                                                                                |
+| `tooltip`               | `boolean \| SnHeatmapTooltipConfig`                    | `false`     | no       | Per-cell hover tooltip (SnTooltip wrap, lazy popover); `true` = default content `YYYY-MM-DD：value`, object = `TooltipProps` subset (`content` — bubble text when the `tooltip` slot is absent, `placement` default `'top'`, `showArrow` default `true`, `delay` default `100`, `style` / `class` on the popover body). |
+| `x-gap`                 | `number \| string`                                     | `undefined` | no       | Overrides the vertical (row) side of the grid spacing (second `border-spacing` value, like the reference cssr).                                                                                                                                                                                                         |
+| `y-gap`                 | `number \| string`                                     | `undefined` | no       | Overrides the horizontal (column) side of the grid spacing (first `border-spacing` value, like the reference cssr).                                                                                                                                                                                                     |
 
 ## Events
 
@@ -50,13 +50,13 @@ None (the reference has no events).
 
 ## Slots
 
-| Name | Parameters | Description |
-|---|---|---|
-| `footer` | — | Left footer area. |
-| `indicator` | — | Replaces the whole right-side indicator. |
-| `indicator-leading-text` | — | Leading indicator text (default '少'). |
-| `indicator-trailing-text` | — | Trailing indicator text (default '多'). |
-| `tooltip` | Cell data object `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }` | Custom per-cell tooltip content; 1:1 with the reference `DayRect` (`dayOfWeek` 0 = Sunday; `color` is the custom palette entry or the level's `--sn-heatmap-color-N` variable). |
+| Name                      | Parameters                                                                    | Description                                                                                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `footer`                  | —                                                                             | Left footer area.                                                                                                                                                               |
+| `indicator`               | —                                                                             | Replaces the whole right-side indicator.                                                                                                                                        |
+| `indicator-leading-text`  | —                                                                             | Leading indicator text (default '少').                                                                                                                                          |
+| `indicator-trailing-text` | —                                                                             | Trailing indicator text (default '多').                                                                                                                                         |
+| `tooltip`                 | Cell data object `{ timestamp, value, color, dayOfWeek, rowIndex, colIndex }` | Custom per-cell tooltip content; 1:1 with the reference `DayRect` (`dayOfWeek` 0 = Sunday; `color` is the custom palette entry or the level's `--sn-heatmap-color-N` variable). |
 
 ## Behavior
 
@@ -104,12 +104,12 @@ None (the reference has no events).
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Action primary | `--sn-web-color-action-primary` | Default scale base |
-| Feedback success / info / warning / danger | `--sn-web-color-feedback-*` | colorTheme bases |
-| Background surface | `--sn-web-color-background-surface` | Scale ramp base; minimum level mixes 2% text-primary over it (batch visual spec, not `background-subtle`) |
-| Text secondary / primary | `--sn-web-color-text-*` | Labels; loading pulse mix; minimum-level mix |
+| Token                                      | CSS Variable                        | Purpose                                                                                                   |
+| ------------------------------------------ | ----------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Action primary                             | `--sn-web-color-action-primary`     | Default scale base                                                                                        |
+| Feedback success / info / warning / danger | `--sn-web-color-feedback-*`         | colorTheme bases                                                                                          |
+| Background surface                         | `--sn-web-color-background-surface` | Scale ramp base; minimum level mixes 2% text-primary over it (batch visual spec, not `background-subtle`) |
+| Text secondary / primary                   | `--sn-web-color-text-*`             | Labels; loading pulse mix; minimum-level mix                                                              |
 
 ## Versioning
 

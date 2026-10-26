@@ -27,29 +27,29 @@ suffix slots inside each row.
 
 ### SnList Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | Size marker (modifier class) |
-| bordered | `boolean` | `false` | Outer border (rows padded 12px 20px) |
-| clickable | `boolean` | `false` | Pointer cursor on rows |
-| hoverable | `boolean` | `false` | Hover highlight on rows |
-| show-divider | `boolean` | `true` | 1px dividers between rows |
+| Name         | Type                             | Default    | Notes                                |
+| ------------ | -------------------------------- | ---------- | ------------------------------------ |
+| size         | `'small' \| 'medium' \| 'large'` | `'medium'` | Size marker (modifier class)         |
+| bordered     | `boolean`                        | `false`    | Outer border (rows padded 12px 20px) |
+| clickable    | `boolean`                        | `false`    | Pointer cursor on rows               |
+| hoverable    | `boolean`                        | `false`    | Hover highlight on rows              |
+| show-divider | `boolean`                        | `true`     | 1px dividers between rows            |
 
 ### SnList Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | `SnListItem` rows |
-| header | `()` | Header area |
-| footer | `()` | Footer area |
+| Name    | Params | Notes             |
+| ------- | ------ | ----------------- |
+| default | `()`   | `SnListItem` rows |
+| header  | `()`   | Header area       |
+| footer  | `()`   | Footer area       |
 
 ### SnListItem Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | Row main content |
-| prefix | `()` | Row leading content |
-| suffix | `()` | Row trailing content |
+| Name    | Params | Notes                |
+| ------- | ------ | -------------------- |
+| default | `()`   | Row main content     |
+| prefix  | `()`   | Row leading content  |
+| suffix  | `()`   | Row trailing content |
 
 An item used outside a list degrades to a standalone row (divider on).
 

@@ -6,7 +6,7 @@
  */
 
 /** Value a single picker option can carry. */
-export type PickerValue = string | number
+export type PickerValue = string | number;
 
 /**
  * Raw option object. Keys are user-defined and resolved through
@@ -14,34 +14,34 @@ export type PickerValue = string | number
  * `PickerOption` contract.
  */
 export interface PickerOption {
-  [key: string]: unknown
+  [key: string]: unknown;
 }
 
 /** One column: primitives or option objects (or a mix). */
-export type PickerColumn = Array<PickerValue | PickerOption>
+export type PickerColumn = Array<PickerValue | PickerOption>;
 
 /** Option after key resolution — what the roller renders. */
 export interface NormalizedPickerOption {
   /** Resolved `valueKey` (falls back to the option itself for primitives). */
-  value: PickerValue
+  value: PickerValue;
   /** Resolved `labelKey`, stringified for rendering. */
-  label: string
+  label: string;
   /** Resolved `disabled` flag. */
-  disabled: boolean
+  disabled: boolean;
   /** Original option (object or primitive) — echoed back on `change`. */
-  raw: PickerOption | PickerValue
+  raw: PickerOption | PickerValue;
 }
 
 /** Payload of the `change` event (mirrors wd-picker-view). */
 export interface PickerViewChangePayload {
   /** Selected value per column. */
-  selectedValues: PickerValue[]
+  selectedValues: PickerValue[];
   /** Selected raw option per column. */
-  selectedOptions: Array<PickerOption | PickerValue>
+  selectedOptions: Array<PickerOption | PickerValue>;
   /** Selected label per column. */
-  selectedLabels: string[]
+  selectedLabels: string[];
   /** Selected index per column. */
-  selectedIndexes: number[]
+  selectedIndexes: number[];
   /** Column whose selection the user just changed. */
-  columnIndex: number
+  columnIndex: number;
 }

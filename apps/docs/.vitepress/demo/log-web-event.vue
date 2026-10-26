@@ -1,36 +1,36 @@
 <script setup lang="ts">
 /** Demo: SnLog — reach-top / reach-bottom / require-more events. */
-import { ref } from 'vue'
-import { SnLog } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnLog } from '@snui/vue-web';
 
 function makeLog(): string {
-  const lines: string[] = []
+  const lines: string[] = [];
   for (let i = 0; i < 10; ++i) {
-    lines.push(Math.random().toString(16))
+    lines.push(Math.random().toString(16));
   }
-  return `${lines.join('\n')}\n`
+  return `${lines.join('\n')}\n`;
 }
 
-const loading = ref(false)
-const log = ref(makeLog())
-const lastEvent = ref('（暂无事件）')
+const loading = ref(false);
+const log = ref(makeLog());
+const lastEvent = ref('（暂无事件）');
 
 function handleRequireMore(from: 'top' | 'bottom') {
-  if (loading.value) return
-  loading.value = true
-  lastEvent.value = `require-more：${from === 'top' ? '顶部' : '底部'}`
+  if (loading.value) return;
+  loading.value = true;
+  lastEvent.value = `require-more：${from === 'top' ? '顶部' : '底部'}`;
   window.setTimeout(() => {
-    log.value = from === 'top' ? makeLog() + log.value : log.value + makeLog()
-    loading.value = false
-  }, 800)
+    log.value = from === 'top' ? makeLog() + log.value : log.value + makeLog();
+    loading.value = false;
+  }, 800);
 }
 
 function handleReachTop() {
-  lastEvent.value = 'reach-top：已到顶部'
+  lastEvent.value = 'reach-top：已到顶部';
 }
 
 function handleReachBottom() {
-  lastEvent.value = 'reach-bottom：已到底部'
+  lastEvent.value = 'reach-bottom：已到底部';
 }
 </script>
 

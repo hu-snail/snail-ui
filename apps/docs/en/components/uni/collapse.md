@@ -39,77 +39,77 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnCollapse } from '@snui/uni/components/sn-collapse/sn-collapse.vue'
-import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-item.vue'
+import { SnCollapse } from '@snui/uni/components/sn-collapse/sn-collapse.vue';
+import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-item.vue';
 ```
 
 ## Props
 
 ### sn-collapse
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| string[] \| boolean` | `[]` | Bound value: `string[]` in normal mode, `string` in accordion mode, `boolean` in view-more mode |
-| `accordion` | `boolean` | `false` | Accordion mode |
-| `viewmore` | `boolean` | `false` | View-more mode |
-| `useMoreSlot` | `boolean` | `false` | Enable the `more` slot in view-more mode |
-| `lineNum` | `number` | `2` | Collapsed line count in view-more mode |
-| `customMoreSlotClass` | `string` | `''` | Extra class around the `more` slot |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop                  | Type                            | Default | Description                                                                                     |
+| --------------------- | ------------------------------- | ------- | ----------------------------------------------------------------------------------------------- |
+| `modelValue`          | `string \| string[] \| boolean` | `[]`    | Bound value: `string[]` in normal mode, `string` in accordion mode, `boolean` in view-more mode |
+| `accordion`           | `boolean`                       | `false` | Accordion mode                                                                                  |
+| `viewmore`            | `boolean`                       | `false` | View-more mode                                                                                  |
+| `useMoreSlot`         | `boolean`                       | `false` | Enable the `more` slot in view-more mode                                                        |
+| `lineNum`             | `number`                        | `2`     | Collapsed line count in view-more mode                                                          |
+| `customMoreSlotClass` | `string`                        | `''`    | Extra class around the `more` slot                                                              |
+| `customClass`         | `string`                        | `''`    | Extra class on the root node                                                                    |
+| `customStyle`         | `string`                        | `''`    | Inline style on the root node                                                                   |
 
 ### sn-collapse-item
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | `''` | Unique panel name |
-| `title` | `string` | `''` | Panel title |
-| `disabled` | `boolean` | `false` | Disable this panel |
-| `beforeExpend` | `(name) => boolean \| Promise<boolean>` | `undefined` | Veto hook run before opening |
-| `border` | `boolean` | `true` | Draw the panel divider |
-| `customBodyClass` | `string` | `''` | Extra class on the body container |
-| `customBodyStyle` | `string` | `''` | Inline style on the body container |
-| `customClass` | `string` | `''` | Extra class on the panel root |
-| `customStyle` | `string` | `''` | Inline style on the panel root |
+| Prop              | Type                                    | Default     | Description                        |
+| ----------------- | --------------------------------------- | ----------- | ---------------------------------- |
+| `name`            | `string`                                | `''`        | Unique panel name                  |
+| `title`           | `string`                                | `''`        | Panel title                        |
+| `disabled`        | `boolean`                               | `false`     | Disable this panel                 |
+| `beforeExpend`    | `(name) => boolean \| Promise<boolean>` | `undefined` | Veto hook run before opening       |
+| `border`          | `boolean`                               | `true`      | Draw the panel divider             |
+| `customBodyClass` | `string`                                | `''`        | Extra class on the body container  |
+| `customBodyStyle` | `string`                                | `''`        | Inline style on the body container |
+| `customClass`     | `string`                                | `''`        | Extra class on the panel root      |
+| `customStyle`     | `string`                                | `''`        | Inline style on the panel root     |
 
 > `beforeExpend` keeps wot-ui's original spelling (an upstream typo) so the prop surface stays 1:1. It runs only when **opening**; collapsing never asks. A rejected promise is treated as "stay closed" and is not rethrown.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Bound value changed | `(value: string \| string[] \| boolean)` |
-| `change` | Bound value changed | `({ value })` |
-| `change` (item) | One panel's state changed | `({ name, expanded })` |
+| Event               | Description               | Payload                                  |
+| ------------------- | ------------------------- | ---------------------------------------- |
+| `update:modelValue` | Bound value changed       | `(value: string \| string[] \| boolean)` |
+| `change`            | Bound value changed       | `({ value })`                            |
+| `change` (item)     | One panel's state changed | `({ name, expanded })`                   |
 
 ## Methods
 
-| Method | Description | Parameters |
-| --- | --- | --- |
+| Method      | Description                                                                                                           | Parameters                                                   |
+| ----------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
 | `toggleAll` | Toggle every panel. `{ expanded: true }` opens all, `{ expanded: false }` closes all, no argument flips the whole set | `(options?: { expanded?: boolean; skipDisabled?: boolean })` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` (collapse) | Panel list |
-| `more` (collapse) | Custom expand / collapse area in view-more mode; scope `{ expanded }` |
-| `title` (item) | Custom title area; scope `{ expanded, disabled, isFirst }` |
-| `default` (item) | Panel content |
+| Slot                 | Description                                                           |
+| -------------------- | --------------------------------------------------------------------- |
+| `default` (collapse) | Panel list                                                            |
+| `more` (collapse)    | Custom expand / collapse area in view-more mode; scope `{ expanded }` |
+| `title` (item)       | Custom title area; scope `{ expanded, disabled, isFirst }`            |
+| `default` (item)     | Panel content                                                         |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | Panel surface |
-| `--sn-mp-color-background-soft` | Title tap feedback |
-| `--sn-mp-color-border-subtle` | Panel divider |
-| `--sn-mp-color-text-primary` | Title colour |
-| `--sn-mp-color-text-secondary` | Body and arrow colour |
-| `--sn-mp-color-action-primary` | Expand / collapse label colour |
-| `--sn-mp-font-size-md` / `--sn-mp-font-size-sm` | Title / body size |
-| `--sn-mp-font-line-height-normal` | Body line height (`line-num` clamps against it) |
-| `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Header / body padding |
+| Variable                                        | Purpose                                         |
+| ----------------------------------------------- | ----------------------------------------------- |
+| `--sn-mp-color-background-surface`              | Panel surface                                   |
+| `--sn-mp-color-background-soft`                 | Title tap feedback                              |
+| `--sn-mp-color-border-subtle`                   | Panel divider                                   |
+| `--sn-mp-color-text-primary`                    | Title colour                                    |
+| `--sn-mp-color-text-secondary`                  | Body and arrow colour                           |
+| `--sn-mp-color-action-primary`                  | Expand / collapse label colour                  |
+| `--sn-mp-font-size-md` / `--sn-mp-font-size-sm` | Title / body size                               |
+| `--sn-mp-font-line-height-normal`               | Body line height (`line-num` clamps against it) |
+| `--sn-mp-spacing-3` / `--sn-mp-spacing-4`       | Header / body padding                           |
 
 ## Accessibility
 
@@ -123,7 +123,6 @@ import { SnCollapseItem } from '@snui/uni/components/sn-collapse/sn-collapse-ite
 Every colour in `sn-collapse` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the panel surface flips to the dark surface, the divider uses the dark border token, the title moves to the dark primary text and the body to the dark secondary text.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

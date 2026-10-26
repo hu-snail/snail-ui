@@ -41,12 +41,12 @@
  *   </SnLayout>
  */
 
-import { computed, provide, toRef } from 'vue'
-import type { CSSProperties } from 'vue'
-import { SN_LAYOUT_KEY } from './sn-layout-types'
-import type { SnLayoutPosition, SnLayoutStyleValue } from './sn-layout-types'
+import { computed, provide, toRef } from 'vue';
+import type { CSSProperties } from 'vue';
+import { SN_LAYOUT_KEY } from './sn-layout-types';
+import type { SnLayoutPosition, SnLayoutStyleValue } from './sn-layout-types';
 
-defineOptions({ name: 'SnLayout' })
+defineOptions({ name: 'SnLayout' });
 
 // Reference: naive-ui layoutProps
 //   (https://github.com/tusen-ai/naive-ui/blob/main/src/layout/src/Layout.tsx)
@@ -57,32 +57,32 @@ const props = withDefaults(
   defineProps<{
     /** Whether the layout arranges children in a row (sider present).
      * Mirrors n-layout `has-sider`. Default false. */
-    hasSider?: boolean
+    hasSider?: boolean;
     /** Positioning mode. 'static' keeps normal flow; 'absolute' pins the
      * root to inset 0. Mirrors n-layout `position`. Default 'static'. */
-    position?: SnLayoutPosition
+    position?: SnLayoutPosition;
     /** Inline style forwarded to SnLayoutContent children. Mirrors
      * n-layout `content-style`. */
-    contentStyle?: SnLayoutStyleValue
+    contentStyle?: SnLayoutStyleValue;
     /** Inline style forwarded to SnLayoutHeader children. */
-    headerStyle?: SnLayoutStyleValue
+    headerStyle?: SnLayoutStyleValue;
     /** Inline style forwarded to SnLayoutFooter children. */
-    footerStyle?: SnLayoutStyleValue
+    footerStyle?: SnLayoutStyleValue;
     /** Inline style forwarded to SnLayoutSider children. Mirrors
      * n-layout `sider-style`. */
-    siderStyle?: SnLayoutStyleValue
+    siderStyle?: SnLayoutStyleValue;
   }>(),
   {
     hasSider: false,
     position: 'static',
   },
-)
+);
 
 defineSlots<{
   /** Layout pieces: SnLayoutHeader / SnLayoutContent / SnLayoutFooter /
    * SnLayoutSider (or a nested SnLayout when combining sider + stack). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 provide(SN_LAYOUT_KEY, {
   hasSider: toRef(props, 'hasSider'),
@@ -92,25 +92,25 @@ provide(SN_LAYOUT_KEY, {
   footerStyle: toRef(props, 'footerStyle'),
   siderStyle: toRef(props, 'siderStyle'),
   isInsideLayout: true,
-})
+});
 
 const rootStyle = computed<CSSProperties>(() => {
   const style: CSSProperties = {
     display: 'flex',
     flexDirection: props.hasSider ? 'row' : 'column',
-  }
+  };
   if (props.hasSider) {
-    style.flexWrap = 'nowrap'
+    style.flexWrap = 'nowrap';
   }
   if (props.position === 'absolute') {
-    style.position = 'absolute'
-    style.top = '0'
-    style.right = '0'
-    style.bottom = '0'
-    style.left = '0'
+    style.position = 'absolute';
+    style.top = '0';
+    style.right = '0';
+    style.bottom = '0';
+    style.left = '0';
   }
-  return style
-})
+  return style;
+});
 </script>
 
 <template>

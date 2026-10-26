@@ -39,18 +39,18 @@ text; the expanded state is owned by the component.
 
 All props are optional.
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| expandTrigger | `'click' \| 'none'` | `'none'` | Clicking the text toggles expansion |
-| lineClamp | `number` | `1` | Clamp rows; `1` = single line, above 1 = multi-line |
-| tooltip | `boolean \| SnEllipsisTooltipOptions` | `true` | Full-text tooltip on overflow; the object form forwards tooltip props |
-| width | `number \| 'screen'` | `undefined` | Box width; number = px, `'screen'` = 100vw |
+| Name          | Type                                  | Default     | Description                                                           |
+| ------------- | ------------------------------------- | ----------- | --------------------------------------------------------------------- |
+| expandTrigger | `'click' \| 'none'`                   | `'none'`    | Clicking the text toggles expansion                                   |
+| lineClamp     | `number`                              | `1`         | Clamp rows; `1` = single line, above 1 = multi-line                   |
+| tooltip       | `boolean \| SnEllipsisTooltipOptions` | `true`      | Full-text tooltip on overflow; the object form forwards tooltip props |
+| width         | `number \| 'screen'`                  | `undefined` | Box width; number = px, `'screen'` = 100vw                            |
 
 ### Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
-| default | — | Text content to clamp |
+| Name    | Scope | Description           |
+| ------- | ----- | --------------------- |
+| default | —     | Text content to clamp |
 
 No events.
 

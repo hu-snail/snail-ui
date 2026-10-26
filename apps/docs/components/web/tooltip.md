@@ -58,56 +58,56 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `show` | `boolean` | `undefined` | 是否显示。`undefined` 为不受控模式。 |
-| `defaultShow` | `boolean` | `false` | 不受控模式下的初始显示状态。 |
-| `trigger` | `'hover' \| 'click' \| 'focus' \| 'manual'` | `'hover'` | 触发方式。`'manual'` 时只由 `show` 控制。 |
-| `placement` | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'` | 弹出位置。 |
-| `content` | `string` | `''` | 提示文字。 |
-| `delay` | `number \| [number, number]` | `100` | 打开延迟（ms）。传数组时第二项覆盖关闭延迟。 |
-| `duration` | `number` | `100` | 关闭延迟（ms）。 |
-| `arrow` | `boolean` | `true` | 是否显示箭头。 |
-| `arrowPointToCenter` | `boolean` | `false` | 箭头是否指向气泡中心而非触发器边缘。 |
-| `arrowClass` | `string` | `undefined` | 箭头元素的类名。 |
-| `arrowStyle` | `CSSProperties` | `undefined` | 箭头元素的样式。 |
-| `contentClass` | `string` | `undefined` | 内容区域的类名。 |
-| `contentStyle` | `CSSProperties` | `undefined` | 内容区域的样式。 |
-| `displayDirective` | `'if' \| 'show'` | `'if'` | `'if'` 关闭后卸载；`'show'` 保留节点并切换 `display`。 |
-| `animated` | `boolean` | `true` | 是否使用进出场动画。 |
-| `raw` | `boolean` | `false` | 是否移除内置气泡样式，交由调用方绘制。 |
-| `scrollable` | `boolean` | `false` | 内容超出高度时是否可滚动。 |
-| `flip` | `boolean` | `true` | 空间不足时是否自动翻转到对侧。 |
-| `overlap` | `boolean` | `false` | 是否覆盖触发器而非并排。 |
-| `keepAliveOnHover` | `boolean` | `true` | `hover` 触发时，指针移入气泡是否保持显示。 |
-| `width` | `number \| 'trigger'` | `undefined` | 宽度。`'trigger'` 表示与触发器等宽。 |
-| `to` | `string \| HTMLElement \| false` | `'body'` | 弹层的挂载容器。`false` 表示原地渲染。 |
-| `zIndex` | `number` | `undefined` | 层级。 |
-| `disabled` | `boolean` | `false` | 是否禁用弹出。 |
-| `wrapped` | `boolean` | `true` | 是否用一层 `<span>` 包裹触发内容以承载指针事件。 |
-| `onClickoutside` | `(e: MouseEvent) => void` | `undefined` | 点击外部时调用。 |
+| 名称                 | 类型                                                                                                                                                                 | 默认值      | 说明                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------ |
+| `show`               | `boolean`                                                                                                                                                            | `undefined` | 是否显示。`undefined` 为不受控模式。                   |
+| `defaultShow`        | `boolean`                                                                                                                                                            | `false`     | 不受控模式下的初始显示状态。                           |
+| `trigger`            | `'hover' \| 'click' \| 'focus' \| 'manual'`                                                                                                                          | `'hover'`   | 触发方式。`'manual'` 时只由 `show` 控制。              |
+| `placement`          | `'top-start' \| 'top' \| 'top-end' \| 'right-start' \| 'right' \| 'right-end' \| 'bottom-start' \| 'bottom' \| 'bottom-end' \| 'left-start' \| 'left' \| 'left-end'` | `'top'`     | 弹出位置。                                             |
+| `content`            | `string`                                                                                                                                                             | `''`        | 提示文字。                                             |
+| `delay`              | `number \| [number, number]`                                                                                                                                         | `100`       | 打开延迟（ms）。传数组时第二项覆盖关闭延迟。           |
+| `duration`           | `number`                                                                                                                                                             | `100`       | 关闭延迟（ms）。                                       |
+| `arrow`              | `boolean`                                                                                                                                                            | `true`      | 是否显示箭头。                                         |
+| `arrowPointToCenter` | `boolean`                                                                                                                                                            | `false`     | 箭头是否指向气泡中心而非触发器边缘。                   |
+| `arrowClass`         | `string`                                                                                                                                                             | `undefined` | 箭头元素的类名。                                       |
+| `arrowStyle`         | `CSSProperties`                                                                                                                                                      | `undefined` | 箭头元素的样式。                                       |
+| `contentClass`       | `string`                                                                                                                                                             | `undefined` | 内容区域的类名。                                       |
+| `contentStyle`       | `CSSProperties`                                                                                                                                                      | `undefined` | 内容区域的样式。                                       |
+| `displayDirective`   | `'if' \| 'show'`                                                                                                                                                     | `'if'`      | `'if'` 关闭后卸载；`'show'` 保留节点并切换 `display`。 |
+| `animated`           | `boolean`                                                                                                                                                            | `true`      | 是否使用进出场动画。                                   |
+| `raw`                | `boolean`                                                                                                                                                            | `false`     | 是否移除内置气泡样式，交由调用方绘制。                 |
+| `scrollable`         | `boolean`                                                                                                                                                            | `false`     | 内容超出高度时是否可滚动。                             |
+| `flip`               | `boolean`                                                                                                                                                            | `true`      | 空间不足时是否自动翻转到对侧。                         |
+| `overlap`            | `boolean`                                                                                                                                                            | `false`     | 是否覆盖触发器而非并排。                               |
+| `keepAliveOnHover`   | `boolean`                                                                                                                                                            | `true`      | `hover` 触发时，指针移入气泡是否保持显示。             |
+| `width`              | `number \| 'trigger'`                                                                                                                                                | `undefined` | 宽度。`'trigger'` 表示与触发器等宽。                   |
+| `to`                 | `string \| HTMLElement \| false`                                                                                                                                     | `'body'`    | 弹层的挂载容器。`false` 表示原地渲染。                 |
+| `zIndex`             | `number`                                                                                                                                                             | `undefined` | 层级。                                                 |
+| `disabled`           | `boolean`                                                                                                                                                            | `false`     | 是否禁用弹出。                                         |
+| `wrapped`            | `boolean`                                                                                                                                                            | `true`      | 是否用一层 `<span>` 包裹触发内容以承载指针事件。       |
+| `onClickoutside`     | `(e: MouseEvent) => void`                                                                                                                                            | `undefined` | 点击外部时调用。                                       |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称          | 参数      | 说明           |
+| ------------- | --------- | -------------- |
 | `update:show` | `boolean` | 显示状态变化。 |
-| `show` | `()` | 弹层出现。 |
-| `hide` | `()` | 弹层隐藏。 |
+| `show`        | `()`      | 弹层出现。     |
+| `hide`        | `()`      | 弹层隐藏。     |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称      | 参数      | 说明                                                            |
+| --------- | --------- | --------------------------------------------------------------- |
 | `default` | `(scope)` | 触发元素。`wrapped` 为 `false` 时通过 scope 注入 `triggerRef`。 |
-| `content` | `()` | 气泡内容，替代 `content` prop。 |
+| `content` | `()`      | 气泡内容，替代 `content` prop。                                 |
 
 ### Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
-| `show` | `() => void` | 命令式显示。 |
-| `hide` | `() => void` | 命令式隐藏。 |
+| 名称      | 类型            | 说明               |
+| --------- | --------------- | ------------------ |
+| `show`    | `() => void`    | 命令式显示。       |
+| `hide`    | `() => void`    | 命令式隐藏。       |
 | `isShown` | `() => boolean` | 读取当前显示状态。 |
 
 ## 打开与关闭时机

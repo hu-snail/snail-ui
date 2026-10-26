@@ -103,7 +103,10 @@ describe('@snui/runtime — ActionRegistry', () => {
     const ac = new AbortController();
     ac.abort();
     try {
-      await r.execute({ action: { id: 'check-abort', type: 'state' }, context: buildCtx({ signal: ac.signal }) });
+      await r.execute({
+        action: { id: 'check-abort', type: 'state' },
+        context: buildCtx({ signal: ac.signal }),
+      });
       expect.fail('should have thrown');
     } catch (e) {
       expect(isAUIError(e)).toBe(true);

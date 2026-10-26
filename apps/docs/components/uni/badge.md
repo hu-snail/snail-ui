@@ -27,7 +27,6 @@
 3. `value` 为空或空字符串 → 不渲染角标。
 4. `value === 0` 且 `showZero` 为 false → 不渲染角标。
 
-
 ## 根节点自定义类名与样式（`customClass` / `customStyle`）
 
 两个 prop 都落在**包裹容器**（根节点）上，不是角标节点：`customClass` 追加根节点类名，`customStyle` 直接作为根节点 inline style。角标自身的外观（`type` / `bgColor` / `top` / `right` / `shape`）不受影响，需要改角标底色仍用 `bgColor`。
@@ -45,26 +44,26 @@
 如需显式 import：
 
 ```ts
-import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue'
+import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `value` | `string \| number` | `undefined` | 显示值；数字超出 `max` 时显示 `{max}+` |
-| `max` | `number` | `undefined` | 溢出阈值，仅对数字 `value` 生效 |
-| `top` | `string \| number` | `undefined` | 相对默认锚点向下偏移；数字按 px |
-| `right` | `string \| number` | `undefined` | 相对默认锚点向左偏移；数字按 px |
-| `isDot` | `boolean` | `false` | 圆点模式，不显示数值 |
-| `hidden` | `boolean` | `false` | 隐藏角标（被包裹内容照常渲染） |
-| `type` | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `undefined` | 角标颜色；不设置时用危险色（红） |
-| `bgColor` | `string` | `''` | 角标背景色（内联覆盖） |
-| `showZero` | `boolean` | `false` | 是否显示 `0` |
-| `shape` | `'circle' \| 'square' \| 'bubble'` | `'circle'` | 徽标形状 |
-| `border` | `boolean` | `false` | 是否显示描边环（用页面底色分隔） |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型                                                        | 默认值      | 说明                                   |
+| ------------- | ----------------------------------------------------------- | ----------- | -------------------------------------- |
+| `value`       | `string \| number`                                          | `undefined` | 显示值；数字超出 `max` 时显示 `{max}+` |
+| `max`         | `number`                                                    | `undefined` | 溢出阈值，仅对数字 `value` 生效        |
+| `top`         | `string \| number`                                          | `undefined` | 相对默认锚点向下偏移；数字按 px        |
+| `right`       | `string \| number`                                          | `undefined` | 相对默认锚点向左偏移；数字按 px        |
+| `isDot`       | `boolean`                                                   | `false`     | 圆点模式，不显示数值                   |
+| `hidden`      | `boolean`                                                   | `false`     | 隐藏角标（被包裹内容照常渲染）         |
+| `type`        | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `undefined` | 角标颜色；不设置时用危险色（红）       |
+| `bgColor`     | `string`                                                    | `''`        | 角标背景色（内联覆盖）                 |
+| `showZero`    | `boolean`                                                   | `false`     | 是否显示 `0`                           |
+| `shape`       | `'circle' \| 'square' \| 'bubble'`                          | `'circle'`  | 徽标形状                               |
+| `border`      | `boolean`                                                   | `false`     | 是否显示描边环（用页面底色分隔）       |
+| `customClass` | `string`                                                    | `''`        | 根节点自定义类名                       |
+| `customStyle` | `string`                                                    | `''`        | 根节点自定义 inline style              |
 
 ## Events
 
@@ -72,25 +71,25 @@ import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue'
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明                               |
+| --------- | ---------------------------------- |
 | `default` | 被锚定的内容（图标 / 头像 / 文本） |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-action-primary` | `primary` 类型角标底色 |
-| `--sn-mp-color-feedback-success` | `success` 类型 |
-| `--sn-mp-color-feedback-warning` | `warning` 类型 |
-| `--sn-mp-color-feedback-danger` | `danger` 类型（也是默认色） |
-| `--sn-mp-color-feedback-info` | `info` 类型 |
-| `--sn-mp-color-text-on-primary` | 角标文字色 |
-| `--sn-mp-color-background-surface` | `border` 描边环颜色 |
-| `--sn-mp-color-text-primary` | Doodle 皮肤描边 |
-| `--sn-mp-font-size-xs` | 角标字号 |
-| `--sn-mp-font-weight-{medium,bold}` | 角标字重 |
-| `--sn-mp-radius-{sm,lg,full}` | 圆形 / 方形 / 气泡形状 |
+| 变量                                | 用途                        |
+| ----------------------------------- | --------------------------- |
+| `--sn-mp-color-action-primary`      | `primary` 类型角标底色      |
+| `--sn-mp-color-feedback-success`    | `success` 类型              |
+| `--sn-mp-color-feedback-warning`    | `warning` 类型              |
+| `--sn-mp-color-feedback-danger`     | `danger` 类型（也是默认色） |
+| `--sn-mp-color-feedback-info`       | `info` 类型                 |
+| `--sn-mp-color-text-on-primary`     | 角标文字色                  |
+| `--sn-mp-color-background-surface`  | `border` 描边环颜色         |
+| `--sn-mp-color-text-primary`        | Doodle 皮肤描边             |
+| `--sn-mp-font-size-xs`              | 角标字号                    |
+| `--sn-mp-font-weight-{medium,bold}` | 角标字重                    |
+| `--sn-mp-radius-{sm,lg,full}`       | 圆形 / 方形 / 气泡形状      |
 
 ## 无障碍
 
@@ -107,7 +106,6 @@ import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue'
 - `bgColor` 内联覆盖会被原样使用；如果传入浅色字面量，暗色下不会自动翻转 —— 这类覆盖请使用 `var(--sn-mp-*)`。
 
 用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

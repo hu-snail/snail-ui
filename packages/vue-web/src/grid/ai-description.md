@@ -17,23 +17,23 @@ here MUST also be added to the n-grid parity list.
 ## Import
 
 ```ts
-import { SnGrid } from '@snui/vue-web'
+import { SnGrid } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `cols` | `number \| string` | `24` | Number of grid columns. Falls back to 24 on invalid input (0 / negative / NaN). |
-| `xGap` | `number \| string` | `0` | Horizontal gap (px). Strings pass through. |
-| `yGap` | `number \| string` | `0` | Vertical gap (px). Strings pass through. |
-| `itemResponsive` | `boolean` | `false` | Subscribe to container resize; n-grid full implementation also adjusts item widths per breakpoint (future expansion). |
-| `itemStyle` | `string \| CSSProperties` | — | Inline style applied to each direct child. |
+| Name             | Type                      | Default | Description                                                                                                           |
+| ---------------- | ------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------- |
+| `cols`           | `number \| string`        | `24`    | Number of grid columns. Falls back to 24 on invalid input (0 / negative / NaN).                                       |
+| `xGap`           | `number \| string`        | `0`     | Horizontal gap (px). Strings pass through.                                                                            |
+| `yGap`           | `number \| string`        | `0`     | Vertical gap (px). Strings pass through.                                                                              |
+| `itemResponsive` | `boolean`                 | `false` | Subscribe to container resize; n-grid full implementation also adjusts item widths per breakpoint (future expansion). |
+| `itemStyle`      | `string \| CSSProperties` | —       | Inline style applied to each direct child.                                                                            |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                        |
+| --------- | ---------------------------------- |
 | `default` | Direct children become grid items. |
 
 ## §112 future markers

@@ -17,16 +17,16 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnEquation from '@snui/vue-web/src/equation/SnEquation.vue'
+import SnEquation from '@snui/vue-web/src/equation/SnEquation.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `value` | `string` | `''` | no | LaTeX expression string. |
-| `katex` | `SnEquationKatex` | `undefined` | no | Custom katex-like renderer; overrides the bundled one. |
-| `katexOptions` | `Record<string, unknown>` | `undefined` | no | Options forwarded to `renderToString` (e.g. `displayMode`, `macros`, `fleqn`). `throwOnError` defaults to `false`. |
+| Name           | Type                      | Default     | Required | Description                                                                                                        |
+| -------------- | ------------------------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `value`        | `string`                  | `''`        | no       | LaTeX expression string.                                                                                           |
+| `katex`        | `SnEquationKatex`         | `undefined` | no       | Custom katex-like renderer; overrides the bundled one.                                                             |
+| `katexOptions` | `Record<string, unknown>` | `undefined` | no       | Options forwarded to `renderToString` (e.g. `displayMode`, `macros`, `fleqn`). `throwOnError` defaults to `false`. |
 
 ## Events
 

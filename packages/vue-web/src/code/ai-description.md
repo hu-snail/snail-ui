@@ -17,25 +17,25 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui `n-code`
 ## Import
 
 ```ts
-import SnCode from '@snui/vue-web/src/code/SnCode.vue'
+import SnCode from '@snui/vue-web/src/code/SnCode.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `code` | `string` | `''` | no | Source code text. |
-| `language` | `string` | `undefined` | no | Highlighter language. Only `json` tokenizes (built-in); other languages render plain monospace. |
-| `trim` | `boolean` | `true` | no | Trim the displayed code on the highlighted (json) path. |
-| `inline` | `boolean` | `false` | no | Inline (single-line) rendering without the `pre` wrapper. |
-| `wordWrap` | `boolean` | `false` | no | Soft-wrap overflowing lines. |
-| `showLineNumbers` | `boolean` | `false` | no | Show the line-number gutter (ignored when `inline` or `wordWrap`). |
-| `uri` | `boolean` | `false` | no | Decode `code` as a URI component before display. |
+| Name              | Type      | Default     | Required | Description                                                                                     |
+| ----------------- | --------- | ----------- | -------- | ----------------------------------------------------------------------------------------------- |
+| `code`            | `string`  | `''`        | no       | Source code text.                                                                               |
+| `language`        | `string`  | `undefined` | no       | Highlighter language. Only `json` tokenizes (built-in); other languages render plain monospace. |
+| `trim`            | `boolean` | `true`      | no       | Trim the displayed code on the highlighted (json) path.                                         |
+| `inline`          | `boolean` | `false`     | no       | Inline (single-line) rendering without the `pre` wrapper.                                       |
+| `wordWrap`        | `boolean` | `false`     | no       | Soft-wrap overflowing lines.                                                                    |
+| `showLineNumbers` | `boolean` | `false`     | no       | Show the line-number gutter (ignored when `inline` or `wordWrap`).                              |
+| `uri`             | `boolean` | `false`     | no       | Decode `code` as a URI component before display.                                                |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                                                        |
+| --------- | ---------------------------------------------------------------------------------- |
 | `default` | Custom code content; replaces the rendered code (the gutter still follows `code`). |
 
 ## Divergences from the reference API
@@ -60,17 +60,17 @@ import SnCode from '@snui/vue-web/src/code/SnCode.vue'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Base code color |
-| Text primary (+ color-mix 4.5%) | `--sn-web-color-text-primary` | Block surface background (mixed with surface) |
-| Text primary (+ color-mix 12%) | `--sn-web-color-text-primary` | Block border (mixed with surface) |
-| Text tertiary | `--sn-web-color-text-tertiary` | Line-number gutter |
-| Action primary | `--sn-web-color-action-primary` | JSON key token |
-| Feedback success | `--sn-web-color-feedback-success` | JSON string token |
-| Feedback warning | `--sn-web-color-feedback-warning` | JSON number token |
-| Feedback info | `--sn-web-color-feedback-info` | JSON keyword token |
-| Text secondary (+ color-mix) | `--sn-web-color-text-secondary` | JSON punctuation token |
+| Token                           | CSS Variable                      | Purpose                                       |
+| ------------------------------- | --------------------------------- | --------------------------------------------- |
+| Text primary                    | `--sn-web-color-text-primary`     | Base code color                               |
+| Text primary (+ color-mix 4.5%) | `--sn-web-color-text-primary`     | Block surface background (mixed with surface) |
+| Text primary (+ color-mix 12%)  | `--sn-web-color-text-primary`     | Block border (mixed with surface)             |
+| Text tertiary                   | `--sn-web-color-text-tertiary`    | Line-number gutter                            |
+| Action primary                  | `--sn-web-color-action-primary`   | JSON key token                                |
+| Feedback success                | `--sn-web-color-feedback-success` | JSON string token                             |
+| Feedback warning                | `--sn-web-color-feedback-warning` | JSON number token                             |
+| Feedback info                   | `--sn-web-color-feedback-info`    | JSON keyword token                            |
+| Text secondary (+ color-mix)    | `--sn-web-color-text-secondary`   | JSON punctuation token                        |
 
 ## Versioning
 

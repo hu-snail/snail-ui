@@ -10,13 +10,13 @@
  * Four corners: `top-left` / `top-right` / `bottom-left` / `bottom-right`
  * Four edge midpoints: `top` / `right` / `bottom` / `left` (centred with `50%` + translate)
  */
-import { Bell } from 'lucide-vue-next'
-import { SnFloatButton } from '@snui/vue-web'
-import type { SnFloatButtonPlacement } from '@snui/vue-web'
+import { Bell } from 'lucide-vue-next';
+import { SnFloatButton } from '@snui/vue-web';
+import type { SnFloatButtonPlacement } from '@snui/vue-web';
 
 interface Anchor {
-  placement: SnFloatButtonPlacement
-  label: string
+  placement: SnFloatButtonPlacement;
+  label: string;
 }
 
 const anchors: Anchor[] = [
@@ -28,7 +28,7 @@ const anchors: Anchor[] = [
   { placement: 'bottom-left', label: 'bottom-left' },
   { placement: 'bottom', label: 'bottom' },
   { placement: 'bottom-right', label: 'bottom-right' },
-]
+];
 </script>
 
 <template>
@@ -47,8 +47,8 @@ const anchors: Anchor[] = [
       </div>
     </div>
     <p class="placement-demo__hint">
-      Each cell is a <code>position: relative</code> stage with <code>fixed: false</code>;
-      in a real page, omitting <code>fixed</code> pins the button to the matching viewport position.
+      Each cell is a <code>position: relative</code> stage with <code>fixed: false</code>; in a real
+      page, omitting <code>fixed</code> pins the button to the matching viewport position.
     </p>
   </div>
 </template>

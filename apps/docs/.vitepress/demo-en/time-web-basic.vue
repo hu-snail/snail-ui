@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTime — number / Date input, datetime by default. */
-import { SnTime } from '@snui/vue-web'
+import { SnTime } from '@snui/vue-web';
 </script>
 
 <template>

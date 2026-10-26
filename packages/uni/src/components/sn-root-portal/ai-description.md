@@ -17,11 +17,11 @@ program and no document tree on native App, and no single API reparents a node
 on every uni target. Inventing one would silently change rendering on some
 platforms, so this component guarantees only what is portable:
 
-| Guarantee | How |
-|---|---|
-| Content is not clipped by an ancestor | `position: fixed` layer with zero insets |
-| The layer never blocks the page | `pointer-events: none` on the layer, `auto` on its children |
-| Visibility is explicit | mount to show, unmount to hide (no boolean prop) |
+| Guarantee                             | How                                                         |
+| ------------------------------------- | ----------------------------------------------------------- |
+| Content is not clipped by an ancestor | `position: fixed` layer with zero insets                    |
+| The layer never blocks the page       | `pointer-events: none` on the layer, `auto` on its children |
+| Visibility is explicit                | mount to show, unmount to hide (no boolean prop)            |
 
 **Not implemented:** true DOM reparenting (teleport). Callers who need a real
 overlay — with mask, scroll lock, animation — should use `sn-popup` or
@@ -40,10 +40,10 @@ packages/uni/src/components/sn-root-portal/sn-root-portal.vue
 `wd-root-portal` declares none. Two additive AUI hooks exist because, without a
 teleport target, the layer is the only node a caller can style:
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `customClass` | `string` | `''` | Class on the fixed layer. Additive. |
-| `customStyle` | `string` | `''` | Inline style on the fixed layer. Additive. |
+| Name          | Type     | Default | Description                                |
+| ------------- | -------- | ------- | ------------------------------------------ |
+| `customClass` | `string` | `''`    | Class on the fixed layer. Additive.        |
+| `customStyle` | `string` | `''`    | Inline style on the fixed layer. Additive. |
 
 ## Events
 
@@ -51,8 +51,8 @@ None.
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                              |
+| --------- | ---------------------------------------- |
 | `default` | Content rendered inside the fixed layer. |
 
 ## Tokens Consumed
@@ -68,11 +68,11 @@ the page beneath; only the slotted content is interactive.
 
 ## Cross-end Notes
 
-| Platform | Notes |
-|---|---|
-| H5 | `position: fixed` escapes any ancestor. |
+| Platform           | Notes                                                |
+| ------------------ | ---------------------------------------------------- |
+| H5                 | `position: fixed` escapes any ancestor.              |
 | WeChat / Alipay MP | Same; the layer is a normal view, so no reparenting. |
-| App (uni-app x) | Same. |
+| App (uni-app x)    | Same.                                                |
 
 ## Versioning
 

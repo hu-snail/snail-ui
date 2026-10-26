@@ -45,26 +45,26 @@ after an rAF throttle.
 
 ### Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| items | `Array<Record<string, unknown> \| string \| number>` | `[]` | Full data list; only the rows inside the viewport render. |
-| item-size | `number` | `30` | Fixed row height (px); also the estimate for unmeasured rows. |
-| item-resizable | `boolean` | `false` | Measure rendered rows with a ResizeObserver and reflow from the measurements. |
-| key-field | `string` | `'value'` | Object field used as the render key; falls back to the row index when the field is missing. |
-| overscan | `number` | `3` | Extra rows rendered above / below the viewport to absorb fast scrolling. |
-| visible-height | `number \| undefined` | `undefined` | Pin the viewport height (px); when omitted the container height is measured (default 100%). |
+| Name           | Type                                                 | Default     | Notes                                                                                       |
+| -------------- | ---------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------- |
+| items          | `Array<Record<string, unknown> \| string \| number>` | `[]`        | Full data list; only the rows inside the viewport render.                                   |
+| item-size      | `number`                                             | `30`        | Fixed row height (px); also the estimate for unmeasured rows.                               |
+| item-resizable | `boolean`                                            | `false`     | Measure rendered rows with a ResizeObserver and reflow from the measurements.               |
+| key-field      | `string`                                             | `'value'`   | Object field used as the render key; falls back to the row index when the field is missing. |
+| overscan       | `number`                                             | `3`         | Extra rows rendered above / below the viewport to absorb fast scrolling.                    |
+| visible-height | `number \| undefined`                                | `undefined` | Pin the viewport height (px); when omitted the container height is measured (default 100%). |
 
 ### Events
 
-| Name | Payload | Notes |
-| --- | --- | --- |
-| scroll | `(event: Event)` | Native container scroll event, fired on every scroll. |
+| Name              | Payload               | Notes                                                                                  |
+| ----------------- | --------------------- | -------------------------------------------------------------------------------------- |
+| scroll            | `(event: Event)`      | Native container scroll event, fired on every scroll.                                  |
 | update:scroll-top | `(scrollTop: number)` | Scroll offset committed after the rAF throttle, for external readouts or lazy loading. |
 
 ### Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
+| Name | Params                                                                 | Notes                                                                                           |
+| ---- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | item | `{ item: Record<string, unknown> \| string \| number; index: number }` | Row content; without it string / number entries render as text and object entries render empty. |
 
 ### Methods
@@ -83,8 +83,8 @@ Behavior notes:
 
 ## Tokens
 
-| Token | CSS variable | Purpose |
-| --- | --- | --- |
+| Token        | CSS variable                  | Purpose  |
+| ------------ | ----------------------------- | -------- |
 | Text primary | `--sn-web-color-text-primary` | Row text |
 
 ## Accessibility
@@ -98,11 +98,11 @@ Behavior notes:
 
 ## AI Patch Boundary
 
-| Safe for AI to generate | Requires human review |
-| --- | --- |
-| `items` list content and the `key-field` name | The paging / incremental loading strategy for `items` and when the array is replaced wholesale |
-| Size parameters such as `item-size` / `overscan` / `visible-height` | Data requests and throttling policy inside `update:scroll-top` listeners |
-| The `item-resizable` switch and static composition in docs and demos | Interactive controls and async data inside the `item` slot |
+| Safe for AI to generate                                              | Requires human review                                                                          |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `items` list content and the `key-field` name                        | The paging / incremental loading strategy for `items` and when the array is replaced wholesale |
+| Size parameters such as `item-size` / `overscan` / `visible-height`  | Data requests and throttling policy inside `update:scroll-top` listeners                       |
+| The `item-resizable` switch and static composition in docs and demos | Interactive controls and async data inside the `item` slot                                     |
 
 - AI-generated JSON Patches may only modify the prop data surface above and must
   not inject slot content, event handlers or internal scroll offsets.

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnSelect — basic single select. */
-import { ref } from 'vue'
-import { SnSelect } from '@snui/vue-web'
-const value = ref<string | null>('shanghai')
+import { ref } from 'vue';
+import { SnSelect } from '@snui/vue-web';
+const value = ref<string | null>('shanghai');
 </script>
 
 <template>
@@ -13,6 +13,13 @@ const value = ref<string | null>('shanghai')
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
-.demo-log { font-size: 13px; color: var(--vp-c-text-2); }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-log {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

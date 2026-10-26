@@ -32,70 +32,70 @@
 
 以下 wd-table 属性**未声明**（CONTRIBUTING §2.2：不实现的能力不出现）：
 
-| 属性 | 原因 |
-| --- | --- |
+| 属性                                | 原因                                                                                                                                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `virtual` / `row-height` / `buffer` | 可靠的虚拟滚动需要 `scroll-top` 与逐行高度测量，而 `<scroll-view>` 在微信 / 支付宝 / H5 上报的滚动偏移并不一致。本组件渲染全部行以保证各端行为一致；大数据量请配合 `height` + `fixed-header` 使用 |
-| `span-method` | 跨端 `rowspan` / `colspan` 会打乱按列宽计算的固定列偏移 |
+| `span-method`                       | 跨端 `rowspan` / `colspan` 会打乱按列宽计算的固定列偏移                                                                                                                                           |
 
 ## Props（`sn-table`）
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `data` | `Record<string, unknown>[]` | `[]` | 表格数据源 |
-| `border` | `boolean` | `true` | 是否显示边框 |
-| `stripe` | `boolean` | `true` | 是否显示斑马纹 |
-| `height` | `string \| number` | `undefined` | 最大高度（数字按设计稿 px）；设置后开启纵向滚动 |
-| `showHeader` | `boolean` | `true` | 是否显示表头 |
-| `ellipsis` | `boolean` | `false` | 单元格文本两行省略 |
-| `index` | `boolean \| SnTableIndexConfig` | `false` | 是否显示索引列；对象可自定义 `label` / `width` / `align` |
-| `fixedHeader` | `boolean` | `true` | 是否固定表头（`position: sticky`） |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
+| 属性          | 类型                            | 默认值      | 说明                                                     |
+| ------------- | ------------------------------- | ----------- | -------------------------------------------------------- |
+| `data`        | `Record<string, unknown>[]`     | `[]`        | 表格数据源                                               |
+| `border`      | `boolean`                       | `true`      | 是否显示边框                                             |
+| `stripe`      | `boolean`                       | `true`      | 是否显示斑马纹                                           |
+| `height`      | `string \| number`              | `undefined` | 最大高度（数字按设计稿 px）；设置后开启纵向滚动          |
+| `showHeader`  | `boolean`                       | `true`      | 是否显示表头                                             |
+| `ellipsis`    | `boolean`                       | `false`     | 单元格文本两行省略                                       |
+| `index`       | `boolean \| SnTableIndexConfig` | `false`     | 是否显示索引列；对象可自定义 `label` / `width` / `align` |
+| `fixedHeader` | `boolean`                       | `true`      | 是否固定表头（`position: sticky`）                       |
+| `customClass` | `string`                        | `''`        | 根节点自定义类名                                         |
+| `customStyle` | `string`                        | `''`        | 根节点自定义样式                                         |
 
 ## Props（`sn-table-column`）
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `prop` | `string` | `''` | 列对应的数据字段名 |
-| `label` | `string` | `''` | 列标题 |
-| `width` | `string \| number` | `100` | 列宽（数字按设计稿 px） |
-| `sortable` | `boolean` | `false` | 是否开启排序 |
-| `fixed` | `boolean` | `false` | 是否固定当前列（仅支持固定在左侧） |
-| `align` | `'left' \| 'center' \| 'right'` | `'left'` | 内容对齐方式 |
+| 属性       | 类型                            | 默认值   | 说明                               |
+| ---------- | ------------------------------- | -------- | ---------------------------------- |
+| `prop`     | `string`                        | `''`     | 列对应的数据字段名                 |
+| `label`    | `string`                        | `''`     | 列标题                             |
+| `width`    | `string \| number`              | `100`    | 列宽（数字按设计稿 px）            |
+| `sortable` | `boolean`                       | `false`  | 是否开启排序                       |
+| `fixed`    | `boolean`                       | `false`  | 是否固定当前列（仅支持固定在左侧） |
+| `align`    | `'left' \| 'center' \| 'right'` | `'left'` | 内容对齐方式                       |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名        | 说明                   | 参数                     |
+| ------------- | ---------------------- | ------------------------ |
 | `sort-method` | 点击可排序列表头后触发 | `{ prop, label, order }` |
-| `row-click` | 点击表格行时触发 | `{ rowIndex, row }` |
+| `row-click`   | 点击表格行时触发       | `{ rowIndex, row }`      |
 
 ## Slots
 
-| 插槽名 | 所属组件 | 说明 |
-| --- | --- | --- |
-| `default` | `sn-table` | 列声明（`sn-table-column` 子组件） |
-| `empty` | `sn-table` | 替换内置空态行 |
-| `value` | `sn-table-column` | 自定义单元格内容，参数 `{ row, index }` |
+| 插槽名    | 所属组件          | 说明                                    |
+| --------- | ----------------- | --------------------------------------- |
+| `default` | `sn-table`        | 列声明（`sn-table-column` 子组件）      |
+| `empty`   | `sn-table`        | 替换内置空态行                          |
+| `value`   | `sn-table-column` | 自定义单元格内容，参数 `{ row, index }` |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-elevated` | 表格底盘 |
-| `--sn-mp-color-background-subtle` | 表头背景 |
-| `--sn-mp-color-background-soft` | 斑马纹背景 |
-| `--sn-mp-color-border-subtle` | 单元格边框 |
-| `--sn-mp-color-text-primary` | 正文颜色 |
-| `--sn-mp-color-text-secondary` | 表头文字 |
-| `--sn-mp-color-text-tertiary` | 空态文字 |
-| `--sn-mp-color-text-disabled` | 未激活排序箭头 |
-| `--sn-mp-color-action-primary` | 激活排序箭头 |
-| `--sn-mp-font-size-sm` | 单元格字号 |
-| `--sn-mp-font-weight-semibold` | 表头字重 |
-| `--sn-mp-font-line-height-normal` | 单元格行高 |
+| 变量                                                                                   | 用途                                 |
+| -------------------------------------------------------------------------------------- | ------------------------------------ |
+| `--sn-mp-color-background-elevated`                                                    | 表格底盘                             |
+| `--sn-mp-color-background-subtle`                                                      | 表头背景                             |
+| `--sn-mp-color-background-soft`                                                        | 斑马纹背景                           |
+| `--sn-mp-color-border-subtle`                                                          | 单元格边框                           |
+| `--sn-mp-color-text-primary`                                                           | 正文颜色                             |
+| `--sn-mp-color-text-secondary`                                                         | 表头文字                             |
+| `--sn-mp-color-text-tertiary`                                                          | 空态文字                             |
+| `--sn-mp-color-text-disabled`                                                          | 未激活排序箭头                       |
+| `--sn-mp-color-action-primary`                                                         | 激活排序箭头                         |
+| `--sn-mp-font-size-sm`                                                                 | 单元格字号                           |
+| `--sn-mp-font-weight-semibold`                                                         | 表头字重                             |
+| `--sn-mp-font-line-height-normal`                                                      | 单元格行高                           |
 | `--sn-mp-spacing-1` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-10` | 表头间隙 / 单元格内边距 / 空态内边距 |
-| `--sn-mp-radius-lg` | 表格圆角 |
+| `--sn-mp-radius-lg`                                                                    | 表格圆角                             |
 
 ## 无障碍
 

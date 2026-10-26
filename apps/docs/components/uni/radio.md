@@ -30,66 +30,66 @@
 
 ## Props（sn-radio）
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `value` | `string \| number \| boolean` | `''` | 本项的值，与父组件 `v-model` 匹配。 |
-| `type` | `'circle' \| 'dot' \| 'square' \| 'button'` | 继承父级（`'circle'`） | 形状。 |
-| `checkedColor` | `string` | 继承父级（`''`） | 选中颜色（CSS 颜色，内联覆盖）。 |
-| `uncheckedColor` | `string` | 继承父级（`''`） | 未选中颜色。 |
-| `disabled` | `boolean` | 继承父级（`false`） | 禁用当前项。 |
-| `readonly` | `boolean` | 继承父级（`false`） | 只读当前项。 |
-| `placement` | `'left' \| 'right'` | 继承父级（`'left'`） | 标记位置。 |
-| `direction` | `'horizontal' \| 'vertical'` | 继承父级（`'vertical'`） | 布局方向。 |
-| `customLabelClass` | `string` | `''` | label 自定义类名。 |
-| `customClass` | `string` | `''` | 根节点类名。 |
-| `customStyle` | `string` | `''` | 根节点 inline style。 |
+| 属性               | 类型                                        | 默认值                   | 说明                                |
+| ------------------ | ------------------------------------------- | ------------------------ | ----------------------------------- |
+| `value`            | `string \| number \| boolean`               | `''`                     | 本项的值，与父组件 `v-model` 匹配。 |
+| `type`             | `'circle' \| 'dot' \| 'square' \| 'button'` | 继承父级（`'circle'`）   | 形状。                              |
+| `checkedColor`     | `string`                                    | 继承父级（`''`）         | 选中颜色（CSS 颜色，内联覆盖）。    |
+| `uncheckedColor`   | `string`                                    | 继承父级（`''`）         | 未选中颜色。                        |
+| `disabled`         | `boolean`                                   | 继承父级（`false`）      | 禁用当前项。                        |
+| `readonly`         | `boolean`                                   | 继承父级（`false`）      | 只读当前项。                        |
+| `placement`        | `'left' \| 'right'`                         | 继承父级（`'left'`）     | 标记位置。                          |
+| `direction`        | `'horizontal' \| 'vertical'`                | 继承父级（`'vertical'`） | 布局方向。                          |
+| `customLabelClass` | `string`                                    | `''`                     | label 自定义类名。                  |
+| `customClass`      | `string`                                    | `''`                     | 根节点类名。                        |
+| `customStyle`      | `string`                                    | `''`                     | 根节点 inline style。               |
 
 ## Props（sn-radio-group）
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number \| boolean \| undefined` | `undefined` | 当前选中值。 |
-| `type` | `'circle' \| 'dot' \| 'square' \| 'button'` | `'circle'` | 子组件继承的形状。 |
-| `checkedColor` / `uncheckedColor` | `string` | `''` | 子组件继承的颜色。 |
-| `disabled` | `boolean` | `false` | 禁用整组。 |
-| `readonly` | `boolean` | `false` | 整组只读。 |
-| `placement` | `'left' \| 'right'` | `'left'` | 子组件继承的标记位置。 |
-| `direction` | `'horizontal' \| 'vertical'` | `'vertical'` | 子组件布局方向。 |
-| `allowUncheck` | `boolean` | `false` | 允许取消当前已选中的值。 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点转发。 |
+| 属性                              | 类型                                        | 默认值       | 说明                     |
+| --------------------------------- | ------------------------------------------- | ------------ | ------------------------ |
+| `modelValue`                      | `string \| number \| boolean \| undefined`  | `undefined`  | 当前选中值。             |
+| `type`                            | `'circle' \| 'dot' \| 'square' \| 'button'` | `'circle'`   | 子组件继承的形状。       |
+| `checkedColor` / `uncheckedColor` | `string`                                    | `''`         | 子组件继承的颜色。       |
+| `disabled`                        | `boolean`                                   | `false`      | 禁用整组。               |
+| `readonly`                        | `boolean`                                   | `false`      | 整组只读。               |
+| `placement`                       | `'left' \| 'right'`                         | `'left'`     | 子组件继承的标记位置。   |
+| `direction`                       | `'horizontal' \| 'vertical'`                | `'vertical'` | 子组件布局方向。         |
+| `allowUncheck`                    | `boolean`                                   | `false`      | 允许取消当前已选中的值。 |
+| `customClass` / `customStyle`     | `string`                                    | `''`         | 根节点转发。             |
 
 ## Events
 
-| 事件名 | 组件 | 说明 | 参数 |
-| --- | --- | --- | --- |
-| `change` | sn-radio | 本项被选中（载荷为自身 `value`） | `(value)` |
+| 事件名              | 组件           | 说明                                              | 参数      |
+| ------------------- | -------------- | ------------------------------------------------- | --------- |
+| `change`            | sn-radio       | 本项被选中（载荷为自身 `value`）                  | `(value)` |
 | `update:modelValue` | sn-radio-group | 选中值变化（`allowUncheck` 取消时为 `undefined`） | `(value)` |
-| `change` | sn-radio-group | 与 `update:modelValue` 同时触发 | `(value)` |
+| `change`            | sn-radio-group | 与 `update:modelValue` 同时触发                   | `(value)` |
 
 ## Exposed API（sn-radio-group）
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
-| `select` | `(value) => void` | 代码方式选中某个值。 |
-| `isChecked` | `(value) => boolean` | 查询当前是否选中。 |
+| 成员        | 签名                 | 说明                 |
+| ----------- | -------------------- | -------------------- |
+| `select`    | `(value) => void`    | 代码方式选中某个值。 |
+| `isChecked` | `(value) => boolean` | 查询当前是否选中。   |
 
 ## Slots
 
-| 插槽名 | 组件 | 说明 |
-| --- | --- | --- |
-| `default` | sn-radio | 文本内容。 |
+| 插槽名    | 组件           | 说明       |
+| --------- | -------------- | ---------- |
+| `default` | sn-radio       | 文本内容。 |
 | `default` | sn-radio-group | 子项列表。 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-control-unchecked` | 未选中圆环 |
-| `--sn-mp-color-action-primary` | 选中圆环填充 |
-| `--sn-mp-color-control-knob` | 内部圆点底板 |
+| 变量                                | 用途           |
+| ----------------------------------- | -------------- |
+| `--sn-mp-color-control-unchecked`   | 未选中圆环     |
+| `--sn-mp-color-action-primary`      | 选中圆环填充   |
+| `--sn-mp-color-control-knob`        | 内部圆点底板   |
 | `--sn-mp-color-action-primary-soft` | 按钮态选中底色 |
-| `--sn-mp-color-background-soft` | 按钮态背景 |
-| `--sn-mp-color-text-primary` | 文本颜色 |
+| `--sn-mp-color-background-soft`     | 按钮态背景     |
+| `--sn-mp-color-text-primary`        | 文本颜色       |
 
 ## 无障碍
 
@@ -101,4 +101,3 @@
 ## 暗色模式
 
 所有颜色通过 `--sn-mp-color-*` 解析，无浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下未选中圆环、选中填充、按钮态底色、文本颜色自动翻转。验证方式：
-

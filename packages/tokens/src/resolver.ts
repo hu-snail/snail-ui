@@ -49,12 +49,12 @@ function deepMerge<T>(base: T, override: unknown): T {
     const baseVal = baseObj[key];
     const overrideVal = overrideObj[key];
     if (
-      baseVal !== null
-      && typeof baseVal === 'object'
-      && !Array.isArray(baseVal)
-      && overrideVal !== null
-      && typeof overrideVal === 'object'
-      && !Array.isArray(overrideVal)
+      baseVal !== null &&
+      typeof baseVal === 'object' &&
+      !Array.isArray(baseVal) &&
+      overrideVal !== null &&
+      typeof overrideVal === 'object' &&
+      !Array.isArray(overrideVal)
     ) {
       out[key] = deepMerge(baseVal, overrideVal);
     } else if (overrideVal !== undefined) {
@@ -64,7 +64,11 @@ function deepMerge<T>(base: T, override: unknown): T {
   return out as T;
 }
 
-function mergePrimitiveByAxes(base: PrimitiveTokens, theme: ThemeDefinition, density: DensityDefinition): PrimitiveTokens {
+function mergePrimitiveByAxes(
+  base: PrimitiveTokens,
+  theme: ThemeDefinition,
+  density: DensityDefinition,
+): PrimitiveTokens {
   let color: PrimitiveTokens['color'] = base.color;
   if (theme.primitive) color = deepMerge(color, theme.primitive);
 
@@ -145,23 +149,35 @@ function emitPrimitiveBindings(primitives: PrimitiveTokens): TokenBinding[] {
     out.push({ name: `--aui-shadow-${key}`, value: primitives.shadow[key] });
   }
 
-  for (const familyKey of Object.keys(primitives.font.family) as Array<keyof PrimitiveTokens['font']['family']>) {
+  for (const familyKey of Object.keys(primitives.font.family) as Array<
+    keyof PrimitiveTokens['font']['family']
+  >) {
     out.push({ name: `--aui-font-family-${familyKey}`, value: primitives.font.family[familyKey] });
   }
-  for (const key of Object.keys(primitives.font.size) as Array<keyof PrimitiveTokens['font']['size']>) {
+  for (const key of Object.keys(primitives.font.size) as Array<
+    keyof PrimitiveTokens['font']['size']
+  >) {
     out.push({ name: `--aui-font-size-${key}`, value: primitives.font.size[key] });
   }
-  for (const key of Object.keys(primitives.font.weight) as Array<keyof PrimitiveTokens['font']['weight']>) {
+  for (const key of Object.keys(primitives.font.weight) as Array<
+    keyof PrimitiveTokens['font']['weight']
+  >) {
     out.push({ name: `--aui-font-weight-${key}`, value: primitives.font.weight[key] });
   }
-  for (const key of Object.keys(primitives.font.lineHeight) as Array<keyof PrimitiveTokens['font']['lineHeight']>) {
+  for (const key of Object.keys(primitives.font.lineHeight) as Array<
+    keyof PrimitiveTokens['font']['lineHeight']
+  >) {
     out.push({ name: `--aui-font-line-height-${key}`, value: primitives.font.lineHeight[key] });
   }
 
-  for (const key of Object.keys(primitives.motion.duration) as Array<keyof PrimitiveTokens['motion']['duration']>) {
+  for (const key of Object.keys(primitives.motion.duration) as Array<
+    keyof PrimitiveTokens['motion']['duration']
+  >) {
     out.push({ name: `--aui-motion-duration-${key}`, value: primitives.motion.duration[key] });
   }
-  for (const key of Object.keys(primitives.motion.easing) as Array<keyof PrimitiveTokens['motion']['easing']>) {
+  for (const key of Object.keys(primitives.motion.easing) as Array<
+    keyof PrimitiveTokens['motion']['easing']
+  >) {
     out.push({ name: `--aui-motion-easing-${key}`, value: primitives.motion.easing[key] });
   }
 

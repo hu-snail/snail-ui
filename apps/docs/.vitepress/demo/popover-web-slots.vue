@@ -7,13 +7,13 @@
  * fallback. The header slot carries an SnIcon + bold title, the content slot
  * a paragraph plus an action row.
  */
-import { ref } from 'vue'
-import { BookOpen } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnIcon, SnPopover } from '@snui/vue-web'
+import { ref } from 'vue';
+import { BookOpen } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnIcon, SnPopover } from '@snui/vue-web';
 
-registerSnIcons({ BookOpen })
+registerSnIcons({ BookOpen });
 
-const dismissed = ref(false)
+const dismissed = ref(false);
 </script>
 
 <template>
@@ -49,7 +49,8 @@ const dismissed = ref(false)
     </SnPopover>
 
     <p class="popover-slots-demo__hint">
-      同时传入 header / content 与 #header / #content 时，插槽优先渲染，props 仅作为兜底；插槽内可以放图标、段落、按钮等任意内容。
+      同时传入 header / content 与 #header / #content 时，插槽优先渲染，props
+      仅作为兜底；插槽内可以放图标、段落、按钮等任意内容。
     </p>
   </div>
 </template>

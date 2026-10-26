@@ -3,11 +3,11 @@
  * steps-web-clickable — SnSteps with `v-model:current`. Steps activate on
  * click (the disabled step does not), and the derived statuses update.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(1)
-const log = ref<number[]>([])
+const current = ref(1);
+const log = ref<number[]>([]);
 </script>
 
 <template>

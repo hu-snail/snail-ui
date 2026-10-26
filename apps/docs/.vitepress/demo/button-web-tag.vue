@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnButton (Web) — tag prop swaps root element. */
-import { SnButton } from '@snui/vue-web'
+import { SnButton } from '@snui/vue-web';
 </script>
 
 <template>
@@ -15,5 +15,10 @@ import { SnButton } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sn-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
 </style>

@@ -32,20 +32,20 @@
  *   <SnInfiniteScroll style="height: 240px" :distance="10" :load="load" />
  */
 
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-defineOptions({ name: 'SnInfiniteScroll' })
+defineOptions({ name: 'SnInfiniteScroll' });
 
 const props = withDefaults(
   defineProps<{
     /** Bottom-distance threshold in px that triggers `load`. Mirrors n-infinite-scroll `distance`. */
-    distance?: number
+    distance?: number;
     /** Called when the container is scrolled within `distance` of the bottom; a pending promise blocks further triggers. Mirrors n-infinite-scroll `on-load`. */
-    load?: (() => Promise<void> | void) | undefined
+    load?: (() => Promise<void> | void) | undefined;
     /** Extra attributes for the internal scroll container (the reference applies them to its Scrollbar). Mirrors n-infinite-scroll `scrollbar-props`. */
-    scrollbarProps?: Record<string, unknown> | undefined
+    scrollbarProps?: Record<string, unknown> | undefined;
     /** Render an inline-SVG spinner at the bottom while `load` is pending (addition — the reference ships no loading UI). */
-    showLoading?: boolean
+    showLoading?: boolean;
   }>(),
   {
     distance: 0,
@@ -53,51 +53,50 @@ const props = withDefaults(
     scrollbarProps: undefined,
     showLoading: true,
   },
-)
+);
 
-const rootRef = ref<HTMLDivElement | null>(null)
-const isLoading = ref(false)
+const rootRef = ref<HTMLDivElement | null>(null);
+const isLoading = ref(false);
 
 async function checkBottom(): Promise<void> {
-  const el = rootRef.value
-  if (el === null) return
-  const { scrollTop, clientHeight, scrollHeight } = el
-  if (scrollTop + clientHeight < scrollHeight - props.distance) return
-  isLoading.value = true
+  const el = rootRef.value;
+  if (el === null) return;
+  const { scrollTop, clientHeight, scrollHeight } = el;
+  if (scrollTop + clientHeight < scrollHeight - props.distance) return;
+  isLoading.value = true;
   try {
-    await props.load?.()
-  }
-  catch {
+    await props.load?.();
+  } catch {
     // Load errors are swallowed, matching the reference implementation.
   }
-  isLoading.value = false
+  isLoading.value = false;
 }
 
 function handleScroll(): void {
-  if (isLoading.value) return
-  void checkBottom()
+  if (isLoading.value) return;
+  void checkBottom();
 }
 
 function handleWheel(event: WheelEvent): void {
   // Mirrors the reference: only downward wheels may trigger a load.
-  if (event.deltaY <= 0) return
-  if (isLoading.value) return
-  void checkBottom()
+  if (event.deltaY <= 0) return;
+  if (isLoading.value) return;
+  void checkBottom();
 }
 
 onMounted(() => {
-  const el = rootRef.value
-  if (el === null) return
-  el.addEventListener('scroll', handleScroll)
-  el.addEventListener('wheel', handleWheel)
-})
+  const el = rootRef.value;
+  if (el === null) return;
+  el.addEventListener('scroll', handleScroll);
+  el.addEventListener('wheel', handleWheel);
+});
 
 onBeforeUnmount(() => {
-  const el = rootRef.value
-  if (el === null) return
-  el.removeEventListener('scroll', handleScroll)
-  el.removeEventListener('wheel', handleWheel)
-})
+  const el = rootRef.value;
+  if (el === null) return;
+  el.removeEventListener('scroll', handleScroll);
+  el.removeEventListener('wheel', handleWheel);
+});
 </script>
 
 <template>
@@ -109,17 +108,8 @@ onBeforeUnmount(() => {
     :class="{ 'sn-infinite-scroll--loading': isLoading }"
   >
     <slot />
-    <div
-      v-if="isLoading && showLoading"
-      class="sn-infinite-scroll__loading"
-      aria-live="polite"
-    >
-      <svg
-        class="sn-infinite-scroll__spinner"
-        viewBox="0 0 24 24"
-        fill="none"
-        aria-hidden="true"
-      >
+    <div v-if="isLoading && showLoading" class="sn-infinite-scroll__loading" aria-live="polite">
+      <svg class="sn-infinite-scroll__spinner" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle
           cx="12"
           cy="12"

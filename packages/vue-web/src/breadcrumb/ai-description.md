@@ -18,28 +18,28 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
+import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web';
 ```
 
 ## SnBreadcrumb Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `separator` | `string` | `'/'` | Glyph rendered between items. |
+| Name        | Type     | Default | Description                   |
+| ----------- | -------- | ------- | ----------------------------- |
+| `separator` | `string` | `'/'`   | Glyph rendered between items. |
 
 ## SnBreadcrumb Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `href` | `string` | `''` | When set, item renders as `<a href>`. |
+| Name     | Type      | Default | Description                                                            |
+| -------- | --------- | ------- | ---------------------------------------------------------------------- |
+| `href`   | `string`  | `''`    | When set, item renders as `<a href>`.                                  |
 | `isLast` | `boolean` | `false` | Hint for styling (parent SnBreadcrumb handles the trailing separator). |
 
 ## Slots
 
-| Component | Slot | Description |
-|---|---|---|
-| `SnBreadcrumb` | `default` | Sequence of `SnBreadcrumbItem` children. |
-| `SnBreadcrumbItem` | `default` | Item content (text or inline elements). |
+| Component          | Slot      | Description                              |
+| ------------------ | --------- | ---------------------------------------- |
+| `SnBreadcrumb`     | `default` | Sequence of `SnBreadcrumbItem` children. |
+| `SnBreadcrumbItem` | `default` | Item content (text or inline elements).  |
 
 ## §112 future markers
 
@@ -48,10 +48,10 @@ import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text secondary | `--sn-web-color-text-secondary` | Default link color |
-| Text primary | `--sn-web-color-text-primary` | Current-page color (last item) |
+| Token          | CSS Variable                    | Purpose                        |
+| -------------- | ------------------------------- | ------------------------------ |
+| Text secondary | `--sn-web-color-text-secondary` | Default link color             |
+| Text primary   | `--sn-web-color-text-primary`   | Current-page color (last item) |
 
 ## Accessibility
 

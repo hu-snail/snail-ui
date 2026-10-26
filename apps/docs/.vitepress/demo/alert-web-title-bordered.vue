@@ -3,15 +3,13 @@
  * alert-web-title-bordered — contrasts the default bordered look with
  * `bordered="false"` (bare fill, no outline).
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>
   <div class="alert-demo">
     <p class="alert-demo__label">bordered（默认 true）</p>
-    <SnAlert type="info" title="带边框">
-      默认绘制 1px 描边，描边颜色由 type 派生。
-    </SnAlert>
+    <SnAlert type="info" title="带边框"> 默认绘制 1px 描边，描边颜色由 type 派生。 </SnAlert>
 
     <p class="alert-demo__label">:bordered="false"</p>
     <SnAlert type="info" title="无边框" :bordered="false">

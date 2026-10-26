@@ -31,41 +31,41 @@
  *   </SnDrawer>
  */
 
-import { computed, inject, type CSSProperties } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { X } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import { SN_DRAWER_INJECTION_KEY, type SnDrawerApi } from './drawer-context'
+import { computed, inject, type CSSProperties } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { X } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import { SN_DRAWER_INJECTION_KEY, type SnDrawerApi } from './drawer-context';
 
-defineOptions({ name: 'SnDrawerContent' })
+defineOptions({ name: 'SnDrawerContent' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Header title. Mirrors n-drawer-content `title`. */
-    title?: string
+    title?: string;
     /** Extra class on the header row. */
-    headerClass?: string
+    headerClass?: string;
     /** Extra style on the header row. */
-    headerStyle?: string | CSSProperties
+    headerStyle?: string | CSSProperties;
     /** Extra class on the footer row. */
-    footerClass?: string
+    footerClass?: string;
     /** Extra style on the footer row. */
-    footerStyle?: string | CSSProperties
+    footerStyle?: string | CSSProperties;
     /** Extra class on the body. */
-    bodyClass?: string
+    bodyClass?: string;
     /** Extra style on the body. */
-    bodyStyle?: string | CSSProperties
+    bodyStyle?: string | CSSProperties;
     /** Extra class on the body's inner wrapper. */
-    bodyContentClass?: string
+    bodyContentClass?: string;
     /** Extra style on the body's inner wrapper. */
-    bodyContentStyle?: string | CSSProperties
+    bodyContentStyle?: string | CSSProperties;
     /** Accepted for API parity. See SnDrawer's `nativeScrollbar` note. */
-    nativeScrollbar?: boolean
+    nativeScrollbar?: boolean;
     /** Render the header close button. Mirrors n-drawer-content `closable`. */
-    closable?: boolean
+    closable?: boolean;
   }>(),
   {
     title: undefined as any,
@@ -80,34 +80,34 @@ const props = withDefaults(
     nativeScrollbar: true,
     closable: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Close button clicked. Mirrors n-drawer-content's implicit close. */
-  (e: 'close'): void
-}>()
+  (e: 'close'): void;
+}>();
 
 const slots = defineSlots<{
   /** Drawer body. */
-  default?(): unknown
+  default?(): unknown;
   /** Header row — replaces `title`. */
-  header?(): unknown
+  header?(): unknown;
   /** Footer row. Rendered only when filled. */
-  footer?(): unknown
-}>()
+  footer?(): unknown;
+}>();
 
-const drawer = inject<SnDrawerApi | undefined>(SN_DRAWER_INJECTION_KEY, undefined)
+const drawer = inject<SnDrawerApi | undefined>(SN_DRAWER_INJECTION_KEY, undefined);
 
 /** The header row needs a home for the close button even without a title. */
 const hasHeader = computed<boolean>(
   () => slots.header !== undefined || Boolean(props.title) || props.closable === true,
-)
+);
 
-const hasFooter = computed(() => slots.footer !== undefined)
+const hasFooter = computed(() => slots.footer !== undefined);
 
 function handleCloseClick(): void {
-  emit('close')
-  drawer?.doUpdateShow(false)
+  emit('close');
+  drawer?.doUpdateShow(false);
 }
 </script>
 
@@ -140,12 +140,7 @@ function handleCloseClick(): void {
       </button>
     </div>
 
-    <div
-      class="sn-drawer-body"
-      :class="bodyClass"
-      :style="bodyStyle"
-      role="none"
-    >
+    <div class="sn-drawer-body" :class="bodyClass" :style="bodyStyle" role="none">
       <div
         class="sn-drawer-body-content-wrapper"
         :class="bodyContentClass"

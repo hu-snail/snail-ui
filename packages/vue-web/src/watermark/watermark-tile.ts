@@ -13,21 +13,21 @@
 
 export interface WatermarkTileInput {
   /** Logical tile width in CSS px. */
-  width: number
+  width: number;
   /** Logical tile height in CSS px. */
-  height: number
+  height: number;
   /** Stagger alternate tiles by half a tile. */
-  cross?: boolean | undefined
+  cross?: boolean | undefined;
 }
 
 export interface WatermarkTileSize {
-  width: number
-  height: number
+  width: number;
+  height: number;
 }
 
 /** Copies per axis: 2 when staggered, otherwise 1. */
 export function watermarkTileFactor(input: WatermarkTileInput): number {
-  return input.cross ? 2 : 1
+  return input.cross ? 2 : 1;
 }
 
 /**
@@ -38,19 +38,19 @@ export function watermarkTileFactor(input: WatermarkTileInput): number {
  * — and `cross` canvases (2×2 tiles) would double again.
  */
 export function watermarkTileCssSize(input: WatermarkTileInput): string {
-  const factor = watermarkTileFactor(input)
-  return `${input.width * factor}px ${input.height * factor}px`
+  const factor = watermarkTileFactor(input);
+  return `${input.width * factor}px ${input.height * factor}px`;
 }
 
 /** Device-pixel size of the canvas backing the tile. */
 export function watermarkTileCanvasSize(
   input: WatermarkTileInput & { dpr: number },
 ): WatermarkTileSize {
-  const factor = watermarkTileFactor(input)
+  const factor = watermarkTileFactor(input);
   return {
     width: Math.max(1, Math.floor(input.width * input.dpr * factor)),
     height: Math.max(1, Math.floor(input.height * input.dpr * factor)),
-  }
+  };
 }
 
 /**
@@ -61,12 +61,12 @@ export function watermarkTileCanvasSize(
 export function watermarkTileDrawOffsets(
   input: WatermarkTileInput & { dpr: number },
 ): WatermarkTileSize[] {
-  const offsets: WatermarkTileSize[] = [{ width: 0, height: 0 }]
+  const offsets: WatermarkTileSize[] = [{ width: 0, height: 0 }];
   if (input.cross) {
     offsets.push({
       width: input.width * input.dpr,
       height: input.height * input.dpr,
-    })
+    });
   }
-  return offsets
+  return offsets;
 }

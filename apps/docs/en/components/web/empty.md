@@ -27,19 +27,19 @@ action area.
 
 ### SnEmpty Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| description | `string` | `undefined` | Description text; falls back to no-data copy; `default` slot overrides |
-| show-description | `boolean` | `true` | Render the description line |
-| show-icon | `boolean` | `true` | Render the glyph |
-| size | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | Glyph scale (28 / 34 / 40 / 46 / 52px) |
+| Name             | Type                                                 | Default     | Notes                                                                  |
+| ---------------- | ---------------------------------------------------- | ----------- | ---------------------------------------------------------------------- |
+| description      | `string`                                             | `undefined` | Description text; falls back to no-data copy; `default` slot overrides |
+| show-description | `boolean`                                            | `true`      | Render the description line                                            |
+| show-icon        | `boolean`                                            | `true`      | Render the glyph                                                       |
+| size             | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'`  | Glyph scale (28 / 34 / 40 / 46 / 52px)                                 |
 
 ### SnEmpty Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | Replaces the description |
-| extra | `()` | Content below the description |
-| icon | `()` | Custom glyph, replaces the default inline SVG |
+| Name    | Params | Notes                                         |
+| ------- | ------ | --------------------------------------------- |
+| default | `()`   | Replaces the description                      |
+| extra   | `()`   | Content below the description                 |
+| icon    | `()`   | Custom glyph, replaces the default inline SVG |
 
 See the component `ai-description.md` for the full contract.

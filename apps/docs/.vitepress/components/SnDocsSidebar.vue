@@ -10,59 +10,68 @@
  * Path resolution mirrors vitepress's sidebar matching: longest prefix wins.
  */
 
-import { computed } from 'vue'
-import { useRoute } from 'vitepress'
-import { SnCard, SnCollapse, SnCollapseItem } from '@snui/vue-web'
+import { computed } from 'vue';
+import { useRoute } from 'vitepress';
+import { SnCard, SnCollapse, SnCollapseItem } from '@snui/vue-web';
 
-interface SidebarItem { text: string; link?: string; items?: SidebarItem[] }
-interface SidebarGroup { text: string; items: SidebarItem[] }
-interface SidebarLocale { [prefix: string]: SidebarGroup[] }
+interface SidebarItem {
+  text: string;
+  link?: string;
+  items?: SidebarItem[];
+}
+interface SidebarGroup {
+  text: string;
+  items: SidebarItem[];
+}
+interface SidebarLocale {
+  [prefix: string]: SidebarGroup[];
+}
 
 const props = withDefaults(
   defineProps<{
     /** Vitepress `themeConfig.sidebar` object keyed by path prefix. */
-    groups?: SidebarLocale
+    groups?: SidebarLocale;
   }>(),
   {
-    groups: () => ({} as SidebarLocale),
+    groups: () => ({}) as SidebarLocale,
   },
-)
+);
 
-const route = useRoute()
+const route = useRoute();
 
 /** Pick the longest matching sidebar prefix for the current path. */
 const matchedGroups = computed<SidebarGroup[]>(() => {
-  const path = route.path
-  const prefixes = Object.keys(props.groups ?? {}).sort((a, b) => b.length - a.length)
+  const path = route.path;
+  const prefixes = Object.keys(props.groups ?? {}).sort((a, b) => b.length - a.length);
   for (const p of prefixes) {
-    const normalized = p.replace(/\/$/, '')
-    if (path === p || path.startsWith(p) || path === normalized || path.startsWith(`${normalized}/`)) {
-      return props.groups[p] ?? []
+    const normalized = p.replace(/\/$/, '');
+    if (
+      path === p ||
+      path.startsWith(p) ||
+      path === normalized ||
+      path.startsWith(`${normalized}/`)
+    ) {
+      return props.groups[p] ?? [];
     }
   }
-  return []
-})
+  return [];
+});
 
 /** Default-expand every group on first render for ease of navigation. */
-const defaultExpanded = computed<string[]>(() =>
-  matchedGroups.value.map((_, gi) => `g-${gi}`),
-)
+const defaultExpanded = computed<string[]>(() => matchedGroups.value.map((_, gi) => `g-${gi}`));
 
 /** Active leaf matching the current route (longest prefix wins). */
 function isActive(link: string | undefined): boolean {
-  if (!link) return false
-  const path = route.path
-  return path === link || path === `${link}.html` || path.startsWith(`${link}/`)
+  if (!link) return false;
+  const path = route.path;
+  return path === link || path === `${link}.html` || path.startsWith(`${link}/`);
 }
 </script>
 
 <template>
   <aside class="sn-docs-sidebar" aria-label="Documentation sidebar">
     <SnCard variant="outlined" :padding="'sm'" class="sn-docs-sidebar__card">
-      <SnCollapse
-        :default-expanded-names="defaultExpanded"
-        arrow-placement="right"
-      >
+      <SnCollapse :default-expanded-names="defaultExpanded" arrow-placement="right">
         <SnCollapseItem
           v-for="(group, gi) in matchedGroups"
           :key="`gr-${gi}`"
@@ -80,7 +89,8 @@ function isActive(link: string | undefined): boolean {
                 v-if="it.link"
                 :href="it.link"
                 :aria-current="isActive(it.link) ? 'page' : undefined"
-              >{{ it.text }}</a>
+                >{{ it.text }}</a
+              >
               <span v-else>{{ it.text }}</span>
             </li>
           </ul>
@@ -118,7 +128,9 @@ function isActive(link: string | undefined): boolean {
   color: var(--sn-web-color-text-secondary);
   text-decoration: none;
   font-size: 13px;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 .sn-docs-sidebar__item a:hover {
   background: rgba(0, 0, 0, 0.04);

@@ -7,21 +7,21 @@
  * button decides when to collapse it. The row also carries a "don't ask
  * again" checkbox, a common companion of a destructive confirmation.
  */
-import { ref } from 'vue'
-import { SnButton, SnCheckbox, SnPopconfirm } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnCheckbox, SnPopconfirm } from '@snui/vue-web';
 
-const show = ref(false)
-const dontAskAgain = ref(false)
-const log = ref('')
+const show = ref(false);
+const dontAskAgain = ref(false);
+const log = ref('');
 
 function cancel(): void {
-  show.value = false
-  log.value = '已取消，文档未删除'
+  show.value = false;
+  log.value = '已取消，文档未删除';
 }
 
 function confirm(): void {
-  show.value = false
-  log.value = dontAskAgain.value ? '已删除，并记住不再提示' : '已删除'
+  show.value = false;
+  log.value = dontAskAgain.value ? '已删除，并记住不再提示' : '已删除';
 }
 </script>
 
@@ -51,7 +51,8 @@ function confirm(): void {
     </div>
 
     <p class="popconfirm-action-demo__hint">
-      #action 插槽整体替换内置的「取消 / 确定」按钮区，关闭时机由调用方决定：本例用 v-model:show 受控，自定义按钮自行收起气泡；复选框的取值可以在确认回调里一并提交给业务。
+      #action 插槽整体替换内置的「取消 / 确定」按钮区，关闭时机由调用方决定：本例用 v-model:show
+      受控，自定义按钮自行收起气泡；复选框的取值可以在确认回调里一并提交给业务。
     </p>
   </div>
 </template>

@@ -23,37 +23,37 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `text` | `string` | `''` | 条码内容（12 / 13 位数字） |
-| `format` | `'EAN13'` | `'EAN13'` | 条码格式，当前仅 EAN13 |
-| `showText` | `boolean` | `true` | 是否显示条码文本 |
-| `textPosition` | `'bottom' \| 'top'` | `'bottom'` | 文本位置 |
-| `lineColor` | `string` | `undefined` | 条的颜色，默认文本色 token |
-| `moduleWidth` | `number` | `2` | 单模块宽度（px） |
-| `height` | `string` | `'120rpx'` | 条区高度 |
-| `fontSize` | `string` | `'22rpx'` | 文本字号 |
-| `customClass` | `string` | `undefined` | 根节点自定义类名 |
-| `customStyle` | `string` | `undefined` | 根节点自定义样式 |
+| 名称           | 类型                | 默认值      | 说明                       |
+| -------------- | ------------------- | ----------- | -------------------------- |
+| `text`         | `string`            | `''`        | 条码内容（12 / 13 位数字） |
+| `format`       | `'EAN13'`           | `'EAN13'`   | 条码格式，当前仅 EAN13     |
+| `showText`     | `boolean`           | `true`      | 是否显示条码文本           |
+| `textPosition` | `'bottom' \| 'top'` | `'bottom'`  | 文本位置                   |
+| `lineColor`    | `string`            | `undefined` | 条的颜色，默认文本色 token |
+| `moduleWidth`  | `number`            | `2`         | 单模块宽度（px）           |
+| `height`       | `string`            | `'120rpx'`  | 条区高度                   |
+| `fontSize`     | `string`            | `'22rpx'`   | 文本字号                   |
+| `customClass`  | `string`            | `undefined` | 根节点自定义类名           |
+| `customStyle`  | `string`            | `undefined` | 根节点自定义样式           |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `error` | `(error: SnBarcodeEncodeError)` | 编码失败（`BARCODE_TEXT_INVALID` / `BARCODE_CHECKSUM_INVALID` / `BARCODE_FORMAT_UNSUPPORTED`） |
-| `rendered` | `(encoded: SnBarcodeEncoded)` | 编码成功 |
+| 名称       | 参数                            | 说明                                                                                           |
+| ---------- | ------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `error`    | `(error: SnBarcodeEncodeError)` | 编码失败（`BARCODE_TEXT_INVALID` / `BARCODE_CHECKSUM_INVALID` / `BARCODE_FORMAT_UNSUPPORTED`） |
+| `rendered` | `(encoded: SnBarcodeEncoded)`   | 编码成功                                                                                       |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| — | — | 组件无插槽 |
+| 名称 | 参数 | 说明       |
+| ---- | ---- | ---------- |
+| —    | —    | 组件无插槽 |
 
 ### Methods
 
-| 名称 | 类型 | 说明 |
-| --- | --- | --- |
-| — | — | 组件无对外方法 |
+| 名称 | 类型 | 说明           |
+| ---- | ---- | -------------- |
+| —    | —    | 组件无对外方法 |
 
 ## 暗色模式
 

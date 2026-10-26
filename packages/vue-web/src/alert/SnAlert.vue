@@ -31,42 +31,36 @@
  *   </SnAlert>
  */
 
-import { computed, ref } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import {
-  AlertTriangle,
-  Check,
-  CircleAlert,
-  Info,
-  X,
-} from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
+import { computed, ref } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { AlertTriangle, Check, CircleAlert, Info, X } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
 
-defineOptions({ name: 'SnAlert' })
+defineOptions({ name: 'SnAlert' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Alert heading. Mirrors n-alert `title`. */
-    title?: string
+    title?: string;
     /** Show the leading type icon. Mirrors n-alert `showIcon` (default true). */
-    showIcon?: boolean
+    showIcon?: boolean;
     /** Semantic type — drives color + default icon. Mirrors n-alert `type`. */
-    type?: 'info' | 'warning' | 'error' | 'success' | 'default'
+    type?: 'info' | 'warning' | 'error' | 'success' | 'default';
     /** Draw the surrounding border. Mirrors n-alert `bordered` (default true). */
-    bordered?: boolean
+    bordered?: boolean;
     /** Render the close button. Mirrors n-alert `closable`. */
-    closable?: boolean
+    closable?: boolean;
     /** Called on close click. Return `false` (or a Promise of `false`) to
      * veto the dismissal. Mirrors n-alert `onClose`. */
-    onClose?: () => unknown
+    onClose?: () => unknown;
     /** Called after the leave transition finishes. Mirrors n-alert
      * `onAfterLeave`. */
-    onAfterLeave?: () => void
+    onAfterLeave?: () => void;
     /** @deprecated Use `onAfterLeave` instead. Mirrors n-alert `onAfterHide`. */
-    onAfterHide?: () => void
+    onAfterHide?: () => void;
   }>(),
   {
     title: '',
@@ -81,7 +75,7 @@ const props = withDefaults(
     onAfterLeave: undefined as any,
     onAfterHide: undefined as any,
   },
-)
+);
 
 const emit = defineEmits<{
   /**
@@ -93,53 +87,53 @@ const emit = defineEmits<{
    * that mapping, once via our explicit `props.onClose()` call). Keeping
    * the event name distinct makes the callback fire exactly once.
    */
-  (e: 'closeClick'): void
+  (e: 'closeClick'): void;
   /** Leave transition finished — the alert has been removed.
    * Named `leave` (not `afterLeave`) so Vue does not additionally map it
    * onto the `onAfterLeave` prop listener. */
-  (e: 'leave'): void
-}>()
+  (e: 'leave'): void;
+}>();
 
 defineSlots<{
   /** Alert body content. */
-  default?(): unknown
+  default?(): unknown;
   /** Custom icon — replaces the built-in per-type icon. */
-  icon?(): unknown
+  icon?(): unknown;
   /** Custom header — replaces the `title` prop. */
-  header?(): unknown
-}>()
+  header?(): unknown;
+}>();
 
 /** Visibility gate. Flipped to false once a close is not vetoed. */
-const visible = ref(true)
+const visible = ref(true);
 
 /** Per-type lucide icon. `default` has no icon (mirrors n-alert). */
 const iconComponent = computed(() => {
   switch (props.type) {
     case 'success':
-      return Check
+      return Check;
     case 'info':
-      return Info
+      return Info;
     case 'warning':
-      return AlertTriangle
+      return AlertTriangle;
     case 'error':
-      return CircleAlert
+      return CircleAlert;
     default:
-      return null
+      return null;
   }
-})
+});
 
 async function handleCloseClick() {
-  emit('closeClick')
+  emit('closeClick');
   // Mirror n-alert: a `false` result from onClose vetoes the dismissal.
-  const result = await Promise.resolve(props.onClose?.())
-  if (result === false) return
-  visible.value = false
+  const result = await Promise.resolve(props.onClose?.());
+  if (result === false) return;
+  visible.value = false;
 }
 
 function handleAfterLeave() {
-  props.onAfterLeave?.()
-  props.onAfterHide?.() // deprecated alias
-  emit('leave')
+  props.onAfterLeave?.();
+  props.onAfterHide?.(); // deprecated alias
+  emit('leave');
 }
 </script>
 

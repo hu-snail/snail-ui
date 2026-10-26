@@ -18,40 +18,40 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnBackTop } from '@snui/vue-web'
+import { SnBackTop } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `show` | `boolean` | `undefined` | Controlled visibility (`v-model:show`). When omitted the component drives visibility from the scroll position. |
-| `right` | `string \| number` | `40` | Distance from the viewport right edge. |
-| `bottom` | `string \| number` | `40` | Distance from the viewport bottom edge. |
-| `to` | `HTMLElement \| string` | `'body'` | Element to render the button into. Accepted for API parity. |
-| `visibilityHeight` | `number` | `180` | Scroll distance after which the button appears. |
-| `listenTo` | `string \| HTMLElement \| Document \| (() => HTMLElement \| Document)` | `undefined` | Scroll container; auto-detected from the nearest scrollable ancestor when omitted. |
-| `target` | `() => HTMLElement` | `undefined` | **@deprecated** — use `listenTo`. |
-| `onUpdateShow` | `(value: boolean) => void` | `undefined` | Fired on visibility change (`update:show`). |
-| `onShow` | `() => void` | `undefined` | **@deprecated** — use `onUpdate:show`. |
-| `onHide` | `() => void` | `undefined` | **@deprecated** — use `onUpdate:show`. |
+| Name               | Type                                                                   | Default     | Description                                                                                                    |
+| ------------------ | ---------------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
+| `show`             | `boolean`                                                              | `undefined` | Controlled visibility (`v-model:show`). When omitted the component drives visibility from the scroll position. |
+| `right`            | `string \| number`                                                     | `40`        | Distance from the viewport right edge.                                                                         |
+| `bottom`           | `string \| number`                                                     | `40`        | Distance from the viewport bottom edge.                                                                        |
+| `to`               | `HTMLElement \| string`                                                | `'body'`    | Element to render the button into. Accepted for API parity.                                                    |
+| `visibilityHeight` | `number`                                                               | `180`       | Scroll distance after which the button appears.                                                                |
+| `listenTo`         | `string \| HTMLElement \| Document \| (() => HTMLElement \| Document)` | `undefined` | Scroll container; auto-detected from the nearest scrollable ancestor when omitted.                             |
+| `target`           | `() => HTMLElement`                                                    | `undefined` | **@deprecated** — use `listenTo`.                                                                              |
+| `onUpdateShow`     | `(value: boolean) => void`                                             | `undefined` | Fired on visibility change (`update:show`).                                                                    |
+| `onShow`           | `() => void`                                                           | `undefined` | **@deprecated** — use `onUpdate:show`.                                                                         |
+| `onHide`           | `() => void`                                                           | `undefined` | **@deprecated** — use `onUpdate:show`.                                                                         |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
+| Name          | Payload   | Description                            |
+| ------------- | --------- | -------------------------------------- |
 | `update:show` | `boolean` | Visibility changed while uncontrolled. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                               |
+| --------- | --------------------------------------------------------- |
 | `default` | Custom button content — replaces the built-in arrow icon. |
 
 ## Exposed
 
-| Name | Type | Description |
-|---|---|---|
+| Name          | Type         | Description                                            |
+| ------------- | ------------ | ------------------------------------------------------ |
 | `scrollToTop` | `() => void` | Programmatically scroll the container back to the top. |
 
 ## Behaviour
@@ -92,13 +92,13 @@ import { SnBackTop } from '@snui/vue-web'
 
 ## Tokens Consumed (end: web)
 
-| Token | Use |
-|---|---|
-| `--sn-web-color-background-surface` | Button background. |
-| `--sn-web-color-text-secondary` | Default icon colour. |
-| `--sn-web-color-action-primary-hover` | Icon colour on hover. |
-| `--sn-web-color-action-primary` | Icon colour on press. |
-| `--sn-web-focus-ring` | Keyboard focus outline. |
+| Token                                 | Use                     |
+| ------------------------------------- | ----------------------- |
+| `--sn-web-color-background-surface`   | Button background.      |
+| `--sn-web-color-text-secondary`       | Default icon colour.    |
+| `--sn-web-color-action-primary-hover` | Icon colour on hover.   |
+| `--sn-web-color-action-primary`       | Icon colour on press.   |
+| `--sn-web-focus-ring`                 | Keyboard focus outline. |
 
 ## Accessibility
 

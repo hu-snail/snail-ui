@@ -33,24 +33,24 @@ custom.css` §13 ("Demo cards — waterfall layout") declares `column-count`
 ## Import
 
 ```ts
-import { SnWaterfall } from '@snui/vue-web'
+import { SnWaterfall } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `columns` | `number` | `3` | Logical column count, applied as `column-count`. Coerced to an integer ≥ 1 (a fractional value is floored, `0` / `NaN` / `Infinity` fall back to `1`). Ignored when `minColumnWidth` is set, and when `masonry` is `false`. |
-| `minColumnWidth` | `number \| string` | `undefined` | Minimum column width (number → px, string verbatim). When set, the container emits `column-width` **instead of** `column-count`, so the column count follows the available width (responsive mode); `columns` is ignored. |
-| `columnGap` | `number \| string` | `16` | Gap between columns (number → px). Applied as `column-gap` through `--sn-waterfall-column-gap`. |
-| `rowGap` | `number \| string` | `16` | Gap between items (number → px). Applied as `margin-bottom` on each item box through `--sn-waterfall-row-gap`. |
-| `masonry` | `boolean` | `true` | Convenience "off" switch: `false` renders a plain vertical stack (single column, no multi-column layout, `column-count` / `column-width` not emitted). |
+| Name             | Type               | Default     | Description                                                                                                                                                                                                                 |
+| ---------------- | ------------------ | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `columns`        | `number`           | `3`         | Logical column count, applied as `column-count`. Coerced to an integer ≥ 1 (a fractional value is floored, `0` / `NaN` / `Infinity` fall back to `1`). Ignored when `minColumnWidth` is set, and when `masonry` is `false`. |
+| `minColumnWidth` | `number \| string` | `undefined` | Minimum column width (number → px, string verbatim). When set, the container emits `column-width` **instead of** `column-count`, so the column count follows the available width (responsive mode); `columns` is ignored.   |
+| `columnGap`      | `number \| string` | `16`        | Gap between columns (number → px). Applied as `column-gap` through `--sn-waterfall-column-gap`.                                                                                                                             |
+| `rowGap`         | `number \| string` | `16`        | Gap between items (number → px). Applied as `margin-bottom` on each item box through `--sn-waterfall-row-gap`.                                                                                                              |
+| `masonry`        | `boolean`          | `true`      | Convenience "off" switch: `false` renders a plain vertical stack (single column, no multi-column layout, `column-count` / `column-width` not emitted).                                                                      |
 
 ## Slots
 
-| Name | Params | Description |
-|---|---|---|
-| `default` | `()` | The items. Each direct child becomes one `.sn-waterfall__item` box. |
+| Name      | Params | Description                                                         |
+| --------- | ------ | ------------------------------------------------------------------- |
+| `default` | `()`   | The items. Each direct child becomes one `.sn-waterfall__item` box. |
 
 ## Events
 
@@ -94,10 +94,10 @@ its own (no background, border, text or shadow), so there is no colour to
 tokenize. It exposes two component-scoped knobs instead, both inlined
 from props with a literal fallback in the component's `<style scoped>`:
 
-| Custom property | Default | Use |
-|---|---|---|
-| `--sn-waterfall-column-gap` | `16px` | `column-gap` between the columns. |
-| `--sn-waterfall-row-gap` | `16px` | `margin-bottom` on each item box. |
+| Custom property             | Default | Use                               |
+| --------------------------- | ------- | --------------------------------- |
+| `--sn-waterfall-column-gap` | `16px`  | `column-gap` between the columns. |
+| `--sn-waterfall-row-gap`    | `16px`  | `margin-bottom` on each item box. |
 
 Consumers may retune either by setting the property on the root (or any
 ancestor) without touching the props. All lengths are px.

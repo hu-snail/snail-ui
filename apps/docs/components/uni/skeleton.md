@@ -32,14 +32,14 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| theme | 'text' \| 'avatar' \| 'paragraph' \| 'image' | 'text' | 骨架屏主题（`rowCol` 为空时生效） |
-| rowCol | (number \| SnSkeletonCol[])[] | [] | 自定义每行占位配置 |
-| loading | boolean | true | 是否显示骨架屏；`false` 渲染 default 插槽 |
-| animation | '' \| 'gradient' \| 'flashed' | '' | 动画类型 |
-| customClass | string \| string[] \| Record<string, boolean> | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
+| 属性        | 类型                                          | 默认值 | 说明                                      |
+| ----------- | --------------------------------------------- | ------ | ----------------------------------------- |
+| theme       | 'text' \| 'avatar' \| 'paragraph' \| 'image'  | 'text' | 骨架屏主题（`rowCol` 为空时生效）         |
+| rowCol      | (number \| SnSkeletonCol[])[]                 | []     | 自定义每行占位配置                        |
+| loading     | boolean                                       | true   | 是否显示骨架屏；`false` 渲染 default 插槽 |
+| animation   | '' \| 'gradient' \| 'flashed'                 | ''     | 动画类型                                  |
+| customClass | string \| string[] \| Record<string, boolean> | ''     | 根节点自定义类名                          |
+| customStyle | string                                        | ''     | 根节点自定义样式                          |
 
 `SnSkeletonCol` = `{ type?, size?, width?, height?, margin?, borderRadius?, backgroundColor? }`。
 
@@ -49,19 +49,19 @@
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                             |
+| ------- | -------------------------------- |
 | default | `loading=false` 后展示的真实内容 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-background-subtle | 占位块填充 / 渐变基底 |
-| --sn-mp-color-background-elevated | 渐变高光 |
-| --sn-mp-color-border-default | Doodle 皮肤描边 |
-| --sn-mp-radius-sm` / `-md` / `-lg` / `-full | 占位块圆角 |
-| --sn-mp-spacing-3 | 行间距与列间距 |
+| 变量                                  | 用途                  |
+| ------------------------------------- | --------------------- |
+| --sn-mp-color-background-subtle       | 占位块填充 / 渐变基底 |
+| --sn-mp-color-background-elevated     | 渐变高光              |
+| --sn-mp-color-border-default          | Doodle 皮肤描边       |
+| --sn-mp-radius-sm`/`-md`/`-lg`/`-full | 占位块圆角            |
+| --sn-mp-spacing-3                     | 行间距与列间距        |
 
 ## 无障碍
 
@@ -71,7 +71,6 @@
 ## 暗色模式
 
 占位块填充与高光走 `--sn-mp-color-background-subtle` / `--sn-mp-color-background-elevated`，都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 > 若通过列的 `backgroundColor` 传了自定义色值，该值不会随主题翻转 —— 暗色下请改用 `var(--sn-mp-*)` 形式。
 

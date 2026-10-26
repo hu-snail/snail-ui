@@ -34,59 +34,59 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string` | `''` | 绑定查询词。 |
-| `customInputClass` | `string` | `''` | 内层 `<input>` 类名。 |
-| `placeholder` | `string` | `'搜索'` | 占位文本。 |
-| `cancelTxt` | `string` | `'取消'` | 右侧取消文案。 |
-| `variant` | `'plain' \| 'filled' \| 'light'` | `'plain'` | 视觉变体。 |
-| `hideCancel` | `boolean` | `false` | 隐藏右侧取消文案。 |
-| `disabled` | `boolean` | `false` | 禁用，阻断所有交互事件。 |
-| `maxlength` | `number \| string` | `-1` | 最大长度，`-1` 不限制。 |
-| `placeholderLeft` | `boolean` | `false` | 占位符左对齐（默认居中）。 |
-| `focus` | `boolean` | `false` | 挂载即聚焦。 |
-| `focusWhenClear` | `boolean` | `false` | 清空后自动聚焦（uni 端为占位实现）。 |
-| `placeholderStyle` | `string` | `''` | 占位符内联样式。 |
-| `placeholderClass` | `string` | `''` | 占位符样式类。 |
-| `customClass` | `string` | `''` | 根节点类名。 |
-| `customStyle` | `string` | `''` | 根节点 inline style。 |
+| 属性               | 类型                             | 默认值    | 说明                                 |
+| ------------------ | -------------------------------- | --------- | ------------------------------------ |
+| `modelValue`       | `string`                         | `''`      | 绑定查询词。                         |
+| `customInputClass` | `string`                         | `''`      | 内层 `<input>` 类名。                |
+| `placeholder`      | `string`                         | `'搜索'`  | 占位文本。                           |
+| `cancelTxt`        | `string`                         | `'取消'`  | 右侧取消文案。                       |
+| `variant`          | `'plain' \| 'filled' \| 'light'` | `'plain'` | 视觉变体。                           |
+| `hideCancel`       | `boolean`                        | `false`   | 隐藏右侧取消文案。                   |
+| `disabled`         | `boolean`                        | `false`   | 禁用，阻断所有交互事件。             |
+| `maxlength`        | `number \| string`               | `-1`      | 最大长度，`-1` 不限制。              |
+| `placeholderLeft`  | `boolean`                        | `false`   | 占位符左对齐（默认居中）。           |
+| `focus`            | `boolean`                        | `false`   | 挂载即聚焦。                         |
+| `focusWhenClear`   | `boolean`                        | `false`   | 清空后自动聚焦（uni 端为占位实现）。 |
+| `placeholderStyle` | `string`                         | `''`      | 占位符内联样式。                     |
+| `placeholderClass` | `string`                         | `''`      | 占位符样式类。                       |
+| `customClass`      | `string`                         | `''`      | 根节点类名。                         |
+| `customStyle`      | `string`                         | `''`      | 根节点 inline style。                |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 输入时同步 | `(value: string)` |
-| `change` | 内容变化（`update:modelValue` 的别名） | `(value: string)` |
-| `search` | 点击键盘搜索键 | `(value: string)` |
-| `cancel` | 点击右侧取消文案 | `(value: string)` |
-| `clear` | 点击 × 清空按钮 | — |
-| `focus` | 聚焦 | `(event: Event)` |
-| `blur` | 失焦 | `(event: Event)` |
-| `click` | 禁用态下点击根节点 | `(event: Event)` |
+| 事件名              | 说明                                   | 参数              |
+| ------------------- | -------------------------------------- | ----------------- |
+| `update:modelValue` | 输入时同步                             | `(value: string)` |
+| `change`            | 内容变化（`update:modelValue` 的别名） | `(value: string)` |
+| `search`            | 点击键盘搜索键                         | `(value: string)` |
+| `cancel`            | 点击右侧取消文案                       | `(value: string)` |
+| `clear`             | 点击 × 清空按钮                        | —                 |
+| `focus`             | 聚焦                                   | `(event: Event)`  |
+| `blur`              | 失焦                                   | `(event: Event)`  |
+| `click`             | 禁用态下点击根节点                     | `(event: Event)`  |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
-| `prefix` | 输入框左侧外部内容。 |
+| 插槽名         | 说明                 |
+| -------------- | -------------------- |
+| `prefix`       | 输入框左侧外部内容。 |
 | `input-suffix` | 输入框内部右侧内容。 |
-| `suffix` | 取消文案之后的内容。 |
+| `suffix`       | 取消文案之后的内容。 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-input-bg` | `plain` 输入框底 |
-| `--sn-mp-color-input-text` | 输入文字 |
-| `--sn-mp-color-input-placeholder` | 占位符 |
-| `--sn-mp-color-input-border` | 默认边框 |
-| `--sn-mp-color-input-border-focus` | 聚焦边框 |
-| `--sn-mp-color-background-soft` | `filled` 底色 |
-| `--sn-mp-color-background-subtle` | `light` 底色 |
-| `--sn-mp-color-action-primary` | 取消文案颜色 |
-| `--sn-mp-color-text-secondary` | 搜索 / 清空图标 |
-| `--sn-mp-radius-full` | 胶囊圆角 |
+| 变量                               | 用途             |
+| ---------------------------------- | ---------------- |
+| `--sn-mp-color-input-bg`           | `plain` 输入框底 |
+| `--sn-mp-color-input-text`         | 输入文字         |
+| `--sn-mp-color-input-placeholder`  | 占位符           |
+| `--sn-mp-color-input-border`       | 默认边框         |
+| `--sn-mp-color-input-border-focus` | 聚焦边框         |
+| `--sn-mp-color-background-soft`    | `filled` 底色    |
+| `--sn-mp-color-background-subtle`  | `light` 底色     |
+| `--sn-mp-color-action-primary`     | 取消文案颜色     |
+| `--sn-mp-color-text-secondary`     | 搜索 / 清空图标  |
+| `--sn-mp-radius-full`              | 胶囊圆角         |
 
 ## 无障碍
 
@@ -98,4 +98,3 @@
 ## 暗色模式
 
 所有颜色通过 `--sn-mp-color-*` 解析，无浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下输入框底、边框、占位符、取消文案颜色会自动翻转。验证方式：
-

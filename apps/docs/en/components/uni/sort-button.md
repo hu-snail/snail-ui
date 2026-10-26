@@ -22,21 +22,21 @@ Tri-state sort toggle: 1 ascending / 0 reset / -1 descending; by default it togg
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `1 \| 0 \| -1` | `0` | Current direction |
-| `title` | `string` | `''` | Button label |
-| `allowReset` | `boolean` | `false` | Include the reset state in the cycle |
-| `descFirst` | `boolean` | `false` | Cycle to descending first |
-| `line` | `boolean` | `false` | Render an underline |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                          | Type           | Default | Description                          |
+| ----------------------------- | -------------- | ------- | ------------------------------------ |
+| `modelValue`                  | `1 \| 0 \| -1` | `0`     | Current direction                    |
+| `title`                       | `string`       | `''`    | Button label                         |
+| `allowReset`                  | `boolean`      | `false` | Include the reset state in the cycle |
+| `descFirst`                   | `boolean`      | `false` | Cycle to descending first            |
+| `line`                        | `boolean`      | `false` | Render an underline                  |
+| `customClass` / `customStyle` | `string`       | `''`    | Root class / inline style            |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Direction changed | `(value: 1 \| 0 \| -1)` |
-| `change` | Direction changed (same tick) | `{ value }` |
+| Event               | Description                   | Payload                 |
+| ------------------- | ----------------------------- | ----------------------- |
+| `update:modelValue` | Direction changed             | `(value: 1 \| 0 \| -1)` |
+| `change`            | Direction changed (same tick) | `{ value }`             |
 
 ## Slots
 
@@ -44,14 +44,14 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-text-secondary`` | Idle label |
-| ``--sn-mp-color-text-tertiary`` | Idle arrow |
-| ``--sn-mp-color-action-primary`` | Active label / arrow / underline |
-| ``--sn-mp-color-border-default`` | `line` underline |
-| ``--sn-mp-radius-md`` | Corners |
-| ``--sn-mp-font-size-md`` | Label size |
+| Token                          | Purpose                          |
+| ------------------------------ | -------------------------------- |
+| `--sn-mp-color-text-secondary` | Idle label                       |
+| `--sn-mp-color-text-tertiary`  | Idle arrow                       |
+| `--sn-mp-color-action-primary` | Active label / arrow / underline |
+| `--sn-mp-color-border-default` | `line` underline                 |
+| `--sn-mp-radius-md`            | Corners                          |
+| `--sn-mp-font-size-md`         | Label size                       |
 
 ## Accessibility
 
@@ -60,4 +60,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

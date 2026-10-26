@@ -27,37 +27,37 @@
  *   - 表单校验 — 用 sn-form-item
  */
 
-import { computed, provide, toRef } from 'vue'
-import { SN_CELL_GROUP_KEY } from './sn-cell-types'
+import { computed, provide, toRef } from 'vue';
+import { SN_CELL_GROUP_KEY } from './sn-cell-types';
 
-defineOptions({ name: 'SnCellGroup' })
+defineOptions({ name: 'SnCellGroup' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-cell-group` 1:1 surface ─────────────────────────────── */
 
     /** 分组标题。 */
-    title?: string
+    title?: string;
     /** 分组右侧内容。 */
-    value?: string
+    value?: string;
     /** 是否展示外边框。 */
-    border?: boolean
+    border?: boolean;
     /** 是否展示为圆角卡片风格。 */
-    insert?: boolean
+    insert?: boolean;
     /** 分组标题字号（large 档）。 */
-    size?: 'default' | 'large'
+    size?: 'default' | 'large';
     /** 单元格布局方式，子单元格继承。 */
-    layout?: 'horizontal' | 'vertical'
+    layout?: 'horizontal' | 'vertical';
     /** 右侧内容对齐方式，子单元格继承。 */
-    valueAlign?: 'left' | 'right' | 'center'
+    valueAlign?: 'left' | 'right' | 'center';
     /** 左侧标题宽度，子单元格继承。 */
-    titleWidth?: string | number | undefined
+    titleWidth?: string | number | undefined;
     /** 是否使内容垂直居中，子单元格继承。 */
-    center?: boolean
+    center?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     title: '',
@@ -72,16 +72,16 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 分组标题区域。 */
-  title?(): unknown
+  title?(): unknown;
   /** 分组右侧内容区域。 */
-  value?(): unknown
+  value?(): unknown;
   /** 单元格列表。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 provide(SN_CELL_GROUP_KEY, {
   border: toRef(props, 'border'),
@@ -90,7 +90,7 @@ provide(SN_CELL_GROUP_KEY, {
   layout: toRef(props, 'layout'),
   valueAlign: toRef(props, 'valueAlign'),
   insert: toRef(props, 'insert'),
-})
+});
 
 const rootClass = computed(() => [
   'sn-cell-group',
@@ -100,7 +100,7 @@ const rootClass = computed(() => [
     'sn-cell-group--large': props.size === 'large',
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>

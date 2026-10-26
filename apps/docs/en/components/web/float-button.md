@@ -55,60 +55,60 @@ switches the root element from `<button>` to `<a>`.
 
 ### SnFloatButton Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| type | `'default' \| 'primary'` | `'default'` | Fill: surface background or brand color |
-| shape | `'circle' \| 'square'` | `'circle'` | Square adds a `description` line under the icon |
-| icon | `IconComponent` (lucide component) | `undefined` | Icon component; the `icon` slot overrides it |
-| iconSize | `number \| string` | `18` | Size forwarded to the embedded `SnIcon` |
-| description | `string` | `undefined` | Text under the icon; rendered for `shape="square"` only |
-| tooltip | `string` | `undefined` | Sets the native `title` and the accessible name (`aria-label`); no tooltip component is rendered |
-| badge | `number \| string` | `undefined` | Count bubble; hidden when `undefined`, `0` or `''` |
-| badgeDot | `boolean` | `false` | Dot without a number; a count wins over the dot |
-| href | `string` | `undefined` | Renders `<a href>` instead of `<button type="button">` |
-| target | `'_blank' \| '_self' \| '_parent' \| '_top'` | `undefined` | Native link target, only meaningful with `href` |
-| disabled | `boolean` | `false` | Suppresses `click` and sets `aria-disabled="true"` |
-| visible | `boolean` | `true` | `v-if` the whole button |
-| placement | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Fixed corner; ignored inside a group |
-| right / bottom / top / left | `number \| string` | `undefined` | Explicit offset overriding the placement axis |
-| zIndex | `number` | `1000` | Stacking order; ignored inside a group |
-| fixed | `boolean` | `true` | `false` pins the button to its nearest positioned ancestor (or `container`) instead of the viewport |
-| container | `string \| HTMLElement` | `undefined` | Positioning context for `fixed: false`: a selector or an element |
+| Name                        | Type                                                           | Default          | Notes                                                                                               |
+| --------------------------- | -------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------- |
+| type                        | `'default' \| 'primary'`                                       | `'default'`      | Fill: surface background or brand color                                                             |
+| shape                       | `'circle' \| 'square'`                                         | `'circle'`       | Square adds a `description` line under the icon                                                     |
+| icon                        | `IconComponent` (lucide component)                             | `undefined`      | Icon component; the `icon` slot overrides it                                                        |
+| iconSize                    | `number \| string`                                             | `18`             | Size forwarded to the embedded `SnIcon`                                                             |
+| description                 | `string`                                                       | `undefined`      | Text under the icon; rendered for `shape="square"` only                                             |
+| tooltip                     | `string`                                                       | `undefined`      | Sets the native `title` and the accessible name (`aria-label`); no tooltip component is rendered    |
+| badge                       | `number \| string`                                             | `undefined`      | Count bubble; hidden when `undefined`, `0` or `''`                                                  |
+| badgeDot                    | `boolean`                                                      | `false`          | Dot without a number; a count wins over the dot                                                     |
+| href                        | `string`                                                       | `undefined`      | Renders `<a href>` instead of `<button type="button">`                                              |
+| target                      | `'_blank' \| '_self' \| '_parent' \| '_top'`                   | `undefined`      | Native link target, only meaningful with `href`                                                     |
+| disabled                    | `boolean`                                                      | `false`          | Suppresses `click` and sets `aria-disabled="true"`                                                  |
+| visible                     | `boolean`                                                      | `true`           | `v-if` the whole button                                                                             |
+| placement                   | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'bottom-right'` | Fixed corner; ignored inside a group                                                                |
+| right / bottom / top / left | `number \| string`                                             | `undefined`      | Explicit offset overriding the placement axis                                                       |
+| zIndex                      | `number`                                                       | `1000`           | Stacking order; ignored inside a group                                                              |
+| fixed                       | `boolean`                                                      | `true`           | `false` pins the button to its nearest positioned ancestor (or `container`) instead of the viewport |
+| container                   | `string \| HTMLElement`                                        | `undefined`      | Positioning context for `fixed: false`: a selector or an element                                    |
 
 ### SnFloatButtonGroup Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| shape | `'circle' \| 'square'` | `'circle'` | Handed to every child and overrides the child's own `shape` |
-| open | `boolean` | `undefined` | Controlled open state (`v-model:open`); omitted = uncontrolled |
-| trigger | `'click' \| 'hover'` | `'click'` | Gesture that opens the stack |
-| placement | same eight anchors as `SnFloatButton` | `'bottom-right'` | Anchor of the whole group |
-| direction | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'` | Which side the stack opens on; `auto` derives it from `placement` (always towards the viewport centre) |
-| right / bottom / top / left | `number \| string` | `undefined` | Explicit offsets overriding `placement` (defaults `right` / `bottom` = 24) |
-| fixed | `boolean` | `true` | Same as the single button: `false` pins the whole group in its positioning context |
-| container | `string \| HTMLElement` | `undefined` | Positioning context for `fixed: false` |
-| zIndex | `number` | `1000` | Stacking order of the fixed root |
-| gap | `number` | `12` | Vertical gap between the stacked children (and to the trigger) |
-| triggerIcon | `IconComponent` (lucide component) | lucide `Plus` | Trigger glyph, rotated 45° while open |
-| triggerTooltip | `string` | `undefined` | Sets the trigger's native `title` and accessible name |
+| Name                        | Type                                            | Default          | Notes                                                                                                  |
+| --------------------------- | ----------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------ |
+| shape                       | `'circle' \| 'square'`                          | `'circle'`       | Handed to every child and overrides the child's own `shape`                                            |
+| open                        | `boolean`                                       | `undefined`      | Controlled open state (`v-model:open`); omitted = uncontrolled                                         |
+| trigger                     | `'click' \| 'hover'`                            | `'click'`        | Gesture that opens the stack                                                                           |
+| placement                   | same eight anchors as `SnFloatButton`           | `'bottom-right'` | Anchor of the whole group                                                                              |
+| direction                   | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'`         | Which side the stack opens on; `auto` derives it from `placement` (always towards the viewport centre) |
+| right / bottom / top / left | `number \| string`                              | `undefined`      | Explicit offsets overriding `placement` (defaults `right` / `bottom` = 24)                             |
+| fixed                       | `boolean`                                       | `true`           | Same as the single button: `false` pins the whole group in its positioning context                     |
+| container                   | `string \| HTMLElement`                         | `undefined`      | Positioning context for `fixed: false`                                                                 |
+| zIndex                      | `number`                                        | `1000`           | Stacking order of the fixed root                                                                       |
+| gap                         | `number`                                        | `12`             | Vertical gap between the stacked children (and to the trigger)                                         |
+| triggerIcon                 | `IconComponent` (lucide component)              | lucide `Plus`    | Trigger glyph, rotated 45° while open                                                                  |
+| triggerTooltip              | `string`                                        | `undefined`      | Sets the trigger's native `title` and accessible name                                                  |
 
 ### Events
 
-| Name | Component | Payload | Notes |
-| --- | --- | --- | --- |
-| click | SnFloatButton | `MouseEvent` | Native click; not emitted while `disabled` |
-| update:open | SnFloatButtonGroup | `boolean` | Open state changed (`v-model:open`), only on an actual change |
-| openChange | SnFloatButtonGroup | `boolean` | Event-style alias of `update:open` |
+| Name        | Component          | Payload      | Notes                                                         |
+| ----------- | ------------------ | ------------ | ------------------------------------------------------------- |
+| click       | SnFloatButton      | `MouseEvent` | Native click; not emitted while `disabled`                    |
+| update:open | SnFloatButtonGroup | `boolean`    | Open state changed (`v-model:open`), only on an actual change |
+| openChange  | SnFloatButtonGroup | `boolean`    | Event-style alias of `update:open`                            |
 
 ### Slots
 
-| Name | Component | Params | Notes |
-| --- | --- | --- | --- |
-| icon | SnFloatButton | `()` | Replaces the icon |
-| description | SnFloatButton | `()` | Replaces the `description` text |
-| default | SnFloatButton | `()` | Replaces the whole inner content (icon + text) |
-| default | SnFloatButtonGroup | `()` | The stacked `SnFloatButton` children |
-| trigger | SnFloatButtonGroup | `()` | Replaces the built-in trigger entirely |
+| Name        | Component          | Params | Notes                                          |
+| ----------- | ------------------ | ------ | ---------------------------------------------- |
+| icon        | SnFloatButton      | `()`   | Replaces the icon                              |
+| description | SnFloatButton      | `()`   | Replaces the `description` text                |
+| default     | SnFloatButton      | `()`   | Replaces the whole inner content (icon + text) |
+| default     | SnFloatButtonGroup | `()`   | The stacked `SnFloatButton` children           |
+| trigger     | SnFloatButtonGroup | `()`   | Replaces the built-in trigger entirely         |
 
 ## Positioning
 
@@ -182,7 +182,7 @@ overriding those tokens.
   component is involved, which also keeps the button disposable-free.
 - The library ships no `SnBadge` yet, so the count bubble is rendered inline by
   `SnFloatButton`.
-- The `trigger` slot replaces the built-in trigger *and* its wiring: a custom
+- The `trigger` slot replaces the built-in trigger _and_ its wiring: a custom
   trigger has to drive `v-model:open` and provide its own `aria-expanded` /
   `aria-haspopup`.
 - `FloatButton.BackTop`, `FloatButton.PurePanel` and the group popup-menu mode

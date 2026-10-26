@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnSlider — clickable marks. */
-import { ref } from 'vue'
-import { SnSlider } from '@snui/vue-web'
-const v = ref(30)
+import { ref } from 'vue';
+import { SnSlider } from '@snui/vue-web';
+const v = ref(30);
 </script>
 
 <template>
@@ -12,5 +12,7 @@ const v = ref(30)
 </template>
 
 <style scoped>
-.demo-col { max-width: 400px; }
+.demo-col {
+  max-width: 400px;
+}
 </style>

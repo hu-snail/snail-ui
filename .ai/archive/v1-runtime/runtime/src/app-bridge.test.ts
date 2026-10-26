@@ -4,7 +4,11 @@ import { createNoopAppBridge, listCapabilities, type AppBridge } from './app-bri
 describe('@snui/runtime — AppBridge', () => {
   it('listCapabilities returns all five when bridge has all five', () => {
     expect(listCapabilities(createNoopAppBridge())).toEqual([
-      'router', 'storage', 'notify', 'analytics', 'event',
+      'router',
+      'storage',
+      'notify',
+      'analytics',
+      'event',
     ]);
   });
 

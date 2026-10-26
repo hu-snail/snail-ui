@@ -10,11 +10,11 @@
  *   - the panel's own events are re-emitted so a host can own the state
  */
 
-import { describe, expect, it, vi } from 'vitest'
-import { mount, type VueWrapper } from '@vue/test-utils'
-import SnAiAssistant from './SnAiAssistant.vue'
-import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '../shared/types'
-import type { SnAiRunTurn } from './use-ai-turn-queue'
+import { describe, expect, it, vi } from 'vitest';
+import { mount, type VueWrapper } from '@vue/test-utils';
+import SnAiAssistant from './SnAiAssistant.vue';
+import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '../shared/types';
+import type { SnAiRunTurn } from './use-ai-turn-queue';
 
 const vendors: SnAiVendor[] = [
   {
@@ -22,13 +22,13 @@ const vendors: SnAiVendor[] = [
     name: '本地服务',
     models: [{ id: 'm-deep', name: 'Deep', vendorId: 'v-local' }],
   },
-]
+];
 
 interface AssistantOptions {
-  showModelConfig?: boolean
-  modelConfigOpen?: boolean | undefined
-  title?: string
-  params?: SnAiModelParams | undefined
+  showModelConfig?: boolean;
+  modelConfigOpen?: boolean | undefined;
+  title?: string;
+  params?: SnAiModelParams | undefined;
 }
 
 /** Teleport is stubbed so the drawer's panel renders inline and is findable. */
@@ -36,110 +36,107 @@ function mountAssistant(options: AssistantOptions = {}): VueWrapper {
   return mount(SnAiAssistant, {
     props: { messages: [] as SnAiMessage[], vendors, ...options },
     global: { stubs: { teleport: true } },
-  })
+  });
 }
 
 /** The header's model-config entry point, or undefined when it is off. */
 function triggerOf(wrapper: VueWrapper) {
-  return wrapper
-    .findAll('button')
-    .find((button) => button.attributes('aria-label') === '模型配置')
+  return wrapper.findAll('button').find((button) => button.attributes('aria-label') === '模型配置');
 }
 
 describe('SnAiAssistant', () => {
   describe('composition', () => {
     it('should assemble the message list and the composer, not wrap another page', () => {
-      const wrapper = mountAssistant({ title: '代码助手' })
+      const wrapper = mountAssistant({ title: '代码助手' });
 
-      expect(wrapper.find('.sn-ai-assistant__title').text()).toBe('代码助手')
-      expect(wrapper.findComponent({ name: 'SnAiMessageList' }).exists()).toBe(true)
-      expect(wrapper.findComponent({ name: 'SnAiPrompt' }).exists()).toBe(true)
+      expect(wrapper.find('.sn-ai-assistant__title').text()).toBe('代码助手');
+      expect(wrapper.findComponent({ name: 'SnAiMessageList' }).exists()).toBe(true);
+      expect(wrapper.findComponent({ name: 'SnAiPrompt' }).exists()).toBe(true);
       // The chat page is a sibling assembly, never a child of this one.
-      expect(wrapper.findComponent({ name: 'SnAiChat' }).exists()).toBe(false)
-    })
+      expect(wrapper.findComponent({ name: 'SnAiChat' }).exists()).toBe(false);
+    });
 
     it('should run a turn through the shared engine', async () => {
       const run = vi.fn<SnAiRunTurn>(async (_turn, context) => {
-        context.emit({ type: 'text', text: '答案' })
-      })
-      const wrapper = mountAssistant({ run })
+        context.emit({ type: 'text', text: '答案' });
+      });
+      const wrapper = mountAssistant({ run });
 
       wrapper.findComponent({ name: 'SnAiPrompt' }).vm.$emit('send', {
         id: 't1',
         text: '问题',
         attachments: [],
         createdAt: 1,
-      })
-      await new Promise((resolve) => setTimeout(resolve, 0))
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
 
-      expect(run).toHaveBeenCalledTimes(1)
-      expect(wrapper.emitted('turn-start')).toHaveLength(1)
-      const transcript = wrapper.emitted('update:messages')?.at(-1)?.[0] as SnAiMessage[]
-      expect(transcript.map((message) => message.role)).toEqual(['user', 'assistant'])
-      expect(transcript[1]?.parts[0]).toEqual({ type: 'text', text: '答案' })
-      expect(transcript[1]?.status).toBe('done')
-    })
+      expect(run).toHaveBeenCalledTimes(1);
+      expect(wrapper.emitted('turn-start')).toHaveLength(1);
+      const transcript = wrapper.emitted('update:messages')?.at(-1)?.[0] as SnAiMessage[];
+      expect(transcript.map((message) => message.role)).toEqual(['user', 'assistant']);
+      expect(transcript[1]?.parts[0]).toEqual({ type: 'text', text: '答案' });
+      expect(transcript[1]?.status).toBe('done');
+    });
 
     it('should render the chat page and the model-config panel as one template', async () => {
-      const wrapper = mountAssistant()
-      const trigger = triggerOf(wrapper)
-      expect(trigger).toBeDefined()
+      const wrapper = mountAssistant();
+      const trigger = triggerOf(wrapper);
+      expect(trigger).toBeDefined();
 
-      await trigger?.trigger('click')
+      await trigger?.trigger('click');
 
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(true)
-    })
-  })
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(true);
+    });
+  });
 
   describe('model config', () => {
     it('should open the drawer, report it, and close it again', async () => {
-      const wrapper = mountAssistant()
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(false)
+      const wrapper = mountAssistant();
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(false);
 
-      await triggerOf(wrapper)?.trigger('click')
-      expect(wrapper.emitted('update:modelConfigOpen')?.at(-1)).toEqual([true])
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(true)
+      await triggerOf(wrapper)?.trigger('click');
+      expect(wrapper.emitted('update:modelConfigOpen')?.at(-1)).toEqual([true]);
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(true);
 
-      const panel = wrapper.findComponent({ name: 'SnModelConfig' })
-      panel.vm.$emit('update:activeModelId', 'm-deep')
-      panel.vm.$emit('test-connection', { vendorId: 'v-local' })
-      await wrapper.vm.$nextTick()
+      const panel = wrapper.findComponent({ name: 'SnModelConfig' });
+      panel.vm.$emit('update:activeModelId', 'm-deep');
+      panel.vm.$emit('test-connection', { vendorId: 'v-local' });
+      await wrapper.vm.$nextTick();
 
-      expect(wrapper.emitted('update:activeModelId')?.at(-1)).toEqual(['m-deep'])
-      expect(wrapper.emitted('test-connection')?.at(-1)).toEqual([{ vendorId: 'v-local' }])
-    })
+      expect(wrapper.emitted('update:activeModelId')?.at(-1)).toEqual(['m-deep']);
+      expect(wrapper.emitted('test-connection')?.at(-1)).toEqual([{ vendorId: 'v-local' }]);
+    });
 
     it('should hand the drawer the same vendor list the composer uses', async () => {
-      const wrapper = mountAssistant()
-      await triggerOf(wrapper)?.trigger('click')
+      const wrapper = mountAssistant();
+      await triggerOf(wrapper)?.trigger('click');
 
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).props('vendors')).toEqual(vendors)
-    })
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).props('vendors')).toEqual(vendors);
+    });
     it('should own `params` rather than falling through to the chat page', () => {
-      const params: SnAiModelParams = { temperature: 0.4, stream: true }
-      const wrapper = mountAssistant({ params, modelConfigOpen: true })
+      const params: SnAiModelParams = { temperature: 0.4, stream: true };
+      const wrapper = mountAssistant({ params, modelConfigOpen: true });
 
       // A declared prop: an undeclared `params` would sit in $attrs, reach
       // SnConfigProvider — which renders fragment / teleport roots and cannot
       // inherit attributes — and warn, while `v-model:params` would never bind.
-      expect(wrapper.props('params')).toEqual(params)
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).props('params')).toEqual(params)
-    })
-
+      expect(wrapper.props('params')).toEqual(params);
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).props('params')).toEqual(params);
+    });
 
     it('should drop the entry point and the panel when disabled', () => {
-      const wrapper = mountAssistant({ showModelConfig: false, modelConfigOpen: true })
+      const wrapper = mountAssistant({ showModelConfig: false, modelConfigOpen: true });
 
-      expect(triggerOf(wrapper)).toBeUndefined()
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(false)
-    })
+      expect(triggerOf(wrapper)).toBeUndefined();
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(false);
+    });
 
     it('should let a host control the open state', async () => {
-      const wrapper = mountAssistant({ modelConfigOpen: true })
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(true)
+      const wrapper = mountAssistant({ modelConfigOpen: true });
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(true);
 
-      await wrapper.setProps({ modelConfigOpen: false })
-      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(false)
-    })
-  })
-})
+      await wrapper.setProps({ modelConfigOpen: false });
+      expect(wrapper.findComponent({ name: 'SnModelConfig' }).exists()).toBe(false);
+    });
+  });
+});

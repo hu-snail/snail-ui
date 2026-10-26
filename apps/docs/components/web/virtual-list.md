@@ -32,26 +32,26 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| items | `Array<Record<string, unknown> \| string \| number>` | `[]` | 完整数据列表，仅渲染可视窗口内的行。 |
-| item-size | `number` | `30` | 固定行高（px），同时作为未测量行的估算高度。 |
-| item-resizable | `boolean` | `false` | 用 ResizeObserver 测量已渲染行高并按测量结果重排。 |
-| key-field | `string` | `'value'` | 对象条目取渲染 key 的字段名；字段缺失时回退为行下标。 |
-| overscan | `number` | `3` | 视口上下额外渲染的行数，用于吸收快速滚动。 |
-| visible-height | `number \| undefined` | `undefined` | 固定视口高度（px）；未提供时测量容器自身高度（默认 100%）。 |
+| 名称           | 类型                                                 | 默认值      | 说明                                                        |
+| -------------- | ---------------------------------------------------- | ----------- | ----------------------------------------------------------- |
+| items          | `Array<Record<string, unknown> \| string \| number>` | `[]`        | 完整数据列表，仅渲染可视窗口内的行。                        |
+| item-size      | `number`                                             | `30`        | 固定行高（px），同时作为未测量行的估算高度。                |
+| item-resizable | `boolean`                                            | `false`     | 用 ResizeObserver 测量已渲染行高并按测量结果重排。          |
+| key-field      | `string`                                             | `'value'`   | 对象条目取渲染 key 的字段名；字段缺失时回退为行下标。       |
+| overscan       | `number`                                             | `3`         | 视口上下额外渲染的行数，用于吸收快速滚动。                  |
+| visible-height | `number \| undefined`                                | `undefined` | 固定视口高度（px）；未提供时测量容器自身高度（默认 100%）。 |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| scroll | `(event: Event)` | 容器原生滚动事件，每次滚动都会触发。 |
+| 名称              | 参数                  | 说明                                               |
+| ----------------- | --------------------- | -------------------------------------------------- |
+| scroll            | `(event: Event)`      | 容器原生滚动事件，每次滚动都会触发。               |
 | update:scroll-top | `(scrollTop: number)` | rAF 节流后提交的滚动偏移，用于外部回显或按需加载。 |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称 | 参数                                                                   | 说明                                                            |
+| ---- | ---------------------------------------------------------------------- | --------------------------------------------------------------- |
 | item | `{ item: Record<string, unknown> \| string \| number; index: number }` | 行内容；未提供时字符串 / 数字条目按文本渲染，对象条目渲染为空。 |
 
 ### Methods
@@ -67,8 +67,8 @@
 
 ## Tokens
 
-| Token | CSS 变量 | 用途 |
-| --- | --- | --- |
+| Token    | CSS 变量                      | 用途   |
+| -------- | ----------------------------- | ------ |
 | 主文本色 | `--sn-web-color-text-primary` | 行文字 |
 
 ## 无障碍
@@ -79,11 +79,11 @@
 
 ## AI Patch Boundary
 
-| 可安全由 AI 生成 | 需要人工确认 |
-| --- | --- |
-| `items` 列表内容与 `key-field` 字段名 | `items` 的分页 / 增量加载策略与数组整体替换时机 |
-| `item-size` / `overscan` / `visible-height` 等尺寸参数 | `update:scroll-top` 监听内的数据请求与节流策略 |
-| `item-resizable` 开关与文档、demo 中的静态组合用法 | `item` 插槽内的交互控件与异步数据 |
+| 可安全由 AI 生成                                       | 需要人工确认                                    |
+| ------------------------------------------------------ | ----------------------------------------------- |
+| `items` 列表内容与 `key-field` 字段名                  | `items` 的分页 / 增量加载策略与数组整体替换时机 |
+| `item-size` / `overscan` / `visible-height` 等尺寸参数 | `update:scroll-top` 监听内的数据请求与节流策略  |
+| `item-resizable` 开关与文档、demo 中的静态组合用法     | `item` 插槽内的交互控件与异步数据               |
 
 - AI 生成的 JSON Patch 只允许修改以上 Props 数据面，不得注入插槽内容、事件处理器或内部滚动偏移。
 - `item-size` 必须为正数；`overscan` 为非负整数。

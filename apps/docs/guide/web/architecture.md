@@ -39,17 +39,17 @@ snail-aui v3.1 是端独立的 AI-Native UI 框架生态。Web（PC）和 uni（
 
 ## 包结构
 
-| 包 | 角色 | 端 |
-|---|---|---|
-| `@snui/tokens` | 统一 Token 三层级联，输出 `--aui-*` | 跨端共用底层 |
-| `@snui/tokens-web` | `--sn-web-*` 别名层 | Web 独立包 |
-| `@snui/tokens-mp` | `--sn-mp-*` 别名层（含 px→rpx 转换）| uni 独立包 |
-| `@snui/vue-web` | Web 端组件库（SnButton / SnTable / ...）| Web 端独立 |
-| `@snui/uni` | uni 端组件库（sn-button / sn-list / ...）| uni 端独立 |
-| `@snui/style-packs` | 风格包描述（含 `end` 字段）| 跨端共用 |
-| `@snui/ai` | Skill + MCP + ai-meta | 跨端共用 |
-| `@snui/cli` | resolver + llms.txt + token-check + pack-validate | 跨端共用 |
-| `@snui/docs` | VitePress 文档站 | 跨端共用 |
+| 包                  | 角色                                              | 端           |
+| ------------------- | ------------------------------------------------- | ------------ |
+| `@snui/tokens`      | 统一 Token 三层级联，输出 `--aui-*`               | 跨端共用底层 |
+| `@snui/tokens-web`  | `--sn-web-*` 别名层                               | Web 独立包   |
+| `@snui/tokens-mp`   | `--sn-mp-*` 别名层（含 px→rpx 转换）              | uni 独立包   |
+| `@snui/vue-web`     | Web 端组件库（SnButton / SnTable / ...）          | Web 端独立   |
+| `@snui/uni`         | uni 端组件库（sn-button / sn-list / ...）         | uni 端独立   |
+| `@snui/style-packs` | 风格包描述（含 `end` 字段）                       | 跨端共用     |
+| `@snui/ai`          | Skill + MCP + ai-meta                             | 跨端共用     |
+| `@snui/cli`         | resolver + llms.txt + token-check + pack-validate | 跨端共用     |
+| `@snui/docs`        | VitePress 文档站                                  | 跨端共用     |
 
 ## 端独立性原则（v3.1 最高优先级）
 
@@ -88,46 +88,46 @@ Primitive  →  Semantic  →  Component  →  --aui-* 原始层
 
 不同端有不同的 Component Token 字段，按场景独立：
 
-| 字段 | Web（`--sn-web-*`）| uni（`--sn-mp-*`）|
-|---|---|---|
-| button-radius | ✅ 6px | ✅ 24rpx |
-| button-height-medium | ✅ 36px | ✅ 72rpx |
-| table-row-height | ✅ 32px | ❌ |
-| list-item-height | ❌ | ✅ 88rpx |
-| sidebar-item-height | ❌ | ✅ 100rpx |
-| dropdown-item-padding | ✅ 8px 16px | ❌ |
+| 字段                  | Web（`--sn-web-*`） | uni（`--sn-mp-*`） |
+| --------------------- | ------------------- | ------------------ |
+| button-radius         | ✅ 6px              | ✅ 24rpx           |
+| button-height-medium  | ✅ 36px             | ✅ 72rpx           |
+| table-row-height      | ✅ 32px             | ❌                 |
+| list-item-height      | ❌                  | ✅ 88rpx           |
+| sidebar-item-height   | ❌                  | ✅ 100rpx          |
+| dropdown-item-padding | ✅ 8px 16px         | ❌                 |
 
 `tokens-web` 和 `tokens-mp` 各自独立维护字段映射，互不影响。
 
 ## 三轴独立
 
-| 轴 | 改什么 | 禁止 |
-|---|---|---|
-| Theme | 颜色 | 圆角、间距、尺寸 |
-| Style | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
-| Density | 间距 + 尺寸 + 字号 | 颜色、圆角 |
+| 轴      | 改什么                        | 禁止             |
+| ------- | ----------------------------- | ---------------- |
+| Theme   | 颜色                          | 圆角、间距、尺寸 |
+| Style   | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
+| Density | 间距 + 尺寸 + 字号            | 颜色、圆角       |
 
 Style Pack 是 Theme + Style + Density 的组合。
 
 ## Style Pack 三层
 
-| 层 | 内容 | 必需 |
-|---|---|---|
-| Token | 颜色 / 圆角 / 间距覆盖（snCssVars()）| ✅ 所有 Pack |
-| Skin CSS | `.snui-skin-{name}` 作用域 CSS | 仅需视觉人格的 Pack |
-| Resources | 字体 / 纹理 | 少数 Pack |
+| 层        | 内容                                  | 必需                |
+| --------- | ------------------------------------- | ------------------- |
+| Token     | 颜色 / 圆角 / 间距覆盖（snCssVars()） | ✅ 所有 Pack        |
+| Skin CSS  | `.snui-skin-{name}` 作用域 CSS        | 仅需视觉人格的 Pack |
+| Resources | 字体 / 纹理                           | 少数 Pack           |
 
 皮肤 CSS 不能修改组件 .vue / Props / 行为，只能操作视觉层。
 
 ## uni / 小程序平台差异
 
-| 能力 | Web | uni H5 | 微信 / 支付宝小程序 |
-|---|---|---|---|
-| `:root {}` CSS 变量 | ✅ | ✅ | ❌（只支持 page / 组件级）|
-| `[data-theme="dark"]` | ✅ | ✅ | ❌ |
-| `document.body.classList` | ✅ | ✅（H5）| ❌ |
-| 动态注入 `<style>` | ✅ | ✅（H5）| ❌ |
-| Skin CSS (BEM class) | ✅ | ✅ | ✅（组件 scoped 级别）|
+| 能力                      | Web | uni H5   | 微信 / 支付宝小程序        |
+| ------------------------- | --- | -------- | -------------------------- |
+| `:root {}` CSS 变量       | ✅  | ✅       | ❌（只支持 page / 组件级） |
+| `[data-theme="dark"]`     | ✅  | ✅       | ❌                         |
+| `document.body.classList` | ✅  | ✅（H5） | ❌                         |
+| 动态注入 `<style>`        | ✅  | ✅（H5） | ❌                         |
+| Skin CSS (BEM class)      | ✅  | ✅       | ✅（组件 scoped 级别）     |
 
 小程序走 `ConfigProvider` 根元素 class 传递 + 组件 scoped CSS 覆盖。
 
@@ -138,35 +138,39 @@ Style Pack 是 Theme + Style + Density 的组合。
 export const snWebAliasMap = [
   ['--sn-web-color-action-primary', '--aui-color-action-primary'],
   // ...
-]
+];
 
 // tokens-mp/src/variables.ts (uni 端别名映射，含 rpx 转换)
 export const snMpAliasMap = [
   ['--sn-mp-color-action-primary', '--aui-color-action-primary'],
   // 注意：px 自动转 rpx
   // ...
-]
+];
 ```
 
 组件消费：
 
 ```css
 /* Web 端 */
-.sn-button { background: var(--sn-web-color-action-primary); }
+.sn-button {
+  background: var(--sn-web-color-action-primary);
+}
 
 /* uni 端 */
-.sn-button { background: var(--sn-mp-color-action-primary); }
+.sn-button {
+  background: var(--sn-mp-color-action-primary);
+}
 ```
 
 ## 跨端共用层
 
-| 跨端共用 | 怎么按端过滤 |
-|---|---|
-| `@snui/style-packs` | Pack 的 `end: 'web' \| 'mp' \| 'both'` 字段 |
-| `@snui/ai` Skill 文件 | 按端列组件清单 |
-| `@snui/ai` MCP `list_components` | 输入 `end` 字段 |
-| `@snui/ai` ai-meta.json | components 数组按 end 分组 |
-| `@snui/docs` 文档站 | 导航按 Web / uni 分组 |
+| 跨端共用                         | 怎么按端过滤                                |
+| -------------------------------- | ------------------------------------------- |
+| `@snui/style-packs`              | Pack 的 `end: 'web' \| 'mp' \| 'both'` 字段 |
+| `@snui/ai` Skill 文件            | 按端列组件清单                              |
+| `@snui/ai` MCP `list_components` | 输入 `end` 字段                             |
+| `@snui/ai` ai-meta.json          | components 数组按 end 分组                  |
+| `@snui/docs` 文档站              | 导航按 Web / uni 分组                       |
 
 ## CI 流水线
 

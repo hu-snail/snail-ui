@@ -19,45 +19,45 @@ Per AGENTS.md §112, this family's API surface mirrors naive-ui `n-text` /
 ## Import
 
 ```ts
-import { SnText } from '@snui/vue-web/src/text/SnText.vue'
-import SnTitle from '@snui/vue-web/src/text/SnTitle.vue'
-import SnParagraph from '@snui/vue-web/src/text/SnParagraph.vue'
+import { SnText } from '@snui/vue-web/src/text/SnText.vue';
+import SnTitle from '@snui/vue-web/src/text/SnTitle.vue';
+import SnParagraph from '@snui/vue-web/src/text/SnParagraph.vue';
 ```
 
 ## SnText Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | no | Semantic type — drives the text color. |
-| `depth` | `'1' \| '2' \| '3'` | — | no | Gray scale; only applied for `type="default"`. |
-| `strong` | `boolean` | `false` | no | Bolder text. |
-| `italic` | `boolean` | `false` | no | Italic text. |
-| `underline` | `boolean` | `false` | no | Underlined text. |
-| `delete` | `boolean` | `false` | no | Strike-through text. Combines with `underline`. |
-| `code` | `boolean` | `false` | no | Inline-code styling (mono font + subtle background). |
-| `disabled` | `boolean` | `false` | no | Greyed-out text with a not-allowed cursor. |
-| `tag` | `'h1'…'h6' \| 'p' \| 'span' \| 'blockquote'` | `'span'` | no | Rendered element. |
-| `customClass` | `string` | `''` | no | Extra class merged onto the rendered element. |
-| `customStyle` | `string \| CSSProperties` | — | no | Inline style merged onto the rendered element. |
+| Name          | Type                                                                    | Default     | Required | Description                                          |
+| ------------- | ----------------------------------------------------------------------- | ----------- | -------- | ---------------------------------------------------- |
+| `type`        | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | no       | Semantic type — drives the text color.               |
+| `depth`       | `'1' \| '2' \| '3'`                                                     | —           | no       | Gray scale; only applied for `type="default"`.       |
+| `strong`      | `boolean`                                                               | `false`     | no       | Bolder text.                                         |
+| `italic`      | `boolean`                                                               | `false`     | no       | Italic text.                                         |
+| `underline`   | `boolean`                                                               | `false`     | no       | Underlined text.                                     |
+| `delete`      | `boolean`                                                               | `false`     | no       | Strike-through text. Combines with `underline`.      |
+| `code`        | `boolean`                                                               | `false`     | no       | Inline-code styling (mono font + subtle background). |
+| `disabled`    | `boolean`                                                               | `false`     | no       | Greyed-out text with a not-allowed cursor.           |
+| `tag`         | `'h1'…'h6' \| 'p' \| 'span' \| 'blockquote'`                            | `'span'`    | no       | Rendered element.                                    |
+| `customClass` | `string`                                                                | `''`        | no       | Extra class merged onto the rendered element.        |
+| `customStyle` | `string \| CSSProperties`                                               | —           | no       | Inline style merged onto the rendered element.       |
 
 ## SnTitle Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `level` | `1…6` | `1` | no | Heading level — renders `<h1>…<h6>` at 30/22/18/16/16/16 px, weight 500. |
-| `type` / `depth` / `strong` / `italic` / `underline` / `delete` | same as SnText | — | no | Forwarded to SnText. |
+| Name                                                            | Type           | Default | Required | Description                                                              |
+| --------------------------------------------------------------- | -------------- | ------- | -------- | ------------------------------------------------------------------------ |
+| `level`                                                         | `1…6`          | `1`     | no       | Heading level — renders `<h1>…<h6>` at 30/22/18/16/16/16 px, weight 500. |
+| `type` / `depth` / `strong` / `italic` / `underline` / `delete` | same as SnText | —       | no       | Forwarded to SnText.                                                     |
 
 ## SnParagraph Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `spacing` | `'tight' \| 'base' \| 'loose'` | `'base'` | no | Line-height scale: 1.4 / 1.6 / 1.8. |
-| `type` / `depth` / `strong` / `italic` / `underline` / `delete` | same as SnText | — | no | Forwarded to SnText. |
+| Name                                                            | Type                           | Default  | Required | Description                         |
+| --------------------------------------------------------------- | ------------------------------ | -------- | -------- | ----------------------------------- |
+| `spacing`                                                       | `'tight' \| 'base' \| 'loose'` | `'base'` | no       | Line-height scale: 1.4 / 1.6 / 1.8. |
+| `type` / `depth` / `strong` / `italic` / `underline` / `delete` | same as SnText                 | —        | no       | Forwarded to SnText.                |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                          |
+| --------- | ------------------------------------ |
 | `default` | Text content (all three components). |
 
 ## Divergences from the reference API
@@ -71,12 +71,12 @@ import SnParagraph from '@snui/vue-web/src/text/SnParagraph.vue'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary / secondary / tertiary / disabled | `--sn-web-color-text-*` | Default + depth + disabled colors |
-| Action primary | `--sn-web-color-action-primary` | `type="primary"` color |
-| Feedback info / success / warning / danger | `--sn-web-color-feedback-*` | Typed colors |
-| Background subtle | `--sn-web-color-background-subtle` | `code` background |
+| Token                                          | CSS Variable                       | Purpose                           |
+| ---------------------------------------------- | ---------------------------------- | --------------------------------- |
+| Text primary / secondary / tertiary / disabled | `--sn-web-color-text-*`            | Default + depth + disabled colors |
+| Action primary                                 | `--sn-web-color-action-primary`    | `type="primary"` color            |
+| Feedback info / success / warning / danger     | `--sn-web-color-feedback-*`        | Typed colors                      |
+| Background subtle                              | `--sn-web-color-background-subtle` | `code` background                 |
 
 ## Accessibility
 

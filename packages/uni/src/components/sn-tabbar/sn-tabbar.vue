@@ -25,39 +25,39 @@
  *   - 顶部导航 — 用 sn-navbar
  */
 
-import { computed, provide, ref, toRef, watch } from 'vue'
-import { SN_TABBAR_KEY, type SnTabbarValue } from './sn-tabbar-types'
+import { computed, provide, ref, toRef, watch } from 'vue';
+import { SN_TABBAR_KEY, type SnTabbarValue } from './sn-tabbar-types';
 
-defineOptions({ name: 'SnTabbar' })
+defineOptions({ name: 'SnTabbar' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-tabbar` 1:1 surface ─────────────────────────────────── */
 
     /** 选中标签的索引值或者名称。 */
-    modelValue?: SnTabbarValue
+    modelValue?: SnTabbarValue;
     /** 是否固定在底部。 */
-    fixed?: boolean
+    fixed?: boolean;
     /** 是否显示顶部边框。 */
-    bordered?: boolean
+    bordered?: boolean;
     /** 是否设置底部安全区。 */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** 标签栏形状：default / round。 */
-    shape?: 'default' | 'round'
+    shape?: 'default' | 'round';
     /** 激活标签颜色（内联覆盖，空 = 令牌默认）。 */
-    activeColor?: string
+    activeColor?: string;
     /** 未激活标签颜色（内联覆盖，空 = 令牌默认）。 */
-    inactiveColor?: string
+    inactiveColor?: string;
     /** 固定在底部时，是否生成等高占位元素。 */
-    placeholder?: boolean
+    placeholder?: boolean;
     /** 组件层级。 */
-    zIndex?: number
+    zIndex?: number;
     /** 切换前的回调，返回 false 可阻止切换，支持 Promise<boolean>。 */
-    beforeChange?: ((value: SnTabbarValue) => boolean | Promise<boolean>) | undefined
+    beforeChange?: ((value: SnTabbarValue) => boolean | Promise<boolean>) | undefined;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 0,
@@ -73,41 +73,41 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model 同步。 */
-  (e: 'update:modelValue', value: SnTabbarValue): void
+  (e: 'update:modelValue', value: SnTabbarValue): void;
   /** 标签切换时触发。 */
-  (e: 'change', payload: { value: SnTabbarValue }): void
-}>()
+  (e: 'change', payload: { value: SnTabbarValue }): void;
+}>();
 
 defineSlots<{
   /** TabbarItem 列表。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Uncontrolled fallback + controlled sync — both modes stay in step. */
-const innerValue = ref<SnTabbarValue>(props.modelValue)
+const innerValue = ref<SnTabbarValue>(props.modelValue);
 watch(
   () => props.modelValue,
   (next) => {
-    innerValue.value = next
+    innerValue.value = next;
   },
-)
-const activeValue = computed<SnTabbarValue>(() => innerValue.value)
+);
+const activeValue = computed<SnTabbarValue>(() => innerValue.value);
 
 /** Item registration counter — provides the default index-based `name`. */
-let itemCounter = 0
+let itemCounter = 0;
 
 function nextIndex(): number {
-  const index = itemCounter
-  itemCounter += 1
-  return index
+  const index = itemCounter;
+  itemCounter += 1;
+  return index;
 }
 
 function isActive(value: SnTabbarValue): boolean {
-  return activeValue.value === value
+  return activeValue.value === value;
 }
 
 /**
@@ -115,35 +115,35 @@ function isActive(value: SnTabbarValue): boolean {
  * or a rejected / `false` promise) — wd-tabbar's documented contract.
  */
 async function select(value: SnTabbarValue): Promise<void> {
-  if (isActive(value)) return
+  if (isActive(value)) return;
   if (props.beforeChange) {
-    let allowed: boolean
+    let allowed: boolean;
     try {
-      allowed = await props.beforeChange(value)
+      allowed = await props.beforeChange(value);
     } catch {
-      return
+      return;
     }
-    if (!allowed) return
+    if (!allowed) return;
   }
-  innerValue.value = value
-  emit('update:modelValue', value)
-  emit('change', { value })
+  innerValue.value = value;
+  emit('update:modelValue', value);
+  emit('change', { value });
 }
 
 provide(SN_TABBAR_KEY, {
   activeValue,
   isActive,
   select: (value: SnTabbarValue) => {
-    void select(value)
+    void select(value);
   },
   nextIndex,
   activeColor: toRef(props, 'activeColor'),
   inactiveColor: toRef(props, 'inactiveColor'),
   shape: toRef(props, 'shape'),
-})
+});
 
 /** Public imperative API — host pages can drive the bar from code (§14). */
-defineExpose({ select })
+defineExpose({ select });
 
 const rootClass = computed(() => [
   'sn-tabbar',
@@ -154,24 +154,19 @@ const rootClass = computed(() => [
     'sn-tabbar--safe-area': props.safeAreaInsetBottom,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.fixed) parts.push(`z-index: ${props.zIndex}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.fixed) parts.push(`z-index: ${props.zIndex}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 </script>
 
 <template>
   <view v-if="fixed && placeholder" class="sn-tabbar__placeholder" aria-hidden="true" />
-  <view
-    data-snui-component="tabbar"
-    :class="rootClass"
-    :style="rootStyle"
-    role="tablist"
-  >
+  <view data-snui-component="tabbar" :class="rootClass" :style="rootStyle" role="tablist">
     <slot />
   </view>
 </template>

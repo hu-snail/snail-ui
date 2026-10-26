@@ -22,37 +22,37 @@ the step data is handed to the host through the default slot.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnTour } from '@snui/uni/components/sn-tour/sn-tour.vue'
+import { SnTour } from '@snui/uni/components/sn-tour/sn-tour.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `modelValue` | `boolean` | `false` | Whether the tour is open. |
-| `steps` | `TourStep[]` | `[]` | Step list. |
-| `current` | `number` | `0` | Current step index. |
-| `mask` | `boolean` | `true` | Mask rendering and colour. |
-| `maskColor` | `string` | `''` | Mask rendering and colour. |
-| `offset` | `number` | `20` | Highlight geometry — **not implemented** (needs synchronous element measurement). |
-| `padding` | `number` | `8` | Highlight geometry — **not implemented** (needs synchronous element measurement). |
-| `placement` | `TourPlacement` | `'auto'` | Highlight geometry — **not implemented** (needs synchronous element measurement). |
-| `highlightStyle` | `Record<string, string>` | `{}` | Highlight geometry — **not implemented** (needs synchronous element measurement). |
-| `missingStrategy` | `MissingStrategy` | `'stop'` | Measurement-dependent — **not implemented**. |
-| `topSafetyOffset` | `number` | `0` | Measurement-dependent — **not implemented**. |
-| `bottomSafetyOffset` | `number` | `100` | Measurement-dependent — **not implemented**. |
-| `customNav` | `boolean` | `false` | Measurement-dependent — **not implemented**. |
-| `duration` | `number` | `300` | Animation duration and panel radius. |
-| `borderRadius` | `number` | `4` | Animation duration and panel radius. |
-| `prevText` | `string` | `上一步` | Button labels. |
-| `nextText` | `string` | `下一步` | Button labels. |
-| `skipText` | `string` | `跳过` | Button labels. |
-| `finishText` | `string` | `完成` | Button labels. |
-| `clickMaskNext` | `boolean` | `false` | Advance on a mask tap. |
-| `zIndex` | `number` | `undefined` | Stacking level and button visibility. |
-| `showTourButtons` | `boolean` | `true` | Stacking level and button visibility. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name                 | Type                     | Default     | Description                                                                       |
+| -------------------- | ------------------------ | ----------- | --------------------------------------------------------------------------------- |
+| `modelValue`         | `boolean`                | `false`     | Whether the tour is open.                                                         |
+| `steps`              | `TourStep[]`             | `[]`        | Step list.                                                                        |
+| `current`            | `number`                 | `0`         | Current step index.                                                               |
+| `mask`               | `boolean`                | `true`      | Mask rendering and colour.                                                        |
+| `maskColor`          | `string`                 | `''`        | Mask rendering and colour.                                                        |
+| `offset`             | `number`                 | `20`        | Highlight geometry — **not implemented** (needs synchronous element measurement). |
+| `padding`            | `number`                 | `8`         | Highlight geometry — **not implemented** (needs synchronous element measurement). |
+| `placement`          | `TourPlacement`          | `'auto'`    | Highlight geometry — **not implemented** (needs synchronous element measurement). |
+| `highlightStyle`     | `Record<string, string>` | `{}`        | Highlight geometry — **not implemented** (needs synchronous element measurement). |
+| `missingStrategy`    | `MissingStrategy`        | `'stop'`    | Measurement-dependent — **not implemented**.                                      |
+| `topSafetyOffset`    | `number`                 | `0`         | Measurement-dependent — **not implemented**.                                      |
+| `bottomSafetyOffset` | `number`                 | `100`       | Measurement-dependent — **not implemented**.                                      |
+| `customNav`          | `boolean`                | `false`     | Measurement-dependent — **not implemented**.                                      |
+| `duration`           | `number`                 | `300`       | Animation duration and panel radius.                                              |
+| `borderRadius`       | `number`                 | `4`         | Animation duration and panel radius.                                              |
+| `prevText`           | `string`                 | `上一步`    | Button labels.                                                                    |
+| `nextText`           | `string`                 | `下一步`    | Button labels.                                                                    |
+| `skipText`           | `string`                 | `跳过`      | Button labels.                                                                    |
+| `finishText`         | `string`                 | `完成`      | Button labels.                                                                    |
+| `clickMaskNext`      | `boolean`                | `false`     | Advance on a mask tap.                                                            |
+| `zIndex`             | `number`                 | `undefined` | Stacking level and button visibility.                                             |
+| `showTourButtons`    | `boolean`                | `true`      | Stacking level and button visibility.                                             |
+| `customClass`        | `string`                 | `''`        | Root forwarding.                                                                  |
+| `customStyle`        | `string`                 | `''`        | Root forwarding.                                                                  |
 
 > **Not implemented**: `element` / `offset` / `padding` / `placement` /
 > `highlightStyle` / `missingStrategy` / `topSafetyOffset` /
@@ -64,33 +64,33 @@ import { SnTour } from '@snui/uni/components/sn-tour/sn-tour.vue'
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:modelValue` | `boolean` | Visibility changed. |
-| `update:current` | `number` | Step changed. |
-| `change` | `{ current }` | Step changed. |
-| `prev` | `{ prevCurrent, current, total, isElementInTop }` | Step navigation. |
-| `next` | `{ prevCurrent, current, total, isElementInTop }` | Step navigation. |
-| `finish` | `{ current, total }` | Tour completed / dismissed. |
-| `skip` | `{ current, total }` | Tour completed / dismissed. |
-| `error` | `{ message, element }` | Target lookup failed. |
+| Name                | Payload                                           | Description                 |
+| ------------------- | ------------------------------------------------- | --------------------------- |
+| `update:modelValue` | `boolean`                                         | Visibility changed.         |
+| `update:current`    | `number`                                          | Step changed.               |
+| `change`            | `{ current }`                                     | Step changed.               |
+| `prev`              | `{ prevCurrent, current, total, isElementInTop }` | Step navigation.            |
+| `next`              | `{ prevCurrent, current, total, isElementInTop }` | Step navigation.            |
+| `finish`            | `{ current, total }`                              | Tour completed / dismissed. |
+| `skip`              | `{ current, total }`                              | Tour completed / dismissed. |
+| `error`             | `{ message, element }`                            | Target lookup failed.       |
 
 ## Slots
 
-| Name | Scope | Description |
-|---|---|---|
-| `default` | `{ step, current, total }` | Custom panel content. |
-| `footer` | `{ step, current, total }` | Custom footer actions. |
+| Name      | Scope                      | Description            |
+| --------- | -------------------------- | ---------------------- |
+| `default` | `{ step, current, total }` | Custom panel content.  |
+| `footer`  | `{ step, current, total }` | Custom footer actions. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Overlay / panel | `--sn-mp-color-background-overlay`, `--sn-mp-color-background-elevated` | Scrim and panel |
-| Button chrome | `--sn-mp-color-background-surface`, `--sn-mp-color-border-default` | Secondary button |
-| Text | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary` | Body, skip and progress labels |
-| Action primary | `--sn-mp-color-action-primary`, `--sn-mp-color-text-on-primary` | Primary button |
-| Elevation / radius / spacing | `--sn-mp-shadow-lg`, `--sn-mp-radius-md`, `--sn-mp-spacing-4` | Panel and button geometry |
+| Token                        | CSS Variable                                                                                | Purpose                        |
+| ---------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------ |
+| Overlay / panel              | `--sn-mp-color-background-overlay`, `--sn-mp-color-background-elevated`                     | Scrim and panel                |
+| Button chrome                | `--sn-mp-color-background-surface`, `--sn-mp-color-border-default`                          | Secondary button               |
+| Text                         | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`, `--sn-mp-color-text-tertiary` | Body, skip and progress labels |
+| Action primary               | `--sn-mp-color-action-primary`, `--sn-mp-color-text-on-primary`                             | Primary button                 |
+| Elevation / radius / spacing | `--sn-mp-shadow-lg`, `--sn-mp-radius-md`, `--sn-mp-spacing-4`                               | Panel and button geometry      |
 
 ## Accessibility
 

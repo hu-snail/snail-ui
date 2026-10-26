@@ -102,61 +102,61 @@
 
 ### SnCarousel Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| autoplay | `boolean` | `false` | 自动播放；悬停暂停，移出恢复 |
-| centered-slides | `boolean` | `false` | 居中当前 slide（配合 slides-per-view / auto） |
-| current-index | `number \| undefined` | `undefined` | 受控当前索引（`v-model:current-index`）；undefined 为非受控 |
-| default-index | `number` | `0` | 初始索引（非受控） |
-| direction | `'horizontal' \| 'vertical'` | `'horizontal'` | 滚动方向 |
-| dot-placement | `'top' \| 'bottom' \| 'left' \| 'right'` | `'bottom'` | 指示点位置 |
-| dot-type | `'dot' \| 'line'` | `'dot'` | 指示点形态 |
-| draggable | `boolean` | `false` | 鼠标拖拽切换 |
-| effect | `'slide' \| 'fade' \| 'card' \| 'custom'` | `'slide'` | 切换效果 |
-| interval | `number` | `5000` | 自动播放间隔（ms） |
-| loop | `boolean` | `true` | 两端循环（slide + 单屏时用首尾克隆实现无缝循环） |
-| mousewheel | `boolean` | `false` | 滚轮切换 |
-| next-slide-style | `CSSProperties \| string` | `undefined` | 下一张样式覆盖（card 模式） |
-| prev-slide-style | `CSSProperties \| string` | `undefined` | 上一张样式覆盖（card 模式） |
-| slides-per-view | `number \| 'auto'` | `1` | 每屏 slide 数；`'auto'` 按 DOM 实测宽度 |
-| space-between | `number` | `0` | slide 间距（px） |
-| show-arrow | `boolean` | `false` | 内置左右箭头（内联 SVG，零依赖） |
-| show-dots | `boolean` | `true` | 指示点 |
-| touchable | `boolean` | `true` | 触摸拖拽切换 |
-| transition-style | `{ transitionDuration?, transitionTimingFunction? }` | `{ transitionDuration: '300ms' }` | slide/fade/card 过渡时长与缓动 |
-| transition-props | `TransitionProps` | `undefined` | `effect="custom"` 时传给 `<Transition>` |
-| trigger | `'click' \| 'hover'` | `'click'` | 指示点触发方式 |
-| keyboard | `boolean` | `false` | 焦点在指示点上时方向键切换 |
+| Prop             | 类型                                                 | 默认值                            | 说明                                                        |
+| ---------------- | ---------------------------------------------------- | --------------------------------- | ----------------------------------------------------------- |
+| autoplay         | `boolean`                                            | `false`                           | 自动播放；悬停暂停，移出恢复                                |
+| centered-slides  | `boolean`                                            | `false`                           | 居中当前 slide（配合 slides-per-view / auto）               |
+| current-index    | `number \| undefined`                                | `undefined`                       | 受控当前索引（`v-model:current-index`）；undefined 为非受控 |
+| default-index    | `number`                                             | `0`                               | 初始索引（非受控）                                          |
+| direction        | `'horizontal' \| 'vertical'`                         | `'horizontal'`                    | 滚动方向                                                    |
+| dot-placement    | `'top' \| 'bottom' \| 'left' \| 'right'`             | `'bottom'`                        | 指示点位置                                                  |
+| dot-type         | `'dot' \| 'line'`                                    | `'dot'`                           | 指示点形态                                                  |
+| draggable        | `boolean`                                            | `false`                           | 鼠标拖拽切换                                                |
+| effect           | `'slide' \| 'fade' \| 'card' \| 'custom'`            | `'slide'`                         | 切换效果                                                    |
+| interval         | `number`                                             | `5000`                            | 自动播放间隔（ms）                                          |
+| loop             | `boolean`                                            | `true`                            | 两端循环（slide + 单屏时用首尾克隆实现无缝循环）            |
+| mousewheel       | `boolean`                                            | `false`                           | 滚轮切换                                                    |
+| next-slide-style | `CSSProperties \| string`                            | `undefined`                       | 下一张样式覆盖（card 模式）                                 |
+| prev-slide-style | `CSSProperties \| string`                            | `undefined`                       | 上一张样式覆盖（card 模式）                                 |
+| slides-per-view  | `number \| 'auto'`                                   | `1`                               | 每屏 slide 数；`'auto'` 按 DOM 实测宽度                     |
+| space-between    | `number`                                             | `0`                               | slide 间距（px）                                            |
+| show-arrow       | `boolean`                                            | `false`                           | 内置左右箭头（内联 SVG，零依赖）                            |
+| show-dots        | `boolean`                                            | `true`                            | 指示点                                                      |
+| touchable        | `boolean`                                            | `true`                            | 触摸拖拽切换                                                |
+| transition-style | `{ transitionDuration?, transitionTimingFunction? }` | `{ transitionDuration: '300ms' }` | slide/fade/card 过渡时长与缓动                              |
+| transition-props | `TransitionProps`                                    | `undefined`                       | `effect="custom"` 时传给 `<Transition>`                     |
+| trigger          | `'click' \| 'hover'`                                 | `'click'`                         | 指示点触发方式                                              |
+| keyboard         | `boolean`                                            | `false`                           | 焦点在指示点上时方向键切换                                  |
 
 事件：`update:current-index (currentIndex: number, lastIndex: number)`。
 
 ### SnCarouselItem Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| title | `string` | `undefined` | 底部渐变浮层的主标题（超出 naive 的扩展能力） |
-| description | `string` | `undefined` | 标题下方的次级描述行 |
+| Prop        | 类型     | 默认值      | 说明                                          |
+| ----------- | -------- | ----------- | --------------------------------------------- |
+| title       | `string` | `undefined` | 底部渐变浮层的主标题（超出 naive 的扩展能力） |
+| description | `string` | `undefined` | 标题下方的次级描述行                          |
 
 title / description / `caption` 插槽任一存在时渲染底部浮层（渐变背景 + 白字，`pointer-events: none` 不挡拖拽）；`caption` 插槽内容会替换 title/description 文本。
 
 ### Slots
 
-| 组件 | 插槽 | 参数 | 说明 |
-| --- | --- | --- | --- |
-| SnCarousel | `default` | — | `<SnCarouselItem>` 序列（裸子元素会自动包一层 item） |
-| SnCarousel | `arrow` | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | 自定义箭头 |
-| SnCarousel | `dots` | `{ total, currentIndex, to }` | 自定义指示点 |
-| SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }` | slide 内容 |
-| SnCarouselItem | `caption` | — | 自定义 caption 浮层内容（替换 title/description 文本） |
+| 组件           | 插槽      | 参数                                                                      | 说明                                                   |
+| -------------- | --------- | ------------------------------------------------------------------------- | ------------------------------------------------------ |
+| SnCarousel     | `default` | —                                                                         | `<SnCarouselItem>` 序列（裸子元素会自动包一层 item）   |
+| SnCarousel     | `arrow`   | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | 自定义箭头                                             |
+| SnCarousel     | `dots`    | `{ total, currentIndex, to }`                                             | 自定义指示点                                           |
+| SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }`                                     | slide 内容                                             |
+| SnCarouselItem | `caption` | —                                                                         | 自定义 caption 浮层内容（替换 title/description 文本） |
 
 ### Inst Methods
 
-| 方法 | 签名 | 说明 |
-| --- | --- | --- |
-| to | `(index: number) => void` | 跳转到指定索引 |
-| prev | `() => void` | 上一张 |
-| next | `() => void` | 下一张 |
-| getCurrentIndex | `() => number` | 当前索引 |
+| 方法            | 签名                      | 说明           |
+| --------------- | ------------------------- | -------------- |
+| to              | `(index: number) => void` | 跳转到指定索引 |
+| prev            | `() => void`              | 上一张         |
+| next            | `() => void`              | 下一张         |
+| getCurrentIndex | `() => number`            | 当前索引       |
 
 ## Divergence / future
 

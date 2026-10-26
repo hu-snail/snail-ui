@@ -16,11 +16,11 @@
 
 ## 为什么用轮询而不是 ResizeObserver
 
-| 端 | `ResizeObserver` | `uni.createSelectorQuery` |
-| --- | --- | --- |
-| H5 | 有 | 有 |
-| 微信 / 支付宝小程序 | **没有** | 有 |
-| App（uni-app x） | 不保证 | 有 |
+| 端                  | `ResizeObserver` | `uni.createSelectorQuery` |
+| ------------------- | ---------------- | ------------------------- |
+| H5                  | 有               | 有                        |
+| 微信 / 支付宝小程序 | **没有**         | 有                        |
+| App（uni-app x）    | 不保证           | 有                        |
 
 取三端都能用的最小公约数，所以用 `uni.createSelectorQuery().boundingClientRect()` 每 100ms 轮询一次。这也是本组件唯一的资源，卸载时一句 `clearInterval` 就清理干净。
 
@@ -28,22 +28,22 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `customStyle` | `string` | `''` | 根节点内联样式 |
-| `customClass` | `string` | `''` | 根节点类名 |
-| `customContainerClass` | `string` | `''` | 被测量的内层节点类名 |
+| 属性                   | 类型     | 默认值 | 说明                 |
+| ---------------------- | -------- | ------ | -------------------- |
+| `customStyle`          | `string` | `''`   | 根节点内联样式       |
+| `customClass`          | `string` | `''`   | 根节点类名           |
+| `customContainerClass` | `string` | `''`   | 被测量的内层节点类名 |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名   | 说明                       | 参数                                                        |
+| -------- | -------------------------- | ----------------------------------------------------------- |
 | `resize` | 首次测量与盒模型变化时触发 | `{ width, height, top, left, bottom, right }`（px，已取整） |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名    | 说明               |
+| --------- | ------------------ |
 | `default` | 需要监听尺寸的内容 |
 
 ## 主题变量

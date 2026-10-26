@@ -26,38 +26,38 @@
  *   - 徽标本体 — 用 sn-badge
  */
 
-import { computed, inject, markRaw } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import { SN_TABBAR_KEY, type SnTabbarValue } from './sn-tabbar-types'
+import { computed, inject, markRaw } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { SN_TABBAR_KEY, type SnTabbarValue } from './sn-tabbar-types';
 
-defineOptions({ name: 'SnTabbarItem' })
+defineOptions({ name: 'SnTabbarItem' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-tabbar-item` 1:1 surface ────────────────────────────── */
 
     /** 标签页标题。 */
-    title?: string
+    title?: string;
     /** 唯一标识符，不传时默认使用索引值。 */
-    name?: SnTabbarValue | undefined
+    name?: SnTabbarValue | undefined;
     /** 图标名称（经 `registerSnIcons()` 注册）。 */
-    icon?: string
+    icon?: string;
     /** 图标类名前缀，`cssIcon` 打开时用于拼出字体图标 class。 */
-    iconPrefix?: string
+    iconPrefix?: string;
     /** CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。 */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** 徽标显示值。 */
-    value?: number | string | undefined
+    value?: number | string | undefined;
     /** 是否显示点状徽标。 */
-    isDot?: boolean
+    isDot?: boolean;
     /** 徽标最大值，超过后显示 `{max}+`。 */
-    max?: number
+    max?: number;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     title: '',
@@ -71,55 +71,55 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 自定义整个标签项内容。 */
-  default?(): unknown
+  default?(): unknown;
   /** 自定义图标（作用域参数 `{ active }`）。 */
-  icon?(scope: { active: boolean }): unknown
-}>()
+  icon?(scope: { active: boolean }): unknown;
+}>();
 
-const tabbar = inject(SN_TABBAR_KEY, null)
+const tabbar = inject(SN_TABBAR_KEY, null);
 
 /** Stable index handed out by the bar on mount (DOM order). */
-const registeredIndex = tabbar ? tabbar.nextIndex() : 0
+const registeredIndex = tabbar ? tabbar.nextIndex() : 0;
 
 /** Effective value: explicit `name` wins, otherwise the registration index. */
-const itemValue = computed<SnTabbarValue>(() => props.name ?? registeredIndex)
+const itemValue = computed<SnTabbarValue>(() => props.name ?? registeredIndex);
 
-const isActive = computed(() => tabbar?.isActive(itemValue.value) ?? false)
+const isActive = computed(() => tabbar?.isActive(itemValue.value) ?? false);
 
 /** Active / inactive label colour, only emitted when the bar overrides it. */
 const labelColor = computed<string | undefined>(() => {
-  if (!tabbar) return undefined
-  const custom = isActive.value ? tabbar.activeColor.value : tabbar.inactiveColor.value
-  return custom === '' ? undefined : custom
-})
+  if (!tabbar) return undefined;
+  const custom = isActive.value ? tabbar.activeColor.value : tabbar.inactiveColor.value;
+  return custom === '' ? undefined : custom;
+});
 
 const iconData = computed<IconData | null>(() => {
-  if (!props.icon) return null
-  const resolved = resolveIconByName(props.icon)
-  return resolved ? markRaw(resolved) : null
-})
+  if (!props.icon) return null;
+  const resolved = resolveIconByName(props.icon);
+  return resolved ? markRaw(resolved) : null;
+});
 
 /** Font-icon class list — mirrors sn-tag's `cssIcon` handling. */
 const cssIconClass = computed<string>(() => {
-  if (!props.icon || !props.cssIcon) return ''
-  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix
-  return prefix ? `${prefix}-${props.icon}` : props.icon
-})
+  if (!props.icon || !props.cssIcon) return '';
+  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix;
+  return prefix ? `${prefix}-${props.icon}` : props.icon;
+});
 
 /** Badge text: `{max}+` above the ceiling, dot mode renders no text. */
 const badgeText = computed<string>(() => {
-  if (props.isDot || props.value === undefined || props.value === '') return ''
-  if (typeof props.value === 'number' && props.value > props.max) return `${props.max}+`
-  return String(props.value)
-})
+  if (props.isDot || props.value === undefined || props.value === '') return '';
+  if (typeof props.value === 'number' && props.value > props.max) return `${props.max}+`;
+  return String(props.value);
+});
 
 function onTap(): void {
-  if (!tabbar) return
-  void tabbar.select(itemValue.value)
+  if (!tabbar) return;
+  void tabbar.select(itemValue.value);
 }
 
 const rootClass = computed(() => [
@@ -130,7 +130,7 @@ const rootClass = computed(() => [
     'sn-tabbar-item--dot': props.isDot,
   },
   props.customClass,
-])
+]);
 </script>
 
 <template>
@@ -148,7 +148,11 @@ const rootClass = computed(() => [
         <view class="sn-tabbar-item__icon">
           <slot name="icon" :active="isActive">
             <SnIcon v-if="iconData" :icon="iconData" :size="44" />
-            <text v-else-if="cssIconClass" :class="['sn-tabbar-item__css-icon', cssIconClass]" aria-hidden="true" />
+            <text
+              v-else-if="cssIconClass"
+              :class="['sn-tabbar-item__css-icon', cssIconClass]"
+              aria-hidden="true"
+            />
           </slot>
           <view
             v-if="isDot || badgeText"
@@ -162,7 +166,8 @@ const rootClass = computed(() => [
           v-if="title"
           class="sn-tabbar-item__title"
           :style="labelColor ? `color: ${labelColor}` : undefined"
-        >{{ title }}</text>
+          >{{ title }}</text
+        >
       </view>
     </slot>
   </view>

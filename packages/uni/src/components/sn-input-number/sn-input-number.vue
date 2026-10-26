@@ -39,70 +39,70 @@
  *   - 金额格式化 / 千分位 — 由宿主格式化后传入
  */
 
-import { computed, onBeforeUnmount, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { Minus as MinusIcon, Plus as PlusIcon } from '../sn-icon/sn-icon-set'
+import { computed, onBeforeUnmount, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Minus as MinusIcon, Plus as PlusIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnInputNumber' })
+defineOptions({ name: 'SnInputNumber' });
 
 /** wot-ui `InputNumberTheme`. */
-type InputNumberTheme = 'default' | 'outline' | 'outline-split' | 'primary'
+type InputNumberTheme = 'default' | 'outline' | 'outline-split' | 'primary';
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-input-number` 1:1 surface ───────────────────────────── */
 
     /** Bound value (`v-model`). */
-    modelValue?: number | string
+    modelValue?: number | string;
     /** Lower bound. */
-    min?: number
+    min?: number;
     /** Upper bound. */
-    max?: number
+    max?: number;
     /** Increment / decrement step. */
-    step?: number
+    step?: number;
     /** Snap every committed value onto the `step` grid. */
-    stepStrictly?: boolean
+    stepStrictly?: boolean;
     /** Decimal places kept after every commit. */
-    precision?: number | string
+    precision?: number | string;
     /** Disables the whole stepper. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Disables the editable field only (buttons stay live). */
-    disableInput?: boolean
+    disableInput?: boolean;
     /** Disables the minus button only. */
-    disableMinus?: boolean
+    disableMinus?: boolean;
     /** Disables the plus button only. */
-    disablePlus?: boolean
+    disablePlus?: boolean;
     /** Hide the field — buttons only. */
-    withoutInput?: boolean
+    withoutInput?: boolean;
     /** Field width. A number is treated as an rpx design value. */
-    inputWidth?: number | string | undefined
+    inputWidth?: number | string | undefined;
     /** Allow the field to hold an empty string. */
-    allowNull?: boolean
+    allowNull?: boolean;
     /** Placeholder shown while the field is empty. */
-    placeholder?: string
+    placeholder?: string;
     /** Auto-scroll the page when the soft keyboard covers the field. */
-    adjustPosition?: boolean
+    adjustPosition?: boolean;
     /**
      * Veto hook for every value change. Returning `false` (or resolving
      * `false`) keeps the current value.
      */
-    beforeChange?: ((value: number | string) => boolean | Promise<boolean>) | undefined
+    beforeChange?: ((value: number | string) => boolean | Promise<boolean>) | undefined;
     /** Repeat the step while the button is held down. */
-    longPress?: boolean
+    longPress?: boolean;
     /** Emit while typing; `false` commits on blur / button only. */
-    immediateChange?: boolean
+    immediateChange?: boolean;
     /** Emit a corrected value on mount (clamped / snapped / rounded). */
-    updateOnInit?: boolean
+    updateOnInit?: boolean;
     /** Native keyboard type for the field. */
-    inputType?: 'number' | 'digit'
+    inputType?: 'number' | 'digit';
     /** Visual theme. */
-    theme?: InputNumberTheme
+    theme?: InputNumberTheme;
     /** Fully rounded action buttons. */
-    round?: boolean
+    round?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 0,
@@ -130,172 +130,172 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: number | string): void
-  (e: 'change', payload: { value: number | string }): void
-  (e: 'focus', payload: { value: number | string, height: number }): void
-  (e: 'blur', payload: { value: number | string }): void
-}>()
+  (e: 'update:modelValue', value: number | string): void;
+  (e: 'change', payload: { value: number | string }): void;
+  (e: 'focus', payload: { value: number | string; height: number }): void;
+  (e: 'blur', payload: { value: number | string }): void;
+}>();
 
 /* ── Value maths ───────────────────────────────────────────────────────── */
 
 const precisionValue = computed(() => {
-  const parsed = Number(props.precision)
-  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 0
-})
+  const parsed = Number(props.precision);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 0;
+});
 
 /** Current value as a number (`''` → `NaN` when `allowNull`). */
 const numericValue = computed<number>(() => {
-  const parsed = Number(props.modelValue)
-  return Number.isFinite(parsed) ? parsed : Number.NaN
-})
+  const parsed = Number(props.modelValue);
+  return Number.isFinite(parsed) ? parsed : Number.NaN;
+});
 
 function round(value: number): number {
-  const factor = 10 ** precisionValue.value
-  return Math.round(value * factor) / factor
+  const factor = 10 ** precisionValue.value;
+  return Math.round(value * factor) / factor;
 }
 
 /** Clamp + snap + round. Pure — used by `commit` and `updateOnInit`. */
 function normalize(raw: number): number {
-  let next = raw
-  if (next < props.min) next = props.min
-  if (next > props.max) next = props.max
+  let next = raw;
+  if (next < props.min) next = props.min;
+  if (next > props.max) next = props.max;
   if (props.stepStrictly && props.step > 0) {
-    const steps = Math.round((next - props.min) / props.step)
-    next = props.min + steps * props.step
-    if (next > props.max) next -= props.step
-    if (next < props.min) next = props.min
+    const steps = Math.round((next - props.min) / props.step);
+    next = props.min + steps * props.step;
+    if (next > props.max) next -= props.step;
+    if (next < props.min) next = props.min;
   }
-  return round(next)
+  return round(next);
 }
 
 function currentOrMin(): number {
-  const current = numericValue.value
-  if (Number.isFinite(current)) return current
-  return props.allowNull ? props.min : props.min
+  const current = numericValue.value;
+  if (Number.isFinite(current)) return current;
+  return props.allowNull ? props.min : props.min;
 }
 
 /** Can the value move by `direction`? */
 function canStep(direction: 1 | -1): boolean {
-  if (props.disabled) return false
-  if (direction === 1 && props.disablePlus) return false
-  if (direction === -1 && props.disableMinus) return false
-  const current = numericValue.value
-  if (!Number.isFinite(current)) return true
-  if (direction === 1) return current < props.max
-  return current > props.min
+  if (props.disabled) return false;
+  if (direction === 1 && props.disablePlus) return false;
+  if (direction === -1 && props.disableMinus) return false;
+  const current = numericValue.value;
+  if (!Number.isFinite(current)) return true;
+  if (direction === 1) return current < props.max;
+  return current > props.min;
 }
 
 async function commit(next: number | string): Promise<boolean> {
-  if (props.disabled) return false
-  let resolved: number | string = next
+  if (props.disabled) return false;
+  let resolved: number | string = next;
   if (next === '' || next === null) {
-    if (!props.allowNull) return false
-    resolved = ''
+    if (!props.allowNull) return false;
+    resolved = '';
   } else {
-    const numeric = Number(next)
-    if (!Number.isFinite(numeric)) return false
-    resolved = normalize(numeric)
+    const numeric = Number(next);
+    if (!Number.isFinite(numeric)) return false;
+    resolved = normalize(numeric);
   }
   if (props.beforeChange) {
-    const verdict = await props.beforeChange(resolved)
-    if (verdict === false) return false
+    const verdict = await props.beforeChange(resolved);
+    if (verdict === false) return false;
   }
-  if (resolved === props.modelValue) return false
-  emit('update:modelValue', resolved)
-  emit('change', { value: resolved })
-  return true
+  if (resolved === props.modelValue) return false;
+  emit('update:modelValue', resolved);
+  emit('change', { value: resolved });
+  return true;
 }
 
 async function stepBy(direction: 1 | -1): Promise<void> {
-  if (!canStep(direction)) return
-  const base = Number.isFinite(numericValue.value) ? numericValue.value : props.min
-  await commit(base + direction * props.step)
+  if (!canStep(direction)) return;
+  const base = Number.isFinite(numericValue.value) ? numericValue.value : props.min;
+  await commit(base + direction * props.step);
 }
 
 function onMinus(): void {
-  void stepBy(-1)
+  void stepBy(-1);
 }
 
 function onPlus(): void {
-  void stepBy(1)
+  void stepBy(1);
 }
 
 /* ── Field ─────────────────────────────────────────────────────────────── */
 
-const draft = ref<string | null>(null)
+const draft = ref<string | null>(null);
 
 /** Text shown in the field — the draft while typing, else the model value. */
 const displayValue = computed<string>(() => {
-  if (draft.value !== null) return draft.value
-  const current = props.modelValue
-  if (current === '' || current === null || current === undefined) return ''
-  return String(current)
-})
+  if (draft.value !== null) return draft.value;
+  const current = props.modelValue;
+  if (current === '' || current === null || current === undefined) return '';
+  return String(current);
+});
 
 function onInput(event: Event): void {
-  if (props.disabled || props.disableInput) return
-  const target = event.target as HTMLInputElement
-  const raw = target.value
-  draft.value = raw
-  if (!props.immediateChange) return
+  if (props.disabled || props.disableInput) return;
+  const target = event.target as HTMLInputElement;
+  const raw = target.value;
+  draft.value = raw;
+  if (!props.immediateChange) return;
   if (raw === '') {
-    void commit('')
-    return
+    void commit('');
+    return;
   }
-  const numeric = Number(raw)
-  if (!Number.isFinite(numeric)) return
+  const numeric = Number(raw);
+  if (!Number.isFinite(numeric)) return;
   // While typing, keep the in-range value only — a half-typed "12" of "120"
   // must not be clamped up to `min` on the first keystroke.
-  if (numeric < props.min || numeric > props.max) return
-  void commit(numeric)
+  if (numeric < props.min || numeric > props.max) return;
+  void commit(numeric);
 }
 
 function onFieldBlur(event: Event): void {
-  const raw = draft.value
-  draft.value = null
+  const raw = draft.value;
+  draft.value = null;
   if (raw !== null) {
-    if (raw === '') void commit('')
-    else void commit(raw)
+    if (raw === '') void commit('');
+    else void commit(raw);
   }
-  void event
-  emit('blur', { value: props.modelValue })
+  void event;
+  emit('blur', { value: props.modelValue });
 }
 
 function onFieldFocus(): void {
-  emit('focus', { value: props.modelValue, height: 0 })
+  emit('focus', { value: props.modelValue, height: 0 });
 }
 
 /* ── Long press (AGENTS.md §41 — one timer, always cleared) ────────────── */
 
-let pressTimer: ReturnType<typeof setInterval> | null = null
+let pressTimer: ReturnType<typeof setInterval> | null = null;
 
 function clearPressTimer(): void {
   if (pressTimer !== null) {
-    clearInterval(pressTimer)
-    pressTimer = null
+    clearInterval(pressTimer);
+    pressTimer = null;
   }
 }
 
 function onPressStart(direction: 1 | -1): void {
-  if (!props.longPress) return
-  clearPressTimer()
+  if (!props.longPress) return;
+  clearPressTimer();
   pressTimer = setInterval(() => {
     if (!canStep(direction)) {
-      clearPressTimer()
-      return
+      clearPressTimer();
+      return;
     }
-    void stepBy(direction)
-  }, 120)
+    void stepBy(direction);
+  }, 120);
 }
 
 function onPressEnd(): void {
-  clearPressTimer()
+  clearPressTimer();
 }
 
-onBeforeUnmount(clearPressTimer)
+onBeforeUnmount(clearPressTimer);
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
@@ -308,28 +308,29 @@ const rootClass = computed(() => [
     'sn-input-number--without-input': props.withoutInput,
   },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => props.customStyle || undefined)
+const rootStyle = computed(() => props.customStyle || undefined);
 
 const fieldWidthStyle = computed(() => {
-  if (props.inputWidth === undefined || props.inputWidth === '') return undefined
-  const width = typeof props.inputWidth === 'number' ? `${props.inputWidth * 2}rpx` : props.inputWidth
-  return `width: ${width}`
-})
+  if (props.inputWidth === undefined || props.inputWidth === '') return undefined;
+  const width =
+    typeof props.inputWidth === 'number' ? `${props.inputWidth * 2}rpx` : props.inputWidth;
+  return `width: ${width}`;
+});
 
-const minusDisabled = computed(() => !canStep(-1))
-const plusDisabled = computed(() => !canStep(1))
-const fieldDisabled = computed(() => props.disabled || props.disableInput)
+const minusDisabled = computed(() => !canStep(-1));
+const plusDisabled = computed(() => !canStep(1));
+const fieldDisabled = computed(() => props.disabled || props.disableInput);
 
 /* Emit the corrected value once on mount (wd-input-number `update-on-init`). */
 if (props.updateOnInit) {
-  const current = numericValue.value
+  const current = numericValue.value;
   if (Number.isFinite(current)) {
-    const fixed = normalize(current)
+    const fixed = normalize(current);
     if (fixed !== props.modelValue) {
-      emit('update:modelValue', fixed)
-      emit('change', { value: fixed })
+      emit('update:modelValue', fixed);
+      emit('change', { value: fixed });
     }
   }
 }
@@ -344,7 +345,11 @@ if (props.updateOnInit) {
     :aria-disabled="disabled ? 'true' : undefined"
   >
     <view
-      :class="['sn-input-number__action', 'sn-input-number__minus', { 'sn-input-number__action--disabled': minusDisabled }]"
+      :class="[
+        'sn-input-number__action',
+        'sn-input-number__minus',
+        { 'sn-input-number__action--disabled': minusDisabled },
+      ]"
       role="button"
       aria-label="decrease"
       :aria-disabled="minusDisabled ? 'true' : undefined"
@@ -370,11 +375,15 @@ if (props.updateOnInit) {
       @input="onInput"
       @focus="onFieldFocus"
       @blur="onFieldBlur"
-    >
+    />
     <view v-else class="sn-input-number__divider" aria-hidden="true" />
 
     <view
-      :class="['sn-input-number__action', 'sn-input-number__plus', { 'sn-input-number__action--disabled': plusDisabled }]"
+      :class="[
+        'sn-input-number__action',
+        'sn-input-number__plus',
+        { 'sn-input-number__action--disabled': plusDisabled },
+      ]"
       role="button"
       aria-label="increase"
       :aria-disabled="plusDisabled ? 'true' : undefined"

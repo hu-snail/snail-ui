@@ -48,28 +48,28 @@
  *   - 裁剪结果的存储 / 上传 — 由宿主处理 `confirm` 的几何
  */
 
-import { computed, markRaw, onBeforeUnmount, ref, watch } from 'vue'
-import SnButton from '../sn-button/sn-button.vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import SnPopup from '../sn-popup/sn-popup.vue'
+import { computed, markRaw, onBeforeUnmount, ref, watch } from 'vue';
+import SnButton from '../sn-button/sn-button.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
 
-defineOptions({ name: 'SnImgCropper' })
+defineOptions({ name: 'SnImgCropper' });
 
 /** Design px → rpx (750 design width, 1px = 2rpx — CONTRIBUTING §2.4). */
-const RPX_PER_PX = 2
+const RPX_PER_PX = 2;
 
 /** Lowest zoom factor (the image may be shrunk below the frame). */
-const MIN_SCALE = 0.5
+const MIN_SCALE = 0.5;
 
 /** Smallest crop frame side in rpx, so the frame never collapses. */
-const MIN_FRAME_SIDE = 200
+const MIN_FRAME_SIDE = 200;
 
 /** Long side of the crop frame in rpx. */
-const LONG_FRAME_SIDE = 500
+const LONG_FRAME_SIDE = 500;
 
 /** Rotation step per tap of the rotate control, in degrees. */
-const ROTATE_STEP = 90
+const ROTATE_STEP = 90;
 
 /**
  * Rotate glyph — a circular arrow on the same 24×24 grid as the icon set.
@@ -79,83 +79,80 @@ const ROTATE_STEP = 90
  */
 const ROTATE_GLYPH: IconData = markRaw({
   viewBox: '0 0 24 24',
-  paths: [
-    'M21 12a9 9 0 1 1-3-6.7',
-    'M21 3v6h-6',
-  ],
-})
+  paths: ['M21 12a9 9 0 1 1-3-6.7', 'M21 3v6h-6'],
+});
 
 /** A resolved `width:height` ratio pair. */
 interface CropRatio {
-  width: number
-  height: number
+  width: number;
+  height: number;
 }
 
 /** Gesture state captured on `touchstart`. */
 interface GestureState {
   /** Finger count at gesture start. */
-  fingers: number
+  fingers: number;
   /** Pointer position at gesture start. */
-  startX: number
-  startY: number
+  startX: number;
+  startY: number;
   /** Distance between the first two fingers at gesture start. */
-  startDistance: number
+  startDistance: number;
   /** Offset / scale at gesture start. */
-  startOffsetX: number
-  startOffsetY: number
-  startScale: number
+  startOffsetX: number;
+  startOffsetY: number;
+  startScale: number;
 }
 
 /** Payload of `confirm`. */
 export interface SnImgCropperResult {
   /** Applied horizontal offset in rpx. */
-  offsetX: number
+  offsetX: number;
   /** Applied vertical offset in rpx. */
-  offsetY: number
+  offsetY: number;
   /** Applied scale factor. */
-  scale: number
+  scale: number;
   /** Applied rotation in degrees. */
-  rotate: number
+  rotate: number;
   /** Source rectangle covered by the frame, in source-image pixels. */
-  source: { x: number; y: number; width: number; height: number }
+  source: { x: number; y: number; width: number; height: number };
   /** Frame size in rpx. */
-  frame: { width: number; height: number }
+  frame: { width: number; height: number };
 }
 
 const props = withDefaults(
   defineProps<{
     /** Whether the cropper layer is visible (`v-model`). */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** Source image URL. */
-    imgSrc?: string
+    imgSrc?: string;
     /** Preview image width — a number is rpx, a string is used verbatim. */
-    imgWidth?: number | string | undefined
+    imgWidth?: number | string | undefined;
     /** Preview image height — a number is rpx, a string is used verbatim. */
-    imgHeight?: number | string | undefined
+    imgHeight?: number | string | undefined;
     /** Disable rotation entirely. */
-    disabledRotate?: boolean
+    disabledRotate?: boolean;
     /** Maximum zoom factor. */
-    maxScale?: number
+    maxScale?: number;
     /*
      * Export props — declared for wd-img-cropper parity, inert here (see the
      * header): the host applies them when it rasterizes `confirm`'s geometry.
      */
     /** Export image scale factor. */
-    exportScale?: number
+    exportScale?: number;
     /** Export image quality, 0–1. */
-    quality?: number
+    quality?: number;
     /** Export image type. */
-    fileType?: 'png' | 'jpg'
+    fileType?: 'png' | 'jpg';
     /** Cancel button label. */
-    cancelButtonText?: string
+    cancelButtonText?: string;
     /** Confirm button label. */
-    confirmButtonText?: string
+    confirmButtonText?: string;
     /** Crop-frame aspect ratio, `"width:height"`. */
-    aspectRatio?: string
+    aspectRatio?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: false,
@@ -173,114 +170,114 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'confirm', result: SnImgCropperResult): void
-  (e: 'cancel'): void
-  (e: 'imgloaded', payload: { src: string }): void
-  (e: 'imgloaderror', payload: { error: unknown }): void
-}>()
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'confirm', result: SnImgCropperResult): void;
+  (e: 'cancel'): void;
+  (e: 'imgloaded', payload: { src: string }): void;
+  (e: 'imgloaderror', payload: { error: unknown }): void;
+}>();
 
 /* ── Geometry ──────────────────────────────────────────────────────────── */
 
 /** Parsed aspect ratio; a malformed string falls back to 1:1. */
 const ratio = computed<CropRatio>(() => {
-  const parts = props.aspectRatio.split(':')
-  const width = Number(parts[0])
-  const height = Number(parts[1])
+  const parts = props.aspectRatio.split(':');
+  const width = Number(parts[0]);
+  const height = Number(parts[1]);
   if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
-    return { width: 1, height: 1 }
+    return { width: 1, height: 1 };
   }
-  return { width, height }
-})
+  return { width, height };
+});
 
 /** Crop-frame size in rpx: a 500rpx long side, short side per the ratio. */
 const frame = computed<{ width: number; height: number }>(() => {
-  const { width, height } = ratio.value
+  const { width, height } = ratio.value;
   if (width >= height) {
     return {
       width: LONG_FRAME_SIDE,
       height: Math.max(MIN_FRAME_SIDE, Math.round((LONG_FRAME_SIDE * height) / width)),
-    }
+    };
   }
   return {
     width: Math.max(MIN_FRAME_SIDE, Math.round((LONG_FRAME_SIDE * width) / height)),
     height: LONG_FRAME_SIDE,
-  }
-})
+  };
+});
 
 /** Clamped maximum zoom. */
 const maxScaleValue = computed(() =>
   Number.isFinite(props.maxScale) && props.maxScale > MIN_SCALE ? props.maxScale : 3,
-)
+);
 
 /* ── Transform state ───────────────────────────────────────────────────── */
 
 /** Horizontal offset in rpx. */
-const offsetX = ref(0)
+const offsetX = ref(0);
 /** Vertical offset in rpx. */
-const offsetY = ref(0)
+const offsetY = ref(0);
 /** Zoom factor. */
-const scale = ref(1)
+const scale = ref(1);
 /** Rotation in degrees (always a multiple of `ROTATE_STEP`). */
-const rotate = ref(0)
+const rotate = ref(0);
 /** Gesture in progress; `null` at rest. */
-const gesture = ref<GestureState | null>(null)
+const gesture = ref<GestureState | null>(null);
 
 function clampScale(value: number): number {
-  return Math.min(maxScaleValue.value, Math.max(MIN_SCALE, value))
+  return Math.min(maxScaleValue.value, Math.max(MIN_SCALE, value));
 }
 
 /** Reset offset / scale / rotation (mirrors wd-img-cropper `resetImg`). */
 function resetImg(): void {
-  offsetX.value = 0
-  offsetY.value = 0
-  scale.value = 1
-  rotate.value = 0
-  gesture.value = null
+  offsetX.value = 0;
+  offsetY.value = 0;
+  scale.value = 1;
+  rotate.value = 0;
+  gesture.value = null;
 }
 
 /** Set the rotation, snapped to 90° steps; a no-op when rotation is disabled. */
 function setRotate(deg: number): void {
-  if (props.disabledRotate) return
-  rotate.value = ((Math.round(deg / ROTATE_STEP) * ROTATE_STEP) % 360 + 360) % 360
+  if (props.disabledRotate) return;
+  rotate.value = (((Math.round(deg / ROTATE_STEP) * ROTATE_STEP) % 360) + 360) % 360;
 }
 
 /** One tap of the rotate control. */
 function rotateByStep(): void {
-  setRotate(rotate.value + ROTATE_STEP)
+  setRotate(rotate.value + ROTATE_STEP);
 }
 
 /** Reopening the layer always starts from the reset transform. */
 watch(
   () => props.modelValue,
   (isVisible) => {
-    if (isVisible) resetImg()
+    if (isVisible) resetImg();
   },
-)
+);
 
 onBeforeUnmount(() => {
   // §41: the gesture snapshot is the only state this component owns; the popup
   // owns its animation timer and no listener is registered anywhere.
-  gesture.value = null
-})
+  gesture.value = null;
+});
 
 /* ── Gestures ──────────────────────────────────────────────────────────── */
 
 /** Distance between the first two touches. */
 function touchDistance(event: TouchEvent): number {
-  const touches = Array.from(event.touches ?? [])
-  const first = touches[0]
-  const second = touches[1]
-  if (first === undefined || second === undefined) return 0
-  return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY)
+  const touches = Array.from(event.touches ?? []);
+  const first = touches[0];
+  const second = touches[1];
+  if (first === undefined || second === undefined) return 0;
+  return Math.hypot(second.clientX - first.clientX, second.clientY - first.clientY);
 }
 
 function onTouchStart(event: TouchEvent): void {
-  const touches = Array.from(event.touches ?? [])
-  const first = touches[0]
+  const touches = Array.from(event.touches ?? []);
+  const first = touches[0];
   gesture.value = {
     fingers: touches.length,
     startX: first?.clientX ?? 0,
@@ -289,29 +286,29 @@ function onTouchStart(event: TouchEvent): void {
     startOffsetX: offsetX.value,
     startOffsetY: offsetY.value,
     startScale: scale.value,
-  }
+  };
 }
 
 function onTouchMove(event: TouchEvent): void {
-  const state = gesture.value
-  if (state === null) return
-  const first = Array.from(event.touches ?? [])[0]
-  if (first === undefined) return
+  const state = gesture.value;
+  if (state === null) return;
+  const first = Array.from(event.touches ?? [])[0];
+  if (first === undefined) return;
 
   // Two fingers: spread to zoom. One finger: drag to pan.
   if (state.fingers >= 2) {
-    const distance = touchDistance(event)
+    const distance = touchDistance(event);
     if (state.startDistance > 0 && distance > 0) {
-      scale.value = clampScale(state.startScale * (distance / state.startDistance))
+      scale.value = clampScale(state.startScale * (distance / state.startDistance));
     }
-    return
+    return;
   }
-  offsetX.value = state.startOffsetX + (first.clientX - state.startX) * RPX_PER_PX
-  offsetY.value = state.startOffsetY + (first.clientY - state.startY) * RPX_PER_PX
+  offsetX.value = state.startOffsetX + (first.clientX - state.startX) * RPX_PER_PX;
+  offsetY.value = state.startOffsetY + (first.clientY - state.startY) * RPX_PER_PX;
 }
 
 function onTouchEnd(): void {
-  gesture.value = null
+  gesture.value = null;
 }
 
 /* ── Actions ───────────────────────────────────────────────────────────── */
@@ -326,7 +323,7 @@ function sourceRect(): SnImgCropperResult['source'] {
     y: Math.round(-offsetY.value / scale.value / RPX_PER_PX) || 0,
     width: Math.round(frame.value.width / scale.value / RPX_PER_PX),
     height: Math.round(frame.value.height / scale.value / RPX_PER_PX),
-  }
+  };
 }
 
 function onConfirm(): void {
@@ -337,24 +334,24 @@ function onConfirm(): void {
     rotate: rotate.value,
     source: sourceRect(),
     frame: { ...frame.value },
-  })
-  emit('update:modelValue', false)
+  });
+  emit('update:modelValue', false);
 }
 
 function onCancel(): void {
-  emit('cancel')
-  emit('update:modelValue', false)
+  emit('cancel');
+  emit('update:modelValue', false);
 }
 function onImgLoaded(): void {
-  emit('imgloaded', { src: props.imgSrc })
+  emit('imgloaded', { src: props.imgSrc });
 }
 
 function onImgError(event: Event): void {
-  emit('imgloaderror', { error: event })
+  emit('imgloaderror', { error: event });
 }
 
 function onPopupModelUpdate(value: boolean): void {
-  emit('update:modelValue', value)
+  emit('update:modelValue', value);
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -366,30 +363,30 @@ const PANEL_STYLE = [
   'max-width: 100%',
   'max-height: 100%',
   'padding: 0',
-].join('; ')
+].join('; ');
 
 const rootClass = computed(() => [
   'sn-img-cropper',
   { 'sn-img-cropper--rotate-disabled': props.disabledRotate },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 
 /**
  * Non-undefined view of `modelValue` for the popup binding — a bare prop
  * identifier types as `boolean | undefined` under `exactOptionalPropertyTypes`.
  */
-const visibleValue = computed(() => props.modelValue)
+const visibleValue = computed(() => props.modelValue);
 
 const frameStyle = computed(
   () => `width: ${frame.value.width}rpx; height: ${frame.value.height}rpx`,
-)
+);
 
 /** Resolve a preview length: a bare number is a px design value (→ rpx). */
 function toPreviewLength(value: number | string | undefined): string | undefined {
-  if (value === undefined || value === '') return undefined
-  return typeof value === 'number' ? `${value * RPX_PER_PX}rpx` : value
+  if (value === undefined || value === '') return undefined;
+  return typeof value === 'number' ? `${value * RPX_PER_PX}rpx` : value;
 }
 
 /**
@@ -399,17 +396,17 @@ function toPreviewLength(value: number | string | undefined): string | undefined
 const imageStyle = computed(() => {
   const parts = [
     `transform: translate(${offsetX.value}rpx, ${offsetY.value}rpx) scale(${scale.value}) rotate(${rotate.value}deg)`,
-  ]
-  const width = toPreviewLength(props.imgWidth)
-  const height = toPreviewLength(props.imgHeight)
-  if (width !== undefined) parts.push(`width: ${width}`)
-  if (height !== undefined) parts.push(`height: ${height}`)
-  return parts.join('; ')
-})
+  ];
+  const width = toPreviewLength(props.imgWidth);
+  const height = toPreviewLength(props.imgHeight);
+  if (width !== undefined) parts.push(`width: ${width}`);
+  if (height !== undefined) parts.push(`height: ${height}`);
+  return parts.join('; ');
+});
 
 const ariaLabel = computed(() =>
   props.imgSrc === '' ? 'image cropper' : `image cropper: ${props.imgSrc}`,
-)
+);
 </script>
 
 <template>

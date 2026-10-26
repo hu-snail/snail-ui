@@ -8,12 +8,12 @@ ADR-0001（2026-10-03）推翻 v1.x 的 "Schema First / Runtime First / Renderer
 
 本次归档包含 4 个 v1.x 包（35 个任务交付的代码）：
 
-| 归档路径 | 原始包 | 内容摘要 |
-|---|---|---|
+| 归档路径    | 原始包           | 内容摘要                                                                                                                                                     |
+| ----------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `protocol/` | `@snui/protocol` | UISchema / UINode / UIBinding / UIAction / UIAccessibility / UICapability + ButtonContract / InputContract / FormContract / CardContract / ComponentContract |
-| `schema/` | `@snui/schema` | Validator + Normalizer + Version compat |
-| `runtime/` | `@snui/runtime` | AUIRuntime + RuntimeContext + Lifecycle + Error system + PlatformAdapter |
-| `ai/` | `@snui/ai` | Context index + Schema generation + JSON Patch + Repair + Inspection |
+| `schema/`   | `@snui/schema`   | Validator + Normalizer + Version compat                                                                                                                      |
+| `runtime/`  | `@snui/runtime`  | AUIRuntime + RuntimeContext + Lifecycle + Error system + PlatformAdapter                                                                                     |
+| `ai/`       | `@snui/ai`       | Context index + Schema generation + JSON Patch + Repair + Inspection                                                                                         |
 
 ## 为什么归档而不是直接删
 
@@ -35,12 +35,12 @@ ADR-0001（2026-10-03）推翻 v1.x 的 "Schema First / Runtime First / Renderer
 
 ## 复用机会（v2.0）
 
-| v1.x 资产 | v2.0 复用方式 |
-|---|---|
-| `protocol/src/component-contract.ts` 的 `defineComponentContract<T>` 模式 | CLI 工具 `extractComponentMeta()` 解析 .vue 文件，复用 contract 概念（不依赖 Zod） |
-| `tokens/src/theme.ts` 的 Theme / Style / Density 三轴设计 | 保留，作为 v2.0 主题切换系统 |
-| `runtime/src/error.ts` 的 AUIError 结构 | 简化为 `SnError` 工具函数，给组件库内部使用 |
-| `protocol/src/button-contract.ts` 的 ButtonProps 类型 | **直接读这里**作为 v2.0 SnButton 的 props 设计参考（v1 已经设计过完整 schema，避免重新设计遗漏） |
+| v1.x 资产                                                                 | v2.0 复用方式                                                                                    |
+| ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `protocol/src/component-contract.ts` 的 `defineComponentContract<T>` 模式 | CLI 工具 `extractComponentMeta()` 解析 .vue 文件，复用 contract 概念（不依赖 Zod）               |
+| `tokens/src/theme.ts` 的 Theme / Style / Density 三轴设计                 | 保留，作为 v2.0 主题切换系统                                                                     |
+| `runtime/src/error.ts` 的 AUIError 结构                                   | 简化为 `SnError` 工具函数，给组件库内部使用                                                      |
+| `protocol/src/button-contract.ts` 的 ButtonProps 类型                     | **直接读这里**作为 v2.0 SnButton 的 props 设计参考（v1 已经设计过完整 schema，避免重新设计遗漏） |
 
 ---
 

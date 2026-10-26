@@ -5,18 +5,18 @@
  * Shows: two identical requests, one with a 600ms delay. The short task ends
  * before the timer fires, so no spinner is ever painted.
  */
-import { ref } from 'vue'
-import { SnButton, SnLoading } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnLoading } from '@snui/vue-web';
 
-const fastDone = ref(false)
-const fastLoading = ref(false)
-const slowLoading = ref(false)
+const fastDone = ref(false);
+const fastLoading = ref(false);
+const slowLoading = ref(false);
 
 function run(target: typeof fastLoading, ms: number): void {
-  target.value = true
+  target.value = true;
   setTimeout(() => {
-    target.value = false
-  }, ms)
+    target.value = false;
+  }, ms);
 }
 </script>
 
@@ -34,7 +34,11 @@ function run(target: typeof fastLoading, ms: number): void {
       </div>
       <SnButton
         size="small"
-        @click="run(fastLoading, 200); fastDone = false; setTimeout(() => fastDone = true, 220)"
+        @click="
+          run(fastLoading, 200);
+          fastDone = false;
+          setTimeout(() => (fastDone = true), 220);
+        "
       >
         Run
       </SnButton>
@@ -50,13 +54,12 @@ function run(target: typeof fastLoading, ms: number): void {
           <span class="ldg-delay__body">Content always visible</span>
         </SnLoading>
       </div>
-      <SnButton size="small" @click="run(slowLoading, 200)">
-        Run
-      </SnButton>
+      <SnButton size="small" @click="run(slowLoading, 200)"> Run </SnButton>
     </div>
 
     <p class="ldg-delay__hint">
-      <code>delay</code> prevents a flash of the loading state: when the request returns within the delay, the indicator never renders.
+      <code>delay</code> prevents a flash of the loading state: when the request returns within the
+      delay, the indicator never renders.
     </p>
   </div>
 </template>

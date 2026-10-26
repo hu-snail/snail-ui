@@ -23,4 +23,4 @@ export {
   renderSnMpStyles,
   listSnMpAliases,
   pxToRpx,
-} from './variables.js'
+} from './variables.js';

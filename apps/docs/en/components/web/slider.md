@@ -30,19 +30,19 @@ Custom-painted slider with range dual handles, marks, vertical / reverse, and to
 
 ### SnSlider Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `number \| [number, number]` | `0` | v-model (dual in range) |
-| min / max | `number` | `0` / `100` | Bounds |
-| step | `number` | `1` | Step snapping |
-| range | `boolean` | `false` | Dual-handle mode |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| vertical | `boolean` | `false` | Vertical orientation |
-| reverse | `boolean` | `false` | Reversed |
-| tooltip | `boolean` | `true` | Drag bubble |
-| formatTooltip | `(value: number) => string \| number` | — | Bubble formatter |
-| marks | `Record<number, string>` | — | Marks |
-| placement | 12 placements | `'top'` | Bubble placement |
+| Prop                | Type                                  | Default     | Notes                   |
+| ------------------- | ------------------------------------- | ----------- | ----------------------- |
+| modelValue          | `number \| [number, number]`          | `0`         | v-model (dual in range) |
+| min / max           | `number`                              | `0` / `100` | Bounds                  |
+| step                | `number`                              | `1`         | Step snapping           |
+| range               | `boolean`                             | `false`     | Dual-handle mode        |
+| disabled / readonly | `boolean`                             | `false`     | Disabled / read-only    |
+| vertical            | `boolean`                             | `false`     | Vertical orientation    |
+| reverse             | `boolean`                             | `false`     | Reversed                |
+| tooltip             | `boolean`                             | `true`      | Drag bubble             |
+| formatTooltip       | `(value: number) => string \| number` | —           | Bubble formatter        |
+| marks               | `Record<number, string>`              | —           | Marks                   |
+| placement           | 12 placements                         | `'top'`     | Bubble placement        |
 
 Each handle: `role="slider"` + aria-valuenow/min/max; arrows / Home / End / PageUp/PageDown (10×step).
 

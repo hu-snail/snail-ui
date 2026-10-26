@@ -8,14 +8,14 @@ A catalog of the uni-app end: 86 components across 6 categories. The simulator b
 
 ## Categories
 
-| Category | Scope |
-| --- | --- |
-| Basic | Buttons, icons, text, layout atoms |
-| Navigation | Nav bars, tabs, sidebars |
-| Form | Forms and input controls |
-| Feedback | Overlays, loading, progress, toasts |
-| Display | Cards, images, QR codes, tables |
-| Business | Draws, scratchcards, barcodes — ready-made business scenes |
+| Category   | Scope                                                      |
+| ---------- | ---------------------------------------------------------- |
+| Basic      | Buttons, icons, text, layout atoms                         |
+| Navigation | Nav bars, tabs, sidebars                                   |
+| Form       | Forms and input controls                                   |
+| Feedback   | Overlays, loading, progress, toasts                        |
+| Display    | Cards, images, QR codes, tables                            |
+| Business   | Draws, scratchcards, barcodes — ready-made business scenes |
 
 ## Notes
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDescriptions — size 三档字号与内边距。 */
-import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web'
+import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web';
 </script>
 
 <template>

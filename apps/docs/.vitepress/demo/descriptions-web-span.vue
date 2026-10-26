@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDescriptionsItem — span 让条目占据多列。 */
-import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web'
+import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web';
 </script>
 
 <template>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnSwitch — checkedValue / uncheckedValue. */
-import { ref } from 'vue'
-import { SnSwitch } from '@snui/vue-web'
-const mode = ref<'on' | 'off'>('on')
-const level = ref<number>(1)
+import { ref } from 'vue';
+import { SnSwitch } from '@snui/vue-web';
+const mode = ref<'on' | 'off'>('on');
+const level = ref<number>(1);
 </script>
 
 <template>
@@ -20,7 +20,18 @@ const level = ref<number>(1)
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; }
-.demo-row { display: flex; gap: 16px; align-items: center; }
-.demo-log { font-size: 13px; color: var(--vp-c-text-2); }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.demo-log {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
 </style>

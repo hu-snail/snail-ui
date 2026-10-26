@@ -2,11 +2,11 @@
 /**
  * tabs-web-bar-width — pinning the active bar to a fixed width.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs } from '@snui/vue-web';
 
-const natural = ref('a')
-const pinned = ref('a')
+const natural = ref('a');
+const pinned = ref('a');
 </script>
 
 <template>
@@ -30,7 +30,8 @@ const pinned = ref('a')
     </div>
 
     <p class="tabs-bar__hint">
-      <code>barWidth</code> switches the bar from "following tab width" to a fixed value so it no longer jumps when switching.
+      <code>barWidth</code> switches the bar from "following tab width" to a fixed value so it no
+      longer jumps when switching.
     </p>
   </div>
 </template>

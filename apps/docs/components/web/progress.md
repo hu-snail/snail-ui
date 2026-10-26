@@ -52,28 +52,28 @@
 
 所有 Props 均为可选。
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| type | `'line' \| 'circle' \| 'multiple-circle'` | `'line'` | 进度条形态 |
-| percentage | `number \| number[]` | `0` | 进度值，自动收敛到 0–100；多环形态传数组 |
-| height | `number \| string` | `undefined` | 线形轨道高度，数字为 px |
-| borderRadius | `number \| string` | `undefined` | 线形轨道圆角 |
-| fillBorderRadius | `number \| string` | `undefined` | 线形填充圆角，缺省跟随 `borderRadius` |
-| strokeWidth | `number` | `6` | 环形描边宽度（px） |
-| indicatorPlacement | `'inside' \| 'outside' \| 'top'` | `'outside'` | 指示器位置（仅线形生效） |
-| color | `string \| { color: string; stop?: number }[] \| (percentage: number) => string` | `undefined` | 填充色：纯色 / 渐变 / 函数；设置后覆盖 `status` 色 |
-| railColor | `string \| { color: string; stop?: number }[]` | `undefined` | 轨道色 |
-| showIndicator | `boolean` | `true` | 是否显示指示器与多环图例 |
-| status | `'default' \| 'success' \| 'error' \| 'info' \| 'warning'` | `'default'` | 状态，决定默认填充色与环形状态图标 |
-| processing | `boolean` | `false` | 处理中：线形显示条纹动画，环形填充弧呼吸 |
-| offsetDegree | `number` | `0` | 环形起始角度偏移（0 = 12 点方向） |
+| 名称               | 类型                                                                             | 默认值      | 说明                                               |
+| ------------------ | -------------------------------------------------------------------------------- | ----------- | -------------------------------------------------- |
+| type               | `'line' \| 'circle' \| 'multiple-circle'`                                        | `'line'`    | 进度条形态                                         |
+| percentage         | `number \| number[]`                                                             | `0`         | 进度值，自动收敛到 0–100；多环形态传数组           |
+| height             | `number \| string`                                                               | `undefined` | 线形轨道高度，数字为 px                            |
+| borderRadius       | `number \| string`                                                               | `undefined` | 线形轨道圆角                                       |
+| fillBorderRadius   | `number \| string`                                                               | `undefined` | 线形填充圆角，缺省跟随 `borderRadius`              |
+| strokeWidth        | `number`                                                                         | `6`         | 环形描边宽度（px）                                 |
+| indicatorPlacement | `'inside' \| 'outside' \| 'top'`                                                 | `'outside'` | 指示器位置（仅线形生效）                           |
+| color              | `string \| { color: string; stop?: number }[] \| (percentage: number) => string` | `undefined` | 填充色：纯色 / 渐变 / 函数；设置后覆盖 `status` 色 |
+| railColor          | `string \| { color: string; stop?: number }[]`                                   | `undefined` | 轨道色                                             |
+| showIndicator      | `boolean`                                                                        | `true`      | 是否显示指示器与多环图例                           |
+| status             | `'default' \| 'success' \| 'error' \| 'info' \| 'warning'`                       | `'default'` | 状态，决定默认填充色与环形状态图标                 |
+| processing         | `boolean`                                                                        | `false`     | 处理中：线形显示条纹动画，环形填充弧呼吸           |
+| offsetDegree       | `number`                                                                         | `0`         | 环形起始角度偏移（0 = 12 点方向）                  |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数                     | 说明                                 |
+| ------- | ------------------------ | ------------------------------------ |
 | default | `{ percentage: number }` | 自定义指示器内容；多环形态下逐环调用 |
-| icon | — | 自定义环形成功 / 失败图标 |
+| icon    | —                        | 自定义环形成功 / 失败图标            |
 
 无事件。
 
@@ -81,13 +81,13 @@
 
 ## Tokens
 
-| Token | 用途 |
-| --- | --- |
-| `--sn-web-color-action-primary` | 默认填充 |
-| `--sn-web-color-feedback-success / -danger / -info / -warning` | 状态填充与状态图标 |
-| `--sn-web-color-background-subtle` | 轨道色 |
-| `--sn-web-color-text-secondary` | 指示器文字 |
-| `--sn-web-color-text-on-primary` | 轨道内部的指示器文字 |
+| Token                                                          | 用途                 |
+| -------------------------------------------------------------- | -------------------- |
+| `--sn-web-color-action-primary`                                | 默认填充             |
+| `--sn-web-color-feedback-success / -danger / -info / -warning` | 状态填充与状态图标   |
+| `--sn-web-color-background-subtle`                             | 轨道色               |
+| `--sn-web-color-text-secondary`                                | 指示器文字           |
+| `--sn-web-color-text-on-primary`                               | 轨道内部的指示器文字 |
 
 ## 无障碍
 

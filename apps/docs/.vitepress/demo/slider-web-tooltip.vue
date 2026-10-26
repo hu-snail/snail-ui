@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnSlider — tooltip + formatTooltip. */
-import { ref } from 'vue'
-import { SnSlider } from '@snui/vue-web'
-const v = ref(50)
+import { ref } from 'vue';
+import { SnSlider } from '@snui/vue-web';
+const v = ref(50);
 </script>
 
 <template>
@@ -13,5 +13,10 @@ const v = ref(50)
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
 </style>

@@ -34,18 +34,18 @@
 
 所有 Props 均为可选。
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| expandTrigger | `'click' \| 'none'` | `'none'` | 点击文本切换展开 / 收起 |
-| lineClamp | `number` | `1` | 截断行数，`1` 为单行省略，大于 1 为多行省略 |
-| tooltip | `boolean \| SnEllipsisTooltipOptions` | `true` | 溢出时气泡显示完整文本；对象形式透传气泡属性 |
-| width | `number \| 'screen'` | `undefined` | 容器宽度；数字为 px，`'screen'` 为 100vw |
+| 名称          | 类型                                  | 默认值      | 说明                                         |
+| ------------- | ------------------------------------- | ----------- | -------------------------------------------- |
+| expandTrigger | `'click' \| 'none'`                   | `'none'`    | 点击文本切换展开 / 收起                      |
+| lineClamp     | `number`                              | `1`         | 截断行数，`1` 为单行省略，大于 1 为多行省略  |
+| tooltip       | `boolean \| SnEllipsisTooltipOptions` | `true`      | 溢出时气泡显示完整文本；对象形式透传气泡属性 |
+| width         | `number \| 'screen'`                  | `undefined` | 容器宽度；数字为 px，`'screen'` 为 100vw     |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | — | 被截断的文本内容 |
+| 名称    | 参数 | 说明             |
+| ------- | ---- | ---------------- |
+| default | —    | 被截断的文本内容 |
 
 无事件。
 

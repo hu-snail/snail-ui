@@ -37,7 +37,7 @@ const schema = {
 export default {
   setup() {
     onMounted(() => {
-      renderer.mount(schema, /* uni-app page ref */);
+      renderer.mount(schema /* uni-app page ref */);
     });
   },
 };
@@ -51,7 +51,7 @@ uni-app's API varies across platforms (WeChat MP / iOS / Android / H5). The rend
 import { UICapabilitySchema } from '@snui/protocol';
 
 const capability: UICapability = {
-  platform: 'mp-weixin',          // mini-program WeChat
+  platform: 'mp-weixin', // mini-program WeChat
   feature: 'clipboard.write',
   // Renderer picks the best API for the current platform, falling back when unsupported.
 };
@@ -61,14 +61,14 @@ See [Capabilities](/en/guide/web/architecture) for the full capability negotiati
 
 ## What's the same vs different?
 
-| Concern | Web | uni-app |
-| --- | --- | --- |
-| Schema | UISchema | Same |
-| Runtime | AUIRuntime | Same |
-| Tokens | Theme / Style / Density | Same |
-| Actions | ActionRegistry + AppBridge | Same AppBridge, host services differ |
-| Event catalog | DOM events (`click`, `change`, …) | Uni events + DOM events on H5 |
-| Renderer | `createVueRenderer()` | `createUniRenderer()` |
+| Concern       | Web                               | uni-app                              |
+| ------------- | --------------------------------- | ------------------------------------ |
+| Schema        | UISchema                          | Same                                 |
+| Runtime       | AUIRuntime                        | Same                                 |
+| Tokens        | Theme / Style / Density           | Same                                 |
+| Actions       | ActionRegistry + AppBridge        | Same AppBridge, host services differ |
+| Event catalog | DOM events (`click`, `change`, …) | Uni events + DOM events on H5        |
+| Renderer      | `createVueRenderer()`             | `createUniRenderer()`                |
 
 The component contract's `events` and `capabilities` keys differ by end. Check `/components/uni/` for the uni-specific event catalog per component.
 

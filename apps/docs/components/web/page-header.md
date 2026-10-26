@@ -28,42 +28,42 @@
 
 所有 Props 均为可选。
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| title | `string` | `undefined` | 标题文字；`title` 插槽优先 |
-| subtitle | `string` | `undefined` | 副标题；`subtitle` 插槽优先 |
-| extra | `string` | `undefined` | 右侧操作区文字；`extra` 插槽优先 |
+| 名称     | 类型     | 默认值      | 说明                             |
+| -------- | -------- | ----------- | -------------------------------- |
+| title    | `string` | `undefined` | 标题文字；`title` 插槽优先       |
+| subtitle | `string` | `undefined` | 副标题；`subtitle` 插槽优先      |
+| extra    | `string` | `undefined` | 右侧操作区文字；`extra` 插槽优先 |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称 | 参数                  | 说明               |
+| ---- | --------------------- | ------------------ |
 | back | `(event: MouseEvent)` | 激活返回控件时触发 |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| header | — | 替换整个头部行 |
-| back | — | 替换整个返回控件 |
-| icon | — | 替换返回图标（默认内联 chevron-left SVG） |
-| title | — | 标题内容，仅当未传 `title` 时使用 |
-| subtitle | — | 副标题内容，仅当未传 `subtitle` 时使用 |
-| extra | — | 右侧操作内容，仅当未传 `extra` 时使用 |
-| footer | — | 底部区域（上边框分隔） |
-| default | — | 头部与底部之间的正文内容 |
+| 名称     | 参数 | 说明                                      |
+| -------- | ---- | ----------------------------------------- |
+| header   | —    | 替换整个头部行                            |
+| back     | —    | 替换整个返回控件                          |
+| icon     | —    | 替换返回图标（默认内联 chevron-left SVG） |
+| title    | —    | 标题内容，仅当未传 `title` 时使用         |
+| subtitle | —    | 副标题内容，仅当未传 `subtitle` 时使用    |
+| extra    | —    | 右侧操作内容，仅当未传 `extra` 时使用     |
+| footer   | —    | 底部区域（上边框分隔）                    |
+| default  | —    | 头部与底部之间的正文内容                  |
 
 ## Tokens
 
-| Token | 用途 |
-| --- | --- |
-| `--sn-web-color-text-primary` | 标题颜色 |
-| `--sn-web-color-text-secondary` | 返回图标 / extra / 页脚颜色 |
-| `--sn-web-color-text-tertiary` | 副标题颜色 |
-| `--sn-web-color-action-primary` | 返回控件悬停颜色 |
-| `--sn-web-color-background-subtle` | 返回按钮悬停背景 |
-| `--sn-web-color-border-subtle` | 页脚分隔线 |
-| `--sn-web-focus-ring` | 返回按钮键盘焦点 |
+| Token                              | 用途                        |
+| ---------------------------------- | --------------------------- |
+| `--sn-web-color-text-primary`      | 标题颜色                    |
+| `--sn-web-color-text-secondary`    | 返回图标 / extra / 页脚颜色 |
+| `--sn-web-color-text-tertiary`     | 副标题颜色                  |
+| `--sn-web-color-action-primary`    | 返回控件悬停颜色            |
+| `--sn-web-color-background-subtle` | 返回按钮悬停背景            |
+| `--sn-web-color-border-subtle`     | 页脚分隔线                  |
+| `--sn-web-focus-ring`              | 返回按钮键盘焦点            |
 
 ## 无障碍
 

@@ -28,44 +28,44 @@ Flat month grid: minDate / maxDate bound the month range; tapping a day writes i
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| number[] \| null` | `null` | Selected timestamp(s) |
-| `type` | `'date' \| 'dates' \| 'datetime' \| 'month' \| 'daterange' \| 'datetimerange' \| 'monthrange'` | `'date'` | Selection mode |
-| `minDate` / `maxDate` | `number` | `undefined` | Bounds (defaults to ±6 months) |
-| `firstDayOfWeek` | `number` | `0` | First weekday (0 = Sunday) |
-| `formatter` | `CalendarFormatter` | `undefined` | Cell formatter hook |
-| `maxRange` | `number` | `0` | Max range span in days (`0` = unconstrained) |
-| `rangePrompt` | `string` | `''` | Message shown when `maxRange` is exceeded |
-| `allowSameDay` | `boolean` | `false` | Allow a zero-length range |
-| `showPanelTitle` | `boolean` | `true` | Render the per-month title |
-| `defaultTime` | `string \| string[]` | `'00:00:00'` | Clock time applied to date values |
-| `panelHeight` | `number` | `316` | Scrollable panel height (px design units) |
-| `immediateChange` | `boolean` | `false` | Emit on every tap |
-| `switchMode` | `'none' \| 'month' \| 'year-month'` | `'none'` | Month-switch mode |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
-| `timeFilter` | `CalendarTimeFilter` | `undefined` | Time-column filter — **declared, not implemented** (no in-panel time roller) |
-| `timeItemHeight` | `number` | `44` | Time row height — **declared, not implemented** |
-| `timeVisibleItemCount` | `number` | `6` | Visible time rows — **declared, not implemented** |
-| `hideSecond` | `boolean` | `false` | Hide the seconds column — **declared, not implemented** |
+| Prop                          | Type                                                                                           | Default      | Description                                                                  |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------- |
+| `modelValue`                  | `number \| number[] \| null`                                                                   | `null`       | Selected timestamp(s)                                                        |
+| `type`                        | `'date' \| 'dates' \| 'datetime' \| 'month' \| 'daterange' \| 'datetimerange' \| 'monthrange'` | `'date'`     | Selection mode                                                               |
+| `minDate` / `maxDate`         | `number`                                                                                       | `undefined`  | Bounds (defaults to ±6 months)                                               |
+| `firstDayOfWeek`              | `number`                                                                                       | `0`          | First weekday (0 = Sunday)                                                   |
+| `formatter`                   | `CalendarFormatter`                                                                            | `undefined`  | Cell formatter hook                                                          |
+| `maxRange`                    | `number`                                                                                       | `0`          | Max range span in days (`0` = unconstrained)                                 |
+| `rangePrompt`                 | `string`                                                                                       | `''`         | Message shown when `maxRange` is exceeded                                    |
+| `allowSameDay`                | `boolean`                                                                                      | `false`      | Allow a zero-length range                                                    |
+| `showPanelTitle`              | `boolean`                                                                                      | `true`       | Render the per-month title                                                   |
+| `defaultTime`                 | `string \| string[]`                                                                           | `'00:00:00'` | Clock time applied to date values                                            |
+| `panelHeight`                 | `number`                                                                                       | `316`        | Scrollable panel height (px design units)                                    |
+| `immediateChange`             | `boolean`                                                                                      | `false`      | Emit on every tap                                                            |
+| `switchMode`                  | `'none' \| 'month' \| 'year-month'`                                                            | `'none'`     | Month-switch mode                                                            |
+| `customClass` / `customStyle` | `string`                                                                                       | `''`         | Root class / inline style                                                    |
+| `timeFilter`                  | `CalendarTimeFilter`                                                                           | `undefined`  | Time-column filter — **declared, not implemented** (no in-panel time roller) |
+| `timeItemHeight`              | `number`                                                                                       | `44`         | Time row height — **declared, not implemented**                              |
+| `timeVisibleItemCount`        | `number`                                                                                       | `6`          | Visible time rows — **declared, not implemented**                            |
+| `hideSecond`                  | `boolean`                                                                                      | `false`      | Hide the seconds column — **declared, not implemented**                      |
 
 > **Not implemented**: `week` / `weekrange` types (no reliable ISO-week helper on every target), plus `timeFilter` / `timeItemHeight` / `timeVisibleItemCount` / `hideSecond` — the in-panel time roller is not implemented; `datetime` / `datetimerange` exist and apply `defaultTime`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Selection changed | `(value: CalendarValue)` |
-| `change` | Selection changed (same tick) | `{ value }` |
-| `pickstart` / `pickend` | Reserved for the (unimplemented) time roller | — |
+| Event                   | Description                                  | Payload                  |
+| ----------------------- | -------------------------------------------- | ------------------------ |
+| `update:modelValue`     | Selection changed                            | `(value: CalendarValue)` |
+| `change`                | Selection changed (same tick)                | `{ value }`              |
+| `pickstart` / `pickend` | Reserved for the (unimplemented) time roller | —                        |
 
 ## Exposed API
 
-| Member | Signature | Description |
-| --- | --- | --- |
-| `shiftMonth` | `(delta: number) => void` | Move the active month |
-| `shiftYear` | `(delta: number) => void` | Move the active year (year-month mode) |
-| `jumpToToday` | `() => void` | Jump to the month containing today |
+| Member        | Signature                 | Description                            |
+| ------------- | ------------------------- | -------------------------------------- |
+| `shiftMonth`  | `(delta: number) => void` | Move the active month                  |
+| `shiftYear`   | `(delta: number) => void` | Move the active year (year-month mode) |
+| `jumpToToday` | `() => void`              | Jump to the month containing today     |
 
 ## Slots
 
@@ -73,15 +73,15 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | Panel surface |
-| ``--sn-mp-color-action-primary` / `-soft`` | Selected / range-middle day |
-| ``--sn-mp-color-text-on-primary`` | Selected day text |
+| Token                                                                     | Purpose                               |
+| ------------------------------------------------------------------------- | ------------------------------------- |
+| `--sn-mp-color-background-elevated`                                       | Panel surface                         |
+| ``--sn-mp-color-action-primary` / `-soft``                                | Selected / range-middle day           |
+| `--sn-mp-color-text-on-primary`                                           | Selected day text                     |
 | ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-disabled`` | Day / title / weekday / disabled text |
-| ``--sn-mp-color-border-default` / `-subtle`` | Today ring / control rule |
-| ``--sn-mp-color-feedback-warning`` | Range prompt |
-| ``--sn-mp-radius-md`` | Day + control corners |
+| ``--sn-mp-color-border-default` / `-subtle``                              | Today ring / control rule             |
+| `--sn-mp-color-feedback-warning`                                          | Range prompt                          |
+| `--sn-mp-radius-md`                                                       | Day + control corners                 |
 
 ## Accessibility
 
@@ -92,4 +92,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

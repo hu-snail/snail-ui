@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnTree — multiple selection with cancelable toggle. */
-import { ref } from 'vue'
-import { SnTree } from '@snui/vue-web'
-import type { SnTreeOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTree } from '@snui/vue-web';
+import type { SnTreeOption } from '@snui/vue-web';
 
-const selected = ref<string[]>([])
+const selected = ref<string[]>([]);
 
 const data: SnTreeOption[] = [
   {
@@ -21,7 +21,7 @@ const data: SnTreeOption[] = [
     children: [{ key: 'go', label: 'Go squad' }],
   },
   { key: 'qa', label: 'QA team' },
-]
+];
 </script>
 
 <template>
@@ -37,6 +37,12 @@ const data: SnTreeOption[] = [
 </template>
 
 <style scoped>
-.sn-demo { max-width: 320px; }
-.sn-demo__hint { margin: 8px 0 0; font-size: 12px; color: var(--sn-web-color-text-tertiary); }
+.sn-demo {
+  max-width: 320px;
+}
+.sn-demo__hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--sn-web-color-text-tertiary);
+}
 </style>

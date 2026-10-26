@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDataTable — ellipsis cells (native title fallback). */
-import { SnDataTable } from '@snui/vue-web'
+import { SnDataTable } from '@snui/vue-web';
 
 const columns = [
   {
@@ -14,7 +14,7 @@ const columns = [
     key: 'address',
     ellipsis: true,
   },
-]
+];
 
 const data = [
   {
@@ -27,7 +27,7 @@ const data = [
     name: 'Jim Green',
     address: 'London No. 1 Lake Park, another overflowing address for the demo',
   },
-]
+];
 </script>
 
 <template>
@@ -38,5 +38,9 @@ const data = [
 </template>
 
 <style scoped>
-.sn-demo-tip { margin: 0 0 24px; color: var(--sn-web-color-text-secondary); font-size: 14px; }
+.sn-demo-tip {
+  margin: 0 0 24px;
+  color: var(--sn-web-color-text-secondary);
+  font-size: 14px;
+}
 </style>

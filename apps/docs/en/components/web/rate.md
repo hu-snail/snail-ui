@@ -22,15 +22,15 @@ Rating with inline SVG stars (no emoji), half stars, clearable, and keyboard sup
 
 ### SnRate Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `number \| null` | `null` | v-model |
-| count | `number` | `5` | Star count |
-| allowHalf | `boolean` | `false` | Half stars |
-| clearable | `boolean` | `false` | Re-click clears |
-| readonly / disabled | `boolean` | `false` | Read-only / disabled |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | Size |
-| color | `string` | — | Active color (token variable) |
+| Prop                | Type                         | Default    | Notes                         |
+| ------------------- | ---------------------------- | ---------- | ----------------------------- |
+| modelValue          | `number \| null`             | `null`     | v-model                       |
+| count               | `number`                     | `5`        | Star count                    |
+| allowHalf           | `boolean`                    | `false`    | Half stars                    |
+| clearable           | `boolean`                    | `false`    | Re-click clears               |
+| readonly / disabled | `boolean`                    | `false`    | Read-only / disabled          |
+| size                | `'small'\|'medium'\|'large'` | `'medium'` | Size                          |
+| color               | `string`                     | —          | Active color (token variable) |
 
 `role="radiogroup"` with star `role="radio"`; ArrowLeft/Right ±1 (±0.5 with allowHalf).
 

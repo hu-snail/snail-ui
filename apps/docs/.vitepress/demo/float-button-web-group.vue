@@ -9,21 +9,21 @@
  * The group is `fixed: false` + `container` (the stage element), so it stays
  * inside the module instead of jumping to the browser corner.
  */
-import { ref, useTemplateRef } from 'vue'
-import { Bell, MessageSquare, Star } from 'lucide-vue-next'
-import { SnButton, SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web'
+import { ref, useTemplateRef } from 'vue';
+import { Bell, MessageSquare, Star } from 'lucide-vue-next';
+import { SnButton, SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web';
 
-const open = ref(false)
+const open = ref(false);
 
-const stageRef = useTemplateRef<HTMLElement>('stage')
+const stageRef = useTemplateRef<HTMLElement>('stage');
 
 function fillValue(): HTMLElement | null {
-  return stageRef.value
+  return stageRef.value;
 }
 
 /* The `container` prop accepts a selector or an element; a getter keeps the
  * reference reactive so the group mounts once the stage exists. */
-const container = () => fillValue()
+const container = () => fillValue();
 </script>
 
 <template>

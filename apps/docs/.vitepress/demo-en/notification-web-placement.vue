@@ -6,20 +6,14 @@
  * placement 是 Provider 的 prop，切换后堆叠容器整体移动到新的角落；
  * bottom 系列自下而上生长（新通知出现在下方）。
  */
-import { defineComponent, ref } from 'vue'
-import { SnButton, SnNotificationProvider, useNotification } from '@snui/vue-web'
+import { defineComponent, ref } from 'vue';
+import { SnButton, SnNotificationProvider, useNotification } from '@snui/vue-web';
 
-type Placement =
-  | 'top'
-  | 'top-right'
-  | 'top-left'
-  | 'bottom'
-  | 'bottom-right'
-  | 'bottom-left'
+type Placement = 'top' | 'top-right' | 'top-left' | 'bottom' | 'bottom-right' | 'bottom-left';
 
 interface PlacementOption {
-  value: Placement
-  label: string
+  value: Placement;
+  label: string;
 }
 
 const PLACEMENTS: PlacementOption[] = [
@@ -29,9 +23,9 @@ const PLACEMENTS: PlacementOption[] = [
   { value: 'bottom', label: 'Bottom center' },
   { value: 'bottom-right', label: 'Bottom right' },
   { value: 'bottom-left', label: 'Bottom left' },
-]
+];
 
-const placement = ref<Placement>('top-right')
+const placement = ref<Placement>('top-right');
 
 const PlacementTrigger = defineComponent({
   name: 'NotificationPlacementTrigger',
@@ -43,26 +37,26 @@ const PlacementTrigger = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const notification = useNotification()
-    let pushed = 0
+    const notification = useNotification();
+    let pushed = 0;
 
     const push = (): void => {
-      pushed += 1
+      pushed += 1;
       notification.info({
         title: `Notification ${pushed}`,
         content: `Stacking placement: ${props.placement}`,
         meta: 'Trigger again after switching; the notification appears in the new corner',
-      })
-    }
+      });
+    };
 
     const clearAll = (): void => {
-      pushed = 0
-      notification.destroyAll()
-    }
+      pushed = 0;
+      notification.destroyAll();
+    };
 
-    return () => slots.default?.({ push, clearAll })
+    return () => slots.default?.({ push, clearAll });
   },
-})
+});
 </script>
 
 <template>
@@ -89,7 +83,9 @@ const PlacementTrigger = defineComponent({
     </SnNotificationProvider>
 
     <p class="ntf-place__hint">
-      Current placement <code>{{ placement }}</code>: the notification container snaps to that corner as a whole, and on-screen notifications move with it.
+      Current placement <code>{{ placement }}</code
+      >: the notification container snaps to that corner as a whole, and on-screen notifications
+      move with it.
     </p>
   </div>
 </template>

@@ -1,19 +1,19 @@
 <script setup lang="ts">
 /** Demo: SnPagination — 多档每页条数（label/value）+ 数据总量变化联动。 */
-import { computed, ref } from 'vue'
-import { SnButton, SnPagination } from '@snui/vue-web'
+import { computed, ref } from 'vue';
+import { SnButton, SnPagination } from '@snui/vue-web';
 
-const itemCount = ref(87)
-const page = ref(1)
-const pageSize = ref(10)
+const itemCount = ref(87);
+const page = ref(1);
+const pageSize = ref(10);
 
 /** 与组件同规则推导总页数，用于回显联动结果。 */
-const pageCount = computed(() => Math.max(1, Math.ceil(itemCount.value / pageSize.value)))
+const pageCount = computed(() => Math.max(1, Math.ceil(itemCount.value / pageSize.value)));
 
 /** 切换数据集：宿主负责把页码重置回第 1 页。 */
 function switchDataset(next: number): void {
-  itemCount.value = next
-  page.value = 1
+  itemCount.value = next;
+  page.value = 1;
 }
 </script>
 
@@ -37,7 +37,8 @@ function switchDataset(next: number): void {
       ]"
     />
     <p class="pagination-demo__hint">
-      {{ itemCount }} items · {{ pageCount }} pages · on page {{ page }} (the page number converges with the new total after switching dataset or page size)
+      {{ itemCount }} items · {{ pageCount }} pages · on page {{ page }} (the page number converges
+      with the new total after switching dataset or page size)
     </p>
   </div>
 </template>

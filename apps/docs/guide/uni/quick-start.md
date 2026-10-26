@@ -55,15 +55,15 @@ pnpm add @snui/uni
 
 <script setup lang="ts">
 const onSubmit = () => {
-  uni.showToast({ title: '已提交' })
-}
+  uni.showToast({ title: '已提交' });
+};
 </script>
 ```
 
 如需显式 import：
 
 ```ts
-import { SnButton } from '@snui/uni'
+import { SnButton } from '@snui/uni';
 ```
 
 ## 跨端构建
@@ -80,7 +80,7 @@ pnpm build:app        # App
 ## 暗色模式
 
 ```html
-<html data-theme="dark">
+<html data-theme="dark"></html>
 ```
 
 CSS 变量自动级联。

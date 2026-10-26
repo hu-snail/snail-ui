@@ -27,38 +27,38 @@ Numeric keypad: `maxlength` caps the value, delete removes one character, close 
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `visible` | `boolean` | `false` | Keyboard visibility |
-| `modelValue` | `string` | `''` | Current value |
-| `title` | `string` | `''` | Keyboard title |
-| `mode` | `'default' \| 'custom' \| 'car'` | `'default'` | Layout preset |
-| `zIndex` | `number` | `100` | Stacking level |
-| `maxlength` | `number` | `Infinity` | Maximum value length |
-| `showDeleteKey` | `boolean` | `true` | Render the delete key |
-| `randomKeyOrder` | `boolean` | `false` | Shuffle the digit keys |
-| `closeText` / `deleteText` | `string` | `''` | Button labels |
-| `closeButtonLoading` | `boolean` | `false` | Spinner in the close button |
-| `modal` / `hideOnClickOutside` / `lockScroll` | `boolean` | `false` / `true` / `true` | Scrim behaviour |
-| `safeAreaInsetBottom` | `boolean` | `true` | Safe-area padding |
-| `extraKey` | `string \| string[]` | `undefined` | Extra digit-grid key(s) |
-| `carLang` | `'zh' \| 'en'` | `'zh'` | Car-plate language |
-| `autoSwitchLang` | `boolean` | `false` | Switch to letters after the province char |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
-| `rootPortal` | `boolean` | `false` | Render outside the page flow — **declared, not implemented** (no portal host on MP; forwarded to `sn-popup`) |
+| Prop                                          | Type                             | Default                   | Description                                                                                                  |
+| --------------------------------------------- | -------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `visible`                                     | `boolean`                        | `false`                   | Keyboard visibility                                                                                          |
+| `modelValue`                                  | `string`                         | `''`                      | Current value                                                                                                |
+| `title`                                       | `string`                         | `''`                      | Keyboard title                                                                                               |
+| `mode`                                        | `'default' \| 'custom' \| 'car'` | `'default'`               | Layout preset                                                                                                |
+| `zIndex`                                      | `number`                         | `100`                     | Stacking level                                                                                               |
+| `maxlength`                                   | `number`                         | `Infinity`                | Maximum value length                                                                                         |
+| `showDeleteKey`                               | `boolean`                        | `true`                    | Render the delete key                                                                                        |
+| `randomKeyOrder`                              | `boolean`                        | `false`                   | Shuffle the digit keys                                                                                       |
+| `closeText` / `deleteText`                    | `string`                         | `''`                      | Button labels                                                                                                |
+| `closeButtonLoading`                          | `boolean`                        | `false`                   | Spinner in the close button                                                                                  |
+| `modal` / `hideOnClickOutside` / `lockScroll` | `boolean`                        | `false` / `true` / `true` | Scrim behaviour                                                                                              |
+| `safeAreaInsetBottom`                         | `boolean`                        | `true`                    | Safe-area padding                                                                                            |
+| `extraKey`                                    | `string \| string[]`             | `undefined`               | Extra digit-grid key(s)                                                                                      |
+| `carLang`                                     | `'zh' \| 'en'`                   | `'zh'`                    | Car-plate language                                                                                           |
+| `autoSwitchLang`                              | `boolean`                        | `false`                   | Switch to letters after the province char                                                                    |
+| `customClass` / `customStyle`                 | `string`                         | `''`                      | Root class / inline style                                                                                    |
+| `rootPortal`                                  | `boolean`                        | `false`                   | Render outside the page flow — **declared, not implemented** (no portal host on MP; forwarded to `sn-popup`) |
 
 > **Not implemented**: `root-portal` — declared and forwarded to `sn-popup`, but uni-app mini-programs have no portal host, so it has no visual effect.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Value changed | `(value: string)` |
-| `update:visible` | Visibility changed | `(value: boolean)` |
-| `update:carLang` | Car language changed | `(lang: 'zh' \| 'en')` |
-| `input` | A character key was pressed | `(key: string)` |
-| `delete` | Delete key pressed | — |
-| `close` | Keyboard closed | — |
+| Event               | Description                 | Payload                |
+| ------------------- | --------------------------- | ---------------------- |
+| `update:modelValue` | Value changed               | `(value: string)`      |
+| `update:visible`    | Visibility changed          | `(value: boolean)`     |
+| `update:carLang`    | Car language changed        | `(lang: 'zh' \| 'en')` |
+| `input`             | A character key was pressed | `(key: string)`        |
+| `delete`            | Delete key pressed          | —                      |
+| `close`             | Keyboard closed             | —                      |
 
 ## Slots
 
@@ -66,14 +66,14 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | Keyboard surface |
-| ``--sn-mp-color-background-soft`` | Key plate |
-| ``--sn-mp-color-background-sunken`` | Custom-mode delete plate |
-| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary`` | Key + header text |
-| ``--sn-mp-radius-md`` | Key corners |
-| ``--sn-mp-font-size-md` / `-sm` / `-xl`` | Label sizes |
+| Token                                                       | Purpose                  |
+| ----------------------------------------------------------- | ------------------------ |
+| `--sn-mp-color-background-elevated`                         | Keyboard surface         |
+| `--sn-mp-color-background-soft`                             | Key plate                |
+| `--sn-mp-color-background-sunken`                           | Custom-mode delete plate |
+| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary`` | Key + header text        |
+| `--sn-mp-radius-md`                                         | Key corners              |
+| ``--sn-mp-font-size-md` / `-sm` / `-xl``                    | Label sizes              |
 
 ## Accessibility
 
@@ -84,4 +84,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

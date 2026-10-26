@@ -9,22 +9,22 @@
  * via provide/inject.
  */
 
-import { inject } from 'vue'
-import { ChevronRight, ChevronDown } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
+import { inject } from 'vue';
+import { ChevronRight, ChevronDown } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
 
-defineOptions({ name: 'SnCollapseItem' })
+defineOptions({ name: 'SnCollapseItem' });
 
 const props = withDefaults(
   defineProps<{
     /** Unique identifier within the parent SnCollapse. Required. */
-    name?: string | number
+    name?: string | number;
     /** Header label. Mirrors n-collapse-item `title`. */
-    title?: string
+    title?: string;
     /** Disable interaction. Mirrors n-collapse-item `disabled`. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Override parent arrowPlacement. Mirrors n-collapse-item `arrow`. */
-    arrow?: string | boolean
+    arrow?: string | boolean;
   }>(),
   {
     name: '',
@@ -32,58 +32,58 @@ const props = withDefaults(
     disabled: false,
     arrow: '',
   },
-)
+);
 
-type ToggleFn = (name: string | number) => void
-type IsExpandedFn = (name: string | number) => boolean
-type ArrowFn = () => 'left' | 'right'
-type DisplayFn = () => 'show' | 'if'
-type TriggerFn = () => 'click' | 'hover'
+type ToggleFn = (name: string | number) => void;
+type IsExpandedFn = (name: string | number) => boolean;
+type ArrowFn = () => 'left' | 'right';
+type DisplayFn = () => 'show' | 'if';
+type TriggerFn = () => 'click' | 'hover';
 
-const toggle = inject<ToggleFn>('sn-collapse-toggle', () => {})
-const isExpanded = inject<IsExpandedFn>('sn-collapse-is-expanded', () => false)
-const getArrowPlacement = inject<ArrowFn>('sn-collapse-arrow-placement', () => 'left')
-const getDisplayDirective = inject<DisplayFn>('sn-collapse-display-directive', () => 'if' as const)
-const getTrigger = inject<TriggerFn>('sn-collapse-trigger', () => 'click' as const)
+const toggle = inject<ToggleFn>('sn-collapse-toggle', () => {});
+const isExpanded = inject<IsExpandedFn>('sn-collapse-is-expanded', () => false);
+const getArrowPlacement = inject<ArrowFn>('sn-collapse-arrow-placement', () => 'left');
+const getDisplayDirective = inject<DisplayFn>('sn-collapse-display-directive', () => 'if' as const);
+const getTrigger = inject<TriggerFn>('sn-collapse-trigger', () => 'click' as const);
 
 function handleHeaderClick(): void {
-  if (props.disabled) return
+  if (props.disabled) return;
   if (typeof props.name === 'number' || typeof props.name === 'string') {
-    toggle(props.name)
+    toggle(props.name);
   }
 }
 
 function handleHeaderMouseenter(): void {
-  if (getTrigger() !== 'hover') return
-  handleHeaderClick()
+  if (getTrigger() !== 'hover') return;
+  handleHeaderClick();
 }
 
 const expanded = (): boolean => {
-  if (typeof props.name !== 'string' && typeof props.name !== 'number') return false
-  return isExpanded(props.name)
-}
+  if (typeof props.name !== 'string' && typeof props.name !== 'number') return false;
+  return isExpanded(props.name);
+};
 
 const showArrow = (): boolean => {
-  if (props.arrow === false) return false
-  if (props.arrow === true || props.arrow === '') return true
-  return true
-}
+  if (props.arrow === false) return false;
+  if (props.arrow === true || props.arrow === '') return true;
+  return true;
+};
 
 const arrowPlacement = (): 'left' | 'right' => {
-  if (props.arrow === 'left' || props.arrow === 'right') return props.arrow
-  return getArrowPlacement()
-}
+  if (props.arrow === 'left' || props.arrow === 'right') return props.arrow;
+  return getArrowPlacement();
+};
 
 /** `v-show` vs `v-if` for collapsed content — selected via parent's
  * `displayDirective`. 'show' = always rendered, toggle via display:none.
  * 'if' = unmounted when not expanded (default, cheaper for heavy content). */
-const displayMode = (): 'show' | 'if' => getDisplayDirective()
+const displayMode = (): 'show' | 'if' => getDisplayDirective();
 
 /** Whether parent is in 'show' mode (always mount). */
-const isShowMode = (): boolean => displayMode() === 'show'
+const isShowMode = (): boolean => displayMode() === 'show';
 
 /** Whether parent is in 'if' mode AND this item is expanded (mount now). */
-const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded()
+const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded();
 </script>
 
 <template>
@@ -128,19 +128,10 @@ const isIfModeMounted = (): boolean => displayMode() === 'if' && expanded()
       We split into two mutually exclusive divs to avoid the
       v-if + v-show ambiguity that warns "Invalid vnode type".
     -->
-    <div
-      v-if="isShowMode()"
-      v-show="expanded()"
-      class="sn-collapse-item__body"
-      role="region"
-    >
+    <div v-if="isShowMode()" v-show="expanded()" class="sn-collapse-item__body" role="region">
       <slot />
     </div>
-    <div
-      v-else-if="isIfModeMounted()"
-      class="sn-collapse-item__body"
-      role="region"
-    >
+    <div v-else-if="isIfModeMounted()" class="sn-collapse-item__body" role="region">
       <slot />
     </div>
   </section>

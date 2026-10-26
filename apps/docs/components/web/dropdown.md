@@ -22,14 +22,14 @@
 
 ### SnDropdown Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| options | `SnDropdownOption[]` | `[]` | {label, key, disabled?, icon?, children?}，type:'divider' 分隔线 |
-| trigger | `'click'\|'hover'` | `'hover'` | 触发方式 |
-| placement | 六档 bottom/top ± start/end | `'bottom'` | 弹出方位（翻转保留对齐后缀） |
-| disabled | `boolean` | `false` | 禁用 |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| show | `boolean` | — | 受控开关（v-model:show） |
+| Prop      | 类型                         | 默认值     | 说明                                                             |
+| --------- | ---------------------------- | ---------- | ---------------------------------------------------------------- |
+| options   | `SnDropdownOption[]`         | `[]`       | {label, key, disabled?, icon?, children?}，type:'divider' 分隔线 |
+| trigger   | `'click'\|'hover'`           | `'hover'`  | 触发方式                                                         |
+| placement | 六档 bottom/top ± start/end  | `'bottom'` | 弹出方位（翻转保留对齐后缀）                                     |
+| disabled  | `boolean`                    | `false`    | 禁用                                                             |
+| size      | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸                                                             |
+| show      | `boolean`                    | —          | 受控开关（v-model:show）                                         |
 
 事件：`update:show` / `select(key, option)` / `clickoutside`。键盘：Enter/Space/ArrowDown 打开、ArrowUp/Down 高亮、ArrowRight/Left 进出子菜单、Esc 关闭。aria：menu/menuitem/separator。
 

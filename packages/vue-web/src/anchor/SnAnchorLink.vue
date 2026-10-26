@@ -23,75 +23,73 @@
  *   <SnAnchorLink title="简介" href="#intro" />
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { snAnchorInjectionKey } from './sn-anchor-context'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { snAnchorInjectionKey } from './sn-anchor-context';
 
-defineOptions({ name: 'SnAnchorLink' })
+defineOptions({ name: 'SnAnchorLink' });
 
 const props = withDefaults(
   defineProps<{
     /** Link label. Mirrors n-anchor-link `title`. */
-    title?: string
+    title?: string;
     /** Target section id, e.g. `#intro`. Mirrors n-anchor-link `href`. */
-    href?: string
+    href?: string;
   }>(),
   {
     title: '',
     href: undefined as any,
   },
-)
+);
 
 defineSlots<{
   /** Nested `SnAnchorLink` children (sub-sections). */
-  default?(): unknown
+  default?(): unknown;
   /** Link label — overrides the `title` prop. */
-  title?(): unknown
-}>()
+  title?(): unknown;
+}>();
 
-const anchor = inject(snAnchorInjectionKey, null)
+const anchor = inject(snAnchorInjectionKey, null);
 
 if (!anchor) {
   throw new Error(
     '[snui] SnAnchorLink must be placed inside SnAnchor (missing sn-anchor context).',
-  )
+  );
 }
 
 // Re-bind after the guard so TS keeps the non-null type inside closures.
-const anchorContext = anchor
+const anchorContext = anchor;
 
-const titleRef = ref<HTMLElement | null>(null)
+const titleRef = ref<HTMLElement | null>(null);
 
-const active = computed(
-  () => !!props.href && props.href === anchorContext.activeHref.value,
-)
+const active = computed(() => !!props.href && props.href === anchorContext.activeHref.value);
 
 // ---------- Parent registration ----------
 
 onMounted(() => {
-  if (props.href !== undefined) anchorContext.collectedLinkHrefs.push(props.href)
-  if (titleRef.value) anchorContext.titleEls.push(titleRef.value)
-})
+  if (props.href !== undefined) anchorContext.collectedLinkHrefs.push(props.href);
+  if (titleRef.value) anchorContext.titleEls.push(titleRef.value);
+});
 
 // Move the rail bar onto this link as it becomes active.
 watch(active, (value) => {
   if (value && titleRef.value) {
-    anchorContext.updateBarPosition(titleRef.value)
+    anchorContext.updateBarPosition(titleRef.value);
   }
-})
+});
 
 onBeforeUnmount(() => {
-  const hrefIndex = anchorContext.collectedLinkHrefs.indexOf(props.href ?? '')
-  if (hrefIndex > -1) anchorContext.collectedLinkHrefs.splice(hrefIndex, 1)
+  const hrefIndex = anchorContext.collectedLinkHrefs.indexOf(props.href ?? '');
+  if (hrefIndex > -1) anchorContext.collectedLinkHrefs.splice(hrefIndex, 1);
 
-  const el = titleRef.value
+  const el = titleRef.value;
   if (el) {
-    const elIndex = anchorContext.titleEls.indexOf(el)
-    if (elIndex > -1) anchorContext.titleEls.splice(elIndex, 1)
+    const elIndex = anchorContext.titleEls.indexOf(el);
+    if (elIndex > -1) anchorContext.titleEls.splice(elIndex, 1);
   }
-})
+});
 
 function handleClick(): void {
-  if (props.href !== undefined) anchorContext.setActiveHref(props.href)
+  if (props.href !== undefined) anchorContext.setActiveHref(props.href);
 }
 </script>
 

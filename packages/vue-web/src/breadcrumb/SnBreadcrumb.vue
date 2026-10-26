@@ -28,14 +28,14 @@
  *   </SnBreadcrumb>
  */
 
-import { computed, provide, useSlots } from 'vue'
+import { computed, provide, useSlots } from 'vue';
 
-defineOptions({ name: 'SnBreadcrumb' })
+defineOptions({ name: 'SnBreadcrumb' });
 
 const props = withDefaults(
   defineProps<{
     /** Separator glyph between items. Mirrors n-breadcrumb `separator`. */
-    separator?: string
+    separator?: string;
     /** Maximum number of items to display. When the total exceeds this
      * count, the trail renders as `head(1) + ellipsis + tail(maxCount-1)` —
      * the middle items are folded into a single `…` affordance.
@@ -49,65 +49,62 @@ const props = withDefaults(
      *   - tail shows the last `maxCount - 1` items
      *   - everything between is collapsed into an ellipsis
      */
-    maxCount?: number
+    maxCount?: number;
   }>(),
   {
     separator: '/',
     maxCount: Infinity,
   },
-)
+);
 
 defineSlots<{
   /** Sequence of `<SnBreadcrumbItem>` children. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Provide the resolved separator ref so descendant items can read it
  *  reactively (and so per-item override picks up parent's default). */
-provide('sn-breadcrumb-separator', () => props.separator)
+provide('sn-breadcrumb-separator', () => props.separator);
 
 /* ─────────── maxCount truncation ─────────── */
 
 /** Sentinel type we tag ellipsis items with so the template can branch
  *  on `seg.kind === 'ellipsis'` instead of comparing object references. */
-const ELLIPSIS_KIND = 'ellipsis' as const
-type EllipsisSeg = { kind: typeof ELLIPSIS_KIND; hidden: number; key: number }
-type ChildSeg = { kind: 'child'; node: unknown; key: number }
-type Segment = EllipsisSeg | ChildSeg
+const ELLIPSIS_KIND = 'ellipsis' as const;
+type EllipsisSeg = { kind: typeof ELLIPSIS_KIND; hidden: number; key: number };
+type ChildSeg = { kind: 'child'; node: unknown; key: number };
+type Segment = EllipsisSeg | ChildSeg;
 
 const segments = computed<Segment[]>(() => {
-  const all = (slots.default?.() ?? []) as unknown[]
-  const max = Math.floor(props.maxCount)
+  const all = (slots.default?.() ?? []) as unknown[];
+  const max = Math.floor(props.maxCount);
   if (!Number.isFinite(max) || max <= 0 || all.length <= max) {
-    return all.map((node, i) => ({ kind: 'child' as const, node, key: i }))
+    return all.map((node, i) => ({ kind: 'child' as const, node, key: i }));
   }
-  const headCount = 1
-  const tailCount = Math.max(1, max - 1)
-  const out: Segment[] = []
+  const headCount = 1;
+  const tailCount = Math.max(1, max - 1);
+  const out: Segment[] = [];
   for (let i = 0; i < headCount; i++) {
-    out.push({ kind: 'child', node: all[i], key: i })
+    out.push({ kind: 'child', node: all[i], key: i });
   }
-  const hidden = all.length - headCount - tailCount
-  out.push({ kind: ELLIPSIS_KIND, hidden, key: headCount })
+  const hidden = all.length - headCount - tailCount;
+  out.push({ kind: ELLIPSIS_KIND, hidden, key: headCount });
   for (let i = 0; i < tailCount; i++) {
-    const idx = all.length - tailCount + i
-    out.push({ kind: 'child', node: all[idx], key: idx })
+    const idx = all.length - tailCount + i;
+    out.push({ kind: 'child', node: all[idx], key: idx });
   }
-  return out
-})
+  return out;
+});
 
 function isEllipsis(seg: Segment): seg is EllipsisSeg {
-  return seg.kind === ELLIPSIS_KIND
+  return seg.kind === ELLIPSIS_KIND;
 }
 </script>
 
 <template>
-  <nav
-    class="sn-breadcrumb"
-    aria-label="Breadcrumb"
-  >
+  <nav class="sn-breadcrumb" aria-label="Breadcrumb">
     <!--
       Container is a <div> (not <ul>) on purpose.
       - The wrapper element keeps its own width (display: inline-flex on .sn-breadcrumb
@@ -129,21 +126,15 @@ function isEllipsis(seg: Segment): seg is EllipsisSeg {
         to the original SnBreadcrumbItem instance.
       -->
       <template v-for="(seg, i) in segments" :key="seg.key">
-        <component
-          v-if="!isEllipsis(seg)"
-          :is="seg.node"
-        />
-        <div
-          v-else
-          class="sn-breadcrumb-item sn-breadcrumb-item--ellipsis"
-          aria-hidden="true"
-        >
+        <component v-if="!isEllipsis(seg)" :is="seg.node" />
+        <div v-else class="sn-breadcrumb-item sn-breadcrumb-item--ellipsis" aria-hidden="true">
           <span class="sn-breadcrumb-item__link sn-breadcrumb-item__link--ellipsis">…</span>
           <span
             v-if="i < segments.length - 1"
             class="sn-breadcrumb-item__separator"
             role="separator"
-          >{{ separator }}</span>
+            >{{ separator }}</span
+          >
         </div>
       </template>
     </div>

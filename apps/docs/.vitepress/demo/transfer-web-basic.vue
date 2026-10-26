@@ -1,14 +1,14 @@
 <script setup lang="ts">
 /** Demo: SnTransfer — 双面板穿梭 + 移动按钮 + 已选回显。 */
-import { ref } from 'vue'
-import { SnTransfer } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTransfer } from '@snui/vue-web';
 
 const options = Array.from({ length: 8 }, (_, i) => ({
   value: `opt-${i + 1}`,
   label: `选项 ${i + 1}`,
-}))
+}));
 
-const target = ref<string[]>(['opt-1'])
+const target = ref<string[]>(['opt-1']);
 </script>
 
 <template>

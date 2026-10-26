@@ -1,12 +1,12 @@
 <script setup lang="ts">
 /** Demo: SnImageGroup — member images share one preview with prev/next. */
-import { SnImage, SnImageGroup } from '@snui/vue-web'
+import { SnImage, SnImageGroup } from '@snui/vue-web';
 
 const urls = [
   'https://picsum.photos/id/1015/1200/800',
   'https://picsum.photos/id/1016/1200/800',
   'https://picsum.photos/id/1018/1200/800',
-]
+];
 </script>
 
 <template>
@@ -26,5 +26,9 @@ const urls = [
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 12px; align-items: flex-start; }
+.demo-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
 </style>

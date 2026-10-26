@@ -27,38 +27,38 @@ The checkbox type takes an array `v-model`; min / max cap the selection; tapping
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number \| boolean \| Array<...>` | `undefined` | Scalar for radio, array for checkbox |
-| `visible` | `boolean` | `false` | Sheet visibility |
-| `title` | `string` | `'选择器'` | Toolbar title |
-| `checkedColor` | `string` | `''` | Checked accent color |
-| `min` / `max` | `number` | `0` | Selection limits (`0` = unconstrained) |
-| `type` | `'checkbox' \| 'radio'` | `'checkbox'` | Selection type |
-| `valueKey` / `labelKey` | `string` | `'value'` / `'label'` | Option keys |
-| `confirmButtonText` | `string` | `'确认'` | Confirm label |
-| `loading` / `loadingColor` | `boolean` / `string` | `false` / `''` | Loading state + color |
-| `closeOnClickModal` | `boolean` | `true` | Mask tap closes |
-| `columns` | `Record<string, unknown>[]` | `[]` | Option list |
-| `beforeConfirm` | `({ value, selectedItems }) => boolean \| Promise<boolean>` | `undefined` | Veto hook for confirm |
-| `zIndex` / `safeAreaInsetBottom` | `number` / `boolean` | `15` / `true` | Sheet placement |
-| `filterable` / `filterPlaceholder` | `boolean` / `string` | `false` / `'搜索'` | Search field |
-| `scrollIntoView` | `boolean` | `true` | Scroll the active row into view on open |
-| `customContentClass` | `string` | `''` | Option-list wrapper class |
-| `showConfirm` | `boolean` | `true` | Render the confirm button |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                               | Type                                                        | Default               | Description                             |
+| ---------------------------------- | ----------------------------------------------------------- | --------------------- | --------------------------------------- |
+| `modelValue`                       | `string \| number \| boolean \| Array<...>`                 | `undefined`           | Scalar for radio, array for checkbox    |
+| `visible`                          | `boolean`                                                   | `false`               | Sheet visibility                        |
+| `title`                            | `string`                                                    | `'选择器'`            | Toolbar title                           |
+| `checkedColor`                     | `string`                                                    | `''`                  | Checked accent color                    |
+| `min` / `max`                      | `number`                                                    | `0`                   | Selection limits (`0` = unconstrained)  |
+| `type`                             | `'checkbox' \| 'radio'`                                     | `'checkbox'`          | Selection type                          |
+| `valueKey` / `labelKey`            | `string`                                                    | `'value'` / `'label'` | Option keys                             |
+| `confirmButtonText`                | `string`                                                    | `'确认'`              | Confirm label                           |
+| `loading` / `loadingColor`         | `boolean` / `string`                                        | `false` / `''`        | Loading state + color                   |
+| `closeOnClickModal`                | `boolean`                                                   | `true`                | Mask tap closes                         |
+| `columns`                          | `Record<string, unknown>[]`                                 | `[]`                  | Option list                             |
+| `beforeConfirm`                    | `({ value, selectedItems }) => boolean \| Promise<boolean>` | `undefined`           | Veto hook for confirm                   |
+| `zIndex` / `safeAreaInsetBottom`   | `number` / `boolean`                                        | `15` / `true`         | Sheet placement                         |
+| `filterable` / `filterPlaceholder` | `boolean` / `string`                                        | `false` / `'搜索'`    | Search field                            |
+| `scrollIntoView`                   | `boolean`                                                   | `true`                | Scroll the active row into view on open |
+| `customContentClass`               | `string`                                                    | `''`                  | Option-list wrapper class               |
+| `showConfirm`                      | `boolean`                                                   | `true`                | Render the confirm button               |
+| `customClass` / `customStyle`      | `string`                                                    | `''`                  | Root class / inline style               |
 
 > **Not implemented**: `root-portal`: uni-app mini-programs have no portal host.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Selection changed | `(value)` |
-| `update:visible` | Sheet shown / hidden | `(value: boolean)` |
-| `change` | Selection changed (same tick) | `{ value }` |
-| `confirm` | Confirm pressed and accepted | `{ value, selectedItems }` |
-| `cancel` / `open` / `close` | Sheet lifecycle | — |
+| Event                       | Description                   | Payload                    |
+| --------------------------- | ----------------------------- | -------------------------- |
+| `update:modelValue`         | Selection changed             | `(value)`                  |
+| `update:visible`            | Sheet shown / hidden          | `(value: boolean)`         |
+| `change`                    | Selection changed (same tick) | `{ value }`                |
+| `confirm`                   | Confirm pressed and accepted  | `{ value, selectedItems }` |
+| `cancel` / `open` / `close` | Sheet lifecycle               | —                          |
 
 ## Slots
 
@@ -66,15 +66,15 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | Sheet surface |
-| ``--sn-mp-color-background-soft`` | Search field fill |
-| ``--sn-mp-color-action-primary`` | Checked label / check glyph |
-| ``--sn-mp-color-text-on-primary`` | Confirm label |
-| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary`` | Row / footer / meta text |
-| ``--sn-mp-color-border-subtle`` | Row + footer rules |
-| ``--sn-mp-radius-md` / `-full`` | Corners |
+| Token                                                       | Purpose                     |
+| ----------------------------------------------------------- | --------------------------- |
+| `--sn-mp-color-background-elevated`                         | Sheet surface               |
+| `--sn-mp-color-background-soft`                             | Search field fill           |
+| `--sn-mp-color-action-primary`                              | Checked label / check glyph |
+| `--sn-mp-color-text-on-primary`                             | Confirm label               |
+| ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary`` | Row / footer / meta text    |
+| `--sn-mp-color-border-subtle`                               | Row + footer rules          |
+| ``--sn-mp-radius-md` / `-full``                             | Corners                     |
 
 ## Accessibility
 
@@ -85,4 +85,3 @@ This component exposes no slots.
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

@@ -47,12 +47,12 @@
  *   - 上传 / 裁剪 — 用 sn-upload
  */
 
-import { computed, markRaw, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
+import { computed, markRaw, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 
-defineOptions({ name: 'SnAvatar' })
+defineOptions({ name: 'SnAvatar' });
 
 /** Named size presets → rpx diameter (750 design canvas, 1px = 2rpx). */
 const SIZE_PRESETS: Readonly<Record<'large' | 'medium' | 'normal' | 'small', string>> = {
@@ -60,16 +60,16 @@ const SIZE_PRESETS: Readonly<Record<'large' | 'medium' | 'normal' | 'small', str
   medium: '96rpx',
   normal: '72rpx',
   small: '48rpx',
-}
+};
 
 /**
  * Numeric sizes are px (the upstream contract); strings pass through so `rpx`
  * and `%` stay usable.
  */
 function resolveSize(size: string | number): string {
-  if (typeof size === 'number') return `${size}px`
-  const preset = SIZE_PRESETS[size as keyof typeof SIZE_PRESETS]
-  return preset ?? size
+  if (typeof size === 'number') return `${size}px`;
+  const preset = SIZE_PRESETS[size as keyof typeof SIZE_PRESETS];
+  return preset ?? size;
 }
 
 // Reference: wot-ui wd-avatar Attributes
@@ -78,31 +78,31 @@ function resolveSize(size: string | number): string {
 const props = withDefaults(
   defineProps<{
     /** 图片地址。加载失败时按 `alt` → 文字 → 图标 顺序回退。 */
-    src?: string
+    src?: string;
     /** 文本内容（无图片 / 图片失败时显示）。 */
-    text?: string
+    text?: string;
     /** 图标名称（经 `registerSnIcons()` 注册的 sn-icon 名称）。 */
-    icon?: string
+    icon?: string;
     /** 图标类名前缀，`cssIcon` 打开时用于拼出字体图标 class。 */
-    iconPrefix?: string
+    iconPrefix?: string;
     /** CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。 */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** 头像尺寸：large / medium / normal / small，或自定义数值 / 单位字符串。 */
-    size?: string | number
+    size?: string | number;
     /** 头像形状：round / square。 */
-    shape?: 'round' | 'square'
+    shape?: 'round' | 'square';
     /** 背景颜色（内联覆盖默认底色）。 */
-    bgColor?: string
+    bgColor?: string;
     /** 文字颜色（内联覆盖默认文字色）。 */
-    color?: string
+    color?: string;
     /** 图片加载失败时的占位文本。 */
-    alt?: string
+    alt?: string;
     /** 图片填充模式，同 uni-app image 组件的 mode。 */
-    mode?: string
+    mode?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义 inline style。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     src: '',
@@ -119,81 +119,84 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 点击头像时触发。 */
-  (e: 'click', event: Event): void
+  (e: 'click', event: Event): void;
   /** 图片加载失败时触发。 */
-  (e: 'error', event: Event): void
-}>()
+  (e: 'error', event: Event): void;
+}>();
 
 defineSlots<{
   /** 自定义头像内容（优先于 src / text / icon）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Set once the `<image>` load fails; forces the text / icon fallback. */
-const imageFailed = ref(false)
+const imageFailed = ref(false);
 
 // A new src is a fresh chance for the image to load — otherwise a recycled
 // avatar instance would keep showing the fallback for its whole lifetime.
 watch(
   () => props.src,
   () => {
-    imageFailed.value = false
+    imageFailed.value = false;
   },
-)
+);
 
-const showImage = computed<boolean>(() => Boolean(props.src) && !imageFailed.value)
+const showImage = computed<boolean>(() => Boolean(props.src) && !imageFailed.value);
 
 /** Registry-resolved icon data for the `icon` prop (null when unknown). */
 const iconData = computed<IconData | null>(() => {
-  if (!props.icon) return null
-  const resolved = resolveIconByName(props.icon)
-  return resolved ? markRaw(resolved) : null
-})
+  if (!props.icon) return null;
+  const resolved = resolveIconByName(props.icon);
+  return resolved ? markRaw(resolved) : null;
+});
 
 /** Font-icon class list (same contract as sn-tag / sn-button). */
 const cssIconClass = computed<string>(() => {
-  if (!props.icon || !props.cssIcon) return ''
-  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix
-  return prefix ? `${prefix}-${props.icon}` : props.icon
-})
+  if (!props.icon || !props.cssIcon) return '';
+  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix;
+  return prefix ? `${prefix}-${props.icon}` : props.icon;
+});
 
 /** Fallback label: `alt` wins over `text` when the image failed. */
 const fallbackText = computed<string>(() => {
-  if (props.src && imageFailed.value && props.alt) return props.alt
-  return props.text
-})
+  if (props.src && imageFailed.value && props.alt) return props.alt;
+  return props.text;
+});
 
 /** True when `size` is one of the four named presets (drives the size class). */
 const isPresetSize = computed<boolean>(
   () => typeof props.size === 'string' && props.size in SIZE_PRESETS,
-)
+);
 
 const rootClass = computed(() => [
   'sn-avatar',
   `sn-avatar--${props.shape}`,
   isPresetSize.value ? `sn-avatar--size-${props.size}` : '',
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = [`width: ${resolveSize(props.size)}`, `height: ${resolveSize(props.size)}`]
-  if (props.bgColor) parts.push(`background-color: ${props.bgColor}`)
-  if (props.color) parts.push(`color: ${props.color}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts: string[] = [
+    `width: ${resolveSize(props.size)}`,
+    `height: ${resolveSize(props.size)}`,
+  ];
+  if (props.bgColor) parts.push(`background-color: ${props.bgColor}`);
+  if (props.color) parts.push(`color: ${props.color}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 function onTap(event: Event): void {
-  emit('click', event)
+  emit('click', event);
 }
 
 function onImageError(event: Event): void {
-  imageFailed.value = true
-  emit('error', event)
+  imageFailed.value = true;
+  emit('error', event);
 }
 </script>
 
@@ -221,7 +224,11 @@ function onImageError(event: Event): void {
         :icon="iconData"
         :size="props.size === 'small' ? 24 : 32"
       />
-      <text v-else-if="cssIconClass" :class="['sn-avatar__icon', cssIconClass]" aria-hidden="true" />
+      <text
+        v-else-if="cssIconClass"
+        :class="['sn-avatar__icon', cssIconClass]"
+        aria-hidden="true"
+      />
     </slot>
   </view>
 </template>

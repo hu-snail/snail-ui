@@ -2,12 +2,12 @@
 /**
  * tabs-web-size — the three size tiers.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs } from '@snui/vue-web';
 
-const small = ref('a')
-const medium = ref('a')
-const large = ref('a')
+const small = ref('a');
+const medium = ref('a');
+const large = ref('a');
 </script>
 
 <template>

@@ -12,10 +12,10 @@ AI Skill（`snail-ui.skill.md`）是一份结构化的行为契约，**不是** 
 
 AI 接到任务后，必须先判断目标端：
 
-| 关键词 | 目标端 |
-|---|---|
-| PC / 桌面 / 网页 / Web / Vue 3 / 浏览器 | `web` |
-| 移动 / 小程序 / 微信 / 支付宝 / H5 / uni-app / uniapp | `mp` |
+| 关键词                                                | 目标端 |
+| ----------------------------------------------------- | ------ |
+| PC / 桌面 / 网页 / Web / Vue 3 / 浏览器               | `web`  |
+| 移动 / 小程序 / 微信 / 支付宝 / H5 / uni-app / uniapp | `mp`   |
 
 若无法判断，先问"这个需求是 Web（PC）端还是 uni（移动）端？"，**禁止**默认选 Web。
 
@@ -24,8 +24,8 @@ AI 接到任务后，必须先判断目标端：
 **Web 端（`@snui/vue-web`）**：
 
 ```ts
-import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 - 全部 `Sn-` 前缀，PascalCase 导入
@@ -63,10 +63,10 @@ import '@snui/tokens-web/styles'
 
 按端区分：
 
-| 端 | 唯一允许的 Token |
-|---|---|
+| 端                         | 唯一允许的 Token               |
+| -------------------------- | ------------------------------ |
 | **Web**（`@snui/vue-web`） | `var(--sn-web-*)` 别名层（px） |
-| **uni**（`@snui/uni`） | `var(--sn-mp-*)` 别名层（rpx） |
+| **uni**（`@snui/uni`）     | `var(--sn-mp-*)` 别名层（rpx） |
 
 禁止：
 
@@ -85,9 +85,9 @@ import '@snui/tokens-web/styles'
 
 ```vue
 <script setup lang="ts">
-import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-import { ref } from 'vue'
+import { SnButton, SnInput, SnForm, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
+import { ref } from 'vue';
 // 只 import snail-aui 组件和 Vue 核心
 // 不引入 axios / pinia / router（原型阶段用 setTimeout 模拟异步）
 </script>
@@ -104,7 +104,9 @@ import { ref } from 'vue'
 
 <style scoped>
 /* 只用 var(--sn-web-*) 变量，不写字面量颜色 */
-.page { padding: var(--sn-web-spacing-inset-lg); }
+.page {
+  padding: var(--sn-web-spacing-inset-lg);
+}
 </style>
 ```
 
@@ -113,8 +115,8 @@ import { ref } from 'vue'
 ```vue
 <!-- easycom 自动注册 sn-button / sn-input / sn-form / sn-card -->
 <script setup lang="ts">
-import '@snui/tokens-mp/styles'
-import { ref } from 'vue'
+import '@snui/tokens-mp/styles';
+import { ref } from 'vue';
 </script>
 
 <template>
@@ -128,7 +130,9 @@ import { ref } from 'vue'
 
 <style scoped>
 /* 只用 var(--sn-mp-*) 变量，自动 rpx */
-.page { padding: var(--sn-mp-spacing-inset-lg); }
+.page {
+  padding: var(--sn-mp-spacing-inset-lg);
+}
 </style>
 ```
 
@@ -150,11 +154,11 @@ import { ref } from 'vue'
 Skill 文件被 `@snui/ai/skill` 模块导出：
 
 ```ts
-import { SKILL_VERSION, SKILL_CONTENT, loadSkill } from '@snui/ai/skill'
+import { SKILL_VERSION, SKILL_CONTENT, loadSkill } from '@snui/ai/skill';
 
-const text = loadSkill()
+const text = loadSkill();
 // 拼到 AI prompt 头部
-const prompt = `${SKILL_CONTENT}\n\n## User request\n${userInput}`
+const prompt = `${SKILL_CONTENT}\n\n## User request\n${userInput}`;
 ```
 
 ---

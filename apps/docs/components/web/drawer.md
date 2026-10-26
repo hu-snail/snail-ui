@@ -14,10 +14,10 @@
 
 抽屉被拆成外壳与内容两层：
 
-| 组件 | 职责 |
-|---|---|
-| `SnDrawer` | 遮罩、进出场动画、方向定位、滚动锁、焦点陷阱、尺寸与拖拽调整 |
-| `SnDrawerContent` | 面板内的头部（标题 + 关闭按钮）、可滚动主体、底部操作区 |
+| 组件              | 职责                                                         |
+| ----------------- | ------------------------------------------------------------ |
+| `SnDrawer`        | 遮罩、进出场动画、方向定位、滚动锁、焦点陷阱、尺寸与拖拽调整 |
+| `SnDrawerContent` | 面板内的头部（标题 + 关闭按钮）、可滚动主体、底部操作区      |
 
 `SnDrawer` 通过 `default` 插槽接收面板内容，通常传入一个 `<SnDrawerContent>`。不传内容时是一个空白面板。
 
@@ -69,84 +69,84 @@
 
 ### SnDrawer Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `show` | `boolean` | `false` | 是否展示抽屉。 |
-| `placement` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'` | 抽屉展示的位置。 |
-| `width` | `number \| string` | `undefined` | 抽屉宽度，在位置是 `left` 和 `right` 时生效。 |
-| `height` | `number \| string` | `undefined` | 抽屉高度，在位置是 `top` 和 `bottom` 时生效。 |
-| `defaultWidth` | `number \| string` | `251` | 拖拽调整的起始宽度，在位置是 `left` 和 `right` 时生效。 |
-| `defaultHeight` | `number \| string` | `251` | 拖拽调整的起始高度，在位置是 `top` 和 `bottom` 时生效。 |
-| `resizable` | `boolean` | `false` | 是否允许拖拽调整面板宽高。 |
-| `maxWidth` | `number` | `undefined` | 拖拽时的最大宽度（px）。 |
-| `maxHeight` | `number` | `undefined` | 拖拽时的最大高度（px）。 |
-| `minWidth` | `number` | `undefined` | 拖拽时的最小宽度（px）。 |
-| `minHeight` | `number` | `undefined` | 拖拽时的最小高度（px）。 |
-| `showMask` | `boolean \| 'transparent'` | `true` | 是否显示遮罩。`'transparent'` 展示透明遮罩；`false` 会同时禁用焦点陷阱。 |
-| `maskClosable` | `boolean` | `true` | 点击遮罩时是否关闭抽屉。 |
-| `closeOnEsc` | `boolean` | `true` | 按下 Escape 是否关闭抽屉。 |
-| `autoFocus` | `boolean` | `true` | 打开时是否自动聚焦面板内第一个可聚焦元素。 |
-| `trapFocus` | `boolean` | `true` | 是否将 Tab 焦点锁定在面板内部。 |
-| `blockScroll` | `boolean` | `true` | 打开时是否禁用 `<html>` 滚动。 |
-| `displayDirective` | `'if' \| 'show'` | `'if'` | 控制内容渲染的指令。`'if'` 用 `v-if`，`'show'` 用 `v-show` 保留节点。 |
-| `nativeScrollbar` | `boolean` | `true` | 是否使用原生滚动容器。 |
-| `scrollbarProps` | `SnDrawerScrollbarProps` | `undefined` | 传给滚动容器的属性，支持 `trigger` / `xScrollable` / `onScroll`。 |
-| `to` | `string \| HTMLElement` | `'body'` | 抽屉渲染的目标容器。 |
-| `zIndex` | `number` | `undefined` | 抽屉的层级。 |
-| `contentClass` | `string` | `undefined` | 可滚动内容节点的类名。 |
-| `contentStyle` | `string \| CSSProperties` | `undefined` | 可滚动内容节点的样式。 |
-| `onMaskClick` | `(e: MouseEvent) => void` | `undefined` | 点击遮罩时调用（在关闭判定之前）。 |
-| `onEsc` | `() => void` | `undefined` | 按下 Escape 时调用（在关闭判定之前）。 |
-| `onAfterEnter` | `() => void` | `undefined` | 进场过渡结束后调用。 |
-| `onAfterLeave` | `() => void` | `undefined` | 离场过渡结束后调用。 |
+| 名称               | 类型                                     | 默认值      | 说明                                                                     |
+| ------------------ | ---------------------------------------- | ----------- | ------------------------------------------------------------------------ |
+| `show`             | `boolean`                                | `false`     | 是否展示抽屉。                                                           |
+| `placement`        | `'top' \| 'right' \| 'bottom' \| 'left'` | `'right'`   | 抽屉展示的位置。                                                         |
+| `width`            | `number \| string`                       | `undefined` | 抽屉宽度，在位置是 `left` 和 `right` 时生效。                            |
+| `height`           | `number \| string`                       | `undefined` | 抽屉高度，在位置是 `top` 和 `bottom` 时生效。                            |
+| `defaultWidth`     | `number \| string`                       | `251`       | 拖拽调整的起始宽度，在位置是 `left` 和 `right` 时生效。                  |
+| `defaultHeight`    | `number \| string`                       | `251`       | 拖拽调整的起始高度，在位置是 `top` 和 `bottom` 时生效。                  |
+| `resizable`        | `boolean`                                | `false`     | 是否允许拖拽调整面板宽高。                                               |
+| `maxWidth`         | `number`                                 | `undefined` | 拖拽时的最大宽度（px）。                                                 |
+| `maxHeight`        | `number`                                 | `undefined` | 拖拽时的最大高度（px）。                                                 |
+| `minWidth`         | `number`                                 | `undefined` | 拖拽时的最小宽度（px）。                                                 |
+| `minHeight`        | `number`                                 | `undefined` | 拖拽时的最小高度（px）。                                                 |
+| `showMask`         | `boolean \| 'transparent'`               | `true`      | 是否显示遮罩。`'transparent'` 展示透明遮罩；`false` 会同时禁用焦点陷阱。 |
+| `maskClosable`     | `boolean`                                | `true`      | 点击遮罩时是否关闭抽屉。                                                 |
+| `closeOnEsc`       | `boolean`                                | `true`      | 按下 Escape 是否关闭抽屉。                                               |
+| `autoFocus`        | `boolean`                                | `true`      | 打开时是否自动聚焦面板内第一个可聚焦元素。                               |
+| `trapFocus`        | `boolean`                                | `true`      | 是否将 Tab 焦点锁定在面板内部。                                          |
+| `blockScroll`      | `boolean`                                | `true`      | 打开时是否禁用 `<html>` 滚动。                                           |
+| `displayDirective` | `'if' \| 'show'`                         | `'if'`      | 控制内容渲染的指令。`'if'` 用 `v-if`，`'show'` 用 `v-show` 保留节点。    |
+| `nativeScrollbar`  | `boolean`                                | `true`      | 是否使用原生滚动容器。                                                   |
+| `scrollbarProps`   | `SnDrawerScrollbarProps`                 | `undefined` | 传给滚动容器的属性，支持 `trigger` / `xScrollable` / `onScroll`。        |
+| `to`               | `string \| HTMLElement`                  | `'body'`    | 抽屉渲染的目标容器。                                                     |
+| `zIndex`           | `number`                                 | `undefined` | 抽屉的层级。                                                             |
+| `contentClass`     | `string`                                 | `undefined` | 可滚动内容节点的类名。                                                   |
+| `contentStyle`     | `string \| CSSProperties`                | `undefined` | 可滚动内容节点的样式。                                                   |
+| `onMaskClick`      | `(e: MouseEvent) => void`                | `undefined` | 点击遮罩时调用（在关闭判定之前）。                                       |
+| `onEsc`            | `() => void`                             | `undefined` | 按下 Escape 时调用（在关闭判定之前）。                                   |
+| `onAfterEnter`     | `() => void`                             | `undefined` | 进场过渡结束后调用。                                                     |
+| `onAfterLeave`     | `() => void`                             | `undefined` | 离场过渡结束后调用。                                                     |
 
 ### SnDrawer Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `update:show` | `boolean` | 显示状态变化。 |
-| `update:width` | `number` | 拖拽产生了新的宽度。 |
-| `update:height` | `number` | 拖拽产生了新的高度。 |
-| `mask-click` | `MouseEvent` | 遮罩被点击。 |
-| `esc` | `()` | 按下了 Escape。 |
-| `after-enter` | `()` | 进场过渡结束。 |
-| `after-leave` | `()` | 离场过渡结束。 |
+| 名称            | 参数         | 说明                 |
+| --------------- | ------------ | -------------------- |
+| `update:show`   | `boolean`    | 显示状态变化。       |
+| `update:width`  | `number`     | 拖拽产生了新的宽度。 |
+| `update:height` | `number`     | 拖拽产生了新的高度。 |
+| `mask-click`    | `MouseEvent` | 遮罩被点击。         |
+| `esc`           | `()`         | 按下了 Escape。      |
+| `after-enter`   | `()`         | 进场过渡结束。       |
+| `after-leave`   | `()`         | 离场过渡结束。       |
 
 ### SnDrawer Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称      | 参数 | 说明                                   |
+| --------- | ---- | -------------------------------------- |
 | `default` | `()` | 面板内容，通常是 `<SnDrawerContent>`。 |
 
 ### SnDrawerContent Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `title` | `string` | `undefined` | 标题文字。 |
-| `closable` | `boolean` | `false` | 是否显示标题右侧的关闭按钮。 |
-| `nativeScrollbar` | `boolean` | `true` | 主体部分是否使用原生滚动条。 |
-| `bodyClass` | `string` | `undefined` | 主体区域的类名。 |
-| `bodyStyle` | `string \| CSSProperties` | `undefined` | 主体区域的样式。 |
-| `bodyContentClass` | `string` | `undefined` | 主体内容节点的类名。 |
-| `bodyContentStyle` | `string \| CSSProperties` | `undefined` | 主体内容节点的样式。 |
-| `headerClass` | `string` | `undefined` | 头部区域的类名。 |
-| `headerStyle` | `string \| CSSProperties` | `undefined` | 头部区域的样式。 |
-| `footerClass` | `string` | `undefined` | 底部区域的类名。 |
-| `footerStyle` | `string \| CSSProperties` | `undefined` | 底部区域的样式。 |
+| 名称               | 类型                      | 默认值      | 说明                         |
+| ------------------ | ------------------------- | ----------- | ---------------------------- |
+| `title`            | `string`                  | `undefined` | 标题文字。                   |
+| `closable`         | `boolean`                 | `false`     | 是否显示标题右侧的关闭按钮。 |
+| `nativeScrollbar`  | `boolean`                 | `true`      | 主体部分是否使用原生滚动条。 |
+| `bodyClass`        | `string`                  | `undefined` | 主体区域的类名。             |
+| `bodyStyle`        | `string \| CSSProperties` | `undefined` | 主体区域的样式。             |
+| `bodyContentClass` | `string`                  | `undefined` | 主体内容节点的类名。         |
+| `bodyContentStyle` | `string \| CSSProperties` | `undefined` | 主体内容节点的样式。         |
+| `headerClass`      | `string`                  | `undefined` | 头部区域的类名。             |
+| `headerStyle`      | `string \| CSSProperties` | `undefined` | 头部区域的样式。             |
+| `footerClass`      | `string`                  | `undefined` | 底部区域的类名。             |
+| `footerStyle`      | `string \| CSSProperties` | `undefined` | 底部区域的样式。             |
 
 ### SnDrawerContent Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数 | 说明             |
+| ------- | ---- | ---------------- |
 | `close` | `()` | 关闭按钮被点击。 |
 
 ### SnDrawerContent Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `default` | `()` | 主体内容。 |
-| `header` | `()` | 头部行，替代 `title`。 |
-| `footer` | `()` | 底部行，仅在填充时渲染。 |
+| 名称      | 参数 | 说明                     |
+| --------- | ---- | ------------------------ |
+| `default` | `()` | 主体内容。               |
+| `header`  | `()` | 头部行，替代 `title`。   |
+| `footer`  | `()` | 底部行，仅在填充时渲染。 |
 
 ## 尺寸与拖拽
 

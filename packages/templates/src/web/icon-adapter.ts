@@ -8,16 +8,16 @@
  * repeated renders of the same icon reuse one component definition instead of
  * allocating a fresh one on every render.
  */
-import { defineComponent, h, markRaw } from 'vue'
-import type { IconComponent } from '@snui/vue-web'
-import type { SnIconData } from '../shared/icons'
+import { defineComponent, h, markRaw } from 'vue';
+import type { IconComponent } from '@snui/vue-web';
+import type { SnIconData } from '../shared/icons';
 
-const cache = new WeakMap<SnIconData, IconComponent>()
+const cache = new WeakMap<SnIconData, IconComponent>();
 
 /** Adapt shared icon data into a Vue component for `<SnIcon :icon>`. */
 export function toIconComponent(data: SnIconData): IconComponent {
-  const cached = cache.get(data)
-  if (cached) return cached
+  const cached = cache.get(data);
+  if (cached) return cached;
 
   const component = defineComponent({
     name: 'SnTemplateIcon',
@@ -37,13 +37,13 @@ export function toIconComponent(data: SnIconData): IconComponent {
           'aria-hidden': 'true',
         },
         data.paths.map((path) => h('path', { d: path })),
-      )
+      );
     },
-  }) as unknown as IconComponent
+  }) as unknown as IconComponent;
 
   // markRaw keeps the definition out of Vue's reactive proxy — passing a
   // component through props otherwise warns on every render.
-  const raw = markRaw(component)
-  cache.set(data, raw)
-  return raw
+  const raw = markRaw(component);
+  cache.set(data, raw);
+  return raw;
 }

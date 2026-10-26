@@ -19,43 +19,43 @@
  * Not responsible for: 概率 / 库存等业务规则 —— 由宿主决定 index。
  */
 
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref } from 'vue';
 
-defineOptions({ name: 'SnDialer' })
+defineOptions({ name: 'SnDialer' });
 
 export interface SnDialerPrize {
   /** 奖品 id。 */
-  id: string
+  id: string;
   /** 奖品名。 */
-  name: string
+  name: string;
   /** 奖品图（可选）。 */
-  img?: string
+  img?: string;
   /** 本扇区背景色（优先于 prizeBgColors）。 */
-  color?: string
+  color?: string;
 }
 
 const props = withDefaults(
   defineProps<{
     /** 奖品列表（2-12 项）。 */
-    prizeList?: SnDialerPrize[]
+    prizeList?: SnDialerPrize[];
     /** 旋转圈数。 */
-    turns?: number
+    turns?: number;
     /** 旋转时长（秒）。 */
-    duration?: number
+    duration?: number;
     /** 转盘直径（rpx / px 长度字符串）。 */
-    size?: string
+    size?: string;
     /** 交替扇区背景色。 */
-    prizeBgColors?: string[]
+    prizeBgColors?: string[];
     /** 扇区描边色。 */
-    borderColor?: string
+    borderColor?: string;
     /** 奖品名字号。 */
-    fontSize?: string
+    fontSize?: string;
     /** 奖品名颜色。 */
-    color?: string
+    color?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     prizeList: () => [],
@@ -69,52 +69,57 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'click'): void
-  (e: 'done', index: number): void
-}>()
+  (e: 'click'): void;
+  (e: 'done', index: number): void;
+}>();
 
 defineSlots<{
   /** 自定义奖品内容（{ item, index }）。 */
-  prize?(props: { item: SnDialerPrize; index: number }): unknown
+  prize?(props: { item: SnDialerPrize; index: number }): unknown;
   /** 自定义指针（默认中心 GO 按钮）。 */
-  pointer?(): unknown
-}>()
+  pointer?(): unknown;
+}>();
 
-const rotation = ref(0)
-const spinning = ref(false)
-let settleTimer: ReturnType<typeof setTimeout> | null = null
+const rotation = ref(0);
+const spinning = ref(false);
+let settleTimer: ReturnType<typeof setTimeout> | null = null;
 
 /** 解析长度（数值 + 单位），供扇区几何计算。 */
 function parseLength(input: string): { value: number; unit: string } {
-  const match = /^(-?[\d.]+)(rpx|px|%)?$/.exec(input.trim())
-  if (match === null) return { value: 600, unit: 'rpx' }
-  return { value: Number(match[1]), unit: match[2] ?? 'rpx' }
+  const match = /^(-?[\d.]+)(rpx|px|%)?$/.exec(input.trim());
+  if (match === null) return { value: 600, unit: 'rpx' };
+  return { value: Number(match[1]), unit: match[2] ?? 'rpx' };
 }
 
-const count = computed(() => Math.min(12, Math.max(0, props.prizeList.length)))
+const count = computed(() => Math.min(12, Math.max(0, props.prizeList.length)));
 /** Non-optional view of the prop list — the template never sees `undefined`. */
-const prizes = computed<SnDialerPrize[]>(() => props.prizeList)
-const sectorCount = computed(() => (count.value >= 2 ? count.value : 0))
-const angle = computed(() => (sectorCount.value > 0 ? 360 / sectorCount.value : 360))
+const prizes = computed<SnDialerPrize[]>(() => props.prizeList);
+const sectorCount = computed(() => (count.value >= 2 ? count.value : 0));
+const angle = computed(() => (sectorCount.value > 0 ? 360 / sectorCount.value : 360));
 
-const rootClass = computed(() => ['sn-dialer', props.customClass])
+const rootClass = computed(() => ['sn-dialer', props.customClass]);
 const rootStyle = computed(() => {
-  const parts = [`width: ${props.size}`, `height: ${props.size}`, `border-color: ${props.borderColor}`]
-  if (props.customStyle !== '') parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [
+    `width: ${props.size}`,
+    `height: ${props.size}`,
+    `border-color: ${props.borderColor}`,
+  ];
+  if (props.customStyle !== '') parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 const wheelStyle = computed(
-  () => `transform: rotate(${rotation.value}deg); transition: transform ${props.duration}s cubic-bezier(0.12, 0.8, 0.25, 1)`,
-)
+  () =>
+    `transform: rotate(${rotation.value}deg); transition: transform ${props.duration}s cubic-bezier(0.12, 0.8, 0.25, 1)`,
+);
 
 function sectorStyle(index: number): string {
-  const { value, unit } = parseLength(props.size)
-  const prize = props.prizeList[index]
-  const background = prize?.color ?? props.prizeBgColors[index % props.prizeBgColors.length]
+  const { value, unit } = parseLength(props.size);
+  const prize = props.prizeList[index];
+  const background = prize?.color ?? props.prizeBgColors[index % props.prizeBgColors.length];
   return [
     'position: absolute',
     'top: 0',
@@ -126,11 +131,11 @@ function sectorStyle(index: number): string {
     'transform-origin: 50% 100%',
     `transform: rotate(${index * angle.value}deg)`,
     `background-color: ${background ?? 'var(--sn-mp-color-background-subtle)'}`,
-  ].join('; ')
+  ].join('; ');
 }
 
 function prizeWrapStyle(index: number): string {
-  const { value, unit } = parseLength(props.size)
+  const { value, unit } = parseLength(props.size);
   return [
     'position: absolute',
     'left: 50%',
@@ -139,48 +144,56 @@ function prizeWrapStyle(index: number): string {
     'display: flex',
     'flex-direction: column',
     'align-items: center',
-  ].join('; ')
+  ].join('; ');
 }
 
 function prizeNameStyle(): string {
-  return `font-size: ${props.fontSize}; color: ${props.color}`
+  return `font-size: ${props.fontSize}; color: ${props.color}`;
 }
 
 /** 开始旋转到指定奖品索引（指针位于正上方）。 */
 function run(index: number): void {
-  if (spinning.value) return
-  const n = sectorCount.value
-  if (n === 0) return
-  const target = Math.min(n - 1, Math.max(0, Math.round(index)))
-  spinning.value = true
-  const targetMod = (360 - ((target + 0.5) * angle.value)) % 360
-  const currentMod = ((rotation.value % 360) + 360) % 360
-  let delta = targetMod - currentMod
-  if (delta <= 0) delta += 360
-  rotation.value = rotation.value + Math.max(1, props.turns) * 360 + delta
-  settleTimer = setTimeout(() => {
-    spinning.value = false
-    emit('done', target)
-  }, Math.max(0.1, props.duration) * 1000)
+  if (spinning.value) return;
+  const n = sectorCount.value;
+  if (n === 0) return;
+  const target = Math.min(n - 1, Math.max(0, Math.round(index)));
+  spinning.value = true;
+  const targetMod = (360 - (target + 0.5) * angle.value) % 360;
+  const currentMod = ((rotation.value % 360) + 360) % 360;
+  let delta = targetMod - currentMod;
+  if (delta <= 0) delta += 360;
+  rotation.value = rotation.value + Math.max(1, props.turns) * 360 + delta;
+  settleTimer = setTimeout(
+    () => {
+      spinning.value = false;
+      emit('done', target);
+    },
+    Math.max(0.1, props.duration) * 1000,
+  );
 }
 
 function onPointerTap(): void {
-  if (spinning.value) return
-  emit('click')
+  if (spinning.value) return;
+  emit('click');
 }
 
 onBeforeUnmount(() => {
-  if (settleTimer !== null) clearTimeout(settleTimer)
-})
+  if (settleTimer !== null) clearTimeout(settleTimer);
+});
 
-defineExpose({ run })
+defineExpose({ run });
 </script>
 
 <template>
   <view :class="rootClass" :style="rootStyle" role="img" aria-label="dialer">
     <view class="sn-dialer__wheel" :style="wheelStyle">
       <view v-for="index in sectorCount" :key="`s-${index}`" :style="sectorStyle(index - 1)" />
-      <view v-for="index in sectorCount" :key="`p-${index}`" class="sn-dialer__prize" :style="prizeWrapStyle(index - 1)">
+      <view
+        v-for="index in sectorCount"
+        :key="`p-${index}`"
+        class="sn-dialer__prize"
+        :style="prizeWrapStyle(index - 1)"
+      >
         <slot name="prize" :item="prizes[index - 1]!" :index="index - 1">
           <image
             v-if="prizes[index - 1]?.img !== undefined && prizes[index - 1]?.img !== ''"
@@ -188,7 +201,9 @@ defineExpose({ run })
             :src="prizes[index - 1]?.img"
             mode="aspectFit"
           />
-          <text class="sn-dialer__prize-name" :style="prizeNameStyle()">{{ prizes[index - 1]?.name }}</text>
+          <text class="sn-dialer__prize-name" :style="prizeNameStyle()">{{
+            prizes[index - 1]?.name
+          }}</text>
         </slot>
       </view>
     </view>

@@ -30,24 +30,24 @@
 
 ### SnCountdown Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| duration | `number` | `0` | 倒计时总时长 ms（非响应式） |
-| active | `boolean` | `true` | 是否处于计时状态 |
-| precision | `0 \| 1 \| 2 \| 3` | `0` | 秒的小数精度 |
-| render | `(info: { hours, minutes, seconds, milliseconds }) => VNodeChild` | `undefined` | 自定义渲染函数 |
+| Prop      | 类型                                                              | 默认值      | 说明                        |
+| --------- | ----------------------------------------------------------------- | ----------- | --------------------------- |
+| duration  | `number`                                                          | `0`         | 倒计时总时长 ms（非响应式） |
+| active    | `boolean`                                                         | `true`      | 是否处于计时状态            |
+| precision | `0 \| 1 \| 2 \| 3`                                                | `0`         | 秒的小数精度                |
+| render    | `(info: { hours, minutes, seconds, milliseconds }) => VNodeChild` | `undefined` | 自定义渲染函数              |
 
 ### SnCountdown Events
 
-| 事件 | 参数 | 说明 |
-| --- | --- | --- |
-| finish | — | 倒计时到 0 时触发（每次计时结束触发一次，reset 后可再触发） |
+| 事件   | 参数 | 说明                                                        |
+| ------ | ---- | ----------------------------------------------------------- |
+| finish | —    | 倒计时到 0 时触发（每次计时结束触发一次，reset 后可再触发） |
 
 ### SnCountdown Methods
 
-| 方法 | 参数 | 说明 |
-| --- | --- | --- |
-| reset | — | 重置到完整时长 |
+| 方法  | 参数 | 说明           |
+| ----- | ---- | -------------- |
+| reset | —    | 重置到完整时长 |
 
 显示值在当前精度步进内向上取整（剩余 4999ms 时秒位仍显示 5），与 naive 一致。
 

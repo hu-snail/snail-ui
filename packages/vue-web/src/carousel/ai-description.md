@@ -23,7 +23,7 @@ interface.ts, utils/, styles/index.cssr.ts, styles/light.ts).
 ## Import
 
 ```ts
-import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
+import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
 ```
 
 ## Mechanics (mirrors naive Carousel.tsx)
@@ -50,8 +50,8 @@ import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
   a drag beats a pending autoplay tick; only one carousel may drag at a
   time (module-level flag, naive parity). A drag never starts when
   mousedown/touchstart lands inside an interactive element (`video,
-  audio, a, button, input, textarea, select, [contenteditable],
-  [data-no-drag]`) — native controls keep working; card-mode side-slide
+audio, a, button, input, textarea, select, [contenteditable],
+[data-no-drag]`) — native controls keep working; card-mode side-slide
   click navigation is unaffected (it listens for `click`).
 - **Caption** (SnCarouselItem, beyond naive): `title` / `description`
   props render a bottom gradient text overlay; the `caption` slot
@@ -78,39 +78,39 @@ import { SnCarousel, SnCarouselItem } from '@snui/vue-web'
 
 ## SnCarousel Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `autoplay` | `boolean` | `false` | Auto-advance; pauses on hover. |
-| `centeredSlides` | `boolean` | `false` | Centre the active slide (per-view/auto layouts). |
-| `currentIndex` | `number \| undefined` | `undefined` | Controlled current display index (`v-model:current-index`). `undefined` = uncontrolled. |
-| `defaultIndex` | `number` | `0` | Initial display index (uncontrolled). |
-| `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | Scroll axis. |
-| `dotPlacement` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'bottom'` | Indicator dots position. |
-| `dotType` | `'dot' \| 'line'` | `'dot'` | Indicator dots shape. |
-| `draggable` | `boolean` | `false` | Mouse drag switches slides. |
-| `effect` | `'slide' \| 'fade' \| 'card' \| 'custom'` | `'slide'` | Transition effect. |
-| `interval` | `number` | `5000` | Autoplay interval (ms). |
-| `loop` | `boolean` | `true` | Wrap around at both ends. |
-| `mousewheel` | `boolean` | `false` | Wheel switches slides. |
-| `nextSlideStyle` | `CSSProperties \| string` | `undefined` | Inline style for the next slide (card mode). |
-| `prevSlideStyle` | `CSSProperties \| string` | `undefined` | Inline style for the previous slide (card mode). |
-| `slidesPerView` | `number \| 'auto'` | `1` | Slides per view; `'auto'` measures slide widths from the DOM (ResizeObserver with feature detection, SSR-safe). |
-| `spaceBetween` | `number` | `0` | Gap (px) between slides. |
-| `showArrow` | `boolean` | `false` | Built-in prev/next arrows (inline SVG chevrons, zero deps). |
-| `showDots` | `boolean` | `true` | Indicator dots. |
-| `touchable` | `boolean` | `true` | Touch drag switches slides. |
-| `transitionStyle` | `{ transitionDuration?: string; transitionTimingFunction?: string }` | `{ transitionDuration: '300ms' }` | Slide/fade/card transition timing. |
-| `transitionProps` | `TransitionProps` | `undefined` | Vue `<Transition>` props for `effect='custom'`. |
-| `trigger` | `'click' \| 'hover'` | `'click'` | How dots activate. |
-| `keyboard` | `boolean` | `false` | Arrow keys switch while a dot is focused. |
-| `onUpdateCurrentIndex` | `(currentIndex: number, lastIndex: number) => void` | `undefined` | Secondary callback channel (naive parity; the event below is the primary one). |
+| Name                   | Type                                                                 | Default                           | Description                                                                                                     |
+| ---------------------- | -------------------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `autoplay`             | `boolean`                                                            | `false`                           | Auto-advance; pauses on hover.                                                                                  |
+| `centeredSlides`       | `boolean`                                                            | `false`                           | Centre the active slide (per-view/auto layouts).                                                                |
+| `currentIndex`         | `number \| undefined`                                                | `undefined`                       | Controlled current display index (`v-model:current-index`). `undefined` = uncontrolled.                         |
+| `defaultIndex`         | `number`                                                             | `0`                               | Initial display index (uncontrolled).                                                                           |
+| `direction`            | `'horizontal' \| 'vertical'`                                         | `'horizontal'`                    | Scroll axis.                                                                                                    |
+| `dotPlacement`         | `'top' \| 'bottom' \| 'left' \| 'right'`                             | `'bottom'`                        | Indicator dots position.                                                                                        |
+| `dotType`              | `'dot' \| 'line'`                                                    | `'dot'`                           | Indicator dots shape.                                                                                           |
+| `draggable`            | `boolean`                                                            | `false`                           | Mouse drag switches slides.                                                                                     |
+| `effect`               | `'slide' \| 'fade' \| 'card' \| 'custom'`                            | `'slide'`                         | Transition effect.                                                                                              |
+| `interval`             | `number`                                                             | `5000`                            | Autoplay interval (ms).                                                                                         |
+| `loop`                 | `boolean`                                                            | `true`                            | Wrap around at both ends.                                                                                       |
+| `mousewheel`           | `boolean`                                                            | `false`                           | Wheel switches slides.                                                                                          |
+| `nextSlideStyle`       | `CSSProperties \| string`                                            | `undefined`                       | Inline style for the next slide (card mode).                                                                    |
+| `prevSlideStyle`       | `CSSProperties \| string`                                            | `undefined`                       | Inline style for the previous slide (card mode).                                                                |
+| `slidesPerView`        | `number \| 'auto'`                                                   | `1`                               | Slides per view; `'auto'` measures slide widths from the DOM (ResizeObserver with feature detection, SSR-safe). |
+| `spaceBetween`         | `number`                                                             | `0`                               | Gap (px) between slides.                                                                                        |
+| `showArrow`            | `boolean`                                                            | `false`                           | Built-in prev/next arrows (inline SVG chevrons, zero deps).                                                     |
+| `showDots`             | `boolean`                                                            | `true`                            | Indicator dots.                                                                                                 |
+| `touchable`            | `boolean`                                                            | `true`                            | Touch drag switches slides.                                                                                     |
+| `transitionStyle`      | `{ transitionDuration?: string; transitionTimingFunction?: string }` | `{ transitionDuration: '300ms' }` | Slide/fade/card transition timing.                                                                              |
+| `transitionProps`      | `TransitionProps`                                                    | `undefined`                       | Vue `<Transition>` props for `effect='custom'`.                                                                 |
+| `trigger`              | `'click' \| 'hover'`                                                 | `'click'`                         | How dots activate.                                                                                              |
+| `keyboard`             | `boolean`                                                            | `false`                           | Arrow keys switch while a dot is focused.                                                                       |
+| `onUpdateCurrentIndex` | `(currentIndex: number, lastIndex: number) => void`                  | `undefined`                       | Secondary callback channel (naive parity; the event below is the primary one).                                  |
 
 ## SnCarouselItem Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `title` | `string \| undefined` | `undefined` | Primary caption in the bottom gradient overlay (beyond naive). |
-| `description` | `string \| undefined` | `undefined` | Secondary caption line under the title. |
+| Name          | Type                  | Default     | Description                                                    |
+| ------------- | --------------------- | ----------- | -------------------------------------------------------------- |
+| `title`       | `string \| undefined` | `undefined` | Primary caption in the bottom gradient overlay (beyond naive). |
+| `description` | `string \| undefined` | `undefined` | Secondary caption line under the title.                        |
 
 Content is the default slot; per-slide behaviour (current/prev/next
 state, sizing, margins, card transforms) is derived from the parent
@@ -118,28 +118,28 @@ through provide/inject (mirrors naive CarouselContext).
 
 ## Events
 
-| Event | Payload | When |
-|---|---|---|
+| Event                  | Payload                                     | When                                             |
+| ---------------------- | ------------------------------------------- | ------------------------------------------------ |
 | `update:current-index` | `(currentIndex: number, lastIndex: number)` | Display index changed (`v-model:current-index`). |
 
 ## Slots
 
-| Component | Slot | Scope | Description |
-|---|---|---|---|
-| `SnCarousel` | `default` | — | Sequence of `<SnCarouselItem>` children (bare children are auto-wrapped). |
-| `SnCarousel` | `arrow` | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Replaces the built-in arrow pair. `prev`/`next` are the transition-guarded variants. |
-| `SnCarousel` | `dots` | `{ total, currentIndex, to }` | Replaces the built-in dots. |
-| `SnCarouselItem` | `default` | `{ isPrev, isNext, isActive, index }` | Slide content. |
-| `SnCarouselItem` | `caption` | — | Replaces the `title` / `description` text inside the caption overlay. |
+| Component        | Slot      | Scope                                                                     | Description                                                                          |
+| ---------------- | --------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `SnCarousel`     | `default` | —                                                                         | Sequence of `<SnCarouselItem>` children (bare children are auto-wrapped).            |
+| `SnCarousel`     | `arrow`   | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Replaces the built-in arrow pair. `prev`/`next` are the transition-guarded variants. |
+| `SnCarousel`     | `dots`    | `{ total, currentIndex, to }`                                             | Replaces the built-in dots.                                                          |
+| `SnCarouselItem` | `default` | `{ isPrev, isNext, isActive, index }`                                     | Slide content.                                                                       |
+| `SnCarouselItem` | `caption` | —                                                                         | Replaces the `title` / `description` text inside the caption overlay.                |
 
 ## Inst Methods (defineExpose)
 
-| Method | Signature | Description |
-|---|---|---|
-| `to` | `(index: number) => void` | Jump to a display index. |
-| `prev` | `() => void` | Previous slide. |
-| `next` | `() => void` | Next slide. |
-| `getCurrentIndex` | `() => number` | Current display index. |
+| Method            | Signature                 | Description              |
+| ----------------- | ------------------------- | ------------------------ |
+| `to`              | `(index: number) => void` | Jump to a display index. |
+| `prev`            | `() => void`              | Previous slide.          |
+| `next`            | `() => void`              | Next slide.              |
+| `getCurrentIndex` | `() => number`            | Current display index.   |
 
 ## §112 Divergences (documented, intentional)
 
@@ -179,14 +179,14 @@ through provide/inject (mirrors naive CarouselContext).
 
 ## Tokens Consumed (end: web)
 
-| Token / colour | Value | Purpose |
-|---|---|---|
-| `--sn-web-bezier-ease` | token | All transitions' easing |
-| `--sn-web-color-background-overlay` | token | Caption overlay gradient end (mask semantics) |
-| Dot colours | `rgba(255,255,255,.3 / .5 / 1)` | Inactive / focused / active dots |
-| Arrow background | `rgba(255,255,255,.2)`, hover `.3` | Arrow buttons |
-| Arrow icon colour | `color-mix(in srgb, rgba(255,255,255,1) 93%, transparent)` | ≈ naive `#eee` (see note) |
-| Caption text | `rgba(255,255,255,.9)` title, `.7` description | White overlay text on arbitrary imagery |
+| Token / colour                      | Value                                                      | Purpose                                       |
+| ----------------------------------- | ---------------------------------------------------------- | --------------------------------------------- |
+| `--sn-web-bezier-ease`              | token                                                      | All transitions' easing                       |
+| `--sn-web-color-background-overlay` | token                                                      | Caption overlay gradient end (mask semantics) |
+| Dot colours                         | `rgba(255,255,255,.3 / .5 / 1)`                            | Inactive / focused / active dots              |
+| Arrow background                    | `rgba(255,255,255,.2)`, hover `.3`                         | Arrow buttons                                 |
+| Arrow icon colour                   | `color-mix(in srgb, rgba(255,255,255,1) 93%, transparent)` | ≈ naive `#eee` (see note)                     |
+| Caption text                        | `rgba(255,255,255,.9)` title, `.7` description             | White overlay text on arbitrary imagery       |
 
 Token note: dots, arrows and the caption overlay render on top of
 arbitrary slide imagery, so they use the white-overlay rgba() values that

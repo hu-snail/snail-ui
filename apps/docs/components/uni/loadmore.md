@@ -26,41 +26,41 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| state | '' \| 'loading' \| 'finished' \| 'error' | '' | 加载状态；空字符串不渲染 |
-| loadingText | string | '正在努力加载中...' | 加载中文案 |
-| finishedText | string | '已加载完毕' | 加载完成文案 |
-| errorText | string | '加载失败' | 加载失败文案 |
-| loadingProps | Record<string, unknown> | `{}` | 透传给内部 `sn-loading` 的属性 |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
+| 属性         | 类型                                     | 默认值              | 说明                           |
+| ------------ | ---------------------------------------- | ------------------- | ------------------------------ |
+| state        | '' \| 'loading' \| 'finished' \| 'error' | ''                  | 加载状态；空字符串不渲染       |
+| loadingText  | string                                   | '正在努力加载中...' | 加载中文案                     |
+| finishedText | string                                   | '已加载完毕'        | 加载完成文案                   |
+| errorText    | string                                   | '加载失败'          | 加载失败文案                   |
+| loadingProps | Record<string, unknown>                  | `{}`                | 透传给内部 `sn-loading` 的属性 |
+| customClass  | string                                   | ''                  | 根节点自定义类名               |
+| customStyle  | string                                   | ''                  | 根节点自定义样式               |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| reload | `state="error"` 时点击组件 | — |
+| 事件名 | 说明                       | 参数 |
+| ------ | -------------------------- | ---- |
+| reload | `state="error"` 时点击组件 | —    |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
-| loading | 自定义加载中内容 |
+| 插槽名   | 说明               |
+| -------- | ------------------ |
+| loading  | 自定义加载中内容   |
 | finished | 自定义加载完成内容 |
-| error | 自定义加载失败内容 |
+| error    | 自定义加载失败内容 |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-text-secondary | 加载中文案 |
-| --sn-mp-color-text-tertiary | 加载完成文案 |
-| --sn-mp-color-feedback-danger | 加载失败文案 |
-| --sn-mp-color-action-primary | 「点击重试」提示 |
-| --sn-mp-font-size-sm | 页脚文案字号 |
-| --sn-mp-font-line-height-normal | 页脚文案行高 |
-| --sn-mp-spacing-2` / `-4` / `-5 | 内边距与间距 |
+| 变量                            | 用途             |
+| ------------------------------- | ---------------- |
+| --sn-mp-color-text-secondary    | 加载中文案       |
+| --sn-mp-color-text-tertiary     | 加载完成文案     |
+| --sn-mp-color-feedback-danger   | 加载失败文案     |
+| --sn-mp-color-action-primary    | 「点击重试」提示 |
+| --sn-mp-font-size-sm            | 页脚文案字号     |
+| --sn-mp-font-line-height-normal | 页脚文案行高     |
+| --sn-mp-spacing-2`/`-4`/`-5     | 内边距与间距     |
 
 ## 无障碍
 
@@ -70,7 +70,6 @@
 ## 暗色模式
 
 文案颜色来自语义色 token（`--sn-mp-color-text-secondary` / `-tertiary` / `--sn-mp-color-feedback-danger` / `--sn-mp-color-action-primary`），都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

@@ -27,21 +27,21 @@
 ```vue
 <script setup lang="ts">
 // ✅ 只 import snail-aui 组件和 Vue 核心
-import { SnButton, SnInput, SnForm, SnFormItem, SnCard } from '@snui/vue-web'
-import { ref, reactive } from 'vue'
+import { SnButton, SnInput, SnForm, SnFormItem, SnCard } from '@snui/vue-web';
+import { ref, reactive } from 'vue';
 
 // 状态定义
 const form = reactive({
   name: '',
   email: '',
-})
-const loading = ref(false)
+});
+const loading = ref(false);
 
 // 事件处理（无真实 API 调用，只展示交互流程）
 async function handleSubmit() {
-  loading.value = true
-  await new Promise(r => setTimeout(r, 1000)) // 模拟 loading
-  loading.value = false
+  loading.value = true;
+  await new Promise((r) => setTimeout(r, 1000)); // 模拟 loading
+  loading.value = false;
 }
 </script>
 
@@ -55,9 +55,7 @@ async function handleSubmit() {
         <SnFormItem label="邮箱">
           <SnInput v-model="form.email" type="email" placeholder="请输入邮箱" />
         </SnFormItem>
-        <SnButton type="primary" :loading="loading" @click="handleSubmit">
-          提交
-        </SnButton>
+        <SnButton type="primary" :loading="loading" @click="handleSubmit"> 提交 </SnButton>
       </SnForm>
     </SnCard>
   </div>
@@ -91,12 +89,12 @@ prototype/
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import HomePage from './pages/HomePage.vue'
-import ListPage from './pages/ListPage.vue'
+import { ref } from 'vue';
+import HomePage from './pages/HomePage.vue';
+import ListPage from './pages/ListPage.vue';
 
-const pages = { home: HomePage, list: ListPage }
-const current = ref<'home' | 'list'>('home')
+const pages = { home: HomePage, list: ListPage };
+const current = ref<'home' | 'list'>('home');
 </script>
 
 <template>
@@ -153,50 +151,50 @@ src/
 
 ```ts
 // stores/user.store.ts
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import type { User } from '../types/user.types'
-import { fetchUser } from '../api/user.api'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import type { User } from '../types/user.types';
+import { fetchUser } from '../api/user.api';
 
 export const useUserStore = defineStore('user', () => {
   // State
-  const user = ref<User | null>(null)
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+  const user = ref<User | null>(null);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
 
   // Getters
-  const isLoggedIn = computed(() => user.value !== null)
+  const isLoggedIn = computed(() => user.value !== null);
 
   // Actions
   async function loadUser(id: string) {
-    loading.value = true
-    error.value = null
+    loading.value = true;
+    error.value = null;
     try {
-      user.value = await fetchUser(id)
+      user.value = await fetchUser(id);
     } catch (e) {
-      error.value = '加载失败，请重试'
+      error.value = '加载失败，请重试';
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
 
-  return { user, loading, error, isLoggedIn, loadUser }
-})
+  return { user, loading, error, isLoggedIn, loadUser };
+});
 ```
 
 ### 4.3 API 层规范
 
 ```ts
 // api/user.api.ts
-import type { User } from '../types/user.types'
+import type { User } from '../types/user.types';
 
 // API 基础配置（由用户补充真实地址）
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
 export async function fetchUser(id: string): Promise<User> {
-  const res = await fetch(`${BASE_URL}/users/${id}`)
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return res.json() as Promise<User>
+  const res = await fetch(`${BASE_URL}/users/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<User>;
 }
 ```
 
@@ -229,20 +227,20 @@ uni-app 页面产出额外需要：
 
 ## 5. 原型与应用的边界
 
-| 能力 | 原型 | 应用代码 |
-|---|---|---|
-| 真实组件 | ✅ | ✅ |
-| 真实交互 | ✅（模拟） | ✅（真实） |
-| API 调用 | ❌（setTimeout 模拟） | ✅（真实 fetch） |
-| Pinia Store | ❌（本地 ref 代替） | ✅ |
-| 路由 | ❌（component :is 代替） | ✅（vue-router） |
-| 表单验证 | ✅（SnForm rules） | ✅（可用 Zod 集成） |
-| TypeScript 类型 | 基础（Props 正确即可） | 完整严格 |
+| 能力            | 原型                     | 应用代码            |
+| --------------- | ------------------------ | ------------------- |
+| 真实组件        | ✅                       | ✅                  |
+| 真实交互        | ✅（模拟）               | ✅（真实）          |
+| API 调用        | ❌（setTimeout 模拟）    | ✅（真实 fetch）    |
+| Pinia Store     | ❌（本地 ref 代替）      | ✅                  |
+| 路由            | ❌（component :is 代替） | ✅（vue-router）    |
+| 表单验证        | ✅（SnForm rules）       | ✅（可用 Zod 集成） |
+| TypeScript 类型 | 基础（Props 正确即可）   | 完整严格            |
 
 ---
 
 ## 6. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
+| 版本 | 日期       | 变更               |
+| ---- | ---------- | ------------------ |
 | v1.0 | 2026-10-03 | 初始版本（Active） |

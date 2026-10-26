@@ -25,7 +25,7 @@
  * See: https://lucide.dev/icons
  */
 
-import type { IconData } from './sn-icon.vue'
+import type { IconData } from './sn-icon.vue';
 
 /**
  * Module-level registry. Plain object so `Object.create(null)` keeps the
@@ -41,7 +41,7 @@ import type { IconData } from './sn-icon.vue'
  * implementation to a `provide` / `inject` key on the root app instance
  * (the public API does not need to change).
  */
-const iconRegistry: Record<string, IconData> = Object.create(null)
+const iconRegistry: Record<string, IconData> = Object.create(null);
 
 /**
  * Register icon data objects for lookup by string name. Call this once
@@ -52,7 +52,7 @@ const iconRegistry: Record<string, IconData> = Object.create(null)
  */
 export function registerSnIcons(map: Record<string, IconData>): void {
   for (const key in map) {
-    iconRegistry[key] = map[key]!
+    iconRegistry[key] = map[key]!;
   }
 }
 
@@ -62,7 +62,7 @@ export function registerSnIcons(map: Record<string, IconData>): void {
  */
 export function clearSnIcons(): void {
   for (const key in iconRegistry) {
-    delete iconRegistry[key]
+    delete iconRegistry[key];
   }
 }
 
@@ -72,5 +72,5 @@ export function clearSnIcons(): void {
  * can implement their own resolution logic.
  */
 export function resolveIconByName(name: string): IconData | undefined {
-  return iconRegistry[name]
+  return iconRegistry[name];
 }

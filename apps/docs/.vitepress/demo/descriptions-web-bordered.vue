@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDescriptions — bordered 描边网格（含左置 label 变体）。 */
-import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web'
+import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web';
 </script>
 
 <template>
@@ -14,7 +14,12 @@ import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web'
       </SnDescriptionsItem>
     </SnDescriptions>
 
-    <SnDescriptions title="bordered + label-placement = left" bordered label-placement="left" label-align="right">
+    <SnDescriptions
+      title="bordered + label-placement = left"
+      bordered
+      label-placement="left"
+      label-align="right"
+    >
       <SnDescriptionsItem label="早餐">苹果</SnDescriptionsItem>
       <SnDescriptionsItem label="午餐">苹果</SnDescriptionsItem>
       <SnDescriptionsItem label="晚餐">苹果</SnDescriptionsItem>

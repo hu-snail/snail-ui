@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnHighlight — case-sensitive matching. */
-import { SnHighlight } from '@snui/vue-web'
+import { SnHighlight } from '@snui/vue-web';
 
-const text = 'Snail AUI 全量使用 TypeScript 编写，和你的 TypeScript 项目无缝衔接'
-const patterns = ['Snail AUI', 'typeScript']
+const text = 'Snail AUI 全量使用 TypeScript 编写，和你的 TypeScript 项目无缝衔接';
+const patterns = ['Snail AUI', 'typeScript'];
 </script>
 
 <template>

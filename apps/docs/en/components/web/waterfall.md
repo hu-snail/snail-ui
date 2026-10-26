@@ -31,26 +31,26 @@ column never leaves a hole beside a tall item (the failure mode of a row /
 
 ### SnWaterfall Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| columns | `number` | `3` | Logical column count, emitted as `column-count`; coerced to an integer ≥ 1 (floored, `0` / `NaN` / `Infinity` fall back to `1`). Ignored when `min-column-width` is set or `masonry=false` |
-| min-column-width | `number \| string` | — | Minimum column width (number → px, string verbatim). When set the container emits `column-width` **instead of** `column-count`, so the column count follows the available width (responsive mode); `columns` is then ignored |
-| column-gap | `number \| string` | `16` | Gap between columns (number → px), applied as `column-gap` through `--sn-waterfall-column-gap` |
-| row-gap | `number \| string` | `16` | Gap between items (number → px), applied as each item box's `margin-bottom` through `--sn-waterfall-row-gap` |
-| masonry | `boolean` | `true` | Convenience "off" switch: `false` renders a plain vertical stack (no `column-count` / `column-width` emitted) |
+| Name             | Type               | Default | Notes                                                                                                                                                                                                                        |
+| ---------------- | ------------------ | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| columns          | `number`           | `3`     | Logical column count, emitted as `column-count`; coerced to an integer ≥ 1 (floored, `0` / `NaN` / `Infinity` fall back to `1`). Ignored when `min-column-width` is set or `masonry=false`                                   |
+| min-column-width | `number \| string` | —       | Minimum column width (number → px, string verbatim). When set the container emits `column-width` **instead of** `column-count`, so the column count follows the available width (responsive mode); `columns` is then ignored |
+| column-gap       | `number \| string` | `16`    | Gap between columns (number → px), applied as `column-gap` through `--sn-waterfall-column-gap`                                                                                                                               |
+| row-gap          | `number \| string` | `16`    | Gap between items (number → px), applied as each item box's `margin-bottom` through `--sn-waterfall-row-gap`                                                                                                                 |
+| masonry          | `boolean`          | `true`  | Convenience "off" switch: `false` renders a plain vertical stack (no `column-count` / `column-width` emitted)                                                                                                                |
 
 ### SnWaterfall Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | The items; every direct child (including each entry a `<template v-for>` expands to) gets its own `.sn-waterfall__item` wrapper |
+| Name    | Params | Notes                                                                                                                           |
+| ------- | ------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| default | `()`   | The items; every direct child (including each entry a `<template v-for>` expands to) gets its own `.sn-waterfall__item` wrapper |
 
 ### Custom properties (CSS variables)
 
-| Name | Default | Notes |
-| --- | --- | --- |
-| `--sn-waterfall-column-gap` | `16px` | Column gap — retune without touching the prop |
-| `--sn-waterfall-row-gap` | `16px` | Vertical gap between items |
+| Name                        | Default | Notes                                         |
+| --------------------------- | ------- | --------------------------------------------- |
+| `--sn-waterfall-column-gap` | `16px`  | Column gap — retune without touching the prop |
+| `--sn-waterfall-row-gap`    | `16px`  | Vertical gap between items                    |
 
 ### Notes
 

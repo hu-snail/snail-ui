@@ -28,44 +28,44 @@ type="daterange" 选区间；maxRange 限制跨度并显示提示；switchMode="
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| number[] \| null` | `null` | 选中的时间戳 |
-| `type` | `'date' \| 'dates' \| 'datetime' \| 'month' \| 'daterange' \| 'datetimerange' \| 'monthrange'` | `'date'` | 选择模式 |
-| `minDate` / `maxDate` | `number` | `undefined` | 最小 / 最大日期（默认前后 6 个月） |
-| `firstDayOfWeek` | `number` | `0` | 周起始日（0 为周日） |
-| `formatter` | `CalendarFormatter` | `undefined` | 单元格格式化钩子 |
-| `maxRange` | `number` | `0` | 区间最大跨度（天，0 不限制） |
-| `rangePrompt` | `string` | `''` | 超出跨度的提示文案 |
-| `allowSameDay` | `boolean` | `false` | 允许区间起止同一天 |
-| `showPanelTitle` | `boolean` | `true` | 是否显示月份标题 |
-| `defaultTime` | `string \| string[]` | `'00:00:00'` | 日期默认时分秒 |
-| `panelHeight` | `number` | `316` | 可滚动面板高度（px 设计值） |
-| `immediateChange` | `boolean` | `false` | 点击即触发 change |
-| `switchMode` | `'none' \| 'month' \| 'year-month'` | `'none'` | 切换模式 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
-| `timeFilter` | `CalendarTimeFilter` | `undefined` | 时间列过滤钩子——**声明但未实现**（面板内无时间滚筒）|
-| `timeItemHeight` | `number` | `44` | 时间行高——**声明但未实现**（同上）|
-| `timeVisibleItemCount` | `number` | `6` | 时间可见行数——**声明但未实现**（同上）|
-| `hideSecond` | `boolean` | `false` | 隐藏秒列——**声明但未实现**（同上）|
+| 属性                          | 类型                                                                                           | 默认值       | 说明                                                 |
+| ----------------------------- | ---------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------- |
+| `modelValue`                  | `number \| number[] \| null`                                                                   | `null`       | 选中的时间戳                                         |
+| `type`                        | `'date' \| 'dates' \| 'datetime' \| 'month' \| 'daterange' \| 'datetimerange' \| 'monthrange'` | `'date'`     | 选择模式                                             |
+| `minDate` / `maxDate`         | `number`                                                                                       | `undefined`  | 最小 / 最大日期（默认前后 6 个月）                   |
+| `firstDayOfWeek`              | `number`                                                                                       | `0`          | 周起始日（0 为周日）                                 |
+| `formatter`                   | `CalendarFormatter`                                                                            | `undefined`  | 单元格格式化钩子                                     |
+| `maxRange`                    | `number`                                                                                       | `0`          | 区间最大跨度（天，0 不限制）                         |
+| `rangePrompt`                 | `string`                                                                                       | `''`         | 超出跨度的提示文案                                   |
+| `allowSameDay`                | `boolean`                                                                                      | `false`      | 允许区间起止同一天                                   |
+| `showPanelTitle`              | `boolean`                                                                                      | `true`       | 是否显示月份标题                                     |
+| `defaultTime`                 | `string \| string[]`                                                                           | `'00:00:00'` | 日期默认时分秒                                       |
+| `panelHeight`                 | `number`                                                                                       | `316`        | 可滚动面板高度（px 设计值）                          |
+| `immediateChange`             | `boolean`                                                                                      | `false`      | 点击即触发 change                                    |
+| `switchMode`                  | `'none' \| 'month' \| 'year-month'`                                                            | `'none'`     | 切换模式                                             |
+| `customClass` / `customStyle` | `string`                                                                                       | `''`         | 根节点自定义类名 / 样式                              |
+| `timeFilter`                  | `CalendarTimeFilter`                                                                           | `undefined`  | 时间列过滤钩子——**声明但未实现**（面板内无时间滚筒） |
+| `timeItemHeight`              | `number`                                                                                       | `44`         | 时间行高——**声明但未实现**（同上）                   |
+| `timeVisibleItemCount`        | `number`                                                                                       | `6`          | 时间可见行数——**声明但未实现**（同上）               |
+| `hideSecond`                  | `boolean`                                                                                      | `false`      | 隐藏秒列——**声明但未实现**（同上）                   |
 
 > **未实现**：`week` / `weekrange` 类型（各端没有可靠的 ISO 周辅助函数），以及 `timeFilter` / `timeItemHeight` / `timeVisibleItemCount` / `hideSecond`——本轮不实现面板内的时间滚筒；`datetime` / `datetimerange` 类型存在，并按 `defaultTime` 取时分秒。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 选中变化时 | `(value: CalendarValue)` |
-| `change` | 选中变化时（同 tick） | `{ value }` |
-| `pickstart` / `pickend` | 预留给（未实现的）时间滚筒 | — |
+| 事件名                  | 说明                       | 参数                     |
+| ----------------------- | -------------------------- | ------------------------ |
+| `update:modelValue`     | 选中变化时                 | `(value: CalendarValue)` |
+| `change`                | 选中变化时（同 tick）      | `{ value }`              |
+| `pickstart` / `pickend` | 预留给（未实现的）时间滚筒 | —                        |
 
 ## Exposed API
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
-| `shiftMonth` | `(delta: number) => void` | 切换激活月份 |
-| `shiftYear` | `(delta: number) => void` | 切换激活年份（year-month 模式） |
-| `jumpToToday` | `() => void` | 跳到今天所在月份 |
+| 成员          | 签名                      | 说明                            |
+| ------------- | ------------------------- | ------------------------------- |
+| `shiftMonth`  | `(delta: number) => void` | 切换激活月份                    |
+| `shiftYear`   | `(delta: number) => void` | 切换激活年份（year-month 模式） |
+| `jumpToToday` | `() => void`              | 跳到今天所在月份                |
 
 ## Slots
 
@@ -73,15 +73,15 @@ type="daterange" 选区间；maxRange 限制跨度并显示提示；switchMode="
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | 面板底色 |
-| ``--sn-mp-color-action-primary` / `-soft`` | 选中日 / 区间中间日 |
-| ``--sn-mp-color-text-on-primary`` | 选中日文字 |
+| 变量                                                                      | 用途                          |
+| ------------------------------------------------------------------------- | ----------------------------- |
+| `--sn-mp-color-background-elevated`                                       | 面板底色                      |
+| ``--sn-mp-color-action-primary` / `-soft``                                | 选中日 / 区间中间日           |
+| `--sn-mp-color-text-on-primary`                                           | 选中日文字                    |
 | ``--sn-mp-color-text-primary` / `-secondary` / `-tertiary` / `-disabled`` | 日期 / 标题 / 星期 / 禁用文字 |
-| ``--sn-mp-color-border-default` / `-subtle`` | 今天描边 / 控制条分割线 |
-| ``--sn-mp-color-feedback-warning`` | 区间提示 |
-| ``--sn-mp-radius-md`` | 日期格 / 控制按钮圆角 |
+| ``--sn-mp-color-border-default` / `-subtle``                              | 今天描边 / 控制条分割线       |
+| `--sn-mp-color-feedback-warning`                                          | 区间提示                      |
+| `--sn-mp-radius-md`                                                       | 日期格 / 控制按钮圆角         |
 
 ## 无障碍
 
@@ -92,4 +92,3 @@ type="daterange" 选区间；maxRange 限制跨度并显示提示；switchMode="
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

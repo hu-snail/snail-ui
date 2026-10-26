@@ -56,9 +56,7 @@ export const UIAccessibilitySchema = z
       .min(1, 'keyboard array must have at least one entry if provided')
       .optional(),
 
-    aria: z
-      .record(z.string(), z.union([z.string(), z.boolean(), z.number()]))
-      .optional(),
+    aria: z.record(z.string(), z.union([z.string(), z.boolean(), z.number()])).optional(),
 
     label: z
       .string()

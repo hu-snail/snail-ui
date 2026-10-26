@@ -80,11 +80,11 @@ Component Tokens    组件级，Style 轴可替换此层
 
 Style Pack 由三层构成（详见 Spec-01 §2）：
 
-| 层 | 内容 | 必须 |
-|---|---|---|
-| Token 层 | 颜色、圆角、间距覆盖（`snCssVars()`）| ✅ 所有 Pack |
-| 皮肤 CSS 层 | `.snui-skin-{name}` 作用域 CSS（字体/特效/装饰）| 仅需视觉人格的 Pack |
-| 资源层 | 字体文件、SVG 纹理 | 仅 douyin 等 M4 Pack |
+| 层          | 内容                                             | 必须                 |
+| ----------- | ------------------------------------------------ | -------------------- |
+| Token 层    | 颜色、圆角、间距覆盖（`snCssVars()`）            | ✅ 所有 Pack         |
+| 皮肤 CSS 层 | `.snui-skin-{name}` 作用域 CSS（字体/特效/装饰） | 仅需视觉人格的 Pack  |
+| 资源层      | 字体文件、SVG 纹理                               | 仅 douyin 等 M4 Pack |
 
 **核心约束**：皮肤 CSS 只操作视觉，不修改组件 DOM / Props / 行为。
 
@@ -106,6 +106,7 @@ Style Pack 由三层构成（详见 Spec-01 §2）：
 `ComponentPreview.vue` 当前是 v1 schema renderer（`createVueRenderer` / `UISchema`），不能正常渲染当前组件。必须重建为直接 `import` Vue 组件并 mount 的方式。
 
 **新增组件**：
+
 - `StyleSwitcher.vue`：在线 Pack 切换面板，Web 端注入 `<style>` + `body.class`，文档站专用
 - `ThemeCopier.vue`：展示 `snCssVars(...)` 代码片段，一键复制
 
@@ -122,12 +123,14 @@ Style Pack 由三层构成（详见 Spec-01 §2）：
 
 **关于 ai-description.md 的维护策略**：  
 手写 `ai-description.md` 与 `.vue` 文件会产生漂移。规范：
+
 - Props / Events / Slots 表格由 `@snui/cli` 从 SFC `defineProps`/`defineEmits`/`defineSlots` 自动抽取
 - 组件用途描述（Purpose）、使用场景（When to use / When not to use）、反例由人工维护
 - CLI 在生成时合并两部分，Props 以自动抽取为准
 
 **关于 render_preview 安全边界**：  
 `render_preview` 接收任意 Vue SFC 字符串，存在安全风险。实现约束：
+
 - 运行在独立 sandbox iframe，`sandbox="allow-scripts allow-same-origin"` 无网络权限
 - SFC 编译由 `@vue/compiler-sfc` 在服务端完成，不执行 `eval`
 - 超时 15 秒，内存 64MB 上限
@@ -138,14 +141,14 @@ Style Pack 由三层构成（详见 Spec-01 §2）：
 **包**：`@snui/cli`  
 **当前缺少 `bin` 入口**，`pnpm snui *` 命令需要在 AUI-TOOL-002 中补充。
 
-| 命令 | 说明 |
-|---|---|
-| `snui llms` | 生成 llms.txt |
-| `snui ai-meta` | 生成 ai-meta.json |
-| `snui docs` | 从 SFC 提取 Props 等，生成 / 更新组件文档 |
-| `snui new SnFoo` | 组件脚手架 |
-| `snui pack validate` | 校验 Style Pack 合法性 |
-| `snui token check` | 检查组件 CSS 无字面量颜色兜底 |
+| 命令                 | 说明                                      |
+| -------------------- | ----------------------------------------- |
+| `snui llms`          | 生成 llms.txt                             |
+| `snui ai-meta`       | 生成 ai-meta.json                         |
+| `snui docs`          | 从 SFC 提取 Props 等，生成 / 更新组件文档 |
+| `snui new SnFoo`     | 组件脚手架                                |
+| `snui pack validate` | 校验 Style Pack 合法性                    |
+| `snui token check`   | 检查组件 CSS 无字面量颜色兜底             |
 
 ---
 
@@ -153,12 +156,12 @@ Style Pack 由三层构成（详见 Spec-01 §2）：
 
 这四个任务是 Style Pack 和 ComponentPreview 的前置条件，不做好整个 v3.0 的核心功能都无法工作。
 
-| ID | 任务 | 阻塞点 |
-|---|---|---|
-| AUI-FOUND-001 | Token 命名对齐（变量名统一 + 组件对齐）| 风格切换无效 |
-| AUI-FOUND-002 | 重建 ComponentPreview.vue（移除 schema renderer）| 文档预览不可用 |
-| AUI-FOUND-003 | ConfigProvider 双端 `skin` prop | uni 风格切换无路径 |
-| AUI-FOUND-004 | 组件根元素 `data-snui-component` 钩子 | 皮肤 CSS 无选择器 |
+| ID            | 任务                                              | 阻塞点             |
+| ------------- | ------------------------------------------------- | ------------------ |
+| AUI-FOUND-001 | Token 命名对齐（变量名统一 + 组件对齐）           | 风格切换无效       |
+| AUI-FOUND-002 | 重建 ComponentPreview.vue（移除 schema renderer） | 文档预览不可用     |
+| AUI-FOUND-003 | ConfigProvider 双端 `skin` prop                   | uni 风格切换无路径 |
+| AUI-FOUND-004 | 组件根元素 `data-snui-component` 钩子             | 皮肤 CSS 无选择器  |
 
 ---
 
@@ -221,28 +224,28 @@ AI 调用 MCP render_preview → 沙箱编译渲染验证
 
 ## 5. 包边界规则
 
-| 规则 | 说明 |
-|---|---|
-| tokens ← 无依赖 | 叶子节点，零运行时依赖 |
-| style-packs → tokens（类型） | 只依赖 Token 类型，不依赖运行时 |
-| vue-web / uni → tokens（CSS 变量） | 通过 CSS 变量消费，不 import TS |
-| ai → cli + tokens（类型） | 读取 ai-description + Token 类型 |
-| docs → vue-web + uni + style-packs | Application 层 |
-| 禁止 vue-web / uni → ai | 组件不引入 AI 逻辑 |
-| 禁止 tokens → vue / ai | Token 层 Framework Agnostic |
-| 禁止循环依赖 | turbo lint 强制 |
+| 规则                               | 说明                             |
+| ---------------------------------- | -------------------------------- |
+| tokens ← 无依赖                    | 叶子节点，零运行时依赖           |
+| style-packs → tokens（类型）       | 只依赖 Token 类型，不依赖运行时  |
+| vue-web / uni → tokens（CSS 变量） | 通过 CSS 变量消费，不 import TS  |
+| ai → cli + tokens（类型）          | 读取 ai-description + Token 类型 |
+| docs → vue-web + uni + style-packs | Application 层                   |
+| 禁止 vue-web / uni → ai            | 组件不引入 AI 逻辑               |
+| 禁止 tokens → vue / ai             | Token 层 Framework Agnostic      |
+| 禁止循环依赖                       | turbo lint 强制                  |
 
 ---
 
 ## 6. uni / 小程序平台差异
 
-| 能力 | Web 端 | uni H5 | 微信/支付宝小程序 |
-|---|---|---|---|
-| `:root {}` CSS 变量 | ✅ | ✅ | ❌（只支持 page / 组件级）|
-| `[data-theme="dark"]` | ✅ | ✅ | ❌ |
-| `document.body.classList` | ✅ | ✅（H5）| ❌ |
-| 动态注入 `<style>` | ✅ | ✅（H5）| ❌ |
-| 皮肤 CSS（BEM class）| ✅ | ✅ | ✅（组件 scoped 级别）|
+| 能力                      | Web 端 | uni H5   | 微信/支付宝小程序          |
+| ------------------------- | ------ | -------- | -------------------------- |
+| `:root {}` CSS 变量       | ✅     | ✅       | ❌（只支持 page / 组件级） |
+| `[data-theme="dark"]`     | ✅     | ✅       | ❌                         |
+| `document.body.classList` | ✅     | ✅（H5） | ❌                         |
+| 动态注入 `<style>`        | ✅     | ✅（H5） | ❌                         |
+| 皮肤 CSS（BEM class）     | ✅     | ✅       | ✅（组件 scoped 级别）     |
 
 **小程序皮肤策略**：ConfigProvider 根元素 class 传递 → 组件 scoped CSS 内声明 `.snui-skin-{name}` 覆盖 → 覆盖范围局限于 ConfigProvider 的 DOM 子树。皮肤效果不如 Web 端完整，但有明确的降级路径。
 
@@ -278,23 +281,23 @@ merge main
 
 ## 8. 技术选型
 
-| 层 | 技术 | 原因 |
-|---|---|---|
-| Token 系统 | TypeScript + CSS Custom Properties | 零运行时，类型安全，浏览器原生 |
-| Style Pack | TS 数据对象 + 独立 CSS 文件 | Token 层零运行时；皮肤 CSS 异步加载，按需 |
-| 组件（Web） | Vue 3 SFC + `<script setup>` | naive-ui 风格 API |
-| 组件（Uni） | Vue 3 SFC + easycom | wot-ui 风格 API |
-| 文档站 | VitePress | 真实组件渲染 |
-| MCP Server | Node.js + @modelcontextprotocol/sdk | MCP 标准协议 |
-| 构建 | Turbo + tsc + vue-tsc + esbuild | Monorepo 并行 |
-| 测试 | Vitest + @vue/test-utils + happy-dom | 轻量，与 Vite 生态一致 |
+| 层          | 技术                                 | 原因                                      |
+| ----------- | ------------------------------------ | ----------------------------------------- |
+| Token 系统  | TypeScript + CSS Custom Properties   | 零运行时，类型安全，浏览器原生            |
+| Style Pack  | TS 数据对象 + 独立 CSS 文件          | Token 层零运行时；皮肤 CSS 异步加载，按需 |
+| 组件（Web） | Vue 3 SFC + `<script setup>`         | naive-ui 风格 API                         |
+| 组件（Uni） | Vue 3 SFC + easycom                  | wot-ui 风格 API                           |
+| 文档站      | VitePress                            | 真实组件渲染                              |
+| MCP Server  | Node.js + @modelcontextprotocol/sdk  | MCP 标准协议                              |
+| 构建        | Turbo + tsc + vue-tsc + esbuild      | Monorepo 并行                             |
+| 测试        | Vitest + @vue/test-utils + happy-dom | 轻量，与 Vite 生态一致                    |
 
 ---
 
 ## 9. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.0 | 2026-09 | Schema-Runtime 三段式架构 |
-| v2.0 | 2026-10-03 | Component First + Token First |
+| 版本 | 日期       | 变更                                                                        |
+| ---- | ---------- | --------------------------------------------------------------------------- |
+| v1.0 | 2026-09    | Schema-Runtime 三段式架构                                                   |
+| v2.0 | 2026-10-03 | Component First + Token First                                               |
 | v3.0 | 2026-10-03 | 新增 Style Pack 三层结构（Token+CSS+资源）+ AI 层 + 地基任务 + uni 平台差异 |

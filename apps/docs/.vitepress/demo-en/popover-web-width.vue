@@ -6,7 +6,7 @@
  * be compared side by side without hovering; clicking a trigger toggles its
  * own bubble, and `placement="right"` keeps the two panels from overlapping.
  */
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { SnButton, SnPopover } from '@snui/vue-web';
 </script>
 
 <template>
@@ -19,7 +19,7 @@ import { SnButton, SnPopover } from '@snui/vue-web'
         placement="right"
         show-arrow
         header="Same width as trigger"
-        content="width=&quot;trigger&quot; makes the bubble follow the trigger's width, good for short notes as wide as the button."
+        content='width="trigger" makes the bubble follow the trigger&apos;s width, good for short notes as wide as the button.'
       >
         <SnButton>width=&quot;trigger&quot;</SnButton>
       </SnPopover>
@@ -38,7 +38,10 @@ import { SnButton, SnPopover } from '@snui/vue-web'
     </div>
 
     <p class="popover-width-demo__hint">
-      Both bubbles start open for comparison; click the trigger buttons to toggle. Width is computed when the bubble opens: the top one tracks the trigger's width while the bottom one is fixed at 240px; the card also caps at 280px and shrinks back into the visible area along the cross axis when the viewport is too narrow.
+      Both bubbles start open for comparison; click the trigger buttons to toggle. Width is computed
+      when the bubble opens: the top one tracks the trigger's width while the bottom one is fixed at
+      240px; the card also caps at 280px and shrinks back into the visible area along the cross axis
+      when the viewport is too narrow.
     </p>
   </div>
 </template>

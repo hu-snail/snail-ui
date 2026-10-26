@@ -10,15 +10,17 @@
  * `fixed: false` keeps all three inside the demo stage instead of pinning them
  * to the browser corner.
  */
-import { Bell, ExternalLink, LifeBuoy } from 'lucide-vue-next'
-import { SnFloatButton } from '@snui/vue-web'
+import { Bell, ExternalLink, LifeBuoy } from 'lucide-vue-next';
+import { SnFloatButton } from '@snui/vue-web';
 </script>
 
 <template>
   <div class="float-button-demo">
     <p class="float-button-demo__hint">
-      数量徽标（<code>badge</code>）、小红点（<code>badgeDot</code>）、
-      链接根元素（<code>href</code> + <code>target</code>）。
+      数量徽标（<code>badge</code>）、小红点（<code>badgeDot</code>）、 链接根元素（<code
+        >href</code
+      >
+      + <code>target</code>）。
     </p>
 
     <div class="float-button-demo__stage">

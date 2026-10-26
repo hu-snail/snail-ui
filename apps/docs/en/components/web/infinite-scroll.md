@@ -15,12 +15,12 @@ built-in pending spinner and re-entrancy guard.
 
 ### SnInfiniteScroll Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| distance | `number` | `0` | Bottom threshold (px) that triggers `load` |
-| load | `() => Promise<void> \| void` | `undefined` | Load callback; pending promise blocks re-trigger, rejections are swallowed |
-| scrollbarProps | `Record<string, unknown>` | `undefined` | Extra attributes on the internal scroll container |
-| showLoading | `boolean` | `true` | Show a spinner below content while pending |
+| Prop           | Type                          | Default     | Notes                                                                      |
+| -------------- | ----------------------------- | ----------- | -------------------------------------------------------------------------- |
+| distance       | `number`                      | `0`         | Bottom threshold (px) that triggers `load`                                 |
+| load           | `() => Promise<void> \| void` | `undefined` | Load callback; pending promise blocks re-trigger, rejections are swallowed |
+| scrollbarProps | `Record<string, unknown>`     | `undefined` | Extra attributes on the internal scroll container                          |
+| showLoading    | `boolean`                     | `true`      | Show a spinner below content while pending                                 |
 
 ### SnInfiniteScroll Events
 
@@ -28,8 +28,8 @@ None — pass `load` as a function prop.
 
 ### SnInfiniteScroll Slots
 
-| Slot | Notes |
-| --- | --- |
+| Slot    | Notes              |
+| ------- | ------------------ |
 | default | Scrollable content |
 
 Sizing is consumer-controlled (e.g. `style="height: 240px"`); the root

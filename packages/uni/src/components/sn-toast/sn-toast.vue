@@ -49,66 +49,66 @@
  *   - 内联加载指示器 — 用 sn-loading
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback'
-import SnLoading from '../sn-loading/sn-loading.vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
+import SnLoading from '../sn-loading/sn-loading.vue';
 
-defineOptions({ name: 'SnToast' })
+defineOptions({ name: 'SnToast' });
 
 /** Layout direction of icon + text. Mirrors `wd-toast` `direction`. */
-type ToastDirection = 'horizontal' | 'vertical'
+type ToastDirection = 'horizontal' | 'vertical';
 
 /** Built-in icon kind. Mirrors `wd-toast` `icon-name`. */
-type ToastIconType = '' | 'success' | 'error' | 'warning' | 'loading' | 'info'
+type ToastIconType = '' | 'success' | 'error' | 'warning' | 'loading' | 'info';
 
 /** Spinner shape for `icon-name="loading"`. Mirrors `wd-toast` `loading-type`. */
-type ToastLoadingType = 'circular' | 'spinner' | 'dots' | 'wave'
+type ToastLoadingType = 'circular' | 'spinner' | 'dots' | 'wave';
 
 /** Anchor of the toast box. Mirrors `wd-toast` `position`. */
-type ToastPosition = 'top' | 'middle-top' | 'middle' | 'bottom'
+type ToastPosition = 'top' | 'middle-top' | 'middle' | 'bottom';
 
 const props = withDefaults(
   defineProps<{
     /** Whether the toast is shown (v-model). Component-form counterpart of `show`. */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** Message text. */
-    msg?: string
+    msg?: string;
     /** Auto-close delay in ms; `0` keeps the toast open. */
-    duration?: number
+    duration?: number;
     /** Layout direction of icon + text. */
-    direction?: ToastDirection
+    direction?: ToastDirection;
     /** Built-in icon kind; empty renders no icon. */
-    iconName?: ToastIconType
+    iconName?: ToastIconType;
     /** Icon size (bare number = rpx, string passes through). */
-    iconSize?: number | string | undefined
+    iconSize?: number | string | undefined;
     /** Spinner shape used when `iconName` is `loading`. */
-    loadingType?: ToastLoadingType
+    loadingType?: ToastLoadingType;
     /** Spinner color (any CSS color value). */
-    loadingColor?: string
+    loadingColor?: string;
     /** Spinner size (bare number = rpx, string passes through). */
-    loadingSize?: number | string | undefined
+    loadingSize?: number | string | undefined;
     /** Status glyph color (any CSS color value). */
-    iconColor?: string
+    iconColor?: string;
     /** Anchor of the toast box. */
-    position?: ToastPosition
+    position?: ToastPosition;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Render a transparent full-screen scrim that blocks the page behind. */
-    cover?: boolean
+    cover?: boolean;
     /** Custom class for the icon node (parity; uni icons are IconData). */
-    iconClass?: string
+    iconClass?: string;
     /** Icon class prefix (parity; inert on the uni end). */
-    classPrefix?: string
+    classPrefix?: string;
     /** CSS-icon mode (parity; inert on the uni end). */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** Instance id used by the function API (parity only, no effect here). */
-    selector?: string
+    selector?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the toast box. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: false,
@@ -131,54 +131,54 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Custom message content (replaces `msg`). */
-  default?(): unknown
+  default?(): unknown;
   /** Custom icon area. */
-  icon?(): unknown
-}>()
+  icon?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
+  (e: 'update:modelValue', value: boolean): void;
   /** Fired once the toast finished appearing. */
-  (e: 'opened'): void
+  (e: 'opened'): void;
   /** Fired once the toast finished closing. */
-  (e: 'closed'): void
-  (e: 'click'): void
-}>()
+  (e: 'closed'): void;
+  (e: 'click'): void;
+}>();
 
 /** Node present in the tree — cleared after the leave transition. */
-const isMounted = ref(props.modelValue)
+const isMounted = ref(props.modelValue);
 /** Target visible state — drives the opacity transition. */
-const isShown = ref(props.modelValue)
+const isShown = ref(props.modelValue);
 
 /** Auto-close timer (cleared on close / unmount, §41). */
-let closeTimer: ReturnType<typeof setTimeout> | null = null
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
 /** Leave-transition timer. */
-let leaveTimer: ReturnType<typeof setTimeout> | null = null
+let leaveTimer: ReturnType<typeof setTimeout> | null = null;
 
 /** Duration of the fade transition, kept in sync with the CSS below. */
-const FADE_MS = 200
+const FADE_MS = 200;
 
 function clearCloseTimer(): void {
   if (closeTimer !== null) {
-    clearTimeout(closeTimer)
-    closeTimer = null
+    clearTimeout(closeTimer);
+    closeTimer = null;
   }
 }
 
 function clearLeaveTimer(): void {
   if (leaveTimer !== null) {
-    clearTimeout(leaveTimer)
-    leaveTimer = null
+    clearTimeout(leaveTimer);
+    leaveTimer = null;
   }
 }
 
 function clearAllTimers(): void {
-  clearCloseTimer()
-  clearLeaveTimer()
+  clearCloseTimer();
+  clearLeaveTimer();
 }
 
 /**
@@ -189,63 +189,61 @@ function clearAllTimers(): void {
  * status glyph rendered at twice the intended size (a 64px check in a toast).
  */
 function resolveSize(value: number | string | undefined, fallbackRpx: number): string | number {
-  if (value === undefined || value === '') return `${fallbackRpx}rpx`
-  return typeof value === 'number' ? `${value}rpx` : value
+  if (value === undefined || value === '') return `${fallbackRpx}rpx`;
+  return typeof value === 'number' ? `${value}rpx` : value;
 }
 
-const isStatusIcon = computed(
-  () => props.iconName !== '' && props.iconName !== 'loading',
-)
+const isStatusIcon = computed(() => props.iconName !== '' && props.iconName !== 'loading');
 
 const statusIcon = computed<IconData | null>(() =>
   isStatusIcon.value ? resolveFeedbackIcon(props.iconName) : null,
-)
+);
 
 /** Non-undefined spinner shape for the inner sn-loading. */
-const spinnerType = computed(() => props.loadingType)
+const spinnerType = computed(() => props.loadingType);
 
-const glyphSize = computed(() => resolveSize(props.iconSize, 64))
-const spinnerSize = computed(() => resolveSize(props.loadingSize, 56))
+const glyphSize = computed(() => resolveSize(props.iconSize, 64));
+const spinnerSize = computed(() => resolveSize(props.loadingSize, 56));
 
 function show(): void {
-  clearAllTimers()
-  isMounted.value = true
-  isShown.value = true
-  emit('opened')
+  clearAllTimers();
+  isMounted.value = true;
+  isShown.value = true;
+  emit('opened');
   if (props.duration > 0) {
     closeTimer = setTimeout(() => {
-      closeTimer = null
-      requestClose()
-    }, props.duration)
+      closeTimer = null;
+      requestClose();
+    }, props.duration);
   }
 }
 
 function requestClose(): void {
-  emit('update:modelValue', false)
+  emit('update:modelValue', false);
 }
 
 function hide(): void {
-  clearAllTimers()
-  isShown.value = false
+  clearAllTimers();
+  isShown.value = false;
   leaveTimer = setTimeout(() => {
-    leaveTimer = null
-    isMounted.value = false
-    emit('closed')
-  }, FADE_MS)
+    leaveTimer = null;
+    isMounted.value = false;
+    emit('closed');
+  }, FADE_MS);
 }
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (value) show()
-    else hide()
+    if (value) show();
+    else hide();
   },
-)
+);
 
-onBeforeUnmount(clearAllTimers)
+onBeforeUnmount(clearAllTimers);
 
 function onClick(): void {
-  emit('click')
+  emit('click');
 }
 
 const rootClass = computed(() => [
@@ -255,34 +253,27 @@ const rootClass = computed(() => [
     'sn-toast--cover': props.cover,
   },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => `z-index: ${props.zIndex}`)
+const rootStyle = computed(() => `z-index: ${props.zIndex}`);
 
 const boxClass = computed(() => [
   'sn-toast__box',
   `sn-toast__box--${props.direction}`,
   { 'sn-toast__box--loading': props.iconName === 'loading' },
-])
+]);
 
-const boxStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const boxStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 
-const statusStyle = computed(() =>
-  props.iconColor ? `color: ${props.iconColor}` : undefined,
-)
+const statusStyle = computed(() => (props.iconColor ? `color: ${props.iconColor}` : undefined));
 
 const spinnerStyle = computed(() =>
   props.loadingColor ? `color: ${props.loadingColor}` : undefined,
-)
+);
 </script>
 
 <template>
-  <view
-    v-if="isMounted"
-    :class="rootClass"
-    :style="rootStyle"
-    data-snui-component="toast"
-  >
+  <view v-if="isMounted" :class="rootClass" :style="rootStyle" data-snui-component="toast">
     <view
       class="sn-toast__mask"
       :class="{ 'sn-toast__mask--shown': isShown }"
@@ -290,23 +281,12 @@ const spinnerStyle = computed(() =>
       @touchmove.stop.prevent
     />
 
-    <view
-      :class="boxClass"
-      :style="boxStyle"
-      role="alert"
-      aria-live="assertive"
-      @tap="onClick"
-    >
+    <view :class="boxClass" :style="boxStyle" role="alert" aria-live="assertive" @tap="onClick">
       <slot name="icon">
         <view v-if="iconName === 'loading'" class="sn-toast__icon" :style="spinnerStyle">
           <SnLoading :type="spinnerType" :size="spinnerSize" />
         </view>
-        <view
-          v-else-if="statusIcon"
-          class="sn-toast__icon"
-          :class="iconClass"
-          :style="statusStyle"
-        >
+        <view v-else-if="statusIcon" class="sn-toast__icon" :class="iconClass" :style="statusStyle">
           <SnIcon :icon="statusIcon" :size="glyphSize" />
         </view>
       </slot>

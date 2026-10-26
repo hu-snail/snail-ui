@@ -5,11 +5,11 @@
  * the tabs and the end-of-strip icons after the trailing `+`, exactly like a
  * browser window's tab row.
  */
-import { ref } from 'vue'
-import { ArrowLeft, ArrowRight, RotateCw, Star } from 'lucide-vue-next'
-import { SnIcon, SnTabs, SnTabPane } from '@snui/vue-web'
+import { ref } from 'vue';
+import { ArrowLeft, ArrowRight, RotateCw, Star } from 'lucide-vue-next';
+import { SnIcon, SnTabs, SnTabPane } from '@snui/vue-web';
 
-const active = ref<string>('home')
+const active = ref<string>('home');
 </script>
 
 <template>
@@ -28,9 +28,15 @@ const active = ref<string>('home')
         </span>
       </template>
 
-      <SnTabPane name="home" tab="Home">A browser tab row: navigation actions on the left, the star on the right.</SnTabPane>
-      <SnTabPane name="token" tab="Token">Theme / style pack / density as three independent dimensions.</SnTabPane>
-      <SnTabPane name="disabled" tab="Disabled" disabled>A disabled tab cannot be activated.</SnTabPane>
+      <SnTabPane name="home" tab="Home"
+        >A browser tab row: navigation actions on the left, the star on the right.</SnTabPane
+      >
+      <SnTabPane name="token" tab="Token"
+        >Theme / style pack / density as three independent dimensions.</SnTabPane
+      >
+      <SnTabPane name="disabled" tab="Disabled" disabled
+        >A disabled tab cannot be activated.</SnTabPane
+      >
     </SnTabs>
     <p class="tabs-demo__state">
       Current:<code>{{ active }}</code>

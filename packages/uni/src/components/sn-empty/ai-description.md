@@ -25,20 +25,20 @@ added to the wd-empty parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnEmpty } from '@snui/uni'
+import { SnEmpty } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `icon` | `string` | `'empty'` | no | Icon name / registry key / image URL / CSS class (see resolution order). |
-| `iconPrefix` | `string` | `''` | no | Iconfont class prefix applied together with `icon`. |
-| `cssIcon` | `boolean \| string` | `false` | no | CSS-icon mode: treat `icon` / `iconPrefix` as class names. |
-| `iconSize` | `number \| string` | `''` | no | Glyph / image size; a bare number is rpx, a string passes through. |
-| `tip` | `string` | `''` | no | Tip text under the glyph. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
+| Name          | Type                | Default   | Required | Description                                                              |
+| ------------- | ------------------- | --------- | -------- | ------------------------------------------------------------------------ |
+| `icon`        | `string`            | `'empty'` | no       | Icon name / registry key / image URL / CSS class (see resolution order). |
+| `iconPrefix`  | `string`            | `''`      | no       | Iconfont class prefix applied together with `icon`.                      |
+| `cssIcon`     | `boolean \| string` | `false`   | no       | CSS-icon mode: treat `icon` / `iconPrefix` as class names.               |
+| `iconSize`    | `number \| string`  | `''`      | no       | Glyph / image size; a bare number is rpx, a string passes through.       |
+| `tip`         | `string`            | `''`      | no       | Tip text under the glyph.                                                |
+| `customClass` | `string`            | `''`      | no       | Custom class for the root node.                                          |
+| `customStyle` | `string`            | `''`      | no       | Custom inline style for the root node.                                   |
 
 ### Icon resolution order
 
@@ -55,23 +55,23 @@ None — `sn-empty` is purely presentational.
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `image` | Custom glyph area — replaces the icon / image resolution above. |
-| `bottom` | Content below the tip (e.g. a retry button). |
+| Name     | Description                                                     |
+| -------- | --------------------------------------------------------------- |
+| `image`  | Custom glyph area — replaces the icon / image resolution above. |
+| `bottom` | Content below the tip (e.g. a retry button).                    |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text disabled | `--sn-mp-color-text-disabled` | Glyph color |
-| Text secondary | `--sn-mp-color-text-secondary` | Tip color |
-| Font size MD | `--sn-mp-font-size-md` | Tip size |
-| Line height normal | `--sn-mp-font-line-height-normal` | Tip line height |
-| Spacing 5 | `--sn-mp-spacing-5` | Glyph → tip / bottom gap |
-| Spacing 12 | `--sn-mp-spacing-12` | Bottom padding |
-| Border default | `--sn-mp-color-border-default` | Doodle skin outline |
-| Radius XL | `--sn-mp-radius-xl` | Doodle skin outline corners |
+| Token              | CSS Variable                      | Purpose                     |
+| ------------------ | --------------------------------- | --------------------------- |
+| Text disabled      | `--sn-mp-color-text-disabled`     | Glyph color                 |
+| Text secondary     | `--sn-mp-color-text-secondary`    | Tip color                   |
+| Font size MD       | `--sn-mp-font-size-md`            | Tip size                    |
+| Line height normal | `--sn-mp-font-line-height-normal` | Tip line height             |
+| Spacing 5          | `--sn-mp-spacing-5`               | Glyph → tip / bottom gap    |
+| Spacing 12         | `--sn-mp-spacing-12`              | Bottom padding              |
+| Border default     | `--sn-mp-color-border-default`    | Doodle skin outline         |
+| Radius XL          | `--sn-mp-radius-xl`               | Doodle skin outline corners |
 
 ## Accessibility
 

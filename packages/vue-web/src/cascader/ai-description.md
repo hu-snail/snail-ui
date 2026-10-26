@@ -18,38 +18,38 @@ render as one expandable list instead of side-by-side columns.
 
 ## SnCascader Props
 
-| Prop           | Type                                        | Default           | Notes                                              |
-| -------------- | ------------------------------------------- | ----------------- | -------------------------------------------------- |
-| modelValue     | `Array<string \| number> \| null`          | `[]`              | `v-model`. Full leaf path, root-first. Clear commits `[]`. |
-| options        | `Array<{ label, value, disabled?, children? }>` | `[]`       | Tree options (recursive `children`).               |
-| labelField     | `string`                                    | `'label'`         | Label key remapping.                               |
-| valueField     | `string`                                    | `'value'`         | Value key remapping.                               |
-| childrenField  | `string`                                    | `'children'`      | Children key remapping.                            |
-| placeholder    | `string`                                    | `'Please select'` | Empty-state text.                                  |
-| clearable      | `boolean`                                   | `false`           | Shows × button when a value exists.                |
-| filterable     | `boolean`                                   | `false`           | Enables the internal filter input.                 |
-| disabled       | `boolean`                                   | `false`           | Blocks open / select / clear.                      |
-| readonly       | `boolean`                                   | `false`           | Visible but inert.                                 |
-| size           | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | Trigger + row height / font preset.        |
-| status         | `'default' \| 'error' \| 'warning'`         | `'default'`       | Border color + `aria-invalid`.                     |
-| expandTrigger  | `'click' \| 'hover'`                        | `'click'`         | How a parent row opens the next column.            |
-| ariaLabel      | `string`                                    | `''`              | Accessible name for the trigger.                   |
-| emptyText      | `string`                                    | `'No options'`    | Empty state text (`empty` slot wins).              |
+| Prop          | Type                                                 | Default           | Notes                                                      |
+| ------------- | ---------------------------------------------------- | ----------------- | ---------------------------------------------------------- |
+| modelValue    | `Array<string \| number> \| null`                    | `[]`              | `v-model`. Full leaf path, root-first. Clear commits `[]`. |
+| options       | `Array<{ label, value, disabled?, children? }>`      | `[]`              | Tree options (recursive `children`).                       |
+| labelField    | `string`                                             | `'label'`         | Label key remapping.                                       |
+| valueField    | `string`                                             | `'value'`         | Value key remapping.                                       |
+| childrenField | `string`                                             | `'children'`      | Children key remapping.                                    |
+| placeholder   | `string`                                             | `'Please select'` | Empty-state text.                                          |
+| clearable     | `boolean`                                            | `false`           | Shows × button when a value exists.                        |
+| filterable    | `boolean`                                            | `false`           | Enables the internal filter input.                         |
+| disabled      | `boolean`                                            | `false`           | Blocks open / select / clear.                              |
+| readonly      | `boolean`                                            | `false`           | Visible but inert.                                         |
+| size          | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'`        | Trigger + row height / font preset.                        |
+| status        | `'default' \| 'error' \| 'warning'`                  | `'default'`       | Border color + `aria-invalid`.                             |
+| expandTrigger | `'click' \| 'hover'`                                 | `'click'`         | How a parent row opens the next column.                    |
+| ariaLabel     | `string`                                             | `''`              | Accessible name for the trigger.                           |
+| emptyText     | `string`                                             | `'No options'`    | Empty state text (`empty` slot wins).                      |
 
 ## SnCascader Events
 
-| Event               | Payload                        | When                                       |
-| ------------------- | ------------------------------ | ------------------------------------------ |
+| Event               | Payload                            | When                                  |
+| ------------------- | ---------------------------------- | ------------------------------------- |
 | `update:modelValue` | `(value: Array<string \| number>)` | Leaf selected / cleared.              |
 | `change`            | `(value: Array<string \| number>)` | Selection committed (clear included). |
-| `clear`             | —                              | Clear button activated.                    |
-| `focus` / `blur`    | `(FocusEvent)`                 | Trigger focus change.                      |
+| `clear`             | —                                  | Clear button activated.               |
+| `focus` / `blur`    | `(FocusEvent)`                     | Trigger focus change.                 |
 
 ## SnCascader Slots
 
-| Slot    | Description                                  |
-| ------- | -------------------------------------------- |
-| `empty` | Empty state (no options / no filter match).  |
+| Slot    | Description                                 |
+| ------- | ------------------------------------------- |
+| `empty` | Empty state (no options / no filter match). |
 
 ## Selection semantics
 
@@ -82,22 +82,22 @@ render as one expandable list instead of side-by-side columns.
 All styling resolves through `--sn-web-cascader-*` aliases with
 `--sn-web-color-*` fallbacks:
 
-| Token                                        | Default                              | Purpose            |
-| -------------------------------------------- | ------------------------------------ | ------------------ |
-| `--sn-web-cascader-height`                   | `22–40px` (per size)                 | Trigger height     |
-| `--sn-web-cascader-radius`                   | `6px`                                | Corner radius      |
-| `--sn-web-cascader-border-color`             | `--sn-web-color-border-default`      | Trigger border     |
-| `--sn-web-cascader-border-color-focus`       | `--sn-web-color-action-primary`      | Open/focus border  |
-| `--sn-web-cascader-bg`                       | `--sn-web-color-background-surface`  | Trigger fill       |
-| `--sn-web-cascader-text-color`               | `--sn-web-color-text-primary`        | Value text         |
-| `--sn-web-cascader-placeholder-color`        | `--sn-web-color-text-tertiary`       | Placeholder text   |
-| `--sn-web-cascader-menu-bg`                  | `--sn-web-color-background-elevated` | Dropdown fill      |
-| `--sn-web-cascader-menu-z-index`             | `1000`                               | Dropdown stacking  |
-| `--sn-web-cascader-column-width`             | `160px`                              | Column min width   |
-| `--sn-web-cascader-menu-max-height`          | `260px`                              | Columns scroll cap |
-| `--sn-web-cascader-option-bg-hover`          | `--sn-web-color-background-surface-hover` | Row highlight |
-| `--sn-web-cascader-option-bg-selected`       | `--sn-web-color-action-primary-soft` | Selected leaf fill |
-| `--sn-web-cascader-option-text-color-in-path`| `--sn-web-color-action-primary`      | Walked parent text |
+| Token                                         | Default                                   | Purpose            |
+| --------------------------------------------- | ----------------------------------------- | ------------------ |
+| `--sn-web-cascader-height`                    | `22–40px` (per size)                      | Trigger height     |
+| `--sn-web-cascader-radius`                    | `6px`                                     | Corner radius      |
+| `--sn-web-cascader-border-color`              | `--sn-web-color-border-default`           | Trigger border     |
+| `--sn-web-cascader-border-color-focus`        | `--sn-web-color-action-primary`           | Open/focus border  |
+| `--sn-web-cascader-bg`                        | `--sn-web-color-background-surface`       | Trigger fill       |
+| `--sn-web-cascader-text-color`                | `--sn-web-color-text-primary`             | Value text         |
+| `--sn-web-cascader-placeholder-color`         | `--sn-web-color-text-tertiary`            | Placeholder text   |
+| `--sn-web-cascader-menu-bg`                   | `--sn-web-color-background-elevated`      | Dropdown fill      |
+| `--sn-web-cascader-menu-z-index`              | `1000`                                    | Dropdown stacking  |
+| `--sn-web-cascader-column-width`              | `160px`                                   | Column min width   |
+| `--sn-web-cascader-menu-max-height`           | `260px`                                   | Columns scroll cap |
+| `--sn-web-cascader-option-bg-hover`           | `--sn-web-color-background-surface-hover` | Row highlight      |
+| `--sn-web-cascader-option-bg-selected`        | `--sn-web-color-action-primary-soft`      | Selected leaf fill |
+| `--sn-web-cascader-option-text-color-in-path` | `--sn-web-color-action-primary`           | Walked parent text |
 
 ## Accessibility
 

@@ -47,7 +47,7 @@ Import the class-only token layer in `App.uvue` (App has no `:root`; variables
 mount on `.sn-theme-root`, which `sn-config-provider` adds automatically):
 
 ```css
-@import "@snui/uni-x/theme/index.css";
+@import '@snui/uni-x/theme/index.css';
 ```
 
 Pages that do not use `sn-config-provider` should add `class="sn-theme-root"`
@@ -65,15 +65,15 @@ Same as the uni end: wrap with `<sn-config-provider theme="dark">`, or add the
 
 ## Current status
 
-| Item | Status |
-| --- | --- |
-| Components | All 82 components (95 `.uvue` files) + 29 ts helpers |
-| Theme / dark mode | Class-only token layer generated |
-| Style Packs (skin) | **Supported via variable injection**: skin descendant rules flatten into single-class `--snx-*` var blocks (measured: 59 components, 1097 injected vars, 434 consumers); only 9 interactive-state (`:hover`/`:active`) rules are dropped — unrepresentable on App (see PORTING-REPORT) |
-| sn-table | uvue officially supports `<component :is>` on App; the slot-function value shape used here needs compile verification |
-| sn-sticky | Degrades to normal flow on App (vapor has no `position: sticky`; built-in sticky-section works only inside list-view) — use list-view + sticky-section for list pinning |
-| Canvas components | Only sn-qr-code actually uses canvas — adapted to the uni-app x API (W3C 2d context + bitmap DPR sizing + `toDataURL` export); sn-signature / sn-watermark / sn-img-cropper were designed canvas-free (view strokes / view tiling / geometry reporting), nothing to change |
-| Desktop H5 mouse gestures (picker-view) | Gated behind `#ifdef H5`; App stays touch-only |
+| Item                                    | Status                                                                                                                                                                                                                                                                                 |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Components                              | All 82 components (95 `.uvue` files) + 29 ts helpers                                                                                                                                                                                                                                   |
+| Theme / dark mode                       | Class-only token layer generated                                                                                                                                                                                                                                                       |
+| Style Packs (skin)                      | **Supported via variable injection**: skin descendant rules flatten into single-class `--snx-*` var blocks (measured: 59 components, 1097 injected vars, 434 consumers); only 9 interactive-state (`:hover`/`:active`) rules are dropped — unrepresentable on App (see PORTING-REPORT) |
+| sn-table                                | uvue officially supports `<component :is>` on App; the slot-function value shape used here needs compile verification                                                                                                                                                                  |
+| sn-sticky                               | Degrades to normal flow on App (vapor has no `position: sticky`; built-in sticky-section works only inside list-view) — use list-view + sticky-section for list pinning                                                                                                                |
+| Canvas components                       | Only sn-qr-code actually uses canvas — adapted to the uni-app x API (W3C 2d context + bitmap DPR sizing + `toDataURL` export); sn-signature / sn-watermark / sn-img-cropper were designed canvas-free (view strokes / view tiling / geometry reporting), nothing to change             |
+| Desktop H5 mouse gestures (picker-view) | Gated behind `#ifdef H5`; App stays touch-only                                                                                                                                                                                                                                         |
 
 Every transform decision (dropped rules, wrapped text, renamed events) is
 listed in `packages/uni-x/PORTING-REPORT.md`.

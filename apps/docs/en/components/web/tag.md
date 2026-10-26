@@ -22,17 +22,17 @@ Tag (n-tag aligned). Six-color types, closable, checkable.
 
 ### SnTag Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| type | six colors same as Text | `'default'` | Color semantics |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | Size (22/28/34px) |
-| closable | `boolean` | `false` | Close button |
-| disabled | `boolean` | `false` | Disabled |
-| bordered | `boolean` | `true` | Border |
-| round | `boolean` | `false` | Pill |
-| color | `string` | — | Custom background (overrides type) |
-| checkable | `boolean` | `false` | Selectable |
-| checked | `boolean` | `false` | v-model:checked |
+| Prop      | Type                         | Default     | Notes                              |
+| --------- | ---------------------------- | ----------- | ---------------------------------- |
+| type      | six colors same as Text      | `'default'` | Color semantics                    |
+| size      | `'small'\|'medium'\|'large'` | `'medium'`  | Size (22/28/34px)                  |
+| closable  | `boolean`                    | `false`     | Close button                       |
+| disabled  | `boolean`                    | `false`     | Disabled                           |
+| bordered  | `boolean`                    | `true`      | Border                             |
+| round     | `boolean`                    | `false`     | Pill                               |
+| color     | `string`                     | —           | Custom background (overrides type) |
+| checkable | `boolean`                    | `false`     | Selectable                         |
+| checked   | `boolean`                    | `false`     | v-model:checked                    |
 
 Events: `close` / `update:checked`; Slots: `default`. Checkable renders `role="button"` + `aria-pressed`, toggled with Enter/Space.
 

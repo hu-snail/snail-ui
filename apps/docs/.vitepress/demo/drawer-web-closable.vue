@@ -5,11 +5,11 @@
  * Shows: `closable` on the content panel (built-in X), and the footer-only
  * variant where `closable` stays off and the footer owns the exit.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const plain = ref(false)
-const footerless = ref(false)
+const plain = ref(false);
+const footerless = ref(false);
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnComment — avatar / author / datetime / content / actions 完整评论场景。 */
-import { SnComment } from '@snui/vue-web'
+import { SnComment } from '@snui/vue-web';
 </script>
 
 <template>
@@ -16,11 +16,7 @@ import { SnComment } from '@snui/vue-web'
         <span class="action">回复</span>
       </template>
     </SnComment>
-    <SnComment
-      author="巴尔扎克"
-      datetime="30 分钟前"
-      content="好设计是尽可能少的设计。"
-    >
+    <SnComment author="巴尔扎克" datetime="30 分钟前" content="好设计是尽可能少的设计。">
       <template #actions>
         <span class="action">赞同 21</span>
         <span class="action">回复</span>
@@ -46,6 +42,10 @@ import { SnComment } from '@snui/vue-web'
 }
 
 .action:hover {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 2%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
 }
 </style>

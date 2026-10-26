@@ -33,39 +33,39 @@ enableHistory 显示撤回 / 恢复按钮；penColor 覆盖笔色；disabled 锁
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `penColor` | `string` | `''` | 笔色（空 = token 默认） |
-| `lineWidth` | `number` | `3` | 笔宽（px 设计值） |
-| `confirmText` / `clearText` | `string` | `'确认'` / `'清空'` | 确认 / 清空文案 |
-| `revokeText` / `restoreText` | `string` | `'撤回'` / `'恢复'` | 撤回 / 恢复文案 |
-| `undoText` / `redoText` | `string` | `''` | 覆盖撤回 / 恢复文案 |
-| `disabled` | `boolean` | `false` | 禁用画板与按钮 |
-| `height` / `width` | `string \| number` | `undefined` | 画板尺寸（数字按 rpx） |
-| `backgroundColor` | `string` | `''` | 画板背景色 |
-| `disableScroll` | `boolean` | `true` | 绘制时拦截 touchmove |
-| `enableHistory` | `boolean` | `false` | 是否显示撤回 / 恢复 |
-| `step` | `number` | `1` | 每次撤回 / 恢复的笔画数 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                          | 类型               | 默认值              | 说明                    |
+| ----------------------------- | ------------------ | ------------------- | ----------------------- |
+| `penColor`                    | `string`           | `''`                | 笔色（空 = token 默认） |
+| `lineWidth`                   | `number`           | `3`                 | 笔宽（px 设计值）       |
+| `confirmText` / `clearText`   | `string`           | `'确认'` / `'清空'` | 确认 / 清空文案         |
+| `revokeText` / `restoreText`  | `string`           | `'撤回'` / `'恢复'` | 撤回 / 恢复文案         |
+| `undoText` / `redoText`       | `string`           | `''`                | 覆盖撤回 / 恢复文案     |
+| `disabled`                    | `boolean`          | `false`             | 禁用画板与按钮          |
+| `height` / `width`            | `string \| number` | `undefined`         | 画板尺寸（数字按 rpx）  |
+| `backgroundColor`             | `string`           | `''`                | 画板背景色              |
+| `disableScroll`               | `boolean`          | `true`              | 绘制时拦截 touchmove    |
+| `enableHistory`               | `boolean`          | `false`             | 是否显示撤回 / 恢复     |
+| `step`                        | `number`           | `1`                 | 每次撤回 / 恢复的笔画数 |
+| `customClass` / `customStyle` | `string`           | `''`                | 根节点自定义类名 / 样式 |
 
 > **未实现**：`fileType` / `quality` / `exportScale`（图片导出需要 `<canvas>`，不在跨端白名单内），`pressure` / `maxWidth` / `minWidth` / `minSpeed`（速度采样式笔宽在部分小程序渲染器上不可靠）。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `start` / `end` / `signing` | 触摸生命周期 | `(event: Event)` |
-| `confirm` | 点击确认时 | `SignatureResult` |
-| `clear` | 清空画板时 | — |
+| 事件名                      | 说明         | 参数              |
+| --------------------------- | ------------ | ----------------- |
+| `start` / `end` / `signing` | 触摸生命周期 | `(event: Event)`  |
+| `confirm`                   | 点击确认时   | `SignatureResult` |
+| `clear`                     | 清空画板时   | —                 |
 
 ## Exposed API
 
-| 成员 | 签名 | 说明 |
-| --- | --- | --- |
-| `confirm` | `() => void` | 发出当前笔画几何 |
-| `clear` | `() => void` | 清空画板 |
-| `revoke` / `restore` | `() => void` | 撤回 / 恢复 |
-| `init` | `() => void` | 清空重做栈 |
+| 成员                 | 签名         | 说明             |
+| -------------------- | ------------ | ---------------- |
+| `confirm`            | `() => void` | 发出当前笔画几何 |
+| `clear`              | `() => void` | 清空画板         |
+| `revoke` / `restore` | `() => void` | 撤回 / 恢复      |
+| `init`               | `() => void` | 清空重做栈       |
 
 ## Slots
 
@@ -73,15 +73,15 @@ enableHistory 显示撤回 / 恢复按钮；penColor 覆盖笔色；disabled 锁
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-surface`` | 画板底色 |
-| ``--sn-mp-color-border-default`` | 画板边框 |
-| ``--sn-mp-color-text-primary`` | 默认笔色 |
-| ``--sn-mp-color-background-soft`` | 次要按钮底色 |
-| ``--sn-mp-color-action-primary`` | 确认按钮 |
-| ``--sn-mp-color-text-on-primary`` | 确认按钮文字 |
-| ``--sn-mp-color-background-overlay`` | 禁用遮罩 |
+| 变量                                    | 用途                   |
+| --------------------------------------- | ---------------------- |
+| `--sn-mp-color-background-surface`      | 画板底色               |
+| `--sn-mp-color-border-default`          | 画板边框               |
+| `--sn-mp-color-text-primary`            | 默认笔色               |
+| `--sn-mp-color-background-soft`         | 次要按钮底色           |
+| `--sn-mp-color-action-primary`          | 确认按钮               |
+| `--sn-mp-color-text-on-primary`         | 确认按钮文字           |
+| `--sn-mp-color-background-overlay`      | 禁用遮罩               |
 | ``--sn-mp-radius-lg` / `-full` / `-md`` | 画板 / 笔画 / 按钮圆角 |
 
 ## 无障碍
@@ -94,4 +94,3 @@ enableHistory 显示撤回 / 恢复按钮；penColor 覆盖笔色；disabled 锁
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

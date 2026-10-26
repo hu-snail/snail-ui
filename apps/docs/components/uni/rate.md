@@ -28,30 +28,30 @@ allowHalf 允许半星；clearable 再次点击当前分数清空为 null；acti
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| null` | `null` | 当前分数 |
-| `num` | `number` | `5` | 图标数量 |
-| `readonly` | `boolean` | `false` | 只读 |
-| `size` | `string \| number` | `undefined` | 图标尺寸（px 设计值） |
-| `space` | `string \| number` | `undefined` | 图标间距（数字按 rpx） |
-| `color` | `string` | `''` | 未选中颜色 |
-| `activeColor` | `string \| string[]` | `''` | 选中颜色，支持逐图标数组 |
-| `icon` / `activeIcon` | `string` | `'star'` | 未选中 / 选中图标名（注册表解析） |
-| `iconPrefix` | `string` | `''` | 图标类名前缀（仅对齐 wot-ui） |
-| `cssIcon` | `boolean \| string` | `false` | 把图标名当 CSS 类名使用 |
-| `disabled` | `boolean` | `false` | 禁用 |
-| `allowHalf` | `boolean` | `false` | 允许半选 |
-| `clearable` | `boolean` | `false` | 再次点击当前分数清空为 null |
-| `block` | `boolean` | `false` | 块级撑满整行 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                          | 类型                 | 默认值      | 说明                              |
+| ----------------------------- | -------------------- | ----------- | --------------------------------- |
+| `modelValue`                  | `number \| null`     | `null`      | 当前分数                          |
+| `num`                         | `number`             | `5`         | 图标数量                          |
+| `readonly`                    | `boolean`            | `false`     | 只读                              |
+| `size`                        | `string \| number`   | `undefined` | 图标尺寸（px 设计值）             |
+| `space`                       | `string \| number`   | `undefined` | 图标间距（数字按 rpx）            |
+| `color`                       | `string`             | `''`        | 未选中颜色                        |
+| `activeColor`                 | `string \| string[]` | `''`        | 选中颜色，支持逐图标数组          |
+| `icon` / `activeIcon`         | `string`             | `'star'`    | 未选中 / 选中图标名（注册表解析） |
+| `iconPrefix`                  | `string`             | `''`        | 图标类名前缀（仅对齐 wot-ui）     |
+| `cssIcon`                     | `boolean \| string`  | `false`     | 把图标名当 CSS 类名使用           |
+| `disabled`                    | `boolean`            | `false`     | 禁用                              |
+| `allowHalf`                   | `boolean`            | `false`     | 允许半选                          |
+| `clearable`                   | `boolean`            | `false`     | 再次点击当前分数清空为 null       |
+| `block`                       | `boolean`            | `false`     | 块级撑满整行                      |
+| `customClass` / `customStyle` | `string`             | `''`        | 根节点自定义类名 / 样式           |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 分数变化时 | `(value: number \| null)` |
-| `change` | 分数变化时（同 tick） | `{ value }` |
+| 事件名              | 说明                  | 参数                      |
+| ------------------- | --------------------- | ------------------------- |
+| `update:modelValue` | 分数变化时            | `(value: number \| null)` |
+| `change`            | 分数变化时（同 tick） | `{ value }`               |
 
 ## Slots
 
@@ -59,11 +59,11 @@ allowHalf 允许半星；clearable 再次点击当前分数清空为 null；acti
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-feedback-warning`` | 默认选中色 |
-| ``--sn-mp-color-text-disabled`` | 默认未选中色 |
-| ``--sn-mp-spacing-2`` | 默认图标间距 |
+| 变量                             | 用途         |
+| -------------------------------- | ------------ |
+| `--sn-mp-color-feedback-warning` | 默认选中色   |
+| `--sn-mp-color-text-disabled`    | 默认未选中色 |
+| `--sn-mp-spacing-2`              | 默认图标间距 |
 
 ## 无障碍
 
@@ -73,4 +73,3 @@ allowHalf 允许半星；clearable 再次点击当前分数清空为 null；acti
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

@@ -16,24 +16,31 @@ NNNN-short-title.md
 # NNNN — <Title>
 
 ## Status
+
 Proposed | Accepted | Superseded by NNNN | Deprecated
 
 ## Context
+
 <why this decision is needed>
 
 ## Options
+
 <alternatives considered>
 
 ## Decision
+
 <chosen>
 
 ## Reason
+
 <why this option>
 
 ## Trade-offs
+
 <what we accept>
 
 ## Consequences
+
 <follow-ups>
 ```
 

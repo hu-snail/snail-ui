@@ -16,16 +16,16 @@ Grid lucky draw: `play()` cycles the highlight clockwise along the grid perimete
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `rows` | `number` | `3` | no | Rows (≥3). |
-| `cols` | `number` | `3` | no | Columns (≥3). |
-| `prizes` | `SnLuckyPrize[]` | `[]` | no | Prizes `{ name, img?, color? }` along the perimeter. |
-| `gutter` | `string` | `'8rpx'` | no | Cell gap. |
-| `cellHeight` | `string` | `'120rpx'` | no | Cell height. |
-| `speed` | `number` | `60` | no | Cycling step interval (ms). |
-| `customClass` | `string` | `''` | no | Root custom class. |
-| `customStyle` | `string` | `''` | no | Root custom style. |
+| Name          | Type             | Default    | Required | Description                                          |
+| ------------- | ---------------- | ---------- | -------- | ---------------------------------------------------- |
+| `rows`        | `number`         | `3`        | no       | Rows (≥3).                                           |
+| `cols`        | `number`         | `3`        | no       | Columns (≥3).                                        |
+| `prizes`      | `SnLuckyPrize[]` | `[]`       | no       | Prizes `{ name, img?, color? }` along the perimeter. |
+| `gutter`      | `string`         | `'8rpx'`   | no       | Cell gap.                                            |
+| `cellHeight`  | `string`         | `'120rpx'` | no       | Cell height.                                         |
+| `speed`       | `number`         | `60`       | no       | Cycling step interval (ms).                          |
+| `customClass` | `string`         | `''`       | no       | Root custom class.                                   |
+| `customStyle` | `string`         | `''`       | no       | Root custom style.                                   |
 
 ## Events
 

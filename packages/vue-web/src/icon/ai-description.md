@@ -14,8 +14,8 @@ Lucide 是 Feather Icons 的社区 fork，1500+ 个统一 24×24 / 2px 描边风
 
 ```vue
 <script setup lang="ts">
-import { ChevronRight } from 'lucide-vue-next'
-import { SnIcon } from '@snui/vue-web'
+import { ChevronRight } from 'lucide-vue-next';
+import { SnIcon } from '@snui/vue-web';
 </script>
 
 <template>
@@ -32,10 +32,10 @@ import { SnIcon } from '@snui/vue-web'
 ```vue
 <!-- app entry / once at bootstrap -->
 <script setup lang="ts">
-import { ChevronRight, Settings, Search } from 'lucide-vue-next'
-import { registerSnIcons } from '@snui/vue-web'
+import { ChevronRight, Settings, Search } from 'lucide-vue-next';
+import { registerSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ ChevronRight, Settings, Search })
+registerSnIcons({ ChevronRight, Settings, Search });
 </script>
 
 <!-- anywhere in the app -->
@@ -50,8 +50,8 @@ registerSnIcons({ ChevronRight, Settings, Search })
 
 ```ts
 // ✗ 反面：把整个图标库打进 bundle
-import * as Icons from 'lucide-vue-next'
-const icon = computed(() => Icons[props.name])
+import * as Icons from 'lucide-vue-next';
+const icon = computed(() => Icons[props.name]);
 ```
 
 这种写法 vite/Rollup 都无法 tree-shake —— `Icons` 是个完整 namespace 对象，bundler 没法静态推断哪些 key 会被用到。结果就是 1500+ 个 SVG 全部进 bundle，体积膨胀几百 KB。
@@ -60,25 +60,25 @@ const icon = computed(() => Icons[props.name])
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-|---|---|---|---|
-| `icon` | `Component` | — | 直接传入图标组件（推荐） |
-| `name` | `string` | — | 从注册表查图标 |
-| `size` | `number \| string` | `16` | 图标尺寸（px 或 CSS 长度） |
-| `color` | `string` | `'currentColor'` | 描边颜色（默认继承父元素 color） |
-| `strokeWidth` | `number \| string` | `2` | 描边宽度（设计单位） |
-| `strokeWidthAbsolute` | `boolean` | `false` | true: 描边宽度按绝对像素（不随 size 缩放） |
-| `defaultClass` | `string` | — | 传给 SVG 内部的 class |
+| 名称                  | 类型               | 默认值           | 说明                                       |
+| --------------------- | ------------------ | ---------------- | ------------------------------------------ |
+| `icon`                | `Component`        | —                | 直接传入图标组件（推荐）                   |
+| `name`                | `string`           | —                | 从注册表查图标                             |
+| `size`                | `number \| string` | `16`             | 图标尺寸（px 或 CSS 长度）                 |
+| `color`               | `string`           | `'currentColor'` | 描边颜色（默认继承父元素 color）           |
+| `strokeWidth`         | `number \| string` | `2`              | 描边宽度（设计单位）                       |
+| `strokeWidthAbsolute` | `boolean`          | `false`          | true: 描边宽度按绝对像素（不随 size 缩放） |
+| `defaultClass`        | `string`           | —                | 传给 SVG 内部的 class                      |
 
 `icon` 与 `name` 同时传入时 `icon` 优先；都不传则渲染 placeholder（开发态提示「icon not registered」，生产环境可通过 CSS 隐藏）。
 
 ### 注册表 API
 
 ```ts
-import { registerSnIcons, clearSnIcons } from '@snui/vue-web'
+import { registerSnIcons, clearSnIcons } from '@snui/vue-web';
 
-registerSnIcons({ ChevronRight, Settings, Search })  // 注册（合并）
-clearSnIcons()                                       // 清空（测试用）
+registerSnIcons({ ChevronRight, Settings, Search }); // 注册（合并）
+clearSnIcons(); // 清空（测试用）
 ```
 
 ## 与 SnButton 配合

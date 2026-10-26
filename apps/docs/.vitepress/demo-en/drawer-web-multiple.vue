@@ -5,11 +5,11 @@
  * Shows: independent state per drawer, stacking order, and that closing an
  * inner drawer leaves the outer one open.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-const outer = ref(false)
-const inner = ref(false)
+const outer = ref(false);
+const inner = ref(false);
 </script>
 
 <template>
@@ -23,7 +23,10 @@ const inner = ref(false)
 
         <SnDrawer v-model:show="inner" placement="right" :width="320">
           <SnDrawerContent title="Second layer" closable @close="inner = false">
-            <p>Nested drawers keep independent state; closing this one does not affect the outer layer.</p>
+            <p>
+              Nested drawers keep independent state; closing this one does not affect the outer
+              layer.
+            </p>
             <p>Each layer has its own mask; the more layers, the darker the backdrop.</p>
           </SnDrawerContent>
         </SnDrawer>

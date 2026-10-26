@@ -3,10 +3,10 @@
  * Demo: SnLink — underline on/off, the disabled state, and link-like
  * interaction rendered on a non-anchor tag.
  */
-import { ref } from 'vue'
-import { SnLink } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnLink } from '@snui/vue-web';
 
-const clickCount = ref(0)
+const clickCount = ref(0);
 </script>
 
 <template>
@@ -14,8 +14,12 @@ const clickCount = ref(0)
     <section class="link-state-demo__block">
       <h4>Underline</h4>
       <div class="link-state-demo__row">
-        <SnLink type="primary" href="#underline-off">underline = false (default, shown on hover)</SnLink>
-        <SnLink type="primary" underline href="#underline-on">underline = true (always shown)</SnLink>
+        <SnLink type="primary" href="#underline-off"
+          >underline = false (default, shown on hover)</SnLink
+        >
+        <SnLink type="primary" underline href="#underline-on"
+          >underline = true (always shown)</SnLink
+        >
       </div>
     </section>
 

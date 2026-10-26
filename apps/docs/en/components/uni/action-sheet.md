@@ -35,57 +35,57 @@ Each `actions` entry renders one row; an empty `cancelText` hides the cancel but
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| modelValue | boolean | false | Visibility (`v-model`) |
-| actions | SnActionSheetAction[] | [] | List rows |
-| panels | Array<Panel \| Panel[]> | [] | Grid cells; a nested array means multiple rows |
-| title | string | '' | Title text |
-| cancelText | string | '' | Cancel label; an empty string hides the button |
-| closeOnClickAction | boolean | true | Close after a row is selected |
-| closeOnClickModal | boolean | true | Close on scrim tap |
-| duration | number | 200 | Animation duration in ms |
-| zIndex | number | 10 | Stacking level |
-| lazyRender | boolean | true | Defer content rendering until first open |
-| safeAreaInsetBottom | boolean | true | Pad the sheet for the device safe area |
-| customTitleClass | string | '' | Custom class for the title area |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the panel |
+| Prop                | Type                    | Default | Description                                    |
+| ------------------- | ----------------------- | ------- | ---------------------------------------------- |
+| modelValue          | boolean                 | false   | Visibility (`v-model`)                         |
+| actions             | SnActionSheetAction[]   | []      | List rows                                      |
+| panels              | Array<Panel \| Panel[]> | []      | Grid cells; a nested array means multiple rows |
+| title               | string                  | ''      | Title text                                     |
+| cancelText          | string                  | ''      | Cancel label; an empty string hides the button |
+| closeOnClickAction  | boolean                 | true    | Close after a row is selected                  |
+| closeOnClickModal   | boolean                 | true    | Close on scrim tap                             |
+| duration            | number                  | 200     | Animation duration in ms                       |
+| zIndex              | number                  | 10      | Stacking level                                 |
+| lazyRender          | boolean                 | true    | Defer content rendering until first open       |
+| safeAreaInsetBottom | boolean                 | true    | Pad the sheet for the device safe area         |
+| customTitleClass    | string                  | ''      | Custom class for the title area                |
+| customClass         | string                  | ''      | Custom class for the root node                 |
+| customStyle         | string                  | ''      | Custom inline style for the panel              |
 
 `SnActionSheetAction` = `{ name?, description?, color?, icon?, disabled? }`; `SnActionSheetPanel` = `{ title?, name?, icon? }`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| update:modelValue | `v-model` sync | boolean |
-| select | Row / cell tapped | `{ item, index }` or `{ item, rowIndex, colIndex }` |
-| cancel | Cancel tapped | — |
-| close | Panel closed (forwarded from `sn-popup`) | — |
-| click-modal | Scrim tapped (forwarded from `sn-popup`) | — |
-| enter` / `after-enter` / `leave` / `after-leave | Animation legs (forwarded from `sn-popup`) | — |
+| Event                                     | Description                                | Payload                                             |
+| ----------------------------------------- | ------------------------------------------ | --------------------------------------------------- |
+| update:modelValue                         | `v-model` sync                             | boolean                                             |
+| select                                    | Row / cell tapped                          | `{ item, index }` or `{ item, rowIndex, colIndex }` |
+| cancel                                    | Cancel tapped                              | —                                                   |
+| close                                     | Panel closed (forwarded from `sn-popup`)   | —                                                   |
+| click-modal                               | Scrim tapped (forwarded from `sn-popup`)   | —                                                   |
+| enter`/`after-enter`/`leave`/`after-leave | Animation legs (forwarded from `sn-popup`) | —                                                   |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                     |
+| ------- | ----------------------------------------------- |
 | default | Custom content above the list, inside the panel |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-text-primary | Row labels |
-| --sn-mp-color-text-secondary | Title / grid captions |
-| --sn-mp-color-text-tertiary | Row descriptions |
-| --sn-mp-color-text-disabled | Disabled rows |
-| --sn-mp-color-action-primary | Grid icons |
-| --sn-mp-color-background-elevated | Cancel button surface |
-| --sn-mp-color-background-subtle | Gap strip |
-| --sn-mp-color-border-subtle | Row separators |
-| --sn-mp-font-size-sm` / `--sn-mp-font-size-lg | Caption / row label size |
-| --sn-mp-font-line-height-normal | All text line height |
-| --sn-mp-spacing-2` … `--sn-mp-spacing-5 | Padding and gaps |
+| Variable                                    | Purpose                  |
+| ------------------------------------------- | ------------------------ |
+| --sn-mp-color-text-primary                  | Row labels               |
+| --sn-mp-color-text-secondary                | Title / grid captions    |
+| --sn-mp-color-text-tertiary                 | Row descriptions         |
+| --sn-mp-color-text-disabled                 | Disabled rows            |
+| --sn-mp-color-action-primary                | Grid icons               |
+| --sn-mp-color-background-elevated           | Cancel button surface    |
+| --sn-mp-color-background-subtle             | Gap strip                |
+| --sn-mp-color-border-subtle                 | Row separators           |
+| --sn-mp-font-size-sm`/`--sn-mp-font-size-lg | Caption / row label size |
+| --sn-mp-font-line-height-normal             | All text line height     |
+| --sn-mp-spacing-2`…`--sn-mp-spacing-5       | Padding and gaps         |
 
 ## Accessibility
 
@@ -96,7 +96,6 @@ Each `actions` entry renders one row; an empty `cancelText` hides the cancel but
 ## Dark mode
 
 The panel surface, text and status colors all come from semantic tokens (`--sn-mp-color-background-elevated` / `--sn-mp-color-text-*` / `--sn-mp-color-border-subtle`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

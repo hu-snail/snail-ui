@@ -44,64 +44,64 @@ SSR) no zone is created and `open()` still works.
 ```
 
 ```ts
-import { SnImagePreview } from '@snui/uni'
+import { SnImagePreview } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `selector` | `string` | `''` | no | CSS selector whose matched elements open the viewer. |
-| `images` | `string[]` | `[]` | no | Image URLs. |
-| `startPosition` | `number` | `0` | no | Index shown when opened. |
-| `showIndex` | `boolean` | `true` | no | Show the `n / total` counter. |
-| `loop` | `boolean` | `true` | no | Loop from the last image to the first. |
-| `closeable` | `boolean` | `true` | no | Render the close button. |
-| `closeIcon` | `string` | `'close'` | no | sn-icon registry name; unknown names fall back to the built-in X glyph. |
-| `closeIconPosition` | `'top-left' \| 'top-right'` | `'top-right'` | no | Close-button anchor. |
-| `closeOnClick` | `boolean` | `true` | no | Tapping the image or the scrim closes the viewer. |
-| `showMenuByLongpress` | `boolean` | `true` | no | Long-press shows the miniprogram QR menu on the image. |
-| `zIndex` | `number` | `1000` | no | Stacking level. |
-| `customClass` | `string` | `''` | no | Custom class for the viewer root. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the viewer root. |
+| Name                  | Type                        | Default       | Required | Description                                                             |
+| --------------------- | --------------------------- | ------------- | -------- | ----------------------------------------------------------------------- |
+| `selector`            | `string`                    | `''`          | no       | CSS selector whose matched elements open the viewer.                    |
+| `images`              | `string[]`                  | `[]`          | no       | Image URLs.                                                             |
+| `startPosition`       | `number`                    | `0`           | no       | Index shown when opened.                                                |
+| `showIndex`           | `boolean`                   | `true`        | no       | Show the `n / total` counter.                                           |
+| `loop`                | `boolean`                   | `true`        | no       | Loop from the last image to the first.                                  |
+| `closeable`           | `boolean`                   | `true`        | no       | Render the close button.                                                |
+| `closeIcon`           | `string`                    | `'close'`     | no       | sn-icon registry name; unknown names fall back to the built-in X glyph. |
+| `closeIconPosition`   | `'top-left' \| 'top-right'` | `'top-right'` | no       | Close-button anchor.                                                    |
+| `closeOnClick`        | `boolean`                   | `true`        | no       | Tapping the image or the scrim closes the viewer.                       |
+| `showMenuByLongpress` | `boolean`                   | `true`        | no       | Long-press shows the miniprogram QR menu on the image.                  |
+| `zIndex`              | `number`                    | `1000`        | no       | Stacking level.                                                         |
+| `customClass`         | `string`                    | `''`          | no       | Custom class for the viewer root.                                       |
+| `customStyle`         | `string`                    | `''`          | no       | Custom inline style for the viewer root.                                |
 
 ## Methods
 
-| Name | Parameters | Description |
-|---|---|---|
-| `open` | `options?: { images?, startPosition? }` | Show the viewer; the options override the props for this session. |
-| `close` | — | Hide the viewer. |
-| `setActive` | `index: number` | Jump to an index (clamped to the list). |
+| Name        | Parameters                              | Description                                                       |
+| ----------- | --------------------------------------- | ----------------------------------------------------------------- |
+| `open`      | `options?: { images?, startPosition? }` | Show the viewer; the options override the props for this session. |
+| `close`     | —                                       | Hide the viewer.                                                  |
+| `setActive` | `index: number`                         | Jump to an index (clamped to the list).                           |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `open` | — | The viewer opened. |
-| `close` | — | The viewer closed. |
-| `change` | `{ index }` | The active image changed (swipe or `setActive`). |
-| `long-press` | `{ image }` | The current image was long-pressed. |
+| Name         | Payload     | Description                                      |
+| ------------ | ----------- | ------------------------------------------------ |
+| `open`       | —           | The viewer opened.                               |
+| `close`      | —           | The viewer closed.                               |
+| `change`     | `{ index }` | The active image changed (swipe or `setActive`). |
+| `long-press` | `{ image }` | The current image was long-pressed.              |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Bottom content, receives `{ current }`. Rendered under the counter. |
-| `indicator` | Replaces the built-in counter, receives `{ current, total }`. |
+| Name        | Description                                                         |
+| ----------- | ------------------------------------------------------------------- |
+| `default`   | Bottom content, receives `{ current }`. Rendered under the counter. |
+| `indicator` | Replaces the built-in counter, receives `{ current, total }`.       |
 
 The `default` slot also stands in for the whole stage when `images` is empty.
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background overlay | `--sn-mp-color-background-overlay` | Counter pill / close button plate |
-| Text on primary | `--sn-mp-color-text-on-primary` | Counter + close glyph |
-| Font size MD | `--sn-mp-font-size-md` | Counter text |
-| Font weight medium | `--sn-mp-font-weight-medium` | Counter text |
-| Line height normal | `--sn-mp-font-line-height-normal` | Counter text |
-| Radius full | `--sn-mp-radius-full` | Counter pill / close button |
-| Spacing 1 / 4 / 5 / 8 | `--sn-mp-spacing-*` | Counter padding, close inset, footer padding, counter offset |
+| Token                 | CSS Variable                       | Purpose                                                      |
+| --------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| Background overlay    | `--sn-mp-color-background-overlay` | Counter pill / close button plate                            |
+| Text on primary       | `--sn-mp-color-text-on-primary`    | Counter + close glyph                                        |
+| Font size MD          | `--sn-mp-font-size-md`             | Counter text                                                 |
+| Font weight medium    | `--sn-mp-font-weight-medium`       | Counter text                                                 |
+| Line height normal    | `--sn-mp-font-line-height-normal`  | Counter text                                                 |
+| Radius full           | `--sn-mp-radius-full`              | Counter pill / close button                                  |
+| Spacing 1 / 4 / 5 / 8 | `--sn-mp-spacing-*`                | Counter padding, close inset, footer padding, counter offset |
 
 ## Accessibility
 

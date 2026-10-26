@@ -22,23 +22,23 @@ mask=false 显示明文；errorInfo 覆盖 info 并把边框切成危险色；gu
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string` | `''` | 当前输入值 |
-| `mask` | `boolean` | `true` | 是否隐藏为圆点 |
-| `info` / `errorInfo` | `string` | `''` | 提示 / 错误文案（错误优先） |
-| `gutter` | `number \| string` | `0` | 方框间距 |
-| `length` | `number` | `6` | 方框数量 |
-| `focused` | `boolean` | `true` | 是否聚焦（显示光标） |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                          | 类型               | 默认值 | 说明                        |
+| ----------------------------- | ------------------ | ------ | --------------------------- |
+| `modelValue`                  | `string`           | `''`   | 当前输入值                  |
+| `mask`                        | `boolean`          | `true` | 是否隐藏为圆点              |
+| `info` / `errorInfo`          | `string`           | `''`   | 提示 / 错误文案（错误优先） |
+| `gutter`                      | `number \| string` | `0`    | 方框间距                    |
+| `length`                      | `number`           | `6`    | 方框数量                    |
+| `focused`                     | `boolean`          | `true` | 是否聚焦（显示光标）        |
+| `customClass` / `customStyle` | `string`           | `''`   | 根节点自定义类名 / 样式     |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 值变化时 | `(value: string)` |
-| `change` | 值变化时（同 tick） | `(value: string)` |
-| `focus` / `blur` | 原生输入框聚焦 / 失焦 | `(event: Event)` |
+| 事件名              | 说明                  | 参数              |
+| ------------------- | --------------------- | ----------------- |
+| `update:modelValue` | 值变化时              | `(value: string)` |
+| `change`            | 值变化时（同 tick）   | `(value: string)` |
+| `focus` / `blur`    | 原生输入框聚焦 / 失焦 | `(event: Event)`  |
 
 ## Slots
 
@@ -46,14 +46,14 @@ mask=false 显示明文；errorInfo 覆盖 info 并把边框切成危险色；gu
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
+| 变量                                                               | 用途                              |
+| ------------------------------------------------------------------ | --------------------------------- |
 | ``--sn-mp-color-input-bg` / `-border` / `-border-focus` / `-text`` | 方框底色 / 边框 / 聚焦边框 / 文字 |
-| ``--sn-mp-color-feedback-danger`` | 错误边框与文案 |
-| ``--sn-mp-color-action-primary`` | 光标 |
-| ``--sn-mp-color-text-tertiary`` | 提示文案 |
-| ``--sn-mp-radius-md`` | 方框圆角 |
-| ``--sn-mp-font-size-xl` / `-sm`` | 字形 / 文案字号 |
+| `--sn-mp-color-feedback-danger`                                    | 错误边框与文案                    |
+| `--sn-mp-color-action-primary`                                     | 光标                              |
+| `--sn-mp-color-text-tertiary`                                      | 提示文案                          |
+| `--sn-mp-radius-md`                                                | 方框圆角                          |
+| ``--sn-mp-font-size-xl` / `-sm``                                   | 字形 / 文案字号                   |
 
 ## 无障碍
 
@@ -64,4 +64,3 @@ mask=false 显示明文；errorInfo 覆盖 info 并把边框切成危险色；gu
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

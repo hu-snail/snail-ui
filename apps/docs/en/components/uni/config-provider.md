@@ -18,10 +18,10 @@ uni-app runs on mini programs and native App targets that have no `document` and
 
 `themeVars` writes inline CSS variables onto the root, so changing a single colour slot needs no stylesheet. Keys accept two spellings:
 
-| Form | Resulting variable |
-| --- | --- |
-| `'--sn-mp-color-action-primary'` | used verbatim |
-| `'buttonPrimaryBgColor'` | `--sn-mp-button-primary-bg-color` (prefixed and kebab-cased) |
+| Form                             | Resulting variable                                           |
+| -------------------------------- | ------------------------------------------------------------ |
+| `'--sn-mp-color-action-primary'` | used verbatim                                                |
+| `'buttonPrimaryBgColor'`         | `--sn-mp-button-primary-bg-color` (prefixed and kebab-cased) |
 
 The second form exists so snippets copied from the wot-ui docs work unchanged.
 
@@ -29,13 +29,13 @@ The second form exists so snippets copied from the wot-ui docs work unchanged.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `skin` | `string` | `''` | Style Pack id (kebab-case). `'default'` or empty adds no skin class |
-| `theme` | `'light' \| 'dark'` | `'light'` | Theme mode for this subtree |
-| `themeVars` | `Record<string, string>` | `{}` | Subtree-level CSS variable overrides |
-| `customClass` | `string` | `''` | Custom class on the root node |
-| `customStyle` | `string` | `''` | Custom inline style on the root node |
+| Prop          | Type                     | Default   | Description                                                         |
+| ------------- | ------------------------ | --------- | ------------------------------------------------------------------- |
+| `skin`        | `string`                 | `''`      | Style Pack id (kebab-case). `'default'` or empty adds no skin class |
+| `theme`       | `'light' \| 'dark'`      | `'light'` | Theme mode for this subtree                                         |
+| `themeVars`   | `Record<string, string>` | `{}`      | Subtree-level CSS variable overrides                                |
+| `customClass` | `string`                 | `''`      | Custom class on the root node                                       |
+| `customStyle` | `string`                 | `''`      | Custom inline style on the root node                                |
 
 ## Events
 
@@ -43,18 +43,18 @@ None.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                             |
+| --------- | --------------------------------------- |
 | `default` | Content that inherits the configuration |
 
 ## Theme variables
 
 This component does not consume colour tokens — it **sets** them:
 
-| Mechanism | Variables affected |
-| --- | --- |
+| Mechanism      | Variables affected                                                                                                   |
+| -------------- | -------------------------------------------------------------------------------------------------------------------- |
 | `theme="dark"` | every `--sn-mp-color-*` alias declared in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles` |
-| `themeVars` | whatever keys the caller passes |
+| `themeVars`    | whatever keys the caller passes                                                                                      |
 
 ## Accessibility
 
@@ -62,7 +62,7 @@ The root is a plain container carrying `data-snui-theme` for inspection. It adds
 
 ## Dark mode
 
-This component *is* the dark-mode entry point: `theme="dark"` enables the full dark alias set inside the subtree. Verify with:
+This component _is_ the dark-mode entry point: `theme="dark"` enables the full dark alias set inside the subtree. Verify with:
 
 <Demo name="config-provider-mp-dark" description="Light and dark subtrees coexist on one page without affecting each other." />
 

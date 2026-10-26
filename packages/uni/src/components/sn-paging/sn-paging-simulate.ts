@@ -21,25 +21,25 @@
 
 export interface BrowserPagingGestureOptions {
   /** Whether the refresher gesture is currently enabled (prop-driven). */
-  isRefresherEnabled: () => boolean
+  isRefresherEnabled: () => boolean;
   /** Arming pull distance in px (prop-driven). */
-  refresherThreshold: () => number
+  refresherThreshold: () => number;
   /** Distance from the bottom that fires load-more, in px (prop-driven). */
-  lowerThreshold: () => number
+  lowerThreshold: () => number;
   /** A query is in flight — dragging must not stack another one. */
-  isBusy: () => boolean
+  isBusy: () => boolean;
   /** Drag distance update while pulling; `0` snaps back. */
-  onPull: (distance: number) => void
+  onPull: (distance: number) => void;
   /** Released past the threshold — host starts the refresh query. */
-  onRefreshArm: () => void
+  onRefreshArm: () => void;
   /** Scrolled near the bottom — host loads the next page. */
-  onReachBottom: () => void
+  onReachBottom: () => void;
 }
 
 /** Damping applied to the finger travel; keeps the pull feeling heavier. */
-const PULL_DAMPING = 0.6
+const PULL_DAMPING = 0.6;
 /** Pull travel is clamped to this multiple of the arming threshold. */
-const PULL_MAX_RATIO = 1.6
+const PULL_MAX_RATIO = 1.6;
 
 /**
  * Install the fallback gestures on `el`. Returns a dispose function; returns
@@ -49,54 +49,54 @@ export function createBrowserPagingGesture(
   el: HTMLElement,
   options: BrowserPagingGestureOptions,
 ): (() => void) | null {
-  if (typeof document === 'undefined') return null
+  if (typeof document === 'undefined') return null;
 
-  let startY = 0
-  let armed = false
-  let lastPull = 0
+  let startY = 0;
+  let armed = false;
+  let lastPull = 0;
 
   const onTouchStart = (event: TouchEvent): void => {
-    const touch = event.touches[0]
-    if (!touch) return
-    armed = options.isRefresherEnabled() && !options.isBusy() && el.scrollTop <= 0
-    startY = touch.clientY
-  }
+    const touch = event.touches[0];
+    if (!touch) return;
+    armed = options.isRefresherEnabled() && !options.isBusy() && el.scrollTop <= 0;
+    startY = touch.clientY;
+  };
 
   const onTouchMove = (event: TouchEvent): void => {
-    if (!armed) return
-    const touch = event.touches[0]
-    if (!touch) return
-    const dy = touch.clientY - startY
-    const threshold = options.refresherThreshold()
-    lastPull = Math.max(0, Math.min(dy * PULL_DAMPING, threshold * PULL_MAX_RATIO))
-    options.onPull(lastPull)
-    if (lastPull > 0 && event.cancelable) event.preventDefault()
-  }
+    if (!armed) return;
+    const touch = event.touches[0];
+    if (!touch) return;
+    const dy = touch.clientY - startY;
+    const threshold = options.refresherThreshold();
+    lastPull = Math.max(0, Math.min(dy * PULL_DAMPING, threshold * PULL_MAX_RATIO));
+    options.onPull(lastPull);
+    if (lastPull > 0 && event.cancelable) event.preventDefault();
+  };
 
   const onTouchEnd = (): void => {
-    if (!armed) return
-    armed = false
-    const armedNow = lastPull >= options.refresherThreshold()
-    lastPull = 0
-    options.onPull(0)
-    if (armedNow) options.onRefreshArm()
-  }
+    if (!armed) return;
+    armed = false;
+    const armedNow = lastPull >= options.refresherThreshold();
+    lastPull = 0;
+    options.onPull(0);
+    if (armedNow) options.onRefreshArm();
+  };
 
   const onScroll = (): void => {
-    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
-    if (distanceFromBottom <= options.lowerThreshold()) options.onReachBottom()
-  }
+    const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    if (distanceFromBottom <= options.lowerThreshold()) options.onReachBottom();
+  };
 
   /* Touch listeners need `preventDefault` authority while dragging. */
-  el.addEventListener('touchstart', onTouchStart, { passive: true })
-  el.addEventListener('touchmove', onTouchMove, { passive: false })
-  el.addEventListener('touchend', onTouchEnd, { passive: true })
-  el.addEventListener('scroll', onScroll, { passive: true })
+  el.addEventListener('touchstart', onTouchStart, { passive: true });
+  el.addEventListener('touchmove', onTouchMove, { passive: false });
+  el.addEventListener('touchend', onTouchEnd, { passive: true });
+  el.addEventListener('scroll', onScroll, { passive: true });
 
   return () => {
-    el.removeEventListener('touchstart', onTouchStart)
-    el.removeEventListener('touchmove', onTouchMove)
-    el.removeEventListener('touchend', onTouchEnd)
-    el.removeEventListener('scroll', onScroll)
-  }
+    el.removeEventListener('touchstart', onTouchStart);
+    el.removeEventListener('touchmove', onTouchMove);
+    el.removeEventListener('touchend', onTouchEnd);
+    el.removeEventListener('scroll', onScroll);
+  };
 }

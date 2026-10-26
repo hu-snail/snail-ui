@@ -26,22 +26,22 @@
  * hit area.
  */
 
-import { computed, onBeforeUnmount, ref } from 'vue'
-import { useData } from 'vitepress'
-import { Check, Copy, Pencil } from 'lucide-vue-next'
-import { SnButton, SnIcon } from '@snui/vue-web'
-import { RAW_DOC_SOURCE_ATTR } from '../utils/raw-doc-source'
+import { computed, onBeforeUnmount, ref } from 'vue';
+import { useData } from 'vitepress';
+import { Check, Copy, Pencil } from 'lucide-vue-next';
+import { SnButton, SnIcon } from '@snui/vue-web';
+import { RAW_DOC_SOURCE_ATTR } from '../utils/raw-doc-source';
 
 /** Written onto every page by the markdown-it rule in config.ts. */
-const SOURCE_SELECTOR = `div[${RAW_DOC_SOURCE_ATTR}]`
+const SOURCE_SELECTOR = `div[${RAW_DOC_SOURCE_ATTR}]`;
 
 /** Used only if `themeConfig.editBase` is missing (see utils/edit-link.ts). */
-const EDIT_BASE_FALLBACK = 'https://github.com/hu-snail/snail-ui/edit/main/apps/docs/'
+const EDIT_BASE_FALLBACK = 'https://github.com/hu-snail/snail-ui/edit/main/apps/docs/';
 
 /** How long the success / failure state stays on screen (ms). */
-const FEEDBACK_MS = 2000
+const FEEDBACK_MS = 2000;
 
-const { page, theme } = useData()
+const { page, theme } = useData();
 
 /**
  * Branch-matched at build time by utils/edit-link.ts and shipped through
@@ -50,22 +50,22 @@ const { page, theme } = useData()
  */
 const editBase = computed<string>(
   () => (theme.value as { editBase?: string }).editBase || EDIT_BASE_FALLBACK,
-)
+);
 
 const editUrl = computed<string>(() =>
   page.value.relativePath ? `${editBase.value}${page.value.relativePath}` : '',
-)
+);
 
-const state = ref<'idle' | 'copied' | 'failed'>('idle')
-let resetTimer: ReturnType<typeof setTimeout> | undefined
+const state = ref<'idle' | 'copied' | 'failed'>('idle');
+let resetTimer: ReturnType<typeof setTimeout> | undefined;
 
 const label = computed<string>(() => {
-  if (state.value === 'copied') return '已复制文档源码'
-  if (state.value === 'failed') return '复制失败，请重试'
-  return '复制文档'
-})
+  if (state.value === 'copied') return '已复制文档源码';
+  if (state.value === 'failed') return '复制失败，请重试';
+  return '复制文档';
+});
 
-const icon = computed(() => (state.value === 'copied' ? Check : Copy))
+const icon = computed(() => (state.value === 'copied' ? Check : Copy));
 
 /**
  * Read the page's markdown back out of its hidden carrier element.
@@ -76,24 +76,24 @@ const icon = computed(() => (state.value === 'copied' ? Check : Copy))
  * is the exact inverse — base64 → UTF-8 bytes → string.
  */
 function readSource(): string {
-  const el = document.querySelector<HTMLElement>(SOURCE_SELECTOR)
-  const payload = el ? el.getAttribute(RAW_DOC_SOURCE_ATTR) : null
-  if (!payload) return ''
+  const el = document.querySelector<HTMLElement>(SOURCE_SELECTOR);
+  const payload = el ? el.getAttribute(RAW_DOC_SOURCE_ATTR) : null;
+  if (!payload) return '';
   try {
-    const binary = atob(payload)
-    const bytes = Uint8Array.from(binary, (ch) => ch.charCodeAt(0))
-    return new TextDecoder().decode(bytes)
+    const binary = atob(payload);
+    const bytes = Uint8Array.from(binary, (ch) => ch.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
   } catch {
-    return ''
+    return '';
   }
 }
 
 function flash(next: 'copied' | 'failed'): void {
-  state.value = next
-  if (resetTimer) clearTimeout(resetTimer)
+  state.value = next;
+  if (resetTimer) clearTimeout(resetTimer);
   resetTimer = setTimeout(() => {
-    state.value = 'idle'
-  }, FEEDBACK_MS)
+    state.value = 'idle';
+  }, FEEDBACK_MS);
 }
 
 /**
@@ -107,44 +107,44 @@ function flash(next: 'copied' | 'failed'): void {
 async function writeClipboard(text: string): Promise<void> {
   if (navigator.clipboard?.writeText) {
     try {
-      await navigator.clipboard.writeText(text)
-      return
+      await navigator.clipboard.writeText(text);
+      return;
     } catch {
       // fall through to the legacy path
     }
   }
 
-  const scratch = document.createElement('textarea')
-  scratch.value = text
-  scratch.setAttribute('readonly', '')
+  const scratch = document.createElement('textarea');
+  scratch.value = text;
+  scratch.setAttribute('readonly', '');
   // Off-screen but still selectable — `display: none` could not be selected.
-  scratch.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0'
-  document.body.appendChild(scratch)
+  scratch.style.cssText = 'position:fixed;top:0;left:-9999px;opacity:0';
+  document.body.appendChild(scratch);
   try {
-    scratch.select()
-    if (!document.execCommand('copy')) throw new Error('copy rejected')
+    scratch.select();
+    if (!document.execCommand('copy')) throw new Error('copy rejected');
   } finally {
-    document.body.removeChild(scratch)
+    document.body.removeChild(scratch);
   }
 }
 
 async function copyDoc(): Promise<void> {
-  const source = readSource()
+  const source = readSource();
   if (!source) {
-    flash('failed')
-    return
+    flash('failed');
+    return;
   }
   try {
-    await writeClipboard(source)
-    flash('copied')
+    await writeClipboard(source);
+    flash('copied');
   } catch {
-    flash('failed')
+    flash('failed');
   }
 }
 
 onBeforeUnmount(() => {
-  if (resetTimer) clearTimeout(resetTimer)
-})
+  if (resetTimer) clearTimeout(resetTimer);
+});
 </script>
 
 <template>

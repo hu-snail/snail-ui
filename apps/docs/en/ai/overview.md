@@ -26,12 +26,12 @@ Location: `packages/ai/src/skill/skill.md`.
 
 MCP (Model Context Protocol) lets any MCP-capable AI client (Cursor / Claude Desktop / Mavis) call tools directly. All tools support `end` filtering:
 
-| Tool | Input | Output | end filter |
-|---|---|---|---|
-| `list_components` | `{ end: 'web' \| 'mp' \| 'both' }` | Component list | ✅ by end |
-| `get_component_meta` | `{ name, end }` | Props / Events / Slots / Tokens / A11y | ✅ validates component end |
-| `get_style_pack` | `{ name, end? }` | Pack + ready-to-paste `snCssVars` snippet | ✅ validates pack.end |
-| `render_preview` | `{ vueCode, packName?, end }` | Sandbox preview URL (M3) | ✅ picks end sandbox |
+| Tool                 | Input                              | Output                                    | end filter                 |
+| -------------------- | ---------------------------------- | ----------------------------------------- | -------------------------- |
+| `list_components`    | `{ end: 'web' \| 'mp' \| 'both' }` | Component list                            | ✅ by end                  |
+| `get_component_meta` | `{ name, end }`                    | Props / Events / Slots / Tokens / A11y    | ✅ validates component end |
+| `get_style_pack`     | `{ name, end? }`                   | Pack + ready-to-paste `snCssVars` snippet | ✅ validates pack.end      |
+| `render_preview`     | `{ vueCode, packName?, end }`      | Sandbox preview URL (M3)                  | ✅ picks end sandbox       |
 
 Start:
 
@@ -136,8 +136,8 @@ Wrong example (mixed ends):
 ```vue
 <!-- ❌ wrong: importing both vue-web and uni -->
 <script setup>
-import { SnButton } from '@snui/vue-web'  // Web
-import snButton from '@snui/uni/sn-button' // uni
+import { SnButton } from '@snui/vue-web'; // Web
+import snButton from '@snui/uni/sn-button'; // uni
 </script>
 ```
 
@@ -146,12 +146,14 @@ Correct example (per-end files):
 ```vue
 <!-- Web code (apps/web/src/pages/Home.vue) -->
 <script setup lang="ts">
-import { SnButton, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnButton, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 </script>
 
 <style scoped>
-.button { padding: var(--sn-web-spacing-inset-md); }
+.button {
+  padding: var(--sn-web-spacing-inset-md);
+}
 </style>
 ```
 
@@ -159,11 +161,13 @@ import '@snui/tokens-web/styles'
 <!-- uni code (apps/uni/src/pages/home/home.vue) -->
 <script setup lang="ts">
 // easycom auto-registers sn-button / sn-card
-import '@snui/tokens-mp/styles'
+import '@snui/tokens-mp/styles';
 </script>
 
 <style scoped>
-.button { padding: var(--sn-mp-spacing-inset-md); }
+.button {
+  padding: var(--sn-mp-spacing-inset-md);
+}
 </style>
 ```
 

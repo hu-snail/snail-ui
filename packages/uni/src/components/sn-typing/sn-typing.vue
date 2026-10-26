@@ -11,24 +11,24 @@
  * Not responsible for: 消息流状态 —— 由宿主按需挂载 / 卸载。
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnTyping' })
+defineOptions({ name: 'SnTyping' });
 
 const props = withDefaults(
   defineProps<{
     /** 随圆点一起展示的文案（空字符串则只显示圆点）。 */
-    text?: string
+    text?: string;
     /** 圆点数量。 */
-    dotCount?: number
+    dotCount?: number;
     /** 单个圆点脉动周期（ms）。 */
-    speed?: number
+    speed?: number;
     /** 圆点颜色（非激活观感由低透明度表达）。 */
-    activeDotColor?: string
+    activeDotColor?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     text: '输入中',
@@ -38,19 +38,21 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
-const dotIndexes = computed(() => Array.from({ length: Math.max(1, Math.min(5, props.dotCount)) }, (_, i) => i + 1))
+const dotIndexes = computed(() =>
+  Array.from({ length: Math.max(1, Math.min(5, props.dotCount)) }, (_, i) => i + 1),
+);
 
-const rootClass = computed(() => ['sn-typing', props.customClass])
+const rootClass = computed(() => ['sn-typing', props.customClass]);
 const rootStyle = computed(() => {
-  const parts = [] as string[]
-  if (props.customStyle !== '') parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [] as string[];
+  if (props.customStyle !== '') parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 function dotStyle(index: number): string {
-  return `background-color: ${props.activeDotColor}; animation-duration: ${props.speed}ms; animation-delay: ${((index - 1) * props.speed) / 3}ms`
+  return `background-color: ${props.activeDotColor}; animation-duration: ${props.speed}ms; animation-delay: ${((index - 1) * props.speed) / 3}ms`;
 }
 </script>
 

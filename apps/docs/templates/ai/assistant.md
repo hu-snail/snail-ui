@@ -16,12 +16,12 @@
 
 助手不是一个新的「大组件」，而是把下面几块拼起来。调度引擎由两个页面模板共用，所以「组装页」的排队、中断、流式行为与它们完全一致：
 
-| 区域 | 来自 | 单独引入 |
-| --- | --- | --- |
-| 转录区 | 消息列表模板 | `@snui/templates/web/message-list` |
-| 输入区 | 输入框模板 | `@snui/templates/web/prompt` |
-| 模型配置（抽屉） | 模型配置模板 | `@snui/templates/web/model-config` |
-| 调度 · 排队 · 流式折叠 · 中断 | 轮次引擎 | `@snui/templates/web/turn-queue` |
+| 区域                          | 来自         | 单独引入                           |
+| ----------------------------- | ------------ | ---------------------------------- |
+| 转录区                        | 消息列表模板 | `@snui/templates/web/message-list` |
+| 输入区                        | 输入框模板   | `@snui/templates/web/prompt`       |
+| 模型配置（抽屉）              | 模型配置模板 | `@snui/templates/web/model-config` |
+| 调度 · 排队 · 流式折叠 · 中断 | 轮次引擎     | `@snui/templates/web/turn-queue`   |
 
 `SnAiChat` 是同一批零件去掉抽屉的另一种组装。
 
@@ -31,25 +31,25 @@
 
 ```ts
 // 1) 只导入用到的那个模板：它的 JS 和它自己的样式会一起被带上
-import { SnAiAssistant } from '@snui/templates/web/assistant'
+import { SnAiAssistant } from '@snui/templates/web/assistant';
 
 // 2) 共享 token 层在应用入口导入一次
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) 需要自己控制代码分割时，也可以单独引某个模板的样式文件
-import '@snui/templates/styles/web-assistant.css'
+import '@snui/templates/styles/web-assistant.css';
 ```
 
 每个模板的样式文件（都在 `@snui/templates/styles/` 下）：
 
-| 文件 | 对应模板 |
-| --- | --- |
-| `web-assistant.css` | `@snui/templates/web/assistant` |
-| `web-chat.css` | `@snui/templates/web/chat` |
-| `web-prompt.css` | `@snui/templates/web/prompt` |
+| 文件                   | 对应模板                           |
+| ---------------------- | ---------------------------------- |
+| `web-assistant.css`    | `@snui/templates/web/assistant`    |
+| `web-chat.css`         | `@snui/templates/web/chat`         |
+| `web-prompt.css`       | `@snui/templates/web/prompt`       |
 | `web-message-list.css` | `@snui/templates/web/message-list` |
 | `web-model-config.css` | `@snui/templates/web/model-config` |
-| `uni-chat.css` | `@snui/templates/uni/chat` |
+| `uni-chat.css`         | `@snui/templates/uni/chat`         |
 | `uni-message-list.css` | `@snui/templates/uni/message-list` |
 
 引 `web-assistant.css` **不会**带上其他模板的规则；共享的 token 层只有一份（第 2 步），再引第二个模板时不会重复下载。
@@ -60,17 +60,17 @@ import '@snui/templates/styles/web-assistant.css'
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiAssistant } from '@snui/templates/web/assistant'
-import type { SnAiRunTurn } from '@snui/templates/web/chat'
-import type { SnAiMessage, SnAiVendor } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiAssistant } from '@snui/templates/web/assistant';
+import type { SnAiRunTurn } from '@snui/templates/web/chat';
+import type { SnAiMessage, SnAiVendor } from '@snui/templates/web';
 
-const messages = ref<SnAiMessage[]>([])
-const vendors = ref<SnAiVendor[]>([])
+const messages = ref<SnAiMessage[]>([]);
+const vendors = ref<SnAiVendor[]>([]);
 
 const run: SnAiRunTurn = async (turn, { emit }) => {
-  emit({ type: 'text', text: `你刚才说的是：${turn.text}` })
-}
+  emit({ type: 'text', text: `你刚才说的是：${turn.text}` });
+};
 </script>
 
 <template>
@@ -92,22 +92,22 @@ const run: SnAiRunTurn = async (turn, { emit }) => {
 
 ```vue
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { SnAiAssistant } from '@snui/templates/web/assistant'
-import { SnButton } from '@snui/vue-web'
-import type { SnAiRunTurn } from '@snui/templates/web/chat'
-import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '@snui/templates/web'
+import { computed, ref } from 'vue';
+import { SnAiAssistant } from '@snui/templates/web/assistant';
+import { SnButton } from '@snui/vue-web';
+import type { SnAiRunTurn } from '@snui/templates/web/chat';
+import type { SnAiMessage, SnAiModelParams, SnAiVendor } from '@snui/templates/web';
 
-const messages = ref<SnAiMessage[]>([])
-const vendors = ref<SnAiVendor[]>([])
-const activeVendorId = ref<string | undefined>(undefined)
-const activeModelId = ref<string | undefined>(undefined)
-const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true })
+const messages = ref<SnAiMessage[]>([]);
+const vendors = ref<SnAiVendor[]>([]);
+const activeVendorId = ref<string | undefined>(undefined);
+const activeModelId = ref<string | undefined>(undefined);
+const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true });
 /** 抽屉开合由宿主机接管，用来同步到 URL 或埋点。 */
-const configOpen = ref(false)
+const configOpen = ref(false);
 
 /** 输入区的模型选择器与抽屉共用同一份厂商列表。 */
-const models = computed(() => vendors.value.flatMap((vendor) => vendor.models ?? []))
+const models = computed(() => vendors.value.flatMap((vendor) => vendor.models ?? []));
 
 const run: SnAiRunTurn = async (turn, { signal, emit }) => {
   const response = await fetch('/api/chat', {
@@ -122,20 +122,20 @@ const run: SnAiRunTurn = async (turn, { signal, emit }) => {
     }),
     // 抽屉里的 stop 与页面卸载都会中止它。
     signal,
-  })
-  const reader = response.body!.getReader()
-  const decoder = new TextDecoder()
+  });
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
   for (;;) {
-    const { value, done } = await reader.read()
-    if (done) break
-    emit({ type: 'text', text: decoder.decode(value, { stream: true }) })
+    const { value, done } = await reader.read();
+    if (done) break;
+    emit({ type: 'text', text: decoder.decode(value, { stream: true }) });
   }
-}
+};
 
 /** 宿主机负责真正验证接口与凭证；这里只回填「测试中」的那一项。 */
-const testingVendorId = ref<string | undefined>(undefined)
+const testingVendorId = ref<string | undefined>(undefined);
 function onTestConnection({ vendorId }: { vendorId: string }): void {
-  testingVendorId.value = vendorId
+  testingVendorId.value = vendorId;
 }
 </script>
 
@@ -183,47 +183,47 @@ function onTestConnection({ vendorId }: { vendorId: string }): void {
 
 除此之外，本模板只新增下面这些成员：
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `showModelConfig` | `boolean` | `true` | 是否显示页头的「模型配置」入口与抽屉 |
-| `modelConfigTitle` | `string` | `'模型配置'` | 抽屉标题，同时作为入口按钮的可访问名称 |
-| `modelConfigWidth` | `number \| string` | `420` | 抽屉宽度，数字按 px 处理 |
-| `modelConfigOpen` | `boolean \| undefined` | `undefined` | 受控的抽屉开合状态；不传时由模板自己记住 |
-| `activeVendorId` | `string \| undefined` | `undefined` | 传给模型配置的当前厂商 |
-| `activeModelId` | `string \| undefined` | `undefined` | 传给模型配置的当前模型 |
-| `params` | `SnAiModelParams \| undefined` | `undefined` | 传给模型配置的生成参数 |
-| `editableModels` | `boolean` | `true` | 是否允许在抽屉里增删改厂商 / 模型 |
-| `vendors` | `SnAiVendor[] \| undefined` | `undefined` | 已配置的厂商。抽屉与输入区模型选择器共用这一份 |
+| 名称               | 类型                           | 默认值       | 说明                                           |
+| ------------------ | ------------------------------ | ------------ | ---------------------------------------------- |
+| `showModelConfig`  | `boolean`                      | `true`       | 是否显示页头的「模型配置」入口与抽屉           |
+| `modelConfigTitle` | `string`                       | `'模型配置'` | 抽屉标题，同时作为入口按钮的可访问名称         |
+| `modelConfigWidth` | `number \| string`             | `420`        | 抽屉宽度，数字按 px 处理                       |
+| `modelConfigOpen`  | `boolean \| undefined`         | `undefined`  | 受控的抽屉开合状态；不传时由模板自己记住       |
+| `activeVendorId`   | `string \| undefined`          | `undefined`  | 传给模型配置的当前厂商                         |
+| `activeModelId`    | `string \| undefined`          | `undefined`  | 传给模型配置的当前模型                         |
+| `params`           | `SnAiModelParams \| undefined` | `undefined`  | 传给模型配置的生成参数                         |
+| `editableModels`   | `boolean`                      | `true`       | 是否允许在抽屉里增删改厂商 / 模型              |
+| `vendors`          | `SnAiVendor[] \| undefined`    | `undefined`  | 已配置的厂商。抽屉与输入区模型选择器共用这一份 |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `update:modelConfigOpen` | `boolean` | 抽屉开合状态变化 |
-| `update:vendors` | `SnAiVendor[]` | 抽屉里的厂商或其模型发生变化 |
-| `update:activeVendorId` | `string` | 抽屉里切换了厂商 |
-| `update:activeModelId` | `string` | 抽屉里切换了激活模型 |
-| `update:params` | `SnAiModelParams` | 抽屉里改动了生成参数 |
-| `test-connection` | `{ vendorId }` | 请求宿主机验证该厂商的接口与凭证 |
+| 名称                     | 参数              | 说明                             |
+| ------------------------ | ----------------- | -------------------------------- |
+| `update:modelConfigOpen` | `boolean`         | 抽屉开合状态变化                 |
+| `update:vendors`         | `SnAiVendor[]`    | 抽屉里的厂商或其模型发生变化     |
+| `update:activeVendorId`  | `string`          | 抽屉里切换了厂商                 |
+| `update:activeModelId`   | `string`          | 抽屉里切换了激活模型             |
+| `update:params`          | `SnAiModelParams` | 抽屉里改动了生成参数             |
+| `test-connection`        | `{ vendorId }`    | 请求宿主机验证该厂商的接口与凭证 |
 
 prop 与事件名都与模型配置模板保持一致（`params` / `update:params`），因此 `v-model:params` 直接可用，同一个 handler 也可以原样交给 `SnModelConfig`。
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `header-actions` | — | 渲染在「模型配置」按钮之后，页头右侧的自定义操作 |
-| `model-config` | `{ close }` | 替换抽屉正文；`close()` 关闭抽屉，走同一个开合状态 |
-| `transcript` | `{ messages, empty }` | 转发自 `SnAiChat`，替换整个转录区域 |
-| `toolbar` | — | 转发自 `SnAiChat`，输入框工具条中的额外控件 |
+| 名称             | 参数                  | 说明                                               |
+| ---------------- | --------------------- | -------------------------------------------------- |
+| `header-actions` | —                     | 渲染在「模型配置」按钮之后，页头右侧的自定义操作   |
+| `model-config`   | `{ close }`           | 替换抽屉正文；`close()` 关闭抽屉，走同一个开合状态 |
+| `transcript`     | `{ messages, empty }` | 转发自 `SnAiChat`，替换整个转录区域                |
+| `toolbar`        | —                     | 转发自 `SnAiChat`，输入框工具条中的额外控件        |
 
 ### 类型导出
 
-| 名称 | 来源 | 说明 |
-| --- | --- | --- |
-| `SnAiAssistant` | `@snui/templates/web/assistant` | 模板组件本体。 |
-| `SnAiRunTurn` | `@snui/templates/web/chat` | 运行函数签名。 |
-| `SnAiMessage` / `SnAiVendor` / `SnAiModelParams` 等 | `@snui/templates` | 共享契约类型，供宿主机构造数据。 |
+| 名称                                                | 来源                            | 说明                             |
+| --------------------------------------------------- | ------------------------------- | -------------------------------- |
+| `SnAiAssistant`                                     | `@snui/templates/web/assistant` | 模板组件本体。                   |
+| `SnAiRunTurn`                                       | `@snui/templates/web/chat`      | 运行函数签名。                   |
+| `SnAiMessage` / `SnAiVendor` / `SnAiModelParams` 等 | `@snui/templates`               | 共享契约类型，供宿主机构造数据。 |
 
 ## 主题与 token 定制
 

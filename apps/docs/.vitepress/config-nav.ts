@@ -13,7 +13,10 @@
  * for vitepress's own internal pages (404, page navigation links, etc).
  */
 
-export interface DocsNavItem { text: string; link: string }
+export interface DocsNavItem {
+  text: string;
+  link: string;
+}
 
 export const nav: DocsNavItem[] = [
   { text: '指南', link: '/guide/web/intro' },
@@ -23,7 +26,7 @@ export const nav: DocsNavItem[] = [
   { text: '主题', link: '/theme/overview' },
   { text: 'AI 生态', link: '/ai/overview' },
   { text: '模板', link: '/templates/overview' },
-]
+];
 
 export const enNav: DocsNavItem[] = [
   { text: 'Guide', link: '/en/guide/web/intro' },
@@ -33,4 +36,4 @@ export const enNav: DocsNavItem[] = [
   { text: 'Theme', link: '/en/theme/overview' },
   { text: 'AI Ecosystem', link: '/en/ai/overview' },
   { text: 'Templates', link: '/en/templates/overview' },
-]
+];

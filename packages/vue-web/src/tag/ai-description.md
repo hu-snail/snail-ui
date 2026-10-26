@@ -17,35 +17,35 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui `n-tag`
 ## Import
 
 ```ts
-import SnTag from '@snui/vue-web/src/tag/SnTag.vue'
+import SnTag from '@snui/vue-web/src/tag/SnTag.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | no | Semantic type — drives colors. |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | no | Tag scale (22/28/34 px heights). |
-| `round` | `boolean` | `false` | no | Pill-shaped corners. |
-| `closable` | `boolean` | `false` | no | Render the close button (inline SVG glyph). |
-| `disabled` | `boolean` | `false` | no | Disabled interactions (no toggle, no close). |
-| `bordered` | `boolean` | `true` | no | Draw the surrounding border. |
-| `color` | `string` | — | no | Custom background color; overrides the type background. |
-| `checkable` | `boolean` | `false` | no | Click toggles the checked state. |
-| `checked` | `boolean` | `false` | no | Checked state (v-model:checked). |
+| Name        | Type                                                                    | Default     | Required | Description                                             |
+| ----------- | ----------------------------------------------------------------------- | ----------- | -------- | ------------------------------------------------------- |
+| `type`      | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | no       | Semantic type — drives colors.                          |
+| `size`      | `'small' \| 'medium' \| 'large'`                                        | `'medium'`  | no       | Tag scale (22/28/34 px heights).                        |
+| `round`     | `boolean`                                                               | `false`     | no       | Pill-shaped corners.                                    |
+| `closable`  | `boolean`                                                               | `false`     | no       | Render the close button (inline SVG glyph).             |
+| `disabled`  | `boolean`                                                               | `false`     | no       | Disabled interactions (no toggle, no close).            |
+| `bordered`  | `boolean`                                                               | `true`      | no       | Draw the surrounding border.                            |
+| `color`     | `string`                                                                | —           | no       | Custom background color; overrides the type background. |
+| `checkable` | `boolean`                                                               | `false`     | no       | Click toggles the checked state.                        |
+| `checked`   | `boolean`                                                               | `false`     | no       | Checked state (v-model:checked).                        |
 
 ## Events
 
-| Name | Parameters | Description |
-|---|---|---|
-| `close` | — | Close button clicked; the tag hides itself afterwards. |
-| `update:checked` | `boolean` | Checkable toggle — supports `v-model:checked`. |
+| Name             | Parameters | Description                                            |
+| ---------------- | ---------- | ------------------------------------------------------ |
+| `close`          | —          | Close button clicked; the tag hides itself afterwards. |
+| `update:checked` | `boolean`  | Checkable toggle — supports `v-model:checked`.         |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Tag label. |
+| Name      | Description |
+| --------- | ----------- |
+| `default` | Tag label.  |
 
 ## Divergences from the reference API
 
@@ -65,13 +65,13 @@ import SnTag from '@snui/vue-web/src/tag/SnTag.vue'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text secondary / on-primary | `--sn-web-color-text-secondary` / `--sn-web-color-text-on-primary` | Label colors |
-| Action primary | `--sn-web-color-action-primary` | `primary` tint + checked background |
-| Feedback info / success / warning / danger | `--sn-web-color-feedback-*` | Typed tints |
-| Background surface / subtle | `--sn-web-color-background-*` | Tint base + default background |
-| Border default | `--sn-web-color-border-default` | Default border |
+| Token                                      | CSS Variable                                                       | Purpose                             |
+| ------------------------------------------ | ------------------------------------------------------------------ | ----------------------------------- |
+| Text secondary / on-primary                | `--sn-web-color-text-secondary` / `--sn-web-color-text-on-primary` | Label colors                        |
+| Action primary                             | `--sn-web-color-action-primary`                                    | `primary` tint + checked background |
+| Feedback info / success / warning / danger | `--sn-web-color-feedback-*`                                        | Typed tints                         |
+| Background surface / subtle                | `--sn-web-color-background-*`                                      | Tint base + default background      |
+| Border default                             | `--sn-web-color-border-default`                                    | Default border                      |
 
 ## Versioning
 

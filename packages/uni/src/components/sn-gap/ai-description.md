@@ -24,18 +24,18 @@ gesture bar.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnGap } from '@snui/uni/components/sn-gap/sn-gap.vue'
+import { SnGap } from '@snui/uni/components/sn-gap/sn-gap.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `height` | `string \| number` | `14` | no | Spacer height. A number is px; a string is used verbatim (`'40rpx'`). |
-| `bgColor` | `string` | `'transparent'` | no | Background colour. `transparent` writes no inline background at all. |
-| `safeAreaBottom` | `boolean` | `false` | no | Add `env(safe-area-inset-bottom)` as bottom padding on top of `height`. |
-| `customClass` | `string` | `''` | no | Extra class on the root node. |
-| `customStyle` | `string` | `''` | no | Inline style appended to the root node. |
+| Name             | Type               | Default         | Required | Description                                                             |
+| ---------------- | ------------------ | --------------- | -------- | ----------------------------------------------------------------------- |
+| `height`         | `string \| number` | `14`            | no       | Spacer height. A number is px; a string is used verbatim (`'40rpx'`).   |
+| `bgColor`        | `string`           | `'transparent'` | no       | Background colour. `transparent` writes no inline background at all.    |
+| `safeAreaBottom` | `boolean`          | `false`         | no       | Add `env(safe-area-inset-bottom)` as bottom padding on top of `height`. |
+| `customClass`    | `string`           | `''`            | no       | Extra class on the root node.                                           |
+| `customStyle`    | `string`           | `''`            | no       | Inline style appended to the root node.                                 |
 
 ## Events
 

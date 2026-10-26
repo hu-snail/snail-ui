@@ -30,14 +30,14 @@ pnpm add @snui/schema @snui/protocol
 
 ## 各包内容一览
 
-| Package | 体积 | 包含 |
-| --- | --- | --- |
-| `@snui/protocol` | ~25 KB | 全部 Zod schemas + types |
-| `@snui/schema` | ~10 KB | Validator + Normalizer + Version |
-| `@snui/tokens` | ~15 KB | Primitive / Semantic / Component + resolver |
-| `@snui/runtime` | ~80 KB | AUIRuntime + Reactive + Binding + Action + AppBridge |
-| `@snui/vue-web` | ~10 KB（+ Vue）| 渲染器 + 4 个官方组件（Phase 2） |
-| `@snui/uni` | ~5 KB | 渲染器（Phase 3，占位） |
+| Package          | 体积            | 包含                                                 |
+| ---------------- | --------------- | ---------------------------------------------------- |
+| `@snui/protocol` | ~25 KB          | 全部 Zod schemas + types                             |
+| `@snui/schema`   | ~10 KB          | Validator + Normalizer + Version                     |
+| `@snui/tokens`   | ~15 KB          | Primitive / Semantic / Component + resolver          |
+| `@snui/runtime`  | ~80 KB          | AUIRuntime + Reactive + Binding + Action + AppBridge |
+| `@snui/vue-web`  | ~10 KB（+ Vue） | 渲染器 + 4 个官方组件（Phase 2）                     |
+| `@snui/uni`      | ~5 KB           | 渲染器（Phase 3，占位）                              |
 
 ## Bundle 示例（Web）
 
@@ -50,7 +50,7 @@ const registry = createComponentRegistry();
 registry.register('button', Button);
 
 const runtime = createRuntime({
-  schema: { /* 你的 UISchema */ },
+  schema: {/* 你的 UISchema */},
   registry,
   actionRegistry: createActionRegistry(),
   tokens: { theme: LIGHT_THEME, style: MODERN_STYLE, density: COMFORTABLE_DENSITY },

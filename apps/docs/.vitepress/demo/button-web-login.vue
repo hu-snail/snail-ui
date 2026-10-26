@@ -6,38 +6,38 @@
  * 对勾，2 秒后复位。收窄动画放在外层容器的 `width` 上，`SnButton` 只负责
  * 它自己的 `loading` / `circle` / `icon` 三档视觉，两者互不侵入。
  */
-import { onBeforeUnmount, ref } from 'vue'
-import { Check } from 'lucide-vue-next'
-import { SnButton } from '@snui/vue-web'
+import { onBeforeUnmount, ref } from 'vue';
+import { Check } from 'lucide-vue-next';
+import { SnButton } from '@snui/vue-web';
 
-type LoginStatus = 'idle' | 'loading' | 'success'
+type LoginStatus = 'idle' | 'loading' | 'success';
 
-const status = ref<LoginStatus>('idle')
-const timers = new Set<number>()
+const status = ref<LoginStatus>('idle');
+const timers = new Set<number>();
 
 function later(fn: () => void, ms: number): void {
   const id = window.setTimeout(() => {
-    timers.delete(id)
-    fn()
-  }, ms)
-  timers.add(id)
+    timers.delete(id);
+    fn();
+  }, ms);
+  timers.add(id);
 }
 
 function login(): void {
-  if (status.value !== 'idle') return
-  status.value = 'loading'
+  if (status.value !== 'idle') return;
+  status.value = 'loading';
   later(() => {
-    status.value = 'success'
+    status.value = 'success';
     later(() => {
-      status.value = 'idle'
-    }, 2000)
-  }, 1400)
+      status.value = 'idle';
+    }, 2000);
+  }, 1400);
 }
 
 onBeforeUnmount(() => {
-  timers.forEach((id) => window.clearTimeout(id))
-  timers.clear()
-})
+  timers.forEach((id) => window.clearTimeout(id));
+  timers.clear();
+});
 </script>
 
 <template>

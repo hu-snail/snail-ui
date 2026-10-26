@@ -27,73 +27,73 @@ added to the wd-popover parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnPopover } from '@snui/uni'
+import { SnPopover } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `modelValue` | `boolean` | `false` | no | Whether the bubble is shown (`v-model`). |
-| `content` | `string \| SnPopoverMenuItem[]` | `''` | no | A string in `normal` mode, a row list in `menu` mode. |
-| `mode` | `'normal' \| 'menu'` | `'normal'` | no | Bubble display mode. |
-| `placement` | 12-direction `PlacementType` | `'bottom'` | no | Bubble anchor. |
-| `offset` | `number \| number[] \| { x?, y? }` | `0` | no | Gap in design px; published as `--sn-popover-offset-x` / `-y`. |
-| `visibleArrow` | `boolean` | `true` | no | Render the arrow. |
-| `disabled` | `boolean` | `false` | no | Disables the trigger. |
-| `showClose` | `boolean` | `false` | no | Render a close button inside the bubble. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
-| `customArrow` | `string` | `''` | no | Extra class on the arrow node. |
-| `customPop` | `string` | `''` | no | Extra class on the bubble node. |
-| `rootPortal` | `boolean` | `false` | no | **Not implemented** — declared for parity; miniprogram has no portal host. |
+| Name           | Type                               | Default    | Required | Description                                                                |
+| -------------- | ---------------------------------- | ---------- | -------- | -------------------------------------------------------------------------- |
+| `modelValue`   | `boolean`                          | `false`    | no       | Whether the bubble is shown (`v-model`).                                   |
+| `content`      | `string \| SnPopoverMenuItem[]`    | `''`       | no       | A string in `normal` mode, a row list in `menu` mode.                      |
+| `mode`         | `'normal' \| 'menu'`               | `'normal'` | no       | Bubble display mode.                                                       |
+| `placement`    | 12-direction `PlacementType`       | `'bottom'` | no       | Bubble anchor.                                                             |
+| `offset`       | `number \| number[] \| { x?, y? }` | `0`        | no       | Gap in design px; published as `--sn-popover-offset-x` / `-y`.             |
+| `visibleArrow` | `boolean`                          | `true`     | no       | Render the arrow.                                                          |
+| `disabled`     | `boolean`                          | `false`    | no       | Disables the trigger.                                                      |
+| `showClose`    | `boolean`                          | `false`    | no       | Render a close button inside the bubble.                                   |
+| `customClass`  | `string`                           | `''`       | no       | Custom class for the root node.                                            |
+| `customStyle`  | `string`                           | `''`       | no       | Custom inline style for the root node.                                     |
+| `customArrow`  | `string`                           | `''`       | no       | Extra class on the arrow node.                                             |
+| `customPop`    | `string`                           | `''`       | no       | Extra class on the bubble node.                                            |
+| `rootPortal`   | `boolean`                          | `false`    | no       | **Not implemented** — declared for parity; miniprogram has no portal host. |
 
 ### `SnPopoverMenuItem`
 
-| Field | Type | Description |
-|---|---|---|
-| `content` | `string` | Row label. |
-| `iconClass` | `string` | `sn-icon` registry name, or an image URL. |
-| `disabled` | `boolean` | Disable the row — taps are ignored. |
+| Field       | Type      | Description                               |
+| ----------- | --------- | ----------------------------------------- |
+| `content`   | `string`  | Row label.                                |
+| `iconClass` | `string`  | `sn-icon` registry name, or an image URL. |
+| `disabled`  | `boolean` | Disable the row — taps are ignored.       |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:modelValue` | `boolean` | Visibility changed. |
-| `open` | — | Bubble shown. |
-| `close` | — | Bubble hidden. |
-| `change` | `{ show: boolean }` | Visibility changed. |
-| `menuclick` | `{ item: SnPopoverMenuItem, index: number }` | A `menu` mode row was tapped. |
+| Name                | Payload                                      | Description                   |
+| ------------------- | -------------------------------------------- | ----------------------------- |
+| `update:modelValue` | `boolean`                                    | Visibility changed.           |
+| `open`              | —                                            | Bubble shown.                 |
+| `close`             | —                                            | Bubble hidden.                |
+| `change`            | `{ show: boolean }`                          | Visibility changed.           |
+| `menuclick`         | `{ item: SnPopoverMenuItem, index: number }` | A `menu` mode row was tapped. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Trigger content. |
+| Name      | Description                                           |
+| --------- | ----------------------------------------------------- |
+| `default` | Trigger content.                                      |
 | `content` | Custom bubble body; replaces `content` in both modes. |
 
 ## Exposed Methods
 
-| Name | Description |
-|---|---|
-| `open()` | Show the bubble. |
-| `close()` | Hide the bubble. |
+| Name               | Description                                    |
+| ------------------ | ---------------------------------------------- |
+| `open()`           | Show the bubble.                               |
+| `close()`          | Hide the bubble.                               |
 | `updatePosition()` | Compatibility no-op — placement is CSS-driven. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Surface | `--sn-mp-color-background-elevated` | Bubble background |
-| Text | `--sn-mp-color-text-primary` | Bubble / row text |
-| Muted text | `--sn-mp-color-text-secondary` | Row icon |
-| Disabled text | `--sn-mp-color-text-disabled` | Disabled row |
-| Border | `--sn-mp-color-border-subtle` | Bubble + arrow outline |
-| Elevation | `--sn-mp-shadow-md` | Bubble shadow |
-| Radius | `--sn-mp-radius-md` | Bubble corners |
-| Spacing | `--sn-mp-spacing-2/3/4` | Padding / gaps |
-| Typography | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal` | Bubble text |
+| Token         | CSS Variable                                              | Purpose                |
+| ------------- | --------------------------------------------------------- | ---------------------- |
+| Surface       | `--sn-mp-color-background-elevated`                       | Bubble background      |
+| Text          | `--sn-mp-color-text-primary`                              | Bubble / row text      |
+| Muted text    | `--sn-mp-color-text-secondary`                            | Row icon               |
+| Disabled text | `--sn-mp-color-text-disabled`                             | Disabled row           |
+| Border        | `--sn-mp-color-border-subtle`                             | Bubble + arrow outline |
+| Elevation     | `--sn-mp-shadow-md`                                       | Bubble shadow          |
+| Radius        | `--sn-mp-radius-md`                                       | Bubble corners         |
+| Spacing       | `--sn-mp-spacing-2/3/4`                                   | Padding / gaps         |
+| Typography    | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal` | Bubble text            |
 
 ## Accessibility
 

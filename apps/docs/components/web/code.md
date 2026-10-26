@@ -45,20 +45,20 @@
 
 ### SnCode Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| code | `string` | `''` | 传入的代码字符串 |
-| language | `string` | `undefined` | 高亮语言；`json` 使用内置分词器，其他语言纯文本展示 |
-| trim | `boolean` | `true` | 高亮路径下是否去掉首尾空白 |
-| inline | `boolean` | `false` | 行内样式 |
-| word-wrap | `boolean` | `false` | 代码过长时是否自动换行 |
-| show-line-numbers | `boolean` | `false` | 是否显示行号，`inline` 或 `word-wrap` 时不生效 |
-| uri | `boolean` | `false` | 是否将 `code` 按 URI 解码后展示 |
+| 名称              | 类型      | 默认值      | 说明                                                |
+| ----------------- | --------- | ----------- | --------------------------------------------------- |
+| code              | `string`  | `''`        | 传入的代码字符串                                    |
+| language          | `string`  | `undefined` | 高亮语言；`json` 使用内置分词器，其他语言纯文本展示 |
+| trim              | `boolean` | `true`      | 高亮路径下是否去掉首尾空白                          |
+| inline            | `boolean` | `false`     | 行内样式                                            |
+| word-wrap         | `boolean` | `false`     | 代码过长时是否自动换行                              |
+| show-line-numbers | `boolean` | `false`     | 是否显示行号，`inline` 或 `word-wrap` 时不生效      |
+| uri               | `boolean` | `false`     | 是否将 `code` 按 URI 解码后展示                     |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | — | 自定义代码内容，替换 `code` 渲染；行号仍按 `code` 计算 |
+| 名称    | 参数 | 说明                                                   |
+| ------- | ---- | ------------------------------------------------------ |
+| default | —    | 自定义代码内容，替换 `code` 渲染；行号仍按 `code` 计算 |
 
 完整契约见组件 `ai-description.md`。

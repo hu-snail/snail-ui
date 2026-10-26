@@ -40,13 +40,25 @@ export function transformScript(src: string, file: string): TextTransformResult 
     } else {
       const end: number | null = findDefineSlotsEnd(code, dsIdx);
       if (end === null) {
-        issues.push({ file, kind: 'defineSlots-manual', detail: 'defineSlots call could not be parsed' });
+        issues.push({
+          file,
+          kind: 'defineSlots-manual',
+          detail: 'defineSlots call could not be parsed',
+        });
       } else {
         // Swallow the leading indentation of the call's own line.
         let lineStart = dsIdx;
-        while (lineStart > 0 && (code.charAt(lineStart - 1) === ' ' || code.charAt(lineStart - 1) === '\t')) lineStart--;
+        while (
+          lineStart > 0 &&
+          (code.charAt(lineStart - 1) === ' ' || code.charAt(lineStart - 1) === '\t')
+        )
+          lineStart--;
         code = code.slice(0, lineStart) + code.slice(end);
-        issues.push({ file, kind: 'defineSlots-stripped', detail: 'defineSlots macro call removed (type-only)' });
+        issues.push({
+          file,
+          kind: 'defineSlots-stripped',
+          detail: 'defineSlots macro call removed (type-only)',
+        });
       }
     }
   }
@@ -65,7 +77,7 @@ function findDefineSlotsEnd(code: string, start: number): number | null {
       if (c === '<') depth++;
       else if (c === '>') {
         // Skip arrow-function `=>` inside the generic body.
-        if (code.charAt(i - 1) !== '=' ) {
+        if (code.charAt(i - 1) !== '=') {
           depth--;
           if (depth === 0) {
             i++;

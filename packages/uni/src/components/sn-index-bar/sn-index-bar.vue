@@ -34,78 +34,78 @@
  *   - 联系人列表业务逻辑 — 由宿主处理
  */
 
-import { computed, onBeforeUnmount, provide, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, provide, ref, watch } from 'vue';
 import {
   SN_INDEX_BAR_KEY,
   type SnIndexAnchorEntry,
   type SnIndexBarValue,
-} from './sn-index-bar-types'
+} from './sn-index-bar-types';
 
-defineOptions({ name: 'SnIndexBar' })
+defineOptions({ name: 'SnIndexBar' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-index-bar` 1:1 surface ──────────────────────────────── */
 
     /** 索引是否吸顶。 */
-    sticky?: boolean
+    sticky?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     sticky: false,
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 索引列表内容（sn-index-anchor 列表）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
   /** 激活索引变化时触发。 */
-  (e: 'change', payload: { index: SnIndexBarValue }): void
-}>()
+  (e: 'change', payload: { index: SnIndexBarValue }): void;
+}>();
 
 /** Registered anchors in DOM order. */
-const anchors = ref<SnIndexAnchorEntry[]>([])
+const anchors = ref<SnIndexAnchorEntry[]>([]);
 
 /** Id of the anchor currently in view (`scroll-into-view` target). */
-const scrollTarget = ref('')
+const scrollTarget = ref('');
 
 /** Index label of the active anchor, shown in the sidebar highlight. */
-const activeIndexValue = ref<SnIndexBarValue | undefined>(undefined)
+const activeIndexValue = ref<SnIndexBarValue | undefined>(undefined);
 
 function registerAnchor(entry: SnIndexAnchorEntry): number {
-  anchors.value = [...anchors.value, entry]
-  return anchors.value.length - 1
+  anchors.value = [...anchors.value, entry];
+  return anchors.value.length - 1;
 }
 
 function unregisterAnchor(uid: number): void {
-  anchors.value = anchors.value.filter((anchor) => anchor.uid !== uid)
+  anchors.value = anchors.value.filter((anchor) => anchor.uid !== uid);
 }
 
 function activeIndex(): SnIndexBarValue | undefined {
-  return activeIndexValue.value
+  return activeIndexValue.value;
 }
 
 /** Jump to the anchor carrying `index` by targeting its DOM id. */
 function scrollTo(index: SnIndexBarValue): void {
-  const anchor = anchors.value.find((entry) => entry.getIndex() === index)
-  if (!anchor) return
-  activeIndexValue.value = index
-  scrollTarget.value = anchor.getId()
-  emit('change', { index })
+  const anchor = anchors.value.find((entry) => entry.getIndex() === index);
+  if (!anchor) return;
+  activeIndexValue.value = index;
+  scrollTarget.value = anchor.getId();
+  emit('change', { index });
 }
 
-provide(SN_INDEX_BAR_KEY, { registerAnchor, unregisterAnchor, activeIndex })
+provide(SN_INDEX_BAR_KEY, { registerAnchor, unregisterAnchor, activeIndex });
 
 /** Public imperative API — mirrors wd-index-bar's exposed methods (§14). */
-defineExpose({ scrollTo })
+defineExpose({ scrollTo });
 
 const rootClass = computed(() => [
   'sn-index-bar',
@@ -113,21 +113,21 @@ const rootClass = computed(() => [
     'sn-index-bar--sticky': props.sticky,
   },
   props.customClass,
-])
+]);
 
 onBeforeUnmount(() => {
-  anchors.value = []
-})
+  anchors.value = [];
+});
 
 /* Keep the highlight honest when anchors come and go (e.g. filtering). */
 watch(anchors, (list) => {
   if (list.length === 0) {
-    activeIndexValue.value = undefined
-    return
+    activeIndexValue.value = undefined;
+    return;
   }
-  const stillThere = list.some((entry) => entry.getIndex() === activeIndexValue.value)
-  if (!stillThere) activeIndexValue.value = list[0]!.getIndex()
-})
+  const stillThere = list.some((entry) => entry.getIndex() === activeIndexValue.value);
+  if (!stillThere) activeIndexValue.value = list[0]!.getIndex();
+});
 </script>
 
 <template>

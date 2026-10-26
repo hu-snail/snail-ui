@@ -29,20 +29,20 @@
  *   </SnAvatarGroup>
  */
 
-import { computed, useSlots, type CSSProperties } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { Comment, Fragment } from 'vue'
-import SnAvatar from '../avatar/SnAvatar.vue'
+import { computed, useSlots, type CSSProperties } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { Comment, Fragment } from 'vue';
+import SnAvatar from '../avatar/SnAvatar.vue';
 
-defineOptions({ name: 'SnAvatarGroup' })
+defineOptions({ name: 'SnAvatarGroup' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 /** Mirrors n-avatar-group `maxOptions`. */
 export interface SnAvatarGroupMaxOptions {
-  max: number
-  onExpand?: () => void
+  max: number;
+  onExpand?: () => void;
 }
 
 const props = withDefaults(
@@ -53,109 +53,113 @@ const props = withDefaults(
      * avatars plus a clickable `+k` summary that calls `onExpand`.
      * Mirrors n-avatar-group `maxOptions`.
      */
-    maxOptions?: SnAvatarGroupMaxOptions | number | undefined
+    maxOptions?: SnAvatarGroupMaxOptions | number | undefined;
     /** Size applied to the overflow summary avatar. Mirrors n-avatar-group `size`. */
-    size?: number | 'small' | 'medium' | 'large' | undefined
+    size?: number | 'small' | 'medium' | 'large' | undefined;
     /**
      * Layout for the stack: 'tightening' overlaps avatars with a negative
      * margin, 'shrink' scales each following avatar down slightly.
      */
-    sizeBehavior?: 'tightening' | 'shrink'
+    sizeBehavior?: 'tightening' | 'shrink';
   }>(),
   {
     maxOptions: undefined,
     size: 'medium',
     sizeBehavior: 'tightening',
   },
-)
+);
 
 defineSlots<{
   /** Avatar list — render SnAvatar elements. Mirrors n-avatar-group `default`. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /* ─────────── Slot vnodes ─────────── */
 /** Flatten fragments / nested arrays and drop comment nodes. */
 const avatarNodes = computed<{ vnode: unknown; key: number }[]>(() => {
-  const out: { vnode: unknown; key: number }[] = []
-  let key = 0
+  const out: { vnode: unknown; key: number }[] = [];
+  let key = 0;
   const push = (value: unknown): void => {
     // Slots can hand back nested arrays (template v-for) or Fragment
     // vnodes — recurse into both so every avatar is counted once.
     if (Array.isArray(value)) {
-      for (const entry of value) push(entry)
-      return
+      for (const entry of value) push(entry);
+      return;
     }
-    const node = value as { type?: unknown; children?: unknown } | null
-    if (!node || node.type === Comment) return
+    const node = value as { type?: unknown; children?: unknown } | null;
+    if (!node || node.type === Comment) return;
     if (node.type === Fragment && Array.isArray(node.children)) {
-      push(node.children)
-      return
+      push(node.children);
+      return;
     }
-    out.push({ vnode: value, key: key++ })
-  }
-  push(slots.default?.() ?? [])
-  return out
-})
+    out.push({ vnode: value, key: key++ });
+  };
+  push(slots.default?.() ?? []);
+  return out;
+});
 
-const totalCount = computed(() => avatarNodes.value.length)
+const totalCount = computed(() => avatarNodes.value.length);
 
 /** `maxOptions` as a number is an alias for `{ max: n }` (no expand hook). */
 const maxCount = computed<number | undefined>(() => {
-  if (props.maxOptions === undefined) return undefined
-  return typeof props.maxOptions === 'number' ? props.maxOptions : props.maxOptions.max
-})
+  if (props.maxOptions === undefined) return undefined;
+  return typeof props.maxOptions === 'number' ? props.maxOptions : props.maxOptions.max;
+});
 
 const onExpand = computed(() =>
   props.maxOptions !== undefined && typeof props.maxOptions === 'object'
     ? props.maxOptions.onExpand
     : undefined,
-)
+);
 
 const overflowing = computed(
   () => maxCount.value !== undefined && totalCount.value > maxCount.value,
-)
+);
 
 /** With `max: n` the visible avatars are the first n − 1 (reference rule). */
 const shownNodes = computed(() => {
-  if (!overflowing.value || maxCount.value === undefined) return avatarNodes.value
-  const shown = Math.max(maxCount.value - 1, 0)
-  return avatarNodes.value.slice(0, shown)
-})
+  if (!overflowing.value || maxCount.value === undefined) return avatarNodes.value;
+  const shown = Math.max(maxCount.value - 1, 0);
+  return avatarNodes.value.slice(0, shown);
+});
 
 const restCount = computed(() => {
-  if (!overflowing.value) return 0
-  return totalCount.value - shownNodes.value.length
-})
+  if (!overflowing.value) return 0;
+  return totalCount.value - shownNodes.value.length;
+});
 
 /* ─────────── Layout ─────────── */
 
 /** Overlap depth for the tightening stack (px). */
-const OVERLAP = 10
+const OVERLAP = 10;
 /** Per-index scale step for the shrink stack. */
-const SHRINK_STEP = 0.06
-const SHRINK_MIN = 0.7
+const SHRINK_STEP = 0.06;
+const SHRINK_MIN = 0.7;
 
 function itemStyle(index: number): CSSProperties | undefined {
   if (props.sizeBehavior === 'tightening') {
-    return index === 0 ? undefined : { marginLeft: `-${OVERLAP}px` }
+    return index === 0 ? undefined : { marginLeft: `-${OVERLAP}px` };
   }
-  const scale = Math.max(SHRINK_MIN, 1 - index * SHRINK_STEP)
-  if (scale >= 1) return undefined
-  return { transform: `scale(${scale})`, transformOrigin: 'left center' }
+  const scale = Math.max(SHRINK_MIN, 1 - index * SHRINK_STEP);
+  if (scale >= 1) return undefined;
+  return { transform: `scale(${scale})`, transformOrigin: 'left center' };
 }
 
 function handleExpand(): void {
-  onExpand.value?.()
+  onExpand.value?.();
 }
 
-const restIsClickable = computed(() => onExpand.value !== undefined)
+const restIsClickable = computed(() => onExpand.value !== undefined);
 </script>
 
 <template>
-  <div data-snui-component="avatar-group" class="sn-avatar-group" :class="`sn-avatar-group--${sizeBehavior}`">
+  <div
+    data-snui-component="avatar-group"
+    class="sn-avatar-group"
+    :class="`sn-avatar-group--${sizeBehavior}`"
+  >
     <span
       v-for="(item, index) in shownNodes"
       :key="item.key"
@@ -169,10 +173,16 @@ const restIsClickable = computed(() => onExpand.value !== undefined)
         :is="restIsClickable ? 'button' : 'span'"
         class="sn-avatar-group__rest-trigger"
         :type="restIsClickable ? 'button' : undefined"
-        :aria-label="restIsClickable ? locale.AvatarGroup.rest.replace('{count}', String(restCount)) : undefined"
+        :aria-label="
+          restIsClickable
+            ? locale.AvatarGroup.rest.replace('{count}', String(restCount))
+            : undefined
+        "
         @click="handleExpand"
       >
-        <SnAvatar :size="size ?? 'medium'" class="sn-avatar-group__rest-avatar">+{{ restCount }}</SnAvatar>
+        <SnAvatar :size="size ?? 'medium'" class="sn-avatar-group__rest-avatar"
+          >+{{ restCount }}</SnAvatar
+        >
       </component>
     </span>
   </div>

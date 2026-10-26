@@ -38,14 +38,14 @@
 
 ### SnHighlight Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| text | `string` | `undefined` | 完整文本 |
-| patterns | `string[]` | `[]` | 需要高亮的内容 |
-| highlight-tag | `string` | `'mark'` | 高亮片段的 HTML 元素 |
-| case-sensitive | `boolean` | `false` | 是否区分大小写 |
-| auto-escape | `boolean` | `true` | 是否对 patterns 做正则转义（按字面匹配） |
-| highlight-class | `string` | `undefined` | 高亮片段的类名 |
-| highlight-style | `object \| string` | `undefined` | 高亮片段的内联样式 |
+| 名称            | 类型               | 默认值      | 说明                                     |
+| --------------- | ------------------ | ----------- | ---------------------------------------- |
+| text            | `string`           | `undefined` | 完整文本                                 |
+| patterns        | `string[]`         | `[]`        | 需要高亮的内容                           |
+| highlight-tag   | `string`           | `'mark'`    | 高亮片段的 HTML 元素                     |
+| case-sensitive  | `boolean`          | `false`     | 是否区分大小写                           |
+| auto-escape     | `boolean`          | `true`      | 是否对 patterns 做正则转义（按字面匹配） |
+| highlight-class | `string`           | `undefined` | 高亮片段的类名                           |
+| highlight-style | `object \| string` | `undefined` | 高亮片段的内联样式                       |
 
 完整契约见组件 `ai-description.md`。

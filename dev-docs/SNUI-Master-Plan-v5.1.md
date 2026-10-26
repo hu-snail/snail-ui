@@ -30,30 +30,30 @@ React 端（未来）   →  @snui/react-web   +  @snui/tokens-react
 
 ## 2. 端独立性原则
 
-| 维度 | 端间关系 |
-|---|---|
-| 源代码 | **0 行复用**。每端独立写。 |
-| 构建产物 | 每端独立 dist/。独立 npm 包。 |
-| TypeScript 类型 | 每端独立 .d.ts。 |
-| Token 命名空间 | 每端独立别名层（`--sn-web-*` / `--sn-mp-*` / `--sn-react-*`）。 |
-| API 风格 | 每端参考对应生态最佳实践，不要求跨端同形。 |
-| 组件清单 | 端专属 + 少量共享（Button / ConfigProvider / Icon）。 |
-| 单元测试 | 每端独立。 |
-| 风格包 / Skill / 文档 | 跨端共用，按 `end` 字段过滤。 |
+| 维度                  | 端间关系                                                        |
+| --------------------- | --------------------------------------------------------------- |
+| 源代码                | **0 行复用**。每端独立写。                                      |
+| 构建产物              | 每端独立 dist/。独立 npm 包。                                   |
+| TypeScript 类型       | 每端独立 .d.ts。                                                |
+| Token 命名空间        | 每端独立别名层（`--sn-web-*` / `--sn-mp-*` / `--sn-react-*`）。 |
+| API 风格              | 每端参考对应生态最佳实践，不要求跨端同形。                      |
+| 组件清单              | 端专属 + 少量共享（Button / ConfigProvider / Icon）。           |
+| 单元测试              | 每端独立。                                                      |
+| 风格包 / Skill / 文档 | 跨端共用，按 `end` 字段过滤。                                   |
 
 ---
 
 ## 3. 里程碑（v5.1）
 
-| 里程碑 | 时间 | 交付 |
-|---|---|---|
-| M0 | 2026-10 | ADR-0001 + Button demo ✅ |
-| M0.5 | 2026-10 | ADR-0002 + PRD v3.0 ✅ |
-| **M0.6** | 2026-10 | **PRD v3.1 + 双端独立拆分 + 双 Token 别名层 + WBS v3.1 + Master Plan v5.1** ✅ |
-| M1 | 2026-11 | `@snui/tokens-web` + `@snui/tokens-mp` 新包 + 端独立组件 M1（Web ~50 / uni ~50 个，按各自场景） |
-| M2 | 2026-12 | Style Pack 默认 3 Pack（`end: 'both'`）+ 移动端 2 Pack（`end: 'mp'`）+ AI Layer + StyleSwitcher / ThemeCopier |
-| M3 | 2027 Q1 | doodle / sticky-note + wechat Pack + render_preview 实装 |
-| M4 | 2027 Q2 | 新增 React 端（按 v3.1 模式）+ VSCode 插件 + 视觉回归 |
+| 里程碑   | 时间    | 交付                                                                                                          |
+| -------- | ------- | ------------------------------------------------------------------------------------------------------------- |
+| M0       | 2026-10 | ADR-0001 + Button demo ✅                                                                                     |
+| M0.5     | 2026-10 | ADR-0002 + PRD v3.0 ✅                                                                                        |
+| **M0.6** | 2026-10 | **PRD v3.1 + 双端独立拆分 + 双 Token 别名层 + WBS v3.1 + Master Plan v5.1** ✅                                |
+| M1       | 2026-11 | `@snui/tokens-web` + `@snui/tokens-mp` 新包 + 端独立组件 M1（Web ~50 / uni ~50 个，按各自场景）               |
+| M2       | 2026-12 | Style Pack 默认 3 Pack（`end: 'both'`）+ 移动端 2 Pack（`end: 'mp'`）+ AI Layer + StyleSwitcher / ThemeCopier |
+| M3       | 2027 Q1 | doodle / sticky-note + wechat Pack + render_preview 实装                                                      |
+| M4       | 2027 Q2 | 新增 React 端（按 v3.1 模式）+ VSCode 插件 + 视觉回归                                                         |
 
 ---
 
@@ -87,13 +87,13 @@ React 端（未来）   →  @snui/react-web   +  @snui/tokens-react
 
 ### Style Packs
 
-| Pack | end | 阶段 |
-|---|---|---|
-| default | both | M2 |
-| dark | both | M2 |
-| ios | both | M2 |
-| mp-taobao | mp | M2 |
-| mp-douyin | mp | M2 |
+| Pack      | end  | 阶段 |
+| --------- | ---- | ---- |
+| default   | both | M2   |
+| dark      | both | M2   |
+| ios       | both | M2   |
+| mp-taobao | mp   | M2   |
+| mp-douyin | mp   | M2   |
 
 ### AI Layer
 
@@ -134,9 +134,9 @@ React 端（未来）   →  @snui/react-web   +  @snui/tokens-react
 
 ## 8. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.0 | 2026-08 | 初始 |
-| v4.0 | 2026-10-03 | 改为组件库（ADR-0001） |
-| v5.0 | 2026-10-03 | Style Pack + AI Layer（ADR-0002） |
+| 版本     | 日期       | 变更                                                  |
+| -------- | ---------- | ----------------------------------------------------- |
+| v1.0     | 2026-08    | 初始                                                  |
+| v4.0     | 2026-10-03 | 改为组件库（ADR-0001）                                |
+| v5.0     | 2026-10-03 | Style Pack + AI Layer（ADR-0002）                     |
 | **v5.1** | 2026-10-03 | **双端独立 + 双 Token 别名 + 端独立性原则（Active）** |

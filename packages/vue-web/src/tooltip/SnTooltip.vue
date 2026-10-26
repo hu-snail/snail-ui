@@ -44,23 +44,23 @@
  *   </SnTooltip>
  */
 
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  ref,
-  useSlots,
-  watch,
-  type CSSProperties,
-} from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, useSlots, watch, type CSSProperties } from 'vue';
 
-defineOptions({ name: 'SnTooltip' })
+defineOptions({ name: 'SnTooltip' });
 
 export type SnTooltipPlacement =
-  | 'top-start' | 'top' | 'top-end'
-  | 'right-start' | 'right' | 'right-end'
-  | 'bottom-start' | 'bottom' | 'bottom-end'
-  | 'left-start' | 'left' | 'left-end'
+  | 'top-start'
+  | 'top'
+  | 'top-end'
+  | 'right-start'
+  | 'right'
+  | 'right-end'
+  | 'bottom-start'
+  | 'bottom'
+  | 'bottom-end'
+  | 'left-start'
+  | 'left'
+  | 'left-end';
 
 const props = withDefaults(
   defineProps<{
@@ -68,121 +68,121 @@ const props = withDefaults(
      * Whether to show the tooltip. When `undefined`, falls back to
      * uncontrolled mode using internal state. Mirrors n-tooltip `show`.
      */
-    show?: boolean | undefined
+    show?: boolean | undefined;
     /**
      * Initial show value for uncontrolled mode. Mirrors n-tooltip
      * `defaultShow`. Default false.
      */
-    defaultShow?: boolean
+    defaultShow?: boolean;
     /**
      * What user gesture opens the tooltip. Mirrors n-tooltip `trigger`.
      * Default 'hover'. 'manual' disables any automatic show/hide — only
      * `show` / `update:show` controls the state.
      */
-    trigger?: 'hover' | 'click' | 'focus' | 'manual'
+    trigger?: 'hover' | 'click' | 'focus' | 'manual';
     /**
      * Where to render the tooltip relative to the trigger. Mirrors
      * n-tooltip `placement`. Default 'top'.
      */
-    placement?: SnTooltipPlacement
+    placement?: SnTooltipPlacement;
     /**
      * Open/close debounce in ms. Single number = same delay for open+close.
      * Use an array `[open, close]` for asymmetric delays (e.g. snappier
      * open, slower close). Mirrors n-tooltip `delay`. Default 100.
      */
-    delay?: number | [number, number]
+    delay?: number | [number, number];
     /**
      * Show the directional arrow. Mirrors n-tooltip `arrow`. Default true.
      */
-    arrow?: boolean
+    arrow?: boolean;
     /**
      * The tooltip body. Can be a plain string or any Vue-renderable value.
      * Mirrors n-tooltip `content`.
      */
-    content?: string | undefined
+    content?: string | undefined;
     /**
      * Render the trigger inside a wrapper `<span>` that owns the pointer
      * listeners. Set to `false` when the slot already renders a focusable
      * element and the extra wrapper would break layout. Mirrors n-popover
      * `raw` (inverted: this library defaults to wrapping). Default true.
      */
-    wrapped?: boolean
+    wrapped?: boolean;
     /**
      * Skip the library's own bubble styling so the caller can paint the
      * popover entirely. Mirrors n-popover `raw`. Default false.
      */
-    raw?: boolean
+    raw?: boolean;
     /**
      * Animate the popover in/out. Mirrors n-popover `animated`. Default true.
      */
-    animated?: boolean
+    animated?: boolean;
     /**
      * Point the arrow at the trigger's centre rather than its edge. Mirrors
      * n-popover `arrowPointToCenter`. Default false.
      */
-    arrowPointToCenter?: boolean
+    arrowPointToCenter?: boolean;
     /** Class on the arrow element. Mirrors n-popover `arrowClass`. */
-    arrowClass?: string
+    arrowClass?: string;
     /** Style on the arrow element. Mirrors n-popover `arrowStyle`. */
-    arrowStyle?: CSSProperties
+    arrowStyle?: CSSProperties;
     /** Class on the scrollable body. Mirrors n-popover `contentClass`. */
-    contentClass?: string
+    contentClass?: string;
     /** Style on the scrollable body. Mirrors n-popover `contentStyle`. */
-    contentStyle?: CSSProperties
+    contentStyle?: CSSProperties;
     /**
      * `'if'` unmounts the popover on hide; `'show'` keeps the node and
      * toggles `display`. Mirrors n-popover `displayDirective`. Default 'if'.
      */
-    displayDirective?: 'if' | 'show'
+    displayDirective?: 'if' | 'show';
     /**
      * How long the popover lingers before closing, in ms. Distinct from
      * `delay`, which gates opening. Mirrors n-popover `duration`.
      * Default 100.
      */
-    duration?: number
+    duration?: number;
     /**
      * Flip to the opposite side when the chosen placement would overflow
      * the viewport. Mirrors n-popover `flip`. Default true.
      */
-    flip?: boolean
+    flip?: boolean;
     /**
      * Keep the popover open while the pointer is inside it (hover trigger
      * only). Mirrors n-popover `keepAliveOnHover`. Default true.
      */
-    keepAliveOnHover?: boolean
+    keepAliveOnHover?: boolean;
     /**
      * Let the popover overlap the trigger instead of sitting beside it.
      * Mirrors n-popover `overlap`. Default false.
      */
-    overlap?: boolean
+    overlap?: boolean;
     /**
      * Make the popover body scrollable once it exceeds `max-height`.
      * Mirrors n-popover `scrollable`. Default false.
      */
-    scrollable?: boolean
+    scrollable?: boolean;
     /**
      * Where to teleport the popover. `false` keeps it inline (useful inside
      * transform-heavy ancestors). Mirrors n-popover `to`. Default 'body'.
      */
-    to?: string | HTMLElement | false
+    to?: string | HTMLElement | false;
     /**
      * Pin the popover width to the trigger's width. Mirrors n-popover
      * `width` = `'trigger'`; a number sets a fixed width in px.
      */
-    width?: number | 'trigger'
+    width?: number | 'trigger';
     /**
      * Explicit stacking order. Mirrors n-popover `zIndex`.
      */
-    zIndex?: number
+    zIndex?: number;
     /**
      * Called when a click lands outside the popover and its trigger.
      * Mirrors n-popover `onClickoutside`.
      */
-    onClickoutside?: (e: MouseEvent) => void
+    onClickoutside?: (e: MouseEvent) => void;
     /**
      * Disable showing entirely. Mirrors n-tooltip `disabled`. Default false.
      */
-    disabled?: boolean
+    disabled?: boolean;
   }>(),
   {
     show: undefined,
@@ -212,38 +212,37 @@ const props = withDefaults(
     onClickoutside: undefined as any,
     disabled: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Fired when show state changes (v-model:show). Mirrors n-tooltip `on-update-show`. */
-  (e: 'update:show', show: boolean): void
+  (e: 'update:show', show: boolean): void;
   /** Fired when the popover appears. Mirrors n-tooltip `on-show`. */
-  (e: 'show'): void
+  (e: 'show'): void;
   /** Fired when the popover hides. Mirrors n-tooltip `on-hide`. */
-  (e: 'hide'): void
-}>()
+  (e: 'hide'): void;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /* ─────────── Internal show state ─────────── */
 
-const uncontrolledShow = ref<boolean>(props.defaultShow)
-const isControlled = computed(() => props.show !== undefined)
+const uncontrolledShow = ref<boolean>(props.defaultShow);
+const isControlled = computed(() => props.show !== undefined);
 const visible = computed<boolean>(() =>
   isControlled.value ? (props.show as boolean) : uncontrolledShow.value,
-)
+);
 
 function setVisible(next: boolean): void {
-  if (props.disabled) return
+  if (props.disabled) return;
   if (isControlled.value) {
     // Parent owns state — only emit, never write our own ref.
-    if (visible.value !== next) emit('update:show', next)
+    if (visible.value !== next) emit('update:show', next);
+  } else {
+    uncontrolledShow.value = next;
   }
-  else {
-    uncontrolledShow.value = next
-  }
-  if (next) emit('show')
-  else emit('hide')
+  if (next) emit('show');
+  else emit('hide');
 }
 
 /* ─────────── Delay timers ─────────── */
@@ -254,76 +253,82 @@ function setVisible(next: boolean): void {
  * convenience of the pair form without a second prop.
  */
 const [openDelay, closeDelay] = computed<[number, number]>(() => {
-  const d = props.delay
-  return Array.isArray(d) ? d : [d, props.duration]
-}).value as [number, number]
+  const d = props.delay;
+  return Array.isArray(d) ? d : [d, props.duration];
+}).value as [number, number];
 
-let openTimer: ReturnType<typeof setTimeout> | null = null
-let closeTimer: ReturnType<typeof setTimeout> | null = null
+let openTimer: ReturnType<typeof setTimeout> | null = null;
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
 function clearTimers(): void {
-  if (openTimer) { clearTimeout(openTimer); openTimer = null }
-  if (closeTimer) { clearTimeout(closeTimer); closeTimer = null }
+  if (openTimer) {
+    clearTimeout(openTimer);
+    openTimer = null;
+  }
+  if (closeTimer) {
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  }
 }
 
 function scheduleOpen(): void {
-  clearTimers()
-  if (openDelay <= 0) setVisible(true)
-  else openTimer = setTimeout(() => setVisible(true), openDelay)
+  clearTimers();
+  if (openDelay <= 0) setVisible(true);
+  else openTimer = setTimeout(() => setVisible(true), openDelay);
 }
 function scheduleClose(): void {
-  clearTimers()
-  if (closeDelay <= 0) setVisible(false)
-  else closeTimer = setTimeout(() => setVisible(false), closeDelay)
+  clearTimers();
+  if (closeDelay <= 0) setVisible(false);
+  else closeTimer = setTimeout(() => setVisible(false), closeDelay);
 }
 
 /* ─────────── Trigger event wiring ─────────── */
 
-const triggerEl = ref<HTMLElement | null>(null)
-const popoverEl = ref<HTMLElement | null>(null)
+const triggerEl = ref<HTMLElement | null>(null);
+const popoverEl = ref<HTMLElement | null>(null);
 
 function onTriggerMouseEnter(): void {
-  if (props.trigger !== 'hover') return
-  scheduleOpen()
+  if (props.trigger !== 'hover') return;
+  scheduleOpen();
 }
 function onTriggerMouseLeave(e: MouseEvent): void {
-  if (props.trigger !== 'hover') return
+  if (props.trigger !== 'hover') return;
   // If the user moves directly into the popover, keep it open. The popover
   // listens for mouseenter/mouseleave separately and re-schedules.
-  const to = e.relatedTarget as Node | null
-  if (to && popoverEl.value && popoverEl.value.contains(to)) return
-  scheduleClose()
+  const to = e.relatedTarget as Node | null;
+  if (to && popoverEl.value && popoverEl.value.contains(to)) return;
+  scheduleClose();
 }
 function onTriggerClick(): void {
-  if (props.trigger !== 'click') return
-  setVisible(!visible.value)
+  if (props.trigger !== 'click') return;
+  setVisible(!visible.value);
 }
 function onTriggerFocus(): void {
-  if (props.trigger !== 'focus') return
-  scheduleOpen()
+  if (props.trigger !== 'focus') return;
+  scheduleOpen();
 }
 function onTriggerBlur(e: FocusEvent): void {
-  if (props.trigger !== 'focus') return
-  const to = e.relatedTarget as Node | null
-  if (to && popoverEl.value && popoverEl.value.contains(to)) return
-  scheduleClose()
+  if (props.trigger !== 'focus') return;
+  const to = e.relatedTarget as Node | null;
+  if (to && popoverEl.value && popoverEl.value.contains(to)) return;
+  scheduleClose();
 }
 
 /* Popover hover bridge — keep popover open while user moves between
  * trigger and popover. The mouseleave→mouseenter gap is bridged by
  * either side's enter cancelling the other's close timer. */
 function onPopoverMouseEnter(): void {
-  if (props.trigger !== 'hover') return
+  if (props.trigger !== 'hover') return;
   // Without keepAliveOnHover the popover closes as soon as the pointer
   // leaves the trigger, so entering the bubble must not cancel the timer.
-  if (!props.keepAliveOnHover) return
-  clearTimers()
+  if (!props.keepAliveOnHover) return;
+  clearTimers();
 }
 function onPopoverMouseLeave(e: MouseEvent): void {
-  if (props.trigger !== 'hover') return
-  if (!props.keepAliveOnHover) return
-  const to = e.relatedTarget as Node | null
-  if (to && triggerEl.value && triggerEl.value.contains(to)) return
-  scheduleClose()
+  if (props.trigger !== 'hover') return;
+  if (!props.keepAliveOnHover) return;
+  const to = e.relatedTarget as Node | null;
+  if (to && triggerEl.value && triggerEl.value.contains(to)) return;
+  scheduleClose();
 }
 
 /* ─────────── Positioning + boundary detection ─────────── */
@@ -333,21 +338,21 @@ function onPopoverMouseLeave(e: MouseEvent): void {
  * `.sn-tooltip__arrow--*`), so this constant is the single place the JS
  * layout reserve and the CSS shape are kept in step.
  */
-const ARROW_SIZE = 8
+const ARROW_SIZE = 8;
 
 interface PositionRect {
-  top: number
-  left: number
-  width: number
-  height: number
+  top: number;
+  left: number;
+  width: number;
+  height: number;
   /** Convenience for the trigger's right edge. */
-  right: number
+  right: number;
   /** Convenience for the trigger's bottom edge. */
-  bottom: number
+  bottom: number;
 }
 
-const popoverStyle = ref<Record<string, string>>({})
-const arrowStyle = ref<Record<string, string>>({})
+const popoverStyle = ref<Record<string, string>>({});
+const arrowStyle = ref<Record<string, string>>({});
 
 /**
  * Which side the popover actually ended up on. `placement` is only the
@@ -356,7 +361,7 @@ const arrowStyle = ref<Record<string, string>>({})
  * `placement` alone (the previous behaviour) left a flipped bubble pointing
  * the wrong way, with its arrow parked outside the bubble.
  */
-const resolvedSide = ref<'top' | 'right' | 'bottom' | 'left'>('top')
+const resolvedSide = ref<'top' | 'right' | 'bottom' | 'left'>('top');
 
 /**
  * Compute the popover position. Layout strategy: measure trigger +
@@ -368,14 +373,14 @@ const resolvedSide = ref<'top' | 'right' | 'bottom' | 'left'>('top')
  * doesn't drift off the bubble.
  */
 async function recompute(): Promise<void> {
-  if (!visible.value) return
-  await nextTick()
-  const trig = triggerEl.value
-  const pop = popoverEl.value
-  if (!trig || !pop) return
+  if (!visible.value) return;
+  await nextTick();
+  const trig = triggerEl.value;
+  const pop = popoverEl.value;
+  if (!trig || !pop) return;
 
-  const trigRect = trig.getBoundingClientRect()
-  const popRect = pop.getBoundingClientRect()
+  const trigRect = trig.getBoundingClientRect();
+  const popRect = pop.getBoundingClientRect();
   // Extend the rectangles with right / bottom for the position math.
   const trigBox: PositionRect = {
     top: trigRect.top,
@@ -384,7 +389,7 @@ async function recompute(): Promise<void> {
     height: trigRect.height,
     right: trigRect.right,
     bottom: trigRect.bottom,
-  }
+  };
   const popBox: PositionRect = {
     top: popRect.top,
     left: popRect.left,
@@ -392,21 +397,21 @@ async function recompute(): Promise<void> {
     height: popRect.height,
     right: popRect.right,
     bottom: popRect.bottom,
-  }
-  const vw = window.innerWidth
-  const vh = window.innerHeight
-  const margin = 8 // minimum gap between popover and viewport edge
+  };
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const margin = 8; // minimum gap between popover and viewport edge
   // `overlap` seats the bubble on the trigger instead of beside it, so no
   // arrow-sized gap is reserved. A resting `overlap` is 8px by default, so
   // the reserved band and the CSS arrow size must agree — keep ARROW_SIZE
   // and `.sn-tooltip__arrow--*`'s border-width in sync.
-  const arrowSize = props.overlap ? 0 : ARROW_SIZE
+  const arrowSize = props.overlap ? 0 : ARROW_SIZE;
 
   // Determine initial side + alignment from placement string
   // e.g. 'top-start' → side='top', align='start'
-  const [sideRaw, alignRaw = 'center'] = props.placement.split('-')
-  const side = sideRaw as 'top' | 'right' | 'bottom' | 'left'
-  const align = alignRaw as 'start' | 'center' | 'end'
+  const [sideRaw, alignRaw = 'center'] = props.placement.split('-');
+  const side = sideRaw as 'top' | 'right' | 'bottom' | 'left';
+  const align = alignRaw as 'start' | 'center' | 'end';
 
   /**
    * How far the arrow's centre must sit from the bubble's own edge. Half the
@@ -414,7 +419,7 @@ async function recompute(): Promise<void> {
    * a little further so the triangle's flat base stays inside the rounded
    * corner instead of poking out of it.
    */
-  const arrowInset = arrowSize > 0 ? arrowSize + 4 : 0
+  const arrowInset = arrowSize > 0 ? arrowSize + 4 : 0;
 
   /**
    * Nudge a coordinate back inside `[margin, limit - size - margin]` so a
@@ -422,10 +427,10 @@ async function recompute(): Promise<void> {
    * still fully readable instead of being clipped by the viewport.
    */
   function clampWithin(value: number, size: number, limit: number): number {
-    const max = Math.min(value, limit - size - margin)
+    const max = Math.min(value, limit - size - margin);
     // `Math.max` runs second so a bubble larger than the viewport anchors to
     // the near edge rather than escaping past the far one.
-    return Math.max(margin, max)
+    return Math.max(margin, max);
   }
 
   // Helper: lay out the bubble on `sideChoice`. `strict` returns null when
@@ -439,65 +444,67 @@ async function recompute(): Promise<void> {
     strict = true,
   ): PositionRect | null {
     const out: PositionRect = {
-      top: 0, left: 0,
-      width: pop.width, height: pop.height,
-      right: 0, bottom: 0,
-    }
+      top: 0,
+      left: 0,
+      width: pop.width,
+      height: pop.height,
+      right: 0,
+      bottom: 0,
+    };
     switch (sideChoice) {
       case 'top':
-        out.top = trigger.top - pop.height - arrowSize
-        break
+        out.top = trigger.top - pop.height - arrowSize;
+        break;
       case 'bottom':
-        out.top = trigger.bottom + arrowSize
-        break
+        out.top = trigger.bottom + arrowSize;
+        break;
       case 'left':
-        out.left = trigger.left - pop.width - arrowSize
-        break
+        out.left = trigger.left - pop.width - arrowSize;
+        break;
       case 'right':
-        out.left = trigger.right + arrowSize
-        break
+        out.left = trigger.right + arrowSize;
+        break;
     }
     // Cross axis: order the bubble per `align`. Used verbatim while probing
     // (so an honest overflow can trigger a flip), clamped when we have
     // committed to this side.
     const place = (raw: number, size: number, limit: number): number =>
-      strict ? raw : clampWithin(raw, size, limit)
+      strict ? raw : clampWithin(raw, size, limit);
     // Horizontal axis
     if (sideChoice === 'top' || sideChoice === 'bottom') {
       switch (align) {
-        case 'start': out.left = place(trigger.left, pop.width, vw); break
-        case 'end': out.left = place(trigger.right - pop.width, pop.width, vw); break
+        case 'start':
+          out.left = place(trigger.left, pop.width, vw);
+          break;
+        case 'end':
+          out.left = place(trigger.right - pop.width, pop.width, vw);
+          break;
         default:
-          out.left = place(
-            trigger.left + trigger.width / 2 - pop.width / 2,
-            pop.width,
-            vw,
-          )
+          out.left = place(trigger.left + trigger.width / 2 - pop.width / 2, pop.width, vw);
       }
     }
     // Vertical axis
     else {
       switch (align) {
-        case 'start': out.top = place(trigger.top, pop.height, vh); break
-        case 'end': out.top = place(trigger.bottom - pop.height, pop.height, vh); break
+        case 'start':
+          out.top = place(trigger.top, pop.height, vh);
+          break;
+        case 'end':
+          out.top = place(trigger.bottom - pop.height, pop.height, vh);
+          break;
         default:
-          out.top = place(
-            trigger.top + trigger.height / 2 - pop.height / 2,
-            pop.height,
-            vh,
-          )
+          out.top = place(trigger.top + trigger.height / 2 - pop.height / 2, pop.height, vh);
       }
     }
     // Check viewport fit along the *main* axis. The cross axis is already
     // clamped when `!strict`, so re-testing it would reject rects that
     // rectFor just made fit.
     if (sideChoice === 'top' || sideChoice === 'bottom') {
-      if (out.top < margin || out.top + pop.height > vh - margin) return null
+      if (out.top < margin || out.top + pop.height > vh - margin) return null;
+    } else {
+      if (out.left < margin || out.left + pop.width > vw - margin) return null;
     }
-    else {
-      if (out.left < margin || out.left + pop.width > vw - margin) return null
-    }
-    return out
+    return out;
   }
 
   /**
@@ -513,9 +520,9 @@ async function recompute(): Promise<void> {
     height: number,
   ): boolean {
     if (sideChoice === 'top' || sideChoice === 'bottom') {
-      return rect.left >= margin && rect.left + rect.width <= width - margin
+      return rect.left >= margin && rect.left + rect.width <= width - margin;
     }
-    return rect.top >= margin && rect.top + rect.height <= height - margin
+    return rect.top >= margin && rect.top + rect.height <= height - margin;
   }
 
   // Try the requested side; flip if the main axis doesn't fit and `flip`
@@ -525,14 +532,14 @@ async function recompute(): Promise<void> {
     bottom: 'top',
     left: 'right',
     right: 'left',
-  }
-  let finalSide = side
-  let r = rectFor(side, trigBox, popBox)
+  };
+  let finalSide = side;
+  let r = rectFor(side, trigBox, popBox);
   if (!r && props.flip) {
-    const flipped = rectFor(opposite[side], trigBox, popBox)
+    const flipped = rectFor(opposite[side], trigBox, popBox);
     if (flipped) {
-      r = flipped
-      finalSide = opposite[side]
+      r = flipped;
+      finalSide = opposite[side];
     }
   }
   // Nothing exact on the main axis, or the bubble landed with its *cross*
@@ -542,26 +549,25 @@ async function recompute(): Promise<void> {
   // raw rect here used to push edge-aligned bubbles past the viewport edge,
   // and when *both* axes failed it left `r` null and crashed on `r.top`.
   if (!r || !fitsCrossAxis(finalSide, r, vw, vh)) {
-    r = rectFor(finalSide, trigBox, popBox, false)!
+    r = rectFor(finalSide, trigBox, popBox, false)!;
   }
-  resolvedSide.value = finalSide
+  resolvedSide.value = finalSide;
 
   // `width="trigger"` pins the bubble's horizontal size to the trigger.
-  const widthStyle = props.width === 'trigger'
-    ? { width: `${trigBox.width}px` }
-    : typeof props.width === 'number'
-      ? { width: `${props.width}px` }
-      : {}
+  const widthStyle =
+    props.width === 'trigger'
+      ? { width: `${trigBox.width}px` }
+      : typeof props.width === 'number'
+        ? { width: `${props.width}px` }
+        : {};
 
   popoverStyle.value = {
     position: 'fixed',
     top: `${r.top}px`,
     left: `${r.left}px`,
-    ...Object.fromEntries(
-      Object.entries(widthStyle).map(([k, v]) => [k, String(v)]),
-    ),
+    ...Object.fromEntries(Object.entries(widthStyle).map(([k, v]) => [k, String(v)])),
     ...(props.zIndex === undefined ? {} : { zIndex: String(props.zIndex) }),
-  }
+  };
 
   // Arrow position: aim at the trigger's midpoint on the relevant axis,
   // or at the popover's own centre when `arrowPointToCenter` is set.
@@ -571,13 +577,13 @@ async function recompute(): Promise<void> {
   // stale `left` / `top` from the previous orientation cannot survive a
   // flip, a scroll, or a resize — which is exactly how the arrow used to
   // detach from the bubble.
-  const arrowOffset: Record<string, string> = {}
-  const popCenterX = r.left + r.width / 2
-  const popCenterY = r.top + r.height / 2
-  const triggerCenterX = trigBox.left + trigBox.width / 2
-  const triggerCenterY = trigBox.top + trigBox.height / 2
-  const aimX = props.arrowPointToCenter ? popCenterX : triggerCenterX
-  const aimY = props.arrowPointToCenter ? popCenterY : triggerCenterY
+  const arrowOffset: Record<string, string> = {};
+  const popCenterX = r.left + r.width / 2;
+  const popCenterY = r.top + r.height / 2;
+  const triggerCenterX = trigBox.left + trigBox.width / 2;
+  const triggerCenterY = trigBox.top + trigBox.height / 2;
+  const aimX = props.arrowPointToCenter ? popCenterX : triggerCenterX;
+  const aimY = props.arrowPointToCenter ? popCenterY : triggerCenterY;
 
   /**
    * Clamp the arrow's centre into the bubble, keeping `arrowInset` of margin
@@ -586,105 +592,116 @@ async function recompute(): Promise<void> {
    * end edge.
    */
   function clampAim(aim: number, start: number, size: number): number {
-    const lo = start + arrowInset
-    const hi = start + size - arrowInset
-    return Math.max(lo, Math.min(aim, hi))
+    const lo = start + arrowInset;
+    const hi = start + size - arrowInset;
+    return Math.max(lo, Math.min(aim, hi));
   }
 
   if (finalSide === 'top' || finalSide === 'bottom') {
-    const arrowCenter = clampAim(aimX, r.left, r.width)
-    arrowOffset.left = `${arrowCenter - r.left}px`
-    arrowOffset[finalSide === 'top' ? 'bottom' : 'top'] = `-${arrowSize}px`
+    const arrowCenter = clampAim(aimX, r.left, r.width);
+    arrowOffset.left = `${arrowCenter - r.left}px`;
+    arrowOffset[finalSide === 'top' ? 'bottom' : 'top'] = `-${arrowSize}px`;
+  } else {
+    const arrowCenter = clampAim(aimY, r.top, r.height);
+    arrowOffset.top = `${arrowCenter - r.top}px`;
+    arrowOffset[finalSide === 'left' ? 'right' : 'left'] = `-${arrowSize}px`;
   }
-  else {
-    const arrowCenter = clampAim(aimY, r.top, r.height)
-    arrowOffset.top = `${arrowCenter - r.top}px`
-    arrowOffset[finalSide === 'left' ? 'right' : 'left'] = `-${arrowSize}px`
-  }
-  arrowStyle.value = arrowOffset
+  arrowStyle.value = arrowOffset;
 }
 
 /* Recompute whenever visible flips to true, and on resize / scroll
  * while open. We listen on window — the canvas resize observer for
  * arbitrary parent containers is out of scope for v0. */
-let resizeObserver: ResizeObserver | null = null
-watch(visible, async (v) => {
-  // SSR guard (§SSR): the immediate pass runs during server render where
-  // window / document do not exist; listeners are client-only.
-  if (typeof window === 'undefined') return
-  if (v) {
-    await recompute()
-    if (!resizeObserver && typeof ResizeObserver !== 'undefined') {
-      resizeObserver = new ResizeObserver(() => { void recompute() })
-      // Observe document body for layout shifts while open.
-      resizeObserver.observe(document.body)
+let resizeObserver: ResizeObserver | null = null;
+watch(
+  visible,
+  async (v) => {
+    // SSR guard (§SSR): the immediate pass runs during server render where
+    // window / document do not exist; listeners are client-only.
+    if (typeof window === 'undefined') return;
+    if (v) {
+      await recompute();
+      if (!resizeObserver && typeof ResizeObserver !== 'undefined') {
+        resizeObserver = new ResizeObserver(() => {
+          void recompute();
+        });
+        // Observe document body for layout shifts while open.
+        resizeObserver.observe(document.body);
+      }
+      window.addEventListener('scroll', onScrollOrResize, true);
+      window.addEventListener('resize', onScrollOrResize);
+    } else {
+      window.removeEventListener('scroll', onScrollOrResize, true);
+      window.removeEventListener('resize', onScrollOrResize);
     }
-    window.addEventListener('scroll', onScrollOrResize, true)
-    window.addEventListener('resize', onScrollOrResize)
-  }
-  else {
-    window.removeEventListener('scroll', onScrollOrResize, true)
-    window.removeEventListener('resize', onScrollOrResize)
-  }
-  // `immediate` matters for controlled consumers that mount already open:
-  // without it the first render never positions the popover, because
-  // `visible` never transitions from false to true.
-}, { immediate: true })
+    // `immediate` matters for controlled consumers that mount already open:
+    // without it the first render never positions the popover, because
+    // `visible` never transitions from false to true.
+  },
+  { immediate: true },
+);
 function onScrollOrResize(): void {
-  void recompute()
+  void recompute();
 }
 
 /* ─────────── Outside-click dismiss (click trigger only) ─────────── */
 
 function onDocumentMouseDown(e: MouseEvent): void {
-  if (props.trigger !== 'click' || !visible.value) return
-  const t = e.target as Node | null
-  if (!t) return
-  if (triggerEl.value && triggerEl.value.contains(t)) return
-  if (popoverEl.value && popoverEl.value.contains(t)) return
-  props.onClickoutside?.(e)
-  setVisible(false)
+  if (props.trigger !== 'click' || !visible.value) return;
+  const t = e.target as Node | null;
+  if (!t) return;
+  if (triggerEl.value && triggerEl.value.contains(t)) return;
+  if (popoverEl.value && popoverEl.value.contains(t)) return;
+  props.onClickoutside?.(e);
+  setVisible(false);
 }
 
-watch(visible, (v) => {
-  if (props.trigger !== 'click') return
-  if (v) document.addEventListener('mousedown', onDocumentMouseDown)
-  else document.removeEventListener('mousedown', onDocumentMouseDown)
-  // Same reason as the positioning watcher: a controlled popover can mount
-  // already visible, and the listener must be attached on that first pass.
-}, { immediate: true })
+watch(
+  visible,
+  (v) => {
+    if (props.trigger !== 'click') return;
+    if (v) document.addEventListener('mousedown', onDocumentMouseDown);
+    else document.removeEventListener('mousedown', onDocumentMouseDown);
+    // Same reason as the positioning watcher: a controlled popover can mount
+    // already visible, and the listener must be attached on that first pass.
+  },
+  { immediate: true },
+);
 
 /* ─────────── Cleanup ─────────── */
 
 onBeforeUnmount(() => {
-  clearTimers()
-  window.removeEventListener('scroll', onScrollOrResize, true)
-  window.removeEventListener('resize', onScrollOrResize)
-  document.removeEventListener('mousedown', onDocumentMouseDown)
+  clearTimers();
+  window.removeEventListener('scroll', onScrollOrResize, true);
+  window.removeEventListener('resize', onScrollOrResize);
+  document.removeEventListener('mousedown', onDocumentMouseDown);
   if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
+    resizeObserver.disconnect();
+    resizeObserver = null;
   }
-})
+});
 
 /* When controlled show changes from false → true via parent (e.g. another
  * component tells us to show), recompute. Same in reverse — we don't
  * actively hide, but if the parent flips us off while we're in a timer,
  * the next tick should reset. */
-watch(() => props.show, (s) => {
-  if (s === undefined) return
-  if (s && !visible.value) {
-    clearTimers()
-    setVisible(true)
-  }
-})
+watch(
+  () => props.show,
+  (s) => {
+    if (s === undefined) return;
+    if (s && !visible.value) {
+      clearTimers();
+      setVisible(true);
+    }
+  },
+);
 
 const arrowPlacementClass = computed(() => {
   // Driven by the *resolved* side rather than the requested `placement`:
   // a bubble flipped by boundary detection still has to point its arrow —
   // and play its enter animation — the way it actually landed.
-  return `sn-tooltip__arrow--${resolvedSide.value}`
-})
+  return `sn-tooltip__arrow--${resolvedSide.value}`;
+});
 
 /**
  * Modifier for the bubble itself. Keeps the requested placement (so
@@ -694,25 +711,23 @@ const arrowPlacementClass = computed(() => {
  * asked for, not the side it landed on.
  */
 const popoverPlacementClass = computed<string[]>(() => {
-  const requested = `sn-tooltip--${props.placement}`
-  const resolved = `sn-tooltip--${resolvedSide.value}`
-  return requested === resolved ? [requested] : [requested, resolved]
-})
+  const requested = `sn-tooltip--${props.placement}`;
+  const resolved = `sn-tooltip--${resolvedSide.value}`;
+  return requested === resolved ? [requested] : [requested, resolved];
+});
 
 /**
  * `displayDirective: 'if'` mounts the popover only while visible.
  * `'show'` keeps it mounted after the first reveal and toggles display,
  * which preserves internal state (scroll position, embedded inputs).
  */
-const hasBeenVisible = ref(false)
+const hasBeenVisible = ref(false);
 watch(visible, (v) => {
-  if (v) hasBeenVisible.value = true
-})
+  if (v) hasBeenVisible.value = true;
+});
 const shouldRenderPopover = computed(() =>
-  props.displayDirective === 'show'
-    ? hasBeenVisible.value
-    : visible.value && !props.disabled,
-)
+  props.displayDirective === 'show' ? hasBeenVisible.value : visible.value && !props.disabled,
+);
 
 // Expose imperative API for parents that prefer ref-based control.
 defineExpose({
@@ -722,11 +737,11 @@ defineExpose({
   hide: () => setVisible(false),
   /** Read current effective show state (handles controlled + uncontrolled). */
   isShown: () => visible.value,
-})
+});
 
 // Reference `slots` so the linter doesn't complain about an unused import
 // while we still need it for trigger rendering below.
-void slots
+void slots;
 </script>
 
 <template>
@@ -748,7 +763,13 @@ void slots
       slot. We use a fragment-like trick — render a placeholder that
       collects a ref via the slot scope.
     -->
-    <slot :trigger-ref="(el: HTMLElement | null) => { triggerEl = el }" />
+    <slot
+      :trigger-ref="
+        (el: HTMLElement | null) => {
+          triggerEl = el;
+        }
+      "
+    />
   </template>
 
   <Teleport :to="to === false ? 'body' : to" :disabled="to === false">
@@ -815,10 +836,18 @@ void slots
    * the trigger and the bubble "grows from" the trigger side. */
   animation: sn-tooltip-in 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.sn-tooltip--top    { animation-name: sn-tooltip-in-top; }
-.sn-tooltip--bottom { animation-name: sn-tooltip-in-bottom; }
-.sn-tooltip--left   { animation-name: sn-tooltip-in-left; }
-.sn-tooltip--right  { animation-name: sn-tooltip-in-right; }
+.sn-tooltip--top {
+  animation-name: sn-tooltip-in-top;
+}
+.sn-tooltip--bottom {
+  animation-name: sn-tooltip-in-bottom;
+}
+.sn-tooltip--left {
+  animation-name: sn-tooltip-in-left;
+}
+.sn-tooltip--right {
+  animation-name: sn-tooltip-in-right;
+}
 
 /* `animated: false` — keep the bubble static. */
 .sn-tooltip--no-animation {
@@ -864,19 +893,73 @@ void slots
   border-color: transparent;
   border-width: 0;
 }
-.sn-tooltip__arrow--top    { border-width: 8px 8px 0 8px; border-top-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95)); }
-.sn-tooltip__arrow--bottom { border-width: 0 8px 8px 8px; border-bottom-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95)); }
-.sn-tooltip__arrow--left   { border-width: 8px 8px 8px 0; border-left-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95)); }
-.sn-tooltip__arrow--right  { border-width: 8px 0 8px 8px; border-right-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95)); }
+.sn-tooltip__arrow--top {
+  border-width: 8px 8px 0 8px;
+  border-top-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
+}
+.sn-tooltip__arrow--bottom {
+  border-width: 0 8px 8px 8px;
+  border-bottom-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
+}
+.sn-tooltip__arrow--left {
+  border-width: 8px 8px 8px 0;
+  border-left-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
+}
+.sn-tooltip__arrow--right {
+  border-width: 8px 0 8px 8px;
+  border-right-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
+}
 
 /* ─────────── Animations ─────────── */
 
 @keyframes sn-tooltip-in {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
-@keyframes sn-tooltip-in-top    { from { opacity: 0; transform: translateY(4px) scale(0.96); } to { opacity: 1; transform: none; } }
-@keyframes sn-tooltip-in-bottom { from { opacity: 0; transform: translateY(-4px) scale(0.96); } to { opacity: 1; transform: none; } }
-@keyframes sn-tooltip-in-left   { from { opacity: 0; transform: translateX(4px) scale(0.96); } to { opacity: 1; transform: none; } }
-@keyframes sn-tooltip-in-right  { from { opacity: 0; transform: translateX(-4px) scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes sn-tooltip-in-top {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sn-tooltip-in-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sn-tooltip-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sn-tooltip-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(-4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
 </style>

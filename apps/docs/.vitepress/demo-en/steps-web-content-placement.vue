@@ -5,10 +5,10 @@
  * Shows: `contentPlacement="bottom"` on an otherwise identical horizontal
  * steps, so the layout delta is the only variable.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>

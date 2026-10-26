@@ -9,50 +9,50 @@
 //                                                  STRIP @import rules)
 //
 // Mirrors packages/vue-web/scripts/copy-styles.mjs.
-import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
-import { dirname, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const root = resolve(__dirname, '..')
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const root = resolve(__dirname, '..');
 
 const sources = [
   resolve(root, '../tokens/styles/index.css'),
   resolve(root, '../tokens-mp/styles/index.css'),
   resolve(root, 'src/styles/index.css'),
-]
+];
 
-const componentCss = resolve(root, 'dist/styles/index.css')
-const dst = componentCss
+const componentCss = resolve(root, 'dist/styles/index.css');
+const dst = componentCss;
 
-mkdirSync(dirname(dst), { recursive: true })
+mkdirSync(dirname(dst), { recursive: true });
 
 function stripAtImports(css) {
   return css
     .split('\n')
     .filter((line) => !/^\s*@import\b/i.test(line))
-    .join('\n')
+    .join('\n');
 }
 
-let tokensBundle = ''
+let tokensBundle = '';
 for (const src of sources) {
   if (existsSync(src)) {
-    tokensBundle += stripAtImports(readFileSync(src, 'utf8')) + '\n'
+    tokensBundle += stripAtImports(readFileSync(src, 'utf8')) + '\n';
   }
 }
 
-let body = ''
+let body = '';
 if (existsSync(componentCss)) {
-  body = stripAtImports(readFileSync(componentCss, 'utf8'))
+  body = stripAtImports(readFileSync(componentCss, 'utf8'));
 }
 
-const tokensSignature = tokensBundle.trim().slice(0, 80)
+const tokensSignature = tokensBundle.trim().slice(0, 80);
 if (tokensBundle && !body.startsWith(tokensSignature)) {
-  writeFileSync(dst, `${tokensBundle}\n${body}`, 'utf8')
-  console.log('✓ copy-styles:', dst, '(tokens + components)')
+  writeFileSync(dst, `${tokensBundle}\n${body}`, 'utf8');
+  console.log('✓ copy-styles:', dst, '(tokens + components)');
 } else if (!existsSync(dst)) {
-  writeFileSync(dst, '/* No styles yet */\n', 'utf8')
-  console.log('✓ copy-styles:', dst, '(empty placeholder)')
+  writeFileSync(dst, '/* No styles yet */\n', 'utf8');
+  console.log('✓ copy-styles:', dst, '(empty placeholder)');
 } else {
-  console.log('✓ copy-styles:', dst, '(already up to date)')
+  console.log('✓ copy-styles:', dst, '(already up to date)');
 }

@@ -18,34 +18,34 @@ Styles are emitted **per template**: importing one template brings its own JS an
 
 ```ts
 // 1) Import only the template you use: its JS and its own styles come with it
-import { SnAiMessageList, SnAiMessage } from '@snui/templates/web/message-list'
+import { SnAiMessageList, SnAiMessage } from '@snui/templates/web/message-list';
 
 // 2) Import the shared token layer once at the app entry
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) When you want to control code splitting yourself, import a single template's stylesheet
-import '@snui/templates/styles/web-message-list.css'
+import '@snui/templates/styles/web-message-list.css';
 ```
 
 The uni-app end is the same:
 
 ```ts
-import { SnAiMessage } from '@snui/templates/uni/message-list'
-import '@snui/templates/styles'
-import '@snui/templates/styles/uni-message-list.css'
+import { SnAiMessage } from '@snui/templates/uni/message-list';
+import '@snui/templates/styles';
+import '@snui/templates/styles/uni-message-list.css';
 ```
 
 The per-template stylesheets (all under `@snui/templates/styles/`):
 
-| File | Template |
-| --- | --- |
+| File                   | Template                           |
+| ---------------------- | ---------------------------------- |
 | `web-message-list.css` | `@snui/templates/web/message-list` |
 | `uni-message-list.css` | `@snui/templates/uni/message-list` |
-| `web-assistant.css` | `@snui/templates/web/assistant` |
-| `web-chat.css` | `@snui/templates/web/chat` |
-| `web-prompt.css` | `@snui/templates/web/prompt` |
+| `web-assistant.css`    | `@snui/templates/web/assistant`    |
+| `web-chat.css`         | `@snui/templates/web/chat`         |
+| `web-prompt.css`       | `@snui/templates/web/prompt`       |
 | `web-model-config.css` | `@snui/templates/web/model-config` |
-| `uni-chat.css` | `@snui/templates/uni/chat` |
+| `uni-chat.css`         | `@snui/templates/uni/chat`         |
 
 Importing `web-message-list.css` does **not** pull the composer, chat page or model config rules; the shared token layer exists once (step 2), so a second template does not download it again.
 
@@ -57,9 +57,9 @@ The smallest working version: a static transcript.
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnAiMessageList } from '@snui/templates/web/message-list'
-import type { SnAiMessage } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnAiMessageList } from '@snui/templates/web/message-list';
+import type { SnAiMessage } from '@snui/templates/web';
 
 const messages = ref<SnAiMessage[]>([
   {
@@ -78,10 +78,10 @@ const messages = ref<SnAiMessage[]>([
       { type: 'text', text: 'The document has three sections: positioning, contract, integration.' },
     ],
   },
-])
+]);
 
 function onRetry(message: SnAiMessage): void {
-  console.info('Retry requested:', message.id)
+  console.info('Retry requested:', message.id);
 }
 </script>
 
@@ -96,18 +96,18 @@ A transcript usually pairs with a streaming request: fold the deltas into the me
 
 ```vue
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
-import { SnAiMessageList, SnAiMessage as SnAiMessageRow } from '@snui/templates/web/message-list'
-import type { SnAiError, SnAiMessage, SnAiQueuedTurn } from '@snui/templates/web'
+import { computed, onBeforeUnmount, ref } from 'vue';
+import { SnAiMessageList, SnAiMessage as SnAiMessageRow } from '@snui/templates/web/message-list';
+import type { SnAiError, SnAiMessage, SnAiQueuedTurn } from '@snui/templates/web';
 
-const messages = ref<SnAiMessage[]>([])
-const running = ref(false)
-const quoted = ref<SnAiMessage | undefined>(undefined)
-let controller: AbortController | null = null
+const messages = ref<SnAiMessage[]>([]);
+const running = ref(false);
+const quoted = ref<SnAiMessage | undefined>(undefined);
+let controller: AbortController | null = null;
 
 /** Fold one request into the transcript: the reasoning block grows first, the answer follows. */
 async function run(turn: SnAiQueuedTurn): Promise<void> {
-  const replyId = `${turn.id}-reply`
+  const replyId = `${turn.id}-reply`;
   messages.value = [
     ...messages.value,
     { id: turn.id, role: 'user', status: 'done', parts: [{ type: 'text', text: turn.text }] },
@@ -117,21 +117,21 @@ async function run(turn: SnAiQueuedTurn): Promise<void> {
       status: 'thinking',
       parts: [{ type: 'thinking', text: '', done: false }],
     },
-  ]
+  ];
 
-  const abort = new AbortController()
-  controller = abort
-  running.value = true
+  const abort = new AbortController();
+  controller = abort;
+  running.value = true;
 
   /** Find this turn's assistant message and patch it in place. */
   function patch(update: (message: SnAiMessage) => void): void {
-    const next = [...messages.value]
-    const index = next.findIndex((message) => message.id === replyId)
-    if (index === -1) return
-    const copy = { ...next[index], parts: [...next[index].parts] }
-    update(copy)
-    next[index] = copy
-    messages.value = next
+    const next = [...messages.value];
+    const index = next.findIndex((message) => message.id === replyId);
+    if (index === -1) return;
+    const copy = { ...next[index], parts: [...next[index].parts] };
+    update(copy);
+    next[index] = copy;
+    messages.value = next;
   }
 
   try {
@@ -140,58 +140,58 @@ async function run(turn: SnAiQueuedTurn): Promise<void> {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ prompt: turn.text, modelId: turn.modelId }),
       signal: abort.signal,
-    })
-    const reader = response.body!.getReader()
-    const decoder = new TextDecoder()
+    });
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
     for (;;) {
-      const { value, done } = await reader.read()
-      if (done) break
-      const chunk = decoder.decode(value, { stream: true })
+      const { value, done } = await reader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
       patch((message) => {
-        const last = message.parts[message.parts.length - 1]
-        if (last?.type === 'text') last.text += chunk
-        else message.parts.push({ type: 'text', text: chunk })
-        message.status = 'streaming'
-      })
+        const last = message.parts[message.parts.length - 1];
+        if (last?.type === 'text') last.text += chunk;
+        else message.parts.push({ type: 'text', text: chunk });
+        message.status = 'streaming';
+      });
     }
     patch((message) => {
-      const thinking = message.parts.find((part) => part.type === 'thinking')
-      if (thinking?.type === 'thinking') thinking.done = true
-      message.status = 'done'
-    })
+      const thinking = message.parts.find((part) => part.type === 'thinking');
+      if (thinking?.type === 'thinking') thinking.done = true;
+      message.status = 'done';
+    });
   } catch (cause) {
     patch((message) => {
       if (abort.signal.aborted) {
-        message.status = 'aborted'
-        return
+        message.status = 'aborted';
+        return;
       }
-      const error: SnAiError = { code: 'REQUEST_FAILED', message: String(cause), retryable: true }
-      message.status = 'error'
-      message.error = error
-      message.parts.push({ type: 'error', error })
-    })
+      const error: SnAiError = { code: 'REQUEST_FAILED', message: String(cause), retryable: true };
+      message.status = 'error';
+      message.error = error;
+      message.parts.push({ type: 'error', error });
+    });
   } finally {
-    running.value = false
-    controller = null
+    running.value = false;
+    controller = null;
   }
 }
 
 /** Retrying means running the original turn again. */
 function onRetry(message: SnAiMessage): void {
-  const index = messages.value.findIndex((item) => item.id === message.id)
-  const part = messages.value[index - 1]?.parts.find((item) => item.type === 'text')
-  messages.value = messages.value.filter((item) => item.id !== message.id)
+  const index = messages.value.findIndex((item) => item.id === message.id);
+  const part = messages.value[index - 1]?.parts.find((item) => item.type === 'text');
+  messages.value = messages.value.filter((item) => item.id !== message.id);
   if (part?.type === 'text') {
-    void run({ id: message.id, text: part.text, attachments: [], createdAt: Date.now() })
+    void run({ id: message.id, text: part.text, attachments: [], createdAt: Date.now() });
   }
 }
 
-onBeforeUnmount(() => controller?.abort())
+onBeforeUnmount(() => controller?.abort());
 
 const quotedText = computed(() => {
-  const part = quoted.value?.parts.find((item) => item.type === 'text')
-  return part?.type === 'text' ? part.text : ''
-})
+  const part = quoted.value?.parts.find((item) => item.type === 'text');
+  return part?.type === 'text' ? part.text : '';
+});
 </script>
 
 <template>
@@ -234,45 +234,45 @@ The uni end ships the single-row renderer, showing reasoning collapse, a tool ro
 
 `SnAiMessageList`:
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `messages` | `SnAiMessage[]` | `[]` | The transcript, oldest first. |
-| `loading` | `boolean` | `false` | Show skeleton rows while loading. |
-| `loadingRows` | `number` | `3` | Number of skeleton rows. |
-| `emptyText` | `string` | `'开始新的对话'` | Empty-state headline. |
-| `emptyHint` | `string` | `'在下方输入框输入你的问题'` | Empty-state secondary line. |
-| `autoScroll` | `boolean` | `true` | Follow the newest output. |
-| `showCopy` | `boolean` | `true` | Offer copy on finished messages. |
-| `showThinking` | `boolean` | `true` | Keep reasoning blocks after a turn finishes. |
-| `maxHeight` | `string` | `undefined` | Max height of the scroll area; fills the parent when unset. |
-| `stickThreshold` | `number` | `48` | How many pixels from the bottom still count as "pinned" before following stops. |
+| Name             | Type            | Default                      | Description                                                                     |
+| ---------------- | --------------- | ---------------------------- | ------------------------------------------------------------------------------- |
+| `messages`       | `SnAiMessage[]` | `[]`                         | The transcript, oldest first.                                                   |
+| `loading`        | `boolean`       | `false`                      | Show skeleton rows while loading.                                               |
+| `loadingRows`    | `number`        | `3`                          | Number of skeleton rows.                                                        |
+| `emptyText`      | `string`        | `'开始新的对话'`             | Empty-state headline.                                                           |
+| `emptyHint`      | `string`        | `'在下方输入框输入你的问题'` | Empty-state secondary line.                                                     |
+| `autoScroll`     | `boolean`       | `true`                       | Follow the newest output.                                                       |
+| `showCopy`       | `boolean`       | `true`                       | Offer copy on finished messages.                                                |
+| `showThinking`   | `boolean`       | `true`                       | Keep reasoning blocks after a turn finishes.                                    |
+| `maxHeight`      | `string`        | `undefined`                  | Max height of the scroll area; fills the parent when unset.                     |
+| `stickThreshold` | `number`        | `48`                         | How many pixels from the bottom still count as "pinned" before following stops. |
 
 Single-row `SnAiMessage`:
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `message` | `SnAiMessage` | required | The message to render. |
-| `copied` | `boolean` | `false` | Whether the copy button shows the copied confirmation. |
-| `showThinking` | `boolean` | `true` | Keep reasoning blocks. |
-| `showCopy` | `boolean` | `true` | Offer copy. |
+| Name           | Type          | Default  | Description                                            |
+| -------------- | ------------- | -------- | ------------------------------------------------------ |
+| `message`      | `SnAiMessage` | required | The message to render.                                 |
+| `copied`       | `boolean`     | `false`  | Whether the copy button shows the copied confirmation. |
+| `showThinking` | `boolean`     | `true`   | Keep reasoning blocks.                                 |
+| `showCopy`     | `boolean`     | `true`   | Offer copy.                                            |
 
 `SnAiThinking` (the reasoning block itself, usable on its own):
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `part` | `SnAiThinkingPart` | required | The reasoning block to render. |
-| `expanded` | `boolean` | `undefined` | Expansion state; `undefined` means auto — open while streaming, collapsed once closed. |
-| `defaultCollapsed` | `boolean` | `false` | Force collapsed, taking priority over `expanded`. |
+| Name               | Type               | Default     | Description                                                                            |
+| ------------------ | ------------------ | ----------- | -------------------------------------------------------------------------------------- |
+| `part`             | `SnAiThinkingPart` | required    | The reasoning block to render.                                                         |
+| `expanded`         | `boolean`          | `undefined` | Expansion state; `undefined` means auto — open while streaming, collapsed once closed. |
+| `defaultCollapsed` | `boolean`          | `false`     | Force collapsed, taking priority over `expanded`.                                      |
 
 ### Events
 
 `SnAiMessageList`:
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `retry` | `SnAiMessage` | The user clicked retry on a failed message. |
-| `copy` | `SnAiMessage` | The user copied a message's answer. |
-| `reach-bottom` | — | The user scrolled to the bottom of the transcript. |
+| Name           | Payload       | Description                                        |
+| -------------- | ------------- | -------------------------------------------------- |
+| `retry`        | `SnAiMessage` | The user clicked retry on a failed message.        |
+| `copy`         | `SnAiMessage` | The user copied a message's answer.                |
+| `reach-bottom` | —             | The user scrolled to the bottom of the transcript. |
 
 Single-row `SnAiMessage`: `retry` and `copy` (same payloads).
 
@@ -280,46 +280,46 @@ Single-row `SnAiMessage`: `retry` and `copy` (same payloads).
 
 `SnAiMessageList`:
 
-| Name | Props | Description |
-| --- | --- | --- |
-| `empty` | — | Custom empty state. |
+| Name    | Props | Description         |
+| ------- | ----- | ------------------- |
+| `empty` | —     | Custom empty state. |
 
 Single-row `SnAiMessage`:
 
-| Name | Props | Description |
-| --- | --- | --- |
-| `avatar` | — | Replace the avatar area (the role's default is used when unset). |
+| Name     | Props | Description                                                      |
+| -------- | ----- | ---------------------------------------------------------------- |
+| `avatar` | —     | Replace the avatar area (the role's default is used when unset). |
 
 ### Type exports
 
-| Name | From | Description |
-| --- | --- | --- |
-| `SnAiMessageList` / `SnAiMessage` / `SnAiThinking` | `@snui/templates/web/message-list` | The list, single-row and reasoning-block renderers. |
-| `SnAiMessage` / `SnAiMessagePart` / `SnAiThinkingPart` and friends | `@snui/templates` | Shared contract types so a host can build data. |
+| Name                                                               | From                               | Description                                         |
+| ------------------------------------------------------------------ | ---------------------------------- | --------------------------------------------------- |
+| `SnAiMessageList` / `SnAiMessage` / `SnAiThinking`                 | `@snui/templates/web/message-list` | The list, single-row and reasoning-block renderers. |
+| `SnAiMessage` / `SnAiMessagePart` / `SnAiThinkingPart` and friends | `@snui/templates`                  | Shared contract types so a host can build data.     |
 
 ### Message structure
 
 A message is an ordered list of content blocks, rendered in array order:
 
-| Block | Description |
-| --- | --- |
-| `thinking` | Reasoning. Expands while generating ("思考中"), then collapses showing the elapsed duration. |
-| `text` | The answer. A caret trails the line while streaming. |
-| `tool` | A tool call. `running` shows a spinner; `done` / `error` show the outcome. |
-| `attachment` | An attachment row echoing a user upload. |
-| `error` | An error card with code, hint and a retry button. |
+| Block        | Description                                                                                  |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| `thinking`   | Reasoning. Expands while generating ("思考中"), then collapses showing the elapsed duration. |
+| `text`       | The answer. A caret trails the line while streaming.                                         |
+| `tool`       | A tool call. `running` shows a spinner; `done` / `error` show the outcome.                   |
+| `attachment` | An attachment row echoing a user upload.                                                     |
+| `error`      | An error card with code, hint and a retry button.                                            |
 
 The message status decides the overall presentation:
 
-| Status | Presentation |
-| --- | --- |
-| `idle` | The resting state for user / system messages: the body renders as-is. |
-| `queued` | Shows "排队中，等待上一条回复完成". |
-| `thinking` | The reasoning block is live; shows "正在思考…" while there is no answer yet. |
-| `streaming` | The answer grows with a caret. |
-| `done` | Full answer plus a copy affordance. |
-| `error` | The error card replaces the tail of the body. |
-| `aborted` | Keeps the partial output and appends a "已停止生成" notice. |
+| Status      | Presentation                                                                 |
+| ----------- | ---------------------------------------------------------------------------- |
+| `idle`      | The resting state for user / system messages: the body renders as-is.        |
+| `queued`    | Shows "排队中，等待上一条回复完成".                                          |
+| `thinking`  | The reasoning block is live; shows "正在思考…" while there is no answer yet. |
+| `streaming` | The answer grows with a caret.                                               |
+| `done`      | Full answer plus a copy affordance.                                          |
+| `error`     | The error card replaces the tail of the body.                                |
+| `aborted`   | Keeps the partial output and appends a "已停止生成" notice.                  |
 
 ## Theme and token customisation
 
@@ -354,17 +354,17 @@ The uni end overrides `--sn-mp-*` (its size tokens are rpx):
 
 Content blocks and statuses mean exactly the same on both ends; the structure and capabilities differ:
 
-| Aspect | Web (`SnAiMessageList` / `SnAiMessage`) | uni-app (`SnAiMessage`) |
-| --- | --- | --- |
-| What ships | List container + single-row renderer + reasoning block, each usable alone | Single-row renderer only; the page builds the list with `v-for` |
-| Elements | Standard `<div>` / `<ul>` / `<li>` tags | Cross-end `<view>` / `<text>` elements |
-| Units | `--sn-web-*` tokens in px | `--sn-mp-*` tokens, sized in rpx |
-| Scrolling | Own scroll area and a "jump to latest" button, tunable via `maxHeight` / `stickThreshold` | No scroll area: the uni chat page's `<scroll-view scroll-y>` owns it |
-| Empty state | `emptyText` / `emptyHint` / the `empty` slot | None (rendered by the uni chat page) |
-| Copy | `showCopy` + the `copy` event + the `copied` state | No copy capability |
-| Avatar | Has the `avatar` slot | No avatar slot |
-| Icons | Reuses the same path data, rendered by `SnIcon` | Reuses the same path data, rendered by `sn-icon` |
-| Contract | `SnAiMessage`, content blocks and statuses come from the `@snui/templates` shared layer | Same |
+| Aspect      | Web (`SnAiMessageList` / `SnAiMessage`)                                                   | uni-app (`SnAiMessage`)                                              |
+| ----------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| What ships  | List container + single-row renderer + reasoning block, each usable alone                 | Single-row renderer only; the page builds the list with `v-for`      |
+| Elements    | Standard `<div>` / `<ul>` / `<li>` tags                                                   | Cross-end `<view>` / `<text>` elements                               |
+| Units       | `--sn-web-*` tokens in px                                                                 | `--sn-mp-*` tokens, sized in rpx                                     |
+| Scrolling   | Own scroll area and a "jump to latest" button, tunable via `maxHeight` / `stickThreshold` | No scroll area: the uni chat page's `<scroll-view scroll-y>` owns it |
+| Empty state | `emptyText` / `emptyHint` / the `empty` slot                                              | None (rendered by the uni chat page)                                 |
+| Copy        | `showCopy` + the `copy` event + the `copied` state                                        | No copy capability                                                   |
+| Avatar      | Has the `avatar` slot                                                                     | No avatar slot                                                       |
+| Icons       | Reuses the same path data, rendered by `SnIcon`                                           | Reuses the same path data, rendered by `sn-icon`                     |
+| Contract    | `SnAiMessage`, content blocks and statuses come from the `@snui/templates` shared layer   | Same                                                                 |
 
 ## Accessibility
 

@@ -52,40 +52,40 @@ stay dark-on-light to scan, so the module colors deliberately do **not** follow
 ```
 
 ```ts
-import { SnQrCode } from '@snui/uni'
+import { SnQrCode } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `text` | `string` | `''` | no | Payload encoded into the code. |
-| `size` | `number` | `200` | no | Canvas side length in design px (clamped 40-1000). |
-| `correctLevel` | `'L' \| 'M' \| 'Q' \| 'H'` | `'H'` | no | Error correction level. |
-| `colorDark` | `string` | `''` | no | Dark module color; `''` = the code's own dark. |
-| `colorLight` | `string` | `''` | no | Light module + quiet-zone color. |
-| `margin` | `number` | `0` | no | Quiet zone in design px, painted inside the canvas. |
-| `dotType` | `'square' \| 'dots' \| 'rounded' \| 'liquid'` | `'square'` | no | Module shape. |
-| `dotScale` | `number` | `1` | no | Module fill ratio (clamped 0.4-1). |
-| `enableGradient` | `boolean` | `false` | no | Paint dark modules with a linear gradient. |
-| `gradientColor` | `string` | `''` | no | Gradient end color; `''` falls back to `colorDark`. |
-| `gradientColors` | `string[]` | `[]` | no | Multi-stop gradient (2+); wins over `gradientColor`. |
-| `gradientDirection` | `'diagonal' \| 'horizontal' \| 'vertical' \| number` | `'diagonal'` | no | Gradient direction; a number is an angle in degrees. |
-| `canvasId` | `string` | `''` | no | Canvas id; `''` = per-instance generated. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
+| Name                | Type                                                 | Default      | Required | Description                                          |
+| ------------------- | ---------------------------------------------------- | ------------ | -------- | ---------------------------------------------------- |
+| `text`              | `string`                                             | `''`         | no       | Payload encoded into the code.                       |
+| `size`              | `number`                                             | `200`        | no       | Canvas side length in design px (clamped 40-1000).   |
+| `correctLevel`      | `'L' \| 'M' \| 'Q' \| 'H'`                           | `'H'`        | no       | Error correction level.                              |
+| `colorDark`         | `string`                                             | `''`         | no       | Dark module color; `''` = the code's own dark.       |
+| `colorLight`        | `string`                                             | `''`         | no       | Light module + quiet-zone color.                     |
+| `margin`            | `number`                                             | `0`          | no       | Quiet zone in design px, painted inside the canvas.  |
+| `dotType`           | `'square' \| 'dots' \| 'rounded' \| 'liquid'`        | `'square'`   | no       | Module shape.                                        |
+| `dotScale`          | `number`                                             | `1`          | no       | Module fill ratio (clamped 0.4-1).                   |
+| `enableGradient`    | `boolean`                                            | `false`      | no       | Paint dark modules with a linear gradient.           |
+| `gradientColor`     | `string`                                             | `''`         | no       | Gradient end color; `''` falls back to `colorDark`.  |
+| `gradientColors`    | `string[]`                                           | `[]`         | no       | Multi-stop gradient (2+); wins over `gradientColor`. |
+| `gradientDirection` | `'diagonal' \| 'horizontal' \| 'vertical' \| number` | `'diagonal'` | no       | Gradient direction; a number is an angle in degrees. |
+| `canvasId`          | `string`                                             | `''`         | no       | Canvas id; `''` = per-instance generated.            |
+| `customClass`       | `string`                                             | `''`         | no       | Custom class for the root node.                      |
+| `customStyle`       | `string`                                             | `''`         | no       | Custom inline style for the root node.               |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `click` | `Event` | The code was tapped. |
+| Name    | Payload   | Description                         |
+| ------- | --------- | ----------------------------------- |
+| `click` | `Event`   | The code was tapped.                |
 | `error` | `unknown` | Encoding or canvas-context failure. |
 
 ## Methods
 
-| Name | Returns | Description |
-|---|---|---|
+| Name            | Returns           | Description                                                                                                                                                                                 |
+| --------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `exportImage()` | `Promise<string>` | Temp file path of the canvas. Rejects with `{ code: 'CAPABILITY_UNSUPPORTED' }` when `uni.canvasToTempFilePath` is absent, `{ code: 'EXPORT_FAILED' }` when the platform reports a failure. |
 
 ## Slots
@@ -94,15 +94,15 @@ None.
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Border subtle | `--sn-mp-color-border-subtle` | Frame around the code |
-| Background elevated | `--sn-mp-color-background-elevated` | Root plate / error panel |
-| Radius MD | `--sn-mp-radius-md` | Root + error panel corners |
-| Spacing 4 | `--sn-mp-spacing-4` | Error panel padding |
-| Feedback danger | `--sn-mp-color-feedback-danger` | Encode-failure text |
-| Font size SM | `--sn-mp-font-size-sm` | Encode-failure text |
-| Line height normal | `--sn-mp-font-line-height-normal` | Encode-failure text |
+| Token               | CSS Variable                        | Purpose                    |
+| ------------------- | ----------------------------------- | -------------------------- |
+| Border subtle       | `--sn-mp-color-border-subtle`       | Frame around the code      |
+| Background elevated | `--sn-mp-color-background-elevated` | Root plate / error panel   |
+| Radius MD           | `--sn-mp-radius-md`                 | Root + error panel corners |
+| Spacing 4           | `--sn-mp-spacing-4`                 | Error panel padding        |
+| Feedback danger     | `--sn-mp-color-feedback-danger`     | Encode-failure text        |
+| Font size SM        | `--sn-mp-font-size-sm`              | Encode-failure text        |
+| Line height normal  | `--sn-mp-font-line-height-normal`   | Encode-failure text        |
 
 ## Accessibility
 

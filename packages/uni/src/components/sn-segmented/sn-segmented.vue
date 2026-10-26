@@ -32,47 +32,47 @@
  *   - 单选语义的列表 — 用 sn-radio-group
  */
 
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue';
 
-defineOptions({ name: 'SnSegmented' })
+defineOptions({ name: 'SnSegmented' });
 
 /** One normalised option. */
 export interface SegmentedOption {
   /** Option value — compared against the bound value. */
-  value: string | number
+  value: string | number;
   /** Option label; falls back to `String(value)` when omitted. */
-  label?: string
+  label?: string;
   /** Disables just this option. */
-  disabled?: boolean
+  disabled?: boolean;
   /** Free-form payload handed back through the slots and events. */
-  payload?: unknown
+  payload?: unknown;
 }
 
-type SegmentedRawOption = string | number | SegmentedOption
+type SegmentedRawOption = string | number | SegmentedOption;
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-segmented` 1:1 surface ──────────────────────────────── */
 
     /** 当前选中的值。 */
-    modelValue?: string | number | undefined
+    modelValue?: string | number | undefined;
     /**
      * wot-ui `value` 别名 —— `wd-segmented` 把选中值叫 `value`，本组件叫
      * `modelValue`。两者同时存在时 `value` 优先，便于从 wot-ui 直接迁移。
      */
-    value?: string | number | undefined
+    value?: string | number | undefined;
     /** 是否禁用分段器。 */
-    disabled?: boolean
+    disabled?: boolean;
     /** 数据集合：string[] / number[] / SegmentedOption[]。 */
-    options?: SegmentedRawOption[]
+    options?: SegmentedRawOption[];
     /** 分段器主题：card / outline。 */
-    theme?: 'card' | 'outline'
+    theme?: 'card' | 'outline';
     /** 切换选项时是否触发短振动。 */
-    vibrateShort?: boolean
+    vibrateShort?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: undefined,
@@ -84,37 +84,37 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model 同步。 */
-  (e: 'update:modelValue', value: string | number): void
+  (e: 'update:modelValue', value: string | number): void;
   /**
    * wot-ui spelling of the same event (`wd-segmented` names the model
    * `value`). Emitted alongside `update:modelValue` so a caller written
    * against wot-ui's docs works without renaming anything.
    */
-  (e: 'update:value', value: string | number): void
+  (e: 'update:value', value: string | number): void;
   /** 选项切换时触发。 */
-  (e: 'change', option: SegmentedOption): void
+  (e: 'change', option: SegmentedOption): void;
   /** 选项点击时触发（含重复点击当前项）。 */
-  (e: 'click', option: SegmentedOption): void
-}>()
+  (e: 'click', option: SegmentedOption): void;
+}>();
 
 defineSlots<{
   /** 自定义选项标签内容，作用域 `{ option }`。 */
-  label?(scope: { option: SegmentedOption }): unknown
-}>()
+  label?(scope: { option: SegmentedOption }): unknown;
+}>();
 
 /** Normalised option list — mixed input shapes collapse to one contract. */
 const normalizedOptions = computed<SegmentedOption[]>(() =>
   props.options.map((option) => {
     if (typeof option === 'string' || typeof option === 'number') {
-      return { value: option, label: String(option) }
+      return { value: option, label: String(option) };
     }
-    return { ...option, label: option.label ?? String(option.value) }
+    return { ...option, label: option.label ?? String(option.value) };
   }),
-)
+);
 
 /** Uncontrolled fallback + controlled sync — both modes stay in step. */
 /**
@@ -124,45 +124,43 @@ const normalizedOptions = computed<SegmentedOption[]>(() =>
  * caller passes both, `value` wins — that is the wot-ui-native spelling, so a
  * component migrated from wd-segmented keeps working unchanged.
  */
-const boundValue = computed<string | number | undefined>(
-  () => props.value ?? props.modelValue,
-)
+const boundValue = computed<string | number | undefined>(() => props.value ?? props.modelValue);
 
 /** Uncontrolled fallback + controlled sync — both modes stay in step. */
-const innerValue = ref<string | number | undefined>(boundValue.value)
+const innerValue = ref<string | number | undefined>(boundValue.value);
 watch(boundValue, (next) => {
-  innerValue.value = next
-})
+  innerValue.value = next;
+});
 const activeIndex = computed(() =>
   normalizedOptions.value.findIndex((option) => option.value === innerValue.value),
-)
+);
 
 function isActive(option: SegmentedOption): boolean {
-  return option.value === innerValue.value
+  return option.value === innerValue.value;
 }
 
 /** Short haptic feedback — guarded because H5 has no vibration motor. */
 function vibrate(): void {
-  if (!props.vibrateShort) return
-  const uni = (globalThis as { uni?: { vibrateShort?: (opts?: object) => unknown } }).uni
-  if (typeof uni?.vibrateShort !== 'function') return
+  if (!props.vibrateShort) return;
+  const uni = (globalThis as { uni?: { vibrateShort?: (opts?: object) => unknown } }).uni;
+  if (typeof uni?.vibrateShort !== 'function') return;
   try {
-    uni.vibrateShort({})
+    uni.vibrateShort({});
   } catch {
     /* Vibration is decorative — a host that rejects the API must not break tap. */
   }
 }
 
 function onTap(option: SegmentedOption): void {
-  if (props.disabled || option.disabled) return
-  emit('click', option)
-  if (isActive(option)) return
-  innerValue.value = option.value
-  vibrate()
-  emit('update:modelValue', option.value)
+  if (props.disabled || option.disabled) return;
+  emit('click', option);
+  if (isActive(option)) return;
+  innerValue.value = option.value;
+  vibrate();
+  emit('update:modelValue', option.value);
   // wot-ui spelling: same payload, so `@update:value` callers keep working.
-  emit('update:value', option.value)
-  emit('change', option)
+  emit('update:value', option.value);
+  emit('change', option);
 }
 
 const rootClass = computed(() => [
@@ -172,15 +170,15 @@ const rootClass = computed(() => [
     'sn-segmented--disabled': props.disabled,
   },
   props.customClass,
-])
+]);
 
 /** Slider geometry — one equal share per option, offset by the active index. */
 const sliderStyle = computed(() => {
-  const count = normalizedOptions.value.length
-  if (count === 0 || activeIndex.value < 0) return undefined
-  const share = 100 / count
-  return `width: calc(${share}% - 8rpx); transform: translateX(calc(${activeIndex.value} * 100%))`
-})
+  const count = normalizedOptions.value.length;
+  if (count === 0 || activeIndex.value < 0) return undefined;
+  const share = 100 / count;
+  return `width: calc(${share}% - 8rpx); transform: translateX(calc(${activeIndex.value} * 100%))`;
+});
 </script>
 
 <template>
@@ -190,7 +188,12 @@ const sliderStyle = computed(() => {
     :style="customStyle || undefined"
     role="group"
   >
-    <view v-if="theme === 'card'" class="sn-segmented__slider" :style="sliderStyle" aria-hidden="true" />
+    <view
+      v-if="theme === 'card'"
+      class="sn-segmented__slider"
+      :style="sliderStyle"
+      aria-hidden="true"
+    />
     <view
       v-for="option in normalizedOptions"
       :key="String(option.value)"

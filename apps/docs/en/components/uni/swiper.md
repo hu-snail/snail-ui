@@ -65,53 +65,53 @@ An item with `type: "video"` degrades to rendering its `poster` image on the uni
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| autoplay | boolean | true | Autoplay |
-| current | number | 0 | Current index (`v-model:current`) |
-| direction | 'horizontal' \| 'vertical' | 'horizontal' | Scroll axis |
-| displayMultipleItems | number | 1 | Slides visible at once |
-| duration | number | 300 | Slide transition duration in ms |
-| easingFunction | string | 'default' | Easing name (forwarded to the native swiper) |
-| height | string \| number | 192 | Carousel height (bare number = rpx) |
-| interval | number | 5000 | Autoplay interval in ms |
-| list | (string \| SnSwiperItem)[] | [] | Slide data |
-| loop | boolean | true | Loop the slides |
-| nextMargin | string \| number | 0 | Next-slide inset (bare number = rpx) |
-| indicatorPosition | SwiperIndicatorPosition | 'bottom' | Indicator anchor |
-| previousMargin | string \| number | 0 | Previous-slide inset (bare number = rpx) |
-| radius | string \| number | '' | Corner radius (bare number = rpx) |
-| snapToEdge | boolean | false | Snap the insets to the first / last slide |
-| indicator | boolean \| SnSwiperIndicator | true | Indicator config; `false` hides it |
-| imageMode | SwiperImageMode | 'aspectFill' | Crop mode forwarded to `sn-img` |
-| showMenuByLongpress | boolean | false | Long-press QR menu (WeChat only) |
-| adjustHeight | 'first' \| 'current' \| 'highest' \| '' | '' | Auto-size to the slide height (Alipay miniprogram only) |
-| adjustVerticalHeight | boolean | false | Force `adjustHeight` in vertical mode (Alipay miniprogram only) |
-| autoplayVideo | boolean | false | Autoplay video items (declared; video items degrade to their poster) |
-| muted | boolean | false | Mute video items (same, no visual effect) |
-| videoLoop | boolean | false | Loop video items (same, no visual effect) |
-| stopPreviousVideo | boolean | false | Stop the previous slide's video on change (same, no visual effect) |
-| stopAutoplayWhenVideoPlay | boolean | false | Pause autoplay while a video plays (same, no visual effect) |
-| valueKey | string | 'value' | Image URL field name on an item object |
-| textKey | string | 'text' | Caption field name on an item object |
-| customIndicatorClass | string | '' | Custom class for the indicator node |
-| customImageClass | string | '' | Custom class for the image node |
-| customItemClass | string | '' | Custom class for each slide |
-| customTextClass | string | '' | Custom class for the caption node |
-| customTextStyle | string | '' | Custom inline style for the caption node |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop                      | Type                                    | Default      | Description                                                          |
+| ------------------------- | --------------------------------------- | ------------ | -------------------------------------------------------------------- |
+| autoplay                  | boolean                                 | true         | Autoplay                                                             |
+| current                   | number                                  | 0            | Current index (`v-model:current`)                                    |
+| direction                 | 'horizontal' \| 'vertical'              | 'horizontal' | Scroll axis                                                          |
+| displayMultipleItems      | number                                  | 1            | Slides visible at once                                               |
+| duration                  | number                                  | 300          | Slide transition duration in ms                                      |
+| easingFunction            | string                                  | 'default'    | Easing name (forwarded to the native swiper)                         |
+| height                    | string \| number                        | 192          | Carousel height (bare number = rpx)                                  |
+| interval                  | number                                  | 5000         | Autoplay interval in ms                                              |
+| list                      | (string \| SnSwiperItem)[]              | []           | Slide data                                                           |
+| loop                      | boolean                                 | true         | Loop the slides                                                      |
+| nextMargin                | string \| number                        | 0            | Next-slide inset (bare number = rpx)                                 |
+| indicatorPosition         | SwiperIndicatorPosition                 | 'bottom'     | Indicator anchor                                                     |
+| previousMargin            | string \| number                        | 0            | Previous-slide inset (bare number = rpx)                             |
+| radius                    | string \| number                        | ''           | Corner radius (bare number = rpx)                                    |
+| snapToEdge                | boolean                                 | false        | Snap the insets to the first / last slide                            |
+| indicator                 | boolean \| SnSwiperIndicator            | true         | Indicator config; `false` hides it                                   |
+| imageMode                 | SwiperImageMode                         | 'aspectFill' | Crop mode forwarded to `sn-img`                                      |
+| showMenuByLongpress       | boolean                                 | false        | Long-press QR menu (WeChat only)                                     |
+| adjustHeight              | 'first' \| 'current' \| 'highest' \| '' | ''           | Auto-size to the slide height (Alipay miniprogram only)              |
+| adjustVerticalHeight      | boolean                                 | false        | Force `adjustHeight` in vertical mode (Alipay miniprogram only)      |
+| autoplayVideo             | boolean                                 | false        | Autoplay video items (declared; video items degrade to their poster) |
+| muted                     | boolean                                 | false        | Mute video items (same, no visual effect)                            |
+| videoLoop                 | boolean                                 | false        | Loop video items (same, no visual effect)                            |
+| stopPreviousVideo         | boolean                                 | false        | Stop the previous slide's video on change (same, no visual effect)   |
+| stopAutoplayWhenVideoPlay | boolean                                 | false        | Pause autoplay while a video plays (same, no visual effect)          |
+| valueKey                  | string                                  | 'value'      | Image URL field name on an item object                               |
+| textKey                   | string                                  | 'text'       | Caption field name on an item object                                 |
+| customIndicatorClass      | string                                  | ''           | Custom class for the indicator node                                  |
+| customImageClass          | string                                  | ''           | Custom class for the image node                                      |
+| customItemClass           | string                                  | ''           | Custom class for each slide                                          |
+| customTextClass           | string                                  | ''           | Custom class for the caption node                                    |
+| customTextStyle           | string                                  | ''           | Custom inline style for the caption node                             |
+| customClass               | string                                  | ''           | Custom class for the root node                                       |
+| customStyle               | string                                  | ''           | Custom inline style for the root node                                |
 
 `SnSwiperItem` = `{ value?, poster?, text?, type?: "image" | "video" }`; `SnSwiperIndicator` = `{ type?: "dots" | "dots-bar" | "fraction"; minShowNum?; showControls? }`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| click | Slide tapped | `{ index, item }` |
-| change | Slide switched | `{ current, source }` |
+| Event           | Description              | Payload               |
+| --------------- | ------------------------ | --------------------- |
+| click           | Slide tapped             | `{ index, item }`     |
+| change          | Slide switched           | `{ current, source }` |
 | animationfinish | Slide animation finished | `{ current, source }` |
-| update:current | Current index sync | number |
+| update:current  | Current index sync       | number                |
 
 ## Slots
 
@@ -119,17 +119,17 @@ None.
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-background-subtle | Slide plate |
-| --sn-mp-color-background-elevated | Inactive dot |
-| --sn-mp-color-background-overlay | Caption strip / fraction plate |
-| --sn-mp-color-action-primary | Active dot |
-| --sn-mp-color-text-on-primary | Caption and fraction text |
-| --sn-mp-font-size-xs` / `-md` / `-lg | Fraction / caption / control size |
-| --sn-mp-font-line-height-normal | Text line height |
-| --sn-mp-spacing-1` … `-4 | Indicator padding and caption padding |
-| --sn-mp-radius-xs` / `-full` / `-lg | Dots / controls / container corners |
+| Variable                          | Purpose                               |
+| --------------------------------- | ------------------------------------- |
+| --sn-mp-color-background-subtle   | Slide plate                           |
+| --sn-mp-color-background-elevated | Inactive dot                          |
+| --sn-mp-color-background-overlay  | Caption strip / fraction plate        |
+| --sn-mp-color-action-primary      | Active dot                            |
+| --sn-mp-color-text-on-primary     | Caption and fraction text             |
+| --sn-mp-font-size-xs`/`-md`/`-lg  | Fraction / caption / control size     |
+| --sn-mp-font-line-height-normal   | Text line height                      |
+| --sn-mp-spacing-1`…`-4            | Indicator padding and caption padding |
+| --sn-mp-radius-xs`/`-full`/`-lg   | Dots / controls / container corners   |
 
 ## Accessibility
 
@@ -139,7 +139,6 @@ None.
 ## Dark mode
 
 The slide plate, dots, caption strip and text all come from semantic tokens (`--sn-mp-color-background-*` / `--sn-mp-color-action-primary` / `--sn-mp-color-text-on-primary`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

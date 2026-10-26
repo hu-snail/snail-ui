@@ -70,10 +70,10 @@ describe('@snui/tokens — Component Tokens', () => {
       DEFAULT_COMPONENT_TOKENS.icon.sizeMedium,
       DEFAULT_COMPONENT_TOKENS.icon.sizeLarge,
       DEFAULT_COMPONENT_TOKENS.icon.sizeXlarge,
-    ]
-    const px = tiers.map((v) => parseFloat(v))
+    ];
+    const px = tiers.map((v) => parseFloat(v));
     for (let i = 1; i < px.length; i++) {
-      expect(px[i]!, `${tiers[i - 1]} → ${tiers[i]} should be larger`).toBeGreaterThan(px[i - 1]!)
+      expect(px[i]!, `${tiers[i - 1]} → ${tiers[i]} should be larger`).toBeGreaterThan(px[i - 1]!);
     }
-  })
+  });
 });

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /** Demo: SnCountdown — reset() restarts the countdown; active pauses it. */
-import { ref } from 'vue'
-import { SnButton, SnCountdown, SnSwitch } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnCountdown, SnSwitch } from '@snui/vue-web';
 
-const active = ref(true)
-const countdownRef = ref<{ reset: () => void } | null>(null)
+const active = ref(true);
+const countdownRef = ref<{ reset: () => void } | null>(null);
 
 function handleReset(): void {
-  countdownRef.value?.reset()
+  countdownRef.value?.reset();
 }
 </script>
 

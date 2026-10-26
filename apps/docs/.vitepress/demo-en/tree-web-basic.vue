@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnTree — basic data + defaultExpandedKeys + selected v-model. */
-import { ref } from 'vue'
-import { SnTree } from '@snui/vue-web'
-import type { SnTreeOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTree } from '@snui/vue-web';
+import type { SnTreeOption } from '@snui/vue-web';
 
-const selected = ref<string[]>([])
+const selected = ref<string[]>([]);
 
 const data: SnTreeOption[] = [
   {
@@ -24,21 +24,23 @@ const data: SnTreeOption[] = [
     ],
   },
   { key: 'c', label: 'README' },
-]
+];
 </script>
 
 <template>
   <div class="sn-demo">
-    <SnTree
-      v-model:selected-keys="selected"
-      :data="data"
-      :default-expanded-keys="['a']"
-    />
+    <SnTree v-model:selected-keys="selected" :data="data" :default-expanded-keys="['a']" />
     <p class="sn-demo__hint">Currently selected: {{ selected.join(', ') || 'None' }}</p>
   </div>
 </template>
 
 <style scoped>
-.sn-demo { max-width: 320px; }
-.sn-demo__hint { margin: 8px 0 0; font-size: 12px; color: var(--sn-web-color-text-tertiary); }
+.sn-demo {
+  max-width: 320px;
+}
+.sn-demo__hint {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: var(--sn-web-color-text-tertiary);
+}
 </style>

@@ -20,17 +20,17 @@
  * `--sn-web-*` token aliases only (px units).
  */
 
-import type { StyleValue } from 'vue'
-import type { LoadingBarStatus } from './loading-bar-types'
+import type { StyleValue } from 'vue';
+import type { LoadingBarStatus } from './loading-bar-types';
 
-defineOptions({ name: 'SnLoadingBar' })
+defineOptions({ name: 'SnLoadingBar' });
 
 defineProps<{
   /** Inline style (width / opacity / transition) computed by the provider. */
-  barStyle: StyleValue
+  barStyle: StyleValue;
   /** Colour state: 'default' primary colour, 'error' danger colour. */
-  status?: LoadingBarStatus
-}>()
+  status?: LoadingBarStatus;
+}>();
 </script>
 
 <template>

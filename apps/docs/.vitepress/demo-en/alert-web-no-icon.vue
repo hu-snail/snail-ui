@@ -5,7 +5,7 @@
  * Shows: the alert collapsing to a pure text block when the icon is off,
  * and how the text region reclaims the freed horizontal space.
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>

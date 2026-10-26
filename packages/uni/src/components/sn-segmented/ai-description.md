@@ -22,45 +22,45 @@ always a `SegmentedOption`.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue'
+import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `modelValue` | `string \| number` | `undefined` | Selected value. |
-| `disabled` | `boolean` | `false` | Disable the whole control. |
-| `options` | `string[] \| number[] \| SegmentedOption[]` | `[]` | Option list. |
-| `theme` | `'card' \| 'outline'` | `'card'` | Visual theme. |
-| `vibrateShort` | `boolean` | `false` | Short vibration on switch. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name           | Type                                        | Default     | Description                |
+| -------------- | ------------------------------------------- | ----------- | -------------------------- |
+| `modelValue`   | `string \| number`                          | `undefined` | Selected value.            |
+| `disabled`     | `boolean`                                   | `false`     | Disable the whole control. |
+| `options`      | `string[] \| number[] \| SegmentedOption[]` | `[]`        | Option list.               |
+| `theme`        | `'card' \| 'outline'`                       | `'card'`    | Visual theme.              |
+| `vibrateShort` | `boolean`                                   | `false`     | Short vibration on switch. |
+| `customClass`  | `string`                                    | `''`        | Root forwarding.           |
+| `customStyle`  | `string`                                    | `''`        | Root forwarding.           |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:modelValue` | `string \| number` | Selected value changed. |
-| `change` | `SegmentedOption` | Option switched. |
-| `click` | `SegmentedOption` | Option tapped (including the active one). |
+| Name                | Payload            | Description                               |
+| ------------------- | ------------------ | ----------------------------------------- |
+| `update:modelValue` | `string \| number` | Selected value changed.                   |
+| `change`            | `SegmentedOption`  | Option switched.                          |
+| `click`             | `SegmentedOption`  | Option tapped (including the active one). |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name    | Description                              |
+| ------- | ---------------------------------------- |
 | `label` | Custom option label; scope `{ option }`. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Track / slider | `--sn-mp-color-background-subtle`, `--sn-mp-color-background-surface` | Card track and slider |
-| Border | `--sn-mp-color-border-default` | Outline theme border |
-| Text | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-disabled` | Inactive / disabled labels |
-| Action primary | `--sn-mp-color-action-primary` | Active label and outline fill |
-| Text on primary | `--sn-mp-color-text-on-primary` | Outline active label |
-| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-md`, `--sn-mp-spacing-1` | Label typography and track geometry |
+| Token                   | CSS Variable                                                          | Purpose                             |
+| ----------------------- | --------------------------------------------------------------------- | ----------------------------------- |
+| Track / slider          | `--sn-mp-color-background-subtle`, `--sn-mp-color-background-surface` | Card track and slider               |
+| Border                  | `--sn-mp-color-border-default`                                        | Outline theme border                |
+| Text                    | `--sn-mp-color-text-secondary`, `--sn-mp-color-text-disabled`         | Inactive / disabled labels          |
+| Action primary          | `--sn-mp-color-action-primary`                                        | Active label and outline fill       |
+| Text on primary         | `--sn-mp-color-text-on-primary`                                       | Outline active label                |
+| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-md`, `--sn-mp-spacing-1`      | Label typography and track geometry |
 
 ## Accessibility
 

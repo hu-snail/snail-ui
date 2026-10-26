@@ -10,14 +10,17 @@
  * `fixed: false` keeps all three inside the demo stage instead of pinning them
  * to the browser corner.
  */
-import { Bell, ExternalLink, LifeBuoy } from 'lucide-vue-next'
-import { SnFloatButton } from '@snui/vue-web'
+import { Bell, ExternalLink, LifeBuoy } from 'lucide-vue-next';
+import { SnFloatButton } from '@snui/vue-web';
 </script>
 
 <template>
   <div class="float-button-demo">
     <p class="float-button-demo__hint">
-      Count badge (<code>badge</code>), red dot (<code>badgeDot</code>), link root element (<code>href</code> + <code>target</code>）。
+      Count badge (<code>badge</code>), red dot (<code>badgeDot</code>), link root element (<code
+        >href</code
+      >
+      + <code>target</code>）。
     </p>
 
     <div class="float-button-demo__stage">

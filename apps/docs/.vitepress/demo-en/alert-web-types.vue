@@ -2,7 +2,7 @@
 /**
  * alert-web-types — shows all five semantic types side by side.
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>
@@ -10,7 +10,9 @@ import { SnAlert } from '@snui/vue-web'
     <SnAlert type="default" title="default">Neutral notice — no built-in icon.</SnAlert>
     <SnAlert type="info" title="info">General info that adds context.</SnAlert>
     <SnAlert type="success" title="success">The operation completed successfully.</SnAlert>
-    <SnAlert type="warning" title="warning">Needs attention but does not block the current flow.</SnAlert>
+    <SnAlert type="warning" title="warning"
+      >Needs attention but does not block the current flow.</SnAlert
+    >
     <SnAlert type="error" title="error">Failed. Check the network and try again.</SnAlert>
   </div>
 </template>

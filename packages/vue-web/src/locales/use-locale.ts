@@ -17,22 +17,21 @@
  * the `SnLocale` type and the `zhCN` / `enUS` constants).
  */
 
-import { computed, inject, isRef } from 'vue'
-import { zhCN } from './zh-cn'
-import type { ComputedRef, InjectionKey, Ref } from 'vue'
-import type { SnLocale } from './zh-cn'
+import { computed, inject, isRef } from 'vue';
+import { zhCN } from './zh-cn';
+import type { ComputedRef, InjectionKey, Ref } from 'vue';
+import type { SnLocale } from './zh-cn';
 
 /**
  * Provide/inject key for the active locale. `null` (or absence) means "no
  * provider" → built-in zhCN. Exported so `SnConfigProvider` and tests share
  * the exact same contract; normal consumers use `<SnConfigProvider locale>`.
  */
-export const SN_LOCALE_KEY: InjectionKey<
-  Partial<SnLocale> | null | Ref<Partial<SnLocale> | null>
-> = Symbol('sn-locale')
+export const SN_LOCALE_KEY: InjectionKey<Partial<SnLocale> | null | Ref<Partial<SnLocale> | null>> =
+  Symbol('sn-locale');
 
 /** What a host may pass to `<SnConfigProvider :locale>` — see the merge contract above. */
-export type SnLocaleInput = Partial<SnLocale>
+export type SnLocaleInput = Partial<SnLocale>;
 
 /**
  * Resolve the effective locale: the injected (possibly partial) one merged
@@ -42,14 +41,14 @@ export type SnLocaleInput = Partial<SnLocale>
  * every consuming component without remounting.
  */
 export function useLocale(): ComputedRef<SnLocale> {
-  const injected = inject(SN_LOCALE_KEY, null)
+  const injected = inject(SN_LOCALE_KEY, null);
 
   return computed(() => {
     // `SnConfigProvider` provides a reactive ref (so locale switches
     // propagate); a host may also provide a plain object. Unwrap refs here
     // so the merge below always sees the plain locale object.
-    const source: Partial<SnLocale> | null = isRef(injected) ? injected.value : injected
-    if (source === null) return zhCN
+    const source: Partial<SnLocale> | null = isRef(injected) ? injected.value : injected;
+    if (source === null) return zhCN;
     return {
       ...zhCN,
       ...source,
@@ -70,6 +69,6 @@ export function useLocale(): ComputedRef<SnLocale> {
       Drawer: { ...zhCN.Drawer, ...source.Drawer },
       AvatarGroup: { ...zhCN.AvatarGroup, ...source.AvatarGroup },
       Popconfirm: { ...zhCN.Popconfirm, ...source.Popconfirm },
-    }
-  })
+    };
+  });
 }

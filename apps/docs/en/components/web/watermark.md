@@ -46,34 +46,34 @@ nothing; `zIndex` controls the overlay stacking order.
 
 All props are optional.
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| content | `string \| string[]` | `undefined` | Watermark text; array items are separate lines, an empty string draws nothing |
-| image | `string` | `undefined` | Watermark image URL; drawn instead of text |
-| cross | `boolean` | `false` | Stagger adjacent tiles by half a tile |
-| fullscreen | `boolean` | `false` | Cover the whole viewport instead of wrapping content |
-| fontSize | `number` | `16` | Text size (px) |
-| lineHeight | `number` | `16` | Text line height (px) |
-| width | `number` | `128` | Tile width (px) |
-| height | `number` | `64` | Tile height (px) |
-| rotate | `number` | `0` | Tile rotation (degrees) |
-| x | `number` | `0` | Tile x offset (px) |
-| y | `number` | `0` | Tile y offset (px) |
-| zIndex | `number` | `10` | Overlay stacking order |
-| opacity | `number` | `0.5` | Overlay opacity (0–1) |
-| fontFamily | `string` | `undefined` | Text font family |
-| fontWeight | `number \| string` | `undefined` | Text font weight |
-| fontStyle | `'normal' \| 'italic' \| 'oblique'` | `undefined` | Text font style |
-| fontColor | `string` | `undefined` | Text color |
-| background | `string` | `undefined` | Tile background color |
-| grayscale | `number` | `0` | Overlay CSS grayscale (0–1) |
-| blend | `CSSProperties['mixBlendMode']` | `undefined` | Overlay mix-blend-mode |
+| Name       | Type                                | Default     | Description                                                                   |
+| ---------- | ----------------------------------- | ----------- | ----------------------------------------------------------------------------- |
+| content    | `string \| string[]`                | `undefined` | Watermark text; array items are separate lines, an empty string draws nothing |
+| image      | `string`                            | `undefined` | Watermark image URL; drawn instead of text                                    |
+| cross      | `boolean`                           | `false`     | Stagger adjacent tiles by half a tile                                         |
+| fullscreen | `boolean`                           | `false`     | Cover the whole viewport instead of wrapping content                          |
+| fontSize   | `number`                            | `16`        | Text size (px)                                                                |
+| lineHeight | `number`                            | `16`        | Text line height (px)                                                         |
+| width      | `number`                            | `128`       | Tile width (px)                                                               |
+| height     | `number`                            | `64`        | Tile height (px)                                                              |
+| rotate     | `number`                            | `0`         | Tile rotation (degrees)                                                       |
+| x          | `number`                            | `0`         | Tile x offset (px)                                                            |
+| y          | `number`                            | `0`         | Tile y offset (px)                                                            |
+| zIndex     | `number`                            | `10`        | Overlay stacking order                                                        |
+| opacity    | `number`                            | `0.5`       | Overlay opacity (0–1)                                                         |
+| fontFamily | `string`                            | `undefined` | Text font family                                                              |
+| fontWeight | `number \| string`                  | `undefined` | Text font weight                                                              |
+| fontStyle  | `'normal' \| 'italic' \| 'oblique'` | `undefined` | Text font style                                                               |
+| fontColor  | `string`                            | `undefined` | Text color                                                                    |
+| background | `string`                            | `undefined` | Tile background color                                                         |
+| grayscale  | `number`                            | `0`         | Overlay CSS grayscale (0–1)                                                   |
+| blend      | `CSSProperties['mixBlendMode']`     | `undefined` | Overlay mix-blend-mode                                                        |
 
 ### Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
-| default | — | Content the watermark covers; not rendered when `fullscreen` |
+| Name    | Scope | Description                                                  |
+| ------- | ----- | ------------------------------------------------------------ |
+| default | —     | Content the watermark covers; not rendered when `fullscreen` |
 
 No events.
 

@@ -35,55 +35,55 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnIndexBar } from '@snui/uni/components/sn-index-bar/sn-index-bar.vue'
-import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor.vue'
+import { SnIndexBar } from '@snui/uni/components/sn-index-bar/sn-index-bar.vue';
+import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor.vue';
 ```
 
 ## Props
 
 ### sn-index-bar
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `sticky` | `boolean` | `false` | Pin the index bar |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type      | Default | Description                   |
+| ------------- | --------- | ------- | ----------------------------- |
+| `sticky`      | `boolean` | `false` | Pin the index bar             |
+| `customClass` | `string`  | `''`    | Extra class on the root node  |
+| `customStyle` | `string`  | `''`    | Inline style on the root node |
 
 ### sn-index-anchor
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `index` | `string \| number` | `''` | Index character(s) |
-| `customClass` | `string` | `''` | Extra class on the anchor root |
-| `customStyle` | `string` | `''` | Inline style on the anchor root |
+| Prop          | Type               | Default | Description                     |
+| ------------- | ------------------ | ------- | ------------------------------- |
+| `index`       | `string \| number` | `''`    | Index character(s)              |
+| `customClass` | `string`           | `''`    | Extra class on the anchor root  |
+| `customStyle` | `string`           | `''`    | Inline style on the anchor root |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
+| Event    | Description          | Payload       |
+| -------- | -------------------- | ------------- |
 | `change` | Active index changed | `({ index })` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot                  | Description                             |
+| --------------------- | --------------------------------------- |
 | `default` (index-bar) | Index list (`sn-index-anchor` children) |
-| `default` (anchor) | Entries under that index |
+| `default` (anchor)    | Entries under that index                |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | List and entry surface |
-| `--sn-mp-color-background-soft` | Group heading surface |
-| `--sn-mp-color-action-primary-soft` | Active group heading surface |
-| `--sn-mp-color-text-secondary` | Sidebar entry and heading text |
-| `--sn-mp-color-action-primary` | Active entry fill and active heading text |
-| `--sn-mp-color-text-on-primary` | Active entry label |
-| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | Entry / heading size |
-| `--sn-mp-font-weight-medium` | Heading weight |
-| `--sn-mp-radius-full` | Entry pill radius |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | Entry gap / heading padding |
+| Variable                                        | Purpose                                   |
+| ----------------------------------------------- | ----------------------------------------- |
+| `--sn-mp-color-background-surface`              | List and entry surface                    |
+| `--sn-mp-color-background-soft`                 | Group heading surface                     |
+| `--sn-mp-color-action-primary-soft`             | Active group heading surface              |
+| `--sn-mp-color-text-secondary`                  | Sidebar entry and heading text            |
+| `--sn-mp-color-action-primary`                  | Active entry fill and active heading text |
+| `--sn-mp-color-text-on-primary`                 | Active entry label                        |
+| `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | Entry / heading size                      |
+| `--sn-mp-font-weight-medium`                    | Heading weight                            |
+| `--sn-mp-radius-full`                           | Entry pill radius                         |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | Entry gap / heading padding               |
 
 ## Accessibility
 
@@ -97,7 +97,6 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 Every colour in `sn-index-bar` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the list flips to the dark surface, headings use the dark soft fill, and the active entry keeps the brand pill.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

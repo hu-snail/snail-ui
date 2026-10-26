@@ -91,10 +91,9 @@ describe('@snui/tokens — static stylesheet emission', () => {
   it('mirrors every component leaf as --sn-* pointing at the --aui-* original', () => {
     for (const [name] of collectLeaves()) {
       const mirror = name.replace(/^--aui-/, '--sn-');
-      expect(
-        declared.get(mirror),
-        `${mirror} is missing from styles/index.css`,
-      ).toBe(`var(${name})`);
+      expect(declared.get(mirror), `${mirror} is missing from styles/index.css`).toBe(
+        `var(${name})`,
+      );
     }
   });
 

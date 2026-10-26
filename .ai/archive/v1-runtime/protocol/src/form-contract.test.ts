@@ -21,9 +21,7 @@ describe('@snui/protocol — FormContract', () => {
       expect(r.success).toBe(true);
     });
     it('rejects unknown extra fields (strict)', () => {
-      expect(
-        FormRuleSchema.safeParse({ required: true, sneaky: 1 }).success,
-      ).toBe(false);
+      expect(FormRuleSchema.safeParse({ required: true, sneaky: 1 }).success).toBe(false);
     });
   });
 

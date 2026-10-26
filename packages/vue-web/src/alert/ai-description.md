@@ -18,28 +18,28 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `title` | `string` | `''` | Alert heading. |
-| `showIcon` | `boolean` | `true` | Show the leading type icon. |
-| `type` | `'info' \| 'warning' \| 'error' \| 'success' \| 'default'` | `'default'` | Semantic type — drives color + built-in icon. |
-| `bordered` | `boolean` | `true` | Draw the surrounding border overlay. |
-| `closable` | `boolean` | `false` | Render the close button. |
-| `onClose` | `() => unknown` | `undefined` | Called on close click. Return `false` (or a Promise of `false`) to **veto** the dismissal. |
-| `onAfterLeave` | `() => void` | `undefined` | Called after the leave transition finishes. |
-| `onAfterHide` | `() => void` | `undefined` | **@deprecated** — use `onAfterLeave`. |
+| Name           | Type                                                       | Default     | Description                                                                                |
+| -------------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------ |
+| `title`        | `string`                                                   | `''`        | Alert heading.                                                                             |
+| `showIcon`     | `boolean`                                                  | `true`      | Show the leading type icon.                                                                |
+| `type`         | `'info' \| 'warning' \| 'error' \| 'success' \| 'default'` | `'default'` | Semantic type — drives color + built-in icon.                                              |
+| `bordered`     | `boolean`                                                  | `true`      | Draw the surrounding border overlay.                                                       |
+| `closable`     | `boolean`                                                  | `false`     | Render the close button.                                                                   |
+| `onClose`      | `() => unknown`                                            | `undefined` | Called on close click. Return `false` (or a Promise of `false`) to **veto** the dismissal. |
+| `onAfterLeave` | `() => void`                                               | `undefined` | Called after the leave transition finishes.                                                |
+| `onAfterHide`  | `() => void`                                               | `undefined` | **@deprecated** — use `onAfterLeave`.                                                      |
 
 ## Events
 
-| Event | Payload | When |
-|---|---|---|
-| `closeClick` | `()` | Close button clicked (fires before the veto check resolves). |
-| `leave` | `()` | Leave transition finished — the alert has been removed. |
+| Event        | Payload | When                                                         |
+| ------------ | ------- | ------------------------------------------------------------ |
+| `closeClick` | `()`    | Close button clicked (fires before the veto check resolves). |
+| `leave`      | `()`    | Leave transition finished — the alert has been removed.      |
 
 > Event names are deliberately **not** `close` / `afterLeave`: Vue maps an
 > emitted `close` onto an `onClose` prop listener, which would invoke the
@@ -49,11 +49,11 @@ import { SnAlert } from '@snui/vue-web'
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Alert body content. |
-| `icon` | Custom icon — replaces the built-in per-type icon. |
-| `header` | Custom header — replaces the `title` prop. |
+| Name      | Description                                        |
+| --------- | -------------------------------------------------- |
+| `default` | Alert body content.                                |
+| `icon`    | Custom icon — replaces the built-in per-type icon. |
+| `header`  | Custom header — replaces the `title` prop.         |
 
 ## Close semantics
 
@@ -76,17 +76,17 @@ The node is removed after the leave transition completes, at which point
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Subtle background | `--sn-web-color-background-subtle` | `type="default"` fill |
-| Surface | `--sn-web-color-background-surface` | Base for `color-mix()` type tints |
-| Info | `--sn-web-color-feedback-info` | Info text + tint |
-| Success | `--sn-web-color-feedback-success` | Success text + tint |
-| Warning | `--sn-web-color-feedback-warning` | Warning text + tint |
-| Danger | `--sn-web-color-feedback-danger` | Error text + tint |
-| Border default | `--sn-web-color-border-default` | `type="default"` border |
-| Text primary | `--sn-web-color-text-primary` | Default body text |
-| Focus ring | `--sn-web-focus-ring` | Close button `:focus-visible` |
+| Token             | CSS Variable                        | Purpose                           |
+| ----------------- | ----------------------------------- | --------------------------------- |
+| Subtle background | `--sn-web-color-background-subtle`  | `type="default"` fill             |
+| Surface           | `--sn-web-color-background-surface` | Base for `color-mix()` type tints |
+| Info              | `--sn-web-color-feedback-info`      | Info text + tint                  |
+| Success           | `--sn-web-color-feedback-success`   | Success text + tint               |
+| Warning           | `--sn-web-color-feedback-warning`   | Warning text + tint               |
+| Danger            | `--sn-web-color-feedback-danger`    | Error text + tint                 |
+| Border default    | `--sn-web-color-border-default`     | `type="default"` border           |
+| Text primary      | `--sn-web-color-text-primary`       | Default body text                 |
+| Focus ring        | `--sn-web-focus-ring`               | Close button `:focus-visible`     |
 
 Tinted backgrounds use `color-mix(in srgb, var(--token) 12%, var(--sn-web-color-background-surface))`
 — the same pattern SnButton uses for softened fills (AGENTS.md §34: no

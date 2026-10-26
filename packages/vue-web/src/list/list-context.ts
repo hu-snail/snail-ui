@@ -6,13 +6,11 @@
  * `undefined` from `inject` means the item was rendered outside a list —
  * it then degrades to a standalone row (divider shown like the default).
  */
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 export interface SnListContext {
   /** Whether inter-item dividers render (parent `show-divider`). */
-  showDivider: Ref<boolean>
+  showDivider: Ref<boolean>;
 }
 
-export const SN_LIST_INJECTION_KEY: InjectionKey<SnListContext> = Symbol(
-  'sn-list',
-)
+export const SN_LIST_INJECTION_KEY: InjectionKey<SnListContext> = Symbol('sn-list');

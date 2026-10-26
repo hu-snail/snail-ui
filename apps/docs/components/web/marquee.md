@@ -34,21 +34,21 @@
 
 ### SnMarquee Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| direction | `'left' \| 'right' \| 'up' \| 'down'` | `'left'` | 内容行进方向。 |
-| duration | `number` | `12` | 一轮完整滚动的秒数。非有限值 / 非正数回退为 `12`。 |
-| repeat | `number` | `2` | 渲染几份插槽内容。强制取整并至少为 2（`Math.max(2, Math.floor(...))`）。 |
-| gap | `number \| string` | `24` | 两份内容之间的距离，数字按 px 处理。以「尾部内边距」的形式加在每一份内容上。 |
-| pauseOnHover | `boolean` | `true` | 鼠标悬停时暂停动画。 |
-| playing | `boolean` | `true` | 是否正在滚动，`false` 时原地冻结。 |
-| vertical | `boolean` | `false` | 竖向滚动简写：`direction` 不是 `'up'` / `'down'` 时等价于 `direction="up"`。 |
-| height | `number \| string` | `undefined` | 盒子高度（数字按 px）。竖向跑马灯建议显式设置，否则没有可裁剪的视口。 |
+| 名称         | 类型                                  | 默认值      | 说明                                                                         |
+| ------------ | ------------------------------------- | ----------- | ---------------------------------------------------------------------------- |
+| direction    | `'left' \| 'right' \| 'up' \| 'down'` | `'left'`    | 内容行进方向。                                                               |
+| duration     | `number`                              | `12`        | 一轮完整滚动的秒数。非有限值 / 非正数回退为 `12`。                           |
+| repeat       | `number`                              | `2`         | 渲染几份插槽内容。强制取整并至少为 2（`Math.max(2, Math.floor(...))`）。     |
+| gap          | `number \| string`                    | `24`        | 两份内容之间的距离，数字按 px 处理。以「尾部内边距」的形式加在每一份内容上。 |
+| pauseOnHover | `boolean`                             | `true`      | 鼠标悬停时暂停动画。                                                         |
+| playing      | `boolean`                             | `true`      | 是否正在滚动，`false` 时原地冻结。                                           |
+| vertical     | `boolean`                             | `false`     | 竖向滚动简写：`direction` 不是 `'up'` / `'down'` 时等价于 `direction="up"`。 |
+| height       | `number \| string`                    | `undefined` | 盒子高度（数字按 px）。竖向跑马灯建议显式设置，否则没有可裁剪的视口。        |
 
 ### SnMarquee Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称    | 参数 | 说明                                                     |
+| ------- | ---- | -------------------------------------------------------- |
 | default | `()` | **一份**内容。组件内部会自动复制，调用方不要重复写多份。 |
 
 ### SnMarquee Events

@@ -36,15 +36,15 @@ Without `icon` the component renders its built-in inline SVG glyph (no emoji, no
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `icon` | `string` | `'empty'` | Icon name / registry key / image URL / CSS class |
-| `iconPrefix` | `string` | `''` | Icon class prefix (applied with `icon`) |
-| `cssIcon` | `boolean \| string` | `false` | CSS-icon mode: treat `icon` / `iconPrefix` as class names |
-| `iconSize` | `number \| string` | `''` | Glyph / image size; a number is rpx, a string passes through |
-| `tip` | `string` | `''` | Tip text |
-| `customClass` | `string` | `''` | Custom class for the root node |
-| `customStyle` | `string` | `''` | Custom inline style for the root node |
+| Prop          | Type                | Default   | Description                                                  |
+| ------------- | ------------------- | --------- | ------------------------------------------------------------ |
+| `icon`        | `string`            | `'empty'` | Icon name / registry key / image URL / CSS class             |
+| `iconPrefix`  | `string`            | `''`      | Icon class prefix (applied with `icon`)                      |
+| `cssIcon`     | `boolean \| string` | `false`   | CSS-icon mode: treat `icon` / `iconPrefix` as class names    |
+| `iconSize`    | `number \| string`  | `''`      | Glyph / image size; a number is rpx, a string passes through |
+| `tip`         | `string`            | `''`      | Tip text                                                     |
+| `customClass` | `string`            | `''`      | Custom class for the root node                               |
+| `customStyle` | `string`            | `''`      | Custom inline style for the root node                        |
 
 ## Events
 
@@ -52,23 +52,23 @@ None — `sn-empty` is purely presentational.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `image` | Custom image area content |
-| `bottom` | Custom bottom content |
+| Slot     | Description               |
+| -------- | ------------------------- |
+| `image`  | Custom image area content |
+| `bottom` | Custom bottom content     |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-text-disabled` | Glyph color |
-| `--sn-mp-color-text-secondary` | Tip color |
-| `--sn-mp-font-size-md` | Tip size |
-| `--sn-mp-font-line-height-normal` | Tip line height |
-| `--sn-mp-spacing-5` | Glyph ↔ tip / bottom gap |
-| `--sn-mp-spacing-12` | Component bottom padding |
-| `--sn-mp-color-border-default` | Doodle-skin outline |
-| `--sn-mp-radius-xl` | Doodle-skin corners |
+| Variable                          | Purpose                  |
+| --------------------------------- | ------------------------ |
+| `--sn-mp-color-text-disabled`     | Glyph color              |
+| `--sn-mp-color-text-secondary`    | Tip color                |
+| `--sn-mp-font-size-md`            | Tip size                 |
+| `--sn-mp-font-line-height-normal` | Tip line height          |
+| `--sn-mp-spacing-5`               | Glyph ↔ tip / bottom gap |
+| `--sn-mp-spacing-12`              | Component bottom padding |
+| `--sn-mp-color-border-default`    | Doodle-skin outline      |
+| `--sn-mp-radius-xl`               | Doodle-skin corners      |
 
 ## Accessibility
 
@@ -79,7 +79,6 @@ None — `sn-empty` is purely presentational.
 ## Dark mode
 
 The glyph and tip use `--sn-mp-color-text-disabled` / `--sn-mp-color-text-secondary`, both overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

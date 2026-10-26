@@ -3,19 +3,17 @@
  * skeleton-web-card — a card placeholder assembled from primitives, plus the
  * `animated` and `sharp` switches.
  */
-import { ref } from 'vue'
-import { SnButton, SnSkeleton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnSkeleton } from '@snui/vue-web';
 
-const animated = ref(true)
-const sharp = ref(true)
+const animated = ref(true);
+const sharp = ref(true);
 </script>
 
 <template>
   <div class="sk-demo">
     <div class="sk-demo__controls">
-      <SnButton size="small" @click="animated = !animated">
-        animated: {{ animated }}
-      </SnButton>
+      <SnButton size="small" @click="animated = !animated"> animated: {{ animated }} </SnButton>
       <SnButton size="small" @click="sharp = !sharp">sharp: {{ sharp }}</SnButton>
     </div>
 

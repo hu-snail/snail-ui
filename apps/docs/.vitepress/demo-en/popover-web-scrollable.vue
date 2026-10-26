@@ -7,7 +7,7 @@
  * on overflow scrolling; a `max-height` passed through `content-style` wins
  * over that default because it is inlined on the same element.
  */
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { SnButton, SnPopover } from '@snui/vue-web';
 
 const changelog = [
   'v3.1.0 — Added the popover-card component family with twelve placements and viewport flipping.',
@@ -19,7 +19,7 @@ const changelog = [
   'v2.9.2 — Split text tooltip and popover card into independently scoped semantics.',
   'v2.9.1 — Added a controlled display mode; external state can fully take over popping.',
   'v2.9.0 — Popup positioning moved to fixed coordinates for steadier scroll following.',
-].join('\n')
+].join('\n');
 </script>
 
 <template>
@@ -50,7 +50,10 @@ const changelog = [
     </div>
 
     <p class="popover-scrollable-demo__hint">
-      When the body exceeds the height it scrolls inside the popover while the page itself does not; the arrow and card border stay fixed and do not scroll with the content. The left one uses the built-in default height cap; the right one limits the visible height to 120px via content-style.
+      When the body exceeds the height it scrolls inside the popover while the page itself does not;
+      the arrow and card border stay fixed and do not scroll with the content. The left one uses the
+      built-in default height cap; the right one limits the visible height to 120px via
+      content-style.
     </p>
   </div>
 </template>

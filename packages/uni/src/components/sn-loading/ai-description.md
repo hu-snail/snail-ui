@@ -26,22 +26,22 @@ added to the wd-loading parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnLoading } from '@snui/uni'
+import { SnLoading } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `type` | `'circular' \| 'spinner' \| 'dots' \| 'wave'` | `'circular'` | no | Spinner shape. |
-| `color` | `string` | `''` | no | Spinner color override (any CSS color value). |
-| `size` | `number \| string` | `''` | no | Base size; a bare number is rpx, a string passes through. |
-| `text` | `string` | `''` | no | Text shown next to / below the spinner. |
-| `direction` | `'vertical' \| 'horizontal'` | `'vertical'` | no | Layout direction of spinner + text. |
-| `inheritColor` | `boolean` | `false` | no | Inherit the parent's `color` instead of the token default. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
-| `customSpinnerClass` | `string` | `''` | no | Custom class for the spinner box only. |
+| Name                 | Type                                          | Default      | Required | Description                                                |
+| -------------------- | --------------------------------------------- | ------------ | -------- | ---------------------------------------------------------- |
+| `type`               | `'circular' \| 'spinner' \| 'dots' \| 'wave'` | `'circular'` | no       | Spinner shape.                                             |
+| `color`              | `string`                                      | `''`         | no       | Spinner color override (any CSS color value).              |
+| `size`               | `number \| string`                            | `''`         | no       | Base size; a bare number is rpx, a string passes through.  |
+| `text`               | `string`                                      | `''`         | no       | Text shown next to / below the spinner.                    |
+| `direction`          | `'vertical' \| 'horizontal'`                  | `'vertical'` | no       | Layout direction of spinner + text.                        |
+| `inheritColor`       | `boolean`                                     | `false`      | no       | Inherit the parent's `color` instead of the token default. |
+| `customClass`        | `string`                                      | `''`         | no       | Custom class for the root node.                            |
+| `customStyle`        | `string`                                      | `''`         | no       | Custom inline style for the root node.                     |
+| `customSpinnerClass` | `string`                                      | `''`         | no       | Custom class for the spinner box only.                     |
 
 ## Events
 
@@ -49,20 +49,20 @@ None — `sn-loading` is purely presentational.
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                              |
+| --------- | ---------------------------------------- |
 | `default` | Loading text content (overrides `text`). |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Action primary | `--sn-mp-color-action-primary` | Default spinner color |
-| Text secondary | `--sn-mp-color-text-secondary` | Label color |
-| Font size MD | `--sn-mp-font-size-md` | Label size |
-| Line height normal | `--sn-mp-font-line-height-normal` | Label line height |
-| Spacing 3 | `--sn-mp-spacing-3` | Spinner ↔ label gap / horizontal margin |
-| Radius XS | `--sn-mp-radius-xs` | Doodle skin bar corners |
+| Token              | CSS Variable                      | Purpose                                 |
+| ------------------ | --------------------------------- | --------------------------------------- |
+| Action primary     | `--sn-mp-color-action-primary`    | Default spinner color                   |
+| Text secondary     | `--sn-mp-color-text-secondary`    | Label color                             |
+| Font size MD       | `--sn-mp-font-size-md`            | Label size                              |
+| Line height normal | `--sn-mp-font-line-height-normal` | Label line height                       |
+| Spacing 3          | `--sn-mp-spacing-3`               | Spinner ↔ label gap / horizontal margin |
+| Radius XS          | `--sn-mp-radius-xs`               | Doodle skin bar corners                 |
 
 ## Accessibility
 

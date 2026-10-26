@@ -27,7 +27,6 @@ Rule order:
 3. `value` is absent or an empty string → no marker.
 4. `value === 0` and `showZero` is false → no marker.
 
-
 ## Root class and inline style (`customClass` / `customStyle`)
 
 Both props land on the **wrapper** (the root node), not on the marker: `customClass` appends a root class and `customStyle` becomes the root inline style. The marker's own look (`type` / `bgColor` / `top` / `right` / `shape`) is untouched — keep using `bgColor` to recolour the marker.
@@ -45,26 +44,26 @@ Both props land on the **wrapper** (the root node), not on the marker: `customCl
 For an explicit import:
 
 ```ts
-import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue'
+import { SnBadge } from '@snui/uni/components/sn-badge/sn-badge.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `value` | `string \| number` | `undefined` | Displayed value; a number over `max` renders `{max}+` |
-| `max` | `number` | `undefined` | Overflow threshold, applied to numeric values only |
-| `top` | `string \| number` | `undefined` | Vertical nudge from the default anchor; a number is px |
-| `right` | `string \| number` | `undefined` | Horizontal nudge from the default anchor; a number is px |
-| `isDot` | `boolean` | `false` | Dot mode, no label |
-| `hidden` | `boolean` | `false` | Hide the marker (wrapped content still renders) |
-| `type` | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `undefined` | Marker colour; unset falls back to danger red |
-| `bgColor` | `string` | `''` | Inline background override |
-| `showZero` | `boolean` | `false` | Render a `0` value |
-| `shape` | `'circle' \| 'square' \| 'bubble'` | `'circle'` | Marker outline |
-| `border` | `boolean` | `false` | Draw a separating ring in the page background colour |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop          | Type                                                        | Default     | Description                                              |
+| ------------- | ----------------------------------------------------------- | ----------- | -------------------------------------------------------- |
+| `value`       | `string \| number`                                          | `undefined` | Displayed value; a number over `max` renders `{max}+`    |
+| `max`         | `number`                                                    | `undefined` | Overflow threshold, applied to numeric values only       |
+| `top`         | `string \| number`                                          | `undefined` | Vertical nudge from the default anchor; a number is px   |
+| `right`       | `string \| number`                                          | `undefined` | Horizontal nudge from the default anchor; a number is px |
+| `isDot`       | `boolean`                                                   | `false`     | Dot mode, no label                                       |
+| `hidden`      | `boolean`                                                   | `false`     | Hide the marker (wrapped content still renders)          |
+| `type`        | `'primary' \| 'success' \| 'warning' \| 'danger' \| 'info'` | `undefined` | Marker colour; unset falls back to danger red            |
+| `bgColor`     | `string`                                                    | `''`        | Inline background override                               |
+| `showZero`    | `boolean`                                                   | `false`     | Render a `0` value                                       |
+| `shape`       | `'circle' \| 'square' \| 'bubble'`                          | `'circle'`  | Marker outline                                           |
+| `border`      | `boolean`                                                   | `false`     | Draw a separating ring in the page background colour     |
+| `customClass` | `string`                                                    | `''`        | Extra class on the root node                             |
+| `customStyle` | `string`                                                    | `''`        | Inline style on the root node                            |
 
 ## Events
 
@@ -72,25 +71,25 @@ None. The marker is decoration; taps belong to the wrapped content.
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                                                  |
+| --------- | ------------------------------------------------------------ |
 | `default` | The content the marker is anchored to (icon / avatar / text) |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-action-primary` | `primary` marker fill |
-| `--sn-mp-color-feedback-success` | `success` type |
-| `--sn-mp-color-feedback-warning` | `warning` type |
-| `--sn-mp-color-feedback-danger` | `danger` type (also the default) |
-| `--sn-mp-color-feedback-info` | `info` type |
-| `--sn-mp-color-text-on-primary` | Marker label |
-| `--sn-mp-color-background-surface` | `border` ring colour |
-| `--sn-mp-color-text-primary` | Doodle skin outline |
-| `--sn-mp-font-size-xs` | Marker label size |
-| `--sn-mp-font-weight-{medium,bold}` | Marker label weight |
-| `--sn-mp-radius-{sm,lg,full}` | Circle / square / bubble shape |
+| Variable                            | Purpose                          |
+| ----------------------------------- | -------------------------------- |
+| `--sn-mp-color-action-primary`      | `primary` marker fill            |
+| `--sn-mp-color-feedback-success`    | `success` type                   |
+| `--sn-mp-color-feedback-warning`    | `warning` type                   |
+| `--sn-mp-color-feedback-danger`     | `danger` type (also the default) |
+| `--sn-mp-color-feedback-info`       | `info` type                      |
+| `--sn-mp-color-text-on-primary`     | Marker label                     |
+| `--sn-mp-color-background-surface`  | `border` ring colour             |
+| `--sn-mp-color-text-primary`        | Doodle skin outline              |
+| `--sn-mp-font-size-xs`              | Marker label size                |
+| `--sn-mp-font-weight-{medium,bold}` | Marker label weight              |
+| `--sn-mp-radius-{sm,lg,full}`       | Circle / square / bubble shape   |
 
 ## Accessibility
 
@@ -107,7 +106,6 @@ Every fill and label colour in `sn-badge` comes from `--sn-mp-color-*` with no l
 - `bgColor` is used verbatim; a light literal will not invert in dark mode, so prefer `var(--sn-mp-*)` for such overrides.
 
 Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

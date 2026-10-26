@@ -23,27 +23,27 @@ here MUST also be added to the n-flex parity list.
 ## Import
 
 ```ts
-import SnFlex from '@snui/vue-web/src/flex/SnFlex.vue'
+import SnFlex from '@snui/vue-web/src/flex/SnFlex.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `vertical` | `boolean` | `false` | Stack children in a column. Vertical layout always `nowrap` (n-flex semantics). |
-| `gap` | `number \| 'small' \| 'medium' \| 'large' \| [number, number]` | `'medium'` | Gap between children. Tuple is `[horizontal, vertical]` px → `column-gap` / `row-gap`. Invalid values fall back to medium. |
-| `wrap` | `boolean` | `true` | Allow horizontal children to wrap. `vertical` forces `nowrap` regardless. |
-| `justify` | `'start' \| 'end' \| 'center' \| 'space-around' \| 'space-between' \| 'space-evenly'` | `'start'` | Main-axis distribution, passed through as-is (n-flex does NOT normalize `'start'`/`'end'` to `flex-*` — both are valid CSS Box Alignment values). |
-| `align` | `'stretch' \| 'baseline' \| 'start' \| 'end' \| 'center' \| 'flex-start' \| 'flex-end'` | — | Cross-axis alignment. Unset → CSS `normal` (no `align-items` emitted). |
-| `inline` | `boolean` | `false` | Render as `inline-flex`. |
-| `expand` | `boolean` | `false` | **Snail extension** (n-flex main has no such prop): direct children get `flex: 1 1 auto` so they grow to fill the free main-axis space. |
-| `customClass` | `string` | `''` | Extra class appended to the container (snail extension). |
-| `customStyle` | `string \| Record<string, string>` | `''` | Inline style appended to the container (snail extension). |
+| Name          | Type                                                                                    | Default    | Description                                                                                                                                       |
+| ------------- | --------------------------------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `vertical`    | `boolean`                                                                               | `false`    | Stack children in a column. Vertical layout always `nowrap` (n-flex semantics).                                                                   |
+| `gap`         | `number \| 'small' \| 'medium' \| 'large' \| [number, number]`                          | `'medium'` | Gap between children. Tuple is `[horizontal, vertical]` px → `column-gap` / `row-gap`. Invalid values fall back to medium.                        |
+| `wrap`        | `boolean`                                                                               | `true`     | Allow horizontal children to wrap. `vertical` forces `nowrap` regardless.                                                                         |
+| `justify`     | `'start' \| 'end' \| 'center' \| 'space-around' \| 'space-between' \| 'space-evenly'`   | `'start'`  | Main-axis distribution, passed through as-is (n-flex does NOT normalize `'start'`/`'end'` to `flex-*` — both are valid CSS Box Alignment values). |
+| `align`       | `'stretch' \| 'baseline' \| 'start' \| 'end' \| 'center' \| 'flex-start' \| 'flex-end'` | —          | Cross-axis alignment. Unset → CSS `normal` (no `align-items` emitted).                                                                            |
+| `inline`      | `boolean`                                                                               | `false`    | Render as `inline-flex`.                                                                                                                          |
+| `expand`      | `boolean`                                                                               | `false`    | **Snail extension** (n-flex main has no such prop): direct children get `flex: 1 1 auto` so they grow to fill the free main-axis space.           |
+| `customClass` | `string`                                                                                | `''`       | Extra class appended to the container (snail extension).                                                                                          |
+| `customStyle` | `string \| Record<string, string>`                                                      | `''`       | Inline style appended to the container (snail extension).                                                                                         |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                                      |
+| --------- | ------------------------------------------------ |
 | `default` | Direct children are flex items of the container. |
 
 ## §112 future markers

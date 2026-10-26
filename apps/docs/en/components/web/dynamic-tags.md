@@ -26,15 +26,15 @@ Dynamic tags. Tag list + inline add input; Enter commits / Esc cancels / blur su
 
 ### SnDynamicTags Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `Array<string \| number>` | `[]` | v-model; emits a fresh array |
-| closable | `boolean` | `true` | Tags removable |
-| disabled / readonly | `boolean` | `false` | Disabled / read-only |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | Size |
-| max | `number` | — | Cap (hides add at limit) |
-| trigger | `'click'\|'focus'` | `'click'` | How the input opens |
-| placeholder | `string` | — | Inline input placeholder |
+| Prop                | Type                         | Default    | Notes                        |
+| ------------------- | ---------------------------- | ---------- | ---------------------------- |
+| modelValue          | `Array<string \| number>`    | `[]`       | v-model; emits a fresh array |
+| closable            | `boolean`                    | `true`     | Tags removable               |
+| disabled / readonly | `boolean`                    | `false`    | Disabled / read-only         |
+| size                | `'small'\|'medium'\|'large'` | `'medium'` | Size                         |
+| max                 | `number`                     | —          | Cap (hides add at limit)     |
+| trigger             | `'click'\|'focus'`           | `'click'`  | How the input opens          |
+| placeholder         | `string`                     | —          | Inline input placeholder     |
 
 Events: `update:modelValue` / `change` / `add` / `remove` / `click` (on tag); Slots: `input` / `tag` (scoped `{ label, index }`) / `trigger` / `empty`.
 

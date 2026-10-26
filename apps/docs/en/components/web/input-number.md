@@ -30,20 +30,20 @@ Numeric input with steppers (press-and-hold), bounds clamp, precision, stepStric
 
 ### SnInputNumber Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `number \| null` | `null` | v-model (empty is null) |
-| min / max | `number` | — | Bounds clamp |
-| step | `number` | `1` | Step |
-| precision | `number` | — | Decimals |
-| stepStrictly | `boolean` | `false` | Snap to step grid |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size |
-| showButton | `boolean` | `true` | Show steppers |
-| buttonPlacement | `'both'\|'right'` | `'both'` | Stepper placement |
-| clearable | `boolean` | `false` | Clear button |
-| format | `(value: number) => string` | — | Display format |
-| parse | `(text: string) => number \| null` | — | Parse |
-| validator | `(value: number) => boolean` | — | Pre-commit validator (reject keeps old value) |
+| Prop            | Type                                         | Default    | Notes                                         |
+| --------------- | -------------------------------------------- | ---------- | --------------------------------------------- |
+| modelValue      | `number \| null`                             | `null`     | v-model (empty is null)                       |
+| min / max       | `number`                                     | —          | Bounds clamp                                  |
+| step            | `number`                                     | `1`        | Step                                          |
+| precision       | `number`                                     | —          | Decimals                                      |
+| stepStrictly    | `boolean`                                    | `false`    | Snap to step grid                             |
+| size            | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size                                          |
+| showButton      | `boolean`                                    | `true`     | Show steppers                                 |
+| buttonPlacement | `'both'\|'right'`                            | `'both'`   | Stepper placement                             |
+| clearable       | `boolean`                                    | `false`    | Clear button                                  |
+| format          | `(value: number) => string`                  | —          | Display format                                |
+| parse           | `(text: string) => number \| null`           | —          | Parse                                         |
+| validator       | `(value: number) => boolean`                 | —          | Pre-commit validator (reject keeps old value) |
 
 `role="spinbutton"`; ArrowUp/Down, PageUp/Down (×10), Home/End to bounds.
 

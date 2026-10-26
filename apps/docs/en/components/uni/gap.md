@@ -33,18 +33,18 @@ A string `height` is forwarded verbatim, so `24rpx` keeps the mobile rhythm; `cu
 For an explicit import:
 
 ```ts
-import { SnGap } from '@snui/uni/components/sn-gap/sn-gap.vue'
+import { SnGap } from '@snui/uni/components/sn-gap/sn-gap.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `height` | `string \| number` | `14` | Spacer height; a number is px, a string is used verbatim |
-| `bgColor` | `string` | `'transparent'` | Background colour; `transparent` writes no inline background |
-| `safeAreaBottom` | `boolean` | `false` | Add the bottom safe-area inset |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop             | Type               | Default         | Description                                                  |
+| ---------------- | ------------------ | --------------- | ------------------------------------------------------------ |
+| `height`         | `string \| number` | `14`            | Spacer height; a number is px, a string is used verbatim     |
+| `bgColor`        | `string`           | `'transparent'` | Background colour; `transparent` writes no inline background |
+| `safeAreaBottom` | `boolean`          | `false`         | Add the bottom safe-area inset                               |
+| `customClass`    | `string`           | `''`            | Extra class on the root node                                 |
+| `customStyle`    | `string`           | `''`            | Inline style on the root node                                |
 
 ## Events
 
@@ -76,7 +76,6 @@ One caveat: passing a light literal to `bgColor` (for example `#f4f4f5`) keeps t
 ```
 
 Verify the default transparent spacer with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

@@ -28,27 +28,27 @@ ease-out (`1 - (1 - t)³`); `false` runs linear.
 ```
 
 ```ts
-import { SnCountTo } from '@snui/uni'
+import { SnCountTo } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `color` | string | '' | no | Text color override. |
-| `type` | 'default' | 'primary' | 'success' | 'warning' | 'error' | 'default' | no | Semantic text theme. |
-| `startVal` | number | 0 | no | Start value. |
-| `endVal` | number | 2024 | no | End value. |
-| `duration` | number | 3000 | no | Tween duration in ms. |
-| `autoStart` | boolean | true | no | Start on mount / on value change. |
-| `decimals` | number | 0 | no | Decimal places to keep. |
-| `decimal` | string | '.' | no | Decimal separator character. |
-| `separator` | string | ',' | no | Thousands separator character. |
-| `prefix` | string | '' | no | Text before the number. |
-| `suffix` | string | '' | no | Text after the number. |
-| `useEasing` | boolean | true | no | Cubic ease-out instead of a linear ramp. |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name          | Type      | Default   | Required  | Description                              |
+| ------------- | --------- | --------- | --------- | ---------------------------------------- |
+| `color`       | string    | ''        | no        | Text color override.                     |
+| `type`        | 'default' | 'primary' | 'success' | 'warning'                                | 'error' | 'default' | no  | Semantic text theme. |
+| `startVal`    | number    | 0         | no        | Start value.                             |
+| `endVal`      | number    | 2024      | no        | End value.                               |
+| `duration`    | number    | 3000      | no        | Tween duration in ms.                    |
+| `autoStart`   | boolean   | true      | no        | Start on mount / on value change.        |
+| `decimals`    | number    | 0         | no        | Decimal places to keep.                  |
+| `decimal`     | string    | '.'       | no        | Decimal separator character.             |
+| `separator`   | string    | ','       | no        | Thousands separator character.           |
+| `prefix`      | string    | ''        | no        | Text before the number.                  |
+| `suffix`      | string    | ''        | no        | Text after the number.                   |
+| `useEasing`   | boolean   | true      | no        | Cubic ease-out instead of a linear ramp. |
+| `customClass` | string    | ''        | no        | Custom class for the root node.          |
+| `customStyle` | string    | ''        | no        | Custom inline style for the root node.   |
 
 ## Exposed methods
 
@@ -56,10 +56,10 @@ import { SnCountTo } from '@snui/uni'
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `mounted` | — | Component mounted (parity with the reference). |
-| `finish` | — | Tween reached `endVal`. |
+| Event     | Payload | Description                                    |
+| --------- | ------- | ---------------------------------------------- |
+| `mounted` | —       | Component mounted (parity with the reference). |
+| `finish`  | —       | Tween reached `endVal`.                        |
 
 ## Slots
 
@@ -67,13 +67,13 @@ None.
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-mp-color-text-primary` | `type="default"` text |
-| Action primary | `--sn-mp-color-action-primary` | `type="primary"` text |
+| Token                               | CSS Variable                       | Purpose                                     |
+| ----------------------------------- | ---------------------------------- | ------------------------------------------- |
+| Text primary                        | `--sn-mp-color-text-primary`       | `type="default"` text                       |
+| Action primary                      | `--sn-mp-color-action-primary`     | `type="primary"` text                       |
 | Feedback success / warning / danger | `--sn-mp-color-feedback-success …` | `type="success"` / `warning` / `error` text |
-| Font size MD | `--sn-mp-font-size-md` | Text size |
-| Line height normal | `--sn-mp-font-line-height-normal` | Text line height |
+| Font size MD                        | `--sn-mp-font-size-md`             | Text size                                   |
+| Line height normal                  | `--sn-mp-font-line-height-normal`  | Text line height                            |
 
 ## Accessibility
 

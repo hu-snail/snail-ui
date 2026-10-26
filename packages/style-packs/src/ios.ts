@@ -1,4 +1,4 @@
-import type { StylePackDefinition } from './types.js'
+import type { StylePackDefinition } from './types.js';
 
 /**
  * ios Pack — Apple Human Interface Guidelines.
@@ -34,6 +34,6 @@ export const iosPack: StylePackDefinition = {
       card: { radius: '16px', shadow: 'none' },
     },
   },
-}
+};
 
-export default iosPack
+export default iosPack;

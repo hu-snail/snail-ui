@@ -14,7 +14,6 @@ Per AGENTS.md §112, the API surface mirrors wot-ui `wd-sort-button`
 (https://wot-ui.cn/component/sort-button.html). New props added here MUST also be
 added to the parity list.
 
-
 ## Import
 
 ```vue
@@ -23,46 +22,41 @@ added to the parity list.
 ```
 
 ```ts
-import SnSortButton from '@snui/uni-src/components/sn-sort-button/sn-sort-button.vue'
+import SnSortButton from '@snui/uni-src/components/sn-sort-button/sn-sort-button.vue';
 ```
-
 
 ## Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `1 \| 0 \| -1` | `0` | Current direction. |
-| `title` | `string` | `''` | Button label. |
-| `allowReset` | `boolean` | `false` | Include the reset state in the cycle. |
-| `descFirst` | `boolean` | `false` | Cycle to descending first. |
-| `line` | `boolean` | `false` | Render an underline. |
-| `customClass` / `customStyle` | `string` | `''` | Root forwarding. |
-
+| Name                          | Type           | Default | Description                           |
+| ----------------------------- | -------------- | ------- | ------------------------------------- |
+| `modelValue`                  | `1 \| 0 \| -1` | `0`     | Current direction.                    |
+| `title`                       | `string`       | `''`    | Button label.                         |
+| `allowReset`                  | `boolean`      | `false` | Include the reset state in the cycle. |
+| `descFirst`                   | `boolean`      | `false` | Cycle to descending first.            |
+| `line`                        | `boolean`      | `false` | Render an underline.                  |
+| `customClass` / `customStyle` | `string`       | `''`    | Root forwarding.                      |
 
 ## Events
 
-| Name | Payload | When |
-| --- | --- | --- |
-| `update:modelValue` | `(value: 1 \| 0 \| -1)` | Direction changed. |
-| `change` | `{ value }` | Direction changed (same tick). |
-
+| Name                | Payload                 | When                           |
+| ------------------- | ----------------------- | ------------------------------ |
+| `update:modelValue` | `(value: 1 \| 0 \| -1)` | Direction changed.             |
+| `change`            | `{ value }`             | Direction changed (same tick). |
 
 ## Tokens Consumed (end: mp)
 
-| Token | Purpose |
-| --- | --- |
-| `--sn-mp-color-text-secondary` | Idle label |
-| `--sn-mp-color-text-tertiary` | Idle arrow |
+| Token                          | Purpose                          |
+| ------------------------------ | -------------------------------- |
+| `--sn-mp-color-text-secondary` | Idle label                       |
+| `--sn-mp-color-text-tertiary`  | Idle arrow                       |
 | `--sn-mp-color-action-primary` | Active label / arrow / underline |
-| `--sn-mp-color-border-default` | `line` underline |
-| `--sn-mp-radius-md` | Corners |
-| `--sn-mp-font-size-md` | Label size |
-
+| `--sn-mp-color-border-default` | `line` underline                 |
+| `--sn-mp-radius-md`            | Corners                          |
+| `--sn-mp-font-size-md`         | Label size                       |
 
 ## Accessibility
 
 - Root is `role="button"` with `aria-sort` mapped to `ascending` / `descending` / `none` and a focusable `tabindex="0"`.
-
 
 ## Versioning
 

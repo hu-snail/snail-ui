@@ -8,17 +8,15 @@
  * by default. The Menu 3 leaf in Navigation 1 is `disabled: true` — it
  * renders greyed-out and emits nothing on click.
  */
-import { ref } from 'vue'
-import { markRaw } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import type { SnMenuOption } from '@snui/vue-web'
-import {
-  LayoutGrid, Sun, Lightbulb,
-} from 'lucide-vue-next'
+import { ref } from 'vue';
+import { markRaw } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import type { SnMenuOption } from '@snui/vue-web';
+import { LayoutGrid, Sun, Lightbulb } from 'lucide-vue-next';
 
-const active = ref<string | number | null>('m1-2')
-const expanded = ref<Array<string | number>>(['n1', 'n2'])
-const collapsed = ref(false)
+const active = ref<string | number | null>('m1-2');
+const expanded = ref<Array<string | number>>(['n1', 'n2']);
+const collapsed = ref(false);
 
 const items: SnMenuOption[] = [
   { key: 'm-top', label: 'Menu 1' },
@@ -47,7 +45,7 @@ const items: SnMenuOption[] = [
     label: 'Navigation 3',
     icon: markRaw(Lightbulb),
   },
-]
+];
 </script>
 
 <template>
@@ -62,7 +60,8 @@ const items: SnMenuOption[] = [
       />
     </div>
     <p class="sn-menu-inline-submenu-demo__hint">
-      菜单内可以嵌入多个子项，通过 <code>defaultExpandedKeys</code>（文档中常称 <code>openKeys</code>）可以设置默认打开的子项。
+      菜单内可以嵌入多个子项，通过 <code>defaultExpandedKeys</code>（文档中常称
+      <code>openKeys</code>）可以设置默认打开的子项。
     </p>
     <div class="sn-menu-inline-submenu-demo__controls">
       <button
@@ -73,7 +72,9 @@ const items: SnMenuOption[] = [
         <span aria-hidden="true">≡</span>
       </button>
       <span class="sn-menu-inline-submenu-demo__state">
-        折叠：<code>{{ collapsed ? '是' : '否' }}</code> · 展开：<code>{{ expanded.join(', ') }}</code>
+        折叠：<code>{{ collapsed ? '是' : '否' }}</code> · 展开：<code>{{
+          expanded.join(', ')
+        }}</code>
       </span>
     </div>
   </div>

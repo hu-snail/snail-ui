@@ -18,41 +18,41 @@ here MUST also be added to the n-menu parity list.
 ## Import
 
 ```ts
-import { SnMenu, type SnMenuOption } from '@snui/vue-web'
+import { SnMenu, type SnMenuOption } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `mode` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction. |
-| `options` | `SnMenuOption[]` | `[]` | Menu tree. Each node: `{ key, label, children?, disabled?, href?, icon? }`. |
-| `value` | `string \| number \| null` | `null` | Selected key (controlled). |
-| `defaultValue` | `string \| number \| null` | `null` | Initial selected key. |
-| `expandedKeys` | `Array<string \| number>` | `[]` | Expanded group keys (controlled, vertical mode). |
-| `defaultExpandedKeys` | `Array<string \| number>` | `[]` | Initial expanded group keys. |
-| `defaultExpandAll` | `boolean` | `false` | Expand every group on first render. |
-| `accordion` | `boolean` | `false` | Restrict to a single expanded top-level group. |
-| `indent` | `number` | `32` | Indent per level in px (vertical mode). |
+| Name                  | Type                         | Default      | Description                                                                 |
+| --------------------- | ---------------------------- | ------------ | --------------------------------------------------------------------------- |
+| `mode`                | `'vertical' \| 'horizontal'` | `'vertical'` | Layout direction.                                                           |
+| `options`             | `SnMenuOption[]`             | `[]`         | Menu tree. Each node: `{ key, label, children?, disabled?, href?, icon? }`. |
+| `value`               | `string \| number \| null`   | `null`       | Selected key (controlled).                                                  |
+| `defaultValue`        | `string \| number \| null`   | `null`       | Initial selected key.                                                       |
+| `expandedKeys`        | `Array<string \| number>`    | `[]`         | Expanded group keys (controlled, vertical mode).                            |
+| `defaultExpandedKeys` | `Array<string \| number>`    | `[]`         | Initial expanded group keys.                                                |
+| `defaultExpandAll`    | `boolean`                    | `false`      | Expand every group on first render.                                         |
+| `accordion`           | `boolean`                    | `false`      | Restrict to a single expanded top-level group.                              |
+| `indent`              | `number`                     | `32`         | Indent per level in px (vertical mode).                                     |
 
 ## Events
 
-| Event | Payload | When |
-|---|---|---|
-| `update:value` | `(key: string \| number \| null)` | Leaf item clicked / `v-model:value` sync. |
+| Event                 | Payload                           | When                                          |
+| --------------------- | --------------------------------- | --------------------------------------------- |
+| `update:value`        | `(key: string \| number \| null)` | Leaf item clicked / `v-model:value` sync.     |
 | `update:expandedKeys` | `(keys: Array<string \| number>)` | Group toggled / `v-model:expanded-keys` sync. |
-| `select` | `(key, item: SnMenuOption)` | Mirrors n-menu `onSelect` callback. |
+| `select`              | `(key, item: SnMenuOption)`       | Mirrors n-menu `onSelect` callback.           |
 
 ## SnMenuOption
 
 ```ts
 interface SnMenuOption {
-  key: string | number
-  label: string
-  children?: SnMenuOption[]
-  disabled?: boolean
-  href?: string      // When set, renders as <a> instead of <button>
-  icon?: Component   // Sn* icon component or generic Vue component
+  key: string | number;
+  label: string;
+  children?: SnMenuOption[];
+  disabled?: boolean;
+  href?: string; // When set, renders as <a> instead of <button>
+  icon?: Component; // Sn* icon component or generic Vue component
 }
 ```
 
@@ -79,10 +79,10 @@ n-menu parity list can be updated when a consumer needs them:
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Default item color |
-| Action primary | `--sn-web-color-action-primary` | Active item background |
+| Token           | CSS Variable                     | Purpose                |
+| --------------- | -------------------------------- | ---------------------- |
+| Text primary    | `--sn-web-color-text-primary`    | Default item color     |
+| Action primary  | `--sn-web-color-action-primary`  | Active item background |
 | Text on primary | `--sn-web-color-text-on-primary` | Active item text color |
 
 ## Accessibility

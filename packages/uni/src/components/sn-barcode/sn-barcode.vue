@@ -19,33 +19,38 @@
  * Not responsible for: 扫码识别、图片导出（宿主可对渲染结果截图）。
  */
 
-import { computed, ref, watch } from 'vue'
-import { encodeEan13, type SnBarcodeEncoded, type SnBarcodeEncodeError, type SnBarcodeFormat } from './sn-barcode-types'
+import { computed, ref, watch } from 'vue';
+import {
+  encodeEan13,
+  type SnBarcodeEncoded,
+  type SnBarcodeEncodeError,
+  type SnBarcodeFormat,
+} from './sn-barcode-types';
 
-defineOptions({ name: 'SnBarcode' })
+defineOptions({ name: 'SnBarcode' });
 
 const props = withDefaults(
   defineProps<{
     /** 条码内容（EAN-13：12 位自动补校验位，13 位会校验）。 */
-    text?: string
+    text?: string;
     /** 条码格式。当前实现 `EAN13`。 */
-    format?: SnBarcodeFormat
+    format?: SnBarcodeFormat;
     /** 是否在条码旁显示文本。 */
-    showText?: boolean
+    showText?: boolean;
     /** 文本位置。 */
-    textPosition?: 'bottom' | 'top'
+    textPosition?: 'bottom' | 'top';
     /** 条的颜色。 */
-    lineColor?: string
+    lineColor?: string;
     /** 单模块宽度（px）。 */
-    moduleWidth?: number
+    moduleWidth?: number;
     /** 条区高度（rpx / px 长度字符串）。 */
-    height?: string
+    height?: string;
     /** 文本字号（rpx / px 长度字符串）。 */
-    fontSize?: string
+    fontSize?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     text: '',
@@ -59,53 +64,63 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'error', error: SnBarcodeEncodeError): void
-  (e: 'rendered', encoded: SnBarcodeEncoded): void
-}>()
+  (e: 'error', error: SnBarcodeEncodeError): void;
+  (e: 'rendered', encoded: SnBarcodeEncoded): void;
+}>();
 
-const encoded = ref<SnBarcodeEncoded | null>(null)
-const failure = ref<SnBarcodeEncodeError | null>(null)
+const encoded = ref<SnBarcodeEncoded | null>(null);
+const failure = ref<SnBarcodeEncodeError | null>(null);
 
 watch(
   () => [props.text, props.format] as const,
   () => {
     if (props.format !== 'EAN13') {
-      encoded.value = null
-      failure.value = { code: 'BARCODE_FORMAT_UNSUPPORTED', message: `暂未实现格式 ${props.format}，当前支持 EAN13` }
-      emit('error', failure.value)
-      return
+      encoded.value = null;
+      failure.value = {
+        code: 'BARCODE_FORMAT_UNSUPPORTED',
+        message: `暂未实现格式 ${props.format}，当前支持 EAN13`,
+      };
+      emit('error', failure.value);
+      return;
     }
-    const result = encodeEan13(props.text)
-    encoded.value = result.encoded ?? null
-    failure.value = result.error ?? null
-    if (result.error !== undefined) emit('error', result.error)
-    if (result.encoded !== undefined) emit('rendered', result.encoded)
+    const result = encodeEan13(props.text);
+    encoded.value = result.encoded ?? null;
+    failure.value = result.error ?? null;
+    if (result.error !== undefined) emit('error', result.error);
+    if (result.encoded !== undefined) emit('rendered', result.encoded);
   },
   { immediate: true },
-)
+);
 
-const rootClass = computed(() => ['sn-barcode', props.customClass])
+const rootClass = computed(() => ['sn-barcode', props.customClass]);
 const rootStyle = computed(() => {
-  const parts = [] as string[]
-  if (props.customStyle !== '') parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [] as string[];
+  if (props.customStyle !== '') parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 const barStyle = computed(() => (bar: boolean): string => {
-  const parts = [`width: ${Math.max(1, Math.round(props.moduleWidth))}px`, `height: ${props.height}`]
-  if (bar) parts.push(`background-color: ${props.lineColor}`)
-  return parts.join('; ')
-})
+  const parts = [
+    `width: ${Math.max(1, Math.round(props.moduleWidth))}px`,
+    `height: ${props.height}`,
+  ];
+  if (bar) parts.push(`background-color: ${props.lineColor}`);
+  return parts.join('; ');
+});
 
-const textStyle = computed(() => `font-size: ${props.fontSize}; color: ${props.lineColor}`)
+const textStyle = computed(() => `font-size: ${props.fontSize}; color: ${props.lineColor}`);
 </script>
 
 <template>
   <view :class="rootClass" :style="rootStyle" role="img" aria-label="barcode">
-    <text v-if="showText && textPosition === 'top' && encoded !== null" class="sn-barcode__text" :style="textStyle">
+    <text
+      v-if="showText && textPosition === 'top' && encoded !== null"
+      class="sn-barcode__text"
+      :style="textStyle"
+    >
       {{ encoded.displayText }}
     </text>
 
@@ -116,7 +131,11 @@ const textStyle = computed(() => `font-size: ${props.fontSize}; color: ${props.l
       <text class="sn-barcode__empty-text">{{ failure?.message ?? '' }}</text>
     </view>
 
-    <text v-if="showText && textPosition === 'bottom' && encoded !== null" class="sn-barcode__text" :style="textStyle">
+    <text
+      v-if="showText && textPosition === 'bottom' && encoded !== null"
+      class="sn-barcode__text"
+      :style="textStyle"
+    >
       {{ encoded.displayText }}
     </text>
   </view>

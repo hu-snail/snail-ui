@@ -37,43 +37,43 @@
  *     @update:show="show = $event" />
  */
 
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { X } from 'lucide-vue-next'
-import SnIcon from '../icon/SnIcon.vue'
-import SnVideoControls from './SnVideoControls.vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { X } from 'lucide-vue-next';
+import SnIcon from '../icon/SnIcon.vue';
+import SnVideoControls from './SnVideoControls.vue';
 
-defineOptions({ name: 'SnVideoPreviewOverlay' })
+defineOptions({ name: 'SnVideoPreviewOverlay' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Video url shown in the overlay. */
-    src?: string | undefined
+    src?: string | undefined;
     /** Poster shown before the overlay video starts. */
-    poster?: string | undefined
+    poster?: string | undefined;
     /** Header text and accessible name of the dialog. */
-    title?: string | undefined
+    title?: string | undefined;
     /** Controlled visibility; `undefined` falls back to uncontrolled state. */
-    show?: boolean | undefined
+    show?: boolean | undefined;
     /** Initial visibility for uncontrolled usage. */
-    defaultShow?: boolean
+    defaultShow?: boolean;
     /** Close when the mask is clicked. */
-    closeOnMaskClick?: boolean | undefined
+    closeOnMaskClick?: boolean | undefined;
     /** Render OUR custom, beautified control bar (never the native one). */
-    controls?: boolean | undefined
+    controls?: boolean | undefined;
     /** Render the browser's own `controls` attribute (unstylable, UA-drawn). */
-    nativeControls?: boolean | undefined
+    nativeControls?: boolean | undefined;
     /** Start playing as soon as the overlay mounts. */
-    autoplay?: boolean | undefined
+    autoplay?: boolean | undefined;
     /** Loop the overlay video. */
-    loop?: boolean | undefined
+    loop?: boolean | undefined;
     /** Mute the overlay video. */
-    muted?: boolean | undefined
+    muted?: boolean | undefined;
     /** Preload strategy of the overlay video. */
-    preload?: 'none' | 'metadata' | 'auto' | undefined
+    preload?: 'none' | 'metadata' | 'auto' | undefined;
   }>(),
   {
     src: undefined,
@@ -89,162 +89,162 @@ const props = withDefaults(
     muted: false,
     preload: 'metadata',
   },
-)
+);
 
 const emit = defineEmits<{
   /** Visibility change (close via mask / Esc / close button). */
-  (e: 'update:show', value: boolean): void
+  (e: 'update:show', value: boolean): void;
   /** Overlay closed. */
-  (e: 'close'): void
-}>()
+  (e: 'close'): void;
+}>();
 
 /* ── Visibility (controlled / uncontrolled) ─────────────────────────────── */
 
-const uncontrolledShow = ref(props.defaultShow)
-const mergedShow = computed(() => (props.show !== undefined ? props.show : uncontrolledShow.value))
+const uncontrolledShow = ref(props.defaultShow);
+const mergedShow = computed(() => (props.show !== undefined ? props.show : uncontrolledShow.value));
 
-const videoRef = ref<HTMLVideoElement | null>(null)
-const closeButtonRef = ref<HTMLButtonElement | null>(null)
+const videoRef = ref<HTMLVideoElement | null>(null);
+const closeButtonRef = ref<HTMLButtonElement | null>(null);
 
-const dialogLabel = computed(() => props.title || '视频预览')
+const dialogLabel = computed(() => props.title || '视频预览');
 
 function doUpdateShow(value: boolean): void {
-  uncontrolledShow.value = value
-  emit('update:show', value)
+  uncontrolledShow.value = value;
+  emit('update:show', value);
 }
 
 function close(): void {
-  if (!mergedShow.value) return
-  emit('close')
-  doUpdateShow(false)
+  if (!mergedShow.value) return;
+  emit('close');
+  doUpdateShow(false);
 }
 
 /* ── Playback state fed to the shared control bar ───────────────────────── */
 
-const isPlaying = ref(false)
-const currentTime = ref(0)
-const duration = ref(0)
-const isMutedState = ref(props.muted)
-const isFullscreen = ref(false)
+const isPlaying = ref(false);
+const currentTime = ref(0);
+const duration = ref(0);
+const isMutedState = ref(props.muted);
+const isFullscreen = ref(false);
 /** Feature detection: absent in happy-dom and in some embedded WebViews. */
-const canFullscreen = ref(false)
+const canFullscreen = ref(false);
 
 /** Autoplay is only allowed for muted media — same rule as the inline box. */
-const isAutoplay = computed(() => props.autoplay)
+const isAutoplay = computed(() => props.autoplay);
 
 watch(
   () => props.muted,
   (value) => {
-    isMutedState.value = value
+    isMutedState.value = value;
   },
-)
+);
 
 watch(isAutoplay, (value) => {
-  if (value) isMutedState.value = true
-})
+  if (value) isMutedState.value = true;
+});
 
 /* ── Media helpers (every call is guarded: happy-dom has no media engine) ── */
 
 function pauseVideo(): void {
-  const el = videoRef.value
-  if (el && typeof el.pause === 'function') el.pause()
-  isPlaying.value = false
+  const el = videoRef.value;
+  if (el && typeof el.pause === 'function') el.pause();
+  isPlaying.value = false;
 }
 
 function attemptPlay(): void {
-  const el = videoRef.value
-  if (!el || typeof el.play !== 'function') return
-  isPlaying.value = true
-  const result: unknown = el.play()
+  const el = videoRef.value;
+  if (!el || typeof el.play !== 'function') return;
+  isPlaying.value = true;
+  const result: unknown = el.play();
   if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
     void (result as Promise<unknown>).catch(() => {
       // Autoplay refused by policy — stay paused on the poster.
-      isPlaying.value = false
-    })
+      isPlaying.value = false;
+    });
   }
 }
 
 function togglePlay(): void {
-  if (isPlaying.value) pauseVideo()
-  else attemptPlay()
+  if (isPlaying.value) pauseVideo();
+  else attemptPlay();
 }
 
 function syncMutedStateFromElement(): void {
-  const el = videoRef.value
-  if (el) isMutedState.value = el.muted
+  const el = videoRef.value;
+  if (el) isMutedState.value = el.muted;
 }
 
 /** Drop the media resource so no decoder/buffer outlives the overlay (§41). */
 function resetVideoSource(): void {
-  const el = videoRef.value
-  if (!el) return
-  pauseVideo()
-  el.removeAttribute('src')
-  if (typeof el.load === 'function') el.load()
+  const el = videoRef.value;
+  if (!el) return;
+  pauseVideo();
+  el.removeAttribute('src');
+  if (typeof el.load === 'function') el.load();
 }
 
 /* ── Bar bridge (bar → media element) ───────────────────────────────────── */
 
 function handleBarTogglePlay(): void {
-  togglePlay()
+  togglePlay();
 }
 
 function handleBarToggleMute(): void {
-  const el = videoRef.value
-  const next = !isMutedState.value
-  if (el) el.muted = next
-  isMutedState.value = el ? el.muted : next
+  const el = videoRef.value;
+  const next = !isMutedState.value;
+  if (el) el.muted = next;
+  isMutedState.value = el ? el.muted : next;
 }
 
 function handleBarSeek(time: number): void {
-  const el = videoRef.value
-  if (!el) return
-  el.currentTime = time
-  currentTime.value = time
+  const el = videoRef.value;
+  if (!el) return;
+  el.currentTime = time;
+  currentTime.value = time;
 }
 
 /* ── Element listeners (§41: every one is removed on unmount) ───────────── */
 
-const MEDIA_EVENTS = ['timeupdate', 'loadedmetadata', 'durationchange', 'volumechange'] as const
+const MEDIA_EVENTS = ['timeupdate', 'loadedmetadata', 'durationchange', 'volumechange'] as const;
 const mediaListeners: Record<(typeof MEDIA_EVENTS)[number], () => void> = {
   timeupdate: () => {
-    const el = videoRef.value
-    if (el) currentTime.value = el.currentTime
+    const el = videoRef.value;
+    if (el) currentTime.value = el.currentTime;
   },
   loadedmetadata: () => {
-    const el = videoRef.value
-    if (el) duration.value = el.duration
+    const el = videoRef.value;
+    if (el) duration.value = el.duration;
   },
   durationchange: () => {
-    const el = videoRef.value
-    if (el && Number.isFinite(el.duration)) duration.value = el.duration
+    const el = videoRef.value;
+    if (el && Number.isFinite(el.duration)) duration.value = el.duration;
   },
   volumechange: () => {
-    syncMutedStateFromElement()
+    syncMutedStateFromElement();
   },
-}
+};
 
-let listenedVideo: HTMLVideoElement | null = null
+let listenedVideo: HTMLVideoElement | null = null;
 
 function attachVideoListeners(): void {
-  const el = videoRef.value
-  if (!el) return
-  for (const name of MEDIA_EVENTS) el.addEventListener(name, mediaListeners[name])
-  listenedVideo = el
+  const el = videoRef.value;
+  if (!el) return;
+  for (const name of MEDIA_EVENTS) el.addEventListener(name, mediaListeners[name]);
+  listenedVideo = el;
 }
 
 function detachVideoListeners(): void {
-  const el = listenedVideo
-  if (!el) return
-  for (const name of MEDIA_EVENTS) el.removeEventListener(name, mediaListeners[name])
-  listenedVideo = null
+  const el = listenedVideo;
+  if (!el) return;
+  for (const name of MEDIA_EVENTS) el.removeEventListener(name, mediaListeners[name]);
+  listenedVideo = null;
 }
 
 function handleVideoClick(): void {
   // The custom bar owns play/pause; the native bar owns the rest. Only a
   // chrome-less player reacts to a click on the video body.
-  if (props.controls || props.nativeControls) return
-  togglePlay()
+  if (props.controls || props.nativeControls) return;
+  togglePlay();
 }
 
 /* ── Fullscreen (feature-detected; owns its own document listener) ──────── */
@@ -256,113 +256,113 @@ function handleVideoClick(): void {
  * button is worse than offering none.
  */
 function supportsFullscreen(el: HTMLVideoElement): boolean {
-  const request: unknown = (el as unknown as { requestFullscreen?: unknown }).requestFullscreen
-  const exit: unknown = (document as unknown as { exitFullscreen?: unknown }).exitFullscreen
+  const request: unknown = (el as unknown as { requestFullscreen?: unknown }).requestFullscreen;
+  const exit: unknown = (document as unknown as { exitFullscreen?: unknown }).exitFullscreen;
   return (
     typeof request === 'function' &&
     typeof exit === 'function' &&
     Object.prototype.hasOwnProperty.call(document, 'fullscreenElement')
-  )
+  );
 }
 
 function isVideoFullscreen(el: HTMLVideoElement | null): boolean {
-  if (!el) return false
-  return document.fullscreenElement === el
+  if (!el) return false;
+  return document.fullscreenElement === el;
 }
 
 function handleFullscreenChange(): void {
-  isFullscreen.value = isVideoFullscreen(videoRef.value)
+  isFullscreen.value = isVideoFullscreen(videoRef.value);
 }
 
 function toggleFullscreen(): void {
-  const el = videoRef.value
-  if (!el || !canFullscreen.value) return
-  const doc = document as unknown as { exitFullscreen: () => Promise<void> | void }
+  const el = videoRef.value;
+  if (!el || !canFullscreen.value) return;
+  const doc = document as unknown as { exitFullscreen: () => Promise<void> | void };
   if (isVideoFullscreen(el)) {
-    void doc.exitFullscreen()
-    return
+    void doc.exitFullscreen();
+    return;
   }
   const request = (el as unknown as { requestFullscreen: () => Promise<void> | void })
-    .requestFullscreen
-  const result: unknown = request.call(el)
+    .requestFullscreen;
+  const result: unknown = request.call(el);
   if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
     void (result as Promise<unknown>).catch(() => {
       // Rejected (permissions / gesture) — stay in the dialog.
-    })
+    });
   }
 }
 
 /* ── Keyboard + scroll lock while shown ─────────────────────────────────── */
 
 function handleKeydown(event: KeyboardEvent): void {
-  if (event.key === 'Escape') close()
+  if (event.key === 'Escape') close();
 }
 
-let memoizedHtmlOverflow: string | null = null
-let isScrollLocked = false
+let memoizedHtmlOverflow: string | null = null;
+let isScrollLocked = false;
 
 watch(mergedShow, (shown) => {
-  if (typeof document === 'undefined') return
-  if (shown) document.addEventListener('keydown', handleKeydown)
-  else document.removeEventListener('keydown', handleKeydown)
+  if (typeof document === 'undefined') return;
+  if (shown) document.addEventListener('keydown', handleKeydown);
+  else document.removeEventListener('keydown', handleKeydown);
 
   if (shown && !isScrollLocked) {
-    memoizedHtmlOverflow = document.documentElement.style.overflow
-    document.documentElement.style.overflow = 'hidden'
-    isScrollLocked = true
+    memoizedHtmlOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    isScrollLocked = true;
   } else if (!shown && isScrollLocked) {
-    document.documentElement.style.overflow = memoizedHtmlOverflow ?? ''
-    isScrollLocked = false
+    document.documentElement.style.overflow = memoizedHtmlOverflow ?? '';
+    isScrollLocked = false;
   }
 
   if (shown) {
     // Move focus into the dialog so Esc / Tab work without a prior click.
-    void nextTick(() => closeButtonRef.value?.focus())
+    void nextTick(() => closeButtonRef.value?.focus());
   } else {
-    pauseVideo()
+    pauseVideo();
   }
-})
+});
 
 onMounted(() => {
-  const el = videoRef.value
-  if (!el) return
-  canFullscreen.value = supportsFullscreen(el)
+  const el = videoRef.value;
+  if (!el) return;
+  canFullscreen.value = supportsFullscreen(el);
   // Autoplay+muted fallback: the attribute alone is not enough everywhere.
-  if (isAutoplay.value && el.muted !== isMutedState.value) el.muted = isMutedState.value
+  if (isAutoplay.value && el.muted !== isMutedState.value) el.muted = isMutedState.value;
   if (canFullscreen.value && typeof document !== 'undefined') {
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
   }
-  attachVideoListeners()
-})
+  attachVideoListeners();
+});
 
 onBeforeUnmount(() => {
   if (typeof document !== 'undefined') {
-    document.removeEventListener('keydown', handleKeydown)
-    document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    document.removeEventListener('keydown', handleKeydown);
+    document.removeEventListener('fullscreenchange', handleFullscreenChange);
     if (isScrollLocked) {
-      document.documentElement.style.overflow = memoizedHtmlOverflow ?? ''
-      isScrollLocked = false
+      document.documentElement.style.overflow = memoizedHtmlOverflow ?? '';
+      isScrollLocked = false;
     }
   }
-  detachVideoListeners()
-  resetVideoSource()
-})
+  detachVideoListeners();
+  resetVideoSource();
+});
 
 function handleMaskClick(): void {
-  if (props.closeOnMaskClick) close()
+  if (props.closeOnMaskClick) close();
 }
 
 function handleVideoPlay(): void {
-  isPlaying.value = true
-  syncMutedStateFromElement()
+  isPlaying.value = true;
+  syncMutedStateFromElement();
 }
 
 function handleVideoPause(): void {
-  isPlaying.value = false
+  isPlaying.value = false;
 }
 
 function handleVideoEnded(): void {
-  isPlaying.value = false
+  isPlaying.value = false;
 }
 </script>
 
@@ -446,7 +446,10 @@ function handleVideoEnded(): void {
 .sn-video-preview-overlay__mask {
   position: absolute;
   inset: 0;
-  background: var(--sn-web-video-preview-overlay-mask, var(--sn-web-color-background-overlay, #000000d1));
+  background: var(
+    --sn-web-video-preview-overlay-mask,
+    var(--sn-web-color-background-overlay, #000000d1)
+  );
   animation: sn-video-preview-overlay-fade-in 0.2s;
 }
 
@@ -466,7 +469,10 @@ function handleVideoEnded(): void {
   justify-content: space-between;
   gap: var(--sn-web-spacing-8, 8px);
   min-height: var(--sn-web-video-preview-overlay-header-height, 32px);
-  color: var(--sn-web-video-preview-overlay-title-color, var(--sn-web-color-text-on-primary, #ffffff));
+  color: var(
+    --sn-web-video-preview-overlay-title-color,
+    var(--sn-web-color-text-on-primary, #ffffff)
+  );
   font-size: var(--sn-web-font-size-md, 14px);
 }
 
@@ -492,7 +498,10 @@ function handleVideoEnded(): void {
 }
 
 .sn-video-preview-overlay__close:hover {
-  background: var(--sn-web-video-preview-overlay-close-bg-hover, var(--sn-web-color-background-elevated, #ffffff1f));
+  background: var(
+    --sn-web-video-preview-overlay-close-bg-hover,
+    var(--sn-web-color-background-elevated, #ffffff1f)
+  );
 }
 
 .sn-video-preview-overlay__close:focus-visible {
@@ -514,7 +523,8 @@ function handleVideoEnded(): void {
   display: block;
   max-width: calc(100vw - var(--sn-web-video-preview-overlay-gutter, 48px));
   max-height: calc(
-    100vh - var(--sn-web-video-preview-overlay-header-height, 32px) - var(--sn-web-video-preview-overlay-gutter, 48px)
+    100vh - var(--sn-web-video-preview-overlay-header-height, 32px) -
+      var(--sn-web-video-preview-overlay-gutter, 48px)
   );
   background: var(--sn-web-color-background-surface, #000000);
 }

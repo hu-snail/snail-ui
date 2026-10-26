@@ -2,15 +2,15 @@
 /**
  * tabs-web-display-directive — whether a hidden pane stays mounted.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs, SnButton } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs, SnButton } from '@snui/vue-web';
 
-const directive = ref<'if' | 'show'>('if')
-const active = ref('a')
-const mountCount = ref(0)
+const directive = ref<'if' | 'show'>('if');
+const active = ref('a');
+const mountCount = ref(0);
 
 function onPaneMount(): void {
-  mountCount.value += 1
+  mountCount.value += 1;
 }
 </script>
 
@@ -38,9 +38,7 @@ function onPaneMount(): void {
     </div>
 
     <SnTabs v-model:value="active" type="line">
-      <SnTabPane name="a" tab="面板 A" display-directive="show">
-        面板 A 的内容
-      </SnTabPane>
+      <SnTabPane name="a" tab="面板 A" display-directive="show"> 面板 A 的内容 </SnTabPane>
       <SnTabPane :name="'b'" tab="面板 B" :display-directive="directive">
         <span>面板 B 的内容（切换看挂载次数变化）</span>
       </SnTabPane>

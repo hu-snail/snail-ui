@@ -5,10 +5,10 @@
  * Shows: omitting `listen-to` entirely. The button walks up from its own
  * position to find the nearest scrollable ancestor, so no ref is needed.
  */
-import { ref } from 'vue'
-import { SnBackTop } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnBackTop } from '@snui/vue-web';
 
-const canvasRef = ref<HTMLElement | null>(null)
+const canvasRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>

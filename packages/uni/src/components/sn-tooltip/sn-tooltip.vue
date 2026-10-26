@@ -51,60 +51,68 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnTooltip' })
+defineOptions({ name: 'SnTooltip' });
 
 /** Bubble anchor. Mirrors `wd-tooltip` `placement` (12 directions). */
 type TooltipPlacement =
-  | 'top' | 'top-start' | 'top-end'
-  | 'bottom' | 'bottom-start' | 'bottom-end'
-  | 'left' | 'left-start' | 'left-end'
-  | 'right' | 'right-start' | 'right-end'
+  | 'top'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left'
+  | 'left-start'
+  | 'left-end'
+  | 'right'
+  | 'right-start'
+  | 'right-end';
 
 /**
  * Gap between trigger and bubble. `number` applies to both axes, `[x, y]`
  * sets them individually, `{ x, y }` sets either one.
  */
-type PopoverOffset = number | number[] | { x?: number, y?: number }
+type PopoverOffset = number | number[] | { x?: number; y?: number };
 
 /** One row of an array `content`. */
-type TooltipContentRow = Record<string, unknown> | string
+type TooltipContentRow = Record<string, unknown> | string;
 
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
-const ANIMATION_DURATION = 150
+const ANIMATION_DURATION = 150;
 
 const props = withDefaults(
   defineProps<{
     /** Whether the bubble is shown (v-model). */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** Bubble text; an array renders one line per entry. */
-    content?: string | TooltipContentRow[]
+    content?: string | TooltipContentRow[];
     /** Bubble anchor. */
-    placement?: TooltipPlacement
+    placement?: TooltipPlacement;
     /** Gap between trigger and bubble, in design px. */
-    offset?: PopoverOffset
+    offset?: PopoverOffset;
     /** Render the arrow pointing at the trigger. */
-    visibleArrow?: boolean
+    visibleArrow?: boolean;
     /** Disables the trigger — taps are ignored and the bubble stays closed. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Render a close button inside the bubble. */
-    showClose?: boolean
+    showClose?: boolean;
     /** Extra class on the arrow node. */
-    customArrow?: string
+    customArrow?: string;
     /** Extra class on the bubble node. */
-    customPop?: string
+    customPop?: string;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for `wd-tooltip` parity, NOT implemented — miniprogram has no
      * portal host, so the bubble cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: false,
@@ -120,88 +128,88 @@ const props = withDefaults(
     customStyle: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Trigger content (the element the bubble points at). */
-  default?(): unknown
+  default?(): unknown;
   /** Custom bubble body; replaces `content`. */
-  content?(): unknown
-}>()
+  content?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'open'): void
-  (e: 'close'): void
-  (e: 'change', payload: { show: boolean }): void
-}>()
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'open'): void;
+  (e: 'close'): void;
+  (e: 'change', payload: { show: boolean }): void;
+}>();
 
 /** Bubble node present in the tree (survives the leave leg). */
-const isMounted = ref(props.modelValue)
+const isMounted = ref(props.modelValue);
 /** Target visible state — drives the opacity transition. */
-const isShown = ref(props.modelValue)
+const isShown = ref(props.modelValue);
 
 /** Single pending transition timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 /** Guards against a stale leg finishing after a newer one started. */
-let generation = 0
+let generation = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 async function enter(): Promise<void> {
-  clearTimer()
-  const token = ++generation
-  isMounted.value = true
+  clearTimer();
+  const token = ++generation;
+  isMounted.value = true;
   // One tick so the hidden style is committed before the shown class lands,
   // otherwise both frames coalesce and the bubble pops in without fading.
-  await nextTick()
-  if (token !== generation) return
-  isShown.value = true
-  emit('open')
-  emit('change', { show: true })
+  await nextTick();
+  if (token !== generation) return;
+  isShown.value = true;
+  emit('open');
+  emit('change', { show: true });
 }
 
 function leave(): void {
-  clearTimer()
-  const token = ++generation
-  isShown.value = false
-  emit('close')
-  emit('change', { show: false })
+  clearTimer();
+  const token = ++generation;
+  isShown.value = false;
+  emit('close');
+  emit('change', { show: false });
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    isMounted.value = false
-  }, ANIMATION_DURATION)
+    timer = null;
+    if (token !== generation) return;
+    isMounted.value = false;
+  }, ANIMATION_DURATION);
 }
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (props.disabled) return
-    if (value) void enter()
-    else leave()
+    if (props.disabled) return;
+    if (value) void enter();
+    else leave();
   },
-)
+);
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Show the bubble and notify the consumer (controlled + uncontrolled). */
 function open(): void {
-  if (props.disabled) return
-  emit('update:modelValue', true)
+  if (props.disabled) return;
+  emit('update:modelValue', true);
   // A consumer that ignores `update:modelValue` still gets a working bubble.
-  if (!props.modelValue) void enter()
+  if (!props.modelValue) void enter();
 }
 
 /** Hide the bubble and notify the consumer. */
 function close(): void {
-  emit('update:modelValue', false)
-  if (props.modelValue) leave()
+  emit('update:modelValue', false);
+  if (props.modelValue) leave();
 }
 
 /** Compatibility no-op — see the header note (CSS-driven placement). */
@@ -209,39 +217,39 @@ function updatePosition(): void {
   // Intentionally empty: nothing is measured, so there is nothing to refresh.
 }
 
-defineExpose({ open, close, updatePosition })
+defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
-  if (props.disabled) return
-  if (props.modelValue) close()
-  else open()
+  if (props.disabled) return;
+  if (props.modelValue) close();
+  else open();
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
 /** Normalise `offset` into a `{ x, y }` pair of design px. */
-const offsetPair = computed<{ x: number, y: number }>(() => {
-  const value = props.offset
-  if (typeof value === 'number') return { x: value, y: value }
+const offsetPair = computed<{ x: number; y: number }>(() => {
+  const value = props.offset;
+  if (typeof value === 'number') return { x: value, y: value };
   if (Array.isArray(value)) {
-    const x = value[0]
-    const y = value[1]
-    return { x: typeof x === 'number' ? x : 0, y: typeof y === 'number' ? y : 0 }
+    const x = value[0];
+    const y = value[1];
+    return { x: typeof x === 'number' ? x : 0, y: typeof y === 'number' ? y : 0 };
   }
-  return { x: value.x ?? 0, y: value.y ?? 0 }
-})
+  return { x: value.x ?? 0, y: value.y ?? 0 };
+});
 
 /** Text lines for a `content` value. */
 const contentLines = computed<string[]>(() => {
-  if (typeof props.content === 'string') return props.content ? [props.content] : []
+  if (typeof props.content === 'string') return props.content ? [props.content] : [];
   return props.content
     .map((row) => {
-      if (typeof row === 'string') return row
-      const label = row.label ?? row.text ?? row.content ?? row.name
-      return typeof label === 'string' ? label : ''
+      if (typeof row === 'string') return row;
+      const label = row.label ?? row.text ?? row.content ?? row.name;
+      return typeof label === 'string' ? label : '';
     })
-    .filter((line) => line !== '')
-})
+    .filter((line) => line !== '');
+});
 
 const rootClass = computed(() => [
   'sn-tooltip',
@@ -251,25 +259,21 @@ const rootClass = computed(() => [
     'sn-tooltip--shown': isShown.value,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const { x, y } = offsetPair.value
-  const base = [`--sn-tooltip-offset-x: ${x}px`, `--sn-tooltip-offset-y: ${y}px`].join('; ')
-  return props.customStyle ? `${base}; ${props.customStyle}` : base
-})
+  const { x, y } = offsetPair.value;
+  const base = [`--sn-tooltip-offset-x: ${x}px`, `--sn-tooltip-offset-y: ${y}px`].join('; ');
+  return props.customStyle ? `${base}; ${props.customStyle}` : base;
+});
 
-const popClass = computed(() => ['sn-tooltip__pop', props.customPop])
+const popClass = computed(() => ['sn-tooltip__pop', props.customPop]);
 
-const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow])
+const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 </script>
 
 <template>
-  <view
-    data-snui-component="tooltip"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="tooltip" :class="rootClass" :style="rootStyle">
     <view
       class="sn-tooltip__trigger"
       role="button"

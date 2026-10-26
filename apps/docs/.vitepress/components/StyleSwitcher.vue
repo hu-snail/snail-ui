@@ -12,47 +12,47 @@
  * the docs site stays self-contained.
  */
 
-import { ref } from 'vue'
-import { allPacks } from '@snui/style-packs'
-import { snCssVars } from '@snui/tokens'
-import { ChevronRight, ChevronDown } from 'lucide-vue-next'
-import { SnIcon } from '@snui/vue-web'
+import { ref } from 'vue';
+import { allPacks } from '@snui/style-packs';
+import { snCssVars } from '@snui/tokens';
+import { ChevronRight, ChevronDown } from 'lucide-vue-next';
+import { SnIcon } from '@snui/vue-web';
 
-const activePack = ref<string>('default')
-const open = ref(false)
+const activePack = ref<string>('default');
+const open = ref(false);
 
 const PACKS = allPacks.map((p) => ({
   name: p.name,
   label: p.label,
   description: p.description ?? '',
-}))
+}));
 
 function applyPack(name: string): void {
-  activePack.value = name
-  const pack = allPacks.find((p) => p.name === name)
-  if (!pack) return
+  activePack.value = name;
+  const pack = allPacks.find((p) => p.name === name);
+  if (!pack) return;
   const css = snCssVars({
     theme: pack.theme,
     style: pack.style,
     density: pack.density,
-  })
+  });
   // Inject into <style id="snui-docs-pack"> in <head>.
-  let styleEl = document.getElementById('snui-docs-pack') as HTMLStyleElement | null
+  let styleEl = document.getElementById('snui-docs-pack') as HTMLStyleElement | null;
   if (!styleEl) {
-    styleEl = document.createElement('style')
-    styleEl.id = 'snui-docs-pack'
-    document.head.appendChild(styleEl)
+    styleEl = document.createElement('style');
+    styleEl.id = 'snui-docs-pack';
+    document.head.appendChild(styleEl);
   }
-  styleEl.textContent = css
+  styleEl.textContent = css;
 
   // Body class for any skin-CSS overlays (no official packs have skinCss yet,
   // but the hook is ready for doodle / sticky-note / douyin).
   document.body.classList.forEach((c) => {
-    if (c.startsWith('snui-skin-')) document.body.classList.remove(c)
-  })
-  if (name !== 'default') document.body.classList.add(`snui-skin-${name}`)
+    if (c.startsWith('snui-skin-')) document.body.classList.remove(c);
+  });
+  if (name !== 'default') document.body.classList.add(`snui-skin-${name}`);
 
-  open.value = false
+  open.value = false;
 }
 </script>
 
@@ -64,7 +64,10 @@ function applyPack(name: string): void {
       :aria-expanded="open"
       @click="open = !open"
     >
-      <span class="sn-style-switcher__dot" :style="{ background: 'var(--sn-color-action-primary)' }" />
+      <span
+        class="sn-style-switcher__dot"
+        :style="{ background: 'var(--sn-color-action-primary)' }"
+      />
       <span class="sn-style-switcher__label">{{ activePack }}</span>
       <span class="sn-style-switcher__chevron">
         <SnIcon :icon="open ? ChevronDown : ChevronRight" :size="12" />

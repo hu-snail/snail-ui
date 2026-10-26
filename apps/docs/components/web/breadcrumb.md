@@ -19,8 +19,8 @@
 ## 基础用法
 
 ```ts
-import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 ```html
@@ -37,33 +37,33 @@ import '@snui/tokens-web/styles'
 
 ### SnBreadcrumb Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `separator` | `string` | `'/'` | 全局分隔符。每项可通过 `separator` prop 或 `<template #separator>` slot 覆盖。 |
-| `maxCount` | `number` | `Infinity` | 最多显示几项；超出部分折叠为 `head(1) + ellipsis + tail(maxCount-1)`。 |
+| 名称        | 类型     | 默认值     | 说明                                                                           |
+| ----------- | -------- | ---------- | ------------------------------------------------------------------------------ |
+| `separator` | `string` | `'/'`      | 全局分隔符。每项可通过 `separator` prop 或 `<template #separator>` slot 覆盖。 |
+| `maxCount`  | `number` | `Infinity` | 最多显示几项；超出部分折叠为 `head(1) + ellipsis + tail(maxCount-1)`。         |
 
 ### SnBreadcrumbItem Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `href` | `string` | `''` | 链接地址（为空则渲染为不可点的 `<span>`） |
-| `clickable` | `boolean` | `true` | 是否可点 / 可 hover |
-| `separator` | `string` | `''` | 当前项的覆盖分隔符（空时回退到 parent） |
-| `showSeparator` | `boolean` | `true` | 是否渲染 trailing 分隔符 |
-| `icon` | `IconComponent` | `undefined` | 前置图标，通过 `SnIcon` 渲染。 |
-| `variant` | `'plain' \| 'chip' \| 'outlined'` | `'plain'` | 背景样式。`plain` 透明，`chip` 填充背景圆角胶囊（适合 dashboard / settings 紧凑路径），`outlined` 透明加边框。可以每项独立设置。 |
+| 名称            | 类型                              | 默认值      | 说明                                                                                                                             |
+| --------------- | --------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `href`          | `string`                          | `''`        | 链接地址（为空则渲染为不可点的 `<span>`）                                                                                        |
+| `clickable`     | `boolean`                         | `true`      | 是否可点 / 可 hover                                                                                                              |
+| `separator`     | `string`                          | `''`        | 当前项的覆盖分隔符（空时回退到 parent）                                                                                          |
+| `showSeparator` | `boolean`                         | `true`      | 是否渲染 trailing 分隔符                                                                                                         |
+| `icon`          | `IconComponent`                   | `undefined` | 前置图标，通过 `SnIcon` 渲染。                                                                                                   |
+| `variant`       | `'plain' \| 'chip' \| 'outlined'` | `'plain'`   | 背景样式。`plain` 透明，`chip` 填充背景圆角胶囊（适合 dashboard / settings 紧凑路径），`outlined` 透明加边框。可以每项独立设置。 |
 
 ### SnBreadcrumbItem Events
 
-| 名称 | 回调签名 | 说明 |
-| --- | --- | --- |
+| 名称    | 回调签名                  | 说明             |
+| ------- | ------------------------- | ---------------- |
 | `click` | `(e: MouseEvent) => void` | 链接被点击时触发 |
 
 ### SnBreadcrumbItem Slots
 
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 链接文本 |
+| 名称        | 说明                                                            |
+| ----------- | --------------------------------------------------------------- |
+| `default`   | 链接文本                                                        |
 | `separator` | 当前项自定义分隔符（覆盖 `separator` prop 和 parent separator） |
 
 ## 无障碍

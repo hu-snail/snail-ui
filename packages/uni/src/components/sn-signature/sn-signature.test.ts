@@ -6,67 +6,80 @@
  * numbers in assertions.
  */
 
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import SnSignature from './sn-signature.vue'
-import type { SignatureResult } from './sn-signature.vue'
+import { describe, it, expect } from 'vitest';
+import { mount } from '@vue/test-utils';
+import SnSignature from './sn-signature.vue';
+import type { SignatureResult } from './sn-signature.vue';
 
 function mountPad(props: Record<string, unknown> = {}) {
-  return mount(SnSignature, { props })
+  return mount(SnSignature, { props });
 }
 
 /** Give the pad a deterministic box so pad-relative points are stable. */
 function withPadBox(w: ReturnType<typeof mount>, left = 0, top = 0): void {
-  const pad = w.find('.sn-signature__pad')
-  const element = pad.element as HTMLElement
-  element.getBoundingClientRect = () => ({
-    left, top, width: 200, height: 200, right: left + 200, bottom: top + 200, x: left, y: top,
-    toJSON: () => ({}),
-  }) as DOMRect
+  const pad = w.find('.sn-signature__pad');
+  const element = pad.element as HTMLElement;
+  element.getBoundingClientRect = () =>
+    ({
+      left,
+      top,
+      width: 200,
+      height: 200,
+      right: left + 200,
+      bottom: top + 200,
+      x: left,
+      y: top,
+      toJSON: () => ({}),
+    }) as DOMRect;
 }
 
 /** Draw a two-segment stroke. */
 async function drawStroke(w: ReturnType<typeof mount>): Promise<void> {
-  const pad = w.find('.sn-signature__pad')
-  await pad.trigger('touchstart', { touches: [{ clientX: 10, clientY: 10 }] })
-  await pad.trigger('touchmove', { touches: [{ clientX: 40, clientY: 10 }] })
-  await pad.trigger('touchmove', { touches: [{ clientX: 40, clientY: 40 }] })
-  await pad.trigger('touchend', { touches: [{ clientX: 40, clientY: 40 }] })
+  const pad = w.find('.sn-signature__pad');
+  await pad.trigger('touchstart', { touches: [{ clientX: 10, clientY: 10 }] });
+  await pad.trigger('touchmove', { touches: [{ clientX: 40, clientY: 10 }] });
+  await pad.trigger('touchmove', { touches: [{ clientX: 40, clientY: 40 }] });
+  await pad.trigger('touchend', { touches: [{ clientX: 40, clientY: 40 }] });
 }
 
 describe('sn-signature', () => {
   describe('structure', () => {
     it('renders the pad and the buttons', () => {
-      const w = mountPad()
-      expect(w.find('.sn-signature__pad').exists()).toBe(true)
-      expect(w.findAll('.sn-signature__button').length).toBeGreaterThanOrEqual(2)
-    })
+      const w = mountPad();
+      expect(w.find('.sn-signature__pad').exists()).toBe(true);
+      expect(w.findAll('.sn-signature__button').length).toBeGreaterThanOrEqual(2);
+    });
 
     it('renders the custom button labels', () => {
-      const w = mountPad({ confirmText: 'Save', clearText: 'Wipe' })
-      const buttons = w.findAll('.sn-signature__button')
-      expect(buttons[0]?.text()).toBe('Wipe')
-      expect(buttons.at(-1)?.text()).toBe('Save')
-    })
+      const w = mountPad({ confirmText: 'Save', clearText: 'Wipe' });
+      const buttons = w.findAll('.sn-signature__button');
+      expect(buttons[0]?.text()).toBe('Wipe');
+      expect(buttons.at(-1)?.text()).toBe('Save');
+    });
 
     it('renders no strokes initially', () => {
-      expect(mountPad().findAll('.sn-signature__bar')).toHaveLength(0)
-    })
+      expect(mountPad().findAll('.sn-signature__bar')).toHaveLength(0);
+    });
 
     it('applies the disabled class and scrim', () => {
-      const w = mountPad({ disabled: true })
-      expect(w.classes()).toContain('sn-signature--disabled')
-      expect(w.find('.sn-signature__scrim').exists()).toBe(true)
-    })
+      const w = mountPad({ disabled: true });
+      expect(w.classes()).toContain('sn-signature--disabled');
+      expect(w.find('.sn-signature__scrim').exists()).toBe(true);
+    });
 
     it('forwards penColor / backgroundColor / size as custom properties', () => {
-      const w = mountPad({ penColor: 'rgb(1,2,3)', backgroundColor: 'rgb(4,5,6)', height: 200, width: 300 })
-      const style = w.attributes('style') ?? ''
-      expect(style).toContain('--sn-signature-pen-color: rgb(1,2,3)')
-      expect(style).toContain('--sn-signature-pad-bg: rgb(4,5,6)')
-      expect(style).toContain('--sn-signature-height:')
-      expect(style).toContain('--sn-signature-width:')
-    })
+      const w = mountPad({
+        penColor: 'rgb(1,2,3)',
+        backgroundColor: 'rgb(4,5,6)',
+        height: 200,
+        width: 300,
+      });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-signature-pen-color: rgb(1,2,3)');
+      expect(style).toContain('--sn-signature-pad-bg: rgb(4,5,6)');
+      expect(style).toContain('--sn-signature-height:');
+      expect(style).toContain('--sn-signature-width:');
+    });
 
     it('accepts the export / pressure parity props without changing the pad', async () => {
       const w = mountPad({
@@ -77,141 +90,150 @@ describe('sn-signature', () => {
         maxWidth: 8,
         minWidth: 1,
         minSpeed: 2,
-      })
-      withPadBox(w)
-      await drawStroke(w)
+      });
+      withPadBox(w);
+      await drawStroke(w);
       // Rendering is unchanged: the export props are the host's to apply.
-      expect(w.findAll('.sn-signature__bar')).toHaveLength(2)
-      expect(w.find('.sn-signature__pad').exists()).toBe(true)
-    })
-  })
+      expect(w.findAll('.sn-signature__bar')).toHaveLength(2);
+      expect(w.find('.sn-signature__pad').exists()).toBe(true);
+    });
+  });
 
   describe('drawing', () => {
     it('renders one bar per point pair', async () => {
-      const w = mountPad()
-      withPadBox(w)
-      await drawStroke(w)
-      expect(w.findAll('.sn-signature__bar')).toHaveLength(2)
-    })
+      const w = mountPad();
+      withPadBox(w);
+      await drawStroke(w);
+      expect(w.findAll('.sn-signature__bar')).toHaveLength(2);
+    });
 
     it('emits start / signing / end', async () => {
-      const w = mountPad()
-      withPadBox(w)
-      await drawStroke(w)
-      expect(w.emitted('start')).toHaveLength(1)
-      expect(w.emitted('signing')).toHaveLength(2)
-      expect(w.emitted('end')).toHaveLength(1)
-    })
+      const w = mountPad();
+      withPadBox(w);
+      await drawStroke(w);
+      expect(w.emitted('start')).toHaveLength(1);
+      expect(w.emitted('signing')).toHaveLength(2);
+      expect(w.emitted('end')).toHaveLength(1);
+    });
 
     it('renders a dot for a single-point tap', async () => {
-      const w = mountPad()
-      withPadBox(w)
-      await w.find('.sn-signature__pad').trigger('touchstart', { touches: [{ clientX: 5, clientY: 5 }] })
-      await w.find('.sn-signature__pad').trigger('touchend', { touches: [{ clientX: 5, clientY: 5 }] })
-      expect(w.findAll('.sn-signature__dot')).toHaveLength(1)
-    })
+      const w = mountPad();
+      withPadBox(w);
+      await w
+        .find('.sn-signature__pad')
+        .trigger('touchstart', { touches: [{ clientX: 5, clientY: 5 }] });
+      await w
+        .find('.sn-signature__pad')
+        .trigger('touchend', { touches: [{ clientX: 5, clientY: 5 }] });
+      expect(w.findAll('.sn-signature__dot')).toHaveLength(1);
+    });
 
     it('drops duplicate points', async () => {
-      const w = mountPad()
-      withPadBox(w)
-      const pad = w.find('.sn-signature__pad')
-      await pad.trigger('touchstart', { touches: [{ clientX: 10, clientY: 10 }] })
-      await pad.trigger('touchmove', { touches: [{ clientX: 10, clientY: 10 }] })
-      await pad.trigger('touchmove', { touches: [{ clientX: 10, clientY: 10 }] })
-      expect(w.emitted('signing')).toBeUndefined()
-    })
+      const w = mountPad();
+      withPadBox(w);
+      const pad = w.find('.sn-signature__pad');
+      await pad.trigger('touchstart', { touches: [{ clientX: 10, clientY: 10 }] });
+      await pad.trigger('touchmove', { touches: [{ clientX: 10, clientY: 10 }] });
+      await pad.trigger('touchmove', { touches: [{ clientX: 10, clientY: 10 }] });
+      expect(w.emitted('signing')).toBeUndefined();
+    });
 
     it('does not draw while disabled', async () => {
-      const w = mountPad({ disabled: true })
-      withPadBox(w)
-      await drawStroke(w)
-      expect(w.emitted('start')).toBeUndefined()
-      expect(w.findAll('.sn-signature__bar')).toHaveLength(0)
-    })
-  })
+      const w = mountPad({ disabled: true });
+      withPadBox(w);
+      await drawStroke(w);
+      expect(w.emitted('start')).toBeUndefined();
+      expect(w.findAll('.sn-signature__bar')).toHaveLength(0);
+    });
+  });
 
   describe('clear', () => {
     it('clears the strokes and emits clear', async () => {
-      const w = mountPad()
-      withPadBox(w)
-      await drawStroke(w)
-      expect(w.findAll('.sn-signature__bar').length).toBeGreaterThan(0)
-      await w.findAll('.sn-signature__button')[0]?.trigger('tap')
-      expect(w.findAll('.sn-signature__bar')).toHaveLength(0)
-      expect(w.emitted('clear')).toHaveLength(1)
-    })
+      const w = mountPad();
+      withPadBox(w);
+      await drawStroke(w);
+      expect(w.findAll('.sn-signature__bar').length).toBeGreaterThan(0);
+      await w.findAll('.sn-signature__button')[0]?.trigger('tap');
+      expect(w.findAll('.sn-signature__bar')).toHaveLength(0);
+      expect(w.emitted('clear')).toHaveLength(1);
+    });
 
     it('does not clear while disabled', async () => {
-      const w = mountPad({ disabled: true })
-      await w.findAll('.sn-signature__button')[0]?.trigger('tap')
-      expect(w.emitted('clear')).toBeUndefined()
-    })
-  })
+      const w = mountPad({ disabled: true });
+      await w.findAll('.sn-signature__button')[0]?.trigger('tap');
+      expect(w.emitted('clear')).toBeUndefined();
+    });
+  });
 
   describe('history', () => {
     it('renders undo / redo only when enableHistory is on', () => {
-      expect(mountPad().findAll('.sn-signature__button')).toHaveLength(2)
-      expect(mountPad({ enableHistory: true }).findAll('.sn-signature__button')).toHaveLength(4)
-    })
+      expect(mountPad().findAll('.sn-signature__button')).toHaveLength(2);
+      expect(mountPad({ enableHistory: true }).findAll('.sn-signature__button')).toHaveLength(4);
+    });
 
     it('undo removes the last stroke and redo restores it', async () => {
-      const w = mountPad({ enableHistory: true })
-      withPadBox(w)
-      await drawStroke(w)
-      const drawn = w.findAll('.sn-signature__bar').length
-      const buttons = w.findAll('.sn-signature__button')
-      await buttons[1]?.trigger('tap')
-      expect(w.findAll('.sn-signature__bar')).toHaveLength(0)
-      await w.findAll('.sn-signature__button')[2]?.trigger('tap')
-      expect(w.findAll('.sn-signature__bar')).toHaveLength(drawn)
-    })
+      const w = mountPad({ enableHistory: true });
+      withPadBox(w);
+      await drawStroke(w);
+      const drawn = w.findAll('.sn-signature__bar').length;
+      const buttons = w.findAll('.sn-signature__button');
+      await buttons[1]?.trigger('tap');
+      expect(w.findAll('.sn-signature__bar')).toHaveLength(0);
+      await w.findAll('.sn-signature__button')[2]?.trigger('tap');
+      expect(w.findAll('.sn-signature__bar')).toHaveLength(drawn);
+    });
 
     it('marks undo disabled with an empty history', () => {
-      const w = mountPad({ enableHistory: true })
-      expect(w.findAll('.sn-signature__button')[1]?.classes()).toContain('sn-signature__button--disabled')
-    })
+      const w = mountPad({ enableHistory: true });
+      expect(w.findAll('.sn-signature__button')[1]?.classes()).toContain(
+        'sn-signature__button--disabled',
+      );
+    });
 
     it('drops the redo stack after a new stroke', async () => {
-      const w = mountPad({ enableHistory: true })
-      withPadBox(w)
-      await drawStroke(w)
-      await w.findAll('.sn-signature__button')[1]?.trigger('tap')
-      await drawStroke(w)
-      await w.findAll('.sn-signature__button')[2]?.trigger('tap')
+      const w = mountPad({ enableHistory: true });
+      withPadBox(w);
+      await drawStroke(w);
+      await w.findAll('.sn-signature__button')[1]?.trigger('tap');
+      await drawStroke(w);
+      await w.findAll('.sn-signature__button')[2]?.trigger('tap');
       // The redo stack was cleared, so the bar count stays at one stroke.
-      expect(w.findAll('.sn-signature__bar')).toHaveLength(2)
-    })
+      expect(w.findAll('.sn-signature__bar')).toHaveLength(2);
+    });
 
     it('ignores undo / redo when history is off', async () => {
-      const w = mountPad()
-      const vm = w.vm as unknown as { revoke(): void, restore(): void }
-      expect(() => { vm.revoke(); vm.restore() }).not.toThrow()
-    })
-  })
+      const w = mountPad();
+      const vm = w.vm as unknown as { revoke(): void; restore(): void };
+      expect(() => {
+        vm.revoke();
+        vm.restore();
+      }).not.toThrow();
+    });
+  });
 
   describe('confirm', () => {
     it('emits the stroke geometry', async () => {
-      const w = mountPad()
-      withPadBox(w)
-      await drawStroke(w)
-      await w.findAll('.sn-signature__button').at(-1)?.trigger('tap')
-      const payload = w.emitted('confirm')?.[0]?.[0] as SignatureResult
-      expect(payload.paths).toHaveLength(1)
-      expect(payload.paths[0]).toHaveLength(3)
-      expect(payload.isEmpty).toBe(false)
-    })
+      const w = mountPad();
+      withPadBox(w);
+      await drawStroke(w);
+      await w.findAll('.sn-signature__button').at(-1)?.trigger('tap');
+      const payload = w.emitted('confirm')?.[0]?.[0] as SignatureResult;
+      expect(payload.paths).toHaveLength(1);
+      expect(payload.paths[0]).toHaveLength(3);
+      expect(payload.isEmpty).toBe(false);
+    });
 
     it('reports an empty pad', async () => {
-      const w = mountPad()
-      await w.findAll('.sn-signature__button').at(-1)?.trigger('tap')
-      const payload = w.emitted('confirm')?.[0]?.[0] as SignatureResult
-      expect(payload.isEmpty).toBe(true)
-    })
+      const w = mountPad();
+      await w.findAll('.sn-signature__button').at(-1)?.trigger('tap');
+      const payload = w.emitted('confirm')?.[0]?.[0] as SignatureResult;
+      expect(payload.isEmpty).toBe(true);
+    });
 
     it('does not confirm while disabled', async () => {
-      const w = mountPad({ disabled: true })
-      await w.findAll('.sn-signature__button').at(-1)?.trigger('tap')
-      expect(w.emitted('confirm')).toBeUndefined()
-    })
-  })
-})
+      const w = mountPad({ disabled: true });
+      await w.findAll('.sn-signature__button').at(-1)?.trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+    });
+  });
+});

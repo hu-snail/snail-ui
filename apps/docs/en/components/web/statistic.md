@@ -16,20 +16,20 @@ Statistic display (n-statistic aligned): a small label above a large value, with
 
 ### SnStatistic Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| label | `string` | `undefined` | Label above the value |
-| value | `string \| number` | `undefined` | Statistic value; takes precedence over the default slot, `0` is valid |
-| tabular-nums | `boolean` | `false` | Equal-width digits (font-variant-numeric: tabular-nums) |
+| Prop         | Type               | Default     | Notes                                                                 |
+| ------------ | ------------------ | ----------- | --------------------------------------------------------------------- |
+| label        | `string`           | `undefined` | Label above the value                                                 |
+| value        | `string \| number` | `undefined` | Statistic value; takes precedence over the default slot, `0` is valid |
+| tabular-nums | `boolean`          | `false`     | Equal-width digits (font-variant-numeric: tabular-nums)               |
 
 ### SnStatistic Slots
 
-| Slot | Notes |
-| --- | --- |
+| Slot    | Notes                                                |
+| ------- | ---------------------------------------------------- |
 | default | Value content (used only when `value` is not passed) |
-| label | Label (used only when `label` is not passed) |
-| prefix | Prefix before the value |
-| suffix | Suffix after the value |
+| label   | Label (used only when `label` is not passed)         |
+| prefix  | Prefix before the value                              |
+| suffix  | Suffix after the value                               |
 
 No events. Metrics mirror the naive cssr: label 14px / value 24px / value margin-top 4px / prefix-suffix gutters 4px.
 

@@ -44,10 +44,7 @@ export const StateBindingSchema = z
     kind: z.literal('state'),
     path: z
       .string()
-      .regex(
-        DOTTED_PATH_RE,
-        'state path must be a dotted identifier (e.g. local.form.email)',
-      ),
+      .regex(DOTTED_PATH_RE, 'state path must be a dotted identifier (e.g. local.form.email)'),
   })
   .strict();
 
@@ -65,12 +62,7 @@ export type ComputedBinding = z.infer<typeof ComputedBindingSchema>;
 export const PropBindingSchema = z
   .object({
     kind: z.literal('prop'),
-    path: z
-      .string()
-      .regex(
-        PROP_PATH_RE,
-        'prop path must start with "props." (e.g. props.title)',
-      ),
+    path: z.string().regex(PROP_PATH_RE, 'prop path must start with "props." (e.g. props.title)'),
   })
   .strict();
 

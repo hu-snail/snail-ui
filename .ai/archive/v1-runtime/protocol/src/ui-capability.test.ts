@@ -55,14 +55,12 @@ describe('@snui/protocol — UICapabilitySchema', () => {
   });
 
   it('rejects requires entries longer than 64 chars', () => {
-    expect(
-      UICapabilitySchema.safeParse({ feature: 'x', requires: ['x'.repeat(65)] }).success,
-    ).toBe(false);
+    expect(UICapabilitySchema.safeParse({ feature: 'x', requires: ['x'.repeat(65)] }).success).toBe(
+      false,
+    );
   });
 
   it('rejects unknown extra fields (strict)', () => {
-    expect(
-      UICapabilitySchema.safeParse({ feature: 'x', sneaky: true }).success,
-    ).toBe(false);
+    expect(UICapabilitySchema.safeParse({ feature: 'x', sneaky: true }).success).toBe(false);
   });
 });

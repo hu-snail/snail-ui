@@ -28,6 +28,6 @@ export type {
   SnDrawerLocale,
   SnAvatarGroupLocale,
   SnPopconfirmLocale,
-} from './zh-cn'
-export { zhCN } from './zh-cn'
-export { enUS } from './en-us'
+} from './zh-cn';
+export { zhCN } from './zh-cn';
+export { enUS } from './en-us';

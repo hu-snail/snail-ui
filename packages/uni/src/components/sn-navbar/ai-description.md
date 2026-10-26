@@ -23,56 +23,56 @@ a hairline bottom border and status-bar safe-area padding.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnNavbar } from '@snui/uni/components/sn-navbar/sn-navbar.vue'
+import { SnNavbar } from '@snui/uni/components/sn-navbar/sn-navbar.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `title` | `string` | `''` | no | Title text. |
-| `leftText` | `string` | `''` | no | Left-side label. |
-| `rightText` | `string` | `''` | no | Right-side label. |
-| `leftArrow` | `boolean` | `false` | no | Render the back arrow on the left. |
-| `bordered` | `boolean` | `false` | no | Hairline bottom border. |
-| `fixed` | `boolean` | `false` | no | Pin the bar to the top of the viewport. |
-| `placeholder` | `boolean` | `false` | no | Reserve the bar height in flow when `fixed`. |
-| `zIndex` | `number` | `10` | no | Stacking level (only written when `fixed`). |
-| `safeAreaInsetTop` | `boolean` | `false` | no | Add status-bar height as top padding. |
-| `leftDisabled` | `boolean` | `false` | no | Dim the left zone and block its events. |
-| `rightDisabled` | `boolean` | `false` | no | Dim the right zone and block its events. |
-| `customClass` | `string` | `''` | no | Extra class on the root node. |
-| `customStyle` | `string` | `''` | no | Inline style appended to the root node. |
+| Name               | Type      | Default | Required | Description                                  |
+| ------------------ | --------- | ------- | -------- | -------------------------------------------- |
+| `title`            | `string`  | `''`    | no       | Title text.                                  |
+| `leftText`         | `string`  | `''`    | no       | Left-side label.                             |
+| `rightText`        | `string`  | `''`    | no       | Right-side label.                            |
+| `leftArrow`        | `boolean` | `false` | no       | Render the back arrow on the left.           |
+| `bordered`         | `boolean` | `false` | no       | Hairline bottom border.                      |
+| `fixed`            | `boolean` | `false` | no       | Pin the bar to the top of the viewport.      |
+| `placeholder`      | `boolean` | `false` | no       | Reserve the bar height in flow when `fixed`. |
+| `zIndex`           | `number`  | `10`    | no       | Stacking level (only written when `fixed`).  |
+| `safeAreaInsetTop` | `boolean` | `false` | no       | Add status-bar height as top padding.        |
+| `leftDisabled`     | `boolean` | `false` | no       | Dim the left zone and block its events.      |
+| `rightDisabled`    | `boolean` | `false` | no       | Dim the right zone and block its events.     |
+| `customClass`      | `string`  | `''`    | no       | Extra class on the root node.                |
+| `customStyle`      | `string`  | `''`    | no       | Inline style appended to the root node.      |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `click-left` | `Event` | Left zone tapped. Blocked while `leftDisabled`. |
-| `click-right` | `Event` | Right zone tapped. Blocked while `rightDisabled`. |
-| `back` | `Event` | Emitted alongside `click-left` when `leftArrow` is on. |
-| `back-home` | `Event` | Capsule zone tapped (WeChat "return home" idiom). |
+| Name          | Payload | Description                                            |
+| ------------- | ------- | ------------------------------------------------------ |
+| `click-left`  | `Event` | Left zone tapped. Blocked while `leftDisabled`.        |
+| `click-right` | `Event` | Right zone tapped. Blocked while `rightDisabled`.      |
+| `back`        | `Event` | Emitted alongside `click-left` when `leftArrow` is on. |
+| `back-home`   | `Event` | Capsule zone tapped (WeChat "return home" idiom).      |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `capsule` | Custom capsule; suppresses the left zone. |
-| `left` | Left content, overrides `leftArrow` / `leftText`. |
-| `title` | Title content, overrides `title`. |
-| `right` | Right content, overrides `rightText`. |
+| Name      | Description                                       |
+| --------- | ------------------------------------------------- |
+| `capsule` | Custom capsule; suppresses the left zone.         |
+| `left`    | Left content, overrides `leftArrow` / `leftText`. |
+| `title`   | Title content, overrides `title`.                 |
+| `right`   | Right content, overrides `rightText`.             |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background surface | `--sn-mp-color-background-surface` | Bar background |
-| Text primary | `--sn-mp-color-text-primary` | Title colour |
-| Border subtle | `--sn-mp-color-border-subtle` | Hairline bottom border |
-| Action primary | `--sn-mp-color-action-primary` | Side-zone label colour |
-| Font size | `--sn-mp-font-size-md`, `--sn-mp-font-size-lg` | Side / title typography |
-| Font weight | `--sn-mp-font-weight-medium` | Title weight |
-| Spacing | `--sn-mp-spacing-1`, `--sn-mp-spacing-3` | Icon gap and side padding |
+| Token              | CSS Variable                                   | Purpose                   |
+| ------------------ | ---------------------------------------------- | ------------------------- |
+| Background surface | `--sn-mp-color-background-surface`             | Bar background            |
+| Text primary       | `--sn-mp-color-text-primary`                   | Title colour              |
+| Border subtle      | `--sn-mp-color-border-subtle`                  | Hairline bottom border    |
+| Action primary     | `--sn-mp-color-action-primary`                 | Side-zone label colour    |
+| Font size          | `--sn-mp-font-size-md`, `--sn-mp-font-size-lg` | Side / title typography   |
+| Font weight        | `--sn-mp-font-weight-medium`                   | Title weight              |
+| Spacing            | `--sn-mp-spacing-1`, `--sn-mp-spacing-3`       | Icon gap and side padding |
 
 ## Accessibility
 

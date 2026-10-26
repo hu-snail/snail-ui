@@ -6,66 +6,66 @@
  * layout `sn-tabs` / `sn-sidebar` use.
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Content alignment. Mirrors `wd-table-column` `align`. */
-export type SnTableAlign = 'left' | 'center' | 'right'
+export type SnTableAlign = 'left' | 'center' | 'right';
 
 /** Sort direction of a sortable column; `none` = unsorted. */
-export type SnTableSortOrder = 'asc' | 'desc' | 'none'
+export type SnTableSortOrder = 'asc' | 'desc' | 'none';
 
 /** One row. `unknown` values (AGENTS.md §12 — no `any`). */
-export type SnTableRow = Record<string, unknown>
+export type SnTableRow = Record<string, unknown>;
 
 /** Column config accepted by the `index` prop of `sn-table`. */
 export interface SnTableIndexConfig {
   /** Header label of the index column; `''` renders an empty header cell. */
-  label?: string
+  label?: string;
   /** Column width — a bare number is design px. */
-  width?: string | number
+  width?: string | number;
   /** Content alignment. */
-  align?: SnTableAlign
+  align?: SnTableAlign;
 }
 
 /** A column as registered by `sn-table-column` and resolved by the container. */
 export interface SnTableColumn {
   /** Data field name (and `v-for` key). */
-  prop: string
+  prop: string;
   /** Header label. */
-  label: string
+  label: string;
   /** Column width as declared (`string | number`); the container resolves it. */
-  width: string | number
+  width: string | number;
   /** Whether the header toggles a sort order. */
-  sortable: boolean
+  sortable: boolean;
   /** Pin the column to the left edge while the body scrolls horizontally. */
-  fixed: boolean
+  fixed: boolean;
   /** Content alignment. */
-  align: SnTableAlign
+  align: SnTableAlign;
   /** Current sort order (only meaningful when `sortable`). */
-  sortOrder: SnTableSortOrder
+  sortOrder: SnTableSortOrder;
 }
 /** One registered column; getters keep the container's render reactive. */
 export interface SnTableColumnEntry {
   /** Stable registration id. */
-  uid: number
+  uid: number;
   /** Current column definition. */
-  getColumn: () => SnTableColumn
+  getColumn: () => SnTableColumn;
   /** Set the sort order the container asked for. */
-  setSortOrder: (order: SnTableSortOrder) => void
+  setSortOrder: (order: SnTableSortOrder) => void;
   /** Custom cell renderer supplied through the column's `value` slot. */
-  getValueSlot: () => ((props: { row: SnTableRow; index: number }) => unknown) | undefined
+  getValueSlot: () => ((props: { row: SnTableRow; index: number }) => unknown) | undefined;
 }
 
 /** Context injected by `SnTable` into `SnTableColumn` instances. */
 export interface SnTableContext {
   /** Registered columns in DOM order. */
-  columns: Ref<SnTableColumnEntry[]>
+  columns: Ref<SnTableColumnEntry[]>;
   /** Register a column; returns its stable id. */
-  registerColumn: (entry: SnTableColumnEntry) => void
+  registerColumn: (entry: SnTableColumnEntry) => void;
   /** Drop a column when it unmounts. */
-  unregisterColumn: (uid: number) => void
+  unregisterColumn: (uid: number) => void;
   /** Header tap on a sortable column — cycles the order and emits `sort-method`. */
-  toggleSort: (uid: number) => void
+  toggleSort: (uid: number) => void;
 }
 
-export const SN_TABLE_KEY: InjectionKey<SnTableContext> = Symbol('sn-table')
+export const SN_TABLE_KEY: InjectionKey<SnTableContext> = Symbol('sn-table');

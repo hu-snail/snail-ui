@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnRadio — basic v-model + checkedValue. */
-import { ref } from 'vue'
-import { SnRadio } from '@snui/vue-web'
-const picked = ref('apple')
+import { ref } from 'vue';
+import { SnRadio } from '@snui/vue-web';
+const picked = ref('apple');
 </script>
 
 <template>
@@ -14,5 +14,9 @@ const picked = ref('apple')
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 </style>

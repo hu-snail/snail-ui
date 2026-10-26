@@ -6,24 +6,24 @@
  * chrome (mask + teleport + centring) the library's overlay provider will
  * eventually own. See DialogStage.vue for the scope note.
  */
-import { ref } from 'vue'
-import { SnButton, SnDialog } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDialog } from '@snui/vue-web';
 
 // Closed on load — a dialog must not appear before the reader asks for it.
-const open = ref(false)
-const lastAction = ref('—')
+const open = ref(false);
+const lastAction = ref('—');
 
 function onPositive() {
-  lastAction.value = 'positive-click'
-  open.value = false
+  lastAction.value = 'positive-click';
+  open.value = false;
 }
 function onNegative() {
-  lastAction.value = 'negative-click'
-  open.value = false
+  lastAction.value = 'negative-click';
+  open.value = false;
 }
 function onClose() {
-  lastAction.value = 'close'
-  open.value = false
+  lastAction.value = 'close';
+  open.value = false;
 }
 </script>
 

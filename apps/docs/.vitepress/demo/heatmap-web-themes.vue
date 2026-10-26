@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnHeatmap — the five built-in color themes. */
-import { ref } from 'vue'
-import { SnHeatmap } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnHeatmap } from '@snui/vue-web';
 
-type DemoColorTheme = 'green' | 'blue' | 'orange' | 'purple' | 'red'
+type DemoColorTheme = 'green' | 'blue' | 'orange' | 'purple' | 'red';
 
 const themes: Array<{ name: string; value: DemoColorTheme }> = [
   { name: '绿色', value: 'green' },
@@ -11,22 +11,22 @@ const themes: Array<{ name: string; value: DemoColorTheme }> = [
   { name: '橙色', value: 'orange' },
   { name: '紫色', value: 'purple' },
   { name: '红色', value: 'red' },
-]
+];
 
 /** Deterministic pseudo-random data over the last ~20 weeks. */
 function buildData() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const out: Array<{ timestamp: number; value: number }> = []
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const out: Array<{ timestamp: number; value: number }> = [];
   for (let i = 139; i >= 0; i -= 1) {
-    const ts = today.getTime() - i * 86_400_000
-    const seed = Math.abs(Math.sin(ts / 86_400_000 + 0.5))
-    out.push({ timestamp: ts, value: Math.floor(seed * 12) })
+    const ts = today.getTime() - i * 86_400_000;
+    const seed = Math.abs(Math.sin(ts / 86_400_000 + 0.5));
+    out.push({ timestamp: ts, value: Math.floor(seed * 12) });
   }
-  return out
+  return out;
 }
 
-const data = ref(buildData())
+const data = ref(buildData());
 </script>
 
 <template>

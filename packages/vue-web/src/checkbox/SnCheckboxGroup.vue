@@ -14,32 +14,32 @@
  * declared below; CSS uses `--sn-web-*` token aliases only.
  */
 
-import { computed, provide, toRef } from 'vue'
-import SnCheckbox from './SnCheckbox.vue'
+import { computed, provide, toRef } from 'vue';
+import SnCheckbox from './SnCheckbox.vue';
 import {
   SN_CHECKBOX_GROUP_KEY,
   type SnCheckboxGroupOption,
   type SnCheckboxValue,
-} from './sn-checkbox-types'
+} from './sn-checkbox-types';
 
-defineOptions({ name: 'SnCheckboxGroup' })
+defineOptions({ name: 'SnCheckboxGroup' });
 
 const props = withDefaults(
   defineProps<{
     /** Selected values (`v-model:value` in naive; here `v-model`). */
-    modelValue?: SnCheckboxValue[]
+    modelValue?: SnCheckboxValue[];
     /** Uncontrolled initial selection. Mirrors n-checkbox-group `default-value`. */
-    defaultValue?: SnCheckboxValue[]
+    defaultValue?: SnCheckboxValue[];
     /** Option list — renders checkboxes when provided. Mirrors `options`. */
-    options?: SnCheckboxGroupOption[]
+    options?: SnCheckboxGroupOption[];
     /** Disables every child checkbox. Mirrors n-checkbox-group `disabled`. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Size preset applied to every child. Mirrors n-checkbox-group `size`. */
-    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large'
+    size?: 'mini' | 'tiny' | 'small' | 'medium' | 'large';
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     defaultValue: () => [],
@@ -49,42 +49,40 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync. */
-  (e: 'update:modelValue', value: SnCheckboxValue[]): void
+  (e: 'update:modelValue', value: SnCheckboxValue[]): void;
   /** Selection changed — naive-ui's `onUpdate:value` payload. */
-  (e: 'update:value', value: SnCheckboxValue[]): void
-}>()
+  (e: 'update:value', value: SnCheckboxValue[]): void;
+}>();
 
 defineSlots<{
   /** Default slot children (SnCheckbox instances). Ignored when `options` is non-empty. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Effective selection: the prop wins when provided (controlled). */
-const selectedValues = computed<SnCheckboxValue[]>(() =>
-  props.modelValue ?? props.defaultValue,
-)
+const selectedValues = computed<SnCheckboxValue[]>(() => props.modelValue ?? props.defaultValue);
 
 /** Group change dispatcher — emits both spellings. */
 function toggleValue(value: SnCheckboxValue, nextChecked: boolean): void {
-  const current = selectedValues.value
-  let next: SnCheckboxValue[]
+  const current = selectedValues.value;
+  let next: SnCheckboxValue[];
   if (nextChecked) {
     if (current.includes(value)) {
-      return
+      return;
     }
-    next = [...current, value]
+    next = [...current, value];
   } else {
     if (!current.includes(value)) {
-      return
+      return;
     }
-    next = current.filter(v => v !== value)
+    next = current.filter((v) => v !== value);
   }
-  emit('update:modelValue', next)
-  emit('update:value', next)
+  emit('update:modelValue', next);
+  emit('update:value', next);
 }
 
 provide(SN_CHECKBOX_GROUP_KEY, {
@@ -93,9 +91,9 @@ provide(SN_CHECKBOX_GROUP_KEY, {
   groupSize: toRef(props, 'size'),
   toggleValue,
   isInsideGroup: true,
-})
+});
 
-const hasOptions = computed(() => props.options.length > 0)
+const hasOptions = computed(() => props.options.length > 0);
 
 const classList = computed(() => [
   'sn-checkbox-group',
@@ -104,12 +102,14 @@ const classList = computed(() => [
     'sn-checkbox-group--has-options': hasOptions.value,
   },
   props.customClass,
-])
+]);
 
 const wrapperStyle = computed(() => {
-  if (typeof props.customStyle === 'string') return props.customStyle
-  return Object.entries(props.customStyle ?? {}).map(([k, v]) => `${k}:${v}`).join(';')
-})
+  if (typeof props.customStyle === 'string') return props.customStyle;
+  return Object.entries(props.customStyle ?? {})
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';');
+});
 </script>
 
 <template>

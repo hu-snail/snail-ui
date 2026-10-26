@@ -2,7 +2,7 @@
 /**
  * Demo: SnPopover — hover trigger, header + content, arrow and placements.
  */
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { SnButton, SnPopover } from '@snui/vue-web';
 </script>
 
 <template>
@@ -10,7 +10,10 @@ import { SnButton, SnPopover } from '@snui/vue-web'
     <section class="popover-demo__block">
       <h4 class="popover-demo__title">标题 + 正文（hover 触发）</h4>
       <div class="popover-demo__row">
-        <SnPopover header="导出数据" content="将当前表格视图导出为 CSV 文件，包含全部可见列与筛选条件。">
+        <SnPopover
+          header="导出数据"
+          content="将当前表格视图导出为 CSV 文件，包含全部可见列与筛选条件。"
+        >
           <SnButton>悬停查看说明</SnButton>
         </SnPopover>
         <SnPopover
@@ -47,7 +50,7 @@ import { SnButton, SnPopover } from '@snui/vue-web'
       <div class="popover-demo__row">
         <SnPopover
           header="与触发器等宽"
-          content="width=&quot;trigger&quot; 时气泡宽度对齐触发元素。"
+          content='width="trigger" 时气泡宽度对齐触发元素。'
           width="trigger"
         >
           <SnButton>width="trigger"</SnButton>

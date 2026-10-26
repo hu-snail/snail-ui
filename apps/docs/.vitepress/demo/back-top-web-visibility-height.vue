@@ -5,25 +5,32 @@
  * Shows: three containers sharing the same scroll content but different
  * `visibilityHeight`, so the reveal point differs per column.
  */
-import { ref } from 'vue'
-import { SnBackTop } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnBackTop } from '@snui/vue-web';
 
-const lowRef = ref<HTMLElement | null>(null)
-const midRef = ref<HTMLElement | null>(null)
-const highRef = ref<HTMLElement | null>(null)
+const lowRef = ref<HTMLElement | null>(null);
+const midRef = ref<HTMLElement | null>(null);
+const highRef = ref<HTMLElement | null>(null);
 
 const columns = [
   { key: 'low', label: 'visibilityHeight=40', ref: lowRef, threshold: 40 },
   { key: 'mid', label: 'visibilityHeight=120', ref: midRef, threshold: 120 },
   { key: 'high', label: 'visibilityHeight=240', ref: highRef, threshold: 240 },
-]
+];
 </script>
 
 <template>
   <div class="bt-vh">
     <div v-for="col in columns" :key="col.key" class="bt-vh__col">
       <span class="bt-vh__cap">{{ col.label }}</span>
-      <div :ref="(el) => { col.ref.value = el as HTMLElement | null }" class="bt-vh__scroller">
+      <div
+        :ref="
+          (el) => {
+            col.ref.value = el as HTMLElement | null;
+          }
+        "
+        class="bt-vh__scroller"
+      >
         <p v-for="n in 24" :key="n" class="bt-vh__line">第 {{ n }} 行内容</p>
         <SnBackTop
           :listen-to="() => col.ref.value"

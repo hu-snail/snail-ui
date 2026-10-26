@@ -7,34 +7,34 @@
  * Emoji-as-icon is forbidden (§113) — every star is an inline SVG path.
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnRate' })
+defineOptions({ name: 'SnRate' });
 
 const props = withDefaults(
   defineProps<{
     /** Bound rating value. 0 (or null) = unrated. */
-    modelValue?: number | null
+    modelValue?: number | null;
     /** Number of stars rendered. */
-    count?: number
+    count?: number;
     /** Allow half-star precision (0.5 steps). */
-    allowHalf?: boolean
+    allowHalf?: boolean;
     /** Read-only — visible but not interactive. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Disabled — greyed out, not interactive. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Visual size preset. Drives star glyph size. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /**
      * Filled-star color. Accepts any CSS color (token variable like
      * `var(--sn-web-color-feedback-warning)` is recommended); applied via
      * the `--sn-rate-color` CSS variable so it stays themeable.
      */
-    color?: string
+    color?: string;
     /** Clicking the same rating again resets the value to 0. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Accessible label for the radiogroup. */
-    ariaLabel?: string
+    ariaLabel?: string;
   }>(),
   {
     modelValue: null,
@@ -47,57 +47,53 @@ const props = withDefaults(
     clearable: false,
     ariaLabel: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync. */
-  (e: 'update:modelValue', value: number): void
+  (e: 'update:modelValue', value: number): void;
   /** Fired on every committed rating change (click / keyboard). */
-  (e: 'change', value: number): void
-}>()
+  (e: 'change', value: number): void;
+}>();
 
 defineSlots<{
   /** Custom per-star content. Replaces the built-in SVG star. */
-  icon?(props: { index: number; filled: boolean }): unknown
-}>()
+  icon?(props: { index: number; filled: boolean }): unknown;
+}>();
 
-const currentValue = computed(() => props.modelValue ?? 0)
+const currentValue = computed(() => props.modelValue ?? 0);
 
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
 /** Inline style exposing the `color` prop as a themeable CSS variable. */
-const colorStyle = computed(() =>
-  props.color ? { '--sn-rate-color': props.color } : undefined,
-)
+const colorStyle = computed(() => (props.color ? { '--sn-rate-color': props.color } : undefined));
 
-const starIndices = computed(() =>
-  Array.from({ length: props.count }, (_, i) => i + 1),
-)
+const starIndices = computed(() => Array.from({ length: props.count }, (_, i) => i + 1));
 
 /** Fill ratio (0..1) of the star at `index` (1-based). */
 function fillOf(index: number): number {
-  return Math.min(Math.max(currentValue.value - (index - 1), 0), 1)
+  return Math.min(Math.max(currentValue.value - (index - 1), 0), 1);
 }
 
 function isItemChecked(index: number): boolean {
   // The "checked" radio is the star the value points at.
-  return currentValue.value > 0 && Math.ceil(currentValue.value) === index
+  return currentValue.value > 0 && Math.ceil(currentValue.value) === index;
 }
 
 /** Tabindex: exactly one stop inside the radiogroup (active star, else first). */
 function itemTabindex(index: number): number {
-  if (!isInteractive.value) return -1
-  const active = currentValue.value > 0 ? Math.ceil(currentValue.value) : 1
-  return index === active ? 0 : -1
+  if (!isInteractive.value) return -1;
+  const active = currentValue.value > 0 ? Math.ceil(currentValue.value) : 1;
+  return index === active ? 0 : -1;
 }
 
 function commit(next: number): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   // n-rate parity: a no-op change (clamped boundary, repeat click
   // without clearable) emits nothing rather than re-emitting the value.
-  if (next === currentValue.value) return
-  emit('update:modelValue', next)
-  emit('change', next)
+  if (next === currentValue.value) return;
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 /**
@@ -106,24 +102,24 @@ function commit(next: number): void {
  */
 function select(next: number): void {
   if (props.clearable && next === currentValue.value) {
-    commit(0)
-    return
+    commit(0);
+    return;
   }
-  commit(next)
+  commit(next);
 }
 
 function onHalfClick(index: number, half: 'left' | 'right'): void {
-  select(half === 'left' ? index - 0.5 : index)
+  select(half === 'left' ? index - 0.5 : index);
 }
 
 function onKeydown(event: KeyboardEvent): void {
-  const step = props.allowHalf ? 0.5 : 1
+  const step = props.allowHalf ? 0.5 : 1;
   if (event.key === 'ArrowLeft') {
-    event.preventDefault()
-    commit(Math.max(currentValue.value - step, 0))
+    event.preventDefault();
+    commit(Math.max(currentValue.value - step, 0));
   } else if (event.key === 'ArrowRight') {
-    event.preventDefault()
-    commit(Math.min(currentValue.value + step, props.count))
+    event.preventDefault();
+    commit(Math.min(currentValue.value + step, props.count));
   }
 }
 
@@ -135,7 +131,7 @@ const classList = computed(() => [
     'sn-rate--readonly': props.readonly,
     'sn-rate--half': props.allowHalf,
   },
-])
+]);
 </script>
 
 <template>
@@ -167,11 +163,7 @@ const classList = computed(() => [
           @click="onHalfClick(index, 'left')"
         >
           <slot name="icon" :index="index" :filled="fillOf(index) === 1">
-            <svg
-              class="sn-rate__star sn-rate__star--base"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
+            <svg class="sn-rate__star sn-rate__star--base" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 d="M12 2.5l2.95 5.98 6.6.96-4.78 4.66 1.13 6.58L12 17.77l-5.9 3.1 1.13-6.58L2.45 9.44l6.6-.96L12 2.5z"
               />
@@ -277,9 +269,15 @@ const classList = computed(() => [
 }
 
 /* Sizes */
-.sn-rate--small { --sn-web-rate-star-size: var(--sn-web-rate-size-small, 14px); }
-.sn-rate--medium { --sn-web-rate-star-size: var(--sn-web-rate-size-medium, 18px); }
-.sn-rate--large { --sn-web-rate-star-size: var(--sn-web-rate-size-large, 22px); }
+.sn-rate--small {
+  --sn-web-rate-star-size: var(--sn-web-rate-size-small, 14px);
+}
+.sn-rate--medium {
+  --sn-web-rate-star-size: var(--sn-web-rate-size-medium, 18px);
+}
+.sn-rate--large {
+  --sn-web-rate-star-size: var(--sn-web-rate-size-large, 22px);
+}
 
 /* Keyboard focus ring on the radio item (custom, token-based). */
 .sn-rate__item:focus-visible {

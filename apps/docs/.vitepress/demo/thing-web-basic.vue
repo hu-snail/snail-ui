@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnThing — 标题 / 描述 / 正文 / 尾部 / 操作 各区域。 */
-import { SnButton, SnThing } from '@snui/vue-web'
+import { SnButton, SnThing } from '@snui/vue-web';
 </script>
 
 <template>

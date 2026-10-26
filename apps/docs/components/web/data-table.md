@@ -106,29 +106,29 @@
 
 ### SnDataTable Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| columns | `DataTableColumn[]` | `[]` | 列定义（基础列 / selection / expand / index），类型见下方 Column 说明 |
-| data | `object[]` | `[]` | 行数据 |
-| row-key | `(row) => string \| number` | — | 行 key 取值函数（缺省取 `row.key`） |
-| row-props | `(row, index) => HTMLAttributes` | — | 行上的额外属性 |
-| row-class-name | `string \| (row, index) => string` | — | 行类名 |
-| striped | `boolean` | `false` | 斑马条纹 |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | 尺寸（th/td padding 8/12/12px） |
-| bordered | `boolean` | `true` | 是否显示外框边框 |
-| bottom-bordered | `boolean` | `true` | 是否显示底边（bordered 为 true 时无效） |
-| single-line | `boolean` | `true` | 是否不显示列分割线 |
-| single-column | `boolean` | `false` | 是否不显示行分割线 |
-| loading | `boolean` | `false` | 显示加载态（遮罩 + spinner，阻断勾选/分页） |
-| scroll-x | `number \| string` | — | 表格内容最小宽度（横向滚动） |
-| max-height | `number \| string` | — | 表格内容最大高度（吸顶表头，table-layout 固定为 fixed） |
-| summary | `(pageData) => SummaryRow \| SummaryRow[]` | — | 总结栏数据（value + colSpan） |
-| summary-placement | `'top' \| 'bottom'` | `'bottom'` | 总结栏位置 |
-| checked-row-keys | `Array<string \| number>` | — | 选中的行 key（v-model:checked-row-keys） |
-| default-checked-row-keys | `Array<string \| number>` | `[]` | 非受控默认选中 key |
-| expanded-row-keys | `Array<string \| number>` | — | 展开行 key（v-model:expanded-row-keys） |
-| default-expanded-row-keys | `Array<string \| number>` | `[]` | 非受控默认展开 key |
-| pagination | `false \| object` | `false` | 简化分页条配置（见下） |
+| Prop                      | 类型                                       | 默认值     | 说明                                                                  |
+| ------------------------- | ------------------------------------------ | ---------- | --------------------------------------------------------------------- |
+| columns                   | `DataTableColumn[]`                        | `[]`       | 列定义（基础列 / selection / expand / index），类型见下方 Column 说明 |
+| data                      | `object[]`                                 | `[]`       | 行数据                                                                |
+| row-key                   | `(row) => string \| number`                | —          | 行 key 取值函数（缺省取 `row.key`）                                   |
+| row-props                 | `(row, index) => HTMLAttributes`           | —          | 行上的额外属性                                                        |
+| row-class-name            | `string \| (row, index) => string`         | —          | 行类名                                                                |
+| striped                   | `boolean`                                  | `false`    | 斑马条纹                                                              |
+| size                      | `'small' \| 'medium' \| 'large'`           | `'medium'` | 尺寸（th/td padding 8/12/12px）                                       |
+| bordered                  | `boolean`                                  | `true`     | 是否显示外框边框                                                      |
+| bottom-bordered           | `boolean`                                  | `true`     | 是否显示底边（bordered 为 true 时无效）                               |
+| single-line               | `boolean`                                  | `true`     | 是否不显示列分割线                                                    |
+| single-column             | `boolean`                                  | `false`    | 是否不显示行分割线                                                    |
+| loading                   | `boolean`                                  | `false`    | 显示加载态（遮罩 + spinner，阻断勾选/分页）                           |
+| scroll-x                  | `number \| string`                         | —          | 表格内容最小宽度（横向滚动）                                          |
+| max-height                | `number \| string`                         | —          | 表格内容最大高度（吸顶表头，table-layout 固定为 fixed）               |
+| summary                   | `(pageData) => SummaryRow \| SummaryRow[]` | —          | 总结栏数据（value + colSpan）                                         |
+| summary-placement         | `'top' \| 'bottom'`                        | `'bottom'` | 总结栏位置                                                            |
+| checked-row-keys          | `Array<string \| number>`                  | —          | 选中的行 key（v-model:checked-row-keys）                              |
+| default-checked-row-keys  | `Array<string \| number>`                  | `[]`       | 非受控默认选中 key                                                    |
+| expanded-row-keys         | `Array<string \| number>`                  | —          | 展开行 key（v-model:expanded-row-keys）                               |
+| default-expanded-row-keys | `Array<string \| number>`                  | `[]`       | 非受控默认展开 key                                                    |
+| pagination                | `false \| object`                          | `false`    | 简化分页条配置（见下）                                                |
 
 ### DataTableColumn（列类型）
 
@@ -136,11 +136,11 @@
 
 特殊列：
 
-| type | 专属字段 | 说明 |
-| --- | --- | --- |
-| `'selection'` | `multiple`（默认 `true`）、`disabled(row)` | 勾选列；单选模式隐藏表头全选 |
-| `'expand'` | `renderExpand(row, index)`、`expandable(row)` | 展开列 |
-| `'index'` | `title` | 序号列（页内 1 起编号；naive 无此类型，为 sn 扩展） |
+| type          | 专属字段                                      | 说明                                                |
+| ------------- | --------------------------------------------- | --------------------------------------------------- |
+| `'selection'` | `multiple`（默认 `true`）、`disabled(row)`    | 勾选列；单选模式隐藏表头全选                        |
+| `'expand'`    | `renderExpand(row, index)`、`expandable(row)` | 展开列                                              |
+| `'index'`     | `title`                                       | 序号列（页内 1 起编号；naive 无此类型，为 sn 扩展） |
 
 ### DataTablePagination（内置简化分页）
 
@@ -148,19 +148,19 @@
 
 ### 事件
 
-| 事件 | 参数 | 说明 |
-| --- | --- | --- |
-| update:checked-row-keys | `(keys, rows, { row, action })` | 勾选变化；action ∈ check / uncheck / checkAll / uncheckAll |
-| update:expanded-row-keys | `(keys)` | 展开变化 |
-| update:filters | `(filters, column)` | 筛选提交 |
-| update:sorter | `(DataTableSortState \| null)` | 表头排序点击（descend → ascend → false 循环） |
-| update:page | `(page)` | 页码变化 |
-| update:page-size | `(pageSize)` | 页大小变化 |
+| 事件                     | 参数                            | 说明                                                       |
+| ------------------------ | ------------------------------- | ---------------------------------------------------------- |
+| update:checked-row-keys  | `(keys, rows, { row, action })` | 勾选变化；action ∈ check / uncheck / checkAll / uncheckAll |
+| update:expanded-row-keys | `(keys)`                        | 展开变化                                                   |
+| update:filters           | `(filters, column)`             | 筛选提交                                                   |
+| update:sorter            | `(DataTableSortState \| null)`  | 表头排序点击（descend → ascend → false 循环）              |
+| update:page              | `(page)`                        | 页码变化                                                   |
+| update:page-size         | `(pageSize)`                    | 页大小变化                                                 |
 
 ### Slots
 
-| 名称 | 说明 |
-| --- | --- |
+| 名称  | 说明                   |
+| ----- | ---------------------- |
 | empty | 覆盖默认「无数据」空态 |
 
 完整契约见组件 `ai-description.md`。

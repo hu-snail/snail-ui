@@ -18,25 +18,25 @@
 
 ```ts
 // 1) 只导入用到的那个模板：它的 JS 和它自己的样式会一起被带上
-import { SnModelConfig } from '@snui/templates/web/model-config'
+import { SnModelConfig } from '@snui/templates/web/model-config';
 
 // 2) 共享 token 层在应用入口导入一次
-import '@snui/templates/styles'
+import '@snui/templates/styles';
 
 // 3) 需要自己控制代码分割时，也可以单独引某个模板的样式文件
-import '@snui/templates/styles/web-model-config.css'
+import '@snui/templates/styles/web-model-config.css';
 ```
 
 每个模板的样式文件（都在 `@snui/templates/styles/` 下）：
 
-| 文件 | 对应模板 |
-| --- | --- |
+| 文件                   | 对应模板                           |
+| ---------------------- | ---------------------------------- |
 | `web-model-config.css` | `@snui/templates/web/model-config` |
-| `web-assistant.css` | `@snui/templates/web/assistant` |
-| `web-chat.css` | `@snui/templates/web/chat` |
-| `web-prompt.css` | `@snui/templates/web/prompt` |
+| `web-assistant.css`    | `@snui/templates/web/assistant`    |
+| `web-chat.css`         | `@snui/templates/web/chat`         |
+| `web-prompt.css`       | `@snui/templates/web/prompt`       |
 | `web-message-list.css` | `@snui/templates/web/message-list` |
-| `uni-chat.css` | `@snui/templates/uni/chat` |
+| `uni-chat.css`         | `@snui/templates/uni/chat`         |
 | `uni-message-list.css` | `@snui/templates/uni/message-list` |
 
 引 `web-model-config.css` **不会**带上对话页、输入框、消息列表等其他模板的规则；共享的 token 层只有一份（第 2 步），再引第二个模板时不会重复下载。
@@ -47,9 +47,9 @@ import '@snui/templates/styles/web-model-config.css'
 
 ```vue
 <script setup lang="ts">
-import { ref } from 'vue'
-import { SnModelConfig } from '@snui/templates/web/model-config'
-import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web'
+import { ref } from 'vue';
+import { SnModelConfig } from '@snui/templates/web/model-config';
+import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web';
 
 const vendors = ref<SnAiVendor[]>([
   {
@@ -59,10 +59,10 @@ const vendors = ref<SnAiVendor[]>([
     hasCredential: true,
     models: [{ id: 'deep', name: 'Deep', vendorId: 'v-gateway', supportsThinking: true }],
   },
-])
-const activeVendorId = ref('v-gateway')
-const activeModelId = ref('deep')
-const params = ref<SnAiModelParams>({ temperature: 0.7, topP: 1, maxTokens: 4096, stream: true })
+]);
+const activeVendorId = ref('v-gateway');
+const activeModelId = ref('deep');
+const params = ref<SnAiModelParams>({ temperature: 0.7, topP: 1, maxTokens: 4096, stream: true });
 </script>
 
 <template>
@@ -81,33 +81,33 @@ const params = ref<SnAiModelParams>({ temperature: 0.7, topP: 1, maxTokens: 4096
 
 ```vue
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { SnModelConfig } from '@snui/templates/web/model-config'
-import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web'
+import { computed, onMounted, ref } from 'vue';
+import { SnModelConfig } from '@snui/templates/web/model-config';
+import type { SnAiModelParams, SnAiVendor } from '@snui/templates/web';
 
-const vendors = ref<SnAiVendor[]>([])
-const activeVendorId = ref<string | undefined>(undefined)
-const activeModelId = ref<string | undefined>(undefined)
-const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true })
-const search = ref('')
+const vendors = ref<SnAiVendor[]>([]);
+const activeVendorId = ref<string | undefined>(undefined);
+const activeModelId = ref<string | undefined>(undefined);
+const params = ref<SnAiModelParams>({ temperature: 0.7, stream: true });
+const search = ref('');
 /** 正在测试连接的厂商：配置面板据此在该卡片上显示加载态。 */
-const testingVendorId = ref<string | undefined>(undefined)
+const testingVendorId = ref<string | undefined>(undefined);
 
-const activeVendor = computed(() => vendors.value.find((item) => item.id === activeVendorId.value))
+const activeVendor = computed(() => vendors.value.find((item) => item.id === activeVendorId.value));
 
 onMounted(async () => {
-  const response = await fetch('/api/model-config')
+  const response = await fetch('/api/model-config');
   const data = (await response.json()) as {
-    vendors: SnAiVendor[]
-    activeVendorId?: string
-    activeModelId?: string
-    params?: SnAiModelParams
-  }
-  vendors.value = data.vendors
-  activeVendorId.value = data.activeVendorId ?? data.vendors[0]?.id
-  activeModelId.value = data.activeModelId ?? data.vendors[0]?.models?.[0]?.id
-  params.value = data.params ?? { temperature: 0.7, stream: true }
-})
+    vendors: SnAiVendor[];
+    activeVendorId?: string;
+    activeModelId?: string;
+    params?: SnAiModelParams;
+  };
+  vendors.value = data.vendors;
+  activeVendorId.value = data.activeVendorId ?? data.vendors[0]?.id;
+  activeModelId.value = data.activeModelId ?? data.vendors[0]?.models?.[0]?.id;
+  params.value = data.params ?? { temperature: 0.7, stream: true };
+});
 
 /** 落盘：厂商、激活模型或参数任意一项变化都写回后端。 */
 async function persist(): Promise<void> {
@@ -120,29 +120,27 @@ async function persist(): Promise<void> {
       activeModelId: activeModelId.value,
       params: params.value,
     }),
-  })
+  });
 }
 
 /** 连接测试：配置面板只报告意图，真正探活由宿主机负责。 */
 async function onTestConnection({ vendorId }: { vendorId: string }): Promise<void> {
-  const vendor = vendors.value.find((item) => item.id === vendorId)
-  if (!vendor) return
-  testingVendorId.value = vendorId
+  const vendor = vendors.value.find((item) => item.id === vendorId);
+  if (!vendor) return;
+  testingVendorId.value = vendorId;
   try {
     const response = await fetch('/api/model-config/test', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ baseUrl: vendor.baseUrl }),
-    })
+    });
     // 结果只回写到「是否已配置凭证」，凭证本身不离开宿主机。
     if (response.ok) {
-      vendors.value = vendors.value.map((item) =>
-        item.id === vendorId ? { ...item, hasCredential: true } : item,
-      )
+      vendors.value = vendors.value.map((item) => (item.id === vendorId ? { ...item, hasCredential: true } : item));
     }
   } finally {
-    testingVendorId.value = undefined
-    void persist()
+    testingVendorId.value = undefined;
+    void persist();
   }
 }
 
@@ -156,7 +154,7 @@ function chatBody(prompt: string): string {
     maxTokens: params.value.maxTokens,
     thinkingLevel: params.value.thinkingLevel,
     stream: params.value.stream,
-  })
+  });
 }
 </script>
 
@@ -206,52 +204,52 @@ function chatBody(prompt: string): string {
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `vendors` | `SnAiVendor[]` | `undefined` | 已配置的厂商，各自带模型清单。 |
-| `activeVendorId` | `string` | `undefined` | 当前选中的厂商。 |
-| `activeModelId` | `string` | `undefined` | 当前激活的模型。 |
-| `params` | `SnAiModelParams` | `undefined` | 生成参数。 |
-| `editable` | `boolean` | `true` | 是否提供新增 / 编辑 / 删除操作。 |
-| `title` | `string` | `'模型配置'` | 页面标题。 |
-| `searchable` | `boolean` | `true` | 是否提供模型搜索框。 |
-| `testingVendorId` | `string` | `undefined` | 正在测试连接的厂商，该卡片显示加载态。 |
-| `search` | `string` | `undefined` | 模型搜索关键词。 |
+| 名称              | 类型              | 默认值       | 说明                                   |
+| ----------------- | ----------------- | ------------ | -------------------------------------- |
+| `vendors`         | `SnAiVendor[]`    | `undefined`  | 已配置的厂商，各自带模型清单。         |
+| `activeVendorId`  | `string`          | `undefined`  | 当前选中的厂商。                       |
+| `activeModelId`   | `string`          | `undefined`  | 当前激活的模型。                       |
+| `params`          | `SnAiModelParams` | `undefined`  | 生成参数。                             |
+| `editable`        | `boolean`         | `true`       | 是否提供新增 / 编辑 / 删除操作。       |
+| `title`           | `string`          | `'模型配置'` | 页面标题。                             |
+| `searchable`      | `boolean`         | `true`       | 是否提供模型搜索框。                   |
+| `testingVendorId` | `string`          | `undefined`  | 正在测试连接的厂商，该卡片显示加载态。 |
+| `search`          | `string`          | `undefined`  | 模型搜索关键词。                       |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `update:vendors` | `SnAiVendor[]` | 厂商或其模型发生变化。 |
-| `update:activeVendorId` | `string` | 切换厂商。 |
-| `update:activeModelId` | `string` | 切换激活模型。 |
-| `update:params` | `SnAiModelParams` | 生成参数变化。 |
-| `update:search` | `string` | 搜索关键词变化。 |
-| `test-connection` | `{ vendorId }` | 请求宿主机验证该厂商的接口与凭证。 |
+| 名称                    | 参数              | 说明                               |
+| ----------------------- | ----------------- | ---------------------------------- |
+| `update:vendors`        | `SnAiVendor[]`    | 厂商或其模型发生变化。             |
+| `update:activeVendorId` | `string`          | 切换厂商。                         |
+| `update:activeModelId`  | `string`          | 切换激活模型。                     |
+| `update:params`         | `SnAiModelParams` | 生成参数变化。                     |
+| `update:search`         | `string`          | 搜索关键词变化。                   |
+| `test-connection`       | `{ vendorId }`    | 请求宿主机验证该厂商的接口与凭证。 |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| `vendor-extra` | `{ vendor }` | 在厂商卡片下追加内容。 |
+| 名称           | 参数         | 说明                     |
+| -------------- | ------------ | ------------------------ |
+| `vendor-extra` | `{ vendor }` | 在厂商卡片下追加内容。   |
 | `params-extra` | `{ params }` | 在参数面板中追加参数行。 |
 
 ### 类型导出
 
-| 名称 | 来源 | 说明 |
-| --- | --- | --- |
-| `SnModelConfig` | `@snui/templates/web/model-config` | 模板组件本体。 |
-| `SnAiVendor` / `SnAiModel` / `SnAiModelParams` 等 | `@snui/templates` | 共享契约类型，供宿主机构造数据。 |
+| 名称                                              | 来源                               | 说明                             |
+| ------------------------------------------------- | ---------------------------------- | -------------------------------- |
+| `SnModelConfig`                                   | `@snui/templates/web/model-config` | 模板组件本体。                   |
+| `SnAiVendor` / `SnAiModel` / `SnAiModelParams` 等 | `@snui/templates`                  | 共享契约类型，供宿主机构造数据。 |
 
 ### 参数面板
 
-| 参数 | 范围 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| 温度 | 0 – 2，步长 0.1 | 0.7 | 越高输出越发散。 |
-| Top P | 0 – 1，步长 0.01 | 1 | 核采样阈值。 |
-| 最大输出 | tokens | 4096 | 单轮答案的长度上限。 |
-| 思考程度 | 五档（`off` / `low` / `medium` / `high` / `max`） | `off` | 所选模型不支持推理时，该项显示为「当前模型不支持」。 |
-| 流式输出 | 开 / 关 | 开 | 是否逐字返回。 |
+| 参数     | 范围                                              | 默认值 | 说明                                                 |
+| -------- | ------------------------------------------------- | ------ | ---------------------------------------------------- |
+| 温度     | 0 – 2，步长 0.1                                   | 0.7    | 越高输出越发散。                                     |
+| Top P    | 0 – 1，步长 0.01                                  | 1      | 核采样阈值。                                         |
+| 最大输出 | tokens                                            | 4096   | 单轮答案的长度上限。                                 |
+| 思考程度 | 五档（`off` / `low` / `medium` / `high` / `max`） | `off`  | 所选模型不支持推理时，该项显示为「当前模型不支持」。 |
+| 流式输出 | 开 / 关                                           | 开     | 是否逐字返回。                                       |
 
 参数默认值只在 `params` 未提供对应字段时生效；宿主机的 `params` 与面板双向同步。
 

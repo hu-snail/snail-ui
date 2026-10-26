@@ -27,27 +27,27 @@
  *   <SnEquation :value="expr" :katex-options="{ displayMode: true }" />
  */
 
-import { computed } from 'vue'
-import * as katexNamespace from 'katex'
-import type { SnEquationKatex } from './sn-equation-types'
+import { computed } from 'vue';
+import * as katexNamespace from 'katex';
+import type { SnEquationKatex } from './sn-equation-types';
 
-defineOptions({ name: 'SnEquation' })
+defineOptions({ name: 'SnEquation' });
 
 const props = withDefaults(
   defineProps<{
     /** LaTeX expression string. Mirrors n-equation `value`. */
-    value?: string
+    value?: string;
     /** Custom katex-like renderer; overrides the bundled one. Mirrors n-equation `katex`. */
-    katex?: SnEquationKatex | undefined
+    katex?: SnEquationKatex | undefined;
     /** Options forwarded to renderToString (e.g. displayMode / macros). Mirrors n-equation `katexOptions`. */
-    katexOptions?: Record<string, unknown> | undefined
+    katexOptions?: Record<string, unknown> | undefined;
   }>(),
   {
     value: '',
     katex: undefined,
     katexOptions: undefined,
   },
-)
+);
 
 /**
  * Resolve the renderToString entry across interop shapes (ESM namespace
@@ -57,38 +57,36 @@ const props = withDefaults(
  */
 function resolveKatex(ns: unknown): SnEquationKatex | undefined {
   if (typeof (ns as SnEquationKatex | undefined)?.renderToString === 'function') {
-    return ns as SnEquationKatex
+    return ns as SnEquationKatex;
   }
-  const fallback = (ns as { default?: unknown } | undefined)?.default
+  const fallback = (ns as { default?: unknown } | undefined)?.default;
   if (typeof (fallback as SnEquationKatex | undefined)?.renderToString === 'function') {
-    return fallback as SnEquationKatex
+    return fallback as SnEquationKatex;
   }
-  return undefined
+  return undefined;
 }
 
-const bundledKatex: SnEquationKatex | undefined = resolveKatex(katexNamespace)
+const bundledKatex: SnEquationKatex | undefined = resolveKatex(katexNamespace);
 
 const rendered = computed(() => {
-  const lib = props.katex ?? bundledKatex
+  const lib = props.katex ?? bundledKatex;
   if (!lib) {
     return {
       wrapperTag: 'span',
       wrapperClass: undefined as string | undefined,
       innerHtml: 'no katex provided',
-    }
+    };
   }
   const outerHtml = lib.renderToString(props.value, {
     throwOnError: false,
     ...props.katexOptions,
-  })
-  const matchResult = outerHtml.match(/^<([a-z]+)[^>]+class="([^"]+)"[^>]*>/)
-  const wrapperTag = matchResult?.[1] || 'span'
-  const wrapperClass = matchResult?.[2]
-  const innerHtml = outerHtml
-    .replace(/^<[a-z]+[^>]*>/, '')
-    .replace(/<\/[a-z]+>$/, '')
-  return { wrapperTag, wrapperClass, innerHtml }
-})
+  });
+  const matchResult = outerHtml.match(/^<([a-z]+)[^>]+class="([^"]+)"[^>]*>/);
+  const wrapperTag = matchResult?.[1] || 'span';
+  const wrapperClass = matchResult?.[2];
+  const innerHtml = outerHtml.replace(/^<[a-z]+[^>]*>/, '').replace(/<\/[a-z]+>$/, '');
+  return { wrapperTag, wrapperClass, innerHtml };
+});
 </script>
 
 <template>

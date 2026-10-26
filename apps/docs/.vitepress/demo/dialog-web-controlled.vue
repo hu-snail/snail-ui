@@ -6,15 +6,15 @@
  * The dialog itself never writes visible state; it only emits. The stage
  * follows the same contract — it emits, the parent decides.
  */
-import { ref } from 'vue'
-import { SnButton, SnDialog } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDialog } from '@snui/vue-web';
 
-const open = ref(false)
-const closeFocusable = ref(false)
-const events = ref<string[]>([])
+const open = ref(false);
+const closeFocusable = ref(false);
+const events = ref<string[]>([]);
 
 function log(name: string): void {
-  events.value = [`${name} @ ${new Date().toLocaleTimeString()}`, ...events.value].slice(0, 4)
+  events.value = [`${name} @ ${new Date().toLocaleTimeString()}`, ...events.value].slice(0, 4);
 }
 </script>
 
@@ -23,7 +23,7 @@ function log(name: string): void {
     <div class="dlg-ctrl__bar">
       <SnButton type="primary" @click="open = true">打开（受控）</SnButton>
       <label class="dlg-ctrl__toggle">
-        <input v-model="closeFocusable" type="checkbox">
+        <input v-model="closeFocusable" type="checkbox" />
         closeFocusable
       </label>
     </div>

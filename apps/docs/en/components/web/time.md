@@ -37,14 +37,14 @@ Time formatter (n-time aligned): renders a timestamp / Date as datetime, date-on
 
 ### SnTime Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| time | `number \| Date` | `undefined` (mount time) | Time to render |
-| to | `number \| Date` | `undefined` (mount time) | Base time for relative |
-| type | `'relative' \| 'date' \| 'datetime'` | `'datetime'` | Rendered representation |
-| unix | `boolean` | `false` | Interpret input as unix seconds |
-| format | `string` | `undefined` | Custom format (yyyy yy MMMM MMM MM M dd d EEEE EEE HH H hh h mm m ss s SSS a + '…' literals) |
-| text | `boolean` | `false` | Render a bare text node instead of `<time>` |
-| time-zone | `string` | `undefined` | IANA zone, affects formatting only |
+| Prop      | Type                                 | Default                  | Notes                                                                                        |
+| --------- | ------------------------------------ | ------------------------ | -------------------------------------------------------------------------------------------- |
+| time      | `number \| Date`                     | `undefined` (mount time) | Time to render                                                                               |
+| to        | `number \| Date`                     | `undefined` (mount time) | Base time for relative                                                                       |
+| type      | `'relative' \| 'date' \| 'datetime'` | `'datetime'`             | Rendered representation                                                                      |
+| unix      | `boolean`                            | `false`                  | Interpret input as unix seconds                                                              |
+| format    | `string`                             | `undefined`              | Custom format (yyyy yy MMMM MMM MM M dd d EEEE EEE HH H hh h mm m ss s SSS a + '…' literals) |
+| text      | `boolean`                            | `false`                  | Render a bare text node instead of `<time>`                                                  |
+| time-zone | `string`                             | `undefined`              | IANA zone, affects formatting only                                                           |
 
 No events, no slots. Divergences from naive: no date-fns dependency (format is a common-token subset), relative wording is built-in zh-CN (formatDistanceStrict equivalent) — see the component `ai-description.md`.

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDropdown — submenu. */
-import { SnButton, SnDropdown } from '@snui/vue-web'
+import { SnButton, SnDropdown } from '@snui/vue-web';
 const options = [
   { label: '文件', key: 'file' },
   {
@@ -13,7 +13,7 @@ const options = [
     ],
   },
   { label: '关闭', key: 'close' },
-]
+];
 </script>
 
 <template>

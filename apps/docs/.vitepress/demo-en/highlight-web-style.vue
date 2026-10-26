@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnHighlight — custom mark style via highlight-style. */
-import { SnHighlight } from '@snui/vue-web'
+import { SnHighlight } from '@snui/vue-web';
 
-const text = 'Snail AUI is written entirely in TypeScript and integrates seamlessly with your TypeScript projects'
-const patterns = ['Snail AUI', 'TypeScript']
+const text =
+  'Snail AUI is written entirely in TypeScript and integrates seamlessly with your TypeScript projects';
+const patterns = ['Snail AUI', 'TypeScript'];
 
 const markStyle = {
   padding: '0 6px',
@@ -11,7 +12,7 @@ const markStyle = {
   display: 'inline-block',
   color: 'var(--sn-web-color-background-surface)',
   background: 'var(--sn-web-color-action-primary)',
-}
+};
 </script>
 
 <template>

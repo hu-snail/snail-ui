@@ -1,23 +1,23 @@
 <script setup lang="ts">
 /** Demo: SnVirtualList — scroll / update:scrollTop 实时回显 + overscan 预渲染对照。 */
-import { reactive } from 'vue'
-import { SnVirtualList } from '@snui/vue-web'
+import { reactive } from 'vue';
+import { SnVirtualList } from '@snui/vue-web';
 
 /** 本地造 1000 条数据。 */
 const items = Array.from({ length: 1000 }, (_, i) => ({
   value: i,
   label: `Row ${i + 1}`,
-}))
+}));
 
 /** 两组滚动回显：native scroll 计数 + rAF 节流后的 scrollTop。 */
 const readouts = reactive({
   plain: { scrollTop: 0, scrollCount: 0 },
   buffered: { scrollTop: 0, scrollCount: 0 },
-})
+});
 
 function onScrollTop(key: 'plain' | 'buffered', next: number): void {
-  readouts[key].scrollTop = next
-  readouts[key].scrollCount += 1
+  readouts[key].scrollTop = next;
+  readouts[key].scrollCount += 1;
 }
 </script>
 
@@ -39,11 +39,14 @@ function onScrollTop(key: 'plain' | 'buffered', next: number): void {
           </template>
         </SnVirtualList>
         <p class="virtual-list-demo__hint">
-          scrollTop {{ readouts.plain.scrollTop }}px · {{ readouts.plain.scrollCount }} scroll events
+          scrollTop {{ readouts.plain.scrollTop }}px · {{ readouts.plain.scrollCount }} scroll
+          events
         </p>
       </section>
       <section class="virtual-list-demo__block">
-        <h4 class="virtual-list-demo__title">overscan 12 — renders 12 extra buffer rows above and below the viewport</h4>
+        <h4 class="virtual-list-demo__title">
+          overscan 12 — renders 12 extra buffer rows above and below the viewport
+        </h4>
         <SnVirtualList
           :items="items"
           :item-size="32"
@@ -57,12 +60,14 @@ function onScrollTop(key: 'plain' | 'buffered', next: number): void {
           </template>
         </SnVirtualList>
         <p class="virtual-list-demo__hint">
-          scrollTop {{ readouts.buffered.scrollTop }}px · {{ readouts.buffered.scrollCount }} scroll events
+          scrollTop {{ readouts.buffered.scrollTop }}px · {{ readouts.buffered.scrollCount }} scroll
+          events
         </p>
       </section>
     </div>
     <p class="virtual-list-demo__hint virtual-list-demo__hint--note">
-      scroll is a native high-frequency event; update:scrollTop is throttled via rAF. A larger overscan lowers the chance of blank rows during fast scrolling.
+      scroll is a native high-frequency event; update:scrollTop is throttled via rAF. A larger
+      overscan lowers the chance of blank rows during fast scrolling.
     </p>
   </div>
 </template>

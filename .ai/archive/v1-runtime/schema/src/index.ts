@@ -24,10 +24,7 @@ export {
   type UISchema,
 } from './validator.js';
 
-export {
-  createNormalizer,
-  type Normalizer,
-} from './normalizer.js';
+export { createNormalizer, type Normalizer } from './normalizer.js';
 
 export {
   parseSchemaVersion,

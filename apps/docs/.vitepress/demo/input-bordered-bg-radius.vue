@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /** Demo: SnInput — bordered / bg / radius variants. */
-import { ref } from 'vue'
-import { SnInput } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnInput } from '@snui/vue-web';
 
-const a = ref('')
-const b = ref('')
-const c = ref('')
-const d = ref('search')
-const e = ref('')
+const a = ref('');
+const b = ref('');
+const c = ref('');
+const d = ref('search');
+const e = ref('');
 </script>
 
 <template>
@@ -29,7 +29,21 @@ const e = ref('')
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
-.sn-demo__title { margin: 12px 0 0; font-size: 13px; font-weight: 600; color: var(--vp-c-text-1); }
-.on-soft { background: var(--vp-c-bg-soft); padding: 8px; border-radius: 6px; }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
+.sn-demo__title {
+  margin: 12px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+.on-soft {
+  background: var(--vp-c-bg-soft);
+  padding: 8px;
+  border-radius: 6px;
+}
 </style>

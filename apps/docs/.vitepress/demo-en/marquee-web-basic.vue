@@ -4,13 +4,13 @@
  * Per AUI-DOCS-016: imports the real @snui/vue-web SnMarquee.
  * 默认 12 秒一轮、24px 间距、鼠标悬停暂停。
  */
-import { SnMarquee } from '@snui/vue-web'
+import { SnMarquee } from '@snui/vue-web';
 
 const notices = [
   'Notice: system maintenance this Friday 22:00 - 24:00; services unavailable during that window.',
   'Component library docs updated with new Marquee, Comment and more.',
   'All-hands meeting next Monday at 10:00 in the multipurpose room. Please be on time.',
-]
+];
 </script>
 
 <template>
@@ -22,7 +22,8 @@ const notices = [
     </SnMarquee>
 
     <p class="marquee-demo__hint">
-      Put a single copy of the content in the slot; the component duplicates it end-to-end for a seamless loop, and hovering pauses it.
+      Put a single copy of the content in the slot; the component duplicates it end-to-end for a
+      seamless loop, and hovering pauses it.
     </p>
   </div>
 </template>

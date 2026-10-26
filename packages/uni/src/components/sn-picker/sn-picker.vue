@@ -34,72 +34,74 @@
  *   - 弹层定位 / 动画 — 用 sn-popup
  */
 
-import { computed, ref, watch } from 'vue'
-import SnPopup from '../sn-popup/sn-popup.vue'
-import SnPickerView from '../sn-picker-view/sn-picker-view.vue'
+import { computed, ref, watch } from 'vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
+import SnPickerView from '../sn-picker-view/sn-picker-view.vue';
 import type {
   PickerColumn,
   PickerOption,
   PickerValue,
-} from '../sn-picker-view/sn-picker-view-types'
+} from '../sn-picker-view/sn-picker-view-types';
 
-defineOptions({ name: 'SnPicker' })
+defineOptions({ name: 'SnPicker' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-picker` 1:1 surface ─────────────────────────────────── */
 
     /** Confirmed value per column (`v-model`). */
-    modelValue?: PickerValue[]
+    modelValue?: PickerValue[];
     /** Sheet visibility (`v-model:visible`). */
-    visible?: boolean
+    visible?: boolean;
     /** Columns, or the option tree when `cascade` is set. */
-    columns?: PickerColumn[]
+    columns?: PickerColumn[];
     /** Treat `columns` as a nested option tree. */
-    cascade?: boolean
+    cascade?: boolean;
     /** Toolbar title. Empty = no title row. */
-    title?: string
+    title?: string;
     /** Cancel button label. */
-    cancelButtonText?: string
+    cancelButtonText?: string;
     /** Confirm button label. */
-    confirmButtonText?: string
+    confirmButtonText?: string;
     /** Option key holding the value. */
-    valueKey?: string
+    valueKey?: string;
     /** Option key holding the label. */
-    labelKey?: string
+    labelKey?: string;
     /** Option key holding the children (cascade mode). */
-    childrenKey?: string
+    childrenKey?: string;
     /** Row height in px design units. */
-    itemHeight?: number
+    itemHeight?: number;
     /** Number of visible rows. */
-    visibleItemCount?: number
+    visibleItemCount?: number;
     /**
      * Veto hook for confirm. Returning `false` (or resolving `false`) keeps
      * the sheet open and the model untouched.
      */
-    beforeConfirm?: ((payload: {
-      value: PickerValue[]
-      selectedItems: Array<PickerOption | PickerValue>
-    }) => boolean | Promise<boolean>) | undefined
+    beforeConfirm?:
+      | ((payload: {
+          value: PickerValue[];
+          selectedItems: Array<PickerOption | PickerValue>;
+        }) => boolean | Promise<boolean>)
+      | undefined;
     /** Tapping the mask closes the sheet. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Pad the sheet for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Write `v-model` on every roll instead of only on confirm. */
-    immediateChange?: boolean
+    immediateChange?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the sheet. */
-    customStyle?: string
+    customStyle?: string;
     /**
      * Accepted for wot-ui parity, NOT implemented — miniprogram has no portal
      * host, so the layer cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
     /** Class forwarded to the roller body. */
-    customViewClass?: string
+    customViewClass?: string;
   }>(),
   {
     modelValue: () => [],
@@ -124,84 +126,87 @@ const props = withDefaults(
     rootPortal: false,
     customViewClass: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: PickerValue[]): void
-  (e: 'update:visible', value: boolean): void
-  (e: 'confirm', payload: { value: PickerValue[], selectedItems: Array<PickerOption | PickerValue> }): void
-  (e: 'cancel'): void
-  (e: 'open'): void
-}>()
+  (e: 'update:modelValue', value: PickerValue[]): void;
+  (e: 'update:visible', value: boolean): void;
+  (
+    e: 'confirm',
+    payload: { value: PickerValue[]; selectedItems: Array<PickerOption | PickerValue> },
+  ): void;
+  (e: 'cancel'): void;
+  (e: 'open'): void;
+}>();
 
 /** Draft selection while the sheet is open. */
-const draft = ref<PickerValue[]>(props.modelValue.slice())
+const draft = ref<PickerValue[]>(props.modelValue.slice());
 /** Latest selection payload reported by the roller body. */
-const lastSelectedItems = ref<Array<PickerOption | PickerValue>>([])
+const lastSelectedItems = ref<Array<PickerOption | PickerValue>>([]);
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (props.immediateChange) return
-    draft.value = value.slice()
+    if (props.immediateChange) return;
+    draft.value = value.slice();
   },
   { deep: true },
-)
+);
 
 watch(
   () => props.visible,
   (value) => {
-    if (!value) return
-    draft.value = props.modelValue.slice()
-    emit('open')
+    if (!value) return;
+    draft.value = props.modelValue.slice();
+    emit('open');
   },
-)
+);
 
 /** Value bound into the roller — the draft, or the model in immediate mode. */
 const viewValue = computed<PickerValue[]>(() =>
   props.immediateChange ? props.modelValue : draft.value,
-)
+);
 
 function onViewChange(payload: {
-  selectedValues: PickerValue[]
-  selectedOptions: Array<PickerOption | PickerValue>
+  selectedValues: PickerValue[];
+  selectedOptions: Array<PickerOption | PickerValue>;
 }): void {
-  lastSelectedItems.value = payload.selectedOptions
+  lastSelectedItems.value = payload.selectedOptions;
   if (!props.immediateChange) {
-    draft.value = payload.selectedValues.slice()
-    return
+    draft.value = payload.selectedValues.slice();
+    return;
   }
-  emit('update:modelValue', payload.selectedValues.slice())
+  emit('update:modelValue', payload.selectedValues.slice());
 }
 
 function requestClose(): void {
-  emit('update:visible', false)
+  emit('update:visible', false);
 }
 
 function onCancel(): void {
-  emit('cancel')
-  requestClose()
+  emit('cancel');
+  requestClose();
 }
 
 async function onConfirm(): Promise<void> {
-  const value = viewValue.value.slice()
-  const items = lastSelectedItems.value
+  const value = viewValue.value.slice();
+  const items = lastSelectedItems.value;
   if (props.beforeConfirm) {
-    const verdict = await props.beforeConfirm({ value, selectedItems: items })
-    if (verdict === false) return
+    const verdict = await props.beforeConfirm({ value, selectedItems: items });
+    if (verdict === false) return;
   }
-  if (!props.immediateChange) emit('update:modelValue', value)
-  emit('confirm', { value, selectedItems: items })
-  requestClose()
+  if (!props.immediateChange) emit('update:modelValue', value);
+  emit('confirm', { value, selectedItems: items });
+  requestClose();
 }
 
 /** Class applied to the popup root — the sheet chrome lives in the slot. */
-const popupClass = computed(() => ['sn-picker-popup', props.customClass].filter(Boolean).join(' '))
+const popupClass = computed(() => ['sn-picker-popup', props.customClass].filter(Boolean).join(' '));
 
 /** Forwarded to sn-popup — a string, so `exactOptionalPropertyTypes` stays happy. */
-const rootStyle = computed(() => props.customStyle)
+const rootStyle = computed(() => props.customStyle);
 
-const viewClass = computed(() => props.customViewClass)
+const viewClass = computed(() => props.customViewClass);
 </script>
 
 <template>
@@ -223,14 +228,16 @@ const viewClass = computed(() => props.customViewClass)
           role="button"
           :aria-label="props.cancelButtonText"
           @tap="onCancel"
-        >{{ props.cancelButtonText }}</view>
+          >{{ props.cancelButtonText }}</view
+        >
         <text v-if="props.title" class="sn-picker__title">{{ props.title }}</text>
         <view
           class="sn-picker__action sn-picker__confirm"
           role="button"
           :aria-label="props.confirmButtonText"
           @tap="onConfirm"
-        >{{ props.confirmButtonText }}</view>
+          >{{ props.confirmButtonText }}</view
+        >
       </view>
 
       <SnPickerView

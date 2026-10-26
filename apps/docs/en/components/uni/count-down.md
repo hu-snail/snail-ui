@@ -22,36 +22,36 @@ With a `ref` on the instance you can call `start()` / `pause()` / `reset()`; `mi
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| time | number | 0 | Countdown length in milliseconds |
-| millisecond | boolean | false | Enable millisecond ticks (~16ms) |
-| format | string | 'HH:mm:ss' | Format string |
-| autoStart | boolean | true | Start automatically on mount / after `time` changes |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop        | Type    | Default    | Description                                         |
+| ----------- | ------- | ---------- | --------------------------------------------------- |
+| time        | number  | 0          | Countdown length in milliseconds                    |
+| millisecond | boolean | false      | Enable millisecond ticks (~16ms)                    |
+| format      | string  | 'HH:mm:ss' | Format string                                       |
+| autoStart   | boolean | true       | Start automatically on mount / after `time` changes |
+| customClass | string  | ''         | Custom class for the root node                      |
+| customStyle | string  | ''         | Custom inline style for the root node               |
 
 Exposed methods: `start()` / `pause()` / `reset()`. `SnCountDownTimeData` = `{ total, days, hours, minutes, seconds, milliseconds }`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| change | Fires on every tick | SnCountDownTimeData |
-| finish | Fires when the countdown reaches zero | — |
+| Event  | Description                           | Payload             |
+| ------ | ------------------------------------- | ------------------- |
+| change | Fires on every tick                   | SnCountDownTimeData |
+| finish | Fires when the countdown reaches zero | —                   |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                            |
+| ------- | ------------------------------------------------------ |
 | default | Custom rendering; slot props are `SnCountDownTimeData` |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-text-primary | Timer text |
-| --sn-mp-font-size-md | Text size |
+| Variable                        | Purpose          |
+| ------------------------------- | ---------------- |
+| --sn-mp-color-text-primary      | Timer text       |
+| --sn-mp-font-size-md            | Text size        |
 | --sn-mp-font-line-height-normal | Text line height |
 
 ## Accessibility
@@ -61,7 +61,6 @@ Exposed methods: `start()` / `pause()` / `reset()`. `SnCountDownTimeData` = `{ t
 ## Dark mode
 
 The text color uses `--sn-mp-color-text-primary`, overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

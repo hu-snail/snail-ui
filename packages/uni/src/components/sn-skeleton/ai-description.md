@@ -37,19 +37,19 @@ A column descriptor accepts `type` (`text` / `rect` / `circle` / `image`),
 ```
 
 ```ts
-import { SnSkeleton } from '@snui/uni'
+import { SnSkeleton } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `theme` | 'text' | 'avatar' | 'paragraph' | 'image' | 'text' | no | Preset layout when `rowCol` is empty. |
-| `rowCol` | (number | SnSkeletonCol[])[] | [] | no | Per-row layout. |
-| `loading` | boolean | true | no | Show the skeleton; `false` renders the default slot. |
-| `animation` | '' | 'gradient' | 'flashed' | '' | no | Shimmer kind. |
-| `customClass` | string | string[] | Record<string, boolean> | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name          | Type    | Default            | Required                | Description                                          |
+| ------------- | ------- | ------------------ | ----------------------- | ---------------------------------------------------- |
+| `theme`       | 'text'  | 'avatar'           | 'paragraph'             | 'image'                                              | 'text'          | no                              | Preset layout when `rowCol` is empty. |
+| `rowCol`      | (number | SnSkeletonCol[])[] | []                      | no                                                   | Per-row layout. |
+| `loading`     | boolean | true               | no                      | Show the skeleton; `false` renders the default slot. |
+| `animation`   | ''      | 'gradient'         | 'flashed'               | ''                                                   | no              | Shimmer kind.                   |
+| `customClass` | string  | string[]           | Record<string, boolean> | ''                                                   | no              | Custom class for the root node. |
+| `customStyle` | string  | ''                 | no                      | Custom inline style for the root node.               |
 
 `SnSkeletonCol` = `{ type?, size?, width?, height?, margin?, borderRadius?, backgroundColor? }`.
 
@@ -59,19 +59,19 @@ None — the component is presentational.
 
 ## Slots
 
-| Slot | Description |
-|---|---|
+| Slot      | Description                                     |
+| --------- | ----------------------------------------------- |
 | `default` | Real content, rendered once `loading` is false. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background subtle | `--sn-mp-color-background-subtle` | Placeholder fill + gradient base |
-| Background elevated | `--sn-mp-color-background-elevated` | Gradient highlight |
-| Border default | `--sn-mp-color-border-default` | Doodle skin outline |
-| Radius SM / MD / LG / full | `--sn-mp-radius-sm …` | Placeholder corners |
-| Spacing 3 | `--sn-mp-spacing-3` | Row + column gap |
+| Token                      | CSS Variable                        | Purpose                          |
+| -------------------------- | ----------------------------------- | -------------------------------- |
+| Background subtle          | `--sn-mp-color-background-subtle`   | Placeholder fill + gradient base |
+| Background elevated        | `--sn-mp-color-background-elevated` | Gradient highlight               |
+| Border default             | `--sn-mp-color-border-default`      | Doodle skin outline              |
+| Radius SM / MD / LG / full | `--sn-mp-radius-sm …`               | Placeholder corners              |
+| Spacing 3                  | `--sn-mp-spacing-3`                 | Row + column gap                 |
 
 ## Accessibility
 

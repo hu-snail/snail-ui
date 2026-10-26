@@ -1,13 +1,13 @@
 <script setup lang="ts">
 /** Demo: SnForm — basic model + reactive submit. */
-import { reactive, ref } from 'vue'
-import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web'
+import { reactive, ref } from 'vue';
+import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web';
 
-const form = reactive({ name: '', email: '' })
-const last = ref<string | null>(null)
+const form = reactive({ name: '', email: '' });
+const last = ref<string | null>(null);
 
 function onSubmit(payload: { valid: boolean }): void {
-  if (payload.valid) last.value = JSON.stringify(form, null, 2)
+  if (payload.valid) last.value = JSON.stringify(form, null, 2);
 }
 </script>
 
@@ -27,11 +27,18 @@ function onSubmit(payload: { valid: boolean }): void {
 </template>
 
 <style scoped>
-.sn-form-demo { max-width: 360px; display: flex; flex-direction: column; gap: 16px; }
+.sn-form-demo {
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 .sn-form-demo__log {
-  margin: 0; padding: 12px;
+  margin: 0;
+  padding: 12px;
   background: var(--vp-c-bg-soft);
   border-radius: 6px;
-  font-size: 12px; color: var(--vp-c-text-2);
+  font-size: 12px;
+  color: var(--vp-c-text-2);
 }
 </style>

@@ -57,9 +57,9 @@
  *   - 空态插画 — 用 sn-empty（本组件只渲染一行内置空态）
  */
 
-import { computed, provide, ref, useSlots } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { ChevronDown, ChevronUp } from '../sn-icon/sn-icon-set'
+import { computed, provide, ref, useSlots } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { ChevronDown, ChevronUp } from '../sn-icon/sn-icon-set';
 import {
   SN_TABLE_KEY,
   type SnTableAlign,
@@ -68,38 +68,38 @@ import {
   type SnTableIndexConfig,
   type SnTableRow,
   type SnTableSortOrder,
-} from './sn-table-types'
+} from './sn-table-types';
 
-defineOptions({ name: 'SnTable' })
+defineOptions({ name: 'SnTable' });
 
 /** Default column width in design px (mirrors `wd-table-column` `width`). */
-const DEFAULT_COLUMN_WIDTH = 100
+const DEFAULT_COLUMN_WIDTH = 100;
 
 /** Design px → rpx (750 design width, 1px = 2rpx — CONTRIBUTING §2.4). */
-const RPX_PER_PX = 2
+const RPX_PER_PX = 2;
 
 const props = withDefaults(
   defineProps<{
     /** Table rows. */
-    data?: SnTableRow[]
+    data?: SnTableRow[];
     /** Draw cell borders. */
-    border?: boolean
+    border?: boolean;
     /** Zebra-stripe the body rows. */
-    stripe?: boolean
+    stripe?: boolean;
     /** Max height — a bare number is design px. Setting it turns on vertical scrolling. */
-    height?: string | number | undefined
+    height?: string | number | undefined;
     /** Render the header row. */
-    showHeader?: boolean
+    showHeader?: boolean;
     /** Clamp cell text to two lines. */
-    ellipsis?: boolean
+    ellipsis?: boolean;
     /** Show the index column; an object customises its label / width / align. */
-    index?: boolean | SnTableIndexConfig
+    index?: boolean | SnTableIndexConfig;
     /** Pin the header row while the body scrolls vertically. */
-    fixedHeader?: boolean
+    fixedHeader?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     data: () => [],
@@ -113,30 +113,30 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Column definitions (`sn-table-column` children). */
-  default?(): unknown
+  default?(): unknown;
   /** Replaces the built-in empty row when the table has no rows. */
-  empty?(): unknown
-}>()
+  empty?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'sort-method', column: { prop: string; label: string; order: SnTableSortOrder }): void
-  (e: 'row-click', payload: { rowIndex: number; row: SnTableRow }): void
-}>()
+  (e: 'sort-method', column: { prop: string; label: string; order: SnTableSortOrder }): void;
+  (e: 'row-click', payload: { rowIndex: number; row: SnTableRow }): void;
+}>();
 
 /* ── Column registration (provide / inject) ─────────────────────────────── */
 
-const columns = ref<SnTableColumnEntry[]>([])
+const columns = ref<SnTableColumnEntry[]>([]);
 
 function registerColumn(entry: SnTableColumnEntry): void {
-  columns.value = [...columns.value, entry]
+  columns.value = [...columns.value, entry];
 }
 
 function unregisterColumn(uid: number): void {
-  columns.value = columns.value.filter((entry) => entry.uid !== uid)
+  columns.value = columns.value.filter((entry) => entry.uid !== uid);
 }
 
 /**
@@ -145,102 +145,103 @@ function unregisterColumn(uid: number): void {
  * The component never reorders `data` itself (AGENTS.md §32).
  */
 function toggleSort(uid: number): void {
-  const entry = columns.value.find((column) => column.uid === uid)
-  if (!entry) return
-  const current = entry.getColumn().sortOrder
-  const next: SnTableSortOrder = current === 'none' ? 'asc' : current === 'asc' ? 'desc' : 'none'
-  entry.setSortOrder(next)
-  const column = entry.getColumn()
-  emit('sort-method', { prop: column.prop, label: column.label, order: next })
+  const entry = columns.value.find((column) => column.uid === uid);
+  if (!entry) return;
+  const current = entry.getColumn().sortOrder;
+  const next: SnTableSortOrder = current === 'none' ? 'asc' : current === 'asc' ? 'desc' : 'none';
+  entry.setSortOrder(next);
+  const column = entry.getColumn();
+  emit('sort-method', { prop: column.prop, label: column.label, order: next });
 }
 
-provide(SN_TABLE_KEY, { columns, registerColumn, unregisterColumn, toggleSort })
+provide(SN_TABLE_KEY, { columns, registerColumn, unregisterColumn, toggleSort });
 
 /* ── Layout resolution ─────────────────────────────────────────────────── */
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Whether the index column is rendered. */
-const showsIndex = computed(() => props.index !== false)
+const showsIndex = computed(() => props.index !== false);
 
 /** Resolved index-column config (label / width / align). */
 const indexConfig = computed<Required<SnTableIndexConfig>>(() => {
-  const raw = typeof props.index === 'object' && props.index !== null ? props.index : {}
+  const raw = typeof props.index === 'object' && props.index !== null ? props.index : {};
   return {
     label: raw.label ?? '',
     width: raw.width ?? DEFAULT_COLUMN_WIDTH,
     align: raw.align ?? 'center',
-  }
-})
+  };
+});
 
 /** Resolve a numeric-or-string length (bare number = design px → rpx). */
 function toLength(value: string | number | undefined): string {
-  if (value === undefined || value === '') return `${DEFAULT_COLUMN_WIDTH * RPX_PER_PX}rpx`
-  return typeof value === 'number' ? `${value * RPX_PER_PX}rpx` : value
+  if (value === undefined || value === '') return `${DEFAULT_COLUMN_WIDTH * RPX_PER_PX}rpx`;
+  return typeof value === 'number' ? `${value * RPX_PER_PX}rpx` : value;
 }
 
 /** A column with its resolved CSS width and sticky offset. */
 interface ResolvedColumn extends SnTableColumn {
   /** Resolved CSS width. */
-  cssWidth: string
+  cssWidth: string;
   /** Cumulative left offset when pinned, `''` otherwise. */
-  stickyLeft: string
+  stickyLeft: string;
 }
 
 /** Columns resolved left-to-right, with sticky offsets for pinned ones. */
 const resolvedColumns = computed<ResolvedColumn[]>(() => {
   // The index column occupies the leftmost slot; pinned columns start after it.
-  let offsetPx = showsIndex.value
-    ? toLength(indexConfig.value.width)
-    : '0px'
+  let offsetPx = showsIndex.value ? toLength(indexConfig.value.width) : '0px';
   return columns.value.map((entry) => {
-    const column = entry.getColumn()
-    const cssWidth = toLength(column.width)
-    const stickyLeft = column.fixed ? offsetPx : ''
-    if (column.fixed) offsetPx = `calc(${offsetPx} + ${cssWidth})`
-    return { ...column, cssWidth, stickyLeft }
-  })
-})
+    const column = entry.getColumn();
+    const cssWidth = toLength(column.width);
+    const stickyLeft = column.fixed ? offsetPx : '';
+    if (column.fixed) offsetPx = `calc(${offsetPx} + ${cssWidth})`;
+    return { ...column, cssWidth, stickyLeft };
+  });
+});
 
 /** Map `prop → column uid`, so a header tap does not re-scan the list. */
 const columnUids = computed<Record<string, number>>(() => {
-  const map: Record<string, number> = {}
-  for (const entry of columns.value) map[entry.getColumn().prop] = entry.uid
-  return map
-})
+  const map: Record<string, number> = {};
+  for (const entry of columns.value) map[entry.getColumn().prop] = entry.uid;
+  return map;
+});
 
 /** Map `prop → custom cell renderer` declared through a column's `value` slot. */
-const cellRenderers = computed<Record<string, ((props: { row: SnTableRow; index: number }) => unknown) | undefined>>(() => {
-  const map: Record<string, ((props: { row: SnTableRow; index: number }) => unknown) | undefined> = {}
-  for (const entry of columns.value) map[entry.getColumn().prop] = entry.getValueSlot()
-  return map
-})
+const cellRenderers = computed<
+  Record<string, ((props: { row: SnTableRow; index: number }) => unknown) | undefined>
+>(() => {
+  const map: Record<string, ((props: { row: SnTableRow; index: number }) => unknown) | undefined> =
+    {};
+  for (const entry of columns.value) map[entry.getColumn().prop] = entry.getValueSlot();
+  return map;
+});
 
 /** Rows actually rendered — all of them (see the header on `virtual`). */
-const rows = computed<SnTableRow[]>(() => props.data ?? [])
+const rows = computed<SnTableRow[]>(() => props.data ?? []);
 
 /** Cell text for one row / column. Objects are JSON-encoded, never `[object Object]`. */
 function cellText(row: SnTableRow, prop: string): string {
-  const value = row[prop]
-  if (value === null || value === undefined) return ''
-  if (typeof value === 'object') return JSON.stringify(value)
-  return String(value)
+  const value = row[prop];
+  if (value === null || value === undefined) return '';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
 }
 
 /** Row classes: stripe + tap affordance. */
 function rowClass(rowIndex: number): (string | Record<string, boolean>)[] {
-  return ['sn-table__row', { 'sn-table__row--stripe': props.stripe && rowIndex % 2 === 1 }]
+  return ['sn-table__row', { 'sn-table__row--stripe': props.stripe && rowIndex % 2 === 1 }];
 }
 
 function onRowTap(rowIndex: number, row: SnTableRow): void {
-  emit('row-click', { rowIndex, row })
+  emit('row-click', { rowIndex, row });
 }
 
 function onHeaderTap(column: ResolvedColumn): void {
-  if (!column.sortable) return
-  const uid = columnUids.value[column.prop]
-  if (uid === undefined) return
-  toggleSort(uid)
+  if (!column.sortable) return;
+  const uid = columnUids.value[column.prop];
+  if (uid === undefined) return;
+  toggleSort(uid);
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -253,54 +254,49 @@ const rootClass = computed(() => [
     'sn-table--fixed-header': props.fixedHeader,
   },
   props.customClass,
-])
+]);
 
 /** Height of the vertical scroller; `''` = auto (no vertical scrolling). */
 const heightStyle = computed(() => {
-  if (props.height === undefined || props.height === '') return ''
-  return toLength(props.height)
-})
+  if (props.height === undefined || props.height === '') return '';
+  return toLength(props.height);
+});
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (heightStyle.value) parts.push(`--sn-table-height: ${heightStyle.value}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (heightStyle.value) parts.push(`--sn-table-height: ${heightStyle.value}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 /** Whether the body scrolls vertically. */
-const scrollsVertically = computed(() => heightStyle.value !== '')
+const scrollsVertically = computed(() => heightStyle.value !== '');
 
 /** Whether the built-in empty row is replaced by the `empty` slot. */
-const showsEmptySlot = computed(() => rows.value.length === 0 && Boolean(slots.empty))
+const showsEmptySlot = computed(() => rows.value.length === 0 && Boolean(slots.empty));
 
 /** Inline cell style: width plus the sticky offset for pinned columns. */
 function cellStyle(cssWidth: string, stickyLeft: string): string {
-  const parts = [`width: ${cssWidth}`, `min-width: ${cssWidth}`]
-  if (stickyLeft) parts.push(`left: ${stickyLeft}`)
-  return parts.join('; ')
+  const parts = [`width: ${cssWidth}`, `min-width: ${cssWidth}`];
+  if (stickyLeft) parts.push(`left: ${stickyLeft}`);
+  return parts.join('; ');
 }
 
 /** Alignment modifier class. */
 function alignClass(align: SnTableAlign): string {
-  return `sn-table__cell--${align}`
+  return `sn-table__cell--${align}`;
 }
 
 /** `aria-sort` value of a sortable header. */
 function ariaSort(column: ResolvedColumn): 'ascending' | 'descending' | 'none' | undefined {
-  if (!column.sortable) return undefined
-  if (column.sortOrder === 'asc') return 'ascending'
-  if (column.sortOrder === 'desc') return 'descending'
-  return 'none'
+  if (!column.sortable) return undefined;
+  if (column.sortOrder === 'asc') return 'ascending';
+  if (column.sortOrder === 'desc') return 'descending';
+  return 'none';
 }
 </script>
 <template>
-  <view
-    data-snui-component="table"
-    :class="rootClass"
-    :style="rootStyle"
-    role="table"
-  >
+  <view data-snui-component="table" :class="rootClass" :style="rootStyle" role="table">
     <!--
       Column declarations. `sn-table-column` renders no visible node, but it has
       to be mounted for its `onMounted` registration to reach the container, so

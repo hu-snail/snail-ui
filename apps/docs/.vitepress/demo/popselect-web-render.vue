@@ -11,34 +11,30 @@
  * run outside this SFC's template scope, so they inline their styles and use
  * `--sn-web-*` tokens for colour.
  */
-import { computed, h, ref, type VNodeChild } from 'vue'
-import { Bug, FileText, GitBranch } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnIcon, SnPopselect } from '@snui/vue-web'
+import { computed, h, ref, type VNodeChild } from 'vue';
+import { Bug, FileText, GitBranch } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnIcon, SnPopselect } from '@snui/vue-web';
 import type {
   SnPopselectLeafOption,
   SnPopselectRenderOption,
   SnPopselectValue,
   SnSelectOptionInput,
-} from '@snui/vue-web'
+} from '@snui/vue-web';
 
-registerSnIcons({ Bug, FileText, GitBranch })
+registerSnIcons({ Bug, FileText, GitBranch });
 
 /** Registry names keep the render callables data-driven. */
 const iconNameOf: Record<string, string> = {
   demand: 'FileText',
   bug: 'Bug',
   iteration: 'GitBranch',
-}
+};
 
 const renderLabel = (option: SnPopselectLeafOption): VNodeChild =>
-  h(
-    'span',
-    { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } },
-    [
-      h(SnIcon, { name: iconNameOf[String(option.value)] ?? 'FileText', size: 14 }),
-      h('span', null, option.label),
-    ],
-  )
+  h('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '6px' } }, [
+    h(SnIcon, { name: iconNameOf[String(option.value)] ?? 'FileText', size: 14 }),
+    h('span', null, option.label),
+  ]);
 
 const renderOption: SnPopselectRenderOption = (info) =>
   h(
@@ -60,33 +56,35 @@ const renderOption: SnPopselectRenderOption = (info) =>
         info.selected ? '已启用' : '未启用',
       ),
     ],
-  )
+  );
 
 const typeOptions: SnSelectOptionInput[] = [
   { label: '需求池', value: 'demand' },
   { label: '缺陷池', value: 'bug' },
   { label: '迭代任务', value: 'iteration' },
-]
+];
 
 const labelOf: Record<string, string> = {
   demand: '需求池',
   bug: '缺陷池',
   iteration: '迭代任务',
-}
+};
 
-const typeValue = ref<SnPopselectValue>('bug')
+const typeValue = ref<SnPopselectValue>('bug');
 const typeLabel = computed(() =>
-  typeValue.value === null ? '未选择' : labelOf[String(typeValue.value)] ?? String(typeValue.value),
-)
+  typeValue.value === null
+    ? '未选择'
+    : (labelOf[String(typeValue.value)] ?? String(typeValue.value)),
+);
 
 const flagOptions: SnSelectOptionInput[] = [
   { label: '新版导航', value: 'newNav' },
   { label: '实验性编辑器', value: 'editor' },
   { label: '灰度报表', value: 'report' },
-]
+];
 
-const flagValue = ref<SnPopselectValue>(['newNav'])
-const flagCount = computed(() => (Array.isArray(flagValue.value) ? flagValue.value.length : 0))
+const flagValue = ref<SnPopselectValue>(['newNav']);
+const flagCount = computed(() => (Array.isArray(flagValue.value) ? flagValue.value.length : 0));
 </script>
 
 <template>
@@ -121,7 +119,9 @@ const flagCount = computed(() => (Array.isArray(flagValue.value) ? flagValue.val
     </section>
 
     <p class="popselect-render-demo__hint">
-      render-label 只替换行标签，选中态的主色文字与对勾仍由组件绘制；render-option 拿到整行默认节点 node，可以像上例一样追加随选中状态变化的附属文案。两者互斥：同时传入时只有 render-option 生效。
+      render-label 只替换行标签，选中态的主色文字与对勾仍由组件绘制；render-option 拿到整行默认节点
+      node，可以像上例一样追加随选中状态变化的附属文案。两者互斥：同时传入时只有 render-option
+      生效。
     </p>
   </div>
 </template>

@@ -2,27 +2,25 @@
 /**
  * drawer-web-basic — the four placements, mask click and Escape to close.
  */
-import { ref } from 'vue'
-import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDrawer, SnDrawerContent } from '@snui/vue-web';
 
-type Placement = 'left' | 'right' | 'top' | 'bottom'
+type Placement = 'left' | 'right' | 'top' | 'bottom';
 
-const placements: Placement[] = ['left', 'right', 'top', 'bottom']
-const active = ref<Placement | null>(null)
-const show = ref(false)
-const lastAction = ref('—')
+const placements: Placement[] = ['left', 'right', 'top', 'bottom'];
+const active = ref<Placement | null>(null);
+const show = ref(false);
+const lastAction = ref('—');
 
 function open(placement: Placement) {
-  active.value = placement
-  show.value = true
-  lastAction.value = `open (${placement})`
+  active.value = placement;
+  show.value = true;
+  lastAction.value = `open (${placement})`;
 }
 
 /** Width only applies to left/right; height only to top/bottom. */
 function sizeOf(placement: Placement) {
-  return placement === 'left' || placement === 'right'
-    ? { width: 360 }
-    : { height: 260 }
+  return placement === 'left' || placement === 'right' ? { width: 360 } : { height: 260 };
 }
 </script>
 
@@ -52,7 +50,8 @@ function sizeOf(placement: Placement) {
     >
       <SnDrawerContent :title="`Slide in from ${active ?? 'right'}`">
         <p class="drw-demo__body">
-          Clicking the mask triggers <code>mask-click</code>; pressing Escape triggers <code>esc</code>. Both fire before the close happens.
+          Clicking the mask triggers <code>mask-click</code>; pressing Escape triggers
+          <code>esc</code>. Both fire before the close happens.
         </p>
         <template #footer>
           <SnButton @click="show = false">Cancel</SnButton>

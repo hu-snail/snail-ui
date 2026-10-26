@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnWatermark — fullscreen coverage toggled from the page. */
-import { ref } from 'vue'
-import { SnButton, SnWatermark } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnWatermark } from '@snui/vue-web';
 
-const fullscreen = ref(false)
+const fullscreen = ref(false);
 </script>
 
 <template>
@@ -13,7 +13,8 @@ const fullscreen = ref(false)
     </SnButton>
 
     <p class="watermark-fullscreen-demo__hint">
-      The fullscreen watermark covers the whole viewport via a fixed layer (zIndex 1000) without wrapping the page content.
+      The fullscreen watermark covers the whole viewport via a fixed layer (zIndex 1000) without
+      wrapping the page content.
     </p>
 
     <SnWatermark

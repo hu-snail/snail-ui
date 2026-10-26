@@ -30,25 +30,25 @@
  *   - 宫格布局 — 用 sn-grid
  */
 
-import { computed, provide, toRef } from 'vue'
-import { SN_LAYOUT_KEY, type SnLayoutAlign, type SnLayoutJustify } from './sn-layout-types'
+import { computed, provide, toRef } from 'vue';
+import { SN_LAYOUT_KEY, type SnLayoutAlign, type SnLayoutJustify } from './sn-layout-types';
 
-defineOptions({ name: 'SnLayout' })
+defineOptions({ name: 'SnLayout' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-row` 1:1 surface ────────────────────────────────────── */
 
     /** 列元素之间的间距（单位为 px）。 */
-    gutter?: number
+    gutter?: number;
     /** 主轴对齐方式。 */
-    justify?: SnLayoutJustify
+    justify?: SnLayoutJustify;
     /** 交叉轴对齐方式。 */
-    align?: SnLayoutAlign
+    align?: SnLayoutAlign;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     gutter: 0,
@@ -57,38 +57,34 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** 行内容（sn-col 列表）。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
-provide(SN_LAYOUT_KEY, { gutter: toRef(props, 'gutter') })
+provide(SN_LAYOUT_KEY, { gutter: toRef(props, 'gutter') });
 
 const rootClass = computed(() => [
   'sn-layout',
   `sn-layout--justify-${props.justify}`,
   `sn-layout--align-${props.align}`,
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
+  const parts: string[] = [];
   if (props.gutter > 0) {
-    parts.push(`margin-left: ${-props.gutter / 2}px`, `margin-right: ${-props.gutter / 2}px`)
+    parts.push(`margin-left: ${-props.gutter / 2}px`, `margin-right: ${-props.gutter / 2}px`);
   }
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 </script>
 
 <template>
-  <view
-    data-snui-component="layout"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="layout" :class="rootClass" :style="rootStyle">
     <slot />
   </view>
 </template>
@@ -102,14 +98,32 @@ const rootStyle = computed(() => {
   width: 100%;
 }
 
-.sn-layout--justify-start { justify-content: flex-start; }
-.sn-layout--justify-center { justify-content: center; }
-.sn-layout--justify-end { justify-content: flex-end; }
-.sn-layout--justify-space-between { justify-content: space-between; }
-.sn-layout--justify-space-around { justify-content: space-around; }
-.sn-layout--justify-space-evenly { justify-content: space-evenly; }
+.sn-layout--justify-start {
+  justify-content: flex-start;
+}
+.sn-layout--justify-center {
+  justify-content: center;
+}
+.sn-layout--justify-end {
+  justify-content: flex-end;
+}
+.sn-layout--justify-space-between {
+  justify-content: space-between;
+}
+.sn-layout--justify-space-around {
+  justify-content: space-around;
+}
+.sn-layout--justify-space-evenly {
+  justify-content: space-evenly;
+}
 
-.sn-layout--align-top { align-items: flex-start; }
-.sn-layout--align-middle { align-items: center; }
-.sn-layout--align-bottom { align-items: flex-end; }
+.sn-layout--align-top {
+  align-items: flex-start;
+}
+.sn-layout--align-middle {
+  align-items: center;
+}
+.sn-layout--align-bottom {
+  align-items: flex-end;
+}
 </style>

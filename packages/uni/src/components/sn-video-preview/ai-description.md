@@ -23,9 +23,9 @@ The reference exposes `open` / `close` as methods and `on-open` / `on-close` as
 **props** (callbacks) rather than events. Both are supported:
 
 ```ts
-const video = ref()
-video.value.open({ src, poster, title })
-video.value.close()
+const video = ref();
+video.value.open({ src, poster, title });
+video.value.close();
 ```
 
 ```vue
@@ -45,35 +45,35 @@ calling the prop separately.
 ```
 
 ```ts
-import { SnVideoPreview } from '@snui/uni'
+import { SnVideoPreview } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `selector` | `string` | `''` | no | Instance identifier (parity; exposed as `data-selector`). |
-| `zIndex` | `number` | `1000` | no | Stacking level. |
-| `fullScreen` | `boolean` | `false` | no | Fill the viewport instead of the centred stage. |
-| `closePosition` | `'left-top' \| 'right-top'` | `'left-top'` | no | Close-button anchor. |
-| `onOpen` | `() => void` | `undefined` | no | Called after the layer opened (reference callback prop). |
-| `onClose` | `() => void` | `undefined` | no | Called after the layer closed (reference callback prop). |
-| `customClass` | `string` | `''` | no | Custom class for the layer root. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the layer root. |
+| Name            | Type                        | Default      | Required | Description                                               |
+| --------------- | --------------------------- | ------------ | -------- | --------------------------------------------------------- |
+| `selector`      | `string`                    | `''`         | no       | Instance identifier (parity; exposed as `data-selector`). |
+| `zIndex`        | `number`                    | `1000`       | no       | Stacking level.                                           |
+| `fullScreen`    | `boolean`                   | `false`      | no       | Fill the viewport instead of the centred stage.           |
+| `closePosition` | `'left-top' \| 'right-top'` | `'left-top'` | no       | Close-button anchor.                                      |
+| `onOpen`        | `() => void`                | `undefined`  | no       | Called after the layer opened (reference callback prop).  |
+| `onClose`       | `() => void`                | `undefined`  | no       | Called after the layer closed (reference callback prop).  |
+| `customClass`   | `string`                    | `''`         | no       | Custom class for the layer root.                          |
+| `customStyle`   | `string`                    | `''`         | no       | Custom inline style for the layer root.                   |
 
 ## Methods
 
-| Name | Parameters | Description |
-|---|---|---|
-| `open` | `options: { src, poster?, title?, autoplay? }` | Load the video and show the layer. |
-| `close` | — | Hide the layer and unload the source. |
+| Name    | Parameters                                     | Description                           |
+| ------- | ---------------------------------------------- | ------------------------------------- |
+| `open`  | `options: { src, poster?, title?, autoplay? }` | Load the video and show the layer.    |
+| `close` | —                                              | Hide the layer and unload the source. |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `open` | — | The layer opened (also reachable as the `onOpen` prop). |
-| `close` | — | The layer closed (also reachable as the `onClose` prop). |
+| Name    | Payload | Description                                              |
+| ------- | ------- | -------------------------------------------------------- |
+| `open`  | —       | The layer opened (also reachable as the `onOpen` prop).  |
+| `close` | —       | The layer closed (also reachable as the `onClose` prop). |
 
 ## Slots
 
@@ -81,15 +81,15 @@ None.
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
+| Token              | CSS Variable                       | Purpose                               |
+| ------------------ | ---------------------------------- | ------------------------------------- |
 | Background overlay | `--sn-mp-color-background-overlay` | Layer scrim / title bar / close plate |
-| Text on primary | `--sn-mp-color-text-on-primary` | Title + close glyph |
-| Font size MD | `--sn-mp-font-size-md` | Title text |
-| Font weight medium | `--sn-mp-font-weight-medium` | Title text |
-| Line height normal | `--sn-mp-font-line-height-normal` | Title line height |
-| Radius full | `--sn-mp-radius-full` | Close button |
-| Spacing 3 / 4 / 12 | `--sn-mp-spacing-*` | Bar padding, close inset |
+| Text on primary    | `--sn-mp-color-text-on-primary`    | Title + close glyph                   |
+| Font size MD       | `--sn-mp-font-size-md`             | Title text                            |
+| Font weight medium | `--sn-mp-font-weight-medium`       | Title text                            |
+| Line height normal | `--sn-mp-font-line-height-normal`  | Title line height                     |
+| Radius full        | `--sn-mp-radius-full`              | Close button                          |
+| Spacing 3 / 4 / 12 | `--sn-mp-spacing-*`                | Bar padding, close inset              |
 
 ## Accessibility
 

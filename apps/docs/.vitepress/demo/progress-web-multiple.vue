@@ -1,18 +1,15 @@
 <script setup lang="ts">
 /** Demo: SnProgress — multiple-circle rings with a per-ring colour legend. */
-import { SnProgress } from '@snui/vue-web'
+import { SnProgress } from '@snui/vue-web';
 
 /** Ring → colour mapping: array index selects the ring, tokens keep them themed. */
 const threeRings = [
   'var(--sn-web-color-action-primary)',
   'var(--sn-web-color-feedback-success)',
   'var(--sn-web-color-feedback-warning)',
-]
+];
 
-const twoRings = [
-  'var(--sn-web-color-feedback-info)',
-  'var(--sn-web-color-feedback-danger)',
-]
+const twoRings = ['var(--sn-web-color-feedback-info)', 'var(--sn-web-color-feedback-danger)'];
 </script>
 
 <template>

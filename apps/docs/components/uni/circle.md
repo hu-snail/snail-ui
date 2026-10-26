@@ -26,20 +26,20 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | number | 0 | 当前进度，0–100（越界截断） |
-| size | number \| string | 120 | 圆环直径（数字按 rpx） |
-| color | string \| Record<string, string> | '' | 进度色：纯色，或 `{ offset: color }` 渐变表 |
-| layerColor | string | '' | 轨道颜色 |
-| fill | string | '' | 环内底盘填充色；为空则是空心环 |
-| speed | number | 50 | 动画速度（百分比 / 秒）；`0` 关闭过渡 |
-| text | string | '' | 圆环中间文字；为空则显示四舍五入后的百分比 |
-| strokeWidth | number \| string | 18 | 进度条宽度（数字按 rpx） |
-| strokeLinecap | 'butt' \| 'round' \| 'square' | 'round' | 端点形状（对齐用，无效果） |
-| clockwise | boolean | true | 是否顺时针增加 |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
+| 属性          | 类型                             | 默认值  | 说明                                        |
+| ------------- | -------------------------------- | ------- | ------------------------------------------- |
+| modelValue    | number                           | 0       | 当前进度，0–100（越界截断）                 |
+| size          | number \| string                 | 120     | 圆环直径（数字按 rpx）                      |
+| color         | string \| Record<string, string> | ''      | 进度色：纯色，或 `{ offset: color }` 渐变表 |
+| layerColor    | string                           | ''      | 轨道颜色                                    |
+| fill          | string                           | ''      | 环内底盘填充色；为空则是空心环              |
+| speed         | number                           | 50      | 动画速度（百分比 / 秒）；`0` 关闭过渡       |
+| text          | string                           | ''      | 圆环中间文字；为空则显示四舍五入后的百分比  |
+| strokeWidth   | number \| string                 | 18      | 进度条宽度（数字按 rpx）                    |
+| strokeLinecap | 'butt' \| 'round' \| 'square'    | 'round' | 端点形状（对齐用，无效果）                  |
+| clockwise     | boolean                          | true    | 是否顺时针增加                              |
+| customClass   | string                           | ''      | 根节点自定义类名                            |
+| customStyle   | string                           | ''      | 根节点自定义样式                            |
 
 ## Events
 
@@ -47,20 +47,20 @@
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                                       |
+| ------- | ------------------------------------------ |
 | default | 自定义圆环中心内容（替代 `text` / 百分比） |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-action-primary | 默认进度色 |
-| --sn-mp-color-background-subtle | 轨道颜色 |
-| --sn-mp-color-text-primary | 中心文字 |
-| --sn-mp-font-size-lg | 中心文字字号 |
-| --sn-mp-font-weight-medium | 中心文字字重 |
-| --sn-mp-font-line-height-tight | 中心文字行高 |
+| 变量                            | 用途         |
+| ------------------------------- | ------------ |
+| --sn-mp-color-action-primary    | 默认进度色   |
+| --sn-mp-color-background-subtle | 轨道颜色     |
+| --sn-mp-color-text-primary      | 中心文字     |
+| --sn-mp-font-size-lg            | 中心文字字号 |
+| --sn-mp-font-weight-medium      | 中心文字字重 |
+| --sn-mp-font-line-height-tight  | 中心文字行高 |
 
 ## 无障碍
 
@@ -72,7 +72,6 @@
 ## 暗色模式
 
 轨道与文字颜色来自语义色 token（`--sn-mp-color-background-subtle` / `--sn-mp-color-text-primary`），默认进度色是 `--sn-mp-color-action-primary`；这些都在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 > 若通过 `color` / `layerColor` / `fill` 传了自定义色值，该值不会随主题翻转 —— 暗色下请改用 `var(--sn-mp-*)` 形式。
 

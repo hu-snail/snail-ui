@@ -37,30 +37,30 @@
  *   <SnSkeleton repeat="3" height="1em" :sharp="false" />
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnSkeleton' })
+defineOptions({ name: 'SnSkeleton' });
 
 const props = withDefaults(
   defineProps<{
     /** Render as an inline text placeholder. Mirrors n-skeleton `text`. */
-    text?: boolean
+    text?: boolean;
     /** Fully rounded ends (pill). Mirrors n-skeleton `round`. */
-    round?: boolean
+    round?: boolean;
     /** Circular block; width and height are forced equal. Mirrors `circle`. */
-    circle?: boolean
+    circle?: boolean;
     /** Block height — number is px. Mirrors n-skeleton `height`. */
-    height?: string | number
+    height?: string | number;
     /** Block width — number is px. Mirrors n-skeleton `width`. */
-    width?: string | number
+    width?: string | number;
     /** Height tier used when no explicit height/width is given. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Number of sibling blocks to render. Mirrors n-skeleton `repeat`. */
-    repeat?: number
+    repeat?: number;
     /** Run the shimmer animation. Mirrors n-skeleton `animated`. */
-    animated?: boolean
+    animated?: boolean;
     /** Keep square corners (unset the token radius). Mirrors `sharp`. */
-    sharp?: boolean
+    sharp?: boolean;
   }>(),
   {
     text: false,
@@ -73,48 +73,50 @@ const props = withDefaults(
     animated: true,
     sharp: true,
   },
-)
+);
 
 /** Height tier tokens, mirroring upstream's `createKey('height', size)`. */
 const SIZE_HEIGHT: Record<'small' | 'medium' | 'large', string> = {
   small: 'var(--sn-web-skeleton-height-small)',
   medium: 'var(--sn-web-skeleton-height-medium)',
   large: 'var(--sn-web-skeleton-height-large)',
-}
+};
 
 /** Upstream `pxfy()` — pass CSS lengths through untouched. */
 function toLength(value: string | number | undefined): string | undefined {
-  if (value === undefined) return undefined
-  return typeof value === 'number' ? `${value}px` : value
+  if (value === undefined) return undefined;
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
-const sizeHeight = computed(() =>
-  props.size === undefined ? undefined : SIZE_HEIGHT[props.size],
-)
+const sizeHeight = computed(() => (props.size === undefined ? undefined : SIZE_HEIGHT[props.size]));
 
 /** `repeat` is 1-indexed in spirit; anything below 1 renders one block. */
-const repeatCount = computed(() => (props.repeat > 1 ? Math.floor(props.repeat) : 1))
+const repeatCount = computed(() => (props.repeat > 1 ? Math.floor(props.repeat) : 1));
 
 const blockStyle = computed(() => {
-  const tierHeight = sizeHeight.value
+  const tierHeight = sizeHeight.value;
   // Circle squares the footprint: an explicit width acts as the height too,
   // and vice versa, before falling back to the size tier.
-  const mergedWidth = props.circle
-    ? props.width ?? props.height ?? tierHeight
-    : props.width
-  const mergedHeight = (props.circle ? props.width ?? props.height : props.height) ?? tierHeight
+  const mergedWidth = props.circle ? (props.width ?? props.height ?? tierHeight) : props.width;
+  const mergedHeight = (props.circle ? (props.width ?? props.height) : props.height) ?? tierHeight;
 
   return {
     display: props.text ? 'inline-block' : '',
     verticalAlign: props.text ? '-0.125em' : '',
-    borderRadius: props.circle ? '50%' : props.round ? '4096px' : props.sharp ? '' : 'var(--sn-web-skeleton-radius)',
+    borderRadius: props.circle
+      ? '50%'
+      : props.round
+        ? '4096px'
+        : props.sharp
+          ? ''
+          : 'var(--sn-web-skeleton-radius)',
     // Leave the property absent rather than empty: an empty inline value would
     // override the `1em` / `100%` defaults in the stylesheet.
     ...(toLength(mergedWidth) === undefined ? {} : { width: toLength(mergedWidth) }),
     ...(toLength(mergedHeight) === undefined ? {} : { height: toLength(mergedHeight) }),
     animation: props.animated ? '' : 'none',
-  }
-})
+  };
+});
 </script>
 
 <template>

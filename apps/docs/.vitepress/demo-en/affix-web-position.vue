@@ -3,7 +3,7 @@
  * affix-web-position — the `position` prop: fixed (out of flow) versus
  * absolute (kept in flow).
  */
-import { SnAffix, SnButton } from '@snui/vue-web'
+import { SnAffix, SnButton } from '@snui/vue-web';
 </script>
 
 <template>

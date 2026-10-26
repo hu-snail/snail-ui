@@ -40,22 +40,22 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `text` | `boolean` | `false` | 渲染为文本骨架。 |
-| `round` | `boolean` | `false` | 渲染为圆角骨架。 |
-| `circle` | `boolean` | `false` | 渲染为圆形骨架。 |
-| `height` | `string \| number` | `undefined` | 骨架高度。 |
-| `width` | `string \| number` | `undefined` | 骨架宽度。 |
-| `size` | `'small' \| 'medium' \| 'large'` | `undefined` | 骨架大小，决定默认高度。 |
-| `repeat` | `string \| number` | `1` | 重复次数。 |
-| `animated` | `boolean` | `true` | 是否启用闪烁动画。 |
-| `sharp` | `boolean` | `true` | 是否渲染为直角骨架。 |
+| 名称       | 类型                             | 默认值      | 说明                     |
+| ---------- | -------------------------------- | ----------- | ------------------------ |
+| `text`     | `boolean`                        | `false`     | 渲染为文本骨架。         |
+| `round`    | `boolean`                        | `false`     | 渲染为圆角骨架。         |
+| `circle`   | `boolean`                        | `false`     | 渲染为圆形骨架。         |
+| `height`   | `string \| number`               | `undefined` | 骨架高度。               |
+| `width`    | `string \| number`               | `undefined` | 骨架宽度。               |
+| `size`     | `'small' \| 'medium' \| 'large'` | `undefined` | 骨架大小，决定默认高度。 |
+| `repeat`   | `string \| number`               | `1`         | 重复次数。               |
+| `animated` | `boolean`                        | `true`      | 是否启用闪烁动画。       |
+| `sharp`    | `boolean`                        | `true`      | 是否渲染为直角骨架。     |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称      | 参数 | 说明                             |
+| --------- | ---- | -------------------------------- |
 | `default` | `()` | 自定义骨架内容，替代内置占位块。 |
 
 ## 圆角解析顺序
@@ -73,12 +73,12 @@
 
 组件消费 `--sn-web-skeleton-*` token 别名：
 
-| Token | 说明 |
-| --- | --- |
-| `--sn-web-skeleton-color` | 基础填充色 |
-| `--sn-web-skeleton-color-end` | 闪烁峰值色 |
-| `--sn-web-skeleton-radius` | `sharp: false` 时使用的圆角 |
-| `--sn-web-skeleton-height-small` / `-medium` / `-large` | 三档高度 |
+| Token                                                   | 说明                        |
+| ------------------------------------------------------- | --------------------------- |
+| `--sn-web-skeleton-color`                               | 基础填充色                  |
+| `--sn-web-skeleton-color-end`                           | 闪烁峰值色                  |
+| `--sn-web-skeleton-radius`                              | `sharp: false` 时使用的圆角 |
+| `--sn-web-skeleton-height-small` / `-medium` / `-large` | 三档高度                    |
 
 ## 无障碍
 

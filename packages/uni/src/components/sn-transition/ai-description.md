@@ -34,51 +34,51 @@ drops its result, so a fast open→close→open cannot strand the node.
 ```
 
 ```ts
-import { SnTransition } from '@snui/uni'
+import { SnTransition } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `show` | boolean | false | no | Whether the content is shown. |
-| `duration` | number | boolean | Record<string, number> | 300 | no | Animation duration; `false` disables it, a record sets per-leg. |
-| `lazyRender` | boolean | false | no | Defer the first render until `show` turns true. |
-| `name` | TransitionName | TransitionName[] | — | no | One animation name, or several to combine. |
-| `destroy` | boolean | true | no | Hide with `display: none` after the leave animation. |
-| `enterClass` | string | '' | no | Class on the enter start frame. |
-| `enterActiveClass` | string | '' | no | Class while entering. |
-| `enterToClass` | string | '' | no | Class on the enter end frame. |
-| `leaveClass` | string | '' | no | Class on the leave start frame. |
-| `leaveActiveClass` | string | '' | no | Class while leaving. |
-| `leaveToClass` | string | '' | no | Class on the leave end frame. |
-| `disableTouchMove` | boolean | false | no | Intercept touchmove so the page behind cannot scroll. |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name               | Type           | Default          | Required               | Description                                           |
+| ------------------ | -------------- | ---------------- | ---------------------- | ----------------------------------------------------- |
+| `show`             | boolean        | false            | no                     | Whether the content is shown.                         |
+| `duration`         | number         | boolean          | Record<string, number> | 300                                                   | no                                         | Animation duration; `false` disables it, a record sets per-leg. |
+| `lazyRender`       | boolean        | false            | no                     | Defer the first render until `show` turns true.       |
+| `name`             | TransitionName | TransitionName[] | —                      | no                                                    | One animation name, or several to combine. |
+| `destroy`          | boolean        | true             | no                     | Hide with `display: none` after the leave animation.  |
+| `enterClass`       | string         | ''               | no                     | Class on the enter start frame.                       |
+| `enterActiveClass` | string         | ''               | no                     | Class while entering.                                 |
+| `enterToClass`     | string         | ''               | no                     | Class on the enter end frame.                         |
+| `leaveClass`       | string         | ''               | no                     | Class on the leave start frame.                       |
+| `leaveActiveClass` | string         | ''               | no                     | Class while leaving.                                  |
+| `leaveToClass`     | string         | ''               | no                     | Class on the leave end frame.                         |
+| `disableTouchMove` | boolean        | false            | no                     | Intercept touchmove so the page behind cannot scroll. |
+| `customClass`      | string         | ''               | no                     | Custom class for the root node.                       |
+| `customStyle`      | string         | ''               | no                     | Custom inline style for the root node.                |
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `before-enter` | — | Enter leg about to start. |
-| `enter` | — | Enter leg started. |
-| `after-enter` | — | Enter leg finished. |
-| `before-leave` | — | Leave leg about to start. |
-| `leave` | — | Leave leg started. |
-| `after-leave` | — | Leave leg finished. |
-| `click` | Event | Root tapped. |
+| Event          | Payload | Description               |
+| -------------- | ------- | ------------------------- |
+| `before-enter` | —       | Enter leg about to start. |
+| `enter`        | —       | Enter leg started.        |
+| `after-enter`  | —       | Enter leg finished.       |
+| `before-leave` | —       | Leave leg about to start. |
+| `leave`        | —       | Leave leg started.        |
+| `after-leave`  | —       | Leave leg finished.       |
+| `click`        | Event   | Root tapped.              |
 
 ## Slots
 
-| Slot | Description |
-|---|---|
+| Slot      | Description       |
+| --------- | ----------------- |
 | `default` | Animated content. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| (none) | `—` | The wrapper consumes no color token; the animation is transform / opacity only. |
+| Token  | CSS Variable | Purpose                                                                         |
+| ------ | ------------ | ------------------------------------------------------------------------------- |
+| (none) | `—`          | The wrapper consumes no color token; the animation is transform / opacity only. |
 
 ## Accessibility
 

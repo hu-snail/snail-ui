@@ -19,8 +19,8 @@ prop 命名与语义遵循本库的双端契约。高级参数（`suffix` / `col
 `SnGrid` 是简单的 CSS Grid 容器，子节点直接成为 grid item：
 
 ```ts
-import { SnGrid, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
+import { SnGrid, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
 ```
 
 ```html
@@ -33,26 +33,26 @@ import '@snui/tokens-web/styles'
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `cols` | `number \| ResponsiveCols` | `24` | 列数；可传对象 `{xs,s,m,l,xl,xxl}` 按断点切换 |
-| `xGap` | `number \| string` | `0` | 列间距（px） |
-| `yGap` | `number \| string` | `0` | 行间距（px） |
-| `itemResponsive` | `boolean` | `false` | 启用子节点 resize 监听 |
-| `itemStyle` | `string \| CSSProperties` | — | 透传到每个直接子节点 |
-| `collapsed` | `boolean` | `false` | 折叠模式：仅显示前 `collapsedRows` 行 + suffix |
-| `collapsedRows` | `number` | `1` | `collapsed: true` 时显示的行数 |
+| 名称             | 类型                       | 默认值  | 说明                                           |
+| ---------------- | -------------------------- | ------- | ---------------------------------------------- |
+| `cols`           | `number \| ResponsiveCols` | `24`    | 列数；可传对象 `{xs,s,m,l,xl,xxl}` 按断点切换  |
+| `xGap`           | `number \| string`         | `0`     | 列间距（px）                                   |
+| `yGap`           | `number \| string`         | `0`     | 行间距（px）                                   |
+| `itemResponsive` | `boolean`                  | `false` | 启用子节点 resize 监听                         |
+| `itemStyle`      | `string \| CSSProperties`  | —       | 透传到每个直接子节点                           |
+| `collapsed`      | `boolean`                  | `false` | 折叠模式：仅显示前 `collapsedRows` 行 + suffix |
+| `collapsedRows`  | `number`                   | `1`     | `collapsed: true` 时显示的行数                 |
 
 ### ResponsiveCols
 
 ```ts
 interface ResponsiveCols {
-  xs?: number | string   // < 480px
-  s?: number | string    // ≥ 480px
-  m?: number | string    // ≥ 640px
-  l?: number | string    // ≥ 768px
-  xl?: number | string   // ≥ 1024px
-  xxl?: number | string  // ≥ 1280px
+  xs?: number | string; // < 480px
+  s?: number | string; // ≥ 480px
+  m?: number | string; // ≥ 640px
+  l?: number | string; // ≥ 768px
+  xl?: number | string; // ≥ 1024px
+  xxl?: number | string; // ≥ 1280px
 }
 ```
 
@@ -60,10 +60,10 @@ interface ResponsiveCols {
 
 ### Slots
 
-| 名称 | 说明 |
-| --- | --- |
-| `default` | 直接子节点即 grid item；自动 `min-width:0` 允许长文本 wrap |
-| `suffix` | `suffix: true` 时附加到 grid 末尾（用于「+N more」展开按钮） |
+| 名称      | 说明                                                         |
+| --------- | ------------------------------------------------------------ |
+| `default` | 直接子节点即 grid item；自动 `min-width:0` 允许长文本 wrap   |
+| `suffix`  | `suffix: true` 时附加到 grid 末尾（用于「+N more」展开按钮） |
 
 ## 无障碍
 

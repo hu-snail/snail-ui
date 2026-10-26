@@ -2,11 +2,11 @@
 /**
  * tabs-web-trigger — click vs hover activation.
  */
-import { ref } from 'vue'
-import { SnTabPane, SnTabs } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabPane, SnTabs } from '@snui/vue-web';
 
-const byClick = ref('a')
-const byHover = ref('a')
+const byClick = ref('a');
+const byHover = ref('a');
 </script>
 
 <template>

@@ -3,10 +3,10 @@
  * steps-web-vertical — SnSteps `vertical` stacks the steps; the connector
  * line runs down the indicator column. Good for side-panel flow notes.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(2)
+const current = ref(2);
 </script>
 
 <template>

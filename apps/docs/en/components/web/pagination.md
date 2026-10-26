@@ -65,38 +65,38 @@ the size picker all become inoperable and no longer emit events.
 
 ### Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| page | `number \| undefined` | `undefined` | Current page. `undefined` means uncontrolled mode, seeded by `default-page`; out-of-range values clamp into `[1, page count]`. |
-| item-count | `number` | `0` | Total item count, used to derive the page count when `page-count` is not given. |
-| page-size | `number \| null \| undefined` | `undefined` | Page size. `undefined` / `null` falls back to internal state (seeded by `default-page-size`). |
-| default-page | `number` | `1` | Initial page for uncontrolled mode. |
-| default-page-size | `number` | `10` | Initial page size for uncontrolled mode. |
-| page-count | `number` | `undefined` | Explicit page count; wins over the `item-count / page-size` derivation. |
-| page-sizes | `Array<number \| { label: string; value: number }>` | `[10, 20, 30, 40]` | Size-picker options; plain numbers render as `N / 页`. |
-| show-quick-jumper | `boolean` | `false` | Render the `跳至` input; commits on Enter / blur, not rendered in simple mode. |
-| show-size-picker | `boolean` | `false` | Render the per-page-size select. |
-| page-slot | `number` | `9` | Maximum number of page buttons; more pages collapse into ellipsis. |
-| show-total | `boolean` | `false` | Render `共 N 条`. |
-| simple | `boolean` | `false` | Compact mode: prev / page input / page count / next — no page list and no jump input. |
-| disabled | `boolean` | `false` | Disable every control; interactions while disabled emit no events. |
+| Name              | Type                                                | Default            | Notes                                                                                                                          |
+| ----------------- | --------------------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| page              | `number \| undefined`                               | `undefined`        | Current page. `undefined` means uncontrolled mode, seeded by `default-page`; out-of-range values clamp into `[1, page count]`. |
+| item-count        | `number`                                            | `0`                | Total item count, used to derive the page count when `page-count` is not given.                                                |
+| page-size         | `number \| null \| undefined`                       | `undefined`        | Page size. `undefined` / `null` falls back to internal state (seeded by `default-page-size`).                                  |
+| default-page      | `number`                                            | `1`                | Initial page for uncontrolled mode.                                                                                            |
+| default-page-size | `number`                                            | `10`               | Initial page size for uncontrolled mode.                                                                                       |
+| page-count        | `number`                                            | `undefined`        | Explicit page count; wins over the `item-count / page-size` derivation.                                                        |
+| page-sizes        | `Array<number \| { label: string; value: number }>` | `[10, 20, 30, 40]` | Size-picker options; plain numbers render as `N / 页`.                                                                         |
+| show-quick-jumper | `boolean`                                           | `false`            | Render the `跳至` input; commits on Enter / blur, not rendered in simple mode.                                                 |
+| show-size-picker  | `boolean`                                           | `false`            | Render the per-page-size select.                                                                                               |
+| page-slot         | `number`                                            | `9`                | Maximum number of page buttons; more pages collapse into ellipsis.                                                             |
+| show-total        | `boolean`                                           | `false`            | Render `共 N 条`.                                                                                                              |
+| simple            | `boolean`                                           | `false`            | Compact mode: prev / page input / page count / next — no page list and no jump input.                                          |
+| disabled          | `boolean`                                           | `false`            | Disable every control; interactions while disabled emit no events.                                                             |
 
 ### Events
 
-| Name | Payload | Notes |
-| --- | --- | --- |
-| update:page | `(page: number)` | Page committed (page click / jump input / simple-mode input). |
-| update:page-size | `(pageSize: number)` | Page size committed (size-picker select). |
+| Name             | Payload              | Notes                                                         |
+| ---------------- | -------------------- | ------------------------------------------------------------- |
+| update:page      | `(page: number)`     | Page committed (page click / jump input / simple-mode input). |
+| update:page-size | `(pageSize: number)` | Page size committed (size-picker select).                     |
 
 ### Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| prev | — | Prev-button content, replacing the default left chevron. |
-| next | — | Next-button content, replacing the default right chevron. |
-| prefix | — | Content before the pager. |
-| suffix | — | Content after the pager. |
-| label | `{ page: number }` | Text inside a page button; ellipsis markers never go through it. |
+| Name   | Params             | Notes                                                            |
+| ------ | ------------------ | ---------------------------------------------------------------- |
+| prev   | —                  | Prev-button content, replacing the default left chevron.         |
+| next   | —                  | Next-button content, replacing the default right chevron.        |
+| prefix | —                  | Content before the pager.                                        |
+| suffix | —                  | Content after the pager.                                         |
+| label  | `{ page: number }` | Text inside a page button; ellipsis markers never go through it. |
 
 ### Methods
 
@@ -114,12 +114,12 @@ Behavior notes:
 
 ## Tokens
 
-| Token | CSS variable | Purpose |
-| --- | --- | --- |
-| Text secondary | `--sn-web-color-text-secondary` | Default page numbers / ellipsis |
-| Text tertiary | `--sn-web-color-text-tertiary` | Total / jumper label / page count |
-| Action primary | `--sn-web-color-action-primary` | Active page tint (16% primary fill + primary text) |
-| Button height small | `--sn-web-button-height-small` | Minimum width / height of page items and ellipsis (28px fallback) |
+| Token               | CSS variable                    | Purpose                                                           |
+| ------------------- | ------------------------------- | ----------------------------------------------------------------- |
+| Text secondary      | `--sn-web-color-text-secondary` | Default page numbers / ellipsis                                   |
+| Text tertiary       | `--sn-web-color-text-tertiary`  | Total / jumper label / page count                                 |
+| Action primary      | `--sn-web-color-action-primary` | Active page tint (16% primary fill + primary text)                |
+| Button height small | `--sn-web-button-height-small`  | Minimum width / height of page items and ellipsis (28px fallback) |
 
 ## Accessibility
 
@@ -136,12 +136,12 @@ Behavior notes:
 
 ## AI Patch Boundary
 
-| Safe for AI to generate | Requires human review |
-| --- | --- |
-| Data-surface bindings such as `page` / `page-size` / `page-count` / `item-count` | How a controlled `v-model:page` is synced with the host data source (when the list is re-fetched) |
-| Display switches `show-total` / `show-quick-jumper` / `show-size-picker` / `simple` | Whether the page is reset to 1 after a page-size change |
-| `page-sizes` option labels and a static `page-slot` value | Slot content (`label` / `prefix` / `suffix`) and event handlers |
-| Static composition used in docs and demos | Data requests triggered by paging |
+| Safe for AI to generate                                                             | Requires human review                                                                             |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Data-surface bindings such as `page` / `page-size` / `page-count` / `item-count`    | How a controlled `v-model:page` is synced with the host data source (when the list is re-fetched) |
+| Display switches `show-total` / `show-quick-jumper` / `show-size-picker` / `simple` | Whether the page is reset to 1 after a page-size change                                           |
+| `page-sizes` option labels and a static `page-slot` value                           | Slot content (`label` / `prefix` / `suffix`) and event handlers                                   |
+| Static composition used in docs and demos                                           | Data requests triggered by paging                                                                 |
 
 - AI-generated JSON Patches may only modify the prop data surface above and
   must not inject event handlers, slot content or internal state.

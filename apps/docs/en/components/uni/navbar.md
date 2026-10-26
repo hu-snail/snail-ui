@@ -14,7 +14,6 @@ The `left` / `title` / `right` slots override the same-named props; `fixed` + `p
 
 <Demo name="navbar-mp-slots" description="left / right slots carry custom icons; fixed + placeholder pins the bar and renders the spacer." />
 
-
 ## Disabled sides / safe area / capsule slot
 
 `left-disabled` / `right-disabled` make that side inert; `safe-area-inset-top` adds the status-bar height; the `capsule` slot takes over the left zone; `custom-class` / `custom-style` land on the root:
@@ -32,56 +31,56 @@ The component follows the easycom convention, so **no import is needed in a temp
 For an explicit import:
 
 ```ts
-import { SnNavbar } from '@snui/uni/components/sn-navbar/sn-navbar.vue'
+import { SnNavbar } from '@snui/uni/components/sn-navbar/sn-navbar.vue';
 ```
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | `''` | Title text |
-| `leftText` | `string` | `''` | Left-side label |
-| `rightText` | `string` | `''` | Right-side label |
-| `leftArrow` | `boolean` | `false` | Show the back arrow on the left |
-| `bordered` | `boolean` | `false` | Hairline bottom border |
-| `fixed` | `boolean` | `false` | Pin the bar to the top |
-| `placeholder` | `boolean` | `false` | Reserve the bar height in flow when fixed |
-| `zIndex` | `number` | `10` | Stacking level (written only when fixed) |
-| `safeAreaInsetTop` | `boolean` | `false` | Add status-bar height as top padding |
-| `leftDisabled` | `boolean` | `false` | Dim the left zone and block its events |
-| `rightDisabled` | `boolean` | `false` | Dim the right zone and block its events |
-| `customClass` | `string` | `''` | Extra class on the root node |
-| `customStyle` | `string` | `''` | Inline style on the root node |
+| Prop               | Type      | Default | Description                               |
+| ------------------ | --------- | ------- | ----------------------------------------- |
+| `title`            | `string`  | `''`    | Title text                                |
+| `leftText`         | `string`  | `''`    | Left-side label                           |
+| `rightText`        | `string`  | `''`    | Right-side label                          |
+| `leftArrow`        | `boolean` | `false` | Show the back arrow on the left           |
+| `bordered`         | `boolean` | `false` | Hairline bottom border                    |
+| `fixed`            | `boolean` | `false` | Pin the bar to the top                    |
+| `placeholder`      | `boolean` | `false` | Reserve the bar height in flow when fixed |
+| `zIndex`           | `number`  | `10`    | Stacking level (written only when fixed)  |
+| `safeAreaInsetTop` | `boolean` | `false` | Add status-bar height as top padding      |
+| `leftDisabled`     | `boolean` | `false` | Dim the left zone and block its events    |
+| `rightDisabled`    | `boolean` | `false` | Dim the right zone and block its events   |
+| `customClass`      | `string`  | `''`    | Extra class on the root node              |
+| `customStyle`      | `string`  | `''`    | Inline style on the root node             |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `click-left` | Left zone tapped (blocked while `leftDisabled`) | `(event: Event)` |
-| `click-right` | Right zone tapped (blocked while `rightDisabled`) | `(event: Event)` |
-| `back` | Fired alongside `click-left` when `leftArrow` is on | `(event: Event)` |
-| `back-home` | Capsule zone tapped | `(event: Event)` |
+| Event         | Description                                         | Payload          |
+| ------------- | --------------------------------------------------- | ---------------- |
+| `click-left`  | Left zone tapped (blocked while `leftDisabled`)     | `(event: Event)` |
+| `click-right` | Right zone tapped (blocked while `rightDisabled`)   | `(event: Event)` |
+| `back`        | Fired alongside `click-left` when `leftArrow` is on | `(event: Event)` |
+| `back-home`   | Capsule zone tapped                                 | `(event: Event)` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `capsule` | Custom capsule; suppresses the left zone |
-| `left` | Left content; overrides `leftArrow` / `leftText` |
-| `title` | Title content; overrides `title` |
-| `right` | Right content; overrides `rightText` |
+| Slot      | Description                                      |
+| --------- | ------------------------------------------------ |
+| `capsule` | Custom capsule; suppresses the left zone         |
+| `left`    | Left content; overrides `leftArrow` / `leftText` |
+| `title`   | Title content; overrides `title`                 |
+| `right`   | Right content; overrides `rightText`             |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-surface` | Bar background |
-| `--sn-mp-color-text-primary` | Title colour |
-| `--sn-mp-color-border-subtle` | Bottom hairline |
-| `--sn-mp-color-action-primary` | Side action colour |
-| `--sn-mp-font-size-md` / `--sn-mp-font-size-lg` | Action / title size |
-| `--sn-mp-font-weight-medium` | Title weight |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | Icon gap / side padding |
+| Variable                                        | Purpose                 |
+| ----------------------------------------------- | ----------------------- |
+| `--sn-mp-color-background-surface`              | Bar background          |
+| `--sn-mp-color-text-primary`                    | Title colour            |
+| `--sn-mp-color-border-subtle`                   | Bottom hairline         |
+| `--sn-mp-color-action-primary`                  | Side action colour      |
+| `--sn-mp-font-size-md` / `--sn-mp-font-size-lg` | Action / title size     |
+| `--sn-mp-font-weight-medium`                    | Title weight            |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | Icon gap / side padding |
 
 ## Accessibility
 
@@ -95,7 +94,6 @@ import { SnNavbar } from '@snui/uni/components/sn-navbar/sn-navbar.vue'
 Every colour in `sn-navbar` comes from `--sn-mp-color-*` with no light `var()` fallback, so it adapts automatically under `.sn-theme-dark`: the background flips to the dark surface, the title and action labels switch to the dark text colours, and the hairline uses the dark border token.
 
 Verify it by wrapping in sn-config-provider 的 theme 设为 dark:
-
 
 ## Related
 

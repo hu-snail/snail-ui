@@ -5,7 +5,7 @@
  * Note: `fontColor` is painted into a canvas tile, so it must be a real CSS
  * colour value (a `var(--sn-web-*)` string cannot be resolved by canvas).
  */
-import { SnWatermark } from '@snui/vue-web'
+import { SnWatermark } from '@snui/vue-web';
 </script>
 
 <template>
@@ -25,9 +25,13 @@ import { SnWatermark } from '@snui/vue-web'
         <div class="watermark-content-demo__panel">
           <h5>Quarterly business analysis</h5>
           <p>
-            When content is an array, each item renders as one line with lineHeight controlling the spacing; tiles form a width / height grid, not interleaved by default.
+            When content is an array, each item renders as one line with lineHeight controlling the
+            spacing; tiles form a width / height grid, not interleaved by default.
           </p>
-          <p>The watermark layer is purely decorative and does not affect selecting, copying, or clicking the body content.</p>
+          <p>
+            The watermark layer is purely decorative and does not affect selecting, copying, or
+            clicking the body content.
+          </p>
         </div>
       </SnWatermark>
     </section>
@@ -48,7 +52,8 @@ import { SnWatermark } from '@snui/vue-web'
         <div class="watermark-content-demo__panel">
           <h5>Staggered layout of the same copy</h5>
           <p>
-            With cross on, adjacent tiles in a row are offset vertically by half a tile height — denser visually and harder to crop out.
+            With cross on, adjacent tiles in a row are offset vertically by half a tile height —
+            denser visually and harder to crop out.
           </p>
           <p>Both blocks have identical content / rotation / opacity; only cross differs.</p>
         </div>

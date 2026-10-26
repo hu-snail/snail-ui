@@ -2,23 +2,23 @@
 /**
  * Demo: SnPopconfirm — async confirm callback (Promise semantics).
  */
-import { ref } from 'vue'
-import { SnButton, SnPopconfirm } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnPopconfirm } from '@snui/vue-web';
 
-type Phase = 'idle' | 'pending' | 'done' | 'failed'
-const phase = ref<Phase>('idle')
+type Phase = 'idle' | 'pending' | 'done' | 'failed';
+const phase = ref<Phase>('idle');
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function onPositive(): Promise<boolean> {
-  phase.value = 'pending'
-  await sleep(1200)
+  phase.value = 'pending';
+  await sleep(1200);
   // 模拟 50% 成功率：失败时解析为 false，弹层保持打开。
-  const ok = Math.random() > 0.5
-  phase.value = ok ? 'done' : 'failed'
-  return ok
+  const ok = Math.random() > 0.5;
+  phase.value = ok ? 'done' : 'failed';
+  return ok;
 }
 
 const phaseText: Record<Phase, string> = {
@@ -26,7 +26,7 @@ const phaseText: Record<Phase, string> = {
   pending: 'Request in progress; popover stays open…',
   done: 'Request succeeded; popover closed',
   failed: 'Request failed; popover stays open for retry',
-}
+};
 </script>
 
 <template>
@@ -47,7 +47,8 @@ const phaseText: Record<Phase, string> = {
       </span>
     </div>
     <p class="popconfirm-async-demo__hint">
-      When the callback returns a Promise: the popover stays open if it resolves to false (or until reject) — fits request-first, close-later flows.
+      When the callback returns a Promise: the popover stays open if it resolves to false (or until
+      reject) — fits request-first, close-later flows.
     </p>
   </div>
 </template>

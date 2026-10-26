@@ -43,10 +43,10 @@
  *   <SnLoading :show="loading"><p>内容</p></SnLoading>
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import SnLoadingSpinner from './SnLoadingSpinner.vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import SnLoadingSpinner from './SnLoadingSpinner.vue';
 
-defineOptions({ name: 'SnLoading' })
+defineOptions({ name: 'SnLoading' });
 
 /** Upstream `STROKE_WIDTH` map — the arc thins as the spinner grows. */
 const STROKE_WIDTH_BY_SIZE: Record<'tiny' | 'small' | 'medium' | 'large' | 'huge', number> = {
@@ -55,42 +55,42 @@ const STROKE_WIDTH_BY_SIZE: Record<'tiny' | 'small' | 'medium' | 'large' | 'huge
   medium: 18,
   large: 16,
   huge: 16,
-}
+};
 
-const DEFAULT_STROKE_WIDTH = 28
-const DEFAULT_SCALE = 1
-const DEFAULT_RADIUS = 100
+const DEFAULT_STROKE_WIDTH = 28;
+const DEFAULT_SCALE = 1;
+const DEFAULT_RADIUS = 100;
 
 const props = withDefaults(
   defineProps<{
     /** Size tier, or a number treated as px. Mirrors n-spin `size`. */
-    size?: 'tiny' | 'small' | 'medium' | 'large' | 'huge' | number
+    size?: 'tiny' | 'small' | 'medium' | 'large' | 'huge' | number;
     /** Whether the spinner is visible. Mirrors n-spin `show`. */
-    show?: boolean
+    show?: boolean;
     /** Defer the spinner by N ms; hiding is always immediate. Mirrors `delay`. */
-    delay?: number
+    delay?: number;
     /** Rotate a custom `icon` slot. Ignored for the built-in spinner, which
      *  is animated by SMIL. Mirrors n-spin `rotate`. */
-    rotate?: boolean
+    rotate?: boolean;
     /** Text under the spinner. Mirrors n-spin `description`. */
-    description?: string
+    description?: string;
     /** Class applied to the wrapped content. Mirrors `contentClass`. */
-    contentClass?: string
+    contentClass?: string;
     /** Style applied to the wrapped content. Mirrors `contentStyle`. */
-    contentStyle?: string | Record<string, string | number>
+    contentStyle?: string | Record<string, string | number>;
     /** Custom arc colour. Mirrors n-spin `stroke`. */
-    stroke?: string
+    stroke?: string;
     /** Arc thickness in SVG units. Mirrors n-spin `strokeWidth`. */
-    strokeWidth?: number
+    strokeWidth?: number;
     /** Overall scale factor. Mirrors n-spin `scale`. */
-    scale?: number
+    scale?: number;
     /** SVG arc radius in design units. Mirrors n-spin `radius`. */
-    radius?: number
+    radius?: number;
     /**
      * Deprecated upstream alias for `show`; wins when both are set.
      * Mirrors n-spin `spinning`.
      */
-    spinning?: boolean
+    spinning?: boolean;
   }>(),
   {
     size: 'medium',
@@ -106,76 +106,74 @@ const props = withDefaults(
     radius: undefined as any,
     spinning: undefined as any,
   },
-)
+);
 
 defineSlots<{
   /** Wrapped content. When present the spinner overlays it. */
-  default?(): unknown
+  default?(): unknown;
   /** Rich description under the spinner (overrides `description`). */
-  description?(): unknown
+  description?(): unknown;
   /** Custom spinner graphic, replacing the built-in SVG arc. */
-  icon?(): unknown
-}>()
+  icon?(): unknown;
+}>();
 
 if (props.spinning !== undefined) {
-  console.warn('[SnLoading] `spinning` is deprecated, please use `show` instead.')
+  console.warn('[SnLoading] `spinning` is deprecated, please use `show` instead.');
 }
 
 /** `spinning` wins over `show` when supplied — upstream `useCompitable` order. */
-const resolvedShow = computed(() =>
-  props.spinning !== undefined ? props.spinning : props.show,
-)
+const resolvedShow = computed(() => (props.spinning !== undefined ? props.spinning : props.show));
 
-const active = ref(false)
-let delayTimer: ReturnType<typeof setTimeout> | undefined
+const active = ref(false);
+let delayTimer: ReturnType<typeof setTimeout> | undefined;
 
 function clearDelayTimer(): void {
   if (delayTimer !== undefined) {
-    clearTimeout(delayTimer)
-    delayTimer = undefined
+    clearTimeout(delayTimer);
+    delayTimer = undefined;
   }
 }
 
 watch(
   resolvedShow,
   (visible) => {
-    clearDelayTimer()
-    const delay = props.delay
+    clearDelayTimer();
+    const delay = props.delay;
     if (visible && delay) {
       // Hiding must be immediate: a pending delay is cancelled above, so a
       // request that resolves inside the delay window never flashes.
       delayTimer = setTimeout(() => {
-        active.value = true
-        delayTimer = undefined
-      }, delay)
-      return
+        active.value = true;
+        delayTimer = undefined;
+      }, delay);
+      return;
     }
-    active.value = visible
+    active.value = visible;
   },
   { immediate: true },
-)
+);
 
-onBeforeUnmount(clearDelayTimer)
+onBeforeUnmount(clearDelayTimer);
 
 const strokeWidth = computed(() => {
-  if (props.strokeWidth !== undefined) return props.strokeWidth
+  if (props.strokeWidth !== undefined) return props.strokeWidth;
   return typeof props.size === 'number'
     ? STROKE_WIDTH_BY_SIZE.medium
-    : STROKE_WIDTH_BY_SIZE[props.size]
-})
+    : STROKE_WIDTH_BY_SIZE[props.size];
+});
 
 const sizeValue = computed(() =>
   typeof props.size === 'number' ? `${props.size}px` : `var(--sn-web-spin-size-${props.size})`,
-)
+);
 
 const spinnerStyle = computed(() => ({
   width: sizeValue.value,
   height: sizeValue.value,
   fontSize: sizeValue.value,
   color: props.stroke ?? 'var(--sn-web-spin-color)',
-}))
+}));
 
-const containerStyle = computed(() => ({ '--sn-loading-size': sizeValue.value }))
+const containerStyle = computed(() => ({ '--sn-loading-size': sizeValue.value }));
 </script>
 
 <template>
@@ -209,7 +207,12 @@ const containerStyle = computed(() => ({ '--sn-loading-size': sizeValue.value })
   </div>
 
   <!-- Wrapper mode: content stays mounted, spinner overlays it -->
-  <div v-else data-snui-component="SnLoading" class="sn-loading sn-loading--wrapped" :style="containerStyle">
+  <div
+    v-else
+    data-snui-component="SnLoading"
+    class="sn-loading sn-loading--wrapped"
+    :style="containerStyle"
+  >
     <div
       class="sn-loading__content"
       :class="[contentClass, { 'sn-loading__content--spinning': active }]"
@@ -228,11 +231,11 @@ const containerStyle = computed(() => ({ '--sn-loading-size': sizeValue.value })
           >
             <slot v-if="$slots.icon" name="icon" />
             <SnLoadingSpinner
-          v-else
-          :radius="radius ?? DEFAULT_RADIUS"
-          :scale="scale ?? DEFAULT_SCALE"
-          :stroke-width="strokeWidth"
-        />
+              v-else
+              :radius="radius ?? DEFAULT_RADIUS"
+              :scale="scale ?? DEFAULT_SCALE"
+              :stroke-width="strokeWidth"
+            />
           </div>
           <div v-if="description || $slots.description" class="sn-loading__description">
             <slot name="description">{{ description }}</slot>

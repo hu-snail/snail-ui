@@ -47,9 +47,9 @@
  *   - 服务端签名 / 鉴权 — 由宿主在 `beforeUpload` / `uploadMethod` 里完成
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { Plus as PlusIcon, X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Plus as PlusIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 import type {
   UploadCameraType,
   UploadChangeEvent,
@@ -63,55 +63,55 @@ import type {
   UploadSourceType,
   UploadStatusType,
   UploadSuccessEvent,
-} from './sn-upload-types'
+} from './sn-upload-types';
 
-defineOptions({ name: 'SnUpload' })
+defineOptions({ name: 'SnUpload' });
 
 /* ── Narrow, existence-guarded bridge to the uni-app runtime ───────────── */
 
 /** Chosen media entry as reported by the runtime. */
 interface ChosenFile {
-  path: string
-  size: number
-  name?: string
+  path: string;
+  size: number;
+  name?: string;
 }
 
 /** Upload task handle (only `abort` is used here). */
 interface UploadTask {
-  abort?: () => void
+  abort?: () => void;
 }
 
 /** Minimal shape of the runtime API this component touches. */
 interface UniRuntime {
   chooseImage?: (options: {
-    count: number
-    sourceType: UploadSourceType[]
-    sizeType: UploadSizeType[]
-    success?: (result: { tempFiles: ChosenFile[] }) => void
-    fail?: (error: unknown) => void
-  }) => void
+    count: number;
+    sourceType: UploadSourceType[];
+    sizeType: UploadSizeType[];
+    success?: (result: { tempFiles: ChosenFile[] }) => void;
+    fail?: (error: unknown) => void;
+  }) => void;
   chooseVideo?: (options: {
-    sourceType: UploadSourceType[]
-    compressed: boolean
-    maxDuration: number
-    camera: UploadCameraType
-    success?: (result: { tempFilePath: string, size: number }) => void
-    fail?: (error: unknown) => void
-  }) => void
+    sourceType: UploadSourceType[];
+    compressed: boolean;
+    maxDuration: number;
+    camera: UploadCameraType;
+    success?: (result: { tempFilePath: string; size: number }) => void;
+    fail?: (error: unknown) => void;
+  }) => void;
   chooseMessageFile?: (options: {
-    count: number
-    success?: (result: { tempFiles: ChosenFile[] }) => void
-    fail?: (error: unknown) => void
-  }) => void
+    count: number;
+    success?: (result: { tempFiles: ChosenFile[] }) => void;
+    fail?: (error: unknown) => void;
+  }) => void;
   uploadFile?: (options: {
-    url: string
-    filePath: string
-    name: string
-    header?: Record<string, unknown>
-    formData?: Record<string, unknown>
-    success?: (result: { statusCode: number, data: string }) => void
-    fail?: (error: unknown) => void
-  }) => UploadTask | undefined
+    url: string;
+    filePath: string;
+    name: string;
+    header?: Record<string, unknown>;
+    formData?: Record<string, unknown>;
+    success?: (result: { statusCode: number; data: string }) => void;
+    fail?: (error: unknown) => void;
+  }) => UploadTask | undefined;
 }
 
 /**
@@ -121,8 +121,8 @@ interface UniRuntime {
  * this file loadable in a plain Node / happy-dom test process.
  */
 function getRuntime(): UniRuntime | undefined {
-  const scope = globalThis as unknown as { uni?: UniRuntime }
-  return scope.uni
+  const scope = globalThis as unknown as { uni?: UniRuntime };
+  return scope.uni;
 }
 
 /* ── Props ─────────────────────────────────────────────────────────────── */
@@ -132,55 +132,59 @@ const props = withDefaults(
     /* ── wot-ui `wd-upload` 1:1 surface ─────────────────────────────────── */
 
     /** File list (`v-model:file-list`). */
-    fileList?: UploadFileItem[]
+    fileList?: UploadFileItem[];
     /** Upload endpoint. */
-    action?: string
+    action?: string;
     /** Request headers. */
-    header?: Record<string, unknown>
+    header?: Record<string, unknown>;
     /** Allow picking more than one file. */
-    multiple?: boolean
+    multiple?: boolean;
     /** Disables the picker and every row action. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Maximum number of files. `0` = unconstrained. */
-    limit?: number
+    limit?: number;
     /** Render the `current / limit` counter next to the picker. */
-    showLimitNum?: boolean
+    showLimitNum?: boolean;
     /** Per-file byte ceiling. */
-    maxSize?: number
+    maxSize?: number;
     /** Picker sources. */
-    sourceType?: UploadSourceType[]
+    sourceType?: UploadSourceType[];
     /** Image sizing. */
-    sizeType?: UploadSizeType[]
+    sizeType?: UploadSizeType[];
     /** Multipart field name. */
-    name?: string
+    name?: string;
     /** Extra multipart fields. */
-    formData?: Record<string, unknown>
+    formData?: Record<string, unknown>;
     /** Veto / transform hook before a file is added. */
-    beforeUpload?: ((file: UploadFileItem) => boolean | UploadFileItem | Promise<boolean | UploadFileItem>) | undefined
+    beforeUpload?:
+      | ((file: UploadFileItem) => boolean | UploadFileItem | Promise<boolean | UploadFileItem>)
+      | undefined;
     /** Veto hook before the picker opens. */
-    beforeChoose?: (() => boolean | Promise<boolean>) | undefined
+    beforeChoose?: (() => boolean | Promise<boolean>) | undefined;
     /** Veto hook before a file is removed. */
-    beforeRemove?: ((file: UploadFileItem, index: number) => boolean | Promise<boolean>) | undefined
+    beforeRemove?:
+      ((file: UploadFileItem, index: number) => boolean | Promise<boolean>) | undefined;
     /** Veto hook before a preview opens. */
-    beforePreview?: ((file: UploadFileItem) => boolean | Promise<boolean>) | undefined
+    beforePreview?: ((file: UploadFileItem) => boolean | Promise<boolean>) | undefined;
     /** Custom multipart builder. */
-    buildFormData?: ((file: UploadFileItem) => Record<string, unknown>) | undefined
+    buildFormData?: ((file: UploadFileItem) => Record<string, unknown>) | undefined;
     /** Accepted file category. */
-    accept?: UploadFileType
+    accept?: UploadFileType;
     /** Preview image fit mode (forwarded to `<image mode>`). */
-    imageMode?: 'scaleToFill' | 'aspectFit' | 'aspectFill' | 'widthFix'
+    imageMode?: 'scaleToFill' | 'aspectFit' | 'aspectFill' | 'widthFix';
     /** Class on the picker tile. */
-    customEvokeClass?: string
+    customEvokeClass?: string;
     /** Class on the preview tile. */
-    customPreviewClass?: string
+    customPreviewClass?: string;
     /** Upload automatically after picking. */
-    autoUpload?: boolean
+    autoUpload?: boolean;
     /** Custom transfer implementation (bypasses `uni.uploadFile`). */
-    uploadMethod?: ((file: UploadFileItem) => Promise<string | Record<string, unknown>>) | undefined
+    uploadMethod?:
+      ((file: UploadFileItem) => Promise<string | Record<string, unknown>>) | undefined;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     fileList: () => [],
@@ -209,68 +213,68 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:fileList', value: UploadFileItem[]): void
-  (e: 'change', payload: UploadChangeEvent): void
-  (e: 'remove', payload: UploadRemoveEvent): void
-  (e: 'success', payload: UploadSuccessEvent): void
-  (e: 'fail', payload: UploadErrorEvent): void
-  (e: 'progress', payload: UploadProgressEvent): void
-  (e: 'oversize', payload: UploadOversizeEvent): void
-  (e: 'chooseerror', error: unknown): void
-}>()
+  (e: 'update:fileList', value: UploadFileItem[]): void;
+  (e: 'change', payload: UploadChangeEvent): void;
+  (e: 'remove', payload: UploadRemoveEvent): void;
+  (e: 'success', payload: UploadSuccessEvent): void;
+  (e: 'fail', payload: UploadErrorEvent): void;
+  (e: 'progress', payload: UploadProgressEvent): void;
+  (e: 'oversize', payload: UploadOversizeEvent): void;
+  (e: 'chooseerror', error: unknown): void;
+}>();
 
 /* ── List state ────────────────────────────────────────────────────────── */
 
 /** Internal mirror of the list; the prop wins on every external change. */
-const list = ref<UploadFileItem[]>(props.fileList.map(file => ({ ...file })))
+const list = ref<UploadFileItem[]>(props.fileList.map((file) => ({ ...file })));
 
 watch(
   () => props.fileList,
   (value) => {
-    list.value = value.map(file => ({ ...file }))
+    list.value = value.map((file) => ({ ...file }));
   },
   { deep: true },
-)
+);
 
 /** Next `uid` — a monotonic counter, not a random number (deterministic). */
-let nextUid = 1
+let nextUid = 1;
 for (const file of list.value) {
-  if (Number.isFinite(file.uid) && file.uid >= nextUid) nextUid = file.uid + 1
+  if (Number.isFinite(file.uid) && file.uid >= nextUid) nextUid = file.uid + 1;
 }
 
 /** In-flight upload tasks by `uid`, aborted on unmount (§41). */
-const tasks = new Map<number, UploadTask>()
+const tasks = new Map<number, UploadTask>();
 
 function commit(next: UploadFileItem[]): void {
-  list.value = next
-  emit('update:fileList', next)
-  emit('change', { fileList: next })
+  list.value = next;
+  emit('update:fileList', next);
+  emit('change', { fileList: next });
 }
 
 function patchFile(uid: number, patch: Partial<UploadFileItem>): UploadFileItem | undefined {
-  const index = list.value.findIndex(file => file.uid === uid)
-  if (index < 0) return undefined
-  const current = list.value[index]
-  if (!current) return undefined
-  const next = { ...current, ...patch }
-  const copy = list.value.slice()
-  copy[index] = next
-  commit(copy)
-  return next
+  const index = list.value.findIndex((file) => file.uid === uid);
+  if (index < 0) return undefined;
+  const current = list.value[index];
+  if (!current) return undefined;
+  const next = { ...current, ...patch };
+  const copy = list.value.slice();
+  copy[index] = next;
+  commit(copy);
+  return next;
 }
 
 /* ── Limits ────────────────────────────────────────────────────────────── */
 
-const count = computed(() => list.value.length)
+const count = computed(() => list.value.length);
 
-const atLimit = computed(() => props.limit > 0 && count.value >= props.limit)
+const atLimit = computed(() => props.limit > 0 && count.value >= props.limit);
 
-const pickerVisible = computed(() => !props.disabled && !atLimit.value)
+const pickerVisible = computed(() => !props.disabled && !atLimit.value);
 
-const limitLabel = computed(() => (props.limit > 0 ? `${count.value}/${props.limit}` : ''))
+const limitLabel = computed(() => (props.limit > 0 ? `${count.value}/${props.limit}` : ''));
 
 /* ── Picking ───────────────────────────────────────────────────────────── */
 
@@ -282,53 +286,59 @@ function toFileItem(chosen: ChosenFile): UploadFileItem {
     size: chosen.size,
     status: 'pending',
     percent: 0,
-  }
+  };
 }
 
 async function acceptChosen(files: ChosenFile[]): Promise<void> {
-  const additions: UploadFileItem[] = []
+  const additions: UploadFileItem[] = [];
   for (const chosen of files) {
-    if (props.limit > 0 && list.value.length + additions.length >= props.limit) break
+    if (props.limit > 0 && list.value.length + additions.length >= props.limit) break;
     if (chosen.size > props.maxSize) {
-      emit('oversize', { file: toFileItem(chosen), maxSize: props.maxSize })
-      continue
+      emit('oversize', { file: toFileItem(chosen), maxSize: props.maxSize });
+      continue;
     }
-    let item = toFileItem(chosen)
+    let item = toFileItem(chosen);
     if (props.beforeUpload) {
-      const verdict = await props.beforeUpload(item)
-      if (verdict === false) continue
-      if (typeof verdict === 'object') item = { ...verdict, uid: item.uid }
+      const verdict = await props.beforeUpload(item);
+      if (verdict === false) continue;
+      if (typeof verdict === 'object') item = { ...verdict, uid: item.uid };
     }
-    additions.push(item)
+    additions.push(item);
   }
-  if (additions.length === 0) return
-  commit([...list.value, ...additions])
+  if (additions.length === 0) return;
+  commit([...list.value, ...additions]);
   if (props.autoUpload) {
-    for (const item of additions) void startUpload(item.uid)
+    for (const item of additions) void startUpload(item.uid);
   }
 }
 
 async function onEvokeTap(): Promise<void> {
-  if (!pickerVisible.value) return
+  if (!pickerVisible.value) return;
   if (props.beforeChoose) {
-    const verdict = await props.beforeChoose()
-    if (verdict === false) return
+    const verdict = await props.beforeChoose();
+    if (verdict === false) return;
   }
-  const runtime = getRuntime()
+  const runtime = getRuntime();
   if (!runtime) {
-    emit('chooseerror', new Error('uni runtime unavailable'))
-    return
+    emit('chooseerror', new Error('uni runtime unavailable'));
+    return;
   }
-  const onFail = (error: unknown): void => { emit('chooseerror', error) }
-  const countLimit = props.multiple ? Math.max(props.limit > 0 ? props.limit - count.value : 9, 1) : 1
+  const onFail = (error: unknown): void => {
+    emit('chooseerror', error);
+  };
+  const countLimit = props.multiple
+    ? Math.max(props.limit > 0 ? props.limit - count.value : 9, 1)
+    : 1;
 
   if (props.accept === 'file' || props.accept === 'all') {
     runtime.chooseMessageFile?.({
       count: countLimit,
-      success: (result) => { void acceptChosen(result.tempFiles) },
+      success: (result) => {
+        void acceptChosen(result.tempFiles);
+      },
       fail: onFail,
-    })
-    return
+    });
+    return;
   }
   if (props.accept === 'video') {
     runtime.chooseVideo?.({
@@ -337,48 +347,50 @@ async function onEvokeTap(): Promise<void> {
       maxDuration: 60,
       camera: 'back',
       success: (result) => {
-        void acceptChosen([{ path: result.tempFilePath, size: result.size }])
+        void acceptChosen([{ path: result.tempFilePath, size: result.size }]);
       },
       fail: onFail,
-    })
-    return
+    });
+    return;
   }
   runtime.chooseImage?.({
     count: countLimit,
     sourceType: props.sourceType,
     sizeType: props.sizeType,
-    success: (result) => { void acceptChosen(result.tempFiles) },
+    success: (result) => {
+      void acceptChosen(result.tempFiles);
+    },
     fail: onFail,
-  })
+  });
 }
 
 /* ── Uploading ─────────────────────────────────────────────────────────── */
 
 async function startUpload(uid: number): Promise<void> {
-  const file = list.value.find(item => item.uid === uid)
-  if (!file) return
-  patchFile(uid, { status: 'loading', percent: 0 })
+  const file = list.value.find((item) => item.uid === uid);
+  if (!file) return;
+  patchFile(uid, { status: 'loading', percent: 0 });
 
   if (props.uploadMethod) {
     try {
-      const response = await props.uploadMethod(file)
-      const done = patchFile(uid, { status: 'success', percent: 100, response })
-      emit('success', { file: done ?? file, response })
+      const response = await props.uploadMethod(file);
+      const done = patchFile(uid, { status: 'success', percent: 100, response });
+      emit('success', { file: done ?? file, response });
     } catch (error) {
-      const failed = patchFile(uid, { status: 'fail' })
-      emit('fail', { file: failed ?? file, error })
+      const failed = patchFile(uid, { status: 'fail' });
+      emit('fail', { file: failed ?? file, error });
     }
-    return
+    return;
   }
 
-  const runtime = getRuntime()
+  const runtime = getRuntime();
   if (!runtime?.uploadFile) {
-    const failed = patchFile(uid, { status: 'fail' })
-    emit('fail', { file: failed ?? file, error: new Error('uni.uploadFile unavailable') })
-    return
+    const failed = patchFile(uid, { status: 'fail' });
+    emit('fail', { file: failed ?? file, error: new Error('uni.uploadFile unavailable') });
+    return;
   }
 
-  const formData = props.buildFormData ? props.buildFormData(file) : props.formData
+  const formData = props.buildFormData ? props.buildFormData(file) : props.formData;
   const task = runtime.uploadFile({
     url: props.action,
     filePath: file.url ?? '',
@@ -386,75 +398,80 @@ async function startUpload(uid: number): Promise<void> {
     header: props.header,
     formData,
     success: (result) => {
-      tasks.delete(uid)
+      tasks.delete(uid);
       const done = patchFile(uid, {
         status: 'success',
         percent: 100,
         response: result.data,
-      })
-      emit('success', { file: done ?? file, response: result.data })
+      });
+      emit('success', { file: done ?? file, response: result.data });
     },
     fail: (error) => {
-      tasks.delete(uid)
-      const failed = patchFile(uid, { status: 'fail' })
-      emit('fail', { file: failed ?? file, error })
+      tasks.delete(uid);
+      const failed = patchFile(uid, { status: 'fail' });
+      emit('fail', { file: failed ?? file, error });
     },
-  })
-  if (task) tasks.set(uid, task)
+  });
+  if (task) tasks.set(uid, task);
 }
 
 /** Public imperative API (wd-upload parity): start every pending upload. */
 async function submit(): Promise<void> {
-  if (props.disabled) return
-  const pending = list.value.filter(file => file.status === 'pending' || file.status === 'fail')
-  for (const file of pending) await startUpload(file.uid)
+  if (props.disabled) return;
+  const pending = list.value.filter((file) => file.status === 'pending' || file.status === 'fail');
+  for (const file of pending) await startUpload(file.uid);
 }
 
 /** Public imperative API (wd-upload parity): abort one task, or all of them. */
 function abort(task?: UploadTask): void {
   if (task) {
-    task.abort?.()
-    return
+    task.abort?.();
+    return;
   }
-  for (const running of tasks.values()) running.abort?.()
-  tasks.clear()
+  for (const running of tasks.values()) running.abort?.();
+  tasks.clear();
 }
 
 /* ── Row actions ───────────────────────────────────────────────────────── */
 
 async function onRemove(index: number): Promise<void> {
-  if (props.disabled) return
-  const file = list.value[index]
-  if (!file) return
+  if (props.disabled) return;
+  const file = list.value[index];
+  if (!file) return;
   if (props.beforeRemove) {
-    const verdict = await props.beforeRemove(file, index)
-    if (verdict === false) return
+    const verdict = await props.beforeRemove(file, index);
+    if (verdict === false) return;
   }
-  const running = tasks.get(file.uid)
-  running?.abort?.()
-  tasks.delete(file.uid)
-  const next = list.value.filter((_, i) => i !== index)
-  commit(next)
-  emit('remove', { file, fileList: next })
+  const running = tasks.get(file.uid);
+  running?.abort?.();
+  tasks.delete(file.uid);
+  const next = list.value.filter((_, i) => i !== index);
+  commit(next);
+  emit('remove', { file, fileList: next });
 }
 
 async function onPreview(file: UploadFileItem): Promise<void> {
   if (props.beforePreview) {
-    const verdict = await props.beforePreview(file)
-    if (verdict === false) return
+    const verdict = await props.beforePreview(file);
+    if (verdict === false) return;
   }
-  const runtime = getRuntime() as (UniRuntime & { previewImage?: (options: { urls: string[], current: string }) => void }) | undefined
-  if (!runtime?.previewImage || !file.url) return
-  runtime.previewImage({ urls: list.value.map(item => item.url ?? '').filter(Boolean), current: file.url })
+  const runtime = getRuntime() as
+    | (UniRuntime & { previewImage?: (options: { urls: string[]; current: string }) => void })
+    | undefined;
+  if (!runtime?.previewImage || !file.url) return;
+  runtime.previewImage({
+    urls: list.value.map((item) => item.url ?? '').filter(Boolean),
+    current: file.url,
+  });
 }
 
 /* ── Lifecycle ─────────────────────────────────────────────────────────── */
 
 onBeforeUnmount(() => {
-  abort()
-})
+  abort();
+});
 
-defineExpose({ submit, abort })
+defineExpose({ submit, abort });
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
@@ -465,19 +482,19 @@ const rootClass = computed(() => [
     'sn-upload--at-limit': atLimit.value,
   },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => props.customStyle)
+const rootStyle = computed(() => props.customStyle);
 
 function statusClass(file: UploadFileItem): Record<string, boolean> {
-  const status: UploadStatusType = file.status ?? 'pending'
+  const status: UploadStatusType = file.status ?? 'pending';
   return {
     [`sn-upload__file--${status}`]: true,
-  }
+  };
 }
 
 function progressLabel(file: UploadFileItem): string {
-  return `${file.percent ?? 0}%`
+  return `${file.percent ?? 0}%`;
 }
 </script>
 
@@ -530,7 +547,9 @@ function progressLabel(file: UploadFileItem): string {
       <SnIcon :icon="PlusIcon" :size="32" />
     </view>
 
-    <text v-if="props.showLimitNum && props.limit > 0" class="sn-upload__limit">{{ limitLabel }}</text>
+    <text v-if="props.showLimitNum && props.limit > 0" class="sn-upload__limit">{{
+      limitLabel
+    }}</text>
   </view>
 </template>
 

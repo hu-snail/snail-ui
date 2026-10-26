@@ -28,24 +28,24 @@ Countdown (n-countdown aligned): ticks from `duration` (ms) down to zero, render
 
 ### SnCountdown Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| duration | `number` | `0` | Total duration in ms (non-reactive) |
-| active | `boolean` | `true` | Whether ticking |
-| precision | `0 \| 1 \| 2 \| 3` | `0` | Decimal precision of the seconds |
-| render | `(info: { hours, minutes, seconds, milliseconds }) => VNodeChild` | `undefined` | Custom render function |
+| Prop      | Type                                                              | Default     | Notes                               |
+| --------- | ----------------------------------------------------------------- | ----------- | ----------------------------------- |
+| duration  | `number`                                                          | `0`         | Total duration in ms (non-reactive) |
+| active    | `boolean`                                                         | `true`      | Whether ticking                     |
+| precision | `0 \| 1 \| 2 \| 3`                                                | `0`         | Decimal precision of the seconds    |
+| render    | `(info: { hours, minutes, seconds, milliseconds }) => VNodeChild` | `undefined` | Custom render function              |
 
 ### SnCountdown Events
 
-| Event | Parameters | Notes |
-| --- | --- | --- |
-| finish | — | Fired once per run at zero (again after reset) |
+| Event  | Parameters | Notes                                          |
+| ------ | ---------- | ---------------------------------------------- |
+| finish | —          | Fired once per run at zero (again after reset) |
 
 ### SnCountdown Methods
 
-| Method | Parameters | Notes |
-| --- | --- | --- |
-| reset | — | Restore the full duration |
+| Method | Parameters | Notes                     |
+| ------ | ---------- | ------------------------- |
+| reset  | —          | Restore the full duration |
 
 The displayed value rounds up within the current precision step (4999 ms still shows second 5), matching naive.
 

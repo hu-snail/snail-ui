@@ -8,63 +8,61 @@
  * `完成` closes the modal and the page keeps the last accepted list, so the
  * pattern "上传完成后回到页面" is visible.
  */
-import { computed, onBeforeUnmount, ref } from 'vue'
-import { SnButton, SnDialog, SnUpload } from '@snui/vue-web'
-import type { SnUploadFile } from '@snui/vue-web'
+import { computed, onBeforeUnmount, ref } from 'vue';
+import { SnButton, SnDialog, SnUpload } from '@snui/vue-web';
+import type { SnUploadFile } from '@snui/vue-web';
 
-const open = ref(false)
-const files = ref<SnUploadFile[]>([])
+const open = ref(false);
+const files = ref<SnUploadFile[]>([]);
 /** Files accepted in the current dialog session (committed on 完成). */
-const committed = ref<SnUploadFile[]>([])
-const previewed = ref<SnUploadFile | null>(null)
-const timers = new Set<number>()
+const committed = ref<SnUploadFile[]>([]);
+const previewed = ref<SnUploadFile | null>(null);
+const timers = new Set<number>();
 
 const uploadingCount = computed(
   () => files.value.filter((file) => file.status === 'uploading').length,
-)
+);
 
-const failureCount = computed(
-  () => files.value.filter((file) => file.status === 'error').length,
-)
+const failureCount = computed(() => files.value.filter((file) => file.status === 'error').length);
 
 function formatSize(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
 /** Simulated driver: three quick ticks, then done (or error for `*.err`). */
 function simulateUpload(file: SnUploadFile): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    let value = 0
+    let value = 0;
     const id = window.setInterval(() => {
-      value = Math.min(100, value + 20 + Math.round(Math.random() * 20))
-      file.percentage = value
-      if (value < 100) return
-      window.clearInterval(id)
-      timers.delete(id)
-      if (file.name.toLowerCase().endsWith('.err')) reject(new Error('upload failed'))
-      else resolve()
-    }, 220)
-    timers.add(id)
-  })
+      value = Math.min(100, value + 20 + Math.round(Math.random() * 20));
+      file.percentage = value;
+      if (value < 100) return;
+      window.clearInterval(id);
+      timers.delete(id);
+      if (file.name.toLowerCase().endsWith('.err')) reject(new Error('upload failed'));
+      else resolve();
+    }, 220);
+    timers.add(id);
+  });
 }
 
 function openDialog(): void {
-  files.value = []
-  previewed.value = null
-  open.value = true
+  files.value = [];
+  previewed.value = null;
+  open.value = true;
 }
 
 function confirm(): void {
-  committed.value = files.value.filter((file) => file.status === 'done')
-  open.value = false
+  committed.value = files.value.filter((file) => file.status === 'done');
+  open.value = false;
 }
 
 onBeforeUnmount(() => {
-  timers.forEach((id) => window.clearInterval(id))
-  timers.clear()
-})
+  timers.forEach((id) => window.clearInterval(id));
+  timers.clear();
+});
 </script>
 
 <template>
@@ -110,7 +108,7 @@ onBeforeUnmount(() => {
               class="upload-dialog-demo__thumb"
               :src="previewed.url"
               :alt="previewed.name"
-            >
+            />
             <div class="upload-dialog-demo__meta">
               <strong>{{ previewed.name }}</strong>
               <span>{{ formatSize(previewed.size) }} · {{ previewed.status }}</span>

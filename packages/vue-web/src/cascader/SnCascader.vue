@@ -1,14 +1,18 @@
 <template>
   <div
     ref="rootRef"
-    :class="['sn-cascader', `sn-cascader--${size}`, {
-      'sn-cascader--filterable': filterable,
-      'sn-cascader--disabled': disabled,
-      'sn-cascader--readonly': readonly,
-      'sn-cascader--focused': isFocused,
-      'sn-cascader--active': isMenuOpen,
-      [`sn-cascader--status-${status}`]: status !== 'default',
-    }]"
+    :class="[
+      'sn-cascader',
+      `sn-cascader--${size}`,
+      {
+        'sn-cascader--filterable': filterable,
+        'sn-cascader--disabled': disabled,
+        'sn-cascader--readonly': readonly,
+        'sn-cascader--focused': isFocused,
+        'sn-cascader--active': isMenuOpen,
+        [`sn-cascader--status-${status}`]: status !== 'default',
+      },
+    ]"
     :data-snui-component="'cascader'"
     :data-size="size"
     :data-status="status"
@@ -39,10 +43,9 @@
       </span>
 
       <!-- Filterable: committed label + inline search input -->
-      <span
-        v-if="filterable && selectedLabel !== null"
-        class="sn-cascader__single-value"
-      >{{ selectedLabel }}</span>
+      <span v-if="filterable && selectedLabel !== null" class="sn-cascader__single-value">{{
+        selectedLabel
+      }}</span>
       <input
         v-if="filterable"
         ref="filterInputRef"
@@ -65,7 +68,7 @@
         @keydown.stop="onKeyDown"
         @focus="onFocus"
         @blur="onBlur"
-      >
+      />
     </div>
 
     <!-- Suffix area: clear button | arrow -->
@@ -144,11 +147,7 @@
                 @mouseenter="onOptionMouseEnter(node)"
               >
                 <span class="sn-cascader-option__label">{{ node.label }}</span>
-                <span
-                  v-if="!node.isLeaf"
-                  class="sn-cascader-option__expand"
-                  aria-hidden="true"
-                >
+                <span v-if="!node.isLeaf" class="sn-cascader-option__expand" aria-hidden="true">
                   <SnIcon :icon="ChevronRightIcon" :size="12" />
                 </span>
               </div>
@@ -199,10 +198,10 @@
  * declared below; CSS uses `--sn-web-cascader-*` aliases +
  * `--sn-web-color-*` fallbacks only.
  */
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import { useOverlayFollow } from '../_internal/use-overlay-follow'
-import { ChevronDownIcon, ChevronRightIcon, CloseIcon } from './sn-cascader-icons'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import { useOverlayFollow } from '../_internal/use-overlay-follow';
+import { ChevronDownIcon, ChevronRightIcon, CloseIcon } from './sn-cascader-icons';
 import {
   collectCascaderLeaves,
   defaultCascaderFilter,
@@ -215,42 +214,42 @@ import {
   type SnCascaderSize,
   type SnCascaderStatus,
   type SnCascaderValue,
-} from './sn-cascader-types'
+} from './sn-cascader-types';
 
-defineOptions({ name: 'SnCascader' })
+defineOptions({ name: 'SnCascader' });
 
 const props = withDefaults(
   defineProps<{
     /** Bound value — the full leaf path (root-first); empty when cleared. */
-    modelValue?: Array<SnCascaderValue> | null
+    modelValue?: Array<SnCascaderValue> | null;
     /** Tree option list ({ label, value, disabled?, children? }). */
-    options?: SnCascaderOptionInput[]
+    options?: SnCascaderOptionInput[];
     /** Label key remapping for object options. */
-    labelField?: string
+    labelField?: string;
     /** Value key remapping for object options. */
-    valueField?: string
+    valueField?: string;
     /** Children key remapping for object options. */
-    childrenField?: string
+    childrenField?: string;
     /** Placeholder text when empty. */
-    placeholder?: string
+    placeholder?: string;
     /** Show the clear (×) button when a value is present. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Enable the internal filter input (matches on the full path text). */
-    filterable?: boolean
+    filterable?: boolean;
     /** Disables interaction. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — opens nothing, commits nothing. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. */
-    size?: SnCascaderSize
+    size?: SnCascaderSize;
     /** Validation-driven visual status. */
-    status?: SnCascaderStatus
+    status?: SnCascaderStatus;
     /** How parent nodes expand the next column. */
-    expandTrigger?: SnCascaderExpandTrigger
+    expandTrigger?: SnCascaderExpandTrigger;
     /** Accessible name for the trigger. */
-    ariaLabel?: string
+    ariaLabel?: string;
     /** Empty-state text (overridden by the `empty` slot). */
-    emptyText?: string
+    emptyText?: string;
   }>(),
   {
     modelValue: () => [],
@@ -269,28 +268,28 @@ const props = withDefaults(
     ariaLabel: '',
     emptyText: 'No options',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — full leaf path (root-first). */
-  (e: 'update:modelValue', value: Array<SnCascaderValue>): void
+  (e: 'update:modelValue', value: Array<SnCascaderValue>): void;
   /** Selection committed (also fires for clear). */
-  (e: 'change', value: Array<SnCascaderValue>): void
+  (e: 'change', value: Array<SnCascaderValue>): void;
   /** Clear button activated. */
-  (e: 'clear'): void
+  (e: 'clear'): void;
   /** Trigger gained focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Trigger lost focus. */
-  (e: 'blur', event: FocusEvent): void
-}>()
+  (e: 'blur', event: FocusEvent): void;
+}>();
 
 defineSlots<{
   /** Empty state (no options / no filter match). */
-  empty?(): unknown
-}>()
+  empty?(): unknown;
+}>();
 
 /** Display separator between path labels in the trigger + filter rows. */
-const PATH_SEPARATOR = ' / '
+const PATH_SEPARATOR = ' / ';
 
 /* ─────────── Option normalization (pure, deterministic) ─────────── */
 
@@ -300,99 +299,100 @@ const normalizedNodes = computed<SnCascaderNode[]>(() =>
     valueField: props.valueField,
     childrenField: props.childrenField,
   }),
-)
+);
 
 /* ─────────── Selection echo ─────────── */
 
 const selectedPath = computed<SnCascaderNode[] | null>(() => {
-  if (props.modelValue === null || props.modelValue.length === 0) return null
-  return findPathByValues(normalizedNodes.value, props.modelValue)
-})
+  if (props.modelValue === null || props.modelValue.length === 0) return null;
+  return findPathByValues(normalizedNodes.value, props.modelValue);
+});
 
-const selectedKey = computed<string | null>(() =>
-  selectedPath.value?.[selectedPath.value.length - 1]?.key ?? null,
-)
+const selectedKey = computed<string | null>(
+  () => selectedPath.value?.[selectedPath.value.length - 1]?.key ?? null,
+);
 
 const selectedLabel = computed<string | null>(() =>
   selectedPath.value === null
     ? null
-    : selectedPath.value.map(node => node.label).join(PATH_SEPARATOR),
-)
+    : selectedPath.value.map((node) => node.label).join(PATH_SEPARATOR),
+);
 
 /* ─────────── Filter state ─────────── */
 
-const query = ref('')
-const filterInputRef = ref<HTMLInputElement | null>(null)
+const query = ref('');
+const filterInputRef = ref<HTMLInputElement | null>(null);
 
-const isFiltering = computed(() => props.filterable && query.value !== '')
+const isFiltering = computed(() => props.filterable && query.value !== '');
 
 const filteredLeaves = computed<SnCascaderNode[]>(() => {
-  if (!isFiltering.value) return []
-  return collectCascaderLeaves(normalizedNodes.value)
-    .filter(node => defaultCascaderFilter(query.value, node.pathLabels.join(PATH_SEPARATOR)))
-})
+  if (!isFiltering.value) return [];
+  return collectCascaderLeaves(normalizedNodes.value).filter((node) =>
+    defaultCascaderFilter(query.value, node.pathLabels.join(PATH_SEPARATOR)),
+  );
+});
 
 const showEmptyState = computed(() =>
   isFiltering.value ? filteredLeaves.value.length === 0 : normalizedNodes.value.length === 0,
-)
+);
 
 /* ─────────── Open state ─────────── */
 
-const rootRef = ref<HTMLElement | null>(null)
-const triggerRef = ref<HTMLElement | null>(null)
-const menuRef = ref<HTMLElement | null>(null)
+const rootRef = ref<HTMLElement | null>(null);
+const triggerRef = ref<HTMLElement | null>(null);
+const menuRef = ref<HTMLElement | null>(null);
 
-const isMenuOpen = ref(false)
-const isFocused = ref(false)
+const isMenuOpen = ref(false);
+const isFocused = ref(false);
 /** Keys of the expanded ancestors (root-first) — the columns spine. */
-const expandedKeys = ref<string[]>([])
+const expandedKeys = ref<string[]>([]);
 /** Keyboard-active column index (0 = root level). */
-const activeColumn = ref(0)
+const activeColumn = ref(0);
 /** Keyboard / hover highlight target (aria-activedescendant source). */
-const pendingKey = ref<string | null>(null)
+const pendingKey = ref<string | null>(null);
 
-const isInteractive = computed(() => !props.disabled && !props.readonly)
+const isInteractive = computed(() => !props.disabled && !props.readonly);
 
 /** Module-level counter so every SnCascader instance owns a unique menu id. */
-let cascaderInstanceSeed = 0
-const instanceId = ++cascaderInstanceSeed
-const menuId = `sn-cascader-menu-${instanceId}`
+let cascaderInstanceSeed = 0;
+const instanceId = ++cascaderInstanceSeed;
+const menuId = `sn-cascader-menu-${instanceId}`;
 
 /** DOM id for one option row (aria-activedescendant target). */
 function optionDomId(node: SnCascaderNode): string {
-  return `sn-cascader-option-${instanceId}-${node.key}`
+  return `sn-cascader-option-${instanceId}-${node.key}`;
 }
 
 const activeDescendant = computed<string | null>(() => {
-  if (!isMenuOpen.value || pendingKey.value === null) return null
-  return `sn-cascader-option-${instanceId}-${pendingKey.value}`
-})
+  if (!isMenuOpen.value || pendingKey.value === null) return null;
+  return `sn-cascader-option-${instanceId}-${pendingKey.value}`;
+});
 
 /** Visible columns: the root list plus every expanded ancestor's children. */
 const expandedColumns = computed<SnCascaderNode[][]>(() => {
-  const columns: SnCascaderNode[][] = [normalizedNodes.value]
-  let level = normalizedNodes.value
+  const columns: SnCascaderNode[][] = [normalizedNodes.value];
+  let level = normalizedNodes.value;
   for (const key of expandedKeys.value) {
-    const parent = level.find(node => node.key === key)
-    if (parent === undefined || parent.isLeaf) break
-    columns.push(parent.children)
-    level = parent.children
+    const parent = level.find((node) => node.key === key);
+    if (parent === undefined || parent.isLeaf) break;
+    columns.push(parent.children);
+    level = parent.children;
   }
-  return columns
-})
+  return columns;
+});
 
 /** Resolve an index-path key back to its node (walks the tree by index). */
 function nodeAtKey(key: string): SnCascaderNode | null {
-  let level = normalizedNodes.value
-  let node: SnCascaderNode | null = null
+  let level = normalizedNodes.value;
+  let node: SnCascaderNode | null = null;
   for (const part of key.split('-')) {
-    const index = Number(part)
-    const next = level[index]
-    if (next === undefined) return null
-    node = next
-    level = next.children
+    const index = Number(part);
+    const next = level[index];
+    if (next === undefined) return null;
+    node = next;
+    level = next.children;
   }
-  return node
+  return node;
 }
 
 function optionClasses(node: SnCascaderNode): Array<string | Record<string, boolean>> {
@@ -405,165 +405,159 @@ function optionClasses(node: SnCascaderNode): Array<string | Record<string, bool
       'sn-cascader-option--pending': node.key === pendingKey.value,
       'sn-cascader-option--disabled': node.disabled,
     },
-  ]
+  ];
 }
 
 function pathText(node: SnCascaderNode): string {
-  return node.pathLabels.join(PATH_SEPARATOR)
+  return node.pathLabels.join(PATH_SEPARATOR);
 }
 
 /* ─────────── Dropdown positioning (simplified popper) ─────────── */
 
-const MENU_VIEWPORT_GAP = 4
-const placement = ref<'bottom' | 'top'>('bottom')
-const menuStyle = ref<Record<string, string>>({})
+const MENU_VIEWPORT_GAP = 4;
+const placement = ref<'bottom' | 'top'>('bottom');
+const menuStyle = ref<Record<string, string>>({});
 
 async function repositionMenu(): Promise<void> {
-  const root = rootRef.value
-  const menu = menuRef.value
-  if (!root || !menu) return
-  const rootRect = root.getBoundingClientRect()
+  const root = rootRef.value;
+  const menu = menuRef.value;
+  if (!root || !menu) return;
+  const rootRect = root.getBoundingClientRect();
   // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
   // transform (scale 0.92) does not distort — getBoundingClientRect would
   // measure the scaled panel while the enter transition is running.
-  const menuWidth = menu.offsetWidth
-  const menuHeight = menu.offsetHeight
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const menuWidth = menu.offsetWidth;
+  const menuHeight = menu.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
   // Width: at least the trigger width.
-  const width = Math.max(rootRect.width, menuWidth)
+  const width = Math.max(rootRect.width, menuWidth);
   const left = Math.min(
     Math.max(MENU_VIEWPORT_GAP, rootRect.left),
     Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
-  )
+  );
 
   // Bottom preferred; flip to top when the viewport lacks room below
   // but has room above.
-  const roomBelow = vh - rootRect.bottom
-  const roomAbove = rootRect.top
-  const useTop = roomBelow < menuHeight && roomAbove > roomBelow
-  placement.value = useTop ? 'top' : 'bottom'
+  const roomBelow = vh - rootRect.bottom;
+  const roomAbove = rootRect.top;
+  const useTop = roomBelow < menuHeight && roomAbove > roomBelow;
+  placement.value = useTop ? 'top' : 'bottom';
 
-  const top = useTop
-    ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight)
-    : rootRect.bottom
+  const top = useTop ? Math.max(MENU_VIEWPORT_GAP, rootRect.top - menuHeight) : rootRect.bottom;
 
   menuStyle.value = {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
     'min-width': `${Math.round(rootRect.width)}px`,
-  }
+  };
 }
 
 /* Scroll/resize follow: while the menu is open, any scroll (page or a nested
  * scrollable ancestor) or viewport resize re-runs repositionMenu so the
  * fixed-position menu stays glued to the trigger instead of detaching. */
-const followViewport = useOverlayFollow(rootRef, menuRef, repositionMenu, isMenuOpen)
+const followViewport = useOverlayFollow(rootRef, menuRef, repositionMenu, isMenuOpen);
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
 function onDocumentMouseDown(event: MouseEvent): void {
-  if (!isMenuOpen.value) return
-  const target = event.target as Node | null
-  if (!target) return
-  if (rootRef.value && rootRef.value.contains(target)) return
-  if (menuRef.value && menuRef.value.contains(target)) return
-  closeMenu()
+  if (!isMenuOpen.value) return;
+  const target = event.target as Node | null;
+  if (!target) return;
+  if (rootRef.value && rootRef.value.contains(target)) return;
+  if (menuRef.value && menuRef.value.contains(target)) return;
+  closeMenu();
 }
 
 /* ─────────── Open / close ─────────── */
 
 function openMenu(): void {
-  if (!isInteractive.value || isMenuOpen.value) return
-  isMenuOpen.value = true
+  if (!isInteractive.value || isMenuOpen.value) return;
+  isMenuOpen.value = true;
   // Reopen on the committed path: expand its ancestors, highlight the leaf.
-  const path = selectedPath.value
+  const path = selectedPath.value;
   if (path !== null && path.length > 0) {
-    expandedKeys.value = path.slice(0, -1).map(node => node.key)
-    activeColumn.value = expandedKeys.value.length
-    pendingKey.value = path[path.length - 1]?.key ?? null
+    expandedKeys.value = path.slice(0, -1).map((node) => node.key);
+    activeColumn.value = expandedKeys.value.length;
+    pendingKey.value = path[path.length - 1]?.key ?? null;
   } else {
-    expandedKeys.value = []
-    activeColumn.value = 0
-    pendingKey.value = null
+    expandedKeys.value = [];
+    activeColumn.value = 0;
+    pendingKey.value = null;
   }
   void nextTick(() => {
-    void repositionMenu()
-    followViewport.start()
+    void repositionMenu();
+    followViewport.start();
     if (props.filterable) {
-      filterInputRef.value?.focus()
+      filterInputRef.value?.focus();
     }
-  })
+  });
 }
 
 function closeMenu(): void {
-  if (!isMenuOpen.value) return
-  isMenuOpen.value = false
-  followViewport.stop()
-  query.value = ''
-  expandedKeys.value = []
-  activeColumn.value = 0
-  pendingKey.value = null
+  if (!isMenuOpen.value) return;
+  isMenuOpen.value = false;
+  followViewport.stop();
+  query.value = '';
+  expandedKeys.value = [];
+  activeColumn.value = 0;
+  pendingKey.value = null;
 }
 
 /* ─────────── Expansion ─────────── */
 
 function expandNode(node: SnCascaderNode, focusFirstChild: boolean): void {
-  if (node.isLeaf || node.disabled) return
-  expandedKeys.value = keyChainOf(node.key)
-  activeColumn.value = node.depth + 1
+  if (node.isLeaf || node.disabled) return;
+  expandedKeys.value = keyChainOf(node.key);
+  activeColumn.value = node.depth + 1;
   if (focusFirstChild) {
-    const childColumn = expandedColumns.value[node.depth + 1] ?? []
-    const first = childColumn.find(child => !child.disabled)
-    pendingKey.value = first?.key ?? null
+    const childColumn = expandedColumns.value[node.depth + 1] ?? [];
+    const first = childColumn.find((child) => !child.disabled);
+    pendingKey.value = first?.key ?? null;
   } else {
-    pendingKey.value = node.key
+    pendingKey.value = node.key;
   }
 }
 
 /* ─────────── Selection commit ─────────── */
 
 function emitChange(next: Array<SnCascaderValue>): void {
-  emit('update:modelValue', next)
-  emit('change', next)
+  emit('update:modelValue', next);
+  emit('change', next);
 }
 
 function chooseNode(node: SnCascaderNode): void {
-  if (!isInteractive.value || node.disabled || !node.isLeaf) return
-  emitChange([...node.pathValues])
-  closeMenu()
-  triggerRef.value?.focus()
+  if (!isInteractive.value || node.disabled || !node.isLeaf) return;
+  emitChange([...node.pathValues]);
+  closeMenu();
+  triggerRef.value?.focus();
 }
 
 function clearSelection(): void {
-  if (!isInteractive.value) return
-  emitChange([])
-  emit('clear')
+  if (!isInteractive.value) return;
+  emitChange([]);
+  emit('clear');
 }
 
 /* ─────────── Option row events ─────────── */
 
 function onOptionClick(node: SnCascaderNode): void {
-  if (node.disabled) return
+  if (node.disabled) return;
   if (node.isLeaf) {
-    chooseNode(node)
-    return
+    chooseNode(node);
+    return;
   }
   // Parents expand on click in both trigger modes (harmless under hover).
-  expandNode(node, true)
+  expandNode(node, true);
 }
 
 function onOptionMouseEnter(node: SnCascaderNode): void {
-  if (node.disabled) return
-  pendingKey.value = node.key
-  if (
-    props.expandTrigger === 'hover'
-    && !node.isLeaf
-    && !expandedKeys.value.includes(node.key)
-  ) {
-    expandNode(node, false)
+  if (node.disabled) return;
+  pendingKey.value = node.key;
+  if (props.expandTrigger === 'hover' && !node.isLeaf && !expandedKeys.value.includes(node.key)) {
+    expandNode(node, false);
   }
 }
 
@@ -571,96 +565,99 @@ function onOptionMouseEnter(node: SnCascaderNode): void {
 
 /** Selectable nodes of the current keyboard context (filter list or column). */
 function currentSelectableNodes(): SnCascaderNode[] {
-  if (isFiltering.value) return filteredLeaves.value.filter(node => !node.disabled)
-  const column = expandedColumns.value[activeColumn.value] ?? []
-  return column.filter(node => !node.disabled)
+  if (isFiltering.value) return filteredLeaves.value.filter((node) => !node.disabled);
+  const column = expandedColumns.value[activeColumn.value] ?? [];
+  return column.filter((node) => !node.disabled);
 }
 
 function movePending(delta: 1 | -1): void {
-  const list = currentSelectableNodes()
-  if (list.length === 0) return
-  const currentIndex = list.findIndex(node => node.key === pendingKey.value)
-  const nextIndex = currentIndex === -1
-    ? (delta > 0 ? 0 : list.length - 1)
-    : (currentIndex + delta + list.length) % list.length
-  const next = list[nextIndex]
-  pendingKey.value = next?.key ?? null
+  const list = currentSelectableNodes();
+  if (list.length === 0) return;
+  const currentIndex = list.findIndex((node) => node.key === pendingKey.value);
+  const nextIndex =
+    currentIndex === -1
+      ? delta > 0
+        ? 0
+        : list.length - 1
+      : (currentIndex + delta + list.length) % list.length;
+  const next = list[nextIndex];
+  pendingKey.value = next?.key ?? null;
 }
 
 function activatePending(): void {
-  if (pendingKey.value === null) return
-  const node = nodeAtKey(pendingKey.value)
-  if (node === null) return
-  if (node.isLeaf) chooseNode(node)
-  else expandNode(node, true)
+  if (pendingKey.value === null) return;
+  const node = nodeAtKey(pendingKey.value);
+  if (node === null) return;
+  if (node.isLeaf) chooseNode(node);
+  else expandNode(node, true);
 }
 
 function moveColumnLeft(): void {
-  if (isFiltering.value) return
-  const current = activeColumn.value
-  if (current <= 0) return
+  if (isFiltering.value) return;
+  const current = activeColumn.value;
+  if (current <= 0) return;
   // The parent being collapsed back into — it becomes the highlight target.
-  const collapsingParentKey = expandedKeys.value[current - 1]
-  expandedKeys.value = expandedKeys.value.slice(0, current - 1)
-  activeColumn.value = current - 1
-  if (collapsingParentKey !== undefined) pendingKey.value = collapsingParentKey
+  const collapsingParentKey = expandedKeys.value[current - 1];
+  expandedKeys.value = expandedKeys.value.slice(0, current - 1);
+  activeColumn.value = current - 1;
+  if (collapsingParentKey !== undefined) pendingKey.value = collapsingParentKey;
 }
 
 function onKeyDown(event: KeyboardEvent): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   // Space inside the filter input must type a space, not toggle the menu.
-  if (event.target === filterInputRef.value && event.key === ' ') return
+  if (event.target === filterInputRef.value && event.key === ' ') return;
   switch (event.key) {
     case 'Enter': {
-      event.preventDefault()
-      if (!isMenuOpen.value) openMenu()
-      else activatePending()
-      break
+      event.preventDefault();
+      if (!isMenuOpen.value) openMenu();
+      else activatePending();
+      break;
     }
     case ' ':
     case 'Spacebar': {
-      event.preventDefault()
-      if (!isMenuOpen.value) openMenu()
-      break
+      event.preventDefault();
+      if (!isMenuOpen.value) openMenu();
+      break;
     }
     case 'ArrowDown': {
-      event.preventDefault()
-      if (!isMenuOpen.value) openMenu()
-      movePending(1)
-      break
+      event.preventDefault();
+      if (!isMenuOpen.value) openMenu();
+      movePending(1);
+      break;
     }
     case 'ArrowUp': {
-      event.preventDefault()
-      if (!isMenuOpen.value) openMenu()
-      movePending(-1)
-      break
+      event.preventDefault();
+      if (!isMenuOpen.value) openMenu();
+      movePending(-1);
+      break;
     }
     case 'ArrowRight': {
       if (isMenuOpen.value) {
-        event.preventDefault()
+        event.preventDefault();
         if (pendingKey.value !== null) {
-          const node = nodeAtKey(pendingKey.value)
-          if (node !== null && !node.isLeaf) expandNode(node, true)
+          const node = nodeAtKey(pendingKey.value);
+          if (node !== null && !node.isLeaf) expandNode(node, true);
         }
       }
-      break
+      break;
     }
     case 'ArrowLeft': {
       if (isMenuOpen.value) {
-        event.preventDefault()
-        moveColumnLeft()
+        event.preventDefault();
+        moveColumnLeft();
       }
-      break
+      break;
     }
     case 'Escape': {
       if (isMenuOpen.value) {
-        event.preventDefault()
-        closeMenu()
+        event.preventDefault();
+        closeMenu();
       }
-      break
+      break;
     }
     default:
-      break
+      break;
   }
 }
 
@@ -669,50 +666,53 @@ function onKeyDown(event: KeyboardEvent): void {
 function onTriggerMouseDown(event: MouseEvent): void {
   // Keep focus on the trigger (or filter input) — but let the filter input
   // receive the caret while the menu is open.
-  if (props.filterable && isMenuOpen.value) return
-  event.preventDefault()
+  if (props.filterable && isMenuOpen.value) return;
+  event.preventDefault();
 }
 
 function onTriggerClick(): void {
-  if (!isInteractive.value) return
-  if (isMenuOpen.value) closeMenu()
-  else openMenu()
+  if (!isInteractive.value) return;
+  if (isMenuOpen.value) closeMenu();
+  else openMenu();
 }
 
 function onFilterInput(): void {
   // Jump the highlight to the first selectable match (filter rows).
-  pendingKey.value = filteredLeaves.value.find(node => !node.disabled)?.key ?? null
+  pendingKey.value = filteredLeaves.value.find((node) => !node.disabled)?.key ?? null;
 }
 
 function onFocus(event: FocusEvent): void {
-  isFocused.value = true
-  emit('focus', event)
+  isFocused.value = true;
+  emit('focus', event);
 }
 
 function onBlur(event: FocusEvent): void {
-  isFocused.value = false
-  emit('blur', event)
+  isFocused.value = false;
+  emit('blur', event);
 }
 
 /* ─────────── Listeners lifecycle (§41/§42) ─────────── */
 
 onMounted(() => {
-  document.addEventListener('mousedown', onDocumentMouseDown)
-})
+  document.addEventListener('mousedown', onDocumentMouseDown);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown)
-  followViewport.stop()
-})
+  document.removeEventListener('mousedown', onDocumentMouseDown);
+  followViewport.stop();
+});
 
-watch(() => props.options, () => {
-  // Options swapped — re-measure the open menu.
-  if (isMenuOpen.value) void nextTick(() => void repositionMenu())
-})
+watch(
+  () => props.options,
+  () => {
+    // Options swapped — re-measure the open menu.
+    if (isMenuOpen.value) void nextTick(() => void repositionMenu());
+  },
+);
 
 watch(isMenuOpen, (open) => {
-  if (open) void nextTick(() => void repositionMenu())
-})
+  if (open) void nextTick(() => void repositionMenu());
+});
 </script>
 
 <style scoped>
@@ -737,7 +737,9 @@ watch(isMenuOpen, (open) => {
   background-color: var(--sn-web-cascader-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-cascader-text-color, var(--sn-web-color-text-primary));
   cursor: pointer;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
   outline: none;
 }
 
@@ -757,11 +759,26 @@ watch(isMenuOpen, (open) => {
 }
 
 /* Sizes — height + font-size presets (mirror SnSelect). */
-.sn-cascader--mini { --sn-web-cascader-height: 22px; font-size: 11px; }
-.sn-cascader--tiny { --sn-web-cascader-height: 24px; font-size: 12px; }
-.sn-cascader--small { --sn-web-cascader-height: 28px; font-size: 13px; }
-.sn-cascader--medium { --sn-web-cascader-height: 32px; font-size: 14px; }
-.sn-cascader--large { --sn-web-cascader-height: 40px; font-size: 15px; }
+.sn-cascader--mini {
+  --sn-web-cascader-height: 22px;
+  font-size: 11px;
+}
+.sn-cascader--tiny {
+  --sn-web-cascader-height: 24px;
+  font-size: 12px;
+}
+.sn-cascader--small {
+  --sn-web-cascader-height: 28px;
+  font-size: 13px;
+}
+.sn-cascader--medium {
+  --sn-web-cascader-height: 32px;
+  font-size: 14px;
+}
+.sn-cascader--large {
+  --sn-web-cascader-height: 40px;
+  font-size: 15px;
+}
 
 .sn-cascader__placeholder {
   color: var(--sn-web-cascader-placeholder-color, var(--sn-web-color-text-tertiary));
@@ -891,10 +908,7 @@ watch(isMenuOpen, (open) => {
   box-sizing: border-box;
   border: 1px solid var(--sn-web-cascader-menu-border-color, rgba(0, 0, 0, 0.06));
   border-radius: var(--sn-web-cascader-menu-radius, 3px);
-  background-color: var(
-    --sn-web-cascader-menu-bg,
-    var(--sn-web-color-background-elevated)
-  );
+  background-color: var(--sn-web-cascader-menu-bg, var(--sn-web-color-background-elevated));
   /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
   box-shadow: var(
     --sn-web-cascader-menu-shadow,
@@ -954,10 +968,8 @@ watch(isMenuOpen, (open) => {
 }
 
 .sn-cascader-menu__column + .sn-cascader-menu__column {
-  border-left: 1px solid var(
-    --sn-web-cascader-menu-divider-color,
-    var(--sn-web-color-border-subtle)
-  );
+  border-left: 1px solid
+    var(--sn-web-cascader-menu-divider-color, var(--sn-web-color-border-subtle));
 }
 
 .sn-cascader-menu__empty {
@@ -1007,10 +1019,7 @@ watch(isMenuOpen, (open) => {
 
 /* Expanded ancestor — text accent marks the walked path. */
 .sn-cascader-option--in-path {
-  color: var(
-    --sn-web-cascader-option-text-color-in-path,
-    var(--sn-web-color-action-primary)
-  );
+  color: var(--sn-web-cascader-option-text-color-in-path, var(--sn-web-color-action-primary));
   font-weight: 500;
 }
 
@@ -1021,10 +1030,7 @@ watch(isMenuOpen, (open) => {
     --sn-web-cascader-option-bg-selected,
     var(--sn-web-color-action-primary-soft)
   );
-  color: var(
-    --sn-web-cascader-option-text-color-selected,
-    var(--sn-web-color-action-primary)
-  );
+  color: var(--sn-web-cascader-option-text-color-selected, var(--sn-web-color-action-primary));
   font-weight: 500;
 }
 
@@ -1044,10 +1050,7 @@ watch(isMenuOpen, (open) => {
 
 .sn-cascader-option--disabled {
   cursor: not-allowed;
-  color: var(
-    --sn-web-cascader-option-text-color-disabled,
-    var(--sn-web-color-text-disabled)
-  );
+  color: var(--sn-web-cascader-option-text-color-disabled, var(--sn-web-color-text-disabled));
   background-color: transparent;
 }
 
@@ -1056,16 +1059,28 @@ watch(isMenuOpen, (open) => {
     --sn-web-cascader-option-bg-selected-disabled,
     var(--sn-web-color-background-soft)
   );
-  color: var(
-    --sn-web-cascader-option-text-color-disabled,
-    var(--sn-web-color-text-disabled)
-  );
+  color: var(--sn-web-cascader-option-text-color-disabled, var(--sn-web-color-text-disabled));
 }
 
 /* Size presets — shrink row height / font as the trigger shrinks. */
-.sn-cascader-option--mini { min-height: var(--sn-web-cascader-option-height, 26px); font-size: 11px; }
-.sn-cascader-option--tiny { min-height: var(--sn-web-cascader-option-height, 28px); font-size: 12px; }
-.sn-cascader-option--small { min-height: var(--sn-web-cascader-option-height, 30px); font-size: 13px; }
-.sn-cascader-option--medium { min-height: var(--sn-web-cascader-option-height, 34px); font-size: 14px; }
-.sn-cascader-option--large { min-height: var(--sn-web-cascader-option-height, 40px); font-size: 15px; }
+.sn-cascader-option--mini {
+  min-height: var(--sn-web-cascader-option-height, 26px);
+  font-size: 11px;
+}
+.sn-cascader-option--tiny {
+  min-height: var(--sn-web-cascader-option-height, 28px);
+  font-size: 12px;
+}
+.sn-cascader-option--small {
+  min-height: var(--sn-web-cascader-option-height, 30px);
+  font-size: 13px;
+}
+.sn-cascader-option--medium {
+  min-height: var(--sn-web-cascader-option-height, 34px);
+  font-size: 14px;
+}
+.sn-cascader-option--large {
+  min-height: var(--sn-web-cascader-option-height, 40px);
+  font-size: 15px;
+}
 </style>

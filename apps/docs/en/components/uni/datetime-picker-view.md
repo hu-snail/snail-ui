@@ -33,37 +33,37 @@ Roller body: `type` sets the column set and minDate / maxDate bound the range.
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `undefined` | Timestamp, or `HH:mm[:ss]` for `time` |
-| `type` | `'datetime' \| 'date' \| 'year-month' \| 'time' \| 'year'` | `'datetime'` | Column set |
-| `itemHeight` / `visibleItemCount` | `number` | `44` / `6` | Row geometry |
-| `valueKey` / `labelKey` | `string` | `'value'` / `'label'` | Parity only (columns are generated) |
-| `formatter` | `(type, value) => string` | `undefined` | Custom label formatter |
-| `filter` | `(type, values) => number[]` | `undefined` | Filter column values |
-| `columnFormatter` | `(type, values) => number[]` | `undefined` | Rewrite a whole column |
-| `minDate` / `maxDate` | `number` | `undefined` | Bounds (±10 years by default) |
-| `minHour` / `maxHour` / `minMinute` / `maxMinute` | `number` | `0` / `23` / `0` / `59` | `time`-type bounds |
-| `useSecond` / `minSecond` / `maxSecond` | `boolean` / `number` / `number` | `false` / `0` / `59` | Seconds column |
-| `immediateChange` | `boolean` | `false` | Emit while dragging |
-| `boundaryMinDate` / `boundaryMaxDate` | `number` | `undefined` | Range-mode linkage helpers |
-| `customClass` / `customStyle` | `string` | `''` | Root class / inline style |
+| Prop                                              | Type                                                       | Default                 | Description                           |
+| ------------------------------------------------- | ---------------------------------------------------------- | ----------------------- | ------------------------------------- |
+| `modelValue`                                      | `string \| number`                                         | `undefined`             | Timestamp, or `HH:mm[:ss]` for `time` |
+| `type`                                            | `'datetime' \| 'date' \| 'year-month' \| 'time' \| 'year'` | `'datetime'`            | Column set                            |
+| `itemHeight` / `visibleItemCount`                 | `number`                                                   | `44` / `6`              | Row geometry                          |
+| `valueKey` / `labelKey`                           | `string`                                                   | `'value'` / `'label'`   | Parity only (columns are generated)   |
+| `formatter`                                       | `(type, value) => string`                                  | `undefined`             | Custom label formatter                |
+| `filter`                                          | `(type, values) => number[]`                               | `undefined`             | Filter column values                  |
+| `columnFormatter`                                 | `(type, values) => number[]`                               | `undefined`             | Rewrite a whole column                |
+| `minDate` / `maxDate`                             | `number`                                                   | `undefined`             | Bounds (±10 years by default)         |
+| `minHour` / `maxHour` / `minMinute` / `maxMinute` | `number`                                                   | `0` / `23` / `0` / `59` | `time`-type bounds                    |
+| `useSecond` / `minSecond` / `maxSecond`           | `boolean` / `number` / `number`                            | `false` / `0` / `59`    | Seconds column                        |
+| `immediateChange`                                 | `boolean`                                                  | `false`                 | Emit while dragging                   |
+| `boundaryMinDate` / `boundaryMaxDate`             | `number`                                                   | `undefined`             | Range-mode linkage helpers            |
+| `customClass` / `customStyle`                     | `string`                                                   | `''`                    | Root class / inline style             |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Selection changed | `(value: string \| number)` |
-| `change` | Selection changed (same tick) | `{ value, columns }` |
-| `pickstart` / `pickend` | Drag lifecycle | — |
+| Event                   | Description                   | Payload                     |
+| ----------------------- | ----------------------------- | --------------------------- |
+| `update:modelValue`     | Selection changed             | `(value: string \| number)` |
+| `change`                | Selection changed (same tick) | `{ value, columns }`        |
+| `pickstart` / `pickend` | Drag lifecycle                | —                           |
 
 ## Exposed API
 
-| Member | Signature | Description |
-| --- | --- | --- |
-| `getSelectedOptions` | `() => Array<{ value, label }>` | One entry per column |
-| `correctValue` | `(value) => string \| number` | Normalize a value into the declared type |
-| `getOriginColumns` | `() => RollerColumn[]` | The derived columns |
+| Member               | Signature                       | Description                              |
+| -------------------- | ------------------------------- | ---------------------------------------- |
+| `getSelectedOptions` | `() => Array<{ value, label }>` | One entry per column                     |
+| `correctValue`       | `(value) => string \| number`   | Normalize a value into the declared type |
+| `getOriginColumns`   | `() => RollerColumn[]`          | The derived columns                      |
 
 ## Slots
 
@@ -71,14 +71,14 @@ This component exposes no slots.
 
 ## Theme tokens
 
-| Token | Purpose |
-| --- | --- |
-| ``--sn-mp-color-background-elevated`` | Roller surface |
-| ``--sn-mp-color-text-primary` / `-secondary`` | Active / idle row text |
-| ``--sn-mp-color-border-subtle`` | Selection indicator |
-| ``--sn-mp-font-size-md`` | Row text size |
-| ``--sn-mp-font-weight-semibold`` | Active row weight |
-| ``--sn-mp-spacing-2` / `-3`` | Indicator inset / panel padding |
+| Token                                         | Purpose                         |
+| --------------------------------------------- | ------------------------------- |
+| `--sn-mp-color-background-elevated`           | Roller surface                  |
+| ``--sn-mp-color-text-primary` / `-secondary`` | Active / idle row text          |
+| `--sn-mp-color-border-subtle`                 | Selection indicator             |
+| `--sn-mp-font-size-md`                        | Row text size                   |
+| `--sn-mp-font-weight-semibold`                | Active row weight               |
+| ``--sn-mp-spacing-2` / `-3``                  | Indicator inset / panel padding |
 
 ## Accessibility
 
@@ -93,4 +93,3 @@ Beyond touch, the H5 build accepts desktop input on the roller: hold the left mo
 ## Dark mode
 
 Every color resolves through a `--sn-mp-*` token and there is no light literal fallback. Under `.sn-theme-dark` / `page.sn-theme-dark` the text, surfaces, borders and state colors flip automatically. Verify with:
-

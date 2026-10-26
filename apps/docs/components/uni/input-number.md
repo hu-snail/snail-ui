@@ -31,40 +31,40 @@ default / outline / outline-split / primary 四种主题；round 圆角；disabl
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `number \| string` | `0` | 绑定值 |
-| `min` | `number` | `1` | 最小值 |
-| `max` | `number` | `Number.MAX_SAFE_INTEGER` | 最大值 |
-| `step` | `number` | `1` | 步进值 |
-| `stepStrictly` | `boolean` | `false` | 是否严格按步进值对齐 |
-| `precision` | `number \| string` | `0` | 小数精度 |
-| `disabled` | `boolean` | `false` | 禁用整个计数器 |
-| `disableInput` | `boolean` | `false` | 禁用输入框（按钮仍可用） |
-| `disableMinus` | `boolean` | `false` | 禁用减号按钮 |
-| `disablePlus` | `boolean` | `false` | 禁用加号按钮 |
-| `withoutInput` | `boolean` | `false` | 不显示输入框，只保留按钮 |
-| `inputWidth` | `number \| string` | `undefined` | 输入框宽度，数字按 rpx 设计值处理 |
-| `allowNull` | `boolean` | `false` | 允许值为空字符串 |
-| `placeholder` | `string` | `''` | 占位文本 |
-| `adjustPosition` | `boolean` | `true` | 键盘弹起时自动上推页面 |
-| `beforeChange` | `(value) => boolean \| Promise<boolean>` | `undefined` | 变更前钩子，返回 false 阻止更新 |
-| `longPress` | `boolean` | `false` | 长按连续加减 |
-| `immediateChange` | `boolean` | `true` | 输入时立即提交；false 仅在失焦提交 |
-| `updateOnInit` | `boolean` | `true` | 初始化时回写修正后的值 |
-| `inputType` | `'number' \| 'digit'` | `'digit'` | 输入框类型 |
-| `theme` | `'default' \| 'outline' \| 'outline-split' \| 'primary'` | `'default'` | 主题风格 |
-| `round` | `boolean` | `false` | 圆角样式 |
-| `customClass` / `customStyle` | `string` | `''` | 根节点自定义类名 / 样式 |
+| 属性                          | 类型                                                     | 默认值                    | 说明                               |
+| ----------------------------- | -------------------------------------------------------- | ------------------------- | ---------------------------------- |
+| `modelValue`                  | `number \| string`                                       | `0`                       | 绑定值                             |
+| `min`                         | `number`                                                 | `1`                       | 最小值                             |
+| `max`                         | `number`                                                 | `Number.MAX_SAFE_INTEGER` | 最大值                             |
+| `step`                        | `number`                                                 | `1`                       | 步进值                             |
+| `stepStrictly`                | `boolean`                                                | `false`                   | 是否严格按步进值对齐               |
+| `precision`                   | `number \| string`                                       | `0`                       | 小数精度                           |
+| `disabled`                    | `boolean`                                                | `false`                   | 禁用整个计数器                     |
+| `disableInput`                | `boolean`                                                | `false`                   | 禁用输入框（按钮仍可用）           |
+| `disableMinus`                | `boolean`                                                | `false`                   | 禁用减号按钮                       |
+| `disablePlus`                 | `boolean`                                                | `false`                   | 禁用加号按钮                       |
+| `withoutInput`                | `boolean`                                                | `false`                   | 不显示输入框，只保留按钮           |
+| `inputWidth`                  | `number \| string`                                       | `undefined`               | 输入框宽度，数字按 rpx 设计值处理  |
+| `allowNull`                   | `boolean`                                                | `false`                   | 允许值为空字符串                   |
+| `placeholder`                 | `string`                                                 | `''`                      | 占位文本                           |
+| `adjustPosition`              | `boolean`                                                | `true`                    | 键盘弹起时自动上推页面             |
+| `beforeChange`                | `(value) => boolean \| Promise<boolean>`                 | `undefined`               | 变更前钩子，返回 false 阻止更新    |
+| `longPress`                   | `boolean`                                                | `false`                   | 长按连续加减                       |
+| `immediateChange`             | `boolean`                                                | `true`                    | 输入时立即提交；false 仅在失焦提交 |
+| `updateOnInit`                | `boolean`                                                | `true`                    | 初始化时回写修正后的值             |
+| `inputType`                   | `'number' \| 'digit'`                                    | `'digit'`                 | 输入框类型                         |
+| `theme`                       | `'default' \| 'outline' \| 'outline-split' \| 'primary'` | `'default'`               | 主题风格                           |
+| `round`                       | `boolean`                                                | `false`                   | 圆角样式                           |
+| `customClass` / `customStyle` | `string`                                                 | `''`                      | 根节点自定义类名 / 样式            |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 值变化时 | `(value: number \| string)` |
-| `change` | 值变化时（与 update 同 tick） | `{ value }` |
-| `focus` | 输入框聚焦时 | `{ value, height }` |
-| `blur` | 输入框失焦时 | `{ value }` |
+| 事件名              | 说明                          | 参数                        |
+| ------------------- | ----------------------------- | --------------------------- |
+| `update:modelValue` | 值变化时                      | `(value: number \| string)` |
+| `change`            | 值变化时（与 update 同 tick） | `{ value }`                 |
+| `focus`             | 输入框聚焦时                  | `{ value, height }`         |
+| `blur`              | 输入框失焦时                  | `{ value }`                 |
 
 ## Slots
 
@@ -72,15 +72,15 @@ default / outline / outline-split / primary 四种主题；round 圆角；disabl
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| ``--sn-mp-color-background-soft`` | 计数器底色 |
-| ``--sn-mp-color-background-elevated`` | 按钮底板 |
-| ``--sn-mp-color-text-primary` / `-secondary` / `-disabled`` | 数值 / 按钮 / 禁用 |
-| ``--sn-mp-color-action-primary` / `-soft`` | `primary` 主题填充 |
-| ``--sn-mp-color-text-on-primary`` | `primary` 加号图标 |
-| ``--sn-mp-color-border-default` / `-subtle`` | `outline` 边框 / 分割线 |
-| ``--sn-mp-radius-md` / `-sm` / `-full`` | 圆角 |
+| 变量                                                        | 用途                    |
+| ----------------------------------------------------------- | ----------------------- |
+| `--sn-mp-color-background-soft`                             | 计数器底色              |
+| `--sn-mp-color-background-elevated`                         | 按钮底板                |
+| ``--sn-mp-color-text-primary` / `-secondary` / `-disabled`` | 数值 / 按钮 / 禁用      |
+| ``--sn-mp-color-action-primary` / `-soft``                  | `primary` 主题填充      |
+| `--sn-mp-color-text-on-primary`                             | `primary` 加号图标      |
+| ``--sn-mp-color-border-default` / `-subtle``                | `outline` 边框 / 分割线 |
+| ``--sn-mp-radius-md` / `-sm` / `-full``                     | 圆角                    |
 
 ## 无障碍
 
@@ -91,4 +91,3 @@ default / outline / outline-split / primary 四种主题；round 圆角；disabl
 ## 暗色模式
 
 所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
-

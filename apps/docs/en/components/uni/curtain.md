@@ -37,52 +37,52 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | Whether the curtain is shown (`v-model`) |
-| `src` | `string` | `''` | Image URL (network address or package path) |
-| `width` | `number` | `0` | Image width in design px; `0` fills the screen width |
-| `to` | `string` | `''` | Page path opened when the image is tapped |
-| `closePosition` | `'inset' \| 'top' \| 'bottom' \| 'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'inset'` | Close button position |
-| `closeOnClickModal` | `boolean` | `false` | Close on a scrim tap |
-| `closeOnClick` | `boolean` | `true` | Close on an image tap |
-| `hideWhenClose` | `boolean` | `true` | Remove the node once closed |
-| `zIndex` | `number` | `10` | Stacking level |
-| `customCloseClass` | `string` | `''` | Extra class on the close button |
-| `customCloseStyle` | `string` | `''` | Extra inline style on the close button |
-| `showMenuByLongpress` | `boolean` | `false` | WeChat long-press menu (WeChat only) |
-| `customClass` | `string` | `''` | Root class |
-| `customStyle` | `string` | `''` | Root inline style |
-| `rootPortal` | `boolean` | `false` | **Not implemented** (no portal host on miniprogram) |
+| Prop                  | Type                                                                                           | Default   | Description                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------- | --------- | ---------------------------------------------------- |
+| `modelValue`          | `boolean`                                                                                      | `false`   | Whether the curtain is shown (`v-model`)             |
+| `src`                 | `string`                                                                                       | `''`      | Image URL (network address or package path)          |
+| `width`               | `number`                                                                                       | `0`       | Image width in design px; `0` fills the screen width |
+| `to`                  | `string`                                                                                       | `''`      | Page path opened when the image is tapped            |
+| `closePosition`       | `'inset' \| 'top' \| 'bottom' \| 'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right'` | `'inset'` | Close button position                                |
+| `closeOnClickModal`   | `boolean`                                                                                      | `false`   | Close on a scrim tap                                 |
+| `closeOnClick`        | `boolean`                                                                                      | `true`    | Close on an image tap                                |
+| `hideWhenClose`       | `boolean`                                                                                      | `true`    | Remove the node once closed                          |
+| `zIndex`              | `number`                                                                                       | `10`      | Stacking level                                       |
+| `customCloseClass`    | `string`                                                                                       | `''`      | Extra class on the close button                      |
+| `customCloseStyle`    | `string`                                                                                       | `''`      | Extra inline style on the close button               |
+| `showMenuByLongpress` | `boolean`                                                                                      | `false`   | WeChat long-press menu (WeChat only)                 |
+| `customClass`         | `string`                                                                                       | `''`      | Root class                                           |
+| `customStyle`         | `string`                                                                                       | `''`      | Root inline style                                    |
+| `rootPortal`          | `boolean`                                                                                      | `false`   | **Not implemented** (no portal host on miniprogram)  |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Visibility changed | `(value: boolean)` |
-| `click` | The curtain image was tapped | — |
-| `close` | A close was requested (image / scrim / close button) | — |
-| `closed` | The leave animation finished | — |
-| `click-modal` | The scrim was tapped | — |
-| `before-enter` / `enter` / `after-enter` | Enter animation legs | — |
-| `before-leave` / `leave` / `after-leave` | Leave animation legs | — |
-| `load` | The image loaded | `(event: Event)` |
-| `error` | The image failed to load (the curtain hides itself) | — |
+| Event                                    | Description                                          | Payload            |
+| ---------------------------------------- | ---------------------------------------------------- | ------------------ |
+| `update:modelValue`                      | Visibility changed                                   | `(value: boolean)` |
+| `click`                                  | The curtain image was tapped                         | —                  |
+| `close`                                  | A close was requested (image / scrim / close button) | —                  |
+| `closed`                                 | The leave animation finished                         | —                  |
+| `click-modal`                            | The scrim was tapped                                 | —                  |
+| `before-enter` / `enter` / `after-enter` | Enter animation legs                                 | —                  |
+| `before-leave` / `leave` / `after-leave` | Leave animation legs                                 | —                  |
+| `load`                                   | The image loaded                                     | `(event: Event)`   |
+| `error`                                  | The image failed to load (the curtain hides itself)  | —                  |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                      |
+| ------- | ------------------------------------------------ |
 | `close` | Custom close button; replaces the built-in glyph |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | Full-screen scrim |
-| `--sn-mp-color-background-elevated` | Close button fill |
-| `--sn-mp-color-text-secondary` | Close button glyph |
-| `--sn-mp-color-border-default` | Close button outline |
+| Variable                                    | Purpose                            |
+| ------------------------------------------- | ---------------------------------- |
+| `--sn-mp-color-background-overlay`          | Full-screen scrim                  |
+| `--sn-mp-color-background-elevated`         | Close button fill                  |
+| `--sn-mp-color-text-secondary`              | Close button glyph                 |
+| `--sn-mp-color-border-default`              | Close button outline               |
 | `--sn-mp-radius-md` / `--sn-mp-radius-full` | Image corners / round close button |
 
 ## Accessibility

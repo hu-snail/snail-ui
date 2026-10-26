@@ -18,35 +18,35 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnPageHeader from '@snui/vue-web/src/page-header/SnPageHeader.vue'
+import SnPageHeader from '@snui/vue-web/src/page-header/SnPageHeader.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `title` | `string` | `undefined` | no | Page title text; the `title` slot takes precedence. |
-| `subtitle` | `string` | `undefined` | no | Subtitle under the title; the `subtitle` slot takes precedence. |
-| `extra` | `string` | `undefined` | no | Right-side extra content; the `extra` slot takes precedence. |
+| Name       | Type     | Default     | Required | Description                                                     |
+| ---------- | -------- | ----------- | -------- | --------------------------------------------------------------- |
+| `title`    | `string` | `undefined` | no       | Page title text; the `title` slot takes precedence.             |
+| `subtitle` | `string` | `undefined` | no       | Subtitle under the title; the `subtitle` slot takes precedence. |
+| `extra`    | `string` | `undefined` | no       | Right-side extra content; the `extra` slot takes precedence.    |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
+| Name   | Payload               | Description                               |
+| ------ | --------------------- | ----------------------------------------- |
 | `back` | `(event: MouseEvent)` | Fired when the back control is activated. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `header` | Replaces the whole header row. |
-| `back` | Replaces the back control entirely. |
-| `icon` | Replaces the back glyph inside the control. |
-| `title` | Title content (wins over the `title` prop). |
+| Name       | Description                                       |
+| ---------- | ------------------------------------------------- |
+| `header`   | Replaces the whole header row.                    |
+| `back`     | Replaces the back control entirely.               |
+| `icon`     | Replaces the back glyph inside the control.       |
+| `title`    | Title content (wins over the `title` prop).       |
 | `subtitle` | Subtitle content (wins over the `subtitle` prop). |
-| `extra` | Extra content (wins over the `extra` prop). |
-| `footer` | Bottom area, separated by a top border. |
-| `default` | Content between the header and the footer. |
+| `extra`    | Extra content (wins over the `extra` prop).       |
+| `footer`   | Bottom area, separated by a top border.           |
+| `default`  | Content between the header and the footer.        |
 
 ## Divergences from the reference API
 
@@ -54,8 +54,8 @@ import SnPageHeader from '@snui/vue-web/src/page-header/SnPageHeader.vue'
   (packages/vue-web carries no icon dependency); the `icon` slot
   replaces it.
 - The back control is a real `<button aria-label="Back">` for keyboard
-  + screen-reader access (the reference renders a plain clickable
-  wrapper).
+  - screen-reader access (the reference renders a plain clickable
+    wrapper).
 - Theme colors map to web tokens: title → text-primary, subtitle →
   text-tertiary, extra → text-secondary; title 16px / subtitle 12px.
 - No config-provider / RTL integration (web-end v3 has no provider yet).
@@ -71,14 +71,14 @@ import SnPageHeader from '@snui/vue-web/src/page-header/SnPageHeader.vue'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Text primary | `--sn-web-color-text-primary` | Title color |
-| Text secondary | `--sn-web-color-text-secondary` | Back glyph / extra / footer color |
-| Text tertiary | `--sn-web-color-text-tertiary` | Subtitle color |
-| Background subtle | `--sn-web-color-background-subtle` | Back button hover background |
-| Border subtle | `--sn-web-color-border-subtle` | Footer separator |
-| Focus ring | `--sn-web-focus-ring` | Back button focus outline |
+| Token             | CSS Variable                       | Purpose                           |
+| ----------------- | ---------------------------------- | --------------------------------- |
+| Text primary      | `--sn-web-color-text-primary`      | Title color                       |
+| Text secondary    | `--sn-web-color-text-secondary`    | Back glyph / extra / footer color |
+| Text tertiary     | `--sn-web-color-text-tertiary`     | Subtitle color                    |
+| Background subtle | `--sn-web-color-background-subtle` | Back button hover background      |
+| Border subtle     | `--sn-web-color-border-subtle`     | Footer separator                  |
+| Focus ring        | `--sn-web-focus-ring`              | Back button focus outline         |
 
 ## Versioning
 

@@ -6,14 +6,16 @@
  * 舞台（stage）。舞台内用 grid 让触发器之间保持等距，避免不同
  * placement 的触发器挤在一起看不出方位差异。
  */
-import { SnTooltip } from '@snui/vue-web'
+import { SnTooltip } from '@snui/vue-web';
 </script>
 
 <template>
   <div class="tt-demo">
     <section class="tt-demo__section">
       <h4 class="tt-demo__title">Four directions</h4>
-      <p class="tt-demo__hint">The four most-used placements. Hover a trigger to see its tooltip.</p>
+      <p class="tt-demo__hint">
+        The four most-used placements. Hover a trigger to see its tooltip.
+      </p>
       <div class="tt-demo__stage">
         <SnTooltip content="Top" placement="top">
           <button class="tt-demo__btn" type="button">top</button>
@@ -33,7 +35,8 @@ import { SnTooltip } from '@snui/vue-web'
     <section class="tt-demo__section">
       <h4 class="tt-demo__title">Edge alignment</h4>
       <p class="tt-demo__hint">
-        <code>-start</code> / <code>-end</code> aligns the popover to one side of the trigger — great for icon buttons or narrow columns.
+        <code>-start</code> / <code>-end</code> aligns the popover to one side of the trigger —
+        great for icon buttons or narrow columns.
       </p>
       <div class="tt-demo__stage">
         <SnTooltip content="Top Start" placement="top-start">
@@ -102,7 +105,9 @@ import { SnTooltip } from '@snui/vue-web'
   font-size: 13px;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 .tt-demo__btn:hover {
   border-color: var(--vp-c-brand-1);

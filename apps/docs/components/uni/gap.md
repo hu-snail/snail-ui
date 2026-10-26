@@ -33,18 +33,18 @@
 如需显式 import：
 
 ```ts
-import { SnGap } from '@snui/uni/components/sn-gap/sn-gap.vue'
+import { SnGap } from '@snui/uni/components/sn-gap/sn-gap.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `height` | `string \| number` | `14` | 间隔高度；数字按 px，字符串原样转发 |
-| `bgColor` | `string` | `'transparent'` | 背景色；`transparent` 时不写内联背景 |
-| `safeAreaBottom` | `boolean` | `false` | 是否叠加底部安全区 inset |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性             | 类型               | 默认值          | 说明                                 |
+| ---------------- | ------------------ | --------------- | ------------------------------------ |
+| `height`         | `string \| number` | `14`            | 间隔高度；数字按 px，字符串原样转发  |
+| `bgColor`        | `string`           | `'transparent'` | 背景色；`transparent` 时不写内联背景 |
+| `safeAreaBottom` | `boolean`          | `false`         | 是否叠加底部安全区 inset             |
+| `customClass`    | `string`           | `''`            | 根节点自定义类名                     |
+| `customStyle`    | `string`           | `''`            | 根节点自定义 inline style            |
 
 ## Events
 
@@ -76,7 +76,6 @@ import { SnGap } from '@snui/uni/components/sn-gap/sn-gap.vue'
 ```
 
 用 sn-config-provider 的 theme 设为 dark 包裹验证默认透明间隔：
-
 
 ## 相关
 

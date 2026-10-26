@@ -68,15 +68,6 @@ export {
   type TokenEnvironment,
 } from './theme.js';
 
-export {
-  resolveEnvironment,
-  renderStyleBlock,
-  type TokenBinding,
-} from './resolver.js';
+export { resolveEnvironment, renderStyleBlock, type TokenBinding } from './resolver.js';
 
-export {
-  snCssVars,
-  snVarName,
-  auiVarName,
-  type SnCssVarsOptions,
-} from './css-vars.js';
+export { snCssVars, snVarName, auiVarName, type SnCssVarsOptions } from './css-vars.js';

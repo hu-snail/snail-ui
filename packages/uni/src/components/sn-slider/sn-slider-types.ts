@@ -5,21 +5,21 @@
  */
 
 /** Single knob value or a `[start, end]` pair in `range` mode. */
-export type SliderValue = number | number[]
+export type SliderValue = number | number[];
 
 /** Visual style. */
-export type SliderTheme = 'default' | 'capsule'
+export type SliderTheme = 'default' | 'capsule';
 
 /** When the value bubble is shown. */
-export type SliderPopoverVisible = 'always' | 'normal' | 'never'
+export type SliderPopoverVisible = 'always' | 'normal' | 'never';
 
 /** One tick mark. */
 export interface SliderMark {
   /** Value the mark sits at. */
-  value: number
+  value: number;
   /** Caption rendered under the track. */
-  label: string
+  label: string;
 }
 
 /** Marks as an array of entries or a `{ value: label }` record. */
-export type SliderMarks = SliderMark[] | Record<number, string>
+export type SliderMarks = SliderMark[] | Record<number, string>;

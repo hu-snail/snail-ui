@@ -25,9 +25,9 @@
  *   - 校验信息展示 — 用 sn-form-item
  */
 
-import { computed, inject, markRaw } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { Check as CheckIcon } from '../sn-icon/sn-icon-set'
+import { computed, inject, markRaw } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { Check as CheckIcon } from '../sn-icon/sn-icon-set';
 import {
   SN_RADIO_GROUP_KEY,
   type SnRadioDirection,
@@ -35,36 +35,36 @@ import {
   type SnRadioPlacement,
   type SnRadioType,
   type SnRadioValue,
-} from './sn-radio-types'
+} from './sn-radio-types';
 
-defineOptions({ name: 'SnRadio' })
+defineOptions({ name: 'SnRadio' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-radio` 1:1 surface ───────────────────────────────────── */
 
     /** This option's value — matched against the group's `v-model`. */
-    value?: SnRadioValue
+    value?: SnRadioValue;
     /** Shape preset. Inherits from the group when not set. */
-    type?: SnRadioType | undefined
+    type?: SnRadioType | undefined;
     /** Checked color. Inherits from the group when not set. */
-    checkedColor?: string | undefined
+    checkedColor?: string | undefined;
     /** Unchecked color. Inherits from the group when not set. */
-    uncheckedColor?: string | undefined
+    uncheckedColor?: string | undefined;
     /** Disables this option. Inherits from the group when not set. */
-    disabled?: boolean | undefined
+    disabled?: boolean | undefined;
     /** Read-only. Inherits from the group when not set. */
-    readonly?: boolean | undefined
+    readonly?: boolean | undefined;
     /** Marker position. Inherits from the group when not set. */
-    placement?: SnRadioPlacement | undefined
+    placement?: SnRadioPlacement | undefined;
     /** Layout direction (only meaningful inside a group). */
-    direction?: SnRadioDirection | undefined
+    direction?: SnRadioDirection | undefined;
     /** Class on the label text node. */
-    customLabelClass?: string
+    customLabelClass?: string;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     value: '',
@@ -79,48 +79,48 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** Selection changed — payload is this option's `value`. */
-  (e: 'change', value: SnRadioValue): void
-}>()
+  (e: 'change', value: SnRadioValue): void;
+}>();
 
-const group = inject<SnRadioGroupContext | null>(SN_RADIO_GROUP_KEY, null)
+const group = inject<SnRadioGroupContext | null>(SN_RADIO_GROUP_KEY, null);
 
 /** Whether this option is the group's current selection. */
-const isChecked = computed<boolean>(() => group?.isChecked(props.value) ?? false)
+const isChecked = computed<boolean>(() => group?.isChecked(props.value) ?? false);
 
 /** Effective prop resolution — own value wins, then the group, then default. */
 function resolve<T>(own: T | undefined, fromGroup: T | undefined, fallback: T): T {
-  return own !== undefined ? own : fromGroup !== undefined ? fromGroup : fallback
+  return own !== undefined ? own : fromGroup !== undefined ? fromGroup : fallback;
 }
 
 const effectiveType = computed<SnRadioType>(() =>
   resolve(props.type, group?.groupType.value, 'circle'),
-)
+);
 const effectivePlacement = computed<SnRadioPlacement>(() =>
   resolve(props.placement, group?.groupPlacement.value, 'left'),
-)
+);
 const effectiveDirection = computed<SnRadioDirection>(() =>
   resolve(props.direction, group?.groupDirection.value, 'vertical'),
-)
+);
 const effectiveCheckedColor = computed<string>(() =>
   resolve(props.checkedColor, group?.groupCheckedColor.value, ''),
-)
+);
 const effectiveUncheckedColor = computed<string>(() =>
   resolve(props.uncheckedColor, group?.groupUncheckedColor.value, ''),
-)
+);
 const isDisabled = computed<boolean>(() =>
   resolve(props.disabled, group?.groupDisabled.value, false),
-)
+);
 const isReadonly = computed<boolean>(() =>
   resolve(props.readonly, group?.groupReadonly.value, false),
-)
-const isBlocked = computed(() => isDisabled.value || isReadonly.value)
+);
+const isBlocked = computed(() => isDisabled.value || isReadonly.value);
 
 /** Tick glyph for the `button` shape (never emoji, §113). */
-const checkIcon = markRaw(CheckIcon)
+const checkIcon = markRaw(CheckIcon);
 
 /**
  * Colour overrides arrive as user-supplied CSS colors (like wot-ui's
@@ -130,17 +130,15 @@ const markerStyle = computed(() => {
   if (isChecked.value) {
     return effectiveCheckedColor.value
       ? { borderColor: effectiveCheckedColor.value, backgroundColor: effectiveCheckedColor.value }
-      : undefined
+      : undefined;
   }
-  return effectiveUncheckedColor.value
-    ? { borderColor: effectiveUncheckedColor.value }
-    : undefined
-})
+  return effectiveUncheckedColor.value ? { borderColor: effectiveUncheckedColor.value } : undefined;
+});
 
 function onSelect(): void {
-  if (isBlocked.value) return
-  group?.select(props.value)
-  emit('change', props.value)
+  if (isBlocked.value) return;
+  group?.select(props.value);
+  emit('change', props.value);
 }
 
 const classList = computed(() => [
@@ -154,9 +152,9 @@ const classList = computed(() => [
     'sn-radio--horizontal': effectiveDirection.value === 'horizontal',
   },
   props.customClass,
-])
+]);
 
-const wrapperStyle = computed(() => props.customStyle || undefined)
+const wrapperStyle = computed(() => props.customStyle || undefined);
 </script>
 
 <template>
@@ -236,7 +234,9 @@ const wrapperStyle = computed(() => props.customStyle || undefined)
   border-radius: 50%;
   background-color: transparent;
   box-sizing: border-box;
-  transition: border-color 0.18s ease-out, background-color 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    background-color 0.18s ease-out;
 }
 
 /* Inner dot — the "filled" half of a checked circle. */

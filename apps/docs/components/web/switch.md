@@ -26,16 +26,16 @@
 
 ### SnSwitch Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `boolean \| string \| number` | `false` | v-model |
-| checkedValue | `boolean \| string \| number` | `true` | 选中值 |
-| uncheckedValue | `boolean \| string \| number` | `false` | 未选中值 |
-| size | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| disabled | `boolean` | `false` | 禁用 |
-| readonly | `boolean` | `false` | 只读 |
-| loading | `boolean` | `false` | 加载中（不响应切换） |
-| railStyle | `(info: { checked: boolean }) => StyleValue` | — | rail 样式函数 |
+| Prop           | 类型                                         | 默认值     | 说明                 |
+| -------------- | -------------------------------------------- | ---------- | -------------------- |
+| modelValue     | `boolean \| string \| number`                | `false`    | v-model              |
+| checkedValue   | `boolean \| string \| number`                | `true`     | 选中值               |
+| uncheckedValue | `boolean \| string \| number`                | `false`    | 未选中值             |
+| size           | `'small'\|'medium'\|'large'`                 | `'medium'` | 尺寸                 |
+| disabled       | `boolean`                                    | `false`    | 禁用                 |
+| readonly       | `boolean`                                    | `false`    | 只读                 |
+| loading        | `boolean`                                    | `false`    | 加载中（不响应切换） |
+| railStyle      | `(info: { checked: boolean }) => StyleValue` | —          | rail 样式函数        |
 
 ### Slots
 

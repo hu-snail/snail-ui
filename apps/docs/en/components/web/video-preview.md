@@ -53,55 +53,55 @@ video to a purely decorative banner / section background.
 
 ### SnVideoPreview Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| src | `string` | — | Video source (required) |
-| poster | `string` | `undefined` | Poster shown before playback starts (ignored while `background`) |
-| preview-src | `string` | `undefined` | Larger url used by the overlay; falls back to `src` |
-| width | `string \| number` | `320` | Media box width (number → px); ignored while `background` |
-| height | `string \| number` | `undefined` | Media box height (number → px) |
-| aspect-ratio | `string` | `undefined` | Media box ratio, e.g. `'16 / 9'`; applied only without an explicit height |
-| object-fit | `'contain' \| 'cover' \| 'fill'` | `'cover'` | How the video fits its box; forced to `'cover'` while `background` |
-| controls | `boolean` | `true` | **Renders OUR beautified bar** (play/pause, mute, timeline, time, fullscreen). It no longer means the browser's own `controls` attribute |
-| native-controls | `boolean` | `false` | Renders the browser's own `controls` attribute. Native chrome is **unstylable** and inconsistent across browsers / OSes; escape hatch only. May be combined with `controls` |
-| background | `boolean` | `false` | Decorative banner / background mode: forces `controls` and `native-controls` off, forces `muted` + `autoplay` + `loop` + `object-fit: cover`, absolutely fills the parent, hides the video from AT and from pointer events |
-| autoplay | `boolean` | `false` | Start playback on mount (browser policy requires muted — see Compatibility) |
-| loop | `boolean` | `false` | Loop inline playback |
-| muted | `boolean` | `false` | Mute inline playback |
-| preload | `'none' \| 'metadata' \| 'auto'` | `'metadata'` | Preload strategy |
-| preview-disabled | `boolean` | `false` | Disable the overlay: no affordance, `showPreview()` becomes a no-op (also implied by `background`) |
-| show-toolbar | `boolean` | `true` | Render the top-right expand affordance (revealed on hover / focus; hidden while `background`) |
-| close-on-mask-click | `boolean` | `true` | Close the overlay on mask click |
-| title | `string` | `undefined` | Overlay header text, and accessible-name fallback |
-| alt | `string` | `undefined` | Accessible description of the video; wins over `title` |
+| Prop                | Type                             | Default      | Notes                                                                                                                                                                                                                      |
+| ------------------- | -------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| src                 | `string`                         | —            | Video source (required)                                                                                                                                                                                                    |
+| poster              | `string`                         | `undefined`  | Poster shown before playback starts (ignored while `background`)                                                                                                                                                           |
+| preview-src         | `string`                         | `undefined`  | Larger url used by the overlay; falls back to `src`                                                                                                                                                                        |
+| width               | `string \| number`               | `320`        | Media box width (number → px); ignored while `background`                                                                                                                                                                  |
+| height              | `string \| number`               | `undefined`  | Media box height (number → px)                                                                                                                                                                                             |
+| aspect-ratio        | `string`                         | `undefined`  | Media box ratio, e.g. `'16 / 9'`; applied only without an explicit height                                                                                                                                                  |
+| object-fit          | `'contain' \| 'cover' \| 'fill'` | `'cover'`    | How the video fits its box; forced to `'cover'` while `background`                                                                                                                                                         |
+| controls            | `boolean`                        | `true`       | **Renders OUR beautified bar** (play/pause, mute, timeline, time, fullscreen). It no longer means the browser's own `controls` attribute                                                                                   |
+| native-controls     | `boolean`                        | `false`      | Renders the browser's own `controls` attribute. Native chrome is **unstylable** and inconsistent across browsers / OSes; escape hatch only. May be combined with `controls`                                                |
+| background          | `boolean`                        | `false`      | Decorative banner / background mode: forces `controls` and `native-controls` off, forces `muted` + `autoplay` + `loop` + `object-fit: cover`, absolutely fills the parent, hides the video from AT and from pointer events |
+| autoplay            | `boolean`                        | `false`      | Start playback on mount (browser policy requires muted — see Compatibility)                                                                                                                                                |
+| loop                | `boolean`                        | `false`      | Loop inline playback                                                                                                                                                                                                       |
+| muted               | `boolean`                        | `false`      | Mute inline playback                                                                                                                                                                                                       |
+| preload             | `'none' \| 'metadata' \| 'auto'` | `'metadata'` | Preload strategy                                                                                                                                                                                                           |
+| preview-disabled    | `boolean`                        | `false`      | Disable the overlay: no affordance, `showPreview()` becomes a no-op (also implied by `background`)                                                                                                                         |
+| show-toolbar        | `boolean`                        | `true`       | Render the top-right expand affordance (revealed on hover / focus; hidden while `background`)                                                                                                                              |
+| close-on-mask-click | `boolean`                        | `true`       | Close the overlay on mask click                                                                                                                                                                                            |
+| title               | `string`                         | `undefined`  | Overlay header text, and accessible-name fallback                                                                                                                                                                          |
+| alt                 | `string`                         | `undefined`  | Accessible description of the video; wins over `title`                                                                                                                                                                     |
 
 ### SnVideoPreview Events
 
-| Name | Parameters | Notes |
-| --- | --- | --- |
-| play | `()` | Inline playback started |
-| pause | `()` | Inline playback paused |
-| ended | `()` | Inline playback reached the end |
-| error | `(event: Event)` | The video failed to load or decode |
-| preview | `()` | Overlay opened |
-| close | `()` | Overlay closed (Esc / mask / close button / closePreview()) |
+| Name    | Parameters       | Notes                                                       |
+| ------- | ---------------- | ----------------------------------------------------------- |
+| play    | `()`             | Inline playback started                                     |
+| pause   | `()`             | Inline playback paused                                      |
+| ended   | `()`             | Inline playback reached the end                             |
+| error   | `(event: Event)` | The video failed to load or decode                          |
+| preview | `()`             | Overlay opened                                              |
+| close   | `()`             | Overlay closed (Esc / mask / close button / closePreview()) |
 
 ### SnVideoPreview Slots
 
-| Name | Parameters | Notes |
-| --- | --- | --- |
-| placeholder | `()` | Replaces the poster area while there is no poster and/or playback has not started (not rendered while `background`) |
-| play-icon | `()` | Replaces the centered play glyph (default: SnIcon + lucide Play) |
-| toolbar | `{ showPreview: () => void }` | Replaces the expand affordance; call `showPreview` to open the overlay |
+| Name        | Parameters                    | Notes                                                                                                               |
+| ----------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| placeholder | `()`                          | Replaces the poster area while there is no poster and/or playback has not started (not rendered while `background`) |
+| play-icon   | `()`                          | Replaces the centered play glyph (default: SnIcon + lucide Play)                                                    |
+| toolbar     | `{ showPreview: () => void }` | Replaces the expand affordance; call `showPreview` to open the overlay                                              |
 
 ### SnVideoPreview Methods
 
-| Name | Type | Notes |
-| --- | --- | --- |
-| play | `() => void` | Start inline playback |
-| pause | `() => void` | Pause inline playback |
-| showPreview | `() => void` | Open the full-screen overlay (no-op while `preview-disabled` or `background`) |
-| closePreview | `() => void` | Close the full-screen overlay |
+| Name         | Type         | Notes                                                                         |
+| ------------ | ------------ | ----------------------------------------------------------------------------- |
+| play         | `() => void` | Start inline playback                                                         |
+| pause        | `() => void` | Pause inline playback                                                         |
+| showPreview  | `() => void` | Open the full-screen overlay (no-op while `preview-disabled` or `background`) |
+| closePreview | `() => void` | Close the full-screen overlay                                                 |
 
 ### The custom control bar
 
@@ -138,7 +138,7 @@ timeline**, **total time**, **fullscreen / exit fullscreen**.
 These are browser facts, not component bugs:
 
 - **Autoplay requires muted media.** The autoplay policies of Chrome / Safari /
-  Firefox only allow *muted* media to start on its own (Safari additionally
+  Firefox only allow _muted_ media to start on its own (Safari additionally
   consults the user's per-site preference). `autoplay` therefore forces
   `muted` — both the `muted` attribute and the `video.muted` property, because
   engines check different ones — and `background` forces `muted` + `autoplay` +
@@ -183,12 +183,12 @@ Every bar style comes from component-level `--sn-web-video-preview-*` /
 `--sn-web-video-controls-*` variables, each with a literal fallback, overridable
 per instance:
 
-| Token | Purpose |
-| --- | --- |
-| `--sn-web-video-preview-radius` / `--sn-web-video-preview-bg` | Box radius and surface |
-| `--sn-web-video-preview-mask-bg` / `--sn-web-video-preview-play-*` | Poster scrim and centered play button |
-| `--sn-web-video-preview-toolbar-*` | Top-right expand affordance |
-| `--sn-web-video-preview-controls-z-index` | Custom bar stacking |
-| `--sn-web-video-controls-bg` / `--sn-web-video-controls-color` | Bar surface and text |
-| `--sn-web-video-controls-timeline-bg` / `--sn-web-video-controls-thumb-bg` | Timeline track and thumb |
-| `--sn-web-video-preview-overlay-*` | Overlay mask, title, close button, sizing |
+| Token                                                                      | Purpose                                   |
+| -------------------------------------------------------------------------- | ----------------------------------------- |
+| `--sn-web-video-preview-radius` / `--sn-web-video-preview-bg`              | Box radius and surface                    |
+| `--sn-web-video-preview-mask-bg` / `--sn-web-video-preview-play-*`         | Poster scrim and centered play button     |
+| `--sn-web-video-preview-toolbar-*`                                         | Top-right expand affordance               |
+| `--sn-web-video-preview-controls-z-index`                                  | Custom bar stacking                       |
+| `--sn-web-video-controls-bg` / `--sn-web-video-controls-color`             | Bar surface and text                      |
+| `--sn-web-video-controls-timeline-bg` / `--sn-web-video-controls-thumb-bg` | Timeline track and thumb                  |
+| `--sn-web-video-preview-overlay-*`                                         | Overlay mask, title, close button, sizing |

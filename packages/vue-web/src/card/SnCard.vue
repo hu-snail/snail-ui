@@ -23,10 +23,10 @@
  *   - Drag / sortable behavior
  */
 
-import { computed, useSlots } from 'vue'
-import { XIcon } from '../icon/sn-input-icons'
+import { computed, useSlots } from 'vue';
+import { XIcon } from '../icon/sn-input-icons';
 
-defineOptions({ name: 'SnCard' })
+defineOptions({ name: 'SnCard' });
 
 // Reference: naive-ui cardBaseProps
 //   (https://github.com/tusen-ai/naive-ui/blob/main/src/card/src/Card.tsx)
@@ -36,70 +36,72 @@ const props = withDefaults(
   defineProps<{
     /** Title text or render function. Rendered inside header when header
      * slot is not provided. */
-    title?: string | (() => unknown)
+    title?: string | (() => unknown);
     /** Class applied to the content (body) region. */
-    contentClass?: string
+    contentClass?: string;
     /** Inline style applied to the content (body) region. */
-    contentStyle?: string | Record<string, string>
+    contentStyle?: string | Record<string, string>;
     /** Make content region scrollable when overflowing. Naive UI wires this
      * to NScrollbar; we render a max-height + overflow:auto shell that
      * approximates that behavior without pulling in the full virtualized
      * scrollbar. */
-    contentScrollable?: boolean
+    contentScrollable?: boolean;
     /** Class applied to the header region. */
-    headerClass?: string
+    headerClass?: string;
     /** Inline style applied to the header region. */
-    headerStyle?: string | Record<string, string>
+    headerStyle?: string | Record<string, string>;
     /** Class applied to the header-extra region. */
-    headerExtraClass?: string
+    headerExtraClass?: string;
     /** Inline style applied to the header-extra region. */
-    headerExtraStyle?: string | Record<string, string>
+    headerExtraStyle?: string | Record<string, string>;
     /** Class applied to the footer region. */
-    footerClass?: string
+    footerClass?: string;
     /** Inline style applied to the footer region. */
-    footerStyle?: string | Record<string, string>
+    footerStyle?: string | Record<string, string>;
     /** Embedded variant — strips outer border + shadow for nested cards. */
-    embedded?: boolean
+    embedded?: boolean;
     /** Segmented divider lines between regions. Can be `true` (all on) or
      * `{ content?, footer?, action? }` shape (each `true | 'soft'`). */
-    segmented?: boolean | { content?: boolean | 'soft'; footer?: boolean | 'soft'; action?: boolean | 'soft' }
+    segmented?:
+      | boolean
+      | { content?: boolean | 'soft'; footer?: boolean | 'soft'; action?: boolean | 'soft' };
     /** Card size preset. Drives padding + font-size. */
-    size?: 'small' | 'medium' | 'large' | 'huge'
+    size?: 'small' | 'medium' | 'large' | 'huge';
     /** Show 1px outer border. Default true. */
-    bordered?: boolean
+    bordered?: boolean;
     /** Show close button in header. Requires `onClose` to do anything. */
-    closable?: boolean
+    closable?: boolean;
     /** Apply hover-lift visual cue. */
-    hoverable?: boolean
+    hoverable?: boolean;
     /** Accessible role attribute. Default 'region'. */
-    role?: string
+    role?: string;
     /** Root tag. Default 'div'. */
-    tag?: keyof HTMLElementTagNameMap
+    tag?: keyof HTMLElementTagNameMap;
     /** Render function for cover (above header). */
-    cover?: () => unknown
+    cover?: () => unknown;
     /** Content text or render function. Rendered inside body when default
      * slot is not provided. */
-    content?: string | (() => unknown)
+    content?: string | (() => unknown);
     /** Render function for footer region. */
-    footer?: () => unknown
+    footer?: () => unknown;
     /** Render function for action region (below footer). */
-    action?: () => unknown
+    action?: () => unknown;
     /** Render function for header-extra region. */
-    headerExtra?: () => unknown
+    headerExtra?: () => unknown;
     /** Close button focusable (keyboard tab). Default true. */
-    closeFocusable?: boolean
+    closeFocusable?: boolean;
     /** Web-only convenience alias: visual variant. Maps to (bordered, |)
      * combinations. 'default' → bordered true + shadow false. 'outlined' →
      * bordered true + shadow false (alias of default; kept for nav parity
      * with prior docs). 'elevated' → bordered false + shadow true.
      * @deprecated Prefer `bordered` + token-driven `--sn-web-card-shadow`. */
-    variant?: 'default' | 'outlined' | 'elevated'
+    variant?: 'default' | 'outlined' | 'elevated';
     /** Web-only convenience alias: padding sub-axis. Maps to `size`. */
-    padding?: 'none' | 'sm' | 'md' | 'lg'
+    padding?: 'none' | 'sm' | 'md' | 'lg';
     /** Web-only convenience alias: show shadow. */
-    shadow?: boolean
+    shadow?: boolean;
     /** Native ARIA label. Forwarded to the root element when provided. */
-    ariaLabel?: string
+    ariaLabel?: string;
   }>(),
   {
     bordered: true,
@@ -107,107 +109,104 @@ const props = withDefaults(
     role: 'region',
     tag: 'div',
   },
-)
+);
 
 const emit = defineEmits<{
   /** Fired when the close button is clicked (only when `closable` is true). */
-  (e: 'close'): void
-}>()
+  (e: 'close'): void;
+}>();
 
 defineSlots<{
   /** Card body content (rendered between header and footer). */
-  default?(): unknown
+  default?(): unknown;
   /** Cover region (above header). */
-  cover?(): unknown
+  cover?(): unknown;
   /** Header region. Overrides the `title` prop. */
-  header?(): unknown
+  header?(): unknown;
   /** Header-extra region (right side of header). */
-  'header-extra'?(): unknown
+  'header-extra'?(): unknown;
   /** Footer region. */
-  footer?(): unknown
+  footer?(): unknown;
   /** Action region (below footer). */
-  action?(): unknown
-}>()
+  action?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Resolve `variant` alias into `(bordered, shadow)` flags. The legacy
  * `variant` is a §112-allowed convenience that mirrors the pre-render docs
  * surface; the canonical n-card-aligned API is `bordered` + token shadow. */
 const effectiveBordered = computed(() => {
-  if (props.variant === 'elevated') return false
-  return props.bordered
-})
+  if (props.variant === 'elevated') return false;
+  return props.bordered;
+});
 const effectiveShadow = computed(() => {
-  if (props.variant === 'elevated') return true
-  if (props.variant === 'outlined') return false
-  return props.shadow
-})
+  if (props.variant === 'elevated') return true;
+  if (props.variant === 'outlined') return false;
+  return props.shadow;
+});
 /** Resolve `padding` alias into `size` value. */
 const effectiveSize = computed(() => {
   if (props.padding) {
-    if (props.padding === 'none') return undefined
-    if (props.padding === 'sm') return 'small'
-    if (props.padding === 'md') return 'medium'
-    if (props.padding === 'lg') return 'large'
+    if (props.padding === 'none') return undefined;
+    if (props.padding === 'sm') return 'small';
+    if (props.padding === 'md') return 'medium';
+    if (props.padding === 'lg') return 'large';
   }
-  return props.size
-})
+  return props.size;
+});
 
 /** Whether header should render. Triggered by `title`, `header` slot,
  * `closable`, or `headerExtra` (anything header-region-worthy). */
 const showHeader = computed(() => {
   return Boolean(
-    slots.header
-    || props.title !== undefined
-    || props.headerExtra !== undefined
-    || props.closable,
-  )
-})
+    slots.header || props.title !== undefined || props.headerExtra !== undefined || props.closable,
+  );
+});
 
 /** Whether content region should render. Triggered by default slot or
  * `content` prop. */
 const showContent = computed(() => {
-  return Boolean(slots.default || props.content !== undefined)
-})
+  return Boolean(slots.default || props.content !== undefined);
+});
 
 /** Whether footer region should render. Triggered by `footer` slot or
  * `footer` prop. */
 const showFooter = computed(() => {
-  return Boolean(slots.footer || props.footer !== undefined)
-})
+  return Boolean(slots.footer || props.footer !== undefined);
+});
 
 /** Whether action region should render. Triggered by `action` slot or
  * `action` prop. */
 const showAction = computed(() => {
-  return Boolean(slots.action || props.action !== undefined)
-})
+  return Boolean(slots.action || props.action !== undefined);
+});
 
 /** Whether cover region should render. Triggered by `cover` slot or
  * `cover` prop. */
 const showCover = computed(() => {
-  return Boolean(slots.cover || props.cover !== undefined)
-})
+  return Boolean(slots.cover || props.cover !== undefined);
+});
 
 /** Resolve segmented into a normalized object. */
 const segmentedObj = computed(() => {
   if (props.segmented === true) {
-    return { content: true, footer: true, action: true }
+    return { content: true, footer: true, action: true };
   }
   if (props.segmented === false || props.segmented === undefined) {
-    return { content: false, footer: false, action: false }
+    return { content: false, footer: false, action: false };
   }
   return {
     content: props.segmented.content === true,
     footer: props.segmented.footer === true,
     action: props.segmented.action === true,
-  }
-})
+  };
+});
 
-const CloseIconComponent = XIcon
+const CloseIconComponent = XIcon;
 
 function handleClose(): void {
-  emit('close')
+  emit('close');
 }
 
 // useSlots() reference keeps vue-tsc treating this file as a Vue SFC and
@@ -215,7 +214,7 @@ function handleClose(): void {
 // `import { ... } from 'vue'`, vue-tsc may skip JS emission and leave raw
 // SFC markup in dist — which trips up downstream consumers that resolve
 // `import { SnCard } from '@snui/vue-web'` via the package main entry.
-void useSlots
+void useSlots;
 </script>
 
 <template>
@@ -321,10 +320,7 @@ void useSlots
     <!-- Action -->
     <div
       v-if="showAction"
-      :class="[
-        'sn-card__action',
-        segmentedObj.action ? 'sn-card__action--segmented' : '',
-      ]"
+      :class="['sn-card__action', segmentedObj.action ? 'sn-card__action--segmented' : '']"
       role="none"
     >
       <slot name="action">
@@ -348,7 +344,9 @@ void useSlots
   border-radius: var(--sn-web-card-radius);
   font-family: inherit;
   line-height: 1.5;
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
 
 .sn-card--bordered {
@@ -451,7 +449,9 @@ void useSlots
   border-radius: 4px;
   cursor: pointer;
   color: var(--sn-web-color-text-secondary);
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 .sn-card__close:hover {
   background: rgba(0, 0, 0, 0.06);

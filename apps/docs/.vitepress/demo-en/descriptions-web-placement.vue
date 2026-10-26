@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnDescriptions — label-placement：label 在上 / 在左。 */
-import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web'
+import { SnDescriptions, SnDescriptionsItem } from '@snui/vue-web';
 </script>
 
 <template>

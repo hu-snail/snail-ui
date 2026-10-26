@@ -4,352 +4,460 @@
  * Mirror of packages/vue-web/src/form/SnForm.test.ts. Same coverage.
  */
 
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import { defineComponent, h, nextTick, reactive, ref } from 'vue'
-import SnForm from './sn-form.vue'
-import SnFormItem from './sn-form-item.vue'
-import SnInput from '../sn-input/sn-input.vue'
-import SnButton from '../sn-button/sn-button.vue'
-import type { FormRule } from './sn-form-types'
+import { describe, it, expect } from 'vitest';
+import { mount } from '@vue/test-utils';
+import { defineComponent, h, nextTick, reactive, ref } from 'vue';
+import SnForm from './sn-form.vue';
+import SnFormItem from './sn-form-item.vue';
+import SnInput from '../sn-input/sn-input.vue';
+import SnButton from '../sn-button/sn-button.vue';
+import type { FormRule } from './sn-form-types';
 
 const App = defineComponent({
   props: ['model', 'rules', 'required'],
   setup(props) {
-    const formRef = ref<InstanceType<typeof SnForm> | null>(null)
+    const formRef = ref<InstanceType<typeof SnForm> | null>(null);
     return () =>
-      h(SnForm, {
-        ref: formRef,
-        model: props.model,
-        rules: props.rules,
-      }, {
-        default: () => [
-          h(SnFormItem, { prop: 'email', label: 'Email', required: props.required }, {
-            default: () => h(SnInput, { modelValue: props.model.email, 'onUpdate:modelValue': (v: string) => { props.model.email = v } }),
-          }),
-          h(SnFormItem, { prop: 'password', label: 'Password' }, {
-            default: () => h(SnInput, { modelValue: props.model.password, 'onUpdate:modelValue': (v: string) => { props.model.password = v } }),
-          }),
-          h(SnButton, {}, { default: () => 'Submit' }),
-        ],
-      })
+      h(
+        SnForm,
+        {
+          ref: formRef,
+          model: props.model,
+          rules: props.rules,
+        },
+        {
+          default: () => [
+            h(
+              SnFormItem,
+              { prop: 'email', label: 'Email', required: props.required },
+              {
+                default: () =>
+                  h(SnInput, {
+                    modelValue: props.model.email,
+                    'onUpdate:modelValue': (v: string) => {
+                      props.model.email = v;
+                    },
+                  }),
+              },
+            ),
+            h(
+              SnFormItem,
+              { prop: 'password', label: 'Password' },
+              {
+                default: () =>
+                  h(SnInput, {
+                    modelValue: props.model.password,
+                    'onUpdate:modelValue': (v: string) => {
+                      props.model.password = v;
+                    },
+                  }),
+              },
+            ),
+            h(SnButton, {}, { default: () => 'Submit' }),
+          ],
+        },
+      );
   },
-})
+});
 
 describe('sn-form', () => {
   it('renders the slot content', () => {
-    const model = reactive({ email: '', password: '' })
-    const wrapper = mount(App, { props: { model, rules: {} } })
-    expect(wrapper.find('.sn-form').exists()).toBe(true)
-    expect(wrapper.findAll('.sn-form-item')).toHaveLength(2)
-  })
+    const model = reactive({ email: '', password: '' });
+    const wrapper = mount(App, { props: { model, rules: {} } });
+    expect(wrapper.find('.sn-form').exists()).toBe(true);
+    expect(wrapper.findAll('.sn-form-item')).toHaveLength(2);
+  });
 
   it('validates all fields and returns false when one fails', async () => {
-    const model = reactive({ email: '', password: '' })
+    const model = reactive({ email: '', password: '' });
     const rules = {
       email: [{ required: true, message: 'Email required' } as FormRule],
       password: [{ minLength: 6, message: 'Min 6 chars' } as FormRule],
-    }
-    const wrapper = mount(App, { props: { model, rules } })
-    const form = wrapper.findComponent(SnForm)
-    const result = await form.vm.validate()
-    expect(result).toBe(false)
-  })
+    };
+    const wrapper = mount(App, { props: { model, rules } });
+    const form = wrapper.findComponent(SnForm);
+    const result = await form.vm.validate();
+    expect(result).toBe(false);
+  });
 
   it('returns true when every field passes', async () => {
-    const model = reactive({ email: 'a@b.com', password: '123456' })
+    const model = reactive({ email: 'a@b.com', password: '123456' });
     const rules = {
       email: [
         { required: true, message: 'Email required' } as FormRule,
         { type: 'email' as const, message: 'Bad email' },
       ],
       password: [{ minLength: 6, message: 'Min 6' } as FormRule],
-    }
-    const wrapper = mount(App, { props: { model, rules } })
-    const result = await wrapper.findComponent(SnForm).vm.validate()
-    expect(result).toBe(true)
-  })
+    };
+    const wrapper = mount(App, { props: { model, rules } });
+    const result = await wrapper.findComponent(SnForm).vm.validate();
+    expect(result).toBe(true);
+  });
 
   it('validateField targets a single prop', async () => {
-    const model = reactive({ email: '', password: '' })
+    const model = reactive({ email: '', password: '' });
     const rules = {
       email: [{ required: true, message: 'Email required' } as FormRule],
       password: [{ required: true, message: 'Password required' } as FormRule],
-    }
-    const wrapper = mount(App, { props: { model, rules } })
-    const ok = await wrapper.findComponent(SnForm).vm.validateField('email')
-    expect(ok).toBe(false)
-    const items = wrapper.findAllComponents(SnFormItem)
-    expect(items[0]!.attributes('data-status')).toBe('error')
-    expect(items[1]!.attributes('data-status')).toBe('default')
-  })
+    };
+    const wrapper = mount(App, { props: { model, rules } });
+    const ok = await wrapper.findComponent(SnForm).vm.validateField('email');
+    expect(ok).toBe(false);
+    const items = wrapper.findAllComponents(SnFormItem);
+    expect(items[0]!.attributes('data-status')).toBe('error');
+    expect(items[1]!.attributes('data-status')).toBe('default');
+  });
 
   it('resetFields restores the initial model values', async () => {
-    const model = reactive({ email: 'init@x.com', password: 'init-pw' })
-    const wrapper = mount(App, { props: { model, rules: {} } })
-    model.email = 'changed@x.com'
-    wrapper.findComponent(SnForm).vm.resetFields()
-    expect(model.email).toBe('init@x.com')
-  })
+    const model = reactive({ email: 'init@x.com', password: 'init-pw' });
+    const wrapper = mount(App, { props: { model, rules: {} } });
+    model.email = 'changed@x.com';
+    wrapper.findComponent(SnForm).vm.resetFields();
+    expect(model.email).toBe('init@x.com');
+  });
 
   it('clearValidate clears messages without resetting values', async () => {
-    const model = reactive({ email: '', password: '' })
+    const model = reactive({ email: '', password: '' });
     const rules = {
       email: [{ required: true, message: 'Email required' } as FormRule],
-    }
-    const wrapper = mount(App, { props: { model, rules } })
-    await wrapper.findComponent(SnForm).vm.validate()
-    expect(wrapper.findAll('.sn-form-item__message').length).toBeGreaterThan(0)
-    wrapper.findComponent(SnForm).vm.clearValidate()
-    await nextTick()
-    expect(wrapper.findAll('.sn-form-item__message')).toHaveLength(0)
-    expect(model.email).toBe('')
-  })
+    };
+    const wrapper = mount(App, { props: { model, rules } });
+    await wrapper.findComponent(SnForm).vm.validate();
+    expect(wrapper.findAll('.sn-form-item__message').length).toBeGreaterThan(0);
+    wrapper.findComponent(SnForm).vm.clearValidate();
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__message')).toHaveLength(0);
+    expect(model.email).toBe('');
+  });
 
   it('supports async validator', async () => {
-    const model = reactive({ email: 'a@b.com', password: '' })
+    const model = reactive({ email: 'a@b.com', password: '' });
     const rules = {
-      email: [{
-        asyncValidator: async (_v: string) => false,
-        message: 'async-fail',
-      } as FormRule],
-    }
-    const wrapper = mount(App, { props: { model, rules } })
-    const ok = await wrapper.findComponent(SnForm).vm.validate()
-    expect(ok).toBe(false)
-  })
+      email: [
+        {
+          asyncValidator: async (_v: string) => false,
+          message: 'async-fail',
+        } as FormRule,
+      ],
+    };
+    const wrapper = mount(App, { props: { model, rules } });
+    const ok = await wrapper.findComponent(SnForm).vm.validate();
+    expect(ok).toBe(false);
+  });
 
   it('shows required asterisk on FormItem', () => {
-    const model = reactive({ email: '', password: '' })
-    const wrapper = mount(App, { props: { model, rules: {}, required: true } })
-    expect(wrapper.find('.sn-form-item__required').exists()).toBe(true)
-  })
+    const model = reactive({ email: '', password: '' });
+    const wrapper = mount(App, { props: { model, rules: {}, required: true } });
+    expect(wrapper.find('.sn-form-item__required').exists()).toBe(true);
+  });
 
   it('applies labelWidth via the grid template columns', () => {
-    const model = reactive({ email: '', password: '' })
+    const model = reactive({ email: '', password: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model, labelWidth: 160 }, {
-          default: () => h(SnFormItem, { prop: 'email' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model, labelWidth: 160 },
+            {
+              default: () => h(SnFormItem, { prop: 'email' }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    const style = wrapper.find('.sn-form-item').attributes('style') ?? ''
-    expect(style).toContain('grid-template-columns')
-    expect(style).toContain('160rpx')
-  })
+    });
+    const wrapper = mount(FormHost);
+    const style = wrapper.find('.sn-form-item').attributes('style') ?? '';
+    expect(style).toContain('grid-template-columns');
+    expect(style).toContain('160rpx');
+  });
 
   it('renders inline label icon when iconData prop is provided', () => {
     const Heart = Object.freeze({
       viewBox: '0 0 24 24',
       paths: ['M19 14 L12 21 L5 14'],
-    })
-    const model = reactive({ email: '', password: '' })
+    });
+    const model = reactive({ email: '', password: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', iconData: Heart }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email', iconData: Heart }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item__icon').exists()).toBe(true)
-    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--with-icon')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item__icon').exists()).toBe(true);
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--with-icon');
+  });
 
   /* ── wot-ui `wd-form` 1:1 parity ─────────────────────────────────────── */
 
   it('applies size class on the form root', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
-      setup() { return () => h(SnForm, { model, size: 'large' }) },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--size-large')
-  })
+      setup() {
+        return () => h(SnForm, { model, size: 'large' });
+      },
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--size-large');
+  });
 
   it('applies value-align on the form root', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
-      setup() { return () => h(SnForm, { model, valueAlign: 'right' }) },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--value-align-right')
-  })
+      setup() {
+        return () => h(SnForm, { model, valueAlign: 'right' });
+      },
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--value-align-right');
+  });
 
   it('adds border between items when border is true', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model, border: true }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model, border: true },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email' }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--border')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--border');
+  });
 
   it('hides asterisk when hideAsterisk is true', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model, hideAsterisk: true }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', required: true }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model, hideAsterisk: true },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email', required: true }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--hide-asterisk')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--hide-asterisk');
+  });
 
   /* ── wot-ui `wd-form-item` 1:1 parity ────────────────────────────────── */
 
   it('overrides form size at the FormItem level', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model, size: 'small' }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', size: 'large' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model, size: 'small' },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email', size: 'large' }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--size-large')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--size-large');
+  });
 
   it('renders right arrow when isLink is true', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', isLink: true }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email', isLink: true }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--is-link')
-    expect(wrapper.find('.sn-form-item__arrow').exists()).toBe(true)
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--is-link');
+    expect(wrapper.find('.sn-form-item__arrow').exists()).toBe(true);
+  });
 
   it('emits click on row tap when clickable is true', async () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', clickable: true }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email', clickable: true }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    await wrapper.find('.sn-form-item').trigger('tap')
-    expect(wrapper.findComponent(SnFormItem).emitted('click')).toHaveLength(1)
-  })
+    });
+    const wrapper = mount(FormHost);
+    await wrapper.find('.sn-form-item').trigger('tap');
+    expect(wrapper.findComponent(SnFormItem).emitted('click')).toHaveLength(1);
+  });
 
   it('renders description below the field', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', description: 'No spam' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () =>
+                h(SnFormItem, { prop: 'email', label: 'Email', description: 'No spam' }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item__description').text()).toContain('No spam')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item__description').text()).toContain('No spam');
+  });
 
   it('renders placeholder when no default slot is provided', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', placeholder: 'Not set' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () =>
+                h(SnFormItem, { prop: 'email', label: 'Email', placeholder: 'Not set' }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item__placeholder').text()).toBe('Not set')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item__placeholder').text()).toBe('Not set');
+  });
 
   it('applies ellipsis class on the FormItem', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'A very long label', ellipsis: true }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () =>
+                h(SnFormItem, { prop: 'email', label: 'A very long label', ellipsis: true }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--ellipsis')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--ellipsis');
+  });
 
   it('renders asterisk on the right when asteriskPosition is right', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email', required: true, asteriskPosition: 'right' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () =>
+                h(SnFormItem, {
+                  prop: 'email',
+                  label: 'Email',
+                  required: true,
+                  asteriskPosition: 'right',
+                }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--asterisk-right')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item').classes()).toContain('sn-form-item--asterisk-right');
+  });
 
   /* ── wd-form `schema` / `title-width` / `layout` ─────────────────────── */
 
   it('applies the layout class on the form root', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
-      setup() { return () => h(SnForm, { model, layout: 'vertical' }) },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--layout-vertical')
-  })
+      setup() {
+        return () => h(SnForm, { model, layout: 'vertical' });
+      },
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--layout-vertical');
+  });
 
   it('defaults the layout to horizontal', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
-      setup() { return () => h(SnForm, { model }) },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--layout-horizontal')
-  })
+      setup() {
+        return () => h(SnForm, { model });
+      },
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form').classes()).toContain('sn-form--layout-horizontal');
+  });
 
   it('inherits title-width into the FormItem label column', () => {
-    const model = reactive({ email: '' })
+    const model = reactive({ email: '' });
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model, titleWidth: 200 }, {
-          default: () => h(SnFormItem, { prop: 'email' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model, titleWidth: 200 },
+            {
+              default: () => h(SnFormItem, { prop: 'email' }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(wrapper.find('.sn-form-item').attributes('style')).toContain('200rpx')
-  })
+    });
+    const wrapper = mount(FormHost);
+    expect(wrapper.find('.sn-form-item').attributes('style')).toContain('200rpx');
+  });
 
   it('accepts a schema object without affecting validation', async () => {
-    const model = reactive({ email: '' })
-    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const model = reactive({ email: '' });
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] };
     const FormHost = defineComponent({
       setup() {
-        return () => h(SnForm, { model, rules, schema: { email: { required: true } } }, {
-          default: () => h(SnFormItem, { prop: 'email', label: 'Email' }),
-        })
+        return () =>
+          h(
+            SnForm,
+            { model, rules, schema: { email: { required: true } } },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email' }),
+            },
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false)
-  })
-})
+    });
+    const wrapper = mount(FormHost);
+    expect(await wrapper.findComponent(SnForm).vm.validate()).toBe(false);
+  });
+});
 describe('SnForm statusIcon', () => {
   it('should render a status glyph when the form enables status-icon', async () => {
-    const model = reactive({ email: '' })
-    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const model = reactive({ email: '' });
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] };
     const FormHost = defineComponent({
       setup() {
         return () =>
@@ -357,18 +465,18 @@ describe('SnForm statusIcon', () => {
             SnForm,
             { model, rules, statusIcon: true },
             { default: () => h(SnFormItem, { prop: 'email', label: 'Email' }) },
-          )
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    await wrapper.findComponent(SnForm).vm.validate()
-    await nextTick()
-    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(1)
-  })
+    });
+    const wrapper = mount(FormHost);
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(1);
+  });
 
   it('should not render a status glyph by default', async () => {
-    const model = reactive({ email: '' })
-    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const model = reactive({ email: '' });
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] };
     const FormHost = defineComponent({
       setup() {
         return () =>
@@ -376,18 +484,18 @@ describe('SnForm statusIcon', () => {
             SnForm,
             { model, rules },
             { default: () => h(SnFormItem, { prop: 'email', label: 'Email' }) },
-          )
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    await wrapper.findComponent(SnForm).vm.validate()
-    await nextTick()
-    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(0)
-  })
+    });
+    const wrapper = mount(FormHost);
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(0);
+  });
 
   it('should let an item override the form-level status-icon', async () => {
-    const model = reactive({ email: '' })
-    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] }
+    const model = reactive({ email: '' });
+    const rules = { email: [{ required: true, message: 'Email required' } as FormRule] };
     const FormHost = defineComponent({
       setup() {
         return () =>
@@ -395,12 +503,12 @@ describe('SnForm statusIcon', () => {
             SnForm,
             { model, rules, statusIcon: false },
             { default: () => h(SnFormItem, { prop: 'email', label: 'Email', statusIcon: true }) },
-          )
+          );
       },
-    })
-    const wrapper = mount(FormHost)
-    await wrapper.findComponent(SnForm).vm.validate()
-    await nextTick()
-    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(1)
-  })
-})
+    });
+    const wrapper = mount(FormHost);
+    await wrapper.findComponent(SnForm).vm.validate();
+    await nextTick();
+    expect(wrapper.findAll('.sn-form-item__status-icon')).toHaveLength(1);
+  });
+});

@@ -12,29 +12,29 @@ Future ends (React, Flutter, ...) follow the same pattern: `@snui/tokens-{end}` 
 
 ## Two ends differ
 
-| Dimension | Web (PC desktop) | uni (mobile touch) |
-|---|---|---|
-| Typical apps | Admin dashboards, CRM, ERP, IDE-like tools, low-code platforms | E-commerce, content, O2O, enterprise apps |
-| Input | Mouse + keyboard | Touch + gestures |
-| Resolution | 1280×720+, scales to 4K | 320-414 width-first |
-| Components | Information density (Table / Tree / Pagination / Cascader / DatePicker ...) | Flow layout (List / PullRefresh / swiper / sticky-tabs / lazy-image ...) |
-| Namespace | SnButton / SnForm / SnTable ... | sn-button / sn-list / sn-grid ... |
-| Token alias | `var(--sn-web-*)` | `var(--sn-mp-*)` |
-| Size unit | px | rpx (auto-converted) |
-| API style | Web: config-driven | uni: event-driven |
+| Dimension    | Web (PC desktop)                                                            | uni (mobile touch)                                                       |
+| ------------ | --------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Typical apps | Admin dashboards, CRM, ERP, IDE-like tools, low-code platforms              | E-commerce, content, O2O, enterprise apps                                |
+| Input        | Mouse + keyboard                                                            | Touch + gestures                                                         |
+| Resolution   | 1280×720+, scales to 4K                                                     | 320-414 width-first                                                      |
+| Components   | Information density (Table / Tree / Pagination / Cascader / DatePicker ...) | Flow layout (List / PullRefresh / swiper / sticky-tabs / lazy-image ...) |
+| Namespace    | SnButton / SnForm / SnTable ...                                             | sn-button / sn-list / sn-grid ...                                        |
+| Token alias  | `var(--sn-web-*)`                                                           | `var(--sn-mp-*)`                                                         |
+| Size unit    | px                                                                          | rpx (auto-converted)                                                     |
+| API style    | Web: config-driven                                                          | uni: event-driven                                                        |
 
 **Small overlap**: Button / ConfigProvider / Icon are the lowest-common-denominator components shared across ends.
 
 ## Cross-end shared layers
 
-| Shared | How ends are separated |
-|---|---|
+| Shared                      | How ends are separated                     |
+| --------------------------- | ------------------------------------------ |
 | `@snui/tokens` unified base | Outputs `--aui-*` raw layer (end-agnostic) |
-| `@snui/style-packs` | Each Pack declares `end: web / mp / both` |
-| `@snui/ai` Skill + MCP | Tool output filtered by `end` |
-| `@snui/ai` ai-meta.json | components array grouped by end |
-| `@snui/cli` | resolver per-end, token-check per-end |
-| `@snui/docs` | nav split into Web / uni groups |
+| `@snui/style-packs`         | Each Pack declares `end: web / mp / both`  |
+| `@snui/ai` Skill + MCP      | Tool output filtered by `end`              |
+| `@snui/ai` ai-meta.json     | components array grouped by end            |
+| `@snui/cli`                 | resolver per-end, token-check per-end      |
+| `@snui/docs`                | nav split into Web / uni groups            |
 
 ## 30-second overview
 

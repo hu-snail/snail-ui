@@ -10,11 +10,11 @@ Style Packs are snail-aui's **first-class style citizens**. They combine **Token
 
 Modifying Token variables (colors, radii, spacing) alone cannot reproduce **visual personalities** like Doodle, Sticky-Note, or Douyin — hand-drawn borders, handwritten fonts, and neon glow require CSS. Style Packs therefore consist of three layers:
 
-| Layer | Contents | Required |
-|---|---|---|
-| **Token layer** | Color / radius / spacing overrides (`snCssVars({ end })`) | ✅ All Packs |
+| Layer              | Contents                                                       | Required                                       |
+| ------------------ | -------------------------------------------------------------- | ---------------------------------------------- |
+| **Token layer**    | Color / radius / spacing overrides (`snCssVars({ end })`)      | ✅ All Packs                                   |
 | **Skin CSS layer** | `.snui-skin-{name}` scoped rules (fonts, effects, decorations) | Packs with visual personality (Doodle, Douyin) |
-| **Resource layer** | Fonts / textures / SVGs | A few Packs (Douyin, Taobao) |
+| **Resource layer** | Fonts / textures / SVGs                                        | A few Packs (Douyin, Taobao)                   |
 
 **Hard constraint**: Skin CSS may only operate on the visual layer (colors, shadows, fonts, animations, pseudo-elements). It must not modify component DOM, Props, or behavior.
 
@@ -22,15 +22,15 @@ Modifying Token variables (colors, radii, spacing) alone cannot reproduce **visu
 
 ## Official Pack roadmap
 
-| Pack | Visual signature | Layers | `end` | Delivery |
-|---|---|---|---|---|
-| `default` | 6px radii, subtle shadow, blue | Token | `both` | M2 ✅ |
-| `dark` | Low-saturation dark | Token | `both` | M2 ✅ |
-| `ios` | Large radii, no shadow, Apple blue | Token | `both` | M2 ✅ |
-| `doodle` | Hand-drawn borders, handwritten font, B&W | Token + Skin CSS | `both` | M3 |
-| `sticky-note` | Warm yellow bg, tilted shadow | Token + Skin CSS | `both` | M3 |
-| `mp-taobao` | Orange-red accent, rounded radii | Token + Skin CSS | `mp` | M4 |
-| `mp-douyin` | Dark bg, red/cyan accent, neon glow | Token + Skin CSS + Resources | `mp` | M4 |
+| Pack          | Visual signature                          | Layers                       | `end`  | Delivery |
+| ------------- | ----------------------------------------- | ---------------------------- | ------ | -------- |
+| `default`     | 6px radii, subtle shadow, blue            | Token                        | `both` | M2 ✅    |
+| `dark`        | Low-saturation dark                       | Token                        | `both` | M2 ✅    |
+| `ios`         | Large radii, no shadow, Apple blue        | Token                        | `both` | M2 ✅    |
+| `doodle`      | Hand-drawn borders, handwritten font, B&W | Token + Skin CSS             | `both` | M3       |
+| `sticky-note` | Warm yellow bg, tilted shadow             | Token + Skin CSS             | `both` | M3       |
+| `mp-taobao`   | Orange-red accent, rounded radii          | Token + Skin CSS             | `mp`   | M4       |
+| `mp-douyin`   | Dark bg, red/cyan accent, neon glow       | Token + Skin CSS + Resources | `mp`   | M4       |
 
 > **End constraint**: `mp-taobao` and `mp-douyin` are not available on the Web side — they are designed for mobile dense layouts and rpx units. The docs site's StyleSwitcher and MCP `get_style_pack` automatically filter by `end`.
 
@@ -42,18 +42,18 @@ Modifying Token variables (colors, radii, spacing) alone cannot reproduce **visu
 
 ```ts
 // @snui/vue-web project
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-web/styles'  // imports --sn-web-* alias layer
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-web/styles'; // imports --sn-web-* alias layer
+import { iosPack } from '@snui/style-packs/ios';
 
-const el = document.createElement('style')
+const el = document.createElement('style');
 el.textContent = snCssVars({
-  end: 'web',           // ← end identifier; outputs --sn-web-* aliases
+  end: 'web', // ← end identifier; outputs --sn-web-* aliases
   theme: iosPack.theme,
   style: iosPack.style,
   density: iosPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 ```
 
 Or via ConfigProvider:
@@ -71,16 +71,16 @@ ConfigProvider internally adds `skin="ios"` to `document.body.classList`, instan
 
 ```ts
 // @snui/uni project
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-mp/styles'   // imports --sn-mp-* alias layer (rpx units)
-import { doodlePack } from '@snui/style-packs/doodle'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-mp/styles'; // imports --sn-mp-* alias layer (rpx units)
+import { doodlePack } from '@snui/style-packs/doodle';
 
 const cssText = snCssVars({
-  end: 'mp',            // ← end identifier; outputs --sn-mp-* aliases + rpx conversion
+  end: 'mp', // ← end identifier; outputs --sn-mp-* aliases + rpx conversion
   theme: doodlePack.theme,
   style: doodlePack.style,
   density: doodlePack.density,
-})
+});
 // uni has no document.head; inject via ConfigProvider
 ```
 
@@ -103,9 +103,9 @@ Web component CSS (`@snui/vue-web`) references `var(--sn-web-*)`; uni component 
 
 The **StyleSwitcher** in the top-right of the docs site lists all official Packs and instantly switches the Token variables for every component on the page.
 
-| Page | StyleSwitcher lists |
-|---|---|
-| `/guide/web/{...}` | Packs where `end ∈ {web, both}` (default / dark / ios / doodle / sticky-note) |
+| Page               | StyleSwitcher lists                                                                                  |
+| ------------------ | ---------------------------------------------------------------------------------------------------- |
+| `/guide/web/{...}` | Packs where `end ∈ {web, both}` (default / dark / ios / doodle / sticky-note)                        |
 | `/guide/uni/{...}` | Packs where `end ∈ {mp, both}` (default / dark / ios / doodle / sticky-note / mp-taobao / mp-douyin) |
 
 Each component page also includes **StylePackPreview** showing that component rendered under different Packs.
@@ -119,7 +119,7 @@ Each component page also includes **StylePackPreview** showing that component re
 Publish your own Pack:
 
 ```ts
-import type { StylePackDefinition } from '@snui/style-packs'
+import type { StylePackDefinition } from '@snui/style-packs';
 
 const myPack: StylePackDefinition = {
   name: 'my-brand',
@@ -135,8 +135,8 @@ const myPack: StylePackDefinition = {
     component: { button: { radius: '8px' } },
   },
 
-  skinCss: '/packs/my-brand.skin.css',  // optional
-}
+  skinCss: '/packs/my-brand.skin.css', // optional
+};
 ```
 
 Validate:

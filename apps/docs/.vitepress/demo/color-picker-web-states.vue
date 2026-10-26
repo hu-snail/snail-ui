@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnColorPicker — clearable / disabled / readonly. */
-import { ref } from 'vue'
-import { SnColorPicker } from '@snui/vue-web'
-const a = ref('#2080f0')
-const b = ref('#18a058')
+import { ref } from 'vue';
+import { SnColorPicker } from '@snui/vue-web';
+const a = ref('#2080f0');
+const b = ref('#18a058');
 </script>
 
 <template>
@@ -15,5 +15,10 @@ const b = ref('#18a058')
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
 </style>

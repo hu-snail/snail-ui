@@ -34,30 +34,30 @@
 如需显式 import：
 
 ```ts
-import { SnLayout } from '@snui/uni/components/sn-layout/sn-layout.vue'
-import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue'
+import { SnLayout } from '@snui/uni/components/sn-layout/sn-layout.vue';
+import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue';
 ```
 
 ## Props
 
 ### sn-layout
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `gutter` | `number` | `0` | 列元素之间的间距（px） |
-| `justify` | `'start' \| 'center' \| 'end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'start'` | 主轴对齐方式 |
-| `align` | `'top' \| 'middle' \| 'bottom'` | `'top'` | 交叉轴对齐方式 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型                                                                                  | 默认值    | 说明                      |
+| ------------- | ------------------------------------------------------------------------------------- | --------- | ------------------------- |
+| `gutter`      | `number`                                                                              | `0`       | 列元素之间的间距（px）    |
+| `justify`     | `'start' \| 'center' \| 'end' \| 'space-between' \| 'space-around' \| 'space-evenly'` | `'start'` | 主轴对齐方式              |
+| `align`       | `'top' \| 'middle' \| 'bottom'`                                                       | `'top'`   | 交叉轴对齐方式            |
+| `customClass` | `string`                                                                              | `''`      | 根节点自定义类名          |
+| `customStyle` | `string`                                                                              | `''`      | 根节点自定义 inline style |
 
 ### sn-col
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `span` | `number` | `24` | 列元素宽度（24 栅格中的列数） |
-| `offset` | `number` | `0` | 列元素左侧偏移列数 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性          | 类型     | 默认值 | 说明                          |
+| ------------- | -------- | ------ | ----------------------------- |
+| `span`        | `number` | `24`   | 列元素宽度（24 栅格中的列数） |
+| `offset`      | `number` | `0`    | 列元素左侧偏移列数            |
+| `customClass` | `string` | `''`   | 根节点自定义类名              |
+| `customStyle` | `string` | `''`   | 根节点自定义 inline style     |
 
 ## Events
 
@@ -65,10 +65,10 @@ import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue'
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名              | 说明                    |
+| ------------------- | ----------------------- |
 | `default`（layout） | 行内容（`sn-col` 集合） |
-| `default`（col） | 列内容 |
+| `default`（col）    | 列内容                  |
 
 ## 主题变量
 
@@ -85,7 +85,6 @@ import { SnCol } from '@snui/uni/components/sn-layout/sn-col.vue'
 `sn-layout` / `sn-col` 不声明任何颜色，因此暗色模式无需适配：底色与文字色都来自列内内容自己的 `--sn-mp-color-*` 令牌，在 `.sn-theme-dark` 下随内容自动切换。
 
 用 sn-config-provider 的 theme 设为 dark 包裹即可验证：
-
 
 ## 相关
 

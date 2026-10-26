@@ -12,19 +12,19 @@
  * resolver.ts) is touched.
  */
 
-import type { VNodeChild } from 'vue'
+import type { VNodeChild } from 'vue';
 
 /** Node identifier — mirrors naive-ui Tree `Key`. */
-export type SnTreeKey = string | number
+export type SnTreeKey = string | number;
 
 /**
  * Field override names (`key-field` / `label-field` / `children-field`
  * remap these defaults).
  */
 export interface SnTreeFieldNames {
-  keyField: string
-  labelField: string
-  childrenField: string
+  keyField: string;
+  labelField: string;
+  childrenField: string;
 }
 
 /**
@@ -34,48 +34,48 @@ export interface SnTreeFieldNames {
  */
 export interface SnTreeOptionBase {
   /** Node key — must be unique (auto-generated when missing). */
-  key?: SnTreeKey
+  key?: SnTreeKey;
   /** Node label text. */
-  label?: string
+  label?: string;
   /** Child nodes (empty/absent = leaf unless `isLeaf` says otherwise). */
-  children?: SnTreeOption[]
+  children?: SnTreeOption[];
   /** Disabled — no selection, no check, no expand via click. */
-  disabled?: boolean
+  disabled?: boolean;
   /** Force leaf rendering (no switcher) even with `children`. */
-  isLeaf?: boolean
+  isLeaf?: boolean;
   /** Per-node prefix — text or render fn. */
-  prefix?: string | (() => VNodeChild)
+  prefix?: string | (() => VNodeChild);
   /** Per-node suffix — text or render fn. */
-  suffix?: string | (() => VNodeChild)
+  suffix?: string | (() => VNodeChild);
   /** Disable only the node's checkbox (selection still allowed). */
-  checkboxDisabled?: boolean
+  checkboxDisabled?: boolean;
 }
 
-export type SnTreeOption = SnTreeOptionBase & Record<string, unknown>
+export type SnTreeOption = SnTreeOptionBase & Record<string, unknown>;
 
 /** Info bag passed to tree-level render fns — mirrors naive-ui. */
 export interface SnTreeRenderProps {
-  option: SnTreeOption
-  checked: boolean
-  selected: boolean
+  option: SnTreeOption;
+  checked: boolean;
+  selected: boolean;
 }
 
 /** `render-prefix` / `render-suffix` signature — mirrors naive-ui. */
-export type SnTreeRenderSidePart = (info: SnTreeRenderProps) => VNodeChild
+export type SnTreeRenderSidePart = (info: SnTreeRenderProps) => VNodeChild;
 
 /** `meta.action` for `update:expandedKeys`. */
-export type SnTreeExpandAction = 'expand' | 'collapse' | 'filter'
+export type SnTreeExpandAction = 'expand' | 'collapse' | 'filter';
 
 /** `meta.action` for `update:selectedKeys`. */
-export type SnTreeSelectAction = 'select' | 'unselect'
+export type SnTreeSelectAction = 'select' | 'unselect';
 
 /** `meta.action` for `update:checkedKeys`. */
-export type SnTreeCheckAction = 'check' | 'uncheck'
+export type SnTreeCheckAction = 'check' | 'uncheck';
 
 /** Payload meta for the three `update:*` events — mirrors naive-ui. */
 export interface SnTreeEventMeta<Action extends string> {
-  node: SnTreeOption | null
-  action: Action
+  node: SnTreeOption | null;
+  action: Action;
 }
 
 /**
@@ -84,26 +84,26 @@ export interface SnTreeEventMeta<Action extends string> {
  * with user-provided string keys.
  */
 export interface SnTreeNode {
-  key: SnTreeKey
-  option: SnTreeOption
-  label: string
+  key: SnTreeKey;
+  option: SnTreeOption;
+  label: string;
   /** 0-based depth (roots are level 0). */
-  level: number
-  parentKey: SnTreeKey | null
+  level: number;
+  parentKey: SnTreeKey | null;
   /** Direct children keys (data order). */
-  childKeys: SnTreeKey[]
+  childKeys: SnTreeKey[];
   /** Whether the node renders a switcher (non-leaf). */
-  isLeaf: boolean
-  disabled: boolean
-  checkboxDisabled: boolean
+  isLeaf: boolean;
+  disabled: boolean;
+  checkboxDisabled: boolean;
 }
 
 /** Internal flat map produced from `data` on each change. */
 export interface SnTreeNormalizedData {
   /** All nodes by key (insertion order of a depth-first walk). */
-  nodeMap: Map<SnTreeKey, SnTreeNode>
+  nodeMap: Map<SnTreeKey, SnTreeNode>;
   /** Root-level keys (data order). */
-  rootKeys: SnTreeKey[]
+  rootKeys: SnTreeKey[];
   /** All descendants per node key (precomputed, depth-first order). */
-  descendants: Map<SnTreeKey, SnTreeKey[]>
+  descendants: Map<SnTreeKey, SnTreeKey[]>;
 }

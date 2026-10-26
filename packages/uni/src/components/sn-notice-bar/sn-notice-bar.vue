@@ -38,56 +38,56 @@
  *   - 无停留的轻提示 — 用 sn-toast
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnNoticeBar' })
+defineOptions({ name: 'SnNoticeBar' });
 
 /** Semantic type. Mirrors `wd-notice-bar` `type`. */
-type NoticeBarType = 'warning' | 'info' | 'danger'
+type NoticeBarType = 'warning' | 'info' | 'danger';
 
 /** Scroll axis. Mirrors `wd-notice-bar` `direction`. */
-type NoticeBarDirection = 'horizontal' | 'vertical'
+type NoticeBarDirection = 'horizontal' | 'vertical';
 
 /** Rough glyph advance as a fraction of the font size, for the duration estimate. */
-const CHAR_WIDTH_RATIO = 0.95
+const CHAR_WIDTH_RATIO = 0.95;
 /** Fallback font size in px when the token cannot be resolved at runtime. */
-const FALLBACK_FONT_PX = 14
+const FALLBACK_FONT_PX = 14;
 /** Minimum marquee cycle, so a very short text still reads as motion. */
-const MIN_CYCLE_SECONDS = 4
+const MIN_CYCLE_SECONDS = 4;
 
 const props = withDefaults(
   defineProps<{
     /** Notice text — a string or an array of lines. */
-    text?: string | string[]
+    text?: string | string[];
     /** Semantic type — drives the tint. */
-    type?: NoticeBarType
+    type?: NoticeBarType;
     /** Left icon name (sn-icon registry); empty falls back to the type glyph. */
-    prefix?: string
+    prefix?: string;
     /** Enable the marquee. `false` shows a static (optionally wrapped) strip. */
-    scrollable?: boolean
+    scrollable?: boolean;
     /** Delay before the marquee starts, in seconds. */
-    delay?: number
+    delay?: number;
     /** Marquee speed in px per second (converted into a cycle duration). */
-    speed?: number
+    speed?: number;
     /** Show the close button. */
-    closable?: boolean
+    closable?: boolean;
     /** Wrap long text onto multiple lines; only applies when `scrollable` is false. */
-    wrapable?: boolean
+    wrapable?: boolean;
     /** Text and icon color override (any CSS color value). */
-    color?: string
+    color?: string;
     /** Background color override (any CSS color value). */
-    backgroundColor?: string
+    backgroundColor?: string;
     /** Scroll axis. */
-    direction?: NoticeBarDirection
+    direction?: NoticeBarDirection;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     text: '',
@@ -104,96 +104,99 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Custom leading content; overrides `prefix`. */
-  prefix?(): unknown
+  prefix?(): unknown;
   /** Custom trailing content; overrides the default close button. */
-  suffix?(): unknown
+  suffix?(): unknown;
   /** Custom notice text (horizontal direction only). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'next', index: number): void
-  (e: 'click', payload: { text: string; index: number }): void
-}>()
+  (e: 'close'): void;
+  (e: 'next', index: number): void;
+  (e: 'click', payload: { text: string; index: number }): void;
+}>();
 
 /** Notice text normalised to an array of lines. */
 const lines = computed<string[]>(() => {
-  if (Array.isArray(props.text)) return props.text
-  return props.text === '' ? [] : [props.text]
-})
+  if (Array.isArray(props.text)) return props.text;
+  return props.text === '' ? [] : [props.text];
+});
 
 /** Closed by the user — the strip stays hidden until `text` changes. */
-const closed = ref(false)
-watch(() => props.text, () => {
-  closed.value = false
-})
+const closed = ref(false);
+watch(
+  () => props.text,
+  () => {
+    closed.value = false;
+  },
+);
 
 /** Vertical mode: the line currently on screen. */
-const activeIndex = ref(0)
+const activeIndex = ref(0);
 
 /** Interval handle for vertical mode (cleared on unmount, §41). */
-let rotateTimer: ReturnType<typeof setInterval> | null = null
+let rotateTimer: ReturnType<typeof setInterval> | null = null;
 
 function clearRotateTimer(): void {
   if (rotateTimer !== null) {
-    clearInterval(rotateTimer)
-    rotateTimer = null
+    clearInterval(rotateTimer);
+    rotateTimer = null;
   }
 }
 
 /** Cycle for one full marquee pass, derived from `speed` and the text length. */
 const marqueeSeconds = computed(() => {
-  const longest = lines.value.reduce((max, line) => Math.max(max, line.length), 0)
-  const estimatedWidth = longest * FALLBACK_FONT_PX * CHAR_WIDTH_RATIO
-  const pxPerSecond = props.speed > 0 ? props.speed : 50
-  return Math.max(MIN_CYCLE_SECONDS, estimatedWidth / pxPerSecond)
-})
+  const longest = lines.value.reduce((max, line) => Math.max(max, line.length), 0);
+  const estimatedWidth = longest * FALLBACK_FONT_PX * CHAR_WIDTH_RATIO;
+  const pxPerSecond = props.speed > 0 ? props.speed : 50;
+  return Math.max(MIN_CYCLE_SECONDS, estimatedWidth / pxPerSecond);
+});
 
 /** Vertical rotation interval — one line every `speed`-derived dwell. */
-const rotateIntervalMs = computed(() => Math.max(1000, marqueeSeconds.value * 1000 / 2))
+const rotateIntervalMs = computed(() => Math.max(1000, (marqueeSeconds.value * 1000) / 2));
 
 function startRotateTimer(): void {
-  clearRotateTimer()
-  if (!props.scrollable || props.direction !== 'vertical' || lines.value.length <= 1) return
+  clearRotateTimer();
+  if (!props.scrollable || props.direction !== 'vertical' || lines.value.length <= 1) return;
   rotateTimer = setInterval(() => {
-    activeIndex.value = (activeIndex.value + 1) % lines.value.length
-    emit('next', activeIndex.value)
-  }, rotateIntervalMs.value)
+    activeIndex.value = (activeIndex.value + 1) % lines.value.length;
+    emit('next', activeIndex.value);
+  }, rotateIntervalMs.value);
 }
 
 watch(
   () => [props.text, props.direction, props.scrollable, rotateIntervalMs.value],
   () => {
-    activeIndex.value = 0
-    startRotateTimer()
+    activeIndex.value = 0;
+    startRotateTimer();
   },
   { immediate: true },
-)
+);
 
-onBeforeUnmount(clearRotateTimer)
+onBeforeUnmount(clearRotateTimer);
 
 /** Resolve the leading icon: `prefix` from the registry, else the type glyph. */
 const prefixIcon = computed<IconData | null>(() => {
   if (props.prefix) {
-    const registered = resolveIconByName(props.prefix)
-    if (registered) return registered
+    const registered = resolveIconByName(props.prefix);
+    if (registered) return registered;
   }
-  return resolveFeedbackIcon(props.type)
-})
+  return resolveFeedbackIcon(props.type);
+});
 
 /** The line rendered in the static / horizontal-marquee modes. */
-const primaryText = computed(() => lines.value[0] ?? '')
+const primaryText = computed(() => lines.value[0] ?? '');
 
 const isHorizontalMarquee = computed(
   () => props.scrollable && props.direction === 'horizontal' && lines.value.length > 0,
-)
+);
 
-const isVertical = computed(() => props.direction === 'vertical')
+const isVertical = computed(() => props.direction === 'vertical');
 
 const rootClass = computed(() => [
   'sn-notice-bar',
@@ -203,32 +206,32 @@ const rootClass = computed(() => [
     'sn-notice-bar--vertical': isVertical.value,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.color) parts.push(`color: ${props.color}`)
-  if (props.backgroundColor) parts.push(`background-color: ${props.backgroundColor}`)
+  const parts: string[] = [];
+  if (props.color) parts.push(`color: ${props.color}`);
+  if (props.backgroundColor) parts.push(`background-color: ${props.backgroundColor}`);
   if (isHorizontalMarquee.value) {
-    parts.push(`--sn-notice-bar-duration: ${marqueeSeconds.value}s`)
-    parts.push(`--sn-notice-bar-delay: ${Math.max(0, props.delay)}s`)
+    parts.push(`--sn-notice-bar-duration: ${marqueeSeconds.value}s`);
+    parts.push(`--sn-notice-bar-delay: ${Math.max(0, props.delay)}s`);
   }
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 function onClose(event: Event): void {
-  event.stopPropagation()
-  closed.value = true
-  emit('close')
+  event.stopPropagation();
+  closed.value = true;
+  emit('close');
 }
 
 function onClick(): void {
   if (isVertical.value) {
-    emit('click', { text: lines.value[activeIndex.value] ?? '', index: activeIndex.value })
-    return
+    emit('click', { text: lines.value[activeIndex.value] ?? '', index: activeIndex.value });
+    return;
   }
-  emit('click', { text: primaryText.value, index: 0 })
+  emit('click', { text: primaryText.value, index: 0 });
 }
 </script>
 
@@ -374,8 +377,12 @@ function onClick(): void {
 }
 
 @keyframes sn-notice-bar-marquee {
-  from { transform: translateX(100%); }
-  to { transform: translateX(-100%); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }
 
 /* ── Vertical rotation ────────────────────────────────────────────────── */

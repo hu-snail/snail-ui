@@ -65,11 +65,11 @@
  * a release-day addition.
  */
 
-import { computed, markRaw } from 'vue'
-import type { IconComponent, IconComponentProps } from './sn-icon-registry'
-import { resolveIconByName } from './sn-icon-registry'
+import { computed, markRaw } from 'vue';
+import type { IconComponent, IconComponentProps } from './sn-icon-registry';
+import { resolveIconByName } from './sn-icon-registry';
 
-defineOptions({ name: 'SnIcon' })
+defineOptions({ name: 'SnIcon' });
 
 const props = withDefaults(
   defineProps<{
@@ -78,26 +78,26 @@ const props = withDefaults(
      * path — the bundler can statically analyze the named import and
      * tree-shake every icon you didn't reference.
      */
-    icon?: IconComponent
+    icon?: IconComponent;
     /**
      * Or look up an icon previously registered via `registerSnIcons()`.
      * Use this for data-driven icon resolution (e.g. menu config from
      * a server that ships icon names as strings).
      */
-    name?: string
+    name?: string;
     /** Pixel size (or CSS length). Forwarded to the inner icon component. */
-    size?: number | string | undefined
+    size?: number | string | undefined;
     /** Stroke color. Inherits from `currentColor` by default. */
-    color?: string | undefined
+    color?: string | undefined;
     /** Stroke width in design-units. Default 2 (lucide's standard). */
-    strokeWidth?: number | string | undefined
+    strokeWidth?: number | string | undefined;
     /**
      * If true, stroke width is interpreted in absolute pixels rather
      * than scaling with `size`. Matches lucide's `absoluteStrokeWidth`.
      */
-    strokeWidthAbsolute?: boolean | undefined
+    strokeWidthAbsolute?: boolean | undefined;
     /** Optional CSS class for the inner SVG element. */
-    defaultClass?: string | undefined
+    defaultClass?: string | undefined;
   }>(),
   {
     size: 16,
@@ -105,7 +105,7 @@ const props = withDefaults(
     strokeWidth: 2,
     strokeWidthAbsolute: false,
   },
-)
+);
 
 /**
  * Resolved icon component: prefer explicit `icon`, fall back to
@@ -116,20 +116,15 @@ const props = withDefaults(
  * was made a reactive object") every render.
  */
 const resolvedIcon = computed<IconComponent | null>(() => {
-  const icon = props.icon ?? (props.name ? resolveIconByName(props.name) : null)
-  return icon ? markRaw(icon) : null
-})
+  const icon = props.icon ?? (props.name ? resolveIconByName(props.name) : null);
+  return icon ? markRaw(icon) : null;
+});
 
-const hasIcon = computed(() => resolvedIcon.value !== null)
+const hasIcon = computed(() => resolvedIcon.value !== null);
 </script>
 
 <template>
-  <span
-    v-if="hasIcon"
-    class="sn-icon"
-    aria-hidden="true"
-    data-snui-component="icon"
-  >
+  <span v-if="hasIcon" class="sn-icon" aria-hidden="true" data-snui-component="icon">
     <!--
       `<component :is>` resolves the registered icon and forwards the
       props every lucide icon accepts (size / color / stroke-width /

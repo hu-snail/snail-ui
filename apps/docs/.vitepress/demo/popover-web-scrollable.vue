@@ -7,7 +7,7 @@
  * on overflow scrolling; a `max-height` passed through `content-style` wins
  * over that default because it is inlined on the same element.
  */
-import { SnButton, SnPopover } from '@snui/vue-web'
+import { SnButton, SnPopover } from '@snui/vue-web';
 
 const changelog = [
   'v3.1.0 — 新增气泡卡片组件族，支持十二个方位与视口翻转。',
@@ -19,7 +19,7 @@ const changelog = [
   'v2.9.2 — 文本提示与气泡卡片拆分，语义各自独立。',
   'v2.9.1 — 新增受控显示模式，外部状态可完全接管弹出。',
   'v2.9.0 — 弹层定位改为 fixed 坐标，滚动跟随更稳定。',
-].join('\n')
+].join('\n');
 </script>
 
 <template>
@@ -50,7 +50,8 @@ const changelog = [
     </div>
 
     <p class="popover-scrollable-demo__hint">
-      正文超出高度时在气泡内部滚动，页面本身不滚动；箭头与卡片描边保持固定，不随内容滚动。左侧使用内置的默认高度上限，右侧通过 content-style 把可视高度压到 120px。
+      正文超出高度时在气泡内部滚动，页面本身不滚动；箭头与卡片描边保持固定，不随内容滚动。左侧使用内置的默认高度上限，右侧通过
+      content-style 把可视高度压到 120px。
     </p>
   </div>
 </template>

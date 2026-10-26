@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnHighlight — custom mark element via highlight-tag. */
-import { SnHighlight } from '@snui/vue-web'
+import { SnHighlight } from '@snui/vue-web';
 
-const text = 'Snail AUI is a multi-end UI framework — schema-driven, written in TypeScript, and fast.'
-const patterns = ['Snail AUI', 'Schema', 'TypeScript', 'fast']
+const text =
+  'Snail AUI is a multi-end UI framework — schema-driven, written in TypeScript, and fast.';
+const patterns = ['Snail AUI', 'Schema', 'TypeScript', 'fast'];
 </script>
 
 <template>

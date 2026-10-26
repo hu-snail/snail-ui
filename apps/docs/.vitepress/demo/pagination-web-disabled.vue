@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnPagination — disabled 整体禁用 + pageSlot 收窄出现省略号对照。 */
-import { Lock } from 'lucide-vue-next'
-import { registerSnIcons, SnIcon, SnPagination } from '@snui/vue-web'
+import { Lock } from 'lucide-vue-next';
+import { registerSnIcons, SnIcon, SnPagination } from '@snui/vue-web';
 
-registerSnIcons({ Lock })
+registerSnIcons({ Lock });
 </script>
 
 <template>
@@ -21,7 +21,14 @@ registerSnIcons({ Lock })
         <SnIcon :icon="Lock" :size="14" />
         disabled 整体禁用（页码 / 跳页 / 条数全部不可操作）
       </span>
-      <SnPagination :item-count="80" :default-page="4" :page-slot="5" show-quick-jumper show-size-picker disabled />
+      <SnPagination
+        :item-count="80"
+        :default-page="4"
+        :page-slot="5"
+        show-quick-jumper
+        show-size-picker
+        disabled
+      />
     </div>
   </div>
 </template>

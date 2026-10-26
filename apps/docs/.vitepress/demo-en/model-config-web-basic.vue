@@ -5,9 +5,9 @@
  * 演示添加自定义厂商、编辑接口地址与凭证、增删模型、切换激活模型，以及
  * 参数面板随所选模型能力自动启用或禁用「思考程度」。
  */
-import { ref } from 'vue'
-import { SnModelConfig } from '@snui/templates-src/web/index'
-import type { SnAiModelParams, SnAiVendor } from '@snui/templates-src/shared/types'
+import { ref } from 'vue';
+import { SnModelConfig } from '@snui/templates-src/web/index';
+import type { SnAiModelParams, SnAiVendor } from '@snui/templates-src/shared/types';
 
 const vendors = ref<SnAiVendor[]>([
   {
@@ -35,20 +35,20 @@ const vendors = ref<SnAiVendor[]>([
       },
     ],
   },
-])
+]);
 
-const activeVendorId = ref('v-open')
-const activeModelId = ref('m-deep')
-const params = ref<SnAiModelParams>({ temperature: 0.7, topP: 1, maxTokens: 4096, stream: true })
-const search = ref('')
-const testingVendorId = ref<string | undefined>(undefined)
+const activeVendorId = ref('v-open');
+const activeModelId = ref('m-deep');
+const params = ref<SnAiModelParams>({ temperature: 0.7, topP: 1, maxTokens: 4096, stream: true });
+const search = ref('');
+const testingVendorId = ref<string | undefined>(undefined);
 
 /** 模拟连接测试：短暂展示加载态后结束。 */
 function onTest(payload: { vendorId: string }): void {
-  testingVendorId.value = payload.vendorId
+  testingVendorId.value = payload.vendorId;
   setTimeout(() => {
-    testingVendorId.value = undefined
-  }, 1200)
+    testingVendorId.value = undefined;
+  }, 1200);
 }
 </script>
 

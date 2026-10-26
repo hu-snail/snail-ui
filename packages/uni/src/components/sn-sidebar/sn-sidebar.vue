@@ -24,23 +24,23 @@
  *   - 顶部 / 底部导航 — 用 sn-navbar / sn-tabbar
  */
 
-import { computed, provide, ref, toRef, watch } from 'vue'
-import { SN_SIDEBAR_KEY, type SnSidebarValue } from './sn-sidebar-types'
+import { computed, provide, ref, toRef, watch } from 'vue';
+import { SN_SIDEBAR_KEY, type SnSidebarValue } from './sn-sidebar-types';
 
-defineOptions({ name: 'SnSidebar' })
+defineOptions({ name: 'SnSidebar' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-sidebar` 1:1 surface ────────────────────────────────── */
 
     /** 当前激活项的值。 */
-    modelValue?: SnSidebarValue
+    modelValue?: SnSidebarValue;
     /** 切换前钩子，接收目标值，返回 boolean 或 Promise<boolean>。 */
-    beforeChange?: ((value: SnSidebarValue) => boolean | Promise<boolean>) | undefined
+    beforeChange?: ((value: SnSidebarValue) => boolean | Promise<boolean>) | undefined;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: 0,
@@ -48,63 +48,63 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model 同步。 */
-  (e: 'update:modelValue', value: SnSidebarValue): void
+  (e: 'update:modelValue', value: SnSidebarValue): void;
   /** 激活项切换时触发。 */
-  (e: 'change', payload: { value: SnSidebarValue; label: string }): void
-}>()
+  (e: 'change', payload: { value: SnSidebarValue; label: string }): void;
+}>();
 
 defineSlots<{
   /** SidebarItem 列表。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Uncontrolled fallback + controlled sync — both modes stay in step. */
-const innerValue = ref<SnSidebarValue>(props.modelValue)
+const innerValue = ref<SnSidebarValue>(props.modelValue);
 watch(
   () => props.modelValue,
   (next) => {
-    innerValue.value = next
+    innerValue.value = next;
   },
-)
-const activeValue = computed<SnSidebarValue>(() => innerValue.value)
+);
+const activeValue = computed<SnSidebarValue>(() => innerValue.value);
 
 function isActive(value: SnSidebarValue): boolean {
-  return activeValue.value === value
+  return activeValue.value === value;
 }
 
 /** Commit a switch. `beforeChange` can veto (sync `false` / rejected promise). */
 async function select(value: SnSidebarValue, label: string): Promise<void> {
-  if (isActive(value)) return
+  if (isActive(value)) return;
   if (props.beforeChange) {
-    let allowed: boolean
+    let allowed: boolean;
     try {
-      allowed = await props.beforeChange(value)
+      allowed = await props.beforeChange(value);
     } catch {
-      return
+      return;
     }
-    if (!allowed) return
+    if (!allowed) return;
   }
-  innerValue.value = value
-  emit('update:modelValue', value)
-  emit('change', { value, label })
+  innerValue.value = value;
+  emit('update:modelValue', value);
+  emit('change', { value, label });
 }
 
 provide(SN_SIDEBAR_KEY, {
   activeValue,
   isActive,
   select: (value: SnSidebarValue, label: string) => {
-    void select(value, label)
+    void select(value, label);
   },
-})
+});
 
 /** Public imperative API — host pages can drive the sidebar from code (§14). */
-defineExpose({ select })
+defineExpose({ select });
 
-const rootClass = computed(() => ['sn-sidebar', props.customClass])
+const rootClass = computed(() => ['sn-sidebar', props.customClass]);
 </script>
 
 <template>

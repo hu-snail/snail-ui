@@ -22,37 +22,37 @@
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| time | number | 0 | 倒计时时长（ms） |
-| millisecond | boolean | false | 是否开启毫秒级渲染（约 16ms 一跳） |
-| format | string | 'HH:mm:ss' | 倒计时格式化字符串 |
-| autoStart | boolean | true | 是否在初始化和 `time` 变化后自动开始 |
-| customClass | string | '' | 根节点自定义类名 |
-| customStyle | string | '' | 根节点自定义样式 |
+| 属性        | 类型    | 默认值     | 说明                                 |
+| ----------- | ------- | ---------- | ------------------------------------ |
+| time        | number  | 0          | 倒计时时长（ms）                     |
+| millisecond | boolean | false      | 是否开启毫秒级渲染（约 16ms 一跳）   |
+| format      | string  | 'HH:mm:ss' | 倒计时格式化字符串                   |
+| autoStart   | boolean | true       | 是否在初始化和 `time` 变化后自动开始 |
+| customClass | string  | ''         | 根节点自定义类名                     |
+| customStyle | string  | ''         | 根节点自定义样式                     |
 
 暴露方法：`start()` / `pause()` / `reset()`。`SnCountDownTimeData` = `{ total, days, hours, minutes, seconds, milliseconds }`。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
+| 事件名 | 说明                   | 参数                |
+| ------ | ---------------------- | ------------------- |
 | change | 每次跳秒（或跳毫秒）时 | SnCountDownTimeData |
-| finish | 倒计时归零时 | — |
+| finish | 倒计时归零时           | —                   |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                                            |
+| ------- | ----------------------------------------------- |
 | default | 自定义渲染，插槽 props 为 `SnCountDownTimeData` |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| --sn-mp-color-text-primary | 倒计时文字 |
-| --sn-mp-font-size-md | 文字字号 |
-| --sn-mp-font-line-height-normal | 文字行高 |
+| 变量                            | 用途       |
+| ------------------------------- | ---------- |
+| --sn-mp-color-text-primary      | 倒计时文字 |
+| --sn-mp-font-size-md            | 文字字号   |
+| --sn-mp-font-line-height-normal | 文字行高   |
 
 ## 无障碍
 
@@ -61,7 +61,6 @@
 ## 暗色模式
 
 文字颜色走 `--sn-mp-color-text-primary`，该变量在 `@snui/tokens-mp/styles` 的暗色块里覆盖过，因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
-
 
 ## 相关
 

@@ -24,35 +24,35 @@
  *   <SnText tag="blockquote" depth="3">引用</SnText>
  */
 
-import { computed } from 'vue'
-import type { CSSProperties } from 'vue'
+import { computed } from 'vue';
+import type { CSSProperties } from 'vue';
 
-defineOptions({ name: 'SnText' })
+defineOptions({ name: 'SnText' });
 
 const props = withDefaults(
   defineProps<{
     /** Semantic type — drives the text color. Mirrors n-text `type`. */
-    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
+    type?: 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error';
     /** Gray scale — only applied for type="default". Mirrors n-text `depth`. */
-    depth?: '1' | '2' | '3' | undefined
+    depth?: '1' | '2' | '3' | undefined;
     /** Bolder text. Mirrors n-text `strong`. */
-    strong?: boolean
+    strong?: boolean;
     /** Italic text. Mirrors n-text `italic`. */
-    italic?: boolean
+    italic?: boolean;
     /** Underlined text. Mirrors n-text `underline`. */
-    underline?: boolean
+    underline?: boolean;
     /** Strike-through text. Mirrors n-text `delete`. */
-    delete?: boolean
+    delete?: boolean;
     /** Inline-code styling (mono font + subtle background). Mirrors n-text `code`. */
-    code?: boolean
+    code?: boolean;
     /** Greyed-out text with a not-allowed cursor. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Rendered element. Mirrors n-text `tag`. */
-    tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'blockquote'
+    tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'blockquote';
     /** Extra class merged onto the rendered element. */
-    customClass?: string
+    customClass?: string;
     /** Inline style merged onto the rendered element. */
-    customStyle?: string | CSSProperties | undefined
+    customStyle?: string | CSSProperties | undefined;
   }>(),
   {
     type: 'default',
@@ -67,25 +67,25 @@ const props = withDefaults(
     customClass: '',
     customStyle: undefined,
   },
-)
+);
 
 defineSlots<{
   /** Text content. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 // n-text applies `depth` only to the default type — a colored text keeps its
 // type color even when depth is set.
-const effectiveDepth = computed(() => (props.type === 'default' ? props.depth : undefined))
+const effectiveDepth = computed(() => (props.type === 'default' ? props.depth : undefined));
 
 // `text-decoration` is not additive across declarations: underline + delete
 // must merge into one value to render "line-through underline".
 const decorationStyle = computed<CSSProperties | undefined>(() => {
-  const parts: string[] = []
-  if (props.underline) parts.push('underline')
-  if (props.delete) parts.push('line-through')
-  return parts.length > 0 ? { textDecoration: parts.join(' ') } : undefined
-})
+  const parts: string[] = [];
+  if (props.underline) parts.push('underline');
+  if (props.delete) parts.push('line-through');
+  return parts.length > 0 ? { textDecoration: parts.join(' ') } : undefined;
+});
 </script>
 
 <template>

@@ -45,60 +45,60 @@
  *   <SnPagination :item-count="45" simple />
  */
 
-import { computed, ref, watch } from 'vue'
-import { ChevronLeft, ChevronRight } from 'lucide-vue-next'
-import SnButton from '../button/SnButton.vue'
-import SnIcon from '../icon/SnIcon.vue'
-import SnInput from '../input/SnInput.vue'
-import SnSelect from '../select/SnSelect.vue'
-import type { SnSelectValue } from '../select/sn-select-types'
-defineOptions({ name: 'SnPagination' })
+import { computed, ref, watch } from 'vue';
+import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
+import SnButton from '../button/SnButton.vue';
+import SnIcon from '../icon/SnIcon.vue';
+import SnInput from '../input/SnInput.vue';
+import SnSelect from '../select/SnSelect.vue';
+import type { SnSelectValue } from '../select/sn-select-types';
+defineOptions({ name: 'SnPagination' });
 
-import { useLocale } from '../locales/use-locale'
+import { useLocale } from '../locales/use-locale';
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 /** Active Pagination locale namespace (naive-ui i18n). */
-const paginationLocale = computed(() => locale.value.Pagination)
+const paginationLocale = computed(() => locale.value.Pagination);
 
 /** A rendered pager item: a page number or an ellipsis marker. */
-type PaginationDisplayItem = number | 'start-ellipsis' | 'end-ellipsis'
+type PaginationDisplayItem = number | 'start-ellipsis' | 'end-ellipsis';
 
 /** naive pageSizes entry: plain number or explicit label/value pair. */
-type PaginationPageSize = number | { label: string; value: number }
+type PaginationPageSize = number | { label: string; value: number };
 
 const props = withDefaults(
   defineProps<{
     /** Current page (controlled). When undefined the component is uncontrolled. Mirrors n-pagination `page`. */
-    page?: number | undefined
+    page?: number | undefined;
     /** Total item count used to derive the page count. Mirrors n-pagination `itemCount`. */
-    itemCount?: number
+    itemCount?: number;
     /** Page size (controlled). `undefined` / `null` falls back to internal state. Mirrors n-pagination `pageSize`. */
-    pageSize?: number | null | undefined
+    pageSize?: number | null | undefined;
     /** Initial page for uncontrolled mode. Mirrors n-pagination `defaultPage`. */
-    defaultPage?: number
+    defaultPage?: number;
     /** Initial page size for uncontrolled mode. Mirrors n-pagination `defaultPageSize`. */
-    defaultPageSize?: number
+    defaultPageSize?: number;
     /** Explicit page count — takes precedence over itemCount / pageSize. Mirrors n-pagination `pageCount`. */
-    pageCount?: number | undefined
+    pageCount?: number | undefined;
     /** Options for the size picker; plain numbers render as `N / 页`. Mirrors n-pagination `pageSizes`. */
-    pageSizes?: PaginationPageSize[]
+    pageSizes?: PaginationPageSize[];
     /** Render the quick page-jumper input. Mirrors n-pagination `showQuickJumper`. */
-    showQuickJumper?: boolean
+    showQuickJumper?: boolean;
     /** Render the page-size picker. Mirrors n-pagination `showSizePicker`. */
-    showSizePicker?: boolean
+    showSizePicker?: boolean;
     /**
      * Maximum number of page buttons rendered before collapsing into
      * first / last / neighborhood + ellipsis. Mirrors n-pagination
      * `pageSlot`. Default 9.
      */
-    pageSlot?: number
+    pageSlot?: number;
     /** Show the `共 N 条` total. Mirrors n-pagination `showTotal`. */
-    showTotal?: boolean
+    showTotal?: boolean;
     /** Compact mode: prev / page input / page count / next only. Mirrors n-pagination `simple`. */
-    simple?: boolean
+    simple?: boolean;
     /** Disable every control. Mirrors n-pagination `disabled`. */
-    disabled?: boolean
+    disabled?: boolean;
   }>(),
   {
     page: undefined,
@@ -115,27 +115,27 @@ const props = withDefaults(
     simple: false,
     disabled: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Page committed (button click / jumper). Mirrors n-pagination `on-update:page`. */
-  (e: 'update:page', page: number): void
+  (e: 'update:page', page: number): void;
   /** Page size committed via the size picker. Mirrors n-pagination `on-update:page-size`. */
-  (e: 'update:pageSize', pageSize: number): void
-}>()
+  (e: 'update:pageSize', pageSize: number): void;
+}>();
 
 defineSlots<{
   /** Custom arrow content for the prev button. Mirrors n-pagination `prev`. */
-  prev?(): unknown
+  prev?(): unknown;
   /** Custom arrow content for the next button. Mirrors n-pagination `next`. */
-  next?(): unknown
+  next?(): unknown;
   /** Content rendered before the pager. Mirrors n-pagination `prefix`. */
-  prefix?(): unknown
+  prefix?(): unknown;
   /** Content rendered after the pager. Mirrors n-pagination `suffix`. */
-  suffix?(): unknown
+  suffix?(): unknown;
   /** Custom page-number label; receives `{ page }`. Mirrors n-pagination `label`. */
-  label?(props: { page: number }): unknown
-}>()
+  label?(props: { page: number }): unknown;
+}>();
 
 /**
  * Definite-boolean view of `disabled`. Under `exactOptionalPropertyTypes`
@@ -143,52 +143,54 @@ defineSlots<{
  * types (SnButton / SnInput / SnSelect) reject — same narrowing as
  * SnDialog's `isLoading`.
  */
-const isDisabled = computed(() => props.disabled === true)
+const isDisabled = computed(() => props.disabled === true);
 
 /* ─────────── Controlled / uncontrolled page + pageSize ─────────── */
 
-const isPageControlled = computed(() => props.page !== undefined)
-const isPageSizeControlled = computed(() => props.pageSize !== undefined && props.pageSize !== null)
+const isPageControlled = computed(() => props.page !== undefined);
+const isPageSizeControlled = computed(
+  () => props.pageSize !== undefined && props.pageSize !== null,
+);
 
-const uncontrolledPage = ref(props.defaultPage)
-const uncontrolledPageSize = ref(props.defaultPageSize)
+const uncontrolledPage = ref(props.defaultPage);
+const uncontrolledPageSize = ref(props.defaultPageSize);
 
 const mergedPageSize = computed(() =>
   isPageSizeControlled.value ? (props.pageSize as number) : uncontrolledPageSize.value,
-)
+);
 
 const mergedPageCount = computed(() => {
-  if (props.pageCount !== undefined) return Math.max(props.pageCount, 0)
-  return Math.max(1, Math.ceil(props.itemCount / mergedPageSize.value))
-})
+  if (props.pageCount !== undefined) return Math.max(props.pageCount, 0);
+  return Math.max(1, Math.ceil(props.itemCount / mergedPageSize.value));
+});
 
 const mergedPage = computed(() => {
-  const raw = isPageControlled.value ? (props.page as number) : uncontrolledPage.value
-  return Math.min(Math.max(1, raw), Math.max(mergedPageCount.value, 1))
-})
+  const raw = isPageControlled.value ? (props.page as number) : uncontrolledPage.value;
+  return Math.min(Math.max(1, raw), Math.max(mergedPageCount.value, 1));
+});
 
 /** Commit a page change. Always emits; writes internal state only when uncontrolled. */
 function go(next: number): void {
-  if (props.disabled) return
-  const target = Math.min(Math.max(Math.round(next), 1), Math.max(mergedPageCount.value, 1))
-  if (target === mergedPage.value) return
-  if (!isPageControlled.value) uncontrolledPage.value = target
-  emit('update:page', target)
+  if (props.disabled) return;
+  const target = Math.min(Math.max(Math.round(next), 1), Math.max(mergedPageCount.value, 1));
+  if (target === mergedPage.value) return;
+  if (!isPageControlled.value) uncontrolledPage.value = target;
+  emit('update:page', target);
 }
 
 /** Commit a page-size change via the size picker. */
 function setPageSize(next: number): void {
-  if (props.disabled) return
-  if (next === mergedPageSize.value) return
-  if (!isPageSizeControlled.value) uncontrolledPageSize.value = next
-  emit('update:pageSize', next)
+  if (props.disabled) return;
+  if (next === mergedPageSize.value) return;
+  if (!isPageSizeControlled.value) uncontrolledPageSize.value = next;
+  emit('update:pageSize', next);
 }
 
 /* ─────────── Ellipsis collapsing (first / last / neighborhood) ─────────── */
 
 const displayItems = computed<PaginationDisplayItem[]>(() =>
   buildDisplayItems(mergedPage.value, mergedPageCount.value, props.pageSlot),
-)
+);
 
 /**
  * Page > pageSlot collapses to: [1, (…), neighborhood, (…), N]. The
@@ -201,63 +203,63 @@ function buildDisplayItems(
   pageCount: number,
   pageSlot: number,
 ): PaginationDisplayItem[] {
-  if (pageCount <= 0) return []
+  if (pageCount <= 0) return [];
   if (pageCount <= pageSlot) {
-    const all: PaginationDisplayItem[] = []
-    for (let i = 1; i <= pageCount; i++) all.push(i)
-    return all
+    const all: PaginationDisplayItem[] = [];
+    for (let i = 1; i <= pageCount; i++) all.push(i);
+    return all;
   }
-  const middleCount = Math.max(pageSlot - 4, 1)
-  let start = Math.max(2, page - Math.floor(middleCount / 2))
-  let end = Math.min(pageCount - 1, start + middleCount - 1)
-  start = Math.max(2, end - middleCount + 1)
-  const showStartEllipsis = start > 2
-  const showEndEllipsis = end < pageCount - 1
-  if (!showStartEllipsis && showEndEllipsis) end = Math.min(pageCount - 1, pageSlot - 2)
-  if (!showEndEllipsis && showStartEllipsis) start = Math.max(2, pageCount - pageSlot + 3)
+  const middleCount = Math.max(pageSlot - 4, 1);
+  let start = Math.max(2, page - Math.floor(middleCount / 2));
+  let end = Math.min(pageCount - 1, start + middleCount - 1);
+  start = Math.max(2, end - middleCount + 1);
+  const showStartEllipsis = start > 2;
+  const showEndEllipsis = end < pageCount - 1;
+  if (!showStartEllipsis && showEndEllipsis) end = Math.min(pageCount - 1, pageSlot - 2);
+  if (!showEndEllipsis && showStartEllipsis) start = Math.max(2, pageCount - pageSlot + 3);
 
-  const items: PaginationDisplayItem[] = [1]
-  if (showStartEllipsis) items.push('start-ellipsis')
-  for (let i = start; i <= end; i++) items.push(i)
-  if (showEndEllipsis) items.push('end-ellipsis')
-  items.push(pageCount)
-  return items
+  const items: PaginationDisplayItem[] = [1];
+  if (showStartEllipsis) items.push('start-ellipsis');
+  for (let i = start; i <= end; i++) items.push(i);
+  if (showEndEllipsis) items.push('end-ellipsis');
+  items.push(pageCount);
+  return items;
 }
 
 /* ─────────── Quick jumper ─────────── */
 
-const jumperValue = ref(String(mergedPage.value))
+const jumperValue = ref(String(mergedPage.value));
 
 watch(mergedPage, (page) => {
-  jumperValue.value = String(page)
-  simpleInputValue.value = String(page)
-})
+  jumperValue.value = String(page);
+  simpleInputValue.value = String(page);
+});
 
 /** Enter / blur commit: parse, clamp into [1, pageCount], reset the field. */
 function commitJumper(): void {
-  const parsed = Number.parseInt(jumperValue.value, 10)
+  const parsed = Number.parseInt(jumperValue.value, 10);
   if (Number.isNaN(parsed)) {
-    jumperValue.value = String(mergedPage.value)
-    return
+    jumperValue.value = String(mergedPage.value);
+    return;
   }
-  const target = Math.min(Math.max(parsed, 1), Math.max(mergedPageCount.value, 1))
-  jumperValue.value = String(target)
-  go(target)
+  const target = Math.min(Math.max(parsed, 1), Math.max(mergedPageCount.value, 1));
+  jumperValue.value = String(target);
+  go(target);
 }
 
 /* ─────────── Simple mode input ─────────── */
 
-const simpleInputValue = ref(String(mergedPage.value))
+const simpleInputValue = ref(String(mergedPage.value));
 
 function commitSimpleInput(): void {
-  const parsed = Number.parseInt(simpleInputValue.value, 10)
+  const parsed = Number.parseInt(simpleInputValue.value, 10);
   if (Number.isNaN(parsed)) {
-    simpleInputValue.value = String(mergedPage.value)
-    return
+    simpleInputValue.value = String(mergedPage.value);
+    return;
   }
-  const target = Math.min(Math.max(parsed, 1), Math.max(mergedPageCount.value, 1))
-  simpleInputValue.value = String(target)
-  go(target)
+  const target = Math.min(Math.max(parsed, 1), Math.max(mergedPageCount.value, 1));
+  simpleInputValue.value = String(target);
+  go(target);
 }
 
 /* ─────────── Size picker ─────────── */
@@ -268,10 +270,10 @@ const pageSizeOptions = computed(() =>
       ? { label: `${entry} / 页`, value: entry }
       : { label: entry.label, value: entry.value },
   ),
-)
+);
 
 function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
-  if (typeof value === 'number' && !Number.isNaN(value)) setPageSize(value)
+  if (typeof value === 'number' && !Number.isNaN(value)) setPageSize(value);
 }
 </script>
 
@@ -289,7 +291,9 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
     <div v-if="$slots.prefix" class="sn-pagination__prefix">
       <slot name="prefix" />
     </div>
-    <span v-if="showTotal" class="sn-pagination__total">{{ paginationLocale.total.replace('{total}', String(itemCount)) }}</span>
+    <span v-if="showTotal" class="sn-pagination__total">{{
+      paginationLocale.total.replace('{total}', String(itemCount))
+    }}</span>
 
     <!-- Simple mode: prev / page input / count / next -->
     <div v-if="simple" class="sn-pagination__simple">

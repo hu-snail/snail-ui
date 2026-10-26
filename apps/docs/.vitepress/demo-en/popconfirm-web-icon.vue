@@ -7,13 +7,13 @@
  * slot (own colour and size), or turning the area off with
  * `show-icon="false"` for pure-text confirmations.
  */
-import { ref } from 'vue'
-import { CircleAlert } from 'lucide-vue-next'
-import { registerSnIcons, SnButton, SnIcon, SnPopconfirm } from '@snui/vue-web'
+import { ref } from 'vue';
+import { CircleAlert } from 'lucide-vue-next';
+import { registerSnIcons, SnButton, SnIcon, SnPopconfirm } from '@snui/vue-web';
 
-registerSnIcons({ CircleAlert })
+registerSnIcons({ CircleAlert });
 
-const result = ref('')
+const result = ref('');
 </script>
 
 <template>
@@ -38,7 +38,11 @@ const result = ref('')
         @negative-click="result = 'Deletion cancelled'"
       >
         <template #icon>
-          <SnIcon :icon="CircleAlert" :size="20" color="var(--sn-web-color-feedback-danger, #d03050)" />
+          <SnIcon
+            :icon="CircleAlert"
+            :size="20"
+            color="var(--sn-web-color-feedback-danger, #d03050)"
+          />
         </template>
         <SnButton type="error">#icon slot (danger color)</SnButton>
       </SnPopconfirm>
@@ -56,7 +60,9 @@ const result = ref('')
 
     <p class="popconfirm-icon-demo__result">Last action: {{ result || '(none yet)' }}</p>
     <p class="popconfirm-icon-demo__hint">
-      Without icon the built-in warning icon is used; the icon prop accepts any icon component and keeps the warning color. Switch to the #icon slot to customize color or size, or set show-icon=false to remove the icon area entirely.
+      Without icon the built-in warning icon is used; the icon prop accepts any icon component and
+      keeps the warning color. Switch to the #icon slot to customize color or size, or set
+      show-icon=false to remove the icon area entirely.
     </p>
   </div>
 </template>

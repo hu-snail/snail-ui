@@ -16,11 +16,11 @@
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `text` | `string` | `'输入中'` | no | Label; empty string = dots only. |
-| `dotCount` | `number` | `3` | no | Dot count (clamped 1-5). |
-| `speed` | `number` | `350` | no | Pulse period per dot (ms). |
-| `activeDotColor` | `string` | primary token | no | Dot color. |
-| `customClass` | `string` | `''` | no | Root custom class. |
-| `customStyle` | `string` | `''` | no | Root custom style. |
+| Name             | Type     | Default       | Required | Description                      |
+| ---------------- | -------- | ------------- | -------- | -------------------------------- |
+| `text`           | `string` | `'输入中'`    | no       | Label; empty string = dots only. |
+| `dotCount`       | `number` | `3`           | no       | Dot count (clamped 1-5).         |
+| `speed`          | `number` | `350`         | no       | Pulse period per dot (ms).       |
+| `activeDotColor` | `string` | primary token | no       | Dot color.                       |
+| `customClass`    | `string` | `''`          | no       | Root custom class.               |
+| `customStyle`    | `string` | `''`          | no       | Root custom style.               |

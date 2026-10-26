@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnTag — checkable. */
-import { ref } from 'vue'
-import { SnTag } from '@snui/vue-web'
-const picked = ref(true)
+import { ref } from 'vue';
+import { SnTag } from '@snui/vue-web';
+const picked = ref(true);
 </script>
 
 <template>
@@ -14,5 +14,9 @@ const picked = ref(true)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 8px; align-items: center; }
+.demo-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
 </style>

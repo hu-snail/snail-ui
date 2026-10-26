@@ -8,13 +8,13 @@ AI uses snail-aui to produce **hi-fi prototypes** — not screenshots, not Figma
 
 ## Prototype vs design
 
-| Dimension | Design | Prototype |
-|---|---|---|
-| Form | PNG / Figma | Real Vue components |
-| Interaction | None | Clickable / fillable / state-toggleable |
-| Style | Static | Token driven |
-| Modification | Re-render | Edit SFC + switch Style Pack |
-| AI output | No | Yes |
+| Dimension    | Design      | Prototype                               |
+| ------------ | ----------- | --------------------------------------- |
+| Form         | PNG / Figma | Real Vue components                     |
+| Interaction  | None        | Clickable / fillable / state-toggleable |
+| Style        | Static      | Token driven                            |
+| Modification | Re-render   | Edit SFC + switch Style Pack            |
+| AI output    | No          | Yes                                     |
 
 ---
 
@@ -49,17 +49,17 @@ Output end-independent runnable Vue SFC
 ```vue
 <script setup lang="ts">
 // ✅ only snail-aui components + Vue core
-import { SnButton, SnInput, SnForm, SnFormItem, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-import { ref, reactive } from 'vue'
+import { SnButton, SnInput, SnForm, SnFormItem, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
+import { ref, reactive } from 'vue';
 
-const form = reactive({ name: '', email: '' })
-const loading = ref(false)
+const form = reactive({ name: '', email: '' });
+const loading = ref(false);
 
 async function handleSubmit() {
-  loading.value = true
-  await new Promise(r => setTimeout(r, 1000)) // simulated loading
-  loading.value = false
+  loading.value = true;
+  await new Promise((r) => setTimeout(r, 1000)); // simulated loading
+  loading.value = false;
 }
 </script>
 
@@ -73,9 +73,7 @@ async function handleSubmit() {
         <SnFormItem label="Email">
           <SnInput v-model="form.email" type="email" placeholder="Email" />
         </SnFormItem>
-        <SnButton type="primary" :loading="loading" @click="handleSubmit">
-          Submit
-        </SnButton>
+        <SnButton type="primary" :loading="loading" @click="handleSubmit"> Submit </SnButton>
       </SnForm>
     </SnCard>
   </div>
@@ -96,16 +94,16 @@ async function handleSubmit() {
 ```vue
 <!-- easycom auto-registers sn-button / sn-input / sn-form / sn-form-item / sn-card -->
 <script setup lang="ts">
-import '@snui/tokens-mp/styles'
-import { ref, reactive } from 'vue'
+import '@snui/tokens-mp/styles';
+import { ref, reactive } from 'vue';
 
-const form = reactive({ name: '', email: '' })
-const loading = ref(false)
+const form = reactive({ name: '', email: '' });
+const loading = ref(false);
 
 async function handleSubmit() {
-  loading.value = true
-  await new Promise(r => setTimeout(r, 1000))
-  loading.value = false
+  loading.value = true;
+  await new Promise((r) => setTimeout(r, 1000));
+  loading.value = false;
 }
 </script>
 
@@ -119,9 +117,7 @@ async function handleSubmit() {
         <sn-form-item label="Email">
           <sn-input v-model="form.email" type="email" placeholder="Email" />
         </sn-form-item>
-        <sn-button type="primary" :loading="loading" @click="handleSubmit">
-          Submit
-        </sn-button>
+        <sn-button type="primary" :loading="loading" @click="handleSubmit"> Submit </sn-button>
       </sn-form>
     </sn-card>
   </view>
@@ -137,13 +133,13 @@ async function handleSubmit() {
 
 **Key differences**:
 
-| Item | Web | uni |
-|---|---|---|
-| Container | `<div>` | `<view>` |
-| Component prefix | `SnButton` / `SnCard` | `sn-button` / `sn-card` |
-| Component syntax | PascalCase import | kebab-case tag + easycom |
-| Token alias | `--sn-web-*` | `--sn-mp-*` |
-| Unit | px | rpx |
+| Item             | Web                   | uni                      |
+| ---------------- | --------------------- | ------------------------ |
+| Container        | `<div>`               | `<view>`                 |
+| Component prefix | `SnButton` / `SnCard` | `sn-button` / `sn-card`  |
+| Component syntax | PascalCase import     | kebab-case tag + easycom |
+| Token alias      | `--sn-web-*`          | `--sn-mp-*`              |
+| Unit             | px                    | rpx                      |
 
 ---
 
@@ -166,12 +162,12 @@ prototype/
 ```vue
 <!-- Web App.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import HomePage from './pages/HomePage.vue'
-import ListPage from './pages/ListPage.vue'
+import { ref } from 'vue';
+import HomePage from './pages/HomePage.vue';
+import ListPage from './pages/ListPage.vue';
 
-const pages = { home: HomePage, list: ListPage }
-const current = ref<'home' | 'list'>('home')
+const pages = { home: HomePage, list: ListPage };
+const current = ref<'home' | 'list'>('home');
 </script>
 
 <template>
@@ -182,12 +178,12 @@ const current = ref<'home' | 'list'>('home')
 ```vue
 <!-- uni App.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import HomePage from './pages/home.vue'
-import ListPage from './pages/list.vue'
+import { ref } from 'vue';
+import HomePage from './pages/home.vue';
+import ListPage from './pages/list.vue';
 
-const pages = { home: HomePage, app: ListPage }
-const current = ref<'home' | 'list'>('home')
+const pages = { home: HomePage, app: ListPage };
+const current = ref<'home' | 'list'>('home');
 </script>
 
 <template>
@@ -223,53 +219,57 @@ AI self-check after output:
 
 Add engineering code on top of Web prototype:
 
-| Prototype part | Application addition |
-|---|---|
-| `<script setup>` state | Pinia Store (`defineStore` + state / getters / actions) |
-| `setTimeout` simulation | Real API layer (`fetch` + TS types) |
-| Single file | Multi-file (router / views / components / api / types) |
-| No router | Vue Router |
-| No error handling | Error boundary + Toast |
+| Prototype part          | Application addition                                    |
+| ----------------------- | ------------------------------------------------------- |
+| `<script setup>` state  | Pinia Store (`defineStore` + state / getters / actions) |
+| `setTimeout` simulation | Real API layer (`fetch` + TS types)                     |
+| Single file             | Multi-file (router / views / components / api / types)  |
+| No router               | Vue Router                                              |
+| No error handling       | Error boundary + Toast                                  |
 
 Pinia Store convention:
 
 ```ts
 // stores/user.store.ts
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import type { User } from '../types/user.types'
-import { fetchUser } from '../api/user.api'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import type { User } from '../types/user.types';
+import { fetchUser } from '../api/user.api';
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<User | null>(null)
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-  const isLoggedIn = computed(() => user.value !== null)
+  const user = ref<User | null>(null);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+  const isLoggedIn = computed(() => user.value !== null);
 
   async function loadUser(id: string) {
-    loading.value = true
-    error.value = null
-    try { user.value = await fetchUser(id) }
-    catch (e) { error.value = 'Load failed, please retry' }
-    finally { loading.value = false }
+    loading.value = true;
+    error.value = null;
+    try {
+      user.value = await fetchUser(id);
+    } catch (e) {
+      error.value = 'Load failed, please retry';
+    } finally {
+      loading.value = false;
+    }
   }
 
-  return { user, loading, error, isLoggedIn, loadUser }
-})
+  return { user, loading, error, isLoggedIn, loadUser };
+});
 ```
 
 API layer:
 
 ```ts
 // api/user.api.ts
-import type { User } from '../types/user.types'
+import type { User } from '../types/user.types';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
 export async function fetchUser(id: string): Promise<User> {
-  const res = await fetch(`${BASE_URL}/users/${id}`)
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return res.json() as Promise<User>
+  const res = await fetch(`${BASE_URL}/users/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<User>;
 }
 ```
 
@@ -279,13 +279,13 @@ export async function fetchUser(id: string): Promise<User> {
 
 Add uni engineering code on top of uni prototype:
 
-| Prototype part | Application addition |
-|---|---|
-| `<script setup>` state | `useXxxStore` pattern or page-local ref |
-| `setTimeout` simulation | Real `uni.request` / `wx.request` |
-| Single file | `pages/{name}/index.vue` + `pages.json` registration |
-| No router | `pages.json` route config |
-| No error handling | `uni.showToast` / `uni.showModal` |
+| Prototype part          | Application addition                                 |
+| ----------------------- | ---------------------------------------------------- |
+| `<script setup>` state  | `useXxxStore` pattern or page-local ref              |
+| `setTimeout` simulation | Real `uni.request` / `wx.request`                    |
+| Single file             | `pages/{name}/index.vue` + `pages.json` registration |
+| No router               | `pages.json` route config                            |
+| No error handling       | `uni.showToast` / `uni.showModal`                    |
 
 ```json
 // src/pages.json

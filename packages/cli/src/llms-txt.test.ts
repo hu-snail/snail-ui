@@ -2,14 +2,14 @@
  * llms-txt generator unit tests.
  */
 
-import { describe, it, expect } from 'vitest'
-import { parseAiDescription } from './llms-txt.js'
+import { describe, it, expect } from 'vitest';
+import { parseAiDescription } from './llms-txt.js';
 
 // Note: pipes inside TypeScript union types are escaped with `\|` because the
 // sample is a real Markdown table. We build the string by joining literal
 // segments to avoid the `\|` regex escape tripping ESLint's no-useless-escape.
-const PIPE = '|'
-const BACKSLASH = '\\'
+const PIPE = '|';
+const BACKSLASH = '\\';
 const SAMPLE_BUTTON_MD = [
   '# SnButton — AI-Friendly Component Description',
   '',
@@ -44,43 +44,43 @@ const SAMPLE_BUTTON_MD = [
   `${PIPE}---${PIPE}---${PIPE}`,
   `${PIPE} --sn-color-action-primary ${PIPE} action primary ${PIPE}`,
   '',
-].join('\n')
+].join('\n');
 
 describe('parseAiDescription', () => {
   it('extracts description from blockquote', () => {
-    const parsed = parseAiDescription(SAMPLE_BUTTON_MD)
-    expect(parsed.description).toContain('Primary button')
-  })
+    const parsed = parseAiDescription(SAMPLE_BUTTON_MD);
+    expect(parsed.description).toContain('Primary button');
+  });
 
   it('extracts props', () => {
-    const parsed = parseAiDescription(SAMPLE_BUTTON_MD)
-    expect(parsed.props).toHaveLength(2)
-    expect(parsed.props[0]).toEqual({ name: 'type', type: "'primary' | 'default'" })
-  })
+    const parsed = parseAiDescription(SAMPLE_BUTTON_MD);
+    expect(parsed.props).toHaveLength(2);
+    expect(parsed.props[0]).toEqual({ name: 'type', type: "'primary' | 'default'" });
+  });
 
   it('extracts events', () => {
-    const parsed = parseAiDescription(SAMPLE_BUTTON_MD)
-    expect(parsed.events).toHaveLength(1)
-    expect(parsed.events[0]?.name).toBe('click')
-  })
+    const parsed = parseAiDescription(SAMPLE_BUTTON_MD);
+    expect(parsed.events).toHaveLength(1);
+    expect(parsed.events[0]?.name).toBe('click');
+  });
 
   it('extracts slots', () => {
-    const parsed = parseAiDescription(SAMPLE_BUTTON_MD)
-    expect(parsed.slots).toContain('default')
-  })
+    const parsed = parseAiDescription(SAMPLE_BUTTON_MD);
+    expect(parsed.slots).toContain('default');
+  });
 
   it('extracts tokens', () => {
-    const parsed = parseAiDescription(SAMPLE_BUTTON_MD)
-    expect(parsed.tokens).toContain('--sn-color-action-primary')
-  })
+    const parsed = parseAiDescription(SAMPLE_BUTTON_MD);
+    expect(parsed.tokens).toContain('--sn-color-action-primary');
+  });
 
   it('handles empty input', () => {
-    const parsed = parseAiDescription('')
-    expect(parsed.props).toEqual([])
-    expect(parsed.events).toEqual([])
-    expect(parsed.slots).toEqual([])
-    expect(parsed.tokens).toEqual([])
-  })
+    const parsed = parseAiDescription('');
+    expect(parsed.props).toEqual([]);
+    expect(parsed.events).toEqual([]);
+    expect(parsed.slots).toEqual([]);
+    expect(parsed.tokens).toEqual([]);
+  });
 
   // Multi-component folders title their tables with the component name
   // (`## SnCollapse Props`, `## SnDrawerContent Events`). The section keyword
@@ -104,13 +104,13 @@ describe('parseAiDescription', () => {
       `${PIPE} Name ${PIPE} Description ${PIPE}`,
       `${PIPE}---${PIPE}---${PIPE}`,
       `${PIPE} header ${PIPE} Header row. ${PIPE}`,
-    ].join('\n')
-    const parsed = parseAiDescription(md)
+    ].join('\n');
+    const parsed = parseAiDescription(md);
 
-    expect(parsed.props.map((p) => p.name)).toEqual(['accordion'])
-    expect(parsed.events.map((e) => e.name)).toEqual(['toggle'])
-    expect(parsed.slots).toEqual(['header'])
-  })
+    expect(parsed.props.map((p) => p.name)).toEqual(['accordion']);
+    expect(parsed.events.map((e) => e.name)).toEqual(['toggle']);
+    expect(parsed.slots).toEqual(['header']);
+  });
 
   it('does not treat unrelated headings as sections', () => {
     const md = [
@@ -119,8 +119,8 @@ describe('parseAiDescription', () => {
       `${PIPE} Name ${PIPE} Description ${PIPE}`,
       `${PIPE}---${PIPE}---${PIPE}`,
       `${PIPE} notAProp ${PIPE} Should be ignored. ${PIPE}`,
-    ].join('\n')
+    ].join('\n');
 
-    expect(parseAiDescription(md).props).toEqual([])
-  })
-})
+    expect(parseAiDescription(md).props).toEqual([]);
+  });
+});

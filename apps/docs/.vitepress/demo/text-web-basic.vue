@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnText — basic + six types. */
-import { SnText } from '@snui/vue-web'
+import { SnText } from '@snui/vue-web';
 </script>
 
 <template>
@@ -15,5 +15,10 @@ import { SnText } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
 </style>

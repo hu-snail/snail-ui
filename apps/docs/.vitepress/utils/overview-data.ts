@@ -5,19 +5,19 @@
 
 export interface OverviewItem {
   /** 组件名（sn-xxx）。 */
-  name: string
+  name: string;
   /** 中文名。 */
-  title: string
+  title: string;
   /** 一句话定位。 */
-  desc: string
+  desc: string;
 }
 
 export interface OverviewGroup {
   /** 分组 key（chips 过滤用）。 */
-  key: string
+  key: string;
   /** 分组标题（完整显示，不省略）。 */
-  label: string
-  items: OverviewItem[]
+  label: string;
+  items: OverviewItem[];
 }
 
 export const OVERVIEW_GROUPS: OverviewGroup[] = [
@@ -145,6 +145,6 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-typing', title: '输入中', desc: '聊天输入中跳动圆点' },
     ],
   },
-]
+];
 
-export const OVERVIEW_TOTAL = OVERVIEW_GROUPS.reduce((sum, group) => sum + group.items.length, 0)
+export const OVERVIEW_TOTAL = OVERVIEW_GROUPS.reduce((sum, group) => sum + group.items.length, 0);

@@ -64,7 +64,13 @@ function skipParens(s: string, openIdx: number): number {
 }
 
 function parseCompound(input: string): ParsedCompound {
-  const out: ParsedCompound = { tag: null, classes: [], hasAttr: false, pseudos: [], pseudoEls: [] };
+  const out: ParsedCompound = {
+    tag: null,
+    classes: [],
+    hasAttr: false,
+    pseudos: [],
+    pseudoEls: [],
+  };
   let i = 0;
   while (i < input.length) {
     const c: string = input.charAt(i);
@@ -173,18 +179,31 @@ function splitComplex(sel: string): ComplexPart[] {
 
 function decideSelector(rawSelector: string): SelectorDecision {
   const parts: ComplexPart[] = splitComplex(rawSelector);
-  if (parts.length === 0) return { action: 'drop', kind: 'tag-only-selector', detail: `empty selector "${rawSelector}"` };
+  if (parts.length === 0)
+    return { action: 'drop', kind: 'tag-only-selector', detail: `empty selector "${rawSelector}"` };
   const parsed = parts.map((p) => parseCompound(p.compoundStr));
   for (let idx = 0; idx < parsed.length; idx++) {
     const c: ParsedCompound = parsed[idx]!;
     if (c.hasAttr)
-      return { action: 'drop', kind: 'attribute-selector', detail: `attribute selector in "${rawSelector}"` };
+      return {
+        action: 'drop',
+        kind: 'attribute-selector',
+        detail: `attribute selector in "${rawSelector}"`,
+      };
     if (c.pseudoEls.length > 0)
-      return { action: 'drop', kind: 'pseudo-element', detail: `pseudo-element in "${rawSelector}"` };
+      return {
+        action: 'drop',
+        kind: 'pseudo-element',
+        detail: `pseudo-element in "${rawSelector}"`,
+      };
     if (c.pseudos.length > 0)
       return { action: 'drop', kind: 'pseudo-class', detail: `pseudo-class in "${rawSelector}"` };
     if (c.classes.length === 0)
-      return { action: 'drop', kind: 'tag-only-selector', detail: `tag-only selector "${rawSelector}"` };
+      return {
+        action: 'drop',
+        kind: 'tag-only-selector',
+        detail: `tag-only selector "${rawSelector}"`,
+      };
   }
   const rebuilt: string[] = parsed.map((c) => `.${c.classes.join('.')}`);
   if (parsed.length === 1) return { action: 'keep', selector: rebuilt[0]! };
@@ -202,14 +221,20 @@ function decideSelector(rawSelector: string): SelectorDecision {
     };
   }
   const comb: string = second.combinator ?? ' ';
-  const kind: IssueKind = comb === '+' || comb === '~' ? 'combinator-unsupported' : 'combinator-unsupported';
-  return { action: 'drop', kind, detail: `selector "${rawSelector}" (${parsed.length} levels, "${comb}")` };
+  const kind: IssueKind =
+    comb === '+' || comb === '~' ? 'combinator-unsupported' : 'combinator-unsupported';
+  return {
+    action: 'drop',
+    kind,
+    detail: `selector "${rawSelector}" (${parsed.length} levels, "${comb}")`,
+  };
 }
 
 function insideKeyframes(rule: Rule): boolean {
   let parent: (Rule | AtRule | postcss.Root | undefined) | undefined = rule.parent;
   while (parent !== undefined && parent.type !== 'root') {
-    if (parent.type === 'atrule' && /^(?:-webkit-)?keyframes$/.test((parent as AtRule).name)) return true;
+    if (parent.type === 'atrule' && /^(?:-webkit-)?keyframes$/.test((parent as AtRule).name))
+      return true;
     parent = parent.parent;
   }
   return false;
@@ -276,7 +301,10 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
     root.walkRules((r) => {
       if (insideKeyframes(r)) return;
       const parts: ComplexPart[] = splitComplex(r.selector);
-      if (parts.length === 1 && parseCompound(parts[0]!.compoundStr).classes.join('.') === targetClass) {
+      if (
+        parts.length === 1 &&
+        parseCompound(parts[0]!.compoundStr).classes.join('.') === targetClass
+      ) {
         r.append({ prop, value: fallbackLess });
         return false;
       }
@@ -300,7 +328,10 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
       containerDeclCache.set(containerSelector, rule);
     }
     const dup = rule.nodes.some(
-      (n) => n.type === 'decl' && (n as postcss.Declaration).prop === prop && (n as postcss.Declaration).value === value,
+      (n) =>
+        n.type === 'decl' &&
+        (n as postcss.Declaration).prop === prop &&
+        (n as postcss.Declaration).value === value,
     );
     if (!dup) rule.append({ prop, value });
   };
@@ -317,7 +348,10 @@ function transformComponent(root: postcss.Root, file: string, issues: TransformI
       if (decision.action === 'keep') {
         kept.push(decision.selector);
       } else if (decision.action === 'flatten') {
-        flattens.push({ containerSelector: decision.containerSelector, targetClass: decision.targetClass });
+        flattens.push({
+          containerSelector: decision.containerSelector,
+          targetClass: decision.targetClass,
+        });
       } else {
         issues.push({
           file,
@@ -387,7 +421,11 @@ function transformTokens(root: postcss.Root, file: string, issues: TransformIssu
     }
     rule.selector = rewritten.join(', ');
   });
-  issues.push({ file, kind: 'patch', detail: 'token selectors rewritten to class-only (.sn-theme-root)' });
+  issues.push({
+    file,
+    kind: 'patch',
+    detail: 'token selectors rewritten to class-only (.sn-theme-root)',
+  });
 }
 
 export function transformCss(css: string, mode: CssMode, file: string): CssTransformResult {

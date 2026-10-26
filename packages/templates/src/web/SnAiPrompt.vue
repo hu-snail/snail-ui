@@ -21,9 +21,9 @@
  * Usage:
  *   <SnAiPrompt v-model="text" :models="models" @send="onSend" @stop="onStop" />
  */
-import { computed, ref } from 'vue'
-import { SnDropdown, SnIcon, SnImage, SnSlider, SnTooltip } from '@snui/vue-web'
-import type { IconComponent } from '@snui/vue-web'
+import { computed, ref } from 'vue';
+import { SnDropdown, SnIcon, SnImage, SnSlider, SnTooltip } from '@snui/vue-web';
+import type { IconComponent } from '@snui/vue-web';
 import {
   AgentIcon,
   ChevronDownIcon,
@@ -37,7 +37,7 @@ import {
   StopIcon,
   ThinkingIcon,
   TrashIcon,
-} from '../shared/icons'
+} from '../shared/icons';
 import {
   DEFAULT_PERMISSION_OPTIONS,
   THINKING_LEVELS,
@@ -45,7 +45,7 @@ import {
   formatContextWindow,
   nextId,
   thinkingBudget,
-} from '../shared/stream'
+} from '../shared/stream';
 import type {
   SnAiAgent,
   SnAiAttachment,
@@ -54,49 +54,49 @@ import type {
   SnAiPermissionOption,
   SnAiQueuedTurn,
   SnAiThinkingLevel,
-} from '../shared/types'
-import { toIconComponent } from './icon-adapter'
+} from '../shared/types';
+import { toIconComponent } from './icon-adapter';
 
-defineOptions({ name: 'SnAiPrompt' })
+defineOptions({ name: 'SnAiPrompt' });
 
 const props = withDefaults(
   defineProps<{
     /** Prompt text. Use with `update:modelValue`. */
-    modelValue?: string | undefined
+    modelValue?: string | undefined;
     /** Attachments already accepted for this turn. */
-    attachments?: SnAiAttachment[] | undefined
+    attachments?: SnAiAttachment[] | undefined;
     /** Agents offered by the agent selector. */
-    agents?: SnAiAgent[] | undefined
+    agents?: SnAiAgent[] | undefined;
     /** Currently selected agent id. */
-    agentId?: string | undefined
+    agentId?: string | undefined;
     /** Permission scopes offered; defaults to the four standard scopes. */
-    permissions?: SnAiPermissionOption[] | undefined
+    permissions?: SnAiPermissionOption[] | undefined;
     /** Currently selected permission scope. */
-    permission?: SnAiPermission | undefined
+    permission?: SnAiPermission | undefined;
     /** Models offered by the model picker. */
-    models?: SnAiModel[] | undefined
+    models?: SnAiModel[] | undefined;
     /** Currently selected model id. */
-    modelId?: string | undefined
+    modelId?: string | undefined;
     /** Reasoning budget tier. */
-    thinkingLevel?: SnAiThinkingLevel | undefined
+    thinkingLevel?: SnAiThinkingLevel | undefined;
     /** A turn is running: the send button becomes stop. */
-    active?: boolean | undefined
+    active?: boolean | undefined;
     /** Turns accepted but not yet dispatched. */
-    queued?: SnAiQueuedTurn[] | undefined
+    queued?: SnAiQueuedTurn[] | undefined;
     /** Disable the whole composer. */
-    disabled?: boolean | undefined
+    disabled?: boolean | undefined;
     /** Placeholder for the text area. */
-    placeholder?: string | undefined
+    placeholder?: string | undefined;
     /** Maximum prompt length. */
-    maxlength?: number | undefined
+    maxlength?: number | undefined;
     /** Accept filter for the hidden file input. */
-    accept?: string | undefined
+    accept?: string | undefined;
     /** Offer the reasoning-budget slider. */
-    showThinking?: boolean | undefined
+    showThinking?: boolean | undefined;
     /** Render the pending queue above the toolbar. */
-    showQueue?: boolean | undefined
+    showQueue?: boolean | undefined;
     /** Number of visible text rows before the area scrolls. */
-    rows?: number | undefined
+    rows?: number | undefined;
   }>(),
   {
     modelValue: undefined,
@@ -118,24 +118,24 @@ const props = withDefaults(
     showQueue: true,
     rows: 3,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-  (e: 'update:attachments', value: SnAiAttachment[]): void
-  (e: 'update:agentId', value: string): void
-  (e: 'update:permission', value: SnAiPermission): void
-  (e: 'update:modelId', value: string): void
-  (e: 'update:thinkingLevel', value: SnAiThinkingLevel): void
+  (e: 'update:modelValue', value: string): void;
+  (e: 'update:attachments', value: SnAiAttachment[]): void;
+  (e: 'update:agentId', value: string): void;
+  (e: 'update:permission', value: SnAiPermission): void;
+  (e: 'update:modelId', value: string): void;
+  (e: 'update:thinkingLevel', value: SnAiThinkingLevel): void;
   /** A composed turn is ready to run. */
-  (e: 'send', turn: SnAiQueuedTurn): void
+  (e: 'send', turn: SnAiQueuedTurn): void;
   /** Stop the running turn. */
-  (e: 'stop'): void
+  (e: 'stop'): void;
   /** Remove a queued turn. */
-  (e: 'remove-queued', id: string): void
+  (e: 'remove-queued', id: string): void;
   /** The user picked files; the host owns the actual upload. */
-  (e: 'attach', files: File[]): void
-}>()
+  (e: 'attach', files: File[]): void;
+}>();
 
 const icons = {
   paperclip: toIconComponent(PaperclipIcon),
@@ -150,60 +150,60 @@ const icons = {
   file: toIconComponent(FileIcon),
   image: toIconComponent(ImageIcon),
   trash: toIconComponent(TrashIcon),
-}
+};
 
 /** The textarea element, so the file picker can be opened from its button. */
-const fileInputRef = ref<HTMLInputElement | null>(null)
+const fileInputRef = ref<HTMLInputElement | null>(null);
 /** Whether the attachment panel is open. */
-const attachOpen = ref(false)
+const attachOpen = ref(false);
 
-const attachments = computed<SnAiAttachment[]>(() => props.attachments ?? [])
-const agents = computed<SnAiAgent[]>(() => props.agents ?? [])
-const models = computed<SnAiModel[]>(() => props.models ?? [])
-const queued = computed<SnAiQueuedTurn[]>(() => props.queued ?? [])
-const permissionOptions = computed<SnAiPermissionOption[]>(
-  () => [...(props.permissions ?? DEFAULT_PERMISSION_OPTIONS)],
-)
+const attachments = computed<SnAiAttachment[]>(() => props.attachments ?? []);
+const agents = computed<SnAiAgent[]>(() => props.agents ?? []);
+const models = computed<SnAiModel[]>(() => props.models ?? []);
+const queued = computed<SnAiQueuedTurn[]>(() => props.queued ?? []);
+const permissionOptions = computed<SnAiPermissionOption[]>(() => [
+  ...(props.permissions ?? DEFAULT_PERMISSION_OPTIONS),
+]);
 
-const text = computed(() => props.modelValue ?? '')
-const isDisabled = computed(() => props.disabled === true)
-const isActive = computed(() => props.active === true)
+const text = computed(() => props.modelValue ?? '');
+const isDisabled = computed(() => props.disabled === true);
+const isActive = computed(() => props.active === true);
 
 /** Whether the composer has anything worth sending. */
-const canSend = computed(() => text.value.trim().length > 0 || attachments.value.length > 0)
+const canSend = computed(() => text.value.trim().length > 0 || attachments.value.length > 0);
 
-const selectedAgent = computed(() => agents.value.find((agent) => agent.id === props.agentId))
-const selectedModel = computed(() => models.value.find((model) => model.id === props.modelId))
+const selectedAgent = computed(() => agents.value.find((agent) => agent.id === props.agentId));
+const selectedModel = computed(() => models.value.find((model) => model.id === props.modelId));
 const selectedPermission = computed(() =>
   permissionOptions.value.find((option) => option.value === props.permission),
-)
+);
 
 /** The reasoning tier, resolved to a concrete value for the slider index. */
-const thinkingLevel = computed<SnAiThinkingLevel>(() => props.thinkingLevel ?? 'off')
-const thinkingIndex = computed(() => THINKING_LEVELS.indexOf(thinkingLevel.value))
+const thinkingLevel = computed<SnAiThinkingLevel>(() => props.thinkingLevel ?? 'off');
+const thinkingIndex = computed(() => THINKING_LEVELS.indexOf(thinkingLevel.value));
 /** The picked model cannot reason → the slider is not offered at all. */
 const thinkingAvailable = computed(
   () => props.showThinking === true && selectedModel.value?.supportsThinking !== false,
-)
+);
 const thinkingLabel = computed(() => {
-  const level = thinkingLevel.value
+  const level = thinkingLevel.value;
   const labels: Record<SnAiThinkingLevel, string> = {
     off: '关闭',
     low: '轻量',
     medium: '中等',
     high: '深入',
     max: '极限',
-  }
-  const budget = thinkingBudget(level)
-  return budget > 0 ? `${labels[level]} · ${budget} tokens` : labels[level]
-})
+  };
+  const budget = thinkingBudget(level);
+  return budget > 0 ? `${labels[level]} · ${budget} tokens` : labels[level];
+});
 
 /* ── Text editing ────────────────────────────────────────────────────────── */
 
 function onInput(event: Event): void {
-  const target = event.target as HTMLTextAreaElement | null
-  if (!target) return
-  emit('update:modelValue', target.value)
+  const target = event.target as HTMLTextAreaElement | null;
+  if (!target) return;
+  emit('update:modelValue', target.value);
 }
 
 /**
@@ -212,24 +212,24 @@ function onInput(event: Event): void {
  * Chinese candidate would submit a half-typed word.
  */
 function onKeydown(event: KeyboardEvent): void {
-  if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return
-  event.preventDefault()
-  submit()
+  if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+  event.preventDefault();
+  submit();
 }
 
 /* ── Attachment panel ────────────────────────────────────────────────────── */
 
 function openFilePicker(): void {
-  attachOpen.value = false
-  fileInputRef.value?.click()
+  attachOpen.value = false;
+  fileInputRef.value?.click();
 }
 
 function onFilesPicked(event: Event): void {
-  const input = event.target as HTMLInputElement | null
-  if (!input?.files?.length) return
-  emit('attach', Array.from(input.files))
+  const input = event.target as HTMLInputElement | null;
+  if (!input?.files?.length) return;
+  emit('attach', Array.from(input.files));
   // Reset so picking the same file twice fires `change` again.
-  input.value = ''
+  input.value = '';
 }
 
 /**
@@ -241,36 +241,36 @@ function onFilesPicked(event: Event): void {
  * A text-only paste is left alone so the textarea inserts it as usual.
  */
 function onPaste(event: ClipboardEvent): void {
-  const items = event.clipboardData?.items
-  if (!items) return
+  const items = event.clipboardData?.items;
+  if (!items) return;
 
-  const files: File[] = []
+  const files: File[] = [];
   for (const item of items) {
-    if (item.kind !== 'file') continue
-    const file = item.getAsFile()
-    if (file) files.push(file)
+    if (item.kind !== 'file') continue;
+    const file = item.getAsFile();
+    if (file) files.push(file);
   }
-  if (!files.length) return
+  if (!files.length) return;
 
-  event.preventDefault()
-  emit('attach', files)
+  event.preventDefault();
+  emit('attach', files);
 }
 
 function removeAttachment(id: string): void {
   emit(
     'update:attachments',
     attachments.value.filter((attachment) => attachment.id !== id),
-  )
+  );
 }
 
 /** Attachment chips use the image glyph for image MIME types, file otherwise. */
 function attachmentIcon(attachment: SnAiAttachment): IconComponent {
-  return attachment.mime?.startsWith('image/') ? icons.image : icons.file
+  return attachment.mime?.startsWith('image/') ? icons.image : icons.file;
 }
 
 function attachmentMeta(attachment: SnAiAttachment): string {
-  const size = formatBytes(attachment.size)
-  return [attachment.mime ?? '', size].filter(Boolean).join(' · ')
+  const size = formatBytes(attachment.size);
+  return [attachment.mime ?? '', size].filter(Boolean).join(' · ');
 }
 
 /**
@@ -280,35 +280,35 @@ function attachmentMeta(attachment: SnAiAttachment): string {
  * it has finished uploading, so a still-uploading chip simply has no preview.
  */
 function attachmentPreview(attachment: SnAiAttachment): 'image' | 'link' | 'none' {
-  if (!attachment.url) return 'none'
-  return attachment.mime?.startsWith('image/') ? 'image' : 'link'
+  if (!attachment.url) return 'none';
+  return attachment.mime?.startsWith('image/') ? 'image' : 'link';
 }
 
 /* ── Selectors ───────────────────────────────────────────────────────────── */
 
 function pickAgent(id: string): void {
-  emit('update:agentId', id)
+  emit('update:agentId', id);
 }
 
 function pickPermission(value: SnAiPermission): void {
-  emit('update:permission', value)
+  emit('update:permission', value);
 }
 
 function pickModel(id: string): void {
-  emit('update:modelId', id)
+  emit('update:modelId', id);
 }
 
 /** Slider index → tier. Out-of-range indices clamp to the ends. */
 function onThinkingInput(index: number): void {
-  const level = THINKING_LEVELS[index] ?? THINKING_LEVELS[0]
-  if (level) emit('update:thinkingLevel', level)
+  const level = THINKING_LEVELS[index] ?? THINKING_LEVELS[0];
+  if (level) emit('update:thinkingLevel', level);
 }
 
 /* ── Submit / stop / queue ───────────────────────────────────────────────── */
 
 /** Compose the current draft into a queued turn and hand it to the host. */
 function submit(): void {
-  if (isDisabled.value || isActive.value || !canSend.value) return
+  if (isDisabled.value || isActive.value || !canSend.value) return;
   emit('send', {
     id: nextId('sn-ai-turn'),
     text: text.value.trim(),
@@ -318,33 +318,37 @@ function submit(): void {
     modelId: props.modelId,
     thinkingLevel: thinkingLevel.value,
     createdAt: Date.now(),
-  })
-  emit('update:modelValue', '')
-  emit('update:attachments', [])
+  });
+  emit('update:modelValue', '');
+  emit('update:attachments', []);
 }
 
 function onPrimaryAction(): void {
   if (isActive.value) {
-    emit('stop')
-    return
+    emit('stop');
+    return;
   }
-  submit()
+  submit();
 }
 
 function removeQueued(id: string): void {
-  emit('remove-queued', id)
+  emit('remove-queued', id);
 }
 
 /** One-line preview of a queued turn's text. */
 function queuePreview(turn: SnAiQueuedTurn): string {
-  const flat = turn.text.replace(/\s+/g, ' ').trim()
-  if (flat.length <= 48) return flat
-  return `${flat.slice(0, 48)}…`
+  const flat = turn.text.replace(/\s+/g, ' ').trim();
+  if (flat.length <= 48) return flat;
+  return `${flat.slice(0, 48)}…`;
 }
 </script>
 
 <template>
-  <div class="sn-ai-prompt" :class="{ 'sn-ai-prompt--disabled': isDisabled }" data-snui-component="ai-prompt">
+  <div
+    class="sn-ai-prompt"
+    :class="{ 'sn-ai-prompt--disabled': isDisabled }"
+    data-snui-component="ai-prompt"
+  >
     <!-- Pending queue -->
     <ul v-if="showQueue && queued.length" class="sn-ai-prompt__queue" aria-label="待发送消息队列">
       <slot name="queue" :turns="queued" :remove="removeQueued">
@@ -446,11 +450,21 @@ function queuePreview(turn: SnAiQueuedTurn): string {
             </button>
             <Transition name="sn-ai-prompt-pop">
               <div v-if="attachOpen" class="sn-ai-prompt__attach-panel" role="menu">
-                <button type="button" class="sn-ai-prompt__attach-item" role="menuitem" @click="openFilePicker">
+                <button
+                  type="button"
+                  class="sn-ai-prompt__attach-item"
+                  role="menuitem"
+                  @click="openFilePicker"
+                >
                   <SnIcon :icon="icons.image" :size="14" />
                   <span>上传图片</span>
                 </button>
-                <button type="button" class="sn-ai-prompt__attach-item" role="menuitem" @click="openFilePicker">
+                <button
+                  type="button"
+                  class="sn-ai-prompt__attach-item"
+                  role="menuitem"
+                  @click="openFilePicker"
+                >
                   <SnIcon :icon="icons.file" :size="14" />
                   <span>上传文档</span>
                 </button>
@@ -491,7 +505,11 @@ function queuePreview(turn: SnAiQueuedTurn): string {
             "
             @select="pickAgent(String($event))"
           >
-            <button type="button" class="sn-ai-prompt__tool sn-ai-prompt__tool--wide" :disabled="isDisabled">
+            <button
+              type="button"
+              class="sn-ai-prompt__tool sn-ai-prompt__tool--wide"
+              :disabled="isDisabled"
+            >
               <SnIcon :icon="icons.agent" :size="14" />
               <span>{{ selectedAgent?.name ?? '选择智能体' }}</span>
               <SnIcon :icon="icons.chevron" :size="12" />
@@ -538,7 +556,11 @@ function queuePreview(turn: SnAiQueuedTurn): string {
             "
             @select="pickModel(String($event))"
           >
-            <button type="button" class="sn-ai-prompt__tool sn-ai-prompt__tool--wide" :disabled="isDisabled">
+            <button
+              type="button"
+              class="sn-ai-prompt__tool sn-ai-prompt__tool--wide"
+              :disabled="isDisabled"
+            >
               <SnIcon :icon="icons.model" :size="14" />
               <span>{{ selectedModel?.name ?? '选择模型' }}</span>
               <SnIcon :icon="icons.chevron" :size="12" />
@@ -871,7 +893,9 @@ function queuePreview(turn: SnAiQueuedTurn): string {
 
 .sn-ai-prompt-pop-enter-active,
 .sn-ai-prompt-pop-leave-active {
-  transition: opacity 0.12s ease, transform 0.12s ease;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
 }
 
 .sn-ai-prompt-pop-enter-from,
@@ -893,7 +917,9 @@ function queuePreview(turn: SnAiQueuedTurn): string {
   background-color: var(--sn-web-color-action-primary);
   color: var(--sn-web-color-text-on-primary);
   cursor: pointer;
-  transition: background-color 0.15s, opacity 0.15s;
+  transition:
+    background-color 0.15s,
+    opacity 0.15s;
 }
 
 .sn-ai-prompt__primary:hover:not(:disabled) {

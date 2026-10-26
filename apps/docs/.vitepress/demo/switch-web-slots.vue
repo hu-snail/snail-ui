@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnSwitch — checked / unchecked rail slots. */
-import { ref } from 'vue'
-import { SnSwitch } from '@snui/vue-web'
-const v = ref(true)
+import { ref } from 'vue';
+import { SnSwitch } from '@snui/vue-web';
+const v = ref(true);
 </script>
 
 <template>
@@ -19,5 +19,9 @@ const v = ref(true)
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 16px; align-items: center; }
+.demo-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
 </style>

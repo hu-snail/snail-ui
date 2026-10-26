@@ -43,74 +43,82 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, markRaw, nextTick, onBeforeUnmount, ref, watch } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { X as XIcon } from '../sn-icon/sn-icon-set'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
+import { computed, markRaw, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 
-defineOptions({ name: 'SnPopover' })
+defineOptions({ name: 'SnPopover' });
 
 /** Bubble anchor. Mirrors `wd-popover` `placement` (12 directions). */
 type PopoverPlacement =
-  | 'top' | 'top-start' | 'top-end'
-  | 'bottom' | 'bottom-start' | 'bottom-end'
-  | 'left' | 'left-start' | 'left-end'
-  | 'right' | 'right-start' | 'right-end'
+  | 'top'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left'
+  | 'left-start'
+  | 'left-end'
+  | 'right'
+  | 'right-start'
+  | 'right-end';
 
 /** Bubble display mode. */
-type PopoverMode = 'normal' | 'menu'
+type PopoverMode = 'normal' | 'menu';
 
 /**
  * Gap between trigger and bubble. `number` applies to both axes, `[x, y]`
  * sets them individually, `{ x, y }` sets either one.
  */
-type PopoverOffset = number | number[] | { x?: number, y?: number }
+type PopoverOffset = number | number[] | { x?: number; y?: number };
 
 /** One row of the `menu` mode list. */
 export interface SnPopoverMenuItem {
   /** Row label. */
-  content?: string
+  content?: string;
   /** `sn-icon` registry name, or an image URL. */
-  iconClass?: string
+  iconClass?: string;
   /** Disable the row — taps are ignored. */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
-const ANIMATION_DURATION = 150
+const ANIMATION_DURATION = 150;
 
 const props = withDefaults(
   defineProps<{
     /** Whether the bubble is shown (v-model). */
-    modelValue?: boolean
+    modelValue?: boolean;
     /** Bubble body: a string in `normal` mode, a list in `menu` mode. */
-    content?: string | SnPopoverMenuItem[]
+    content?: string | SnPopoverMenuItem[];
     /** Bubble display mode. */
-    mode?: PopoverMode
+    mode?: PopoverMode;
     /** Bubble anchor. */
-    placement?: PopoverPlacement
+    placement?: PopoverPlacement;
     /** Gap between trigger and bubble, in design px. */
-    offset?: PopoverOffset
+    offset?: PopoverOffset;
     /** Render the arrow pointing at the trigger. */
-    visibleArrow?: boolean
+    visibleArrow?: boolean;
     /** Disables the trigger — taps are ignored and the bubble stays closed. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Render a close button inside the bubble. */
-    showClose?: boolean
+    showClose?: boolean;
     /** Extra class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /** Extra class on the arrow node. */
-    customArrow?: string
+    customArrow?: string;
     /** Extra class on the bubble node. */
-    customPop?: string
+    customPop?: string;
     /**
      * Accepted for `wd-popover` parity, NOT implemented — miniprogram has no
      * portal host, so the bubble cannot leave the page's document flow.
      */
-    rootPortal?: boolean
+    rootPortal?: boolean;
   }>(),
   {
     modelValue: false,
@@ -127,87 +135,87 @@ const props = withDefaults(
     customPop: '',
     rootPortal: false,
   },
-)
+);
 
 defineSlots<{
   /** Trigger content (the element the bubble points at). */
-  default?(): unknown
+  default?(): unknown;
   /** Custom bubble body; replaces `content`. */
-  content?(): unknown
-}>()
+  content?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: boolean): void
-  (e: 'open'): void
-  (e: 'close'): void
-  (e: 'change', payload: { show: boolean }): void
-  (e: 'menuclick', payload: { item: SnPopoverMenuItem, index: number }): void
-}>()
+  (e: 'update:modelValue', value: boolean): void;
+  (e: 'open'): void;
+  (e: 'close'): void;
+  (e: 'change', payload: { show: boolean }): void;
+  (e: 'menuclick', payload: { item: SnPopoverMenuItem; index: number }): void;
+}>();
 
 /** Bubble node present in the tree (survives the leave leg). */
-const isMounted = ref(props.modelValue)
+const isMounted = ref(props.modelValue);
 /** Target visible state — drives the opacity transition. */
-const isShown = ref(props.modelValue)
+const isShown = ref(props.modelValue);
 
 /** Single pending transition timer (cleared on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 /** Guards against a stale leg finishing after a newer one started. */
-let generation = 0
+let generation = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 async function enter(): Promise<void> {
-  clearTimer()
-  const token = ++generation
-  isMounted.value = true
+  clearTimer();
+  const token = ++generation;
+  isMounted.value = true;
   // One tick so the hidden style is committed before the shown class lands.
-  await nextTick()
-  if (token !== generation) return
-  isShown.value = true
-  emit('open')
-  emit('change', { show: true })
+  await nextTick();
+  if (token !== generation) return;
+  isShown.value = true;
+  emit('open');
+  emit('change', { show: true });
 }
 
 function leave(): void {
-  clearTimer()
-  const token = ++generation
-  isShown.value = false
-  emit('close')
-  emit('change', { show: false })
+  clearTimer();
+  const token = ++generation;
+  isShown.value = false;
+  emit('close');
+  emit('change', { show: false });
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    isMounted.value = false
-  }, ANIMATION_DURATION)
+    timer = null;
+    if (token !== generation) return;
+    isMounted.value = false;
+  }, ANIMATION_DURATION);
 }
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (props.disabled) return
-    if (value) void enter()
-    else leave()
+    if (props.disabled) return;
+    if (value) void enter();
+    else leave();
   },
-)
+);
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Show the bubble and notify the consumer (controlled + uncontrolled). */
 function open(): void {
-  if (props.disabled) return
-  emit('update:modelValue', true)
-  if (!props.modelValue) void enter()
+  if (props.disabled) return;
+  emit('update:modelValue', true);
+  if (!props.modelValue) void enter();
 }
 
 /** Hide the bubble and notify the consumer. */
 function close(): void {
-  emit('update:modelValue', false)
-  if (props.modelValue) leave()
+  emit('update:modelValue', false);
+  if (props.modelValue) leave();
 }
 
 /** Compatibility no-op — see the header note (CSS-driven placement). */
@@ -215,51 +223,51 @@ function updatePosition(): void {
   // Intentionally empty: nothing is measured, so there is nothing to refresh.
 }
 
-defineExpose({ open, close, updatePosition })
+defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
-  if (props.disabled) return
-  if (props.modelValue) close()
-  else open()
+  if (props.disabled) return;
+  if (props.modelValue) close();
+  else open();
 }
 
 function onMenuTap(item: SnPopoverMenuItem, index: number): void {
-  if (item.disabled) return
-  emit('menuclick', { item, index })
+  if (item.disabled) return;
+  emit('menuclick', { item, index });
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
 /** Normalise `offset` into a `{ x, y }` pair of design px. */
-const offsetPair = computed<{ x: number, y: number }>(() => {
-  const value = props.offset
-  if (typeof value === 'number') return { x: value, y: value }
+const offsetPair = computed<{ x: number; y: number }>(() => {
+  const value = props.offset;
+  if (typeof value === 'number') return { x: value, y: value };
   if (Array.isArray(value)) {
-    const x = value[0]
-    const y = value[1]
-    return { x: typeof x === 'number' ? x : 0, y: typeof y === 'number' ? y : 0 }
+    const x = value[0];
+    const y = value[1];
+    return { x: typeof x === 'number' ? x : 0, y: typeof y === 'number' ? y : 0 };
   }
-  return { x: value.x ?? 0, y: value.y ?? 0 }
-})
+  return { x: value.x ?? 0, y: value.y ?? 0 };
+});
 
 /** `menu` mode rows (an empty list in `normal` mode). */
-const menuItems = computed<SnPopoverMenuItem[]>(
-  () => (props.mode === 'menu' && Array.isArray(props.content) ? props.content : []),
-)
+const menuItems = computed<SnPopoverMenuItem[]>(() =>
+  props.mode === 'menu' && Array.isArray(props.content) ? props.content : [],
+);
 
 /** Plain text body for `normal` mode. */
-const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''))
+const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
 
 /** Looks like an image source rather than a registry icon name. */
 function isImageSource(value: string): boolean {
-  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value)
+  return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
 }
 
 /** Registry icon data for a menu row, or `null` when it is an image URL. */
 function resolveRowIcon(icon: string | undefined): IconData | null {
-  if (!icon || isImageSource(icon)) return null
-  const data = resolveIconByName(icon)
-  return data ? markRaw(data) : null
+  if (!icon || isImageSource(icon)) return null;
+  const data = resolveIconByName(icon);
+  return data ? markRaw(data) : null;
 }
 
 const rootClass = computed(() => [
@@ -271,25 +279,21 @@ const rootClass = computed(() => [
     'sn-popover--shown': isShown.value,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const { x, y } = offsetPair.value
-  const base = [`--sn-popover-offset-x: ${x}px`, `--sn-popover-offset-y: ${y}px`].join('; ')
-  return props.customStyle ? `${base}; ${props.customStyle}` : base
-})
+  const { x, y } = offsetPair.value;
+  const base = [`--sn-popover-offset-x: ${x}px`, `--sn-popover-offset-y: ${y}px`].join('; ');
+  return props.customStyle ? `${base}; ${props.customStyle}` : base;
+});
 
-const popClass = computed(() => ['sn-popover__pop', props.customPop])
+const popClass = computed(() => ['sn-popover__pop', props.customPop]);
 
-const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow])
+const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 </script>
 
 <template>
-  <view
-    data-snui-component="popover"
-    :class="rootClass"
-    :style="rootStyle"
-  >
+  <view data-snui-component="popover" :class="rootClass" :style="rootStyle">
     <view
       class="sn-popover__trigger"
       role="button"

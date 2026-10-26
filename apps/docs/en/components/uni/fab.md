@@ -32,52 +32,52 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| active | boolean | false | Whether the menu is expanded (`v-model:active`) |
-| type | 'primary' \| 'success' \| 'info' \| 'warning' \| 'danger' | 'primary' | Color theme |
-| position | FabPosition | 'right-bottom' | Anchor preset (8 options) |
-| draggable | boolean | false | Allow dragging the trigger |
-| direction | 'top' \| 'right' \| 'bottom' \| 'left' | 'top' | Menu expansion direction |
-| disabled | boolean | false | Disable the whole button |
-| inactiveIcon | string | 'plus' | Icon while collapsed |
-| activeIcon | string | 'close' | Icon while expanded |
-| zIndex | number | 99 | Stacking level |
-| gap | SnFabGap | `{ top: 16, right: 16, bottom: 16, left: 16 }` | Inset from each viewport edge |
-| expandable | boolean | true | Expand on tap; `false` emits `click` |
-| top | number | — | Top inset (overrides `gap.top`) |
-| bottom | number | — | Bottom inset (overrides `gap.bottom`) |
-| left | number | — | Left inset (overrides `gap.left`) |
-| right | number | — | Right inset (overrides `gap.right`) |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop         | Type                                                      | Default                                        | Description                                     |
+| ------------ | --------------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------- |
+| active       | boolean                                                   | false                                          | Whether the menu is expanded (`v-model:active`) |
+| type         | 'primary' \| 'success' \| 'info' \| 'warning' \| 'danger' | 'primary'                                      | Color theme                                     |
+| position     | FabPosition                                               | 'right-bottom'                                 | Anchor preset (8 options)                       |
+| draggable    | boolean                                                   | false                                          | Allow dragging the trigger                      |
+| direction    | 'top' \| 'right' \| 'bottom' \| 'left'                    | 'top'                                          | Menu expansion direction                        |
+| disabled     | boolean                                                   | false                                          | Disable the whole button                        |
+| inactiveIcon | string                                                    | 'plus'                                         | Icon while collapsed                            |
+| activeIcon   | string                                                    | 'close'                                        | Icon while expanded                             |
+| zIndex       | number                                                    | 99                                             | Stacking level                                  |
+| gap          | SnFabGap                                                  | `{ top: 16, right: 16, bottom: 16, left: 16 }` | Inset from each viewport edge                   |
+| expandable   | boolean                                                   | true                                           | Expand on tap; `false` emits `click`            |
+| top          | number                                                    | —                                              | Top inset (overrides `gap.top`)                 |
+| bottom       | number                                                    | —                                              | Bottom inset (overrides `gap.bottom`)           |
+| left         | number                                                    | —                                              | Left inset (overrides `gap.left`)               |
+| right        | number                                                    | —                                              | Right inset (overrides `gap.right`)             |
+| customClass  | string                                                    | ''                                             | Custom class for the root node                  |
+| customStyle  | string                                                    | ''                                             | Custom inline style for the root node           |
 
 `SnFabGap` = `{ top?, right?, bottom?, left? }` (px); `FabPosition` = `"left-top" | "right-top" | "left-bottom" | "right-bottom" | "left-center" | "right-center" | "top-center" | "bottom-center"`.
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| update:active | Menu expanded / collapsed | boolean |
-| click | Emitted on tap when `expandable=false` | — |
+| Event         | Description                            | Payload |
+| ------------- | -------------------------------------- | ------- |
+| update:active | Menu expanded / collapsed              | boolean |
+| click         | Emitted on tap when `expandable=false` | —       |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot    | Description                                      |
+| ------- | ------------------------------------------------ |
 | default | Action items rendered inside the expandable menu |
-| trigger | Fully custom trigger content |
+| trigger | Fully custom trigger content                     |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-action-primary | `type="primary"` fill |
-| --sn-mp-color-feedback-success` / `-info` / `-warning` / `-danger | Other type fills |
-| --sn-mp-color-text-on-primary | Trigger icon color |
-| --sn-mp-shadow-lg | Trigger elevation |
-| --sn-mp-radius-full | Trigger shape |
-| --sn-mp-spacing-2` / `--sn-mp-spacing-3 | Menu gap and root gap |
+| Variable                                                    | Purpose               |
+| ----------------------------------------------------------- | --------------------- |
+| --sn-mp-color-action-primary                                | `type="primary"` fill |
+| --sn-mp-color-feedback-success`/`-info`/`-warning`/`-danger | Other type fills      |
+| --sn-mp-color-text-on-primary                               | Trigger icon color    |
+| --sn-mp-shadow-lg                                           | Trigger elevation     |
+| --sn-mp-radius-full                                         | Trigger shape         |
+| --sn-mp-spacing-2`/`--sn-mp-spacing-3                       | Menu gap and root gap |
 
 ## Accessibility
 

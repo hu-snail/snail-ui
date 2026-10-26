@@ -43,18 +43,12 @@ export const UIActionSchema = z
     id: z
       .string()
       .min(1, 'action id must be a non-empty identifier')
-      .regex(
-        ACTION_ID_RE,
-        'action id must be a dotted lowercase identifier (e.g. user.login)',
-      ),
+      .regex(ACTION_ID_RE, 'action id must be a dotted lowercase identifier (e.g. user.login)'),
 
     type: z
       .string()
       .min(1, 'action type must be a non-empty identifier')
-      .regex(
-        ACTION_TYPE_RE,
-        'action type must be a lowercase identifier (e.g. submit, navigate)',
-      ),
+      .regex(ACTION_TYPE_RE, 'action type must be a lowercase identifier (e.g. submit, navigate)'),
 
     params: z.record(z.string(), z.unknown()).optional(),
 

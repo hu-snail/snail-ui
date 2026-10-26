@@ -33,42 +33,42 @@
  *   - 侧边导航 — 用 sn-sidebar
  */
 
-import { computed, useSlots } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import { ArrowLeft } from '../sn-icon/sn-icon-set'
+import { computed, useSlots } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import { ArrowLeft } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnNavbar' })
+defineOptions({ name: 'SnNavbar' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-navbar` 1:1 surface ─────────────────────────────────── */
 
     /** 标题文字。 */
-    title?: string
+    title?: string;
     /** 左侧文案。 */
-    leftText?: string
+    leftText?: string;
     /** 右侧文案。 */
-    rightText?: string
+    rightText?: string;
     /** 是否显示左侧返回箭头。 */
-    leftArrow?: boolean
+    leftArrow?: boolean;
     /** 是否显示下边框。 */
-    bordered?: boolean
+    bordered?: boolean;
     /** 是否固定到顶部。 */
-    fixed?: boolean
+    fixed?: boolean;
     /** 固定到顶部时，是否在原位置生成一个等高的占位元素。 */
-    placeholder?: boolean
+    placeholder?: boolean;
     /** 导航栏 z-index。 */
-    zIndex?: number
+    zIndex?: number;
     /** 是否开启顶部安全区适配。 */
-    safeAreaInsetTop?: boolean
+    safeAreaInsetTop?: boolean;
     /** 是否禁用左侧按钮（透明度降低且不触发事件）。 */
-    leftDisabled?: boolean
+    leftDisabled?: boolean;
     /** 是否禁用右侧按钮（透明度降低且不触发事件）。 */
-    rightDisabled?: boolean
+    rightDisabled?: boolean;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     title: '',
@@ -85,56 +85,56 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 点击左侧按钮时触发。 */
-  (e: 'click-left', event: Event): void
+  (e: 'click-left', event: Event): void;
   /** 点击右侧按钮时触发。 */
-  (e: 'click-right', event: Event): void
+  (e: 'click-right', event: Event): void;
   /** 点击返回（左侧箭头）按钮时触发。 */
-  (e: 'back', event: Event): void
+  (e: 'back', event: Event): void;
   /** 点击胶囊区域时触发（微信小程序返回首页语义）。 */
-  (e: 'back-home', event: Event): void
-}>()
+  (e: 'back-home', event: Event): void;
+}>();
 
 defineSlots<{
   /** 自定义胶囊（存在时 left 插槽不生效）。 */
-  capsule?(): unknown
+  capsule?(): unknown;
   /** 左侧内容。 */
-  left?(): unknown
+  left?(): unknown;
   /** 标题内容。 */
-  title?(): unknown
+  title?(): unknown;
   /** 右侧内容。 */
-  right?(): unknown
-}>()
+  right?(): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 /** Left zone renders only when it actually carries something. */
-const hasLeft = computed(() => props.leftArrow || props.leftText !== '' || !!slots.left)
+const hasLeft = computed(() => props.leftArrow || props.leftText !== '' || !!slots.left);
 /** Right zone renders only when it actually carries something. */
-const hasRight = computed(() => props.rightText !== '' || !!slots.right)
+const hasRight = computed(() => props.rightText !== '' || !!slots.right);
 
 function onLeftTap(event: Event): void {
   if (props.leftDisabled) {
-    event.stopPropagation()
-    return
+    event.stopPropagation();
+    return;
   }
-  emit('click-left', event)
-  if (props.leftArrow) emit('back', event)
+  emit('click-left', event);
+  if (props.leftArrow) emit('back', event);
 }
 
 function onRightTap(event: Event): void {
   if (props.rightDisabled) {
-    event.stopPropagation()
-    return
+    event.stopPropagation();
+    return;
   }
-  emit('click-right', event)
+  emit('click-right', event);
 }
 
 function onCapsuleTap(event: Event): void {
-  emit('back-home', event)
+  emit('back-home', event);
 }
 
 const rootClass = computed(() => [
@@ -147,14 +147,14 @@ const rootClass = computed(() => [
     'sn-navbar--right-disabled': props.rightDisabled,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.fixed) parts.push(`z-index: ${props.zIndex}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.fixed) parts.push(`z-index: ${props.zIndex}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 </script>
 
 <template>
@@ -166,11 +166,7 @@ const rootStyle = computed(() => {
     role="navigation"
     :aria-label="title || undefined"
   >
-    <view
-      v-if="$slots.capsule"
-      class="sn-navbar__capsule"
-      @tap="onCapsuleTap"
-    >
+    <view v-if="$slots.capsule" class="sn-navbar__capsule" @tap="onCapsuleTap">
       <slot name="capsule" />
     </view>
 

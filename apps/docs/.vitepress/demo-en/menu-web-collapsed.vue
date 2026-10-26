@@ -11,39 +11,43 @@
  * screen real estate is tight and the user wants quick switching rather
  * than reading every item label.
  */
-import { ref } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import {
-  Home, Settings, Lightbulb, ShieldCheck, Flame, Menu as MenuIcon
-} from 'lucide-vue-next'
+import { ref } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import { Home, Settings, Lightbulb, ShieldCheck, Flame, Menu as MenuIcon } from 'lucide-vue-next';
 
-const active = ref<string | number | null>('home')
-const collapsed = ref(false)
+const active = ref<string | number | null>('home');
+const collapsed = ref(false);
 
 const items = [
   { key: 'home', label: 'Home', icon: Home },
-  { key: 'settings', label: 'Settings', icon: Settings, children: [
-    { key: 'general', label: 'General', href: '/settings/general' },
-    { key: 'privacy', label: 'Privacy', href: '/settings/privacy' },
-    { key: 'security', label: 'Security', href: '/settings/security' },
-  ]},
+  {
+    key: 'settings',
+    label: 'Settings',
+    icon: Settings,
+    children: [
+      { key: 'general', label: 'General', href: '/settings/general' },
+      { key: 'privacy', label: 'Privacy', href: '/settings/privacy' },
+      { key: 'security', label: 'Security', href: '/settings/security' },
+    ],
+  },
   { key: 'tips', label: 'Tip', icon: Lightbulb },
-  { key: 'safe', label: 'Guard', icon: ShieldCheck, children: [
-    { key: 'rules', label: 'Rules', href: '/safe/rules' },
-    { key: 'logs', label: 'Logs', href: '/safe/logs' },
-  ]},
+  {
+    key: 'safe',
+    label: 'Guard',
+    icon: ShieldCheck,
+    children: [
+      { key: 'rules', label: 'Rules', href: '/safe/rules' },
+      { key: 'logs', label: 'Logs', href: '/safe/logs' },
+    ],
+  },
   { key: 'trending', label: 'Trends', icon: Flame },
   { key: 'more', label: 'More', icon: MenuIcon },
-]
+];
 </script>
 
 <template>
   <div class="sn-menu-collapsed-demo">
-    <button
-      type="button"
-      class="sn-menu-collapsed-demo__toggle"
-      @click="collapsed = !collapsed"
-    >
+    <button type="button" class="sn-menu-collapsed-demo__toggle" @click="collapsed = !collapsed">
       {{ collapsed ? 'Expand' : 'Collapse' }}
     </button>
     <div class="sn-menu-collapsed-demo__stage">
@@ -54,10 +58,10 @@ const items = [
         :collapsed="collapsed"
         :collapsed-width="64"
         :collapsed-icon-size="22"
-        style="border: 1px solid var(--vp-c-divider); border-radius: 8px;"
+        style="border: 1px solid var(--vp-c-divider); border-radius: 8px"
       />
     </div>
-    <p class="sn-menu-collapsed-demo__hint" style="max-width: 240px; text-align: center;">
+    <p class="sn-menu-collapsed-demo__hint" style="max-width: 240px; text-align: center">
       Hover the icons with submenus (Settings / Guard) → a submenu popover pops out on the right
     </p>
     <p class="sn-menu-collapsed-demo__active">

@@ -9,7 +9,7 @@
  * users would paste into main.ts (docs site ThemeCopier reads from this field).
  */
 
-import type { AiMcpTool, GetStylePackInput, StylePackInfo } from '../types.js'
+import type { AiMcpTool, GetStylePackInput, StylePackInfo } from '../types.js';
 
 const KNOWN_PACKS: Record<string, StylePackInfo> = {
   default: {
@@ -59,17 +59,17 @@ el.textContent = snCssVars({
 document.head.appendChild(el)`,
     hasSkinCss: false,
   },
-}
+};
 
 export const getStylePack: AiMcpTool<GetStylePackInput, StylePackInfo> = {
   name: 'get_style_pack',
   description: 'Get a Style Pack definition + ready-to-paste snippet.',
   inputSchema: 'json-schema-stub',
   async handle(input: GetStylePackInput): Promise<StylePackInfo> {
-    const pack = KNOWN_PACKS[input.name]
+    const pack = KNOWN_PACKS[input.name];
     if (!pack) {
-      throw new Error(`style pack not found: ${input.name}`)
+      throw new Error(`style pack not found: ${input.name}`);
     }
-    return pack
+    return pack;
   },
-}
+};

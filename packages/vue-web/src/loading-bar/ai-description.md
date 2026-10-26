@@ -31,29 +31,25 @@ that never completes on its own; `finish()` sprints to 100% and fades out;
 ## Import
 
 ```ts
-import {
-  SnLoadingBar,
-  SnLoadingBarProvider,
-  useLoadingBar,
-} from '@snui/vue-web'
+import { SnLoadingBar, SnLoadingBarProvider, useLoadingBar } from '@snui/vue-web';
 ```
 
 ## Component Surface
 
 ### `<SnLoadingBarProvider>` Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `to` | `string \| HTMLElement` | `'body'` | Teleport target for the bar element. |
+| Name              | Type                                           | Default     | Description                            |
+| ----------------- | ---------------------------------------------- | ----------- | -------------------------------------- |
+| `to`              | `string \| HTMLElement`                        | `'body'`    | Teleport target for the bar element.   |
 | `loadingBarStyle` | `{ loading?: StyleValue; error?: StyleValue }` | `undefined` | Custom inline styles per visual state. |
 
 ### `useLoadingBar()` → `LoadingBarApi`
 
-| Method | Signature | Description |
-|---|---|---|
-| `start` | `() => void` | Show the bar and grow the width towards 90% with a decelerating rAF loop. Repeat calls while loading are no-ops. |
-| `finish` | `() => void` | Sprint to 100%, fade out, reset. No-op when idle. |
-| `error` | `() => void` | Sprint to 100% in the danger colour, fade out, reset. No-op when idle. |
+| Method   | Signature    | Description                                                                                                      |
+| -------- | ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `start`  | `() => void` | Show the bar and grow the width towards 90% with a decelerating rAF loop. Repeat calls while loading are no-ops. |
+| `finish` | `() => void` | Sprint to 100%, fade out, reset. No-op when idle.                                                                |
+| `error`  | `() => void` | Sprint to 100% in the danger colour, fade out, reset. No-op when idle.                                           |
 
 ## Provider / composable wiring
 
@@ -82,12 +78,12 @@ import {
 
 ## Tokens Consumed (end: web)
 
-| Token | Purpose |
-|---|---|
-| `--sn-web-color-action-primary` | Bar fill in the default state |
-| `--sn-web-color-feedback-danger` | Bar fill in the error state |
-| `--sn-web-loading-bar-height` (fallback `2px`) | Bar height |
-| `--sn-web-loading-bar-z-index` (fallback `7000`) | Bar z-index |
+| Token                                            | Purpose                       |
+| ------------------------------------------------ | ----------------------------- |
+| `--sn-web-color-action-primary`                  | Bar fill in the default state |
+| `--sn-web-color-feedback-danger`                 | Bar fill in the error state   |
+| `--sn-web-loading-bar-height` (fallback `2px`)   | Bar height                    |
+| `--sn-web-loading-bar-z-index` (fallback `7000`) | Bar z-index                   |
 
 ## Accessibility
 

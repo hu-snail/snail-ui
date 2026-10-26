@@ -24,70 +24,70 @@ clickable, hover class, direction, icon size and centring through
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnGrid } from '@snui/uni/components/sn-grid/sn-grid.vue'
-import { SnGridItem } from '@snui/uni/components/sn-grid/sn-grid-item.vue'
+import { SnGrid } from '@snui/uni/components/sn-grid/sn-grid.vue';
+import { SnGridItem } from '@snui/uni/components/sn-grid/sn-grid-item.vue';
 ```
 
 ## Props — sn-grid
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `column` | `number` | `3` | Column count and cell gutter (px). |
-| `gutter` | `number` | `0` | Column count and cell gutter (px). |
-| `border` | `boolean` | `false` | Inner rules, square cells, tap feedback. |
-| `square` | `boolean` | `false` | Inner rules, square cells, tap feedback. |
-| `clickable` | `boolean` | `false` | Inner rules, square cells, tap feedback. |
-| `bgColor` | `string` | `''` | Surface override and pressed-state class. |
-| `hoverClass` | `string` | `'sn-grid-item__content--hover'` | Surface override and pressed-state class. |
-| `center` | `boolean` | `true` | Content flow. |
-| `direction` | enum | `'vertical'` | Content flow. |
-| `reverse` | `boolean` | `false` | Content flow. |
-| `iconSize` | `string` | `'28px'` | Icon size inherited by every cell. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name          | Type      | Default                          | Description                               |
+| ------------- | --------- | -------------------------------- | ----------------------------------------- |
+| `column`      | `number`  | `3`                              | Column count and cell gutter (px).        |
+| `gutter`      | `number`  | `0`                              | Column count and cell gutter (px).        |
+| `border`      | `boolean` | `false`                          | Inner rules, square cells, tap feedback.  |
+| `square`      | `boolean` | `false`                          | Inner rules, square cells, tap feedback.  |
+| `clickable`   | `boolean` | `false`                          | Inner rules, square cells, tap feedback.  |
+| `bgColor`     | `string`  | `''`                             | Surface override and pressed-state class. |
+| `hoverClass`  | `string`  | `'sn-grid-item__content--hover'` | Surface override and pressed-state class. |
+| `center`      | `boolean` | `true`                           | Content flow.                             |
+| `direction`   | enum      | `'vertical'`                     | Content flow.                             |
+| `reverse`     | `boolean` | `false`                          | Content flow.                             |
+| `iconSize`    | `string`  | `'28px'`                         | Icon size inherited by every cell.        |
+| `customClass` | `string`  | `''`                             | Root forwarding.                          |
+| `customStyle` | `string`  | `''`                             | Root forwarding.                          |
 
 ## Props — sn-grid-item
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `text` | `string` | `''` | Label and truncation. |
-| `ellipsis` | `boolean` | `false` | Label and truncation. |
-| `icon` | `string` | `''` | Icon resolution. |
-| `iconColor` | `string` | `''` | Icon resolution. |
-| `iconPrefix` | `string` | `''` | Icon resolution. |
-| `cssIcon` | `boolean \| string` | `false` | Icon resolution. |
-| `isDot` | `boolean` | `false` | Badge rendering. |
-| `value` | `string \| number` | `undefined` | Badge rendering. |
-| `max` | `number` | `99` | Badge rendering. |
-| `url` | `string` | `''` | Forwarded through `click` only — no self-navigation. |
-| `linkType` | enum | `'navigateTo'` | Forwarded through `click` only — no self-navigation. |
-| `customClass` | `string` | `''` | Cell root forwarding. |
-| `customStyle` | `string` | `''` | Cell root forwarding. |
+| Name          | Type                | Default        | Description                                          |
+| ------------- | ------------------- | -------------- | ---------------------------------------------------- |
+| `text`        | `string`            | `''`           | Label and truncation.                                |
+| `ellipsis`    | `boolean`           | `false`        | Label and truncation.                                |
+| `icon`        | `string`            | `''`           | Icon resolution.                                     |
+| `iconColor`   | `string`            | `''`           | Icon resolution.                                     |
+| `iconPrefix`  | `string`            | `''`           | Icon resolution.                                     |
+| `cssIcon`     | `boolean \| string` | `false`        | Icon resolution.                                     |
+| `isDot`       | `boolean`           | `false`        | Badge rendering.                                     |
+| `value`       | `string \| number`  | `undefined`    | Badge rendering.                                     |
+| `max`         | `number`            | `99`           | Badge rendering.                                     |
+| `url`         | `string`            | `''`           | Forwarded through `click` only — no self-navigation. |
+| `linkType`    | enum                | `'navigateTo'` | Forwarded through `click` only — no self-navigation. |
+| `customClass` | `string`            | `''`           | Cell root forwarding.                                |
+| `customStyle` | `string`            | `''`           | Cell root forwarding.                                |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
+| Name    | Payload             | Description                                         |
+| ------- | ------------------- | --------------------------------------------------- |
 | `click` | `{ url, linkType }` | Cell tapped while `clickable` or when `url` is set. |
 
 ## Slots
 
-| Name | Scope | Description |
-|---|---|---|
-| `default (grid)` | — | Cell list. |
-| `default` | — | Cell content areas. |
-| `icon` | — | Cell content areas. |
-| `text (item)` | — | Cell content areas. |
+| Name             | Scope | Description         |
+| ---------------- | ----- | ------------------- |
+| `default (grid)` | —     | Cell list.          |
+| `default`        | —     | Cell content areas. |
+| `icon`           | —     | Cell content areas. |
+| `text (item)`    | —     | Cell content areas. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Surface / feedback | `--sn-mp-color-background-surface`, `--sn-mp-color-background-soft` | Grid surface and tap feedback |
-| Border | `--sn-mp-color-border-subtle` | Inner rules |
-| Text | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary` | Label and icon |
-| Badge | `--sn-mp-color-feedback-danger`, `--sn-mp-color-text-on-primary` | Badge fill and text |
-| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-full`, `--sn-mp-spacing-4` | Label and cell geometry |
+| Token                   | CSS Variable                                                        | Purpose                       |
+| ----------------------- | ------------------------------------------------------------------- | ----------------------------- |
+| Surface / feedback      | `--sn-mp-color-background-surface`, `--sn-mp-color-background-soft` | Grid surface and tap feedback |
+| Border                  | `--sn-mp-color-border-subtle`                                       | Inner rules                   |
+| Text                    | `--sn-mp-color-text-primary`, `--sn-mp-color-text-secondary`        | Label and icon                |
+| Badge                   | `--sn-mp-color-feedback-danger`, `--sn-mp-color-text-on-primary`    | Badge fill and text           |
+| Font / radius / spacing | `--sn-mp-font-size-md`, `--sn-mp-radius-full`, `--sn-mp-spacing-4`  | Label and cell geometry       |
 
 ## Accessibility
 

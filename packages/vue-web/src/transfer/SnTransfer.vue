@@ -43,40 +43,35 @@
  *               source-title="候选" target-title="已选" />
  */
 
-import { computed, defineComponent, ref, watch } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import type { PropType, VNodeChild } from 'vue'
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-vue-next'
-import SnButton from '../button/SnButton.vue'
-import SnCheckbox from '../checkbox/SnCheckbox.vue'
-import type { SnCheckboxValue } from '../checkbox/sn-checkbox-types'
-import SnEmpty from '../empty/SnEmpty.vue'
-import SnIcon from '../icon/SnIcon.vue'
-import SnInput from '../input/SnInput.vue'
+import { computed, defineComponent, ref, watch } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import type { PropType, VNodeChild } from 'vue';
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-vue-next';
+import SnButton from '../button/SnButton.vue';
+import SnCheckbox from '../checkbox/SnCheckbox.vue';
+import type { SnCheckboxValue } from '../checkbox/sn-checkbox-types';
+import SnEmpty from '../empty/SnEmpty.vue';
+import SnIcon from '../icon/SnIcon.vue';
+import SnInput from '../input/SnInput.vue';
 
-defineOptions({ name: 'SnTransfer' })
+defineOptions({ name: 'SnTransfer' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 /** One transferable entry. Mirrors the reference option shape. */
 interface SnTransferOption {
-  label: string
-  value: string | number
-  disabled?: boolean
+  label: string;
+  value: string | number;
+  disabled?: boolean;
 }
 
-type SnTransferValue = string | number
+type SnTransferValue = string | number;
 
-type SnTransferSize = 'small' | 'medium' | 'large'
+type SnTransferSize = 'small' | 'medium' | 'large';
 
 /** Render-function prop signature (receives `{ option }`, returns VNodeChild). */
-type RenderLabelFn = (data: { option: SnTransferOption }) => VNodeChild
+type RenderLabelFn = (data: { option: SnTransferOption }) => VNodeChild;
 
 /**
  * Internal renderer for the `renderSourceLabel` / `renderTargetLabel`
@@ -94,38 +89,38 @@ const TransferLabel = defineComponent({
   },
   setup(labelProps) {
     return () => {
-      if (!labelProps.render) return null
-      return labelProps.render({ option: labelProps.option })
-    }
+      if (!labelProps.render) return null;
+      return labelProps.render({ option: labelProps.option });
+    };
   },
-})
+});
 
 const props = withDefaults(
   defineProps<{
     /** Transferable entries. Mirrors n-transfer `options`. */
-    options?: SnTransferOption[]
+    options?: SnTransferOption[];
     /** Selected (right-panel) values (controlled). Mirrors n-transfer `value`. */
-    value?: SnTransferValue[] | undefined
+    value?: SnTransferValue[] | undefined;
     /** Initial selected values for uncontrolled mode. Mirrors n-transfer `default-value`. */
-    defaultValue?: SnTransferValue[]
+    defaultValue?: SnTransferValue[];
     /** Show the per-panel filter input. Mirrors n-transfer `filterable`. */
-    filterable?: boolean
+    filterable?: boolean;
     /** Filter placeholder in the source panel. Mirrors n-transfer `source-filter-placeholder`. */
-    sourceFilterPlaceholder?: string | undefined
+    sourceFilterPlaceholder?: string | undefined;
     /** Filter placeholder in the target panel. Mirrors n-transfer `target-filter-placeholder`. */
-    targetFilterPlaceholder?: string | undefined
+    targetFilterPlaceholder?: string | undefined;
     /** Visual size of rows / buttons. Mirrors n-transfer `size`. */
-    size?: SnTransferSize
+    size?: SnTransferSize;
     /** Disable every control. Mirrors n-transfer `disabled`. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Source panel title (fixed zh default). Mirrors n-transfer `source-title`. */
-    sourceTitle?: string | undefined
+    sourceTitle?: string | undefined;
     /** Target panel title (fixed zh default). Mirrors n-transfer `target-title`. */
-    targetTitle?: string | undefined
+    targetTitle?: string | undefined;
     /** Custom label renderer for source rows. Mirrors n-transfer `render-source-label`. */
-    renderSourceLabel?: RenderLabelFn | undefined
+    renderSourceLabel?: RenderLabelFn | undefined;
     /** Custom label renderer for target rows. Mirrors n-transfer `render-target-label`. */
-    renderTargetLabel?: RenderLabelFn | undefined
+    renderTargetLabel?: RenderLabelFn | undefined;
   }>(),
   {
     options: () => [],
@@ -141,12 +136,12 @@ const props = withDefaults(
     renderSourceLabel: undefined,
     renderTargetLabel: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Selected values committed (move buttons). Mirrors n-transfer `on-update:value`. */
-  (e: 'update:value', value: SnTransferValue[]): void
-}>()
+  (e: 'update:value', value: SnTransferValue[]): void;
+}>();
 
 /**
  * Definite-boolean view of `disabled`. Under `exactOptionalPropertyTypes`
@@ -154,166 +149,174 @@ const emit = defineEmits<{
  * types (SnButton / SnCheckbox / SnInput) reject — same narrowing as
  * SnDialog's `isLoading`.
  */
-const isDisabled = computed(() => props.disabled === true)
+const isDisabled = computed(() => props.disabled === true);
 
 /* ─────────── Controlled / uncontrolled target values ─────────── */
 
-const isValueControlled = computed(() => props.value !== undefined)
-const uncontrolledTarget = ref<SnTransferValue[]>([...props.defaultValue])
+const isValueControlled = computed(() => props.value !== undefined);
+const uncontrolledTarget = ref<SnTransferValue[]>([...props.defaultValue]);
 
 const targetValues = computed<SnTransferValue[]>(() =>
   isValueControlled.value ? (props.value as SnTransferValue[]) : uncontrolledTarget.value,
-)
+);
 
 function commitValue(next: SnTransferValue[]): void {
-  if (!isValueControlled.value) uncontrolledTarget.value = next
-  emit('update:value', next)
+  if (!isValueControlled.value) uncontrolledTarget.value = next;
+  emit('update:value', next);
 }
 
 /* ─────────── Derived option lists ─────────── */
 
 const optionMap = computed(() => {
-  const map = new Map<SnTransferValue, SnTransferOption>()
+  const map = new Map<SnTransferValue, SnTransferOption>();
   for (const option of props.options) {
-    if (!map.has(option.value)) map.set(option.value, option)
+    if (!map.has(option.value)) map.set(option.value, option);
   }
-  return map
-})
+  return map;
+});
 
-const targetValueSet = computed(() => new Set<SnTransferValue>(targetValues.value))
+const targetValueSet = computed(() => new Set<SnTransferValue>(targetValues.value));
 
 /** Left panel: everything not selected, in `options` order. */
 const sourceOptions = computed(() =>
   props.options.filter((option) => !targetValueSet.value.has(option.value)),
-)
+);
 
 /** Right panel: selected values in `value` order, skipping unknown entries. */
 const targetOptions = computed(() =>
   targetValues.value
     .map((value) => optionMap.value.get(value))
     .filter((option): option is SnTransferOption => option !== undefined),
-)
+);
 
 /* ─────────── Checkbox selection state (internal) ─────────── */
 
-const sourceChecked = ref(new Set<SnTransferValue>())
-const targetChecked = ref(new Set<SnTransferValue>())
-const sourceFilter = ref('')
-const targetFilter = ref('')
+const sourceChecked = ref(new Set<SnTransferValue>());
+const targetChecked = ref(new Set<SnTransferValue>());
+const sourceFilter = ref('');
+const targetFilter = ref('');
 
 function matchesFilter(option: SnTransferOption, pattern: string): boolean {
-  return option.label.toLowerCase().includes(pattern.trim().toLowerCase())
+  return option.label.toLowerCase().includes(pattern.trim().toLowerCase());
 }
 
 const filteredSourceOptions = computed(() => {
-  if (!props.filterable || sourceFilter.value.trim() === '') return sourceOptions.value
-  return sourceOptions.value.filter((option) => matchesFilter(option, sourceFilter.value))
-})
+  if (!props.filterable || sourceFilter.value.trim() === '') return sourceOptions.value;
+  return sourceOptions.value.filter((option) => matchesFilter(option, sourceFilter.value));
+});
 
 const filteredTargetOptions = computed(() => {
-  if (!props.filterable || targetFilter.value.trim() === '') return targetOptions.value
-  return targetOptions.value.filter((option) => matchesFilter(option, targetFilter.value))
-})
+  if (!props.filterable || targetFilter.value.trim() === '') return targetOptions.value;
+  return targetOptions.value.filter((option) => matchesFilter(option, targetFilter.value));
+});
 
 /** Rows that the header checkbox may touch (visible + not disabled). */
-const sourceCheckable = computed(() => filteredSourceOptions.value.filter((o) => !o.disabled))
-const targetCheckable = computed(() => filteredTargetOptions.value.filter((o) => !o.disabled))
+const sourceCheckable = computed(() => filteredSourceOptions.value.filter((o) => !o.disabled));
+const targetCheckable = computed(() => filteredTargetOptions.value.filter((o) => !o.disabled));
 
 const sourceAllChecked = computed(
-  () => sourceCheckable.value.length > 0
-    && sourceCheckable.value.every((o) => sourceChecked.value.has(o.value)),
-)
+  () =>
+    sourceCheckable.value.length > 0 &&
+    sourceCheckable.value.every((o) => sourceChecked.value.has(o.value)),
+);
 const sourceSomeChecked = computed(
-  () => !sourceAllChecked.value && sourceCheckable.value.some((o) => sourceChecked.value.has(o.value)),
-)
+  () =>
+    !sourceAllChecked.value && sourceCheckable.value.some((o) => sourceChecked.value.has(o.value)),
+);
 const targetAllChecked = computed(
-  () => targetCheckable.value.length > 0
-    && targetCheckable.value.every((o) => targetChecked.value.has(o.value)),
-)
+  () =>
+    targetCheckable.value.length > 0 &&
+    targetCheckable.value.every((o) => targetChecked.value.has(o.value)),
+);
 const targetSomeChecked = computed(
-  () => !targetAllChecked.value && targetCheckable.value.some((o) => targetChecked.value.has(o.value)),
-)
+  () =>
+    !targetAllChecked.value && targetCheckable.value.some((o) => targetChecked.value.has(o.value)),
+);
 
 function toggleOption(option: SnTransferOption, side: 'source' | 'target'): void {
-  if (props.disabled || option.disabled) return
-  const checked = side === 'source' ? sourceChecked.value : targetChecked.value
-  if (checked.has(option.value)) checked.delete(option.value)
-  else checked.add(option.value)
+  if (props.disabled || option.disabled) return;
+  const checked = side === 'source' ? sourceChecked.value : targetChecked.value;
+  if (checked.has(option.value)) checked.delete(option.value);
+  else checked.add(option.value);
 }
 
 function toggleAll(side: 'source' | 'target', checked: SnCheckboxValue): void {
-  if (props.disabled) return
-  const pool = side === 'source' ? sourceCheckable.value : targetCheckable.value
-  const checkedSet = side === 'source' ? sourceChecked.value : targetChecked.value
+  if (props.disabled) return;
+  const pool = side === 'source' ? sourceCheckable.value : targetCheckable.value;
+  const checkedSet = side === 'source' ? sourceChecked.value : targetChecked.value;
   if (checked === true) {
-    for (const option of pool) checkedSet.add(option.value)
+    for (const option of pool) checkedSet.add(option.value);
   } else {
-    for (const option of pool) checkedSet.delete(option.value)
+    for (const option of pool) checkedSet.delete(option.value);
   }
 }
 
 /* Prune stale checkbox state when value / options change externally. */
 watch(targetValues, (values) => {
-  const present = new Set<SnTransferValue>(values)
+  const present = new Set<SnTransferValue>(values);
   for (const v of [...targetChecked.value]) {
-    if (!present.has(v)) targetChecked.value.delete(v)
+    if (!present.has(v)) targetChecked.value.delete(v);
   }
-})
+});
 watch(
   () => props.options,
   (options) => {
-    const known = new Set<SnTransferValue>(options.map((o) => o.value))
+    const known = new Set<SnTransferValue>(options.map((o) => o.value));
     for (const v of [...sourceChecked.value]) {
-      if (!known.has(v)) sourceChecked.value.delete(v)
+      if (!known.has(v)) sourceChecked.value.delete(v);
     }
     for (const v of [...targetChecked.value]) {
-      if (!known.has(v)) targetChecked.value.delete(v)
+      if (!known.has(v)) targetChecked.value.delete(v);
     }
   },
-)
+);
 
 /* ─────────── Move operations ─────────── */
 
 function collectMovable(all: boolean, side: 'source' | 'target'): SnTransferOption[] {
-  const list = side === 'source' ? filteredSourceOptions.value : filteredTargetOptions.value
-  if (all) return list.filter((option) => !option.disabled)
-  const checkedSet = side === 'source' ? sourceChecked.value : targetChecked.value
-  return list.filter((option) => !option.disabled && checkedSet.has(option.value))
+  const list = side === 'source' ? filteredSourceOptions.value : filteredTargetOptions.value;
+  if (all) return list.filter((option) => !option.disabled);
+  const checkedSet = side === 'source' ? sourceChecked.value : targetChecked.value;
+  return list.filter((option) => !option.disabled && checkedSet.has(option.value));
 }
 
-const canMoveSelectedRight = computed(() => !props.disabled && collectMovable(false, 'source').length > 0)
+const canMoveSelectedRight = computed(
+  () => !props.disabled && collectMovable(false, 'source').length > 0,
+);
 const canMoveAllRight = computed(
   () => !props.disabled && filteredSourceOptions.value.some((o) => !o.disabled),
-)
-const canMoveSelectedLeft = computed(() => !props.disabled && collectMovable(false, 'target').length > 0)
+);
+const canMoveSelectedLeft = computed(
+  () => !props.disabled && collectMovable(false, 'target').length > 0,
+);
 const canMoveAllLeft = computed(
   () => !props.disabled && filteredTargetOptions.value.some((o) => !o.disabled),
-)
+);
 
 /** Move checked (or all movable) source entries into the target. */
 function moveRight(all: boolean): void {
-  if (props.disabled) return
-  const movable = collectMovable(all, 'source')
-  if (movable.length === 0) return
-  const movedValues = movable.map((option) => option.value)
-  commitValue([...targetValues.value, ...movedValues])
-  for (const value of movedValues) sourceChecked.value.delete(value)
+  if (props.disabled) return;
+  const movable = collectMovable(all, 'source');
+  if (movable.length === 0) return;
+  const movedValues = movable.map((option) => option.value);
+  commitValue([...targetValues.value, ...movedValues]);
+  for (const value of movedValues) sourceChecked.value.delete(value);
 }
 
 /** Move checked (or all movable) target entries back to the source. */
 function moveLeft(all: boolean): void {
-  if (props.disabled) return
-  const movable = collectMovable(all, 'target')
-  if (movable.length === 0) return
-  const moved = new Set<SnTransferValue>(movable.map((option) => option.value))
-  commitValue(targetValues.value.filter((value) => !moved.has(value)))
-  for (const value of moved) targetChecked.value.delete(value)
+  if (props.disabled) return;
+  const movable = collectMovable(all, 'target');
+  if (movable.length === 0) return;
+  const moved = new Set<SnTransferValue>(movable.map((option) => option.value));
+  commitValue(targetValues.value.filter((value) => !moved.has(value)));
+  for (const value of moved) targetChecked.value.delete(value);
 }
 
 /* ─────────── Titles ─────────── */
 
-const resolvedSourceTitle = computed(() => props.sourceTitle ?? '源')
-const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
+const resolvedSourceTitle = computed(() => props.sourceTitle ?? '源');
+const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标');
 </script>
 
 <template>
@@ -334,7 +337,9 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
           @update:model-value="toggleAll('source', $event as SnCheckboxValue)"
         />
         <span class="sn-transfer__title">{{ resolvedSourceTitle }}</span>
-        <span class="sn-transfer__count">{{ sourceChecked.size }} / {{ sourceOptions.length }}</span>
+        <span class="sn-transfer__count"
+          >{{ sourceChecked.size }} / {{ sourceOptions.length }}</span
+        >
       </div>
       <div v-if="filterable" class="sn-transfer__filter">
         <SnInput
@@ -369,11 +374,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
             :aria-label="option.label"
           />
           <span class="sn-transfer__option-label">
-            <TransferLabel
-              v-if="renderSourceLabel"
-              :render="renderSourceLabel"
-              :option="option"
-            />
+            <TransferLabel v-if="renderSourceLabel" :render="renderSourceLabel" :option="option" />
             <template v-else>{{ option.label }}</template>
           </span>
         </div>
@@ -437,7 +438,9 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
           @update:model-value="toggleAll('target', $event as SnCheckboxValue)"
         />
         <span class="sn-transfer__title">{{ resolvedTargetTitle }}</span>
-        <span class="sn-transfer__count">{{ targetChecked.size }} / {{ targetOptions.length }}</span>
+        <span class="sn-transfer__count"
+          >{{ targetChecked.size }} / {{ targetOptions.length }}</span
+        >
       </div>
       <div v-if="filterable" class="sn-transfer__filter">
         <SnInput
@@ -472,11 +475,7 @@ const resolvedTargetTitle = computed(() => props.targetTitle ?? '目标')
             :aria-label="option.label"
           />
           <span class="sn-transfer__option-label">
-            <TransferLabel
-              v-if="renderTargetLabel"
-              :render="renderTargetLabel"
-              :option="option"
-            />
+            <TransferLabel v-if="renderTargetLabel" :render="renderTargetLabel" :option="option" />
             <template v-else>{{ option.label }}</template>
           </span>
         </div>

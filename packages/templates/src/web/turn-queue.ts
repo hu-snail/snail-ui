@@ -9,10 +9,10 @@
  * The two page templates mount this same engine, so an assembled page behaves
  * identically to them by construction.
  */
-export { useAiTurnQueue } from './use-ai-turn-queue'
+export { useAiTurnQueue } from './use-ai-turn-queue';
 export type {
   AiTurnQueue,
   AiTurnQueueHooks,
   AiTurnQueueOptions,
   SnAiRunTurn,
-} from './use-ai-turn-queue'
+} from './use-ai-turn-queue';

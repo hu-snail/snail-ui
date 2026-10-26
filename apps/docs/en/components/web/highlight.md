@@ -22,14 +22,14 @@ Highlights matched keywords inside plain text with a configurable element.
 
 ### SnHighlight Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| text | `string` | `undefined` | Full text |
-| patterns | `string[]` | `[]` | Substrings to highlight |
-| highlight-tag | `string` | `'mark'` | Element for matched fragments |
-| case-sensitive | `boolean` | `false` | Case-sensitive matching |
-| auto-escape | `boolean` | `true` | Escape regex metacharacters in patterns |
-| highlight-class | `string` | `undefined` | Class merged onto matches |
-| highlight-style | `object \| string` | `undefined` | Inline style merged onto matches |
+| Prop            | Type               | Default     | Notes                                   |
+| --------------- | ------------------ | ----------- | --------------------------------------- |
+| text            | `string`           | `undefined` | Full text                               |
+| patterns        | `string[]`         | `[]`        | Substrings to highlight                 |
+| highlight-tag   | `string`           | `'mark'`    | Element for matched fragments           |
+| case-sensitive  | `boolean`          | `false`     | Case-sensitive matching                 |
+| auto-escape     | `boolean`          | `true`      | Escape regex metacharacters in patterns |
+| highlight-class | `string`           | `undefined` | Class merged onto matches               |
+| highlight-style | `object \| string` | `undefined` | Inline style merged onto matches        |
 
 See the component `ai-description.md` for the full contract.

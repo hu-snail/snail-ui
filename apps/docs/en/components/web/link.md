@@ -40,37 +40,37 @@ clicks and navigation; a non-anchor `tag` keeps click semantics only.
 
 All props are optional.
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| href | `string` | `undefined` | Navigation target; rendered only on `tag='a'` |
-| target | `string` | `undefined` | Browsing context (`_blank`, …) |
-| rel | `string` | `undefined` | Relationship metadata |
-| type | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | Semantic color driving text and hover feedback |
-| disabled | `boolean` | `false` | Blocks clicks + navigation, drops `href`, sets `aria-disabled="true"` |
-| underline | `boolean` | `false` | `true` underlines permanently; `false` on hover only |
-| tag | `string` | `'a'` | Root element to render |
+| Name      | Type                                                                    | Default     | Description                                                           |
+| --------- | ----------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------- |
+| href      | `string`                                                                | `undefined` | Navigation target; rendered only on `tag='a'`                         |
+| target    | `string`                                                                | `undefined` | Browsing context (`_blank`, …)                                        |
+| rel       | `string`                                                                | `undefined` | Relationship metadata                                                 |
+| type      | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | Semantic color driving text and hover feedback                        |
+| disabled  | `boolean`                                                               | `false`     | Blocks clicks + navigation, drops `href`, sets `aria-disabled="true"` |
+| underline | `boolean`                                                               | `false`     | `true` underlines permanently; `false` on hover only                  |
+| tag       | `string`                                                                | `'a'`       | Root element to render                                                |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
+| Name  | Payload               | Description                                                        |
+| ----- | --------------------- | ------------------------------------------------------------------ |
 | click | `(event: MouseEvent)` | Fired on activation; suppressed (and not emitted) while `disabled` |
 
 ### Slots
 
-| Name | Scope | Description |
-| --- | --- | --- |
-| default | — | Link text |
-| icon | — | Leading icon |
+| Name    | Scope | Description  |
+| ------- | ----- | ------------ |
+| default | —     | Link text    |
+| icon    | —     | Leading icon |
 
 ## Tokens
 
-| Token | Purpose |
-| --- | --- |
-| `--sn-web-color-text-primary` | Default type color |
-| `--sn-web-color-action-primary / -hover` | Primary color and hover |
-| `--sn-web-color-feedback-info / -success / -warning` | Matching type colors |
-| `--sn-web-color-feedback-danger / -hover` | Error color and hover |
+| Token                                                | Purpose                 |
+| ---------------------------------------------------- | ----------------------- |
+| `--sn-web-color-text-primary`                        | Default type color      |
+| `--sn-web-color-action-primary / -hover`             | Primary color and hover |
+| `--sn-web-color-feedback-info / -success / -warning` | Matching type colors    |
+| `--sn-web-color-feedback-danger / -hover`            | Error color and hover   |
 
 ## Accessibility
 

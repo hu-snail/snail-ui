@@ -25,46 +25,46 @@ be added to the wd-floating-panel parity list.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnFloatingPanel } from '@snui/uni'
+import { SnFloatingPanel } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `height` | `number` | `0` | no | Panel height in design px (`v-model:height`). `0` starts at the first anchor. |
-| `anchors` | `number[]` | `[]` | no | Snap points in design px; empty = the wd default `[100, windowHeight * 0.6]`. |
-| `duration` | `number` | `300` | no | Snap animation duration in ms; `0` disables the animation. |
-| `contentDraggable` | `boolean` | `true` | no | Let the content area drag the panel too, not only the handle. |
-| `safeAreaInsetBottom` | `boolean` | `false` | no | Pad the panel for the device safe area. |
-| `showScrollbar` | `boolean` | `true` | no | Render the scrollbar of the content area. |
-| `customClass` | `string` | `''` | no | Custom class for the root node. |
-| `customStyle` | `string` | `''` | no | Custom inline style for the root node. |
+| Name                  | Type       | Default | Required | Description                                                                   |
+| --------------------- | ---------- | ------- | -------- | ----------------------------------------------------------------------------- |
+| `height`              | `number`   | `0`     | no       | Panel height in design px (`v-model:height`). `0` starts at the first anchor. |
+| `anchors`             | `number[]` | `[]`    | no       | Snap points in design px; empty = the wd default `[100, windowHeight * 0.6]`. |
+| `duration`            | `number`   | `300`   | no       | Snap animation duration in ms; `0` disables the animation.                    |
+| `contentDraggable`    | `boolean`  | `true`  | no       | Let the content area drag the panel too, not only the handle.                 |
+| `safeAreaInsetBottom` | `boolean`  | `false` | no       | Pad the panel for the device safe area.                                       |
+| `showScrollbar`       | `boolean`  | `true`  | no       | Render the scrollbar of the content area.                                     |
+| `customClass`         | `string`   | `''`    | no       | Custom class for the root node.                                               |
+| `customStyle`         | `string`   | `''`    | no       | Custom inline style for the root node.                                        |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `update:height` | `number` | Height changed (continuously during a drag, then on the snap). |
-| `height-change` | `{ height: number }` | The drag settled — fires once per gesture (wd parity). |
+| Name            | Payload              | Description                                                    |
+| --------------- | -------------------- | -------------------------------------------------------------- |
+| `update:height` | `number`             | Height changed (continuously during a drag, then on the snap). |
+| `height-change` | `{ height: number }` | The drag settled — fires once per gesture (wd parity).         |
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description                               |
+| --------- | ----------------------------------------- |
 | `default` | Panel content (scrolls inside the panel). |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Surface | `--sn-mp-color-background-elevated` | Panel background |
-| Text | `--sn-mp-color-text-primary` | Panel text |
-| Handle | `--sn-mp-color-border-default` | Drag-handle bar (rest) |
-| Handle active | `--sn-mp-color-action-primary` | Drag-handle bar (dragging) |
-| Elevation | `--sn-mp-shadow-lg` | Panel shadow |
-| Radius | `--sn-mp-radius-xl/full` | Panel + handle corners |
-| Spacing | `--sn-mp-spacing-4` | Content padding |
+| Token         | CSS Variable                        | Purpose                    |
+| ------------- | ----------------------------------- | -------------------------- |
+| Surface       | `--sn-mp-color-background-elevated` | Panel background           |
+| Text          | `--sn-mp-color-text-primary`        | Panel text                 |
+| Handle        | `--sn-mp-color-border-default`      | Drag-handle bar (rest)     |
+| Handle active | `--sn-mp-color-action-primary`      | Drag-handle bar (dragging) |
+| Elevation     | `--sn-mp-shadow-lg`                 | Panel shadow               |
+| Radius        | `--sn-mp-radius-xl/full`            | Panel + handle corners     |
+| Spacing       | `--sn-mp-spacing-4`                 | Content padding            |
 
 ## Gestures
 

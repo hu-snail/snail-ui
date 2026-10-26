@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnList — header / items / footer + prefix / suffix 槽位。 */
-import { SnList, SnListItem } from '@snui/vue-web'
+import { SnList, SnListItem } from '@snui/vue-web';
 </script>
 
 <template>
@@ -30,6 +30,5 @@ import { SnList, SnListItem } from '@snui/vue-web'
 <style scoped>
 .list-demo {
   width: 100%;
-
 }
 </style>

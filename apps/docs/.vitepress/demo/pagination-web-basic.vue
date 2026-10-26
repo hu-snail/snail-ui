@@ -1,19 +1,14 @@
 <script setup lang="ts">
 /** Demo: SnPagination — 基础分页 + 总条数 + 快速跳页。 */
-import { ref } from 'vue'
-import { SnPagination } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnPagination } from '@snui/vue-web';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>
   <div class="pagination-demo">
-    <SnPagination
-      v-model:page="current"
-      :item-count="97"
-      show-total
-      show-quick-jumper
-    />
+    <SnPagination v-model:page="current" :item-count="97" show-total show-quick-jumper />
     <p class="pagination-demo__hint">当前第 {{ current }} 页（v-model:page 受控）</p>
   </div>
 </template>

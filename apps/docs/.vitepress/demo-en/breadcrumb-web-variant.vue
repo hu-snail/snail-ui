@@ -9,8 +9,8 @@
  * snail-aui extension: a per-item background variant. Combine with
  * `show-separator=false` on every item for the cleanest chip look.
  */
-import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
-import { Home, Settings, FileText } from 'lucide-vue-next'
+import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web';
+import { Home, Settings, FileText } from 'lucide-vue-next';
 </script>
 
 <template>
@@ -26,7 +26,9 @@ import { Home, Settings, FileText } from 'lucide-vue-next'
     <SnBreadcrumb>
       <SnBreadcrumbItem variant="chip" :icon="Home" href="/">Home</SnBreadcrumbItem>
       <SnBreadcrumbItem variant="chip" :icon="Settings" href="/settings">Settings</SnBreadcrumbItem>
-      <SnBreadcrumbItem variant="chip" :icon="FileText" :show-separator="false">Details</SnBreadcrumbItem>
+      <SnBreadcrumbItem variant="chip" :icon="FileText" :show-separator="false"
+        >Details</SnBreadcrumbItem
+      >
     </SnBreadcrumb>
 
     <p class="sn-breadcrumb-demo__label">outlined — transparent + border</p>

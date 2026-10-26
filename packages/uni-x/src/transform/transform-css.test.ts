@@ -42,7 +42,9 @@ describe('transformCss (component mode)', () => {
     const r = transformCss(css, 'component', FILE);
     expect(r.css).toContain('var(--snx-b-margin-top)');
     expect(r.css).not.toContain('.a .b');
-    expect(r.issues.some((i) => i.kind === 'combinator-unsupported' || i.kind === 'pseudo-class')).toBe(false);
+    expect(
+      r.issues.some((i) => i.kind === 'combinator-unsupported' || i.kind === 'pseudo-class'),
+    ).toBe(false);
   });
 
   it('should merge multiple container rules onto one target var name', () => {
@@ -76,7 +78,9 @@ describe('transformCss (component mode)', () => {
     const r = transformCss('.a {\n  cursor: pointer;\n  color: red;\n}\n', 'component', FILE);
     expect(r.css).not.toContain('cursor');
     expect(r.css).toContain('color: red');
-    expect(r.issues.some((i) => i.kind === 'unsupported-property' && i.detail.includes('cursor'))).toBe(true);
+    expect(
+      r.issues.some((i) => i.kind === 'unsupported-property' && i.detail.includes('cursor')),
+    ).toBe(true);
   });
 
   it('should be idempotent (normalize(normalize(x)) === normalize(x))', () => {

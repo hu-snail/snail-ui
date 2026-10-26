@@ -6,15 +6,15 @@
  * Note the `icon` slot is still gated by `showIcon` — toggle it to see the
  * slot lose the render race.
  */
-import { computed, ref, h } from 'vue'
-import { SnButton, SnDialog, SnIcon } from '@snui/vue-web'
-import { CloudUpload, X } from 'lucide-vue-next'
+import { computed, ref, h } from 'vue';
+import { SnButton, SnDialog, SnIcon } from '@snui/vue-web';
+import { CloudUpload, X } from 'lucide-vue-next';
 
 // Closed on load — a dialog must not appear before the reader asks for it.
-const open = ref(false)
-const showIcon = ref(true)
+const open = ref(false);
+const showIcon = ref(true);
 
-const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }))
+const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }));
 </script>
 
 <template>
@@ -22,7 +22,7 @@ const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }))
     <div class="dlg-slots__bar">
       <SnButton type="primary" size="small" @click="open = true">打开对话框</SnButton>
       <label class="dlg-slots__toggle">
-        <input v-model="showIcon" type="checkbox">
+        <input v-model="showIcon" type="checkbox" />
         showIcon
       </label>
     </div>
@@ -37,8 +37,7 @@ const customIcon = computed(() => h(SnIcon, { icon: CloudUpload, size: 22 }))
         </template>
         <template #default>
           <p class="dlg-slots__body">
-            正文来自 <code>default</code> 插槽，可以放任意结构 ——
-            列表、代码块、甚至一个表单。
+            正文来自 <code>default</code> 插槽，可以放任意结构 —— 列表、代码块、甚至一个表单。
           </p>
         </template>
         <template #close>

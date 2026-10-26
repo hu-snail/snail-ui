@@ -29,57 +29,57 @@ added to the wd-notify parity list.
 ```
 
 ```ts
-import { SnNotify } from '@snui/uni'
+import { SnNotify } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `visible` | boolean | false | no | Visibility (`v-model:visible`). |
-| `type` | 'primary' | 'success' | 'warning' | 'danger' | 'danger' | no | Semantic type — fill color + default glyph. |
-| `message` | string | number | '' | no | Message text; `\n` renders as a line break. |
-| `duration` | number | 3000 | no | Auto-dismiss delay in ms; `0` keeps it open. |
-| `position` | 'top' | 'bottom' | 'top' | no | Anchor of the banner. |
-| `color` | string | '' | no | Text color override. |
-| `background` | string | '' | no | Background color override. |
-| `zIndex` | number | 99 | no | Stacking level. |
-| `safeHeight` | number | string | — | no | Extra top offset (bare number = px). |
-| `closable` | boolean | false | no | Show the close button. |
-| `variant` | 'filled' | 'floating' | 'filled' | no | Edge-to-edge bar or inset rounded card. |
-| `selector` | string | '' | no | Instance id (parity only). |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
+| Name          | Type      | Default    | Required  | Description                                  |
+| ------------- | --------- | ---------- | --------- | -------------------------------------------- |
+| `visible`     | boolean   | false      | no        | Visibility (`v-model:visible`).              |
+| `type`        | 'primary' | 'success'  | 'warning' | 'danger'                                     | 'danger'                                    | no  | Semantic type — fill color + default glyph. |
+| `message`     | string    | number     | ''        | no                                           | Message text; `\n` renders as a line break. |
+| `duration`    | number    | 3000       | no        | Auto-dismiss delay in ms; `0` keeps it open. |
+| `position`    | 'top'     | 'bottom'   | 'top'     | no                                           | Anchor of the banner.                       |
+| `color`       | string    | ''         | no        | Text color override.                         |
+| `background`  | string    | ''         | no        | Background color override.                   |
+| `zIndex`      | number    | 99         | no        | Stacking level.                              |
+| `safeHeight`  | number    | string     | —         | no                                           | Extra top offset (bare number = px).        |
+| `closable`    | boolean   | false      | no        | Show the close button.                       |
+| `variant`     | 'filled'  | 'floating' | 'filled'  | no                                           | Edge-to-edge bar or inset rounded card.     |
+| `selector`    | string    | ''         | no        | Instance id (parity only).                   |
+| `customClass` | string    | ''         | no        | Custom class for the root node.              |
+| `customStyle` | string    | ''         | no        | Custom inline style for the root node.       |
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
+| Event            | Payload | Description                                        |
+| ---------------- | ------- | -------------------------------------------------- |
 | `update:visible` | boolean | v-model sync (also fires on auto-dismiss / close). |
-| `click` | Event | Banner body tapped. |
-| `opened` | — | Banner finished appearing. |
-| `closed` | — | Banner finished leaving (node unmounted). |
+| `click`          | Event   | Banner body tapped.                                |
+| `opened`         | —       | Banner finished appearing.                         |
+| `closed`         | —       | Banner finished leaving (node unmounted).          |
 
 ## Slots
 
-| Slot | Description |
-|---|---|
+| Slot      | Description                                       |
+| --------- | ------------------------------------------------- |
 | `default` | Custom notification content (replaces `message`). |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Action primary | `--sn-mp-color-action-primary` | `type="primary"` filled fill |
-| Feedback success / warning / danger | `--sn-mp-color-feedback-success …` | Filled fills + floating icons |
-| Text on primary | `--sn-mp-color-text-on-primary` | Filled variant text |
-| Text primary | `--sn-mp-color-text-primary` | Floating variant text |
-| Background elevated | `--sn-mp-color-background-elevated` | Floating card surface |
-| Shadow MD | `--sn-mp-shadow-md` | Floating card shadow |
-| Font size MD | `--sn-mp-font-size-md` | Message size |
-| Line height normal | `--sn-mp-font-line-height-normal` | Message line height |
-| Spacing 3 / 4 / 5 | `--sn-mp-spacing-3 …` | Padding + icon gap |
-| Radius LG | `--sn-mp-radius-lg` | Floating card corners |
+| Token                               | CSS Variable                        | Purpose                       |
+| ----------------------------------- | ----------------------------------- | ----------------------------- |
+| Action primary                      | `--sn-mp-color-action-primary`      | `type="primary"` filled fill  |
+| Feedback success / warning / danger | `--sn-mp-color-feedback-success …`  | Filled fills + floating icons |
+| Text on primary                     | `--sn-mp-color-text-on-primary`     | Filled variant text           |
+| Text primary                        | `--sn-mp-color-text-primary`        | Floating variant text         |
+| Background elevated                 | `--sn-mp-color-background-elevated` | Floating card surface         |
+| Shadow MD                           | `--sn-mp-shadow-md`                 | Floating card shadow          |
+| Font size MD                        | `--sn-mp-font-size-md`              | Message size                  |
+| Line height normal                  | `--sn-mp-font-line-height-normal`   | Message line height           |
+| Spacing 3 / 4 / 5                   | `--sn-mp-spacing-3 …`               | Padding + icon gap            |
+| Radius LG                           | `--sn-mp-radius-lg`                 | Floating card corners         |
 
 ## Accessibility
 

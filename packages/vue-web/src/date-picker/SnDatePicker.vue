@@ -1,13 +1,18 @@
 <template>
   <div
     ref="rootRef"
-    :class="['sn-date-picker', `sn-date-picker--${size}`, {
-      'sn-date-picker--disabled': disabled,
-      'sn-date-picker--readonly': readonly,
-      'sn-date-picker--focused': isFocused,
-      'sn-date-picker--active': isPanelOpen,
-      [`sn-date-picker--status-${status}`]: status !== 'default',
-    }, customClass]"
+    :class="[
+      'sn-date-picker',
+      `sn-date-picker--${size}`,
+      {
+        'sn-date-picker--disabled': disabled,
+        'sn-date-picker--readonly': readonly,
+        'sn-date-picker--focused': isFocused,
+        'sn-date-picker--active': isPanelOpen,
+        [`sn-date-picker--status-${status}`]: status !== 'default',
+      },
+      customClass,
+    ]"
     :data-snui-component="'date-picker'"
     :data-size="size"
     :data-status="status"
@@ -32,7 +37,9 @@
       @blur="onBlur"
     >
       <template v-if="isRange">
-        <span v-if="rangeStartText !== null" class="sn-date-picker__value">{{ rangeStartText }}</span>
+        <span v-if="rangeStartText !== null" class="sn-date-picker__value">{{
+          rangeStartText
+        }}</span>
         <span v-else class="sn-date-picker__placeholder">{{ rangePlaceholders[0] }}</span>
         <span class="sn-date-picker__separator" aria-hidden="true">{{ locale.DatePicker.to }}</span>
         <span v-if="rangeEndText !== null" class="sn-date-picker__value">{{ rangeEndText }}</span>
@@ -81,16 +88,24 @@
           @mousedown.prevent
         >
           <div class="sn-date-picker-panel__calendars">
-            <div
-              v-for="cal in calendars"
-              :key="cal.key"
-              class="sn-date-picker-calendar"
-            >
+            <div v-for="cal in calendars" :key="cal.key" class="sn-date-picker-calendar">
               <div class="sn-date-picker-calendar__header">
-                <button type="button" class="sn-date-picker-nav" :aria-label="`Previous ${navUnitLabel}s`" :tabindex="-1" @click="shiftAnchor(-navBigStep)">
+                <button
+                  type="button"
+                  class="sn-date-picker-nav"
+                  :aria-label="`Previous ${navUnitLabel}s`"
+                  :tabindex="-1"
+                  @click="shiftAnchor(-navBigStep)"
+                >
                   <SnIcon :icon="DoubleChevronLeftIcon" :size="12" />
                 </button>
-                <button type="button" class="sn-date-picker-nav" :aria-label="`Previous ${navUnitLabel}`" :tabindex="-1" @click="shiftAnchor(-1)">
+                <button
+                  type="button"
+                  class="sn-date-picker-nav"
+                  :aria-label="`Previous ${navUnitLabel}`"
+                  :tabindex="-1"
+                  @click="shiftAnchor(-1)"
+                >
                   <SnIcon :icon="ChevronLeftIcon" :size="12" />
                 </button>
                 <button
@@ -98,26 +113,51 @@
                   class="sn-date-picker-calendar__title"
                   :tabindex="-1"
                   @click="onTitleClick"
-                >{{ cal.title }}</button>
-                <button type="button" class="sn-date-picker-nav" :aria-label="`Next ${navUnitLabel}`" :tabindex="-1" @click="shiftAnchor(1)">
+                >
+                  {{ cal.title }}
+                </button>
+                <button
+                  type="button"
+                  class="sn-date-picker-nav"
+                  :aria-label="`Next ${navUnitLabel}`"
+                  :tabindex="-1"
+                  @click="shiftAnchor(1)"
+                >
                   <SnIcon :icon="ChevronRightIcon" :size="12" />
                 </button>
-                <button type="button" class="sn-date-picker-nav" :aria-label="`Next ${navUnitLabel}s`" :tabindex="-1" @click="shiftAnchor(navBigStep)">
+                <button
+                  type="button"
+                  class="sn-date-picker-nav"
+                  :aria-label="`Next ${navUnitLabel}s`"
+                  :tabindex="-1"
+                  @click="shiftAnchor(navBigStep)"
+                >
                   <SnIcon :icon="DoubleChevronRightIcon" :size="12" />
                 </button>
               </div>
 
               <!-- Day view -->
-              <div v-if="viewMode === 'day'" class="sn-date-picker-grid" role="grid" :aria-label="cal.title">
+              <div
+                v-if="viewMode === 'day'"
+                class="sn-date-picker-grid"
+                role="grid"
+                :aria-label="cal.title"
+              >
                 <div class="sn-date-picker-grid__row" role="row">
                   <span
                     v-for="wd in datePickerLocale.weekdays"
                     :key="wd"
                     class="sn-date-picker-grid__weekday"
                     role="columnheader"
-                  >{{ wd }}</span>
+                    >{{ wd }}</span
+                  >
                 </div>
-                <div v-for="(row, ri) in cal.monthGrid" :key="ri" class="sn-date-picker-grid__row" role="row">
+                <div
+                  v-for="(row, ri) in cal.monthGrid"
+                  :key="ri"
+                  class="sn-date-picker-grid__row"
+                  role="row"
+                >
                   <div
                     v-for="cell in row"
                     :key="cell.ts"
@@ -129,20 +169,37 @@
                       'sn-date-picker-cell--start': isCellStart(cell.ts),
                       'sn-date-picker-cell--end': isCellEnd(cell.ts),
                       'sn-date-picker-cell--in-range': isCellInRange(cell.ts),
-                      'sn-date-picker-cell--cursor': cursor !== null && cell.ts === startOfDay(cursor),
+                      'sn-date-picker-cell--cursor':
+                        cursor !== null && cell.ts === startOfDay(cursor),
                     }"
                     role="gridcell"
-                    :aria-selected="isCellSelected(cell.ts) || isCellStart(cell.ts) || isCellEnd(cell.ts) ? 'true' : 'false'"
+                    :aria-selected="
+                      isCellSelected(cell.ts) || isCellStart(cell.ts) || isCellEnd(cell.ts)
+                        ? 'true'
+                        : 'false'
+                    "
                     :data-value="cell.ts"
                     @click="onDayCellClick(cell.ts)"
                     @mouseenter="onDayCellHover(cell.ts)"
-                  >{{ cell.day }}</div>
+                  >
+                    {{ cell.day }}
+                  </div>
                 </div>
               </div>
 
               <!-- Month-of-year view -->
-              <div v-else-if="viewMode === 'month'" class="sn-date-picker-grid sn-date-picker-grid--unit" role="grid" :aria-label="cal.yearTitle">
-                <div v-for="(row, ri) in cal.monthUnitRows" :key="ri" class="sn-date-picker-grid__row" role="row">
+              <div
+                v-else-if="viewMode === 'month'"
+                class="sn-date-picker-grid sn-date-picker-grid--unit"
+                role="grid"
+                :aria-label="cal.yearTitle"
+              >
+                <div
+                  v-for="(row, ri) in cal.monthUnitRows"
+                  :key="ri"
+                  class="sn-date-picker-grid__row"
+                  role="row"
+                >
                   <div
                     v-for="cell in row"
                     :key="cell.value"
@@ -156,13 +213,25 @@
                     :aria-selected="isMonthCellSelected(cell.ts, cal.year) ? 'true' : 'false'"
                     :data-value="cell.value"
                     @click="onMonthCellClick(cell.ts)"
-                  >{{ cell.label }}</div>
+                  >
+                    {{ cell.label }}
+                  </div>
                 </div>
               </div>
 
               <!-- Year view -->
-              <div v-else class="sn-date-picker-grid sn-date-picker-grid--unit" role="grid" :aria-label="cal.decadeTitle">
-                <div v-for="(row, ri) in cal.yearUnitRows" :key="ri" class="sn-date-picker-grid__row" role="row">
+              <div
+                v-else
+                class="sn-date-picker-grid sn-date-picker-grid--unit"
+                role="grid"
+                :aria-label="cal.decadeTitle"
+              >
+                <div
+                  v-for="(row, ri) in cal.yearUnitRows"
+                  :key="ri"
+                  class="sn-date-picker-grid__row"
+                  role="row"
+                >
                   <div
                     v-for="cell in row"
                     :key="cell.value"
@@ -176,7 +245,9 @@
                     :aria-selected="isYearCellSelected(cell.ts) ? 'true' : 'false'"
                     :data-value="cell.value"
                     @click="onYearCellClick(cell.ts)"
-                  >{{ cell.label }}</div>
+                  >
+                    {{ cell.label }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -201,13 +272,20 @@
                 :data-unit="col.key"
                 :data-value="v"
                 @click="onTimeCellClick('start', col.key, v)"
-              >{{ pad2(v) }}</div>
+              >
+                {{ pad2(v) }}
+              </div>
             </div>
           </div>
 
-          <div v-if="hasTime && isRange && rangeDraft.start !== null && rangeDraft.end !== null" class="sn-date-picker-panel__time sn-date-picker-panel__time--range">
+          <div
+            v-if="hasTime && isRange && rangeDraft.start !== null && rangeDraft.end !== null"
+            class="sn-date-picker-panel__time sn-date-picker-panel__time--range"
+          >
             <div v-for="side in RANGE_SIDES" :key="side" class="sn-date-picker-time-group">
-              <div class="sn-date-picker-time-group__label">{{ side === 'start' ? locale.DatePicker.startTime : locale.DatePicker.endTime }}</div>
+              <div class="sn-date-picker-time-group__label">
+                {{ side === 'start' ? locale.DatePicker.startTime : locale.DatePicker.endTime }}
+              </div>
               <div class="sn-date-picker-panel__time">
                 <div
                   v-for="col in timeColumns"
@@ -220,20 +298,29 @@
                     v-for="v in col.values"
                     :key="v"
                     class="sn-date-picker-time-item"
-                    :class="{ 'sn-date-picker-time-item--selected': rangeTimeDraft[side][col.key] === v }"
+                    :class="{
+                      'sn-date-picker-time-item--selected': rangeTimeDraft[side][col.key] === v,
+                    }"
                     role="option"
                     :aria-selected="rangeTimeDraft[side][col.key] === v ? 'true' : 'false'"
                     :data-unit="col.key"
                     :data-value="v"
                     @click="onTimeCellClick(side, col.key, v)"
-                  >{{ pad2(v) }}</div>
+                  >
+                    {{ pad2(v) }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
           <div v-if="hasTime" class="sn-date-picker-panel__footer">
-            <button type="button" class="sn-date-picker-panel__confirm" :tabindex="-1" @click="confirmAndClose">
+            <button
+              type="button"
+              class="sn-date-picker-panel__confirm"
+              :tabindex="-1"
+              @click="confirmAndClose"
+            >
               {{ locale.DatePicker.confirm }}
             </button>
           </div>
@@ -279,16 +366,9 @@
  * declared below; CSS uses `--sn-web-date-picker-*` aliases with
  * `--sn-web-color-*` fallbacks only.
  */
-import {
-  computed,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
-import SnIcon from '../icon/SnIcon.vue'
-import { useOverlayFollow } from '../_internal/use-overlay-follow'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import SnIcon from '../icon/SnIcon.vue';
+import { useOverlayFollow } from '../_internal/use-overlay-follow';
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -296,8 +376,8 @@ import {
   CloseIcon,
   DoubleChevronLeftIcon,
   DoubleChevronRightIcon,
-} from './sn-date-picker-icons'
-import { useLocale } from '../locales/use-locale'
+} from './sn-date-picker-icons';
+import { useLocale } from '../locales/use-locale';
 import {
   DEFAULT_FORMATS,
   addMonths,
@@ -321,36 +401,36 @@ import {
   type SnDatePickerStatus,
   type SnDatePickerType,
   type SnUnitGridCell,
-} from './sn-date-picker-types'
+} from './sn-date-picker-types';
 
-defineOptions({ name: 'SnDatePicker' })
+defineOptions({ name: 'SnDatePicker' });
 
 const props = withDefaults(
   defineProps<{
     /** Bound value: timestamp (single) | [start, end] (range) | null. */
-    modelValue?: number | [number, number] | null
+    modelValue?: number | [number, number] | null;
     /** Panel / value mode. */
-    type?: SnDatePickerType
+    type?: SnDatePickerType;
     /** Display format — lowercase tokens (yyyy MM dd HH mm ss). */
-    format?: string
+    format?: string;
     /** Placeholder; `[start, end]` pair in range modes. */
-    placeholder?: string | [string, string]
+    placeholder?: string | [string, string];
     /** Show the clear (×) button when a value is present. */
-    clearable?: boolean
+    clearable?: boolean;
     /** Disables interaction. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — opens nothing, commits nothing. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. */
-    size?: SnDatePickerSize
+    size?: SnDatePickerSize;
     /** Validation-driven visual status. */
-    status?: SnDatePickerStatus
+    status?: SnDatePickerStatus;
     /** Accessible name for the trigger (fallback: 'Date picker'). */
-    ariaLabel?: string
+    ariaLabel?: string;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     modelValue: null,
@@ -365,102 +445,102 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — fires on any commit. */
-  (e: 'update:modelValue', value: number | [number, number] | null): void
+  (e: 'update:modelValue', value: number | [number, number] | null): void;
   /** Value committed (also fires for clear). */
-  (e: 'change', value: number | [number, number] | null): void
+  (e: 'change', value: number | [number, number] | null): void;
   /** Value cleared via the × button. */
-  (e: 'clear'): void
+  (e: 'clear'): void;
   /** Trigger gained focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Trigger lost focus. */
-  (e: 'blur', event: FocusEvent): void
-}>()
+  (e: 'blur', event: FocusEvent): void;
+}>();
 
 /* ─────────── Local view model ─────────── */
 
 /** Keyboard cursor highlight unit. */
-type SnTimeUnit = 'hour' | 'minute' | 'second'
-type SnTimeOfDay = Record<SnTimeUnit, number>
-type SnRangeSide = 'start' | 'end'
-const RANGE_SIDES: readonly SnRangeSide[] = ['start', 'end']
+type SnTimeUnit = 'hour' | 'minute' | 'second';
+type SnTimeOfDay = Record<SnTimeUnit, number>;
+type SnRangeSide = 'start' | 'end';
+const RANGE_SIDES: readonly SnRangeSide[] = ['start', 'end'];
 
 /** Panel grid view — 'day' for date grids, 'month'/'year' are drill-downs. */
-type SnViewMode = 'day' | 'month' | 'year'
+type SnViewMode = 'day' | 'month' | 'year';
 
 /** Active DatePicker locale namespace (naive-ui i18n). */
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 /** Active DatePicker locale namespace (naive-ui i18n). */
-const datePickerLocale = computed(() => locale.value.DatePicker)
+const datePickerLocale = computed(() => locale.value.DatePicker);
 /** Module-level counter so every instance owns unique DOM ids. */
-let datePickerInstanceSeed = 0
-const instanceId = ++datePickerInstanceSeed
-const panelId = `sn-date-picker-panel-${instanceId}`
+let datePickerInstanceSeed = 0;
+const instanceId = ++datePickerInstanceSeed;
+const panelId = `sn-date-picker-panel-${instanceId}`;
 
 function cellId(ts: number): string {
-  return `sn-date-picker-cell-${instanceId}-${ts}`
+  return `sn-date-picker-cell-${instanceId}-${ts}`;
 }
 
 function unitCellId(calKey: string, kind: 'm' | 'y', value: number): string {
-  return `sn-date-picker-unit-${instanceId}-${calKey}-${kind}-${value}`
+  return `sn-date-picker-unit-${instanceId}-${calKey}-${kind}-${value}`;
 }
 
 /* ─────────── State ─────────── */
 
-const rootRef = ref<HTMLElement | null>(null)
-const panelRef = ref<HTMLElement | null>(null)
+const rootRef = ref<HTMLElement | null>(null);
+const panelRef = ref<HTMLElement | null>(null);
 
-const isPanelOpen = ref(false)
-const isFocused = ref(false)
-const viewMode = ref<SnViewMode>('day')
+const isPanelOpen = ref(false);
+const isFocused = ref(false);
+const viewMode = ref<SnViewMode>('day');
 /** Anchor timestamp of the left calendar (any instant inside its month). */
-const anchorTs = ref<number>(Date.now())
+const anchorTs = ref<number>(Date.now());
 /** Keyboard cursor — the highlighted date / month / year. */
-const cursor = ref<number>(Date.now())
+const cursor = ref<number>(Date.now());
 /** Single-mode pending day (local midnight). */
-const dateDraft = ref<number | null>(null)
+const dateDraft = ref<number | null>(null);
 /** Single-mode pending time-of-day. */
-const timeDraft = ref<SnTimeOfDay>({ hour: 0, minute: 0, second: 0 })
+const timeDraft = ref<SnTimeOfDay>({ hour: 0, minute: 0, second: 0 });
 /** Range-mode pending days (local midnights). */
-const rangeDraft = ref<{ start: number | null; end: number | null }>({ start: null, end: null })
+const rangeDraft = ref<{ start: number | null; end: number | null }>({ start: null, end: null });
 /** Range-mode pending time-of-day per side. */
 const rangeTimeDraft = ref<{ start: SnTimeOfDay; end: SnTimeOfDay }>({
   start: { hour: 0, minute: 0, second: 0 },
   end: { hour: 0, minute: 0, second: 0 },
-})
+});
 /**
  * Range-mode hover preview: while the end date is being picked, the cell
  * under the pointer becomes the provisional end so the in-range light
  * background tracks the mouse live (reference UX). Cleared on commit,
  * fresh pick, panel close, and external model changes.
  */
-const rangeHoverEnd = ref<number | null>(null)
+const rangeHoverEnd = ref<number | null>(null);
 
-const isRange = computed(() => isRangeType(props.type))
-const hasTime = computed(() => hasTimePart(props.type))
-const isInteractive = computed(() => !props.disabled && !props.readonly)
-const resolvedFormat = computed(() => props.format || DEFAULT_FORMATS[props.type])
+const isRange = computed(() => isRangeType(props.type));
+const hasTime = computed(() => hasTimePart(props.type));
+const isInteractive = computed(() => !props.disabled && !props.readonly);
+const resolvedFormat = computed(() => props.format || DEFAULT_FORMATS[props.type]);
 
 /** Normalized single value (null in range modes). */
 const singleModel = computed<number | null>(() => {
-  if (isRange.value) return null
-  return typeof props.modelValue === 'number' ? props.modelValue : null
-})
+  if (isRange.value) return null;
+  return typeof props.modelValue === 'number' ? props.modelValue : null;
+});
 
 /** Normalized range value (null in single modes). */
 const rangeModel = computed<SnDateRangeValue>(() => {
-  if (!isRange.value) return null
+  if (!isRange.value) return null;
   if (Array.isArray(props.modelValue) && props.modelValue.length === 2) {
-    return [props.modelValue[0], props.modelValue[1]]
+    return [props.modelValue[0], props.modelValue[1]];
   }
-  return null
-})
+  return null;
+});
 
-const hasValue = computed(() => singleModel.value !== null || rangeModel.value !== null)
+const hasValue = computed(() => singleModel.value !== null || rangeModel.value !== null);
 
 /* ─────────── Display ─────────── */
 
@@ -468,99 +548,108 @@ const singlePlaceholder = computed(() =>
   typeof props.placeholder === 'string' && props.placeholder !== ''
     ? props.placeholder
     : datePickerLocale.value.placeholder,
-)
+);
 
 const rangePlaceholders = computed<readonly [string, string]>(() => {
   if (Array.isArray(props.placeholder) && props.placeholder.length === 2) {
-    return [props.placeholder[0], props.placeholder[1]]
+    return [props.placeholder[0], props.placeholder[1]];
   }
-  return [datePickerLocale.value.rangeStartPlaceholder, datePickerLocale.value.rangeEndPlaceholder]
-})
+  return [datePickerLocale.value.rangeStartPlaceholder, datePickerLocale.value.rangeEndPlaceholder];
+});
 
 const singleText = computed<string | null>(() =>
   singleModel.value === null ? null : formatDate(singleModel.value, resolvedFormat.value),
-)
+);
 
 const rangeStartText = computed<string | null>(() => {
-  const v = rangeModel.value
-  if (v === null) return rangeDraft.value.start !== null && isPanelOpen.value
-    ? formatDate(rangeDraft.value.start, resolvedFormat.value)
-    : null
-  return formatDate(v[0], resolvedFormat.value)
-})
+  const v = rangeModel.value;
+  if (v === null)
+    return rangeDraft.value.start !== null && isPanelOpen.value
+      ? formatDate(rangeDraft.value.start, resolvedFormat.value)
+      : null;
+  return formatDate(v[0], resolvedFormat.value);
+});
 
 const rangeEndText = computed<string | null>(() => {
-  const v = rangeModel.value
-  if (v === null) return rangeDraft.value.end !== null && isPanelOpen.value
-    ? formatDate(rangeDraft.value.end, resolvedFormat.value)
-    : null
-  return formatDate(v[1], resolvedFormat.value)
-})
+  const v = rangeModel.value;
+  if (v === null)
+    return rangeDraft.value.end !== null && isPanelOpen.value
+      ? formatDate(rangeDraft.value.end, resolvedFormat.value)
+      : null;
+  return formatDate(v[1], resolvedFormat.value);
+});
 
 const wrapperStyle = computed(() => {
-  if (typeof props.customStyle === 'string') return props.customStyle
-  return Object.entries(props.customStyle ?? {}).map(([k, v]) => `${k}:${v}`).join(';')
-})
+  if (typeof props.customStyle === 'string') return props.customStyle;
+  return Object.entries(props.customStyle ?? {})
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';');
+});
 
 /* ─────────── Calendar model ─────────── */
 
 interface SnCalendarViewModel {
-  key: string
-  year: number
-  month: number
-  title: string
-  yearTitle: string
-  decadeTitle: string
-  monthGrid: ReturnType<typeof buildMonthGrid>
-  monthUnitRows: SnUnitGridCell[][]
-  yearUnitRows: SnUnitGridCell[][]
+  key: string;
+  year: number;
+  month: number;
+  title: string;
+  yearTitle: string;
+  decadeTitle: string;
+  monthGrid: ReturnType<typeof buildMonthGrid>;
+  monthUnitRows: SnUnitGridCell[][];
+  yearUnitRows: SnUnitGridCell[][];
 }
 
 function chunk<T>(items: readonly T[], size: number): T[][] {
-  const rows: T[][] = []
-  for (let i = 0; i < items.length; i += size) rows.push(items.slice(i, i + size))
-  return rows
+  const rows: T[][] = [];
+  for (let i = 0; i < items.length; i += size) rows.push(items.slice(i, i + size));
+  return rows;
 }
 
 function calendarOf(anchor: number, key: string): SnCalendarViewModel {
-  const p = getDateParts(anchor)
+  const p = getDateParts(anchor);
   return {
     key,
     year: p.year,
     month: p.month,
-    title: datePickerLocale.value.monthTitle.replace('{y}', String(p.year)).replace('{m}', String(p.month + 1)),
+    title: datePickerLocale.value.monthTitle
+      .replace('{y}', String(p.year))
+      .replace('{m}', String(p.month + 1)),
     yearTitle: datePickerLocale.value.yearTitle.replace('{y}', String(p.year)),
     decadeTitle: formatDecadeTitle(p.year),
     monthGrid: buildMonthGrid(p.year, p.month),
     monthUnitRows: chunk(
-      buildMonthUnitGrid(p.year).map((c) => ({ ...c, label: datePickerLocale.value.months[c.value] ?? c.label })),
+      buildMonthUnitGrid(p.year).map((c) => ({
+        ...c,
+        label: datePickerLocale.value.months[c.value] ?? c.label,
+      })),
       4,
     ),
     yearUnitRows: chunk(buildYearUnitGrid(p.year), 4),
-  }
+  };
 }
 
 const calendars = computed<SnCalendarViewModel[]>(() => {
   if (isRange.value) {
-    return [calendarOf(anchorTs.value, 'a'), calendarOf(addMonths(anchorTs.value, 1), 'b')]
+    return [calendarOf(anchorTs.value, 'a'), calendarOf(addMonths(anchorTs.value, 1), 'b')];
   }
-  return [calendarOf(anchorTs.value, 'a')]
-})
+  return [calendarOf(anchorTs.value, 'a')];
+});
 
 /** Header step unit label (a11y for the nav buttons). */
 const navUnitLabel = computed(() =>
   viewMode.value === 'day' ? 'month' : viewMode.value === 'month' ? 'year' : 'decade',
-)
+);
 
 /** Big step: ±1 year in day view, ±decade in month/year views. */
-const navBigStep = computed(() => (viewMode.value === 'day' ? 12 : 120))
+const navBigStep = computed(() => (viewMode.value === 'day' ? 12 : 120));
 
 /* ─────────── Cell state predicates (day view) ─────────── */
 
 function isCellSelected(ts: number): boolean {
-  if (isRange.value) return false
-  if (!isPanelOpen.value) return singleModel.value !== null && isSameDay(ts, singleModel.value)
-  return dateDraft.value !== null && isSameDay(ts, dateDraft.value)
+  if (isRange.value) return false;
+  if (!isPanelOpen.value) return singleModel.value !== null && isSameDay(ts, singleModel.value);
+  return dateDraft.value !== null && isSameDay(ts, dateDraft.value);
 }
 
 function isCellStart(ts: number): boolean {
@@ -568,45 +657,45 @@ function isCellStart(ts: number): boolean {
     // Draft pick in progress — the draft start wins over the committed one
     // (restarting a pick must move the --start marker immediately).
     if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
-      return isSameDay(ts, rangeDraft.value.start)
+      return isSameDay(ts, rangeDraft.value.start);
     }
-    if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[0])
-    return rangeDraft.value.start !== null && isSameDay(ts, rangeDraft.value.start)
+    if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[0]);
+    return rangeDraft.value.start !== null && isSameDay(ts, rangeDraft.value.start);
   }
-  return false
+  return false;
 }
 
 function isCellEnd(ts: number): boolean {
   if (isRange.value) {
     // No end picked yet — no --end marker (the pointer cell shows --cursor).
     if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
-      return false
+      return false;
     }
-    if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[1])
-    return rangeDraft.value.end !== null && isSameDay(ts, rangeDraft.value.end)
+    if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[1]);
+    return rangeDraft.value.end !== null && isSameDay(ts, rangeDraft.value.end);
   }
-  return false
+  return false;
 }
 
 function rangeBounds(): { start: number | null; end: number | null } {
   // Draft pick in progress (start set, end pending) — the preview wins over
   // the committed model so restarting a pick clears the old interval at once.
   if (isRange.value && rangeDraft.value.start !== null && rangeDraft.value.end === null) {
-    const a = startOfDay(rangeDraft.value.start)
-    const b = startOfDay(rangeHoverEnd.value ?? cursor.value)
-    return a <= b ? { start: a, end: b } : { start: b, end: a }
+    const a = startOfDay(rangeDraft.value.start);
+    const b = startOfDay(rangeHoverEnd.value ?? cursor.value);
+    return a <= b ? { start: a, end: b } : { start: b, end: a };
   }
   if (isRange.value && rangeModel.value !== null) {
-    return { start: rangeModel.value[0], end: rangeModel.value[1] }
+    return { start: rangeModel.value[0], end: rangeModel.value[1] };
   }
-  return rangeDraft.value
+  return rangeDraft.value;
 }
 
 function isCellInRange(ts: number): boolean {
-  const { start, end } = rangeBounds()
-  if (start === null || end === null) return false
-  const day = startOfDay(ts)
-  return day > startOfDay(start) && day < startOfDay(end)
+  const { start, end } = rangeBounds();
+  if (start === null || end === null) return false;
+  const day = startOfDay(ts);
+  return day > startOfDay(start) && day < startOfDay(end);
 }
 
 /* ─────────── Month / year view predicates ─────────── */
@@ -614,30 +703,30 @@ function isCellInRange(ts: number): boolean {
 function isMonthCellSelected(ts: number, calYear: number): boolean {
   if (props.type === 'month') {
     if (!isPanelOpen.value || dateDraft.value === null) {
-      return singleModel.value !== null && isSameMonth(ts, singleModel.value)
+      return singleModel.value !== null && isSameMonth(ts, singleModel.value);
     }
-    return isSameMonth(ts, dateDraft.value)
+    return isSameMonth(ts, dateDraft.value);
   }
   // date modes: navigation grid — highlight the anchor month.
-  return isSameMonth(ts, anchorTs.value) && getDateParts(ts).year === calYear
+  return isSameMonth(ts, anchorTs.value) && getDateParts(ts).year === calYear;
 }
 
 function isMonthCellCursor(ts: number, calYear: number): boolean {
-  return isSameMonth(ts, cursor.value) && getDateParts(ts).year === calYear
+  return isSameMonth(ts, cursor.value) && getDateParts(ts).year === calYear;
 }
 
 function isYearCellSelected(ts: number): boolean {
   if (props.type === 'year') {
     if (!isPanelOpen.value || dateDraft.value === null) {
-      return singleModel.value !== null && isSameYear(ts, singleModel.value)
+      return singleModel.value !== null && isSameYear(ts, singleModel.value);
     }
-    return isSameYear(ts, dateDraft.value)
+    return isSameYear(ts, dateDraft.value);
   }
-  return isSameYear(ts, anchorTs.value)
+  return isSameYear(ts, anchorTs.value);
 }
 
 function isYearCellCursor(ts: number): boolean {
-  return isSameYear(ts, cursor.value)
+  return isSameYear(ts, cursor.value);
 }
 
 /* ─────────── Time columns ─────────── */
@@ -646,222 +735,233 @@ const timeColumns = computed(() => [
   { key: 'hour' as const, values: rangeInclusive(0, 23) },
   { key: 'minute' as const, values: rangeInclusive(0, 59) },
   { key: 'second' as const, values: rangeInclusive(0, 59) },
-])
+]);
 
 /* ─────────── aria-activedescendant ─────────── */
 
 const activeDescendant = computed<string | null>(() => {
-  if (!isPanelOpen.value) return null
+  if (!isPanelOpen.value) return null;
   if (viewMode.value === 'day') {
-    return cellId(startOfDay(cursor.value))
+    return cellId(startOfDay(cursor.value));
   }
   // Unit views always anchor on the left calendar.
-  const p = getDateParts(cursor.value)
-  return unitCellId('a', viewMode.value === 'month' ? 'm' : 'y',
-    viewMode.value === 'month' ? p.month : p.year)
-})
+  const p = getDateParts(cursor.value);
+  return unitCellId(
+    'a',
+    viewMode.value === 'month' ? 'm' : 'y',
+    viewMode.value === 'month' ? p.month : p.year,
+  );
+});
 
 /* ─────────── Panel positioning (simplified popper) ─────────── */
 
-const PANEL_VIEWPORT_GAP = 4
-const placement = ref<'bottom' | 'top'>('bottom')
-const panelStyle = ref<Record<string, string>>({})
+const PANEL_VIEWPORT_GAP = 4;
+const placement = ref<'bottom' | 'top'>('bottom');
+const panelStyle = ref<Record<string, string>>({});
 
 function repositionPanel(): void {
-  const root = rootRef.value
-  const panel = panelRef.value
-  if (!root || !panel) return
-  const rootRect = root.getBoundingClientRect()
+  const root = rootRef.value;
+  const panel = panelRef.value;
+  if (!root || !panel) return;
+  const rootRect = root.getBoundingClientRect();
   // offsetWidth/offsetHeight read the layout box, which the sn-pop enter
   // transform (scale 0.92) does not distort — getBoundingClientRect would
   // measure the scaled panel while the enter transition is running.
-  const panelWidth = panel.offsetWidth
-  const panelHeight = panel.offsetHeight
-  const vw = window.innerWidth
-  const vh = window.innerHeight
+  const panelWidth = panel.offsetWidth;
+  const panelHeight = panel.offsetHeight;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
 
   const left = Math.min(
     Math.max(PANEL_VIEWPORT_GAP, rootRect.left),
     Math.max(PANEL_VIEWPORT_GAP, vw - panelWidth - PANEL_VIEWPORT_GAP),
-  )
+  );
 
   // Bottom preferred; flip to top when the viewport lacks room below
   // but has room above.
-  const roomBelow = vh - rootRect.bottom
-  const roomAbove = rootRect.top
-  const useTop = roomBelow < panelHeight && roomAbove > roomBelow
-  placement.value = useTop ? 'top' : 'bottom'
+  const roomBelow = vh - rootRect.bottom;
+  const roomAbove = rootRect.top;
+  const useTop = roomBelow < panelHeight && roomAbove > roomBelow;
+  placement.value = useTop ? 'top' : 'bottom';
 
-  const top = useTop
-    ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight)
-    : rootRect.bottom
+  const top = useTop ? Math.max(PANEL_VIEWPORT_GAP, rootRect.top - panelHeight) : rootRect.bottom;
 
   panelStyle.value = {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
     'min-width': `${Math.round(rootRect.width)}px`,
-  }
+  };
 }
 
 /* Scroll/resize follow: while the panel is open, any scroll (page or a
  * nested scrollable ancestor) or viewport resize re-runs repositionPanel so
  * the fixed-position panel stays glued to the trigger instead of detaching. */
-const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen)
+const followViewport = useOverlayFollow(rootRef, panelRef, repositionPanel, isPanelOpen);
 
 /* ─────────── Outside-click dismiss (§41/§42) ─────────── */
 
 function onDocumentMouseDown(event: MouseEvent): void {
-  if (!isPanelOpen.value) return
-  const target = event.target as Node | null
-  if (!target) return
-  if (rootRef.value && rootRef.value.contains(target)) return
-  if (panelRef.value && panelRef.value.contains(target)) return
-  closePanel()
+  if (!isPanelOpen.value) return;
+  const target = event.target as Node | null;
+  if (!target) return;
+  if (rootRef.value && rootRef.value.contains(target)) return;
+  if (panelRef.value && panelRef.value.contains(target)) return;
+  closePanel();
 }
 
 /* ─────────── Open / close ─────────── */
 
 function initDraftsFromModel(): void {
-  const now = Date.now()
+  const now = Date.now();
   if (isRange.value) {
-    const v = rangeModel.value
+    const v = rangeModel.value;
     if (v !== null) {
-      rangeDraft.value = { start: startOfDay(v[0]), end: startOfDay(v[1]) }
-      rangeHoverEnd.value = null
-      const sa = getDateParts(v[0])
-      const sb = getDateParts(v[1])
+      rangeDraft.value = { start: startOfDay(v[0]), end: startOfDay(v[1]) };
+      rangeHoverEnd.value = null;
+      const sa = getDateParts(v[0]);
+      const sb = getDateParts(v[1]);
       rangeTimeDraft.value = {
         start: { hour: sa.hour, minute: sa.minute, second: sa.second },
         end: { hour: sb.hour, minute: sb.minute, second: sb.second },
-      }
-      anchorTs.value = v[0]
-      cursor.value = v[0]
+      };
+      anchorTs.value = v[0];
+      cursor.value = v[0];
     } else {
-      rangeDraft.value = { start: null, end: null }
-      rangeHoverEnd.value = null
+      rangeDraft.value = { start: null, end: null };
+      rangeHoverEnd.value = null;
       rangeTimeDraft.value = {
         start: { hour: 0, minute: 0, second: 0 },
         end: { hour: 0, minute: 0, second: 0 },
-      }
-      anchorTs.value = now
-      cursor.value = now
+      };
+      anchorTs.value = now;
+      cursor.value = now;
     }
   } else {
-    const v = singleModel.value
+    const v = singleModel.value;
     if (v !== null) {
-      dateDraft.value = startOfDay(v)
-      const p = getDateParts(v)
-      timeDraft.value = { hour: p.hour, minute: p.minute, second: p.second }
-      anchorTs.value = v
-      cursor.value = v
+      dateDraft.value = startOfDay(v);
+      const p = getDateParts(v);
+      timeDraft.value = { hour: p.hour, minute: p.minute, second: p.second };
+      anchorTs.value = v;
+      cursor.value = v;
     } else {
-      dateDraft.value = startOfDay(now)
-      timeDraft.value = { hour: 0, minute: 0, second: 0 }
-      anchorTs.value = now
-      cursor.value = now
+      dateDraft.value = startOfDay(now);
+      timeDraft.value = { hour: 0, minute: 0, second: 0 };
+      anchorTs.value = now;
+      cursor.value = now;
     }
   }
-  viewMode.value = props.type === 'month' ? 'month' : props.type === 'year' ? 'year' : 'day'
+  viewMode.value = props.type === 'month' ? 'month' : props.type === 'year' ? 'year' : 'day';
 }
 
 function openPanel(): void {
-  if (!isInteractive.value || isPanelOpen.value) return
-  isPanelOpen.value = true
-  initDraftsFromModel()
+  if (!isInteractive.value || isPanelOpen.value) return;
+  isPanelOpen.value = true;
+  initDraftsFromModel();
   void nextTick(() => {
-    repositionPanel()
-    followViewport.start()
-  })
+    repositionPanel();
+    followViewport.start();
+  });
 }
 
 function closePanel(): void {
-  if (!isPanelOpen.value) return
-  isPanelOpen.value = false
-  rangeHoverEnd.value = null
-  followViewport.stop()
+  if (!isPanelOpen.value) return;
+  isPanelOpen.value = false;
+  rangeHoverEnd.value = null;
+  followViewport.stop();
 }
 
 /* ─────────── Commit ─────────── */
 
 function emitCommit(value: number | [number, number] | null): void {
-  emit('update:modelValue', value)
-  emit('change', value)
+  emit('update:modelValue', value);
+  emit('change', value);
 }
 
 function commitSingle(): void {
   // Commit from the cursor (kept in sync on every cell click and keyboard
   // move) — not from dateDraft, so keyboard-moved-but-unconfirmed days
   // confirm exactly what the panel highlights.
-  const day = startOfDay(cursor.value)
+  const day = startOfDay(cursor.value);
   const ts = hasTime.value
     ? combineDateTime(day, timeDraft.value.hour, timeDraft.value.minute, timeDraft.value.second)
     : props.type === 'month'
       ? startOfMonthTs(day)
       : props.type === 'year'
         ? startOfYearTs(day)
-        : day
-  emitCommit(ts)
+        : day;
+  emitCommit(ts);
 }
 
 function startOfMonthTs(ms: number): number {
-  const p = getDateParts(ms)
-  return new Date(p.year, p.month, 1).getTime()
+  const p = getDateParts(ms);
+  return new Date(p.year, p.month, 1).getTime();
 }
 
 function startOfYearTs(ms: number): number {
-  const p = getDateParts(ms)
-  return new Date(p.year, 0, 1).getTime()
+  const p = getDateParts(ms);
+  return new Date(p.year, 0, 1).getTime();
 }
 
 function commitRange(): void {
-  const { start, end } = rangeDraft.value
-  if (start === null || end === null) return
+  const { start, end } = rangeDraft.value;
+  if (start === null || end === null) return;
   const s = hasTime.value
-    ? combineDateTime(start, rangeTimeDraft.value.start.hour, rangeTimeDraft.value.start.minute, rangeTimeDraft.value.start.second)
-    : start
+    ? combineDateTime(
+        start,
+        rangeTimeDraft.value.start.hour,
+        rangeTimeDraft.value.start.minute,
+        rangeTimeDraft.value.start.second,
+      )
+    : start;
   const e = hasTime.value
-    ? combineDateTime(end, rangeTimeDraft.value.end.hour, rangeTimeDraft.value.end.minute, rangeTimeDraft.value.end.second)
-    : end
-  emitCommit([s, e])
+    ? combineDateTime(
+        end,
+        rangeTimeDraft.value.end.hour,
+        rangeTimeDraft.value.end.minute,
+        rangeTimeDraft.value.end.second,
+      )
+    : end;
+  emitCommit([s, e]);
 }
 
 function clearValue(): void {
-  if (!isInteractive.value) return
-  emitCommit(null)
-  emit('clear')
-  closePanel()
+  if (!isInteractive.value) return;
+  emitCommit(null);
+  emit('clear');
+  closePanel();
 }
 
 /* ─────────── Cell interactions ─────────── */
 
 function onDayCellClick(ts: number): void {
-  if (!isInteractive.value) return
-  const day = startOfDay(ts)
-  cursor.value = day
+  if (!isInteractive.value) return;
+  const day = startOfDay(ts);
+  cursor.value = day;
   if (isRange.value) {
     if (rangeDraft.value.start === null || rangeDraft.value.end !== null) {
       // Fresh pick: start over with the clicked day as start.
-      rangeDraft.value = { start: day, end: null }
-      rangeHoverEnd.value = null
+      rangeDraft.value = { start: day, end: null };
+      rangeHoverEnd.value = null;
     } else {
       // Second pick: swap when end < start, then commit.
-      const start = rangeDraft.value.start
-      const [lo, hi] = day < start ? [day, start] : [start, day]
-      rangeDraft.value = { start: lo, end: hi }
-      rangeHoverEnd.value = null
+      const start = rangeDraft.value.start;
+      const [lo, hi] = day < start ? [day, start] : [start, day];
+      rangeDraft.value = { start: lo, end: hi };
+      rangeHoverEnd.value = null;
       if (hasTime.value) {
-        commitRange() // datetimerange keeps the panel open (确认 closes)
+        commitRange(); // datetimerange keeps the panel open (确认 closes)
       } else {
-        commitRange()
-        closePanel()
+        commitRange();
+        closePanel();
       }
     }
-    return
+    return;
   }
-  dateDraft.value = day
-  commitSingle()
-  if (!hasTime.value) closePanel()
+  dateDraft.value = day;
+  commitSingle();
+  if (!hasTime.value) closePanel();
 }
 
 /**
@@ -870,171 +970,171 @@ function onDayCellClick(ts: number): void {
  * Outside the draft phase (or in single modes) this is a no-op.
  */
 function onDayCellHover(ts: number): void {
-  if (!isRange.value || !isInteractive.value) return
+  if (!isRange.value || !isInteractive.value) return;
   if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
-    rangeHoverEnd.value = startOfDay(ts)
+    rangeHoverEnd.value = startOfDay(ts);
   }
 }
 
 function onMonthCellClick(ts: number): void {
-  if (!isInteractive.value) return
-  cursor.value = ts
+  if (!isInteractive.value) return;
+  cursor.value = ts;
   if (props.type === 'month') {
-    dateDraft.value = ts
-    commitSingle()
-    closePanel()
-    return
+    dateDraft.value = ts;
+    commitSingle();
+    closePanel();
+    return;
   }
   // date modes: drill back into the day grid anchored at that month.
-  viewMode.value = 'day'
-  anchorTs.value = ts
+  viewMode.value = 'day';
+  anchorTs.value = ts;
 }
 
 function onYearCellClick(ts: number): void {
-  if (!isInteractive.value) return
-  cursor.value = ts
+  if (!isInteractive.value) return;
+  cursor.value = ts;
   if (props.type === 'year') {
-    dateDraft.value = ts
-    commitSingle()
-    closePanel()
-    return
+    dateDraft.value = ts;
+    commitSingle();
+    closePanel();
+    return;
   }
-  viewMode.value = props.type === 'month' ? 'day' : 'month'
-  anchorTs.value = ts
+  viewMode.value = props.type === 'month' ? 'day' : 'month';
+  anchorTs.value = ts;
 }
 
 function onTimeCellClick(side: SnRangeSide, unit: SnTimeUnit, value: number): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   if (isRange.value) {
-    rangeTimeDraft.value[side][unit] = value
-    if (rangeDraft.value.start !== null && rangeDraft.value.end !== null) commitRange()
-    return
+    rangeTimeDraft.value[side][unit] = value;
+    if (rangeDraft.value.start !== null && rangeDraft.value.end !== null) commitRange();
+    return;
   }
-  timeDraft.value[unit] = value
-  commitSingle()
+  timeDraft.value[unit] = value;
+  commitSingle();
 }
 
 function confirmAndClose(): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   if (isRange.value) {
-    if (rangeDraft.value.start !== null && rangeDraft.value.end !== null) commitRange()
+    if (rangeDraft.value.start !== null && rangeDraft.value.end !== null) commitRange();
   } else {
-    commitSingle()
+    commitSingle();
   }
-  closePanel()
+  closePanel();
 }
 
 /* ─────────── Header navigation ─────────── */
 
 /** Shift anchors by whole months (day view) / years (unit views). */
 function shiftAnchor(deltaUnits: number): void {
-  const months = viewMode.value === 'day' ? deltaUnits : deltaUnits * 12
-  anchorTs.value = addMonths(anchorTs.value, months)
-  cursor.value = addMonths(cursor.value, months)
+  const months = viewMode.value === 'day' ? deltaUnits : deltaUnits * 12;
+  anchorTs.value = addMonths(anchorTs.value, months);
+  cursor.value = addMonths(cursor.value, months);
 }
 
 function onTitleClick(): void {
-  if (viewMode.value === 'day') viewMode.value = 'month'
-  else if (viewMode.value === 'month') viewMode.value = 'year'
+  if (viewMode.value === 'day') viewMode.value = 'month';
+  else if (viewMode.value === 'month') viewMode.value = 'year';
 }
 
 /* ─────────── Keyboard ─────────── */
 
 function stepCursor(deltaDays: number): void {
-  cursor.value = startOfDay(cursor.value + deltaDays * 86_400_000)
+  cursor.value = startOfDay(cursor.value + deltaDays * 86_400_000);
   // Keep the grid in view when the cursor leaves the anchored month.
   if (viewMode.value === 'day' && !isSameMonth(cursor.value, anchorTs.value)) {
-    anchorTs.value = cursor.value
+    anchorTs.value = cursor.value;
   }
 }
 
 function pageCursor(delta: 1 | -1): void {
-  const months = viewMode.value === 'day' ? delta : delta * 12
-  cursor.value = addMonths(cursor.value, months)
-  anchorTs.value = cursor.value
+  const months = viewMode.value === 'day' ? delta : delta * 12;
+  cursor.value = addMonths(cursor.value, months);
+  anchorTs.value = cursor.value;
 }
 
 function pickCursor(): void {
-  const day = startOfDay(cursor.value)
+  const day = startOfDay(cursor.value);
   if (viewMode.value === 'day') {
-    onDayCellClick(day)
-    return
+    onDayCellClick(day);
+    return;
   }
   if (viewMode.value === 'month') {
-    onMonthCellClick(day)
-    return
+    onMonthCellClick(day);
+    return;
   }
-  onYearCellClick(day)
+  onYearCellClick(day);
 }
 
 function onTriggerKeyDown(event: KeyboardEvent): void {
-  if (!isInteractive.value) return
+  if (!isInteractive.value) return;
   switch (event.key) {
     case 'Enter': {
-      event.preventDefault()
+      event.preventDefault();
       if (!isPanelOpen.value) {
-        openPanel()
-        return
+        openPanel();
+        return;
       }
       if (hasTime.value) {
-        confirmAndClose()
+        confirmAndClose();
       } else {
-        pickCursor()
+        pickCursor();
       }
-      break
+      break;
     }
     case ' ': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      break;
     }
     case 'Escape': {
       if (isPanelOpen.value) {
-        event.preventDefault()
-        closePanel()
+        event.preventDefault();
+        closePanel();
       }
-      break
+      break;
     }
     case 'ArrowLeft': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      stepCursor(viewMode.value === 'day' ? -1 : 0)
-      if (viewMode.value !== 'day') pageCursor(-1)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      stepCursor(viewMode.value === 'day' ? -1 : 0);
+      if (viewMode.value !== 'day') pageCursor(-1);
+      break;
     }
     case 'ArrowRight': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      stepCursor(viewMode.value === 'day' ? 1 : 0)
-      if (viewMode.value !== 'day') pageCursor(1)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      stepCursor(viewMode.value === 'day' ? 1 : 0);
+      if (viewMode.value !== 'day') pageCursor(1);
+      break;
     }
     case 'ArrowUp': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      stepCursor(-7)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      stepCursor(-7);
+      break;
     }
     case 'ArrowDown': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      stepCursor(7)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      stepCursor(7);
+      break;
     }
     case 'PageUp': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      pageCursor(-1)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      pageCursor(-1);
+      break;
     }
     case 'PageDown': {
-      event.preventDefault()
-      if (!isPanelOpen.value) openPanel()
-      pageCursor(1)
-      break
+      event.preventDefault();
+      if (!isPanelOpen.value) openPanel();
+      pageCursor(1);
+      break;
     }
     default:
-      break
+      break;
   }
 }
 
@@ -1042,40 +1142,43 @@ function onTriggerKeyDown(event: KeyboardEvent): void {
 
 function onTriggerMouseDown(event: MouseEvent): void {
   // Keep focus on the trigger — no text-selection caret on the wrapper.
-  event.preventDefault()
+  event.preventDefault();
 }
 
 function onTriggerClick(): void {
-  if (!isInteractive.value) return
-  if (isPanelOpen.value) closePanel()
-  else openPanel()
+  if (!isInteractive.value) return;
+  if (isPanelOpen.value) closePanel();
+  else openPanel();
 }
 
 function onFocus(event: FocusEvent): void {
-  isFocused.value = true
-  emit('focus', event)
+  isFocused.value = true;
+  emit('focus', event);
 }
 
 function onBlur(event: FocusEvent): void {
-  isFocused.value = false
-  emit('blur', event)
+  isFocused.value = false;
+  emit('blur', event);
 }
 
 /* ─────────── Listeners lifecycle (§41/§42) ─────────── */
 
 onMounted(() => {
-  document.addEventListener('mousedown', onDocumentMouseDown)
-})
+  document.addEventListener('mousedown', onDocumentMouseDown);
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('mousedown', onDocumentMouseDown)
-  followViewport.stop()
-})
+  document.removeEventListener('mousedown', onDocumentMouseDown);
+  followViewport.stop();
+});
 
-watch(() => props.modelValue, () => {
-  // External value change while open — keep the panel drafts in sync.
-  if (isPanelOpen.value) initDraftsFromModel()
-})
+watch(
+  () => props.modelValue,
+  () => {
+    // External value change while open — keep the panel drafts in sync.
+    if (isPanelOpen.value) initDraftsFromModel();
+  },
+);
 </script>
 
 <style scoped>
@@ -1101,7 +1204,9 @@ watch(() => props.modelValue, () => {
   background-color: var(--sn-web-date-picker-bg, var(--sn-web-color-background-surface));
   color: var(--sn-web-date-picker-text-color, var(--sn-web-color-text-primary));
   cursor: pointer;
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out;
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out;
   outline: none;
 }
 
@@ -1116,11 +1221,26 @@ watch(() => props.modelValue, () => {
 }
 
 /* Sizes — height + font-size presets (mirror SnSelect / SnTimePicker). */
-.sn-date-picker--mini { --sn-web-date-picker-height: 22px; font-size: 11px; }
-.sn-date-picker--tiny { --sn-web-date-picker-height: 24px; font-size: 12px; }
-.sn-date-picker--small { --sn-web-date-picker-height: 28px; font-size: 13px; }
-.sn-date-picker--medium { --sn-web-date-picker-height: 32px; font-size: 14px; }
-.sn-date-picker--large { --sn-web-date-picker-height: 40px; font-size: 15px; }
+.sn-date-picker--mini {
+  --sn-web-date-picker-height: 22px;
+  font-size: 11px;
+}
+.sn-date-picker--tiny {
+  --sn-web-date-picker-height: 24px;
+  font-size: 12px;
+}
+.sn-date-picker--small {
+  --sn-web-date-picker-height: 28px;
+  font-size: 13px;
+}
+.sn-date-picker--medium {
+  --sn-web-date-picker-height: 32px;
+  font-size: 14px;
+}
+.sn-date-picker--large {
+  --sn-web-date-picker-height: 40px;
+  font-size: 15px;
+}
 
 .sn-date-picker__value,
 .sn-date-picker__placeholder {
@@ -1228,10 +1348,7 @@ watch(() => props.modelValue, () => {
   box-sizing: border-box;
   border: 1px solid var(--sn-web-date-picker-panel-border-color, rgba(0, 0, 0, 0.06));
   border-radius: var(--sn-web-date-picker-panel-radius, 3px);
-  background-color: var(
-    --sn-web-date-picker-panel-bg,
-    var(--sn-web-color-background-elevated)
-  );
+  background-color: var(--sn-web-date-picker-panel-bg, var(--sn-web-color-background-elevated));
   /* naive-ui popover shadow — three faint layers, airy instead of heavy. */
   box-shadow: var(
     --sn-web-date-picker-panel-shadow,
@@ -1360,7 +1477,9 @@ watch(() => props.modelValue, () => {
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.12s ease-out, color 0.12s ease-out;
+  transition:
+    background-color 0.12s ease-out,
+    color 0.12s ease-out;
 }
 
 .sn-date-picker-cell:hover {
@@ -1374,21 +1493,18 @@ watch(() => props.modelValue, () => {
   color: var(--sn-web-date-picker-cell-color-other-month, var(--sn-web-color-text-disabled));
 }
 
-.sn-date-picker-cell--cursor:not(.sn-date-picker-cell--selected):not(.sn-date-picker-cell--start):not(.sn-date-picker-cell--end) {
-  box-shadow: inset 0 0 0 1px var(--sn-web-date-picker-cursor-border, var(--sn-web-color-action-primary));
+.sn-date-picker-cell--cursor:not(.sn-date-picker-cell--selected):not(
+    .sn-date-picker-cell--start
+  ):not(.sn-date-picker-cell--end) {
+  box-shadow: inset 0 0 0 1px
+    var(--sn-web-date-picker-cursor-border, var(--sn-web-color-action-primary));
 }
 
 .sn-date-picker-cell--selected,
 .sn-date-picker-cell--start,
 .sn-date-picker-cell--end {
-  background-color: var(
-    --sn-web-date-picker-cell-bg-selected,
-    var(--sn-web-color-action-primary)
-  );
-  color: var(
-    --sn-web-date-picker-cell-text-color-selected,
-    var(--sn-web-color-text-on-primary)
-  );
+  background-color: var(--sn-web-date-picker-cell-bg-selected, var(--sn-web-color-action-primary));
+  color: var(--sn-web-date-picker-cell-text-color-selected, var(--sn-web-color-text-on-primary));
 }
 
 .sn-date-picker-cell--selected:hover,
@@ -1461,7 +1577,10 @@ watch(() => props.modelValue, () => {
 }
 
 .sn-date-picker-time-item:hover {
-  background-color: var(--sn-web-date-picker-time-item-bg-hover, var(--sn-web-color-background-subtle));
+  background-color: var(
+    --sn-web-date-picker-time-item-bg-hover,
+    var(--sn-web-color-background-subtle)
+  );
 }
 
 .sn-date-picker-time-item--selected {
@@ -1488,14 +1607,8 @@ watch(() => props.modelValue, () => {
   padding: 4px 12px;
   border: none;
   border-radius: var(--sn-web-date-picker-confirm-radius, 4px);
-  background-color: var(
-    --sn-web-date-picker-confirm-bg,
-    var(--sn-web-color-action-primary)
-  );
-  color: var(
-    --sn-web-date-picker-confirm-text-color,
-    var(--sn-web-color-text-on-primary)
-  );
+  background-color: var(--sn-web-date-picker-confirm-bg, var(--sn-web-color-action-primary));
+  color: var(--sn-web-date-picker-confirm-text-color, var(--sn-web-color-text-on-primary));
   font-size: inherit;
   cursor: pointer;
 }

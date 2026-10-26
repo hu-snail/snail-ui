@@ -10,7 +10,7 @@ Publish your own Pack and treat team brand / customer customization as reusable 
 
 ```ts
 // my-brand/styles/skin.ts
-import type { StylePackDefinition } from '@snui/style-packs'
+import type { StylePackDefinition } from '@snui/style-packs';
 
 export const myBrandPack: StylePackDefinition = {
   name: 'my-brand',
@@ -49,19 +49,19 @@ export const myBrandPack: StylePackDefinition = {
 
   // Skin CSS layer — optional, overrides component visual personality
   skinCss: '/packs/my-brand.skin.css',
-}
+};
 ```
 
 Skin CSS example:
 
 ```css
 /* my-brand/public/packs/my-brand.skin.css */
-.snui-skin-my-brand [data-snui-component="button"] {
+.snui-skin-my-brand [data-snui-component='button'] {
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
-.snui-skin-my-brand [data-snui-component="card"] {
+.snui-skin-my-brand [data-snui-component='card'] {
   border-top: 3px solid #ff5722;
 }
 ```
@@ -91,25 +91,25 @@ Checks:
 ### Web side
 
 ```ts
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-web/styles'
-import { myBrandPack } from './styles/my-brand'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-web/styles';
+import { myBrandPack } from './styles/my-brand';
 
-const el = document.createElement('style')
+const el = document.createElement('style');
 el.textContent = snCssVars({
   end: 'web',
   theme: myBrandPack.theme,
   style: myBrandPack.style,
   density: myBrandPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 
 // Also load skin CSS
 if (myBrandPack.skinCss) {
-  const link = document.createElement('link')
-  link.rel = 'stylesheet'
-  link.href = myBrandPack.skinCss
-  document.head.appendChild(link)
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = myBrandPack.skinCss;
+  document.head.appendChild(link);
 }
 ```
 

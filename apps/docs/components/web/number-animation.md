@@ -34,26 +34,26 @@
 
 ### SnNumberAnimation Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| from | `number` | `0` | 起始值 |
-| to | `number` | `0` | 目标值 |
-| precision | `number` | `0` | 小数位数 |
-| show-separator | `boolean` | `false` | 整数部分千分位分隔 |
-| locale | `string` | `undefined` | BCP-47 语言（默认跟随运行时 locale） |
-| active | `boolean` | `true` | 是否播放动画（true 时从头开始） |
-| duration | `number` | `2000` | 动画时长 ms（非响应式） |
+| Prop           | 类型      | 默认值      | 说明                                 |
+| -------------- | --------- | ----------- | ------------------------------------ |
+| from           | `number`  | `0`         | 起始值                               |
+| to             | `number`  | `0`         | 目标值                               |
+| precision      | `number`  | `0`         | 小数位数                             |
+| show-separator | `boolean` | `false`     | 整数部分千分位分隔                   |
+| locale         | `string`  | `undefined` | BCP-47 语言（默认跟随运行时 locale） |
+| active         | `boolean` | `true`      | 是否播放动画（true 时从头开始）      |
+| duration       | `number`  | `2000`      | 动画时长 ms（非响应式）              |
 
 ### SnNumberAnimation Events
 
-| 事件 | 参数 | 说明 |
-| --- | --- | --- |
-| finish | — | 动画到达 `to` 时触发 |
+| 事件   | 参数 | 说明                 |
+| ------ | ---- | -------------------- |
+| finish | —    | 动画到达 `to` 时触发 |
 
 ### SnNumberAnimation Methods
 
-| 方法 | 参数 | 说明 |
-| --- | --- | --- |
-| play | — | 重放动画；动画进行中调用会被忽略 |
+| 方法 | 参数 | 说明                             |
+| ---- | ---- | -------------------------------- |
+| play | —    | 重放动画；动画进行中调用会被忽略 |
 
 完整契约见组件 `ai-description.md`。

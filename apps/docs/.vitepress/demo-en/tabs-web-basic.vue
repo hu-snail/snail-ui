@@ -3,10 +3,10 @@
  * tabs-web-basic — SnTabs default `type="bar"` with three panes and a
  * `v-model:value` binding. Shows the default visual style.
  */
-import { ref } from 'vue'
-import { SnTabs, SnTabPane } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnTabs, SnTabPane } from '@snui/vue-web';
 
-const active = ref<string>('overview')
+const active = ref<string>('overview');
 </script>
 
 <template>
@@ -18,11 +18,11 @@ const active = ref<string>('overview')
       <SnTabPane name="architecture" tab="Architecture">
         pnpm workspace + dual-platform alias packages; web consumes <code>--sn-web-*</code>。
       </SnTabPane>
-      <SnTabPane name="faq" tab="FAQ">
-        FAQ and migration notes.
-      </SnTabPane>
+      <SnTabPane name="faq" tab="FAQ"> FAQ and migration notes. </SnTabPane>
     </SnTabs>
-    <p class="tabs-demo__state">Current:<code>{{ active }}</code></p>
+    <p class="tabs-demo__state">
+      Current:<code>{{ active }}</code>
+    </p>
   </div>
 </template>
 

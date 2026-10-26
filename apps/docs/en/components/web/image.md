@@ -56,74 +56,74 @@ a group.
 
 ### SnImage Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| src | `string` | `undefined` | Image source |
-| alt | `string` | `undefined` | Description used as alt + aria-label |
-| width | `string \| number` | `undefined` | Thumbnail width (number → px) |
-| height | `string \| number` | `undefined` | Thumbnail height (number → px) |
-| object-fit | `'fill' \| 'contain' \| 'cover' \| 'none' \| 'scale-down'` | `'fill'` | Thumbnail fit mode |
-| fallback-src | `string` | `undefined` | Shown when the source fails |
-| preview-src | `string` | `undefined` | Dedicated preview url, falls back to `src` |
-| img-props | `ImgHTMLAttributes` | `undefined` | Extra attrs forwarded to the inner img |
-| previewed-img-props | `ImgHTMLAttributes` | `undefined` | Attrs/style for the previewed img |
-| lazy | `boolean` | `false` | Load on viewport entry (native lazy by default) |
-| intersection-observer-options | `{ root?, rootMargin?, threshold? }` | `undefined` | Switches lazy to IntersectionObserver mode |
-| preview-disabled | `boolean` | `false` | Disable click-to-preview |
-| show-toolbar | `boolean` | `true` | Show the preview toolbar |
-| show-toolbar-tooltip | `boolean` | `false` | Native title hints on toolbar buttons |
-| keep-drag-offset | `boolean` | `false` | Keep the drag offset after release (default springs back) |
-| render-toolbar | `(props: { nodes }) => VNodeChild` | `undefined` | Custom toolbar renderer with prev / next / rotateCounterclockwise / rotateClockwise / resizeToOriginalSize / zoomOut / zoomIn / download / close |
+| Prop                          | Type                                                       | Default     | Notes                                                                                                                                            |
+| ----------------------------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| src                           | `string`                                                   | `undefined` | Image source                                                                                                                                     |
+| alt                           | `string`                                                   | `undefined` | Description used as alt + aria-label                                                                                                             |
+| width                         | `string \| number`                                         | `undefined` | Thumbnail width (number → px)                                                                                                                    |
+| height                        | `string \| number`                                         | `undefined` | Thumbnail height (number → px)                                                                                                                   |
+| object-fit                    | `'fill' \| 'contain' \| 'cover' \| 'none' \| 'scale-down'` | `'fill'`    | Thumbnail fit mode                                                                                                                               |
+| fallback-src                  | `string`                                                   | `undefined` | Shown when the source fails                                                                                                                      |
+| preview-src                   | `string`                                                   | `undefined` | Dedicated preview url, falls back to `src`                                                                                                       |
+| img-props                     | `ImgHTMLAttributes`                                        | `undefined` | Extra attrs forwarded to the inner img                                                                                                           |
+| previewed-img-props           | `ImgHTMLAttributes`                                        | `undefined` | Attrs/style for the previewed img                                                                                                                |
+| lazy                          | `boolean`                                                  | `false`     | Load on viewport entry (native lazy by default)                                                                                                  |
+| intersection-observer-options | `{ root?, rootMargin?, threshold? }`                       | `undefined` | Switches lazy to IntersectionObserver mode                                                                                                       |
+| preview-disabled              | `boolean`                                                  | `false`     | Disable click-to-preview                                                                                                                         |
+| show-toolbar                  | `boolean`                                                  | `true`      | Show the preview toolbar                                                                                                                         |
+| show-toolbar-tooltip          | `boolean`                                                  | `false`     | Native title hints on toolbar buttons                                                                                                            |
+| keep-drag-offset              | `boolean`                                                  | `false`     | Keep the drag offset after release (default springs back)                                                                                        |
+| render-toolbar                | `(props: { nodes }) => VNodeChild`                         | `undefined` | Custom toolbar renderer with prev / next / rotateCounterclockwise / rotateClockwise / resizeToOriginalSize / zoomOut / zoomIn / download / close |
 
 ### SnImage Events
 
-| Name | Parameters | Notes |
-| --- | --- | --- |
-| load | `(event: Event)` | Thumbnail loaded |
+| Name  | Parameters       | Notes                                         |
+| ----- | ---------------- | --------------------------------------------- |
+| load  | `(event: Event)` | Thumbnail loaded                              |
 | error | `(event: Event)` | Thumbnail failed (after the fallback attempt) |
 
 ### SnImage Slots
 
-| Name | Parameters | Notes |
-| --- | --- | --- |
-| error | `()` | Replaces the img in the error state |
-| placeholder | `()` | Shown while the image has not loaded |
+| Name        | Parameters | Notes                                |
+| ----------- | ---------- | ------------------------------------ |
+| error       | `()`       | Replaces the img in the error state  |
+| placeholder | `()`       | Shown while the image has not loaded |
 
 ### SnImage Methods
 
-| Name | Type | Notes |
-| --- | --- | --- |
+| Name        | Type         | Notes                    |
+| ----------- | ------------ | ------------------------ |
 | showPreview | `() => void` | Open the preview overlay |
-| click | `() => void` | Alias of showPreview |
+| click       | `() => void` | Alias of showPreview     |
 
 ### SnImageGroup Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| src-list | `string[]` | `undefined` | Standalone url list browsed by the shared preview |
-| current | `number` | `undefined` | Current index (v-model:current) |
-| default-current | `number` | `0` | Uncontrolled initial index |
-| show | `boolean` | `undefined` | Preview visibility (v-model:show) |
-| default-show | `boolean` | `false` | Uncontrolled initial visibility |
-| show-toolbar | `boolean` | `true` | Show the preview toolbar |
-| show-toolbar-tooltip | `boolean` | `false` | Native title hints |
-| keep-drag-offset | `boolean` | `false` | Keep the drag offset after release |
-| render-toolbar | `(props: { nodes }) => VNodeChild` | `undefined` | Custom toolbar renderer |
+| Prop                 | Type                               | Default     | Notes                                             |
+| -------------------- | ---------------------------------- | ----------- | ------------------------------------------------- |
+| src-list             | `string[]`                         | `undefined` | Standalone url list browsed by the shared preview |
+| current              | `number`                           | `undefined` | Current index (v-model:current)                   |
+| default-current      | `number`                           | `0`         | Uncontrolled initial index                        |
+| show                 | `boolean`                          | `undefined` | Preview visibility (v-model:show)                 |
+| default-show         | `boolean`                          | `false`     | Uncontrolled initial visibility                   |
+| show-toolbar         | `boolean`                          | `true`      | Show the preview toolbar                          |
+| show-toolbar-tooltip | `boolean`                          | `false`     | Native title hints                                |
+| keep-drag-offset     | `boolean`                          | `false`     | Keep the drag offset after release                |
+| render-toolbar       | `(props: { nodes }) => VNodeChild` | `undefined` | Custom toolbar renderer                           |
 
 ### SnImageGroup Events
 
-| Name | Parameters | Notes |
-| --- | --- | --- |
-| update:current | `(value: number)` | Index change (v-model:current) |
-| update:show | `(value: boolean)` | Visibility change (v-model:show) |
-| preview-next | `()` | Next clicked |
-| preview-prev | `()` | Previous clicked |
+| Name           | Parameters         | Notes                            |
+| -------------- | ------------------ | -------------------------------- |
+| update:current | `(value: number)`  | Index change (v-model:current)   |
+| update:show    | `(value: boolean)` | Visibility change (v-model:show) |
+| preview-next   | `()`               | Next clicked                     |
+| preview-prev   | `()`               | Previous clicked                 |
 
 ### SnImageGroup Slots
 
-| Name | Parameters | Notes |
-| --- | --- | --- |
-| default | `()` | Member images |
+| Name    | Parameters | Notes         |
+| ------- | ---------- | ------------- |
+| default | `()`       | Member images |
 
 ### Keyboard & interaction
 

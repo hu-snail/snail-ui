@@ -11,17 +11,17 @@
  *
  * 每个格子用 `fixed: false` 钉在自己的小舞台上，四格互不干扰。
  */
-import { Bell, MessageSquare, Star } from 'lucide-vue-next'
-import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web'
-import type { SnFloatButtonGroupDirection, SnFloatButtonPlacement } from '@snui/vue-web'
+import { Bell, MessageSquare, Star } from 'lucide-vue-next';
+import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web';
+import type { SnFloatButtonGroupDirection, SnFloatButtonPlacement } from '@snui/vue-web';
 
-type OpenDirection = Exclude<SnFloatButtonGroupDirection, 'auto'>
+type OpenDirection = Exclude<SnFloatButtonGroupDirection, 'auto'>;
 
 interface Scenario {
-  direction: OpenDirection
+  direction: OpenDirection;
   /** The anchor that pairs naturally with this direction. */
-  placement: SnFloatButtonPlacement
-  note: string
+  placement: SnFloatButtonPlacement;
+  note: string;
 }
 
 const scenarios: Scenario[] = [
@@ -29,7 +29,7 @@ const scenarios: Scenario[] = [
   { direction: 'down', placement: 'top-right', note: '向下展开' },
   { direction: 'left', placement: 'bottom-right', note: '向左展开' },
   { direction: 'right', placement: 'bottom-left', note: '向右展开' },
-]
+];
 </script>
 
 <template>

@@ -30,28 +30,28 @@
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `height` | `number` | `0` | Panel height in design px (`v-model:height`) |
-| `anchors` | `number[]` | `[]` | Snap points in design px; empty = `[100, viewportHeight * 0.6]` |
-| `duration` | `number` | `300` | Snap animation duration (ms); `0` disables it |
-| `contentDraggable` | `boolean` | `true` | Let the content area drag the panel |
-| `safeAreaInsetBottom` | `boolean` | `false` | Pad for the bottom safe area |
-| `showScrollbar` | `boolean` | `true` | Render the content scrollbar |
-| `customClass` | `string` | `''` | Root class |
-| `customStyle` | `string` | `''` | Root inline style |
+| Prop                  | Type       | Default | Description                                                     |
+| --------------------- | ---------- | ------- | --------------------------------------------------------------- |
+| `height`              | `number`   | `0`     | Panel height in design px (`v-model:height`)                    |
+| `anchors`             | `number[]` | `[]`    | Snap points in design px; empty = `[100, viewportHeight * 0.6]` |
+| `duration`            | `number`   | `300`   | Snap animation duration (ms); `0` disables it                   |
+| `contentDraggable`    | `boolean`  | `true`  | Let the content area drag the panel                             |
+| `safeAreaInsetBottom` | `boolean`  | `false` | Pad for the bottom safe area                                    |
+| `showScrollbar`       | `boolean`  | `true`  | Render the content scrollbar                                    |
+| `customClass`         | `string`   | `''`    | Root class                                                      |
+| `customStyle`         | `string`   | `''`    | Root inline style                                               |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:height` | Height changed (continuously while dragging, once more on the snap) | `(height: number)` |
-| `heightChange` | The drag settled and the snap finished (once per gesture) | `{ height: number }` |
+| Event           | Description                                                         | Payload              |
+| --------------- | ------------------------------------------------------------------- | -------------------- |
+| `update:height` | Height changed (continuously while dragging, once more on the snap) | `(height: number)`   |
+| `heightChange`  | The drag settled and the snap finished (once per gesture)           | `{ height: number }` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                              |
+| --------- | ---------------------------------------- |
 | `default` | Panel content (scrolls inside the panel) |
 
 ## Gestures and snapping
@@ -68,15 +68,15 @@ The wot-ui default is `[100, viewportHeight * 0.6]`. There is no `window` on min
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-elevated` | Panel background |
-| `--sn-mp-color-text-primary` | Panel text |
-| `--sn-mp-color-border-default` | Handle bar (rest) |
-| `--sn-mp-color-action-primary` | Handle bar (dragging) |
-| `--sn-mp-shadow-lg` | Panel shadow |
+| Variable                                    | Purpose                |
+| ------------------------------------------- | ---------------------- |
+| `--sn-mp-color-background-elevated`         | Panel background       |
+| `--sn-mp-color-text-primary`                | Panel text             |
+| `--sn-mp-color-border-default`              | Handle bar (rest)      |
+| `--sn-mp-color-action-primary`              | Handle bar (dragging)  |
+| `--sn-mp-shadow-lg`                         | Panel shadow           |
 | `--sn-mp-radius-xl` / `--sn-mp-radius-full` | Panel / handle corners |
-| `--sn-mp-spacing-4` | Content padding |
+| `--sn-mp-spacing-4`                         | Content padding        |
 
 ## Accessibility
 

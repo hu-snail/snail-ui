@@ -13,23 +13,21 @@
  * the narrow viewport — the menu inside collapses automatically when the
  * stage's rendered width drops below 992px.
  */
-import { ref } from 'vue'
-import { markRaw } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import type { SnMenuOption } from '@snui/vue-web'
-import {
-  LayoutGrid, Sun, Lightbulb,
-} from 'lucide-vue-next'
+import { ref } from 'vue';
+import { markRaw } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import type { SnMenuOption } from '@snui/vue-web';
+import { LayoutGrid, Sun, Lightbulb } from 'lucide-vue-next';
 
-const active = ref<string | number | null>('m1-2')
+const active = ref<string | number | null>('m1-2');
 // Two-way bound so we can render the effective state below + let the user
 // override the auto-collapse behavior if they want.
-const collapsed = ref(false)
-const stageWidth = ref(1024)
+const collapsed = ref(false);
+const stageWidth = ref(1024);
 // Pre-open Navigation 1 so the demo shows the expanded menu (submenu
 // items rendered inline) at viewport >= md breakpoint — matches the
 // responsive-collapse behavior documented in menu.md.
-const expanded = ref<Array<string | number>>(['n1'])
+const expanded = ref<Array<string | number>>(['n1']);
 
 const items: SnMenuOption[] = [
   {
@@ -58,20 +56,17 @@ const items: SnMenuOption[] = [
     label: 'Navigation 3',
     icon: markRaw(Lightbulb),
   },
-]
+];
 
 function toggleStage(): void {
   // Toggle between narrow (< md breakpoint) and wide.
-  stageWidth.value = stageWidth.value <= 600 ? 1024 : 500
+  stageWidth.value = stageWidth.value <= 600 ? 1024 : 500;
 }
 </script>
 
 <template>
   <div class="sn-menu-responsive-collapse-demo">
-    <div
-      class="sn-menu-responsive-collapse-demo__stage"
-      :style="{ maxWidth: stageWidth + 'px' }"
-    >
+    <div class="sn-menu-responsive-collapse-demo__stage" :style="{ maxWidth: stageWidth + 'px' }">
       <SnMenu
         mode="vertical"
         :options="items"
@@ -84,18 +79,19 @@ function toggleStage(): void {
       />
     </div>
     <p class="sn-menu-responsive-collapse-demo__hint">
-      Settings <code>breakpoint="md"</code>(992px) for responsive collapsing. When the container width drops below the breakpoint, the menu auto-collapses into an icon-only sidebar; two-way state sync via <code>v-model:collapsed</code> .
+      Settings <code>breakpoint="md"</code>(992px) for responsive collapsing. When the container
+      width drops below the breakpoint, the menu auto-collapses into an icon-only sidebar; two-way
+      state sync via <code>v-model:collapsed</code> .
     </p>
     <div class="sn-menu-responsive-collapse-demo__controls">
-      <button
-        type="button"
-        class="sn-menu-responsive-collapse-demo__toggle"
-        @click="toggleStage"
-      >
+      <button type="button" class="sn-menu-responsive-collapse-demo__toggle" @click="toggleStage">
         <span aria-hidden="true">≡</span>
       </button>
       <span class="sn-menu-responsive-collapse-demo__state">
-        Container width:<code>{{ stageWidth }}px</code> · Collapsed:<code>{{ collapsed ? 'Yes' : 'No' }}</code> · Expand:<code>{{ expanded.join(', ') }}</code>
+        Container width:<code>{{ stageWidth }}px</code> · Collapsed:<code>{{
+          collapsed ? 'Yes' : 'No'
+        }}</code>
+        · Expand:<code>{{ expanded.join(', ') }}</code>
       </span>
     </div>
   </div>

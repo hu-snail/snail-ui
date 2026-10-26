@@ -14,77 +14,79 @@
  * classes / attributes and the canvas paint through the recorded context calls.
  */
 
-import { afterEach, describe, it, expect, vi } from 'vitest'
-import { mount } from '@vue/test-utils'
-import SnQrCode from './sn-qr-code.vue'
-import { encode, pickSegmentMode, type SnQrEncoded } from './sn-qr-core'
+import { afterEach, describe, it, expect, vi } from 'vitest';
+import { mount } from '@vue/test-utils';
+import SnQrCode from './sn-qr-code.vue';
+import { encode, pickSegmentMode, type SnQrEncoded } from './sn-qr-core';
 
 /** Render a matrix as `#`/`.` rows — handy for structural assertions. */
 function matrixRows(qr: SnQrEncoded): string[] {
-  const rows: string[] = []
+  const rows: string[] = [];
   for (let y = 0; y < qr.size; y++) {
-    let row = ''
-    for (let x = 0; x < qr.size; x++) row += qr.getModule(x, y) ? '#' : '.'
-    rows.push(row)
+    let row = '';
+    for (let x = 0; x < qr.size; x++) row += qr.getModule(x, y) ? '#' : '.';
+    rows.push(row);
   }
-  return rows
+  return rows;
 }
 
 /** ISO format-bits payload per EC level (uint2), fixed by the standard. */
-const FORMAT_BITS = { L: 1, M: 0, Q: 3, H: 2 } as const
+const FORMAT_BITS = { L: 1, M: 0, Q: 3, H: 2 } as const;
 
 /** Read the top-left 15-bit format-info copy out of the grid. */
 function readFormatBits(qr: SnQrEncoded): number {
-  const bits: boolean[] = new Array<boolean>(15).fill(false)
-  for (let i = 0; i <= 5; i++) bits[i] = qr.getModule(8, i)
-  bits[6] = qr.getModule(8, 7)
-  bits[7] = qr.getModule(8, 8)
-  bits[8] = qr.getModule(7, 8)
-  for (let i = 9; i < 15; i++) bits[i] = qr.getModule(14 - i, 8)
-  let value = 0
-  for (let i = 0; i < 15; i++) if (bits[i]) value |= 1 << i
-  return value
+  const bits: boolean[] = new Array<boolean>(15).fill(false);
+  for (let i = 0; i <= 5; i++) bits[i] = qr.getModule(8, i);
+  bits[6] = qr.getModule(8, 7);
+  bits[7] = qr.getModule(8, 8);
+  bits[8] = qr.getModule(7, 8);
+  for (let i = 9; i < 15; i++) bits[i] = qr.getModule(14 - i, 8);
+  let value = 0;
+  for (let i = 0; i < 15; i++) if (bits[i]) value |= 1 << i;
+  return value;
 }
 
 /** Assert a 7×7 finder pattern (plus separators) centered at (cx, cy). */
 function expectFinderPattern(qr: SnQrEncoded, cx: number, cy: number): void {
   for (let dy = -3; dy <= 3; dy++) {
     for (let dx = -3; dx <= 3; dx++) {
-      const dist = Math.max(Math.abs(dx), Math.abs(dy))
-      expect(qr.getModule(cx + dx, cy + dy)).toBe(dist !== 2)
+      const dist = Math.max(Math.abs(dx), Math.abs(dy));
+      expect(qr.getModule(cx + dx, cy + dy)).toBe(dist !== 2);
     }
   }
-  expect(qr.getModule(cx + 4, cy)).toBe(false)
-  expect(qr.getModule(cx, cy + 4)).toBe(false)
+  expect(qr.getModule(cx + 4, cy)).toBe(false);
+  expect(qr.getModule(cx, cy + 4)).toBe(false);
 }
 
 /** Assert a 5×5 alignment pattern centered at (cx, cy). */
 function expectAlignmentPattern(qr: SnQrEncoded, cx: number, cy: number): void {
-  expect(qr.getModule(cx, cy)).toBe(true)
-  expect(qr.getModule(cx - 1, cy)).toBe(false)
-  expect(qr.getModule(cx - 2, cy)).toBe(true)
-  expect(qr.getModule(cx - 2, cy - 2)).toBe(true)
-  expect(qr.getModule(cx + 2, cy + 2)).toBe(true)
+  expect(qr.getModule(cx, cy)).toBe(true);
+  expect(qr.getModule(cx - 1, cy)).toBe(false);
+  expect(qr.getModule(cx - 2, cy)).toBe(true);
+  expect(qr.getModule(cx - 2, cy - 2)).toBe(true);
+  expect(qr.getModule(cx + 2, cy + 2)).toBe(true);
 }
 
 /* ── Recording canvas stub ──────────────────────────────────────────────── */
 
 interface RecordedCall {
-  method: string
-  args: unknown[]
-  fillStyle: unknown
+  method: string;
+  args: unknown[];
+  fillStyle: unknown;
 }
 
 /** A fake canvas context that records every draw call. */
 function createRecordingContext(): {
-  context: Record<string, unknown>
-  calls: RecordedCall[]
+  context: Record<string, unknown>;
+  calls: RecordedCall[];
 } {
-  const calls: RecordedCall[] = []
-  const state: { fillStyle: unknown } = { fillStyle: '' }
-  const record = (method: string) => (...args: unknown[]) => {
-    calls.push({ method, args, fillStyle: state.fillStyle })
-  }
+  const calls: RecordedCall[] = [];
+  const state: { fillStyle: unknown } = { fillStyle: '' };
+  const record =
+    (method: string) =>
+    (...args: unknown[]) => {
+      calls.push({ method, args, fillStyle: state.fillStyle });
+    };
   const context: Record<string, unknown> = {
     fillRect: record('fillRect'),
     beginPath: record('beginPath'),
@@ -92,57 +94,57 @@ function createRecordingContext(): {
     fill: record('fill'),
     draw: record('draw'),
     createLinearGradient: () => ({ addColorStop: () => undefined }),
-  }
+  };
   Object.defineProperty(context, 'fillStyle', {
     get: () => state.fillStyle,
     set: (value: unknown) => {
-      state.fillStyle = value
+      state.fillStyle = value;
     },
-  })
-  return { context, calls }
+  });
+  return { context, calls };
 }
 
 /** Install a `globalThis.uni` stub with a canvas context; returns cleanup. */
 function installUni(overrides: Record<string, unknown> = {}) {
-  const recorder = createRecordingContext()
-  const host = globalThis as { uni?: Record<string, unknown> }
-  const previous = host.uni
+  const recorder = createRecordingContext();
+  const host = globalThis as { uni?: Record<string, unknown> };
+  const previous = host.uni;
   host.uni = {
     createCanvasContext: () => recorder.context,
     ...overrides,
-  }
+  };
   return {
     calls: recorder.calls,
     restore() {
-      if (previous === undefined) delete host.uni
-      else host.uni = previous
+      if (previous === undefined) delete host.uni;
+      else host.uni = previous;
     },
-  }
+  };
 }
 
 afterEach(() => {
-  const host = globalThis as { uni?: unknown }
-  delete host.uni
-  vi.useRealTimers()
-})
+  const host = globalThis as { uni?: unknown };
+  delete host.uni;
+  vi.useRealTimers();
+});
 
 describe('sn-qr-core', () => {
   it('should encode the same payload into an identical matrix', () => {
-    const a = encode('https://snui.dev/order/20240001', 'M')
-    const b = encode('https://snui.dev/order/20240001', 'M')
-    expect(a.version).toBe(b.version)
-    expect(a.mask).toBe(b.mask)
-    expect(matrixRows(a)).toEqual(matrixRows(b))
-  })
+    const a = encode('https://snui.dev/order/20240001', 'M');
+    const b = encode('https://snui.dev/order/20240001', 'M');
+    expect(a.version).toBe(b.version);
+    expect(a.mask).toBe(b.mask);
+    expect(matrixRows(a)).toEqual(matrixRows(b));
+  });
 
   it('should match the known vector for byte-mode "hello" at version 1', () => {
     // Byte mode (lowercase is outside the alphanumeric charset); the EC level
     // boosts M→H because 5 bytes still fit version 1 at H.
-    const qr = encode('hello', 'M')
-    expect(qr.version).toBe(1)
-    expect(qr.size).toBe(21)
-    expect(qr.mode).toBe('byte')
-    expect(qr.level).toBe('H')
+    const qr = encode('hello', 'M');
+    expect(qr.version).toBe(1);
+    expect(qr.size).toBe(21);
+    expect(qr.mode).toBe('byte');
+    expect(qr.level).toBe('H');
     expect(matrixRows(qr)).toEqual([
       '#######.....#.#######',
       '#.....#.......#.....#',
@@ -165,297 +167,295 @@ describe('sn-qr-core', () => {
       '#.###.#...##.########',
       '#.....#..############',
       '#######...#..#.......',
-    ])
-  })
+    ]);
+  });
 
   it('should select the densest single-segment mode for the payload', () => {
-    expect(pickSegmentMode('')).toBe('byte')
-    expect(pickSegmentMode('1234567890')).toBe('numeric')
-    expect(pickSegmentMode('HELLO WORLD 123')).toBe('alphanumeric')
-    expect(pickSegmentMode('hello')).toBe('byte')
-    expect(pickSegmentMode('订单 2024')).toBe('byte')
-  })
+    expect(pickSegmentMode('')).toBe('byte');
+    expect(pickSegmentMode('1234567890')).toBe('numeric');
+    expect(pickSegmentMode('HELLO WORLD 123')).toBe('alphanumeric');
+    expect(pickSegmentMode('hello')).toBe('byte');
+    expect(pickSegmentMode('订单 2024')).toBe('byte');
+  });
 
   it('should pick a smaller version for numeric payloads than byte mode would need', () => {
-    const numeric = encode('123456789012345678901234567890', 'L', { boostEcl: false })
-    expect(numeric.mode).toBe('numeric')
+    const numeric = encode('123456789012345678901234567890', 'L', { boostEcl: false });
+    expect(numeric.mode).toBe('numeric');
     // 30 digits = 100 data bits; version 1-L holds 152 bits, so v1 suffices.
-    expect(numeric.version).toBe(1)
-    expect(numeric.size).toBe(21)
-  })
+    expect(numeric.version).toBe(1);
+    expect(numeric.size).toBe(21);
+  });
 
   it('should draw the three finder patterns and the timing patterns', () => {
-    const qr = encode('AUI', 'M')
-    expectFinderPattern(qr, 3, 3)
-    expectFinderPattern(qr, qr.size - 4, 3)
-    expectFinderPattern(qr, 3, qr.size - 4)
+    const qr = encode('AUI', 'M');
+    expectFinderPattern(qr, 3, 3);
+    expectFinderPattern(qr, qr.size - 4, 3);
+    expectFinderPattern(qr, 3, qr.size - 4);
     for (let i = 8; i < qr.size - 8; i++) {
-      expect(qr.getModule(i, 6)).toBe(i % 2 === 0)
-      expect(qr.getModule(6, i)).toBe(i % 2 === 0)
+      expect(qr.getModule(i, 6)).toBe(i % 2 === 0);
+      expect(qr.getModule(6, i)).toBe(i % 2 === 0);
     }
-  })
+  });
 
   it('should draw alignment patterns for version 2 and up', () => {
-    const qr = encode('AUI-UNI-QR-CODE-ALIGNMENT-PATTERN-CHECK', 'L')
-    expect(qr.version).toBeGreaterThanOrEqual(2)
-    const center = qr.size - 7
-    expectAlignmentPattern(qr, center, center)
-  })
+    const qr = encode('AUI-UNI-QR-CODE-ALIGNMENT-PATTERN-CHECK', 'L');
+    expect(qr.version).toBeGreaterThanOrEqual(2);
+    const center = qr.size - 7;
+    expectAlignmentPattern(qr, center, center);
+  });
 
   it('should write the requested EC level into the format info when not boosted', () => {
     for (const level of ['L', 'M', 'Q', 'H'] as const) {
-      const qr = encode('AUI', level, { boostEcl: false })
-      expect(qr.level).toBe(level)
+      const qr = encode('AUI', level, { boostEcl: false });
+      expect(qr.level).toBe(level);
       // The 15-bit format word is XORed with the ISO mask 0x5412 — undo it.
       // Bits 14..13 hold the 2 EC-level bits, bits 12..10 the 3 mask bits.
-      const bits = readFormatBits(qr) ^ 0x5412
-      expect((bits >> 13) & 0b11).toBe(FORMAT_BITS[level])
-      expect(qr.mask).toBe((bits >> 10) & 0b111)
+      const bits = readFormatBits(qr) ^ 0x5412;
+      expect((bits >> 13) & 0b11).toBe(FORMAT_BITS[level]);
+      expect(qr.mask).toBe((bits >> 10) & 0b111);
     }
-  })
+  });
 
   it('should raise the EC level while the payload still fits the version', () => {
-    const boosted = encode('AUI', 'L')
-    expect(boosted.version).toBe(1)
-    expect(boosted.level).toBe('H')
+    const boosted = encode('AUI', 'L');
+    expect(boosted.version).toBe(1);
+    expect(boosted.level).toBe('H');
 
-    const unboosted = encode('AUI', 'L', { boostEcl: false })
-    expect(unboosted.level).toBe('L')
-  })
+    const unboosted = encode('AUI', 'L', { boostEcl: false });
+    expect(unboosted.level).toBe('L');
+  });
 
   it('should grow the version as the payload grows', () => {
-    const small = encode('AUI', 'M')
-    const medium = encode('x'.repeat(200), 'M')
-    const large = encode('x'.repeat(1000), 'M')
-    expect(small.version).toBeLessThan(medium.version)
-    expect(medium.version).toBeLessThan(large.version)
-    expect(large.size).toBe(large.version * 4 + 17)
-  })
+    const small = encode('AUI', 'M');
+    const medium = encode('x'.repeat(200), 'M');
+    const large = encode('x'.repeat(1000), 'M');
+    expect(small.version).toBeLessThan(medium.version);
+    expect(medium.version).toBeLessThan(large.version);
+    expect(large.size).toBe(large.version * 4 + 17);
+  });
 
   it('should throw RangeError when the payload exceeds version 40', () => {
-    expect(() => encode('x'.repeat(3000), 'H')).toThrow(RangeError)
-  })
+    expect(() => encode('x'.repeat(3000), 'H')).toThrow(RangeError);
+  });
 
   it('should honour a forced mask pattern', () => {
-    const qr = encode('AUI', 'M', { mask: 3, boostEcl: false })
-    expect(qr.mask).toBe(3)
-    expect(((readFormatBits(qr) ^ 0x5412) >> 10) & 0b111).toBe(3)
-  })
-})
+    const qr = encode('AUI', 'M', { mask: 3, boostEcl: false });
+    expect(qr.mask).toBe(3);
+    expect(((readFormatBits(qr) ^ 0x5412) >> 10) & 0b111).toBe(3);
+  });
+});
 
 describe('sn-qr-code', () => {
   it('should render a canvas node with the encoded geometry', () => {
-    const wrapper = mount(SnQrCode, { props: { text: 'https://snui.dev' } })
-    const canvas = wrapper.find('canvas')
-    expect(canvas.exists()).toBe(true)
-    expect(wrapper.classes()).toContain('sn-qr-code')
+    const wrapper = mount(SnQrCode, { props: { text: 'https://snui.dev' } });
+    const canvas = wrapper.find('canvas');
+    expect(canvas.exists()).toBe(true);
+    expect(wrapper.classes()).toContain('sn-qr-code');
     // Version + module count are exposed for inspection / tests.
-    expect(Number(canvas.attributes('data-version'))).toBeGreaterThanOrEqual(1)
+    expect(Number(canvas.attributes('data-version'))).toBeGreaterThanOrEqual(1);
     expect(Number(canvas.attributes('data-modules'))).toBe(
       Number(canvas.attributes('data-version')) * 4 + 17,
-    )
-  })
+    );
+  });
 
   it('should expose the dot type as a root modifier class', () => {
-    const wrapper = mount(SnQrCode, { props: { text: 'AUI', dotType: 'dots' } })
-    expect(wrapper.classes()).toContain('sn-qr-code--dots')
-    expect(wrapper.find('canvas').attributes('data-dot-type')).toBe('dots')
-  })
+    const wrapper = mount(SnQrCode, { props: { text: 'AUI', dotType: 'dots' } });
+    expect(wrapper.classes()).toContain('sn-qr-code--dots');
+    expect(wrapper.find('canvas').attributes('data-dot-type')).toBe('dots');
+  });
 
   it('should use a per-instance canvas id unless one is given', () => {
-    const a = mount(SnQrCode, { props: { text: 'A' } })
-    const b = mount(SnQrCode, { props: { text: 'B' } })
+    const a = mount(SnQrCode, { props: { text: 'A' } });
+    const b = mount(SnQrCode, { props: { text: 'B' } });
     expect(a.find('canvas').attributes('canvas-id')).not.toBe(
       b.find('canvas').attributes('canvas-id'),
-    )
+    );
 
-    const fixed = mount(SnQrCode, { props: { text: 'C', canvasId: 'my-canvas' } })
-    expect(fixed.find('canvas').attributes('canvas-id')).toBe('my-canvas')
-  })
+    const fixed = mount(SnQrCode, { props: { text: 'C', canvasId: 'my-canvas' } });
+    expect(fixed.find('canvas').attributes('canvas-id')).toBe('my-canvas');
+  });
 
   it('should paint the matrix through the uni canvas context', () => {
-    const uni = installUni()
+    const uni = installUni();
     try {
-      const wrapper = mount(SnQrCode, { props: { text: 'AUI', size: 120 } })
+      const wrapper = mount(SnQrCode, { props: { text: 'AUI', size: 120 } });
       // Quiet-zone plate + at least one dark module + the flush call.
-      const fillRects = uni.calls.filter((call) => call.method === 'fillRect')
-      expect(fillRects.length).toBeGreaterThan(1)
-      expect(uni.calls.some((call) => call.method === 'draw')).toBe(true)
-      expect(wrapper.find('.sn-qr-code__error').exists()).toBe(false)
+      const fillRects = uni.calls.filter((call) => call.method === 'fillRect');
+      expect(fillRects.length).toBeGreaterThan(1);
+      expect(uni.calls.some((call) => call.method === 'draw')).toBe(true);
+      expect(wrapper.find('.sn-qr-code__error').exists()).toBe(false);
     } finally {
-      uni.restore()
+      uni.restore();
     }
-  })
+  });
 
   it('should paint with the light color as the quiet-zone plate', () => {
-    const uni = installUni()
+    const uni = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', colorLight: 'linen' } })
-      const plate = uni.calls.find((call) => call.method === 'fillRect')
-      expect(plate?.fillStyle).toBe('linen')
+      mount(SnQrCode, { props: { text: 'AUI', colorLight: 'linen' } });
+      const plate = uni.calls.find((call) => call.method === 'fillRect');
+      expect(plate?.fillStyle).toBe('linen');
     } finally {
-      uni.restore()
+      uni.restore();
     }
-  })
+  });
 
   it('should paint dark modules with colorDark and fall back to black', () => {
-    const withColor = installUni()
+    const withColor = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', colorDark: 'navy' } })
-      const darkCalls = withColor.calls.filter((call) => call.method === 'fillRect')
+      mount(SnQrCode, { props: { text: 'AUI', colorDark: 'navy' } });
+      const darkCalls = withColor.calls.filter((call) => call.method === 'fillRect');
       // The plate is the first fill; module fills follow with the dark color.
-      expect(darkCalls.slice(1).every((call) => call.fillStyle === 'navy')).toBe(true)
+      expect(darkCalls.slice(1).every((call) => call.fillStyle === 'navy')).toBe(true);
     } finally {
-      withColor.restore()
+      withColor.restore();
     }
 
-    const byDefault = installUni()
+    const byDefault = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI' } })
-      const darkCalls = byDefault.calls.filter((call) => call.method === 'fillRect')
-      expect(darkCalls.slice(1).every((call) => call.fillStyle === 'black')).toBe(true)
+      mount(SnQrCode, { props: { text: 'AUI' } });
+      const darkCalls = byDefault.calls.filter((call) => call.method === 'fillRect');
+      expect(darkCalls.slice(1).every((call) => call.fillStyle === 'black')).toBe(true);
     } finally {
-      byDefault.restore()
+      byDefault.restore();
     }
-  })
+  });
 
   it('should add a quiet zone from margin', () => {
-    const without = installUni()
+    const without = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', size: 200 } })
+      mount(SnQrCode, { props: { text: 'AUI', size: 200 } });
     } finally {
-      without.restore()
+      without.restore();
     }
-    const firstModuleNoMargin = without.calls
-      .filter((call) => call.method === 'fillRect')[1]
+    const firstModuleNoMargin = without.calls.filter((call) => call.method === 'fillRect')[1];
 
-    const withMargin = installUni()
+    const withMargin = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', size: 200, margin: 20 } })
+      mount(SnQrCode, { props: { text: 'AUI', size: 200, margin: 20 } });
     } finally {
-      withMargin.restore()
+      withMargin.restore();
     }
-    const firstModuleWithMargin = withMargin.calls
-      .filter((call) => call.method === 'fillRect')[1]
+    const firstModuleWithMargin = withMargin.calls.filter((call) => call.method === 'fillRect')[1];
 
     // The quiet zone shifts the first module right / down by `margin` px.
     expect(Number(firstModuleWithMargin?.args[0])).toBeGreaterThan(
       Number(firstModuleNoMargin?.args[0]),
-    )
-  })
+    );
+  });
 
   it('should shrink the module fill ratio from dotScale', () => {
-    const full = installUni()
+    const full = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', size: 200 } })
+      mount(SnQrCode, { props: { text: 'AUI', size: 200 } });
     } finally {
-      full.restore()
+      full.restore();
     }
-    const fullWidth = Number(full.calls.filter((call) => call.method === 'fillRect')[1]?.args[2])
+    const fullWidth = Number(full.calls.filter((call) => call.method === 'fillRect')[1]?.args[2]);
 
-    const half = installUni()
+    const half = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', size: 200, dotScale: 0.5 } })
+      mount(SnQrCode, { props: { text: 'AUI', size: 200, dotScale: 0.5 } });
     } finally {
-      half.restore()
+      half.restore();
     }
-    const halfWidth = Number(half.calls.filter((call) => call.method === 'fillRect')[1]?.args[2])
+    const halfWidth = Number(half.calls.filter((call) => call.method === 'fillRect')[1]?.args[2]);
 
-    expect(halfWidth).toBeLessThan(fullWidth)
-    expect(halfWidth).toBeGreaterThan(0)
-  })
+    expect(halfWidth).toBeLessThan(fullWidth);
+    expect(halfWidth).toBeGreaterThan(0);
+  });
 
   it('should paint dots as circles when the canvas supports arcs', () => {
-    const uni = installUni()
+    const uni = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', dotType: 'dots' } })
-      expect(uni.calls.some((call) => call.method === 'arc')).toBe(true)
+      mount(SnQrCode, { props: { text: 'AUI', dotType: 'dots' } });
+      expect(uni.calls.some((call) => call.method === 'arc')).toBe(true);
     } finally {
-      uni.restore()
+      uni.restore();
     }
-  })
+  });
 
   it('should bridge neighbouring dots in liquid mode', () => {
-    const dots = installUni()
+    const dots = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', dotType: 'dots' } })
+      mount(SnQrCode, { props: { text: 'AUI', dotType: 'dots' } });
     } finally {
-      dots.restore()
+      dots.restore();
     }
-    const liquid = installUni()
+    const liquid = installUni();
     try {
-      mount(SnQrCode, { props: { text: 'AUI', dotType: 'liquid' } })
+      mount(SnQrCode, { props: { text: 'AUI', dotType: 'liquid' } });
     } finally {
-      liquid.restore()
+      liquid.restore();
     }
     // Liquid adds bridge rectangles on top of the same circle count.
-    const dotsFills = dots.calls.filter((call) => call.method === 'fillRect').length
-    const liquidFills = liquid.calls.filter((call) => call.method === 'fillRect').length
-    expect(liquidFills).toBeGreaterThan(dotsFills)
-  })
+    const dotsFills = dots.calls.filter((call) => call.method === 'fillRect').length;
+    const liquidFills = liquid.calls.filter((call) => call.method === 'fillRect').length;
+    expect(liquidFills).toBeGreaterThan(dotsFills);
+  });
 
   it('should emit error and show the fallback for an oversized payload', () => {
-    const wrapper = mount(SnQrCode, { props: { text: 'x'.repeat(4000), correctLevel: 'H' } })
-    expect(wrapper.emitted('error')).toHaveLength(1)
-    expect(wrapper.find('.sn-qr-code__error').exists()).toBe(true)
-    expect(wrapper.find('canvas').attributes('data-version')).toBe('0')
-  })
+    const wrapper = mount(SnQrCode, { props: { text: 'x'.repeat(4000), correctLevel: 'H' } });
+    expect(wrapper.emitted('error')).toHaveLength(1);
+    expect(wrapper.find('.sn-qr-code__error').exists()).toBe(true);
+    expect(wrapper.find('canvas').attributes('data-version')).toBe('0');
+  });
 
   it('should emit click on tap', async () => {
-    const wrapper = mount(SnQrCode, { props: { text: 'AUI' } })
-    await wrapper.trigger('tap')
-    expect(wrapper.emitted('click')).toHaveLength(1)
-  })
+    const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+    await wrapper.trigger('tap');
+    expect(wrapper.emitted('click')).toHaveLength(1);
+  });
 
   it('should forward customClass and customStyle to the root', () => {
     const wrapper = mount(SnQrCode, {
       props: { text: 'AUI', customClass: 'my-qr', customStyle: 'padding: 8px' },
-    })
-    expect(wrapper.classes()).toContain('my-qr')
-    expect(wrapper.attributes('style')).toContain('padding: 8px')
-  })
+    });
+    expect(wrapper.classes()).toContain('my-qr');
+    expect(wrapper.attributes('style')).toContain('padding: 8px');
+  });
 
   it('should expose an accessible name from the payload', () => {
-    const wrapper = mount(SnQrCode, { props: { text: 'https://snui.dev' } })
-    expect(wrapper.attributes('role')).toBe('img')
-    expect(wrapper.attributes('aria-label')).toBe('QR code: https://snui.dev')
-  })
+    const wrapper = mount(SnQrCode, { props: { text: 'https://snui.dev' } });
+    expect(wrapper.attributes('role')).toBe('img');
+    expect(wrapper.attributes('aria-label')).toBe('QR code: https://snui.dev');
+  });
 
   it('should reject exportImage with CAPABILITY_UNSUPPORTED off a uni host', async () => {
-    const wrapper = mount(SnQrCode, { props: { text: 'AUI' } })
-    const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> }
+    const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+    const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> };
     await expect(exposed.exportImage()).rejects.toMatchObject({
       code: 'CAPABILITY_UNSUPPORTED',
-    })
-  })
+    });
+  });
 
   it('should resolve exportImage with the temp file path when uni supports it', async () => {
     const uni = installUni({
       canvasToTempFilePath: (options: { success: (r: { tempFilePath: string }) => void }) => {
-        options.success({ tempFilePath: 'wxfile://tmp/qr.png' })
+        options.success({ tempFilePath: 'wxfile://tmp/qr.png' });
       },
-    })
+    });
     try {
-      const wrapper = mount(SnQrCode, { props: { text: 'AUI' } })
-      const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> }
-      await expect(exposed.exportImage()).resolves.toBe('wxfile://tmp/qr.png')
+      const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+      const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> };
+      await expect(exposed.exportImage()).resolves.toBe('wxfile://tmp/qr.png');
     } finally {
-      uni.restore()
+      uni.restore();
     }
-  })
+  });
 
   it('should reject exportImage when the platform reports a failure', async () => {
     const uni = installUni({
       canvasToTempFilePath: (options: { fail: (error: unknown) => void }) => {
-        options.fail(new Error('no canvas'))
+        options.fail(new Error('no canvas'));
       },
-    })
+    });
     try {
-      const wrapper = mount(SnQrCode, { props: { text: 'AUI' } })
-      const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> }
-      await expect(exposed.exportImage()).rejects.toMatchObject({ code: 'EXPORT_FAILED' })
+      const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+      const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> };
+      await expect(exposed.exportImage()).rejects.toMatchObject({ code: 'EXPORT_FAILED' });
     } finally {
-      uni.restore()
+      uni.restore();
     }
-  })
-})
+  });
+});

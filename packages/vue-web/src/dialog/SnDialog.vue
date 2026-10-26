@@ -61,26 +61,26 @@
  *   <SnDialog icon-placement="top" title="成功" type="success" />
  */
 
-import { computed } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-vue-next'
-import SnButton from '../button/SnButton.vue'
-import SnIcon from '../icon/SnIcon.vue'
-import type { IconComponent } from '../icon/sn-icon-registry'
+import { computed } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-vue-next';
+import SnButton from '../button/SnButton.vue';
+import SnIcon from '../icon/SnIcon.vue';
+import type { IconComponent } from '../icon/sn-icon-registry';
 
-defineOptions({ name: 'SnDialog' })
+defineOptions({ name: 'SnDialog' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 /** `n-dialog` iconPlacement values. */
-export type SnDialogIconPlacement = 'left' | 'top'
+export type SnDialogIconPlacement = 'left' | 'top';
 
 /** `n-dialog` type values. */
-export type SnDialogType = 'info' | 'success' | 'warning' | 'error' | 'default'
+export type SnDialogType = 'info' | 'success' | 'warning' | 'error' | 'default';
 
-type IconPlacement = SnDialogIconPlacement
-type DialogType = SnDialogType
+type IconPlacement = SnDialogIconPlacement;
+type DialogType = SnDialogType;
 
 /**
  * Upstream `iconRenderMap`. 'default' shares the 'info' glyph — this is the
@@ -92,7 +92,7 @@ const ICON_BY_TYPE: Record<DialogType, IconComponent> = {
   success: CircleCheck as IconComponent,
   warning: TriangleAlert as IconComponent,
   error: CircleX as IconComponent,
-}
+};
 
 /**
  * Upstream resolves the icon colour with `createKey('iconColor', type)`, so
@@ -105,50 +105,50 @@ const ICON_COLOR_SUFFIX_BY_TYPE: Record<DialogType, string> = {
   success: '-success',
   warning: '-warning',
   error: '-error',
-}
+};
 
 const props = withDefaults(
   defineProps<{
     /** Custom icon component, replacing the per-`type` default. */
-    icon?: IconComponent
+    icon?: IconComponent;
     /** Semantic type — drives the default icon + its colour. */
-    type?: DialogType
+    type?: DialogType;
     /** Panel title. Mirrors n-dialog `title`. */
-    title?: string
+    title?: string;
     /** Show the close button. Mirrors n-dialog `closable`. */
-    closable?: boolean
+    closable?: boolean;
     /** Cancel button label. Omit to hide the button. */
-    negativeText?: string
+    negativeText?: string;
     /** Confirm button label. Omit to hide the button. */
-    positiveText?: string
+    positiveText?: string;
     /** Extra props forwarded to the confirm button. */
-    positiveButtonProps?: Record<string, unknown>
+    positiveButtonProps?: Record<string, unknown>;
     /** Extra props forwarded to the cancel button. */
-    negativeButtonProps?: Record<string, unknown>
+    negativeButtonProps?: Record<string, unknown>;
     /** Body text. Mirrors n-dialog `content`. */
-    content?: string
+    content?: string;
     /** Whether to render the type icon. Mirrors n-dialog `showIcon`. */
-    showIcon?: boolean
+    showIcon?: boolean;
     /** Confirm button enters its loading state. Mirrors n-dialog `loading`. */
-    loading?: boolean
+    loading?: boolean;
     /** Draw a border around the panel. Mirrors n-dialog `bordered`. */
-    bordered?: boolean
+    bordered?: boolean;
     /** Icon above the title ('top') or inline before it ('left'). */
-    iconPlacement?: IconPlacement
+    iconPlacement?: IconPlacement;
     /** Extra class on the title row. */
-    titleClass?: string | Array<string | undefined>
+    titleClass?: string | Array<string | undefined>;
     /** Extra style on the title row. */
-    titleStyle?: string | Record<string, string | number>
+    titleStyle?: string | Record<string, string | number>;
     /** Extra class on the body. */
-    contentClass?: string | Array<string | undefined>
+    contentClass?: string | Array<string | undefined>;
     /** Extra style on the body. */
-    contentStyle?: string | Record<string, string | number>
+    contentStyle?: string | Record<string, string | number>;
     /** Extra class on the action row. */
-    actionClass?: string | Array<string | undefined>
+    actionClass?: string | Array<string | undefined>;
     /** Extra style on the action row. */
-    actionStyle?: string | Record<string, string | number>
+    actionStyle?: string | Record<string, string | number>;
     /** Make the close button keyboard-focusable. */
-    closeFocusable?: boolean
+    closeFocusable?: boolean;
   }>(),
   {
     icon: undefined as any,
@@ -172,65 +172,58 @@ const props = withDefaults(
     actionStyle: undefined as any,
     closeFocusable: false,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Confirm button clicked. Mirrors n-dialog `onPositiveClick`. */
-  (e: 'positive-click', event: MouseEvent): void
+  (e: 'positive-click', event: MouseEvent): void;
   /** Cancel button clicked. Mirrors n-dialog `onNegativeClick`. */
-  (e: 'negative-click', event: MouseEvent): void
+  (e: 'negative-click', event: MouseEvent): void;
   /** Close button clicked. Mirrors n-dialog `onClose`. */
-  (e: 'close'): void
-}>()
+  (e: 'close'): void;
+}>();
 
 const slots = defineSlots<{
   /** Dialog body — replaces `content`. */
-  default?(): unknown
+  default?(): unknown;
   /** Title row — replaces `title`. */
-  header?(): unknown
+  header?(): unknown;
   /** Type icon — replaces the built-in per-type glyph. */
-  icon?(): unknown
+  icon?(): unknown;
   /** Action row — replaces the built-in buttons entirely. */
-  action?(): unknown
+  action?(): unknown;
   /** Close button — replaces the built-in close glyph. */
-  close?(): unknown
-}>()
+  close?(): unknown;
+}>();
 
-const mergedIconPlacement = computed<IconPlacement>(() => props.iconPlacement ?? 'left')
+const mergedIconPlacement = computed<IconPlacement>(() => props.iconPlacement ?? 'left');
 
-const mergedIcon = computed<IconComponent>(
-  () => props.icon ?? ICON_BY_TYPE[props.type],
-)
+const mergedIcon = computed<IconComponent>(() => props.icon ?? ICON_BY_TYPE[props.type]);
 
 /** Token suffix for the icon colour; '' means the base `icon-color` token. */
 const iconColorVar = computed(
   () => `var(--sn-web-dialog-icon-color${ICON_COLOR_SUFFIX_BY_TYPE[props.type]})`,
-)
+);
 
 /**
  * Resolved flags for the confirm button. `loading` is optional in the props
  * type (TS2379 under `exactOptionalPropertyTypes`), so it is narrowed to a
  * definite boolean before being handed to SnButton.
  */
-const isLoading = computed(() => props.loading === true)
+const isLoading = computed(() => props.loading === true);
 
 /** Positive button inherits the dialog type, mirroring upstream's fallback. */
-const positiveButtonType = computed(() =>
-  props.type === 'default' ? 'primary' : props.type,
-)
+const positiveButtonType = computed(() => (props.type === 'default' ? 'primary' : props.type));
 
 /**
  * The action row is skipped entirely when there is nothing to render —
  * upstream checks the slot, then `action`, then the two text props.
  */
 const hasActionRow = computed(
-  () =>
-    slots.action !== undefined ||
-    Boolean(props.positiveText) ||
-    Boolean(props.negativeText),
-)
+  () => slots.action !== undefined || Boolean(props.positiveText) || Boolean(props.negativeText),
+);
 
-const isTopIcon = computed(() => mergedIconPlacement.value === 'top')
+const isTopIcon = computed(() => mergedIconPlacement.value === 'top');
 
 /**
  * Upstream builds `const icon = showIcon ? <NBaseIcon>…</NBaseIcon> : null`
@@ -238,10 +231,10 @@ const isTopIcon = computed(() => mergedIconPlacement.value === 'top')
  * `showIcon` gate is the only thing that decides whether an icon renders —
  * including a user-supplied `#icon` slot.
  */
-const hasIcon = computed(() => props.showIcon)
+const hasIcon = computed(() => props.showIcon);
 
 /** The close button only exists when `closable` and the slot is unused. */
-const showBuiltinClose = computed(() => props.closable && slots.close === undefined)
+const showBuiltinClose = computed(() => props.closable && slots.close === undefined);
 </script>
 
 <template>
@@ -297,12 +290,7 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
         <slot>{{ content }}</slot>
       </div>
 
-      <div
-        v-if="hasActionRow"
-        class="sn-dialog__action"
-        :class="actionClass"
-        :style="actionStyle"
-      >
+      <div v-if="hasActionRow" class="sn-dialog__action" :class="actionClass" :style="actionStyle">
         <slot name="action">
           <SnButton
             v-if="negativeText"

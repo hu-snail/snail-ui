@@ -8,13 +8,13 @@
 
 用户反馈「Alert 组件标题和图标没有垂直水平居中」。浏览器实测（Playwright，Chrome，字号 14px / 行高 1.6）：
 
-| 用例 | 图形盒 | 图形中心 − 首行文字中心 | 关闭按钮 − 首行文字中心 | 正文左边界 |
-|---|---|---|---|---|
-| info 标题+正文 | **14×16（横向压扁）** | **−3.5px** | — | 74 |
-| info 仅标题 | 14×16 | −3.5px（图形比自身盒子中心还高 5.2px） | — | 74 |
-| warning 可关闭 | 14×16 | −3.5px | **+12.89px** | 74 |
-| error 多行正文 | 14×16 | −3.5px | **+24.1px** | 74 |
-| default（无内置图形） | 无 | — | — | **60（凭空多缩进 8px）** |
+| 用例                  | 图形盒                | 图形中心 − 首行文字中心                | 关闭按钮 − 首行文字中心 | 正文左边界               |
+| --------------------- | --------------------- | -------------------------------------- | ----------------------- | ------------------------ |
+| info 标题+正文        | **14×16（横向压扁）** | **−3.5px**                             | —                       | 74                       |
+| info 仅标题           | 14×16                 | −3.5px（图形比自身盒子中心还高 5.2px） | —                       | 74                       |
+| warning 可关闭        | 14×16                 | −3.5px                                 | **+12.89px**            | 74                       |
+| error 多行正文        | 14×16                 | −3.5px                                 | **+24.1px**             | 74                       |
+| default（无内置图形） | 无                    | —                                      | —                       | **60（凭空多缩进 8px）** |
 
 ## 四个独立根因
 
@@ -30,13 +30,13 @@
 
 ## 修法
 
-| 根因 | 修法 |
-|---|---|
-| 1 | `.sn-alert { align-items: flex-start }` — 图标 / 关闭按钮对齐**首行**，不是多行 banner 的几何中心 |
-| 2 | 图标列改 `display: flex; align-items: center; justify-content: center; height: 1.6em`，删掉 `line-height: 0`。`1.6em` 恰好等于首行行盒（14px × 1.6），图形中心 = 首行行盒中心 |
-| 3 | `.sn-alert__icon :deep(.sn-icon) / .sn-alert__close :deep(.sn-icon) { width: auto; height: auto }` + `:deep(svg) { display: block; flex: none }`，让图形自己定义盒子 |
-| 4 | 模板守卫改成 `v-if="showIcon && (iconComponent \|\| $slots.icon)"` |
-| 附带 | 2px 间距从标题的 `margin-bottom` 移到 `.sn-alert-body__title + .sn-alert-body__content { margin-top: 2px }`；关闭按钮加 `font: inherit` |
+| 根因 | 修法                                                                                                                                                                          |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | `.sn-alert { align-items: flex-start }` — 图标 / 关闭按钮对齐**首行**，不是多行 banner 的几何中心                                                                             |
+| 2    | 图标列改 `display: flex; align-items: center; justify-content: center; height: 1.6em`，删掉 `line-height: 0`。`1.6em` 恰好等于首行行盒（14px × 1.6），图形中心 = 首行行盒中心 |
+| 3    | `.sn-alert__icon :deep(.sn-icon) / .sn-alert__close :deep(.sn-icon) { width: auto; height: auto }` + `:deep(svg) { display: block; flex: none }`，让图形自己定义盒子          |
+| 4    | 模板守卫改成 `v-if="showIcon && (iconComponent \|\| $slots.icon)"`                                                                                                            |
+| 附带 | 2px 间距从标题的 `margin-bottom` 移到 `.sn-alert-body__title + .sn-alert-body__content { margin-top: 2px }`；关闭按钮加 `font: inherit`                                       |
 
 修复后实测：图形盒 16×16；图标 / 关闭按钮与首行文字中心的偏差全部收敛到 **+0.69px**（同一行盒内 svg 盒与文字墨迹的字体度量差，亚像素级，不可再优化）；仅标题时图标与自身盒子中心偏差 −0.01px；`type="default"` 正文左边界回到 52（= padding）。多行正文时图标仍停在首行（−23.4px 相对整盒中心），符合预期。
 

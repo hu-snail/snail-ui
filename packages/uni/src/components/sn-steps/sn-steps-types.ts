@@ -6,29 +6,29 @@
  * `status` is unset — wd-step's documented "status 默认由 active 推导" rule.
  */
 
-import type { InjectionKey, Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue';
 
 /** Step state. `wait` / `process` / `finished` / `error`. */
-export type SnStepStatus = 'wait' | 'process' | 'finished' | 'error'
+export type SnStepStatus = 'wait' | 'process' | 'finished' | 'error';
 
 /** Context injected by `SnSteps` into child `SnStep` instances. */
 export interface SnStepsContext {
   /** Index of the active step. */
-  active: Ref<number>
+  active: Ref<number>;
   /** Vertical layout flag. */
-  vertical: Ref<boolean>
+  vertical: Ref<boolean>;
   /** Dot-indicator flag. */
-  dot: Ref<boolean>
+  dot: Ref<boolean>;
   /** Custom spacing between steps (empty = auto). */
-  space: Ref<string>
+  space: Ref<string>;
   /** Center the horizontal steps. */
-  alignCenter: Ref<boolean>
+  alignCenter: Ref<boolean>;
   /** Register a step; returns its index in DOM order. */
-  registerStep: (uid: number) => number
+  registerStep: (uid: number) => number;
   /** Drop a step when it unmounts. */
-  unregisterStep: (uid: number) => void
+  unregisterStep: (uid: number) => void;
   /** Total registered steps (drives "is this the last one"). */
-  stepCount: Ref<number>
+  stepCount: Ref<number>;
 }
 
-export const SN_STEPS_KEY: InjectionKey<SnStepsContext> = Symbol('sn-steps')
+export const SN_STEPS_KEY: InjectionKey<SnStepsContext> = Symbol('sn-steps');

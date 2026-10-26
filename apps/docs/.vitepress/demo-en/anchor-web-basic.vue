@@ -3,19 +3,15 @@
  * anchor-web-basic — a rail anchor tracking three sections in a scroll
  * container. Clicking a link scrolls to its section.
  */
-import { ref } from 'vue'
-import { SnAnchor, SnAnchorLink } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnAnchor, SnAnchorLink } from '@snui/vue-web';
 
-const scrollRef = ref<HTMLElement | null>(null)
+const scrollRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>
   <div class="anchor-demo">
-    <SnAnchor
-      class="anchor-demo__nav"
-      :bound="12"
-      :offset-target="() => scrollRef as HTMLElement"
-    >
+    <SnAnchor class="anchor-demo__nav" :bound="12" :offset-target="() => scrollRef as HTMLElement">
       <SnAnchorLink title="Overview" href="#anchor-demo-intro" />
       <SnAnchorLink title="Installation" href="#anchor-demo-install" />
       <SnAnchorLink title="Usage" href="#anchor-demo-usage" />
@@ -24,7 +20,9 @@ const scrollRef = ref<HTMLElement | null>(null)
     <div ref="scrollRef" class="anchor-demo__scroller">
       <section id="anchor-demo-intro" class="anchor-demo__section">
         <h4>Overview</h4>
-        <p v-for="n in 6" :key="n">Introduction paragraph {{ n }} — scroll to watch the highlight follow on the left.</p>
+        <p v-for="n in 6" :key="n">
+          Introduction paragraph {{ n }} — scroll to watch the highlight follow on the left.
+        </p>
       </section>
       <section id="anchor-demo-install" class="anchor-demo__section">
         <h4>Installation</h4>

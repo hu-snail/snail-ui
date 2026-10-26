@@ -35,51 +35,59 @@
  *   - 页面路由过渡 — 由宿主框架负责
  */
 
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 
-defineOptions({ name: 'SnTransition' })
+defineOptions({ name: 'SnTransition' });
 
 /** Animation name. Mirrors `wd-transition` `name`. */
 type TransitionName =
-  | 'fade' | 'fade-up' | 'fade-down' | 'fade-left' | 'fade-right'
-  | 'slide-up' | 'slide-down' | 'slide-left' | 'slide-right'
-  | 'zoom-in' | 'zoom-out'
+  | 'fade'
+  | 'fade-up'
+  | 'fade-down'
+  | 'fade-left'
+  | 'fade-right'
+  | 'slide-up'
+  | 'slide-down'
+  | 'slide-left'
+  | 'slide-right'
+  | 'zoom-in'
+  | 'zoom-out';
 
 /** Duration: ms, `false` = none, record = per leg. */
-type TransitionDuration = number | boolean | Record<string, number>
+type TransitionDuration = number | boolean | Record<string, number>;
 
-const DEFAULT_DURATION = 300
+const DEFAULT_DURATION = 300;
 
 const props = withDefaults(
   defineProps<{
     /** Whether the content is shown. */
-    show?: boolean
+    show?: boolean;
     /** Animation duration in ms; `false` disables it, a record sets per-leg. */
-    duration?: TransitionDuration
+    duration?: TransitionDuration;
     /** Defer the very first render until `show` turns true. */
-    lazyRender?: boolean
+    lazyRender?: boolean;
     /** One animation name, or several to combine. */
-    name?: TransitionName | TransitionName[] | undefined
+    name?: TransitionName | TransitionName[] | undefined;
     /** Hide with `display: none` once the leave animation finished. */
-    destroy?: boolean
+    destroy?: boolean;
     /** Class applied on the enter start frame. */
-    enterClass?: string
+    enterClass?: string;
     /** Class applied while entering. */
-    enterActiveClass?: string
+    enterActiveClass?: string;
     /** Class applied on the enter end frame. */
-    enterToClass?: string
+    enterToClass?: string;
     /** Class applied on the leave start frame. */
-    leaveClass?: string
+    leaveClass?: string;
     /** Class applied while leaving. */
-    leaveActiveClass?: string
+    leaveActiveClass?: string;
     /** Class applied on the leave end frame. */
-    leaveToClass?: string
+    leaveToClass?: string;
     /** Intercept touchmove so the page behind cannot scroll. */
-    disableTouchMove?: boolean
+    disableTouchMove?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     show: false,
@@ -99,123 +107,123 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Animated content. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 const emit = defineEmits<{
-  (e: 'before-enter'): void
-  (e: 'enter'): void
-  (e: 'after-enter'): void
-  (e: 'before-leave'): void
-  (e: 'leave'): void
-  (e: 'after-leave'): void
-  (e: 'click', event: Event): void
-}>()
+  (e: 'before-enter'): void;
+  (e: 'enter'): void;
+  (e: 'after-enter'): void;
+  (e: 'before-leave'): void;
+  (e: 'leave'): void;
+  (e: 'after-leave'): void;
+  (e: 'click', event: Event): void;
+}>();
 
 /** Resolve the duration for one leg. */
 function resolveDuration(value: TransitionDuration, leg: 'enter' | 'leave'): number {
-  if (value === false) return 0
-  if (value === true) return DEFAULT_DURATION
-  if (typeof value === 'number') return value
-  const legValue = value[leg] ?? value.enter ?? value.leave
-  return typeof legValue === 'number' ? legValue : DEFAULT_DURATION
+  if (value === false) return 0;
+  if (value === true) return DEFAULT_DURATION;
+  if (typeof value === 'number') return value;
+  const legValue = value[leg] ?? value.enter ?? value.leave;
+  return typeof legValue === 'number' ? legValue : DEFAULT_DURATION;
 }
 
 /** Node present in the tree. */
 // At rest a `destroy: true` node leaves the tree; `destroy: false` keeps it
 // mounted (hidden) so its subtree keeps state.
-const isMounted = ref(props.show || (!props.lazyRender && !props.destroy))
+const isMounted = ref(props.show || (!props.lazyRender && !props.destroy));
 /** Content rendered at least once (`lazyRender` gate). */
-const hasRendered = ref(props.show || !props.lazyRender)
+const hasRendered = ref(props.show || !props.lazyRender);
 /** Target visible state — drives the animation class. */
-const isShown = ref(props.show)
+const isShown = ref(props.show);
 /** Running leg. `none` = at rest. */
-const phase = ref<'none' | 'enter' | 'leave'>('none')
+const phase = ref<'none' | 'enter' | 'leave'>('none');
 /** Duration of the running leg. */
-const durationMs = ref(resolveDuration(props.duration, 'enter'))
+const durationMs = ref(resolveDuration(props.duration, 'enter'));
 
 /** Single pending animation timer (disposed on unmount, §41). */
-let timer: ReturnType<typeof setTimeout> | null = null
+let timer: ReturnType<typeof setTimeout> | null = null;
 /** Animation generation — drops results from superseded legs. */
-let generation = 0
+let generation = 0;
 
 function clearTimer(): void {
   if (timer !== null) {
-    clearTimeout(timer)
-    timer = null
+    clearTimeout(timer);
+    timer = null;
   }
 }
 
 async function enter(): Promise<void> {
-  clearTimer()
-  const token = ++generation
-  durationMs.value = resolveDuration(props.duration, 'enter')
-  emit('before-enter')
-  isMounted.value = true
-  hasRendered.value = true
-  phase.value = 'enter'
-  await nextTick()
-  if (token !== generation) return
-  isShown.value = true
-  emit('enter')
+  clearTimer();
+  const token = ++generation;
+  durationMs.value = resolveDuration(props.duration, 'enter');
+  emit('before-enter');
+  isMounted.value = true;
+  hasRendered.value = true;
+  phase.value = 'enter';
+  await nextTick();
+  if (token !== generation) return;
+  isShown.value = true;
+  emit('enter');
   if (durationMs.value <= 0) {
-    phase.value = 'none'
-    emit('after-enter')
-    return
+    phase.value = 'none';
+    emit('after-enter');
+    return;
   }
   timer = setTimeout(() => {
-    timer = null
-    if (token !== generation) return
-    phase.value = 'none'
-    emit('after-enter')
-  }, durationMs.value)
+    timer = null;
+    if (token !== generation) return;
+    phase.value = 'none';
+    emit('after-enter');
+  }, durationMs.value);
 }
 
 function leave(): void {
-  clearTimer()
-  const token = ++generation
-  durationMs.value = resolveDuration(props.duration, 'leave')
-  emit('before-leave')
-  isShown.value = false
-  phase.value = 'leave'
-  emit('leave')
+  clearTimer();
+  const token = ++generation;
+  durationMs.value = resolveDuration(props.duration, 'leave');
+  emit('before-leave');
+  isShown.value = false;
+  phase.value = 'leave';
+  emit('leave');
   if (durationMs.value <= 0) {
-    finishLeave()
-    return
+    finishLeave();
+    return;
   }
   timer = setTimeout(() => {
-    if (token !== generation) return
-    finishLeave()
-  }, durationMs.value)
+    if (token !== generation) return;
+    finishLeave();
+  }, durationMs.value);
 }
 
 function finishLeave(): void {
-  timer = null
-  phase.value = 'none'
-  if (props.destroy) isMounted.value = false
-  emit('after-leave')
+  timer = null;
+  phase.value = 'none';
+  if (props.destroy) isMounted.value = false;
+  emit('after-leave');
 }
 
 watch(
   () => props.show,
   (value) => {
-    if (value) void enter()
-    else leave()
+    if (value) void enter();
+    else leave();
   },
-)
+);
 
-onBeforeUnmount(clearTimer)
+onBeforeUnmount(clearTimer);
 
 /** Combined animation name, e.g. `fade-up` for `['fade', 'up']`. */
 const animationName = computed(() => {
-  if (props.name === undefined) return ''
-  const names = Array.isArray(props.name) ? props.name : [props.name]
-  return names.join('-')
-})
+  if (props.name === undefined) return '';
+  const names = Array.isArray(props.name) ? props.name : [props.name];
+  return names.join('-');
+});
 
 const rootClass = computed(() => [
   'sn-transition',
@@ -232,21 +240,21 @@ const rootClass = computed(() => [
     [props.leaveToClass]: !isShown.value && props.leaveToClass !== '',
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts = [`--sn-transition-duration: ${durationMs.value}ms`]
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.join('; ')
-})
+  const parts = [`--sn-transition-duration: ${durationMs.value}ms`];
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.join('; ');
+});
 
 function onTap(event: Event): void {
-  emit('click', event)
+  emit('click', event);
 }
 
 function onTouchMove(event: Event): void {
-  if (!props.disableTouchMove) return
-  event.preventDefault()
+  if (!props.disableTouchMove) return;
+  event.preventDefault();
 }
 </script>
 
@@ -327,47 +335,103 @@ function onTouchMove(event: Event): void {
 }
 
 @keyframes sn-transition-fade {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes sn-transition-fade-up {
-  from { opacity: 0; transform: translateY(24rpx); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes sn-transition-fade-down {
-  from { opacity: 0; transform: translateY(-24rpx); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes sn-transition-fade-left {
-  from { opacity: 0; transform: translateX(24rpx); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes sn-transition-fade-right {
-  from { opacity: 0; transform: translateX(-24rpx); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-24rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes sn-transition-slide-up {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 @keyframes sn-transition-slide-down {
-  from { transform: translateY(-100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 @keyframes sn-transition-slide-left {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 @keyframes sn-transition-slide-right {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 @keyframes sn-transition-zoom-in {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 @keyframes sn-transition-zoom-out {
-  from { opacity: 0; transform: scale(1.2); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 </style>

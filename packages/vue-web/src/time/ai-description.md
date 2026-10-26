@@ -18,20 +18,20 @@ Per AGENTS.md §112, this component's API surface mirrors naive-ui
 ## Import
 
 ```ts
-import SnTime from '@snui/vue-web/src/time/SnTime.vue'
+import SnTime from '@snui/vue-web/src/time/SnTime.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `time` | `number \| Date` | mount time | no | Time to render (ms timestamp or Date). |
-| `type` | `'relative' \| 'date' \| 'datetime'` | `'datetime'` | no | Rendered representation. |
-| `to` | `number \| Date` | mount time | no | Base time for `type="relative"`. |
-| `unix` | `boolean` | `false` | no | Interpret `time` / `to` as unix timestamps in seconds. |
-| `format` | `string` | — | no | Custom format string (date-fns token subset, see below). |
-| `text` | `boolean` | `false` | no | Render a bare text node instead of a `<time>` element. |
-| `timeZone` | `string` | — | no | IANA time zone used when formatting. |
+| Name       | Type                                 | Default      | Required | Description                                              |
+| ---------- | ------------------------------------ | ------------ | -------- | -------------------------------------------------------- |
+| `time`     | `number \| Date`                     | mount time   | no       | Time to render (ms timestamp or Date).                   |
+| `type`     | `'relative' \| 'date' \| 'datetime'` | `'datetime'` | no       | Rendered representation.                                 |
+| `to`       | `number \| Date`                     | mount time   | no       | Base time for `type="relative"`.                         |
+| `unix`     | `boolean`                            | `false`      | no       | Interpret `time` / `to` as unix timestamps in seconds.   |
+| `format`   | `string`                             | —            | no       | Custom format string (date-fns token subset, see below). |
+| `text`     | `boolean`                            | `false`      | no       | Render a bare text node instead of a `<time>` element.   |
+| `timeZone` | `string`                             | —            | no       | IANA time zone used when formatting.                     |
 
 ## Events
 
@@ -52,7 +52,7 @@ names are built-in zh-CN (一月 / 星期四 / 上午).
 - naive builds on `date-fns` + `date-fns-tz`; this package has no date
   dependency, so `format` supports the common token subset above and
   relative wording is a `formatDistanceStrict(date, to,
-  { addSuffix: true })` equivalent with built-in zh-CN strings
+{ addSuffix: true })` equivalent with built-in zh-CN strings
   (unit durations 365d / 30.4375d / 24h / 60m / 1s, half-up rounding; a
   sub-second distance renders 「不到 1 秒」 where date-fns zh-CN renders the
   CLDR quirk 「不到 5 秒」).

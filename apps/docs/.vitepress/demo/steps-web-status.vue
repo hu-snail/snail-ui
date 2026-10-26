@@ -4,7 +4,7 @@
  * parent `status="error"`, one group where a single step overrides its
  * own status explicitly.
  */
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { SnSteps, SnStep } from '@snui/vue-web';
 </script>
 
 <template>

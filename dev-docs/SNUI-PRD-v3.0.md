@@ -45,23 +45,23 @@ DX First           TS 类型完整 + 按需加载 + 真实渲染文档 + 一键�
 
 ### 1.1 目标用户
 
-| 用户 | 场景 |
-|---|---|
-| Vue 3 Web 开发者 | 参考 naive-ui 体验，直接 `import { SnButton }` |
-| uni-app 多端开发者 | 参考 wot-ui 体验，easycom 自动注册 |
-| AI 编程场景（Cursor / Claude Code / Mavis 等）| 通过 Skill + MCP 理解组件 API，产出规范代码 |
-| 产品 / 设计师 | 在文档站切换风格包预览，复制配置给开发者 |
+| 用户                                           | 场景                                           |
+| ---------------------------------------------- | ---------------------------------------------- |
+| Vue 3 Web 开发者                               | 参考 naive-ui 体验，直接 `import { SnButton }` |
+| uni-app 多端开发者                             | 参考 wot-ui 体验，easycom 自动注册             |
+| AI 编程场景（Cursor / Claude Code / Mavis 等） | 通过 Skill + MCP 理解组件 API，产出规范代码    |
+| 产品 / 设计师                                  | 在文档站切换风格包预览，复制配置给开发者       |
 
 ### 1.2 核心价值
 
-| 维度 | 描述 |
-|---|---|
-| 组件易用 | `<SnButton type="primary">` 一行 import，TS 类型完整 |
-| 多端一致 | web / uni 双端同名组件，Token 共享 |
-| 风格替换 | Style Pack 三层覆盖，Token + 皮肤 CSS + 资源，涂鸦/便签/iOS/淘宝/抖音 |
-| AI 友好 | Skill 文件 + MCP Server + ai-meta.json，AI 可理解并产出 |
-| 高保真原型 | AI 从需求描述产出可运行的 Vue SFC 原型 |
-| 配置复制 | ThemeCopier 一键复制风格包配置到项目 |
+| 维度       | 描述                                                                  |
+| ---------- | --------------------------------------------------------------------- |
+| 组件易用   | `<SnButton type="primary">` 一行 import，TS 类型完整                  |
+| 多端一致   | web / uni 双端同名组件，Token 共享                                    |
+| 风格替换   | Style Pack 三层覆盖，Token + 皮肤 CSS + 资源，涂鸦/便签/iOS/淘宝/抖音 |
+| AI 友好    | Skill 文件 + MCP Server + ai-meta.json，AI 可理解并产出               |
+| 高保真原型 | AI 从需求描述产出可运行的 Vue SFC 原型                                |
+| 配置复制   | ThemeCopier 一键复制风格包配置到项目                                  |
 
 ---
 
@@ -101,37 +101,37 @@ snail-aui/
 
 因此 Style Pack 由三层组成：
 
-| 层 | 内容 | 必需 |
-|---|---|---|
-| Token 层 | 颜色 / 圆角 / 间距覆盖（`snCssVars()`）| 所有 Pack |
-| 皮肤 CSS 层 | `.snui-skin-{name}` 作用域 CSS | 涂鸦 / 便签 / 淘宝 / 抖音 |
-| 资源层 | 字体文件 / SVG 纹理 | 抖音等 M4 Pack |
+| 层          | 内容                                    | 必需                      |
+| ----------- | --------------------------------------- | ------------------------- |
+| Token 层    | 颜色 / 圆角 / 间距覆盖（`snCssVars()`） | 所有 Pack                 |
+| 皮肤 CSS 层 | `.snui-skin-{name}` 作用域 CSS          | 涂鸦 / 便签 / 淘宝 / 抖音 |
+| 资源层      | 字体文件 / SVG 纹理                     | 抖音等 M4 Pack            |
 
 **硬约束**：皮肤 CSS 只能操作视觉（颜色、背景、字体、阴影、动画、伪元素），不能改 DOM / Props / 行为。
 
 ### 3.2 官方风格包路线图
 
-| Pack | 视觉特征 | 层 | 交付 |
-|---|---|---|---|
-| default | 6px 圆角，微妙阴影，蓝色主色 | Token | M2 |
-| dark | 深色背景，低饱和度 | Token | M2 |
-| ios | 大圆角，无阴影，苹果蓝 | Token | M2 |
-| doodle | 手绘边框，手写字体，黑白主色 | Token + 皮肤 CSS | M3 |
-| sticky-note | 暖黄背景，倾斜阴影 | Token + 皮肤 CSS | M3 |
-| taobao | 橙红主色，圆润圆角 | Token + 皮肤 CSS | M4 |
-| douyin | 深色底，红青主色，霓虹 glow | Token + 皮肤 CSS + 资源 | M4 |
+| Pack        | 视觉特征                     | 层                      | 交付 |
+| ----------- | ---------------------------- | ----------------------- | ---- |
+| default     | 6px 圆角，微妙阴影，蓝色主色 | Token                   | M2   |
+| dark        | 深色背景，低饱和度           | Token                   | M2   |
+| ios         | 大圆角，无阴影，苹果蓝       | Token                   | M2   |
+| doodle      | 手绘边框，手写字体，黑白主色 | Token + 皮肤 CSS        | M3   |
+| sticky-note | 暖黄背景，倾斜阴影           | Token + 皮肤 CSS        | M3   |
+| taobao      | 橙红主色，圆润圆角           | Token + 皮肤 CSS        | M4   |
+| douyin      | 深色底，红青主色，霓虹 glow  | Token + 皮肤 CSS + 资源 | M4   |
 
 ### 3.3 Web 端激活
 
 ```ts
-import { snCssVars } from '@snui/tokens'
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import { iosPack } from '@snui/style-packs/ios';
 
 // Token 层：注入 :root CSS 变量
-const el = document.createElement('style')
-el.id = 'snui-pack'
-el.textContent = snCssVars({ theme: iosPack.theme, style: iosPack.style })
-document.head.appendChild(el)
+const el = document.createElement('style');
+el.id = 'snui-pack';
+el.textContent = snCssVars({ theme: iosPack.theme, style: iosPack.style });
+document.head.appendChild(el);
 
 // 皮肤 CSS 层（iOS 无需，doodle 等需要）：
 // document.body.classList.add('snui-skin-doodle')
@@ -166,6 +166,7 @@ document.head.appendChild(el)
 **A. snail-ui.skill.md**
 
 AI 行为契约，规范 AI 使用 snail-aui 的方式：
+
 - 组件引用规范（`Sn-` 前缀，easycom 路径）
 - Token 引用规则（只用 `--sn-*`，禁止硬编码颜色）
 - 高保真原型输出格式（三段式 SFC）
@@ -173,12 +174,12 @@ AI 行为契约，规范 AI 使用 snail-aui 的方式：
 
 **B. MCP Server（4 个工具）**
 
-| 工具 | 说明 |
-|---|---|
-| `list_components` | 所有组件列表 + 简述 |
+| 工具                 | 说明                                              |
+| -------------------- | ------------------------------------------------- |
+| `list_components`    | 所有组件列表 + 简述                               |
 | `get_component_meta` | Props / Events / Slots / Tokens / A11y 完整元数据 |
-| `get_style_pack` | Pack 定义 + `snCssVars(...)` 代码片段 |
-| `render_preview` | 接受 Vue SFC 字符串，返回沙箱预览 URL |
+| `get_style_pack`     | Pack 定义 + `snCssVars(...)` 代码片段             |
+| `render_preview`     | 接受 Vue SFC 字符串，返回沙箱预览 URL             |
 
 安全约束：只读，沙箱隔离，无网络副作用，15 秒超时。
 
@@ -189,6 +190,7 @@ AI 行为契约，规范 AI 使用 snail-aui 的方式：
 ### 4.2 ai-description.md 维护策略
 
 **不手工维护 Props / Events / Slots 表格**，避免与 `.vue` 文件漂移：
+
 - Props / Events / Slots 由 `pnpm snui docs` 从 `defineProps` / `defineEmits` / `defineSlots` 自动抽取
 - 需要手工维护的内容：组件用途描述、使用场景、不适用场景、代码示例
 - CLI 合并两部分生成最终 `ai-description.md`，Props 以自动抽取为准
@@ -215,12 +217,12 @@ MCP render_preview → 沙箱验证渲染
 
 ## 5. 地基任务（M1 前，不做则 v3.0 核心功能无法工作）
 
-| ID | 任务 | 阻塞点 |
-|---|---|---|
-| AUI-FOUND-001 | Token 命名对齐：组件消费变量名与 `@snui/tokens` 输出一致 | 风格切换无效 |
-| AUI-FOUND-002 | 重建 ComponentPreview.vue（移除 schema renderer） | 文档预览不可用 |
-| AUI-FOUND-003 | ConfigProvider 双端 `skin` prop | uni 无风格切换路径 |
-| AUI-FOUND-004 | 组件根元素 `data-snui-component` 皮肤钩子 | 皮肤 CSS 无选择器 |
+| ID            | 任务                                                     | 阻塞点             |
+| ------------- | -------------------------------------------------------- | ------------------ |
+| AUI-FOUND-001 | Token 命名对齐：组件消费变量名与 `@snui/tokens` 输出一致 | 风格切换无效       |
+| AUI-FOUND-002 | 重建 ComponentPreview.vue（移除 schema renderer）        | 文档预览不可用     |
+| AUI-FOUND-003 | ConfigProvider 双端 `skin` prop                          | uni 无风格切换路径 |
+| AUI-FOUND-004 | 组件根元素 `data-snui-component` 皮肤钩子                | 皮肤 CSS 无选择器  |
 
 ---
 
@@ -237,14 +239,14 @@ MCP render_preview → 沙箱验证渲染
 
 ## 7. 里程碑
 
-| 里程碑 | 时间 | 交付 |
-|---|---|---|
-| **M0** 架构反转 | 2026-10 | ADR-0001 + 文档 v2.0 + Button demo ✅ |
-| **M0.5** 文档重写 | 2026-10 | ADR-0002 + PRD/架构/Spec/WBS v3.0 ✅ |
-| **M1** 核心组件 + 地基 | 2026-11 | FOUND-001~004 + P0+P1 ~40 组件 + docs |
+| 里程碑                 | 时间    | 交付                                                      |
+| ---------------------- | ------- | --------------------------------------------------------- |
+| **M0** 架构反转        | 2026-10 | ADR-0001 + 文档 v2.0 + Button demo ✅                     |
+| **M0.5** 文档重写      | 2026-10 | ADR-0002 + PRD/架构/Spec/WBS v3.0 ✅                      |
+| **M1** 核心组件 + 地基 | 2026-11 | FOUND-001~004 + P0+P1 ~40 组件 + docs                     |
 | **M2** Style Pack + AI | 2026-12 | default/dark/ios Pack + MCP + StyleSwitcher + ThemeCopier |
-| **M3** 风格扩展 | 2027 Q1 | doodle + sticky-note + 原型流程验证 |
-| **M4** 生态打磨 | 2027 Q2 | taobao + douyin + P2 组件 + VSCode 插件 |
+| **M3** 风格扩展        | 2027 Q1 | doodle + sticky-note + 原型流程验证                       |
+| **M4** 生态打磨        | 2027 Q2 | taobao + douyin + P2 组件 + VSCode 插件                   |
 
 ---
 
@@ -261,8 +263,8 @@ MCP render_preview → 沙箱验证渲染
 
 ## 9. 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
-| v1.2 | 2026-09 | Schema-driven 架构（Superseded） |
-| v2.0 | 2026-10-03 | 传统组件库 + 简单 AI 友好（Superseded） |
+| 版本 | 日期       | 变更                                            |
+| ---- | ---------- | ----------------------------------------------- |
+| v1.2 | 2026-09    | Schema-driven 架构（Superseded）                |
+| v2.0 | 2026-10-03 | 传统组件库 + 简单 AI 友好（Superseded）         |
 | v3.0 | 2026-10-03 | Style Pack 三层 + AI Layer + 地基任务（Active） |

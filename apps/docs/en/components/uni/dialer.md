@@ -23,35 +23,35 @@ Sectors alternate through `prizeBgColors`; a prize item's `color` wins. Sector c
 
 ### Props
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| `prizeList` | `SnDialerPrize[]` | `[]` | Prizes (`{ id, name, img?, color? }`, 2-12 items) |
-| `turns` | `number` | `5` | Rotation turns |
-| `duration` | `number` | `3` | Rotation duration (seconds) |
-| `size` | `string` | `'600rpx'` | Wheel diameter |
-| `prizeBgColors` | `string[]` | `['#FFF0A3', '#FFFCE6']` | Alternating sector colors |
-| `borderColor` | `string` | `'#FFD752'` | Wheel border color |
-| `fontSize` | `string` | `'24rpx'` | Prize name font size |
-| `color` | `string` | `undefined` | Prize name color (text token) |
-| `customClass` | `string` | `undefined` | Root custom class |
-| `customStyle` | `string` | `undefined` | Root custom style |
+| Name            | Type              | Default                  | Description                                       |
+| --------------- | ----------------- | ------------------------ | ------------------------------------------------- |
+| `prizeList`     | `SnDialerPrize[]` | `[]`                     | Prizes (`{ id, name, img?, color? }`, 2-12 items) |
+| `turns`         | `number`          | `5`                      | Rotation turns                                    |
+| `duration`      | `number`          | `3`                      | Rotation duration (seconds)                       |
+| `size`          | `string`          | `'600rpx'`               | Wheel diameter                                    |
+| `prizeBgColors` | `string[]`        | `['#FFF0A3', '#FFFCE6']` | Alternating sector colors                         |
+| `borderColor`   | `string`          | `'#FFD752'`              | Wheel border color                                |
+| `fontSize`      | `string`          | `'24rpx'`                | Prize name font size                              |
+| `color`         | `string`          | `undefined`              | Prize name color (text token)                     |
+| `customClass`   | `string`          | `undefined`              | Root custom class                                 |
+| `customStyle`   | `string`          | `undefined`              | Root custom style                                 |
 
 ### Events
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `click` | — | Pointer tapped (ignored while spinning) |
-| `done` | `(index: number)` | Settled on the prize index |
+| Name    | Payload           | Description                             |
+| ------- | ----------------- | --------------------------------------- |
+| `click` | —                 | Pointer tapped (ignored while spinning) |
+| `done`  | `(index: number)` | Settled on the prize index              |
 
 ### Slots
 
-| Name | Payload | Description |
-| --- | --- | --- |
-| `prize` | `{ item, index }` | Custom prize content |
-| `pointer` | — | Custom pointer; defaults to the GO button |
+| Name      | Payload           | Description                               |
+| --------- | ----------------- | ----------------------------------------- |
+| `prize`   | `{ item, index }` | Custom prize content                      |
+| `pointer` | —                 | Custom pointer; defaults to the GO button |
 
 ### Methods
 
-| Name | Type | Description |
-| --- | --- | --- |
+| Name  | Type                      | Description                                      |
+| ----- | ------------------------- | ------------------------------------------------ |
 | `run` | `(index: number) => void` | Spin to the prize index (ignored while spinning) |

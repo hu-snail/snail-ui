@@ -27,51 +27,51 @@
 
 下列 wd-img-cropper 属性**已声明**（对齐参考 API，配置可以原样 type-check），但在本实现里没有渲染效果：
 
-| 属性 | 说明 |
-| --- | --- |
+| 属性                                     | 说明                                                                                                                                                      |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `export-scale` / `quality` / `file-type` | 只在导出为图片文件时才有意义，需要 `<canvas>` + `uni.canvasToTempFilePath`，不在本包的跨端元素白名单内。宿主用 `confirm` 返回的几何自行栅格化并应用这三项 |
-| `img-width` / `img-height` | 作为**预览框**尺寸生效：数字按设计稿 px（内部 ×2 换 rpx），字符串原样使用（`%` 才有意义）。留空则沿用 `100%` 适配 |
+| `img-width` / `img-height`               | 作为**预览框**尺寸生效：数字按设计稿 px（内部 ×2 换 rpx），字符串原样使用（`%` 才有意义）。留空则沿用 `100%` 适配                                         |
 
 <Demo name="img-cropper-mp-export" description="img-width / img-height 预览框、max-scale 上限，以及 export-scale / quality / file-type 代入 confirm 结果。" />
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `boolean` | `false` | 是否打开裁剪组件（`v-model`） |
-| `imgSrc` | `string` | `''` | 图片资源链接 |
-| `disabledRotate` | `boolean` | `false` | 禁止图片旋转 |
-| `maxScale` | `number` | `3` | 最大缩放倍数（小于等于 0.5 时回落到 3） |
-| `imgWidth` | `number \| string` | `undefined` | 预览图宽度：数字按设计稿 px，字符串原样使用 |
-| `imgHeight` | `number \| string` | `undefined` | 预览图高度：同上 |
-| `exportScale` | `number` | `1` | 导出缩放倍数（已声明，本实现不栅格化） |
-| `quality` | `number` | `0.92` | 导出质量 0–1（已声明，本实现不栅格化） |
-| `fileType` | `'png' \| 'jpg'` | `'png'` | 导出格式（已声明，本实现不栅格化） |
-| `cancelButtonText` | `string` | `'取消'` | 取消按钮文案 |
-| `confirmButtonText` | `string` | `'完成'` | 确认按钮文案 |
-| `aspectRatio` | `string` | `'1:1'` | 裁剪框宽高比，格式 `宽:高` |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义样式 |
+| 属性                | 类型               | 默认值      | 说明                                        |
+| ------------------- | ------------------ | ----------- | ------------------------------------------- |
+| `modelValue`        | `boolean`          | `false`     | 是否打开裁剪组件（`v-model`）               |
+| `imgSrc`            | `string`           | `''`        | 图片资源链接                                |
+| `disabledRotate`    | `boolean`          | `false`     | 禁止图片旋转                                |
+| `maxScale`          | `number`           | `3`         | 最大缩放倍数（小于等于 0.5 时回落到 3）     |
+| `imgWidth`          | `number \| string` | `undefined` | 预览图宽度：数字按设计稿 px，字符串原样使用 |
+| `imgHeight`         | `number \| string` | `undefined` | 预览图高度：同上                            |
+| `exportScale`       | `number`           | `1`         | 导出缩放倍数（已声明，本实现不栅格化）      |
+| `quality`           | `number`           | `0.92`      | 导出质量 0–1（已声明，本实现不栅格化）      |
+| `fileType`          | `'png' \| 'jpg'`   | `'png'`     | 导出格式（已声明，本实现不栅格化）          |
+| `cancelButtonText`  | `string`           | `'取消'`    | 取消按钮文案                                |
+| `confirmButtonText` | `string`           | `'完成'`    | 确认按钮文案                                |
+| `aspectRatio`       | `string`           | `'1:1'`     | 裁剪框宽高比，格式 `宽:高`                  |
+| `customClass`       | `string`           | `''`        | 根节点自定义类名                            |
+| `customStyle`       | `string`           | `''`        | 根节点自定义样式                            |
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 显隐变化（`v-model`） | `boolean` |
-| `confirm` | 完成截图时触发，随后关闭 | `SnImgCropperResult` |
-| `cancel` | 取消截图时触发，随后关闭 | — |
-| `imgloaded` | 图片加载完成 | `{ src }` |
-| `imgloaderror` | 图片加载错误 | `{ error }` |
+| 事件名              | 说明                     | 参数                 |
+| ------------------- | ------------------------ | -------------------- |
+| `update:modelValue` | 显隐变化（`v-model`）    | `boolean`            |
+| `confirm`           | 完成截图时触发，随后关闭 | `SnImgCropperResult` |
+| `cancel`            | 取消截图时触发，随后关闭 | —                    |
+| `imgloaded`         | 图片加载完成             | `{ src }`            |
+| `imgloaderror`      | 图片加载错误             | `{ error }`          |
 
 ### `SnImgCropperResult`
 
-| 字段 | 类型 | 含义 |
-| --- | --- | --- |
-| `offsetX` / `offsetY` | `number` | 实际平移量（rpx） |
-| `scale` | `number` | 实际缩放倍数 |
-| `rotate` | `number` | 实际旋转角度（90 的倍数） |
-| `source` | `{ x, y, width, height }` | 裁剪框覆盖的源图矩形（源图像素） |
-| `frame` | `{ width, height }` | 裁剪框尺寸（rpx） |
+| 字段                  | 类型                      | 含义                             |
+| --------------------- | ------------------------- | -------------------------------- |
+| `offsetX` / `offsetY` | `number`                  | 实际平移量（rpx）                |
+| `scale`               | `number`                  | 实际缩放倍数                     |
+| `rotate`              | `number`                  | 实际旋转角度（90 的倍数）        |
+| `source`              | `{ x, y, width, height }` | 裁剪框覆盖的源图矩形（源图像素） |
+| `frame`               | `{ width, height }`       | 裁剪框尺寸（rpx）                |
 
 ## Slots
 
@@ -79,17 +79,17 @@
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-overlay` | 层遮罩 / 工具按钮底盘 |
-| `--sn-mp-color-background-elevated` | 裁剪框描边 / 底部操作栏 |
-| `--sn-mp-color-background-sunken` | 裁剪框底盘 |
-| `--sn-mp-color-border-subtle` | 三分构图线 |
-| `--sn-mp-color-action-primary` | 裁剪框角标 |
-| `--sn-mp-color-text-on-primary` | 工具文案 / 图标 |
-| `--sn-mp-font-size-sm` | 工具文案字号 |
-| `--sn-mp-font-line-height-normal` | 工具文案行高 |
-| `--sn-mp-radius-full` | 圆形工具按钮 |
+| 变量                                                                                  | 用途                               |
+| ------------------------------------------------------------------------------------- | ---------------------------------- |
+| `--sn-mp-color-background-overlay`                                                    | 层遮罩 / 工具按钮底盘              |
+| `--sn-mp-color-background-elevated`                                                   | 裁剪框描边 / 底部操作栏            |
+| `--sn-mp-color-background-sunken`                                                     | 裁剪框底盘                         |
+| `--sn-mp-color-border-subtle`                                                         | 三分构图线                         |
+| `--sn-mp-color-action-primary`                                                        | 裁剪框角标                         |
+| `--sn-mp-color-text-on-primary`                                                       | 工具文案 / 图标                    |
+| `--sn-mp-font-size-sm`                                                                | 工具文案字号                       |
+| `--sn-mp-font-line-height-normal`                                                     | 工具文案行高                       |
+| `--sn-mp-radius-full`                                                                 | 圆形工具按钮                       |
 | `--sn-mp-spacing-3` / `--sn-mp-spacing-4` / `--sn-mp-spacing-5` / `--sn-mp-spacing-8` | 工具内边距 / 底部内边距 / 工具间距 |
 
 ## 无障碍

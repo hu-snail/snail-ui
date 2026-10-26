@@ -30,34 +30,34 @@ raw values      semantics       component-level
 
 ## Three independent axes
 
-| Axis | What | Forbidden |
-|---|---|---|
-| **Theme** | Color | Radius, spacing, size |
-| **Style** | Radius + shadow + Component Token | Color, spacing, font size |
-| **Density** | Spacing + size + font size | Color, radius |
+| Axis        | What                              | Forbidden                 |
+| ----------- | --------------------------------- | ------------------------- |
+| **Theme**   | Color                             | Radius, spacing, size     |
+| **Style**   | Radius + shadow + Component Token | Color, spacing, font size |
+| **Density** | Spacing + size + font size        | Color, radius             |
 
 ## Default values
 
-| Token | Default |
-|---|---|
-| `--aui-color-action-primary` | `#1677ff` |
-| `--aui-color-text-primary` | `#18181b` |
-| `--aui-color-background-surface` | `#ffffff` |
-| `--aui-button-radius` | `6px` → Web `--sn-web-button-radius: 6px` / uni `--sn-mp-button-radius: 24rpx` |
-| `--aui-button-height-medium` | `36px` → Web `36px` / uni `72rpx` |
-| `--aui-card-shadow` | `0 1px 3px rgba(0,0,0,0.08)` |
+| Token                            | Default                                                                        |
+| -------------------------------- | ------------------------------------------------------------------------------ |
+| `--aui-color-action-primary`     | `#1677ff`                                                                      |
+| `--aui-color-text-primary`       | `#18181b`                                                                      |
+| `--aui-color-background-surface` | `#ffffff`                                                                      |
+| `--aui-button-radius`            | `6px` → Web `--sn-web-button-radius: 6px` / uni `--sn-mp-button-radius: 24rpx` |
+| `--aui-button-height-medium`     | `36px` → Web `36px` / uni `72rpx`                                              |
+| `--aui-card-shadow`              | `0 1px 3px rgba(0,0,0,0.08)`                                                   |
 
 ## Per-end tokens
 
 Different ends have different Component Token fields:
 
-| Field | Web (`--sn-web-*`) | uni (`--sn-mp-*`) |
-|---|---|---|
-| `button-radius` | ✅ 6px | ✅ 24rpx |
-| `table-row-height` | ✅ 32px | ❌ |
-| `list-item-height` | ❌ | ✅ 88rpx |
-| `dropdown-item-padding` | ✅ 8px 16px | ❌ |
-| `sidebar-item-height` | ❌ | ✅ 100rpx |
+| Field                   | Web (`--sn-web-*`) | uni (`--sn-mp-*`) |
+| ----------------------- | ------------------ | ----------------- |
+| `button-radius`         | ✅ 6px             | ✅ 24rpx          |
+| `table-row-height`      | ✅ 32px            | ❌                |
+| `list-item-height`      | ❌                 | ✅ 88rpx          |
+| `dropdown-item-padding` | ✅ 8px 16px        | ❌                |
+| `sidebar-item-height`   | ❌                 | ✅ 100rpx         |
 
 ## Where to next
 

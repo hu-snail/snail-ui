@@ -51,7 +51,9 @@ describe('@snui/protocol — UIActionSchema', () => {
 
   describe('params field', () => {
     it('rejects non-record params', () => {
-      expect(UIActionSchema.safeParse({ id: 'a.b', type: 'submit', params: 'oops' }).success).toBe(false);
+      expect(UIActionSchema.safeParse({ id: 'a.b', type: 'submit', params: 'oops' }).success).toBe(
+        false,
+      );
     });
 
     it('accepts record<string, unknown>', () => {
@@ -110,6 +112,8 @@ describe('@snui/protocol — AIActionMetadataSchema', () => {
   });
 
   it('rejects unknown extra fields', () => {
-    expect(AIActionMetadataSchema.safeParse({ description: 'x', sneaky: true }).success).toBe(false);
+    expect(AIActionMetadataSchema.safeParse({ description: 'x', sneaky: true }).success).toBe(
+      false,
+    );
   });
 });

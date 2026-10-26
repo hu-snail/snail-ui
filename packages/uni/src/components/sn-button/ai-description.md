@@ -21,30 +21,30 @@ packages/uni/src/components/sn-button/sn-button.vue
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `type` | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Visual variant. |
-| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | Size preset. |
-| `block` | `boolean` | `false` | Full-width layout. |
-| `round` | `boolean` | `false` | Pill-shaped. |
-| `disabled` | `boolean` | `false` | Disabled state. |
-| `loading` | `boolean` | `false` | Loading state with spinner. |
-| `hairline` | `boolean` | `true` | Show hairline border (default type only). |
-| `feedback` | `boolean` | `true` | Tap feedback (active opacity). |
+| Name       | Type                                                           | Default     | Description                               |
+| ---------- | -------------------------------------------------------------- | ----------- | ----------------------------------------- |
+| `type`     | `'primary' \| 'default' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Visual variant.                           |
+| `size`     | `'small' \| 'medium' \| 'large'`                               | `'medium'`  | Size preset.                              |
+| `block`    | `boolean`                                                      | `false`     | Full-width layout.                        |
+| `round`    | `boolean`                                                      | `false`     | Pill-shaped.                              |
+| `disabled` | `boolean`                                                      | `false`     | Disabled state.                           |
+| `loading`  | `boolean`                                                      | `false`     | Loading state with spinner.               |
+| `hairline` | `boolean`                                                      | `true`      | Show hairline border (default type only). |
+| `feedback` | `boolean`                                                      | `true`      | Tap feedback (active opacity).            |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
+| Name    | Payload                  | Description                                     |
+| ------- | ------------------------ | ----------------------------------------------- |
 | `click` | `(event: Event) => void` | Fired on tap. Skipped when disabled or loading. |
 
 ## Slots
 
-| Name | Description |
-|---|---|
-| `default` | Button label. |
-| `icon` | Custom icon (replaces loading spinner when present). |
-| `loading` | Custom loading indicator. |
+| Name      | Description                                          |
+| --------- | ---------------------------------------------------- |
+| `default` | Button label.                                        |
+| `icon`    | Custom icon (replaces loading spinner when present). |
+| `loading` | Custom loading indicator.                            |
 
 ## Tokens Consumed
 
@@ -53,12 +53,12 @@ Unit sizing uses `rpx` for cross-device scaling.
 
 ## Cross-end Notes
 
-| Platform | Notes |
-|---|---|
-| H5 | Renders as `<view>`. Touch handled via `tap`. |
-| WeChat MP | Compiles to native `<button>`-like view. |
-| App (uni-app x) | Native rendering with touch events. |
-| Alipay MP | Mirrors WeChat MP behavior. |
+| Platform        | Notes                                         |
+| --------------- | --------------------------------------------- |
+| H5              | Renders as `<view>`. Touch handled via `tap`. |
+| WeChat MP       | Compiles to native `<button>`-like view.      |
+| App (uni-app x) | Native rendering with touch events.           |
+| Alipay MP       | Mirrors WeChat MP behavior.                   |
 
 ## Versioning
 

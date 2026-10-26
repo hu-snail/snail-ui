@@ -30,20 +30,20 @@
 
 ### SnInputNumber Props
 
-| Prop | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| modelValue | `number \| null` | `null` | v-model（空值为 null） |
-| min / max | `number` | — | 边界 clamp |
-| step | `number` | `1` | 步长 |
-| precision | `number` | — | 小数位 |
-| stepStrictly | `boolean` | `false` | 值吸附 step 网格 |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸 |
-| showButton | `boolean` | `true` | 显示步进按钮 |
-| buttonPlacement | `'both' \| 'right'` | `'right'` | 按钮位置 |
-| clearable | `boolean` | `false` | 清空按钮 |
-| format | `(value: number) => string` | — | 展示格式化 |
-| parse | `(text: string) => number \| null` | — | 解析 |
-| validator | `(value: number) => boolean` | — | 提交前校验（拒绝则保留旧值） |
+| Prop            | 类型                                         | 默认值     | 说明                         |
+| --------------- | -------------------------------------------- | ---------- | ---------------------------- |
+| modelValue      | `number \| null`                             | `null`     | v-model（空值为 null）       |
+| min / max       | `number`                                     | —          | 边界 clamp                   |
+| step            | `number`                                     | `1`        | 步长                         |
+| precision       | `number`                                     | —          | 小数位                       |
+| stepStrictly    | `boolean`                                    | `false`    | 值吸附 step 网格             |
+| size            | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | 尺寸                         |
+| showButton      | `boolean`                                    | `true`     | 显示步进按钮                 |
+| buttonPlacement | `'both' \| 'right'`                          | `'right'`  | 按钮位置                     |
+| clearable       | `boolean`                                    | `false`    | 清空按钮                     |
+| format          | `(value: number) => string`                  | —          | 展示格式化                   |
+| parse           | `(text: string) => number \| null`           | —          | 解析                         |
+| validator       | `(value: number) => boolean`                 | —          | 提交前校验（拒绝则保留旧值） |
 
 `role="spinbutton"`；ArrowUp/Down、PageUp/Down（×10）、Home/End 到边界。
 

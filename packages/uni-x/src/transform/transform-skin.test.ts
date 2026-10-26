@@ -25,9 +25,13 @@ describe('style-pack variable injection (uni-x)', () => {
       '}',
     ].join('\n');
     const r = transformCss(css, 'component', FILE);
-    expect(r.css).toContain('.snui-skin-doodle {\n  --snx-sn-button-border-width: 5rpx;\n  --snx-sn-button-border-color: #1a1a1a;\n}');
+    expect(r.css).toContain(
+      '.snui-skin-doodle {\n  --snx-sn-button-border-width: 5rpx;\n  --snx-sn-button-border-color: #1a1a1a;\n}',
+    );
     expect(r.css).toContain('border-width: var(--snx-sn-button-border-width, 2rpx);');
-    expect(r.css).toContain('border-color: var(--snx-sn-button-border-color, var(--sn-mp-color-border-default));');
+    expect(r.css).toContain(
+      'border-color: var(--snx-sn-button-border-color, var(--sn-mp-color-border-default));',
+    );
     expect(r.css).not.toMatch(/\.snui-skin-doodle \./);
     expect(r.issues).toHaveLength(0);
   });
@@ -42,11 +46,14 @@ describe('style-pack variable injection (uni-x)', () => {
     expect(r.css).toContain('--snx-sn-button-border-width: 5rpx;');
     expect(r.css).toContain('--snx-sn-button-border-width: 2rpx;');
     // One consumer declaration only — the var resolves per ancestor at runtime.
-    expect((r.css.match(/border-width: var\(--snx-sn-button-border-width, 2rpx\);/g) ?? []).length).toBe(1);
+    expect(
+      (r.css.match(/border-width: var\(--snx-sn-button-border-width, 2rpx\);/g) ?? []).length,
+    ).toBe(1);
   });
 
   it('should drop and report interactive-state skin rules (no pseudo-classes on App)', () => {
-    const css = '.snui-skin-doodle .sn-button:hover:not(.sn-button--disabled) {\n  transform: translate(-2rpx, -2rpx);\n}\n';
+    const css =
+      '.snui-skin-doodle .sn-button:hover:not(.sn-button--disabled) {\n  transform: translate(-2rpx, -2rpx);\n}\n';
     const r = transformCss(css, 'component', FILE);
     expect(r.css).not.toContain(':hover');
     expect(r.issues.some((i) => i.kind === 'pseudo-class')).toBe(true);

@@ -30,26 +30,26 @@ Checkbox built on a native `input[type=checkbox]` (tri-state aria-checked), usab
 
 ### SnCheckbox Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `boolean` | `false` | v-model |
-| label | `string` | `''` | Label text (label slot wins) |
-| value | `SnCheckboxValue` | — | Value inside a group |
-| disabled | `boolean` | `false` | Disabled (ORs with group) |
-| readonly | `boolean` | `false` | Read-only |
-| indeterminate | `boolean` | `false` | Mixed state (aria-checked=mixed) |
-| size | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'` | Size |
-| checkedValue | `SnCheckboxValue` | `true` | Value when checked |
-| uncheckedValue | `SnCheckboxValue` | `false` | Value when unchecked |
-| status | `'default'\|'error'\|'warning'` | `'default'` | Status |
+| Prop           | Type                                         | Default     | Notes                            |
+| -------------- | -------------------------------------------- | ----------- | -------------------------------- |
+| modelValue     | `boolean`                                    | `false`     | v-model                          |
+| label          | `string`                                     | `''`        | Label text (label slot wins)     |
+| value          | `SnCheckboxValue`                            | —           | Value inside a group             |
+| disabled       | `boolean`                                    | `false`     | Disabled (ORs with group)        |
+| readonly       | `boolean`                                    | `false`     | Read-only                        |
+| indeterminate  | `boolean`                                    | `false`     | Mixed state (aria-checked=mixed) |
+| size           | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`  | Size                             |
+| checkedValue   | `SnCheckboxValue`                            | `true`      | Value when checked               |
+| uncheckedValue | `SnCheckboxValue`                            | `false`     | Value when unchecked             |
+| status         | `'default'\|'error'\|'warning'`              | `'default'` | Status                           |
 
 ### SnCheckboxGroup Props
 
-| Prop | Type | Default | Notes |
-| --- | --- | --- | --- |
-| modelValue | `SnCheckboxValue[]` | `[]` | Array v-model |
-| options | `Array<SnCheckboxGroupOption \| SnCheckboxValue>` | `[]` | Declarative options |
-| disabled | `boolean` | `false` | Group-level disabled |
-| size | same as above | `'medium'` | Group size |
+| Prop       | Type                                              | Default    | Notes                |
+| ---------- | ------------------------------------------------- | ---------- | -------------------- |
+| modelValue | `SnCheckboxValue[]`                               | `[]`       | Array v-model        |
+| options    | `Array<SnCheckboxGroupOption \| SnCheckboxValue>` | `[]`       | Declarative options  |
+| disabled   | `boolean`                                         | `false`    | Group-level disabled |
+| size       | same as above                                     | `'medium'` | Group size           |
 
 See the component `ai-description.md` for the full contract.

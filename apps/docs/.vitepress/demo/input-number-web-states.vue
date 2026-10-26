@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnInputNumber — disabled / readonly / clearable. */
-import { ref } from 'vue'
-import { SnInputNumber } from '@snui/vue-web'
-const v = ref(10)
+import { ref } from 'vue';
+import { SnInputNumber } from '@snui/vue-web';
+const v = ref(10);
 </script>
 
 <template>
@@ -18,7 +18,19 @@ const v = ref(10)
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
-.demo-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-.demo-field { width: 130px; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+.demo-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.demo-field {
+  width: 130px;
+}
 </style>

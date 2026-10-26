@@ -37,53 +37,53 @@
 如需显式 import：
 
 ```ts
-import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue'
+import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue';
 ```
 
 ## Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `undefined` | 当前选中的值 |
-| `value` | `string \| number` | `undefined` | wot-ui 写法的选中值别名；与 `modelValue` 同时传入时优先 |
-| `disabled` | `boolean` | `false` | 是否禁用分段器 |
-| `options` | `string[] \| number[] \| SegmentedOption[]` | `[]` | 数据集合 |
-| `theme` | `'card' \| 'outline'` | `'card'` | 分段器主题 |
-| `vibrateShort` | `boolean` | `false` | 切换时是否触发短振动 |
-| `customClass` | `string` | `''` | 根节点自定义类名 |
-| `customStyle` | `string` | `''` | 根节点自定义 inline style |
+| 属性           | 类型                                        | 默认值      | 说明                                                    |
+| -------------- | ------------------------------------------- | ----------- | ------------------------------------------------------- |
+| `modelValue`   | `string \| number`                          | `undefined` | 当前选中的值                                            |
+| `value`        | `string \| number`                          | `undefined` | wot-ui 写法的选中值别名；与 `modelValue` 同时传入时优先 |
+| `disabled`     | `boolean`                                   | `false`     | 是否禁用分段器                                          |
+| `options`      | `string[] \| number[] \| SegmentedOption[]` | `[]`        | 数据集合                                                |
+| `theme`        | `'card' \| 'outline'`                       | `'card'`    | 分段器主题                                              |
+| `vibrateShort` | `boolean`                                   | `false`     | 切换时是否触发短振动                                    |
+| `customClass`  | `string`                                    | `''`        | 根节点自定义类名                                        |
+| `customStyle`  | `string`                                    | `''`        | 根节点自定义 inline style                               |
 
 `SegmentedOption` 结构：`{ value: string | number, label?: string, disabled?: boolean, payload?: unknown }`。
 
 ## Events
 
-| 事件名 | 说明 | 参数 |
-| --- | --- | --- |
-| `update:modelValue` | 选中值变化时触发 | `(value: string \| number)` |
-| `change` | 选项切换时触发 | `(option: SegmentedOption)` |
-| `click` | 选项点击时触发（含重复点击当前项） | `(option: SegmentedOption)` |
+| 事件名              | 说明                               | 参数                        |
+| ------------------- | ---------------------------------- | --------------------------- |
+| `update:modelValue` | 选中值变化时触发                   | `(value: string \| number)` |
+| `change`            | 选项切换时触发                     | `(option: SegmentedOption)` |
+| `click`             | 选项点击时触发（含重复点击当前项） | `(option: SegmentedOption)` |
 
 ## Slots
 
-| 插槽名 | 说明 |
-| --- | --- |
+| 插槽名  | 说明                                    |
+| ------- | --------------------------------------- |
 | `label` | 自定义选项标签内容，作用域 `{ option }` |
 
 ## 主题变量
 
-| 变量 | 用途 |
-| --- | --- |
-| `--sn-mp-color-background-subtle` | `card` 主题的轨道底色 |
-| `--sn-mp-color-background-surface` | 滑块与 `card` 选项底色 |
-| `--sn-mp-color-border-default` | `outline` 主题的边框与分隔线 |
-| `--sn-mp-color-text-secondary` | 非选中项文字色 |
-| `--sn-mp-color-text-disabled` | 禁用项文字色 |
-| `--sn-mp-color-action-primary` | 选中项文字色与 `outline` 填充 |
-| `--sn-mp-color-text-on-primary` | `outline` 选中项文字色 |
-| `--sn-mp-font-size-md` | 选项文字字号 |
-| `--sn-mp-font-weight-medium` | 选中项字重 |
-| `--sn-mp-radius-md` / `--sn-mp-radius-sm` | 轨道 / 滑块圆角 |
-| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | 轨道内边距 / 选项内边距 |
+| 变量                                      | 用途                          |
+| ----------------------------------------- | ----------------------------- |
+| `--sn-mp-color-background-subtle`         | `card` 主题的轨道底色         |
+| `--sn-mp-color-background-surface`        | 滑块与 `card` 选项底色        |
+| `--sn-mp-color-border-default`            | `outline` 主题的边框与分隔线  |
+| `--sn-mp-color-text-secondary`            | 非选中项文字色                |
+| `--sn-mp-color-text-disabled`             | 禁用项文字色                  |
+| `--sn-mp-color-action-primary`            | 选中项文字色与 `outline` 填充 |
+| `--sn-mp-color-text-on-primary`           | `outline` 选中项文字色        |
+| `--sn-mp-font-size-md`                    | 选项文字字号                  |
+| `--sn-mp-font-weight-medium`              | 选中项字重                    |
+| `--sn-mp-radius-md` / `--sn-mp-radius-sm` | 轨道 / 滑块圆角               |
+| `--sn-mp-spacing-1` / `--sn-mp-spacing-3` | 轨道内边距 / 选项内边距       |
 
 ## 无障碍
 
@@ -97,7 +97,6 @@ import { SnSegmented } from '@snui/uni/components/sn-segmented/sn-segmented.vue'
 `sn-segmented` 的全部颜色来自 `--sn-mp-color-*`，没有浅色 `var()` 兜底，因此在 `.sn-theme-dark` 下自动适配：轨道底色切换为暗色 subtle 表面，滑块为暗色 elevated 表面，选中文字保持主色，`outline` 主题的填充色不变（主色本身在暗色下仍可识别）。
 
 用 sn-config-provider 的 theme 设为 dark 包裹即可验证：
-
 
 ## 相关
 

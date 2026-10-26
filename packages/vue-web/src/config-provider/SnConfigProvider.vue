@@ -17,13 +17,12 @@
  *   - 路由
  */
 
-import { computed, inject, isRef, watch, onBeforeUnmount, provide } from 'vue'
-import { SN_LOCALE_KEY } from '../locales/use-locale'
-import type { SnLocaleInput } from '../locales/use-locale'
+import { computed, inject, isRef, watch, onBeforeUnmount, provide } from 'vue';
+import { SN_LOCALE_KEY } from '../locales/use-locale';
+import type { SnLocaleInput } from '../locales/use-locale';
 
-import type { SnFontOverride } from './sn-config-provider-types'
-defineOptions({ name: 'SnConfigProvider' })
-
+import type { SnFontOverride } from './sn-config-provider-types';
+defineOptions({ name: 'SnConfigProvider' });
 
 const props = withDefaults(
   defineProps<{
@@ -32,14 +31,14 @@ const props = withDefaults(
      * 传空字符串 / undefined 时清除已有 skin class。
      * 设为 'default' 等同于清空（默认皮肤无额外样式）。
      */
-    skin?: string
+    skin?: string;
     /**
      * 组件文案 locale（naive-ui 风格）：传内置 `zhCN` / `enUS`（从
      * `@snui/vue-web` 导入）或自定义对象。不传时后代组件回落内置 zhCN。
      * 允许 partial 对象：整个未提供的命名空间回落 zhCN，已提供的命名空间
      * 必须完整（见 `use-locale.ts` 的合并约定）。
      */
-    locale?: SnLocaleInput
+    locale?: SnLocaleInput;
     /**
      * 字体覆盖（naive-ui fonts 文档模式）。每个键映射一个语义字体 token：
      * `body` / `heading` / `code` → `--aui-font-family-*`（同时覆盖
@@ -48,12 +47,12 @@ const props = withDefaults(
      * 以内联 `<style>` 标签输出 —— SSR 输出携带覆盖，无闪烁，组件卸载
      * 时随之移除，无全局残留。
      */
-    font?: SnFontOverride
+    font?: SnFontOverride;
   }>(),
   {
     skin: '',
   },
-)
+);
 
 /* ── Font override（naive-ui fonts 文档模式）────────────────────────────── */
 
@@ -62,7 +61,7 @@ const FONT_TOKEN_TARGETS: ReadonlyArray<readonly [keyof SnFontOverride, string]>
   ['body', '--aui-font-family-body'],
   ['heading', '--aui-font-family-heading'],
   ['code', '--aui-font-family-code'],
-] as const
+] as const;
 
 /**
  * A font stack never legitimately contains `</style` — strip any occurrence
@@ -70,7 +69,7 @@ const FONT_TOKEN_TARGETS: ReadonlyArray<readonly [keyof SnFontOverride, string]>
  * `textContent` path is inert, but the SSR text path is raw).
  */
 function sanitizeFontValue(value: string): string {
-  return value.replace(/<\/style/gi, '')
+  return value.replace(/<\/style/gi, '');
 }
 
 /**
@@ -82,25 +81,25 @@ function sanitizeFontValue(value: string): string {
  * Empty string when no font / no keys → the tag is not rendered at all.
  */
 const fontCss = computed(() => {
-  const font = props.font
-  if (!font) return ''
-  const declarations: string[] = []
+  const font = props.font;
+  if (!font) return '';
+  const declarations: string[] = [];
   for (const [key, auiVar] of FONT_TOKEN_TARGETS) {
-    const raw = font[key]
-    if (typeof raw !== 'string' || raw === '') continue
-    const value = sanitizeFontValue(raw)
-    declarations.push(`${auiVar}:${value}`, `--sn-web-${auiVar.slice(6)}:${value}`)
+    const raw = font[key];
+    if (typeof raw !== 'string' || raw === '') continue;
+    const value = sanitizeFontValue(raw);
+    declarations.push(`${auiVar}:${value}`, `--sn-web-${auiVar.slice(6)}:${value}`);
   }
-  if (declarations.length === 0) return ''
-  let css = `:root{${declarations.join(';')}}`
+  if (declarations.length === 0) return '';
+  let css = `:root{${declarations.join(';')}}`;
   if (typeof font.body === 'string' && font.body !== '') {
-    css += `body{font-family:var(--sn-web-font-family-body, var(--aui-font-family-body))}`
+    css += `body{font-family:var(--sn-web-font-family-body, var(--aui-font-family-body))}`;
   }
-  return css
-})
+  return css;
+});
 
 /** 给后代组件提供当前 skin（用于子组件内部局部读取）。 */
-provide('snui-skin', props.skin)
+provide('snui-skin', props.skin);
 
 /**
  * Reactive locale provision（响应式 provide）：提供的是一个跟随 `locale`
@@ -113,27 +112,27 @@ provide('snui-skin', props.skin)
  * locale 覆盖掉），都没有才回落 `null` → 后代取内置 zhCN。提供的是跟随
  * `locale` prop 的 ref，后代组件无需重挂载即可切换文案。
  */
-const parentLocale = inject(SN_LOCALE_KEY, null)
+const parentLocale = inject(SN_LOCALE_KEY, null);
 provide(
   SN_LOCALE_KEY,
   computed<SnLocaleInput | null>(() => {
-    if (props.locale) return props.locale
-    return isRef(parentLocale) ? parentLocale.value : parentLocale
+    if (props.locale) return props.locale;
+    return isRef(parentLocale) ? parentLocale.value : parentLocale;
   }),
-)
+);
 
-const SKIN_CLASS_PREFIX = 'snui-skin-'
+const SKIN_CLASS_PREFIX = 'snui-skin-';
 
 function applySkin(skin: string): void {
-  if (typeof document === 'undefined') return
+  if (typeof document === 'undefined') return;
   // 移除所有 snui-skin-* class
   const cls = document.body.className
     .split(/\s+/)
     .filter((c) => c && !c.startsWith(SKIN_CLASS_PREFIX))
-    .join(' ')
-  document.body.className = cls.trim()
+    .join(' ');
+  document.body.className = cls.trim();
   if (skin && skin !== 'default') {
-    document.body.classList.add(`${SKIN_CLASS_PREFIX}${skin}`)
+    document.body.classList.add(`${SKIN_CLASS_PREFIX}${skin}`);
   }
 }
 
@@ -141,7 +140,7 @@ watch(
   () => props.skin,
   (next) => applySkin(next),
   { immediate: true },
-)
+);
 
 onBeforeUnmount(() => {
   // 组件卸载时清理 body class，避免影响外层应用
@@ -149,10 +148,10 @@ onBeforeUnmount(() => {
     const cls = document.body.className
       .split(/\s+/)
       .filter((c) => c && !c.startsWith(SKIN_CLASS_PREFIX))
-      .join(' ')
-    document.body.className = cls.trim()
+      .join(' ');
+    document.body.className = cls.trim();
   }
-})
+});
 </script>
 
 <template>

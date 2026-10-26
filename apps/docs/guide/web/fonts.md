@@ -5,24 +5,24 @@
 的思路一致 —— 字体文件(@font-face / 网络字体)由应用自行加载,组件库只
 负责把字体栈注入 token 级联):
 
-| 语义 token | 默认绑定 | 用途 |
-| --- | --- | --- |
-| `--aui-font-family-body` | `var(--aui-font-family-sans)` | 正文 / 组件默认字体 |
-| `--aui-font-family-heading` | `var(--aui-font-family-sans)` | 标题 |
-| `--aui-font-family-code` | `var(--aui-font-family-mono)` | 代码 / 等宽 |
-| `--sn-web-font-family-*` | `var(--aui-font-family-*)` | Web 组件消费的别名层 |
+| 语义 token                  | 默认绑定                      | 用途                 |
+| --------------------------- | ----------------------------- | -------------------- |
+| `--aui-font-family-body`    | `var(--aui-font-family-sans)` | 正文 / 组件默认字体  |
+| `--aui-font-family-heading` | `var(--aui-font-family-sans)` | 标题                 |
+| `--aui-font-family-code`    | `var(--aui-font-family-mono)` | 代码 / 等宽          |
+| `--sn-web-font-family-*`    | `var(--aui-font-family-*)`    | Web 组件消费的别名层 |
 
 ## 方式一:`SnConfigProvider` 的 `font` prop
 
 ```vue
 <script setup lang="ts">
-import { SnConfigProvider } from '@snui/vue-web'
+import { SnConfigProvider } from '@snui/vue-web';
 
 const font = {
   body: '"Inter", "PingFang SC", sans-serif',
   heading: '"Inter Display", sans-serif',
   code: '"JetBrains Mono", ui-monospace, monospace',
-}
+};
 </script>
 
 <template>
@@ -66,8 +66,8 @@ Nuxt 场景推荐此方式:字体变量在服务端 HTML 中原生生效,零闪�
 字体文件本身与组件库无关,按应用方式接入即可:
 
 ```html
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 ```
 
 或使用 `@font-face` + 自托管字体,然后把字体栈传给 `font` prop 或全局 CSS。

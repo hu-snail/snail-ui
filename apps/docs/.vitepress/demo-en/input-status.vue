@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnInput — status / error / warning visual states. */
-import { reactive } from 'vue'
-import { SnInput } from '@snui/vue-web'
+import { reactive } from 'vue';
+import { SnInput } from '@snui/vue-web';
 
-const form = reactive({ default: 'Default', error: 'Invalid input', warning: 'Heads up' })
+const form = reactive({ default: 'Default', error: 'Invalid input', warning: 'Heads up' });
 </script>
 
 <template>
@@ -15,5 +15,10 @@ const form = reactive({ default: 'Default', error: 'Invalid input', warning: 'He
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
 </style>

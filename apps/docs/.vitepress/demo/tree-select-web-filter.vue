@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnTreeSelect — filterable + expand all. */
-import { ref } from 'vue'
-import { SnTreeSelect } from '@snui/vue-web'
-const value = ref<string | null>(null)
+import { ref } from 'vue';
+import { SnTreeSelect } from '@snui/vue-web';
+const value = ref<string | null>(null);
 const options = [
   {
     label: '组件',
@@ -14,9 +14,15 @@ const options = [
     ],
   },
   { label: '指南', value: 'guide' },
-]
+];
 </script>
 
 <template>
-  <SnTreeSelect v-model="value" :options="options" filterable placeholder="输入过滤（如 tree）" style="width: 260px;" />
+  <SnTreeSelect
+    v-model="value"
+    :options="options"
+    filterable
+    placeholder="输入过滤（如 tree）"
+    style="width: 260px"
+  />
 </template>

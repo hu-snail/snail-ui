@@ -3,10 +3,10 @@
  * Demo: SnLink — underline on/off, the disabled state, and link-like
  * interaction rendered on a non-anchor tag.
  */
-import { ref } from 'vue'
-import { SnLink } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnLink } from '@snui/vue-web';
 
-const clickCount = ref(0)
+const clickCount = ref(0);
 </script>
 
 <template>

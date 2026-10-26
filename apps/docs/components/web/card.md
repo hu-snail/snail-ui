@@ -2,7 +2,6 @@
 
 `<div role="region">` 容器，按顺序区域承载 cover → header → content → footer → action。视觉走 `--sn-web-card-*` Token 别名层（padding / radius / shadow）。
 
-
 ## 基本用法
 
 <Demo name="card-web" description="默认 variant（带边框）+ elevated variant（无边框 + 阴影）。展示 title + header slot + footer slot + body 内容。" />
@@ -23,53 +22,53 @@
 
 > 下表 `标准` 列表示契约内的标准 prop；`便利 alias` 列表示 snail-aui 提供的友好命名，行为映射到标准 prop。
 
-| Prop | Type | Default | 类别 | Description |
-| --- | --- | --- | --- | --- |
-| `title` | `string \| (() => VNode)` | — | 标准 | 头部标题文本或渲染函数 |
-| `contentClass` | `string` | — | 标准 | 内容区 class 名 |
-| `contentStyle` | `string \| CSSProperties` | — | 标准 | 内容区 inline style |
-| `contentScrollable` | `boolean` | `false` | 标准 | 内容区超长时可滚动（max-height + overflow:auto） |
-| `headerClass` | `string` | — | 标准 | 头部 class 名 |
-| `headerStyle` | `string \| CSSProperties` | — | 标准 | 头部 inline style |
-| `headerExtraClass` | `string` | — | 标准 | 头部右侧区域 class 名 |
-| `headerExtraStyle` | `string \| CSSProperties` | — | 标准 | 头部右侧区域 inline style |
-| `footerClass` | `string` | — | 标准 | 底部 class 名 |
-| `footerStyle` | `string \| CSSProperties` | — | 标准 | 底部 inline style |
-| `embedded` | `boolean` | `false` | 标准 | 嵌套卡片模式（去边框 + 阴影） |
-| `segmented` | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false` | 标准 | 区域之间的分割线 |
-| `size` | `'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | 标准 | padding + font-size 子轴 |
-| `bordered` | `boolean` | `true` | 标准 | 是否显示外边框 |
-| `closable` | `boolean` | `false` | 标准 | 头部显示关闭按钮（需 `onClose` 才有作用） |
-| `hoverable` | `boolean` | `false` | 标准 | hover 时显示上浮视觉效果 |
-| `role` | `string` | `'region'` | 标准 | 无障碍 role 属性 |
-| `tag` | `keyof HTMLElementTagNameMap` | `'div'` | 标准 | 根节点元素类型 |
-| `cover` | `() => VNode` | — | 标准 | 顶部封面区渲染函数 |
-| `content` | `string \| (() => VNode)` | — | 标准 | 内容区文本或渲染函数（`default` slot 不传时生效） |
-| `footer` | `() => VNode` | — | 标准 | 底部区渲染函数 |
-| `action` | `() => VNode` | — | 标准 | 底部下方操作区渲染函数 |
-| `headerExtra` | `() => VNode` | — | 标准 | 头部右侧渲染函数 |
-| `closeFocusable` | `boolean` | `true` | 标准 | 关闭按钮是否可键盘聚焦 |
-| `variant` | `'default' \| 'outlined' \| 'elevated'` | `'default'` | 便利 alias | 映射到 `(bordered, shadow)` 组合（`'elevated'` = 无边框 + 阴影；`'default'`/`'outlined'` = 带边框 + 无阴影） |
-| `padding` | `'none' \| 'sm' \| 'md' \| 'lg'` | `'md'` | 便利 alias | 映射到 `size`（`'none'` = 不加 size class；`'sm'` = small；`'md'` = medium；`'lg'` = large） |
-| `shadow` | `boolean` | `false` | 便利 alias | 是否显示阴影（消费 `--sn-web-card-shadow`） |
-| `ariaLabel` | `string` | — | 便利 | 转发到根节点 `aria-label` |
+| Prop                | Type                                                                                                 | Default     | 类别       | Description                                                                                                  |
+| ------------------- | ---------------------------------------------------------------------------------------------------- | ----------- | ---------- | ------------------------------------------------------------------------------------------------------------ |
+| `title`             | `string \| (() => VNode)`                                                                            | —           | 标准       | 头部标题文本或渲染函数                                                                                       |
+| `contentClass`      | `string`                                                                                             | —           | 标准       | 内容区 class 名                                                                                              |
+| `contentStyle`      | `string \| CSSProperties`                                                                            | —           | 标准       | 内容区 inline style                                                                                          |
+| `contentScrollable` | `boolean`                                                                                            | `false`     | 标准       | 内容区超长时可滚动（max-height + overflow:auto）                                                             |
+| `headerClass`       | `string`                                                                                             | —           | 标准       | 头部 class 名                                                                                                |
+| `headerStyle`       | `string \| CSSProperties`                                                                            | —           | 标准       | 头部 inline style                                                                                            |
+| `headerExtraClass`  | `string`                                                                                             | —           | 标准       | 头部右侧区域 class 名                                                                                        |
+| `headerExtraStyle`  | `string \| CSSProperties`                                                                            | —           | 标准       | 头部右侧区域 inline style                                                                                    |
+| `footerClass`       | `string`                                                                                             | —           | 标准       | 底部 class 名                                                                                                |
+| `footerStyle`       | `string \| CSSProperties`                                                                            | —           | 标准       | 底部 inline style                                                                                            |
+| `embedded`          | `boolean`                                                                                            | `false`     | 标准       | 嵌套卡片模式（去边框 + 阴影）                                                                                |
+| `segmented`         | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false`     | 标准       | 区域之间的分割线                                                                                             |
+| `size`              | `'small' \| 'medium' \| 'large' \| 'huge'`                                                           | `'medium'`  | 标准       | padding + font-size 子轴                                                                                     |
+| `bordered`          | `boolean`                                                                                            | `true`      | 标准       | 是否显示外边框                                                                                               |
+| `closable`          | `boolean`                                                                                            | `false`     | 标准       | 头部显示关闭按钮（需 `onClose` 才有作用）                                                                    |
+| `hoverable`         | `boolean`                                                                                            | `false`     | 标准       | hover 时显示上浮视觉效果                                                                                     |
+| `role`              | `string`                                                                                             | `'region'`  | 标准       | 无障碍 role 属性                                                                                             |
+| `tag`               | `keyof HTMLElementTagNameMap`                                                                        | `'div'`     | 标准       | 根节点元素类型                                                                                               |
+| `cover`             | `() => VNode`                                                                                        | —           | 标准       | 顶部封面区渲染函数                                                                                           |
+| `content`           | `string \| (() => VNode)`                                                                            | —           | 标准       | 内容区文本或渲染函数（`default` slot 不传时生效）                                                            |
+| `footer`            | `() => VNode`                                                                                        | —           | 标准       | 底部区渲染函数                                                                                               |
+| `action`            | `() => VNode`                                                                                        | —           | 标准       | 底部下方操作区渲染函数                                                                                       |
+| `headerExtra`       | `() => VNode`                                                                                        | —           | 标准       | 头部右侧渲染函数                                                                                             |
+| `closeFocusable`    | `boolean`                                                                                            | `true`      | 标准       | 关闭按钮是否可键盘聚焦                                                                                       |
+| `variant`           | `'default' \| 'outlined' \| 'elevated'`                                                              | `'default'` | 便利 alias | 映射到 `(bordered, shadow)` 组合（`'elevated'` = 无边框 + 阴影；`'default'`/`'outlined'` = 带边框 + 无阴影） |
+| `padding`           | `'none' \| 'sm' \| 'md' \| 'lg'`                                                                     | `'md'`      | 便利 alias | 映射到 `size`（`'none'` = 不加 size class；`'sm'` = small；`'md'` = medium；`'lg'` = large）                 |
+| `shadow`            | `boolean`                                                                                            | `false`     | 便利 alias | 是否显示阴影（消费 `--sn-web-card-shadow`）                                                                  |
+| `ariaLabel`         | `string`                                                                                             | —           | 便利       | 转发到根节点 `aria-label`                                                                                    |
 
 ## Events
 
-| Event | Payload | When |
-| --- | --- | --- |
-| `close` | `()` | 关闭按钮点击（仅当 `closable` 为 true） |
+| Event   | Payload | When                                    |
+| ------- | ------- | --------------------------------------- |
+| `close` | `()`    | 关闭按钮点击（仅当 `closable` 为 true） |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| `default` | 内容区（与 `content` prop 互斥） |
-| `cover` | 顶部封面区（与 `cover` prop 互斥） |
-| `header` | 头部区（覆盖 `title` prop） |
+| Slot           | Description                              |
+| -------------- | ---------------------------------------- |
+| `default`      | 内容区（与 `content` prop 互斥）         |
+| `cover`        | 顶部封面区（与 `cover` prop 互斥）       |
+| `header`       | 头部区（覆盖 `title` prop）              |
 | `header-extra` | 头部右侧区（与 `headerExtra` prop 互斥） |
-| `footer` | 底部区（与 `footer` prop 互斥） |
-| `action` | 底部下方操作区（与 `action` prop 互斥） |
+| `footer`       | 底部区（与 `footer` prop 互斥）          |
+| `action`       | 底部下方操作区（与 `action` prop 互斥）  |
 
 ## 区域省略规则
 
@@ -81,12 +80,12 @@
 
 ## Accessibility
 
-| Attribute | Value |
-| --- | --- |
-| `role` | `'region'`（可由 `role` prop 覆盖） |
-| `aria-label` | 由 `ariaLabel` prop 转发 |
-| `role="heading"` | 头部区域 |
-| 关闭按钮 | `aria-label` 来自 `ariaLabel + ' close'` 或默认 `'Close'` |
+| Attribute        | Value                                                     |
+| ---------------- | --------------------------------------------------------- |
+| `role`           | `'region'`（可由 `role` prop 覆盖）                       |
+| `aria-label`     | 由 `ariaLabel` prop 转发                                  |
+| `role="heading"` | 头部区域                                                  |
+| 关闭按钮         | `aria-label` 来自 `ariaLabel + ' close'` 或默认 `'Close'` |
 
 ## 嵌套与子节点
 
@@ -94,12 +93,12 @@ Card 通过 default slot 接收任意子树（按钮、输入、其他 Card 等�
 
 ## Tokens（end: web）
 
-| Token | CSS Variable | 用途 |
-| --- | --- | --- |
-| Card padding | `--sn-web-card-padding` | 默认内 padding（medium 档） |
-| Card radius | `--sn-web-card-radius` | 圆角 |
-| Card shadow | `--sn-web-card-shadow` | 阴影（仅当 `shadow=true` 或 `variant='elevated'`） |
-| Border default | `--sn-web-color-border-default` | 外边框 / 区域分割线 |
-| Text primary | `--sn-web-color-text-primary` | 标题 + 正文 |
-| Text secondary | `--sn-web-color-text-secondary` | header-extra + 关闭按钮 |
-| Background surface | `--sn-web-color-background-surface` | 卡片背景 |
+| Token              | CSS Variable                        | 用途                                               |
+| ------------------ | ----------------------------------- | -------------------------------------------------- |
+| Card padding       | `--sn-web-card-padding`             | 默认内 padding（medium 档）                        |
+| Card radius        | `--sn-web-card-radius`              | 圆角                                               |
+| Card shadow        | `--sn-web-card-shadow`              | 阴影（仅当 `shadow=true` 或 `variant='elevated'`） |
+| Border default     | `--sn-web-color-border-default`     | 外边框 / 区域分割线                                |
+| Text primary       | `--sn-web-color-text-primary`       | 标题 + 正文                                        |
+| Text secondary     | `--sn-web-color-text-secondary`     | header-extra + 关闭按钮                            |
+| Background surface | `--sn-web-color-background-surface` | 卡片背景                                           |

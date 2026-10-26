@@ -29,35 +29,35 @@ separately as `SnBackTop`); the fixed-corner offset model (`right` / `bottom` /
 ## Import
 
 ```ts
-import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web'
+import { SnFloatButton, SnFloatButtonGroup } from '@snui/vue-web';
 ```
 
 ## Props
 
 ### SnFloatButton
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `type` | `'default' \| 'primary'` | `'default'` | no | Filled color: surface background or brand fill. |
-| `shape` | `'circle' \| 'square'` | `'circle'` | no | Square renders the icon above a `description` line. |
-| `icon` | `IconComponent` (lucide component) | `undefined` | no | Icon component; the `icon` slot overrides it. |
-| `iconSize` | `number \| string` | `18` | no | Size forwarded to the embedded `SnIcon`. |
-| `description` | `string` | `undefined` | no | Text under the icon. Rendered for `shape="square"` only. |
-| `tooltip` | `string` | `undefined` | no | Sets the native `title` **and** the accessible name (`aria-label`). No tooltip component is used. |
-| `badge` | `number \| string` | `undefined` | no | Count bubble; hidden when `undefined`, `0` or `''`. |
-| `badgeDot` | `boolean` | `false` | no | Render a dot when there is no count to show. A count wins over the dot. |
-| `href` | `string` | `undefined` | no | When set the root renders `<a href>`, otherwise `<button type="button">`. |
-| `target` | `'_blank' \| '_self' \| '_parent' \| '_top'` | `undefined` | no | Native link target; only meaningful with `href`. |
-| `disabled` | `boolean` | `false` | no | Suppresses `click` and sets `aria-disabled="true"`. |
-| `visible` | `boolean` | `true` | no | `v-if` the whole button. |
-| `placement` | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom-right'` | no | One of eight anchors (four corners + four edge midpoints). Ignored inside a group. |
-| `right` | `number \| string` | `undefined` | no | Explicit right offset; overrides the placement axis. |
-| `bottom` | `number \| string` | `undefined` | no | Explicit bottom offset; overrides the placement axis. |
-| `top` | `number \| string` | `undefined` | no | Explicit top offset; overrides the placement axis. |
-| `left` | `number \| string` | `undefined` | no | Explicit left offset; overrides the placement axis. |
-| `zIndex` | `number` | `1000` | no | Stacking order of the fixed root. Ignored inside a group. |
-| `fixed` | `boolean` | `true` | no | `false` pins the button to its positioning context instead of the viewport. |
-| `container` | `string \| HTMLElement` | `undefined` | no | Positioning context for `fixed: false` (selector or element). |
+| Name          | Type                                                                                                     | Default          | Required | Description                                                                                       |
+| ------------- | -------------------------------------------------------------------------------------------------------- | ---------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `type`        | `'default' \| 'primary'`                                                                                 | `'default'`      | no       | Filled color: surface background or brand fill.                                                   |
+| `shape`       | `'circle' \| 'square'`                                                                                   | `'circle'`       | no       | Square renders the icon above a `description` line.                                               |
+| `icon`        | `IconComponent` (lucide component)                                                                       | `undefined`      | no       | Icon component; the `icon` slot overrides it.                                                     |
+| `iconSize`    | `number \| string`                                                                                       | `18`             | no       | Size forwarded to the embedded `SnIcon`.                                                          |
+| `description` | `string`                                                                                                 | `undefined`      | no       | Text under the icon. Rendered for `shape="square"` only.                                          |
+| `tooltip`     | `string`                                                                                                 | `undefined`      | no       | Sets the native `title` **and** the accessible name (`aria-label`). No tooltip component is used. |
+| `badge`       | `number \| string`                                                                                       | `undefined`      | no       | Count bubble; hidden when `undefined`, `0` or `''`.                                               |
+| `badgeDot`    | `boolean`                                                                                                | `false`          | no       | Render a dot when there is no count to show. A count wins over the dot.                           |
+| `href`        | `string`                                                                                                 | `undefined`      | no       | When set the root renders `<a href>`, otherwise `<button type="button">`.                         |
+| `target`      | `'_blank' \| '_self' \| '_parent' \| '_top'`                                                             | `undefined`      | no       | Native link target; only meaningful with `href`.                                                  |
+| `disabled`    | `boolean`                                                                                                | `false`          | no       | Suppresses `click` and sets `aria-disabled="true"`.                                               |
+| `visible`     | `boolean`                                                                                                | `true`           | no       | `v-if` the whole button.                                                                          |
+| `placement`   | `'top-left' \| 'top-right' \| 'bottom-left' \| 'bottom-right' \| 'top' \| 'right' \| 'bottom' \| 'left'` | `'bottom-right'` | no       | One of eight anchors (four corners + four edge midpoints). Ignored inside a group.                |
+| `right`       | `number \| string`                                                                                       | `undefined`      | no       | Explicit right offset; overrides the placement axis.                                              |
+| `bottom`      | `number \| string`                                                                                       | `undefined`      | no       | Explicit bottom offset; overrides the placement axis.                                             |
+| `top`         | `number \| string`                                                                                       | `undefined`      | no       | Explicit top offset; overrides the placement axis.                                                |
+| `left`        | `number \| string`                                                                                       | `undefined`      | no       | Explicit left offset; overrides the placement axis.                                               |
+| `zIndex`      | `number`                                                                                                 | `1000`           | no       | Stacking order of the fixed root. Ignored inside a group.                                         |
+| `fixed`       | `boolean`                                                                                                | `true`           | no       | `false` pins the button to its positioning context instead of the viewport.                       |
+| `container`   | `string \| HTMLElement`                                                                                  | `undefined`      | no       | Positioning context for `fixed: false` (selector or element).                                     |
 
 Corner defaults: with the default `placement="bottom-right"` and no explicit
 offsets the button is pinned at `right: 24px; bottom: 24px`. `placement` only
@@ -78,52 +78,52 @@ a block (a docs preview card, a hero section) rather than to the page.
 
 ### SnFloatButtonGroup
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `shape` | `'circle' \| 'square'` | `'circle'` | no | Handed to every child and overrides the child's own `shape`. |
-| `open` | `boolean` | `undefined` | no | Controlled open state (`v-model:open`). Omitted = uncontrolled. |
-| `trigger` | `'click' \| 'hover'` | `'click'` | no | Gesture that opens the stack. |
-| `placement` | same eight anchors as `SnFloatButton` | `'bottom-right'` | no | Anchor of the group (and of its children). |
-| `direction` | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'` | no | Which side the stack opens on; `auto` derives it from `placement`. |
-| `right` / `bottom` / `top` / `left` | `number \| string` | `undefined` | no | Explicit offsets overriding `placement` (defaults `right`/`bottom` = 24). |
-| `fixed` | `boolean` | `true` | no | `false` pins the group in its positioning context instead of the viewport. |
-| `container` | `string \| HTMLElement` | `undefined` | no | Positioning context for `fixed: false`. |
-| `zIndex` | `number` | `1000` | no | Stacking order of the fixed root. |
-| `gap` | `number` | `12` | no | Vertical gap between the stacked children (and to the trigger). |
-| `triggerIcon` | `IconComponent` (lucide component) | lucide `Plus` | no | Trigger glyph; rotated 45° while open. |
-| `triggerTooltip` | `string` | `undefined` | no | Sets the trigger's native `title` and accessible name. |
+| Name                                | Type                                            | Default          | Required | Description                                                                |
+| ----------------------------------- | ----------------------------------------------- | ---------------- | -------- | -------------------------------------------------------------------------- |
+| `shape`                             | `'circle' \| 'square'`                          | `'circle'`       | no       | Handed to every child and overrides the child's own `shape`.               |
+| `open`                              | `boolean`                                       | `undefined`      | no       | Controlled open state (`v-model:open`). Omitted = uncontrolled.            |
+| `trigger`                           | `'click' \| 'hover'`                            | `'click'`        | no       | Gesture that opens the stack.                                              |
+| `placement`                         | same eight anchors as `SnFloatButton`           | `'bottom-right'` | no       | Anchor of the group (and of its children).                                 |
+| `direction`                         | `'auto' \| 'up' \| 'down' \| 'left' \| 'right'` | `'auto'`         | no       | Which side the stack opens on; `auto` derives it from `placement`.         |
+| `right` / `bottom` / `top` / `left` | `number \| string`                              | `undefined`      | no       | Explicit offsets overriding `placement` (defaults `right`/`bottom` = 24).  |
+| `fixed`                             | `boolean`                                       | `true`           | no       | `false` pins the group in its positioning context instead of the viewport. |
+| `container`                         | `string \| HTMLElement`                         | `undefined`      | no       | Positioning context for `fixed: false`.                                    |
+| `zIndex`                            | `number`                                        | `1000`           | no       | Stacking order of the fixed root.                                          |
+| `gap`                               | `number`                                        | `12`             | no       | Vertical gap between the stacked children (and to the trigger).            |
+| `triggerIcon`                       | `IconComponent` (lucide component)              | lucide `Plus`    | no       | Trigger glyph; rotated 45° while open.                                     |
+| `triggerTooltip`                    | `string`                                        | `undefined`      | no       | Sets the trigger's native `title` and accessible name.                     |
 
 ## Slots
 
 ### SnFloatButton
 
-| Name | Params | Description |
-|---|---|---|
-| `icon` | `()` | Replaces the icon. |
-| `description` | `()` | Replaces the `description` text. |
-| `default` | `()` | Replaces the whole inner content (icon + description). |
+| Name          | Params | Description                                            |
+| ------------- | ------ | ------------------------------------------------------ |
+| `icon`        | `()`   | Replaces the icon.                                     |
+| `description` | `()`   | Replaces the `description` text.                       |
+| `default`     | `()`   | Replaces the whole inner content (icon + description). |
 
 ### SnFloatButtonGroup
 
-| Name | Params | Description |
-|---|---|---|
-| `default` | `()` | The `SnFloatButton` children. They stack on the side `direction` selects (above the trigger by default). |
-| `trigger` | `()` | Replaces the built-in trigger button entirely. |
+| Name      | Params | Description                                                                                              |
+| --------- | ------ | -------------------------------------------------------------------------------------------------------- |
+| `default` | `()`   | The `SnFloatButton` children. They stack on the side `direction` selects (above the trigger by default). |
+| `trigger` | `()`   | Replaces the built-in trigger button entirely.                                                           |
 
 ## Events
 
 ### SnFloatButton
 
-| Name | Payload | Description |
-|---|---|---|
+| Name    | Payload      | Description                                                                                                                 |
+| ------- | ------------ | --------------------------------------------------------------------------------------------------------------------------- |
 | `click` | `MouseEvent` | Native click. Not emitted while `disabled` (the handler also calls `preventDefault`, so a disabled link does not navigate). |
 
 ### SnFloatButtonGroup
 
-| Name | Payload | Description |
-|---|---|---|
+| Name          | Payload   | Description                                                                |
+| ------------- | --------- | -------------------------------------------------------------------------- |
 | `update:open` | `boolean` | The open state changed (`v-model:open`). Only emitted on an actual change. |
-| `openChange` | `boolean` | Event-style alias of `update:open`. |
+| `openChange`  | `boolean` | Event-style alias of `update:open`.                                        |
 
 ## Behaviour
 
@@ -183,7 +183,7 @@ a block (a docs preview card, a hero section) rather than to the page.
   open.
 - **`gap`**: parameterised (default 12) instead of the reference's hard-coded
   vertical rhythm.
-- **Custom `trigger` slot**: the slot replaces the trigger button *and* its
+- **Custom `trigger` slot**: the slot replaces the trigger button _and_ its
   wiring — a custom trigger must call `update:open` / `v-model:open` itself and
   provide its own `aria-expanded` / `aria-haspopup`, because the built-in
   ARIA wiring lives on the default trigger.
@@ -194,20 +194,20 @@ a block (a docs preview card, a hero section) rather than to the page.
 
 ## Tokens Consumed (end: web)
 
-| Token | Use |
-|---|---|
-| `--sn-web-color-background-elevated` | Default button surface. |
-| `--sn-web-color-text-primary` | Default icon / description color. |
-| `--sn-web-color-border-subtle` | Default border. |
-| `--sn-web-color-action-primary` | Primary fill; default hover accent. |
-| `--sn-web-color-action-primary-hover` | Primary hover fill. |
-| `--sn-web-color-text-on-primary` | Foreground on a primary fill / badge. |
-| `--sn-web-color-feedback-danger` | Badge bubble background. |
-| `--sn-web-focus-ring` | Keyboard focus outline. |
-| `--sn-web-shadow-md`, `--sn-web-shadow-sm` | Floating elevation (group children sit lighter). |
-| `--sn-web-radius-full`, `--sn-web-radius-md` | Circle / square radius, badge pill. |
-| `--sn-web-font-size-sm`, `--sn-web-font-size-xs` | Description / badge type. |
-| `--sn-web-font-line-height-tight` | Description / badge line-height. |
+| Token                                            | Use                                              |
+| ------------------------------------------------ | ------------------------------------------------ |
+| `--sn-web-color-background-elevated`             | Default button surface.                          |
+| `--sn-web-color-text-primary`                    | Default icon / description color.                |
+| `--sn-web-color-border-subtle`                   | Default border.                                  |
+| `--sn-web-color-action-primary`                  | Primary fill; default hover accent.              |
+| `--sn-web-color-action-primary-hover`            | Primary hover fill.                              |
+| `--sn-web-color-text-on-primary`                 | Foreground on a primary fill / badge.            |
+| `--sn-web-color-feedback-danger`                 | Badge bubble background.                         |
+| `--sn-web-focus-ring`                            | Keyboard focus outline.                          |
+| `--sn-web-shadow-md`, `--sn-web-shadow-sm`       | Floating elevation (group children sit lighter). |
+| `--sn-web-radius-full`, `--sn-web-radius-md`     | Circle / square radius, badge pill.              |
+| `--sn-web-font-size-sm`, `--sn-web-font-size-xs` | Description / badge type.                        |
+| `--sn-web-font-line-height-tight`                | Description / badge line-height.                 |
 
 Metrics (px): 40px circle button, 44px minimum for the square variant, badge
 16px tall (8px dot), default corner offset 24px, default stack gap 12px,

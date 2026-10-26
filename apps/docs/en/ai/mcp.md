@@ -45,7 +45,9 @@ Add `snail-aui` server following each client's MCP config spec; command + args s
 
 ```ts
 // Input
-{ end: 'web' | 'mp' | 'both' }
+{
+  end: 'web' | 'mp' | 'both';
+}
 
 // Output
 {
@@ -63,17 +65,17 @@ Add `snail-aui` server following each client's MCP config spec; command + args s
       description: 'Primary action button (uni)',
       importPath: 'easycom auto-register, no import needed',
     },
-  ]
+  ];
 }
 ```
 
 **`end` filter rules**:
 
-| Input `end` | Returns |
-|---|---|
-| `'web'` | `component.end === 'web'` |
-| `'mp'` | `component.end === 'mp'` |
-| `'both'` | All components (Web + mp) |
+| Input `end` | Returns                   |
+| ----------- | ------------------------- |
+| `'web'`     | `component.end === 'web'` |
+| `'mp'`      | `component.end === 'mp'`  |
+| `'both'`    | All components (Web + mp) |
 
 > Cross-end components (`end: 'both'`) return for either query, but `importPath` adapts to the queried end.
 

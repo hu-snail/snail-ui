@@ -39,22 +39,22 @@ Scrolls left by default; hovering pauses it.
 
 ### SnMarquee Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| direction | `'left' \| 'right' \| 'up' \| 'down'` | `'left'` | Direction the content travels |
-| duration | `number` | `12` | Seconds for one full pass; non-finite / non-positive values fall back to `12` |
-| repeat | `number` | `2` | How many copies are rendered; coerced to an integer ≥ 2 (`Math.max(2, Math.floor(...))`) |
-| gap | `number \| string` | `24` | Distance between two copies (number → px), applied as trailing padding on every copy |
-| pauseOnHover | `boolean` | `true` | Pause while the pointer hovers the marquee |
-| playing | `boolean` | `true` | Whether the ticker runs; `false` freezes it in place |
-| vertical | `boolean` | `false` | Shorthand for a vertical ticker: `direction="up"` unless `direction` already is `'up'` / `'down'` |
-| height | `number \| string` | `undefined` | Box height (number → px); recommended for a vertical ticker so there is a viewport to clip against |
+| Name         | Type                                  | Default     | Notes                                                                                              |
+| ------------ | ------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------- |
+| direction    | `'left' \| 'right' \| 'up' \| 'down'` | `'left'`    | Direction the content travels                                                                      |
+| duration     | `number`                              | `12`        | Seconds for one full pass; non-finite / non-positive values fall back to `12`                      |
+| repeat       | `number`                              | `2`         | How many copies are rendered; coerced to an integer ≥ 2 (`Math.max(2, Math.floor(...))`)           |
+| gap          | `number \| string`                    | `24`        | Distance between two copies (number → px), applied as trailing padding on every copy               |
+| pauseOnHover | `boolean`                             | `true`      | Pause while the pointer hovers the marquee                                                         |
+| playing      | `boolean`                             | `true`      | Whether the ticker runs; `false` freezes it in place                                               |
+| vertical     | `boolean`                             | `false`     | Shorthand for a vertical ticker: `direction="up"` unless `direction` already is `'up'` / `'down'`  |
+| height       | `number \| string`                    | `undefined` | Box height (number → px); recommended for a vertical ticker so there is a viewport to clip against |
 
 ### SnMarquee Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | **ONE** copy of the content — the component duplicates it, so do not repeat the content yourself |
+| Name    | Params | Notes                                                                                            |
+| ------- | ------ | ------------------------------------------------------------------------------------------------ |
+| default | `()`   | **ONE** copy of the content — the component duplicates it, so do not repeat the content yourself |
 
 ### SnMarquee Events
 

@@ -34,37 +34,37 @@
 
 所有 Props 均为可选。
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| href | `string` | `undefined` | 跳转地址；仅 `tag='a'` 时渲染 |
-| target | `string` | `undefined` | 浏览上下文（`_blank` 等） |
-| rel | `string` | `undefined` | 目标关系说明 |
-| type | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义色，驱动文字颜色与悬停反馈 |
-| disabled | `boolean` | `false` | 禁用：阻止点击与导航，移除 `href`，设置 `aria-disabled="true"` |
-| underline | `boolean` | `false` | `true` 常显下划线；`false` 仅悬停显示 |
-| tag | `string` | `'a'` | 渲染元素标签 |
+| 名称      | 类型                                                                    | 默认值      | 说明                                                           |
+| --------- | ----------------------------------------------------------------------- | ----------- | -------------------------------------------------------------- |
+| href      | `string`                                                                | `undefined` | 跳转地址；仅 `tag='a'` 时渲染                                  |
+| target    | `string`                                                                | `undefined` | 浏览上下文（`_blank` 等）                                      |
+| rel       | `string`                                                                | `undefined` | 目标关系说明                                                   |
+| type      | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义色，驱动文字颜色与悬停反馈                                 |
+| disabled  | `boolean`                                                               | `false`     | 禁用：阻止点击与导航，移除 `href`，设置 `aria-disabled="true"` |
+| underline | `boolean`                                                               | `false`     | `true` 常显下划线；`false` 仅悬停显示                          |
+| tag       | `string`                                                                | `'a'`       | 渲染元素标签                                                   |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称  | 参数                  | 说明                                    |
+| ----- | --------------------- | --------------------------------------- |
 | click | `(event: MouseEvent)` | 激活时触发；`disabled` 时被阻止且不派发 |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | — | 链接文字 |
-| icon | — | 前缀图标 |
+| 名称    | 参数 | 说明     |
+| ------- | ---- | -------- |
+| default | —    | 链接文字 |
+| icon    | —    | 前缀图标 |
 
 ## Tokens
 
-| Token | 用途 |
-| --- | --- |
-| `--sn-web-color-text-primary` | default 色文字 |
-| `--sn-web-color-action-primary / -hover` | primary 色文字与悬停 |
-| `--sn-web-color-feedback-info / -success / -warning` | 对应语义色 |
-| `--sn-web-color-feedback-danger / -hover` | error 色文字与悬停 |
+| Token                                                | 用途                 |
+| ---------------------------------------------------- | -------------------- |
+| `--sn-web-color-text-primary`                        | default 色文字       |
+| `--sn-web-color-action-primary / -hover`             | primary 色文字与悬停 |
+| `--sn-web-color-feedback-info / -success / -warning` | 对应语义色           |
+| `--sn-web-color-feedback-danger / -hover`            | error 色文字与悬停   |
 
 ## 无障碍
 

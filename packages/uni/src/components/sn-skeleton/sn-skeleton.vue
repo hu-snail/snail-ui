@@ -34,54 +34,54 @@
  *   - 空状态 — 用 sn-empty
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnSkeleton' })
+defineOptions({ name: 'SnSkeleton' });
 
 /** Preset layout. Mirrors `wd-skeleton` `theme`. */
-type SkeletonTheme = 'text' | 'avatar' | 'paragraph' | 'image'
+type SkeletonTheme = 'text' | 'avatar' | 'paragraph' | 'image';
 
 /** Shimmer kind. Mirrors `wd-skeleton` `animation`. */
-type SkeletonAnimation = '' | 'gradient' | 'flashed'
+type SkeletonAnimation = '' | 'gradient' | 'flashed';
 
 /** Placeholder shape. */
-type SkeletonColType = 'text' | 'rect' | 'circle' | 'image'
+type SkeletonColType = 'text' | 'rect' | 'circle' | 'image';
 
 /** One column descriptor inside a `row-col` row. */
 export interface SnSkeletonCol {
   /** Placeholder shape. */
-  type?: SkeletonColType
+  type?: SkeletonColType;
   /** Width — a number is treated as rpx, a string passes through. */
-  size?: number | string
+  size?: number | string;
   /** Explicit width (overrides `size`). */
-  width?: number | string
+  width?: number | string;
   /** Explicit height. */
-  height?: number | string
+  height?: number | string;
   /** Outer margin. */
-  margin?: string
+  margin?: string;
   /** Corner radius override. */
-  borderRadius?: string
+  borderRadius?: string;
   /** Background color override for this placeholder. */
-  backgroundColor?: string
+  backgroundColor?: string;
 }
 
 /** One `row-col` entry: a column count, or an explicit column list. */
-type SkeletonRowCol = number | SnSkeletonCol[]
+type SkeletonRowCol = number | SnSkeletonCol[];
 
 const props = withDefaults(
   defineProps<{
     /** Preset layout when `rowCol` is empty. */
-    theme?: SkeletonTheme
+    theme?: SkeletonTheme;
     /** Per-row layout: a column count or an explicit column list per row. */
-    rowCol?: SkeletonRowCol[]
+    rowCol?: SkeletonRowCol[];
     /** Whether the skeleton is shown; `false` renders the default slot. */
-    loading?: boolean
+    loading?: boolean;
     /** Shimmer kind. */
-    animation?: SkeletonAnimation
+    animation?: SkeletonAnimation;
     /** Custom class for the root node. */
-    customClass?: string | string[] | Record<string, boolean>
+    customClass?: string | string[] | Record<string, boolean>;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     theme: 'text',
@@ -91,56 +91,61 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 defineSlots<{
   /** Real content, rendered once `loading` is false. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Preset row layouts per theme (mirrors the reference's four presets). */
 const THEME_ROWS: Record<SkeletonTheme, SkeletonRowCol[]> = {
   text: [1],
-  avatar: [[{ type: 'circle', size: 96 }, { type: 'rect', size: '60%' }]],
+  avatar: [
+    [
+      { type: 'circle', size: 96 },
+      { type: 'rect', size: '60%' },
+    ],
+  ],
   paragraph: [1, 1, [{ type: 'text', size: '60%' }]],
   image: [[{ type: 'image', size: '100%' }]],
-}
+};
 
 /** Effective rows: explicit `rowCol` wins, otherwise the theme preset. */
 const rows = computed<SkeletonRowCol[]>(() =>
   props.rowCol.length > 0 ? props.rowCol : THEME_ROWS[props.theme],
-)
+);
 
 /** Normalise one row into a column list. */
 function normaliseRow(row: SkeletonRowCol): SnSkeletonCol[] {
   if (typeof row === 'number') {
-    return Array.from({ length: Math.max(1, Math.round(row)) }, () => ({ type: 'text' }))
+    return Array.from({ length: Math.max(1, Math.round(row)) }, () => ({ type: 'text' }));
   }
-  return row.length > 0 ? row : [{ type: 'text' }]
+  return row.length > 0 ? row : [{ type: 'text' }];
 }
 
 /** Resolve a numeric-or-string length (bare number = rpx). */
 function toLength(value: number | string | undefined): string | undefined {
-  if (value === undefined || value === '') return undefined
-  return typeof value === 'number' ? `${value}rpx` : value
+  if (value === undefined || value === '') return undefined;
+  return typeof value === 'number' ? `${value}rpx` : value;
 }
 
 /** Inline style for one placeholder column. */
 function colStyle(col: SnSkeletonCol): string {
-  const parts: string[] = []
-  const width = toLength(col.width ?? col.size)
-  const height = toLength(col.height)
-  if (width) parts.push(`width: ${width}`)
-  if (height) parts.push(`height: ${height}`)
-  if (col.margin) parts.push(`margin: ${col.margin}`)
-  if (col.borderRadius) parts.push(`border-radius: ${col.borderRadius}`)
-  if (col.backgroundColor) parts.push(`background-color: ${col.backgroundColor}`)
-  return parts.join('; ')
+  const parts: string[] = [];
+  const width = toLength(col.width ?? col.size);
+  const height = toLength(col.height);
+  if (width) parts.push(`width: ${width}`);
+  if (height) parts.push(`height: ${height}`);
+  if (col.margin) parts.push(`margin: ${col.margin}`);
+  if (col.borderRadius) parts.push(`border-radius: ${col.borderRadius}`);
+  if (col.backgroundColor) parts.push(`background-color: ${col.backgroundColor}`);
+  return parts.join('; ');
 }
 
 /** Column shape class. */
 function colClass(col: SnSkeletonCol): string[] {
-  return ['sn-skeleton__col', `sn-skeleton__col--${col.type ?? 'text'}`]
+  return ['sn-skeleton__col', `sn-skeleton__col--${col.type ?? 'text'}`];
 }
 
 const rootClass = computed(() => [
@@ -150,9 +155,9 @@ const rootClass = computed(() => [
     'sn-skeleton--flashed': props.animation === 'flashed',
   },
   props.customClass,
-])
+]);
 
-const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined))
+const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
 </script>
 
 <template>
@@ -166,11 +171,7 @@ const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefi
     aria-busy="true"
     aria-label="loading"
   >
-    <view
-      v-for="(row, rowIndex) in rows"
-      :key="rowIndex"
-      class="sn-skeleton__row"
-    >
+    <view v-for="(row, rowIndex) in rows" :key="rowIndex" class="sn-skeleton__row">
       <view
         v-for="(col, colIndex) in normaliseRow(row)"
         :key="colIndex"
@@ -248,8 +249,12 @@ const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefi
 }
 
 @keyframes sn-skeleton-gradient {
-  0% { background-position: 100% 50%; }
-  100% { background-position: 0 50%; }
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
 }
 
 /* ── Shimmer: opacity pulse ───────────────────────────────────────────── */
@@ -259,8 +264,13 @@ const rootStyle = computed(() => (props.customStyle ? props.customStyle : undefi
 }
 
 @keyframes sn-skeleton-flashed {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* Doodle skin — dashed placeholder outline. */

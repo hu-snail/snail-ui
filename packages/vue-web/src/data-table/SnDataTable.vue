@@ -66,18 +66,10 @@
  *     v-model:checked-row-keys="keys" @update:sorter="onSorter" />
  */
 
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from 'vue'
-import { useLocale } from '../locales/use-locale'
-import type { PropType, VNodeChild } from 'vue'
-import type { HTMLAttributes } from 'vue'
+import { computed, defineComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import type { PropType, VNodeChild } from 'vue';
+import type { HTMLAttributes } from 'vue';
 import type {
   DataTableBaseColumn,
   DataTableColumn,
@@ -93,58 +85,58 @@ import type {
   DataTableSortOrder,
   DataTableSortState,
   DataTableSummaryRow,
-} from './sn-data-table-types'
-import type { DataTableCreateSummary } from './sn-data-table-types'
+} from './sn-data-table-types';
+import type { DataTableCreateSummary } from './sn-data-table-types';
 
-defineOptions({ name: 'SnDataTable' })
+defineOptions({ name: 'SnDataTable' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 const props = withDefaults(
   defineProps<{
     /** Column definitions. Mirrors n-data-table `columns`. */
-    columns?: DataTableColumns
+    columns?: DataTableColumns;
     /** Row data records. Mirrors n-data-table `data`. */
-    data?: DataTableRowData[]
+    data?: DataTableRowData[];
     /** Derive the row key from a row. Mirrors n-data-table `row-key`. */
-    rowKey?: ((row: DataTableRowData) => DataTableRowKey) | undefined
+    rowKey?: ((row: DataTableRowData) => DataTableRowKey) | undefined;
     /** Extra tr attributes. Mirrors n-data-table `row-props`. */
-    rowProps?: ((row: DataTableRowData, index: number) => HTMLAttributes) | undefined
+    rowProps?: ((row: DataTableRowData, index: number) => HTMLAttributes) | undefined;
     /** Static or computed tr class. Mirrors n-data-table `row-class-name`. */
-    rowClassName?: string | ((row: DataTableRowData, index: number) => string) | undefined
+    rowClassName?: string | ((row: DataTableRowData, index: number) => string) | undefined;
     /** Zebra stripes on odd page rows. Mirrors n-data-table `striped`. */
-    striped?: boolean
+    striped?: boolean;
     /** Table scale. Mirrors n-data-table `size`. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Outer frame border; undefined = true. Mirrors n-data-table `bordered`. */
-    bordered?: boolean | undefined
+    bordered?: boolean | undefined;
     /** Last-row bottom border (no effect while bordered); undefined = true. Mirrors `bottom-bordered`. */
-    bottomBordered?: boolean | undefined
+    bottomBordered?: boolean | undefined;
     /** Hide column separators. Mirrors n-data-table `single-line`. */
-    singleLine?: boolean
+    singleLine?: boolean;
     /** Hide row separators. Mirrors n-data-table `single-column`. */
-    singleColumn?: boolean
+    singleColumn?: boolean;
     /** Dim the body and show the centered spinner. Mirrors `loading`. */
-    loading?: boolean
+    loading?: boolean;
     /** Inner table min-width -> horizontal scroll. Mirrors `scroll-x`. */
-    scrollX?: number | string | undefined
+    scrollX?: number | string | undefined;
     /** Scroll container max-height -> sticky header. Mirrors `max-height`. */
-    maxHeight?: number | string | undefined
+    maxHeight?: number | string | undefined;
     /** Summary rows factory over the current page data. Mirrors `summary`. */
-    summary?: DataTableCreateSummary | undefined
+    summary?: DataTableCreateSummary | undefined;
     /** Render summary above or below the body. Mirrors `summary-placement`. */
-    summaryPlacement?: 'top' | 'bottom'
+    summaryPlacement?: 'top' | 'bottom';
     /** Checked keys (v-model:checked-row-keys). Mirrors `checked-row-keys`. */
-    checkedRowKeys?: DataTableRowKey[] | undefined
+    checkedRowKeys?: DataTableRowKey[] | undefined;
     /** Uncontrolled initial checked keys. Mirrors `default-checked-row-keys`. */
-    defaultCheckedRowKeys?: DataTableRowKey[]
+    defaultCheckedRowKeys?: DataTableRowKey[];
     /** Expanded keys (v-model:expanded-row-keys). Mirrors `expanded-row-keys`. */
-    expandedRowKeys?: DataTableRowKey[] | undefined
+    expandedRowKeys?: DataTableRowKey[] | undefined;
     /** Uncontrolled initial expanded keys. Mirrors `default-expanded-row-keys`. */
-    defaultExpandedRowKeys?: DataTableRowKey[]
+    defaultExpandedRowKeys?: DataTableRowKey[];
     /** false disables pagination; object renders the simplified bar. Mirrors `pagination`. */
-    pagination?: DataTablePagination | false
+    pagination?: DataTablePagination | false;
   }>(),
   {
     columns: () => [],
@@ -171,26 +163,29 @@ const props = withDefaults(
     defaultExpandedRowKeys: () => [],
     pagination: false,
   },
-)
+);
 
 const emit = defineEmits<{
   (
     e: 'update:checkedRowKeys',
     keys: DataTableRowKey[],
     rows: DataTableRowData[],
-    meta: { row: DataTableRowData | undefined, action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll' },
-  ): void
-  (e: 'update:expandedRowKeys', keys: DataTableRowKey[]): void
-  (e: 'update:filters', filters: DataTableFilterState, column: DataTableBaseColumn): void
-  (e: 'update:sorter', state: DataTableSortState | DataTableSortState[] | null): void
-  (e: 'update:page', page: number): void
-  (e: 'update:pageSize', pageSize: number): void
-}>()
+    meta: {
+      row: DataTableRowData | undefined;
+      action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll';
+    },
+  ): void;
+  (e: 'update:expandedRowKeys', keys: DataTableRowKey[]): void;
+  (e: 'update:filters', filters: DataTableFilterState, column: DataTableBaseColumn): void;
+  (e: 'update:sorter', state: DataTableSortState | DataTableSortState[] | null): void;
+  (e: 'update:page', page: number): void;
+  (e: 'update:pageSize', pageSize: number): void;
+}>();
 
 defineSlots<{
   /** Replaces the default 无数据 empty state. */
-  empty?(): unknown
-}>()
+  empty?(): unknown;
+}>();
 
 /* ------------------------------------------------------------------ */
 /* Internal helper: render a user render-fn result (VNodeChild) as-is.  */
@@ -205,63 +200,60 @@ const VNodeRenderer = defineComponent({
     },
   },
   setup(rendererProps) {
-    return () => rendererProps.content
+    return () => rendererProps.content;
   },
-})
+});
 
 /* ------------------------------------------------------------------ */
 /* Column helpers                                                       */
 /* ------------------------------------------------------------------ */
 
-type DataTableColumns = DataTableColumn[]
+type DataTableColumns = DataTableColumn[];
 
 function isBaseColumn(column: DataTableColumn): column is DataTableBaseColumn {
-  return (column as { type?: string }).type === undefined
+  return (column as { type?: string }).type === undefined;
 }
 
 function isSelectionColumn(column: DataTableColumn): column is DataTableSelectionColumn {
-  return column.type === 'selection'
+  return column.type === 'selection';
 }
 
 function isExpandColumn(column: DataTableColumn): column is DataTableExpandColumn {
-  return column.type === 'expand'
+  return column.type === 'expand';
 }
 
-const SELECTION_COL_WIDTH = 40
-const EXPAND_COL_WIDTH = 40
+const SELECTION_COL_WIDTH = 40;
+const EXPAND_COL_WIDTH = 40;
 
 function getColumnKey(column: DataTableColumn): DataTableColumnKey {
-  if (isSelectionColumn(column)) return '__sn_selection__'
-  if (isExpandColumn(column)) return '__sn_expand__'
-  if (column.type === 'index') return `__sn_index__${column.key ?? ''}`
-  return column.key
+  if (isSelectionColumn(column)) return '__sn_selection__';
+  if (isExpandColumn(column)) return '__sn_expand__';
+  if (column.type === 'index') return `__sn_index__${column.key ?? ''}`;
+  return column.key;
 }
 
 function numericColumnWidth(column: DataTableColumn): number {
-  const fallback
-    = isSelectionColumn(column) || isExpandColumn(column)
-      ? SELECTION_COL_WIDTH
-      : 0
+  const fallback = isSelectionColumn(column) || isExpandColumn(column) ? SELECTION_COL_WIDTH : 0;
   if (isSelectionColumn(column) || isExpandColumn(column)) {
-    if (column.width === undefined) return fallback
+    if (column.width === undefined) return fallback;
   }
-  const raw = column.width
-  if (typeof raw === 'number') return raw
+  const raw = column.width;
+  if (typeof raw === 'number') return raw;
   if (typeof raw === 'string') {
-    const parsed = Number.parseFloat(raw)
-    return Number.isNaN(parsed) ? fallback : parsed
+    const parsed = Number.parseFloat(raw);
+    return Number.isNaN(parsed) ? fallback : parsed;
   }
-  return fallback
+  return fallback;
 }
 
 function cssLen(value: number | string): string {
-  return typeof value === 'number' ? `${value}px` : value
+  return typeof value === 'number' ? `${value}px` : value;
 }
 
 const columnMetas = computed<DataTableColumnMeta[]>(() => {
-  const metas: DataTableColumnMeta[] = []
-  const cols = props.columns
-  let leftAcc = 0
+  const metas: DataTableColumnMeta[] = [];
+  const cols = props.columns;
+  let leftAcc = 0;
   for (const col of cols) {
     if (col.fixed === 'left') {
       metas.push({
@@ -271,8 +263,8 @@ const columnMetas = computed<DataTableColumnMeta[]>(() => {
         isFixedRight: false,
         leftOffset: leftAcc,
         rightOffset: 0,
-      })
-      leftAcc += numericColumnWidth(col)
+      });
+      leftAcc += numericColumnWidth(col);
     } else {
       metas.push({
         column: col,
@@ -281,270 +273,262 @@ const columnMetas = computed<DataTableColumnMeta[]>(() => {
         isFixedRight: false,
         leftOffset: 0,
         rightOffset: 0,
-      })
+      });
     }
   }
-  const rightOffsets = new Map<string, number>()
-  let rightAcc = 0
+  const rightOffsets = new Map<string, number>();
+  let rightAcc = 0;
   for (let index = cols.length - 1; index >= 0; index -= 1) {
-    const col = cols[index]
-    if (col === undefined) continue
+    const col = cols[index];
+    if (col === undefined) continue;
     if (col.fixed === 'right') {
-      rightOffsets.set(String(getColumnKey(col)), rightAcc)
-      rightAcc += numericColumnWidth(col)
+      rightOffsets.set(String(getColumnKey(col)), rightAcc);
+      rightAcc += numericColumnWidth(col);
     }
   }
   for (const meta of metas) {
-    const offset = rightOffsets.get(meta.key)
+    const offset = rightOffsets.get(meta.key);
     if (offset !== undefined) {
-      meta.isFixedRight = true
-      meta.rightOffset = offset
+      meta.isFixedRight = true;
+      meta.rightOffset = offset;
     }
   }
-  return metas
-})
+  return metas;
+});
 
 const hasFixedColumns = computed<boolean>(() =>
   columnMetas.value.some((meta) => meta.isFixedLeft || meta.isFixedRight),
-)
+);
 
 const hasEllipsisColumn = computed<boolean>(() =>
   props.columns.some((col) => isBaseColumn(col) && col.ellipsis === true),
-)
+);
 
 const tableLayout = computed<'auto' | 'fixed'>(() =>
   props.maxHeight !== undefined || hasEllipsisColumn.value ? 'fixed' : 'auto',
-)
+);
 
 /* ------------------------------------------------------------------ */
 /* Filtering                                                            */
 /* ------------------------------------------------------------------ */
 
 function initialFilterState(): DataTableFilterState {
-  const state: DataTableFilterState = {}
+  const state: DataTableFilterState = {};
   for (const col of props.columns) {
-    if (!isBaseColumn(col) || !col.filter) continue
+    if (!isBaseColumn(col) || !col.filter) continue;
     if (col.filterMultiple === false) {
-      state[col.key] = col.defaultFilterOptionValue ?? null
+      state[col.key] = col.defaultFilterOptionValue ?? null;
     } else {
-      state[col.key] = col.defaultFilterOptionValues ?? []
+      state[col.key] = col.defaultFilterOptionValues ?? [];
     }
   }
-  return state
+  return state;
 }
 
-const uncontrolledFilterState = ref<DataTableFilterState>(initialFilterState())
+const uncontrolledFilterState = ref<DataTableFilterState>(initialFilterState());
 
 const mergedFilterState = computed<DataTableFilterState>(() => {
-  const state: DataTableFilterState = { ...uncontrolledFilterState.value }
+  const state: DataTableFilterState = { ...uncontrolledFilterState.value };
   for (const col of props.columns) {
-    if (!isBaseColumn(col)) continue
+    if (!isBaseColumn(col)) continue;
     if (col.filterOptionValues !== undefined) {
-      state[col.key] = col.filterOptionValues
+      state[col.key] = col.filterOptionValues;
     } else if (col.filterOptionValue !== undefined) {
-      state[col.key] = col.filterOptionValue
+      state[col.key] = col.filterOptionValue;
     }
   }
-  return state
-})
+  return state;
+});
 
 function defaultFilterOf(
   columnKey: DataTableColumnKey,
 ): (value: string | number, row: DataTableRowData) => boolean {
   return (value: string | number, row: DataTableRowData) =>
-    String(row[columnKey]).indexOf(String(value)) !== -1
+    String(row[columnKey]).indexOf(String(value)) !== -1;
 }
 
 const filteredData = computed<DataTableRowData[]>(() => {
-  const state = mergedFilterState.value
+  const state = mergedFilterState.value;
   const activeEntries: Array<{
-    column: DataTableBaseColumn
-    values: Array<string | number>
-  }> = []
+    column: DataTableBaseColumn;
+    values: Array<string | number>;
+  }> = [];
   for (const col of props.columns) {
-    if (!isBaseColumn(col)) continue
-    const active = state[col.key]
-    if (active == null) continue
-    const values = Array.isArray(active) ? [...active] : [active]
-    if (values.length === 0) continue
-    activeEntries.push({ column: col, values })
+    if (!isBaseColumn(col)) continue;
+    const active = state[col.key];
+    if (active == null) continue;
+    const values = Array.isArray(active) ? [...active] : [active];
+    if (values.length === 0) continue;
+    activeEntries.push({ column: col, values });
   }
-  if (activeEntries.length === 0) return props.data
+  if (activeEntries.length === 0) return props.data;
   return props.data.filter((row) => {
     for (const entry of activeEntries) {
-      const filterFn
-        = entry.column.filter === 'default'
+      const filterFn =
+        entry.column.filter === 'default'
           ? defaultFilterOf(entry.column.key)
           : typeof entry.column.filter === 'function'
             ? entry.column.filter
-            : null
-      if (filterFn === null) continue
+            : null;
+      if (filterFn === null) continue;
       if (entry.column.filterMode === 'and') {
-        if (entry.values.some((value) => !filterFn(value, row))) return false
+        if (entry.values.some((value) => !filterFn(value, row))) return false;
       } else if (entry.values.some((value) => filterFn(value, row))) {
-        continue
+        continue;
       } else {
-        return false
+        return false;
       }
     }
-    return true
-  })
-})
+    return true;
+  });
+});
 
 /* ------------------------------------------------------------------ */
 /* Sorting                                                              */
 /* ------------------------------------------------------------------ */
 
 function nextSortOrder(order: DataTableSortOrder): DataTableSortOrder {
-  if (!order) return 'descend'
-  if (order === 'descend') return 'ascend'
-  return false
+  if (!order) return 'descend';
+  if (order === 'descend') return 'ascend';
+  return false;
 }
 
 function initialSortStates(): DataTableSortState[] {
-  const states: DataTableSortState[] = []
+  const states: DataTableSortState[] = [];
   for (const col of props.columns) {
-    if (!isBaseColumn(col) || col.sorter === undefined) continue
+    if (!isBaseColumn(col) || col.sorter === undefined) continue;
     states.push({
       columnKey: col.key,
       sorter: col.sorter,
       order: col.defaultSortOrder ?? false,
-    })
+    });
   }
-  return states
+  return states;
 }
 
-const uncontrolledSortStates = ref<DataTableSortState[]>(initialSortStates())
+const uncontrolledSortStates = ref<DataTableSortState[]>(initialSortStates());
 
 const mergedSortStates = computed<DataTableSortState[]>(() => {
-  const controlledColumns: DataTableBaseColumn[] = []
+  const controlledColumns: DataTableBaseColumn[] = [];
   for (const col of props.columns) {
     if (
-      isBaseColumn(col)
-      && col.sorter !== undefined
-      && (col.sortOrder === 'ascend'
-        || col.sortOrder === 'descend'
-        || col.sortOrder === false)
+      isBaseColumn(col) &&
+      col.sorter !== undefined &&
+      (col.sortOrder === 'ascend' || col.sortOrder === 'descend' || col.sortOrder === false)
     ) {
-      controlledColumns.push(col)
+      controlledColumns.push(col);
     }
   }
-  const activeControlled = controlledColumns.filter(
-    (col) => col.sortOrder !== false,
-  )
+  const activeControlled = controlledColumns.filter((col) => col.sortOrder !== false);
   if (activeControlled.length > 0) {
     return activeControlled.map((col) => ({
       columnKey: col.key,
       sorter: col.sorter as DataTableSortState['sorter'],
       order: col.sortOrder as DataTableSortOrder,
-    }))
+    }));
   }
-  if (controlledColumns.length > 0) return []
-  return uncontrolledSortStates.value
-})
+  if (controlledColumns.length > 0) return [];
+  return uncontrolledSortStates.value;
+});
 
 function getFlagOfOrder(order: DataTableSortOrder): number {
-  if (order === 'ascend') return 1
-  if (order === 'descend') return -1
-  return 0
+  if (order === 'ascend') return 1;
+  if (order === 'descend') return -1;
+  return 0;
 }
 
 function defaultComparator(
   columnKey: DataTableColumnKey,
 ): (row1: DataTableRowData, row2: DataTableRowData) => number {
   return (row1, row2) => {
-    const value1 = row1[columnKey]
-    const value2 = row2[columnKey]
-    if (value1 == null && value2 == null) return 0
-    if (value1 == null) return -1
-    if (value2 == null) return 1
+    const value1 = row1[columnKey];
+    const value2 = row2[columnKey];
+    if (value1 == null && value2 == null) return 0;
+    if (value1 == null) return -1;
+    if (value2 == null) return 1;
     if (typeof value1 === 'number' && typeof value2 === 'number') {
-      return value1 - value2
+      return value1 - value2;
     }
     if (typeof value1 === 'string' && typeof value2 === 'string') {
-      return value1.localeCompare(value2)
+      return value1.localeCompare(value2);
     }
-    return 0
-  }
+    return 0;
+  };
 }
 
 const sortedData = computed<DataTableRowData[]>(() => {
-  const base = filteredData.value
+  const base = filteredData.value;
   const comparators: Array<{
-    flag: number
-    compare: (row1: DataTableRowData, row2: DataTableRowData) => number
-  }> = []
+    flag: number;
+    compare: (row1: DataTableRowData, row2: DataTableRowData) => number;
+  }> = [];
   for (const state of mergedSortStates.value) {
-    const flag = getFlagOfOrder(state.order)
-    if (flag === 0) continue
+    const flag = getFlagOfOrder(state.order);
+    if (flag === 0) continue;
     if (state.sorter === 'default') {
-      comparators.push({ flag, compare: defaultComparator(state.columnKey) })
+      comparators.push({ flag, compare: defaultComparator(state.columnKey) });
     } else if (typeof state.sorter === 'function') {
-      comparators.push({ flag, compare: state.sorter })
+      comparators.push({ flag, compare: state.sorter });
     }
   }
-  if (comparators.length === 0) return base
+  if (comparators.length === 0) return base;
   return base.slice().sort((row1, row2) => {
     for (const entry of comparators) {
-      const result = entry.compare(row1, row2)
-      if (result !== 0) return result * entry.flag
+      const result = entry.compare(row1, row2);
+      if (result !== 0) return result * entry.flag;
     }
-    return 0
-  })
-})
+    return 0;
+  });
+});
 
 function isColumnSortable(column: DataTableColumn): boolean {
-  return isBaseColumn(column) && !!column.sorter
+  return isBaseColumn(column) && !!column.sorter;
 }
 
 function isColumnSorting(column: DataTableColumn): boolean {
-  if (!isBaseColumn(column)) return false
+  if (!isBaseColumn(column)) return false;
   return mergedSortStates.value.some(
     (state) => state.columnKey === column.key && state.order !== false,
-  )
+  );
 }
 
 function currentSortOrder(column: DataTableColumn): DataTableSortOrder {
-  if (!isBaseColumn(column)) return false
-  const state = mergedSortStates.value.find(
-    (entry) => entry.columnKey === column.key,
-  )
-  return state?.order !== undefined ? state.order : false
+  if (!isBaseColumn(column)) return false;
+  const state = mergedSortStates.value.find((entry) => entry.columnKey === column.key);
+  return state?.order !== undefined ? state.order : false;
 }
 
 function handleSorterClick(column: DataTableBaseColumn): void {
   // naive-ui single-sort semantics: clicking replaces the whole sort state
   // (createNextSorter -> getUpdatedSorterState returns one state).
-  const state = uncontrolledSortStates.value.find(
-    (entry) => entry.columnKey === column.key,
-  )
-  const order
-    = state === undefined || state.columnKey !== column.key
+  const state = uncontrolledSortStates.value.find((entry) => entry.columnKey === column.key);
+  const order =
+    state === undefined || state.columnKey !== column.key
       ? nextSortOrder(false)
-      : nextSortOrder(state.order)
+      : nextSortOrder(state.order);
   const next: DataTableSortState = {
     columnKey: column.key,
     sorter: column.sorter ?? false,
     order,
-  }
-  emit('update:sorter', next)
-  uncontrolledSortStates.value = [next]
+  };
+  emit('update:sorter', next);
+  uncontrolledSortStates.value = [next];
 }
 
 function handleThClick(meta: DataTableColumnMeta): void {
   if (isBaseColumn(meta.column) && meta.column.sorter !== undefined) {
-    handleSorterClick(meta.column)
+    handleSorterClick(meta.column);
   }
 }
 
 function sorterClasses(column: DataTableColumn): Array<string | false> {
-  const order = currentSortOrder(column)
+  const order = currentSortOrder(column);
   return [
     'sn-data-table__sorter',
     order === 'ascend' ? 'sn-data-table__sorter--asc' : false,
     order === 'descend' ? 'sn-data-table__sorter--desc' : false,
     order !== false ? 'sn-data-table__sorter--active' : false,
-  ]
+  ];
 }
 
 /* ------------------------------------------------------------------ */
@@ -553,78 +537,78 @@ function sorterClasses(column: DataTableColumn): Array<string | false> {
 
 const paginationConfig = computed<DataTablePagination | null>(() =>
   props.pagination === false ? null : props.pagination,
-)
+);
 
 const uncontrolledPage = ref<number>(
   props.pagination !== false ? (props.pagination?.defaultPage ?? 1) : 1,
-)
+);
 const uncontrolledPageSize = ref<number>(
   props.pagination !== false
     ? (props.pagination?.defaultPageSize ?? props.pagination?.pageSize ?? 10)
     : 10,
-)
+);
 
 const mergedPageSize = computed<number>(
   () => paginationConfig.value?.pageSize ?? uncontrolledPageSize.value,
-)
+);
 
 const itemCount = computed<number>(
   () => paginationConfig.value?.itemCount ?? filteredData.value.length,
-)
+);
 
 const pageCount = computed<number>(() => {
-  const explicit = paginationConfig.value?.pageCount
-  if (explicit !== undefined) return Math.max(1, explicit)
-  return Math.max(1, Math.ceil(itemCount.value / mergedPageSize.value))
-})
+  const explicit = paginationConfig.value?.pageCount;
+  if (explicit !== undefined) return Math.max(1, explicit);
+  return Math.max(1, Math.ceil(itemCount.value / mergedPageSize.value));
+});
 
 const mergedPage = computed<number>(() => {
-  const page = paginationConfig.value?.page ?? uncontrolledPage.value
-  return Math.max(1, Math.min(pageCount.value, page))
-})
+  const page = paginationConfig.value?.page ?? uncontrolledPage.value;
+  return Math.max(1, Math.min(pageCount.value, page));
+});
 
 const paginatedData = computed<DataTableRowData[]>(() => {
-  if (paginationConfig.value === null) return sortedData.value
-  const start = (mergedPage.value - 1) * mergedPageSize.value
-  return sortedData.value.slice(start, start + mergedPageSize.value)
-})
+  if (paginationConfig.value === null) return sortedData.value;
+  const start = (mergedPage.value - 1) * mergedPageSize.value;
+  return sortedData.value.slice(start, start + mergedPageSize.value);
+});
 
 const pageWindow = computed<number[]>(() => {
-  const total = pageCount.value
-  const current = mergedPage.value
-  const start = Math.max(1, Math.min(current - 2, total - 4))
-  const end = Math.min(total, start + 4)
-  const pages: number[] = []
-  for (let page = start; page <= end; page += 1) pages.push(page)
-  return pages
-})
+  const total = pageCount.value;
+  const current = mergedPage.value;
+  const start = Math.max(1, Math.min(current - 2, total - 4));
+  const end = Math.min(total, start + 4);
+  const pages: number[] = [];
+  for (let page = start; page <= end; page += 1) pages.push(page);
+  return pages;
+});
 
 const pageSizeOptions = computed<number[]>(() => {
-  const sizes = paginationConfig.value?.pageSizes
-  if (sizes !== undefined && sizes.length > 0) return sizes
-  return [mergedPageSize.value]
-})
+  const sizes = paginationConfig.value?.pageSizes;
+  if (sizes !== undefined && sizes.length > 0) return sizes;
+  return [mergedPageSize.value];
+});
 
 function handlePageChange(page: number): void {
-  if (props.loading) return
-  const clamped = Math.max(1, Math.min(pageCount.value, page))
-  if (clamped === mergedPage.value) return
-  paginationConfig.value?.onChange?.(clamped)
-  emit('update:page', clamped)
-  uncontrolledPage.value = clamped
+  if (props.loading) return;
+  const clamped = Math.max(1, Math.min(pageCount.value, page));
+  if (clamped === mergedPage.value) return;
+  paginationConfig.value?.onChange?.(clamped);
+  emit('update:page', clamped);
+  uncontrolledPage.value = clamped;
 }
 
 function handlePageSizeChange(pageSize: number): void {
-  if (props.loading) return
-  paginationConfig.value?.onUpdatePageSize?.(pageSize)
-  emit('update:pageSize', pageSize)
-  uncontrolledPageSize.value = pageSize
+  if (props.loading) return;
+  paginationConfig.value?.onUpdatePageSize?.(pageSize);
+  emit('update:pageSize', pageSize);
+  uncontrolledPageSize.value = pageSize;
 }
 
 function handlePageSizeSelect(event: Event): void {
-  const target = event.target as HTMLSelectElement
-  const size = Number.parseInt(target.value, 10)
-  if (!Number.isNaN(size)) handlePageSizeChange(size)
+  const target = event.target as HTMLSelectElement;
+  const size = Number.parseInt(target.value, 10);
+  if (!Number.isNaN(size)) handlePageSizeChange(size);
 }
 
 /* ------------------------------------------------------------------ */
@@ -632,124 +616,111 @@ function handlePageSizeSelect(event: Event): void {
 /* ------------------------------------------------------------------ */
 
 function getRowKey(row: DataTableRowData): DataTableRowKey {
-  if (props.rowKey !== undefined) return props.rowKey(row)
-  const key = row.key
-  if (typeof key === 'string' || typeof key === 'number') return key
-  return ''
+  if (props.rowKey !== undefined) return props.rowKey(row);
+  const key = row.key;
+  if (typeof key === 'string' || typeof key === 'number') return key;
+  return '';
 }
 
 const dataRowMap = computed<Map<DataTableRowKey, DataTableRowData>>(() => {
-  const map = new Map<DataTableRowKey, DataTableRowData>()
-  for (const row of props.data) map.set(getRowKey(row), row)
-  return map
-})
+  const map = new Map<DataTableRowKey, DataTableRowData>();
+  for (const row of props.data) map.set(getRowKey(row), row);
+  return map;
+});
 
 const selectionColumn = computed<DataTableSelectionColumn | null>(() => {
   for (const col of props.columns) {
-    if (isSelectionColumn(col)) return col
+    if (isSelectionColumn(col)) return col;
   }
-  return null
-})
+  return null;
+});
 
-const isMultipleSelection = computed<boolean>(
-  () => selectionColumn.value?.multiple !== false,
-)
+const isMultipleSelection = computed<boolean>(() => selectionColumn.value?.multiple !== false);
 
-const uncontrolledCheckedKeys = ref<DataTableRowKey[]>([
-  ...props.defaultCheckedRowKeys,
-])
+const uncontrolledCheckedKeys = ref<DataTableRowKey[]>([...props.defaultCheckedRowKeys]);
 
 const mergedCheckedKeys = computed<DataTableRowKey[]>(() => {
-  const source = props.checkedRowKeys ?? uncontrolledCheckedKeys.value
-  if (!isMultipleSelection.value) return source.slice(0, 1)
-  return source
-})
+  const source = props.checkedRowKeys ?? uncontrolledCheckedKeys.value;
+  if (!isMultipleSelection.value) return source.slice(0, 1);
+  return source;
+});
 
-const checkedKeySet = computed<Set<DataTableRowKey>>(
-  () => new Set(mergedCheckedKeys.value),
-)
+const checkedKeySet = computed<Set<DataTableRowKey>>(() => new Set(mergedCheckedKeys.value));
 
 const selectablePageRows = computed<DataTableRowData[]>(() =>
-  paginatedData.value.filter(
-    (row) => selectionColumn.value?.disabled?.(row) !== true,
-  ),
-)
+  paginatedData.value.filter((row) => selectionColumn.value?.disabled?.(row) !== true),
+);
 
 const countPageChecked = computed<number>(
-  () =>
-    selectablePageRows.value.filter((row) =>
-      checkedKeySet.value.has(getRowKey(row)),
-    ).length,
-)
+  () => selectablePageRows.value.filter((row) => checkedKeySet.value.has(getRowKey(row))).length,
+);
 
 const allRowsChecked = computed<boolean>(
   () =>
-    selectablePageRows.value.length > 0
-    && countPageChecked.value === selectablePageRows.value.length,
-)
+    selectablePageRows.value.length > 0 &&
+    countPageChecked.value === selectablePageRows.value.length,
+);
 
 const someRowsChecked = computed<boolean>(
-  () =>
-    countPageChecked.value > 0
-    && countPageChecked.value < selectablePageRows.value.length,
-)
+  () => countPageChecked.value > 0 && countPageChecked.value < selectablePageRows.value.length,
+);
 
 function emitChecked(
   keys: DataTableRowKey[],
   row: DataTableRowData | undefined,
   action: 'check' | 'uncheck' | 'checkAll' | 'uncheckAll',
 ): void {
-  const rowMap = dataRowMap.value
-  const rows: DataTableRowData[] = []
+  const rowMap = dataRowMap.value;
+  const rows: DataTableRowData[] = [];
   for (const key of keys) {
-    const found = rowMap.get(key)
-    if (found !== undefined) rows.push(found)
+    const found = rowMap.get(key);
+    if (found !== undefined) rows.push(found);
   }
-  emit('update:checkedRowKeys', keys, rows, { row, action })
-  uncontrolledCheckedKeys.value = keys
+  emit('update:checkedRowKeys', keys, rows, { row, action });
+  uncontrolledCheckedKeys.value = keys;
 }
 
 function isRowChecked(row: DataTableRowData): boolean {
-  return checkedKeySet.value.has(getRowKey(row))
+  return checkedKeySet.value.has(getRowKey(row));
 }
 
 function isRowCheckDisabled(row: DataTableRowData): boolean {
-  return selectionColumn.value?.disabled?.(row) === true || props.loading
+  return selectionColumn.value?.disabled?.(row) === true || props.loading;
 }
 
 function handleRowCheck(row: DataTableRowData): void {
-  const col = selectionColumn.value
-  if (col === null || props.loading) return
-  if (col.disabled?.(row) === true) return
-  const key = getRowKey(row)
+  const col = selectionColumn.value;
+  if (col === null || props.loading) return;
+  if (col.disabled?.(row) === true) return;
+  const key = getRowKey(row);
   if (checkedKeySet.value.has(key)) {
     emitChecked(
       mergedCheckedKeys.value.filter((existing) => existing !== key),
       row,
       'uncheck',
-    )
+    );
   } else if (isMultipleSelection.value) {
-    emitChecked([...mergedCheckedKeys.value, key], row, 'check')
+    emitChecked([...mergedCheckedKeys.value, key], row, 'check');
   } else {
-    emitChecked([key], row, 'check')
+    emitChecked([key], row, 'check');
   }
 }
 
 function handleCheckAll(): void {
-  const col = selectionColumn.value
-  if (col === null || props.loading) return
-  const pageKeys = selectablePageRows.value.map((row) => getRowKey(row))
+  const col = selectionColumn.value;
+  if (col === null || props.loading) return;
+  const pageKeys = selectablePageRows.value.map((row) => getRowKey(row));
   if (allRowsChecked.value) {
-    const removeSet = new Set(pageKeys)
+    const removeSet = new Set(pageKeys);
     emitChecked(
       mergedCheckedKeys.value.filter((key) => !removeSet.has(key)),
       undefined,
       'uncheckAll',
-    )
+    );
   } else {
-    const merged = new Set(mergedCheckedKeys.value)
-    for (const key of pageKeys) merged.add(key)
-    emitChecked([...merged], undefined, 'checkAll')
+    const merged = new Set(mergedCheckedKeys.value);
+    for (const key of pageKeys) merged.add(key);
+    emitChecked([...merged], undefined, 'checkAll');
   }
 }
 
@@ -759,43 +730,39 @@ function handleCheckAll(): void {
 
 const expandColumn = computed<DataTableExpandColumn | null>(() => {
   for (const col of props.columns) {
-    if (isExpandColumn(col)) return col
+    if (isExpandColumn(col)) return col;
   }
-  return null
-})
+  return null;
+});
 
-const uncontrolledExpandedKeys = ref<DataTableRowKey[]>([
-  ...props.defaultExpandedRowKeys,
-])
+const uncontrolledExpandedKeys = ref<DataTableRowKey[]>([...props.defaultExpandedRowKeys]);
 
 const mergedExpandedKeys = computed<DataTableRowKey[]>(
   () => props.expandedRowKeys ?? uncontrolledExpandedKeys.value,
-)
+);
 
-const expandedKeySet = computed<Set<DataTableRowKey>>(
-  () => new Set(mergedExpandedKeys.value),
-)
+const expandedKeySet = computed<Set<DataTableRowKey>>(() => new Set(mergedExpandedKeys.value));
 
 function isRowExpanded(row: DataTableRowData): boolean {
-  return expandedKeySet.value.has(getRowKey(row))
+  return expandedKeySet.value.has(getRowKey(row));
 }
 
 function rowExpandable(row: DataTableRowData): boolean {
-  const col = expandColumn.value
-  if (col === null) return false
-  if (col.expandable !== undefined) return col.expandable(row)
-  return true
+  const col = expandColumn.value;
+  if (col === null) return false;
+  if (col.expandable !== undefined) return col.expandable(row);
+  return true;
 }
 
 function toggleExpand(row: DataTableRowData): void {
-  if (props.loading) return
-  if (!rowExpandable(row)) return
-  const key = getRowKey(row)
+  if (props.loading) return;
+  if (!rowExpandable(row)) return;
+  const key = getRowKey(row);
   const next = isRowExpanded(row)
     ? mergedExpandedKeys.value.filter((existing) => existing !== key)
-    : [...mergedExpandedKeys.value, key]
-  emit('update:expandedRowKeys', next)
-  uncontrolledExpandedKeys.value = next
+    : [...mergedExpandedKeys.value, key];
+  emit('update:expandedRowKeys', next);
+  uncontrolledExpandedKeys.value = next;
 }
 
 /* ------------------------------------------------------------------ */
@@ -803,23 +770,22 @@ function toggleExpand(row: DataTableRowData): void {
 /* ------------------------------------------------------------------ */
 
 interface SummaryCellView {
-  key: string
-  colSpan: number | undefined
-  content: VNodeChild
+  key: string;
+  colSpan: number | undefined;
+  content: VNodeChild;
 }
 
 interface SummaryRowView {
-  key: string
-  cells: SummaryCellView[]
-  isLast: boolean
+  key: string;
+  cells: SummaryCellView[];
+  isLast: boolean;
 }
 
 const summaryRowViews = computed<SummaryRowView[]>(() => {
-  const createSummary = props.summary
-  if (createSummary === undefined) return []
-  const result = createSummary(paginatedData.value)
-  const list: DataTableSummaryRow[]
-    = Array.isArray(result) ? result : [result]
+  const createSummary = props.summary;
+  if (createSummary === undefined) return [];
+  const result = createSummary(paginatedData.value);
+  const list: DataTableSummaryRow[] = Array.isArray(result) ? result : [result];
   return list.map((record, rowIndex) => ({
     key: `summary-${rowIndex}`,
     cells: Object.entries(record).map(([columnKey, cell]) => ({
@@ -828,77 +794,75 @@ const summaryRowViews = computed<SummaryRowView[]>(() => {
       content: cell?.value ?? null,
     })),
     isLast: false,
-  }))
-})
+  }));
+});
 
 const summaryRowsTop = computed<SummaryRowView[]>(() =>
   props.summaryPlacement === 'top' ? summaryRowViews.value : [],
-)
+);
 
 const summaryRowsBottom = computed<SummaryRowView[]>(() => {
-  if (props.summaryPlacement !== 'bottom') return []
-  const rows = summaryRowViews.value
+  if (props.summaryPlacement !== 'bottom') return [];
+  const rows = summaryRowViews.value;
   return rows.map((row, index) => ({
     ...row,
     isLast: index === rows.length - 1,
-  }))
-})
+  }));
+});
 
 /* ------------------------------------------------------------------ */
 /* Display rows (data rows + interleaved expand rows)                   */
 /* ------------------------------------------------------------------ */
 
 interface DisplayRowItem {
-  kind: 'row'
-  key: string
-  row: DataTableRowData
-  rowIndex: number
-  isLast: boolean
+  kind: 'row';
+  key: string;
+  row: DataTableRowData;
+  rowIndex: number;
+  isLast: boolean;
 }
 
 interface DisplayExpandItem {
-  kind: 'expand'
-  key: string
-  row: DataTableRowData
-  rowIndex: number
-  isLast: boolean
+  kind: 'expand';
+  key: string;
+  row: DataTableRowData;
+  rowIndex: number;
+  isLast: boolean;
 }
 
-type DisplayItem = DisplayRowItem | DisplayExpandItem
+type DisplayItem = DisplayRowItem | DisplayExpandItem;
 
 const displayItems = computed<DisplayItem[]>(() => {
-  const rows = paginatedData.value
-  const items: DisplayItem[] = []
+  const rows = paginatedData.value;
+  const items: DisplayItem[] = [];
   rows.forEach((row, rowIndex) => {
-    const key = String(getRowKey(row))
-    const isLastRow
-      = summaryRowsBottom.value.length === 0
-        && rowIndex === rows.length - 1
+    const key = String(getRowKey(row));
+    const isLastRow = summaryRowsBottom.value.length === 0 && rowIndex === rows.length - 1;
     if (isRowExpanded(row) && rowExpandable(row)) {
-      items.push({ kind: 'row', key, row, rowIndex, isLast: false })
+      items.push({ kind: 'row', key, row, rowIndex, isLast: false });
       items.push({
         kind: 'expand',
         key: `${key}-expand`,
         row,
         rowIndex,
         isLast: isLastRow,
-      })
+      });
     } else {
-      items.push({ kind: 'row', key, row, rowIndex, isLast: isLastRow })
+      items.push({ kind: 'row', key, row, rowIndex, isLast: isLastRow });
     }
-  })
-  return items
-})
+  });
+  return items;
+});
 
 function rowClassFor(item: DisplayRowItem): string {
   if (typeof props.rowClassName === 'function') {
-    return props.rowClassName(item.row, item.rowIndex)
+    return props.rowClassName(item.row, item.rowIndex);
   }
-  return props.rowClassName ?? ''
+  return props.rowClassName ?? '';
 }
 
 function rowPropsFor(item: DisplayRowItem): HTMLAttributes {
-  return props.rowProps?.(item.row, item.rowIndex) ?? {}
+  return props.rowProps?.(item.row, item.rowIndex) ?? {};
 }
 
 /* ------------------------------------------------------------------ */
@@ -906,41 +870,39 @@ function rowPropsFor(item: DisplayRowItem): HTMLAttributes {
 /* ------------------------------------------------------------------ */
 
 function cellWidthStyle(column: DataTableColumn): Record<string, string> {
-  const style: Record<string, string> = {}
-  const defaultWidth
-    = isSelectionColumn(column) || isExpandColumn(column)
-      ? SELECTION_COL_WIDTH
-      : undefined
-  const width = column.width ?? defaultWidth
+  const style: Record<string, string> = {};
+  const defaultWidth =
+    isSelectionColumn(column) || isExpandColumn(column) ? SELECTION_COL_WIDTH : undefined;
+  const width = column.width ?? defaultWidth;
   if (width !== undefined) {
-    style.width = cssLen(width)
-    style.minWidth = cssLen(column.minWidth ?? width)
+    style.width = cssLen(width);
+    style.minWidth = cssLen(column.minWidth ?? width);
   } else if (column.minWidth !== undefined) {
-    style.minWidth = cssLen(column.minWidth)
+    style.minWidth = cssLen(column.minWidth);
   }
-  if (column.maxWidth !== undefined) style.maxWidth = cssLen(column.maxWidth)
-  return style
+  if (column.maxWidth !== undefined) style.maxWidth = cssLen(column.maxWidth);
+  return style;
 }
 
 function thStyle(meta: DataTableColumnMeta): Record<string, string> {
-  const style = cellWidthStyle(meta.column)
-  const align = meta.column.titleAlign ?? meta.column.align
-  if (align !== undefined) style.textAlign = align
-  if (meta.isFixedLeft) style.left = `${meta.leftOffset}px`
-  if (meta.isFixedRight) style.right = `${meta.rightOffset}px`
-  return style
+  const style = cellWidthStyle(meta.column);
+  const align = meta.column.titleAlign ?? meta.column.align;
+  if (align !== undefined) style.textAlign = align;
+  if (meta.isFixedLeft) style.left = `${meta.leftOffset}px`;
+  if (meta.isFixedRight) style.right = `${meta.rightOffset}px`;
+  return style;
 }
 
 function tdStyle(meta: DataTableColumnMeta): Record<string, string> {
-  const style = cellWidthStyle(meta.column)
-  if (meta.column.align !== undefined) style.textAlign = meta.column.align
-  if (meta.isFixedLeft) style.left = `${meta.leftOffset}px`
-  if (meta.isFixedRight) style.right = `${meta.rightOffset}px`
-  return style
+  const style = cellWidthStyle(meta.column);
+  if (meta.column.align !== undefined) style.textAlign = meta.column.align;
+  if (meta.isFixedLeft) style.left = `${meta.leftOffset}px`;
+  if (meta.isFixedRight) style.right = `${meta.rightOffset}px`;
+  return style;
 }
 
 function thClasses(meta: DataTableColumnMeta): Array<string | Record<string, boolean>> {
-  const col = meta.column
+  const col = meta.column;
   return [
     {
       'sn-data-table__th--selection': col.type === 'selection',
@@ -953,11 +915,14 @@ function thClasses(meta: DataTableColumnMeta): Array<string | Record<string, boo
       'sn-data-table__th--fixed-right': meta.isFixedRight,
     },
     col.className ?? '',
-  ]
+  ];
 }
 
-function tdClasses(meta: DataTableColumnMeta, item: DisplayRowItem): Array<string | Record<string, boolean>> {
-  const col = meta.column
+function tdClasses(
+  meta: DataTableColumnMeta,
+  item: DisplayRowItem,
+): Array<string | Record<string, boolean>> {
+  const col = meta.column;
   return [
     {
       'sn-data-table__td--selection': col.type === 'selection',
@@ -970,208 +935,192 @@ function tdClasses(meta: DataTableColumnMeta, item: DisplayRowItem): Array<strin
       'sn-data-table__td--last-row': item.isLast,
     },
     col.className ?? '',
-  ]
+  ];
 }
 
-function tdRenderContent(
-  column: DataTableColumn,
-  item: DisplayRowItem,
-): VNodeChild {
-  if (!isBaseColumn(column)) return null
-  if (column.render === undefined) return null
-  return column.render(item.row, item.rowIndex)
+function tdRenderContent(column: DataTableColumn, item: DisplayRowItem): VNodeChild {
+  if (!isBaseColumn(column)) return null;
+  if (column.render === undefined) return null;
+  return column.render(item.row, item.rowIndex);
 }
 
 function tdText(column: DataTableColumn, row: DataTableRowData): string {
-  if (!isBaseColumn(column)) return ''
-  const value = row[column.key]
-  if (value === null || value === undefined) return ''
-  return String(value)
+  if (!isBaseColumn(column)) return '';
+  const value = row[column.key];
+  if (value === null || value === undefined) return '';
+  return String(value);
 }
 
-function ellipsisTitle(
-  column: DataTableColumn,
-  row: DataTableRowData,
-): string | undefined {
-  if (!isBaseColumn(column) || column.ellipsis !== true) return undefined
-  return tdText(column, row)
+function ellipsisTitle(column: DataTableColumn, row: DataTableRowData): string | undefined {
+  if (!isBaseColumn(column) || column.ellipsis !== true) return undefined;
+  return tdText(column, row);
 }
 
 function columnTitle(column: DataTableColumn): VNodeChild {
   if (isBaseColumn(column)) {
-    return typeof column.title === 'function'
-      ? column.title(column)
-      : (column.title ?? null)
+    return typeof column.title === 'function' ? column.title(column) : (column.title ?? null);
   }
   if (isExpandColumn(column)) {
-    return typeof column.title === 'function'
-      ? column.title(column)
-      : (column.title ?? null)
+    return typeof column.title === 'function' ? column.title(column) : (column.title ?? null);
   }
-  if (column.type === 'index') return column.title ?? '#'
-  return null
+  if (column.type === 'index') return column.title ?? '#';
+  return null;
 }
 
 /* ------------------------------------------------------------------ */
 /* Filter menu (inline panel; outside click closes)                     */
 /* ------------------------------------------------------------------ */
 
-const filterMenuKey = ref<string | null>(null)
-const tempFilterValues = ref<Array<string | number>>([])
-const tempFilterSingle = ref<string | number | null>(null)
+const filterMenuKey = ref<string | null>(null);
+const tempFilterValues = ref<Array<string | number>>([]);
+const tempFilterSingle = ref<string | number | null>(null);
 
 const filterMenuColumn = computed<DataTableBaseColumn | null>(() => {
-  if (filterMenuKey.value === null) return null
+  if (filterMenuKey.value === null) return null;
   for (const col of props.columns) {
-    if (isBaseColumn(col) && String(col.key) === filterMenuKey.value) return col
+    if (isBaseColumn(col) && String(col.key) === filterMenuKey.value) return col;
   }
-  return null
-})
+  return null;
+});
 
 const filterMenuMultiple = computed<boolean>(
   () => filterMenuColumn.value?.filterMultiple !== false,
-)
+);
 
 const filterMenuOptions = computed<DataTableFilterOption[]>(
   () => filterMenuColumn.value?.filterOptions ?? [],
-)
+);
 
 function isColumnFilterable(column: DataTableColumn): boolean {
-  if (!isBaseColumn(column)) return false
-  return !!column.filter && (column.filterOptions?.length ?? 0) > 0
+  if (!isBaseColumn(column)) return false;
+  return !!column.filter && (column.filterOptions?.length ?? 0) > 0;
 }
 
 function isFilterOpenOn(meta: DataTableColumnMeta): boolean {
-  return filterMenuKey.value !== null && filterMenuKey.value === meta.key
+  return filterMenuKey.value !== null && filterMenuKey.value === meta.key;
 }
 
 function isFilterActive(column: DataTableColumn): boolean {
-  if (!isBaseColumn(column)) return false
-  const active = mergedFilterState.value[column.key]
-  if (active == null) return false
-  return Array.isArray(active) ? active.length > 0 : true
+  if (!isBaseColumn(column)) return false;
+  const active = mergedFilterState.value[column.key];
+  if (active == null) return false;
+  return Array.isArray(active) ? active.length > 0 : true;
 }
 
 function toggleFilterMenu(column: DataTableColumn): void {
-  if (!isBaseColumn(column)) return
-  const key = String(column.key)
+  if (!isBaseColumn(column)) return;
+  const key = String(column.key);
   if (filterMenuKey.value === key) {
-    filterMenuKey.value = null
-    return
+    filterMenuKey.value = null;
+    return;
   }
-  filterMenuKey.value = key
-  const current = mergedFilterState.value[column.key]
+  filterMenuKey.value = key;
+  const current = mergedFilterState.value[column.key];
   if (column.filterMultiple === false) {
-    tempFilterSingle.value
-      = typeof current === 'string' || typeof current === 'number'
-        ? current
-        : null
+    tempFilterSingle.value =
+      typeof current === 'string' || typeof current === 'number' ? current : null;
   } else {
-    tempFilterValues.value = Array.isArray(current) ? [...current] : []
+    tempFilterValues.value = Array.isArray(current) ? [...current] : [];
   }
 }
 
 function toggleTempFilterValue(value: string | number): void {
   if (tempFilterValues.value.includes(value)) {
-    tempFilterValues.value = tempFilterValues.value.filter(
-      (existing) => existing !== value,
-    )
+    tempFilterValues.value = tempFilterValues.value.filter((existing) => existing !== value);
   } else {
-    tempFilterValues.value = [...tempFilterValues.value, value]
+    tempFilterValues.value = [...tempFilterValues.value, value];
   }
 }
 
 function chooseTempFilterValue(value: string | number): void {
-  tempFilterSingle.value = value
-  commitFilterState(value)
+  tempFilterSingle.value = value;
+  commitFilterState(value);
 }
 
 function confirmFilterMenu(): void {
-  const column = filterMenuColumn.value
-  if (column === null) return
+  const column = filterMenuColumn.value;
+  if (column === null) return;
   if (filterMenuMultiple.value) {
-    commitFilterState([...tempFilterValues.value])
+    commitFilterState([...tempFilterValues.value]);
   } else {
-    commitFilterState(tempFilterSingle.value)
+    commitFilterState(tempFilterSingle.value);
   }
 }
 
 function resetFilterMenu(): void {
-  const column = filterMenuColumn.value
-  if (column === null) return
-  commitFilterState(filterMenuMultiple.value ? [] : null)
+  const column = filterMenuColumn.value;
+  if (column === null) return;
+  commitFilterState(filterMenuMultiple.value ? [] : null);
 }
 
-function commitFilterState(
-  value: Array<string | number> | string | number | null,
-): void {
-  const column = filterMenuColumn.value
-  if (column === null) return
-  const nextState: DataTableFilterState = { ...mergedFilterState.value }
-  nextState[column.key] = value
-  emit('update:filters', nextState, column)
-  uncontrolledFilterState.value = nextState
-  filterMenuKey.value = null
+function commitFilterState(value: Array<string | number> | string | number | null): void {
+  const column = filterMenuColumn.value;
+  if (column === null) return;
+  const nextState: DataTableFilterState = { ...mergedFilterState.value };
+  nextState[column.key] = value;
+  emit('update:filters', nextState, column);
+  uncontrolledFilterState.value = nextState;
+  filterMenuKey.value = null;
 }
 
 function handleDocPointerDown(event: Event): void {
-  if (filterMenuKey.value === null) return
-  const target = event.target
+  if (filterMenuKey.value === null) return;
+  const target = event.target;
   if (
-    target instanceof Element
-    && target.closest('.sn-data-table__filter-menu, .sn-data-table__filter') !== null
+    target instanceof Element &&
+    target.closest('.sn-data-table__filter-menu, .sn-data-table__filter') !== null
   ) {
-    return
+    return;
   }
-  filterMenuKey.value = null
+  filterMenuKey.value = null;
 }
 
 watch(filterMenuKey, (key) => {
   if (key !== null) {
-    document.addEventListener('pointerdown', handleDocPointerDown)
+    document.addEventListener('pointerdown', handleDocPointerDown);
   } else {
-    document.removeEventListener('pointerdown', handleDocPointerDown)
+    document.removeEventListener('pointerdown', handleDocPointerDown);
   }
-})
+});
 
 onBeforeUnmount(() => {
-  document.removeEventListener('pointerdown', handleDocPointerDown)
-})
+  document.removeEventListener('pointerdown', handleDocPointerDown);
+});
 
 /* ------------------------------------------------------------------ */
 /* Fixed-column scroll shadows                                          */
 /* ------------------------------------------------------------------ */
 
-const scrollRef = ref<HTMLElement | null>(null)
-const scrollShadowState = ref<{ left: boolean, right: boolean }>({
+const scrollRef = ref<HTMLElement | null>(null);
+const scrollShadowState = ref<{ left: boolean; right: boolean }>({
   left: false,
   right: false,
-})
+});
 
 function updateScrollShadow(): void {
-  const el = scrollRef.value
+  const el = scrollRef.value;
   if (el === null || !hasFixedColumns.value) {
-    scrollShadowState.value = { left: false, right: false }
-    return
+    scrollShadowState.value = { left: false, right: false };
+    return;
   }
   scrollShadowState.value = {
     left: el.scrollLeft > 0,
     right: el.scrollLeft + el.clientWidth < el.scrollWidth - 1,
-  }
+  };
 }
 
 function handleBodyScroll(): void {
-  updateScrollShadow()
+  updateScrollShadow();
 }
 
-onMounted(updateScrollShadow)
+onMounted(updateScrollShadow);
 
 watch(
   () => [paginatedData.value, props.scrollX],
   () => {
-    void nextTick(updateScrollShadow)
+    void nextTick(updateScrollShadow);
   },
-)
+);
 
 /* ------------------------------------------------------------------ */
 /* Root classes / styles                                                */
@@ -1179,15 +1128,15 @@ watch(
 
 const mergedBordered = computed<boolean>(() =>
   props.bordered !== undefined ? props.bordered : true,
-)
+);
 
 const mergedBottomBordered = computed<boolean>(() => {
-  if (mergedBordered.value) return false
-  if (props.bottomBordered !== undefined) return props.bottomBordered
-  return true
-})
+  if (mergedBordered.value) return false;
+  if (props.bottomBordered !== undefined) return props.bottomBordered;
+  return true;
+});
 
-const isEmptyData = computed<boolean>(() => paginatedData.value.length === 0)
+const isEmptyData = computed<boolean>(() => paginatedData.value.length === 0);
 
 const rootClasses = computed<Array<string | Record<string, boolean>>>(() => [
   `sn-data-table--${props.size}`,
@@ -1202,29 +1151,25 @@ const rootClasses = computed<Array<string | Record<string, boolean>>>(() => [
     'sn-data-table--shadow-left': scrollShadowState.value.left,
     'sn-data-table--shadow-right': scrollShadowState.value.right,
   },
-])
+]);
 
 const scrollStyle = computed<Record<string, string>>(() => {
-  const style: Record<string, string> = {}
+  const style: Record<string, string> = {};
   if (props.maxHeight !== undefined) {
-    style.maxHeight = cssLen(props.maxHeight)
+    style.maxHeight = cssLen(props.maxHeight);
   }
-  return style
-})
+  return style;
+});
 
 const innerStyle = computed<Record<string, string>>(() => {
-  const style: Record<string, string> = {}
-  if (props.scrollX !== undefined) style.minWidth = cssLen(props.scrollX)
-  return style
-})
+  const style: Record<string, string> = {};
+  if (props.scrollX !== undefined) style.minWidth = cssLen(props.scrollX);
+  return style;
+});
 </script>
 
 <template>
-  <div
-    data-snui-component="data-table"
-    class="sn-data-table"
-    :class="rootClasses"
-  >
+  <div data-snui-component="data-table" class="sn-data-table" :class="rootClasses">
     <div
       ref="scrollRef"
       class="sn-data-table__scroll"
@@ -1232,10 +1177,7 @@ const innerStyle = computed<Record<string, string>>(() => {
       @scroll="handleBodyScroll"
     >
       <div class="sn-data-table__inner" :style="innerStyle">
-        <table
-          class="sn-data-table__table"
-          :style="{ tableLayout }"
-        >
+        <table class="sn-data-table__table" :style="{ tableLayout }">
           <thead class="sn-data-table__thead">
             <tr class="sn-data-table__tr">
               <th
@@ -1255,7 +1197,9 @@ const innerStyle = computed<Record<string, string>>(() => {
                     'sn-data-table__checkbox--disabled': paginatedData.length === 0 || loading,
                   }"
                   role="checkbox"
-                  :aria-checked="someRowsChecked && !allRowsChecked ? 'mixed' : allRowsChecked ? 'true' : 'false'"
+                  :aria-checked="
+                    someRowsChecked && !allRowsChecked ? 'mixed' : allRowsChecked ? 'true' : 'false'
+                  "
                   :aria-disabled="paginatedData.length === 0 || loading ? 'true' : undefined"
                   tabindex="0"
                   @click.stop="handleCheckAll"
@@ -1315,7 +1259,8 @@ const innerStyle = computed<Record<string, string>>(() => {
                     type="button"
                     class="sn-data-table__filter"
                     :class="{
-                      'sn-data-table__filter--active': isFilterActive(meta.column) || isFilterOpenOn(meta),
+                      'sn-data-table__filter--active':
+                        isFilterActive(meta.column) || isFilterOpenOn(meta),
                     }"
                     aria-haspopup="true"
                     :aria-expanded="isFilterOpenOn(meta) ? 'true' : 'false'"
@@ -1333,11 +1278,7 @@ const innerStyle = computed<Record<string, string>>(() => {
                       <path d="M22 3H2l8 9.46V19l4 2v-9.54L22 3z" />
                     </svg>
                   </button>
-                  <div
-                    v-if="isFilterOpenOn(meta)"
-                    class="sn-data-table__filter-menu"
-                    @click.stop
-                  >
+                  <div v-if="isFilterOpenOn(meta)" class="sn-data-table__filter-menu" @click.stop>
                     <div class="sn-data-table__filter-menu-options">
                       <template v-if="filterMenuMultiple">
                         <label
@@ -1349,10 +1290,14 @@ const innerStyle = computed<Record<string, string>>(() => {
                           <span
                             class="sn-data-table__checkbox"
                             :class="{
-                              'sn-data-table__checkbox--checked': tempFilterValues.includes(option.value),
+                              'sn-data-table__checkbox--checked': tempFilterValues.includes(
+                                option.value,
+                              ),
                             }"
                             role="checkbox"
-                            :aria-checked="tempFilterValues.includes(option.value) ? 'true' : 'false'"
+                            :aria-checked="
+                              tempFilterValues.includes(option.value) ? 'true' : 'false'
+                            "
                           >
                             <svg
                               v-if="tempFilterValues.includes(option.value)"
@@ -1503,7 +1448,8 @@ const innerStyle = computed<Record<string, string>>(() => {
                   <span
                     v-else-if="meta.column.type === 'index'"
                     class="sn-data-table__index-cell"
-                  >{{ item.rowIndex + 1 }}</span>
+                    >{{ item.rowIndex + 1 }}</span
+                  >
                   <template v-else>
                     <VNodeRenderer
                       v-if="tdRenderContent(meta.column, item) !== null"
@@ -1513,15 +1459,13 @@ const innerStyle = computed<Record<string, string>>(() => {
                       v-else-if="meta.column.ellipsis === true"
                       class="sn-data-table__ellipsis"
                       :title="ellipsisTitle(meta.column, item.row)"
-                    >{{ tdText(meta.column, item.row) }}</span>
+                      >{{ tdText(meta.column, item.row) }}</span
+                    >
                     <template v-else>{{ tdText(meta.column, item.row) }}</template>
                   </template>
                 </td>
               </tr>
-              <tr
-                v-else
-                class="sn-data-table__tr sn-data-table__tr--expand-row"
-              >
+              <tr v-else class="sn-data-table__tr sn-data-table__tr--expand-row">
                 <td
                   class="sn-data-table__td sn-data-table__td--expand-cell"
                   :class="{ 'sn-data-table__td--last-row': item.isLast }"
@@ -1537,10 +1481,7 @@ const innerStyle = computed<Record<string, string>>(() => {
               v-if="isEmptyData && summaryRowsTop.length === 0"
               class="sn-data-table__tr sn-data-table__tr--empty"
             >
-              <td
-                class="sn-data-table__td sn-data-table__td--empty"
-                :colspan="columnMetas.length"
-              >
+              <td class="sn-data-table__td sn-data-table__td--empty" :colspan="columnMetas.length">
                 <slot name="empty">
                   <div class="sn-data-table__empty">
                     <svg
@@ -1554,7 +1495,9 @@ const innerStyle = computed<Record<string, string>>(() => {
                       aria-hidden="true"
                     >
                       <path d="M22 12h-6l-2 3h-4l-2-3H2" />
-                      <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+                      <path
+                        d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"
+                      />
                     </svg>
                     <span class="sn-data-table__empty-text">{{ locale.Empty.description }}</span>
                   </div>
@@ -1581,7 +1524,9 @@ const innerStyle = computed<Record<string, string>>(() => {
       </div>
     </div>
     <div v-if="paginationConfig !== null" class="sn-data-table__pagination">
-      <span class="sn-data-table__pagination-total">{{ locale.Pagination.total.replace('{total}', String(itemCount)) }}</span>
+      <span class="sn-data-table__pagination-total">{{
+        locale.Pagination.total.replace('{total}', String(itemCount))
+      }}</span>
       <button
         type="button"
         class="sn-data-table__pagination-item sn-data-table__pagination-arrow"
@@ -1640,11 +1585,7 @@ const innerStyle = computed<Record<string, string>>(() => {
         :aria-label="locale.Pagination.perPage"
         @change="handlePageSizeSelect"
       >
-        <option
-          v-for="sizeOption in pageSizeOptions"
-          :key="sizeOption"
-          :value="sizeOption"
-        >
+        <option v-for="sizeOption in pageSizeOptions" :key="sizeOption" :value="sizeOption">
           {{ sizeOption }} {{ locale.Pagination.itemsPerPage }}
         </option>
       </select>
@@ -2062,7 +2003,8 @@ const innerStyle = computed<Record<string, string>>(() => {
   background-color: var(--sn-dt-striped-bg);
 }
 
-.sn-data-table__tr:not(.sn-data-table__tr--summary):not(.sn-data-table__tr--empty):hover .sn-data-table__td {
+.sn-data-table__tr:not(.sn-data-table__tr--summary):not(.sn-data-table__tr--empty):hover
+  .sn-data-table__td {
   background-color: var(--sn-dt-hover-bg);
 }
 

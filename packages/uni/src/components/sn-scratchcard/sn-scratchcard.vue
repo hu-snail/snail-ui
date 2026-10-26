@@ -21,36 +21,36 @@
  * Not responsible for: 奖品与核销逻辑 —— 宿主在 `open` 后处理。
  */
 
-import { computed, getCurrentInstance, onMounted, ref } from 'vue'
+import { computed, getCurrentInstance, onMounted, ref } from 'vue';
 
-defineOptions({ name: 'SnScratchcard' })
+defineOptions({ name: 'SnScratchcard' });
 
 const props = withDefaults(
   defineProps<{
     /** 封面颜色（coverImg 优先）。 */
-    coverColor?: string
+    coverColor?: string;
     /** 封面图片。 */
-    coverImg?: string
+    coverImg?: string;
     /** 刮开比例阈值（0-1）。 */
-    ratio?: number
+    ratio?: number;
     /** 刮擦半径（px）。 */
-    scratchRadius?: number
+    scratchRadius?: number;
     /** 封面水印文字。 */
-    watermarkText?: string
+    watermarkText?: string;
     /** 水印字号（px）。 */
-    watermarkSize?: number
+    watermarkSize?: number;
     /** 水印颜色。 */
-    watermarkColor?: string
+    watermarkColor?: string;
     /** 封面标题文字。 */
-    title?: string
+    title?: string;
     /** 标题字号（px）。 */
-    titleSize?: number
+    titleSize?: number;
     /** 标题颜色。 */
-    titleColor?: string
+    titleColor?: string;
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义样式（至少提供 width / height）。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     coverColor: '#C5C5C5',
@@ -66,273 +66,291 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'open'): void
-}>()
+  (e: 'open'): void;
+}>();
 
 defineSlots<{
   /** 刮层下方的奖品内容。 */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 interface UniHost {
   /** 旧版 canvas 上下文（仅老 uni 宿主存在）。 */
-  createCanvasContext?: (id: string, component?: unknown) => unknown
+  createCanvasContext?: (id: string, component?: unknown) => unknown;
 }
 
 function getUni(): UniHost | null {
-  const host = globalThis as { uni?: UniHost }
-  return host.uni ?? null
+  const host = globalThis as { uni?: UniHost };
+  return host.uni ?? null;
 }
 
-const instance = getCurrentInstance()
-const canvasId = computed(() => `sn-scratchcard-${instance?.uid ?? 0}`)
+const instance = getCurrentInstance();
+const canvasId = computed(() => `sn-scratchcard-${instance?.uid ?? 0}`);
 
-const canvasEl = ref<unknown>(null)
+const canvasEl = ref<unknown>(null);
 /** false = 宿主无元素 canvas，走点按揭示降级。 */
-const realScratch = ref(true)
-const revealed = ref(false)
-const opened = ref(false)
+const realScratch = ref(true);
+const revealed = ref(false);
+const opened = ref(false);
 
 interface Ctx2D {
-  clearRect: (x: number, y: number, w: number, h: number) => void
-  fillRect?: (x: number, y: number, w: number, h: number) => void
-  fillText?: (text: string, x: number, y: number) => void
-  beginPath?: () => void
-  arc?: (x: number, y: number, r: number, start: number, end: number) => void
-  fill?: () => void
-  moveTo?: (x: number, y: number) => void
-  lineTo?: (x: number, y: number) => void
-  stroke?: () => void
-  save?: () => void
-  restore?: () => void
-  scale?: (x: number, y: number) => void
-  getImageData?: (x: number, y: number, w: number, h: number) => { data: ArrayLike<number> } | undefined
-  createImage?: () => { src: string; onload?: (() => void) | null; onerror?: (() => void) | null }
-  drawImage?: (image: unknown, x: number, y: number, w: number, h: number) => void
-  font?: string
-  textAlign?: string
-  textBaseline?: string
-  fillStyle?: unknown
-  strokeStyle?: unknown
-  lineWidth?: number
-  lineCap?: string
-  lineJoin?: string
-  globalCompositeOperation?: string
+  clearRect: (x: number, y: number, w: number, h: number) => void;
+  fillRect?: (x: number, y: number, w: number, h: number) => void;
+  fillText?: (text: string, x: number, y: number) => void;
+  beginPath?: () => void;
+  arc?: (x: number, y: number, r: number, start: number, end: number) => void;
+  fill?: () => void;
+  moveTo?: (x: number, y: number) => void;
+  lineTo?: (x: number, y: number) => void;
+  stroke?: () => void;
+  save?: () => void;
+  restore?: () => void;
+  scale?: (x: number, y: number) => void;
+  getImageData?: (
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ) => { data: ArrayLike<number> } | undefined;
+  createImage?: () => { src: string; onload?: (() => void) | null; onerror?: (() => void) | null };
+  drawImage?: (image: unknown, x: number, y: number, w: number, h: number) => void;
+  font?: string;
+  textAlign?: string;
+  textBaseline?: string;
+  fillStyle?: unknown;
+  strokeStyle?: unknown;
+  lineWidth?: number;
+  lineCap?: string;
+  lineJoin?: string;
+  globalCompositeOperation?: string;
 }
 
 interface CanvasBox {
-  width?: number
-  height?: number
-  offsetWidth?: number
-  offsetHeight?: number
-  getContext?: (type: string) => unknown
+  width?: number;
+  height?: number;
+  offsetWidth?: number;
+  offsetHeight?: number;
+  getContext?: (type: string) => unknown;
 }
 
-let ctx: Ctx2D | null = null
-let box: CanvasBox | null = null
-let dpr = 1
-let prevPoint: { x: number; y: number } | null = null
-let scratchedLength = 0
+let ctx: Ctx2D | null = null;
+let box: CanvasBox | null = null;
+let dpr = 1;
+let prevPoint: { x: number; y: number } | null = null;
+let scratchedLength = 0;
 
-const rootClass = computed(() => ['sn-scratchcard', props.customClass])
+const rootClass = computed(() => ['sn-scratchcard', props.customClass]);
 
 /** uni-app x：canvas 位图默认 0×0，按官方样式用元素盒 × dpr 手动设尺寸。 */
 function applyBitmapSize(): void {
-  const el = box as CanvasBox | null
-  if (el === null || ctx === null) return
-  const width = el.offsetWidth ?? 0
-  const height = el.offsetHeight ?? 0
-  if (width <= 0 || height <= 0) return
-  const deviceInfo = (getUni() as { getDeviceInfo?: () => { devicePixelRatio?: number } } | null)?.getDeviceInfo?.()
-  dpr = deviceInfo?.devicePixelRatio ?? 1
-  el.width = Math.round(width * dpr)
-  el.height = Math.round(height * dpr)
-  ctx.scale?.(dpr, dpr)
+  const el = box as CanvasBox | null;
+  if (el === null || ctx === null) return;
+  const width = el.offsetWidth ?? 0;
+  const height = el.offsetHeight ?? 0;
+  if (width <= 0 || height <= 0) return;
+  const deviceInfo = (
+    getUni() as { getDeviceInfo?: () => { devicePixelRatio?: number } } | null
+  )?.getDeviceInfo?.();
+  dpr = deviceInfo?.devicePixelRatio ?? 1;
+  el.width = Math.round(width * dpr);
+  el.height = Math.round(height * dpr);
+  ctx.scale?.(dpr, dpr);
 }
 
 function paintCover(): void {
-  if (ctx === null || box === null) return
-  const width = box.offsetWidth ?? 0
-  const height = box.offsetHeight ?? 0
-  ctx.fillStyle = props.coverColor
-  ctx.fillRect?.(0, 0, width, height)
+  if (ctx === null || box === null) return;
+  const width = box.offsetWidth ?? 0;
+  const height = box.offsetHeight ?? 0;
+  ctx.fillStyle = props.coverColor;
+  ctx.fillRect?.(0, 0, width, height);
   if (props.watermarkText !== '') {
-    ctx.save?.()
-    ctx.fillStyle = props.watermarkColor
-    ctx.font = `${props.watermarkSize}px sans-serif`
+    ctx.save?.();
+    ctx.fillStyle = props.watermarkColor;
+    ctx.font = `${props.watermarkSize}px sans-serif`;
     for (let y = 24; y < height + 40; y += 56) {
       for (let x = (y / 56) % 2 === 0 ? 8 : 48; x < width; x += 96) {
-        ctx.fillText?.(props.watermarkText, x, y)
+        ctx.fillText?.(props.watermarkText, x, y);
       }
     }
-    ctx.restore?.()
+    ctx.restore?.();
   }
   if (props.title !== '') {
-    ctx.save?.()
-    ctx.fillStyle = props.titleColor
-    ctx.font = `bold ${props.titleSize}px sans-serif`
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillText?.(props.title, width / 2, height / 2)
-    ctx.restore?.()
+    ctx.save?.();
+    ctx.fillStyle = props.titleColor;
+    ctx.font = `bold ${props.titleSize}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText?.(props.title, width / 2, height / 2);
+    ctx.restore?.();
   }
 }
 
 function paintCoverImage(): void {
-  if (ctx === null || box === null) return
-  const width = box.offsetWidth ?? 0
-  const height = box.offsetHeight ?? 0
-  const createImage = ctx.createImage?.()
+  if (ctx === null || box === null) return;
+  const width = box.offsetWidth ?? 0;
+  const height = box.offsetHeight ?? 0;
+  const createImage = ctx.createImage?.();
   if (createImage === undefined) {
-    paintCover()
-    return
+    paintCover();
+    return;
   }
-  createImage.src = props.coverImg
+  createImage.src = props.coverImg;
   createImage.onload = () => {
-    ctx?.drawImage?.(createImage, 0, 0, width, height)
-  }
+    ctx?.drawImage?.(createImage, 0, 0, width, height);
+  };
   createImage.onerror = () => {
-    paintCover()
-  }
+    paintCover();
+  };
 }
 
 function initCanvas(): void {
-  const el = canvasEl.value
+  const el = canvasEl.value;
   if (el === null || typeof el !== 'object') {
-    realScratch.value = false
-    return
+    realScratch.value = false;
+    return;
   }
-  const candidate = el as CanvasBox
-  const context = typeof candidate.getContext === 'function' ? (candidate.getContext('2d') as Ctx2D | null) : null
+  const candidate = el as CanvasBox;
+  const context =
+    typeof candidate.getContext === 'function'
+      ? (candidate.getContext('2d') as Ctx2D | null)
+      : null;
   if (context === null || typeof context !== 'object') {
-    realScratch.value = false
-    return
+    realScratch.value = false;
+    return;
   }
-  box = candidate
-  ctx = context
-  realScratch.value = true
-  applyBitmapSize()
+  box = candidate;
+  ctx = context;
+  realScratch.value = true;
+  applyBitmapSize();
   if ((box.offsetWidth ?? 0) <= 0) {
     // 布局未就绪：位图无法定尺寸，退化点按揭示（可预期行为）。
-    realScratch.value = false
-    return
+    realScratch.value = false;
+    return;
   }
-  if (props.coverImg !== '') paintCoverImage()
-  else paintCover()
+  if (props.coverImg !== '') paintCoverImage();
+  else paintCover();
 }
 
 onMounted(() => {
-  initCanvas()
-})
+  initCanvas();
+});
 
 /** 重置：重绘封面，可再次刮。 */
 function reset(): void {
-  opened.value = false
-  revealed.value = false
-  scratchedLength = 0
-  prevPoint = null
+  opened.value = false;
+  revealed.value = false;
+  scratchedLength = 0;
+  prevPoint = null;
   if (realScratch.value && ctx !== null) {
-    if (props.coverImg !== '') paintCoverImage()
-    else paintCover()
+    if (props.coverImg !== '') paintCoverImage();
+    else paintCover();
   }
 }
 
 function touchPoint(event: unknown): { x: number; y: number } | null {
-  const touches = (event as { touches?: { clientX?: number; clientY?: number }[] })?.touches
-  const touch = touches?.[0]
-  if (touch?.clientX === undefined || touch.clientY === undefined || box === null) return null
+  const touches = (event as { touches?: { clientX?: number; clientY?: number }[] })?.touches;
+  const touch = touches?.[0];
+  if (touch?.clientX === undefined || touch.clientY === undefined || box === null) return null;
   // 触摸坐标以画布为原点：减去 canvas 元素的视口偏移。
-  const rect = (canvasEl.value as { getBoundingClientRect?: () => { left: number; top: number } } | null)
-    ?.getBoundingClientRect?.()
-  return { x: touch.clientX - (rect?.left ?? 0), y: touch.clientY - (rect?.top ?? 0) }
+  const rect = (
+    canvasEl.value as { getBoundingClientRect?: () => { left: number; top: number } } | null
+  )?.getBoundingClientRect?.();
+  return { x: touch.clientX - (rect?.left ?? 0), y: touch.clientY - (rect?.top ?? 0) };
 }
 
 function scratchTo(point: { x: number; y: number }): void {
-  if (ctx === null) return
-  ctx.globalCompositeOperation = 'destination-out'
-  ctx.lineWidth = props.scratchRadius * 2
-  ctx.lineCap = 'round'
-  ctx.lineJoin = 'round'
-  if (prevPoint !== null && ctx.moveTo !== undefined && ctx.lineTo !== undefined && ctx.stroke !== undefined) {
-    ctx.beginPath?.()
-    ctx.moveTo(prevPoint.x, prevPoint.y)
-    ctx.lineTo(point.x, point.y)
-    ctx.stroke()
+  if (ctx === null) return;
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.lineWidth = props.scratchRadius * 2;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  if (
+    prevPoint !== null &&
+    ctx.moveTo !== undefined &&
+    ctx.lineTo !== undefined &&
+    ctx.stroke !== undefined
+  ) {
+    ctx.beginPath?.();
+    ctx.moveTo(prevPoint.x, prevPoint.y);
+    ctx.lineTo(point.x, point.y);
+    ctx.stroke();
   }
   if (ctx.beginPath !== undefined && ctx.arc !== undefined && ctx.fill !== undefined) {
-    ctx.beginPath()
-    ctx.arc(point.x, point.y, props.scratchRadius, 0, Math.PI * 2)
-    ctx.fill()
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, props.scratchRadius, 0, Math.PI * 2);
+    ctx.fill();
   }
   const step =
-    prevPoint !== null ? Math.hypot(point.x - prevPoint.x, point.y - prevPoint.y) : props.scratchRadius
-  scratchedLength += step
-  prevPoint = point
+    prevPoint !== null
+      ? Math.hypot(point.x - prevPoint.x, point.y - prevPoint.y)
+      : props.scratchRadius;
+  scratchedLength += step;
+  prevPoint = point;
 }
 
 /** 透明比例采样：网格步进读 alpha；不可用时退化为笔画长度启发式。 */
 function scratchedRatio(): number {
-  if (ctx === null || box === null) return 0
-  const width = box.offsetWidth ?? 0
-  const height = box.offsetHeight ?? 0
-  if (width <= 0 || height <= 0) return 0
-  const imageData = ctx.getImageData?.(0, 0, Math.round(width * dpr), Math.round(height * dpr))
+  if (ctx === null || box === null) return 0;
+  const width = box.offsetWidth ?? 0;
+  const height = box.offsetHeight ?? 0;
+  if (width <= 0 || height <= 0) return 0;
+  const imageData = ctx.getImageData?.(0, 0, Math.round(width * dpr), Math.round(height * dpr));
   if (imageData === undefined || imageData === null) {
-    const area = width * height
-    const strokeArea = scratchedLength * props.scratchRadius * 2
-    return Math.min(1, strokeArea / area)
+    const area = width * height;
+    const strokeArea = scratchedLength * props.scratchRadius * 2;
+    return Math.min(1, strokeArea / area);
   }
-  const data = imageData.data
-  let clear = 0
-  let total = 0
-  const stride = 16 * 4
+  const data = imageData.data;
+  let clear = 0;
+  let total = 0;
+  const stride = 16 * 4;
   for (let i = 3; i < data.length; i += stride) {
-    total += 1
-    if ((data as ArrayLike<number>)[i]! < 32) clear += 1
+    total += 1;
+    if ((data as ArrayLike<number>)[i]! < 32) clear += 1;
   }
-  return total === 0 ? 0 : clear / total
+  return total === 0 ? 0 : clear / total;
 }
 
 function finishIfReached(): void {
-  if (opened.value) return
+  if (opened.value) return;
   if (scratchedRatio() >= Math.min(1, Math.max(0, props.ratio))) {
-    opened.value = true
-    ctx?.clearRect?.(0, 0, (box?.offsetWidth ?? 0) + 1, (box?.offsetHeight ?? 0) + 1)
-    emit('open')
+    opened.value = true;
+    ctx?.clearRect?.(0, 0, (box?.offsetWidth ?? 0) + 1, (box?.offsetHeight ?? 0) + 1);
+    emit('open');
   }
 }
 
 function onTouchStart(event: unknown): void {
-  if (opened.value) return
-  prevPoint = touchPoint(event)
+  if (opened.value) return;
+  prevPoint = touchPoint(event);
 }
 
 function onTouchMove(event: unknown): void {
-  if (opened.value || !realScratch.value) return
-  const point = touchPoint(event)
-  if (point === null) return
-  scratchTo(point)
+  if (opened.value || !realScratch.value) return;
+  const point = touchPoint(event);
+  if (point === null) return;
+  scratchTo(point);
 }
 
 function onTouchEnd(): void {
-  if (opened.value) return
-  prevPoint = null
-  if (realScratch.value) finishIfReached()
+  if (opened.value) return;
+  prevPoint = null;
+  if (realScratch.value) finishIfReached();
 }
 
 /** 降级模式：点按整层揭示。 */
 function onCoverTap(): void {
   if (!realScratch.value && !opened.value) {
-    opened.value = true
-    revealed.value = true
-    emit('open')
+    opened.value = true;
+    revealed.value = true;
+    emit('open');
   }
 }
 
-defineExpose({ reset })
+defineExpose({ reset });
 </script>
 
 <template>
@@ -359,7 +377,10 @@ defineExpose({ reset })
       :hover-class="opened ? 'none' : 'sn-scratchcard__cover--down'"
       @tap="onCoverTap"
     >
-      <text class="sn-scratchcard__cover-title" :style="`color: ${props.titleColor}; font-size: ${props.titleSize}px`">
+      <text
+        class="sn-scratchcard__cover-title"
+        :style="`color: ${props.titleColor}; font-size: ${props.titleSize}px`"
+      >
         {{ title !== '' ? title : '刮一刮' }}
       </text>
     </view>

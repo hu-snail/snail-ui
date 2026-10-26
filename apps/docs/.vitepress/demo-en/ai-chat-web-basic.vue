@@ -5,40 +5,42 @@
  * 用一个本地模拟运行器驱动真实的流式折叠：先输出思考过程，再逐字输出答案，
  * 这样文档里的演示与真实接入时的渲染路径完全一致。
  */
-import { ref } from 'vue'
-import { SnAiChat } from '@snui/templates-src/web/index'
-import type { SnAiRunTurn } from '@snui/templates-src/web/SnAiChat.vue'
-import type { SnAiMessage } from '@snui/templates-src/shared/types'
+import { ref } from 'vue';
+import { SnAiChat } from '@snui/templates-src/web/index';
+import type { SnAiRunTurn } from '@snui/templates-src/web/SnAiChat.vue';
+import type { SnAiMessage } from '@snui/templates-src/shared/types';
 
-const messages = ref<SnAiMessage[]>([])
+const messages = ref<SnAiMessage[]>([]);
 
 const agents = [
   { id: 'code', name: 'Code assistant', description: 'Great at reading and editing code' },
   { id: 'doc', name: 'Docs assistant', description: 'Organize and polish documents' },
-]
+];
 
 const models = [
   { id: 'deep', name: 'Deep', supportsThinking: true, contextWindow: 128000 },
   { id: 'fast', name: 'Fast', supportsThinking: false, contextWindow: 32000 },
-]
+];
 
 /** 模拟运行器：真实地走一遍思考 → 思考结束 → 逐字答案的流。 */
 const run: SnAiRunTurn = async (_turn, context) => {
-  const reasoning = 'First confirm what the user wants to know about template integration, then compose the answer.'
+  const reasoning =
+    'First confirm what the user wants to know about template integration, then compose the answer.';
   for (const chunk of reasoning.match(/.{1,4}/g) ?? []) {
-    await new Promise((resolve) => setTimeout(resolve, 40))
-    if (context.signal.aborted) return
-    context.emit({ type: 'thinking', text: chunk })
+    await new Promise((resolve) => setTimeout(resolve, 40));
+    if (context.signal.aborted) return;
+    context.emit({ type: 'thinking', text: chunk });
   }
-  context.emit({ type: 'thinking-end', durationMs: 1200 })
+  context.emit({ type: 'thinking-end', durationMs: 1200 });
 
-  const answer = 'The AI chat template already wires up the message list, input box, and queue scheduling — integration only needs a run function.'
+  const answer =
+    'The AI chat template already wires up the message list, input box, and queue scheduling — integration only needs a run function.';
   for (const chunk of answer.match(/.{1,3}/g) ?? []) {
-    await new Promise((resolve) => setTimeout(resolve, 45))
-    if (context.signal.aborted) return
-    context.emit({ type: 'text', text: chunk })
+    await new Promise((resolve) => setTimeout(resolve, 45));
+    if (context.signal.aborted) return;
+    context.emit({ type: 'text', text: chunk });
   }
-}
+};
 </script>
 
 <template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnFlex — basic + gap. */
-import { SnFlex, SnTag } from '@snui/vue-web'
+import { SnFlex, SnTag } from '@snui/vue-web';
 </script>
 
 <template>
@@ -15,5 +15,10 @@ import { SnFlex, SnTag } from '@snui/vue-web'
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
 </style>

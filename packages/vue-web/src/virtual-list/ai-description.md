@@ -20,33 +20,33 @@ Task ID: AUI-WEB-DD-029.
 ## Import
 
 ```ts
-import SnVirtualList from '@snui/vue-web/src/virtual-list/SnVirtualList.vue'
+import SnVirtualList from '@snui/vue-web/src/virtual-list/SnVirtualList.vue';
 // or, once registered by the package entry:
-import { SnVirtualList } from '@snui/vue-web'
+import { SnVirtualList } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `items` | `Array<Record<string, unknown> \| string \| number>` | `[]` | no | Full data list; only the visible window renders. |
-| `itemSize` | `number` | `30` | no | Fixed row height in px; also the fallback estimate for unmeasured rows. |
-| `itemResizable` | `boolean` | `false` | no | Measure rendered rows via ResizeObserver and reflow from measured heights. |
-| `keyField` | `string` | `'value'` | no | Object field used as the render key (primitives / missing field fall back). |
-| `overscan` | `number` | `3` | no | Extra rows rendered above / below the visible window. |
-| `visibleHeight` | `number \| undefined` | `undefined` | no | Pin the viewport height in px; when omitted the container height is measured. |
+| Name            | Type                                                 | Default     | Required | Description                                                                   |
+| --------------- | ---------------------------------------------------- | ----------- | -------- | ----------------------------------------------------------------------------- |
+| `items`         | `Array<Record<string, unknown> \| string \| number>` | `[]`        | no       | Full data list; only the visible window renders.                              |
+| `itemSize`      | `number`                                             | `30`        | no       | Fixed row height in px; also the fallback estimate for unmeasured rows.       |
+| `itemResizable` | `boolean`                                            | `false`     | no       | Measure rendered rows via ResizeObserver and reflow from measured heights.    |
+| `keyField`      | `string`                                             | `'value'`   | no       | Object field used as the render key (primitives / missing field fall back).   |
+| `overscan`      | `number`                                             | `3`         | no       | Extra rows rendered above / below the visible window.                         |
+| `visibleHeight` | `number \| undefined`                                | `undefined` | no       | Pin the viewport height in px; when omitted the container height is measured. |
 
 ## Events
 
-| Name | Payload | Description |
-|---|---|---|
-| `scroll` | `(event: Event)` | Native scroll event of the container. |
+| Name               | Payload               | Description                                     |
+| ------------------ | --------------------- | ----------------------------------------------- |
+| `scroll`           | `(event: Event)`      | Native scroll event of the container.           |
 | `update:scrollTop` | `(scrollTop: number)` | Scroll offset committed after the rAF throttle. |
 
 ## Slots
 
-| Name | Params | Description |
-|---|---|---|
+| Name   | Params            | Description                                               |
+| ------ | ----------------- | --------------------------------------------------------- |
 | `item` | `{ item, index }` | Row content. Default fallback renders primitives as text. |
 
 ## Divergences from the reference API
@@ -74,8 +74,8 @@ import { SnVirtualList } from '@snui/vue-web'
 
 ## Tokens Consumed (end: web)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
+| Token        | CSS Variable                  | Purpose  |
+| ------------ | ----------------------------- | -------- |
 | Text primary | `--sn-web-color-text-primary` | Row text |
 
 ## Versioning

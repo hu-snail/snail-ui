@@ -25,27 +25,27 @@ deliberately NOT used.
 ## Import
 
 ```ts
-import { SnMarquee } from '@snui/vue-web'
+import { SnMarquee } from '@snui/vue-web';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `direction` | `'left' \| 'right' \| 'up' \| 'down'` | `'left'` | Direction the content travels. |
-| `duration` | `number` | `12` | Seconds for one full pass of the track. Non-finite / non-positive values fall back to `12`. |
-| `repeat` | `number` | `2` | How many copies of the slot content are rendered. Coerced to an integer ≥ 2 (`Math.max(2, Math.floor(...))`). |
-| `gap` | `number \| string` | `24` | Distance kept between two copies (number → px). Applied as trailing padding on every copy. |
-| `pauseOnHover` | `boolean` | `true` | Pause the animation while the pointer hovers the marquee. |
-| `playing` | `boolean` | `true` | Whether the ticker runs. `false` freezes it in place. |
-| `vertical` | `boolean` | `false` | Shorthand for a vertical ticker: behaves as `direction="up"` unless `direction` already is `'up'` / `'down'`. |
-| `height` | `number \| string` | `undefined` | Box height (number → px). Recommended for a vertical ticker so the viewport has a fixed height to clip against. |
+| Name           | Type                                  | Default     | Description                                                                                                     |
+| -------------- | ------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------- |
+| `direction`    | `'left' \| 'right' \| 'up' \| 'down'` | `'left'`    | Direction the content travels.                                                                                  |
+| `duration`     | `number`                              | `12`        | Seconds for one full pass of the track. Non-finite / non-positive values fall back to `12`.                     |
+| `repeat`       | `number`                              | `2`         | How many copies of the slot content are rendered. Coerced to an integer ≥ 2 (`Math.max(2, Math.floor(...))`).   |
+| `gap`          | `number \| string`                    | `24`        | Distance kept between two copies (number → px). Applied as trailing padding on every copy.                      |
+| `pauseOnHover` | `boolean`                             | `true`      | Pause the animation while the pointer hovers the marquee.                                                       |
+| `playing`      | `boolean`                             | `true`      | Whether the ticker runs. `false` freezes it in place.                                                           |
+| `vertical`     | `boolean`                             | `false`     | Shorthand for a vertical ticker: behaves as `direction="up"` unless `direction` already is `'up'` / `'down'`.   |
+| `height`       | `number \| string`                    | `undefined` | Box height (number → px). Recommended for a vertical ticker so the viewport has a fixed height to clip against. |
 
 ## Slots
 
-| Name | Params | Description |
-|---|---|---|
-| `default` | `()` | ONE copy of the ticker content. The component duplicates it; the caller must not repeat the content. |
+| Name      | Params | Description                                                                                          |
+| --------- | ------ | ---------------------------------------------------------------------------------------------------- |
+| `default` | `()`   | ONE copy of the ticker content. The component duplicates it; the caller must not repeat the content. |
 
 ## Events
 
@@ -105,12 +105,12 @@ None — the ticker is pure CSS and never emits.
 
 ## Tokens Consumed (end: web)
 
-| Token | Use |
-|---|---|
-| `--sn-web-color-background-surface` | Box background. |
-| `--sn-web-color-text-primary` | Ticker text colour. |
-| `--sn-web-font-size-md` | Base font size. |
-| `--sn-web-font-line-height-normal` | Base line height. |
+| Token                               | Use                 |
+| ----------------------------------- | ------------------- |
+| `--sn-web-color-background-surface` | Box background.     |
+| `--sn-web-color-text-primary`       | Ticker text colour. |
+| `--sn-web-font-size-md`             | Base font size.     |
+| `--sn-web-font-line-height-normal`  | Base line height.   |
 
 Every declaration ships a literal fallback (`var(--sn-web-…, <literal>)`) so the
 component renders standalone; the animation inputs

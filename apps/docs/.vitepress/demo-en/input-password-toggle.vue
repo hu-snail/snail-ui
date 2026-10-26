@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnInput — showPassword toggles type=password between 'password' and 'text'. */
-import { ref } from 'vue'
-import { SnInput } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnInput } from '@snui/vue-web';
 
-const secret = ref('initial-secret-123')
+const secret = ref('initial-secret-123');
 </script>
 
 <template>
@@ -14,6 +14,14 @@ const secret = ref('initial-secret-123')
 </template>
 
 <style scoped>
-.sn-demo { display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
-.sn-demo__hint { font-size: 12px; color: var(--vp-c-text-2); }
+.sn-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
+.sn-demo__hint {
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+}
 </style>

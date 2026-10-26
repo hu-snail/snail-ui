@@ -8,14 +8,14 @@ iOS 风格是 snail-aui 默认提供的风格包之一，完全在 **Token 层**
 
 ## 视觉特征
 
-| 维度 | default | iOS |
-|---|---|---|
-| 圆角（control）| 6px | 12px |
-| 圆角（card）| 8px | 16px |
-| 阴影 | 微妙（subtle）| 无 |
-| 边框 | 1px 细线 | 0.5px 细线 |
-| 主色 | `#1677ff`（蓝色）| `#007AFF`（苹果蓝）|
-| 按钮 hover | `#4096ff` | `#3395FF` |
+| 维度            | default           | iOS                 |
+| --------------- | ----------------- | ------------------- |
+| 圆角（control） | 6px               | 12px                |
+| 圆角（card）    | 8px               | 16px                |
+| 阴影            | 微妙（subtle）    | 无                  |
+| 边框            | 1px 细线          | 0.5px 细线          |
+| 主色            | `#1677ff`（蓝色） | `#007AFF`（苹果蓝） |
+| 按钮 hover      | `#4096ff`         | `#3395FF`           |
 
 ---
 
@@ -25,18 +25,18 @@ iOS 风格是 snail-aui 默认提供的风格包之一，完全在 **Token 层**
 
 ```ts
 // @snui/vue-web 项目
-import { snCssVars } from '@snui/tokens'
-import '@snui/tokens-web/styles'
-import { iosPack } from '@snui/style-packs/ios'
+import { snCssVars } from '@snui/tokens';
+import '@snui/tokens-web/styles';
+import { iosPack } from '@snui/style-packs/ios';
 
-const el = document.createElement('style')
+const el = document.createElement('style');
 el.textContent = snCssVars({
   end: 'web',
   theme: iosPack.theme,
   style: iosPack.style,
   density: iosPack.density,
-})
-document.head.appendChild(el)
+});
+document.head.appendChild(el);
 ```
 
 或用 ConfigProvider：

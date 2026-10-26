@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnTimeline — size 大号标题 + icon-size 放大节点。 */
-import { SnTimeline, SnTimelineItem } from '@snui/vue-web'
+import { SnTimeline, SnTimelineItem } from '@snui/vue-web';
 </script>
 
 <template>

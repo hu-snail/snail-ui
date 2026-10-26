@@ -39,49 +39,49 @@ With `direction="vertical"` and a `text` array, one line shows at a time and eac
 
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| text | string \| string[] | '' | Notice text (a string, or lines) |
-| type | 'warning' \| 'info' \| 'danger' | 'warning' | Semantic type (tint + fallback glyph) |
-| prefix | string | '' | Leading icon name (sn-icon registry) |
-| scrollable | boolean | true | Enable the marquee |
-| delay | number | 1 | Delay before the marquee starts, in seconds |
-| speed | number | 50 | Marquee speed in px per second |
-| closable | boolean | false | Show the close button |
-| wrapable | boolean | false | Wrap long text (only when `scrollable=false`) |
-| color | string | '' | Text and icon color override |
-| backgroundColor | string | '' | Background color override |
-| direction | 'horizontal' \| 'vertical' | 'horizontal' | Scroll axis |
-| customClass | string | '' | Custom class for the root node |
-| customStyle | string | '' | Custom inline style for the root node |
+| Prop            | Type                            | Default      | Description                                   |
+| --------------- | ------------------------------- | ------------ | --------------------------------------------- |
+| text            | string \| string[]              | ''           | Notice text (a string, or lines)              |
+| type            | 'warning' \| 'info' \| 'danger' | 'warning'    | Semantic type (tint + fallback glyph)         |
+| prefix          | string                          | ''           | Leading icon name (sn-icon registry)          |
+| scrollable      | boolean                         | true         | Enable the marquee                            |
+| delay           | number                          | 1            | Delay before the marquee starts, in seconds   |
+| speed           | number                          | 50           | Marquee speed in px per second                |
+| closable        | boolean                         | false        | Show the close button                         |
+| wrapable        | boolean                         | false        | Wrap long text (only when `scrollable=false`) |
+| color           | string                          | ''           | Text and icon color override                  |
+| backgroundColor | string                          | ''           | Background color override                     |
+| direction       | 'horizontal' \| 'vertical'      | 'horizontal' | Scroll axis                                   |
+| customClass     | string                          | ''           | Custom class for the root node                |
+| customStyle     | string                          | ''           | Custom inline style for the root node         |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| close | Close button tapped (the strip hides itself) | — |
-| next | Vertical mode advanced to the next line | index: number |
-| click | Content area tapped | `{ text, index }` |
+| Event | Description                                  | Payload           |
+| ----- | -------------------------------------------- | ----------------- |
+| close | Close button tapped (the strip hides itself) | —                 |
+| next  | Vertical mode advanced to the next line      | index: number     |
+| click | Content area tapped                          | `{ text, index }` |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
-| prefix | Custom leading content; ignored when the `prefix` prop is set |
-| suffix | Custom trailing content; overrides the default close icon |
-| default | Custom notice text (horizontal direction only) |
+| Slot    | Description                                                   |
+| ------- | ------------------------------------------------------------- |
+| prefix  | Custom leading content; ignored when the `prefix` prop is set |
+| suffix  | Custom trailing content; overrides the default close icon     |
+| default | Custom notice text (horizontal direction only)                |
 
 ## Theme variables
 
-| Variable | Purpose |
-| --- | --- |
-| --sn-mp-color-feedback-warning` / `-warning-soft | `type="warning"` tint |
-| --sn-mp-color-feedback-info | `type="info"` foreground |
-| --sn-mp-color-background-subtle | `type="info"` tint |
-| --sn-mp-color-feedback-danger` / `-danger-soft | `type="danger"` tint |
-| --sn-mp-font-size-md | Text size |
-| --sn-mp-font-line-height-normal | Text line height |
-| --sn-mp-spacing-3` / `--sn-mp-spacing-4 | Padding and icon gap |
+| Variable                                       | Purpose                  |
+| ---------------------------------------------- | ------------------------ |
+| --sn-mp-color-feedback-warning`/`-warning-soft | `type="warning"` tint    |
+| --sn-mp-color-feedback-info                    | `type="info"` foreground |
+| --sn-mp-color-background-subtle                | `type="info"` tint       |
+| --sn-mp-color-feedback-danger`/`-danger-soft   | `type="danger"` tint     |
+| --sn-mp-font-size-md                           | Text size                |
+| --sn-mp-font-line-height-normal                | Text line height         |
+| --sn-mp-spacing-3`/`--sn-mp-spacing-4          | Padding and icon gap     |
 
 ## Accessibility
 
@@ -92,7 +92,6 @@ With `direction="vertical"` and a `text` array, one line shows at a time and eac
 ## Dark mode
 
 All three type tints and foregrounds come from semantic tokens (`--sn-mp-color-feedback-*` / `--sn-mp-color-background-subtle`), all overridden in the dark block of `@snui/tokens-mp/styles`, so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
-
 
 > A literal passed through `color` / `backgroundColor` does not flip with the theme — prefer `var(--sn-mp-*)` colors in dark mode.
 

@@ -39,44 +39,44 @@ spans and an optional bordered outline.
 
 ### SnDescriptions Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| title | `string` | `undefined` | Title above the table; `header` slot overrides |
-| column | `number` | `3` | Total grid columns |
-| label-placement | `'left' \| 'top'` | `'top'` | Label position relative to content |
-| label-align | `'left' \| 'right' \| 'center'` | `'left'` | Label alignment |
-| separator | `string` | `':'` | Inline separator (left + non-bordered only) |
-| size | `'small' \| 'medium' \| 'large'` | `'medium'` | Font scale + cell padding |
-| bordered | `boolean` | `false` | Bordered grid |
-| label-class | `string` | `undefined` | Class on all label cells/spans |
-| label-style | `string \| CSSProperties` | `undefined` | Style on all label cells/spans |
-| content-class | `string` | `undefined` | Class on all content cells/spans |
-| content-style | `string \| CSSProperties` | `undefined` | Style on all content cells/spans |
+| Name            | Type                             | Default     | Notes                                          |
+| --------------- | -------------------------------- | ----------- | ---------------------------------------------- |
+| title           | `string`                         | `undefined` | Title above the table; `header` slot overrides |
+| column          | `number`                         | `3`         | Total grid columns                             |
+| label-placement | `'left' \| 'top'`                | `'top'`     | Label position relative to content             |
+| label-align     | `'left' \| 'right' \| 'center'`  | `'left'`    | Label alignment                                |
+| separator       | `string`                         | `':'`       | Inline separator (left + non-bordered only)    |
+| size            | `'small' \| 'medium' \| 'large'` | `'medium'`  | Font scale + cell padding                      |
+| bordered        | `boolean`                        | `false`     | Bordered grid                                  |
+| label-class     | `string`                         | `undefined` | Class on all label cells/spans                 |
+| label-style     | `string \| CSSProperties`        | `undefined` | Style on all label cells/spans                 |
+| content-class   | `string`                         | `undefined` | Class on all content cells/spans               |
+| content-style   | `string \| CSSProperties`        | `undefined` | Style on all content cells/spans               |
 
 ### SnDescriptions Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | `SnDescriptionsItem` entries |
-| header | `()` | Header content, overrides `title` |
+| Name    | Params | Notes                             |
+| ------- | ------ | --------------------------------- |
+| default | `()`   | `SnDescriptionsItem` entries      |
+| header  | `()`   | Header content, overrides `title` |
 
 ### SnDescriptionsItem Props
 
-| Name | Type | Default | Notes |
-| --- | --- | --- | --- |
-| label | `string` | `undefined` | Label text; `label` slot overrides |
-| span | `number` | `1` | Columns this entry occupies |
-| label-class | `string` | `undefined` | Entry label class |
-| label-style | `string \| CSSProperties` | `undefined` | Entry label style |
-| content-class | `string` | `undefined` | Entry content class |
-| content-style | `string \| CSSProperties` | `undefined` | Entry content style |
+| Name          | Type                      | Default     | Notes                              |
+| ------------- | ------------------------- | ----------- | ---------------------------------- |
+| label         | `string`                  | `undefined` | Label text; `label` slot overrides |
+| span          | `number`                  | `1`         | Columns this entry occupies        |
+| label-class   | `string`                  | `undefined` | Entry label class                  |
+| label-style   | `string \| CSSProperties` | `undefined` | Entry label style                  |
+| content-class | `string`                  | `undefined` | Entry content class                |
+| content-style | `string \| CSSProperties` | `undefined` | Entry content style                |
 
 ### SnDescriptionsItem Slots
 
-| Name | Params | Notes |
-| --- | --- | --- |
-| default | `()` | Entry content |
-| label | `()` | Entry label, overrides `label` |
+| Name    | Params | Notes                          |
+| ------- | ------ | ------------------------------ |
+| default | `()`   | Entry content                  |
+| label   | `()`   | Entry label, overrides `label` |
 
 Layout: the grid expands over `column * 2` physical tracks; each row's
 last entry stretches to fill the remaining tracks.

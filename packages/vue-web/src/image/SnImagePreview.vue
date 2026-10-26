@@ -3,18 +3,18 @@
  * Toolbar node contract shared with `render-toolbar` (mirrors the upstream
  * ImagePreview render-toolbar signature).
  */
-import type { VNode } from 'vue'
+import type { VNode } from 'vue';
 
 export interface SnImageToolbarNodes {
-  prev: VNode
-  next: VNode
-  rotateCounterclockwise: VNode
-  rotateClockwise: VNode
-  resizeToOriginalSize: VNode
-  zoomOut: VNode
-  zoomIn: VNode
-  download: VNode
-  close: VNode
+  prev: VNode;
+  next: VNode;
+  rotateCounterclockwise: VNode;
+  rotateClockwise: VNode;
+  resizeToOriginalSize: VNode;
+  zoomOut: VNode;
+  zoomIn: VNode;
+  download: VNode;
+  close: VNode;
 }
 </script>
 
@@ -54,32 +54,41 @@ export interface SnImageToolbarNodes {
  *   <SnImagePreview :src="url" :show="show" @update:show="show = $event" />
  */
 
-import { computed, defineComponent, h, onBeforeUnmount, ref, watch, type CSSProperties, type ImgHTMLAttributes } from 'vue'
+import {
+  computed,
+  defineComponent,
+  h,
+  onBeforeUnmount,
+  ref,
+  watch,
+  type CSSProperties,
+  type ImgHTMLAttributes,
+} from 'vue';
 
-defineOptions({ name: 'SnImagePreview' })
+defineOptions({ name: 'SnImagePreview' });
 
 const props = withDefaults(
   defineProps<{
     /** Large image url shown in the overlay. */
-    src?: string | undefined
+    src?: string | undefined;
     /** Controlled visibility; `undefined` falls back to uncontrolled state. */
-    show?: boolean | undefined
+    show?: boolean | undefined;
     /** Initial visibility for uncontrolled usage. Mirrors `default-show`. */
-    defaultShow?: boolean
+    defaultShow?: boolean;
     /** Whether the bottom toolbar is rendered. Mirrors `show-toolbar`. */
-    showToolbar?: boolean | undefined
+    showToolbar?: boolean | undefined;
     /** Native title hints on toolbar buttons. Mirrors `show-toolbar-tooltip` (divergence: title vs floating tooltip). */
-    showToolbarTooltip?: boolean | undefined
+    showToolbarTooltip?: boolean | undefined;
     /** Keep the dragged offset after mouse release. Mirrors `keep-drag-offset`. */
-    keepDragOffset?: boolean | undefined
+    keepDragOffset?: boolean | undefined;
     /** Extra attributes/style for the previewed <img>. Mirrors `previewed-img-props`. */
-    previewedImgProps?: ImgHTMLAttributes | undefined
+    previewedImgProps?: ImgHTMLAttributes | undefined;
     /** Custom toolbar renderer. Mirrors `render-toolbar`. */
-    renderToolbar?: ((props: { nodes: SnImageToolbarNodes }) => unknown) | undefined
+    renderToolbar?: ((props: { nodes: SnImageToolbarNodes }) => unknown) | undefined;
     /** Group-only: switch to the previous image (resets view first). */
-    prev?: (() => void) | undefined
+    prev?: (() => void) | undefined;
     /** Group-only: switch to the next image (resets view first). */
-    next?: (() => void) | undefined
+    next?: (() => void) | undefined;
   }>(),
   {
     src: undefined,
@@ -93,137 +102,137 @@ const props = withDefaults(
     prev: undefined,
     next: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Visibility change (close via mask/Esc/toolbar). Mirrors `on-update:show`. */
-  (e: 'update:show', value: boolean): void
+  (e: 'update:show', value: boolean): void;
   /** Preview closed. Mirrors `on-close`. */
-  (e: 'close'): void
-}>()
+  (e: 'close'): void;
+}>();
 
 /* ── Visibility (controlled / uncontrolled) ─────────────────────────────── */
 
-const uncontrolledShow = ref(props.defaultShow)
-const mergedShow = computed(() => (props.show !== undefined ? props.show : uncontrolledShow.value))
+const uncontrolledShow = ref(props.defaultShow);
+const mergedShow = computed(() => (props.show !== undefined ? props.show : uncontrolledShow.value));
 
 function doUpdateShow(value: boolean): void {
-  uncontrolledShow.value = value
-  emit('update:show', value)
+  uncontrolledShow.value = value;
+  emit('update:show', value);
 }
 
 function close(): void {
-  if (!mergedShow.value) return
-  emit('close')
-  doUpdateShow(false)
+  if (!mergedShow.value) return;
+  emit('close');
+  doUpdateShow(false);
 }
 
 /* ── View state: zoom / rotate / pan ────────────────────────────────────── */
 
-const SCALE_RADIX = 1.5
-const BLEEDING = 32
-const MIN_SCALE = 0.5
+const SCALE_RADIX = 1.5;
+const BLEEDING = 32;
+const MIN_SCALE = 0.5;
 
-let scaleExp = 0
-const scale = ref(1)
-const rotate = ref(0)
-const offsetX = ref(0)
-const offsetY = ref(0)
-const isDragging = ref(false)
-const previewImgRef = ref<HTMLImageElement | null>(null)
+let scaleExp = 0;
+const scale = ref(1);
+const rotate = ref(0);
+const offsetX = ref(0);
+const offsetY = ref(0);
+const isDragging = ref(false);
+const previewImgRef = ref<HTMLImageElement | null>(null);
 
 function resetView(): void {
-  scale.value = 1
-  scaleExp = 0
-  rotate.value = 0
-  offsetX.value = 0
-  offsetY.value = 0
-  isDragging.value = false
+  scale.value = 1;
+  scaleExp = 0;
+  rotate.value = 0;
+  offsetX.value = 0;
+  offsetY.value = 0;
+  isDragging.value = false;
 }
 
 function getMaxScale(): number {
-  const img = previewImgRef.value
-  if (!img || typeof window === 'undefined') return 3
-  const heightMaxScale = Math.max(1, img.naturalHeight / (window.innerHeight - BLEEDING))
-  const widthMaxScale = Math.max(1, img.naturalWidth / (window.innerWidth - BLEEDING))
-  return Math.max(3, heightMaxScale * 2, widthMaxScale * 2)
+  const img = previewImgRef.value;
+  if (!img || typeof window === 'undefined') return 3;
+  const heightMaxScale = Math.max(1, img.naturalHeight / (window.innerHeight - BLEEDING));
+  const widthMaxScale = Math.max(1, img.naturalWidth / (window.innerWidth - BLEEDING));
+  return Math.max(3, heightMaxScale * 2, widthMaxScale * 2);
 }
 
 function getOriginalSizeScale(): number {
-  const img = previewImgRef.value
-  if (!img || typeof window === 'undefined') return 1
-  const heightScale = img.naturalHeight / (window.innerHeight - BLEEDING)
-  const widthScale = img.naturalWidth / (window.innerWidth - BLEEDING)
-  if (heightScale < 1 && widthScale < 1) return 1
-  return Math.max(heightScale, widthScale)
+  const img = previewImgRef.value;
+  if (!img || typeof window === 'undefined') return 1;
+  const heightScale = img.naturalHeight / (window.innerHeight - BLEEDING);
+  const widthScale = img.naturalWidth / (window.innerWidth - BLEEDING);
+  if (heightScale < 1 && widthScale < 1) return 1;
+  return Math.max(heightScale, widthScale);
 }
 
 function zoomIn(): void {
-  const maxScale = getMaxScale()
+  const maxScale = getMaxScale();
   if (scale.value < maxScale) {
-    scaleExp += 1
-    scale.value = Math.min(maxScale, SCALE_RADIX ** scaleExp)
+    scaleExp += 1;
+    scale.value = Math.min(maxScale, SCALE_RADIX ** scaleExp);
   }
 }
 
 function zoomOut(): void {
   if (scale.value > MIN_SCALE) {
-    scaleExp -= 1
-    scale.value = Math.max(MIN_SCALE, SCALE_RADIX ** scaleExp)
+    scaleExp -= 1;
+    scale.value = Math.max(MIN_SCALE, SCALE_RADIX ** scaleExp);
   }
 }
 
 function resizeToOriginalSize(): void {
-  scale.value = getOriginalSizeScale()
-  scaleExp = Math.ceil(Math.log(scale.value) / Math.log(SCALE_RADIX))
-  offsetX.value = 0
-  offsetY.value = 0
+  scale.value = getOriginalSizeScale();
+  scaleExp = Math.ceil(Math.log(scale.value) / Math.log(SCALE_RADIX));
+  offsetX.value = 0;
+  offsetY.value = 0;
 }
 
 function rotateCounterclockwise(): void {
-  rotate.value -= 90
+  rotate.value -= 90;
 }
 
 function rotateClockwise(): void {
-  rotate.value += 90
+  rotate.value += 90;
 }
 
 function handleDblclick(): void {
-  const originalSizeScale = getOriginalSizeScale()
-  scale.value = scale.value === originalSizeScale ? 1 : originalSizeScale
-  scaleExp = Math.ceil(Math.log(scale.value || 1) / Math.log(SCALE_RADIX))
+  const originalSizeScale = getOriginalSizeScale();
+  scale.value = scale.value === originalSizeScale ? 1 : originalSizeScale;
+  scaleExp = Math.ceil(Math.log(scale.value || 1) / Math.log(SCALE_RADIX));
 }
 
 function handleWheel(event: WheelEvent): void {
-  if (event.deltaY < 0) zoomIn()
-  else zoomOut()
+  if (event.deltaY < 0) zoomIn();
+  else zoomOut();
 }
 
 /* ── Drag to pan ────────────────────────────────────────────────────────── */
 
-let dragStartX = 0
-let dragStartY = 0
-let dragStartOffsetX = 0
-let dragStartOffsetY = 0
-let mouseDownClientX = 0
-let mouseDownClientY = 0
+let dragStartX = 0;
+let dragStartY = 0;
+let dragStartOffsetX = 0;
+let dragStartOffsetY = 0;
+let mouseDownClientX = 0;
+let mouseDownClientY = 0;
 
 function handleMousedown(event: MouseEvent): void {
-  if (event.button !== 0) return
-  isDragging.value = true
-  dragStartX = event.clientX - offsetX.value
-  dragStartY = event.clientY - offsetY.value
-  dragStartOffsetX = offsetX.value
-  dragStartOffsetY = offsetY.value
-  mouseDownClientX = event.clientX
-  mouseDownClientY = event.clientY
-  document.addEventListener('mousemove', handleMousemove)
-  document.addEventListener('mouseup', handleMouseup)
+  if (event.button !== 0) return;
+  isDragging.value = true;
+  dragStartX = event.clientX - offsetX.value;
+  dragStartY = event.clientY - offsetY.value;
+  dragStartOffsetX = offsetX.value;
+  dragStartOffsetY = offsetY.value;
+  mouseDownClientX = event.clientX;
+  mouseDownClientY = event.clientY;
+  document.addEventListener('mousemove', handleMousemove);
+  document.addEventListener('mouseup', handleMouseup);
 }
 
 function handleMousemove(event: MouseEvent): void {
-  offsetX.value = event.clientX - dragStartX
-  offsetY.value = event.clientY - dragStartY
+  offsetX.value = event.clientX - dragStartX;
+  offsetY.value = event.clientY - dragStartY;
 }
 
 /**
@@ -231,55 +240,56 @@ function handleMousemove(event: MouseEvent): void {
  * clamp it to the viewport edges (upstream `getDerivedOffset`).
  */
 function getDerivedOffset(event: MouseEvent): { offsetX: number; offsetY: number } {
-  const img = previewImgRef.value
-  if (!img || typeof window === 'undefined') return { offsetX: 0, offsetY: 0 }
-  const box = img.getBoundingClientRect()
-  const deltaHorizontal = mouseDownClientX - event.clientX
-  const deltaVertical = mouseDownClientY - event.clientY
+  const img = previewImgRef.value;
+  if (!img || typeof window === 'undefined') return { offsetX: 0, offsetY: 0 };
+  const box = img.getBoundingClientRect();
+  const deltaHorizontal = mouseDownClientX - event.clientX;
+  const deltaVertical = mouseDownClientY - event.clientY;
 
-  let nextOffsetX = 0
-  let nextOffsetY = 0
+  let nextOffsetX = 0;
+  let nextOffsetY = 0;
   if (box.width <= window.innerWidth) {
-    nextOffsetX = 0
+    nextOffsetX = 0;
   } else {
-    const limitX = (box.width - window.innerWidth) / 2
-    if (box.left > 0) nextOffsetX = limitX
-    else if (box.right < window.innerWidth) nextOffsetX = -limitX
-    else if (deltaHorizontal > 0) nextOffsetX = Math.min(limitX, dragStartOffsetX - deltaHorizontal)
-    else nextOffsetX = Math.max(-limitX, dragStartOffsetX - deltaHorizontal)
+    const limitX = (box.width - window.innerWidth) / 2;
+    if (box.left > 0) nextOffsetX = limitX;
+    else if (box.right < window.innerWidth) nextOffsetX = -limitX;
+    else if (deltaHorizontal > 0)
+      nextOffsetX = Math.min(limitX, dragStartOffsetX - deltaHorizontal);
+    else nextOffsetX = Math.max(-limitX, dragStartOffsetX - deltaHorizontal);
   }
   if (box.height <= window.innerHeight) {
-    nextOffsetY = 0
+    nextOffsetY = 0;
   } else {
-    const limitY = (box.height - window.innerHeight) / 2
-    if (box.top > 0) nextOffsetY = limitY
-    else if (box.bottom < window.innerHeight) nextOffsetY = -limitY
-    else if (deltaVertical > 0) nextOffsetY = Math.min(limitY, dragStartOffsetY - deltaVertical)
-    else nextOffsetY = Math.max(-limitY, dragStartOffsetY - deltaVertical)
+    const limitY = (box.height - window.innerHeight) / 2;
+    if (box.top > 0) nextOffsetY = limitY;
+    else if (box.bottom < window.innerHeight) nextOffsetY = -limitY;
+    else if (deltaVertical > 0) nextOffsetY = Math.min(limitY, dragStartOffsetY - deltaVertical);
+    else nextOffsetY = Math.max(-limitY, dragStartOffsetY - deltaVertical);
   }
-  return { offsetX: nextOffsetX, offsetY: nextOffsetY }
+  return { offsetX: nextOffsetX, offsetY: nextOffsetY };
 }
 
 function handleMouseup(event: MouseEvent): void {
-  document.removeEventListener('mousemove', handleMousemove)
-  document.removeEventListener('mouseup', handleMouseup)
-  isDragging.value = false
+  document.removeEventListener('mousemove', handleMousemove);
+  document.removeEventListener('mouseup', handleMouseup);
+  isDragging.value = false;
   if (!props.keepDragOffset) {
-    const derived = getDerivedOffset(event)
-    offsetX.value = derived.offsetX
-    offsetY.value = derived.offsetY
+    const derived = getDerivedOffset(event);
+    offsetX.value = derived.offsetX;
+    offsetY.value = derived.offsetY;
   }
 }
 
 /** Switch image: upstream resets scale/offset/rotation before notifying. */
 function handleSwitchPrev(): void {
-  resetView()
-  props.prev?.()
+  resetView();
+  props.prev?.();
 }
 
 function handleSwitchNext(): void {
-  resetView()
-  props.next?.()
+  resetView();
+  props.next?.();
 }
 
 /* ── Keyboard + scroll lock while shown ─────────────────────────────────── */
@@ -287,60 +297,60 @@ function handleSwitchNext(): void {
 function handleKeydown(event: KeyboardEvent): void {
   switch (event.key) {
     case ' ':
-      event.preventDefault()
-      break
+      event.preventDefault();
+      break;
     case 'ArrowLeft':
-      if (props.prev) handleSwitchPrev()
-      break
+      if (props.prev) handleSwitchPrev();
+      break;
     case 'ArrowRight':
-      if (props.next) handleSwitchNext()
-      break
+      if (props.next) handleSwitchNext();
+      break;
     case 'ArrowUp':
-      event.preventDefault()
-      zoomIn()
-      break
+      event.preventDefault();
+      zoomIn();
+      break;
     case 'ArrowDown':
-      event.preventDefault()
-      zoomOut()
-      break
+      event.preventDefault();
+      zoomOut();
+      break;
     case 'Escape':
-      close()
-      break
+      close();
+      break;
   }
 }
 
 // Lock <html> while shown and restore the previous inline value on release
 // (same contract as SnDrawer's scroll lock).
-let memoizedHtmlOverflow: string | null = null
-let isScrollLocked = false
+let memoizedHtmlOverflow: string | null = null;
+let isScrollLocked = false;
 
 watch(mergedShow, (shown) => {
-  if (typeof document === 'undefined') return
-  if (shown) document.addEventListener('keydown', handleKeydown)
-  else document.removeEventListener('keydown', handleKeydown)
+  if (typeof document === 'undefined') return;
+  if (shown) document.addEventListener('keydown', handleKeydown);
+  else document.removeEventListener('keydown', handleKeydown);
 
   if (shown && !isScrollLocked) {
-    memoizedHtmlOverflow = document.documentElement.style.overflow
-    document.documentElement.style.overflow = 'hidden'
-    isScrollLocked = true
+    memoizedHtmlOverflow = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    isScrollLocked = true;
   } else if (!shown && isScrollLocked) {
-    document.documentElement.style.overflow = memoizedHtmlOverflow ?? ''
-    isScrollLocked = false
+    document.documentElement.style.overflow = memoizedHtmlOverflow ?? '';
+    isScrollLocked = false;
   }
-  if (shown) resetView()
-})
+  if (shown) resetView();
+});
 
 onBeforeUnmount(() => {
   if (typeof document !== 'undefined') {
-    document.removeEventListener('keydown', handleKeydown)
-    document.removeEventListener('mousemove', handleMousemove)
-    document.removeEventListener('mouseup', handleMouseup)
+    document.removeEventListener('keydown', handleKeydown);
+    document.removeEventListener('mousemove', handleMousemove);
+    document.removeEventListener('mouseup', handleMouseup);
   }
   if (isScrollLocked && typeof document !== 'undefined') {
-    document.documentElement.style.overflow = memoizedHtmlOverflow ?? ''
-    isScrollLocked = false
+    document.documentElement.style.overflow = memoizedHtmlOverflow ?? '';
+    isScrollLocked = false;
   }
-})
+});
 
 /* ── Toolbar ────────────────────────────────────────────────────────────── */
 
@@ -355,41 +365,73 @@ const ICON_PATHS = {
   zoomIn: ['M19 11a8 8 0 1 0-16 0 8 8 0 0 0 16 0', 'M21 21l-4.35-4.35', 'M11 8v6', 'M8 11h6'],
   download: ['M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4', 'M7 10l5 5 5-5', 'M12 15V3'],
   close: ['M18 6L6 18', 'M6 6l12 12'],
-} as const
+} as const;
 
 interface ToolbarButton {
-  key: string
-  label: string
-  paths: readonly string[]
-  onClick: () => void
+  key: string;
+  label: string;
+  paths: readonly string[];
+  onClick: () => void;
 }
 
 function buildToolbarButtons(): ToolbarButton[] {
-  const buttons: ToolbarButton[] = []
-  if (props.prev) buttons.push({ key: 'prev', label: '上一张', paths: ICON_PATHS.prev, onClick: handleSwitchPrev })
-  if (props.next) buttons.push({ key: 'next', label: '下一张', paths: ICON_PATHS.next, onClick: handleSwitchNext })
+  const buttons: ToolbarButton[] = [];
+  if (props.prev)
+    buttons.push({
+      key: 'prev',
+      label: '上一张',
+      paths: ICON_PATHS.prev,
+      onClick: handleSwitchPrev,
+    });
+  if (props.next)
+    buttons.push({
+      key: 'next',
+      label: '下一张',
+      paths: ICON_PATHS.next,
+      onClick: handleSwitchNext,
+    });
   buttons.push(
-    { key: 'rotate-counterclockwise', label: '向左旋转', paths: ICON_PATHS.rotateCounterclockwise, onClick: rotateCounterclockwise },
-    { key: 'rotate-clockwise', label: '向右旋转', paths: ICON_PATHS.rotateClockwise, onClick: rotateClockwise },
-    { key: 'resize-to-original-size', label: '原始尺寸', paths: ICON_PATHS.resizeToOriginalSize, onClick: resizeToOriginalSize },
+    {
+      key: 'rotate-counterclockwise',
+      label: '向左旋转',
+      paths: ICON_PATHS.rotateCounterclockwise,
+      onClick: rotateCounterclockwise,
+    },
+    {
+      key: 'rotate-clockwise',
+      label: '向右旋转',
+      paths: ICON_PATHS.rotateClockwise,
+      onClick: rotateClockwise,
+    },
+    {
+      key: 'resize-to-original-size',
+      label: '原始尺寸',
+      paths: ICON_PATHS.resizeToOriginalSize,
+      onClick: resizeToOriginalSize,
+    },
     { key: 'zoom-out', label: '缩小', paths: ICON_PATHS.zoomOut, onClick: zoomOut },
     { key: 'zoom-in', label: '放大', paths: ICON_PATHS.zoomIn, onClick: zoomIn },
-    { key: 'download', label: '下载图片', paths: ICON_PATHS.download, onClick: handleDownloadClick },
+    {
+      key: 'download',
+      label: '下载图片',
+      paths: ICON_PATHS.download,
+      onClick: handleDownloadClick,
+    },
     { key: 'close', label: '关闭', paths: ICON_PATHS.close, onClick: close },
-  )
-  return buttons
+  );
+  return buttons;
 }
 
-const defaultToolbarButtons = computed(() => buildToolbarButtons())
+const defaultToolbarButtons = computed(() => buildToolbarButtons());
 
 function handleDownloadClick(): void {
-  if (!props.src || typeof document === 'undefined') return
-  const anchor = document.createElement('a')
-  anchor.href = props.src
-  anchor.download = ''
-  document.body.appendChild(anchor)
-  anchor.click()
-  document.body.removeChild(anchor)
+  if (!props.src || typeof document === 'undefined') return;
+  const anchor = document.createElement('a');
+  anchor.href = props.src;
+  anchor.download = '';
+  document.body.appendChild(anchor);
+  anchor.click();
+  document.body.removeChild(anchor);
 }
 
 /** Toolbar VNodes handed to `render-toolbar` (all nine actions, upstream order). */
@@ -419,50 +461,54 @@ function buildToolbarNodes(): SnImageToolbarNodes {
           button.paths.map((d) => h('path', { d })),
         ),
       ],
-    )
+    );
   const build = (label: string, paths: readonly string[], onClick: () => void): VNode =>
-    make({ key: label, label, paths, onClick })
+    make({ key: label, label, paths, onClick });
   return {
     prev: build('上一张', ICON_PATHS.prev, handleSwitchPrev),
     next: build('下一张', ICON_PATHS.next, handleSwitchNext),
-    rotateCounterclockwise: build('向左旋转', ICON_PATHS.rotateCounterclockwise, rotateCounterclockwise),
+    rotateCounterclockwise: build(
+      '向左旋转',
+      ICON_PATHS.rotateCounterclockwise,
+      rotateCounterclockwise,
+    ),
     rotateClockwise: build('向右旋转', ICON_PATHS.rotateClockwise, rotateClockwise),
     resizeToOriginalSize: build('原始尺寸', ICON_PATHS.resizeToOriginalSize, resizeToOriginalSize),
     zoomOut: build('缩小', ICON_PATHS.zoomOut, zoomOut),
     zoomIn: build('放大', ICON_PATHS.zoomIn, zoomIn),
     download: build('下载图片', ICON_PATHS.download, handleDownloadClick),
     close: build('关闭', ICON_PATHS.close, close),
-  }
+  };
 }
 
 /** Renders whatever `render-toolbar` returns (VNodeChild). */
 const CustomToolbarHost = defineComponent({
   name: 'SnImagePreviewCustomToolbar',
   setup() {
-    return () => (props.renderToolbar ? props.renderToolbar({ nodes: buildToolbarNodes() }) : null)
+    return () => (props.renderToolbar ? props.renderToolbar({ nodes: buildToolbarNodes() }) : null);
   },
-})
+});
 
 /* ── Previewed <img> bindings ───────────────────────────────────────────── */
 
 const previewedImgAttrs = computed<Record<string, unknown> | undefined>(() => {
-  const forwarded = props.previewedImgProps as Record<string, unknown> | undefined
-  if (!forwarded) return undefined
-  const rest: Record<string, unknown> = {}
+  const forwarded = props.previewedImgProps as Record<string, unknown> | undefined;
+  if (!forwarded) return undefined;
+  const rest: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(forwarded)) {
-    if (key !== 'style') rest[key] = value
+    if (key !== 'style') rest[key] = value;
   }
-  return rest
-})
+  return rest;
+});
 
-const controlledStyle = computed(() => props.previewedImgProps?.style)
+const controlledStyle = computed(() => props.previewedImgProps?.style);
 
 const previewStyle = computed<CSSProperties>(() => ({
   cursor: isDragging.value ? 'grabbing' : 'grab',
   transition: isDragging.value ? 'none' : undefined,
   transform: `translateX(${offsetX.value}px) translateY(${offsetY.value}px) rotate(${rotate.value}deg) scale(${scale.value})`,
   transformOrigin: 'center',
-}))
+}));
 </script>
 
 <template>
@@ -507,7 +553,7 @@ const previewStyle = computed<CSSProperties>(() => ({
           @mousedown="handleMousedown"
           @dblclick="handleDblclick"
           @dragstart.prevent
-        >
+        />
       </div>
     </div>
   </Teleport>
@@ -567,7 +613,11 @@ const previewStyle = computed<CSSProperties>(() => ({
 
 .sn-image-preview__toolbar-button:hover,
 .sn-image-preview__toolbar :deep(.sn-image-preview__toolbar-button:hover) {
-  background: color-mix(in srgb, var(--sn-web-color-text-primary) 4.7%, var(--sn-web-color-background-surface));
+  background: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 4.7%,
+    var(--sn-web-color-background-surface)
+  );
 }
 
 .sn-image-preview__toolbar-button svg,

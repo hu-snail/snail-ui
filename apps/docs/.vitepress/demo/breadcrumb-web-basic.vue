@@ -2,7 +2,7 @@
 /**
  * breadcrumb-web-basic — SnBreadcrumb 默认分隔符 / 自定义分隔符 / 末页不可点
  */
-import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web'
+import { SnBreadcrumb, SnBreadcrumbItem } from '@snui/vue-web';
 </script>
 
 <template>

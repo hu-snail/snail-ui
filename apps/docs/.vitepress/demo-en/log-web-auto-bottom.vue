@@ -1,47 +1,47 @@
 <script setup lang="ts">
 /** Demo: SnLog — keep the viewer scrolled to the newest line. */
-import { nextTick, onBeforeUnmount, ref, watchEffect } from 'vue'
-import { SnButton, SnLog } from '@snui/vue-web'
+import { nextTick, onBeforeUnmount, ref, watchEffect } from 'vue';
+import { SnButton, SnLog } from '@snui/vue-web';
 
 function makeLog(): string {
-  const lines: string[] = []
+  const lines: string[] = [];
   for (let i = 0; i < 10; ++i) {
-    lines.push(Math.random().toString(16))
+    lines.push(Math.random().toString(16));
   }
-  return `${lines.join('\n')}\n`
+  return `${lines.join('\n')}\n`;
 }
 
-const log = ref(makeLog())
-const logRef = ref<InstanceType<typeof SnLog> | null>(null)
-const running = ref(false)
-let timer: number | null = null
+const log = ref(makeLog());
+const logRef = ref<InstanceType<typeof SnLog> | null>(null);
+const running = ref(false);
+let timer: number | null = null;
 
 function toggleRun() {
-  running.value = !running.value
+  running.value = !running.value;
   if (running.value) {
     timer = window.setInterval(() => {
-      log.value = log.value + makeLog()
-    }, 1000)
+      log.value = log.value + makeLog();
+    }, 1000);
   } else if (timer !== null) {
-    window.clearInterval(timer)
-    timer = null
+    window.clearInterval(timer);
+    timer = null;
   }
 }
 
 onBeforeUnmount(() => {
   if (timer !== null) {
-    window.clearInterval(timer)
-    timer = null
+    window.clearInterval(timer);
+    timer = null;
   }
-})
+});
 
 watchEffect(() => {
   if (log.value) {
     void nextTick(() => {
-      logRef.value?.scrollTo({ position: 'bottom', silent: true })
-    })
+      logRef.value?.scrollTo({ position: 'bottom', silent: true });
+    });
   }
-})
+});
 </script>
 
 <template>

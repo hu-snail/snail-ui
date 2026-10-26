@@ -29,26 +29,26 @@
  *   - 弹层定位 / 动画 — 用 sn-popup
  */
 
-import { computed, ref, watch } from 'vue'
-import SnPopup from '../sn-popup/sn-popup.vue'
-import SnCalendarView from '../sn-calendar-view/sn-calendar-view.vue'
+import { computed, ref, watch } from 'vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
+import SnCalendarView from '../sn-calendar-view/sn-calendar-view.vue';
 import type {
   CalendarFormatter,
   CalendarTimeFilter,
   CalendarType,
   CalendarValue,
-} from '../sn-calendar-view/sn-calendar-view-types'
+} from '../sn-calendar-view/sn-calendar-view-types';
 
-defineOptions({ name: 'SnCalendar' })
+defineOptions({ name: 'SnCalendar' });
 
 /** One shortcut chip. */
 interface CalendarShortcut {
   /** Visible label. */
-  text: string
+  text: string;
   /** Value written when the chip is tapped. */
-  value?: CalendarValue
+  value?: CalendarValue;
   /** Relative day offset helper (`-7` = one week ago). */
-  days?: number
+  days?: number;
 }
 
 const props = withDefaults(
@@ -56,55 +56,55 @@ const props = withDefaults(
     /* ── wot-ui `wd-calendar` 1:1 surface ────────────────────────────────── */
 
     /** Selected value. */
-    modelValue?: CalendarValue
+    modelValue?: CalendarValue;
     /** Sheet visibility (`v-model:visible`). */
-    visible?: boolean
+    visible?: boolean;
     /** Selection mode. */
-    type?: CalendarType
+    type?: CalendarType;
     /** Minimum date (timestamp). */
-    minDate?: number | undefined
+    minDate?: number | undefined;
     /** Maximum date (timestamp). */
-    maxDate?: number | undefined
+    maxDate?: number | undefined;
     /** First weekday of the grid. */
-    firstDayOfWeek?: number
+    firstDayOfWeek?: number;
     /** Cell formatter hook. */
-    formatter?: CalendarFormatter | undefined
+    formatter?: CalendarFormatter | undefined;
     /** Maximum span for range types (days). `0` = unconstrained. */
-    maxRange?: number
+    maxRange?: number;
     /** Message shown when `maxRange` is exceeded. */
-    rangePrompt?: string
+    rangePrompt?: string;
     /** Allow a zero-length range. */
-    allowSameDay?: boolean
+    allowSameDay?: boolean;
     /** Default clock time applied to date / datetime values. */
-    defaultTime?: string | string[]
+    defaultTime?: string | string[];
     /** Toolbar title. */
-    title?: string
+    title?: string;
     /** Tapping the mask closes the sheet. */
-    closeOnClickModal?: boolean
+    closeOnClickModal?: boolean;
     /** Stacking level. */
-    zIndex?: number
+    zIndex?: number;
     /** Render the confirm button. */
-    showConfirm?: boolean
+    showConfirm?: boolean;
     /** Confirm button label. */
-    confirmText?: string
+    confirmText?: string;
     /** Preset chips shown above the grid. */
-    shortcuts?: CalendarShortcut[]
+    shortcuts?: CalendarShortcut[];
     /** Pad the sheet for the device safe area. */
-    safeAreaInsetBottom?: boolean
+    safeAreaInsetBottom?: boolean;
     /** Veto hook for confirm. */
-    beforeConfirm?: ((value: CalendarValue) => boolean | Promise<boolean>) | undefined
+    beforeConfirm?: ((value: CalendarValue) => boolean | Promise<boolean>) | undefined;
     /** Class forwarded to the panel body. */
-    customViewClass?: string
+    customViewClass?: string;
     /** Emit `change` as soon as a cell is tapped. */
-    immediateChange?: boolean
+    immediateChange?: boolean;
     /** Scrollable panel height in px design units. */
-    panelHeight?: number
+    panelHeight?: number;
     /** Render the per-month panel title. */
-    showPanelTitle?: boolean
+    showPanelTitle?: boolean;
     /** Month-switch mode. */
-    switchMode?: 'none' | 'month' | 'year-month'
+    switchMode?: 'none' | 'month' | 'year-month';
     /** Sheet animation duration in ms. */
-    duration?: number
+    duration?: number;
     /*
      * Parity-only props: declared so a wd-calendar config type-checks
      * unchanged. This build has no time roller and no portal host, so the
@@ -112,23 +112,23 @@ const props = withDefaults(
      * `onShortcutTap`).
      */
     /** Time-option filter hook (datetime / datetimerange). */
-    timeFilter?: CalendarTimeFilter | undefined
+    timeFilter?: CalendarTimeFilter | undefined;
     /** Hide the seconds roller (datetime / datetimerange). */
-    hideSecond?: boolean
+    hideSecond?: boolean;
     /** Custom range-panel echo: fixed text, or a formatter of the value. */
-    innerDisplayFormat?: string | ((value: CalendarValue) => string)
+    innerDisplayFormat?: string | ((value: CalendarValue) => string);
     /** Ellipsis the range text. */
-    ellipsis?: boolean
+    ellipsis?: boolean;
     /** Show the day / week / month switch. */
-    showTypeSwitch?: boolean
+    showTypeSwitch?: boolean;
     /** Called after a shortcut chip writes its value. */
-    onShortcutsClick?: ((shortcut: CalendarShortcut) => void) | undefined
+    onShortcutsClick?: ((shortcut: CalendarShortcut) => void) | undefined;
     /** Teleport the sheet out of the page flow (no portal host on MP). */
-    rootPortal?: boolean
+    rootPortal?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the sheet. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: null,
@@ -166,108 +166,110 @@ const props = withDefaults(
     onShortcutsClick: undefined,
     rootPortal: false,
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: CalendarValue): void
-  (e: 'update:visible', value: boolean): void
-  (e: 'confirm', payload: { value: CalendarValue }): void
-  (e: 'change', payload: { value: CalendarValue }): void
-  (e: 'cancel'): void
-  (e: 'open'): void
-}>()
+  (e: 'update:modelValue', value: CalendarValue): void;
+  (e: 'update:visible', value: boolean): void;
+  (e: 'confirm', payload: { value: CalendarValue }): void;
+  (e: 'change', payload: { value: CalendarValue }): void;
+  (e: 'cancel'): void;
+  (e: 'open'): void;
+}>();
 
 /** Draft value while the sheet is open. */
-const draft = ref<CalendarValue>(props.modelValue)
+const draft = ref<CalendarValue>(props.modelValue);
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (props.immediateChange) return
-    draft.value = value
+    if (props.immediateChange) return;
+    draft.value = value;
   },
   { deep: true },
-)
+);
 
 watch(
   () => props.visible,
   (value) => {
-    if (!value) return
-    draft.value = props.modelValue
-    emit('open')
+    if (!value) return;
+    draft.value = props.modelValue;
+    emit('open');
   },
-)
+);
 
 const viewValue = computed<CalendarValue>(() =>
   props.immediateChange ? props.modelValue : draft.value,
-)
+);
 
 function onViewChange(payload: { value: CalendarValue }): void {
-  if (props.immediateChange) emit('update:modelValue', payload.value)
-  else draft.value = payload.value
-  emit('change', payload)
+  if (props.immediateChange) emit('update:modelValue', payload.value);
+  else draft.value = payload.value;
+  emit('change', payload);
 }
 
 function requestClose(): void {
-  emit('update:visible', false)
+  emit('update:visible', false);
 }
 
 function onCancel(): void {
   // Drop the draft so reopening starts from the committed model.
-  draft.value = props.modelValue
-  emit('cancel')
-  requestClose()
+  draft.value = props.modelValue;
+  emit('cancel');
+  requestClose();
 }
 
 async function onConfirm(): Promise<void> {
-  const value = viewValue.value
+  const value = viewValue.value;
   if (props.beforeConfirm) {
-    const verdict = await props.beforeConfirm(value)
-    if (verdict === false) return
+    const verdict = await props.beforeConfirm(value);
+    if (verdict === false) return;
   }
-  if (!props.immediateChange) emit('update:modelValue', value)
-  emit('confirm', { value })
-  requestClose()
+  if (!props.immediateChange) emit('update:modelValue', value);
+  emit('confirm', { value });
+  requestClose();
 }
 
 /* ── Shortcuts ─────────────────────────────────────────────────────────── */
 
 /** Resolve a shortcut chip to a concrete value. */
 function shortcutValue(shortcut: CalendarShortcut): CalendarValue {
-  let stamp: number
+  let stamp: number;
   if (typeof shortcut.value === 'number') {
-    stamp = shortcut.value
+    stamp = shortcut.value;
   } else {
-    const offset = shortcut.days ?? 0
-    const target = new Date()
-    target.setHours(0, 0, 0, 0)
-    target.setDate(target.getDate() + offset)
-    stamp = target.getTime()
+    const offset = shortcut.days ?? 0;
+    const target = new Date();
+    target.setHours(0, 0, 0, 0);
+    target.setDate(target.getDate() + offset);
+    stamp = target.getTime();
   }
   // Reshape into the value the declared `type` expects (AGENTS.md §27).
   if (props.type === 'daterange' || props.type === 'datetimerange' || props.type === 'monthrange') {
-    return [stamp, stamp]
+    return [stamp, stamp];
   }
-  if (props.type === 'dates') return [stamp]
-  return stamp
+  if (props.type === 'dates') return [stamp];
+  return stamp;
 }
 
 function onShortcutTap(shortcut: CalendarShortcut): void {
-  draft.value = shortcutValue(shortcut)
-  if (props.immediateChange) emit('update:modelValue', draft.value)
+  draft.value = shortcutValue(shortcut);
+  if (props.immediateChange) emit('update:modelValue', draft.value);
   // wd-calendar parity: the hook fires after the chip wrote its value, so the
   // host can react (close the sheet, log, prefill a range…) without a watcher.
-  props.onShortcutsClick?.(shortcut)
+  props.onShortcutsClick?.(shortcut);
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
-const popupClass = computed(() => ['sn-calendar-popup', props.customClass].filter(Boolean).join(' '))
+const popupClass = computed(() =>
+  ['sn-calendar-popup', props.customClass].filter(Boolean).join(' '),
+);
 
 /** Forwarded to sn-popup — a string, so `exactOptionalPropertyTypes` stays happy. */
-const rootStyle = computed(() => props.customStyle)
+const rootStyle = computed(() => props.customStyle);
 
-const viewClass = computed(() => props.customViewClass)
+const viewClass = computed(() => props.customViewClass);
 </script>
 
 <template>
@@ -297,7 +299,8 @@ const viewClass = computed(() => props.customViewClass)
           role="button"
           :aria-label="shortcut.text"
           @tap="onShortcutTap(shortcut)"
-        >{{ shortcut.text }}</view>
+          >{{ shortcut.text }}</view
+        >
       </view>
 
       <SnCalendarView
@@ -324,19 +327,17 @@ const viewClass = computed(() => props.customViewClass)
           <slot name="confirm-left" />
         </view>
         <view class="sn-calendar__actions">
-          <view
-            class="sn-calendar__cancel"
-            role="button"
-            aria-label="cancel"
-            @tap="onCancel"
-          >取消</view>
+          <view class="sn-calendar__cancel" role="button" aria-label="cancel" @tap="onCancel"
+            >取消</view
+          >
           <view
             v-if="props.showConfirm"
             class="sn-calendar__confirm"
             role="button"
             :aria-label="props.confirmText"
             @tap="onConfirm"
-          >{{ props.confirmText }}</view>
+            >{{ props.confirmText }}</view
+          >
         </view>
         <view class="sn-calendar__footer-right">
           <slot name="confirm-right" />

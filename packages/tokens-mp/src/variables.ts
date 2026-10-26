@@ -11,11 +11,11 @@
  * Per Spec-02 v1.1 §3.3: uni component CSS uses ONLY `--sn-mp-*`.
  */
 
-const PX_TO_RPX = 2 // 750 rpx design / 375 px design
+const PX_TO_RPX = 2; // 750 rpx design / 375 px design
 
 function toRpx(px: string | number): string {
-  const n = typeof px === 'string' ? parseFloat(px) : px
-  return `${n * PX_TO_RPX}rpx`
+  const n = typeof px === 'string' ? parseFloat(px) : px;
+  return `${n * PX_TO_RPX}rpx`;
 }
 
 /**
@@ -88,7 +88,7 @@ export const snMpSizeMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-font-size-lg', toRpx(16)],
   ['--sn-mp-font-size-xl', toRpx(18)],
   ['--sn-mp-font-size-2xl', toRpx(20)],
-]
+];
 
 /**
  * Pass-through aliases (no unit conversion) — colors, shadows, focus ring.
@@ -159,7 +159,7 @@ export const snMpColorMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-focus-ring', 'var(--aui-focus-ring)'],
   ['--sn-mp-button-shadow', 'var(--aui-button-shadow)'],
   ['--sn-mp-card-shadow', 'var(--aui-card-shadow)'],
-]
+];
 
 /**
  * Unitless scale aliases — ratios and raw design units that must NOT be
@@ -175,22 +175,22 @@ export const snMpUnitlessMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-font-weight-medium', '500'],
   ['--sn-mp-font-weight-semibold', '600'],
   ['--sn-mp-font-weight-bold', '700'],
-]
+];
 
 /** Combined: all aliases emitted by this package. */
 export const snMpAliasMap: ReadonlyArray<readonly [string, string]> = [
   ...snMpSizeMap,
   ...snMpUnitlessMap,
   ...snMpColorMap,
-]
+];
 
 export function renderSnMpStyles(): string {
-  const body = snMpAliasMap.map(([a, v]) => `  ${a}: ${v};`).join('\n')
-  return `:root {\n${body}\n}\n`
+  const body = snMpAliasMap.map(([a, v]) => `  ${a}: ${v};`).join('\n');
+  return `:root {\n${body}\n}\n`;
 }
 
 export function listSnMpAliases(): ReadonlyArray<string> {
-  return snMpAliasMap.map(([a]) => a)
+  return snMpAliasMap.map(([a]) => a);
 }
 
 /**
@@ -198,5 +198,5 @@ export function listSnMpAliases(): ReadonlyArray<string> {
  * scenarios where the consumer wants to compute rpx at runtime.
  */
 export function pxToRpx(px: string | number): string {
-  return toRpx(px)
+  return toRpx(px);
 }

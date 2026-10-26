@@ -3,17 +3,17 @@
  * Group context shared with member `SnImage`s (mirrors the upstream
  * imageGroupInjectionKey contract: register preview urls + open at index).
  */
-import type { InjectionKey } from 'vue'
+import type { InjectionKey } from 'vue';
 
 export interface SnImageGroupContext {
   /** Register a member image's preview url; returns the unregister fn. */
-  registerImage: (id: number, url: string) => () => void
+  registerImage: (id: number, url: string) => () => void;
   /** Open the shared preview at the member's position. */
-  open: (id: number) => void
+  open: (id: number) => void;
 }
 
 export const SN_IMAGE_GROUP_INJECTION_KEY: InjectionKey<SnImageGroupContext> =
-  Symbol('sn-image-group')
+  Symbol('sn-image-group');
 </script>
 
 <script setup lang="ts">
@@ -50,32 +50,32 @@ export const SN_IMAGE_GROUP_INJECTION_KEY: InjectionKey<SnImageGroupContext> =
  *   <SnImageGroup :src-list="urls" v-model:show="open" />
  */
 
-import { computed, provide, ref } from 'vue'
-import SnImagePreview from './SnImagePreview.vue'
-import type { SnImageToolbarNodes } from './SnImagePreview.vue'
+import { computed, provide, ref } from 'vue';
+import SnImagePreview from './SnImagePreview.vue';
+import type { SnImageToolbarNodes } from './SnImagePreview.vue';
 
-defineOptions({ name: 'SnImageGroup' })
+defineOptions({ name: 'SnImageGroup' });
 
 const props = withDefaults(
   defineProps<{
     /** Standalone image list — the preview browses these urls. Mirrors `src-list`. */
-    srcList?: string[] | undefined
+    srcList?: string[] | undefined;
     /** Current previewed index (v-model:current). Mirrors `current`. */
-    current?: number | undefined
+    current?: number | undefined;
     /** Initial index for uncontrolled usage. Mirrors `default-current`. */
-    defaultCurrent?: number
+    defaultCurrent?: number;
     /** Controlled preview visibility (v-model:show). Mirrors `show`. */
-    show?: boolean | undefined
+    show?: boolean | undefined;
     /** Initial visibility for uncontrolled usage. Mirrors `default-show`. */
-    defaultShow?: boolean
+    defaultShow?: boolean;
     /** Toolbar visibility inside the shared preview. Mirrors `show-toolbar`. */
-    showToolbar?: boolean | undefined
+    showToolbar?: boolean | undefined;
     /** Native title hints on toolbar buttons. Mirrors `show-toolbar-tooltip`. */
-    showToolbarTooltip?: boolean | undefined
+    showToolbarTooltip?: boolean | undefined;
     /** Keep the dragged offset after release. Mirrors `keep-drag-offset`. */
-    keepDragOffset?: boolean | undefined
+    keepDragOffset?: boolean | undefined;
     /** Custom toolbar renderer. Mirrors `render-toolbar`. */
-    renderToolbar?: ((props: { nodes: SnImageToolbarNodes }) => unknown) | undefined
+    renderToolbar?: ((props: { nodes: SnImageToolbarNodes }) => unknown) | undefined;
   }>(),
   {
     srcList: undefined,
@@ -88,96 +88,94 @@ const props = withDefaults(
     keepDragOffset: false,
     renderToolbar: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Preview index change (v-model:current). Mirrors `on-update:current`. */
-  (e: 'update:current', value: number): void
+  (e: 'update:current', value: number): void;
   /** Preview visibility change (v-model:show). Mirrors `on-update:show`. */
-  (e: 'update:show', value: boolean): void
+  (e: 'update:show', value: boolean): void;
   /** Next button clicked. Mirrors `on-preview-next`. */
-  (e: 'preview-next'): void
+  (e: 'preview-next'): void;
   /** Previous button clicked. Mirrors `on-preview-prev`. */
-  (e: 'preview-prev'): void
-}>()
+  (e: 'preview-prev'): void;
+}>();
 
 defineSlots<{
   /** Image group content (member SnImages). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /* ── Member registry (unused when srcList is set) ───────────────────────── */
 
-const registeredUrls = ref(new Map<number, string>())
+const registeredUrls = ref(new Map<number, string>());
 
 function registerImage(id: number, url: string): () => void {
-  if (props.srcList) return () => {} // member images are ignored, like upstream
-  registeredUrls.value.set(id, url)
+  if (props.srcList) return () => {}; // member images are ignored, like upstream
+  registeredUrls.value.set(id, url);
   return () => {
-    registeredUrls.value.delete(id)
-  }
+    registeredUrls.value.delete(id);
+  };
 }
 
 /** Ordered preview urls: srcList, else members sorted by registration id. */
 const mergedUrls = computed<string[]>(() => {
-  if (props.srcList) return props.srcList
-  const ids = Array.from(registeredUrls.value.keys()).sort((a, b) => a - b)
-  return ids.map((id) => registeredUrls.value.get(id) ?? '')
-})
+  if (props.srcList) return props.srcList;
+  const ids = Array.from(registeredUrls.value.keys()).sort((a, b) => a - b);
+  return ids.map((id) => registeredUrls.value.get(id) ?? '');
+});
 
 function open(id: number): void {
-  if (props.srcList) return
-  const ids = Array.from(registeredUrls.value.keys()).sort((a, b) => a - b)
-  const index = ids.indexOf(id)
-  if (index >= 0) setCurrentIndex(index)
-  doUpdateShow(true)
+  if (props.srcList) return;
+  const ids = Array.from(registeredUrls.value.keys()).sort((a, b) => a - b);
+  const index = ids.indexOf(id);
+  if (index >= 0) setCurrentIndex(index);
+  doUpdateShow(true);
 }
 
-provide(SN_IMAGE_GROUP_INJECTION_KEY, { registerImage, open })
+provide(SN_IMAGE_GROUP_INJECTION_KEY, { registerImage, open });
 
 /* ── Current index (controlled / uncontrolled) ──────────────────────────── */
 
-const uncontrolledCurrent = ref(props.defaultCurrent)
+const uncontrolledCurrent = ref(props.defaultCurrent);
 const mergedCurrent = computed(() =>
   props.current !== undefined ? props.current : uncontrolledCurrent.value,
-)
+);
 
 function setCurrentIndex(index: number): void {
-  if (index === mergedCurrent.value) return
-  uncontrolledCurrent.value = index
-  emit('update:current', index)
+  if (index === mergedCurrent.value) return;
+  uncontrolledCurrent.value = index;
+  emit('update:current', index);
 }
 
 /* ── Show (controlled / uncontrolled) ───────────────────────────────────── */
 
-const uncontrolledShow = ref(props.defaultShow)
-const mergedShow = computed(() =>
-  props.show !== undefined ? props.show : uncontrolledShow.value,
-)
+const uncontrolledShow = ref(props.defaultShow);
+const mergedShow = computed(() => (props.show !== undefined ? props.show : uncontrolledShow.value));
 
 function doUpdateShow(value: boolean): void {
-  uncontrolledShow.value = value
-  emit('update:show', value)
+  uncontrolledShow.value = value;
+  emit('update:show', value);
 }
 
 /* ── prev / next with wrap-around ───────────────────────────────────────── */
 
-const currentUrl = computed(() => mergedUrls.value[mergedCurrent.value] ?? '')
+const currentUrl = computed(() => mergedUrls.value[mergedCurrent.value] ?? '');
 
 function go(step: 1 | -1): void {
-  const count = mergedUrls.value.length
+  const count = mergedUrls.value.length;
   if (count > 0) {
-    const index = mergedCurrent.value
+    const index = mergedCurrent.value;
     for (let i = 1; i <= count; i++) {
-      const candidate = (((index + step * i) % count) + count) % count
+      const candidate = (((index + step * i) % count) + count) % count;
       if (mergedUrls.value[candidate]) {
-        setCurrentIndex(candidate)
-        break
+        setCurrentIndex(candidate);
+        break;
       }
     }
   }
-  if (step === 1) emit('preview-next')
-  else emit('preview-prev')
+  if (step === 1) emit('preview-next');
+  else emit('preview-prev');
 }
 </script>
 

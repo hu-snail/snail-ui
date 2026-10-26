@@ -3,12 +3,12 @@
  * back-top-web-control — custom slot content, a controlled `show`, and
  * different right/bottom offsets.
  */
-import { ref } from 'vue'
-import { SnBackTop, SnButton } from '@snui/vue-web'
-import { ChevronsUp, ArrowUpCircle } from 'lucide-vue-next'
+import { ref } from 'vue';
+import { SnBackTop, SnButton } from '@snui/vue-web';
+import { ChevronsUp, ArrowUpCircle } from 'lucide-vue-next';
 
-const controlledShow = ref(false)
-const scrollRef = ref<HTMLElement | null>(null)
+const controlledShow = ref(false);
+const scrollRef = ref<HTMLElement | null>(null);
 </script>
 
 <template>

@@ -27,55 +27,55 @@ Where the API is absent the tap only emits `click`.
 ```
 
 ```ts
-import { SnImg } from '@snui/uni'
+import { SnImg } from '@snui/uni';
 ```
 
 ## Props
 
-| Name | Type | Default | Required | Description |
-|---|---|---|---|---|
-| `src` | string | '' | no | Image source. |
-| `previewSrc` | string | '' | no | Image opened by `enablePreview` (defaults to `src`). |
-| `width` | string | number | '' | no | Width (bare number = rpx). |
-| `height` | string | number | '' | no | Height (bare number = rpx). |
-| `mode` | ImageMode | 'scaleToFill' | no | Crop mode (uni `<image mode>` set). |
-| `round` | boolean | false | no | Render as a circle. |
-| `radius` | string | number | '' | no | Corner radius (bare number = rpx). |
-| `lazyLoad` | boolean | false | no | Lazy-load the image. |
-| `enablePreview` | boolean | false | no | Tap opens `uni.previewImage`. |
-| `showMenuByLongpress` | boolean | false | no | Long-press shows the miniprogram QR menu (WeChat only). |
-| `showLoading` | boolean | true | no | Show the loading overlay. |
-| `showError` | boolean | true | no | Show the error overlay. |
-| `customClass` | string | '' | no | Custom class for the root node. |
-| `customStyle` | string | '' | no | Custom inline style for the root node. |
-| `customImage` | string | '' | no | Custom class for the inner `<image>`. |
+| Name                  | Type      | Default       | Required | Description                                             |
+| --------------------- | --------- | ------------- | -------- | ------------------------------------------------------- |
+| `src`                 | string    | ''            | no       | Image source.                                           |
+| `previewSrc`          | string    | ''            | no       | Image opened by `enablePreview` (defaults to `src`).    |
+| `width`               | string    | number        | ''       | no                                                      | Width (bare number = rpx).         |
+| `height`              | string    | number        | ''       | no                                                      | Height (bare number = rpx).        |
+| `mode`                | ImageMode | 'scaleToFill' | no       | Crop mode (uni `<image mode>` set).                     |
+| `round`               | boolean   | false         | no       | Render as a circle.                                     |
+| `radius`              | string    | number        | ''       | no                                                      | Corner radius (bare number = rpx). |
+| `lazyLoad`            | boolean   | false         | no       | Lazy-load the image.                                    |
+| `enablePreview`       | boolean   | false         | no       | Tap opens `uni.previewImage`.                           |
+| `showMenuByLongpress` | boolean   | false         | no       | Long-press shows the miniprogram QR menu (WeChat only). |
+| `showLoading`         | boolean   | true          | no       | Show the loading overlay.                               |
+| `showError`           | boolean   | true          | no       | Show the error overlay.                                 |
+| `customClass`         | string    | ''            | no       | Custom class for the root node.                         |
+| `customStyle`         | string    | ''            | no       | Custom inline style for the root node.                  |
+| `customImage`         | string    | ''            | no       | Custom class for the inner `<image>`.                   |
 
 ## Events
 
-| Event | Payload | Description |
-|---|---|---|
-| `click` | Event | Image tapped. |
-| `load` | Event | Image loaded. |
-| `error` | Event | Image failed to load. |
+| Event   | Payload | Description           |
+| ------- | ------- | --------------------- |
+| `click` | Event   | Image tapped.         |
+| `load`  | Event   | Image loaded.         |
+| `error` | Event   | Image failed to load. |
 
 ## Slots
 
-| Slot | Description |
-|---|---|
+| Slot      | Description           |
+| --------- | --------------------- |
 | `loading` | Custom loading state. |
-| `error` | Custom error state. |
+| `error`   | Custom error state.   |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
-| Background subtle | `--sn-mp-color-background-subtle` | Placeholder plate |
-| Border default | `--sn-mp-color-border-default` | Spinner track |
-| Action primary | `--sn-mp-color-action-primary` | Spinner head |
-| Text tertiary | `--sn-mp-color-text-tertiary` | Error text |
-| Font size SM | `--sn-mp-font-size-sm` | Error text size |
+| Token              | CSS Variable                      | Purpose                |
+| ------------------ | --------------------------------- | ---------------------- |
+| Background subtle  | `--sn-mp-color-background-subtle` | Placeholder plate      |
+| Border default     | `--sn-mp-color-border-default`    | Spinner track          |
+| Action primary     | `--sn-mp-color-action-primary`    | Spinner head           |
+| Text tertiary      | `--sn-mp-color-text-tertiary`     | Error text             |
+| Font size SM       | `--sn-mp-font-size-sm`            | Error text size        |
 | Line height normal | `--sn-mp-font-line-height-normal` | Error text line height |
-| Radius full | `--sn-mp-radius-full` | `round` shape |
+| Radius full        | `--sn-mp-radius-full`             | `round` shape          |
 
 ## Accessibility
 

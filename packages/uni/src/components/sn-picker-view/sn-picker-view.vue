@@ -47,50 +47,50 @@
  *   - 日期列生成 — 用 sn-datetime-picker-view
  */
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import type {
   NormalizedPickerOption,
   PickerColumn,
   PickerOption,
   PickerValue,
   PickerViewChangePayload,
-} from './sn-picker-view-types'
-import { createRollerDrag } from './sn-picker-view-drag'
+} from './sn-picker-view-types';
+import { createRollerDrag } from './sn-picker-view-drag';
 
-defineOptions({ name: 'SnPickerView' })
+defineOptions({ name: 'SnPickerView' });
 
 const props = withDefaults(
   defineProps<{
     /* ── wot-ui `wd-picker-view` 1:1 surface ────────────────────────────── */
 
     /** Selected value per column (`v-model`). */
-    modelValue?: PickerValue[]
+    modelValue?: PickerValue[];
     /**
      * Columns. Each entry is a column of primitives / option objects.
      * In `cascade` mode pass the option *tree* here instead: the component
      * derives the visible columns from the selected path.
      */
-    columns?: PickerColumn[]
+    columns?: PickerColumn[];
     /** Row height in px design units (converted to rpx for layout). */
-    itemHeight?: number
+    itemHeight?: number;
     /** Number of visible rows; must be odd so a row can sit in the middle. */
-    visibleItemCount?: number
+    visibleItemCount?: number;
     /** Option key holding the value. */
-    valueKey?: string
+    valueKey?: string;
     /** Option key holding the visible label. */
-    labelKey?: string
+    labelKey?: string;
     /** Option key holding the children (cascade mode only). */
-    childrenKey?: string
+    childrenKey?: string;
     /** Emit `change` while dragging instead of only on release. */
-    immediateChange?: boolean
+    immediateChange?: boolean;
     /** Treat `columns` as a nested option tree. */
-    cascade?: boolean
+    cascade?: boolean;
     /** Disables the whole roller. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Class on the root node. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root node. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     modelValue: () => [],
@@ -106,44 +106,44 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: PickerValue[]): void
-  (e: 'change', payload: PickerViewChangePayload): void
-  (e: 'pickstart'): void
-  (e: 'pickend'): void
-}>()
+  (e: 'update:modelValue', value: PickerValue[]): void;
+  (e: 'change', payload: PickerViewChangePayload): void;
+  (e: 'pickstart'): void;
+  (e: 'pickend'): void;
+}>();
 
 /* ── Normalisation ─────────────────────────────────────────────────────── */
 
 function readKey(raw: PickerOption | PickerValue, key: string): unknown {
-  if (typeof raw !== 'object' || raw === null) return undefined
-  return raw[key]
+  if (typeof raw !== 'object' || raw === null) return undefined;
+  return raw[key];
 }
 
 function normalizeOption(raw: PickerValue | PickerOption): NormalizedPickerOption {
   if (typeof raw === 'object' && raw !== null) {
-    const value = readKey(raw, props.valueKey)
-    const label = readKey(raw, props.labelKey)
+    const value = readKey(raw, props.valueKey);
+    const label = readKey(raw, props.labelKey);
     return {
       value: typeof value === 'string' || typeof value === 'number' ? value : String(label ?? ''),
       label: label === undefined || label === null ? '' : String(label),
       disabled: readKey(raw, 'disabled') === true,
       raw,
-    }
+    };
   }
-  return { value: raw, label: String(raw), disabled: false, raw }
+  return { value: raw, label: String(raw), disabled: false, raw };
 }
 
 function normalizeColumn(column: PickerColumn | undefined): NormalizedPickerOption[] {
-  if (!column) return []
-  return column.map(normalizeOption)
+  if (!column) return [];
+  return column.map(normalizeOption);
 }
 
 function readChildren(raw: PickerOption | PickerValue): PickerColumn | undefined {
-  const children = readKey(raw, props.childrenKey)
-  return Array.isArray(children) ? (children as PickerColumn) : undefined
+  const children = readKey(raw, props.childrenKey);
+  return Array.isArray(children) ? (children as PickerColumn) : undefined;
 }
 
 /**
@@ -153,50 +153,50 @@ function readChildren(raw: PickerOption | PickerValue): PickerColumn | undefined
  * column per selected option that still has children.
  */
 function resolveColumns(values: PickerValue[]): NormalizedPickerOption[][] {
-  if (!props.cascade) return props.columns.map(normalizeColumn)
-  const root = normalizeColumn(props.columns as unknown as PickerColumn)
-  const result: NormalizedPickerOption[][] = [root]
+  if (!props.cascade) return props.columns.map(normalizeColumn);
+  const root = normalizeColumn(props.columns as unknown as PickerColumn);
+  const result: NormalizedPickerOption[][] = [root];
   for (let i = 0; i < values.length; i += 1) {
-    const current = result[i]
-    if (!current) break
-    const selected = current.find(option => option.value === values[i])
-    if (!selected) break
-    const children = readChildren(selected.raw)
-    if (!children || children.length === 0) break
-    result.push(normalizeColumn(children))
+    const current = result[i];
+    if (!current) break;
+    const selected = current.find((option) => option.value === values[i]);
+    if (!selected) break;
+    const children = readChildren(selected.raw);
+    if (!children || children.length === 0) break;
+    result.push(normalizeColumn(children));
   }
-  return result
+  return result;
 }
 
-const resolvedColumns = computed<NormalizedPickerOption[][]>(
-  () => resolveColumns(props.modelValue),
-)
+const resolvedColumns = computed<NormalizedPickerOption[][]>(() =>
+  resolveColumns(props.modelValue),
+);
 
 /** Index of the selected row per column (0 when the value is not present). */
 const selectedIndexes = computed<number[]>(() =>
   resolvedColumns.value.map((column, ci) => {
-    const index = column.findIndex(option => option.value === props.modelValue[ci])
-    return index < 0 ? 0 : index
+    const index = column.findIndex((option) => option.value === props.modelValue[ci]);
+    return index < 0 ? 0 : index;
   }),
-)
+);
 
 /** Value per column, falling back to the first option when unset. */
 const effectiveValues = computed<PickerValue[]>(() =>
   resolvedColumns.value.map((column, ci) => {
-    const index = selectedIndexes.value[ci] ?? 0
-    const option = column[index]
-    return option ? option.value : props.modelValue[ci] ?? ''
+    const index = selectedIndexes.value[ci] ?? 0;
+    const option = column[index];
+    return option ? option.value : (props.modelValue[ci] ?? '');
   }),
-)
+);
 
 /* ── Geometry (all rpx — 1px design = 2rpx) ────────────────────────────── */
 
-const RATIO = 2
+const RATIO = 2;
 
-const itemRpx = computed(() => Math.max(props.itemHeight, 1) * RATIO)
-const itemHeightRpx = computed(() => `${itemRpx.value}rpx`)
-const visibleCount = computed(() => Math.max(props.visibleItemCount, 1))
-const columnHeightRpx = computed(() => `${itemRpx.value * visibleCount.value}rpx`)
+const itemRpx = computed(() => Math.max(props.itemHeight, 1) * RATIO);
+const itemHeightRpx = computed(() => `${itemRpx.value}rpx`);
+const visibleCount = computed(() => Math.max(props.visibleItemCount, 1));
+const columnHeightRpx = computed(() => `${itemRpx.value * visibleCount.value}rpx`);
 
 /* ── Drag engine (shared with sn-datetime-picker-view) ─────────────────── */
 
@@ -204,15 +204,15 @@ const drag = createRollerDrag({
   isDisabled: () => props.disabled,
   itemRpx: () => itemRpx.value,
   visibleCount: () => visibleCount.value,
-  indexOf: columnIndex => selectedIndexes.value[columnIndex] ?? 0,
-  lengthOf: columnIndex => resolvedColumns.value[columnIndex]?.length ?? 0,
+  indexOf: (columnIndex) => selectedIndexes.value[columnIndex] ?? 0,
+  lengthOf: (columnIndex) => resolvedColumns.value[columnIndex]?.length ?? 0,
   isRowDisabled: (columnIndex, rowIndex) =>
     resolvedColumns.value[columnIndex]?.[rowIndex]?.disabled === true,
   isImmediate: () => props.immediateChange,
   commit,
   onStart: () => emit('pickstart'),
   onEnd: () => emit('pickend'),
-})
+});
 
 const {
   isDragging,
@@ -224,114 +224,116 @@ const {
   onTouchCancel,
   shouldIgnoreTap,
   bindMouseGestures,
-} = drag
+} = drag;
 
 /* ── Desktop H5: mouse drag + wheel (additive) ─────────────────────────── */
 
-const rootRef = ref<unknown>(null)
-let disposeMouseGestures: (() => void) | null = null
+const rootRef = ref<unknown>(null);
+let disposeMouseGestures: (() => void) | null = null;
 
 onMounted(() => {
   // Browser hosts only — a mini-program page has no `document`, and uni H5
   // wraps `<view>` in a component instance, so unwrap `$el` when present.
-  if (typeof document === 'undefined') return
-  const el = (rootRef.value as { $el?: unknown } | null)?.$el
-    ?? (rootRef.value as unknown)
-  if (el instanceof HTMLElement) disposeMouseGestures = bindMouseGestures(el)
-})
+  if (typeof document === 'undefined') return;
+  const el = (rootRef.value as { $el?: unknown } | null)?.$el ?? (rootRef.value as unknown);
+  if (el instanceof HTMLElement) disposeMouseGestures = bindMouseGestures(el);
+});
 
 onBeforeUnmount(() => {
-  disposeMouseGestures?.()
-  disposeMouseGestures = null
-})
+  disposeMouseGestures?.();
+  disposeMouseGestures = null;
+});
 
 /** Commit a row index for one column: emits `update:modelValue` + `change`. */
 function commit(columnIndex: number, rowIndex: number): void {
-  const column = resolvedColumns.value[columnIndex]
-  if (!column || column.length === 0) return
-  const target = column[rowIndex]
-  if (!target || target.disabled) return
-  if (selectedIndexes.value[columnIndex] === rowIndex) return
+  const column = resolvedColumns.value[columnIndex];
+  if (!column || column.length === 0) return;
+  const target = column[rowIndex];
+  if (!target || target.disabled) return;
+  if (selectedIndexes.value[columnIndex] === rowIndex) return;
 
   // Cascade: a parent change invalidates every deeper selection, so the
   // emitted path stops right after the changed column and is re-derived.
   const base = props.cascade
     ? effectiveValues.value.slice(0, columnIndex + 1)
-    : effectiveValues.value.slice()
-  base[columnIndex] = target.value
-  const trimmed = base.slice(0, resolveColumns(base).length)
+    : effectiveValues.value.slice();
+  base[columnIndex] = target.value;
+  const trimmed = base.slice(0, resolveColumns(base).length);
 
-  emit('update:modelValue', trimmed)
-  emit('change', buildPayload(trimmed, columnIndex))
+  emit('update:modelValue', trimmed);
+  emit('change', buildPayload(trimmed, columnIndex));
 }
 
 function buildPayload(values: PickerValue[], columnIndex: number): PickerViewChangePayload {
-  const columns = resolveColumns(values)
-  const selectedOptions: Array<PickerOption | PickerValue> = []
-  const selectedLabels: string[] = []
-  const selectedIndexes: number[] = []
+  const columns = resolveColumns(values);
+  const selectedOptions: Array<PickerOption | PickerValue> = [];
+  const selectedLabels: string[] = [];
+  const selectedIndexes: number[] = [];
   columns.forEach((column, ci) => {
-    const index = Math.max(column.findIndex(option => option.value === values[ci]), 0)
-    const option = column[index]
-    selectedIndexes.push(index)
-    selectedOptions.push(option ? option.raw : '')
-    selectedLabels.push(option ? option.label : '')
-  })
+    const index = Math.max(
+      column.findIndex((option) => option.value === values[ci]),
+      0,
+    );
+    const option = column[index];
+    selectedIndexes.push(index);
+    selectedOptions.push(option ? option.raw : '');
+    selectedLabels.push(option ? option.label : '');
+  });
   return {
     selectedValues: values,
     selectedOptions,
     selectedLabels,
     selectedIndexes,
     columnIndex,
-  }
+  };
 }
 
 function onItemTap(columnIndex: number, rowIndex: number): void {
-  if (props.disabled) return
+  if (props.disabled) return;
   // Uni re-fires `tap` on the touchstart target when the finger lifts; after
   // a real drag that row is no longer the one the gesture settled on.
-  if (shouldIgnoreTap()) return
-  commit(columnIndex, rowIndex)
+  if (shouldIgnoreTap()) return;
+  commit(columnIndex, rowIndex);
 }
 
 /* ── Public imperative API (wd-picker-view parity) ─────────────────────── */
 
 function getSelectedValues(): PickerValue[] {
-  return effectiveValues.value.slice()
+  return effectiveValues.value.slice();
 }
 
 function getSelectedOptions(): Array<PickerOption | PickerValue> {
-  return buildPayload(effectiveValues.value, 0).selectedOptions
+  return buildPayload(effectiveValues.value, 0).selectedOptions;
 }
 
 function getSelectedLabels(): string[] {
-  return buildPayload(effectiveValues.value, 0).selectedLabels
+  return buildPayload(effectiveValues.value, 0).selectedLabels;
 }
 
 function getSelectedIndex(): number[] {
-  return selectedIndexes.value.slice()
+  return selectedIndexes.value.slice();
 }
 
 function getColumnsData(): NormalizedPickerOption[][] {
-  return resolvedColumns.value
+  return resolvedColumns.value;
 }
 
 function getColumnData(columnIndex: number): NormalizedPickerOption[] {
-  return resolvedColumns.value[columnIndex] ?? []
+  return resolvedColumns.value[columnIndex] ?? [];
 }
 
 function getColumnIndex(): number[] {
-  return selectedIndexes.value.slice()
+  return selectedIndexes.value.slice();
 }
 
 /** Reset every column to its first selectable option. */
 function resetColumns(): void {
-  const nextValues = resolvedColumns.value.map(column => {
-    const first = column.find(option => !option.disabled) ?? column[0]
-    return first ? first.value : ''
-  })
-  emit('update:modelValue', nextValues)
-  emit('change', buildPayload(nextValues, 0))
+  const nextValues = resolvedColumns.value.map((column) => {
+    const first = column.find((option) => !option.disabled) ?? column[0];
+    return first ? first.value : '';
+  });
+  emit('update:modelValue', nextValues);
+  emit('change', buildPayload(nextValues, 0));
 }
 
 defineExpose({
@@ -343,7 +345,7 @@ defineExpose({
   getColumnData,
   getColumnIndex,
   resetColumns,
-})
+});
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
@@ -354,29 +356,29 @@ const rootClass = computed(() => [
     'sn-picker-view--cascade': props.cascade,
   },
   props.customClass,
-])
+]);
 
 /** Half the leftover space — the top / bottom fade covers exactly that. */
 const maskHeightRpx = computed(() => {
-  const rest = itemRpx.value * (visibleCount.value - 1)
-  return `${Math.max(rest / 2, 0)}rpx`
-})
+  const rest = itemRpx.value * (visibleCount.value - 1);
+  return `${Math.max(rest / 2, 0)}rpx`;
+});
 
 const rootStyle = computed(() => {
   const vars = [
     `--sn-picker-view-item-height: ${itemHeightRpx.value}`,
     `--sn-picker-view-mask-height: ${maskHeightRpx.value}`,
     `--sn-picker-view-settle-duration: ${snapDurationMs.value}ms`,
-  ].join('; ')
-  return props.customStyle ? `${vars}; ${props.customStyle}` : vars
-})
+  ].join('; ');
+  return props.customStyle ? `${vars}; ${props.customStyle}` : vars;
+});
 
 function isActive(columnIndex: number, rowIndex: number): boolean {
-  return (selectedIndexes.value[columnIndex] ?? 0) === rowIndex
+  return (selectedIndexes.value[columnIndex] ?? 0) === rowIndex;
 }
 
 function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
-  return isActive(columnIndex, rowIndex) ? 'true' : 'false'
+  return isActive(columnIndex, rowIndex) ? 'true' : 'false';
 }
 </script>
 
@@ -421,7 +423,8 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
           @tap="onItemTap(columnIndex, rowIndex)"
-        >{{ option.label }}</view>
+          >{{ option.label }}</view
+        >
       </view>
       <view class="sn-picker-view__mask sn-picker-view__mask--top" aria-hidden="true" />
       <view class="sn-picker-view__mask sn-picker-view__mask--bottom" aria-hidden="true" />

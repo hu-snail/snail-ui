@@ -2,8 +2,8 @@
 /**
  * Demo: SnPopselect — multiple selection, scrollable menu, controlled value.
  */
-import { ref } from 'vue'
-import { SnButton, SnPopselect } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnPopselect } from '@snui/vue-web';
 
 const options = [
   'User research',
@@ -16,9 +16,9 @@ const options = [
   'Requirement review',
   'Design review',
   'Launch retrospective',
-]
+];
 
-const selected = ref<string[]>(['Usability testing', 'Data analysis'])
+const selected = ref<string[]>(['Usability testing', 'Data analysis']);
 </script>
 
 <template>
@@ -31,16 +31,13 @@ const selected = ref<string[]>(['Usability testing', 'Data analysis'])
         scrollable
         placement="bottom"
       >
-        <SnButton>
-          {{ selected.length }} selected (click to edit)
-        </SnButton>
+        <SnButton> {{ selected.length }} selected (click to edit) </SnButton>
       </SnPopselect>
     </div>
-    <p class="popselect-multi-demo__state">
-      value = [{{ selected.join(', ') || 'empty' }}]
-    </p>
+    <p class="popselect-multi-demo__state">value = [{{ selected.join(', ') || 'empty' }}]</p>
     <p class="popselect-multi-demo__hint">
-      In multiple mode the menu stays open after selection so you can keep checking / unchecking; scrollable caps the menu height and scrolls on overflow.
+      In multiple mode the menu stays open after selection so you can keep checking / unchecking;
+      scrollable caps the menu height and scrolls on overflow.
     </p>
   </div>
 </template>

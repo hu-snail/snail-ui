@@ -33,150 +33,150 @@
  *  keeps the docs package free of a direct `markdown-it` dependency (same
  *  approach as ./raw-doc-source.ts). */
 interface MarkdownToken {
-  type: string
-  tag: string
-  content: string
-  children?: MarkdownToken[] | null
+  type: string;
+  tag: string;
+  content: string;
+  children?: MarkdownToken[] | null;
 }
 
 interface MarkdownStateCore {
-  Token: new (type: string, tag: string, nesting: number) => MarkdownToken
-  tokens: MarkdownToken[]
+  Token: new (type: string, tag: string, nesting: number) => MarkdownToken;
+  tokens: MarkdownToken[];
 }
 
 interface MarkdownRenderer {
   core: {
     ruler: {
-      push: (name: string, rule: (state: MarkdownStateCore) => void) => void
-    }
-  }
+      push: (name: string, rule: (state: MarkdownStateCore) => void) => void;
+    };
+  };
 }
 
 /** Matches a `<Demo … />` / `<Demo …>` opening tag. */
-const DEMO_TAG = /<Demo(?=[\s/>])/g
+const DEMO_TAG = /<Demo(?=[\s/>])/g;
 
 /** `data-sn-doc-source` marks the hidden div carrying the page's raw markdown
  *  (see ./raw-doc-source.ts); its payload must never be read as a demo. */
-const RAW_SOURCE_MARKER = 'data-sn-doc-source'
+const RAW_SOURCE_MARKER = 'data-sn-doc-source';
 
 /** HTML-bearing token kinds that can carry a `<Demo>` tag. */
-const HTML_TOKEN_TYPES = new Set(['html_block', 'html_inline'])
+const HTML_TOKEN_TYPES = new Set(['html_block', 'html_inline']);
 
 interface Section {
   /** Index of the section's `heading_open` token. */
-  start: number
+  start: number;
   /** Index of the section's last token (inclusive). */
-  end: number
+  end: number;
   /** Heading level (2 = `h2`). */
-  level: number
+  level: number;
   /** Number of `<Demo>` tags inside the section. */
-  demos: number
+  demos: number;
 }
 
 function countDemoTags(token: MarkdownToken): number {
-  if (!HTML_TOKEN_TYPES.has(token.type)) return 0
-  const content = token.content || ''
-  if (content.includes(RAW_SOURCE_MARKER)) return 0
-  return (content.match(DEMO_TAG) || []).length
+  if (!HTML_TOKEN_TYPES.has(token.type)) return 0;
+  const content = token.content || '';
+  if (content.includes(RAW_SOURCE_MARKER)) return 0;
+  return (content.match(DEMO_TAG) || []).length;
 }
 
 function countDemosIn(tokens: MarkdownToken[], start: number, end: number): number {
-  let count = 0
+  let count = 0;
   for (let i = start; i <= end; i++) {
-    const token = tokens[i]
-    count += countDemoTags(token)
-    const children = token.children
+    const token = tokens[i];
+    count += countDemoTags(token);
+    const children = token.children;
     if (Array.isArray(children)) {
-      for (const child of children) count += countDemoTags(child)
+      for (const child of children) count += countDemoTags(child);
     }
   }
-  return count
+  return count;
 }
 
 /** Split the token stream into heading-anchored sections. */
 function splitSections(tokens: MarkdownToken[]): Section[] {
-  const starts: number[] = []
+  const starts: number[] = [];
   for (let i = 0; i < tokens.length; i++) {
-    if (tokens[i].type === 'heading_open') starts.push(i)
+    if (tokens[i].type === 'heading_open') starts.push(i);
   }
 
   return starts.map((start, index) => {
-    const next = index + 1 < starts.length ? starts[index + 1] : tokens.length
-    const end = next - 1
+    const next = index + 1 < starts.length ? starts[index + 1] : tokens.length;
+    const end = next - 1;
     return {
       start,
       end,
       level: Number((tokens[start].tag || '').slice(1)) || 0,
       demos: countDemosIn(tokens, start, end),
-    }
-  })
+    };
+  });
 }
 
 /** A section that renders as one demo card. */
 function isCell(section: Section): boolean {
-  return section.level >= 2 && section.demos === 1
+  return section.level >= 2 && section.demos === 1;
 }
 
 /** Collect wrapper HTML per token index, preserving insertion order. */
 function push(map: Map<number, string[]>, index: number, html: string): void {
-  const list = map.get(index)
+  const list = map.get(index);
   if (list === undefined) {
-    map.set(index, [html])
+    map.set(index, [html]);
   } else {
-    list.push(html)
+    list.push(html);
   }
 }
 
 export function demoGrid(md: MarkdownRenderer): void {
   md.core.ruler.push('sn-demo-grid', (state) => {
-    const tokens = state.tokens
-    const sections = splitSections(tokens)
-    if (!sections.length) return
+    const tokens = state.tokens;
+    const sections = splitSections(tokens);
+    if (!sections.length) return;
 
     // Wrapper opens/closes are collected per token index, then spliced in one
     // pass so the section indexes stay valid.
-    const before = new Map<number, string[]>()
-    const after = new Map<number, string[]>()
+    const before = new Map<number, string[]>();
+    const after = new Map<number, string[]>();
 
-    let index = 0
+    let index = 0;
     while (index < sections.length) {
       if (!isCell(sections[index])) {
-        index++
-        continue
+        index++;
+        continue;
       }
 
       // Extend over the maximal run of consecutive cells.
-      let last = index
-      while (last + 1 < sections.length && isCell(sections[last + 1])) last++
+      let last = index;
+      while (last + 1 < sections.length && isCell(sections[last + 1])) last++;
 
-      const grouped = last > index
-      if (grouped) push(before, sections[index].start, '<div class="sn-demo-grid">')
+      const grouped = last > index;
+      if (grouped) push(before, sections[index].start, '<div class="sn-demo-grid">');
       for (let k = index; k <= last; k++) {
-        push(before, sections[k].start, '<div class="sn-demo-cell">')
-        push(after, sections[k].end, '</div>')
+        push(before, sections[k].start, '<div class="sn-demo-cell">');
+        push(after, sections[k].end, '</div>');
       }
-      if (grouped) push(after, sections[last].end, '</div>')
+      if (grouped) push(after, sections[last].end, '</div>');
 
-      index = last + 1
+      index = last + 1;
     }
 
-    if (!before.size) return
+    if (!before.size) return;
 
-    const out: MarkdownToken[] = []
+    const out: MarkdownToken[] = [];
     const emit = (html: string): void => {
-      const token = new state.Token('html_block', '', 0)
-      token.content = html
-      out.push(token)
-    }
+      const token = new state.Token('html_block', '', 0);
+      token.content = html;
+      out.push(token);
+    };
 
     tokens.forEach((token, i) => {
-      const opens = before.get(i)
-      if (opens !== undefined) opens.forEach(emit)
-      out.push(token)
-      const closes = after.get(i)
-      if (closes !== undefined) closes.forEach(emit)
-    })
+      const opens = before.get(i);
+      if (opens !== undefined) opens.forEach(emit);
+      out.push(token);
+      const closes = after.get(i);
+      if (closes !== undefined) closes.forEach(emit);
+    });
 
-    state.tokens = out
-  })
+    state.tokens = out;
+  });
 }

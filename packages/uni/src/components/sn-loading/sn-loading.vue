@@ -34,36 +34,36 @@
  *   - 进度百分比 — 用 sn-progress
  */
 
-import { computed } from 'vue'
+import { computed } from 'vue';
 
-defineOptions({ name: 'SnLoading' })
+defineOptions({ name: 'SnLoading' });
 
 /** Spinner shape. Mirrors `wd-loading` `type`. */
-type LoadingType = 'circular' | 'spinner' | 'dots' | 'wave'
+type LoadingType = 'circular' | 'spinner' | 'dots' | 'wave';
 
 /** Layout direction of spinner + text. Mirrors `wd-loading` `direction`. */
-type LoadingDirection = 'vertical' | 'horizontal'
+type LoadingDirection = 'vertical' | 'horizontal';
 
 const props = withDefaults(
   defineProps<{
     /** Spinner shape. */
-    type?: LoadingType
+    type?: LoadingType;
     /** Spinner color override (any CSS color value). */
-    color?: string
+    color?: string;
     /** Base size — a bare number is treated as rpx, a string passes through. */
-    size?: number | string
+    size?: number | string;
     /** Text shown next to / below the spinner. */
-    text?: string
+    text?: string;
     /** Layout direction of spinner + text. */
-    direction?: LoadingDirection
+    direction?: LoadingDirection;
     /** Inherit the parent's `color` instead of the token default. */
-    inheritColor?: boolean
+    inheritColor?: boolean;
     /** Custom class for the root node. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style for the root node. */
-    customStyle?: string
+    customStyle?: string;
     /** Custom class for the spinner box only. */
-    customSpinnerClass?: string
+    customSpinnerClass?: string;
   }>(),
   {
     type: 'circular',
@@ -76,24 +76,24 @@ const props = withDefaults(
     customStyle: '',
     customSpinnerClass: '',
   },
-)
+);
 
 defineSlots<{
   /** Loading text content (overrides `text`). */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /** Bars rendered by the `wave` type — mirrors wd-loading's 5-bar wave. */
-const WAVE_BARS = [0, 1, 2, 3, 4] as const
+const WAVE_BARS = [0, 1, 2, 3, 4] as const;
 
 /**
  * Effective size. A bare number is rpx (uni-app's cross-device unit), a string
  * is used verbatim so `'2em'` / `'48rpx'` / `'20px'` all work.
  */
 const spinnerSize = computed(() => {
-  if (props.size === '' || props.size === undefined) return ''
-  return typeof props.size === 'number' ? `${props.size}rpx` : props.size
-})
+  if (props.size === '' || props.size === undefined) return '';
+  return typeof props.size === 'number' ? `${props.size}rpx` : props.size;
+});
 
 const rootClass = computed(() => [
   'sn-loading',
@@ -103,19 +103,19 @@ const rootClass = computed(() => [
     'sn-loading--inherit-color': props.inheritColor,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
+  const parts: string[] = [];
   // `size` drives the root font-size: every shape is sized in `em`, so one
   // value scales the whole spinner (see the file header).
-  if (spinnerSize.value) parts.push(`font-size: ${spinnerSize.value}`)
-  if (props.color) parts.push(`color: ${props.color}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  if (spinnerSize.value) parts.push(`font-size: ${spinnerSize.value}`);
+  if (props.color) parts.push(`color: ${props.color}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
-const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerClass])
+const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerClass]);
 </script>
 
 <template>
@@ -234,14 +234,38 @@ const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerC
   animation: sn-loading-bar-fade 0.8s linear infinite;
 }
 
-.sn-loading__spinner-bar:nth-child(1) { animation-delay: 0s; opacity: 1; }
-.sn-loading__spinner-bar:nth-child(2) { animation-delay: 0.1s; opacity: 0.875; }
-.sn-loading__spinner-bar:nth-child(3) { animation-delay: 0.2s; opacity: 0.75; }
-.sn-loading__spinner-bar:nth-child(4) { animation-delay: 0.3s; opacity: 0.625; }
-.sn-loading__spinner-bar:nth-child(5) { animation-delay: 0.4s; opacity: 0.5; }
-.sn-loading__spinner-bar:nth-child(6) { animation-delay: 0.5s; opacity: 0.375; }
-.sn-loading__spinner-bar:nth-child(7) { animation-delay: 0.6s; opacity: 0.25; }
-.sn-loading__spinner-bar:nth-child(8) { animation-delay: 0.7s; opacity: 0.125; }
+.sn-loading__spinner-bar:nth-child(1) {
+  animation-delay: 0s;
+  opacity: 1;
+}
+.sn-loading__spinner-bar:nth-child(2) {
+  animation-delay: 0.1s;
+  opacity: 0.875;
+}
+.sn-loading__spinner-bar:nth-child(3) {
+  animation-delay: 0.2s;
+  opacity: 0.75;
+}
+.sn-loading__spinner-bar:nth-child(4) {
+  animation-delay: 0.3s;
+  opacity: 0.625;
+}
+.sn-loading__spinner-bar:nth-child(5) {
+  animation-delay: 0.4s;
+  opacity: 0.5;
+}
+.sn-loading__spinner-bar:nth-child(6) {
+  animation-delay: 0.5s;
+  opacity: 0.375;
+}
+.sn-loading__spinner-bar:nth-child(7) {
+  animation-delay: 0.6s;
+  opacity: 0.25;
+}
+.sn-loading__spinner-bar:nth-child(8) {
+  animation-delay: 0.7s;
+  opacity: 0.125;
+}
 
 /* ── dots ─────────────────────────────────────────────────────────────── */
 
@@ -261,8 +285,12 @@ const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerC
   animation: sn-loading-dot-pulse 1s ease-in-out infinite;
 }
 
-.sn-loading__dot:nth-child(2) { animation-delay: 0.15s; }
-.sn-loading__dot:nth-child(3) { animation-delay: 0.3s; }
+.sn-loading__dot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.sn-loading__dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
 
 /* ── wave ─────────────────────────────────────────────────────────────── */
 
@@ -298,22 +326,41 @@ const spinnerClass = computed(() => ['sn-loading__spinner', props.customSpinnerC
 /* ── Keyframes ────────────────────────────────────────────────────────── */
 
 @keyframes sn-loading-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes sn-loading-bar-fade {
-  0%, 100% { opacity: 0.125; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.125;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 @keyframes sn-loading-dot-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(0.6); }
-  50% { opacity: 1; transform: scale(1); }
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes sn-loading-wave {
-  0%, 100% { transform: scaleY(0.4); }
-  50% { transform: scaleY(1); }
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
 }
 
 /* Doodle skin — thicker hand-drawn strokes. */

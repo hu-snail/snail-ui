@@ -3,14 +3,15 @@
  * Demo: SnMarquee — four directions (left / right / up / down).
  * 竖向跑马灯需要显式给盒子高度，否则没有可裁剪的视口。
  */
-import { SnMarquee } from '@snui/vue-web'
+import { SnMarquee } from '@snui/vue-web';
 
-const horizontal = 'Notice: system maintenance this Friday 22:00 - 24:00; services will be unavailable during that time.'
+const horizontal =
+  'Notice: system maintenance this Friday 22:00 - 24:00; services will be unavailable during that time.';
 const verticalItems = [
   'New version 0.1.0 released',
   'Added marquee / comment components',
   'Docs site now supports switching between Chinese and English',
-]
+];
 </script>
 
 <template>

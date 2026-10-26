@@ -26,23 +26,23 @@
  *   </SnList>
  */
 
-import { provide, toRef } from 'vue'
-import { SN_LIST_INJECTION_KEY } from './list-context'
+import { provide, toRef } from 'vue';
+import { SN_LIST_INJECTION_KEY } from './list-context';
 
-defineOptions({ name: 'SnList' })
+defineOptions({ name: 'SnList' });
 
 const props = withDefaults(
   defineProps<{
     /** Font scale marker (emitted as a modifier class). */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /** Draw the outer border with rounded corners. */
-    bordered?: boolean
+    bordered?: boolean;
     /** Rows get the pointer cursor. */
-    clickable?: boolean
+    clickable?: boolean;
     /** Rows highlight on hover. */
-    hoverable?: boolean
+    hoverable?: boolean;
     /** Render the 1px divider between rows. */
-    showDivider?: boolean
+    showDivider?: boolean;
   }>(),
   {
     size: 'medium',
@@ -51,20 +51,20 @@ const props = withDefaults(
     hoverable: false,
     showDivider: true,
   },
-)
+);
 
 defineSlots<{
   /** `<SnListItem>` rows. */
-  default?(): unknown
+  default?(): unknown;
   /** Header content (bordered off from the rows). */
-  header?(): unknown
+  header?(): unknown;
   /** Footer content. */
-  footer?(): unknown
-}>()
+  footer?(): unknown;
+}>();
 
 provide(SN_LIST_INJECTION_KEY, {
   showDivider: toRef(props, 'showDivider'),
-})
+});
 </script>
 
 <template>
@@ -109,7 +109,8 @@ provide(SN_LIST_INJECTION_KEY, {
 /* naive list borderColor = dividerColor (≈6% ink on white) — the hairline
  * mix, not the heavier --sn-web-color-border-* tokens. */
 .sn-list--bordered {
-  border: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
+  border: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
   border-radius: 3px;
 }
 
@@ -122,7 +123,8 @@ provide(SN_LIST_INJECTION_KEY, {
 }
 
 .sn-list__header:not(:last-child) {
-  border-bottom: 1px solid color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--sn-web-color-text-primary) 6%, var(--sn-web-color-background-surface));
 }
 
 /* Bordered / hoverable lists pad the header/footer like the rows. */

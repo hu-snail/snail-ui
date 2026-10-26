@@ -5,10 +5,10 @@
  * Shows: replacing the `description` prop with arbitrary markup, including
  * a nested list and inline emphasis.
  */
-import { ref } from 'vue'
-import { SnSteps, SnStep } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnSteps, SnStep } from '@snui/vue-web';
 
-const current = ref(1)
+const current = ref(1);
 </script>
 
 <template>
@@ -24,7 +24,8 @@ const current = ref(1)
 
       <SnStep title="Hook up the pipeline">
         <p class="steps-content__para">
-          Add <code>.ci.yml</code>at the repo root; it takes effect after pushing to the default branch.
+          Add <code>.ci.yml</code>at the repo root; it takes effect after pushing to the default
+          branch.
         </p>
       </SnStep>
 
@@ -36,7 +37,8 @@ const current = ref(1)
     </SnSteps>
 
     <p class="steps-content__hint">
-      The default slot fully takes over the step body; <code>description</code> the prop is no longer rendered.
+      The default slot fully takes over the step body; <code>description</code> the prop is no
+      longer rendered.
     </p>
   </div>
 </template>

@@ -23,8 +23,8 @@
  * Usage:
  *   <SnAiMessage :message="message" @retry="onRetry" />
  */
-import { computed } from 'vue'
-import { SnIcon } from '@snui/vue-web'
+import { computed } from 'vue';
+import { SnIcon } from '@snui/vue-web';
 import {
   CheckIcon,
   CopyIcon,
@@ -33,39 +33,39 @@ import {
   RetryIcon,
   ToolIcon,
   WarningIcon,
-} from '../shared/icons'
-import { formatBytes, formatThinkingDuration } from '../shared/stream'
-import type { SnAiAttachment, SnAiMessage, SnAiToolPart } from '../shared/types'
-import type { IconComponent } from '@snui/vue-web'
-import { toIconComponent } from './icon-adapter'
-import SnAiThinking from './SnAiThinking.vue'
+} from '../shared/icons';
+import { formatBytes, formatThinkingDuration } from '../shared/stream';
+import type { SnAiAttachment, SnAiMessage, SnAiToolPart } from '../shared/types';
+import type { IconComponent } from '@snui/vue-web';
+import { toIconComponent } from './icon-adapter';
+import SnAiThinking from './SnAiThinking.vue';
 
-defineOptions({ name: 'SnAiMessage' })
+defineOptions({ name: 'SnAiMessage' });
 
 const props = withDefaults(
   defineProps<{
     /** The turn to render. */
-    message: SnAiMessage
+    message: SnAiMessage;
     /** Whether the row's copy affordance shows the copied confirmation. */
-    copied?: boolean | undefined
+    copied?: boolean | undefined;
     /** Show the reasoning block even after the turn finishes. */
-    showThinking?: boolean | undefined
+    showThinking?: boolean | undefined;
     /** Show the copy affordance on finished assistant turns. */
-    showCopy?: boolean | undefined
+    showCopy?: boolean | undefined;
   }>(),
   {
     copied: false,
     showThinking: true,
     showCopy: true,
   },
-)
+);
 
 const emit = defineEmits<{
   /** User asked to retry a failed turn. */
-  (e: 'retry', message: SnAiMessage): void
+  (e: 'retry', message: SnAiMessage): void;
   /** User asked to copy the turn's answer text. */
-  (e: 'copy', message: SnAiMessage): void
-}>()
+  (e: 'copy', message: SnAiMessage): void;
+}>();
 
 const icons = {
   warning: toIconComponent(WarningIcon),
@@ -75,59 +75,55 @@ const icons = {
   tool: toIconComponent(ToolIcon),
   file: toIconComponent(FileIcon),
   image: toIconComponent(ImageIcon),
-}
+};
 
 /** Assistant rows carry the copy affordance; user rows are right-aligned. */
-const isAssistant = computed(() => props.message.role === 'assistant')
+const isAssistant = computed(() => props.message.role === 'assistant');
 
 /** Parts that belong to the body (everything except error, rendered apart). */
-const bodyParts = computed(() =>
-  props.message.parts.filter((part) => part.type !== 'error'),
-)
+const bodyParts = computed(() => props.message.parts.filter((part) => part.type !== 'error'));
 
 /** Inline failures for this turn. */
-const errorParts = computed(() =>
-  props.message.parts.filter((part) => part.type === 'error'),
-)
+const errorParts = computed(() => props.message.parts.filter((part) => part.type === 'error'));
 
 /** Whether the answer is still arriving (drives the caret + waiting line). */
-const isStreaming = computed(() => props.message.status === 'streaming')
-const isQueued = computed(() => props.message.status === 'queued')
-const isThinkingOnly = computed(() => props.message.status === 'thinking')
-const isAborted = computed(() => props.message.status === 'aborted')
-const isDone = computed(() => props.message.status === 'done')
+const isStreaming = computed(() => props.message.status === 'streaming');
+const isQueued = computed(() => props.message.status === 'queued');
+const isThinkingOnly = computed(() => props.message.status === 'thinking');
+const isAborted = computed(() => props.message.status === 'aborted');
+const isDone = computed(() => props.message.status === 'done');
 
 /** Whether the row has any visible content yet. */
-const hasBody = computed(() => bodyParts.value.length > 0)
+const hasBody = computed(() => bodyParts.value.length > 0);
 
 /** Icon for an attachment chip, chosen from its MIME type. */
 function attachmentIcon(attachment: SnAiAttachment): IconComponent {
-  return attachment.mime?.startsWith('image/') ? icons.image : icons.file
+  return attachment.mime?.startsWith('image/') ? icons.image : icons.file;
 }
 
 /** Human-readable attachment metadata line. */
 function attachmentMeta(attachment: SnAiAttachment): string {
-  const size = formatBytes(attachment.size)
-  const type = attachment.mime ?? ''
-  return [type, size].filter(Boolean).join(' · ')
+  const size = formatBytes(attachment.size);
+  const type = attachment.mime ?? '';
+  return [type, size].filter(Boolean).join(' · ');
 }
 
 /** Label for a tool row's status. */
 function toolStatusLabel(status: SnAiToolPart['status']): string {
-  if (status === 'running') return '执行中'
-  if (status === 'error') return '执行失败'
-  return '已完成'
+  if (status === 'running') return '执行中';
+  if (status === 'error') return '执行失败';
+  return '已完成';
 }
 
 /** Whether a thinking block should render given `showThinking`. */
-const visibleThinking = computed(() => props.showThinking || isThinkingOnly.value)
+const visibleThinking = computed(() => props.showThinking || isThinkingOnly.value);
 
 function onRetry(): void {
-  emit('retry', props.message)
+  emit('retry', props.message);
 }
 
 function onCopy(): void {
-  emit('copy', props.message)
+  emit('copy', props.message);
 }
 </script>
 
@@ -141,7 +137,11 @@ function onCopy(): void {
     :data-snui-component="'ai-message'"
     :data-status="message.status ?? 'idle'"
   >
-    <div v-if="isAssistant || message.role === 'system'" class="sn-ai-message__avatar" aria-hidden="true">
+    <div
+      v-if="isAssistant || message.role === 'system'"
+      class="sn-ai-message__avatar"
+      aria-hidden="true"
+    >
       <slot name="avatar">
         <span class="sn-ai-message__avatar-fallback">{{ isAssistant ? 'AI' : 'SYS' }}</span>
       </slot>
@@ -167,7 +167,11 @@ function onCopy(): void {
         >
           <SnIcon :icon="icons.tool" :size="14" class="sn-ai-message__tool-icon" />
           <span class="sn-ai-message__tool-name">{{ part.name }}</span>
-          <span v-if="part.status === 'running'" class="sn-ai-message__tool-spinner" aria-hidden="true" />
+          <span
+            v-if="part.status === 'running'"
+            class="sn-ai-message__tool-spinner"
+            aria-hidden="true"
+          />
           <span class="sn-ai-message__tool-status">{{ toolStatusLabel(part.status) }}</span>
           <span v-if="part.detail" class="sn-ai-message__tool-detail">{{ part.detail }}</span>
         </div>
@@ -197,11 +201,17 @@ function onCopy(): void {
 
       <!-- Aborted notice -->
       <p v-if="isAborted" class="sn-ai-message__notice">
-        已停止生成<template v-if="message.parts.some((p) => p.type === 'text')">，以上为已生成内容</template>
+        已停止生成<template v-if="message.parts.some((p) => p.type === 'text')"
+          >，以上为已生成内容</template
+        >
       </p>
 
       <!-- Inline failures -->
-      <div v-for="(part, index) in errorParts" :key="`${message.id}-err-${index}`" class="sn-ai-message__error">
+      <div
+        v-for="(part, index) in errorParts"
+        :key="`${message.id}-err-${index}`"
+        class="sn-ai-message__error"
+      >
         <div class="sn-ai-message__error-head">
           <SnIcon :icon="icons.warning" :size="14" class="sn-ai-message__error-icon" />
           <span class="sn-ai-message__error-title">{{ part.error.message }}</span>
@@ -225,8 +235,24 @@ function onCopy(): void {
           <SnIcon :icon="copied ? icons.check : icons.copy" :size="13" />
           <span>{{ copied ? '已复制' : '复制' }}</span>
         </button>
-        <span v-if="formatThinkingDuration(message.updatedAt && message.createdAt ? message.updatedAt - message.createdAt : undefined)" class="sn-ai-message__elapsed">
-          用时 {{ formatThinkingDuration(message.updatedAt && message.createdAt ? message.updatedAt - message.createdAt : undefined) }}
+        <span
+          v-if="
+            formatThinkingDuration(
+              message.updatedAt && message.createdAt
+                ? message.updatedAt - message.createdAt
+                : undefined,
+            )
+          "
+          class="sn-ai-message__elapsed"
+        >
+          用时
+          {{
+            formatThinkingDuration(
+              message.updatedAt && message.createdAt
+                ? message.updatedAt - message.createdAt
+                : undefined,
+            )
+          }}
         </span>
       </div>
     </div>

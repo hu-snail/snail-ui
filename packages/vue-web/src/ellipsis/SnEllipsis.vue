@@ -36,10 +36,10 @@ import {
   ref,
   watch,
   type CSSProperties,
-} from 'vue'
-import SnTooltip from '../tooltip/SnTooltip.vue'
+} from 'vue';
+import SnTooltip from '../tooltip/SnTooltip.vue';
 
-defineOptions({ name: 'SnEllipsis' })
+defineOptions({ name: 'SnEllipsis' });
 
 /**
  * Documented subset of SnTooltip props accepted through the object form
@@ -47,26 +47,34 @@ defineOptions({ name: 'SnEllipsis' })
  */
 export interface SnEllipsisTooltipOptions {
   /** Tooltip body; defaults to the full slot text. */
-  content?: string
+  content?: string;
   placement?:
-    | 'top-start' | 'top' | 'top-end'
-    | 'right-start' | 'right' | 'right-end'
-    | 'bottom-start' | 'bottom' | 'bottom-end'
-    | 'left-start' | 'left' | 'left-end'
-  trigger?: 'hover' | 'click' | 'focus' | 'manual'
-  delay?: number | [number, number]
-  duration?: number
-  arrow?: boolean
-  zIndex?: number
-  raw?: boolean
-  animated?: boolean
-  keepAliveOnHover?: boolean
-  overlap?: boolean
-  width?: number | 'trigger'
-  to?: string | HTMLElement | false
-  displayDirective?: 'if' | 'show'
-  contentClass?: string
-  contentStyle?: CSSProperties
+    | 'top-start'
+    | 'top'
+    | 'top-end'
+    | 'right-start'
+    | 'right'
+    | 'right-end'
+    | 'bottom-start'
+    | 'bottom'
+    | 'bottom-end'
+    | 'left-start'
+    | 'left'
+    | 'left-end';
+  trigger?: 'hover' | 'click' | 'focus' | 'manual';
+  delay?: number | [number, number];
+  duration?: number;
+  arrow?: boolean;
+  zIndex?: number;
+  raw?: boolean;
+  animated?: boolean;
+  keepAliveOnHover?: boolean;
+  overlap?: boolean;
+  width?: number | 'trigger';
+  to?: string | HTMLElement | false;
+  displayDirective?: 'if' | 'show';
+  contentClass?: string;
+  contentStyle?: CSSProperties;
 }
 
 const props = withDefaults(
@@ -75,17 +83,17 @@ const props = withDefaults(
      * Whether clicking the text toggles the expanded state.
      * Mirrors n-ellipsis `expandTrigger`. Default 'none'.
      */
-    expandTrigger?: 'click' | 'none'
+    expandTrigger?: 'click' | 'none';
     /** Row count before clamping. 1 = single line. Mirrors n-ellipsis `lineClamp`. Default 1. */
-    lineClamp?: number
+    lineClamp?: number;
     /**
      * Show a tooltip with the full text when the content overflows.
      * `true` uses the defaults; an object forwards SnTooltip props.
      * Mirrors n-ellipsis `tooltip`. Default true.
      */
-    tooltip?: boolean | SnEllipsisTooltipOptions
+    tooltip?: boolean | SnEllipsisTooltipOptions;
     /** Box width; a number is px, 'screen' is 100vw. Mirrors n-ellipsis `width`. */
-    width?: number | 'screen' | undefined
+    width?: number | 'screen' | undefined;
   }>(),
   {
     expandTrigger: 'none',
@@ -93,79 +101,78 @@ const props = withDefaults(
     tooltip: true,
     width: undefined,
   },
-)
+);
 
 defineSlots<{
   /** Text content that gets clamped. Mirrors n-ellipsis `default`. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 /* ─────────── Overflow detection ─────────── */
 
-const expanded = ref(false)
-const overflow = ref(false)
-const fullText = ref('')
-const contentEl = ref<HTMLElement | null>(null)
+const expanded = ref(false);
+const overflow = ref(false);
+const fullText = ref('');
+const contentEl = ref<HTMLElement | null>(null);
 
 function measure(): void {
-  const el = contentEl.value
-  if (!el) return
-  fullText.value = (el.textContent ?? '').replace(/\s+/g, ' ').trim()
+  const el = contentEl.value;
+  if (!el) return;
+  fullText.value = (el.textContent ?? '').replace(/\s+/g, ' ').trim();
   if (expanded.value) {
-    overflow.value = false
-    return
+    overflow.value = false;
+    return;
   }
   if (props.lineClamp > 1) {
-    overflow.value = el.scrollHeight - el.clientHeight > 1
-  }
-  else {
-    overflow.value = el.scrollWidth - el.clientWidth > 1
+    overflow.value = el.scrollHeight - el.clientHeight > 1;
+  } else {
+    overflow.value = el.scrollWidth - el.clientWidth > 1;
   }
 }
 
 function onWindowResize(): void {
-  measure()
+  measure();
 }
 
 /* Per AGENTS.md §41: the observer + listener are torn down on unmount. */
-let resizeObserver: ResizeObserver | null = null
+let resizeObserver: ResizeObserver | null = null;
 
 onMounted(() => {
-  measure()
-  window.addEventListener('resize', onWindowResize)
+  measure();
+  window.addEventListener('resize', onWindowResize);
   if (typeof ResizeObserver !== 'undefined') {
-    resizeObserver = new ResizeObserver(() => measure())
-    if (contentEl.value) resizeObserver.observe(contentEl.value)
+    resizeObserver = new ResizeObserver(() => measure());
+    if (contentEl.value) resizeObserver.observe(contentEl.value);
   }
-})
+});
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', onWindowResize)
+  window.removeEventListener('resize', onWindowResize);
   if (resizeObserver) {
-    resizeObserver.disconnect()
-    resizeObserver = null
+    resizeObserver.disconnect();
+    resizeObserver = null;
   }
-})
+});
 
 watch([() => props.lineClamp, () => props.width], () => {
-  void nextTick().then(measure)
-})
+  void nextTick().then(measure);
+});
 
 watch(expanded, () => {
-  void nextTick().then(measure)
-})
+  void nextTick().then(measure);
+});
 
 /* ─────────── Styling ─────────── */
 
 const rootStyle = computed<CSSProperties | undefined>(() => {
-  if (props.width === undefined) return undefined
+  if (props.width === undefined) return undefined;
   return {
     width: props.width === 'screen' ? '100vw' : `${props.width}px`,
-  }
-})
+  };
+});
 
 const contentStyle = computed<CSSProperties | undefined>(() => {
-  if (expanded.value) return undefined
+  if (expanded.value) return undefined;
   if (props.lineClamp > 1) {
     return {
       display: '-webkit-box',
@@ -173,36 +180,34 @@ const contentStyle = computed<CSSProperties | undefined>(() => {
       WebkitLineClamp: props.lineClamp,
       overflow: 'hidden',
       wordBreak: 'break-word',
-    }
+    };
   }
   return {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',
-  }
-})
+  };
+});
 
 /* ─────────── Expand on click ─────────── */
 
 function onContentClick(): void {
-  if (props.expandTrigger !== 'click') return
-  expanded.value = !expanded.value
+  if (props.expandTrigger !== 'click') return;
+  expanded.value = !expanded.value;
 }
 
 /* ─────────── Tooltip passthrough ─────────── */
 
-const tooltipEnabled = computed(() => props.tooltip !== false)
+const tooltipEnabled = computed(() => props.tooltip !== false);
 
 const tooltipOptions = computed<SnEllipsisTooltipOptions>(() =>
   typeof props.tooltip === 'object' ? props.tooltip : {},
-)
+);
 
-const tooltipContent = computed(
-  () => tooltipOptions.value.content ?? fullText.value,
-)
+const tooltipContent = computed(() => tooltipOptions.value.content ?? fullText.value);
 
 /** The bubble only opens for genuinely overflowing (and collapsed) text. */
-const tooltipDisabled = computed(() => !overflow.value || expanded.value)
+const tooltipDisabled = computed(() => !overflow.value || expanded.value);
 </script>
 
 <template>
@@ -226,7 +231,8 @@ const tooltipDisabled = computed(() => !overflow.value || expanded.value)
         class="sn-ellipsis__content"
         :style="contentStyle"
         @click="onContentClick"
-      ><slot /></span>
+        ><slot
+      /></span>
     </SnTooltip>
     <span
       v-else
@@ -234,7 +240,8 @@ const tooltipDisabled = computed(() => !overflow.value || expanded.value)
       class="sn-ellipsis__content"
       :style="contentStyle"
       @click="onContentClick"
-    ><slot /></span>
+      ><slot
+    /></span>
   </span>
 </template>
 

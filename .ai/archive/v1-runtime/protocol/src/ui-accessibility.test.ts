@@ -80,7 +80,9 @@ describe('@snui/protocol — UIAccessibilitySchema', () => {
     });
 
     it('rejects aria with object values', () => {
-      expect(UIAccessibilitySchema.safeParse({ aria: { bad: { nested: true } } }).success).toBe(false);
+      expect(UIAccessibilitySchema.safeParse({ aria: { bad: { nested: true } } }).success).toBe(
+        false,
+      );
     });
   });
 
@@ -100,7 +102,9 @@ describe('@snui/protocol — UIAccessibilitySchema', () => {
     });
 
     it('rejects a description longer than 1024 chars', () => {
-      expect(UIAccessibilitySchema.safeParse({ description: 'x'.repeat(1025) }).success).toBe(false);
+      expect(UIAccessibilitySchema.safeParse({ description: 'x'.repeat(1025) }).success).toBe(
+        false,
+      );
     });
   });
 

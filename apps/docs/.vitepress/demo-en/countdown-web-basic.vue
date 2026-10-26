@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnCountdown — basic seconds countdown toggled by active. */
-import { ref } from 'vue'
-import { SnCountdown, SnSwitch } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnCountdown, SnSwitch } from '@snui/vue-web';
 
-const active = ref(false)
+const active = ref(false);
 </script>
 
 <template>

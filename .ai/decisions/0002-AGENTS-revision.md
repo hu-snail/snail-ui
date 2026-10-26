@@ -17,57 +17,57 @@ AGENTS.md 是项目最高级别规则文件。当前规则基于 v1.x Schema-Run
 
 ## 冲突条款列表
 
-| AGENTS.md 章节 | 当前规则概要 | 与 v3.0 冲突点 | 修订方向 |
-|---|---|---|---|
-| §16-§20 | Schema First / Runtime First / Schema 不得直接调用 Service | v3.0 是 Component First / Token First / Style Pack First | 改为「Component First / Token First / Style Pack First」并删除"Schema 不得直接调 Service"等已无意义的条款 |
-| §21 | Schema 不得调用业务 Service（`{action: "userService.createUser"}` 改为 `{action: "create-user"}`）| 已无 schema 概念 | 删除 |
-| §22 | Action Registry 必须通过注册表解析 | 无 Action Registry 概念 | 删除 |
-| §23 | 禁止 `eval()` / `new Function()`；Schema 表达式沙箱 | 部分仍需保留（禁止动态执行），但 Schema 沙箱无意义 | 拆分为"禁止动态代码执行"（保留）+ 删除"Schema 表达式沙箱" |
-| §24 | Binding 只能引用受控 Context（state / props / computed / context）| 无 Binding 概念 | 删除 |
-| §25 | 所有核心 Schema 用 Zod 单一真理来源 | 已无 Schema | 替换为"组件 Props 类型用 TS interface，AI 元数据用 ai-description.md 维护" |
-| §26 | Schema 必须 validate / normalize / execute | 无 Schema 概念 | 删除 |
-| §27 | Normalizer 必须 deterministic / pure / idempotent | 无 Normalizer | 删除 |
-| §28-§29 | AUIError 接口 + 错误码 | 错误系统仍需保留，但用 TS interface 而非 Zod | 改写为"TS interface + 字符串字面量联合作为错误码" |
-| §30-§31 | Component Contract（name / version / props / events / slots / tokens / accessibility / capabilities） | 与 v3.0 一致，保留 | 保留并细化（加入 `data-snui-component` 钩子要求） |
-| §32 | Vue 组件只负责渲染 / 交互 / DOM，不负责 Schema 校验 / 业务逻辑 / AI 逻辑 | 仍有效 | 保留 |
-| §33-§34 | Token 层级 | 与 v3.0 一致，保留 | 保留 |
-| §35 | CSS Token 优先 | 与 v3.0 一致 | 保留（补充："兜底值只允许 transparent/inherit/currentColor"） |
-| §36-§43 | 命名 / 函数 / 异步 / Abort / Dispose 等代码规范 | 与 v3.0 兼容 | 保留 |
-| §44-§47 | 测试规范 | 保留 | 保留 |
-| §48 | AI 不得删除失败测试 | 保留 | 保留 |
-| §49-§51 | Snapshot / E2E / Visual Regression | 保留 | 保留 |
-| §52 | A11y 不是发布后再补 | 保留 | 保留 |
-| §53-§55 | Git Commit | 保留 | 保留 |
-| §56 | Dependency 原则 | 保留 | 保留 |
-| §57 | Package Dependency 方向（protocol ← schema ← runtime ← renderer）| 已无这些包 | 改为"tokens ← style-packs/vue-web/uni/ai ← docs" |
-| §58 | Package Boundary（protocol 不能 import vue-web 等）| 保留并改写（vue-web 不能 import ai） | 保留 |
-| §59 | Web / Uni Boundary | 保留 | 保留 |
-| §61-§64 | Studio 原则 / JSON Patch / AI Repair | 无 Studio，无 Patch 概念 | 删除 |
-| §65 | Runtime Inspect | 无 Runtime | 改为"开发环境 Inspect 通过 ai-meta.json + MCP 工具" |
-| §66-§68 | 敏感信息 / Logging / Reporter | 保留 | 保留 |
-| §69-§72 | 文档 / 注释 / TODO / FIXME | 保留 | 保留 |
-| §73-§74 | ADR 流程 | 保留（继续生效） | 保留 |
-| §75 | AI Context 标准 | 保留 | 保留 |
-| §76-§77 | Golden Schema / Regression | 已无 Schema | 删除 Golden Schema；保留 Regression（改为"组件 golden"）|
-| §78-§79 | API Compatibility / Stability | 保留 | 保留（补充 Style Pack 也属于 Public API）|
-| §80-§81 | Performance / Bundle Size | 保留 | 保留 |
-| §82 | Memory Leak | 保留 | 保留 |
-| §83-§85 | Error Recovery / Capability / Fallback | 保留 | 保留 |
-| §86-§87 | AI 自修复机制 | 保留 | 保留 |
-| §88-§89 | Review Agent / Checklist | 保留 | 保留（增加"皮肤 CSS 不依赖 DOM 深层选择器"检查项） |
-| §90 | Human Gate | 保留（继续生效） | 保留（补充 Style Pack 调整 token 变量名需 Human Gate） |
-| §91-§92 | 普通任务 + Merge Gate | 保留 | 保留 |
-| §93 | Stop-the-Line | 保留（大部分仍生效） | 改写：删除"Schema 直接调 Service"等已无意义条款；保留 eval / TypeScript / Dispose / Inspect 数据等核心条款 |
-| §94-§95 | Agent 输出标准 / 不得声称未执行验证为通过 | 保留 | 保留 |
-| §96-§97 | 完成标准 / 核心规则 | 保留 | 保留（补充"AI 不得绕开 tokens 包直接写 --aui-*"）|
-| §98 | Agent 工作模型 | 保留 | 保留 |
-| §99 | Human vs AI 决策边界 | 保留 | 保留（补充：Style Pack 调整属于 Human Gate） |
-| §100 | Rule Priority | 保留 | 保留 |
-| §101-§103 | Git 回退 / 评审 / Bug 记录 | 保留 | 保留 |
-| §104 | 避免重复造轮子 | 保留 | 保留 |
-| §105-§108 | 代码质量高标准 / 无废代码 / 无未用 | 保留 | 保留 |
-| §109 | 补充规则 | 保留 | 保留 |
-| §110 | 组件文档自动同步（VitePress）| 大部分仍生效 | 修订：删除"`framework-web.js` esbuild bundle"（FOUND-002 重建后不再用 schema bundle）；保留双语 × 双端 + ComponentPreview 真实渲染 |
+| AGENTS.md 章节 | 当前规则概要                                                                                          | 与 v3.0 冲突点                                           | 修订方向                                                                                                                           |
+| -------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| §16-§20        | Schema First / Runtime First / Schema 不得直接调用 Service                                            | v3.0 是 Component First / Token First / Style Pack First | 改为「Component First / Token First / Style Pack First」并删除"Schema 不得直接调 Service"等已无意义的条款                          |
+| §21            | Schema 不得调用业务 Service（`{action: "userService.createUser"}` 改为 `{action: "create-user"}`）    | 已无 schema 概念                                         | 删除                                                                                                                               |
+| §22            | Action Registry 必须通过注册表解析                                                                    | 无 Action Registry 概念                                  | 删除                                                                                                                               |
+| §23            | 禁止 `eval()` / `new Function()`；Schema 表达式沙箱                                                   | 部分仍需保留（禁止动态执行），但 Schema 沙箱无意义       | 拆分为"禁止动态代码执行"（保留）+ 删除"Schema 表达式沙箱"                                                                          |
+| §24            | Binding 只能引用受控 Context（state / props / computed / context）                                    | 无 Binding 概念                                          | 删除                                                                                                                               |
+| §25            | 所有核心 Schema 用 Zod 单一真理来源                                                                   | 已无 Schema                                              | 替换为"组件 Props 类型用 TS interface，AI 元数据用 ai-description.md 维护"                                                         |
+| §26            | Schema 必须 validate / normalize / execute                                                            | 无 Schema 概念                                           | 删除                                                                                                                               |
+| §27            | Normalizer 必须 deterministic / pure / idempotent                                                     | 无 Normalizer                                            | 删除                                                                                                                               |
+| §28-§29        | AUIError 接口 + 错误码                                                                                | 错误系统仍需保留，但用 TS interface 而非 Zod             | 改写为"TS interface + 字符串字面量联合作为错误码"                                                                                  |
+| §30-§31        | Component Contract（name / version / props / events / slots / tokens / accessibility / capabilities） | 与 v3.0 一致，保留                                       | 保留并细化（加入 `data-snui-component` 钩子要求）                                                                                  |
+| §32            | Vue 组件只负责渲染 / 交互 / DOM，不负责 Schema 校验 / 业务逻辑 / AI 逻辑                              | 仍有效                                                   | 保留                                                                                                                               |
+| §33-§34        | Token 层级                                                                                            | 与 v3.0 一致，保留                                       | 保留                                                                                                                               |
+| §35            | CSS Token 优先                                                                                        | 与 v3.0 一致                                             | 保留（补充："兜底值只允许 transparent/inherit/currentColor"）                                                                      |
+| §36-§43        | 命名 / 函数 / 异步 / Abort / Dispose 等代码规范                                                       | 与 v3.0 兼容                                             | 保留                                                                                                                               |
+| §44-§47        | 测试规范                                                                                              | 保留                                                     | 保留                                                                                                                               |
+| §48            | AI 不得删除失败测试                                                                                   | 保留                                                     | 保留                                                                                                                               |
+| §49-§51        | Snapshot / E2E / Visual Regression                                                                    | 保留                                                     | 保留                                                                                                                               |
+| §52            | A11y 不是发布后再补                                                                                   | 保留                                                     | 保留                                                                                                                               |
+| §53-§55        | Git Commit                                                                                            | 保留                                                     | 保留                                                                                                                               |
+| §56            | Dependency 原则                                                                                       | 保留                                                     | 保留                                                                                                                               |
+| §57            | Package Dependency 方向（protocol ← schema ← runtime ← renderer）                                     | 已无这些包                                               | 改为"tokens ← style-packs/vue-web/uni/ai ← docs"                                                                                   |
+| §58            | Package Boundary（protocol 不能 import vue-web 等）                                                   | 保留并改写（vue-web 不能 import ai）                     | 保留                                                                                                                               |
+| §59            | Web / Uni Boundary                                                                                    | 保留                                                     | 保留                                                                                                                               |
+| §61-§64        | Studio 原则 / JSON Patch / AI Repair                                                                  | 无 Studio，无 Patch 概念                                 | 删除                                                                                                                               |
+| §65            | Runtime Inspect                                                                                       | 无 Runtime                                               | 改为"开发环境 Inspect 通过 ai-meta.json + MCP 工具"                                                                                |
+| §66-§68        | 敏感信息 / Logging / Reporter                                                                         | 保留                                                     | 保留                                                                                                                               |
+| §69-§72        | 文档 / 注释 / TODO / FIXME                                                                            | 保留                                                     | 保留                                                                                                                               |
+| §73-§74        | ADR 流程                                                                                              | 保留（继续生效）                                         | 保留                                                                                                                               |
+| §75            | AI Context 标准                                                                                       | 保留                                                     | 保留                                                                                                                               |
+| §76-§77        | Golden Schema / Regression                                                                            | 已无 Schema                                              | 删除 Golden Schema；保留 Regression（改为"组件 golden"）                                                                           |
+| §78-§79        | API Compatibility / Stability                                                                         | 保留                                                     | 保留（补充 Style Pack 也属于 Public API）                                                                                          |
+| §80-§81        | Performance / Bundle Size                                                                             | 保留                                                     | 保留                                                                                                                               |
+| §82            | Memory Leak                                                                                           | 保留                                                     | 保留                                                                                                                               |
+| §83-§85        | Error Recovery / Capability / Fallback                                                                | 保留                                                     | 保留                                                                                                                               |
+| §86-§87        | AI 自修复机制                                                                                         | 保留                                                     | 保留                                                                                                                               |
+| §88-§89        | Review Agent / Checklist                                                                              | 保留                                                     | 保留（增加"皮肤 CSS 不依赖 DOM 深层选择器"检查项）                                                                                 |
+| §90            | Human Gate                                                                                            | 保留（继续生效）                                         | 保留（补充 Style Pack 调整 token 变量名需 Human Gate）                                                                             |
+| §91-§92        | 普通任务 + Merge Gate                                                                                 | 保留                                                     | 保留                                                                                                                               |
+| §93            | Stop-the-Line                                                                                         | 保留（大部分仍生效）                                     | 改写：删除"Schema 直接调 Service"等已无意义条款；保留 eval / TypeScript / Dispose / Inspect 数据等核心条款                         |
+| §94-§95        | Agent 输出标准 / 不得声称未执行验证为通过                                                             | 保留                                                     | 保留                                                                                                                               |
+| §96-§97        | 完成标准 / 核心规则                                                                                   | 保留                                                     | 保留（补充"AI 不得绕开 tokens 包直接写 --aui-*"）                                                                                  |
+| §98            | Agent 工作模型                                                                                        | 保留                                                     | 保留                                                                                                                               |
+| §99            | Human vs AI 决策边界                                                                                  | 保留                                                     | 保留（补充：Style Pack 调整属于 Human Gate）                                                                                       |
+| §100           | Rule Priority                                                                                         | 保留                                                     | 保留                                                                                                                               |
+| §101-§103      | Git 回退 / 评审 / Bug 记录                                                                            | 保留                                                     | 保留                                                                                                                               |
+| §104           | 避免重复造轮子                                                                                        | 保留                                                     | 保留                                                                                                                               |
+| §105-§108      | 代码质量高标准 / 无废代码 / 无未用                                                                    | 保留                                                     | 保留                                                                                                                               |
+| §109           | 补充规则                                                                                              | 保留                                                     | 保留                                                                                                                               |
+| §110           | 组件文档自动同步（VitePress）                                                                         | 大部分仍生效                                             | 修订：删除"`framework-web.js` esbuild bundle"（FOUND-002 重建后不再用 schema bundle）；保留双语 × 双端 + ComponentPreview 真实渲染 |
 
 ---
 
@@ -214,6 +214,6 @@ AI Native          AI 通过 Skill 文件 + MCP Server 理解组件
 
 ## 修订记录
 
-| 版本 | 日期 | 变更 |
-|---|---|---|
+| 版本 | 日期       | 变更                         |
+| ---- | ---------- | ---------------------------- |
 | v1.0 | 2026-10-03 | 初始版本（Proposed，待审批） |

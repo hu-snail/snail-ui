@@ -45,31 +45,31 @@
 
 ### Props
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| `show` | `boolean` | `undefined` | 是否显示按钮（受控）。`undefined` 表示由滚动位置决定。 |
-| `right` | `string \| number` | `40` | 距容器右侧的偏移。 |
-| `bottom` | `string \| number` | `40` | 距容器底部的偏移。 |
-| `to` | `string \| HTMLElement` | `'body'` | 按钮渲染的目标容器。 |
-| `visibilityHeight` | `number` | `180` | 触发显示的滚动高度。 |
-| `listenTo` | `() => HTMLElement \| undefined` | `undefined` | 监听滚动的元素。省略时自动寻找最近的可滚动祖先。 |
-| `target` | `() => HTMLElement \| undefined` | `undefined` | 滚动容器的取值函数，用于计算偏移基准。 |
-| `onUpdateShow` | `(value: boolean) => void` | `undefined` | 显示状态变化时调用。 |
-| `onShow` | `() => void` | `undefined` | 按钮出现时调用。 |
-| `onHide` | `() => void` | `undefined` | 按钮隐藏时调用。 |
+| 名称               | 类型                             | 默认值      | 说明                                                   |
+| ------------------ | -------------------------------- | ----------- | ------------------------------------------------------ |
+| `show`             | `boolean`                        | `undefined` | 是否显示按钮（受控）。`undefined` 表示由滚动位置决定。 |
+| `right`            | `string \| number`               | `40`        | 距容器右侧的偏移。                                     |
+| `bottom`           | `string \| number`               | `40`        | 距容器底部的偏移。                                     |
+| `to`               | `string \| HTMLElement`          | `'body'`    | 按钮渲染的目标容器。                                   |
+| `visibilityHeight` | `number`                         | `180`       | 触发显示的滚动高度。                                   |
+| `listenTo`         | `() => HTMLElement \| undefined` | `undefined` | 监听滚动的元素。省略时自动寻找最近的可滚动祖先。       |
+| `target`           | `() => HTMLElement \| undefined` | `undefined` | 滚动容器的取值函数，用于计算偏移基准。                 |
+| `onUpdateShow`     | `(value: boolean) => void`       | `undefined` | 显示状态变化时调用。                                   |
+| `onShow`           | `() => void`                     | `undefined` | 按钮出现时调用。                                       |
+| `onHide`           | `() => void`                     | `undefined` | 按钮隐藏时调用。                                       |
 
 ### Events
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称          | 参数      | 说明           |
+| ------------- | --------- | -------------- |
 | `update:show` | `boolean` | 显示状态变化。 |
-| `show` | `()` | 按钮出现。 |
-| `hide` | `()` | 按钮隐藏。 |
+| `show`        | `()`      | 按钮出现。     |
+| `hide`        | `()`      | 按钮隐藏。     |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
+| 名称      | 参数 | 说明                           |
+| --------- | ---- | ------------------------------ |
 | `default` | `()` | 自定义按钮内容，替代内建图标。 |
 
 ## 受控与非受控

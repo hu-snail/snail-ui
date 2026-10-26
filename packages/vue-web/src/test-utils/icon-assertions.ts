@@ -20,10 +20,10 @@
  * SnIcon).
  */
 
-import { expect } from 'vitest'
-import type { DOMWrapper, VueWrapper } from '@vue/test-utils'
+import { expect } from 'vitest';
+import type { DOMWrapper, VueWrapper } from '@vue/test-utils';
 
-type WrapperLike = VueWrapper<unknown> | DOMWrapper<Element>
+type WrapperLike = VueWrapper<unknown> | DOMWrapper<Element>;
 
 /**
  * Assert that `selector` matched an element containing a *real* icon svg —
@@ -34,20 +34,14 @@ type WrapperLike = VueWrapper<unknown> | DOMWrapper<Element>
  * @param selector CSS selector for the icon host (the element that wraps, or
  *                 is, `<SnIcon>`). Defaults to the first `.sn-icon`.
  */
-export function expectIconRendered(
-  wrapper: WrapperLike,
-  selector = '.sn-icon',
-): void {
-  const host = wrapper.find(selector)
-  expect(host.exists(), `expected an icon host at "${selector}"`).toBe(true)
+export function expectIconRendered(wrapper: WrapperLike, selector = '.sn-icon'): void {
+  const host = wrapper.find(selector);
+  expect(host.exists(), `expected an icon host at "${selector}"`).toBe(true);
   expect(
     host.classes(),
     `icon at "${selector}" fell back to the unregistered placeholder`,
-  ).not.toContain('sn-icon--missing')
-  expect(
-    host.find('svg').exists(),
-    `icon at "${selector}" rendered no <svg> body`,
-  ).toBe(true)
+  ).not.toContain('sn-icon--missing');
+  expect(host.find('svg').exists(), `icon at "${selector}" rendered no <svg> body`).toBe(true);
 }
 
 /**
@@ -55,9 +49,9 @@ export function expectIconRendered(
  * Used to prove the diagnostic path still works.
  */
 export function expectIconMissing(wrapper: WrapperLike, selector = '.sn-icon'): void {
-  const host = wrapper.find(selector)
-  expect(host.exists(), `expected an icon host at "${selector}"`).toBe(true)
-  expect(host.classes()).toContain('sn-icon--missing')
+  const host = wrapper.find(selector);
+  expect(host.exists(), `expected an icon host at "${selector}"`).toBe(true);
+  expect(host.classes()).toContain('sn-icon--missing');
 }
 
 /**
@@ -68,9 +62,9 @@ export function expectIconMissing(wrapper: WrapperLike, selector = '.sn-icon'): 
  * The optional `label` is only used to make the failure message readable.
  */
 export function expectNoMissingIcons(wrapper: WrapperLike, label?: string): void {
-  const missing = wrapper.findAll('.sn-icon--missing')
+  const missing = wrapper.findAll('.sn-icon--missing');
   expect(
     missing.length,
     `${label ?? 'component'} left ${missing.length} unresolved SnIcon placeholder(s)`,
-  ).toBe(0)
+  ).toBe(0);
 }

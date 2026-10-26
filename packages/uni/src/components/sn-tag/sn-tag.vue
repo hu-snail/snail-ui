@@ -39,13 +39,13 @@
  *   - 长文本排版 — 用 sn-text
  */
 
-import { computed, markRaw, ref } from 'vue'
-import SnIcon from '../sn-icon/sn-icon.vue'
-import type { IconData } from '../sn-icon/sn-icon.vue'
-import { resolveIconByName } from '../sn-icon/sn-icon-registry'
-import { X } from '../sn-icon/sn-icon-set'
+import { computed, markRaw, ref } from 'vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { X } from '../sn-icon/sn-icon-set';
 
-defineOptions({ name: 'SnTag' })
+defineOptions({ name: 'SnTag' });
 
 // Reference: wot-ui wd-tag Attributes
 //   (https://wot-ui.cn/component/tag.html)
@@ -53,7 +53,7 @@ defineOptions({ name: 'SnTag' })
 const props = withDefaults(
   defineProps<{
     /** 标签尺寸，可选值为 small、medium、large、extra-large、default。 */
-    size?: 'small' | 'medium' | 'large' | 'extra-large' | 'default'
+    size?: 'small' | 'medium' | 'large' | 'extra-large' | 'default';
     /**
      * 标签类型（语义色）。
      * default / primary / success / warning / danger / volcano / lightblue /
@@ -69,31 +69,31 @@ const props = withDefaults(
       | 'lightblue'
       | 'cyan'
       | 'pink'
-      | 'purple'
+      | 'purple';
     /** 左侧图标名（经 `registerSnIcons()` 注册的 sn-icon 名称）。 */
-    icon?: string
+    icon?: string;
     /** 图标类名前缀，`cssIcon` 打开时用于拼出字体图标 class。 */
-    iconPrefix?: string
+    iconPrefix?: string;
     /** CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。 */
-    cssIcon?: boolean | string
+    cssIcon?: boolean | string;
     /** 是否可关闭（渲染关闭按钮，点击 emit `close`）。 */
-    closable?: boolean
+    closable?: boolean;
     /** 是否为新增标签（渲染输入框，确认后 emit `confirm`）。 */
-    dynamic?: boolean
+    dynamic?: boolean;
     /** 文字颜色（内联覆盖）。 */
-    color?: string
+    color?: string;
     /** 背景色和边框色（内联覆盖）。 */
-    bgColor?: string
+    bgColor?: string;
     /** 是否圆角（胶囊形）。 */
-    round?: boolean
+    round?: boolean;
     /** 是否标记样式（左上 / 右下不对称圆角）。 */
-    mark?: boolean
+    mark?: boolean;
     /** 标签变体：light / dark / plain / dashed / text。 */
-    variant?: 'light' | 'dark' | 'plain' | 'dashed' | 'text'
+    variant?: 'light' | 'dark' | 'plain' | 'dashed' | 'text';
     /** 根节点自定义类名。 */
-    customClass?: string
+    customClass?: string;
     /** 根节点自定义 inline style。 */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     size: 'default',
@@ -111,32 +111,32 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** 点击标签时触发。 */
-  (e: 'click', event: Event): void
+  (e: 'click', event: Event): void;
   /** 点击关闭按钮时触发。 */
-  (e: 'close', event: Event): void
+  (e: 'close', event: Event): void;
   /** 新增标签输入确认后触发。 */
-  (e: 'confirm', payload: { value: string }): void
-}>()
+  (e: 'confirm', payload: { value: string }): void;
+}>();
 
 defineSlots<{
   /** 标签内容。 */
-  default?(): unknown
+  default?(): unknown;
   /** 自定义图标（覆盖 `icon` prop）。 */
-  icon?(): unknown
+  icon?(): unknown;
   /** 自定义新增标签内容，`dynamic` 为 true 时生效。 */
-  add?(): unknown
-}>()
+  add?(): unknown;
+}>();
 
 /** Registry-resolved icon data for the `icon` prop (null when unknown). */
 const iconData = computed<IconData | null>(() => {
-  if (!props.icon) return null
-  const resolved = resolveIconByName(props.icon)
-  return resolved ? markRaw(resolved) : null
-})
+  if (!props.icon) return null;
+  const resolved = resolveIconByName(props.icon);
+  return resolved ? markRaw(resolved) : null;
+});
 
 /**
  * Font-icon class list. `cssIcon === true` uses `iconPrefix` as the prefix
@@ -144,26 +144,26 @@ const iconData = computed<IconData | null>(() => {
  * escape hatch for consumers carrying their own iconfont.
  */
 const cssIconClass = computed<string>(() => {
-  if (!props.icon || !props.cssIcon) return ''
-  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix
-  return prefix ? `${prefix}-${props.icon}` : props.icon
-})
+  if (!props.icon || !props.cssIcon) return '';
+  const prefix = typeof props.cssIcon === 'string' ? props.cssIcon : props.iconPrefix;
+  return prefix ? `${prefix}-${props.icon}` : props.icon;
+});
 
 /** Draft text of the inline "new tag" input. */
-const draftValue = ref('')
+const draftValue = ref('');
 
 /** Close button click — must not bubble into the root `click`. */
 function onCloseTap(event: Event): void {
-  event.stopPropagation()
-  emit('close', event)
+  event.stopPropagation();
+  emit('close', event);
 }
 
 function onRootTap(event: Event): void {
-  emit('click', event)
+  emit('click', event);
 }
 
 function onConfirm(): void {
-  emit('confirm', { value: draftValue.value })
+  emit('confirm', { value: draftValue.value });
 }
 
 const rootClass = computed(() => [
@@ -178,15 +178,16 @@ const rootClass = computed(() => [
     'sn-tag--dynamic': props.dynamic,
   },
   props.customClass,
-])
+]);
 
 const rootStyle = computed(() => {
-  const parts: string[] = []
-  if (props.color) parts.push(`color: ${props.color}`)
-  if (props.bgColor) parts.push(`background-color: ${props.bgColor}`, `border-color: ${props.bgColor}`)
-  if (props.customStyle) parts.push(props.customStyle)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts: string[] = [];
+  if (props.color) parts.push(`color: ${props.color}`);
+  if (props.bgColor)
+    parts.push(`background-color: ${props.bgColor}`, `border-color: ${props.bgColor}`);
+  if (props.customStyle) parts.push(props.customStyle);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 </script>
 
 <template>
@@ -198,7 +199,12 @@ const rootStyle = computed(() => {
     @tap="onRootTap"
   >
     <slot name="icon">
-      <SnIcon v-if="iconData" class="sn-tag__icon" :icon="iconData" :size="size === 'small' ? 20 : 24" />
+      <SnIcon
+        v-if="iconData"
+        class="sn-tag__icon"
+        :icon="iconData"
+        :size="size === 'small' ? 20 : 24"
+      />
       <text v-else-if="cssIconClass" :class="['sn-tag__icon', cssIconClass]" aria-hidden="true" />
     </slot>
 
@@ -210,17 +216,11 @@ const rootStyle = computed(() => {
       confirm-type="done"
       :placeholder="''"
       @confirm="onConfirm"
-    >
+    />
     <slot v-else />
     <slot v-if="dynamic" name="add" />
 
-    <view
-      v-if="closable"
-      class="sn-tag__close"
-      role="button"
-      aria-label="Close"
-      @tap="onCloseTap"
-    >
+    <view v-if="closable" class="sn-tag__close" role="button" aria-label="Close" @tap="onCloseTap">
       <SnIcon :icon="X" :size="size === 'small' ? 16 : 20" />
     </view>
   </view>

@@ -43,11 +43,11 @@
  *   <SnHeatmap :data="data" color-theme="blue" size="large" tooltip />
  */
 
-import { computed, useSlots } from 'vue'
-import { useLocale } from '../locales/use-locale'
-import SnTooltip from '../tooltip/SnTooltip.vue'
-import { defaultTooltipContent } from './heatmap-tooltip'
-import type { SnHeatmapTooltipConfig, SnHeatmapTooltipDay } from './heatmap-tooltip'
+import { computed, useSlots } from 'vue';
+import { useLocale } from '../locales/use-locale';
+import SnTooltip from '../tooltip/SnTooltip.vue';
+import { defaultTooltipContent } from './heatmap-tooltip';
+import type { SnHeatmapTooltipConfig, SnHeatmapTooltipDay } from './heatmap-tooltip';
 import {
   buildHeatmapMatrix,
   buildLoadingMatrix,
@@ -56,64 +56,64 @@ import {
   buildWeekLabels,
   calcLevel,
   normalizeHeatmapData,
-} from './heatmap-utils'
+} from './heatmap-utils';
 import type {
   SnHeatmapCell,
   SnHeatmapColorTheme,
   SnHeatmapDataItem,
   SnHeatmapFirstDayOfWeek,
-} from './heatmap-utils'
+} from './heatmap-utils';
 
-defineOptions({ name: 'SnHeatmap' })
+defineOptions({ name: 'SnHeatmap' });
 
 /** Active locale (injected once at setup — inject() is setup-only). */
-const locale = useLocale()
+const locale = useLocale();
 
 /** Laid-out cell with the resolved color level (row/col carried for tooltip slot params). */
 interface SnHeatmapViewCell {
-  timestamp: number
-  value: number | null | undefined
-  level: number
-  rowIndex: number
-  colIndex: number
+  timestamp: number;
+  value: number | null | undefined;
+  level: number;
+  rowIndex: number;
+  colIndex: number;
 }
 
 const props = withDefaults(
   defineProps<{
     /** Data source: `{ timestamp, value }` list (null / absent value renders an empty cell). Mirrors n-heatmap `data`. */
-    data?: SnHeatmapDataItem[] | undefined
+    data?: SnHeatmapDataItem[] | undefined;
     /** Data shown while loading. Mirrors n-heatmap `loadingData`. */
-    loadingData?: SnHeatmapDataItem[] | undefined
+    loadingData?: SnHeatmapDataItem[] | undefined;
     /** Custom level colors, light → dark; overrides the built-in theme. Mirrors n-heatmap `activeColors`. */
-    activeColors?: string[] | undefined
+    activeColors?: string[] | undefined;
     /** Custom minimum-level color. Mirrors n-heatmap `minimumColor`. */
-    minimumColor?: string | undefined
+    minimumColor?: string | undefined;
     /** Built-in color theme. Mirrors n-heatmap `colorTheme`. */
-    colorTheme?: SnHeatmapColorTheme | undefined
+    colorTheme?: SnHeatmapColorTheme | undefined;
     /** Fill the leading empty week cells with 0 instead of blanks. Mirrors n-heatmap `fillCalendarLeading`. */
-    fillCalendarLeading?: boolean
+    fillCalendarLeading?: boolean;
     /** Week start: 0 = Monday … 6 = Sunday. Mirrors n-heatmap `firstDayOfWeek`. */
-    firstDayOfWeek?: SnHeatmapFirstDayOfWeek
+    firstDayOfWeek?: SnHeatmapFirstDayOfWeek;
     /** Loading state; without `loadingData` renders a 7 × 53 skeleton. Mirrors n-heatmap `loading`. */
-    loading?: boolean
+    loading?: boolean;
     /** Show the bottom color indicator. Mirrors n-heatmap `showColorIndicator`. */
-    showColorIndicator?: boolean
+    showColorIndicator?: boolean;
     /** Show the left week labels. Mirrors n-heatmap `showWeekLabels`. */
-    showWeekLabels?: boolean
+    showWeekLabels?: boolean;
     /** Show the top month labels. Mirrors n-heatmap `showMonthLabels`. */
-    showMonthLabels?: boolean
+    showMonthLabels?: boolean;
     /** Scale preset (rects 10 / 11 / 12 px). Mirrors n-heatmap `size`. */
-    size?: 'small' | 'medium' | 'large'
+    size?: 'small' | 'medium' | 'large';
     /**
      * Per-cell hover tooltip: `false` renders the bare rect (no tooltip
      * instances), `true` uses the SnTooltip defaults, an object forwards a
      * `TooltipProps` subset. Mirrors n-heatmap `tooltip` (1:1).
      */
-    tooltip?: boolean | SnHeatmapTooltipConfig | undefined
+    tooltip?: boolean | SnHeatmapTooltipConfig | undefined;
     /** Vertical (row) side of the grid spacing (px number or CSS length; second border-spacing value, like the reference cssr). Mirrors n-heatmap `xGap`. */
-    xGap?: number | string | undefined
+    xGap?: number | string | undefined;
     /** Horizontal (column) side of the grid spacing (px number or CSS length; first border-spacing value, like the reference cssr). Mirrors n-heatmap `yGap`. */
-    yGap?: number | string | undefined
+    yGap?: number | string | undefined;
   }>(),
   {
     data: undefined,
@@ -132,130 +132,130 @@ const props = withDefaults(
     xGap: undefined,
     yGap: undefined,
   },
-)
+);
 
 defineSlots<{
   /** Left footer area. */
-  footer?(): unknown
+  footer?(): unknown;
   /** Replaces the whole right-side indicator. */
-  indicator?(): unknown
+  indicator?(): unknown;
   /** Leading indicator text (default '少'). */
-  'indicator-leading-text'?(): unknown
+  'indicator-leading-text'?(): unknown;
   /** Trailing indicator text (default '多'). */
-  'indicator-trailing-text'?(): unknown
+  'indicator-trailing-text'?(): unknown;
   /** Custom per-cell tooltip content; receives the cell's `DayRect` (1:1 reference slot). */
-  tooltip?(day: SnHeatmapTooltipDay): unknown
-}>()
+  tooltip?(day: SnHeatmapTooltipDay): unknown;
+}>();
 
-const slots = useSlots()
+const slots = useSlots();
 
 const normalizedData = computed(() =>
   normalizeHeatmapData(props.data ?? [], props.firstDayOfWeek, props.fillCalendarLeading),
-)
+);
 
 const normalizedLoadingData = computed(() =>
   normalizeHeatmapData(props.loadingData ?? [], props.firstDayOfWeek, props.fillCalendarLeading),
-)
+);
 
 // The reference derives the max from the regular data even while loading.
 const maxValue = computed(() => {
-  let max = 0
+  let max = 0;
   for (const item of normalizedData.value) {
-    const value = item.value
-    if (typeof value === 'number' && value > max) max = value
+    const value = item.value;
+    if (typeof value === 'number' && value > max) max = value;
   }
-  return max
-})
+  return max;
+});
 
 const matrix = computed(() => {
   if (props.loading && normalizedLoadingData.value.length === 0) {
-    return buildLoadingMatrix(props.firstDayOfWeek)
+    return buildLoadingMatrix(props.firstDayOfWeek);
   }
-  const finalData = props.loading ? normalizedLoadingData.value : normalizedData.value
-  if (finalData.length === 0) return []
-  return buildHeatmapMatrix(finalData, props.firstDayOfWeek)
-})
+  const finalData = props.loading ? normalizedLoadingData.value : normalizedData.value;
+  if (finalData.length === 0) return [];
+  return buildHeatmapMatrix(finalData, props.firstDayOfWeek);
+});
 
 /** Custom palette (index 0 = minimum) or null for the class-based scale. */
 const palette = computed<readonly (string | null)[] | null>(() => {
-  if (props.activeColors === undefined && props.minimumColor === undefined) return null
-  return [props.minimumColor ?? null, ...(props.activeColors ?? [])]
-})
+  if (props.activeColors === undefined && props.minimumColor === undefined) return null;
+  return [props.minimumColor ?? null, ...(props.activeColors ?? [])];
+});
 
-const levelCount = computed(() => palette.value?.length ?? 5)
+const levelCount = computed(() => palette.value?.length ?? 5);
 
 const viewRows = computed<ReadonlyArray<ReadonlyArray<SnHeatmapViewCell | null>>>(() => {
-  const rows = matrix.value
-  const out: Array<Array<SnHeatmapViewCell | null>> = []
+  const rows = matrix.value;
+  const out: Array<Array<SnHeatmapViewCell | null>> = [];
   // The reference renders 7 rows even with no data (week labels remain).
   for (let r = 0; r < 7; r += 1) {
-    const row = rows[r] ?? []
-    out.push(row.map((cell: SnHeatmapCell | null) => {
-      if (cell === null || cell === undefined) return null
-      return {
-        timestamp: cell.timestamp,
-        value: cell.value,
-        level: calcLevel(cell.value, maxValue.value, levelCount.value),
-        rowIndex: cell.rowIndex,
-        colIndex: cell.colIndex,
-      }
-    }))
+    const row = rows[r] ?? [];
+    out.push(
+      row.map((cell: SnHeatmapCell | null) => {
+        if (cell === null || cell === undefined) return null;
+        return {
+          timestamp: cell.timestamp,
+          value: cell.value,
+          level: calcLevel(cell.value, maxValue.value, levelCount.value),
+          rowIndex: cell.rowIndex,
+          colIndex: cell.colIndex,
+        };
+      }),
+    );
   }
-  return out
-})
+  return out;
+});
 
-const weekLabels = computed(() => buildWeekLabels(props.firstDayOfWeek))
+const weekLabels = computed(() => buildWeekLabels(props.firstDayOfWeek));
 
 const monthLabels = computed(() => {
-  if (props.loading && !props.loadingData) return buildLoadingMonthLabels()
-  return buildMonthLabels(matrix.value)
-})
+  if (props.loading && !props.loadingData) return buildLoadingMonthLabels();
+  return buildMonthLabels(matrix.value);
+});
 
 // The reference maps xGap/yGap onto border-spacing (yGap first = horizontal).
 const gapStyle = computed<Record<string, string>>(() => {
-  const style: Record<string, string> = {}
+  const style: Record<string, string> = {};
   if (props.xGap !== undefined) {
-    style['--sn-heatmap-x-gap'] = typeof props.xGap === 'number' ? `${props.xGap}px` : props.xGap
+    style['--sn-heatmap-x-gap'] = typeof props.xGap === 'number' ? `${props.xGap}px` : props.xGap;
   }
   if (props.yGap !== undefined) {
-    style['--sn-heatmap-y-gap'] = typeof props.yGap === 'number' ? `${props.yGap}px` : props.yGap
+    style['--sn-heatmap-y-gap'] = typeof props.yGap === 'number' ? `${props.yGap}px` : props.yGap;
   }
-  return style
-})
+  return style;
+});
 
-const hasFooterSlot = computed(() => slots.footer !== undefined)
+const hasFooterSlot = computed(() => slots.footer !== undefined);
 
 const swatches = computed<Array<{ level: number; color: string | null }>>(() => {
-  const custom = palette.value
+  const custom = palette.value;
   if (custom === null) {
-    return [0, 1, 2, 3, 4].map(level => ({ level, color: null }))
+    return [0, 1, 2, 3, 4].map((level) => ({ level, color: null }));
   }
-  return custom.map((color, level) => ({ level, color }))
-})
+  return custom.map((color, level) => ({ level, color }));
+});
 
 function rectStyle(cell: SnHeatmapViewCell): Record<string, string> | undefined {
-  const custom = palette.value
-  if (custom === null) return undefined
-  const color = custom[cell.level]
-  return typeof color === 'string' ? { background: color } : undefined
+  const custom = palette.value;
+  if (custom === null) return undefined;
+  const color = custom[cell.level];
+  return typeof color === 'string' ? { background: color } : undefined;
 }
 
 /* ─────────── Tooltip (reference Rect.tsx) ─────────── */
 
 /** Truthy `tooltip` (true | config object) wraps rects; `loading` skips the wrap like the reference. */
-const tooltipEnabled = computed(() => Boolean(props.tooltip) && !props.loading)
+const tooltipEnabled = computed(() => Boolean(props.tooltip) && !props.loading);
 
 /** Object form of `tooltip` (`{}` for `true`), like the reference `tooltipPropsRef`. */
 const tooltipConfig = computed<SnHeatmapTooltipConfig>(() =>
   typeof props.tooltip === 'object' ? props.tooltip : {},
-)
+);
 
 /** Resolved cell color: the custom palette entry or the level's CSS variable (tooltip slot param). */
 function colorFor(cell: SnHeatmapViewCell): string {
-  const custom = palette.value?.[cell.level]
-  return typeof custom === 'string'
-    ? custom
-    : `var(--sn-heatmap-color-${cell.level})`
+  const custom = palette.value?.[cell.level];
+  return typeof custom === 'string' ? custom : `var(--sn-heatmap-color-${cell.level})`;
 }
 
 /** Build the reference `DayRect` shape for the `tooltip` slot. */
@@ -267,7 +267,7 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
     dayOfWeek: new Date(cell.timestamp).getDay(),
     rowIndex: cell.rowIndex,
     colIndex: cell.colIndex,
-  }
+  };
 }
 </script>
 
@@ -275,10 +275,7 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
   <div
     data-snui-component="heatmap"
     class="sn-heatmap"
-    :class="[
-      `sn-heatmap--${size}`,
-      colorTheme ? `sn-heatmap--theme-${colorTheme}` : '',
-    ]"
+    :class="[`sn-heatmap--${size}`, colorTheme ? `sn-heatmap--theme-${colorTheme}` : '']"
     :style="gapStyle"
   >
     <div class="sn-heatmap__content">
@@ -346,10 +343,7 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
         </tbody>
       </table>
     </div>
-    <div
-      class="sn-heatmap__footer"
-      :class="{ 'sn-heatmap__footer--single': !hasFooterSlot }"
-    >
+    <div class="sn-heatmap__footer" :class="{ 'sn-heatmap__footer--single': !hasFooterSlot }">
       <div v-if="hasFooterSlot" class="sn-heatmap__footer-slot">
         <slot name="footer" />
       </div>
@@ -388,10 +382,26 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
   --sn-heatmap-base: var(--sn-web-color-action-primary);
   /* Batch visual spec: secondary surfaces use a 2% text-primary mix over
    * the surface token; --sn-web-color-background-subtle is reserved out. */
-  --sn-heatmap-color-0: color-mix(in srgb, var(--sn-web-color-text-primary) 2%, var(--sn-web-color-background-surface));
-  --sn-heatmap-color-1: color-mix(in srgb, var(--sn-heatmap-base) 30%, var(--sn-web-color-background-surface));
-  --sn-heatmap-color-2: color-mix(in srgb, var(--sn-heatmap-base) 55%, var(--sn-web-color-background-surface));
-  --sn-heatmap-color-3: color-mix(in srgb, var(--sn-heatmap-base) 78%, var(--sn-web-color-background-surface));
+  --sn-heatmap-color-0: color-mix(
+    in srgb,
+    var(--sn-web-color-text-primary) 2%,
+    var(--sn-web-color-background-surface)
+  );
+  --sn-heatmap-color-1: color-mix(
+    in srgb,
+    var(--sn-heatmap-base) 30%,
+    var(--sn-web-color-background-surface)
+  );
+  --sn-heatmap-color-2: color-mix(
+    in srgb,
+    var(--sn-heatmap-base) 55%,
+    var(--sn-web-color-background-surface)
+  );
+  --sn-heatmap-color-3: color-mix(
+    in srgb,
+    var(--sn-heatmap-base) 78%,
+    var(--sn-web-color-background-surface)
+  );
   --sn-heatmap-color-4: var(--sn-heatmap-base);
   --sn-heatmap-loading-start: color-mix(in srgb, var(--sn-web-color-text-primary) 6%, transparent);
   --sn-heatmap-loading-end: color-mix(in srgb, var(--sn-web-color-text-primary) 12%, transparent);
@@ -437,7 +447,11 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
 }
 
 .sn-heatmap--theme-purple {
-  --sn-heatmap-base: color-mix(in srgb, var(--sn-web-color-feedback-danger) 55%, var(--sn-web-color-action-primary));
+  --sn-heatmap-base: color-mix(
+    in srgb,
+    var(--sn-web-color-feedback-danger) 55%,
+    var(--sn-web-color-action-primary)
+  );
 }
 
 .sn-heatmap__content {

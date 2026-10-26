@@ -25,26 +25,26 @@
  */
 
 /** Name of the attribute carrying the JSON-encoded markdown. */
-export const RAW_DOC_SOURCE_ATTR = 'data-sn-doc-source'
+export const RAW_DOC_SOURCE_ATTR = 'data-sn-doc-source';
 
 /** The slice of markdown-it's API this plugin needs (kept structural so the
  *  docs package does not need markdown-it as a direct dependency). */
 interface MarkdownToken {
-  content: string
+  content: string;
 }
 
 interface MarkdownStateCore {
-  src: string
-  Token: new (type: string, tag: string, nesting: number) => MarkdownToken
-  tokens: MarkdownToken[]
+  src: string;
+  Token: new (type: string, tag: string, nesting: number) => MarkdownToken;
+  tokens: MarkdownToken[];
 }
 
 interface MarkdownRenderer {
   core: {
     ruler: {
-      push: (name: string, rule: (state: MarkdownStateCore) => void) => void
-    }
-  }
+      push: (name: string, rule: (state: MarkdownStateCore) => void) => void;
+    };
+  };
 }
 
 /**
@@ -69,21 +69,20 @@ interface MarkdownRenderer {
  * `btoa` cannot take arbitrary Unicode, so the string is UTF-8 encoded first.
  */
 function encodeSource(value: string): string {
-  const bytes = new TextEncoder().encode(value)
-  let binary = ''
-  for (const byte of bytes) binary += String.fromCharCode(byte)
+  const bytes = new TextEncoder().encode(value);
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
   // eslint-disable-next-line no-undef
-  return btoa(binary)
+  return btoa(binary);
 }
 
 export function rawDocSource(md: MarkdownRenderer): void {
   md.core.ruler.push('sn-raw-doc-source', (state) => {
-    const source = typeof state.src === 'string' ? state.src.trim() : ''
-    if (!source) return
+    const source = typeof state.src === 'string' ? state.src.trim() : '';
+    if (!source) return;
 
-    const token = new state.Token('html_block', '', 0)
-    token.content =
-      `<div hidden ${RAW_DOC_SOURCE_ATTR}="${encodeSource(source)}"></div>`
-    state.tokens.push(token)
-  })
+    const token = new state.Token('html_block', '', 0);
+    token.content = `<div hidden ${RAW_DOC_SOURCE_ATTR}="${encodeSource(source)}"></div>`;
+    state.tokens.push(token);
+  });
 }

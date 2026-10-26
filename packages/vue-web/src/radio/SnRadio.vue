@@ -10,15 +10,15 @@
  * Per AGENTS.md §30/31: props / events / slots / tokens declared via
  * `defineProps` + `defineEmits` + `defineSlots` + CSS variables.
  */
-import { computed, inject } from 'vue'
+import { computed, inject } from 'vue';
 import {
   snRadioGroupInjectionKey,
   type SnRadioSize,
   type SnRadioStatus,
   type SnRadioValue,
-} from './sn-radio-types'
+} from './sn-radio-types';
 
-defineOptions({ name: 'SnRadio' })
+defineOptions({ name: 'SnRadio' });
 
 const props = withDefaults(
   defineProps<{
@@ -27,29 +27,29 @@ const props = withDefaults(
      * `modelValue` equals it, this radio is checked. naive-ui calls
      * this `value`.
      */
-    checkedValue?: SnRadioValue | null
+    checkedValue?: SnRadioValue | null;
     /**
      * Standalone bound value. Inside a group the group's modelValue wins.
      */
-    modelValue?: SnRadioValue | null
+    modelValue?: SnRadioValue | null;
     /** Label text rendered next to the dot. Slot `label` overrides. */
-    label?: string | undefined
+    label?: string | undefined;
     /** Native radio group name — required for arrow-key nav. Provided by group. */
-    name?: string | undefined
+    name?: string | undefined;
     /** Disables this radio. Group-level disabled ORs in. */
-    disabled?: boolean
+    disabled?: boolean;
     /** Read-only — renders but ignores activation. */
-    readonly?: boolean
+    readonly?: boolean;
     /** Visual size preset. Falls back to group size then 'medium'. */
-    size?: SnRadioSize
+    size?: SnRadioSize;
     /** Visual status. Falls back to group status then 'default'. */
-    status?: SnRadioStatus
+    status?: SnRadioStatus;
     /** Native ARIA label (overrides label for the accessible name). */
-    ariaLabel?: string | undefined
+    ariaLabel?: string | undefined;
     /** Class on the root wrapper. */
-    customClass?: string
+    customClass?: string;
     /** Inline style on the root wrapper. */
-    customStyle?: string | Record<string, string>
+    customStyle?: string | Record<string, string>;
   }>(),
   {
     checkedValue: null,
@@ -60,59 +60,59 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
 const emit = defineEmits<{
   /** v-model sync — emits this radio's `checkedValue` on activation. */
-  (e: 'update:modelValue', value: SnRadioValue | null): void
+  (e: 'update:modelValue', value: SnRadioValue | null): void;
   /** Fired on user activation (native change). */
-  (e: 'change', value: SnRadioValue, event: Event): void
+  (e: 'change', value: SnRadioValue, event: Event): void;
   /** Fires when the radio's checked state flips to true via user interaction. */
-  (e: 'checked', value: SnRadioValue): void
+  (e: 'checked', value: SnRadioValue): void;
   /** Native update event — every state change. */
-  (e: 'update', value: SnRadioValue | null, event: Event): void
+  (e: 'update', value: SnRadioValue | null, event: Event): void;
   /** Native focus. */
-  (e: 'focus', event: FocusEvent): void
+  (e: 'focus', event: FocusEvent): void;
   /** Native blur. */
-  (e: 'blur', event: FocusEvent): void
-}>()
+  (e: 'blur', event: FocusEvent): void;
+}>();
 
 defineSlots<{
   /** Custom label content. Renders instead of the `label` prop text. */
-  label?(props: { checked: boolean, disabled: boolean }): unknown
-}>()
+  label?(props: { checked: boolean; disabled: boolean }): unknown;
+}>();
 
 /** Group context, if mounted inside SnRadioGroup. */
-const groupInject = inject(snRadioGroupInjectionKey, null)
+const groupInject = inject(snRadioGroupInjectionKey, null);
 
-const isGrouped = computed(() => groupInject !== null)
+const isGrouped = computed(() => groupInject !== null);
 
 /** Effective disabled = own || group. */
-const isDisabled = computed(() => props.disabled || (groupInject?.disabled.value ?? false))
+const isDisabled = computed(() => props.disabled || (groupInject?.disabled.value ?? false));
 
 /** Effective interactive — readonly blocks activation without dimming semantics. */
-const isReadonly = computed(() => props.readonly)
+const isReadonly = computed(() => props.readonly);
 
 /** Checked = effective modelValue strictly equals checkedValue. */
 const isChecked = computed(() => {
-  const bound = isGrouped.value ? groupInject!.modelValue.value : props.modelValue
-  return bound !== null && bound === props.checkedValue
-})
+  const bound = isGrouped.value ? groupInject!.modelValue.value : props.modelValue;
+  return bound !== null && bound === props.checkedValue;
+});
 
 /** Shared native name — group-provided name wins. */
-const effectiveName = computed(() =>
-  (isGrouped.value ? groupInject!.name.value : undefined) ?? props.name ?? undefined,
-)
+const effectiveName = computed(
+  () => (isGrouped.value ? groupInject!.name.value : undefined) ?? props.name ?? undefined,
+);
 
-const effectiveSize = computed<SnRadioSize>(() =>
-  props.size ?? groupInject?.size.value ?? 'medium',
-)
+const effectiveSize = computed<SnRadioSize>(
+  () => props.size ?? groupInject?.size.value ?? 'medium',
+);
 
-const effectiveStatus = computed<SnRadioStatus>(() =>
-  props.status ?? groupInject?.status.value ?? 'default',
-)
+const effectiveStatus = computed<SnRadioStatus>(
+  () => props.status ?? groupInject?.status.value ?? 'default',
+);
 
-const ariaInvalid = computed(() => effectiveStatus.value === 'error' ? 'true' : undefined)
+const ariaInvalid = computed(() => (effectiveStatus.value === 'error' ? 'true' : undefined));
 
 const classList = computed(() => [
   'sn-radio',
@@ -125,31 +125,33 @@ const classList = computed(() => [
     [`sn-radio--status-${effectiveStatus.value}`]: effectiveStatus.value !== 'default',
   },
   props.customClass,
-])
+]);
 
 const wrapperStyle = computed(() => {
-  if (typeof props.customStyle === 'string') return props.customStyle
-  return Object.entries(props.customStyle ?? {}).map(([k, v]) => `${k}:${v}`).join(';')
-})
+  if (typeof props.customStyle === 'string') return props.customStyle;
+  return Object.entries(props.customStyle ?? {})
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';');
+});
 
 function onChange(event: Event): void {
-  const target = event.target as HTMLInputElement
-  const checked = props.checkedValue
+  const target = event.target as HTMLInputElement;
+  const checked = props.checkedValue;
   if (target.checked && checked !== null) {
-    emit('update:modelValue', checked)
-    emit('update', checked, event)
-    emit('checked', checked)
-    emit('change', checked, event)
-    if (isGrouped.value) groupInject!.onChange(checked)
+    emit('update:modelValue', checked);
+    emit('update', checked, event);
+    emit('checked', checked);
+    emit('change', checked, event);
+    if (isGrouped.value) groupInject!.onChange(checked);
   }
 }
 
 function onFocus(event: FocusEvent): void {
-  emit('focus', event)
+  emit('focus', event);
 }
 
 function onBlur(event: FocusEvent): void {
-  emit('blur', event)
+  emit('blur', event);
 }
 </script>
 
@@ -176,12 +178,9 @@ function onBlur(event: FocusEvent): void {
       @change="onChange"
       @focus="onFocus"
       @blur="onBlur"
-    >
+    />
     <span class="sn-radio__dot" aria-hidden="true" />
-    <span
-      v-if="$slots.label || label"
-      class="sn-radio__label"
-    >
+    <span v-if="$slots.label || label" class="sn-radio__label">
       <slot name="label" :checked="isChecked" :disabled="isDisabled">{{ label }}</slot>
     </span>
   </label>
@@ -228,7 +227,9 @@ function onBlur(event: FocusEvent): void {
   border-radius: var(--sn-web-radio-radius, 999px);
   border: 1px solid var(--sn-web-radio-border-color, var(--sn-web-color-border-default));
   background-color: var(--sn-web-radio-bg, var(--sn-web-color-background-surface));
-  transition: border-color 0.18s ease-out, box-shadow 0.18s ease-out,
+  transition:
+    border-color 0.18s ease-out,
+    box-shadow 0.18s ease-out,
     background-color 0.18s ease-out;
   flex-shrink: 0;
 }
@@ -266,20 +267,45 @@ function onBlur(event: FocusEvent): void {
 }
 
 /* Sizes */
-.sn-radio--mini { font-size: 11px; }
-.sn-radio--mini .sn-radio__dot { width: 12px; height: 12px; }
+.sn-radio--mini {
+  font-size: 11px;
+}
+.sn-radio--mini .sn-radio__dot {
+  width: 12px;
+  height: 12px;
+}
 
-.sn-radio--tiny { font-size: 12px; }
-.sn-radio--tiny .sn-radio__dot { width: 14px; height: 14px; }
+.sn-radio--tiny {
+  font-size: 12px;
+}
+.sn-radio--tiny .sn-radio__dot {
+  width: 14px;
+  height: 14px;
+}
 
-.sn-radio--small { font-size: 13px; }
-.sn-radio--small .sn-radio__dot { width: 14px; height: 14px; }
+.sn-radio--small {
+  font-size: 13px;
+}
+.sn-radio--small .sn-radio__dot {
+  width: 14px;
+  height: 14px;
+}
 
-.sn-radio--medium { font-size: 14px; }
-.sn-radio--medium .sn-radio__dot { width: 16px; height: 16px; }
+.sn-radio--medium {
+  font-size: 14px;
+}
+.sn-radio--medium .sn-radio__dot {
+  width: 16px;
+  height: 16px;
+}
 
-.sn-radio--large { font-size: 15px; }
-.sn-radio--large .sn-radio__dot { width: 18px; height: 18px; }
+.sn-radio--large {
+  font-size: 15px;
+}
+.sn-radio--large .sn-radio__dot {
+  width: 18px;
+  height: 18px;
+}
 
 /* Status */
 .sn-radio--status-error .sn-radio__dot {

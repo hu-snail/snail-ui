@@ -5,23 +5,23 @@
  * One dialog, three configurations: flip the switches and reopen to compare
  * the visual delta on the same content.
  */
-import { ref } from 'vue'
-import { SnButton, SnDialog } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnButton, SnDialog } from '@snui/vue-web';
 
-const open = ref(false)
-const bordered = ref(true)
-const showIcon = ref(true)
+const open = ref(false);
+const bordered = ref(true);
+const showIcon = ref(true);
 </script>
 
 <template>
   <div class="dlg-borderless">
     <div class="dlg-borderless__bar">
       <label class="dlg-borderless__toggle">
-        <input v-model="bordered" type="checkbox">
+        <input v-model="bordered" type="checkbox" />
         bordered
       </label>
       <label class="dlg-borderless__toggle">
-        <input v-model="showIcon" type="checkbox">
+        <input v-model="showIcon" type="checkbox" />
         showIcon
       </label>
       <SnButton type="primary" size="small" @click="open = true">打开对话框</SnButton>

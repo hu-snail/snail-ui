@@ -5,11 +5,11 @@
  * 消息模块可以不配对话页单独使用：这里只挂载消息列表，并给出每条消息的
  * 思考折叠、流式光标、工具行、附件行、错误卡片与停止提示。
  */
-import { ref } from 'vue'
-import { SnAiMessageList } from '@snui/templates-src/web/index'
-import type { SnAiMessage } from '@snui/templates-src/shared/types'
+import { ref } from 'vue';
+import { SnAiMessageList } from '@snui/templates-src/web/index';
+import type { SnAiMessage } from '@snui/templates-src/shared/types';
 
-const copied = ref('')
+const copied = ref('');
 
 const messages: SnAiMessage[] = [
   {
@@ -18,7 +18,10 @@ const messages: SnAiMessage[] = [
     status: 'idle',
     parts: [
       { type: 'text', text: '读一下 src/index.ts，然后说明它的导出结构' },
-      { type: 'attachment', attachment: { id: 'a1', name: 'index.ts', size: 2048, mime: 'text/plain' } },
+      {
+        type: 'attachment',
+        attachment: { id: 'a1', name: 'index.ts', size: 2048, mime: 'text/plain' },
+      },
     ],
   },
   {
@@ -28,7 +31,12 @@ const messages: SnAiMessage[] = [
     createdAt: 1,
     updatedAt: 3200,
     parts: [
-      { type: 'thinking', text: '先看文件头部的注释，再逐个确认导出。', done: true, durationMs: 2400 },
+      {
+        type: 'thinking',
+        text: '先看文件头部的注释，再逐个确认导出。',
+        done: true,
+        durationMs: 2400,
+      },
       { type: 'tool', name: 'read_file', status: 'done', detail: 'src/index.ts' },
       { type: 'text', text: '该文件是包的公共入口，按组件、类型、工具函数三段组织导出。' },
     ],
@@ -42,13 +50,13 @@ const messages: SnAiMessage[] = [
       { type: 'text', text: '另外，resolver 的组件清单需要与入口保持一致，' },
     ],
   },
-]
+];
 
 function onCopy(message: SnAiMessage): void {
-  copied.value = message.id
+  copied.value = message.id;
   setTimeout(() => {
-    copied.value = ''
-  }, 1500)
+    copied.value = '';
+  }, 1500);
 }
 </script>
 

@@ -3,16 +3,16 @@
  * Demo: SnPageHeader — subtitle + `#extra` actions + `#footer`, with the
  * back control wired to real state instead of a no-op handler.
  */
-import { ref } from 'vue'
-import { SnButton, SnIcon, SnPageHeader, registerSnIcons } from '@snui/vue-web'
-import { Clock, Download, Share2 } from 'lucide-vue-next'
+import { ref } from 'vue';
+import { SnButton, SnIcon, SnPageHeader, registerSnIcons } from '@snui/vue-web';
+import { Clock, Download, Share2 } from 'lucide-vue-next';
 
-registerSnIcons({ Clock, Download, Share2 })
+registerSnIcons({ Clock, Download, Share2 });
 
-const lastAction = ref('Waiting for action')
+const lastAction = ref('Waiting for action');
 
 function handleBack(): void {
-  lastAction.value = 'Went back one level (back event fired)'
+  lastAction.value = 'Went back one level (back event fired)';
 }
 </script>
 
@@ -25,7 +25,10 @@ function handleBack(): void {
     >
       <div class="page-header-composite-demo__body">
         <p>Last action:{{ lastAction }}</p>
-        <p>The actions on the header's right come from the #extra slot; the footer note comes from #footer.</p>
+        <p>
+          The actions on the header's right come from the #extra slot; the footer note comes from
+          #footer.
+        </p>
       </div>
 
       <template #extra>

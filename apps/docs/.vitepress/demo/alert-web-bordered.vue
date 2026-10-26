@@ -5,7 +5,7 @@
  * Shows: the `bordered` prop. Borderless keeps the type tint on the fill
  * instead of drawing a full outline.
  */
-import { SnAlert } from '@snui/vue-web'
+import { SnAlert } from '@snui/vue-web';
 </script>
 
 <template>

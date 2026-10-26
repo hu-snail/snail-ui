@@ -40,34 +40,34 @@
 
 所有 Props 均为可选。
 
-| 名称 | 类型 | 默认值 | 说明 |
-| --- | --- | --- | --- |
-| content | `string \| string[]` | `undefined` | 水印文字；数组时每项一行，空字符串不绘制文字 |
-| image | `string` | `undefined` | 水印图片地址；设置后替代文字绘制 |
-| cross | `boolean` | `false` | 相邻瓦片交错排布（错开半个瓦片） |
-| fullscreen | `boolean` | `false` | 覆盖整个视口而非包裹内容 |
-| fontSize | `number` | `16` | 文字大小（px） |
-| lineHeight | `number` | `16` | 文字行高（px） |
-| width | `number` | `128` | 瓦片宽度（px） |
-| height | `number` | `64` | 瓦片高度（px） |
-| rotate | `number` | `0` | 瓦片旋转角度（度） |
-| x | `number` | `0` | 瓦片内水平偏移（px） |
-| y | `number` | `0` | 瓦片内垂直偏移（px） |
-| zIndex | `number` | `10` | 覆盖层层级 |
-| opacity | `number` | `0.5` | 覆盖层透明度（0–1） |
-| fontFamily | `string` | `undefined` | 水印文字字体 |
-| fontWeight | `number \| string` | `undefined` | 水印文字字重 |
-| fontStyle | `'normal' \| 'italic' \| 'oblique'` | `undefined` | 水印文字样式 |
-| fontColor | `string` | `undefined` | 水印文字颜色 |
-| background | `string` | `undefined` | 瓦片背景色 |
-| grayscale | `number` | `0` | 覆盖层灰度（CSS filter，0–1） |
-| blend | `CSSProperties['mixBlendMode']` | `undefined` | 覆盖层混合模式（CSS mix-blend-mode） |
+| 名称       | 类型                                | 默认值      | 说明                                         |
+| ---------- | ----------------------------------- | ----------- | -------------------------------------------- |
+| content    | `string \| string[]`                | `undefined` | 水印文字；数组时每项一行，空字符串不绘制文字 |
+| image      | `string`                            | `undefined` | 水印图片地址；设置后替代文字绘制             |
+| cross      | `boolean`                           | `false`     | 相邻瓦片交错排布（错开半个瓦片）             |
+| fullscreen | `boolean`                           | `false`     | 覆盖整个视口而非包裹内容                     |
+| fontSize   | `number`                            | `16`        | 文字大小（px）                               |
+| lineHeight | `number`                            | `16`        | 文字行高（px）                               |
+| width      | `number`                            | `128`       | 瓦片宽度（px）                               |
+| height     | `number`                            | `64`        | 瓦片高度（px）                               |
+| rotate     | `number`                            | `0`         | 瓦片旋转角度（度）                           |
+| x          | `number`                            | `0`         | 瓦片内水平偏移（px）                         |
+| y          | `number`                            | `0`         | 瓦片内垂直偏移（px）                         |
+| zIndex     | `number`                            | `10`        | 覆盖层层级                                   |
+| opacity    | `number`                            | `0.5`       | 覆盖层透明度（0–1）                          |
+| fontFamily | `string`                            | `undefined` | 水印文字字体                                 |
+| fontWeight | `number \| string`                  | `undefined` | 水印文字字重                                 |
+| fontStyle  | `'normal' \| 'italic' \| 'oblique'` | `undefined` | 水印文字样式                                 |
+| fontColor  | `string`                            | `undefined` | 水印文字颜色                                 |
+| background | `string`                            | `undefined` | 瓦片背景色                                   |
+| grayscale  | `number`                            | `0`         | 覆盖层灰度（CSS filter，0–1）                |
+| blend      | `CSSProperties['mixBlendMode']`     | `undefined` | 覆盖层混合模式（CSS mix-blend-mode）         |
 
 ### Slots
 
-| 名称 | 参数 | 说明 |
-| --- | --- | --- |
-| default | — | 被水印覆盖的内容；`fullscreen` 时不渲染 |
+| 名称    | 参数 | 说明                                    |
+| ------- | ---- | --------------------------------------- |
+| default | —    | 被水印覆盖的内容；`fullscreen` 时不渲染 |
 
 无事件。
 

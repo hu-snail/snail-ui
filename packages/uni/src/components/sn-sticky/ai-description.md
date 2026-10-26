@@ -24,17 +24,17 @@ measurement and nothing to dispose.
 
 ```ts
 // Optional explicit import (when easycom is disabled)
-import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue'
+import { SnSticky } from '@snui/uni/components/sn-sticky/sn-sticky.vue';
 ```
 
 ## Props
 
-| Name | Type | Default | Description |
-|---|---|---|---|
-| `zIndex` | `number` | `1` | Stacking level. |
-| `offsetTop` | `number` | `0` | Sticky offset in px. |
-| `customClass` | `string` | `''` | Root forwarding. |
-| `customStyle` | `string` | `''` | Root forwarding. |
+| Name          | Type     | Default | Description          |
+| ------------- | -------- | ------- | -------------------- |
+| `zIndex`      | `number` | `1`     | Stacking level.      |
+| `offsetTop`   | `number` | `0`     | Sticky offset in px. |
+| `customClass` | `string` | `''`    | Root forwarding.     |
+| `customStyle` | `string` | `''`    | Root forwarding.     |
 
 ## Events
 
@@ -43,14 +43,14 @@ renders state, it does not own business transitions).
 
 ## Slots
 
-| Name | Description |
-|---|---|
+| Name      | Description     |
+| --------- | --------------- |
 | `default` | Content to pin. |
 
 ## Tokens Consumed (end: mp)
 
-| Token | CSS Variable | Purpose |
-|---|---|---|
+| Token   | CSS Variable                       | Purpose                     |
+| ------- | ---------------------------------- | --------------------------- |
 | Surface | `--sn-mp-color-background-surface` | Keeps pinned content opaque |
 
 ## Accessibility

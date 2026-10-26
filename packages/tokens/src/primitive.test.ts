@@ -14,7 +14,19 @@ describe('@snui/tokens — Primitive Tokens', () => {
 
   it('color scales follow a 50–950 ramp', () => {
     const ramps = Object.keys(DEFAULT_PRIMITIVE_TOKENS.color.blue);
-    expect(ramps).toEqual(['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950']);
+    expect(ramps).toEqual([
+      '50',
+      '100',
+      '200',
+      '300',
+      '400',
+      '500',
+      '600',
+      '700',
+      '800',
+      '900',
+      '950',
+    ]);
   });
 
   it('spacing follows an 8pt rhythm at the wider steps', () => {

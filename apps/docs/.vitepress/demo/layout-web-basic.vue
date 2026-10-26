@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /** Demo: SnLayout — basic three-section. */
-import { SnLayout, SnLayoutHeader, SnLayoutContent, SnLayoutFooter, SnText } from '@snui/vue-web'
+import { SnLayout, SnLayoutHeader, SnLayoutContent, SnLayoutFooter, SnText } from '@snui/vue-web';
 </script>
 
 <template>
-  <SnLayout bordered style="height: 240px; border-radius: 8px; overflow: hidden;">
+  <SnLayout bordered style="height: 240px; border-radius: 8px; overflow: hidden">
     <SnLayoutHeader>
       <SnText strong>应用标题</SnText>
     </SnLayoutHeader>

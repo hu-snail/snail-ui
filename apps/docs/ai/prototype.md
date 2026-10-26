@@ -8,13 +8,13 @@ AI 用 snail-aui 产出**高保真原型**——不是截图，不是 Figma，�
 
 ## 原型 vs 设计稿
 
-| 维度 | 设计稿 | 高保真原型 |
-|---|---|---|
-| 形态 | PNG / Figma | 真实 Vue 组件 |
-| 交互 | 无 | 可点击 / 填写 / 切换状态 |
-| 样式 | 静态 | Token 驱动（`--sn-web-*` / `--sn-mp-*`） |
-| 修改 | 重画 | 改 SFC + 切 Style Pack |
-| AI 产出 | 不可 | 是 |
+| 维度    | 设计稿      | 高保真原型                               |
+| ------- | ----------- | ---------------------------------------- |
+| 形态    | PNG / Figma | 真实 Vue 组件                            |
+| 交互    | 无          | 可点击 / 填写 / 切换状态                 |
+| 样式    | 静态        | Token 驱动（`--sn-web-*` / `--sn-mp-*`） |
+| 修改    | 重画        | 改 SFC + 切 Style Pack                   |
+| AI 产出 | 不可        | 是                                       |
 
 ---
 
@@ -49,19 +49,19 @@ MCP render_preview({ vueCode, end })（M3 实装） → 沙箱验证渲染
 ```vue
 <script setup lang="ts">
 // ✅ 只 import snail-aui 组件和 Vue 核心
-import { SnButton, SnInput, SnForm, SnFormItem, SnCard } from '@snui/vue-web'
-import '@snui/tokens-web/styles'
-import { ref, reactive } from 'vue'
+import { SnButton, SnInput, SnForm, SnFormItem, SnCard } from '@snui/vue-web';
+import '@snui/tokens-web/styles';
+import { ref, reactive } from 'vue';
 
 // 状态定义
-const form = reactive({ name: '', email: '' })
-const loading = ref(false)
+const form = reactive({ name: '', email: '' });
+const loading = ref(false);
 
 // 事件处理（无真实 API 调用，只展示交互流程）
 async function handleSubmit() {
-  loading.value = true
-  await new Promise(r => setTimeout(r, 1000)) // 模拟 loading
-  loading.value = false
+  loading.value = true;
+  await new Promise((r) => setTimeout(r, 1000)); // 模拟 loading
+  loading.value = false;
 }
 </script>
 
@@ -75,9 +75,7 @@ async function handleSubmit() {
         <SnFormItem label="邮箱">
           <SnInput v-model="form.email" type="email" placeholder="请输入邮箱" />
         </SnFormItem>
-        <SnButton type="primary" :loading="loading" @click="handleSubmit">
-          提交
-        </SnButton>
+        <SnButton type="primary" :loading="loading" @click="handleSubmit"> 提交 </SnButton>
       </SnForm>
     </SnCard>
   </div>
@@ -98,16 +96,16 @@ async function handleSubmit() {
 ```vue
 <!-- easycom 自动注册 sn-button / sn-input / sn-form / sn-form-item / sn-card -->
 <script setup lang="ts">
-import '@snui/tokens-mp/styles'
-import { ref, reactive } from 'vue'
+import '@snui/tokens-mp/styles';
+import { ref, reactive } from 'vue';
 
-const form = reactive({ name: '', email: '' })
-const loading = ref(false)
+const form = reactive({ name: '', email: '' });
+const loading = ref(false);
 
 async function handleSubmit() {
-  loading.value = true
-  await new Promise(r => setTimeout(r, 1000))
-  loading.value = false
+  loading.value = true;
+  await new Promise((r) => setTimeout(r, 1000));
+  loading.value = false;
 }
 </script>
 
@@ -121,9 +119,7 @@ async function handleSubmit() {
         <sn-form-item label="邮箱">
           <sn-input v-model="form.email" type="email" placeholder="请输入邮箱" />
         </sn-form-item>
-        <sn-button type="primary" :loading="loading" @click="handleSubmit">
-          提交
-        </sn-button>
+        <sn-button type="primary" :loading="loading" @click="handleSubmit"> 提交 </sn-button>
       </sn-form>
     </sn-card>
   </view>
@@ -139,13 +135,13 @@ async function handleSubmit() {
 
 **关键差异**：
 
-| 项 | Web | uni |
-|---|---|---|
-| 容器 | `<div>` | `<view>` |
-| 组件前缀 | `SnButton` / `SnCard` | `sn-button` / `sn-card` |
-| 组件写法 | PascalCase import | kebab-case 标签 + easycom |
-| Token 别名 | `--sn-web-*` | `--sn-mp-*` |
-| 单位 | px | rpx |
+| 项         | Web                   | uni                       |
+| ---------- | --------------------- | ------------------------- |
+| 容器       | `<div>`               | `<view>`                  |
+| 组件前缀   | `SnButton` / `SnCard` | `sn-button` / `sn-card`   |
+| 组件写法   | PascalCase import     | kebab-case 标签 + easycom |
+| Token 别名 | `--sn-web-*`          | `--sn-mp-*`               |
+| 单位       | px                    | rpx                       |
 
 ---
 
@@ -168,12 +164,12 @@ prototype/
 ```vue
 <!-- Web 端 App.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import HomePage from './pages/HomePage.vue'
-import ListPage from './pages/ListPage.vue'
+import { ref } from 'vue';
+import HomePage from './pages/HomePage.vue';
+import ListPage from './pages/ListPage.vue';
 
-const pages = { home: HomePage, list: ListPage }
-const current = ref<'home' | 'list'>('home')
+const pages = { home: HomePage, list: ListPage };
+const current = ref<'home' | 'list'>('home');
 </script>
 
 <template>
@@ -184,12 +180,12 @@ const current = ref<'home' | 'list'>('home')
 ```vue
 <!-- uni 端 App.vue -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import HomePage from './pages/home.vue'
-import ListPage from './pages/list.vue'
+import { ref } from 'vue';
+import HomePage from './pages/home.vue';
+import ListPage from './pages/list.vue';
 
-const pages = { home: HomePage, list: ListPage }
-const current = ref<'home' | 'list'>('home')
+const pages = { home: HomePage, list: ListPage };
+const current = ref<'home' | 'list'>('home');
 </script>
 
 <template>
@@ -225,53 +221,57 @@ AI 产出后必须自检：
 
 在原型基础上继续产出 Web 端工程代码：
 
-| 原型部分 | 应用代码补充 |
-|---|---|
+| 原型部分              | 应用代码补充                                             |
+| --------------------- | -------------------------------------------------------- |
 | `<script setup>` 状态 | Pinia Store（`defineStore` + state / getters / actions） |
-| `setTimeout` 模拟 | 真实 API 调用层（`fetch` + TypeScript 类型） |
-| 单文件 | 多文件（router / views / components / api / types） |
-| 无路由 | Vue Router |
-| 无错误处理 | 错误边界 + Toast 提示 |
+| `setTimeout` 模拟     | 真实 API 调用层（`fetch` + TypeScript 类型）             |
+| 单文件                | 多文件（router / views / components / api / types）      |
+| 无路由                | Vue Router                                               |
+| 无错误处理            | 错误边界 + Toast 提示                                    |
 
 Pinia Store 规范：
 
 ```ts
 // stores/user.store.ts
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import type { User } from '../types/user.types'
-import { fetchUser } from '../api/user.api'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import type { User } from '../types/user.types';
+import { fetchUser } from '../api/user.api';
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<User | null>(null)
-  const loading = ref(false)
-  const error = ref<string | null>(null)
-  const isLoggedIn = computed(() => user.value !== null)
+  const user = ref<User | null>(null);
+  const loading = ref(false);
+  const error = ref<string | null>(null);
+  const isLoggedIn = computed(() => user.value !== null);
 
   async function loadUser(id: string) {
-    loading.value = true
-    error.value = null
-    try { user.value = await fetchUser(id) }
-    catch (e) { error.value = '加载失败，请重试' }
-    finally { loading.value = false }
+    loading.value = true;
+    error.value = null;
+    try {
+      user.value = await fetchUser(id);
+    } catch (e) {
+      error.value = '加载失败，请重试';
+    } finally {
+      loading.value = false;
+    }
   }
 
-  return { user, loading, error, isLoggedIn, loadUser }
-})
+  return { user, loading, error, isLoggedIn, loadUser };
+});
 ```
 
 API 层：
 
 ```ts
 // api/user.api.ts
-import type { User } from '../types/user.types'
+import type { User } from '../types/user.types';
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api'
+const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api';
 
 export async function fetchUser(id: string): Promise<User> {
-  const res = await fetch(`${BASE_URL}/users/${id}`)
-  if (!res.ok) throw new Error(`HTTP ${res.status}`)
-  return res.json() as Promise<User>
+  const res = await fetch(`${BASE_URL}/users/${id}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json() as Promise<User>;
 }
 ```
 
@@ -281,13 +281,13 @@ export async function fetchUser(id: string): Promise<User> {
 
 在原型基础上产出 uni 端工程代码：
 
-| 原型部分 | 应用代码补充 |
-|---|---|
-| `<script setup>` 状态 | `useXxxStore` 模式或 pages 局部 ref |
-| `setTimeout` 模拟 | 真实 `uni.request` / `wx.request` 调用 |
-| 单文件 | `pages/{name}/index.vue` + `pages.json` 注册 |
-| 无路由 | `pages.json` 路由配置 |
-| 无错误处理 | `uni.showToast` / `uni.showModal` |
+| 原型部分              | 应用代码补充                                 |
+| --------------------- | -------------------------------------------- |
+| `<script setup>` 状态 | `useXxxStore` 模式或 pages 局部 ref          |
+| `setTimeout` 模拟     | 真实 `uni.request` / `wx.request` 调用       |
+| 单文件                | `pages/{name}/index.vue` + `pages.json` 注册 |
+| 无路由                | `pages.json` 路由配置                        |
+| 无错误处理            | `uni.showToast` / `uni.showModal`            |
 
 ```json
 // src/pages.json

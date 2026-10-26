@@ -1,11 +1,8 @@
 <script setup lang="ts">
 /** Demo: SnImageGroup — show-toolbar-tooltip adds native title hints to the toolbar. */
-import { SnImage, SnImageGroup } from '@snui/vue-web'
+import { SnImage, SnImageGroup } from '@snui/vue-web';
 
-const urls = [
-  'https://picsum.photos/id/1050/1200/800',
-  'https://picsum.photos/id/1051/1200/800',
-]
+const urls = ['https://picsum.photos/id/1050/1200/800', 'https://picsum.photos/id/1051/1200/800'];
 </script>
 
 <template>
@@ -25,5 +22,9 @@ const urls = [
 </template>
 
 <style scoped>
-.demo-row { display: flex; gap: 12px; align-items: flex-start; }
+.demo-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
 </style>

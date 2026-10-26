@@ -7,8 +7,8 @@
  * 因此这里把触发与句柄托管放在内层子组件，通过作用域插槽暴露状态与操作。
  * 图标走 lucide + registerSnIcons + SnIcon（禁止 emoji）。
  */
-import { defineComponent, h, ref } from 'vue'
-import { Check, Clock } from 'lucide-vue-next'
+import { defineComponent, h, ref } from 'vue';
+import { Check, Clock } from 'lucide-vue-next';
 import {
   registerSnIcons,
   SnAvatar,
@@ -16,36 +16,35 @@ import {
   SnIcon,
   SnNotificationProvider,
   useNotification,
-} from '@snui/vue-web'
-import type { NotificationReactive } from '@snui/vue-web'
+} from '@snui/vue-web';
+import type { NotificationReactive } from '@snui/vue-web';
 
-registerSnIcons({ Check, Clock })
+registerSnIcons({ Check, Clock });
 
 const CustomTrigger = defineComponent({
   name: 'NotificationCustomTrigger',
   setup(_props, { slots }) {
-    const notification = useNotification()
-    const held = ref(false)
-    let handle: NotificationReactive | undefined
+    const notification = useNotification();
+    const held = ref(false);
+    let handle: NotificationReactive | undefined;
 
     /** 手动关闭当前持有的那条通知。 */
     const closeHeld = (): void => {
-      handle?.destroy()
-      handle = undefined
-      held.value = false
-    }
+      handle?.destroy();
+      handle = undefined;
+      held.value = false;
+    };
 
     const push = (): void => {
       // 先关掉上一条，保证屏幕上只有一条自定义通知。
-      closeHeld()
+      closeHeld();
       handle = notification.create({
         title: '李然 提交了设计评审',
         content: '交互稿 v2 已上传，等待你的确认。',
         description: '评审通过后会自动同步到版本库。',
         meta: `提交于 ${new Date().toLocaleTimeString('zh-CN', { hour12: false })}`,
         duration: 0,
-        avatar: () =>
-          h(SnAvatar, { fallbackText: '李', circle: true, size: 32 }),
+        avatar: () => h(SnAvatar, { fallbackText: '李', circle: true, size: 32 }),
         footer: () =>
           h('div', { style: 'display: flex; gap: 8px; margin-top: 2px' }, [
             h(
@@ -61,15 +60,15 @@ const CustomTrigger = defineComponent({
             h(SnButton, { size: 'tiny', onClick: closeHeld }, () => '稍后处理'),
           ]),
         onClose: () => {
-          held.value = false
+          held.value = false;
         },
-      })
-      held.value = true
-    }
+      });
+      held.value = true;
+    };
 
-    return () => slots.default?.({ push, closeHeld, held: held.value })
+    return () => slots.default?.({ push, closeHeld, held: held.value });
   },
-})
+});
 </script>
 
 <template>

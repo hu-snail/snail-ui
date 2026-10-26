@@ -1,28 +1,24 @@
 <script setup lang="ts">
 /** Demo: SnForm — FormRule union across every kind (required / type /
  *  pattern / length / numeric bounds / custom validator / async). */
-import { reactive } from 'vue'
-import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web'
-import type { FormRule } from '@snui/vue-web'
+import { reactive } from 'vue';
+import { SnButton, SnForm, SnFormItem, SnInput } from '@snui/vue-web';
+import type { FormRule } from '@snui/vue-web';
 
 const form = reactive({
   email: '',
   age: 18,
   bio: '',
   handle: '',
-})
+});
 
 const rules: Record<string, FormRule[]> = {
   email: [
     { required: true, message: 'Email is required' },
     { type: 'email', message: 'Must be a valid email' },
   ],
-  age: [
-    { required: true, min: 18, max: 120, message: 'Must be 18 or older' },
-  ],
-  bio: [
-    { maxLength: 140, message: 'Keep it under 140 chars' },
-  ],
+  age: [{ required: true, min: 18, max: 120, message: 'Must be 18 or older' }],
+  bio: [{ maxLength: 140, message: 'Keep it under 140 chars' }],
   handle: [
     { required: true, pattern: /^[a-z0-9_]+$/, message: 'Lowercase + digits + underscore only' },
     {
@@ -34,7 +30,7 @@ const rules: Record<string, FormRule[]> = {
       message: 'Too short',
     },
   ],
-}
+};
 </script>
 
 <template>
@@ -58,5 +54,7 @@ const rules: Record<string, FormRule[]> = {
 </template>
 
 <style scoped>
-.sn-form-demo { max-width: 360px; }
+.sn-form-demo {
+  max-width: 360px;
+}
 </style>

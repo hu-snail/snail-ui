@@ -6,9 +6,9 @@
  * rendering; leaves render as `<a href>` (or `<button>` if no href).
  * `accordion: true` ensures only one group is open at a time.
  */
-import { ref } from 'vue'
-import { SnMenu } from '@snui/vue-web'
-import type { SnMenuOption } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnMenu } from '@snui/vue-web';
+import type { SnMenuOption } from '@snui/vue-web';
 
 const items: SnMenuOption[] = [
   {
@@ -36,14 +36,14 @@ const items: SnMenuOption[] = [
       { key: 'grid', label: 'Grid', href: '/components/web/grid' },
     ],
   },
-]
+];
 
-const active = ref<string | null>('button')
-const expanded = ref<Array<string | number>>(['basic'])
+const active = ref<string | null>('button');
+const expanded = ref<Array<string | number>>(['basic']);
 </script>
 
 <template>
-  <div style="max-width: 280px;">
+  <div style="max-width: 280px">
     <SnMenu
       mode="vertical"
       :options="items"

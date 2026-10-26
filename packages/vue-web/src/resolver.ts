@@ -19,18 +19,18 @@
 // Type-only import — no runtime dependency on unplugin-vue-components.
 // If consumers don't have it installed, they can still use named imports.
 type ResolvedComponent = {
-  name: string
-  from: string
-  sideEffects?: string | string[]
-}
+  name: string;
+  from: string;
+  sideEffects?: string | string[];
+};
 type ComponentResolver = {
-  type: 'component'
-  resolve: (name: string) => ResolvedComponent | undefined
-}
+  type: 'component';
+  resolve: (name: string) => ResolvedComponent | undefined;
+};
 
 export interface SnUIResolverOptions {
   /** Library to import from. Default: '@snui/vue-web'. */
-  library?: string
+  library?: string;
 }
 
 /**
@@ -165,22 +165,22 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnWaterfall',
   'SnVideoPreview',
   'SnMarquee',
-]
+];
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {
-  const library = options.library ?? '@snui/vue-web'
+  const library = options.library ?? '@snui/vue-web';
 
   return {
     type: 'component',
     resolve(name: string): ResolvedComponent | undefined {
-      if (!PUBLIC_COMPONENTS.includes(name)) return undefined
+      if (!PUBLIC_COMPONENTS.includes(name)) return undefined;
       return {
         name: 'default',
         from: library,
         sideEffects: `${library}/styles`,
-      }
+      };
     },
-  }
+  };
 }
 
-export default SnUIResolver
+export default SnUIResolver;

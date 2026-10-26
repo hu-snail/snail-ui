@@ -1,9 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnDynamicTags — disabled / readonly. */
-import { ref } from 'vue'
-import { SnDynamicTags } from '@snui/vue-web'
-const a = ref(['Read-only tag'])
-const b = ref(['Disabled tag'])
+import { ref } from 'vue';
+import { SnDynamicTags } from '@snui/vue-web';
+const a = ref(['Read-only tag']);
+const b = ref(['Disabled tag']);
 </script>
 
 <template>
@@ -14,5 +14,10 @@ const b = ref(['Disabled tag'])
 </template>
 
 <style scoped>
-.demo-col { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; }
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
 </style>

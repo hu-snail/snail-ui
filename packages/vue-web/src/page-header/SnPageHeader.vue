@@ -30,50 +30,50 @@
  *   </SnPageHeader>
  */
 
-defineOptions({ name: 'SnPageHeader' })
+defineOptions({ name: 'SnPageHeader' });
 
 const props = withDefaults(
   defineProps<{
     /** Page title text; the `title` slot takes precedence. Mirrors n-page-header `title`. */
-    title?: string | undefined
+    title?: string | undefined;
     /** Subtitle under the title; the `subtitle` slot takes precedence. Mirrors n-page-header `subtitle`. */
-    subtitle?: string | undefined
+    subtitle?: string | undefined;
     /** Right-side extra content; the `extra` slot takes precedence. Mirrors n-page-header `extra`. */
-    extra?: string | undefined
+    extra?: string | undefined;
   }>(),
   {
     title: undefined,
     subtitle: undefined,
     extra: undefined,
   },
-)
+);
 
 const emit = defineEmits<{
   /** Fired when the back control is activated. Mirrors n-page-header `onBack`. */
-  (e: 'back', event: MouseEvent): void
-}>()
+  (e: 'back', event: MouseEvent): void;
+}>();
 
 defineSlots<{
   /** Replaces the whole header row. Mirrors n-page-header `header`. */
-  header?(): unknown
+  header?(): unknown;
   /** Replaces the back control entirely. Mirrors n-page-header `back`. */
-  back?(): unknown
+  back?(): unknown;
   /** Replaces the back glyph inside the control. Mirrors n-page-header `icon`. */
-  icon?(): unknown
+  icon?(): unknown;
   /** Title content — used only when `title` is not passed. Mirrors n-page-header `title`. */
-  title?(): unknown
+  title?(): unknown;
   /** Subtitle content — used only when `subtitle` is not passed. Mirrors n-page-header `subtitle`. */
-  subtitle?(): unknown
+  subtitle?(): unknown;
   /** Extra content — used only when `extra` is not passed. Mirrors n-page-header `extra`. */
-  extra?(): unknown
+  extra?(): unknown;
   /** Bottom area, separated by a top border. Mirrors n-page-header `footer`. */
-  footer?(): unknown
+  footer?(): unknown;
   /** Content between the header and the footer. Mirrors n-page-header `default`. */
-  default?(): unknown
-}>()
+  default?(): unknown;
+}>();
 
 function handleBack(event: MouseEvent): void {
-  emit('back', event)
+  emit('back', event);
 }
 </script>
 
@@ -121,10 +121,10 @@ function handleBack(event: MouseEvent): void {
           <slot v-if="$slots.subtitle" name="subtitle" />
           <template v-else>{{ subtitle }}</template>
         </div>
-      <div v-if="$slots.extra || extra !== undefined" class="sn-page-header__extra">
-        <slot v-if="$slots.extra" name="extra" />
-        <template v-else>{{ extra }}</template>
-      </div>
+        <div v-if="$slots.extra || extra !== undefined" class="sn-page-header__extra">
+          <slot v-if="$slots.extra" name="extra" />
+          <template v-else>{{ extra }}</template>
+        </div>
       </div>
     </div>
 
@@ -170,7 +170,9 @@ function handleBack(event: MouseEvent): void {
   background: transparent;
   color: var(--sn-web-color-text-secondary);
   cursor: pointer;
-  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sn-page-header__back-button:hover {

@@ -8,8 +8,8 @@
 
 用户在文档站手机预览面板（桌面 Chrome，鼠标操作）反馈「uni 端 picker 无法滚动选择」。浏览器实测（文档站 `/components/uni/picker-view`，探针计数）：
 
-| 手势 | 事件流 | 结果 |
-|---|---|---|
+| 手势                    | 事件流                                       | 结果                           |
+| ----------------------- | -------------------------------------------- | ------------------------------ |
 | 鼠标向上拖 88px（2 行） | `touchstart:1 → touchmove:1 → touchcancel:1` | transform 纹丝不动，选中行不变 |
 
 ## 两个独立根因
@@ -20,10 +20,10 @@
 
 ## 修法
 
-| 根因 | 修法 |
-|---|---|
-| 1 | 引擎新增 `bindMouseGestures(root: HTMLElement)`：mousedown 锚定同一拖拽核心（提取 `beginDrag` / `dragTo` / `settleDrag` 共享体），document 级 mousemove/mouseup/mouseleave(窗口)/blur followers 随手势挂载、随结束/卸载解除（§41/§42）；wheel 每 100px 累计一格前进一行（跳过禁用行、两端收边、`preventDefault` 接管页面滚动）。触摸后 500ms 内的合成鼠标事件被时间窗抑制，避免双重驱动。仅浏览器宿主安装（`typeof document` 守卫），小程序零影响 |
-| 2 | 预览桥 `onMouseLeave` 只在 `event.target === document \|\| documentElement`（真正离开窗口）时取消；组件根节点新增 `data-snui-mouse-gesture` 标记，桥接对其跳过（自管鼠标输入，避免双重驱动） |
+| 根因 | 修法                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | 引擎新增 `bindMouseGestures(root: HTMLElement)`：mousedown 锚定同一拖拽核心（提取 `beginDrag` / `dragTo` / `settleDrag` 共享体），document 级 mousemove/mouseup/mouseleave(窗口)/blur followers 随手势挂载、随结束/卸载解除（§41/§42）；wheel 每 100px 累计一格前进一行（跳过禁用行、两端收边、`preventDefault` 接管页面滚动）。触摸后 500ms 内的合成鼠标事件被时间窗抑制，避免双重驱动。仅浏览器宿主安装（`typeof document` 守卫），小程序零影响 |
+| 2    | 预览桥 `onMouseLeave` 只在 `event.target === document \|\| documentElement`（真正离开窗口）时取消；组件根节点新增 `data-snui-mouse-gesture` 标记，桥接对其跳过（自管鼠标输入，避免双重驱动）                                                                                                                                                                                                                                                      |
 
 ## Regression Test
 

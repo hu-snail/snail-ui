@@ -20,29 +20,37 @@ tasks/
 # AUI-XXX-XXX-NNN — <Task Name>
 
 ## Task
+
 <one-line objective>
 
 ## Context read
+
 - [ ] AGENTS.md
 - [ ] relevant /dev-docs/*.md
 - [ ] relevant /packages/* contract
 
 ## Plan
+
 <Minimal Changes>
 
 ## Files
+
 - <list>
 
 ## Tests
+
 - <plan>
 
 ## Acceptance
+
 - [ ] <list>
 
 ## Forbidden
+
 - <list>
 
 ## Status
+
 TODO | IN_PROGRESS | REVIEW | DONE | BLOCKED
 ```
 

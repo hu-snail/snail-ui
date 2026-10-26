@@ -22,7 +22,6 @@
 
 <Demo name="drop-menu-mp-guard" description="Upwards panel + beforeToggle blocking the first two taps + custom field names." />
 
-
 ## No scrim / panel height / custom panel
 
 - `modal=false` renders no scrim
@@ -36,80 +35,80 @@
 <Demo name="drop-menu-mp-panel" description="modal=false; close-on-click-modal=false; popup-height cap; custom-popup-class / custom-popup-style; disabled; default slot." />
 ## Props
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `modelValue` | `string \| number` | `''` | Current selected value (`v-model`) |
-| `options` | `SnDropMenuOption[]` | `[]` | Option rows |
-| `direction` | `'up' \| 'down'` | `'down'` | Expansion direction |
-| `zIndex` | `number` | `12` | Scrim and panel stacking level |
-| `modal` | `boolean` | `true` | Render the scrim |
-| `closeOnClickModal` | `boolean` | `true` | Close on a scrim tap |
-| `duration` | `number` | `200` | Open / close animation duration (ms) |
-| `disabled` | `boolean` | `false` | Disable the whole menu |
-| `iconName` | `string` | `'check'` | `sn-icon` name of the selected-row glyph |
-| `title` | `string` | `''` | Menu title; overrides the selected label |
-| `icon` | `string` | `'caret-down'` | `sn-icon` name of the bar arrow |
-| `iconSize` | `string \| number` | `32` | Arrow size in design px |
-| `beforeToggle` | `({ status }) => boolean \| Promise<boolean>` | — | Toggle guard |
-| `valueKey` | `string` | `'value'` | Option value field name |
-| `labelKey` | `string` | `'label'` | Option label field name |
-| `tipKey` | `string` | `'tip'` | Option tip field name |
-| `customPopupClass` | `string` | `''` | Custom class on the option panel |
-| `customPopupStyle` | `string` | `''` | Custom inline style on the option panel |
-| `popupHeight` | `string` | `''` | Panel height; empty = at most 80% of the viewport |
-| `customClass` | `string` | `''` | Root class |
-| `customStyle` | `string` | `''` | Root inline style |
-| `rootPortal` | `boolean` | `false` | **Not implemented** (no portal host on miniprogram) |
+| Prop                | Type                                          | Default        | Description                                         |
+| ------------------- | --------------------------------------------- | -------------- | --------------------------------------------------- |
+| `modelValue`        | `string \| number`                            | `''`           | Current selected value (`v-model`)                  |
+| `options`           | `SnDropMenuOption[]`                          | `[]`           | Option rows                                         |
+| `direction`         | `'up' \| 'down'`                              | `'down'`       | Expansion direction                                 |
+| `zIndex`            | `number`                                      | `12`           | Scrim and panel stacking level                      |
+| `modal`             | `boolean`                                     | `true`         | Render the scrim                                    |
+| `closeOnClickModal` | `boolean`                                     | `true`         | Close on a scrim tap                                |
+| `duration`          | `number`                                      | `200`          | Open / close animation duration (ms)                |
+| `disabled`          | `boolean`                                     | `false`        | Disable the whole menu                              |
+| `iconName`          | `string`                                      | `'check'`      | `sn-icon` name of the selected-row glyph            |
+| `title`             | `string`                                      | `''`           | Menu title; overrides the selected label            |
+| `icon`              | `string`                                      | `'caret-down'` | `sn-icon` name of the bar arrow                     |
+| `iconSize`          | `string \| number`                            | `32`           | Arrow size in design px                             |
+| `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | Toggle guard                                        |
+| `valueKey`          | `string`                                      | `'value'`      | Option value field name                             |
+| `labelKey`          | `string`                                      | `'label'`      | Option label field name                             |
+| `tipKey`            | `string`                                      | `'tip'`        | Option tip field name                               |
+| `customPopupClass`  | `string`                                      | `''`           | Custom class on the option panel                    |
+| `customPopupStyle`  | `string`                                      | `''`           | Custom inline style on the option panel             |
+| `popupHeight`       | `string`                                      | `''`           | Panel height; empty = at most 80% of the viewport   |
+| `customClass`       | `string`                                      | `''`           | Root class                                          |
+| `customStyle`       | `string`                                      | `''`           | Root inline style                                   |
+| `rootPortal`        | `boolean`                                     | `false`        | **Not implemented** (no portal host on miniprogram) |
 
 ### SnDropMenuOption
 
-| Field | Type | Description |
-| --- | --- | --- |
-| `label` | `string` | Row label (key configurable) |
-| `value` | `string \| number` | Value reported through `v-model` (key configurable) |
-| `tip` | `string` | Secondary tip line (key configurable) |
-| `disabled` | `boolean` | Disable the row |
+| Field      | Type               | Description                                         |
+| ---------- | ------------------ | --------------------------------------------------- |
+| `label`    | `string`           | Row label (key configurable)                        |
+| `value`    | `string \| number` | Value reported through `v-model` (key configurable) |
+| `tip`      | `string`           | Secondary tip line (key configurable)               |
+| `disabled` | `boolean`          | Disable the row                                     |
 
 ## Events
 
-| Event | Description | Payload |
-| --- | --- | --- |
-| `update:modelValue` | Selected value changed | `(value: string \| number)` |
-| `change` | A row was picked | `{ value, selectedItem }` |
-| `open` | The menu started expanding | — |
-| `opened` | The expansion animation finished | — |
-| `close` | The menu started closing | — |
-| `closed` | The close animation finished (panel unmounted) | — |
+| Event               | Description                                    | Payload                     |
+| ------------------- | ---------------------------------------------- | --------------------------- |
+| `update:modelValue` | Selected value changed                         | `(value: string \| number)` |
+| `change`            | A row was picked                               | `{ value, selectedItem }`   |
+| `open`              | The menu started expanding                     | —                           |
+| `opened`            | The expansion animation finished               | —                           |
+| `close`             | The menu started closing                       | —                           |
+| `closed`            | The close animation finished (panel unmounted) | —                           |
 
 ## Slots
 
-| Slot | Description |
-| --- | --- |
+| Slot      | Description                                         |
+| --------- | --------------------------------------------------- |
 | `default` | Custom panel body; replaces the default option list |
 
 ## Methods
 
-| Method | Description |
-| --- | --- |
-| `getShowPop()` | Whether the menu is currently open |
-| `open()` | Open the menu (respects `beforeToggle`) |
-| `close()` | Close the menu (respects `beforeToggle`) |
-| `toggle()` | Toggle the menu |
+| Method         | Description                              |
+| -------------- | ---------------------------------------- |
+| `getShowPop()` | Whether the menu is currently open       |
+| `open()`       | Open the menu (respects `beforeToggle`)  |
+| `close()`      | Close the menu (respects `beforeToggle`) |
+| `toggle()`     | Toggle the menu                          |
 
 ## Tokens
 
-| Variable | Purpose |
-| --- | --- |
-| `--sn-mp-color-background-elevated` | Bar / panel background |
-| `--sn-mp-color-background-overlay` | Scrim |
-| `--sn-mp-color-text-primary` | Bar and row text |
-| `--sn-mp-color-text-secondary` / `--sn-mp-color-text-tertiary` | Placeholder, tip line, arrow |
-| `--sn-mp-color-action-primary` | Active row and arrow |
-| `--sn-mp-color-text-disabled` | Disabled state |
-| `--sn-mp-color-border-subtle` | Panel and row separators |
-| `--sn-mp-shadow-md` | Panel shadow |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Padding |
-| `--sn-mp-font-size-md` / `--sn-mp-font-size-xs` | Row text and tip line |
+| Variable                                                        | Purpose                      |
+| --------------------------------------------------------------- | ---------------------------- |
+| `--sn-mp-color-background-elevated`                             | Bar / panel background       |
+| `--sn-mp-color-background-overlay`                              | Scrim                        |
+| `--sn-mp-color-text-primary`                                    | Bar and row text             |
+| `--sn-mp-color-text-secondary` / `--sn-mp-color-text-tertiary`  | Placeholder, tip line, arrow |
+| `--sn-mp-color-action-primary`                                  | Active row and arrow         |
+| `--sn-mp-color-text-disabled`                                   | Disabled state               |
+| `--sn-mp-color-border-subtle`                                   | Panel and row separators     |
+| `--sn-mp-shadow-md`                                             | Panel shadow                 |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Padding                      |
+| `--sn-mp-font-size-md` / `--sn-mp-font-size-xs`                 | Row text and tip line        |
 
 ## Accessibility
 

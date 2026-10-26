@@ -6,14 +6,14 @@
  * `columns` 决定，而是跟随可用宽度自动变化（此时 `columns` 被忽略）。
  * 下面的按钮只切换外层容器宽度，用来观察列数重排。
  */
-import { ref } from 'vue'
-import { SnWaterfall } from '@snui/vue-web'
+import { ref } from 'vue';
+import { SnWaterfall } from '@snui/vue-web';
 
 interface Tile {
-  id: number
-  height: number
-  from: string
-  to: string
+  id: number;
+  height: number;
+  from: string;
+  to: string;
 }
 
 const tiles: Tile[] = [
@@ -25,23 +25,21 @@ const tiles: Tile[] = [
   { id: 6, height: 200, from: '#52c41a', to: '#95de64' },
   { id: 7, height: 95, from: '#2f54eb', to: '#85a5ff' },
   { id: 8, height: 140, from: '#f5222d', to: '#ff7875' },
-]
+];
 
 const stageWidths = [
   { label: '720px', value: '720px' },
   { label: '420px', value: '420px' },
   { label: '260px', value: '260px' },
-]
+];
 
-const stageWidth = ref('720px')
+const stageWidth = ref('720px');
 </script>
 
 <template>
   <div class="waterfall-responsive">
     <div class="waterfall-responsive__toolbar">
-      <span class="waterfall-responsive__hint">
-        min-column-width="150" · 容器宽度
-      </span>
+      <span class="waterfall-responsive__hint"> min-column-width="150" · 容器宽度 </span>
       <button
         v-for="width in stageWidths"
         :key="width.value"

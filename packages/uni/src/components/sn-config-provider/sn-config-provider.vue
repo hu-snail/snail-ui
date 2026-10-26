@@ -38,32 +38,32 @@
  * 不负责：Schema 校验 / 业务状态 / 路由。
  */
 
-import { computed, provide } from 'vue'
+import { computed, provide } from 'vue';
 
-defineOptions({ name: 'SnConfigProvider' })
+defineOptions({ name: 'SnConfigProvider' });
 
 /** Theme mode. Mirrors `wd-config-provider` `theme`. */
-type ConfigProviderTheme = 'light' | 'dark'
+type ConfigProviderTheme = 'light' | 'dark';
 
 /**
  * Theme variable overrides. Keys are either CSS custom property names
  * (`--sn-mp-color-action-primary`) or wot-style camelCase
  * (`buttonPrimaryBgColor`); values are any CSS value.
  */
-type ConfigProviderThemeVars = Record<string, string>
+type ConfigProviderThemeVars = Record<string, string>;
 
 const props = withDefaults(
   defineProps<{
     /** 当前激活的 Style Pack 标识（kebab-case）。'default' 或空 = 无 skin class。 */
-    skin?: string
+    skin?: string;
     /** Theme mode for this subtree. Mirrors `wd-config-provider` theme. */
-    theme?: ConfigProviderTheme
+    theme?: ConfigProviderTheme;
     /** Per-subtree CSS variable overrides. Mirrors `wd-config-provider` theme-vars. */
-    themeVars?: ConfigProviderThemeVars
+    themeVars?: ConfigProviderThemeVars;
     /** Custom class on the root node. Mirrors `wd-config-provider` custom-class. */
-    customClass?: string
+    customClass?: string;
     /** Custom inline style on the root node. Mirrors `wd-config-provider` custom-style. */
-    customStyle?: string
+    customStyle?: string;
   }>(),
   {
     skin: '',
@@ -72,34 +72,34 @@ const props = withDefaults(
     customClass: '',
     customStyle: '',
   },
-)
+);
 
-provide('snui-skin', props.skin)
+provide('snui-skin', props.skin);
 
 /** camelCase → `--sn-mp-kebab-case`. Already-prefixed keys pass through. */
 function toCssVarName(key: string): string {
-  if (key.startsWith('--')) return key
-  const kebab = key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase()
-  return `--sn-mp-${kebab}`
+  if (key.startsWith('--')) return key;
+  const kebab = key.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+  return `--sn-mp-${kebab}`;
 }
 
 const themeVarsStyle = computed(() => {
-  const entries = Object.entries(props.themeVars)
-  if (entries.length === 0) return ''
-  return entries.map(([key, value]) => `${toCssVarName(key)}: ${value}`).join('; ')
-})
+  const entries = Object.entries(props.themeVars);
+  if (entries.length === 0) return '';
+  return entries.map(([key, value]) => `${toCssVarName(key)}: ${value}`).join('; ');
+});
 
 const rootStyle = computed(() => {
-  const parts = [themeVarsStyle.value, props.customStyle].filter(Boolean)
-  return parts.length > 0 ? parts.join('; ') : undefined
-})
+  const parts = [themeVarsStyle.value, props.customStyle].filter(Boolean);
+  return parts.length > 0 ? parts.join('; ') : undefined;
+});
 
 const rootClass = computed(() => [
   'sn-config-provider',
   props.skin && props.skin !== 'default' ? `snui-skin-${props.skin}` : '',
   props.theme === 'dark' ? 'sn-theme-dark' : '',
   props.customClass,
-])
+]);
 </script>
 
 <template>

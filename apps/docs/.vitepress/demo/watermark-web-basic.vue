@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Demo: SnWatermark — tiled text watermark over wrapped content with cross / rotate / opacity. */
-import { SnWatermark } from '@snui/vue-web'
+import { SnWatermark } from '@snui/vue-web';
 </script>
 
 <template>
@@ -18,14 +18,19 @@ import { SnWatermark } from '@snui/vue-web'
         <h4>季度经营分析报告</h4>
         <p>
           本页面内容仅限授权人员查阅。水印层为纯装饰元素，不影响正文的
-          选择、复制与交互；多行文案以数组形式传入，相邻瓦片默认按
-          width / height 网格平铺。
+          选择、复制与交互；多行文案以数组形式传入，相邻瓦片默认按 width / height 网格平铺。
         </p>
         <p>设置 cross 后，相邻瓦片会错开半个瓦片，形成交错布局。</p>
       </div>
     </SnWatermark>
 
-    <SnWatermark content="CROSS" :cross="true" :rotate="-30" :opacity="0.4" font-color="rgba(14, 128, 235, 0.3)">
+    <SnWatermark
+      content="CROSS"
+      :cross="true"
+      :rotate="-30"
+      :opacity="0.4"
+      font-color="rgba(14, 128, 235, 0.3)"
+    >
       <div class="watermark-demo__content watermark-demo__content--short">
         <h4>交错瓦片</h4>
         <p>cross = true：同一行的相邻水印错开半个间距。</p>
