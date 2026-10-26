@@ -29,6 +29,25 @@ export const GROUP_LABELS = {
   more: '更多组件',
 };
 
+/** 分组英文标签（演示工程 i18n 用；docs overview 未提供英文分组名）。 */
+export const GROUP_LABELS_EN = {
+  basic: 'Basic Components',
+  navigation: 'Navigation',
+  form: 'Form Components',
+  feedback: 'Feedback',
+  display: 'Display',
+  business: 'Business',
+  more: 'More',
+};
+
+/** 组件 key → 英文名（`action-sheet` → `Action Sheet`；gen-pages 生成 titleEn）。 */
+export function titleEnOf(key) {
+  return key
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
 /**
  * 解析 docs overview-data.ts。
  *
@@ -75,6 +94,8 @@ export function splitSubpackages(compsByGroup, groupOrder) {
       ordinal += 1;
       subpackages.push({
         root: ordinal === 1 ? group : `${group}-${ordinal}`,
+        /** 原始分组 key（i18n 标签查询用；root 带切分序号）。 */
+        group,
         label: GROUP_LABELS[group] ?? group,
         comps: comps.slice(i, i + size),
       });

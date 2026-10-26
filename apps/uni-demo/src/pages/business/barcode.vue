@@ -1,19 +1,22 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— barcode 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/barcode-mp.vue';
+import DemoPageShell from '../../components/DemoPageShell.vue';
 </script>
 
 <template>
-  <view class="page">
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">基础用法</text>
-      </view>
-      <view class="module__body">
-        <Demo0 />
+  <DemoPageShell :title-zh="'条形码'" :title-en="'Barcode'">
+    <view class="page">
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">基础用法</text>
+        </view>
+        <view class="module__body">
+          <Demo0 />
+        </view>
       </view>
     </view>
-  </view>
+  </DemoPageShell>
 </template>
 
 <style scoped>
@@ -22,8 +25,6 @@ import Demo0 from './demos/barcode-mp.vue';
 }
 
 .module {
-  background-color: #ffffff;
-  border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
 }
@@ -35,7 +36,7 @@ import Demo0 from './demos/barcode-mp.vue';
 .module__title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f1f1f;
+  color: var(--demo-title);
 }
 
 .module__body {

@@ -4,7 +4,8 @@
  *
  * 产出：
  *   - src/pages.json                 首页 + 按组件分组的 subPackages
- *   - src/pages/index/index.vue      首页：组件目录（静态数据渲染，无动态组件）
+ *   - src/pages/index/home-data.ts   首页目录数据（含英文字段；首页页面本体
+ *                                     index.vue 为手写代码，消费该数据）
  *   - src/pages/<group>/<comp>.vue   组件聚合页：静态展开该组件全部场景
  *   - src/demos-manifest.json        目录清单（docs 消费：分组 / 标题 / 英文影子）
  *
@@ -23,7 +24,7 @@
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { GROUP_LABELS, parseOverviewData, splitSubpackages } from './subpackages.mjs';
+import { GROUP_LABELS_EN, parseOverviewData, splitSubpackages, titleEnOf } from './subpackages.mjs';
 
 const pagesDir = fileURLToPath(new URL('../src/pages/', import.meta.url));
 const manifestOut = fileURLToPath(new URL('../src/demos-manifest.json', import.meta.url));
@@ -153,126 +154,41 @@ const pagesJson = {
 };
 writeFileSync(`${pagesDir}../pages.json`, `${JSON.stringify(pagesJson, null, 2)}\n`);
 
-// ── 生成首页 ───────────────────────────────────────────────────────────────
+// ── 生成首页数据（首页页面本体 src/pages/index/index.vue 为手写代码） ──────
 const homeGroups = subpackages.map((sub) => ({
   key: sub.root,
   label: sub.label,
+  labelEn: GROUP_LABELS_EN[sub.group] ?? sub.label,
   comps: sub.comps.map((comp) => ({
     key: comp.key,
     group: sub.root,
     title: comp.title,
+    titleEn: titleEnOf(comp.key),
     desc: comp.desc,
     count: comp.demos.length,
   })),
 }));
-const homeVue = `<script setup lang="ts">
-// 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 \`pnpm gen:pages\`。
-interface CompItem {
+const homeDataTs = `// 由 scripts/gen-pages.mjs 生成，勿手改；demo 变更后重跑 \`pnpm gen:pages\`。
+export interface DemoHomeComp {
   key: string
   group: string
   title: string
+  titleEn: string
   desc: string
   count: number
 }
 
-interface GroupItem {
+export interface DemoHomeGroup {
   key: string
   label: string
-  comps: CompItem[]
+  labelEn: string
+  comps: DemoHomeComp[]
 }
 
-const groups: GroupItem[] = ${JSON.stringify(homeGroups, null, 2)}
-
-function open(comp: CompItem): void {
-  uni.navigateTo({ url: \`/pages/\${comp.group}/\${comp.key}\` })
-}
-</script>
-
-<template>
-  <view class="home">
-    <view v-for="group in groups" :key="group.key" class="home__group">
-      <view class="home__group-title">{{ group.label }}</view>
-      <view
-        v-for="comp in group.comps"
-        :key="comp.key"
-        class="home__card"
-        @tap="open(comp)"
-      >
-        <view class="home__card-head">
-          <text class="home__title">{{ comp.title }}</text>
-          <text class="home__count">{{ comp.count }} 个场景</text>
-        </view>
-        <text class="home__desc">{{ comp.desc }}</text>
-      </view>
-    </view>
-    <view class="home__foot">
-      <text class="home__foot-text">snui · uni-app 端组件演示</text>
-    </view>
-  </view>
-</template>
-
-<style scoped>
-.home {
-  padding: 24rpx;
-}
-
-.home__group {
-  margin-bottom: 32rpx;
-}
-
-.home__group-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1f1f1f;
-  padding: 8rpx 8rpx 16rpx;
-}
-
-.home__card {
-  background-color: #ffffff;
-  border-radius: 16rpx;
-  padding: 28rpx;
-  margin-bottom: 20rpx;
-}
-
-.home__card-head {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8rpx;
-}
-
-.home__title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #1f1f1f;
-}
-
-.home__count {
-  font-size: 22rpx;
-  color: #999999;
-}
-
-.home__desc {
-  font-size: 24rpx;
-  color: #666666;
-  line-height: 1.6;
-}
-
-.home__foot {
-  padding: 40rpx 0;
-  display: flex;
-  justify-content: center;
-}
-
-.home__foot-text {
-  font-size: 22rpx;
-  color: #bbbbbb;
-}
-</style>
+export const HOME_GROUPS: DemoHomeGroup[] = ${JSON.stringify(homeGroups, null, 2)}
 `;
 mkdirSync(`${pagesDir}index`, { recursive: true });
-writeFileSync(`${pagesDir}index/index.vue`, homeVue);
+writeFileSync(`${pagesDir}index/home-data.ts`, homeDataTs);
 
 // ── 生成组件聚合页 ─────────────────────────────────────────────────────────
 // 只清理聚合页 .vue 文件，保留 demos/（demo 源由 fork-demos.mjs 管理，
@@ -285,19 +201,20 @@ for (const sub of subpackages) {
     }
   }
   for (const comp of sub.comps) {
-    const imports = comp.demos
-      .map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`)
-      .join('\n');
+    const imports = [
+      ...comp.demos.map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`),
+      `import DemoPageShell from '../../components/DemoPageShell.vue'`,
+    ].join('\n');
     const modules = comp.demos
       .map(
-        (demo, i) => `    <view class="module">
-      <view class="module__head">
-        <text class="module__title">${scenarioLabel(demo.scenario)}</text>
-      </view>
-      <view class="module__body">
-        <Demo${i} />
-      </view>
-    </view>`,
+        (demo, i) => `      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">${scenarioLabel(demo.scenario)}</text>
+        </view>
+        <view class="module__body">
+          <Demo${i} />
+        </view>
+      </view>`,
       )
       .join('\n');
     const vue = `<script setup lang="ts">
@@ -306,9 +223,11 @@ ${imports}
 </script>
 
 <template>
-  <view class="page">
+  <DemoPageShell :title-zh="'${comp.title}'" :title-en="'${titleEnOf(comp.key)}'">
+    <view class="page">
 ${modules}
-  </view>
+    </view>
+  </DemoPageShell>
 </template>
 
 <style scoped>
@@ -317,8 +236,6 @@ ${modules}
 }
 
 .module {
-  background-color: #ffffff;
-  border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
 }
@@ -330,7 +247,7 @@ ${modules}
 .module__title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f1f1f;
+  color: var(--demo-title);
 }
 
 .module__body {
@@ -382,7 +299,7 @@ try {
       'silent',
       manifestOut,
       `${pagesDir}../pages.json`,
-      `${pagesDir}index/index.vue`,
+      `${pagesDir}index/home-data.ts`,
       `${pagesDir}/*/*.vue`,
     ],
     { stdio: 'inherit', shell: false },

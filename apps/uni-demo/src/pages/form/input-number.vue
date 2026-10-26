@@ -5,51 +5,54 @@ import Demo1 from './demos/input-number-mp-commit-hooks.vue';
 import Demo2 from './demos/input-number-mp-controls.vue';
 import Demo3 from './demos/input-number-mp-custom-class.vue';
 import Demo4 from './demos/input-number-mp-theme-state.vue';
+import DemoPageShell from '../../components/DemoPageShell.vue';
 </script>
 
 <template>
-  <view class="page">
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">基础用法</text>
+  <DemoPageShell :title-zh="'计数器'" :title-en="'Input Number'">
+    <view class="page">
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">基础用法</text>
+        </view>
+        <view class="module__body">
+          <Demo0 />
+        </view>
       </view>
-      <view class="module__body">
-        <Demo0 />
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">commit-hooks</text>
+        </view>
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">controls</text>
+        </view>
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">自定义类名</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">theme-state</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
+        </view>
       </view>
     </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">commit-hooks</text>
-      </view>
-      <view class="module__body">
-        <Demo1 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">controls</text>
-      </view>
-      <view class="module__body">
-        <Demo2 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">自定义类名</text>
-      </view>
-      <view class="module__body">
-        <Demo3 />
-      </view>
-    </view>
-    <view class="module">
-      <view class="module__head">
-        <text class="module__title">theme-state</text>
-      </view>
-      <view class="module__body">
-        <Demo4 />
-      </view>
-    </view>
-  </view>
+  </DemoPageShell>
 </template>
 
 <style scoped>
@@ -58,8 +61,6 @@ import Demo4 from './demos/input-number-mp-theme-state.vue';
 }
 
 .module {
-  background-color: #ffffff;
-  border-radius: 16rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
 }
@@ -71,7 +72,7 @@ import Demo4 from './demos/input-number-mp-theme-state.vue';
 .module__title {
   font-size: 28rpx;
   font-weight: 600;
-  color: #1f1f1f;
+  color: var(--demo-title);
 }
 
 .module__body {
