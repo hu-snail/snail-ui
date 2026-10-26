@@ -115,7 +115,9 @@ function onTap(): void {
   >
     <slot v-if="state === 'loading'" name="loading">
       <view class="sn-loadmore__spinner">
-        <SnLoading v-bind="loadingProps" :text="''" size="28" />
+        <!-- Defaults first, `loadingProps` second (the honoured subset overrides
+             them), the forced empty text last — the label is loadmore's own. -->
+        <SnLoading :size="28" v-bind="loadingProps" :text="''" />
       </view>
       <text class="sn-loadmore__text">{{ loadingText }}</text>
     </slot>

@@ -153,4 +153,113 @@ describe('sn-notify', () => {
     wrapper.unmount();
     expect(() => vi.advanceTimersByTime(5000)).not.toThrow();
   });
+
+  /* ── Added coverage ──────────────────────────────────────────────────── */
+
+  it('renders a numeric message', () => {
+    const wrapper = mount(SnNotify, { props: { visible: true, message: 42 } });
+    expect(wrapper.find('.sn-notify__line').text()).toBe('42');
+  });
+
+  it('renders the zero message rather than dropping it', () => {
+    const wrapper = mount(SnNotify, { props: { visible: true, message: 0 } });
+    expect(wrapper.find('.sn-notify__line').text()).toBe('0');
+  });
+
+  it('accepts a string safeHeight verbatim', () => {
+    // env() / calc() values are dropped by happy-dom's CSS parser; assert with
+    // a length it keeps (string safeHeight is passed through unchanged).
+    const wrapper = mount(SnNotify, {
+      props: { visible: true, message: 'x', safeHeight: '12px' },
+    });
+    expect(wrapper.attributes('style')).toContain('padding-top: 12px');
+  });
+
+  it('applies the color override and appends customStyle', () => {
+    const wrapper = mount(SnNotify, {
+      props: { visible: true, message: 'x', color: 'white', customStyle: 'border: 1px' },
+    });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style).toContain('color: white');
+    expect(style).toContain('border: 1px');
+  });
+
+  it('exposes the close button to assistive tech and stops the tap there', async () => {
+    const wrapper = mount(SnNotify, { props: { visible: true, message: 'x', closable: true } });
+    const close = wrapper.find('.sn-notify__close');
+    expect(close.attributes('role')).toBe('button');
+    expect(close.attributes('aria-label')).toBe('close');
+    await close.trigger('tap');
+    expect(wrapper.emitted('update:visible')?.[0]).toEqual([false]);
+    expect(wrapper.emitted('click')).toBeUndefined();
+  });
+
+  it('announces through an assertive live region', () => {
+    const wrapper = mount(SnNotify, { props: { visible: true, message: 'x' } });
+    expect(wrapper.find('.sn-notify__body').attributes('aria-live')).toBe('assertive');
+  });
+
+  it('re-showing while the leave transition is pending keeps the node mounted', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnNotify, {
+      props: { visible: false, message: 'x', duration: 0 },
+    });
+    await wrapper.setProps({ visible: true });
+    await wrapper.setProps({ visible: false });
+    vi.advanceTimersByTime(100); // mid-leave (leave lasts 300ms)
+    await wrapper.setProps({ visible: true });
+    vi.advanceTimersByTime(1000); // past the leave length
+
+    expect(wrapper.find('.sn-notify').exists()).toBe(true);
+    expect(wrapper.emitted('closed')).toBeUndefined();
+    expect(wrapper.emitted('opened')).toHaveLength(2);
+  });
+
+  it('restarts the auto-dismiss timer when re-shown mid-countdown', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnNotify, {
+      props: { visible: false, message: 'x', duration: 3000 },
+    });
+    await wrapper.setProps({ visible: true });
+    vi.advanceTimersByTime(2500);
+    await wrapper.setProps({ visible: false });
+    vi.advanceTimersByTime(100);
+    await wrapper.setProps({ visible: true });
+
+    vi.advanceTimersByTime(2999);
+    expect(wrapper.emitted('update:visible')).toBeUndefined();
+    vi.advanceTimersByTime(1);
+    expect(wrapper.emitted('update:visible')?.[0]).toEqual([false]);
+  });
+
+  it('auto-dismisses and emits opened when mounted already visible', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnNotify, { props: { visible: true, message: 'x', duration: 3000 } });
+    // Regression: the show leg used to run only on the false→true transition,
+    // so a notification mounted visible never armed its auto-dismiss timer.
+    expect(wrapper.emitted('opened')).toHaveLength(1);
+    vi.advanceTimersByTime(2999);
+    expect(wrapper.emitted('update:visible')).toBeUndefined();
+    vi.advanceTimersByTime(1);
+    expect(wrapper.emitted('update:visible')?.[0]).toEqual([false]);
+  });
+
+  it('auto-dismisses with the default duration', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnNotify, { props: { visible: false, message: 'x' } });
+    await wrapper.setProps({ visible: true });
+    vi.advanceTimersByTime(2999);
+    expect(wrapper.emitted('update:visible')).toBeUndefined();
+    vi.advanceTimersByTime(1);
+    expect(wrapper.emitted('update:visible')?.[0]).toEqual([false]);
+  });
+
+  it('accepts the parity props (selector / rootPortal) without a portal host', () => {
+    const wrapper = mount(SnNotify, {
+      props: { visible: true, message: 'x', selector: 'a', rootPortal: true },
+    });
+    // The banner renders inline — miniprogram has no portal host.
+    expect(wrapper.find('.sn-notify__line').text()).toBe('x');
+    expect(wrapper.element.parentElement).not.toBeNull();
+  });
 });

@@ -12,6 +12,9 @@
  *   - the transition timer is cleared on unmount (§41)
  *
  * No `rpx` values in assertions — happy-dom drops lengths it cannot parse.
+ *
+ * Untestable in happy-dom: `showMenuByLongpress` beyond attribute forwarding —
+ * the long-press menu is a WeChat-native behaviour with no DOM counterpart.
  */
 
 import { afterEach, describe, it, expect, vi } from 'vitest';
@@ -298,5 +301,98 @@ describe('sn-curtain', () => {
         mount(SnCurtain, { props: { modelValue: true } }).attributes('data-snui-component'),
       ).toBe('curtain');
     });
+  });
+
+  /* ── Added coverage ──────────────────────────────────────────────────── */
+
+  describe('close positions', () => {
+    it.each(['inset', 'top', 'bottom', 'bottom-left'] as const)(
+      'applies the %s close-position class',
+      (position) => {
+        const w = mount(SnCurtain, { props: { modelValue: true, closePosition: position } });
+        expect(w.find('.sn-curtain__close').classes()).toContain(
+          `sn-curtain__close--${position}`,
+        );
+      },
+    );
+
+    it('applies the top-left close-position class', () => {
+      const w = mount(SnCurtain, { props: { modelValue: true, closePosition: 'top-left' } });
+      expect(w.find('.sn-curtain__close').classes()).toContain('sn-curtain__close--top-left');
+    });
+  });
+
+  describe('rapid open / close cycling', () => {
+    it('re-opening mid-leave keeps the node and finishes the new enter leg', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnCurtain, { props: { modelValue: false } });
+        await w.setProps({ modelValue: true });
+        await flushPromises();
+        vi.advanceTimersByTime(100); // mid-enter
+        await w.setProps({ modelValue: false });
+        vi.advanceTimersByTime(50); // mid-leave
+        await w.setProps({ modelValue: true });
+        await flushPromises();
+        vi.advanceTimersByTime(300);
+
+        expect(w.find('.sn-curtain').exists()).toBe(true);
+        expect(w.classes()).toContain('sn-curtain--shown');
+        // Exactly one after-enter — the superseded legs drop their results.
+        expect(w.emitted('after-enter')).toHaveLength(1);
+        expect(w.emitted('after-leave')).toBeUndefined();
+        expect(w.emitted('closed')).toBeUndefined();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('never emits after-enter for a leg superseded by a leave', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnCurtain, { props: { modelValue: false } });
+        await w.setProps({ modelValue: true });
+        await flushPromises();
+        vi.advanceTimersByTime(100); // mid-enter
+        await w.setProps({ modelValue: false });
+        vi.advanceTimersByTime(300);
+        await w.vm.$nextTick();
+
+        expect(w.emitted('after-enter')).toBeUndefined();
+        expect(w.emitted('after-leave')).toHaveLength(1);
+        expect(w.emitted('closed')).toHaveLength(1);
+        expect(w.find('.sn-curtain').exists()).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+  });
+
+  it('forwards the native load event object', async () => {
+    const w = mount(SnCurtain, { props: { modelValue: true } });
+    await w.find('.sn-curtain__image').trigger('load');
+    expect(w.emitted('load')?.[0]?.[0]).toBeInstanceOf(Event);
+  });
+
+  it('still navigates when closeOnClick is off', async () => {
+    const navigateTo = vi.fn();
+    installUni(navigateTo);
+    const w = mount(SnCurtain, { props: { modelValue: true, to: '/pages/campaign', closeOnClick: false } });
+    await w.find('.sn-curtain__image').trigger('tap');
+    expect(navigateTo).toHaveBeenCalledWith({ url: '/pages/campaign' });
+    expect(w.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('does not navigate when the host has no navigateTo', async () => {
+    installUni({}); // uni exists but cannot navigate
+    const w = mount(SnCurtain, { props: { modelValue: true, to: '/pages/campaign' } });
+    await w.find('.sn-curtain__image').trigger('tap');
+    expect(w.emitted('click')).toHaveLength(1);
+  });
+
+  it('keeps rendering inline when rootPortal is set (parity prop)', () => {
+    const w = mount(SnCurtain, { props: { modelValue: true, rootPortal: true } });
+    expect(w.find('.sn-curtain__image').exists()).toBe(true);
+    expect(w.element.parentElement).not.toBeNull();
   });
 });

@@ -249,4 +249,148 @@ describe('sn-tour', () => {
       expect(wrapper.emitted('update:current')?.at(-1)).toEqual([1]);
     });
   });
+
+  /* ── Added coverage ──────────────────────────────────────────────────── */
+
+  describe('imperative edges', () => {
+    it('ignores handlePrev on the first step', async () => {
+      const wrapper = mount(SnTour, { props: { modelValue: true, steps: STEPS } });
+      const vm = wrapper.vm as unknown as { handlePrev: () => void };
+      vm.handlePrev();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('prev')).toBeUndefined();
+      expect(wrapper.emitted('update:current')).toBeUndefined();
+    });
+
+    it('finishes through handleFinish with the payload and closes', async () => {
+      const wrapper = mount(SnTour, { props: { modelValue: true, steps: STEPS, current: 1 } });
+      const vm = wrapper.vm as unknown as { handleFinish: () => void };
+      vm.handleFinish();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('finish')?.at(-1)).toEqual([{ current: 1, total: 3 }]);
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false]);
+    });
+
+    it('closes through handleSkip from any step', async () => {
+      const wrapper = mount(SnTour, { props: { modelValue: true, steps: STEPS, current: 2 } });
+      const vm = wrapper.vm as unknown as { handleSkip: () => void };
+      vm.handleSkip();
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('skip')?.at(-1)).toEqual([{ current: 2, total: 3 }]);
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false]);
+    });
+  });
+
+  describe('controlled current', () => {
+    it('follows an externally updated current prop', async () => {
+      const wrapper = mount(SnTour, { props: { modelValue: true, steps: STEPS, current: 0 } });
+      await wrapper.setProps({ current: 2 });
+      expect(wrapper.find('.sn-tour__text').text()).toBe('Third step');
+      expect(wrapper.find('.sn-tour__progress').text()).toBe('3 / 3');
+    });
+
+    it('emits change for each step of a full run', async () => {
+      const wrapper = mount(SnTour, { props: { modelValue: true, steps: STEPS } });
+      await wrapper.find('.sn-tour__next').trigger('tap');
+      await wrapper.find('.sn-tour__next').trigger('tap');
+      await wrapper.find('.sn-tour__next').trigger('tap'); // last step → finish
+      expect(wrapper.emitted('change')?.map((entry) => entry)).toEqual([
+        [{ current: 1 }],
+        [{ current: 2 }],
+      ]);
+      expect(wrapper.emitted('finish')?.at(-1)).toEqual([{ current: 2, total: 3 }]);
+    });
+  });
+
+  describe('mask tap edges', () => {
+    it('finishes instead of advancing when the mask is tapped on the last step', async () => {
+      const wrapper = mount(SnTour, {
+        props: { modelValue: true, steps: STEPS, current: 2, clickMaskNext: true },
+      });
+      await wrapper.find('.sn-tour__mask').trigger('tap');
+      expect(wrapper.emitted('finish')?.at(-1)).toEqual([{ current: 2, total: 3 }]);
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([false]);
+    });
+
+    it('does not close when the mask is tapped without clickMaskNext', async () => {
+      const wrapper = mount(SnTour, { props: { modelValue: true, steps: STEPS } });
+      await wrapper.find('.sn-tour__mask').trigger('tap');
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    });
+  });
+
+  describe('slots', () => {
+    it('exposes the step through the footer slot', () => {
+      const wrapper = mount(SnTour, {
+        props: { modelValue: true, steps: STEPS, current: 1 },
+        slots: {
+          footer: `<template #footer="{ step, current, total }">
+            <text class="custom-footer">{{ step?.content }}|{{ current }}|{{ total }}</text>
+          </template>`,
+        },
+      });
+      expect(wrapper.find('.custom-footer').text()).toBe('Second step|1|3');
+      expect(wrapper.find('.sn-tour__actions').exists()).toBe(false);
+    });
+  });
+
+  describe('layout knobs', () => {
+    it('writes the duration custom property only when it differs from the default', () => {
+      const custom = mount(SnTour, { props: { modelValue: true, steps: STEPS, duration: 500 } });
+      expect(custom.attributes('style')).toContain('--snui-tour-duration: 500ms');
+
+      const legacy = mount(SnTour, { props: { modelValue: true, steps: STEPS } });
+      expect(legacy.attributes('style')).toBeUndefined();
+    });
+
+    it('exposes the border radius as a custom property', () => {
+      const wrapper = mount(SnTour, {
+        props: { modelValue: true, steps: STEPS, borderRadius: 12 },
+      });
+      expect(wrapper.find('.sn-tour__panel').attributes('style')).toContain(
+        '--snui-tour-radius: 12px',
+      );
+    });
+  });
+
+  describe('accessibility (added)', () => {
+    it('labels the dialog and the skip / finish buttons', () => {
+      const first = mount(SnTour, { props: { modelValue: true, steps: STEPS, skipText: 'Skip' } });
+      expect(first.attributes('aria-label')).toBe('Guide');
+      expect(first.find('.sn-tour__skip').attributes('aria-label')).toBe('Skip');
+
+      const last = mount(SnTour, {
+        props: { modelValue: true, steps: STEPS, current: 2, finishText: 'Done' },
+      });
+      expect(last.find('.sn-tour__next').attributes('aria-label')).toBe('Done');
+    });
+
+    it('labels the prev button with the prevText', () => {
+      const wrapper = mount(SnTour, {
+        props: { modelValue: true, steps: STEPS, current: 1, prevText: 'Back' },
+      });
+      expect(wrapper.find('.sn-tour__prev').attributes('aria-label')).toBe('Back');
+    });
+  });
+
+  describe('accepted parity props', () => {
+    it('accepts the measurement-dependent props without effect', () => {
+      // element / padding / offset / placement / missingStrategy are part of
+      // the frozen wd-tour contract but need element measurement (unavailable
+      // on the uni end); accepting them without effect is the documented
+      // behaviour, so they must not break rendering.
+      const wrapper = mount(SnTour, {
+        props: {
+          modelValue: true,
+          steps: [{ ...STEPS[0], placement: 'top', padding: 4, offset: 8 }],
+          missingStrategy: 'skip',
+          customNav: true,
+          highlightStyle: { border: '2px solid red' },
+          bottomSafetyOffset: 50,
+          topSafetyOffset: 10,
+        },
+      });
+      expect(wrapper.find('.sn-tour__text').text()).toBe('First step');
+    });
+  });
 });

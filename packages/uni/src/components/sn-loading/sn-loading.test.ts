@@ -106,4 +106,52 @@ describe('sn-loading', () => {
     expect(wrapper.attributes('aria-live')).toBe('polite');
     expect(wrapper.attributes('aria-busy')).toBe('true');
   });
+
+  /* ── Added coverage ──────────────────────────────────────────────────── */
+
+  it('fans the spinner bars around the circle at 45-degree steps', () => {
+    const wrapper = mount(SnLoading, { props: { type: 'spinner' } });
+    const bars = wrapper.findAll('.sn-loading__spinner-bar');
+    expect(bars[0]?.attributes('style')).toContain('rotate(0deg)');
+    expect(bars[1]?.attributes('style')).toContain('rotate(45deg)');
+    expect(bars[7]?.attributes('style')).toContain('rotate(315deg)');
+  });
+
+  it('staggers the wave bars in sequence', () => {
+    const wrapper = mount(SnLoading, { props: { type: 'wave' } });
+    const bars = wrapper.findAll('.sn-loading__wave-bar');
+    expect(bars[0]?.attributes('style')).toContain('animation-delay: 0s');
+    expect(bars[1]?.attributes('style')).toContain('animation-delay: 0.1s');
+    expect(bars[4]?.attributes('style')).toContain('animation-delay: 0.4s');
+  });
+
+  it('hides the decorative spinner from assistive tech', () => {
+    const wrapper = mount(SnLoading);
+    expect(wrapper.find('.sn-loading__spinner').attributes('aria-hidden')).toBe('true');
+  });
+
+  it('renders the text region for a slot-only label', () => {
+    const wrapper = mount(SnLoading, { slots: { default: '来自插槽' } });
+    expect(wrapper.find('.sn-loading__text').exists()).toBe(true);
+    expect(wrapper.find('.sn-loading__text').text()).toBe('来自插槽');
+  });
+
+  it('combines size, color and customStyle in one style attribute', () => {
+    const wrapper = mount(SnLoading, {
+      props: { size: '2em', color: 'rebeccapurple', customStyle: 'margin: 4px' },
+    });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style).toContain('font-size: 2em');
+    expect(style).toContain('rebeccapurple');
+    expect(style).toContain('margin: 4px');
+  });
+
+  it('keeps the default color style absent so the token applies', () => {
+    const wrapper = mount(SnLoading);
+    expect(wrapper.attributes('style')).toBeUndefined();
+  });
+
+  it('tags the root for the docs / AI component map', () => {
+    expect(mount(SnLoading).attributes('data-snui-component')).toBe('loading');
+  });
 });

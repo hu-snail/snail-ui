@@ -106,4 +106,42 @@ describe('sn-loadmore', () => {
     expect(wrapper.classes()).toContain('my-loadmore');
     expect(wrapper.attributes('style')).toContain('margin: 8px');
   });
+
+  /* ── Added coverage ──────────────────────────────────────────────────── */
+
+  it('honours the size override from loadingProps', () => {
+    // Regression: the hardcoded `size="28"` used to sit after the v-bind
+    // spread, silently discarding the documented size override (and emitting
+    // an invalid unitless `font-size: 28`).
+    const wrapper = mount(SnLoadmore, {
+      props: { state: 'loading', loadingProps: { size: '3em' } },
+    });
+    expect(wrapper.find('.sn-loading').attributes('style')).toContain('font-size: 3em');
+  });
+
+  it('honours the type override from loadingProps', () => {
+    const wrapper = mount(SnLoadmore, {
+      props: { state: 'loading', loadingProps: { type: 'spinner' } },
+    });
+    expect(wrapper.findAll('.sn-loading__spinner-bar')).toHaveLength(8);
+  });
+
+  it('keeps the inner spinner text suppressed even when loadingProps sets one', () => {
+    const wrapper = mount(SnLoadmore, {
+      props: { state: 'loading', loadingProps: { text: 'inner' } },
+    });
+    expect(wrapper.findAll('.sn-loading__text')).toHaveLength(0);
+  });
+
+  it('exposes the footer as a polite status live region', () => {
+    const wrapper = mount(SnLoadmore, { props: { state: 'loading' } });
+    expect(wrapper.attributes('role')).toBe('status');
+    expect(wrapper.attributes('aria-live')).toBe('polite');
+  });
+
+  it('tags the root for the docs / AI component map', () => {
+    expect(mount(SnLoadmore, { props: { state: 'finished' } }).attributes('data-snui-component')).toBe(
+      'loadmore',
+    );
+  });
 });

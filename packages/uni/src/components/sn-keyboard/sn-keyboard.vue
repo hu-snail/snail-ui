@@ -145,8 +145,13 @@ const digitRows = computed<KeyboardKey[][]>(() => {
   let digits = [...DIGITS];
   if (props.randomKeyOrder) digits = shuffle(digits);
   const extra = extraKeys.value;
+  // wd-keyboard contract: one extra-key slot in the default grid, two in the
+  // custom layout (which has the wider bottom row beside the action column).
+  // Unfilled slots stay as inert placeholders so the grid keeps its geometry.
+  const slotCount = props.mode === 'custom' ? 2 : 1;
+  const slots = Array.from({ length: slotCount }, (_, index) => extra[index] ?? '');
   const bottom: KeyboardKey[] = [
-    { text: extra[0] ?? '', value: extra[0] ?? '' },
+    ...slots.map((key) => ({ text: key, value: key })),
     { text: '0', value: '0' },
     { text: '', value: '__delete__' },
   ];
@@ -373,8 +378,8 @@ const deleteLabel = computed(() => props.deleteText || '删除');
         <view class="sn-keyboard__keys">
           <view v-for="(row, rowIndex) in digitRows" :key="rowIndex" class="sn-keyboard__row">
             <view
-              v-for="key in row"
-              :key="`${rowIndex}-${key.text}`"
+              v-for="(key, keyIndex) in row"
+              :key="`${rowIndex}-${keyIndex}`"
               :class="[
                 'sn-keyboard__key',
                 {

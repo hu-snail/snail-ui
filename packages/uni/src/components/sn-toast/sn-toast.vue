@@ -49,7 +49,7 @@
  *   - 内联加载指示器 — 用 sn-loading
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
@@ -239,6 +239,12 @@ watch(
     else hide();
   },
 );
+
+onMounted(() => {
+  // A toast mounted open must run the full show leg: the auto-close timer is
+  // armed in show(), which the modelValue watch only reaches on a transition.
+  if (props.modelValue) show();
+});
 
 onBeforeUnmount(clearAllTimers);
 

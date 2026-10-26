@@ -42,7 +42,7 @@
  *   - 居中确认框 — 用 sn-dialog
  */
 
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
@@ -204,6 +204,13 @@ watch(
     else hide();
   },
 );
+
+onMounted(() => {
+  // A notification mounted visible must run the full show leg: the
+  // auto-dismiss timer is armed in show(), which the visible watch only
+  // reaches on a transition.
+  if (props.visible) show();
+});
 
 onBeforeUnmount(clearAllTimers);
 

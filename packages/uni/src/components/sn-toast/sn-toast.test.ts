@@ -140,4 +140,155 @@ describe('sn-toast', () => {
     wrapper.unmount();
     expect(() => vi.advanceTimersByTime(5000)).not.toThrow();
   });
+
+  /* ── Added coverage ──────────────────────────────────────────────────── */
+
+  it('applies the top and middle-top position classes', () => {
+    expect(mount(SnToast, { props: { modelValue: true, position: 'top' } }).classes()).toContain(
+      'sn-toast--top',
+    );
+    expect(
+      mount(SnToast, { props: { modelValue: true, position: 'middle-top' } }).classes(),
+    ).toContain('sn-toast--middle-top');
+  });
+
+  it('renders a status glyph for each non-loading icon kind', () => {
+    for (const iconName of ['error', 'warning', 'info'] as const) {
+      const wrapper = mount(SnToast, { props: { modelValue: true, iconName } });
+      expect(wrapper.find('.sn-toast__icon svg').exists()).toBe(true);
+    }
+  });
+
+  it('renders each non-dots spinner shape for iconName="loading"', () => {
+    expect(
+      mount(SnToast, { props: { modelValue: true, iconName: 'loading' } }).find(
+        '.sn-loading__circular',
+      ).exists(),
+    ).toBe(true);
+
+    const spinner = mount(SnToast, {
+      props: { modelValue: true, iconName: 'loading', loadingType: 'spinner' },
+    });
+    expect(spinner.findAll('.sn-loading__spinner-bar')).toHaveLength(8);
+
+    const wave = mount(SnToast, {
+      props: { modelValue: true, iconName: 'loading', loadingType: 'wave' },
+    });
+    expect(wave.findAll('.sn-loading__wave-bar')).toHaveLength(5);
+  });
+
+  it('applies iconColor to the status glyph and loadingColor to the spinner', () => {
+    const status = mount(SnToast, {
+      props: { modelValue: true, iconName: 'success', iconColor: 'rebeccapurple' },
+    });
+    expect(status.find('.sn-toast__icon').attributes('style')).toContain(
+      'color: rebeccapurple',
+    );
+
+    const spinner = mount(SnToast, {
+      props: { modelValue: true, iconName: 'loading', loadingColor: 'rebeccapurple' },
+    });
+    expect(spinner.find('.sn-toast__icon').attributes('style')).toContain(
+      'color: rebeccapurple',
+    );
+  });
+
+  it('passes string icon sizes through verbatim', () => {
+    // Bare numbers map to rpx, which happy-dom discards — assert with a unit
+    // the test environment keeps. Sizes land on the inner sn-icon box.
+    const status = mount(SnToast, {
+      props: { modelValue: true, iconName: 'success', iconSize: '2em' },
+    });
+    expect(status.find('.sn-toast__icon .sn-icon').attributes('style')).toContain('2em');
+
+    const spinner = mount(SnToast, {
+      props: { modelValue: true, iconName: 'loading', loadingSize: '1.5em' },
+    });
+    expect(spinner.find('.sn-toast__icon .sn-loading').attributes('style')).toContain('1.5em');
+  });
+
+  it('applies iconClass to the icon node', () => {
+    const wrapper = mount(SnToast, {
+      props: { modelValue: true, iconName: 'success', iconClass: 'my-glyph' },
+    });
+    expect(wrapper.find('.sn-toast__icon').classes()).toContain('my-glyph');
+  });
+
+  it('lets the icon slot replace the built-in icon area', () => {
+    const wrapper = mount(SnToast, {
+      props: { modelValue: true, msg: 'x', iconName: 'success' },
+      slots: { icon: '<text class="custom-icon">star</text>' },
+    });
+    expect(wrapper.find('.custom-icon').exists()).toBe(true);
+    expect(wrapper.find('.sn-toast__icon svg').exists()).toBe(false);
+  });
+
+  it('announces through an assertive live region and hides the mask from AT', () => {
+    const wrapper = mount(SnToast, { props: { modelValue: true, msg: 'x' } });
+    expect(wrapper.find('.sn-toast__box').attributes('aria-live')).toBe('assertive');
+    expect(wrapper.find('.sn-toast__mask').attributes('aria-hidden')).toBe('true');
+  });
+
+  it('re-showing while the leave transition is pending keeps the node mounted', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnToast, {
+      props: { modelValue: false, msg: 'x', duration: 0 },
+    });
+    await wrapper.setProps({ modelValue: true });
+    await wrapper.setProps({ modelValue: false });
+    vi.advanceTimersByTime(50); // mid-leave
+    await wrapper.setProps({ modelValue: true });
+    vi.advanceTimersByTime(1000); // past the leave length
+
+    expect(wrapper.find('.sn-toast').exists()).toBe(true);
+    expect(wrapper.emitted('closed')).toBeUndefined();
+    expect(wrapper.emitted('opened')).toHaveLength(2);
+  });
+
+  it('restarts the auto-close timer when re-shown mid-countdown', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnToast, {
+      props: { modelValue: false, msg: 'x', duration: 2000 },
+    });
+    await wrapper.setProps({ modelValue: true });
+    vi.advanceTimersByTime(1500);
+    // Close and re-open before the first countdown elapses.
+    await wrapper.setProps({ modelValue: false });
+    vi.advanceTimersByTime(50);
+    await wrapper.setProps({ modelValue: true });
+
+    vi.advanceTimersByTime(1999);
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    vi.advanceTimersByTime(1);
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('accepts the parity props (selector / classPrefix / cssIcon) without effect', () => {
+    const wrapper = mount(SnToast, {
+      props: { modelValue: true, msg: 'x', selector: 'a', classPrefix: 'my-icon', cssIcon: true },
+    });
+    expect(wrapper.find('.sn-toast__msg').text()).toBe('x');
+  });
+
+  it('auto-closes and emits opened when mounted already shown', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnToast, { props: { modelValue: true, msg: 'x', duration: 2000 } });
+    // Regression: the show leg used to run only on the false→true transition,
+    // so a toast mounted open never armed its auto-close timer.
+    expect(wrapper.emitted('opened')).toHaveLength(1);
+    vi.advanceTimersByTime(1999);
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    vi.advanceTimersByTime(1);
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
+
+  it('auto-closes with the default duration', async () => {
+    vi.useFakeTimers();
+    const wrapper = mount(SnToast, { props: { modelValue: false, msg: 'x' } });
+    await wrapper.setProps({ modelValue: true });
+    vi.advanceTimersByTime(1999);
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    vi.advanceTimersByTime(1);
+    expect(wrapper.emitted('update:modelValue')?.[0]).toEqual([false]);
+  });
 });
