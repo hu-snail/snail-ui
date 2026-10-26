@@ -50,9 +50,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       # demo 源经 @snui/uni-src 别名引用组件库源码；App.vue 另引入
-      # '@snui/uni/styles'（dist 产物），需先构建组件库及其 token 依赖。
-      - name: Build @snui/uni (with deps)
-        run: pnpm --filter @snui/uni... run build
+      # '@snui/uni/styles' 与风格包（@snui/style-packs → dist），需先构建
+      # 组件库、风格包及其 token 依赖。
+      - name: Build @snui/uni + @snui/style-packs (with deps)
+        run: pnpm --filter @snui/uni... --filter @snui/style-packs... run build
 
       - name: Build uni-demo H5
         run: pnpm --filter @snui/uni-demo run build:h5
