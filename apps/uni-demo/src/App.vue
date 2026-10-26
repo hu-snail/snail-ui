@@ -28,6 +28,55 @@ page {
   background-color: #eef1f8;
 }
 
+/* 组件 token 锚定（关键修复）：tokens-mp 的 --sn-mp-* 颜色别名在某些环境
+ *（系统深色 + uni h5 的 page 样式注入）会在 body 层被深色字面污染，导致
+ * 浅色模式下组件面板发黑。在 shell 根节点把全部 --sn-mp-color-* 重新锚定到
+ * --aui 链——元素自身的声明优先于继承值，污染被就近覆盖；深色时 .dark 翻转
+ * --aui，锚定链自动跟随（与 @snui/uni/styles 内置 .dark 块的值一致）。 */
+.demo-shell {
+  --sn-mp-color-text-primary: var(--aui-color-text-primary);
+  --sn-mp-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-mp-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-mp-color-text-tertiary: var(--aui-color-text-tertiary);
+  --sn-mp-color-text-on-primary: var(--aui-color-text-on-primary);
+  --sn-mp-color-background-surface: var(--aui-color-background-surface);
+  --sn-mp-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-mp-color-background-elevated: var(--aui-color-background-elevated);
+  --sn-mp-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-mp-color-background-soft: var(--aui-color-background-subtle);
+  --sn-mp-color-background-sunken: var(--aui-color-background-sunken);
+  --sn-mp-color-border-default: var(--aui-color-border-default);
+  --sn-mp-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-mp-color-action-primary: var(--aui-color-action-primary);
+  --sn-mp-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-mp-color-action-primary-soft: var(--aui-color-action-primary-soft);
+  --sn-mp-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-mp-color-feedback-success-soft: var(--aui-color-feedback-success-soft);
+  --sn-mp-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-mp-color-feedback-warning-soft: var(--aui-color-feedback-warning-soft);
+  --sn-mp-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-mp-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+  --sn-mp-color-feedback-danger-soft: var(--aui-color-feedback-danger-soft);
+  --sn-mp-color-feedback-info: var(--aui-color-feedback-info);
+  --sn-mp-color-input-bg: var(--aui-color-background-surface);
+  --sn-mp-color-input-text: var(--aui-color-text-primary);
+  --sn-mp-color-input-placeholder: var(--aui-color-text-disabled);
+  --sn-mp-color-input-border: var(--aui-color-border-default);
+  --sn-mp-color-input-border-focus: var(--aui-color-action-primary);
+  --sn-mp-color-control-unchecked: var(--aui-color-border-default);
+  --sn-mp-color-control-knob: var(--aui-color-background-elevated);
+  --sn-mp-color-volcano: var(--aui-color-volcano);
+  --sn-mp-color-volcano-soft: var(--aui-color-volcano-soft);
+  --sn-mp-color-lightblue: var(--aui-color-lightblue);
+  --sn-mp-color-lightblue-soft: var(--aui-color-lightblue-soft);
+  --sn-mp-color-cyan: var(--aui-color-cyan);
+  --sn-mp-color-cyan-soft: var(--aui-color-cyan-soft);
+  --sn-mp-color-pink: var(--aui-color-pink);
+  --sn-mp-color-pink-soft: var(--aui-color-pink-soft);
+  --sn-mp-color-purple: var(--aui-color-purple);
+  --sn-mp-color-purple-soft: var(--aui-color-purple-soft);
+}
+
 /* 深色主题：demo 骨架变量替换（挂在使用方根节点 demo-shell--dark 上）；
  * 组件库 token 由 `@snui/uni/styles` 内置的 `.dark` 块翻转（49 变量，含
  * soft tints / sunken），根节点同时挂 `dark` 类即可作用到所有 demo 组件。

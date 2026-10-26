@@ -10,16 +10,22 @@ uni 端（`@snui/uni`）组件 demo 的**唯一事实源**与真实运行时演�
 - **微信小程序**：`pnpm build:mp-weixin` 产出 `dist/build/mp-weixin`，
   用微信开发者工具导入运行。
 - **页面 UI**：总览/组件页共用 `DemoPageShell`——渐变弥散背景 + 呼吸动画、
-  玻璃卡（浅色透明渐变 + 圆角 + 描边，backdrop-filter 渐进增强）、中/英切换
-  与深/浅主题切换按钮（`src/state/demo-ui.ts`，uni storage 持久化）、总览页
-  组件搜索（中文名/英文名/key/描述本地过滤）。
+  玻璃卡（浅色透明渐变 + 圆角 + 描边，backdrop-filter 渐进增强）、**风格包
+  切换**（调色板按钮 → action sheet 选 Default / iOS / Doodle / Dark，token
+  变量对象绑 shell 根 `:style`，跨端通用）、中/英切换与深/浅主题切换按钮
+  （`src/state/demo-ui.ts`，uni storage 持久化）、总览页组件搜索。
 - **深色主题（组件级）**：根节点挂 `dark` 类翻转 `@snui/uni/styles` 内置的
-  深色变量块（49 变量：文本/面板/边框/soft tints/sunken 全套），demo 内的
-  组件本体随主题翻深；demo 层仅补 `--sn-mp-color-control-knob` 一处（旋钮
-  两主题保持浅色的设计约定）。H5 导航栏经 `#ifdef H5` 注入样式随主题同步。
+  深色变量块（49 变量），demo 内组件本体随主题翻深。**关键修复**：tokens-mp
+  的 `--sn-mp-color-*` 别名在部分环境（系统深色 + uni h5 page 样式注入）会被
+  深色字面污染 body 层——浅色模式下组件面板发黑；`.demo-shell` 上把全部
+  `--sn-mp-color-*` 重新锚定到 `--aui-*` 链（元素声明优先于继承），深浅两态
+  均由 `.dark` 类驱动，与系统深色解耦。H5 导航栏经 `#ifdef H5` 注入样式同步。
 - **双语覆盖**：分组标签、组件名（key Title Case）、场景标题（40 个高频
   key 映射 + Title Case 兜底）、页面 chrome 全部双语；组件**描述**暂无
   英文数据（英文模式下隐藏，登记于 README 待补真实翻译）。
+- **已知边界**：风格包的 `style.component` 层覆盖对 uni 端组件只部分生效
+  （uni 组件消费 `--sn-mp-*` 字面 token，component 级覆盖写的是 web 端
+  变量）；theme/semantic 层（主色等）全端生效。
 
 ## 脚本
 
