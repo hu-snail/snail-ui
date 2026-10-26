@@ -45,6 +45,11 @@ coverage/
 .parcel-cache/
 .next/
 
+# VitePress per-site build + optimizeDeps cache
+apps/docs/.vitepress/cache/
+apps/docs/.vitepress/dist/
+apps/docs/.vitepress/.temp/
+
 # Changesets: ignore generated MDs, keep config/README
 .changeset/*.md
 !.changeset/config.json

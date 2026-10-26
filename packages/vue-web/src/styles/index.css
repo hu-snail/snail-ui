@@ -1,0 +1,17 @@
+/**
+ * @snui/vue-web default stylesheet — inject token CSS variables.
+ *
+ * Import this once at app entry:
+ *   import '@snui/vue-web/styles'
+ *
+ * Emits (v3.1 end-independent per Spec-01 v1.2 + Spec-02 v1.1):
+ *   - `:root { --aui-* base layer }`        from `@snui/tokens/styles`
+ *   - `:root { --sn-web-* alias layer }`     from `@snui/tokens-web/styles`
+ *
+ * Components reference `--sn-web-*` variables only. Direct `--aui-*` reference
+ * is forbidden in Web component CSS (enforced by `pnpm snui token-check --dir
+ * packages/vue-web`).
+ */
+
+@import '@snui/tokens/styles/index.css';
+@import '@snui/tokens-web/styles/index.css';

@@ -1,62 +1,81 @@
 # Introduction
 
-AUI is an **AI-native multi-end UI framework**. It treats the UI as a schema, not as code: every screen is described by a `UISchema` (a typed JSON document), and the runtime interprets it. Renderers map the schema to DOM (Vue 3) or uni-app components.
+snail-aui v3.1 is an AI-Native UI framework ecosystem for **Vue 3 (Web, PC desktop)** + **uni-app (mobile, touch)**.
 
-## Why schema-first?
+**The key design principle is: end-aware**.
 
-Traditional UI frameworks describe the UI in code:
+> Web (PC) and uni (mobile) are **fully independent** from source to publish.  
+> Each end has independent source, independent build, independent npm package, independent Token alias.  
+> **Zero source reuse across ends**.
 
-```vue
-<template>
-  <button class="btn btn--primary" @click="submit">Submit</button>
-</template>
+Future ends (React, Flutter, ...) follow the same pattern: `@snui/tokens-{end}` alias package + `@snui/{end}` independent component package.
+
+## Two ends differ
+
+| Dimension | Web (PC desktop) | uni (mobile touch) |
+|---|---|---|
+| Typical apps | Admin dashboards, CRM, ERP, IDE-like tools, low-code platforms | E-commerce, content, O2O, enterprise apps |
+| Input | Mouse + keyboard | Touch + gestures |
+| Resolution | 1280×720+, scales to 4K | 320-414 width-first |
+| Components | Information density (Table / Tree / Pagination / Cascader / DatePicker ...) | Flow layout (List / PullRefresh / swiper / sticky-tabs / lazy-image ...) |
+| Namespace | SnButton / SnForm / SnTable ... | sn-button / sn-list / sn-grid ... |
+| Token alias | `var(--sn-web-*)` | `var(--sn-mp-*)` |
+| Size unit | px | rpx (auto-converted) |
+| API style | Web: config-driven | uni: event-driven |
+
+**Small overlap**: Button / ConfigProvider / Icon are the lowest-common-denominator components shared across ends.
+
+## Cross-end shared layers
+
+| Shared | How ends are separated |
+|---|---|
+| `@snui/tokens` unified base | Outputs `--aui-*` raw layer (end-agnostic) |
+| `@snui/style-packs` | Each Pack declares `end: web / mp / both` |
+| `@snui/ai` Skill + MCP | Tool output filtered by `end` |
+| `@snui/ai` ai-meta.json | components array grouped by end |
+| `@snui/cli` | resolver per-end, token-check per-end |
+| `@snui/docs` | nav split into Web / uni groups |
+
+## 30-second overview
+
+```text
+@snui/tokens         --aui-* raw layer (end-agnostic)
+        ↑              ↑
+   ┌────┴─────┐    ┌────┴──────┐
+   │         │    │          │
+@snui/tokens-web  @snui/tokens-mp
+--sn-web-* alias   --sn-mp-* alias (with rpx conversion)
+   ↑                     ↑
+@snui/vue-web         @snui/uni
+SnButton / SnTable    sn-button / sn-list / sn-pull-refresh
+(independent PC)       (independent mobile)
+
+Shared cross-end (end-agnostic):
+   @snui/style-packs   @snui/ai   @snui/cli   @snui/docs
 ```
 
-AUI describes the UI in data:
+## Style Pack / AI vs end
 
-```ts
-const schema: UISchema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', text: 'Submit' },
-    events: { click: { kind: 'event', trigger: 'click' } },
-  },
-};
-```
+- Style Packs are **shared cross-end**, but each Pack declares `end: web / mp / both`
+- Apply a Style Pack with `snCssVars({ end: 'web' | 'mp', theme, style })` — `end` determines whether `--sn-web-*` or `--sn-mp-*` is emitted
+- AI tools (Skill / ai-meta) classify components by end
+- MCP `list_components({ end })` filters by end
 
-The benefits compound:
-- An LLM can **generate** a schema; a renderer turns it into pixels.
-- An LLM can **patch** a schema (JSON Patch); the runtime re-renders.
-- The same schema runs on **Web** (Vue 3) and **uni-app** (iOS / Android / H5 / MP).
-- Tokens, accessibility, and capabilities are **declared**, not hand-coded.
+## What's shipped
 
-## Architecture in 30 seconds
-
-```
-@snui/protocol     ── Zod schemas (framework-agnostic)
-       ↑
-@snui/schema       ── Validator + Normalizer + Version
-@snui/tokens       ── Primitive / Semantic / Component cascade
-@snui/runtime      ── AUIRuntime + Reactive + Binding + Action + AppBridge
-       ↑
-@snui/vue-web      ── Vue 3 renderer + Button (Phase 2)
-@snui/uni          ── uni-app renderer (Phase 3)
-```
-
-`@snui/protocol` never imports Vue. Renderers consume Runtime, not Protocol directly. The single-direction graph is enforced by package imports (AGENTS.md §67).
-
-## What ships today
-
-- **Phase 1**: all 8 internal packages (28 tasks) — see [Architecture](/en/guide/web/architecture).
-- **Phase 2 starter**: `@snui/vue-web` ships a `Button` component as the first official contract.
-- **Phase 3**: `@snui/uni` is a placeholder — same contracts, uni-app renderer to follow.
+- **M0**: Framework pivot + Button demo ✅
+- **M0.5**: ADR-0002 (Style Pack + AI Layer) ✅
+- **M0.6**: ADR-0003 (end-aware split + dual Token aliases) ✅ — this batch: PRD v3.1 / Spec-01~02 / WBS v3.1 / Master Plan v5.1 / Dev Guide v3.1
+- **M1 (next)**: `@snui/tokens-web` / `@snui/tokens-mp` alias packages + first batch of ~10 components per end
+- **M2**: Style Packs (3 default + 2 mp) + AI Layer + StyleSwitcher / ThemeCopier
+- **M3**: doodle / sticky-note / wechat Packs + render_preview sandbox
+- **M4**: React end extension (same pattern) + VSCode plugin + visual regression
 
 ## Where to next
 
-- [Installation](/en/guide/web/installation)
-- [Quick start (Web)](/en/guide/web/quick-start)
-- [Quick start (uni-app)](/en/guide/uni/quick-start)
+- [Web quick start](/en/guide/web/quick-start)
+- [uni-app quick start](/en/guide/uni/quick-start)
 - [Architecture](/en/guide/web/architecture)
-- [Theme / Style / Density](/en/theme/overview)
+- [Theme & Tokens](/en/theme/overview)
+- [Style Packs](/en/style-packs/overview)
+- [AI Ecosystem](/en/ai/overview)

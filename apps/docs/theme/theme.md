@@ -1,80 +1,74 @@
-# Theme · Light / Dark
+# Theme · 浅色 / 暗色
 
-Theme 轴掌管 **颜色** 系统：text、background、border、action、feedback 颜色。
-
-Theme 覆盖 primitive color + semantic color。它**不会**触及 radius、shadow、spacing 或字号（那些归 Style + Density）。
+Theme 轴掌管**颜色**。Theme 输出底层 `--aui-color-*` 原始变量，由每端别名包映射到 `--sn-{end}-color-*`。
 
 ## 内置默认
 
 ```ts
-import { LIGHT_THEME, DARK_THEME } from '@snui/tokens';
+import { LIGHT_THEME, DARK_THEME } from '@snui/tokens'
 ```
 
-| Theme | 事实源 |
+| Theme | 用途 |
 | --- | --- |
-| `LIGHT_THEME` | 默认 — semantic.text.primary → `var(--aui-color-gray-900)` |
-| `DARK_THEME` | semantic.text.primary → `var(--aui-color-gray-100)` |
+| `LIGHT_THEME` | 浅色背景，深色文字（默认） |
+| `DARK_THEME` | 深色背景，浅色文字 |
 
-## 切换 Theme 时的行为
+## 切换 Theme
 
+```ts
+import { snCssVars } from '@snui/tokens'
+
+// Web 端应用
+snCssVars({
+  end: 'web',
+  theme: DARK_THEME,
+  style: MODERN_STYLE,
+  density: COMFORTABLE_DENSITY,
+})
+
+// uni 端应用
+snCssVars({
+  end: 'mp',
+  theme: DARK_THEME,
+  style: MODERN_STYLE,
+  density: COMFORTABLE_DENSITY,
+})
 ```
-Theme 切换
-   ↓
-保留 Style
-   ↓
-保留 Density
-   ↓
-重新解析 Token
+
+切换 Theme 时保留 Style 与 Density。
+
+## 通过 data-theme 切换
+
+```html
+<html data-theme="dark">
 ```
 
-按 AUI-PRD-v1.2.md §38：切换 Theme 时保留 Style 与 Density 轴。只重算颜色层。
+```css
+:root { --aui-color-action-primary: #1677ff; }
+[data-theme="dark"] { --aui-color-action-primary: #3b82f6; }
+```
 
 ## 自定义 Theme
 
 ```ts
-import type { ThemeDefinition } from '@snui/tokens';
+import type { ThemeDefinition } from '@snui/tokens'
 
-const brand: ThemeDefinition = {
-  name: 'brand',
-  primitive: {
-    blue: {
-      500: '#5b21b6', // 品牌紫
-    },
-  },
-  semantic: {
-    text: {
-      primary: 'var(--aui-color-blue-500)',
-    },
-  },
-};
+const myBrand: ThemeDefinition = {
+  name: 'my-brand',
+  semantic: { action: { primary: '#ff5722', primaryHover: '#ff7043' } },
+}
 ```
-
-当用户选择 `brand` 时，所有引用 `--aui-color-action-primary` 的组件会基于新 primitive 颜色重新渲染（`--aui-color-blue-500` 的绑定被替换），无需任何代码改动。
 
 ## Theme 不得做的事
 
 | 禁止 | 原因 |
 | --- | --- |
-| 覆盖 radius / shadow / spacing | 属于 Style / Density |
-| 引用 `window` / `document` / 全局状态 | Tokens 是纯数据 |
-| 引用 Style 或 Density 轴 | 三轴互相独立 |
-
-如果你发现自己想做上述事情，那其实是在设计 Style 或 Density——把它拆出来。
-
-## Live 对比
-
-下面两个 preview 用同一份 Button 分别挂载 LIGHT_THEME 与 DARK_THEME。Schema 完全一致，只有绑定表不同。
-
-<script setup>
-import ComponentPreview from '../.vitepress/components/ComponentPreview.vue';
-</script>
-
-<ComponentPreview name="button" variant="primary" text="Light theme" />
-
-> Dark theme preview 在文档站支持夜间模式切换后即上线。契约完全一致，只是 resolver 输出不同。
+| 覆盖圆角 token | 属于 Style 轴 |
+| 覆盖间距 / 尺寸 | 属于 Density 轴 |
+| 与特定 Style 绑定 | Theme 与 Style 独立 |
 
 ## 下一步
 
-- [Style（Modern / Glass / Minimal）](/theme/style)
-- [Density（Compact / Comfortable）](/theme/density)
+- [Style · 形状轴](/theme/style)
+- [Density · 紧凑 / 舒适](/theme/density)
 - [Token 级联](/theme/cascade)

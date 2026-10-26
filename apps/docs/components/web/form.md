@@ -1,214 +1,144 @@
-# Form · Web
+# Form · Web（PC 端）
 
-原生 `<form>` 容器 + FormItem 子组件，支持 FormData 自动收集、字段级错误回显、disabled / loading 状态级联。
+表单编排器 `SnForm` + 字段包装 `SnFormItem`。Provide/Inject 通讯，统一校验 / 重置 / 提交。
 
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
+## 基础用法
 
-## Live render · 真实框架挂载
+<Demo name="form-basic" description="基本 model + v-model 同步 + submit 处理。" />
 
-### Login form（最简场景）
+## 校验规则（FormRule）
 
-<ComponentPreview name="form" :raw-props="{ formId: 'login', layout: 'vertical' }" :children='JSON.stringify([
-  { id: "email-item", type: "form-item", props: { prop: "email", label: "Email", required: true }, children: [
-    { id: "email", type: "input", props: { value: "", type: "email", name: "email", placeholder: "you@aui.dev" } }
-  ]},
-  { id: "password-item", type: "form-item", props: { prop: "password", label: "Password", required: true }, children: [
-    { id: "password", type: "input", props: { value: "", type: "password", name: "password", placeholder: "••••••" } }
-  ]},
-  { id: "submit", type: "button", props: { variant: "primary", text: "Sign in", type: "submit" } }
-])' />
+<Demo name="form-rules" description="覆盖所有 FormRule 类型：required / type / pattern / length / 自定义 validator / asyncValidator。" />
 
-### Disabled form
+## Label 位置与宽度
 
-<ComponentPreview name="form" :raw-props="{ formId: 'signup', disabled: true, layout: 'vertical' }" :children='JSON.stringify([
-  { id: "n", type: "form-item", props: { prop: "name", label: "Name" }, children: [
-    { id: "ni", type: "input", props: { value: "Ada Lovelace", name: "name", type: "text" } }
-  ]},
-  { id: "s", type: "button", props: { variant: "primary", text: "Submit", type: "submit" } }
-])' />
+<Demo name="form-label" description="labelPosition: left / right / top + labelWidth。" />
 
-### Loading form
+## Inline label icon
 
-<ComponentPreview name="form" :raw-props='{ formId: "loading-demo", loading: true, layout: "vertical" }' :children='JSON.stringify([
-  { id: "e", type: "form-item", props: { prop: "email", label: "Email" }, children: [
-    { id: "ei", type: "input", props: { value: "loading@aui.dev", type: "email", name: "email" } }
-  ]},
-  { id: "s", type: "button", props: { variant: "primary", text: "Submit", type: "submit", loading: true } }
-])' />
+<Demo name="form-icon" description="icon / iconName prop 在 label 内渲染图标（SnIcon + lucide）。" />
 
-### Error wiring（FormItem 错误回显）
+## 重置 / 校验 / 提交
 
-<ComponentPreview name="form" :raw-props="{ formId: 'errors' }" :children='JSON.stringify([
-  { id: "email", type: "form-item", props: { prop: "email", label: "Email", error: "Invalid email format" }, children: [
-    { id: "email-input", type: "input", props: { value: "broken", type: "email", name: "email" } }
-  ]},
-  { id: "submit", type: "button", props: { variant: "danger", text: "Try again", type: "submit" } }
-])' />
+<Demo name="form-reset-submit" description="formRef.validate() / validateField() / resetFields() / clearValidate()，html-type submit。" />
 
-### 完整登录流程（含 ActionRegistry）
+## 整体禁用（disabled）
 
-<ComponentPreview
-  name="form"
-  :raw-props="{ formId: 'full', layout: 'vertical' }"
-  :children='JSON.stringify([
-    { id: "f-name", type: "form-item", props: { prop: "name", label: "Name", required: true }, children: [
-      { id: "i-name", type: "input", props: { value: "Ada", type: "text", name: "name" } }
-    ]},
-    { id: "f-email", type: "form-item", props: { prop: "email", label: "Email", required: true }, children: [
-      { id: "i-email", type: "input", props: { value: "ada@aui.dev", type: "email", name: "email" } }
-    ]},
-    { id: "f-submit", type: "button", props: { variant: "primary", text: "Sign in", type: "submit" } }
-  ])'
-/>
+<Demo name="form-disabled" description="SnForm 的 disabled prop 级联到所有 FormItem。" />
+
+## Cell 列表化（`border` / `ellipsis` / `clickable` / `isLink`）
+
+<Demo name="form-cell" description="Cell 列表化：border 加分割线、ellipsis 长 label 截断、clickable 整行可点 + click 事件、isLink 显示 › 箭头、placeholder 占位、description 副文本。" />
+
+## 表单级默认（`size` / `valueAlign` / `asteriskPosition` / `hideAsterisk`）
+
+<Demo name="form-cell-style" description="Form 级统一：size 缩放、valueAlign right、asteriskPosition right、hideAsterisk 关掉 * 标记。" />
+
+## 校验触发 / 重置切换 / 错误展示（`validateTrigger` / `resetOnChange` / `errorType`）
+
+<Demo name="form-validation-flow" description="validateTrigger: 'blur' | 'change'；resetOnChange 提交后自动清错误；errorType: 'message' | 'toast' | 'none'。" />
+
+## SnForm Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `model` | `Record<string, unknown>` | (required) | 响应式 model，items 通过 v-model 写入。 |
+| `rules` | `FormRules` | `{}` | 按 `prop` 键索引的校验规则集。 |
+| `novalidate` | `boolean` | `true` | 关闭原生 HTML5 校验。 |
+| `showMessage` | `boolean` | `true` | 是否显示错误 / 警告信息。 |
+| `statusIcon` | `boolean` | `false` | 状态图标（Phase 1 仅文本）。 |
+| `labelPosition` | `'left' \| 'right' \| 'top'` | `'right'` | 全局 label 位置。 |
+| `labelWidth` | `number \| string` | `'auto'` | 全局 label 列宽。 |
+| `disabled` | `boolean` | `false` | 整体禁用。 |
+| `validateTrigger` | `'blur' \| 'change'` | `'blur'` | 字段触发校验的时机。 |
+| `resetOnChange` | `boolean` | `true` | model 变更后自动清字段错误。 |
+| `errorType` | `'message' \| 'toast' \| 'none'` | `'message'` | 错误显示策略：`toast` 让宿主弹 toast；`none` 静默。 |
+| `border` | `boolean` | `false` | FormItem 之间加 1px 分隔线。 |
+| `center` | `boolean` | `false` | FormItem 控制列垂直居中。 |
+| `size` | `'small' \| 'medium' \| 'large'` | `'medium'` | FormItem 默认 size。 |
+| `valueAlign` | `'left' \| 'right'` | `'left'` | 默认字段值对齐。 |
+| `asteriskPosition` | `'left' \| 'right'` | `'left'` | `*` 在 label 左 / 右。 |
+| `hideAsterisk` | `boolean` | `false` | 隐藏 required 标记。 |
+| `ellipsis` | `boolean` | `false` | 长 label 截断（text-overflow: ellipsis）。 |
+
+## SnFormItem Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `prop` | `string` | — | model dot-path，缺省则 item 不参与校验。 |
+| `label` | `string` | — | label 文本。 |
+| `required` | `boolean` | `false` | 显示 `*` 标记。 |
+| `rules` | `FormRule[]` | — | item 本地规则，与 form rules 合并。 |
+| `showMessage` | `boolean` | inherited | 覆盖 form 级。 |
+| `labelWidth` | `number \| string` | inherited | 覆盖 form 级。 |
+| `labelPosition` | `'left' \| 'right' \| 'top'` | inherited | 覆盖 form 级。 |
+| `ariaLabel` | `string` | — | 屏幕阅读器名称。 |
+| `icon` | `IconComponent` | — | 直接传 lucide 组件。 |
+| `iconName` | `string` | — | 通过 `registerSnIcons` 解析。 |
+| `iconSize` | `number \| string` | `14` | 像素 / CSS 长度。 |
+| `size` | `'small' \| 'medium' \| 'large'` | inherited | 覆盖 form 级 size。 |
+| `valueAlign` | `'left' \| 'right'` | inherited | 覆盖 form 级 valueAlign。 |
+| `asteriskPosition` | `'left' \| 'right'` | inherited | 覆盖 form 级 asteriskPosition。 |
+| `hideAsterisk` | `boolean` | inherited | 覆盖 form 级 hideAsterisk。 |
+| `ellipsis` | `boolean` | inherited | 覆盖 form 级 ellipsis。 |
+| `border` | `boolean` | inherited | 自身加底部分隔线。 |
+| `center` | `boolean` | inherited | 自身垂直居中。 |
+| `clickable` | `boolean` | `false` | 整行可点 → 触发 `click` 事件。 |
+| `isLink` | `boolean` | `false` | 右侧显示 › 箭头（Cell 跳转风格）。 |
+| `placeholder` | `string` | `''` | 当未传 default slot 时显示的占位文本。 |
+| `description` | `string` | `''` | 字段下方的辅助说明文本。 |
+
+> 标注 `inherited` 的 prop：未显式传入时，从父级 `SnForm` 通过 `provide` / `inject` 继承；显式传入则覆盖。
+
+## FormRule 联合类型
 
 ```ts
-import { createRuntime, createActionRegistry } from '@snui/runtime';
-import { createVueRenderer, createComponentRegistry, Form, FormItem, Input, Button } from '@snui/vue-web';
-import { LIGHT_THEME, MODERN_STYLE, COMFORTABLE_DENSITY } from '@snui/tokens';
-
-const actions = createActionRegistry();
-actions.register('sign-in', async (ctx, params) => {
-  console.log('submit values:', params);
-  // 真实场景：await fetch('/api/login', { method: 'POST', body: JSON.stringify(params) });
-});
-
-const registry = createComponentRegistry();
-registry.register('button', Button);
-registry.register('input', Input);
-registry.register('form', Form);
-registry.register('form-item', FormItem);
-
-const runtime = createRuntime({
-  schema: { version: '1.0.0', root: { id: 'root', type: 'form', props: { formId: 'login' } } },
-  registry: {
-    resolve: (type) => registry.has(type) ? { name: type, version: '0.1.0' } : undefined,
-    has: (type) => registry.has(type),
-    list: () => registry.list(),
-  },
-  actionRegistry: {
-    resolve: (id) => actions.resolve(id),
-    has: (id) => actions.has(id),
-  },
-  tokens: { theme: LIGHT_THEME, style: MODERN_STYLE, density: COMFORTABLE_DENSITY },
-  platform: { id: 'web', capabilities: { supports: { dom: true } } },
-});
-
-createVueRenderer({ registry }).mount(runtime.schema, document.getElementById('app')!);
-runtime.mount(document.getElementById('app')!);
+type FormRule =
+  | { required: true; message: string }
+  | { type: 'string' | 'number' | 'email' | 'url'; message: string }
+  | { pattern: RegExp; message: string }
+  | { minLength: number; maxLength: number; message: string }
+  | { min: number; max: number; message: string }
+  | { validator: (value) => boolean | string; message: string }
+  | { asyncValidator: (value) => Promise<boolean | string>; message: string }
 ```
 
-## Form props
+首个失败的 `message` 会被显示。Async 规则会被 `await`。
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>layout</code></td><td><code>'horizontal' | 'vertical'</code></td><td><code>'vertical'</code></td><td>No</td><td>布局方向。</td></tr>
-    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>禁用整个表单（cascading via FormContext）。</td></tr>
-    <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>表单加载中（应用 <code>aria-busy</code>）。</td></tr>
-    <tr><td><code>initialValues</code></td><td><code>Record&lt;string, unknown&gt;</code></td><td><code>{}</code></td><td>No</td><td>初始值（HTML FormData 仍由原生 input 自动收集）。</td></tr>
-    <tr><td><code>fields</code></td><td><code>FormField[]</code></td><td>—</td><td>No</td><td>字段描述数组，可选；内嵌 children 树是更常用的方式。</td></tr>
-    <tr><td><code>formId</code></td><td><code>string</code></td><td>—</td><td>No</td><td>原生 <code>&lt;form&gt;</code> 元素 id。</td></tr>
-  </tbody>
-</table>
+## SnForm Exposed API
 
-## FormItem props
+通过 template ref 调用：
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>prop</code></td><td><code>string</code></td><td>—</td><td>**Yes**</td><td>字段路径，用于值查找与错误回显。</td></tr>
-    <tr><td><code>label</code></td><td><code>string</code></td><td>—</td><td>No</td><td>字段标签。</td></tr>
-    <tr><td><code>required</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>必填，附加 <code>*</code> 标记 + <code>aria-required</code>。</td></tr>
-    <tr><td><code>error</code></td><td><code>string</code></td><td>—</td><td>No</td><td>字段级错误信息（来自父级 validate）。</td></tr>
-  </tbody>
-</table>
+```ts
+const formRef = ref<InstanceType<typeof SnForm> | null>(null)
+await formRef.value?.validate()
+await formRef.value?.validateField('email')
+formRef.value?.resetFields()
+formRef.value?.clearValidate()       // 全部
+formRef.value?.clearValidate('email') // 单个
+```
 
-## Validation rules（`fields[].rules`）
+## SnFormItem Events
 
-Phase 2 最小规则集：
+| Event | Payload | When |
+| --- | --- | --- |
+| `click` | `(event: MouseEvent)` | 整行点击（仅 `clickable=true` 时）。 |
 
-| Rule | 行为 |
-| --- | --- |
-| `required` | 值非空字符串 |
-| `minLength` | 字符串长度下限 |
-| `maxLength` | 字符串长度上限 |
-| `pattern` | RegExp 源码（运行时编译） |
-| `message` | 自定义错误文本 |
+## SnForm Events
 
-## Events
-
-<table class="props">
-  <thead>
-    <tr><th>Event id</th><th>DOM event</th><th>Payload</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>submit</code></td><td><code>submit</code></td><td><code>Record&lt;string, string&gt;</code>（已清理的 values）</td></tr>
-    <tr><td><code>validate</code></td><td>—</td><td><code>{ valid: boolean; errors: Record&lt;string, string&gt; }</code></td></tr>
-  </tbody>
-</table>
-
-## Tokens
-
-| Logical slot | CSS variable |
-| --- | --- |
-| `background` | `var(--aui-color-surface)` |
-| `itemGap` | `var(--aui-spacing-md)` |
-| `labelColor` | `var(--aui-color-text-primary)` |
-| `errorColor` | `var(--aui-color-text-danger)` |
-| `requiredColor` | `var(--aui-color-text-danger)` |
-| `borderColor` | `var(--aui-color-border-default)` |
+| Event | Payload | When |
+| --- | --- | --- |
+| `validate` | `{ valid, errors: Record<prop, message> }` | 每次全表 `validate()` 之后。 |
+| `reset` | — | `resetFields()` 后。 |
+| `submit` | `{ valid }` | 表单提交 + 校验完成。 |
 
 ## Accessibility
 
-| Attribute | Value |
-| --- | --- |
-| `role` | `form`（Form） · `group`（FormItem） |
-| `keyboard` | `Enter`, `Tab`（Form） · 平台原生（FormItem） |
-| `aria-busy` | 绑定到 `Form.props.loading` |
-| `aria-disabled` | 绑定到 `Form.props.disabled` |
-| `aria-required` | 绑定到 `FormItem.props.required` |
-| `aria-invalid` | 绑定到 <code>has-error(error)</code>（有错误信息时） |
-
-## AI Patch Boundary
-
-**Form**
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `layout`, `disabled`, `loading`, `initialValues`, `fields`, `formId` |
-| `ai.readonly` | `role`, `submit`, `reset` |
-
-**FormItem**
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `prop`, `label`, `required`, `error` |
-| `ai.readonly` | `role` |
+- 包裹 `<form novalidate>` 关闭原生 HTML5 校验。
+- 错误信息 `aria-live="assertive"`，警告 `aria-live="polite"`。
+- Label 使用原生 `<label>` 元素就近关联。
+- `clickable` 行 `cursor: pointer` + hover bg，键鼠均可触发。
 
 ## Source
 
-`packages/protocol/src/form-contract.ts` (Contract source) · `packages/vue-web/src/form.ts` (Vue renderer)
-
-## 完整流程（Schema → Runtime → Submit → Action）
-
-```text
-User types
-   ↓
-Input emits 'input' / 'change'
-   ↓
-Form's <form> dispatchEvent('submit')
-   ↓
-Form collects FormData → emit 'submit' (values)
-   ↓
-Runtime ActionRegistry dispatches registered handler
-   ↓
-Handler mutates state (or returns validation)
-   ↓
-Reactive re-render via @vue/reactivity
-```
+Web 渲染器在 `@snui/vue-web`，uni 端镜像在 `@snui/uni`，跨端共用 FormRule 类型 + validator 各自复制以避免 package 依赖。

@@ -1,75 +1,75 @@
-# Theme / Style / Density
+# Token 总览
 
-AUI 把 tokens 拆分成三个互相独立的维度。运行时切换任一维度都不会影响其他两个。
+snail-aui 的样式系统核心是 Token（设计变量）。组件不写硬编码颜色 / 间距 / 圆角 —— 所有视觉属性通过 Token 引用。
 
-| 轴 | 职责 | 切换示例 |
-| --- | --- | --- |
-| **Theme** | 颜色（text / background / border / action / feedback） | Light、Dark |
-| **Style** | 圆角、阴影、组件形状 | Modern、Glass、Minimal |
-| **Density** | 尺寸、间距、字号 | Compact、Comfortable |
+## 端独立 Token 架构（v3.1）
 
-三个维度 **永远不会** 隐式相互影响（AUI-PRD-v1.2.md §36：「三个维度不得隐式修改其他维度」）。改 Theme 不会动 spacing；改 Density 不会动颜色。
+每端消费各自的 Token 别名：
 
-## 级联
-
-```
-默认值
-   ↓
-Theme 覆盖     → primitive.color + semantic.color
-   ↓
-Style 覆盖     → primitive.radius/shadow + component tokens
-   ↓
-Density 覆盖   → primitive.spacing/size/font.size
-   ↓
-Variant         → component 令牌（per-instance preset）
-   ↓
-Instance 覆盖   → flat Record<string, string>（最上层）
+```text
+统一底层：@snui/tokens
+   ↓  --aui-* CSS 变量（端无关原始层）
+   ├──→  @snui/tokens-web    --sn-web-*    →  @snui/vue-web 消费
+   └──→  @snui/tokens-mp     --sn-mp-*     →  @snui/uni 消费
 ```
 
-## Tokens 即 CSS 变量
+- Web 端组件只能用 `var(--sn-web-*)` 变量
+- uni 端组件只能用 `var(--sn-mp-*)` 变量
+- 跨端 0 行源代码复用
+- 底层 `--aui-*` 端无关
 
-Resolver 输出扁平的 `TokenBinding[]`：
+## 三层级联
 
-```ts
-{ name: '--aui-color-blue-500', value: '#1677ff' }
-{ name: '--aui-color-text-primary', value: 'var(--aui-color-blue-500)' }
-{ name: '--aui-button-radius', value: 'var(--aui-radius-control)' }
+```text
+Primitive   →  Semantic   →  Component   →  --aui-* 原始层（统一）
+原始值          语义名          组件级          （端无关）
+   ↓
+   @snui/tokens-web 生成 --sn-web-* 别名  →  Web 端消费
+   @snui/tokens-mp  生成 --sn-mp-* 别名   →  uni 端消费（含 rpx）
 ```
 
-组件消费 `var(--aui-color-action-primary)`——从不直接接触原始 primitive。这意味着切换 Theme 只改绑定表，组件代码无需修改。
+## 三轴独立
 
-## 本节页面
+Token 系统有三个独立维度：
 
-- [Theme（Light / Dark）](/theme/theme)
-- [Style（Modern / Glass / Minimal）](/theme/style)
-- [Density（Compact / Comfortable）](/theme/density)
+| 轴 | 改什么 | 禁止改 |
+|---|---|---|
+| **Theme** | 颜色 | 圆角、间距、尺寸 |
+| **Style** | 圆角 + 阴影 + Component Token | 颜色、间距、字号 |
+| **Density** | 间距 + 尺寸 + 字号 | 颜色、圆角 |
+
+切换 Theme 不影响组件形状；切换 Style 不影响颜色；切换 Density 不影响颜色或圆角。
+
+## 默认值
+
+| Token | 默认 |
+|---|---|
+| `--aui-color-action-primary` | `#1677ff` |
+| `--aui-color-text-primary` | `#18181b` |
+| `--aui-color-background-surface` | `#ffffff` |
+| `--aui-button-radius` | `6px` → Web `--sn-web-button-radius: 6px` / uni `--sn-mp-button-radius: 24rpx` |
+| `--aui-button-height-medium` | `36px` → Web `36px` / uni `72rpx` |
+| `--aui-card-shadow` | `0 1px 3px rgba(0,0,0,0.08)` |
+
+切换暗色主题：颜色变化，圆角间距不变。
+切换 iOS 风格：圆角变大、阴影消失，颜色不变。
+
+## 端专属 Token
+
+不同端可有不同 Component Token 字段：
+
+| 字段 | Web（`--sn-web-*`） | uni（`--sn-mp-*`） |
+|---|---|---|
+| `button-radius` | ✅ 6px | ✅ 24rpx |
+| `table-row-height` | ✅ 32px | ❌（Web 桌面专属）|
+| `list-item-height` | ❌ | ✅ 88rpx |
+| `dropdown-item-padding` | ✅ 8px 16px | ❌ |
+| `sidebar-item-height` | ❌ | ✅ 100rpx |
+
+## 下一步
+
+- [Theme · 浅色 / 暗色](/theme/theme)
+- [Style · 形状轴](/theme/style)
+- [Density · 紧凑 / 舒适](/theme/density)
 - [Token 级联](/theme/cascade)
-
-## 编程式 API
-
-```ts
-import { resolveEnvironment, renderStyleBlock } from '@snui/tokens';
-
-const env = {
-  theme: LIGHT_THEME,
-  style: MODERN_STYLE,
-  density: COMFORTABLE_DENSITY,
-  // 可选的实例覆盖
-  instanceOverrides: {
-    '--aui-color-action-primary': '#ff5500',
-  },
-};
-
-const bindings = resolveEnvironment(env);
-
-// 注入为 CSS 字符串：
-const css = renderStyleBlock(bindings);
-document.head.insertAdjacentHTML('beforeend', `<style>${css}</style>`);
-
-// 或者直接挂到宿主元素上：
-for (const { name, value } of bindings) {
-  document.documentElement.style.setProperty(name, value);
-}
-```
-
-完整默认尺度见 [`@snui/tokens` 源码](https://github.com/hu-snail/snail-ui)。
+- [风格包（跨端共用）](/style-packs/overview)

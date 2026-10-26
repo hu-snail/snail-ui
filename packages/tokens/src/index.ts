@@ -73,3 +73,10 @@ export {
   renderStyleBlock,
   type TokenBinding,
 } from './resolver.js';
+
+export {
+  snCssVars,
+  snVarName,
+  auiVarName,
+  type SnCssVarsOptions,
+} from './css-vars.js';

@@ -190,7 +190,11 @@ function emitSemanticBindings(semantic: SemanticTokens): TokenBinding[] {
     }
     if (value !== null && typeof value === 'object') {
       for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-        emitPath(`${prefix}-${k}`, v);
+        // Keys are camelCase in TS but kebab-case in CSS. Emitting them raw
+        // produced names no consumer asks for (`--aui-color-action-primaryHover`
+        // instead of `--aui-color-action-primary-hover`), so runtime theme
+        // overrides silently missed every multi-word semantic token.
+        emitPath(`${prefix}-${camelToKebab(k)}`, v);
       }
     }
   }
@@ -205,24 +209,42 @@ function emitSemanticBindings(semantic: SemanticTokens): TokenBinding[] {
   return out;
 }
 
-/** Emit component CSS variable bindings. */
+/**
+ * Emit component CSS variable bindings. Per ADR-0002 + Spec-01 §1.3:
+ *   - camelCase property names are converted to kebab-case CSS identifiers
+ *     (e.g. `heightMedium` → `--aui-button-height-medium`)
+ *   - One-to-one `--sn-*` alias is emitted in the same pass (see css-vars.ts
+ *     `renderAliasBlock` which loops over the same binding list)
+ */
 function emitComponentBindings(component: ComponentTokens): TokenBinding[] {
   const out: TokenBinding[] = [];
-  function emitPath(prefix: string, value: unknown): void {
-    if (typeof value === 'string') {
-      out.push({ name: `--aui-${prefix}`, value });
-      return;
-    }
-    if (value !== null && typeof value === 'object') {
-      for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-        emitPath(`${prefix}-${k}`, v);
-      }
+
+  function emitKey(componentPrefix: string, propKey: string, value: unknown): void {
+    if (typeof value !== 'string') return;
+    const cssKey = camelToKebab(propKey);
+    out.push({ name: `--aui-${componentPrefix}-${cssKey}`, value });
+  }
+
+  // Walk every group on the ComponentTokens object instead of listing the
+  // keys by hand: an explicit list silently skips a group the moment one is
+  // added (which is how `icon` went unemitted while its `--sn-web-icon-*`
+  // aliases already pointed at it). The key order is the declaration order,
+  // so the CSS output stays deterministic.
+  for (const group of Object.keys(component) as Array<keyof ComponentTokens>) {
+    // Double assertion on purpose: `ComponentTokens[K]` is a heterogeneous
+    // union of interfaces with no index signature, so a direct cast to
+    // `Record<string, unknown>` is rejected by TS2352 as group count grows.
+    const tokens = component[group] as unknown as Record<string, unknown>;
+    for (const key of Object.keys(tokens)) {
+      emitKey(group as string, key, tokens[key]);
     }
   }
-  emitPath('button', component.button);
-  emitPath('input', component.input);
-  emitPath('card', component.card);
   return out;
+}
+
+/** `heightMedium` → `height-medium`. Pure ASCII, no locale-dependent upper case. */
+function camelToKebab(input: string): string {
+  return input.replace(/[A-Z]/g, (ch) => `-${ch.toLowerCase()}`);
 }
 
 /**

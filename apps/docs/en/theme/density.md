@@ -1,79 +1,50 @@
-# Density · Compact / Comfortable
+# Density · compact / comfortable
 
-The Density axis owns **size**: control heights, padding, font sizes, line-heights.
+The Density axis owns **size density**. Does not affect color or radius.
 
-A Density does NOT touch tokens (those are Style) or changes (those are Theme).
-
-## Defaults shipped
+## Built-in defaults
 
 ```ts
-import { COMPACT_DENSITY, COMFORTABLE_DENSITY } from '@snui/tokens';
+import { COMPACT_DENSITY, COMFORTABLE_DENSITY } from '@snui/tokens'
 ```
 
-| Density | Sample deltas |
+| Density | Use |
 | --- | --- |
-| `COMPACT_DENSITY` | `--aui-spacing-4: 10px` (was 12px), `--aui-size-control-md: 20px` (was 32px) |
-| `COMFORTABLE_DENSITY` | default — no overrides |
+| `COMFORTABLE_DENSITY` | Default — generous spacing, large sizes |
+| `COMPACT_DENSITY` | Tighter spacing, smaller control heights, desktop / dense layouts |
 
-## Behavior on density change
+## Per-end Density base
 
-```
-Density Change
-   ↓
-保留 Theme
-   ↓
-保留 Style
-   ↓
-只重新计算尺寸类 Token
-```
+Web and uni Density presets map to different px / rpx bases:
 
-Per AUI-PRD-v1.2.md §38: changing the density preserves Theme and Style. Only size primitives are recomputed.
+- **Web**: Density outputs px values (32px / 36px / 44px ...)
+- **uni**: Density via `@snui/tokens-mp` auto-converts to rpx (64rpx / 72rpx / 88rpx ...)
 
-## Custom density
+Switching Density preserves Theme and Style.
+
+## Custom Density
 
 ```ts
-import type { DensityDefinition } from '@snui/tokens';
+import type { DensityDefinition } from '@snui/tokens'
 
-const cozy: DensityDefinition = {
-  name: 'cozy',
+const dense: DensityDefinition = {
+  name: 'dense',
   primitive: {
-    spacing: {
-      '3': '10px',
-      '4': '14px',
-      '5': '18px',
-    },
-    size: {
-      control: { sm: '28px', md: '36px', lg: '44px' },
-    },
-    font: {
-      size: { md: '15px' },
-    },
+    spacing: { '3': '4px', '4': '8px', '5': '12px' },
+    size: { control: { sm: '20px', md: '28px', lg: '36px' } },
   },
-};
+}
 ```
 
-`cozy` is between `compact` and `comfortable`. It does not touch any color or radius token.
+## Forbidden
 
-## What a Density MUST NOT do
-
-| Forbidden | Reason |
+| Don't | Why |
 | --- | --- |
-| Override color tokens | Belongs to Theme |
+| Override color Tokens | Belongs to Theme |
 | Override radius / shadow | Belongs to Style |
-| Tight-couple to a specific style | Styles and Densities are independent axes |
+| Couple with specific Theme / Style | Three axes are independent |
 
-## Live comparison
-
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
-
-<ComponentPreview name="button" variant="primary" size="medium" text="Comfortable · medium" />
-
-> Compact density preview lands once the docs site supports a density switcher. The contract surface is the same; only the primitive `spacing` / `size` overrides change.
-
-## Next
+## Where to next
 
 - [Token cascade](/en/theme/cascade)
-- [Theme (Light / Dark)](/en/theme/theme)
-- [Style (Modern / Glass / Minimal)](/en/theme/style)
+- [Style Packs](/en/style-packs/overview)

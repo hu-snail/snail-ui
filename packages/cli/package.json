@@ -1,0 +1,58 @@
+{
+  "name": "@snui/cli",
+  "version": "0.2.0",
+  "private": true,
+  "description": "snail-aui CLI — unplugin-vue-components resolver, llms.txt / ai-meta generator, doc extractor, token check, pack validate. Per AUI-TOOL-001~005.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "snui": "./dist/bin/snui.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./resolver": {
+      "types": "./dist/resolver.d.ts",
+      "import": "./dist/resolver.js"
+    },
+    "./llms-txt": {
+      "types": "./dist/llms-txt.d.ts",
+      "import": "./dist/llms-txt.js"
+    },
+    "./token-check": {
+      "types": "./dist/token-check.d.ts",
+      "import": "./dist/token-check.js"
+    },
+    "./pack-validate": {
+      "types": "./dist/pack-validate.d.ts",
+      "import": "./dist/pack-validate.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@snui/tokens": "workspace:",
+    "@snui/vue-web": "workspace:"
+  },
+  "peerDependencies": {
+    "unplugin-vue-components": "*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8",
+    "eslint": "^9.17.0"
+  }
+}

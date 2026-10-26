@@ -1,39 +1,32 @@
-# Style · Modern / Glass / Minimal
+# Style · the shape axis
 
-The Style axis owns the **shape personality**: radius, shadow, and component shape tokens (button radius, card padding, etc.).
+Style owns **shape personality**: radius, shadow, Component Token. Style never touches color or size primitives.
 
-A Style does NOT touch colors (those are Theme) or size primitives (those are Density).
-
-## Defaults shipped
+## Built-in defaults
 
 ```ts
-import { MODERN_STYLE } from '@snui/tokens';
+import { MODERN_STYLE } from '@snui/tokens'
 ```
 
 | Style | Personality |
 | --- | --- |
-| `MODERN_STYLE` | 6px control radius, subtle shadow, flat surfaces |
-| `GLASS_STYLE` | (Phase 2) — 12px radius, elevated shadow, blur |
-| `MINIMAL_STYLE` | (Phase 2) — 0 radius, no shadow, hairline borders |
+| `MODERN_STYLE` | 6px radius, subtle shadow, flat |
+| `GLASS_STYLE` | (Phase 2) — 12px radius, floating shadow, glassmorphic |
+| `MINIMAL_STYLE` | (Phase 2) — 0 radius, no shadow, hairline border |
 
-## Behavior on style change
+## Per-end Style
 
-```
-Style Change
-   ↓
-保留 Theme
-   ↓
-保留 Density
-   ↓
-重新计算 Component Token
-```
+Web and uni have independent Style fields (sharing the `--aui-*` base):
 
-Per AUI-PRD-v1.2.md §38: changing the style preserves Theme and Density. Only the component-shape tokens are recomputed.
+- **Web Style**: `--sn-web-button-radius` / `--sn-web-card-shadow`
+- **uni Style**: `--sn-mp-button-radius` / `--sn-mp-card-shadow`
 
-## Custom style
+Switching Style preserves Theme and Density.
+
+## Custom Style
 
 ```ts
-import type { StyleDefinition } from '@snui/tokens';
+import type { StyleDefinition } from '@snui/tokens'
 
 const glass: StyleDefinition = {
   name: 'glass',
@@ -45,33 +38,19 @@ const glass: StyleDefinition = {
     button: { radius: 'var(--aui-radius-lg)' },
     card: { radius: 'var(--aui-radius-lg)' },
   },
-};
+}
 ```
 
-When `glass` is applied, the Button's `--aui-button-radius` flips from `6px` to `16px` and shadow depth increases. Color and spacing stay identical.
+## Forbidden
 
-## What a Style MUST NOT do
-
-| Forbidden | Reason |
+| Don't | Why |
 | --- | --- |
-| Override color tokens | Belongs to Theme |
-| Override spacing / size primitives | Belongs to Density |
-| Tight-couple to a specific theme | Themes and Styles are independent axes |
+| Override color Tokens | Belongs to Theme |
+| Override spacing / size | Belongs to Density |
+| Couple with a specific Theme | Independent |
 
-## Live comparison
+## Where to next
 
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
-
-<ComponentPreview name="button" variant="primary" text="Modern" />
-
-<ComponentPreview name="button" variant="primary" text="Modern · large" size="large" />
-
-> Glass / Minimal previews land when those styles are implemented. The contract surface is the same; only the `component.*` overrides change.
-
-## Next
-
-- [Density (Compact / Comfortable)](/en/theme/density)
+- [Density · compact / comfortable](/en/theme/density)
 - [Token cascade](/en/theme/cascade)
-- [Theme (Light / Dark)](/en/theme/theme)
+- [Style Packs](/en/style-packs/overview)

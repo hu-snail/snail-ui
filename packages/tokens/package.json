@@ -1,8 +1,8 @@
 {
   "name": "@snui/tokens",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "AUI Tokens — Primitive / Semantic / Component token cascade with Theme / Style / Density dimensions.",
+  "description": "AUI Tokens — Primitive / Semantic / Component cascade with --sn-* brand alias layer. Framework-agnostic, zero runtime deps. Consumed by @snui/vue-web and @snui/uni.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -11,9 +11,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./styles": "./styles/index.css",
+    "./styles/": "./styles/"
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "styles"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",

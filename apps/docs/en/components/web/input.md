@@ -1,121 +1,138 @@
 # Input · Web
 
-Controlled input with token-driven styling and a complete set of native input events. Maps to a real `<input>` DOM element via `@snui/vue-web`.
+Controlled input. Renders a native `<input>` / `<textarea>` styled through the token alias layer.
 
-<script setup>
-import ComponentPreview from '../../../.vitepress/components/ComponentPreview.vue';
-</script>
+## Basic
 
-## Live render · real framework mount
+<Demo name="input-basic" description="Two-way v-model binding." />
 
-All inputs below are mounted via `createVueRenderer().mount()`. Refresh the page to re-mount.
+## Types
 
-### Types
+12 native input types, including the mobile-friendly `digit` / `idcard` / `nickname` / `safe-password`.
 
-<ComponentPreview name="input" :raw-props="{ value: 'text input', type: 'text', placeholder: 'Text input' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'a@b.dev', type: 'email', placeholder: 'Email' }" />
-<ComponentPreview name="input" :raw-props="{ value: '', type: 'password', placeholder: 'Password' }" />
-<ComponentPreview name="input" :raw-props="{ value: '13900000000', type: 'tel', placeholder: 'Phone' }" />
+<Demo name="input-types" description="12 types: text / password / email / number / digit / idcard / nickname / safe-password / tel / url / search / textarea." />
 
-### Sizes
+## Sizes
 
-<ComponentPreview name="input" :raw-props="{ value: 'Small', size: 'small', placeholder: 'Small' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Medium', size: 'medium', placeholder: 'Medium' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Large', size: 'large', placeholder: 'Large' }" />
+5 tiers `tiny` / `small` / `medium` / `large` / `huge`, mapped to `--sn-web-input-height-{size}`.
 
-### States
+<Demo name="input-sizes" description="5 height tiers, covering compact search to hero forms." />
 
-<ComponentPreview name="input" :raw-props="{ value: 'Disabled', disabled: true }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Read-only', readonly: true }" />
+## Status
 
-### Clearable
+<Demo name="input-status" description="default / error / warning — driven by FormItem validation, manual override allowed." />
 
-<ComponentPreview name="input" :raw-props="{ value: 'Click × to clear', clearable: true }" />
+## States
 
-### Length constraints
+<Demo name="input-states" description="disabled / readonly / required — sets aria-* attributes accordingly." />
 
-<ComponentPreview name="input" :raw-props="{ value: '', placeholder: 'Max 8 chars', maxlength: 8, name: 'username' }" />
+## Clearable + Counter
+
+<Demo name="input-clearable-count" description="clearable × button; clearTrigger 'always' | 'focus'; showCount / showWordLimit + maxlength." />
+
+## Show Password
+
+<Demo name="input-password-toggle" description="type='password' + showPassword renders eye toggle." />
+
+## Prefix / Suffix Icon
+
+<Demo name="input-prefix-suffix" description="prefixIcon / suffixIcon rendered through SnIcon; cssIcon falls back to CSS class." />
+
+## Border / Background / Radius
+
+<Demo name="input-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none' (bordered alias); bg / customBg; radius preset." />
+
+## alignRight / compact / inputmode
+
+<Demo name="input-align-compact" description="amount-field right-align; compact mode; inputmode soft-keyboard hint." />
+
+## customClass / customStyle / customInputClass
+
+<Demo name="input-custom" description="Three class / style hooks at root / inner / via slot." />
+
+## Textarea
+
+Multi-line textarea via `type="textarea"`. See input-slots for an inline bio example, or:
+
+```vue
+<SnInput v-model="bio" type="textarea" :rows="4" :maxlength="280" show-count />
+```
 
 ## Props
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>value</code></td><td><code>string</code></td><td><code>''</code></td><td>No</td><td>Controlled value. Parent re-renders with new value after <code>input</code>.</td></tr>
-    <tr><td><code>placeholder</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Empty-state placeholder.</td></tr>
-    <tr><td><code>type</code></td><td><code>'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search'</code></td><td><code>'text'</code></td><td>No</td><td>Native input type.</td></tr>
-    <tr><td><code>size</code></td><td><code>'small' | 'medium' | 'large'</code></td><td><code>'medium'</code></td><td>No</td><td>Height + padding + font-size sub-axis (§36).</td></tr>
-    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Disable and apply <code>aria-disabled</code>.</td></tr>
-    <tr><td><code>readonly</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Read-only and apply <code>aria-readonly</code>.</td></tr>
-    <tr><td><code>clearable</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Show <code>×</code> clear button when value is non-empty.</td></tr>
-    <tr><td><code>maxlength</code></td><td><code>number</code></td><td>—</td><td>No</td><td>Maximum character count.</td></tr>
-    <tr><td><code>minlength</code></td><td><code>number</code></td><td>—</td><td>No</td><td>Minimum character count.</td></tr>
-    <tr><td><code>name</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Native name (used by FormData collection).</td></tr>
-  </tbody>
-</table>
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `string \| number` | `''` | v-model value; `type="number"` coerces to number. |
+| `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | Native input type; textarea renders multi-line. |
+| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | Height / font-size. |
+| `placeholder` | `string` | `''` | Placeholder text. |
+| `placeholderStyle` | `string` | `''` | Inline CSS injected into `::placeholder` pseudo-element. |
+| `placeholderClass` | `string` | `''` | Extra class on placeholder pseudo-element. |
+| `disabled` | `boolean` | `false` | Disabled + aria-disabled. |
+| `readonly` | `boolean` | `false` | Read-only. |
+| `required` | `boolean` | `false` | aria-required="true". |
+| `ariaLabel` | `string` | — | Accessible name. |
+| `maxlength` | `number` | — | Forwarded. |
+| `minlength` | `number` | — | Forwarded. |
+| `showCount` | `boolean` | `false` | Show current / max counter. |
+| `showWordLimit` | `boolean` | `false` | Alias for `showCount`. |
+| `clearable` | `boolean` | `false` | Show × button. |
+| `clearTrigger` | `'always' \| 'focus'` | `'always'` | When × shows: `focus` only on focus. |
+| `focusWhenClear` | `boolean` | `true` | Auto-refocus after × click. |
+| `showPassword` | `boolean` | `false` | Eye toggle on `type='password'`. |
+| `prefixIcon` | `string` | `''` | Front icon name (resolved via SnIcon). |
+| `suffixIcon` | `string` | `''` | Tail icon name. |
+| `cssIcon` | `boolean \| string` | `false` | `true` treats prefix/suffix icon as CSS class (bypass SnIcon). |
+| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | Border color + aria-invalid. |
+| `min` / `max` / `step` | `number` | — | Numeric bounds. |
+| `rows` | `number` | `3` | Textarea rows. |
+| `border` | `'all' \| 'bottom' \| 'none'` | `'all'` | Border mode. `all` four sides, `bottom` only bottom (inline form row), `none` no border. |
+| `bordered` *(deprecated)* | `boolean` | `true` | Alias: `true === 'all'`, `false === 'none'`. |
+| `bg` | `'surface' \| 'transparent' \| 'soft'` | `'surface'` | Background tone. |
+| `customBg` | `string` | `''` | Inline `background-color` override. |
+| `radius` | `'default' \| 'pill' \| 'square'` | `'default'` | Radius preset. |
+| `alignRight` | `boolean` | `false` | Right-align value (amount fields). |
+| `compact` | `boolean` | `false` | Strip padding + bg so input nests inside FormItem. |
+| `focus` | `boolean` | `false` | Auto-focus on mount. |
+| `inputmode` | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'` | Soft-keyboard hint. |
+| `customInputClass` | `string` | `''` | Inner `<input>` / `<textarea>` extra class. |
+| `customClass` | `string` | `''` | Root extra class. |
+| `customStyle` | `string \| Record<string,string>` | `''` | Root inline style. |
 
 ## Events
 
-<table class="props">
-  <thead>
-    <tr><th>Event id</th><th>DOM event</th><th>Payload</th><th>Notes</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>input</code></td><td><code>input</code></td><td><code>string</code></td><td>Emitted on every keystroke.</td></tr>
-    <tr><td><code>change</code></td><td><code>change</code></td><td><code>string</code></td><td>Emitted on commit (input + blur / Enter).</td></tr>
-    <tr><td><code>focus</code></td><td><code>focus</code></td><td><code>FocusEvent</code></td><td>Element receives focus.</td></tr>
-    <tr><td><code>blur</code></td><td><code>blur</code></td><td><code>FocusEvent</code></td><td>Element loses focus.</td></tr>
-    <tr><td><code>clear</code></td><td><code>click</code> (clear button)</td><td>—</td><td>Emitted when user clicks the clear button (<code>clearable=true</code>). Also emits <code>input</code>/<code>change</code> with empty string.</td></tr>
-  </tbody>
-</table>
+| Event | Payload | Notes |
+| --- | --- | --- |
+| `update:modelValue` | `(value)` | v-model sync. |
+| `input` | `(value, event)` | Native input. |
+| `change` | `(value, event)` | Native change. |
+| `focus` | `(event: FocusEvent)` | Native focus. |
+| `blur` | `(event: FocusEvent)` | Native blur. |
+| `clear` | — | × button click. |
+| `click` | `(event: MouseEvent)` | Root click (e.g. for embedded popup). |
+| `clickPrefixIcon` | `(event: MouseEvent)` | Click on prefixIcon region. |
+| `clickSuffixIcon` | `(event: MouseEvent)` | Click on suffixIcon region. |
+| `confirm` | `(value: string \| number)` | Enter on single-line input. |
 
-## Tokens
+## Slots
 
-| Logical slot | CSS variable |
+| Slot | Description |
 | --- | --- |
-| `background` | `var(--aui-color-input-bg)` |
-| `color` | `var(--aui-color-input-text)` |
-| `borderColor` | `var(--aui-color-input-border)` |
-| `placeholderColor` | `var(--aui-color-input-placeholder)` |
-| `disabledBackground` | `var(--aui-color-input-bg-disabled)` |
-| `disabledColor` | `var(--aui-color-input-text-disabled)` |
-| `focusRing` | `var(--aui-color-focus-ring)` |
-| `size.small.height` | `var(--aui-control-height-sm)` |
-| `size.medium.height` | `var(--aui-control-height-md)` |
-| `size.large.height` | `var(--aui-control-height-lg)` |
+| `prefix` | Left of input. Overrides `prefixIcon`. |
+| `suffix` | Right of input. Overrides `suffixIcon`. |
+| `clear-icon` | Custom × button content. |
+| `count` | Custom counter (receives `{ current, max }`). |
 
 ## Accessibility
 
 | Attribute | Value |
 | --- | --- |
-| `role` | `textbox` |
-| `keyboard` | `Tab`, `ArrowLeft`, `ArrowRight`, `Backspace`, `Delete` |
-| `aria-disabled` | bound to `props.disabled` |
-| `aria-readonly` | bound to `props.readonly` |
-| `aria-placeholder` | bound to `props.placeholder` |
-
-## AI Patch Boundary
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `value`, `placeholder`, `disabled`, `readonly`, `type`, `size`, `clearable`, `maxlength`, `minlength`, `name` |
-| `ai.readonly` | `role`, `keyboard`, `focus`, `blur` |
+| `aria-invalid` | `props.status === 'error'`. |
+| `aria-required` | `props.required`. |
+| `aria-disabled` | `props.disabled`. |
+| Focus animation | border-color + outer ring, 0.18s ease-out; error/warning paints own soft outer ring. |
+| Placeholder color | Distinct from input text (`--sn-web-input-placeholder-color` resolves to `text-tertiary`). |
 
 ## Source
 
-`packages/protocol/src/input-contract.ts` (Contract source) · `packages/vue-web/src/input.ts` (Vue renderer)
-
-## With Form
-
-Inputs typically nest inside `Form` / `FormItem`. FormData is collected automatically by the native `<form>` element on submit.
-
-```html
-<form>
-  <div class="form-item">
-    <label>Email</label>
-    <input name="email" type="email" />
-  </div>
-</form>
-```
+Renderer lives at `@snui/vue-web`; uni mirror at `@snui/uni`.

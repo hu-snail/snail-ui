@@ -1,7 +1,11 @@
 # AUI 产品需求与系统架构文档
 
+> ⚠️ **本文档已被 PRD v3.0 取代（Superseded by `dev-docs/SNUI-PRD-v3.0.md`）**  
+> 请勿再据此做新功能决策。仅用于历史追溯。  
+> 历史路径：v1.2 → v2.0 → v3.0。
+
 **版本：v1.2**  
-**状态：Architecture Baseline / Phase 1 开发基线**  
+**状态：Superseded（被 SNUI-PRD-v3.0.md 取代）**  
 **文档性质：产品需求 + 系统架构 + Protocol Contract**  
 **目标：作为《AUI Development v1.2》的唯一上游需求基线**
 

@@ -1,147 +1,142 @@
-# Input · Web
+# Input · Web（PC 端）
 
-受控输入控件，Token 驱动的样式方案与一组跨浏览器原生 input 事件。映射到真实的 `<input>` DOM 元素，由 `@snui/vue-web` 渲染。
+受控输入控件。映射到原生 `<input>` / `<textarea>`，Token 别名层驱动的样式方案。
 
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
+## 基础用法
 
-## Live render · 真实框架挂载
+<Demo name="input-basic" description="v-model 双向绑定。" />
 
-下面所有输入框通过 `createVueRenderer().mount()` 挂载，刷新页面即可重新挂载。
+## 类型（type）
 
-### Types（input type）
+12 种原生 input 类型，包含移动端字段常用的 `digit` / `idcard` / `nickname` / `safe-password`。
 
-<ComponentPreview name="input" :raw-props="{ value: 'text input', type: 'text', placeholder: '文本输入' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'a@b.dev', type: 'email', placeholder: '邮箱' }" />
-<ComponentPreview name="input" :raw-props="{ value: '', type: 'password', placeholder: '密码' }" />
-<ComponentPreview name="input" :raw-props="{ value: '13900000000', type: 'tel', placeholder: '手机号' }" />
+<Demo name="input-types" description="12 种 type：text / password / email / number / digit / idcard / nickname / safe-password / tel / url / search / textarea。" />
 
-### Sizes（尺寸）
+## 尺寸（size）
 
-<ComponentPreview name="input" :raw-props="{ value: 'Small', size: 'small', placeholder: '小号' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Medium', size: 'medium', placeholder: '中号' }" />
-<ComponentPreview name="input" :raw-props="{ value: 'Large', size: 'large', placeholder: '大号' }" />
+5 档 `tiny` / `small` / `medium` / `large` / `huge`，对应 `--sn-web-input-height-{size}`。
 
-### States（状态）
+<Demo name="input-sizes" description="5 档高度，覆盖紧凑搜索 → 首屏表单全场景。" />
 
-<ComponentPreview name="input" :raw-props="{ value: '禁用态', disabled: true }" />
-<ComponentPreview name="input" :raw-props="{ value: '只读态', readonly: true }" />
+## 状态（status）
 
-### Clearable（可清除）
+<Demo name="input-status" description="default / error / warning — 由 FormItem 校验驱动，手动覆盖也允许。" />
 
-<ComponentPreview name="input" :raw-props="{ value: '点击右侧 × 清空', clearable: true }" />
+## 表单态（disabled / readonly / required）
 
-### Length constraints（长度约束）
+<Demo name="input-states" description="disabled 禁用交互，readonly 只读不可改，required 设 aria-required。" />
 
-<ComponentPreview name="input" :raw-props="{ value: '', placeholder: '最多 8 字符', maxlength: 8, name: 'username' }" />
+## 清空 + 计数（`clearable` / `showCount`）
 
-### 受控用法示例
+<Demo name="input-clearable-count" description="clearable × 按钮；clearTrigger: 'always' | 'focus'；showCount / showWordLimit + maxlength 计数。" />
 
-<ComponentPreview
-  name="input"
-  :raw-props="{ value: 'controlled', name: 'email', type: 'email', placeholder: 'you@aui.dev' }"
-/>
+## 密码显示切换（`showPassword`）
 
-```ts
-import { ref } from 'vue';
-import { createVueRenderer, createComponentRegistry, Input } from '@snui/vue-web';
+<Demo name="input-password-toggle" description="type='password' + showPassword 渲染眼睛切换图标。" />
 
-const value = ref('hello@aui.dev');
+## 前缀 / 后缀图标（`prefixIcon` / `suffixIcon`）
 
-// 或者直接构造 schema：
-const registry = createComponentRegistry();
-registry.register('input', Input);
-createVueRenderer({ registry }).mount({
-  version: '1.0.0',
-  root: {
-    id: 'email',
-    type: 'input',
-    props: { value: value.value, name: 'email', type: 'email' },
-  },
-}, document.getElementById('app')!);
+<Demo name="input-prefix-suffix" description="prefixIcon / suffixIcon 通过 SnIcon 渲染；cssIcon 改为 CSS class。" />
+
+## 边框 / 背景 / 圆角
+
+<Demo name="input-bordered-bg-radius" description="border: 'all' | 'bottom' | 'none'（bordered alias）；bg / customBg；radius 三种圆角。" />
+
+## 右对齐 / 紧凑 / 输入模式（`alignRight` / `compact` / `inputmode`）
+
+<Demo name="input-align-compact" description="金额字段右对齐；compact 紧凑模式；inputmode 软键盘提示。" />
+
+## 自定义类 / 自定义样式（`customClass` / `customStyle` / `customInputClass`）
+
+<Demo name="input-custom" description="三处 class / style 钩子。" />
+
+## Textarea
+
+多行文本域走 `type="textarea"`，独立 `.sn-input--textarea` 容器样式。Demo 见 input-slots 内的 bio 字段，或单独使用：
+
+```vue
+<SnInput v-model="bio" type="textarea" :rows="4" :maxlength="280" show-count />
 ```
 
 ## Props
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>value</code></td><td><code>string</code></td><td><code>''</code></td><td>No</td><td>受控值。父组件在收到 <code>input</code> 后应使用新值重新渲染。</td></tr>
-    <tr><td><code>placeholder</code></td><td><code>string</code></td><td>—</td><td>No</td><td>空值占位符。</td></tr>
-    <tr><td><code>type</code></td><td><code>'text' | 'password' | 'email' | 'number' | 'tel' | 'url' | 'search'</code></td><td><code>'text'</code></td><td>No</td><td>原生 input type。</td></tr>
-    <tr><td><code>size</code></td><td><code>'small' | 'medium' | 'large'</code></td><td><code>'medium'</code></td><td>No</td><td>高度 / 内边距 / 字号子轴（§36）。</td></tr>
-    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>禁用并应用 <code>aria-disabled</code>。</td></tr>
-    <tr><td><code>readonly</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>只读并应用 <code>aria-readonly</code>。</td></tr>
-    <tr><td><code>clearable</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>值为非空时显示 <code>×</code> 清除按钮。</td></tr>
-    <tr><td><code>maxlength</code></td><td><code>number</code></td><td>—</td><td>No</td><td>最大字符数。</td></tr>
-    <tr><td><code>minlength</code></td><td><code>number</code></td><td>—</td><td>No</td><td>最小字符数。</td></tr>
-    <tr><td><code>name</code></td><td><code>string</code></td><td>—</td><td>No</td><td>原生 name（FormData 收集时使用）。</td></tr>
-  </tbody>
-</table>
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `modelValue` | `string \| number` | `''` | 双向绑定值。`type='number'` 时输入会强转为 number。 |
+| `type` | `'text' \| 'number' \| 'digit' \| 'idcard' \| 'safe-password' \| 'nickname' \| 'tel' \| 'password' \| 'email' \| 'url' \| 'search' \| 'textarea'` | `'text'` | 原生 input type。`textarea` 渲染多行文本域。 |
+| `size` | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'` | `'medium'` | 高度 / 字号。 |
+| `placeholder` | `string` | `''` | 占位符。 |
+| `placeholderStyle` | `string` | `''` | 行内 CSS 注入 `::placeholder` 伪元素。 |
+| `placeholderClass` | `string` | `''` | 占位符上的额外 class。 |
+| `disabled` | `boolean` | `false` | 禁用 + `aria-disabled`。 |
+| `readonly` | `boolean` | `false` | 只读。 |
+| `required` | `boolean` | `false` | `aria-required="true"`。 |
+| `ariaLabel` | `string` | — | 无障碍标签。 |
+| `maxlength` | `number` | — | 原生 maxlength。 |
+| `minlength` | `number` | — | 原生 minlength。 |
+| `showCount` | `boolean` | `false` | 渲染 `current / max` 计数。 |
+| `showWordLimit` | `boolean` | `false` | `showCount` 的别名。 |
+| `clearable` | `boolean` | `false` | 显示 × 清除按钮。 |
+| `clearTrigger` | `'always' \| 'focus'` | `'always'` | × 按钮显示时机：`focus` 仅在聚焦时显示。 |
+| `focusWhenClear` | `boolean` | `true` | × 点击后自动 refocus。 |
+| `showPassword` | `boolean` | `false` | `type='password'` 时显示眼睛切换图标。 |
+| `prefixIcon` | `string` | `''` | 前置图标名称（SnIcon 解析）。 |
+| `suffixIcon` | `string` | `''` | 后置图标名称。 |
+| `cssIcon` | `boolean \| string` | `false` | `true` 把 prefixIcon / suffixIcon 当 CSS class 名渲染（绕过 SnIcon 注册）。 |
+| `status` | `'default' \| 'error' \| 'warning'` | `'default'` | 边框色 + `aria-invalid`。 |
+| `min` / `max` / `step` | `number` | — | 数字输入限定。 |
+| `rows` | `number` | `3` | textarea 行数。 |
+| `border` | `'all' \| 'bottom' \| 'none'` | `'all'` | 边框模式。`all` 四边、`bottom` 仅底边（行内表单行）、`none` 无边框。 |
+| `bordered` *(deprecated)* | `boolean` | `true` | 别名：`true === border: 'all'`，`false === border: 'none'`。 |
+| `bg` | `'surface' \| 'transparent' \| 'soft'` | `'surface'` | 背景色调。 |
+| `customBg` | `string` | `''` | 内联 `background-color` 覆盖。 |
+| `radius` | `'default' \| 'pill' \| 'square'` | `'default'` | 圆角预设。 |
+| `alignRight` | `boolean` | `false` | 字段值右对齐（金额字段常用）。 |
+| `compact` | `boolean` | `false` | 紧凑布局 — strip padding + bg 让 input 嵌套进 FormItem。 |
+| `focus` | `boolean` | `false` | 挂载即 focus。 |
+| `inputmode` | `'none' \| 'text' \| 'decimal' \| 'numeric' \| 'tel' \| 'search' \| 'email' \| 'url'` | `'text'` | 软键盘提示。 |
+| `customInputClass` | `string` | `''` | 内层 `<input>` / `<textarea>` 上的额外 class。 |
+| `customClass` | `string` | `''` | 根元素上的额外 class。 |
+| `customStyle` | `string \| Record<string,string>` | `''` | 根元素上的内联样式。 |
 
 ## Events
 
-<table class="props">
-  <thead>
-    <tr><th>Event id</th><th>DOM event</th><th>Payload</th><th>Notes</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>input</code></td><td><code>input</code></td><td><code>string</code></td><td>每次按键触发。</td></tr>
-    <tr><td><code>change</code></td><td><code>change</code></td><td><code>string</code></td><td>提交时触发（input + blur / Enter）。</td></tr>
-    <tr><td><code>focus</code></td><td><code>focus</code></td><td><code>FocusEvent</code></td><td>获得焦点。</td></tr>
-    <tr><td><code>blur</code></td><td><code>blur</code></td><td><code>FocusEvent</code></td><td>失去焦点。</td></tr>
-    <tr><td><code>clear</code></td><td><code>click</code>（清除按钮）</td><td>—</td><td>用户点击清除按钮（<code>clearable=true</code> 时）。同时 emit 一对 <code>input</code>/<code>change</code>，值为 <code>''</code>。</td></tr>
-  </tbody>
-</table>
+| Event id | Payload | Notes |
+| --- | --- | --- |
+| `update:modelValue` | `(value: string \| number)` | v-model 同步。 |
+| `input` | `(value, event: Event)` | 原生 input 事件，每次按键。 |
+| `change` | `(value, event: Event)` | 原生 change（blur / Enter）。 |
+| `focus` | `(event: FocusEvent)` | 获得焦点。 |
+| `blur` | `(event: FocusEvent)` | 失去焦点。 |
+| `clear` | — | × 清除按钮触发，同时发 `update:modelValue=''`。 |
+| `click` | `(event: MouseEvent)` | 整个 root 点击（用于嵌入 popup 的场景）。 |
+| `clickPrefixIcon` | `(event: MouseEvent)` | 点击 prefixIcon 区域触发。 |
+| `clickSuffixIcon` | `(event: MouseEvent)` | 点击 suffixIcon 区域触发。 |
+| `confirm` | `(value: string \| number)` | 单行 input 按 Enter 触发。 |
 
-## Tokens
+## Slots
 
-| Logical slot | CSS variable |
+| Slot | Description |
 | --- | --- |
-| `background` | `var(--aui-color-input-bg)` |
-| `color` | `var(--aui-color-input-text)` |
-| `borderColor` | `var(--aui-color-input-border)` |
-| `placeholderColor` | `var(--aui-color-input-placeholder)` |
-| `disabledBackground` | `var(--aui-color-input-bg-disabled)` |
-| `disabledColor` | `var(--aui-color-input-text-disabled)` |
-| `focusRing` | `var(--aui-color-focus-ring)` |
-| `size.small.height` | `var(--aui-control-height-sm)` |
-| `size.medium.height` | `var(--aui-control-height-md)` |
-| `size.large.height` | `var(--aui-control-height-lg)` |
+| `prefix` | 输入框左侧内容（图标 / 文本）。覆盖 `prefixIcon`。 |
+| `suffix` | 输入框右侧内容。覆盖 `suffixIcon`。 |
+| `clear-icon` | 自定义 × 按钮内容。 |
+| `count` | 自定义计数器（接收 `{ current, max }`）。 |
 
 ## Accessibility
 
 | Attribute | Value |
 | --- | --- |
-| `role` | `textbox` |
-| `keyboard` | `Tab`, `ArrowLeft`, `ArrowRight`, `Backspace`, `Delete` |
-| `aria-disabled` | 绑定到 `props.disabled` |
-| `aria-readonly` | 绑定到 `props.readonly` |
-| `aria-placeholder` | 绑定到 `props.placeholder` |
+| `aria-invalid` | 绑定 `status == 'error'`。 |
+| `aria-required` | 绑定 `props.required`。 |
+| `aria-disabled` | 绑定 `props.disabled`。 |
+| Focus animation | border-color + outer ring 0.18s ease-out；error / warning 状态使用自有 15% rgba 外环。 |
+| Placeholder color | 与 input 文本**不同**（用 `--sn-web-input-placeholder-color` 解析为 `text-tertiary`）。 |
 
-## AI Patch Boundary
+## Tokens
 
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `value`, `placeholder`, `disabled`, `readonly`, `type`, `size`, `clearable`, `maxlength`, `minlength`, `name` |
-| `ai.readonly` | `role`, `keyboard`, `focus`, `blur` |
+视觉属性通过 `var(--sn-web-input-*)` 别名解析，可被父级 selector 覆盖。详见 ai-description.md。
 
 ## Source
 
-`packages/protocol/src/input-contract.ts` (Contract source) · `packages/vue-web/src/input.ts` (Vue renderer)
-
-## 与 Form 联动
-
-通常 Input 嵌入 `Form` / `FormItem` 容器，FormData 在原生 `<form>` submit 时自动收集带 `name` 的输入。
-
-```html
-<form>
-  <div class="form-item">
-    <label>Email</label>
-    <input name="email" type="email" />
-  </div>
-</form>
-```
+渲染器在 `@snui/vue-web`，uni 端镜像在 `@snui/uni`。

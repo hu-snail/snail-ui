@@ -1,75 +1,68 @@
-# Theme / Style / Density
+# Tokens Overview
 
-AUI splits tokens into three independent dimensions. Each axis can be changed at runtime without touching the others.
+The core of snail-aui's styling system is Tokens (design variables). Components never hardcode colors, spacing, or radii — every visual property references a Token.
 
-| Axis | Owns | Example switches |
-| --- | --- | --- |
-| **Theme** | Color (text / background / border / action / feedback) | Light, Dark |
-| **Style** | Radius, Shadow, Component shape | Modern, Glass, Minimal |
-| **Density** | Size, Spacing, Font size | Compact, Comfortable |
+## End-aware Token architecture (v3.1)
 
-The three dimensions **never** implicitly affect each other (AUI-PRD-v1.2.md §36: "三个维度不得隐式修改其他维度"). Changing the theme never alters spacing; changing density never alters color.
+Each end consumes its own Token alias:
 
-## The cascade
-
-```
-Default values
-   ↓
-Theme override     → primitive.color + semantic.color
-   ↓
-Style override     → primitive.radius/shadow + component tokens
-   ↓
-Density override   → primitive.spacing/size/font.size
-   ↓
-Variant            → component tokens (per-instance preset)
-   ↓
-Instance override  → flat Record<string, string> (top-most)
+```text
+Unified base: @snui/tokens
+   ↓  --aui-* CSS variables (end-agnostic raw layer)
+   ├──→  @snui/tokens-web    --sn-web-*    →  consumed by @snui/vue-web
+   └──→  @snui/tokens-mp     --sn-mp-*     →  consumed by @snui/uni
 ```
 
-## Tokens are CSS variables
+- Web components only use `var(--sn-web-*)`
+- uni components only use `var(--sn-mp-*)`
+- Zero source code reuse
+- The base `--aui-*` layer is end-agnostic
 
-The resolver outputs a flat `TokenBinding[]`:
+## Three-layer cascade
 
-```ts
-{ name: '--aui-color-blue-500', value: '#1677ff' }
-{ name: '--aui-color-text-primary', value: 'var(--aui-color-blue-500)' }
-{ name: '--aui-button-radius', value: 'var(--aui-radius-control)' }
+```text
+Primitive   →  Semantic   →  Component   →  --aui-* raw (end-agnostic)
+raw values      semantics       component-level
+   ↓
+   @snui/tokens-web emits --sn-web-* aliases  →  Web consumption
+   @snui/tokens-mp  emits --sn-mp-* aliases   →  uni consumption (with rpx)
 ```
 
-Components consume via `var(--aui-color-action-primary)` — they never see the raw primitive. This means a theme switch only changes the binding table, not the components.
+## Three independent axes
 
-## Pages in this section
+| Axis | What | Forbidden |
+|---|---|---|
+| **Theme** | Color | Radius, spacing, size |
+| **Style** | Radius + shadow + Component Token | Color, spacing, font size |
+| **Density** | Spacing + size + font size | Color, radius |
 
-- [Theme (Light / Dark)](/en/theme/theme)
-- [Style (Modern / Glass / Minimal)](/en/theme/style)
-- [Density (Compact / Comfortable)](/en/theme/density)
+## Default values
+
+| Token | Default |
+|---|---|
+| `--aui-color-action-primary` | `#1677ff` |
+| `--aui-color-text-primary` | `#18181b` |
+| `--aui-color-background-surface` | `#ffffff` |
+| `--aui-button-radius` | `6px` → Web `--sn-web-button-radius: 6px` / uni `--sn-mp-button-radius: 24rpx` |
+| `--aui-button-height-medium` | `36px` → Web `36px` / uni `72rpx` |
+| `--aui-card-shadow` | `0 1px 3px rgba(0,0,0,0.08)` |
+
+## Per-end tokens
+
+Different ends have different Component Token fields:
+
+| Field | Web (`--sn-web-*`) | uni (`--sn-mp-*`) |
+|---|---|---|
+| `button-radius` | ✅ 6px | ✅ 24rpx |
+| `table-row-height` | ✅ 32px | ❌ |
+| `list-item-height` | ❌ | ✅ 88rpx |
+| `dropdown-item-padding` | ✅ 8px 16px | ❌ |
+| `sidebar-item-height` | ❌ | ✅ 100rpx |
+
+## Where to next
+
+- [Theme · light / dark](/en/theme/theme)
+- [Style · the shape axis](/en/theme/style)
+- [Density · compact / comfortable](/en/theme/density)
 - [Token cascade](/en/theme/cascade)
-
-## Programmatic API
-
-```ts
-import { resolveEnvironment, renderStyleBlock } from '@snui/tokens';
-
-const env = {
-  theme: LIGHT_THEME,
-  style: MODERN_STYLE,
-  density: COMFORTABLE_DENSITY,
-  // Optional instance overrides
-  instanceOverrides: {
-    '--aui-color-action-primary': '#ff5500',
-  },
-};
-
-const bindings = resolveEnvironment(env);
-
-// Inject as a CSS string:
-const css = renderStyleBlock(bindings);
-document.head.insertAdjacentHTML('beforeend', `<style>${css}</style>`);
-
-// Or attach to a host element directly:
-for (const { name, value } of bindings) {
-  document.documentElement.style.setProperty(name, value);
-}
-```
-
-See the [`@snui/tokens` source](https://github.com/hu-snail/snail-ui) for the full default scale.
+- [Style Packs (cross-end)](/en/style-packs/overview)

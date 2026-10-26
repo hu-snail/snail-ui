@@ -1,99 +1,90 @@
-# Web 快速开始
+# 快速开始（Web）
 
-60 秒内把一个 Button 挂到 DOM 节点上。
+5 分钟把 `@snui/vue-web` 接入到 Vue 3 项目。
 
-## 1. 安装
+## 安装
 
 ```bash
-pnpm add @snui/vue-web @snui/runtime @snui/protocol @snui/tokens
-pnpm add vue@^3.5 zod
+pnpm add @snui/vue-web
 ```
 
-## 2. 挂载 Button
+## 完整引入
 
 ```ts
 // main.ts
-import { createVueRenderer, createComponentRegistry, Button } from '@snui/vue-web';
+import { createApp } from 'vue'
+import App from './App.vue'
+import SnUI from '@snui/vue-web'
+import '@snui/vue-web/styles'
 
-const registry = createComponentRegistry();
-registry.register('button', Button);
-
-const renderer = createVueRenderer({ registry });
-
-const schema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', size: 'medium', text: 'Submit' },
-  },
-};
-
-renderer.mount(schema, document.getElementById('app')!);
+createApp(App).use(SnUI).mount('#app')
 ```
 
-这就是最小可用的 AUI 应用。Button 是真实 DOM，渲染器是真实 Vue，schema 是事实源。
+然后在任意 .vue 中：
 
-## 3. 加上 State + Action
+```vue
+<template>
+  <SnButton type="primary" @click="onSubmit">提交</SnButton>
+</template>
+```
 
-想要带状态的行为，加上 Runtime：
+## 按需引入（推荐）
+
+通过 `unplugin-vue-components` 自动注册组件，无需手动 import：
+
+```bash
+pnpm add -D unplugin-vue-components
+```
 
 ```ts
-import { createRuntime, createActionRegistry } from '@snui/runtime';
-import { LIGHT_THEME, MODERN_STYLE, COMFORTABLE_DENSITY } from '@snui/tokens';
+// vite.config.ts
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import { SnUIResolver } from '@snui/vue-web/resolver'
 
-const actions = createActionRegistry();
-actions.register('submit-form', async (_ctx, params) => {
-  await fetch('/api/submit', { method: 'POST', body: JSON.stringify(params) });
-});
-
-const runtime = createRuntime({
-  schema,
-  registry,
-  actionRegistry: actions,
-  tokens: { theme: LIGHT_THEME, style: MODERN_STYLE, density: COMFORTABLE_DENSITY },
-  platform: { id: 'web', capabilities: { supports: { dom: true } } },
-});
-
-// 点击触发 action：
-const schemaWithEvent = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', text: 'Submit' },
-    events: {
-      submit: { kind: 'event', trigger: 'click' },
-    },
-  },
-};
+export default defineConfig({
+  plugins: [
+    vue(),
+    Components({
+      resolvers: [SnUIResolver()],
+    }),
+  ],
+})
 ```
 
-## 4. 把 State 绑定到 Props
+模板里直接用：
 
-State 绑定用点路径引用运行时 `state` 对象：
+```vue
+<template>
+  <SnButton type="primary" @click="onSubmit">提交</SnButton>
+</template>
+```
+
+不需要 `import { SnButton } from '@snui/vue-web'`，组件按 ESM tree-shake，未使用不打包。
+
+## 引入样式
 
 ```ts
-const schema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: {
-      disabled: { kind: 'expression', expr: 'state.form.isSubmitting' },
-      text: {
-        kind: 'expression',
-        expr: 'state.form.isSubmitting ? "Submitting..." : "Submit"',
-      },
-    },
-  },
-};
+import '@snui/vue-web/styles'
 ```
 
-表达式引擎（AGENTS.md §23）是沙箱化的——没有 `eval`，没有 `new Function`。
+或单独引入 token CSS：
+
+```ts
+import '@snui/tokens/styles'
+```
+
+## 暗色模式
+
+```html
+<html data-theme="dark">
+```
+
+CSS 变量自动切换。无需额外配置。
 
 ## 下一步
 
-- [Button 组件文档](/components/web/button)
-- [Theme / Style / Density](/theme/overview)
-- [架构](/guide/web/architecture)
+- 组件文档：[`Button`](/components/web/button)
+- 主题定制：[`theme`](/theme/overview)
+- 快速接入 uni-app：[`uni-app 快速开始`](/guide/uni/quick-start)

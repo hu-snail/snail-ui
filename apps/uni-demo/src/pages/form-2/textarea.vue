@@ -1,0 +1,98 @@
+<script setup lang="ts">
+// 由 scripts/gen-pages.mjs 生成，勿手改 —— textarea 组件全部场景聚合页（静态展开）。
+import Demo0 from './demos/textarea-mp-basic.vue';
+import Demo1 from './demos/textarea-mp-clear-trigger.vue';
+import Demo2 from './demos/textarea-mp-counter-clear.vue';
+import Demo3 from './demos/textarea-mp-custom-class.vue';
+import Demo4 from './demos/textarea-mp-mp-runtime.vue';
+import Demo5 from './demos/textarea-mp-prefix-icon.vue';
+import Demo6 from './demos/textarea-mp-states.vue';
+</script>
+
+<template>
+  <view class="page">
+    <view class="module">
+      <view class="module__head">
+        <text class="module__title">基础用法</text>
+      </view>
+      <view class="module__body">
+        <Demo0 />
+      </view>
+    </view>
+    <view class="module">
+      <view class="module__head">
+        <text class="module__title">clear-trigger</text>
+      </view>
+      <view class="module__body">
+        <Demo1 />
+      </view>
+    </view>
+    <view class="module">
+      <view class="module__head">
+        <text class="module__title">counter-clear</text>
+      </view>
+      <view class="module__body">
+        <Demo2 />
+      </view>
+    </view>
+    <view class="module">
+      <view class="module__head">
+        <text class="module__title">自定义类名</text>
+      </view>
+      <view class="module__body">
+        <Demo3 />
+      </view>
+    </view>
+    <view class="module">
+      <view class="module__head">
+        <text class="module__title">mp-runtime</text>
+      </view>
+      <view class="module__body">
+        <Demo4 />
+      </view>
+    </view>
+    <view class="module">
+      <view class="module__head">
+        <text class="module__title">prefix-icon</text>
+      </view>
+      <view class="module__body">
+        <Demo5 />
+      </view>
+    </view>
+    <view class="module">
+      <view class="module__head">
+        <text class="module__title">状态</text>
+      </view>
+      <view class="module__body">
+        <Demo6 />
+      </view>
+    </view>
+  </view>
+</template>
+
+<style scoped>
+.page {
+  padding: 24rpx;
+}
+
+.module {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  margin-bottom: 24rpx;
+  overflow: hidden;
+}
+
+.module__head {
+  padding: 24rpx 24rpx 0;
+}
+
+.module__title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1f1f1f;
+}
+
+.module__body {
+  padding: 24rpx;
+}
+</style>

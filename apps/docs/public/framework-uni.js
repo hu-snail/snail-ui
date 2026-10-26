@@ -18,7 +18,7 @@ var AUI_UNI = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // packages/uni/src/index.ts
+  // ../../packages/uni/src/index.ts
   var src_exports = {};
   __export(src_exports, {
     AUI_UNI_VERSION: () => AUI_UNI_VERSION,
@@ -27,7 +27,7 @@ var AUI_UNI = (() => {
     createVueRenderer: () => createVueRenderer2
   });
 
-  // packages/uni/src/registry.ts
+  // ../../packages/uni/src/registry.ts
   function createComponentRegistry(initial = /* @__PURE__ */ new Map()) {
     const components = new Map(initial);
     return {
@@ -55,7 +55,7 @@ var AUI_UNI = (() => {
     };
   }
 
-  // node_modules/.pnpm/@vue+shared@3.5.43/node_modules/@vue/shared/dist/shared.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+shared@3.5.43/node_modules/@vue/shared/dist/shared.esm-bundler.js
   // @__NO_SIDE_EFFECTS__
   function makeMap(str) {
     const map2 = /* @__PURE__ */ Object.create(null);
@@ -309,7 +309,7 @@ var AUI_UNI = (() => {
     return String(a) === String(b);
   }
 
-  // node_modules/.pnpm/@vue+reactivity@3.5.43/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+reactivity@3.5.43/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js
   function warn(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
   }
@@ -1975,7 +1975,7 @@ var AUI_UNI = (() => {
     return value;
   }
 
-  // node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+runtime-core@3.5.43/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js
   var stack = [];
   function pushWarningContext(vnode) {
     stack.push(vnode);
@@ -7641,7 +7641,7 @@ Component that was made reactive: `,
   var version = "3.5.43";
   var warn2 = true ? warn$1 : NOOP;
 
-  // node_modules/.pnpm/@vue+runtime-dom@3.5.43/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js
+  // ../../node_modules/.pnpm/@vue+runtime-dom@3.5.43/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js
   var policy = void 0;
   var tt = typeof window !== "undefined" && window.trustedTypes;
   if (tt) {
@@ -8193,7 +8193,7 @@ Expected function or array of functions, received type ${typeof value}.`
     return container;
   }
 
-  // node_modules/.pnpm/vue@3.5.43_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-bundler.js
+  // ../../node_modules/.pnpm/vue@3.5.43_typescript@5.9.3/node_modules/vue/dist/vue.runtime.esm-bundler.js
   function initDev() {
     {
       initCustomFormatter();
@@ -8203,7 +8203,7 @@ Expected function or array of functions, received type ${typeof value}.`
     initDev();
   }
 
-  // packages/uni/src/renderer.ts
+  // ../../packages/uni/src/renderer.ts
   function createVueRenderer(options) {
     const { registry } = options;
     const renderNode = (node) => {
@@ -8239,7 +8239,7 @@ Expected function or array of functions, received type ${typeof value}.`
     };
   }
 
-  // packages/uni/src/index.ts
+  // ../../packages/uni/src/index.ts
   var AUI_UNI_VERSION = "0.1.0";
   var createComponentRegistry2 = createComponentRegistry;
   var createVueRenderer2 = createVueRenderer;

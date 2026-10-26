@@ -1,6 +1,45 @@
 import DefaultTheme from 'vitepress/theme';
 import './custom.css';
+import '@snui/vue-web/styles';
+import StyleSwitcher from '../components/StyleSwitcher.vue';
+import ThemeCopier from '../components/ThemeCopier.vue';
+import Demo from '../components/Demo.vue';
+import DemoLabFab from '../components/DemoLabFab.vue';
+import DialogStage from '../components/DialogStage.vue';
+import MpHome from '../components/MpHome.vue';
+import Layout from './Layout.vue';
 
+/**
+ * Register all docs-site components as VitePress global components.
+ * Per AUI-PRD-v3.1 + ADR-0002 + Spec-05 §5 + AUI-DOCS-016/018:
+ *   - StyleSwitcher: global Style Pack switcher (按 end 过滤, AUI-DOCS-010)
+ *   - ThemeCopier:   paste-ready snCssVars() snippet (按 end, AUI-DOCS-011)
+ *   - Demo:          web demos render live via demo/<name>.vue; uni demos
+ *                    preview the deployed uni-demo site in an iframe (ADR-0005)
+ *   - DemoLabFab:    global FAB → Style + Theme + Preview (AUI-DOCS-018)
+ *   - DialogStage:   modal overlay shell for the dialog demos (docs-only;
+ *                    the library's overlay belongs to the future provider)
+ *
+ * Custom Layout.vue mounts DemoLabFab into the doc-after slot; the FAB itself
+ * only renders when route.path starts with `/components/`.
+ *
+ * Per-component web demo files import from the package main entry
+ * (`import { SnButton } from '@snui/vue-web'`), which resolves to the
+ * vite-built dist/index.js. This end-to-end exercises the published dist —
+ * if a demo renders, the dist is verified to be consumable.
+ *
+ * @snui/tokens + @snui/style-packs are statically imported by StyleSwitcher +
+ * ThemeCopier + DemoLabFab, so vite auto-discovers them for optimizeDeps.
+ */
 export default {
   extends: DefaultTheme,
-};
+  Layout,
+  enhanceApp({ app }: { app: { component: (name: string, c: unknown) => void } }) {
+    app.component('StyleSwitcher', StyleSwitcher)
+    app.component('ThemeCopier', ThemeCopier)
+    app.component('Demo', Demo)
+    app.component('DemoLabFab', DemoLabFab)
+    app.component('DialogStage', DialogStage)
+    app.component('MpHome', MpHome)
+  },
+}

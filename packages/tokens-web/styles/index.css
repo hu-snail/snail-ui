@@ -1,0 +1,181 @@
+/**
+ * @snui/tokens-web static stylesheet — Web end alias layer.
+ *
+ * Must be imported AFTER `@snui/tokens/styles` (so `--aui-*` is defined) and
+ * BEFORE any `@snui/vue-web` component CSS.
+ *
+ * Per Spec-01 v1.2 §2.3 + Spec-02 v1.1 §3.3:
+ * - Every alias here MUST also appear in `src/variables.ts` (consistency
+ *   enforced by `variablesMatchStyles()` test).
+ * - Direct `--aui-*` reference is forbidden inside `@snui/vue-web` component
+ *   CSS — use `--sn-web-*` aliases only.
+ */
+
+:root {
+  /* Semantic — color */
+  --sn-web-color-text-primary: var(--aui-color-text-primary);
+  --sn-web-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-web-color-text-tertiary: var(--aui-color-text-tertiary);
+  --sn-web-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-web-color-text-on-primary: var(--aui-color-text-on-primary);
+  --sn-web-color-background-surface: var(--aui-color-background-surface);
+  --sn-web-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-web-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-web-color-background-elevated: var(--aui-color-background-elevated);
+  --sn-web-color-border-default: var(--aui-color-border-default);
+  --sn-web-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-web-color-action-primary: var(--aui-color-action-primary);
+  --sn-web-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-web-color-action-primary-soft: var(--aui-color-action-primary-soft);
+  --sn-web-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-web-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-web-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-web-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+  --sn-web-color-feedback-info: var(--aui-color-feedback-info);
+
+  /* Focus ring */
+  --sn-web-focus-ring: var(--aui-focus-ring);
+
+  /* Component tokens — Button (px) */
+  --sn-web-button-height-tiny: var(--aui-button-height-tiny);
+  --sn-web-button-height-small: var(--aui-button-height-small);
+  --sn-web-button-height-medium: var(--aui-button-height-medium);
+  --sn-web-button-height-large: var(--aui-button-height-large);
+  --sn-web-button-padding-x: var(--aui-button-padding-x);
+  --sn-web-button-radius: var(--aui-button-radius);
+  --sn-web-button-font-size: var(--aui-button-font-size);
+  --sn-web-button-shadow: var(--aui-button-shadow);
+
+  /* Component tokens — Input (px) */
+  --sn-web-input-height-small: var(--aui-input-height-small);
+  --sn-web-input-height-medium: var(--aui-input-height-medium);
+  --sn-web-input-height-large: var(--aui-input-height-large);
+  --sn-web-input-padding-x: var(--aui-input-padding-x);
+  --sn-web-input-radius: var(--aui-input-radius);
+
+  /* Component tokens — Card (px) */
+  --sn-web-card-padding: var(--aui-card-padding);
+  --sn-web-card-radius: var(--aui-card-radius);
+  --sn-web-card-shadow: var(--aui-card-shadow);
+
+  /* Component tokens — Icon (px).
+     Drives SnIcon size scale + stroke width. Default sizeMedium matches
+     lucide-vue-next's 16px standard. Override per-app via :root. */
+  --sn-web-icon-size-tiny: var(--aui-icon-size-tiny);
+  --sn-web-icon-size-small: var(--aui-icon-size-small);
+  --sn-web-icon-size-medium: var(--aui-icon-size-medium);
+  --sn-web-icon-size-large: var(--aui-icon-size-large);
+  --sn-web-icon-size-xlarge: var(--aui-icon-size-xlarge);
+  --sn-web-icon-stroke-width: var(--aui-icon-stroke-width);
+
+  /* Component tokens — Spin (px / unitless). Drives SnLoading. */
+  --sn-web-spin-color: var(--aui-spin-color);
+  --sn-web-spin-text-color: var(--aui-spin-text-color);
+  --sn-web-spin-size-tiny: var(--aui-spin-size-tiny);
+  --sn-web-spin-size-small: var(--aui-spin-size-small);
+  --sn-web-spin-size-medium: var(--aui-spin-size-medium);
+  --sn-web-spin-size-large: var(--aui-spin-size-large);
+  --sn-web-spin-size-huge: var(--aui-spin-size-huge);
+  --sn-web-spin-font-size: var(--aui-spin-font-size);
+  --sn-web-spin-opacity-spinning: var(--aui-spin-opacity-spinning);
+  --sn-web-spin-description-gap: var(--aui-spin-description-gap);
+
+  /* Component tokens — Skeleton (px / unitless). Drives SnSkeleton. */
+  --sn-web-skeleton-color: var(--aui-skeleton-color);
+  --sn-web-skeleton-color-end: var(--aui-skeleton-color-end);
+  --sn-web-skeleton-radius: var(--aui-skeleton-radius);
+  --sn-web-skeleton-height-small: var(--aui-skeleton-height-small);
+  --sn-web-skeleton-height-medium: var(--aui-skeleton-height-medium);
+  --sn-web-skeleton-height-large: var(--aui-skeleton-height-large);
+
+  /* Component tokens — Dialog (px / color / unitless). Drives SnDialog. */
+  --sn-web-dialog-color: var(--aui-dialog-color);
+  --sn-web-dialog-text-color: var(--aui-dialog-text-color);
+  --sn-web-dialog-title-text-color: var(--aui-dialog-title-text-color);
+  --sn-web-dialog-box-shadow: var(--aui-dialog-box-shadow);
+  --sn-web-dialog-border: var(--aui-dialog-border);
+  --sn-web-dialog-radius: var(--aui-dialog-radius);
+  --sn-web-dialog-padding: var(--aui-dialog-padding);
+  --sn-web-dialog-title-font-size: var(--aui-dialog-title-font-size);
+  --sn-web-dialog-title-font-weight: var(--aui-dialog-title-font-weight);
+  --sn-web-dialog-font-size: var(--aui-dialog-font-size);
+  --sn-web-dialog-line-height: var(--aui-dialog-line-height);
+  --sn-web-dialog-icon-size: var(--aui-dialog-icon-size);
+  --sn-web-dialog-icon-margin: var(--aui-dialog-icon-margin);
+  --sn-web-dialog-icon-margin-icon-top: var(--aui-dialog-icon-margin-icon-top);
+  --sn-web-dialog-icon-color: var(--aui-dialog-icon-color);
+  --sn-web-dialog-icon-color-info: var(--aui-dialog-icon-color-info);
+  --sn-web-dialog-icon-color-success: var(--aui-dialog-icon-color-success);
+  --sn-web-dialog-icon-color-warning: var(--aui-dialog-icon-color-warning);
+  --sn-web-dialog-icon-color-error: var(--aui-dialog-icon-color-error);
+  --sn-web-dialog-content-margin: var(--aui-dialog-content-margin);
+  --sn-web-dialog-action-space: var(--aui-dialog-action-space);
+  --sn-web-dialog-close-size: var(--aui-dialog-close-size);
+  --sn-web-dialog-close-icon-size: var(--aui-dialog-close-icon-size);
+  --sn-web-dialog-close-margin: var(--aui-dialog-close-margin);
+  --sn-web-dialog-close-margin-icon-top: var(--aui-dialog-close-margin-icon-top);
+  --sn-web-dialog-close-color: var(--aui-dialog-close-color);
+  --sn-web-dialog-close-color-hover: var(--aui-dialog-close-color-hover);
+  --sn-web-dialog-close-icon-color: var(--aui-dialog-close-icon-color);
+  --sn-web-dialog-close-icon-color-hover: var(--aui-dialog-close-icon-color-hover);
+
+  /* Drawer — full upstream `n-drawer` var surface. */
+  --sn-web-drawer-color: var(--aui-drawer-color);
+  --sn-web-drawer-text-color: var(--aui-drawer-text-color);
+  --sn-web-drawer-title-text-color: var(--aui-drawer-title-text-color);
+  --sn-web-drawer-box-shadow: var(--aui-drawer-box-shadow);
+  --sn-web-drawer-line-height: var(--aui-drawer-line-height);
+  --sn-web-drawer-radius: var(--aui-drawer-radius);
+  --sn-web-drawer-header-padding: var(--aui-drawer-header-padding);
+  --sn-web-drawer-body-padding: var(--aui-drawer-body-padding);
+  --sn-web-drawer-footer-padding: var(--aui-drawer-footer-padding);
+  --sn-web-drawer-title-font-size: var(--aui-drawer-title-font-size);
+  --sn-web-drawer-title-font-weight: var(--aui-drawer-title-font-weight);
+  --sn-web-drawer-header-border-bottom: var(--aui-drawer-header-border-bottom);
+  --sn-web-drawer-footer-border-top: var(--aui-drawer-footer-border-top);
+  --sn-web-drawer-close-size: var(--aui-drawer-close-size);
+  --sn-web-drawer-close-icon-size: var(--aui-drawer-close-icon-size);
+  --sn-web-drawer-close-icon-color: var(--aui-drawer-close-icon-color);
+  --sn-web-drawer-close-icon-color-hover: var(--aui-drawer-close-icon-color-hover);
+  --sn-web-drawer-close-color: var(--aui-drawer-close-color);
+  --sn-web-drawer-close-color-hover: var(--aui-drawer-close-color-hover);
+  --sn-web-drawer-mask-color: var(--aui-drawer-mask-color);
+
+  /* Semantic scale — spacing / radius / shadow / typography (AUI-TPL-001) */
+  --sn-web-spacing-0: var(--aui-spacing-0);
+  --sn-web-spacing-1: var(--aui-spacing-1);
+  --sn-web-spacing-2: var(--aui-spacing-2);
+  --sn-web-spacing-3: var(--aui-spacing-3);
+  --sn-web-spacing-4: var(--aui-spacing-4);
+  --sn-web-spacing-5: var(--aui-spacing-5);
+  --sn-web-spacing-6: var(--aui-spacing-6);
+  --sn-web-spacing-8: var(--aui-spacing-8);
+  --sn-web-spacing-10: var(--aui-spacing-10);
+  --sn-web-spacing-12: var(--aui-spacing-12);
+  --sn-web-radius-xs: var(--aui-radius-xs);
+  --sn-web-radius-sm: var(--aui-radius-sm);
+  --sn-web-radius-md: var(--aui-radius-md);
+  --sn-web-radius-lg: var(--aui-radius-lg);
+  --sn-web-radius-xl: var(--aui-radius-xl);
+  --sn-web-radius-full: var(--aui-radius-full);
+  --sn-web-shadow-xs: var(--aui-shadow-xs);
+  --sn-web-shadow-sm: var(--aui-shadow-sm);
+  --sn-web-shadow-md: var(--aui-shadow-md);
+  --sn-web-shadow-lg: var(--aui-shadow-lg);
+  --sn-web-font-family-body: var(--aui-font-family-body);
+  --sn-web-font-family-heading: var(--aui-font-family-heading);
+  --sn-web-font-family-code: var(--aui-font-family-code);
+  --sn-web-font-size-xs: var(--aui-font-size-xs);
+  --sn-web-font-size-sm: var(--aui-font-size-sm);
+  --sn-web-font-size-md: var(--aui-font-size-md);
+  --sn-web-font-size-lg: var(--aui-font-size-lg);
+  --sn-web-font-size-xl: var(--aui-font-size-xl);
+  --sn-web-font-size-2xl: var(--aui-font-size-2xl);
+  --sn-web-font-weight-normal: var(--aui-font-weight-normal);
+  --sn-web-font-weight-medium: var(--aui-font-weight-medium);
+  --sn-web-font-weight-semibold: var(--aui-font-weight-semibold);
+  --sn-web-font-weight-bold: var(--aui-font-weight-bold);
+  --sn-web-font-line-height-tight: var(--aui-font-line-height-tight);
+  --sn-web-font-line-height-normal: var(--aui-font-line-height-normal);
+  --sn-web-font-line-height-loose: var(--aui-font-line-height-loose);
+}

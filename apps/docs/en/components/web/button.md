@@ -1,106 +1,132 @@
-# Button · Web
+# Button (Web)
 
-The first official AUI component. Used by `apps/docs` itself in every preview. Maps to a real `<button>` DOM element via `@snui/vue-web`.
+`SnButton` is the most common interactive component in `@snui/vue-web` (PC desktop). All visual properties are driven by the `--sn-web-*` Token alias layer.
 
-<script setup>
-import ComponentPreview from '../../../.vitepress/components/ComponentPreview.vue';
-</script>
+## Basic usage
 
-## Live render · real framework mount
+<Demo name="button-web-basic" description="6 semantic types: default / primary / info / success / warning / error." />
 
-The 12 buttons below are mounted via `createVueRenderer().mount()` from `@snui/vue-web`. Refresh the page to re-mount.
+## Sizes
 
-### Variants
+5 tiers `tiny` / `small` / `medium` / `large` / `huge`, mapped to `--sn-web-button-height-{size}`.
 
-<ComponentPreview name="button" variant="primary" text="Primary" />
+<Demo name="button-web-size" description="5 height tiers, covering everything from compact lists to hero CTAs." />
 
-<ComponentPreview name="button" variant="secondary" text="Secondary" />
+## Block & round
 
-<ComponentPreview name="button" variant="danger" text="Danger" />
+<Demo name="button-web-shape" description="block spans the parent width; round applies pill-shaped corners." />
 
-<ComponentPreview name="button" variant="ghost" text="Ghost" />
+## States
 
-### Sizes
+<Demo name="button-web-state" description="disabled fully disables; loading shows spinner and is unclickable; can manually toggle loading state." />
 
-<ComponentPreview name="button" variant="primary" size="small" text="Small" />
+While `loading`, the button is unclickable and shows a spinner. Override via the `loading` slot.
 
-<ComponentPreview name="button" variant="primary" size="medium" text="Medium" />
+## Interactive: loading → done
 
-<ComponentPreview name="button" variant="primary" size="large" text="Large" />
+`loading` swallows the click and renders the spinner inside the button; combined with `circle` + `icon` it produces the "login → round check" pattern, where the button narrows on completion. `type` carries the success / error colour semantics. The width morph lives on an outer container's `width` — no extra prop is needed.
 
-### States
+<Demo name="button-web-login" description="Simulated login: click → loading → round ✓ → resets after 2s, plus a three-state visual strip." />
 
-<ComponentPreview name="button" variant="primary" :disabled="true" text="Disabled" />
+A set of ready-to-reuse async-action scenarios (submit / download / star toggle / copy / add to cart / delete with confirmation):
 
-<ComponentPreview name="button" variant="primary" :loading="true" text="Loading" />
+<Demo name="button-web-interactive" description="Six button + async-action scenarios covering loading, icon switching and double confirmation." />
 
-### On dark surface
+## Variant: text / ghost / dashed
 
-<ComponentPreview name="button" variant="primary" text="On dark" :dark="true" />
+<Demo name="button-web-variant" description="text — text-only button; ghost — transparent bg + colored border; dashed — dashed border." />
 
-<ComponentPreview name="button" variant="ghost" text="Ghost dark" :dark="true" />
+## Circle / Strong / Secondary / Tertiary / Quaternary
 
-## Props
+<Demo name="button-web-emphasis" description="circle — round icon-only; strong — primary shadow; secondary / tertiary / quaternary — text variant emphasis gradient." />
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>variant</code></td><td><code>'primary' | 'secondary' | 'danger' | 'ghost'</code></td><td><code>'primary'</code></td><td>No</td><td>Visual style. Maps to <code>--aui-color-action-*</code>.</td></tr>
-    <tr><td><code>size</code></td><td><code>'small' | 'medium' | 'large'</code></td><td><code>'medium'</code></td><td>No</td><td>Height + padding + font-size (sub-axis per §36).</td></tr>
-    <tr><td><code>disabled</code></td><td><code>boolean</code></td><td><code>false'</code></td><td>No</td><td>Suppresses click + applies <code>aria-disabled</code>.</td></tr>
-    <tr><td><code>loading</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Shows spinner + applies <code>aria-busy</code>; suppresses click.</td></tr>
-    <tr><td><code>icon</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Icon name (registered via <code>AppIcon</code>; see project README).</td></tr>
-    <tr><td><code>text</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Visible label. Min length 1.</td></tr>
-    <tr><td><code>type</code></td><td><code>'button' | 'submit' | 'reset'</code></td><td><code>'button'</code></td><td>No</td><td>Native button type.</td></tr>
-  </tbody>
-</table>
+## Custom color
 
-## Events
+<Demo name="button-web-color" description="color prop sets custom CSS color → `--sn-button-color` token override." />
 
-<table class="props">
-  <thead>
-    <tr><th>Event id</th><th>DOM event</th><th>Notes</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>click</code></td><td><code>click</code></td><td>Suppressed while <code>disabled</code> or <code>loading</code>.</td></tr>
-  </tbody>
-</table>
+## Tag-based rendering (`<a>` / `<div>` / `<span>`)
 
-## Tokens
+<Demo name="button-web-tag" description="tag='a' renders as link; tag='div' as container; default tag='button'." />
 
-| Logical slot | CSS variable |
+## iconPlacement + showIcon
+
+<Demo name="button-web-icon-placement" description="iconPlacement 'right' puts icon on the right; showIcon false hides icon entirely (loading still renders spinner)." />
+
+## attrType + focusable
+
+<Demo name="button-web-attr-type" description="attrType for form submit / reset; focusable false removes tab focus." />
+
+## API
+
+### Props
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `'default' \| 'primary' \| 'info' \| 'success' \| 'warning' \| 'error' \| 'tertiary'` | `'default'` | Semantic type. |
+| `size` | `'tiny' \| 'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | Button size. |
+| `block` | `boolean` | `false` | Block (full width). |
+| `round` | `boolean` | `false` | Pill shape (`border-radius: 999px`). |
+| `circle` | `boolean` | `false` | Circle (square padding). |
+| `text` | `boolean` | `false` | Text button — transparent bg, no border. |
+| `ghost` | `boolean` | `false` | Transparent bg + colored border. |
+| `dashed` | `boolean` | `false` | Dashed border. |
+| `secondary` | `boolean` | `false` | Reverse hover (visual variant). |
+| `tertiary` | `boolean` | `false` | Soft-bg variant of `primary`. |
+| `quaternary` | `boolean` | `false` | Text variant of tertiary. |
+| `strong` | `boolean` | `false` | Heavier shadow (filled buttons). |
+| `color` | `string` | — | Custom CSS color; `--sn-button-color` token overrides type color. |
+| `tag` | `'button' \| 'a' \| 'div' \| 'span'` | `'button'` | Root element. `a` disables `disabled` (HTMLAnchorElement doesn't support it). |
+| `attrType` | `'button' \| 'submit' \| 'reset'` | `'button'` | Native `<button>` `type`. |
+| `htmlType` *(deprecated)* | `'button' \| 'submit' \| 'reset'` | — | Legacy alias of `attrType`. |
+| `disabled` | `boolean` | `false` | Disabled. |
+| `loading` | `boolean` | `false` | Loading (spinner + click suppression). |
+| `focusable` | `boolean` | `true` | Whether the button can be tab-focused. |
+| `icon` | `IconComponent` | — | Pass lucide component directly. |
+| `iconName` | `string` | — | Resolved via `registerSnIcons`. |
+| `iconPlacement` | `'left' \| 'right'` | `'left'` | Icon placement. |
+| `iconSize` | `number \| string` | `14` | Icon px / CSS length. |
+| `showIcon` | `boolean` | `true` | Whether to show the icon. `false` hides (loading still renders spinner). |
+| `bordered` *(deprecated)* | `boolean` | `true` | Legacy border flag, kept for back-compat only. |
+| `ariaLabel` | `string` | — | A11y label. |
+
+### Events
+
+| Name | Payload | Description |
+| --- | --- | --- |
+| `click` | `(event: MouseEvent)` | Click; not emitted when `disabled` or `loading` |
+
+### Slots
+
+| Name | Description |
 | --- | --- |
-| `primary.background` | `var(--aui-color-action-primary)` |
-| `primary.color` | `var(--aui-color-text-on-action)` |
-| `danger.background` | `var(--aui-color-action-danger)` |
-| `ghost.color` | `var(--aui-color-action-primary)` |
-| `ghost.borderColor` | `var(--aui-color-action-primary)` |
-| `size.small.height` | `var(--aui-control-height-sm)` |
-| `size.medium.height` | `var(--aui-control-height-md)` |
-| `size.large.height` | `var(--aui-control-height-lg)` |
+| `default` | Button content |
+| `icon` | Custom icon (overrides default icon rendering) |
+| `loading` | Custom loading icon (replaces spinner) |
+
+## Token customization (Web alias layer)
+
+Web component CSS uses only `--sn-web-*`. Override:
+
+```css
+:root {
+  --sn-web-color-action-primary: #1677ff;       /* primary background */
+  --sn-web-color-feedback-danger: #ef4444;      /* error background */
+  --sn-web-button-radius: 8px;                  /* radius */
+  --sn-web-button-height-medium: 36px;          /* medium height */
+}
+```
+
+> **Forbidden**: Web component CSS must not reference `--sn-mp-*` or `--aui-*` directly. To override: re-declare `--sn-web-*` aliases in `:root`.
 
 ## Accessibility
 
-| Attribute | Value |
-| --- | --- |
-| `role` | `button` |
-| `keyboard` | `Enter`, `Space` |
-| `aria-disabled` | bound to `props.disabled` |
-| `aria-busy` | bound to `props.loading` |
+- Native `<button>` (unless `tag='a'`), `role="button"`
+- `disabled` → `aria-disabled="true"`
+- `loading` → `aria-busy="true"`
+- Supports `aria-label` override
+- Keyboard Enter / Space trigger click natively
+- `focusable={false}` → `tabindex=-1`
 
-## AI Patch Boundary
+## Related
 
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `variant`, `size`, `disabled`, `loading`, `icon`, `text`, `type` |
-| `ai.readonly` | `role`, `keyboard`, `click` |
-
-## Source
-
-`packages/protocol/src/button-contract.ts` (Contract source) · `packages/vue-web/src/button.ts` (Vue renderer)
-
-## Uni-app equivalent
-
-The same Button contract ships for uni-app with the same props, different event catalog. See [Button · uni-app](/en/components/uni/button).
+- uni: [`sn-button`](/en/components/uni/button) — includes MP-only open-type / hover-class / cell concepts

@@ -1,0 +1,47 @@
+{
+  "name": "@snui/style-packs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "snail-aui Style Packs — preset token overrides for default / ios / dark (AUI-PACK-001~004). Per AUI-PRD-v3.0 §3 + ADR-0002, packs are pure data objects consumed via snCssVars().",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./default": {
+      "types": "./dist/default.d.ts",
+      "import": "./dist/default.js"
+    },
+    "./ios": {
+      "types": "./dist/ios.d.ts",
+      "import": "./dist/ios.js"
+    },
+    "./dark": {
+      "types": "./dist/dark.d.ts",
+      "import": "./dist/dark.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@snui/tokens": "workspace:"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8",
+    "eslint": "^9.17.0"
+  }
+}

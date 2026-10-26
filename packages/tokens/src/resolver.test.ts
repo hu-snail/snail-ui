@@ -25,11 +25,56 @@ describe('@snui/tokens — Resolver (Cascade)', () => {
     expect(semanticIdx).toBeGreaterThan(primitiveIdx);
   });
 
-  it('dark theme swaps the color text values to gray-100', () => {
-    const env = { theme: DARK_THEME, style: MODERN_STYLE, density: COMFORTABLE_DENSITY };
-    const bindings = resolveEnvironment(env);
-    const text = bindings.find((b) => b.name === '--aui-color-text-primary');
-    expect(text?.value).toBe('var(--aui-color-gray-100)');
+  it('emits kebab-case semantic names that match the consumer-facing CSS', () => {
+    const env = { theme: LIGHT_THEME, style: MODERN_STYLE, density: COMFORTABLE_DENSITY };
+    const names = resolveEnvironment(env).map((b) => b.name);
+    // Regression: semantic keys were emitted verbatim, so multi-word tokens came
+    // out as `--aui-color-action-primaryHover` — a name no consumer reads, which
+    // made every runtime theme override for those tokens a silent no-op.
+    expect(names).toContain('--aui-color-action-primary-hover');
+    expect(names).toContain('--aui-color-action-secondary-hover');
+    expect(names).toContain('--aui-color-feedback-danger-hover');
+    expect(names).toContain('--aui-color-text-on-primary');
+    expect(names.filter((name) => /[A-Z]/.test(name))).toEqual([]);
+  });
+
+  it('emits resolvable colour values in both themes', () => {
+    for (const theme of [LIGHT_THEME, DARK_THEME]) {
+      const bindings = resolveEnvironment({
+        theme,
+        style: MODERN_STYLE,
+        density: COMFORTABLE_DENSITY,
+      });
+      const names = new Set(bindings.map((b) => b.name));
+      const value = (name: string): string | undefined =>
+        bindings.find((b) => b.name === name)?.value;
+      for (const binding of bindings.filter((b) => b.name.startsWith('--aui-color-'))) {
+        // Regression: the light theme restated every semantic token as
+        // `var(--aui-color-text-primary)` — a cycle — and some entries pointed at
+        // names only the static stylesheet defines (`--aui-color-bg-surface`), so
+        // the runtime snippet rendered as invalid CSS.
+        for (const match of binding.value.matchAll(/var\((--[a-z0-9-]+)\)/g)) {
+          const ref = match[1] as string;
+          expect(binding.name === ref, `${binding.name} references itself`).toBe(false);
+          expect(names.has(ref), `${binding.name} references unemitted ${ref}`).toBe(true);
+        }
+      }
+      if (theme.name === 'dark') {
+        expect(value('--aui-color-text-primary')).toBe('#fafafa');
+        expect(value('--aui-color-text-secondary')).toBe('#a1a1aa');
+        expect(value('--aui-color-background-surface')).toBe('#09090b');
+        expect(value('--aui-color-border-default')).toBe('#27272a');
+        // The accent stays blue in both themes, so text on it stays light.
+        expect(value('--aui-color-text-on-primary')).toBe('#ffffff');
+      }
+      else {
+        expect(value('--aui-color-text-primary')).toBe('var(--aui-color-gray-950)');
+        expect(value('--aui-color-text-secondary')).toBe('var(--aui-color-gray-500)');
+        expect(value('--aui-color-background-surface')).toBe('#ffffff');
+        expect(value('--aui-color-border-default')).toBe('var(--aui-color-gray-200)');
+        expect(value('--aui-color-text-on-primary')).toBe('#ffffff');
+      }
+    }
   });
 
   it('density.compact overrides size.control.md to 28px', () => {

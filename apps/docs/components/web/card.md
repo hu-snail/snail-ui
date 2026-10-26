@@ -1,142 +1,105 @@
-# Card · Web
+# Card · Web（PC 端）
 
-`<section role="region">` 容器，支持 title / description 头部、token 驱动的阴影与边框、可选 body 与 footer 插槽。
+`<div role="region">` 容器，按顺序区域承载 cover → header → content → footer → action。视觉走 `--sn-web-card-*` Token 别名层（padding / radius / shadow）。
 
-<script setup>
-import ComponentPreview from '../../.vitepress/components/ComponentPreview.vue';
-</script>
 
-## Live render · 真实框架挂载
+## 基本用法
 
-### Default（默认 variant + bordered）
+<Demo name="card-web" description="默认 variant（带边框）+ elevated variant（无边框 + 阴影）。展示 title + header slot + footer slot + body 内容。" />
 
-<ComponentPreview name="card" :raw-props="{ title: 'Order #1024', description: 'Placed today · shipping in 2 days' }" :children='JSON.stringify([
-  { id: "amount", type: "card", props: { title: "Amount", bordered: false, padding: "sm" } }
-])' />
+## 实时预览
 
-### Outlined
+<Demo name="card-web-cover" description="cover 槽位（顶部 banner）+ action 槽位（底部按钮）" />
 
-<ComponentPreview name="card" :raw-props="{ variant: 'outlined', title: 'Outlined card', description: 'Stronger border, no shadow' }" />
+<Demo name="card-web-footer" description="footer 槽位（时间戳 + 操作）" />
 
-### Elevated
+<Demo name="card-web-closable" description="closable: true + @close 事件" />
 
-<ComponentPreview name="card" :raw-props="{ variant: 'elevated', title: 'Elevated card', description: 'Borderless + drop shadow' }" />
+<Demo name="card-web-hoverable" description="hoverable: true 鼠标悬停上浮（+ elevated 组合）" />
 
-### Padding variants
-
-<ComponentPreview name="card" :raw-props="{ title: 'No padding', padding: 'none', bordered: true }" :children='JSON.stringify([
-  { id: "i", type: "input", props: { value: "tight content", type: "text" } }
-])' />
-
-<ComponentPreview name="card" :raw-props="{ title: 'Large padding', padding: 'lg', bordered: true, shadow: true }" :children='JSON.stringify([
-  { id: "b", type: "button", props: { variant: "primary", text: "Click me" } }
-])' />
-
-### No header / No border
-
-<ComponentPreview name="card" :raw-props="{ bordered: false }" :children='JSON.stringify([
-  { id: "t", type: "button", props: { variant: "ghost", text: "Action" } }
-])' />
-
-### On dark surface
-
-<ComponentPreview name="card" dark :raw-props="{ title: 'On dark', description: 'High-contrast card', bordered: true, shadow: true }" :children='JSON.stringify([
-  { id: "b", type: "button", props: { variant: "primary", text: "Confirm" } }
-])' />
-
-### Order summary（组合 Form + Input + Button）
-
-<ComponentPreview
-  name="card"
-  :raw-props="{ title: 'Order #1024', description: 'Pending payment', bordered: true, shadow: true }"
-  :children='JSON.stringify([
-    { id: "f", type: "form-item", props: { prop: "voucher", label: "Voucher" }, children: [
-      { id: "i", type: "input", props: { value: "", placeholder: "V-AUI-1024", name: "voucher" } }
-    ]},
-    { id: "b", type: "button", props: { variant: "primary", text: "Apply", type: "submit" } }
-  ])'
-/>
-
-```ts
-// Card 容器 + 嵌套 FormItem + Input + Button 的一次完整组合
-import { createVueRenderer, createComponentRegistry, Card, Form, FormItem, Input, Button } from '@snui/vue-web';
-
-const registry = createComponentRegistry();
-registry.register('card', Card);
-registry.register('form', Form);
-registry.register('form-item', FormItem);
-registry.register('input', Input);
-registry.register('button', Button);
-
-createVueRenderer({ registry }).mount({
-  version: '1.0.0',
-  root: {
-    id: 'order',
-    type: 'card',
-    props: { title: 'Order #1024', description: 'Pending payment' },
-    children: [
-      { id: 'f', type: 'form', props: { formId: 'voucher' }, children: [
-        { id: 'fi', type: 'form-item', props: { prop: 'voucher', label: 'Voucher' }, children: [
-          { id: 'i', type: 'input', props: { name: 'voucher', placeholder: 'V-AUI-1024' } }
-        ]},
-        { id: 's', type: 'button', props: { variant: 'primary', text: 'Apply', type: 'submit' } }
-      ]}
-    ],
-  },
-}, document.getElementById('app')!);
-```
+<Demo name="card-web-sizes" description="size 4 档（small / medium / large / huge）— padding + 视觉块体量差异" />
 
 ## Props
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>title</code></td><td><code>string</code></td><td>—</td><td>No</td><td>头部标题文本。</td></tr>
-    <tr><td><code>description</code></td><td><code>string</code></td><td>—</td><td>No</td><td>头部副标题。</td></tr>
-    <tr><td><code>variant</code></td><td><code>'default' | 'outlined' | 'elevated'</code></td><td><code>'default'</code></td><td>No</td><td>视觉风格变体。</td></tr>
-    <tr><td><code>padding</code></td><td><code>'none' | 'sm' | 'md' | 'lg'</code></td><td><code>'md'</code></td><td>No</td><td>内部 padding 子轴。</td></tr>
-    <tr><td><code>bordered</code></td><td><code>boolean</code></td><td><code>true</code></td><td>No</td><td>显示边框。</td></tr>
-    <tr><td><code>shadow</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>显示阴影。</td></tr>
-  </tbody>
-</table>
+> 下表 `标准` 列表示契约内的标准 prop；`便利 alias` 列表示 snail-aui 提供的友好命名，行为映射到标准 prop。
 
-## Tokens
+| Prop | Type | Default | 类别 | Description |
+| --- | --- | --- | --- | --- |
+| `title` | `string \| (() => VNode)` | — | 标准 | 头部标题文本或渲染函数 |
+| `contentClass` | `string` | — | 标准 | 内容区 class 名 |
+| `contentStyle` | `string \| CSSProperties` | — | 标准 | 内容区 inline style |
+| `contentScrollable` | `boolean` | `false` | 标准 | 内容区超长时可滚动（max-height + overflow:auto） |
+| `headerClass` | `string` | — | 标准 | 头部 class 名 |
+| `headerStyle` | `string \| CSSProperties` | — | 标准 | 头部 inline style |
+| `headerExtraClass` | `string` | — | 标准 | 头部右侧区域 class 名 |
+| `headerExtraStyle` | `string \| CSSProperties` | — | 标准 | 头部右侧区域 inline style |
+| `footerClass` | `string` | — | 标准 | 底部 class 名 |
+| `footerStyle` | `string \| CSSProperties` | — | 标准 | 底部 inline style |
+| `embedded` | `boolean` | `false` | 标准 | 嵌套卡片模式（去边框 + 阴影） |
+| `segmented` | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false` | 标准 | 区域之间的分割线 |
+| `size` | `'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | 标准 | padding + font-size 子轴 |
+| `bordered` | `boolean` | `true` | 标准 | 是否显示外边框 |
+| `closable` | `boolean` | `false` | 标准 | 头部显示关闭按钮（需 `onClose` 才有作用） |
+| `hoverable` | `boolean` | `false` | 标准 | hover 时显示上浮视觉效果 |
+| `role` | `string` | `'region'` | 标准 | 无障碍 role 属性 |
+| `tag` | `keyof HTMLElementTagNameMap` | `'div'` | 标准 | 根节点元素类型 |
+| `cover` | `() => VNode` | — | 标准 | 顶部封面区渲染函数 |
+| `content` | `string \| (() => VNode)` | — | 标准 | 内容区文本或渲染函数（`default` slot 不传时生效） |
+| `footer` | `() => VNode` | — | 标准 | 底部区渲染函数 |
+| `action` | `() => VNode` | — | 标准 | 底部下方操作区渲染函数 |
+| `headerExtra` | `() => VNode` | — | 标准 | 头部右侧渲染函数 |
+| `closeFocusable` | `boolean` | `true` | 标准 | 关闭按钮是否可键盘聚焦 |
+| `variant` | `'default' \| 'outlined' \| 'elevated'` | `'default'` | 便利 alias | 映射到 `(bordered, shadow)` 组合（`'elevated'` = 无边框 + 阴影；`'default'`/`'outlined'` = 带边框 + 无阴影） |
+| `padding` | `'none' \| 'sm' \| 'md' \| 'lg'` | `'md'` | 便利 alias | 映射到 `size`（`'none'` = 不加 size class；`'sm'` = small；`'md'` = medium；`'lg'` = large） |
+| `shadow` | `boolean` | `false` | 便利 alias | 是否显示阴影（消费 `--sn-web-card-shadow`） |
+| `ariaLabel` | `string` | — | 便利 | 转发到根节点 `aria-label` |
 
-| Logical slot | CSS variable |
+## Events
+
+| Event | Payload | When |
+| --- | --- | --- |
+| `close` | `()` | 关闭按钮点击（仅当 `closable` 为 true） |
+
+## Slots
+
+| Slot | Description |
 | --- | --- |
-| `background` | `var(--aui-color-surface)` |
-| `borderColor` | `var(--aui-color-border-default)` |
-| `titleColor` | `var(--aui-color-text-primary)` |
-| `descriptionColor` | `var(--aui-color-text-secondary)` |
-| `footerBorderColor` | `var(--aui-color-border-soft)` |
-| `shadow` | `var(--aui-shadow-md)` |
-| `radius` | `var(--aui-radius-card)` |
-| `padding.none` | `0` |
-| `padding.sm` | `var(--aui-spacing-sm)` |
-| `padding.md` | `var(--aui-spacing-md)` |
-| `padding.lg` | `var(--aui-spacing-lg)` |
+| `default` | 内容区（与 `content` prop 互斥） |
+| `cover` | 顶部封面区（与 `cover` prop 互斥） |
+| `header` | 头部区（覆盖 `title` prop） |
+| `header-extra` | 头部右侧区（与 `headerExtra` prop 互斥） |
+| `footer` | 底部区（与 `footer` prop 互斥） |
+| `action` | 底部下方操作区（与 `action` prop 互斥） |
+
+## 区域省略规则
+
+- `header` 仅在 `title` / `header` slot / `headerExtra` / `closable` 任一存在时渲染
+- `content` 仅在 default slot / `content` prop 任一存在时渲染
+- `footer` 仅在 `footer` slot / `footer` prop 任一存在时渲染
+- `action` 仅在 `action` slot / `action` prop 任一存在时渲染
+- `cover` 仅在 `cover` slot / `cover` prop 任一存在时渲染
 
 ## Accessibility
 
 | Attribute | Value |
 | --- | --- |
-| `role` | `region` |
-| `aria-labelledby` | 指向 `<h3>` 标题元素 id（当 `title` 存在时） |
-| `aria-describedby` | 指向 description 元素 id（当 `description` 存在时） |
-
-## AI Patch Boundary
-
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `title`, `description`, `variant`, `padding`, `bordered`, `shadow` |
-| `ai.readonly` | `role` |
-
-## Source
-
-`packages/protocol/src/card-contract.ts` (Contract source) · `packages/vue-web/src/card.ts` (Vue renderer)
+| `role` | `'region'`（可由 `role` prop 覆盖） |
+| `aria-label` | 由 `ariaLabel` prop 转发 |
+| `role="heading"` | 头部区域 |
+| 关闭按钮 | `aria-label` 来自 `ariaLabel + ' close'` 或默认 `'Close'` |
 
 ## 嵌套与子节点
 
-Card 通过 UINode children 接收任意子树（包括按钮、输入、其他 Card）。当 `title` / `description` 都为空时 header 自动省略；当 `footer` slot 为空时 footer 自动省略。
+Card 通过 default slot 接收任意子树（按钮、输入、其他 Card 等）。`header` slot 可写自定义标题（含 `<h3>` / `<p>` 子节点）。`header-extra` slot 在头部右侧对齐展示（如时间、标签、链接）。
+
+## Tokens（end: web）
+
+| Token | CSS Variable | 用途 |
+| --- | --- | --- |
+| Card padding | `--sn-web-card-padding` | 默认内 padding（medium 档） |
+| Card radius | `--sn-web-card-radius` | 圆角 |
+| Card shadow | `--sn-web-card-shadow` | 阴影（仅当 `shadow=true` 或 `variant='elevated'`） |
+| Border default | `--sn-web-color-border-default` | 外边框 / 区域分割线 |
+| Text primary | `--sn-web-color-text-primary` | 标题 + 正文 |
+| Text secondary | `--sn-web-color-text-secondary` | header-extra + 关闭按钮 |
+| Background surface | `--sn-web-color-background-surface` | 卡片背景 |

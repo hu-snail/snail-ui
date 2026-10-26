@@ -29,7 +29,9 @@ describe('@snui/tokens — Primitive Tokens', () => {
   });
 
   it('size exposes control + icon scale groups', () => {
-    expect(DEFAULT_PRIMITIVE_TOKENS.size.control.md).toBe('32px');
+    expect(DEFAULT_PRIMITIVE_TOKENS.size.control.sm).toBe('32px');
+    expect(DEFAULT_PRIMITIVE_TOKENS.size.control.md).toBe('36px');
+    expect(DEFAULT_PRIMITIVE_TOKENS.size.control.lg).toBe('40px');
     expect(DEFAULT_PRIMITIVE_TOKENS.size.icon.md).toBe('16px');
   });
 });

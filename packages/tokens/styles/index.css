@@ -1,0 +1,474 @@
+/**
+ * @snui/tokens static stylesheet — default token cascade.
+ *
+ * Inject at app entry to get all component CSS variables. The full cascade
+ * (Theme / Style / Density + variant) is also available programmatically via
+ * `snCssVars({ theme, style, density })` from `@snui/tokens`.
+ *
+ * This static file emits the default theme only (Light / Modern / Comfortable).
+ * For dark theme, add either `.dark` class OR `data-theme="dark"` to `<html>`
+ * — the cascade below includes both, so v-press-style `.dark` and custom
+ * `data-theme` stylesheets both flip the same set of variables.
+ *
+ * Emission completeness — every DEFAULT_COMPONENT_TOKENS leaf must appear
+ * here as `--aui-*` plus a `--sn-*` mirror, and no `var(--aui-*)` reference
+ * inside this file may dangle — is enforced by `src/static-css.test.ts`.
+ * Keep this file in sync with src/component.ts when adding a family.
+ */
+
+:root {
+  /* Primitive — color (blue ramp) */
+  --aui-color-blue-50: #eff6ff;
+  --aui-color-blue-100: #dbeafe;
+  --aui-color-blue-200: #bfdbfe;
+  --aui-color-blue-300: #93c5fd;
+  --aui-color-blue-400: #60a5fa;
+  --aui-color-blue-500: #1677ff;
+  --aui-color-blue-600: #2563eb;
+  --aui-color-blue-700: #1d4ed8;
+  --aui-color-blue-800: #1e40af;
+  --aui-color-blue-900: #1e3a8a;
+  --aui-color-blue-950: #172554;
+
+  --aui-color-neutral-50: #fafafa;
+  --aui-color-neutral-100: #f4f4f5;
+  --aui-color-neutral-200: #e4e4e7;
+  --aui-color-neutral-300: #d4d4d8;
+  --aui-color-neutral-400: #a1a1aa;
+  --aui-color-neutral-500: #71717a;
+  --aui-color-neutral-600: #52525b;
+  --aui-color-neutral-700: #3f3f46;
+  --aui-color-neutral-800: #27272a;
+  --aui-color-neutral-900: #18181b;
+  --aui-color-neutral-950: #09090b;
+
+  --aui-color-success: #10b981;
+  --aui-color-warning: #f59e0b;
+  --aui-color-danger: #ef4444;
+
+  /* Primitive — spacing (8pt rhythm) */
+  --aui-spacing-0: 0;
+  --aui-spacing-1: 2px;
+  --aui-spacing-2: 4px;
+  --aui-spacing-3: 8px;
+  --aui-spacing-4: 12px;
+  --aui-spacing-5: 16px;
+  --aui-spacing-6: 20px;
+  --aui-spacing-8: 24px;
+  --aui-spacing-10: 32px;
+  --aui-spacing-12: 40px;
+  --aui-spacing-16: 56px;
+  --aui-spacing-20: 72px;
+  --aui-spacing-24: 96px;
+
+  /* Primitive — radius */
+  --aui-radius-none: 0;
+  --aui-radius-xs: 2px;
+  --aui-radius-sm: 4px;
+  --aui-radius-md: 6px;
+  --aui-radius-lg: 8px;
+  --aui-radius-xl: 12px;
+  --aui-radius-full: 9999px;
+
+  /* Primitive — shadow */
+  --aui-shadow-none: none;
+  --aui-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --aui-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --aui-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --aui-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --aui-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* Primitive — font size / weight / line-height */
+  --aui-font-size-xs: 11px;
+  --aui-font-size-sm: 12px;
+  --aui-font-size-md: 14px;
+  --aui-font-size-lg: 16px;
+  --aui-font-size-xl: 18px;
+  --aui-font-size-2xl: 20px;
+  --aui-font-size-3xl: 24px;
+
+  --aui-font-weight-normal: 400;
+  --aui-font-weight-medium: 500;
+  --aui-font-weight-semibold: 600;
+  --aui-font-weight-bold: 700;
+
+  --aui-font-line-height-tight: 1.2;
+  --aui-font-line-height-normal: 1.5;
+  --aui-font-line-height-loose: 1.8;
+  /* Primitive — font family (mirrors PRIMITIVE_TOKENS.font.family) */
+  --aui-font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --aui-font-family-serif: Georgia, "Times New Roman", serif;
+  --aui-font-family-mono: "SF Mono", Monaco, Menlo, Consolas, monospace;
+  /* Semantic — font family / size bindings. Override these (e.g. via
+     <SnConfigProvider :font="..."> or a global stylesheet) to re-skin
+     typography without touching components. */
+  --aui-font-family-body: var(--aui-font-family-sans);
+  --aui-font-family-heading: var(--aui-font-family-sans);
+  --aui-font-family-code: var(--aui-font-family-mono);
+  --aui-font-size-body: var(--aui-font-size-md);
+  --aui-font-size-caption: var(--aui-font-size-sm);
+  --aui-font-size-heading: var(--aui-font-size-xl);
+
+  /* Semantic — color */
+  --aui-color-text-primary: var(--aui-color-neutral-950);
+  --aui-color-text-secondary: var(--aui-color-neutral-500);
+  --aui-color-text-tertiary: var(--aui-color-neutral-400);
+  --aui-color-text-disabled: var(--aui-color-neutral-300);
+  --aui-color-text-on-primary: #fff;
+
+  --aui-color-background-surface: #ffffff;
+  --aui-color-background-subtle: var(--aui-color-neutral-100);
+  --aui-color-background-sunken: var(--aui-color-neutral-50);
+
+  --aui-color-border-default: var(--aui-color-neutral-200);
+  --aui-color-border-subtle: var(--aui-color-neutral-100);
+
+  --aui-color-action-primary: var(--aui-color-blue-500);
+  --aui-color-action-primary-hover: var(--aui-color-blue-400);
+  --aui-color-action-primary-soft: var(--aui-color-blue-50);
+
+  --aui-color-feedback-success: var(--aui-color-success);
+  --aui-color-feedback-warning: var(--aui-color-warning);
+  --aui-color-feedback-danger: var(--aui-color-danger);
+  --aui-color-feedback-info: var(--aui-color-neutral-500);
+  /*
+   * Tinted feedback / action surfaces ("soft" variants, tag light style,
+   * alert backgrounds). Literal light tints rather than primitive ramp refs:
+   * the ramps only carry blue / neutral, and a 12% alpha of the base hue keeps
+   * the tint on-brand without inventing a second palette. Dark mode overrides
+   * these four with higher-alpha tints so they stay visible on a dark surface.
+   */
+  --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.12);
+  --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.12);
+  --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.12);
+  /*
+   * Extra hue families used by the mobile tag's `type` set. The semantic
+   * palette only carries blue / neutral / green / amber / red, while a tag
+   * needs a few more distinguishable accents. Flat single values (same shape
+   * as `--aui-color-success` above) rather than full ramps: nothing consumes
+   * intermediate steps yet.
+   *
+   * They intentionally keep their identity in dark mode — a solid tag
+   * background carries white text in both themes, so brightening the hue
+   * would only cost contrast.
+   */
+  --aui-color-volcano: #fa8c16;
+  --aui-color-lightblue: #38bdf8;
+  --aui-color-cyan: #0891b2;
+  --aui-color-pink: #db2777;
+  --aui-color-purple: #7c3aed;
+  /* Light-variant tints of the hues above — same 12% / 22% pattern as the
+     feedback tints declared earlier in this block. */
+  --aui-color-volcano-soft: rgba(250, 140, 22, 0.12);
+  --aui-color-lightblue-soft: rgba(56, 189, 248, 0.12);
+  --aui-color-cyan-soft: rgba(8, 145, 178, 0.12);
+  --aui-color-pink-soft: rgba(219, 39, 119, 0.12);
+  --aui-color-purple-soft: rgba(124, 58, 237, 0.12);
+  --aui-color-background-elevated: #ffffff;
+  --aui-color-background-overlay: rgba(0, 0, 0, 0.8);
+  --aui-color-feedback-danger-hover: #f87171;
+
+  /* Semantic — radius / shadow (bound to the primitives above) */
+  --aui-radius-control: var(--aui-radius-md);
+  --aui-radius-card: var(--aui-radius-lg);
+  --aui-radius-pill: var(--aui-radius-full);
+  --aui-shadow-control: var(--aui-shadow-xs);
+  --aui-shadow-card: var(--aui-shadow-sm);
+  --aui-shadow-overlay: var(--aui-shadow-xl);
+
+  /* Focus ring — consumed via the --sn-web-focus-ring alias */
+  --aui-focus-ring: rgba(22, 119, 255, 0.25);
+
+  /* Sn-* alias layer (brand) */
+  --sn-color-text-primary: var(--aui-color-text-primary);
+  --sn-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-color-text-tertiary: var(--aui-color-text-tertiary);
+  --sn-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-color-text-on-primary: var(--aui-color-text-on-primary);
+  --sn-color-background-surface: var(--aui-color-background-surface);
+  --sn-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-color-background-elevated: var(--aui-color-background-elevated);
+  --sn-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-color-border-default: var(--aui-color-border-default);
+  --sn-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-color-action-primary: var(--aui-color-action-primary);
+  --sn-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-color-feedback-success: var(--aui-color-feedback-success);
+  --sn-color-feedback-warning: var(--aui-color-feedback-warning);
+  --sn-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+  --sn-color-feedback-info: var(--aui-color-feedback-info);
+  --sn-color-volcano: var(--aui-color-volcano);
+  --sn-color-lightblue: var(--aui-color-lightblue);
+  --sn-color-cyan: var(--aui-color-cyan);
+  --sn-color-pink: var(--aui-color-pink);
+  --sn-color-purple: var(--aui-color-purple);
+  --sn-color-volcano-soft: var(--aui-color-volcano-soft);
+  --sn-color-lightblue-soft: var(--aui-color-lightblue-soft);
+  --sn-color-cyan-soft: var(--aui-color-cyan-soft);
+  --sn-color-pink-soft: var(--aui-color-pink-soft);
+  --sn-color-purple-soft: var(--aui-color-purple-soft);
+  --sn-focus-ring: var(--aui-focus-ring);
+
+  /* Component tokens — button */
+  --aui-button-height-tiny: 24px;
+  --aui-button-height-small: 32px;
+  --aui-button-height-medium: 36px;
+  --aui-button-height-large: 40px;
+  --aui-button-padding-x: 16px;
+  --aui-button-radius: 6px;
+  --aui-button-font-size: 14px;
+  --aui-button-shadow: none;
+  --aui-button-focus-ring: rgba(22, 119, 255, 0.25);
+
+  /* Sn-* component aliases — button */
+  --sn-button-height-tiny: var(--aui-button-height-tiny);
+  --sn-button-height-small: var(--aui-button-height-small);
+  --sn-button-height-medium: var(--aui-button-height-medium);
+  --sn-button-height-large: var(--aui-button-height-large);
+  --sn-button-padding-x: var(--aui-button-padding-x);
+  --sn-button-radius: var(--aui-button-radius);
+  --sn-button-font-size: var(--aui-button-font-size);
+  --sn-button-shadow: var(--aui-button-shadow);
+  --sn-button-focus-ring: var(--aui-button-focus-ring);
+
+  /* Component tokens — input */
+  --aui-input-height-small: 32px;
+  --aui-input-height-medium: 36px;
+  --aui-input-height-large: 40px;
+  --aui-input-padding-x: 12px;
+  --aui-input-radius: 6px;
+
+  /* Sn-* component aliases — input */
+  --sn-input-height-small: var(--aui-input-height-small);
+  --sn-input-height-medium: var(--aui-input-height-medium);
+  --sn-input-height-large: var(--aui-input-height-large);
+  --sn-input-padding-x: var(--aui-input-padding-x);
+  --sn-input-radius: var(--aui-input-radius);
+
+  /* Component tokens — card */
+  --aui-card-padding: 24px;
+  --aui-card-radius: 8px;
+  --aui-card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+
+  /* Sn-* component aliases — card */
+  --sn-card-padding: var(--aui-card-padding);
+  --sn-card-radius: var(--aui-card-radius);
+  --sn-card-shadow: var(--aui-card-shadow);
+
+  /* Component tokens — icon */
+  --aui-icon-size-tiny: 12px;
+  --aui-icon-size-small: 14px;
+  --aui-icon-size-medium: 16px;
+  --aui-icon-size-large: 20px;
+  --aui-icon-size-xlarge: 24px;
+  --aui-icon-stroke-width: 2;
+
+  /* Sn-* component aliases — icon */
+  --sn-icon-size-tiny: var(--aui-icon-size-tiny);
+  --sn-icon-size-small: var(--aui-icon-size-small);
+  --sn-icon-size-medium: var(--aui-icon-size-medium);
+  --sn-icon-size-large: var(--aui-icon-size-large);
+  --sn-icon-size-xlarge: var(--aui-icon-size-xlarge);
+  --sn-icon-stroke-width: var(--aui-icon-stroke-width);
+
+  /* Component tokens — spin */
+  --aui-spin-color: var(--aui-color-action-primary);
+  --aui-spin-text-color: var(--aui-color-text-secondary);
+  --aui-spin-size-tiny: 14px;
+  --aui-spin-size-small: 18px;
+  --aui-spin-size-medium: 24px;
+  --aui-spin-size-large: 32px;
+  --aui-spin-size-huge: 40px;
+  --aui-spin-font-size: var(--aui-font-size-md);
+  --aui-spin-opacity-spinning: 0.55;
+  --aui-spin-description-gap: var(--aui-spacing-3);
+
+  /* Sn-* component aliases — spin */
+  --sn-spin-color: var(--aui-spin-color);
+  --sn-spin-text-color: var(--aui-spin-text-color);
+  --sn-spin-size-tiny: var(--aui-spin-size-tiny);
+  --sn-spin-size-small: var(--aui-spin-size-small);
+  --sn-spin-size-medium: var(--aui-spin-size-medium);
+  --sn-spin-size-large: var(--aui-spin-size-large);
+  --sn-spin-size-huge: var(--aui-spin-size-huge);
+  --sn-spin-font-size: var(--aui-spin-font-size);
+  --sn-spin-opacity-spinning: var(--aui-spin-opacity-spinning);
+  --sn-spin-description-gap: var(--aui-spin-description-gap);
+
+  /* Component tokens — skeleton */
+  --aui-skeleton-color: var(--aui-color-background-subtle);
+  --aui-skeleton-color-end: var(--aui-color-border-subtle);
+  --aui-skeleton-radius: var(--aui-radius-control);
+  --aui-skeleton-height-small: 20px;
+  --aui-skeleton-height-medium: 24px;
+  --aui-skeleton-height-large: 32px;
+
+  /* Sn-* component aliases — skeleton */
+  --sn-skeleton-color: var(--aui-skeleton-color);
+  --sn-skeleton-color-end: var(--aui-skeleton-color-end);
+  --sn-skeleton-radius: var(--aui-skeleton-radius);
+  --sn-skeleton-height-small: var(--aui-skeleton-height-small);
+  --sn-skeleton-height-medium: var(--aui-skeleton-height-medium);
+  --sn-skeleton-height-large: var(--aui-skeleton-height-large);
+
+  /* Component tokens — dialog */
+  --aui-dialog-color: var(--aui-color-background-elevated);
+  --aui-dialog-text-color: var(--aui-color-text-secondary);
+  --aui-dialog-title-text-color: var(--aui-color-text-primary);
+  /* Upstream n-dialog panel shadow: three soft layers, max 28px blur. */
+  --aui-dialog-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  --aui-dialog-border: 1px solid var(--aui-color-border-default);
+  --aui-dialog-radius: var(--aui-radius-card);
+  --aui-dialog-padding: var(--aui-spacing-5);
+  --aui-dialog-title-font-size: var(--aui-font-size-xl);
+  --aui-dialog-title-font-weight: var(--aui-font-weight-semibold);
+  --aui-dialog-font-size: var(--aui-font-size-md);
+  --aui-dialog-line-height: var(--aui-font-line-height-normal);
+  --aui-dialog-icon-size: 28px;
+  --aui-dialog-icon-margin: 0 4px 0 0;
+  --aui-dialog-icon-margin-icon-top: 4px 0 8px 0;
+  --aui-dialog-icon-color: var(--aui-color-action-primary);
+  --aui-dialog-icon-color-info: var(--aui-color-feedback-info);
+  --aui-dialog-icon-color-success: var(--aui-color-feedback-success);
+  --aui-dialog-icon-color-warning: var(--aui-color-feedback-warning);
+  --aui-dialog-icon-color-error: var(--aui-color-feedback-danger);
+  --aui-dialog-content-margin: 8px 0 16px 0;
+  --aui-dialog-action-space: 12px;
+  --aui-dialog-close-size: 22px;
+  --aui-dialog-close-icon-size: 18px;
+  --aui-dialog-close-margin: 20px 26px 0 0;
+  --aui-dialog-close-margin-icon-top: 10px 16px 0 0;
+  --aui-dialog-close-color: transparent;
+  --aui-dialog-close-color-hover: var(--aui-color-background-subtle);
+  --aui-dialog-close-icon-color: var(--aui-color-text-secondary);
+  --aui-dialog-close-icon-color-hover: var(--aui-color-text-primary);
+
+  /* Sn-* component aliases — dialog */
+  --sn-dialog-color: var(--aui-dialog-color);
+  --sn-dialog-text-color: var(--aui-dialog-text-color);
+  --sn-dialog-title-text-color: var(--aui-dialog-title-text-color);
+  --sn-dialog-box-shadow: var(--aui-dialog-box-shadow);
+  --sn-dialog-border: var(--aui-dialog-border);
+  --sn-dialog-radius: var(--aui-dialog-radius);
+  --sn-dialog-padding: var(--aui-dialog-padding);
+  --sn-dialog-title-font-size: var(--aui-dialog-title-font-size);
+  --sn-dialog-title-font-weight: var(--aui-dialog-title-font-weight);
+  --sn-dialog-font-size: var(--aui-dialog-font-size);
+  --sn-dialog-line-height: var(--aui-dialog-line-height);
+  --sn-dialog-icon-size: var(--aui-dialog-icon-size);
+  --sn-dialog-icon-margin: var(--aui-dialog-icon-margin);
+  --sn-dialog-icon-margin-icon-top: var(--aui-dialog-icon-margin-icon-top);
+  --sn-dialog-icon-color: var(--aui-dialog-icon-color);
+  --sn-dialog-icon-color-info: var(--aui-dialog-icon-color-info);
+  --sn-dialog-icon-color-success: var(--aui-dialog-icon-color-success);
+  --sn-dialog-icon-color-warning: var(--aui-dialog-icon-color-warning);
+  --sn-dialog-icon-color-error: var(--aui-dialog-icon-color-error);
+  --sn-dialog-content-margin: var(--aui-dialog-content-margin);
+  --sn-dialog-action-space: var(--aui-dialog-action-space);
+  --sn-dialog-close-size: var(--aui-dialog-close-size);
+  --sn-dialog-close-icon-size: var(--aui-dialog-close-icon-size);
+  --sn-dialog-close-margin: var(--aui-dialog-close-margin);
+  --sn-dialog-close-margin-icon-top: var(--aui-dialog-close-margin-icon-top);
+  --sn-dialog-close-color: var(--aui-dialog-close-color);
+  --sn-dialog-close-color-hover: var(--aui-dialog-close-color-hover);
+  --sn-dialog-close-icon-color: var(--aui-dialog-close-icon-color);
+  --sn-dialog-close-icon-color-hover: var(--aui-dialog-close-icon-color-hover);
+
+  /* Component tokens — drawer */
+  --aui-drawer-color: var(--aui-color-background-elevated);
+  --aui-drawer-text-color: var(--aui-color-text-secondary);
+  --aui-drawer-title-text-color: var(--aui-color-text-primary);
+  --aui-drawer-box-shadow: var(--aui-shadow-overlay);
+  --aui-drawer-line-height: var(--aui-font-line-height-normal);
+  --aui-drawer-radius: var(--aui-radius-card);
+  --aui-drawer-header-padding: 16px 24px;
+  --aui-drawer-body-padding: 16px 24px;
+  --aui-drawer-footer-padding: 16px 24px;
+  --aui-drawer-title-font-size: var(--aui-font-size-xl);
+  --aui-drawer-title-font-weight: var(--aui-font-weight-semibold);
+  --aui-drawer-header-border-bottom: 1px solid var(--aui-color-border-subtle);
+  --aui-drawer-footer-border-top: 1px solid var(--aui-color-border-subtle);
+  --aui-drawer-close-size: 22px;
+  --aui-drawer-close-icon-size: 18px;
+  --aui-drawer-close-icon-color: var(--aui-color-text-secondary);
+  --aui-drawer-close-icon-color-hover: var(--aui-color-text-primary);
+  --aui-drawer-close-color: transparent;
+  --aui-drawer-close-color-hover: var(--aui-color-background-subtle);
+  --aui-drawer-mask-color: var(--aui-color-background-overlay);
+
+  /* Sn-* component aliases — drawer */
+  --sn-drawer-color: var(--aui-drawer-color);
+  --sn-drawer-text-color: var(--aui-drawer-text-color);
+  --sn-drawer-title-text-color: var(--aui-drawer-title-text-color);
+  --sn-drawer-box-shadow: var(--aui-drawer-box-shadow);
+  --sn-drawer-line-height: var(--aui-drawer-line-height);
+  --sn-drawer-radius: var(--aui-drawer-radius);
+  --sn-drawer-header-padding: var(--aui-drawer-header-padding);
+  --sn-drawer-body-padding: var(--aui-drawer-body-padding);
+  --sn-drawer-footer-padding: var(--aui-drawer-footer-padding);
+  --sn-drawer-title-font-size: var(--aui-drawer-title-font-size);
+  --sn-drawer-title-font-weight: var(--aui-drawer-title-font-weight);
+  --sn-drawer-header-border-bottom: var(--aui-drawer-header-border-bottom);
+  --sn-drawer-footer-border-top: var(--aui-drawer-footer-border-top);
+  --sn-drawer-close-size: var(--aui-drawer-close-size);
+  --sn-drawer-close-icon-size: var(--aui-drawer-close-icon-size);
+  --sn-drawer-close-icon-color: var(--aui-drawer-close-icon-color);
+  --sn-drawer-close-icon-color-hover: var(--aui-drawer-close-icon-color-hover);
+  --sn-drawer-close-color: var(--aui-drawer-close-color);
+  --sn-drawer-close-color-hover: var(--aui-drawer-close-color-hover);
+  --sn-drawer-mask-color: var(--aui-drawer-mask-color);
+
+}
+
+[data-theme="dark"],
+.dark {
+  --aui-color-text-primary: #fafafa;
+  --aui-color-text-secondary: #a1a1aa;
+  --aui-color-text-tertiary: #71717a;
+  --aui-color-text-disabled: #52525b;
+  --aui-color-background-surface: #09090b;
+  --aui-color-background-subtle: #27272a;
+  --aui-color-background-elevated: #18181b;
+  --aui-color-background-overlay: rgba(0, 0, 0, 0.8);
+  --aui-color-border-default: #27272a;
+  --aui-color-border-subtle: #27272a;
+  --aui-color-action-primary-hover: #3b82f6;
+  --aui-color-feedback-danger: #7f1d1d;
+  --aui-color-feedback-danger-hover: #991b1b;
+  /*
+   * Dark-mode counterparts of the tinted surfaces declared in `:root`.
+   *
+   * Alpha has to grow on a dark background: a 12% tint over `#09090b` is
+   * invisible, while 22% reads as a subtle wash without glowing. The neutral
+   * sunken slot also has to move *below* the surface (a lighter gray would read
+   * as elevation, which is the opposite of "sunken").
+   */
+  --aui-color-background-sunken: #18181b;
+  --aui-color-action-primary-soft: rgba(22, 119, 255, 0.22);
+  --aui-color-feedback-success-soft: rgba(16, 185, 129, 0.22);
+  --aui-color-feedback-warning-soft: rgba(245, 158, 11, 0.22);
+  --aui-color-feedback-danger-soft: rgba(239, 68, 68, 0.22);
+  /* Dark counterparts of the extra tag hues: the hue keeps its identity, only
+     the tint alpha grows so a light-variant tag stays visible on a dark page. */
+  --aui-color-volcano-soft: rgba(250, 140, 22, 0.22);
+  --aui-color-lightblue-soft: rgba(56, 189, 248, 0.22);
+  --aui-color-cyan-soft: rgba(8, 145, 178, 0.22);
+  --aui-color-pink-soft: rgba(219, 39, 119, 0.22);
+  --aui-color-purple-soft: rgba(124, 58, 237, 0.22);
+
+  /* Sn-* alias for dark */
+  --sn-color-text-primary: var(--aui-color-text-primary);
+  --sn-color-text-secondary: var(--aui-color-text-secondary);
+  --sn-color-text-tertiary: var(--aui-color-text-tertiary);
+  --sn-color-text-disabled: var(--aui-color-text-disabled);
+  --sn-color-background-surface: var(--aui-color-background-surface);
+  --sn-color-background-subtle: var(--aui-color-background-subtle);
+  --sn-color-background-elevated: var(--aui-color-background-elevated);
+  --sn-color-border-default: var(--aui-color-border-default);
+  --sn-color-border-subtle: var(--aui-color-border-subtle);
+  --sn-color-action-primary-hover: var(--aui-color-action-primary-hover);
+  --sn-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-color-feedback-danger: var(--aui-color-feedback-danger);
+  --sn-color-feedback-danger-hover: var(--aui-color-feedback-danger-hover);
+}

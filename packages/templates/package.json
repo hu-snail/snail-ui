@@ -1,0 +1,92 @@
+{
+  "name": "@snui/templates",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI Templates — installable page/section templates composed from @snui/vue-web (web) and @snui/uni (uni-app). Each template is an independent subpath export so consumers load only the one they mount.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./web": {
+      "types": "./dist/web/index.d.ts",
+      "import": "./dist/web/index.js"
+    },
+    "./web/assistant": {
+      "types": "./dist/web/assistant.d.ts",
+      "import": "./dist/web/assistant.js"
+    },
+    "./web/chat": {
+      "types": "./dist/web/chat.d.ts",
+      "import": "./dist/web/chat.js"
+    },
+    "./web/prompt": {
+      "types": "./dist/web/prompt.d.ts",
+      "import": "./dist/web/prompt.js"
+    },
+    "./web/message-list": {
+      "types": "./dist/web/message-list.d.ts",
+      "import": "./dist/web/message-list.js"
+    },
+    "./web/model-config": {
+      "types": "./dist/web/model-config.d.ts",
+      "import": "./dist/web/model-config.js"
+    },
+    "./web/turn-queue": {
+      "types": "./dist/web/turn-queue.d.ts",
+      "import": "./dist/web/turn-queue.js"
+    },
+    "./uni": {
+      "types": "./dist/uni/index.d.ts",
+      "import": "./dist/uni/index.js"
+    },
+    "./uni/chat": {
+      "types": "./dist/uni/chat.d.ts",
+      "import": "./dist/uni/chat.js"
+    },
+    "./uni/message-list": {
+      "types": "./dist/uni/message-list.d.ts",
+      "import": "./dist/uni/message-list.js"
+    },
+    "./styles": "./dist/styles/tokens.css",
+    "./styles/*": "./dist/styles/*",
+    "./src/*.ts": "./src/*.ts",
+    "./src/*.vue": "./src/*.vue"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build && vue-tsc -p tsconfig.json --emitDeclarationOnly",
+    "dev": "vite build --watch",
+    "lint": "eslint src --ext .ts,.vue",
+    "typecheck": "vue-tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo coverage"
+  },
+  "dependencies": {
+    "@snui/tokens": "workspace:",
+    "@snui/tokens-mp": "workspace:",
+    "@snui/tokens-web": "workspace:",
+    "@snui/uni": "workspace:",
+    "@snui/vue-web": "workspace:",
+    "vue": "^3.5.43"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^9.17.0",
+    "happy-dom": "^15.11.7",
+    "typescript": "^5.7.3",
+    "vite": "^6.4.3",
+    "vitest": "^2.1.8",
+    "vue-tsc": "^2.2.0"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ]
+}

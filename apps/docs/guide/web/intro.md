@@ -1,62 +1,81 @@
 # 介绍
 
-AUI 是一个 **AI-native 的多端 UI 框架**。它把 UI 当作 schema 而不是代码：每一个界面都由一个 `UISchema`（类型化的 JSON 文档）描述，运行时负责解释它。渲染器把 schema 映射到 DOM（Vue 3）或 uni-app 组件。
+snail-aui v3.1 是面向 **Vue 3（Web 端，PC 桌面）** + **uni-app（移动端，触屏）** 的 AI-Native UI 框架生态。
 
-## 为什么选择 Schema 优先？
+**最关键的设计原则：端独立**。
 
-传统 UI 框架用代码描述 UI：
+> Web 端（PC）和 uni 端（移动）从开发到打包发布**完全独立**。  
+> 每端独立源代码、独立构建、独立 npm 包、独立 Token 别名。  
+> **跨端 0 行源代码复用**。
 
-```vue
-<template>
-  <button class="btn btn--primary" @click="submit">Submit</button>
-</template>
+未来新增端（React、Flutter、...）按相同模式扩展：`@snui/tokens-{end}` 别名层 + `@snui/{end}` 独立组件包。
+
+## 两端差异
+
+| 维度 | Web 端（PC 桌面） | uni 端（移动触屏） |
+|---|---|---|
+| 典型应用 | 管理后台、CRM、ERP、IDE-like、低代码平台 | 邮箱/内容/O2O、企业 App |
+| 操作方式 | 鼠标 + 键盘 | 触屏 + 手势 |
+| 分辨率 | 1280×720+，自适应 4K | 320-414 宽优先 |
+| 组件清单 | 信息密度型（Table / Tree / Pagination / Cascader / DatePicker ...） | 流式布局型（List / PullRefresh / swiper / sticky-tabs / lazy-image ...） |
+| 命名空间 | SnButton / SnForm / SnTable ... | sn-button / sn-list / sn-grid ... |
+| Token 别名 | `var(--sn-web-*)` | `var(--sn-mp-*)` |
+| 尺寸单位 | px | rpx（自动转换）|
+| API 风格 | Web 端配置驱动 | uni 端事件驱动 |
+
+**少量共享**：Button / ConfigProvider / Icon 是两端的最低公约数组件。
+
+## 跨端共用层
+
+| 共用 | 怎么区分端 |
+|---|---|
+| `@snui/tokens` 统一底层 | 输出 `--aui-*` 原始层（端无关）|
+| `@snui/style-packs` | 每个 Pack 标注 `end: web / mp / both` |
+| `@snui/ai` Skill + MCP | 工具输出按 `end` 过滤 |
+| `@snui/ai` ai-meta.json | components 数组按 end 分组 |
+| `@snui/cli` | resolver 按端、token-check 按端 |
+| `@snui/docs` | 左侧导航 Web / uni 两个分组 |
+
+## 30 秒看懂
+
+```text
+@snui/tokens         --aui-* 原始层（端无关）
+        ↑              ↑
+   ┌────┴─────┐    ┌────┴──────┐
+   │         │    │          │
+@snui/tokens-web  @snui/tokens-mp
+--sn-web-* 别名    --sn-mp-* 别名（含 rpx 转换）
+   ↑                     ↑
+@snui/vue-web         @snui/uni
+SnButton / SnTable    sn-button / sn-list / sn-pull-refresh
+（独立桌面分支）         （独立移动分支）
+
+跨端共用（无关）：
+   @snui/style-packs   @snui/ai   @snui/cli   @snui/docs
 ```
 
-AUI 用数据描述 UI：
+## Style Pack / AI 与端的关系
 
-```ts
-const schema: UISchema = {
-  version: '1.0.0',
-  root: {
-    id: 'submit',
-    type: 'button',
-    props: { variant: 'primary', text: 'Submit' },
-    events: { click: { kind: 'event', trigger: 'click' } },
-  },
-};
-```
+- Style Pack **跨端共用**，但每个 Pack 标注 `end: web / mp / both` 字段
+- 应用 Style Pack 时调用 `snCssVars({ end: 'web' | 'mp', theme, style })` —— `end` 决定输出 `--sn-web-*` 还是 `--sn-mp-*`
+- AI 工具（Skill / ai-meta）按端分类组件清单
+- MCP `list_components({ end })` 按端过滤
 
-带来的好处是叠加的：
-- LLM 可以 **生成** schema，渲染器再把它变成像素。
-- LLM 可以 **patch** schema（JSON Patch），运行时重新渲染。
-- 同一份 schema 可运行于 **Web**（Vue 3）和 **uni-app**（iOS / Android / H5 / MP）。
-- Token、可访问性、能力是**自描述**的，不是手写出来的。
+## 已交付
 
-## 30 秒看懂架构
-
-```
-@snui/protocol     ── Zod schemas（框架无关）
-       ↑
-@snui/schema       ── Validator + Normalizer + Version
-@snui/tokens       ── Primitive / Semantic / Component 级联
-@snui/runtime      ── AUIRuntime + Reactive + Binding + Action + AppBridge
-       ↑
-@snui/vue-web      ── Vue 3 渲染器 + 4 个官方组件（Phase 2）
-@snui/uni          ── uni-app 渲染器（Phase 3）
-```
-
-`@snui/protocol` 永不引入 Vue。渲染器消费 Runtime，不直接依赖 Protocol。这个层级关系由 package 的导入方向强制保证（AGENTS.md §67）。
-
-## 当前已交付
-
-- **Phase 1**: 全部 8 个内部包（28 个任务）— 详见 [架构](/guide/web/architecture)。
-- **Phase 2**: `@snui/vue-web` 提供 4 个官方组件（`Button` / `Input` / `Form` / `Card`）+ Web E2E 测试。
-- **Phase 3**: `@snui/uni` 占位中 — 同样的协议，uni-app 渲染器随后交付。
+- **M0**：架构反转 + Button demo ✅
+- **M0.5**：ADR-0002（Style Pack + AI Layer）✅
+- **M0.6**：ADR-0003（端独立拆分 + Token 双别名）✅ —— 本次 PRD v3.1 / Spec-01~02 / WBS v3.1 / Master Plan v5.1 / Dev Guide v3.1
+- **M1（下一步）**：`@snui/tokens-web` / `@snui/tokens-mp` 别名层 + 每端第一批 ~10 个组件
+- **M2**：Style Pack（默认 3 + mp 端 2）+ AI Layer + StyleSwitcher / ThemeCopier
+- **M3**：doodle / sticky-note / wechat Pack + render_preview 沙箱
+- **M4**：React 端扩展（按相同模式）+ VSCode 插件 + 视觉回归
 
 ## 下一步
 
-- [安装](/guide/web/installation)
-- [Web 快速开始](/guide/web/quick-start)
-- [uni-app 快速开始](/guide/uni/quick-start)
+- [Web 端快速开始](/guide/web/quick-start)
+- [uni-app 端快速开始](/guide/uni/quick-start)
 - [架构](/guide/web/architecture)
-- [Theme / Style / Density](/theme/overview)
+- [主题与 Token](/theme/overview)
+- [风格包](/style-packs/overview)
+- [AI 生态](/ai/overview)

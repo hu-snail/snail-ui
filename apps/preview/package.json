@@ -1,0 +1,27 @@
+{
+  "name": "@snui/preview",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI Preview — local demo app that imports real @snui/vue-web components. Validates that the component library builds and renders end-to-end.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "echo 'preview lint: noop (vue-tsc handles)'",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "echo 'preview test: noop'",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@snui/vue-web": "workspace:",
+    "@snui/tokens": "workspace:",
+    "vue": "^3.5.43"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.0",
+    "vue-tsc": "^2.2.0"
+  }
+}

@@ -1,100 +1,88 @@
-# Card · Web
+# Card · Web (PC)
 
-`<section role="region">` container with title / description header, token-driven shadow + border, and an optional body / footer slot.
+`<div role="region">` container rendering cover → header → content → footer → action in order. Visual styling is driven by `--sn-web-card-*` token aliases (padding / radius / shadow).
 
-<script setup>
-import ComponentPreview from '../../../.vitepress/components/ComponentPreview.vue';
-</script>
+## Basic usage
 
-## Live render · real framework mount
-
-### Default
-
-<ComponentPreview name="card" :raw-props="{ title: 'Order #1024', description: 'Placed today · shipping in 2 days' }" :children='JSON.stringify([
-  { id: "amount", type: "card", props: { title: "Amount", bordered: false, padding: "sm" } }
-])' />
-
-### Outlined
-
-<ComponentPreview name="card" :raw-props="{ variant: 'outlined', title: 'Outlined card', description: 'Stronger border, no shadow' }" />
-
-### Elevated
-
-<ComponentPreview name="card" :raw-props="{ variant: 'elevated', title: 'Elevated card', description: 'Borderless + drop shadow' }" />
-
-### Padding variants
-
-<ComponentPreview name="card" :raw-props="{ title: 'No padding', padding: 'none', bordered: true }" :children='JSON.stringify([
-  { id: "i", type: "input", props: { value: "tight content", type: "text" } }
-])' />
-
-<ComponentPreview name="card" :raw-props="{ title: 'Large padding', padding: 'lg', bordered: true, shadow: true }" :children='JSON.stringify([
-  { id: "b", type: "button", props: { variant: "primary", text: "Click me" } }
-])' />
-
-### No header / no border
-
-<ComponentPreview name="card" :raw-props="{ bordered: false }" :children='JSON.stringify([
-  { id: "t", type: "button", props: { variant: "ghost", text: "Action" } }
-])' />
-
-### On dark surface
-
-<ComponentPreview name="card" dark :raw-props="{ title: 'On dark', description: 'High-contrast card', bordered: true, shadow: true }" :children='JSON.stringify([
-  { id: "b", type: "button", props: { variant: "primary", text: "Confirm" } }
-])' />
+<Demo name="card-web" description="Default variant (bordered) + elevated variant (borderless + shadow). Shows title + header slot + footer slot + body." />
 
 ## Props
 
-<table class="props">
-  <thead>
-    <tr><th>Prop</th><th>Type</th><th>Default</th><th>Required</th><th>Description</th></tr>
-  </thead>
-  <tbody>
-    <tr><td><code>title</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Header title text.</td></tr>
-    <tr><td><code>description</code></td><td><code>string</code></td><td>—</td><td>No</td><td>Header subtitle.</td></tr>
-    <tr><td><code>variant</code></td><td><code>'default' | 'outlined' | 'elevated'</code></td><td><code>'default'</code></td><td>No</td><td>Visual style variant.</td></tr>
-    <tr><td><code>padding</code></td><td><code>'none' | 'sm' | 'md' | 'lg'</code></td><td><code>'md'</code></td><td>No</td><td>Inner padding sub-axis.</td></tr>
-    <tr><td><code>bordered</code></td><td><code>boolean</code></td><td><code>true</code></td><td>No</td><td>Show border.</td></tr>
-    <tr><td><code>shadow</code></td><td><code>boolean</code></td><td><code>false</code></td><td>No</td><td>Show shadow.</td></tr>
-  </tbody>
-</table>
+> The `Standard` column marks contract-standard props; `convenience alias` marks snail-aui-friendly names that map to standard props.
 
-## Tokens
+| Prop | Type | Default | Category | Description |
+| --- | --- | --- | --- | --- |
+| `title` | `string \| (() => VNode)` | — | Standard | Header title text or render function |
+| `contentClass` | `string` | — | Standard | Class for content region |
+| `contentStyle` | `string \| CSSProperties` | — | Standard | Inline style for content region |
+| `contentScrollable` | `boolean` | `false` | Standard | Make content scrollable when overflowed (max-height + overflow:auto) |
+| `headerClass` | `string` | — | Standard | Class for header region |
+| `headerStyle` | `string \| CSSProperties` | — | Standard | Inline style for header region |
+| `headerExtraClass` | `string` | — | Standard | Class for header-extra region |
+| `headerExtraStyle` | `string \| CSSProperties` | — | Standard | Inline style for header-extra region |
+| `footerClass` | `string` | — | Standard | Class for footer region |
+| `footerStyle` | `string \| CSSProperties` | — | Standard | Inline style for footer region |
+| `embedded` | `boolean` | `false` | Standard | Nested-card mode (strips border + shadow) |
+| `segmented` | `boolean \| { content?: boolean \| 'soft'; footer?: boolean \| 'soft'; action?: boolean \| 'soft' }` | `false` | Standard | Divider lines between regions |
+| `size` | `'small' \| 'medium' \| 'large' \| 'huge'` | `'medium'` | Standard | Padding + font-size preset |
+| `bordered` | `boolean` | `true` | Standard | Show 1px outer border |
+| `closable` | `boolean` | `false` | Standard | Show close button in header (needs `onClose`) |
+| `hoverable` | `boolean` | `false` | Standard | Apply hover-lift visual cue |
+| `role` | `string` | `'region'` | Standard | Accessible role |
+| `tag` | `keyof HTMLElementTagNameMap` | `'div'` | Standard | Root element tag |
+| `cover` | `() => VNode` | — | Standard | Render fn for top cover region |
+| `content` | `string \| (() => VNode)` | — | Standard | Content text or render fn (when `default` slot absent) |
+| `footer` | `() => VNode` | — | Standard | Render fn for footer region |
+| `action` | `() => VNode` | — | Standard | Render fn for action region (below footer) |
+| `headerExtra` | `() => VNode` | — | Standard | Render fn for header-extra region |
+| `closeFocusable` | `boolean` | `true` | Standard | Close button keyboard-focusable |
+| `variant` | `'default' \| 'outlined' \| 'elevated'` | `'default'` | convenience alias | Maps to `(bordered, shadow)` combination |
+| `padding` | `'none' \| 'sm' \| 'md' \| 'lg'` | `'md'` | convenience alias | Maps to `size` |
+| `shadow` | `boolean` | `false` | convenience alias | Show shadow (consumes `--sn-web-card-shadow`) |
+| `ariaLabel` | `string` | — | convenience | Forwarded to root `aria-label` |
 
-| Logical slot | CSS variable |
+## Events
+
+| Event | Payload | When |
+| --- | --- | --- |
+| `close` | `()` | Close button clicked (only when `closable` is true) |
+
+## Slots
+
+| Slot | Description |
 | --- | --- |
-| `background` | `var(--aui-color-surface)` |
-| `borderColor` | `var(--aui-color-border-default)` |
-| `titleColor` | `var(--aui-color-text-primary)` |
-| `descriptionColor` | `var(--aui-color-text-secondary)` |
-| `footerBorderColor` | `var(--aui-color-border-soft)` |
-| `shadow` | `var(--aui-shadow-md)` |
-| `radius` | `var(--aui-radius-card)` |
-| `padding.none` | `0` |
-| `padding.sm` | `var(--aui-spacing-sm)` |
-| `padding.md` | `var(--aui-spacing-md)` |
-| `padding.lg` | `var(--aui-spacing-lg)` |
+| `default` | Content region (mutually exclusive with `content` prop) |
+| `cover` | Top cover region (mutually exclusive with `cover` prop) |
+| `header` | Header region (overrides `title` prop) |
+| `header-extra` | Header-extra region (mutually exclusive with `headerExtra` prop) |
+| `footer` | Footer region (mutually exclusive with `footer` prop) |
+| `action` | Action region (mutually exclusive with `action` prop) |
+
+## Region omission rules
+
+- `header` renders only if `title` / `header` slot / `headerExtra` / `closable` exists
+- `content` renders only if default slot / `content` prop exists
+- `footer` renders only if `footer` slot / `footer` prop exists
+- `action` renders only if `action` slot / `action` prop exists
+- `cover` renders only if `cover` slot / `cover` prop exists
 
 ## Accessibility
 
 | Attribute | Value |
 | --- | --- |
-| `role` | `region` |
-| `aria-labelledby` | points to the `<h3>` title element id (when `title` is set) |
-| `aria-describedby` | points to the description element id (when `description` is set) |
+| `role` | `'region'` (overridable via `role` prop) |
+| `aria-label` | forwarded from `ariaLabel` prop |
+| `role="heading"` | Header region |
+| close button | `aria-label` from `ariaLabel + ' close'` or default `'Close'` |
 
-## AI Patch Boundary
+## Tokens (end: web)
 
-| Status | Field |
-| --- | --- |
-| `ai.patchable` | `title`, `description`, `variant`, `padding`, `bordered`, `shadow` |
-| `ai.readonly` | `role` |
-
-## Source
-
-`packages/protocol/src/card-contract.ts` (Contract source) · `packages/vue-web/src/card.ts` (Vue renderer)
-
-## Nesting & children
-
-Card accepts an arbitrary subtree through UINode children (buttons, inputs, other cards). The header is omitted when both `title` and `description` are missing; the footer is omitted when its slot is empty.
+| Token | CSS Variable | Purpose |
+| --- | --- | --- |
+| Card padding | `--sn-web-card-padding` | Default inner padding (medium) |
+| Card radius | `--sn-web-card-radius` | Border radius |
+| Card shadow | `--sn-web-card-shadow` | Shadow (only when `shadow=true` or `variant='elevated'`) |
+| Border default | `--sn-web-color-border-default` | Outer border + region dividers |
+| Text primary | `--sn-web-color-text-primary` | Title + body text |
+| Text secondary | `--sn-web-color-text-secondary` | Header-extra + close button |
+| Background surface | `--sn-web-color-background-surface` | Card background |

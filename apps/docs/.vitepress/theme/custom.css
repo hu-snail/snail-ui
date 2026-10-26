@@ -1,33 +1,401 @@
-/* AUI Docs — custom theme overrides */
+/* AUI Docs — docs-site skin: neutral surfaces, 1px hairline borders,
+ * compact typography, minimal chrome.
+ *
+ * Loaded by theme/index.ts after the default vitepress theme, so equal
+ * specificity rules here win. Order: tokens → prose → blocks → chrome. */
+
+/* =====================================================================
+   1. Tokens
+   ===================================================================== */
 
 :root {
+  /* Brand stays blue (the three brand-1/2/3 values are the VitePress
+   * variable definitions themselves, not ad-hoc colours). */
   --vp-c-brand-1: #1677ff;
   --vp-c-brand-2: #4096ff;
   --vp-c-brand-3: #69b1ff;
-  --vp-c-brand-soft: rgba(22, 119, 255, 0.14);
+  --vp-c-brand-soft: rgba(22, 119, 255, 0.12);
 
-  --vp-font-family-base: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --vp-font-family-mono: 'JetBrains Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
+  /* Inter for text; code uses the OS mono stack (no bundled code face). */
+  --vp-font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --vp-font-family-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Chrome metrics: 56px top bar on a page-tinted translucent surface,
+   * sidebar shares the page colour instead of a second grey plane. */
+  --vp-nav-height: 56px;
+  --vp-nav-bg-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent);
+  --vp-sidebar-bg-color: var(--vp-c-bg);
+
+  /* Code surfaces use the soft neutral plane in both modes (never pure black). */
+  --vp-code-block-bg: var(--vp-c-bg-soft);
+  --vp-code-color: var(--vp-c-text-1);
+  --vp-code-lang-color: var(--vp-c-text-3);
+  /* Surfaces / text / dividers mirror the component token palette, so the
+   * chrome and the rendered components sit on the same greys. */
+  --vp-c-bg: #ffffff;
+  --vp-c-bg-alt: #fafafa;
+  --vp-c-bg-soft: #f4f4f5;
+  --vp-c-bg-mute: #f4f4f5;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-divider: #e4e4e7;
+  --vp-c-gutter: #e4e4e7;
+  --vp-c-text-1: #09090b;
+  --vp-c-text-2: #71717a;
+  --vp-c-text-3: #a1a1aa;
 }
 
 .dark {
   --vp-c-brand-1: #4096ff;
   --vp-c-brand-2: #69b1ff;
   --vp-c-brand-3: #91caff;
+
+  /* Same palette in dark: near-black page, zinc-800 hairlines, zinc-50 text. */
+  --vp-c-bg: #09090b;
+  --vp-c-bg-alt: #09090b;
+  --vp-c-bg-soft: #18181b;
+  --vp-c-bg-mute: #27272a;
+  --vp-c-bg-elv: #18181b;
+  --vp-c-divider: #27272a;
+  --vp-c-gutter: #27272a;
+  --vp-c-text-1: #fafafa;
+  --vp-c-text-2: #a1a1aa;
+  --vp-c-text-3: #71717a;
 }
 
-/* Custom prose styling for component pages */
+/* =====================================================================
+   2. Prose — headings, body copy, links, inline code
+   ===================================================================== */
+
+.vp-doc h1 {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+
+/* Section heading: compact scale. Deliberately no rule under the text — the
+ * hairline this page uses between sections stays *above* the heading, where
+ * vitepress puts it (`.vp-doc h2 { border-top: … }`). */
+
 .vp-doc h2 {
+  font-size: 20px;
   font-weight: 600;
+  line-height: 1.5;
   letter-spacing: -0.01em;
-  border-bottom: 1px solid var(--vp-c-divider);
-  padding-bottom: 0.3em;
 }
 
 .vp-doc h3 {
+  font-size: 16px;
   font-weight: 600;
-  margin-top: 2em;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  margin-top: 32px;
+  margin-bottom: 8px;
 }
+
+.vp-doc p,
+.vp-doc li {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--vp-c-text-2);
+}
+
+.vp-doc strong {
+  color: var(--vp-c-text-1);
+}
+
+/* Links: brand blue, underline only on hover. */
+.vp-doc a {
+  color: var(--vp-c-brand-1);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.vp-doc a:hover {
+  color: var(--vp-c-brand-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Inline code: hairline chip on the soft plane. */
+.vp-doc :not(pre) > code {
+  padding: 2px 6px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background-color: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+  font-size: 0.86em;
+}
+
+/* =====================================================================
+   3. Fenced code blocks
+   ===================================================================== */
+
+@media (min-width: 640px) {
+  .vp-doc div[class*='language-'],
+  .vp-block {
+    border: 1px solid var(--vp-c-divider);
+    border-radius: 8px;
+  }
+}
+
+/* Language chip + copy affordance: muted, 12px. */
+.vp-doc [class*='language-'] > span.lang {
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+}
+
+.vp-doc [class*='language-'] > button.copy {
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  color: var(--vp-c-text-3);
+}
+
+/* =====================================================================
+   4. Tables (Props / API)
+   ----------------------------------------------------------------------
+ * VitePress ships `table { display: block; overflow-x: auto }` so a wide
+ * table can scroll. The catch: `display: block` turns the element into a
+ * block container whose rows are wrapped in an *anonymous* table box, and
+ * that box is fit-content. `width: 100%` therefore only stretched the
+ * invisible wrapper — measured on /components/web/button, the 4-column
+ * Props table rendered ~430px wide inside an 816px article and left half
+ * the module empty.
+ *
+ * `display: table` makes `width: 100%` mean what it says, and auto layout
+ * then hands the spare width to the widest column (说明 / Description)
+ * instead of wrapping it early.
+ * ===================================================================== */
+
+.vp-doc table {
+  display: table;
+  width: 100%;
+  font-size: 13.5px;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+}
+
+/* Below 768px there is no spare width to give away: back to vitepress's
+ * scrollable block rather than squeezing every cell onto three lines. */
+@media (max-width: 767px) {
+  .vp-doc table {
+    display: block;
+    overflow-x: auto;
+  }
+}
+
+/* A demo card is only a fraction of the article wide (≈400px in the
+ * waterfall), and the tables that live there are the *component's* own
+ * 5-7 column previews. Filling the card would squeeze them into an
+ * unusable grid and, once the columns' min-content widths add up, the
+ * table would spill out of the card and across the article. Keep
+ * vitepress's scrollable box for those. */
+.sn-demo-cell table {
+  display: block;
+  overflow-x: auto;
+}
+
+/* No zebra striping, no vertical rules between columns. */
+.vp-doc tr {
+  background-color: transparent;
+  border-top: 0;
+}
+
+.vp-doc tr:nth-child(2n) {
+  background-color: transparent;
+}
+
+.vp-doc th,
+.vp-doc td {
+  border: 0;
+  border-top: 1px solid var(--vp-c-divider);
+  padding: 8px 12px;
+  font-size: 13.5px;
+  vertical-align: top;
+}
+
+.vp-doc thead tr:first-child th {
+  border-top: 0;
+}
+
+/* `overflow` no longer clips the table to its 8px radius (it was only ever
+ * doing that because the element was a scroll container), so round the
+ * header row's own background — the only filled band in this style. */
+.vp-doc thead tr:first-child th:first-child {
+  border-top-left-radius: 7px;
+}
+
+.vp-doc thead tr:first-child th:last-child {
+  border-top-right-radius: 7px;
+}
+
+.vp-doc th {
+  font-weight: 600;
+  color: var(--vp-c-text-2);
+  background-color: var(--vp-c-bg-soft);
+}
+
+.vp-doc td code {
+  font-size: 12.5px;
+  padding: 1px 6px;
+}
+
+/* =====================================================================
+   5. Sidebar — flat rail on the page colour, no group separators
+   (#VPSidebarNav scopes these above the component's own scoped rules)
+   ===================================================================== */
+
+#VPSidebarNav .group + .group {
+  border-top: 0;
+  padding-top: 6px;
+}
+
+@media (min-width: 960px) {
+  #VPSidebarNav .group {
+    padding-top: 6px;
+  }
+
+  /* Hairline hand-off between sidebar and content. */
+  .VPSidebar {
+    border-right: 1px solid var(--vp-c-divider);
+  }
+}
+
+#VPSidebarNav .VPSidebarItem.level-0 {
+  padding-bottom: 6px;
+}
+
+/* Group label */
+#VPSidebarNav .VPSidebarItem.level-0 > .item > .text,
+#VPSidebarNav .VPSidebarItem.level-0 > .item > .link > .text {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 24px;
+  padding: 4px 0;
+  color: var(--vp-c-text-1);
+}
+
+/* Rows: 32px, soft fill on hover, 6px radius, no vertical bar. */
+#VPSidebarNav .VPSidebarItem:not(.level-0) > .item {
+  margin: 0 -8px;
+  padding: 0 8px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+#VPSidebarNav .VPSidebarItem:not(.level-0) > .item:hover {
+  background-color: var(--vp-c-bg-soft);
+}
+
+#VPSidebarNav .VPSidebarItem:not(.level-0) > .item .text {
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 32px;
+  padding: 0;
+  color: var(--vp-c-text-2);
+}
+
+#VPSidebarNav .VPSidebarItem:not(.level-0) > .item:hover .text,
+#VPSidebarNav .VPSidebarItem:not(.level-0).has-active > .item .text {
+  color: var(--vp-c-text-1);
+}
+
+#VPSidebarNav .VPSidebarItem:not(.level-0).is-active > .item {
+  background-color: var(--vp-c-bg-soft);
+}
+
+#VPSidebarNav .VPSidebarItem:not(.level-0).is-active > .item .text {
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+}
+
+#VPSidebarNav .VPSidebarItem > .item > .indicator {
+  display: none;
+}
+
+#VPSidebarNav .VPSidebarItem.level-1 .items,
+#VPSidebarNav .VPSidebarItem.level-2 .items,
+#VPSidebarNav .VPSidebarItem.level-3 .items,
+#VPSidebarNav .VPSidebarItem.level-4 .items,
+#VPSidebarNav .VPSidebarItem.level-5 .items {
+  border-left: 1px solid var(--vp-c-divider);
+  padding-left: 12px;
+}
+
+/* =====================================================================
+   6. Right-hand outline (on-page TOC)
+   ===================================================================== */
+
+/* 1px hairline rail the outline items hang from. */
+.VPDocAsideOutline .content {
+  border-left: 1px solid var(--vp-c-divider);
+}
+
+.VPDocAsideOutline .content .outline-title {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--vp-c-text-3);
+}
+
+.VPDocAsideOutline .content .outline-link {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 28px;
+  color: var(--vp-c-text-3);
+}
+
+.VPDocAsideOutline .content .outline-link:hover,
+.VPDocAsideOutline .content .outline-link.active {
+  color: var(--vp-c-text-1);
+}
+
+.VPDocAsideOutline .content .outline-link.active {
+  font-weight: 600;
+}
+
+/* =====================================================================
+   7. Top bar
+   ===================================================================== */
+
+.VPNavBar {
+  background-color: color-mix(in srgb, var(--vp-c-bg) 90%, transparent) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   DocSearch-Button — the search trigger collapses to a bare icon on
+   narrow viewports and then reads as decoration. Keep a fixed 220px pill
+   so the button, its label and the `/` + Cmd/Ctrl+K hint stay legible on
+   every viewport.
+   ────────────────────────────────────────────────────────────────────── */
+.DocSearch-Button {
+  width: 220px !important;
+  min-width: 220px !important;
+  height: 32px !important;
+  border: 1px solid var(--vp-c-divider) !important;
+  border-radius: 6px !important;
+  background-color: var(--vp-c-bg) !important;
+  padding: 0 10px !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  color: var(--vp-c-text-2) !important;
+  transition: border-color 0.2s, background 0.2s !important;
+}
+.DocSearch-Button:hover {
+  border-color: var(--vp-c-brand-1) !important;
+  color: var(--vp-c-text-1) !important;
+}
+
+/* =====================================================================
+   8. Legacy docs helpers (kept as-is: no current page consumes them)
+   ===================================================================== */
 
 /* Component preview container */
 .preview-card {
@@ -212,3 +580,452 @@ table.props code {
 .snui-button--small { height: 24px; padding: 0 12px; font-size: 12px; }
 .snui-button--medium { height: 32px; padding: 0 16px; font-size: 14px; }
 .snui-button--large { height: 40px; padding: 0 20px; font-size: 16px; }
+
+/* =====================================================================
+   9. Chrome hand-off (unchanged architecture)
+   ----------------------------------------------------------------------
+ * Phase-1 chrome replacement (AUI-DOCS-019):
+ * SnDocsNav + SnDocsFooter now own the top-bar + footer. Hide ALL of
+ * vitepress's default chrome so the real @snui/vue-web components are
+ * the sole render path. SnDocsNav lives inside the `nav-bar-content-before`
+ * slot (Layout.vue) so it inherits the VPNavBar shell height + sticky
+ * behavior — we just suppress the duplicate title / menu / search /
+ * appearance-toggle / social links / footer.
+ *
+ *   VPNavBarTitle         default brand text on the left (overrides SnDocsNav brand)
+ *   VPNavBarMenu          default menu links (already replaced by SnMenu)
+ *   VPNavBarSearch        default ⌘K search button (already replaced by SnButton)
+ *   VPNavBarAppearance    default light/dark toggle (already replaced by SnButton)
+ *   VPNavBarExtra / VPFooter / VPSocialLinks  default extras (already replaced)
+ *
+ * VPNavBarHamburger is intentionally KEPT for mobile menu trigger.
+ * ===================================================================== */
+.VPNavBarMenu,
+.VPNavBarMenuLink,
+.VPNavBarTitle,
+.VPNavBarTitleLink,
+.VPNavBarSearch,
+.VPNavBarAppearance,
+.VPNavBarExtra,
+.VPSocialLinks,
+.VPFooter,
+.VPNavBar .divider,
+.VPNavBar .divider-line {
+  display: none !important;
+}
+
+/* Vitepress's .content-body pushes children to the right (flex-end) so the
+ * default search / menu / appearance sit at the right edge. After we hide
+ * those, only SnDocsNav is left but the flex-end still pushes it right.
+ * Override to flex-start so SnDocsNav spans the full nav width. */
+.VPNavBar .content .content-body {
+  justify-content: flex-start !important;
+  padding: 0 !important;
+}
+
+/* Vitepress's .container caps at calc(--vp-layout-max-width - 64px) = 1376px
+ * and centers itself. On wide viewports (>1440px) that leaves ~140 px of bare
+ * page color on left + right and the Sn* chrome background stops at 1376 px.
+ * Override to 100% so SnDocsNav (and any future full-width chrome) renders
+ * edge-to-edge regardless of viewport. */
+.VPNavBar .wrapper .container {
+  max-width: 100% !important;
+}
+
+/* Vitepress puts horizontal padding on `.wrapper` (32px on desktop, 24/8 on
+ * mobile), which insets the cream-bg SnDocsNav from the viewport edges —
+ * Sn* chrome can't reach the true page border. Zero out both layers so
+ * SnDocsNav (which itself manages its own top/bottom padding via Sn*-tokens)
+ * truly spans 0 → 100% viewport width. */
+.VPNavBar .wrapper {
+  padding: 0 !important;
+}
+.VPNavBar .wrapper .container {
+  padding: 0 !important;
+}
+
+/* =====================================================================
+   10. Full-bleed layout parity with the home page
+   ----------------------------------------------------------------------
+ * The home page has no sidebar, so vitepress never insets `.content` and
+ * SnDocsNav spans the viewport edge-to-edge. Doc pages carry `has-sidebar`,
+ * and vitepress centres their whole chrome to its 1440px layout:
+ *
+ *   >=960px :  `.VPNavBar.has-sidebar .content` gets the sidebar inset on
+ *              the left + 32px on the right
+ *   >=1440px:  `.VPNavBar.has-sidebar .content` AND `.VPContent.has-sidebar`
+ *              additionally get `(100vw - 1440px) / 2` on both sides, and
+ *              `.VPSidebar` widens to `(100% - 1376px) / 2 + 272px` so its
+ *              labels keep lining up with the centred article
+ *
+ * Measured at 1920px that left the nav inset 512px / 272px (SnDocsNav only
+ * 1136px wide) and the article with a 240px dead gutter on the right.
+ *
+ * SnDocsNav already owns its own 24px token gutters, and the sidebar starts
+ * *below* the navbar (`--vp-layout-top-height`), so the nav bar can span the
+ * full viewport on doc pages too. The sidebar keeps its standard
+ * `--vp-sidebar-width` and the article sits directly next to it, filling the
+ * rest of the viewport — no max-width anywhere, matching the home page.
+ * ===================================================================== */
+
+/* Nav bar: full-bleed at every width (parity with the home page). */
+.VPNavBar.has-sidebar .content {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+@media (min-width: 1440px) {
+  /* Sidebar: back to its standard width + gutter. */
+  .VPSidebar {
+    padding-left: 32px !important;
+    width: var(--vp-sidebar-width) !important;
+  }
+
+  /* Article: start right after the sidebar and fill the remaining width. */
+  .VPContent.has-sidebar {
+    padding-right: 0 !important;
+    padding-left: var(--vp-sidebar-width) !important;
+  }
+}
+
+/* =====================================================================
+   11. Article width and gutters on doc pages
+   ----------------------------------------------------------------------
+ * VitePress caps the article at 688px whenever the page has an aside (the
+ * right-hand outline): `.VPDoc.has-aside .content-container { max-width:
+ * 688px }`. Measured at 1339px that left the prose 683px wide inside a
+ * 1067px doc area, i.e. a large dead column on the right.
+ *
+ * Let the article fill the space between the sidebar and the outline, and
+ * own the breathing room on both sides explicitly:
+ *   - `.VPDoc` carries a 48px gutter left and right
+ *   - the duplicate 32px vitepress also puts on the inner `.content` is
+ *     dropped, so the two don't stack into 80px
+ *
+ * Measured at 1440px the article therefore starts 48px after the sidebar
+ * and ends 48px before the outline, instead of 32px / 32px.
+ * ===================================================================== */
+/* `!important` is required: vitepress ships these rules from a `<style scoped>`
+ * block, so they land as `.VPDoc[data-v-…]` / `.VPDoc.has-aside
+ * .content-container[data-v-…]` and outrank any unscoped selector we can
+ * write. */
+.VPDoc.has-aside .content-container {
+  max-width: 100% !important;
+}
+
+/* Desktop only: below 960px vitepress's own 24px gutter is already a large
+ * share of the viewport, and the outline is gone. */
+@media (min-width: 960px) {
+  .VPDoc {
+    padding-left: 48px !important;
+    padding-right: 48px !important;
+  }
+}
+
+/* Drop the inner duplicate so the two gutters don't stack. */
+.VPDoc > .container > .content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ---------------------------------------------------------------------
+ * Title row: the copy / edit actions are mounted through `doc-before`,
+ * which VitePress renders as a sibling ABOVE `<main class="main">` inside
+ * `.content-container` — so in flow they push the `<h1>` down by their own
+ * height. Park the row instead: `.content-container` becomes its containing
+ * block and the row sits at the top-right, sharing the title's line.
+ *
+ * `z-index: 1` is load-bearing, not decoration. The <h1> that the row
+ * overlaps is itself `position: relative` (vitepress ships that), so both
+ * are positioned boxes and, with `z-index: auto` on each, they paint in DOM
+ * order — i.e. `<main>`/`<h1>` come after the slot and cover the row.
+ * Measured before this fix: `elementFromPoint()` over either button centre
+ * returned the H1, so neither button could be clicked at all. Lifting the
+ * row above the article's own positioned content restores the hit area.
+ *
+ * `.vp-doc h1` then reserves that corner so a long title wraps before it
+ * reaches the two 32px buttons (2 × 32 + 6 gap + 12 breathing room).
+ * --------------------------------------------------------------------- */
+.VPDoc .content-container {
+  position: relative;
+}
+
+.sn-docs-doc-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.vp-doc h1 {
+  padding-right: 82px;
+}
+
+/* =====================================================================
+   12. Collapsible left sidebar
+   ----------------------------------------------------------------------
+ * The collapse control is the tab that rides the sidebar's right border
+ * line, vertically centred in the viewport. It is a plain
+ * `position: fixed` element, which is why theme/Layout.vue mounts it
+ * through `layout-top`, i.e. OUTSIDE VPSidebar: that element is
+ * `overflow: hidden`, so a child of it would be clipped at the very
+ * border it has to sit on, and it also carries a (near-identity)
+ * transform, which would make it the containing block for a fixed child
+ * and pin the tab to the sidebar box instead of the viewport.
+ *
+ * The tab only makes sense while a sidebar is on screen and expanded:
+ *   - `:has(.VPSidebar)` skips pages that render no sidebar (home,
+ *     standalone docs pages)
+ *   - `.sn-sidebar-collapsed` steps aside for the expand control
+ *     SnDocsNav renders while collapsed
+ *   - below 960px the same element is vitepress's off-canvas drawer, so
+ *     the handle is desktop-only (SnDocsNav's control is hidden there too)
+ *
+ * Collapsing above 960px is then purely a layout change: hide the sidebar
+ * and hand its column back to the article.
+ * ===================================================================== */
+
+/* Off by default; only the desktop + expanded + sidebar-present case below
+ * switches it on. */
+.sn-docs-sidebar-handle {
+  display: none;
+}
+
+@media (min-width: 960px) {
+  /* `left` is the sidebar's border-box right edge, i.e. exactly where its
+   * `border-right` ends, so the tab hangs off that line without covering
+   * it. 272px + the 20px tab still clears the article, whose text starts
+   * at 304px. */
+  html:has(.VPSidebar):not(.sn-sidebar-collapsed) .sn-docs-sidebar-handle {
+    position: fixed;
+    top: 50%;
+    left: var(--vp-sidebar-width);
+    z-index: 61;
+    display: flex;
+    transform: translateY(-50%);
+  }
+
+  html.sn-sidebar-collapsed .VPSidebar {
+    display: none !important;
+  }
+
+  /* Reclaim the sidebar column for the article. */
+  html.sn-sidebar-collapsed .VPContent.has-sidebar {
+    padding-left: 0 !important;
+  }
+}
+
+@media (max-width: 959px) {
+  .sn-docs-nav .sn-docs-sidebar-toggle {
+    display: none;
+  }
+}
+
+/* =====================================================================
+   13. Demo cards — waterfall layout, two columns
+   ----------------------------------------------------------------------
+ * utils/demo-grid.ts wraps every "one demo per heading" section in
+ * `.sn-demo-cell`, and every run of two or more consecutive cells in
+ * `.sn-demo-grid`.
+ *
+ * The container is a CSS multi-column box, not a grid: each column packs
+ * on its own, so a tall card never pushes the card next to it downwards
+ * and leaves a hole beside it (the "height mismatch" a grid produces).
+ * It also re-flows for free — when a demo's async chunk lands, the code
+ * panel expands or the window resizes — with no JS measuring step.
+ *
+ * These rules reach across a component boundary: `.sn-demo*` is a
+ * `<style scoped>` block inside Demo.vue, i.e. it ships as
+ * `.sn-demo__card[data-v-…]` (2 class-level selectors). Prefixing with
+ * `.vp-doc .sn-demo-cell` puts ours at 3, which wins no matter which
+ * order the two stylesheets end up in the bundle — no `!important`
+ * needed.
+ * ===================================================================== */
+
+.sn-demo-grid {
+  column-count: 1;
+  column-gap: 16px;
+  margin: 16px 0 24px;
+}
+
+/* Two columns once the article can hold them. 1200px is where the article
+ * (sidebar + gutters excluded) is ~860px, i.e. two ~420px cards; below that
+ * one full-width column keeps wider demos (forms, model config) usable. */
+@media (min-width: 1200px) {
+  .sn-demo-grid {
+    column-count: 2;
+  }
+}
+
+/* The card. */
+.vp-doc .sn-demo-cell {
+  min-width: 0;
+  margin: 16px 0 24px;
+  padding: 16px 16px 12px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 10px;
+  background: var(--vp-c-bg);
+}
+
+/* Inside the waterfall the column gap owns the horizontal spacing and each
+ * card owns the vertical one. `break-inside` keeps a card in one piece, so a
+ * column break can only land between cards. */
+.sn-demo-grid > .sn-demo-cell {
+  margin: 0 0 16px;
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* The section heading becomes the card title. It stays a real heading, so its
+ * `#` anchor, its sidebar entry and its "on this page" link keep working; we
+ * only drop the page-level chrome (48px top margin, hairline rules, 24px+20px
+ * scale) and pin the absolutely-positioned anchor to the title's own top. */
+.vp-doc .sn-demo-cell > h2,
+.vp-doc .sn-demo-cell > h3,
+.vp-doc .sn-demo-cell > h4 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.vp-doc .sn-demo-cell > h2 .header-anchor,
+.vp-doc .sn-demo-cell > h3 .header-anchor,
+.vp-doc .sn-demo-cell > h4 .header-anchor {
+  top: 0;
+}
+
+/* A note between the title and the demo (e.g. "5 档 `tiny` / `small` …"). */
+.vp-doc .sn-demo-cell > p {
+  margin: 6px 0 10px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--vp-c-text-2);
+}
+
+/* Everything below reaches into Demo.vue only through a direct-child chain
+ * (`cell > .sn-demo > …`). Demo *files* reuse the plain `sn-demo` /
+ * `sn-demo__toolbar` class names for their own roots — they sit deeper in the
+ * tree (inside `.sn-demo__card`), so the chain leaves them alone. */
+
+/* Demo.vue's own 24px rhythm would double the card padding. */
+.vp-doc .sn-demo-cell > .sn-demo {
+  margin: 0;
+}
+
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__description {
+  margin: 4px 0 10px;
+  font-size: 13px;
+}
+
+/* Preview plane: the plain card surface (white in light mode, page colour in
+ * dark mode), so demos sit on the same surface as the card and no tinted
+ * block frames them. */
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__card {
+  padding: 20px 16px;
+  border: 0;
+  background: var(--vp-c-bg);
+}
+
+/* `bare` demos opt out of the preview chrome entirely. */
+.vp-doc .sn-demo-cell > .sn-demo.sn-demo--bare > .sn-demo__card {
+  padding: 0;
+  background: transparent;
+}
+
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__toolbar {
+  margin-top: 6px;
+  padding: 0;
+}
+
+/* =====================================================================
+   14. Template-end filter (the web / uni-app capsule)
+   ----------------------------------------------------------------------
+ * The 模板 sidebar lists one page per AI 套件 template, and every page covers
+ * both ends inside the article. Three of those templates are web-only, so
+ * `<html data-sn-template-end="uni">` — set by
+ * components/SnDocsTemplateEnd.vue through utils/template-end.ts — hides their
+ * sidebar entries and the list then mirrors what the selected end ships.
+ *
+ * `:has()` targets the item WRAPPER because vitepress renders
+ * `.VPSidebarItem > .item > a[href]`; hiding the <a> alone would leave the
+ * wrapper's spacing behind as a gap.
+ *
+ * Hrefs are matched with `*=` because dev serves `/templates/ai/chat` while a
+ * build emits `/templates/ai/chat.html`, and the /en/ locale prefixes the whole
+ * path. Keep these three in sync with WEB_ONLY_ROUTES in
+ * utils/template-end.ts, which the capsule's "this page is web-only" hint is
+ * built from.
+ *
+ * Nothing is hidden while the attribute is absent, so SSR and pages without a
+ * sidebar are unaffected. The capsule itself needs no outer margin: vitepress
+ * places `sidebar-nav-before` inside `nav.nav`, i.e. within VPSidebar's own
+ * padding.
+ * ===================================================================== */
+
+html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/templates/ai/assistant']),
+html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/templates/ai/prompt']),
+html[data-sn-template-end='uni'] .VPSidebarItem:has(> .item > a[href*='/templates/ai/model-config']) {
+  display: none;
+}
+
+/* =====================================================================
+   15. Preview dock — article keeps code, device stays on the right
+   ----------------------------------------------------------------------
+ * On uni component pages `Demo.vue` teleports each demo's live preview into
+ * `DemoDock` (fixed, 400px, top-right). The article therefore only carries the
+ * heading, the note and the code block — which is the part a reader copies.
+ *
+ * The article must yield the dock's width or the fixed panel would cover the
+ * prose. The outline is already hidden on these pages (the dock replaces it),
+ * so the article reclaims that column and then reserves the dock gutter.
+ *
+ * Below 1200px the dock is not mounted at all (see DemoDock.vue), so these
+ * rules only apply where the panel actually exists.
+ * ===================================================================== */
+
+@media (min-width: 1200px) {
+  /* Doc area: reserve the dock column on the right. */
+  html:has(.sn-dock) .VPContent.has-sidebar {
+    padding-right: 448px !important;
+  }
+
+  /* The right-hand outline would sit under the dock; the dock's section tabs
+   * already provide page-level navigation for these pages. */
+  html:has(.sn-dock) .VPDoc .aside {
+    display: none !important;
+  }
+
+  html:has(.sn-dock) .VPDoc.has-aside .content-container {
+    max-width: 100% !important;
+  }
+}
+
+/* A demo whose preview lives in the dock collapses to its code block: the
+ * article must not leave an empty preview card behind. */
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__stage--docked,
+.vp-doc .sn-demo-cell > .sn-demo > .sn-demo__stage:empty {
+  display: none;
+}
+
+/* The "shown in the panel" affordance for the non-docked fallback path. */
+.sn-demo__docked-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px dashed var(--vp-c-divider);
+  border-radius: 6px;
+  color: var(--vp-c-text-3);
+  font-size: 12px;
+}
+
+/* In the dock the device frame is the panel's content: no outer margin. */
+.sn-dock__host .sn-phone {
+  margin: 0;
+  padding: 0;
+}

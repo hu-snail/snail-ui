@@ -1514,7 +1514,56 @@ Commit
 
 ---
 
-# 56. Dependency 原则
+# 56. 任务完成立即 Commit + Push
+
+**每完成一个 Task 必须立即 `git commit` 并 `git push`，不允许本地堆积**。
+
+```text
+Task 完成
+ ↓
+§92 Merge Gate：typecheck + lint (0 warning) + test + build 全过
+ ↓
+git add -A
+ ↓
+git commit -m "<type>(<scope>): <description>"
+ ↓
+git push origin <branch>
+ ↓
+在 Task Completion Report (§94) 里记录 commit hash
+```
+
+**强制约束**：
+
+- 禁止"做完多个任务再一起 commit"
+- 禁止"完成任务后不 push"
+- 禁止"working tree 留着不 commit，下次继续干"
+- 禁止"修改了本地大量文件但未暂存"
+- 禁止 `git stash` 长期保存未完成的工作
+
+**理由**：
+
+- 防止本地工作树丢失（磁盘故障、断电、`rm -rf` 误操作）
+- 便于 Human 随时 review（每 commit 都是可 review 的最小单元）
+- 便于 Rollback（单一 task 失败只 revert 一个 commit）
+- 便于跨 session / 跨设备继续（commit + push 后任何 session 都能 resume）
+- CI 流水友好：每 commit 触发一次 CI，立刻发现 regression
+
+**例外**：
+
+- Human Gate 等待期间：未审批的代码可以保留在 working tree，但**不超过一天**；审批通过后立即 commit + push
+- 长期阻塞任务（>1 天）：拆成 subtask，每 subtask 一个 commit
+- 网络故障 push 失败：保留 commit 在本地，retry 直到成功；不可丢弃 commit
+
+**与其它规则的关系**：
+
+- 与 §55 配合：commit 粒度 = 一个 task / 一个 logical subtask
+- 与 §92 配合：commit 前必须通过 Merge Gate（typecheck / lint / test / build 全过）
+- 与 §94 配合：Task Completion Report 必须列出 commit hash
+- 与 §101 配合：未经用户授权，绝不 `git reset --hard` / `git checkout -- <file>` 破坏已 commit 的工作树
+
+---
+
+# 57. Dependency 原则
 
 新增依赖之前必须判断：
 
@@ -2550,6 +2599,7 @@ DONE
 10. Capability before Platform Assumption
 11. Human Gate before Architecture Change
 12. CI before Merge
+13. Commit + Push before Next Task   ← §56 强制任务节奏
 ```
 
 ---
@@ -3000,11 +3050,17 @@ pnpm turbo run typecheck
 | #101 禁止回退 | §93 Stop-the-Line 延伸 |
 | #102 任务后评审 | §88 Review Agent + §94 Agent 输出标准 |
 | #103 Bug 记录 | §47 Bug 修复标准 + §75 AI Context 标准 |
-| #104 避免重复造轮子 | §56 Dependency 原则 |
+| #104 避免重复造轮子 | §57 Dependency 原则 |
 | #105 代码质量高标准 | §92 Merge Gate |
 | #106 不写废代码 | §11 禁止无意义重构 + §69 Documentation |
 | #107 无未用变量 / 方法 | §46 测试原则（Behavior > Implementation Detail） |
 | #108 无未用 import / export | §12 TypeScript 标准 + §13 TypeScript 类型原则 |
+
+# 109.b 任务节奏强制
+
+| 规则 | 对应原编号 |
+| --- | --- |
+| 任务完成立即 commit + push | §56 任务完成立即 Commit + Push |
 
 ---
 
@@ -3052,6 +3108,569 @@ D. 修改 Component name / version
 
 ---
 
+# 111. 文档站 uni-end 预览 rpx 适配
+
+uni-app 组件以 `rpx` 作为跨端尺寸单位。浏览器 CSS 解析器**不**认识 `rpx`，会把含 rpx 的属性整条丢弃 → input/form/button 等几何 box（padding / border / border-radius / font-size / height / gap / margin）在 docs 预览里全部失效，渲染出扁平无样式的盒（见 issue：`/components/uni/input` 的 input-mp-types 截图）。
+
+解法由两层组合，**两层都不可少**：
+
+## 1.1 docs-side vite plugin：rpxTransform
+
+`apps/docs/.vitepress/utils/rpx-transform.ts` 已经挂着。它在 `transform()` 里匹配以下三种 id 形态并把所有 `(\d+)rpx` 替换为 `(\d+ × 0.5)px`：
+
+```text
+a. id.includes('@snui/uni')                       — 包主入口 import（dist barrel）
+b. id.includes('<packages/uni/src>/')             — SFC scoped CSS via @snui/uni-src alias
+c. id.includes('/packages/uni/dist/')             — 直接 file fetch（vite dev 的 /@fs/... 形态）
+```
+
+0.5 是标准 750rpx → 375px viewport 映射。
+
+**id 匹配规则改动时必须 review 这三个形态是否都还覆盖** —— bundler / monorepo layout 变化可能让 path 重写，filter regression 直接表现成"demo 没样式"。
+
+## 1.2 docs demo 必须走 `@snui/uni-src` 而非 `@snui/uni`
+
+每个 uni-end demo 文件（`apps/docs/.vitepress/demo/*-mp-*.vue`）必须从 `@snui/uni-src/components/<comp>/<comp>.vue` import 组件本体 + types / shortcut data / registry，**禁止**：
+
+```ts
+import { SnInput } from '@snui/uni'                       // ❌ dist 入口
+import { registerSnIcons } from '@snui/uni'              // ❌
+import type { FormRule } from '@snui/uni'                // ❌
+import { ChevronRight } from '@snui/uni'                 // ❌ shortcut data
+```
+
+正确写法：
+
+```ts
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue'           // ✓
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry'  // ✓
+import type { FormRule } from '@snui/uni-src/components/sn-form/sn-form-types'  // ✓
+import { ChevronRight } from '@snui/uni-src/components/sn-icon/sn-icon-set'    // ✓
+```
+
+**为什么强制 source import**：
+
+1. `@snui/uni-src` alias 走 vite-plugin-vue 重编 SFC，scoped CSS id 形如
+   `…/packages/uni/src/components/sn-input/sn-input.vue?vue&type=style&index=0&scoped=true&lang.css`，
+   plugin 走 (b) 分支必命中。
+2. `@snui/uni` dist 入口由 vite resolve 到 `dist/styles/index.css`，
+   plugin 走 (a) 或 (c) 分支，依赖 path string 命中。
+3. 包 main 入口的 bundled JS 不带 scoped style，**所有**样式只在 `dist/styles/index.css`。
+   一旦 monorepo 路径规划变化（hoisted node_modules / workspace layout shift），
+   (a) / (c) 分支就 miss；source import 的 (b) 分支永远命中 —— **plugin 修改也救不回的方向**。
+
+**写新 mp demo 时**：先看 `apps/docs/.vitepress/demo/button-mp-*.vue` 的写法作为模板。
+
+review agent / Reviewer 检查 mp demo 时，必须 grep：
+
+```bash
+grep -l "from '@snui/uni'" apps/docs/.vitepress/demo/*-mp-*.vue
+```
+
+若有命中 → reject，要求改写为 `@snui/uni-src/...`。
+
+---
+
+# 112. 双端组件 API 参考库 — 强约束
+
+snail-aui 的 `@snui/vue-web` 与 `@snui/uni` 在 API surface 上**不共用一份参考库**：
+
+| 端（package） | 参考库 | 文档地址 |
+|---|---|---|
+| `@snui/vue-web`（web 浏览器端） | **naive-ui** | https://www.naiveui.com/zh-CN/light/components/{button,input,form,...} |
+| `@snui/uni`（uni-app 小程序/H5/App 端） | **wot-ui** | https://wot-ui.cn/component/{input,button,form,...}.html |
+
+**每写一个组件的 prop / event / slot，都必须 1:1 对齐参考库同名列出的属性**（同名 ≠ 类型相同；类型 / 默认值 / 受控语义都按参考库约定走）。
+
+## 112.1 选错参考库 = Stop-the-Line
+
+```text
+❌ 在 @snui/vue-web/SnButton.vue 里抄 wd-button 的 open-type / hover-class / cell props
+❌ 在 @snui/uni/sn-button.vue 里抄 n-button 的 attrType / tag / showIcon props
+❌ 两端共用一份 props 列表（一个组件不应该既含 attrType 又含 hover-class）
+```
+
+任何违反 → AGENTS.md §93 Stop-the-Line。CI / Review Agent / Human Gate 三处都会拒收。
+
+## 112.2 规则如何落到代码层
+
+### a. 组件文件头部注释必须标注参考源
+
+```vue
+<script setup lang="ts">
+/**
+ * SnButton — web-end primary button (AUI-CORE-001).
+ *
+ * Reference library: naive-ui `n-button` (https://www.naiveui.com/...)
+ * Anything new added here MUST also be added to the reference list in
+ * AGENTS.md §112.
+ */
+</script>
+```
+
+`sn-*.vue`（uni 端）头部必须写 `Reference library: wot-ui wd-button`。
+
+### b. withDefaults 注释字段必须 1:1 复刻参考库的 prop 含义
+
+参考库 prop → snail 组件 prop 名字可以重命名（去繁就简到 www- 友好命名），但**默认值 / 可选值集合 / 受控语义必须对齐**。
+
+例：
+
+```ts
+// wot-ui wd-button:
+type: 'primary' | 'success' | 'warning' | 'danger' | 'info'  // 5 档 + 1 default
+variant: 'base' | 'plain' | 'dashed' | 'soft' | 'subtle' | 'text'
+
+// naive-ui n-button:
+type: 'default' | 'primary' | 'tertiary' | 'info' | 'success' | 'warning' | 'error'
+attrType: 'button' | 'submit' | 'reset'
+```
+
+### c. 旧的别名 prop 必须保留 + 标注 `@deprecated`，不要破坏现有用户代码
+
+例：web SnButton 保留 `htmlType: 'button' | 'submit' | 'reset'` 作为 `attrType` 的 legacy alias；uni sn-input 保留 `bordered: boolean` 作为 `border: 'all' | 'bottom' | 'none'` 的 legacy alias。
+
+### d. 测试必须覆盖参考库的每个非平凡 prop
+
+| 参考库 prop | 测试必含 | 备注 |
+|---|---|---|
+| `border: 'all' \| 'bottom' \| 'none'` | 3 个 class 渲染 + `bordered` alias | 跨端通用 |
+| `variant: 'plain' \| 'soft' \| 'dashed' \| 'subtle' \| 'text'` | 5 个 class 渲染 | 仅 uni |
+| `attrType: 'button' \| 'submit' \| 'reset'` | type 属性转发 | 仅 web |
+| `loadingColor` | inline style 转发 | 仅 uni |
+| `iconPlacement: 'left' \| 'right'` | 右对齐 class | 仅 web |
+| `openType: 'share' \| ...` | open-type 属性转发 | 仅 uni（uni-app MP only） |
+
+每个组件完成时 test 覆盖率（含对齐比例）写入 §94 Task Completion Report 的 `Tests` 行。
+
+### e. PR / merge gate 必须校验
+
+Review Agent / CI 在合并前必须做一次反向校验：
+
+```bash
+# 1. web 端必须对 naive-ui 对得上，不能有 wot-ui-only 的 props
+grep -n "open-type\|hover-class\|hover-start-time\|hover-stay-time\|form-type\|cell=\|variant=\|loading-color\|custom-style=\|custom-class=" \
+  packages/vue-web/src/**/*.vue \
+  --include=SnButton.vue --include=SnInput.vue --include=SnForm.vue --include=SnFormItem.vue
+
+# 命中 → reject（这些是 uni-only 的，web 端不该出现）
+```
+
+```bash
+# 2. uni 端必须对 wot-ui 对得上，不能有 naive-ui-only 的 props
+grep -n "attrType=\|attr-type=\|tag=\|focusable=\|showIcon=\|icon-placement=\|secondary=\|quaternary=\|strong=" \
+  packages/uni/src/components/*/*.vue
+
+# 命中 → reject（这些是 web-only 的，uni 端不该出现）
+```
+
+### f. 持续校验
+
+每次新组件 / 新 prop 加入 → 必须同时更新：
+
+1. 组件 SFC 头部注释（reference library）
+2. withDefaults 默认值（与参考库一致）
+3. 测试（每个新增 prop 至少一份渲染 / 行为测试）
+4. 本规则 §112.2 表格（如新增 prop 类别）
+
+不允许只更新前端 SFC 而漏测试或漏规则 —— 会让下一次同组件迭代无法对齐。
+
+## 112.3 例外：MP-only / Web-only 边界
+
+某些 prop 仅在某一端的 runtime 下有意义：
+
+| prop | 仅在哪端 | 备注 |
+|---|---|---|
+| `open-type`, `hover-class`, `hover-start-time`, `hover-stay-time`, `form-type` | uni（uni-app MP runtime） | 不要搬到 web |
+| `cursor`, `selection-start`, `selection-end`, `placeholder-style`, `placeholder-class`（uni MP native attr 形态）, `confirm-type`, `hold-keyboard`, `adjust-position`, `always-embed` | uni（uni-app MP runtime） | 不要搬到 web |
+| `attrType`, `tag` (`'button' \| 'a' \| 'div' \| 'span'`), `focusable`, `iconPlacement`, `showIcon`, `color`, `secondary`, `tertiary`, `quaternary`, `strong`, `ghost`, `dashed`, `circle`, `tertiary` | web | 不要搬到 uni |
+| `attrType` legacy alias `htmlType` | web | 仅作 back-compat alias |
+
+跨端**通用**部分（type / size / disabled / placeholder / clearable 等基础受控 props）必须 1:1 对齐；任一端漏补都需要补齐，缺口是设计 bug，不是可选优化。
+
+### 112.3a 登记的 additive 能力（uni 端）
+
+| 能力 | 组件 | 行为 |
+|---|---|---|
+| 桌面 H5 鼠标拖拽 + 滚轮（additive） | `sn-picker-view` / `sn-datetime-picker-view`（`sn-picker` / `sn-datetime-picker` 弹层内同享） | H5 宿主（`typeof document !== 'undefined'`）在触摸之外额外支持鼠标拖动滚轮与 wheel 逐行滚动；实现于 `packages/uni/src/components/sn-picker-view/sn-picker-view-drag.ts` 的 `bindMouseGestures`，组件根节点携带 `data-snui-mouse-gesture` 供 docs 预览桥识别跳过。参考库无此能力，属 AUI 追加 |
+
+## 112.4 机器可读规格（`.ai/reference/`）
+
+§112 的 1:1 对齐要求过去只能靠逐个打开上游文档页人工比对，无法在 review 中
+diff。现在 wot-ui 的完整 API 面已抓取入库：
+
+```text
+.ai/reference/wot-ui-api-spec.json   wot-ui v2.3.2，82 个组件 / 1480 个 prop
+.ai/reference/README.md              结构说明 + 使用规则
+```
+
+新增 `sn-*` 组件时的强制顺序：
+
+```text
+读 .ai/reference/wot-ui-api-spec.json 对应条目
+ ↓
+按 name / type / default 声明 props
+ ↓
+写测试（每个非平凡 prop 至少一条断言）
+ ↓
+更新 ai-description.md + 双语文档
+```
+
+**禁止凭记忆写 prop**。规格里没有的 prop 不得出现在 uni 端（web-only prop
+同样禁止，见 §112.1）。确实需要新增 AUI 专属能力时，必须在组件头注释里标注
+"additive"，并同步登记到本规则。
+
+### 112.4a 用户指定的例外参考库（uni 端）
+
+个别组件的参考库由 Human 显式指定（产品决策，§99），登记如下：
+
+| 组件 | 参考库 | 依据 |
+| --- | --- | --- |
+| `sn-paging` | z-paging（https://z-paging.zxlee.cn） | Human 指令（2026-10-25）：高性能、轻量化对标 z-paging 的分页容器。wot-ui spec 无对应容器组件（仅 `wd-loading` / `wd-loadmore`，二者仍是内嵌指示器的参考）；prop 命名 / 默认文案对齐 z-paging 子集，wot-ui / naive-ui 独有 prop 不得混入 |
+
+## 112.5 uni 端暗色模式契约
+
+uni-app 运行在无 `document` / 无 `:root` 的小程序与原生 App 上，web 的
+`.dark` on `<html>` 方案不可用。uni 端暗色的唯一契约：
+
+```text
+--sn-mp-color-* 别名  +  .sn-theme-dark class（或 page.sn-theme-dark）
+```
+
+强制约束：
+
+1. 组件颜色 **只能** 通过 `var(--sn-mp-color-*)` 取得，禁止颜色字面量
+2. **禁止** `var(--sn-mp-x, #fff)` 这类浅色兜底 —— 兜底会让暗色下漏出浅色
+3. 新增 `--sn-mp-color-*` 必须在 `packages/tokens-mp/styles/index.css` 的
+   `page.sn-theme-dark, .sn-theme-dark` 块里同步覆盖
+   （`packages/tokens-mp/src/variables.test.ts` 有回归测试守着）
+4. 组件文档页必须有「暗色模式」小节，说明可用
+   `<sn-config-provider theme="dark">` 包裹验证
+
+`sn-config-provider` 的 `theme` / `themeVars` 对应 `wd-config-provider` 同名
+prop；`skin`（Style Pack）是 AUI 追加能力，不替代 `theme`。
+
+---
+
+# 113. UI 图标禁止用 emoji，必须走 SnIcon / SnIcon 组件
+
+## 113.1 规则
+
+任何**面向用户**的 UI 元素（按钮、tag、close 触发、status indicator、navigation arrow、tab 切换、列表 chevron 等）需要"图标"语义时：
+
+```text
+✅ SnIcon component 渲染 SVG（resolved via registerSnIcons / 自带 builtin icons）
+✅ inline SVG 元素 <svg><path d="..." /></svg>
+✅ unicode 文本符号但**非 emoji**的字符（× · − + ※ → ← ↑ ↓ ▶ ◆ ★ — 但 × 是 delete 符号不是 emoji，谨慎）
+
+❌ ❌ ❌ emoji 字符 ❌ ❌ ❌
+   🙈 👁 👀 ⭐ ✨ ✓ ✔ ❌ 🛒 ⚡ 🎉 🚀 ✏ 🗑 🔍 💡 📝 ⚙ 🔔 🏠 ❤️
+```
+
+emoji 不允许出现在：
+- 组件 SFC 模板内（`<button>{{ 🙈 }}</button>` ← Stop-the-Line §93）
+- demo `<Demo name="..." />` 引用源里的 icon slot / inline text
+- docs markdown 里"装饰性"的图标
+
+emoji 允许出现在：
+- 文档正文中文描述用 emoji 提高可读性（如 `💡 Tips:` 前缀），**不**渲染为 UI 节点
+- 代码注释里说明规则的引用（如本节）
+- 测试 mock data 字符串（HTML attribute value 里用作占位符）— 但推荐改成普通 ASCII
+
+## 113.2 自带 builtin 图标 — 解耦第三方 icon 库
+
+`@snui/vue-web` 不强制依赖 lucide-vue-next / tabler-icons / heroicons / 任何第三方图标库。组件内部必须的少量核心图标（SnInput password toggle 的 Eye/EyeOff、SnInput clear button 的 X、SnButton loading spinner 等）由 `@snui/vue-web` 自带的 `packages/vue-web/src/icon/sn-input-icons.ts` 提供：
+
+```ts
+// packages/vue-web/src/icon/sn-input-icons.ts
+export const EyeIcon: IconComponent     // SVG <path> from MDI / Lucide
+export const EyeOffIcon: IconComponent  // 同上
+export const XIcon: IconComponent       // 同上
+```
+
+原则：
+- 任何**用户能看到的 UI 图标**走 SnIcon 组件 + IconComponent 数据
+- `IconComponent` 通过 `registerSnIcons({...})` 注册；包内置核心图标不依赖消费者手动注册
+- 消费者可以自由用 `registerSnIcons({ ChevronRight: ChevronRight, ... })` 覆盖或扩展
+
+`@snui/uni` 端同理：`packages/uni/src/components/sn-icon/sn-icon-set.ts` 维护一棵小图标集（X / Eye / EyeOff / ChevronRight 等），文件-per-icon 拆分以便 tree-shake。
+
+## 113.3 SnIcon 组件契约
+
+```ts
+// packages/vue-web/src/icon/SnIcon.vue / packages/uni/src/components/sn-icon/sn-icon.vue
+interface IconData {
+  viewBox: string
+  paths: string[]  // SVG <path d="...">，可多条
+}
+
+defineComponent<{ icon: IconComponent | IconComponent[]; size?: number | string }>(...)
+```
+
+- 严禁把 emoji 字符串塞进 `:icon`（运行时类型不匹配 → fall back to null → 控件没图标）
+- `cssIcon` mode 仅 web 端有：consumer 直接给 CSS class name（用于外接矢量字体等场景），内部也禁 emoji
+
+## 113.4 检测 / 校验
+
+CI / Review Agent 必须 grep：
+
+```bash
+# 找 docs / package 源码里的 emoji
+rg --pcre2 "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{1F000}-\x{1F2FF}]" \
+  apps/docs/.vitepress/demo \
+  packages/vue-web/src packages/uni/src/components
+```
+
+命中 → reject；要求改成 `SnIcon :icon="XIcon"` 或者内置 builtin icon。
+
+测试文件里的 mock string（test ID 占位符）属于宽松区，但**优先用 ASCII**（`"stub"` `"slot"` `"X"` 等）。
+
+## 113.5 demo 里的"切换按钮" / 状态指示
+
+写 demo 时不要做：
+
+```vue
+<!-- ❌ emoji-as-ui-icon -->
+<SnButton>{{ ok ? '✓ Done' : 'Apply' }}</SnButton>
+
+<!-- ❌ emoji in icon slot -->
+<SnButton><span>📁 Pick</span></SnButton>
+```
+
+要改成：
+
+```vue
+<!-- ✅ SnIcon + text -->
+<SnButton>
+  <SnIcon v-if="ok" :icon="CheckIcon" :size="14" />
+  {{ ok ? 'Done' : 'Apply' }}
+</SnButton>
+
+<!-- ✅ SnIcon (registered name) -->
+<SnButton :icon="ok ? 'Check' : 'Plus'">{{ ok ? 'Done' : 'Pick' }}</SnButton>
+```
+
+## 113.6 例外
+
+- **docs markdown 正文段落** 里的 emoji（如 `💡 注意：`）允许 — 它们渲染为文字字符、不进 UI 树
+- **代码注释 / 文档元描述** 里的 emoji（如本节）允许 — 它们不是 UI 节点
+- emoji-as-mock-data 在测试里（`<i data-testid="slot">anything</i>`）允许但不推荐
+
+---
+
+# 114. 组件文档文案规范 — 禁止出现外部参考库名称
+
+## 114.1 规则
+
+**snail-aui 的组件文档（`apps/docs/**`、`packages/*/src/**/ai-description.md`）是自有产品的文档，不是参考库的镜像说明。**
+
+禁止在用户可见文档中出现：
+
+```text
+naive-ui / naive ui / NButton / NInput ...
+wot-ui / wot design ...
+Element Plus / Ant Design / antd / Vant / Arco ...
+对标 xxx / 参考 xxx / 与 xxx 对齐 / 同 xxx 一致
+parity with xxx / aligned with xxx / same as xxx
+```
+
+也禁止出现这类表述的变体：
+
+```text
+❌ 对标 naive-ui 实现
+❌ 与参考库保持 1:1
+❌ 参考 naive-ui 的 props 设计
+❌ 本组件按 naive-ui 语义实现
+```
+
+## 114.2 为什么
+
+1. **产品独立性** — snail-aui 是独立组件库，文档不应替第三方做宣传，也不应让用户觉得「这是某库的仿制版」。
+2. **可维护性** — 一旦文档和外部库绑定，外部库改名 / 改语义就会让文档变成误导。
+3. **§112 已覆盖内部约束** — 参考库关系属于 **Agent 内部实现约定**，应写在源码头部注释（§112.2a）和 `ai-description.md` 的元信息里，**不进入面向用户的文档正文**。
+
+## 114.3 正确写法
+
+| 场景 | ❌ 禁止 | ✅ 正确 |
+| --- | --- | --- |
+| 导语 | 本组件对标 naive-ui 的 Drawer | 抽屉用于从屏幕侧边滑出承载辅助内容 |
+| props 说明 | 与 naive-ui 保持一致的 `resizable` | `resizable` 控制是否允许拖拽边缘调整宽高 |
+| 迁移提示 | 从 Element Plus 迁移请参考… | 删除该段，或改写为能力对比说明 |
+| demo 标题 | naive-ui 风格的多层抽屉 | 多层嵌套抽屉 |
+
+## 114.4 内部元信息例外（不进用户文档）
+
+以下位置**允许且要求**标注参考源 —— 它们属于 §112.2a 的 Agent 契约，不是用户文档：
+
+- `packages/<pkg>/src/<camelCase>/ai-description.md` 的 frontmatter / 元信息区
+- `packages/<pkg>/src/<camelCase>/Sn<Name>.vue` 头部注释
+- `AGENTS.md`、`dev-docs/**` 等内部文档
+
+判定标准：**用户打开文档站会看到的内容里绝不能出现外部库名；仓库内部协作文档里必须保留。**
+
+## 114.5 校验
+
+```bash
+# 用户可见文档里的外部库名 / 对标文案（命中即修）
+grep -rniE "naive-?ui|wot-?ui|element-plus|ant-?design|vant|arco-?design|对标|参考库|参考 ?UI|与.*对齐" \
+  apps/docs/ --include=*.md --include=*.vue \
+  | grep -v "node_modules"
+```
+
+CI 应把该检查纳入 gate；命中数必须为 0（§114.4 列出的内部元信息路径除外）。
+
+---
+
+# 115. 组件文档与演示质量标准
+
+## 115.1 演示覆盖面
+
+每个 web 端组件在 `apps/docs/.vitepress/demo/` 下的演示必须覆盖参考实现（§112 定义的参考库）的**全部常规场景**。
+
+判定：
+
+```text
+参考实现的每个非 debug 演示
+  ↓
+snail-aui 必须有对应用例
+```
+
+- **debug 类演示**（`*-debug`、`rtl-debug`、`dark-*-debug`、`focus-debug`）**可选**：能覆盖则覆盖，不覆盖时必须在 `dev-docs/SNUI-WBS-v3.1.md` 登记为待办。
+- 每个演示**一个文件**，命名 `<component>-web-<scenario>.vue`（kebab-case，见 §36）。
+- 演示必须**自包含可运行**：不依赖未导出的内部状态，不 mock 掉真实交互路径。
+
+## 115.2 演示质量标准
+
+```text
+[ ] 每个 demo 只讲清一个场景，标题即场景名
+[ ] 用 SnIcon 表示图标（§113），禁止 emoji / 第三方 icon 组件
+[ ] 颜色 / 间距走 var(--sn-web-*) token（Spec-02），禁止字面量
+[ ] 交互真实可用：点击 / 拖拽 / 键盘可达
+[ ] 不使用「演示 A / 演示 B」这类无语义占位文案
+[ ] 与同组件其他 demo 视觉风格统一（间距、对齐、容器宽度）
+```
+
+「演示是乱的」属于质量缺陷，不是风格偏好 —— 遇到必须修，不得放过。
+
+## 115.3 文档结构标准
+
+每个组件文档 `apps/docs/components/web/<component>.md` 必须按固定骨架组织：
+
+```md
+# 组件名 Name
+
+<一句话定位：这个组件解决什么问题>
+
+## 何时使用
+
+- 场景 1
+- 场景 2
+
+## 代码演示
+
+### <场景名>
+
+<描述该场景要说明的能力>
+
+<demo 组件引用>
+
+## API
+
+### Props
+
+| 名称 | 类型 | 默认值 | 说明 |
+
+### Events
+
+| 名称 | 参数 | 说明 |
+
+### Slots
+
+| 名称 | 参数 | 说明 |
+
+### Methods
+
+| 名称 | 类型 | 说明 |
+```
+
+规则：
+
+- 章节顺序固定：`何时使用` → `代码演示` → `API`。
+- API 表**只写实际存在的成员**；未实现项不得出现在表里，应登记到 WBS（§112 future markers）。
+- Props 说明用**行为描述**，不用「同某某库」这类比较句式（§114）。
+- 每个 Props 行必须有默认值；无默认值写 `undefined`。
+
+## 115.4 与其它规则的关系
+
+- 与 §112 配合：props 语义 1:1 对齐是**内部约束**，文档呈现是**自有表述**。
+- 与 §110 配合：文档自动同步机制不变。
+- 与 §113 配合：演示里的图标一律走 SnIcon。
+- 与 §94 配合：Task Completion Report 必须列出「demo 数量 before → after」。
+
+---
+
+# 116. uni-app / uni-app x 双端适配规范（单源码双产物）
+
+> 架构依据：ADR-0004（`.ai/decisions/0004-uni-x-adoption.md`）。
+> uni-app x 指 App 端蒸汽模式（vapor, HBuilderX 5.21+）；其 web / 小程序目标不在范围内。
+
+## 116.1 架构铁律
+
+```text
+packages/uni      唯一组件源码（uni-app 全端 + uni-app x 的事实源）
+       ↓  确定性转换管线
+packages/uni-x    转换器 + 锚定补丁 → dist/components/*.uvue（npm 发布，prepack 自动生成）
+```
+
+- **禁止**手写第二套 `.uvue` 组件树；**禁止**手改 `packages/uni-x/dist`（生成物）。
+- uni-x 消费方式：`pnpm add @snui/uni-x` + easycom 指向
+  `@snui/uni-x/components/sn-$1/sn-$1.uvue`；用户侧零生成、零拷贝。
+- 所有无法自动转换的组件级差异必须落在 `packages/uni-x/src/transform/patches.ts`
+  锚定补丁，缺口登记于 `PORTING-REPORT.md` 与 `cli.ts` 的 `MANUAL_FLAGS`。
+
+## 116.2 双端兼容写法（在 packages/uni 写组件时强制）
+
+**CSS**：
+
+| 规则 | 原因 |
+| --- | --- |
+| 只用 class 选择器（复合 `.a.b` 允许）；后代选择器最多两段且目标必须单 class | App 端仅 class 选择器；两段式会被管线降级为 CSS 变量上下文注入，其余直接删除并上报 |
+| 禁伪类（`:hover/:active/:focus/:nth-child`）与伪元素（`::before/::after`） | App 端不支持；按压态一律 `hover-class`，分隔线用真实元素，交错样式用 v-for index class |
+| 文字必须显式写在 `<text>` 内；**不依赖样式继承** | App 端文本不继承容器样式；裸文本会被自动包 `<text>` 且无样式 |
+| 皮肤 / 主题差异走 CSS 变量（`--sn-mp-*`），禁止新增 `.snui-skin-xxx` 后代选择器覆盖 | 后代选择器在 App 端无法表达（skin 变量化是 ADR-0004 既定方向） |
+| `cursor` / `user-select` / `outline` 等允许存在但会被剥离 | 不得让布局依赖它们 |
+
+**模板**：
+
+- 事件用 `@click`（`@tap` 会被归一为 `@click`）。
+- `<component :is>` 允许（uvue App 端官方支持）；新增用法必须登记到 `MANUAL_FLAGS` 验证。
+- 禁 `position: sticky`（App 端不支持，内置 sticky-section 仅限 list-view 内）。
+- `data-*` 属性仅作工具钩子（uni-x 产物中被剥离），不得承载运行时语义。
+
+**脚本**：
+
+- DOM / `window` 访问必须包 `#ifdef H5`。
+- `event.preventDefault()` / `stopImmediatePropagation()` 会被转为可选调用，不得依赖其同步生效。
+- 不得消费 `defineSlots` 返回值（现有例外：sn-form-item，已登记）。
+
+## 116.3 补丁纪律
+
+- 锚点失配 = 构建失败 = 必须同步 `patches.ts`；禁止放宽锚点或绕过构建。
+- 新增 / 修改组件后必须跑 `pnpm -F @snui/uni-x build`，并检查 `PORTING-REPORT.md`：
+  该文件**不得新增** pseudo-class / pseudo-element / attribute-selector /
+  combinator 类 issue——出现即改写法，或配补丁并在 `MANUAL_FLAGS` 登记。
+
+## 116.4 文档与状态
+
+- uni-x 能力变化必须同步双语指南 `apps/docs/guide/uni/uni-app-x.md`（含 en）的
+  状态表与真机验证清单。
+- §110 的逐组件三端文档在 uni-x 真机验证完成前不展开，以指南状态表 +
+  PORTING-REPORT 为准（ADR-0004 Consequences）。
+- 发版：`prepack` 自动重建 `dist/`；正式发布需将 `@snui/uni-x` `private` 翻转并走
+  changesets（`privatePackages.policy: "disallow"`，见包 README）。
+
+---
+
 # END
 
-AUI Agent 执行标准 v1.0.1（补充规则 #101-#110）
+AUI Agent 执行标准 v1.0.2（补充规则 #101-#116）
