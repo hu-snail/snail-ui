@@ -26,6 +26,29 @@ MP 兼容改造移除了 `sn-picker-view` / `sn-datetime-picker-view` 模板中�
 正确性判定（动量投影逻辑未动），但优先级建议提高——按上面第二/三条方向
 做时钟注入是根治路径。
 
+### 追记二：冻结 Date.now 的实测结论（否决捷径）
+
+实测把 `Date.now` 冻结为常量（touchstart/touchend 间隔 = 0）不可行：
+`velocityPxPerMs` 的 `dt < MIN_SAMPLE_MS` 守卫虽然让动量归零，但 datetime
+用例的提交值变成 NaN、picker-view 用例完全不 emit——引擎/组件内还有第二处
+时间使用路径（NaT 值提交、无提交），冻结全局时钟会踩进去。
+
+**正确修法（方案二细化）**：引擎已具备 `options.now` 时钟注入点
+（`sn-picker-view-drag.ts:243`），但组件未把它暴露出来。做法：
+`SnPickerView` / `SnDatetimePickerView` 增加内部注入通道（provide key 或
+仅测试可见的 instance 字段，标注 `@internal`），贯通到
+`createRollerDrag({ now })`；测试里注入阶跃时钟（touchstart=T、
+touchend=T+8ms，8 < MIN_SAMPLE_MS=16，动量归零且避免 0 间隔路径）。
+涉及两个组件 + 两个测试文件，工作量 ≈ 半个任务。
+
+### 追记三：包体卫生对测试的影响（已修）
+
+同卷 AppleDouble 垃圾（`._index.test.ts` 等）会被 vitest 当测试文件解析
+（`Unexpected "\x00"`）导致 style-packs 套件必挂；`@snui/tokens` 的静态
+CSS 漂移测试按精确字符串比较，prettier 规范化 rgba 空格后误报漂移。
+已修：全部 vitest 配置补 `exclude: ['**/._*']`（style-packs / ai 此前缺失）、
+漂移测试改去空白比较、仓库 `._` 垃圾一次性清理。
+
 ## Regression
 
 修复时先在负载下复现（合并跑 4 文件循环 ≥10 次），再验证 0 失败。

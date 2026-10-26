@@ -84,7 +84,12 @@ describe('@snui/tokens — static stylesheet emission', () => {
     expect(leaves.length).toBeGreaterThanOrEqual(80);
     for (const [name, tsValue] of leaves) {
       expect(declared.has(name), `${name} is missing from styles/index.css`).toBe(true);
-      expect(declared.get(name), `${name} drifted from src/component.ts`).toBe(tsValue);
+      // CSS 侧经过 prettier（如 rgba 空格规范化），按去空白后的值比较：
+      // 漂移检测针对语义（颜色/长度），不针对排版。
+      const normalize = (value: string): string => value.replace(/\s+/g, '');
+      expect(normalize(declared.get(name) ?? ''), `${name} drifted from src/component.ts`).toBe(
+        normalize(tsValue),
+      );
     }
   });
 
