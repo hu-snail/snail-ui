@@ -13,6 +13,8 @@ on:
       - 'packages/templates/**'
       - 'packages/tokens/**'
       - 'packages/tokens-mp/**'
+      - 'packages/style-packs/**'
+      - 'pnpm-lock.yaml'
       - '.github/workflows/uni-demo-deploy.yml'
 
 permissions:
