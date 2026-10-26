@@ -212,10 +212,11 @@ const railStyleValue = computed(() =>
   border-radius: 50%;
   background-color: var(--sn-web-switch-knob-bg, var(--sn-web-color-background-surface));
   box-shadow: var(--sn-web-switch-knob-shadow, 0 2px 4px rgba(0, 0, 0, 0.15));
-  /* Slide on transform, not `left` — transform animates on the compositor,
-   * `left` re-layouts every frame. The shift is rail width minus the knob
-   * and the 2px inset on each side, from the same tokens the rail uses. */
-  transition: transform 0.2s ease-in-out;
+  /* `left` (not transform): the knob must track the *actual* rail width,
+   * which `railStyle` render-props and token overrides can change — a
+   * token-based translateX would desync from custom widths. The layout
+   * dirty region is the rail itself, so the cost is negligible. */
+  transition: left 0.2s ease-in-out;
 }
 
 .sn-switch--small .sn-switch__knob {
@@ -227,29 +228,15 @@ const railStyleValue = computed(() =>
   height: var(--sn-web-switch-knob-size-lg, 24px);
 }
 
-/* Checked slide: same end position as `left: calc(100% - knob - 2px)` —
- * translateX distance = rail width − 2×2px inset − knob size. */
+/* Rail width minus knob + 2px inset on each side. */
 .sn-switch--checked .sn-switch__knob {
-  transform: translateY(-50%)
-    translateX(
-      calc(var(--sn-web-switch-rail-width, 34px) - var(--sn-web-switch-knob-size, 18px) - 4px)
-    );
+  left: calc(100% - var(--sn-web-switch-knob-size, 18px) - 2px);
 }
 .sn-switch--small.sn-switch--checked .sn-switch__knob {
-  transform: translateY(-50%)
-    translateX(
-      calc(
-        var(--sn-web-switch-rail-width-sm, 34px) - var(--sn-web-switch-knob-size-sm, 14px) - 4px
-      )
-    );
+  left: calc(100% - var(--sn-web-switch-knob-size-sm, 14px) - 2px);
 }
 .sn-switch--large.sn-switch--checked .sn-switch__knob {
-  transform: translateY(-50%)
-    translateX(
-      calc(
-        var(--sn-web-switch-rail-width-lg, 52px) - var(--sn-web-switch-knob-size-lg, 24px) - 4px
-      )
-    );
+  left: calc(100% - var(--sn-web-switch-knob-size-lg, 24px) - 2px);
 }
 
 /* Labels */
