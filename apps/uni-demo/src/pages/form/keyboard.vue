@@ -5,6 +5,10 @@ import Demo1 from './demos/keyboard-mp-car-custom.vue';
 import Demo2 from './demos/keyboard-mp-labels.vue';
 import Demo3 from './demos/keyboard-mp-scrim.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -12,7 +16,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -20,7 +24,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">car-custom</text>
+          <text class="module__title">{{ t('car-custom', 'Car Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -28,7 +32,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">labels</text>
+          <text class="module__title">{{ t('labels', 'Labels') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -36,7 +40,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">scrim</text>
+          <text class="module__title">{{ t('scrim', 'Scrim') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />

@@ -6,6 +6,10 @@ import Demo2 from './demos/input-number-mp-controls.vue';
 import Demo3 from './demos/input-number-mp-custom-class.vue';
 import Demo4 from './demos/input-number-mp-theme-state.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -21,7 +25,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">commit-hooks</text>
+          <text class="module__title">{{ t('commit-hooks', 'Commit Hooks') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -29,7 +33,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">controls</text>
+          <text class="module__title">{{ t('controls', 'Controls') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -37,7 +41,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">自定义类名</text>
+          <text class="module__title">{{ t('自定义类名', 'Custom class') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -45,7 +49,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">theme-state</text>
+          <text class="module__title">{{ t('theme-state', 'Theme State') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />

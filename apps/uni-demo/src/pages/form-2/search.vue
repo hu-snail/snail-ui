@@ -6,6 +6,10 @@ import Demo2 from './demos/search-mp-input-attrs.vue';
 import Demo3 from './demos/search-mp-placeholder-style.vue';
 import Demo4 from './demos/search-mp-variant.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -21,7 +25,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">cancel-states</text>
+          <text class="module__title">{{ t('cancel-states', 'Cancel States') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -29,7 +33,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">input-attrs</text>
+          <text class="module__title">{{ t('input-attrs', 'Input Attrs') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -37,7 +41,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">placeholder-style</text>
+          <text class="module__title">{{ t('placeholder-style', 'Placeholder Style') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -45,7 +49,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">变体</text>
+          <text class="module__title">{{ t('变体', 'Variants') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />

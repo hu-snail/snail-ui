@@ -75,9 +75,58 @@ const SCENARIO_LABELS = {
   hover: '悬停',
 };
 
+const SCENARIO_LABELS_EN = {
+  basic: 'Basic usage',
+  behavior: 'Behavior',
+  size: 'Size',
+  shape: 'Shape',
+  state: 'State',
+  states: 'State',
+  custom: 'Custom',
+  'custom-class': 'Custom class',
+  'custom-style': 'Custom style',
+  variant: 'Variants',
+  config: 'Configuration',
+  slots: 'Slots',
+  type: 'Type',
+  types: 'Type',
+  vertical: 'Vertical',
+  color: 'Color',
+  icon: 'Icon',
+  icons: 'Icons',
+  iconfont: 'Iconfont',
+  'icon-font': 'Iconfont',
+  disabled: 'Disabled',
+  style: 'Style',
+  scroll: 'Scroll',
+  cell: 'Cell',
+  layout: 'Layout',
+  guard: 'Guard',
+  position: 'Position',
+  label: 'Label',
+  export: 'Export',
+  text: 'Text',
+  placement: 'Placement',
+  badge: 'Badge',
+  panels: 'Panels',
+  sheet: 'Action sheet',
+  fields: 'Fields',
+  'form-type': 'Form type',
+  fallback: 'Fallback',
+  threshold: 'Threshold',
+  visibility: 'Visibility',
+  hover: 'Hover',
+};
+
 function scenarioLabel(scenario) {
   if (scenario === undefined || scenario === '') return SCENARIO_LABELS.basic;
   return SCENARIO_LABELS[scenario] ?? scenario;
+}
+
+/** 场景英文标题：映射表优先，未收录的 key 用 Title Case 兜底。 */
+function scenarioLabelEn(scenario) {
+  if (scenario === undefined || scenario === '') return SCENARIO_LABELS_EN.basic;
+  return SCENARIO_LABELS_EN[scenario] ?? titleEnOf(scenario);
 }
 
 // ── 扫描 demo 源（src/pages/<group>/demos/） ────────────────────────────────
@@ -204,12 +253,13 @@ for (const sub of subpackages) {
     const imports = [
       ...comp.demos.map((demo, i) => `import Demo${i} from './demos/${demo.name}.vue'`),
       `import DemoPageShell from '../../components/DemoPageShell.vue'`,
+      `import { useDemoUi } from '../../state/demo-ui';`,
     ].join('\n');
     const modules = comp.demos
       .map(
         (demo, i) => `      <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">${scenarioLabel(demo.scenario)}</text>
+          <text class="module__title">{{ t('${scenarioLabel(demo.scenario)}', '${scenarioLabelEn(demo.scenario)}') }}</text>
         </view>
         <view class="module__body">
           <Demo${i} />
@@ -220,6 +270,9 @@ for (const sub of subpackages) {
     const vue = `<script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— ${comp.key} 组件全部场景聚合页（静态展开）。
 ${imports}
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>

@@ -11,6 +11,10 @@ import Demo7 from './demos/form-mp-rules.vue';
 import Demo8 from './demos/form-mp-schema-layout.vue';
 import Demo9 from './demos/form-mp-validation-flow.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -18,7 +22,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -26,7 +30,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">单元格</text>
+          <text class="module__title">{{ t('单元格', 'Cell') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -34,7 +38,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">cell-style</text>
+          <text class="module__title">{{ t('cell-style', 'Cell Style') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -42,7 +46,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">禁用</text>
+          <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -50,7 +54,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">图标</text>
+          <text class="module__title">{{ t('图标', 'Icon') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -58,7 +62,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">标签</text>
+          <text class="module__title">{{ t('标签', 'Label') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -66,7 +70,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">reset-submit</text>
+          <text class="module__title">{{ t('reset-submit', 'Reset Submit') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />
@@ -74,7 +78,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">rules</text>
+          <text class="module__title">{{ t('rules', 'Rules') }}</text>
         </view>
         <view class="module__body">
           <Demo7 />
@@ -82,7 +86,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">schema-layout</text>
+          <text class="module__title">{{ t('schema-layout', 'Schema Layout') }}</text>
         </view>
         <view class="module__body">
           <Demo8 />
@@ -90,7 +94,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">validation-flow</text>
+          <text class="module__title">{{ t('validation-flow', 'Validation Flow') }}</text>
         </view>
         <view class="module__body">
           <Demo9 />

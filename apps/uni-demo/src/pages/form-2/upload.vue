@@ -8,6 +8,10 @@ import Demo4 from './demos/upload-mp-multiple-source.vue';
 import Demo5 from './demos/upload-mp-preview-custom.vue';
 import Demo6 from './demos/upload-mp-request-method.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -15,7 +19,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -23,7 +27,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">before-hooks</text>
+          <text class="module__title">{{ t('before-hooks', 'Before Hooks') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -31,7 +35,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">disabled-status</text>
+          <text class="module__title">{{ t('disabled-status', 'Disabled Status') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -39,7 +43,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">events-counter</text>
+          <text class="module__title">{{ t('events-counter', 'Events Counter') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -47,7 +51,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">multiple-source</text>
+          <text class="module__title">{{ t('multiple-source', 'Multiple Source') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -55,7 +59,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">preview-custom</text>
+          <text class="module__title">{{ t('preview-custom', 'Preview Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -63,7 +67,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">request-method</text>
+          <text class="module__title">{{ t('request-method', 'Request Method') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />

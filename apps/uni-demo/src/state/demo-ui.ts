@@ -39,6 +39,10 @@ const isDark = ref<boolean>(readStored(THEME_KEY) === 'dark');
 
 /** 按当前主题同步导航栏颜色（frontColor 仅接受纯黑/纯白）。 */
 function applyNavBar(): void {
+  // #ifdef H5
+  applyNavBarH5();
+  // #endif
+  // #ifndef H5
   try {
     uni.setNavigationBarColor({
       frontColor: isDark.value ? '#ffffff' : '#000000',
@@ -47,7 +51,30 @@ function applyNavBar(): void {
   } catch {
     // 平台不支持（如部分 H5 环境）时忽略
   }
+  // #endif
 }
+
+// #ifdef H5
+/**
+ * H5 导航栏 DOM 适配：`uni.setNavigationBarColor` 在 H5 端不可靠（部分环境
+ * 静默失败），直接注入覆盖样式到 `uni-page-head`（uni h5 的模拟导航栏）。
+ * hash 路由 SPA 下导航栏元素跨页面复用，一个持久 style 节点即可。
+ */
+function applyNavBarH5(): void {
+  const bg = isDark.value ? BG_DARK : BG_LIGHT;
+  const fg = isDark.value ? '#fafafa' : '#1c2030';
+  let style = document.getElementById('snui-demo-navbar-style') as HTMLStyleElement | null;
+  if (style === null) {
+    style = document.createElement('style');
+    style.id = 'snui-demo-navbar-style';
+    document.head.appendChild(style);
+  }
+  style.textContent = [
+    `uni-page-head .uni-page-head{background-color:${bg} !important;box-shadow:none !important;}`,
+    `uni-page-head .uni-page-head__title,uni-page-head .uni-page-head-btn,uni-page-head .uni-page-head-hd,uni-page-head .uni-page-head-ft{color:${fg} !important;}`,
+  ].join('');
+}
+// #endif
 
 /** 设置导航栏标题（页面标题双语用）。 */
 function setNavTitle(title: string): void {

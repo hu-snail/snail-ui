@@ -8,6 +8,10 @@ import Demo4 from './demos/textarea-mp-mp-runtime.vue';
 import Demo5 from './demos/textarea-mp-prefix-icon.vue';
 import Demo6 from './demos/textarea-mp-states.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -15,7 +19,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -23,7 +27,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">clear-trigger</text>
+          <text class="module__title">{{ t('clear-trigger', 'Clear Trigger') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -31,7 +35,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">counter-clear</text>
+          <text class="module__title">{{ t('counter-clear', 'Counter Clear') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -39,7 +43,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">自定义类名</text>
+          <text class="module__title">{{ t('自定义类名', 'Custom class') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -47,7 +51,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">mp-runtime</text>
+          <text class="module__title">{{ t('mp-runtime', 'Mp Runtime') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -55,7 +59,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">prefix-icon</text>
+          <text class="module__title">{{ t('prefix-icon', 'Prefix Icon') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -63,7 +67,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">状态</text>
+          <text class="module__title">{{ t('状态', 'State') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />

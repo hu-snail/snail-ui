@@ -6,6 +6,10 @@ import Demo2 from './demos/popup-mp-position.vue';
 import Demo3 from './demos/popup-mp-scroll.vue';
 import Demo4 from './demos/popup-mp-surface.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -21,7 +25,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">配置</text>
+          <text class="module__title">{{ t('配置', 'Configuration') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -29,7 +33,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">位置</text>
+          <text class="module__title">{{ t('位置', 'Position') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -37,7 +41,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">滚动</text>
+          <text class="module__title">{{ t('滚动', 'Scroll') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -45,7 +49,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">surface</text>
+          <text class="module__title">{{ t('surface', 'Surface') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />

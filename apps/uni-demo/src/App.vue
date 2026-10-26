@@ -28,8 +28,13 @@ page {
   background-color: #eef1f8;
 }
 
-/* 深色主题：仅替换变量（挂在使用方根节点 demo-shell--dark 上）。 */
+/* 深色主题：demo 骨架变量替换（挂在使用方根节点 demo-shell--dark 上）；
+ * 组件库 token 由 `@snui/uni/styles` 内置的 `.dark` 块翻转（49 变量，含
+ * soft tints / sunken），根节点同时挂 `dark` 类即可作用到所有 demo 组件。
+ * 这里只补组件库深色块没有的一处：开关/复选的旋钮在两种主题下都保持浅色
+ * （tokens-mp 对该插槽的设计约定——rail 是品牌色实底）。 */
 .demo-shell--dark {
+  --sn-mp-color-control-knob: #e4e4e7;
   --demo-page-bg: #10131c;
   --demo-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
   --demo-card-border: rgba(255, 255, 255, 0.1);

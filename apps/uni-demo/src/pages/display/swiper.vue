@@ -10,6 +10,10 @@ import Demo6 from './demos/swiper-mp-playback.vue';
 import Demo7 from './demos/swiper-mp-vertical.vue';
 import Demo8 from './demos/swiper-mp-video.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -17,7 +21,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -25,7 +29,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">自定义</text>
+          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -33,7 +37,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">data</text>
+          <text class="module__title">{{ t('data', 'Data') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -41,7 +45,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">indicator</text>
+          <text class="module__title">{{ t('indicator', 'Indicator') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -49,7 +53,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">indicator-position</text>
+          <text class="module__title">{{ t('indicator-position', 'Indicator Position') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -57,7 +61,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">multiple</text>
+          <text class="module__title">{{ t('multiple', 'Multiple') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -65,7 +69,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">playback</text>
+          <text class="module__title">{{ t('playback', 'Playback') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />
@@ -73,7 +77,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">垂直模式</text>
+          <text class="module__title">{{ t('垂直模式', 'Vertical') }}</text>
         </view>
         <view class="module__body">
           <Demo7 />
@@ -81,7 +85,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">video</text>
+          <text class="module__title">{{ t('video', 'Video') }}</text>
         </view>
         <view class="module__body">
           <Demo8 />
