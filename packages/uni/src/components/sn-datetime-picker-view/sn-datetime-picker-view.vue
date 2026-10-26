@@ -42,9 +42,9 @@
  *   - 日历面板（月份网格）— 用 sn-calendar-view
  */
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import type { PickerValue } from '../sn-picker-view/sn-picker-view-types';
-import { createRollerDrag } from '../sn-picker-view/sn-picker-view-drag';
+import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from '../sn-picker-view/sn-picker-view-drag';
 import {
   type DateParts,
   type DateTimeColumnType,
@@ -340,7 +340,11 @@ const maskHeightRpx = computed(() => {
 
 /* ── Drag engine (shared with sn-picker-view) ──────────────────────────── */
 
+// 测试时钟注入（@internal，FB-010）：未注入时引擎走 Date.now。
+const testNow = inject<(() => number) | undefined>(PICKER_DRAG_CLOCK_INJECT, undefined);
+
 const drag = createRollerDrag({
+  now: testNow,
   isDisabled: () => false,
   itemRpx: () => itemRpx.value,
   visibleCount: () => visibleCount.value,

@@ -114,6 +114,9 @@ interface TouchEventLike {
   target?: unknown;
 }
 
+/** 测试用时钟注入 key（`@internal`）：provide `() => number`，引擎 `now()` 改走该时钟（FB-010）。 */
+export const PICKER_DRAG_CLOCK_INJECT = 'snui:picker-drag-clock';
+
 /** Host callbacks the roller component provides. */
 export interface RollerDragOptions {
   /** Whole-roller disable flag. */

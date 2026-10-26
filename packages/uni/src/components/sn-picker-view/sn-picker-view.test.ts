@@ -9,6 +9,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SnPickerView from './sn-picker-view.vue';
+import { PICKER_DRAG_CLOCK_INJECT } from './sn-picker-view-drag';
 import type { PickerViewChangePayload } from './sn-picker-view-types';
 
 const FRUITS = ['apple', 'banana', 'cherry'];
@@ -27,8 +28,11 @@ beforeAll(() => {
   });
 });
 
-function mountView(props: Record<string, unknown> = {}) {
-  return mount(SnPickerView, { props: { modelValue: [], columns: [FRUITS], ...props } });
+function mountView(props: Record<string, unknown> = {}, provide?: Record<string, unknown>) {
+  return mount(SnPickerView, {
+    props: { modelValue: [], columns: [FRUITS], ...props },
+    global: provide ? { provide } : undefined,
+  });
 }
 
 describe('sn-picker-view', () => {
@@ -161,7 +165,14 @@ describe('sn-picker-view', () => {
     });
 
     it('advances the selection when dragged far enough', async () => {
-      const w = mountView({ modelValue: ['apple'], itemHeight: 44, visibleItemCount: 6 });
+      // FB-010：阶跃时钟（每次 now() +8ms，< MIN_SAMPLE_MS=16）让采样间隔
+      // 确定性落进"无动量"窗口——落点只由拖拽位移决定，不受测试负载影响。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const w = mountView(
+        { modelValue: ['apple'], itemHeight: 44, visibleItemCount: 6 },
+        { [PICKER_DRAG_CLOCK_INJECT]: stepClock },
+      );
       const column = w.find('.sn-picker-view__column');
       await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
       // 50px ≈ 100rpx ≈ one and a bit rows at 88rpx per row.
@@ -189,7 +200,10 @@ describe('sn-picker-view', () => {
       // Regression: real `touchend` events carry an EMPTY `touches` array and
       // only `changedTouches` holds the point. The old `touches ?? changed…`
       // read returned 0 and snapped the wheel to a wild row on every release.
-      const w = mountView({ modelValue: ['apple'] });
+      // FB-010：注入阶跃时钟（见上）排除动量对落点的干扰。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const w = mountView({ modelValue: ['apple'] }, { [PICKER_DRAG_CLOCK_INJECT]: stepClock });
       const column = w.find('.sn-picker-view__column');
       await column.trigger('touchstart', { touches: [{ clientY: 300, identifier: 1 }] });
       await column.trigger('touchend', {
@@ -340,7 +354,10 @@ describe('sn-picker-view', () => {
     });
 
     it('selects a row from a mouse drag', async () => {
-      const w = mountView({ modelValue: ['apple'] });
+      // FB-010：注入阶跃时钟，让 mouse 采样的速度窗口确定性归零（无动量）。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const w = mountView({ modelValue: ['apple'] }, { [PICKER_DRAG_CLOCK_INJECT]: stepClock });
       const column = w.find('.sn-picker-view__column').element;
       // One synchronous batch: the release lands well inside the velocity
       // window, so the drag commits exactly the travelled rows.
