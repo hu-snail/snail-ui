@@ -239,5 +239,266 @@ describe('sn-cascader', () => {
       await optionsOf(w, 0)[0]?.trigger('tap');
       expect(w.findAll('.sn-cascader__line--dot').length).toBeGreaterThan(0);
     });
+
+    it('converts a numeric lineWidth / lineHeight into rpx', async () => {
+      const w = mountCascader({ lineWidth: 24, lineHeight: 6 });
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      const style = w.find('.sn-cascader__line').attributes('style') ?? '';
+      expect(style).toContain('--sn-cascader-line-width: 48rpx');
+      expect(style).toContain('--sn-cascader-line-height: 12rpx');
+    });
+
+    it('passes a string lineWidth through verbatim', async () => {
+      const w = mountCascader({ lineWidth: '50%' });
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      expect(w.find('.sn-cascader__line').attributes('style')).toContain(
+        '--sn-cascader-line-width: 50%',
+      );
+    });
+  });
+
+  describe('tabs', () => {
+    it('titles each tab with the selected node text', async () => {
+      const w = mountCascader();
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      const tabs = w.findAll('.sn-cascader__tab');
+      expect(tabs[0]?.find('.sn-cascader__tab-text').text()).toBe('Zhejiang');
+      // The drilled-into level has no selection yet.
+      expect(tabs[1]?.find('.sn-cascader__tab-text').text()).toBe('');
+    });
+
+    it('activates the deepest tab seeded from a path modelValue', () => {
+      const w = mountCascader({ modelValue: ['zj', 'hz'], checkStrictly: true });
+      const tabs = w.findAll('.sn-cascader__tab');
+      expect(tabs[2]?.classes()).toContain('sn-cascader__tab--active');
+      expect(tabs[0]?.classes()).not.toContain('sn-cascader__tab--active');
+    });
+
+    it('reactivates an earlier tab on tap', async () => {
+      const w = mountCascader();
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      await w.findAll('.sn-cascader__tab')[0]?.trigger('tap');
+      expect(w.findAll('.sn-cascader__tab')[0]?.classes()).toContain('sn-cascader__tab--active');
+      expect(w.findAll('.sn-cascader__tab')[1]?.classes()).not.toContain(
+        'sn-cascader__tab--active',
+      );
+    });
+  });
+
+  describe('option tips + keys', () => {
+    it('renders the option tip when present', () => {
+      const w = mountCascader({
+        options: [{ value: 'a', text: 'A', tip: 'famous for tea' }],
+      });
+      expect(w.find('.sn-cascader__option-tip').text()).toBe('famous for tea');
+    });
+
+    it('resolves a custom tipKey', () => {
+      const w = mountCascader({
+        options: [{ value: 'a', text: 'A', hint: 'the hint' }],
+        tipKey: 'hint',
+      });
+      expect(w.find('.sn-cascader__option-tip').text()).toBe('the hint');
+    });
+
+    it('honours a custom isLeafKey in lazy mode', async () => {
+      const w = mountCascader({
+        options: [{ value: 'a', text: 'A', leaf: true }],
+        isLeafKey: 'leaf',
+        lazyLoad: () => {},
+      });
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      // A lazy leaf never auto-confirms and never opens a second tab.
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(1);
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      await w.find('.sn-cascader__confirm').trigger('tap');
+      await Promise.resolve();
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([['a']]);
+    });
+  });
+
+  describe('popup wiring + labels', () => {
+    it('emits close and closes on cancel', async () => {
+      const w = mountCascader();
+      await w.find('.sn-cascader__cancel').trigger('tap');
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('closes on mask tap when closeOnClickModal is on', async () => {
+      const w = mountCascader();
+      await w.find('.sn-popup__modal').trigger('tap');
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('stays open on mask tap when closeOnClickModal is off', async () => {
+      const w = mountCascader({ closeOnClickModal: false });
+      await w.find('.sn-popup__modal').trigger('tap');
+      expect(w.emitted('update:visible')).toBeUndefined();
+    });
+
+    it('renders the custom confirmText', () => {
+      expect(
+        mountCascader({ checkStrictly: true, confirmText: 'done' }).find(
+          '.sn-cascader__confirm',
+        ).text(),
+      ).toBe('done');
+    });
+
+    it('forwards zIndex / safeAreaInsetBottom / customStyle to the popup', () => {
+      const w = mountCascader({
+        zIndex: 42,
+        safeAreaInsetBottom: false,
+        customStyle: 'background: red',
+      });
+      const popup = w.findComponent({ name: 'SnPopup' });
+      expect(popup.props('zIndex')).toBe(42);
+      expect(popup.props('safeAreaInsetBottom')).toBe(false);
+      expect(popup.props('customStyle')).toBe('background: red');
+    });
+
+    it('merges customClass into the popup sheet', () => {
+      const w = mountCascader({ customClass: 'my-sheet' });
+      expect(w.find('.sn-cascader-popup.my-sheet').exists()).toBe(true);
+    });
+
+    it('accepts root-portal as the documented no-op', () => {
+      const w = mountCascader({ rootPortal: true });
+      expect(w.find('.sn-cascader').exists()).toBe(true);
+    });
+  });
+
+  describe('model seeding', () => {
+    it('ignores a scalar modelValue instead of crashing', () => {
+      const w = mountCascader({ modelValue: 'zj', checkStrictly: true });
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(1);
+      expect(optionsOf(w, 0)[0]?.classes()).not.toContain('sn-cascader__option--selected');
+    });
+
+    it('stops seeding at an unknown path segment', () => {
+      const w = mountCascader({ modelValue: ['zj', 'nowhere'], checkStrictly: true });
+      // Root + Zhejiang's children resolve; the unknown segment does not.
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(2);
+    });
+
+    it('re-seeds when options change while visible', async () => {
+      const w = mountCascader({ visible: false, options: [] });
+      await w.setProps({ visible: true });
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(1);
+      await w.setProps({ options: TREE });
+      expect(optionsOf(w, 0)).toHaveLength(2);
+    });
+  });
+
+  describe('lazy mode edges', () => {
+    const LAZY = [{ value: 'a', text: 'A', isLeaf: false }];
+
+    it('clears the loading state without adding a tab for empty children', async () => {
+      let resolver: ((children: unknown[]) => void) | undefined;
+      const w = mountCascader({
+        options: LAZY,
+        lazyLoad: (_option, _index, resolve) => {
+          resolver = resolve as (c: unknown[]) => void;
+        },
+      });
+      await w.findAll('.sn-cascader__option')[0]?.trigger('tap');
+      expect(w.find('.sn-cascader__loading').exists()).toBe(true);
+      resolver?.([]);
+      await w.vm.$nextTick();
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(1);
+      expect(w.find('.sn-cascader__loading').exists()).toBe(false);
+    });
+
+    it('supersedes an in-flight request when another node is tapped', async () => {
+      const resolvers: Array<(children: unknown[]) => void> = [];
+      const w = mountCascader({
+        options: [
+          { value: 'a', text: 'A', isLeaf: false },
+          { value: 'b', text: 'B', isLeaf: false },
+        ],
+        lazyLoad: (_option, _index, resolve) => {
+          resolvers.push(resolve as (c: unknown[]) => void);
+        },
+      });
+      await w.findAll('.sn-cascader__option')[0]?.trigger('tap');
+      await w.findAll('.sn-cascader__option')[1]?.trigger('tap');
+      expect(resolvers).toHaveLength(2);
+      // The first resolve is stale — only the second may add a tab.
+      resolvers[0]?.([{ value: 'stale', text: 'Stale' }]);
+      await w.vm.$nextTick();
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(1);
+      resolvers[1]?.([{ value: 'b1', text: 'B1' }]);
+      await w.vm.$nextTick();
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(2);
+      expect(optionsOf(w, 1)[0]?.text()).toBe('B1');
+    });
+  });
+
+  describe('strict confirm payload', () => {
+    it('emits confirm with the path and closes', async () => {
+      const w = mountCascader({ checkStrictly: true });
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      await w.find('.sn-cascader__confirm').trigger('tap');
+      await Promise.resolve();
+      expect(w.emitted('confirm')?.[0]).toEqual([
+        { value: 'zj', selectedOptions: [TREE[0]] },
+      ]);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('hands the payload to beforeConfirm', async () => {
+      const beforeConfirm = vi.fn(() => true);
+      const w = mountCascader({ checkStrictly: true, beforeConfirm });
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      await w.find('.sn-cascader__confirm').trigger('tap');
+      await Promise.resolve();
+      expect(beforeConfirm.mock.calls[0]?.[0]).toEqual({
+        value: 'zj',
+        selectedOptions: [TREE[0]],
+      });
+    });
+
+    it('marks the confirm button aria-disabled until a node is selected', () => {
+      const w = mountCascader({ checkStrictly: true });
+      expect(w.find('.sn-cascader__confirm').attributes('aria-disabled')).toBe('true');
+    });
+  });
+
+  describe('accessibility', () => {
+    it('exposes the tab strip with selection state', async () => {
+      const w = mountCascader();
+      expect(w.find('.sn-cascader__tabs').attributes('role')).toBe('tablist');
+      const tabs = w.findAll('.sn-cascader__tab');
+      expect(tabs[0]?.attributes('role')).toBe('tab');
+      expect(tabs[0]?.attributes('aria-selected')).toBe('true');
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      expect(w.findAll('.sn-cascader__tab')[1]?.attributes('aria-selected')).toBe('true');
+    });
+
+    it('exposes options as toggle buttons with pressed state', async () => {
+      const w = mountCascader();
+      const option = optionsOf(w, 0)[0];
+      expect(option?.attributes('role')).toBe('button');
+      expect(option?.attributes('aria-pressed')).toBe('false');
+      await option?.trigger('tap');
+      expect(optionsOf(w, 0)[0]?.attributes('aria-pressed')).toBe('true');
+    });
+
+    it('announces the lazy loading state', async () => {
+      const w = mountCascader({
+        options: [{ value: 'a', text: 'A', isLeaf: false }],
+        lazyLoad: () => {},
+      });
+      await w.findAll('.sn-cascader__option')[0]?.trigger('tap');
+      const loading = w.find('.sn-cascader__loading');
+      expect(loading.attributes('role')).toBe('status');
+      expect(loading.attributes('aria-live')).toBe('polite');
+    });
+
+    it('labels the cancel action as a button', () => {
+      const w = mountCascader();
+      expect(w.find('.sn-cascader__cancel').attributes('role')).toBe('button');
+      expect(w.find('.sn-cascader__cancel').attributes('aria-label')).toBe('cancel');
+    });
   });
 });

@@ -141,8 +141,14 @@ const emit = defineEmits<{
 
 /** Draft selection while the sheet is open. */
 const draft = ref<PickerValue[]>(props.modelValue.slice());
-/** Latest selection payload reported by the roller body. */
-const lastSelectedItems = ref<Array<PickerOption | PickerValue>>([]);
+
+/**
+ * Roller controller — `getSelectedOptions()` reflects the value actually bound
+ * into the roller, so a confirm without a preceding roll still reports the
+ * selected items (the old tracked `lastSelectedItems` stayed empty until the
+ * first interaction and contradicted `value` in the confirm payload).
+ */
+const viewRef = ref<InstanceType<typeof SnPickerView> | null>(null);
 
 watch(
   () => props.modelValue,
@@ -171,7 +177,6 @@ function onViewChange(payload: {
   selectedValues: PickerValue[];
   selectedOptions: Array<PickerOption | PickerValue>;
 }): void {
-  lastSelectedItems.value = payload.selectedOptions;
   if (!props.immediateChange) {
     draft.value = payload.selectedValues.slice();
     return;
@@ -190,7 +195,7 @@ function onCancel(): void {
 
 async function onConfirm(): Promise<void> {
   const value = viewValue.value.slice();
-  const items = lastSelectedItems.value;
+  const items = viewRef.value?.getSelectedOptions() ?? [];
   if (props.beforeConfirm) {
     const verdict = await props.beforeConfirm({ value, selectedItems: items });
     if (verdict === false) return;
@@ -241,6 +246,7 @@ const viewClass = computed(() => props.customViewClass);
       </view>
 
       <SnPickerView
+        ref="viewRef"
         :class="viewClass"
         :model-value="viewValue"
         :columns="props.columns"

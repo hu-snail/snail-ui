@@ -405,4 +405,183 @@ describe('sn-picker-view', () => {
       expect(w.emitted('update:modelValue')).toBeUndefined();
     });
   });
+
+  describe('presentation props', () => {
+    it('applies customClass to the root', () => {
+      expect(mountView({ customClass: 'my-roller' }).classes()).toContain('my-roller');
+    });
+
+    it('appends customStyle after the inline CSS variables', () => {
+      // The style attribute is read back verbatim — happy-dom only drops
+      // lengths when *computing* styles, never on the raw attribute.
+      const w = mountView({ customStyle: 'background: red' });
+      const style = w.attributes('style');
+      expect(style).toContain('--sn-picker-view-item-height:');
+      expect(style).toContain('background: red');
+    });
+
+    it('scales the roller geometry with itemHeight / visibleItemCount', () => {
+      const w = mountView({ itemHeight: 22, visibleItemCount: 3 });
+      const style = w.attributes('style') ?? '';
+      // 22px design → 44rpx rows; the fade mask is (3 − 1) rows / 2 tall.
+      // Only the string-bound root vars are observable — happy-dom drops
+      // rpx lengths set through style *object* bindings (see file header).
+      expect(style).toContain('--sn-picker-view-item-height: 44rpx');
+      expect(style).toContain('--sn-picker-view-mask-height: 44rpx');
+    });
+
+    it('renders the group role but no aria-disabled while enabled', () => {
+      const w = mountView();
+      expect(w.attributes('role')).toBe('group');
+      expect(w.attributes('aria-disabled')).toBeUndefined();
+    });
+
+    it('hides the decorative masks and indicator from assistive tech', () => {
+      const w = mountView();
+      const column = w.find('.sn-picker-view__column');
+      for (const node of [
+        column?.find('.sn-picker-view__mask--top'),
+        column?.find('.sn-picker-view__mask--bottom'),
+        column?.find('.sn-picker-view__indicator'),
+      ]) {
+        expect(node?.attributes('aria-hidden')).toBe('true');
+      }
+    });
+  });
+
+  describe('exposed API', () => {
+    it('getSelectedOptions returns the raw option objects in column order', () => {
+      const option = { id: 2, text: 'Two' };
+      const w = mountView({
+        modelValue: [1],
+        columns: [[{ id: 1, text: 'One' }, option]],
+        valueKey: 'id',
+        labelKey: 'text',
+      });
+      const vm = w.vm as unknown as {
+        getSelectedOptions(): Array<unknown>;
+      };
+      expect(vm.getSelectedOptions()).toEqual([{ id: 1, text: 'One' }]);
+    });
+
+    it('getSelectedIndex / getColumnIndex report the selected row per column', () => {
+      const w = mountView({ modelValue: ['cherry'], columns: [FRUITS, ['a', 'b']] });
+      const vm = w.vm as unknown as {
+        getSelectedIndex(): number[];
+        getColumnIndex(): number[];
+      };
+      expect(vm.getSelectedIndex()).toEqual([2, 0]);
+      expect(vm.getColumnIndex()).toEqual([2, 0]);
+    });
+
+    it('getColumnsData returns every normalized column', () => {
+      const w = mountView({ columns: [FRUITS, ['a', 'b']] });
+      const vm = w.vm as unknown as {
+        getColumnsData(): Array<Array<{ value: string | number; label: string }>>;
+      };
+      const data = vm.getColumnsData();
+      expect(data).toHaveLength(2);
+      expect(data[1]?.map((option) => option.label)).toEqual(['a', 'b']);
+    });
+
+    it('resetColumns skips a disabled first row', () => {
+      const w = mountView({
+        modelValue: ['c'],
+        columns: [
+          [
+            { value: 'a', label: 'a', disabled: true },
+            { value: 'b', label: 'b' },
+            { value: 'c', label: 'c' },
+          ],
+        ],
+      });
+      const vm = w.vm as unknown as { resetColumns(): void };
+      vm.resetColumns();
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['b']]);
+      expect(w.emitted('change')?.at(-1)?.[0]).toMatchObject({ selectedValues: ['b'] });
+    });
+  });
+
+  describe('edge cases', () => {
+    it('renders nothing for empty columns and stays inert', async () => {
+      const w = mountView({ columns: [] });
+      expect(w.findAll('.sn-picker-view__column')).toHaveLength(0);
+      await w.find('.sn-picker-view').trigger('tap');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('falls back to the first row for an out-of-range value', async () => {
+      const w = mountView({ modelValue: ['durian'] });
+      const items = w.findAll('.sn-picker-view__item');
+      expect(items[0]?.classes()).toContain('sn-picker-view__item--active');
+      expect(items[0]?.attributes('aria-selected')).toBe('true');
+      // Row 0 is the fallback itself (already "selected"), but another row
+      // still commits from the effective base.
+      await w.findAll('.sn-picker-view__item')[1]?.trigger('tap');
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['banana']]);
+    });
+
+    it('emits one change per tap on rapid re-selection', async () => {
+      const w = mountView({ modelValue: ['apple'] });
+      await w.findAll('.sn-picker-view__item')[1]?.trigger('tap');
+      await w.findAll('.sn-picker-view__item')[2]?.trigger('tap');
+      expect(w.emitted('update:modelValue')).toHaveLength(2);
+      expect(w.emitted('update:modelValue')?.at(-1)).toEqual([['cherry']]);
+      expect(w.emitted('change')?.at(-1)?.[0]).toMatchObject({
+        selectedValues: ['cherry'],
+        selectedOptions: ['cherry'],
+      });
+    });
+
+    it('re-renders when the column count changes', async () => {
+      const w = mountView({ modelValue: ['apple', 'a'] });
+      expect(w.findAll('.sn-picker-view__column')).toHaveLength(1);
+      await w.setProps({ columns: [FRUITS, ['a', 'b']] });
+      expect(w.findAll('.sn-picker-view__column')).toHaveLength(2);
+      expect(w.findAll('.sn-picker-view__column')[1]?.text()).toContain('a');
+    });
+
+    it('returns to rest on touchcancel without committing', async () => {
+      const w = mountView({ modelValue: ['apple'] });
+      const column = w.find('.sn-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 250 }] });
+      await column.trigger('touchcancel');
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.emitted('pickend')).toHaveLength(1);
+      expect(w.find('.sn-picker-view__roller').classes()).not.toContain(
+        'sn-picker-view__roller--dragging',
+      );
+    });
+
+    it('echoes raw option objects in the change payload', async () => {
+      const option = { id: 2, text: 'Two' };
+      const w = mountView({
+        modelValue: [1],
+        columns: [[{ id: 1, text: 'One' }, option]],
+        valueKey: 'id',
+        labelKey: 'text',
+      });
+      await w.findAll('.sn-picker-view__item')[1]?.trigger('tap');
+      const payload = w.emitted('change')?.at(-1)?.[0] as PickerViewChangePayload;
+      expect(payload.selectedOptions).toEqual([{ id: 2, text: 'Two' }]);
+    });
+
+    it('derives the root column only for an out-of-range cascade path', () => {
+      const TREE = [
+        {
+          value: 'zj',
+          label: 'Zhejiang',
+          children: [
+            { value: 'hz', label: 'Hangzhou' },
+            { value: 'nb', label: 'Ningbo' },
+          ],
+        },
+      ];
+      const w = mountView({ cascade: true, columns: TREE, modelValue: ['zj', 'nowhere'] });
+      expect(w.findAll('.sn-picker-view__column')).toHaveLength(2);
+      const secondColumn = w.findAll('.sn-picker-view__column')[1];
+      expect(secondColumn?.find('.sn-picker-view__item--active').text()).toBe('Hangzhou');
+    });
+  });
 });

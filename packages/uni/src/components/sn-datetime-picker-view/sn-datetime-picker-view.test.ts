@@ -329,4 +329,201 @@ describe('sn-datetime-picker-view', () => {
       expect(w.emitted('update:modelValue')).toBeUndefined();
     });
   });
+
+  describe('time bounds', () => {
+    it('honours minMinute / maxMinute for the time type', () => {
+      const w = mountView({ type: 'time', modelValue: '10:30', minMinute: 10, maxMinute: 40 });
+      const minuteColumn = w.findAll('.sn-datetime-picker-view__column')[1];
+      const items = minuteColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
+      expect(items).toHaveLength(31);
+      expect(items[0]?.text()).toBe('10');
+      expect(items.at(-1)?.text()).toBe('40');
+    });
+
+    it('honours minSecond / maxSecond when seconds are shown', () => {
+      const w = mountView({
+        type: 'time',
+        modelValue: '10:30:20',
+        useSecond: true,
+        minSecond: 15,
+        maxSecond: 25,
+      });
+      const secondColumn = w.findAll('.sn-datetime-picker-view__column')[2];
+      const items = secondColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
+      expect(items).toHaveLength(11);
+      expect(items[0]?.text()).toBe('15');
+    });
+
+    it('splits an HH:mm:ss value into three columns', () => {
+      const w = mountView({ type: 'time', modelValue: '10:30:45', useSecond: true });
+      expect(columnTypes(w)).toBe(3);
+      expect(activeLabels(w)).toEqual(['10', '30', '45']);
+    });
+  });
+
+  describe('date bounds', () => {
+    it('starts the hour column at the min hour on the min-date day', () => {
+      const w = mountView({
+        modelValue: new Date(2024, 5, 15, 12, 0, 0).getTime(),
+        minDate: new Date(2024, 5, 15, 8, 0, 0).getTime(),
+        maxDate: new Date(2030, 11, 31, 23, 59, 59).getTime(),
+      });
+      const hourColumn = w.findAll('.sn-datetime-picker-view__column')[3];
+      const items = hourColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
+      expect(items[0]?.text()).toBe('08');
+    });
+
+    it('starts the minute column at the min minute inside the min hour', () => {
+      const w = mountView({
+        modelValue: new Date(2024, 5, 15, 10, 45, 0).getTime(),
+        minDate: new Date(2024, 5, 15, 10, 30, 0).getTime(),
+        maxDate: new Date(2030, 11, 31, 23, 59, 59).getTime(),
+      });
+      const minuteColumn = w.findAll('.sn-datetime-picker-view__column')[4];
+      const items = minuteColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
+      expect(items[0]?.text()).toBe('30');
+    });
+
+    it('clamps an out-of-range value to the first row of the year column', () => {
+      const w = mountView({
+        type: 'year',
+        minDate: new Date(2020, 0, 1).getTime(),
+        maxDate: new Date(2030, 0, 1).getTime(),
+        modelValue: new Date(2050, 0, 1).getTime(),
+      });
+      const items = w.findAll('.sn-datetime-picker-view__item');
+      expect(items[0]?.classes()).toContain('sn-datetime-picker-view__item--active');
+    });
+  });
+
+  describe('hooks edge cases', () => {
+    it('renders an emptied column without crashing', () => {
+      const w = mountView({
+        type: 'year',
+        filter: (_type, values) => values.filter(() => false),
+      });
+      expect(w.findAll('.sn-datetime-picker-view__item')).toHaveLength(0);
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('emits the fallback selection when the filtered column loses the value', async () => {
+      // Keep only the even years: the selected 2024 stays, so tapping 2020
+      // emits from the filtered column.
+      const w = mountView({
+        type: 'year',
+        minDate: new Date(2020, 0, 1).getTime(),
+        maxDate: new Date(2024, 0, 1).getTime(),
+        filter: (_type, values) => values.filter((value) => value % 2 === 0),
+      });
+      await w.findAll('.sn-datetime-picker-view__item')[0]?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      expect(new Date(value).getFullYear()).toBe(2020);
+    });
+  });
+
+  describe('accessibility', () => {
+    it('announces the current value on the group role', () => {
+      const w = mountView();
+      expect(w.attributes('role')).toBe('group');
+      expect(w.attributes('aria-label')).toBe('2024-06-15 10:30');
+    });
+
+    it('echoes the value through a polite live region', () => {
+      const sr = mountView().find('.sn-datetime-picker-view__sr');
+      expect(sr.attributes('aria-live')).toBe('polite');
+      expect(sr.text()).toBe('2024-06-15 10:30');
+    });
+
+    it('announces HH:mm values for the time type', () => {
+      const w = mountView({ type: 'time', modelValue: '10:30' });
+      expect(w.attributes('aria-label')).toBe('10:30');
+    });
+
+    it('marks the roller rows as buttons with selection state', () => {
+      const w = mountView({ type: 'year' });
+      const items = w.findAll('.sn-datetime-picker-view__item');
+      expect(items[0]?.attributes('role')).toBe('button');
+      expect(items[0]?.attributes('aria-selected')).toBe('false');
+      const active = w.find('.sn-datetime-picker-view__item--active');
+      expect(active.attributes('aria-selected')).toBe('true');
+    });
+
+    it('hides the decorative masks and indicator from assistive tech', () => {
+      const column = mountView().find('.sn-datetime-picker-view__column');
+      for (const node of [
+        column.find('.sn-datetime-picker-view__mask--top'),
+        column.find('.sn-datetime-picker-view__mask--bottom'),
+        column.find('.sn-datetime-picker-view__indicator'),
+      ]) {
+        expect(node.attributes('aria-hidden')).toBe('true');
+      }
+    });
+  });
+
+  describe('presentation props', () => {
+    it('tags the root with the active type class', () => {
+      expect(mountView({ type: 'time' }).classes()).toContain('sn-datetime-picker-view--time');
+    });
+
+    it('applies customClass and appends customStyle after the CSS variables', () => {
+      const w = mountView({ customClass: 'my-roller', customStyle: 'background: red' });
+      expect(w.classes()).toContain('my-roller');
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-datetime-picker-view-item-height:');
+      expect(style).toContain('background: red');
+    });
+  });
+
+  describe('exposed API', () => {
+    it('getOriginColumns returns the derived columns with their kinds', () => {
+      const w = mountView({ type: 'date' });
+      const vm = w.vm as unknown as {
+        getOriginColumns(): Array<{ type: string; values: number[]; selected: number }>;
+      };
+      const columns = vm.getOriginColumns();
+      expect(columns.map((column) => column.type)).toEqual(['year', 'month', 'date']);
+      expect(columns[0]?.selected).toBe(2024);
+    });
+
+    it('correctValue normalizes a numeric string for date types', () => {
+      const w = mountView({ type: 'date' });
+      const vm = w.vm as unknown as { correctValue(value: string | number): string | number };
+      const value = vm.correctValue(String(new Date(2024, 5, 15, 10, 30).getTime()));
+      expect(typeof value).toBe('number');
+      expect(new Date(value as number).getFullYear()).toBe(2024);
+    });
+  });
+
+  describe('interaction edges', () => {
+    it('emits a timestamp from the year-month month column', async () => {
+      const w = mountView({ type: 'year-month' });
+      await w
+        .findAll('.sn-datetime-picker-view__column')[1]
+        ?.findAll('.sn-datetime-picker-view__item')[0]
+        ?.trigger('tap');
+      const value = w.emitted('update:modelValue')?.[0]?.[0] as number;
+      expect(new Date(value).getMonth()).toBe(0);
+      expect(new Date(value).getFullYear()).toBe(2024);
+    });
+
+    it('commits mid-drag when immediateChange is set', async () => {
+      // The year column starts at 2020 and 2024 sits at index 4, so one row
+      // up is 2025 (same geometry as the settle test above).
+      const w = mountView({ type: 'year', immediateChange: true });
+      const column = w.find('.sn-datetime-picker-view__column');
+      await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
+      await column.trigger('touchmove', { touches: [{ clientY: 256 }] });
+      const value = w.emitted('update:modelValue')?.at(-1)?.[0] as number;
+      expect(new Date(value).getFullYear()).toBe(2025);
+    });
+
+    it('accepts the range-linkage boundary props without breaking the roller', () => {
+      const w = mountView({
+        boundaryMinDate: new Date(2020, 0, 1).getTime(),
+        boundaryMaxDate: new Date(2030, 11, 31).getTime(),
+      });
+      expect(columnTypes(w)).toBe(5);
+      expect(activeLabels(w)).toEqual(['2024', '06', '15', '10', '30']);
+    });
+  });
 });

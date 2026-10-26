@@ -191,4 +191,129 @@ describe('sn-datetime-picker', () => {
     const w = mountPicker({ displayFormatTabLabel: (tab: string) => tab.toUpperCase() });
     expect(w.find('.sn-datetime-picker').exists()).toBe(true);
   });
+
+  describe('prop forwarding', () => {
+    it('adds the seconds column to the datetime sheet when useSecond is set', () => {
+      expect(
+        mountPicker({ type: 'datetime', useSecond: true }).findAll(
+          '.sn-datetime-picker-view__column',
+        ),
+      ).toHaveLength(6);
+    });
+
+    it('forwards the time bounds to the roller body', () => {
+      const w = mountPicker({
+        type: 'time',
+        modelValue: '10:30',
+        minHour: 8,
+        maxHour: 18,
+        minMinute: 5,
+        maxMinute: 55,
+        minSecond: 10,
+        maxSecond: 50,
+        useSecond: true,
+      });
+      const view = w.findComponent({ name: 'SnDatetimePickerView' });
+      expect(view.props('minHour')).toBe(8);
+      expect(view.props('maxHour')).toBe(18);
+      expect(view.props('minMinute')).toBe(5);
+      expect(view.props('maxMinute')).toBe(55);
+      expect(view.props('minSecond')).toBe(10);
+      expect(view.props('maxSecond')).toBe(50);
+      expect(view.props('useSecond')).toBe(true);
+    });
+
+    it('forwards minDate / maxDate and the label hooks to the roller body', () => {
+      const formatter = (type: string, value: number): string => `${type}:${value}`;
+      const filter = (_type: string, values: number[]): number[] => values;
+      const minDate = new Date(2021, 0, 1).getTime();
+      const maxDate = new Date(2029, 11, 31).getTime();
+      const w = mountPicker({ minDate, maxDate, formatter, filter });
+      const view = w.findComponent({ name: 'SnDatetimePickerView' });
+      expect(view.props('minDate')).toBe(minDate);
+      expect(view.props('maxDate')).toBe(maxDate);
+      expect(view.props('formatter')).toBe(formatter);
+      expect(view.props('filter')).toBe(filter);
+    });
+
+    it('forwards the roller geometry and key props', () => {
+      const w = mountPicker({
+        itemHeight: 33,
+        visibleItemCount: 5,
+        valueKey: 'v',
+        labelKey: 'l',
+      });
+      const view = w.findComponent({ name: 'SnDatetimePickerView' });
+      expect(view.props('itemHeight')).toBe(33);
+      expect(view.props('visibleItemCount')).toBe(5);
+      expect(view.props('valueKey')).toBe('v');
+      expect(view.props('labelKey')).toBe('l');
+    });
+
+    it('forwards zIndex / safeAreaInsetBottom / customStyle to the popup', () => {
+      const w = mountPicker({
+        zIndex: 42,
+        safeAreaInsetBottom: false,
+        customStyle: 'background: red',
+      });
+      const popup = w.findComponent({ name: 'SnPopup' });
+      expect(popup.props('zIndex')).toBe(42);
+      expect(popup.props('safeAreaInsetBottom')).toBe(false);
+      expect(popup.props('customStyle')).toBe('background: red');
+    });
+
+    it('merges customClass into the popup and customViewClass into the roller', () => {
+      const w = mountPicker({ customClass: 'my-sheet', customViewClass: 'my-roller' });
+      expect(w.find('.sn-datetime-picker-popup.my-sheet').exists()).toBe(true);
+      expect(w.find('.sn-datetime-picker-view.my-roller').exists()).toBe(true);
+    });
+  });
+
+  describe('accessibility', () => {
+    it('exposes the toolbar actions as labelled buttons', () => {
+      const w = mountPicker({ title: 'When' });
+      const cancel = w.find('.sn-datetime-picker__cancel');
+      const confirm = w.find('.sn-datetime-picker__confirm');
+      expect(cancel.attributes('role')).toBe('button');
+      expect(cancel.attributes('aria-label')).toBe('取消');
+      expect(confirm.attributes('role')).toBe('button');
+      expect(confirm.attributes('aria-label')).toBe('确认');
+    });
+  });
+
+  describe('confirm contract edges', () => {
+    it('closes without confirming when the model is empty', async () => {
+      const w = mountPicker({ modelValue: undefined, type: 'time' });
+      await w.find('.sn-datetime-picker__confirm').trigger('tap');
+      expect(w.emitted('confirm')).toBeUndefined();
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('proceeds when the async beforeConfirm resolves true', async () => {
+      const w = mountPicker({ beforeConfirm: async () => true });
+      await w.find('.sn-datetime-picker__confirm').trigger('tap');
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(w.emitted('confirm')).toHaveLength(1);
+      expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('emits change alongside the immediate model write', async () => {
+      const w = mountPicker({ immediateChange: true });
+      await firstColumn(w)?.findAll('.sn-datetime-picker-view__item')[0]?.trigger('tap');
+      expect(w.emitted('update:modelValue')).toHaveLength(1);
+      expect(w.emitted('change')).toHaveLength(1);
+      const change = w.emitted('change')?.[0]?.[0] as { value: number };
+      expect(new Date(change.value).getFullYear()).toBe(2020);
+    });
+
+    it('emits open on every reopen', async () => {
+      const w = mountPicker({ visible: false });
+      await w.setProps({ visible: true });
+      await w.setProps({ visible: false });
+      await w.setProps({ visible: true });
+      expect(w.emitted('open')).toHaveLength(2);
+    });
+  });
 });

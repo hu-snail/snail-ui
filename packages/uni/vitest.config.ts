@@ -30,6 +30,8 @@ export default defineConfig({
       ],
       reporter: ['text', 'text-summary', 'lcov'],
       reportsDirectory: 'coverage',
+      // Workspace 里常有并行任务的 WIP 测试在失败，报告必须照常产出才能做缺口分析
+      reportOnFailure: true,
     },
   },
 });

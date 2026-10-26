@@ -4,8 +4,13 @@
  * Behaviour only (AGENTS.md §46). The clock is injected so flick timing is
  * deterministic — no fake timers, no wall clock. Component-level gesture
  * coverage lives in `sn-picker-view.test.ts`.
+ *
+ * Untestable in happy-dom: real touch-gesture physics (multi-finger
+ * interpolated moves, real scroll-view interplay) — the engine is driven with
+ * synthetic single-point events; and mini-program hosts (`typeof document ===
+ * 'undefined'` is only simulated for the one guard test below).
  */
-import { afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 import { createRollerDrag, type RollerDragOptions } from './sn-picker-view-drag';
 
 /**
@@ -162,6 +167,16 @@ describe('sn-picker-view-drag', () => {
       expect(api.columnOffsetRpx(0)).toBe(220 + 800 * 0.35);
     });
 
+    it('damps the drag past the last row from the bottom anchor', () => {
+      // Anchor on the last row of the column and drag upwards past it.
+      const { api } = mountEngine({ indexOf: () => 7 });
+      api.onTouchStart(touchStart(300), 0);
+      api.onTouchMove(touchStart(0), 0);
+      // Base offset for row 7 is (2.5 − 7) × 88 = −396rpx; the 300px travel
+      // is 600rpx raw, damped to 35% (undamped would be −996).
+      expect(api.columnOffsetRpx(0)).toBe(-396 + -600 * 0.35);
+    });
+
     it('skips a disabled row when the drag settles on it', () => {
       const { api, commits } = mountEngine({ isRowDisabled: (_c, row) => row === 1 });
       api.onTouchStart(touchStart(300), 0);
@@ -174,6 +189,63 @@ describe('sn-picker-view-drag', () => {
       api.onTouchStart(touchStart(300), 0);
       api.onTouchEnd(touchEnd(0), 0);
       expect(commits).toEqual([[0, 7]]);
+    });
+  });
+
+  describe('coordinate sources', () => {
+    it('falls back to pageY when clientY is absent', () => {
+      const { api, commits } = mountEngine();
+      api.onTouchStart({ touches: [{ pageY: 300 }] } as unknown as Event, 0);
+      api.onTouchEnd({
+        touches: [],
+        changedTouches: [{ pageY: 256 }],
+      } as unknown as Event, 0);
+      expect(commits).toEqual([[0, 1]]);
+    });
+
+    it('reads uni legacy detail.y when no touch list is present', () => {
+      const { api, commits } = mountEngine();
+      api.onTouchStart({ detail: { y: 300 } } as unknown as Event, 0);
+      api.onTouchEnd({ detail: { y: 256 } } as unknown as Event, 0);
+      expect(commits).toEqual([[0, 1]]);
+    });
+  });
+
+  describe('column guards', () => {
+    it('ignores move events that target another column', () => {
+      const { api, commits } = mountEngine();
+      api.onTouchStart(touchStart(300), 0);
+      // A move attributed to column 1 must not drag column 0's wheel…
+      api.onTouchMove(touchStart(200), 1);
+      expect(api.columnOffsetRpx(0)).toBe(220);
+      // …while `touchend` — which the DOM fires on the touchstart element,
+      // so its columnIndex is deliberately ignored — still settles the
+      // gesture on the owning column.
+      api.onTouchEnd(touchEnd(256), 0);
+      expect(commits).toEqual([[0, 1]]);
+    });
+
+    it('ignores a touchstart on an empty column', () => {
+      const { api, starts } = mountEngine({ lengthOf: () => 0 });
+      api.onTouchStart(touchStart(300), 0);
+      expect(starts).toEqual([]);
+    });
+
+    it('ignores a touchend with no running gesture', () => {
+      const { api, commits, ends } = mountEngine();
+      api.onTouchEnd(touchEnd(256), 0);
+      expect(commits).toEqual([]);
+      expect(ends).toEqual([]);
+    });
+
+    it('never commits when the column empties mid-gesture', () => {
+      let length = 8;
+      const { api, commits, ends } = mountEngine({ lengthOf: () => length });
+      api.onTouchStart(touchStart(300), 0);
+      length = 0;
+      api.onTouchEnd(touchEnd(256), 0);
+      expect(commits).toEqual([]);
+      expect(ends).toHaveLength(1);
     });
   });
 
@@ -443,6 +515,114 @@ describe('sn-picker-view-drag', () => {
       const wasPrevented = observeDefaultPrevented('wheel');
       wheel(surface.column, 100);
       expect(wasPrevented()).toBe(true);
+    });
+
+    it('returns an inert disposer without a document (mini-program host)', () => {
+      vi.stubGlobal('document', undefined);
+      try {
+        const { api } = mountEngine();
+        const dispose = api.bindMouseGestures({} as HTMLElement);
+        expect(typeof dispose).toBe('function');
+        expect(() => dispose()).not.toThrow();
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
+
+    it('ignores mouse input while the roller is disabled', () => {
+      const { api, commits, starts } = mountEngine({ isDisabled: () => true });
+      const surface = mountSurface(api);
+      mouseDown(surface.column, 300);
+      wheel(surface.column, 100);
+      expect(starts).toEqual([]);
+      expect(commits).toEqual([]);
+    });
+
+    it('ignores a mousedown while a touch gesture is running', () => {
+      const { api, starts } = mountEngine();
+      const surface = mountSurface(api);
+      api.onTouchStart(touchStart(300), 0);
+      mouseDown(surface.column, 300);
+      expect(starts).toHaveLength(1);
+      api.onTouchCancel(0);
+    });
+
+    it('cancels a running mouse drag when the window loses focus', () => {
+      const { api, commits, ends } = mountEngine();
+      const surface = mountSurface(api);
+      mouseDown(surface.column, 300);
+      window.dispatchEvent(new Event('blur'));
+      expect(api.dragColumn.value).toBe(null);
+      expect(ends).toHaveLength(1);
+      mouseUp(256);
+      expect(commits).toEqual([]);
+    });
+
+    it('ignores columns with a malformed data-snui-column marker', () => {
+      const { api, starts } = mountEngine();
+      const root = document.createElement('div');
+      document.body.appendChild(root);
+      const disposeMouse = api.bindMouseGestures(root);
+      teardown.push(() => {
+        disposeMouse();
+        root.remove();
+      });
+      for (const marker of ['', 'x', '-1']) {
+        const column = document.createElement('div');
+        column.setAttribute('data-snui-column', marker);
+        root.appendChild(column);
+        mouseDown(column, 300);
+        mouseUp(300);
+        column.remove();
+      }
+      expect(starts).toEqual([]);
+    });
+
+    it('ignores a wheel event another handler already consumed', () => {
+      const { api, commits } = mountEngine();
+      const surface = mountSurface(api);
+      const event = new WheelEvent('wheel', {
+        bubbles: true,
+        cancelable: true,
+        deltaY: 100,
+      });
+      Object.defineProperty(event, 'defaultPrevented', { value: true });
+      surface.column.dispatchEvent(event);
+      expect(commits).toEqual([]);
+    });
+
+    it('ignores wheel notches while a drag is running', () => {
+      const { api, commits } = mountEngine();
+      const surface = mountSurface(api);
+      mouseDown(surface.column, 300);
+      wheel(surface.column, 100);
+      expect(commits).toEqual([]);
+      mouseUp(256);
+    });
+
+    it('scales line-mode wheel deltas (Firefox) into rows', () => {
+      // 4 lines × 33px = 132px → one notch.
+      const { api, commits } = mountEngine();
+      const surface = mountSurface(api);
+      surface.column.dispatchEvent(
+        new WheelEvent('wheel', {
+          bubbles: true,
+          cancelable: true,
+          deltaY: 4,
+          deltaMode: 1,
+        }),
+      );
+      expect(commits).toEqual([[0, 1]]);
+    });
+
+    it('resets the wheel accumulator after an idle gap', () => {
+      const { api, commits, tick } = mountEngine();
+      const surface = mountSurface(api);
+      wheel(surface.column, 60);
+      tick(300);
+      // 60 + 60 would be one row, but the gap wipes the accumulator.
+      wheel(surface.column, 60);
+      expect(commits).toEqual([]);
     });
   });
 });

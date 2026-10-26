@@ -212,6 +212,9 @@ function commit(values: SelectValue[]): void {
 
 function onOptionTap(raw: SelectOption): void {
   if (props.loading) return;
+  // The row is rendered with the disabled class + aria-disabled, so a tap
+  // must not commit it either.
+  if (raw.disabled === true) return;
   const value = optionValue(raw);
   if (props.type === 'radio') {
     commit([value]);
