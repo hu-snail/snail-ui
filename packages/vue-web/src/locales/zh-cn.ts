@@ -239,6 +239,48 @@ export interface SnPopconfirmLocale {
   positiveText: string;
 }
 
+/** Localized strings for SnVideoPlayer. */
+export interface SnVideoPlayerLocale {
+  play: string;
+  pause: string;
+  mute: string;
+  unmute: string;
+  fullscreen: string;
+  exitFullscreen: string;
+  /** Browser picture-in-picture toggle. */
+  pip: string;
+  /** Mini floating window (小窗) toggle. */
+  mini: string;
+  /** Settings menu (quality / rate / loop). */
+  settings: string;
+  /** Quality section header. */
+  quality: string;
+  /** Playback-rate section header. */
+  rate: string;
+  /** Loop toggle label. */
+  loop: string;
+  /** Live badge + live-mode hint. */
+  live: string;
+  /** Download current media. */
+  download: string;
+  /** Danmaku visibility toggle (on state). */
+  danmuOn: string;
+  /** Danmaku visibility toggle (off state). */
+  danmuOff: string;
+  /** Danmaku input placeholder. */
+  danmuInput: string;
+  /** Danmaku send button. */
+  danmuSend: string;
+  /** Retry button on the error panel. */
+  retry: string;
+  /** Error panel hint. */
+  errorHint: string;
+  /** Progress slider aria-label. */
+  timeline: string;
+  /** Volume slider aria-label. */
+  volume: string;
+}
+
 /**
  * Locale contract for @snui/vue-web — `zhCN` / `enUS` ship complete
  * translations; custom locales may omit whole namespaces (per-namespace
@@ -281,6 +323,8 @@ export interface SnLocale {
   AvatarGroup: SnAvatarGroupLocale;
   /** SnPopconfirm strings. */
   Popconfirm: SnPopconfirmLocale;
+  /** SnVideoPlayer strings. */
+  VideoPlayer: SnVideoPlayerLocale;
 }
 
 /** Built-in Chinese (Simplified) locale — values mirror the pre-locale UI. */
@@ -397,5 +441,29 @@ export const zhCN: SnLocale = {
   Popconfirm: {
     negativeText: '取消',
     positiveText: '确定',
+  },
+  VideoPlayer: {
+    play: '播放',
+    pause: '暂停',
+    mute: '静音',
+    unmute: '取消静音',
+    fullscreen: '全屏',
+    exitFullscreen: '退出全屏',
+    pip: '画中画',
+    mini: '小窗播放',
+    settings: '设置',
+    quality: '清晰度',
+    rate: '倍速',
+    loop: '循环播放',
+    live: '直播',
+    download: '下载视频',
+    danmuOn: '关闭弹幕',
+    danmuOff: '开启弹幕',
+    danmuInput: '发个友善的弹幕见证当下',
+    danmuSend: '发送',
+    retry: '重试',
+    errorHint: '视频加载失败，请检查网络后重试',
+    timeline: '播放进度',
+    volume: '音量',
   },
 };

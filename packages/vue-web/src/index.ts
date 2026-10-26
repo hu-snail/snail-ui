@@ -249,6 +249,17 @@ export { default as SnFloatButton } from './float-button/SnFloatButton.vue';
 export { default as SnFloatButtonGroup } from './float-button/SnFloatButtonGroup.vue';
 export { default as SnWaterfall } from './waterfall/SnWaterfall.vue';
 export { default as SnVideoPreview } from './video-preview/SnVideoPreview.vue';
+export { default as SnVideoPlayer } from './video-player/SnVideoPlayer.vue';
+export type {
+  SnVideoQuality,
+  SnVideoDanmu,
+  SnDanmuType,
+  SnBridgeQuality,
+  SnBridgeSource,
+  SnVideoSourceBridge,
+  SnVideoSourceBridgeContext,
+  SnVideoSourceBridgeHandle,
+} from './video-player/video-player-types';
 export { default as SnMarquee } from './marquee/SnMarquee.vue';
 export type {
   SnFloatButtonGroupDirection,

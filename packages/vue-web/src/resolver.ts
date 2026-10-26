@@ -164,6 +164,7 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnFloatButtonGroup',
   'SnWaterfall',
   'SnVideoPreview',
+  'SnVideoPlayer',
   'SnMarquee',
 ];
 

@@ -118,6 +118,7 @@ import SnFloatButton from './float-button/SnFloatButton.vue';
 import SnFloatButtonGroup from './float-button/SnFloatButtonGroup.vue';
 import SnWaterfall from './waterfall/SnWaterfall.vue';
 import SnVideoPreview from './video-preview/SnVideoPreview.vue';
+import SnVideoPlayer from './video-player/SnVideoPlayer.vue';
 import SnMarquee from './marquee/SnMarquee.vue';
 
 export interface SnUIOptions {
@@ -249,6 +250,7 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnFloatButtonGroup', component: SnFloatButtonGroup },
   { name: 'SnWaterfall', component: SnWaterfall },
   { name: 'SnVideoPreview', component: SnVideoPreview },
+  { name: 'SnVideoPlayer', component: SnVideoPlayer },
   { name: 'SnMarquee', component: SnMarquee },
 ];
 
