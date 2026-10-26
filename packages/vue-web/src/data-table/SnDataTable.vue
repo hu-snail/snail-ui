@@ -1285,7 +1285,10 @@ const innerStyle = computed<Record<string, string>>(() => {
                           v-for="option in filterMenuOptions"
                           :key="String(option.value)"
                           class="sn-data-table__filter-option"
+                          tabindex="0"
                           @click.stop="toggleTempFilterValue(option.value)"
+                          @keydown.enter.prevent="toggleTempFilterValue(option.value)"
+                          @keydown.space.prevent="toggleTempFilterValue(option.value)"
                         >
                           <span
                             class="sn-data-table__checkbox"
@@ -1320,7 +1323,10 @@ const innerStyle = computed<Record<string, string>>(() => {
                           v-for="option in filterMenuOptions"
                           :key="String(option.value)"
                           class="sn-data-table__filter-option"
+                          tabindex="0"
                           @click.stop="chooseTempFilterValue(option.value)"
+                          @keydown.enter.prevent="chooseTempFilterValue(option.value)"
+                          @keydown.space.prevent="chooseTempFilterValue(option.value)"
                         >
                           <span
                             class="sn-data-table__radio"

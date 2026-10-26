@@ -397,6 +397,29 @@ describe('SnDataTable (AUI-WEB-DD-004)', () => {
       expect(rowTexts(w)).toHaveLength(3);
     });
 
+    it('toggles filter options with the keyboard (Enter / Space)', async () => {
+      const w = mountTable({
+        columns: filterColumns,
+        data: baseData,
+      });
+      await w.find('.sn-data-table__filter').trigger('click');
+      const options = w.findAll('.sn-data-table__filter-option');
+      expect(options[0].attributes('tabindex')).toBe('0');
+
+      await options[0].trigger('keydown', { key: 'Enter' });
+      await options[0].trigger('keydown', { key: ' ' });
+      // Enter + Space on the same option → toggled twice, back to unchecked.
+      expect(
+        w.findAll('.sn-data-table__filter-option')[0].find('.sn-data-table__checkbox--checked')
+          .exists(),
+      ).toBe(false);
+
+      await options[0].trigger('keydown', { key: 'Enter' });
+      await w.find('.sn-data-table__filter-menu').find('.sn-data-table__filter-action').trigger('click');
+      const emitted = w.findComponent(SnDataTable).emitted('update:filters');
+      expect(emitted?.[0]?.[0]).toEqual({ address: ['London'] });
+    });
+
     it('applies single-mode filters immediately on option click', async () => {
       const columns: DataTableColumns = [
         {

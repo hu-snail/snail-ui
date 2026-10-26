@@ -376,7 +376,9 @@ function handleVideoEnded(): void {
       aria-modal="true"
       :aria-label="dialogLabel"
     >
-      <div class="sn-video-preview-overlay__mask" @click="handleMaskClick" />
+      <!-- Mouse-only dismissal affordance; keyboard users close via the
+           labelled close button, matching the drawer mask. -->
+      <div class="sn-video-preview-overlay__mask" aria-hidden="true" @click="handleMaskClick" />
       <div class="sn-video-preview-overlay__panel">
         <div class="sn-video-preview-overlay__header">
           <span v-if="title" class="sn-video-preview-overlay__title">{{ title }}</span>

@@ -514,7 +514,9 @@ const previewStyle = computed<CSSProperties>(() => ({
 <template>
   <Teleport to="body">
     <div v-if="mergedShow" class="sn-image-preview" @wheel.prevent="handleWheel">
-      <div class="sn-image-preview__overlay" @click="close" />
+      <!-- Mouse-only dismissal affordance; keyboard users close via the
+           labelled toolbar button / Escape, matching the drawer mask. -->
+      <div class="sn-image-preview__overlay" aria-hidden="true" @click="close" />
       <div v-if="showToolbar" class="sn-image-preview__toolbar">
         <CustomToolbarHost v-if="renderToolbar" />
         <template v-else>
