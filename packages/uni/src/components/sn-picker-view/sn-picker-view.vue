@@ -47,7 +47,7 @@
  *   - 日期列生成 — 用 sn-datetime-picker-view
  */
 
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
 import type {
   NormalizedPickerOption,
   PickerColumn,
@@ -55,7 +55,7 @@ import type {
   PickerValue,
   PickerViewChangePayload,
 } from './sn-picker-view-types';
-import { createRollerDrag } from './sn-picker-view-drag';
+import { PICKER_DRAG_CLOCK_INJECT, createRollerDrag } from './sn-picker-view-drag';
 
 defineOptions({ name: 'SnPickerView' });
 
@@ -200,7 +200,11 @@ const columnHeightRpx = computed(() => `${itemRpx.value * visibleCount.value}rpx
 
 /* ── Drag engine (shared with sn-datetime-picker-view) ─────────────────── */
 
+// 测试时钟注入（@internal，FB-010）：未注入时引擎走 Date.now。
+const testNow = inject<(() => number) | undefined>(PICKER_DRAG_CLOCK_INJECT, undefined);
+
 const drag = createRollerDrag({
+  now: testNow,
   isDisabled: () => props.disabled,
   itemRpx: () => itemRpx.value,
   visibleCount: () => visibleCount.value,

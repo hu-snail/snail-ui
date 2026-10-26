@@ -10,6 +10,7 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SnDatetimePickerView from './sn-datetime-picker-view.vue';
+import { PICKER_DRAG_CLOCK_INJECT } from '../sn-picker-view/sn-picker-view-drag';
 
 /**
  * Pin the viewport to the 750rpx design reference (375px) so the drag
@@ -28,7 +29,7 @@ beforeAll(() => {
 /** 2024-06-15 10:30:00 local time. */
 const BASE = new Date(2024, 5, 15, 10, 30, 0).getTime();
 
-function mountView(props: Record<string, unknown> = {}) {
+function mountView(props: Record<string, unknown> = {}, provide?: Record<string, unknown>) {
   return mount(SnDatetimePickerView, {
     props: {
       modelValue: BASE,
@@ -36,6 +37,7 @@ function mountView(props: Record<string, unknown> = {}) {
       maxDate: new Date(2030, 11, 31, 23, 59, 59).getTime(),
       ...props,
     },
+    global: provide ? { provide } : undefined,
   });
 }
 
@@ -226,7 +228,11 @@ describe('sn-datetime-picker-view', () => {
     });
 
     it('advances the selection when dragged far enough', async () => {
-      const w = mountView({ type: 'year' });
+      // FB-010：阶跃时钟（每次 now() +8ms，< MIN_SAMPLE_MS=16）让采样间隔
+      // 确定性落进"无动量"窗口——落点只由拖拽位移决定，不受测试负载影响。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const w = mountView({ type: 'year' }, { [PICKER_DRAG_CLOCK_INJECT]: stepClock });
       const column = w.find('.sn-datetime-picker-view__column');
       await column.trigger('touchstart', { touches: [{ clientY: 300 }] });
       await column.trigger('touchend', { touches: [{ clientY: 250 }] });
@@ -284,7 +290,13 @@ describe('sn-datetime-picker-view', () => {
     });
 
     it('selects a row from a mouse drag on the minute column', async () => {
-      const w = mountView({ type: 'time', modelValue: '10:30' });
+      // FB-010：注入阶跃时钟，让 mouse 采样的速度窗口确定性归零（无动量）。
+      let clockT = 0;
+      const stepClock = (): number => (clockT += 4);
+      const w = mountView(
+        { type: 'time', modelValue: '10:30' },
+        { [PICKER_DRAG_CLOCK_INJECT]: stepClock },
+      );
       const minute = w.findAll('.sn-datetime-picker-view__column')[1]?.element;
       // One synchronous batch keeps the release inside the velocity window,
       // so the drag commits exactly the travelled rows.
