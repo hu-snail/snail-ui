@@ -6,6 +6,10 @@ import Demo2 from './demos/notice-bar-mp-marquee.vue';
 import Demo3 from './demos/notice-bar-mp-type.vue';
 import Demo4 from './demos/notice-bar-mp-vertical.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -21,7 +25,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">自定义</text>
+          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -29,7 +33,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">marquee</text>
+          <text class="module__title">{{ t('marquee', 'Marquee') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -37,7 +41,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">类型</text>
+          <text class="module__title">{{ t('类型', 'Type') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -45,7 +49,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">垂直模式</text>
+          <text class="module__title">{{ t('垂直模式', 'Vertical') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />

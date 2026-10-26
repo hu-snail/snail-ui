@@ -15,6 +15,10 @@ import Demo11 from './demos/button-mp-size.vue';
 import Demo12 from './demos/button-mp-state.vue';
 import Demo13 from './demos/button-mp-variant.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -22,7 +26,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -30,7 +34,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -38,7 +42,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">单元格</text>
+          <text class="module__title">{{ t('单元格', 'Cell') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -46,7 +50,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">自定义</text>
+          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -54,7 +58,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">表单类型</text>
+          <text class="module__title">{{ t('表单类型', 'Form type') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -62,7 +66,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">悬停</text>
+          <text class="module__title">{{ t('悬停', 'Hover') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -70,7 +74,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">字体图标</text>
+          <text class="module__title">{{ t('字体图标', 'Iconfont') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />
@@ -78,7 +82,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">loading-props</text>
+          <text class="module__title">{{ t('loading-props', 'Loading Props') }}</text>
         </view>
         <view class="module__body">
           <Demo7 />
@@ -86,7 +90,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">mp-open-type</text>
+          <text class="module__title">{{ t('mp-open-type', 'Mp Open Type') }}</text>
         </view>
         <view class="module__body">
           <Demo8 />
@@ -94,7 +98,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">open-type</text>
+          <text class="module__title">{{ t('open-type', 'Open Type') }}</text>
         </view>
         <view class="module__body">
           <Demo9 />
@@ -102,7 +106,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">形状</text>
+          <text class="module__title">{{ t('形状', 'Shape') }}</text>
         </view>
         <view class="module__body">
           <Demo10 />
@@ -110,7 +114,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">尺寸</text>
+          <text class="module__title">{{ t('尺寸', 'Size') }}</text>
         </view>
         <view class="module__body">
           <Demo11 />
@@ -118,7 +122,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">状态</text>
+          <text class="module__title">{{ t('状态', 'State') }}</text>
         </view>
         <view class="module__body">
           <Demo12 />
@@ -126,7 +130,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">变体</text>
+          <text class="module__title">{{ t('变体', 'Variants') }}</text>
         </view>
         <view class="module__body">
           <Demo13 />

@@ -4,6 +4,10 @@ import Demo0 from './demos/notify-mp-basic.vue';
 import Demo1 from './demos/notify-mp-style.vue';
 import Demo2 from './demos/notify-mp-variant.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -11,7 +15,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -19,7 +23,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">样式</text>
+          <text class="module__title">{{ t('样式', 'Style') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -27,7 +31,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">变体</text>
+          <text class="module__title">{{ t('变体', 'Variants') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />

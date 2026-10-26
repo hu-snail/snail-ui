@@ -6,6 +6,10 @@ import Demo2 from './demos/calendar-mp-hooks-parity.vue';
 import Demo3 from './demos/calendar-mp-panel-sheet.vue';
 import Demo4 from './demos/calendar-mp-shortcuts-range.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -21,7 +25,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">grid-range</text>
+          <text class="module__title">{{ t('grid-range', 'Grid Range') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -29,7 +33,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">hooks-parity</text>
+          <text class="module__title">{{ t('hooks-parity', 'Hooks Parity') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -37,7 +41,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">panel-sheet</text>
+          <text class="module__title">{{ t('panel-sheet', 'Panel Sheet') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -45,7 +49,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">shortcuts-range</text>
+          <text class="module__title">{{ t('shortcuts-range', 'Shortcuts Range') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />

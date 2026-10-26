@@ -7,6 +7,10 @@ import Demo3 from './demos/icon-mp-name.vue';
 import Demo4 from './demos/icon-mp-registry.vue';
 import Demo5 from './demos/icon-mp-size.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -14,7 +18,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -22,7 +26,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">css</text>
+          <text class="module__title">{{ t('css', 'Css') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -30,7 +34,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">自定义</text>
+          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -38,7 +42,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">name</text>
+          <text class="module__title">{{ t('name', 'Name') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -46,7 +50,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">registry</text>
+          <text class="module__title">{{ t('registry', 'Registry') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -54,7 +58,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">尺寸</text>
+          <text class="module__title">{{ t('尺寸', 'Size') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />

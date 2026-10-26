@@ -82,7 +82,7 @@ watch(
 </script>
 
 <template>
-  <view class="demo-shell" :class="{ 'demo-shell--dark': isDark }">
+  <view class="demo-shell" :class="{ 'demo-shell--dark': isDark, dark: isDark }">
     <!-- 渐变弥散背景：radial 色块自带柔边，随呼吸动画缓慢起伏 -->
     <view class="demo-shell__blobs" aria-hidden="true">
       <view class="demo-shell__blob demo-shell__blob--1" />

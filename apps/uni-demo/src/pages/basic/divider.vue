@@ -5,6 +5,10 @@ import Demo1 from './demos/divider-mp-content-position.vue';
 import Demo2 from './demos/divider-mp-hairline.vue';
 import Demo3 from './demos/divider-mp-vertical.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
+import { useDemoUi } from '../../state/demo-ui';
+
+// 场景标题双语（中/英切换见 DemoPageShell）。
+const { t } = useDemoUi();
 </script>
 
 <template>
@@ -12,7 +16,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
     <view class="page">
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">基础用法</text>
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
         </view>
         <view class="module__body">
           <Demo0 />
@@ -20,7 +24,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">content-position</text>
+          <text class="module__title">{{ t('content-position', 'Content Position') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -28,7 +32,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">hairline</text>
+          <text class="module__title">{{ t('hairline', 'Hairline') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -36,7 +40,7 @@ import DemoPageShell from '../../components/DemoPageShell.vue';
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">垂直模式</text>
+          <text class="module__title">{{ t('垂直模式', 'Vertical') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
