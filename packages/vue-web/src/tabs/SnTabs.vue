@@ -192,6 +192,8 @@ watch(
     const first = list.find((p) => !p.disabled);
     if (first) innerValue.value = first.name;
   },
+  // deep is required: registerPane / unregisterPane mutate the array in
+  // place (push / splice), so a shallow watch on the ref would never fire.
   { immediate: true, deep: true },
 );
 

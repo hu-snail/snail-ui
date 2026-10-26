@@ -631,6 +631,7 @@ watch(
       window.addEventListener('scroll', onScrollOrResize, true);
       window.addEventListener('resize', onScrollOrResize);
     } else {
+      cancelPendingRecompute();
       window.removeEventListener('scroll', onScrollOrResize, true);
       window.removeEventListener('resize', onScrollOrResize);
     }
@@ -640,8 +641,22 @@ watch(
   },
   { immediate: true },
 );
+/* Scroll (capture — any container) and resize both land here. Recomputes are
+ * coalesced to one per animation frame: a scroll burst would otherwise run
+ * the full measure-and-write positioning pass per event and thrash layout. */
+let recomputeFrame: number | null = null;
+function cancelPendingRecompute(): void {
+  if (recomputeFrame !== null) {
+    window.cancelAnimationFrame(recomputeFrame);
+    recomputeFrame = null;
+  }
+}
 function onScrollOrResize(): void {
-  void recompute();
+  if (recomputeFrame !== null || !visible.value) return;
+  recomputeFrame = window.requestAnimationFrame(() => {
+    recomputeFrame = null;
+    if (visible.value) void recompute();
+  });
 }
 
 /* ─────────── Outside-click dismiss (click trigger only) ─────────── */
@@ -672,6 +687,7 @@ watch(
 
 onBeforeUnmount(() => {
   clearTimers();
+  cancelPendingRecompute();
   window.removeEventListener('scroll', onScrollOrResize, true);
   window.removeEventListener('resize', onScrollOrResize);
   document.removeEventListener('mousedown', onDocumentMouseDown);

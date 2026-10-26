@@ -35,7 +35,7 @@
  *   </SnGrid>
  */
 
-import { computed, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
 defineOptions({ name: 'SnGrid' });
 
@@ -120,24 +120,47 @@ const isResponsiveCols = (v: unknown): v is ResponsiveCols => {
 };
 
 const currentBreakpoint = ref<keyof ResponsiveCols>('l');
-if (typeof window !== 'undefined') {
-  const sync = (): void => {
-    const w = window.innerWidth;
-    // Iterate from largest breakpoint → smallest. First match wins so we
-    // resolve to the highest breakpoint whose min-width is satisfied.
-    for (let i = BP_MIN_WIDTHS.length - 1; i >= 0; i--) {
-      const entry = BP_MIN_WIDTHS[i];
-      if (!entry) continue;
-      const [bp, min] = entry;
-      if (w >= min) {
-        currentBreakpoint.value = bp;
-        break;
-      }
+const syncBreakpoint = (): void => {
+  const w = window.innerWidth;
+  // Iterate from largest breakpoint → smallest. First match wins so we
+  // resolve to the highest breakpoint whose min-width is satisfied.
+  for (let i = BP_MIN_WIDTHS.length - 1; i >= 0; i--) {
+    const entry = BP_MIN_WIDTHS[i];
+    if (!entry) continue;
+    const [bp, min] = entry;
+    if (w >= min) {
+      currentBreakpoint.value = bp;
+      break;
     }
-  };
-  sync();
-  window.addEventListener('resize', sync, { passive: true });
-}
+  }
+};
+
+// The viewport listener is only meaningful for responsive `cols` objects.
+// Binding it lazily keeps the common static-`cols` case listener-free, and
+// the unmount cleanup prevents the listener (and its closure) from leaking
+// across mount/unmount cycles.
+let resizeBound = false;
+const setViewportListener = (bind: boolean): void => {
+  if (typeof window === 'undefined' || bind === resizeBound) return;
+  resizeBound = bind;
+  if (bind) {
+    syncBreakpoint();
+    window.addEventListener('resize', syncBreakpoint, { passive: true });
+  } else {
+    window.removeEventListener('resize', syncBreakpoint);
+  }
+};
+
+watch(
+  () => props.cols,
+  (cols) => {
+    setViewportListener(isResponsiveCols(cols));
+  },
+  { immediate: true },
+);
+onBeforeUnmount(() => {
+  setViewportListener(false);
+});
 
 const responsiveCols = computed<number>(() => {
   if (!isResponsiveCols(props.cols)) {
@@ -199,7 +222,6 @@ const collapsedMaxHeight = computed<string>(() => {
       width: '100%',
       maxHeight: collapsedMaxHeight,
       overflow: collapsed ? 'hidden' : 'visible',
-      transition: 'max-height 0.3s ease',
     }"
   >
     <slot />
@@ -223,6 +245,15 @@ const collapsedMaxHeight = computed<string>(() => {
  * only placed at row-end (consumer controls position via slot). */
 .sn-grid--collapsed {
   position: relative;
+}
+
+/* Collapse animates max-height (a layout property — the only practical way
+ * to clip grid rows). Kept out of the inline style so it can be skipped
+ * entirely for users who prefer reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .sn-grid--collapsed {
+    transition: max-height 0.3s ease;
+  }
 }
 
 /* Doodle skin — heavier gap + chunky borders on grid items */

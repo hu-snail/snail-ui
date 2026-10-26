@@ -881,7 +881,11 @@ onUpdated(() => {
   const slideEls = slideElsRef.value;
   if (slideEls.length < 2) return;
   const domOrder = Array.from(container.getElementsByClassName('sn-carousel__slide'));
-  slideEls.sort((a, b) => domOrder.indexOf(a) - domOrder.indexOf(b));
+  // Index the DOM order once — sorting with `indexOf` per comparison was
+  // O(n²) DOM scans on every component update.
+  const order = new Map<Element, number>();
+  domOrder.forEach((el, i) => order.set(el, i));
+  slideEls.sort((a, b) => (order.get(a) ?? 0) - (order.get(b) ?? 0));
 });
 
 /* ────────────────────────── watches ────────────────────────── */
@@ -936,7 +940,9 @@ watch(
       fixTranslate();
     }
   },
-  { deep: true },
+  // Plain shallow watch: the computed emits a fresh primitive array per
+  // recompute, so reference equality already fires exactly on real changes
+  // — deep traversal would only add per-run cost.
 );
 
 watch(sequenceLayout, (value) => {

@@ -564,11 +564,52 @@ describe('SnFloatButtonGroup', () => {
       await wrapper.find(GROUP).trigger('mouseenter');
       expect(wrapper.find(ITEMS).classes()).toContain('sn-float-button-group__items--open');
 
+      // The dismiss evaluates on the next animation frame — run frames
+      // synchronously so the test observes the settled state.
+      vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+      });
       // happy-dom reports a zero-sized rect, so any point is "outside".
       document.dispatchEvent(new MouseEvent('mousemove', { clientX: 500, clientY: 500 }));
       await nextTick();
+      vi.unstubAllGlobals();
 
       expect(wrapper.find(ITEMS).classes()).not.toContain('sn-float-button-group__items--open');
+    });
+
+    it('coalesces a mousemove burst into one rect read per frame', async () => {
+      const wrapper = mountGroup({ trigger: 'hover' });
+      await wrapper.find(GROUP).trigger('mouseenter');
+      expect(wrapper.find(ITEMS).classes()).toContain('sn-float-button-group__items--open');
+
+      // Defer frames so queued evaluations only run when flushed.
+      const frames: Array<FrameRequestCallback | undefined> = [];
+      vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+        frames.push(cb);
+        return frames.length;
+      });
+      vi.stubGlobal('cancelAnimationFrame', (handle: number) => {
+        delete frames[handle - 1];
+      });
+
+      const rectSpy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect');
+      rectSpy.mockClear();
+      for (let i = 0; i < 5; i++) {
+        document.dispatchEvent(new MouseEvent('mousemove', { clientX: 500 + i, clientY: 500 }));
+      }
+      // No layout reads until the frame runs; five events → one queued frame.
+      expect(rectSpy).not.toHaveBeenCalled();
+      expect(frames.length).toBe(1);
+
+      const frame = frames.shift();
+      frame?.(0);
+      await nextTick();
+      // One evaluation pass = exactly one rect read.
+      expect(rectSpy).toHaveBeenCalledTimes(1);
+
+      wrapper.unmount();
+      vi.unstubAllGlobals();
     });
 
     it('should not install the document guard for the click trigger', () => {

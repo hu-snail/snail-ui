@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnGrid from './SnGrid.vue';
 import type { ResponsiveCols } from './SnGrid.vue';
@@ -97,5 +97,44 @@ describe('SnGrid (AUI-WEB-LAYOUT-002)', () => {
       slots: { default: '<div>a</div>', suffix: '<button>hidden</button>' },
     });
     expect(w.text()).not.toContain('hidden');
+  });
+
+  /* ─────────── viewport listener lifecycle (leak regression) ───────── */
+
+  it('binds no resize listener for static cols', () => {
+    const addSpy = vi.spyOn(window, 'addEventListener');
+    const w = mount(SnGrid, { props: { cols: 3 } });
+    expect(addSpy.mock.calls.some(([type]) => type === 'resize')).toBe(false);
+    w.unmount();
+    addSpy.mockRestore();
+  });
+
+  it('binds the resize listener for responsive cols and removes it on unmount', () => {
+    const addSpy = vi.spyOn(window, 'addEventListener');
+    const removeSpy = vi.spyOn(window, 'removeEventListener');
+    const cols: ResponsiveCols = { l: 2 };
+    const w = mount(SnGrid, { props: { cols } });
+    expect(addSpy.mock.calls.some(([type]) => type === 'resize')).toBe(true);
+    w.unmount();
+    expect(removeSpy.mock.calls.some(([type]) => type === 'resize')).toBe(true);
+    addSpy.mockRestore();
+    removeSpy.mockRestore();
+  });
+
+  it('binds the resize listener lazily when cols switches to responsive', async () => {
+    const addSpy = vi.spyOn(window, 'addEventListener');
+    const removeSpy = vi.spyOn(window, 'removeEventListener');
+    const w = mount(SnGrid, { props: { cols: 3 } });
+    expect(addSpy.mock.calls.some(([type]) => type === 'resize')).toBe(false);
+    const cols: ResponsiveCols = { s: 1, m: 2 };
+    void w.setProps({ cols });
+    await Promise.resolve();
+    expect(addSpy.mock.calls.some(([type]) => type === 'resize')).toBe(true);
+    void w.setProps({ cols: 4 });
+    await Promise.resolve();
+    expect(removeSpy.mock.calls.some(([type]) => type === 'resize')).toBe(true);
+    w.unmount();
+    addSpy.mockRestore();
+    removeSpy.mockRestore();
   });
 });

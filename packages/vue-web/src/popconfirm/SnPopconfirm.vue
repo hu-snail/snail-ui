@@ -545,14 +545,29 @@ watch(
       window.addEventListener('scroll', onScrollOrResize, true);
       window.addEventListener('resize', onScrollOrResize);
     } else {
+      cancelPendingRecompute();
       window.removeEventListener('scroll', onScrollOrResize, true);
       window.removeEventListener('resize', onScrollOrResize);
     }
   },
   { immediate: true },
 );
+/* Scroll (capture — any container) and resize both land here. Recomputes are
+ * coalesced to one per animation frame so a scroll burst does not run the
+ * measure-and-write positioning pass per event. */
+let recomputeFrame: number | null = null;
+function cancelPendingRecompute(): void {
+  if (recomputeFrame !== null) {
+    window.cancelAnimationFrame(recomputeFrame);
+    recomputeFrame = null;
+  }
+}
 function onScrollOrResize(): void {
-  void recompute();
+  if (recomputeFrame !== null || !visible.value) return;
+  recomputeFrame = window.requestAnimationFrame(() => {
+    recomputeFrame = null;
+    if (visible.value) void recompute();
+  });
 }
 
 /* ─────────── Outside-click dismiss (click trigger) ─────────── */
@@ -618,6 +633,7 @@ const resolvedIcon = computed<IconComponent>(() => props.icon ?? defaultIcon);
 
 onBeforeUnmount(() => {
   clearTimers();
+  cancelPendingRecompute();
   window.removeEventListener('scroll', onScrollOrResize, true);
   window.removeEventListener('resize', onScrollOrResize);
   document.removeEventListener('mousedown', onDocumentMouseDown);

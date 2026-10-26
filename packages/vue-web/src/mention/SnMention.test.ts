@@ -457,10 +457,20 @@ describe('SnMention', () => {
       menu.classList.contains('sn-pop-enter-from') ||
         menu.classList.contains('sn-pop-enter-active'),
     ).toBe(true);
-    // Enter completes within 300ms: panel still mounted, enter classes gone.
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    // Enter completes: panel still mounted, enter classes gone. Vue removes
+    // them after two chained rAFs + the transition expiry timer, which
+    // happy-dom can starve well past 300ms under full-suite load — poll with
+    // a generous deadline instead of a fixed sleep.
     const settled = panel() as HTMLElement | null;
     expect(settled).not.toBeNull();
+    const deadline = Date.now() + 5000;
+    while (
+      Date.now() < deadline &&
+      (settled.classList.contains('sn-pop-enter-active') ||
+        settled.classList.contains('sn-pop-enter-from'))
+    ) {
+      await new Promise((resolve) => setTimeout(resolve, 25));
+    }
     expect(settled.classList.contains('sn-pop-enter-active')).toBe(false);
     expect(settled.classList.contains('sn-pop-enter-from')).toBe(false);
   });

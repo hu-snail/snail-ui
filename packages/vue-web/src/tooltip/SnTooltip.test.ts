@@ -66,19 +66,32 @@ function arrowEl(): HTMLElement {
 }
 
 describe('SnTooltip (AUI-WEB-FEED-006)', () => {
+  // Wrappers left mounted keep their window-level scroll listeners alive and
+  // pollute later tests that count events — always tear them down.
+  const liveWrappers: ReturnType<typeof mountTooltip>[] = [];
   beforeEach(() => stubRect());
   afterEach(() => {
+    while (liveWrappers.length) {
+      const w = liveWrappers.pop();
+      try {
+        if (w.exists()) w.unmount();
+      } catch {
+        // already unmounted by the test itself
+      }
+    }
     vi.restoreAllMocks();
     // Tear down any Teleport nodes that survived the prior component.
     document.body.querySelectorAll('.sn-tooltip').forEach((el) => el.remove());
   });
 
   function mountTooltip(props: Record<string, unknown> = {}, slot?: () => unknown) {
-    return mount(SnTooltip, {
+    const w = mount(SnTooltip, {
       props,
       slots: { default: slot ?? (() => h(Trigger)) },
       attachTo: document.body,
     });
+    liveWrappers.push(w);
+    return w;
   }
 
   it('renders the default slot wrapped in a <span class="sn-tooltip-trigger">', () => {
@@ -568,6 +581,61 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
       pop.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
 
       expect(onClickoutside).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('scroll recompute coalescing', () => {
+    /**
+     * A scroll burst (capture listener fires for every container) must
+     * collapse into at most one positioning pass per animation frame —
+     * otherwise each event runs a full measure-and-write cycle and the
+     * scroll thread thrashes layout. Recompute is observable as exactly two
+     * getBoundingClientRect calls (trigger box + popover box).
+     */
+    it('coalesces a scroll burst into one recompute per frame', async () => {
+      // Defer rAF so queued recomputes only run when the frame is flushed.
+      const frames: Array<FrameRequestCallback | undefined> = [];
+      vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+        frames.push(cb);
+        return frames.length;
+      });
+      vi.stubGlobal('cancelAnimationFrame', (handle: number) => {
+        delete frames[handle - 1];
+      });
+
+      const w = mountTooltip({ content: 'x', show: true, trigger: 'click' });
+      await nextTick();
+      await new Promise((r) => setTimeout(r, 10));
+
+      const rectSpy = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect');
+      rectSpy.mockClear();
+
+      window.dispatchEvent(new Event('scroll'));
+      window.dispatchEvent(new Event('scroll'));
+      window.dispatchEvent(new Event('scroll'));
+      // Nothing synchronously — the burst is parked on a single frame.
+      expect(rectSpy).not.toHaveBeenCalled();
+      expect(frames.length).toBe(1);
+
+      const frame = frames.shift();
+      frame?.(0);
+      await nextTick();
+      await Promise.resolve();
+      // One recompute pass = trigger box + popover box reads.
+      expect(rectSpy).toHaveBeenCalledTimes(2);
+
+      // After close, scroll events schedule no frame and read no layout.
+      // `show` is controlled here, so closing goes through the prop.
+      void w.setProps({ show: false });
+      await nextTick();
+      await new Promise((r) => setTimeout(r, 10));
+      rectSpy.mockClear();
+      window.dispatchEvent(new Event('scroll'));
+      expect(frames.length).toBe(0);
+      expect(rectSpy).not.toHaveBeenCalled();
+
+      w.unmount();
+      vi.unstubAllGlobals();
     });
   });
 });

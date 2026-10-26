@@ -321,16 +321,11 @@ function handleGroupMouseLeave(): void {
 
 const rootRef = ref<HTMLElement | null>(null);
 
-function isPointerInsideGroup(event: MouseEvent): boolean {
+function isPointerInsideGroup(x: number, y: number): boolean {
   const root = rootRef.value;
   if (!root) return false;
   const rect = root.getBoundingClientRect();
-  return (
-    event.clientX >= rect.left &&
-    event.clientX <= rect.right &&
-    event.clientY >= rect.top &&
-    event.clientY <= rect.bottom
-  );
+  return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
 }
 
 /* ---------- Container mounting (§41) ---------- */
@@ -362,9 +357,25 @@ onMounted(() => {
   containerHost = { parent, placeholder };
 });
 
-function handleDocumentMouseMove(event: MouseEvent): void {
-  if (isPointerInsideGroup(event)) return;
+/* mousemove fires far faster than frames render. Coalesce to one rect read
+ * per animation frame, keeping only the latest pointer position — the
+ * dismiss decision is identical, without per-event layout reads. */
+let moveFrame: number | null = null;
+let lastPointer: { x: number; y: number } | null = null;
+
+function evaluatePointer(): void {
+  moveFrame = null;
+  if (!lastPointer) return;
+  const { x, y } = lastPointer;
+  lastPointer = null;
+  if (isPointerInsideGroup(x, y)) return;
   setOpen(false);
+}
+
+function handleDocumentMouseMove(event: MouseEvent): void {
+  lastPointer = { x: event.clientX, y: event.clientY };
+  if (moveFrame !== null || typeof window === 'undefined') return;
+  moveFrame = window.requestAnimationFrame(evaluatePointer);
 }
 function bindHoverGuard(): void {
   // SSR guard (§SSR): the immediate hover watch calls unbind on the server.
@@ -374,6 +385,11 @@ function bindHoverGuard(): void {
 
 function unbindHoverGuard(): void {
   if (typeof document === 'undefined') return;
+  if (moveFrame !== null && typeof window !== 'undefined') {
+    window.cancelAnimationFrame(moveFrame);
+    moveFrame = null;
+  }
+  lastPointer = null;
   document.removeEventListener('mousemove', handleDocumentMouseMove);
 }
 
