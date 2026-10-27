@@ -2,7 +2,10 @@
 /** Demo: sn-rich-text (uni-end) — 样式映射、锚点目录与空状态插槽。 */
 import { ref } from 'vue';
 import SnRichText from '@snui/uni-src/components/sn-rich-text/sn-rich-text.vue';
-import type { RichTextHeading, RichTextInstance } from '@snui/uni-src/components/sn-rich-text/sn-rich-text-types';
+import type {
+  RichTextHeading,
+  RichTextInstance,
+} from '@snui/uni-src/components/sn-rich-text/sn-rich-text-types';
 
 const styled = `
   <p class="eyebrow">YOU ARE INVITED</p>
@@ -12,7 +15,9 @@ const styled = `
 `;
 
 const tagStyle = { p: 'text-align:center;line-height:1.9;', h2: 'text-align:center;' };
-const classStyles = { eyebrow: 'font-size:12px;letter-spacing:3px;color:var(--sn-mp-color-feedback-success);' };
+const classStyles = {
+  eyebrow: 'font-size:12px;letter-spacing:3px;color:var(--sn-mp-color-feedback-success);',
+};
 
 const outline = `
   <h2 id="intro">出发之前</h2>
@@ -47,21 +52,11 @@ function clearContent(): void {
     <SnRichText :content="styled" :tag-style="tagStyle" :class-styles="classStyles" />
 
     <view class="sn-demo__actions">
-      <view
-        v-for="item in headings"
-        :key="item.id"
-        class="sn-demo__button"
-        @click="jump(item.id)"
-      >
+      <view v-for="item in headings" :key="item.id" class="sn-demo__button" @click="jump(item.id)">
         <text class="sn-demo__button-text">{{ item.text }}</text>
       </view>
     </view>
-    <SnRichText
-      ref="richText"
-      :content="outline"
-      enable-anchor
-      @load="onLoad"
-    />
+    <SnRichText ref="richText" :content="outline" enable-anchor @load="onLoad" />
 
     <view class="sn-demo__actions">
       <view class="sn-demo__button" @click="clearContent">

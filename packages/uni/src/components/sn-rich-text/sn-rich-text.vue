@@ -259,8 +259,10 @@ function onMediaEvent(node: RichTextNode, kind: string, detail: Record<string, u
   const media = node.media;
   if (media === undefined) return;
   if (kind === 'play') emit('media-play', { id: media.id, type: media.kind, src: media.src });
-  else if (kind === 'pause') emit('media-pause', { id: media.id, type: media.kind, src: media.src });
-  else if (kind === 'ended') emit('media-ended', { id: media.id, type: media.kind, src: media.src });
+  else if (kind === 'pause')
+    emit('media-pause', { id: media.id, type: media.kind, src: media.src });
+  else if (kind === 'ended')
+    emit('media-ended', { id: media.id, type: media.kind, src: media.src });
   else if (kind === 'timeupdate') {
     emit('media-timeupdate', {
       id: media.id,
@@ -359,7 +361,10 @@ function getText(): string {
     }
   };
   walk(parsed.value.root);
-  return parts.join('').replace(/\n{3,}/g, '\n\n').trim();
+  return parts
+    .join('')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 /** Heading outline (empty unless `enable-anchor` is on). */
@@ -470,7 +475,8 @@ async function scrollToAnchor(id: string, options?: RichTextScrollToAnchorOption
   const first = await measureAnchor(id);
   if (token !== anchorRequestToken) throw new Error('anchor request superseded');
   const host = readUniHost();
-  if (host?.pageScrollTo === undefined) throw new Error('page scroll is unavailable on this platform');
+  if (host?.pageScrollTo === undefined)
+    throw new Error('page scroll is unavailable on this platform');
   const target = Math.max(0, first.scrollTop + first.top - offset);
   host.pageScrollTo({ scrollTop: target, duration });
   if (duration <= 0) return;
@@ -591,11 +597,7 @@ defineExpose({
   >
     <slot v-if="isEmpty" />
     <template v-else>
-      <sn-rich-text-node
-        v-for="(node, index) in parsed.root"
-        :key="`root-${index}`"
-        :node="node"
-      />
+      <sn-rich-text-node v-for="(node, index) in parsed.root" :key="`root-${index}`" :node="node" />
     </template>
   </view>
 </template>

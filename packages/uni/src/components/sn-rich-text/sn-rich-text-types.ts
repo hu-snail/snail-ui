@@ -134,9 +134,7 @@ export interface RichTextMediaErrorPayload {
 }
 
 export type RichTextErrorEvent =
-  | RichTextParseErrorPayload
-  | RichTextImageErrorPayload
-  | RichTextMediaErrorPayload;
+  RichTextParseErrorPayload | RichTextImageErrorPayload | RichTextMediaErrorPayload;
 
 /** `image-load` payload — a content image finished loading. */
 export interface RichTextImageLoadEvent {

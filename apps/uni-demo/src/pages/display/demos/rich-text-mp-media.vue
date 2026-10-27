@@ -35,17 +35,18 @@ function onTimeUpdate(payload: { currentTime: number; duration: number }): void 
 <template>
   <view class="sn-demo">
     <view class="sn-demo__actions">
-      <view class="sn-demo__button" @click="play"><text class="sn-demo__button-text">播放视频</text></view>
-      <view class="sn-demo__button" @click="pause"><text class="sn-demo__button-text">全部暂停</text></view>
-      <view class="sn-demo__button" @click="seek"><text class="sn-demo__button-text">跳到 5 秒</text></view>
+      <view class="sn-demo__button" @click="play"
+        ><text class="sn-demo__button-text">播放视频</text></view
+      >
+      <view class="sn-demo__button" @click="pause"
+        ><text class="sn-demo__button-text">全部暂停</text></view
+      >
+      <view class="sn-demo__button" @click="seek"
+        ><text class="sn-demo__button-text">跳到 5 秒</text></view
+      >
     </view>
     <text v-if="progress !== ''" class="sn-demo__progress">进度：{{ progress }}</text>
-    <SnRichText
-      ref="richText"
-      :content="media"
-      enable-anchor
-      @media-timeupdate="onTimeUpdate"
-    />
+    <SnRichText ref="richText" :content="media" enable-anchor @media-timeupdate="onTimeUpdate" />
   </view>
 </template>
 

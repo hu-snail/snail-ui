@@ -68,49 +68,49 @@ import { SnRichText } from '@snui/uni';
 
 ## Props
 
-| Name             | Type                     | Default | Description                                                              |
-| ---------------- | ------------------------ | ------- | ------------------------------------------------------------------------ |
-| `content`        | `string`                 | `''`    | HTML string to render.                                                    |
-| `loadingImage`   | `string`                 | `''`    | Placeholder image while loading; falls back to text.                       |
-| `errorImage`     | `string`                 | `''`    | Placeholder image on failure; falls back to `alt`.                         |
-| `enableAnchor`   | `boolean`                | `false` | Build the heading outline and enable anchor targeting.                     |
-| `selectable`     | `boolean`                | `false` | Allow text selection where the platform supports it.                       |
-| `previewImage`   | `boolean`                | `true`  | Preview a standalone image on tap via the native API.                     |
-| `lazyLoad`       | `boolean`                | `false` | Let the platform lazy-load content images.                                 |
-| `baseUrl`        | `string`                 | `''`    | Absolute base for relative resource addresses; links stay untouched.      |
-| `allowDataImage` | `boolean`                | `false` | Accept ≤64KiB PNG/JPEG/GIF/WebP base64 images; never auto-previewed.       |
-| `tagStyle`       | `Record<string, string>` | `{}`    | Per-tag default style overrides.                                           |
-| `classStyles`    | `Record<string, string>` | `{}`    | Class-name → inline-style map for content classes.                        |
-| `customClass`    | `string`                 | `''`    | Root custom class.                                                         |
-| `customStyle`    | `string`                 | `''`    | Root custom inline style.                                                  |
+| Name             | Type                     | Default | Description                                                          |
+| ---------------- | ------------------------ | ------- | -------------------------------------------------------------------- |
+| `content`        | `string`                 | `''`    | HTML string to render.                                               |
+| `loadingImage`   | `string`                 | `''`    | Placeholder image while loading; falls back to text.                 |
+| `errorImage`     | `string`                 | `''`    | Placeholder image on failure; falls back to `alt`.                   |
+| `enableAnchor`   | `boolean`                | `false` | Build the heading outline and enable anchor targeting.               |
+| `selectable`     | `boolean`                | `false` | Allow text selection where the platform supports it.                 |
+| `previewImage`   | `boolean`                | `true`  | Preview a standalone image on tap via the native API.                |
+| `lazyLoad`       | `boolean`                | `false` | Let the platform lazy-load content images.                           |
+| `baseUrl`        | `string`                 | `''`    | Absolute base for relative resource addresses; links stay untouched. |
+| `allowDataImage` | `boolean`                | `false` | Accept ≤64KiB PNG/JPEG/GIF/WebP base64 images; never auto-previewed. |
+| `tagStyle`       | `Record<string, string>` | `{}`    | Per-tag default style overrides.                                     |
+| `classStyles`    | `Record<string, string>` | `{}`    | Class-name → inline-style map for content classes.                   |
+| `customClass`    | `string`                 | `''`    | Root custom class.                                                   |
+| `customStyle`    | `string`                 | `''`    | Root custom inline style.                                            |
 
 Style priority: tag defaults → `tagStyle` → `classStyles` → HTML inline style.
 
 ## Events
 
-| Name               | Payload                                                     | Description                                            |
-| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------ |
-| `load`             | `{ imageCount }`                                             | Parsing + node update done; media not awaited.         |
-| `error`            | `{ source: 'parse' \| 'image' \| 'video' \| 'audio', … }`     | Limit, image failure or media resource failure.        |
-| `image-load`       | `{ src, index, width, height }`                              | A content image loaded; once per image node.           |
-| `image-click`      | `{ src, index }`                                             | A standalone image was tapped.                          |
-| `link-click`       | `{ href }`                                                   | A link (or linked image) with a valid href was tapped.  |
-| `media-play`       | `{ id, type, src }`                                          | Media started playing.                                 |
-| `media-pause`      | `{ id, type, src }`                                          | Media paused.                                          |
-| `media-ended`      | `{ id, type, src }`                                          | Media reached the end.                                 |
-| `media-timeupdate` | `{ id, type, src, currentTime, duration }`                   | Progress in seconds.                                   |
+| Name               | Payload                                                   | Description                                            |
+| ------------------ | --------------------------------------------------------- | ------------------------------------------------------ |
+| `load`             | `{ imageCount }`                                          | Parsing + node update done; media not awaited.         |
+| `error`            | `{ source: 'parse' \| 'image' \| 'video' \| 'audio', … }` | Limit, image failure or media resource failure.        |
+| `image-load`       | `{ src, index, width, height }`                           | A content image loaded; once per image node.           |
+| `image-click`      | `{ src, index }`                                          | A standalone image was tapped.                         |
+| `link-click`       | `{ href }`                                                | A link (or linked image) with a valid href was tapped. |
+| `media-play`       | `{ id, type, src }`                                       | Media started playing.                                 |
+| `media-pause`      | `{ id, type, src }`                                       | Media paused.                                          |
+| `media-ended`      | `{ id, type, src }`                                       | Media reached the end.                                 |
+| `media-timeupdate` | `{ id, type, src, currentTime, duration }`                | Progress in seconds.                                   |
 
 ## Methods
 
-| Name             | Signature                                   | Return                                    | Description                                        |
-| ---------------- | -------------------------------------------- | ----------------------------------------- | -------------------------------------------------- |
-| `getText`        | -                                            | `string`                                  | Filtered plain text; paragraphs and alt text kept.  |
-| `getHeadings`    | -                                            | `{ id, level, text }[]`                   | Outline copy; empty when `enableAnchor` is off.     |
-| `getAnchorRect`  | `id: string`                                 | `Promise<{ top, left, width, height }>`   | Rejects when unknown, hidden or not rendered.      |
-| `scrollToAnchor` | `id, { offset?, duration? }`                  | `Promise<void>`                           | Page scroll with one post-animation correction.     |
-| `playMedia`      | `id: string`                                 | `boolean`                                 | `true` means the command was dispatched.            |
-| `pauseMedia`     | `id?: string`                                | `boolean`                                 | Omit the id to pause every media in the content.    |
-| `seekMedia`      | `id: string, seconds: number`                | `boolean`                                 | Moves without starting playback.                    |
+| Name             | Signature                     | Return                                  | Description                                        |
+| ---------------- | ----------------------------- | --------------------------------------- | -------------------------------------------------- |
+| `getText`        | -                             | `string`                                | Filtered plain text; paragraphs and alt text kept. |
+| `getHeadings`    | -                             | `{ id, level, text }[]`                 | Outline copy; empty when `enableAnchor` is off.    |
+| `getAnchorRect`  | `id: string`                  | `Promise<{ top, left, width, height }>` | Rejects when unknown, hidden or not rendered.      |
+| `scrollToAnchor` | `id, { offset?, duration? }`  | `Promise<void>`                         | Page scroll with one post-animation correction.    |
+| `playMedia`      | `id: string`                  | `boolean`                               | `true` means the command was dispatched.           |
+| `pauseMedia`     | `id?: string`                 | `boolean`                               | Omit the id to pause every media in the content.   |
+| `seekMedia`      | `id: string, seconds: number` | `boolean`                               | Moves without starting playback.                   |
 
 ## Slots
 
@@ -120,16 +120,16 @@ Style priority: tag defaults → `tagStyle` → `classStyles` → HTML inline st
 
 ## CSS variables
 
-| Name                                       | Description                                   |
-| ------------------------------------------ | --------------------------------------------- |
-| `--sn-mp-rich-text-color`                   | Body text colour.                             |
-| `--sn-mp-rich-text-font-size`               | Body font size.                               |
-| `--sn-mp-rich-text-line-height`             | Body line height (default `1.7`).             |
-| `--sn-mp-rich-text-link-color`              | Link colour.                                  |
-| `--sn-mp-rich-text-video-height`            | Video height when the content sets none.      |
-| `--sn-mp-rich-text-image-state-min-height`  | Minimum height of the image loading state.    |
-| `--sn-mp-rich-text-image-state-color`      | Image state text colour.                      |
-| `--sn-mp-rich-text-image-state-bg`         | Image state background colour.                |
+| Name                                       | Description                                |
+| ------------------------------------------ | ------------------------------------------ |
+| `--sn-mp-rich-text-color`                  | Body text colour.                          |
+| `--sn-mp-rich-text-font-size`              | Body font size.                            |
+| `--sn-mp-rich-text-line-height`            | Body line height (default `1.7`).          |
+| `--sn-mp-rich-text-link-color`             | Link colour.                               |
+| `--sn-mp-rich-text-video-height`           | Video height when the content sets none.   |
+| `--sn-mp-rich-text-image-state-min-height` | Minimum height of the image loading state. |
+| `--sn-mp-rich-text-image-state-color`      | Image state text colour.                   |
+| `--sn-mp-rich-text-image-state-bg`         | Image state background colour.             |
 
 All eight default to theme aliases, so dark mode needs no extra wiring.
 

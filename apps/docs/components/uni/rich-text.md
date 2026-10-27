@@ -68,68 +68,68 @@ import { SnRichText } from '@snui/uni';
 
 ## Props
 
-| 属性              | 类型                     | 默认值  | 说明                                                     |
-| ----------------- | ------------------------ | ------- | -------------------------------------------------------- |
-| `content`         | `string`                 | `''`    | HTML 字符串                                              |
-| `loadingImage`    | `string`                 | `''`    | 图片加载中占位图，失败后退回文字                         |
-| `errorImage`      | `string`                 | `''`    | 图片失败占位图，失败后退回 `alt`                         |
-| `enableAnchor`    | `boolean`                | `false` | 开启标题目录与锚点定位                                   |
-| `selectable`      | `boolean`                | `false` | 允许选择文字，实际行为依平台而定                         |
-| `previewImage`    | `boolean`                | `true`  | 点击普通图片时自动预览                                   |
-| `lazyLoad`        | `boolean`                | `false` | 开启平台支持的图片懒加载                                 |
-| `baseUrl`         | `string`                 | `''`    | 资源基址，用于补全相对地址；不转换链接 `href`            |
-| `allowDataImage`  | `boolean`                | `false` | 允许 ≤64KiB 的 PNG/JPEG/GIF/WebP Base64 图片，不自动预览 |
-| `tagStyle`        | `Record<string, string>` | `{}`    | 标签默认样式映射                                         |
-| `classStyles`     | `Record<string, string>` | `{}`    | class 到内联样式的显式映射                               |
-| `customClass`     | `string`                 | `''`    | 根节点自定义类名                                         |
-| `customStyle`     | `string`                 | `''`    | 根节点内联样式                                           |
+| 属性             | 类型                     | 默认值  | 说明                                                     |
+| ---------------- | ------------------------ | ------- | -------------------------------------------------------- |
+| `content`        | `string`                 | `''`    | HTML 字符串                                              |
+| `loadingImage`   | `string`                 | `''`    | 图片加载中占位图，失败后退回文字                         |
+| `errorImage`     | `string`                 | `''`    | 图片失败占位图，失败后退回 `alt`                         |
+| `enableAnchor`   | `boolean`                | `false` | 开启标题目录与锚点定位                                   |
+| `selectable`     | `boolean`                | `false` | 允许选择文字，实际行为依平台而定                         |
+| `previewImage`   | `boolean`                | `true`  | 点击普通图片时自动预览                                   |
+| `lazyLoad`       | `boolean`                | `false` | 开启平台支持的图片懒加载                                 |
+| `baseUrl`        | `string`                 | `''`    | 资源基址，用于补全相对地址；不转换链接 `href`            |
+| `allowDataImage` | `boolean`                | `false` | 允许 ≤64KiB 的 PNG/JPEG/GIF/WebP Base64 图片，不自动预览 |
+| `tagStyle`       | `Record<string, string>` | `{}`    | 标签默认样式映射                                         |
+| `classStyles`    | `Record<string, string>` | `{}`    | class 到内联样式的显式映射                               |
+| `customClass`    | `string`                 | `''`    | 根节点自定义类名                                         |
+| `customStyle`    | `string`                 | `''`    | 根节点内联样式                                           |
 
 样式优先级：标签默认样式 → `tagStyle` → `classStyles` → HTML 内联样式。
 
 ## Events
 
-| 事件名称           | 参数                                                      | 说明                                       |
-| ------------------ | --------------------------------------------------------- | ------------------------------------------ |
-| `load`             | `{ imageCount }`                                          | 解析与节点更新完成，不等待媒体资源加载     |
-| `error`            | `{ source: 'parse' \| 'image' \| 'video' \| 'audio', … }`  | 解析超限、图片失败或媒体资源失败           |
-| `image-load`       | `{ src, index, width, height }`                           | 原内容中的图片成功加载，每个图片节点一次   |
-| `image-click`      | `{ src, index }`                                          | 点击普通图片，无论是否开启自动预览         |
-| `link-click`       | `{ href }`                                                | 点击有有效地址的链接，包括图片链接         |
-| `media-play`       | `{ id, type, src }`                                       | 音视频开始播放                             |
-| `media-pause`      | `{ id, type, src }`                                       | 音视频暂停                                 |
-| `media-ended`      | `{ id, type, src }`                                       | 音视频播放结束                             |
-| `media-timeupdate` | `{ id, type, src, currentTime, duration }`                | 播放进度更新，单位秒                       |
+| 事件名称           | 参数                                                      | 说明                                     |
+| ------------------ | --------------------------------------------------------- | ---------------------------------------- |
+| `load`             | `{ imageCount }`                                          | 解析与节点更新完成，不等待媒体资源加载   |
+| `error`            | `{ source: 'parse' \| 'image' \| 'video' \| 'audio', … }` | 解析超限、图片失败或媒体资源失败         |
+| `image-load`       | `{ src, index, width, height }`                           | 原内容中的图片成功加载，每个图片节点一次 |
+| `image-click`      | `{ src, index }`                                          | 点击普通图片，无论是否开启自动预览       |
+| `link-click`       | `{ href }`                                                | 点击有有效地址的链接，包括图片链接       |
+| `media-play`       | `{ id, type, src }`                                       | 音视频开始播放                           |
+| `media-pause`      | `{ id, type, src }`                                       | 音视频暂停                               |
+| `media-ended`      | `{ id, type, src }`                                       | 音视频播放结束                           |
+| `media-timeupdate` | `{ id, type, src, currentTime, duration }`                | 播放进度更新，单位秒                     |
 
 ## Methods
 
-| 方法名称         | 参数                                       | 返回值                                     | 说明                                 |
-| ---------------- | ------------------------------------------ | ------------------------------------------ | ------------------------------------ |
-| `getText`        | -                                          | `string`                                   | 过滤后的纯文本，保留段落与图片替代文字 |
-| `getHeadings`    | -                                          | `{ id, level, text }[]`                    | 标题目录副本，未开启时为空数组        |
-| `getAnchorRect`  | `id: string`                               | `Promise<{ top, left, width, height }>`    | 查询目标在内容视口中的位置            |
-| `scrollToAnchor` | `id: string, options?: { offset?, duration? }` | `Promise<void>`                        | 页面滚动至目标，动画后校正一次        |
-| `playMedia`      | `id: string`                               | `boolean`                                  | 播放指定媒体，`true` 表示已下发指令    |
-| `pauseMedia`     | `id?: string`                              | `boolean`                                  | 暂停指定媒体；不传 ID 暂停全部        |
-| `seekMedia`      | `id: string, seconds: number`              | `boolean`                                  | 跳转播放进度，不主动播放              |
+| 方法名称         | 参数                                           | 返回值                                  | 说明                                   |
+| ---------------- | ---------------------------------------------- | --------------------------------------- | -------------------------------------- |
+| `getText`        | -                                              | `string`                                | 过滤后的纯文本，保留段落与图片替代文字 |
+| `getHeadings`    | -                                              | `{ id, level, text }[]`                 | 标题目录副本，未开启时为空数组         |
+| `getAnchorRect`  | `id: string`                                   | `Promise<{ top, left, width, height }>` | 查询目标在内容视口中的位置             |
+| `scrollToAnchor` | `id: string, options?: { offset?, duration? }` | `Promise<void>`                         | 页面滚动至目标，动画后校正一次         |
+| `playMedia`      | `id: string`                                   | `boolean`                               | 播放指定媒体，`true` 表示已下发指令    |
+| `pauseMedia`     | `id?: string`                                  | `boolean`                               | 暂停指定媒体；不传 ID 暂停全部         |
+| `seekMedia`      | `id: string, seconds: number`                  | `boolean`                               | 跳转播放进度，不主动播放               |
 
 ## Slots
 
-| 插槽名称  | 说明                                               |
-| --------- | -------------------------------------------------- |
-| `default` | 内容为空、过滤后无渲染节点或解析失败时显示         |
+| 插槽名称  | 说明                                       |
+| --------- | ------------------------------------------ |
+| `default` | 内容为空、过滤后无渲染节点或解析失败时显示 |
 
 ## CSS 变量
 
-| 名称                                        | 说明                     |
-| ------------------------------------------- | ------------------------ |
-| `--sn-mp-rich-text-color`                   | 正文颜色                 |
-| `--sn-mp-rich-text-font-size`               | 正文字号                 |
-| `--sn-mp-rich-text-line-height`             | 正文行高，默认 `1.7`     |
-| `--sn-mp-rich-text-link-color`              | 链接颜色                 |
-| `--sn-mp-rich-text-video-height`            | 未指定高度时的视频高度   |
-| `--sn-mp-rich-text-image-state-min-height`  | 图片状态最小高度         |
-| `--sn-mp-rich-text-image-state-color`       | 图片状态文字颜色         |
-| `--sn-mp-rich-text-image-state-bg`          | 图片状态背景色           |
+| 名称                                       | 说明                   |
+| ------------------------------------------ | ---------------------- |
+| `--sn-mp-rich-text-color`                  | 正文颜色               |
+| `--sn-mp-rich-text-font-size`              | 正文字号               |
+| `--sn-mp-rich-text-line-height`            | 正文行高，默认 `1.7`   |
+| `--sn-mp-rich-text-link-color`             | 链接颜色               |
+| `--sn-mp-rich-text-video-height`           | 未指定高度时的视频高度 |
+| `--sn-mp-rich-text-image-state-min-height` | 图片状态最小高度       |
+| `--sn-mp-rich-text-image-state-color`      | 图片状态文字颜色       |
+| `--sn-mp-rich-text-image-state-bg`         | 图片状态背景色         |
 
 八个变量都默认指向主题变量，暗色模式无需额外接线。
 

@@ -120,7 +120,9 @@ describe('sn-rich-text parser', () => {
 
   describe('style sanitizing', () => {
     it('keeps allowlisted declarations', () => {
-      expect(sanitizeInlineStyle('color:red;text-align:center')).toBe('color:red;text-align:center');
+      expect(sanitizeInlineStyle('color:red;text-align:center')).toBe(
+        'color:red;text-align:center',
+      );
     });
 
     it('drops positioning and url() values', () => {
@@ -160,10 +162,7 @@ describe('sn-rich-text parser', () => {
     });
 
     it('prefers original-src for preview when valid', () => {
-      const { images } = parseRichText(
-        '<img src="thumb.png" original-src="full.png">',
-        OPTIONS,
-      );
+      const { images } = parseRichText('<img src="thumb.png" original-src="full.png">', OPTIONS);
       expect(images[0]?.src).toBe('thumb.png');
       expect(images[0]?.previewSrc).toBe('full.png');
     });
@@ -527,7 +526,9 @@ describe('sn-rich-text component', () => {
         enableAnchor: true,
       });
       const headings = (
-        wrapper.vm as unknown as { getHeadings(): Array<{ id: string; level: number; text: string }> }
+        wrapper.vm as unknown as {
+          getHeadings(): Array<{ id: string; level: number; text: string }>;
+        }
       ).getHeadings();
       expect(headings).toEqual([
         { id: 'a', level: 2, text: '出发' },

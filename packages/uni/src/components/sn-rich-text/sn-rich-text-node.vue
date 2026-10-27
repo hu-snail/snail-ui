@@ -36,7 +36,6 @@ import type { RichTextNode, RichTextTableMeta } from './sn-rich-text-types';
 
 defineOptions({ name: 'SnRichTextNode' });
 
-
 const props = defineProps<{
   /** Node to render (its children recurse back into this component). */
   node: RichTextNode;
@@ -446,24 +445,13 @@ function cellStyle(colSpan: number, width: string): string {
 
 <template>
   <view class="sn-rich-text__node">
-    <view
-      v-if="node.tag === 'br'"
-      class="sn-rich-text__break"
-    >
+    <view v-if="node.tag === 'br'" class="sn-rich-text__break">
       <text class="sn-rich-text__break-text">{{ breakText }}</text>
     </view>
 
-    <view
-      v-else-if="node.tag === 'hr'"
-      class="sn-rich-text__hr"
-      :class="blockClass"
-    />
+    <view v-else-if="node.tag === 'hr'" class="sn-rich-text__hr" :class="blockClass" />
 
-    <view
-      v-else-if="node.tag === 'img'"
-      class="sn-rich-text__image-wrap"
-      :id="anchorElementId"
-    >
+    <view v-else-if="node.tag === 'img'" class="sn-rich-text__image-wrap" :id="anchorElementId">
       <image
         v-if="imageState !== 'error' && imagePlaceholder === ''"
         class="sn-rich-text__image"
@@ -483,20 +471,14 @@ function cellStyle(colSpan: number, width: string): string {
         :style="imageStyle"
         @click="onImageTap"
       />
-      <view
-        v-else
-        class="sn-rich-text__image-fallback"
-        @click="onImageTap"
-      >
-        <text class="sn-rich-text__image-fallback-text">{{ imageAlt === '' ? '×' : imageAlt }}</text>
+      <view v-else class="sn-rich-text__image-fallback" @click="onImageTap">
+        <text class="sn-rich-text__image-fallback-text">{{
+          imageAlt === '' ? '×' : imageAlt
+        }}</text>
       </view>
     </view>
 
-    <view
-      v-else-if="node.tag === 'video'"
-      class="sn-rich-text__video"
-      :id="anchorElementId"
-    >
+    <view v-else-if="node.tag === 'video'" class="sn-rich-text__video" :id="anchorElementId">
       <video
         v-if="mediaSrc !== ''"
         class="sn-rich-text__video-player"
@@ -516,13 +498,11 @@ function cellStyle(colSpan: number, width: string): string {
       </view>
     </view>
 
-    <view
-      v-else-if="node.tag === 'audio'"
-      class="sn-rich-text__audio"
-      :id="anchorElementId"
-    >
+    <view v-else-if="node.tag === 'audio'" class="sn-rich-text__audio" :id="anchorElementId">
       <view class="sn-rich-text__audio-button" @click="onAudioToggle">
-        <text class="sn-rich-text__audio-button-text">{{ audioState.playing ? '暂停' : '播放' }}</text>
+        <text class="sn-rich-text__audio-button-text">{{
+          audioState.playing ? '暂停' : '播放'
+        }}</text>
       </view>
       <text class="sn-rich-text__audio-title">{{ audioTitle }}</text>
     </view>
@@ -553,7 +533,8 @@ function cellStyle(colSpan: number, width: string): string {
                 :style="run.style === '' ? undefined : run.style"
                 :selectable="ctx.selectable"
                 @click="onRunTap(run)"
-              >{{ run.text }}</text>
+                >{{ run.text }}</text
+              >
             </view>
           </view>
         </view>
@@ -567,11 +548,7 @@ function cellStyle(colSpan: number, width: string): string {
       :id="anchorElementId"
       :style="blockStyle === '' ? undefined : blockStyle"
     >
-      <view
-        v-for="segment in segments"
-        :key="segment.key"
-        class="sn-rich-text__segment"
-      >
+      <view v-for="segment in segments" :key="segment.key" class="sn-rich-text__segment">
         <text
           v-if="segment.kind === 'inline'"
           class="sn-rich-text__line"
@@ -585,12 +562,10 @@ function cellStyle(colSpan: number, width: string): string {
             :style="run.style === '' ? undefined : run.style"
             :selectable="ctx.selectable"
             @click="onRunTap(run)"
-          >{{ run.isBreak ? breakText : run.text }}</text>
+            >{{ run.isBreak ? breakText : run.text }}</text
+          >
         </text>
-        <sn-rich-text-node
-          v-else
-          :node="segment.node"
-        />
+        <sn-rich-text-node v-else :node="segment.node" />
       </view>
     </view>
   </view>
@@ -899,4 +874,3 @@ function cellStyle(colSpan: number, width: string): string {
   line-height: inherit;
 }
 </style>
-
