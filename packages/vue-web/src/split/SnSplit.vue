@@ -1,10 +1,10 @@
 <script setup lang="ts">
 /**
- * SnSplitter — web-end splitter container (naive-ui n-splitter parity).
+ * SnSplit — web-end split container (naive-ui n-splitter parity).
  *
- * Owns the percent size state of its descendant SnSplitterPanel children and
+ * Owns the percent size state of its descendant SnSplitPanel children and
  * the drag / keyboard logic of the dividers between them. Panels register
- * through the injection context (splitter-context.ts); each panel renders its
+ * through the injection context (split-context.ts); each panel renders its
  * own divider (except the first) as a sibling fragment node, so the flex row
  * is [panel][divider][panel][divider][panel] and percent widths stay exact
  * flex-item sizes.
@@ -14,20 +14,20 @@
  */
 import { computed, onBeforeUnmount, onMounted, provide, reactive, ref, watch } from 'vue';
 import {
-  SN_SPLITTER_INJECTION_KEY,
-  SN_SPLITTER_KEYBOARD_STEP_PERCENT,
+  SN_SPLIT_INJECTION_KEY,
+  SN_SPLIT_KEYBOARD_STEP_PERCENT,
   parsePercentSize,
   round2,
-} from './splitter-context';
+} from './split-context';
 import type {
-  SnSplitterApi,
-  SnSplitterBoundaryAria,
-  SnSplitterPanelHandle,
-  SnSplitterResizeState,
-  SplitterPanelEntry,
-} from './splitter-context';
+  SnSplitApi,
+  SnSplitBoundaryAria,
+  SnSplitPanelHandle,
+  SnSplitResizeState,
+  SplitPanelEntry,
+} from './split-context';
 
-defineOptions({ name: 'SnSplitter' });
+defineOptions({ name: 'SnSplit' });
 
 const props = withDefaults(
   defineProps<{
@@ -44,7 +44,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   /** A resize gesture finished (drag end / keyboard / dblclick). */
-  (e: 'resize', state: SnSplitterResizeState): void;
+  (e: 'resize', state: SnSplitResizeState): void;
 }>();
 
 const isVertical = computed(() => props.direction === 'vertical');
@@ -53,27 +53,27 @@ const rootEl = ref<HTMLDivElement | null>(null);
 
 // ---- registered panels ---------------------------------------------------
 
-const entries = reactive<SplitterPanelEntry[]>([]);
+const entries = reactive<SplitPanelEntry[]>([]);
 let nextPanelId = 1;
 
-function defaultOf(entry: SplitterPanelEntry): number | null {
+function defaultOf(entry: SplitPanelEntry): number | null {
   return parsePercentSize(entry.handle.props.defaultSize);
 }
 
-function minOf(entry: SplitterPanelEntry): number {
+function minOf(entry: SplitPanelEntry): number {
   return parsePercentSize(entry.handle.props.minSize) ?? 0;
 }
 
-function maxOf(entry: SplitterPanelEntry): number {
+function maxOf(entry: SplitPanelEntry): number {
   return parsePercentSize(entry.handle.props.maxSize) ?? 100;
 }
 
 /** A collapsed panel's effective lower bound is 0, not its minSize. */
-function effectiveMinOf(entry: SplitterPanelEntry): number {
+function effectiveMinOf(entry: SplitPanelEntry): number {
   return entry.collapsed ? 0 : minOf(entry);
 }
 
-function isCollapsible(entry: SplitterPanelEntry): boolean {
+function isCollapsible(entry: SplitPanelEntry): boolean {
   return entry.handle.props.collapsible === true;
 }
 
@@ -91,7 +91,7 @@ function donorIndexOf(index: number): number {
 }
 
 /** Collapse to 0 and hand the freed percent to the nearest live neighbor. */
-function collapseEntry(entry: SplitterPanelEntry): void {
+function collapseEntry(entry: SplitPanelEntry): void {
   const donorIndex = donorIndexOf(entries.indexOf(entry));
   const donor = donorIndex >= 0 ? entries[donorIndex] : undefined;
   if (donor) {
@@ -106,7 +106,7 @@ function collapseEntry(entry: SplitterPanelEntry): void {
 }
 
 /** Restore defaultSize by taking percent from the nearest live neighbor. */
-function expandEntry(entry: SplitterPanelEntry): void {
+function expandEntry(entry: SplitPanelEntry): void {
   entry.collapsed = false;
   entry.handle.emitCollapsed(false);
   const donorIndex = donorIndexOf(entries.indexOf(entry));
@@ -149,10 +149,10 @@ function normalizeSizes(): void {
   for (const entry of unsized) entry.size = round2(share);
 }
 
-function registerPanel(handle: SnSplitterPanelHandle): { id: number; unregister: () => void } {
+function registerPanel(handle: SnSplitPanelHandle): { id: number; unregister: () => void } {
   const id = nextPanelId;
   nextPanelId += 1;
-  const entry = reactive<SplitterPanelEntry>({
+  const entry = reactive<SplitPanelEntry>({
     id,
     handle,
     size: handle.props.collapsed === true ? 0 : (parsePercentSize(handle.props.defaultSize) ?? 50),
@@ -302,8 +302,8 @@ function onDividerKeydown(boundary: number, event: KeyboardEvent): void {
   const growKey = isVertical.value ? 'ArrowDown' : 'ArrowRight';
   const shrinkKey = isVertical.value ? 'ArrowUp' : 'ArrowLeft';
   let delta: number | null = null;
-  if (event.key === growKey) delta = SN_SPLITTER_KEYBOARD_STEP_PERCENT;
-  else if (event.key === shrinkKey) delta = -SN_SPLITTER_KEYBOARD_STEP_PERCENT;
+  if (event.key === growKey) delta = SN_SPLIT_KEYBOARD_STEP_PERCENT;
+  else if (event.key === shrinkKey) delta = -SN_SPLIT_KEYBOARD_STEP_PERCENT;
   else if (event.key === 'Home') delta = effectiveMinOf(before) - before.size;
   else if (event.key === 'End') {
     delta = round2(before.size + after.size - effectiveMinOf(after)) - before.size;
@@ -324,7 +324,7 @@ function onDividerDblClick(boundary: number): void {
     expandEntry(before.collapsed ? before : after);
   } else {
     // Restore both panels toward their defaults while preserving the pair's
-    // current total, so the rest of the splitter is unaffected.
+    // current total, so the rest of the split container is unaffected.
     const pairSum = round2(before.size + after.size);
     const beforeDefault = defaultOf(before) ?? 50;
     const afterDefault = defaultOf(after) ?? 50;
@@ -341,7 +341,7 @@ function onDividerDblClick(boundary: number): void {
 
 // ---- a11y ----------------------------------------------------------------
 
-function getBoundaryAria(boundary: number): SnSplitterBoundaryAria | null {
+function getBoundaryAria(boundary: number): SnSplitBoundaryAria | null {
   const before = entries[boundary - 1];
   const after = entries[boundary];
   if (!before || !after) return null;
@@ -353,7 +353,7 @@ function getBoundaryAria(boundary: number): SnSplitterBoundaryAria | null {
   };
 }
 
-const api: SnSplitterApi = {
+const api: SnSplitApi = {
   direction: computed(() => props.direction),
   isDisabled: computed(() => props.disabled),
   registerPanel,
@@ -364,7 +364,7 @@ const api: SnSplitterApi = {
   onDividerDblClick,
   getBoundaryAria,
 };
-provide(SN_SPLITTER_INJECTION_KEY, api);
+provide(SN_SPLIT_INJECTION_KEY, api);
 
 onMounted(() => {
   normalizeSizes();
@@ -381,40 +381,40 @@ onBeforeUnmount(() => {
   <div
     ref="rootEl"
     :class="[
-      'sn-splitter',
+      'sn-split',
       {
-        'sn-splitter--vertical': isVertical,
-        'sn-splitter--disabled': disabled,
-        'sn-splitter--dragging': isDragging,
+        'sn-split--vertical': isVertical,
+        'sn-split--disabled': disabled,
+        'sn-split--dragging': isDragging,
       },
     ]"
-    :data-snui-component="'splitter'"
+    :data-snui-component="'split'"
   >
     <slot />
   </div>
 </template>
 
 <style scoped>
-.sn-splitter {
+.sn-split {
   display: flex;
   width: 100%;
   height: 100%;
   box-sizing: border-box;
 }
 
-.sn-splitter--vertical {
+.sn-split--vertical {
   flex-direction: column;
 }
 
-/* While a drag gesture is live: no text selection anywhere in the splitter,
+/* While a drag gesture is live: no text selection anywhere in the split container,
    and the grab cursor stays on even when the pointer leaves the divider. */
-.sn-splitter--dragging {
+.sn-split--dragging {
   cursor: col-resize;
   user-select: none;
   -webkit-user-select: none;
 }
 
-.sn-splitter--vertical.sn-splitter--dragging {
+.sn-split--vertical.sn-split--dragging {
   cursor: row-resize;
 }
 </style>

@@ -1,18 +1,18 @@
 /**
- * SnSplitter ↔ SnSplitterPanel contract.
+ * SnSplit ↔ SnSplitPanel contract.
  *
  * Mirrors the drawer-context.ts pattern: the container provides an API object
  * under a typed injection key; panels register during setup and receive their
  * percent size state back through the same context. `undefined` from `inject`
- * means the panel was rendered outside a splitter — it then degrades to a
- * static box (no divider, no sizing).
+ * means the panel was rendered outside a split container — it then degrades
+ * to a static box (no divider, no sizing).
  */
 import type { ComputedRef, InjectionKey } from 'vue';
 
-export type SnSplitterDirection = 'horizontal' | 'vertical';
+export type SnSplitDirection = 'horizontal' | 'vertical';
 
-/** Payload of the splitter `resize` event (drag end / keyboard / dblclick). */
-export interface SnSplitterResizeState {
+/** Payload of the split `resize` event (drag end / keyboard / dblclick). */
+export interface SnSplitResizeState {
   /** Percent size of the panel before the divider. */
   before: number;
   /** Percent size of the panel after the divider. */
@@ -24,12 +24,12 @@ export interface SnSplitterResizeState {
 }
 
 /**
- * Public props of SnSplitterPanel. Declared here so the container can read
+ * Public props of SnSplitPanel. Declared here so the container can read
  * live constraint values from the panel's reactive props via the handle.
  * Optional props carry `| undefined` so the reactive props object stays
  * assignable under `exactOptionalPropertyTypes`.
  */
-export interface SnSplitterPanelPublicProps {
+export interface SnSplitPanelPublicProps {
   /** Initial percent size. Numbers are percents; strings must be `"N%"`. */
   defaultSize?: number | string | undefined;
   /** Lower resize bound, in percent. */
@@ -43,47 +43,47 @@ export interface SnSplitterPanelPublicProps {
 }
 
 /** @internal Container-side mirror of one registered panel. */
-export interface SplitterPanelEntry {
+export interface SplitPanelEntry {
   readonly id: number;
   /** Current percent size (0 while collapsed). */
   size: number;
   /** Collapsed mirror (kept in sync with the panel prop, idempotently). */
   collapsed: boolean;
-  readonly handle: SnSplitterPanelHandle;
+  readonly handle: SnSplitPanelHandle;
 }
 
-/** @internal What a panel hands to its splitter at registration time. */
-export interface SnSplitterPanelHandle {
+/** @internal What a panel hands to its split container at registration time. */
+export interface SnSplitPanelHandle {
   /** The panel's reactive props object (live defaultSize / min / max / …). */
-  props: SnSplitterPanelPublicProps;
+  props: SnSplitPanelPublicProps;
   /** Ask the panel to emit `update:collapsed` to its host. */
   emitCollapsed: (next: boolean) => void;
 }
 
 /** Divider a11y metrics for `role="separator"`. */
-export interface SnSplitterBoundaryAria {
+export interface SnSplitBoundaryAria {
   valueNow: number;
   valueMin: number;
   valueMax: number;
 }
 
-/** What SnSplitter exposes to its descendant SnSplitterPanels. @internal */
-export interface SnSplitterApi {
-  direction: ComputedRef<SnSplitterDirection>;
+/** What SnSplit exposes to its descendant SnSplitPanels. @internal */
+export interface SnSplitApi {
+  direction: ComputedRef<SnSplitDirection>;
   isDisabled: ComputedRef<boolean>;
-  registerPanel: (handle: SnSplitterPanelHandle) => { id: number; unregister: () => void };
-  getEntry: (id: number) => SplitterPanelEntry | undefined;
+  registerPanel: (handle: SnSplitPanelHandle) => { id: number; unregister: () => void };
+  getEntry: (id: number) => SplitPanelEntry | undefined;
   indexOfPanel: (id: number) => number;
   onDividerPointerDown: (boundary: number, event: PointerEvent) => void;
   onDividerKeydown: (boundary: number, event: KeyboardEvent) => void;
   onDividerDblClick: (boundary: number) => void;
-  getBoundaryAria: (boundary: number) => SnSplitterBoundaryAria | null;
+  getBoundaryAria: (boundary: number) => SnSplitBoundaryAria | null;
 }
 
-export const SN_SPLITTER_INJECTION_KEY: InjectionKey<SnSplitterApi> = Symbol('sn-splitter-api');
+export const SN_SPLIT_INJECTION_KEY: InjectionKey<SnSplitApi> = Symbol('sn-split-api');
 
 /** Keyboard nudge per Arrow press, in percent of the container axis. */
-export const SN_SPLITTER_KEYBOARD_STEP_PERCENT = 2;
+export const SN_SPLIT_KEYBOARD_STEP_PERCENT = 2;
 
 /**
  * Parse naive-style sizes: numbers are percents, strings must be `"N%"`.

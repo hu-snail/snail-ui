@@ -1,20 +1,20 @@
 <script setup lang="ts">
 /**
- * SnSplitterPanel — panel inside SnSplitter (naive-ui n-splitter-panel parity).
+ * SnSplitPanel — panel inside SnSplit (naive-ui n-splitter-panel parity).
  *
  * Renders as a multi-root fragment: its divider (every panel after the first)
  * followed by the panel body, so both become direct flex items of the
- * splitter container and percent sizes stay exact. Size (percent width or
- * height) is owned by the parent splitter through the injection context.
+  * split container and percent sizes stay exact. Size (percent width or
+  * height) is owned by the parent split container through the injection context.
  */
 import { computed, inject, onBeforeUnmount } from 'vue';
-import { SN_SPLITTER_INJECTION_KEY } from './splitter-context';
-import type { SnSplitterBoundaryAria } from './splitter-context';
-import type { SnSplitterPanelPublicProps } from './splitter-context';
+import { SN_SPLIT_INJECTION_KEY } from './split-context';
+import type { SnSplitBoundaryAria } from './split-context';
+import type { SnSplitPanelPublicProps } from './split-context';
 
-defineOptions({ name: 'SnSplitterPanel', inheritAttrs: false });
+defineOptions({ name: 'SnSplitPanel', inheritAttrs: false });
 
-const props = defineProps<SnSplitterPanelPublicProps>();
+const props = defineProps<SnSplitPanelPublicProps>();
 
 const emit = defineEmits<{
   /** v-model:collapsed sync (collapse snap / expand restore / host change). */
@@ -26,7 +26,7 @@ defineSlots<{
   default?(): unknown;
 }>();
 
-const api = inject(SN_SPLITTER_INJECTION_KEY);
+const api = inject(SN_SPLIT_INJECTION_KEY);
 
 let panelId = -1;
 let unregister: (() => void) | null = null;
@@ -58,7 +58,7 @@ const bodyStyle = computed<Record<string, string> | undefined>(() => {
     : { width: `${current.size}%` };
 });
 
-const dividerAria = computed<SnSplitterBoundaryAria | null>(() =>
+const dividerAria = computed<SnSplitBoundaryAria | null>(() =>
   api && dividerVisible.value ? api.getBoundaryAria(panelIndex.value) : null,
 );
 const isDividerDisabled = computed(() => api?.isDisabled.value ?? false);
@@ -82,7 +82,7 @@ function onDividerDblClick(): void {
 <template>
   <div
     v-if="dividerVisible"
-    class="sn-splitter__divider"
+    class="sn-split__divider"
     role="separator"
     :tabindex="isDividerDisabled ? -1 : 0"
     :aria-orientation="dividerOrientation"
@@ -94,15 +94,15 @@ function onDividerDblClick(): void {
     @keydown="onDividerKeydown"
     @dblclick="onDividerDblClick"
   >
-    <span class="sn-splitter__divider-line" />
+     <span class="sn-split__divider-bar" />
   </div>
-  <div class="sn-splitter__panel" :style="bodyStyle" v-bind="$attrs">
+  <div class="sn-split__panel" :style="bodyStyle" v-bind="$attrs">
     <slot />
   </div>
 </template>
 
 <style scoped>
-.sn-splitter__panel {
+.sn-split__panel {
   flex: 0 1 auto;
   min-width: 0;
   min-height: 0;
@@ -110,57 +110,68 @@ function onDividerDblClick(): void {
   overflow: hidden;
 }
 
-/* Divider: the interactive bar between two panels. The visible grip line
-   highlights on hover / focus / active drag (via the container's
-   --dragging class); the hit area is wider than the line. */
-.sn-splitter__divider {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: var(--sn-web-splitter-divider-size, 10px);
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: col-resize;
-  touch-action: none;
-  outline: none;
-}
+ /* Divider: the interactive bar between two panels. The grip bar is hidden
+    while idle and appears centered in the hit area on hover / keyboard focus
+    / active drag (via the container's --dragging class); the hit area is
+    wider than the bar, so panels stay visually clean by default. */
+ .sn-split__divider {
+   flex: none;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   box-sizing: border-box;
+   width: var(--sn-web-split-divider-size, 10px);
+   padding: 0;
+   border: none;
+   background: transparent;
+   cursor: col-resize;
+   touch-action: none;
+   outline: none;
+ }
+ 
+ .sn-split__divider-bar {
+   flex: none;
+   width: var(--sn-web-split-divider-bar-size, 3px);
+   height: var(--sn-web-split-divider-bar-length, 32px);
+   border-radius: var(--sn-web-split-divider-bar-radius, 999px);
+   background-color: var(--sn-web-split-divider-bar-color, var(--sn-web-color-border-default));
+   opacity: 0;
+   transition:
+     opacity 0.15s ease,
+     background-color 0.15s ease;
+ }
+ 
+ .sn-split__divider:hover .sn-split__divider-bar,
+ .sn-split__divider:focus-visible .sn-split__divider-bar,
+ .sn-split--dragging .sn-split__divider-bar {
+   opacity: 1;
+ }
+ 
+ .sn-split__divider:focus-visible .sn-split__divider-bar,
+ .sn-split--dragging .sn-split__divider-bar {
+   background-color: var(
+     --sn-web-split-divider-bar-color-active,
+     var(--sn-web-color-action-primary)
+   );
+ }
 
-.sn-splitter__divider-line {
-  width: var(--sn-web-splitter-divider-line-size, 2px);
-  height: 100%;
-  background-color: var(--sn-web-splitter-divider-line-color, var(--sn-web-color-border-default));
-  transition: background-color 0.15s ease;
-}
-
-.sn-splitter__divider:hover .sn-splitter__divider-line,
-.sn-splitter__divider:focus-visible .sn-splitter__divider-line,
-.sn-splitter--dragging .sn-splitter__divider-line {
-  background-color: var(
-    --sn-web-splitter-divider-line-color-active,
-    var(--sn-web-color-action-primary)
-  );
-}
-
-.sn-splitter__divider:focus-visible {
+.sn-split__divider:focus-visible {
   box-shadow: var(--sn-web-focus-ring, 0 0 0 3px rgba(22, 119, 255, 0.15));
 }
 
-.sn-splitter__divider[aria-disabled='true'] {
+.sn-split__divider[aria-disabled='true'] {
   cursor: default;
 }
 
 /* Vertical container: the divider is a horizontal bar across the column. */
-.sn-splitter--vertical .sn-splitter__divider {
+.sn-split--vertical .sn-split__divider {
   width: auto;
-  height: var(--sn-web-splitter-divider-size, 10px);
+  height: var(--sn-web-split-divider-size, 10px);
   cursor: row-resize;
 }
 
-.sn-splitter--vertical .sn-splitter__divider-line {
-  width: 100%;
-  height: var(--sn-web-splitter-divider-line-size, 2px);
-}
+ .sn-split--vertical .sn-split__divider-bar {
+   width: var(--sn-web-split-divider-bar-length, 32px);
+   height: var(--sn-web-split-divider-bar-size, 3px);
+ }
 </style>

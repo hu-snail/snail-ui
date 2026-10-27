@@ -1,22 +1,24 @@
-# Splitter · Web
+# Split · Web
 
 Split panes (n-splitter aligned). Drag to resize, keyboard accessible, collapsible panels.
 
+The divider is hidden while idle; a rounded vertical bar appears at the center on hover, keyboard focus or drag. Distinguish panels with different backgrounds.
+
 ## Basic
 
-<Demo name="splitter-web-basic" description="Dual panes drag + min/max." />
+<Demo name="split-web-basic" description="Dual panes drag + min/max, two backgrounds to tell panels apart." />
 
 ## Vertical
 
-<Demo name="splitter-web-vertical" description="direction='vertical'." />
+<Demo name="split-web-vertical" description="direction='vertical'." />
 
 ## Collapsible
 
-<Demo name="splitter-web-collapse" description="Snap-collapse below min; double-click to restore." />
+<Demo name="split-web-collapse" description="Snap-collapse below min; double-click to restore." />
 
 ## API
 
-### SnSplitter Props
+### SnSplit Props
 
 | Prop      | Type                       | Default        | Notes            |
 | --------- | -------------------------- | -------------- | ---------------- |
@@ -25,7 +27,7 @@ Split panes (n-splitter aligned). Drag to resize, keyboard accessible, collapsib
 
 Events: `resize` (after drag/collapse settles).
 
-### SnSplitterPanel Props
+### SnSplitPanel Props
 
 | Prop              | Type                   | Default | Notes                                 |
 | ----------------- | ---------------------- | ------- | ------------------------------------- |

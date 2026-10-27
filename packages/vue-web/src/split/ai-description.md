@@ -1,7 +1,7 @@
-# SnSplitter (Web)
+# SnSplit (Web)
 
-Web-end splitter component pair for `@snui/vue-web`: `SnSplitter` (container) +
-`SnSplitterPanel` (panel). Surface mirrors naive-ui `n-splitter` /
+Web-end split component pair for `@snui/vue-web`: `SnSplit` (container) +
+`SnSplitPanel` (panel). Surface mirrors naive-ui `n-splitter` /
 `n-splitter-panel` (naive 2.38+) with an explicitly simplified collapse model
 (see "Differences from naive-ui").
 
@@ -30,20 +30,20 @@ and double-clickable.
 - The divider is a real flex item (default hit area 10px), so percent sizes
   may shrink by `flex-shrink: 1` to fit the divider pixels in.
 
-## SnSplitter props
+## SnSplit props
 
 | Prop        | Type                         | Default        | Notes                                                                     |
 | ----------- | ---------------------------- | -------------- | ------------------------------------------------------------------------- |
 | `direction` | `'horizontal' \| 'vertical'` | `'horizontal'` | Split axis.                                                               |
 | `disabled`  | `boolean`                    | `false`        | Disables drag + keyboard; dividers become `aria-disabled` and untabbable. |
 
-## SnSplitter events
+## SnSplit events
 
 | Event    | Payload                                    | When                                                                                                                                                                |
 | -------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `resize` | `{ before, after, beforeSize, afterSize }` | A gesture finished: drag end, keyboard commit, dblclick. `before`/`after` are the adjacent panels' percents (numbers); `beforeSize`/`afterSize` are `"N%"` strings. |
 
-## SnSplitterPanel props
+## SnSplitPanel props
 
 | Prop          | Type               | Default | Notes                                                        |
 | ------------- | ------------------ | ------- | ------------------------------------------------------------ |
@@ -53,7 +53,7 @@ and double-clickable.
 | `collapsible` | `boolean`          | `false` | Enables snap-to-collapse when a drag pushes below `minSize`. |
 | `collapsed`   | `boolean`          | `false` | `v-model:collapsed`. Collapsed size is 0.                    |
 
-## SnSplitterPanel events
+## SnSplitPanel events
 
 | Event              | Payload   | When                                                             |
 | ------------------ | --------- | ---------------------------------------------------------------- |
@@ -61,9 +61,9 @@ and double-clickable.
 
 ## Slots
 
-| Slot      | On                | Notes          |
-| --------- | ----------------- | -------------- |
-| `default` | `SnSplitterPanel` | Panel content. |
+| Slot      | On             | Notes          |
+| --------- | -------------- | -------------- |
+| `default` | `SnSplitPanel` | Panel content. |
 
 ## Interaction
 
@@ -79,6 +79,15 @@ and double-clickable.
   its `defaultSize` (taking percent from the other side); otherwise both
   adjacent panels are restored toward their defaults scaled to keep the pair
   sum constant.
+
+## Divider appearance
+
+- While idle the divider shows **no visible line** — adjacent panels meet
+  cleanly. Distinguish modules through panel backgrounds (see the docs demos)
+  or host-provided borders.
+- On hover, keyboard focus or an active drag, a **rounded vertical bar
+  appears centered** in the 10px hit area (horizontal split; a horizontal bar
+  for a vertical split), signalling the grab point.
 
 ## Collapse semantics (simplified vs naive-ui)
 
@@ -99,20 +108,21 @@ and double-clickable.
 ## Accessibility
 
 - Divider: `role="separator"`, `tabindex="0"`, `aria-orientation`
-  (`vertical` for a horizontal splitter — the divider is a vertical line —
-  and `horizontal` for a vertical splitter), `aria-valuenow` (leading panel
+  (`vertical` for a horizontal split — the divider is a vertical line —
+  and `horizontal` for a vertical split), `aria-valuenow` (leading panel
   percent), `aria-valuemin` / `aria-valuemax` (effective drag bounds),
-  `aria-disabled` when the splitter is disabled.
-- Divider highlight on hover / focus / active drag through
-  `--sn-web-splitter-divider-line-color-active` (falls back to
-  `--sn-web-color-action-primary`).
+  `aria-disabled` when the split is disabled.
+- Divider bar appears on hover / focus / active drag; keyboard focus also
+  draws the focus ring on the hit area.
 
 ## Tokens
 
-`--sn-web-splitter-divider-size` (hit area, `10px`),
-`--sn-web-splitter-divider-line-size` (`2px`),
-`--sn-web-splitter-divider-line-color` (falls back to
-`--sn-web-color-border-default`), `--sn-web-splitter-divider-line-color-active`
+`--sn-web-split-divider-size` (hit area, `10px`),
+`--sn-web-split-divider-bar-size` (bar thickness, `3px`),
+`--sn-web-split-divider-bar-length` (bar length, `32px`),
+`--sn-web-split-divider-bar-radius` (bar rounding, `999px`),
+`--sn-web-split-divider-bar-color` (falls back to
+`--sn-web-color-border-default`), `--sn-web-split-divider-bar-color-active`
 (falls back to `--sn-web-color-action-primary`).
 
 ## Differences from naive-ui
@@ -121,6 +131,8 @@ and double-clickable.
   the divider; here collapse is `v-model:collapsed` at size 0 with dblclick /
   drag / host to restore, and the collapsed panel's divider stays in place
   for keyboard + dblclick restore.
+- The idle divider line of naive-ui is replaced by a hidden-by-default bar
+  that appears centered on hover / focus / drag.
 - `show-collapsible` buttons, controlled `size` / `v-model:size` per panel,
   px unit support and runtime panel-set re-normalization (panels added or
   removed after mount keep their current sizes) are not implemented.
@@ -129,7 +141,7 @@ and double-clickable.
 
 ## Limitations
 
-- Panels must be direct children of `SnSplitter` (injection-based; a panel
-  rendered outside a splitter degrades to a static box).
+- Panels must be direct children of `SnSplit` (injection-based; a panel
+  rendered outside a split container degrades to a static box).
 - The panel set is normalized once at container mount; panels added or
   removed later keep the current size distribution.

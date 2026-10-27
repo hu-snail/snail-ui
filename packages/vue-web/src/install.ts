@@ -57,8 +57,8 @@ import SnLayoutHeader from './layout/SnLayoutHeader.vue';
 import SnLayoutContent from './layout/SnLayoutContent.vue';
 import SnLayoutFooter from './layout/SnLayoutFooter.vue';
 import SnLayoutSider from './layout/SnLayoutSider.vue';
-import SnSplitter from './splitter/SnSplitter.vue';
-import SnSplitterPanel from './splitter/SnSplitterPanel.vue';
+import SnSplit from './split/SnSplit.vue';
+import SnSplitPanel from './split/SnSplitPanel.vue';
 import SnDropdown from './dropdown/SnDropdown.vue';
 import SnDialog from './dialog/SnDialog.vue';
 import SnDrawer from './drawer/SnDrawer.vue';
@@ -187,8 +187,8 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnLayoutContent', component: SnLayoutContent },
   { name: 'SnLayoutFooter', component: SnLayoutFooter },
   { name: 'SnLayoutSider', component: SnLayoutSider },
-  { name: 'SnSplitter', component: SnSplitter },
-  { name: 'SnSplitterPanel', component: SnSplitterPanel },
+  { name: 'SnSplit', component: SnSplit },
+  { name: 'SnSplitPanel', component: SnSplitPanel },
   { name: 'SnDropdown', component: SnDropdown },
   { name: 'SnLoading', component: SnLoading },
   { name: 'SnMenu', component: SnMenu },

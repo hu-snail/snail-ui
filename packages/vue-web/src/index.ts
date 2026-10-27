@@ -101,9 +101,9 @@ export { default as SnLayoutContent } from './layout/SnLayoutContent.vue';
 export { default as SnLayoutFooter } from './layout/SnLayoutFooter.vue';
 export { default as SnLayoutSider } from './layout/SnLayoutSider.vue';
 export type { SnLayoutPosition, SnLayoutStyleValue } from './layout/sn-layout-types';
-export { default as SnSplitter } from './splitter/SnSplitter.vue';
-export { default as SnSplitterPanel } from './splitter/SnSplitterPanel.vue';
-export type { SnSplitterDirection } from './splitter/splitter-context';
+export { default as SnSplit } from './split/SnSplit.vue';
+export { default as SnSplitPanel } from './split/SnSplitPanel.vue';
+export type { SnSplitDirection } from './split/split-context';
 export { default as SnDropdown } from './dropdown/SnDropdown.vue';
 export type {
   SnDropdownOption,

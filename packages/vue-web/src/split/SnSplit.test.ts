@@ -1,5 +1,5 @@
 /**
- * SnSplitter unit tests — web-end splitter (naive-ui n-splitter parity).
+ * SnSplit unit tests — web-end split (naive-ui n-splitter parity).
  *
  * Behavior coverage (AGENTS.md §46), not implementation detail:
  *   - initial percent distribution (defaultSize / unsized equal halves)
@@ -20,8 +20,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, nextTick, ref } from 'vue';
-import SnSplitter from './SnSplitter.vue';
-import SnSplitterPanel from './SnSplitterPanel.vue';
+import SnSplit from './SnSplit.vue';
+import SnSplitPanel from './SnSplitPanel.vue';
 
 const RECT = {
   left: 0,
@@ -44,21 +44,21 @@ afterEach(() => {
 });
 
 interface HostOptions {
-  splitter?: Record<string, unknown>;
+  split?: Record<string, unknown>;
   panelA?: Record<string, unknown>;
   panelB?: Record<string, unknown>;
 }
 
 /** Host with a live v-model:collapsed on panel A so updates flow both ways. */
-function mountSplitter({ splitter = {}, panelA = {}, panelB = {} }: HostOptions = {}) {
+function mountSplit({ split = {}, panelA = {}, panelB = {} }: HostOptions = {}) {
   const collapsedA = ref(panelA.collapsed === true);
   const host = defineComponent({
     setup() {
       return () =>
-        h(SnSplitter, splitter, {
+        h(SnSplit, split, {
           default: () => [
             h(
-              SnSplitterPanel,
+              SnSplitPanel,
               {
                 ...panelA,
                 collapsed: collapsedA.value,
@@ -69,7 +69,7 @@ function mountSplitter({ splitter = {}, panelA = {}, panelB = {} }: HostOptions 
               { default: () => h('div', { class: 'pane-a' }, 'A') },
             ),
             h(
-              SnSplitterPanel,
+              SnSplitPanel,
               { ...panelB },
               { default: () => h('div', { class: 'pane-b' }, 'B') },
             ),
@@ -81,9 +81,9 @@ function mountSplitter({ splitter = {}, panelA = {}, panelB = {} }: HostOptions 
   return {
     wrapper,
     collapsedA,
-    splitterComponent: () => wrapper.findComponent(SnSplitter),
-    panels: () => wrapper.findAll('.sn-splitter__panel'),
-    divider: () => wrapper.find('.sn-splitter__divider'),
+    splitComponent: () => wrapper.findComponent(SnSplit),
+    panels: () => wrapper.findAll('.sn-split__panel'),
+    divider: () => wrapper.find('.sn-split__divider'),
   };
 }
 
@@ -91,10 +91,10 @@ function pointerEvent(type: string, x: number): PointerEvent {
   return new PointerEvent(type, { clientX: x, clientY: 0, bubbles: true, cancelable: true });
 }
 
-describe('SnSplitter', () => {
+describe('SnSplit', () => {
   describe('initial sizes', () => {
     it('should distribute panels from defaultSize on mount', async () => {
-      const { wrapper, panels } = mountSplitter({ panelA: { defaultSize: 30 } });
+      const { wrapper, panels } = mountSplit({ panelA: { defaultSize: 30 } });
       await nextTick();
       expect(panels().length).toBe(2);
       expect(panels()[0].element.style.width).toBe('30%');
@@ -104,14 +104,14 @@ describe('SnSplitter', () => {
     });
 
     it('should default two unsized panels to equal halves', async () => {
-      const { panels } = mountSplitter();
+      const { panels } = mountSplit();
       await nextTick();
       expect(panels()[0].element.style.width).toBe('50%');
       expect(panels()[1].element.style.width).toBe('50%');
     });
 
     it('should honor a panel collapsed at mount', async () => {
-      const { collapsedA, panels } = mountSplitter({
+      const { collapsedA, panels } = mountSplit({
         panelA: { defaultSize: 30, collapsed: true },
       });
       await nextTick();
@@ -123,7 +123,7 @@ describe('SnSplitter', () => {
 
   describe('drag resize', () => {
     it('should update both panels while dragging the divider', async () => {
-      const { panels, divider } = mountSplitter({ panelA: { defaultSize: 30 } });
+      const { panels, divider } = mountSplit({ panelA: { defaultSize: 30 } });
       await nextTick();
       await divider().trigger('pointerdown', { clientX: 100, clientY: 0 });
       document.dispatchEvent(pointerEvent('pointermove', 120));
@@ -134,12 +134,12 @@ describe('SnSplitter', () => {
     });
 
     it('should emit resize with the adjacent panel sizes when the drag ends', async () => {
-      const { splitterComponent, divider } = mountSplitter({ panelA: { defaultSize: 30 } });
+      const { splitComponent, divider } = mountSplit({ panelA: { defaultSize: 30 } });
       await nextTick();
       await divider().trigger('pointerdown', { clientX: 100, clientY: 0 });
       document.dispatchEvent(pointerEvent('pointermove', 120));
       document.dispatchEvent(pointerEvent('pointerup', 120));
-      const emitted = splitterComponent().emitted('resize');
+      const emitted = splitComponent().emitted('resize');
       expect(emitted).toHaveLength(1);
       expect(emitted?.[0]).toEqual([
         { before: 40, after: 60, beforeSize: '40%', afterSize: '60%' },
@@ -147,7 +147,7 @@ describe('SnSplitter', () => {
     });
 
     it('should clamp the drag against minSize of the leading panel', async () => {
-      const { panels, divider } = mountSplitter({
+      const { panels, divider } = mountSplit({
         panelA: { defaultSize: 30, minSize: 20 },
       });
       await nextTick();
@@ -161,7 +161,7 @@ describe('SnSplitter', () => {
     });
 
     it('should clamp the drag against maxSize of the leading panel', async () => {
-      const { panels, divider } = mountSplitter({
+      const { panels, divider } = mountSplit({
         panelA: { defaultSize: 30, maxSize: 60 },
       });
       await nextTick();
@@ -177,7 +177,7 @@ describe('SnSplitter', () => {
 
   describe('collapsible', () => {
     it('should snap a collapsible panel to collapsed when dragged below its min', async () => {
-      const { collapsedA, panels, divider } = mountSplitter({
+      const { collapsedA, panels, divider } = mountSplit({
         panelA: { defaultSize: 30, minSize: 20, collapsible: true },
       });
       await nextTick();
@@ -192,7 +192,7 @@ describe('SnSplitter', () => {
     });
 
     it('should not snap a non-collapsible panel below its min', async () => {
-      const { panels, divider } = mountSplitter({
+      const { panels, divider } = mountSplit({
         panelA: { defaultSize: 30, minSize: 20 },
       });
       await nextTick();
@@ -204,7 +204,7 @@ describe('SnSplitter', () => {
     });
 
     it('should expand a collapsed panel on divider dblclick', async () => {
-      const { collapsedA, panels, divider } = mountSplitter({
+      const { collapsedA, panels, divider } = mountSplit({
         panelA: { defaultSize: 30, minSize: 20, collapsible: true, collapsed: true },
       });
       await nextTick();
@@ -217,7 +217,7 @@ describe('SnSplitter', () => {
     });
 
     it('should expand when the host clears v-model:collapsed', async () => {
-      const { collapsedA, panels } = mountSplitter({
+      const { collapsedA, panels } = mountSplit({
         panelA: { defaultSize: 30, collapsed: true },
       });
       await nextTick();
@@ -230,7 +230,7 @@ describe('SnSplitter', () => {
 
   describe('keyboard', () => {
     it('should nudge sizes by 2% with arrow keys on a focused divider', async () => {
-      const { splitterComponent, panels, divider } = mountSplitter({
+      const { splitComponent, panels, divider } = mountSplit({
         panelA: { defaultSize: 30 },
       });
       await nextTick();
@@ -240,11 +240,11 @@ describe('SnSplitter', () => {
       await divider().trigger('keydown', { key: 'ArrowLeft' });
       await nextTick();
       expect(panels()[0].element.style.width).toBe('30%');
-      expect(splitterComponent().emitted('resize')?.length).toBe(2);
+      expect(splitComponent().emitted('resize')?.length).toBe(2);
     });
 
     it('should move the divider to the bounds with Home and End', async () => {
-      const { panels, divider } = mountSplitter({
+      const { panels, divider } = mountSplit({
         panelA: { defaultSize: 30, minSize: 20, maxSize: 60 },
         panelB: { minSize: 10 },
       });
@@ -262,8 +262,8 @@ describe('SnSplitter', () => {
 
   describe('disabled', () => {
     it('should ignore drag and keyboard when disabled', async () => {
-      const { splitterComponent, panels, divider } = mountSplitter({
-        splitter: { disabled: true },
+      const { splitComponent, panels, divider } = mountSplit({
+        split: { disabled: true },
         panelA: { defaultSize: 30 },
       });
       await nextTick();
@@ -275,13 +275,13 @@ describe('SnSplitter', () => {
       expect(panels()[0].element.style.width).toBe('30%');
       expect(divider().attributes('tabindex')).toBe('-1');
       expect(divider().attributes('aria-disabled')).toBe('true');
-      expect(splitterComponent().emitted('resize')).toBeUndefined();
+      expect(splitComponent().emitted('resize')).toBeUndefined();
     });
   });
 
   describe('a11y', () => {
     it('should expose separator semantics on the divider', async () => {
-      const { divider } = mountSplitter({ panelA: { defaultSize: 30, minSize: 10 } });
+      const { divider } = mountSplit({ panelA: { defaultSize: 30, minSize: 10 } });
       await nextTick();
       const handle = divider();
       expect(handle.attributes('role')).toBe('separator');
@@ -295,12 +295,12 @@ describe('SnSplitter', () => {
 
   describe('vertical direction', () => {
     it('should lay out vertically and respond to vertical arrow keys', async () => {
-      const { wrapper, panels, divider } = mountSplitter({
-        splitter: { direction: 'vertical' },
+      const { wrapper, panels, divider } = mountSplit({
+        split: { direction: 'vertical' },
         panelA: { defaultSize: 30 },
       });
       await nextTick();
-      expect(wrapper.find('.sn-splitter--vertical').exists()).toBe(true);
+      expect(wrapper.find('.sn-split--vertical').exists()).toBe(true);
       expect(panels()[0].element.style.height).toBe('30%');
       expect(divider().attributes('aria-orientation')).toBe('horizontal');
       await divider().trigger('keydown', { key: 'ArrowDown' });
@@ -315,20 +315,20 @@ describe('SnSplitter', () => {
         defineComponent({
           setup: () => () =>
             h(
-              SnSplitter,
+              SnSplit,
               {},
               {
-                default: () => [h(SnSplitterPanel, {}, { default: () => 'only' })],
+                default: () => [h(SnSplitPanel, {}, { default: () => 'only' })],
               },
             ),
         }),
       );
-      expect(wrapper.find('.sn-splitter__divider').exists()).toBe(false);
+      expect(wrapper.find('.sn-split__divider').exists()).toBe(false);
       wrapper.unmount();
     });
 
     it('should detach the document pointer listeners on unmount', async () => {
-      const { wrapper, panels, divider } = mountSplitter({ panelA: { defaultSize: 30 } });
+      const { wrapper, panels, divider } = mountSplit({ panelA: { defaultSize: 30 } });
       await nextTick();
       await divider().trigger('pointerdown', { clientX: 100, clientY: 0 });
       const panelA = panels()[0].element;
