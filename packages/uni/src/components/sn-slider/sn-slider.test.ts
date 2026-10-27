@@ -409,3 +409,30 @@ describe('sn-slider', () => {
     });
   });
 });
+
+describe('sn-slider track-start and vertical coordinate fallbacks', () => {
+  it('starts a single-knob drag from the track itself', async () => {
+    const w = mount(SnSlider, { props: { modelValue: 20 } });
+    withTrackBox(w);
+    await w.find('.sn-slider__track').trigger('touchstart', { touches: [{ clientX: 40 }] });
+    expect(w.emitted('dragstart')?.[0]).toEqual([{ value: 20 }]);
+    await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientX: 40 }] });
+    expect(w.emitted('update:modelValue')).toBeDefined();
+  });
+
+  it('ignores a second track touchstart while a drag is active', async () => {
+    const w = mount(SnSlider, { props: { modelValue: 20 } });
+    withTrackBox(w);
+    await w.find('.sn-slider__track').trigger('touchstart', { touches: [{ clientX: 40 }] });
+    await w.find('.sn-slider__track').trigger('touchstart', { touches: [{ clientX: 90 }] });
+    expect(w.emitted('dragstart')).toHaveLength(1);
+  });
+
+  it('resolves a vertical drag from clientY', async () => {
+    const w = mount(SnSlider, { props: { modelValue: 20, vertical: true } });
+    withTrackBox(w);
+    await w.find('.sn-slider__knob').trigger('touchstart', { touches: [{ clientY: 20 }] });
+    await w.find('.sn-slider__track').trigger('touchend', { touches: [{ clientY: 90 }] });
+    expect(w.emitted('update:modelValue')).toBeDefined();
+  });
+});

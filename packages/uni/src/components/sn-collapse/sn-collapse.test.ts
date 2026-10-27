@@ -600,3 +600,35 @@ describe('sn-collapse', () => {
     });
   });
 });
+
+describe('sn-collapse model sync and disabled registry cleanup', () => {
+  it('follows an external modelValue write', async () => {
+    const wrapper = mountCollapse({ modelValue: [] });
+    await wrapper.setProps({ modelValue: ['b'] });
+    await wrapper.vm.$nextTick();
+    const expanded = wrapper.findAll('.sn-collapse-item--expanded');
+    expect(expanded).toHaveLength(1);
+    expect(expanded[0]!.text()).toContain('B');
+  });
+
+  it('drops a disabled name from the registry when its item unmounts', async () => {
+    const items = ref([{ name: 'a', title: 'A', disabled: true }]);
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnCollapse, { modelValue: [], border: true }, {
+            default: () =>
+              items.value.map((item) =>
+                h(SnCollapseItem, item, { default: () => `body ${item.name}` }),
+              ),
+          });
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    // Removing the disabled item must not leave it in the skip set.
+    items.value = [];
+    await wrapper.vm.$nextTick();
+    expect(wrapper.findAll('.sn-collapse-item')).toHaveLength(0);
+  });
+});

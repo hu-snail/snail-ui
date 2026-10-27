@@ -208,3 +208,44 @@ describe('sn-slide-verify', () => {
     });
   });
 });
+
+describe('sn-slide-verify gesture cancellation and coordinate fallbacks', () => {
+  it('resets the offset when the gesture is cancelled mid-drag', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    const handle = w.find('.sn-slide-verify__handle');
+    await handle.trigger('touchstart', { touches: [{ clientX: 0 }] });
+    await handle.trigger('touchmove', { touches: [{ clientX: 100 }] });
+    expect(w.classes()).toContain('sn-slide-verify--dragging');
+    await handle.trigger('touchcancel');
+    expect(w.classes()).not.toContain('sn-slide-verify--dragging');
+    expect(w.emitted('success')).toBeUndefined();
+  });
+
+  it('ignores a cancel that arrives outside a drag', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    await w.find('.sn-slide-verify__handle').trigger('touchcancel');
+    expect(w.classes()).not.toContain('sn-slide-verify--dragging');
+  });
+
+  it('falls back to pageX when clientX is absent', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    const handle = w.find('.sn-slide-verify__handle');
+    await handle.trigger('touchstart', { touches: [{ pageX: 0 }] });
+    await handle.trigger('touchmove', { touches: [{ pageX: 400 }] });
+    await handle.trigger('touchend', { touches: [{ pageX: 400 }] });
+    expect(w.emitted('success')).toHaveLength(1);
+  });
+
+  it('falls back to detail.x when no touch list is present', async () => {
+    const w = mount(SnSlideVerify);
+    withTrackBox(w);
+    const handle = w.find('.sn-slide-verify__handle');
+    await handle.trigger('touchstart', { detail: { x: 0 } });
+    await handle.trigger('touchmove', { detail: { x: 400 } });
+    await handle.trigger('touchend', { detail: { x: 400 } });
+    expect(w.emitted('success')).toHaveLength(1);
+  });
+});

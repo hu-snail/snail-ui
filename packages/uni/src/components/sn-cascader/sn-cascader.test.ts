@@ -502,3 +502,26 @@ describe('sn-cascader', () => {
     });
   });
 });
+
+describe('sn-cascader model sync and node value coercion', () => {
+  it('re-seeds the path when the modelValue prop changes', async () => {
+    const w = mountCascader({ modelValue: [] });
+    await w.setProps({ modelValue: [TREE[0].value] });
+    await w.vm.$nextTick();
+    // The tab strip reflects the seeded path (one tab for the chosen branch).
+    expect(w.findAll('.sn-cascader__tab').length).toBeGreaterThan(0);
+  });
+
+  it('accepts numeric option values without string coercion', async () => {
+    // checkStrictly defers to the confirm button, so the payload is observable
+    // without walking to a leaf.
+    const numeric = [{ text: 'One', value: 1, children: [{ text: 'Leaf', value: 11 }] }];
+    const w = mountCascader({ options: numeric, modelValue: [], checkStrictly: true });
+    await optionsOf(w, 0)[0]?.trigger('tap');
+    await w.vm.$nextTick();
+    await w.find('.sn-cascader__confirm').trigger('tap');
+    await w.vm.$nextTick();
+    // A single-select cascader writes the last path value, not an array.
+    expect(w.emitted('update:modelValue')?.at(-1)?.[0]).toBe(1);
+  });
+});

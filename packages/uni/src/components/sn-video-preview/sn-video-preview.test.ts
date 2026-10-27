@@ -181,3 +181,25 @@ describe('sn-video-preview', () => {
     expect(root.attributes('aria-label')).toBe('video preview');
   });
 });
+
+describe('sn-video-preview popup visibility bridge', () => {
+  it('should keep the layer open when the popup reports visible', async () => {
+    const { preview } = await mountVideo();
+    const popup = preview.findComponent(SnPopup);
+    popup.vm.$emit('update:modelValue', true);
+    await nextTick();
+    expect(preview.find('video').exists()).toBe(false);
+    expect(preview.emitted('close')).toBeUndefined();
+  });
+
+  it('should close when the popup reports hidden', async () => {
+    const { preview, api } = await mountVideo();
+    api.open(video);
+    await nextTick();
+    const popup = preview.findComponent(SnPopup);
+    popup.vm.$emit('update:modelValue', false);
+    await nextTick();
+    expect(preview.find('video').exists()).toBe(false);
+    expect(preview.emitted('close')).toHaveLength(1);
+  });
+});
