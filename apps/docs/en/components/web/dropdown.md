@@ -59,6 +59,13 @@ outside-click still close); the custom content owns its a11y. Combine with
 
 Events: `update:show` / `select(key, option)` / `clickoutside`. Keyboard: Enter/Space/ArrowDown open, ArrowUp/Down highlight, ArrowRight/Left enter/exit submenu, Esc close. ARIA: menu/menuitem/separator.
 
-Slots: `#content="{ close }"` takes over the panel body entirely (`options` ignored, submenus included); call `close()` from custom rows; the option keyboard walk is disabled in this mode while Esc / outside-click keep working. `options[].icon` accepts any Vue icon component, identical under all three triggers.
+### SnDropdown Slots
+
+| Slot    | Scope       | Notes                                                                                                                                                                                                                                                                                                                                          |
+| ------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| default | —           | Trigger content. Render a focusable element (its keydown bubbles to the wrapper so keyboard users can open the menu).                                                                                                                                                                                                                          |
+| content | `{ close }` | Takes over the panel body: `options` and submenus are ignored while provided; call `close()` from custom rows to dismiss. The option keyboard walk is disabled in this mode (Enter/Space still open, Esc / outside-click still close); the custom content owns its a11y. Combine with `trigger="contextMenu"` for a fully custom context menu. |
+
+Icons: `options[].icon` accepts any Vue icon component (same convention as SnMenu `icon`), identical under the click / hover / contextMenu triggers.
 
 See the component `ai-description.md` for the full contract.
