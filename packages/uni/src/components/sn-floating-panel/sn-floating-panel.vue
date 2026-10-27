@@ -391,11 +391,10 @@ const contentClass = computed(() => [
 }
 
 .sn-floating-panel__content--hidden-scrollbar {
+  /* The portable standard property only: `::-webkit-scrollbar` is a
+   * browser engine pseudo-element that App drops (§116.2), and App renders
+   * no scrollbar chrome for scroll-view anyway. */
   scrollbar-width: none;
-}
-
-.sn-floating-panel__content--hidden-scrollbar::-webkit-scrollbar {
-  display: none;
 }
 
 /* Doodle skin — hand-drawn panel outline. */

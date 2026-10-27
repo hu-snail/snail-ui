@@ -80,40 +80,6 @@ const iconDataUrl = computed<string | undefined>(() => {
     },
   ],
 
-  'sn-cell/sn-cell.vue': [
-    {
-      anchor: `    :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
-    @tap="onTap"
-  >`,
-      replacement: `    :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
-    @tap="onTap"
-  >
-    <view v-if="effectiveBorder" class="sn-cell__hairline" aria-hidden="true" />`,
-      note: 'pressed hover-class is source-native now; ::after hairline still replaced by a real element',
-    },
-    {
-      anchor: `.sn-cell--border::after {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: var(--sn-mp-spacing-4);
-  height: 2rpx;
-  background-color: var(--sn-mp-color-border-subtle);
-  content: '';
-}`,
-      replacement: `/* uni-app x App: ::after unsupported — hairline is a real element. */
-.sn-cell__hairline {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: var(--sn-mp-spacing-4);
-  height: 2rpx;
-  background-color: var(--sn-mp-color-border-subtle);
-}`,
-      note: '::after hairline rule → .sn-cell__hairline (:active → .sn-cell--pressed moved into source)',
-    },
-  ],
-
   'sn-form/sn-form-item.vue': [
     {
       anchor: `        class="sn-form-item__message"

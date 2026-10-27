@@ -260,6 +260,10 @@ const classList = computed(() => [
   {
     'sn-textarea--disabled': props.disabled,
     'sn-textarea--readonly': props.readonly,
+    /* Focus chrome rides this class instead of `:focus-within` (§116.2 —
+     * App has no pseudo-classes); the flag is set from the native
+     * textarea's focus / blur events, the same signal the browser used. */
+    'sn-textarea--focused': isFocused.value,
     'sn-textarea--compact': props.compact === true,
     'sn-textarea--auto-height': props.autoHeight,
     'sn-textarea--with-prefix': !!(slots.prefix || props.prefixIcon || props.iconPrefix),
@@ -270,6 +274,14 @@ const classList = computed(() => [
 ]);
 
 const wrapperStyle = computed(() => props.customStyle || undefined);
+
+/** Placeholder styling is a native attribute — App has no `::placeholder`
+ * (§116.2). The default keeps the token color the CSS rule used to provide. */
+const DEFAULT_PLACEHOLDER_STYLE =
+  'color: var(--sn-mp-color-input-placeholder); opacity: 1';
+const placeholderStyleAttr = computed(
+  () => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE,
+);
 
 /**
  * uni-app MP-only native textarea attributes.（MP 端模板不支持 v-bind="obj"
@@ -303,7 +315,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
       :class="[placeholderClass, customTextareaClass]"
       :value="nativeValue"
       :placeholder="placeholder"
-      :placeholder-style="placeholderStyle || undefined"
+      :placeholder-style="placeholderStyleAttr"
       :placeholder-class="placeholderClass || undefined"
       :disabled="disabled"
       :readonly="readonly"
@@ -383,7 +395,10 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
     background-color 0.18s ease-out;
 }
 
-.sn-textarea:focus-within {
+/* Compound classes keep the two-class specificity the `:focus-within` rule
+ * had, so the `--error` rule below still loses to a focused field (§116.2 —
+ * App has no pseudo-classes). */
+.sn-textarea.sn-textarea--focused {
   border-color: var(--sn-mp-color-input-border-focus);
 }
 
@@ -426,10 +441,8 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   height: auto;
 }
 
-.sn-textarea__native::placeholder {
-  color: var(--sn-mp-color-input-placeholder);
-  opacity: 1;
-}
+/* Placeholder styling rides `placeholder-style` (native attribute): App has no
+ * `::placeholder` pseudo-element (§116.2). */
 
 /* Prefix (icon / slot) sits above the field so the textarea keeps full width. */
 .sn-textarea__prefix {
@@ -491,7 +504,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   border-color: var(--sn-mp-color-text-primary);
   font-weight: 600;
 }
-.snui-skin-doodle .sn-textarea:focus-within {
+.snui-skin-doodle .sn-textarea--focused {
   transform: translate(-2rpx, -2rpx);
   box-shadow: 4rpx 4rpx 0 var(--sn-mp-color-text-primary);
 }

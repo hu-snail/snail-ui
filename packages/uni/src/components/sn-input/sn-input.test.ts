@@ -280,6 +280,13 @@ describe('sn-input', () => {
     expect(wrapper.find('input').attributes('placeholder-class')).toBe('ph');
   });
 
+  it('ships the token placeholder color through the native attribute by default', () => {
+    // App has no `::placeholder` pseudo-element (§116.2) — the default style
+    // must come from the attribute instead of CSS.
+    const style = mount(SnInput).find('input').attributes('placeholder-style');
+    expect(style).toContain('--sn-mp-color-input-placeholder');
+  });
+
   it('forwards confirm-type / hold-keyboard / adjust-position / always-embed', () => {
     const wrapper = mount(SnInput, {
       props: {

@@ -9,11 +9,10 @@
 | --- | --- |
 | template-attr | 156 |
 | defineSlots-stripped | 66 |
-| patch | 33 |
 | unsupported-property | 31 |
+| patch | 31 |
 | template-bare-text | 20 |
 | script-guard | 9 |
-| pseudo-element | 6 |
 | defineSlots-manual | 1 |
 | stray-sfc-content | 1 |
 
@@ -93,12 +92,9 @@
 
 ### sn-cell/sn-cell.uvue
 
-- patch applied — `patch`: pressed hover-class is source-native now; ::after hairline still replaced by a real element
-- patch applied — `patch`: ::after hairline rule → .sn-cell__hairline (:active → .sn-cell--pressed moved into source)
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-element rule dropped — `pseudo-element` (line 151): pseudo-element in ".snui-skin-doodle .sn-cell--border::after"
 
 ### sn-checkbox/sn-checkbox-group.uvue
 
@@ -201,7 +197,6 @@
 - script DOM guard — `script-guard`: 1 DOM event call(s) converted to optional calls
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-element rule dropped — `pseudo-element` (line 67): pseudo-element in ".sn-floating-panel__content--hidden-scrollbar::-webkit-scrollbar"
 
 ### sn-form/sn-form-item.uvue
 
@@ -284,13 +279,12 @@
 - bare text wrapped in <text> — `template-bare-text` (line 140): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 4 data-* attribute(s) stripped
-- pseudo-element rule dropped — `pseudo-element` (line 144): pseudo-element in ".sn-input__native::placeholder"
 - unsupported property stripped — `unsupported-property` (line 108): cursor stripped
 - unsupported property stripped — `unsupported-property` (line 137): outline stripped
 - unsupported property stripped — `unsupported-property`: cursor stripped
-- unsupported property stripped — `unsupported-property` (line 165): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 194): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 214): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 160): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 189): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 209): cursor stripped
 
 ### sn-keyboard/sn-keyboard.uvue
 
@@ -468,11 +462,10 @@
 
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 2 data-* attribute(s) stripped
-- pseudo-element rule dropped — `pseudo-element` (line 81): pseudo-element in ".sn-search__native::placeholder"
 - unsupported property stripped — `unsupported-property` (line 66): outline stripped
-- unsupported property stripped — `unsupported-property` (line 111): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 120): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 132): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 109): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 118): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 130): cursor stripped
 
 ### sn-segmented/sn-segmented.uvue
 
@@ -491,7 +484,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-element rule dropped — `pseudo-element` (line 26): pseudo-element in ".sn-sidebar-item--active::before"
 
 ### sn-sidebar/sn-sidebar.uvue
 
@@ -612,11 +604,10 @@
 - bare text wrapped in <text> — `template-bare-text` (line 66): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 2 data-* attribute(s) stripped
-- pseudo-element rule dropped — `pseudo-element` (line 70): pseudo-element in ".sn-textarea__native::placeholder"
 - unsupported property stripped — `unsupported-property` (line 37): cursor stripped
 - unsupported property stripped — `unsupported-property` (line 55): outline stripped
 - unsupported property stripped — `unsupported-property`: cursor stripped
-- unsupported property stripped — `unsupported-property` (line 125): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 123): cursor stripped
 
 ### sn-toast/sn-toast.uvue
 

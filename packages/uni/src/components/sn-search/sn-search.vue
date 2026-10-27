@@ -176,6 +176,14 @@ const classList = computed(() => [
 ]);
 
 const wrapperStyle = computed(() => props.customStyle || undefined);
+
+/** Placeholder styling is a native attribute — App has no `::placeholder`
+ * (§116.2). The default keeps the token color the CSS rule used to provide. */
+const DEFAULT_PLACEHOLDER_STYLE =
+  'color: var(--sn-mp-color-input-placeholder); opacity: 1';
+const placeholderStyleAttr = computed(
+  () => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE,
+);
 </script>
 
 <template>
@@ -203,7 +211,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
         confirm-type="search"
         :value="nativeValue"
         :placeholder="placeholder"
-        :placeholder-style="placeholderStyle || undefined"
+        :placeholder-style="placeholderStyleAttr"
         :placeholder-class="placeholderClass || undefined"
         :disabled="disabled"
         :maxlength="typeof maxlength === 'number' ? maxlength : Number(maxlength)"
@@ -322,10 +330,8 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   text-align: left;
 }
 
-.sn-search__native::placeholder {
-  color: var(--sn-mp-color-input-placeholder);
-  opacity: 1;
-}
+/* Placeholder styling rides `placeholder-style` (native attribute): App has no
+ * `::placeholder` pseudo-element (§116.2). */
 
 .sn-search__input-suffix,
 .sn-search__prefix,

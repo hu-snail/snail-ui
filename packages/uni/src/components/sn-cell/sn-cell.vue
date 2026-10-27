@@ -260,6 +260,7 @@ const rootClass = computed(() => [
     :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
     @tap="onTap"
   >
+    <view v-if="effectiveBorder" class="sn-cell__hairline" aria-hidden="true" />
     <view class="sn-cell__title" :style="titleStyle">
       <slot name="prefix">
         <SnIcon
@@ -357,14 +358,15 @@ const rootClass = computed(() => [
   background-color: var(--sn-mp-color-background-soft);
 }
 
-.sn-cell--border::after {
+/* Hairline is a real element, not `::after`: App has no pseudo-elements
+ * (§116.2). The skin restyles it through the same class. */
+.sn-cell__hairline {
   position: absolute;
   right: 0;
   bottom: 0;
   left: var(--sn-mp-spacing-4);
   height: 2rpx;
   background-color: var(--sn-mp-color-border-subtle);
-  content: '';
 }
 
 .sn-cell--layout-vertical {
@@ -484,7 +486,7 @@ const rootClass = computed(() => [
 }
 
 /* Doodle skin — heavier divider. */
-.snui-skin-doodle .sn-cell--border::after {
+.snui-skin-doodle .sn-cell__hairline {
   height: 4rpx;
   background-color: var(--sn-mp-color-text-primary);
 }

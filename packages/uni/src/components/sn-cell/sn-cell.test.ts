@@ -312,6 +312,15 @@ describe('sn-cell', () => {
         'sn-cell--border',
       );
     });
+
+    it('draws the hairline as a real element, not a ::after pseudo', () => {
+      // App has no pseudo-elements (§116.2) — the divider must exist in the
+      // tree so it survives the uvue transform.
+      const withBorder = mount(SnCell, { props: { title: 'A', border: true } });
+      expect(withBorder.find('.sn-cell__hairline').exists()).toBe(true);
+      const withoutBorder = mount(SnCell, { props: { title: 'A', border: false } });
+      expect(withoutBorder.find('.sn-cell__hairline').exists()).toBe(false);
+    });
   });
 
   describe('navigation payload', () => {

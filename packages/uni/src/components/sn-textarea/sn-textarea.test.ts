@@ -59,6 +59,15 @@ describe('sn-textarea', () => {
       expect(wrapper.emitted('blur')).toHaveLength(1);
     });
 
+    it('toggles the focused modifier class with the native textarea focus state', async () => {
+      const wrapper = mount(SnTextarea);
+      expect(wrapper.classes()).not.toContain('sn-textarea--focused');
+      await wrapper.find('textarea').trigger('focus');
+      expect(wrapper.classes()).toContain('sn-textarea--focused');
+      await wrapper.find('textarea').trigger('blur');
+      expect(wrapper.classes()).not.toContain('sn-textarea--focused');
+    });
+
     it('emits confirm with the current value', async () => {
       const wrapper = mount(SnTextarea, { props: { modelValue: 'done' } });
       await wrapper.find('textarea').trigger('confirm');

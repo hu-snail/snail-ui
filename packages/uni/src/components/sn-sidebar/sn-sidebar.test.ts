@@ -60,6 +60,13 @@ describe('sn-sidebar', () => {
       expect(items[1]!.classes()).toContain('sn-sidebar-item--active');
     });
 
+    it('renders the active marker as a real element, not a ::before pseudo', () => {
+      // App has no pseudo-elements (§116.2).
+      const items = mountSidebar({ modelValue: 1 }).findAll('.sn-sidebar-item');
+      expect(items[0]!.find('.sn-sidebar-item__marker').exists()).toBe(false);
+      expect(items[1]!.find('.sn-sidebar-item__marker').exists()).toBe(true);
+    });
+
     it('emits update:modelValue on tap', async () => {
       const wrapper = mountSidebar({ modelValue: 0 });
       await wrapper.findAll('.sn-sidebar-item')[2]!.trigger('tap');

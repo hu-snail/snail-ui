@@ -447,8 +447,14 @@ const wrapperStyle = computed(() => {
  * （MP 端模板不支持 v-bind="obj" 展开，这些属性已在模板中显式逐条绑定。）
  */
 
-/** Placeholder is a separate native input attribute in uni-app. */
-const placeholderStyleAttr = computed(() => props.placeholderStyle || undefined);
+/** Placeholder styling is a native input attribute, not a `::placeholder`
+ * rule: App has no pseudo-elements (§116.2). The default keeps the token
+ * color that the CSS rule used to supply. */
+const DEFAULT_PLACEHOLDER_STYLE =
+  'color: var(--sn-mp-color-input-placeholder, var(--sn-mp-color-text-tertiary)); opacity: 1';
+const placeholderStyleAttr = computed(
+  () => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE,
+);
 const placeholderClassAttr = computed(() => props.placeholderClass || undefined);
 </script>
 
@@ -741,13 +747,8 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
   line-height: 1.4;
   padding: 0;
 }
-.sn-input__native::placeholder {
-  /* Distinguish placeholder from input value — deliberately lighter
-   * than the regular text color so the user can tell empty from
-   * filled state at a glance. */
-  color: var(--sn-mp-color-input-placeholder, var(--sn-mp-color-text-tertiary));
-  opacity: 1;
-}
+/* Placeholder styling rides `placeholder-style` (native attribute), not
+ * `::placeholder` — pseudo-elements do not exist on App (§116.2). */
 
 textarea.sn-input__native {
   resize: vertical;

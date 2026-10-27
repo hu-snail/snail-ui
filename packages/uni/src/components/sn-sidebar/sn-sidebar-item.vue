@@ -128,6 +128,7 @@ const rootClass = computed(() => [
     :hover-class="disabled ? 'none' : 'sn-sidebar-item--pressed'"
     @tap="onTap"
   >
+    <view v-if="isActive" class="sn-sidebar-item__marker" aria-hidden="true" />
     <view class="sn-sidebar-item__content">
       <slot name="icon">
         <SnIcon v-if="iconData" class="sn-sidebar-item__icon" :icon="iconData" :size="32" />
@@ -174,7 +175,8 @@ const rootClass = computed(() => [
   font-weight: var(--sn-mp-font-weight-medium);
 }
 
-.sn-sidebar-item--active::before {
+/* Active marker is a real element — App has no `::before` (§116.2). */
+.sn-sidebar-item__marker {
   position: absolute;
   top: 50%;
   left: 0;
@@ -182,7 +184,6 @@ const rootClass = computed(() => [
   height: 32rpx;
   border-radius: 0 var(--sn-mp-radius-xs) var(--sn-mp-radius-xs) 0;
   background-color: var(--sn-mp-color-action-primary);
-  content: '';
   transform: translateY(-50%);
 }
 
