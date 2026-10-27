@@ -3,7 +3,8 @@
  *
  * Behavior-focused (AGENTS.md §46): pure conversions, parse of every
  * input format, trigger display, v-model round-trip, panel layout, SV /
- * hue / alpha pointer dragging (document-level move/up), mode tabs,
+ * hue / alpha pointer dragging (document-level move/up), format dropdown,
+ * rgb channel / hex / alpha inputs, recent colors, panel-only mode,
  * swatches, showAlpha, clearable, disabled / readonly, keyboard stepping
  * on the panel handles, outside click, listener cleanup on unmount.
  */
@@ -12,6 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h, nextTick, ref } from 'vue';
 import SnColorPicker from './SnColorPicker.vue';
+import { recentColors, recordRecentColor, resetRecentColors } from './sn-color-picker-recent';
 import {
   formatRgb,
   formatRgba,
@@ -79,6 +81,7 @@ async function panelLeft(): Promise<void> {
 
 describe('SnColorPicker', () => {
   beforeEach(() => {
+    resetRecentColors();
     // happy-dom has no layout — stable rects: SV square 200x200 at origin,
     // rails 200 wide at origin, trigger below, panel measured separately.
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
@@ -217,20 +220,31 @@ describe('SnColorPicker', () => {
 
   /* ───── panel layout ───── */
 
-  it('opens the panel on trigger click with mode tabs and hue rail', async () => {
+  it('opens the panel on trigger click with the hue rail and no alpha rail', async () => {
     const w = mountPicker();
     expect(panelEl()).toBeNull();
     await openPanel(w);
     expect(panelEl()).not.toBeNull();
-    expect(document.body.querySelectorAll('.sn-color-picker-panel__mode')).toHaveLength(2);
     expect(document.body.querySelector('.sn-color-picker-panel__hue')).not.toBeNull();
     expect(document.body.querySelector('.sn-color-picker-panel__alpha')).toBeNull();
   });
 
-  it('hides the mode tabs when only one mode is offered', async () => {
+  it('hides the format select when only one mode is offered', async () => {
     const w = mountPicker({ modes: ['hex'] });
     await openPanel(w);
-    expect(document.body.querySelector('.sn-color-picker-panel__modes')).toBeNull();
+    expect(document.body.querySelector('.sn-color-picker-panel__mode')).toBeNull();
+  });
+
+  it('renders the recent-colors section with titles and the 暂无 empty state', async () => {
+    const w = mountPicker({ swatches: ['#00ff00'] });
+    await openPanel(w);
+    const titles = [...document.body.querySelectorAll('.sn-color-picker-panel__section-title')].map(
+      (el) => el.textContent?.trim(),
+    );
+    expect(titles).toEqual(['最近使用颜色', '系统预设颜色']);
+    expect(document.body.querySelector('.sn-color-picker-panel__section-empty')?.textContent).toBe(
+      '暂无',
+    );
   });
 
   it('shows the alpha rail when showAlpha is on', async () => {
@@ -259,19 +273,60 @@ describe('SnColorPicker', () => {
     expect(panelEl()).not.toBeNull();
   });
 
-  /* ───── mode tabs ───── */
+  /* ───── format dropdown ───── */
 
-  it('switching the tab reformats the text input', async () => {
+  it('opens the format dropdown, switches to Hex, and output follows the active format', async () => {
+    const { wrapper, value } = mountVModel('#ff0000');
+    await openPanel(wrapper);
+    // RGB is the default format → channel fields instead of a text input.
+    expect(document.body.querySelector('.sn-color-picker-panel__input')).toBeNull();
+    expect(document.body.querySelectorAll('.sn-color-picker-panel__channel')).toHaveLength(3);
+    const trigger = document.body.querySelector<HTMLElement>(
+      '.sn-color-picker-panel__mode-trigger',
+    );
+    expect(trigger?.textContent?.trim()).toBe('RGB');
+    expect(document.body.querySelector('.sn-color-picker-panel__mode-menu')).toBeNull();
+    trigger?.click();
+    await nextTick();
+    const options = [
+      ...document.body.querySelectorAll<HTMLElement>('.sn-color-picker-panel__mode-option'),
+    ];
+    expect(options.map((o) => o.textContent?.trim())).toEqual(['RGB', 'Hex']);
+    options[1]?.click();
+    await nextTick();
+    expect(document.body.querySelector('.sn-color-picker-panel__mode-menu')).toBeNull();
+    expect(document.body.querySelector('.sn-color-picker-panel__input')).not.toBeNull();
+    expect(document.body.querySelectorAll('.sn-color-picker-panel__channel')).toHaveLength(0);
+    const input = document.body.querySelector<HTMLInputElement>('.sn-color-picker-panel__input');
+    expect(input?.value).toBe('ff0000');
+    input!.value = '00ff00';
+    input?.dispatchEvent(new Event('input', { bubbles: true }));
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await nextTick();
+    expect(value.value).toBe('#00ff00');
+  });
+
+  it('closes the format dropdown on Escape and on press outside the select', async () => {
     const { wrapper } = mountVModel('#ff0000');
     await openPanel(wrapper);
-    const input = document.body.querySelector<HTMLInputElement>('.sn-color-picker-panel__input');
-    expect(input?.value).toBe('rgb(255, 0, 0)');
-    const hexTab = [...document.body.querySelectorAll('.sn-color-picker-panel__mode')].find(
-      (b) => b.textContent?.trim() === 'HEX',
+    const trigger = document.body.querySelector<HTMLElement>(
+      '.sn-color-picker-panel__mode-trigger',
     );
-    hexTab?.click();
+    trigger?.click();
     await nextTick();
-    expect(input?.value).toBe('#ff0000');
+    expect(document.body.querySelector('.sn-color-picker-panel__mode-menu')).not.toBeNull();
+    trigger?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await nextTick();
+    expect(document.body.querySelector('.sn-color-picker-panel__mode-menu')).toBeNull();
+    trigger?.click();
+    await nextTick();
+    // A press inside the panel but outside the select closes only the menu.
+    document.body
+      .querySelector('.sn-color-picker-panel__sv')
+      ?.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    await nextTick();
+    expect(document.body.querySelector('.sn-color-picker-panel__mode-menu')).toBeNull();
+    expect(panelEl()).not.toBeNull();
   });
 
   it('default model value initializes the sv handle at the black corner', async () => {
@@ -351,30 +406,38 @@ describe('SnColorPicker', () => {
     expect(wrapper.emitted('change')?.at(-1)).toEqual(['rgb(0, 255, 0)']);
   });
 
-  it('typing a valid color in the input commits on Enter', async () => {
-    const { wrapper, value } = mountVModel('#000000');
+  it('typing a valid hex commits on Enter, with or without the # prefix', async () => {
+    const { wrapper, value } = mountVModel('#000000', { modes: ['hex'] });
     await openPanel(wrapper);
     const input = document.body.querySelector<HTMLInputElement>('.sn-color-picker-panel__input');
+    expect(input?.value).toBe('000000');
     // Unchanged value — a no-op Enter must not re-emit.
     input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await nextTick();
     expect(wrapper.emitted('change')).toBeUndefined();
-    input!.value = '#ff0000';
+    // Without the (decorative) # prefix.
+    input!.value = 'ff0000';
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await nextTick();
-    expect(value.value).toBe('rgb(255, 0, 0)');
+    expect(value.value).toBe('#ff0000');
+    // With the prefix — still accepted.
+    input!.value = '#00ff00';
+    input?.dispatchEvent(new Event('input', { bubbles: true }));
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await nextTick();
+    expect(value.value).toBe('#00ff00');
   });
 
-  it('an invalid input reverts to the formatted draft', async () => {
-    const { wrapper } = mountVModel('#000000');
+  it('an invalid text input reverts to the formatted draft', async () => {
+    const { wrapper } = mountVModel('#000000', { modes: ['hex'] });
     await openPanel(wrapper);
     const input = document.body.querySelector<HTMLInputElement>('.sn-color-picker-panel__input');
     input!.value = 'zzz';
     input?.dispatchEvent(new Event('input', { bubbles: true }));
     input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
     await nextTick();
-    expect(input?.value).toBe('rgb(0, 0, 0)');
+    expect(input?.value).toBe('000000');
     expect(wrapper.emitted('change')).toBeUndefined();
   });
 
@@ -641,5 +704,164 @@ describe('SnColorPicker', () => {
     await nextTick();
     expect(reads).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+  /* ───── recent colors store ───── */
+
+  describe('sn-color-picker-recent', () => {
+    it('dedups (move-to-front), normalizes to hex, and caps at 10', () => {
+      resetRecentColors();
+      for (let i = 0; i < 12; i += 1) recordRecentColor(`rgb(${i * 20}, 0, 0)`);
+      expect(recentColors.value).toHaveLength(10);
+      expect(recentColors.value[0]).toBe('#dc0000');
+      recordRecentColor('#000000');
+      expect(recentColors.value[0]).toBe('#000000');
+      expect(recentColors.value).toHaveLength(10);
+      recordRecentColor('not a color');
+      expect(recentColors.value[0]).toBe('#000000');
+    });
+  });
+
+  /* ───── recent colors section ───── */
+
+  it('records committed changes into the session recent history', async () => {
+    const { wrapper } = mountVModel('#ff0000', { modes: ['hex'] });
+    await openPanel(wrapper);
+    const input = document.body.querySelector<HTMLInputElement>('.sn-color-picker-panel__input');
+    input!.value = '00ff00';
+    input?.dispatchEvent(new Event('input', { bubbles: true }));
+    input?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await nextTick();
+    expect(recentColors.value).toEqual(['#00ff00']);
+  });
+
+  it('selects a recent color and re-records it at the front', async () => {
+    resetRecentColors();
+    recordRecentColor('#0000ff');
+    recordRecentColor('#00ff00');
+    const { wrapper, value } = mountVModel('#ff0000');
+    await openPanel(wrapper);
+    const recents = document.body.querySelectorAll<HTMLElement>('.sn-color-picker-panel__swatch');
+    // First section only — no swatches prop → recents only.
+    expect(recents).toHaveLength(2);
+    recents[0]?.click();
+    await nextTick();
+    expect(value.value).toBe('rgb(0, 255, 0)');
+    expect(recentColors.value[0]).toBe('#00ff00');
+  });
+
+  /* ───── panel-only ───── */
+
+  it('renders the panel inline without a trigger when panelOnly is set', async () => {
+    const w = mountPicker({ panelOnly: true, modelValue: '#00ff00' });
+    await nextTick();
+    expect(w.find('.sn-color-picker--panel-only').exists()).toBe(true);
+    expect(w.find('.sn-color-picker__selection').exists()).toBe(false);
+    const panel = w.find('.sn-color-picker-panel');
+    expect(panel.exists()).toBe(true);
+    expect(panel.classes()).toContain('sn-color-picker-panel--static');
+    expect(panel.attributes('role')).toBe('group');
+    // Inputs seeded from the model without any open step.
+    const channels = w.findAll<HTMLInputElement>('.sn-color-picker-panel__channel');
+    expect(channels.map((c) => c.element.value)).toEqual(['0', '255', '0']);
+  });
+
+  it('keeps the panel-only panel mounted on outside press and ignores defaultShow', async () => {
+    const w = mountPicker({ panelOnly: true, defaultShow: true });
+    await nextTick();
+    document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    await nextTick();
+    expect(w.find('.sn-color-picker-panel').exists()).toBe(true);
+  });
+
+  it('disables the panel inputs when panelOnly is disabled', async () => {
+    const w = mountPicker({ panelOnly: true, disabled: true, showAlpha: true });
+    await nextTick();
+    expect(w.find('.sn-color-picker-panel__channel').attributes('disabled')).toBeDefined();
+    expect(w.find('.sn-color-picker-panel__mode-trigger').attributes('disabled')).toBeDefined();
+    expect(w.find('.sn-color-picker-panel__alpha-input').attributes('disabled')).toBeDefined();
+  });
+
+  /* ───── alpha percent field ───── */
+
+  it('commits an alpha percent from the alpha field', async () => {
+    const { wrapper, value } = mountVModel('#ff0000', { showAlpha: true });
+    await openPanel(wrapper);
+    const alpha = document.body.querySelector<HTMLInputElement>(
+      '.sn-color-picker-panel__alpha-input',
+    );
+    expect(alpha?.value).toBe('100');
+    alpha!.value = '50';
+    alpha?.dispatchEvent(new Event('input', { bubbles: true }));
+    alpha?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await nextTick();
+    expect(value.value).toBe('rgba(255, 0, 0, 0.5)');
+  });
+
+  it('reverts an invalid alpha percent and live-updates it while dragging', async () => {
+    const { wrapper } = mountVModel('#ff0000', { showAlpha: true });
+    await openPanel(wrapper);
+    const alpha = document.body.querySelector<HTMLInputElement>(
+      '.sn-color-picker-panel__alpha-input',
+    );
+    alpha!.value = 'abc';
+    alpha?.dispatchEvent(new Event('input', { bubbles: true }));
+    alpha?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await nextTick();
+    expect(alpha?.value).toBe('100');
+    const rail = document.body.querySelector<HTMLElement>('.sn-color-picker-panel__alpha');
+    rail?.dispatchEvent(
+      new PointerEvent('pointerdown', { clientX: 50, clientY: 5, bubbles: true }),
+    );
+    await nextTick();
+    expect(alpha?.value).toBe('25');
+    document.dispatchEvent(new PointerEvent('pointerup'));
+  });
+
+  /* ───── rgb channel fields ───── */
+
+  it('renders rgb channel inputs seeded from the value and commits on Enter', async () => {
+    const { wrapper, value } = mountVModel('#ff0000');
+    await openPanel(wrapper);
+    const channels = [
+      ...document.body.querySelectorAll<HTMLInputElement>('.sn-color-picker-panel__channel'),
+    ];
+    expect(channels.map((c) => c.value)).toEqual(['255', '0', '0']);
+    channels[1]!.value = '128';
+    channels[1]?.dispatchEvent(new Event('input', { bubbles: true }));
+    channels[1]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await nextTick();
+    expect(value.value).toBe('rgb(255, 128, 0)');
+    expect(wrapper.emitted('change')?.at(-1)).toEqual(['rgb(255, 128, 0)']);
+  });
+
+  it('reverts invalid rgb channel input on Enter', async () => {
+    const { wrapper } = mountVModel('#ff0000');
+    await openPanel(wrapper);
+    const channels = [
+      ...document.body.querySelectorAll<HTMLInputElement>('.sn-color-picker-panel__channel'),
+    ];
+    channels[0]!.value = 'abc';
+    channels[0]?.dispatchEvent(new Event('input', { bubbles: true }));
+    channels[0]?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    await nextTick();
+    expect(channels.map((c) => c.value)).toEqual(['255', '0', '0']);
+    expect(wrapper.emitted('change')).toBeUndefined();
+  });
+
+  it('live-updates the rgb channels and the alpha field while dragging', async () => {
+    const { wrapper } = mountVModel('#000000', { showAlpha: true });
+    await openPanel(wrapper);
+    const sv = document.body.querySelector<HTMLElement>('.sn-color-picker-panel__sv');
+    sv?.dispatchEvent(new PointerEvent('pointerdown', { clientX: 0, clientY: 0, bubbles: true }));
+    await nextTick();
+    // s=0, v=100 → white; alpha untouched at 100%.
+    const channels = [
+      ...document.body.querySelectorAll<HTMLInputElement>('.sn-color-picker-panel__channel'),
+    ];
+    expect(channels.map((c) => c.value)).toEqual(['255', '255', '255']);
+    expect(
+      document.body.querySelector<HTMLInputElement>('.sn-color-picker-panel__alpha-input')?.value,
+    ).toBe('100');
+    document.dispatchEvent(new PointerEvent('pointerup'));
   });
 });
