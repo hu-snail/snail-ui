@@ -220,9 +220,11 @@ describe('sn-search', () => {
   });
 
   it('sets aria-disabled on the input while disabled', () => {
-    expect(mount(SnSearch, { props: { disabled: true } }).find('input').attributes('aria-disabled')).toBe(
-      'true',
-    );
+    expect(
+      mount(SnSearch, { props: { disabled: true } })
+        .find('input')
+        .attributes('aria-disabled'),
+    ).toBe('true');
   });
 
   it('labels the clear button and keeps it in the tab order', () => {

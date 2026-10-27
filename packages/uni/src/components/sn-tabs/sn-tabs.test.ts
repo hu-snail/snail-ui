@@ -42,8 +42,7 @@ describe('sn-tabs', () => {
     it('keeps disabled items inert', async () => {
       const Harness = defineComponent({
         setup() {
-          return () =>
-            h(SnTabs, {}, { default: () => [h(SnTab, { title: 'A', disabled: true })] });
+          return () => h(SnTabs, {}, { default: () => [h(SnTab, { title: 'A', disabled: true })] });
         },
       });
       const wrapper = mount(Harness);
@@ -339,13 +338,17 @@ describe('sn-tabs swipeable', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnTabs, { modelValue: 1, ...props }, {
-            default: () => [
-              h(SnTab, { title: 'A' }),
-              h(SnTab, { title: 'B' }),
-              h(SnTab, { title: 'C' }),
-            ],
-          });
+          h(
+            SnTabs,
+            { modelValue: 1, ...props },
+            {
+              default: () => [
+                h(SnTab, { title: 'A' }),
+                h(SnTab, { title: 'B' }),
+                h(SnTab, { title: 'C' }),
+              ],
+            },
+          );
       },
     });
     return mount(Harness);
@@ -424,16 +427,14 @@ describe('sn-tabs extras', () => {
   it('writes the animation duration CSS var only when animated', () => {
     const animated = mountTabs({ animated: true, duration: 450 });
     expect(animated.find('.sn-tabs').classes()).toContain('sn-tabs--animated');
-    expect(animated.find('.sn-tabs').attributes('style')).toContain(
-      '--snui-tabs-duration: 450ms',
-    );
+    expect(animated.find('.sn-tabs').attributes('style')).toContain('--snui-tabs-duration: 450ms');
     expect(mountTabs({ duration: 450 }).find('.sn-tabs').attributes('style')).toBeUndefined();
   });
 
   it('forwards showScrollbar onto the nav strip', () => {
-    expect(mountTabs({ showScrollbar: true }).find('.sn-tabs__nav').attributes('show-scrollbar')).toBe(
-      'true',
-    );
+    expect(
+      mountTabs({ showScrollbar: true }).find('.sn-tabs__nav').attributes('show-scrollbar'),
+    ).toBe('true');
     expect(mountTabs().find('.sn-tabs__nav').attributes('show-scrollbar')).toBe('false');
   });
 

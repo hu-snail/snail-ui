@@ -97,12 +97,16 @@ describe('sn-index-bar', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnIndexBar, {}, {
-              default: () =>
-                letters().map((letter) =>
-                  h(SnIndexAnchor, { index: letter }, { default: () => `items ${letter}` }),
-                ),
-            });
+            h(
+              SnIndexBar,
+              {},
+              {
+                default: () =>
+                  letters().map((letter) =>
+                    h(SnIndexAnchor, { index: letter }, { default: () => `items ${letter}` }),
+                  ),
+              },
+            );
         },
       });
       return mount(Harness);
@@ -166,12 +170,13 @@ describe('sn-index-bar', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnIndexBar, {}, {
-              default: () => [
-                h(SnIndexAnchor, { index: 1 }),
-                h(SnIndexAnchor, { index: 2 }),
-              ],
-            });
+            h(
+              SnIndexBar,
+              {},
+              {
+                default: () => [h(SnIndexAnchor, { index: 1 }), h(SnIndexAnchor, { index: 2 })],
+              },
+            );
         },
       });
       const wrapper = mount(Harness);

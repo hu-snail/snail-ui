@@ -44,7 +44,10 @@ function query(pageNo: number, pageSize: number): void {
         </view>
       </SnPaging>
     </view>
-    <text class="sn-demo__meta">Pull down to refresh, scroll to bottom for the next page; a short last page stops automatically</text>
+    <text class="sn-demo__meta"
+      >Pull down to refresh, scroll to bottom for the next page; a short last page stops
+      automatically</text
+    >
   </view>
 </template>
 

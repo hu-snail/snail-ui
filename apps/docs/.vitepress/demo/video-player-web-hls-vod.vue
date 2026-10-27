@@ -20,7 +20,10 @@ interface HlsLike {
   attachMedia(media: HTMLMediaElement): void;
   destroy(): void;
   currentLevel: number;
-  on(event: string, cb: (event: unknown, data: { levels: Array<{ height?: number; bitrate?: number }> }) => void): void;
+  on(
+    event: string,
+    cb: (event: unknown, data: { levels: Array<{ height?: number; bitrate?: number }> }) => void,
+  ): void;
 }
 type HlsConstructor = { new (): HlsLike; isSupported(): boolean };
 
@@ -88,7 +91,8 @@ onBeforeUnmount(() => {
   <div class="demo-stack">
     <SnVideoPlayer :src="VOD_URL" :source-bridge="hlsBridge" title="多码率点播（Mux 公开测试流）" />
     <p class="demo-hint">
-      {{ status }}。清晰度来自流本身（hls.js 上报），与渐进式 `qualities` 阶梯共用同一套菜单与切换逻辑。
+      {{ status }}。清晰度来自流本身（hls.js 上报），与渐进式 `qualities`
+      阶梯共用同一套菜单与切换逻辑。
     </p>
   </div>
 </template>

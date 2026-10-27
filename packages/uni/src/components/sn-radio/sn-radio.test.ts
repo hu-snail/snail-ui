@@ -342,13 +342,10 @@ describe('sn-radio', () => {
   });
 
   it('applies the group uncheckedColor to an unselected child marker', () => {
-    const wrapper = mountGroup(
-      { modelValue: 'b', uncheckedColor: 'rgb(5, 6, 7)' },
-      [
-        { value: 'a', label: 'A' },
-        { value: 'b', label: 'B' },
-      ],
-    );
+    const wrapper = mountGroup({ modelValue: 'b', uncheckedColor: 'rgb(5, 6, 7)' }, [
+      { value: 'a', label: 'A' },
+      { value: 'b', label: 'B' },
+    ]);
     expect(
       wrapper.findAllComponents(SnRadio)[0]!.find('.sn-radio__marker').attributes('style'),
     ).toContain('border-color: rgb(5, 6, 7)');
