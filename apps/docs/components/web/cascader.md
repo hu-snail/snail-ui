@@ -12,6 +12,12 @@
 
 <Demo name="cascader-web-multiple" description="multiple 多选：父级级联勾选、tag 回显与单独删除。" />
 
+## 严格选择模式（check-strictly）
+
+设置 `check-strictly` 开启严格选择模式，点击任何节点都可以选择。单选时点击父级会提交其自身完整路径并同时展开下级，便于继续下钻；多选时解除父子节点的关联 —— 每个勾选框只代表自身，勾选父级不再级联后代，也没有半选状态。过滤命中同样包含父级节点。
+
+<Demo name="cascader-web-strictly" description="check-strictly：单选点击父级即选中并展开；多选勾选互不关联。" />
+
 ## 可过滤（filterable）
 
 <Demo name="cascader-web-filterable" description="按完整路径文本匹配，命中平铺展示。" />
@@ -41,12 +47,13 @@
 | filterable                              | `boolean`                                    | `false`     | 按路径文本匹配                                        |
 | multiple                                | `boolean`                                    | `false`     | 多选（树选择）：勾选父级级联全部可选后代叶子          |
 | maxTagCount                             | `number`                                     | —           | 多选时最多展示的 tag 数，其余折叠为 `+N`              |
+| checkStrictly                           | `boolean`                                    | `false`     | 严格选择：任意节点（含父级）可提交；多选解除父子关联  |
 | disabled / readonly                     | `boolean`                                    | `false`     | 禁用 / 只读                                           |
 | size                                    | `'mini'\|'tiny'\|'small'\|'medium'\|'large'` | `'medium'`  | 尺寸                                                  |
 | status                                  | `'default'\|'error'\|'warning'`              | `'default'` | 校验状态                                              |
 | labelField / valueField / childrenField | `string`                                     | —           | 字段映射                                              |
 | expandTrigger                           | `'click'\|'hover'`                           | `'click'`   | 下级展开触发                                          |
 
-事件：`update:modelValue` / `change` / `clear` / `focus` / `blur`；Slot：`empty`。键盘：ArrowLeft/Right 切列、ArrowUp/Down 移动、Enter 选中叶（多选时切换勾选且不关闭）、Esc 关闭。回显：路径 label 以 " / " 连接；多选时每条路径一个 tag。菜单列宽固定为 `--sn-web-cascader-column-width`（默认 160px），不随内容自适应；面板宽度由已展开的列决定（初始一列，每展开一级加宽一列），不与触发器同宽。
+事件：`update:modelValue` / `change` / `clear` / `focus` / `blur`；Slot：`empty`。键盘：ArrowLeft/Right 切列、ArrowUp/Down 移动、Enter 选中叶（多选时切换勾选且不关闭；`check-strictly` 单选时高亮父级同样提交）、Esc 关闭。回显：路径 label 以 " / " 连接；多选时每条路径一个 tag。菜单列宽固定为 `--sn-web-cascader-column-width`（默认 160px），不随内容自适应；面板宽度由已展开的列决定（初始一列，每展开一级加宽一列），不与触发器同宽。
 
 完整契约见组件 `ai-description.md`。

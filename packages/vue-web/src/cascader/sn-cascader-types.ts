@@ -123,21 +123,27 @@ export function normalizeCascaderOptions(
 
 /**
  * Resolve a bound value path (root-first) to its node chain. Returns null
- * when any level misses or the path stops on a non-leaf — a broken path
- * renders the placeholder instead of a partial label.
+ * when any level misses or — unless `allowNonLeaf` — the path stops on a
+ * non-leaf; a broken path renders the placeholder instead of a partial
+ * label. `allowNonLeaf` is for check-strictly mode, which binds parent
+ * values too.
  */
 export function findPathByValues(
   nodes: ReadonlyArray<SnCascaderNode>,
   values: ReadonlyArray<SnCascaderValue>,
+  options: { allowNonLeaf?: boolean } = {},
 ): SnCascaderNode[] | null {
+  const allowNonLeaf = options.allowNonLeaf === true;
   if (values.length === 0) return null;
   const first = values[0];
   if (first === undefined) return null;
   const head = nodes.find((node) => node.value === first);
   if (head === undefined) return null;
-  if (values.length === 1) return head.isLeaf ? [head] : null;
+  if (values.length === 1) {
+    return head.isLeaf || allowNonLeaf ? [head] : null;
+  }
   if (head.isLeaf) return null;
-  const rest = findPathByValues(head.children, values.slice(1));
+  const rest = findPathByValues(head.children, values.slice(1), options);
   return rest === null ? null : [head, ...rest];
 }
 
@@ -147,6 +153,16 @@ export function collectCascaderLeaves(nodes: ReadonlyArray<SnCascaderNode>): SnC
   for (const node of nodes) {
     if (node.isLeaf) out.push(node);
     else out.push(...collectCascaderLeaves(node.children));
+  }
+  return out;
+}
+
+/** Collect EVERY node (parents + leaves) under `nodes`, depth-first. */
+export function collectCascaderNodes(nodes: ReadonlyArray<SnCascaderNode>): SnCascaderNode[] {
+  const out: SnCascaderNode[] = [];
+  for (const node of nodes) {
+    out.push(node);
+    out.push(...collectCascaderNodes(node.children));
   }
   return out;
 }

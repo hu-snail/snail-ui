@@ -1007,3 +1007,175 @@ describe('SnCascader multiple', () => {
     expect(document.body.querySelector('.sn-cascader-menu')).not.toBeNull();
   });
 });
+
+/* ───── check-strictly (strict selection) mode ───── */
+
+describe('SnCascader checkStrictly', () => {
+  beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      const isMenu = this.classList.contains('sn-cascader-menu');
+      return isMenu
+        ? {
+            top: 0,
+            left: 0,
+            width: 200,
+            height: 160,
+            right: 200,
+            bottom: 160,
+            x: 0,
+            y: 0,
+            toJSON: () => ({}),
+          }
+        : {
+            top: 300,
+            left: 40,
+            width: 200,
+            height: 32,
+            right: 240,
+            bottom: 332,
+            x: 40,
+            y: 300,
+            toJSON: () => ({}),
+          };
+    });
+  });
+
+  afterEach(async () => {
+    for (const w of mounted.splice(0)) w.unmount();
+    vi.restoreAllMocks();
+    document.body.innerHTML = '';
+  });
+
+  it('single strict: clicking a parent commits its own path and expands', async () => {
+    const { wrapper, value } = mountVModel([], { checkStrictly: true });
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    expect(value.value).toEqual(['asia']);
+    expect(wrapper.emitted('change')?.at(-1)).toEqual([['asia']]);
+    // The menu stays open and the child column expanded for drilling.
+    expect(document.body.querySelector('.sn-cascader-menu')).not.toBeNull();
+    expect(columns()).toHaveLength(2);
+    expect(wrapper.find('.sn-cascader__single-value').text()).toBe('Asia');
+  });
+
+  it('single strict: Enter commits the highlighted parent', async () => {
+    const { wrapper, value } = mountVModel([], { checkStrictly: true });
+    const trigger = triggerOf(wrapper);
+    await trigger.trigger('keydown', { key: 'ArrowDown' });
+    await trigger.trigger('keydown', { key: 'Enter' });
+    expect(value.value).toEqual(['asia']);
+    await nextTick();
+    await menuLeft();
+    expect(document.body.querySelector('.sn-cascader-menu')).toBeNull();
+  });
+
+  it('single strict: leaf selection still commits the full path and closes', async () => {
+    const { wrapper, value } = mountVModel([], { checkStrictly: true });
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    rowByKey('0-0')?.click();
+    await nextTick();
+    rowByKey('0-0-0')?.click();
+    await nextTick();
+    expect(value.value).toEqual(['asia', 'china', 'beijing']);
+    await menuLeft();
+    expect(document.body.querySelector('.sn-cascader-menu')).toBeNull();
+    expect(wrapper.find('.sn-cascader__single-value').text()).toBe('Asia / China / Beijing');
+  });
+
+  it('single strict: echo resolves a parent-bound path', () => {
+    const w = mountCascader({ checkStrictly: true, modelValue: ['asia', 'china'] });
+    expect(w.find('.sn-cascader__single-value').text()).toBe('Asia / China');
+  });
+
+  it('single strict without the prop still refuses parent commits', async () => {
+    const { wrapper, value } = mountVModel([], {});
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    expect(value.value).toEqual([]);
+  });
+
+  it('single strict: a filter match on a parent commits and closes', async () => {
+    const { wrapper, value } = mountVModel([], { checkStrictly: true, filterable: true });
+    await openMenu(wrapper);
+    await wrapper.find('.sn-cascader__filter-input').setValue('china');
+    await nextTick();
+    // Depth-first pool: the matched parent row comes before its leaf rows.
+    expect(allRows()[0]?.textContent).toBe('Asia / China');
+    allRows()[0]?.click();
+    await nextTick();
+    expect(value.value).toEqual(['asia', 'china']);
+    await menuLeft();
+    expect(document.body.querySelector('.sn-cascader-menu')).toBeNull();
+  });
+
+  it('multiple strict: checking a parent commits only its own path', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true, checkStrictly: true });
+    await openMenu(wrapper);
+    checkboxOf(rowByKey('0'))?.click();
+    await nextTick();
+    expect(value.value).toEqual([['asia']]);
+    expect(wrapper.find('.sn-cascader__tag-label').text()).toBe('Asia');
+    // No cascade: the child column stayed unexpanded-child-free in value.
+    expect(value.value).toHaveLength(1);
+  });
+
+  it('multiple strict: no indeterminate state on partially-checked parents', async () => {
+    const w = mountCascader({
+      multiple: true,
+      checkStrictly: true,
+      modelValue: [['asia', 'china', 'beijing']],
+    });
+    await openMenu(w);
+    const parentBox = checkboxOf(rowByKey('0'));
+    expect(parentBox?.classList.contains('sn-cascader-option__checkbox--indeterminate')).toBe(
+      false,
+    );
+    expect(parentBox?.classList.contains('sn-cascader-option__checkbox--checked')).toBe(false);
+    expect(
+      checkboxOf(rowByKey('0-0-0'))?.classList.contains('sn-cascader-option__checkbox--checked'),
+    ).toBe(true);
+  });
+
+  it('multiple strict: unchecking a parent removes only its own path', async () => {
+    const { wrapper, value } = mountVModel([['asia'], ['asia', 'china', 'beijing']], {
+      multiple: true,
+      checkStrictly: true,
+    });
+    await openMenu(wrapper);
+    checkboxOf(rowByKey('0'))?.click();
+    await nextTick();
+    expect(value.value).toEqual([['asia', 'china', 'beijing']]);
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[['asia', 'china', 'beijing']]]);
+  });
+
+  it('multiple strict: parent rows still expand on click', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true, checkStrictly: true });
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    expect(columns()).toHaveLength(2);
+    expect(value.value).toEqual([]);
+  });
+
+  it('multiple strict: filter matches include parents and toggle them in place', async () => {
+    const { wrapper, value } = mountVModel([], {
+      multiple: true,
+      checkStrictly: true,
+      filterable: true,
+    });
+    await openMenu(wrapper);
+    await wrapper.find('.sn-cascader__filter-input').setValue('china');
+    await nextTick();
+    expect(allRows()[0]?.textContent).toBe('Asia / China');
+    allRows()[0]?.click();
+    await nextTick();
+    expect(value.value).toEqual([['asia', 'china']]);
+    expect(document.body.querySelector('.sn-cascader-menu')).not.toBeNull();
+  });
+});

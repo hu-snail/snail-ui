@@ -248,6 +248,9 @@
  *     descendant leaf path; trigger renders one removable tag per committed
  *     path (maxTagCount collapses the rest into `+N`); the menu stays open
  *     while toggling
+ *   - checkStrictly: any node can be committed — single commits the clicked
+ *     node's own path (parents still expand); multiple decouples parent and
+ *     child (self-only checks, no cascade, no indeterminate state)
  *   - filterable: built-in case-insensitive match on the FULL path text
  *     (labels joined with ' / '), so matching a parent keeps its leaves;
  *     matches render as a flat list of full-path rows
@@ -280,6 +283,7 @@ import { ChevronDownIcon, ChevronRightIcon, CloseIcon } from './sn-cascader-icon
 import {
   cascaderPathKey,
   collectCascaderLeaves,
+  collectCascaderNodes,
   collectSelectableLeaves,
   defaultCascaderFilter,
   findPathByValues,
@@ -335,6 +339,13 @@ const props = withDefaults(
     multiple?: boolean;
     /** Max visible tags before the rest collapse into `+N` (multiple only). */
     maxTagCount?: number | undefined;
+    /**
+     * Strict selection (check-strictly): ANY node — parent or leaf — can be
+     * committed. Single mode commits the clicked node's own path (parents
+     * still expand for drilling); multiple mode decouples parent/child —
+     * checkboxes check themselves only, no cascade, no indeterminate state.
+     */
+    checkStrictly?: boolean;
     /** Accessible name for the trigger. */
     ariaLabel?: string;
     /** Empty-state text (overridden by the `empty` slot). */
@@ -356,6 +367,7 @@ const props = withDefaults(
     expandTrigger: 'click',
     multiple: false,
     maxTagCount: undefined,
+    checkStrictly: false,
     ariaLabel: '',
     emptyText: 'No options',
   },
@@ -410,7 +422,7 @@ const singleBoundPath = computed<SnCascaderPath | null>(() => {
 const selectedPath = computed<SnCascaderNode[] | null>(() => {
   const path = singleBoundPath.value;
   if (path === null) return null;
-  return findPathByValues(normalizedNodes.value, path);
+  return findPathByValues(normalizedNodes.value, path, { allowNonLeaf: props.checkStrictly });
 });
 
 /** Multiple-mode bound leaf paths (malformed entries are ignored). */
@@ -446,7 +458,9 @@ const isSelectionEmpty = computed(() =>
 /** Resolved trigger tags — one per committed path; unknown paths skipped. */
 const selectedTags = computed<{ key: string; values: SnCascaderPath; label: string }[]>(() =>
   selectedPaths.value.flatMap((path) => {
-    const nodes = findPathByValues(normalizedNodes.value, path);
+    const nodes = findPathByValues(normalizedNodes.value, path, {
+      allowNonLeaf: props.checkStrictly,
+    });
     if (nodes === null) return [];
     return [
       {
@@ -478,7 +492,11 @@ const isFiltering = computed(() => props.filterable && query.value !== '');
 
 const filteredLeaves = computed<SnCascaderNode[]>(() => {
   if (!isFiltering.value) return [];
-  return collectCascaderLeaves(normalizedNodes.value).filter((node) =>
+  // Strict mode can commit ANY node, so parent rows join the match pool.
+  const pool = props.checkStrictly
+    ? collectCascaderNodes(normalizedNodes.value)
+    : collectCascaderLeaves(normalizedNodes.value);
+  return pool.filter((node) =>
     defaultCascaderFilter(query.value, node.pathLabels.join(PATH_SEPARATOR)),
   );
 });
@@ -546,13 +564,15 @@ function nodeAtKey(key: string): SnCascaderNode | null {
   return node;
 }
 
-/** Visual selected tint — single: committed leaf; multiple: checked leaf. */
+/** Visual selected tint — single: committed node; multiple: checked node. */
 function isNodeVisuallySelected(node: SnCascaderNode): boolean {
   if (!props.multiple) return node.key === selectedKey.value;
-  return node.isLeaf && checkedLeafKeys.value.has(cascaderPathKey(node.pathValues));
+  // Committed paths are leaf-only unless checkStrictly allows parents, so a
+  // plain key lookup covers both without an isLeaf gate.
+  return checkedLeafKeys.value.has(cascaderPathKey(node.pathValues));
 }
 
-/** aria-selected source — single: committed leaf; multiple: check state. */
+/** aria-selected source — single: committed node; multiple: check state. */
 function isNodeSelected(node: SnCascaderNode): boolean {
   if (!props.multiple) return node.key === selectedKey.value;
   return nodeCheckState(node) === 'all';
@@ -560,7 +580,9 @@ function isNodeSelected(node: SnCascaderNode): boolean {
 
 /** Checkbox state of one row — 'all' | 'some' | 'none' (multiple mode). */
 function nodeCheckState(node: SnCascaderNode): 'all' | 'some' | 'none' {
-  if (node.isLeaf) {
+  // Strict mode decouples parent/child: every row reflects its OWN path
+  // only — no cascade, no indeterminate propagation.
+  if (props.checkStrictly || node.isLeaf) {
     return checkedLeafKeys.value.has(cascaderPathKey(node.pathValues)) ? 'all' : 'none';
   }
   const leaves = collectSelectableLeaves(node);
@@ -575,7 +597,7 @@ function nodeCheckState(node: SnCascaderNode): 'all' | 'some' | 'none' {
 /** Checkbox box classes for one row (multiple mode only). */
 function checkboxClasses(node: SnCascaderNode): Array<string | Record<string, boolean>> {
   const state = nodeCheckState(node);
-  const checkable = node.isLeaf || collectSelectableLeaves(node).length > 0;
+  const checkable = props.checkStrictly || node.isLeaf || collectSelectableLeaves(node).length > 0;
   return [
     'sn-cascader-option__checkbox',
     {
@@ -675,7 +697,9 @@ function openMenu(): void {
   const firstBoundPath = selectedPaths.value[0];
   const firstCheckedPath =
     props.multiple && path === null && firstBoundPath !== undefined
-      ? findPathByValues(normalizedNodes.value, firstBoundPath)
+      ? findPathByValues(normalizedNodes.value, firstBoundPath, {
+          allowNonLeaf: props.checkStrictly,
+        })
       : null;
   const openPath = path ?? firstCheckedPath;
   if (openPath !== null && openPath.length > 0) {
@@ -729,7 +753,10 @@ function emitChange(next: SnCascaderPath | SnCascaderPath[]): void {
 }
 
 function chooseNode(node: SnCascaderNode): void {
-  if (!isInteractive.value || node.disabled || !node.isLeaf) return;
+  if (!isInteractive.value || node.disabled) return;
+  // Strict mode lets ANY node be committed (single: its own path; multiple:
+  // its own path as an independent check).
+  if (!node.isLeaf && !props.checkStrictly) return;
   // Multiple mode: row click toggles the check and keeps the menu open.
   if (props.multiple) {
     toggleLeaf(node);
@@ -774,8 +801,12 @@ function toggleParent(node: SnCascaderNode): void {
 /** Checkbox click — leaf toggles itself, parent cascades its subtree. */
 function onCheckboxClick(node: SnCascaderNode): void {
   if (!isInteractive.value || node.disabled) return;
-  if (node.isLeaf) toggleLeaf(node);
-  else toggleParent(node);
+  // Strict mode: every row checks itself only — no cascade either way.
+  if (props.checkStrictly || node.isLeaf) {
+    toggleLeaf(node);
+    return;
+  }
+  toggleParent(node);
 }
 
 /** Remove one committed path via its trigger tag close button. */
@@ -797,6 +828,29 @@ function onOptionClick(node: SnCascaderNode): void {
   if (node.disabled) return;
   if (node.isLeaf) {
     chooseNode(node);
+    return;
+  }
+  // Parent row. Multiple: rows expand — checking happens on the checkbox
+  // (strict filter rows are the exception: the flat list has no columns to
+  // expand into, so a row click toggles that node's own check).
+  if (props.multiple) {
+    if (props.checkStrictly && isFiltering.value) {
+      chooseNode(node);
+      return;
+    }
+    expandNode(node, true);
+    return;
+  }
+  // Single + strict: clicking a parent commits its own path AND expands so
+  // drilling continues; in the flat filter list it commits and closes.
+  if (props.checkStrictly) {
+    emitChange([...node.pathValues]);
+    if (isFiltering.value) {
+      closeMenu();
+      triggerRef.value?.focus();
+      return;
+    }
+    expandNode(node, true);
     return;
   }
   // Parents expand on click in both trigger modes (harmless under hover).
@@ -838,8 +892,13 @@ function activatePending(): void {
   if (pendingKey.value === null) return;
   const node = nodeAtKey(pendingKey.value);
   if (node === null) return;
-  if (node.isLeaf) chooseNode(node);
-  else expandNode(node, true);
+  // Parents expand on Enter — except strict single mode, where Enter commits
+  // the parent's own path (chooseNode closes; ArrowRight still expands).
+  if (!node.isLeaf && (props.multiple || !props.checkStrictly)) {
+    expandNode(node, true);
+    return;
+  }
+  chooseNode(node);
 }
 
 function moveColumnLeft(): void {

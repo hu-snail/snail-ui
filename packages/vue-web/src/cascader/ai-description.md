@@ -19,25 +19,26 @@ render as one expandable list instead of side-by-side columns.
 
 ## SnCascader Props
 
-| Prop          | Type                                                                | Default           | Notes                                                                                                                               |
-| ------------- | ------------------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| modelValue    | `Array<string \| number> \| Array<Array<string \| number>> \| null` | `[]`              | `v-model`. Single: one full leaf path, root-first. Multiple: one path per committed leaf. Clear commits `[]`.                       |
-| options       | `Array<{ label, value, disabled?, children? }>`                     | `[]`              | Tree options (recursive `children`).                                                                                                |
-| labelField    | `string`                                                            | `'label'`         | Label key remapping.                                                                                                                |
-| valueField    | `string`                                                            | `'value'`         | Value key remapping.                                                                                                                |
-| childrenField | `string`                                                            | `'children'`      | Children key remapping.                                                                                                             |
-| placeholder   | `string`                                                            | `'Please select'` | Empty-state text.                                                                                                                   |
-| clearable     | `boolean`                                                           | `false`           | Shows × button when a value exists.                                                                                                 |
-| filterable    | `boolean`                                                           | `false`           | Enables the internal filter input.                                                                                                  |
-| multiple      | `boolean`                                                           | `false`           | Tree-check mode: checkbox per row; parent check cascades to all selectable descendant leaves; one removable tag per committed path. |
-| maxTagCount   | `number`                                                            | —                 | Multiple only — max visible tags before the rest collapse into `+N`.                                                                |
-| disabled      | `boolean`                                                           | `false`           | Blocks open / select / clear.                                                                                                       |
-| readonly      | `boolean`                                                           | `false`           | Visible but inert.                                                                                                                  |
-| size          | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`                | `'medium'`        | Trigger + row height / font preset.                                                                                                 |
-| status        | `'default' \| 'error' \| 'warning'`                                 | `'default'`       | Border color + `aria-invalid`.                                                                                                      |
-| expandTrigger | `'click' \| 'hover'`                                                | `'click'`         | How a parent row opens the next column.                                                                                             |
-| ariaLabel     | `string`                                                            | `''`              | Accessible name for the trigger.                                                                                                    |
-| emptyText     | `string`                                                            | `'No options'`    | Empty state text (`empty` slot wins).                                                                                               |
+| Prop          | Type                                                                | Default           | Notes                                                                                                                                                                                            |
+| ------------- | ------------------------------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| modelValue    | `Array<string \| number> \| Array<Array<string \| number>> \| null` | `[]`              | `v-model`. Single: one full leaf path, root-first. Multiple: one path per committed leaf. Clear commits `[]`.                                                                                    |
+| options       | `Array<{ label, value, disabled?, children? }>`                     | `[]`              | Tree options (recursive `children`).                                                                                                                                                             |
+| labelField    | `string`                                                            | `'label'`         | Label key remapping.                                                                                                                                                                             |
+| valueField    | `string`                                                            | `'value'`         | Value key remapping.                                                                                                                                                                             |
+| childrenField | `string`                                                            | `'children'`      | Children key remapping.                                                                                                                                                                          |
+| placeholder   | `string`                                                            | `'Please select'` | Empty-state text.                                                                                                                                                                                |
+| clearable     | `boolean`                                                           | `false`           | Shows × button when a value exists.                                                                                                                                                              |
+| filterable    | `boolean`                                                           | `false`           | Enables the internal filter input.                                                                                                                                                               |
+| multiple      | `boolean`                                                           | `false`           | Tree-check mode: checkbox per row; parent check cascades to all selectable descendant leaves; one removable tag per committed path.                                                              |
+| maxTagCount   | `number`                                                            | —                 | Multiple only — max visible tags before the rest collapse into `+N`.                                                                                                                             |
+| checkStrictly | `boolean`                                                           | `false`           | Strict selection: any node (parents included) can be committed. Single: clicking a parent commits its own path and expands. Multiple: checks are self-only — no cascade, no indeterminate state. |
+| disabled      | `boolean`                                                           | `false`           | Blocks open / select / clear.                                                                                                                                                                    |
+| readonly      | `boolean`                                                           | `false`           | Visible but inert.                                                                                                                                                                               |
+| size          | `'mini' \| 'tiny' \| 'small' \| 'medium' \| 'large'`                | `'medium'`        | Trigger + row height / font preset.                                                                                                                                                              |
+| status        | `'default' \| 'error' \| 'warning'`                                 | `'default'`       | Border color + `aria-invalid`.                                                                                                                                                                   |
+| expandTrigger | `'click' \| 'hover'`                                                | `'click'`         | How a parent row opens the next column.                                                                                                                                                          |
+| ariaLabel     | `string`                                                            | `''`              | Accessible name for the trigger.                                                                                                                                                                 |
+| emptyText     | `string`                                                            | `'No options'`    | Empty state text (`empty` slot wins).                                                                                                                                                            |
 
 ## SnCascader Events
 
@@ -80,12 +81,21 @@ render as one expandable list instead of side-by-side columns.
   an indeterminate checkbox. The trigger renders one removable tag per
   committed path (`maxTagCount` collapses the rest into `+N`); the clear
   button removes every path at once.
+- `checkStrictly` (strict selection): ANY node — parent or leaf — can be
+  committed. Single mode: clicking a parent commits its own full path AND
+  expands the next column so drilling continues (Enter commits and closes;
+  in the filter list a parent match commits and closes); the trigger echoes
+  the parent path. Multiple mode: parent/child checks are decoupled — each
+  checkbox reflects only its own path, checking a parent no longer
+  cascades, and no indeterminate state is ever shown. The filter pool
+  includes parent rows, so strict matches can commit parents directly.
 
 ## Keyboard
 
 - `Enter` — open the menu; on a highlighted parent, expand it; on a
   highlighted leaf, select and close (multiple mode: toggle the check and
-  keep the menu open).
+  keep the menu open; `checkStrictly` single mode: a highlighted parent
+  commits its own path and closes).
 - `Space` — open the menu (page scroll suppressed; inside the filter input
   it types a space instead).
 - `ArrowUp` / `ArrowDown` — move the highlight within the active column
@@ -131,6 +141,5 @@ All styling resolves through `--sn-web-cascader-*` aliases with
 
 - Flat choices — use SnSelect.
 - Single expandable tree list instead of columns — use SnTreeSelect.
-- Parent-node value commits (checkStrategy / check-strictly) — not
-  supported yet; values are always leaf paths. Use SnTreeSelect for a
-  strict parent/child check model.
+- Parent-child linked tree checks rendered as one list — SnTreeSelect may
+  fit better.
