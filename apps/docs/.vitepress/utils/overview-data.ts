@@ -131,6 +131,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-img-cropper', title: '图片裁剪', desc: '裁剪几何交互' },
       { name: 'sn-qr-code', title: '二维码', desc: '二维码生成与导出' },
       { name: 'sn-table', title: '表格', desc: '数据表格' },
+      { name: 'sn-rich-text', title: '富文本', desc: 'HTML 内容：图文、表格与媒体' },
     ],
   },
   {

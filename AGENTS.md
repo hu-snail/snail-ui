@@ -3324,7 +3324,7 @@ diff。现在 wot-ui 的完整 API 面已抓取入库：
 
 | 组件        | 参考库                                | 依据                                                                                                                                                                                                                                    |
 | ----------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sn-paging` | z-paging（https://z-paging.zxlee.cn） | Human 指令（2026-10-25）：高性能、轻量化对标 z-paging 的分页容器。wot-ui spec 无对应容器组件（仅 `wd-loading` / `wd-loadmore`，二者仍是内嵌指示器的参考）；prop 命名 / 默认文案对齐 z-paging 子集，wot-ui / naive-ui 独有 prop 不得混入 |
+| `sn-rich-text` | wot-ui `wd-rich-text`（https://wot-ui.cn/component/rich-text.html） | Human 指令（2026-10-26）：uni 端 HTML 富文本渲染。wot-ui spec（v2.3.2）抓取时点未含 `rich-text` 条目，故以官方文档页为对齐单源（14 props / 9 events / 7 methods / default slot / 8 CSS vars，1:1）；上游标注「不支持 uni-app x」，App 端能力以 PORTING-REPORT 与指南状态表为准 |
 
 ## 112.5 uni 端暗色模式契约
 

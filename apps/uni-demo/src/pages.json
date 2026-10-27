@@ -520,6 +520,12 @@
           }
         },
         {
+          "path": "rich-text",
+          "style": {
+            "navigationBarTitleText": "富文本"
+          }
+        },
+        {
           "path": "swiper",
           "style": {
             "navigationBarTitleText": "轮播"

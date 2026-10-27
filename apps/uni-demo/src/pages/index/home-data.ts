@@ -702,6 +702,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         count: 4,
       },
       {
+        key: 'rich-text',
+        group: 'display',
+        title: '富文本',
+        titleEn: 'Rich Text',
+        desc: 'HTML 内容：图文、表格与媒体',
+        count: 6,
+      },
+      {
         key: 'swiper',
         group: 'display',
         title: '轮播',

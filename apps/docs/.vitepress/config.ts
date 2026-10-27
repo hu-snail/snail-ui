@@ -303,6 +303,7 @@ const sidebar = {
         { text: 'sn-img-cropper 图片裁剪'.trim(), link: '/components/uni/img-cropper' },
         { text: 'sn-qr-code 二维码'.trim(), link: '/components/uni/qr-code' },
         { text: 'sn-table 表格'.trim(), link: '/components/uni/table' },
+        { text: 'sn-rich-text 富文本'.trim(), link: '/components/uni/rich-text' },
       ],
     },
     {
@@ -625,6 +626,7 @@ const enSidebar = {
         { text: 'sn-img-cropper', link: '/en/components/uni/img-cropper' },
         { text: 'sn-qr-code', link: '/en/components/uni/qr-code' },
         { text: 'sn-table', link: '/en/components/uni/table' },
+        { text: 'sn-rich-text', link: '/en/components/uni/rich-text' },
       ],
     },
     {

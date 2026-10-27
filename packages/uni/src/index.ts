@@ -82,6 +82,19 @@ export { default as SnRadio } from './components/sn-radio/sn-radio.vue';
 export { default as SnRadioGroup } from './components/sn-radio/sn-radio-group.vue';
 export { default as SnRate } from './components/sn-rate/sn-rate.vue';
 export { default as SnResize } from './components/sn-resize/sn-resize.vue';
+export { default as SnRichText } from './components/sn-rich-text/sn-rich-text.vue';
+export type {
+  RichTextErrorEvent,
+  RichTextHeading,
+  RichTextImageClickEvent,
+  RichTextImageLoadEvent,
+  RichTextInstance,
+  RichTextLinkClickEvent,
+  RichTextLoadEvent,
+  RichTextMediaEvent,
+  RichTextMediaTimeUpdateEvent,
+  RichTextScrollToAnchorOptions,
+} from './components/sn-rich-text/sn-rich-text-types';
 export { default as SnRootPortal } from './components/sn-root-portal/sn-root-portal.vue';
 export { default as SnScratchcard } from './components/sn-scratchcard/sn-scratchcard.vue';
 export { default as SnSearch } from './components/sn-search/sn-search.vue';

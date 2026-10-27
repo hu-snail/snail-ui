@@ -67,11 +67,12 @@ Same as the uni end: wrap with `<sn-config-provider theme="dark">`, or add the
 
 | Item                                    | Status                                                                                                                                                                                                                                                                                 |
 | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Components                              | All 82 components (95 `.uvue` files) + 29 ts helpers                                                                                                                                                                                                                                   |
+| Components                              | All 91 components (104 `.uvue` files) + 34 ts helpers                                                                                                                                                                                                                                   |
 | Theme / dark mode                       | Class-only token layer generated                                                                                                                                                                                                                                                       |
 | Style Packs (skin)                      | **Supported via variable injection**: skin descendant rules flatten into single-class `--snx-*` var blocks (measured: 59 components, 1097 injected vars, 434 consumers); only 9 interactive-state (`:hover`/`:active`) rules are dropped — unrepresentable on App (see PORTING-REPORT) |
 | sn-table                                | uvue officially supports `<component :is>` on App; the slot-function value shape used here needs compile verification                                                                                                                                                                  |
-| sn-sticky                               | Degrades to normal flow on App (vapor has no `position: sticky`; built-in sticky-section works only inside list-view) — use list-view + sticky-section for list pinning                                                                                                                |
+| sn-sticky                               | Degrades to normal flow on App (vapor has no `position: sticky`; built-in sticky-section works only inside list-view) — use list-view + sticky-section for list pinning
+| sn-rich-text                            | Transforms with zero drops (type-only defineSlots strip only); media control / anchor positioning rely on platform APIs — treat as unverified until device-tested                                                                                                                |
 | Canvas components                       | Only sn-qr-code actually uses canvas — adapted to the uni-app x API (W3C 2d context + bitmap DPR sizing + `toDataURL` export); sn-signature / sn-watermark / sn-img-cropper were designed canvas-free (view strokes / view tiling / geometry reporting), nothing to change             |
 | Desktop H5 mouse gestures (picker-view) | Gated behind `#ifdef H5`; App stays touch-only                                                                                                                                                                                                                                         |
 
@@ -100,6 +101,7 @@ yet — verify them first when adopting:
 - [ ] CSS variables injected via `:style` (~80 sites, e.g. tabs animation duration)
 - [ ] `gap` / `@keyframes` under the bytecode rendering pipeline
 - [ ] `position: fixed` with safe-area variables (overlay components)
+- [ ] sn-rich-text `<video>` / audio button / anchor selector queries (`createSelectorQuery` / `pageScrollTo`)
 - [ ] `defineProps` / `withDefaults` / `defineSlots` macro coverage (sn-form-item
       consumes the `defineSlots` return value)
 

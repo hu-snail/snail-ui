@@ -2230,6 +2230,44 @@
         }
       ]
     },
+    "rich-text": {
+      "group": "display",
+      "title": "富文本",
+      "desc": "HTML 内容：图文、表格与媒体",
+      "page": "pages/display/rich-text",
+      "demos": [
+        {
+          "name": "rich-text-mp-basic",
+          "title": "基础用法",
+          "hasEn": false
+        },
+        {
+          "name": "rich-text-mp-images",
+          "title": "images",
+          "hasEn": false
+        },
+        {
+          "name": "rich-text-mp-links",
+          "title": "links",
+          "hasEn": false
+        },
+        {
+          "name": "rich-text-mp-media",
+          "title": "media",
+          "hasEn": false
+        },
+        {
+          "name": "rich-text-mp-styles",
+          "title": "styles",
+          "hasEn": false
+        },
+        {
+          "name": "rich-text-mp-table",
+          "title": "table",
+          "hasEn": false
+        }
+      ]
+    },
     "swiper": {
       "group": "display",
       "title": "轮播",
