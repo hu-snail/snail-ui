@@ -17,9 +17,24 @@
  * The cross-end element allowlist for this package is `view` / `text` /
  * `image` / `scroll-view` / `input`. `<canvas>` is not in it, so the stroke is
  * drawn as a chain of absolutely positioned, rotated `<view>` bars: one bar per
- * consecutive point pair, `width` = the segment length, `transform:
- * rotate(θ)` about the left edge. The result is a real polyline that renders on
- * every uni target — no canvas, no `document`, no image export.
+ * consecutive point pair, `width` = the segment length + one line width,
+ * `transform: rotate(θ)` about the left edge. The result is a real polyline that
+ * renders on every uni target — no canvas, no `document`, no image export.
+ *
+ * ## Smoothness and the desktop fix (see sn-signature-strokes.ts / -mouse.ts)
+ *
+ *   - **连贯性**: every bar is extended by one line width and capped round,
+ *     so bar N's tail covers the joint at its `to` point — no wedge gaps at
+ *     kinks, the chain reads as one continuous rounded stroke.
+ *   - **丝滑 / 性能**: moves are distance-sampled (≥2 design px), so the node
+ *     count stays flat at high sample rates; the live stroke renders bars
+ *     incrementally while drawing and re-renders committed strokes only on
+ *     stroke end.
+ *   - **desktop**: browsers do not translate mouse drags into touch events,
+ *     so the touch-only pad was dead on the desktop H5 demo.
+ *     `bindMouseDrawing` (pattern of sn-picker-view-drag, §112.3a) feeds the
+ *     same handlers from `mousedown/mousemove/mouseup` on `document`, with
+ *     synthetic-event suppression and a full disposer (§41).
  *
  * ## Documented divergences (CONTRIBUTING §9)
  *
@@ -42,25 +57,14 @@
  *   - 业务字段校验 — 用 sn-form-item
  */
 
-import { computed, ref } from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { barsOf, dotsOf, shouldSample } from './sn-signature-strokes';
+import type { SignaturePoint, SignatureSegment } from './sn-signature-strokes';
+import { bindMouseDrawing } from './sn-signature-mouse';
 
 defineOptions({ name: 'SnSignature' });
 
-/** One sampled point, in px design units relative to the pad. */
-interface SignaturePoint {
-  x: number;
-  y: number;
-}
-
-/** A drawn segment ready for the template. */
-interface SignatureSegment {
-  left: number;
-  top: number;
-  width: number;
-  angle: number;
-}
-
-/** Nested array of strokes; each stroke is a point list. */
+/* Point / segment geometry lives in sn-signature-strokes.ts (single source). */
 type SignaturePaths = SignaturePoint[][];
 
 /** Payload of the `confirm` event. */
@@ -165,6 +169,8 @@ const emit = defineEmits<{
   (e: 'clear'): void;
 }>();
 
+const instance = getCurrentInstance();
+
 /* ── Stroke state ──────────────────────────────────────────────────────── */
 
 /** Committed strokes. */
@@ -173,8 +179,12 @@ const strokes = ref<SignaturePaths>([]);
 const current = ref<SignaturePoint[]>([]);
 /** Strokes removed by undo, kept for redo. */
 const undone = ref<SignaturePaths>([]);
-/** Whether a finger is down. */
+/** Whether a finger (or the desktop mouse) is down. */
 const drawing = ref(false);
+/** Bars of the live stroke, appended incrementally while drawing. */
+const liveBars = ref<SignatureSegment[]>([]);
+/** Bars of the finished strokes — recomputed only on stroke / undo / clear. */
+const committedBars = ref<SignatureSegment[][]>([]);
 
 /** History depth guard — very long sessions must not grow without bound. */
 const MAX_STROKES = 200;
@@ -187,6 +197,7 @@ function onClear(): void {
   if (props.disabled) return;
   strokes.value = [];
   current.value = [];
+  committedBars.value = [];
   resetHistory();
   emit('clear');
 }
@@ -199,6 +210,7 @@ function revoke(): void {
   if (taken.length === 0) return;
   undone.value = [...undone.value, ...taken];
   strokes.value = strokes.value.slice(0, strokes.value.length - taken.length);
+  committedBars.value = committedBars.value.slice(0, strokes.value.length);
 }
 
 /** Redo `step` strokes (wd-signature `restore`). */
@@ -209,6 +221,7 @@ function restore(): void {
   if (taken.length === 0) return;
   undone.value = undone.value.slice(0, undone.value.length - taken.length);
   strokes.value = [...strokes.value, ...taken];
+  committedBars.value = [...committedBars.value, ...taken.map((s) => barsOf(s, props.lineWidth))];
 }
 
 const canUndo = computed(() => props.enableHistory && strokes.value.length > 0);
@@ -219,6 +232,45 @@ const isEmpty = computed(() => strokes.value.length === 0 && current.value.lengt
 /* ── Touch ─────────────────────────────────────────────────────────────── */
 
 const padRef = ref<{ getBoundingClientRect?: () => { left: number; top: number } } | null>(null);
+
+/**
+ * Pad origin in viewport coordinates, cached from a guarded selector query.
+ * Mini-programs have no DOM  on template refs, so the
+ * stroke offset would drift by the pad position without this (H5 reads the
+ * live box synchronously and never needs the cache).
+ */
+const padOrigin = ref<{ left: number; top: number }>({ left: 0, top: 0 });
+
+interface PadQueryLike {
+  in?: (component: unknown) => PadQueryLike;
+  select?: (selector: string) => {
+    boundingClientRect?: (callback: (rect: { left: number; top: number } | null) => void) => {
+      exec?: () => void;
+    };
+  };
+}
+
+/** Refresh the cached pad origin (mini-program path; no-op without a host). */
+function measurePadOrigin(): void {
+  const host = (globalThis as { uni?: { createSelectorQuery?: () => PadQueryLike } }).uni;
+  const createSelectorQuery = host?.createSelectorQuery;
+  if (typeof createSelectorQuery !== 'function') return;
+  try {
+    const query = createSelectorQuery();
+    if (query === null || query === undefined) return;
+    const scoped = typeof query.in === 'function' ? query.in(instance) : query;
+    const selection = scoped.select?.('.sn-signature__pad');
+    if (selection?.boundingClientRect === undefined) return;
+    selection
+      .boundingClientRect((rect) => {
+        if (rect === null) return;
+        padOrigin.value = { left: rect.left, top: rect.top };
+      })
+      .exec?.();
+  } catch {
+    // A host without layout queries keeps the last (or zero) origin.
+  }
+}
 
 /** Read the pointer position relative to the pad, in px design units. */
 function pointOf(event: Event): SignaturePoint | null {
@@ -236,17 +288,60 @@ function pointOf(event: Event): SignaturePoint | null {
   if (x === undefined && detail.detail && typeof detail.detail.x === 'number') x = detail.detail.x;
   if (y === undefined && detail.detail && typeof detail.detail.y === 'number') y = detail.detail.y;
   if (x === undefined || y === undefined) return null;
+  // H5: the live DOM box is exact. MP: fall back to the cached query origin.
   const rect = padRef.value?.getBoundingClientRect?.();
-  return { x: x - (rect?.left ?? 0), y: y - (rect?.top ?? 0) };
+  const left = rect?.left ?? padOrigin.value.left;
+  const top = rect?.top ?? padOrigin.value.top;
+  return { x: x - left, y: y - top };
+}
+
+/** Common pen-down path (touch and desktop mouse). */
+function beginStroke(point: SignaturePoint): void {
+  measurePadOrigin();
+  drawing.value = true;
+  current.value = [point];
+  liveBars.value = [];
+  resetHistory();
+}
+
+/**
+ * Common pen-move path. Distance sampling keeps the node count flat.
+ * Returns false when the move was below the sample threshold (no new point,
+ * no bar) — callers must not report a signing event for it.
+ */
+function extendStroke(point: SignaturePoint): boolean {
+  const last = current.value[current.value.length - 1];
+  if (!shouldSample(last, point)) return false;
+  const from = last;
+  current.value = [...current.value, point];
+  if (from !== undefined) {
+    // Append one bar incrementally — no recompute of the whole stroke.
+    const bars = barsOf([from, point], props.lineWidth);
+    const bar = bars[bars.length - 1];
+    if (bar !== undefined) liveBars.value = [...liveBars.value, bar];
+  }
+  return true;
+}
+
+/** Common pen-up path: commit the stroke and its bars once. */
+function endStroke(): void {
+  const stroke = current.value;
+  current.value = [];
+  liveBars.value = [];
+  // A single point is a deliberate dot, not noise — commit it so a quick tap
+  // still leaves a mark (matches wd-signature's tap behaviour).
+  if (stroke.length > 0) {
+    const next = [...strokes.value, stroke];
+    strokes.value = next.length > MAX_STROKES ? next.slice(next.length - MAX_STROKES) : next;
+    committedBars.value = [...committedBars.value, barsOf(stroke, props.lineWidth)];
+  }
 }
 
 function onTouchStart(event: Event): void {
   if (props.disabled) return;
   const point = pointOf(event);
   if (!point) return;
-  drawing.value = true;
-  current.value = [point];
-  resetHistory();
+  beginStroke(point);
   emit('start', event);
 }
 
@@ -255,30 +350,21 @@ function onTouchMove(event: Event): void {
   if (props.disableScroll) event.preventDefault();
   const point = pointOf(event);
   if (!point) return;
-  const last = current.value[current.value.length - 1];
-  // Drop sub-pixel duplicates — they produce zero-length, invisible segments.
-  if (last && Math.abs(point.x - last.x) < 0.5 && Math.abs(point.y - last.y) < 0.5) return;
-  current.value = [...current.value, point];
+  if (!extendStroke(point)) return;
   emit('signing', event);
 }
 
 function onTouchEnd(event: Event): void {
   if (!drawing.value) return;
   drawing.value = false;
-  const stroke = current.value;
-  current.value = [];
-  // A single point is a deliberate dot, not noise — commit it so a quick tap
-  // still leaves a mark (matches wd-signature's tap behaviour).
-  if (stroke.length > 0) {
-    const next = [...strokes.value, stroke];
-    strokes.value = next.length > MAX_STROKES ? next.slice(next.length - MAX_STROKES) : next;
-  }
+  endStroke();
   emit('end', event);
 }
 
 function onTouchCancel(): void {
   drawing.value = false;
   current.value = [];
+  liveBars.value = [];
 }
 
 /* ── Confirm ───────────────────────────────────────────────────────────── */
@@ -289,6 +375,41 @@ function confirm(): void {
 }
 
 defineExpose({ confirm, clear: onClear, revoke, restore, init: resetHistory });
+
+/* ── Desktop H5 mouse drawing (§112.3a; see sn-signature-mouse.ts) ─────── */
+
+let disposeMouse: (() => void) | null = null;
+
+onMounted(() => {
+  measurePadOrigin();
+  const pad = padRef.value as HTMLElement | null;
+  if (pad === null) return;
+  disposeMouse = bindMouseDrawing(pad, {
+    begin: (point) => {
+      if (props.disabled) return;
+      beginStroke(point);
+      emit('start', new Event('signstart'));
+    },
+    extend: (point) => {
+      if (props.disabled || !drawing.value) return;
+      if (!extendStroke(point)) return;
+      emit('signing', new Event('signmove'));
+    },
+    end: () => {
+      if (!drawing.value) return;
+      drawing.value = false;
+      endStroke();
+      emit('end', new Event('signend'));
+    },
+    isDisabled: () => props.disabled,
+    isTouchActive: () => drawing.value,
+  });
+});
+
+onBeforeUnmount(() => {
+  disposeMouse?.();
+  disposeMouse = null;
+});
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
@@ -324,32 +445,23 @@ const rootStyle = computed(() => {
   return base ? `${base}; ${props.customStyle}` : props.customStyle;
 });
 
-/** Turn a stroke into rotated bars. */
-function segmentsOf(stroke: SignaturePoint[]): SignatureSegment[] {
-  const bars: SignatureSegment[] = [];
-  for (let i = 1; i < stroke.length; i += 1) {
-    const from = stroke[i - 1];
-    const to = stroke[i];
-    if (!from || !to) continue;
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const length = Math.sqrt(dx * dx + dy * dy);
-    if (length < 0.5) continue;
-    bars.push({
-      left: from.x,
-      top: from.y,
-      width: length,
-      angle: (Math.atan2(dy, dx) * 180) / Math.PI,
-    });
-  }
-  return bars;
-}
+/**
+ * Bars for the template: committed strokes come from the cache (rebuilt only
+ * on stroke end / undo / redo / clear / lineWidth change), the live stroke
+ * appends incrementally — a fast stroke never re-walks the whole path.
+ */
+const barGroups = computed(() => {
+  const groups: SignatureSegment[][] = [...committedBars.value];
+  if (liveBars.value.length > 0) groups.push(liveBars.value);
+  return groups.filter((bars) => bars.length > 0);
+});
 
-/** Every rendered bar across the finished strokes and the live one. */
-const renderedStrokes = computed(() =>
-  [...strokes.value, ...(current.value.length > 1 ? [current.value] : [])]
-    .map((stroke, index) => ({ index, bars: segmentsOf(stroke) }))
-    .filter((stroke) => stroke.bars.length > 0),
+/** lineWidth changes re-scale every bar — rebuild the cache once. */
+watch(
+  () => props.lineWidth,
+  () => {
+    committedBars.value = strokes.value.map((stroke) => barsOf(stroke, props.lineWidth));
+  },
 );
 
 function barStyle(bar: SignatureSegment): string {
@@ -360,14 +472,8 @@ function barStyle(bar: SignatureSegment): string {
     `transform: rotate(${bar.angle}deg)`,
   ].join('; ');
 }
-
 /** Single-point taps render as a dot so a quick tap still leaves a mark. */
-const dotPoints = computed(() =>
-  [...strokes.value, current.value]
-    .filter((stroke) => stroke.length === 1)
-    .map((stroke) => stroke[0])
-    .filter((point): point is SignaturePoint => point !== undefined),
-);
+const dotPoints = computed(() => dotsOf([...strokes.value, current.value]));
 
 function dotStyle(point: SignaturePoint): string {
   return `left: ${point.x * RATIO}rpx; top: ${point.y * RATIO}rpx`;
@@ -405,13 +511,13 @@ const historySnapshotHint = computed(() => String(historySnapshot().length));
       @touchcancel="onTouchCancel"
     >
       <view
-        v-for="stroke in renderedStrokes"
-        :key="stroke.index"
+        v-for="(bars, groupIndex) in barGroups"
+        :key="'group-' + groupIndex"
         class="sn-signature__stroke"
         aria-hidden="true"
       >
         <view
-          v-for="(bar, barIndex) in stroke.bars"
+          v-for="(bar, barIndex) in bars"
           :key="barIndex"
           class="sn-signature__bar"
           :style="barStyle(bar)"

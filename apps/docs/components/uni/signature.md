@@ -1,12 +1,19 @@
 # Signature 签名（uni 端 / 移动端）
 
-`sn-signature` 是 `@snui/uni` 的签名板：触摸采样点，确认时通过 `confirm` 返回笔画几何。easycom 自动注册（`components/sn-signature/sn-signature.vue` → `<sn-signature>`），几何值使用 `rpx`。因为跨端元素白名单里没有 `<canvas>`，笔画由一串绝对定位、按段旋转的 `<view>` 条组成——每个相邻点对一条，`width` 为段长，`transform: rotate(θ)` 以左边缘为轴，形成真实折线。
+`sn-signature` 是 `@snui/uni` 的签名板：触摸采样点，确认时通过 `confirm` 返回笔画几何。easycom 自动注册（`components/sn-signature/sn-signature.vue` → `<sn-signature>`），几何值使用 `rpx`。因为跨端元素白名单里没有 `<canvas>`，笔画由一串绝对定位、按段旋转的 `<view>` 条组成——每个相邻点对一条，`width` 为段长加一个线宽（圆头覆盖拐点，笔画连贯无豁口），`transform: rotate(θ)` 以左边缘为轴，形成真实折线。
 
 ## 基础用法
 
 sn-signature 签名板：touchstart / touchmove 采样点，确认时通过 confirm 返回笔画几何（paths）。
 
 <Demo name="signature-mp-basic" description="sn-signature 签名板：touchstart / touchmove 采样点，确认时通过 confirm 返回笔画几何（paths）。" />
+
+## 输入与手感
+
+- **触摸**：`touchmove` 按距离采样（≥2 设计 px），高频采样率下节点数量保持平稳，绘制顺滑。
+- **桌面鼠标**：桌面浏览器不会把鼠标拖拽转成触摸事件，组件在 H5 宿主上额外绑定 `mousedown / mousemove / mouseup`（`document` 级跟踪，可画出画板边界；触摸后的合成鼠标事件会被时间窗抑制）。文档站右侧预览可直接用鼠标签名。
+- **连贯笔画**：每段条向末端延长一个线宽并以圆头收尾，段与段的拐点被圆头覆盖，无楔形豁口。
+- **小程序坐标**：画板原点通过选择器查询缓存，模板 ref 无 DOM 盒的小程序端笔画不会整体偏移。
 
 ## 撤销 / 恢复与外观（`enableHistory` / `penColor` / `disabled`）
 

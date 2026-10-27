@@ -1,12 +1,19 @@
 # Signature · uni-app
 
-`sn-signature` is the signature pad of `@snui/uni`: it samples touch points and reports the stroke geometry through `confirm`. easycom auto-registration (`components/sn-signature/sn-signature.vue` → `<sn-signature>`); geometry in `rpx`. Because `<canvas>` is not in the cross-end element allowlist, the stroke is drawn as a chain of absolutely positioned, rotated `<view>` bars — one per consecutive point pair, `width` = the segment length, `transform: rotate(θ)` about the left edge, forming a real polyline.
+`sn-signature` is the signature pad of `@snui/uni`: it samples touch points and reports the stroke geometry through `confirm`. easycom auto-registration (`components/sn-signature/sn-signature.vue` → `<sn-signature>`); geometry in `rpx`. Because `<canvas>` is not in the cross-end element allowlist, the stroke is drawn as a chain of absolutely positioned, rotated `<view>` bars — one per consecutive point pair, `width` = the segment length plus one line width (round caps cover the joints, so strokes stay continuous), `transform: rotate(θ)` about the left edge, forming a real polyline.
 
 ## Basic usage
 
 Signature pad: touchstart / touchmove sample the points and `confirm` reports the stroke geometry (`paths`).
 
 <Demo name="signature-mp-basic" description="Signature pad: touchstart / touchmove sample the points and `confirm` reports the stroke geometry (`paths`)." />
+
+## Input and stroke quality
+
+- **Touch** — `touchmove` is distance-sampled (≥2 design px), so the node count stays flat at high sample rates and drawing feels smooth.
+- **Desktop mouse** — desktop browsers do not translate mouse drags into touch events; on H5 hosts the pad additionally binds `mousedown / mousemove / mouseup` (tracked on `document`, strokes may leave the pad; synthetic post-touch mousedowns are suppressed). The docs preview signs with the mouse directly.
+- **Continuous strokes** — every bar extends one line width past its end and is capped round, so joints are covered and no wedge gaps appear.
+- **Mini-program origin** — the pad origin is cached through a selector query; pads without a DOM box on template refs no longer drift.
 
 ## Undo / redo & appearance (`enableHistory` / `penColor` / `disabled`)
 

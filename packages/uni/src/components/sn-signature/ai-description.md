@@ -1,6 +1,23 @@
 # sn-sn-signature — AI-Friendly Component Description
 
-> Human-readable + AI-parseable description of the uni-end Touch signature pad. Strokes are captured as point lists and rendered as rotated `<view>` bars (no `<canvas>`), so it works on every uni target..
+> Human-readable + AI-parseable description of the uni-end Touch signature pad. Strokes are captured as point lists and rendered as rotated `<view>` bars (no `<canvas>`), so it works on every uni target.
+
+## Input and stroke quality
+
+- **Touch** — `touchstart/move/end/cancel` on the pad; `touchmove` is
+  distance-sampled (≥2 design px) so high-frequency pointers do not flood
+  the renderer with sub-pixel bars.
+- **Desktop H5 mouse (AUI-additive, §112.3a)** — `bindMouseDrawing` feeds
+  the same pipeline from `mousedown/mousemove/mouseup` on `document`
+  (browser hosts only; synthetic post-touch mousedowns are suppressed).
+  A touch-only pad was dead on the desktop demo before this.
+- **连贯性** — every bar is extended by one line width and capped round, so
+  bar N's tail covers the joint at its end point: no wedge gaps at kinks.
+- **性能** — the live stroke appends bars incrementally; committed strokes
+  re-render only on stroke end / undo / redo / clear / line-width change.
+- **MP origin** — pad-relative coordinates fall back to a cached
+  `createSelectorQuery` origin where template refs carry no DOM box..
+
 > Consumed by `@snui/cli` and `@snui/ai` (MCP) for end-aware listing.
 > **`end: mp`** marker — consumed by `list_components({ end: 'mp' })`.
 
