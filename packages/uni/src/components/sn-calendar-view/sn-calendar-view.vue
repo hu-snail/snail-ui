@@ -491,7 +491,7 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
         role="button"
         aria-label="previous"
         @tap="shiftMonth(-1)"
-        >‹</view
+        ><text>‹</text></view
       >
       <text class="sn-calendar-view__control-title">
         {{ monthBlocks[activeMonthIndex]?.title ?? '' }}
@@ -502,14 +502,14 @@ const rangeHint = computed(() => (props.maxRange > 0 ? props.rangePrompt : ''));
         role="button"
         aria-label="next year"
         @tap="shiftYear(1)"
-        >»</view
+        ><text>»</text></view
       >
       <view
         class="sn-calendar-view__control sn-calendar-view__control--next"
         role="button"
         aria-label="next"
         @tap="shiftMonth(1)"
-        >›</view
+        ><text>›</text></view
       >
     </view>
 

@@ -11,7 +11,7 @@
 | defineSlots-stripped | 66 |
 | unsupported-property | 31 |
 | patch | 31 |
-| template-bare-text | 20 |
+| template-bare-text | 16 |
 | script-guard | 9 |
 | defineSlots-manual | 1 |
 | stray-sfc-content | 1 |
@@ -64,13 +64,11 @@
 
 ### sn-calendar-view/sn-calendar-view.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 15): 3 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 
 ### sn-calendar/sn-calendar.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 28): 3 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 3 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 
@@ -81,7 +79,6 @@
 
 ### sn-cascader/sn-cascader.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 20): 2 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 
@@ -147,7 +144,6 @@
 
 ### sn-datetime-picker-view/sn-datetime-picker-view.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 38): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
 - unsupported property stripped — `unsupported-property` (line 25): -webkit-user-select stripped
@@ -155,7 +151,7 @@
 
 ### sn-datetime-picker/sn-datetime-picker.uvue
 
-- bare text wrapped in <text> — `template-bare-text` (line 21): 2 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 29): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 

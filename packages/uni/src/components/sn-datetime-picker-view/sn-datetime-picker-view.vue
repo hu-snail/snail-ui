@@ -288,13 +288,6 @@ const columns = computed<RollerColumn[]>(() => {
 
 /* ── Selection ─────────────────────────────────────────────────────────── */
 
-/** Value of a column at a row index. */
-function valueAt(columnIndex: number, rowIndex: number): number {
-  const column = columns.value[columnIndex];
-  if (!column) return 0;
-  return column.values[rowIndex] ?? column.selected;
-}
-
 /** Index of the selected row inside a column. */
 function indexOf(columnIndex: number): number {
   const column = columns.value[columnIndex];
@@ -476,7 +469,7 @@ const ariaValue = computed(() =>
           role="button"
           :aria-selected="column.selected === value ? 'true' : 'false'"
           @tap="onItemTap(columnIndex, rowIndex)"
-          >{{ column.labels[rowIndex] }}</view
+          ><text>{{ column.labels[rowIndex] }}</text></view
         >
       </view>
       <view

@@ -128,6 +128,16 @@ describe('sn-datetime-picker-view', () => {
       expect(items).toHaveLength(11);
       expect(items[0]?.text()).toBe('08');
     });
+
+    it('spans now ±10 years when min / max dates are not given', () => {
+      const w = mount(SnDatetimePickerView, { props: { modelValue: BASE } });
+      const yearColumn = w.findAll('.sn-datetime-picker-view__column')[0];
+      const items = yearColumn?.findAll('.sn-datetime-picker-view__item') ?? [];
+      const thisYear = new Date().getFullYear();
+      expect(items).toHaveLength(21);
+      expect(items[0]?.text()).toBe(String(thisYear - 10));
+      expect(items[20]?.text()).toBe(String(thisYear + 10));
+    });
   });
 
   describe('selection writes', () => {

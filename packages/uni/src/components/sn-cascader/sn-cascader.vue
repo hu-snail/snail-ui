@@ -388,7 +388,7 @@ function tabTitle(index: number): string {
           role="button"
           aria-label="cancel"
           @tap="onCancel"
-          >取消</view
+          ><text>取消</text></view
         >
         <text v-if="props.title" class="sn-cascader__title">{{ props.title }}</text>
         <view
@@ -402,7 +402,7 @@ function tabTitle(index: number): string {
           :aria-label="props.confirmText"
           :aria-disabled="canConfirm ? undefined : 'true'"
           @tap="onConfirm"
-          >{{ props.confirmText }}</view
+          ><text>{{ props.confirmText }}</text></view
         >
         <view v-else class="sn-cascader__action sn-cascader__placeholder" aria-hidden="true" />
       </view>

@@ -261,7 +261,7 @@ const viewClass = computed(() => props.customViewClass);
           role="button"
           :aria-label="props.cancelButtonText"
           @tap="onCancel"
-          >{{ props.cancelButtonText }}</view
+          ><text>{{ props.cancelButtonText }}</text></view
         >
         <text v-if="props.title" class="sn-datetime-picker__title">{{ props.title }}</text>
         <view
@@ -269,7 +269,7 @@ const viewClass = computed(() => props.customViewClass);
           role="button"
           :aria-label="props.confirmButtonText"
           @tap="onConfirm"
-          >{{ props.confirmButtonText }}</view
+          ><text>{{ props.confirmButtonText }}</text></view>
         >
       </view>
 

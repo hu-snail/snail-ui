@@ -359,7 +359,7 @@ const deleteLabel = computed(() => props.deleteText || '删除');
           role="button"
           aria-label="switch language"
           @tap="toggleLang"
-          >{{ props.carLang === 'zh' ? 'EN' : '中' }}</view
+          ><text>{{ props.carLang === 'zh' ? 'EN' : '中' }}</text></view>
         >
         <view
           class="sn-keyboard__close"
@@ -408,7 +408,7 @@ const deleteLabel = computed(() => props.deleteText || '删除');
             role="button"
             :aria-label="closeLabel"
             @tap="close"
-            >{{ closeLabel }}</view
+            ><text>{{ closeLabel }}</text></view>
           >
           <view
             v-if="props.showDeleteKey"
@@ -431,7 +431,7 @@ const deleteLabel = computed(() => props.deleteText || '删除');
           role="button"
           :aria-label="key"
           @tap="onKeyTap({ text: key, value: key })"
-          >{{ key }}</view
+          ><text>{{ key }}</text></view>
         >
         <view
           v-if="props.showDeleteKey"

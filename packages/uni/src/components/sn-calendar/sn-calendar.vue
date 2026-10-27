@@ -299,7 +299,7 @@ const viewClass = computed(() => props.customViewClass);
           role="button"
           :aria-label="shortcut.text"
           @tap="onShortcutTap(shortcut)"
-          >{{ shortcut.text }}</view
+          ><text>{{ shortcut.text }}</text></view
         >
       </view>
 
@@ -328,7 +328,7 @@ const viewClass = computed(() => props.customViewClass);
         </view>
         <view class="sn-calendar__actions">
           <view class="sn-calendar__cancel" role="button" aria-label="cancel" @tap="onCancel"
-            >取消</view
+            ><text>取消</text></view
           >
           <view
             v-if="props.showConfirm"
@@ -336,7 +336,7 @@ const viewClass = computed(() => props.customViewClass);
             role="button"
             :aria-label="props.confirmText"
             @tap="onConfirm"
-            >{{ props.confirmText }}</view
+            ><text>{{ props.confirmText }}</text></view
           >
         </view>
         <view class="sn-calendar__footer-right">
