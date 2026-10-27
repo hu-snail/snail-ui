@@ -47,6 +47,6 @@ Set `multiple` to enable checkbox tree selection. Every row renders a checkbox; 
 | labelField / valueField / childrenField | `string`                                     | —           | Field mapping                                                  |
 | expandTrigger                           | `'click'\|'hover'`                           | `'click'`   | Sub-level expand trigger                                       |
 
-Events: `update:modelValue` / `change` / `clear` / `focus` / `blur`; Slot: `empty`. Keyboard: ArrowLeft/Right switch columns, ArrowUp/Down move, Enter selects a leaf (toggles the check in multiple mode without closing), Esc closes. Display: path labels joined with " / "; one tag per path in multiple mode. Column width is fixed via `--sn-web-cascader-column-width` (default 160px) and does not adapt to content.
+Events: `update:modelValue` / `change` / `clear` / `focus` / `blur`; Slot: `empty`. Keyboard: ArrowLeft/Right switch columns, ArrowUp/Down move, Enter selects a leaf (toggles the check in multiple mode without closing), Esc closes. Display: path labels joined with " / "; one tag per path in multiple mode. Column width is fixed via `--sn-web-cascader-column-width` (default 160px) and does not adapt to content; the panel width is driven by the expanded columns (one column initially, one more per expanded level) and does not stretch to the trigger width.
 
 See the component `ai-description.md` for the full contract.

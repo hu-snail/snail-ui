@@ -640,6 +640,16 @@ describe('SnCascader', () => {
     expect(menu.style.left).toBe('40px');
   });
 
+  it('does not stretch the panel to the trigger width (column-driven width)', async () => {
+    const w = mountCascader();
+    await openMenu(w);
+    await nextTick();
+    const menu = document.body.querySelector('.sn-cascader-menu') as HTMLElement;
+    // The panel wraps its fixed-width columns; no trigger-width min-width
+    // is forced on the inline style, so an unexpanded panel is one column.
+    expect(menu.style.minWidth).toBe('');
+  });
+
   it('opens the menu through the sn-pop transition and settles with it mounted', async () => {
     // VTU stubs Transition by default; opt into the real one here so the
     // sn-pop enter classes are actually applied.

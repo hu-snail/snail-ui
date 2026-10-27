@@ -59,6 +59,9 @@ render as one expandable list instead of side-by-side columns.
 - Each menu column has a fixed width (`--sn-web-cascader-column-width`,
   default 160px) that does NOT adapt to its content — long labels ellipsize
   inside the row (full text available via the row `title`), naive-ui parity.
+  The panel itself is column-driven: it starts one column wide and grows by
+  one fixed column per expanded level; it never stretches to the trigger
+  width.
 - Only leaves commit. Clicking (or hovering, per `expandTrigger`) a parent
   swaps the next column to its children; the walked ancestors stay
   highlighted so the current path is always visible.

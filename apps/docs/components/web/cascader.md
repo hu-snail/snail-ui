@@ -47,6 +47,6 @@
 | labelField / valueField / childrenField | `string`                                     | —           | 字段映射                                              |
 | expandTrigger                           | `'click'\|'hover'`                           | `'click'`   | 下级展开触发                                          |
 
-事件：`update:modelValue` / `change` / `clear` / `focus` / `blur`；Slot：`empty`。键盘：ArrowLeft/Right 切列、ArrowUp/Down 移动、Enter 选中叶（多选时切换勾选且不关闭）、Esc 关闭。回显：路径 label 以 " / " 连接；多选时每条路径一个 tag。菜单列宽固定为 `--sn-web-cascader-column-width`（默认 160px），不随内容自适应。
+事件：`update:modelValue` / `change` / `clear` / `focus` / `blur`；Slot：`empty`。键盘：ArrowLeft/Right 切列、ArrowUp/Down 移动、Enter 选中叶（多选时切换勾选且不关闭）、Esc 关闭。回显：路径 label 以 " / " 连接；多选时每条路径一个 tag。菜单列宽固定为 `--sn-web-cascader-column-width`（默认 160px），不随内容自适应；面板宽度由已展开的列决定（初始一列，每展开一级加宽一列），不与触发器同宽。
 
 完整契约见组件 `ai-description.md`。

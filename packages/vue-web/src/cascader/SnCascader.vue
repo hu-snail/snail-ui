@@ -622,8 +622,10 @@ async function repositionMenu(): Promise<void> {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
-  // Width: at least the trigger width.
-  const width = Math.max(rootRect.width, menuWidth);
+  // Width: the panel wraps its columns only — it does NOT stretch to the
+  // trigger width. Every expanded level adds one fixed-width column
+  // (--sn-web-cascader-column-width), so the panel grows column by column.
+  const width = menuWidth;
   const left = Math.min(
     Math.max(MENU_VIEWPORT_GAP, rootRect.left),
     Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
@@ -642,7 +644,6 @@ async function repositionMenu(): Promise<void> {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
-    'min-width': `${Math.round(rootRect.width)}px`,
   };
 }
 
