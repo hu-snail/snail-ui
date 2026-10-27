@@ -408,6 +408,10 @@ const classList = computed(() => [
   {
     'sn-input--disabled': props.disabled,
     'sn-input--readonly': props.readonly,
+    /* Focus chrome rides this class instead of `:focus-within` (§116.2 —
+     * App has no pseudo-classes); the flag is set from the native input's
+     * focus / blur events, the same signal the browser used. */
+    'sn-input--focused': isFocused.value,
     'sn-input--clearable': props.clearable,
     [`sn-input--bg-${props.bg}`]: true,
     [`sn-input--radius-${props.radius}`]: true,
@@ -634,7 +638,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 .sn-input--border-none {
   border-color: transparent;
 }
-.sn-input--border-none:focus-within {
+.sn-input--border-none.sn-input--focused {
   border-color: transparent;
 }
 
@@ -661,8 +665,10 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 }
 
 /* Focus state — border color soft outer ring so users can see
- * exactly which field owns the focus without a heavy chrome change. */
-.sn-input:focus-within {
+ * exactly which field owns the focus without a heavy chrome change.
+ * Compound classes keep the two-class specificity the `:focus-within`
+ * rule had, so the status/error rules below still lose/wins identically. */
+.sn-input.sn-input--focused {
   border-color: var(--sn-mp-color-input-border-focus, var(--sn-mp-color-action-primary));
 }
 
@@ -692,7 +698,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
 .sn-input--error {
   border-color: var(--sn-mp-color-feedback-danger);
 }
-.sn-input--error:focus-within {
+.sn-input--error.sn-input--focused {
   border-color: var(--sn-mp-color-feedback-danger);
 }
 
@@ -718,7 +724,7 @@ const placeholderClassAttr = computed(() => props.placeholderClass || undefined)
   background-color: transparent;
   border-color: transparent;
 }
-.sn-input--compact:focus-within {
+.sn-input--compact.sn-input--focused {
   background-color: var(--sn-mp-color-input-bg, var(--sn-mp-color-background-surface));
   border-color: var(--sn-mp-color-input-border, var(--sn-mp-color-border-default));
 }
@@ -838,11 +844,9 @@ textarea.sn-input__native {
   background-color: var(--sn-mp-color-background-elevated);
   font-weight: 600;
 }
-.snui-skin-doodle .sn-input:hover:not(.sn-input--disabled):not(.sn-input--readonly) {
-  transform: translate(-2rpx, -2rpx);
-  box-shadow: 4rpx 4rpx 0 #1a1a1a;
-}
-.snui-skin-doodle .sn-input:focus-within {
+/* `:hover` chrome dropped — touch platforms have no hover and App has no
+ * pseudo-classes (§116.2); the pressed look ships on focus below. */
+.snui-skin-doodle .sn-input--focused {
   transform: translate(-2rpx, -2rpx);
   box-shadow: 4rpx 4rpx 0 #1a1a1a;
 }

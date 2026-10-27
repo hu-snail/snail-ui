@@ -155,6 +155,9 @@ const rootClass = computed(() => [
   {
     'sn-grid-item--clickable': isClickable.value,
     'sn-grid-item--square': grid?.square.value ?? false,
+    /* Border comes from the grid context: a `.sn-grid--border :deep(...)`
+     * rule would be dropped on App (§116.2). */
+    'sn-grid-item--border': grid?.border.value ?? false,
   },
   props.customClass,
 ]);
@@ -225,6 +228,13 @@ const rootStyle = computed(() => {
   display: flex;
   box-sizing: border-box;
   min-width: 0;
+}
+
+/* Cell hairline. The grid sets `border` on the injected context, so the cell
+ * styles itself — App has no `:deep()`. */
+.sn-grid-item--border {
+  border-right: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
 .sn-grid-item__content {

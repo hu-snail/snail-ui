@@ -68,4 +68,13 @@ describe('sn-root-portal', () => {
     expect(wrapper.classes()).toContain('sn-root-portal');
     expect(wrapper.attributes('data-snui-component')).toBe('root-portal');
   });
+
+  it('wraps the slot in a content layer that owns hit-testing', () => {
+    // Replaces the `> :deep(*)` rule: App supports neither deep combinators
+    // nor pointer-events, so the wrapper is the real tappable surface.
+    const wrapper = mount(SnRootPortal, { slots: { default: '<view class="a" />' } });
+    const content = wrapper.find('.sn-root-portal__content');
+    expect(content.exists()).toBe(true);
+    expect(content.find('.a').exists()).toBe(true);
+  });
 });

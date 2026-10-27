@@ -13,7 +13,7 @@
  * sn-form-validator.ts.
  */
 
-import { computed, onBeforeUnmount, provide, reactive } from 'vue';
+import { computed, onBeforeUnmount, provide, reactive, ref } from 'vue';
 import {
   FORM_CONTEXT_KEY,
   type FormItemHandle,
@@ -164,6 +164,7 @@ for (const key of Object.keys(props.model)) {
 function registerItem(handle: FormItemHandle): void {
   items.set(handle.prop, handle);
   if (!registryOrder.includes(handle.prop)) registryOrder.push(handle.prop);
+  syncLastProp();
   if (!initialValues.has(handle.prop)) {
     initialValues.set(handle.prop, deepClone(ctx.model[handle.prop]));
   }
@@ -172,9 +173,17 @@ function registerItem(handle: FormItemHandle): void {
 function unregisterItem(prop: string): void {
   items.delete(prop);
   registryOrder = registryOrder.filter((p) => p !== prop);
+  syncLastProp();
 }
 
-provide('sn-form-api' as never, { registerItem, unregisterItem } as never);
+/** Last registered prop, kept reactive so items re-evaluate their divider. */
+const lastProp = ref('');
+
+function syncLastProp(): void {
+  lastProp.value = registryOrder.at(-1) ?? '';
+}
+
+provide('sn-form-api' as never, { registerItem, unregisterItem, lastProp } as never);
 
 async function validate(): Promise<boolean> {
   const errors: Record<string, string> = {};
@@ -290,21 +299,10 @@ function deepClone<T>(value: T): T {
   pointer-events: none;
 }
 
-/* Border between items — adds a hairline divider under every FormItem. */
-.sn-form--border :deep(.sn-form-item) {
-  padding-bottom: 24rpx;
-  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
-  margin-bottom: 24rpx;
-}
-.sn-form--border :deep(.sn-form-item:last-child) {
-  border-bottom: none;
-  margin-bottom: 0;
-}
-
-/* Vertically center the control column within each item. */
-.sn-form--center :deep(.sn-form-item) {
-  align-items: center;
-}
+/* Item-level chrome (border / center / vertical layout) lives in
+ * sn-form-item.vue: it reads these flags through FORM_CONTEXT and binds plain
+ * modifier classes. `:deep(.sn-form-item)` cannot be expressed on App
+ * (§116.2), so nothing here reaches into children. */
 
 /* Form-level size hint. */
 .sn-form--size-small {
@@ -317,25 +315,11 @@ function deepClone<T>(value: T): T {
   font-size: 32rpx;
 }
 
-/* Cell layout — `vertical` stacks the label above the control in every
- * descendant FormItem, `horizontal` keeps the two columns side by side. */
-.sn-form--layout-vertical :deep(.sn-form-item) {
-  grid-template-columns: 1fr;
-  align-items: stretch;
-}
-.sn-form--layout-vertical :deep(.sn-form-item__label) {
-  text-align: left;
-  padding: 0;
-}
-.sn-form--layout-vertical :deep(.sn-form-item__control) {
-  flex-direction: column;
-  align-items: stretch;
-}
-
-/* Doodle skin. */
-.snui-skin-doodle.sn-form--border :deep(.sn-form-item) {
-  border-bottom-style: dashed;
-  border-bottom-color: #1a1a1a;
-  border-bottom-width: 4rpx;
+/* Doodle skin reaches items through a CSS variable the item consumes — a
+ * `.snui-skin-doodle.sn-form--border :deep(...)` rule would be dropped on App. */
+.snui-skin-doodle.sn-form--border {
+  --sn-form-item-border-style: dashed;
+  --sn-form-item-border-color: #1a1a1a;
+  --sn-form-item-border-width: 4rpx;
 }
 </style>

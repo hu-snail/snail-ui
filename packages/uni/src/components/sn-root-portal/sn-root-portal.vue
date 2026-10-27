@@ -86,7 +86,9 @@ const rootStyle = computed(() => props.customStyle || undefined);
     :style="rootStyle"
     data-snui-component="root-portal"
   >
-    <slot />
+    <view class="sn-root-portal__content">
+      <slot />
+    </view>
   </view>
 </template>
 
@@ -99,8 +101,11 @@ const rootStyle = computed(() => props.customStyle || undefined);
    * to provide.
    *
    * `pointer-events: none` keeps the invisible full-viewport box from
-   * swallowing taps; `> :deep(*)` re-enables them on the actual content so a
-   * button inside the portal stays tappable.
+   * swallowing taps; the inner `__content` wrapper re-enables them so a
+   * button inside the portal stays tappable. A real wrapper element is used
+   * instead of `> :deep(*)` because App cannot express either the deep
+   * combinator or `pointer-events` (§116.2) — on App the wrapper is a plain
+   * block and hit-testing already follows the content box.
    *
    * z-index comes from the theme's overlay slot so a portal never lands above
    * a dialog by accident.
@@ -115,7 +120,7 @@ const rootStyle = computed(() => props.customStyle || undefined);
   display: block;
 }
 
-.sn-root-portal > :deep(*) {
+.sn-root-portal__content {
   pointer-events: auto;
 }
 </style>

@@ -8,6 +8,10 @@
  *  - focusWhenClear re-focus after clear: uni-end intentionally leaves the
  *    re-focus to the consumer (soft keyboard is dismissed on MP blur);
  *    there is no observable DOM behavior to assert.
+ *  - the programmatic `focus` prop path: happy-dom's `.focus()` updates
+ *    `document.activeElement` but dispatches no focus event, so the
+ *    `--focused` class flip cannot be observed there (the event-driven path
+ *    is covered above; real runtimes fire focus on programmatic focus too).
  *  - IME composition / confirm-key soft-keyboard behaviors (`confirm-type`
  *    label rendering, `hold-keyboard`): MP runtime features with no DOM
  *    equivalent — the native attribute forwarding is asserted instead.
@@ -56,6 +60,15 @@ describe('sn-input', () => {
     await wrapper.find('input').trigger('blur');
     expect(wrapper.emitted('focus')).toHaveLength(1);
     expect(wrapper.emitted('blur')).toHaveLength(1);
+  });
+
+  it('toggles the focused modifier class with the native input focus state', async () => {
+    const wrapper = mount(SnInput, { props: { modelValue: '' } });
+    expect(wrapper.classes()).not.toContain('sn-input--focused');
+    await wrapper.find('input').trigger('focus');
+    expect(wrapper.classes()).toContain('sn-input--focused');
+    await wrapper.find('input').trigger('blur');
+    expect(wrapper.classes()).not.toContain('sn-input--focused');
   });
 
   it('applies size class', () => {

@@ -30,6 +30,8 @@ export interface SnGridContext {
   direction: Ref<SnGridDirection>;
   /** Swap icon and text. */
   reverse: Ref<boolean>;
+  /** Draw the cell hairline borders; replaces a `:deep()` rule App cannot express. */
+  border: Ref<boolean>;
   /** Icon size inherited by every cell. */
   iconSize: Ref<string>;
 }

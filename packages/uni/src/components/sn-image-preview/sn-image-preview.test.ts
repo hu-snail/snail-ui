@@ -17,6 +17,7 @@ import { mount } from '@vue/test-utils';
 import { defineComponent, h, nextTick } from 'vue';
 import SnImagePreview from './sn-image-preview.vue';
 import SnPopup from '../sn-popup/sn-popup.vue';
+import SnSwiper from '../sn-swiper/sn-swiper.vue';
 
 const images = ['https://x/1.png', 'https://x/2.png', 'https://x/3.png'];
 
@@ -324,5 +325,91 @@ describe('sn-image-preview', () => {
     const root = preview.find('.sn-image-preview');
     expect(root.attributes('role')).toBe('dialog');
     expect(root.attributes('aria-modal')).toBe('true');
+  });
+
+  it('should follow the swiper position and emit change when slides move', async () => {
+    const { preview, api } = await mountPreview();
+    api.open();
+    await nextTick();
+    preview.findComponent(SnSwiper).vm.$emit('change', { current: 2, source: 'touch' });
+    await nextTick();
+    expect(preview.emitted('change')?.[0]?.[0]).toEqual({ index: 2 });
+    expect(preview.find('.sn-image-preview__index-text').text()).toBe('3 / 3');
+  });
+
+  it('should not emit change when the swiper reports the current position', async () => {
+    const { preview, api } = await mountPreview({ startPosition: 1 });
+    api.open();
+    await nextTick();
+    preview.findComponent(SnSwiper).vm.$emit('change', { current: 1, source: 'touch' });
+    await nextTick();
+    expect(preview.emitted('change')).toBeUndefined();
+  });
+
+  it('should open and close through the popup visibility update', async () => {
+    const { preview } = await mountPreview();
+    const popup = preview.findComponent(SnPopup);
+    popup.vm.$emit('update:modelValue', true);
+    await nextTick();
+    expect(preview.emitted('open')).toHaveLength(1);
+    expect(popup.props('modelValue')).toBe(true);
+    popup.vm.$emit('update:modelValue', false);
+    await nextTick();
+    expect(preview.emitted('close')).toHaveLength(1);
+    expect(popup.props('modelValue')).toBe(false);
+  });
+
+  it('should close when the popup modal backdrop is tapped', async () => {
+    const { preview, api } = await mountPreview();
+    api.open();
+    await nextTick();
+    preview.findComponent(SnPopup).vm.$emit('click-modal');
+    await nextTick();
+    expect(preview.emitted('close')).toHaveLength(1);
+  });
+
+  it('should keep the viewer open on a modal backdrop tap when closeOnClick is off', async () => {
+    const { preview, api } = await mountPreview({ closeOnClick: false });
+    api.open();
+    await nextTick();
+    preview.findComponent(SnPopup).vm.$emit('click-modal');
+    await nextTick();
+    expect(preview.emitted('close')).toBeUndefined();
+  });
+
+  it('should stay usable when the layout query throws mid-measure', async () => {
+    const host = globalThis as { uni?: Record<string, unknown> };
+    host.uni = {
+      createSelectorQuery: () => ({
+        in: () => {
+          throw new Error('renderer destroyed');
+        },
+      }),
+    };
+    try {
+      const { preview, api } = await mountPreview({ selector: '.thumb' });
+      api.open();
+      await nextTick();
+      // The failure degrades to zero zones, never an exception.
+      expect(preview.emitted('open')).toHaveLength(1);
+      expect(preview.findAll('.sn-image-preview__zone')).toHaveLength(0);
+    } finally {
+      delete host.uni;
+    }
+  });
+
+  it('should tear down cleanly when unmounted with measured hit zones', async () => {
+    const restore = installUniQuery([{ left: 0, top: 0, width: 50, height: 50 }]);
+    try {
+      const { wrapper, preview, api } = await mountPreview({ selector: '.thumb' });
+      api.open();
+      await nextTick();
+      api.close();
+      await nextTick();
+      expect(preview.findAll('.sn-image-preview__zone')).toHaveLength(1);
+      expect(() => wrapper.unmount()).not.toThrow();
+    } finally {
+      restore();
+    }
   });
 });

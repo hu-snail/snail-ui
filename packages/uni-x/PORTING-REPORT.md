@@ -11,11 +11,9 @@
 | defineSlots-stripped | 66 |
 | patch | 33 |
 | unsupported-property | 31 |
-| pseudo-class | 23 |
 | template-bare-text | 20 |
 | script-guard | 9 |
 | pseudo-element | 6 |
-| combinator-unsupported | 3 |
 | defineSlots-manual | 1 |
 | stray-sfc-content | 1 |
 
@@ -110,9 +108,8 @@
 
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 2 data-* attribute(s) stripped
-- deep/sibling selector dropped — `combinator-unsupported` (line 120): selector ".snui-skin-doodle .sn-checkbox--checked .sn-checkbox__icon" (3 levels, " ")
 - unsupported property stripped — `unsupported-property` (line 13): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 107): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 108): cursor stripped
 
 ### sn-circle/sn-circle.uvue
 
@@ -219,20 +216,13 @@
 - bare text wrapped in <text> — `template-bare-text` (line 24): 3 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
-- unsupported property stripped — `unsupported-property` (line 67): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 172): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 89): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 194): cursor stripped
 
 ### sn-form/sn-form.uvue
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 13): pseudo-class in ".sn-form--border :deep(.sn-form-item)"
-- pseudo-class rule dropped — `pseudo-class` (line 18): pseudo-class in ".sn-form--border :deep(.sn-form-item:last-child)"
-- pseudo-class rule dropped — `pseudo-class` (line 24): pseudo-class in ".sn-form--center :deep(.sn-form-item)"
-- pseudo-class rule dropped — `pseudo-class` (line 41): pseudo-class in ".sn-form--layout-vertical :deep(.sn-form-item)"
-- pseudo-class rule dropped — `pseudo-class` (line 45): pseudo-class in ".sn-form--layout-vertical :deep(.sn-form-item__label)"
-- pseudo-class rule dropped — `pseudo-class` (line 49): pseudo-class in ".sn-form--layout-vertical :deep(.sn-form-item__control)"
-- pseudo-class rule dropped — `pseudo-class` (line 55): pseudo-class in ".snui-skin-doodle.sn-form--border :deep(.sn-form-item)"
 
 ### sn-gap/sn-gap.uvue
 
@@ -248,7 +238,6 @@
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 16): pseudo-class in ".sn-grid--border :deep(.sn-grid-item)"
 
 ### sn-icon/sn-icon.uvue
 
@@ -295,19 +284,13 @@
 - bare text wrapped in <text> — `template-bare-text` (line 140): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 4 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 41): pseudo-class in ".sn-input--border-none:focus-within"
-- pseudo-class rule dropped — `pseudo-class` (line 69): pseudo-class in ".sn-input:focus-within"
-- pseudo-class rule dropped — `pseudo-class` (line 99): pseudo-class in ".sn-input--error:focus-within"
-- pseudo-class rule dropped — `pseudo-class` (line 125): pseudo-class in ".sn-input--compact:focus-within"
-- pseudo-element rule dropped — `pseudo-element` (line 142): pseudo-element in ".sn-input__native::placeholder"
-- pseudo-class rule dropped — `pseudo-class` (line 245): pseudo-class in ".snui-skin-doodle .sn-input:hover:not(.sn-input--disabled):not(.sn-input--readonly)"
-- pseudo-class rule dropped — `pseudo-class` (line 249): pseudo-class in ".snui-skin-doodle .sn-input:focus-within"
-- unsupported property stripped — `unsupported-property` (line 106): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 135): outline stripped
+- pseudo-element rule dropped — `pseudo-element` (line 144): pseudo-element in ".sn-input__native::placeholder"
+- unsupported property stripped — `unsupported-property` (line 108): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 137): outline stripped
 - unsupported property stripped — `unsupported-property`: cursor stripped
-- unsupported property stripped — `unsupported-property` (line 163): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 192): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 212): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 165): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 194): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 214): cursor stripped
 
 ### sn-keyboard/sn-keyboard.uvue
 
@@ -371,7 +354,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 43): pseudo-class in ".sn-notice-bar__suffix:empty"
 
 ### sn-notify/sn-notify.uvue
 
@@ -455,9 +437,8 @@
 
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 2 data-* attribute(s) stripped
-- deep/sibling selector dropped — `combinator-unsupported` (line 119): selector ".snui-skin-doodle .sn-radio--checked .sn-radio__marker" (3 levels, " ")
 - unsupported property stripped — `unsupported-property` (line 13): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 107): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 110): cursor stripped
 
 ### sn-rate/sn-rate.uvue
 
@@ -477,7 +458,6 @@
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 26): pseudo-class in ".sn-root-portal > :deep(*)"
 
 ### sn-scratchcard/sn-scratchcard.uvue
 
@@ -499,7 +479,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 68): pseudo-class in ".sn-segmented--outline .sn-segmented__item:first-child"
 
 ### sn-select-picker/sn-select-picker.uvue
 
@@ -579,7 +558,6 @@
 
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 2 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 91): pseudo-class in ".sn-switch:not(.sn-switch--checked) .sn-switch__action"
 - unsupported property stripped — `unsupported-property` (line 11): cursor stripped
 - unsupported property stripped — `unsupported-property` (line 121): cursor stripped
 
@@ -604,7 +582,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 121): pseudo-class in ".sn-table--border .sn-table__row .sn-table__cell:last-child"
 
 ### sn-tabs/sn-tab.uvue
 
@@ -616,7 +593,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 44): pseudo-class in ".sn-tabs:not(.sn-tabs--scrollable) .sn-tabs__item"
 
 ### sn-tag/sn-tag.uvue
 
@@ -636,13 +612,11 @@
 - bare text wrapped in <text> — `template-bare-text` (line 66): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 2 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 24): pseudo-class in ".sn-textarea:focus-within"
-- pseudo-element rule dropped — `pseudo-element` (line 67): pseudo-element in ".sn-textarea__native::placeholder"
-- pseudo-class rule dropped — `pseudo-class` (line 132): pseudo-class in ".snui-skin-doodle .sn-textarea:focus-within"
-- unsupported property stripped — `unsupported-property` (line 34): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 52): outline stripped
+- pseudo-element rule dropped — `pseudo-element` (line 70): pseudo-element in ".sn-textarea__native::placeholder"
+- unsupported property stripped — `unsupported-property` (line 37): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 55): outline stripped
 - unsupported property stripped — `unsupported-property`: cursor stripped
-- unsupported property stripped — `unsupported-property` (line 122): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 125): cursor stripped
 
 ### sn-toast/sn-toast.uvue
 
@@ -650,7 +624,6 @@
 - bare text wrapped in <text> — `template-bare-text` (line 21): 1 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- deep/sibling selector dropped — `combinator-unsupported` (line 80): selector ".sn-toast__mask--shown + .sn-toast__box" (2 levels, "+")
 
 ### sn-tooltip/sn-tooltip.uvue
 
@@ -670,7 +643,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 60): pseudo-class in ".sn-transition:not(.sn-transition--entering):not(.sn-transition--leaving)"
 
 ### sn-upload/sn-upload.uvue
 

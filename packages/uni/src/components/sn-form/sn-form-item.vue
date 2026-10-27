@@ -8,6 +8,7 @@
  */
 
 import { computed, inject, markRaw, onBeforeUnmount, onMounted, provide, ref } from 'vue';
+import type { Ref } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
@@ -185,21 +186,27 @@ const state: FormItemState = { status, message, handle };
 handle.state = state;
 provide(FORM_ITEM_STATE_KEY, state);
 
+/** The form's last registered prop; the divider is drawn on every other row.
+ * Reactive on purpose: the tail moves while siblings mount / unmount. */
+const formApi = inject('sn-form-api' as never, null) as {
+  registerItem?: (h: FormItemHandle) => void;
+  unregisterItem?: (prop: string) => void;
+  lastProp?: Ref<string>;
+} | null;
+
+const isLast = computed(
+  () => props.prop !== '' && formApi?.lastProp?.value === props.prop,
+);
+
 onMounted(() => {
   if (!ctx || !props.prop) return;
   initialValue = deepClone(getByPath(ctx.model, props.prop));
-  const form = inject('sn-form-api' as never, null) as {
-    registerItem?: (h: FormItemHandle) => void;
-  } | null;
-  form?.registerItem?.(handle);
+  formApi?.registerItem?.(handle);
 });
 
 onBeforeUnmount(() => {
   if (!ctx || !props.prop) return;
-  const form = inject('sn-form-api' as never, null) as {
-    unregisterItem?: (prop: string) => void;
-  } | null;
-  form?.unregisterItem?.(props.prop);
+  formApi?.unregisterItem?.(props.prop);
 });
 
 const showMsg = computed(() => {
@@ -255,6 +262,9 @@ const classes = computed(() => [
     'sn-form-item--disabled': !!ctx?.disabled,
     'sn-form-item--with-icon': hasIcon.value,
     'sn-form-item--border': resolveBool(props.border, ctx?.border),
+    /* Registered-order last item replaces `:deep(.sn-form-item:last-child)`. */
+    'sn-form-item--last': isLast.value,
+    'sn-form-item--layout-vertical': (props.labelPosition ?? ctx?.labelPosition) !== 'top' && ctx?.layout === 'vertical',
     'sn-form-item--center': resolveBool(props.center, ctx?.center),
     'sn-form-item--ellipsis': resolveBool(props.ellipsis, ctx?.ellipsis),
     'sn-form-item--hide-asterisk': resolveBool(props.hideAsterisk, ctx?.hideAsterisk),
@@ -396,16 +406,38 @@ function deepClone<T>(value: T): T {
   max-width: 100%;
 }
 
-/* Border between this item and the next. */
+/* Border between this item and the next. The style/color/width come from the
+ * form root as variables so skins can restyle it without a `:deep()` rule. */
 .sn-form-item--border {
-  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
   padding-bottom: 24rpx;
   margin-bottom: 24rpx;
+  border-bottom-style: var(--sn-form-item-border-style, solid);
+  border-bottom-color: var(--sn-form-item-border-color, var(--sn-mp-color-border-subtle));
+  border-bottom-width: var(--sn-form-item-border-width, 2rpx);
+}
+.sn-form-item--border.sn-form-item--last {
+  border-bottom-style: none;
+  margin-bottom: 0;
 }
 
 /* Center the control column. */
 .sn-form-item--center {
   align-items: center;
+}
+
+/* Vertical form layout: the form root sets the flag on the context, the item
+ * binds `--layout-vertical` and stacks its own columns. */
+.sn-form-item--layout-vertical {
+  grid-template-columns: 1fr;
+  align-items: stretch;
+}
+.sn-form-item--layout-vertical .sn-form-item__label {
+  text-align: left;
+  padding: 0;
+}
+.sn-form-item--layout-vertical .sn-form-item__control {
+  flex-direction: column;
+  align-items: stretch;
 }
 
 /* Hide asterisk on required fields. */

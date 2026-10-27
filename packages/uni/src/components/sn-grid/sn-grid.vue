@@ -98,6 +98,7 @@ provide(SN_GRID_KEY, {
   center: toRef(props, 'center'),
   direction: toRef(props, 'direction'),
   reverse: toRef(props, 'reverse'),
+  border: toRef(props, 'border'),
   iconSize: toRef(props, 'iconSize'),
 });
 
@@ -141,8 +142,6 @@ const rootStyle = computed(() => {
   border-left: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
-.sn-grid--border :deep(.sn-grid-item) {
-  border-right: 2rpx solid var(--sn-mp-color-border-subtle);
-  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
-}
+/* Cell hairlines are drawn by sn-grid-item itself (grid -> context -> cell).
+ * `:deep(.sn-grid-item)` cannot be expressed on App (§116.2). */
 </style>

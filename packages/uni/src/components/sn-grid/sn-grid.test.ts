@@ -325,6 +325,23 @@ describe('sn-grid', () => {
     });
   });
 
+  describe('cell borders', () => {
+    it('marks every cell when the grid draws borders', () => {
+      expect(mountGrid().find('.sn-grid-item').classes()).not.toContain(
+        'sn-grid-item--border',
+      );
+      expect(mountGrid({ border: true }).find('.sn-grid-item').classes()).toContain(
+        'sn-grid-item--border',
+      );
+    });
+
+    it('tracks a border flip on the grid', async () => {
+      const wrapper = mountGrid({ border: false });
+      await wrapper.setProps({ border: true });
+      expect(wrapper.find('.sn-grid-item').classes()).toContain('sn-grid-item--border');
+    });
+  });
+
   describe('hover feedback', () => {
     it('attaches the hover class only to clickable cells', () => {
       expect(mountGrid().find('.sn-grid-item').attributes('hover-class')).toBe('none');

@@ -248,6 +248,70 @@ describe('sn-form', () => {
     expect(wrapper.find('.sn-form').classes()).toContain('sn-form--border');
   });
 
+  it('lets the item itself draw the form border (no :deep on App)', () => {
+    const model = reactive({ email: '', name: '' });
+    const FormHost = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, border: true },
+            {
+              default: () => [
+                h(SnFormItem, { prop: 'email', label: 'Email' }),
+                h(SnFormItem, { prop: 'name', label: 'Name' }),
+              ],
+            },
+          );
+      },
+    });
+    const items = mount(FormHost).findAll('.sn-form-item');
+    expect(items).toHaveLength(2);
+    items.forEach((item) => expect(item.classes()).toContain('sn-form-item--border'));
+  });
+
+  it('drops the divider on the last registered item', async () => {
+    const model = reactive({ email: '', name: '' });
+    const FormHost = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, border: true },
+            {
+              default: () => [
+                h(SnFormItem, { prop: 'email', label: 'Email' }),
+                h(SnFormItem, { prop: 'name', label: 'Name' }),
+              ],
+            },
+          );
+      },
+    });
+    const wrapper = mount(FormHost);
+    // Registration happens from `onMounted`, so the tail is known one flush later.
+    await nextTick();
+    const items = wrapper.findAll('.sn-form-item');
+    expect(items[0].classes()).not.toContain('sn-form-item--last');
+    expect(items[1].classes()).toContain('sn-form-item--last');
+  });
+
+  it('marks items with the vertical layout class when the form stacks', () => {
+    const model = reactive({ email: '' });
+    const FormHost = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model, layout: 'vertical', labelPosition: 'left' },
+            { default: () => h(SnFormItem, { prop: 'email', label: 'Email' }) },
+          );
+      },
+    });
+    expect(mount(FormHost).find('.sn-form-item').classes()).toContain(
+      'sn-form-item--layout-vertical',
+    );
+  });
+
   it('hides asterisk when hideAsterisk is true', () => {
     const model = reactive({ email: '' });
     const FormHost = defineComponent({
