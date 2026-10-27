@@ -570,6 +570,12 @@ async function recompute(): Promise<void> {
 
 /* Reposition on show and on scroll/resize while open. */
 let resizeObserver: ResizeObserver | null = null;
+ /* Scroll (capture — any container) and resize both land here. Recomputes are
+  * coalesced to one per animation frame so a scroll burst does not run the
+  * measure-and-write positioning pass per event. Declared above the watcher:
+  * its immediate pass runs synchronously during setup and touches this
+  * binding (a later `let` would be a TDZ ReferenceError on every mount). */
+ let recomputeFrame: number | null = null;
 watch(
   visible,
   async (v) => {
@@ -597,10 +603,6 @@ watch(
   },
   { immediate: true },
 );
-/* Scroll (capture — any container) and resize both land here. Recomputes are
- * coalesced to one per animation frame so a scroll burst does not run the
- * measure-and-write positioning pass per event. */
-let recomputeFrame: number | null = null;
 function cancelPendingRecompute(): void {
   if (recomputeFrame !== null) {
     window.cancelAnimationFrame(recomputeFrame);

@@ -109,6 +109,18 @@ describe('SnPopselect (AUI-WEB-FB-011)', () => {
       expect(w.find('.sn-popselect-trigger').exists()).toBe(true);
       expect(w.find('button.trigger-btn').exists()).toBe(true);
     });
+    it('should mount without watcher callback errors (immediate watch TDZ regression)', () => {
+      const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+      mountPopselect({ options: BASIC_OPTIONS });
+      const watcherError = [...warnSpy.mock.calls, ...errorSpy.mock.calls].some((args) =>
+        args.some((a) => {
+          const text = a instanceof Error ? a.message : typeof a === 'string' ? a : '';
+          return /Unhandled error|recomputeFrame/.test(text);
+        }),
+      );
+      expect(watcherError).toBe(false);
+    });
 
     it('opens on trigger click (click is the default trigger)', async () => {
       const w = mountPopselect({ options: BASIC_OPTIONS });
