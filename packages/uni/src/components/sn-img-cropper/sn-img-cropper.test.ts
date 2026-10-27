@@ -271,3 +271,26 @@ describe('sn-img-cropper', () => {
     expect(root.attributes('aria-label')).toBe(`image cropper: ${imgSrc}`);
   });
 });
+
+describe('sn-img-cropper (gesture release and popup sync)', () => {
+  it('clears the active gesture on touchend and on unmount', async () => {
+    const { wrapper, preview } = mountCropper();
+    gesture(preview, [{ x: 10, y: 10 }], [{ x: 30, y: 20 }]);
+    const stage = preview.find('.sn-img-cropper__stage');
+    // End the gesture, then send a stray move: it must be ignored because the
+    // gesture snapshot is gone.
+    await stage.trigger('touchend');
+    await stage.trigger('touchmove', { touches: [{ clientX: 90, clientY: 90 }] });
+    // The transform still reflects the pre-touchend drag delta only.
+    const transform = preview.find('.sn-img-cropper__image').attributes('style') ?? '';
+    expect(transform).toContain('translate(40rpx, 20rpx)');
+    expect(() => wrapper.unmount()).not.toThrow();
+  });
+
+  it('propagates the popup visibility update to update:modelValue', async () => {
+    const { preview } = mountCropper();
+    preview.findComponent(SnPopup).vm.$emit('update:modelValue', false);
+    await preview.vm.$nextTick();
+    expect(preview.emitted('update:modelValue')?.at(-1)).toEqual([false]);
+  });
+});

@@ -5,7 +5,7 @@
  * rows, the cascade column derivation and the exposed query API. No rpx
  * numbers in assertions — happy-dom discards lengths it cannot parse.
  */
-import { beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SnPickerView from './sn-picker-view.vue';
@@ -21,6 +21,16 @@ const FRUITS = ['apple', 'banana', 'cherry'];
  * default window width.
  */
 beforeAll(() => {
+  Object.defineProperty(globalThis, 'innerWidth', {
+    value: 375,
+    configurable: true,
+    writable: true,
+  });
+});
+
+// Sibling suites share this worker and may pin their own viewport; re-assert
+// the design ratio before each test instead of trusting the previous file.
+beforeEach(() => {
   Object.defineProperty(globalThis, 'innerWidth', {
     value: 375,
     configurable: true,
