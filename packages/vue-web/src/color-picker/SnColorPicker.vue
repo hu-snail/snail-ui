@@ -1296,10 +1296,24 @@ watch(
 
 .sn-color-picker-panel__rail {
   position: relative;
-  height: var(--sn-web-color-picker-rail-height, 12px);
-  border-radius: var(--sn-web-color-picker-rail-radius, 6px);
+  height: var(--sn-web-color-picker-rail-height, 16px);
+  border-radius: var(--sn-web-color-picker-rail-radius, 999px);
   touch-action: none;
   cursor: pointer;
+}
+
+/* Hue rail — the classic 0-360° rainbow sweep. */
+.sn-color-picker-panel__hue {
+  background-image: linear-gradient(
+    to right,
+    rgb(255, 0, 0),
+    rgb(255, 255, 0) 17%,
+    rgb(0, 255, 0) 33%,
+    rgb(0, 255, 255) 50%,
+    rgb(0, 0, 255) 67%,
+    rgb(255, 0, 255) 83%,
+    rgb(255, 0, 0)
+  );
 }
 
 .sn-color-picker-panel__rail::before {
@@ -1312,15 +1326,20 @@ watch(
   pointer-events: none;
 }
 
+/* Rail thumb — solid white dot with a hairline ring, slightly proud of the
+ * rail (TDesign-style slider handle). */
 .sn-color-picker-panel__thumb {
   position: absolute;
   top: 50%;
-  width: 12px;
-  height: 12px;
+  width: var(--sn-web-color-picker-handle-size, 18px);
+  height: var(--sn-web-color-picker-handle-size, 18px);
   transform: translate(-50%, -50%);
-  border: 2px solid var(--sn-web-color-picker-handle-border, rgb(255 255 255));
+  border: none;
   border-radius: 50%;
-  box-shadow: 0 0 2px rgb(0 0 0 / 0.5);
+  background-color: var(--sn-web-color-picker-handle-bg, rgb(255 255 255));
+  box-shadow:
+    0 0 0 1px var(--sn-web-color-picker-handle-ring, rgb(0 0 0 / 0.15)),
+    0 1px 2px rgb(0 0 0 / 0.25);
   cursor: grab;
   outline: none;
 }
