@@ -53,7 +53,9 @@ function jumpTo(next: number): void {
         <text class="liquid-actions__btn-text">150</text>
       </view>
     </view>
-    <text class="sn-demo__meta">点击按钮同时驱动三个球；current 过渡值：{{ Math.round(current) }}</text>
+    <text class="sn-demo__meta"
+      >点击按钮同时驱动三个球；current 过渡值：{{ Math.round(current) }}</text
+    >
   </view>
 </template>
 

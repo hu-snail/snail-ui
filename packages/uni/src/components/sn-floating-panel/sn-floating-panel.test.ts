@@ -300,7 +300,9 @@ describe('sn-floating-panel', () => {
      */
 
     it('does not keep the animating class when duration is 0', async () => {
-      const w = mount(SnFloatingPanel, { props: { height: 200, anchors: [200, 400], duration: 0 } });
+      const w = mount(SnFloatingPanel, {
+        props: { height: 200, anchors: [200, 400], duration: 0 },
+      });
       await drag(w, -100);
       expect(w.classes()).not.toContain('sn-floating-panel--animating');
       expect(w.emitted('height-change')).toHaveLength(1);

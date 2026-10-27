@@ -39,10 +39,15 @@ async function customDownload(source: SnBridgeSource): Promise<string> {
 
 <template>
   <div class="demo-stack">
-    <SnVideoPlayer :src="VIDEO" title="下载演示" :on-download="customDownload" @download="() => (status = busy ? status : '已触发下载')" />
+    <SnVideoPlayer
+      :src="VIDEO"
+      title="下载演示"
+      :on-download="customDownload"
+      @download="() => (status = busy ? status : '已触发下载')"
+    />
     <p class="demo-hint">
-      点击控制条中的下载按钮：本 demo 用 <code>on-download</code> 接管为 fetch → blob
-      → objectURL（模拟鉴权下载）。状态：{{ status }}
+      点击控制条中的下载按钮：本 demo 用 <code>on-download</code> 接管为 fetch → blob →
+      objectURL（模拟鉴权下载）。状态：{{ status }}
     </p>
   </div>
 </template>

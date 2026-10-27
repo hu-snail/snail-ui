@@ -125,7 +125,9 @@ describe('SnDialer run() targeting', () => {
 });
 
 /** Parse the wheel rotation angle from the inline transform style. */
-function readRotation(wrapper: { find: (sel: string) => { attributes: (a: string) => string | undefined } }): number {
+function readRotation(wrapper: {
+  find: (sel: string) => { attributes: (a: string) => string | undefined };
+}): number {
   const style = wrapper.find('.sn-dialer__wheel').attributes('style') ?? '';
   const match = /rotate\((-?[\d.]+)deg\)/.exec(style);
   expect(match, 'wheel must carry a rotate() transform while spinning').not.toBeNull();

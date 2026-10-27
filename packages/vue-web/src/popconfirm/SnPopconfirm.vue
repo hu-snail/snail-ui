@@ -528,6 +528,26 @@ async function recompute(): Promise<void> {
 /* Recompute on show and on scroll/resize while open (capture-phase
  * scroll — the event does not bubble). */
 let resizeObserver: ResizeObserver | null = null;
+/* Scroll (capture — any container) and resize both land here. Recomputes are
+ * coalesced to one per animation frame so a scroll burst does not run the
+ * measure-and-write positioning pass per event.
+ * Declared BEFORE the immediate `watch` below: its first (immediate) run
+ * calls `cancelPendingRecompute`, which reads `recomputeFrame` — declaring
+ * the binding after the watch put it in the TDZ on every closed mount. */
+let recomputeFrame: number | null = null;
+function cancelPendingRecompute(): void {
+  if (recomputeFrame !== null) {
+    window.cancelAnimationFrame(recomputeFrame);
+    recomputeFrame = null;
+  }
+}
+function onScrollOrResize(): void {
+  if (recomputeFrame !== null || !visible.value) return;
+  recomputeFrame = window.requestAnimationFrame(() => {
+    recomputeFrame = null;
+    if (visible.value) void recompute();
+  });
+}
 watch(
   visible,
   async (v) => {
@@ -552,23 +572,6 @@ watch(
   },
   { immediate: true },
 );
-/* Scroll (capture — any container) and resize both land here. Recomputes are
- * coalesced to one per animation frame so a scroll burst does not run the
- * measure-and-write positioning pass per event. */
-let recomputeFrame: number | null = null;
-function cancelPendingRecompute(): void {
-  if (recomputeFrame !== null) {
-    window.cancelAnimationFrame(recomputeFrame);
-    recomputeFrame = null;
-  }
-}
-function onScrollOrResize(): void {
-  if (recomputeFrame !== null || !visible.value) return;
-  recomputeFrame = window.requestAnimationFrame(() => {
-    recomputeFrame = null;
-    if (visible.value) void recompute();
-  });
-}
 
 /* ─────────── Outside-click dismiss (click trigger) ─────────── */
 

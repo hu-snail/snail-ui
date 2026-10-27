@@ -507,7 +507,8 @@ describe('sn-input', () => {
     const wrapper = mount(SnInput, {
       props: { showCount: true, maxlength: 10, modelValue: 'abc' },
       slots: {
-        count: '<template #count="params"><view data-testid="count">{{ params.current }}/{{ params.max }}</view></template>',
+        count:
+          '<template #count="params"><view data-testid="count">{{ params.current }}/{{ params.max }}</view></template>',
       },
     });
     expect(wrapper.find('[data-testid="count"]').text()).toBe('3/10');

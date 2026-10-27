@@ -161,9 +161,9 @@ describe('sn-toast', () => {
 
   it('renders each non-dots spinner shape for iconName="loading"', () => {
     expect(
-      mount(SnToast, { props: { modelValue: true, iconName: 'loading' } }).find(
-        '.sn-loading__circular',
-      ).exists(),
+      mount(SnToast, { props: { modelValue: true, iconName: 'loading' } })
+        .find('.sn-loading__circular')
+        .exists(),
     ).toBe(true);
 
     const spinner = mount(SnToast, {
@@ -181,16 +181,12 @@ describe('sn-toast', () => {
     const status = mount(SnToast, {
       props: { modelValue: true, iconName: 'success', iconColor: 'rebeccapurple' },
     });
-    expect(status.find('.sn-toast__icon').attributes('style')).toContain(
-      'color: rebeccapurple',
-    );
+    expect(status.find('.sn-toast__icon').attributes('style')).toContain('color: rebeccapurple');
 
     const spinner = mount(SnToast, {
       props: { modelValue: true, iconName: 'loading', loadingColor: 'rebeccapurple' },
     });
-    expect(spinner.find('.sn-toast__icon').attributes('style')).toContain(
-      'color: rebeccapurple',
-    );
+    expect(spinner.find('.sn-toast__icon').attributes('style')).toContain('color: rebeccapurple');
   });
 
   it('passes string icon sizes through verbatim', () => {
