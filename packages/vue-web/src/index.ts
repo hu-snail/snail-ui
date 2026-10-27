@@ -128,7 +128,7 @@ export { default as SnTabPane } from './tabs/SnTabPane.vue';
 export { default as SnBreadcrumb } from './breadcrumb/SnBreadcrumb.vue';
 export { default as SnBreadcrumbItem } from './breadcrumb/SnBreadcrumbItem.vue';
 export { default as SnTooltip } from './tooltip/SnTooltip.vue';
-export type { SnTooltipPlacement } from './tooltip/SnTooltip.vue';
+export type { SnTooltipPlacement } from './tooltip/sn-tooltip-types';
 export type { FormRule, FormRules, FormContext, FormItemHandle } from './form/sn-form-types';
 export { registerSnIcons, clearSnIcons, resolveIconByName } from './icon/sn-icon-registry';
 export type { IconComponent, IconComponentProps } from './icon/sn-icon-registry';

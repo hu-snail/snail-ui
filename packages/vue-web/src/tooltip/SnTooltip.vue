@@ -9,7 +9,10 @@
  * 1:1 parity (this version):
  *   - show / defaultShow (controlled vs uncontrolled)
  *   - trigger ('hover' | 'click' | 'focus' | 'manual')
- *   - placement ('top-start' | 'top' | 'top-end' | ... | 'left-end')
+ *   - placement — 12 Arco-style directions (`top` / `tl` / `tr` / … / `rb`;
+ *     letter 2 = the bubble edge aligned with the trigger). The legacy
+ *     naive-ui values (`top-start` / …) normalize internally as deprecated
+ *     aliases. Boundary flips keep the cross alignment (`tl` → `bl`).
  *   - delay (open) + duration (close); delay also accepts [open, close]
  *   - arrow / showArrow semantics / arrowPointToCenter / arrowClass /
  *     arrowStyle
@@ -45,22 +48,9 @@
  */
 
 import { computed, nextTick, onBeforeUnmount, ref, useSlots, watch, type CSSProperties } from 'vue';
+import { parseTooltipPlacement, type SnTooltipPlacement } from './sn-tooltip-types';
 
 defineOptions({ name: 'SnTooltip' });
-
-export type SnTooltipPlacement =
-  | 'top-start'
-  | 'top'
-  | 'top-end'
-  | 'right-start'
-  | 'right'
-  | 'right-end'
-  | 'bottom-start'
-  | 'bottom'
-  | 'bottom-end'
-  | 'left-start'
-  | 'left'
-  | 'left-end';
 
 const props = withDefaults(
   defineProps<{
@@ -81,8 +71,12 @@ const props = withDefaults(
      */
     trigger?: 'hover' | 'click' | 'focus' | 'manual';
     /**
-     * Where to render the tooltip relative to the trigger. Mirrors
-     * n-tooltip `placement`. Default 'top'.
+     * Where to render the tooltip relative to the trigger — 12 Arco-style
+     * directions: `top` / `tl` / `tr` / `bottom` / `bl` / `br` / `left` /
+     * `lt` / `lb` / `right` / `rt` / `rb` (letter 2 = the bubble edge that
+     * aligns with the trigger: `tl` = Left edges flush, `lb` = Bottom edges
+     * flush). Legacy naive-ui values (`top-start` / …) are accepted as
+     * deprecated aliases. Default 'top'.
      */
     placement?: SnTooltipPlacement;
     /**
@@ -407,11 +401,11 @@ async function recompute(): Promise<void> {
   // and `.sn-tooltip__arrow--*`'s border-width in sync.
   const arrowSize = props.overlap ? 0 : ARROW_SIZE;
 
-  // Determine initial side + alignment from placement string
-  // e.g. 'top-start' → side='top', align='start'
-  const [sideRaw, alignRaw = 'center'] = props.placement.split('-');
-  const side = sideRaw as 'top' | 'right' | 'bottom' | 'left';
-  const align = alignRaw as 'start' | 'center' | 'end';
+  // Determine initial side + alignment from the placement value — both the
+  // canonical Arco codes (`tl`…) and the legacy `-start`/`-end` suffixes
+  // normalize into the same (side, align) pair, so every downstream branch
+  // (flip, arrow aiming, animation class) is value-style agnostic.
+  const { side, align } = parseTooltipPlacement(props.placement);
 
   /**
    * How far the arrow's centre must sit from the bubble's own edge. Half the
@@ -599,11 +593,15 @@ async function recompute(): Promise<void> {
 
   if (finalSide === 'top' || finalSide === 'bottom') {
     const arrowCenter = clampAim(aimX, r.left, r.width);
-    arrowOffset.left = `${arrowCenter - r.left}px`;
+    // The triangle box is 2 × ARROW_SIZE wide; `left` positions its LEFT
+    // edge, so subtract half the box to land the visual APEX CENTRE on the
+    // aim point (the previous edge-based offset skewed the arrow 8px off —
+    // the "arrow detached from the content" report).
+    arrowOffset.left = `${arrowCenter - r.left - ARROW_SIZE}px`;
     arrowOffset[finalSide === 'top' ? 'bottom' : 'top'] = `-${arrowSize}px`;
   } else {
     const arrowCenter = clampAim(aimY, r.top, r.height);
-    arrowOffset.top = `${arrowCenter - r.top}px`;
+    arrowOffset.top = `${arrowCenter - r.top - ARROW_SIZE}px`;
     arrowOffset[finalSide === 'left' ? 'right' : 'left'] = `-${arrowSize}px`;
   }
   arrowStyle.value = arrowOffset;
@@ -909,6 +907,18 @@ void slots;
   border-color: transparent;
   border-width: 0;
 }
+/* Arrow orientation per resolved side. The class name is the side the
+ * BUBBLE sits on, so the apex always points at the trigger:
+ *   top    → bubble above  → arrow at the bubble's bottom edge, apex DOWN
+ *   bottom → bubble below  → arrow at the bubble's top edge,    apex UP
+ *   left   → bubble left   → arrow at the bubble's right edge,  apex RIGHT
+ *   right  → bubble right  → arrow at the bubble's left edge,   apex LEFT
+ *
+ * Border-triangle geometry: the apex points out of the COLORED side, and
+ * the colored side must be the one with a NON-zero width — a colored
+ * zero-width border renders nothing (the previous `--left` / `--right`
+ * paired the color with a zero width, so horizontal arrows vanished and
+ * the reserved 8px band read as a gap between arrow and content). */
 .sn-tooltip__arrow--top {
   border-width: 8px 8px 0 8px;
   border-top-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
@@ -918,11 +928,13 @@ void slots;
   border-bottom-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
 }
 .sn-tooltip__arrow--left {
-  border-width: 8px 8px 8px 0;
+  /* Bubble left of trigger → apex RIGHT = colored LEFT border (right = 0). */
+  border-width: 8px 0 8px 8px;
   border-left-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
 }
 .sn-tooltip__arrow--right {
-  border-width: 8px 0 8px 8px;
+  /* Bubble right of trigger → apex LEFT = colored RIGHT border (left = 0). */
+  border-width: 8px 8px 8px 0;
   border-right-color: var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95));
 }
 

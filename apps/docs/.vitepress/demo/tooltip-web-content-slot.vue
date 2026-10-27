@@ -45,7 +45,7 @@ import { SnTooltip } from '@snui/vue-web';
       <h4 class="tt-slot__title">配合 :delay="[200, 0]"</h4>
       <p class="tt-slot__hint">打开延迟 200ms，关闭无延迟 —— 适合指针容易划过的密集布局。</p>
       <div class="tt-slot__stage">
-        <SnTooltip placement="bottom-start" :delay="[200, 0]">
+        <SnTooltip placement="bl" :delay="[200, 0]">
           <button class="tt-slot__btn" type="button">延迟 200ms 打开</button>
           <template #content> 用 <code>:delay="[200, 0]"</code> 控制打开延迟，关闭无延迟 </template>
         </SnTooltip>

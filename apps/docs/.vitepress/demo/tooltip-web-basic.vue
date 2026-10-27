@@ -37,17 +37,17 @@ import { SnTooltip } from '@snui/vue-web';
         适合图标按钮或窄列里的提示。
       </p>
       <div class="tt-demo__stage">
-        <SnTooltip content="Top Start" placement="top-start">
-          <button class="tt-demo__btn" type="button">top-start</button>
+        <SnTooltip content="Top Left" placement="tl">
+          <button class="tt-demo__btn" type="button">tl</button>
         </SnTooltip>
-        <SnTooltip content="Top End" placement="top-end">
-          <button class="tt-demo__btn" type="button">top-end</button>
+        <SnTooltip content="Top Right" placement="tr">
+          <button class="tt-demo__btn" type="button">tr</button>
         </SnTooltip>
-        <SnTooltip content="Bottom Start" placement="bottom-start">
-          <button class="tt-demo__btn" type="button">bottom-start</button>
+        <SnTooltip content="Bottom Left" placement="bl">
+          <button class="tt-demo__btn" type="button">bl</button>
         </SnTooltip>
-        <SnTooltip content="Bottom End" placement="bottom-end">
-          <button class="tt-demo__btn" type="button">bottom-end</button>
+        <SnTooltip content="Bottom Right" placement="br">
+          <button class="tt-demo__btn" type="button">br</button>
         </SnTooltip>
       </div>
     </section>

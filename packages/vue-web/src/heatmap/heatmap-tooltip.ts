@@ -15,7 +15,7 @@
  */
 
 import type { CSSProperties } from 'vue';
-import type { SnTooltipPlacement } from '../tooltip/SnTooltip.vue';
+import type { SnTooltipPlacement } from '../tooltip/sn-tooltip-types';
 
 /** Per-cell tooltip options (a `TooltipProps` subset, all optional). */
 export interface SnHeatmapTooltipConfig {

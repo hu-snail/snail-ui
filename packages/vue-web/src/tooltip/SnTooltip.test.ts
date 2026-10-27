@@ -430,7 +430,7 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
      * arrow must therefore land at 50px, not at the 100px bubble midpoint.
      */
     it('should aim a top arrow at the trigger centre, not the bubble centre', async () => {
-      mountTooltip({ content: 'x', show: true, placement: 'top-start' });
+      mountTooltip({ content: 'x', show: true, placement: 'tl' });
       await new Promise((r) => setTimeout(r, 10));
 
       const a = arrowEl().style;
@@ -438,11 +438,13 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
       const triggerCenter = TRIGGER_RECT.left + TRIGGER_RECT.width / 2;
       const arrowLeft = Number.parseFloat(a.left);
 
-      expect(arrowLeft).toBe(triggerCenter - popLeft);
+      // `left` anchors the 16px-wide triangle box; its visual centre (the
+      // apex) must land on the trigger centre → left = centre - half box.
+      expect(arrowLeft + ARROW_SIZE).toBe(triggerCenter - popLeft);
       // Inside the bubble, and deliberately *not* on its centre (100px).
       expect(arrowLeft).toBeGreaterThan(0);
       expect(arrowLeft).toBeLessThan(POPOVER_RECT.width);
-      expect(arrowLeft).not.toBe(POPOVER_RECT.width / 2);
+      expect(arrowLeft + ARROW_SIZE).not.toBe(POPOVER_RECT.width / 2);
       // Vertical anchor: the arrow hangs in the reserved band at the bottom.
       expect(Number.parseFloat(a.bottom)).toBe(-ARROW_SIZE);
       expect(a.top).toBe('');
@@ -457,7 +459,7 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
       const triggerCenter = TRIGGER_RECT.left + TRIGGER_RECT.width / 2;
       expect(Number.parseFloat(a.top)).toBe(-ARROW_SIZE);
       expect(a.bottom).toBe('');
-      expect(Number.parseFloat(a.left)).toBe(triggerCenter - popLeft);
+      expect(Number.parseFloat(a.left) + ARROW_SIZE).toBe(triggerCenter - popLeft);
       expect(Number.parseFloat(a.left)).toBeGreaterThan(0);
       expect(Number.parseFloat(a.left)).toBeLessThan(POPOVER_RECT.width);
     });
@@ -471,9 +473,19 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
       const triggerCenterY = TRIGGER_RECT.top + TRIGGER_RECT.height / 2;
       expect(Number.parseFloat(a.right)).toBe(-ARROW_SIZE);
       expect(a.left).toBe('');
-      expect(Number.parseFloat(a.top)).toBe(triggerCenterY - popTop);
+      // Vertical centring: apex centre on the trigger's Y centre.
+      expect(Number.parseFloat(a.top) + ARROW_SIZE).toBe(triggerCenterY - popTop);
       expect(Number.parseFloat(a.top)).toBeGreaterThan(0);
       expect(Number.parseFloat(a.top)).toBeLessThan(POPOVER_RECT.height);
+      // Regression note: the colored border side must carry the non-zero
+      // width — the previous `8px 8px 8px 0` + left-color pairing rendered a
+      // zero-area triangle (arrow vanished → detached-gap look). That
+      // constant lives in the scoped stylesheet and cannot be resolved by
+      // happy-dom here; the visible-arrow correctness is covered by the
+      // placement demo review.
+      const arrow = arrowEl();
+      expect(arrow.classList.contains('sn-tooltip__arrow--left')).toBe(true);
+      expect(Number.parseFloat(a.top) + ARROW_SIZE).toBe(triggerCenterY - popTop);
     });
 
     it('should anchor a right arrow inside the bubble band', async () => {
@@ -485,18 +497,52 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
       const triggerCenterY = TRIGGER_RECT.top + TRIGGER_RECT.height / 2;
       expect(Number.parseFloat(a.left)).toBe(-ARROW_SIZE);
       expect(a.right).toBe('');
-      expect(Number.parseFloat(a.top)).toBe(triggerCenterY - popTop);
+      expect(Number.parseFloat(a.top) + ARROW_SIZE).toBe(triggerCenterY - popTop);
       expect(Number.parseFloat(a.top)).toBeGreaterThan(0);
       expect(Number.parseFloat(a.top)).toBeLessThan(POPOVER_RECT.height);
+      // Same visibility caveat as the left arrow: the border-width pairing
+      // lives in the scoped stylesheet (see the left-arrow test note).
+      const arrow = arrowEl();
+      expect(arrow.classList.contains('sn-tooltip__arrow--right')).toBe(true);
+      expect(Number.parseFloat(a.top) + ARROW_SIZE).toBe(triggerCenterY - popTop);
     });
 
     /** `placement` still names the requested side, per the public contract. */
     it('should keep the requested placement class on the bubble', async () => {
-      mountTooltip({ content: 'x', show: true, placement: 'bottom-end' });
+      mountTooltip({ content: 'x', show: true, placement: 'br' });
       await new Promise((r) => setTimeout(r, 10));
 
       const pop = document.body.querySelector('.sn-tooltip') as HTMLElement;
-      expect(pop.classList.contains('sn-tooltip--bottom-end')).toBe(true);
+      expect(pop.classList.contains('sn-tooltip--br')).toBe(true);
+      // Legacy `-end` suffix values keep working (deprecated aliases) and
+      // carry their own class for consumer styling hooks.
+      mountTooltip({ content: 'x', show: true, placement: 'bottom-end' });
+      await new Promise((r) => setTimeout(r, 10));
+      const legacyPop = [
+        ...(document.body.querySelectorAll('.sn-tooltip') as NodeListOf<HTMLElement>),
+      ].at(-1) as HTMLElement;
+      expect(legacyPop.classList.contains('sn-tooltip--bottom-end')).toBe(true);
+    });
+
+    /**
+     * The Arco codes and the legacy naive-ui values are two spellings of
+     * the same layout: `tl` ≡ `top-start` (side top, left edges flush).
+     * Both must normalize to the identical popover rect.
+     */
+    it('should normalize legacy alias values to the same position as their Arco counterpart', async () => {
+      mountTooltip({ content: 'x', show: true, placement: 'tl' });
+      await new Promise((r) => setTimeout(r, 10));
+      const arco = popoverStyle();
+      const arcoTop = arco.top;
+      const arcoLeft = arco.left;
+
+      mountTooltip({ content: 'x', show: true, placement: 'top-start' });
+      await new Promise((r) => setTimeout(r, 10));
+      // Two popovers are live now — read the LAST one (the legacy mount).
+      const pops = document.body.querySelectorAll('.sn-tooltip');
+      const legacy = (pops[pops.length - 1] as HTMLElement).style;
+      expect(legacy.top).toBe(arcoTop);
+      expect(legacy.left).toBe(arcoLeft);
     });
 
     /**
