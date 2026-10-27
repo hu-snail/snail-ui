@@ -60,6 +60,7 @@ export type { SnTimePickerFormat } from './time-picker/sn-time-picker-types';
 export { default as SnCascader } from './cascader/SnCascader.vue';
 export type {
   SnCascaderValue,
+  SnCascaderPath,
   SnCascaderOptionInput,
   SnCascaderNode,
 } from './cascader/sn-cascader-types';

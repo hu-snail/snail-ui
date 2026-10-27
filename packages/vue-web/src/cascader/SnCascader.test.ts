@@ -117,6 +117,11 @@ function allRows(): HTMLElement[] {
   return Array.from(document.body.querySelectorAll<HTMLElement>('.sn-cascader-option'));
 }
 
+/** The multiple-mode checkbox glyph inside one option row. */
+function checkboxOf(row: HTMLElement | null): HTMLElement | null {
+  return row?.querySelector<HTMLElement>('.sn-cascader-option__checkbox') ?? null;
+}
+
 describe('SnCascader', () => {
   beforeEach(() => {
     // happy-dom has no layout — give the trigger + menu stable rects.
@@ -738,5 +743,257 @@ describe('SnCascader', () => {
     await nextTick();
     expect(reads).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+});
+
+/* ───── multiple (tree check) mode ───── */
+
+describe('SnCascader multiple', () => {
+  beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      const isMenu = this.classList.contains('sn-cascader-menu');
+      return isMenu
+        ? {
+            top: 0,
+            left: 0,
+            width: 200,
+            height: 160,
+            right: 200,
+            bottom: 160,
+            x: 0,
+            y: 0,
+            toJSON: () => ({}),
+          }
+        : {
+            top: 300,
+            left: 40,
+            width: 200,
+            height: 32,
+            right: 240,
+            bottom: 332,
+            x: 40,
+            y: 300,
+            toJSON: () => ({}),
+          };
+    });
+  });
+
+  afterEach(async () => {
+    for (const w of mounted.splice(0)) w.unmount();
+    vi.restoreAllMocks();
+    document.body.innerHTML = '';
+  });
+
+  it('renders a checkbox in every row when multiple', async () => {
+    const w = mountCascader({ multiple: true });
+    await openMenu(w);
+    expect(allRows().length).toBeGreaterThan(0);
+    expect(allRows().every((row) => checkboxOf(row) !== null)).toBe(true);
+  });
+
+  it('renders no checkboxes in single mode', async () => {
+    const w = mountCascader();
+    await openMenu(w);
+    expect(checkboxOf(allRows()[0] ?? null)).toBeNull();
+  });
+
+  it('checking a leaf commits its path and keeps the menu open', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true });
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    rowByKey('0-0')?.click();
+    await nextTick();
+    checkboxOf(rowByKey('0-0-0'))?.click();
+    await nextTick();
+    expect(value.value).toEqual([['asia', 'china', 'beijing']]);
+    expect(wrapper.emitted('change')?.at(-1)).toEqual([[['asia', 'china', 'beijing']]]);
+    // Menu stays open for continuous toggling; the tag echoes the path.
+    expect(document.body.querySelector('.sn-cascader-menu')).not.toBeNull();
+    expect(wrapper.find('.sn-cascader__tag-label').text()).toBe('Asia / China / Beijing');
+    // The checked leaf row is marked.
+    expect(rowByKey('0-0-0')?.classList.contains('sn-cascader-option--selected')).toBe(true);
+  });
+
+  it('unchecking a checked leaf removes its path', async () => {
+    const { wrapper, value } = mountVModel([['asia', 'china', 'beijing']], { multiple: true });
+    await openMenu(wrapper);
+    checkboxOf(rowByKey('0-0-0'))?.click();
+    await nextTick();
+    expect(value.value).toEqual([]);
+  });
+
+  it('checking a parent commits every selectable descendant leaf path', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true });
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    checkboxOf(rowByKey('0'))?.click();
+    await nextTick();
+    expect(value.value).toEqual([
+      ['asia', 'china', 'beijing'],
+      ['asia', 'china', 'shanghai'],
+      ['asia', 'japan', 'tokyo'],
+    ]);
+    // Parent + child rows show the checked checkbox state.
+    expect(
+      checkboxOf(rowByKey('0'))?.classList.contains('sn-cascader-option__checkbox--checked'),
+    ).toBe(true);
+    expect(
+      checkboxOf(rowByKey('0-0'))?.classList.contains('sn-cascader-option__checkbox--checked'),
+    ).toBe(true);
+  });
+
+  it('skips disabled leaves when cascading a parent check', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true });
+    await openMenu(wrapper);
+    checkboxOf(rowByKey('0'))?.click();
+    await nextTick();
+    expect(value.value).not.toContainEqual(['asia', 'china', 'chongqing']);
+  });
+
+  it('unchecking a fully-checked parent removes its descendant paths', async () => {
+    const { wrapper, value } = mountVModel(
+      [
+        ['asia', 'china', 'beijing'],
+        ['asia', 'china', 'shanghai'],
+        ['asia', 'japan', 'tokyo'],
+      ],
+      { multiple: true },
+    );
+    await openMenu(wrapper);
+    checkboxOf(rowByKey('0'))?.click();
+    await nextTick();
+    expect(value.value).toEqual([]);
+  });
+
+  it('marks a parent indeterminate when only some descendant leaves are checked', async () => {
+    const { wrapper } = mountVModel([['asia', 'china', 'beijing']], { multiple: true });
+    await openMenu(wrapper);
+    const parentBox = checkboxOf(rowByKey('0'));
+    expect(parentBox?.classList.contains('sn-cascader-option__checkbox--indeterminate')).toBe(true);
+    expect(parentBox?.classList.contains('sn-cascader-option__checkbox--checked')).toBe(false);
+    expect(
+      checkboxOf(rowByKey('0-0'))?.classList.contains(
+        'sn-cascader-option__checkbox--indeterminate',
+      ),
+    ).toBe(true);
+    // The indeterminate parent cascades to fully checked on click.
+    parentBox?.click();
+    await nextTick();
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([
+      [
+        ['asia', 'china', 'beijing'],
+        ['asia', 'china', 'shanghai'],
+        ['asia', 'japan', 'tokyo'],
+      ],
+    ]);
+  });
+
+  it('does not check a disabled leaf via its checkbox', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true });
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    rowByKey('0-0')?.click();
+    await nextTick();
+    checkboxOf(rowByKey('0-0-2'))?.click();
+    await nextTick();
+    expect(value.value).toEqual([]);
+    expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+  });
+
+  it('row click on a leaf toggles the check in multiple mode', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true });
+    await openMenu(wrapper);
+    rowByKey('0')?.click();
+    await nextTick();
+    rowByKey('0-0')?.click();
+    await nextTick();
+    rowByKey('0-0-0')?.click();
+    await nextTick();
+    expect(value.value).toEqual([['asia', 'china', 'beijing']]);
+    rowByKey('0-0-0')?.click();
+    await nextTick();
+    expect(value.value).toEqual([]);
+  });
+
+  it('removes one path via its trigger tag close button', async () => {
+    const { wrapper, value } = mountVModel(
+      [
+        ['asia', 'china', 'beijing'],
+        ['asia', 'japan', 'tokyo'],
+      ],
+      { multiple: true },
+    );
+    const closeButtons = wrapper.findAll('.sn-cascader__tag-close');
+    expect(closeButtons).toHaveLength(2);
+    await closeButtons[0].trigger('click');
+    expect(value.value).toEqual([['asia', 'japan', 'tokyo']]);
+    expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([[['asia', 'japan', 'tokyo']]]);
+  });
+
+  it('collapses tags into +N with maxTagCount', () => {
+    const w = mountCascader({
+      multiple: true,
+      maxTagCount: 1,
+      modelValue: [
+        ['asia', 'china', 'beijing'],
+        ['asia', 'china', 'shanghai'],
+        ['asia', 'japan', 'tokyo'],
+      ],
+    });
+    const labels = w.findAll('.sn-cascader__tag-label').map((t) => t.text());
+    expect(labels).toEqual(['Asia / China / Beijing', '+2']);
+    expect(w.find('.sn-cascader__tag--rest').exists()).toBe(true);
+  });
+
+  it('clears every path and emits clear', async () => {
+    const { wrapper, value } = mountVModel([['asia', 'japan', 'tokyo']], {
+      multiple: true,
+      clearable: true,
+    });
+    await wrapper.find('.sn-cascader__clear').trigger('click');
+    expect(value.value).toEqual([]);
+    expect(wrapper.emitted('clear')).toHaveLength(1);
+    expect(wrapper.find('.sn-cascader__placeholder').text()).toBe('Please select');
+  });
+
+  it('exposes check state through aria-selected and multiselectable columns', async () => {
+    const w = mountCascader({ multiple: true, modelValue: [['asia', 'china', 'beijing']] });
+    await openMenu(w);
+    expect(rowByKey('0-0-0')?.getAttribute('aria-selected')).toBe('true');
+    // Partially-checked ancestors are not aria-selected — their checkbox
+    // carries the indeterminate state instead.
+    expect(rowByKey('0-0')?.getAttribute('aria-selected')).toBe('false');
+    expect(rowByKey('0')?.getAttribute('aria-selected')).toBe('false');
+    expect(
+      checkboxOf(rowByKey('0'))?.classList.contains('sn-cascader-option__checkbox--indeterminate'),
+    ).toBe(true);
+    expect(rowByKey('1')?.getAttribute('aria-selected')).toBe('false');
+    const listbox = document.body.querySelector('.sn-cascader-menu__column');
+    expect(listbox?.getAttribute('aria-multiselectable')).toBe('true');
+  });
+
+  it('reopens on the first bound path so checked rows are visible', async () => {
+    const w = mountCascader({ multiple: true, modelValue: [['asia', 'japan', 'tokyo']] });
+    await openMenu(w);
+    expect(columns()).toHaveLength(3);
+    expect(
+      checkboxOf(rowByKey('0-1-0'))?.classList.contains('sn-cascader-option__checkbox--checked'),
+    ).toBe(true);
+  });
+
+  it('toggles a filter match without closing the menu (multiple + filterable)', async () => {
+    const { wrapper, value } = mountVModel([], { multiple: true, filterable: true });
+    await openMenu(wrapper);
+    await wrapper.find('.sn-cascader__filter-input').setValue('paris');
+    await nextTick();
+    allRows()[0]?.click();
+    await nextTick();
+    expect(value.value).toEqual([['europe', 'france', 'paris']]);
+    expect(document.body.querySelector('.sn-cascader-menu')).not.toBeNull();
   });
 });
