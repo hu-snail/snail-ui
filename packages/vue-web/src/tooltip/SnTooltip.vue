@@ -642,6 +642,15 @@ watch(
     if (typeof window === 'undefined') return;
     if (v) {
       await recompute();
+      // Safety net: if the first pass ran before the teleported popover
+      // element finished mounting (ref still null → early return), the
+      // bubble would stay unpositioned in normal flow. One frame later the
+      // element always exists — re-measure once.
+      if (!popoverStyle.value['position']) {
+        window.requestAnimationFrame(() => {
+          if (visible.value) void recompute();
+        });
+      }
       if (!resizeObserver && typeof ResizeObserver !== 'undefined') {
         resizeObserver = new ResizeObserver(() => {
           void recompute();
