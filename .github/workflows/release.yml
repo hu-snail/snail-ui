@@ -29,7 +29,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Node 22：uni-x build 依赖 TS type stripping（见 ci.yml 同注）。
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install

@@ -24,7 +24,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Node 22：uni-x 的 build 直接 \`node src/transform/cli.ts\` 运行 TS，
+          # 依赖 type stripping（22.18+ 默认启用）；Node 20 会报
+          # ERR_UNKNOWN_FILE_EXTENSION（AGENTS.md engines 仍为 >=20）。
+          node-version: '22'
           cache: 'pnpm'
 
       - name: Install
@@ -53,13 +56,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Node 22：uni-x build 依赖 TS type stripping（见 ci.yml 同注）。
+          node-version: '22'
           cache: 'pnpm'
 
       - run: pnpm install --frozen-lockfile
