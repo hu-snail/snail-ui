@@ -22,7 +22,17 @@
 
 `trigger="contextMenu"`（对齐 Arco Design）：右键触发内容时，面板锚定**鼠标位置**打开并替换浏览器原生菜单；再次右键可重新定位。`placement` 的对齐后缀依然围绕光标点生效。
 
-<Demo name="dropdown-web-context-menu" description="trigger=contextMenu：右键打开、锚定鼠标位置、select 关闭。" />
+<Demo name="dropdown-web-context-menu" description="trigger=contextMenu：右键打开、锚定鼠标位置、图标行、select 关闭。" />
+
+## 图标
+
+`options[].icon` 接受任意 Vue 图标组件（与 SnMenu `icon` 约定一致），在 click / hover / contextMenu 三种触发模式下渲染行为一致。
+
+## 插槽自定义（#content）
+
+提供 `#content` 作用域插槽后，面板内容**完全由插槽接管**（`options` 与子菜单被忽略），插槽作用域为 `{ close }`——自定义行内调用 `close()` 关闭菜单。该模式下组件不再管理选项键盘高亮（Enter/Space 仍可打开、Esc 仍可关闭、点击外部关闭），可访问性由插槽内容自行负责。与 `trigger="contextMenu"` 组合即为完全自定义的右键菜单。
+
+<Demo name="dropdown-web-content-slot" description="#content 插槽接管面板：自定义图标行、危险操作行、页脚，close() 关闭。" />
 
 ## API
 
@@ -38,5 +48,7 @@
 | show      | `boolean`                         | —          | 受控开关（v-model:show）                                         |
 
 事件：`update:show` / `select(key, option)` / `clickoutside`。键盘：Enter/Space/ArrowDown 打开、ArrowUp/Down 高亮、ArrowRight/Left 进出子菜单、Esc 关闭。aria：menu/menuitem/separator。
+
+插槽：`#content="{ close }"` 完全接管面板内容（options 被忽略，含子菜单）；自定义行调用 `close()` 关闭；该模式下组件不再管理选项键盘高亮，Esc / 外部点击关闭仍生效。`options[].icon` 接受任意 Vue 图标组件，三种触发模式行为一致。
 
 完整契约见组件 `ai-description.md`。

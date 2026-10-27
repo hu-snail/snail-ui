@@ -35,42 +35,51 @@
           @mouseenter="onMenuMouseEnter"
           @mouseleave="onMenuMouseLeave"
         >
-          <template v-for="node in normalizedNodes" :key="node.key">
-            <div
-              v-if="node.kind === 'divider'"
-              class="sn-dropdown-menu__divider"
-              role="separator"
-            />
-            <div
-              v-else
-              :id="optionId(node)"
-              :class="[
-                'sn-dropdown-option',
-                {
-                  'sn-dropdown-option--disabled': node.disabled,
-                  'sn-dropdown-option--pending': isPending(node),
-                  'sn-dropdown-option--parent': node.hasChildren,
-                },
-              ]"
-              role="menuitem"
-              tabindex="-1"
-              :aria-disabled="node.disabled ? 'true' : undefined"
-              :aria-haspopup="node.hasChildren ? 'menu' : undefined"
-              :aria-expanded="
-                node.hasChildren ? (openSubmenuIndex === node.index ? 'true' : 'false') : undefined
-              "
-              :data-key="String(node.key)"
-              @mouseenter="onOptionMouseEnter(node, $event)"
-              @click="onOptionClick(node, $event)"
-            >
-              <span v-if="node.icon" class="sn-dropdown-option__icon">
-                <component :is="node.icon" />
-              </span>
-              <span class="sn-dropdown-option__label">{{ node.label }}</span>
-              <span v-if="node.hasChildren" class="sn-dropdown-option__arrow" aria-hidden="true">
-                <SnIcon :icon="ChevronRightIcon" :size="13" />
-              </span>
-            </div>
+          <!-- Arco `#content` parity: a provided content slot fully takes over
+               the panel body (options are ignored); it receives close(). -->
+          <slot v-if="hasCustomContent" name="content" :close="closeMenu" />
+          <template v-else>
+            <template v-for="node in normalizedNodes" :key="node.key">
+              <div
+                v-if="node.kind === 'divider'"
+                class="sn-dropdown-menu__divider"
+                role="separator"
+              />
+              <div
+                v-else
+                :id="optionId(node)"
+                :class="[
+                  'sn-dropdown-option',
+                  {
+                    'sn-dropdown-option--disabled': node.disabled,
+                    'sn-dropdown-option--pending': isPending(node),
+                    'sn-dropdown-option--parent': node.hasChildren,
+                  },
+                ]"
+                role="menuitem"
+                tabindex="-1"
+                :aria-disabled="node.disabled ? 'true' : undefined"
+                :aria-haspopup="node.hasChildren ? 'menu' : undefined"
+                :aria-expanded="
+                  node.hasChildren
+                    ? openSubmenuIndex === node.index
+                      ? 'true'
+                      : 'false'
+                    : undefined
+                "
+                :data-key="String(node.key)"
+                @mouseenter="onOptionMouseEnter(node, $event)"
+                @click="onOptionClick(node, $event)"
+              >
+                <span v-if="node.icon" class="sn-dropdown-option__icon">
+                  <component :is="node.icon" />
+                </span>
+                <span class="sn-dropdown-option__label">{{ node.label }}</span>
+                <span v-if="node.hasChildren" class="sn-dropdown-option__arrow" aria-hidden="true">
+                  <SnIcon :icon="ChevronRightIcon" :size="13" />
+                </span>
+              </div>
+            </template>
           </template>
         </div>
       </Transition>
@@ -166,9 +175,12 @@
  *
  * Simplifications vs n-dropdown (documented, not accidental):
  *   - dropdown is an action menu — no selected-value state to highlight
- *   - no render-fn props (renderIcon / renderLabel), no arrow, no focus
- *     trap: the trigger slot is expected to render a focusable element and
- *     its keydown bubbles to this wrapper
+ *   - no render-fn props (renderIcon / renderLabel): rows customize through
+ *     `options[].icon` (any Vue component) and the whole panel body can be
+ *     taken over with the Arco-parity `#content` scoped slot (receives
+ *     close(); options are ignored while it is provided). No arrow, no
+ *     focus trap: the trigger slot is expected to render a focusable
+ *     element and its keydown bubbles to this wrapper
  *
  * Positioning: Teleport to body + fixed coordinates against the trigger
  * rect (same strategy as SnSelect — no full popper), scroll/resize follow
@@ -176,7 +188,7 @@
  * same way. Per AGENTS.md §41/§42 every timer, listener and follower is
  * torn down on close + unmount.
  */
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue';
 import SnIcon from '../icon/SnIcon.vue';
 import { useOverlayFollow } from '../_internal/use-overlay-follow';
 import { ChevronRightIcon } from './sn-dropdown-icons';
@@ -240,9 +252,26 @@ defineSlots<{
    * users can reach the menu — its keydown bubbles to this wrapper.
    */
   default?(): unknown;
+  /**
+   * Arco `#content` parity — fully custom panel body (icon rows, rich
+   * rows, footers). When provided it REPLACES the `options` rendering
+   * entirely (submenu included) and receives `close()` so custom rows can
+   * dismiss the menu. The component stops managing the option keyboard
+   * walk in this mode (Enter/Space still open, Esc still closes); the
+   * custom content owns its own interactions and a11y.
+   */
+  content?(slotProps: { close: () => void }): unknown;
 }>();
 
 /* ─────────── Option normalization (§27: pure + deterministic) ─────────── */
+
+const slots = useSlots();
+
+/**
+ * Arco `#content` parity — when the consumer provides the content slot it
+ * takes over the panel body; options (and their keyboard walk) are inert.
+ */
+const hasCustomContent = computed(() => slots.content != null);
 
 const normalizedNodes = computed<SnDropdownMenuNode[]>(() =>
   normalizeDropdownOptions(props.options),
@@ -314,6 +343,8 @@ function isPending(node: SnDropdownItemNode): boolean {
 }
 
 const activeDescendant = computed<string | null>(() => {
+  // Custom content owns its own a11y — the option walk does not exist.
+  if (hasCustomContent.value) return null;
   const node = pendingNode();
   return isVisible.value && node ? optionId(node) : null;
 });
@@ -596,6 +627,20 @@ function onTriggerContextMenu(event: MouseEvent): void {
 
 function onTriggerKeyDown(event: KeyboardEvent): void {
   if (props.disabled) return;
+  // Content-slot mode: no option rows exist — Enter/Space open, Esc closes,
+  // arrows are inert (the custom content owns its own interactions).
+  if (hasCustomContent.value) {
+    if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+      event.preventDefault();
+      if (!isVisible.value) openMenu();
+      return;
+    }
+    if (event.key === 'Escape' && isVisible.value) {
+      event.preventDefault();
+      closeMenu();
+    }
+    return;
+  }
   switch (event.key) {
     case 'Enter': {
       event.preventDefault();

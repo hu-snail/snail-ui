@@ -531,4 +531,71 @@ describe('SnDropdown', () => {
     expect(event.defaultPrevented).toBe(false);
     expect(mainMenu()).toBeNull();
   });
+
+  /* ───── content slot (Arco #content parity) ───── */
+
+  function mountWithContentSlot(trigger: 'click' | 'contextMenu') {
+    const w = mount(SnDropdown, {
+      props: { options: ACTIONS, trigger },
+      slots: {
+        content: `<template #content="{ close }">
+            <div class="custom-panel">
+              <button class="custom-row" @click="close()">自定义关闭</button>
+            </div>
+          </template>`,
+      },
+      attachTo: document.body,
+    });
+    mounted.push(w);
+    return w;
+  }
+
+  it('lets the #content slot take over the panel body (options ignored)', async () => {
+    const w = mountWithContentSlot('click');
+    await openByClick(w);
+    expect(mainMenu()).not.toBeNull();
+    expect(document.body.querySelector('.custom-panel')).not.toBeNull();
+    // The options-driven rows and their keyboard highlight are inert.
+    expect(document.body.querySelectorAll('.sn-dropdown-option')).toHaveLength(0);
+    expect(mainMenu()?.getAttribute('aria-activedescendant')).toBeNull();
+    await triggerOf(w).trigger('keydown', { key: 'ArrowDown' });
+    expect(document.body.querySelector('.sn-dropdown-option--pending')).toBeNull();
+  });
+
+  it('closes through the close() slot prop and emits update:show', async () => {
+    const w = mountWithContentSlot('click');
+    await openByClick(w);
+    (document.body.querySelector('.custom-row') as HTMLElement | null)?.click();
+    await nextTick();
+    await menuLeft();
+    expect(mainMenu()).toBeNull();
+    expect(w.emitted('update:show')?.at(-1)).toEqual([false]);
+  });
+
+  it('keeps Esc working in content-slot mode', async () => {
+    const w = mountWithContentSlot('click');
+    await openByClick(w);
+    await triggerOf(w).trigger('keydown', { key: 'Escape' });
+    await nextTick();
+    await menuLeft();
+    expect(mainMenu()).toBeNull();
+  });
+
+  it('supports the #content slot under the contextMenu trigger', async () => {
+    const w = mountWithContentSlot('contextMenu');
+    await openByContextMenu(w);
+    expect(mainMenu()).not.toBeNull();
+    expect(document.body.querySelector('.custom-panel')).not.toBeNull();
+    expect(w.emitted('update:show')?.at(-1)).toEqual([true]);
+  });
+
+  it('renders leading icons on rows in contextMenu mode', async () => {
+    const w = mountDropdown({
+      trigger: 'contextMenu',
+      options: [{ label: 'Edit', key: 'edit', icon: MarkerIcon }],
+    });
+    await openByContextMenu(w);
+    const iconHost = rowByKey('edit')?.querySelector('.sn-dropdown-option__icon');
+    expect(iconHost?.querySelector('svg')).not.toBeNull();
+  });
 });

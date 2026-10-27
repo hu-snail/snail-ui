@@ -1,12 +1,13 @@
 <script setup lang="ts">
-/** Demo: SnDropdown — contextMenu trigger (right-click at pointer). */
+/** Demo: SnDropdown — contextMenu trigger + option icons. */
 import { SnDropdown } from '@snui/vue-web';
+import { FolderOpen, PenLine, Trash2 } from 'lucide-vue-next';
 import { ref } from 'vue';
 const options = [
-  { label: 'Open', key: 'open' },
-  { label: 'Rename', key: 'rename' },
+  { label: 'Open', key: 'open', icon: FolderOpen },
+  { label: 'Rename', key: 'rename', icon: PenLine },
   { type: 'divider' as const, key: 'd1' },
-  { label: 'Delete', key: 'delete' },
+  { label: 'Delete', key: 'delete', icon: Trash2 },
 ];
 const lastKey = ref('');
 </script>
@@ -14,7 +15,7 @@ const lastKey = ref('');
 <template>
   <div>
     <p style="margin: 0 0 12px; font-size: 13px; color: var(--sn-web-color-text-secondary, #666)">
-      Right-click the text below (select closes; right-click again re-anchors):
+      Right-click the text below (options[].icon accepts any Vue icon component):
     </p>
     <SnDropdown trigger="contextMenu" :options="options" @select="(key) => (lastKey = String(key))">
       <p

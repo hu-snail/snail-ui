@@ -33,9 +33,16 @@ user picks a value.
 
 ## Slots
 
-| Slot      | Description                                                                                       |
-| --------- | ------------------------------------------------------------------------------------------------- |
-| `default` | Trigger content. Render a focusable element (e.g. a button) — its keydown bubbles to the wrapper. |
+| Slot      | Scope       | Description                                                                                                                                                                                                                                                                                                   |
+| --------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `default` | —           | Trigger content. Render a focusable element (e.g. a button) — its keydown bubbles to the wrapper.                                                                                                                                                                                                             |
+| `content` | `{ close }` | Arco `#content` parity — fully custom panel body. When provided it REPLACES the `options` rendering (submenus included) and `close()` dismisses the menu. The option keyboard walk is disabled in this mode (Enter/Space open, Esc + outside-click close); the custom content owns its interactions and a11y. |
+
+## Icons
+
+`options[].icon` accepts any Vue component (SnMenu `icon` convention) and is
+clamped into a 16px row icon box. Rendering is identical under the click /
+hover / contextMenu triggers.
 
 ## Submenu
 

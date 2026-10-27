@@ -25,7 +25,24 @@ anchored to the **pointer** and replaces the native context menu; another
 right-click re-anchors it. The `placement` alignment suffix still applies
 around the cursor point.
 
-<Demo name="dropdown-web-context-menu" description="trigger=contextMenu: right-click opens at the pointer; select closes." />
+<Demo name="dropdown-web-context-menu" description="trigger=contextMenu: right-click opens at the pointer; icon rows; select closes." />
+
+## Icons
+
+`options[].icon` accepts any Vue icon component (same convention as SnMenu
+`icon`) and renders identically under the click / hover / contextMenu
+triggers.
+
+## Custom panel (#content slot)
+
+Providing the scoped `#content` slot takes over the panel body entirely
+(`options` and submenus are ignored). The slot scope is `{ close }` — call
+`close()` from a custom row to dismiss. In this mode the component stops
+managing the option keyboard walk (Enter/Space still open, Esc and
+outside-click still close); the custom content owns its a11y. Combine with
+`trigger="contextMenu"` for a fully custom context menu.
+
+<Demo name="dropdown-web-content-slot" description="#content slot: custom icon rows, danger row, footer; close() dismisses." />
 
 ## API
 
@@ -41,5 +58,7 @@ around the cursor point.
 | show      | `boolean`                         | —          | Controlled (v-model:show)                                                     |
 
 Events: `update:show` / `select(key, option)` / `clickoutside`. Keyboard: Enter/Space/ArrowDown open, ArrowUp/Down highlight, ArrowRight/Left enter/exit submenu, Esc close. ARIA: menu/menuitem/separator.
+
+Slots: `#content="{ close }"` takes over the panel body entirely (`options` ignored, submenus included); call `close()` from custom rows; the option keyboard walk is disabled in this mode while Esc / outside-click keep working. `options[].icon` accepts any Vue icon component, identical under all three triggers.
 
 See the component `ai-description.md` for the full contract.
