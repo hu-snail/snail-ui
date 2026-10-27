@@ -9,9 +9,11 @@
  * lengths it cannot parse, so `rpx` values are never asserted.
  */
 
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnRichText from './sn-rich-text.vue';
+import SnImagePreview from '../sn-image-preview/sn-image-preview.vue';
+import SnPopup from '../sn-popup/sn-popup.vue';
 import {
   parseRichText,
   decodeEntities,
@@ -23,9 +25,8 @@ import { sanitizeInlineStyle, mergeStyles, resolveNodeStyle } from './sn-rich-te
 /** Parser options used by most assertions. */
 const OPTIONS = { allowDataImage: false, baseUrl: '' };
 
-/** Minimal uni runtime shape the component reads through `globalThis`. */
+/** Minimal uni runtime shape the component reads through . */
 interface UniStub {
-  previewImage?: (options: { urls: string[]; current: string }) => void;
   pageScrollTo?: (options: { scrollTop: number; duration: number }) => void;
 }
 afterEach(() => {
@@ -410,30 +411,26 @@ describe('sn-rich-text component', () => {
   });
 
   describe('images', () => {
-    it('emits image-click and previews through uni.previewImage', async () => {
-      const previewImage = vi.fn();
-      (globalThis as { uni?: UniStub }).uni = { previewImage };
+    it('emits image-click and opens the built-in viewer at the tapped image', async () => {
       const wrapper = mountRich({ content: '<img src="https://x.dev/a.png">' });
       await wrapper.find('.sn-rich-text__image').trigger('click');
       expect(wrapper.emitted('image-click')?.[0]).toEqual([
         { src: 'https://x.dev/a.png', index: 0 },
       ]);
-      expect(previewImage).toHaveBeenCalledWith({
-        urls: ['https://x.dev/a.png'],
-        current: 'https://x.dev/a.png',
-      });
+      // The built-in WeChat-style viewer is now open (popup model flipped).
+      const viewer = wrapper.findComponent(SnImagePreview);
+      expect(viewer.findComponent(SnPopup).props('modelValue')).toBe(true);
     });
 
-    it('skips the native preview when preview-image is off', async () => {
-      const previewImage = vi.fn();
-      (globalThis as { uni?: UniStub }).uni = { previewImage };
+    it('skips the built-in viewer when preview-image is off', async () => {
       const wrapper = mountRich({
         content: '<img src="https://x.dev/a.png">',
         previewImage: false,
       });
       await wrapper.find('.sn-rich-text__image').trigger('click');
       expect(wrapper.emitted('image-click')).toBeDefined();
-      expect(previewImage).not.toHaveBeenCalled();
+      const viewer = wrapper.findComponent(SnImagePreview);
+      expect(viewer.findComponent(SnPopup).props('modelValue')).toBe(false);
     });
 
     it('routes a linked image tap to link-click', async () => {

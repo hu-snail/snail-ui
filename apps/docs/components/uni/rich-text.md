@@ -19,9 +19,9 @@
 
 ### 图片与预览
 
-普通图片点击触发 `image-click` 并默认调用原生预览；`original-src` 用缩略图展示、高清图预览；`data-preview="false"` 让单张图片退出预览列表；地址无效时回退到 `alt`。
+普通图片点击触发 `image-click` 并默认打开内置的微信级预览层（捏合缩放、双击放大、下滑关闭，见 `sn-image-preview`）；`original-src` 用缩略图展示、高清图预览；`data-preview="false"` 让单张图片退出预览列表；地址无效时回退到 `alt`。
 
-<Demo name="rich-text-mp-images" description="original-src 高清预览、data-preview 退出列表、失败回退 alt 文本。" />
+<Demo name="rich-text-mp-images" description="内置微信级预览、original-src 高清预览、data-preview 退出列表、失败回退 alt 文本。" />
 
 ### 链接与图片链接
 

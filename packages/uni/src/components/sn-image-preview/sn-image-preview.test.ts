@@ -12,14 +12,43 @@
  * No `rpx` numbers in assertions: happy-dom drops CSS lengths it cannot parse.
  */
 
-import { afterEach, describe, it, expect } from 'vitest';
+import { afterEach, describe, it, expect, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h, nextTick } from 'vue';
 import SnImagePreview from './sn-image-preview.vue';
+import {
+  clampZoom,
+  dismissOpacity,
+  lockAxis,
+  panLimit,
+  pinchScale,
+  rubberBand,
+  shouldDismiss,
+  shouldPage,
+  touchDistance,
+  touchMidpoint,
+} from './sn-image-preview-gestures';
 import SnPopup from '../sn-popup/sn-popup.vue';
-import SnSwiper from '../sn-swiper/sn-swiper.vue';
 
 const images = ['https://x/1.png', 'https://x/2.png', 'https://x/3.png'];
+
+/**
+ * Simulate a one-finger tap through the touch pipeline (start → end at the
+ * same point). The viewer closes single taps on a 300 ms timer, so pair this
+ * with fake timers.
+ */
+function tapAt(
+  stage: ReturnType<typeof mount> extends never
+    ? never
+    : { trigger: (e: string, o?: unknown) => Promise<void> },
+  x = 100,
+  y = 100,
+): Promise<void> {
+  const touches = [{ clientX: x, clientY: y }];
+  return stage
+    .trigger('touchstart', { touches })
+    .then(() => stage.trigger('touchend', { touches: [] }));
+}
 
 /** Exposed surface this test drives. */
 interface PreviewApi {
@@ -83,11 +112,11 @@ describe('sn-image-preview', () => {
     expect(preview.emitted('open')).toHaveLength(1);
   });
 
-  it('should render one slide per image inside the swiper', async () => {
+  it('should render one cell per image inside the track', async () => {
     const { preview, api } = await mountPreview();
     api.open();
     await nextTick();
-    expect(preview.findAll('.sn-swiper__item')).toHaveLength(3);
+    expect(preview.findAll('.sn-image-preview__cell')).toHaveLength(3);
   });
 
   it('should render the counter as n / total', async () => {
@@ -148,31 +177,43 @@ describe('sn-image-preview', () => {
     const { preview, api } = await mountPreview();
     api.open({ images: ['https://x/only.png'] });
     await nextTick();
-    expect(preview.findAll('.sn-swiper__item')).toHaveLength(1);
+    expect(preview.findAll('.sn-image-preview__cell')).toHaveLength(1);
     expect(preview.find('.sn-image-preview__index-text').text()).toBe('1 / 1');
   });
 
   it('should close on image tap when closeOnClick is on', async () => {
-    const { preview, api } = await mountPreview();
-    api.open();
-    await nextTick();
-    await preview.find('.sn-image-preview__stage').trigger('tap');
-    expect(preview.emitted('close')).toHaveLength(1);
+    vi.useFakeTimers();
+    try {
+      const { preview, api } = await mountPreview();
+      api.open();
+      await nextTick();
+      await tapAt(preview.find('.sn-image-preview'));
+      await vi.advanceTimersByTimeAsync(350);
+      expect(preview.emitted('close')).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('should not close on image tap when closeOnClick is off', async () => {
-    const { preview, api } = await mountPreview({ closeOnClick: false });
-    api.open();
-    await nextTick();
-    await preview.find('.sn-image-preview__stage').trigger('tap');
-    expect(preview.emitted('close')).toBeUndefined();
+    vi.useFakeTimers();
+    try {
+      const { preview, api } = await mountPreview({ closeOnClick: false });
+      api.open();
+      await nextTick();
+      await tapAt(preview.find('.sn-image-preview'));
+      await vi.advanceTimersByTimeAsync(350);
+      expect(preview.emitted('close')).toBeUndefined();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('should emit long-press with the current image', async () => {
     const { preview, api } = await mountPreview();
     api.open({ startPosition: 1 });
     await nextTick();
-    await preview.find('.sn-image-preview__stage').trigger('longpress');
+    await preview.find('.sn-image-preview').trigger('longpress');
     expect(preview.emitted('long-press')?.[0]?.[0]).toEqual({ image: images[1] });
   });
 
@@ -315,7 +356,7 @@ describe('sn-image-preview', () => {
     const preview = wrapper.findComponent(SnImagePreview);
     (preview.vm as unknown as PreviewApi).open();
     await nextTick();
-    expect(preview.find('.sn-image-preview__stage').text()).toContain('empty viewer');
+    expect(preview.find('.sn-image-preview').text()).toContain('empty viewer');
   });
 
   it('should expose the viewer as a modal dialog', async () => {
@@ -327,21 +368,21 @@ describe('sn-image-preview', () => {
     expect(root.attributes('aria-modal')).toBe('true');
   });
 
-  it('should follow the swiper position and emit change when slides move', async () => {
+  it('should track the active image and emit change via setActive', async () => {
     const { preview, api } = await mountPreview();
     api.open();
     await nextTick();
-    preview.findComponent(SnSwiper).vm.$emit('change', { current: 2, source: 'touch' });
+    api.setActive(2);
     await nextTick();
     expect(preview.emitted('change')?.[0]?.[0]).toEqual({ index: 2 });
     expect(preview.find('.sn-image-preview__index-text').text()).toBe('3 / 3');
   });
 
-  it('should not emit change when the swiper reports the current position', async () => {
+  it('should not emit change when setActive lands on the current index', async () => {
     const { preview, api } = await mountPreview({ startPosition: 1 });
     api.open();
     await nextTick();
-    preview.findComponent(SnSwiper).vm.$emit('change', { current: 1, source: 'touch' });
+    api.setActive(1);
     await nextTick();
     expect(preview.emitted('change')).toBeUndefined();
   });
@@ -411,5 +452,134 @@ describe('sn-image-preview', () => {
     } finally {
       restore();
     }
+  });
+});
+
+describe('sn-image-preview gesture math', () => {
+  it('locks the dominant axis and stays unlocked under the threshold', () => {
+    expect(lockAxis(3, 2, 10)).toBeNull();
+    expect(lockAxis(20, 2, 10)).toBe('x');
+    expect(lockAxis(2, 20, 10)).toBe('y');
+    expect(lockAxis(12, 12, 10)).toBe('x'); // horizontal wins ties
+  });
+
+  it('passes in-range drags 1:1 and resists beyond the limit', () => {
+    expect(rubberBand(40, 50, 0.15)).toBe(40);
+    expect(rubberBand(60, 50, 0.15)).toBeCloseTo(51.5);
+    expect(rubberBand(-60, 0, 0.15)).toBeCloseTo(-9);
+  });
+
+  it('derives pinch scale and clamps zoom into range', () => {
+    expect(pinchScale(100, 200)).toBe(2);
+    expect(pinchScale(0, 200)).toBe(1);
+    expect(clampZoom(0.5, 1, 4)).toBe(1);
+    expect(clampZoom(6, 1, 4)).toBe(4);
+  });
+
+  it('bounds zoomed panning to the scaled overflow', () => {
+    expect(panLimit(375, 1)).toBe(0);
+    expect(panLimit(375, 3)).toBe(375);
+  });
+
+  it('fades the curtain linearly and decides dismissal', () => {
+    expect(dismissOpacity(0, 667)).toBe(1);
+    expect(dismissOpacity(333.5, 667)).toBeCloseTo(0.5);
+    expect(dismissOpacity(700, 667)).toBe(0);
+    expect(shouldDismiss(200, 0, 667)).toBe(true); // > 25% height
+    expect(shouldDismiss(100, 0.8, 667)).toBe(true); // flick
+    expect(shouldDismiss(100, 0.2, 667)).toBe(false);
+  });
+
+  it('pages on distance or flick velocity', () => {
+    expect(shouldPage(300, 0, 375)).toBe(true); // > 35% width
+    expect(shouldPage(100, 0.8, 375)).toBe(true); // flick
+    expect(shouldPage(100, 0.2, 375)).toBe(false);
+  });
+
+  it('measures two-finger distance and midpoint', () => {
+    const touches = [
+      { clientX: 100, clientY: 100 },
+      { clientX: 200, clientY: 200 },
+    ];
+    expect(touchDistance(touches)).toBeCloseTo(141.42);
+    expect(touchMidpoint(touches)).toEqual({ x: 150, y: 150 });
+    expect(touchDistance(touches.slice(0, 1))).toBe(0);
+    expect(touchMidpoint(touches.slice(0, 1))).toBeNull();
+  });
+});
+
+describe('sn-image-preview gestures (component)', () => {
+  /** Two-finger pinch helper: start wide, move closer/farther. */
+  async function pinch(
+    stage: { trigger: (e: string, o?: unknown) => Promise<void> },
+    startDistance: number,
+    endDistance: number,
+  ): Promise<void> {
+    const mid = 180;
+    const half = (d: number) => d / 2;
+    await stage.trigger('touchstart', {
+      touches: [
+        { clientX: mid - half(startDistance), clientY: mid },
+        { clientX: mid + half(startDistance), clientY: mid },
+      ],
+    });
+    await stage.trigger('touchmove', {
+      touches: [
+        { clientX: mid - half(endDistance), clientY: mid },
+        { clientX: mid + half(endDistance), clientY: mid },
+      ],
+    });
+    await stage.trigger('touchend', { touches: [] });
+  }
+
+  it('zooms with a pinch and reports the scale on the current image', async () => {
+    const { preview, api } = await mountPreview();
+    api.open();
+    await nextTick();
+    const stage = preview.find('.sn-image-preview');
+    await pinch(stage, 100, 300);
+    await nextTick();
+    expect(preview.find('.sn-image-preview__image').attributes('style') ?? '').toContain(
+      'scale(3)',
+    );
+  });
+
+  it('snaps the zoom back when pinching below 1x', async () => {
+    const { preview, api } = await mountPreview();
+    api.open();
+    await nextTick();
+    const stage = preview.find('.sn-image-preview');
+    await pinch(stage, 200, 80);
+    await nextTick();
+    expect(preview.find('.sn-image-preview__image').attributes('style') ?? '').not.toContain(
+      'scale(',
+    );
+  });
+
+  it('pages on a horizontal flick and updates the counter', async () => {
+    const { preview, api } = await mountPreview();
+    api.open();
+    await nextTick();
+    const stage = preview.find('.sn-image-preview');
+    await stage.trigger('touchstart', { touches: [{ clientX: 300, clientY: 300 }] });
+    await stage.trigger('touchmove', { touches: [{ clientX: 100, clientY: 300 }] });
+    await stage.trigger('touchend', { touches: [] });
+    await nextTick();
+    expect(preview.emitted('change')?.[0]?.[0]).toEqual({ index: 1 });
+    expect(preview.find('.sn-image-preview__index-text').text()).toBe('2 / 3');
+  });
+
+  it('dismisses on a downward drag past the threshold and fades the curtain', async () => {
+    const { preview, api } = await mountPreview();
+    api.open();
+    await nextTick();
+    const stage = preview.find('.sn-image-preview');
+    await stage.trigger('touchstart', { touches: [{ clientX: 180, clientY: 200 }] });
+    await stage.trigger('touchmove', { touches: [{ clientX: 180, clientY: 420 }] });
+    await nextTick();
+    const curtain = preview.find('.sn-image-preview__curtain');
+    expect(curtain.attributes('style') ?? '').toContain('opacity: 0.670'); // 1 - 220/667
+    await stage.trigger('touchend', { touches: [] });
+    expect(preview.emitted('close')).toHaveLength(1); // 220px > 25% of 667
   });
 });

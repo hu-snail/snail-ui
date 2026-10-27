@@ -6,15 +6,20 @@
 
 ## Purpose
 
-Full-screen image viewer: a scrim layer with a swipeable image stage, an
-`n / total` counter, a close button and tap-to-close. Composed from `sn-popup`
-(scrim / stacking / scroll lock / animation) plus `sn-swiper` (the native
-`<swiper>`), so paging and looping come from the platform.
+WeChat-grade full-screen image viewer: an opaque black curtain, a paged
+image track, an `n / total` counter, a thin close cross and tap-to-close —
+plus a full gesture layer: drag-to-page with rubber banding, pinch zoom
+(1–4×, anchored at the finger midpoint), double-tap zoom (2.5×, anchored at
+the tap point), zoomed panning inside bounds, and drag-down dismiss with a
+curtain fade. Composed from `sn-popup` (scrim / stacking / scroll lock /
+animation); the track and gestures are hand-rolled (see
+`sn-image-preview-gestures.ts`).
 
 ## Reference Library
 
 Per AGENTS.md §112, this component's API surface mirrors wot-ui
-`wd-image-preview` (https://wot-ui.cn/component/image-preview.html). New props
+`wd-image-preview` (https://wot-ui.cn/component/image-preview.html). The
+gesture layer is AUI-additive and registered in AGENTS.md §112.3a. New props
 added here MUST also be added to the wd-image-preview parity list.
 
 ## Imperative surface (not `v-model`)

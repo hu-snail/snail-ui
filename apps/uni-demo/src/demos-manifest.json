@@ -2153,6 +2153,11 @@
           "name": "image-preview-mp-config",
           "title": "配置",
           "hasEn": true
+        },
+        {
+          "name": "image-preview-mp-gestures",
+          "title": "gestures",
+          "hasEn": true
         }
       ]
     },
@@ -2400,6 +2405,21 @@
           "name": "barcode-mp",
           "title": "基础用法",
           "hasEn": false
+        },
+        {
+          "name": "barcode-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "barcode-mp-states",
+          "title": "状态",
+          "hasEn": true
+        },
+        {
+          "name": "barcode-mp-variants",
+          "title": "variants",
+          "hasEn": true
         }
       ]
     },
@@ -2413,6 +2433,21 @@
           "name": "dialer-mp",
           "title": "基础用法",
           "hasEn": false
+        },
+        {
+          "name": "dialer-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "dialer-mp-states",
+          "title": "状态",
+          "hasEn": true
+        },
+        {
+          "name": "dialer-mp-variants",
+          "title": "variants",
+          "hasEn": true
         }
       ]
     },
@@ -2426,6 +2461,21 @@
           "name": "liquid-mp",
           "title": "基础用法",
           "hasEn": false
+        },
+        {
+          "name": "liquid-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "liquid-mp-states",
+          "title": "状态",
+          "hasEn": true
+        },
+        {
+          "name": "liquid-mp-variants",
+          "title": "variants",
+          "hasEn": true
         }
       ]
     },
@@ -2439,6 +2489,21 @@
           "name": "lucky-mp",
           "title": "基础用法",
           "hasEn": false
+        },
+        {
+          "name": "lucky-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "lucky-mp-states",
+          "title": "状态",
+          "hasEn": true
+        },
+        {
+          "name": "lucky-mp-variants",
+          "title": "variants",
+          "hasEn": true
         }
       ]
     },
@@ -2452,6 +2517,21 @@
           "name": "scratchcard-mp",
           "title": "基础用法",
           "hasEn": false
+        },
+        {
+          "name": "scratchcard-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "scratchcard-mp-states",
+          "title": "状态",
+          "hasEn": true
+        },
+        {
+          "name": "scratchcard-mp-variants",
+          "title": "variants",
+          "hasEn": true
         }
       ]
     },
@@ -2465,6 +2545,21 @@
           "name": "typing-mp",
           "title": "基础用法",
           "hasEn": false
+        },
+        {
+          "name": "typing-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "typing-mp-states",
+          "title": "状态",
+          "hasEn": true
+        },
+        {
+          "name": "typing-mp-variants",
+          "title": "variants",
+          "hasEn": true
         }
       ]
     },
@@ -2503,22 +2598,22 @@
         {
           "name": "paging-mp-app",
           "title": "app",
-          "hasEn": false
+          "hasEn": true
         },
         {
           "name": "paging-mp-basic",
           "title": "基础用法",
-          "hasEn": false
+          "hasEn": true
         },
         {
           "name": "paging-mp-scroll",
           "title": "滚动",
-          "hasEn": false
+          "hasEn": true
         },
         {
           "name": "paging-mp-states",
           "title": "状态",
-          "hasEn": false
+          "hasEn": true
         }
       ]
     }

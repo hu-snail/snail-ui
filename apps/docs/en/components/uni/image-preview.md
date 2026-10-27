@@ -2,7 +2,7 @@
 
 `sn-image-preview` is the full-screen image viewer of `@snui/uni` (mobile / miniprogram / H5): a swipeable image stage, an `n / total` counter, a close button and tap-to-close. Auto-registered through easycom (`components/sn-image-preview/sn-image-preview.vue` → `<sn-image-preview>`); geometry uses `rpx`.
 
-It is composed from `sn-popup` (scrim / stacking / scroll lock / animation) wrapping `sn-swiper` (the native `<swiper>`), so paging and looping come from the platform.
+It is composed from `sn-popup` (scrim / stacking / scroll lock / animation); the image track and the WeChat-grade gestures (paging / pinch / double-tap / drag-down dismiss) are built in — see the Gestures section below.
 
 ## Basic usage
 
@@ -28,6 +28,19 @@ The `images` / `startPosition` passed to `open(options)` override the prop value
 
 <Demo name="image-preview-mp-config" description="Top-left close button, counter off, footer slot showing the current position." />
 
+## Gestures (WeChat-grade preview)
+
+The viewer ships the full WeChat gesture layer (AUI-additive on top of the reference spec):
+
+- **Drag to page** — the track follows the finger; release flips past 35% of the width or on a flick; non-loop edges get rubber-band damping
+- **Pinch zoom** — two fingers, 1–4×, anchored at the finger midpoint; out-of-range releases snap back
+- **Double-tap zoom** — toggles 1× / 2.5× anchored at the tap point
+- **Zoomed pan** — one finger pans inside the bounds once zoomed, with rubber banding at the edges
+- **Drag-down dismiss** — the image tracks the finger while the black curtain fades out, revealing the page; past 25% of the screen height (or a flick) the viewer closes
+- Zoom resets on page change; single-tap close and double-tap zoom are disambiguated by a 300 ms window
+
+<Demo name="image-preview-mp-gestures" description="Pinch to zoom, double-tap, pan when zoomed, drag down to dismiss — WeChat image viewer gestures." />
+
 ## `selector` mode
 
 `selector` is resolved on `open()` through `uni.createSelectorQuery`: the boxes of every matched element are laid over with transparent tap zones, so tapping a thumbnail on the page opens the viewer at that index. The query is guarded — on hosts without it (unit tests / SSR) no zone is created and `open()` still works.
@@ -36,7 +49,7 @@ The `images` / `startPosition` passed to `open(options)` override the prop value
 
 ## loop / closeable / close-on-click / z-index
 
-- `loop=false` stops the last image from wrapping round (the inner `sn-swiper` receives `circular=false`)
+- `loop=false` stops paging at the edges with rubber-band damping
 - `closeable=false` hides the close button; provide a close entry in the `default` slot or rely on `close-on-click`
 - `close-on-click=false` stops taps on the image / scrim from closing, so a stray tap cannot dismiss the viewer
 - `z-index` is forwarded to the inner `sn-popup`

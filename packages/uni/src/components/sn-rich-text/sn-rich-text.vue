@@ -41,6 +41,7 @@
 import { computed, getCurrentInstance, onUnmounted, provide, reactive, ref, watch } from 'vue';
 import { INLINE_TAGS, parseRichText, RichTextParseError } from './sn-rich-text-parser';
 import SnRichTextNode from './sn-rich-text-node.vue';
+import SnImagePreview from '../sn-image-preview/sn-image-preview.vue';
 import { RICH_TEXT_CONTEXT_KEY } from './sn-rich-text-context';
 import type { RichTextNodeContext } from './sn-rich-text-context';
 import type {
@@ -74,7 +75,7 @@ const props = withDefaults(
     enableAnchor?: boolean;
     /** Allow text selection where the platform supports it. */
     selectable?: boolean;
-    /** Preview a standalone image on tap (native `uni.previewImage`). */
+    /** Preview a standalone image on tap (built-in WeChat-style viewer). */
     previewImage?: boolean;
     /** Let the platform lazy-load content images. */
     lazyLoad?: boolean;
@@ -160,7 +161,6 @@ interface VideoContextLike {
 }
 
 interface UniHost {
-  previewImage?: (options: { urls: string[]; current: string }) => void;
   pageScrollTo?: (options: { scrollTop: number; duration: number }) => void;
   createSelectorQuery?: () => SelectorQueryLike;
   createVideoContext?: (id: string) => VideoContextLike;
@@ -172,6 +172,9 @@ function readUniHost(): UniHost | undefined {
 
 /** Component proxy, needed for `createSelectorQuery().in()`. */
 const instance = getCurrentInstance();
+
+/** Built-in image viewer — opened from content image taps. */
+const previewRef = ref<InstanceType<typeof SnImagePreview> | null>(null);
 
 /** Root class list. */
 const rootClass = computed<string[]>(() => ['sn-rich-text', props.customClass]);
@@ -235,9 +238,9 @@ function onImageTap(node: RichTextNode): void {
   if (!props.previewImage || !info.previewable) return;
   const urls = previewableImages.value;
   if (urls.length === 0) return;
-  const previewImage = readUniHost()?.previewImage;
-  if (previewImage === undefined) return;
-  previewImage({ urls, current: info.previewSrc });
+  // Open the built-in viewer at the tapped image (WeChat-style gestures).
+  const startPosition = Math.max(0, urls.indexOf(info.previewSrc));
+  previewRef.value?.open({ images: urls, startPosition });
 }
 
 /** Image loaded: forward the real pixel size to the host. */
@@ -599,6 +602,7 @@ defineExpose({
     <template v-else>
       <sn-rich-text-node v-for="(node, index) in parsed.root" :key="`root-${index}`" :node="node" />
     </template>
+    <SnImagePreview ref="previewRef" />
   </view>
 </template>
 

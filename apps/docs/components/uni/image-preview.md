@@ -2,7 +2,7 @@
 
 `sn-image-preview` 是 `@snui/uni`（移动端 / 小程序 / H5）的全屏图片预览层：可滑动的图片舞台 + `n / 总数` 页码 + 关闭按钮 + 点击关闭。基于 easycom 自动注册（`components/sn-image-preview/sn-image-preview.vue` → `<sn-image-preview>`），样式几何值走 `rpx`。
 
-实现由 `sn-popup`（遮罩 / 层级 / 滚动锁 / 进出场动画）包 `sn-swiper`（原生 `<swiper>`）组合而成，翻页与循环都交给平台。
+实现由 `sn-popup`（遮罩 / 层级 / 滚动锁 / 进出场动画）承载，图片轨道与微信级手势（翻页 / 捏合缩放 / 双击 / 下滑关闭）为组件内置，见下方「手势」章节。
 
 ## 基础用法
 
@@ -28,6 +28,19 @@ preview.value.close()
 
 <Demo name="image-preview-mp-config" description="左上关闭按钮、关闭页码、底部插槽显示当前张数。" />
 
+## 手势（微信级预览）
+
+预览层内置完整的微信同款手势（参考库规格之外的能力，已登记为 AUI 追加）：
+
+- **拖拽翻页**：横向拖动跟手，松手按位移（>35% 宽）或速度翻页；非 loop 时首尾有橡皮筋阻尼
+- **捏合缩放**：双指 1–4×，以手指中点为缩放锚点，越界松手回弹
+- **双击缩放**：双击在 1× / 2.5× 间切换，以点击位置为锚点
+- **缩放平移**：放大后单指在界内平移，越界橡皮筋回弹
+- **下滑关闭**：图片跟手下移，黑色幕布透明度同步渐隐露出页面；超过屏高 25% 或快速下滑即关闭
+- 翻页后缩放自动复位；单击关闭与双击互不干扰（300ms 判定窗）
+
+<Demo name="image-preview-mp-gestures" description="捏合缩放、双击放大、缩放后拖动、下滑关闭——微信图片预览同款手势。" />
+
 ## selector 模式
 
 `selector` 会在 `open()` 时通过 `uni.createSelectorQuery` 取所有匹配元素的盒子，并在其上铺透明点击区，因此点页面里的缩略图即可从对应位置打开。查询带守卫：宿主没有该能力（单测 / SSR）时不生成点击区，`open()` 仍然可用。
@@ -36,7 +49,7 @@ preview.value.close()
 
 ## loop / closeable / close-on-click / z-index
 
-- `loop=false` 时最后一页不能再往后翻（内部 `sn-swiper` 收到 `circular=false`）
+- `loop=false` 时最后一页不能再往后翻（翻页在首尾截停并带橡皮筋阻尼）
 - `closeable=false` 隐藏右上关闭按钮，此时应提供 `default` 插槽里的关闭入口或依赖 `close-on-click`
 - `close-on-click=false` 后点图片 / 遮罩不再关闭，避免用户误触退出
 - `z-index` 透传给内部 `sn-popup`
@@ -101,7 +114,7 @@ preview.value.close()
 - 预览根节点挂 `role="dialog"`、`aria-modal="true"`、`aria-label="image preview"`
 - 页码是 `aria-live="polite"` 区域，滑动后会播报新位置
 - 关闭按钮 `role="button"` + `aria-label="close"`
-- 遮罩点击由 `sn-popup` 承担；翻页是原生 `<swiper>` 的手势，没有键盘分页
+- 遮罩点击由 `sn-popup` 承担；翻页 / 缩放为触摸手势，没有键盘分页
 
 ## 暗色模式
 

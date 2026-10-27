@@ -675,7 +675,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图片预览',
         titleEn: 'Image Preview',
         desc: '图片放大预览',
-        count: 3,
+        count: 4,
       },
       {
         key: 'img',
@@ -754,7 +754,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '条形码',
         titleEn: 'Barcode',
         desc: 'EAN-13 条码渲染',
-        count: 1,
+        count: 4,
       },
       {
         key: 'dialer',
@@ -762,7 +762,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '大转盘',
         titleEn: 'Dialer',
         desc: '抽奖转盘，run 指定落点',
-        count: 1,
+        count: 4,
       },
       {
         key: 'liquid',
@@ -770,7 +770,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '水波进度球',
         titleEn: 'Liquid',
         desc: '水波动画的进度展示',
-        count: 1,
+        count: 4,
       },
       {
         key: 'lucky',
@@ -778,7 +778,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '抽奖九宫格',
         titleEn: 'Lucky',
         desc: 'play / stop 两段式抽奖',
-        count: 1,
+        count: 4,
       },
       {
         key: 'scratchcard',
@@ -786,7 +786,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '刮刮乐',
         titleEn: 'Scratchcard',
         desc: '刮层擦除与阈值回调',
-        count: 1,
+        count: 4,
       },
       {
         key: 'typing',
@@ -794,7 +794,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '输入中',
         titleEn: 'Typing',
         desc: '聊天输入中跳动圆点',
-        count: 1,
+        count: 4,
       },
     ],
   },

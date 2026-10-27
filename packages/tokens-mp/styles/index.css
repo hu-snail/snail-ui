@@ -82,6 +82,7 @@
   --sn-mp-color-background-subtle: var(--aui-color-background-subtle);
   --sn-mp-color-background-elevated: var(--aui-color-background-elevated);
   --sn-mp-color-background-overlay: var(--aui-color-background-overlay);
+  --sn-mp-color-background-solid: var(--aui-color-background-solid);
   /* Tinted surfaces — soft / subtle variants and cell fill states. */
   --sn-mp-color-background-soft: var(--aui-color-background-subtle);
   --sn-mp-color-background-sunken: var(--aui-color-background-sunken);
@@ -198,6 +199,8 @@ page.sn-theme-dark,
   /* The overlay scrim is near-black in both themes — the page under it is
      dark already, so the alpha does not need to change. */
   --sn-mp-color-background-overlay: rgba(0, 0, 0, 0.8);
+  /* The solid viewer curtain stays pure black in dark too. */
+  --sn-mp-color-background-solid: #000000;
   /* Text on a filled surface stays white in both themes: the fill colour
      itself does not invert, so the label on top of it must not either. */
   --sn-mp-color-text-on-primary: #ffffff;

@@ -167,6 +167,9 @@
   --aui-color-purple-soft: rgba(124, 58, 237, 0.12);
   --aui-color-background-elevated: #ffffff;
   --aui-color-background-overlay: rgba(0, 0, 0, 0.8);
+  /* Opaque viewer curtain (image preview / video layers) — pure black in
+     both themes: content must float on a void, not on a scrim. */
+  --aui-color-background-solid: #000000;
   --aui-color-feedback-danger-hover: #f87171;
 
   /* Semantic — radius / shadow (bound to the primitives above) */

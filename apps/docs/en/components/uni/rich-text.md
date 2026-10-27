@@ -19,9 +19,9 @@ Hand the HTML to `content`; `selectable` makes the text selectable where the pla
 
 ### Images and preview
 
-Standalone images report `image-click` and join the native preview by default; `original-src` shows a thumbnail but previews the full image; `data-preview="false"` removes one image from the preview list; a filtered address falls back to the `alt` text.
+Standalone images report `image-click` and open the built-in WeChat-style viewer by default (pinch zoom, double-tap, drag-down dismiss — see `sn-image-preview`); `original-src` shows a thumbnail but previews the full image; `data-preview="false"` removes one image from the preview list; a filtered address falls back to the `alt` text.
 
-<Demo name="rich-text-mp-images" description="original-src HD preview, data-preview opt-out, failure falling back to alt." />
+<Demo name="rich-text-mp-images" description="Built-in WeChat-style preview, original-src HD preview, data-preview opt-out, failure falling back to alt." />
 
 ### Links and linked images
 

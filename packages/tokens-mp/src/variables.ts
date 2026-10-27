@@ -105,6 +105,7 @@ export const snMpColorMap: ReadonlyArray<readonly [string, string]> = [
   ['--sn-mp-color-background-subtle', 'var(--aui-color-background-subtle)'],
   ['--sn-mp-color-background-elevated', 'var(--aui-color-background-elevated)'],
   ['--sn-mp-color-background-overlay', 'var(--aui-color-background-overlay)'],
+  ['--sn-mp-color-background-solid', 'var(--aui-color-background-solid)'],
   // Tinted surfaces used by soft / subtle variants and cell fill states.
   // They resolve through the semantic layer (not a literal rgba) so dark mode
   // flips them along with the rest of the palette — a hardcoded
