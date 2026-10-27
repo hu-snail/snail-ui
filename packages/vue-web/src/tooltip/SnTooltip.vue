@@ -609,8 +609,31 @@ async function recompute(): Promise<void> {
 
 /* Recompute whenever visible flips to true, and on resize / scroll
  * while open. We listen on window — the canvas resize observer for
- * arbitrary parent containers is out of scope for v0. */
+ * arbitrary parent containers is out of scope for v0.
+ *
+ * NOTE: the rAF coalescing state below MUST be declared before this
+ * watcher — it runs `immediate: true` synchronously during setup, and a
+ * later `let` binding would be in its temporal dead zone, crashing the
+ * very first callback ("Cannot access 'recomputeFrame' before
+ * initialization") on every mount. */
 let resizeObserver: ResizeObserver | null = null;
+/* Scroll (capture — any container) and resize both land here. Recomputes are
+ * coalesced to one per animation frame: a scroll burst would otherwise run
+ * the full measure-and-write positioning pass per event and thrash layout. */
+let recomputeFrame: number | null = null;
+function cancelPendingRecompute(): void {
+  if (recomputeFrame !== null) {
+    window.cancelAnimationFrame(recomputeFrame);
+    recomputeFrame = null;
+  }
+}
+function onScrollOrResize(): void {
+  if (recomputeFrame !== null || !visible.value) return;
+  recomputeFrame = window.requestAnimationFrame(() => {
+    recomputeFrame = null;
+    if (visible.value) void recompute();
+  });
+}
 watch(
   visible,
   async (v) => {
@@ -639,23 +662,6 @@ watch(
   },
   { immediate: true },
 );
-/* Scroll (capture — any container) and resize both land here. Recomputes are
- * coalesced to one per animation frame: a scroll burst would otherwise run
- * the full measure-and-write positioning pass per event and thrash layout. */
-let recomputeFrame: number | null = null;
-function cancelPendingRecompute(): void {
-  if (recomputeFrame !== null) {
-    window.cancelAnimationFrame(recomputeFrame);
-    recomputeFrame = null;
-  }
-}
-function onScrollOrResize(): void {
-  if (recomputeFrame !== null || !visible.value) return;
-  recomputeFrame = window.requestAnimationFrame(() => {
-    recomputeFrame = null;
-    if (visible.value) void recompute();
-  });
-}
 
 /* ─────────── Outside-click dismiss (click trigger only) ─────────── */
 
