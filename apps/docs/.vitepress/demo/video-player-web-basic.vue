@@ -41,7 +41,9 @@ function note(name: string): () => void {
     />
     <p class="demo-hint">
       聚焦播放器后可用键盘：Space 播放/暂停 · ←→ 快进退 5s · ↑↓ 音量 · M 静音 · F 全屏
-      <template v-if="lastEvent">　—　最近事件：<code>{{ lastEvent }}</code></template>
+      <template v-if="lastEvent"
+        >　—　最近事件：<code>{{ lastEvent }}</code></template
+      >
     </p>
   </div>
 </template>

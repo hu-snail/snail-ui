@@ -452,9 +452,7 @@ const wrapperStyle = computed(() => {
  * color that the CSS rule used to supply. */
 const DEFAULT_PLACEHOLDER_STYLE =
   'color: var(--sn-mp-color-input-placeholder, var(--sn-mp-color-text-tertiary)); opacity: 1';
-const placeholderStyleAttr = computed(
-  () => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE,
-);
+const placeholderStyleAttr = computed(() => props.placeholderStyle || DEFAULT_PLACEHOLDER_STYLE);
 const placeholderClassAttr = computed(() => props.placeholderClass || undefined);
 </script>
 

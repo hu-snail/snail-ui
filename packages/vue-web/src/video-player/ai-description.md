@@ -40,64 +40,64 @@ as components.
 
 ## Props
 
-| Name             | Type                                       | Default      | Required | Description                                                                                      |
-| ---------------- | ------------------------------------------ | ------------ | -------- | ------------------------------------------------------------------------------------------------ |
-| `src`            | `string`                                   | `undefined`  | no       | Media URL (plain mode). Ignored while a bridge owns loading.                                     |
-| `poster`         | `string`                                   | `undefined`  | no       | Poster shown before the first frame.                                                             |
-| `title`          | `string`                                   | `undefined`  | no       | Accessible name; also the mini-window header text.                                               |
-| `qualities`      | `SnVideoQuality[]`                         | `[]`         | no       | Progressive quality ladder (`{ label, value, src, type? }`).                                     |
-| `defaultQuality` | `string \| number`                         | first entry  | no       | Initially selected ladder entry.                                                                 |
-| `autoplay`       | `boolean`                                  | `false`      | no       | Autoplay (browsers require `muted`).                                                             |
-| `muted`          | `boolean`                                  | `false`      | no       | Start muted.                                                                                     |
-| `loop`           | `boolean`                                  | `false`      | no       | Loop playback.                                                                                   |
-| `preload`        | `'none' \| 'metadata' \| 'auto'`           | `'metadata'` | no       | Preload strategy.                                                                                |
-| `volume`         | `number`                                   | `1`          | no       | Initial volume 0–1.                                                                              |
-| `rate`           | `number`                                   | `1`          | no       | Initial playback rate.                                                                           |
-| `live`           | `boolean`                                  | auto         | no       | Force live mode; `undefined` sniffs `duration === Infinity` / bridge report.                     |
-| `shortcuts`      | `boolean`                                  | `true`       | no       | Keyboard shortcuts (Space/K, ←→, ↑↓, M, F, P, D).                                                |
-| `danmus`         | `SnVideoDanmu[]`                           | `[]`         | no       | Danmaku timeline (`{ text, time, color?, type?, self? }`).                                       |
-| `danmuVisible`   | `boolean`                                  | `true`       | no       | Show the danmu layer (v-model-less controlled visibility).                                       |
-| `danmuSend`      | `boolean`                                  | `true`       | no       | Show the inline danmu input box.                                                                 |
-| `danmuOpacity`   | `number`                                   | `1`          | no       | Danmaku layer opacity 0–1.                                                                       |
-| `danmuSpeed`     | `number`                                   | `1`          | no       | Danmaku velocity multiplier.                                                                     |
-| `danmuFontSize`  | `number`                                   | `16`         | no       | Base font size in px (scales with player width).                                                 |
-| `danmuArea`      | `number`                                   | `0.75`       | no       | Fraction of the height usable for danmu lanes.                                                   |
-| `mini`           | `boolean`                                  | uncontrolled | no       | Mini floating window (controlled). `update:mini` mirrors it.                                     |
-| `miniOnScrollOut`| `boolean`                                  | `false`      | no       | Auto-dock into the mini window when scrolled out of view while playing.                          |
-| `miniWidth`      | `number`                                   | `320`        | no       | Docked window width in px.                                                                       |
-| `pip`            | `boolean`                                  | `true`       | no       | PiP toggle; button renders only when the platform supports it.                                   |
-| `download`       | `boolean`                                  | `true`       | no       | Download button (hidden for live / bridge-owned media unless `onDownload` given).                |
-| `settings`       | `boolean`                                  | `true`       | no       | Settings menu (quality / rate / loop).                                                           |
-| `sourceBridge`   | `SnVideoSourceBridge`                      | `undefined`  | no       | Third-party streaming bridge (HLS / DASH / FLV) — host-provided, not bundled.                    |
-| `width`          | `string \| number`                         | `undefined`  | no       | Player width (number → px).                                                                      |
-| `aspectRatio`    | `string`                                   | `'16 / 9'`   | no       | Player aspect ratio.                                                                             |
-| `onDownload`     | `(source) => void \| string \| Promise<string>` | `undefined` | no   | Custom download handler; returning a URL opens that instead of the source.                       |
+| Name              | Type                                            | Default      | Required | Description                                                                       |
+| ----------------- | ----------------------------------------------- | ------------ | -------- | --------------------------------------------------------------------------------- |
+| `src`             | `string`                                        | `undefined`  | no       | Media URL (plain mode). Ignored while a bridge owns loading.                      |
+| `poster`          | `string`                                        | `undefined`  | no       | Poster shown before the first frame.                                              |
+| `title`           | `string`                                        | `undefined`  | no       | Accessible name; also the mini-window header text.                                |
+| `qualities`       | `SnVideoQuality[]`                              | `[]`         | no       | Progressive quality ladder (`{ label, value, src, type? }`).                      |
+| `defaultQuality`  | `string \| number`                              | first entry  | no       | Initially selected ladder entry.                                                  |
+| `autoplay`        | `boolean`                                       | `false`      | no       | Autoplay (browsers require `muted`).                                              |
+| `muted`           | `boolean`                                       | `false`      | no       | Start muted.                                                                      |
+| `loop`            | `boolean`                                       | `false`      | no       | Loop playback.                                                                    |
+| `preload`         | `'none' \| 'metadata' \| 'auto'`                | `'metadata'` | no       | Preload strategy.                                                                 |
+| `volume`          | `number`                                        | `1`          | no       | Initial volume 0–1.                                                               |
+| `rate`            | `number`                                        | `1`          | no       | Initial playback rate.                                                            |
+| `live`            | `boolean`                                       | auto         | no       | Force live mode; `undefined` sniffs `duration === Infinity` / bridge report.      |
+| `shortcuts`       | `boolean`                                       | `true`       | no       | Keyboard shortcuts (Space/K, ←→, ↑↓, M, F, P, D).                                 |
+| `danmus`          | `SnVideoDanmu[]`                                | `[]`         | no       | Danmaku timeline (`{ text, time, color?, type?, self? }`).                        |
+| `danmuVisible`    | `boolean`                                       | `true`       | no       | Show the danmu layer (v-model-less controlled visibility).                        |
+| `danmuSend`       | `boolean`                                       | `true`       | no       | Show the inline danmu input box.                                                  |
+| `danmuOpacity`    | `number`                                        | `1`          | no       | Danmaku layer opacity 0–1.                                                        |
+| `danmuSpeed`      | `number`                                        | `1`          | no       | Danmaku velocity multiplier.                                                      |
+| `danmuFontSize`   | `number`                                        | `16`         | no       | Base font size in px (scales with player width).                                  |
+| `danmuArea`       | `number`                                        | `0.75`       | no       | Fraction of the height usable for danmu lanes.                                    |
+| `mini`            | `boolean`                                       | uncontrolled | no       | Mini floating window (controlled). `update:mini` mirrors it.                      |
+| `miniOnScrollOut` | `boolean`                                       | `false`      | no       | Auto-dock into the mini window when scrolled out of view while playing.           |
+| `miniWidth`       | `number`                                        | `320`        | no       | Docked window width in px.                                                        |
+| `pip`             | `boolean`                                       | `true`       | no       | PiP toggle; button renders only when the platform supports it.                    |
+| `download`        | `boolean`                                       | `true`       | no       | Download button (hidden for live / bridge-owned media unless `onDownload` given). |
+| `settings`        | `boolean`                                       | `true`       | no       | Settings menu (quality / rate / loop).                                            |
+| `sourceBridge`    | `SnVideoSourceBridge`                           | `undefined`  | no       | Third-party streaming bridge (HLS / DASH / FLV) — host-provided, not bundled.     |
+| `width`           | `string \| number`                              | `undefined`  | no       | Player width (number → px).                                                       |
+| `aspectRatio`     | `string`                                        | `'16 / 9'`   | no       | Player aspect ratio.                                                              |
+| `onDownload`      | `(source) => void \| string \| Promise<string>` | `undefined`  | no       | Custom download handler; returning a URL opens that instead of the source.        |
 
 ## Events
 
-| Name               | Payload                              | Description                                  |
-| ------------------ | ------------------------------------ | -------------------------------------------- |
-| `play` / `pause`   | —                                    | Media state changes.                         |
-| `ended`            | —                                    | Playback finished.                           |
-| `timeupdate`       | `currentTime: number`                | Media clock tick.                            |
-| `seeked`           | `currentTime: number`                | Seek finished (danmu pointer re-anchored).   |
-| `waiting` / `canplay` | —                                 | Buffering state.                             |
-| `error`            | `unknown`                            | Media or bridge failure (error panel shows). |
-| `ready`            | —                                    | Metadata loaded.                             |
-| `rate-change`      | `rate: number`                       | Playback rate changed.                       |
-| `volume-change`    | `{ volume, muted }`                  | Volume / mute changed.                       |
-| `fullscreen-change`| `active: boolean`                    | Element fullscreen toggled.                  |
-| `pip-change`       | `active: boolean`                    | Picture-in-picture toggled.                  |
-| `update:mini` / `mini-change` | `active: boolean`         | Mini window toggled (v-model:mini pattern).  |
-| `quality-change`   | `{ id, label? }`                     | Quality switched (ladder or bridge level).   |
-| `danmu-send`       | `SnVideoDanmu`                       | A danmu was sent from the input box.         |
-| `download`         | `SnBridgeSource`                     | Download initiated.                          |
+| Name                          | Payload               | Description                                  |
+| ----------------------------- | --------------------- | -------------------------------------------- |
+| `play` / `pause`              | —                     | Media state changes.                         |
+| `ended`                       | —                     | Playback finished.                           |
+| `timeupdate`                  | `currentTime: number` | Media clock tick.                            |
+| `seeked`                      | `currentTime: number` | Seek finished (danmu pointer re-anchored).   |
+| `waiting` / `canplay`         | —                     | Buffering state.                             |
+| `error`                       | `unknown`             | Media or bridge failure (error panel shows). |
+| `ready`                       | —                     | Metadata loaded.                             |
+| `rate-change`                 | `rate: number`        | Playback rate changed.                       |
+| `volume-change`               | `{ volume, muted }`   | Volume / mute changed.                       |
+| `fullscreen-change`           | `active: boolean`     | Element fullscreen toggled.                  |
+| `pip-change`                  | `active: boolean`     | Picture-in-picture toggled.                  |
+| `update:mini` / `mini-change` | `active: boolean`     | Mini window toggled (v-model:mini pattern).  |
+| `quality-change`              | `{ id, label? }`      | Quality switched (ladder or bridge level).   |
+| `danmu-send`                  | `SnVideoDanmu`        | A danmu was sent from the input box.         |
+| `download`                    | `SnBridgeSource`      | Download initiated.                          |
 
 ## Slots
 
-| Name    | Description                          |
-| ------- | ------------------------------------ |
-| `error` | Replaces the built-in error panel.   |
+| Name    | Description                        |
+| ------- | ---------------------------------- |
+| `error` | Replaces the built-in error panel. |
 
 ## Methods (defineExpose)
 
@@ -131,14 +131,14 @@ Overridable at any ancestor: `--sn-web-video-player-bg`, `-controls-bg`,
 
 ## AI Patch Boundary
 
-| Field               | Patchable | Notes                                             |
-| ------------------- | --------- | ------------------------------------------------- |
-| `src` / `qualities` | yes       | Source swaps preserve playback position.          |
-| `danmus`            | yes       | Whole-timeline replacement; engine re-anchors.    |
-| `danmu*` tuning     | yes       | opacity / speed / fontSize / area are live props. |
-| `mini`              | yes       | Controlled via `v-model:mini`.                    |
-| `sourceBridge`      | no        | Function prop — patching it re-creates the stream.|
-| internal engine state | no      | Danmaku actives / lane bookkeeping are internal.  |
+| Field                 | Patchable | Notes                                              |
+| --------------------- | --------- | -------------------------------------------------- |
+| `src` / `qualities`   | yes       | Source swaps preserve playback position.           |
+| `danmus`              | yes       | Whole-timeline replacement; engine re-anchors.     |
+| `danmu*` tuning       | yes       | opacity / speed / fontSize / area are live props.  |
+| `mini`                | yes       | Controlled via `v-model:mini`.                     |
+| `sourceBridge`        | no        | Function prop — patching it re-creates the stream. |
+| internal engine state | no        | Danmaku actives / lane bookkeeping are internal.   |
 
 ## Compatibility Notes
 

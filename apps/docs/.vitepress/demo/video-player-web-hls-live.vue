@@ -22,7 +22,10 @@ interface HlsLike {
   attachMedia(media: HTMLMediaElement): void;
   destroy(): void;
   currentLevel: number;
-  on(event: string, cb: (event: unknown, data: { levels: Array<{ height?: number }> }) => void): void;
+  on(
+    event: string,
+    cb: (event: unknown, data: { levels: Array<{ height?: number }> }) => void,
+  ): void;
 }
 type HlsConstructor = { new (): HlsLike; isSupported(): boolean };
 
@@ -94,8 +97,8 @@ onBeforeUnmount(() => {
       autoplay
     />
     <p class="demo-hint">
-      {{ status }}。直播源：<code>Akamai moctobpltc 公开测试流</code>；组件库零流媒体依赖，
-      hls.js 由 demo 页按需动态引入（生产请 <code>npm install hls.js</code>）。
+      {{ status }}。直播源：<code>Akamai moctobpltc 公开测试流</code>；组件库零流媒体依赖， hls.js
+      由 demo 页按需动态引入（生产请 <code>npm install hls.js</code>）。
     </p>
   </div>
 </template>

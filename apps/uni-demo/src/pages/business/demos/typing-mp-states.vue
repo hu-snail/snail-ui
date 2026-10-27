@@ -26,7 +26,11 @@ function send(): void {
   peerTyping.value = true;
   replyTimer.push(
     setTimeout(() => {
-      messages.value.push({ id: nextId++, from: 'peer', text: replies[replyIndex % replies.length] ?? '' });
+      messages.value.push({
+        id: nextId++,
+        from: 'peer',
+        text: replies[replyIndex % replies.length] ?? '',
+      });
       replyIndex += 1;
       peerTyping.value = false;
     }, 1800),

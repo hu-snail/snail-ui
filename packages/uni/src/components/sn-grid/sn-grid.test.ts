@@ -256,13 +256,21 @@ describe('sn-grid', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnGrid, {}, {
-              default: () => [
-                h(SnGridItem, { text: 'A', icon: 'Star' }, {
-                  icon: () => h('text', { class: 'custom-icon' }, 'slot icon'),
-                }),
-              ],
-            });
+            h(
+              SnGrid,
+              {},
+              {
+                default: () => [
+                  h(
+                    SnGridItem,
+                    { text: 'A', icon: 'Star' },
+                    {
+                      icon: () => h('text', { class: 'custom-icon' }, 'slot icon'),
+                    },
+                  ),
+                ],
+              },
+            );
         },
       });
       const wrapper = mount(Harness);
@@ -275,13 +283,21 @@ describe('sn-grid', () => {
       const Harness = defineComponent({
         setup() {
           return () =>
-            h(SnGrid, {}, {
-              default: () => [
-                h(SnGridItem, { text: 'prop text' }, {
-                  text: () => h('text', { class: 'custom-text' }, 'slot text'),
-                }),
-              ],
-            });
+            h(
+              SnGrid,
+              {},
+              {
+                default: () => [
+                  h(
+                    SnGridItem,
+                    { text: 'prop text' },
+                    {
+                      text: () => h('text', { class: 'custom-text' }, 'slot text'),
+                    },
+                  ),
+                ],
+              },
+            );
         },
       });
       const wrapper = mount(Harness);
@@ -327,9 +343,7 @@ describe('sn-grid', () => {
 
   describe('cell borders', () => {
     it('marks every cell when the grid draws borders', () => {
-      expect(mountGrid().find('.sn-grid-item').classes()).not.toContain(
-        'sn-grid-item--border',
-      );
+      expect(mountGrid().find('.sn-grid-item').classes()).not.toContain('sn-grid-item--border');
       expect(mountGrid({ border: true }).find('.sn-grid-item').classes()).toContain(
         'sn-grid-item--border',
       );

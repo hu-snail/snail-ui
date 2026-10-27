@@ -196,10 +196,13 @@ describe('sn-picker-view-drag', () => {
     it('falls back to pageY when clientY is absent', () => {
       const { api, commits } = mountEngine();
       api.onTouchStart({ touches: [{ pageY: 300 }] } as unknown as Event, 0);
-      api.onTouchEnd({
-        touches: [],
-        changedTouches: [{ pageY: 256 }],
-      } as unknown as Event, 0);
+      api.onTouchEnd(
+        {
+          touches: [],
+          changedTouches: [{ pageY: 256 }],
+        } as unknown as Event,
+        0,
+      );
       expect(commits).toEqual([[0, 1]]);
     });
 

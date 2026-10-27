@@ -424,6 +424,26 @@ describe('SnPopconfirm (AUI-WEB-FB-010)', () => {
       exposed.hide();
       await nextTick();
       expect(exposed.isShown()).toBe(false);
+      exposed.hide();
+      await nextTick();
+      expect(exposed.isShown()).toBe(false);
+    });
+
+    it('mounts closed without TDZ errors from the coalesced-recompute watch', () => {
+      // Regression: the frame-coalescing bindings used to be declared AFTER
+      // the immediate \`watch(visible)\`; every closed mount ran its else branch
+      // and hit \`Cannot access 'recomputeFrame' before initialization\`.
+      const errors: string[] = [];
+      const spy = vi.spyOn(console, 'error').mockImplementation((...args: unknown[]) => {
+        errors.push(args.map(String).join(' '));
+      });
+      try {
+        const w = mountPopconfirm({ content: 'x' });
+        expect(w.find('.sn-popconfirm-trigger').exists()).toBe(true);
+      } finally {
+        spy.mockRestore();
+      }
+      expect(errors.join('\n')).not.toContain('before initialization');
     });
   });
 });

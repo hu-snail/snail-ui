@@ -72,7 +72,9 @@ export const hlsBridge: SnVideoSourceBridge = (ctx) => {
   });
   return {
     destroy: () => hls.destroy(),
-    selectQuality: (id) => { hls.currentLevel = id as number; },
+    selectQuality: (id) => {
+      hls.currentLevel = id as number;
+    },
   };
 };
 ```
@@ -87,97 +89,97 @@ export const hlsBridge: SnVideoSourceBridge = (ctx) => {
 
 ### Props
 
-| 名称                | 类型                                       | 默认值       | 说明                                                                                     |
-| ------------------- | ------------------------------------------ | ------------ | ---------------------------------------------------------------------------------------- |
-| src                 | `string`                                   | `undefined`  | 视频地址（简单模式）；桥接管流时忽略                                                     |
-| poster              | `string`                                   | `undefined`  | 首帧前封面                                                                               |
-| title               | `string`                                   | `undefined`  | 无障碍名称，同时用作小窗标题                                                             |
-| qualities           | `SnVideoQuality[]`                         | `[]`         | 渐进式清晰度阶梯 `{ label, value, src, type? }`                                          |
-| default-quality     | `string \| number`                         | 首档         | 初始清晰度（`qualities[].value`）                                                        |
-| autoplay            | `boolean`                                  | `false`      | 自动播放（浏览器要求静音，见「兼容性说明」）                                             |
-| muted               | `boolean`                                  | `false`      | 静音起播                                                                                 |
-| loop                | `boolean`                                  | `false`      | 循环播放                                                                                 |
-| preload             | `'none' \| 'metadata' \| 'auto'`           | `'metadata'` | 预加载策略                                                                               |
-| volume              | `number`                                   | `1`          | 初始音量 0–1                                                                             |
-| rate                | `number`                                   | `1`          | 初始倍速                                                                                 |
-| live                | `boolean`                                  | 自动嗅探     | 强制直播模式；缺省按 `duration === Infinity` 或桥接回报判定                              |
-| shortcuts           | `boolean`                                  | `true`       | 键盘快捷键（Space/K、←→、↑↓、M、F、P、D）                                                |
-| danmus              | `SnVideoDanmu[]`                           | `[]`         | 弹幕时间轴 `{ text, time, color?, type?, self? }`                                        |
-| danmu-visible       | `boolean`                                  | `true`       | 弹幕层显示                                                                               |
-| danmu-send          | `boolean`                                  | `true`       | 显示弹幕输入框（直播模式自动隐藏）                                                       |
-| danmu-opacity       | `number`                                   | `1`          | 弹幕层透明度 0–1                                                                         |
-| danmu-speed         | `number`                                   | `1`          | 弹幕速度倍率                                                                             |
-| danmu-font-size     | `number`                                   | `16`         | 弹幕基准字号 px（随播放器宽度缩放）                                                      |
-| danmu-area          | `number`                                   | `0.75`       | 弹幕可用高度占比 0–1                                                                     |
-| mini                | `boolean`                                  | 非受控       | 小窗播放（受控），配合 `@update:mini` / `v-model:mini`                                   |
-| mini-on-scroll-out  | `boolean`                                  | `false`      | 播放中滚出视口时自动停靠小窗                                                             |
-| mini-width          | `number`                                   | `320`        | 小窗宽度 px                                                                              |
-| pip                 | `boolean`                                  | `true`       | 画中画入口（环境不支持时不渲染按钮）                                                     |
-| download            | `boolean`                                  | `true`       | 下载按钮（直播 / 桥接管流且未提供 `on-download` 时隐藏）                                 |
-| settings            | `boolean`                                  | `true`       | 设置菜单（清晰度 / 倍速 / 循环）                                                         |
-| source-bridge       | `SnVideoSourceBridge`                      | `undefined`  | 第三方流媒体桥接函数（HLS / DASH / FLV），见上文「安装第三方流媒体库」                    |
-| width               | `string \| number`                         | `undefined`  | 播放器宽度（数字按 px）                                                                  |
-| aspect-ratio        | `string`                                   | `'16 / 9'`   | 宽高比                                                                                   |
-| on-download         | `(source) => void \| string \| Promise<string>` | `undefined` | 自定义下载：返回 URL 则打开该地址                                                      |
+| 名称               | 类型                                            | 默认值       | 说明                                                                   |
+| ------------------ | ----------------------------------------------- | ------------ | ---------------------------------------------------------------------- |
+| src                | `string`                                        | `undefined`  | 视频地址（简单模式）；桥接管流时忽略                                   |
+| poster             | `string`                                        | `undefined`  | 首帧前封面                                                             |
+| title              | `string`                                        | `undefined`  | 无障碍名称，同时用作小窗标题                                           |
+| qualities          | `SnVideoQuality[]`                              | `[]`         | 渐进式清晰度阶梯 `{ label, value, src, type? }`                        |
+| default-quality    | `string \| number`                              | 首档         | 初始清晰度（`qualities[].value`）                                      |
+| autoplay           | `boolean`                                       | `false`      | 自动播放（浏览器要求静音，见「兼容性说明」）                           |
+| muted              | `boolean`                                       | `false`      | 静音起播                                                               |
+| loop               | `boolean`                                       | `false`      | 循环播放                                                               |
+| preload            | `'none' \| 'metadata' \| 'auto'`                | `'metadata'` | 预加载策略                                                             |
+| volume             | `number`                                        | `1`          | 初始音量 0–1                                                           |
+| rate               | `number`                                        | `1`          | 初始倍速                                                               |
+| live               | `boolean`                                       | 自动嗅探     | 强制直播模式；缺省按 `duration === Infinity` 或桥接回报判定            |
+| shortcuts          | `boolean`                                       | `true`       | 键盘快捷键（Space/K、←→、↑↓、M、F、P、D）                              |
+| danmus             | `SnVideoDanmu[]`                                | `[]`         | 弹幕时间轴 `{ text, time, color?, type?, self? }`                      |
+| danmu-visible      | `boolean`                                       | `true`       | 弹幕层显示                                                             |
+| danmu-send         | `boolean`                                       | `true`       | 显示弹幕输入框（直播模式自动隐藏）                                     |
+| danmu-opacity      | `number`                                        | `1`          | 弹幕层透明度 0–1                                                       |
+| danmu-speed        | `number`                                        | `1`          | 弹幕速度倍率                                                           |
+| danmu-font-size    | `number`                                        | `16`         | 弹幕基准字号 px（随播放器宽度缩放）                                    |
+| danmu-area         | `number`                                        | `0.75`       | 弹幕可用高度占比 0–1                                                   |
+| mini               | `boolean`                                       | 非受控       | 小窗播放（受控），配合 `@update:mini` / `v-model:mini`                 |
+| mini-on-scroll-out | `boolean`                                       | `false`      | 播放中滚出视口时自动停靠小窗                                           |
+| mini-width         | `number`                                        | `320`        | 小窗宽度 px                                                            |
+| pip                | `boolean`                                       | `true`       | 画中画入口（环境不支持时不渲染按钮）                                   |
+| download           | `boolean`                                       | `true`       | 下载按钮（直播 / 桥接管流且未提供 `on-download` 时隐藏）               |
+| settings           | `boolean`                                       | `true`       | 设置菜单（清晰度 / 倍速 / 循环）                                       |
+| source-bridge      | `SnVideoSourceBridge`                           | `undefined`  | 第三方流媒体桥接函数（HLS / DASH / FLV），见上文「安装第三方流媒体库」 |
+| width              | `string \| number`                              | `undefined`  | 播放器宽度（数字按 px）                                                |
+| aspect-ratio       | `string`                                        | `'16 / 9'`   | 宽高比                                                                 |
+| on-download        | `(source) => void \| string \| Promise<string>` | `undefined`  | 自定义下载：返回 URL 则打开该地址                                      |
 
 ### Events
 
-| 名称               | 参数                     | 说明                                     |
-| ------------------ | ------------------------ | ---------------------------------------- |
-| play / pause       | —                        | 播放 / 暂停                              |
-| ended              | —                        | 播放结束                                 |
-| timeupdate         | `currentTime: number`    | 播放时间更新                             |
-| seeked             | `currentTime: number`    | seek 完成（弹幕指针已重锚定）            |
-| waiting / canplay  | —                        | 缓冲状态                                 |
-| error              | `unknown`                | 媒体或桥接失败（错误面板出现）           |
-| ready              | —                        | 元数据加载完成                           |
-| rate-change        | `rate: number`           | 倍速变化                                 |
-| volume-change      | `{ volume, muted }`      | 音量 / 静音变化                          |
-| fullscreen-change  | `active: boolean`        | 元素全屏切换                             |
-| pip-change         | `active: boolean`        | 画中画切换                               |
-| update:mini / mini-change | `active: boolean` | 小窗切换（`v-model:mini` 模式）          |
-| quality-change     | `{ id, label? }`         | 清晰度切换（阶梯或桥接 level）           |
-| danmu-send         | `SnVideoDanmu`           | 从输入框发送了一条弹幕                   |
-| download           | `SnBridgeSource`         | 触发下载                                 |
+| 名称                      | 参数                  | 说明                            |
+| ------------------------- | --------------------- | ------------------------------- |
+| play / pause              | —                     | 播放 / 暂停                     |
+| ended                     | —                     | 播放结束                        |
+| timeupdate                | `currentTime: number` | 播放时间更新                    |
+| seeked                    | `currentTime: number` | seek 完成（弹幕指针已重锚定）   |
+| waiting / canplay         | —                     | 缓冲状态                        |
+| error                     | `unknown`             | 媒体或桥接失败（错误面板出现）  |
+| ready                     | —                     | 元数据加载完成                  |
+| rate-change               | `rate: number`        | 倍速变化                        |
+| volume-change             | `{ volume, muted }`   | 音量 / 静音变化                 |
+| fullscreen-change         | `active: boolean`     | 元素全屏切换                    |
+| pip-change                | `active: boolean`     | 画中画切换                      |
+| update:mini / mini-change | `active: boolean`     | 小窗切换（`v-model:mini` 模式） |
+| quality-change            | `{ id, label? }`      | 清晰度切换（阶梯或桥接 level）  |
+| danmu-send                | `SnVideoDanmu`        | 从输入框发送了一条弹幕          |
+| download                  | `SnBridgeSource`      | 触发下载                        |
 
 ### Slots
 
-| 名称  | 参数 | 说明               |
-| ----- | ---- | ------------------ |
-| error | —    | 替换内置错误面板   |
+| 名称  | 参数 | 说明             |
+| ----- | ---- | ---------------- |
+| error | —    | 替换内置错误面板 |
 
 ### Methods（通过模板 ref 调用）
 
-| 名称                   | 类型                                  | 说明                       |
-| ---------------------- | ------------------------------------- | -------------------------- |
-| play / pause / toggle  | `() => void \| Promise<void>`         | 播放控制                   |
-| seek                   | `(t: number) => void`                 | 跳转（直播钳制到当前时刻） |
-| setVolume / setMuted / toggleMute | `(v) => void`              | 音量控制                   |
-| setRate                | `(r: number) => void`                 | 倍速                       |
-| toggleFullscreen       | `() => void`                          | 元素全屏                   |
-| toggleWebFullscreen    | `() => void`                          | 页面全屏（B 站式网页全屏） |
-| togglePip              | `() => Promise<void>`                 | 画中画                     |
-| toggleMini             | `() => void`                          | 小窗                       |
-| toggleDanmu            | `() => void`                          | 弹幕开关                   |
-| sendDanmu              | `(text, opts?) => void`               | 以当前时刻发送弹幕         |
-| retry                  | `() => void`                          | 错误后重试                 |
-| videoEl / rootEl       | `Ref<HTMLVideoElement \| HTMLElement>`| 底层元素（高级用法）       |
+| 名称                              | 类型                                   | 说明                       |
+| --------------------------------- | -------------------------------------- | -------------------------- |
+| play / pause / toggle             | `() => void \| Promise<void>`          | 播放控制                   |
+| seek                              | `(t: number) => void`                  | 跳转（直播钳制到当前时刻） |
+| setVolume / setMuted / toggleMute | `(v) => void`                          | 音量控制                   |
+| setRate                           | `(r: number) => void`                  | 倍速                       |
+| toggleFullscreen                  | `() => void`                           | 元素全屏                   |
+| toggleWebFullscreen               | `() => void`                           | 页面全屏（B 站式网页全屏） |
+| togglePip                         | `() => Promise<void>`                  | 画中画                     |
+| toggleMini                        | `() => void`                           | 小窗                       |
+| toggleDanmu                       | `() => void`                           | 弹幕开关                   |
+| sendDanmu                         | `(text, opts?) => void`                | 以当前时刻发送弹幕         |
+| retry                             | `() => void`                           | 错误后重试                 |
+| videoEl / rootEl                  | `Ref<HTMLVideoElement \| HTMLElement>` | 底层元素（高级用法）       |
 
 ## 主题 Tokens
 
 组件作用域 `--sn-web-video-player-*` 变量，全部带 `--sn-web-*` 通用 token 兜底，可在任意祖先覆盖：
 
-| Token                          | 说明             | 兜底                                     |
-| ------------------------------ | ---------------- | ---------------------------------------- |
-| `--sn-web-video-player-bg`     | 播放器背景       | `#000000`                                |
-| `--sn-web-video-player-controls-bg` | 控制条背景  | `#000000a6`                              |
-| `--sn-web-video-player-scrim`  | 遮罩 / 浮层底    | `#00000073`                              |
-| `--sn-web-video-player-color`  | 前景色           | `#ffffff`                                |
-| `--sn-web-video-player-button-hover` | 按钮悬停底 | `#ffffff29`                              |
-| `--sn-web-video-player-track` / `-buffered` / `-hover-track` | 进度轨道 | 白色阶梯透明 |
-| `--sn-web-video-player-big-play-size` | 中央播放键尺寸 | `64px`                          |
-| `--sn-web-video-player-mini-width` / `-mini-z` | 小窗宽度 / 层级 | `320px` / `1050`  |
-| `--sn-web-video-player-radius` | 圆角             | `--sn-web-radius-lg`                     |
+| Token                                                        | 说明            | 兜底                 |
+| ------------------------------------------------------------ | --------------- | -------------------- |
+| `--sn-web-video-player-bg`                                   | 播放器背景      | `#000000`            |
+| `--sn-web-video-player-controls-bg`                          | 控制条背景      | `#000000a6`          |
+| `--sn-web-video-player-scrim`                                | 遮罩 / 浮层底   | `#00000073`          |
+| `--sn-web-video-player-color`                                | 前景色          | `#ffffff`            |
+| `--sn-web-video-player-button-hover`                         | 按钮悬停底      | `#ffffff29`          |
+| `--sn-web-video-player-track` / `-buffered` / `-hover-track` | 进度轨道        | 白色阶梯透明         |
+| `--sn-web-video-player-big-play-size`                        | 中央播放键尺寸  | `64px`               |
+| `--sn-web-video-player-mini-width` / `-mini-z`               | 小窗宽度 / 层级 | `320px` / `1050`     |
+| `--sn-web-video-player-radius`                               | 圆角            | `--sn-web-radius-lg` |
 
 ## 无障碍行为
 
