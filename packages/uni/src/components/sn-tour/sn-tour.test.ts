@@ -393,4 +393,14 @@ describe('sn-tour', () => {
       expect(wrapper.find('.sn-tour__text').text()).toBe('First step');
     });
   });
+
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on every built-in tour button', () => {
+      const wrapper = mount(SnTour, { props: { modelValue: true, steps: STEPS, current: 1 } });
+      for (const button of wrapper.findAll('.sn-tour__button')) {
+        expect(button.attributes('hover-class')).toBe('sn-tour__button--pressed');
+      }
+      expect(wrapper.findAll('.sn-tour__button').length).toBeGreaterThanOrEqual(2);
+    });
+  });
 });

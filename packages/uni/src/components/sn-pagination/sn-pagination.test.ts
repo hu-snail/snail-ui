@@ -12,6 +12,33 @@ import { mount } from '@vue/test-utils';
 import SnPagination from './sn-pagination.vue';
 
 describe('sn-pagination', () => {
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on page buttons', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 3, modelValue: 2 } });
+      for (const page of wrapper.findAll('.sn-pagination__page')) {
+        expect(page.attributes('hover-class')).toBe('sn-pagination__page--pressed');
+      }
+    });
+
+    it('wires the pressed class on enabled stepper buttons', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 3, modelValue: 2 } });
+      expect(wrapper.find('.sn-pagination__prev').attributes('hover-class')).toBe(
+        'sn-pagination__button--pressed',
+      );
+      expect(wrapper.find('.sn-pagination__next').attributes('hover-class')).toBe(
+        'sn-pagination__button--pressed',
+      );
+    });
+
+    it('keeps the boundary stepper buttons inert', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 3, modelValue: 1 } });
+      expect(wrapper.find('.sn-pagination__prev').attributes('hover-class')).toBe('none');
+      expect(wrapper.find('.sn-pagination__next').attributes('hover-class')).toBe(
+        'sn-pagination__button--pressed',
+      );
+    });
+  });
+
   describe('page count resolution', () => {
     it('uses totalPage when total is not given', () => {
       const wrapper = mount(SnPagination, { props: { totalPage: 5, modelValue: 1 } });

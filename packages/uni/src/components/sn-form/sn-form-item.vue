@@ -297,6 +297,7 @@ function deepClone<T>(value: T): T {
     :data-snui-component="props.prop ? 'form-item' : 'form-item-static'"
     :data-prop="props.prop"
     :data-status="status"
+    :hover-class="clickable ? 'sn-form-item--pressed' : 'none'"
     @tap="onRowClick"
   >
     <view
@@ -416,7 +417,8 @@ function deepClone<T>(value: T): T {
 .sn-form-item--clickable {
   cursor: pointer;
 }
-.sn-form-item--clickable:active {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-form-item--pressed {
   background-color: var(--sn-mp-color-background-soft);
 }
 

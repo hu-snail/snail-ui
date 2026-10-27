@@ -250,6 +250,7 @@ const rootClass = computed(() => [
       :class="['sn-collapse__more', customMoreSlotClass]"
       role="button"
       :aria-expanded="viewmoreExpanded"
+      hover-class="sn-collapse__more--pressed"
       @tap="toggleViewmore"
     >
       <slot name="more" :expanded="viewmoreExpanded">
@@ -275,7 +276,8 @@ const rootClass = computed(() => [
   padding: var(--sn-mp-spacing-3) 0;
 }
 
-.sn-collapse__more:active {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-collapse__more--pressed {
   opacity: 0.7;
 }
 

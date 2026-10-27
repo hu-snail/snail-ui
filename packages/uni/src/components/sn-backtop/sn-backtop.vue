@@ -158,6 +158,7 @@ const iconStyleComputed = computed(() => {
     role="button"
     :aria-label="text || 'Back to top'"
     :aria-hidden="!isVisible"
+    :hover-class="isVisible ? 'sn-backtop--pressed' : 'none'"
     @tap="onTap"
   >
     <slot>
@@ -202,7 +203,8 @@ const iconStyleComputed = computed(() => {
   visibility: visible;
 }
 
-.sn-backtop--visible:active {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-backtop--visible.sn-backtop--pressed {
   opacity: 0.7;
 }
 

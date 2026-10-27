@@ -205,6 +205,7 @@ const sliderStyle = computed(() => {
       role="button"
       :aria-pressed="isActive(option)"
       :aria-disabled="disabled || option.disabled"
+      :hover-class="disabled || option.disabled ? 'none' : 'sn-segmented__item--pressed'"
       @tap="onTap(option)"
     >
       <slot name="label" :option="option">
@@ -262,7 +263,8 @@ const sliderStyle = computed(() => {
   font-size: var(--sn-mp-font-size-md);
 }
 
-.sn-segmented__item:active:not(.sn-segmented__item--disabled) {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-segmented__item--pressed {
   opacity: 0.7;
 }
 

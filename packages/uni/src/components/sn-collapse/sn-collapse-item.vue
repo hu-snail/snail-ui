@@ -147,6 +147,7 @@ const rootClass = computed(() => [
       :aria-expanded="expanded"
       :aria-disabled="disabled"
       :aria-label="title || undefined"
+      :hover-class="disabled ? 'none' : 'sn-collapse-item__header--pressed'"
       @tap="onTap"
     >
       <view class="sn-collapse-item__title">
@@ -207,7 +208,8 @@ const rootClass = computed(() => [
   background-color: var(--sn-mp-color-background-surface);
 }
 
-.sn-collapse-item__header:active:not(.sn-collapse-item--disabled *) {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-collapse-item__header--pressed {
   background-color: var(--sn-mp-color-background-soft);
 }
 

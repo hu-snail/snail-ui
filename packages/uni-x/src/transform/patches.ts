@@ -18,29 +18,6 @@ export interface SourcePatch {
 }
 
 export const PATCHES: Record<string, SourcePatch[]> = {
-  'sn-button/sn-button.vue': [
-    {
-      anchor: "    hoverClass: 'sn-button--feedback',",
-      replacement: "    hoverClass: 'sn-button--pressed',",
-      note: 'default hover-class switched to the uni-x pressed class',
-    },
-    {
-      anchor: '    :hover-class="hoverClass"',
-      replacement: '    :hover-class="feedback && !disabled && !loading ? hoverClass : \'none\'"',
-      note: 'hover-class gated on feedback/disabled/loading (App has no :active pseudo)',
-    },
-    {
-      anchor: `.sn-button--feedback:active:not(.sn-button--disabled):not(.sn-button--loading) {
-  opacity: 0.7;
-}`,
-      replacement: `/* uni-app x App: :active unsupported — pressed feedback ships via view hover-class. */
-.sn-button--pressed {
-  opacity: 0.7;
-}`,
-      note: ':active rule replaced by .sn-button--pressed (hover-class driven)',
-    },
-  ],
-
   'sn-icon/sn-icon.vue': [
     {
       anchor: `  return style;
@@ -105,15 +82,14 @@ const iconDataUrl = computed<string | undefined>(() => {
 
   'sn-cell/sn-cell.vue': [
     {
-      anchor: `    :aria-label="isInteractive ? title || undefined : undefined"
+      anchor: `    :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
     @tap="onTap"
   >`,
-      replacement: `    :aria-label="isInteractive ? title || undefined : undefined"
-    :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
+      replacement: `    :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
     @tap="onTap"
   >
     <view v-if="effectiveBorder" class="sn-cell__hairline" aria-hidden="true" />`,
-      note: 'pressed feedback via hover-class; ::after hairline replaced by a real element',
+      note: 'pressed hover-class is source-native now; ::after hairline still replaced by a real element',
     },
     {
       anchor: `.sn-cell--border::after {
@@ -125,7 +101,7 @@ const iconDataUrl = computed<string | undefined>(() => {
   background-color: var(--sn-mp-color-border-subtle);
   content: '';
 }`,
-      replacement: `/* uni-app x App: ::after unsupported — hairline is a real element; pressed via hover-class. */
+      replacement: `/* uni-app x App: ::after unsupported — hairline is a real element. */
 .sn-cell__hairline {
   position: absolute;
   right: 0;
@@ -133,12 +109,8 @@ const iconDataUrl = computed<string | undefined>(() => {
   left: var(--sn-mp-spacing-4);
   height: 2rpx;
   background-color: var(--sn-mp-color-border-subtle);
-}
-
-.sn-cell--pressed {
-  background-color: var(--sn-mp-color-background-soft);
 }`,
-      note: '::after hairline rule → .sn-cell__hairline; :active → .sn-cell--pressed',
+      note: '::after hairline rule → .sn-cell__hairline (:active → .sn-cell--pressed moved into source)',
     },
   ],
 

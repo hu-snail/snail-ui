@@ -293,6 +293,7 @@ const panelStyle = computed(() => {
               class="sn-tour__button sn-tour__skip"
               role="button"
               :aria-label="skipText"
+              hover-class="sn-tour__button--pressed"
               @tap="handleSkip"
             >
               <text class="sn-tour__button-text">{{ skipText }}</text>
@@ -304,6 +305,7 @@ const panelStyle = computed(() => {
                 class="sn-tour__button sn-tour__prev"
                 role="button"
                 :aria-label="prevText"
+                hover-class="sn-tour__button--pressed"
                 @tap="handlePrev"
               >
                 <text class="sn-tour__button-text">{{ prevText }}</text>
@@ -312,6 +314,7 @@ const panelStyle = computed(() => {
                 class="sn-tour__button sn-tour__next sn-tour__button--primary"
                 role="button"
                 :aria-label="isLastStep ? finishText : nextText"
+                hover-class="sn-tour__button--pressed"
                 @tap="handleNext"
               >
                 <text class="sn-tour__button-text sn-tour__button-text--primary">
@@ -409,7 +412,8 @@ const panelStyle = computed(() => {
   background-color: var(--sn-mp-color-background-surface);
 }
 
-.sn-tour__button:active {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-tour__button--pressed {
   opacity: 0.7;
 }
 

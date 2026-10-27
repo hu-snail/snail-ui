@@ -340,7 +340,10 @@ const rootStyle = computed(() => {
   line-height: 1;
 }
 
-.sn-grid-item--clickable:active .sn-grid-item__content {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo): the
+   grid's hoverClass (default `sn-grid-item__content--hover`) lands on the item
+   root, and this descendant rule carries the effect to the content surface. */
+.sn-grid-item__content--hover .sn-grid-item__content {
   background-color: var(--sn-mp-color-background-soft);
 }
 

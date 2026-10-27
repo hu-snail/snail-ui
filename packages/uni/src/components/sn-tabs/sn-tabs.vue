@@ -273,6 +273,7 @@ function titleColor(index: number): string | undefined {
           :aria-selected="isActive(index, tab.getName())"
           :aria-disabled="tab.getDisabled()"
           :aria-label="tab.getTitle()"
+          :hover-class="tab.getDisabled() ? 'none' : 'sn-tabs__item--pressed'"
           @tap="select(index)"
         >
           <text
@@ -353,7 +354,8 @@ function titleColor(index: number): string | undefined {
   color: var(--sn-mp-color-text-disabled);
 }
 
-.sn-tabs__item:active:not(.sn-tabs__item--disabled) {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-tabs__item--pressed {
   opacity: 0.7;
 }
 

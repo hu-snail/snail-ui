@@ -257,6 +257,7 @@ const rootClass = computed(() => [
     :style="customStyle || undefined"
     :role="isInteractive ? 'button' : undefined"
     :aria-label="isInteractive ? title || undefined : undefined"
+    :hover-class="isInteractive ? 'sn-cell--pressed' : 'none'"
     @tap="onTap"
   >
     <view class="sn-cell__title" :style="titleStyle">
@@ -351,7 +352,8 @@ const rootClass = computed(() => [
   align-items: center;
 }
 
-.sn-cell--clickable:active {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-cell--pressed {
   background-color: var(--sn-mp-color-background-soft);
 }
 

@@ -338,6 +338,23 @@ describe('sn-cell', () => {
       expect(event).toBeInstanceOf(Event);
     });
   });
+
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on interactive cells', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', clickable: true } });
+      expect(wrapper.attributes('hover-class')).toBe('sn-cell--pressed');
+    });
+
+    it('wires the pressed class on link cells', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', isLink: true } });
+      expect(wrapper.attributes('hover-class')).toBe('sn-cell--pressed');
+    });
+
+    it('stays inert on static cells', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A' } });
+      expect(wrapper.attributes('hover-class')).toBe('none');
+    });
+  });
 });
 
 describe('sn-cell-group', () => {

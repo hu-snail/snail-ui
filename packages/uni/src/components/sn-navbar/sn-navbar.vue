@@ -176,6 +176,7 @@ const rootStyle = computed(() => {
       role="button"
       :aria-disabled="leftDisabled"
       :aria-label="leftText || 'Back'"
+      :hover-class="leftDisabled ? 'none' : 'sn-navbar__side--pressed'"
       @tap="onLeftTap"
     >
       <slot name="left">
@@ -196,6 +197,7 @@ const rootStyle = computed(() => {
       role="button"
       :aria-disabled="rightDisabled"
       :aria-label="rightText || 'Action'"
+      :hover-class="rightDisabled ? 'none' : 'sn-navbar__side--pressed'"
       @tap="onRightTap"
     >
       <slot name="right">
@@ -268,8 +270,8 @@ const rootStyle = computed(() => {
   justify-content: flex-end;
 }
 
-.sn-navbar__left:active,
-.sn-navbar__right:active {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-navbar__side--pressed {
   opacity: 0.6;
 }
 

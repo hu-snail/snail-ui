@@ -141,6 +141,7 @@ const rootClass = computed(() => [
     role="tab"
     :aria-selected="isActive"
     :aria-label="title || undefined"
+    hover-class="sn-tabbar-item--pressed"
     @tap="onTap"
   >
     <slot :active="isActive">
@@ -187,7 +188,8 @@ const rootClass = computed(() => [
   font-size: var(--sn-mp-font-size-xs);
 }
 
-.sn-tabbar-item:active {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-tabbar-item--pressed {
   opacity: 0.7;
 }
 

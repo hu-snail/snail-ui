@@ -64,7 +64,7 @@ const props = withDefaults(
       | 'favorite'
       | 'chooseAvatar'
       | 'weRunGroup';
-    /** Override the hover class (uni-app MP). */
+    /** Override the press-feedback class applied while touched (`hover-class`). */
     hoverClass?: string;
     /** Hover start time (ms, uni-app MP). */
     hoverStartTime?: number;
@@ -235,7 +235,6 @@ const classList = computed(() => [
     'sn-button--disabled': props.disabled,
     'sn-button--loading': props.loading,
     'sn-button--hairline': props.hairline && props.type === 'default',
-    'sn-button--feedback': props.feedback,
     'sn-button--plain': props.plain,
     'sn-button--cell-hover': props.cell === 'hover',
     'sn-button--cell-fill': props.cell === 'fill',
@@ -243,6 +242,18 @@ const classList = computed(() => [
   },
   props.customClass,
 ]);
+
+/**
+ * Press feedback rides uni `hover-class` (§116.2 — App has no :active pseudo),
+ * so the touch state is a dedicated class instead of a CSS pseudo. Inert
+ * buttons (feedback off / disabled / loading) get `none`; the cell variant
+ * presses with a background change instead of the opacity dip.
+ */
+const effectiveHoverClass = computed<string>(() => {
+  if (!props.feedback || props.disabled || props.loading) return 'none';
+  if (props.cell === 'hover') return 'sn-button--cell-pressed';
+  return props.hoverClass;
+});
 
 const wrapperStyle = computed(() => {
   let style = '';
@@ -274,7 +285,7 @@ function onTap(event: Event): void {
     :aria-disabled="disabled || loading"
     :aria-busy="loading"
     :aria-label="ariaLabel"
-    :hover-class="hoverClass"
+    :hover-class="effectiveHoverClass"
     :hover-start-time="hoverStartTime"
     :hover-stay-time="hoverStayTime"
     :hover-stop-propagation="hoverStopPropagation || undefined"
@@ -362,7 +373,9 @@ function onTap(event: Event): void {
   opacity: 0.5;
 }
 
-.sn-button--feedback:active:not(.sn-button--disabled):not(.sn-button--loading) {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo);
+   .sn-button--feedback is applied only while touched (see effectiveHoverClass). */
+.sn-button--feedback {
   opacity: 0.7;
 }
 
@@ -458,8 +471,8 @@ function onTap(event: Event): void {
   border-color: transparent;
 }
 
-/* Cell hover — used inside Cell menu lists. */
-.sn-button--cell-hover:active:not(.sn-button--disabled):not(.sn-button--loading) {
+/* Cell hover — used inside Cell menu lists; press feedback via hover-class. */
+.sn-button--cell-pressed {
   background-color: var(--sn-mp-color-background-soft);
 }
 .sn-button--cell-fill {
@@ -504,11 +517,9 @@ function onTap(event: Event): void {
   font-weight: 700;
   letter-spacing: 0.4rpx;
 }
-.snui-skin-doodle .sn-button:hover:not(.sn-button--disabled):not(.sn-button--loading) {
-  transform: translate(-2rpx, -2rpx);
-  box-shadow: var(--sn-mp-button-shadow, 6rpx 6rpx 0 #1a1a1a);
-}
-.snui-skin-doodle .sn-button:active:not(.sn-button--disabled):not(.sn-button--loading) {
+/* :hover dropped — App 无伪类且触屏无 hover（§116.2）。
+   Press state rides hover-class (.sn-button--feedback, gated in script). */
+.snui-skin-doodle .sn-button--feedback {
   transform: translate(4rpx, 4rpx);
   box-shadow: 2rpx 2rpx 0 #1a1a1a;
 }

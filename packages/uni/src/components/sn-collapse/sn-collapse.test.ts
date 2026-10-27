@@ -37,6 +37,27 @@ function mountCollapse(
 }
 
 describe('sn-collapse', () => {
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on enabled panel headers', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A' }]);
+      expect(wrapper.find('.sn-collapse-item__header').attributes('hover-class')).toBe(
+        'sn-collapse-item__header--pressed',
+      );
+    });
+
+    it('keeps disabled panel headers inert', () => {
+      const wrapper = mountCollapse({ modelValue: [] }, [{ name: 'a', title: 'A', disabled: true }]);
+      expect(wrapper.find('.sn-collapse-item__header').attributes('hover-class')).toBe('none');
+    });
+
+    it('wires the pressed class on the view-more toggle', () => {
+      const wrapper = mountCollapse({ viewmore: true, modelValue: false }, [{ name: 'a' }]);
+      expect(wrapper.find('.sn-collapse__more').attributes('hover-class')).toBe(
+        'sn-collapse__more--pressed',
+      );
+    });
+  });
+
   describe('normal mode', () => {
     it('renders every panel header', () => {
       const wrapper = mountCollapse();

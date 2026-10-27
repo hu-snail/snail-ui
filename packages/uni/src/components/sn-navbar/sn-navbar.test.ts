@@ -247,4 +247,28 @@ describe('sn-navbar', () => {
       expect(wrapper.find('.sn-navbar').attributes('style')).toBeUndefined();
     });
   });
+
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on the left side', () => {
+      const wrapper = mount(SnNavbar, { props: { leftText: 'Back' } });
+      expect(wrapper.find('.sn-navbar__left').attributes('hover-class')).toBe(
+        'sn-navbar__side--pressed',
+      );
+    });
+
+    it('wires the pressed class on the right side', () => {
+      const wrapper = mount(SnNavbar, { props: { rightText: 'More' } });
+      expect(wrapper.find('.sn-navbar__right').attributes('hover-class')).toBe(
+        'sn-navbar__side--pressed',
+      );
+    });
+
+    it('keeps disabled sides inert', () => {
+      const wrapper = mount(SnNavbar, {
+        props: { leftText: 'Back', rightText: 'More', leftDisabled: true, rightDisabled: true },
+      });
+      expect(wrapper.find('.sn-navbar__left').attributes('hover-class')).toBe('none');
+      expect(wrapper.find('.sn-navbar__right').attributes('hover-class')).toBe('none');
+    });
+  });
 });

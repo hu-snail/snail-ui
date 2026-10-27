@@ -9,9 +9,9 @@
 | --- | --- |
 | template-attr | 156 |
 | defineSlots-stripped | 66 |
-| pseudo-class | 42 |
-| patch | 36 |
+| patch | 33 |
 | unsupported-property | 31 |
+| pseudo-class | 23 |
 | template-bare-text | 20 |
 | script-guard | 9 |
 | pseudo-element | 6 |
@@ -49,7 +49,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 36): pseudo-class in ".sn-backtop--visible:active"
 
 ### sn-badge/sn-badge.uvue
 
@@ -58,16 +57,10 @@
 
 ### sn-button/sn-button.uvue
 
-- patch applied — `patch`: default hover-class switched to the uni-x pressed class
-- patch applied — `patch`: hover-class gated on feedback/disabled/loading (App has no :active pseudo)
-- patch applied — `patch`: :active rule replaced by .sn-button--pressed (hover-class driven)
 - script DOM guard — `script-guard`: 2 DOM event call(s) converted to optional calls
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 139): pseudo-class in ".sn-button--cell-hover:active:not(.sn-button--disabled):not(.sn-button--loading)"
-- pseudo-class rule dropped — `pseudo-class` (line 184): pseudo-class in ".snui-skin-doodle .sn-button:hover:not(.sn-button--disabled):not(.sn-button--loading)"
-- pseudo-class rule dropped — `pseudo-class` (line 188): pseudo-class in ".snui-skin-doodle .sn-button:active:not(.sn-button--disabled):not(.sn-button--loading)"
 - unsupported property stripped — `unsupported-property` (line 14): cursor stripped
 - unsupported property stripped — `unsupported-property` (line 15): user-select stripped
 - unsupported property stripped — `unsupported-property` (line 37): cursor stripped
@@ -102,13 +95,12 @@
 
 ### sn-cell/sn-cell.uvue
 
-- patch applied — `patch`: pressed feedback via hover-class; ::after hairline replaced by a real element
-- patch applied — `patch`: ::after hairline rule → .sn-cell__hairline; :active → .sn-cell--pressed
+- patch applied — `patch`: pressed hover-class is source-native now; ::after hairline still replaced by a real element
+- patch applied — `patch`: ::after hairline rule → .sn-cell__hairline (:active → .sn-cell--pressed moved into source)
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 19): pseudo-class in ".sn-cell--clickable:active"
-- pseudo-element rule dropped — `pseudo-element` (line 154): pseudo-element in ".snui-skin-doodle .sn-cell--border::after"
+- pseudo-element rule dropped — `pseudo-element` (line 151): pseudo-element in ".snui-skin-doodle .sn-cell--border::after"
 
 ### sn-checkbox/sn-checkbox-group.uvue
 
@@ -133,14 +125,12 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 25): pseudo-class in ".sn-collapse-item__header:active:not(.sn-collapse-item--disabled *)"
 
 ### sn-collapse/sn-collapse.uvue
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 17): pseudo-class in ".sn-collapse__more:active"
 
 ### sn-config-provider/sn-config-provider.uvue
 
@@ -226,12 +216,11 @@
 - patch applied — `patch`: attribute selector rewritten
 - patch applied — `patch`: attribute selector rewritten
 - defineSlots needs manual review — `defineSlots-manual`: defineSlots return value is consumed — manual review required
-- bare text wrapped in <text> — `template-bare-text` (line 23): 3 bare text node(s) wrapped in <text>
+- bare text wrapped in <text> — `template-bare-text` (line 24): 3 bare text node(s) wrapped in <text>
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 3 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 69): pseudo-class in ".sn-form-item--clickable:active"
 - unsupported property stripped — `unsupported-property` (line 67): cursor stripped
-- unsupported property stripped — `unsupported-property` (line 171): cursor stripped
+- unsupported property stripped — `unsupported-property` (line 172): cursor stripped
 
 ### sn-form/sn-form.uvue
 
@@ -254,7 +243,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 122): pseudo-class in ".sn-grid-item--clickable:active .sn-grid-item__content"
 
 ### sn-grid/sn-grid.uvue
 
@@ -377,8 +365,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 3 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 64): pseudo-class in ".sn-navbar__left:active"
-- pseudo-class rule dropped — `pseudo-class` (line 64): pseudo-class in ".sn-navbar__right:active"
 
 ### sn-notice-bar/sn-notice-bar.uvue
 
@@ -405,8 +391,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 3 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 34): pseudo-class in ".sn-pagination__button:active:not(.sn-pagination__button--disabled)"
-- pseudo-class rule dropped — `pseudo-class` (line 64): pseudo-class in ".sn-pagination__page:active"
 
 ### sn-paging/sn-paging.uvue
 
@@ -515,8 +499,7 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 49): pseudo-class in ".sn-segmented__item:active:not(.sn-segmented__item--disabled)"
-- pseudo-class rule dropped — `pseudo-class` (line 67): pseudo-class in ".sn-segmented--outline .sn-segmented__item:first-child"
+- pseudo-class rule dropped — `pseudo-class` (line 68): pseudo-class in ".sn-segmented--outline .sn-segmented__item:first-child"
 
 ### sn-select-picker/sn-select-picker.uvue
 
@@ -529,8 +512,7 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 15): pseudo-class in ".sn-sidebar-item:active:not(.sn-sidebar-item--disabled)"
-- pseudo-element rule dropped — `pseudo-element` (line 25): pseudo-element in ".sn-sidebar-item--active::before"
+- pseudo-element rule dropped — `pseudo-element` (line 26): pseudo-element in ".sn-sidebar-item--active::before"
 
 ### sn-sidebar/sn-sidebar.uvue
 
@@ -606,7 +588,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 15): pseudo-class in ".sn-tabbar-item:active"
 
 ### sn-tabbar/sn-tabbar.uvue
 
@@ -636,14 +617,12 @@
 - template attribute rewritten — `template-attr`: 1 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
 - pseudo-class rule dropped — `pseudo-class` (line 44): pseudo-class in ".sn-tabs:not(.sn-tabs--scrollable) .sn-tabs__item"
-- pseudo-class rule dropped — `pseudo-class` (line 57): pseudo-class in ".sn-tabs__item:active:not(.sn-tabs__item--disabled)"
 
 ### sn-tag/sn-tag.uvue
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 2 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 184): pseudo-class in ".sn-tag--closable:active .sn-tag__close"
 
 ### sn-text/sn-text.uvue
 
@@ -684,7 +663,6 @@
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 4 @tap binding(s) renamed to @click
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-- pseudo-class rule dropped — `pseudo-class` (line 80): pseudo-class in ".sn-tour__button:active"
 
 ### sn-transition/sn-transition.uvue
 

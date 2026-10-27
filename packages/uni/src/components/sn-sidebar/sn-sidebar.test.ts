@@ -34,6 +34,25 @@ function mountSidebar(
 }
 
 describe('sn-sidebar', () => {
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on enabled items', () => {
+      const wrapper = mountSidebar({ modelValue: 0 });
+      for (const item of wrapper.findAll('.sn-sidebar-item')) {
+        expect(item.attributes('hover-class')).toBe('sn-sidebar-item--pressed');
+      }
+    });
+
+    it('keeps disabled items inert', () => {
+      const wrapper = mountSidebar({ modelValue: 0 }, [
+        { label: 'All', value: 0 },
+        { label: 'Locked', value: 1, disabled: true },
+      ]);
+      const items = wrapper.findAll('.sn-sidebar-item');
+      expect(items[0]!.attributes('hover-class')).toBe('sn-sidebar-item--pressed');
+      expect(items[1]!.attributes('hover-class')).toBe('none');
+    });
+  });
+
   describe('v-model', () => {
     it('marks the item matching modelValue as active', () => {
       const items = mountSidebar({ modelValue: 1 }).findAll('.sn-sidebar-item');

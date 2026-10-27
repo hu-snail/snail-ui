@@ -234,4 +234,16 @@ describe('sn-tag', () => {
       expect(w.attributes('style')).toBeUndefined();
     });
   });
+
+  describe('press feedback (hover-class)', () => {
+    it('wires the close-pressed class on closable tags', () => {
+      const w = mount(SnTag, { props: { closable: true } });
+      expect(w.attributes('hover-class')).toBe('sn-tag--close-pressed');
+    });
+
+    it('stays inert on non-closable tags', () => {
+      const w = mount(SnTag);
+      expect(w.attributes('hover-class')).toBe('none');
+    });
+  });
 });

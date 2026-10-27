@@ -178,4 +178,16 @@ describe('sn-backtop', () => {
       expect(wrapper.find('.sn-backtop__icon').attributes('style')).toContain('rotate(-90deg)');
     });
   });
+
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class while visible', () => {
+      const wrapper = mount(SnBacktop, { props: { scrollTop: 500 } });
+      expect(wrapper.attributes('hover-class')).toBe('sn-backtop--pressed');
+    });
+
+    it('stays inert while hidden', () => {
+      const wrapper = mount(SnBacktop, { props: { scrollTop: 0 } });
+      expect(wrapper.attributes('hover-class')).toBe('none');
+    });
+  });
 });

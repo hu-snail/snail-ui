@@ -9,6 +9,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnButton from './sn-button.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
 import { clearSnIcons, registerSnIcons } from '../sn-icon/sn-icon-registry';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 
@@ -219,6 +220,36 @@ describe('sn-button', () => {
     expect(wrapper.attributes('hover-stay-time')).toBe('600');
   });
 
+  it('applies the press class only while touched', () => {
+    // §116.2 — App has no :active pseudo, so feedback rides hover-class.
+    const wrapper = mount(SnButton, { slots: { default: 'B' } });
+    expect(wrapper.attributes('hover-class')).toBe('sn-button--feedback');
+    expect(wrapper.classes()).not.toContain('sn-button--feedback');
+  });
+
+  it('keeps inert buttons without a press class', () => {
+    expect(
+      mount(SnButton, { props: { feedback: false }, slots: { default: 'B' } }).attributes(
+        'hover-class',
+      ),
+    ).toBe('none');
+    expect(
+      mount(SnButton, { props: { disabled: true }, slots: { default: 'B' } }).attributes(
+        'hover-class',
+      ),
+    ).toBe('none');
+    expect(
+      mount(SnButton, { props: { loading: true }, slots: { default: 'B' } }).attributes(
+        'hover-class',
+      ),
+    ).toBe('none');
+  });
+
+  it('presses cell-hover buttons with the background variant', () => {
+    const wrapper = mount(SnButton, { props: { cell: 'hover' }, slots: { default: 'C' } });
+    expect(wrapper.attributes('hover-class')).toBe('sn-button--cell-pressed');
+  });
+
   it('applies inline bgColor / color when provided', () => {
     const wrapper = mount(SnButton, {
       props: { bgColor: '#abcdef', color: '#123456' },
@@ -250,5 +281,31 @@ describe('sn-button', () => {
       slots: { default: 'X' },
     });
     expect(wrapper.attributes('aria-label')).toBe('Submit form');
+  });
+});
+
+describe('sn-button (style-object and iconfont API)', () => {
+  it('flattens an object customStyle into inline declarations', () => {
+    const wrapper = mount(SnButton, {
+      props: {
+        customStyle: { padding: '4px', margin: '2px' } as unknown as string,
+      },
+      slots: { default: 'Styled' },
+    });
+    const style = wrapper.attributes('style') ?? '';
+    expect(style).toContain('padding: 4px');
+    expect(style).toContain('margin: 2px');
+  });
+
+  it('renders the iconfont API icon when no SVG data is available', () => {
+    const wrapper = mount(SnButton, {
+      props: { icon: 'star', classPrefix: 'wd-icon', cssIcon: false },
+      slots: { default: 'Iconfont' },
+    });
+    const icon = wrapper.findComponent(SnIcon);
+    expect(icon.exists()).toBe(true);
+    expect(icon.props('name')).toBe('star');
+    expect(icon.props('classPrefix')).toBe('wd-icon');
+    expect(icon.props('cssIcon')).toBe(false);
   });
 });

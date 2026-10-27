@@ -15,6 +15,27 @@ import SnSegmented from './sn-segmented.vue';
 const OPTIONS = ['Day', 'Week', 'Month'];
 
 describe('sn-segmented', () => {
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on enabled items', () => {
+      const wrapper = mount(SnSegmented, { props: { options: OPTIONS, modelValue: 'Day' } });
+      for (const item of wrapper.findAll('.sn-segmented__item')) {
+        expect(item.attributes('hover-class')).toBe('sn-segmented__item--pressed');
+      }
+    });
+
+    it('keeps container-disabled items inert', () => {
+      const wrapper = mount(SnSegmented, { props: { options: OPTIONS, disabled: true } });
+      expect(wrapper.find('.sn-segmented__item').attributes('hover-class')).toBe('none');
+    });
+
+    it('keeps option-disabled items inert', () => {
+      const wrapper = mount(SnSegmented, {
+        props: { options: [{ value: 1, label: 'One', disabled: true }] },
+      });
+      expect(wrapper.find('.sn-segmented__item').attributes('hover-class')).toBe('none');
+    });
+  });
+
   describe('options', () => {
     it('renders one item per option', () => {
       const wrapper = mount(SnSegmented, { props: { options: OPTIONS } });

@@ -196,6 +196,7 @@ const rootStyle = computed(() => {
     :class="rootClass"
     :style="rootStyle"
     role="button"
+    :hover-class="closable ? 'sn-tag--close-pressed' : 'none'"
     @tap="onRootTap"
   >
     <slot name="icon">
@@ -409,7 +410,9 @@ const rootStyle = computed(() => {
   opacity: 0.7;
 }
 
-.sn-tag--closable:active .sn-tag__close {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo): the
+   pressed class lands on the closable root and lights the inner close. */
+.sn-tag--close-pressed .sn-tag__close {
   opacity: 1;
 }
 

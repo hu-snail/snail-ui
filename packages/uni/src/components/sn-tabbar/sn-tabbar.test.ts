@@ -28,6 +28,15 @@ function mountBar(props: Record<string, unknown> = {}, itemCount = 3) {
 }
 
 describe('sn-tabbar', () => {
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on items', () => {
+      const wrapper = mountBar({ modelValue: 0 });
+      for (const item of wrapper.findAll('.sn-tabbar-item')) {
+        expect(item.attributes('hover-class')).toBe('sn-tabbar-item--pressed');
+      }
+    });
+  });
+
   describe('v-model', () => {
     it('marks the item matching modelValue as active', () => {
       const wrapper = mountBar({ modelValue: 1 });

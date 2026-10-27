@@ -2,6 +2,18 @@
  * sn-form / sn-form-item unit tests — uni-end form (AUI-MP-004).
  *
  * Mirror of packages/vue-web/src/form/SnForm.test.ts. Same coverage.
+ *
+ * Untestable via the public API:
+ *   - sn-form-item.vue 234-235 (`statusGlyph` warning / empty branches) — the
+ *     status state machine only ever produces 'default' | 'error' today; the
+ *     'warning' state is part of the shared `FormItemState` contract for
+ *     forward compatibility and no producer assigns it yet. The empty-glyph
+ *     branch is guarded by `showStatusIcon && statusGlyph !== ''`, which can
+ *     only evaluate once a message exists — and a message only exists with
+ *     status 'error'.
+ *   - sn-form-validator.ts 85-86 (`matchesType` exhaustive fallback) — the
+ *     `type` discriminator is a closed 4-value union; every member returns
+ *     before the trailing `return true`.
  */
 
 import { describe, it, expect, vi } from 'vitest';
@@ -950,5 +962,85 @@ describe('sn-form (extended: events, rules matrix, message gating)', () => {
     const wrapper = mount(Host);
     expect(wrapper.find('.sn-form-item__icon').exists()).toBe(true);
     clearSnIcons();
+  });
+});
+
+describe('sn-form (lifecycle and defensive paths)', () => {
+  it('restores object and array fields from the deep-cloned initial value on resetFields', async () => {
+    const model = reactive({ profile: { name: 'aui', tags: ['x', 'y'] } });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(SnForm, { model }, { default: () => h(SnFormItem, { prop: 'profile', label: 'Profile' }) });
+      },
+    });
+    const wrapper = mount(Host);
+    model.profile.name = 'changed';
+    model.profile.tags = ['z'];
+    wrapper.findComponent(SnForm).vm.resetFields();
+    await nextTick();
+    expect(model.profile.name).toBe('aui');
+    expect(model.profile.tags).toEqual(['x', 'y']);
+  });
+
+  it('unmounts cleanly while fields are registered', async () => {
+    const model = reactive({ email: '', password: '' });
+    const Host = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () => [
+                h(SnFormItem, { prop: 'email', label: 'Email' }),
+                h(SnFormItem, { prop: 'password', label: 'Password' }),
+              ],
+            },
+          );
+      },
+    });
+    const wrapper = mount(Host);
+    expect(wrapper.findAll('.sn-form-item')).toHaveLength(2);
+    expect(() => wrapper.unmount()).not.toThrow();
+  });
+});
+
+describe('sn-form-validator (rule fallthrough)', () => {
+  it('ignores a rule carrying none of the known constraint keys', async () => {
+    const { validateValue } = await import('./sn-form-validator');
+    // A rule object with only a message matches no constraint branch — the
+    // validator fails open instead of throwing.
+    const result = await validateValue('anything', [{ message: 'never' } as FormRule]);
+    expect(result).toBe('');
+  });
+});
+
+describe('sn-form-item press feedback (hover-class)', () => {
+  function mountItem(itemProps: Record<string, unknown> = {}) {
+    const model = reactive({ email: '' });
+    const FormHost = defineComponent({
+      setup() {
+        return () =>
+          h(
+            SnForm,
+            { model },
+            {
+              default: () => h(SnFormItem, { prop: 'email', label: 'Email', ...itemProps }),
+            },
+          );
+      },
+    });
+    return mount(FormHost);
+  }
+
+  it('wires the pressed class on clickable rows', () => {
+    const wrapper = mountItem({ clickable: true });
+    expect(wrapper.find('.sn-form-item').attributes('hover-class')).toBe('sn-form-item--pressed');
+  });
+
+  it('stays inert on static rows', () => {
+    const wrapper = mountItem();
+    expect(wrapper.find('.sn-form-item').attributes('hover-class')).toBe('none');
   });
 });

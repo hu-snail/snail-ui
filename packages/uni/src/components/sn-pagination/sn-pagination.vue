@@ -195,6 +195,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
         role="button"
         :aria-disabled="!canPrev"
         :aria-label="prevText || 'Previous page'"
+        :hover-class="canPrev ? 'sn-pagination__button--pressed' : 'none'"
         @tap="goTo(currentPage - 1)"
       >
         <!-- MP 编译器不支持 <slot> 上的 v-bind="obj" 批量传参，显式展开（key 与
@@ -230,6 +231,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
               role="button"
               :aria-current="item === currentPage ? 'page' : undefined"
               :aria-label="`Page ${item}`"
+              hover-class="sn-pagination__page--pressed"
               @tap="goTo(item)"
             >
               <text class="sn-pagination__page-text">{{ item }}</text>
@@ -244,6 +246,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
         role="button"
         :aria-disabled="!canNext"
         :aria-label="nextText || 'Next page'"
+        :hover-class="canNext ? 'sn-pagination__button--pressed' : 'none'"
         @tap="goTo(currentPage + 1)"
       >
         <slot
@@ -306,7 +309,9 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   font-size: var(--sn-mp-font-size-sm);
 }
 
-.sn-pagination__button:active:not(.sn-pagination__button--disabled) {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-pagination__button--pressed,
+.sn-pagination__page--pressed {
   opacity: 0.6;
 }
 
@@ -334,10 +339,6 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   border-radius: var(--sn-mp-radius-sm);
   color: var(--sn-mp-color-text-secondary);
   font-size: var(--sn-mp-font-size-sm);
-}
-
-.sn-pagination__page:active {
-  opacity: 0.6;
 }
 
 .sn-pagination__page--active {

@@ -30,6 +30,28 @@ function mountTabs(props: Record<string, unknown> = {}, panes = 3) {
 }
 
 describe('sn-tabs', () => {
+  describe('press feedback (hover-class)', () => {
+    it('wires the pressed class on enabled items', async () => {
+      const wrapper = mountTabs();
+      await wrapper.vm.$nextTick();
+      for (const item of wrapper.findAll('.sn-tabs__item')) {
+        expect(item.attributes('hover-class')).toBe('sn-tabs__item--pressed');
+      }
+    });
+
+    it('keeps disabled items inert', async () => {
+      const Harness = defineComponent({
+        setup() {
+          return () =>
+            h(SnTabs, {}, { default: () => [h(SnTab, { title: 'A', disabled: true })] });
+        },
+      });
+      const wrapper = mount(Harness);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-tabs__item').attributes('hover-class')).toBe('none');
+    });
+  });
+
   describe('nav strip', () => {
     it('renders one nav item per pane title', async () => {
       const wrapper = mountTabs();

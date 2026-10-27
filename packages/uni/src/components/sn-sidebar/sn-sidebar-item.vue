@@ -125,6 +125,7 @@ const rootClass = computed(() => [
     :aria-selected="isActive"
     :aria-disabled="disabled"
     :aria-label="label || undefined"
+    :hover-class="disabled ? 'none' : 'sn-sidebar-item--pressed'"
     @tap="onTap"
   >
     <view class="sn-sidebar-item__content">
@@ -162,7 +163,8 @@ const rootClass = computed(() => [
   font-size: var(--sn-mp-font-size-md);
 }
 
-.sn-sidebar-item:active:not(.sn-sidebar-item--disabled) {
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-sidebar-item--pressed {
   opacity: 0.7;
 }
 
