@@ -18,6 +18,11 @@ import { SnTag } from '@snui/vue-web';
       <SnTag size="medium">medium</SnTag>
       <SnTag size="large">large</SnTag>
     </div>
+    <div class="demo-row">
+      <SnTag round type="primary">胶囊</SnTag>
+      <SnTag round type="success">胶囊</SnTag>
+      <SnTag round type="warning">胶囊</SnTag>
+    </div>
   </div>
 </template>
 
