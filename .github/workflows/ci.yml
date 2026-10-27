@@ -56,10 +56,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          # Node 22：uni-x build 依赖 TS type stripping（见 ci.yml 同注）。
+          # Node 22：uni-x build 依赖 TS type stripping（见 baseline 同注）。
           node-version: '22'
           cache: 'pnpm'
 
