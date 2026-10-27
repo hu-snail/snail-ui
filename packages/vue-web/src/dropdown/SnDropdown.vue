@@ -9,6 +9,7 @@
     :aria-controls="isVisible ? menuId : undefined"
     :aria-disabled="disabled ? 'true' : undefined"
     @click="onTriggerClick"
+    @contextmenu="onTriggerContextMenu"
     @keydown="onTriggerKeyDown"
     @mouseenter="onTriggerMouseEnter"
     @mouseleave="onTriggerMouseLeave"
@@ -144,9 +145,12 @@
  *   - placement: 'bottom' | 'bottom-start' | 'bottom-end' | 'top' |
  *     'top-start' | 'top-end' — the vertical half flips when the viewport
  *     lacks room, keeping the alignment suffix (bottom-start → top-start)
- *   - trigger: 'click' | 'hover'. Hover closes on a fixed 300ms grace delay
- *     (enter on trigger or panel cancels it); the keyboard surface works
- *     regardless of the trigger type
+ *   - trigger: 'click' | 'hover' | 'contextMenu'. Hover closes on a fixed
+ *     300ms grace delay (enter on trigger or panel cancels it); the keyboard
+ *     surface works regardless of the trigger type. 'contextMenu' (Arco
+ *     parity) opens on right-click anchored to the POINTER position —
+ *     placement's alignment suffix still applies around that point — while
+ *     the keyboard path keeps anchoring to the trigger rect.
  *   - disabled / size ('small' | 'medium' | 'large')
  *   - show (controlled) + update:show; uncontrolled when omitted — in
  *     controlled mode the component only emits and the panel follows the prop
@@ -195,7 +199,10 @@ const props = withDefaults(
     options?: SnDropdownOption[];
     /** Where the panel anchors to the trigger (six bottom/top presets). */
     placement?: SnDropdownPlacement;
-    /** What gesture opens the menu; the keyboard path works regardless. */
+    /**
+     * What gesture opens the menu; the keyboard path works regardless.
+     * `'contextMenu'` opens on right-click anchored to the pointer.
+     */
     trigger?: SnDropdownTrigger;
     /** Disables opening entirely. */
     disabled?: boolean;
@@ -367,11 +374,18 @@ const menuStyle = ref<Record<string, string>>({});
 const submenuSide = ref<'right' | 'left'>('right');
 const submenuStyle = ref<Record<string, string>>({});
 
+/**
+ * Pointer anchor for `trigger='contextMenu'` opens — {x, y} viewport
+ * coordinates of the right-click. Non-null only while a context-menu open
+ * is pending / visible; every other open path (click / hover / keyboard)
+ * keeps it null so the panel anchors to the trigger rect as before.
+ */
+const pointerAnchor = ref<{ x: number; y: number } | null>(null);
+
 async function repositionMenu(): Promise<void> {
   const root = rootRef.value;
   const menu = menuRef.value;
   if (!root || !menu) return;
-  const rootRect = root.getBoundingClientRect();
   // offsetWidth/Height read the layout box, which the sn-pop enter
   // transform (scale 0.92) does not distort — getBoundingClientRect would
   // measure the scaled panel while the enter transition is running.
@@ -383,6 +397,38 @@ async function repositionMenu(): Promise<void> {
   const [sideRaw, alignRaw] = props.placement.split('-');
   const side = sideRaw === 'top' ? 'top' : 'bottom';
   const align = alignRaw === 'start' ? 'start' : alignRaw === 'end' ? 'end' : 'center';
+
+  // Context-menu open: the anchor point is the pointer, not the trigger
+  // rect. The alignment suffix keeps its meaning around that point
+  // (start → menu's left edge at the cursor, end → right edge, center →
+  // centered) and the requested vertical half is honoured relative to it,
+  // with the same flip fallback as the trigger-anchored path.
+  if (pointerAnchor.value) {
+    const { x, y } = pointerAnchor.value;
+    let pointerLeft: number;
+    if (align === 'start') pointerLeft = x;
+    else if (align === 'end') pointerLeft = x - menuWidth;
+    else pointerLeft = x - menuWidth / 2;
+    pointerLeft = Math.min(
+      Math.max(MENU_VIEWPORT_GAP, pointerLeft),
+      Math.max(MENU_VIEWPORT_GAP, vw - menuWidth - MENU_VIEWPORT_GAP),
+    );
+    let useTop = side === 'top';
+    const roomBelow = vh - y;
+    if (side === 'bottom' && roomBelow < menuHeight && y > roomBelow) useTop = true;
+    if (side === 'top' && y < menuHeight && roomBelow > y) useTop = false;
+    const sideWord: 'top' | 'bottom' = useTop ? 'top' : 'bottom';
+    resolvedPlacement.value = align === 'center' ? sideWord : `${sideWord}-${align}`;
+    const pointerTop = useTop ? Math.max(MENU_VIEWPORT_GAP, y - menuHeight) : y;
+    menuStyle.value = {
+      position: 'fixed',
+      left: `${Math.round(pointerLeft)}px`,
+      top: `${Math.round(pointerTop)}px`,
+    };
+    return;
+  }
+
+  const rootRect = root.getBoundingClientRect();
 
   // Horizontal: alignment preset, clamped into the viewport.
   let left: number;
@@ -525,6 +571,27 @@ function onTriggerClick(): void {
   if (props.trigger !== 'click') return;
   if (isVisible.value) closeMenu();
   else openMenu();
+}
+
+/* ─────────── Context-menu trigger (right-click at the pointer) ─────────── */
+
+function onTriggerContextMenu(event: MouseEvent): void {
+  // Only the contextMenu gesture claims the native menu; click / hover
+  // keep the browser's own context menu untouched.
+  if (props.trigger !== 'contextMenu') return;
+  if (props.disabled) return;
+  // The dropdown panel always replaces the native context menu — whether
+  // this right-click opens the dropdown or re-anchors one already open.
+  event.preventDefault();
+  pointerAnchor.value = { x: event.clientX, y: event.clientY };
+  if (isVisible.value) {
+    // Already open — glide to the freshly clicked position.
+    void nextTick(() => {
+      void repositionMenu();
+    });
+    return;
+  }
+  openMenu();
 }
 
 function onTriggerKeyDown(event: KeyboardEvent): void {
@@ -705,6 +772,7 @@ watch(isVisible, (open) => {
   // the keyboard path before this watcher runs.
   pendingIndex.value = -1;
   pendingSubIndex.value = -1;
+  pointerAnchor.value = null;
   followViewport.stop();
   closeSubmenu();
 });

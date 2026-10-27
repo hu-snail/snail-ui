@@ -2,7 +2,8 @@
 
 Web-end dropdown action menu for `@snui/vue-web`. Mirrors naive-ui
 `n-dropdown`'s core surface (mixed rows + dividers, six bottom/top
-placements, click/hover trigger, one-level submenu).
+placements, click/hover trigger, one-level submenu) plus Arco's
+`trigger="contextMenu"` right-click mode.
 
 ## When to use
 
@@ -13,14 +14,14 @@ user picks a value.
 
 ## Props
 
-| Prop      | Type                                                                              | Default    | Notes                                                                                                                      |
-| --------- | --------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------------------------------------------------------- |
-| options   | `Array<{ key, label?, disabled?, icon?, children? } \| { type: 'divider', key }>` | `[]`       | Action rows and separators, mixed. Keys required (naive contract).                                                         |
-| placement | `'bottom' \| 'bottom-start' \| 'bottom-end' \| 'top' \| 'top-start' \| 'top-end'` | `'bottom'` | Vertical half flips when the viewport lacks room; the alignment suffix survives the flip.                                  |
-| trigger   | `'click' \| 'hover'`                                                              | `'hover'`  | Hover closes on a fixed 300ms grace delay. Keyboard works regardless.                                                      |
-| disabled  | `boolean`                                                                         | `false`    | Blocks open entirely (click / hover / keyboard).                                                                           |
-| size      | `'small' \| 'medium' \| 'large'`                                                  | `'medium'` | Row height + font preset (28/34/40px).                                                                                     |
-| show      | `boolean \| undefined`                                                            | —          | Controlled mode when passed: the panel follows the prop and the component only emits `update:show`. Omit for uncontrolled. |
+| Prop      | Type                                                                              | Default    | Notes                                                                                                                                           |
+| --------- | --------------------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| options   | `Array<{ key, label?, disabled?, icon?, children? } \| { type: 'divider', key }>` | `[]`       | Action rows and separators, mixed. Keys required (naive contract).                                                                              |
+| placement | `'bottom' \| 'bottom-start' \| 'bottom-end' \| 'top' \| 'top-start' \| 'top-end'` | `'bottom'` | Vertical half flips when the viewport lacks room; the alignment suffix survives the flip.                                                       |
+| trigger   | `'click' \| 'hover' \| 'contextMenu'`                                             | `'hover'`  | Hover closes on a fixed 300ms grace delay. Keyboard works regardless. `contextMenu` opens on right-click anchored to the pointer (Arco parity). |
+| disabled  | `boolean`                                                                         | `false`    | Blocks open entirely (click / hover / keyboard).                                                                                                |
+| size      | `'small' \| 'medium' \| 'large'`                                                  | `'medium'` | Row height + font preset (28/34/40px).                                                                                                          |
+| show      | `boolean \| undefined`                                                            | —          | Controlled mode when passed: the panel follows the prop and the component only emits `update:show`. Omit for uncontrolled.                      |
 
 ## Events
 
@@ -43,6 +44,22 @@ a right-slide second-level panel anchored to the row (`right-start`; flips
 left near the viewport's right edge, clamped vertically). Opens on hover;
 with `trigger="click"` a click toggles it. **One nesting level** — deeper
 `children` arrays are ignored.
+
+## Context menu (right-click)
+
+With `trigger="contextMenu"` (Arco Design Vue parity):
+
+- A right-click on the trigger content **replaces the native context menu**
+  (`preventDefault`) and opens the panel anchored to the **pointer**
+  position. Right-clicking again while open re-anchors the panel to the new
+  position.
+- The `placement` prop keeps its meaning around the pointer: the alignment
+  suffix applies to the cursor point (`bottom-start` → menu's left edge at
+  the cursor) and the requested vertical half flips when it lacks room.
+- The keyboard surface (Enter / Space / ArrowDown) still works and anchors
+  the panel to the trigger rect, since no pointer coordinate exists.
+- Left-clicks do nothing; click/hover trigger modes leave the native
+  context menu untouched.
 
 ## Keyboard
 

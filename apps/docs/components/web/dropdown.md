@@ -18,18 +18,24 @@
 
 <Demo name="dropdown-web-submenu" description="右滑二级面板 + 键盘进出。" />
 
+## 右键菜单（contextMenu）
+
+`trigger="contextMenu"`（对齐 Arco Design）：右键触发内容时，面板锚定**鼠标位置**打开并替换浏览器原生菜单；再次右键可重新定位。`placement` 的对齐后缀依然围绕光标点生效。
+
+<Demo name="dropdown-web-context-menu" description="trigger=contextMenu：右键打开、锚定鼠标位置、select 关闭。" />
+
 ## API
 
 ### SnDropdown Props
 
-| Prop      | 类型                         | 默认值     | 说明                                                             |
-| --------- | ---------------------------- | ---------- | ---------------------------------------------------------------- |
-| options   | `SnDropdownOption[]`         | `[]`       | {label, key, disabled?, icon?, children?}，type:'divider' 分隔线 |
-| trigger   | `'click'\|'hover'`           | `'hover'`  | 触发方式                                                         |
-| placement | 六档 bottom/top ± start/end  | `'bottom'` | 弹出方位（翻转保留对齐后缀）                                     |
-| disabled  | `boolean`                    | `false`    | 禁用                                                             |
-| size      | `'small'\|'medium'\|'large'` | `'medium'` | 尺寸                                                             |
-| show      | `boolean`                    | —          | 受控开关（v-model:show）                                         |
+| Prop      | 类型                              | 默认值     | 说明                                                             |
+| --------- | --------------------------------- | ---------- | ---------------------------------------------------------------- |
+| options   | `SnDropdownOption[]`              | `[]`       | {label, key, disabled?, icon?, children?}，type:'divider' 分隔线 |
+| trigger   | `'click'\|'hover'\|'contextMenu'` | `'hover'`  | 触发方式；contextMenu 为右键触发，面板锚定鼠标位置               |
+| placement | 六档 bottom/top ± start/end       | `'bottom'` | 弹出方位（翻转保留对齐后缀）                                     |
+| disabled  | `boolean`                         | `false`    | 禁用                                                             |
+| size      | `'small'\|'medium'\|'large'`      | `'medium'` | 尺寸                                                             |
+| show      | `boolean`                         | —          | 受控开关（v-model:show）                                         |
 
 事件：`update:show` / `select(key, option)` / `clickoutside`。键盘：Enter/Space/ArrowDown 打开、ArrowUp/Down 高亮、ArrowRight/Left 进出子菜单、Esc 关闭。aria：menu/menuitem/separator。
 

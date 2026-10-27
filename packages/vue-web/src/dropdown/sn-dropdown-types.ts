@@ -22,8 +22,12 @@ export type SnDropdownSize = 'small' | 'medium' | 'large';
 export type SnDropdownPlacement =
   'bottom' | 'bottom-start' | 'bottom-end' | 'top' | 'top-start' | 'top-end';
 
-/** What gesture opens the menu (naive `trigger`). Keyboard always works. */
-export type SnDropdownTrigger = 'click' | 'hover';
+/**
+ * What gesture opens the menu (naive `trigger` + Arco `contextMenu`).
+ * Keyboard always works — it anchors the panel to the trigger, while
+ * `contextMenu` anchors it to the pointer.
+ */
+export type SnDropdownTrigger = 'click' | 'hover' | 'contextMenu';
 
 /**
  * Raw entry accepted by the `options` prop — mirrors naive-ui DropdownOption:

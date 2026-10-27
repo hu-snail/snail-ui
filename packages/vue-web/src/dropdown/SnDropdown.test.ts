@@ -435,4 +435,100 @@ describe('SnDropdown', () => {
     expect(spy).toHaveBeenCalledWith('resize', expect.any(Function));
     spy.mockRestore();
   });
+
+  /* ───── context-menu trigger (Arco parity) ───── */
+
+  /** Dispatch a cancelable right-click and return it for assertions. */
+  async function openByContextMenu(
+    wrapper: ReturnType<typeof mountDropdown>,
+    clientX = 150,
+    clientY = 200,
+  ): Promise<MouseEvent> {
+    const event = new MouseEvent('contextmenu', {
+      bubbles: true,
+      cancelable: true,
+      clientX,
+      clientY,
+    });
+    triggerOf(wrapper).element.dispatchEvent(event);
+    await nextTick();
+    await nextTick();
+    return event;
+  }
+
+  it('opens at the pointer on right-click and swallows the native menu', async () => {
+    const w = mountDropdown({ trigger: 'contextMenu' });
+    const event = await openByContextMenu(w);
+    expect(event.defaultPrevented).toBe(true);
+    expect(mainMenu()).not.toBeNull();
+    expect(w.emitted('update:show')?.at(-1)).toEqual([true]);
+    // Zero-size panel in happy-dom + center alignment → menu's top-left
+    // lands on the pointer itself (bottom side keeps top = pointer y).
+    expect(mainMenu()?.style.left).toBe('150px');
+    expect(mainMenu()?.style.top).toBe('200px');
+  });
+
+  it('re-anchors an open context menu to a fresh right-click position', async () => {
+    const w = mountDropdown({ trigger: 'contextMenu' });
+    await openByContextMenu(w, 150, 200);
+    await openByContextMenu(w, 300, 100);
+    expect(mainMenu()?.style.left).toBe('300px');
+    expect(mainMenu()?.style.top).toBe('100px');
+  });
+
+  it('flips above the pointer when the bottom half lacks room', async () => {
+    // Give panels real sizes so the flip arithmetic has room to fail.
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(180);
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(140);
+    const w = mountDropdown({ trigger: 'contextMenu' });
+    // happy-dom viewport is 768px tall — 8px below the pointer, 760 above.
+    await openByContextMenu(w, 150, 760);
+    expect(mainMenu()?.classList.contains('sn-dropdown-menu--top')).toBe(true);
+    expect(mainMenu()?.style.top).toBe('620px'); // 760 - 140
+  });
+
+  it('keeps the keyboard path anchored to the trigger, not a pointer', async () => {
+    const w = mountDropdown({ trigger: 'contextMenu' });
+    const trigger = triggerOf(w);
+    await trigger.trigger('keydown', { key: 'Enter' });
+    await nextTick();
+    await nextTick();
+    expect(mainMenu()).not.toBeNull();
+    // Trigger rect mock is (40, 300, 120, 32) → center-aligned left 100,
+    // bottom side top 332 — the trigger-anchored arithmetic, not clientX/Y.
+    expect(mainMenu()?.style.left).toBe('100px');
+    expect(mainMenu()?.style.top).toBe('332px');
+  });
+
+  it('closes the context menu after a select', async () => {
+    const w = mountDropdown({ trigger: 'contextMenu' });
+    await openByContextMenu(w);
+    rowByKey('delete')?.click();
+    await nextTick();
+    expect(w.emitted('select')?.at(-1)).toEqual(['delete', { label: 'Delete', key: 'delete' }]);
+    await menuLeft();
+    expect(mainMenu()).toBeNull();
+  });
+
+  it('ignores left-clicks under the contextMenu trigger', async () => {
+    const w = mountDropdown({ trigger: 'contextMenu' });
+    await triggerOf(w).trigger('click');
+    await nextTick();
+    expect(mainMenu()).toBeNull();
+    expect(w.emitted('update:show')).toBeUndefined();
+  });
+
+  it('leaves the native menu and panel alone for other trigger modes', async () => {
+    const w = mountDropdown({ trigger: 'click' });
+    const event = await openByContextMenu(w);
+    expect(event.defaultPrevented).toBe(false);
+    expect(mainMenu()).toBeNull();
+  });
+
+  it('does not open a disabled dropdown on right-click', async () => {
+    const w = mountDropdown({ trigger: 'contextMenu', disabled: true });
+    const event = await openByContextMenu(w);
+    expect(event.defaultPrevented).toBe(false);
+    expect(mainMenu()).toBeNull();
+  });
 });
