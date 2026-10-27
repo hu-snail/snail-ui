@@ -272,7 +272,9 @@ describe('sn-segmented', () => {
       await wrapper.findAll('.sn-segmented__item')[1]!.trigger('tap');
       expect(wrapper.emitted('update:value')).toHaveLength(1);
       expect(wrapper.emitted('update:modelValue')).toHaveLength(1);
-      expect(wrapper.emitted('update:value')?.[0]).toEqual(wrapper.emitted('update:modelValue')?.[0]);
+      expect(wrapper.emitted('update:value')?.[0]).toEqual(
+        wrapper.emitted('update:modelValue')?.[0],
+      );
     });
   });
 

@@ -427,7 +427,8 @@ function ariaSelected(columnIndex: number, rowIndex: number): 'true' | 'false' {
           :aria-selected="ariaSelected(columnIndex, rowIndex)"
           :aria-disabled="option.disabled ? 'true' : undefined"
           @tap="onItemTap(columnIndex, rowIndex)"
-          ><text>{{ option.label }}</text></view>
+          ><text>{{ option.label }}</text></view
+        >
         >
       </view>
       <view class="sn-picker-view__mask sn-picker-view__mask--top" aria-hidden="true" />

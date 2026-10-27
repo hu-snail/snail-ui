@@ -237,23 +237,21 @@ describe('sn-checkbox-group (extended)', () => {
   });
 
   it('applies the group checkedColor to a selected child icon', () => {
-    const wrapper = mountGroup(
-      { modelValue: ['a'], checkedColor: 'rgb(10, 20, 30)' },
-      [{ name: 'a', label: 'A' }],
-    );
-    expect(wrapper.findComponent(SnCheckbox).find('.sn-checkbox__icon').attributes('style')).toContain(
-      'background-color: rgb(10, 20, 30)',
-    );
+    const wrapper = mountGroup({ modelValue: ['a'], checkedColor: 'rgb(10, 20, 30)' }, [
+      { name: 'a', label: 'A' },
+    ]);
+    expect(
+      wrapper.findComponent(SnCheckbox).find('.sn-checkbox__icon').attributes('style'),
+    ).toContain('background-color: rgb(10, 20, 30)');
   });
 
   it('applies the group uncheckedColor to an unselected child icon', () => {
-    const wrapper = mountGroup(
-      { modelValue: [], uncheckedColor: 'rgb(3, 4, 5)' },
-      [{ name: 'a', label: 'A' }],
-    );
-    expect(wrapper.findComponent(SnCheckbox).find('.sn-checkbox__icon').attributes('style')).toContain(
-      'border-color: rgb(3, 4, 5)',
-    );
+    const wrapper = mountGroup({ modelValue: [], uncheckedColor: 'rgb(3, 4, 5)' }, [
+      { name: 'a', label: 'A' },
+    ]);
+    expect(
+      wrapper.findComponent(SnCheckbox).find('.sn-checkbox__icon').attributes('style'),
+    ).toContain('border-color: rgb(3, 4, 5)');
   });
 
   it('removes a group-blocked child from the tab order', () => {

@@ -77,9 +77,9 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 
 ## Events
 
-| Name    | Payload                       | Description                               |
-| ------- | ----------------------------- | ----------------------------------------- |
-| `click` | `Event`, `{ to, replace }`    | Row tapped while `clickable` or `isLink`. |
+| Name    | Payload                    | Description                               |
+| ------- | -------------------------- | ----------------------------------------- |
+| `click` | `Event`, `{ to, replace }` | Row tapped while `clickable` or `isLink`. |
 
 ## Slots
 

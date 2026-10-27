@@ -417,10 +417,14 @@ describe('sn-cell-group', () => {
     const Harness = defineComponent({
       setup() {
         return () =>
-          h(SnCellGroup, { title: 'ignored', value: 'ignored' }, {
-            title: () => h('text', { class: 'custom-group-title' }, 'slot title'),
-            value: () => h('text', { class: 'custom-group-value' }, 'slot value'),
-          });
+          h(
+            SnCellGroup,
+            { title: 'ignored', value: 'ignored' },
+            {
+              title: () => h('text', { class: 'custom-group-title' }, 'slot title'),
+              value: () => h('text', { class: 'custom-group-value' }, 'slot value'),
+            },
+          );
       },
     });
     const wrapper = mount(Harness);

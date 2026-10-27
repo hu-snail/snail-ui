@@ -194,9 +194,7 @@ const formApi = inject('sn-form-api' as never, null) as {
   lastProp?: Ref<string>;
 } | null;
 
-const isLast = computed(
-  () => props.prop !== '' && formApi?.lastProp?.value === props.prop,
-);
+const isLast = computed(() => props.prop !== '' && formApi?.lastProp?.value === props.prop);
 
 onMounted(() => {
   if (!ctx || !props.prop) return;
@@ -264,7 +262,8 @@ const classes = computed(() => [
     'sn-form-item--border': resolveBool(props.border, ctx?.border),
     /* Registered-order last item replaces `:deep(.sn-form-item:last-child)`. */
     'sn-form-item--last': isLast.value,
-    'sn-form-item--layout-vertical': (props.labelPosition ?? ctx?.labelPosition) !== 'top' && ctx?.layout === 'vertical',
+    'sn-form-item--layout-vertical':
+      (props.labelPosition ?? ctx?.labelPosition) !== 'top' && ctx?.layout === 'vertical',
     'sn-form-item--center': resolveBool(props.center, ctx?.center),
     'sn-form-item--ellipsis': resolveBool(props.ellipsis, ctx?.ellipsis),
     'sn-form-item--hide-asterisk': resolveBool(props.hideAsterisk, ctx?.hideAsterisk),

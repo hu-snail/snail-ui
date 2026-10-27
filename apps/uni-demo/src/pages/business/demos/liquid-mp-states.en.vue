@@ -53,7 +53,9 @@ function jumpTo(next: number): void {
         <text class="liquid-actions__btn-text">150</text>
       </view>
     </view>
-    <text class="sn-demo__meta">Buttons drive the three balls below; transitioning current: {{ Math.round(current) }}</text>
+    <text class="sn-demo__meta"
+      >Buttons drive the three balls below; transitioning current: {{ Math.round(current) }}</text
+    >
   </view>
 </template>
 

@@ -272,7 +272,9 @@ describe('sn-sidebar-item', () => {
         { value: 2, label: 'Done' },
       ]);
       await wrapper.vm.$nextTick();
-      expect(wrapper.findAll('.sn-sidebar-item')[2]!.classes()).toContain('sn-sidebar-item--active');
+      expect(wrapper.findAll('.sn-sidebar-item')[2]!.classes()).toContain(
+        'sn-sidebar-item--active',
+      );
     });
 
     it('emits one update per tap in a quick item-to-item sequence', async () => {

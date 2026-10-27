@@ -157,7 +157,11 @@ describe('sn-img', () => {
       const previewImage = vi.fn();
       host.uni = { previewImage };
       const wrapper = mount(SnImg, {
-        props: { src: 'https://x/thumb.png', previewSrc: 'https://x/full.png', enablePreview: true },
+        props: {
+          src: 'https://x/thumb.png',
+          previewSrc: 'https://x/full.png',
+          enablePreview: true,
+        },
       });
       await wrapper.trigger('tap');
       expect(previewImage).toHaveBeenCalledWith({

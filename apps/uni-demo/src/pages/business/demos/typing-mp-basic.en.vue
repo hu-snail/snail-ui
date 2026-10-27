@@ -17,7 +17,9 @@ import SnTyping from '@snui/uni-src/components/sn-typing/sn-typing.vue';
         <SnTyping text="The other side is typing…" :speed="280" />
       </view>
     </view>
-    <text class="sn-demo__meta">Use the typing bubble while waiting; unmount it once the reply arrives</text>
+    <text class="sn-demo__meta"
+      >Use the typing bubble while waiting; unmount it once the reply arrives</text
+    >
   </view>
 </template>
 

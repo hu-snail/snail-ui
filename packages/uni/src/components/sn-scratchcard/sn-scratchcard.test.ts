@@ -47,7 +47,9 @@ describe('SnScratchcard degraded cover contract', () => {
   });
 
   it('should label the region with the title, falling back to a generic label', () => {
-    expect(mount(SnScratchcard, { props: { title: '刮我' } }).attributes('aria-label')).toBe('刮我');
+    expect(mount(SnScratchcard, { props: { title: '刮我' } }).attributes('aria-label')).toBe(
+      '刮我',
+    );
     expect(mount(SnScratchcard).attributes('aria-label')).toBe('scratchcard');
   });
 
@@ -274,7 +276,11 @@ describe('SnScratchcard real scratch path', () => {
   });
 
   it('should fall back to painting the color cover when the image fails to load', () => {
-    const image = { src: '', onload: null as (() => void) | null, onerror: null as (() => void) | null };
+    const image = {
+      src: '',
+      onload: null as (() => void) | null,
+      onerror: null as (() => void) | null,
+    };
     stub.createImage = vi.fn(() => image);
     mount(SnScratchcard, { props: { coverImg: 'https://example.com/cover.png' } });
     expect(image.src).toBe('https://example.com/cover.png');
@@ -284,7 +290,11 @@ describe('SnScratchcard real scratch path', () => {
   });
 
   it('should draw the cover image once it loads', () => {
-    const image = { src: '', onload: null as (() => void) | null, onerror: null as (() => void) | null };
+    const image = {
+      src: '',
+      onload: null as (() => void) | null,
+      onerror: null as (() => void) | null,
+    };
     stub.createImage = vi.fn(() => image);
     mount(SnScratchcard, { props: { coverImg: 'https://example.com/cover.png' } });
     image.onload?.();
@@ -299,9 +309,9 @@ describe('SnScratchcard real scratch path', () => {
 
 describe('SnScratchcard zero-size degradation', () => {
   beforeEach(() => {
-    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(
-      { fillRect: vi.fn() } as unknown as CanvasRenderingContext2D,
-    );
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
+      fillRect: vi.fn(),
+    } as unknown as CanvasRenderingContext2D);
     Object.defineProperty(HTMLCanvasElement.prototype, 'offsetWidth', {
       configurable: true,
       get: () => 0,
