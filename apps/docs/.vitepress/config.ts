@@ -106,6 +106,7 @@ const sidebar = {
         { text: 'Rate 评分', link: '/components/web/rate' },
         { text: 'Form 表单', link: '/components/web/form' },
         { text: 'Transfer 穿梭框', link: '/components/web/transfer' },
+        { text: 'DragSort 拖拽排序', link: '/components/web/drag-sort' },
       ],
     },
     {
@@ -446,6 +447,7 @@ const enSidebar = {
         { text: 'Rate', link: '/en/components/web/rate' },
         { text: 'Form', link: '/en/components/web/form' },
         { text: 'Transfer', link: '/en/components/web/transfer' },
+        { text: 'DragSort', link: '/en/components/web/drag-sort' },
       ],
     },
     {

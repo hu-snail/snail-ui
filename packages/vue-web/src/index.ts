@@ -261,6 +261,16 @@ export type {
   SnVideoSourceBridgeHandle,
 } from './video-player/video-player-types';
 export { default as SnMarquee } from './marquee/SnMarquee.vue';
+
+// 拖拽排序 (AUI-WEB-FORM-018): 可排序列表，v-model 双向绑定
+export { default as SnDragSort } from './drag-sort/SnDragSort.vue';
+export type {
+  SnDragSortItem,
+  SnDragSortKey,
+  SnDragSortDirection,
+  SnDragSortEvent,
+} from './drag-sort/sn-drag-sort-types';
+
 export type {
   SnFloatButtonGroupDirection,
   SnFloatButtonPlacement,

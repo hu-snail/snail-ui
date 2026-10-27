@@ -166,6 +166,8 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnVideoPreview',
   'SnVideoPlayer',
   'SnMarquee',
+  // 拖拽排序 (AUI-WEB-FORM-018)
+  'SnDragSort',
 ];
 
 export function SnUIResolver(options: SnUIResolverOptions = {}): ComponentResolver {

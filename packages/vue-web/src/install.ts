@@ -120,6 +120,7 @@ import SnWaterfall from './waterfall/SnWaterfall.vue';
 import SnVideoPreview from './video-preview/SnVideoPreview.vue';
 import SnVideoPlayer from './video-player/SnVideoPlayer.vue';
 import SnMarquee from './marquee/SnMarquee.vue';
+import SnDragSort from './drag-sort/SnDragSort.vue';
 
 export interface SnUIOptions {
   /** Skip auto-registration of specific components. */
@@ -252,6 +253,8 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnVideoPreview', component: SnVideoPreview },
   { name: 'SnVideoPlayer', component: SnVideoPlayer },
   { name: 'SnMarquee', component: SnMarquee },
+  // 拖拽排序 (AUI-WEB-FORM-018)
+  { name: 'SnDragSort', component: SnDragSort },
 ];
 
 export const SnUI: Plugin = {
