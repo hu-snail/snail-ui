@@ -269,7 +269,8 @@ const viewClass = computed(() => props.customViewClass);
           role="button"
           :aria-label="props.confirmButtonText"
           @tap="onConfirm"
-          ><text>{{ props.confirmButtonText }}</text></view>
+          ><text>{{ props.confirmButtonText }}</text></view
+        >
         >
       </view>
 

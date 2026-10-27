@@ -49,7 +49,15 @@
  *   <SnVideoPlayer :source-bridge="hlsBridge" :src="liveUrl" />
  */
 
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type CSSProperties } from 'vue';
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+  type CSSProperties,
+} from 'vue';
 import { useLocale } from '../locales/use-locale';
 import SnIcon from '../icon/SnIcon.vue';
 import {
@@ -249,7 +257,9 @@ function fmtTime(seconds: number): string {
 
 /* ────────────────────────── source + bridge ────────────────────────── */
 
-const activeQualityId = ref<string | number | undefined>(props.defaultQuality ?? props.qualities[0]?.value);
+const activeQualityId = ref<string | number | undefined>(
+  props.defaultQuality ?? props.qualities[0]?.value,
+);
 const bridgeQualities = ref<SnBridgeQuality[]>([]);
 const bridgeIsLive = ref<boolean | null>(null);
 const sniffedLive = ref(false);
@@ -615,7 +625,9 @@ interface FullscreenApi {
   element: () => Element | null;
 }
 
-type WebkitFullscreenElement = HTMLElement & { webkitRequestFullscreen?: () => Promise<void> | void };
+type WebkitFullscreenElement = HTMLElement & {
+  webkitRequestFullscreen?: () => Promise<void> | void;
+};
 
 function fullscreenApi(): FullscreenApi {
   const doc = document as Document & {
@@ -707,14 +719,11 @@ const uncontrolledMini = ref(false);
 
 const mergedMini = computed(() => props.mini ?? uncontrolledMini.value);
 
-watch(
-  miniState.isMini,
-  (active) => {
-    uncontrolledMini.value = active;
-    emit('update:mini', active);
-    emit('mini-change', active);
-  },
-);
+watch(miniState.isMini, (active) => {
+  uncontrolledMini.value = active;
+  emit('update:mini', active);
+  emit('mini-change', active);
+});
 
 function toggleMini(): void {
   if (mergedMini.value) miniState.exitMini();
@@ -772,14 +781,11 @@ watch(
   },
 );
 
-watch(
-  [danmuVisibleRef, isClient],
-  ([visible, client]) => {
-    if (!client) return;
-    if (visible) danmakuEngine.value?.start();
-    else danmakuEngine.value?.stop();
-  },
-);
+watch([danmuVisibleRef, isClient], ([visible, client]) => {
+  if (!client) return;
+  if (visible) danmakuEngine.value?.start();
+  else danmakuEngine.value?.stop();
+});
 
 // Keep the canvas backing store in sync with the player box.
 let canvasResizeObserver: ResizeObserver | null = null;
@@ -923,7 +929,9 @@ const progressRatio = computed(() => {
 });
 
 const hoverRatio = computed(() =>
-  hoverTime.value !== null && duration.value > 0 ? Math.min(1, hoverTime.value / duration.value) : 0,
+  hoverTime.value !== null && duration.value > 0
+    ? Math.min(1, hoverTime.value / duration.value)
+    : 0,
 );
 
 function ratioFromEvent(event: PointerEvent): number {
@@ -1084,7 +1092,10 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
     @pointerdown="showControls"
     @mouseleave="playing && (controlsVisible = false)"
   >
-    <div class="sn-video-player__stage" :style="{ aspectRatio: mergedMini ? '16 / 9' : aspectRatio }">
+    <div
+      class="sn-video-player__stage"
+      :style="{ aspectRatio: mergedMini ? '16 / 9' : aspectRatio }"
+    >
       <!-- eslint-disable-next-line vue/html-self-closing -->
       <video
         ref="videoRef"
@@ -1192,7 +1203,10 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
             :aria-label="mutedRef ? locale.VideoPlayer.unmute : locale.VideoPlayer.mute"
             @click="toggleMute"
           >
-            <SnIcon :icon="(mutedRef || volumeRef === 0 ? VolumeX : Volume2) as IconComponent" :size="18" />
+            <SnIcon
+              :icon="(mutedRef || volumeRef === 0 ? VolumeX : Volume2) as IconComponent"
+              :size="18"
+            />
           </button>
           <input
             v-model.number="volumeRef"
@@ -1231,14 +1245,23 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
           @pointerleave="onTrackPointerLeave"
           @keydown="onTrackKeydown"
         >
-          <div class="sn-video-player__progress-buffered" :style="{ width: `${bufferedRatio * 100}%` }" />
-          <div class="sn-video-player__progress-played" :style="{ width: `${progressRatio * 100}%` }" />
+          <div
+            class="sn-video-player__progress-buffered"
+            :style="{ width: `${bufferedRatio * 100}%` }"
+          />
+          <div
+            class="sn-video-player__progress-played"
+            :style="{ width: `${progressRatio * 100}%` }"
+          />
           <div
             v-if="hoverTime !== null"
             class="sn-video-player__progress-hover"
             :style="{ left: `${hoverRatio * 100}%` }"
           />
-          <div class="sn-video-player__progress-thumb" :style="{ left: `${progressRatio * 100}%` }" />
+          <div
+            class="sn-video-player__progress-thumb"
+            :style="{ left: `${progressRatio * 100}%` }"
+          />
           <div
             v-if="hoverTime !== null"
             class="sn-video-player__progress-tooltip"
@@ -1286,7 +1309,10 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
                 :aria-checked="q.id === activeQualityId"
                 class="sn-video-player__settings-item"
                 :class="q.id === activeQualityId && 'sn-video-player__settings-item--active'"
-                @click="selectQuality(q.id); settingsOpen = false"
+                @click="
+                  selectQuality(q.id);
+                  settingsOpen = false;
+                "
               >
                 {{ q.label }}
               </button>
@@ -1301,7 +1327,10 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
                 :aria-checked="r === rateRef"
                 class="sn-video-player__settings-item"
                 :class="r === rateRef && 'sn-video-player__settings-item--active'"
-                @click="setRate(r); settingsOpen = false"
+                @click="
+                  setRate(r);
+                  settingsOpen = false;
+                "
               >
                 {{ r }}x
               </button>
@@ -1374,7 +1403,9 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
           v-if="canFullscreen"
           type="button"
           class="sn-video-player__button"
-          :aria-label="fullscreenActive ? locale.VideoPlayer.exitFullscreen : locale.VideoPlayer.fullscreen"
+          :aria-label="
+            fullscreenActive ? locale.VideoPlayer.exitFullscreen : locale.VideoPlayer.fullscreen
+          "
           @click="toggleFullscreen"
         >
           <SnIcon :icon="Maximize as IconComponent" :size="17" />
@@ -1571,7 +1602,8 @@ const resolvedPoster = computed(() => props.poster ?? undefined);
   gap: var(--sn-web-spacing-1, 4px);
   width: 100%;
   box-sizing: border-box;
-  padding: var(--sn-web-video-player-controls-pad-y, 8px) var(--sn-web-video-player-controls-pad-x, 12px);
+  padding: var(--sn-web-video-player-controls-pad-y, 8px)
+    var(--sn-web-video-player-controls-pad-x, 12px);
   color: var(--sn-web-video-player-color, #ffffff);
   background: var(--sn-web-video-player-controls-bg, #000000a6);
   backdrop-filter: blur(6px);

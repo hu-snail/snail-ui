@@ -339,9 +339,9 @@ describe('sn-cascader', () => {
 
     it('renders the custom confirmText', () => {
       expect(
-        mountCascader({ checkStrictly: true, confirmText: 'done' }).find(
-          '.sn-cascader__confirm',
-        ).text(),
+        mountCascader({ checkStrictly: true, confirmText: 'done' })
+          .find('.sn-cascader__confirm')
+          .text(),
       ).toBe('done');
     });
 
@@ -440,9 +440,7 @@ describe('sn-cascader', () => {
       await optionsOf(w, 0)[0]?.trigger('tap');
       await w.find('.sn-cascader__confirm').trigger('tap');
       await Promise.resolve();
-      expect(w.emitted('confirm')?.[0]).toEqual([
-        { value: 'zj', selectedOptions: [TREE[0]] },
-      ]);
+      expect(w.emitted('confirm')?.[0]).toEqual([{ value: 'zj', selectedOptions: [TREE[0]] }]);
       expect(w.emitted('update:visible')?.[0]).toEqual([false]);
     });
 

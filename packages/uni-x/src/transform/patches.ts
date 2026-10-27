@@ -100,27 +100,27 @@ const iconDataUrl = computed<string | undefined>(() => {
       note: 'status-icon [data-status] attribute selector → status modifier class',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status=\'error\'] {',
+      anchor: ".sn-form-item__status-icon[data-status='error'] {",
       replacement: '.sn-form-item__status-icon--error {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status=\'warning\'] {',
+      anchor: ".sn-form-item__status-icon[data-status='warning'] {",
       replacement: '.sn-form-item__status-icon--warning {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__status-icon[data-status=\'success\'] {',
+      anchor: ".sn-form-item__status-icon[data-status='success'] {",
       replacement: '.sn-form-item__status-icon--success {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__message[data-status=\'error\'] {',
+      anchor: ".sn-form-item__message[data-status='error'] {",
       replacement: '.sn-form-item__message--error {',
       note: 'attribute selector rewritten',
     },
     {
-      anchor: '.sn-form-item__message[data-status=\'warning\'] {',
+      anchor: ".sn-form-item__message[data-status='warning'] {",
       replacement: '.sn-form-item__message--warning {',
       note: 'attribute selector rewritten',
     },

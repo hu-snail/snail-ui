@@ -410,12 +410,17 @@ describe('SnDataTable (AUI-WEB-DD-004)', () => {
       await options[0].trigger('keydown', { key: ' ' });
       // Enter + Space on the same option → toggled twice, back to unchecked.
       expect(
-        w.findAll('.sn-data-table__filter-option')[0].find('.sn-data-table__checkbox--checked')
+        w
+          .findAll('.sn-data-table__filter-option')[0]
+          .find('.sn-data-table__checkbox--checked')
           .exists(),
       ).toBe(false);
 
       await options[0].trigger('keydown', { key: 'Enter' });
-      await w.find('.sn-data-table__filter-menu').find('.sn-data-table__filter-action').trigger('click');
+      await w
+        .find('.sn-data-table__filter-menu')
+        .find('.sn-data-table__filter-action')
+        .trigger('click');
       const emitted = w.findComponent(SnDataTable).emitted('update:filters');
       expect(emitted?.[0]?.[0]).toEqual({ address: ['London'] });
     });

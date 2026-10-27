@@ -128,7 +128,9 @@ describe('sn-password-input', () => {
   /* ── Extended coverage: bounds, a11y, v-model flow, forwarding ── */
 
   it('renders at least one box when length is 0', () => {
-    expect(mount(SnPasswordInput, { props: { length: 0 } }).findAll('.sn-password-input__box')).toHaveLength(1);
+    expect(
+      mount(SnPasswordInput, { props: { length: 0 } }).findAll('.sn-password-input__box'),
+    ).toHaveLength(1);
   });
 
   it('shows the caret by default (focused defaults to true)', () => {

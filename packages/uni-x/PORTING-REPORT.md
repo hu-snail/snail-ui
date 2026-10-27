@@ -5,20 +5,20 @@
 
 ## Issue summary
 
-| kind | count |
-| --- | --- |
-| template-attr | 156 |
-| defineSlots-stripped | 66 |
-| unsupported-property | 31 |
-| patch | 31 |
-| template-bare-text | 16 |
-| script-guard | 9 |
-| defineSlots-manual | 1 |
-| stray-sfc-content | 1 |
+| kind                 | count |
+| -------------------- | ----- |
+| template-attr        | 156   |
+| defineSlots-stripped | 66    |
+| unsupported-property | 31    |
+| patch                | 31    |
+| template-bare-text   | 16    |
+| script-guard         | 9     |
+| defineSlots-manual   | 1     |
+| stray-sfc-content    | 1     |
 
 ## Manual-port flags (curated)
 
-- **sn-table** — uvue officially supports `<component :is>` on App (vue/built-in docs), but cellRenderers pass a slot *function* as the value; that shape needs compile verification on device.
+- **sn-table** — uvue officially supports `<component :is>` on App (vue/built-in docs), but cellRenderers pass a slot _function_ as the value; that shape needs compile verification on device.
 - **sn-sticky** — `position: sticky` is unsupported on App vapor and the built-in sticky-section/sticky-header only work inside list-view; the component degrades to normal flow (patched + documented).
 - **sn-form-item** — consumed `defineSlots` return (`const slots = defineSlots…`); verify the macro exists on the vapor compiler.
 - **sn-qr-code** — canvas runs on the W3C-aligned 2d context of uni-app x (bitmap sizing + `toDataURL` export patched in); verify first-paint bitmap timing and the roundRect/gradient fallbacks on device.
@@ -645,4 +645,3 @@
 
 - defineSlots stripped — `defineSlots-stripped`: defineSlots macro call removed (type-only)
 - template attribute rewritten — `template-attr`: 1 data-* attribute(s) stripped
-

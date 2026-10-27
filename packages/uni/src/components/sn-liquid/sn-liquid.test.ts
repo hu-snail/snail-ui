@@ -49,9 +49,7 @@ describe('SnLiquid clamping and static styling', () => {
 
   it('should add the outline class and drop it by default', () => {
     expect(mount(SnLiquid).classes()).not.toContain('sn-liquid--outline');
-    expect(mount(SnLiquid, { props: { outline: true } }).classes()).toContain(
-      'sn-liquid--outline',
-    );
+    expect(mount(SnLiquid, { props: { outline: true } }).classes()).toContain('sn-liquid--outline');
   });
 
   it('should paint both waves with the waveColor and double the size for the wave geometry', () => {

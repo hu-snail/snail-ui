@@ -344,9 +344,8 @@ export class DanmakuEngine {
     ctx.clearRect(0, 0, this.cssWidth, this.cssHeight);
     const fontPx = this.effectiveFontPx();
     ctx.font = `${fontPx}px system-ui, -apple-system, 'PingFang SC', sans-serif`;
-    ctx.textAlign = this.cssWidth > 0 && this.actives.some((a) => a.type !== 'scroll')
-      ? 'center'
-      : 'left';
+    ctx.textAlign =
+      this.cssWidth > 0 && this.actives.some((a) => a.type !== 'scroll') ? 'center' : 'left';
     ctx.textBaseline = 'middle';
     ctx.globalAlpha = this.options.opacity;
     ctx.lineWidth = 2;
