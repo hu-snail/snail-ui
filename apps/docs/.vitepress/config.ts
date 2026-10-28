@@ -12,6 +12,15 @@ import { EDIT_BASE } from './utils/edit-link';
 const UNI_DEMO_BASE = process.env.UNI_DEMO_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui/';
 
 /**
+ * uni-templates 部署站（docs 首页 uni-templates iframe / 二维码的目标，
+ * 见 utils/uni-templates-base.ts）。与 uni-demo 分离的独立工程
+ * （apps/uni-templates，场景模板 subpages 分包，H5 + 微信小程序双发布）。
+ * 本地联调：UNI_TEMPLATES_PREVIEW_BASE=http://localhost:5174 pnpm dev
+ */
+const UNI_TEMPLATES_BASE =
+  process.env.UNI_TEMPLATES_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui-templates/';
+
+/**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
  *
  * Per ADR-0001 + ADR-0002:
@@ -834,8 +843,9 @@ export default defineConfig({
   vite: {
     build: { target: 'es2022' },
     define: {
-      // 构建期注入 uni-demo 部署站地址（hash 路由），客户端代码不读 process.env。
+      // 构建期注入 uni-demo / uni-templates 部署站地址（hash 路由），客户端代码不读 process.env。
       __UNI_DEMO_BASE__: JSON.stringify(UNI_DEMO_BASE),
+      __UNI_TEMPLATES_BASE__: JSON.stringify(UNI_TEMPLATES_BASE),
     },
     resolve: {
       // Web demo 源直接引用包源码，vite + @vitejs/plugin-vue 按请求重编译 SFC

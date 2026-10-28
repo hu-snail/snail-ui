@@ -1,0 +1,81 @@
+name: uni-templates deploy
+
+# 场景模板站（apps/uni-templates）的 H5 产物独立部署到 GitHub Pages，
+# 与 uni-demo（组件演示）分离。docs 首页 uni-templates 的 iframe 预览
+# 与扫码引流二维码指向该站点（见 apps/docs/.vitepress/utils/uni-templates-base.ts）。
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/uni-templates/**'
+      - 'packages/uni/**'
+      - 'packages/tokens/**'
+      - 'packages/tokens-mp/**'
+      - 'packages/style-packs/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/uni-templates-deploy.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: uni-templates-pages
+  cancel-in-progress: true
+
+env:
+  # GitHub Pages 项目站：https://<owner>.github.io/snail-ui-templates/
+  # 与 docs config.ts 的 UNI_TEMPLATES_BASE 默认值保持一致。
+  UNI_H5_BASE: /snail-ui-templates/
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Node 22：与 ci.yml 对齐（engines >=20 仍满足）。
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # 模板页经 @snui/uni-src 别名引用组件库源码；App.vue 另引入
+      # '@snui/uni/styles' 与风格包（@snui/style-packs → dist），需先构建
+      # 组件库、风格包及其 token 依赖。
+      - name: Build @snui/uni + @snui/style-packs (with deps)
+        run: pnpm --filter @snui/uni... --filter @snui/style-packs... run build
+
+      - name: Build uni-templates H5
+        run: pnpm --filter @snui/uni-templates run build:h5
+
+      - name: Disable Jekyll
+        run: touch apps/uni-templates/dist/build/h5/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/uni-templates/dist/build/h5
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
