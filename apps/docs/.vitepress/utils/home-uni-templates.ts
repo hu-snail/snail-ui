@@ -25,17 +25,17 @@ export interface UniTemplate {
 
 /** 模板清单 —— 11 个真实场景模板页（apps/uni-templates/src/subpages）。 */
 export const uniTemplates: UniTemplate[] = [
-  { id: 'login', route: 'subpages/login', h: 540 },
-  { id: 'mall', route: 'subpages/mall', h: 620 },
-  { id: 'goods', route: 'subpages/goods', h: 620 },
-  { id: 'order', route: 'subpages/order', h: 580 },
-  { id: 'xhs', route: 'subpages/xhs', h: 600 },
-  { id: 'news', route: 'subpages/news', h: 545 },
-  { id: 'address', route: 'subpages/address', h: 480 },
-  { id: 'article', route: 'subpages/article', h: 600 },
-  { id: 'stats', route: 'subpages/stats', h: 570 },
+  { id: 'login', route: 'subpages/login', h: 500 },
+  { id: 'mall', route: 'subpages/mall', h: 660 },
+  { id: 'goods', route: 'subpages/goods', h: 640 },
+  { id: 'order', route: 'subpages/order', h: 560 },
+  { id: 'xhs', route: 'subpages/xhs', h: 620 },
+  { id: 'news', route: 'subpages/news', h: 500 },
+  { id: 'address', route: 'subpages/address', h: 460 },
+  { id: 'article', route: 'subpages/article', h: 660 },
+  { id: 'stats', route: 'subpages/stats', h: 610 },
   { id: 'contacts', route: 'subpages/contacts', h: 540 },
-  { id: 'form', route: 'subpages/form', h: 585 },
+  { id: 'form', route: 'subpages/form', h: 580 },
 ];
 
 type UniTplDict = Record<string, string>;
