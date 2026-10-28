@@ -3,8 +3,11 @@
  *
  * 与 uni-demo（组件演示）分离的独立工程（apps/uni-templates）：主包只有
  * 模板目录，场景模板页全部在 `subpages` 分包，可发布 H5 与微信小程序。
+ * H5 与 uni-demo 合并部署在同一个 Pages 项目站的 /uni-templates/ 子路径
+ * （见 .github/workflows/uni-sites-deploy.yml —— GitHub Pages 每仓库只有
+ * 一个站点，两个 workflow 各自 deploy 会互相覆盖）。
  *
- * 默认指向本仓库的独立 Pages 项目站；本地联调时用环境变量覆盖为本地
+ * 默认指向同一 Pages 项目站的 /uni-templates/ 子路径；本地联调时用环境变量覆盖为本地
  * uni-templates dev server：
  *
  *   UNI_TEMPLATES_PREVIEW_BASE=http://localhost:5174 pnpm dev

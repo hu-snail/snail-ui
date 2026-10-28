@@ -18,7 +18,8 @@ const UNI_DEMO_BASE = process.env.UNI_DEMO_PREVIEW_BASE ?? 'https://hu-snail.git
  * 本地联调：UNI_TEMPLATES_PREVIEW_BASE=http://localhost:5174 pnpm dev
  */
 const UNI_TEMPLATES_BASE =
-  process.env.UNI_TEMPLATES_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui-templates/';
+  process.env.UNI_TEMPLATES_PREVIEW_BASE ??
+  'https://hu-snail.github.io/snail-ui/uni-templates/';
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).

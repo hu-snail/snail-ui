@@ -1,21 +1,26 @@
-name: uni-templates deploy
+name: uni sites deploy
 
-# 场景模板站（apps/uni-templates）的 H5 产物独立部署到 GitHub Pages，
-# 与 uni-demo（组件演示）分离。docs 首页 uni-templates 的 iframe 预览
-# 与扫码引流二维码指向该站点（见 apps/docs/.vitepress/utils/uni-templates-base.ts）。
+# uni 端两个 H5 站点合并部署到同一个 GitHub Pages 项目站
+# （https://<owner>.github.io/<repo>/）—— GitHub Pages 每仓库只有一个站点，
+# 两个 workflow 各自 deploy 会互相覆盖，因此这里一次构建、合并产物：
+#   /                      ← apps/uni-demo（组件演示，ADR-0005）
+#   /uni-templates/        ← apps/uni-templates（场景模板，docs 首页 iframe
+#                            预览 + 扫码引流，见 utils/uni-templates-base.ts）
 
 on:
   workflow_dispatch:
   push:
     branches: [main]
     paths:
+      - 'apps/uni-demo/**'
       - 'apps/uni-templates/**'
       - 'packages/uni/**'
+      - 'packages/templates/**'
       - 'packages/tokens/**'
       - 'packages/tokens-mp/**'
       - 'packages/style-packs/**'
       - 'pnpm-lock.yaml'
-      - '.github/workflows/uni-templates-deploy.yml'
+      - '.github/workflows/uni-sites-deploy.yml'
 
 permissions:
   contents: read
@@ -23,18 +28,13 @@ permissions:
   id-token: write
 
 concurrency:
-  group: uni-templates-pages
+  group: uni-pages
   cancel-in-progress: true
-
-env:
-  # GitHub Pages 项目站：https://<owner>.github.io/snail-ui-templates/
-  # 与 docs config.ts 的 UNI_TEMPLATES_BASE 默认值保持一致。
-  UNI_H5_BASE: /snail-ui-templates/
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -51,22 +51,35 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      # 模板页经 @snui/uni-src 别名引用组件库源码；App.vue 另引入
+      # 两个 H5 站的页面都经 @snui/uni-src 别名引用组件库源码；App.vue 另引入
       # '@snui/uni/styles' 与风格包（@snui/style-packs → dist），需先构建
       # 组件库、风格包及其 token 依赖。
       - name: Build @snui/uni + @snui/style-packs (with deps)
         run: pnpm --filter @snui/uni... --filter @snui/style-packs... run build
 
+      # 组件演示站（站点根）：base 由 env 注入 build-h5.mjs → manifest.router.base
+      - name: Build uni-demo H5
+        run: pnpm --filter @snui/uni-demo run build:h5
+        env:
+          UNI_H5_BASE: /snail-ui/
+
+      # 场景模板站（站点子路径 /uni-templates/）
       - name: Build uni-templates H5
         run: pnpm --filter @snui/uni-templates run build:h5
+        env:
+          UNI_H5_BASE: /snail-ui/uni-templates/
 
-      - name: Disable Jekyll
-        run: touch apps/uni-templates/dist/build/h5/.nojekyll
+      # 合并产物：模板站挂到演示站根的 /uni-templates/ 子目录
+      - name: Merge artifacts
+        run: |
+          cp -R apps/uni-demo/dist/build/h5 ./site
+          cp -R apps/uni-templates/dist/build/h5 ./site/uni-templates
+          touch ./site/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/uni-templates/dist/build/h5
+          path: ./site
 
   deploy:
     needs: build
