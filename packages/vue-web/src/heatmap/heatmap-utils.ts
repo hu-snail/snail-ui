@@ -226,11 +226,14 @@ export function buildLoadingMatrix(
   return rows;
 }
 
-/** Week labels: starts at `firstDayOfWeek`, odd indexes visible. */
+/**
+ * Week labels: starts at `firstDayOfWeek`. All seven rows stay visible —
+ * the reference rendering shows the full 一二三四五六日 column.
+ */
 export function buildWeekLabels(firstDayOfWeek: SnHeatmapFirstDayOfWeek): SnHeatmapWeekLabel[] {
   return Array.from({ length: 7 }, (_, i) => ({
     label: WEEK_CHAR_LABELS[(firstDayOfWeek + i) % 7] ?? '',
-    visible: i % 2 !== 0,
+    visible: true,
   }));
 }
 

@@ -405,10 +405,10 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
   --sn-heatmap-color-4: var(--sn-heatmap-base);
   --sn-heatmap-loading-start: color-mix(in srgb, var(--sn-web-color-text-primary) 6%, transparent);
   --sn-heatmap-loading-end: color-mix(in srgb, var(--sn-web-color-text-primary) 12%, transparent);
-  --sn-heatmap-rect-size: 12px;
-  --sn-heatmap-x-gap: 4px;
-  --sn-heatmap-y-gap: 4px;
-  --sn-heatmap-radius: 3px;
+  --sn-heatmap-rect-size: 13px;
+  --sn-heatmap-x-gap: 5px;
+  --sn-heatmap-y-gap: 5px;
+  --sn-heatmap-radius: 4px;
   /* The reference eases with its common cubicBezierEaseInOut. */
   --sn-heatmap-bezier: cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -420,15 +420,15 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
 }
 
 .sn-heatmap--small {
-  --sn-heatmap-rect-size: 10px;
-  --sn-heatmap-x-gap: 3px;
-  --sn-heatmap-y-gap: 3px;
-  --sn-heatmap-radius: 2px;
+  --sn-heatmap-rect-size: 11px;
+  --sn-heatmap-x-gap: 4px;
+  --sn-heatmap-y-gap: 4px;
+  --sn-heatmap-radius: 3px;
 }
 
 .sn-heatmap--large {
-  --sn-heatmap-rect-size: 13px;
-  --sn-heatmap-radius: 3px;
+  --sn-heatmap-rect-size: 15px;
+  --sn-heatmap-radius: 4px;
   font-size: 14px;
 }
 
@@ -492,8 +492,8 @@ function tooltipDay(cell: SnHeatmapViewCell): SnHeatmapTooltipDay {
   color: var(--sn-web-color-text-tertiary);
   text-align: right;
   width: 27px;
-  height: 12px;
-  line-height: 12px;
+  height: var(--sn-heatmap-rect-size);
+  line-height: var(--sn-heatmap-rect-size);
   padding: 0 4px 0 0;
   border: none;
   vertical-align: middle;
