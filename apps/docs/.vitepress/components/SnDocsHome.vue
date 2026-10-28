@@ -153,7 +153,7 @@ function navTo(url: string): void {
               v-for="tpl in uniTemplates"
               :key="tpl.id"
               :id="tpl.id"
-              :page="tpl.page"
+              :route="tpl.route"
               :height="tpl.h"
               :locale="homeLocale"
             />
