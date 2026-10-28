@@ -13,7 +13,12 @@
  *     no image — missing `src` or a load error — the first available of
  *     default slot → `fallbackText` → `icon` → builtin person SVG renders.
  *   - `icon` resolves a SnIcon registry name; the `icon` slot replaces it.
- *   - `lazy` / `imgProps` / fallback-src network options are not implemented.
+ *   - `lazy` / `intersection-observer-options` are implemented on the same
+ *     contract as SnImage (shared `_internal/lazy-visibility`): a plain
+ *     `lazy` uses the native `loading="lazy"` attribute, and adding
+ *     `intersection-observer-options` withholds the src until the avatar
+ *     enters the viewport. While gated, the fallback content is rendered.
+ *   - `imgProps` / `fallbackSrc` network options are still not implemented.
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
  * `--sn-web-*` token aliases only (px units).
@@ -27,6 +32,8 @@
 import { computed, ref, watch } from 'vue';
 import type { CSSProperties } from 'vue';
 import SnIcon from '../icon/SnIcon.vue';
+import { useLazyVisibility } from '../_internal/lazy-visibility';
+import type { LazyVisibilityOptions } from '../_internal/lazy-visibility';
 
 defineOptions({ name: 'SnAvatar' });
 
@@ -48,6 +55,10 @@ const props = withDefaults(
     fallbackText?: string | undefined;
     /** SnIcon registry name for the placeholder glyph. */
     icon?: string | undefined;
+    /** Load on viewport entry. Same contract as SnImage `lazy`. */
+    lazy?: boolean;
+    /** IntersectionObserver config for lazy loading (see SnImage). */
+    intersectionObserverOptions?: LazyVisibilityOptions | undefined;
   }>(),
   {
     size: 'medium',
@@ -58,6 +69,8 @@ const props = withDefaults(
     circle: false,
     fallbackText: undefined,
     icon: undefined,
+    lazy: false,
+    intersectionObserverOptions: undefined,
   },
 );
 
@@ -91,6 +104,28 @@ function handleImageError(event: Event): void {
 
 const hasImage = computed(() => props.src !== undefined && props.src !== '' && !hasLoadError.value);
 
+const rootRef = ref<HTMLElement | null>(null);
+
+// Shared lazy gate (`_internal/lazy-visibility`), same contract as SnImage:
+// a plain `lazy` keeps the native loading="lazy" attribute, while adding
+// `intersection-observer-options` withholds the src until the avatar scrolls
+// into view. The fallback content is rendered while the gate is closed.
+// The observer watches the always-mounted root box, never the <img> — that
+// element only exists once the gate opens, so observing it would deadlock.
+const { shouldLoad } = useLazyVisibility(
+  rootRef,
+  computed(() => props.intersectionObserverOptions),
+  computed(() => props.lazy && props.intersectionObserverOptions !== undefined),
+);
+
+/** Native loading attribute — `lazy` only (observer mode is JS-gated). */
+const loadingAttr = computed<'lazy' | 'eager'>(() =>
+  props.lazy && !props.intersectionObserverOptions ? 'lazy' : 'eager',
+);
+
+/** The image is rendered only once its src is allowed to load. */
+const showsImage = computed(() => hasImage.value && shouldLoad.value);
+
 const rootStyle = computed<CSSProperties | undefined>(() => {
   if (props.color === undefined && typeof props.size !== 'number') return undefined;
   const style: CSSProperties = {};
@@ -105,6 +140,7 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
 
 <template>
   <div
+    ref="rootRef"
     data-snui-component="avatar"
     class="sn-avatar"
     :class="[
@@ -115,9 +151,10 @@ const rootStyle = computed<CSSProperties | undefined>(() => {
     :style="rootStyle"
   >
     <img
-      v-if="hasImage"
+      v-if="showsImage"
       class="sn-avatar__img"
       :src="src"
+      :loading="loadingAttr"
       :style="{ objectFit }"
       @error="handleImageError"
     />
