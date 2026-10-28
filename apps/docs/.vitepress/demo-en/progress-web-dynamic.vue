@@ -5,7 +5,7 @@
  * never leaves an interval running.
  */
 import { computed, onUnmounted, ref } from 'vue';
-import { SnButton, SnIcon, SnProgress, registerSnIcons } from '@snui/vue-web';
+import { SnButton, SnIcon, SnProgress, SnSlider, registerSnIcons } from '@snui/vue-web';
 import { Minus, Pause, Play, Plus, RotateCcw, SlidersHorizontal } from 'lucide-vue-next';
 
 registerSnIcons({ Minus, Pause, Play, Plus, RotateCcw, SlidersHorizontal });
@@ -58,6 +58,12 @@ function reset(): void {
   percentage.value = 0;
 }
 
+/** Slider drag — pause the auto-play and adopt the dragged value. */
+function onSliderInput(v: number | number[]): void {
+  stopTimer();
+  percentage.value = clamp(typeof v === 'number' ? v : (v[0] ?? 0));
+}
+
 onUnmounted(stopTimer);
 </script>
 
@@ -76,18 +82,17 @@ onUnmounted(stopTimer);
         <SnButton size="small" icon-name="Plus" @click="step(10)">Increase 10%</SnButton>
         <SnButton size="small" icon-name="RotateCcw" @click="reset">Reset</SnButton>
       </div>
-      <label class="progress-dynamic-demo__slider">
+      <div class="progress-dynamic-demo__slider">
         <SnIcon name="SlidersHorizontal" :size="14" />
-        <input
-          v-model.number="percentage"
-          type="range"
-          min="0"
-          max="100"
-          step="1"
+        <SnSlider
+          :model-value="percentage"
+          :min="0"
+          :max="100"
+          :step="1"
           aria-label="Progress percentage"
-          @input="stopTimer"
+          @update:model-value="onSliderInput"
         />
-      </label>
+      </div>
     </section>
 
     <section class="progress-dynamic-demo__block">
@@ -133,9 +138,5 @@ onUnmounted(stopTimer);
   gap: 8px;
   width: 320px;
   color: var(--sn-web-color-text-secondary);
-}
-.progress-dynamic-demo__slider input {
-  flex: 1 1 auto;
-  accent-color: var(--sn-web-color-action-primary);
 }
 </style>

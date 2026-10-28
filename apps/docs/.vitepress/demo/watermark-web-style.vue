@@ -7,7 +7,7 @@
  * colour value; the surrounding chrome uses `--sn-web-*` tokens.
  */
 import { ref } from 'vue';
-import { SnWatermark } from '@snui/vue-web';
+import { SnSlider, SnWatermark } from '@snui/vue-web';
 
 const fontSize = ref(14);
 const rotate = ref(-24);
@@ -19,25 +19,51 @@ const colorPresets = [
   { label: '中性灰', value: 'rgba(96, 98, 122, 0.34)' },
   { label: '警示红', value: 'rgba(208, 48, 80, 0.3)' },
 ];
+
+/** SnSlider emits `number | number[]` (range mode) — narrow to a number. */
+function toNumber(v: number | number[]): number {
+  return typeof v === 'number' ? v : (v[0] ?? 0);
+}
 </script>
 
 <template>
   <div class="watermark-style-demo">
     <section class="watermark-style-demo__controls">
-      <label class="watermark-style-demo__field">
+      <div class="watermark-style-demo__field">
         <span>fontSize：{{ fontSize }}px</span>
-        <input v-model.number="fontSize" type="range" min="10" max="28" step="1" />
-      </label>
+        <SnSlider
+          :model-value="fontSize"
+          :min="10"
+          :max="28"
+          :step="1"
+          aria-label="水印字号"
+          @update:model-value="(v) => (fontSize = toNumber(v))"
+        />
+      </div>
 
-      <label class="watermark-style-demo__field">
+      <div class="watermark-style-demo__field">
         <span>rotate：{{ rotate }}°</span>
-        <input v-model.number="rotate" type="range" min="-90" max="90" step="1" />
-      </label>
+        <SnSlider
+          :model-value="rotate"
+          :min="-90"
+          :max="90"
+          :step="1"
+          aria-label="水印旋转角度"
+          @update:model-value="(v) => (rotate = toNumber(v))"
+        />
+      </div>
 
-      <label class="watermark-style-demo__field">
+      <div class="watermark-style-demo__field">
         <span>opacity：{{ opacity.toFixed(2) }}</span>
-        <input v-model.number="opacity" type="range" min="0.1" max="1" step="0.05" />
-      </label>
+        <SnSlider
+          :model-value="opacity"
+          :min="0.1"
+          :max="1"
+          :step="0.05"
+          aria-label="水印透明度"
+          @update:model-value="(v) => (opacity = toNumber(v))"
+        />
+      </div>
 
       <div class="watermark-style-demo__field">
         <span>fontColor</span>
@@ -93,9 +119,6 @@ const colorPresets = [
   gap: 6px;
   font-size: 13px;
   color: var(--sn-web-color-text-secondary);
-}
-.watermark-style-demo__field input {
-  accent-color: var(--sn-web-color-action-primary);
 }
 .watermark-style-demo__presets {
   display: flex;
