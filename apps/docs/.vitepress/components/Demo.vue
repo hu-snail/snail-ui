@@ -489,13 +489,17 @@ watch(
 }
 
 .sn-demo__card {
-  border: 1px solid var(--vp-c-divider);
+  border: 1px solid rgba(9, 9, 11, 0.08);
   border-radius: 8px;
   padding: 24px;
   /* 预览面与页面底色一致（白底），避免浅灰内嵌。 */
   background: var(--vp-c-bg);
   min-height: 80px;
   position: relative;
+}
+
+html.dark .sn-demo__card {
+  border-color: rgba(250, 250, 250, 0.09);
 }
 
 .sn-demo--bare .sn-demo__card {
