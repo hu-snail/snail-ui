@@ -141,7 +141,11 @@ export type { IconComponent, IconComponentProps } from './icon/sn-icon-registry'
 export { default as SnCalendar } from './calendar/SnCalendar.vue';
 export { default as SnCarousel } from './carousel/SnCarousel.vue';
 export { default as SnCarouselItem } from './carousel/SnCarouselItem.vue';
-export type { CarouselArrowSlotProps, CarouselDotSlotProps } from './carousel/SnCarousel.vue';
+export type {
+  CarouselArrowSlotProps,
+  CarouselDotSlotProps,
+  SnCarouselMediaItem,
+} from './carousel/SnCarousel.vue';
 export { default as SnCode } from './code/SnCode.vue';
 export { default as SnComment } from './comment/SnComment.vue';
 export type { SnCommentAlign } from './comment/SnComment.vue';

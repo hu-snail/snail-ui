@@ -1,71 +1,116 @@
 <script setup lang="ts">
 /**
- * Demo: SnCarousel — video banner mixed with image slides.
- * The `<video>` renders without native controls: click toggles play/pause,
- * and leaving its slide pauses it automatically, so switching slides never
- * leaves audio playing.
+ * Demo: SnCarousel — options-driven image/video carousel + item slot customization.
+ * Built-in video has no controls: click toggles playback; leaving the slide pauses it (built in).
  */
-import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
+import { SnCarousel } from '@snui/vue-web';
 
 /**
- * 演示用网络图片（picsum.photos）。真实照片比渐变占位更能体现轮播的过渡与裁切效果；
- * `seed` 固定则同一张图稳定复现，便于 demo 长期一致。
+ * 演示用网络图片（picsum.photos）。A fixed seed keeps the same image stable across visits.
  */
 function photo(seed: string, w = 800, h = 400): string {
   return `https://picsum.photos/seed/${seed}/${w}/${h}`;
 }
 
-interface Slide {
-  type: 'image' | 'video';
-  src: string;
-  alt: string;
-}
-
-const slides: Slide[] = [
-  { type: 'image', src: photo('carousel-web-video-1'), alt: 'Nature documentary' },
-  { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', alt: 'Promo video' },
-  { type: 'image', src: photo('carousel-web-video-2'), alt: 'City photo walk' },
+/** options mode: type: 'video' marks video entries; the media markup is built in. */
+const slides = [
+  {
+    type: 'image' as const,
+    src: photo('carousel-web-video-1'),
+    alt: '自然纪录片',
+    title: '图文专题',
+    description: '使用图片与视频混排的内容流',
+  },
+  {
+    type: 'video' as const,
+    src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    poster: photo('carousel-web-video-3', 800, 450),
+    title: '宣传视频（点击播放/暂停，切走自动暂停）',
+    description: 'Big Buck Bunny 片段 · 无原生工具栏',
+  },
+  {
+    type: 'image' as const,
+    src: photo('carousel-web-video-2'),
+    alt: '城市旅拍',
+    title: '图文专题',
+    description: '使用图片与视频混排的内容流',
+  },
 ];
 
-const poster = photo('carousel-web-video-3', 800, 450);
-
-/** 无 controls 工具栏：点击视频播放/暂停（切走当前帧时组件自动 pause）。 */
-function toggleVideo(event: MouseEvent): void {
-  const video = event.currentTarget as HTMLVideoElement | null;
-  if (!video) return;
-  if (video.paused) void video.play();
-  else video.pause();
-}
+/** item slot: take over each slide (scope: item / index / isActive...). */
+const customSlides = [
+  { heading: 'Custom slide A', text: 'Rendered by the #item slot' },
+  { heading: 'Custom slide B', text: 'Built-in media renderer fully replaced' },
+];
 </script>
 
 <template>
-  <SnCarousel draggable style="height: 300px; border-radius: 8px; overflow: hidden">
-    <SnCarouselItem
-      v-for="s in slides"
-      :key="s.src"
-      :title="
-        s.type === 'video'
-          ? 'Promo video (click to play/pause; auto-pauses when switched away)'
-          : 'Photo story'
-      "
-      :description="
-        s.type === 'video'
-          ? 'Big Buck Bunny clip · no native toolbar'
-          : 'A content stream mixing images and videos'
-      "
-    >
-      <video
-        v-if="s.type === 'video'"
-        :src="s.src"
-        :poster="poster"
-        muted
-        loop
-        playsinline
-        preload="metadata"
-        style="width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer"
-        @click="toggleVideo"
-      />
-      <img v-else :src="s.src" :alt="s.alt" style="width: 100%; height: 100%; object-fit: cover" />
-    </SnCarouselItem>
-  </SnCarousel>
+  <div class="carousel-demo">
+    <SnCarousel draggable :options="slides" style="height: 300px; border-radius: 8px; overflow: hidden" />
+
+    <p class="demo-note">↓ #item slot overrides the built-in media renderer</p>
+
+    <SnCarousel :options="customSlides" style="height: 160px; border-radius: 8px; overflow: hidden">
+      <template #item="{ item, index, isActive }">
+        <div class="custom-slide" :class="{ 'custom-slide--active': isActive }">
+          <span class="custom-slide__index">{{ index + 1 }}</span>
+          <div>
+            <p class="custom-slide__title">{{ item.heading }}</p>
+            <p class="custom-slide__text">{{ item.text }}</p>
+          </div>
+        </div>
+      </template>
+    </SnCarousel>
+  </div>
 </template>
+
+<style scoped>
+.carousel-demo {
+  width: 100%;
+}
+
+.demo-note {
+  margin: 16px 0 8px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+}
+
+.custom-slide {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 32px;
+  background: linear-gradient(120deg, #eef2ff, #fdf2f8);
+  transition: filter 0.3s ease;
+}
+
+.custom-slide--active {
+  filter: none;
+}
+
+.custom-slide__index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-weight: 600;
+}
+
+.custom-slide__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.custom-slide__text {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+</style>
