@@ -17,6 +17,13 @@
  *     ResizeObserver on the text box (where available), and on prop /
  *     expand changes. Slot content swaps that do not change the box size
  *     are picked up by the next resize pass only.
+ *   - `fade` (local addition): a smoke mask on the clamped edge — bottom
+ *     fade for multi-line clamps, right fade for the single line — so the
+ *     truncated text dissolves instead of ending at a hard cut.
+ *   - `expandPosition` + `expandText` / `collapseText` (local addition): a
+ *     dedicated expand / collapse toggle rendered `suffix` (inline, flush
+ *     with the last text line) or `bottom` (its own row below the text),
+ *     independent of `expandTrigger` (which toggles via the text itself).
  *   - No config-provider / RTL integration (web-end v3 has no provider
  *     yet).
  *
@@ -26,6 +33,7 @@
  * Usage:
  *   <SnEllipsis style="max-width: 200px">很长的一段文本……</SnEllipsis>
  *   <SnEllipsis :line-clamp="2" expand-trigger="click">多行文本……</SnEllipsis>
+ *   <SnEllipsis :line-clamp="3" fade expand-position="bottom">烟雾渐隐……</SnEllipsis>
  */
 
 import {
@@ -38,8 +46,12 @@ import {
   type CSSProperties,
 } from 'vue';
 import SnTooltip from '../tooltip/SnTooltip.vue';
+import { useLocale } from '../locales/use-locale';
 
 defineOptions({ name: 'SnEllipsis' });
+
+/** Active locale (injected once at setup — inject() is setup-only). */
+const locale = useLocale();
 
 /**
  * Documented subset of SnTooltip props accepted through the object form
@@ -94,12 +106,32 @@ const props = withDefaults(
     tooltip?: boolean | SnEllipsisTooltipOptions;
     /** Box width; a number is px, 'screen' is 100vw. Mirrors n-ellipsis `width`. */
     width?: number | 'screen' | undefined;
+    /**
+     * Smoke mask over the clamped edge so the text fades out instead of
+     * ending at a hard cut: bottom fade for multi-line clamps, right fade
+     * for the single line. Default false.
+     */
+    fade?: boolean;
+    /**
+     * Where the expand / collapse toggle renders: `suffix` (inline, flush
+     * with the last text line), `bottom` (its own row below the text), or
+     * `none` (no toggle — use `expandTrigger` on the text). Default 'none'.
+     */
+    expandPosition?: 'suffix' | 'bottom' | 'none';
+    /** Toggle label while collapsed. Defaults to the locale 展开. */
+    expandText?: string | undefined;
+    /** Toggle label while expanded. Defaults to the locale 收起. */
+    collapseText?: string | undefined;
   }>(),
   {
     expandTrigger: 'none',
     lineClamp: 1,
     tooltip: true,
     width: undefined,
+    fade: false,
+    expandPosition: 'none',
+    expandText: undefined,
+    collapseText: undefined,
   },
 );
 
@@ -154,7 +186,7 @@ onBeforeUnmount(() => {
   }
 });
 
-watch([() => props.lineClamp, () => props.width], () => {
+watch([() => props.lineClamp, () => props.width, () => props.expandPosition], () => {
   void nextTick().then(measure);
 });
 
@@ -189,12 +221,29 @@ const contentStyle = computed<CSSProperties | undefined>(() => {
   };
 });
 
-/* ─────────── Expand on click ─────────── */
+const isSingleLine = computed(() => props.lineClamp <= 1);
+
+/* ─────────── Expand / collapse ─────────── */
+
+function toggleExpanded(): void {
+  expanded.value = !expanded.value;
+}
 
 function onContentClick(): void {
   if (props.expandTrigger !== 'click') return;
-  expanded.value = !expanded.value;
+  toggleExpanded();
 }
+
+/** The toggle only exists when there is something to expand / collapse. */
+const showToggle = computed(
+  () => props.expandPosition !== 'none' && (overflow.value || expanded.value),
+);
+
+const actionLabel = computed(() =>
+  expanded.value
+    ? (props.collapseText ?? locale.value.Ellipsis.collapse)
+    : (props.expandText ?? locale.value.Ellipsis.expand),
+);
 
 /* ─────────── Tooltip passthrough ─────────── */
 
@@ -217,6 +266,10 @@ const tooltipDisabled = computed(() => !overflow.value || expanded.value);
     :class="{
       'sn-ellipsis--expanded': expanded,
       'sn-ellipsis--click': expandTrigger === 'click',
+      'sn-ellipsis--fade': fade,
+      'sn-ellipsis--single': isSingleLine,
+      'sn-ellipsis--suffix': expandPosition === 'suffix',
+      'sn-ellipsis--bottom': expandPosition === 'bottom',
     }"
     :style="rootStyle"
   >
@@ -242,6 +295,15 @@ const tooltipDisabled = computed(() => !overflow.value || expanded.value);
       @click="onContentClick"
       ><slot
     /></span>
+    <button
+      v-if="showToggle"
+      type="button"
+      class="sn-ellipsis__action"
+      :aria-expanded="expanded ? 'true' : 'false'"
+      @click.stop="toggleExpanded"
+    >
+      {{ actionLabel }}
+    </button>
   </span>
 </template>
 
@@ -250,6 +312,17 @@ const tooltipDisabled = computed(() => !overflow.value || expanded.value);
  * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`). */
 
 .sn-ellipsis {
+  display: block;
+  min-width: 0;
+}
+
+/*
+ * The text box must be a block-level element: an inline span ignores
+ * overflow / text-overflow entirely, which let a nowrap single line spill
+ * past its container. The multi-line clamp style overrides this with its
+ * own inline `-webkit-box` display.
+ */
+.sn-ellipsis__content {
   display: block;
   min-width: 0;
 }
@@ -268,7 +341,52 @@ const tooltipDisabled = computed(() => !overflow.value || expanded.value);
   width: 100%;
 }
 
-.sn-ellipsis__content {
-  min-width: 0;
+/* Smoke mask over the clamped edge — removed while expanded. */
+.sn-ellipsis--fade:not(.sn-ellipsis--expanded) .sn-ellipsis__content {
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 1.6em), transparent 100%);
+  mask-image: linear-gradient(to bottom, black calc(100% - 1.6em), transparent 100%);
+}
+
+/* Single line fades to the right instead (there is no bottom edge). */
+.sn-ellipsis--fade.sn-ellipsis--single:not(.sn-ellipsis--expanded) .sn-ellipsis__content {
+  -webkit-mask-image: linear-gradient(to right, black calc(100% - 3em), transparent 100%);
+  mask-image: linear-gradient(to right, black calc(100% - 3em), transparent 100%);
+}
+
+/* Suffix toggle: inline, flush with the last text line. */
+.sn-ellipsis--suffix {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.sn-ellipsis--suffix .sn-ellipsis__content,
+.sn-ellipsis--suffix :deep(.sn-tooltip-trigger) {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+/* Bottom toggle: its own row under the text, right-aligned. */
+.sn-ellipsis--bottom .sn-ellipsis__action {
+  display: block;
+  width: 100%;
+  margin-top: 2px;
+  text-align: right;
+}
+
+.sn-ellipsis__action {
+  flex: none;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  line-height: inherit;
+  color: var(--sn-web-color-action-primary);
+  cursor: pointer;
+}
+
+.sn-ellipsis__action:hover {
+  color: var(--sn-web-color-action-primary-hover, var(--sn-web-color-action-primary));
+  text-decoration: underline;
 }
 </style>

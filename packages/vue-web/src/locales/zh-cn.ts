@@ -211,6 +211,14 @@ export interface SnQrCodeLocale {
   download: string;
 }
 
+/** Localized strings for SnEllipsis. */
+export interface SnEllipsisLocale {
+  /** Expand toggle label (collapsed state). */
+  expand: string;
+  /** Collapse toggle label (expanded state). */
+  collapse: string;
+}
+
 /** Localized strings for SnHeatmap. */
 export interface SnHeatmapLocale {
   /** Leading indicator text (low end). */
@@ -321,6 +329,8 @@ export interface SnLocale {
   Empty: SnEmptyLocale;
   /** SnQrCode strings. */
   QrCode: SnQrCodeLocale;
+  /** SnEllipsis strings. */
+  Ellipsis: SnEllipsisLocale;
   /** SnHeatmap strings. */
   Heatmap: SnHeatmapLocale;
   /** SnBackTop strings. */
@@ -435,6 +445,10 @@ export const zhCN: SnLocale = {
   },
   QrCode: {
     download: '下载二维码',
+  },
+  Ellipsis: {
+    expand: '展开',
+    collapse: '收起',
   },
   Heatmap: {
     less: '少',

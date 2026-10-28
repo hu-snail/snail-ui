@@ -107,6 +107,10 @@ export const enUS: SnLocale = {
   QrCode: {
     download: 'Download QR code',
   },
+  Ellipsis: {
+    expand: 'Expand',
+    collapse: 'Collapse',
+  },
   Heatmap: {
     less: 'Less',
     more: 'More',
