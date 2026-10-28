@@ -1,0 +1,66 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "snui 场景模板"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "subpages",
+      "pages": [
+        {
+          "path": "login",
+          "style": { "navigationBarTitleText": "登录" }
+        },
+        {
+          "path": "mall",
+          "style": { "navigationBarTitleText": "商城首页" }
+        },
+        {
+          "path": "goods",
+          "style": { "navigationBarTitleText": "商品详情" }
+        },
+        {
+          "path": "order",
+          "style": { "navigationBarTitleText": "我的订单" }
+        },
+        {
+          "path": "xhs",
+          "style": { "navigationBarTitleText": "图文社区" }
+        },
+        {
+          "path": "news",
+          "style": { "navigationBarTitleText": "新闻资讯" }
+        },
+        {
+          "path": "address",
+          "style": { "navigationBarTitleText": "地址管理" }
+        },
+        {
+          "path": "article",
+          "style": { "navigationBarTitleText": "文章详情" }
+        },
+        {
+          "path": "stats",
+          "style": { "navigationBarTitleText": "数据统计" }
+        },
+        {
+          "path": "contacts",
+          "style": { "navigationBarTitleText": "通讯录" }
+        },
+        {
+          "path": "form",
+          "style": { "navigationBarTitleText": "创建店铺" }
+        }
+      ]
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#f4f6f9"
+  }
+}
