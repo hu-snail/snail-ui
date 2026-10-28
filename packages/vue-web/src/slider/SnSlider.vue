@@ -6,11 +6,15 @@
  * so that marks, range dual-handles, vertical and tooltip all share
  * one geometry pipeline. Keyboard + ARIA follow the WAI slider pattern.
  *
+ * Extras beyond n-slider: `showSteps` step ticks, `showInput` value
+ * inputs (single + range), custom track / rail / tooltip backgrounds
+ * (solid, gradient or transparent) and a configurable rail thickness.
+ *
  * Per AGENTS.md §30/31: contract surfaces declared via defineProps /
  * defineEmits / defineSlots; all colors flow through --sn-web-* tokens.
  */
 
-import { computed, onBeforeUnmount, ref } from 'vue';
+import { computed, onBeforeUnmount, ref, watch } from 'vue';
 
 defineOptions({ name: 'SnSlider' });
 
@@ -60,6 +64,20 @@ const props = withDefaults(
     marks?: Marks;
     /** Tooltip position relative to the handle. */
     placement?: Placement;
+    /** Render a tick at every step between min and max. */
+    showSteps?: boolean;
+    /** Render number input(s) beside the rail (two + separator in range). */
+    showInput?: boolean;
+    /** Fill-track background — any CSS background (solid / gradient / transparent). */
+    trackBackground?: string;
+    /** Rail background — any CSS background (solid / gradient / transparent). */
+    railBackground?: string;
+    /** Rail thickness in px (horizontal: height; vertical: width). */
+    railWidth?: number | string;
+    /** Tooltip bubble background — any CSS background value. */
+    tooltipBackground?: string;
+    /** Tooltip text color. */
+    tooltipTextColor?: string;
     /** Accessible name. */
     ariaLabel?: string;
     /** Class on the root wrapper. */
@@ -78,6 +96,8 @@ const props = withDefaults(
     reverse: false,
     tooltip: true,
     placement: 'top',
+    showSteps: false,
+    showInput: false,
     customClass: '',
     customStyle: '',
   },
@@ -86,7 +106,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   /** v-model sync. Fired on every value change. */
   (e: 'update:modelValue', value: SliderValue): void;
-  /** Committed change (drag end / keyboard commit / mark click). */
+  /** Committed change (drag end / keyboard commit / mark click / input commit). */
   (e: 'change', value: SliderValue): void;
 }>();
 
@@ -150,21 +170,32 @@ function percentOf(value: number): number {
   return props.reverse ? 100 - p : p;
 }
 
-const trackStyle = computed(() => {
+const trackStyle = computed<Record<string, string>>(() => {
   const low = pair.value[0];
   const high = pair.value[1];
   const from = Math.min(percentOf(low), percentOf(high));
   const size = Math.abs(percentOf(high) - percentOf(low));
-  return props.vertical
-    ? { bottom: `${from}%`, height: `${size}%` }
-    : { left: `${from}%`, width: `${size}%` };
+  const style: Record<string, string> =
+    props.vertical
+      ? { bottom: `${from}%`, height: `${size}%` }
+      : { left: `${from}%`, width: `${size}%` };
+  // Custom background wins over the disabled stylesheet color on purpose:
+  // authors opting into a gradient get exactly what they declared.
+  if (props.trackBackground) style.background = props.trackBackground;
+  return style;
 });
+
+/** Inline rail background override (e.g. transparent rail). */
+const railElStyle = computed<Record<string, string> | undefined>(() =>
+  props.railBackground ? { background: props.railBackground } : undefined,
+);
 
 const handlePositions = computed<number[]>(() =>
   props.range ? [percentOf(pair.value[0]), percentOf(pair.value[1])] : [percentOf(pair.value[1])],
 );
 
-function handleStyle(pct: number): Record<string, string> {
+/** Anchor an absolutely-positioned element at a percent on the axis. */
+function axisStyle(pct: number): Record<string, string> {
   return props.vertical ? { bottom: `${pct}%` } : { left: `${pct}%` };
 }
 
@@ -176,8 +207,22 @@ const marksList = computed(() =>
   })),
 );
 
-const markStyle = (pct: number): Record<string, string> =>
-  props.vertical ? { bottom: `${pct}%` } : { left: `${pct}%` };
+// ---- step ticks (showSteps) ----------------------------------------------
+
+/** Hard cap — a dense grid (tiny step) must not explode the DOM. */
+const MAX_STEP_TICKS = 100;
+
+const stepTicks = computed<number[]>(() => {
+  if (!props.showSteps || props.step <= 0 || span.value <= 0) return [];
+  const intervals = Math.floor(span.value / props.step + 1e-9);
+  // Interior ticks only (min / max are self-evident); guard absurd densities.
+  if (intervals < 2 || intervals > MAX_STEP_TICKS) return [];
+  const ticks: number[] = [];
+  for (let i = 1; i < intervals; i += 1) {
+    ticks.push(percentOf(props.min + i * props.step));
+  }
+  return ticks;
+});
 
 // ---- pointer interaction -------------------------------------------------
 
@@ -336,6 +381,81 @@ function onHandleKeydown(e: KeyboardEvent, index: number): void {
   else emitValue(low, Math.max(next, low), true);
 }
 
+// ---- showInput -------------------------------------------------------------
+
+const lowInputRef = ref<HTMLInputElement | null>(null);
+const highInputRef = ref<HTMLInputElement | null>(null);
+const lowDraft = ref('');
+const highDraft = ref('');
+
+/** Push current values into the drafts unless that input is being edited. */
+function syncDrafts(): void {
+  const active = typeof document === 'undefined' ? null : document.activeElement;
+  if (active !== lowInputRef.value) lowDraft.value = String(pair.value[0]);
+  if (active !== highInputRef.value) highDraft.value = String(pair.value[1]);
+}
+
+watch(() => [pair.value[0], pair.value[1]], syncDrafts, { immediate: true });
+
+function inputValueOf(e: Event): string {
+  return e.target instanceof HTMLInputElement ? e.target.value : '';
+}
+
+function parseDraft(draft: string): number | null {
+  const trimmed = draft.trim();
+  if (trimmed === '') return null;
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function onLowInput(e: Event): void {
+  lowDraft.value = inputValueOf(e);
+  const raw = parseDraft(lowDraft.value);
+  if (raw === null) return;
+  const clamped = clamp(raw);
+  if (props.range) {
+    emitValue(Math.min(clamped, pair.value[1]), pair.value[1], false);
+  } else {
+    emitValue(clamped, pair.value[1], false);
+  }
+}
+
+function onHighInput(e: Event): void {
+  highDraft.value = inputValueOf(e);
+  const raw = parseDraft(highDraft.value);
+  if (raw === null) return;
+  emitValue(pair.value[0], Math.max(clamp(raw), pair.value[0]), false);
+}
+
+/** Commit on blur / Enter: clamp to bounds; no-op when unchanged. */
+function commitLow(): void {
+  const raw = parseDraft(lowDraft.value);
+  if (raw === null) {
+    syncDrafts();
+    return;
+  }
+  const next = clamp(raw);
+  if (props.range) {
+    const low = Math.min(next, pair.value[1]);
+    if (low !== pair.value[0]) emitValue(low, pair.value[1], true);
+    else syncDrafts();
+    return;
+  }
+  if (next !== pair.value[0]) emitValue(next, next, true);
+  else syncDrafts();
+}
+
+function commitHigh(): void {
+  const raw = parseDraft(highDraft.value);
+  if (raw === null) {
+    syncDrafts();
+    return;
+  }
+  const next = Math.max(clamp(raw), pair.value[0]);
+  if (next !== pair.value[1]) emitValue(pair.value[0], next, true);
+  else syncDrafts();
+}
+
 // ---- tooltip -------------------------------------------------------------
 
 const tooltipVisible = computed(
@@ -349,6 +469,14 @@ const tooltipText = computed<string>(() => {
   return String(formatted);
 });
 
+/** Per-instance tooltip color overrides (prop → CSS var → token). */
+const tooltipStyle = computed<Record<string, string>>(() => {
+  const style: Record<string, string> = {};
+  if (props.tooltipBackground) style['--sn-web-slider-tooltip-bg'] = props.tooltipBackground;
+  if (props.tooltipTextColor) style['--sn-web-slider-tooltip-text'] = props.tooltipTextColor;
+  return style;
+});
+
 // ---- misc ----------------------------------------------------------------
 
 const classList = computed(() => [
@@ -360,15 +488,26 @@ const classList = computed(() => [
     'sn-slider--reverse': props.reverse,
     'sn-slider--range': props.range,
     'sn-slider--dragging': draggingIndex.value !== null,
+    'sn-slider--marks': marksList.value.length > 0,
+    'sn-slider--show-input': props.showInput,
   },
   props.customClass,
 ]);
 
-const wrapperStyle = computed(() => {
-  if (typeof props.customStyle === 'string') return props.customStyle;
-  return Object.entries(props.customStyle ?? {})
-    .map(([k, v]) => `${k}:${v}`)
-    .join(';');
+const wrapperStyle = computed<string>(() => {
+  const parts: string[] = [];
+  if (props.railWidth !== undefined) {
+    const width = typeof props.railWidth === 'number' ? `${props.railWidth}px` : props.railWidth;
+    parts.push(`--sn-web-slider-rail-width:${width}`);
+  }
+  if (typeof props.customStyle === 'string') {
+    if (props.customStyle) parts.push(props.customStyle);
+  } else {
+    for (const [key, value] of Object.entries(props.customStyle ?? {})) {
+      parts.push(`${key}:${value}`);
+    }
+  }
+  return parts.join(';');
 });
 
 /** aria-valuenow for a single-value handle (range handles get their own). */
@@ -389,52 +528,94 @@ const ariaText = (index: number): string => {
     :aria-label="ariaLabel"
     :aria-disabled="disabled ? 'true' : undefined"
   >
-    <div ref="trackRef" class="sn-slider__rail" @mousedown="onTrackMousedown">
-      <div class="sn-slider__track" :style="trackStyle" />
-      <div
-        v-for="mark in marksList"
-        :key="mark.value"
-        class="sn-slider__mark"
-        :style="markStyle(mark.pct)"
-      >
-        <button
-          type="button"
-          class="sn-slider__mark-dot"
-          :tabindex="-1"
-          :aria-label="`${mark.label} ${mark.value}`"
-          @mousedown.stop
-          @click="onMarkClick(mark.value)"
+    <div class="sn-slider__body">
+      <div ref="trackRef" class="sn-slider__rail" :style="railElStyle" @mousedown="onTrackMousedown">
+        <div class="sn-slider__track" :style="trackStyle" />
+        <i
+          v-for="(pct, tickIndex) in stepTicks"
+          :key="`tick-${tickIndex}`"
+          class="sn-slider__tick"
+          :style="axisStyle(pct)"
+          aria-hidden="true"
         />
-        <span class="sn-slider__mark-label">{{ mark.label }}</span>
-      </div>
-      <template v-for="(pct, index) in handlePositions" :key="index">
         <div
-          :class="['sn-slider__handle', { 'sn-slider__handle--active': activeIndex() === index }]"
-          :style="handleStyle(pct)"
-          role="slider"
-          :tabindex="isInteractive ? 0 : -1"
-          :aria-label="range ? (index === 0 ? 'Start value' : 'End value') : ariaLabel"
-          :aria-valuemin="range && index === 1 ? pair[0] : min"
-          :aria-valuemax="range && index === 0 ? pair[1] : max"
-          :aria-valuenow="ariaNow(index)"
-          :aria-valuetext="ariaText(index)"
-          :aria-disabled="disabled ? 'true' : undefined"
-          :aria-orientation="vertical ? 'vertical' : 'horizontal'"
-          @mousedown="onHandleMousedown($event, index)"
-          @mouseenter="setHoverIndex(index)"
-          @mouseleave="setHoverIndex(null)"
-          @focus="setHoverIndex(index)"
-          @blur="setHoverIndex(null)"
-          @keydown="onHandleKeydown($event, index)"
+          v-for="mark in marksList"
+          :key="mark.value"
+          class="sn-slider__mark"
+          :style="axisStyle(mark.pct)"
         >
-          <div
-            v-if="tooltipVisible && activeIndex() === index"
-            :class="['sn-slider__tooltip', `sn-slider__tooltip--${placement}`]"
-            role="tooltip"
-          >
-            <slot name="tooltip" :value="ariaNow(index)">{{ tooltipText }}</slot>
-          </div>
+          <button
+            type="button"
+            class="sn-slider__mark-dot"
+            :tabindex="-1"
+            :aria-label="`${mark.label} ${mark.value}`"
+            @mousedown.stop
+            @click="onMarkClick(mark.value)"
+          />
+          <span class="sn-slider__mark-label">{{ mark.label }}</span>
         </div>
+        <template v-for="(pct, index) in handlePositions" :key="index">
+          <div
+            :class="['sn-slider__handle', { 'sn-slider__handle--active': activeIndex() === index }]"
+            :style="axisStyle(pct)"
+            role="slider"
+            :tabindex="isInteractive ? 0 : -1"
+            :aria-label="range ? (index === 0 ? 'Start value' : 'End value') : ariaLabel"
+            :aria-valuemin="range && index === 1 ? pair[0] : min"
+            :aria-valuemax="range && index === 0 ? pair[1] : max"
+            :aria-valuenow="ariaNow(index)"
+            :aria-valuetext="ariaText(index)"
+            :aria-disabled="disabled ? 'true' : undefined"
+            :aria-orientation="vertical ? 'vertical' : 'horizontal'"
+            @mousedown="onHandleMousedown($event, index)"
+            @mouseenter="setHoverIndex(index)"
+            @mouseleave="setHoverIndex(null)"
+            @focus="setHoverIndex(index)"
+            @blur="setHoverIndex(null)"
+            @keydown="onHandleKeydown($event, index)"
+          >
+            <div
+              v-if="tooltipVisible && activeIndex() === index"
+              :class="['sn-slider__tooltip', `sn-slider__tooltip--${placement}`]"
+              :style="tooltipStyle"
+              role="tooltip"
+            >
+              <slot name="tooltip" :value="ariaNow(index)">{{ tooltipText }}</slot>
+            </div>
+          </div>
+        </template>
+      </div>
+      <template v-if="showInput">
+        <input
+          ref="lowInputRef"
+          class="sn-slider__input"
+          type="number"
+          :value="lowDraft"
+          :min="min"
+          :max="max"
+          :step="step"
+          :disabled="!isInteractive"
+          :aria-label="range ? 'Start value' : ariaLabel || 'Current value'"
+          @input="onLowInput"
+          @change="commitLow"
+          @keydown.enter.prevent="commitLow"
+        />
+        <span v-if="range" class="sn-slider__input-separator" aria-hidden="true">–</span>
+        <input
+          v-if="range"
+          ref="highInputRef"
+          class="sn-slider__input"
+          type="number"
+          :value="highDraft"
+          :min="min"
+          :max="max"
+          :step="step"
+          :disabled="!isInteractive"
+          aria-label="End value"
+          @input="onHighInput"
+          @change="commitHigh"
+          @keydown.enter.prevent="commitHigh"
+        />
       </template>
     </div>
   </div>
@@ -444,16 +625,30 @@ const ariaText = (index: number): string => {
 .sn-slider {
   display: inline-flex;
   width: 100%;
-  padding: 8px 0;
+  padding: 8px;
   box-sizing: border-box;
   color: var(--sn-web-color-text-primary);
   font-family: inherit;
 }
 
+/* Root padding keeps edge handles (min / max) from sticking out of the box;
+   marks reserve extra room below so labels never hit following content. */
+.sn-slider--marks {
+  padding-bottom: 26px;
+}
+
+.sn-slider__body {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  min-width: 0;
+  min-height: 0;
+}
+
 .sn-slider__rail {
   position: relative;
   width: 100%;
-  height: var(--sn-web-slider-rail-height, 6px);
+  height: var(--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px));
   margin: 6px 0;
   border-radius: var(--sn-web-slider-radius, 3px);
   background-color: var(
@@ -493,15 +688,46 @@ const ariaText = (index: number): string => {
   );
 }
 
+/* Step ticks (showSteps): decorative dots centered on the rail. */
+.sn-slider__tick {
+  position: absolute;
+  top: 50%;
+  width: var(--sn-web-slider-tick-size, 6px);
+  height: var(--sn-web-slider-tick-size, 6px);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--sn-web-slider-tick-bg, var(--sn-web-color-background-surface, #fff));
+  box-shadow: var(--sn-web-slider-tick-shadow, 0 0 0 1px rgba(0, 0, 0, 0.06));
+  pointer-events: none;
+}
+
+.sn-slider--vertical .sn-slider__tick {
+  top: auto;
+  left: 50%;
+  transform: translate(-50%, 50%);
+}
+
 .sn-slider--vertical {
   display: inline-flex;
   width: auto;
   height: 100%;
 }
 
-.sn-slider--vertical .sn-slider__rail {
-  width: var(--sn-web-slider-rail-height, 6px);
+.sn-slider--vertical.sn-slider--marks {
+  padding-bottom: 8px;
+  padding-right: 48px;
+}
+
+.sn-slider--vertical .sn-slider__body {
+  flex-direction: column;
   height: 100%;
+}
+
+.sn-slider--vertical .sn-slider__rail {
+  width: var(--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px));
+  height: auto;
+  flex: 1 1 auto;
+  min-height: 24px;
   margin: 0 6px;
 }
 
@@ -562,6 +788,8 @@ const ariaText = (index: number): string => {
   cursor: grabbing;
 }
 
+/* Bubble colors: prop override (--sn-web-slider-tooltip-*) → shared tooltip
+   token → dark fallback, matching SnTooltip so the value is always readable. */
 .sn-slider__tooltip {
   position: absolute;
   bottom: calc(100% + var(--sn-web-slider-tooltip-gap, 6px));
@@ -570,10 +798,10 @@ const ariaText = (index: number): string => {
   padding: 3px 8px;
   border-radius: var(--sn-web-slider-tooltip-radius, 4px);
   background-color: var(
-    --sn-web-tooltip-bg,
-    var(--sn-web-color-background-elevated, rgba(0, 0, 0, 0.75))
+    --sn-web-slider-tooltip-bg,
+    var(--sn-web-color-tooltip-background, rgba(20, 20, 28, 0.95))
   );
-  color: var(--sn-web-tooltip-text-color, var(--sn-web-color-text-inverse, #fff));
+  color: var(--sn-web-slider-tooltip-text, var(--sn-web-color-text-on-primary, #fff));
   font-size: 12px;
   line-height: 1.4;
   white-space: nowrap;
@@ -607,6 +835,13 @@ const ariaText = (index: number): string => {
   transform: translateY(-50%);
 }
 
+.sn-slider--vertical .sn-slider__tooltip--left,
+.sn-slider--vertical .sn-slider__tooltip--left-start,
+.sn-slider--vertical .sn-slider__tooltip--left-end {
+  left: auto;
+  right: calc(100% + var(--sn-web-slider-tooltip-gap, 6px));
+}
+
 /* Zero-size origin box: the dot + label position themselves from its
    origin, so centering the box centers the whole mark on the rail. */
 .sn-slider__mark {
@@ -635,9 +870,14 @@ const ariaText = (index: number): string => {
   cursor: pointer;
 }
 
+/* Labels hang off the rail center by half the rail thickness + gap, so they
+   clear both the rail and the 16px handle for any rail thickness. */
 .sn-slider__mark-label {
   position: absolute;
-  top: calc(100% + var(--sn-web-slider-mark-gap, 4px));
+  top: calc(
+    var(--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px)) / 2 +
+      var(--sn-web-slider-mark-gap, 8px)
+  );
   left: 50%;
   transform: translateX(-50%);
   color: var(--sn-web-color-text-secondary);
@@ -647,8 +887,64 @@ const ariaText = (index: number): string => {
 }
 
 .sn-slider--vertical .sn-slider__mark-label {
-  top: auto;
-  left: calc(100% + var(--sn-web-slider-mark-gap, 4px));
+  top: 0;
+  left: calc(
+    var(--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px)) / 2 +
+      var(--sn-web-slider-mark-gap, 8px)
+  );
   transform: translateY(-50%);
+}
+
+/* showInput: plain number inputs pinned beside the rail (two + separator
+   in range mode, stacked below the rail in vertical mode). */
+.sn-slider__input {
+  flex: none;
+  width: var(--sn-web-slider-input-width, 72px);
+  height: 28px;
+  margin-left: 12px;
+  padding: 0 8px;
+  border: 1px solid var(--sn-web-color-border-default);
+  border-radius: var(--sn-web-slider-input-radius, 4px);
+  background-color: var(--sn-web-color-background-surface, #fff);
+  color: inherit;
+  font-family: inherit;
+  font-size: 13px;
+  text-align: center;
+  outline: none;
+  box-sizing: border-box;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.sn-slider__input::-webkit-outer-spin-button,
+.sn-slider__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.sn-slider__input:focus-visible {
+  border-color: var(--sn-web-color-action-primary);
+}
+
+.sn-slider__input:disabled {
+  cursor: not-allowed;
+  border-color: var(--sn-web-color-border-default);
+  background-color: var(--sn-web-color-background-subtle, rgba(0, 0, 0, 0.04));
+  color: var(--sn-web-color-text-disabled);
+}
+
+.sn-slider__input-separator {
+  flex: none;
+  margin: 0 8px 0 12px;
+  color: var(--sn-web-color-text-secondary);
+}
+
+.sn-slider--vertical .sn-slider__input {
+  margin-left: 0;
+  margin-top: 8px;
+}
+
+.sn-slider--vertical .sn-slider__input-separator {
+  display: none;
 }
 </style>

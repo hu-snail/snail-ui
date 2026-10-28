@@ -8,6 +8,9 @@
  *   - disabled / readonly suppress interaction
  *   - keyboard: arrows / Home / End / PageUp / PageDown
  *   - marks render and are clickable
+ *   - showSteps ticks (incl. the dense-grid DOM guard)
+ *   - showInput commit / clamp / range cross-clamp / disabled
+ *   - custom track / rail / tooltip backgrounds + railWidth
  *   - vertical orientation geometry
  *   - tooltip / formatTooltip
  *   - ARIA slider semantics
@@ -361,6 +364,125 @@ describe('SnSlider', () => {
     expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([15]);
   });
 
+  describe('showSteps', () => {
+    it('renders one tick per interior step', () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 0, step: 10, showSteps: true },
+      });
+      // min 0 / max 100 / step 10 → 9 interior ticks (ends are self-evident)
+      expect(wrapper.findAll('.sn-slider__tick')).toHaveLength(9);
+    });
+
+    it('renders no ticks by default', () => {
+      const wrapper = mount(SnSlider, { props: { modelValue: 0, step: 10 } });
+      expect(wrapper.findAll('.sn-slider__tick')).toHaveLength(0);
+    });
+
+    it('renders no ticks when the grid is too dense', () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 0, step: 0.5, showSteps: true },
+      });
+      // 200 intervals exceeds the 100-tick DOM guard
+      expect(wrapper.findAll('.sn-slider__tick')).toHaveLength(0);
+    });
+  });
+
+  describe('showInput', () => {
+    it('commits typed values without step snapping', async () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 10, step: 10, showInput: true },
+      });
+      const input = wrapper.find('input.sn-slider__input');
+      expect(input.exists()).toBe(true);
+      await input.setValue('37');
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([37]);
+      expect(wrapper.emitted('change')?.at(-1)).toEqual([37]);
+    });
+
+    it('clamps typed values to max on commit', async () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 90, showInput: true },
+      });
+      await wrapper.find('input.sn-slider__input').setValue('500');
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([100]);
+    });
+
+    it('resets the display when the draft is invalid', async () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 42, showInput: true },
+      });
+      const input = wrapper.find('input.sn-slider__input');
+      await input.setValue('');
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+      expect((input.element as HTMLInputElement).value).toBe('42');
+    });
+
+    it('renders two inputs + separator in range mode and cross-clamps', async () => {
+      const { slider } = mountSlider({ modelValue: [20, 80], range: true, showInput: true });
+      const inputs = slider().findAll('input.sn-slider__input');
+      expect(inputs).toHaveLength(2);
+      expect(slider().find('.sn-slider__input-separator').exists()).toBe(true);
+      await inputs[0].setValue('90');
+      expect(slider().emitted('update:modelValue')?.at(-1)).toEqual([[80, 80]]);
+    });
+
+    it('disables the inputs when the slider is disabled', () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 10, showInput: true, disabled: true },
+      });
+      expect(wrapper.find('input.sn-slider__input').attributes('disabled')).toBeDefined();
+    });
+
+    it('reflects external value changes in the input', async () => {
+      const { slider } = mountSlider({ modelValue: 10, showInput: true });
+      await slider().find('[role="slider"]').trigger('keydown', { key: 'ArrowRight' });
+      expect((slider().find('input.sn-slider__input').element as HTMLInputElement).value).toBe('11');
+    });
+  });
+
+  describe('custom backgrounds & rail width', () => {
+    it('applies trackBackground to the fill track', () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 40, trackBackground: 'linear-gradient(90deg, red, blue)' },
+      });
+      expect(wrapper.find('.sn-slider__track').attributes('style')).toContain(
+        'linear-gradient(90deg, red, blue)',
+      );
+    });
+
+    it('applies railBackground to the rail', () => {
+      const wrapper = mount(SnSlider, {
+        props: { modelValue: 40, railBackground: 'transparent' },
+      });
+      expect(wrapper.find('.sn-slider__rail').attributes('style')).toContain('transparent');
+    });
+
+    it('exposes railWidth as a CSS variable on the root', () => {
+      const numeric = mount(SnSlider, { props: { modelValue: 40, railWidth: 12 } });
+      expect(numeric.attributes('style')?.replace(/\s+/g, '')).toContain(
+        '--sn-web-slider-rail-width:12px',
+      );
+      const literal = mount(SnSlider, { props: { modelValue: 40, railWidth: '2px' } });
+      expect(literal.attributes('style')?.replace(/\s+/g, '')).toContain(
+        '--sn-web-slider-rail-width:2px',
+      );
+    });
+
+    it('applies tooltipBackground / tooltipTextColor to the tooltip', async () => {
+      const wrapper = mount(SnSlider, {
+        props: {
+          modelValue: 42,
+          tooltipBackground: '#2080f0',
+          tooltipTextColor: '#000',
+        },
+      });
+      await wrapper.find('[role="slider"]').trigger('mouseenter');
+      const style = wrapper.find('[role="tooltip"]').attributes('style')?.replace(/\s+/g, '');
+      expect(style).toContain('--sn-web-slider-tooltip-bg:#2080f0');
+      expect(style).toContain('--sn-web-slider-tooltip-text:#000');
+    });
+  });
+
   describe('visual regression', () => {
     let styleEl: HTMLStyleElement | null = null;
 
@@ -418,6 +540,23 @@ describe('SnSlider', () => {
       const readonly = mount(SnSlider, { props: { modelValue: 40, readonly: true } });
       await readonly.find('[role="slider"]').trigger('mouseenter');
       expect(readonly.find('[role="slider"]').classes()).not.toContain('sn-slider__handle--active');
+    });
+
+    it('keeps the bubble dark and the marks clear of the rail (CSS guard)', () => {
+      const source = readFileSync(join(process.cwd(), 'src/slider/SnSlider.vue'), 'utf8');
+      const styleBlock = source.slice(source.indexOf('<style'), source.indexOf('</style>'));
+      // Regression guard: the bubble resolves through the shared dark tooltip
+      // token, never through the white elevated surface (white-on-white bug).
+      expect(styleBlock).toContain('var(--sn-web-color-tooltip-background');
+      expect(styleBlock).not.toContain('--sn-web-tooltip-bg');
+      // Mark labels hang off the rail center by thickness / 2 + gap.
+      expect(styleBlock).toContain(
+        '--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px)) / 2 +',
+      );
+      // Rail thickness flows through one var for both orientations.
+      expect(styleBlock).toContain(
+        'height: var(--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px));',
+      );
     });
   });
 });

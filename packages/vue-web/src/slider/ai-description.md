@@ -29,16 +29,35 @@ keyboard and screen readers per the WAI-ARIA slider pattern.
 | formatTooltip | `(value: number) => string \| number`                     | `undefined` | Formats the tooltip content.                                |
 | marks         | `Record<number, string>`                                  | `undefined` | Tick marks keyed by value; dots are clickable.              |
 | placement     | `'top' \| 'bottom' \| …-start/-end' \| 'left' \| 'right'` | `'top'`     | Tooltip position class (`sn-slider__tooltip--{placement}`). |
+| showSteps         | `boolean`                                                 | `false`     | Tick at every step between min / max (interior ticks, capped at 100). |
+| showInput         | `boolean`                                                 | `false`     | Number input(s) beside the rail; two inputs + separator in range. |
+| trackBackground   | `string`                                                  | `undefined` | Fill-track background — solid / gradient / `transparent`. |
+| railBackground    | `string`                                                  | `undefined` | Rail background — solid / gradient / `transparent`. |
+| railWidth         | `number \| string`                                        | `undefined` | Rail thickness (horizontal: height, vertical: width). Number → px. |
+| tooltipBackground | `string`                                                  | `undefined` | Tooltip bubble background (default: shared dark tooltip token). |
+| tooltipTextColor  | `string`                                                  | `undefined` | Tooltip text color. |
 | ariaLabel     | `string`                                                  | —           | Accessible name (single-handle mode).                       |
 | customClass   | `string`                                                  | `''`        | Class on the root wrapper.                                  |
 | customStyle   | `string \| Record<string, string>`                        | `''`        | Inline style on the root wrapper.                           |
+Notes:
+
+- `showInput` commits only on blur / Enter: the typed value is clamped to
+  `min` / `max` (and to the sibling handle in range mode) but **not** snapped
+  to the step grid — pointer / keyboard-on-handle keep snapping.
+- `trackBackground` / `railBackground` / `tooltipBackground` accept any CSS
+  background value (solid, `linear-gradient(...)`, `transparent`) and win over
+  the disabled stylesheet colors by design.
+- Per-instance tooltip colors override the tokens via inline
+  `--sn-web-slider-tooltip-bg` / `--sn-web-slider-tooltip-text`.
+- Marks labels hang off the rail center by `rail thickness / 2 + gap`, and the
+  root reserves padding for them (bottom when horizontal, right when vertical).
 
 ## Events
 
 | Event               | Payload                               | When                                      |
 | ------------------- | ------------------------------------- | ----------------------------------------- |
 | `update:modelValue` | `(value: number \| [number, number])` | Every value change (v-model sync).        |
-| `change`            | `(value: number \| [number, number])` | Commit: drag end / keyboard / mark click. |
+| `change`            | `(value: number \| [number, number])` | Commit: drag end / keyboard / mark click / input commit. |
 
 ## Slots
 
@@ -61,8 +80,13 @@ In range mode only the focused handle moves.
 
 ## Tokens
 
-`--sn-web-slider-rail-height`, `--sn-web-slider-rail-bg`,
+`--sn-web-slider-rail-width` (extra alias for `--sn-web-slider-rail-height`,
+drives rail thickness in both orientations), `--sn-web-slider-rail-bg`,
 `--sn-web-slider-track-bg`, `--sn-web-slider-handle-size`,
 `--sn-web-slider-handle-border-color`, `--sn-web-slider-handle-bg`,
-`--sn-web-slider-mark-*`, `--sn-web-slider-tooltip-*` — all fall back to
-global `--sn-web-color-*` design tokens.
+`--sn-web-slider-tick-size`, `--sn-web-slider-tick-bg`,
+`--sn-web-slider-tick-shadow`, `--sn-web-slider-mark-*`,
+`--sn-web-slider-input-width`, `--sn-web-slider-input-radius`,
+`--sn-web-slider-tooltip-bg`, `--sn-web-slider-tooltip-text`,
+`--sn-web-slider-tooltip-*` — all fall back to global `--sn-web-color-*`
+design tokens.

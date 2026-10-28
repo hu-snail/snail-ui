@@ -1,6 +1,6 @@
 # Slider · Web（PC 端）
 
-滑块。自绘轨道 + 手柄，支持 range 双柄、marks 刻度、vertical / reverse、tooltip。
+滑块。自绘轨道 + 手柄，支持 range 双柄、marks 刻度、showSteps 步长刻度、showInput 输入框、vertical / reverse、tooltip，以及渐变 / 透明轨道与自定义气泡背景。
 
 ## 基础用法
 
@@ -10,9 +10,9 @@
 
 <Demo name="slider-web-range" description="双柄不交叉，拖拽时另一柄为边界。" />
 
-## 步长与边界
+## 步长与步长刻度（showSteps）
 
-<Demo name="slider-web-step" description="step 吸附 + min / max 边界 clamp。" />
+<Demo name="slider-web-step" description="step 吸附 + showSteps 步长刻度（可切换 Step / Show steps）。" />
 
 ## 刻度（marks）
 
@@ -20,11 +20,19 @@
 
 ## 垂直 / 反向
 
-<Demo name="slider-web-vertical" description="vertical + reverse。" />
+<Demo name="slider-web-vertical" description="vertical + reverse + 垂直刻度标签。" />
 
 ## Tooltip
 
-<Demo name="slider-web-tooltip" description="拖拽显示气泡，formatTooltip 格式化。" />
+<Demo name="slider-web-tooltip" description="拖拽显示气泡，formatTooltip 格式化，tooltipBackground 自定义气泡背景。" />
+
+## 显示输入框（showInput）
+
+<Demo name="slider-web-show-input" description="showInput 在轨道旁显示数字输入框（range 为双输入框 + 分隔符，失焦 / Enter 提交生效）。" />
+
+## 自定义样式（渐变 / 透明 / 轨道粗细）
+
+<Demo name="slider-web-custom" description="trackBackground 渐变、railBackground 透明、railWidth 轨道粗细与 tooltip 配色。" />
 
 ## API
 
@@ -43,6 +51,13 @@
 | formatTooltip       | `(value: number) => string \| number` | —           | 气泡格式化              |
 | marks               | `Record<number, string>`              | —           | 刻度                    |
 | placement           | 12 方位                               | `'top'`     | 气泡方位                |
+| showSteps           | `boolean`                             | `false`     | 步长刻度（min / max 之间的内部刻度） |
+| showInput           | `boolean`                             | `false`     | 轨道旁数字输入框（range 双输入框）   |
+| trackBackground     | `string`                              | —           | 填充轨道背景（渐变 / 透明均可）      |
+| railBackground      | `string`                              | —           | 轨道背景（渐变 / 透明均可）          |
+| railWidth           | `number \| string`                    | —           | 轨道粗细（水平为高、垂直为宽；数字按 px） |
+| tooltipBackground   | `string`                              | —           | 气泡背景                             |
+| tooltipTextColor    | `string`                              | —           | 气泡文字颜色                         |
 
 每柄 `role="slider"` + aria-valuenow/min/max；方向键 / Home / End / PageUp/PageDown（10×step）。
 
