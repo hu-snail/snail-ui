@@ -74,6 +74,8 @@ const props = withDefaults(
     railBackground?: string;
     /** Rail thickness in px (horizontal: height; vertical: width). */
     railWidth?: number | string;
+    /** Rail diffuse glow — any CSS box-shadow value (blurred translucent halo). */
+    railShadow?: string;
     /** Tooltip bubble background — any CSS background value. */
     tooltipBackground?: string;
     /** Tooltip text color. */
@@ -185,10 +187,13 @@ const trackStyle = computed<Record<string, string>>(() => {
   return style;
 });
 
-/** Inline rail background override (e.g. transparent rail). */
-const railElStyle = computed<Record<string, string> | undefined>(() =>
-  props.railBackground ? { background: props.railBackground } : undefined,
-);
+/** Inline rail overrides — gradient / transparent fill and the diffuse glow. */
+const railElStyle = computed<Record<string, string> | undefined>(() => {
+  const style: Record<string, string> = {};
+  if (props.railBackground) style.background = props.railBackground;
+  if (props.railShadow) style.boxShadow = props.railShadow;
+  return Object.keys(style).length > 0 ? style : undefined;
+});
 
 const handlePositions = computed<number[]>(() =>
   props.range ? [percentOf(pair.value[0]), percentOf(pair.value[1])] : [percentOf(pair.value[1])],
@@ -650,13 +655,20 @@ const ariaText = (index: number): string => {
   width: 100%;
   height: var(--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px));
   margin: 6px 0;
+  /* Optional hairline so a transparent rail still reads as a rail. */
+  border: var(--sn-web-slider-rail-border, none);
   border-radius: var(--sn-web-slider-radius, 3px);
-  background-color: var(
+  /* `background` (not `background-color`) so both tokens and props accept
+     gradients and translucent "diffuse" fills — a flat color var would
+     silently drop `linear-gradient(...)`. */
+  background: var(
     --sn-web-slider-rail-bg,
     var(--sn-web-color-background-soft, rgba(0, 0, 0, 0.09))
   );
+  box-shadow: var(--sn-web-slider-rail-shadow, none);
   cursor: pointer;
   align-self: center;
+  box-sizing: border-box;
 }
 
 .sn-slider--disabled .sn-slider__rail,
@@ -672,7 +684,9 @@ const ariaText = (index: number): string => {
   top: 0;
   height: 100%;
   border-radius: inherit;
-  background-color: var(--sn-web-slider-track-bg, var(--sn-web-color-action-primary));
+  /* `background` so a gradient or fading (transparent-diffuse) fill works
+     through the token as well as through `trackBackground`. */
+  background: var(--sn-web-slider-track-bg, var(--sn-web-color-action-primary));
 }
 
 .sn-slider--vertical .sn-slider__track {

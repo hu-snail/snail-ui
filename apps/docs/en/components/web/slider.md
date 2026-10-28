@@ -30,9 +30,9 @@ Custom-painted slider with range dual handles, marks, step ticks (showSteps), va
 
 <Demo name="slider-web-show-input" description="showInput renders number input(s) beside the rail (two + separator in range; commits on blur / Enter)." />
 
-## Custom style (gradient / transparent / thickness)
+## Custom style (gradient / transparent diffuse / thickness)
 
-<Demo name="slider-web-custom" description="trackBackground gradient, railBackground transparent, railWidth thickness and tooltip colors." />
+<Demo name="slider-web-custom" description="Rail gradient and transparent diffuse (railBackground / railShadow), trackBackground gradient, railWidth thickness and tooltip colors." />
 
 ## API
 
@@ -56,6 +56,7 @@ Custom-painted slider with range dual handles, marks, step ticks (showSteps), va
 | trackBackground     | `string`                              | —           | Fill-track background (gradient / transparent) |
 | railBackground      | `string`                              | —           | Rail background (gradient / transparent) |
 | railWidth           | `number \| string`                    | —           | Rail thickness (number → px) |
+| railShadow          | `string`                              | —           | Rail diffuse glow (box-shadow) |
 | tooltipBackground   | `string`                              | —           | Bubble background       |
 | tooltipTextColor    | `string`                              | —           | Bubble text color       |
 

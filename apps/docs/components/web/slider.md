@@ -30,9 +30,9 @@
 
 <Demo name="slider-web-show-input" description="showInput 在轨道旁显示数字输入框（range 为双输入框 + 分隔符，失焦 / Enter 提交生效）。" />
 
-## 自定义样式（渐变 / 透明 / 轨道粗细）
+## 自定义样式（渐变 / 透明弥散 / 轨道粗细）
 
-<Demo name="slider-web-custom" description="trackBackground 渐变、railBackground 透明、railWidth 轨道粗细与 tooltip 配色。" />
+<Demo name="slider-web-custom" description="滑轨渐变与透明弥散（railBackground / railShadow）、trackBackground 渐变、railWidth 轨道粗细与 tooltip 配色。" />
 
 ## API
 
@@ -56,6 +56,7 @@
 | trackBackground     | `string`                              | —           | 填充轨道背景（渐变 / 透明均可）      |
 | railBackground      | `string`                              | —           | 轨道背景（渐变 / 透明均可）          |
 | railWidth           | `number \| string`                    | —           | 轨道粗细（水平为高、垂直为宽；数字按 px） |
+| railShadow          | `string`                              | —           | 滑轨弥散光晕（box-shadow，支持半透明模糊） |
 | tooltipBackground   | `string`                              | —           | 气泡背景                             |
 | tooltipTextColor    | `string`                              | —           | 气泡文字颜色                         |
 

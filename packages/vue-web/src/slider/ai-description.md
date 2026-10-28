@@ -34,6 +34,7 @@ keyboard and screen readers per the WAI-ARIA slider pattern.
 | trackBackground   | `string`                                                  | `undefined` | Fill-track background — solid / gradient / `transparent`. |
 | railBackground    | `string`                                                  | `undefined` | Rail background — solid / gradient / `transparent`. |
 | railWidth         | `number \| string`                                        | `undefined` | Rail thickness (horizontal: height, vertical: width). Number → px. |
+| railShadow        | `string`                                                  | `undefined` | Rail diffuse glow — any `box-shadow` (blurred translucent halo). |
 | tooltipBackground | `string`                                                  | `undefined` | Tooltip bubble background (default: shared dark tooltip token). |
 | tooltipTextColor  | `string`                                                  | `undefined` | Tooltip text color. |
 | ariaLabel     | `string`                                                  | —           | Accessible name (single-handle mode).                       |
@@ -44,9 +45,14 @@ Notes:
 - `showInput` commits only on blur / Enter: the typed value is clamped to
   `min` / `max` (and to the sibling handle in range mode) but **not** snapped
   to the step grid — pointer / keyboard-on-handle keep snapping.
-- `trackBackground` / `railBackground` / `tooltipBackground` accept any CSS
-  background value (solid, `linear-gradient(...)`, `transparent`) and win over
-  the disabled stylesheet colors by design.
+- The rail and the fill track resolve through `background` (not
+  `background-color`), so gradients and translucent "diffuse" fills work
+  through the tokens (`--sn-web-slider-rail-bg`, `--sn-web-slider-track-bg`)
+  and through `railBackground` / `trackBackground` alike; both win over the
+  disabled stylesheet colors by design. `tooltipBackground` behaves the same.
+- `railShadow` (or `--sn-web-slider-rail-shadow`) adds the diffuse glow;
+  `--sn-web-slider-rail-border` adds an optional hairline so a fully
+  transparent rail still reads as a rail.
 - Per-instance tooltip colors override the tokens via inline
   `--sn-web-slider-tooltip-bg` / `--sn-web-slider-tooltip-text`.
 - Marks labels hang off the rail center by `rail thickness / 2 + gap`, and the
@@ -81,12 +87,14 @@ In range mode only the focused handle moves.
 ## Tokens
 
 `--sn-web-slider-rail-width` (extra alias for `--sn-web-slider-rail-height`,
-drives rail thickness in both orientations), `--sn-web-slider-rail-bg`,
-`--sn-web-slider-track-bg`, `--sn-web-slider-handle-size`,
-`--sn-web-slider-handle-border-color`, `--sn-web-slider-handle-bg`,
-`--sn-web-slider-tick-size`, `--sn-web-slider-tick-bg`,
-`--sn-web-slider-tick-shadow`, `--sn-web-slider-mark-*`,
-`--sn-web-slider-input-width`, `--sn-web-slider-input-radius`,
-`--sn-web-slider-tooltip-bg`, `--sn-web-slider-tooltip-text`,
-`--sn-web-slider-tooltip-*` — all fall back to global `--sn-web-color-*`
-design tokens.
+drives rail thickness in both orientations), `--sn-web-slider-rail-bg`
+(accepts gradients / translucent fills), `--sn-web-slider-rail-shadow`,
+`--sn-web-slider-rail-border`, `--sn-web-slider-track-bg` (accepts gradients /
+translucent fills), `--sn-web-slider-track-bg-disabled`,
+`--sn-web-slider-handle-size`, `--sn-web-slider-handle-border-color`,
+`--sn-web-slider-handle-bg`, `--sn-web-slider-tick-size`,
+`--sn-web-slider-tick-bg`, `--sn-web-slider-tick-shadow`,
+`--sn-web-slider-mark-*`, `--sn-web-slider-input-width`,
+`--sn-web-slider-input-radius`, `--sn-web-slider-tooltip-bg`,
+`--sn-web-slider-tooltip-text`, `--sn-web-slider-tooltip-*` — all fall back to
+global `--sn-web-color-*` design tokens.

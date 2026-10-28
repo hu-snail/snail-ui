@@ -457,6 +457,21 @@ describe('SnSlider', () => {
       expect(wrapper.find('.sn-slider__rail').attributes('style')).toContain('transparent');
     });
 
+    it('applies a gradient rail background and the diffuse glow', () => {
+      const wrapper = mount(SnSlider, {
+        props: {
+          modelValue: 40,
+          // happy-dom cannot parse rgba() nested inside a gradient, but it
+          // round-trips hex stops — the rgba case is browser-verified.
+          railBackground: 'linear-gradient(90deg, #2080f0, transparent)',
+          railShadow: '0 0 12px 2px rgba(32, 128, 240, 0.35)',
+        },
+      });
+      const style = (wrapper.find('.sn-slider__rail').attributes('style') ?? '').replace(/\s+/g, '');
+      expect(style).toContain('linear-gradient(90deg,#2080f0,transparent)');
+      expect(style).toContain('box-shadow:0012px2pxrgba(32,128,240,0.35)');
+    });
+
     it('exposes railWidth as a CSS variable on the root', () => {
       const numeric = mount(SnSlider, { props: { modelValue: 40, railWidth: 12 } });
       expect(numeric.attributes('style')?.replace(/\s+/g, '')).toContain(
@@ -557,6 +572,18 @@ describe('SnSlider', () => {
       expect(styleBlock).toContain(
         'height: var(--sn-web-slider-rail-width, var(--sn-web-slider-rail-height, 6px));',
       );
+      // Rail / fill must resolve through `background` (not `background-color`)
+      // so gradients and translucent "diffuse" fills survive the token path.
+      expect(styleBlock).toContain(
+        'background: var(\n    --sn-web-slider-rail-bg,',
+      );
+      expect(styleBlock).toContain(
+        'background: var(--sn-web-slider-track-bg, var(--sn-web-color-action-primary));',
+      );
+      expect(styleBlock).not.toContain('background-color: var(--sn-web-slider-rail-bg');
+      expect(styleBlock).not.toContain('background-color: var(--sn-web-slider-track-bg');
+      // The diffuse glow is a token with an inline prop override.
+      expect(styleBlock).toContain('box-shadow: var(--sn-web-slider-rail-shadow, none);');
     });
   });
 });
