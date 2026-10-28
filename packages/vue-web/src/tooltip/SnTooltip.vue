@@ -30,7 +30,11 @@
  *   renders into a `<Teleport to="body">` so it isn't clipped by any
  *   parent `overflow: hidden` (SnModal, SnDrawer, etc.) and so the
  *   z-index is high by default. Positioning uses fixed coordinates
- *   captured by getBoundingClientRect() — recomputed on every show and
+ *   captured from the trigger's getBoundingClientRect() plus the bubble's
+ *   offsetWidth/offsetHeight LAYOUT size — the layout box is immune to the
+ *   enter animation's `scale()` transform, which getBoundingClientRect()
+ *   reflects and which used to shrink every measurement mid-animation
+ *   (the recurring detached-bubble reports). Recomputed on every show and
  *   on scroll/resize while open. Boundary detection flips the placement
  *   if the chosen side would push the popover outside the viewport.
  *
@@ -374,8 +378,17 @@ async function recompute(): Promise<void> {
   if (!trig || !pop) return;
 
   const trigRect = trig.getBoundingClientRect();
-  const popRect = pop.getBoundingClientRect();
-  // Extend the rectangles with right / bottom for the position math.
+  // Bubble size via offsetWidth / offsetHeight — the LAYOUT box, immune to
+  // CSS transforms. The bubble always mounts mid-enter-animation
+  // (`scale(0.96)` for 180ms, re-asserted by the body ResizeObserver), and
+  // getBoundingClientRect() reflects that transform, so every placement
+  // measured a 4%-shrunken bubble and wrote top/left from it — the
+  // recurring "top 方向分离" detachment. The trigger keeps
+  // getBoundingClientRect: fixed positioning needs viewport coordinates
+  // and must honor ancestor transforms. popBox.top/left are never used by
+  // the math below (the target rect `r` carries the position).
+  const popWidth = pop.offsetWidth;
+  const popHeight = pop.offsetHeight;
   const trigBox: PositionRect = {
     top: trigRect.top,
     left: trigRect.left,
@@ -385,12 +398,12 @@ async function recompute(): Promise<void> {
     bottom: trigRect.bottom,
   };
   const popBox: PositionRect = {
-    top: popRect.top,
-    left: popRect.left,
-    width: popRect.width,
-    height: popRect.height,
-    right: popRect.right,
-    bottom: popRect.bottom,
+    top: 0,
+    left: 0,
+    width: popWidth,
+    height: popHeight,
+    right: popWidth,
+    bottom: popHeight,
   };
   const vw = window.innerWidth;
   const vh = window.innerHeight;
@@ -490,13 +503,27 @@ async function recompute(): Promise<void> {
           out.top = place(trigger.top + trigger.height / 2 - pop.height / 2, pop.height, vh);
       }
     }
-    // Check viewport fit along the *main* axis. The cross axis is already
-    // clamped when `!strict`, so re-testing it would reject rects that
-    // rectFor just made fit.
-    if (sideChoice === 'top' || sideChoice === 'bottom') {
-      if (out.top < margin || out.top + pop.height > vh - margin) return null;
+    // Viewport fit along the *main* axis. In strict mode (the fit probe) a
+    // side that cannot hold the bubble returns null so the flip logic can
+    // try the opposite side. In non-strict mode (committed to this side —
+    // the last resort after both sides failed) the rect MUST exist: clamps
+    // both axes instead of returning null, because a null here used to
+    // crash `recompute()` on `r.top` whenever the trigger sat outside the
+    // viewport (scrolled away, short panels) — the watcher then rejected,
+    // popoverStyle was never written, and the bubble rendered in normal
+    // flow at the end of <body>: the recurring "完全分离" report.
+    if (strict) {
+      if (sideChoice === 'top' || sideChoice === 'bottom') {
+        if (out.top < margin || out.top + pop.height > vh - margin) return null;
+      } else {
+        if (out.left < margin || out.left + pop.width > vw - margin) return null;
+      }
     } else {
-      if (out.left < margin || out.left + pop.width > vw - margin) return null;
+      if (sideChoice === 'top' || sideChoice === 'bottom') {
+        out.top = clampWithin(out.top, pop.height, vh);
+      } else {
+        out.left = clampWithin(out.left, pop.width, vw);
+      }
     }
     return out;
   }
@@ -651,11 +678,18 @@ watch(
           if (visible.value) void recompute();
         });
       }
-      if (!resizeObserver && typeof ResizeObserver !== 'undefined') {
+      if (typeof ResizeObserver !== 'undefined') {
+        // Re-created per show: displayDirective 'if' remounts the bubble,
+        // so the observed element differs every time. Observing the bubble
+        // itself repositions on late content changes (web font swap, async
+        // content) — the body observation stays as a page-layout drift
+        // fallback. Writing identical styles does not re-trigger the
+        // observer, so this settles instead of looping.
+        resizeObserver?.disconnect();
         resizeObserver = new ResizeObserver(() => {
           void recompute();
         });
-        // Observe document body for layout shifts while open.
+        if (popoverEl.value) resizeObserver.observe(popoverEl.value);
         resizeObserver.observe(document.body);
       }
       window.addEventListener('scroll', onScrollOrResize, true);
