@@ -67,6 +67,18 @@ const props = withDefaults(
     iconBorderRadius?: number;
     /** Render target. Mirrors n-qr-code `type`. */
     type?: 'canvas' | 'svg';
+    /**
+     * Module shape: `square` (default), `dot` (mini-program-style circles —
+     * the three finder eyes stay rounded squares for scannability), or
+     * `rounded` (rounded squares). Local addition.
+     */
+    shape?: 'square' | 'dot' | 'rounded';
+    /**
+     * Multi-color palette — dark data modules cycle through these colors
+     * deterministically (`(x * 7 + y * 11) % length`); the finder eyes keep
+     * `color` as the contrast anchor. Overrides `color` for data modules.
+     */
+    colors?: string[] | undefined;
     /** Local addition: reveal the floating download toolbar on hover/focus. */
     showToolbar?: boolean;
   }>(),
@@ -82,6 +94,8 @@ const props = withDefaults(
     iconBackgroundColor: undefined,
     iconBorderRadius: 4,
     type: 'canvas',
+    shape: 'square',
+    colors: undefined,
     showToolbar: true,
   },
 );
@@ -121,6 +135,29 @@ const paintIconBackgroundColor = computed(() =>
   resolvePaintColor(props.iconBackgroundColor, 'var(--sn-web-color-background-surface)', 'white'),
 );
 
+/** True when the module belongs to one of the three 7×7 finder patterns. */
+function isFinderModule(x: number, y: number, size: number): boolean {
+  const inTopLeft = x < 7 && y < 7;
+  const inTopRight = x >= size - 7 && y < 7;
+  const inBottomLeft = x < 7 && y >= size - 7;
+  return inTopLeft || inTopRight || inBottomLeft;
+}
+
+const hasPalette = computed(() => Array.isArray(props.colors) && props.colors.length > 0);
+
+/**
+ * Deterministic per-module paint: the palette cycles over the data
+ * modules while the finder eyes keep the flat `color` as the anchor.
+ */
+function moduleColor(x: number, y: number): string {
+  if (hasPalette.value) {
+    const colors = props.colors as string[];
+    const picked = colors[(x * 7 + y * 11) % colors.length];
+    if (picked !== undefined && !isFinderModule(x, y, matrix.value.size)) return picked;
+  }
+  return paintColor.value;
+}
+
 /** Undefined value falls back to '-', mirroring the reference component. */
 const encodeValue = computed(() => props.value ?? '-');
 
@@ -149,17 +186,34 @@ function drawCanvas(): void {
   if (!ctx) return;
   const scale = canvasWidth / matrix.value.size;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let y = 0; y < matrix.value.size; y++) {
-    for (let x = 0; x < matrix.value.size; x++) {
-      ctx.fillStyle = matrix.value.getModule(x, y) ? paintColor.value : paintBackgroundColor.value;
+  const moduleSize = matrix.value.size;
+  for (let y = 0; y < moduleSize; y++) {
+    for (let x = 0; x < moduleSize; x++) {
+      const dark = matrix.value.getModule(x, y);
+      ctx.fillStyle = dark ? moduleColor(x, y) : paintBackgroundColor.value;
       const startX = Math.floor(x * scale);
       const startY = Math.floor(y * scale);
-      ctx.fillRect(
-        startX,
-        startY,
-        Math.ceil((x + 1) * scale) - startX,
-        Math.ceil((y + 1) * scale) - startY,
-      );
+      const w = Math.ceil((x + 1) * scale) - startX;
+      const h = Math.ceil((y + 1) * scale) - startY;
+      // In dot mode the three finder eyes stay rounded squares — pure
+      // circles on the eyes degrade scanner reliability.
+      const shape =
+        dark && isFinderModule(x, y, moduleSize) && props.shape === 'dot' ? 'rounded' : props.shape;
+      if (dark && shape === 'dot') {
+        ctx.beginPath();
+        ctx.arc(startX + w / 2, startY + h / 2, (Math.min(w, h) / 2) * 0.84, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (dark && shape === 'rounded') {
+        if (typeof ctx.roundRect === 'function') {
+          ctx.beginPath();
+          ctx.roundRect(startX, startY, w, h, Math.min(w, h) * 0.3);
+          ctx.fill();
+        } else {
+          ctx.fillRect(startX, startY, w, h);
+        }
+      } else {
+        ctx.fillRect(startX, startY, w, h);
+      }
     }
   }
   const icon = loadedIconRef.value;
@@ -196,6 +250,8 @@ watch(
     paintColor.value,
     paintBackgroundColor.value,
     props.type,
+    props.shape,
+    props.colors,
     loadedIconRef.value,
   ],
   () => {
@@ -255,6 +311,40 @@ const svgPath = computed(() => {
   return ops.join('');
 });
 
+/** A styled-SVG paint group: same-color modules share one `<g fill>`. */
+interface SnQrSvgModule {
+  x: number;
+  y: number;
+  kind: 'square' | 'rounded' | 'circle';
+}
+
+/**
+ * Null when the default crispEdges merged path applies (square + no
+ * palette); otherwise the per-color module groups for dot / rounded /
+ * palette rendering.
+ */
+const svgStyledGroups = computed<Array<{ color: string; modules: SnQrSvgModule[] }> | null>(() => {
+  if (props.shape === 'square' && !hasPalette.value) return null;
+  const size = matrix.value.size;
+  const groups = new Map<string, SnQrSvgModule[]>();
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (!matrix.value.getModule(x, y)) continue;
+      const kind: SnQrSvgModule['kind'] =
+        props.shape === 'dot' && !isFinderModule(x, y, size)
+          ? 'circle'
+          : props.shape === 'square'
+            ? 'square'
+            : 'rounded';
+      const color = moduleColor(x, y);
+      const list = groups.get(color) ?? [];
+      list.push({ x, y, kind });
+      groups.set(color, list);
+    }
+  }
+  return [...groups.entries()].map(([color, modules]) => ({ color, modules }));
+});
+
 /* ── Download (toolbar) ─────────────────────────────────────────────────── */
 
 function triggerDownload(href: string, filename: string): void {
@@ -282,13 +372,39 @@ function handleDownload(): void {
       return;
     }
   }
+  triggerDownload(
+    `data:image/svg+xml;charset=utf-8,${encodeURIComponent(buildSvgMarkup())}`,
+    'qrcode.svg',
+  );
+}
+
+/** Serialize the styled (dot / rounded / palette) groups or the merged-path SVG. */
+function buildSvgMarkup(): string {
   const size = matrix.value.size;
-  const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" shape-rendering="crispEdges">` +
+  const styled = svgStyledGroups.value;
+  const body = styled
+    ? styled
+        .map(
+          (group) =>
+            `<g fill="${group.color}">` +
+            group.modules
+              .map((m) =>
+                m.kind === 'circle'
+                  ? `<circle cx="${m.x + 0.5}" cy="${m.y + 0.5}" r="0.42"/>`
+                  : `<rect x="${m.x}" y="${m.y}" width="1" height="1"${m.kind === 'rounded' ? ' rx="0.3"' : ''}/>`,
+              )
+              .join('') +
+            `</g>`,
+        )
+        .join('')
+    : `<path d="${svgPath.value}" fill="${paintColor.value}"/>`;
+  const rendering = styled ? '' : ' shape-rendering="crispEdges"';
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"${rendering}>` +
     `<rect width="${size}" height="${size}" fill="${paintBackgroundColor.value}"/>` +
-    `<path d="${svgPath.value}" fill="${paintColor.value}"/>` +
-    `</svg>`;
-  triggerDownload(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`, 'qrcode.svg');
+    body +
+    `</svg>`
+  );
 }
 
 const rootStyle = computed<CSSProperties>(() => ({
@@ -317,9 +433,22 @@ const rootStyle = computed<CSSProperties>(() => ({
       :width="size"
       :height="size"
       :viewBox="`0 0 ${matrix.size} ${matrix.size}`"
-      shape-rendering="crispEdges"
+      :shape-rendering="svgStyledGroups ? 'auto' : 'crispEdges'"
     >
-      <path :d="svgPath" :fill="color" />
+      <g v-for="group in svgStyledGroups" :key="group.color" :fill="group.color">
+        <template v-for="m in group.modules" :key="`${m.x}-${m.y}`">
+          <circle v-if="m.kind === 'circle'" :cx="m.x + 0.5" :cy="m.y + 0.5" r="0.42" />
+          <rect
+            v-else
+            :x="m.x"
+            :y="m.y"
+            width="1"
+            height="1"
+            :rx="m.kind === 'rounded' ? 0.3 : 0"
+          />
+        </template>
+      </g>
+      <path v-if="!svgStyledGroups" :d="svgPath" :fill="paintColor" />
     </svg>
     <div v-if="showToolbar" class="sn-qr-code__toolbar">
       <button

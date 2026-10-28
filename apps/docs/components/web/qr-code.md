@@ -38,24 +38,32 @@
 
 <Demo name="qr-code-web-type" description="type 切换 canvas / svg 两种渲染目标。" />
 
+### 形状与多色（shape / colors）
+
+通过 `shape` 切换模块形状：`square`（默认）/ `dot`（圆点，小程序码风格）/ `rounded`（圆角）；`dot` 模式下三个定位角保持圆角方块以保证可扫性。通过 `colors` 传入多色调色板，数据模块按确定规律循环取色，定位角保持 `color` 主色。
+
+<Demo name="qr-code-web-shape" description="shape 切换方块 / 圆点 / 圆角，colors 多色循环。" />
+
 ## API
 
 ### SnQrCode Props
 
-| 名称                   | 类型                       | 默认值      | 说明                                                   |
-| ---------------------- | -------------------------- | ----------- | ------------------------------------------------------ |
-| value                  | `string`                   | `''`        | 二维码内容                                             |
-| error-correction-level | `'L' \| 'M' \| 'Q' \| 'H'` | `'M'`       | 纠错级别：L 约 7%、M 约 15%、Q 约 25%、H 约 30% 可恢复 |
-| size                   | `number`                   | `100`       | 二维码整体尺寸（含 padding，单位 px）                  |
-| padding                | `number \| string`         | `12`        | 二维码内边距（数字按 px）                              |
-| color                  | `string`                   | `'#000'`    | 深色模块颜色                                           |
-| background-color       | `string`                   | `'#FFF'`    | 浅色模块与底色                                         |
-| icon-src               | `string`                   | `undefined` | 中心图标地址                                           |
-| icon-size              | `number`                   | `40`        | 中心图标尺寸（px）                                     |
-| icon-background-color  | `string`                   | `'#FFF'`    | 图标衬底颜色                                           |
-| icon-border-radius     | `number`                   | `4`         | 图标衬底圆角（px）                                     |
-| type                   | `'canvas' \| 'svg'`        | `'canvas'`  | 渲染目标                                               |
-| show-toolbar           | `boolean`                  | `true`      | 悬停/聚焦时显示浮动下载工具条                          |
+| 名称                   | 类型                             | 默认值      | 说明                                                                |
+| ---------------------- | -------------------------------- | ----------- | ------------------------------------------------------------------- |
+| value                  | `string`                         | `''`        | 二维码内容                                                          |
+| error-correction-level | `'L' \| 'M' \| 'Q' \| 'H'`       | `'M'`       | 纠错级别：L 约 7%、M 约 15%、Q 约 25%、H 约 30% 可恢复              |
+| size                   | `number`                         | `100`       | 二维码整体尺寸（含 padding，单位 px）                               |
+| padding                | `number \| string`               | `12`        | 二维码内边距（数字按 px）                                           |
+| color                  | `string`                         | `'#000'`    | 深色模块颜色                                                        |
+| background-color       | `string`                         | `'#FFF'`    | 浅色模块与底色                                                      |
+| icon-src               | `string`                         | `undefined` | 中心图标地址                                                        |
+| icon-size              | `number`                         | `40`        | 中心图标尺寸（px）                                                  |
+| icon-background-color  | `string`                         | `'#FFF'`    | 图标衬底颜色                                                        |
+| icon-border-radius     | `number`                         | `4`         | 图标衬底圆角（px）                                                  |
+| type                   | `'canvas' \| 'svg'`              | `'canvas'`  | 渲染目标                                                            |
+| shape                  | `'square' \| 'dot' \| 'rounded'` | `'square'`  | 模块形状：方块 / 圆点（小程序码）/ 圆角；dot 模式定位角保持圆角方块 |
+| colors                 | `string[]`                       | `undefined` | 多色调色板：数据模块确定性循环取色，定位角保持 color 主色           |
+| show-toolbar           | `boolean`                        | `true`      | 悬停/聚焦时显示浮动下载工具条                                       |
 
 ### 编码说明
 

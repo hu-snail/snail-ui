@@ -6,9 +6,16 @@
  */
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import SnRadio from './SnRadio.vue';
 import SnRadioButton from './SnRadioButton.vue';
 import SnRadioGroup from './SnRadioGroup.vue';
+
+/** Component source — used for CSS contract assertions (happy-dom skips styles). */
+const here = dirname(fileURLToPath(import.meta.url));
+const radioButtonSource = readFileSync(resolve(here, './SnRadioButton.vue'), 'utf8');
 
 describe('SnRadio', () => {
   it('renders a native radio input', () => {
@@ -339,5 +346,52 @@ describe('SnRadio keyboard behavior', () => {
     });
     const names = wrapper.findAll('input[type="radio"]').map((i) => i.attributes('name'));
     expect(names).toEqual(['kb', 'kb']);
+  });
+});
+
+describe('SnRadioButton in-group segment merging', () => {
+  /*
+   * Regression guard: the group used to remove the right radius only from the
+   * FIRST segment, so every interior segment kept a rounded right corner and
+   * the shared edge rendered as a doubled divider. Only the two outer ends may
+   * stay rounded, and the active segment must paint above its neighbours.
+   */
+  it('squares the right edge of every segment except the last', () => {
+    const rule = /\.sn-radio-button--in-group:not\(:last-child\)\s*\{[^}]*border-top-right-radius:\s*0;[^}]*border-bottom-right-radius:\s*0;/m;
+    expect(rule.test(radioButtonSource)).toBe(true);
+  });
+
+  it('squares the left edge of every non-first segment', () => {
+    const rule = /\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\s*\{[^}]*border-top-left-radius:\s*0;[^}]*border-bottom-left-radius:\s*0;/m;
+    expect(rule.test(radioButtonSource)).toBe(true);
+  });
+
+  it('no longer keys the right-edge rule off the previous sibling', () => {
+    // The old selector left interior segments rounded.
+    const oldRule = /\.sn-radio-button--in-group:not\(\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\)\s*\{/m;
+    expect(oldRule.test(radioButtonSource)).toBe(false);
+  });
+
+  it('raises the checked segment above its neighbours', () => {
+    const rule = /\.sn-radio-button--in-group\.sn-radio-button--checked\s*\{[^}]*z-index:\s*1;/m;
+    expect(rule.test(radioButtonSource)).toBe(true);
+  });
+
+  it('collapses adjacent borders with a negative margin', () => {
+    const rule = /\.sn-radio-button--in-group \+ \.sn-radio-button--in-group\s*\{[^}]*margin-left:\s*-1px;/m;
+    expect(rule.test(radioButtonSource)).toBe(true);
+  });
+
+  it('renders a single shared border line between grouped segments', () => {
+    const wrapper = mount(SnRadioGroup, {
+      props: { button: true, modelValue: 'b', options: ['a', 'b', 'c'] },
+    });
+    const segments = wrapper.findAll('.sn-radio-button--in-group');
+    expect(segments).toHaveLength(3);
+    // Every segment is a sibling in one group — no wrapper element between
+    // them that could re-introduce a separate border box.
+    const parent = segments[0].element.parentElement;
+    expect(segments.every((s) => s.element.parentElement === parent)).toBe(true);
+    expect(wrapper.findAll('.sn-radio-button--checked')).toHaveLength(1);
   });
 });

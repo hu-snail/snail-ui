@@ -64,6 +64,7 @@ checkbox group for multi-select.
 
 - `default` (group) — custom SnRadio / SnRadioButton children; wins over `options`.
 - `label` (radio children) — custom label content, scoped `{ checked, disabled }`.
+- `default` (radio children) — fallback label content when the `label` slot is absent.
 
 ## Tokens
 
