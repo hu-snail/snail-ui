@@ -36,10 +36,11 @@ const props = withDefaults(
     /** Layout axis. Wins over the legacy `horizontal` flag when set. */
     direction?: 'vertical' | 'horizontal';
     /**
-     * Which side of the axis the content sits on, or `alternate` to flip
-     * per item (an item `position` overrides its parity). Vertical reads
-     * left / right, horizontal reads top / bottom; off-axis values are
-     * normalized. Wins over the legacy `item-placement`.
+     * Which side the rail (the axis) sits on — the content takes the
+     * opposite side — or `alternate` to flip per item (an item `position`
+     * overrides its parity). Vertical reads left / right, horizontal reads
+     * top / bottom; off-axis values are normalized. Wins over the legacy
+     * `item-placement`.
      */
     mode?: 'left' | 'right' | 'top' | 'bottom' | 'alternate';
     /**
@@ -189,7 +190,7 @@ provide(SN_TIMELINE_INJECTION_KEY, {
   flex-direction: row;
   /* Items stay gap-separated so the per-item line can bridge through the
    * gap (the line extends by the same amount). */
-  column-gap: 40px;
+  column-gap: var(--sn-timeline-gap, 40px);
   --sn-timeline-axis-y: calc(var(--sn-timeline-icon-size) / 2);
 }
 

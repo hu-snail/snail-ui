@@ -32,7 +32,7 @@ import SnTimelineItem from '@snui/vue-web/src/timeline/SnTimelineItem.vue';
 | Name             | Type                                                    | Default      | Required | Description                                                                     |
 | ---------------- | ------------------------------------------------------- | ------------ | -------- | ------------------------------------------------------------------------------- |
 | `direction`      | `'vertical' \| 'horizontal'`                            | `'vertical'` | no       | Layout axis; wins over the legacy `horizontal` flag.                            |
-| `mode`           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | no       | Content side of the axis; `alternate` flips by item index. Vertical reads left / right, horizontal reads top / bottom; off-axis values are normalized to the direction's default. Wins over the legacy `item-placement`. |
+| `mode`           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | no       | Side the rail (the axis) sits on — the content takes the opposite side; `alternate` flips by item index. Vertical reads left / right, horizontal reads top / bottom; off-axis values are normalized to the direction's default. Wins over the legacy `item-placement`. |
 | `label-position` | `'same' \| 'relative'`                                  | `'relative'` | no       | `relative`: labels across the axis from the content; `same`: content side, adjacent to the rail. |
 | `horizontal`     | `boolean`                                               | `false`      | no       | Legacy: horizontal layout (`direction="horizontal"` preferred).                 |
 | `item-placement` | `'left' \| 'right'`                                     | `'left'`     | no       | Legacy: rail side (vertical only; `mode` preferred).                            |
@@ -97,6 +97,17 @@ None — pure display component.
   gradient dot (180° vertical / 90° horizontal).
 - Horizontal items are separated by a 40px column gap; each item's line
   bridges the gap so segments connect node to node.
+- Component-private layout variables: `--sn-timeline-gap` (horizontal column
+  gap, default 40px), `--sn-timeline-label-w` (vertical cross-axis label
+  column width, default 108px — one width for every item keeps the rail
+  straight), `--sn-timeline-h-label-h` (horizontal label row height, default
+  18px — keeps the rail band on one y), `--sn-timeline-icon-size` (node edge,
+  set by the `icon-size` prop), `--sn-timeline-axis` / `--sn-timeline-axis-y`
+  (axis position inside the rail cell) and `--sn-timeline-line-color`.
+- The item stylesheet must stay flat: nesting the sheet inside
+  `.sn-timeline-item { … }` turns every selector into a descendant selector,
+  so `display: grid` and the mode templates stop matching and the items
+  collapse into a stack. A CSS guard test asserts the flat shape.
 
 ## Tokens Consumed (end: web)
 

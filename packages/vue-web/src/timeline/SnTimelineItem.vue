@@ -91,7 +91,7 @@ defineSlots<{
   label?(): unknown;
   /** Meta line — overrides the `time` prop. */
   footer?(): unknown;
-  /** Entry title — overrides the `title` prop. */
+  /** Entry title — overrides the `header` prop. */
   header?(): unknown;
 }>();
 
@@ -195,42 +195,47 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
 
 <style scoped>
 /* Web side: --sn-web-* aliases only. Direct --aui-* / --sn-mp-* forbidden
- * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`). */
+ * (enforced by `pnpm snui token-check --dir packages/vue-web --end web`).
+ *
+ * Keep every rule at the top level (no CSS nesting): nesting the sheet
+ * inside `.sn-timeline-item { … }` turned each selector into a descendant
+ * selector, so `display: grid` and the mode templates never matched and the
+ * items collapsed into a stack. */
 
 .sn-timeline-item {
-  .sn-timeline-item {
-    position: relative;
-    display: grid;
-    /* Degraded default (item outside a timeline): rail hugs the left like
-    * mode="left". Container mode classes override the columns and the side
-    * classes always override the areas; the fallbacks keep a standalone
-    * item sized without the container's custom properties. */
-    grid-template-columns:
-      auto
-      var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) 1fr;
-    grid-template-areas: 'opposite rail main';
-  }
-
-  /* Vertical column templates (mode-left / mode-right / mode-alternate). */
-  .sn-timeline--mode-left .sn-timeline-item {
-    grid-template-columns:
-      auto
-      var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) 1fr;
-  }
-
-  .sn-timeline--mode-right .sn-timeline-item {
-    grid-template-columns:
-      1fr
-      var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) auto;
-  }
-
-  .sn-timeline--mode-alternate .sn-timeline-item {
-    grid-template-columns:
-      1fr
-      var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) 1fr;
-  }
+  position: relative;
+  display: grid;
+  /* Degraded default (item outside a timeline): rail hugs the left like
+   * mode="left". Container mode classes override the columns and the side
+   * classes always override the areas; the fallbacks keep a standalone
+   * item sized without the container's custom properties. */
+  grid-template-columns:
+    auto
+    var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) 1fr;
+  grid-template-areas: 'opposite rail main';
 }
 
+/* ---------- Vertical column templates (left / right / alternate) ---------- */
+
+.sn-timeline--mode-left .sn-timeline-item {
+  grid-template-columns:
+    auto
+    var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) 1fr;
+}
+
+.sn-timeline--mode-right .sn-timeline-item {
+  grid-template-columns:
+    1fr
+    var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) auto;
+}
+
+.sn-timeline--mode-alternate .sn-timeline-item {
+  grid-template-columns:
+    1fr
+    var(--sn-timeline-rail-w, calc(var(--sn-timeline-icon-size, 14px) + 12px)) 1fr;
+}
+
+/* Content side per item — the railless half of the row. */
 .sn-timeline-item--side-right {
   grid-template-areas: 'opposite rail main';
 }
@@ -239,32 +244,7 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
   grid-template-areas: 'main rail opposite';
 }
 
-/* Horizontal: the same cells transposed into rows. */
-.sn-timeline--horizontal.sn-timeline--mode-top .sn-timeline-item {
-  grid-template-rows: auto var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
-}
-
-.sn-timeline--horizontal.sn-timeline--mode-bottom .sn-timeline-item {
-  grid-template-rows: 1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) auto;
-}
-
-.sn-timeline--horizontal.sn-timeline--mode-alternate .sn-timeline-item {
-  grid-template-rows: 1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
-}
-
-.sn-timeline--horizontal .sn-timeline-item--side-bottom {
-  grid-template-areas:
-    'opposite'
-    'rail'
-    'main';
-}
-
-.sn-timeline--horizontal .sn-timeline-item--side-top {
-  grid-template-areas:
-    'main'
-    'rail'
-    'opposite';
-}
+/* ---------- Item cells ---------- */
 
 .sn-timeline-item__opposite {
   grid-area: opposite;
@@ -290,18 +270,6 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
  * content (column) or under the content (column-reverse). */
 .sn-timeline-item--side-left .sn-timeline-item__main {
   flex-direction: row-reverse;
-}
-
-.sn-timeline--horizontal .sn-timeline-item__main {
-  flex-direction: column;
-}
-
-.sn-timeline--horizontal .sn-timeline-item--side-top .sn-timeline-item__main {
-  flex-direction: column-reverse;
-}
-
-/* Content opposite the axis hugs it too. */
-.sn-timeline-item--side-left .sn-timeline-item__main {
   text-align: right;
 }
 
@@ -311,6 +279,15 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
 
 .sn-timeline-item--side-left .sn-timeline-item__opposite {
   text-align: left;
+}
+
+/* Vertical: one label column width for every item keeps the rail perfectly
+ * straight (an `auto` column sizes per item, so uneven label widths — e.g.
+ * "2017-03-10" vs "2020-09-30" — would stagger the axis). Horizontal labels
+ * sit in their own row and need no gutter. */
+.sn-timeline--vertical .sn-timeline-item__opposite {
+  width: var(--sn-timeline-label-w, 108px);
+  overflow-wrap: break-word;
 }
 
 /* ---------- Semantic node colors (full-strength) ---------- */
@@ -384,7 +361,6 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
 }
 
 .sn-timeline-item__line {
-  transition: background-color 0.3s ease;
   position: absolute;
   left: calc(var(--sn-timeline-axis, calc(var(--sn-timeline-icon-size, 14px) / 2)) - 1px);
   top: calc(
@@ -394,6 +370,12 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
   bottom: 0;
   width: 2px;
   background-color: var(--sn-timeline-line-color);
+  transition: background-color 0.3s ease;
+}
+
+/* The last entry draws no rail — no dangling segment under the final node. */
+.sn-timeline-item:last-child .sn-timeline-item__line {
+  display: none;
 }
 
 /* Dashed / dotted rails (gradient patterns). */
@@ -419,20 +401,60 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
   background-size: 2px 6px;
 }
 
-/* The last entry draws no rail. */
+/* ---------- Horizontal: the same cells transposed into rows ---------- */
+
 .sn-timeline--horizontal .sn-timeline-item {
   flex-shrink: 0;
   /* One column; the mode row templates place opposite/rail/main. Declared
-    * after the vertical mode templates so it wins the equal-specificity
-    * race (mode-alternate applies to both directions). */
+   * after the vertical mode templates so it wins the equal-specificity race
+   * (mode-alternate applies to both directions). */
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* ---------- Horizontal rail geometry ---------- */
-
-.sn-timeline--horizontal .sn-timeline-item {
-  flex-shrink: 0;
+.sn-timeline--horizontal.sn-timeline--mode-top .sn-timeline-item {
+  grid-template-rows:
+    auto var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
 }
+
+.sn-timeline--horizontal.sn-timeline--mode-bottom .sn-timeline-item {
+  grid-template-rows:
+    1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) auto;
+}
+
+.sn-timeline--horizontal.sn-timeline--mode-alternate .sn-timeline-item {
+  grid-template-rows:
+    1fr var(--sn-timeline-rail-h, calc(var(--sn-timeline-icon-size) + 12px)) 1fr;
+}
+
+.sn-timeline--horizontal .sn-timeline-item--side-bottom {
+  grid-template-areas:
+    'opposite'
+    'rail'
+    'main';
+}
+
+.sn-timeline--horizontal .sn-timeline-item--side-top {
+  grid-template-areas:
+    'main'
+    'rail'
+    'opposite';
+}
+
+/* The cross-axis label row keeps one line box in horizontal mode so the rail
+ * band lands on the same y whether or not an item has a label. */
+.sn-timeline--horizontal .sn-timeline-item__opposite {
+  min-height: var(--sn-timeline-h-label-h, 18px);
+}
+
+.sn-timeline--horizontal .sn-timeline-item__main {
+  flex-direction: column;
+}
+
+.sn-timeline--horizontal .sn-timeline-item--side-top .sn-timeline-item__main {
+  flex-direction: column-reverse;
+}
+
+/* ---------- Horizontal rail geometry ---------- */
 
 .sn-timeline--horizontal .sn-timeline-item__circle {
   left: calc(var(--sn-timeline-icon-size) / 2);
@@ -451,10 +473,10 @@ const iconStyle = computed<Record<string, string> | undefined>(() => {
   transform: translate(-50%, -50%);
 }
 
-/* The line bridges the 40px column gap so segments connect node to node. */
+/* The line bridges the column gap so segments connect node to node. */
 .sn-timeline--horizontal .sn-timeline-item__line {
   left: var(--sn-timeline-icon-size);
-  right: -40px;
+  right: calc(-1 * var(--sn-timeline-gap, 40px));
   top: calc(var(--sn-timeline-axis-y) - 1px);
   bottom: auto;
   width: unset;

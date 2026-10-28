@@ -1,11 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h } from 'vue';
 import SnTimeline from './SnTimeline.vue';
 import SnTimelineItem from './SnTimelineItem.vue';
 
 /** Mount SnTimeline through a wrapper component, mirroring real usage. */
-function mountTimeline(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
+function mountTimeline(
+  props: Record<string, unknown> = {},
+  slots: Record<string, unknown> = {},
+  options: Record<string, unknown> = {},
+) {
   return mount(
     defineComponent({
       components: { SnTimeline, SnTimelineItem },
@@ -13,6 +19,7 @@ function mountTimeline(props: Record<string, unknown> = {}, slots: Record<string
         return () => h(SnTimeline, props as never, slots as never);
       },
     }),
+    options as never,
   );
 }
 
@@ -303,5 +310,54 @@ describe('SnTimeline (AUI-WEB-DD-020)', () => {
     );
     expect(w.find('.sn-timeline-item__body').text()).toBe('孤立项');
     expect(w.find('.sn-timeline-item').classes()).toContain('sn-timeline-item--default-type');
+  });
+
+  describe('stylesheet guard (grid layout)', () => {
+    let styleEl: HTMLStyleElement | null = null;
+    let itemCss = '';
+
+    beforeAll(() => {
+      // vitest cwd = packages/vue-web (per-package vitest config).
+      const source = readFileSync(join(process.cwd(), 'src/timeline/SnTimelineItem.vue'), 'utf8');
+      itemCss = source.match(/<style[^>]*>([\s\S]*?)<\/style>/)?.[1] ?? '';
+      expect(itemCss).toContain('.sn-timeline-item__timeline');
+      styleEl = document.createElement('style');
+      styleEl.textContent = itemCss;
+      document.head.appendChild(styleEl);
+    });
+
+    afterAll(() => {
+      styleEl?.remove();
+      styleEl = null;
+    });
+
+    it('keeps the item stylesheet flat (no CSS nesting)', () => {
+      // Regression guard: the whole sheet used to sit nested inside
+      // `.sn-timeline-item { … }`, so every rule became a descendant
+      // selector — `display: grid` and the mode templates never matched and
+      // the items collapsed into a stack.
+      expect(itemCss).not.toMatch(/\.sn-timeline-item\s*\{\s*\n\s*\.[a-z]/i);
+      expect(itemCss).toMatch(/\.sn-timeline-item \{\s*\n\s*position: relative;/);
+      expect(itemCss).toMatch(/\.sn-timeline-item \{\s*\n\s*position: relative;\s*\n\s*display: grid;/);
+    });
+
+    it('lays the item out as a grid', () => {
+      const w = mountTimeline({}, itemSlots(), { attachTo: document.body });
+      expect(getComputedStyle(w.find('.sn-timeline-item').element).display).toBe('grid');
+      w.unmount();
+    });
+
+    it('declares every mode template, the straight label gutter and the railless last item', () => {
+      expect(itemCss).toContain('.sn-timeline--mode-left .sn-timeline-item');
+      expect(itemCss).toContain('.sn-timeline--mode-right .sn-timeline-item');
+      expect(itemCss).toContain('.sn-timeline--mode-alternate .sn-timeline-item');
+      expect(itemCss).toContain('.sn-timeline--horizontal.sn-timeline--mode-top .sn-timeline-item');
+      expect(itemCss).toContain('.sn-timeline--horizontal .sn-timeline-item--side-top');
+      // One label column width for every item keeps the rail straight.
+      expect(itemCss).toContain('width: var(--sn-timeline-label-w, 108px);');
+      // The final entry must not draw a dangling rail segment.
+      expect(itemCss).toContain('.sn-timeline-item:last-child .sn-timeline-item__line {');
+      expect(itemCss).toContain('.sn-timeline-item:last-child .sn-timeline-item__meta');
+    });
   });
 });

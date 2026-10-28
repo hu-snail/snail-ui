@@ -59,7 +59,7 @@ semantic colors. Vertical / horizontal layouts, `mode` display types
 | Name           | Type                                                    | Default      | Notes                                                             |
 | -------------- | ------------------------------------------------------- | ------------ | ----------------------------------------------------------------- |
 | direction      | `'vertical' \| 'horizontal'`                            | `'vertical'` | Layout axis; wins over the legacy `horizontal` flag               |
-| mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | Content side of the axis; alternate flips by index. Horizontal reads top / bottom (off-axis values are normalized) |
+| mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | Side the rail (axis) sits on — content takes the opposite side; alternate flips by index. Horizontal reads top / bottom (off-axis values are normalized) |
 | label-position | `'same' \| 'relative'`                                  | `'relative'` | relative: across the axis; same: content side next to the rail    |
 | horizontal     | `boolean`                                               | `false`      | Legacy: horizontal layout (prefer `direction`)                    |
 | item-placement | `'left' \| 'right'`                                     | `'left'`     | Legacy: rail side (prefer `mode`)                                 |

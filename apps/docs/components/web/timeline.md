@@ -58,7 +58,7 @@
 | 名称           | 类型                                          | 默认值       | 说明                                        |
 | -------------- | --------------------------------------------- | ------------ | ------------------------------------------- |
 | direction      | `'vertical' \| 'horizontal'`                  | `'vertical'` | 排布方向，设置后覆盖兼容的 `horizontal`     |
-| mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'` | 内容相对轴的位置；alternate 按奇偶交替，横向读 top / bottom（离轴值自动归一） |
+| mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'` | 轨道（轴）所在的一侧，内容在轴的另一侧；alternate 按奇偶交替，横向读 top / bottom（离轴值自动归一） |
 | label-position | `'same' \| 'relative'`                        | `'relative'` | 标签位置：relative 轴对侧，same 内容同侧紧贴轴 |
 | horizontal     | `boolean`                                     | `false`      | 兼容保留：水平排布（推荐 `direction`）      |
 | item-placement | `'left' \| 'right'`                           | `'left'`     | 兼容保留：轨道位置（推荐 `mode`）           |
