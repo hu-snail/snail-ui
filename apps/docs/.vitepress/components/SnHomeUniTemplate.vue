@@ -108,6 +108,11 @@ onBeforeUnmount(() => {
           @load="frameLoaded = true"
         />
       </div>
+
+      <!-- 底部安全区 + Home 横条 -->
+      <div class="sn-uni-t__home" aria-hidden="true">
+        <i class="sn-uni-t__home-bar" />
+      </div>
     </div>
 
     <!-- 机身下方：标题 / 描述 / 小程序码标签（悬停出二维码气泡） -->
@@ -251,6 +256,23 @@ html.dark .sn-uni-t__island {
   height: 100%;
   border: 0;
   background: var(--sn-uni-page);
+}
+
+/* 底部安全区 + Home 横条 */
+.sn-uni-t__home {
+  flex-shrink: 0;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sn-uni-page);
+}
+.sn-uni-t__home-bar {
+  width: 108px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--sn-uni-ink);
+  opacity: 0.85;
 }
 
 /* ── 机身下方 caption + 小程序码标签 ── */

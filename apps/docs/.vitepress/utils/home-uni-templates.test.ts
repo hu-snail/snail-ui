@@ -42,6 +42,8 @@ describe('home uni-templates registry', () => {
       expect(t.h, t.id).toBeGreaterThanOrEqual(440);
       expect(t.h, t.id).toBeLessThanOrEqual(680);
     }
+    // 机身高度统一（真实手机等高排列）
+    expect(new Set(uniTemplates.map((t) => t.h)).size).toBe(1);
   });
 
   it('should resolve title & desc in both locales', () => {
