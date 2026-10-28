@@ -194,7 +194,9 @@ provide(snDialogApiInjectionKey, api);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--sn-web-color-background-overlay, rgba(0, 0, 0, 0.5));
+  /* ~44% black — the same derived mask the drawer and the docs dialog
+   * stage use (the raw overlay token is 80% and reads near-opaque). */
+  background: color-mix(in srgb, var(--sn-web-color-background-overlay) 55%, transparent);
 }
 
 /* Upstream keeps the dialog width on the provider's overlay, not the card. */
