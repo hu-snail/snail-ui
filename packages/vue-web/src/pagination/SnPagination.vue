@@ -657,6 +657,9 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
   flex-direction: column;
   min-width: 56px;
   max-height: 232px;
+  /* One axis of scrolling only — the styled vertical bar; horizontal
+   * overflow (3-digit pages + scrollbar width) is clipped away. */
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 4px;
@@ -678,10 +681,13 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
 }
 
 .sn-pagination__quick-item {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
+  /* Fill the panel content box (border-box) so the vertical scrollbar's
+   * width never pushes a horizontal scrollbar into existence. */
+  width: 100%;
+  box-sizing: border-box;
   height: 28px;
   padding: 0 6px;
   border: none;
