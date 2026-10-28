@@ -234,7 +234,10 @@ describe('SnWaterfall', () => {
   });
 
   describe('first measured pack', () => {
-    /** Stub ResizeObserver and expose the callbacks so tests can report sizes. */
+    /** Stub ResizeObserver and expose the callbacks so tests can report sizes.
+     *  The component coalesces RO notifications into one rAF (fix for the
+     *  "ResizeObserver loop" browser error): frames are executed synchronously
+     *  here so the existing assertions right after `reportHeights` hold. */
     function stubResizeObserver(): Array<(entries: ResizeObserverEntry[]) => void> {
       const callbacks: Array<(entries: ResizeObserverEntry[]) => void> = [];
       class ROStub {
@@ -246,6 +249,11 @@ describe('SnWaterfall', () => {
         disconnect(): void {}
       }
       vi.stubGlobal('ResizeObserver', ROStub);
+      vi.stubGlobal('requestAnimationFrame', (cb: (time: number) => void) => {
+        cb(16);
+        return 0;
+      });
+      vi.stubGlobal('cancelAnimationFrame', () => {});
       return callbacks;
     }
 
@@ -313,6 +321,59 @@ describe('SnWaterfall', () => {
         reportHeights(callbacks, wrapper, { a: 900, b: 100, c: 100 });
         await nextTick();
         expect(columnTexts(wrapper)).toEqual(settled);
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
+
+    it('should defer RO processing out of the observer callback (no resize loop)', async () => {
+      // Regression: processing RO notifications synchronously re-entered layout
+      // (state write → render → resize) and the browser logged "ResizeObserver
+      // loop completed with undelivered notifications". The component now only
+      // *collects* notifications in the callback and flushes them on the next
+      // animation frame — this test proves the work moved out of the callback.
+      const frames: Array<() => void> = [];
+      vi.stubGlobal('requestAnimationFrame', (cb: (time: number) => void) => {
+        frames.push(() => cb(16));
+        return frames.length;
+      });
+      vi.stubGlobal('cancelAnimationFrame', () => {});
+      const roCallbacks: Array<(entries: ResizeObserverEntry[]) => void> = [];
+      class ROStub {
+        constructor(callback: (entries: ResizeObserverEntry[]) => void) {
+          roCallbacks.push(callback);
+        }
+        observe(): void {}
+        unobserve(): void {}
+        disconnect(): void {}
+      }
+      vi.stubGlobal('ResizeObserver', ROStub);
+      try {
+        const wrapper = mountWaterfall({
+          props: { columns: 3, rowGap: 0 },
+          slots: { default: () => fragmentList(['a', 'b', 'c', 'd', 'e', 'f']) },
+        });
+        const heights: Record<string, number> = { a: 400, b: 60, c: 60, d: 60, e: 60, f: 60 };
+
+        // Inside the RO callback nothing is processed yet → still the SSR guess.
+        reportHeights(roCallbacks, wrapper, heights);
+        await nextTick();
+        expect(columnTexts(wrapper)).toEqual([
+          ['a', 'd'],
+          ['b', 'e'],
+          ['c', 'f'],
+        ]);
+
+        // Flushing the frame applies the one-shot measured pack exactly once.
+        frames.forEach((run) => run());
+        await nextTick();
+        const after = columnTexts(wrapper);
+        expect(after).not.toEqual([
+          ['a', 'd'],
+          ['b', 'e'],
+          ['c', 'f'],
+        ]);
+        expect(after.flat().sort()).toEqual(['a', 'b', 'c', 'd', 'e', 'f']);
       } finally {
         vi.unstubAllGlobals();
       }
