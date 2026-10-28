@@ -33,7 +33,7 @@ Two `provide` keys keep the boundary clean:
 | model         | `Record<string, unknown>`    | (required) | Reactive model. Items read/write via v-model on SnInput.     |
 | rules         | `FormRules`                  | `{}`       | Per-field rules keyed by `prop`.                             |
 | novalidate    | `boolean`                    | `true`     | Disable browser HTML5 validation.                            |
-| showMessage   | `boolean`                    | `true`     | Show the inline `.sn-form-item__message` line.               |
+| showMessage   | `boolean`                    | `true`     | Show the `.sn-form-item__message` line below the field.      |
 | statusIcon    | `boolean`                    | `false`    | Show status icon (Phase 1: text only).                       |
 | labelPosition | `'left' \| 'right' \| 'top'` | `'right'`  | Inherited by all child FormItems.                            |
 | labelWidth    | `number \| string`           | `'auto'`   | Width for left/right labels.                                 |

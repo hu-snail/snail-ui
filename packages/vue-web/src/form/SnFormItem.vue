@@ -307,11 +307,14 @@ function deepClone<T>(value: T): T {
     </label>
 
     <div class="sn-form-item__control">
-      <slot>
-        <span v-if="placeholder && !$slots.default" class="sn-form-item__placeholder">{{
-          placeholder
-        }}</span>
-      </slot>
+      <div class="sn-form-item__field">
+        <slot>
+          <span v-if="placeholder && !$slots.default" class="sn-form-item__placeholder">{{
+            placeholder
+          }}</span>
+        </slot>
+        <span v-if="isLink" class="sn-form-item__arrow">›</span>
+      </div>
       <p v-if="description || slots.description" class="sn-form-item__description">
         <slot name="description">{{ description }}</slot>
       </p>
@@ -323,7 +326,6 @@ function deepClone<T>(value: T): T {
       >
         <slot name="error">{{ message }}</slot>
       </p>
-      <span v-if="isLink" class="sn-form-item__arrow">›</span>
     </div>
   </div>
 </template>
@@ -455,14 +457,20 @@ function deepClone<T>(value: T): T {
 .sn-form-item__control {
   grid-area: control;
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* The field row: control + optional link arrow share one line; the
+ * description and validation message stack BELOW the field row. */
+.sn-form-item__field {
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 4px;
   min-width: 0;
-}
-.sn-form-item--top .sn-form-item__control {
-  flex-direction: column;
-  align-items: stretch;
 }
 
 /* Right arrow for is-link rows. */
@@ -478,7 +486,6 @@ function deepClone<T>(value: T): T {
   margin: 0;
   font-size: 12px;
   line-height: 1.4;
-  flex: 1 1 100%;
 }
 .sn-form-item__message[data-status='error'] {
   color: var(--sn-web-color-feedback-danger);

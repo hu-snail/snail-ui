@@ -30,8 +30,12 @@ const props = withDefaults(
     modelValue?: SnCheckboxValue[];
     /** Uncontrolled initial selection. Mirrors n-checkbox-group `default-value`. */
     defaultValue?: SnCheckboxValue[];
-    /** Option list — renders checkboxes when provided. Mirrors `options`. */
-    options?: SnCheckboxGroupOption[];
+    /**
+     * Option list — renders checkboxes when provided. Plain string /
+     * number / boolean entries are coerced to `{ label, value }` (same
+     * coercion as SnRadioGroup).
+     */
+    options?: Array<SnCheckboxGroupOption | SnCheckboxValue>;
     /** Disables every child checkbox. Mirrors n-checkbox-group `disabled`. */
     disabled?: boolean;
     /** Size preset applied to every child. Mirrors n-checkbox-group `size`. */
@@ -93,6 +97,16 @@ provide(SN_CHECKBOX_GROUP_KEY, {
   isInsideGroup: true,
 });
 
+/** Normalized option list — plain values are coerced to { label, value } (SnRadioGroup parity). */
+const normalizedOptions = computed<Array<SnCheckboxGroupOption>>(() =>
+  (props.options as Array<SnCheckboxGroupOption | SnCheckboxValue>).map((option) => {
+    if (typeof option === 'string' || typeof option === 'number' || typeof option === 'boolean') {
+      return { label: String(option), value: option };
+    }
+    return option as SnCheckboxGroupOption;
+  }),
+);
+
 const hasOptions = computed(() => props.options.length > 0);
 
 const classList = computed(() => [
@@ -122,7 +136,7 @@ const wrapperStyle = computed(() => {
   >
     <template v-if="hasOptions">
       <SnCheckbox
-        v-for="option in options"
+        v-for="option in normalizedOptions"
         :key="String(option.value)"
         :value="option.value"
         :label="option.label ?? ''"
