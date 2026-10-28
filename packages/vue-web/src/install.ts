@@ -61,6 +61,7 @@ import SnSplit from './split/SnSplit.vue';
 import SnSplitPanel from './split/SnSplitPanel.vue';
 import SnDropdown from './dropdown/SnDropdown.vue';
 import SnDialog from './dialog/SnDialog.vue';
+import SnDialogProvider from './dialog/SnDialogProvider.vue';
 import SnDrawer from './drawer/SnDrawer.vue';
 import SnDrawerContent from './drawer/SnDrawerContent.vue';
 import SnLoading from './loading/SnLoading.vue';
@@ -146,6 +147,7 @@ const COMPONENTS: ReadonlyArray<{ name: string; component: unknown }> = [
   { name: 'SnCollapseItem', component: SnCollapseItem },
   { name: 'SnConfigProvider', component: SnConfigProvider },
   { name: 'SnDialog', component: SnDialog },
+  { name: 'SnDialogProvider', component: SnDialogProvider },
   { name: 'SnDivider', component: SnDivider },
   { name: 'SnDrawer', component: SnDrawer },
   { name: 'SnDrawerContent', component: SnDrawerContent },

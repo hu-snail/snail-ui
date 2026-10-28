@@ -239,6 +239,7 @@ function handleCloseClick(): void {
 .sn-drawer-footer {
   display: flex;
   justify-content: flex-end;
+  gap: var(--sn-web-drawer-footer-gap, 12px);
   padding: var(--sn-web-drawer-footer-padding);
   border-top: var(--sn-web-drawer-footer-border-top);
   transition: border 0.3s ease;

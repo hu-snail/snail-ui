@@ -116,6 +116,9 @@ export type {
 } from './dropdown/sn-dropdown-types';
 export { default as SnLoading } from './loading/SnLoading.vue';
 export { default as SnDialog } from './dialog/SnDialog.vue';
+export { default as SnDialogProvider } from './dialog/SnDialogProvider.vue';
+export { useDialog } from './dialog/use-dialog';
+export type { SnDialogOptions, DialogReactive, DialogApiInjection } from './dialog/use-dialog';
 export type { SnDialogIconPlacement, SnDialogType } from './dialog/SnDialog.vue';
 export { default as SnDrawer } from './drawer/SnDrawer.vue';
 export type { SnDrawerPlacement } from './drawer/SnDrawer.vue';
