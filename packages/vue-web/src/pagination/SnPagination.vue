@@ -15,10 +15,14 @@
  * Parity checklist (slots):
  *   prev / next / prefix / suffix / label ({ page }).
  *
+ * Beyond naive:
+ *   - `quickSwitch` (default on): clicking an `…` ellipsis opens a small
+ *     panel listing the pages hidden in that gap — one click jumps there
+ *     (the documented divergence below is now covered).
+ *   - Prev / next arrows render with a bordered button style and the whole
+ *     pager uses flex centering (icons / numbers vertically centred).
+ *
  * Documented divergences (not §112 violations):
- *   - The `…` markers between page groups are static, aria-hidden
- *     indicators — the reference's hover-to-jump fast-forward /
- *     fast-backward buttons are not implemented.
  *   - `showQuickJumper` accepts `boolean` only (the reference also allows
  *     `{ goButton }`; no go-button is rendered here).
  *   - `prefix` / `suffix` are exposed as Vue slots (the reference declares
@@ -45,7 +49,7 @@
  *   <SnPagination :item-count="45" simple />
  */
 
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 import SnButton from '../button/SnButton.vue';
 import SnIcon from '../icon/SnIcon.vue';
@@ -97,6 +101,12 @@ const props = withDefaults(
     showTotal?: boolean;
     /** Compact mode: prev / page input / page count / next only. Mirrors n-pagination `simple`. */
     simple?: boolean;
+    /**
+     * Quick switch (快速切换): clicking an `…` ellipsis opens a small panel
+     * listing the pages hidden in that gap — one click jumps there. On by
+     * default; set `false` to keep the ellipsis a static marker.
+     */
+    quickSwitch?: boolean;
     /** Disable every control. Mirrors n-pagination `disabled`. */
     disabled?: boolean;
   }>(),
@@ -113,6 +123,7 @@ const props = withDefaults(
     pageSlot: 9,
     showTotal: false,
     simple: false,
+    quickSwitch: true,
     disabled: false,
   },
 );
@@ -233,6 +244,7 @@ const jumperValue = ref(String(mergedPage.value));
 watch(mergedPage, (page) => {
   jumperValue.value = String(page);
   simpleInputValue.value = String(page);
+  openQuickPanel.value = null;
 });
 
 /** Enter / blur commit: parse, clamp into [1, pageCount], reset the field. */
@@ -246,6 +258,80 @@ function commitJumper(): void {
   jumperValue.value = String(target);
   go(target);
 }
+
+/* ─────────── Ellipsis quick switch (快速切换) ─────────── */
+
+type QuickPanelSide = 'start-ellipsis' | 'end-ellipsis';
+const openQuickPanel = ref<QuickPanelSide | null>(null);
+const quickPanelUp = ref(false);
+const rootRef = ref<HTMLElement | null>(null);
+
+/**
+ * The hidden page range each `…` marker stands for. `null` when the marker
+ * is absent or its gap is empty (nothing to switch to).
+ */
+const quickRanges = computed<{
+  'start-ellipsis': [number, number] | null;
+  'end-ellipsis': [number, number] | null;
+}>(() => {
+  const items = displayItems.value;
+  const startIdx = items.indexOf('start-ellipsis');
+  const endIdx = items.indexOf('end-ellipsis');
+  const startGap: [number, number] | null =
+    startIdx > -1 && typeof items[startIdx + 1] === 'number'
+      ? [2, (items[startIdx + 1] as number) - 1]
+      : null;
+  const endGap: [number, number] | null =
+    endIdx > -1 && typeof items[endIdx - 1] === 'number'
+      ? [(items[endIdx - 1] as number) + 1, mergedPageCount.value - 1]
+      : null;
+  const valid = (range: [number, number] | null): [number, number] | null =>
+    range !== null && range[0] <= range[1] ? range : null;
+  return { 'start-ellipsis': valid(startGap), 'end-ellipsis': valid(endGap) };
+});
+
+function quickPagesFor(item: PaginationDisplayItem): number[] {
+  const range =
+    item === 'start-ellipsis' || item === 'end-ellipsis' ? quickRanges.value[item] : null;
+  if (range === null) return [];
+  const pages: number[] = [];
+  for (let p = range[0]; p <= range[1]; p += 1) pages.push(p);
+  return pages;
+}
+
+/** Toggle the gap panel; flips upward when the viewport lacks room below. */
+function toggleQuickPanel(item: QuickPanelSide, event: MouseEvent): void {
+  if (openQuickPanel.value === item) {
+    openQuickPanel.value = null;
+    return;
+  }
+  const button = event.currentTarget as HTMLElement | null;
+  quickPanelUp.value =
+    button !== null &&
+    typeof window !== 'undefined' &&
+    button.getBoundingClientRect().bottom + 236 > window.innerHeight;
+  openQuickPanel.value = item;
+}
+
+function quickGo(page: number): void {
+  go(page);
+  openQuickPanel.value = null;
+}
+
+function onDocumentMousedown(event: MouseEvent): void {
+  if (openQuickPanel.value === null) return;
+  const target = event.target as Node | null;
+  if (rootRef.value && target instanceof Node && rootRef.value.contains(target)) return;
+  openQuickPanel.value = null;
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', onDocumentMousedown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('mousedown', onDocumentMousedown);
+});
 
 /* ─────────── Simple mode input ─────────── */
 
@@ -279,6 +365,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
 
 <template>
   <nav
+    ref="rootRef"
     data-snui-component="pagination"
     class="sn-pagination"
     :class="{
@@ -298,7 +385,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
     <!-- Simple mode: prev / page input / count / next -->
     <div v-if="simple" class="sn-pagination__simple">
       <SnButton
-        class="sn-pagination__item"
+        class="sn-pagination__item sn-pagination__item--nav"
         text
         size="small"
         :disabled="isDisabled || mergedPage <= 1"
@@ -318,7 +405,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
       />
       <span class="sn-pagination__simple-separator">/ {{ mergedPageCount }}</span>
       <SnButton
-        class="sn-pagination__item"
+        class="sn-pagination__item sn-pagination__item--nav"
         text
         size="small"
         :disabled="isDisabled || mergedPage >= mergedPageCount"
@@ -333,7 +420,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
     <ul v-else class="sn-pagination__pages">
       <li class="sn-pagination__page-item">
         <SnButton
-          class="sn-pagination__item"
+          class="sn-pagination__item sn-pagination__item--nav"
           text
           size="small"
           :disabled="isDisabled || mergedPage <= 1"
@@ -348,8 +435,42 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         :key="`${item}-${index}`"
         class="sn-pagination__page-item"
       >
-        <span v-if="typeof item === 'string'" class="sn-pagination__ellipsis" aria-hidden="true">
-          …
+        <span v-if="typeof item === 'string'" class="sn-pagination__ellipsis-wrap">
+          <button
+            v-if="quickSwitch && quickRanges[item]"
+            type="button"
+            class="sn-pagination__ellipsis sn-pagination__ellipsis--switch"
+            :class="{ 'sn-pagination__ellipsis--open': openQuickPanel === item }"
+            :aria-label="paginationLocale.jumpLabel"
+            aria-haspopup="true"
+            :aria-expanded="openQuickPanel === item ? 'true' : 'false'"
+            @click.stop="toggleQuickPanel(item, $event)"
+            @keydown.esc.stop="openQuickPanel = null"
+          >
+            …
+          </button>
+          <span v-else class="sn-pagination__ellipsis" aria-hidden="true">…</span>
+          <div
+            v-if="quickSwitch && openQuickPanel === item"
+            class="sn-pagination__quick-panel"
+            :class="{ 'sn-pagination__quick-panel--up': quickPanelUp }"
+            role="listbox"
+            :aria-label="paginationLocale.jumpLabel"
+          >
+            <button
+              v-for="p in quickPagesFor(item)"
+              :key="p"
+              type="button"
+              role="option"
+              class="sn-pagination__quick-item"
+              :class="{ 'sn-pagination__quick-item--active': p === mergedPage }"
+              :aria-selected="p === mergedPage ? 'true' : 'false'"
+              :aria-current="p === mergedPage ? 'page' : undefined"
+              @click.stop="quickGo(p)"
+            >
+              {{ p }}
+            </button>
+          </div>
         </span>
         <SnButton
           v-else
@@ -367,7 +488,7 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
       </li>
       <li class="sn-pagination__page-item">
         <SnButton
-          class="sn-pagination__item"
+          class="sn-pagination__item sn-pagination__item--nav"
           text
           size="small"
           :disabled="isDisabled || mergedPage >= mergedPageCount"
@@ -454,11 +575,16 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
 
 /* Page item overrides on top of SnButton text variant (transparent base):
  * `.sn-pagination .sn-pagination__item` keeps specificity above the
- * button's own single-class rules. */
+ * button's own single-class rules. Flex centering pins the icon / label
+ * to the exact middle (the mis-alignment fix). */
 .sn-pagination .sn-pagination__item {
   min-width: var(--sn-web-button-height-small, 28px);
   height: var(--sn-web-button-height-small, 28px);
   padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   font-size: 14px;
   font-weight: 400;
 }
@@ -469,6 +595,23 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
   font-weight: 500;
 }
 
+/* Prev / next arrows get a bordered button look (element-plus style) while
+ * page numbers stay borderless. */
+.sn-pagination .sn-pagination__item--nav {
+  padding: 0;
+  border: 1px solid var(--sn-web-color-border-subtle);
+  border-radius: var(--sn-web-button-radius-small, 6px);
+  background-color: var(--sn-web-color-background-surface);
+  transition:
+    border-color 0.18s ease-out,
+    color 0.18s ease-out;
+}
+
+.sn-pagination .sn-pagination__item--nav:not(:disabled):hover {
+  border-color: var(--sn-web-color-action-primary);
+  color: var(--sn-web-color-action-primary);
+}
+
 .sn-pagination__ellipsis {
   display: inline-flex;
   align-items: center;
@@ -477,6 +620,86 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
   height: var(--sn-web-button-height-small, 28px);
   color: var(--sn-web-color-text-secondary);
   user-select: none;
+}
+
+/* Quick switch — the `…` marker becomes a jump button over its gap. */
+.sn-pagination__ellipsis-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.sn-pagination__ellipsis--switch {
+  padding: 0;
+  border: none;
+  border-radius: var(--sn-web-button-radius-small, 4px);
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease-out,
+    color 0.15s ease-out;
+}
+
+.sn-pagination__ellipsis--switch:hover,
+.sn-pagination__ellipsis--switch--open.sn-pagination__ellipsis--switch {
+  background-color: var(--sn-web-color-background-soft);
+  color: var(--sn-web-color-action-primary);
+}
+
+.sn-pagination__quick-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--sn-web-pagination-quick-z-index, 100);
+  display: flex;
+  flex-direction: column;
+  min-width: 56px;
+  max-height: 232px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+  box-sizing: border-box;
+  border: 1px solid var(--sn-web-color-border-subtle);
+  border-radius: 8px;
+  background-color: var(--sn-web-color-background-elevated);
+  box-shadow: var(
+    --sn-web-pagination-quick-shadow,
+    0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08),
+    0 9px 28px 8px rgba(0, 0, 0, 0.05)
+  );
+}
+
+.sn-pagination__quick-panel--up {
+  top: auto;
+  bottom: calc(100% + 4px);
+}
+
+.sn-pagination__quick-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 28px;
+  padding: 0 6px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--sn-web-color-text-primary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.sn-pagination__quick-item:hover {
+  background-color: var(--sn-web-color-background-soft);
+}
+
+.sn-pagination__quick-item--active {
+  background-color: color-mix(in srgb, var(--sn-web-color-action-primary) 16%, transparent);
+  color: var(--sn-web-color-action-primary);
+  font-weight: 500;
 }
 
 /* Simple mode */

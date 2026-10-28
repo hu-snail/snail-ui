@@ -41,6 +41,12 @@
 
 <Demo name="pagination-web-disabled" description="page-slot 折叠省略号对照 + disabled 整体禁用。" />
 
+## 快速切换（quick-switch）
+
+点击省略号 `…` 打开该间隙的隐藏页码面板（滚动可达，当前页高亮），点选直达；上一页 / 下一页为描边按钮样式。
+
+<Demo name="pagination-web-quick-switch" description="省略号快速切换面板 + 描边箭头按钮，100 页长列表直达。" />
+
 ## API
 
 ### Props
@@ -59,6 +65,7 @@
 | page-slot         | `number`                                            | `9`                | 页码按钮的最大数量，总页数超出时折叠省略号。                                             |
 | show-total        | `boolean`                                           | `false`            | 显示「共 N 条」。                                                                        |
 | simple            | `boolean`                                           | `false`            | 简洁模式：上一页 / 页码输入 / 总页数 / 下一页，不渲染页码列表与跳页输入。                |
+| quick-switch      | `boolean`                                           | `true`             | 快速切换：点击省略号打开隐藏页码面板，点选直达；`false` 恢复静态省略号。                 |
 | disabled          | `boolean`                                           | `false`            | 禁用全部控件；禁用期间的交互不提交事件。                                                 |
 
 ### Events
@@ -84,7 +91,8 @@
 
 行为说明：
 
-- 省略号是静态指示（`aria-hidden`），不提供悬停快进 / 快退。
+- **快速切换**：点击省略号打开该间隙的隐藏页码面板（滚动可达，含当前页高亮），点选直达；`quick-switch: false` 恢复静态 `aria-hidden` 省略号。
+- 上一页 / 下一页箭头为描边按钮样式（悬停主色描边），页码保持无框；两项均垂直水平居中。
 - `page` / `page-size` 受控时组件只上报事件，不自行改值。
 - 简洁模式下 `show-quick-jumper` 不生效，`show-total` 仍在分页器左侧渲染。
 

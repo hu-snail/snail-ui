@@ -61,8 +61,11 @@ import { SnPagination } from '@snui/vue-web';
 
 ## Divergences from the reference API
 
-- `…` markers are static, aria-hidden indicators (no hover-to-jump
-  fast-forward / fast-backward buttons).
+- `…` markers open the **quick-switch panel** (`quickSwitch`, default on):
+  clicking an ellipsis lists every page hidden in that gap in a scrollable
+  popover — one click jumps there (this covers the reference's
+  hover-to-jump fast-forward / fast-backward buttons with an explicit list;
+  set `quickSwitch: false` for the static aria-hidden marker).
 - `showQuickJumper` accepts `boolean` only (no `{ goButton }` variant).
 - `prefix` / `suffix` are slots (the reference declares render-function
   props; slots are the idiomatic Vue mapping).

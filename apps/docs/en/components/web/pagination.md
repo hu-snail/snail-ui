@@ -61,6 +61,14 @@ the size picker all become inoperable and no longer emit events.
 
 <Demo name="pagination-web-disabled" description="page-slot ellipsis collapsing versus the fully disabled state." />
 
+### Quick switch (ellipsis jump)
+
+Clicking an ellipsis `…` opens a panel listing the pages hidden in that gap
+(scrollable, current page highlighted) for one-click jumps; prev / next
+render as bordered buttons.
+
+<Demo name="pagination-web-quick-switch" description="Ellipsis quick-switch panel + bordered arrows for long page lists." />
+
 ## API
 
 ### Props
@@ -79,6 +87,7 @@ the size picker all become inoperable and no longer emit events.
 | page-slot         | `number`                                            | `9`                | Maximum number of page buttons; more pages collapse into ellipsis.                                                             |
 | show-total        | `boolean`                                           | `false`            | Render `共 N 条`.                                                                                                              |
 | simple            | `boolean`                                           | `false`            | Compact mode: prev / page input / page count / next — no page list and no jump input.                                          |
+| quick-switch      | `boolean`                                           | `true`             | Quick switch: clicking an ellipsis opens a panel of the hidden pages for one-click jumps; `false` restores the static marker.  |
 | disabled          | `boolean`                                           | `false`            | Disable every control; interactions while disabled emit no events.                                                             |
 
 ### Events
@@ -105,8 +114,11 @@ interaction goes through props and events.
 
 Behavior notes:
 
-- Ellipsis markers are static indicators (`aria-hidden`) — no hover-to-jump
-  fast-forward / fast-backward.
+- **Quick switch**: clicking an ellipsis opens a scrollable panel of the pages
+  hidden in that gap (current page highlighted) for one-click jumps;
+  `quick-switch: false` restores the static `aria-hidden` marker.
+- Prev / next arrows render as bordered buttons (primary border on hover)
+  while page numbers stay borderless; both are flex-centred.
 - With `page` / `page-size` controlled the component only reports events and
   never writes the value itself.
 - In simple mode `show-quick-jumper` has no effect; `show-total` still renders
