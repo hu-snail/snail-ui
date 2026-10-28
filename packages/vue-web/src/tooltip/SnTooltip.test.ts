@@ -358,6 +358,39 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
     });
 
     /**
+     * Root-cause regression for the DEGENERATE-VIEWPORT detachment family
+     * (embedded webviews / iframes / capture panels report
+     * `window.innerWidth / innerHeight` as 0): clamping against a zero
+     * viewport pinned the bubble onto the window edge — detached from its
+     * trigger — on every placement. The engine must trust the raw
+     * beside-the-trigger anchor when the viewport metrics cannot hold the
+     * bubble.
+     */
+    it('positions beside the trigger when the viewport metrics are degenerate (0×0)', async () => {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 0 });
+      Object.defineProperty(window, 'innerHeight', { configurable: true, value: 0 });
+      Object.defineProperty(document.documentElement, 'clientWidth', {
+        configurable: true,
+        value: 0,
+      });
+      Object.defineProperty(document.documentElement, 'clientHeight', {
+        configurable: true,
+        value: 0,
+      });
+
+      mountTooltip({ content: 'x', show: true, placement: 'top' });
+      await new Promise((r) => setTimeout(r, 10));
+
+      const s = popoverStyle();
+      // Raw beside-the-trigger anchor: trigger.top - pop.height - arrow band.
+      expect(Number.parseFloat(s.top)).toBe(TRIGGER_RECT.top - POPOVER_RECT.height - ARROW_SIZE);
+      // Cross axis (center) also passes through unclamped.
+      expect(Number.parseFloat(s.left)).toBe(
+        TRIGGER_RECT.left + TRIGGER_RECT.width / 2 - POPOVER_RECT.width / 2,
+      );
+    });
+
+    /**
      * Root-cause regression for the recurring "top 方向分离" detachment:
      * the bubble always mounts mid-enter-animation (`scale(0.96)` for
      * 180ms), and getBoundingClientRect() reflects that transform — the old

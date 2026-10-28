@@ -405,8 +405,14 @@ async function recompute(): Promise<void> {
     right: popWidth,
     bottom: popHeight,
   };
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
+  // Viewport metrics with a fallback chain: embedded hosts (webviews,
+  // iframes, capture panels) are known to report `window.innerWidth /
+  // innerHeight` as 0 while `documentElement.clientWidth` still carries
+  // the real layout viewport — trusting a zero viewport clamped every
+  // bubble onto the window edge, detached from its trigger (the recurring
+  // "top 方向分离" family).
+  const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+  const vh = window.innerHeight || document.documentElement.clientHeight || 0;
   const margin = 8; // minimum gap between popover and viewport edge
   // `overlap` seats the bubble on the trigger instead of beside it, so no
   // arrow-sized gap is reserved. A resting `overlap` is 8px by default, so
@@ -430,10 +436,17 @@ async function recompute(): Promise<void> {
 
   /**
    * Nudge a coordinate back inside `[margin, limit - size - margin]` so a
+   * Nudge a coordinate back inside `[margin, limit - size - margin]` so a
    * bubble that is wider (or taller) than the space beside its trigger is
    * still fully readable instead of being clipped by the viewport.
+   *
+   * Degenerate limits (0, or smaller than the bubble itself — embedded
+   * hosts reporting a zero viewport) are passed through: clamping against
+   * them pinned the bubble onto the window edge, detached from its
+   * trigger, so the raw beside-the-trigger anchor is the honest position.
    */
   function clampWithin(value: number, size: number, limit: number): number {
+    if (limit <= 0 || limit < size + margin * 2) return Math.max(0, value);
     const max = Math.min(value, limit - size - margin);
     // `Math.max` runs second so a bubble larger than the viewport anchors to
     // the near edge rather than escaping past the far one.
