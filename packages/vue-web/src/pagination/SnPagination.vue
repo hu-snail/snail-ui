@@ -417,8 +417,8 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
     </div>
 
     <!-- Full mode: prev / pages / next -->
-    <ul v-else class="sn-pagination__pages">
-      <li class="sn-pagination__page-item">
+    <div v-else class="sn-pagination__pages">
+      <div class="sn-pagination__page-item">
         <SnButton
           class="sn-pagination__item sn-pagination__item--nav"
           text
@@ -429,8 +429,8 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         >
           <slot name="prev"><SnIcon :icon="ChevronLeft" :size="16" /></slot>
         </SnButton>
-      </li>
-      <li
+      </div>
+      <div
         v-for="(item, index) in displayItems"
         :key="`${item}-${index}`"
         class="sn-pagination__page-item"
@@ -485,8 +485,8 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         >
           <slot name="label" :page="item">{{ item }}</slot>
         </SnButton>
-      </li>
-      <li class="sn-pagination__page-item">
+      </div>
+      <div class="sn-pagination__page-item">
         <SnButton
           class="sn-pagination__item sn-pagination__item--nav"
           text
@@ -497,8 +497,8 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
         >
           <slot name="next"><SnIcon :icon="ChevronRight" :size="16" /></slot>
         </SnButton>
-      </li>
-    </ul>
+      </div>
+    </div>
 
     <div v-if="showQuickJumper && !simple" class="sn-pagination__jumper">
       <span class="sn-pagination__jumper-label">{{ paginationLocale.jumpLabel }}</span>
@@ -558,18 +558,19 @@ function onPageSizeSelect(value: SnSelectValue | SnSelectValue[] | null): void {
   color: var(--sn-web-color-text-tertiary);
 }
 
-/* Page list */
+/* Page list (plain divs — a semantic <ul> would inherit the host doc
+ * stylesheet's `li + li` margins and break the row centring). */
 .sn-pagination__pages {
   display: flex;
   align-items: center;
   gap: 8px;
   margin: 0;
   padding: 0;
-  list-style: none;
 }
 
 .sn-pagination__page-item {
-  display: inline-flex;
+  position: relative;
+  display: flex;
   align-items: center;
 }
 
