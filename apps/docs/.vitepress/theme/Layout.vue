@@ -41,7 +41,10 @@ import { SnConfigProvider, enUS } from '@snui/vue-web';
 import type { SnLocaleInput } from '@snui/vue-web';
 
 const route = useRoute();
-const isHome = computed(() => route.path === '/' || route.path === '');
+/** 首页 = zh 根路径 + /en/ 首页（两个 locale 的 layout:home 页共用 SnDocsHome）。 */
+const isHome = computed(
+  () => route.path === '/' || route.path === '' || route.path === '/en' || route.path === '/en/',
+);
 const showFab = computed(() => route.path.startsWith('/components/'));
 const showTemplateEnd = computed(() => route.path.startsWith('/templates/'));
 
@@ -54,10 +57,16 @@ const navItems = computed(() => (isEn.value ? enNav : nav));
  * /en/ → enUS）。嵌套的 `<SnConfigProvider skin>` 会透传该值（见组件内
  * parentLocale 逻辑），所有示例组件随站点语言自动切换文案。
  */
-const { lang } = useData();
+const { lang, isDark } = useData();
 const siteLocale = computed<SnLocaleInput | undefined>(() =>
   lang.value === 'en-US' ? enUS : undefined,
 );
+
+/**
+ * 首页导航反色 = 首页 && 站点深色主题。首页画布深浅由 SnDocsHome 的
+ * `sn-home--dark` 修饰类跟随 isDark 切换，导航的 inverted 与之保持同步。
+ */
+const homeNavInverted = computed(() => isHome.value && isDark.value);
 
 /**
  * The demo registry is per-page state, so a route change must clear it.
@@ -82,7 +91,7 @@ watch(
     <DefaultTheme.Layout>
       <!-- Replace the default top nav with SnDocsNav (real @snui/vue-web). -->
       <template #nav-bar-content-before>
-        <SnDocsNav :items="navItems" />
+        <SnDocsNav :items="navItems" :inverted="homeNavInverted" />
       </template>
 
       <!-- 模板 section: pick the end you are building for. The capsule rides

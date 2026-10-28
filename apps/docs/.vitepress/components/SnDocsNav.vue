@@ -35,9 +35,13 @@ const props = withDefaults(
   defineProps<{
     /** Top-nav links (mirrors vitepress `themeConfig.nav`). */
     items?: NavItem[];
+    /** 反色导航（首页深色画布专用）：菜单走 SnMenu `inverted`，
+     *  品牌字 / 操作按钮 / kbd 提示改为浅色。 */
+    inverted?: boolean;
   }>(),
   {
     items: () => [],
+    inverted: false,
   },
 );
 
@@ -134,7 +138,7 @@ function onLocaleClick(event: MouseEvent): void {
 
 <template>
   <SnConfigProvider skin="">
-    <div class="sn-docs-nav">
+    <div class="sn-docs-nav" :class="{ 'sn-docs-nav--inverted': inverted }">
       <SnDocsSidebarToggle v-if="collapsed" />
       <a class="sn-docs-nav__brand" :href="isEn ? '/en/' : '/'" aria-label="Home">
         <SnIcon class="sn-docs-nav__brand-icon" :icon="Snail" />
@@ -145,6 +149,7 @@ function onLocaleClick(event: MouseEvent): void {
           mode="horizontal"
           :options="menuOptions"
           :value="activeKey"
+          :inverted="inverted"
           @update:value="() => {}"
         />
       </div>
@@ -342,5 +347,32 @@ function onLocaleClick(event: MouseEvent): void {
     gap: 12px;
     padding: 0 16px;
   }
+}
+
+/* ─────────── Inverted (home landing canvas) ───────────
+ * 首页是固定的深色画布（见 SnDocsHome），导航必须融入背景：
+ * 菜单用 SnMenu 自带的 inverted（浅色文字），品牌字 / 操作按钮 / kbd
+ * 提示在此覆盖为浅色；菜单自带的深底色改为透明，让画布透出来。 */
+.sn-docs-nav--inverted :deep(.sn-menu--inverted) {
+  background: transparent;
+}
+.sn-docs-nav--inverted .sn-docs-nav__brand-text {
+  color: #f2f5fb;
+}
+.sn-docs-nav--inverted :deep(.sn-docs-nav__actions .sn-button) {
+  color: rgba(240, 244, 252, 0.86);
+  background: transparent;
+  border-color: transparent;
+}
+.sn-docs-nav--inverted
+  :deep(.sn-docs-nav__actions .sn-button:hover:not(.sn-button--disabled):not(.sn-button--loading)) {
+  color: #ffffff;
+  background: rgb(255 255 255 / 0.1);
+  border-color: transparent;
+}
+.sn-docs-nav--inverted .sn-docs-nav__kbd {
+  border-color: rgb(255 255 255 / 0.24);
+  background: rgb(255 255 255 / 0.08);
+  color: rgb(240 244 252 / 0.62);
 }
 </style>
