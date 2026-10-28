@@ -83,6 +83,8 @@ export type {
 export { default as SnDatePicker } from './date-picker/SnDatePicker.vue';
 export type {
   SnDatePickerType,
+  SnDatePickerShortcut,
+  SnDatePickerShortcutsPosition,
   SnDateValue,
   SnDateRangeValue,
 } from './date-picker/sn-date-picker-types';
