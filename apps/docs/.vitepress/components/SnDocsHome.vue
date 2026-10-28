@@ -1,290 +1,324 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useData } from 'vitepress';
+/**
+ * SnDocsHome — 首页（按设计稿重构版）。
+ *
+ * 结构（对应设计稿从上到下）：
+ *   1. Hero —— 极光画布上的居中大标题 + 副标题 + Web/Uni 端切换胶囊
+ *      + 双 CTA（开始使用 / 查看组件）。CTA 目标跟随所选端。
+ *   2. 场景案例 —— 一面 SnWaterfall 瀑布流（min-column-width 响应式列数，
+ *      铺满视口宽度，无跑马灯）：白色玻璃卡是真实 @snui/vue-web 组件拼装
+ *      的迷你业务场景（表单 / 列表 / 图表 / 对话 / 二维码 / 表格 / 日历
+ *      等），内容渲染在 SnHomeCaseDemo。
+ *
+ * 画布说明：首页跟随站点深浅（isDark → `sn-home--dark`），浅色 = 近白底
+ * 柔和极光，深色 = 深蓝底亮极光（设计稿）。landing 画布不参与 Style Pack
+ * 换肤；导航栏通过 SnDocsNav inverted（仅深色）+ custom.css §15 融入画布。
+ * 案例卡是淡色渐变弥散玻璃（色相由 caseHue 确定性派生），深浅两套配方见
+ * SnHomeCaseCard。
+ */
+import { computed, ref } from 'vue';
+import { useData, useRouter } from 'vitepress';
+import { ArrowRight } from 'lucide-vue-next';
+import { SnButton, SnConfigProvider, SnIcon, SnWaterfall } from '@snui/vue-web';
+import { caseHue, caseText as caseTextOf, homeCases, type HomeCaseId } from '../utils/home-cases';
+import { uniTemplates } from '../utils/home-uni-templates';
+import SnHomeCaseCard from './SnHomeCaseCard.vue';
+import SnHomeCaseDemo from './SnHomeCaseDemo.vue';
+import SnHomeUniTemplate from './SnHomeUniTemplate.vue';
 
-/** 首页文案双语 —— 跟随站点语言（root=zh / /en/=en）。 */
-const { lang } = useData();
+/** Hero / 区块文案双语 —— 跟随站点语言（root=zh / /en/=en）。 */
+const { lang, isDark } = useData();
 const isEn = computed(() => lang.value === 'en-US');
+const homeLocale = computed(() => (isEn.value ? 'en' : 'zh') as 'en' | 'zh');
 const t = computed(() =>
   isEn.value
     ? {
-        subtitleBefore: 'The AI-Native UI framework ecosystem for ',
-        strongWeb: 'Vue 3 (PC Web)',
-        middle: ' + ',
-        strongUni: 'uni-app (mobile)',
-        subtitleAfter:
-          '. The Web end targets desktop, the uni end targets mobile — both ends are fully independent from development to packaging with zero shared source. A React end will follow the same pattern.',
-        cta: 'Get Started',
-        compSub: '6 semantic types · 5 sizes · 3 variants',
-        btnDefault: 'Default',
-        btnPrimary: 'Primary',
-        btnInfo: 'Info',
-        btnSuccess: 'Success',
-        btnWarning: 'Warning',
-        btnError: 'Error',
-        inputPlaceholder: 'Search components',
-        packSub: 'One style-pack system shared across ends',
-        packFoot:
-          'Token + skin CSS + assets in three layers; each pack is an independent npm package (end: web / mp / both).',
-        aiPrompt: 'Build a login page with snail-ui',
-        aiOut1: '→ Generates Button + Input + Card in 6 steps',
-        aiOut2: '→ MCP Server filters automatically by end',
-        endSub: 'Independent source, build and npm package per end',
+        subtitle: 'The cross-end UI component library & design-system foundation for AI-Native.',
+        tablistLabel: 'Choose an end',
+        ctaStart: 'Get Started',
+        ctaComponents: 'Browse Components',
+        showcaseTitle: 'Scenario Showcases',
+        showcaseHint: 'Composed with live components · interactive · adaptive glass cards',
       }
     : {
-        subtitleBefore: '面向 ',
-        strongWeb: 'Vue 3（PC Web）',
-        middle: ' + ',
-        strongUni: 'uni-app（移动）',
-        subtitleAfter:
-          ' 的 AI-Native UI 框架生态。Web 端面向桌面，uni 端面向移动——两端从开发到打包完全独立，0 行源代码复用。未来 React 端按相同模式扩展。',
-        cta: '开始使用',
-        compSub: '6 语义类型 · 5 尺寸 · 3 变体',
-        btnDefault: '默认',
-        btnPrimary: '主要',
-        btnInfo: '信息',
-        btnSuccess: '成功',
-        btnWarning: '警告',
-        btnError: '危险',
-        inputPlaceholder: 'SnInput 搜索组件',
-        packSub: '跨端共用风格包系统',
-        packFoot: 'Token + 皮肤 CSS + 资源三层，每包独立 npm 包（end: web / mp / both）。',
-        aiPrompt: '用 snail-ui 做登录页',
-        aiOut1: '→ 6 步生成 Button + Input + Card',
-        aiOut2: '→ MCP Server 自动按 end 过滤',
-        endSub: '两端独立源代码 / 构建 / npm 包',
+        subtitle: '面向 AI-Native 的跨端 UI 组件库与设计系统基础',
+        tablistLabel: '选择端',
+        ctaStart: '开始使用',
+        ctaComponents: '查看组件',
+        showcaseTitle: '场景案例',
+        showcaseHint: '真实组件组合 · 可交互 · 弥散玻璃卡片',
       },
 );
-/**
- * SnDocsHome — custom home page chrome, fully built from real
- * @snui/vue-web components (SnCard + SnGrid + SnButton + SnConfigProvider).
- *
- * Replaces vitepress's `home` layout YAML. Wires into `apps/docs/index.md.txt`
- * (which is the bare front-matter; this component is rendered via the
- * SnDocsLayout route composition rather than markdown-Vue interpolation,
- * because vitepress markdown's template binding parser mangles vue
- * `{{ }}` / `:prop` syntax inside HTML blocks).
- *
- * Visual intent: neutral marketing chrome. A compact centred hero (heavy
- * display title, muted body copy, one filled brand button + one outline
- * button) over a 4-up card grid. Cards are flat surfaces: 1px hairline,
- * 8px radius, generous interior padding, no shadows. Colour is reserved for
- * the brand accent on the primary action and the brand mark; everything else
- * stays on the neutral text/border scale. Toggle Style Pack → the hero +
- * features all follow the active skin via CSS variables.
- */
 
-import { ArrowRight } from 'lucide-vue-next';
-import { SnButton, SnCard, SnConfigProvider, SnGrid, SnIcon, SnInput } from '@snui/vue-web';
+const router = useRouter();
 
-function openGithub(): void {
-  if (typeof window !== 'undefined') {
-    window.open('https://github.com/hu-snail/snail-ui', '_blank', 'noopener');
-  }
+/** Hero 端切换：Web / Uni。决定双 CTA 的落点（uni 面向移动端文档）。 */
+type HomeEnd = 'web' | 'uni';
+const activeEnd = ref<HomeEnd>('web');
+
+/** 站点语言前缀：en locale 的文档在 /en/** 下。 */
+const localePrefix = computed(() => (isEn.value ? '/en' : ''));
+
+const startHref = computed(() =>
+  activeEnd.value === 'web' ? `${localePrefix.value}/guide/web/intro` : `${localePrefix.value}/guide/uni/quick-start`,
+);
+const componentsHref = computed(() =>
+  activeEnd.value === 'web'
+    ? `${localePrefix.value}/components/web/button`
+    : `${localePrefix.value}/components/uni/button`,
+);
+
+/** CTA —— VitePress SPA 导航（SnButton 无 href prop，路由在此统一接管）。 */
+function navTo(url: string): void {
+  router.go(url);
 }
 </script>
 
 <template>
   <SnConfigProvider>
-    <div class="sn-home">
-      <!-- ─────────── Hero ─────────── -->
-      <section class="sn-home__hero">
-        <a href="/ai/overview" class="sn-home__pill">
-          <span class="sn-home__pill-dot" aria-hidden="true" />
-          <span class="sn-home__pill-text">New: Style Pack · MCP Server · SnForm</span>
-          <SnIcon class="sn-home__pill-icon" :icon="ArrowRight" />
-        </a>
+    <div class="sn-home" :class="{ 'sn-home--dark': isDark }">
+      <div class="sn-home__inner">
+        <!-- ─────────── Hero ─────────── -->
+        <section class="sn-home__hero">
+          <h1 class="sn-home__title">
+            The Foundation for<br />
+            your AI-Native Design System
+          </h1>
 
-        <h1 class="sn-home__title">
-          The Foundation for<br />
-          your AI-Native Design System
-        </h1>
+          <p class="sn-home__subtitle">{{ t.subtitle }}</p>
 
-        <p class="sn-home__subtitle">
-          {{ t.subtitleBefore }}<strong>{{ t.strongWeb }}</strong
-          >{{ t.middle }}<strong>{{ t.strongUni }}</strong
-          >{{ t.subtitleAfter }}
-        </p>
+          <!-- 端切换胶囊（设计稿：Web / Uni） -->
+          <div class="sn-home__tabs" role="tablist" :aria-label="t.tablistLabel">
+            <button
+              type="button"
+              role="tab"
+              class="sn-home__tab"
+              :class="{ 'sn-home__tab--active': activeEnd === 'web' }"
+              :aria-selected="activeEnd === 'web'"
+              @click="activeEnd = 'web'"
+            >
+              Web
+            </button>
+            <span class="sn-home__tab-divider" aria-hidden="true">/</span>
+            <button
+              type="button"
+              role="tab"
+              class="sn-home__tab"
+              :class="{ 'sn-home__tab--active': activeEnd === 'uni' }"
+              :aria-selected="activeEnd === 'uni'"
+              @click="activeEnd = 'uni'"
+            >
+              Uni
+            </button>
+          </div>
 
-        <div class="sn-home__actions">
-          <SnButton variant="primary" size="large" href="/guide/web/intro">
-            {{ t.cta }}
-            <SnIcon class="sn-home__cta-icon" :icon="ArrowRight" />
-          </SnButton>
-          <SnButton variant="tertiary" size="large" @click="openGithub"> GitHub </SnButton>
-        </div>
-      </section>
+          <div class="sn-home__actions">
+            <SnButton variant="default" size="large" @click="navTo(startHref)">
+              {{ t.ctaStart }}
+              <SnIcon class="sn-home__cta-icon" :icon="ArrowRight" />
+            </SnButton>
+            <SnButton variant="tertiary" size="large" @click="navTo(componentsHref)">
+              {{ t.ctaComponents }}
+            </SnButton>
+          </div>
+        </section>
 
-      <!-- ─────────── Preview grid ─────────── -->
-      <section class="sn-home__previews">
-        <SnGrid :cols="4" :x-gap="20" :y-gap="20">
-          <!-- Card 1 — Components -->
-          <SnCard variant="outlined" size="large">
-            <h3 class="sn-home-card__title">Components</h3>
-            <p class="sn-home-card__sub">{{ t.compSub }}</p>
-            <div class="sn-home-card__buttons">
-              <SnButton variant="default" size="tiny">{{ t.btnDefault }}</SnButton>
-              <SnButton variant="primary" size="tiny">{{ t.btnPrimary }}</SnButton>
-              <SnButton variant="info" size="tiny">{{ t.btnInfo }}</SnButton>
-              <SnButton variant="success" size="tiny">{{ t.btnSuccess }}</SnButton>
-              <SnButton variant="warning" size="tiny">{{ t.btnWarning }}</SnButton>
-              <SnButton variant="error" size="tiny">{{ t.btnError }}</SnButton>
-            </div>
-            <SnInput model-value="" :placeholder="t.inputPlaceholder" size="small" />
-          </SnCard>
+        <!-- ─────────── 场景案例：一面响应式瀑布流 ─────────── -->
+        <section class="sn-home__showcase" aria-labelledby="sn-home-showcase-title">
+          <header class="sn-home__showcase-head">
+            <h2 id="sn-home-showcase-title" class="sn-home__showcase-title">
+              {{ t.showcaseTitle }}
+            </h2>
+            <p class="sn-home__showcase-hint">{{ t.showcaseHint }}</p>
+          </header>
 
-          <!-- Card 2 — Style Pack -->
-          <SnCard variant="outlined" size="large">
-            <h3 class="sn-home-card__title">Style Pack</h3>
-            <p class="sn-home-card__sub">{{ t.packSub }}</p>
-            <div class="sn-home-card__packs">
-              <span class="pack-tag">Default</span>
-              <span class="pack-tag">Doodle</span>
-              <span class="pack-tag">iOS</span>
-              <span class="pack-tag">mp-taobao</span>
-            </div>
-            <p class="sn-home-card__foot">
-              {{ t.packFoot }}
-            </p>
-          </SnCard>
+          <!-- Web 端：玻璃卡场景瀑布流 -->
+          <SnWaterfall v-if="activeEnd === 'web'" :min-column-width="340" :columns="4" :column-gap="16" :row-gap="16">
+            <SnHomeCaseCard
+              v-for="c in homeCases"
+              :key="c.id"
+              :size="c.size"
+              :hue="caseHue(c.id)"
+              :title="caseTextOf(c.id, homeLocale).title"
+              :desc="caseTextOf(c.id, homeLocale).desc"
+            >
+              <SnHomeCaseDemo :id="c.id as HomeCaseId" />
+            </SnHomeCaseCard>
+          </SnWaterfall>
 
-          <!-- Card 3 — AI Native -->
-          <SnCard variant="outlined" size="large">
-            <h3 class="sn-home-card__title">AI Native</h3>
-            <p class="sn-home-card__sub">Skill + MCP + ai-meta.json</p>
-            <div class="sn-home-card__code">
-              <code class="sn-home-card__line">
-                <span class="sn-home-card__prompt">$</span>
-                claude "{{ t.aiPrompt }}"
-              </code>
-              <code class="sn-home-card__line sn-home-card__line--out">
-                {{ t.aiOut1 }}
-              </code>
-              <code class="sn-home-card__line sn-home-card__line--out">
-                {{ t.aiOut2 }}
-              </code>
-            </div>
-          </SnCard>
-
-          <!-- Card 4 — End-aware -->
-          <SnCard variant="outlined" size="large">
-            <h3 class="sn-home-card__title">End-aware</h3>
-            <p class="sn-home-card__sub">{{ t.endSub }}</p>
-            <div class="sn-home-card__ends">
-              <div class="end-row">
-                <span class="end-tag">Web</span>
-                <code class="end-cmd">@snui/vue-web</code>
-              </div>
-              <div class="end-row">
-                <span class="end-tag">uni</span>
-                <code class="end-cmd">@snui/uni</code>
-              </div>
-              <div class="end-row">
-                <span class="end-tag">React</span>
-                <code class="end-cmd end-cmd--plan">@snui/react*</code>
-              </div>
-            </div>
-          </SnCard>
-        </SnGrid>
-      </section>
+          <!-- uni 端：uni-templates —— 真实模板的手机模拟器瀑布流
+             （iframe 实时加载 uni-demo H5；悬停出小程序二维码引流） -->
+          <SnWaterfall v-else :min-column-width="320" :columns="3" :column-gap="20" :row-gap="26">
+            <SnHomeUniTemplate
+              v-for="tpl in uniTemplates"
+              :key="tpl.id"
+              :id="tpl.id"
+              :page="tpl.page"
+              :height="tpl.h"
+              :locale="homeLocale"
+            />
+          </SnWaterfall>
+        </section>
+      </div>
     </div>
   </SnConfigProvider>
 </template>
 
 <style scoped>
-/* ─────────── Layout shell ─────────── */
+/* ─────────── 画布 ───────────
+ * 全幅 landing 画布，跟随站点深浅（isDark → `sn-home--dark`）：
+ * 浅色 = 近白底 + 柔和极光；深色 = 深蓝底 + 亮极光（设计稿）。
+ * 不参与 Style Pack 换肤（文档站 token 无 landing 变体）；
+ * 导航栏（custom.css §15）压在本画布上形成一体。 */
 .sn-home {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px 48px;
+  --sn-home-card-shadow: 0 10px 30px rgb(2 6 16 / 0.08);
+  --sn-home-card-shadow-hover: 0 18px 44px rgb(2 6 16 / 0.12);
+  width: 100%;
+  background:
+    radial-gradient(1200px 480px at 16% -8%, rgb(76 110 245 / 0.16), transparent 62%),
+    radial-gradient(1000px 440px at 86% -6%, rgb(168 85 247 / 0.14), transparent 64%),
+    radial-gradient(900px 420px at 68% 18%, rgb(236 72 153 / 0.1), transparent 66%),
+    #f7f8fb;
+  color: #101828;
+}
+.sn-home--dark {
+  --sn-home-card-shadow: 0 10px 30px rgb(2 6 16 / 0.35);
+  --sn-home-card-shadow-hover: 0 18px 44px rgb(2 6 16 / 0.45);
+  background:
+    radial-gradient(1200px 480px at 16% -8%, rgb(64 90 255 / 0.34), transparent 62%),
+    radial-gradient(1000px 440px at 86% -6%, rgb(168 85 247 / 0.3), transparent 64%),
+    radial-gradient(900px 420px at 68% 18%, rgb(236 72 153 / 0.18), transparent 66%),
+    #0a0f1e;
+  color: #f2f5fb;
+}
+/* 全屏宽度：不设最大宽度，仅留两侧呼吸边距 */
+.sn-home__inner {
+  padding: 0 40px 64px;
 }
 
 /* ─────────── Hero ─────────── */
 .sn-home__hero {
   text-align: center;
-  padding: 32px 0 48px;
+  padding: 132px 0 72px;
 }
 
-/* Pill announcement — hairline only, one brand-toned dot as the accent. */
-.sn-home__pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  border: 1px solid var(--sn-web-color-border-default);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--sn-web-color-text-secondary);
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-  margin-bottom: 24px;
-  transition:
-    background-color 0.2s,
-    color 0.2s;
-}
-.sn-home__pill:hover {
-  background: var(--sn-web-color-background-subtle);
-  color: var(--sn-web-color-text-primary);
-}
-.sn-home__pill-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--sn-web-color-action-primary);
-  flex-shrink: 0;
-}
-.sn-home__pill-icon {
-  width: var(--sn-web-icon-size-small);
-  height: var(--sn-web-icon-size-small);
-}
-.sn-home__pill-icon :deep(svg) {
-  width: 100%;
-  height: 100%;
-}
-
-/* Title */
+/* Title —— 展示级标题（设计稿两行） */
 .sn-home__title {
-  font-size: 36px;
+  font-size: 46px;
   font-weight: 700;
-  margin: 0 0 20px;
-  line-height: 1.15;
+  margin: 0 0 16px;
+  line-height: 1.16;
   letter-spacing: -0.02em;
-  color: var(--sn-web-color-text-primary);
+  color: #101828;
+}
+.sn-home--dark .sn-home__title {
+  color: #f5f7fc;
 }
 
 /* Subtitle */
 .sn-home__subtitle {
-  font-size: 15px;
-  line-height: 1.75;
+  font-size: 16px;
+  line-height: 1.7;
   max-width: 640px;
-  margin: 0 auto 32px;
-  color: var(--sn-web-color-text-secondary);
+  margin: 0 auto 28px;
+  color: #475467;
 }
-.sn-home__subtitle strong {
-  color: var(--sn-web-color-text-primary);
-  font-weight: 600;
+.sn-home--dark .sn-home__subtitle {
+  color: rgb(226 232 244 / 0.72);
 }
 
-/* Actions */
+/* ── 端切换胶囊 ── */
+.sn-home__tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  margin-bottom: 28px;
+  border: 1px solid rgb(15 23 42 / 0.12);
+  border-radius: 999px;
+  background: rgb(15 23 42 / 0.04);
+}
+.sn-home--dark .sn-home__tabs {
+  border-color: rgb(255 255 255 / 0.14);
+  background: rgb(255 255 255 / 0.06);
+}
+.sn-home__tab {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 6px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+  background: transparent;
+  color: #475467;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+.sn-home__tab:hover {
+  color: #101828;
+}
+.sn-home__tab--active {
+  background: #101828;
+  border-color: #101828;
+  color: #ffffff;
+}
+.sn-home--dark .sn-home__tab {
+  color: rgb(226 232 244 / 0.62);
+}
+.sn-home--dark .sn-home__tab:hover {
+  color: #f2f5fb;
+}
+.sn-home--dark .sn-home__tab--active {
+  background: rgb(9 14 28 / 0.92);
+  border-color: rgb(255 255 255 / 0.2);
+  color: #ffffff;
+}
+.sn-home__tab:focus-visible {
+  outline: 2px solid var(--sn-web-color-action-primary);
+  outline-offset: 1px;
+}
+.sn-home__tab-divider {
+  color: rgb(16 24 40 / 0.3);
+  user-select: none;
+}
+.sn-home--dark .sn-home__tab-divider {
+  color: rgb(226 232 244 / 0.4);
+}
+
+/* ── Actions ── */
 .sn-home__actions {
   display: flex;
   justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
 }
-/* Secondary action reads as an outline control: hairline border, transparent
- * fill, neutral hover wash. */
+/* 主 CTA 读作品牌填充；次 CTA 读作描边按钮（深浅各一套描边色） */
 .sn-home__actions :deep(.sn-button--tertiary) {
   background: transparent;
-  border-color: var(--sn-web-color-border-default);
-  color: var(--sn-web-color-text-primary);
+  border-color: rgb(15 23 42 / 0.2);
+  color: #101828;
 }
 .sn-home__actions
   :deep(.sn-button--tertiary:hover:not(.sn-button--disabled):not(.sn-button--loading)) {
-  background: var(--sn-web-color-background-subtle);
-  border-color: var(--sn-web-color-border-default);
-  color: var(--sn-web-color-text-primary);
+  background: rgb(15 23 42 / 0.05);
+  border-color: rgb(15 23 42 / 0.34);
+  color: #101828;
+}
+.sn-home--dark .sn-home__actions :deep(.sn-button--tertiary) {
+  background: rgb(255 255 255 / 0.04);
+  border-color: rgb(255 255 255 / 0.24);
+  color: #f2f5fb;
+}
+.sn-home--dark
+  .sn-home__actions
+  :deep(.sn-button--tertiary:hover:not(.sn-button--disabled):not(.sn-button--loading)) {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.34);
+  color: #ffffff;
 }
 .sn-home__cta-icon {
   width: var(--sn-web-icon-size-small);
@@ -296,173 +330,61 @@ function openGithub(): void {
   height: 100%;
 }
 
-/* ─────────── Preview grid ─────────── */
-.sn-home__previews {
-  margin: 0;
-}
-
-/* Card heading */
-.sn-home-card__title {
-  margin: 0 0 4px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--sn-web-color-text-primary);
-}
-.sn-home-card__sub {
-  margin: 0 0 16px;
-  font-size: 14px;
-  color: var(--sn-web-color-text-secondary);
-}
-.sn-home-card__foot {
-  margin: 16px 0 0;
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--sn-web-color-text-tertiary);
-}
-
-/* Card 1 — buttons preview */
-.sn-home-card__buttons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-/* Card 2 — pack tags. Neutral chips: the pack identity is carried by the
- * label + the live skin applied elsewhere on the page, not by a swatch. */
-.sn-home-card__packs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-.pack-tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.4;
-  border: 1px solid var(--sn-web-color-border-default);
-  background: var(--sn-web-color-background-subtle);
-  color: var(--sn-web-color-text-secondary);
-}
-
-/* Card 3 — code preview */
-.sn-home-card__code {
-  background: var(--sn-web-color-background-subtle);
-  border: 1px solid var(--sn-web-color-border-subtle);
-  border-radius: 6px;
-  padding: 12px 14px;
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
-  font-size: 12.5px;
-  line-height: 1.7;
-}
-.sn-home-card__line {
-  display: block;
-  color: var(--sn-web-color-text-secondary);
-  word-break: break-all;
-}
-.sn-home-card__prompt {
-  color: var(--sn-web-color-text-tertiary);
-  margin-right: 6px;
-  user-select: none;
-}
-.sn-home-card__line--out {
-  color: var(--sn-web-color-text-tertiary);
-}
-
-/* Card 4 — end rows */
-.sn-home-card__ends {
+/* ─────────── 场景案例 ─────────── */
+.sn-home__showcase {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 20px;
 }
-.end-row {
+.sn-home__showcase-head {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: var(--sn-web-color-background-subtle);
+  align-items: baseline;
+  gap: 14px;
+  padding: 0 4px;
+  flex-wrap: wrap;
 }
-.end-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
+.sn-home__showcase-title {
+  margin: 0;
+  font-size: 24px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border: 1px solid var(--sn-web-color-border-default);
-  color: var(--sn-web-color-text-secondary);
+  letter-spacing: -0.01em;
+  color: #101828;
 }
-.end-cmd {
-  font-family: 'JetBrains Mono', 'SF Mono', Monaco, Menlo, Consolas, monospace;
-  font-size: 12px;
-  color: var(--sn-web-color-text-secondary);
+.sn-home--dark .sn-home__showcase-title {
+  color: #f5f7fc;
 }
-.end-cmd--plan {
-  color: var(--sn-web-color-text-tertiary);
+.sn-home__showcase-hint {
+  margin: 0;
+  font-size: 13px;
+  color: #667085;
+}
+.sn-home--dark .sn-home__showcase-hint {
+  color: rgb(226 232 244 / 0.5);
 }
 
 /* ─────────── Mobile adaptations ─────────── */
 @media (max-width: 960px) {
-  /* Page shell */
-  .sn-home {
-    padding: 24px 20px 40px;
+  .sn-home__inner {
+    padding: 0 20px 48px;
   }
   .sn-home__hero {
-    padding: 24px 0 40px;
+    padding: 96px 0 48px;
   }
-  /* Pill — keep on one line, trim text */
-  .sn-home__pill {
-    font-size: 12px;
-    padding: 4px 10px;
-    margin-bottom: 20px;
-    gap: 6px;
-  }
-  /* Title — one step down, still display-weight */
   .sn-home__title {
     font-size: 32px;
-    letter-spacing: -0.02em;
-    margin: 0 0 16px;
   }
-  /* Subtitle — less bottom margin, tighter measure */
   .sn-home__subtitle {
     margin: 0 auto 24px;
   }
-  /* Actions — keep them on the row */
   .sn-home__actions {
     gap: 10px;
-  }
-  /* Preview grid: 4 → 2 columns on tablet.
-     Use :deep() to pierce SnGrid's scoped inline grid-template-columns. */
-  .sn-home__previews :deep(.sn-grid) {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-    row-gap: 16px !important;
   }
 }
 
 @media (max-width: 640px) {
-  /* Page shell — even tighter */
-  .sn-home {
-    padding: 16px 16px 32px;
+  .sn-home__title {
+    font-size: 26px;
   }
-  .sn-home__hero {
-    padding: 20px 0 32px;
-  }
-  /* Subtitle — tighter line-height */
-  .sn-home__subtitle {
-    line-height: 1.7;
-    margin: 0 auto 20px;
-  }
-  /* Pill — drop the arrow on phone to save space */
-  .sn-home__pill-icon {
-    display: none;
-  }
-  /* CTAs — full width on phone, stacked */
   .sn-home__actions {
     flex-direction: column;
     align-items: stretch;
@@ -473,19 +395,6 @@ function openGithub(): void {
   }
   .sn-home__actions :deep(.sn-button) {
     width: 100%;
-  }
-  /* Preview grid: 2 → 1 column on phone */
-  .sn-home__previews :deep(.sn-grid) {
-    grid-template-columns: 1fr !important;
-    row-gap: 16px !important;
-  }
-  /* Card 1 buttons — collapse 2x3 to 3x2 to use less card height */
-  .sn-home-card__buttons {
-    grid-template-columns: repeat(3, 1fr);
-  }
-  /* Card 4 end-row — wrap tag + cmd line by line on phone */
-  .end-row {
-    flex-wrap: wrap;
   }
 }
 </style>

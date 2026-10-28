@@ -849,7 +849,7 @@ watch(
   display: flex;
   gap: 2px;
   position: fixed;
-  z-index: var(--sn-web-time-picker-panel-z-index, 1000);
+  z-index: var(--sn-web-time-picker-panel-z-index, 2000);
   padding: 4px;
   box-sizing: border-box;
   border: 1px solid var(--sn-web-time-picker-panel-border-color, rgba(0, 0, 0, 0.06));

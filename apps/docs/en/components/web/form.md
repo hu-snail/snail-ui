@@ -38,6 +38,12 @@ Form orchestrator `SnForm` + field wrapper `SnFormItem`. Provide/inject plumbing
 
 <Demo name="form-validation-flow" description="validateTrigger 'blur' | 'change'; resetOnChange clears after submit; errorType 'message' | 'toast' | 'none'." />
 
+## Composite form: date / radio / checkbox / selectors
+
+Orchestrate field components — `SnSelect`, `SnRadioGroup`, `SnCheckboxGroup`, `SnInputNumber`, `SnDatePicker`, `SnTimePicker`, and `SnSwitch` — inside one form sharing `rules` validation and the `submit` flow.
+
+<Demo name="form-web-assembly" description="Select / radio / checkbox / number / date / time / switch with unified validation + submit." />
+
 ## SnForm Props
 
 | Prop               | Type                             | Default     | Description                                  |

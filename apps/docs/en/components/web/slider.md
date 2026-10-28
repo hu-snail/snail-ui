@@ -1,6 +1,6 @@
 # Slider · Web
 
-Custom-painted slider with range dual handles, marks, vertical / reverse, and tooltip.
+Custom-painted slider with range dual handles, marks, step ticks (showSteps), value inputs (showInput), vertical / reverse, tooltip, plus gradient / transparent track and custom tooltip colors.
 
 ## Basic
 
@@ -10,9 +10,9 @@ Custom-painted slider with range dual handles, marks, vertical / reverse, and to
 
 <Demo name="slider-web-range" description="Dual handles, non-crossing (clamp)." />
 
-## Step & bounds
+## Step & step ticks (showSteps)
 
-<Demo name="slider-web-step" description="step snapping + min / max clamp." />
+<Demo name="slider-web-step" description="step snapping + showSteps ticks (toggle Step / Show steps)." />
 
 ## Marks
 
@@ -20,11 +20,19 @@ Custom-painted slider with range dual handles, marks, vertical / reverse, and to
 
 ## Vertical / reverse
 
-<Demo name="slider-web-vertical" description="vertical + reverse." />
+<Demo name="slider-web-vertical" description="vertical + reverse + vertical mark labels." />
 
 ## Tooltip
 
-<Demo name="slider-web-tooltip" description="Drag bubble + formatTooltip." />
+<Demo name="slider-web-tooltip" description="Drag bubble + formatTooltip + tooltipBackground." />
+
+## Value inputs (showInput)
+
+<Demo name="slider-web-show-input" description="showInput renders number input(s) beside the rail (two + separator in range; commits on blur / Enter)." />
+
+## Custom style (gradient / transparent diffuse / thickness)
+
+<Demo name="slider-web-custom" description="Rail gradient and transparent diffuse (railBackground / railShadow), trackBackground gradient, railWidth thickness and tooltip colors." />
 
 ## API
 
@@ -43,6 +51,14 @@ Custom-painted slider with range dual handles, marks, vertical / reverse, and to
 | formatTooltip       | `(value: number) => string \| number` | —           | Bubble formatter        |
 | marks               | `Record<number, string>`              | —           | Marks                   |
 | placement           | 12 placements                         | `'top'`     | Bubble placement        |
+| showSteps           | `boolean`                             | `false`     | Step ticks between min / max |
+| showInput           | `boolean`                             | `false`     | Number input(s) beside the rail |
+| trackBackground     | `string`                              | —           | Fill-track background (gradient / transparent) |
+| railBackground      | `string`                              | —           | Rail background (gradient / transparent) |
+| railWidth           | `number \| string`                    | —           | Rail thickness (number → px) |
+| railShadow          | `string`                              | —           | Rail diffuse glow (box-shadow) |
+| tooltipBackground   | `string`                              | —           | Bubble background       |
+| tooltipTextColor    | `string`                              | —           | Bubble text color       |
 
 Each handle: `role="slider"` + aria-valuenow/min/max; arrows / Home / End / PageUp/PageDown (10×step).
 

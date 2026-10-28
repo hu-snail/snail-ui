@@ -212,4 +212,62 @@ describe('SnPagination (AUI-WEB-NAV-009)', () => {
       expect(w.find('.sn-pagination__suffix').text()).toBe('SUFFIX');
     });
   });
+
+  describe('quick switch (ellipsis jump)', () => {
+    it('turns the end ellipsis into a quick-switch button listing its gap', async () => {
+      const w = mountPagination({ itemCount: 1000, page: 1 });
+      const ellipsis = w.find('.sn-pagination__ellipsis--switch');
+      expect(ellipsis.exists()).toBe(true);
+      expect(ellipsis.attributes('aria-expanded')).toBe('false');
+      await ellipsis.trigger('click');
+      await w.vm.$nextTick();
+      expect(ellipsis.attributes('aria-expanded')).toBe('true');
+      // Gap between the last shown page (7) and page 100 lists every hidden
+      // page except 100 itself (it is always rendered as the last button).
+      const items = w.findAll('.sn-pagination__quick-item').map((b) => Number(b.text()));
+      expect(items.length).toBeGreaterThan(0);
+      expect(items[0]).toBe(8);
+      expect(items.at(-1)).toBe(99);
+    });
+
+    it('jumps to a picked gap page and closes the panel', async () => {
+      const w = mountPagination({ itemCount: 1000, page: 1 });
+      await w.find('.sn-pagination__ellipsis--switch').trigger('click');
+      await w.vm.$nextTick();
+      await w.findAll('.sn-pagination__quick-item')[5].trigger('click');
+      await w.vm.$nextTick();
+      expect(w.findComponent(SnPagination).emitted('update:page')?.at(-1)).toEqual([13]);
+      expect(w.find('.sn-pagination__quick-panel').exists()).toBe(false);
+    });
+
+    it('closes the panel on an outside mousedown', async () => {
+      const w = mountPagination({ itemCount: 1000, page: 1 });
+      await w.find('.sn-pagination__ellipsis--switch').trigger('click');
+      await w.vm.$nextTick();
+      expect(w.find('.sn-pagination__quick-panel').exists()).toBe(true);
+      document.body.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+      await w.vm.$nextTick();
+      expect(w.find('.sn-pagination__quick-panel').exists()).toBe(false);
+    });
+
+    it('keeps a static ellipsis when quickSwitch is off', () => {
+      const w = mountPagination({ itemCount: 1000, page: 1, quickSwitch: false });
+      expect(w.find('.sn-pagination__ellipsis--switch').exists()).toBe(false);
+      expect(w.find('.sn-pagination__ellipsis').attributes('aria-hidden')).toBe('true');
+    });
+  });
+
+  describe('arrow button styling', () => {
+    it('gives prev / next arrows the bordered nav style in full mode', () => {
+      const w = mountPagination({ pageCount: 5 });
+      const nav = w.findAll('.sn-pagination__item--nav');
+      expect(nav).toHaveLength(2);
+    });
+
+    it('gives prev / next arrows the bordered nav style in simple mode', () => {
+      const w = mountPagination({ pageCount: 5, simple: true });
+      const nav = w.findAll('.sn-pagination__item--nav');
+      expect(nav).toHaveLength(2);
+    });
+  });
 });

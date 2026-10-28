@@ -1,0 +1,30 @@
+{
+  "name": "@snui/uni-templates",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AUI uni-templates — 场景模板工程（登录 / 商城 / 订单 / 详情 …），与 uni-demo（组件演示）分离。主包仅保留模板目录，模板页全部在 subpages 分包；可发布 H5 站（docs 首页 iframe 预览 + 扫码引流）与微信小程序。见 ADR-0005。",
+  "type": "module",
+  "scripts": {
+    "dev:h5": "uni",
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:h5": "node scripts/build-h5.mjs && node scripts/clean-dist-junk.mjs",
+    "build:mp-weixin": "uni build -p mp-weixin && node scripts/clean-dist-junk.mjs",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-5030320261023001",
+    "@dcloudio/uni-components": "3.0.0-5030320261023001",
+    "@dcloudio/uni-h5": "3.0.0-5030320261023001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-5030320261023001",
+    "@snui/style-packs": "workspace:*",
+    "@snui/tokens": "workspace:*",
+    "@snui/uni": "workspace:*",
+    "vue": "^3.5.43"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.31",
+    "@dcloudio/uni-cli-shared": "3.0.0-5030320261023001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-5030320261023001",
+    "vite": "5.2.8"
+  }
+}

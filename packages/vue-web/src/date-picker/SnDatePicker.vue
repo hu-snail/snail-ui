@@ -87,235 +87,306 @@
           :aria-label="ariaLabel || 'Date picker panel'"
           @mousedown.prevent
         >
-          <div class="sn-date-picker-panel__calendars">
-            <div v-for="cal in calendars" :key="cal.key" class="sn-date-picker-calendar">
-              <div class="sn-date-picker-calendar__header">
-                <button
-                  type="button"
-                  class="sn-date-picker-nav"
-                  :aria-label="`Previous ${navUnitLabel}s`"
-                  :tabindex="-1"
-                  @click="shiftAnchor(-navBigStep)"
-                >
-                  <SnIcon :icon="DoubleChevronLeftIcon" :size="12" />
-                </button>
-                <button
-                  type="button"
-                  class="sn-date-picker-nav"
-                  :aria-label="`Previous ${navUnitLabel}`"
-                  :tabindex="-1"
-                  @click="shiftAnchor(-1)"
-                >
-                  <SnIcon :icon="ChevronLeftIcon" :size="12" />
-                </button>
-                <button
-                  type="button"
-                  class="sn-date-picker-calendar__title"
-                  :tabindex="-1"
-                  @click="onTitleClick"
-                >
-                  {{ cal.title }}
-                </button>
-                <button
-                  type="button"
-                  class="sn-date-picker-nav"
-                  :aria-label="`Next ${navUnitLabel}`"
-                  :tabindex="-1"
-                  @click="shiftAnchor(1)"
-                >
-                  <SnIcon :icon="ChevronRightIcon" :size="12" />
-                </button>
-                <button
-                  type="button"
-                  class="sn-date-picker-nav"
-                  :aria-label="`Next ${navUnitLabel}s`"
-                  :tabindex="-1"
-                  @click="shiftAnchor(navBigStep)"
-                >
-                  <SnIcon :icon="DoubleChevronRightIcon" :size="12" />
-                </button>
-              </div>
-
-              <!-- Day view -->
-              <div
-                v-if="viewMode === 'day'"
-                class="sn-date-picker-grid"
-                role="grid"
-                :aria-label="cal.title"
-              >
-                <div class="sn-date-picker-grid__row" role="row">
-                  <span
-                    v-for="wd in datePickerLocale.weekdays"
-                    :key="wd"
-                    class="sn-date-picker-grid__weekday"
-                    role="columnheader"
-                    >{{ wd }}</span
-                  >
-                </div>
-                <div
-                  v-for="(row, ri) in cal.monthGrid"
-                  :key="ri"
-                  class="sn-date-picker-grid__row"
-                  role="row"
-                >
-                  <div
-                    v-for="cell in row"
-                    :key="cell.ts"
-                    :id="cellId(cell.ts)"
-                    class="sn-date-picker-cell"
-                    :class="{
-                      'sn-date-picker-cell--other-month': !cell.isCurrentMonth,
-                      'sn-date-picker-cell--selected': isCellSelected(cell.ts),
-                      'sn-date-picker-cell--start': isCellStart(cell.ts),
-                      'sn-date-picker-cell--end': isCellEnd(cell.ts),
-                      'sn-date-picker-cell--in-range': isCellInRange(cell.ts),
-                      'sn-date-picker-cell--cursor':
-                        cursor !== null && cell.ts === startOfDay(cursor),
-                    }"
-                    role="gridcell"
-                    :aria-selected="
-                      isCellSelected(cell.ts) || isCellStart(cell.ts) || isCellEnd(cell.ts)
-                        ? 'true'
-                        : 'false'
-                    "
-                    :data-value="cell.ts"
-                    @click="onDayCellClick(cell.ts)"
-                    @mouseenter="onDayCellHover(cell.ts)"
-                  >
-                    {{ cell.day }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Month-of-year view -->
-              <div
-                v-else-if="viewMode === 'month'"
-                class="sn-date-picker-grid sn-date-picker-grid--unit"
-                role="grid"
-                :aria-label="cal.yearTitle"
-              >
-                <div
-                  v-for="(row, ri) in cal.monthUnitRows"
-                  :key="ri"
-                  class="sn-date-picker-grid__row"
-                  role="row"
-                >
-                  <div
-                    v-for="cell in row"
-                    :key="cell.value"
-                    :id="unitCellId(cal.key, 'm', cell.value)"
-                    class="sn-date-picker-cell sn-date-picker-cell--unit"
-                    :class="{
-                      'sn-date-picker-cell--selected': isMonthCellSelected(cell.ts, cal.year),
-                      'sn-date-picker-cell--cursor': isMonthCellCursor(cell.ts, cal.year),
-                    }"
-                    role="gridcell"
-                    :aria-selected="isMonthCellSelected(cell.ts, cal.year) ? 'true' : 'false'"
-                    :data-value="cell.value"
-                    @click="onMonthCellClick(cell.ts)"
-                  >
-                    {{ cell.label }}
-                  </div>
-                </div>
-              </div>
-
-              <!-- Year view -->
-              <div
-                v-else
-                class="sn-date-picker-grid sn-date-picker-grid--unit"
-                role="grid"
-                :aria-label="cal.decadeTitle"
-              >
-                <div
-                  v-for="(row, ri) in cal.yearUnitRows"
-                  :key="ri"
-                  class="sn-date-picker-grid__row"
-                  role="row"
-                >
-                  <div
-                    v-for="cell in row"
-                    :key="cell.value"
-                    :id="unitCellId(cal.key, 'y', cell.value)"
-                    class="sn-date-picker-cell sn-date-picker-cell--unit"
-                    :class="{
-                      'sn-date-picker-cell--selected': isYearCellSelected(cell.ts),
-                      'sn-date-picker-cell--cursor': isYearCellCursor(cell.ts),
-                    }"
-                    role="gridcell"
-                    :aria-selected="isYearCellSelected(cell.ts) ? 'true' : 'false'"
-                    :data-value="cell.value"
-                    @click="onYearCellClick(cell.ts)"
-                  >
-                    {{ cell.label }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Datetime time columns -->
-          <div v-if="hasTime && !isRange" class="sn-date-picker-panel__time">
+          <div class="sn-date-picker-panel__layout">
             <div
-              v-for="col in timeColumns"
-              :key="col.key"
-              class="sn-date-picker-time-col"
-              role="listbox"
-              :aria-label="locale.DatePicker[col.key]"
+              v-if="sideShortcuts.length > 0"
+              class="sn-date-picker-panel__shortcuts sn-date-picker-panel__shortcuts--side"
             >
-              <div
-                v-for="v in col.values"
-                :key="v"
-                class="sn-date-picker-time-item"
-                :class="{ 'sn-date-picker-time-item--selected': timeDraft[col.key] === v }"
-                role="option"
-                :aria-selected="timeDraft[col.key] === v ? 'true' : 'false'"
-                :data-unit="col.key"
-                :data-value="v"
-                @click="onTimeCellClick('start', col.key, v)"
+              <button
+                v-for="sc in sideShortcuts"
+                :key="sc.label"
+                type="button"
+                class="sn-date-picker-panel__shortcut"
+                :tabindex="-1"
+                @click="onShortcutClick(sc)"
               >
-                {{ pad2(v) }}
-              </div>
+                {{ sc.label }}
+              </button>
             </div>
-          </div>
+            <div class="sn-date-picker-panel__body">
+              <div class="sn-date-picker-panel__calendars">
+                <template v-for="(cal, calIndex) in calendars" :key="cal.key">
+                  <div class="sn-date-picker-calendar">
+                    <div class="sn-date-picker-calendar__header">
+                      <button
+                        type="button"
+                        class="sn-date-picker-nav"
+                        :aria-label="`Previous ${navUnitLabel}s`"
+                        :tabindex="-1"
+                        @click="shiftAnchor(-navBigStep)"
+                      >
+                        <SnIcon :icon="DoubleChevronLeftIcon" :size="12" />
+                      </button>
+                      <button
+                        type="button"
+                        class="sn-date-picker-nav"
+                        :aria-label="`Previous ${navUnitLabel}`"
+                        :tabindex="-1"
+                        @click="shiftAnchor(-1)"
+                      >
+                        <SnIcon :icon="ChevronLeftIcon" :size="12" />
+                      </button>
+                      <button
+                        type="button"
+                        class="sn-date-picker-calendar__title"
+                        :tabindex="-1"
+                        @click="onTitleClick"
+                      >
+                        {{ cal.title }}
+                      </button>
+                      <button
+                        type="button"
+                        class="sn-date-picker-nav"
+                        :aria-label="`Next ${navUnitLabel}`"
+                        :tabindex="-1"
+                        @click="shiftAnchor(1)"
+                      >
+                        <SnIcon :icon="ChevronRightIcon" :size="12" />
+                      </button>
+                      <button
+                        type="button"
+                        class="sn-date-picker-nav"
+                        :aria-label="`Next ${navUnitLabel}s`"
+                        :tabindex="-1"
+                        @click="shiftAnchor(navBigStep)"
+                      >
+                        <SnIcon :icon="DoubleChevronRightIcon" :size="12" />
+                      </button>
+                    </div>
 
-          <div
-            v-if="hasTime && isRange && rangeDraft.start !== null && rangeDraft.end !== null"
-            class="sn-date-picker-panel__time sn-date-picker-panel__time--range"
-          >
-            <div v-for="side in RANGE_SIDES" :key="side" class="sn-date-picker-time-group">
-              <div class="sn-date-picker-time-group__label">
-                {{ side === 'start' ? locale.DatePicker.startTime : locale.DatePicker.endTime }}
-              </div>
-              <div class="sn-date-picker-panel__time">
-                <div
-                  v-for="col in timeColumns"
-                  :key="col.key"
-                  class="sn-date-picker-time-col"
-                  role="listbox"
-                  :aria-label="`${side === 'start' ? locale.DatePicker.startTime : locale.DatePicker.endTime} ${locale.DatePicker[col.key]}`"
-                >
-                  <div
-                    v-for="v in col.values"
-                    :key="v"
-                    class="sn-date-picker-time-item"
-                    :class="{
-                      'sn-date-picker-time-item--selected': rangeTimeDraft[side][col.key] === v,
-                    }"
-                    role="option"
-                    :aria-selected="rangeTimeDraft[side][col.key] === v ? 'true' : 'false'"
-                    :data-unit="col.key"
-                    :data-value="v"
-                    @click="onTimeCellClick(side, col.key, v)"
-                  >
-                    {{ pad2(v) }}
+                    <!-- Day view -->
+                    <div
+                      v-if="viewMode === 'day'"
+                      class="sn-date-picker-grid"
+                      role="grid"
+                      :aria-label="cal.title"
+                    >
+                      <div class="sn-date-picker-grid__row" role="row">
+                        <span
+                          v-for="wd in datePickerLocale.weekdays"
+                          :key="wd"
+                          class="sn-date-picker-grid__weekday"
+                          role="columnheader"
+                          >{{ wd }}</span
+                        >
+                      </div>
+                      <div
+                        v-for="(row, ri) in cal.monthGrid"
+                        :key="ri"
+                        class="sn-date-picker-grid__row"
+                        role="row"
+                      >
+                        <div
+                          v-for="cell in row"
+                          :key="cell.ts"
+                          :id="cellId(cell.ts)"
+                          class="sn-date-picker-cell"
+                          :class="{
+                            'sn-date-picker-cell--other-month': !cell.isCurrentMonth,
+                            'sn-date-picker-cell--selected': isCellSelected(cell.ts),
+                            'sn-date-picker-cell--start': isCellStart(cell.ts),
+                            'sn-date-picker-cell--end': isCellEnd(cell.ts),
+                            'sn-date-picker-cell--in-range': isCellInRange(cell.ts),
+                            'sn-date-picker-cell--cursor':
+                              cursor !== null && cell.ts === startOfDay(cursor),
+                            'sn-date-picker-cell--disabled': isCellDisabled(cell.ts),
+                          }"
+                          role="gridcell"
+                          :aria-selected="
+                            isCellSelected(cell.ts) || isCellStart(cell.ts) || isCellEnd(cell.ts)
+                              ? 'true'
+                              : 'false'
+                          "
+                          :aria-disabled="isCellDisabled(cell.ts) ? 'true' : undefined"
+                          :data-value="cell.ts"
+                          @click="onDayCellClick(cell.ts)"
+                          @mouseenter="onDayCellHover(cell.ts)"
+                        >
+                          {{ cell.day }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Quarter view (quarter types commit; date modes: nav drill) -->
+                    <div
+                      v-else-if="viewMode === 'quarter'"
+                      class="sn-date-picker-grid sn-date-picker-grid--unit"
+                      role="grid"
+                      :aria-label="cal.yearTitle"
+                    >
+                      <div
+                        v-for="(row, ri) in cal.quarterUnitRows"
+                        :key="ri"
+                        class="sn-date-picker-grid__row"
+                        role="row"
+                      >
+                        <div
+                          v-for="cell in row"
+                          :key="cell.value"
+                          :id="unitCellId(cal.key, 'q', cell.value)"
+                          class="sn-date-picker-cell sn-date-picker-cell--unit"
+                          :class="{
+                            'sn-date-picker-cell--selected': isQuarterCellSelected(
+                              cell.ts,
+                              cal.year,
+                            ),
+                            'sn-date-picker-cell--cursor': isQuarterCellCursor(cell.ts, cal.year),
+                            'sn-date-picker-cell--disabled': isQuarterCellDisabled(cell.ts),
+                          }"
+                          role="gridcell"
+                          :aria-selected="
+                            isQuarterCellSelected(cell.ts, cal.year) ? 'true' : 'false'
+                          "
+                          :aria-disabled="isQuarterCellDisabled(cell.ts) ? 'true' : undefined"
+                          :data-value="cell.value"
+                          @click="onQuarterCellClick(cell.ts)"
+                        >
+                          {{ cell.label }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Month-of-year view -->
+                    <div
+                      v-else-if="viewMode === 'month'"
+                      class="sn-date-picker-grid sn-date-picker-grid--unit"
+                      role="grid"
+                      :aria-label="cal.yearTitle"
+                    >
+                      <div
+                        v-for="(row, ri) in cal.monthUnitRows"
+                        :key="ri"
+                        class="sn-date-picker-grid__row"
+                        role="row"
+                      >
+                        <div
+                          v-for="cell in row"
+                          :key="cell.value"
+                          :id="unitCellId(cal.key, 'm', cell.value)"
+                          class="sn-date-picker-cell sn-date-picker-cell--unit"
+                          :class="{
+                            'sn-date-picker-cell--selected': isMonthCellSelected(cell.ts, cal.year),
+                            'sn-date-picker-cell--cursor': isMonthCellCursor(cell.ts, cal.year),
+                            'sn-date-picker-cell--disabled': isMonthCellDisabled(cell.ts),
+                          }"
+                          role="gridcell"
+                          :aria-selected="isMonthCellSelected(cell.ts, cal.year) ? 'true' : 'false'"
+                          :aria-disabled="isMonthCellDisabled(cell.ts) ? 'true' : undefined"
+                          :data-value="cell.value"
+                          @click="onMonthCellClick(cell.ts)"
+                        >
+                          {{ cell.label }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Year view -->
+                    <div
+                      v-else
+                      class="sn-date-picker-grid sn-date-picker-grid--unit"
+                      role="grid"
+                      :aria-label="cal.decadeTitle"
+                    >
+                      <div
+                        v-for="(row, ri) in cal.yearUnitRows"
+                        :key="ri"
+                        class="sn-date-picker-grid__row"
+                        role="row"
+                      >
+                        <div
+                          v-for="cell in row"
+                          :key="cell.value"
+                          :id="unitCellId(cal.key, 'y', cell.value)"
+                          class="sn-date-picker-cell sn-date-picker-cell--unit"
+                          :class="{
+                            'sn-date-picker-cell--selected': isYearCellSelected(cell.ts),
+                            'sn-date-picker-cell--cursor': isYearCellCursor(cell.ts),
+                            'sn-date-picker-cell--disabled': isYearCellDisabled(cell.ts),
+                          }"
+                          role="gridcell"
+                          :aria-selected="isYearCellSelected(cell.ts) ? 'true' : 'false'"
+                          :aria-disabled="isYearCellDisabled(cell.ts) ? 'true' : undefined"
+                          :data-value="cell.value"
+                          @click="onYearCellClick(cell.ts)"
+                        >
+                          {{ cell.label }}
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+
+                  <!-- Aside time columns — one group per calendar (showTime) -->
+                  <div
+                    v-if="hasTime"
+                    class="sn-date-picker-panel__time sn-date-picker-panel__time--aside"
+                  >
+                    <div class="sn-date-picker-time-group">
+                      <div v-if="!isRange" class="sn-date-picker-time-group__label">
+                        {{ locale.DatePicker.selectTime }}
+                      </div>
+                      <div class="sn-date-picker-panel__time">
+                        <div
+                          v-for="col in timeColumns"
+                          :key="col.key"
+                          class="sn-date-picker-time-col"
+                          role="listbox"
+                          :aria-label="timeGroupAriaLabel(calIndex, col.key)"
+                        >
+                          <div
+                            v-for="v in col.values"
+                            :key="v"
+                            class="sn-date-picker-time-item"
+                            :class="{
+                              'sn-date-picker-time-item--selected':
+                                timeDraftFor(calIndex)[col.key] === v,
+                            }"
+                            role="option"
+                            :aria-selected="
+                              timeDraftFor(calIndex)[col.key] === v ? 'true' : 'false'
+                            "
+                            :data-unit="col.key"
+                            :data-value="v"
+                            @click="onTimeCellClick(sideOf(calIndex), col.key, v)"
+                          >
+                            {{ pad2(v) }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+
+              <div
+                v-if="bottomShortcuts.length > 0"
+                class="sn-date-picker-panel__shortcuts sn-date-picker-panel__shortcuts--bottom"
+              >
+                <button
+                  v-for="sc in bottomShortcuts"
+                  :key="sc.label"
+                  type="button"
+                  class="sn-date-picker-panel__shortcut"
+                  :tabindex="-1"
+                  @click="onShortcutClick(sc)"
+                >
+                  {{ sc.label }}
+                </button>
               </div>
             </div>
           </div>
 
-          <div v-if="hasTime" class="sn-date-picker-panel__footer">
+          <div v-if="hasTime || showTodayFooter" class="sn-date-picker-panel__footer">
             <button
+              v-if="showTodayFooter"
+              type="button"
+              class="sn-date-picker-panel__today"
+              :tabindex="-1"
+              @click="jumpToday"
+            >
+              {{ locale.DatePicker.today }}
+            </button>
+            <button
+              v-if="hasTime"
               type="button"
               class="sn-date-picker-panel__confirm"
               :tabindex="-1"
@@ -338,29 +409,44 @@
  *   (https://www.naiveui.com/zh-CN/light/components/date-picker)
  *
  * Parity (this version):
- *   - type: 'date' | 'datetime' | 'month' | 'year' | 'daterange' |
- *     'datetimerange'. Range types bind `[start, end]` timestamps.
+ *   - type: 'date' | 'datetime' | 'week' | 'quarter' | 'month' | 'year' |
+ *     'daterange' | 'datetimerange' | 'weekrange' | 'quarterrange'. Range
+ *     types bind `[start, end]` timestamps.
  *   - modelValue: millisecond timestamps, local timezone (Date convention).
- *   - format: lowercase tokens yyyy/yy/MM/M/dd/d/HH/H/mm/m/ss/s
- *     (uppercase 'YYYY-MM-DD' NOT supported — see ai-description.md).
+ *     Week values are the week's Monday midnight; quarter values the
+ *     quarter's first midnight.
+ *   - format: lowercase tokens yyyy/yy/MM/M/dd/d/HH/mm/m/ss/s plus
+ *     w/ww (ISO week) and q/qq (quarter). 'yyyy' stays the CALENDAR year —
+ *     week formats at Dec/Jan boundaries may diverge from the ISO week-year.
  *   - placeholder (string, or [start, end] pair in range modes) /
  *     clearable / disabled / readonly / size / status.
+ *   - disabledDate: predicate over local-midnight timestamps; disabled
+ *     cells render dimmed, carry aria-disabled and refuse picks (period
+ *     cells disable via their period start; week picks via their Monday).
+ *   - shortcuts + shortcutsPosition ('left' | 'right' | 'bottom'): quick
+ *     picks rendered beside or under the panel body; lazy values resolve
+ *     at click time.
+ *   - select event: fires per pick with the draft value (range: the
+ *     provisional start, then the sorted pair) — pair with disabledDate
+ *     for dynamic range constraints.
  *   - panel: Teleport + viewport flip; Monday-first month grid with
- *     adjacent-month cells; month / year navigation grids (click the panel
- *     title to drill down — navigation-only in date modes, committing in
- *     month / year types).
- *   - datetime: additional hour/minute/second columns + 确认 footer.
+ *     adjacent-month cells; quarter / month / year navigation grids (click
+ *     the panel title to drill down — navigation-only in date modes,
+ *     committing in week / quarter / month / year types).
+ *   - datetime: aside time columns RIGHT of the calendar (选择时间 header,
+ *     single mode) — datetimerange puts one time group per calendar.
+ *     Footer: 今天 jump (date type) + 确认 confirm (time modes).
  *   - range: two side-by-side calendars, start-then-end selection with
  *     automatic swap when end < start, selected interval highlighted.
  *   - keyboard: Arrow keys move the cursor, PageUp/PageDown page by the
  *     header unit, Enter picks/confirms, Escape closes (simplified).
- *   - events: update:modelValue, change, clear, focus, blur.
+ *   - events: update:modelValue, change, select, clear, focus, blur.
  *   - a11y: combobox trigger + role=grid/gridcell panels with
  *     aria-selected and aria-activedescendant.
  *
- * Not ported (out of scope, see ai-description.md): shortcuts, dual-panel
- * month/year quick jump, actions bar, formatted-value / value-format,
- * disabled-date, i18n beyond zh-CN strings.
+ * Not ported (out of scope, see ai-description.md): dual-panel month/year
+ * quick jump, actions bar, formatted-value / value-format, disabledTime,
+ * i18n beyond zh-CN strings.
  *
  * Per AGENTS.md §30/31: props / events / tokens / accessibility are
  * declared below; CSS uses `--sn-web-date-picker-*` aliases with
@@ -381,21 +467,32 @@ import { useLocale } from '../locales/use-locale';
 import {
   DEFAULT_FORMATS,
   addMonths,
+  addYears,
   buildMonthGrid,
   buildMonthUnitGrid,
+  buildQuarterUnitGrid,
   buildYearUnitGrid,
   combineDateTime,
   formatDecadeTitle,
   formatDate,
   getDateParts,
+  getQuarter,
   hasTimePart,
+  isQuarterType,
   isRangeType,
   isSameDay,
   isSameMonth,
+  isSameQuarter,
+  isSameWeek,
   isSameYear,
+  isWeekType,
   pad2,
   rangeInclusive,
   startOfDay,
+  startOfQuarter,
+  startOfWeek,
+  type SnDatePickerShortcut,
+  type SnDatePickerShortcutsPosition,
   type SnDateRangeValue,
   type SnDatePickerSize,
   type SnDatePickerStatus,
@@ -425,6 +522,19 @@ const props = withDefaults(
     size?: SnDatePickerSize;
     /** Validation-driven visual status. */
     status?: SnDatePickerStatus;
+    /**
+     * Disable predicate — receives the local-midnight timestamp of each day
+     * cell (and the period start for month / quarter / year cells). Disabled
+     * cells render dimmed, carry `aria-disabled`, and refuse picks.
+     */
+    disabledDate?: (ts: number) => boolean;
+    /**
+     * Quick-pick entries rendered inside the panel. `value` may be a lazy
+     * getter — it is resolved at click time.
+     */
+    shortcuts?: SnDatePickerShortcut[];
+    /** Where the shortcuts bar renders. */
+    shortcutsPosition?: SnDatePickerShortcutsPosition;
     /** Accessible name for the trigger (fallback: 'Date picker'). */
     ariaLabel?: string;
     /** Class on the root wrapper. */
@@ -442,6 +552,7 @@ const props = withDefaults(
     size: 'medium',
     status: 'default',
     ariaLabel: '',
+    shortcutsPosition: 'bottom',
     customClass: '',
     customStyle: '',
   },
@@ -452,6 +563,13 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: number | [number, number] | null): void;
   /** Value committed (also fires for clear). */
   (e: 'change', value: number | [number, number] | null): void;
+  /**
+   * A cell was picked in the panel (before/without the final commit) —
+   * single modes emit the draft value; range modes emit the provisional
+   * start after the first pick and the sorted pair after the second. Pair
+   * with `disabledDate` to constrain the second end dynamically.
+   */
+  (e: 'select', value: number | [number, number] | null): void;
   /** Value cleared via the × button. */
   (e: 'clear'): void;
   /** Trigger gained focus. */
@@ -466,10 +584,14 @@ const emit = defineEmits<{
 type SnTimeUnit = 'hour' | 'minute' | 'second';
 type SnTimeOfDay = Record<SnTimeUnit, number>;
 type SnRangeSide = 'start' | 'end';
-const RANGE_SIDES: readonly SnRangeSide[] = ['start', 'end'];
 
-/** Panel grid view — 'day' for date grids, 'month'/'year' are drill-downs. */
-type SnViewMode = 'day' | 'month' | 'year';
+/** Panel grid view — 'day' for date grids, 'quarter'/'month'/'year' drill-downs. */
+type SnViewMode = 'day' | 'quarter' | 'month' | 'year';
+
+/** Map a calendar index to its range side (single modes use 'start'). */
+function sideOf(calIndex: number): SnRangeSide {
+  return calIndex === 0 ? 'start' : 'end';
+}
 
 /** Active DatePicker locale namespace (naive-ui i18n). */
 /** Active locale (injected once at setup — inject() is setup-only). */
@@ -485,7 +607,7 @@ function cellId(ts: number): string {
   return `sn-date-picker-cell-${instanceId}-${ts}`;
 }
 
-function unitCellId(calKey: string, kind: 'm' | 'y', value: number): string {
+function unitCellId(calKey: string, kind: 'q' | 'm' | 'y', value: number): string {
   return `sn-date-picker-unit-${instanceId}-${calKey}-${kind}-${value}`;
 }
 
@@ -522,8 +644,37 @@ const rangeHoverEnd = ref<number | null>(null);
 
 const isRange = computed(() => isRangeType(props.type));
 const hasTime = computed(() => hasTimePart(props.type));
+const isWeek = computed(() => isWeekType(props.type));
+const isQuarter = computed(() => isQuarterType(props.type));
 const isInteractive = computed(() => !props.disabled && !props.readonly);
 const resolvedFormat = computed(() => props.format || DEFAULT_FORMATS[props.type]);
+
+/** Shortcuts split by render position. */
+const sideShortcuts = computed(() =>
+  props.shortcutsPosition === 'bottom' ? [] : (props.shortcuts ?? []),
+);
+const bottomShortcuts = computed(() =>
+  props.shortcutsPosition === 'bottom' ? (props.shortcuts ?? []) : [],
+);
+
+/** The 今天 footer jump (plain date picking only). */
+const showTodayFooter = computed(() => props.type === 'date');
+
+/** Per-calendar time draft (single: the one draft; range: per side). */
+function timeDraftFor(calIndex: number): SnTimeOfDay {
+  return isRange.value ? rangeTimeDraft.value[sideOf(calIndex)] : timeDraft.value;
+}
+
+/** Aside time-column `aria-label` (visible label only in single mode). */
+function timeGroupAriaLabel(calIndex: number, unit: SnTimeUnit): string {
+  const unitLabel = datePickerLocale.value[unit];
+  if (!isRange.value) return `${datePickerLocale.value.selectTime} ${unitLabel}`;
+  const sideLabel =
+    sideOf(calIndex) === 'start'
+      ? datePickerLocale.value.startTime
+      : datePickerLocale.value.endTime;
+  return `${sideLabel} ${unitLabel}`;
+}
 
 /** Normalized single value (null in range modes). */
 const singleModel = computed<number | null>(() => {
@@ -596,6 +747,7 @@ interface SnCalendarViewModel {
   yearTitle: string;
   decadeTitle: string;
   monthGrid: ReturnType<typeof buildMonthGrid>;
+  quarterUnitRows: SnUnitGridCell[][];
   monthUnitRows: SnUnitGridCell[][];
   yearUnitRows: SnUnitGridCell[][];
 }
@@ -618,6 +770,12 @@ function calendarOf(anchor: number, key: string): SnCalendarViewModel {
     yearTitle: datePickerLocale.value.yearTitle.replace('{y}', String(p.year)),
     decadeTitle: formatDecadeTitle(p.year),
     monthGrid: buildMonthGrid(p.year, p.month),
+    quarterUnitRows: chunk(
+      buildQuarterUnitGrid(p.year, (q) =>
+        datePickerLocale.value.quarterLabel.replace('{q}', String(q)),
+      ),
+      2,
+    ),
     monthUnitRows: chunk(
       buildMonthUnitGrid(p.year).map((c) => ({
         ...c,
@@ -631,7 +789,10 @@ function calendarOf(anchor: number, key: string): SnCalendarViewModel {
 
 const calendars = computed<SnCalendarViewModel[]>(() => {
   if (isRange.value) {
-    return [calendarOf(anchorTs.value, 'a'), calendarOf(addMonths(anchorTs.value, 1), 'b')];
+    // Quarter view steps one YEAR per calendar; every other view one month.
+    const second =
+      viewMode.value === 'quarter' ? addYears(anchorTs.value, 1) : addMonths(anchorTs.value, 1);
+    return [calendarOf(anchorTs.value, 'a'), calendarOf(second, 'b')];
   }
   return [calendarOf(anchorTs.value, 'a')];
 });
@@ -644,10 +805,28 @@ const navUnitLabel = computed(() =>
 /** Big step: ±1 year in day view, ±decade in month/year views. */
 const navBigStep = computed(() => (viewMode.value === 'day' ? 12 : 120));
 
+/* ─────────── Disabled predicate ─────────── */
+
+/** Whether a day cell is blocked by `disabledDate` (local-midnight arg). */
+function isCellDisabled(ts: number): boolean {
+  return props.disabledDate?.(startOfDay(ts)) === true;
+}
+
+/** Week picks are blocked when their Monday is disabled. */
+function isWeekDisabled(weekMonday: number): boolean {
+  return props.disabledDate?.(weekMonday) === true;
+}
+
 /* ─────────── Cell state predicates (day view) ─────────── */
 
 function isCellSelected(ts: number): boolean {
   if (isRange.value) return false;
+  if (isWeek.value) {
+    // Whole-week highlight: every cell of the draft/committed week.
+    const reference =
+      isPanelOpen.value && dateDraft.value !== null ? dateDraft.value : singleModel.value;
+    return reference !== null && isSameWeek(ts, reference);
+  }
   if (!isPanelOpen.value) return singleModel.value !== null && isSameDay(ts, singleModel.value);
   return dateDraft.value !== null && isSameDay(ts, dateDraft.value);
 }
@@ -656,11 +835,13 @@ function isCellStart(ts: number): boolean {
   if (isRange.value) {
     // Draft pick in progress — the draft start wins over the committed one
     // (restarting a pick must move the --start marker immediately).
-    if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
-      return isSameDay(ts, rangeDraft.value.start);
+    const start = rangeDraft.value.start;
+    if (start !== null && rangeDraft.value.end === null) {
+      return isWeek.value ? isSameWeek(ts, start) : isSameDay(ts, start);
     }
-    if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[0]);
-    return rangeDraft.value.start !== null && isSameDay(ts, rangeDraft.value.start);
+    const model = rangeModel.value;
+    if (model !== null) return isWeek.value ? isSameWeek(ts, model[0]) : isSameDay(ts, model[0]);
+    return start !== null && (isWeek.value ? isSameWeek(ts, start) : isSameDay(ts, start));
   }
   return false;
 }
@@ -671,8 +852,10 @@ function isCellEnd(ts: number): boolean {
     if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
       return false;
     }
-    if (rangeModel.value !== null) return isSameDay(ts, rangeModel.value[1]);
-    return rangeDraft.value.end !== null && isSameDay(ts, rangeDraft.value.end);
+    const model = rangeModel.value;
+    if (model !== null) return isWeek.value ? isSameWeek(ts, model[1]) : isSameDay(ts, model[1]);
+    const end = rangeDraft.value.end;
+    return end !== null && (isWeek.value ? isSameWeek(ts, end) : isSameDay(ts, end));
   }
   return false;
 }
@@ -695,10 +878,43 @@ function isCellInRange(ts: number): boolean {
   const { start, end } = rangeBounds();
   if (start === null || end === null) return false;
   const day = startOfDay(ts);
-  return day > startOfDay(start) && day < startOfDay(end);
+  // Week ranges highlight through the END of the end-week (Monday + 6d).
+  const endBound = isWeek.value ? startOfWeek(end) + 6 * 86_400_000 : startOfDay(end);
+  return day > startOfDay(start) && day < endBound;
 }
 
-/* ─────────── Month / year view predicates ─────────── */
+/* ─────────── Quarter / month / year view predicates ─────────── */
+
+function isQuarterCellSelected(ts: number, calYear: number): boolean {
+  if (isQuarter.value) {
+    if (isRange.value) {
+      const model = rangeModel.value;
+      const reference =
+        rangeDraft.value.start !== null && rangeDraft.value.end !== null
+          ? rangeDraft.value.start
+          : (model?.[0] ?? null);
+      if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
+        return isSameQuarter(ts, rangeDraft.value.start);
+      }
+      return reference !== null && isSameQuarter(ts, reference);
+    }
+    if (!isPanelOpen.value || dateDraft.value === null) {
+      return singleModel.value !== null && isSameQuarter(ts, singleModel.value);
+    }
+    return isSameQuarter(ts, dateDraft.value);
+  }
+  // date modes: navigation grid — highlight the anchor quarter.
+  return isSameQuarter(ts, anchorTs.value) && getDateParts(ts).year === calYear;
+}
+
+function isQuarterCellCursor(ts: number, calYear: number): boolean {
+  return isSameQuarter(ts, cursor.value) && getDateParts(ts).year === calYear;
+}
+
+/** Quarter / month / year cells disable via their period start. */
+function isQuarterCellDisabled(ts: number): boolean {
+  return props.disabledDate?.(startOfQuarter(ts)) === true;
+}
 
 function isMonthCellSelected(ts: number, calYear: number): boolean {
   if (props.type === 'month') {
@@ -715,6 +931,11 @@ function isMonthCellCursor(ts: number, calYear: number): boolean {
   return isSameMonth(ts, cursor.value) && getDateParts(ts).year === calYear;
 }
 
+/** Month cells disable via the 1st of the month. */
+function isMonthCellDisabled(ts: number): boolean {
+  return props.disabledDate?.(startOfMonthTs(ts)) === true;
+}
+
 function isYearCellSelected(ts: number): boolean {
   if (props.type === 'year') {
     if (!isPanelOpen.value || dateDraft.value === null) {
@@ -727,6 +948,11 @@ function isYearCellSelected(ts: number): boolean {
 
 function isYearCellCursor(ts: number): boolean {
   return isSameYear(ts, cursor.value);
+}
+
+/** Year cells disable via Jan 1 of the year. */
+function isYearCellDisabled(ts: number): boolean {
+  return props.disabledDate?.(startOfYearTs(ts)) === true;
 }
 
 /* ─────────── Time columns ─────────── */
@@ -746,11 +972,15 @@ const activeDescendant = computed<string | null>(() => {
   }
   // Unit views always anchor on the left calendar.
   const p = getDateParts(cursor.value);
-  return unitCellId(
-    'a',
-    viewMode.value === 'month' ? 'm' : 'y',
-    viewMode.value === 'month' ? p.month : p.year,
-  );
+  const kind =
+    viewMode.value === 'quarter' ? 'q' : viewMode.value === 'month' ? 'm' : ('y' as const);
+  const value =
+    viewMode.value === 'quarter'
+      ? Math.floor(p.month / 3)
+      : viewMode.value === 'month'
+        ? p.month
+        : p.year;
+  return unitCellId('a', kind, value);
 });
 
 /* ─────────── Panel positioning (simplified popper) ─────────── */
@@ -852,7 +1082,14 @@ function initDraftsFromModel(): void {
       cursor.value = now;
     }
   }
-  viewMode.value = props.type === 'month' ? 'month' : props.type === 'year' ? 'year' : 'day';
+  viewMode.value =
+    props.type === 'month'
+      ? 'month'
+      : props.type === 'year'
+        ? 'year'
+        : isQuarter.value
+          ? 'quarter'
+          : 'day';
 }
 
 function openPanel(): void {
@@ -880,18 +1117,23 @@ function emitCommit(value: number | [number, number] | null): void {
 }
 
 function commitSingle(): void {
+  emitCommit(commitSingleValue());
+}
+
+/** The value the current draft/cursor state resolves to (single modes). */
+function commitSingleValue(): number {
   // Commit from the cursor (kept in sync on every cell click and keyboard
   // move) — not from dateDraft, so keyboard-moved-but-unconfirmed days
-  // confirm exactly what the panel highlights.
+  // confirm exactly what the panel highlights. Week / quarter picks keep
+  // the cursor on their period start, so the plain day branch covers them.
   const day = startOfDay(cursor.value);
-  const ts = hasTime.value
+  return hasTime.value
     ? combineDateTime(day, timeDraft.value.hour, timeDraft.value.minute, timeDraft.value.second)
     : props.type === 'month'
       ? startOfMonthTs(day)
       : props.type === 'year'
         ? startOfYearTs(day)
         : day;
-  emitCommit(ts);
 }
 
 function startOfMonthTs(ms: number): number {
@@ -937,19 +1179,23 @@ function clearValue(): void {
 
 function onDayCellClick(ts: number): void {
   if (!isInteractive.value) return;
-  const day = startOfDay(ts);
+  // Week types normalize any clicked day to its week's Monday.
+  const day = isWeek.value ? startOfWeek(ts) : startOfDay(ts);
+  if (isCellDisabled(day) || (isWeek.value && isWeekDisabled(day))) return;
   cursor.value = day;
   if (isRange.value) {
     if (rangeDraft.value.start === null || rangeDraft.value.end !== null) {
       // Fresh pick: start over with the clicked day as start.
       rangeDraft.value = { start: day, end: null };
       rangeHoverEnd.value = null;
+      emit('select', day);
     } else {
       // Second pick: swap when end < start, then commit.
       const start = rangeDraft.value.start;
       const [lo, hi] = day < start ? [day, start] : [start, day];
       rangeDraft.value = { start: lo, end: hi };
       rangeHoverEnd.value = null;
+      emit('select', [lo, hi]);
       if (hasTime.value) {
         commitRange(); // datetimerange keeps the panel open (确认 closes)
       } else {
@@ -961,6 +1207,7 @@ function onDayCellClick(ts: number): void {
   }
   dateDraft.value = day;
   commitSingle();
+  emit('select', commitSingleValue());
   if (!hasTime.value) closePanel();
 }
 
@@ -972,16 +1219,48 @@ function onDayCellClick(ts: number): void {
 function onDayCellHover(ts: number): void {
   if (!isRange.value || !isInteractive.value) return;
   if (rangeDraft.value.start !== null && rangeDraft.value.end === null) {
-    rangeHoverEnd.value = startOfDay(ts);
+    rangeHoverEnd.value = isWeek.value ? startOfWeek(ts) : startOfDay(ts);
   }
 }
 
+function onQuarterCellClick(ts: number): void {
+  if (!isInteractive.value || isQuarterCellDisabled(ts)) return;
+  cursor.value = ts;
+  if (isQuarter.value) {
+    if (isRange.value) {
+      if (rangeDraft.value.start === null || rangeDraft.value.end !== null) {
+        rangeDraft.value = { start: ts, end: null };
+        rangeHoverEnd.value = null;
+        emit('select', ts);
+        return;
+      }
+      const start = rangeDraft.value.start;
+      const [lo, hi] = ts < start ? [ts, start] : [start, ts];
+      rangeDraft.value = { start: lo, end: hi };
+      rangeHoverEnd.value = null;
+      emit('select', [lo, hi]);
+      commitRange();
+      closePanel();
+      return;
+    }
+    dateDraft.value = ts;
+    commitSingle();
+    emit('select', ts);
+    closePanel();
+    return;
+  }
+  // date modes: drill back into the day grid anchored at that quarter.
+  viewMode.value = 'day';
+  anchorTs.value = ts;
+}
+
 function onMonthCellClick(ts: number): void {
-  if (!isInteractive.value) return;
+  if (!isInteractive.value || isMonthCellDisabled(ts)) return;
   cursor.value = ts;
   if (props.type === 'month') {
     dateDraft.value = ts;
     commitSingle();
+    emit('select', ts);
     closePanel();
     return;
   }
@@ -991,15 +1270,16 @@ function onMonthCellClick(ts: number): void {
 }
 
 function onYearCellClick(ts: number): void {
-  if (!isInteractive.value) return;
+  if (!isInteractive.value || isYearCellDisabled(ts)) return;
   cursor.value = ts;
   if (props.type === 'year') {
     dateDraft.value = ts;
     commitSingle();
+    emit('select', ts);
     closePanel();
     return;
   }
-  viewMode.value = props.type === 'month' ? 'day' : 'month';
+  viewMode.value = isQuarter.value ? 'quarter' : 'month';
   anchorTs.value = ts;
 }
 
@@ -1024,6 +1304,28 @@ function confirmAndClose(): void {
   closePanel();
 }
 
+/* ─────────── Shortcuts + today ─────────── */
+
+/** Resolve a shortcut entry (lazy getters run at click time) and commit. */
+function onShortcutClick(sc: SnDatePickerShortcut): void {
+  if (!isInteractive.value) return;
+  const resolved = typeof sc.value === 'function' ? sc.value() : sc.value;
+  emitCommit(resolved);
+  emit('select', resolved);
+  closePanel();
+}
+
+/** 今天 footer — commit the current date and close. */
+function jumpToday(): void {
+  if (!isInteractive.value) return;
+  const now = Date.now();
+  cursor.value = now;
+  dateDraft.value = startOfDay(now);
+  commitSingle();
+  emit('select', commitSingleValue());
+  closePanel();
+}
+
 /* ─────────── Header navigation ─────────── */
 
 /** Shift anchors by whole months (day view) / years (unit views). */
@@ -1034,7 +1336,7 @@ function shiftAnchor(deltaUnits: number): void {
 }
 
 function onTitleClick(): void {
-  if (viewMode.value === 'day') viewMode.value = 'month';
+  if (viewMode.value === 'day' || viewMode.value === 'quarter') viewMode.value = 'month';
   else if (viewMode.value === 'month') viewMode.value = 'year';
 }
 
@@ -1343,7 +1645,7 @@ watch(
  * nodes still receive the scoped attribute, so both blocks stay in this SFC. */
 .sn-date-picker-panel {
   position: fixed;
-  z-index: var(--sn-web-date-picker-panel-z-index, 1000);
+  z-index: var(--sn-web-date-picker-panel-z-index, 2000);
   padding: 8px;
   box-sizing: border-box;
   border: 1px solid var(--sn-web-date-picker-panel-border-color, rgba(0, 0, 0, 0.06));
@@ -1390,6 +1692,17 @@ watch(
 .sn-pop-leave-to {
   opacity: 0;
   transform: scale(0.95);
+}
+
+/* Panel layout: [side shortcuts] [calendars + aside time] stacked over the
+ * bottom shortcuts bar and the footer. The body is the flex row. */
+.sn-date-picker-panel__layout {
+  display: flex;
+  align-items: stretch;
+}
+
+.sn-date-picker-panel__body {
+  min-width: 0;
 }
 
 .sn-date-picker-panel__calendars {
@@ -1527,6 +1840,79 @@ watch(
   width: var(--sn-web-date-picker-unit-cell-size, 52px);
 }
 
+/* Disabled cells — dimmed, click refused by the handlers. */
+.sn-date-picker-cell--disabled {
+  color: var(--sn-web-date-picker-cell-color-disabled, var(--sn-web-color-text-disabled));
+  cursor: not-allowed;
+  background-color: transparent;
+}
+
+.sn-date-picker-cell--disabled.sn-date-picker-cell--selected,
+.sn-date-picker-cell--disabled.sn-date-picker-cell--start,
+.sn-date-picker-cell--disabled.sn-date-picker-cell--end {
+  background-color: var(--sn-web-date-picker-cell-bg-disabled, var(--sn-web-color-background-soft));
+  color: var(--sn-web-date-picker-cell-color-disabled, var(--sn-web-color-text-disabled));
+}
+
+/* Aside time panel — sits right of its calendar (showTime 左右布局). */
+.sn-date-picker-panel__time--aside {
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+.sn-date-picker-panel__time--aside .sn-date-picker-time-group {
+  height: 100%;
+}
+
+.sn-date-picker-panel__time--aside .sn-date-picker-time-group__label {
+  text-align: center;
+}
+
+.sn-date-picker-panel__time--aside .sn-date-picker-panel__time {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+/* Quick-pick shortcuts — side column or bottom bar. */
+.sn-date-picker-panel__shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sn-date-picker-panel__shortcuts--side {
+  margin-right: 12px;
+  padding-right: 12px;
+  border-right: 1px solid var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+.sn-date-picker-panel__shortcuts--bottom {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+.sn-date-picker-panel__shortcut {
+  padding: 4px 10px;
+  border: none;
+  border-radius: var(--sn-web-date-picker-shortcut-radius, 4px);
+  background-color: var(--sn-web-date-picker-shortcut-bg, var(--sn-web-color-background-soft));
+  color: var(--sn-web-date-picker-shortcut-color, var(--sn-web-color-text-secondary));
+  font-size: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sn-date-picker-panel__shortcut:hover {
+  background-color: var(--sn-web-date-picker-cell-bg-selected, var(--sn-web-color-action-primary));
+  color: var(--sn-web-color-text-on-primary);
+}
+
 /* Datetime columns */
 .sn-date-picker-panel__time {
   display: flex;
@@ -1597,10 +1983,31 @@ watch(
 /* Footer */
 .sn-date-picker-panel__footer {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   margin-top: 8px;
   padding-top: 8px;
   border-top: 1px solid var(--sn-web-date-picker-panel-divider, var(--sn-web-color-border-subtle));
+}
+
+/* 今天 jump — left aligned; when absent the confirm floats right. */
+.sn-date-picker-panel__today {
+  padding: 4px 10px;
+  border: none;
+  border-radius: var(--sn-web-date-picker-confirm-radius, 4px);
+  background: transparent;
+  color: var(--sn-web-date-picker-today-color, var(--sn-web-color-action-primary));
+  font-size: inherit;
+  cursor: pointer;
+}
+
+.sn-date-picker-panel__today:hover {
+  background-color: var(--sn-web-color-background-soft);
+}
+
+.sn-date-picker-panel__footer .sn-date-picker-panel__confirm {
+  margin-left: auto;
 }
 
 .sn-date-picker-panel__confirm {

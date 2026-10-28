@@ -4,7 +4,7 @@
  * Mirrors the tree option contract of the web-end reference cascader
  * (label / value / disabled / children) with `labelField` / `valueField` /
  * `childrenField` remapping. The bound value is the full leaf path
- * (root-first array of values).
+ * (root-first array of values); multiple mode binds an array of paths.
  *
  * Kept in a plain `.ts` module (same convention as sn-select-types.ts /
  * sn-tree-select-types.ts) so no shared wiring (install.ts / index.ts /
@@ -13,6 +13,12 @@
 
 /** Value type selectable inside SnCascader — tree values are string | number. */
 export type SnCascaderValue = string | number;
+
+/**
+ * One committed selection: the full root-to-leaf path (root-first).
+ * Single mode binds one path; multiple mode binds an array of paths.
+ */
+export type SnCascaderPath = SnCascaderValue[];
 
 /** Visual size preset (AUI convention adds `mini` below the tiny grade). */
 export type SnCascaderSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
@@ -117,21 +123,27 @@ export function normalizeCascaderOptions(
 
 /**
  * Resolve a bound value path (root-first) to its node chain. Returns null
- * when any level misses or the path stops on a non-leaf — a broken path
- * renders the placeholder instead of a partial label.
+ * when any level misses or — unless `allowNonLeaf` — the path stops on a
+ * non-leaf; a broken path renders the placeholder instead of a partial
+ * label. `allowNonLeaf` is for check-strictly mode, which binds parent
+ * values too.
  */
 export function findPathByValues(
   nodes: ReadonlyArray<SnCascaderNode>,
   values: ReadonlyArray<SnCascaderValue>,
+  options: { allowNonLeaf?: boolean } = {},
 ): SnCascaderNode[] | null {
+  const allowNonLeaf = options.allowNonLeaf === true;
   if (values.length === 0) return null;
   const first = values[0];
   if (first === undefined) return null;
   const head = nodes.find((node) => node.value === first);
   if (head === undefined) return null;
-  if (values.length === 1) return head.isLeaf ? [head] : null;
+  if (values.length === 1) {
+    return head.isLeaf || allowNonLeaf ? [head] : null;
+  }
   if (head.isLeaf) return null;
-  const rest = findPathByValues(head.children, values.slice(1));
+  const rest = findPathByValues(head.children, values.slice(1), options);
   return rest === null ? null : [head, ...rest];
 }
 
@@ -141,6 +153,16 @@ export function collectCascaderLeaves(nodes: ReadonlyArray<SnCascaderNode>): SnC
   for (const node of nodes) {
     if (node.isLeaf) out.push(node);
     else out.push(...collectCascaderLeaves(node.children));
+  }
+  return out;
+}
+
+/** Collect EVERY node (parents + leaves) under `nodes`, depth-first. */
+export function collectCascaderNodes(nodes: ReadonlyArray<SnCascaderNode>): SnCascaderNode[] {
+  const out: SnCascaderNode[] = [];
+  for (const node of nodes) {
+    out.push(node);
+    out.push(...collectCascaderNodes(node.children));
   }
   return out;
 }
@@ -166,4 +188,23 @@ export function keyChainOf(key: string): string[] {
 export function defaultCascaderFilter(pattern: string, pathText: string): boolean {
   if (pattern === '') return true;
   return pathText.toLowerCase().includes(pattern.toLowerCase());
+}
+
+/**
+ * Stable comparable identity of one path (multiple-mode set membership).
+ * JSON keeps string vs number values distinct, so `'1'` and `1` never
+ * collide as sibling keys. Pure + deterministic.
+ */
+export function cascaderPathKey(values: ReadonlyArray<SnCascaderValue>): string {
+  return JSON.stringify(values);
+}
+
+/**
+ * Every selectable (non-disabled) leaf beneath `node` — itself included
+ * when it is a selectable leaf. Drives the multiple-mode checkbox cascade:
+ * checking a parent commits exactly this set of leaf paths.
+ */
+export function collectSelectableLeaves(node: SnCascaderNode): SnCascaderNode[] {
+  const leaves = node.isLeaf ? [node] : collectCascaderLeaves(node.children);
+  return leaves.filter((leaf) => !leaf.disabled);
 }

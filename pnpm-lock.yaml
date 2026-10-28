@@ -151,6 +151,46 @@ importers:
         specifier: 5.2.8
         version: 5.2.8(@types/node@22.20.5)(terser@5.51.2)
 
+  apps/uni-templates:
+    dependencies:
+      '@dcloudio/uni-app':
+        specifier: 3.0.0-5030320261023001
+        version: 3.0.0-5030320261023001(@dcloudio/types@3.4.31)(@vueuse/core@12.8.2(typescript@5.9.3))(postcss@8.5.28)(rollup@4.64.0)(vite@5.2.8(@types/node@22.20.5)(terser@5.51.2))(vue@3.5.43(typescript@5.9.3))
+      '@dcloudio/uni-components':
+        specifier: 3.0.0-5030320261023001
+        version: 3.0.0-5030320261023001(@vueuse/core@12.8.2(typescript@5.9.3))(postcss@8.5.28)(rollup@4.64.0)(vite@5.2.8(@types/node@22.20.5)(terser@5.51.2))(vue@3.5.43(typescript@5.9.3))
+      '@dcloudio/uni-h5':
+        specifier: 3.0.0-5030320261023001
+        version: 3.0.0-5030320261023001(@vueuse/core@12.8.2(typescript@5.9.3))(postcss@8.5.28)(rollup@4.64.0)(vite@5.2.8(@types/node@22.20.5)(terser@5.51.2))(vue@3.5.43(typescript@5.9.3))
+      '@dcloudio/uni-mp-weixin':
+        specifier: 3.0.0-5030320261023001
+        version: 3.0.0-5030320261023001(@vueuse/core@12.8.2(typescript@5.9.3))(postcss@8.5.28)(rollup@4.64.0)(vue@3.5.43(typescript@5.9.3))
+      '@snui/style-packs':
+        specifier: workspace:*
+        version: link:../../packages/style-packs
+      '@snui/tokens':
+        specifier: workspace:*
+        version: link:../../packages/tokens
+      '@snui/uni':
+        specifier: workspace:*
+        version: link:../../packages/uni
+      vue:
+        specifier: ^3.5.43
+        version: 3.5.43(typescript@5.9.3)
+    devDependencies:
+      '@dcloudio/types':
+        specifier: ^3.4.31
+        version: 3.4.31
+      '@dcloudio/uni-cli-shared':
+        specifier: 3.0.0-5030320261023001
+        version: 3.0.0-5030320261023001(@vueuse/core@12.8.2(typescript@5.9.3))(postcss@8.5.28)(rollup@4.64.0)(vue@3.5.43(typescript@5.9.3))
+      '@dcloudio/vite-plugin-uni':
+        specifier: 3.0.0-5030320261023001
+        version: 3.0.0-5030320261023001(@vueuse/core@12.8.2(typescript@5.9.3))(postcss@8.5.28)(rollup@4.64.0)(vite@5.2.8(@types/node@22.20.5)(terser@5.51.2))(vue@3.5.43(typescript@5.9.3))
+      vite:
+        specifier: 5.2.8
+        version: 5.2.8(@types/node@22.20.5)(terser@5.51.2)
+
   packages/ai:
     dependencies:
       '@snui/cli':
@@ -7072,13 +7112,13 @@ snapshots:
       chai: 5.3.3
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@22.20.5)(terser@5.51.2))':
+  '@vitest/mocker@2.1.9(vite@5.2.8(@types/node@22.20.5)(terser@5.51.2))':
     dependencies:
       '@vitest/spy': 2.1.9
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 5.4.21(@types/node@22.20.5)(terser@5.51.2)
+      vite: 5.2.8(@types/node@22.20.5)(terser@5.51.2)
 
   '@vitest/pretty-format@2.1.9':
     dependencies:
@@ -8697,7 +8737,7 @@ snapshots:
       postcss: 8.5.28
       postcss-value-parser: 4.2.0
       read-cache: 1.0.2
-      resolve: 1.22.8
+      resolve: 1.22.13
 
   postcss-load-config@3.1.4(postcss@8.5.28):
     dependencies:
@@ -9353,13 +9393,12 @@ snapshots:
       debug: 4.4.3
       es-module-lexer: 1.7.0
       pathe: 1.1.2
-      vite: 5.4.21(@types/node@22.20.5)(terser@5.51.2)
+      vite: 5.2.8(@types/node@22.20.5)(terser@5.51.2)
     transitivePeerDependencies:
       - '@types/node'
       - less
       - lightningcss
       - sass
-      - sass-embedded
       - stylus
       - sugarss
       - supports-color
@@ -9451,7 +9490,7 @@ snapshots:
   vitest@2.1.9(@types/node@22.20.5)(happy-dom@15.11.7)(terser@5.51.2):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@22.20.5)(terser@5.51.2))
+      '@vitest/mocker': 2.1.9(vite@5.2.8(@types/node@22.20.5)(terser@5.51.2))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9
@@ -9467,7 +9506,7 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.1.1
       tinyrainbow: 1.2.0
-      vite: 5.4.21(@types/node@22.20.5)(terser@5.51.2)
+      vite: 5.2.8(@types/node@22.20.5)(terser@5.51.2)
       vite-node: 2.1.9(@types/node@22.20.5)(terser@5.51.2)
       why-is-node-running: 2.3.0
     optionalDependencies:
@@ -9478,7 +9517,6 @@ snapshots:
       - lightningcss
       - msw
       - sass
-      - sass-embedded
       - stylus
       - sugarss
       - supports-color

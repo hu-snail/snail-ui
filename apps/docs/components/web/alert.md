@@ -16,9 +16,9 @@
 
 ### 基础用法
 
-五种语义类型的配色与内置图标。
+五种语义类型的底色与内置图标。类型色只作用于图标与边框，标题与正文保持中性文字色 —— 色底之上依然清爽可读。
 
-<Demo name="alert-web-basic" description="五种 type 的配色与内置图标" />
+ <Demo name="alert-web-basic" description="五种 type：底色淡染，类型色只落在图标与边框上" />
 
 ### 边框控制
 
@@ -63,7 +63,7 @@
 | 名称           | 类型                                                       | 默认值      | 说明                                                                |
 | -------------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------------------- |
 | `title`        | `string`                                                   | `''`        | 标题。                                                              |
-| `type`         | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动配色与默认图标。                                      |
+| `type`         | `'default' \| 'info' \| 'success' \| 'warning' \| 'error'` | `'default'` | 语义类型，驱动底色、图标与边框配色；文字保持中性色。                |
 | `showIcon`     | `boolean`                                                  | `true`      | 是否显示前置类型图标。                                              |
 | `bordered`     | `boolean`                                                  | `true`      | 是否绘制外边框。                                                    |
 | `closable`     | `boolean`                                                  | `false`     | 是否渲染关闭按钮。                                                  |
@@ -88,7 +88,7 @@
 
 ## 类型与图标
 
-`type` 决定底色、文字色与默认图标：
+`type` 决定底色、图标色与边框色；标题与正文始终使用中性文字色：
 
 | `type`    | 默认图标        | 用途             |
 | --------- | --------------- | ---------------- |
@@ -124,7 +124,9 @@ function onClose() {
 
 ## 主题
 
-组件没有 alert 专属 token，配色直接消费语义 token：`--sn-web-color-feedback-info` / `-success` / `-warning` / `-danger`（类型色，底色由它 12% 混白得来）、`--sn-web-color-background-subtle` / `-surface`、`--sn-web-color-text-primary`、`--sn-web-color-border-default`、`--sn-web-focus-ring`。改主题靠覆盖这些 token。
+组件没有 alert 专属 token，配色直接消费语义 token：`--sn-web-color-feedback-info` / `-success` / `-warning` / `-danger`（类型色：图标与边框消费它，底色由它 12% 混白得来）、`--sn-web-color-background-subtle` / `-surface`、`--sn-web-color-text-primary`（标题 / 无标题正文）、`--sn-web-color-text-secondary`（标题下的正文）、`--sn-web-color-border-default`、`--sn-web-focus-ring`。改主题靠覆盖这些 token。
+
+组件内部把当前类型的色值暴露为 `--sn-alert-accent`，只由图标列与边框层消费；文字不参与其中。这样带色底的提示条仍然保持中性文字色，对比度与可读性不随类型变化。需要整体换色时覆盖上表 token 即可。
 
 图标列与关闭按钮的高度固定为首行行盒（`1.6em`），图形在其中水平垂直居中；图形尺寸来自 `SnIcon` 的默认 `size`（16px）。覆盖 `.sn-alert` 的 `font-size` 时行盒高度会同步缩放。
 

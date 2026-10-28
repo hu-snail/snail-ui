@@ -19,6 +19,22 @@ function mountEllipsis(props: Record<string, unknown> = {}, slots: Record<string
   );
 }
 
+/** Force the measure pass to see an overflowing single-line box. */
+function stubOverflowX(w: ReturnType<typeof mountEllipsis>): void {
+  const el = w.find('.sn-ellipsis__content').element as HTMLElement;
+  Object.defineProperty(el, 'scrollWidth', { configurable: true, value: 300 });
+  Object.defineProperty(el, 'clientWidth', { configurable: true, value: 100 });
+  window.dispatchEvent(new Event('resize'));
+}
+
+/** Force the measure pass to see an overflowing multi-line box. */
+function stubOverflowY(w: ReturnType<typeof mountEllipsis>): void {
+  const el = w.find('.sn-ellipsis__content').element as HTMLElement;
+  Object.defineProperty(el, 'scrollHeight', { configurable: true, value: 300 });
+  Object.defineProperty(el, 'clientHeight', { configurable: true, value: 100 });
+  window.dispatchEvent(new Event('resize'));
+}
+
 describe('SnEllipsis (AUI-WEB-DD-025)', () => {
   afterEach(() => {
     document.body.innerHTML = '';
@@ -84,15 +100,77 @@ describe('SnEllipsis (AUI-WEB-DD-025)', () => {
     });
   });
 
-  describe('overflow tooltip', () => {
-    /** Force the measure pass to see an overflowing single-line box. */
-    function stubOverflow(w: ReturnType<typeof mountEllipsis>): void {
-      const el = w.find('.sn-ellipsis__content').element as HTMLElement;
-      Object.defineProperty(el, 'scrollWidth', { configurable: true, value: 300 });
-      Object.defineProperty(el, 'clientWidth', { configurable: true, value: 100 });
-      window.dispatchEvent(new Event('resize'));
-    }
+  describe('expand / collapse toggle', () => {
+    it('hides the toggle by default (expandPosition none)', () => {
+      const w = mountEllipsis({ expandPosition: 'none' }, { default: () => '文本' });
+      expect(w.find('.sn-ellipsis__action').exists()).toBe(false);
+    });
 
+    it('renders the suffix toggle only when the text overflows and toggles it', async () => {
+      const w = mountEllipsis(
+        { expandPosition: 'suffix', width: 80 },
+        { default: () => '很长很长的一段文本' },
+      );
+      expect(w.find('.sn-ellipsis__action').exists()).toBe(false);
+      stubOverflowX(w);
+      await nextTick();
+      const action = w.find('.sn-ellipsis__action');
+      expect(action.exists()).toBe(true);
+      expect(action.text()).toBe('展开');
+      expect(action.attributes('aria-expanded')).toBe('false');
+      await action.trigger('click');
+      expect(w.find('.sn-ellipsis--expanded').exists()).toBe(true);
+      expect(w.find('.sn-ellipsis__action').text()).toBe('收起');
+      expect(w.find('.sn-ellipsis__action').attributes('aria-expanded')).toBe('true');
+      await w.find('.sn-ellipsis__action').trigger('click');
+      expect(w.find('.sn-ellipsis--expanded').exists()).toBe(false);
+    });
+
+    it('renders the bottom toggle in its own row below the text', async () => {
+      const w = mountEllipsis(
+        { expandPosition: 'bottom', lineClamp: 2, width: 80 },
+        { default: () => '很长很长的一段文本' },
+      );
+      stubOverflowY(w);
+      await nextTick();
+      const action = w.find('.sn-ellipsis__action');
+      expect(action.exists()).toBe(true);
+      // The toggle is the last child of the root — its own row below the text.
+      expect(w.find('.sn-ellipsis').element.lastElementChild).toBe(action.element);
+      await action.trigger('click');
+      expect(w.find('.sn-ellipsis--expanded').exists()).toBe(true);
+    });
+
+    it('uses custom expand / collapse labels when provided', async () => {
+      const w = mountEllipsis(
+        { expandPosition: 'suffix', expandText: '查看更多', collapseText: '收起内容', width: 80 },
+        { default: () => '很长很长的一段文本' },
+      );
+      stubOverflowX(w);
+      await nextTick();
+      expect(w.find('.sn-ellipsis__action').text()).toBe('查看更多');
+      await w.find('.sn-ellipsis__action').trigger('click');
+      expect(w.find('.sn-ellipsis__action').text()).toBe('收起内容');
+    });
+  });
+
+  describe('fade mask', () => {
+    it('applies the fade class only when fade is set', () => {
+      const off = mountEllipsis({ width: 80 }, { default: () => '文本' });
+      expect(off.find('.sn-ellipsis--fade').exists()).toBe(false);
+      const on = mountEllipsis({ fade: true, width: 80 }, { default: () => '文本' });
+      expect(on.find('.sn-ellipsis--fade').exists()).toBe(true);
+      expect(on.find('.sn-ellipsis--single').exists()).toBe(true);
+    });
+
+    it('keeps multi-line fade class independent from the single-line modifier', () => {
+      const w = mountEllipsis({ fade: true, lineClamp: 3, width: 80 }, { default: () => '文本' });
+      expect(w.find('.sn-ellipsis--fade').exists()).toBe(true);
+      expect(w.find('.sn-ellipsis--single').exists()).toBe(false);
+    });
+  });
+
+  describe('overflow tooltip', () => {
     /** Settle the teleported popover after a hover. */
     async function hoverOpen(w: ReturnType<typeof mountEllipsis>): Promise<void> {
       await w.find('.sn-tooltip-trigger').trigger('mouseenter');
@@ -112,7 +190,7 @@ describe('SnEllipsis (AUI-WEB-DD-025)', () => {
         { tooltip: { delay: 0 } },
         { default: () => '完整的一段超长文本内容' },
       );
-      stubOverflow(w);
+      stubOverflowX(w);
       await nextTick();
       await hoverOpen(w);
       const bubble = document.body.querySelector('.sn-tooltip');
@@ -125,7 +203,7 @@ describe('SnEllipsis (AUI-WEB-DD-025)', () => {
         { tooltip: { delay: 0, content: '自定义提示' } },
         { default: () => '完整的一段超长文本内容' },
       );
-      stubOverflow(w);
+      stubOverflowX(w);
       await nextTick();
       await hoverOpen(w);
       const bubble = document.body.querySelector('.sn-tooltip');
@@ -143,7 +221,7 @@ describe('SnEllipsis (AUI-WEB-DD-025)', () => {
         { expandTrigger: 'click', width: 80, tooltip: { delay: 0 } },
         { default: () => '很长很长的一段文本' },
       );
-      stubOverflow(w);
+      stubOverflowX(w);
       await w.find('.sn-ellipsis__content').trigger('click');
       await nextTick();
       await hoverOpen(w);

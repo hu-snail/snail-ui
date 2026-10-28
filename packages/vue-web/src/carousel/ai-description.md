@@ -49,10 +49,13 @@ import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
   0.4 px/ms — naive thresholds). Transition is disabled while dragging;
   a drag beats a pending autoplay tick; only one carousel may drag at a
   time (module-level flag, naive parity). A drag never starts when
-  mousedown/touchstart lands inside an interactive element (`video,
-audio, a, button, input, textarea, select, [contenteditable],
-[data-no-drag]`) — native controls keep working; card-mode side-slide
-  click navigation is unaffected (it listens for `click`).
+  mousedown/touchstart lands inside an interactive element (`a, button,
+input, textarea, select, [contenteditable], [data-no-drag]`) — native
+  controls keep working; card-mode side-slide click navigation is
+  unaffected (it listens for `click`). `<video>` / `<audio>` elements
+  WITHOUT `controls` stay swipeable (a press there starts the carousel
+  drag and preventDefault cancels the browser's native media drag);
+  with `controls` the toolbar owns the pointer.
 - **Caption** (SnCarouselItem, beyond naive): `title` / `description`
   props render a bottom gradient text overlay; the `caption` slot
   replaces that text. The overlay renders only when at least one caption
@@ -92,6 +95,7 @@ audio, a, button, input, textarea, select, [contenteditable],
 | `interval`             | `number`                                                             | `5000`                            | Autoplay interval (ms).                                                                                         |
 | `loop`                 | `boolean`                                                            | `true`                            | Wrap around at both ends.                                                                                       |
 | `mousewheel`           | `boolean`                                                            | `false`                           | Wheel switches slides.                                                                                          |
+| `options`              | `SnCarouselMediaItem[]`                                             | `undefined`                       | Data-driven slides — the component renders the media itself (`type: 'video'` marks video entries: muted + loop + playsinline, click toggles playback, auto-paused off-current). The default slot is ignored while set; the `item` slot overrides the built-in renderer per slide. |
 | `nextSlideStyle`       | `CSSProperties \| string`                                            | `undefined`                       | Inline style for the next slide (card mode).                                                                    |
 | `prevSlideStyle`       | `CSSProperties \| string`                                            | `undefined`                       | Inline style for the previous slide (card mode).                                                                |
 | `slidesPerView`        | `number \| 'auto'`                                                   | `1`                               | Slides per view; `'auto'` measures slide widths from the DOM (ResizeObserver with feature detection, SSR-safe). |
@@ -127,6 +131,7 @@ through provide/inject (mirrors naive CarouselContext).
 | Component        | Slot      | Scope                                                                     | Description                                                                          |
 | ---------------- | --------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `SnCarousel`     | `default` | —                                                                         | Sequence of `<SnCarouselItem>` children (bare children are auto-wrapped).            |
+| `SnCarousel`     | `item`    | `{ item, index, isActive, isPrev, isNext }`                               | Options mode only: overrides the built-in image/video renderer per entry; falls back to the built-in media. |
 | `SnCarousel`     | `arrow`   | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Replaces the built-in arrow pair. `prev`/`next` are the transition-guarded variants. |
 | `SnCarousel`     | `dots`    | `{ total, currentIndex, to }`                                             | Replaces the built-in dots.                                                          |
 | `SnCarouselItem` | `default` | `{ isPrev, isNext, isActive, index }`                                     | Slide content.                                                                       |
@@ -164,9 +169,10 @@ through provide/inject (mirrors naive CarouselContext).
   mouse drag start (`Carousel.tsx handleTouchstart`), which breaks
   `<video controls>`, links and form controls inside slides. SnCarousel
   skips the drag when the press target matches the interactive selector
-  above (plus `[data-no-drag]` opt-out). `draggable`/`touchable`
-  defaults stay naive-aligned (`false` / `true`); the docs demos enable
-  `draggable` for discoverability.
+  above (plus `[data-no-drag]` opt-out) — EXCEPT media without `controls`,
+  which stays swipeable (its native drag would otherwise eat the whole
+  gesture). `draggable`/`touchable` defaults stay naive-aligned
+  (`false` / `true`); the docs demos enable `draggable` for discoverability.
 
 ## §112 future markers (declared parity, deferred)
 

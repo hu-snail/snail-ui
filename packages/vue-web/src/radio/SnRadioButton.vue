@@ -71,6 +71,8 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
+  /** Fallback label content — renders when the `label` slot is absent. */
+  default?(): unknown;
   /** Custom label content. Renders instead of the `label` prop text. */
   label?(props: { checked: boolean; disabled: boolean }): unknown;
 }>();
@@ -170,7 +172,7 @@ function onBlur(event: FocusEvent): void {
       @blur="onBlur"
     />
     <span class="sn-radio-button__label">
-      <slot name="label" :checked="isChecked" :disabled="isDisabled">{{ label }}</slot>
+      <slot name="label" :checked="isChecked" :disabled="isDisabled"> <slot />{{ label }} </slot>
     </span>
   </label>
 </template>
@@ -203,16 +205,31 @@ function onBlur(event: FocusEvent): void {
   margin-left: var(--sn-web-radio-button-gap, 8px);
 }
 
-/* Inside a button group: middle segments merge borders, only the ends rounded. */
+/*
+ * Inside a button group the segments form one pill: adjacent 1px borders
+ * collapse onto a single line via the negative margin, and only the two
+ * outer ends keep the radius. The previous rule removed the right radius
+ * from the FIRST segment only, so every interior segment kept a rounded
+ * right corner — that produced the notched, "un-merged" look plus a
+ * doubled divider where two rounded borders met.
+ */
 .sn-radio-button--in-group + .sn-radio-button--in-group {
   margin-left: -1px;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
-.sn-radio-button--in-group:not(.sn-radio-button--in-group + .sn-radio-button--in-group) {
+/* Every segment except the last is interior on its right edge. */
+.sn-radio-button--in-group:not(:last-child) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+}
+
+/* The checked segment must paint above its neighbours, otherwise the
+ * neighbour's 1px border (which shares the same pixel column thanks to the
+ * -1px overlap) draws a second, grey line over the active divider. */
+.sn-radio-button--in-group.sn-radio-button--checked {
+  z-index: 1;
 }
 
 .sn-radio-button--checked {

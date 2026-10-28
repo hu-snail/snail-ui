@@ -55,6 +55,10 @@ export const enUS: SnLocale = {
     startTime: 'Start time',
     endTime: 'End time',
     confirm: 'Confirm',
+    selectTime: 'Select time',
+    today: 'Today',
+    weekTitle: 'Week {w}, {y}',
+    quarterLabel: 'Q{q}',
     hour: 'Hours',
     minute: 'Minutes',
     second: 'Seconds',
@@ -102,6 +106,10 @@ export const enUS: SnLocale = {
   },
   QrCode: {
     download: 'Download QR code',
+  },
+  Ellipsis: {
+    expand: 'Expand',
+    collapse: 'Collapse',
   },
   Heatmap: {
     less: 'Less',

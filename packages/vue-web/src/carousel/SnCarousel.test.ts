@@ -880,7 +880,7 @@ describe('SnCarousel', () => {
     return vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(300);
   }
 
-  it('should not start a mouse drag from inside a video but drag from the slide body', async () => {
+  it('should swipe from a controls-less video and drag from the slide body', async () => {
     const sizeSpy = stubMeasuredWidth();
     try {
       const w = mount(
@@ -900,25 +900,72 @@ describe('SnCarousel', () => {
       );
       await nextTick();
       const slidesEl = w.find('.sn-carousel__slides');
+      let styleBeforeDrag = slidesEl.attributes('style');
 
-      // Mousedown inside the video → no drag listeners: moving the pointer
-      // 200px left and releasing leaves index and track untouched.
+      // A controls-less video is imagery to the pointer: the swipe follows
+      // the finger and the > half-viewport release flips to slide 2 — the
+      // browser's native media drag must not eat the gesture (mousedown
+      // preventDefault cancels it).
+      await w.find('video').trigger('mousedown', { clientX: 100, clientY: 10 });
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
+      await nextTick();
+      // Follow-the-finger: the track must have left the resting position.
+      expect(slidesEl.attributes('style')).not.toBe(styleBeforeDrag);
+      document.dispatchEvent(new MouseEvent('mouseup'));
+      await nextTick();
+      // The > half-viewport release flips to the next slide.
+      expect(activeDotIndex(w)).toBe(1);
+      // Let the release fixTranslate (nextTick) settle before the next drag.
+      await nextTick();
+      await nextTick();
+
+      // Mousedown on the slide body still drags (slide 2).
+      styleBeforeDrag = slidesEl.attributes('style');
+      await slidesEl.trigger('mousedown', { clientX: 100, clientY: 10 });
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
+      await nextTick();
+      expect(slidesEl.attributes('style')).not.toBe(styleBeforeDrag);
+      document.dispatchEvent(new MouseEvent('mouseup'));
+      await nextTick();
+      expect(activeDotIndex(w)).toBe(2);
+    } finally {
+      sizeSpy.mockRestore();
+    }
+  });
+
+  it('should not start a drag from inside a video with controls', async () => {
+    const sizeSpy = stubMeasuredWidth();
+    try {
+      const w = mount(
+        defineComponent({
+          components: { SnCarousel, SnCarouselItem },
+          setup() {
+            return () =>
+              h(SnCarousel, { draggable: true, style: 'width:300px;height:150px' } as never, {
+                default: () => [
+                  h(
+                    SnCarouselItem,
+                    { key: 0 },
+                    { default: () => h('video', { src: 'a.mp4', controls: true }) },
+                  ),
+                  h(SnCarouselItem, { key: 1 }, { default: () => 'B' }),
+                  h(SnCarouselItem, { key: 2 }, { default: () => 'C' }),
+                ],
+              });
+          },
+        }),
+      );
+      await nextTick();
+      const slidesEl = w.find('.sn-carousel__slides');
+
+      // `controls` hands the pointer to the native toolbar: no carousel
+      // drag listeners, the track and index stay untouched.
       await w.find('video').trigger('mousedown', { clientX: 100, clientY: 10 });
       document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
       document.dispatchEvent(new MouseEvent('mouseup'));
       await nextTick();
       expect(activeDotIndex(w)).toBe(0);
       expect(slidesEl.attributes('style')).not.toContain('translateX(-500px)');
-
-      // Mousedown on the slide body → track follows the pointer (300 base
-      // + 200 offset), then the > half-viewport release flips to slide 2.
-      await slidesEl.trigger('mousedown', { clientX: 100, clientY: 10 });
-      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
-      await nextTick();
-      expect(slidesEl.attributes('style')).toContain('translateX(-500px)');
-      document.dispatchEvent(new MouseEvent('mouseup'));
-      await nextTick();
-      expect(activeDotIndex(w)).toBe(1);
     } finally {
       sizeSpy.mockRestore();
     }
@@ -966,5 +1013,127 @@ describe('SnCarousel', () => {
     } finally {
       sizeSpy.mockRestore();
     }
+  });
+
+  describe('options media slides', () => {
+    interface MediaItem {
+      type?: 'image' | 'video';
+      src: string;
+      alt?: string;
+      poster?: string;
+      title?: string;
+      description?: string;
+      fit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+      key?: string | number;
+    }
+
+    function mountOptions(items: MediaItem[], slots: Record<string, unknown> = {}) {
+      return mount(
+        defineComponent({
+          components: { SnCarousel },
+          setup() {
+            return () =>
+              h(
+                SnCarousel,
+                {
+                  style: 'width: 300px; height: 150px',
+                  options: items,
+                  loop: false,
+                } as never,
+                slots as never,
+              );
+          },
+        }),
+      );
+    }
+
+    it('renders one full-bleed image slide per options entry by default', () => {
+      const w = mountOptions([
+        { src: 'a.png', alt: 'first' },
+        { type: 'image', src: 'b.png', fit: 'contain' },
+      ]);
+      const imgs = w.findAll('.sn-carousel__slide img');
+      expect(imgs).toHaveLength(2);
+      expect(imgs[0].attributes('src')).toBe('a.png');
+      expect(imgs[0].attributes('alt')).toBe('first');
+      expect(imgs[0].attributes('draggable')).toBe('false');
+      expect(imgs[1].attributes('src')).toBe('b.png');
+      expect((imgs[1].element as HTMLElement).style.objectFit).toBe('contain');
+    });
+
+    it('renders a video slide with the muted banner attributes and click toggle', async () => {
+      const w = mountOptions([
+        {
+          type: 'video',
+          src: 'clip.mp4',
+          poster: 'cover.png',
+          title: '宣传视频',
+          description: '点击播放/暂停',
+        },
+      ]);
+      const video = w.find('.sn-carousel__slide video');
+      expect(video.exists()).toBe(true);
+      expect(video.attributes('src')).toBe('clip.mp4');
+      expect(video.attributes('poster')).toBe('cover.png');
+      expect(video.attributes('muted')).toBeDefined();
+      expect(video.attributes('loop')).toBeDefined();
+      expect(video.attributes('playsinline')).toBeDefined();
+      expect(video.attributes('preload')).toBe('metadata');
+      // Caption overlay comes from the item's title / description.
+      expect(w.find('.sn-carousel__caption-title').text()).toBe('宣传视频');
+      expect(w.find('.sn-carousel__caption-description').text()).toBe('点击播放/暂停');
+
+      // Click toggles play/pause. happy-dom exposes `paused` as a
+      // getter-only property, so stub it (and play/pause) on the instance.
+      const el = video.element as HTMLVideoElement;
+      let paused = true;
+      el.play = vi.fn().mockResolvedValue(undefined);
+      el.pause = vi.fn();
+      Object.defineProperty(el, 'paused', { configurable: true, get: () => paused });
+      await video.trigger('click');
+      expect(el.play).toHaveBeenCalledTimes(1);
+      paused = false;
+      await video.trigger('click');
+      expect(el.pause).toHaveBeenCalledTimes(1);
+    });
+
+    it('lets the item slot override the built-in media renderer', () => {
+      const w = mountOptions(
+        [
+          { src: 'a.png', title: 't1' },
+          { type: 'video', src: 'v.mp4' },
+        ],
+        {
+          item: (props: { item: MediaItem; index: number }) =>
+            h('div', { class: 'custom-slide' }, `#${props.index}:${props.item.src}`),
+        },
+      );
+      const customs = w.findAll('.custom-slide');
+      expect(customs).toHaveLength(2);
+      expect(customs[0].text()).toBe('#0:a.png');
+      expect(customs[1].text()).toBe('#1:v.mp4');
+      // Built-in media is fully replaced.
+      expect(w.find('.sn-carousel__slide img').exists()).toBe(false);
+      expect(w.find('.sn-carousel__slide video').exists()).toBe(false);
+    });
+
+    it('ignores the default slot while options is set', () => {
+      const w = mount(
+        defineComponent({
+          components: { SnCarousel, SnCarouselItem },
+          setup() {
+            return () =>
+              h(
+                SnCarousel,
+                { style: 'width: 300px; height: 150px', options: [{ src: 'x.png' }] },
+                { default: () => [h(SnCarouselItem, null, { default: () => 'slot child' })] },
+              );
+          },
+        }),
+      );
+      expect(w.findAll('.sn-carousel__slide')).toHaveLength(1);
+      expect(w.find('.sn-carousel__slide img').attributes('src')).toBe('x.png');
+      expect(w.text()).not.toContain('slot child');
+    });
   });
 });

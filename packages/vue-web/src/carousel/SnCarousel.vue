@@ -30,6 +30,31 @@ export interface SlideSize {
 }
 
 /**
+ * One data-driven slide of the `options` list. The component renders the
+ * media markup itself — a full-bleed `<img>` (default) or `<video>`
+ * (`type: 'video'`, click toggles play/pause, muted + loop + playsinline,
+ * paused automatically when its slide stops being current).
+ */
+export interface SnCarouselMediaItem {
+  /** Media kind. Default `'image'`. */
+  type?: 'image' | 'video';
+  /** Media source URL. */
+  src: string;
+  /** Image alt text (decorative when omitted). */
+  alt?: string;
+  /** Video poster URL. */
+  poster?: string;
+  /** Caption title in the bottom gradient overlay. */
+  title?: string;
+  /** Caption description under the title. */
+  description?: string;
+  /** object-fit of the media. Default `'cover'`. */
+  fit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+  /** Stable diff key; defaults to the list index. */
+  key?: string | number;
+}
+
+/**
  * Provide/inject surface between SnCarousel and SnCarouselItem
  * (1:1 with naive `CarouselContextValue`).
  */
@@ -95,8 +120,10 @@ let globalDragging = false;
  *     `default-index` to 0 (verified against naive-ui 2.43.1; naive ships
  *     no default-index demo).
  *   - Drag start is suppressed when mousedown/touchstart lands inside an
- *     interactive element (`video, audio, a, button, input, …`,
- *     `[data-no-drag]`) so native controls keep working; naive
+ *     interactive element (`a, button, input, …`, `[data-no-drag]`) so
+ *     native controls keep working; a `<video>` / `<audio>` WITHOUT
+ *     `controls` stays swipeable (native media drag would swallow the
+ *     gesture), with `controls` the toolbar owns the pointer; naive
  *     preventDefaults every mouse drag start.
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
@@ -185,6 +212,14 @@ const props = withDefaults(
     loop?: boolean;
     /** Switch slides with the mouse wheel. */
     mousewheel?: boolean;
+    /**
+     * Data-driven slide list. Each entry renders as a full-bleed image or
+     * video slide — the media markup lives inside the component, callers no
+     * longer hand-write `<img>` / `<video>`; `type: 'video'` marks a video
+     * entry. When set (non-empty) the default slot is ignored, while the
+     * `item` slot can still override the built-in media per slide.
+     */
+    options?: SnCarouselMediaItem[];
     /** Inline style override for the next slide (card mode). */
     nextSlideStyle?: CSSProperties | string;
     /** Inline style override for the previous slide (card mode). */
@@ -245,8 +280,20 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  /** Sequence of `<SnCarouselItem>` children. */
+  /** Sequence of `<SnCarouselItem>` children (ignored while `options` is set). */
   default?: () => unknown;
+  /**
+   * Per-slide content override for the `options` list — replaces the
+   * built-in image/video renderer for every entry. Falls back to the
+   * built-in media when omitted.
+   */
+  item?: (props: {
+    item: SnCarouselMediaItem;
+    index: number;
+    isActive: boolean;
+    isPrev: boolean;
+    isNext: boolean;
+  }) => unknown;
   /** Custom arrow buttons; falls back to the built-in pair. */
   arrow?: (props: CarouselArrowSlotProps) => unknown;
   /** Custom indicator dots; falls back to the built-in dots. */
@@ -652,9 +699,24 @@ function onCarouselItemClick(index: number, event: MouseEvent): void {
  * controls>` timeline, a link, a form control). Card-mode side-slide
  * navigation is unaffected — it listens for `click`, not for drag start.
  * (Beyond naive, which preventDefaults every mouse drag start.)
+ *
+ * `<video>` / `<audio>` WITHOUT the `controls` attribute are imagery to the
+ * pointer: native drag would swallow the whole gesture (a ghost drag starts
+ * and no mousemove/mouseup ever reaches the page), so they stay swipeable —
+ * our mousedown preventDefault then also cancels the browser's native media
+ * drag. With `controls` the toolbar owns the pointer.
  */
 const NO_DRAG_SELECTOR =
   'video, audio, a, button, input, textarea, select, [contenteditable], [data-no-drag]';
+
+function isDragGuarded(target: Element): boolean {
+  const guarded = target.closest(NO_DRAG_SELECTOR);
+  if (!guarded) return false;
+  if (guarded instanceof HTMLVideoElement || guarded instanceof HTMLAudioElement) {
+    return guarded.hasAttribute('controls');
+  }
+  return true;
+}
 
 function handleTouchstart(event: MouseEvent | TouchEvent): void {
   if (globalDragging) return;
@@ -663,7 +725,7 @@ function handleTouchstart(event: MouseEvent | TouchEvent): void {
   if (!slidesEl || !(target instanceof Node) || !slidesEl.contains(target)) {
     return;
   }
-  if (target instanceof Element && target.closest(NO_DRAG_SELECTOR)) {
+  if (target instanceof Element && isDragGuarded(target)) {
     return;
   }
   globalDragging = true;
@@ -986,7 +1048,63 @@ function flattenVNodes(vnodes: VNode[], result: VNode[] = []): VNode[] {
   return result;
 }
 
+/* ───────────── options-driven media slides ───────────── */
+
+/** Click-to-toggle playback for built-in `options` videos (muted banners). */
+function toggleVideo(event: MouseEvent): void {
+  const video = event.currentTarget as HTMLVideoElement | null;
+  if (!video) return;
+  if (video.paused) void video.play().catch(() => {});
+  else video.pause();
+}
+
+/** Full-bleed media markup for one `options` entry. */
+function renderMediaItem(item: SnCarouselMediaItem): VNode {
+  const fit = item.fit ?? 'cover';
+  const sizeStyle = { width: '100%', height: '100%', objectFit: fit, display: 'block' };
+  if (item.type === 'video') {
+    // No native controls: click toggles playback, and SnCarouselItem pauses
+    // the video when its slide stops being current.
+    return h('video', {
+      src: item.src,
+      poster: item.poster,
+      muted: true,
+      loop: true,
+      playsinline: true,
+      preload: 'metadata',
+      style: { ...sizeStyle, cursor: 'pointer' },
+      onClick: toggleVideo,
+    });
+  }
+  // draggable=false keeps the native image drag from fighting the
+  // carousel's pointer drag.
+  return h('img', { src: item.src, alt: item.alt ?? '', style: sizeStyle, draggable: false });
+}
+
 const rawSlideVNodes = computed<VNode[]>(() => {
+  if (props.options && props.options.length > 0) {
+    // Data-driven mode: the component builds its own items so the media
+    // markup stays inside; the `item` slot overrides the built-in renderer.
+    return props.options.map((item, i) =>
+      h(
+        SnCarouselItem,
+        {
+          key: item.key ?? i,
+          // exactOptionalPropertyTypes: only pass the caption props when set.
+          ...(item.title !== undefined ? { title: item.title } : {}),
+          ...(item.description !== undefined ? { description: item.description } : {}),
+        },
+        {
+          default: (slotProps: { isActive: boolean; isPrev: boolean; isNext: boolean }) =>
+            slots.item
+              ? // `index` is the options-list index; it must not be overridden
+                // by the item's internal (registration-lagged) scope index.
+                slots.item({ ...slotProps, item, index: i })
+              : renderMediaItem(item),
+        },
+      ),
+    );
+  }
   const children = slots.default ? flattenVNodes(slots.default()) : [];
   const items = children.filter(isCarouselItem);
   if (items.length) return items;

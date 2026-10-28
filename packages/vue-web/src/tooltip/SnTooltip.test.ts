@@ -49,6 +49,21 @@ function stubRect() {
   });
   Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1280 });
   Object.defineProperty(window, 'innerHeight', { configurable: true, value: 800 });
+  // The positioning engine reads the bubble's size from the LAYOUT box
+  // (offsetWidth / offsetHeight — immune to the enter animation's
+  // transform), so the stub provides them independently of the rect.
+  Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+    configurable: true,
+    get(this: HTMLElement) {
+      return this.classList?.contains('sn-tooltip') ? POPOVER_RECT.width : TRIGGER_RECT.width;
+    },
+  });
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    configurable: true,
+    get(this: HTMLElement) {
+      return this.classList?.contains('sn-tooltip') ? POPOVER_RECT.height : TRIGGER_RECT.height;
+    },
+  });
 }
 
 /** Read the teleported popover's computed inline position. */
@@ -340,6 +355,135 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
       // that band, so the rendered result reads as "no gap".
       expect(top + POPOVER_RECT.height).toBe(TRIGGER_RECT.top - ARROW_SIZE);
       expect(top + POPOVER_RECT.height + ARROW_SIZE).toBe(TRIGGER_RECT.top);
+    });
+
+    /**
+     * Root-cause regression for the DEGENERATE-VIEWPORT detachment family
+     * (embedded webviews / iframes / capture panels report
+     * `window.innerWidth / innerHeight` as 0): clamping against a zero
+     * viewport pinned the bubble onto the window edge — detached from its
+     * trigger — on every placement. The engine must trust the raw
+     * beside-the-trigger anchor when the viewport metrics cannot hold the
+     * bubble.
+     */
+    it('positions beside the trigger when the viewport metrics are degenerate (0×0)', async () => {
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: 0 });
+      Object.defineProperty(window, 'innerHeight', { configurable: true, value: 0 });
+      Object.defineProperty(document.documentElement, 'clientWidth', {
+        configurable: true,
+        value: 0,
+      });
+      Object.defineProperty(document.documentElement, 'clientHeight', {
+        configurable: true,
+        value: 0,
+      });
+
+      mountTooltip({ content: 'x', show: true, placement: 'top' });
+      await new Promise((r) => setTimeout(r, 10));
+
+      const s = popoverStyle();
+      // Raw beside-the-trigger anchor: trigger.top - pop.height - arrow band.
+      expect(Number.parseFloat(s.top)).toBe(TRIGGER_RECT.top - POPOVER_RECT.height - ARROW_SIZE);
+      // Cross axis (center) also passes through unclamped.
+      expect(Number.parseFloat(s.left)).toBe(
+        TRIGGER_RECT.left + TRIGGER_RECT.width / 2 - POPOVER_RECT.width / 2,
+      );
+    });
+
+    /**
+     * Root-cause regression for the recurring "top 方向分离" detachment:
+     * the bubble always mounts mid-enter-animation (`scale(0.96)` for
+     * 180ms), and getBoundingClientRect() reflects that transform — the old
+     * engine measured a 4%-shrunken bubble and wrote top/left from it, so
+     * every placement drifted away from its trigger while the animation
+     * played. The engine must read the bubble's size from the LAYOUT box
+     * (offsetWidth / offsetHeight) and ignore the transformed client rect.
+     */
+    it('should measure the bubble from its layout box, not the animated client rect', async () => {
+      // Simulate the mid-animation measurement: the client rect reports a
+      // 4%-shrunken bubble while the layout box stays 200×40.
+      const previous = HTMLElement.prototype.getBoundingClientRect;
+      Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
+        configurable: true,
+        value(this: HTMLElement) {
+          const isPopover = this.classList?.contains('sn-tooltip');
+          if (!isPopover) return previous.call(this);
+          const r = POPOVER_RECT;
+          const w = r.width * 0.96;
+          const h = r.height * 0.96;
+          return {
+            top: 0,
+            left: 0,
+            width: w,
+            height: h,
+            right: w,
+            bottom: h,
+            x: 0,
+            y: 0,
+            toJSON() {
+              return {};
+            },
+          };
+        },
+      });
+
+      mountTooltip({ content: 'x', show: true, placement: 'top' });
+      await new Promise((r) => setTimeout(r, 10));
+
+      const s = popoverStyle();
+      // With the shrunken rect the old engine computed
+      // top = 384 - 38.4 - 8 = 337.6 — a visible gap. The layout box keeps
+      // the bubble exactly one arrow-band below the trigger's top edge.
+      expect(Number.parseFloat(s.top)).toBe(TRIGGER_RECT.top - POPOVER_RECT.height - ARROW_SIZE);
+      expect(Number.parseFloat(s.left)).toBe(
+        TRIGGER_RECT.left + TRIGGER_RECT.width / 2 - POPOVER_RECT.width / 2,
+      );
+    });
+
+    /**
+     * Root-cause regression #2 for the detachment reports: when the trigger
+     * sits outside the viewport along the main axis (scrolled away, short
+     * panel), NEITHER side fits and the last-resort `rectFor(..., false)`
+     * used to return null anyway — crashing `recompute()` on `r.top`. The
+     * watcher rejected, popoverStyle was never written, and the bubble
+     * rendered in normal flow at the end of <body>, visually detached from
+     * everything. The committed side must clamp and always return a rect.
+     */
+    it('should still position (not crash) when the trigger is outside the viewport', async () => {
+      const previous = HTMLElement.prototype.getBoundingClientRect;
+      Object.defineProperty(HTMLElement.prototype, 'getBoundingClientRect', {
+        configurable: true,
+        value(this: HTMLElement) {
+          const isPopover = this.classList?.contains('sn-tooltip');
+          const r = isPopover ? POPOVER_RECT : { top: 1200, left: 500, width: 100, height: 32 };
+          return {
+            top: r.top,
+            left: r.left,
+            width: r.width,
+            height: r.height,
+            right: r.left + r.width,
+            bottom: r.top + r.height,
+            x: r.left,
+            y: r.top,
+            toJSON() {
+              return {};
+            },
+          };
+        },
+      });
+
+      // 1200 is far below the 800px viewport: neither `top` nor `bottom`
+      // fits the strict probe. The old engine crashed here; the new one
+      // clamps the bubble into the viewport and still writes the style.
+      mountTooltip({ content: 'x', show: true, placement: 'top' });
+      await new Promise((r) => setTimeout(r, 10));
+
+      const s = popoverStyle();
+      expect(s.position).toBe('fixed');
+      const top = Number.parseFloat(s.top);
+      expect(top).toBeGreaterThanOrEqual(0);
+      expect(top + POPOVER_RECT.height).toBeLessThanOrEqual(800);
+      void previous;
     });
 
     it('should place a bottom tooltip entirely below the trigger, with no gap', async () => {
@@ -635,8 +779,9 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
      * A scroll burst (capture listener fires for every container) must
      * collapse into at most one positioning pass per animation frame —
      * otherwise each event runs a full measure-and-write cycle and the
-     * scroll thread thrashes layout. Recompute is observable as exactly two
-     * getBoundingClientRect calls (trigger box + popover box).
+     * scroll thread thrashes layout. Recompute is observable as exactly one
+     * getBoundingClientRect call (the trigger box; the bubble's size is
+     * read from the layout box instead).
      */
     it('coalesces a scroll burst into one recompute per frame', async () => {
       // Defer rAF so queued recomputes only run when the frame is flushed.
@@ -667,8 +812,10 @@ describe('SnTooltip (AUI-WEB-FEED-006)', () => {
       frame?.(0);
       await nextTick();
       await Promise.resolve();
-      // One recompute pass = trigger box + popover box reads.
-      expect(rectSpy).toHaveBeenCalledTimes(2);
+      // One recompute pass = one trigger getBoundingClientRect read (the
+      // bubble's size comes from offsetWidth / offsetHeight, which the spy
+      // does not track).
+      expect(rectSpy).toHaveBeenCalledTimes(1);
 
       // After close, scroll events schedule no frame and read no layout.
       // `show` is controlled here, so closing goes through the prop.

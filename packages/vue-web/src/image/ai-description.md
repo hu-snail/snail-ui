@@ -41,8 +41,8 @@ import SnImageGroup from '@snui/vue-web/src/image/SnImageGroup.vue';
 | `previewSrc`                  | `string`                                                   | —        | no       | Dedicated (larger) preview url; falls back to `src`.                                                                                                                    |
 | `imgProps`                    | `ImgHTMLAttributes`                                        | —        | no       | Extra attributes forwarded to the inner `<img>`.                                                                                                                        |
 | `previewedImgProps`           | `ImgHTMLAttributes`                                        | —        | no       | Attributes/style for the previewed `<img>`.                                                                                                                             |
-| `lazy`                        | `boolean`                                                  | `false`  | no       | Load on viewport entry (native `loading="lazy"` by default).                                                                                                            |
-| `intersectionObserverOptions` | `{ root?, rootMargin?, threshold? }`                       | —        | no       | Switches `lazy` to IntersectionObserver mode; `root` accepts an element or a selector string.                                                                           |
+| `lazy`                        | `boolean`                                                  | `false`  | no       | Lazy loading. On its own: native `loading="lazy"`.                                                                                                                      |
+| `intersectionObserverOptions` | `{ root?, rootMargin?, threshold? }`                       | —        | no       | With `lazy`, gates the `src` on an IntersectionObserver; `root` accepts an element or a selector string.                                                                |
 | `previewDisabled`             | `boolean`                                                  | `false`  | no       | Disable click-to-preview.                                                                                                                                               |
 | `showToolbar`                 | `boolean`                                                  | `true`   | no       | Toolbar visibility in the preview.                                                                                                                                      |
 | `showToolbarTooltip`          | `boolean`                                                  | `false`  | no       | Native `title` hints on toolbar buttons.                                                                                                                                |
@@ -110,6 +110,12 @@ import SnImageGroup from '@snui/vue-web/src/image/SnImageGroup.vue';
   toolbar surface) instead of hardcoded rgba literals.
 - Setting `srcList` while member images are present ignores the members
   instead of throwing.
+- Lazy loading is implemented by the shared `_internal/lazy-visibility` gate
+  (SnImage + SnAvatar). Two behaviour fixes fall out of it: the gate survives
+  reactive changes (turning `lazy` / the options on after mount now builds the
+  observer instead of silently doing nothing), and an environment without
+  `IntersectionObserver` resolves the gate immediately — the previous inline
+  implementation never set the src in that case.
 
 ## Accessibility
 

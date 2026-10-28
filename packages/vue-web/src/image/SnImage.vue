@@ -37,11 +37,13 @@ let imageUid = 0;
  *   <SnImageGroup><SnImage src="…" /><SnImage src="…" /></SnImageGroup>
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref, useSlots, watchEffect } from 'vue';
+import { computed, inject, ref, useSlots, watchEffect } from 'vue';
 import type { ImgHTMLAttributes, StyleValue } from 'vue';
 import SnImagePreview from './SnImagePreview.vue';
 import type { SnImageToolbarNodes } from './SnImagePreview.vue';
 import { SN_IMAGE_GROUP_INJECTION_KEY } from './SnImageGroup.vue';
+import { useLazyVisibility } from '../_internal/lazy-visibility';
+import type { LazyVisibilityOptions } from '../_internal/lazy-visibility';
 
 defineOptions({ name: 'SnImage' });
 
@@ -58,13 +60,7 @@ const props = withDefaults(
     /** Load on viewport entry. Mirrors `lazy`. */
     lazy?: boolean;
     /** IntersectionObserver config for lazy loading. Mirrors `intersection-observer-options`. */
-    intersectionObserverOptions?:
-      | {
-          root?: Element | Document | string | null;
-          rootMargin?: string;
-          threshold?: number | number[];
-        }
-      | undefined;
+    intersectionObserverOptions?: LazyVisibilityOptions | undefined;
     /** Thumbnail fit inside its box. Mirrors `object-fit`. */
     objectFit?: 'fill' | 'contain' | 'cover' | 'none' | 'scale-down';
     /** Dedicated (larger) preview url; falls back to `src`. Mirrors `preview-src`. */
@@ -128,8 +124,19 @@ const imageId = ++imageUid;
 const imageRef = ref<HTMLImageElement | null>(null);
 const showError = ref(false);
 const loaded = ref(false);
-const shouldStartLoading = ref(!props.lazy);
 const previewShow = ref(false);
+
+/* ── Lazy loading ───────────────────────────────────────────────────────── */
+
+// Shared IntersectionObserver gate (`_internal/lazy-visibility`): active only
+// when `lazy` is on AND `intersection-observer-options` is given. A plain
+// `lazy` without options keeps the native loading="lazy" attribute and needs
+// no JS gate.
+const { shouldLoad } = useLazyVisibility(
+  imageRef,
+  computed(() => props.intersectionObserverOptions),
+  computed(() => props.lazy && props.intersectionObserverOptions !== undefined),
+);
 
 const mergedPreviewSrc = computed(() => props.previewSrc || props.src);
 
@@ -144,42 +151,6 @@ watchEffect((onInvalidate) => {
   if (!group) return;
   const unregister = group.registerImage(imageId, mergedPreviewSrc.value || '');
   onInvalidate(() => unregister());
-});
-
-/* ── Lazy loading ───────────────────────────────────────────────────────── */
-
-let disconnectObserver: (() => void) | null = null;
-
-onMounted(() => {
-  if (!props.lazy || !props.intersectionObserverOptions) return;
-  if (typeof IntersectionObserver === 'undefined') return;
-  const options = props.intersectionObserverOptions;
-  const rootOption = options.root;
-  let resolvedRoot: Element | Document | null | undefined;
-  if (typeof rootOption === 'string') {
-    resolvedRoot = typeof document !== 'undefined' ? document.querySelector(rootOption) : null;
-  } else {
-    resolvedRoot = rootOption;
-  }
-  const init: IntersectionObserverInit = {};
-  if (resolvedRoot !== undefined) init.root = resolvedRoot;
-  if (options.rootMargin !== undefined) init.rootMargin = options.rootMargin;
-  if (options.threshold !== undefined) init.threshold = options.threshold;
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        shouldStartLoading.value = true;
-        observer.disconnect();
-      }
-    }
-  }, init);
-  if (imageRef.value) observer.observe(imageRef.value);
-  disconnectObserver = () => observer.disconnect();
-});
-
-onBeforeUnmount(() => {
-  disconnectObserver?.();
-  disconnectObserver = null;
 });
 
 /* ── <img> bindings ─────────────────────────────────────────────────────── */
@@ -209,8 +180,9 @@ const imgAttrs = computed<Record<string, unknown>>(() => {
 
 const mergedSrc = computed(() => {
   if (showError.value) return props.fallbackSrc;
-  if (props.lazy && props.intersectionObserverOptions && !shouldStartLoading.value)
-    return undefined;
+  // Gated by the IntersectionObserver (see useLazyVisibility): hold the src
+  // back until the thumbnail has entered the viewport.
+  if (!shouldLoad.value) return undefined;
   return props.src || props.imgProps?.src;
 });
 

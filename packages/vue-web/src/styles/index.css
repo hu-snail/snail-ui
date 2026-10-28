@@ -38,3 +38,120 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Scrollbars (web) ─────────────────────────────────────────────────────
+ * Thin, token-themed bars for every scrollable surface the library owns
+ * (time columns, menus, quick panels, tables, log, transfer lists, …) —
+ * the default UA scrollbar never matches the theme. Opt-in for arbitrary
+ * host surfaces via the `.snui-scroll` utility.
+ *
+ * Firefox gets the standard `scrollbar-width/color` pair; Chromium/Safari
+ * get the `::-webkit-*` block. Drawer keeps its own opt-out: the
+ * `--native-scrollbar` modifier restores UA scrollbars deliberately.
+ */
+:root {
+  --sn-web-scrollbar-size: 6px;
+  --sn-web-scrollbar-thumb: rgba(9, 9, 11, 0.22);
+  --sn-web-scrollbar-thumb-hover: rgba(9, 9, 11, 0.4);
+  --sn-web-scrollbar-track: transparent;
+}
+
+.dark {
+  --sn-web-scrollbar-thumb: rgba(250, 250, 250, 0.26);
+  --sn-web-scrollbar-thumb-hover: rgba(250, 250, 250, 0.46);
+}
+
+.sn-auto-complete__menu,
+.sn-card__content--scrollable,
+.sn-cascader-menu__columns,
+.sn-data-table__scroll,
+.sn-data-table__filter-menu-options,
+.sn-date-picker-time-col,
+.sn-infinite-scroll,
+.sn-log__scroll,
+.sn-mention__menu,
+.sn-notification-container--scrollable,
+.sn-pagination__quick-panel,
+.sn-popover--scrollable .sn-popover__content,
+.sn-popselect--scrollable .sn-popselect__menu,
+.sn-select-menu__body,
+.sn-time-picker-col,
+.sn-tooltip--scrollable .sn-tooltip__body,
+.sn-transfer__list,
+.sn-tree-select-menu__body,
+.sn-virtual-list,
+.snui-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--sn-web-scrollbar-thumb) var(--sn-web-scrollbar-track);
+}
+
+.sn-auto-complete__menu::-webkit-scrollbar,
+.sn-card__content--scrollable::-webkit-scrollbar,
+.sn-cascader-menu__columns::-webkit-scrollbar,
+.sn-data-table__scroll::-webkit-scrollbar,
+.sn-data-table__filter-menu-options::-webkit-scrollbar,
+.sn-date-picker-time-col::-webkit-scrollbar,
+.sn-infinite-scroll::-webkit-scrollbar,
+.sn-log__scroll::-webkit-scrollbar,
+.sn-mention__menu::-webkit-scrollbar,
+.sn-notification-container--scrollable::-webkit-scrollbar,
+.sn-pagination__quick-panel::-webkit-scrollbar,
+.sn-popover--scrollable .sn-popover__content::-webkit-scrollbar,
+.sn-popselect--scrollable .sn-popselect__menu::-webkit-scrollbar,
+.sn-select-menu__body::-webkit-scrollbar,
+.sn-time-picker-col::-webkit-scrollbar,
+.sn-tooltip--scrollable .sn-tooltip__body::-webkit-scrollbar,
+.sn-transfer__list::-webkit-scrollbar,
+.sn-tree-select-menu__body::-webkit-scrollbar,
+.sn-virtual-list::-webkit-scrollbar,
+.snui-scroll::-webkit-scrollbar {
+  width: var(--sn-web-scrollbar-size);
+  height: var(--sn-web-scrollbar-size);
+}
+
+.sn-auto-complete__menu::-webkit-scrollbar-track,
+.sn-cascader-menu__columns::-webkit-scrollbar-track,
+.sn-date-picker-time-col::-webkit-scrollbar-track,
+.sn-pagination__quick-panel::-webkit-scrollbar-track,
+.sn-select-menu__body::-webkit-scrollbar-track,
+.sn-time-picker-col::-webkit-scrollbar-track,
+.snui-scroll::-webkit-scrollbar-track {
+  background: var(--sn-web-scrollbar-track);
+}
+
+.sn-auto-complete__menu::-webkit-scrollbar-thumb,
+.sn-card__content--scrollable::-webkit-scrollbar-thumb,
+.sn-cascader-menu__columns::-webkit-scrollbar-thumb,
+.sn-data-table__scroll::-webkit-scrollbar-thumb,
+.sn-data-table__filter-menu-options::-webkit-scrollbar-thumb,
+.sn-date-picker-time-col::-webkit-scrollbar-thumb,
+.sn-infinite-scroll::-webkit-scrollbar-thumb,
+.sn-log__scroll::-webkit-scrollbar-thumb,
+.sn-mention__menu::-webkit-scrollbar-thumb,
+.sn-notification-container--scrollable::-webkit-scrollbar-thumb,
+.sn-pagination__quick-panel::-webkit-scrollbar-thumb,
+.sn-popover--scrollable .sn-popover__content::-webkit-scrollbar-thumb,
+.sn-popselect--scrollable .sn-popselect__menu::-webkit-scrollbar-thumb,
+.sn-select-menu__body::-webkit-scrollbar-thumb,
+.sn-time-picker-col::-webkit-scrollbar-thumb,
+.sn-tooltip--scrollable .sn-tooltip__body::-webkit-scrollbar-thumb,
+.sn-transfer__list::-webkit-scrollbar-thumb,
+.sn-tree-select-menu__body::-webkit-scrollbar-thumb,
+.sn-virtual-list::-webkit-scrollbar-thumb,
+.snui-scroll::-webkit-scrollbar-thumb {
+  border-radius: calc(var(--sn-web-scrollbar-size) / 2);
+  background-color: var(--sn-web-scrollbar-thumb);
+}
+
+.sn-auto-complete__menu::-webkit-scrollbar-thumb:hover,
+.sn-cascader-menu__columns::-webkit-scrollbar-thumb:hover,
+.sn-data-table__scroll::-webkit-scrollbar-thumb:hover,
+.sn-date-picker-time-col::-webkit-scrollbar-thumb:hover,
+.sn-pagination__quick-panel::-webkit-scrollbar-thumb:hover,
+.sn-select-menu__body::-webkit-scrollbar-thumb:hover,
+.sn-time-picker-col::-webkit-scrollbar-thumb:hover,
+.sn-transfer__list::-webkit-scrollbar-thumb:hover,
+.sn-tree-select-menu__body::-webkit-scrollbar-thumb:hover,
+.snui-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: var(--sn-web-scrollbar-thumb-hover);
+}

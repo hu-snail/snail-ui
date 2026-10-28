@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { h } from 'vue';
 import { Search } from 'lucide-vue-next';
@@ -105,5 +105,112 @@ describe('SnAvatar (AUI-WEB-DS-001)', () => {
   it('applies the color override via inline style', () => {
     const w = mount(SnAvatar, { props: { color: '#ff5722' } });
     expect(w.attributes('style')).toContain('background');
+  });
+});
+
+interface IOController {
+  fire: (isIntersecting: boolean) => void;
+}
+
+/** Stub IntersectionObserver, handing tests manual control. */
+function stubIntersectionObserver(): IOController[] {
+  const controllers: IOController[] = [];
+  class IOStub {
+    constructor(callback: IntersectionObserverCallback) {
+      controllers.push({
+        fire: (isIntersecting: boolean) => {
+          callback(
+            [{ isIntersecting } as IntersectionObserverEntry],
+            this as unknown as IntersectionObserver,
+          );
+        },
+      });
+    }
+    observe(): void {}
+    disconnect(): void {}
+    unobserve(): void {}
+  }
+  vi.stubGlobal('IntersectionObserver', IOStub);
+  return controllers;
+}
+
+describe('SnAvatar lazy loading', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('uses the native loading attribute for a plain lazy avatar', () => {
+    const w = mount(SnAvatar, { props: { src: '/a.png', lazy: true } });
+    const img = w.find('img');
+    expect(img.exists()).toBe(true);
+    expect(img.attributes('src')).toBe('/a.png');
+    expect(img.attributes('loading')).toBe('lazy');
+  });
+
+  it('keeps eager loading when lazy is off', () => {
+    const w = mount(SnAvatar, { props: { src: '/a.png' } });
+    expect(w.find('img').attributes('loading')).toBe('eager');
+  });
+
+  it('withholds the image until the observer reports visibility', async () => {
+    const controllers = stubIntersectionObserver();
+    const w = mount(SnAvatar, {
+      props: {
+        src: '/a.png',
+        lazy: true,
+        fallbackText: '张',
+        intersectionObserverOptions: { rootMargin: '200px' },
+      },
+    });
+
+    // Gated: the fallback content renders and there is no <img> yet.
+    expect(w.find('img').exists()).toBe(false);
+    expect(w.find('.sn-avatar__text').text()).toBe('张');
+    expect(controllers).toHaveLength(1);
+
+    controllers[0].fire(true);
+    await w.vm.$nextTick();
+
+    const img = w.find('img');
+    expect(img.exists()).toBe(true);
+    expect(img.attributes('src')).toBe('/a.png');
+    expect(img.attributes('loading')).toBe('eager'); // observer mode, not native
+    expect(w.find('.sn-avatar__text').exists()).toBe(false);
+  });
+
+  it('falls back to the text thumbnail when the gated image fails', async () => {
+    const controllers = stubIntersectionObserver();
+    const w = mount(SnAvatar, {
+      props: {
+        src: '/broken.png',
+        lazy: true,
+        fallbackText: '张',
+        intersectionObserverOptions: {},
+      },
+    });
+    controllers[0].fire(true);
+    await w.vm.$nextTick();
+    await w.find('img').trigger('error');
+
+    expect(w.emitted('error')).toHaveLength(1);
+    expect(w.find('img').exists()).toBe(false);
+    expect(w.find('.sn-avatar__text').text()).toBe('张');
+  });
+
+  it('loads eagerly when IntersectionObserver is unavailable', async () => {
+    const globalWithIO = globalThis as { IntersectionObserver?: unknown };
+    const original = globalWithIO.IntersectionObserver;
+    delete globalWithIO.IntersectionObserver;
+    try {
+      const w = mount(SnAvatar, {
+        props: { src: '/a.png', lazy: true, intersectionObserverOptions: {} },
+      });
+      // The gate resolves in `onMounted`; the image renders on the next tick.
+      await w.vm.$nextTick();
+      expect(w.find('img').exists()).toBe(true);
+      expect(w.find('img').attributes('src')).toBe('/a.png');
+    } finally {
+      if (original) globalWithIO.IntersectionObserver = original;
+    }
   });
 });

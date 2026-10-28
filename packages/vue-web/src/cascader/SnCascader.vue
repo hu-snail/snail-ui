@@ -6,6 +6,7 @@
       `sn-cascader--${size}`,
       {
         'sn-cascader--filterable': filterable,
+        'sn-cascader--multiple': multiple,
         'sn-cascader--disabled': disabled,
         'sn-cascader--readonly': readonly,
         'sn-cascader--focused': isFocused,
@@ -36,24 +37,54 @@
       @focus="onFocus"
       @blur="onBlur"
     >
-      <!-- Non-filterable: label / placeholder text -->
-      <span v-if="!filterable" class="sn-cascader__single-value">
+      <!-- Single: label / placeholder text -->
+      <span v-if="!multiple && !filterable" class="sn-cascader__single-value">
         <template v-if="selectedLabel !== null">{{ selectedLabel }}</template>
         <span v-else class="sn-cascader__placeholder">{{ placeholder }}</span>
       </span>
 
-      <!-- Filterable: committed label + inline search input -->
-      <span v-if="filterable && selectedLabel !== null" class="sn-cascader__single-value">{{
-        selectedLabel
-      }}</span>
+      <!-- Single + filterable: committed label -->
+      <span
+        v-if="!multiple && filterable && selectedLabel !== null"
+        class="sn-cascader__single-value"
+        >{{ selectedLabel }}</span
+      >
+
+      <!-- Multiple: one tag per committed leaf path -->
+      <template v-if="multiple">
+        <span v-for="tag in visibleTags" :key="tag.key" class="sn-cascader__tag">
+          <span class="sn-cascader__tag-label">{{ tag.label }}</span>
+          <button
+            v-if="isInteractive"
+            type="button"
+            class="sn-cascader__tag-close"
+            :aria-label="`Remove ${tag.label}`"
+            :tabindex="-1"
+            @mousedown.prevent
+            @click.stop="removeTag(tag.values)"
+          >
+            <SnIcon :icon="CloseIcon" :size="9" />
+          </button>
+        </span>
+        <span
+          v-if="restTagCount > 0"
+          class="sn-cascader__tag sn-cascader__tag--rest"
+          :aria-label="`${restTagCount} more selected`"
+        >
+          <span class="sn-cascader__tag-label">+{{ restTagCount }}</span>
+        </span>
+        <span v-if="selectedTags.length === 0" class="sn-cascader__placeholder">{{
+          placeholder
+        }}</span>
+      </template>
       <input
         v-if="filterable"
         ref="filterInputRef"
         v-model="query"
         type="text"
         class="sn-cascader__filter-input"
-        :class="{ 'sn-cascader__filter-input--empty': selectedLabel === null }"
-        :placeholder="selectedLabel === null ? placeholder : ''"
+        :class="{ 'sn-cascader__filter-input--empty': isSelectionEmpty }"
+        :placeholder="isSelectionEmpty ? placeholder : ''"
         :disabled="disabled"
         :readonly="readonly || !isMenuOpen"
         aria-label="Type to filter options"
@@ -74,7 +105,7 @@
     <!-- Suffix area: clear button | arrow -->
     <div class="sn-cascader__suffix">
       <button
-        v-if="clearable && selectedLabel !== null && isInteractive"
+        v-if="clearable && !isSelectionEmpty && isInteractive"
         type="button"
         class="sn-cascader__clear"
         aria-label="Clear selection"
@@ -109,19 +140,40 @@
             <slot name="empty">{{ emptyText }}</slot>
           </div>
           <div v-else-if="isFiltering" class="sn-cascader-menu__columns">
-            <div class="sn-cascader-menu__column" role="listbox" aria-label="Matching options">
+            <div
+              class="sn-cascader-menu__column"
+              role="listbox"
+              aria-label="Matching options"
+              :aria-multiselectable="multiple ? 'true' : undefined"
+            >
               <div
                 v-for="node in filteredLeaves"
                 :key="node.key"
                 :id="optionDomId(node)"
                 :class="optionClasses(node)"
                 role="option"
-                :aria-selected="node.key === selectedKey ? 'true' : 'false'"
+                :aria-selected="isNodeSelected(node) ? 'true' : 'false'"
                 :aria-disabled="node.disabled ? 'true' : undefined"
                 :data-key="node.key"
+                :title="pathText(node)"
                 @click="onOptionClick(node)"
                 @mouseenter="onOptionMouseEnter(node)"
               >
+                <span
+                  v-if="multiple"
+                  :class="checkboxClasses(node)"
+                  aria-hidden="true"
+                  @click.stop="onCheckboxClick(node)"
+                >
+                  <span
+                    v-if="nodeCheckState(node) === 'all'"
+                    class="sn-cascader-option__checkbox-tick"
+                  />
+                  <span
+                    v-else-if="nodeCheckState(node) === 'some'"
+                    class="sn-cascader-option__checkbox-dash"
+                  />
+                </span>
                 <span class="sn-cascader-option__label">{{ pathText(node) }}</span>
               </div>
             </div>
@@ -133,6 +185,7 @@
               class="sn-cascader-menu__column"
               role="listbox"
               :aria-label="`Level ${columnIndex + 1}`"
+              :aria-multiselectable="multiple ? 'true' : undefined"
             >
               <div
                 v-for="node in column"
@@ -140,12 +193,28 @@
                 :id="optionDomId(node)"
                 :class="optionClasses(node)"
                 role="option"
-                :aria-selected="node.key === selectedKey ? 'true' : 'false'"
+                :aria-selected="isNodeSelected(node) ? 'true' : 'false'"
                 :aria-disabled="node.disabled ? 'true' : undefined"
                 :data-key="node.key"
+                :title="node.label"
                 @click="onOptionClick(node)"
                 @mouseenter="onOptionMouseEnter(node)"
               >
+                <span
+                  v-if="multiple"
+                  :class="checkboxClasses(node)"
+                  aria-hidden="true"
+                  @click.stop="onCheckboxClick(node)"
+                >
+                  <span
+                    v-if="nodeCheckState(node) === 'all'"
+                    class="sn-cascader-option__checkbox-tick"
+                  />
+                  <span
+                    v-else-if="nodeCheckState(node) === 'some'"
+                    class="sn-cascader-option__checkbox-dash"
+                  />
+                </span>
                 <span class="sn-cascader-option__label">{{ node.label }}</span>
                 <span v-if="!node.isLeaf" class="sn-cascader-option__expand" aria-hidden="true">
                   <SnIcon :icon="ChevronRightIcon" :size="12" />
@@ -167,13 +236,21 @@
  *   (https://www.naiveui.com/zh-CN/light/components/cascader)
  * Props + semantics mirror n-cascader's main surface.
  *
- * Parity (this version, single-select core):
- *   - modelValue: the full leaf path (root-first array of values); clear
- *     commits an empty array
+ * Parity (this version, single-select + tree-check core):
+ *   - modelValue: single mode binds one full leaf path (root-first array of
+ *     values); multiple mode binds an array of leaf paths; clear commits an
+ *     empty value either way
  *   - options: tree options ({ label, value, disabled?, children? }) with
  *     labelField / valueField / childrenField remapping
  *   - placeholder / clearable / filterable / disabled / readonly / size /
  *     status / expandTrigger ('click' | 'hover')
+ *   - multiple: checkbox cascade — a checked parent commits every selectable
+ *     descendant leaf path; trigger renders one removable tag per committed
+ *     path (maxTagCount collapses the rest into `+N`); the menu stays open
+ *     while toggling
+ *   - checkStrictly: any node can be committed — single commits the clicked
+ *     node's own path (parents still expand); multiple decouples parent and
+ *     child (self-only checks, no cascade, no indeterminate state)
  *   - filterable: built-in case-insensitive match on the FULL path text
  *     (labels joined with ' / '), so matching a parent keeps its leaves;
  *     matches render as a flat list of full-path rows
@@ -183,7 +260,8 @@
  *   - events: update:modelValue, change, clear, focus, blur
  *   - slot: empty
  *   - a11y: role=combobox trigger + role=listbox per column, aria-expanded,
- *     aria-activedescendant, aria-selected / aria-disabled per option
+ *     aria-activedescendant, aria-selected / aria-disabled per option,
+ *     aria-multiselectable per column in multiple mode
  *
  * Dropdown positioning: absolute coordinates against the trigger rect
  * (bottom preferred, flips to top when the viewport lacks room — the same
@@ -203,7 +281,10 @@ import SnIcon from '../icon/SnIcon.vue';
 import { useOverlayFollow } from '../_internal/use-overlay-follow';
 import { ChevronDownIcon, ChevronRightIcon, CloseIcon } from './sn-cascader-icons';
 import {
+  cascaderPathKey,
   collectCascaderLeaves,
+  collectCascaderNodes,
+  collectSelectableLeaves,
   defaultCascaderFilter,
   findPathByValues,
   keyChainOf,
@@ -211,6 +292,7 @@ import {
   type SnCascaderExpandTrigger,
   type SnCascaderNode,
   type SnCascaderOptionInput,
+  type SnCascaderPath,
   type SnCascaderSize,
   type SnCascaderStatus,
   type SnCascaderValue,
@@ -220,8 +302,11 @@ defineOptions({ name: 'SnCascader' });
 
 const props = withDefaults(
   defineProps<{
-    /** Bound value — the full leaf path (root-first); empty when cleared. */
-    modelValue?: Array<SnCascaderValue> | null;
+    /**
+     * Bound value. Single mode: one full leaf path (root-first). Multiple
+     * mode: an array of leaf paths. Clear commits an empty value either way.
+     */
+    modelValue?: Array<SnCascaderValue> | Array<Array<SnCascaderValue>> | null;
     /** Tree option list ({ label, value, disabled?, children? }). */
     options?: SnCascaderOptionInput[];
     /** Label key remapping for object options. */
@@ -246,6 +331,21 @@ const props = withDefaults(
     status?: SnCascaderStatus;
     /** How parent nodes expand the next column. */
     expandTrigger?: SnCascaderExpandTrigger;
+    /**
+     * Multiple selection (tree check) mode — every row renders a checkbox;
+     * checking a parent cascades to all of its selectable descendant leaves
+     * and `modelValue` holds one path per committed leaf.
+     */
+    multiple?: boolean;
+    /** Max visible tags before the rest collapse into `+N` (multiple only). */
+    maxTagCount?: number | undefined;
+    /**
+     * Strict selection (check-strictly): ANY node — parent or leaf — can be
+     * committed. Single mode commits the clicked node's own path (parents
+     * still expand for drilling); multiple mode decouples parent/child —
+     * checkboxes check themselves only, no cascade, no indeterminate state.
+     */
+    checkStrictly?: boolean;
     /** Accessible name for the trigger. */
     ariaLabel?: string;
     /** Empty-state text (overridden by the `empty` slot). */
@@ -265,16 +365,19 @@ const props = withDefaults(
     size: 'medium',
     status: 'default',
     expandTrigger: 'click',
+    multiple: false,
+    maxTagCount: undefined,
+    checkStrictly: false,
     ariaLabel: '',
     emptyText: 'No options',
   },
 );
 
 const emit = defineEmits<{
-  /** v-model sync — full leaf path (root-first). */
-  (e: 'update:modelValue', value: Array<SnCascaderValue>): void;
+  /** v-model sync — one leaf path (single) or an array of leaf paths (multiple). */
+  (e: 'update:modelValue', value: SnCascaderPath | SnCascaderPath[]): void;
   /** Selection committed (also fires for clear). */
-  (e: 'change', value: Array<SnCascaderValue>): void;
+  (e: 'change', value: SnCascaderPath | SnCascaderPath[]): void;
   /** Clear button activated. */
   (e: 'clear'): void;
   /** Trigger gained focus. */
@@ -303,10 +406,39 @@ const normalizedNodes = computed<SnCascaderNode[]>(() =>
 
 /* ─────────── Selection echo ─────────── */
 
-const selectedPath = computed<SnCascaderNode[] | null>(() => {
-  if (props.modelValue === null || props.modelValue.length === 0) return null;
-  return findPathByValues(normalizedNodes.value, props.modelValue);
+/** True elements of a single-mode bound value (string | number). */
+function isValueEntry(entry: unknown): entry is SnCascaderValue {
+  return typeof entry === 'string' || typeof entry === 'number';
+}
+
+/** Single-mode bound path (null in multiple mode or for malformed values). */
+const singleBoundPath = computed<SnCascaderPath | null>(() => {
+  if (props.multiple) return null;
+  const value: unknown = props.modelValue;
+  if (!Array.isArray(value) || value.length === 0) return null;
+  return value.every(isValueEntry) ? value : null;
 });
+
+const selectedPath = computed<SnCascaderNode[] | null>(() => {
+  const path = singleBoundPath.value;
+  if (path === null) return null;
+  return findPathByValues(normalizedNodes.value, path, { allowNonLeaf: props.checkStrictly });
+});
+
+/** Multiple-mode bound leaf paths (malformed entries are ignored). */
+const selectedPaths = computed<SnCascaderPath[]>(() => {
+  if (!props.multiple) return [];
+  const value: unknown = props.modelValue;
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is SnCascaderPath => Array.isArray(entry) && entry.every(isValueEntry),
+  );
+});
+
+/** Keys of the committed leaf paths — checkbox state source. */
+const checkedLeafKeys = computed<Set<string>>(
+  () => new Set(selectedPaths.value.map((path) => cascaderPathKey(path))),
+);
 
 const selectedKey = computed<string | null>(
   () => selectedPath.value?.[selectedPath.value.length - 1]?.key ?? null,
@@ -318,6 +450,39 @@ const selectedLabel = computed<string | null>(() =>
     : selectedPath.value.map((node) => node.label).join(PATH_SEPARATOR),
 );
 
+/** Empty in the active mode — drives the placeholder + filter input echo. */
+const isSelectionEmpty = computed(() =>
+  props.multiple ? selectedPaths.value.length === 0 : selectedPath.value === null,
+);
+
+/** Resolved trigger tags — one per committed path; unknown paths skipped. */
+const selectedTags = computed<{ key: string; values: SnCascaderPath; label: string }[]>(() =>
+  selectedPaths.value.flatMap((path) => {
+    const nodes = findPathByValues(normalizedNodes.value, path, {
+      allowNonLeaf: props.checkStrictly,
+    });
+    if (nodes === null) return [];
+    return [
+      {
+        key: cascaderPathKey(path),
+        values: [...path],
+        label: nodes.map((node) => node.label).join(PATH_SEPARATOR),
+      },
+    ];
+  }),
+);
+
+/** Tags visible before maxTagCount collapses the rest into `+N`. */
+const visibleTags = computed(() => {
+  if (props.maxTagCount === undefined || props.maxTagCount < 0) return selectedTags.value;
+  return selectedTags.value.slice(0, props.maxTagCount);
+});
+
+const restTagCount = computed(() => {
+  if (props.maxTagCount === undefined || props.maxTagCount < 0) return 0;
+  return Math.max(0, selectedTags.value.length - props.maxTagCount);
+});
+
 /* ─────────── Filter state ─────────── */
 
 const query = ref('');
@@ -327,7 +492,11 @@ const isFiltering = computed(() => props.filterable && query.value !== '');
 
 const filteredLeaves = computed<SnCascaderNode[]>(() => {
   if (!isFiltering.value) return [];
-  return collectCascaderLeaves(normalizedNodes.value).filter((node) =>
+  // Strict mode can commit ANY node, so parent rows join the match pool.
+  const pool = props.checkStrictly
+    ? collectCascaderNodes(normalizedNodes.value)
+    : collectCascaderLeaves(normalizedNodes.value);
+  return pool.filter((node) =>
     defaultCascaderFilter(query.value, node.pathLabels.join(PATH_SEPARATOR)),
   );
 });
@@ -395,12 +564,56 @@ function nodeAtKey(key: string): SnCascaderNode | null {
   return node;
 }
 
+/** Visual selected tint — single: committed node; multiple: checked node. */
+function isNodeVisuallySelected(node: SnCascaderNode): boolean {
+  if (!props.multiple) return node.key === selectedKey.value;
+  // Committed paths are leaf-only unless checkStrictly allows parents, so a
+  // plain key lookup covers both without an isLeaf gate.
+  return checkedLeafKeys.value.has(cascaderPathKey(node.pathValues));
+}
+
+/** aria-selected source — single: committed node; multiple: check state. */
+function isNodeSelected(node: SnCascaderNode): boolean {
+  if (!props.multiple) return node.key === selectedKey.value;
+  return nodeCheckState(node) === 'all';
+}
+
+/** Checkbox state of one row — 'all' | 'some' | 'none' (multiple mode). */
+function nodeCheckState(node: SnCascaderNode): 'all' | 'some' | 'none' {
+  // Strict mode decouples parent/child: every row reflects its OWN path
+  // only — no cascade, no indeterminate propagation.
+  if (props.checkStrictly || node.isLeaf) {
+    return checkedLeafKeys.value.has(cascaderPathKey(node.pathValues)) ? 'all' : 'none';
+  }
+  const leaves = collectSelectableLeaves(node);
+  if (leaves.length === 0) return 'none';
+  const checkedCount = leaves.filter((leaf) =>
+    checkedLeafKeys.value.has(cascaderPathKey(leaf.pathValues)),
+  ).length;
+  if (checkedCount === 0) return 'none';
+  return checkedCount === leaves.length ? 'all' : 'some';
+}
+
+/** Checkbox box classes for one row (multiple mode only). */
+function checkboxClasses(node: SnCascaderNode): Array<string | Record<string, boolean>> {
+  const state = nodeCheckState(node);
+  const checkable = props.checkStrictly || node.isLeaf || collectSelectableLeaves(node).length > 0;
+  return [
+    'sn-cascader-option__checkbox',
+    {
+      'sn-cascader-option__checkbox--checked': state === 'all',
+      'sn-cascader-option__checkbox--indeterminate': state === 'some',
+      'sn-cascader-option__checkbox--disabled': node.disabled || !checkable,
+    },
+  ];
+}
+
 function optionClasses(node: SnCascaderNode): Array<string | Record<string, boolean>> {
   return [
     'sn-cascader-option',
     `sn-cascader-option--${props.size}`,
     {
-      'sn-cascader-option--selected': node.key === selectedKey.value,
+      'sn-cascader-option--selected': isNodeVisuallySelected(node),
       'sn-cascader-option--in-path': !node.isLeaf && expandedKeys.value.includes(node.key),
       'sn-cascader-option--pending': node.key === pendingKey.value,
       'sn-cascader-option--disabled': node.disabled,
@@ -431,8 +644,10 @@ async function repositionMenu(): Promise<void> {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
-  // Width: at least the trigger width.
-  const width = Math.max(rootRect.width, menuWidth);
+  // Width: the panel wraps its columns only — it does NOT stretch to the
+  // trigger width. Every expanded level adds one fixed-width column
+  // (--sn-web-cascader-column-width), so the panel grows column by column.
+  const width = menuWidth;
   const left = Math.min(
     Math.max(MENU_VIEWPORT_GAP, rootRect.left),
     Math.max(MENU_VIEWPORT_GAP, vw - width - MENU_VIEWPORT_GAP),
@@ -451,7 +666,6 @@ async function repositionMenu(): Promise<void> {
     position: 'fixed',
     left: `${Math.round(left)}px`,
     top: `${Math.round(top)}px`,
-    'min-width': `${Math.round(rootRect.width)}px`,
   };
 }
 
@@ -476,12 +690,22 @@ function onDocumentMouseDown(event: MouseEvent): void {
 function openMenu(): void {
   if (!isInteractive.value || isMenuOpen.value) return;
   isMenuOpen.value = true;
-  // Reopen on the committed path: expand its ancestors, highlight the leaf.
+  // Reopen on the committed selection. Single: the bound path's ancestors
+  // re-expand and the leaf is highlighted. Multiple: the first bound path
+  // (if any) re-expands so its checked rows are visible.
   const path = selectedPath.value;
-  if (path !== null && path.length > 0) {
-    expandedKeys.value = path.slice(0, -1).map((node) => node.key);
+  const firstBoundPath = selectedPaths.value[0];
+  const firstCheckedPath =
+    props.multiple && path === null && firstBoundPath !== undefined
+      ? findPathByValues(normalizedNodes.value, firstBoundPath, {
+          allowNonLeaf: props.checkStrictly,
+        })
+      : null;
+  const openPath = path ?? firstCheckedPath;
+  if (openPath !== null && openPath.length > 0) {
+    expandedKeys.value = openPath.slice(0, -1).map((node) => node.key);
     activeColumn.value = expandedKeys.value.length;
-    pendingKey.value = path[path.length - 1]?.key ?? null;
+    pendingKey.value = openPath[openPath.length - 1]?.key ?? null;
   } else {
     expandedKeys.value = [];
     activeColumn.value = 0;
@@ -523,16 +747,73 @@ function expandNode(node: SnCascaderNode, focusFirstChild: boolean): void {
 
 /* ─────────── Selection commit ─────────── */
 
-function emitChange(next: Array<SnCascaderValue>): void {
+function emitChange(next: SnCascaderPath | SnCascaderPath[]): void {
   emit('update:modelValue', next);
   emit('change', next);
 }
 
 function chooseNode(node: SnCascaderNode): void {
-  if (!isInteractive.value || node.disabled || !node.isLeaf) return;
+  if (!isInteractive.value || node.disabled) return;
+  // Strict mode lets ANY node be committed (single: its own path; multiple:
+  // its own path as an independent check).
+  if (!node.isLeaf && !props.checkStrictly) return;
+  // Multiple mode: row click toggles the check and keeps the menu open.
+  if (props.multiple) {
+    toggleLeaf(node);
+    return;
+  }
   emitChange([...node.pathValues]);
   closeMenu();
   triggerRef.value?.focus();
+}
+
+/* ─────────── Multiple (tree check) commit ─────────── */
+
+/** Toggle one leaf path in the bound array (menu stays open). */
+function toggleLeaf(node: SnCascaderNode): void {
+  const key = cascaderPathKey(node.pathValues);
+  const exists = checkedLeafKeys.value.has(key);
+  emitChange(
+    exists
+      ? selectedPaths.value.filter((path) => cascaderPathKey(path) !== key)
+      : [...selectedPaths.value, [...node.pathValues]],
+  );
+}
+
+/** Toggle a parent — cascade all of its selectable descendant leaf paths. */
+function toggleParent(node: SnCascaderNode): void {
+  const leaves = collectSelectableLeaves(node);
+  if (leaves.length === 0) return;
+  const allChecked = leaves.every((leaf) =>
+    checkedLeafKeys.value.has(cascaderPathKey(leaf.pathValues)),
+  );
+  if (allChecked) {
+    const removing = new Set(leaves.map((leaf) => cascaderPathKey(leaf.pathValues)));
+    emitChange(selectedPaths.value.filter((path) => !removing.has(cascaderPathKey(path))));
+    return;
+  }
+  const additions = leaves
+    .filter((leaf) => !checkedLeafKeys.value.has(cascaderPathKey(leaf.pathValues)))
+    .map((leaf) => [...leaf.pathValues]);
+  emitChange([...selectedPaths.value, ...additions]);
+}
+
+/** Checkbox click — leaf toggles itself, parent cascades its subtree. */
+function onCheckboxClick(node: SnCascaderNode): void {
+  if (!isInteractive.value || node.disabled) return;
+  // Strict mode: every row checks itself only — no cascade either way.
+  if (props.checkStrictly || node.isLeaf) {
+    toggleLeaf(node);
+    return;
+  }
+  toggleParent(node);
+}
+
+/** Remove one committed path via its trigger tag close button. */
+function removeTag(path: SnCascaderPath): void {
+  if (!isInteractive.value) return;
+  const key = cascaderPathKey(path);
+  emitChange(selectedPaths.value.filter((entry) => cascaderPathKey(entry) !== key));
 }
 
 function clearSelection(): void {
@@ -547,6 +828,29 @@ function onOptionClick(node: SnCascaderNode): void {
   if (node.disabled) return;
   if (node.isLeaf) {
     chooseNode(node);
+    return;
+  }
+  // Parent row. Multiple: rows expand — checking happens on the checkbox
+  // (strict filter rows are the exception: the flat list has no columns to
+  // expand into, so a row click toggles that node's own check).
+  if (props.multiple) {
+    if (props.checkStrictly && isFiltering.value) {
+      chooseNode(node);
+      return;
+    }
+    expandNode(node, true);
+    return;
+  }
+  // Single + strict: clicking a parent commits its own path AND expands so
+  // drilling continues; in the flat filter list it commits and closes.
+  if (props.checkStrictly) {
+    emitChange([...node.pathValues]);
+    if (isFiltering.value) {
+      closeMenu();
+      triggerRef.value?.focus();
+      return;
+    }
+    expandNode(node, true);
     return;
   }
   // Parents expand on click in both trigger modes (harmless under hover).
@@ -588,8 +892,13 @@ function activatePending(): void {
   if (pendingKey.value === null) return;
   const node = nodeAtKey(pendingKey.value);
   if (node === null) return;
-  if (node.isLeaf) chooseNode(node);
-  else expandNode(node, true);
+  // Parents expand on Enter — except strict single mode, where Enter commits
+  // the parent's own path (chooseNode closes; ArrowRight still expands).
+  if (!node.isLeaf && (props.multiple || !props.checkStrictly)) {
+    expandNode(node, true);
+    return;
+  }
+  chooseNode(node);
 }
 
 function moveColumnLeft(): void {
@@ -746,6 +1055,68 @@ watch(isMenuOpen, (open) => {
 /* Suffix overlap guard: leave room for the arrow / clear button. */
 .sn-cascader__selection {
   padding-right: calc(var(--sn-web-cascader-padding-x, 10px) + 22px);
+}
+
+/* Multiple mode: tag rows wrap and the trigger grows vertically. */
+.sn-cascader--multiple .sn-cascader__selection {
+  min-height: var(--sn-web-cascader-height, 34px);
+  height: auto;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  cursor: pointer;
+}
+
+/* Tag pills — one per committed leaf path (mirror SnSelect tags). */
+.sn-cascader__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: calc(var(--sn-web-cascader-height, 34px) - 10px);
+  max-width: 100%;
+  padding: 0 var(--sn-web-cascader-tag-padding-x, 6px);
+  border-radius: var(--sn-web-cascader-tag-radius, 4px);
+  background-color: var(--sn-web-cascader-tag-bg, var(--sn-web-color-background-soft));
+  color: var(--sn-web-cascader-tag-text-color, var(--sn-web-color-text-primary));
+  font-size: calc(1em - 1px);
+  line-height: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.sn-cascader__tag-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sn-cascader__tag--rest {
+  background-color: transparent;
+  border: 1px solid var(--sn-web-cascader-tag-rest-border-color, var(--sn-web-color-border-default));
+}
+
+.sn-cascader__tag-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sn-web-cascader-tag-close-color, var(--sn-web-color-text-tertiary));
+  cursor: pointer;
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
+}
+
+.sn-cascader__tag-close:hover {
+  color: var(--sn-web-cascader-tag-close-color-hover, var(--sn-web-color-text-primary));
+  background-color: var(
+    --sn-web-cascader-tag-close-bg-hover,
+    var(--sn-web-color-background-surface-hover)
+  );
 }
 
 .sn-cascader__selection:focus-visible {
@@ -959,9 +1330,10 @@ watch(isMenuOpen, (open) => {
   overscroll-behavior: contain;
 }
 
+/* Fixed per-column width — does NOT adapt to content (naive-ui parity);
+ * long labels ellipsize inside the row instead of stretching the panel. */
 .sn-cascader-menu__column {
-  min-width: var(--sn-web-cascader-column-width, 160px);
-  max-width: var(--sn-web-cascader-column-max-width, 220px);
+  width: var(--sn-web-cascader-column-width, 160px);
   flex-shrink: 0;
   padding: 2px 0;
   box-sizing: border-box;
@@ -998,12 +1370,70 @@ watch(isMenuOpen, (open) => {
 }
 
 .sn-cascader-option__label {
+  flex: 0 1 auto;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.sn-cascader-option__expand {
+/* Multiple-mode checkbox — presentational glyph (the row itself carries the
+ * option semantics); tick / dash scale in like SnCheckbox's mark. */
+.sn-cascader-option__checkbox {
+  position: relative;
   display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--sn-web-cascader-checkbox-size, 14px);
+  height: var(--sn-web-cascader-checkbox-size, 14px);
+  border: 1px solid var(--sn-web-cascader-checkbox-border-color, var(--sn-web-color-border-default));
+  border-radius: var(--sn-web-cascader-checkbox-radius, 3px);
+  background-color: var(--sn-web-cascader-checkbox-bg, var(--sn-web-color-background-surface));
+  box-sizing: border-box;
+  transition:
+    background-color 0.18s ease-out,
+    border-color 0.18s ease-out;
+}
+
+.sn-cascader-option__checkbox-tick {
+  width: 7px;
+  height: 4px;
+  margin-top: -2px;
+  border-left: 2px solid
+    var(--sn-web-cascader-checkbox-check-color, var(--sn-web-color-text-on-primary));
+  border-bottom: 2px solid
+    var(--sn-web-cascader-checkbox-check-color, var(--sn-web-color-text-on-primary));
+  transform: rotate(-45deg);
+}
+
+.sn-cascader-option__checkbox-dash {
+  width: 8px;
+  height: 0;
+  border-bottom: 2px solid
+    var(--sn-web-cascader-checkbox-check-color, var(--sn-web-color-text-on-primary));
+}
+
+.sn-cascader-option__checkbox--checked,
+.sn-cascader-option__checkbox--indeterminate {
+  background-color: var(--sn-web-cascader-checkbox-bg-checked, var(--sn-web-color-action-primary));
+  border-color: var(
+    --sn-web-cascader-checkbox-border-color-checked,
+    var(--sn-web-color-action-primary)
+  );
+}
+
+.sn-cascader-option--disabled .sn-cascader-option__checkbox {
+  background-color: var(
+    --sn-web-cascader-checkbox-bg-disabled,
+    var(--sn-web-color-background-soft)
+  );
+  border-color: var(
+    --sn-web-cascader-checkbox-border-color-disabled,
+    var(--sn-web-color-border-subtle)
+  );
+}
+
+.sn-cascader-option__expand {
   align-items: center;
   margin-left: auto;
   color: var(--sn-web-cascader-option-expand-color, var(--sn-web-color-text-tertiary));

@@ -1,11 +1,14 @@
 <script setup lang="ts">
 /**
- * waterfall-web-card — 卡片墙：`SnCard` 作为瀑布流子项。
+ * waterfall-web-card — card wall: `SnCard` as the waterfall items.
  *
- * 演示三件事：
- *   - `columns` 控制列数（2 / 3 / 4）；
- *   - `masonry=false` 关掉多列布局，退化为普通单列竖向堆叠；
- *   - `row-gap` 由每个子项的 `margin-bottom` 提供（这里用 12）。
+ * Three things on show:
+ *   - `columns` controls the column count (2 / 3 / 4);
+ *   - `masonry=false` drops the multi-column layout into a plain vertical stack;
+ *   - the same item data is re-distributed shortest-column-first as the count changes.
+ *
+ * Covers come from a real network source (picsum.photos); the `seed` is fixed so
+ * the same photo is reproduced every time.
  */
 import { ref } from 'vue';
 import { SnCard, SnWaterfall } from '@snui/vue-web';
@@ -16,8 +19,7 @@ interface CardItem {
   desc: string;
   coverHeight: number;
   tags: string[];
-  from: string;
-  to: string;
+  seed: string;
 }
 
 const cards: CardItem[] = [
@@ -27,8 +29,7 @@ const cards: CardItem[] = [
     desc: 'Primitive → Semantic → Component aliasing in three layers; the same variables shared across platforms.',
     coverHeight: 96,
     tags: ['token', 'web'],
-    from: '#1677ff',
-    to: '#69b1ff',
+    seed: 'aui-card-token',
   },
   {
     id: 2,
@@ -36,8 +37,7 @@ const cards: CardItem[] = [
     desc: 'The protocol layer does not depend on Vue: Schema → Runtime → Renderer is a one-way dependency; the renderer is just an adapter.',
     coverHeight: 132,
     tags: ['schema', 'runtime'],
-    from: '#722ed1',
-    to: '#b37feb',
+    seed: 'aui-card-schema',
   },
   {
     id: 3,
@@ -45,37 +45,39 @@ const cards: CardItem[] = [
     desc: 'Each column packs independently — uneven heights never push holes into each other.',
     coverHeight: 80,
     tags: ['layout'],
-    from: '#13c2c2',
-    to: '#5cdbd3',
+    seed: 'aui-card-layout',
   },
   {
     id: 4,
-    title: 'Zero-JS measurement',
-    desc: 'No ResizeObserver and no scroll listeners: the column count comes from CSS multi-column layout + available width, and the browser reflows on resize.',
+    title: 'Shortest column first',
+    desc: 'A new item is appended to the currently shortest column; placed items never move, so a late image only grows its own column.',
     coverHeight: 116,
-    tags: ['css', 'a11y'],
-    from: '#fa8c16',
-    to: '#ffc069',
+    tags: ['masonry', 'perf'],
+    seed: 'aui-card-masonry',
   },
   {
     id: 5,
     title: 'Responsive mode',
-    desc: 'With min-column-width set it switches to column-width; the column count follows the width.',
+    desc: 'With min-column-width set the column count is computed from the measured container width, so a width change re-flows the columns.',
     coverHeight: 88,
     tags: ['responsive'],
-    from: '#eb2f96',
-    to: '#ff85c0',
+    seed: 'aui-card-responsive',
   },
   {
     id: 6,
     title: 'A11y',
-    desc: 'The container renders role="list" and each item wrapper renders role="listitem".',
+    desc: 'The container renders role="list", each item wrapper renders role="listitem", and the column wrappers are presentation.',
     coverHeight: 104,
     tags: ['a11y'],
-    from: '#52c41a',
-    to: '#95de64',
+    seed: 'aui-card-a11y',
   },
 ];
+
+/** Request the cover at its aspect ratio; `object-fit` crops the rest. */
+function photo(seed: string, height: number, width = 300): string {
+  const w = 600;
+  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+}
 
 const columnOptions = [2, 3, 4];
 const columns = ref(3);
@@ -118,12 +120,12 @@ const masonry = ref(true);
         :aria-label="card.title"
       >
         <template #cover>
-          <div
+          <img
             class="waterfall-card__cover"
-            :style="{
-              height: `${card.coverHeight}px`,
-              backgroundImage: `linear-gradient(135deg, ${card.from}, ${card.to})`,
-            }"
+            :src="photo(card.seed, card.coverHeight)"
+            :alt="card.title"
+            loading="lazy"
+            :style="{ height: `${card.coverHeight}px` }"
           />
         </template>
         <template #header>
@@ -183,7 +185,11 @@ const masonry = ref(true);
 }
 
 .waterfall-card__cover {
+  display: block;
+  width: 100%;
+  object-fit: cover;
   border-radius: 6px 6px 0 0;
+  background: var(--vp-c-bg-soft);
 }
 
 .waterfall-card__title {

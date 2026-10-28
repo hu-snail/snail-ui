@@ -1,16 +1,29 @@
 <script setup lang="ts">
-/** Demo: SnSlider — step + bounds. */
+/** Demo: SnSlider — step snapping + showSteps ticks. */
 import { ref } from 'vue';
-import { SnSlider } from '@snui/vue-web';
-const v = ref(0);
-const strict = ref(10);
+import { SnSlider, SnInputNumber, SnSwitch } from '@snui/vue-web';
+const v = ref(20);
+const step = ref<number | null>(5);
+const showSteps = ref(true);
 </script>
 
 <template>
   <div class="demo-col">
-    <SnSlider v-model="v" :min="-50" :max="50" :step="10" />
-    <SnSlider v-model="strict" :min="0" :max="100" :step="25" />
-    <span class="demo-log">v = {{ v }} · strict = {{ strict }}</span>
+    <div class="demo-controls">
+      <span class="demo-label">Step</span>
+      <SnInputNumber
+        v-model="step"
+        :min="1"
+        :max="25"
+        :step="1"
+        size="small"
+        class="demo-step"
+      />
+      <span class="demo-label">Show steps</span>
+      <SnSwitch v-model="showSteps" size="small" />
+    </div>
+    <SnSlider v-model="v" :min="0" :max="100" :step="step ?? 1" :show-steps="showSteps" />
+    <span class="demo-log">v = {{ v }} · step = {{ step }}</span>
   </div>
 </template>
 
@@ -18,8 +31,20 @@ const strict = ref(10);
 .demo-col {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  max-width: 360px;
+  gap: 12px;
+  max-width: 420px;
+}
+.demo-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.demo-label {
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+.demo-step {
+  width: 96px;
 }
 .demo-log {
   font-size: 13px;

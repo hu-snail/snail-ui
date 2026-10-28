@@ -1,73 +1,103 @@
 # Timeline · Web
 
-Event rail: node circles joined by a line, each entry carrying a title,
-body, time meta and semantic color.
+Event rail: node dots + connecting lines, each item with title, content, time and
+semantic colors. Vertical / horizontal layouts, `mode` display types
+(left / right / alternate) and cross-axis labels are supported.
 
 ## When to use
 
-- Chronological events: releases, approvals, build logs
-- Semantic node colors (success / info / warning / error)
-- Horizontal timelines or right-side rails
+- Time-ordered events: releases, approvals, build logs
+- Semantic nodes (success / info / warning / error) or fully custom nodes
+- Alternating layout, horizontal timelines, or labels across the axis
 
 ## Examples
 
 ### Basic
 
-<Demo name="timeline-web-basic" description="Semantic type nodes + dashed line segments." />
+<Demo name="timeline-web-basic" description="type semantic nodes + dashed line-type segments." />
 
 ### Size
 
-<Demo name="timeline-web-size" description="size enlarges titles; icon-size enlarges nodes." />
+<Demo name="timeline-web-size" description="size scales the title, icon-size scales the node." />
+
+### Custom node
+
+<Demo name="timeline-web-customize-dot" description="dot-color / dot-type set node color and solid/hollow fill; the dot slot takes full DOM (highest priority)." />
+
+### Custom line style
+
+<Demo name="timeline-web-customize-line" description="line-type: default solid / dashed / dotted." />
 
 ### Item placement
 
-<Demo name="timeline-web-item-placement" description="item-placement: left (default) / right." />
+<Demo name="timeline-web-item-placement" description="item-placement: left (default) / right (legacy, prefer mode)." />
 
-### Horizontal
+### Display modes
 
-<Demo name="timeline-web-horizontal" description="horizontal layout." />
+<Demo name="timeline-web-mode" description="mode=alternate flips sides by index; TimelineItem position fixes one item's side." />
 
-### Custom icons
+### Vertical timeline with labels
 
-<Demo name="timeline-web-customize-icon" description="icon slot replaces the node circle; color overrides." />
+<Demo name="timeline-web-label" description="mode=alternate + label: labels (dates) render across the axis." />
+
+### Horizontal timeline
+
+<Demo name="timeline-web-horizontal" description="direction=horizontal; horizontal mode reads top / bottom / alternate." />
+
+### Label position
+
+<Demo name="timeline-web-label-position" description="labelPosition: same renders beside the content near the rail, relative across the axis (default)." />
+
+### Custom icon
+
+<Demo name="timeline-web-customize-icon" description="icon slot replaces the circle node; color customizes it." />
 
 ## API
 
 ### SnTimeline Props
 
-| Name           | Type                  | Default     | Notes                               |
-| -------------- | --------------------- | ----------- | ----------------------------------- |
-| horizontal     | `boolean`             | `false`     | Horizontal layout                   |
-| item-placement | `'left' \| 'right'`   | `'left'`    | Rail side (ignored when horizontal) |
-| size           | `'medium' \| 'large'` | `'medium'`  | Title font size (14 / 16px)         |
-| icon-size      | `number`              | `undefined` | Node edge length in px (default 14) |
+| Name           | Type                                                    | Default      | Notes                                                             |
+| -------------- | ------------------------------------------------------- | ------------ | ----------------------------------------------------------------- |
+| direction      | `'vertical' \| 'horizontal'`                            | `'vertical'` | Layout axis; wins over the legacy `horizontal` flag               |
+| mode           | `'left' \| 'right' \| 'top' \| 'bottom' \| 'alternate'` | `'left'`     | Side the rail (axis) sits on — content takes the opposite side; alternate flips by index. Horizontal reads top / bottom (off-axis values are normalized) |
+| label-position | `'same' \| 'relative'`                                  | `'relative'` | relative: across the axis; same: content side next to the rail    |
+| horizontal     | `boolean`                                               | `false`      | Legacy: horizontal layout (prefer `direction`)                    |
+| item-placement | `'left' \| 'right'`                                     | `'left'`     | Legacy: rail side (prefer `mode`)                                 |
+| size           | `'medium' \| 'large'`                                   | `'medium'`   | Title size (14 / 16px)                                            |
+| icon-size      | `number`                                                | `undefined`  | Node edge length (px, default 14)                                 |
 
 ### SnTimeline Slots
 
-| Name    | Params | Notes                    |
-| ------- | ------ | ------------------------ |
-| default | `()`   | `SnTimelineItem` entries |
+| Name    | Params | Notes              |
+| ------- | ------ | ------------------ |
+| default | `()`   | `SnTimelineItem`s  |
 
 ### SnTimelineItem Props
 
-| Name      | Type                                                       | Default     | Notes                                  |
-| --------- | ---------------------------------------------------------- | ----------- | -------------------------------------- |
-| type      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | Semantic node color                    |
-| title     | `string`                                                   | `undefined` | Entry title; `header` slot overrides   |
-| content   | `string`                                                   | `undefined` | Entry body; `default` slot overrides   |
-| time      | `string \| number`                                         | `undefined` | Time meta; `footer` slot overrides     |
-| color     | `string`                                                   | `undefined` | Custom node color (ring border / icon) |
-| line-type | `'default' \| 'dashed'`                                    | `'default'` | Line style after this node             |
+| Name      | Type                                                       | Default     | Notes                                        |
+| --------- | ---------------------------------------------------------- | ----------- | -------------------------------------------- |
+| type      | `'default' \| 'success' \| 'info' \| 'warning' \| 'error'` | `'default'` | Semantic node color                          |
+| title     | `string`                                                   | `undefined` | Title; `header` slot overrides               |
+| content   | `string`                                                   | `undefined` | Body; `default` slot overrides               |
+| time      | `string \| number`                                         | `undefined` | Meta line; `footer` slot overrides           |
+| dot-color | `string`                                                   | `undefined` | Custom node color (wins over `color`)        |
+| color     | `string`                                                   | `undefined` | Legacy: custom node color                    |
+| dot-type  | `'solid' \| 'hollow'`                                      | `'solid'`   | Node fill: filled dot / ring                 |
+| line-type | `'default' \| 'dashed' \| 'dotted'`                        | `'default'` | Rail style after this node                   |
+| label     | `string`                                                   | `undefined` | Label text (e.g. a date); `label` slot overrides |
+| position  | `'left' \| 'right' \| 'top' \| 'bottom'`                   | `undefined` | Fix the content side under `mode=alternate`  |
 
 ### SnTimelineItem Slots
 
-| Name    | Params | Notes                                 |
-| ------- | ------ | ------------------------------------- |
-| default | `()`   | Entry body, overrides `content`       |
-| icon    | `()`   | Custom node icon, replaces the circle |
-| header  | `()`   | Entry title, overrides `title`        |
-| footer  | `()`   | Time meta, overrides `time`           |
+| Name    | Params | Notes                              |
+| ------- | ------ | ---------------------------------- |
+| default | `()`   | Body, overrides `content`          |
+| dot     | `()`   | Full custom node DOM, highest priority |
+| icon    | `()`   | Custom node icon (`dot` wins)      |
+| label   | `()`   | Label text, overrides `label`      |
+| header  | `()`   | Title, overrides `title`           |
+| footer  | `()`   | Meta line, overrides `time`        |
 
-The last entry draws no rail; dashed segments use a 10px gradient dash.
+Node priority: `dot` slot > `icon` slot > circle. The last item draws no rail line.
 
 See the component `ai-description.md` for the full contract.

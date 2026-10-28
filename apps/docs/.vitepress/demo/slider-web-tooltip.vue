@@ -1,5 +1,5 @@
 <script setup lang="ts">
-/** Demo: SnSlider — tooltip + formatTooltip. */
+/** Demo: SnSlider — tooltip + formatTooltip + custom tooltip background. */
 import { ref } from 'vue';
 import { SnSlider } from '@snui/vue-web';
 const v = ref(50);
@@ -9,6 +9,7 @@ const v = ref(50);
   <div class="demo-col">
     <SnSlider v-model="v" />
     <SnSlider v-model="v" :format-tooltip="(x: number) => `${x}%`" />
+    <SnSlider v-model="v" tooltip-background="rgba(32, 128, 240, 0.92)" />
   </div>
 </template>
 

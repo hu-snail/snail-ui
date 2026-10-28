@@ -29,9 +29,11 @@ With the same text and width, `lineClamp` of 1 clamps to a single line while
 ### Click to expand and collapse
 
 With `expandTrigger="click"` a click toggles between the clamped and the full
-text; the expanded state is owned by the component.
+text; the expanded state is owned by the component. `fade` dissolves the
+clamped edge like smoke; `expandPosition` places a dedicated expand /
+collapse toggle — `suffix` right after the text, `bottom` on its own row.
 
-<Demo name="ellipsis-web-expand" description="expandTrigger click toggle + a non-expandable comparison." />
+<Demo name="ellipsis-web-expand" description="fade smoke mask + expandPosition suffix / bottom + expandTrigger click toggle." />
 
 ## API
 
@@ -39,12 +41,16 @@ text; the expanded state is owned by the component.
 
 All props are optional.
 
-| Name          | Type                                  | Default     | Description                                                           |
-| ------------- | ------------------------------------- | ----------- | --------------------------------------------------------------------- |
-| expandTrigger | `'click' \| 'none'`                   | `'none'`    | Clicking the text toggles expansion                                   |
-| lineClamp     | `number`                              | `1`         | Clamp rows; `1` = single line, above 1 = multi-line                   |
-| tooltip       | `boolean \| SnEllipsisTooltipOptions` | `true`      | Full-text tooltip on overflow; the object form forwards tooltip props |
-| width         | `number \| 'screen'`                  | `undefined` | Box width; number = px, `'screen'` = 100vw                            |
+| Name           | Type                                  | Default           | Description                                                              |
+| -------------- | ------------------------------------- | ----------------- | ------------------------------------------------------------------------ |
+| expandTrigger  | `'click' \| 'none'`                   | `'none'`          | Clicking the text toggles expansion                                      |
+| lineClamp      | `number`                              | `1`               | Clamp rows; `1` = single line, above 1 = multi-line                      |
+| tooltip        | `boolean \| SnEllipsisTooltipOptions` | `true`            | Full-text tooltip on overflow; the object form forwards tooltip props    |
+| width          | `number \| 'screen'`                  | `undefined`       | Box width; number = px, `'screen'` = 100vw                               |
+| fade           | `boolean`                             | `false`           | Smoke mask on the clamped edge (bottom for multi-line, right for single) |
+| expandPosition | `'suffix' \| 'bottom' \| 'none'`      | `'none'`          | Toggle placement: after the text / its own row                           |
+| expandText     | `string`                              | locale "Expand"   | Toggle label while collapsed                                             |
+| collapseText   | `string`                              | locale "Collapse" | Toggle label while expanded                                              |
 
 ### Slots
 

@@ -776,3 +776,220 @@ describe('SnDatePicker', () => {
     vi.unstubAllGlobals();
   });
 });
+
+/* ───── week / quarter / shortcuts / disabledDate / select ───── */
+
+describe('SnDatePicker extended modes', () => {
+  beforeEach(() => {
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      const isPanel = this.classList.contains('sn-date-picker-panel');
+      return isPanel
+        ? {
+            top: 0,
+            left: 0,
+            width: 300,
+            height: 300,
+            right: 300,
+            bottom: 300,
+            x: 0,
+            y: 0,
+            toJSON: () => ({}),
+          }
+        : {
+            top: 300,
+            left: 40,
+            width: 200,
+            height: 32,
+            right: 240,
+            bottom: 332,
+            x: 40,
+            y: 300,
+            toJSON: () => ({}),
+          };
+    });
+  });
+
+  afterEach(async () => {
+    for (const w of mounted.splice(0)) w.unmount();
+    vi.restoreAllMocks();
+    document.body.innerHTML = '';
+  });
+
+  it('week type: clicking a day commits its week Monday and closes', async () => {
+    const { wrapper, value } = mountVModel(null, { type: 'week' });
+    await openPanel(wrapper);
+    // 2026-10-14 is a Wednesday → its week Monday is 2026-10-12.
+    dayCell(ts(2026, 9, 14))?.click();
+    await nextTick();
+    expect(value.value).toBe(ts(2026, 9, 12));
+    await panelLeft();
+    expect(panelEl()).toBeNull();
+    expect(wrapper.find('.sn-date-picker__value').text()).toBe('2026-42周');
+  });
+
+  it('week type: the whole selected week is highlighted on reopen', async () => {
+    const w = mountPicker({ type: 'week', modelValue: ts(2026, 9, 12) });
+    await openPanel(w);
+    expect(dayCell(ts(2026, 9, 12))?.classList.contains('sn-date-picker-cell--selected')).toBe(
+      true,
+    );
+    expect(dayCell(ts(2026, 9, 18))?.classList.contains('sn-date-picker-cell--selected')).toBe(
+      true,
+    );
+    expect(dayCell(ts(2026, 9, 19))?.classList.contains('sn-date-picker-cell--selected')).toBe(
+      false,
+    );
+  });
+
+  it('quarter type: commits the quarter start and echoes yyyy-Qq', async () => {
+    const { wrapper, value } = mountVModel(null, { type: 'quarter' });
+    await openPanel(wrapper);
+    const q4 = panelEl()?.querySelector('.sn-date-picker-cell--unit[data-value="3"]');
+    q4?.click();
+    await nextTick();
+    expect(value.value).toBe(ts(2026, 9, 1));
+    await panelLeft();
+    expect(wrapper.find('.sn-date-picker__value').text()).toBe('2026-Q4');
+  });
+
+  it('weekrange: two picks commit sorted week Mondays', async () => {
+    const { wrapper, value } = mountVModel(null, { type: 'weekrange' });
+    await openPanel(wrapper);
+    dayCell(ts(2026, 9, 14))?.click(); // week of Oct 12
+    await nextTick();
+    dayCell(ts(2026, 9, 27))?.click(); // week of Oct 26
+    await nextTick();
+    expect(value.value).toEqual([ts(2026, 9, 12), ts(2026, 9, 26)]);
+    // The panel closes after the second pick; reopening highlights whole weeks.
+    await panelLeft();
+    await openPanel(wrapper);
+    // Whole start/end weeks carry the markers (isSameWeek across the row).
+    expect(dayCell(ts(2026, 9, 12))?.classList.contains('sn-date-picker-cell--start')).toBe(true);
+    expect(dayCell(ts(2026, 9, 18))?.classList.contains('sn-date-picker-cell--start')).toBe(true);
+    expect(dayCell(ts(2026, 9, 26))?.classList.contains('sn-date-picker-cell--end')).toBe(true);
+    expect(dayCell(ts(2026, 10, 1))?.classList.contains('sn-date-picker-cell--end')).toBe(true);
+    // The in-between week lights up; the week before the range stays plain.
+    expect(dayCell(ts(2026, 9, 20))?.classList.contains('sn-date-picker-cell--in-range')).toBe(
+      true,
+    );
+    expect(dayCell(ts(2026, 9, 5))?.classList.contains('sn-date-picker-cell--in-range')).toBe(
+      false,
+    );
+  });
+
+  it('quarterrange: two picks commit sorted quarter starts', async () => {
+    const { wrapper, value } = mountVModel(null, { type: 'quarterrange' });
+    await openPanel(wrapper);
+    // First calendar shows 2026 quarters; second shows 2027.
+    const first = panelEl()?.querySelectorAll('.sn-date-picker-calendar')[0];
+    first?.querySelector('.sn-date-picker-cell--unit[data-value="1"]')?.click(); // 2026 Q2
+    await nextTick();
+    const second = panelEl()?.querySelectorAll('.sn-date-picker-calendar')[1];
+    second?.querySelector('.sn-date-picker-cell--unit[data-value="0"]')?.click(); // 2027 Q1
+    await nextTick();
+    expect(value.value).toEqual([ts(2026, 3, 1), ts(2027, 0, 1)]);
+  });
+
+  it('disabledDate: blocked day cells refuse clicks and carry aria-disabled', async () => {
+    const disabled = (t: number): boolean => t === ts(2026, 9, 15);
+    const { value } = mountVModel(null, { disabledDate: disabled });
+    await openPanel(findLastWrapper());
+    const cell = dayCell(ts(2026, 9, 15));
+    expect(cell?.classList.contains('sn-date-picker-cell--disabled')).toBe(true);
+    expect(cell?.getAttribute('aria-disabled')).toBe('true');
+    cell?.click();
+    await nextTick();
+    expect(value.value).toBeNull();
+  });
+
+  it('select event fires on each pick with the draft value', async () => {
+    const w = mountPicker({ type: 'daterange' });
+    await openPanel(w);
+    dayCell(ts(2026, 9, 10))?.click();
+    await nextTick();
+    expect(w.emitted('select')?.at(-1)).toEqual([ts(2026, 9, 10)]);
+    dayCell(ts(2026, 9, 20))?.click();
+    await nextTick();
+    expect(w.emitted('select')?.at(-1)).toEqual([[ts(2026, 9, 10), ts(2026, 9, 20)]]);
+  });
+
+  it('shortcuts: clicking a lazy entry commits and closes', async () => {
+    const target = ts(2026, 5, 1);
+    const w = mountPicker({
+      shortcuts: [{ label: 'June', value: () => target }],
+      shortcutsPosition: 'bottom',
+    });
+    await openPanel(w);
+    const btn = panelEl()?.querySelector('.sn-date-picker-panel__shortcut');
+    expect(btn?.textContent?.trim()).toBe('June');
+    btn?.click();
+    await nextTick();
+    expect(w.emitted('update:modelValue')?.at(-1)).toEqual([target]);
+    await panelLeft();
+    expect(panelEl()).toBeNull();
+  });
+
+  it('shortcutsPosition: left/right render a side column, bottom a bar', async () => {
+    const shortcuts = [{ label: 'today', value: 0 }];
+    const left = mountPicker({ shortcuts, shortcutsPosition: 'left' });
+    await openPanel(left);
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__shortcuts--side')).not.toBeNull();
+
+    // Unmount the first instance so only the bottom panel is in the body.
+    left.unmount();
+    mounted.splice(mounted.indexOf(left), 1);
+
+    const bottom = mountPicker({ shortcuts, shortcutsPosition: 'bottom' });
+    await openPanel(bottom);
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__shortcuts--bottom')).not.toBeNull();
+    expect(panelEl()?.querySelector('.sn-date-picker-panel__shortcuts--side')).toBeNull();
+  });
+
+  it('datetime panel: time columns sit beside the calendar (aside layout)', async () => {
+    const w = mountPicker({ type: 'datetime' });
+    await openPanel(w);
+    const aside = panelEl()?.querySelector('.sn-date-picker-panel__time--aside');
+    expect(aside).not.toBeNull();
+    // Header 选择时间 only in single mode; columns live in the aside group.
+    expect(aside?.querySelector('.sn-date-picker-time-group__label')?.textContent).toBe('选择时间');
+    expect(aside?.querySelectorAll('.sn-date-picker-time-col').length).toBe(3);
+  });
+
+  it('datetimerange panel: one aside time group per calendar', async () => {
+    const w = mountPicker({ type: 'datetimerange' });
+    await openPanel(w);
+    expect(panelEl()?.querySelectorAll('.sn-date-picker-panel__time--aside')).toHaveLength(2);
+    // No visible per-side labels in range mode (aria only).
+    expect(
+      panelEl()?.querySelector(
+        '.sn-date-picker-panel__time--aside .sn-date-picker-time-group__label',
+      ),
+    ).toBeNull();
+  });
+
+  it('date type shows the 今天 footer jump that commits today', async () => {
+    const w = mountPicker({ type: 'date' });
+    await openPanel(w);
+    const today = panelEl()?.querySelector('.sn-date-picker-panel__today');
+    expect(today?.textContent?.trim()).toBe('今天');
+    today?.click();
+    await nextTick();
+    const committed = w.emitted('update:modelValue')?.at(-1)?.[0];
+    expect(typeof committed).toBe('number');
+    expect(isSameDay(committed as number, Date.now())).toBe(true);
+  });
+});
+
+/** The most recently mounted wrapper's root component (test helper). */
+function findLastWrapper() {
+  const last = mounted.at(-1);
+  if (!last) throw new Error('nothing mounted');
+  type Findable = {
+    findComponent: (c: unknown) => {
+      find: (s: string) => { trigger: (e: string, o?: unknown) => Promise<void> };
+    };
+  };
+  return (last as unknown as Findable).findComponent(SnDatePicker);
+}

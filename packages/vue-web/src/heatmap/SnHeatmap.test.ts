@@ -139,10 +139,10 @@ describe('SnHeatmap utils', () => {
   });
 
   describe('buildWeekLabels', () => {
-    it('should start at Monday and show every other label by default', () => {
+    it('should start at Monday and show all seven labels by default', () => {
       const labels = buildWeekLabels(0);
       expect(labels.map((l) => l.label)).toEqual(['一', '二', '三', '四', '五', '六', '日']);
-      expect(labels.map((l) => l.visible)).toEqual([false, true, false, true, false, true, false]);
+      expect(labels.every((l) => l.visible)).toBe(true);
     });
 
     it('should rotate for a Sunday start', () => {
@@ -190,8 +190,9 @@ describe('SnHeatmap (AUI-WEB-DD-008)', () => {
     const w = mountHeatmap();
     expect(w.findAll('tbody tr')).toHaveLength(7);
     const labels = w.findAll('.sn-heatmap__week-label-cell');
-    expect(labels[0]?.text()).toBe('');
+    expect(labels[0]?.text()).toBe('一');
     expect(labels[1]?.text()).toBe('二');
+    expect(labels[6]?.text()).toBe('日');
     expect(w.findAll('.sn-heatmap__swatch')).toHaveLength(5);
     expect(w.text()).toContain('少');
     expect(w.text()).toContain('多');

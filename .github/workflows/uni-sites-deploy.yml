@@ -1,0 +1,94 @@
+name: uni sites deploy
+
+# uni 端两个 H5 站点合并部署到同一个 GitHub Pages 项目站
+# （https://<owner>.github.io/<repo>/）—— GitHub Pages 每仓库只有一个站点，
+# 两个 workflow 各自 deploy 会互相覆盖，因此这里一次构建、合并产物：
+#   /                      ← apps/uni-demo（组件演示，ADR-0005）
+#   /uni-templates/        ← apps/uni-templates（场景模板，docs 首页 iframe
+#                            预览 + 扫码引流，见 utils/uni-templates-base.ts）
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/uni-demo/**'
+      - 'apps/uni-templates/**'
+      - 'packages/uni/**'
+      - 'packages/templates/**'
+      - 'packages/tokens/**'
+      - 'packages/tokens-mp/**'
+      - 'packages/style-packs/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/uni-sites-deploy.yml'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: uni-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Node 22：与 ci.yml 对齐（engines >=20 仍满足）。
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # 两个 H5 站的页面都经 @snui/uni-src 别名引用组件库源码；App.vue 另引入
+      # '@snui/uni/styles' 与风格包（@snui/style-packs → dist），需先构建
+      # 组件库、风格包及其 token 依赖。
+      - name: Build @snui/uni + @snui/style-packs (with deps)
+        run: pnpm --filter @snui/uni... --filter @snui/style-packs... run build
+
+      # 组件演示站（站点根）：base 由 env 注入 build-h5.mjs → manifest.router.base
+      - name: Build uni-demo H5
+        run: pnpm --filter @snui/uni-demo run build:h5
+        env:
+          UNI_H5_BASE: /snail-ui/
+
+      # 场景模板站（站点子路径 /uni-templates/）
+      - name: Build uni-templates H5
+        run: pnpm --filter @snui/uni-templates run build:h5
+        env:
+          UNI_H5_BASE: /snail-ui/uni-templates/
+
+      # 合并产物：模板站挂到演示站根的 /uni-templates/ 子目录
+      - name: Merge artifacts
+        run: |
+          cp -R apps/uni-demo/dist/build/h5 ./site
+          cp -R apps/uni-templates/dist/build/h5 ./site/uni-templates
+          touch ./site/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

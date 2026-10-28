@@ -90,12 +90,22 @@ The `arrow` / `dots` scoped slots fully replace the built-ins
 
 ### Video
 
-Drop a native `<video>` into a `SnCarouselItem`: when a slide stops being
-current the component automatically pauses its videos (no background
-audio), and pressing inside the video never starts a drag. This demo
-renders no native controls — click the video to toggle play/pause.
+Drive the slides with the `options` list — the media markup lives inside
+the component. `type: 'video'` marks a video entry (no hand-written
+`<video>` / `<img>` tags): videos render `muted` + `loop` +
+`playsinline`, click toggles playback, and leaving the current slide
+pauses them; images get `draggable=false` so the native drag never
+fights the carousel. Item shape `SnCarouselMediaItem`: `type`
+(`'image'` default / `'video'`), `src`, `alt`, `poster`,
+`title` / `description` (caption), `fit` (object-fit, default
+`cover`), `key`.
 
-<Demo name="carousel-web-video" description="Video + image slides, auto-paused off-screen" />
+<Demo name="carousel-web-video" description="options-driven image/video slides + item slot customization" />
+
+While `options` is set the default slot is ignored; the `item` scoped
+slot can take over each slide (receives `item` / `index` /
+`isActive` …) — the second carousel in the demo is a slot override.
+Hand-written `SnCarouselItem` usage is unchanged.
 
 ### Real-world scenarios
 
@@ -129,6 +139,7 @@ News / announcements (`direction="vertical"` + `autoplay`):
 | interval         | `number`                                             | `5000`                            | Autoplay interval (ms).                                                 |
 | loop             | `boolean`                                            | `true`                            | Wrap at both ends (edge clones in slide + single-view mode).            |
 | mousewheel       | `boolean`                                            | `false`                           | Wheel switches slides.                                                  |
+| options          | `SnCarouselMediaItem[]`                              | `undefined`                       | Data-driven slides (media markup built in); the default slot is ignored while set. |
 | next-slide-style | `CSSProperties \| string`                            | `undefined`                       | Next-slide style override (card mode).                                  |
 | prev-slide-style | `CSSProperties \| string`                            | `undefined`                       | Prev-slide style override (card mode).                                  |
 | slides-per-view  | `number \| 'auto'`                                   | `1`                               | Slides per view; `'auto'` measures the DOM.                             |
@@ -160,6 +171,7 @@ title/description text.
 | Component      | Slot      | Scope                                                                     | Description                                                       |
 | -------------- | --------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------- |
 | SnCarousel     | `default` | —                                                                         | `<SnCarouselItem>` sequence (bare children are auto-wrapped).     |
+| SnCarousel     | `item`    | `{ item, index, isActive, isPrev, isNext }`                               | Overrides the built-in media renderer in options mode (falls back to built-in). |
 | SnCarousel     | `arrow`   | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | Custom arrows.                                                    |
 | SnCarousel     | `dots`    | `{ total, currentIndex, to }`                                             | Custom dots.                                                      |
 | SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }`                                     | Slide content.                                                    |

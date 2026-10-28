@@ -107,6 +107,14 @@ export interface SnDatePickerLocale {
   endTime: string;
   /** Datetime range confirm button. */
   confirm: string;
+  /** Aside time-panel header (calendar | 选择时间 layout). */
+  selectTime: string;
+  /** Footer jump-to-today button. */
+  today: string;
+  /** Week display pattern — `{y}` ISO week-year, `{w}` week number. */
+  weekTitle: string;
+  /** Quarter cell label, `{q}` is the 1–4 quarter number. */
+  quarterLabel: string;
   /** Hour column `aria-label`. */
   hour: string;
   /** Minute column `aria-label`. */
@@ -201,6 +209,14 @@ export interface SnEmptyLocale {
 export interface SnQrCodeLocale {
   /** Download action `title` / `aria-label`. */
   download: string;
+}
+
+/** Localized strings for SnEllipsis. */
+export interface SnEllipsisLocale {
+  /** Expand toggle label (collapsed state). */
+  expand: string;
+  /** Collapse toggle label (expanded state). */
+  collapse: string;
 }
 
 /** Localized strings for SnHeatmap. */
@@ -313,6 +329,8 @@ export interface SnLocale {
   Empty: SnEmptyLocale;
   /** SnQrCode strings. */
   QrCode: SnQrCodeLocale;
+  /** SnEllipsis strings. */
+  Ellipsis: SnEllipsisLocale;
   /** SnHeatmap strings. */
   Heatmap: SnHeatmapLocale;
   /** SnBackTop strings. */
@@ -376,6 +394,10 @@ export const zhCN: SnLocale = {
     startTime: '开始时间',
     endTime: '结束时间',
     confirm: '确认',
+    selectTime: '选择时间',
+    today: '今天',
+    weekTitle: '{y}-{w}周',
+    quarterLabel: '第{q}季度',
     hour: '小时',
     minute: '分钟',
     second: '秒',
@@ -423,6 +445,10 @@ export const zhCN: SnLocale = {
   },
   QrCode: {
     download: '下载二维码',
+  },
+  Ellipsis: {
+    expand: '展开',
+    collapse: '收起',
   },
   Heatmap: {
     less: '少',

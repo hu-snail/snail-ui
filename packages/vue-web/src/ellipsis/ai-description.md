@@ -22,12 +22,16 @@ import SnEllipsis from '@snui/vue-web/src/ellipsis/SnEllipsis.vue';
 
 ## Props
 
-| Name            | Type                                  | Default     | Required | Description                                                                               |
-| --------------- | ------------------------------------- | ----------- | -------- | ----------------------------------------------------------------------------------------- |
-| `expandTrigger` | `'click' \| 'none'`                   | `'none'`    | no       | Clicking the text toggles the expanded state.                                             |
-| `lineClamp`     | `number`                              | `1`         | no       | Row count before clamping; `1` = single line.                                             |
-| `tooltip`       | `boolean \| SnEllipsisTooltipOptions` | `true`      | no       | Show a tooltip with the full text when overflowing. Object form forwards SnTooltip props. |
-| `width`         | `number \| 'screen'`                  | `undefined` | no       | Box width; number = px, `'screen'` = 100vw.                                               |
+| Name             | Type                                  | Default     | Required | Description                                                                               |
+| ---------------- | ------------------------------------- | ----------- | -------- | ----------------------------------------------------------------------------------------- |
+| `expandTrigger`  | `'click' \| 'none'`                   | `'none'`    | no       | Clicking the text toggles the expanded state.                                             |
+| `lineClamp`      | `number`                              | `1`         | no       | Row count before clamping; `1` = single line.                                             |
+| `tooltip`        | `boolean \| SnEllipsisTooltipOptions` | `true`      | no       | Show a tooltip with the full text when overflowing. Object form forwards SnTooltip props. |
+| `width`          | `number \| 'screen'`                  | `undefined` | no       | Box width; number = px, `'screen'` = 100vw.                                               |
+| `fade`           | `boolean`                             | `false`     | no       | Smoke mask over the clamped edge (bottom for multi-line, right for single line).          |
+| `expandPosition` | `'suffix' \| 'bottom' \| 'none'`      | `'none'`    | no       | Dedicated expand / collapse toggle: after the text, its own row, or none.                 |
+| `expandText`     | `string`                              | locale 展开 | no       | Toggle label while collapsed.                                                             |
+| `collapseText`   | `string`                              | locale 收起 | no       | Toggle label while expanded.                                                              |
 
 `SnEllipsisTooltipOptions` (documented subset of SnTooltip props):
 `content`, `placement`, `trigger`, `delay`, `duration`, `arrow`,

@@ -22,16 +22,18 @@ import SnAvatar from '@snui/vue-web/src/avatar/SnAvatar.vue';
 
 ## Props
 
-| Name           | Type                                                       | Default    | Required | Description                                             |
-| -------------- | ---------------------------------------------------------- | ---------- | -------- | ------------------------------------------------------- |
-| `size`         | `number \| 'small' \| 'medium' \| 'large'`                 | `'medium'` | no       | Pixel size (inline style) or named scale (28/34/40 px). |
-| `src`          | `string`                                                   | —          | no       | Image URL.                                              |
-| `color`        | `string`                                                   | —          | no       | Background color (any CSS color value).                 |
-| `objectFit`    | `'fill' \| 'contain' \| 'cover' \| 'none' \| 'scale-down'` | `'cover'`  | no       | Image fit inside the box.                               |
-| `round`        | `boolean`                                                  | `false`    | no       | Pill-shaped corners.                                    |
-| `circle`       | `boolean`                                                  | `false`    | no       | Circular. Wins over `round`.                            |
-| `fallbackText` | `string`                                                   | —          | no       | Text thumbnail when there is no image.                  |
-| `icon`         | `string`                                                   | —          | no       | SnIcon registry name for the placeholder glyph.         |
+| Name                          | Type                                                       | Default    | Required | Description                                              |
+| ----------------------------- | ---------------------------------------------------------- | ---------- | -------- | -------------------------------------------------------- |
+| `size`                        | `number \| 'small' \| 'medium' \| 'large'`                 | `'medium'` | no       | Pixel size (inline style) or named scale (28/34/40 px).  |
+| `src`                         | `string`                                                   | —          | no       | Image URL.                                               |
+| `color`                       | `string`                                                   | —          | no       | Background color (any CSS color value).                  |
+| `objectFit`                   | `'fill' \| 'contain' \| 'cover' \| 'none' \| 'scale-down'` | `'cover'`  | no       | Image fit inside the box.                                |
+| `round`                       | `boolean`                                                  | `false`    | no       | Pill-shaped corners.                                     |
+| `circle`                      | `boolean`                                                  | `false`    | no       | Circular. Wins over `round`.                             |
+| `fallbackText`                | `string`                                                   | —          | no       | Text thumbnail when there is no image.                   |
+| `icon`                        | `string`                                                   | —          | no       | SnIcon registry name for the placeholder glyph.          |
+| `lazy`                        | `boolean`                                                  | `false`    | no       | Lazy loading. On its own: native `loading="lazy"`.       |
+| `intersectionObserverOptions` | `{ root?, rootMargin?, threshold? }`                       | —          | no       | With `lazy`, gates the `src` on an IntersectionObserver. |
 
 ## Events
 
@@ -59,7 +61,15 @@ A new `src` resets a previous load error.
 ## Divergences from the reference API
 
 - `fallbackText` / `icon` replace `fallbackSrc` + `renderFallback`.
-- `lazy` / `imgProps` / intersection-observer options are not implemented.
+- `lazy` / `intersection-observer-options` are implemented on the same
+  contract as SnImage through the shared `_internal/lazy-visibility` gate:
+  `lazy` alone keeps the native `loading="lazy"` attribute, `lazy` plus
+  `intersection-observer-options` withholds the `src` until the avatar
+  intersects (the fallback content renders while gated, so there is never a
+  broken-image placeholder). The observer watches the always-mounted root box,
+  never the `<img>`: that element only exists once the gate opens, so
+  observing it would deadlock.
+- `imgProps` / `fallbackSrc` network options are still not implemented.
 
 ## Tokens Consumed (end: web)
 

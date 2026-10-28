@@ -60,6 +60,7 @@ export type { SnTimePickerFormat } from './time-picker/sn-time-picker-types';
 export { default as SnCascader } from './cascader/SnCascader.vue';
 export type {
   SnCascaderValue,
+  SnCascaderPath,
   SnCascaderOptionInput,
   SnCascaderNode,
 } from './cascader/sn-cascader-types';
@@ -82,6 +83,8 @@ export type {
 export { default as SnDatePicker } from './date-picker/SnDatePicker.vue';
 export type {
   SnDatePickerType,
+  SnDatePickerShortcut,
+  SnDatePickerShortcutsPosition,
   SnDateValue,
   SnDateRangeValue,
 } from './date-picker/sn-date-picker-types';
@@ -100,9 +103,9 @@ export { default as SnLayoutContent } from './layout/SnLayoutContent.vue';
 export { default as SnLayoutFooter } from './layout/SnLayoutFooter.vue';
 export { default as SnLayoutSider } from './layout/SnLayoutSider.vue';
 export type { SnLayoutPosition, SnLayoutStyleValue } from './layout/sn-layout-types';
-export { default as SnSplitter } from './splitter/SnSplitter.vue';
-export { default as SnSplitterPanel } from './splitter/SnSplitterPanel.vue';
-export type { SnSplitterDirection } from './splitter/splitter-context';
+export { default as SnSplit } from './split/SnSplit.vue';
+export { default as SnSplitPanel } from './split/SnSplitPanel.vue';
+export type { SnSplitDirection } from './split/split-context';
 export { default as SnDropdown } from './dropdown/SnDropdown.vue';
 export type {
   SnDropdownOption,
@@ -113,6 +116,9 @@ export type {
 } from './dropdown/sn-dropdown-types';
 export { default as SnLoading } from './loading/SnLoading.vue';
 export { default as SnDialog } from './dialog/SnDialog.vue';
+export { default as SnDialogProvider } from './dialog/SnDialogProvider.vue';
+export { useDialog } from './dialog/use-dialog';
+export type { SnDialogOptions, DialogReactive, DialogApiInjection } from './dialog/use-dialog';
 export type { SnDialogIconPlacement, SnDialogType } from './dialog/SnDialog.vue';
 export { default as SnDrawer } from './drawer/SnDrawer.vue';
 export type { SnDrawerPlacement } from './drawer/SnDrawer.vue';
@@ -138,7 +144,11 @@ export type { IconComponent, IconComponentProps } from './icon/sn-icon-registry'
 export { default as SnCalendar } from './calendar/SnCalendar.vue';
 export { default as SnCarousel } from './carousel/SnCarousel.vue';
 export { default as SnCarouselItem } from './carousel/SnCarouselItem.vue';
-export type { CarouselArrowSlotProps, CarouselDotSlotProps } from './carousel/SnCarousel.vue';
+export type {
+  CarouselArrowSlotProps,
+  CarouselDotSlotProps,
+  SnCarouselMediaItem,
+} from './carousel/SnCarousel.vue';
 export { default as SnCode } from './code/SnCode.vue';
 export { default as SnComment } from './comment/SnComment.vue';
 export type { SnCommentAlign } from './comment/SnComment.vue';

@@ -8,6 +8,7 @@
 
 import { ref } from 'vue';
 import { SnButton } from '@snui/vue-web';
+import TooltipProbe from './TooltipProbe.vue';
 
 const count = ref(0);
 const isDark = ref(false);
@@ -64,6 +65,11 @@ function toggleTheme(): void {
       <h2>交互</h2>
       <SnButton type="primary" @click="count++">点击 +1</SnButton>
       <SnButton @click="count = 0">重置</SnButton>
+    </section>
+
+    <section>
+      <h2>Tooltip 探针</h2>
+      <TooltipProbe />
     </section>
   </div>
 </template>

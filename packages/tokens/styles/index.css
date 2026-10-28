@@ -401,7 +401,9 @@
   --aui-drawer-close-icon-color-hover: var(--aui-color-text-primary);
   --aui-drawer-close-color: transparent;
   --aui-drawer-close-color-hover: var(--aui-color-background-subtle);
-  --aui-drawer-mask-color: var(--aui-color-background-overlay);
+  /* ~44% black — the reference modal mask; heavier than the raw overlay
+   * token (80%), which stacked into near-opaque black under stacked dialogs. */
+  --aui-drawer-mask-color: color-mix(in srgb, var(--aui-color-background-overlay) 55%, transparent);
 
   /* Sn-* component aliases — drawer */
   --sn-drawer-color: var(--aui-drawer-color);

@@ -78,11 +78,13 @@
 
 <Demo name="carousel-web-custom-arrow-and-dots" description="作用域插槽自绘箭头与序号指示点" />
 
-### 视频
+### 视频 / 图片（options 数据驱动）
 
-原生 `<video>` 直接放进 `SnCarouselItem` 即可作为轮播帧：离开当前帧时组件自动 `pause()` 其中的视频（不会后台漏音），视频上的按下不会触发拖拽。demo 不渲染原生工具栏（`controls`），点击视频播放/暂停。
+通过 `options` 配置幻灯片数据，媒体标记内置在组件里——`type: 'video'` 标记视频项（无需再手写 `<video>` / `<img>` 标签）：视频自动 `muted` + `loop` + `playsinline`，点击播放/暂停，离开当前帧自动暂停；图片 `draggable=false` 不与拖拽冲突。条目类型 `SnCarouselMediaItem`：`type`（`'image'` 默认 / `'video'`）、`src`、`alt`（图片）、`poster`（视频封面）、`title` / `description`（底部字幕）、`fit`（object-fit，默认 `cover`）、`key`。
 
-<Demo name="carousel-web-video" description="视频 + 图片混排，切走自动暂停" />
+<Demo name="carousel-web-video" description="options 数据驱动：图/视频混排 + item 插槽自定义" />
+
+`options` 设置后 default 插槽被忽略；`item` 作用域插槽可整体接管每帧内容（拿到 `item` / `index` / `isActive` 等），demo 第二个轮播即插槽覆盖示例。`SnCarouselItem` 手写模式保持不变。
 
 ### 业务场景
 
@@ -116,6 +118,7 @@
 | interval         | `number`                                             | `5000`                            | 自动播放间隔（ms）                                          |
 | loop             | `boolean`                                            | `true`                            | 两端循环（slide + 单屏时用首尾克隆实现无缝循环）            |
 | mousewheel       | `boolean`                                            | `false`                           | 滚轮切换                                                    |
+| options          | `SnCarouselMediaItem[]`                              | `undefined`                       | 数据驱动幻灯片（媒体标记内置渲染）；设置后 default 插槽被忽略 |
 | next-slide-style | `CSSProperties \| string`                            | `undefined`                       | 下一张样式覆盖（card 模式）                                 |
 | prev-slide-style | `CSSProperties \| string`                            | `undefined`                       | 上一张样式覆盖（card 模式）                                 |
 | slides-per-view  | `number \| 'auto'`                                   | `1`                               | 每屏 slide 数；`'auto'` 按 DOM 实测宽度                     |
@@ -144,6 +147,7 @@ title / description / `caption` 插槽任一存在时渲染底部浮层（渐变
 | 组件           | 插槽      | 参数                                                                      | 说明                                                   |
 | -------------- | --------- | ------------------------------------------------------------------------- | ------------------------------------------------------ |
 | SnCarousel     | `default` | —                                                                         | `<SnCarouselItem>` 序列（裸子元素会自动包一层 item）   |
+| SnCarousel     | `item`    | `{ item, index, isActive, isPrev, isNext }`                               | options 模式下覆盖内置媒体渲染（缺省回退内置）         |
 | SnCarousel     | `arrow`   | `{ total, currentIndex, to, prev, next, isPrevDisabled, isNextDisabled }` | 自定义箭头                                             |
 | SnCarousel     | `dots`    | `{ total, currentIndex, to }`                                             | 自定义指示点                                           |
 | SnCarouselItem | `default` | `{ isPrev, isNext, isActive, index }`                                     | slide 内容                                             |

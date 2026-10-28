@@ -78,6 +78,8 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
+  /** Fallback label content — renders when the `label` slot is absent. */
+  default?(): unknown;
   /** Custom label content. Renders instead of the `label` prop text. */
   label?(props: { checked: boolean; disabled: boolean }): unknown;
 }>();
@@ -180,8 +182,8 @@ function onBlur(event: FocusEvent): void {
       @blur="onBlur"
     />
     <span class="sn-radio__dot" aria-hidden="true" />
-    <span v-if="$slots.label || label" class="sn-radio__label">
-      <slot name="label" :checked="isChecked" :disabled="isDisabled">{{ label }}</slot>
+    <span v-if="$slots.label || $slots.default || label" class="sn-radio__label">
+      <slot name="label" :checked="isChecked" :disabled="isDisabled"> <slot />{{ label }} </slot>
     </span>
   </label>
 </template>

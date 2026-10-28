@@ -83,8 +83,8 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   'SnLayoutContent',
   'SnLayoutFooter',
   'SnLayoutSider',
-  'SnSplitter',
-  'SnSplitterPanel',
+  'SnSplit',
+  'SnSplitPanel',
   'SnDropdown',
   // Layout
   'SnCard',
@@ -107,6 +107,7 @@ export const PUBLIC_COMPONENTS: ReadonlyArray<string> = [
   // Feedback
   'SnAlert',
   'SnDialog',
+  'SnDialogProvider',
   'SnDrawer',
   'SnDrawerContent',
   'SnLoading',

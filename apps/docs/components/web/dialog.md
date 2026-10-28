@@ -73,6 +73,16 @@
 
 <Demo name="dialog-web-controlled" description="v-model:show 受控模式与事件流回显" />
 
+### 命令式调用（useDialog）
+
+包裹 `SnDialogProvider`，在其子树内用 `useDialog()` 拿到命令式 API——
+`info / success / warning / error / create / destroyAll`。每次调用返回
+`DialogReactive`（响应式 options + `destroy()`，字段可实时改）；
+`onPositiveClick` 返回 `false` 则不关闭，返回 Promise 则确认按钮进入
+loading 并在结束后自动关闭。
+
+<Demo name="dialog-web-use-dialog" description="Provider + useDialog 命令式弹窗（成功/警告/错误/信息）" />
+
 ## API
 
 ### Props

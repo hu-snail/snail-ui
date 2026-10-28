@@ -45,9 +45,10 @@
  *     style is needed at all — which also means the dialog is themeable by
  *     overriding tokens rather than props. The panel shadow
  *     (`--sn-web-dialog-box-shadow`) carries the upstream dialog value.
- *   - Icons use lucide (`Info` / `CircleCheck` / `TriangleAlert` / `CircleX`
- *     / `X`) via SnIcon, matching this library's icon strategy rather than
- *     upstream's bespoke SVG icon set.
+ *   - Icons use lucide bare marks (Info / Check / TriangleAlert / X)
+ *     via SnIcon, rendered inside a filled type-coloured circle badge with a
+ *     white glyph (the naive filled-circle look), rather than upstream's
+ *     bespoke SVG set.
  *   - Upstream's `rtl` handling and the `iconPlacement` config-provider
  *     fallback are not modelled (SnConfigProvider does not cover Dialog yet).
  *   - `width: 446px` lives on the provider/overlay upstream, not on the card.
@@ -63,7 +64,7 @@
 
 import { computed } from 'vue';
 import { useLocale } from '../locales/use-locale';
-import { CircleCheck, CircleX, Info, TriangleAlert, X } from 'lucide-vue-next';
+import { Check, Info, TriangleAlert, X } from 'lucide-vue-next';
 import SnButton from '../button/SnButton.vue';
 import SnIcon from '../icon/SnIcon.vue';
 import type { IconComponent } from '../icon/sn-icon-registry';
@@ -86,12 +87,19 @@ type DialogType = SnDialogType;
  * Upstream `iconRenderMap`. 'default' shares the 'info' glyph — this is the
  * same table upstream indexes by `type`.
  */
+/**
+ * Upstream iconRenderMap adapted to this library's filled-circle badge
+ * style: each glyph is a plain white mark sitting on the type-coloured
+ * circle (see .sn-dialog__icon), so the circle-in-circle Circle* icons
+ * are replaced by their bare marks (Check / X) — the badge itself is the
+ * circle. 'default' shares the 'info' glyph, same as upstream's map.
+ */
 const ICON_BY_TYPE: Record<DialogType, IconComponent> = {
   default: Info as IconComponent,
   info: Info as IconComponent,
-  success: CircleCheck as IconComponent,
+  success: Check as IconComponent,
   warning: TriangleAlert as IconComponent,
-  error: CircleX as IconComponent,
+  error: X as IconComponent,
 };
 
 /**
@@ -266,7 +274,7 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
 
       <!-- 'top' placement hoists the icon into its own centred row. -->
       <div v-if="hasIcon && isTopIcon" class="sn-dialog__icon-container">
-        <span class="sn-dialog__icon" :style="{ color: iconColorVar }">
+        <span class="sn-dialog__icon" :style="{ background: iconColorVar }">
           <slot name="icon">
             <SnIcon :icon="mergedIcon" />
           </slot>
@@ -274,7 +282,11 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
       </div>
 
       <div class="sn-dialog__title" :class="titleClass" :style="titleStyle">
-        <span v-if="hasIcon && !isTopIcon" class="sn-dialog__icon" :style="{ color: iconColorVar }">
+        <span
+          v-if="hasIcon && !isTopIcon"
+          class="sn-dialog__icon"
+          :style="{ background: iconColorVar }"
+        >
           <slot name="icon">
             <SnIcon :icon="mergedIcon" />
           </slot>
@@ -388,8 +400,18 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
 }
 
 .sn-dialog__icon {
-  font-size: var(--sn-web-dialog-icon-size);
-  transition: color 0.3s ease;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  /* Filled-circle badge (naive style): the type colour comes from the
+   * inline background, the glyph is white on top of it. */
+  width: var(--sn-web-dialog-icon-size);
+  height: var(--sn-web-dialog-icon-size);
+  border-radius: 50%;
+  font-size: calc(var(--sn-web-dialog-icon-size) * 0.56);
+  color: var(--sn-web-color-text-on-primary, #fff);
+  transition: background-color 0.3s ease;
 }
 
 .sn-dialog__title {
@@ -415,10 +437,7 @@ const showBuiltinClose = computed(() => props.closable && slots.close === undefi
 .sn-dialog__action {
   display: flex;
   justify-content: flex-end;
-}
-
-.sn-dialog__action > :not(:last-child) {
-  margin-right: var(--sn-web-dialog-action-space);
+  gap: var(--sn-web-dialog-action-space, 12px);
 }
 
 /* ── icon-left: inline icon + room for the close button ─────────────── */

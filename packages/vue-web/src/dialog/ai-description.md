@@ -39,6 +39,24 @@ import { SnDialog } from '@snui/vue-web';
 import type { SnDialogType, SnDialogIconPlacement } from '@snui/vue-web';
 ```
 
+## Import
+
+```ts
+import { SnDialog, SnDialogProvider, useDialog } from '@snui/vue-web';
+```
+
+## useDialog / SnDialogProvider (imperative API)
+
+Wrap a subtree in `<SnDialogProvider>`; below it, `useDialog()` returns
+`DialogApiInjection` with `info / success / warning / error / create /
+destroyAll`. Each call creates a modal overlay (mask + centred `SnDialog`
+card, teleported to body) and returns a reactive `DialogReactive`
+(`destroy()` + live-mutable fields like `title`). `onPositiveClick`
+returning `false` keeps the dialog open; returning a Promise shows the
+confirm button's loading state and closes when it settles. Provider props:
+`to` (teleport target, default body), `zIndex` (base stacking order),
+`maskClosable` (default true).
+
 ## Props
 
 | Name                  | Type                                                       | Default     | Description                                                                |
@@ -163,6 +181,16 @@ style is the icon colour, which necessarily follows `type` at runtime.
 - Not implemented here (belongs to the provider item): focus trap, initial
   focus, `Escape` to close, focus restore on dismiss, `aria-labelledby`
   wiring to the title element, background `aria-hidden`.
+
+## Imperative API notes (SnDialogProvider)
+
+- The provider mounts each dialog in its own fixed overlay
+  (`--sn-web-color-background-overlay` mask, centred card, `width: 446px`
+  like upstream's provider-side width).
+- `DialogReactive` is reactive: mutate `title` / `content` / `type` live.
+- `destroyAll` hides everything opened through the provider.
+- Mask click closes by default (`mask-closable` prop); card clicks never
+  dismiss.
 
 ## Versioning
 

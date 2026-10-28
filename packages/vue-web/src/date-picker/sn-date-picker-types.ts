@@ -15,7 +15,16 @@
 
 /** Panel / value mode. `*range` types are range modes (tuple values). */
 export type SnDatePickerType =
-  'date' | 'datetime' | 'month' | 'year' | 'daterange' | 'datetimerange';
+  | 'date'
+  | 'datetime'
+  | 'week'
+  | 'quarter'
+  | 'month'
+  | 'year'
+  | 'daterange'
+  | 'datetimerange'
+  | 'weekrange'
+  | 'quarterrange';
 
 /** Visual size preset (AUI convention adds `mini` below the reference `tiny`). */
 export type SnDatePickerSize = 'mini' | 'tiny' | 'small' | 'medium' | 'large';
@@ -49,23 +58,36 @@ export interface SnMonthGridCell {
   isCurrentMonth: boolean;
 }
 
-/** One cell of a month-of-year or year grid. */
+/** One cell of a quarter / month-of-year / year grid. */
 export interface SnUnitGridCell {
   ts: number;
-  /** Cell label ('1月' / '2026'). */
+  /** Cell label ('Q1' / '1月' / '2026'). */
   label: string;
-  /** Unit value (month index 0–11, or the year). */
+  /** Unit value (quarter index 0–3, month index 0–11, or the year). */
   value: number;
 }
+
+/** Quick-pick shortcut entry (`value` may be lazy — resolved on click). */
+export interface SnDatePickerShortcut {
+  label: string;
+  value: number | [number, number] | (() => number | [number, number]);
+}
+
+/** Where the shortcuts bar renders inside the panel. */
+export type SnDatePickerShortcutsPosition = 'left' | 'right' | 'bottom';
 
 /** Default display format per type. */
 export const DEFAULT_FORMATS: Readonly<Record<SnDatePickerType, string>> = {
   date: 'yyyy-MM-dd',
   datetime: 'yyyy-MM-dd HH:mm:ss',
+  week: 'yyyy-ww周',
+  quarter: 'yyyy-Qq',
   month: 'yyyy-MM',
   year: 'yyyy',
   daterange: 'yyyy-MM-dd',
   datetimerange: 'yyyy-MM-dd HH:mm:ss',
+  weekrange: 'yyyy-ww周',
+  quarterrange: 'yyyy-Qq',
 };
 
 /** Weekday header labels — Monday-first grid (project convention). */
@@ -130,16 +152,50 @@ export function startOfDay(ms: number): number {
   return buildDate(p.year, p.month, p.day);
 }
 
+/** Local midnight of the Monday starting the given timestamp's ISO week. */
+export function startOfWeek(ms: number): number {
+  const p = getDateParts(ms);
+  const leading = (new Date(p.year, p.month, p.day).getDay() + 6) % 7; // Mon → 0
+  return buildDate(p.year, p.month, p.day - leading);
+}
+
 /** First day (local midnight) of the given timestamp's month. */
 export function startOfMonth(ms: number): number {
   const p = getDateParts(ms);
   return buildDate(p.year, p.month, 1);
 }
 
+/** First day (local midnight) of the given timestamp's quarter. */
+export function startOfQuarter(ms: number): number {
+  const p = getDateParts(ms);
+  return buildDate(p.year, Math.floor(p.month / 3) * 3, 1);
+}
+
+/** Quarter index 1–4 of the given timestamp. */
+export function getQuarter(ms: number): number {
+  return Math.floor(getDateParts(ms).month / 3) + 1;
+}
+
 /** First day of the given timestamp's year. */
 export function startOfYear(ms: number): number {
   const p = getDateParts(ms);
   return buildDate(p.year, 0, 1);
+}
+
+/**
+ * ISO 8601 week number of the given timestamp (weeks start Monday; week 1
+ * contains the first Thursday). Returns the ISO week-year alongside —
+ * boundary days of December / January may belong to the adjacent year.
+ */
+export function getIsoWeek(ms: number): { isoYear: number; week: number } {
+  const p = getDateParts(ms);
+  const dayOffset = (new Date(p.year, p.month, p.day).getDay() + 6) % 7; // Mon → 0
+  // The Thursday of this week pins the ISO year.
+  const thursday = buildDate(p.year, p.month, p.day - dayOffset + 3);
+  const t = getDateParts(thursday);
+  const week1Monday = buildDate(t.year, 0, 4 - ((new Date(t.year, 0, 4).getDay() + 6) % 7));
+  const week = Math.round((thursday - week1Monday) / 86_400_000 / 7) + 1;
+  return { isoYear: t.year, week };
 }
 
 /** Shift a timestamp by whole months, keeping the day-of-month clamped. */
@@ -174,11 +230,23 @@ export function isSameDay(a: number, b: number): boolean {
   return startOfDay(a) === startOfDay(b);
 }
 
+/** Same local ISO week (both dates' Mondays match)? */
+export function isSameWeek(a: number, b: number): boolean {
+  return startOfWeek(a) === startOfWeek(b);
+}
+
 /** Same local month? */
 export function isSameMonth(a: number, b: number): boolean {
   const pa = getDateParts(a);
   const pb = getDateParts(b);
   return pa.year === pb.year && pa.month === pb.month;
+}
+
+/** Same local quarter? */
+export function isSameQuarter(a: number, b: number): boolean {
+  const pa = getDateParts(a);
+  const pb = getDateParts(b);
+  return pa.year === pb.year && Math.floor(pa.month / 3) === Math.floor(pb.month / 3);
 }
 
 /** Same local year? */
@@ -215,6 +283,18 @@ export function buildMonthGrid(year: number, monthIdx: number): SnMonthGridCell[
     rows.push(row);
   }
   return rows;
+}
+
+/** Quarter grid (4 cells) for an anchor year. */
+export function buildQuarterUnitGrid(
+  year: number,
+  quarterLabel: (q: number) => string,
+): SnUnitGridCell[] {
+  return rangeInclusive(0, 3).map((q) => ({
+    ts: buildDate(year, q * 3, 1),
+    label: quarterLabel(q + 1),
+    value: q,
+  }));
 }
 
 /** Month-of-year grid (12 cells) for an anchor year. */
@@ -254,12 +334,16 @@ export function formatDecadeTitle(anchorYear: number): string {
 
 /**
  * Format a timestamp with the supported token set (lowercase):
- * `yyyy` `yy` `MM` `M` `dd` `d` `HH` `H` `mm` `m` `ss` `s`.
- * Uppercase variants (YYYY-MM-DD) are NOT supported — documented in
- * ai-description.md.
+ * `yyyy` `yy` `MM` `M` `dd` `d` `HH` `H` `mm` `m` `ss` `s` `ww` `w` `qq` `q`.
+ * `w`/`ww` resolve to the ISO week number and `q`/`qq` to the quarter;
+ * `yyyy` stays the CALENDAR year (week formats at Dec/Jan boundaries may
+ * diverge from the ISO week-year — documented in ai-description.md).
+ * Uppercase variants (YYYY-MM-DD) are NOT supported.
  */
 export function formatDate(ms: number, format: string): string {
   const p = getDateParts(ms);
+  const iso = getIsoWeek(ms);
+  const quarter = getQuarter(ms);
   const tokens: Record<string, string> = {
     yyyy: String(p.year),
     yy: pad2(p.year % 100),
@@ -273,8 +357,12 @@ export function formatDate(ms: number, format: string): string {
     m: String(p.minute),
     ss: pad2(p.second),
     s: String(p.second),
+    ww: pad2(iso.week),
+    w: String(iso.week),
+    qq: `Q${quarter}`,
+    q: String(quarter),
   };
-  return format.replace(/yyyy|yy|MM|M|dd|d|HH|H|mm|m|ss|s/g, (t) => tokens[t] ?? t);
+  return format.replace(/yyyy|yy|ww|MM|qq|dd|HH|mm|ss|M|d|H|m|s|w|q/g, (t) => tokens[t] ?? t);
 }
 
 /** Combine a date (day precision) with a time-of-day. */
@@ -290,10 +378,25 @@ export function combineDateTime(
 
 /** Whether a type is a range mode. */
 export function isRangeType(type: SnDatePickerType): boolean {
-  return type === 'daterange' || type === 'datetimerange';
+  return (
+    type === 'daterange' ||
+    type === 'datetimerange' ||
+    type === 'weekrange' ||
+    type === 'quarterrange'
+  );
 }
 
 /** Whether a type carries a time-of-day column. */
 export function hasTimePart(type: SnDatePickerType): boolean {
   return type === 'datetime' || type === 'datetimerange';
+}
+
+/** Whether a type picks whole ISO weeks (row selection). */
+export function isWeekType(type: SnDatePickerType): boolean {
+  return type === 'week' || type === 'weekrange';
+}
+
+/** Whether a type picks quarters (Q1–Q4 grid). */
+export function isQuarterType(type: SnDatePickerType): boolean {
+  return type === 'quarter' || type === 'quarterrange';
 }

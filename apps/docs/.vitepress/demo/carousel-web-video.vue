@@ -1,75 +1,116 @@
 <script setup lang="ts">
 /**
- * Demo: SnCarousel — video banner mixed with image slides.
- * The `<video>` renders without native controls: click toggles play/pause,
- * and leaving its slide pauses it automatically, so switching slides never
- * leaves audio playing.
+ * Demo: SnCarousel — options 数据驱动的图/视频轮播 + item 插槽自定义。
+ * 内置视频无 controls：点击播放/暂停，切走当前帧自动暂停（组件内置）。
  */
-import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
+import { SnCarousel } from '@snui/vue-web';
 
-/** 自包含渐变占位图（SVG data URI），demo 不依赖外网图片源。 */
-function ph(from: string, to: string, label = '', w = 800, h = 400): string {
-  const parts = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">`,
-    `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs>`,
-    `<rect width="${w}" height="${h}" fill="url(#g)"/>`,
-    `<circle cx="${w * 0.78}" cy="${h * 0.28}" r="${h * 0.3}" fill="rgba(255,255,255,0.16)"/>`,
-    `<circle cx="${w * 0.2}" cy="${h * 0.82}" r="${h * 0.24}" fill="rgba(255,255,255,0.12)"/>`,
-  ];
-  if (label) {
-    parts.push(
-      `<text x="50%" y="52%" fill="rgba(255,255,255,0.92)" font-family="system-ui,sans-serif" font-size="${Math.round(h * 0.13)}" font-weight="600" text-anchor="middle" dominant-baseline="middle">${label}</text>`,
-    );
-  }
-  parts.push('</svg>');
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(parts.join(''))}`;
+/**
+ * 演示用网络图片（picsum.photos）。`seed` 固定则同一张图稳定复现，便于 demo 长期一致。
+ */
+function photo(seed: string, w = 800, h = 400): string {
+  return `https://picsum.photos/seed/${seed}/${w}/${h}`;
 }
 
-interface Slide {
-  type: 'image' | 'video';
-  src: string;
-  alt: string;
-}
-
-const slides: Slide[] = [
-  { type: 'image', src: ph('#69b1ff', '#0958d9', '自然纪录片'), alt: '自然纪录片' },
-  { type: 'video', src: 'https://www.w3schools.com/html/mov_bbb.mp4', alt: '宣传视频' },
-  { type: 'image', src: ph('#5cdbd3', '#08979c', '城市旅拍'), alt: '城市旅拍' },
+/** options 模式：type: 'video' 标记视频项，媒体标记由组件内置渲染。 */
+const slides = [
+  {
+    type: 'image' as const,
+    src: photo('carousel-web-video-1'),
+    alt: '自然纪录片',
+    title: '图文专题',
+    description: '使用图片与视频混排的内容流',
+  },
+  {
+    type: 'video' as const,
+    src: 'https://www.w3schools.com/html/mov_bbb.mp4',
+    poster: photo('carousel-web-video-3', 800, 450),
+    title: '宣传视频（点击播放/暂停，切走自动暂停）',
+    description: 'Big Buck Bunny 片段 · 无原生工具栏',
+  },
+  {
+    type: 'image' as const,
+    src: photo('carousel-web-video-2'),
+    alt: '城市旅拍',
+    title: '图文专题',
+    description: '使用图片与视频混排的内容流',
+  },
 ];
 
-const poster = ph('#85a5ff', '#1d39c4', '', 800, 450);
-
-/** 无 controls 工具栏：点击视频播放/暂停（切走当前帧时组件自动 pause）。 */
-function toggleVideo(event: MouseEvent): void {
-  const video = event.currentTarget as HTMLVideoElement | null;
-  if (!video) return;
-  if (video.paused) void video.play();
-  else video.pause();
-}
+/** item 插槽：完全接管每帧内容（拿到 item / index / isActive 等作用域）。 */
+const customSlides = [
+  { heading: '自定义内容 A', text: '由 #item 插槽渲染' },
+  { heading: '自定义内容 B', text: '内置媒体渲染被整体替换' },
+];
 </script>
 
 <template>
-  <SnCarousel draggable style="height: 300px; border-radius: 8px; overflow: hidden">
-    <SnCarouselItem
-      v-for="s in slides"
-      :key="s.src"
-      :title="s.type === 'video' ? '宣传视频（点击播放/暂停，切走自动暂停）' : '图文专题'"
-      :description="
-        s.type === 'video' ? 'Big Buck Bunny 片段 · 无原生工具栏' : '使用图片与视频混排的内容流'
-      "
-    >
-      <video
-        v-if="s.type === 'video'"
-        :src="s.src"
-        :poster="poster"
-        muted
-        loop
-        playsinline
-        preload="metadata"
-        style="width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer"
-        @click="toggleVideo"
-      />
-      <img v-else :src="s.src" :alt="s.alt" style="width: 100%; height: 100%; object-fit: cover" />
-    </SnCarouselItem>
-  </SnCarousel>
+  <div class="carousel-demo">
+    <SnCarousel draggable :options="slides" style="height: 300px; border-radius: 8px; overflow: hidden" />
+
+    <p class="demo-note">↓ #item 插槽覆盖内置媒体渲染</p>
+
+    <SnCarousel :options="customSlides" style="height: 160px; border-radius: 8px; overflow: hidden">
+      <template #item="{ item, index, isActive }">
+        <div class="custom-slide" :class="{ 'custom-slide--active': isActive }">
+          <span class="custom-slide__index">{{ index + 1 }}</span>
+          <div>
+            <p class="custom-slide__title">{{ item.heading }}</p>
+            <p class="custom-slide__text">{{ item.text }}</p>
+          </div>
+        </div>
+      </template>
+    </SnCarousel>
+  </div>
 </template>
+
+<style scoped>
+.carousel-demo {
+  width: 100%;
+}
+
+.demo-note {
+  margin: 16px 0 8px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+}
+
+.custom-slide {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 32px;
+  background: linear-gradient(120deg, #eef2ff, #fdf2f8);
+  transition: filter 0.3s ease;
+}
+
+.custom-slide--active {
+  filter: none;
+}
+
+.custom-slide__index {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #6366f1;
+  color: #fff;
+  font-weight: 600;
+}
+
+.custom-slide__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.custom-slide__text {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+</style>
