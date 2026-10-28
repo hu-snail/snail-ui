@@ -341,7 +341,22 @@ function setItemRef(key: string, value: unknown): void {
   observer?.observe(element);
 }
 
-function handleResize(entries: ResizeObserverEntry[]): void {
+/**
+ * ResizeObserver notifications are coalesced into one animation frame:
+ * processing them synchronously inside the callback writes reactive state
+ * (containerWidth / one-shot pack) whose render resizes observed elements
+ * again — the browser then reports "ResizeObserver loop completed with
+ * undelivered notifications". Deferring to rAF lets layout settle first.
+ * Entries arriving in the same frame are merged; the latest wins per target.
+ */
+let pendingEntries: ResizeObserverEntry[] = [];
+let roFrame: number | null = null;
+
+function flushResize(): void {
+  roFrame = null;
+  const entries = pendingEntries;
+  pendingEntries = [];
+  if (entries.length === 0) return;
   for (const entry of entries) {
     if (entry.target === rootRef.value) {
       // Feeds `columnCount` only; when the derived count changes, the reactive
@@ -360,12 +375,28 @@ function handleResize(entries: ResizeObserverEntry[]): void {
   if (measuredHeights) packOnceWithMeasurements();
 }
 
+function handleResize(entries: ResizeObserverEntry[]): void {
+  pendingEntries = pendingEntries.concat(entries);
+  if (roFrame !== null) return;
+  // 测试 / 无 rAF 环境（happy-dom 的存根直接跑回调）：同步回退，保持契约。
+  if (typeof requestAnimationFrame !== 'function') {
+    flushResize();
+    return;
+  }
+  roFrame = requestAnimationFrame(flushResize);
+}
+
 /** Observe the container; it is the only element guaranteed to exist. */
 function observeRoot(): void {
   if (observer && rootRef.value) observer.observe(rootRef.value);
 }
 
 function teardownObserver(): void {
+  if (roFrame !== null && typeof cancelAnimationFrame === 'function') {
+    cancelAnimationFrame(roFrame);
+  }
+  roFrame = null;
+  pendingEntries = [];
   observer?.disconnect();
   observer = null;
   itemElements.clear();
