@@ -38,6 +38,12 @@
 
 <Demo name="form-validation-flow" description="validateTrigger: 'blur' | 'change'；resetOnChange 提交后自动清错误；errorType: 'message' | 'toast' | 'none'。" />
 
+## 综合场景：日期 / 日历 / 单选 / 多选 / 选择器编排
+
+把 `SnSelect`、`SnRadioGroup`、`SnCheckboxGroup`、`SnInputNumber`、`SnDatePicker`、`SnTimePicker`、`SnSwitch`、内联 `SnCalendar` 等字段型组件编排在同一个表单里，共享 `rules` 校验与 `submit` 提交流程。
+
+<Demo name="form-web-assembly" description="选择器 / 单选 / 多选 / 数字 / 日期 / 时间 / 开关 / 内联日历 + 统一校验提交。" />
+
 ## SnForm Props
 
 | Prop               | Type                             | Default     | Description                                         |
