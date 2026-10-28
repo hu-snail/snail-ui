@@ -198,13 +198,16 @@ function handleAfterLeave() {
   position: relative;
   display: flex;
   /* The icon and the close button align to the *first text line*, not to the
-   * middle of a multi-line banner — `stretch` used to grow both columns to the
-   * full height and leave their glyphs pinned at the top. */
+    * middle of a multi-line banner — `stretch` used to grow both columns to the
+    * full height and leave their glyphs pinned at the top. */
   align-items: flex-start;
   box-sizing: border-box;
   width: 100%;
   padding: 8px 12px;
   border-radius: 3px;
+  /* Neutral text by default: the semantic type colour is reserved for the icon
+    * and the border, so the copy inside a tinted banner stays crisp. */
+  color: var(--sn-web-color-text-primary);
   font-size: 14px;
   line-height: 1.6;
   transition:
@@ -229,53 +232,60 @@ function handleAfterLeave() {
 
 /* ---------- Type colors ---------- */
 
+/* Each type exposes its hue as `--sn-alert-accent`; only the icon and the
+  * border consume it. Painting the whole banner (title + body) in the type
+  * colour made the copy low-contrast against its own tint. */
 .sn-alert--default {
   background: var(--sn-web-color-background-subtle);
   color: var(--sn-web-color-text-primary);
 }
 
 .sn-alert--info {
+  --sn-alert-accent: var(--sn-web-color-feedback-info);
   background: color-mix(
     in srgb,
     var(--sn-web-color-feedback-info) 12%,
     var(--sn-web-color-background-surface)
   );
-  color: var(--sn-web-color-feedback-info);
 }
 
 .sn-alert--success {
+  --sn-alert-accent: var(--sn-web-color-feedback-success);
   background: color-mix(
     in srgb,
     var(--sn-web-color-feedback-success) 12%,
     var(--sn-web-color-background-surface)
   );
-  color: var(--sn-web-color-feedback-success);
 }
 
 .sn-alert--warning {
+  --sn-alert-accent: var(--sn-web-color-feedback-warning);
   background: color-mix(
     in srgb,
     var(--sn-web-color-feedback-warning) 12%,
     var(--sn-web-color-background-surface)
   );
-  color: var(--sn-web-color-feedback-warning);
 }
 
 .sn-alert--error {
+  --sn-alert-accent: var(--sn-web-color-feedback-danger);
   background: color-mix(
     in srgb,
     var(--sn-web-color-feedback-danger) 12%,
     var(--sn-web-color-background-surface)
   );
-  color: var(--sn-web-color-feedback-danger);
 }
 
 /* ---------- Border overlay ---------- */
 
+/* ---------- Border overlay ---------- */
+
+/* The hairline lives on an overlay layer with its own `color`, so it takes the
+  * type hue without tinting the copy inside. */
 .sn-alert__border {
   position: absolute;
   inset: 0;
-  border: 1px solid currentColor;
+  border: 1px solid var(--sn-alert-accent, currentColor);
   border-radius: inherit;
   opacity: 0.2;
   pointer-events: none;
@@ -292,6 +302,12 @@ function handleAfterLeave() {
  * `line-height` 1.6 above), so centering the glyph in it puts the icon on the
  * title's optical center. Both values are em-relative to `.sn-alert`, so a
  * consumer overriding `font-size` keeps them in step. */
+/* `height: 1.6em` is exactly the first text line box (`font-size` 14px ×
+  * `line-height` 1.6 above), so centering the glyph in it puts the icon on the
+  * title's optical center. Both values are em-relative to `.sn-alert`, so a
+  * consumer overriding `font-size` keeps them in step.
+  *
+  * The glyph is the one element allowed to carry the semantic type colour. */
 .sn-alert__icon {
   flex: none;
   display: flex;
@@ -299,6 +315,7 @@ function handleAfterLeave() {
   justify-content: center;
   height: 1.6em;
   margin-right: 8px;
+  color: var(--sn-alert-accent, currentColor);
 }
 
 /* SnIcon sizes its wrapper at `1em` of the ambient font (14px here) while the
@@ -356,13 +373,18 @@ function handleAfterLeave() {
 }
 
 /* The gap belongs to the title/content *pair*. As a `margin-bottom` on the
- * title it also padded a title-only banner, so the title sat 2px above the
- * vertical center of its own box. */
+  * title it also padded a title-only banner, so the title sat 2px above the
+  * vertical center of its own box.
+  *
+  * The pair also drops the body to the secondary text colour: the semantic type
+  * colour paints only the icon and the border, so the copy stays crisp. */
 .sn-alert-body__title + .sn-alert-body__content {
   margin-top: 2px;
+  color: var(--sn-web-color-text-secondary);
 }
 
+/* A title-less banner *is* the message, so it keeps the primary text colour. */
 .sn-alert-body__content {
-  color: inherit;
+  color: var(--sn-web-color-text-primary);
 }
 </style>

@@ -23,16 +23,16 @@ import { SnAlert } from '@snui/vue-web';
 
 ## Props
 
-| Name           | Type                                                       | Default     | Description                                                                                |
-| -------------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------ |
-| `title`        | `string`                                                   | `''`        | Alert heading.                                                                             |
-| `showIcon`     | `boolean`                                                  | `true`      | Show the leading type icon.                                                                |
-| `type`         | `'info' \| 'warning' \| 'error' \| 'success' \| 'default'` | `'default'` | Semantic type — drives color + built-in icon.                                              |
-| `bordered`     | `boolean`                                                  | `true`      | Draw the surrounding border overlay.                                                       |
-| `closable`     | `boolean`                                                  | `false`     | Render the close button.                                                                   |
-| `onClose`      | `() => unknown`                                            | `undefined` | Called on close click. Return `false` (or a Promise of `false`) to **veto** the dismissal. |
-| `onAfterLeave` | `() => void`                                               | `undefined` | Called after the leave transition finishes.                                                |
-| `onAfterHide`  | `() => void`                                               | `undefined` | **@deprecated** — use `onAfterLeave`.                                                      |
+| Name           | Type                                                       | Default     | Description                                                                                                              |
+| -------------- | ---------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `title`        | `string`                                                   | `''`        | Alert heading.                                                                                                           |
+| `showIcon`     | `boolean`                                                  | `true`      | Show the leading type icon.                                                                                              |
+| `type`         | `'info' \| 'warning' \| 'error' \| 'success' \| 'default'` | `'default'` | Semantic type — drives the tinted background, the icon and the border colour. The copy stays on the neutral text tokens. |
+| `bordered`     | `boolean`                                                  | `true`      | Draw the surrounding border overlay.                                                                                     |
+| `closable`     | `boolean`                                                  | `false`     | Render the close button.                                                                                                 |
+| `onClose`      | `() => unknown`                                            | `undefined` | Called on close click. Return `false` (or a Promise of `false`) to **veto** the dismissal.                               |
+| `onAfterLeave` | `() => void`                                               | `undefined` | Called after the leave transition finishes.                                                                              |
+| `onAfterHide`  | `() => void`                                               | `undefined` | **@deprecated** — use `onAfterLeave`.                                                                                    |
 
 ## Events
 
@@ -80,17 +80,25 @@ The node is removed after the leave transition completes, at which point
 | ----------------- | ----------------------------------- | --------------------------------- |
 | Subtle background | `--sn-web-color-background-subtle`  | `type="default"` fill             |
 | Surface           | `--sn-web-color-background-surface` | Base for `color-mix()` type tints |
-| Info              | `--sn-web-color-feedback-info`      | Info text + tint                  |
-| Success           | `--sn-web-color-feedback-success`   | Success text + tint               |
-| Warning           | `--sn-web-color-feedback-warning`   | Warning text + tint               |
-| Danger            | `--sn-web-color-feedback-danger`    | Error text + tint                 |
+| Info              | `--sn-web-color-feedback-info`      | Info icon / border + tint         |
+| Success           | `--sn-web-color-feedback-success`   | Success icon / border + tint      |
+| Warning           | `--sn-web-color-feedback-warning`   | Warning icon / border + tint      |
+| Danger            | `--sn-web-color-feedback-danger`    | Error icon / border + tint        |
 | Border default    | `--sn-web-color-border-default`     | `type="default"` border           |
-| Text primary      | `--sn-web-color-text-primary`       | Default body text                 |
+| Text primary      | `--sn-web-color-text-primary`       | Title and title-less body text    |
+| Text secondary    | `--sn-web-color-text-secondary`     | Body text under a title           |
 | Focus ring        | `--sn-web-focus-ring`               | Close button `:focus-visible`     |
 
 Tinted backgrounds use `color-mix(in srgb, var(--token) 12%, var(--sn-web-color-background-surface))`
 — the same pattern SnButton uses for softened fills (AGENTS.md §34: no
 literal colors).
+
+The active type hue is exposed internally as `--sn-alert-accent` and consumed
+only by the icon column and the border overlay. The copy deliberately stays on
+the neutral text tokens: painting the whole banner in the type colour dropped
+the contrast between the text and its own tint, which made a coloured alert
+read muddy. Overriding the tokens above is all a consumer needs to re-colour
+the component.
 
 ## Accessibility
 
