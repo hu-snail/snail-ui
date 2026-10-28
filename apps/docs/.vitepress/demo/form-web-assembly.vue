@@ -1,11 +1,9 @@
 <script setup lang="ts">
-/** Demo: SnForm — 综合场景:将选择器 / 单选 / 多选 / 日期 / 时间 / 日历
+/** Demo: SnForm — 综合场景:将选择器 / 单选 / 多选 / 日期 / 时间
  *  等字段型组件编排进同一个表单,统一校验 + 提交。 */
 import { computed, reactive, ref } from 'vue';
 import {
   SnButton,
-  SnCalendar,
-  SnCheckbox,
   SnCheckboxGroup,
   SnDatePicker,
   SnForm,
@@ -28,7 +26,6 @@ const form = reactive({
   birthday: null as number | null,
   reminder: null as number | null,
   remind: true,
-  activeDay: null as number | null,
   note: '',
 });
 
@@ -58,18 +55,13 @@ const summary = computed(() =>
     `人数:${form.headcount}`,
     `生日:${form.birthday ? new Date(form.birthday).toLocaleDateString() : '—'}`,
     `提醒时间:${form.reminder ? new Date(form.reminder).toLocaleTimeString() : '—'}`,
-    `关注日期:${form.activeDay ? new Date(form.activeDay).toLocaleDateString() : '—'}`,
   ].join('\n'),
 );
 
 function onSubmit(payload: { valid: boolean }): void {
   if (!payload.valid) return;
   submitCount.value += 1;
-  last.value = JSON.stringify(
-    { ...form, activeDayLabel: form.activeDay ? new Date(form.activeDay).toDateString() : null },
-    null,
-    2,
-  );
+  last.value = JSON.stringify({ ...form }, null, 2);
 }
 </script>
 
@@ -106,10 +98,6 @@ function onSubmit(payload: { valid: boolean }): void {
 
       <SnFormItem prop="remind" label="接收提醒">
         <SnSwitch v-model="form.remind" />
-      </SnFormItem>
-
-      <SnFormItem prop="activeDay" label="关注日期" description="内联日历,点选一天作为关注日。">
-        <SnCalendar v-model:value="form.activeDay" />
       </SnFormItem>
 
       <SnFormItem prop="note" label="备注" label-position="top">

@@ -1,11 +1,9 @@
 <script setup lang="ts">
 /** Demo: SnForm — composite form: selectors / radio / checkbox / date /
- *  time / calendar fields orchestrated in one form with shared validation
- *  and submit. */
+ *  time fields orchestrated in one form with shared validation and submit. */
 import { computed, reactive, ref } from 'vue';
 import {
   SnButton,
-  SnCalendar,
   SnCheckboxGroup,
   SnDatePicker,
   SnForm,
@@ -28,7 +26,6 @@ const form = reactive({
   birthday: null as number | null,
   reminder: null as number | null,
   remind: true,
-  activeDay: null as number | null,
   note: '',
 });
 
@@ -58,18 +55,13 @@ const summary = computed(() =>
     `Headcount: ${form.headcount}`,
     `Birthday: ${form.birthday ? new Date(form.birthday).toLocaleDateString() : '—'}`,
     `Reminder: ${form.reminder ? new Date(form.reminder).toLocaleTimeString() : '—'}`,
-    `Watched day: ${form.activeDay ? new Date(form.activeDay).toLocaleDateString() : '—'}`,
   ].join('\n'),
 );
 
 function onSubmit(payload: { valid: boolean }): void {
   if (!payload.valid) return;
   submitCount.value += 1;
-  last.value = JSON.stringify(
-    { ...form, activeDayLabel: form.activeDay ? new Date(form.activeDay).toDateString() : null },
-    null,
-    2,
-  );
+  last.value = JSON.stringify({ ...form }, null, 2);
 }
 </script>
 
@@ -106,14 +98,6 @@ function onSubmit(payload: { valid: boolean }): void {
 
       <SnFormItem prop="remind" label="Notify me">
         <SnSwitch v-model="form.remind" />
-      </SnFormItem>
-
-      <SnFormItem
-        prop="activeDay"
-        label="Watched day"
-        description="Inline calendar — tap a day to watch it."
-      >
-        <SnCalendar v-model:value="form.activeDay" />
       </SnFormItem>
 
       <SnFormItem prop="note" label="Note" label-position="top">
