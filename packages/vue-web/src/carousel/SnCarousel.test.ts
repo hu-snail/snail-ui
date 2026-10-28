@@ -880,7 +880,7 @@ describe('SnCarousel', () => {
     return vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(300);
   }
 
-  it('should not start a mouse drag from inside a video but drag from the slide body', async () => {
+  it('should swipe from a controls-less video and drag from the slide body', async () => {
     const sizeSpy = stubMeasuredWidth();
     try {
       const w = mount(
@@ -900,25 +900,72 @@ describe('SnCarousel', () => {
       );
       await nextTick();
       const slidesEl = w.find('.sn-carousel__slides');
+      let styleBeforeDrag = slidesEl.attributes('style');
 
-      // Mousedown inside the video → no drag listeners: moving the pointer
-      // 200px left and releasing leaves index and track untouched.
+      // A controls-less video is imagery to the pointer: the swipe follows
+      // the finger and the > half-viewport release flips to slide 2 — the
+      // browser's native media drag must not eat the gesture (mousedown
+      // preventDefault cancels it).
+      await w.find('video').trigger('mousedown', { clientX: 100, clientY: 10 });
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
+      await nextTick();
+      // Follow-the-finger: the track must have left the resting position.
+      expect(slidesEl.attributes('style')).not.toBe(styleBeforeDrag);
+      document.dispatchEvent(new MouseEvent('mouseup'));
+      await nextTick();
+      // The > half-viewport release flips to the next slide.
+      expect(activeDotIndex(w)).toBe(1);
+      // Let the release fixTranslate (nextTick) settle before the next drag.
+      await nextTick();
+      await nextTick();
+
+      // Mousedown on the slide body still drags (slide 2).
+      styleBeforeDrag = slidesEl.attributes('style');
+      await slidesEl.trigger('mousedown', { clientX: 100, clientY: 10 });
+      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
+      await nextTick();
+      expect(slidesEl.attributes('style')).not.toBe(styleBeforeDrag);
+      document.dispatchEvent(new MouseEvent('mouseup'));
+      await nextTick();
+      expect(activeDotIndex(w)).toBe(2);
+    } finally {
+      sizeSpy.mockRestore();
+    }
+  });
+
+  it('should not start a drag from inside a video with controls', async () => {
+    const sizeSpy = stubMeasuredWidth();
+    try {
+      const w = mount(
+        defineComponent({
+          components: { SnCarousel, SnCarouselItem },
+          setup() {
+            return () =>
+              h(SnCarousel, { draggable: true, style: 'width:300px;height:150px' } as never, {
+                default: () => [
+                  h(
+                    SnCarouselItem,
+                    { key: 0 },
+                    { default: () => h('video', { src: 'a.mp4', controls: true }) },
+                  ),
+                  h(SnCarouselItem, { key: 1 }, { default: () => 'B' }),
+                  h(SnCarouselItem, { key: 2 }, { default: () => 'C' }),
+                ],
+              });
+          },
+        }),
+      );
+      await nextTick();
+      const slidesEl = w.find('.sn-carousel__slides');
+
+      // `controls` hands the pointer to the native toolbar: no carousel
+      // drag listeners, the track and index stay untouched.
       await w.find('video').trigger('mousedown', { clientX: 100, clientY: 10 });
       document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
       document.dispatchEvent(new MouseEvent('mouseup'));
       await nextTick();
       expect(activeDotIndex(w)).toBe(0);
       expect(slidesEl.attributes('style')).not.toContain('translateX(-500px)');
-
-      // Mousedown on the slide body → track follows the pointer (300 base
-      // + 200 offset), then the > half-viewport release flips to slide 2.
-      await slidesEl.trigger('mousedown', { clientX: 100, clientY: 10 });
-      document.dispatchEvent(new MouseEvent('mousemove', { clientX: -100, clientY: 10 }));
-      await nextTick();
-      expect(slidesEl.attributes('style')).toContain('translateX(-500px)');
-      document.dispatchEvent(new MouseEvent('mouseup'));
-      await nextTick();
-      expect(activeDotIndex(w)).toBe(1);
     } finally {
       sizeSpy.mockRestore();
     }

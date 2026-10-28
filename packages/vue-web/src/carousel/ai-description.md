@@ -49,10 +49,13 @@ import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
   0.4 px/ms — naive thresholds). Transition is disabled while dragging;
   a drag beats a pending autoplay tick; only one carousel may drag at a
   time (module-level flag, naive parity). A drag never starts when
-  mousedown/touchstart lands inside an interactive element (`video,
-audio, a, button, input, textarea, select, [contenteditable],
-[data-no-drag]`) — native controls keep working; card-mode side-slide
-  click navigation is unaffected (it listens for `click`).
+  mousedown/touchstart lands inside an interactive element (`a, button,
+input, textarea, select, [contenteditable], [data-no-drag]`) — native
+  controls keep working; card-mode side-slide click navigation is
+  unaffected (it listens for `click`). `<video>` / `<audio>` elements
+  WITHOUT `controls` stay swipeable (a press there starts the carousel
+  drag and preventDefault cancels the browser's native media drag);
+  with `controls` the toolbar owns the pointer.
 - **Caption** (SnCarouselItem, beyond naive): `title` / `description`
   props render a bottom gradient text overlay; the `caption` slot
   replaces that text. The overlay renders only when at least one caption
@@ -164,9 +167,10 @@ through provide/inject (mirrors naive CarouselContext).
   mouse drag start (`Carousel.tsx handleTouchstart`), which breaks
   `<video controls>`, links and form controls inside slides. SnCarousel
   skips the drag when the press target matches the interactive selector
-  above (plus `[data-no-drag]` opt-out). `draggable`/`touchable`
-  defaults stay naive-aligned (`false` / `true`); the docs demos enable
-  `draggable` for discoverability.
+  above (plus `[data-no-drag]` opt-out) — EXCEPT media without `controls`,
+  which stays swipeable (its native drag would otherwise eat the whole
+  gesture). `draggable`/`touchable` defaults stay naive-aligned
+  (`false` / `true`); the docs demos enable `draggable` for discoverability.
 
 ## §112 future markers (declared parity, deferred)
 

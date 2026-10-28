@@ -95,8 +95,10 @@ let globalDragging = false;
  *     `default-index` to 0 (verified against naive-ui 2.43.1; naive ships
  *     no default-index demo).
  *   - Drag start is suppressed when mousedown/touchstart lands inside an
- *     interactive element (`video, audio, a, button, input, …`,
- *     `[data-no-drag]`) so native controls keep working; naive
+ *     interactive element (`a, button, input, …`, `[data-no-drag]`) so
+ *     native controls keep working; a `<video>` / `<audio>` WITHOUT
+ *     `controls` stays swipeable (native media drag would swallow the
+ *     gesture), with `controls` the toolbar owns the pointer; naive
  *     preventDefaults every mouse drag start.
  *
  * Per AUI-FOUND-003 + AUI-FOUND-004, this component is end: web and uses
@@ -652,9 +654,24 @@ function onCarouselItemClick(index: number, event: MouseEvent): void {
  * controls>` timeline, a link, a form control). Card-mode side-slide
  * navigation is unaffected — it listens for `click`, not for drag start.
  * (Beyond naive, which preventDefaults every mouse drag start.)
+ *
+ * `<video>` / `<audio>` WITHOUT the `controls` attribute are imagery to the
+ * pointer: native drag would swallow the whole gesture (a ghost drag starts
+ * and no mousemove/mouseup ever reaches the page), so they stay swipeable —
+ * our mousedown preventDefault then also cancels the browser's native media
+ * drag. With `controls` the toolbar owns the pointer.
  */
 const NO_DRAG_SELECTOR =
   'video, audio, a, button, input, textarea, select, [contenteditable], [data-no-drag]';
+
+function isDragGuarded(target: Element): boolean {
+  const guarded = target.closest(NO_DRAG_SELECTOR);
+  if (!guarded) return false;
+  if (guarded instanceof HTMLVideoElement || guarded instanceof HTMLAudioElement) {
+    return guarded.hasAttribute('controls');
+  }
+  return true;
+}
 
 function handleTouchstart(event: MouseEvent | TouchEvent): void {
   if (globalDragging) return;
@@ -663,7 +680,7 @@ function handleTouchstart(event: MouseEvent | TouchEvent): void {
   if (!slidesEl || !(target instanceof Node) || !slidesEl.contains(target)) {
     return;
   }
-  if (target instanceof Element && target.closest(NO_DRAG_SELECTOR)) {
+  if (target instanceof Element && isDragGuarded(target)) {
     return;
   }
   globalDragging = true;
