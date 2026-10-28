@@ -147,8 +147,9 @@ function navTo(url: string): void {
           </SnWaterfall>
 
           <!-- uni 端：uni-templates —— 真实模板的手机模拟器瀑布流
-             （iframe 实时加载 uni-demo H5；悬停出小程序二维码引流） -->
-          <SnWaterfall v-else :min-column-width="320" :columns="3" :column-gap="20" :row-gap="26">
+             （窄列恢复手机长宽比；iframe 实时加载 uni-templates H5；
+             二维码挂在机身下方「微信小程序」标签，悬停弹出） -->
+          <SnWaterfall v-else :min-column-width="264" :columns="3" :column-gap="20" :row-gap="26">
             <SnHomeUniTemplate
               v-for="tpl in uniTemplates"
               :key="tpl.id"
