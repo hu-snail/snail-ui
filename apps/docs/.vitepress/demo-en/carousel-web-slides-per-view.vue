@@ -2,30 +2,20 @@
 /** Demo: SnCarousel — slides-per-view with space-between and no loop. */
 import { SnCarousel, SnCarouselItem } from '@snui/vue-web';
 
-/** 自包含渐变占位图（SVG data URI），demo 不依赖外网图片源。 */
-function ph(from: string, to: string, label = '', w = 800, h = 400): string {
-  const parts = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}">`,
-    `<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs>`,
-    `<rect width="${w}" height="${h}" fill="url(#g)"/>`,
-    `<circle cx="${w * 0.78}" cy="${h * 0.28}" r="${h * 0.3}" fill="rgba(255,255,255,0.16)"/>`,
-    `<circle cx="${w * 0.2}" cy="${h * 0.82}" r="${h * 0.24}" fill="rgba(255,255,255,0.12)"/>`,
-  ];
-  if (label) {
-    parts.push(
-      `<text x="50%" y="52%" fill="rgba(255,255,255,0.92)" font-family="system-ui,sans-serif" font-size="${Math.round(h * 0.13)}" font-weight="600" text-anchor="middle" dominant-baseline="middle">${label}</text>`,
-    );
-  }
-  parts.push('</svg>');
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(parts.join(''))}`;
+/**
+ * 演示用网络图片（picsum.photos）。真实照片比渐变占位更能体现轮播的过渡与裁切效果；
+ * `seed` 固定则同一张图稳定复现，便于 demo 长期一致。
+ */
+function photo(seed: string, w = 800, h = 400): string {
+  return `https://picsum.photos/seed/${seed}/${w}/${h}`;
 }
 
 const images = [
-  { src: ph('#ff85c0', '#c41d7f', 'Strawberry', 400, 300), alt: 'Strawberry' },
-  { src: ph('#85a5ff', '#1d39c4', 'Polar bear', 400, 300), alt: 'Polar bear' },
-  { src: ph('#5cdbd3', '#08979c', 'Walrus', 400, 300), alt: 'Walrus' },
-  { src: ph('#69b1ff', '#0958d9', 'Island', 400, 300), alt: 'Island' },
-  { src: ph('#b37feb', '#531dab', 'Flower', 400, 300), alt: 'Flower' },
+  { src: photo('carousel-web-slides-per-view-1', 400, 300), alt: 'Strawberry' },
+  { src: photo('carousel-web-slides-per-view-2', 400, 300), alt: 'Polar bear' },
+  { src: photo('carousel-web-slides-per-view-3', 400, 300), alt: 'Walrus' },
+  { src: photo('carousel-web-slides-per-view-4', 400, 300), alt: 'Island' },
+  { src: photo('carousel-web-slides-per-view-5', 400, 300), alt: 'Flower' },
 ];
 </script>
 

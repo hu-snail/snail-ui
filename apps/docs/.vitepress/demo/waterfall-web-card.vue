@@ -5,7 +5,9 @@
  * 演示三件事：
  *   - `columns` 控制列数（2 / 3 / 4）；
  *   - `masonry=false` 关掉多列布局，退化为普通单列竖向堆叠；
- *   - `row-gap` 由每个子项的 `margin-bottom` 提供（这里用 12）。
+ *   - 同一份子项数据在不同列数下按最短列优先重新分配。
+ *
+ * 卡片封面使用真实网络图片（picsum.photos），`seed` 固定则同一张图稳定复现。
  */
 import { ref } from 'vue';
 import { SnCard, SnWaterfall } from '@snui/vue-web';
@@ -16,8 +18,7 @@ interface CardItem {
   desc: string;
   coverHeight: number;
   tags: string[];
-  from: string;
-  to: string;
+  seed: string;
 }
 
 const cards: CardItem[] = [
@@ -27,8 +28,7 @@ const cards: CardItem[] = [
     desc: 'Primitive → Semantic → Component 三层别名，跨端共用同一套变量。',
     coverHeight: 96,
     tags: ['token', 'web'],
-    from: '#1677ff',
-    to: '#69b1ff',
+    seed: 'aui-card-token',
   },
   {
     id: 2,
@@ -36,8 +36,7 @@ const cards: CardItem[] = [
     desc: '协议层不依赖 Vue：Schema → Runtime → Renderer 单向依赖，渲染器只是适配层。',
     coverHeight: 132,
     tags: ['schema', 'runtime'],
-    from: '#722ed1',
-    to: '#b37feb',
+    seed: 'aui-card-schema',
   },
   {
     id: 3,
@@ -45,37 +44,39 @@ const cards: CardItem[] = [
     desc: '每列各自打包，高度不齐也不会互相顶出空洞。',
     coverHeight: 80,
     tags: ['layout'],
-    from: '#13c2c2',
-    to: '#5cdbd3',
+    seed: 'aui-card-layout',
   },
   {
     id: 4,
-    title: '零 JS 测量',
-    desc: '不使用 ResizeObserver，也不需要监听滚动：列数由 CSS 多列布局 + 可用宽度决定，resize 时浏览器自行重排。',
+    title: '最短列优先',
+    desc: '新增子项只追加到当前最短的列；已放置的子项不再移动，图片晚到也只撑高自己那一列。',
     coverHeight: 116,
-    tags: ['css', 'a11y'],
-    from: '#fa8c16',
-    to: '#ffc069',
+    tags: ['masonry', 'perf'],
+    seed: 'aui-card-masonry',
   },
   {
     id: 5,
     title: '响应式模式',
-    desc: '设置 min-column-width 后改用 column-width，列数跟随宽度。',
+    desc: '设置 min-column-width 后列数按实测容器宽度计算，宽度变化即重排列数。',
     coverHeight: 88,
     tags: ['responsive'],
-    from: '#eb2f96',
-    to: '#ff85c0',
+    seed: 'aui-card-responsive',
   },
   {
     id: 6,
     title: 'A11y',
-    desc: '容器渲染 role="list"，每个子项包裹层渲染 role="listitem"。',
+    desc: '容器渲染 role="list"，每个子项包裹层渲染 role="listitem"，列包裹层为 presentation。',
     coverHeight: 104,
     tags: ['a11y'],
-    from: '#52c41a',
-    to: '#95de64',
+    seed: 'aui-card-a11y',
   },
 ];
+
+/** 按封面目标比例取图（占位宽 300px），`object-fit: cover` 再兜底裁切。 */
+function photo(seed: string, height: number, width = 300): string {
+  const w = 600;
+  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+}
 
 const columnOptions = [2, 3, 4];
 const columns = ref(3);
@@ -118,12 +119,12 @@ const masonry = ref(true);
         :aria-label="card.title"
       >
         <template #cover>
-          <div
+          <img
             class="waterfall-card__cover"
-            :style="{
-              height: `${card.coverHeight}px`,
-              backgroundImage: `linear-gradient(135deg, ${card.from}, ${card.to})`,
-            }"
+            :src="photo(card.seed, card.coverHeight)"
+            :alt="card.title"
+            loading="lazy"
+            :style="{ height: `${card.coverHeight}px` }"
           />
         </template>
         <template #header>
@@ -183,7 +184,11 @@ const masonry = ref(true);
 }
 
 .waterfall-card__cover {
+  display: block;
+  width: 100%;
+  object-fit: cover;
   border-radius: 6px 6px 0 0;
+  background: var(--vp-c-bg-soft);
 }
 
 .waterfall-card__title {

@@ -1,10 +1,14 @@
 <script setup lang="ts">
 /**
- * waterfall-web-responsive — 响应式（`min-column-width`）用法。
+ * waterfall-web-responsive — the `min-column-width` (responsive) usage.
  *
- * 设置 `min-column-width` 后容器改用 `column-width`：列数不再由
- * `columns` 决定，而是跟随可用宽度自动变化（此时 `columns` 被忽略）。
- * 下面的按钮只切换外层容器宽度，用来观察列数重排。
+ * With `min-column-width` set, the column count no longer comes from
+ * `columns`: it follows the **measured container width** (computed once a width
+ * exists, e.g. after the container enters the viewport). The buttons only change
+ * the stage width so the re-flow is visible.
+ *
+ * Images come from a real network source (picsum.photos); the `seed` is fixed so
+ * the same photo is reproduced every time.
  */
 import { ref } from 'vue';
 import { SnWaterfall } from '@snui/vue-web';
@@ -12,20 +16,25 @@ import { SnWaterfall } from '@snui/vue-web';
 interface Tile {
   id: number;
   height: number;
-  from: string;
-  to: string;
+  seed: string;
 }
 
 const tiles: Tile[] = [
-  { id: 1, height: 110, from: '#1677ff', to: '#69b1ff' },
-  { id: 2, height: 170, from: '#722ed1', to: '#b37feb' },
-  { id: 3, height: 90, from: '#13c2c2', to: '#5cdbd3' },
-  { id: 4, height: 150, from: '#fa8c16', to: '#ffc069' },
-  { id: 5, height: 120, from: '#eb2f96', to: '#ff85c0' },
-  { id: 6, height: 200, from: '#52c41a', to: '#95de64' },
-  { id: 7, height: 95, from: '#2f54eb', to: '#85a5ff' },
-  { id: 8, height: 140, from: '#f5222d', to: '#ff7875' },
+  { id: 1, height: 110, seed: 'aui-resp-1' },
+  { id: 2, height: 170, seed: 'aui-resp-2' },
+  { id: 3, height: 90, seed: 'aui-resp-3' },
+  { id: 4, height: 150, seed: 'aui-resp-4' },
+  { id: 5, height: 120, seed: 'aui-resp-5' },
+  { id: 6, height: 200, seed: 'aui-resp-6' },
+  { id: 7, height: 95, seed: 'aui-resp-7' },
+  { id: 8, height: 140, seed: 'aui-resp-8' },
 ];
+
+/** Request the image at the tile's aspect ratio; `object-fit` crops the rest. */
+function photo(seed: string, height: number, width = 300): string {
+  const w = 600;
+  return `https://picsum.photos/seed/${seed}/${w}/${Math.round((height / width) * w)}`;
+}
 
 const stageWidths = [
   { label: '720px', value: '720px' },
@@ -56,14 +65,14 @@ const stageWidth = ref('720px');
 
     <div class="waterfall-responsive__stage" :style="{ width: stageWidth }">
       <SnWaterfall :min-column-width="150" :row-gap="12">
-        <div
+        <img
           v-for="tile in tiles"
           :key="tile.id"
           class="waterfall-responsive__tile"
-          :style="{
-            height: `${tile.height}px`,
-            backgroundImage: `linear-gradient(135deg, ${tile.from}, ${tile.to})`,
-          }"
+          :src="photo(tile.seed, tile.height)"
+          :alt="`Responsive tile ${tile.id}`"
+          loading="lazy"
+          :style="{ height: `${tile.height}px` }"
         />
       </SnWaterfall>
     </div>
@@ -110,6 +119,10 @@ const stageWidth = ref('720px');
 }
 
 .waterfall-responsive__tile {
+  display: block;
+  width: 100%;
+  object-fit: cover;
   border-radius: 8px;
+  background: var(--vp-c-bg-soft);
 }
 </style>
