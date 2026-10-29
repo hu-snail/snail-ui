@@ -45,6 +45,19 @@ describe('sn-notice-bar', () => {
     expect(wrapper.find('.sn-notice-bar__prefix svg').exists()).toBe(true);
   });
 
+  it('renders proportionate prefix and close glyphs', () => {
+    // Regression: the prefix glyph used to render at 36px against 14px text —
+    // taller than the bar itself — and the close glyph at 32px inside a 20px
+    // box. Both now match the sibling components' scale.
+    const wrapper = mount(SnNoticeBar, { props: { text: 'x', closable: true } });
+    expect(wrapper.find('.sn-notice-bar__prefix .sn-icon').attributes('style')).toContain(
+      'width: 20px',
+    );
+    expect(wrapper.find('.sn-notice-bar__close .sn-icon').attributes('style')).toContain(
+      'width: 16px',
+    );
+  });
+
   it('renders a static line when scrollable is false', () => {
     const wrapper = mount(SnNoticeBar, { props: { text: 'x', scrollable: false } });
     expect(wrapper.find('.sn-notice-bar__marquee').exists()).toBe(false);
@@ -190,6 +203,24 @@ describe('sn-notice-bar', () => {
     });
     expect(wrapper.find('.sn-notice-bar__suffix').exists()).toBe(true);
     expect(wrapper.find('.custom-suffix').exists()).toBe(true);
+  });
+
+  it('mounts the suffix element only when there is content for it', () => {
+    /* The render guard replaces the old `:empty { display: none }` fallback
+     * (§116.2 — App cannot express `:empty`): without closable and without a
+     * suffix slot the element must not exist at all, so no stray flex gap. */
+    const bare = mount(SnNoticeBar, { props: { text: 'x' } });
+    expect(bare.find('.sn-notice-bar__suffix').exists()).toBe(false);
+
+    const closable = mount(SnNoticeBar, { props: { text: 'x', closable: true } });
+    expect(closable.find('.sn-notice-bar__suffix').exists()).toBe(true);
+    expect(closable.find('.sn-notice-bar__close').exists()).toBe(true);
+
+    const slotted = mount(SnNoticeBar, {
+      props: { text: 'x' },
+      slots: { suffix: '<text>S</text>' },
+    });
+    expect(slotted.find('.sn-notice-bar__suffix').exists()).toBe(true);
   });
 
   it('lets the suffix slot replace the built-in close button', () => {

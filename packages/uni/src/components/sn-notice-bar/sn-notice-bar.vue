@@ -246,7 +246,7 @@ function onClick(): void {
   >
     <view class="sn-notice-bar__prefix" aria-hidden="true">
       <slot name="prefix">
-        <SnIcon v-if="prefixIcon" :icon="prefixIcon" :size="36" />
+        <SnIcon v-if="prefixIcon" :icon="prefixIcon" :size="20" />
       </slot>
     </view>
 
@@ -267,6 +267,9 @@ function onClick(): void {
     </view>
 
     <view v-if="closable || $slots.suffix" class="sn-notice-bar__suffix">
+      <!-- Render guard above is the source of truth: the element only mounts
+       * when there is content (close button or a suffix slot). The old
+       * `:empty { display: none }` fallback is unportable on App (§116.2). -->
       <slot name="suffix">
         <view
           v-if="closable"
@@ -275,7 +278,7 @@ function onClick(): void {
           aria-label="close"
           @tap="onClose"
         >
-          <SnIcon :icon="XIcon" :size="32" />
+          <SnIcon :icon="XIcon" :size="16" />
         </view>
       </slot>
     </view>
@@ -294,6 +297,7 @@ function onClick(): void {
   box-sizing: border-box;
   width: 100%;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
+  border-radius: var(--sn-mp-radius-md);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
 }
@@ -322,10 +326,6 @@ function onClick(): void {
   justify-content: center;
   flex: 0 0 auto;
   color: inherit;
-}
-
-.sn-notice-bar__suffix:empty {
-  display: none;
 }
 
 .sn-notice-bar__close {

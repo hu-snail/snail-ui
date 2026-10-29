@@ -13,6 +13,8 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnToast from './sn-toast.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import SnLoading from '../sn-loading/sn-loading.vue';
 
 afterEach(() => {
   vi.useRealTimers();
@@ -100,6 +102,22 @@ describe('sn-toast', () => {
 
     const cover = mount(SnToast, { props: { modelValue: true, msg: 'x', cover: true } });
     expect(cover.classes()).toContain('sn-toast--cover');
+  });
+
+  it('binds the mask-shown modifier on the box exactly while the mask is shown', async () => {
+    /* Box visibility keys off the same `isShown` flag as the mask instead of
+     * the `+` sibling selector (§116.2 — App has no sibling combinators). */
+    vi.useFakeTimers();
+    const wrapper = mount(SnToast, { props: { modelValue: true, msg: 'x', duration: 0 } });
+    expect(wrapper.find('.sn-toast__mask').classes()).toContain('sn-toast__mask--shown');
+    expect(wrapper.find('.sn-toast__box').classes()).toContain('sn-toast__box--mask-shown');
+
+    await wrapper.setProps({ modelValue: false });
+    expect(wrapper.find('.sn-toast__mask').classes()).not.toContain('sn-toast__mask--shown');
+    expect(wrapper.find('.sn-toast__box').classes()).not.toContain('sn-toast__box--mask-shown');
+
+    await wrapper.setProps({ modelValue: true });
+    expect(wrapper.find('.sn-toast__box').classes()).toContain('sn-toast__box--mask-shown');
   });
 
   it('emits click when the box is tapped', async () => {
@@ -205,6 +223,41 @@ describe('sn-toast', () => {
       props: { modelValue: true, iconName: 'loading', loadingSize: '1.5em' },
     });
     expect(spinner.find('.sn-toast__icon .sn-loading').attributes('style')).toContain('1.5em');
+  });
+
+  it('defaults to a compact horizontal glyph and a larger vertical one', () => {
+    // Direction-aware fallbacks keep the glyph proportional to the message
+    // text: 40rpx beside the line in a row, 56rpx above it in a column. The
+    // old fixed 64rpx fallback dwarfed a horizontal toast. happy-dom discards
+    // rpx declarations, so assert on the size sn-icon receives.
+    const horizontal = mount(SnToast, {
+      props: { modelValue: true, msg: 'x', iconName: 'success' },
+    });
+    expect(horizontal.findComponent(SnIcon).props('size')).toBe('40rpx');
+
+    const vertical = mount(SnToast, {
+      props: { modelValue: true, msg: 'x', iconName: 'success', direction: 'vertical' },
+    });
+    expect(vertical.findComponent(SnIcon).props('size')).toBe('56rpx');
+  });
+
+  it('defaults to direction-aware spinner sizes', () => {
+    const horizontal = mount(SnToast, {
+      props: { modelValue: true, msg: 'x', iconName: 'loading' },
+    });
+    expect(horizontal.findComponent(SnLoading).props('size')).toBe('48rpx');
+
+    const vertical = mount(SnToast, {
+      props: { modelValue: true, msg: 'x', iconName: 'loading', direction: 'vertical' },
+    });
+    expect(vertical.findComponent(SnLoading).props('size')).toBe('64rpx');
+  });
+
+  it('lets explicit numeric sizes override the direction-aware defaults', () => {
+    const wrapper = mount(SnToast, {
+      props: { modelValue: true, msg: 'x', iconName: 'success', iconSize: 72 },
+    });
+    expect(wrapper.findComponent(SnIcon).props('size')).toBe('72rpx');
   });
 
   it('applies iconClass to the icon node', () => {

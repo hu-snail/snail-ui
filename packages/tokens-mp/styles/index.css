@@ -86,6 +86,8 @@
   /* Tinted surfaces — soft / subtle variants and cell fill states. */
   --sn-mp-color-background-soft: var(--aui-color-background-subtle);
   --sn-mp-color-background-sunken: var(--aui-color-background-sunken);
+  /* Dark floating toast plate (sn-toast) — same value in both themes. */
+  --sn-mp-color-background-inverse: var(--aui-color-background-inverse);
   --sn-mp-color-border-default: var(--aui-color-border-default);
   --sn-mp-color-border-subtle: var(--aui-color-border-subtle);
   --sn-mp-color-action-primary: var(--aui-color-action-primary);
@@ -199,6 +201,10 @@ page.sn-theme-dark,
   /* The overlay scrim is near-black in both themes — the page under it is
      dark already, so the alpha does not need to change. */
   --sn-mp-color-background-overlay: rgba(0, 0, 0, 0.8);
+  /* The toast plate keeps its identity in dark mode: the platform toast is a
+     dark translucent plate on light AND dark pages, and the elevation shadow
+     separates it from a near-black page. */
+  --sn-mp-color-background-inverse: var(--aui-color-background-inverse);
   /* The solid viewer curtain stays pure black in dark too. */
   --sn-mp-color-background-solid: #000000;
   /* Text on a filled surface stays white in both themes: the fill colour

@@ -133,6 +133,9 @@ describe('@snui/tokens-mp rpx conversion', () => {
     const aliases = listSnMpAliases();
     for (const alias of [
       '--sn-mp-color-background-soft',
+      // sn-toast's dark plate — referenced by the component, emitted by the
+      // static stylesheet in both themes.
+      '--sn-mp-color-background-inverse',
       '--sn-mp-color-action-primary-soft',
       '--sn-mp-color-feedback-danger-soft',
       '--sn-mp-color-input-bg',

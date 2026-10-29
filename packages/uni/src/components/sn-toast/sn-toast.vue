@@ -186,7 +186,10 @@ function clearAllTimers(): void {
  *
  * A bare number is an rpx design value on the uni end, so the fallback is rpx
  * too: returning the raw number made the browser read it as CSS px and the
- * status glyph rendered at twice the intended size (a 64px check in a toast).
+ * status glyph rendered at twice the intended size. The fallback itself is
+ * direction-aware: a glyph that reads as balanced next to a text line in the
+ * horizontal layout is too small above it in the vertical one, so vertical
+ * toasts get a larger default (40/56rpx glyph, 48/64rpx spinner).
  */
 function resolveSize(value: number | string | undefined, fallbackRpx: number): string | number {
   if (value === undefined || value === '') return `${fallbackRpx}rpx`;
@@ -202,8 +205,14 @@ const statusIcon = computed<IconData | null>(() =>
 /** Non-undefined spinner shape for the inner sn-loading. */
 const spinnerType = computed(() => props.loadingType);
 
-const glyphSize = computed(() => resolveSize(props.iconSize, 64));
-const spinnerSize = computed(() => resolveSize(props.loadingSize, 56));
+const isVerticalLayout = computed(() => props.direction === 'vertical');
+
+const glyphSize = computed(() =>
+  resolveSize(props.iconSize, isVerticalLayout.value ? 56 : 40),
+);
+const spinnerSize = computed(() =>
+  resolveSize(props.loadingSize, isVerticalLayout.value ? 64 : 48),
+);
 
 function show(): void {
   clearAllTimers();
@@ -266,7 +275,12 @@ const rootStyle = computed(() => `z-index: ${props.zIndex}`);
 const boxClass = computed(() => [
   'sn-toast__box',
   `sn-toast__box--${props.direction}`,
-  { 'sn-toast__box--loading': props.iconName === 'loading' },
+  {
+    'sn-toast__box--loading': props.iconName === 'loading',
+    /* Visibility rides the same `isShown` flag as the mask instead of the
+     * `+` sibling selector (§116.2 — App has no sibling combinators). */
+    'sn-toast__box--mask-shown': isShown.value,
+  },
 ]);
 
 const boxStyle = computed(() => (props.customStyle ? props.customStyle : undefined));
@@ -365,14 +379,17 @@ const spinnerStyle = computed(() =>
   align-items: center;
   gap: var(--sn-mp-spacing-3);
   max-width: 480rpx;
-  padding: var(--sn-mp-spacing-5) var(--sn-mp-spacing-6);
-  border-radius: var(--sn-mp-radius-lg);
-  /* Toast surface: the sunken tone reads as a floating dark plate in light
-   * mode and as a raised plate in dark mode (token flips with the theme). */
-  background-color: var(--sn-mp-color-background-sunken);
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-6);
+  border-radius: var(--sn-mp-radius-xl);
+  /* Toast surface: a dark translucent plate — the platform-standard toast
+   * look (iOS / antd / vant all float a black plate with white text in both
+   * themes), and the only combination that keeps white `on-primary` text
+   * readable. The elevation shadow separates the plate from the page. */
+  background-color: var(--sn-mp-color-background-inverse);
   color: var(--sn-mp-color-text-on-primary);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
+  box-shadow: var(--sn-mp-shadow-lg);
   pointer-events: auto;
   opacity: 0;
   transform: scale(0.92);
@@ -381,9 +398,10 @@ const spinnerStyle = computed(() =>
   transition-timing-function: ease;
 }
 
-/* Visibility is driven by the mask's shown state so both nodes animate off one
- * flag — the box is a sibling of the mask, so `:has` is not needed. */
-.sn-toast__mask--shown + .sn-toast__box {
+/* Visibility rides the mask's shown flag, mirrored onto the box as a
+ * modifier class so both nodes animate off one state (§116.2 — App has no
+ * sibling combinators). */
+.sn-toast__box--mask-shown {
   opacity: 1;
   transform: scale(1);
 }
@@ -396,7 +414,7 @@ const spinnerStyle = computed(() =>
 .sn-toast__box--vertical {
   flex-direction: column;
   min-width: 240rpx;
-  padding: var(--sn-mp-spacing-6) var(--sn-mp-spacing-5);
+  padding: var(--sn-mp-spacing-8) var(--sn-mp-spacing-6);
 }
 
 .sn-toast__icon {
