@@ -39,7 +39,6 @@
  *   - `easing-function` is forwarded to the native swiper, which only honours
  *     its own fixed ease set — pass `default` unless a target documents support.
  *
- * ## Additive: 3D card mode (`card3d`)
  * ## Additive: coverflow mode (`coverflow`)
  *
  * `coverflow` is an AUI-additive capability (no counterpart in wd-swiper;
@@ -64,19 +63,6 @@
  * themselves do not emit `change` directly.
  *
  *
- * `card3d` is an AUI-additive capability (no counterpart in wd-swiper;
- * registered in AGENTS.md §112.3a). Rationale: the reference can only lay
- * slides out flat, so apps that want the common "card carousel" hero (App Store
- * / Taobao style — cards leaning back behind a flat, largest centre card) had to
- * fork the component. When `card3d` is on the root gains `sn-swiper--card3d`
- * and every slide gets an inline `perspective() rotateY() scale()` transform
- * plus a matching opacity, derived from its offset to the centre of the active
- * window; neighbours lean back, shrink, fade and are inset by a gap so they read
- * as separate cards. It is presentation only: the native `<swiper>` still owns
- * paging, `displayMultipleItems` still decides how many cards share the screen,
- * and with `card3d` off the DOM / classes / inline styles are exactly as before
- * the prop existed.
- *
  * Per AGENTS.md §32, this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -84,7 +70,7 @@
  *   - 轮播内容为复杂卡片 — 用 `<swiper>` 原生元素自建
  */
 
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import SnImg from '../sn-img/sn-img.vue';
 
 defineOptions({ name: 'SnSwiper' });
@@ -150,11 +136,6 @@ const props = withDefaults(
     list?: Array<string | SnSwiperItem>;
     /** Loop the slides. */
     loop?: boolean;
-    /**
-     * 3D 卡片模式：叠层透视卡片，一屏多个由 displayMultipleItems 控制。
-     * AUI-additive — wd-swiper has no 3D presentation (see the file header).
-     */
-    card3d?: boolean;
     /**
      * Coverflow 模式（AUI-additive）：中间全尺寸、两侧露出缩小。
      * 露出宽度由 previous-margin / next-margin 控制（两者均未设置时默认各 80rpx）。
@@ -234,7 +215,6 @@ const props = withDefaults(
     interval: 5000,
     list: () => [],
     loop: true,
-    card3d: false,
     coverflow: false,
     coverflowScale: 0.85,
     videoLoop: false,
@@ -376,7 +356,31 @@ const pageCount = computed(() =>
   Math.max(1, slides.value.length - props.displayMultipleItems + 1),
 );
 
-const activePage = computed(() => Math.min(props.current, pageCount.value - 1));
+
+/*
+ * Mirrored native position. `props.current` is the seed, but the swiper can
+ * move without a bound parent (uncontrolled usage — the demos swipe without
+ * `v-model:current`), and every presentation derived from the centre —
+ * card transforms, coverflow scaling, the indicator, the arrows — must
+ * track the REAL position, not a stale prop. Parent re-seeding via
+ * `current` syncs back through the watch below.
+ */
+/** Clamp an index into the current slide range. */
+function clampIndex(value: number): number {
+  const max = Math.max(slides.value.length - 1, 0);
+  return Math.min(Math.max(Math.trunc(value), 0), max);
+}
+
+const activeIndex = ref(clampIndex(props.current));
+
+watch(
+  () => props.current,
+  (value) => {
+    activeIndex.value = clampIndex(value);
+  },
+);
+
+const activePage = computed(() => Math.min(activeIndex.value, pageCount.value - 1));
 
 /** uni swiper's `easing-function` accepts a fixed name set; anything else is dropped. */
 const easingFunction = computed(() =>
@@ -386,7 +390,6 @@ const easingFunction = computed(() =>
 const rootClass = computed(() => [
   'sn-swiper',
   `sn-swiper--${props.direction}`,
-  props.card3d ? 'sn-swiper--card3d' : '',
   props.coverflow ? 'sn-swiper--coverflow' : '',
   props.customClass,
 ]);
@@ -424,28 +427,13 @@ const indicatorClass = computed(() => [
 
 const textStyle = computed(() => (props.customTextStyle ? props.customTextStyle : undefined));
 
-/* ── 3D card mode (AUI-additive; see the file header) ─────────────────────── */
-
-/** Y-rotation per card step, in degrees: neighbours lean back toward the centre. */
-const CARD3D_ANGLE_PER_STEP = -18;
-
-/** Scale lost per card step. */
-const CARD3D_SCALE_PER_STEP = 0.06;
-
-/** Opacity lost per card step, so the stack reads front-to-back. */
-const CARD3D_FADE_PER_STEP = 0.12;
-
-/** How far the whole stack sits from the viewer. */
-const CARD3D_PERSPECTIVE = '1200rpx';
-
-/** Offset clamp for scale / fade: beyond two steps cards stop shrinking. */
-const CARD3D_MAX_STEP = 2;
+/* ── Coverflow offset geometry ─────────────────────────────────────────────── */
 
 /**
  * Wrap an offset into `[-floor(n/2), ceil(n/2)]` where `n` = slide count, i.e.
  * the shortest way round a looping track. Without it a slide that is really one
  * step "behind" the first slide of a loop would be counted as `n - 1` steps and
- * lean by a whole track's worth of angle.
+ * shrink by a whole track's worth.
  */
 function wrapCardOffset(offset: number, count: number): number {
   if (count <= 1) return offset;
@@ -464,7 +452,7 @@ function wrapCardOffset(offset: number, count: number): number {
  */
 const cardCentre = computed(() => {
   const lastIndex = Math.max(slides.value.length - 1, 0);
-  const centre = props.current + Math.floor((props.displayMultipleItems - 1) / 2);
+  const centre = activeIndex.value + Math.floor((props.displayMultipleItems - 1) / 2);
   return Math.min(Math.max(centre, 0), lastIndex);
 });
 
@@ -472,25 +460,6 @@ const cardCentre = computed(() => {
 function cardOffset(index: number): number {
   const offset = index - cardCentre.value;
   return props.loop ? wrapCardOffset(offset, slides.value.length) : offset;
-}
-
-/**
- * Inline 3D presentation for one slide. `undefined` when `card3d` is off, so
- * the default render keeps no transform and no extra class. The centre card
- * (offset 0) carries no `rotateY` term at all — it is the flat, largest card
- * facing the viewer; neighbours rotate, shrink and fade by their offset, and
- * the transition on `.sn-swiper--card3d .sn-swiper__slide` animates the swap
- * when `current` moves.
- */
-function card3dStyle(index: number): string | undefined {
-  if (!props.card3d) return undefined;
-  const offset = cardOffset(index);
-  const step = Math.min(Math.abs(offset), CARD3D_MAX_STEP);
-  const rotateY = offset === 0 ? '' : ` rotateY(${offset * CARD3D_ANGLE_PER_STEP}deg)`;
-  return (
-    `transform: perspective(${CARD3D_PERSPECTIVE})${rotateY} scale(${1 - step * CARD3D_SCALE_PER_STEP}); ` +
-    `opacity: ${1 - step * CARD3D_FADE_PER_STEP};`
-  );
 }
 
 /* ── Coverflow mode (AUI-additive; see the file header) ───────────────────── */
@@ -533,21 +502,29 @@ function scaleDotStyle(index: number): string | undefined {
 /** Step one page back from the controls (wrap under `loop`, clamp otherwise). */
 function onPrevControlTap(): void {
   const last = pageCount.value - 1;
-  emit('update:current', activePage.value === 0 && props.loop ? last : Math.max(activePage.value - 1, 0));
+  const target = activePage.value === 0 && props.loop ? last : Math.max(activePage.value - 1, 0);
+  // Uncontrolled usage: the parent may not bind `update:current` back, so the
+  // mirror moves immediately — the native swiper follows via :current.
+  activeIndex.value = target;
+  emit('update:current', target);
 }
 
 /** Step one page forward from the controls (wrap under `loop`, clamp otherwise). */
 function onNextControlTap(): void {
   const last = pageCount.value - 1;
-  emit('update:current', activePage.value === last && props.loop ? 0 : Math.min(activePage.value + 1, last));
+  const target = activePage.value === last && props.loop ? 0 : Math.min(activePage.value + 1, last);
+  activeIndex.value = target;
+  emit('update:current', target);
 }
 
 /* ── Handlers ─────────────────────────────────────────────────────────────── */
 
 function onSwiperChange(event: { detail: { current: number; source: string } }): void {
+  activeIndex.value = clampIndex(event.detail.current);
   emit('update:current', event.detail.current);
   emit('change', { current: event.detail.current, source: event.detail.source });
 }
+
 
 function onAnimationFinish(event: { detail: { current: number; source: string } }): void {
   emit('animationfinish', { current: event.detail.current, source: event.detail.source });
@@ -564,7 +541,7 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
       class="sn-swiper__native"
       :style="swiperStyle"
       :autoplay="props.autoplay"
-      :current="props.current"
+      :current="activeIndex"
       :vertical="props.direction === 'vertical'"
       :display-multiple-items="props.displayMultipleItems"
       :duration="props.duration"
@@ -592,7 +569,7 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
       >
         <view
           class="sn-swiper__slide"
-          :style="card3dStyle(index) ?? coverflowStyle(index)"
+          :style="coverflowStyle(index)"
           @tap="onSlideTap(slide, index)"
         >
           <SnImg
@@ -673,25 +650,6 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
   overflow: hidden;
 }
 
-/* ── 3D card mode (AUI-additive; see the file header) ────────────────────── */
-
-.sn-swiper--card3d {
-  /* Inset gap so the perspective stack reads as separate cards, not one slab. */
-  --sn-swiper-card3d-gap: var(--sn-mp-spacing-2);
-}
-
-.sn-swiper--card3d .sn-swiper__item {
-  padding-right: var(--sn-swiper-card3d-gap);
-  padding-left: var(--sn-swiper-card3d-gap);
-}
-
-.sn-swiper--card3d .sn-swiper__slide {
-  /* The inline transform on each slide animates as `current` moves the stack. */
-  transition: transform 300ms ease, opacity 300ms ease;
-  backface-visibility: hidden;
-}
-
-
 /* ── Coverflow mode (AUI-additive; see the file header) ────────────────────── */
 
 .sn-swiper--coverflow {
@@ -712,24 +670,31 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
   border-radius: var(--sn-swiper-coverflow-radius, var(--sn-mp-radius-lg));
   overflow: hidden;
   /* The inline scale() on each slide animates as `current` moves. Transform
-   * only — width/height/layout properties would force per-frame reflow. */
-  transition: transform 300ms ease;
+   * only — width/height/layout properties would force per-frame reflow. The
+   * ease-out curve keeps the depth swap feeling natural rather than mechanical
+   * (matches a 400ms native swiper slide). */
+  transition: transform 400ms cubic-bezier(0.22, 0.61, 0.36, 1);
   backface-visibility: hidden;
 }
+
 .sn-swiper__caption {
   position: absolute;
   right: 0;
   bottom: 0;
   left: 0;
-  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
-  background-color: var(--sn-mp-color-background-overlay);
+  /* Diffused shadow scrim instead of a solid black bar: a soft gradient that
+   * melts into the image, so the caption floats on the photo. */
+  padding: 64rpx var(--sn-mp-spacing-4) var(--sn-mp-spacing-3);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
 }
 
 .sn-swiper__caption-text {
   color: var(--sn-mp-color-text-on-primary);
   font-size: var(--sn-mp-font-size-md);
   line-height: var(--sn-mp-font-line-height-normal);
+  text-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.45);
 }
+
 
 /* ── Indicator ────────────────────────────────────────────────────────── */
 

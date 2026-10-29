@@ -1,14 +1,15 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— swiper 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/swiper-mp-basic.vue';
-import Demo1 from './demos/swiper-mp-custom.vue';
-import Demo2 from './demos/swiper-mp-data.vue';
-import Demo3 from './demos/swiper-mp-indicator.vue';
-import Demo4 from './demos/swiper-mp-indicator-position.vue';
-import Demo5 from './demos/swiper-mp-multiple.vue';
-import Demo6 from './demos/swiper-mp-playback.vue';
-import Demo7 from './demos/swiper-mp-vertical.vue';
-import Demo8 from './demos/swiper-mp-video.vue';
+import Demo1 from './demos/swiper-mp-coverflow.vue';
+import Demo2 from './demos/swiper-mp-custom.vue';
+import Demo3 from './demos/swiper-mp-data.vue';
+import Demo4 from './demos/swiper-mp-indicator.vue';
+import Demo5 from './demos/swiper-mp-indicator-position.vue';
+import Demo6 from './demos/swiper-mp-multiple.vue';
+import Demo7 from './demos/swiper-mp-playback.vue';
+import Demo8 from './demos/swiper-mp-vertical.vue';
+import Demo9 from './demos/swiper-mp-video.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -29,7 +30,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
+          <text class="module__title">{{ t('coverflow', 'Coverflow') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -37,7 +38,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('data', 'Data') }}</text>
+          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -45,7 +46,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('indicator', 'Indicator') }}</text>
+          <text class="module__title">{{ t('data', 'Data') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -53,7 +54,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('indicator-position', 'Indicator Position') }}</text>
+          <text class="module__title">{{ t('indicator', 'Indicator') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -61,7 +62,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('multiple', 'Multiple') }}</text>
+          <text class="module__title">{{ t('indicator-position', 'Indicator Position') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -69,7 +70,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('playback', 'Playback') }}</text>
+          <text class="module__title">{{ t('multiple', 'Multiple') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />
@@ -77,7 +78,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('垂直模式', 'Vertical') }}</text>
+          <text class="module__title">{{ t('playback', 'Playback') }}</text>
         </view>
         <view class="module__body">
           <Demo7 />
@@ -85,10 +86,18 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('video', 'Video') }}</text>
+          <text class="module__title">{{ t('垂直模式', 'Vertical') }}</text>
         </view>
         <view class="module__body">
           <Demo8 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('video', 'Video') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo9 />
         </view>
       </view>
     </view>

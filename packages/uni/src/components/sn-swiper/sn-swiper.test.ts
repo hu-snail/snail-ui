@@ -10,7 +10,8 @@
  *     gates visibility and `type` picks dots / bars / fraction
  *   - `change` / `animationfinish` / `click` / `update:current` payloads
  *   - `displayMultipleItems > 1` counts indicator PAGES (N-M+1), not slides
- *   - `card3d` (AUI-additive) adds the root class + a per-slide 3D transform
+ *   - `coverflow` (AUI-additive) adds the root class + per-slide scale
+ *   - the indicator / arrows track swipes even without a bound current
  *
  * Untestable in happy-dom: autoplay timing with fake timers, loop wrap-around
  * and touch-swipe direction physics. The component delegates all of these to
@@ -26,11 +27,6 @@ import SnSwiper from './sn-swiper.vue';
 
 const list = ['https://x/1.png', 'https://x/2.png', 'https://x/3.png'];
 
-/** Parse the card3d `rotateY(...)` angle from an inline style (`null` when flat). */
-function readRotateY(style: string | undefined): number | null {
-  const match = /rotateY\((-?[\d.]+)deg\)/.exec(style ?? '');
-  return match ? Number(match[1]) : null;
-}
 
 describe('sn-swiper', () => {
   it('renders one native slide per list entry', () => {
@@ -381,65 +377,20 @@ describe('sn-swiper', () => {
     });
   });
 
-  describe('card3d', () => {
-    it('adds the root class and slide transforms only when card3d is on', () => {
-      const flat = mount(SnSwiper, { props: { list } });
-      expect(flat.classes()).not.toContain('sn-swiper--card3d');
-      expect(flat.find('.sn-swiper__slide').attributes('style')).toBeUndefined();
-
-      const card = mount(SnSwiper, { props: { list, card3d: true } });
-      expect(card.classes()).toContain('sn-swiper--card3d');
-      expect(card.find('.sn-swiper__slide').attributes('style')).toContain('perspective(');
-    });
-
-    it('leaves the centre card flat and leans its neighbours', () => {
-      const wrapper = mount(SnSwiper, { props: { list, card3d: true, current: 1, loop: false } });
-      const slides = wrapper.findAll('.sn-swiper__slide');
-      expect(readRotateY(slides[1]!.attributes('style'))).toBeNull();
-      expect(readRotateY(slides[0]!.attributes('style'))).toBe(18);
-      expect(readRotateY(slides[2]!.attributes('style'))).toBe(-18);
-    });
-
-    it('re-centres the stack when current changes', async () => {
-      const wrapper = mount(SnSwiper, { props: { list, card3d: true, current: 0, loop: false } });
-      expect(readRotateY(wrapper.findAll('.sn-swiper__slide')[0]!.attributes('style'))).toBeNull();
-
-      await wrapper.setProps({ current: 2 });
-      const slides = wrapper.findAll('.sn-swiper__slide');
-      expect(readRotateY(slides[2]!.attributes('style'))).toBeNull();
-      expect(readRotateY(slides[0]!.attributes('style'))).toBe(36);
-    });
-
-    it('centres the middle card of a multi-item window', () => {
+  describe('coverflow', () => {
+    it('tracks swipes without a bound current (uncontrolled usage)', async () => {
+      // Regression: presentation read the stale `current` prop, so without
+      // v-model the centre card, dots and arrows never moved.
       const wrapper = mount(SnSwiper, {
-        props: {
-          list: [...list, 'https://x/4.png', 'https://x/5.png'],
-          card3d: true,
-          displayMultipleItems: 3,
-          current: 0,
-          loop: false,
-        },
+        props: { list: [...list, 'https://x/4.png', 'https://x/5.png'], indicator: { type: 'scale' } },
       });
-      const slides = wrapper.findAll('.sn-swiper__slide');
-      // centre = current + floor((displayMultipleItems - 1) / 2) = 1.
-      expect(readRotateY(slides[1]!.attributes('style'))).toBeNull();
-      expect(readRotateY(slides[0]!.attributes('style'))).toBe(18);
-      expect(readRotateY(slides[2]!.attributes('style'))).toBe(-18);
-    });
-
-    it('wraps the offset so a looping far card does not take a huge angle', () => {
-      // The component wraps its own offsets; the native loop engine itself is
-      // still untestable in happy-dom (see the file header).
-      const wrapper = mount(SnSwiper, {
-        props: {
-          list: [...list, 'https://x/4.png', 'https://x/5.png'],
-          card3d: true,
-          current: 4,
-          loop: true,
-        },
+      await wrapper.find('.sn-swiper__native').trigger('change', {
+        detail: { current: 2, source: 'touch' },
       });
-      // Slide 0 sits 4 steps ahead of the last slide, i.e. 1 step behind it.
-      expect(readRotateY(wrapper.findAll('.sn-swiper__slide')[0]!.attributes('style'))).toBe(-18);
+      const dots = wrapper.findAll('.sn-swiper__dot');
+      expect(dots[2]!.classes()).toContain('sn-swiper__dot--active');
+      expect(dots[2]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 20rpx');
+      expect(dots[0]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 8rpx');
     });
 
     it('scales the neighbour slides when coverflow is on', () => {
@@ -506,7 +457,8 @@ describe('sn-swiper', () => {
       await controls[0]!.trigger('tap');
       expect(wrapper.emitted('update:current')?.[0]).toEqual([0]);
       await controls[1]!.trigger('tap');
-      expect(wrapper.emitted('update:current')?.[1]).toEqual([2]);
+      // The mirror moved to 0 on the first tap, so the second tap steps 0 → 1.
+      expect(wrapper.emitted('update:current')?.[1]).toEqual([1]);
     });
 
     it('wraps at the ends when loop is on', async () => {

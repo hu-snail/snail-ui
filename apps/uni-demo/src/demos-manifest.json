@@ -18,6 +18,11 @@
           "hasEn": true
         },
         {
+          "name": "avatar-mp-group",
+          "title": "头像组",
+          "hasEn": true
+        },
+        {
           "name": "avatar-mp-icon-font",
           "title": "字体图标",
           "hasEn": true
@@ -25,6 +30,11 @@
         {
           "name": "avatar-mp-size",
           "title": "尺寸",
+          "hasEn": true
+        },
+        {
+          "name": "avatar-mp-status",
+          "title": "状态",
           "hasEn": true
         }
       ]
@@ -1239,7 +1249,7 @@
         },
         {
           "name": "input-mp-status",
-          "title": "status",
+          "title": "状态",
           "hasEn": true
         },
         {
@@ -2401,6 +2411,11 @@
         {
           "name": "swiper-mp-basic",
           "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "swiper-mp-coverflow",
+          "title": "coverflow",
           "hasEn": true
         },
         {
