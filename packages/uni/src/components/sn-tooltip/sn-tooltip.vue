@@ -363,6 +363,10 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   display: flex;
   align-items: flex-start;
   gap: var(--sn-mp-spacing-2);
+  /* Shrink-to-fit would clamp to min-content: the abspos containing block is
+   * the trigger-sized root and `left: 50%` leaves only half of it available.
+   * `max-content` grows past that cap; `max-width` still bounds long text. */
+  width: max-content;
   max-width: 480rpx;
   box-sizing: border-box;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
