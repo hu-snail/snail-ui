@@ -2180,7 +2180,17 @@
         {
           "name": "fit-swiper-mp-basic",
           "title": "基础用法",
-          "hasEn": false
+          "hasEn": true
+        },
+        {
+          "name": "fit-swiper-mp-custom",
+          "title": "自定义",
+          "hasEn": true
+        },
+        {
+          "name": "fit-swiper-mp-indicator",
+          "title": "indicator",
+          "hasEn": true
         }
       ]
     },

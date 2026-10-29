@@ -45,6 +45,11 @@ export { default as SnDivider } from './components/sn-divider/sn-divider.vue';
 export { default as SnDropMenu } from './components/sn-drop-menu/sn-drop-menu.vue';
 export { default as SnEmpty } from './components/sn-empty/sn-empty.vue';
 export { default as SnFab } from './components/sn-fab/sn-fab.vue';
+export { default as SnFitSwiper } from './components/sn-fit-swiper/sn-fit-swiper.vue';
+export type {
+  SnFitSwiperIndicator,
+  SnFitSwiperPage,
+} from './components/sn-fit-swiper/sn-fit-swiper.vue';
 export { default as SnFloatingPanel } from './components/sn-floating-panel/sn-floating-panel.vue';
 export { default as SnForm } from './components/sn-form/sn-form.vue';
 export { default as SnFormItem } from './components/sn-form/sn-form-item.vue';

@@ -683,7 +683,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '自适应轮播',
         titleEn: 'Fit Swiper',
         desc: '贴合内容高度的金刚区轮播',
-        count: 1,
+        count: 3,
       },
       {
         key: 'image-preview',
