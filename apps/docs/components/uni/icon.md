@@ -1,44 +1,99 @@
 # sn-icon 图标
 
-跨端图标基础组件。接收 SVG path 数据对象，渲染成 inline SVG。**按需加载**：每个图标作为独立 ESM 数据模块 named export，bundler tree-shake 掉未引用的图标。
-
-## 为什么不用 lucide-vue-next
-
-`lucide-vue-next` 是 web Vue 3 包装（参考 [官方文档](https://lucide.dev/guide/packages/lucide-vue-next)），uni-app 不能直接用。uni 端传统的 iconfont / SVG sprite 方案都有 bundle 膨胀或动态解析的副作用。
-
-`sn-icon` 走「每个图标 = 一个 ESM 数据模块」：把 lucide 图标的 `<path d="...">` 提取为 IconData，按需 named-import 后渲染成内联 SVG。
+跨端图标基础组件。四条渲染路径：**iconfont 字形**（`name` + `classPrefix`）、**内置图标目录**（string `icon`）、**第三方图标源按需加载**（Iconify / 自定义 Provider）、**inline SVG 数据**（`IconData` 对象）。全部路径共用同一个 `size` / `color` / 描边契约。
 
 ## 用法
 
-### 方式 1：使用内置 shortcut icon set
+### 方式 1：string icon — 内置图标库（推荐）
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni';
-import { ChevronRight, Search, Settings } from '@snui/uni';
+import { SnIcon } from '@snui/uni';
 </script>
 
 <template>
-  <SnIcon :icon="ChevronRight" :size="32" />
-  <SnIcon :icon="Search" />
-  <SnIcon :icon="Settings" />
+  <SnIcon icon="arrow-down" />
+  <SnIcon icon="search" :size="20" />
+  <SnIcon icon="circle-check" color="#34d399" />
 </template>
 ```
 
-打包结果：bundle 里只有 ChevronRight + Search + Settings 三个 path 字符串。其余 ~19 个内置图标全部 tree-shake。
+`icon` 为字符串时按顺序解析：`registerSnIcons()` 注册表 → 内置目录。内置目录收录 **111 个常用图标 × 7 个分类**（方向 / 操作 / 提示 / 编辑 / 界面 / 文件 / 数据），数据来自 lucide（ISC 协议）， stroke 风格与 lucide 渲染一致。
 
-> 内置 icon data 在 `@snui/uni` 主入口 named export —— `@snui/uni` 把每个图标数据单独 re-export，bundler 静态分析 `import { A, B, C }` 只打包这三个 path。`SnIcon` 组件本体和 icon data 是两个独立的 ESM 模块，所以 demo 文件也可以拆开 import 路径更清晰：
->
-> ```ts
-> import SnIcon from '@snui/uni'; // 组件
-> import { ChevronRight } from '@snui/uni'; // icon data
-> ```
+同名注册可覆盖目录条目（品牌定制不改组件）：
 
-### 方式 2：自定义 IconData（拷贝 lucide 任意 SVG）
+```ts
+import { registerSnIcons, type IconData } from '@snui/uni';
+
+const BrandStar: IconData = { paths: ['M12 2l2.94 5.95 ...'] };
+registerSnIcons({ star: BrandStar }); // 此后 <SnIcon icon="star" /> 渲染 BrandStar
+```
+
+<Demo name="icon-mp-string" description="string icon API：内置目录名称直接渲染；registry 同名覆盖；与 SnButton 的 #icon slot 集成。" />
+
+### 内置图标库总览（搜索 + 分类）
+
+Showcase 页内置完整目录浏览：搜索框（匹配英文名 / 中文标签 / 关键词）+ 分类筛选 + 网格卡片，点击卡片复制图标名。
+
+<Demo name="icon-mp-gallery" description="内置 111 个图标 × 7 分类总览：搜索（中英文/关键词）、分类 chips、网格卡片（点击复制名称）。" />
+
+目录 API（自定义面板复用同一数据源）：
+
+```ts
+import {
+  SN_ICON_CATALOG,          // 全部条目 { name, category, zh, keywords, data }
+  SN_ICON_CATEGORY_LABELS,  // 分类元数据（key → { zh, en }）
+  searchSnIconCatalog,      // (query, category?) => SnIconCatalogEntry[]
+} from '@snui/uni';
+```
+
+### 方式 2：Iconify 按需加载（第三方图标库）
+
+`icon` 写成 `collection:name`（或显式 `iconify:collection:name`）即可使用 [Iconify](https://iconify.design) 的 20 万+ 图标（mdi / tabler / ph / logos…）。组件按需请求 SVG 文档并渲染，内置 **模块级缓存**（同 URL 只请求一次）、**15s 超时**、**卸载中断**（AbortSignal）与失败降级（结构化警告 + 空渲染，不打断页面）。
+
+```vue
+<template>
+  <SnIcon icon="mdi:home" :size="28" color="#0052d9" />
+  <SnIcon icon="logos:vue" :size="28" />
+</template>
+```
+
+- 显式 `color` 通过 Iconify 的 `color` 参数烘焙进请求；`currentColor`（默认）在远程 SVG 文档中无法继承，会渲染为黑色 —— 需要主题色请显式传。
+- 离线 / 内网应用可关闭网络回退：`configSnIcons({ iconify: false })`；也可 `configSnIconify({ apiBase, timeout, request })` 指向自建代理或注入自有请求实现。
+
+<Demo name="icon-mp-iconify" description="Iconify 按需加载：mdi/tabler/logos/ph 四个第三方图标，显式 color 烘焙，重新加载按钮验证缓存。" />
+
+### 方式 3：自定义图标源 Provider
+
+任意 `prefix:rest` 形式路由到注册的 Provider，可返回 `IconData`（inline SVG 渲染）或图片 URL 字符串（background-image / `<image>` 渲染）：
+
+```ts
+import { registerSnIconProvider } from '@snui/uni';
+
+registerSnIconProvider('app', {
+  resolve: (name, ctx) => fetchMyIcon(name, ctx), // IconData | string | Promise<...>
+});
+```
+
+```vue
+<SnIcon icon="app:logo" />
+```
+
+### 方式 4：阿里 iconfont（字体图标）
+
+`name` 走 wot-ui 兼容的字形路径：渲染 `<view class="{classPrefix}-{name}">`，字体文件与样式表由宿主 app 提供。阿里 [iconfont.cn](https://www.iconfont.cn) 项目生成的类名符合 `{prefix}-{name}` 约定（默认前缀 `sn-icon`），建好项目后把 `@font-face` + 类样式引入全局样式即可；要兼容 `wd-icon-*` 字体改 `class-prefix="wd-icon"`。颜色走 CSS `color` 继承，跨端一致性最好。
+
+<Demo name="icon-mp-name" description="name + class-prefix 生成的 iconfont 类名：默认 sn-icon-home，class-prefix 改成 wd-icon 后为 wd-icon-home。" />
+
+`css-icon` 传字符串时该 class 原样挂载（无前缀），适合自定义命名的图标子集 / 背景图方案。
+
+<Demo name="icon-mp-css" description="css-icon 传字符串 class 原样渲染；css-icon 布尔形式 + name 同时挂两个类名。" />
+
+### 方式 5：IconData 对象（tree-shakeable）
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni';
+import { SnIcon, ChevronRight, type IconData } from '@snui/uni';
 
 const MyFlag: IconData = {
   viewBox: '0 0 24 24',
@@ -47,11 +102,12 @@ const MyFlag: IconData = {
 </script>
 
 <template>
-  <SnIcon :icon="MyFlag" :size="32" />
+  <SnIcon :icon="ChevronRight" :size="32" />
+  <SnIcon :icon="MyFlag" />
 </template>
 ```
 
-SVG path 从 https://lucide.dev/icons 复制，ISC 协议可商用。
+`@snui/uni` 主入口的 shortcut set（`ChevronRight`、`Search`、`Settings` 等 ~22 个）保持 tree-shakeable：named import 只打包引用到的图标。
 
 ## 基础用法
 
@@ -65,18 +121,6 @@ SVG path 从 https://lucide.dev/icons 复制，ISC 协议可商用。
 
 <Demo name="icon-mp-registry" description="自定义 IconData + SnButton 的 #icon slot 集成（Plus / 自定义 / X）。" />
 
-## 字体图标（name / classPrefix）
-
-`name` 走 wot-ui 的原生字形路径：组件渲染 `<view class="{classPrefix}-{name}">`，字形由宿主加载的 iconfont 样式表提供。`class-prefix` 默认 `sn-icon`，需要兼容 `wd-icon-*` 命名的字体时直接改前缀。
-
-<Demo name="icon-mp-name" description="name + class-prefix 生成的 iconfont 类名：默认 sn-icon-home，class-prefix 改成 wd-icon 后为 wd-icon-home。" />
-
-## CSS 图标（cssIcon）
-
-`css-icon` 传字符串时，该 class 原样挂在字形节点上（不追加前缀），适合已经有自己命名的图标子集 / 背景图 / 伪元素方案。传布尔值且同时给了 `name` 时，两种类名会同时挂上。
-
-<Demo name="icon-mp-css" description="css-icon 传字符串 class 原样渲染；css-icon 布尔形式 + name 同时挂两个类名。" />
-
 ## 根节点自定义类名与样式（`customClass` / `customStyle`）
 
 `customClass` 追加到 sn-icon 根节点类名，`customStyle` 与尺寸盒子合并 —— 字符串形式整体写入根节点样式（会覆盖默认 `width` / `height`），对象形式与尺寸合并。需要给图标加边框、内边距或底色时用它们；只改颜色优先用 `color`。
@@ -87,18 +131,18 @@ SVG path 从 https://lucide.dev/icons 复制，ISC 协议可商用。
 
 ### Props
 
-| 名称                | 类型                              | 默认值           | 说明                                                                    |
-| ------------------- | --------------------------------- | ---------------- | ----------------------------------------------------------------------- |
-| icon                | `IconData`                        | —                | SVG path 数据对象（与 `name` 二选一）                                   |
-| size                | `number \| string`                | `32`             | 图标尺寸（推荐 rpx）                                                    |
-| color               | `string`                          | `'currentColor'` | 描边颜色（继承父元素 color）                                            |
-| strokeWidth         | `number \| string`                | `2`              | 描边宽度                                                                |
-| strokeWidthAbsolute | `boolean`                         | `false`          | 描边按绝对像素                                                          |
-| name                | `string`                          | `''`             | iconfont 字形名，渲染 `{classPrefix}-{name}`                            |
-| classPrefix         | `string`                          | `'sn-icon'`      | iconfont 类名前缀                                                       |
-| cssIcon             | `boolean \| string`               | `false`          | 传字符串时该 class 原样渲染（不加前缀）；布尔值 + name 时两种类名同时挂 |
-| customClass         | `string`                          | `''`             | 根节点追加类名                                                          |
-| customStyle         | `string \| Record<string,string>` | `''`             | 根节点内联样式                                                          |
+| 名称                | 类型                              | 默认值           | 说明                                                                                       |
+| ------------------- | --------------------------------- | ---------------- | ------------------------------------------------------------------------------------------ |
+| icon                | `IconData \| string`              | —                | SVG 数据对象；或字符串：registry → 内置目录 → Provider（`prefix:rest`）依次解析             |
+| size                | `number \| string`                | `32`             | 图标尺寸（推荐 rpx）                                                                       |
+| color               | `string`                          | `'currentColor'` | 描边颜色（继承父元素 color；Iconify 路径会烘焙进请求）                                     |
+| strokeWidth         | `number \| string`                | `2`              | 描边宽度                                                                                   |
+| strokeWidthAbsolute | `boolean`                         | `false`          | 描边按绝对像素                                                                             |
+| name                | `string`                          | `''`             | iconfont 字形名，渲染 `{classPrefix}-{name}`（与 `icon` 同时给出时优先）                    |
+| classPrefix         | `string`                          | `'sn-icon'`      | iconfont 类名前缀                                                                          |
+| cssIcon             | `boolean \| string`               | `false`          | 传字符串时该 class 原样渲染（不加前缀）；布尔值 + name 时两种类名同时挂                    |
+| customClass         | `string`                          | `''`             | 根节点追加类名                                                                             |
+| customStyle         | `string \| Record<string,string>` | `''`             | 根节点内联样式                                                                             |
 
 `IconData` 接口：
 
@@ -109,20 +153,25 @@ interface IconData {
 }
 ```
 
-### 内置图标
+### 模块级 API
 
-`@snui/uni` 主入口提供 ~22 个常用图标 named export：`ChevronRight`、`ChevronLeft`、`ChevronDown`、`ChevronUp`、`ArrowRight`、`ArrowLeft`、`Check`、`X`、`Plus`、`Minus`、`Search`、`Settings`、`User`、`Bell`、`Home`、`Heart`、`Star`、`Trash`、`Edit`、`Download`、`Upload`、`Menu`、`MoreHorizontal`。
-
-更多图标按需扩展：在 `components/sn-icon/icons/` 下新建单文件 `chevron-right.ts`，里面 `export const ChevronRight: IconData = { viewBox, paths }`。
+| 函数 / 常量                                                  | 说明                                                          |
+| ------------------------------------------------------------ | ------------------------------------------------------------- |
+| `SN_ICON_CATALOG`                                            | 内置目录全部条目（name / category / zh / keywords / data）    |
+| `SN_ICON_CATEGORY_LABELS`                                    | 分类元数据（key → `{ zh, en }`）                              |
+| `searchSnIconCatalog(query, category?)`                      | 目录搜索（英文名 / 中文 / 关键词，大小写不敏感子串匹配）      |
+| `registerSnIcons(map)` / `clearSnIcons()` / `resolveIconByName(name)` | IconData 注册表（优先级高于目录）                    |
+| `registerSnIconProvider(prefix, provider)`                   | 注册 `prefix:rest` 图标源                                     |
+| `configSnIcons({ iconify })`                                 | `false` 关闭 Iconify 回退；对象形式透传 Iconify 配置          |
+| `configSnIconify({ apiBase, timeout, request })`             | Iconify 服务配置（默认官方 API / 15s / fetch→uni.request）    |
 
 ## 跨端渲染
 
-| 端              | 行为                                        |
-| --------------- | ------------------------------------------- |
-| H5              | inline SVG，浏览器原生渲染                  |
-| 微信小程序      | SVG 编译为 image 标签（部分平台非像素完美） |
-| App (uni-app x) | 原生 SVG，Webview 层                        |
-| 抖音 / 支付宝   | 各家 SVG 兼容性不同，通常能渲染             |
+| 端              | 行为                                                                        |
+| --------------- | ---------------------------------------------------------------------------- |
+| H5              | inline SVG，浏览器原生渲染，`currentColor` 生效                             |
+| 微信小程序      | SVG 数据经 image 语义渲染；Iconify / 远程路径走 background-image data URL    |
+| App (uni-app x) | 转换管线把两条 SVG 路径统一替换为 `<image>` + SVG data URL（补丁见 uni-x）   |
 
 ## 无障碍
 
@@ -133,3 +182,4 @@ interface IconData {
 
 - [web 端 SnIcon](/components/web/icon)
 - [lucide 官方图标库](https://lucide.dev/icons)
+- [Iconify](https://iconify.design) / [iconfont.cn](https://www.iconfont.cn)

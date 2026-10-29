@@ -143,6 +143,44 @@ export {
   clearSnIcons,
   resolveIconByName,
 } from './components/sn-icon/sn-icon-registry';
+export type { IconData } from './components/sn-icon/sn-icon.vue';
+
+// Built-in icon catalog — 111 common icons × 7 categories, with zh labels
+// and search keywords. String-icon API source of truth for the showcase.
+export {
+  SN_ICON_CATALOG,
+  SN_ICON_CATEGORY_LABELS,
+  searchSnIconCatalog,
+} from './components/sn-icon/sn-icon-catalog';
+export type {
+  SnIconCatalogEntry,
+  SnIconCategory,
+} from './components/sn-icon/sn-icon-catalog';
+
+// Icon source resolution — string `icon` routing, custom providers, and
+// the Iconify on-demand loader (configSnIcons({ iconify: false }) disables).
+export {
+  configSnIcons,
+  registerSnIconProvider,
+  getSnIconProvider,
+  clearSnIconProviders,
+  resolveSnIconStringSync,
+  SN_ICON_CATALOG_SIZE,
+  SnIconSourceError,
+} from './components/sn-icon/sn-icon-providers';
+export type {
+  SnIconProvider,
+  SnIconResolveContext,
+  SnIconResolveResult,
+  SnIconsConfig,
+  SnIconSourceErrorCode,
+} from './components/sn-icon/sn-icon-providers';
+export {
+  configSnIconify,
+  clearSnIconifyCache,
+  buildIconifySvgUrl,
+} from './components/sn-icon/sn-icon-iconify';
+export type { SnIconifyOptions } from './components/sn-icon/sn-icon-iconify';
 
 // Shortcut icon data set — frozen `IconData` objects keyed by lucide
 // icon name. Tree-shakeable: each named import is its own ESM module.

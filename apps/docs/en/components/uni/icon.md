@@ -1,44 +1,99 @@
 # sn-icon (uni / Mobile)
 
-Cross-end icon component for `@snui/uni`. Consumes plain SVG path data (an `IconData` object) and renders inline SVG. **Tree-shakeable**: each icon is an independent ESM data module — the bundler drops everything you didn't named-import.
-
-## Why not lucide-vue-next
-
-`lucide-vue-next` is a Vue 3 web wrapper — see [official docs](https://lucide.dev/guide/packages/lucide-vue-next) — and cannot be used directly by uni-app. uni-app's traditional options (iconfont, SVG sprite) have known bundle-bloat / dynamic-resolution issues.
-
-`sn-icon` follows "one icon = one data module": lucide's `<path d="...">` strings are extracted into named `IconData` exports. Consumers named-import only the icons they need; Rollup / esbuild statically analyze the import statements and tree-shake the rest.
+Cross-end icon component for `@snui/uni`. Four rendering paths share one `size` / `color` / stroke contract: **iconfont glyphs** (`name` + `classPrefix`), the **built-in icon catalog** (string `icon`), **third-party icon sources on demand** (Iconify / custom providers), and **inline SVG data** (`IconData` objects).
 
 ## Usage
 
-### 1. Built-in shortcut icon set
+### 1. String icon — built-in catalog (recommended)
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni';
-import { ChevronRight, Search, Settings } from '@snui/uni';
+import { SnIcon } from '@snui/uni';
 </script>
 
 <template>
-  <SnIcon :icon="ChevronRight" :size="32" />
-  <SnIcon :icon="Search" />
-  <SnIcon :icon="Settings" />
+  <SnIcon icon="arrow-down" />
+  <SnIcon icon="search" :size="20" />
+  <SnIcon icon="circle-check" color="#34d399" />
 </template>
 ```
 
-Bundle result: only the three SVG path strings. The other ~19 built-in icons are tree-shaken.
+A string `icon` resolves in order: the `registerSnIcons()` registry → the built-in catalog. The catalog ships **111 common icons × 7 categories** (direction / operation / alert / edit / general / file / chart); the data comes from lucide (ISC license) and renders with lucide's stroke style.
 
-> The shortcut icon data is re-exported from `@snui/uni` as named exports — each icon is its own ESM module, so `import { A, B, C }` 只把这三个 path 打包。The `SnIcon` component and the icon data are independent ESM modules; demos can import them from the same package or split paths for clarity:
->
-> ```ts
-> import SnIcon from '@snui/uni'; // component
-> import { ChevronRight } from '@snui/uni'; // icon data
-> ```
+Registering the same name overrides the catalog entry (brand customization without touching the component):
 
-### 2. Custom IconData (copy from any lucide SVG)
+```ts
+import { registerSnIcons, type IconData } from '@snui/uni';
+
+const BrandStar: IconData = { paths: ['M12 2l2.94 5.95 ...'] };
+registerSnIcons({ star: BrandStar }); // <SnIcon icon="star" /> now renders BrandStar
+```
+
+<Demo name="icon-mp-string" description="String icon API: catalog names render directly; a registry entry of the same name overrides; integrated with SnButton's #icon slot." />
+
+### Built-in catalog gallery (search + categories)
+
+The showcase page browses the whole catalog: a search box (matches English names / Chinese labels / keywords), category chips and a grid of cards — tapping a card copies its name.
+
+<Demo name="icon-mp-gallery" description="All 111 built-in icons × 7 categories: search (English/Chinese/keywords), category chips, grid cards (tap to copy the name)." />
+
+Catalog API (custom panels reuse the same source):
+
+```ts
+import {
+  SN_ICON_CATALOG,          // every entry { name, category, zh, keywords, data }
+  SN_ICON_CATEGORY_LABELS,  // category metadata (key → { zh, en })
+  searchSnIconCatalog,      // (query, category?) => SnIconCatalogEntry[]
+} from '@snui/uni';
+```
+
+### 2. Iconify on demand (third-party icon libraries)
+
+Write `icon` as `collection:name` (or explicitly `iconify:collection:name`) to use [Iconify](https://iconify.design)'s 200k+ icons (mdi / tabler / ph / logos…). The component fetches the SVG document on demand and renders it, with a **module-level cache** (one request per URL), a **15s timeout**, **abort on unmount** (AbortSignal) and failure degradation (structured warning + empty render — the page never breaks).
+
+```vue
+<template>
+  <SnIcon icon="mdi:home" :size="28" color="#0052d9" />
+  <SnIcon icon="logos:vue" :size="28" />
+</template>
+```
+
+- An explicit `color` is baked into the request through Iconify's `color` parameter; `currentColor` (the default) cannot cascade into a remote SVG document and renders black — pass an explicit color when you need theme colors.
+- Offline / intranet apps can disable the network fallback: `configSnIcons({ iconify: false })`; or point at your own proxy with `configSnIconify({ apiBase, timeout, request })`.
+
+<Demo name="icon-mp-iconify" description="Iconify on demand: four third-party icons (mdi/tabler/logos/ph), explicit color baking, and a reload button that exercises the cache." />
+
+### 3. Custom icon source providers
+
+Any `prefix:rest` routes to a registered provider, which may return `IconData` (inline-SVG rendering) or an image URL string (background-image / `<image>` rendering):
+
+```ts
+import { registerSnIconProvider } from '@snui/uni';
+
+registerSnIconProvider('app', {
+  resolve: (name, ctx) => fetchMyIcon(name, ctx), // IconData | string | Promise<...>
+});
+```
+
+```vue
+<SnIcon icon="app:logo" />
+```
+
+### 4. Alibaba iconfont (font glyphs)
+
+`name` uses the wot-ui-compatible glyph path: the component renders `<view class="{classPrefix}-{name}">`, and the font + stylesheet come from the host app. [iconfont.cn](https://www.iconfont.cn) projects emit class names matching `{prefix}-{name}` (default prefix `sn-icon`) — add the `@font-face` + class styles globally and it works; use `class-prefix="wd-icon"` to adopt a `wd-icon-*` font. Color inherits through CSS `color`, the most consistent behavior across platforms.
+
+<Demo name="icon-mp-name" description="The iconfont class name produced by name + class-prefix: sn-icon-home by default, wd-icon-home once class-prefix is wd-icon." />
+
+`css-icon` with a string puts that class on the glyph node verbatim (no prefix) — the fit for custom-named subsets / background-image schemes.
+
+<Demo name="icon-mp-css" description="css-icon with a string class renders verbatim; the boolean form with name applies both class names." />
+
+### 5. IconData objects (tree-shakeable)
 
 ```vue
 <script setup lang="ts">
-import { SnIcon, type IconData } from '@snui/uni';
+import { SnIcon, ChevronRight, type IconData } from '@snui/uni';
 
 const MyFlag: IconData = {
   viewBox: '0 0 24 24',
@@ -47,11 +102,12 @@ const MyFlag: IconData = {
 </script>
 
 <template>
-  <SnIcon :icon="MyFlag" :size="32" />
+  <SnIcon :icon="ChevronRight" :size="32" />
+  <SnIcon :icon="MyFlag" />
 </template>
 ```
 
-Copy SVG paths from https://lucide.dev/icons (ISC-licensed, commercial-use OK).
+The `@snui/uni` shortcut set (`ChevronRight`, `Search`, `Settings`, ~22 icons) stays tree-shakeable: named imports bundle only the referenced icons.
 
 ## Basic usage
 
@@ -65,18 +121,6 @@ Copy SVG paths from https://lucide.dev/icons (ISC-licensed, commercial-use OK).
 
 <Demo name="icon-mp-registry" description="Custom IconData + SnButton's #icon slot (Plus / custom / X)." />
 
-## Iconfont glyphs (name / classPrefix)
-
-`name` uses wot-ui's native glyph path: the component renders `<view class="{classPrefix}-{name}">` and the glyph comes from the iconfont stylesheet the host loads. `class-prefix` defaults to `sn-icon`; change the prefix to work with a font that uses `wd-icon-*` naming.
-
-<Demo name="icon-mp-name" description="The iconfont class name produced by name + class-prefix: sn-icon-home by default, wd-icon-home once class-prefix is wd-icon." />
-
-## CSS icons (cssIcon)
-
-When `css-icon` receives a string, that class goes on the glyph node verbatim (no prefix added) — the fit for an icon subset, background image or pseudo-element that already carries its own naming. With the boolean form plus `name`, both class names are applied.
-
-<Demo name="icon-mp-css" description="css-icon with a string class renders verbatim; the boolean form with name applies both class names." />
-
 ## Root class and inline style (`customClass` / `customStyle`)
 
 `customClass` appends to the sn-icon root class, and `customStyle` merges into the sizing box — a string is written as the root style wholesale (replacing the default `width` / `height`), an object merges with the size. Reach for them when the icon needs a border, padding or a fill; to change only the colour prefer `color`.
@@ -87,18 +131,18 @@ When `css-icon` receives a string, that class goes on the glyph node verbatim (n
 
 ### Props
 
-| Name                | Type                              | Default          | Description                                                                                                       |
-| ------------------- | --------------------------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------- |
-| icon                | `IconData`                        | —                | SVG path data object (alternative to `name`)                                                                      |
-| size                | `number \| string`                | `32`             | Icon size (rpx recommended)                                                                                       |
-| color               | `string`                          | `'currentColor'` | Stroke color (inherits parent `color`)                                                                            |
-| strokeWidth         | `number \| string`                | `2`              | Stroke width in design units                                                                                      |
-| strokeWidthAbsolute | `boolean`                         | `false`          | If true, stroke width is interpreted in absolute pixels rather than scaling with `size`                           |
-| name                | `string`                          | `''`             | Iconfont glyph name; renders `{classPrefix}-{name}`                                                               |
-| classPrefix         | `string`                          | `'sn-icon'`      | Iconfont class-name prefix                                                                                        |
-| cssIcon             | `boolean \| string`               | `false`          | A string renders that class verbatim (no prefix); with the boolean form plus `name`, both class names are applied |
-| customClass         | `string`                          | `''`             | Extra class on the root node                                                                                      |
-| customStyle         | `string \| Record<string,string>` | `''`             | Inline style on the root node                                                                                     |
+| Name                | Type                              | Default          | Description                                                                                              |
+| ------------------- | --------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- |
+| icon                | `IconData \| string`              | —                | SVG data object; or a string resolved as registry → built-in catalog → provider (`prefix:rest`)          |
+| size                | `number \| string`                | `32`             | Icon size (rpx recommended)                                                                              |
+| color               | `string`                          | `'currentColor'` | Stroke color (inherits parent `color`; baked into Iconify requests)                                      |
+| strokeWidth         | `number \| string`                | `2`              | Stroke width in design units                                                                             |
+| strokeWidthAbsolute | `boolean`                         | `false`          | If true, stroke width is interpreted in absolute pixels rather than scaling with `size`                  |
+| name                | `string`                          | `''`             | Iconfont glyph name; renders `{classPrefix}-{name}` (wins over `icon` when both are given)               |
+| classPrefix         | `string`                          | `'sn-icon'`      | Iconfont class-name prefix                                                                               |
+| cssIcon             | `boolean \| string`               | `false`          | A string renders that class verbatim (no prefix); with the boolean form plus `name`, both are applied    |
+| customClass         | `string`                          | `''`             | Extra class on the root node                                                                             |
+| customStyle         | `string \| Record<string,string>` | `''`             | Inline style on the root node                                                                            |
 
 `IconData` interface:
 
@@ -109,20 +153,25 @@ interface IconData {
 }
 ```
 
-### Built-in icons
+### Module-level API
 
-`@snui/uni` main entry exposes ~22 common icons as named exports: `ChevronRight`, `ChevronLeft`, `ChevronDown`, `ChevronUp`, `ArrowRight`, `ArrowLeft`, `Check`, `X`, `Plus`, `Minus`, `Search`, `Settings`, `User`, `Bell`, `Home`, `Heart`, `Star`, `Trash`, `Edit`, `Download`, `Upload`, `Menu`, `MoreHorizontal`.
-
-To add more icons, create one file per icon under `components/sn-icon/icons/` (e.g. `chevron-right.ts`) and export a frozen `IconData` object.
+| Function / constant                                                   | Description                                                                      |
+| --------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `SN_ICON_CATALOG`                                                     | Every built-in catalog entry (name / category / zh / keywords / data)            |
+| `SN_ICON_CATEGORY_LABELS`                                             | Category metadata (key → `{ zh, en }`)                                           |
+| `searchSnIconCatalog(query, category?)`                               | Catalog search (English name / Chinese / keywords, case-insensitive substring)   |
+| `registerSnIcons(map)` / `clearSnIcons()` / `resolveIconByName(name)` | IconData registry (overrides the catalog on name clashes)                        |
+| `registerSnIconProvider(prefix, provider)`                            | Register a `prefix:rest` icon source                                             |
+| `configSnIcons({ iconify })`                                          | `false` disables the Iconify fallback; an object passes Iconify options through  |
+| `configSnIconify({ apiBase, timeout, request })`                      | Iconify service config (official API / 15s / fetch→uni.request by default)       |
 
 ## Cross-platform rendering
 
-| Platform           | Behavior                                                             |
-| ------------------ | -------------------------------------------------------------------- |
-| H5                 | Inline SVG, browser-native rendering                                 |
-| WeChat miniprogram | SVG compiles to an `image` tag (not pixel-perfect on every platform) |
-| App (uni-app x)    | Native SVG via Webview layer                                         |
-| Douyin / Alipay    | SVG support varies by platform; usually renders                      |
+| Platform           | Behavior                                                                                        |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| H5                 | Inline SVG, browser-native rendering, `currentColor` works                                      |
+| WeChat miniprogram | SVG data renders through the image semantics; Iconify / remote paths use background-image data URLs |
+| App (uni-app x)    | The transform pipeline rewrites both SVG paths to `<image>` + SVG data URL (patched in uni-x)   |
 
 ## Accessibility
 
@@ -133,3 +182,4 @@ To add more icons, create one file per icon under `components/sn-icon/icons/` (e
 
 - Web: [SnIcon](/en/components/web/icon)
 - [lucide icon library](https://lucide.dev/icons)
+- [Iconify](https://iconify.design) / [iconfont.cn](https://www.iconfont.cn)

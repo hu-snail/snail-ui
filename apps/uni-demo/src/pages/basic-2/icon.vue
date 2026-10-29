@@ -3,9 +3,12 @@
 import Demo0 from './demos/icon-mp-basic.vue';
 import Demo1 from './demos/icon-mp-css.vue';
 import Demo2 from './demos/icon-mp-custom.vue';
-import Demo3 from './demos/icon-mp-name.vue';
-import Demo4 from './demos/icon-mp-registry.vue';
-import Demo5 from './demos/icon-mp-size.vue';
+import Demo3 from './demos/icon-mp-gallery.vue';
+import Demo4 from './demos/icon-mp-iconify.vue';
+import Demo5 from './demos/icon-mp-name.vue';
+import Demo6 from './demos/icon-mp-registry.vue';
+import Demo7 from './demos/icon-mp-size.vue';
+import Demo8 from './demos/icon-mp-string.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -42,7 +45,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('name', 'Name') }}</text>
+          <text class="module__title">{{ t('图标总览', 'Gallery') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -50,7 +53,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('registry', 'Registry') }}</text>
+          <text class="module__title">{{ t('Iconify 按需', 'Iconify on demand') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -58,10 +61,34 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('尺寸', 'Size') }}</text>
+          <text class="module__title">{{ t('name', 'Name') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('registry', 'Registry') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('尺寸', 'Size') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo7 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('目录用法', 'Catalog names') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo8 />
         </view>
       </view>
     </view>
