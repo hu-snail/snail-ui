@@ -7,6 +7,7 @@
  *   - a row tap emits `menuclick` with `{ item, index }`; disabled rows are inert
  *   - `content` slot replaces the built-in body in both modes
  *   - `placement` / `offset` / `custom*` props are forwarded
+ *   - a tap on the transparent outside mask closes the bubble
  *   - the leave timer is cleared on unmount (§41)
  *
  * No `rpx` values in assertions — happy-dom drops lengths it cannot parse.
@@ -98,6 +99,33 @@ describe('sn-popover', () => {
       expect(style).toContain('--sn-popover-offset-y: 7px');
     });
 
+    it('forwards a --sn-popover-bg / --sn-popover-color override through customStyle', () => {
+      const w = mount(SnPopover, {
+        props: { customStyle: '--sn-popover-bg: #1890ff; --sn-popover-color: #ffffff' },
+      });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-popover-bg: #1890ff');
+      expect(style).toContain('--sn-popover-color: #ffffff');
+    });
+
+    it('mounts the transparent mask exactly while the bubble is mounted', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnPopover, { props: { modelValue: true } });
+        const mask = w.find('.sn-popover__mask');
+        expect(mask.exists()).toBe(true);
+        expect(mask.attributes('aria-hidden')).toBe('true');
+        // Fade-out leg: the mask stays mounted with the bubble, then leaves.
+        await w.setProps({ modelValue: false });
+        expect(w.find('.sn-popover__mask').exists()).toBe(true);
+        vi.advanceTimersByTime(150);
+        await w.vm.$nextTick();
+        expect(w.find('.sn-popover__mask').exists()).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it('accepts the rootPortal parity prop without breaking the render', () => {
       const w = mount(SnPopover, { props: { modelValue: true, rootPortal: true } });
       expect(w.find('.sn-popover__pop').exists()).toBe(true);
@@ -143,6 +171,23 @@ describe('sn-popover', () => {
       await w.find('.sn-popover__trigger').trigger('tap');
       expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
       expect(w.emitted('close')).toHaveLength(1);
+    });
+
+    it('closes on an outside tap (transparent mask)', async () => {
+      const w = mount(SnPopover, { props: { modelValue: true } });
+      await w.find('.sn-popover__mask').trigger('tap');
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
+    });
+
+    it('closes on a mask tap even when the consumer ignores update:modelValue', async () => {
+      const w = mount(SnPopover, { props: { modelValue: true } });
+      await w.find('.sn-popover__mask').trigger('tap');
+      await w.vm.$nextTick();
+      // The bubble keeps the fade-out leg but is no longer shown.
+      expect(w.find('.sn-popover__pop').exists()).toBe(true);
+      expect(w.classes()).not.toContain('sn-popover--shown');
     });
 
     it('ignores the trigger tap while disabled', async () => {
@@ -294,5 +339,47 @@ describe('sn-popover', () => {
       expect(close.attributes('role')).toBe('button');
       expect(close.attributes('aria-label')).toBe('close');
     });
+  });
+});
+
+describe('sn-popover (icon rows and exposed no-op)', () => {
+  it('renders an image element for a menu row whose icon is an image source', () => {
+    const w = mount(SnPopover, {
+      props: {
+        modelValue: true,
+        mode: 'menu',
+        content: [
+          { content: '扫码', iconClass: 'https://cdn.example.com/scan.png' },
+          { content: '相册', iconClass: '/local/album.png' },
+        ],
+      },
+    });
+    const images = w.findAll('image.sn-popover__menu-icon');
+    expect(images).toHaveLength(2);
+    expect(images[0]!.attributes('src')).toBe('https://cdn.example.com/scan.png');
+  });
+
+  it('resolves a registry icon name into the row icon', async () => {
+    const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+    const { Star } = await import('../sn-icon/sn-icon-set');
+    registerSnIcons({ Star });
+    try {
+      const w = mount(SnPopover, {
+        props: {
+          modelValue: true,
+          mode: 'menu',
+          content: [{ content: '收藏', iconClass: 'Star' }],
+        },
+      });
+      expect(w.find('.sn-popover__menu-item svg, .sn-popover__menu-icon svg').exists()).toBe(true);
+      expect(w.find('image.sn-popover__menu-icon').exists()).toBe(false);
+    } finally {
+      clearSnIcons();
+    }
+  });
+
+  it('exposes updatePosition as a safe no-op', () => {
+    const w = mount(SnPopover, { props: { modelValue: true, content: 'x' } });
+    expect(() => (w.vm as unknown as { updatePosition: () => void }).updatePosition()).not.toThrow();
   });
 });

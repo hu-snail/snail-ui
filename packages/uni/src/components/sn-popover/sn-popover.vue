@@ -27,6 +27,23 @@
  *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
  *     rather than a CSS class — uni has no font-icon layer.
  *
+ * ## Click-outside close (transparent mask)
+ *
+ * wot-ui closes the popover on a tap outside the bubble. Miniprogram has no
+ * `document` to hang a global listener on, so the mechanism here is a
+ * transparent fixed mask (z-index 499 — below the bubble's 500, above the
+ * page) mounted exactly while the bubble is; tapping it calls `close()`.
+ * Consequence: while a bubble is shown, the first tap anywhere else —
+ * including on another popover's trigger — closes this one first.
+ *
+ * ## Bubble palette (wot-ui parity: --wot-popover-bg / --wot-popover-color)
+ *
+ * The fill already defaults to the elevated surface (white in the light
+ * theme) and the label to the page text color; both flip with the mp dark
+ * theme. They are published as `--sn-popover-bg` / `--sn-popover-color` so
+ * consumers can recolor the bubble through `custom-style="--sn-popover-bg: …"`
+ * (inline beats the class default). The arrow follows the fill.
+ *
  * ## Timers (AGENTS.md §41)
  *
  * One transition timer keeps the bubble mounted for the fade-out leg. It is
@@ -317,6 +334,8 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       <slot />
     </view>
 
+    <!-- Outside tap catcher: transparent, full viewport, one level under the bubble. -->
+    <view v-if="isMounted" class="sn-popover__mask" aria-hidden="true" @tap="close" />
     <view v-if="isMounted" :class="popClass" role="dialog">
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
@@ -372,6 +391,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   position: relative;
   display: inline-block;
   box-sizing: border-box;
+  /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
+  --sn-popover-bg: var(--sn-mp-color-background-elevated);
+  --sn-popover-color: var(--sn-mp-color-text-primary);
 }
 
 .sn-popover__trigger {
@@ -391,8 +413,8 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   box-sizing: border-box;
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-background-elevated);
-  color: var(--sn-mp-color-text-primary);
+  background-color: var(--sn-popover-bg);
+  color: var(--sn-popover-color);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
   box-shadow: var(--sn-mp-shadow-md);
@@ -403,6 +425,23 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 .sn-popover--shown .sn-popover__pop {
   opacity: 1;
+  pointer-events: auto;
+}
+
+/* Outside tap catcher — invisible, full viewport, one level under the
+ * bubble. Inert during the fade legs so taps fall through to the page. */
+.sn-popover__mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 499;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.sn-popover--shown .sn-popover__mask {
   pointer-events: auto;
 }
 
@@ -473,7 +512,7 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   height: 16rpx;
   box-sizing: border-box;
   border: 2rpx solid var(--sn-mp-color-border-subtle);
-  background-color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-popover-bg);
   transform: rotate(45deg);
 }
 

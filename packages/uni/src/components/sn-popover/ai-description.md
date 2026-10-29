@@ -9,6 +9,9 @@
 Tap-triggered bubble with two modes: `normal` (plain text / custom content) and
 `menu` (a tappable option list). Used for contextual actions ("more" menus) and
 inline rich hints on mobile / miniprogram.
+Tapping outside the bubble (a transparent fixed mask) closes it. The bubble
+defaults to the elevated surface — white in the light theme — with the page
+text color; recolor via `--sn-popover-bg` / `--sn-popover-color`.
 
 ## Reference Library
 
@@ -85,8 +88,7 @@ import { SnPopover } from '@snui/uni';
 
 | Token         | CSS Variable                                              | Purpose                |
 | ------------- | --------------------------------------------------------- | ---------------------- |
-| Surface       | `--sn-mp-color-background-elevated`                       | Bubble background      |
-| Text          | `--sn-mp-color-text-primary`                              | Bubble / row text      |
+| Component vars | `--sn-popover-bg` (default: `--sn-mp-color-background-elevated`), `--sn-popover-color` (default: `--sn-mp-color-text-primary`) | Bubble fill (white in the light theme) / text; the arrow follows the fill |
 | Muted text    | `--sn-mp-color-text-secondary`                            | Row icon               |
 | Disabled text | `--sn-mp-color-text-disabled`                             | Disabled row           |
 | Border        | `--sn-mp-color-border-subtle`                             | Bubble + arrow outline |
@@ -100,11 +102,14 @@ import { SnPopover } from '@snui/uni';
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="dialog"`; the arrow is `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
+- Transparent mask carries `aria-hidden="true"` (gesture layer only)
 - Interaction uses `@tap`; no hover trigger (miniprogram has none)
 
 ## Documented Divergences
 
 - No `trigger` prop: there is no hover on miniprogram, so the trigger is always tapped.
+- Click-outside close: wot-ui closes on an outside tap; miniprogram has no
+  `document`, so the mechanism here is a transparent fixed mask below the bubble.
 - `root-portal` is declared but not implemented.
 - `updatePosition()` is a no-op.
 - `iconClass` is an `sn-icon` registry name / image URL, not a CSS class.
