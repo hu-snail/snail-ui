@@ -7,11 +7,22 @@
 > - `root-portal` 未实现（小程序没有 portal 宿主）。
 > - `panels` 的二维写法按行渲染，`select` 用 `{ item, rowIndex, colIndex }` 回报。
 
+> **AUI 追加能力**
+>
+> - `description`：标题下方的面板描述文案。
+> - `showClose`：标题行右侧关闭按钮。
+
 ## 基础用法
 
 `actions` 每项渲染一行；`cancelText` 为空字符串时不渲染取消按钮。
 
 <Demo name="action-sheet-mp-basic" description="列表行 + 取消按钮，含一个禁用项。" />
+
+## 标题、描述与关闭按钮
+
+`title` 加粗居中显示；`description` 在标题下方渲染一段灰色说明文案；`showClose` 在标题行右上角渲染关闭按钮，点击等同取消（触发 `close`，不发 `select`）。
+
+<Demo name="action-sheet-mp-header" description="标题 + 描述 + 关闭按钮 + 带图标的列表行。" />
 
 ## 宫格面板
 
@@ -41,6 +52,8 @@
 | actions             | SnActionSheetAction[]   | []     | 列表行                         |
 | panels              | Array<Panel \| Panel[]> | []     | 宫格项；嵌套数组视为多行       |
 | title               | string                  | ''     | 标题                           |
+| description         | string                  | ''     | 标题下方描述文案（AUI 追加）   |
+| showClose           | boolean                 | false  | 标题行关闭按钮（AUI 追加）     |
 | cancelText          | string                  | ''     | 取消按钮文案；空字符串隐藏按钮 |
 | closeOnClickAction  | boolean                 | true   | 点击选项后是否关闭             |
 | closeOnClickModal   | boolean                 | true   | 点击遮罩是否关闭               |

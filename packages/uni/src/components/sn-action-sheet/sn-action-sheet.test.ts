@@ -302,4 +302,41 @@ describe('sn-action-sheet', () => {
     });
     expect(wrapper.findComponent({ name: 'SnPopup' }).props('lazyRender')).toBe(false);
   });
+
+  it('renders the panel description under the title', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions, title: '分享', description: '这是一段描述信息' },
+    });
+    expect(wrapper.find('.sn-action-sheet__header').exists()).toBe(true);
+    expect(wrapper.find('.sn-action-sheet__title').text()).toBe('分享');
+    expect(wrapper.find('.sn-action-sheet__description').text()).toBe('这是一段描述信息');
+  });
+
+  it('renders the description alone when there is no title', () => {
+    const wrapper = mount(SnActionSheet, {
+      props: { modelValue: true, actions, description: '这是一段描述信息' },
+    });
+    expect(wrapper.find('.sn-action-sheet__title').exists()).toBe(false);
+    expect(wrapper.find('.sn-action-sheet__description').text()).toBe('这是一段描述信息');
+  });
+
+  it('omits the header when title, description and showClose are all empty', () => {
+    const wrapper = mount(SnActionSheet, { props: { modelValue: true, actions } });
+    expect(wrapper.find('.sn-action-sheet__header').exists()).toBe(false);
+  });
+
+  it('shows the close button only when showClose is set and closes on tap', async () => {
+    const plain = mount(SnActionSheet, { props: { modelValue: true, actions } });
+    expect(plain.find('.sn-action-sheet__close').exists()).toBe(false);
+
+    const closable = mount(SnActionSheet, {
+      props: { modelValue: true, actions, title: '标题', showClose: true },
+    });
+    const close = closable.find('.sn-action-sheet__close');
+    expect(close.exists()).toBe(true);
+    expect(close.attributes('aria-label')).toBe('close');
+    await close.trigger('tap');
+    expect(closable.emitted('update:modelValue')?.[0]).toEqual([false]);
+    expect(closable.emitted('select')).toBeUndefined();
+  });
 });

@@ -3,7 +3,8 @@
 import Demo0 from './demos/action-sheet-mp-basic.vue';
 import Demo1 from './demos/action-sheet-mp-behavior.vue';
 import Demo2 from './demos/action-sheet-mp-custom.vue';
-import Demo3 from './demos/action-sheet-mp-panels.vue';
+import Demo3 from './demos/action-sheet-mp-header.vue';
+import Demo4 from './demos/action-sheet-mp-panels.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -40,10 +41,18 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('多列面板', 'Panels') }}</text>
+          <text class="module__title">{{ t('标题与描述', 'Title & description') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('多列面板', 'Panels') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

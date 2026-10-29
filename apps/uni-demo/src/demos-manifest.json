@@ -1744,6 +1744,11 @@
           "hasEn": true
         },
         {
+          "name": "action-sheet-mp-header",
+          "title": "标题与描述",
+          "hasEn": true
+        },
+        {
           "name": "action-sheet-mp-panels",
           "title": "多列面板",
           "hasEn": true
@@ -1830,6 +1835,11 @@
         {
           "name": "dialog-mp-variant",
           "title": "变体",
+          "hasEn": true
+        },
+        {
+          "name": "dialog-mp-vertical",
+          "title": "垂直模式",
           "hasEn": true
         }
       ]

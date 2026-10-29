@@ -41,7 +41,9 @@ import { SnActionSheet } from '@snui/uni';
 | `actions`             | `SnActionSheetAction[]`   | `[]`    | no       | List rows.                                   |
 | `panels`              | `Array<Panel \| Panel[]>` | `[]`    | no       | Grid cells; a nested array is multiple rows. |
 | `title`               | `string`                  | `''`    | no       | Title above the list.                        |
+| `description`         | `string`                  | `''`    | no       | Intro text under the title (AUI-additive).   |
 | `cancelText`          | `string`                  | `''`    | no       | Cancel label; empty hides the button.        |
+| `showClose`           | `boolean`                 | `false` | no       | Close button in the title row (AUI-additive). |
 | `closeOnClickAction`  | `boolean`                 | `true`  | no       | Close after a row / cell is selected.        |
 | `closeOnClickModal`   | `boolean`                 | `true`  | no       | Close on scrim tap.                          |
 | `duration`            | `number`                  | `200`   | no       | Animation duration in ms.                    |

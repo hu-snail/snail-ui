@@ -24,6 +24,9 @@
  *   - `panels` renders a one-dimensional grid; a two-dimensional
  *     `Panel[][]` (multi-row) input is flattened row by row, and `select`
  *     reports `{ item, rowIndex, colIndex }` for it.
+ *   - `description` (panel intro text under the title) and `showClose`
+ *     (title-row close button) are AUI-additive — the reference has neither;
+ *     registered in AGENTS.md §112.3a.
  *
  * Per AGENTS.md §32, this component handles rendering + interaction only.
  * No schema validation; no business logic.
@@ -38,6 +41,7 @@ import { computed, markRaw } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { X as XIcon } from '../sn-icon/sn-icon-set';
 import SnPopup from '../sn-popup/sn-popup.vue';
 
 defineOptions({ name: 'SnActionSheet' });
@@ -76,8 +80,12 @@ const props = withDefaults(
     panels?: Array<SnActionSheetPanel | SnActionSheetPanel[]>;
     /** Title text above the list. */
     title?: string;
+    /** Intro text shown under the title (AUI-additive). */
+    description?: string;
     /** Cancel button label. An empty string hides the cancel button. */
     cancelText?: string;
+    /** Show the close button in the title row (AUI-additive). */
+    showClose?: boolean;
     /** Close the sheet after a row / cell is selected. */
     closeOnClickAction?: boolean;
     /** Close the sheet when the scrim is tapped. */
@@ -107,7 +115,9 @@ const props = withDefaults(
     actions: () => [],
     panels: () => [],
     title: '',
+    description: '',
     cancelText: '',
+    showClose: false,
     closeOnClickAction: true,
     closeOnClickModal: true,
     duration: 200,
@@ -243,7 +253,19 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
     @after-leave="emit('after-leave')"
   >
     <view class="sn-action-sheet__body" data-snui-component="action-sheet">
-      <text v-if="title" :class="titleClass">{{ title }}</text>
+      <view v-if="title || description || showClose" class="sn-action-sheet__header">
+        <text v-if="title" :class="titleClass">{{ title }}</text>
+        <text v-if="description" class="sn-action-sheet__description">{{ description }}</text>
+        <view
+          v-if="showClose"
+          class="sn-action-sheet__close"
+          role="button"
+          aria-label="close"
+          @tap="close"
+        >
+          <SnIcon :icon="XIcon" :size="32" />
+        </view>
+      </view>
       <slot />
 
       <view v-if="panelRows.length > 0" class="sn-action-sheet__panels">
@@ -266,7 +288,7 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
               mode="aspectFit"
             />
             <view v-else-if="resolveRowIcon(panel.icon)" class="sn-action-sheet__panel-icon">
-              <SnIcon :icon="resolveRowIcon(panel.icon)!" :size="48" />
+              <SnIcon :icon="resolveRowIcon(panel.icon)!" :size="56" />
             </view>
             <text class="sn-action-sheet__panel-title">{{ panel.title }}</text>
           </view>
@@ -322,13 +344,44 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
   color: var(--sn-mp-color-text-primary);
 }
 
+.sn-action-sheet__header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-6);
+  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
 .sn-action-sheet__title {
-  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-3);
-  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-lg);
+  font-weight: var(--sn-mp-font-weight-medium);
+  line-height: var(--sn-mp-font-line-height-normal);
+  text-align: center;
+}
+
+.sn-action-sheet__description {
+  margin-top: var(--sn-mp-spacing-1);
+  color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
   text-align: center;
-  border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
+}
+
+.sn-action-sheet__close {
+  position: absolute;
+  top: var(--sn-mp-spacing-2);
+  right: var(--sn-mp-spacing-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-action-sheet__panels {
+  color: var(--sn-mp-color-text-tertiary);
 }
 
 .sn-action-sheet__panels {
@@ -350,7 +403,7 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
   flex-direction: column;
   align-items: center;
   gap: var(--sn-mp-spacing-2);
-  padding: var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-primary);
 }
 
@@ -358,13 +411,13 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 64rpx;
-  height: 64rpx;
+  width: 72rpx;
+  height: 72rpx;
   color: var(--sn-mp-color-action-primary);
 }
 
 .sn-action-sheet__panel-title {
-  color: var(--sn-mp-color-text-secondary);
+  color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
 }
@@ -379,6 +432,7 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   gap: var(--sn-mp-spacing-3);
   padding: var(--sn-mp-spacing-5) var(--sn-mp-spacing-4);
   color: var(--sn-mp-color-text-primary);
@@ -402,6 +456,7 @@ const titleClass = computed(() => ['sn-action-sheet__title', props.customTitleCl
 .sn-action-sheet__action-texts {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .sn-action-sheet__action-name {

@@ -575,6 +575,12 @@ const actionsClass = computed(() => [
   flex-direction: column;
 }
 
+/* Vertical layout shows the primary action first (confirm on top), matching
+ * the reference spec screenshot; DOM order stays cancel → confirm. */
+.sn-dialog__actions--vertical .sn-dialog__confirm {
+  order: -1;
+}
+
 .sn-dialog__cancel,
 .sn-dialog__confirm {
   flex: 1 1 0;

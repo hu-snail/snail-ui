@@ -7,11 +7,22 @@
 > - `root-portal` is not implemented (no portal host on miniprogram).
 > - A nested `panels` array renders row by row and `select` reports `{ item, rowIndex, colIndex }`.
 
+> **AUI additions**
+>
+> - `description`: intro text under the title.
+> - `showClose`: close button in the title row.
+
 ## Basic usage
 
 Each `actions` entry renders one row; an empty `cancelText` hides the cancel button.
 
 <Demo name="action-sheet-mp-basic" description="List rows plus a cancel button, with one disabled entry." />
+
+## Title, description and close button
+
+`title` renders bold and centred; `description` renders a gray intro line under it; `showClose` adds a close button at the top-right of the title row — tapping it closes the sheet (fires `close`, never `select`).
+
+<Demo name="action-sheet-mp-header" description="Title + description + close button + rows with icons." />
 
 ## Icon grid
 
@@ -41,7 +52,9 @@ Each `actions` entry renders one row; an empty `cancelText` hides the cancel but
 | actions             | SnActionSheetAction[]   | []      | List rows                                      |
 | panels              | Array<Panel \| Panel[]> | []      | Grid cells; a nested array means multiple rows |
 | title               | string                  | ''      | Title text                                     |
+| description         | string                  | ''      | Intro text under the title (AUI addition)      |
 | cancelText          | string                  | ''      | Cancel label; an empty string hides the button |
+| showClose           | boolean                 | false   | Close button in the title row (AUI addition)   |
 | closeOnClickAction  | boolean                 | true    | Close after a row is selected                  |
 | closeOnClickModal   | boolean                 | true    | Close on scrim tap                             |
 | duration            | number                  | 200     | Animation duration in ms                       |

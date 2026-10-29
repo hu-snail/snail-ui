@@ -525,7 +525,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '动作面板',
         titleEn: 'Action Sheet',
         desc: '底部操作列表',
-        count: 4,
+        count: 5,
       },
       {
         key: 'circle',
@@ -549,7 +549,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '弹框',
         titleEn: 'Dialog',
         desc: '模态对话框',
-        count: 4,
+        count: 5,
       },
       {
         key: 'empty',
