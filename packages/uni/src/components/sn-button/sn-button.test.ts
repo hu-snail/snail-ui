@@ -107,16 +107,26 @@ describe('sn-button', () => {
         props: { iconName: 'TestIcon' },
         slots: { default: 'Named' },
       });
-      expect(wrapper.find('.sn-icon').exists()).toBe(true);
+      /* String names go through SnIcon's chain (registry → catalog); the
+       * registry-registered icon resolves to a rendered SVG. */
+      expect(wrapper.find('.sn-icon svg').exists()).toBe(true);
     });
 
-    it('falls through to the sn-icon loader when `iconName` is unregistered', () => {
+    it('resolves a built-in catalog name through the sn-icon chain', () => {
+      /* 'check' ships in the sn-icon built-in catalog — no registry needed. */
       const wrapper = mount(SnButton, {
-        props: { iconName: 'Missing', loading: true },
+        props: { iconName: 'check' },
+        slots: { default: 'Catalog' },
+      });
+      expect(wrapper.find('.sn-icon svg').exists()).toBe(true);
+    });
+
+    it('renders no svg when `iconName` matches nothing', () => {
+      const wrapper = mount(SnButton, {
+        props: { iconName: 'Missing' },
         slots: { default: 'X' },
       });
-      /* The loader itself is an sn-icon (loader-circle glyph). */
-      expect(wrapper.find('.sn-button__spinner .sn-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-icon svg').exists()).toBe(false);
     });
 
     it('icon slot overrides iconData / iconName props', () => {

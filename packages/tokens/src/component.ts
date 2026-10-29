@@ -177,7 +177,7 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     heightMedium: '36px',
     heightLarge: '40px',
     paddingX: '16px',
-    radius: '6px',
+    radius: '4px',
     fontSize: '14px',
     shadow: 'none',
     focusRing: 'rgba(22, 119, 255, 0.25)',
@@ -187,7 +187,7 @@ export const DEFAULT_COMPONENT_TOKENS: ComponentTokens = {
     heightMedium: '36px',
     heightLarge: '40px',
     paddingX: '12px',
-    radius: '6px',
+    radius: '4px',
   },
   card: {
     padding: '24px',

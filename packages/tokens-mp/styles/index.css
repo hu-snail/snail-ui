@@ -16,14 +16,14 @@
   --sn-mp-button-height-medium: 72rpx;
   --sn-mp-button-height-large: 88rpx;
   --sn-mp-button-padding-x: 24rpx;
-  --sn-mp-button-radius: 12rpx;
+  --sn-mp-button-radius: 8rpx;
   --sn-mp-button-font-size: 28rpx;
 
   --sn-mp-input-height-small: 56rpx;
   --sn-mp-input-height-medium: 68rpx;
   --sn-mp-input-height-large: 84rpx;
   --sn-mp-input-padding-x: 24rpx;
-  --sn-mp-input-radius: 12rpx;
+  --sn-mp-input-radius: 8rpx;
 
   --sn-mp-card-padding: 32rpx;
   --sn-mp-card-radius: 16rpx;
@@ -54,7 +54,7 @@
   --sn-mp-spacing-12: 80rpx;
   --sn-mp-radius-xs: 4rpx;
   --sn-mp-radius-sm: 8rpx;
-  --sn-mp-radius-md: 12rpx;
+  --sn-mp-radius-md: 8rpx;
   --sn-mp-radius-lg: 16rpx;
   --sn-mp-radius-xl: 24rpx;
   --sn-mp-radius-full: 19998rpx;

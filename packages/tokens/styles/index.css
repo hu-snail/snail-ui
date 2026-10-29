@@ -65,7 +65,7 @@
   --aui-radius-none: 0;
   --aui-radius-xs: 2px;
   --aui-radius-sm: 4px;
-  --aui-radius-md: 6px;
+  --aui-radius-md: 4px;
   --aui-radius-lg: 8px;
   --aui-radius-xl: 12px;
   --aui-radius-full: 9999px;
@@ -225,7 +225,7 @@
   --aui-button-height-medium: 36px;
   --aui-button-height-large: 40px;
   --aui-button-padding-x: 16px;
-  --aui-button-radius: 6px;
+  --aui-button-radius: 4px;
   --aui-button-font-size: 14px;
   --aui-button-shadow: none;
   --aui-button-focus-ring: rgba(22, 119, 255, 0.25);
@@ -246,7 +246,7 @@
   --aui-input-height-medium: 36px;
   --aui-input-height-large: 40px;
   --aui-input-padding-x: 12px;
-  --aui-input-radius: 6px;
+  --aui-input-radius: 4px;
 
   /* Sn-* component aliases — input */
   --sn-input-height-small: var(--aui-input-height-small);

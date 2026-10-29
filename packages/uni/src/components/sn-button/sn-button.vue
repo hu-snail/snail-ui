@@ -14,7 +14,6 @@
 import { computed, markRaw } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 
 defineOptions({ name: 'SnButton' });
 
@@ -185,16 +184,17 @@ const props = withDefaults(
 );
 
 /**
- * Resolved icon data: prefer explicit `iconData`, fall back to registry
- * lookup by `iconName`. Returns `null` when neither resolves (template
- * renders the default spinner / nothing instead).
+ * Resolved icon data: explicit `iconData` object only. String names are NOT
+ * resolved here — they are forwarded to the embedded SnIcon, whose sync
+ * resolution chain (registry → built-in catalog → provider prefix) covers
+ * the whole sn-icon library without bundling the catalog into sn-button.
  */
-const resolvedIconData = computed<IconData | null>(() => {
-  const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null);
-  return icon ? markRaw(icon) : null;
+const resolvedIconData = computed<IconData | null>(() =>
+  props.iconData ? markRaw(props.iconData) : null,
+);
 
-});
 /**
+ * Inline loader glyph — lucide `loader-circle` (ISC).
  * Inline loader glyph — lucide `loader-circle` (ISC). Rendered through the
  * embedded SnIcon so the spinner reuses the same cross-end SVG pipeline as
  * every other icon, and its stroke scales with `loading-size` instead of
@@ -314,10 +314,12 @@ function onTap(event: Event): void {
   >
     <slot name="icon">
       <!--
-        Icon precedence: SVG data (`iconData` / registry `iconName`) first,
-        then the wot-ui iconfont API (`icon` + `class-prefix` + `css-icon`).
+        Icon precedence: SVG data (`iconData`) first, then string `iconName`
+        resolved by SnIcon (registry → built-in catalog → provider), then the
+        wot-ui iconfont API (`icon` + `class-prefix` + `css-icon`).
       -->
       <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="iconSize ?? 32" />
+      <SnIcon v-else-if="iconName" :icon="iconName" :size="iconSize ?? 32" />
       <SnIcon
         v-else-if="icon"
         :name="icon"
@@ -347,7 +349,7 @@ function onTap(event: Event): void {
   gap: 8rpx;
   padding: 0 28rpx;
   border: 2rpx solid transparent;
-  border-radius: 12rpx;
+  border-radius: 8rpx;
   font-size: 28rpx;
   font-weight: 500;
   line-height: 1;
