@@ -20,16 +20,6 @@
 
 <Demo name="button-web-state" description="disabled 完全禁用；loading 显示 spinner 且不可点击；可手动触发 loading 状态。" />
 
-## 交互场景：加载 → 完成
-
-`loading` 会吞掉点击并在按钮内渲染 spinner，配合 `circle` + `icon` 就能做出「登录 → 圆形对勾」这类完成后收窄的反馈；`type` 负责成功 / 失败的颜色语义。收窄动画放在外层容器的 `width` 上即可，组件本身不需要额外 prop。
-
-<Demo name="button-web-login" description="模拟登录：点击 → loading → 圆形 ✓ → 2s 后复位，并附三档视觉对照。" />
-
-更多可直接复用的异步动作场景（提交表单 / 下载 / 收藏 toggle / 复制命令 / 加入购物车 / 二次确认删除）：
-
-<Demo name="button-web-interactive" description="6 个「按钮 + 异步动作」场景，含 loading、图标切换与二次确认。" />
-
 ## 变体：`text` / `ghost` / `dashed`
 
 <Demo name="button-web-variant" description="text 文字按钮、ghost 透明边框、dashed 虚线边框。" />

@@ -212,4 +212,45 @@ describe('sn-avatar', () => {
       expect(w.attributes('aria-label')).toBeUndefined();
     });
   });
+
+  /*
+   * Presence state is an AUI addition over wd-avatar (registered in
+   * AGENTS.md §112.3a), so it gets its own block: the dot is visual only and
+   * the state must reach assistive tech through the root label.
+   */
+  describe('presence status (additive)', () => {
+    it('renders no status dot by default', () => {
+      const w = mount(SnAvatar, { props: { text: 'AU' } });
+      expect(w.find('.sn-avatar__status').exists()).toBe(false);
+      expect(w.attributes('aria-label')).toBe('AU');
+    });
+
+    it('renders the online dot and announces the state', () => {
+      const w = mount(SnAvatar, { props: { text: 'AU', status: 'online' } });
+      const dot = w.find('.sn-avatar__status');
+      expect(dot.exists()).toBe(true);
+      expect(dot.attributes('aria-hidden')).toBe('true');
+      expect(w.classes()).toContain('sn-avatar--status-online');
+      expect(w.attributes('aria-label')).toBe('AU online');
+    });
+
+    it('renders the offline dot', () => {
+      const w = mount(SnAvatar, { props: { text: 'AU', status: 'offline' } });
+      expect(w.find('.sn-avatar__status').exists()).toBe(true);
+      expect(w.classes()).toContain('sn-avatar--status-offline');
+      expect(w.attributes('aria-label')).toBe('AU offline');
+    });
+
+    it('announces the state for an image avatar through alt', () => {
+      const w = mount(SnAvatar, { props: { src: '/a.png', alt: 'Avatar B', status: 'online' } });
+      expect(w.attributes('aria-label')).toBe('Avatar B online');
+    });
+
+    it('keeps the dot out of the status classes when status is cleared', async () => {
+      const w = mount(SnAvatar, { props: { text: 'AU', status: 'online' } });
+      await w.setProps({ status: '' });
+      expect(w.find('.sn-avatar__status').exists()).toBe(false);
+      expect(w.classes().some((c) => c.startsWith('sn-avatar--status-'))).toBe(false);
+    });
+  });
 });

@@ -258,6 +258,9 @@ const classList = computed(() => [
   `sn-switch--${props.shape}`,
   {
     'sn-switch--checked': isChecked.value,
+    /* Unchecked-side styling (knob at the far end) rides this class instead
+     * of `:not(.sn-switch--checked)` (§116.2 — App has no pseudo-classes). */
+    'sn-switch--unchecked': !isChecked.value,
     'sn-switch--disabled': props.disabled,
     'sn-switch--loading': props.loading || isPending.value,
     'sn-switch--with-rail-text': railText.value.length > 0,
@@ -397,7 +400,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
 .sn-switch--checked .sn-switch__action {
   transform: translateX(0);
 }
-.sn-switch:not(.sn-switch--checked) .sn-switch__action {
+.sn-switch--unchecked .sn-switch__action {
   order: 2;
 }
 

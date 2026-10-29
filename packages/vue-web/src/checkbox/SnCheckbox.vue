@@ -92,10 +92,16 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  /** Rich label content. Wins over the `label` prop. */
-  default?(): unknown;
-  /** Custom checkmark icon. */
-  icon?(): unknown;
+  /** Rich label content. Wins over the `label` prop. Scope: checked state. */
+  default?(props: { checked: boolean; disabled: boolean; indeterminate: boolean }): unknown;
+  /** Custom checkmark glyph. Renders inside the box instead of the CSS tick. */
+  icon?(props: { checked: boolean }): unknown;
+  /**
+   * Replace the entire box (indicator) with custom markup — the hook for
+   * card-style / tag-style checkboxes. Receives the state so the consumer
+   * can render its own selected visuals.
+   */
+  indicator?(props: { checked: boolean; indeterminate: boolean }): unknown;
 }>();
 
 // Injected group context (undefined when standalone).
@@ -128,6 +134,9 @@ const groupChecked = computed<boolean>(
 const isChecked = computed<boolean>(() =>
   isInGroup.value ? groupChecked.value : standaloneChecked.value,
 );
+
+/** Effective indeterminate state — never true while checked (checked wins). */
+const isIndeterminate = computed<boolean>(() => Boolean(props.indeterminate) && !isChecked.value);
 
 /** aria-checked tristate per WAI-ARIA 1.1. */
 const ariaChecked = computed<'true' | 'false' | 'mixed'>(() => {
@@ -210,13 +219,23 @@ function onChange(event: Event): void {
       :readonly="readonly"
       @change="onChange"
     />
-    <span class="sn-checkbox__box" aria-hidden="true">
-      <span class="sn-checkbox__checkmark">
-        <slot name="icon" />
+    <span v-if="$slots.indicator" class="sn-checkbox__box sn-checkbox__box--custom" aria-hidden="true">
+      <slot
+        name="indicator"
+        :checked="isChecked"
+        :indeterminate="props.indeterminate && !isChecked"
+      />
+    </span>
+    <span v-else class="sn-checkbox__box" aria-hidden="true">
+      <span v-if="$slots.icon" class="sn-checkbox__checkmark sn-checkbox__checkmark--custom">
+        <slot name="icon" :checked="isChecked" />
       </span>
+      <span v-else class="sn-checkbox__checkmark" />
     </span>
     <span v-if="label || $slots.default" class="sn-checkbox__label">
-      <slot>{{ label }}</slot>
+      <slot :checked="isChecked" :disabled="isDisabled" :indeterminate="isIndeterminate">{{
+        label
+      }}</slot>
     </span>
   </label>
 </template>
@@ -264,6 +283,20 @@ function onChange(event: Event): void {
     box-shadow 0.18s ease-out;
 }
 
+/* Disabled / readonly keep the state colour but drop the halo — the glow
+ * signals "live selection", which a locked control cannot offer. */
+.sn-checkbox--disabled .sn-checkbox__box,
+.sn-checkbox--readonly .sn-checkbox__box {
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sn-checkbox__box,
+  .sn-checkbox__checkmark {
+    transition: none;
+  }
+}
+
 /* Sizes */
 .sn-checkbox--mini {
   font-size: 11px;
@@ -286,14 +319,49 @@ function onChange(event: Event): void {
   --sn-web-checkbox-size: 16px;
 }
 
-/* Checkmark — drawn with borders (no color literals). Hidden until checked. */
+/* Custom indicator: the slot owns the visuals, so drop the built-in box
+ * chrome (border / fill) and let the markup size itself. */
+.sn-checkbox__box--custom {
+  border: none;
+  background: none;
+  box-shadow: none;
+  width: auto;
+  height: auto;
+  min-width: var(--sn-web-checkbox-size, 14px);
+  min-height: var(--sn-web-checkbox-size, 14px);
+}
+
+/* Custom glyph replaces the CSS tick — keep the centring, drop the border
+ * trick and let the slotted content scale in on selection. */
+.sn-checkbox__checkmark--custom {
+  width: auto;
+  height: auto;
+  border: none;
+  margin-top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: none;
+  opacity: 1;
+}
+
+/*
+ * Checkmark — drawn with borders (no colour literals). It scales from 0
+ * while rotating into place, so ticking reads as a deliberate pop rather
+ * than an instant swap. `transform-origin` is centred so the tick grows
+ * out of the box centre.
+ */
 .sn-checkbox__checkmark {
   width: 7px;
   height: 4px;
   border-left: 2px solid var(--sn-web-checkbox-check-color, var(--sn-web-color-text-on-primary));
   border-bottom: 2px solid var(--sn-web-checkbox-check-color, var(--sn-web-color-text-on-primary));
   transform: rotate(-45deg) scale(0);
-  transition: transform 0.15s ease-out;
+  transform-origin: center;
+  opacity: 0;
+  transition:
+    transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.12s ease-out;
   margin-top: -2px;
 }
 
@@ -304,24 +372,34 @@ function onChange(event: Event): void {
   border-left: none;
   border-bottom: 2px solid var(--sn-web-checkbox-check-color, var(--sn-web-color-text-on-primary));
   transform: scale(1);
+  opacity: 1;
   margin-top: 0;
 }
 
-/* Checked state */
+/*
+ * Checked state. The halo is a soft ring drawn from the box shadow: it
+ * spreads outwards and fades in with the fill, which is the "light glow"
+ * border around a selected checkbox. It is deliberately a shadow (not a
+ * border) so it never changes the box's layout size.
+ */
 .sn-checkbox--checked .sn-checkbox__box {
   background-color: var(--sn-web-checkbox-bg-checked, var(--sn-web-color-action-primary));
   border-color: var(--sn-web-checkbox-border-color-checked, var(--sn-web-color-action-primary));
+  box-shadow: 0 0 0 var(--sn-web-checkbox-halo-width, 3px)
+    var(--sn-web-checkbox-halo-color, var(--sn-web-color-action-primary-soft));
 }
 
 .sn-checkbox--checked .sn-checkbox__checkmark {
   transform: rotate(-45deg) scale(1);
+  opacity: 1;
 }
 
 .sn-checkbox--indeterminate .sn-checkbox__box {
   background-color: var(--sn-web-checkbox-bg-checked, var(--sn-web-color-action-primary));
   border-color: var(--sn-web-checkbox-border-color-checked, var(--sn-web-color-action-primary));
+  box-shadow: 0 0 0 var(--sn-web-checkbox-halo-width, 3px)
+    var(--sn-web-checkbox-halo-color, var(--sn-web-color-action-primary-soft));
 }
-
 /* Focus ring via :focus-visible on the native input (+ sibling box) */
 .sn-checkbox__input:focus-visible + .sn-checkbox__box {
   box-shadow: 0 0 0 3px var(--sn-web-focus-ring, var(--sn-web-color-action-primary-soft));

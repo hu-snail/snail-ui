@@ -203,13 +203,21 @@ defineExpose({
   activeIndex,
 });
 
+/** Whether the nav scrolls horizontally instead of giving each tab an equal share. */
+const isScrollable = computed(
+  () => props.slidable === 'always' || tabs.value.length > props.slidableNum,
+);
+
 const rootClass = computed(() => [
   'sn-tabs',
   `sn-tabs--line-${props.lineTheme}`,
   {
     'sn-tabs--sticky': props.sticky,
     'sn-tabs--animated': props.animated,
-    'sn-tabs--scrollable': props.slidable === 'always' || tabs.value.length > props.slidableNum,
+    'sn-tabs--scrollable': isScrollable.value,
+    /* Equal-width items ride this class instead of
+     * `:not(.sn-tabs--scrollable)` (§116.2 — App has no pseudo-classes). */
+    'sn-tabs--fixed': !isScrollable.value,
   },
   props.customClass,
 ]);
@@ -341,7 +349,7 @@ function titleColor(index: number): string | undefined {
   flex: 0 0 auto;
 }
 
-.sn-tabs:not(.sn-tabs--scrollable) .sn-tabs__item {
+.sn-tabs--fixed .sn-tabs__item {
   flex: 1 1 0;
 }
 

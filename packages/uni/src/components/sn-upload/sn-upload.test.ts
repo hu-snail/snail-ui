@@ -531,3 +531,55 @@ describe('sn-upload', () => {
     });
   });
 });
+
+describe('sn-upload (picker variants and runtime failure)', () => {
+  it('picks files through uni.chooseMessageFile for accept="file"', async () => {
+    const runtime = installRuntime({
+      chooseMessageFile: vi.fn(
+        (options: { success?: (r: { tempFiles: Array<{ path: string; size: number }> }) => void }) => {
+          options.success?.({ tempFiles: [{ path: 'doc.pdf', size: 128 }] });
+        },
+      ),
+    });
+    const w = mountUpload({ accept: 'file' });
+    await w.find('.sn-upload__evoke').trigger('tap');
+    await vi.waitFor(() => expect(runtime.chooseMessageFile).toHaveBeenCalledTimes(1));
+    await vi.waitFor(() => expect(lastList(w)).toHaveLength(1));
+    expect(lastList(w)[0]?.url).toBe('doc.pdf');
+  });
+
+  it('picks a video through uni.chooseVideo for accept="video"', async () => {
+    const runtime = installRuntime({
+      chooseVideo: vi.fn(
+        (options: { success?: (r: { tempFilePath: string; size: number }) => void }) => {
+          options.success?.({ tempFilePath: 'clip.mp4', size: 4096 });
+        },
+      ),
+    });
+    const w = mountUpload({ accept: 'video' });
+    await w.find('.sn-upload__evoke').trigger('tap');
+    await vi.waitFor(() => expect(runtime.chooseVideo).toHaveBeenCalledTimes(1));
+    await vi.waitFor(() => expect(lastList(w)).toHaveLength(1));
+    expect(lastList(w)[0]?.url).toBe('clip.mp4');
+  });
+
+  it('emits fail with the runtime error when uni.uploadFile fails', async () => {
+    const runtime = installRuntime({
+      uploadFile: vi.fn((options: { fail?: (error: unknown) => void }) => {
+        options.fail?.(new Error('network down'));
+        return { abort: vi.fn() };
+      }),
+    });
+    const w = mountUpload({
+      fileList: [{ uid: 1, url: 'a.png', status: 'pending' }],
+      action: '/api/upload',
+    });
+    const vm = w.vm as unknown as { submit(): Promise<void> };
+    await vm.submit();
+    await vi.waitFor(() => expect(w.emitted('fail')).toHaveLength(1));
+    expect(runtime.uploadFile).toHaveBeenCalledTimes(1);
+    expect(lastList(w).at(-1)?.status).toBe('fail');
+    const payload = w.emitted('fail')?.[0]?.[0] as { error: unknown };
+    expect((payload.error as Error).message).toBe('network down');
+  });
+});

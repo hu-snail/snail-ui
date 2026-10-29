@@ -423,3 +423,71 @@ describe('sn-paging', () => {
     });
   });
 });
+
+describe('sn-paging (refresher lifecycle edges)', () => {
+  it('holds the success text for refresherCompleteDuration then collapses', async () => {
+    vi.useFakeTimers();
+    const { wrapper } = mountPaging();
+    wrapper.vm.complete(['first']);
+    await flush();
+    await wrapper.find('scroll-view').trigger('refresherrefresh');
+    wrapper.vm.completeByNoMore(['a'], false);
+    await flush();
+    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('刷新成功');
+    vi.advanceTimersByTime(500);
+    await flush();
+    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
+  });
+
+  it('collapses a pending success hold when a load-more completes', async () => {
+    vi.useFakeTimers();
+    const { wrapper, list } = mountPaging();
+    wrapper.vm.complete(['first']);
+    await flush();
+    await wrapper.find('scroll-view').trigger('refresherrefresh');
+    wrapper.vm.completeByNoMore(['a'], false);
+    await flush();
+    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('刷新成功');
+    // A load-more starts and finishes while the success hold is still pending.
+    await wrapper.find('scroll-view').trigger('scrolltolower');
+    wrapper.vm.completeByNoMore(['b'], false);
+    await flush();
+    // The stale hold was cleared: the refresher collapsed right away instead
+    // of waiting out the success timer.
+    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
+    // The pull-refresh replaced the list, the load-more appended to it.
+    expect(list()).toEqual(['a', 'b']);
+    vi.advanceTimersByTime(1000);
+    await flush();
+    expect(wrapper.find('.sn-paging__refresher-text').text()).toBe('继续下拉刷新');
+  });
+
+  it('keeps the success hold when the native refresherrestore arrives early', async () => {
+    vi.useFakeTimers();
+    const { wrapper } = mountPaging();
+    wrapper.vm.complete(['first']);
+    await flush();
+    await wrapper.find('scroll-view').trigger('refresherrefresh');
+    wrapper.vm.completeByNoMore(['a'], false);
+    await flush();
+    // The restore event fires while the success text is held — the hold wins.
+    await wrapper.find('scroll-view').trigger('refresherrestore');
+    await flush();
+    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('true');
+    vi.advanceTimersByTime(500);
+    await flush();
+    expect(wrapper.find('scroll-view').attributes('refresher-triggered')).toBe('false');
+  });
+
+  it('disposes the browser gesture and pending holds on unmount', async () => {
+    vi.useFakeTimers();
+    const { wrapper } = mountPaging();
+    await wrapper.find('scroll-view').trigger('refresherrefresh');
+    wrapper.vm.complete(['a']);
+    await flush();
+    // Unmount with a pending success hold and a bound gesture: no dangling
+    // timer may fire afterwards.
+    wrapper.unmount();
+    expect(() => vi.advanceTimersByTime(1000)).not.toThrow();
+  });
+});

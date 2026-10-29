@@ -18,8 +18,7 @@ const UNI_DEMO_BASE = process.env.UNI_DEMO_PREVIEW_BASE ?? 'https://hu-snail.git
  * 本地联调：UNI_TEMPLATES_PREVIEW_BASE=http://localhost:5174 pnpm dev
  */
 const UNI_TEMPLATES_BASE =
-  process.env.UNI_TEMPLATES_PREVIEW_BASE ??
-  'https://hu-snail.github.io/snail-ui/uni-templates/';
+  process.env.UNI_TEMPLATES_PREVIEW_BASE ?? 'https://hu-snail.github.io/snail-ui/uni-templates/';
 
 /**
  * VitePress config — bilingual (zh default + en) + multi-end (Web + uni-app).
@@ -222,6 +221,7 @@ const sidebar = {
         { text: 'sn-tag 标签'.trim(), link: '/components/uni/tag' },
         { text: 'sn-badge 徽标'.trim(), link: '/components/uni/badge' },
         { text: 'sn-avatar 头像'.trim(), link: '/components/uni/avatar' },
+        { text: 'sn-avatar-group 头像组'.trim(), link: '/components/uni/avatar-group' },
       ],
     },
     {
@@ -305,6 +305,7 @@ const sidebar = {
       text: 'Display 展示组件',
       items: [
         { text: 'sn-avatar 头像'.trim(), link: '/components/uni/avatar' },
+        { text: 'sn-avatar-group 头像组'.trim(), link: '/components/uni/avatar-group' },
         { text: 'sn-card 卡片'.trim(), link: '/components/uni/card' },
         { text: 'sn-img 图片'.trim(), link: '/components/uni/img' },
         { text: 'sn-swiper 轮播'.trim(), link: '/components/uni/swiper' },
@@ -552,6 +553,7 @@ const enSidebar = {
         { text: 'sn-tag', link: '/en/components/uni/tag' },
         { text: 'sn-badge', link: '/en/components/uni/badge' },
         { text: 'sn-avatar', link: '/en/components/uni/avatar' },
+        { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
       ],
     },
     {
@@ -632,6 +634,7 @@ const enSidebar = {
       text: 'Display',
       items: [
         { text: 'sn-avatar', link: '/en/components/uni/avatar' },
+        { text: 'sn-avatar-group', link: '/en/components/uni/avatar-group' },
         { text: 'sn-card', link: '/en/components/uni/card' },
         { text: 'sn-img', link: '/en/components/uni/img' },
         { text: 'sn-swiper', link: '/en/components/uni/swiper' },

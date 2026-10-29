@@ -25,6 +25,19 @@ describe('sn-switch', () => {
       expect(wrapper.attributes('aria-checked')).toBe('true');
     });
 
+    it('binds the unchecked modifier while off and drops it when on', async () => {
+      /* The knob's far-end styling keys off this class instead of
+       * `:not(.sn-switch--checked)` (§116.2 — App has no pseudo-classes). */
+      const wrapper = mount(SnSwitch);
+      expect(wrapper.classes()).toContain('sn-switch--unchecked');
+      await wrapper.setProps({ modelValue: true });
+      expect(wrapper.classes()).not.toContain('sn-switch--unchecked');
+      expect(wrapper.classes()).toContain('sn-switch--checked');
+      await wrapper.setProps({ modelValue: false });
+      expect(wrapper.classes()).toContain('sn-switch--unchecked');
+      expect(wrapper.classes()).not.toContain('sn-switch--checked');
+    });
+
     it('emits update:modelValue with activeValue when toggled on', async () => {
       const wrapper = mount(SnSwitch, { props: { modelValue: false } });
       await wrapper.trigger('tap');

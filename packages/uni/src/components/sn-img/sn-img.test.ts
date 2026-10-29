@@ -16,6 +16,8 @@
  */
 
 import { describe, it, expect, afterAll, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
 import SnImg from './sn-img.vue';
 
@@ -157,7 +159,11 @@ describe('sn-img', () => {
       const previewImage = vi.fn();
       host.uni = { previewImage };
       const wrapper = mount(SnImg, {
-        props: { src: 'https://x/thumb.png', previewSrc: 'https://x/full.png', enablePreview: true },
+        props: {
+          src: 'https://x/thumb.png',
+          previewSrc: 'https://x/full.png',
+          enablePreview: true,
+        },
       });
       await wrapper.trigger('tap');
       expect(previewImage).toHaveBeenCalledWith({
@@ -187,6 +193,20 @@ describe('sn-img', () => {
       const wrapper = mount(SnImg, { props: { src: 'https://x/a.png', enablePreview: true } });
       await wrapper.trigger('tap');
       expect(wrapper.emitted('click')).toHaveLength(1);
+    });
+
+    /*
+     * Regression guard for the shipped-H5 "tap does nothing" bug: the uni-app
+     * production build only bundles the uni APIs its static analysis can see,
+     * so reaching `previewImage` through a variable (the old
+     * `globalThis.uni?.previewImage` form) let the API be tree-shaken out of
+     * the bundle while every behavioural test above still passed in dev.
+     * The invariant cannot be observed at runtime, so it is pinned on the
+     * source text.
+     */
+    it('calls uni.previewImage statically so the build keeps the API', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-img.vue'), 'utf8');
+      expect(source).toMatch(/\buni\.previewImage\s*\(/);
     });
   });
 

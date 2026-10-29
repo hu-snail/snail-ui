@@ -25,6 +25,13 @@
 ## 自定义选中值（checkedValue / uncheckedValue）
 
 <Demo name="checkbox-web-values" description="非 boolean 值映射：'on' / 'off'、1 / 0。" />
+## 自定义插槽（`indicator` / `icon` / 默认插槽）
+
+三个插槽覆盖不同粒度的定制：`indicator` 替换整个方框（标签 / 卡片形态），`icon` 保留方框只换对勾字形，默认插槽渲染富文本标签。三者都带作用域参数，可直接读取选中态。
+
+选中 / 取消选中带过渡动画：对勾以弹性曲线放大淡入，方框填充同时扩散出一圈浅色光影边框（`box-shadow` 实现，不影响布局尺寸）；`prefers-reduced-motion` 下自动关闭动画。
+
+<Demo name="checkbox-web-custom" description="indicator 标签 / 卡片形态 + icon 自定义对勾 + 默认插槽作用域。" />
 
 ## API
 

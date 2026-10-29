@@ -452,7 +452,7 @@ const wrapperStyle = computed(() => {
       @keydown="onKeydown"
     />
 
-    <span v-if="showPassword && isPassword" class="sn-input__password-toggle" aria-hidden="true">
+    <span v-if="showPassword && isPassword" class="sn-input__password-toggle">
       <button
         type="button"
         class="sn-input__password-toggle-btn"
@@ -460,7 +460,7 @@ const wrapperStyle = computed(() => {
         :aria-label="passwordVisible ? 'Hide password' : 'Show password'"
         @click.stop="passwordVisible = !passwordVisible"
       >
-        <SnIcon :icon="passwordToggleIcon" :size="11" />
+        <SnIcon :icon="passwordToggleIcon" :size="14" />
       </button>
     </span>
 
@@ -674,23 +674,36 @@ textarea.sn-input__native {
   align-items: center;
   flex: 0 0 auto;
 }
+/*
+ * The toggle sits inside the field, so it must not paint an opaque chip of
+ * its own: `--sn-web-color-background-elevated` resolves to #ffffff in the
+ * light theme, which read as a white disc stamped on the input. Keep the
+ * button transparent and reveal a tint only on hover / focus.
+ */
 .sn-input__password-toggle-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border: none;
-  background: var(--sn-web-color-background-elevated, rgba(0, 0, 0, 0.06));
-  color: var(--sn-web-color-text-secondary);
-  border-radius: 50%;
-  font-size: 11px;
+  background: transparent;
+  color: var(--sn-web-color-text-tertiary);
+  border-radius: var(--sn-web-radius-sm, 4px);
   line-height: 1;
   cursor: pointer;
   padding: 0;
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
 }
 .sn-input__password-toggle-btn:hover {
-  background: var(--sn-web-color-background-overlay, rgba(0, 0, 0, 0.12));
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-input__password-toggle-btn:focus-visible {
+  outline: 2px solid var(--sn-web-color-action-primary);
+  outline-offset: 1px;
 }
 
 /* Clear button */
@@ -703,19 +716,26 @@ textarea.sn-input__native {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border: none;
-  background: var(--sn-web-color-background-elevated, rgba(0, 0, 0, 0.06));
-  color: var(--sn-web-color-text-secondary);
-  border-radius: 50%;
-  font-size: 12px;
+  background: transparent;
+  color: var(--sn-web-color-text-tertiary);
+  border-radius: var(--sn-web-radius-sm, 4px);
   line-height: 1;
   cursor: pointer;
   padding: 0;
+  transition:
+    color 0.15s ease-out,
+    background-color 0.15s ease-out;
 }
 .sn-input__clear-btn:hover {
-  background: var(--sn-web-color-background-overlay, rgba(0, 0, 0, 0.12));
+  background: var(--sn-web-color-background-subtle);
+  color: var(--sn-web-color-text-primary);
+}
+.sn-input__clear-btn:focus-visible {
+  outline: 2px solid var(--sn-web-color-action-primary);
+  outline-offset: 1px;
 }
 
 /* Count */

@@ -1,8 +1,18 @@
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { defineComponent, h } from 'vue';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import SnAvatarGroup from './SnAvatarGroup.vue';
 import SnAvatar from '../avatar/SnAvatar.vue';
+
+/**
+ * Component source — happy-dom never parses scoped `<style>` blocks, so the
+ * tightening ring rule is asserted against the source text instead.
+ */
+const here = dirname(fileURLToPath(import.meta.url));
+const source = readFileSync(resolve(here, './SnAvatarGroup.vue'), 'utf8');
 
 /** Mount SnAvatarGroup through a wrapper component, mirroring real usage. */
 function mountGroup(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
@@ -128,6 +138,40 @@ describe('SnAvatarGroup (AUI-WEB-DD-026)', () => {
       const items = w.findAll('.sn-avatar-group__item');
       expect(items[0].attributes('style')).toBeUndefined();
       expect(items[2].attributes('style')).toContain('scale(0.88)');
+    });
+  });
+
+  describe('tightening ring', () => {
+    /*
+     * Regression guard: the ring used to be painted on the
+     * `span.sn-avatar-group__item` wrapper with `border-radius: 3px`. For
+     * circular avatars that produced straight vertical seams between the
+     * stacked circles (the wrapper box is square while the avatar is round).
+     * The ring must live on the avatar itself so it follows its radius.
+     */
+    it('draws the ring on the avatar so it follows the avatar radius', () => {
+      const rule =
+        /\.sn-avatar-group--tightening \.sn-avatar-group__item\s+:deep\(\.sn-avatar\)\s*\{[^}]*box-shadow/m;
+      expect(rule.test(source)).toBe(true);
+    });
+
+    it('does not ring the square item wrapper', () => {
+      const wrapperRule = /\.sn-avatar-group--tightening \.sn-avatar-group__item\s*\{[^}]*box-shadow/m;
+      expect(wrapperRule.test(source)).toBe(false);
+    });
+
+    it('renders circular image avatars without extra markup between them', () => {
+      const w = mountGroup({}, {
+        default: () => [
+          h(SnAvatar, { key: 'a', circle: true, src: '/a.png', fallbackText: 'A' }),
+          h(SnAvatar, { key: 'b', circle: true, src: '/b.png', fallbackText: 'B' }),
+        ],
+      });
+      const items = w.findAll('.sn-avatar-group__item');
+      expect(items).toHaveLength(2);
+      // Each item wraps exactly one circular avatar — no separator element.
+      expect(items[0].findAll('.sn-avatar--circle')).toHaveLength(1);
+      expect(items[0].find('.sn-avatar__img').exists()).toBe(true);
     });
   });
 });

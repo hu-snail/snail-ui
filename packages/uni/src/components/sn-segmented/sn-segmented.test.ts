@@ -179,6 +179,17 @@ describe('sn-segmented', () => {
       expect(wrapper.find('.sn-segmented__slider').exists()).toBe(false);
     });
 
+    it('marks only the first option with the first-item modifier', () => {
+      /* The no-left-edge outline rule keys off this index-bound class instead
+       * of `:first-child` (§116.2 — App has no structural pseudo-classes). */
+      const wrapper = mount(SnSegmented, { props: { options: OPTIONS, theme: 'outline' } });
+      const items = wrapper.findAll('.sn-segmented__item');
+      expect(items).toHaveLength(3);
+      expect(items[0]!.classes()).toContain('sn-segmented__item--first');
+      expect(items[1]!.classes()).not.toContain('sn-segmented__item--first');
+      expect(items[2]!.classes()).not.toContain('sn-segmented__item--first');
+    });
+
     it('offsets the slider by the active index', () => {
       const wrapper = mount(SnSegmented, { props: { options: OPTIONS, modelValue: 'Week' } });
       expect(wrapper.find('.sn-segmented__slider').attributes('style')).toContain(

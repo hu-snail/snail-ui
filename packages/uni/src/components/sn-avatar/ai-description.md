@@ -30,21 +30,22 @@ import { SnAvatar } from '@snui/uni/components/sn-avatar/sn-avatar.vue';
 
 ## Props
 
-| Name          | Type                  | Default        | Required | Description                                                                          |
-| ------------- | --------------------- | -------------- | -------- | ------------------------------------------------------------------------------------ |
-| `src`         | `string`              | `''`           | no       | Image URL. Failure falls back to `alt` → `text` → `icon`.                            |
-| `text`        | `string`              | `''`           | no       | Initials / short label.                                                              |
-| `icon`        | `string`              | `''`           | no       | Icon name, resolved through `registerSnIcons()`.                                     |
-| `iconPrefix`  | `string`              | `''`           | no       | Iconfont class prefix used when `cssIcon` is on.                                     |
-| `cssIcon`     | `boolean \| string`   | `false`        | no       | Render a font icon instead of an SVG one.                                            |
-| `size`        | `string \| number`    | `'normal'`     | no       | Preset (`large` / `medium` / `normal` / `small`) or a custom length. A number is px. |
-| `shape`       | `'round' \| 'square'` | `'round'`      | no       | Outline.                                                                             |
-| `bgColor`     | `string`              | `''`           | no       | Inline background override.                                                          |
-| `color`       | `string`              | `''`           | no       | Inline text / icon colour override.                                                  |
-| `alt`         | `string`              | `''`           | no       | Placeholder label used when the image fails.                                         |
-| `mode`        | `string`              | `'aspectFill'` | no       | uni-app `<image>` fill mode, forwarded verbatim.                                     |
-| `customClass` | `string`              | `''`           | no       | Extra class on the root node.                                                        |
-| `customStyle` | `string`              | `''`           | no       | Inline style appended to the root node.                                              |
+| Name          | Type                          | Default        | Required | Description                                                                          |
+| ------------- | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------------ |
+| `src`         | `string`                      | `''`           | no       | Image URL. Failure falls back to `alt` → `text` → `icon`.                            |
+| `text`        | `string`                      | `''`           | no       | Initials / short label.                                                              |
+| `icon`        | `string`                      | `''`           | no       | Icon name, resolved through `registerSnIcons()`.                                     |
+| `iconPrefix`  | `string`                      | `''`           | no       | Iconfont class prefix used when `cssIcon` is on.                                     |
+| `cssIcon`     | `boolean \| string`           | `false`        | no       | Render a font icon instead of an SVG one.                                            |
+| `size`        | `string \| number`            | `'normal'`     | no       | Preset (`large` / `medium` / `normal` / `small`) or a custom length. A number is px. |
+| `shape`       | `'round' \| 'square'`         | `'round'`      | no       | Outline.                                                                             |
+| `bgColor`     | `string`                      | `''`           | no       | Inline background override.                                                          |
+| `color`       | `string`                      | `''`           | no       | Inline text / icon colour override.                                                  |
+| `alt`         | `string`                      | `''`           | no       | Placeholder label used when the image fails.                                         |
+| `mode`        | `string`                      | `'aspectFill'` | no       | uni-app `<image>` fill mode, forwarded verbatim.                                     |
+| `status`      | `'online' \| 'offline' \| ''` | `''`           | no       | AUI-additive presence dot (§112.3a); announced through `aria-label`.                 |
+| `customClass` | `string`                      | `''`           | no       | Extra class on the root node.                                                        |
+| `customStyle` | `string`                      | `''`           | no       | Inline style appended to the root node.                                              |
 
 ## Size presets
 
@@ -79,11 +80,27 @@ src (image) → alt (on image error) → text → icon (SVG) → iconfont (cssIc
 The error state is per-`src`: assigning a new `src` resets it, so a recycled
 instance gets a fresh load attempt instead of staying stuck on the fallback.
 
+## Presence status (AUI-additive)
+
+`status: 'online' | 'offline'` paints a presence dot on the bottom-right corner
+(green / grey, ringed with the surface colour). The dot is decorative in the
+DOM; the state is announced by appending it to the root `aria-label` ("AU
+online"). Registered in AGENTS.md §112.3a — wd-avatar has no presence concept.
+
+## Inside sn-avatar-group
+
+When rendered inside `sn-avatar-group`, the group's `size` / `shape` win over
+this component's own props (the reference's "统一设置组内头像尺寸 / 形状"
+contract), and the group hands down the stacking variables the stylesheet
+applies. See `sn-avatar-group/ai-description.md`.
+
 ## Tokens Consumed (end: mp)
 
 | Token             | CSS Variable                          | Purpose                    |
 | ----------------- | ------------------------------------- | -------------------------- |
 | Background subtle | `--sn-mp-color-background-subtle`     | Default placeholder fill   |
+| Feedback success  | `--sn-mp-color-feedback-success`      | Presence dot (`online`)    |
+| Text tertiary     | `--sn-mp-color-text-tertiary`         | Presence dot (`offline`)   |
 | Text secondary    | `--sn-mp-color-text-secondary`        | Default initials colour    |
 | Text primary      | `--sn-mp-color-text-primary`          | Doodle skin outline        |
 | Font size         | `--sn-mp-font-size-{xs,md,lg,xl}`     | Initials, scaled by preset |

@@ -104,6 +104,11 @@ describe('SnScratchcard degraded cover contract', () => {
  *
  * Untestable in happy-dom: actual bitmap pixel output of the canvas —
  * happy-dom paints nothing; we assert the drawing command sequence instead.
+ * Also untestable here: sn-scratchcard.vue 212-214 (initCanvas guard for a
+ * null canvas ref) — the template ref always resolves in happy-dom because
+ * the canvas renders whenever realScratch is true and initCanvas runs only
+ * on mount; the guard exists for native MP hosts whose <canvas> binds no
+ * DOM element.
  */
 describe('SnScratchcard real scratch path', () => {
   interface Call {
@@ -294,6 +299,46 @@ describe('SnScratchcard real scratch path', () => {
     });
     // 图片封面不走颜色兜底。
     expect(calls.some((c) => c.op === 'fillRect')).toBe(false);
+  });
+
+  it('should fall back to the color cover when the context cannot create images', () => {
+    // beforeEach 的 stub.createImage 返回 undefined：宿主没有 createImage 能力。
+    mount(SnScratchcard, { props: { coverImg: 'https://example.com/cover.png' } });
+    expect(calls.some((c) => c.op === 'drawImage')).toBe(false);
+    expect(calls).toContainEqual({ op: 'fillRect', args: [0, 0, 300, 150] });
+  });
+
+  it('should accumulate the scratch radius for a stray move before any start', () => {
+    const wrapper = mount(SnScratchcard);
+    const canvas = wrapper.find('canvas');
+    // A move event with no preceding touchstart: no stroke segment is drawn,
+    // but the distance still counts towards the reveal threshold.
+    canvas.trigger('touchmove', { touches: [{ clientX: 50, clientY: 50 }] });
+    expect(calls.some((c) => c.op === 'moveTo')).toBe(false);
+    expect(calls.some((c) => c.op === 'arc')).toBe(true);
+  });
+});
+
+describe('SnScratchcard host without a canvas 2D factory', () => {
+  beforeEach(() => {
+    // 某些宿主暴露的 canvas 元素不带 getContext（原生组件桥）——模拟该形态。
+    Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+      configurable: true,
+      value: 42,
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('should degrade to tap-to-reveal when getContext is not a function', async () => {
+    const onOpen = vi.fn();
+    const wrapper = mount(SnScratchcard, { props: { onOpen } });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('canvas').exists()).toBe(false);
+    await wrapper.find('.sn-scratchcard__cover').trigger('tap');
+    expect(onOpen).toHaveBeenCalledTimes(1);
   });
 });
 

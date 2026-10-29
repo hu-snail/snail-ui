@@ -195,12 +195,15 @@ const sliderStyle = computed(() => {
       aria-hidden="true"
     />
     <view
-      v-for="option in normalizedOptions"
+      v-for="(option, index) in normalizedOptions"
       :key="String(option.value)"
       class="sn-segmented__item"
       :class="{
         'sn-segmented__item--active': isActive(option),
         'sn-segmented__item--disabled': disabled || option.disabled,
+        /* First-item styling rides this class instead of `:first-child`
+         * (§116.2 — App has no structural pseudo-classes). */
+        'sn-segmented__item--first': index === 0,
       }"
       role="button"
       :aria-pressed="isActive(option)"
@@ -282,7 +285,7 @@ const sliderStyle = computed(() => {
   border-left: 2rpx solid var(--sn-mp-color-border-default);
 }
 
-.sn-segmented--outline .sn-segmented__item:first-child {
+.sn-segmented--outline .sn-segmented__item--first {
   border-left: none;
 }
 

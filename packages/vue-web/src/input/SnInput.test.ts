@@ -14,7 +14,14 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import SnInput from './SnInput.vue';
+
+/** Component source — used for CSS contract assertions (happy-dom skips styles). */
+const here = dirname(fileURLToPath(import.meta.url));
+const inputSource = readFileSync(resolve(here, './SnInput.vue'), 'utf8');
 
 describe('SnInput', () => {
   it('renders a text input by default', () => {
@@ -346,5 +353,45 @@ describe('SnInput', () => {
   it('switches to radius-square', () => {
     const wrapper = mount(SnInput, { props: { radius: 'square' } });
     expect(wrapper.classes()).toContain('sn-input--radius-square');
+  });
+});
+
+describe('SnInput password toggle visuals', () => {
+  /*
+   * Regression guard: the toggle used to paint an opaque chip from
+   * `--sn-web-color-background-elevated` (which resolves to #ffffff), so the
+   * eye read as a white disc stamped on the field, and the glyph was rendered
+   * at 11px. The button must stay transparent and the glyph legible.
+   */
+  it('keeps the toggle button background transparent', () => {
+    const rule = /\.sn-input__password-toggle-btn\s*\{[^}]*background:\s*transparent;/m;
+    expect(rule.test(inputSource)).toBe(true);
+  });
+
+  it('does not paint the toggle with the elevated surface token', () => {
+    const rule = /\.sn-input__password-toggle-btn\s*\{[^}]*background:\s*var\(--sn-web-color-background-elevated/m;
+    expect(rule.test(inputSource)).toBe(false);
+  });
+
+  it('renders the eye glyph at a legible size', () => {
+    const match = /class="sn-input__password-toggle-btn"[\s\S]{0,400}?<SnIcon[^>]*:size="(\d+)"/.exec(
+      inputSource,
+    );
+    expect(match).not.toBeNull();
+    expect(Number(match![1])).toBeGreaterThanOrEqual(14);
+  });
+
+  it('exposes the toggle to assistive tech via a label instead of hiding it', () => {
+    // The wrapper used to carry aria-hidden, which hid the interactive
+    // button from screen readers.
+    const wrapperTag = /<span v-if="showPassword && isPassword" class="sn-input__password-toggle"[^>]*>/;
+    const tag = wrapperTag.exec(inputSource)?.[0] ?? '';
+    expect(tag).not.toBe('');
+    expect(tag).not.toContain('aria-hidden');
+    expect(inputSource).toContain(':aria-label="passwordVisible ?');
+  });
+
+  it('gives the toggle a visible focus ring for keyboard users', () => {
+    expect(inputSource).toContain('.sn-input__password-toggle-btn:focus-visible');
   });
 });

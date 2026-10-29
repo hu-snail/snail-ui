@@ -7,7 +7,8 @@
  */
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
-import { registerSnIcons, type IconData } from '@snui/uni';
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
+import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 
 // Override the built-in `star`: registry wins over the catalog.
 const BrandStar: IconData = {

@@ -35,6 +35,15 @@ step, down to 0.7). `size` only styles the `+k` summary avatar.
 
 <Demo name="avatar-group-web-shrink" description="tightening vs shrink + summary avatar size." />
 
+### Image avatars
+
+Any `SnAvatar` in the slot can take `src` to render an image avatar. In the
+overlapping stack the outline is drawn on the avatar itself (following its own
+radius), so stacked circles show no straight vertical seam; a failed image
+falls back to `fallbackText`.
+
+<Demo name="avatar-group-web-image" description="Image avatars — circular stack / shrink / overflow cap." />
+
 ## API
 
 ### Props

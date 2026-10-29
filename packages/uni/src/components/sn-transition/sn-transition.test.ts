@@ -212,6 +212,35 @@ describe('sn-transition', () => {
     expect(wrapper.classes()).not.toContain('sn-transition--entering');
   });
 
+  it('binds the idle modifier exactly while neither leg runs', async () => {
+    /* At-rest styling keys off this class instead of
+     * `:not(--entering):not(--leaving)` (§116.2 — App has no pseudo-classes). */
+    vi.useFakeTimers();
+    const wrapper = mount(SnTransition, {
+      props: { show: false, destroy: false, duration: 100 },
+    });
+    expect(wrapper.classes()).toContain('sn-transition--idle');
+
+    await wrapper.setProps({ show: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.classes()).toContain('sn-transition--entering');
+    expect(wrapper.classes()).not.toContain('sn-transition--idle');
+
+    vi.advanceTimersByTime(100);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.classes()).toContain('sn-transition--idle');
+    expect(wrapper.classes()).not.toContain('sn-transition--entering');
+
+    await wrapper.setProps({ show: false });
+    expect(wrapper.classes()).toContain('sn-transition--leaving');
+    expect(wrapper.classes()).not.toContain('sn-transition--idle');
+
+    vi.advanceTimersByTime(100);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.classes()).toContain('sn-transition--idle');
+    expect(wrapper.classes()).not.toContain('sn-transition--leaving');
+  });
+
   it('defers rendering with lazyRender even when destroy is off', async () => {
     const wrapper = mount(SnTransition, {
       props: { show: false, lazyRender: true, destroy: false },

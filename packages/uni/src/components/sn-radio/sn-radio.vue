@@ -174,6 +174,13 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
       <view
         v-if="effectivePlacement === 'left'"
         class="sn-radio__marker"
+        :class="{
+          /* Filled-plate marker — lets the doodle skin override the checked
+           * colors with a 2-level rule (§116.2: a 3-level
+           * `.skin .radio--checked .marker` selector is unrepresentable on
+           * App). */
+          'sn-radio__marker--checked': isChecked,
+        }"
         :style="markerStyle"
         aria-hidden="true"
       >
@@ -187,6 +194,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
       <view
         v-if="effectivePlacement === 'right'"
         class="sn-radio__marker"
+        :class="{ 'sn-radio__marker--checked': isChecked }"
         :style="markerStyle"
         aria-hidden="true"
       >
@@ -252,7 +260,10 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   line-height: 1;
 }
 
-.sn-radio--checked .sn-radio__marker {
+/* Checked plate — lives on the marker's own modifier class so the doodle
+ * skin override below stays a 2-level rule (§116.2 — App cannot express a
+ * 3-level descendant selector). */
+.sn-radio__marker--checked {
   border-color: var(--sn-mp-color-action-primary);
   background-color: var(--sn-mp-color-action-primary);
 }
@@ -316,7 +327,7 @@ const wrapperStyle = computed(() => props.customStyle || undefined);
   border-color: var(--sn-mp-color-text-primary);
   box-shadow: 2rpx 2rpx 0 var(--sn-mp-color-text-primary);
 }
-.snui-skin-doodle .sn-radio--checked .sn-radio__marker {
+.snui-skin-doodle .sn-radio__marker--checked {
   background-color: var(--sn-mp-color-text-primary);
   border-color: var(--sn-mp-color-text-primary);
 }

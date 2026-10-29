@@ -26,6 +26,18 @@ Checkbox built on a native `input[type=checkbox]` (tri-state aria-checked), usab
 
 <Demo name="checkbox-web-values" description="Non-boolean mapping: 'on' / 'off', 1 / 0." />
 
+## Custom slots (`indicator` / `icon` / default)
+
+Three slots cover different granularities: `indicator` replaces the whole box
+(tag / card styles), `icon` keeps the box and swaps only the tick glyph, and the
+default slot renders rich label content. All three are scoped with the current
+state.
+
+Selecting and clearing are animated: the tick scales in on a spring curve while
+the box fill spreads a soft halo ring (drawn with `box-shadow`, so it never
+affects layout size). Animations are disabled under `prefers-reduced-motion`.
+
+<Demo name="checkbox-web-custom" description="indicator tag / card styles + custom tick via icon slot + default slot scope." />
 ## API
 
 ### SnCheckbox Props

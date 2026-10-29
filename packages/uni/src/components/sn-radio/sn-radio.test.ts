@@ -252,6 +252,23 @@ describe('sn-radio', () => {
       const wrapper = mountGroup({ modelValue: 'a' }, [{ value: 'a', label: 'A' }]);
       expect(wrapper.findComponent(SnRadio).find('.sn-radio__dot').exists()).toBe(true);
     });
+
+    it('binds the filled-plate modifier on the checked option marker only', () => {
+      /* The checked plate (and the doodle-skin override of it) keys off this
+       * marker-level class instead of a 3-level `.skin .checked .marker`
+       * descendant selector (§116.2 — App cannot express those). */
+      const wrapper = mountGroup(
+        { modelValue: 'a' },
+        [
+          { value: 'a', label: 'A' },
+          { value: 'b', label: 'B' },
+        ],
+      );
+      const markers = wrapper.findAll('.sn-radio__marker');
+      expect(markers).toHaveLength(2);
+      expect(markers[0]!.classes()).toContain('sn-radio__marker--checked');
+      expect(markers[1]!.classes()).not.toContain('sn-radio__marker--checked');
+    });
   });
 
   describe('blocked states', () => {

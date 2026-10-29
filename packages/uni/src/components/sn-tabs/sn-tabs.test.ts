@@ -132,6 +132,20 @@ describe('sn-tabs', () => {
       expect(wrapper.find('.sn-tabs').classes()).toContain('sn-tabs--scrollable');
     });
 
+    it('binds the fixed modifier only while the strip is not scrollable', async () => {
+      /* Equal-width items key off this class instead of
+       * `:not(.sn-tabs--scrollable)` (§116.2 — App has no pseudo-classes). */
+      const fixed = mountTabs({}, 2);
+      await fixed.vm.$nextTick();
+      expect(fixed.find('.sn-tabs').classes()).toContain('sn-tabs--fixed');
+      expect(fixed.find('.sn-tabs').classes()).not.toContain('sn-tabs--scrollable');
+
+      const scrollable = mountTabs({ slidable: 'always' }, 2);
+      await scrollable.vm.$nextTick();
+      expect(scrollable.find('.sn-tabs').classes()).toContain('sn-tabs--scrollable');
+      expect(scrollable.find('.sn-tabs').classes()).not.toContain('sn-tabs--fixed');
+    });
+
     it('forwards customClass and customStyle', () => {
       const wrapper = mountTabs({ customClass: 'my-tabs', customStyle: 'margin: 8px;' });
       expect(wrapper.find('.sn-tabs').classes()).toContain('my-tabs');

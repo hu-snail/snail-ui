@@ -12,9 +12,18 @@
  * Per CONTRIBUTING §3, assertions avoid `rpx` lengths: happy-dom drops CSS
  * lengths it cannot parse, so the component's own geometry is asserted through
  * classes / attributes and the canvas paint through the recorded context calls.
+ *
+ * Untestable in happy-dom (component): none — sn-qr-code.vue is at 100% lines
+ * (the DOM canvas fallback is exercised through a `HTMLCanvasElement.getContext`
+ * stub; the uni context through a `globalThis.uni` stub).
+ * Untestable via the public API (sn-qr-core): lines 193-194 (`appendBits`
+ * RangeError guard) and 391 (`getMask` default throw) — both are internal
+ * defensive branches reachable only with arguments the encoder never produces
+ * (bit lengths outside 0-31, mask values outside 0-7). Exporting them purely
+ * for coverage would widen the module's API for no behavioural gain.
  */
 
-import { afterEach, describe, it, expect, vi } from 'vitest';
+import { afterEach, describe, it, expect, vi, type MockInstance } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SnQrCode from './sn-qr-code.vue';
 import { encode, pickSegmentMode, type SnQrEncoded } from './sn-qr-core';
@@ -75,12 +84,22 @@ interface RecordedCall {
   fillStyle: unknown;
 }
 
+/** Recorded gradient creation: geometry + the stops added to it. */
+interface RecordedGradient {
+  args: unknown[];
+  stops: Array<{ offset: number; color: string }>;
+  /** The exact object handed to the canvas as `fillStyle`. */
+  handle: { addColorStop: (offset: number, color: string) => void };
+}
+
 /** A fake canvas context that records every draw call. */
 function createRecordingContext(): {
   context: Record<string, unknown>;
   calls: RecordedCall[];
+  gradients: RecordedGradient[];
 } {
   const calls: RecordedCall[] = [];
+  const gradients: RecordedGradient[] = [];
   const state: { fillStyle: unknown } = { fillStyle: '' };
   const record =
     (method: string) =>
@@ -93,7 +112,17 @@ function createRecordingContext(): {
     arc: record('arc'),
     fill: record('fill'),
     draw: record('draw'),
-    createLinearGradient: () => ({ addColorStop: () => undefined }),
+    roundRect: record('roundRect'),
+    createLinearGradient: (...args: unknown[]) => {
+      const stops: Array<{ offset: number; color: string }> = [];
+      const handle = {
+        addColorStop: (offset: number, color: string) => {
+          stops.push({ offset, color });
+        },
+      };
+      gradients.push({ args, stops, handle });
+      return handle;
+    },
   };
   Object.defineProperty(context, 'fillStyle', {
     get: () => state.fillStyle,
@@ -101,7 +130,7 @@ function createRecordingContext(): {
       state.fillStyle = value;
     },
   });
-  return { context, calls };
+  return { context, calls, gradients };
 }
 
 /** Install a `globalThis.uni` stub with a canvas context; returns cleanup. */
@@ -115,6 +144,7 @@ function installUni(overrides: Record<string, unknown> = {}) {
   };
   return {
     calls: recorder.calls,
+    gradients: recorder.gradients,
     restore() {
       if (previous === undefined) delete host.uni;
       else host.uni = previous;
@@ -126,7 +156,16 @@ afterEach(() => {
   const host = globalThis as { uni?: unknown };
   delete host.uni;
   vi.useRealTimers();
+  vi.restoreAllMocks();
 });
+
+/**
+ * Stub the DOM canvas factory happy-dom exposes (its real one returns `null`)
+ * so the H5 fallback paint path can be observed; returns the spy.
+ */
+function stubDomCanvasGetContext(context: unknown): MockInstance<() => unknown> {
+  return vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => context);
+}
 
 describe('sn-qr-core', () => {
   it('should encode the same payload into an identical matrix', () => {
@@ -454,6 +493,203 @@ describe('sn-qr-code', () => {
       const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
       const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> };
       await expect(exposed.exportImage()).rejects.toMatchObject({ code: 'EXPORT_FAILED' });
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should reject exportImage when the platform returns no temp file path', async () => {
+    const uni = installUni({
+      canvasToTempFilePath: (options: { success: (r: object) => void }) => {
+        options.success({});
+      },
+    });
+    try {
+      const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+      const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> };
+      await expect(exposed.exportImage()).rejects.toMatchObject({
+        code: 'EXPORT_FAILED',
+        message: 'canvasToTempFilePath returned no tempFilePath',
+      });
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should reject exportImage when the platform call throws synchronously', async () => {
+    const uni = installUni({
+      canvasToTempFilePath: () => {
+        throw new Error('bridge exploded');
+      },
+    });
+    try {
+      const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+      const exposed = wrapper.vm as unknown as { exportImage: () => Promise<string> };
+      await expect(exposed.exportImage()).rejects.toMatchObject({
+        code: 'EXPORT_FAILED',
+        message: 'canvasToTempFilePath threw',
+        cause: new Error('bridge exploded'),
+      });
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should emit error and still paint via the DOM canvas when the uni context throws', () => {
+    const domContext = createRecordingContext();
+    const spy = stubDomCanvasGetContext(domContext.context);
+    const uni = installUni({
+      createCanvasContext: () => {
+        throw new Error('native canvas gone');
+      },
+    });
+    try {
+      const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+      expect(wrapper.emitted('error')).toHaveLength(1);
+      // The H5 fallback took over and painted the code.
+      expect(domContext.calls.filter((call) => call.method === 'fillRect').length).toBeGreaterThan(1);
+      expect(spy).toHaveBeenCalledWith('2d');
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should paint through the DOM canvas on a browser-only host', () => {
+    const domContext = createRecordingContext();
+    stubDomCanvasGetContext(domContext.context);
+    const wrapper = mount(SnQrCode, { props: { text: 'AUI', size: 200 } });
+    const fillRects = domContext.calls.filter((call) => call.method === 'fillRect');
+    // Quiet-zone plate + dark modules, and the canvas backing store was sized.
+    expect(fillRects.length).toBeGreaterThan(1);
+    expect(fillRects[0]?.fillStyle).toBe('white');
+    expect((wrapper.find('canvas').element as HTMLCanvasElement).width).toBe(200);
+  });
+
+  it('should emit error when the DOM canvas context cannot be acquired', () => {
+    stubDomCanvasGetContext(null);
+    const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+    // Rendering never throws — the code simply stays unpainted.
+    expect(wrapper.find('canvas').exists()).toBe(true);
+    expect(wrapper.emitted('error')).toBeUndefined();
+  });
+
+  it('should emit error when the DOM canvas context acquisition throws', () => {
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => {
+      throw new Error('getContext failed');
+    });
+    const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+    expect(wrapper.emitted('error')).toHaveLength(1);
+    expect(wrapper.find('.sn-qr-code__error').exists()).toBe(false);
+  });
+
+  it('should clear the deferred paint retry when unmounted before it fires', () => {
+    vi.useFakeTimers();
+    // No uni host, DOM canvas without a context → the mount-time paint fails
+    // and the component schedules exactly one deferred retry.
+    const spy = stubDomCanvasGetContext(null);
+    const wrapper = mount(SnQrCode, { props: { text: 'AUI' } });
+    expect(spy).toHaveBeenCalledTimes(1);
+    wrapper.unmount();
+    vi.runAllTimers();
+    // The retry was cleared on unmount — no second acquisition attempt.
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should paint dark modules with a linear gradient when enableGradient is on', () => {
+    const uni = installUni();
+    try {
+      mount(SnQrCode, { props: { text: 'AUI', size: 100, enableGradient: true, gradientColor: 'teal' } });
+      const [gradient] = uni.gradients;
+      expect(gradient).toBeDefined();
+      // Default diagonal direction spans the whole canvas corner to corner.
+      expect(gradient?.args).toEqual([0, 0, 100, 100]);
+      expect(gradient?.stops).toEqual([
+        { offset: 0, color: 'black' },
+        { offset: 1, color: 'teal' },
+      ]);
+      // Module fills used the gradient object, not a flat color.
+      const moduleFill = uni.calls.filter((call) => call.method === 'fillRect')[1];
+      expect(moduleFill?.fillStyle).toBe(uni.gradients[0]?.handle);
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should prefer a multi-stop gradientColors list over gradientColor', () => {
+    const uni = installUni();
+    try {
+      mount(SnQrCode, {
+        props: {
+          text: 'AUI',
+          enableGradient: true,
+          gradientColors: ['red', '', 'blue'],
+          gradientColor: 'teal',
+          colorDark: 'navy',
+        },
+      });
+      // Empty entries are dropped; the remaining two stops split 0 / 1.
+      expect(uni.gradients[0]?.stops).toEqual([
+        { offset: 0, color: 'red' },
+        { offset: 1, color: 'blue' },
+      ]);
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should map gradientDirection number and axis keywords to gradient geometry', () => {
+    const mountWith = (direction: number | 'horizontal' | 'vertical') => {
+      const uni = installUni();
+      try {
+        mount(SnQrCode, {
+          props: { text: 'AUI', size: 100, enableGradient: true, gradientDirection: direction },
+        });
+        return uni.gradients[0]?.args;
+      } finally {
+        uni.restore();
+      }
+    };
+    // 0°: cos = 1, sin = 0 → horizontal axis through the canvas centre.
+    expect(mountWith(0)).toEqual([0, 50, 100, 50]);
+    expect(mountWith('horizontal')).toEqual([0, 0, 100, 0]);
+    expect(mountWith('vertical')).toEqual([0, 0, 0, 100]);
+  });
+
+  it('should fall back to square fills for dots when the canvas has no arc support', () => {
+    const minimal = createRecordingContext();
+    delete minimal.context.beginPath;
+    delete minimal.context.arc;
+    delete minimal.context.fill;
+    const uni = installUni({ createCanvasContext: () => minimal.context });
+    try {
+      mount(SnQrCode, { props: { text: 'AUI', dotType: 'dots' } });
+      expect(minimal.calls.some((call) => call.method === 'arc')).toBe(false);
+      // Every dark module degrades to a square fillRect.
+      expect(minimal.calls.filter((call) => call.method === 'fillRect').length).toBeGreaterThan(1);
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should paint rounded modules with roundRect when the canvas supports it', () => {
+    const uni = installUni();
+    try {
+      mount(SnQrCode, { props: { text: 'AUI', dotType: 'rounded' } });
+      expect(uni.calls.some((call) => call.method === 'roundRect')).toBe(true);
+      expect(uni.calls.some((call) => call.method === 'arc')).toBe(false);
+    } finally {
+      uni.restore();
+    }
+  });
+
+  it('should degrade rounded modules to circles when roundRect is missing', () => {
+    const noRoundRect = createRecordingContext();
+    delete noRoundRect.context.roundRect;
+    const uni = installUni({ createCanvasContext: () => noRoundRect.context });
+    try {
+      mount(SnQrCode, { props: { text: 'AUI', dotType: 'rounded' } });
+      expect(noRoundRect.calls.some((call) => call.method === 'roundRect')).toBe(false);
+      expect(noRoundRect.calls.some((call) => call.method === 'arc')).toBe(true);
     } finally {
       uni.restore();
     }

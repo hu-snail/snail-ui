@@ -27,7 +27,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '头像',
         titleEn: 'Avatar',
         desc: '圆形 / 方形头像与徽标组合',
-        count: 4,
+        count: 6,
       },
       {
         key: 'badge',
@@ -739,7 +739,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '轮播',
         titleEn: 'Swiper',
         desc: '内容轮播',
-        count: 9,
+        count: 10,
       },
       {
         key: 'table',

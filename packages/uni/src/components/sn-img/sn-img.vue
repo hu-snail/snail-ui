@@ -14,10 +14,15 @@
  *
  * ## Preview
  *
- * `enablePreview` calls `uni.previewImage` — the cross-end preview API every
- * uni target ships. It is looked up through a guarded `globalThis` access so
- * the component still renders (and tests still pass) where `uni` is absent;
- * when it is missing the tap falls back to emitting `click` only.
+ * `enablePreview` opens `uni.previewImage` — the cross-end preview API every
+ * uni target ships. The call site is a **static** `uni.previewImage(...)`
+ * invocation: the uni-app production build tree-shakes the API surface down to
+ * what it can see statically, and the previous dynamic
+ * `globalThis.uni?.previewImage` lookup was invisible to that analysis — built
+ * H5 output lost the API, so taps silently did nothing (AGENTS.md §85: a silent
+ * behaviour change is worse than an explicit fallback). The `globalThis.uni`
+ * probe stays as the test-host fallback, where the global identifier cannot
+ * exist. When no preview API is reachable the tap still emits `click`.
  *
  * ## Dispose (AGENTS.md §41)
  *
@@ -164,16 +169,34 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
-/** Preview API, resolved lazily through the global uni namespace. */
+/**
+ * Open the fullscreen preview for `previewSrc || src`.
+ *
+ * The `uni.previewImage` call is written **statically** on purpose: the
+ * uni-app production build only bundles the APIs its static analysis can see
+ * (see the file header). Reaching the API through a variable — as this used to
+ * — made the built H5 bundle drop `previewImage` entirely, so the tap had
+ * nothing to call.
+ *
+ * Resolution order:
+ *   1. the injected `uni` global (real uni target); `typeof` keeps hosts that
+ *      strip the global from throwing a ReferenceError,
+ *   2. `globalThis.uni` (test hosts, where the bare identifier cannot exist).
+ * A host that exposes neither simply emits `click` — the tap is never silent
+ * about being unsupported, but it also never throws.
+ */
 function openPreview(): void {
   const preview = props.previewSrc !== '' ? props.previewSrc : props.src;
   if (!preview) return;
+  if (typeof uni !== 'undefined' && typeof uni.previewImage === 'function') {
+    uni.previewImage({ urls: [preview], current: preview });
+    return;
+  }
   const host = globalThis as {
-    uni?: { previewImage?: (options: { urls: string[]; current: string }) => void };
+    uni?: { previewImage?: (options: { urls: string[]; current?: string }) => unknown };
   };
   const previewImage = host.uni?.previewImage;
-  if (typeof previewImage !== 'function') return;
-  previewImage({ urls: [preview], current: preview });
+  if (typeof previewImage === 'function') previewImage({ urls: [preview], current: preview });
 }
 
 function onTap(event: Event): void {

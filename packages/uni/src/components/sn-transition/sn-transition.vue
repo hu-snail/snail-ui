@@ -231,6 +231,10 @@ const rootClass = computed(() => [
   {
     'sn-transition--entering': phase.value === 'enter',
     'sn-transition--leaving': phase.value === 'leave',
+    /* At-rest styling rides this class instead of
+     * `:not(--entering):not(--leaving)` (§116.2 — App has no pseudo-classes);
+     * `phase === 'none'` is exactly "neither leg active". */
+    'sn-transition--idle': phase.value === 'none',
     'sn-transition--hidden': !isShown.value && phase.value === 'none',
     [props.enterClass]: phase.value === 'enter' && props.enterClass !== '',
     [props.enterActiveClass]: phase.value === 'enter' && props.enterActiveClass !== '',
@@ -329,8 +333,9 @@ function onTouchMove(event: Event): void {
   animation-direction: reverse;
 }
 
-/* At rest: no animation, just the final style. */
-.sn-transition:not(.sn-transition--entering):not(.sn-transition--leaving) {
+/* At rest: no animation, just the final style. Placed after the named
+ * animation rules so it wins by source order at equal specificity. */
+.sn-transition--idle {
   animation-name: none;
 }
 

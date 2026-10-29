@@ -49,6 +49,10 @@ None (the expand callback arrives through `maxOptions.onExpand`).
   into child n-avatars, which would require modifying SnAvatar).
 - Each avatar is wrapped in a `span.sn-avatar-group__item` for layout;
   target `.sn-avatar` inside it for custom styling.
+- In the `tightening` stack the separating ring is drawn on the avatar
+  itself (`:deep(.sn-avatar)`), not on the wrapper, so it follows that
+  avatar's own radius — circular avatars get a circular ring instead of
+  the straight vertical seams a square wrapper ring produced.
 - No config-provider / RTL integration (web-end v3 has no provider yet).
 
 ## Accessibility

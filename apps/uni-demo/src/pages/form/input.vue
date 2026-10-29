@@ -132,7 +132,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('status', 'Status') }}</text>
+          <text class="module__title">{{ t('状态', 'Status') }}</text>
         </view>
         <view class="module__body">
           <Demo13 />
