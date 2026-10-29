@@ -98,7 +98,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '图标',
         titleEn: 'Icon',
         desc: 'SVG 数据 / iconfont 双路径图标',
-        count: 6,
+        count: 9,
       },
       {
         key: 'layout',
@@ -314,6 +314,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         count: 4,
       },
       {
+        key: 'captcha',
+        group: 'form',
+        title: '拼图验证',
+        titleEn: 'Captcha',
+        desc: '拖动拼图对齐缺口',
+        count: 2,
+      },
+      {
         key: 'cascader',
         group: 'form',
         title: '级联选择器',
@@ -525,7 +533,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '幕帘',
         titleEn: 'Curtain',
         desc: '运营弹幕层',
-        count: 4,
+        count: 5,
       },
       {
         key: 'dialog',
@@ -668,6 +676,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         titleEn: 'Count To',
         desc: '数字滚动动画',
         count: 3,
+      },
+      {
+        key: 'fit-swiper',
+        group: 'display',
+        title: '自适应轮播',
+        titleEn: 'Fit Swiper',
+        desc: '贴合内容高度的金刚区轮播',
+        count: 1,
       },
       {
         key: 'image-preview',

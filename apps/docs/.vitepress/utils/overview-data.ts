@@ -92,6 +92,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-sort-button', title: '排序按钮', desc: '升降序切换按钮' },
       { name: 'sn-signature', title: '签名', desc: '手写签名板' },
       { name: 'sn-slide-verify', title: '滑动验证', desc: '滑块拼图验证' },
+      { name: 'sn-captcha', title: '拼图验证', desc: '拖动拼图对齐缺口' },
     ],
   },
   {
@@ -123,6 +124,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-card', title: '卡片', desc: '内容卡片容器' },
       { name: 'sn-img', title: '图片', desc: '增强图片，多填充模式' },
       { name: 'sn-swiper', title: '轮播', desc: '内容轮播' },
+      { name: 'sn-fit-swiper', title: '自适应轮播', desc: '贴合内容高度的金刚区轮播' },
       { name: 'sn-count-down', title: '倒计时', desc: '秒 / 时间戳倒计时' },
       { name: 'sn-count-to', title: '数字滚动', desc: '数字滚动动画' },
       { name: 'sn-watermark', title: '水印', desc: '页面水印层' },

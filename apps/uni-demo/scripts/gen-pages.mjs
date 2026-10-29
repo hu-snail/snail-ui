@@ -76,6 +76,7 @@ const SCENARIO_LABELS = {
   threshold: '阈值',
   visibility: '可见性',
   hover: '悬停',
+  'image-tap': '点图片关闭',
 };
 
 const SCENARIO_LABELS_EN = {

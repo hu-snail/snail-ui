@@ -45,6 +45,7 @@ page {
   --sn-mp-color-background-overlay: var(--aui-color-background-overlay);
   --sn-mp-color-background-soft: var(--aui-color-background-subtle);
   --sn-mp-color-background-sunken: var(--aui-color-background-sunken);
+  --sn-mp-color-background-inverse: var(--aui-color-background-inverse);
   --sn-mp-color-border-default: var(--aui-color-border-default);
   --sn-mp-color-border-subtle: var(--aui-color-border-subtle);
   --sn-mp-color-action-primary: var(--aui-color-action-primary);

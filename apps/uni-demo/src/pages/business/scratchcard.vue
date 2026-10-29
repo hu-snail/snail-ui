@@ -1,6 +1,9 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— scratchcard 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/scratchcard-mp.vue';
+import Demo1 from './demos/scratchcard-mp-basic.vue';
+import Demo2 from './demos/scratchcard-mp-states.vue';
+import Demo3 from './demos/scratchcard-mp-variants.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -17,6 +20,30 @@ const { t } = useDemoUi();
         </view>
         <view class="module__body">
           <Demo0 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('基础用法', 'Basic usage') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo1 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('状态', 'State') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('variants', 'Variants') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>

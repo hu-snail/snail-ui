@@ -4,6 +4,7 @@ import Demo0 from './demos/curtain-mp-basic.vue';
 import Demo1 from './demos/curtain-mp-behavior.vue';
 import Demo2 from './demos/curtain-mp-close-position.vue';
 import Demo3 from './demos/curtain-mp-custom.vue';
+import Demo4 from './demos/curtain-mp-image-tap.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -44,6 +45,14 @@ const { t } = useDemoUi();
         </view>
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('点图片关闭', 'Image Tap') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>
