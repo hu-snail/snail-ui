@@ -6,7 +6,7 @@ import Demo2 from './demos/button-mp-cell.vue';
 import Demo3 from './demos/button-mp-custom.vue';
 import Demo4 from './demos/button-mp-form-type.vue';
 import Demo5 from './demos/button-mp-hover.vue';
-import Demo6 from './demos/button-mp-iconfont.vue';
+import Demo6 from './demos/button-mp-icon-button.vue';
 import Demo7 from './demos/button-mp-loading-props.vue';
 import Demo8 from './demos/button-mp-mp-open-type.vue';
 import Demo9 from './demos/button-mp-open-type.vue';
@@ -74,7 +74,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('字体图标', 'Iconfont') }}</text>
+          <text class="module__title">{{ t('图标按钮', 'Icon Button') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />
