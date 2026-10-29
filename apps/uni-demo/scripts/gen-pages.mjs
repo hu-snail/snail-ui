@@ -81,6 +81,7 @@ const SCENARIO_LABELS = {
   lunar: '农历',
   range: '日期范围',
   formatter: '自定义文案',
+  nav: '导航按钮',
 };
 
 const SCENARIO_LABELS_EN = {
@@ -131,6 +132,7 @@ const SCENARIO_LABELS_EN = {
   lunar: 'Lunar',
   range: 'Date range',
   formatter: 'Custom text',
+  nav: 'Navigation',
 };
 
 function scenarioLabel(scenario) {

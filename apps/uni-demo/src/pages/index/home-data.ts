@@ -343,7 +343,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '日期条',
         titleEn: 'Date Strip',
         desc: '横向日期快速选择条',
-        count: 4,
+        count: 6,
       },
       {
         key: 'datetime-picker',

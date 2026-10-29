@@ -1026,6 +1026,16 @@
           "hasEn": false
         },
         {
+          "name": "date-strip-mp-lunar",
+          "title": "农历",
+          "hasEn": false
+        },
+        {
+          "name": "date-strip-mp-nav",
+          "title": "导航按钮",
+          "hasEn": false
+        },
+        {
           "name": "date-strip-mp-range",
           "title": "日期范围",
           "hasEn": false

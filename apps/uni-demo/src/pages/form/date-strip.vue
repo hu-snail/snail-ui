@@ -3,7 +3,9 @@
 import Demo0 from './demos/date-strip-mp-basic.vue';
 import Demo1 from './demos/date-strip-mp-custom-style.vue';
 import Demo2 from './demos/date-strip-mp-formatter.vue';
-import Demo3 from './demos/date-strip-mp-range.vue';
+import Demo3 from './demos/date-strip-mp-lunar.vue';
+import Demo4 from './demos/date-strip-mp-nav.vue';
+import Demo5 from './demos/date-strip-mp-range.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -40,10 +42,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('日期范围', 'Date range') }}</text>
+          <text class="module__title">{{ t('农历', 'Lunar') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('导航按钮', 'Navigation') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('日期范围', 'Date range') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>
