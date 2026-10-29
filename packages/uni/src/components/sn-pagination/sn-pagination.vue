@@ -66,6 +66,10 @@ const props = withDefaults(
     buttonVariant?: 'base' | 'plain' | 'dashed' | 'text';
     /** 总页数只有一页时是否隐藏。 */
     hideIfOnePage?: boolean;
+    /** 是否整体禁用。 */
+    disabled?: boolean;
+    /** 简单模式：只展示 prev / 当前页 / next，不渲染页码条。 */
+    simple?: boolean;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
@@ -84,6 +88,8 @@ const props = withDefaults(
     hideIfOnePage: false,
     customClass: '',
     customStyle: '',
+    disabled: false,
+    simple: false,
   },
 );
 
@@ -160,6 +166,7 @@ const slotScope = computed<PaginationSlotScope>(() => ({
 
 /** Commit a page. Out-of-range targets are ignored, not clamped. */
 function goTo(page: number): void {
+  if (props.disabled) return;
   if (page < 1 || page > totalPageNum.value) return;
   if (page === currentPage.value) return;
   innerValue.value = page;
@@ -173,6 +180,7 @@ const canNext = computed(() => currentPage.value < totalPageNum.value);
 const rootClass = computed(() => [
   'sn-pagination',
   `sn-pagination--${props.buttonVariant}`,
+  { 'sn-pagination--disabled': props.disabled },
   props.customClass,
 ]);
 
@@ -185,17 +193,18 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
     data-snui-component="pagination"
     :class="rootClass"
     :style="customStyle || undefined"
+    :aria-disabled="props.disabled || undefined"
     role="navigation"
     aria-label="Pagination"
   >
     <view class="sn-pagination__nav">
       <view
         class="sn-pagination__button sn-pagination__prev"
-        :class="{ 'sn-pagination__button--disabled': !canPrev }"
+        :class="{ 'sn-pagination__button--disabled': !canPrev || props.disabled }"
         role="button"
-        :aria-disabled="!canPrev"
+        :aria-disabled="!canPrev || props.disabled"
         :aria-label="prevText || 'Previous page'"
-        :hover-class="canPrev ? 'sn-pagination__button--pressed' : 'none'"
+        :hover-class="canPrev && !props.disabled ? 'sn-pagination__button--pressed' : 'none'"
         @tap="goTo(currentPage - 1)"
       >
         <!-- MP 编译器不支持 <slot> 上的 v-bind="obj" 批量传参，显式展开（key 与
@@ -212,7 +221,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
         </slot>
       </view>
 
-      <view class="sn-pagination__pages">
+      <view v-if="!props.simple" class="sn-pagination__pages">
         <slot
           name="size"
           :modelValue="slotScope.modelValue"
@@ -240,13 +249,25 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
         </slot>
       </view>
 
+      <view v-if="props.simple" class="sn-pagination__simple">
+        <slot
+          name="size"
+          :modelValue="slotScope.modelValue"
+          :totalPageNum="slotScope.totalPageNum"
+          :total="slotScope.total"
+          :pageSize="slotScope.pageSize"
+        >
+          <text class="sn-pagination__simple-text">{{ messageText }}</text>
+        </slot>
+      </view>
+
       <view
         class="sn-pagination__button sn-pagination__next"
-        :class="{ 'sn-pagination__button--disabled': !canNext }"
+        :class="{ 'sn-pagination__button--disabled': !canNext || props.disabled }"
         role="button"
-        :aria-disabled="!canNext"
+        :aria-disabled="!canNext || props.disabled"
         :aria-label="nextText || 'Next page'"
-        :hover-class="canNext ? 'sn-pagination__button--pressed' : 'none'"
+        :hover-class="canNext && !props.disabled ? 'sn-pagination__button--pressed' : 'none'"
         @tap="goTo(currentPage + 1)"
       >
         <slot
@@ -303,7 +324,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   min-width: 56rpx;
   height: 56rpx;
   padding: 0 var(--sn-mp-spacing-2);
-  border: 2rpx solid transparent;
+  border: 2rpx solid var(--sn-mp-color-border-default);
   border-radius: var(--sn-mp-radius-sm);
   color: var(--sn-mp-color-action-primary);
   font-size: var(--sn-mp-font-size-sm);
@@ -394,5 +415,33 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
 /* Doodle skin — heavier active page. */
 .snui-skin-doodle .sn-pagination__page--active {
   font-weight: var(--sn-mp-font-weight-bold);
+}
+
+/* Whole-control disabled state (Ant-style 禁用). */
+/* Whole-control disabled state (Ant-style 禁用). */
+.sn-pagination--disabled .sn-pagination__button,
+.sn-pagination--disabled .sn-pagination__page,
+.sn-pagination--disabled .sn-pagination__ellipsis,
+.sn-pagination--disabled .sn-pagination__simple-text {
+  color: var(--sn-mp-color-text-disabled);
+}
+
+.sn-pagination--disabled .sn-pagination__page--active {
+  background-color: var(--sn-mp-color-background-disabled, var(--sn-mp-color-action-primary));
+  color: var(--sn-mp-color-text-disabled);
+}
+
+/* Simple mode — prev / 1 / n / next with no numeric strip. */
+.sn-pagination__simple {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.sn-pagination__simple-text {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-sm);
 }
 </style>

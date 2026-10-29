@@ -17,8 +17,11 @@ const page = ref(3);
       prev-text="上一页"
       next-text="下一页"
     />
-    <SnPagination v-model="page" :total-page="3" button-variant="dashed" />
-    <text class="sn-demo__meta">total=95 / pageSize=10 → 10 页；dashed 风格</text>
+    <text class="sn-demo__label">简单模式（simple）</text>
+    <SnPagination v-model="page" :total-page="8" simple />
+    <text class="sn-demo__label">禁用（disabled）</text>
+    <SnPagination v-model="page" :total-page="8" disabled />
+    <text class="sn-demo__meta">total=95 / pageSize=10 → 10 页；dashed / simple / disabled</text>
   </view>
 </template>
 
@@ -28,6 +31,10 @@ const page = ref(3);
   flex-direction: column;
   gap: 12px;
   width: 100%;
+}
+.sn-demo__label {
+  font-size: 24rpx;
+  color: var(--sn-mp-color-text-secondary);
 }
 .sn-demo__meta {
   font-size: 24rpx;

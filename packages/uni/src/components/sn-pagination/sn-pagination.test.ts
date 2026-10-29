@@ -335,4 +335,47 @@ describe('sn-pagination', () => {
       expect(wrapper.find('.custom-size').exists()).toBe(true);
     });
   });
+
+  describe('disabled state', () => {
+    it('blocks all page taps while disabled', async () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 5, modelValue: 2, disabled: true } });
+      await wrapper.findAll('.sn-pagination__page')[3]!.trigger('tap');
+      await wrapper.find('.sn-pagination__prev').trigger('tap');
+      await wrapper.find('.sn-pagination__next').trigger('tap');
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('marks the root and steppers aria-disabled', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 5, modelValue: 2, disabled: true } });
+      expect(wrapper.attributes('aria-disabled')).toBe('true');
+      expect(wrapper.find('.sn-pagination__prev').attributes('aria-disabled')).toBe('true');
+      expect(wrapper.find('.sn-pagination__next').attributes('aria-disabled')).toBe('true');
+      expect(wrapper.classes()).toContain('sn-pagination--disabled');
+    });
+
+    it('keeps steppers interactive when not disabled', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 5, modelValue: 2 } });
+      expect(wrapper.attributes('aria-disabled')).toBeUndefined();
+    });
+  });
+
+  describe('simple mode', () => {
+    it('renders the 1 / n text instead of the page strip', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 8, modelValue: 3, simple: true } });
+      expect(wrapper.find('.sn-pagination__simple-text').text()).toBe('3 / 8');
+      expect(wrapper.find('.sn-pagination__pages').exists()).toBe(false);
+    });
+
+    it('keeps prev / next working in simple mode', async () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 8, modelValue: 3, simple: true } });
+      await wrapper.find('.sn-pagination__next').trigger('tap');
+      expect(wrapper.emitted('update:modelValue')?.at(-1)).toEqual([4]);
+    });
+
+    it('does not render the simple branch by default', () => {
+      const wrapper = mount(SnPagination, { props: { totalPage: 8, modelValue: 3 } });
+      expect(wrapper.find('.sn-pagination__simple').exists()).toBe(false);
+      expect(wrapper.find('.sn-pagination__pages').exists()).toBe(true);
+    });
+  });
 });
