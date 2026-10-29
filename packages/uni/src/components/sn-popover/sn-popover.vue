@@ -413,7 +413,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
    * `max-content` grows past that cap; `max-width` still bounds long text. */
   width: max-content;
   min-width: 160rpx;
-  max-width: 480rpx;
+  /* Never wider than the viewport: the bubble is centered on the trigger,
+   * so an unclamped width overflows the screen near either edge. */
+  max-width: min(480rpx, calc(100vw - 32rpx));
   box-sizing: border-box;
   border: 2rpx solid var(--sn-mp-color-border-subtle);
   border-radius: var(--sn-mp-radius-md);
@@ -524,9 +526,12 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 .sn-popover--top .sn-popover__pop {
   bottom: 100%;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translateX(calc(-50% + var(--sn-popover-offset-x)));
+  transform: translateX(var(--sn-popover-offset-x));
 }
 .sn-popover--top-start .sn-popover__pop {
   bottom: 100%;
@@ -545,9 +550,12 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 .sn-popover--bottom .sn-popover__pop {
   top: 100%;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: calc(12rpx + var(--sn-popover-offset-y));
-  transform: translateX(calc(-50% + var(--sn-popover-offset-x)));
+  transform: translateX(var(--sn-popover-offset-x));
 }
 .sn-popover--bottom-start .sn-popover__pop {
   top: 100%;

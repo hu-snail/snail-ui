@@ -367,7 +367,9 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
    * the trigger-sized root and `left: 50%` leaves only half of it available.
    * `max-content` grows past that cap; `max-width` still bounds long text. */
   width: max-content;
-  max-width: 480rpx;
+  /* Never wider than the viewport: the bubble is centered on the trigger,
+   * so an unclamped width overflows the screen near either edge. */
+  max-width: min(480rpx, calc(100vw - 32rpx));
   box-sizing: border-box;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-radius: var(--sn-mp-radius-md);
@@ -437,9 +439,12 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--top .sn-tooltip__pop {
   bottom: 100%;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   margin-bottom: calc(12rpx + var(--sn-tooltip-offset-y));
-  transform: translateX(calc(-50% + var(--sn-tooltip-offset-x)));
+  transform: translateX(var(--sn-tooltip-offset-x));
 }
 .sn-tooltip--top-start .sn-tooltip__pop {
   bottom: 100%;
@@ -458,9 +463,12 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--bottom .sn-tooltip__pop {
   top: 100%;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: calc(12rpx + var(--sn-tooltip-offset-y));
-  transform: translateX(calc(-50% + var(--sn-tooltip-offset-x)));
+  transform: translateX(var(--sn-tooltip-offset-x));
 }
 .sn-tooltip--bottom-start .sn-tooltip__pop {
   top: 100%;
