@@ -1,7 +1,9 @@
 <script setup lang="ts">
-/** Demo: sn-datetime-picker — 滚筒几何与列取值：itemHeight / visibleItemCount / 时分秒边界 / formatter / filter。 */
+/** Demo: sn-datetime-picker — 滚筒几何与列取值：itemHeight / visibleItemCount / 时分秒边界 / formatter / filter，sn-cell 行触发。 */
 import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -9,7 +11,7 @@ const max = new Date(2024, 11, 31).getTime();
 const bigRows = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
 const openBig = ref(false);
 
-const hours = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
+const hours = ref<string | number | undefined>(new Date(2024, 5, 15, 12).getTime());
 const openHours = ref(false);
 
 const withSeconds = ref<string | number | undefined>('10:30:00');
@@ -27,23 +29,57 @@ const withUnit = (type: string, value: number) => {
 const evenMonths = (type: string, values: number[]) =>
   type === 'month' ? values.filter((v) => v % 2 === 0) : values;
 
-const bigText = computed(() => {
-  if (bigRows.value === undefined) return '（未选择）';
+const pad = (n: number) => String(n).padStart(2, '0');
+const dateText = computed(() => {
+  if (bigRows.value === undefined) return '';
   const d = new Date(Number(bigRows.value));
-  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+});
+const hoursText = computed(() => {
+  if (hours.value === undefined) return '';
+  const d = new Date(Number(hours.value));
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 });
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">itemHeight + visibleItemCount（行高 44px、可见 6 行）</text>
-    <view class="sn-demo__button" @tap="openBig = true">大行高选择器</view>
-    <text class="sn-demo__meta">已选：{{ bigText }}</text>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup insert>
+      <SnCell
+        title="大行高滚筒"
+        label="itemHeight 44 / 可见 6 行，范围 2024 全年"
+        :value="dateText"
+        is-link
+        @click="openBig = true"
+      />
+      <SnCell
+        title="限定时段"
+        label="minHour 08 / maxHour 18，minMinute 15 / maxMinute 45"
+        :value="hoursText"
+        is-link
+        @click="openHours = true"
+      />
+      <SnCell
+        title="精确到秒"
+        label="useSecond + maxSecond 30"
+        :value="String(withSeconds)"
+        is-link
+        @click="openSeconds = true"
+      />
+      <SnCell
+        title="格式化与过滤"
+        label="列文案加单位；月份只留偶数月"
+        :value="dateText"
+        is-link
+        @click="openFormatted = true"
+      />
+    </SnCellGroup>
+
     <SnDatetimePicker
       v-model="bigRows"
       v-model:visible="openBig"
       type="date"
-      title="日期"
+      title="大行高滚筒"
       :item-height="44"
       :visible-item-count="6"
       :min-date="min"
@@ -51,9 +87,6 @@ const bigText = computed(() => {
       value-key="value"
       label-key="label"
     />
-
-    <text class="sn-demo__title">minHour / maxHour / minMinute / maxMinute（08:15 - 18:45）</text>
-    <view class="sn-demo__button" @tap="openHours = true">限定时段</view>
     <SnDatetimePicker
       v-model="hours"
       v-model:visible="openHours"
@@ -66,10 +99,6 @@ const bigText = computed(() => {
       :min-minute="15"
       :max-minute="45"
     />
-
-    <text class="sn-demo__title">useSecond + minSecond / maxSecond（秒只到 30）</text>
-    <view class="sn-demo__button" @tap="openSeconds = true">精确到秒</view>
-    <text class="sn-demo__meta">已选：{{ withSeconds || '（未选择）' }}</text>
     <SnDatetimePicker
       v-model="withSeconds"
       v-model:visible="openSeconds"
@@ -79,9 +108,6 @@ const bigText = computed(() => {
       :min-second="0"
       :max-second="30"
     />
-
-    <text class="sn-demo__title">formatter + filter（列文案加单位；月份只留偶数月）</text>
-    <view class="sn-demo__button" @tap="openFormatted = true">格式化与过滤</view>
     <SnDatetimePicker
       v-model="formatted"
       v-model:visible="openFormatted"
@@ -94,28 +120,3 @@ const bigText = computed(() => {
     />
   </view>
 </template>
-
-<style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
-}
-</style>

@@ -881,6 +881,11 @@
           "hasEn": true
         },
         {
+          "name": "calendar-mp-lunar",
+          "title": "农历",
+          "hasEn": false
+        },
+        {
           "name": "calendar-mp-panel-sheet",
           "title": "panel-sheet",
           "hasEn": true
@@ -999,6 +1004,34 @@
         }
       ]
     },
+    "date-strip": {
+      "group": "form",
+      "title": "日期条",
+      "desc": "横向日期快速选择条",
+      "page": "pages/form/date-strip",
+      "demos": [
+        {
+          "name": "date-strip-mp-basic",
+          "title": "基础用法",
+          "hasEn": false
+        },
+        {
+          "name": "date-strip-mp-custom-style",
+          "title": "自定义样式",
+          "hasEn": false
+        },
+        {
+          "name": "date-strip-mp-formatter",
+          "title": "自定义文案",
+          "hasEn": false
+        },
+        {
+          "name": "date-strip-mp-range",
+          "title": "日期范围",
+          "hasEn": false
+        }
+      ]
+    },
     "datetime-picker": {
       "group": "form",
       "title": "时间选择器",
@@ -1014,6 +1047,11 @@
           "name": "datetime-picker-mp-columns-bounds",
           "title": "columns-bounds",
           "hasEn": true
+        },
+        {
+          "name": "datetime-picker-mp-lunar",
+          "title": "农历",
+          "hasEn": false
         },
         {
           "name": "datetime-picker-mp-sheet",
@@ -1291,10 +1329,10 @@
       ]
     },
     "picker": {
-      "group": "form",
+      "group": "form-2",
       "title": "选择器",
       "desc": "弹层多列选择",
-      "page": "pages/form/picker",
+      "page": "pages/form-2/picker",
       "demos": [
         {
           "name": "picker-mp-basic",

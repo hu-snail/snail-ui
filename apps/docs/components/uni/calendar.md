@@ -19,6 +19,12 @@ shortcuts 渲染预设 chip（days 相对今天）；type="daterange" 选区间�
 
 <Demo name="calendar-mp-grid-range" description="firstDayOfWeek；formatter 自定义 topInfo / bottomInfo / disabled；maxRange + rangePrompt；allowSameDay；defaultTime。" />
 
+## 农历角标（`showLunar`，AUI 追加）
+
+`show-lunar` 在每个日格下方显示农历日名（初二、十五…），初一显示月名（正月 / 闰六月）；`formatter` 的 `bottomInfo` 优先级更高，可覆盖农历文案。
+
+<Demo name="calendar-mp-lunar" description="show-lunar：格下农历角标，初一显示月名；formatter 可覆盖。" />
+
 ## 面板与弹层（`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / 遮罩层级）
 
 `panelHeight`（px 设计值）与 `showPanelTitle` 控制面板；`switchMode` 出「月 / 年」切换控件；`duration` 调弹层动画时长；`immediateChange` 点格子即写 `v-model`；`showConfirm=false` 只留取消。`closeOnClickModal` / `safeAreaInsetBottom` / `zIndex` / `rootPortal` / `customClass` / `customStyle` 全部转发给 `sn-popup`，`customViewClass` 挂到 `sn-calendar-view` 本体。
@@ -54,6 +60,7 @@ shortcuts 渲染预设 chip（days 相对今天）；type="daterange" 选区间�
 | `customViewClass`                               | `string`                                                   | `''`                      | 面板内部视图类名        |
 | `immediateChange`                               | `boolean`                                                  | `false`                   | 点击即触发 change       |
 | `panelHeight` / `showPanelTitle` / `switchMode` | `number` / `boolean` / `'none' \| 'month' \| 'year-month'` | `316` / `true` / `'none'` | 面板透传                |
+| `showLunar`                                     | `boolean`                                                  | `false`                   | 农历角标——**AUI 追加**（初一显示月名；`formatter` 可覆盖） |
 | `duration`                                      | `number`                                                   | `200`                     | 弹层动画时长（ms）      |
 | `customClass` / `customStyle`                   | `string`                                                   | `''`                      | 根节点自定义类名 / 样式 |
 

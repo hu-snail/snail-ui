@@ -129,6 +129,11 @@ const props = withDefaults(
     customClass?: string;
     /** Inline style on the sheet. */
     customStyle?: string;
+    /**
+     * 农历角标（additive，AGENTS.md §112.3a）：转发给 `sn-calendar-view`，
+     * 格子下方显示农历日名，初一显示月名。`formatter` 可覆盖。
+     */
+    showLunar?: boolean;
   }>(),
   {
     modelValue: null,
@@ -165,6 +170,7 @@ const props = withDefaults(
     showTypeSwitch: true,
     onShortcutsClick: undefined,
     rootPortal: false,
+    showLunar: false,
   },
 );
 
@@ -318,6 +324,7 @@ const viewClass = computed(() => props.customViewClass);
         :panel-height="props.panelHeight"
         :show-panel-title="props.showPanelTitle"
         :switch-mode="props.switchMode"
+        :show-lunar="props.showLunar"
         :immediate-change="props.immediateChange"
         @change="onViewChange"
       />

@@ -68,6 +68,7 @@ const SCENARIO_LABELS = {
   text: '文本',
   placement: '弹出位置',
   badge: '徽标',
+  header: '标题与描述',
   panels: '多列面板',
   sheet: '动作面板',
   fields: '字段',
@@ -77,6 +78,9 @@ const SCENARIO_LABELS = {
   visibility: '可见性',
   hover: '悬停',
   'image-tap': '点图片关闭',
+  lunar: '农历',
+  range: '日期范围',
+  formatter: '自定义文案',
 };
 
 const SCENARIO_LABELS_EN = {
@@ -115,6 +119,7 @@ const SCENARIO_LABELS_EN = {
   text: 'Text',
   placement: 'Placement',
   badge: 'Badge',
+  header: 'Title & description',
   panels: 'Panels',
   sheet: 'Action sheet',
   fields: 'Fields',
@@ -123,6 +128,9 @@ const SCENARIO_LABELS_EN = {
   threshold: 'Threshold',
   visibility: 'Visibility',
   hover: 'Hover',
+  lunar: 'Lunar',
+  range: 'Date range',
+  formatter: 'Custom text',
 };
 
 function scenarioLabel(scenario) {

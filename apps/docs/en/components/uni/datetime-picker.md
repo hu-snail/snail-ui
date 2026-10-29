@@ -8,6 +8,12 @@ Sheet picker: rolling only updates the draft and `v-model` is written on confirm
 
 <Demo name="datetime-picker-mp-basic" description="Sheet picker: rolling only updates the draft and `v-model` is written on confirm." />
 
+## Lunar roller (`lunar`, AUI-added)
+
+With `lunar` the year / month / date columns switch to lunar labels: stem-branch years (甲辰年…), months 正月…腊月 including leap months (闰X月; 冬月 = 11th, 腊月 = 12th), and days 初一…三十. `v-model` stays a solar millisecond timestamp (built-in 1900–2100 conversion table). `type="datetime"` + `lunar` keeps the clock rollers; `type="time"` ignores it; `minDate` / `maxDate` only constrain the year column in lunar mode.
+
+<Demo name="datetime-picker-mp-lunar" description="lunar: stem-branch year / months with leap month / days 初一…三十; v-model stays a solar timestamp; datetime + lunar keeps the clock." />
+
 ## Time type & confirm guard (`type="time"` / `beforeConfirm`)
 
 `type="time"` writes an `HH:mm` string; a `beforeConfirm` that returns false keeps the sheet open.
@@ -44,6 +50,7 @@ Sheet picker: rolling only updates the draft and `v-model` is written on confirm
 | `beforeConfirm`                                   | `(value) => boolean \| Promise<boolean>` | `undefined`             | Veto hook                                                                                                    |
 | `zIndex`                                          | `number`                                 | `15`                    | Stacking level                                                                                               |
 | `immediateChange`                                 | `boolean`                                | `false`                 | Write `v-model` on every roll                                                                                |
+| `lunar`                                           | `boolean`                                | `false`                 | Lunar roller — **AUI-added** (stem-branch year / months incl. leap / days 初一…三十; `v-model` stays solar) |
 | `customClass` / `customStyle` / `customViewClass` | `string`                                 | `''`                    | Root / sheet / roller classes                                                                                |
 | `rootPortal`                                      | `boolean`                                | `false`                 | Render outside the page flow — **declared, not implemented** (no portal host on MP; forwarded to `sn-popup`) |
 | `displayFormatTabLabel`                           | `((tab) => string) \| undefined`         | `undefined`             | Range tab label formatter — **declared, not implemented** (single-value mode only)                           |

@@ -20,6 +20,14 @@
  * 2 月 never offers a 30th. All of that is pure (`sn-datetime-picker-view-utils`)
  * so the roller stays a dumb renderer.
  *
+ * ## Lunar roller (additive, AGENTS.md §112.3a)
+ *
+ * `lunar` switches the year / month / date columns to lunar labels
+ * (干支年 / 正月…腊月含闰X月 / 初一…三十) while `v-model` stays a solar
+ * timestamp; conversion lives in the pure `utils/sn-lunar`. wot-ui has no
+ * lunar surface — this is an AUI-specific extension, mirrored by
+ * `sn-datetime-picker`.
+ *
  * ## Touch lifecycle (AGENTS.md §41)
  *
  * Same as `sn-picker-view`: the gesture math lives in the shared
@@ -59,6 +67,17 @@ import {
   range,
   toParts,
 } from './sn-datetime-picker-view-utils';
+import {
+  type LunarParts,
+  formatLunar,
+  lunarDayName,
+  lunarLeapMonth,
+  lunarMonthLength,
+  lunarMonthName,
+  lunarToSolar,
+  lunarYearName,
+  solarToLunar,
+} from '../../utils/sn-lunar';
 
 defineOptions({ name: 'SnDatetimePickerView' });
 
@@ -124,6 +143,13 @@ const props = withDefaults(
     customClass?: string;
     /** Inline style on the root node. */
     customStyle?: string;
+    /**
+     * 农历滚筒（additive，AGENTS.md §112.3a）：年列显示干支（甲辰年）、月列
+     * 显示正月至腊月（含闰X月）、日列显示初一到三十。`v-model` 仍是公历
+     * 时间戳。仅对 date / year-month / year / datetime 生效，`time` 忽略；
+     * `minDate` / `maxDate` 在农历模式下只约束年列。
+     */
+    lunar?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -149,6 +175,7 @@ const props = withDefaults(
     boundaryMaxDate: undefined,
     customClass: '',
     customStyle: '',
+    lunar: false,
   },
 );
 
@@ -281,7 +308,67 @@ function formatLabel(type: DateTimeColumnType, value: number): string {
   return pad(value);
 }
 
+/* ── Lunar mode (additive, AGENTS.md §112.3a) ──────────────────────────── */
+
+/** 农历滚筒是否生效（`time` 类型没有日期列，农历无意义）。 */
+const isLunarMode = computed(() => props.lunar && props.type !== 'time');
+
+/** 当前值（公历时间戳）对应的农历部件。 */
+const lunarSel = computed<LunarParts>(() => solarToLunar(fromParts(parts.value)));
+
+/** 农历月在当年槽位序数（闰月占独立槽位，跟在同名平月后）。 */
+function lunarSlotOf(cur: LunarParts): number {
+  const leap = lunarLeapMonth(cur.year);
+  if (leap > 0 && cur.isLeap) return leap + 1;
+  return leap > 0 && cur.month > leap ? cur.month + 1 : cur.month;
+}
+
+/** 槽位序数 → 农历月名（含闰前缀）。 */
+function lunarSlotLabel(year: number, slot: number): string {
+  const leap = lunarLeapMonth(year);
+  if (leap > 0 && slot === leap + 1) return lunarMonthName(leap, true);
+  return lunarMonthName(leap > 0 && slot > leap ? slot - 1 : slot, false);
+}
+
+/** 农历列：年 = 干支年、月 = 正月…腊月（含闰X月）、日 = 初一…三十。 */
+function buildLunarColumn(type: DateTimeColumnType, cur: LunarParts): RollerColumn {
+  if (type === 'year') {
+    const from = solarToLunar(minTimestamp.value).year;
+    const to = solarToLunar(maxTimestamp.value).year;
+    const values = range(from, to);
+    const selected = Math.min(Math.max(cur.year, from), to);
+    return { type, values, selected, labels: values.map((year) => lunarYearName(year)) };
+  }
+  if (type === 'month') {
+    const leap = lunarLeapMonth(cur.year);
+    const values = range(1, leap > 0 ? 13 : 12);
+    const selected = lunarSlotOf(cur);
+    return {
+      type,
+      values,
+      selected: values.includes(selected) ? selected : (values[0] ?? selected),
+      labels: values.map((slot) => lunarSlotLabel(cur.year, slot)),
+    };
+  }
+  if (type === 'date') {
+    const total = lunarMonthLength(cur.year, cur.month, cur.isLeap);
+    const values = range(1, total);
+    return {
+      type,
+      values,
+      selected: values.includes(cur.day) ? cur.day : (values[0] ?? cur.day),
+      labels: values.map((day) => lunarDayName(day)),
+    };
+  }
+  // 时分秒列仍按公历推（datetime + lunar 组合）。
+  return buildColumn(type, parts.value);
+}
+
 const columns = computed<RollerColumn[]>(() => {
+  if (isLunarMode.value) {
+    const current = lunarSel.value;
+    return columnTypes.value.map((type) => buildLunarColumn(type, current));
+  }
   const current = parts.value;
   return columnTypes.value.map((type) => buildColumn(type, current));
 });
@@ -306,11 +393,52 @@ function emitParts(next: DateParts, columnIndex: number): void {
   void columnIndex;
 }
 
+/** 农历行提交：滚筒值（年号 / 月槽位 / 日）→ 公历时间戳。 */
+function selectLunarRow(column: RollerColumn, value: number): void {
+  const cur = lunarSel.value;
+  const next: LunarParts = { ...cur };
+  if (column.type === 'year') {
+    next.year = value;
+    // 换到没有同名闰月的年份时，闰月标记回落为平月。
+    if (next.isLeap && lunarLeapMonth(next.year) !== next.month) next.isLeap = false;
+  } else if (column.type === 'month') {
+    const leap = lunarLeapMonth(next.year);
+    next.isLeap = leap > 0 && value === leap + 1;
+    next.month = next.isLeap ? leap : value <= leap ? value : value - 1;
+  } else if (column.type === 'date') {
+    next.day = value;
+  } else {
+    return;
+  }
+  // 换月后日数可能超出月长（如三十滚到廿九月），夹回月末。
+  next.day = Math.min(Math.max(next.day, 1), lunarMonthLength(next.year, next.month, next.isLeap));
+  const solar = lunarToSolar(next);
+  // datetime + lunar：保留原值的时分秒。
+  const time = parts.value;
+  const merged = fromParts({
+    ...toParts(solar),
+    hour: time.hour,
+    minute: time.minute,
+    second: time.second,
+  });
+  if (merged === props.modelValue) return;
+  emit('update:modelValue', merged);
+  emit('change', { value: merged, columns: columns.value });
+  void column;
+}
+
 function selectRow(columnIndex: number, rowIndex: number): void {
   const column = columns.value[columnIndex];
   if (!column) return;
   const value = column.values[rowIndex];
   if (value === undefined || value === column.selected) return;
+  if (
+    isLunarMode.value &&
+    (column.type === 'year' || column.type === 'month' || column.type === 'date')
+  ) {
+    selectLunarRow(column, value);
+    return;
+  }
   const next: DateParts = { ...parts.value };
   next[column.type] = value;
   // Rolling the month forward from the 31st lands on a shorter month — clamp.
@@ -390,10 +518,12 @@ function onItemTap(columnIndex: number, rowIndex: number): void {
 /* ── Public API (wd-datetime-picker-view parity) ───────────────────────── */
 
 function getSelectedOptions(): Array<{ value: number; label: string }> {
-  return columns.value.map((column) => ({
-    value: column.selected,
-    label: formatLabel(column.type, column.selected),
-  }));
+  return columns.value.map((column) => {
+    // 农历列的 label 不能走公历 formatLabel，直接取渲染列自身的文案。
+    const index = column.values.indexOf(column.selected);
+    const label = index >= 0 ? column.labels[index] : undefined;
+    return { value: column.selected, label: label ?? formatLabel(column.type, column.selected) };
+  });
 }
 
 function correctValue(value: string | number): string | number {
@@ -412,6 +542,7 @@ defineExpose({ getSelectedOptions, correctValue, getOriginColumns });
 const rootClass = computed(() => [
   'sn-datetime-picker-view',
   `sn-datetime-picker-view--${props.type}`,
+  { 'sn-datetime-picker-view--lunar': isLunarMode.value },
   props.customClass,
 ]);
 
@@ -425,11 +556,15 @@ const rootStyle = computed(() => {
 });
 
 /** Human-readable value echoed to assistive tech. */
-const ariaValue = computed(() =>
-  props.type === 'time'
-    ? formatTime(fromParts(parts.value), props.useSecond)
-    : `${formatDate(fromParts(parts.value))} ${formatTime(fromParts(parts.value), props.useSecond)}`,
-);
+const ariaValue = computed(() => {
+  if (props.type === 'time') return formatTime(fromParts(parts.value), props.useSecond);
+  if (isLunarMode.value) {
+    const lunar = formatLunar(fromParts(parts.value));
+    const clock = formatTime(fromParts(parts.value), props.useSecond);
+    return props.type === 'datetime' ? `${lunar} ${clock}` : lunar;
+  }
+  return `${formatDate(fromParts(parts.value))} ${formatTime(fromParts(parts.value), props.useSecond)}`;
+});
 </script>
 
 <template>

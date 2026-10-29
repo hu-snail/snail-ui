@@ -43,6 +43,7 @@ type="daterange" 选区间；maxRange 限制跨度并显示提示；switchMode="
 | `panelHeight`                 | `number`                                                                                       | `316`        | 可滚动面板高度（px 设计值）                          |
 | `immediateChange`             | `boolean`                                                                                      | `false`      | 点击即触发 change                                    |
 | `switchMode`                  | `'none' \| 'month' \| 'year-month'`                                                            | `'none'`     | 切换模式                                             |
+| `showLunar`                   | `boolean`                                                                                      | `false`      | 农历角标——**AUI 追加**：格下农历日名，初一显示月名；`formatter` 可覆盖 |
 | `customClass` / `customStyle` | `string`                                                                                       | `''`         | 根节点自定义类名 / 样式                              |
 | `timeFilter`                  | `CalendarTimeFilter`                                                                           | `undefined`  | 时间列过滤钩子——**声明但未实现**（面板内无时间滚筒） |
 | `timeItemHeight`              | `number`                                                                                       | `44`         | 时间行高——**声明但未实现**（同上）                   |

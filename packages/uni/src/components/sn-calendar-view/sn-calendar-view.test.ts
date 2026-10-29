@@ -588,4 +588,42 @@ describe('sn-calendar-view', () => {
       expect(w.attributes('style')).toContain('margin: 8px');
     });
   });
+
+  describe('showLunar (additive)', () => {
+    it('renders the lunar day name under each day cell', () => {
+      const w = mountView({ showLunar: true });
+      const cells = dayCells(w);
+      // 2024-06-15 = 甲辰年五月初十。
+      expect(cells[14]?.find('.sn-calendar-view__day-info--bottom').text()).toBe('初十');
+    });
+
+    it('shows the lunar month name on 初一 (incl. leap months)', () => {
+      const w = mountView({
+        showLunar: true,
+        minDate: new Date(2025, 6, 1).getTime(),
+        maxDate: new Date(2025, 6, 31).getTime(),
+      });
+      const cells = dayCells(w);
+      // 2025-07-25 = 乙巳年闰六月初一（当月第 25 格）。
+      expect(cells[24]?.find('.sn-calendar-view__day-info--bottom').text()).toBe('闰六月');
+    });
+
+    it('lets the formatter override the lunar caption', () => {
+      const w = mountView({
+        showLunar: true,
+        formatter: (item: { date: number; bottomInfo: string }) =>
+          item.date === new Date(2024, 5, 15).getTime()
+            ? { ...item, bottomInfo: '自定义' }
+            : item,
+      });
+      const cells = dayCells(w);
+      expect(cells[14]?.find('.sn-calendar-view__day-info--bottom').text()).toBe('自定义');
+      expect(cells[15]?.find('.sn-calendar-view__day-info--bottom').text()).toBe('十一');
+    });
+
+    it('renders no bottom caption by default', () => {
+      const w = mountView();
+      expect(w.find('.sn-calendar-view__day-info--bottom').exists()).toBe(false);
+    });
+  });
 });

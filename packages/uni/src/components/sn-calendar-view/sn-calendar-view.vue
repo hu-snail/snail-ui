@@ -22,6 +22,12 @@
  *     renders no time roller. `datetime` / `datetimerange` still default the
  *     clock time to `default-time`. Docs mark them 「声明但未实现」.
  *
+ * ## Additive
+ *
+ *   - `show-lunar` (AGENTS.md §112.3a): renders a lunar caption under each
+ *     day cell (lunar day name; the month name on 初一). `formatter` wins
+ *     over the lunar text. Conversion is the shared pure `utils/sn-lunar`.
+ *
  * ## Rendering
  *
  * One `<view>` month grid per month between `minDate` and `maxDate`, laid out
@@ -52,6 +58,7 @@ import {
   toParts,
   weekdayOf,
 } from '../sn-datetime-picker-view/sn-datetime-picker-view-utils';
+import { lunarDayLabel } from '../../utils/sn-lunar';
 
 defineOptions({ name: 'SnCalendarView' });
 
@@ -137,6 +144,12 @@ const props = withDefaults(
     timeVisibleItemCount?: number;
     /** Hide the seconds column (`wd-calendar-view` `hide-second`). Declared for parity. */
     hideSecond?: boolean;
+    /**
+     * 农历角标（additive，AGENTS.md §112.3a）：在格子下方显示农历日名
+     * （初二、十五…），初一显示月名（正月 / 闰六月）。`formatter` 的
+     * `bottomInfo` 优先级更高，可覆盖农历文案。
+     */
+    showLunar?: boolean;
   }>(),
   {
     modelValue: null,
@@ -159,9 +172,9 @@ const props = withDefaults(
     timeItemHeight: 44,
     timeVisibleItemCount: 6,
     hideSecond: false,
+    showLunar: false,
   },
 );
-
 const emit = defineEmits<{
   (e: 'update:modelValue', value: CalendarValue): void;
   (e: 'change', payload: { value: CalendarValue }): void;
@@ -302,6 +315,8 @@ function buildCells(block: MonthBlock): Cell[] {
       bottomInfo: '',
       disabled,
     };
+    // 农历角标（additive）：先铺农历文案，formatter 仍可覆盖。
+    if (!filler && props.showLunar) item.bottomInfo = lunarDayLabel(date);
     const formatted = props.formatter && !filler ? props.formatter(item) : undefined;
     cells.push({
       date,
@@ -309,7 +324,7 @@ function buildCells(block: MonthBlock): Cell[] {
       type: formatted?.type ?? type,
       text: formatted?.text ?? item.text,
       topInfo: formatted?.topInfo ?? '',
-      bottomInfo: formatted?.bottomInfo ?? '',
+      bottomInfo: formatted?.bottomInfo ?? item.bottomInfo,
       disabled: formatted?.disabled ?? disabled,
       filler,
     });

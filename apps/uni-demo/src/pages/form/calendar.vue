@@ -3,8 +3,9 @@
 import Demo0 from './demos/calendar-mp-basic.vue';
 import Demo1 from './demos/calendar-mp-grid-range.vue';
 import Demo2 from './demos/calendar-mp-hooks-parity.vue';
-import Demo3 from './demos/calendar-mp-panel-sheet.vue';
-import Demo4 from './demos/calendar-mp-shortcuts-range.vue';
+import Demo3 from './demos/calendar-mp-lunar.vue';
+import Demo4 from './demos/calendar-mp-panel-sheet.vue';
+import Demo5 from './demos/calendar-mp-shortcuts-range.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -41,7 +42,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('panel-sheet', 'Panel Sheet') }}</text>
+          <text class="module__title">{{ t('农历', 'Lunar') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -49,10 +50,18 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('shortcuts-range', 'Shortcuts Range') }}</text>
+          <text class="module__title">{{ t('panel-sheet', 'Panel Sheet') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('shortcuts-range', 'Shortcuts Range') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

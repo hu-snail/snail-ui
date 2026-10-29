@@ -248,6 +248,12 @@
           }
         },
         {
+          "path": "date-strip",
+          "style": {
+            "navigationBarTitleText": "日期条"
+          }
+        },
+        {
           "path": "datetime-picker",
           "style": {
             "navigationBarTitleText": "时间选择器"
@@ -288,18 +294,18 @@
           "style": {
             "navigationBarTitleText": "密码输入框"
           }
-        },
-        {
-          "path": "picker",
-          "style": {
-            "navigationBarTitleText": "选择器"
-          }
         }
       ]
     },
     {
       "root": "pages/form-2",
       "pages": [
+        {
+          "path": "picker",
+          "style": {
+            "navigationBarTitleText": "选择器"
+          }
+        },
         {
           "path": "picker-view",
           "style": {

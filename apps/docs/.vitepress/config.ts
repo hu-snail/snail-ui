@@ -266,6 +266,7 @@ const sidebar = {
         { text: 'sn-cascader 级联选择器'.trim(), link: '/components/uni/cascader' },
         { text: 'sn-calendar 日历选择器'.trim(), link: '/components/uni/calendar' },
         { text: 'sn-calendar-view 日历面板'.trim(), link: '/components/uni/calendar-view' },
+        { text: 'sn-date-strip 日期条'.trim(), link: '/components/uni/date-strip' },
         { text: 'sn-datetime-picker 时间选择器'.trim(), link: '/components/uni/datetime-picker' },
         {
           text: 'sn-datetime-picker-view 时间选择器视图'.trim(),
@@ -595,6 +596,7 @@ const enSidebar = {
         { text: 'sn-cascader', link: '/en/components/uni/cascader' },
         { text: 'sn-calendar', link: '/en/components/uni/calendar' },
         { text: 'sn-calendar-view', link: '/en/components/uni/calendar-view' },
+        { text: 'sn-date-strip', link: '/en/components/uni/date-strip' },
         { text: 'sn-datetime-picker', link: '/en/components/uni/datetime-picker' },
         { text: 'sn-datetime-picker-view', link: '/en/components/uni/datetime-picker-view' },
         { text: 'sn-upload', link: '/en/components/uni/upload' },

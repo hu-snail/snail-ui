@@ -1,7 +1,9 @@
 <script setup lang="ts">
-/** Demo: sn-datetime-picker — 弹层外观与行为：cancelButtonText / closeOnClickModal / safeAreaInsetBottom / zIndex / immediateChange / rootPortal / custom*。 */
+/** Demo: sn-datetime-picker — 弹层外观与行为：immediateChange / 按钮文案 / 遮罩 / 层级 / custom*，sn-cell 行触发。 */
 import { ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const immediate = ref<string | number | undefined>(new Date(2024, 5, 15).getTime());
 const openImmediate = ref(false);
@@ -14,10 +16,23 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? '开始' : '结束
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">immediateChange（滚动即写 v-model，不必确认）</text>
-    <view class="sn-demo__button" @tap="openImmediate = true">即时写回</view>
-    <text class="sn-demo__meta">已选：{{ immediate }}</text>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup insert>
+      <SnCell
+        title="即时写回"
+        label="immediateChange：滚动即写 v-model，不必确认"
+        :value="String(immediate)"
+        is-link
+        @click="openImmediate = true"
+      />
+      <SnCell
+        title="弹层外观"
+        label="取消/确认文案、禁止遮罩关闭、zIndex、custom*"
+        is-link
+        @click="openChrome = true"
+      />
+    </SnCellGroup>
+
     <SnDatetimePicker
       v-model="immediate"
       v-model:visible="openImmediate"
@@ -26,10 +41,6 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? '开始' : '结束
       immediate-change
     />
 
-    <text class="sn-demo__title"
-      >cancelButtonText / closeOnClickModal / safeAreaInsetBottom / zIndex</text
-    >
-    <view class="sn-demo__button" @tap="openChrome = true">弹层外观</view>
     <SnDatetimePicker
       v-model="chrome"
       v-model:visible="openChrome"
@@ -50,29 +61,6 @@ const tabLabel = (tab: 'start' | 'end') => (tab === 'start' ? '开始' : '结束
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
-}
-
 .sn-demo__sheet {
   background-color: var(--sn-mp-color-background-elevated);
 }

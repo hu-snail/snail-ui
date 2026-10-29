@@ -127,6 +127,12 @@ const props = withDefaults(
      * tabs and the hook never runs. Documented as 「未实现」.
      */
     displayFormatTabLabel?: ((tab: DateTimeTab) => string) | undefined;
+    /**
+     * 农历滚筒（additive，AGENTS.md §112.3a）：转发给 `sn-datetime-picker-view`。
+     * 年列干支（甲辰年）、月列正月…腊月（含闰X月）、日列初一…三十；
+     * `v-model` 仍为公历时间戳。`type: 'time'` 下无效果。
+     */
+    lunar?: boolean;
   }>(),
   {
     modelValue: undefined,
@@ -160,6 +166,7 @@ const props = withDefaults(
     rootPortal: false,
     customViewClass: '',
     displayFormatTabLabel: undefined,
+    lunar: false,
   },
 );
 
@@ -293,6 +300,7 @@ const viewClass = computed(() => props.customViewClass);
         :formatter="props.formatter"
         :filter="props.filter"
         :immediate-change="props.immediateChange"
+        :lunar="props.lunar"
         @change="onViewChange"
       />
     </view>

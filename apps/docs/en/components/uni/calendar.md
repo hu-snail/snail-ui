@@ -19,6 +19,12 @@ Sheet calendar: rolling only updates the draft and `v-model` is written on confi
 
 <Demo name="calendar-mp-grid-range" description="firstDayOfWeek; formatter with custom topInfo / bottomInfo / disabled; maxRange + rangePrompt; allowSameDay; defaultTime." />
 
+## Lunar captions (`showLunar`, AUI-added)
+
+`show-lunar` renders a lunar day name under each day cell (初二, 十五…); 初一 shows the month name (正月 / 闰六月). A `formatter` `bottomInfo` wins over the lunar text.
+
+<Demo name="calendar-mp-lunar" description="show-lunar: lunar caption under each cell, month name on 初一; formatter can override." />
+
 ## Panel & sheet (`panelHeight` / `switchMode` / `immediateChange` / `showConfirm` / scrim and stacking)
 
 `panelHeight` (px design value) and `showPanelTitle` shape the panel; `switchMode` renders the month / year switcher; `duration` sets the sheet animation; `immediateChange` writes `v-model` as soon as a cell is tapped; `showConfirm=false` leaves only cancel. `closeOnClickModal` / `safeAreaInsetBottom` / `zIndex` / `rootPortal` / `customClass` / `customStyle` are forwarded to `sn-popup`; `customViewClass` lands on the `sn-calendar-view` body.
@@ -54,6 +60,7 @@ Sheet calendar: rolling only updates the draft and `v-model` is written on confi
 | `customViewClass`                               | `string`                                                   | `''`                      | Panel body class                  |
 | `immediateChange`                               | `boolean`                                                  | `false`                   | Emit on every tap                 |
 | `panelHeight` / `showPanelTitle` / `switchMode` | `number` / `boolean` / `'none' \| 'month' \| 'year-month'` | `316` / `true` / `'none'` | Panel wiring                      |
+| `showLunar`                                     | `boolean`                                                  | `false`                   | Lunar captions — **AUI-added** (month name on 初一; formatter can override) |
 | `duration`                                      | `number`                                                   | `200`                     | Sheet animation duration          |
 | `customClass` / `customStyle`                   | `string`                                                   | `''`                      | Root class / inline style         |
 

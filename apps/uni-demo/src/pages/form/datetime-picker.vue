@@ -2,8 +2,9 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— datetime-picker 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/datetime-picker-mp-basic.vue';
 import Demo1 from './demos/datetime-picker-mp-columns-bounds.vue';
-import Demo2 from './demos/datetime-picker-mp-sheet.vue';
-import Demo3 from './demos/datetime-picker-mp-time-confirm.vue';
+import Demo2 from './demos/datetime-picker-mp-lunar.vue';
+import Demo3 from './demos/datetime-picker-mp-sheet.vue';
+import Demo4 from './demos/datetime-picker-mp-time-confirm.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -32,7 +33,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('动作面板', 'Action sheet') }}</text>
+          <text class="module__title">{{ t('农历', 'Lunar') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -40,10 +41,18 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('time-confirm', 'Time Confirm') }}</text>
+          <text class="module__title">{{ t('动作面板', 'Action sheet') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('time-confirm', 'Time Confirm') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

@@ -37,6 +37,7 @@ export { default as SnConfigProvider } from './components/sn-config-provider/sn-
 export { default as SnCountDown } from './components/sn-count-down/sn-count-down.vue';
 export { default as SnCountTo } from './components/sn-count-to/sn-count-to.vue';
 export { default as SnCurtain } from './components/sn-curtain/sn-curtain.vue';
+export { default as SnDateStrip } from './components/sn-date-strip/sn-date-strip.vue';
 export { default as SnDatetimePicker } from './components/sn-datetime-picker/sn-datetime-picker.vue';
 export { default as SnDatetimePickerView } from './components/sn-datetime-picker-view/sn-datetime-picker-view.vue';
 export { default as SnDialer } from './components/sn-dialer/sn-dialer.vue';

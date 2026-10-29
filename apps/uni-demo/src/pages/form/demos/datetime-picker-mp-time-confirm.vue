@@ -1,7 +1,9 @@
 <script setup lang="ts">
-/** Demo: sn-datetime-picker — type="time" 写回 "HH:mm" 字符串；beforeConfirm 返回 false 时弹层不关闭。 */
+/** Demo: sn-datetime-picker — type="time" 写回 "HH:mm" 字符串；beforeConfirm 拦截时弹层不关闭。sn-cell 行触发。 */
 import { ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const time = ref<string | number | undefined>('10:30');
 const open = ref(false);
@@ -11,8 +13,17 @@ const guard = (value: string | number) => String(value) >= '09:00';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <view class="sn-demo__button" @tap="open = true">选择时间</view>
-    <text class="sn-demo__meta">已选：{{ time || '（未选择）' }}</text>
+    <SnCellGroup insert>
+      <SnCell
+        title="选择时间"
+        label="type=time + beforeConfirm（09:00 前拦截）"
+        placeholder="请选择"
+        :value="time ? String(time) : ''"
+        is-link
+        @click="open = true"
+      />
+    </SnCellGroup>
+
     <SnDatetimePicker
       v-model="time"
       v-model:visible="open"
@@ -23,22 +34,3 @@ const guard = (value: string | number) => String(value) >= '09:00';
     />
   </view>
 </template>
-
-<style scoped>
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
-}
-</style>

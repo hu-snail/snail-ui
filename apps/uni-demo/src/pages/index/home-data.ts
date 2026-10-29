@@ -303,7 +303,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '日历选择器',
         titleEn: 'Calendar',
         desc: '日期区间选择弹层',
-        count: 5,
+        count: 6,
       },
       {
         key: 'calendar-view',
@@ -338,12 +338,20 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         count: 4,
       },
       {
+        key: 'date-strip',
+        group: 'form',
+        title: '日期条',
+        titleEn: 'Date Strip',
+        desc: '横向日期快速选择条',
+        count: 4,
+      },
+      {
         key: 'datetime-picker',
         group: 'form',
         title: '时间选择器',
         titleEn: 'Datetime Picker',
         desc: '日期时间弹层选择',
-        count: 4,
+        count: 5,
       },
       {
         key: 'datetime-picker-view',
@@ -393,14 +401,6 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         desc: '密码 / 验证码输入',
         count: 3,
       },
-      {
-        key: 'picker',
-        group: 'form',
-        title: '选择器',
-        titleEn: 'Picker',
-        desc: '弹层多列选择',
-        count: 4,
-      },
     ],
   },
   {
@@ -408,6 +408,14 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
     label: '录入组件',
     labelEn: 'Form Components',
     comps: [
+      {
+        key: 'picker',
+        group: 'form-2',
+        title: '选择器',
+        titleEn: 'Picker',
+        desc: '弹层多列选择',
+        count: 4,
+      },
       {
         key: 'picker-view',
         group: 'form-2',

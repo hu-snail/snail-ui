@@ -86,6 +86,7 @@ export const OVERVIEW_GROUPS: OverviewGroup[] = [
       { name: 'sn-cascader', title: '级联选择器', desc: '多级联动选择' },
       { name: 'sn-calendar', title: '日历选择器', desc: '日期区间选择弹层' },
       { name: 'sn-calendar-view', title: '日历面板', desc: '内嵌日历面板' },
+      { name: 'sn-date-strip', title: '日期条', desc: '横向日期快速选择条' },
       { name: 'sn-datetime-picker', title: '时间选择器', desc: '日期时间弹层选择' },
       { name: 'sn-datetime-picker-view', title: '时间选择器视图', desc: '内嵌时间滚轮' },
       { name: 'sn-upload', title: '上传', desc: '文件 / 图片上传' },

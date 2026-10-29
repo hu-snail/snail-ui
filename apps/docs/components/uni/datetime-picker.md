@@ -8,6 +8,12 @@ sn-datetime-picker 弹层选择器：滚动只改草稿，确认才写 v-model�
 
 <Demo name="datetime-picker-mp-basic" description="sn-datetime-picker 弹层选择器：滚动只改草稿，确认才写 v-model。" />
 
+## 农历选择（`lunar`，AUI 追加）
+
+`lunar` 打开后年 / 月 / 日三列切换农历文案：年列干支（甲辰年、乙巳年…），月列正月至腊月（含闰X月，冬月 = 十一月、腊月 = 十二月），日列初一至三十。`v-model` 始终是公历毫秒时间戳（内建 1900–2100 历法表换算）。`type="datetime"` + `lunar` 保留时分滚筒；`type="time"` 下无效果；`minDate` / `maxDate` 农历模式下只约束年列。
+
+<Demo name="datetime-picker-mp-lunar" description="lunar：年干支 / 月含闰月 / 日初一三十；v-model 仍是公历时间戳；datetime + lunar 保留时分。" />
+
 ## 时间类型与确认校验（`type="time"` / `beforeConfirm`）
 
 type="time" 写回 "HH:mm" 字符串；beforeConfirm 返回 false 时弹层不关闭。
@@ -44,6 +50,7 @@ type="time" 写回 "HH:mm" 字符串；beforeConfirm 返回 false 时弹层不�
 | `beforeConfirm`                                   | `(value) => boolean \| Promise<boolean>` | `undefined`             | 确认前钩子                                                                  |
 | `zIndex`                                          | `number`                                 | `15`                    | 弹层层级                                                                    |
 | `immediateChange`                                 | `boolean`                                | `false`                 | 滚动即写回 v-model                                                          |
+| `lunar`                                           | `boolean`                                | `false`                 | 农历滚筒——**AUI 追加**（年干支 / 月含闰月 / 日初一三十；v-model 仍为公历时间戳） |
 | `customClass` / `customStyle` / `customViewClass` | `string`                                 | `''`                    | 根节点 / 弹层 / 滚轮类名                                                    |
 | `rootPortal`                                      | `boolean`                                | `false`                 | 脱离文档流渲染——**声明但未实现**（小程序无 portal 宿主，透传给 `sn-popup`） |
 | `displayFormatTabLabel`                           | `((tab) => string) \| undefined`         | `undefined`             | 区间 Tab 标签格式化——**声明但未实现**（本轮只实现单值模式）                 |
