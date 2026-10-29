@@ -94,8 +94,10 @@ const props = withDefaults(
      * `registerSnIcons()` at app bootstrap).
      */
     iconName?: string;
-    /** rpx / pixel size forwarded to the embedded sn-icon. Default 32. */
+    /** rpx / pixel size forwarded to the embedded sn-icon. Default: auto-fit the size preset (small 28 / medium 32 / large 40). */
     iconSize?: number | string;
+    /** 圆形按钮（icon-only）：宽高相等、全圆角，配合内置图标使用。 */
+    circle?: boolean;
     /**
      * Iconfont glyph name — wot-ui's `icon` prop (`wd-button icon="check"`).
      *
@@ -165,7 +167,8 @@ const props = withDefaults(
     customStyle: '',
     bgColor: '',
     color: '',
-    iconSize: 32,
+    iconSize: undefined,
+    circle: false,
     icon: '',
     classPrefix: 'sn-icon',
     cssIcon: false,
@@ -218,11 +221,21 @@ const spinnerColor = computed<string>(() => {
   return typeof fromProps === 'string' ? fromProps : '';
 });
 
+/**
+ * Icon size auto-fit — when `iconSize` is unset the glyph scales with the
+ * button size preset instead of a fixed 32rpx (which read oversized on
+ * small/medium buttons).
+ */
+const ICON_SIZE_BY_SIZE_PRESET = { small: 28, medium: 32, large: 40 } as const;
+const effectiveIconSize = computed<number | string>(
+  () => props.iconSize ?? ICON_SIZE_BY_SIZE_PRESET[props.size] ?? 32,
+);
 const spinnerSize = computed<number | string>(() => {
   if (props.loadingSize !== 32) return props.loadingSize;
   const fromProps = props.loadingProps?.size;
   if (typeof fromProps === 'number' || typeof fromProps === 'string') return fromProps;
-  return props.loadingSize;
+  /* Untouched flat prop and no loading-props size → follow the icon auto-fit. */
+  return effectiveIconSize.value;
 });
 const emit = defineEmits<{
   (e: 'click', event: Event): void;
@@ -240,8 +253,9 @@ const classList = computed(() => [
   `sn-button--${props.size}`,
   `sn-button--variant-${props.variant}`,
   {
+    'sn-button--round': props.round || props.circle,
     'sn-button--block': props.block,
-    'sn-button--round': props.round,
+    'sn-button--circle': props.circle,
     'sn-button--disabled': props.disabled,
     'sn-button--loading': props.loading,
     'sn-button--hairline': props.hairline && props.type === 'default',
@@ -318,14 +332,14 @@ function onTap(event: Event): void {
         resolved by SnIcon (registry → built-in catalog → provider), then the
         wot-ui iconfont API (`icon` + `class-prefix` + `css-icon`).
       -->
-      <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="iconSize ?? 32" />
-      <SnIcon v-else-if="iconName" :icon="iconName" :size="iconSize ?? 32" />
+      <SnIcon v-if="resolvedIconData" :icon="resolvedIconData" :size="effectiveIconSize" />
+      <SnIcon v-else-if="iconName" :icon="iconName" :size="effectiveIconSize" />
       <SnIcon
         v-else-if="icon"
         :name="icon"
         :class-prefix="classPrefix"
         :css-icon="cssIcon"
-        :size="iconSize ?? 32"
+        :size="effectiveIconSize"
       />
       <view v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
         <slot name="loading">
@@ -400,6 +414,25 @@ function onTap(event: Event): void {
   height: 88rpx;
   padding: 0 36rpx;
   font-size: 32rpx;
+}
+
+/* Circle (icon-only) — width equals the preset height so the glyph lands in a
+ * true circle at every size. */
+.sn-button--circle {
+  padding: 0;
+  border-radius: var(--sn-mp-radius-full);
+}
+.sn-button--circle.sn-button--small {
+  width: 56rpx;
+  height: 56rpx;
+}
+.sn-button--circle.sn-button--medium {
+  width: 72rpx;
+  height: 72rpx;
+}
+.sn-button--circle.sn-button--large {
+  width: 88rpx;
+  height: 88rpx;
 }
 
 /* Variants — color tokens only; geometry stays as rpx values above. */

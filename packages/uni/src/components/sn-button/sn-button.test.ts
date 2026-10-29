@@ -333,4 +333,19 @@ describe('sn-button (style-object and iconfont API)', () => {
     expect(icon.props('classPrefix')).toBe('wd-icon');
     expect(icon.props('cssIcon')).toBe(false);
   });
+
+  it('auto-fits the icon size to the size preset when iconSize is unset', () => {
+    const medium = mount(SnButton, { props: { iconName: 'check' } });
+    const small = mount(SnButton, { props: { iconName: 'check', size: 'small' } });
+    const large = mount(SnButton, { props: { iconName: 'check', size: 'large' } });
+    expect(medium.findComponent({ name: 'SnIcon' }).props('size')).toBe(32);
+    expect(small.findComponent({ name: 'SnIcon' }).props('size')).toBe(28);
+    expect(large.findComponent({ name: 'SnIcon' }).props('size')).toBe(40);
+  });
+
+  it('applies the circle (icon-only) shape classes', () => {
+    const wrapper = mount(SnButton, { props: { circle: true, iconName: 'check' } });
+    expect(wrapper.classes()).toContain('sn-button--circle');
+    expect(wrapper.classes()).toContain('sn-button--round');
+  });
 });
