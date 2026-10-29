@@ -1,32 +1,50 @@
 /**
- * Cross-instance bookkeeping for the transparent outside-tap masks of
- * sn-tooltip / sn-popover.
+ * Outside-tap close queue (wot-ui `useQueue` / `closeOutside` parity).
  *
- * The mask closes the bubble on `touchstart` — before the tap "lands" — so on
- * H5 the same tap continues to the element underneath and tapping another
- * tooltip's trigger switches bubbles in one gesture. Because that same tap
- * then also reaches the trigger of the bubble that just closed, every
- * instance records its identity at mask-close time and ignores a trigger tap
- * that arrives immediately after its own outside close (otherwise the bubble
- * would instantly reopen).
+ * uni-app components cannot listen to taps outside their own subtree, so the
+ * library cannot self-contain "tap outside closes me". Instead every overlay
+ * component (tooltip, popover, drop-menu, toast, swipe-action, fab) registers
+ * an idempotent close here while mounted, and the page root — or any wrapper —
+ * binds the tap-bubbling handler:
+ *
+ *   <view @tap="closeOutside"> … page content … </view>
+ *
+ *   import { useQueue } from '@snui/uni';
+ *   const { closeOutside } = useQueue();
+ *
+ * A tap anywhere that is not stopped bubbles to that root and closes every
+ * open overlay at once; triggers bind `@tap.stop` so opening a bubble never
+ * immediately closes it again. Tapping a second trigger therefore switches
+ * bubbles in one gesture: the first tap bubbles (closing the first bubble)
+ * only where it is not stopped.
  */
 
-/** Grace window (ms) in which a trigger tap after an outside close is stale. */
-const OUTSIDE_CLOSE_GUARD_MS = 350;
-
-let lastClosedId: number | null = null;
-let lastClosedAt = 0;
-
-/** Record that the instance `id` just closed via its outside mask. */
-export function markOutsideClose(id: number): void {
-  lastClosedId = id;
-  lastClosedAt = Date.now();
+interface OutsideClosable {
+  /** Stable per-instance id (component `uid`). */
+  id: number;
+  /** Idempotent close — must no-op when the overlay is already closed. */
+  close: () => void;
 }
 
-/**
- * Whether a trigger tap on instance `id` arrives right after that same
- * instance closed via its outside mask (same gesture → must not toggle).
- */
-export function shouldIgnoreTapAfterOutsideClose(id: number): boolean {
-  return lastClosedId === id && Date.now() - lastClosedAt < OUTSIDE_CLOSE_GUARD_MS;
+/** All mounted overlay instances, keyed by instance id (dedup safe). */
+const queue = new Map<number, OutsideClosable>();
+
+/** Register an overlay instance (call from `onMounted`). */
+export function registerOutsideClosable(id: number, close: () => void): void {
+  queue.set(id, { id, close });
+}
+
+/** Remove an overlay instance (call from `onBeforeUnmount`). */
+export function unregisterOutsideClosable(id: number): void {
+  queue.delete(id);
+}
+
+/** Close every registered overlay. Each close is idempotent. */
+export function closeOutside(): void {
+  for (const entry of [...queue.values()]) entry.close();
+}
+
+/** wot-ui `useQueue` parity — returns the outside-close dispatcher. */
+export function useQueue(): { closeOutside: () => void } {
+  return { closeOutside };
 }

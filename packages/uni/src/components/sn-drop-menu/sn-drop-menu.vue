@@ -52,12 +52,20 @@
  *   - 底部动作面板 — 用 sn-action-sheet
  */
 
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue';
+import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Check as CheckIcon, ChevronDown as ChevronDownIcon } from '../sn-icon/sn-icon-set';
 
 defineOptions({ name: 'SnDropMenu' });
+
+const instanceId = getCurrentInstance()?.uid ?? 0;
+// Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
+onMounted(() => registerOutsideClosable(instanceId, () => {
+  if (isOpen.value) void close();
+}));
+onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Menu expansion direction. Mirrors `wd-drop-menu` `direction`. */
 type DropDirection = 'up' | 'down';

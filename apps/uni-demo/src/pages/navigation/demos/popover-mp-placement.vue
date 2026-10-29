@@ -64,7 +64,7 @@ function setOpen(placement: Placement, value: boolean): void {
     </view>
 
     <text class="sn-popover-demo__meta">
-      小程序没有 hover,12 个方位都用点击触发;点击气泡外部(透明遮罩)也会收起。
+      小程序没有 hover,12 个方位都用点击触发;点击气泡外部也会收起(页面根节点 closeOutside)。
     </text>
   </view>
 </template>

@@ -5,14 +5,14 @@
 > **Divergences from wot-ui**
 >
 > - Miniprogram has no `hover`, so the trigger always taps to toggle — there is no `trigger` prop.
-> - Outside-tap close is implemented with a transparent mask (miniprogram has no `document` to attach a global listener to).
+> - Outside-tap close follows the wot-ui `useQueue` pattern: bind `@tap="closeOutside"` on the page root; a tap on any blank area closes every open overlay (tooltip / popover / drop-menu / toast / swipe-action / fab). The trigger and bubble are `@tap.stop`, so tapping another trigger switches in one gesture. No mask is rendered.
 > - `root-portal` is declared but **not implemented** (no portal host on miniprogram).
 > - `updatePosition()` is a compatibility no-op: the bubble is placed by CSS.
 > - `iconClass` is an `sn-icon` registry name or image URL, not a CSS class (uni has no font-icon layer).
 
 ## Basic usage
 
-In `normal` mode `content` is a string; `showClose` adds a close button inside the bubble. Tapping outside the bubble (the transparent mask) or the trigger again closes it.
+In `normal` mode `content` is a string; `showClose` adds a close button inside the bubble. Tapping outside the bubble (the page-root `closeOutside`) or the trigger again closes it.
 
 <Demo name="popover-mp-basic" description="normal mode + close button; the trigger toggles it, an outside tap closes it." />
 
@@ -111,7 +111,6 @@ With `mode="menu"` the `content` prop is an option array. Tapping a row emits `m
 - Bubble carries `role="dialog"`; the arrow is `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
 - Interaction uses `@tap`; no keyboard focus trap on mobile
-- Transparent mask carries `aria-hidden="true"` (pure gesture layer, hidden from assistive tech)
 
 ## Dark mode
 

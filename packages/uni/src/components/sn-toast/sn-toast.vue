@@ -49,13 +49,21 @@
  *   - 内联加载指示器 — 用 sn-loading
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveFeedbackIcon } from '../sn-icon/sn-icon-feedback';
 import SnLoading from '../sn-loading/sn-loading.vue';
 
 defineOptions({ name: 'SnToast' });
+
+const instanceId = getCurrentInstance()?.uid ?? 0;
+// Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
+onMounted(() => registerOutsideClosable(instanceId, () => {
+  if (isShown.value) requestClose();
+}));
+onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Layout direction of icon + text. Mirrors `wd-toast` `direction`. */
 type ToastDirection = 'horizontal' | 'vertical';

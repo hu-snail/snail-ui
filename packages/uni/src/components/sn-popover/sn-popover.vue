@@ -27,17 +27,21 @@
  *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
  *     rather than a CSS class — uni has no font-icon layer.
  *
- * ## Click-outside close (transparent mask)
+ * ## Click-outside close (useQueue / closeOutside, wot-ui parity)
  *
- * wot-ui closes the popover on a tap outside the bubble. Miniprogram has no
- * `document` to hang a global listener on, so the mechanism here is a
- * transparent fixed mask (z-index 499 — below the bubble's 500, above the
- * page) mounted exactly while the bubble is; tapping it calls `close()`.
- * The mask closes on `touchstart` — before the tap lands — so on H5 the same
- * tap continues to the element underneath: tapping another trigger switches
- * bubbles in one gesture (a same-instance reopen guard keeps the just-closed
- * bubble closed). Miniprogram synthesizes the tap on the original touch node,
- * so there a second tap is still needed to open the next bubble.
+ * uni-app components cannot listen to taps outside their own subtree, so the
+ * transparent-mask approach was dropped: it swallowed the whole tap and made
+ * switching to another bubble a two-tap affair. Instead the component
+ * registers an idempotent close in `utils/outside-close.ts` while mounted,
+ * and the page root binds the tap-bubbling dispatcher:
+ *
+ *   import { useQueue } from '@snui/uni';
+ *   const { closeOutside } = useQueue();
+ *   <view @tap="closeOutside"> … page … </view>
+ *
+ * The trigger and the bubble bind `@tap.stop` so taps on them never reach
+ * the root handler — tapping another trigger therefore switches bubbles in
+ * one gesture. Pages that never bind the handler simply never outside-close.
  *
  * ## Bubble palette (wot-ui parity: --wot-popover-bg / --wot-popover-color)
  *
@@ -63,16 +67,26 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, getCurrentInstance, markRaw, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, getCurrentInstance, markRaw, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
-import { markOutsideClose, shouldIgnoreTapAfterOutsideClose } from '../../utils/outside-close';
+import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 
 defineOptions({ name: 'SnPopover' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
+
+// Register while mounted so a page-root `@tap="closeOutside"` closes this
+// overlay too (the callback no-ops while the bubble is already closed).
+onMounted(() =>
+  registerOutsideClosable(instanceId, () => {
+    // Idempotent: an already-closed bubble must not emit another close.
+    if (isShown.value || isMounted.value) close();
+  }),
+);
+onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Bubble anchor. Mirrors `wd-popover` `placement` (12 directions). */
 type PopoverPlacement =
@@ -263,17 +277,8 @@ defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
   if (props.disabled) return;
-  // Same-gesture guard: the outside mask closed this bubble on touchstart,
-  // and the very same tap then lands here — it must not reopen it.
-  if (shouldIgnoreTapAfterOutsideClose(instanceId)) return;
   if (props.modelValue) close();
   else open();
-}
-
-/** Mask handler — records the close so the same-gesture tap can be ignored. */
-function onMaskClose(): void {
-  markOutsideClose(instanceId);
-  close();
 }
 
 function onMenuTap(item: SnPopoverMenuItem, index: number): void {
@@ -344,14 +349,12 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       role="button"
       :aria-expanded="isShown ? 'true' : 'false'"
       :aria-disabled="props.disabled ? 'true' : undefined"
-      @tap="onTriggerTap"
+      @tap.stop="onTriggerTap"
     >
       <slot />
     </view>
 
-    <!-- Outside tap catcher: transparent, full viewport, one level under the bubble. -->
-    <view v-if="isMounted" class="sn-popover__mask" aria-hidden="true" @touchstart="onMaskClose" @tap="onMaskClose" />
-    <view v-if="isMounted" :class="popClass" role="dialog">
+    <view v-if="isMounted" :class="popClass" role="dialog" @tap.stop>
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
       <view v-if="mode === 'menu'" class="sn-popover__menu">
@@ -446,23 +449,6 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
 
 .sn-popover--shown .sn-popover__pop {
   opacity: 1;
-  pointer-events: auto;
-}
-
-/* Outside tap catcher — invisible, full viewport, one level under the
- * bubble. Inert during the fade legs so taps fall through to the page. */
-.sn-popover__mask {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 499;
-  background-color: transparent;
-  pointer-events: none;
-}
-
-.sn-popover--shown .sn-popover__mask {
   pointer-events: auto;
 }
 

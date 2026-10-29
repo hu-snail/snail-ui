@@ -63,9 +63,17 @@
  *   - 列表容器 — 由宿主用 `<view>` 组织
  */
 
-import { computed, onBeforeUnmount, ref, useSlots } from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref, useSlots } from 'vue';
+import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 
 defineOptions({ name: 'SnSwipeAction' });
+
+const instanceId = getCurrentInstance()?.uid ?? 0;
+// Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
+onMounted(() => registerOutsideClosable(instanceId, () => {
+  void close();
+}));
+onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Swipe state. Mirrors `wd-swipe-action` `v-model`. */
 type SwipeActionStatus = 'left' | 'close' | 'right';

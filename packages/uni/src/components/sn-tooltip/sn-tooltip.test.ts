@@ -6,7 +6,7 @@
  *   - `disabled` blocks both the trigger and the imperative API
  *   - `content` renders as text lines; the `content` slot wins over it
  *   - `placement` becomes a class, `offset` becomes a CSS variable pair
- *   - a tap on the transparent outside mask closes the bubble
+ *   - closeOutside() (page-root queue) closes the bubble; mounting registers it
  *   - `showClose` renders a close button that hides the bubble
  *   - the leave timer is cleared on unmount (§41)
  *
@@ -16,6 +16,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import SnTooltip from './sn-tooltip.vue';
+import { closeOutside } from '../../utils/outside-close';
 
 describe('sn-tooltip', () => {
   describe('structure', () => {
@@ -89,22 +90,11 @@ describe('sn-tooltip', () => {
       expect(style).toContain('--sn-tooltip-color: #ffffff');
     });
 
-    it('mounts the transparent mask exactly while the bubble is mounted', async () => {
-      vi.useFakeTimers();
-      try {
-        const w = mount(SnTooltip, { props: { modelValue: true } });
-        const mask = w.find('.sn-tooltip__mask');
-        expect(mask.exists()).toBe(true);
-        expect(mask.attributes('aria-hidden')).toBe('true');
-        // Fade-out leg: the mask stays mounted with the bubble, then leaves.
-        await w.setProps({ modelValue: false });
-        expect(w.find('.sn-tooltip__mask').exists()).toBe(true);
-        vi.advanceTimersByTime(150);
-        await w.vm.$nextTick();
-        expect(w.find('.sn-tooltip__mask').exists()).toBe(false);
-      } finally {
-        vi.useRealTimers();
-      }
+    it('stops responding to closeOutside after unmount', async () => {
+      const w = mount(SnTooltip, { props: { modelValue: true } });
+      w.unmount();
+      // Unregistered on unmount — a page-root closeOutside must not touch it.
+      expect(() => closeOutside()).not.toThrow();
     });
 
     it('publishes the offset as a CSS variable pair', () => {
@@ -173,17 +163,24 @@ describe('sn-tooltip', () => {
       expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
     });
 
-    it('closes on an outside tap (transparent mask)', async () => {
+    it('closes via closeOutside (page-root queue)', async () => {
       const w = mount(SnTooltip, { props: { modelValue: true } });
-      await w.find('.sn-tooltip__mask').trigger('tap');
+      closeOutside();
       expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
       expect(w.emitted('close')).toHaveLength(1);
       expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
     });
 
-    it('closes on a mask tap even when the consumer ignores update:modelValue', async () => {
+    it('closeOutside is a no-op for an already-closed bubble', async () => {
+      const w = mount(SnTooltip, { props: { modelValue: false } });
+      closeOutside();
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.emitted('close')).toBeUndefined();
+    });
+
+    it('closes via closeOutside even when the consumer ignores update:modelValue', async () => {
       const w = mount(SnTooltip, { props: { modelValue: true } });
-      await w.find('.sn-tooltip__mask').trigger('tap');
+      closeOutside();
       await w.vm.$nextTick();
       // The bubble keeps the fade-out leg but is no longer shown.
       expect(w.find('.sn-tooltip__pop').exists()).toBe(true);
@@ -334,13 +331,13 @@ describe('sn-tooltip', () => {
   });
 });
 
-describe('sn-tooltip (outside-tap switching)', () => {
-  it('switches to another tooltip within the same gesture', async () => {
+describe('sn-tooltip (outside-tap switching via the queue)', () => {
+  it('lets one gesture switch bubbles: outside close, then the next trigger opens', async () => {
     const a = mount(SnTooltip, { props: { modelValue: true, content: 'A' } });
     const b = mount(SnTooltip, { props: { modelValue: false, content: 'B' } });
-    // One gesture: touchstart on A's mask closes it early, then the same tap
-    // lands on B's trigger — B must open without a second tap.
-    await a.find('.sn-tooltip__mask').trigger('touchstart');
+    // Page-root decomposition of one tap on B's trigger: the tap bubbles to
+    // the root (closing A) and B's own @tap.stop handler opens B.
+    closeOutside();
     await b.find('.sn-tooltip__trigger').trigger('tap');
     expect(a.emitted('close')).toHaveLength(1);
     expect(b.emitted('update:modelValue')?.[0]).toEqual([true]);
@@ -348,12 +345,13 @@ describe('sn-tooltip (outside-tap switching)', () => {
     b.unmount();
   });
 
-  it('does not instantly reopen the bubble it just closed via the mask', async () => {
-    const w = mount(SnTooltip, { props: { modelValue: true, content: 'A' } });
-    await w.find('.sn-tooltip__mask').trigger('touchstart');
-    // The same-gesture tap on the just-closed trigger must be ignored.
-    await w.find('.sn-tooltip__trigger').trigger('tap');
-    expect(w.emitted('update:modelValue')).toEqual([[false]]);
-    w.unmount();
+  it('closes every open bubble at once', async () => {
+    const a = mount(SnTooltip, { props: { modelValue: true, content: 'A' } });
+    const b = mount(SnTooltip, { props: { modelValue: true, content: 'B' } });
+    closeOutside();
+    expect(a.emitted('close')).toHaveLength(1);
+    expect(b.emitted('close')).toHaveLength(1);
+    a.unmount();
+    b.unmount();
   });
 });

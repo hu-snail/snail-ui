@@ -65,7 +65,7 @@ function setOpen(placement: Placement, value: boolean): void {
 
     <text class="sn-popover-demo__meta">
       Miniprogram has no hover, so all 12 directions open on tap; tapping outside
-      the bubble (transparent mask) closes it too.
+      the bubble closes it too (page-root closeOutside).
     </text>
   </view>
 </template>

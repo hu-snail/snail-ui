@@ -5,14 +5,14 @@
 > **与 wot-ui 的差异**
 >
 > - 小程序没有 `hover`，触发器固定用**点击**切换，因此不声明 `trigger` 属性。
-> - 点击气泡外部关闭通过透明遮罩实现（小程序没有 `document`，挂不了全局监听）。
+> - 点击气泡外部关闭遵循 wot-ui 的 `useQueue` 方案：页面根节点绑定 `@tap="closeOutside"`，点任意空白处关闭所有弹窗（tooltip / popover / drop-menu / toast / swipe-action / fab）；触发器与气泡已 `@tap.stop`，点另一个触发器可一步切换。组件自身不再渲染遮罩。
 > - `root-portal` 已声明但**未实现**（小程序没有 portal 宿主）。
 > - `updatePosition()` 是兼容占位：气泡位置由 CSS 决定。
 > - `iconClass` 取 `sn-icon` 注册表名或图片地址，不是 CSS 类名（uni 端没有字体图标层）。
 
 ## 基础用法
 
-`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。点击气泡外部（透明遮罩）或再点一次触发器收起。
+`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。点击气泡外部（页面根节点 `closeOutside`）或再点一次触发器收起。
 
 <Demo name="popover-mp-basic" description="normal 模式 + 关闭按钮，点击触发器切换，点击外部自动关闭。" />
 
@@ -111,7 +111,6 @@
 - 触发器带 `role="button"` + `aria-expanded` + `aria-disabled`
 - 气泡带 `role="dialog"`，箭头 `aria-hidden="true"`
 - `menu` 模式选项带 `role="menuitem"` + `aria-disabled`
-- 透明遮罩带 `aria-hidden="true"`（纯手势层，对辅助技术隐藏）
 - 交互统一用 `@tap`；移动端无键盘焦点陷阱
 
 ## 暗色模式

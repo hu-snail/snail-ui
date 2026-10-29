@@ -16,6 +16,9 @@ import { computed, onMounted, watch } from 'vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import type { IconData } from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import { useDemoUi } from '../state/demo-ui';
+// wot-ui useQueue 对齐:页面根节点监听冒泡,点任意空白处关闭所有弹窗
+// (tooltip / popover / drop-menu / toast / swipe-action / fab)。
+import { useQueue } from '@snui/uni-src/utils/outside-close';
 
 const props = withDefaults(
   defineProps<{
@@ -42,6 +45,8 @@ const {
   applyNavBar,
   setNavTitle,
 } = useDemoUi();
+
+const { closeOutside } = useQueue();
 
 // lucide.dev — ISC license（ Redistribution 说明见 sn-icon-set.ts 头注）
 const GlobeIcon: IconData = {
@@ -96,6 +101,7 @@ watch(
 <template>
   <view
     class="demo-shell"
+    @tap="closeOutside"
     :class="{ 'demo-shell--dark': isDark, dark: isDark }"
     :style="stylePackVars"
   >

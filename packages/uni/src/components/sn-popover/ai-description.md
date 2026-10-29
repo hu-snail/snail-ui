@@ -9,7 +9,8 @@
 Tap-triggered bubble with two modes: `normal` (plain text / custom content) and
 `menu` (a tappable option list). Used for contextual actions ("more" menus) and
 inline rich hints on mobile / miniprogram.
-Tapping outside the bubble (a transparent fixed mask) closes it. The bubble
+Outside taps close the bubble through the wot-ui-style `useQueue` /
+`closeOutside` page-root hook (see docs). The bubble
 defaults to the elevated surface — white in the light theme — with the page
 text color; recolor via `--sn-popover-bg` / `--sn-popover-color`.
 
@@ -102,14 +103,14 @@ import { SnPopover } from '@snui/uni';
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="dialog"`; the arrow is `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
-- Transparent mask carries `aria-hidden="true"` (gesture layer only)
 - Interaction uses `@tap`; no hover trigger (miniprogram has none)
 
 ## Documented Divergences
 
 - No `trigger` prop: there is no hover on miniprogram, so the trigger is always tapped.
-- Click-outside close: wot-ui closes on an outside tap; miniprogram has no
-  `document`, so the mechanism here is a transparent fixed mask below the bubble.
+- Click-outside close: wot-ui `useQueue` / `closeOutside` parity — the page
+  root binds the tap dispatcher; the component registers an idempotent close.
+  No mask is rendered (a mask swallowed taps and broke one-gesture switching).
 - `root-portal` is declared but not implemented.
 - `updatePosition()` is a no-op.
 - `iconClass` is an `sn-icon` registry name / image URL, not a CSS class.

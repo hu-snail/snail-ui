@@ -36,13 +36,21 @@
  *   - 侧边栏菜单 — 用 sn-sidebar
  */
 
-import { computed, ref } from 'vue';
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, ref } from 'vue';
+import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import { Plus as PlusIcon, X as XIcon } from '../sn-icon/sn-icon-set';
 
 defineOptions({ name: 'SnFab' });
+
+const instanceId = getCurrentInstance()?.uid ?? 0;
+// Outside-close queue: a page-root `@tap="closeOutside"` closes this too.
+onMounted(() => registerOutsideClosable(instanceId, () => {
+  if (props.active) emit('update:active', false);
+}));
+onBeforeUnmount(() => unregisterOutsideClosable(instanceId));
 
 /** Color theme. Mirrors `wd-fab` `type`. */
 type FabType = 'primary' | 'success' | 'info' | 'warning' | 'danger';

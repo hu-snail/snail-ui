@@ -17,6 +17,7 @@
 // registration is unaffected — it resolves the SFC path directly.
 export { default as SnActionSheet } from './components/sn-action-sheet/sn-action-sheet.vue';
 export { default as SnAvatar } from './components/sn-avatar/sn-avatar.vue';
+export { default as SnAvatarGroup } from './components/sn-avatar-group/sn-avatar-group.vue';
 export { default as SnBacktop } from './components/sn-backtop/sn-backtop.vue';
 export { default as SnBadge } from './components/sn-badge/sn-badge.vue';
 export { default as SnBarcode } from './components/sn-barcode/sn-barcode.vue';
@@ -158,10 +159,7 @@ export {
   SN_ICON_CATEGORY_LABELS,
   searchSnIconCatalog,
 } from './components/sn-icon/sn-icon-catalog';
-export type {
-  SnIconCatalogEntry,
-  SnIconCategory,
-} from './components/sn-icon/sn-icon-catalog';
+export type { SnIconCatalogEntry, SnIconCategory } from './components/sn-icon/sn-icon-catalog';
 
 // Icon source resolution — string `icon` routing, custom providers, and
 // the Iconify on-demand loader (configSnIcons({ iconify: false }) disables).
@@ -221,3 +219,9 @@ export {
 // Re-export token utilities for app-level theme overrides.
 export { snCssVars, snVarName, auiVarName } from '@snui/tokens';
 export type { SnCssVarsOptions } from '@snui/tokens';
+
+// Outside-close queue (wot-ui useQueue parity): bind `closeOutside` on the
+// page root to close every open tooltip / popover / drop-menu / toast /
+// swipe-action / fab when the user taps anywhere else. See
+// `utils/outside-close.ts` for the contract.
+export { useQueue, closeOutside } from './utils/outside-close';

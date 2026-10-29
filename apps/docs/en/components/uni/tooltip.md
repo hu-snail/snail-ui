@@ -5,13 +5,13 @@
 > **Divergences from wot-ui**
 >
 > - Miniprogram / touch devices have no `hover`, so the trigger **taps** to toggle.
-> - Outside-tap close is implemented with a transparent mask (miniprogram has no `document` to attach a global listener to).
+> - Outside-tap close follows the wot-ui `useQueue` pattern: bind `@tap="closeOutside"` on the page root; a tap on any blank area closes every open overlay (tooltip / popover / drop-menu / toast / swipe-action / fab). The trigger and bubble are `@tap.stop`, so tapping another trigger switches in one gesture. No mask is rendered.
 > - `root-portal` is declared but **not implemented** (no portal host on miniprogram).
 > - `updatePosition()` is a compatibility no-op: the bubble is placed by CSS.
 
 ## Basic usage
 
-`v-model` controls visibility; `content` is the hint text. Tapping outside the bubble (the transparent mask) or the trigger again closes it.
+`v-model` controls visibility; `content` is the hint text. Tapping outside the bubble (the page-root `closeOutside`) or the trigger again closes it.
 
 <Demo name="tooltip-mp-basic" description="Tap the button to toggle the bubble; tapping outside closes it." />
 
@@ -95,7 +95,6 @@ An array `content` renders one line per entry (objects contribute whichever of `
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="tooltip"`; the arrow is `aria-hidden="true"`
 - Close button carries `role="button"` + `aria-label="close"`
-- Transparent mask carries `aria-hidden="true"` (pure gesture layer, hidden from assistive tech)
 - Interaction uses `@tap`; no keyboard focus trap on mobile
 
 ## Dark mode
