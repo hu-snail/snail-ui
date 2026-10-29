@@ -87,7 +87,7 @@ Put the row content in the default slot and the actions in `right` / `left`. `v-
 
 ## Dark mode
 
-The row and content background use `--sn-mp-color-background-elevated` and the text uses `--sn-mp-color-text-primary` — both overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Action-area colours are the consumer's choice (the demos use `--sn-mp-color-feedback-danger` / `--sn-mp-color-action-primary`). Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The row and content background use `--sn-mp-color-background-elevated` and the text uses `--sn-mp-color-text-primary` — both overridden in the `.sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Action-area colours are the consumer's choice (the demos use `--sn-mp-color-feedback-danger` / `--sn-mp-color-action-primary`). Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 

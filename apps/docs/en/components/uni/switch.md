@@ -97,4 +97,4 @@ None. Rail content comes from `activeText` / `inactiveText` / the icon props.
 
 ## Dark mode
 
-Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` / `page.sn-theme-dark` flips the rail, knob plate and rail label (the brand token `--sn-mp-color-action-primary` keeps the same hue in both themes). Verify with:
+Every color resolves through `--sn-mp-color-*` with no light-only fallback, so `.sn-theme-dark` flips the rail, knob plate and rail label (the brand token `--sn-mp-color-action-primary` keeps the same hue in both themes). Verify with:

@@ -59,4 +59,4 @@ allowReset 把 0 纳入循环；descFirst 首次点击进入降序；line 加下
 
 ## 暗色模式
 
-所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
+所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：

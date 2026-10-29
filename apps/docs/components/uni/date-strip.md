@@ -97,7 +97,7 @@
 
 ## 暗色模式
 
-全部颜色走 `--sn-mp-*` token，`.sn-theme-dark` / `page.sn-theme-dark` 下自动翻转。
+全部颜色走 `--sn-mp-*` token，`.sn-theme-dark` 下自动翻转。
 
 ## Out of scope
 

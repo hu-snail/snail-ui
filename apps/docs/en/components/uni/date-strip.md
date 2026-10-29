@@ -97,7 +97,7 @@ The `formatter` hook rewrites `text` / `topInfo` / `bottomInfo` / `disabled` —
 
 ## Dark mode
 
-All colors resolve through `--sn-mp-*` tokens and flip under `.sn-theme-dark` / `page.sn-theme-dark`.
+All colors resolve through `--sn-mp-*` tokens and flip under `.sn-theme-dark`.
 
 ## Out of scope
 

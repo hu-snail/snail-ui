@@ -99,7 +99,7 @@
 
 ## 暗色模式
 
-气泡默认是「普通表面」配色：底色取 `--sn-mp-color-background-elevated`（亮色主题即白色）、文字取 `--sn-mp-color-text-primary`。这两个 token 都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动变成深底浅字，无需额外处理。需要自定义配色时，用 `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` 覆盖（对齐 wot-ui 的 `--wot-tooltip-bg` / `--wot-tooltip-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
+气泡默认是「普通表面」配色：底色取 `--sn-mp-color-background-elevated`（亮色主题即白色）、文字取 `--sn-mp-color-text-primary`。这两个 token 都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动变成深底浅字，无需额外处理。需要自定义配色时，用 `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` 覆盖（对齐 wot-ui 的 `--wot-tooltip-bg` / `--wot-tooltip-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

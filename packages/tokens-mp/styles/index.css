@@ -16,14 +16,14 @@
   --sn-mp-button-height-medium: 72rpx;
   --sn-mp-button-height-large: 88rpx;
   --sn-mp-button-padding-x: 24rpx;
-  --sn-mp-button-radius: 8rpx;
+  --sn-mp-button-radius: 12rpx;
   --sn-mp-button-font-size: 28rpx;
 
   --sn-mp-input-height-small: 56rpx;
   --sn-mp-input-height-medium: 68rpx;
   --sn-mp-input-height-large: 84rpx;
   --sn-mp-input-padding-x: 24rpx;
-  --sn-mp-input-radius: 8rpx;
+  --sn-mp-input-radius: 12rpx;
 
   --sn-mp-card-padding: 32rpx;
   --sn-mp-card-radius: 16rpx;
@@ -54,7 +54,7 @@
   --sn-mp-spacing-12: 80rpx;
   --sn-mp-radius-xs: 4rpx;
   --sn-mp-radius-sm: 8rpx;
-  --sn-mp-radius-md: 8rpx;
+  --sn-mp-radius-md: 12rpx;
   --sn-mp-radius-lg: 16rpx;
   --sn-mp-radius-xl: 24rpx;
   --sn-mp-radius-full: 19998rpx;
@@ -138,16 +138,18 @@
  * have no `:root` and no `document` — so the web approach of flipping a class
  * on `<html>` cannot drive them. Two hooks cover every target:
  *
- *   1. `page` — the uni-app page root. A consumer sets `page { … }`
- *      or the runtime class below.
- *   2. `.sn-theme-dark` — a class the app puts on the page root (or on any
+ *   `.sn-theme-dark` — a class the app puts on the page root (or on any
  *      wrapping `<view>`), which also works inside a `SnConfigProvider`.
  *
- * Both blocks are duplicated on purpose: the alias layer must resolve to the
- * same dark values whether the app toggles the page-level or the scoped class.
  * Only color / shadow slots flip — geometry (rpx) is theme-independent.
+ *
+ * Do NOT add a `page`-prefixed compound selector for the dark theme back:
+ * MP cannot put a class on the `page` element anyway, and uni-h5's postcss
+ * hoists custom properties from any rule whose selector contains the `page`
+ * tag onto `body` (unconditionally, no media query) — the dark values would
+ * poison light mode for every token-consuming component. Regression-guarded
+ * in `src/variables.test.ts`.
  */
-page.sn-theme-dark,
 .sn-theme-dark {
   --sn-mp-color-text-primary: #fafafa;
   --sn-mp-color-text-secondary: #a1a1aa;

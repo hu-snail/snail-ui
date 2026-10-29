@@ -94,7 +94,7 @@
 
 ## 暗色模式
 
-遮罩走 `--sn-mp-color-background-overlay`，关闭按钮底色 / 描边 / 图标分别走 `--sn-mp-color-background-elevated` / `--sn-mp-color-border-default` / `--sn-mp-color-text-secondary`，全部在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动适配。可用 `<sn-config-provider theme="dark">` 包裹验证。
+遮罩走 `--sn-mp-color-background-overlay`，关闭按钮底色 / 描边 / 图标分别走 `--sn-mp-color-background-elevated` / `--sn-mp-color-border-default` / `--sn-mp-color-text-secondary`，全部在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动适配。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

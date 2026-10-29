@@ -99,7 +99,7 @@ An array `content` renders one line per entry (objects contribute whichever of `
 
 ## Dark mode
 
-The bubble defaults to a plain surface: the fill is `--sn-mp-color-background-elevated` (white in the light theme) and the text is `--sn-mp-color-text-primary`. Both tokens are overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode becomes dark-fill / light-text automatically. To recolor the bubble, override `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` (the wot-ui `--wot-tooltip-bg` / `--wot-tooltip-color` parity); mind the dark-mode contrast yourself when you do. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The bubble defaults to a plain surface: the fill is `--sn-mp-color-background-elevated` (white in the light theme) and the text is `--sn-mp-color-text-primary`. Both tokens are overridden in the `.sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode becomes dark-fill / light-text automatically. To recolor the bubble, override `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` (the wot-ui `--wot-tooltip-bg` / `--wot-tooltip-color` parity); mind the dark-mode contrast yourself when you do. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 

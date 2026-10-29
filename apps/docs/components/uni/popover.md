@@ -115,7 +115,7 @@
 
 ## 暗色模式
 
-气泡底色走 `--sn-popover-bg`（默认 `--sn-mp-color-background-elevated`，亮色主题即白色）、文字走 `--sn-popover-color`（默认 `--sn-mp-color-text-primary`），两个默认 token 都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动适配。需要自定义配色时，用 `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` 覆盖（对齐 wot-ui 的 `--wot-popover-bg` / `--wot-popover-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
+气泡底色走 `--sn-popover-bg`（默认 `--sn-mp-color-background-elevated`，亮色主题即白色）、文字走 `--sn-popover-color`（默认 `--sn-mp-color-text-primary`），两个默认 token 都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动适配。需要自定义配色时，用 `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` 覆盖（对齐 wot-ui 的 `--wot-popover-bg` / `--wot-popover-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

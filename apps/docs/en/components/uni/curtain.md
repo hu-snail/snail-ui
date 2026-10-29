@@ -94,7 +94,7 @@
 
 ## Dark mode
 
-The scrim uses `--sn-mp-color-background-overlay`; the close button uses `--sn-mp-color-background-elevated` / `--sn-mp-color-border-default` / `--sn-mp-color-text-secondary` for fill, outline and glyph. All are overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The scrim uses `--sn-mp-color-background-overlay`; the close button uses `--sn-mp-color-background-elevated` / `--sn-mp-color-border-default` / `--sn-mp-color-text-secondary` for fill, outline and glyph. All are overridden in the `.sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 

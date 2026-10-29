@@ -61,7 +61,7 @@
 
 ## 暗色模式
 
-遮罩底色走 `--sn-mp-color-background-overlay`，该变量在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里已覆盖（暗色下为更深的近黑），因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
+遮罩底色走 `--sn-mp-color-background-overlay`，该变量在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里已覆盖（暗色下为更深的近黑），因此自动适配。可用 sn-config-provider 的 theme 设为 dark 包裹验证：
 
 ## 相关
 

@@ -3344,7 +3344,7 @@ uni-app 运行在无 `document` / 无 `:root` 的小程序与原生 App 上，we
 `.dark` on `<html>` 方案不可用。uni 端暗色的唯一契约：
 
 ```text
---sn-mp-color-* 别名  +  .sn-theme-dark class（或 page.sn-theme-dark）
+--sn-mp-color-* 别名  +  .sn-theme-dark class
 ```
 
 强制约束：
@@ -3352,7 +3352,7 @@ uni-app 运行在无 `document` / 无 `:root` 的小程序与原生 App 上，we
 1. 组件颜色 **只能** 通过 `var(--sn-mp-color-*)` 取得，禁止颜色字面量
 2. **禁止** `var(--sn-mp-x, #fff)` 这类浅色兜底 —— 兜底会让暗色下漏出浅色
 3. 新增 `--sn-mp-color-*` 必须在 `packages/tokens-mp/styles/index.css` 的
-   `page.sn-theme-dark, .sn-theme-dark` 块里同步覆盖
+   `.sn-theme-dark` 块里同步覆盖（禁止 `page.` 复合选择器：uni-h5 会把含 page 选择器规则的自定义属性无条件提升到 body，深色值会污染浅色模式）
    （`packages/tokens-mp/src/variables.test.ts` 有回归测试守着）
 4. 组件文档页必须有「暗色模式」小节，说明可用
    `<sn-config-provider theme="dark">` 包裹验证

@@ -118,12 +118,22 @@ describe('@snui/tokens-mp rpx conversion', () => {
     // color alias that exists in `:root` must be re-declared for dark, or a
     // component using it keeps its light value on a dark page.
     const css = await readFile(stylesheetPath, 'utf-8');
-    const darkBlock = css.slice(css.indexOf('page.sn-theme-dark'));
+    const darkBlock = css.slice(css.indexOf('.sn-theme-dark'));
     expect(darkBlock.length, 'dark block should exist').toBeGreaterThan(0);
     for (const [alias] of snMpColorMap) {
       if (!alias.includes('color-')) continue;
       expect(darkBlock, `${alias} missing from the dark block`).toContain(`${alias}:`);
     }
+  });
+
+  it('never scopes the dark block with a page tag selector', async () => {
+    // uni-h5's postcss hoists custom properties from any rule whose selector
+    // contains the `page` tag onto `body` — unconditionally, without a media
+    // query. A `page.sn-theme-dark` compound would therefore apply the dark
+    // palette to light mode on H5 (token-consuming components rendered dark
+    // until the class flipped). Dark is scoped to `.sn-theme-dark` only.
+    const css = await readFile(stylesheetPath, 'utf-8');
+    expect(css.includes('page.sn-theme-dark')).toBe(false);
   });
 
   it('exposes the tinted / input aliases the components actually reference', () => {

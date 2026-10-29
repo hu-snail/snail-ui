@@ -63,4 +63,4 @@ mask=false 显示明文；errorInfo 覆盖 info 并把边框切成危险色；gu
 
 ## 暗色模式
 
-所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` / `page.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：
+所有颜色都通过 `--sn-mp-*` token 解析，没有浅色兜底。`.sn-theme-dark` 下文字、底板、边框与状态色自动翻转。验证方式：

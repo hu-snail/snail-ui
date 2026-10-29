@@ -61,7 +61,7 @@
 
 ## Dark mode
 
-The scrim uses `--sn-mp-color-background-overlay`, already overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles` (a deeper near-black), so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
+The scrim uses `--sn-mp-color-background-overlay`, already overridden in the `.sn-theme-dark` block of `@snui/tokens-mp/styles` (a deeper near-black), so it adapts automatically. Verify with sn-config-provider 的 theme 设为 dark:
 
 ## Related
 

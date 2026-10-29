@@ -114,7 +114,7 @@ With `mode="menu"` the `content` prop is an option array. Tapping a row emits `m
 
 ## Dark mode
 
-The bubble uses `--sn-popover-bg` for its fill (default `--sn-mp-color-background-elevated` — white in the light theme) and `--sn-popover-color` for text (default `--sn-mp-color-text-primary`); both default tokens are overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. To recolor the bubble, override `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` (the wot-ui `--wot-popover-bg` / `--wot-popover-color` parity); mind the dark-mode contrast yourself when you do. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The bubble uses `--sn-popover-bg` for its fill (default `--sn-mp-color-background-elevated` — white in the light theme) and `--sn-popover-color` for text (default `--sn-mp-color-text-primary`); both default tokens are overridden in the `.sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. To recolor the bubble, override `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` (the wot-ui `--wot-popover-bg` / `--wot-popover-color` parity); mind the dark-mode contrast yourself when you do. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 

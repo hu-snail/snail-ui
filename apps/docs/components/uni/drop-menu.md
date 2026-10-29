@@ -119,7 +119,7 @@
 
 ## 暗色模式
 
-菜单栏、面板、分隔线分别走 `--sn-mp-color-background-elevated`、`--sn-mp-color-border-subtle`，蒙层走 `--sn-mp-color-background-overlay`，三者都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动适配。可用 `<sn-config-provider theme="dark">` 包裹验证。
+菜单栏、面板、分隔线分别走 `--sn-mp-color-background-elevated`、`--sn-mp-color-border-subtle`，蒙层走 `--sn-mp-color-background-overlay`，三者都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动适配。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

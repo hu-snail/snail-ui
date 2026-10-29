@@ -53,7 +53,7 @@ uni-app 运行在无 `document`、无 `:root` 的小程序与原生 App 上，we
 
 | 机制           | 影响的变量                                                                                      |
 | -------------- | ----------------------------------------------------------------------------------------------- |
-| `theme="dark"` | `@snui/tokens-mp/styles` 中 `page.sn-theme-dark, .sn-theme-dark` 块声明的全部 `--sn-mp-color-*` |
+| `theme="dark"` | `@snui/tokens-mp/styles` 中 `.sn-theme-dark` 块声明的全部 `--sn-mp-color-*` |
 | `themeVars`    | 调用方传入的任意键                                                                              |
 
 ## 无障碍

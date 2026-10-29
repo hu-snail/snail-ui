@@ -119,7 +119,7 @@
 
 ## Dark mode
 
-The bar and panel use `--sn-mp-color-background-elevated`, separators use `--sn-mp-color-border-subtle` and the scrim uses `--sn-mp-color-background-overlay` — all three are overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The bar and panel use `--sn-mp-color-background-elevated`, separators use `--sn-mp-color-border-subtle` and the scrim uses `--sn-mp-color-background-overlay` — all three are overridden in the `.sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 
