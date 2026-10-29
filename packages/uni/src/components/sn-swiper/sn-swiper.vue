@@ -394,6 +394,12 @@ const rootClass = computed(() => [
 const rootStyle = computed(() => {
   const parts = [`height: ${heightStyle.value}`];
   if (radiusStyle.value) parts.push(`border-radius: ${radiusStyle.value}`);
+  // Coverflow rounds each card, not the track — hand the caller's radius down
+  // to the slides through a custom property (custom properties survive the
+  // platforms' style parsing; raw rpx values in some positions do not).
+  if (props.coverflow && radiusStyle.value) {
+    parts.push(`--sn-swiper-coverflow-radius: ${radiusStyle.value}`);
+  }
   if (props.customStyle) parts.push(props.customStyle);
   return parts.join('; ');
 });
@@ -607,6 +613,10 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
     </swiper>
 
     <view v-if="showsIndicator" :class="indicatorClass" aria-hidden="true">
+      <view v-if="showsControls" class="sn-swiper__control sn-swiper__control--prev" @tap="onPrevControlTap">
+        <text class="sn-swiper__control-text">‹</text>
+      </view>
+
       <view v-if="indicatorType === 'fraction'" class="sn-swiper__fraction">
         <text class="sn-swiper__fraction-text">{{ activePage + 1 }}/{{ pageCount }}</text>
       </view>
@@ -625,14 +635,9 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
         />
       </view>
 
-      <template v-if="showsControls">
-        <view class="sn-swiper__control sn-swiper__control--prev" @tap="onPrevControlTap">
-          <text class="sn-swiper__control-text">‹</text>
-        </view>
-        <view class="sn-swiper__control sn-swiper__control--next" @tap="onNextControlTap">
-          <text class="sn-swiper__control-text">›</text>
-        </view>
-      </template>
+      <view v-if="showsControls" class="sn-swiper__control sn-swiper__control--next" @tap="onNextControlTap">
+        <text class="sn-swiper__control-text">›</text>
+      </view>
     </view>
   </view>
 </template>
@@ -689,16 +694,27 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
 
 /* ── Coverflow mode (AUI-additive; see the file header) ────────────────────── */
 
-.sn-swiper--coverflow .sn-swiper__slide {
-  /* The inline scale() on each slide animates as `current` moves. */
-  transition: transform 300ms ease;
-  will-change: transform;
+.sn-swiper--coverflow {
+  /* Inter-card gap so the peeking neighbours read as separate rounded cards. */
+  --sn-swiper-coverflow-gap: var(--sn-mp-spacing-2);
 }
 
-/* The root keeps `overflow: hidden` for the track; each card rounds itself so
- * the scaled-down neighbours read as separate rounded cards (设计图 1). */
+/* The margins make the track narrower than the root, so neighbours peek; the
+ * gap insets each card from the peek edge. */
+.sn-swiper--coverflow .sn-swiper__item {
+  padding-right: var(--sn-swiper-coverflow-gap);
+  padding-left: var(--sn-swiper-coverflow-gap);
+}
+
 .sn-swiper--coverflow .sn-swiper__slide {
-  border-radius: var(--sn-mp-radius-lg);
+  /* Radius comes from the `radius` prop via --sn-swiper-coverflow-radius so a
+   * caller-rounded design lands on each card, not on the whole track. */
+  border-radius: var(--sn-swiper-coverflow-radius, var(--sn-mp-radius-lg));
+  overflow: hidden;
+  /* The inline scale() on each slide animates as `current` moves. Transform
+   * only — width/height/layout properties would force per-frame reflow. */
+  transition: transform 300ms ease;
+  backface-visibility: hidden;
 }
 .sn-swiper__caption {
   position: absolute;
