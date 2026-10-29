@@ -24,12 +24,37 @@ describe('SnBarcode', () => {
     expect(wrapper.text()).toContain('EAN-13');
   });
 
-  it('should emit error for an unimplemented format instead of wrong output', async () => {
-    const wrapper = mount(SnBarcode, { props: { text: '590123412345', format: 'CODE128' } });
+  it('should render CODE128 text and emit the display text', async () => {
+    const wrapper = mount(SnBarcode, { props: { text: 'HELLO123', format: 'CODE128' } });
     await wrapper.vm.$nextTick();
-    const errors = wrapper.emitted('error');
-    expect(errors).toHaveLength(1);
-    expect((errors![0] as unknown[])[0]).toMatchObject({ code: 'BARCODE_FORMAT_UNSUPPORTED' });
+    expect(wrapper.find('.sn-barcode__bars').exists()).toBe(true);
+    const rendered = wrapper.emitted('rendered');
+    expect((rendered![0] as unknown[])[0]).toMatchObject({ displayText: 'HELLO123' });
+  });
+
+  it('should render every supported format without errors', async () => {
+    const cases: Array<[string, string]> = [
+      ['CODE39', 'HELLO1'],
+      ['EAN13', '590123412345'],
+      ['EAN8', '9638507'],
+      ['UPC', '03600029145'],
+      ['CODEBAR', 'A123456789B'],
+      ['ITF', '12345678'],
+    ];
+    for (const [format, text] of cases) {
+      const wrapper = mount(SnBarcode, { props: { text, format } });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.sn-barcode__bars').exists(), `${format}`).toBe(true);
+      expect(wrapper.emitted('error'), `${format}`).toBeUndefined();
+    }
+  });
+
+  it('should emit a per-format error for empty text', async () => {
+    const wrapper = mount(SnBarcode, { props: { text: '', format: 'ITF' } });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('error')![0]).toEqual([
+      { code: 'BARCODE_TEXT_INVALID', message: 'ITF 需要偶数位数字' },
+    ]);
   });
 });
 
