@@ -2,8 +2,10 @@
  * sn-backtop unit tests — uni-end back-to-top button.
  *
  * Behaviour only (AGENTS.md §46): the scrollTop threshold, the tap → emit /
- * pageScrollTo contract, the shape variants and the accessibility wiring. No
- * rpx numbers in assertions — happy-dom discards lengths it cannot parse.
+ * pageScrollTo contract, the shape / size / theme variants and the
+ * accessibility wiring. No rpx numbers in assertions — happy-dom discards
+ * lengths it cannot parse; icon tier sizes are asserted on the forwarded
+ * SnIcon prop, before the DOM style layer.
  */
 
 import { describe, it, expect, vi, afterEach } from 'vitest';
@@ -123,6 +125,70 @@ describe('sn-backtop', () => {
       });
       expect(wrapper.classes()).toContain('my-backtop');
       expect(wrapper.attributes('style')).toContain('margin: 4px');
+    });
+  });
+
+  describe('size tiers', () => {
+    it('defaults to the medium tier with the medium icon token', () => {
+      const wrapper = mount(SnBacktop);
+      expect(wrapper.classes()).toContain('sn-backtop--size-medium');
+      expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe(
+        'var(--sn-mp-icon-size-medium)',
+      );
+    });
+
+    it('scales the icon token down on the small tier', () => {
+      const wrapper = mount(SnBacktop, { props: { size: 'small' } });
+      expect(wrapper.classes()).toContain('sn-backtop--size-small');
+      expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe(
+        'var(--sn-mp-icon-size-small)',
+      );
+    });
+
+    it('scales the icon token up on the large tier', () => {
+      const wrapper = mount(SnBacktop, { props: { size: 'large' } });
+      expect(wrapper.classes()).toContain('sn-backtop--size-large');
+      expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe(
+        'var(--sn-mp-icon-size-large)',
+      );
+    });
+  });
+
+  describe('theme', () => {
+    it('defaults to the neutral surface theme', () => {
+      expect(mount(SnBacktop).classes()).toContain('sn-backtop--theme-default');
+    });
+
+    it.each(['primary', 'success', 'warning', 'danger', 'info'] as const)(
+      'applies the %s theme class',
+      (theme) => {
+        expect(mount(SnBacktop, { props: { theme } }).classes()).toContain(
+          `sn-backtop--theme-${theme}`,
+        );
+      },
+    );
+
+    it('combines theme with shape and size classes', () => {
+      const wrapper = mount(SnBacktop, {
+        props: { theme: 'danger', shape: 'square', size: 'large' },
+      });
+      expect(wrapper.classes()).toEqual(
+        expect.arrayContaining([
+          'sn-backtop--theme-danger',
+          'sn-backtop--square',
+          'sn-backtop--size-large',
+        ]),
+      );
+    });
+  });
+
+  describe('label overflow guard', () => {
+    it('keeps a long label intact for a11y while the CSS box clips it', async () => {
+      const label = '一个特别特别特别长的回到顶部文案';
+      const wrapper = mount(SnBacktop, { props: { text: label, scrollTop: 500 } });
+      expect(wrapper.find('.sn-backtop__text').text()).toBe(label);
+      await wrapper.trigger('tap');
+      expect(wrapper.emitted('click')).toHaveLength(1);
     });
   });
 

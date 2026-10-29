@@ -1,73 +1,124 @@
 <script setup lang="ts">
 /**
- * Demo: sn-fab (uni-end) — `active-icon` / `inactive-icon` 切换 + `z-index` +
- * `custom-style`。
+ * Demo: sn-fab (uni-end) — 触发按钮的两条图标轨道 + 主题色切换。
  *
- *   - `inactive-icon` 收起时的图标名（经 sn-icon registry 解析）
- *   - `active-icon`   展开时的图标名
- *   - `z-index`       根节点层级
- *   - `custom-style`  追加到根节点 inline style（z-index 之后写入，可覆盖）
+ *   - icon-name 轨道：`inactive-icon` / `active-icon` 传注册名（左下，
+ *     Edit ↔ X），registry 名经 registerSnIcons() 注册后解析。
+ *   - IconData 轨道：`trigger` 插槽内直接渲染 SnIcon 对象（右下，
+ *     Sparkles ↔ X），随 active 状态切换，不经 registry。
+ *   - 动作项为图标气泡，尺寸走 --sn-mp-icon-size-large（88rpx 气泡内约
+ *     0.45 径比）；点气泡记录反馈并收起。
+ *   - 色板切换右下 FAB 的 `type`（5 档主题色实时生效）。
  *
- * `plus` / `close` 是内置的两个默认名，其余名字走 `registerSnIcons()`。
- * 这里用内置名 + 注册名各演示一组。
+ * 文案与 fab-mp-icons.en.vue 对等。
  */
 import { onBeforeUnmount, ref } from 'vue';
-import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import { registerSnIcons, clearSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import { Heart, Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  Bell,
+  Coffee,
+  Edit,
+  Heart,
+  Music,
+  Sparkles,
+  Star,
+  X,
+  Zap,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
-registerSnIcons({ Heart, Star });
+/** Mirrors the sn-fab `type` union; the component does not export the alias. */
+type DemoFabType = 'primary' | 'success' | 'info' | 'warning' | 'danger';
+
+registerSnIcons({ Edit, X });
 onBeforeUnmount(() => clearSnIcons());
 
-const builtinActive = ref(false);
-const customIconsActive = ref(false);
-const lastAction = ref('—');
+const nameTrackActive = ref(false);
+const dataTrackActive = ref(false);
+const dataTrackType = ref<DemoFabType>('success');
+const lastAction = ref('');
+
+const typeOptions: Array<{ value: DemoFabType; label: string; color: string }> = [
+  { value: 'primary', label: '主色', color: 'var(--sn-mp-color-action-primary)' },
+  { value: 'success', label: '成功', color: 'var(--sn-mp-color-feedback-success)' },
+  { value: 'info', label: '信息', color: 'var(--sn-mp-color-feedback-info)' },
+  { value: 'warning', label: '警告', color: 'var(--sn-mp-color-feedback-warning)' },
+  { value: 'danger', label: '危险', color: 'var(--sn-mp-color-feedback-danger)' },
+];
 
 function pick(label: string): void {
   lastAction.value = label;
-  builtinActive.value = false;
-  customIconsActive.value = false;
+  nameTrackActive.value = false;
+  dataTrackActive.value = false;
 }
 </script>
 
 <template>
   <view class="sn-demo sn-fab-demo__stage">
-    <text class="sn-fab-demo__meta">已触发：{{ lastAction }}</text>
-    <text class="sn-fab-demo__meta">
-      左下：inactive-icon=plus / active-icon=close（内置名）；右下：heart / star（registry 名）+
-      z-index
-    </text>
+    <view class="sn-fab-demo__hint">
+      <text class="sn-fab-demo__hint-title">触发图标双轨与主题色</text>
+      <text class="sn-fab-demo__hint-text">
+        左下：icon-name 轨道（Edit ↔ X）；右下：trigger 插槽 IconData（Sparkles ↔ X）+ 色板切主题。最近选择：{{ lastAction === '' ? '尚未选择' : lastAction }}
+      </text>
+      <view class="sn-fab-demo__swatches" aria-label="主题色板">
+        <view
+          v-for="option in typeOptions"
+          :key="option.value"
+          class="sn-fab-demo__swatch"
+          :class="{ 'sn-fab-demo__swatch--picked': option.value === dataTrackType }"
+          :style="{ backgroundColor: option.color }"
+          role="button"
+          :aria-label="`主题 ${option.label}`"
+          @tap="dataTrackType = option.value"
+        />
+      </view>
+    </view>
 
-    <!-- 内置图标名：plus 收起、close 展开。 -->
     <SnFab
-      v-model:active="builtinActive"
-      inactive-icon="plus"
-      active-icon="close"
+      v-model:active="nameTrackActive"
+      inactive-icon="Edit"
+      active-icon="X"
+      type="warning"
       position="left-bottom"
+      direction="up"
       :gap="{ bottom: 16, left: 16 }"
-      :z-index="10"
       custom-class="sn-demo-contained"
     >
-      <SnButton round size="small" @tap="pick('内置 A')">A</SnButton>
-      <SnButton round size="small" @tap="pick('内置 B')">B</SnButton>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="收藏" @tap="pick('收藏')">
+        <SnIcon :icon="Star" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="喜欢" @tap="pick('喜欢')">
+        <SnIcon :icon="Heart" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="提醒" @tap="pick('提醒')">
+        <SnIcon :icon="Bell" size="var(--sn-mp-icon-size-large)" />
+      </view>
     </SnFab>
 
-    <!-- registry 图标名 + 更高层级 + custom-style 追加阴影。 -->
     <SnFab
-      v-model:active="customIconsActive"
-      inactive-icon="Heart"
-      active-icon="Star"
-      type="success"
+      v-model:active="dataTrackActive"
+      :type="dataTrackType"
       position="right-bottom"
+      direction="up"
       :gap="{ bottom: 16, right: 16 }"
-      :z-index="200"
-      custom-style="box-shadow: var(--sn-mp-shadow-lg);"
       custom-class="sn-demo-contained"
     >
-      <SnButton type="primary" round size="small" @tap="pick('注册图标 A')">A</SnButton>
-      <SnButton type="success" round size="small" @tap="pick('注册图标 B')">B</SnButton>
-      <SnButton round size="small" @tap="pick('注册图标 C')">C</SnButton>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="音乐" @tap="pick('音乐')">
+        <SnIcon :icon="Music" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="咖啡" @tap="pick('咖啡')">
+        <SnIcon :icon="Coffee" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <view class="sn-fab-demo__bubble" role="button" aria-label="快捷启动" @tap="pick('快捷启动')">
+        <SnIcon :icon="Zap" size="var(--sn-mp-icon-size-large)" />
+      </view>
+      <template #trigger>
+        <SnIcon
+          :icon="dataTrackActive ? X : Sparkles"
+          size="var(--sn-mp-icon-size-large)"
+        />
+      </template>
     </SnFab>
   </view>
 </template>
@@ -76,16 +127,62 @@ function pick(label: string): void {
 .sn-fab-demo__stage {
   position: relative;
   width: 100%;
-  height: 520rpx;
+  height: 560rpx;
   overflow: hidden;
-  border-radius: var(--sn-mp-radius-md);
-  background-color: var(--sn-mp-color-background-surface);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-subtle);
 }
-.sn-fab-demo__meta {
-  padding: var(--sn-mp-spacing-3);
-  font-size: var(--sn-mp-font-size-xs);
+
+.sn-fab-demo__hint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-1);
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5) 0;
+}
+
+.sn-fab-demo__hint-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-fab-demo__hint-text {
+  font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-secondary);
 }
+
+.sn-fab-demo__swatches {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sn-mp-spacing-3);
+  margin-top: var(--sn-mp-spacing-3);
+}
+
+.sn-fab-demo__swatch {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: var(--sn-mp-radius-full);
+  opacity: 0.45;
+}
+
+.sn-fab-demo__swatch--picked {
+  opacity: 1;
+  box-shadow: var(--sn-mp-shadow-sm);
+}
+
+.sn-fab-demo__bubble {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: var(--sn-mp-shadow-sm);
+  color: var(--sn-mp-color-text-secondary);
+}
+
 /* Docs-preview only — pin the fixed layer to the phone screen. */
 .sn-fab.sn-demo-contained {
   position: absolute;

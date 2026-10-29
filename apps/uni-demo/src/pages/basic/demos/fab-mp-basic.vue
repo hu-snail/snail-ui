@@ -1,16 +1,24 @@
 <script setup lang="ts">
 /**
- * Demo: sn-fab (uni-end) — anchored floating button with an expanding menu.
- * Per AUI-DOCS-016: imports the real @snui/uni sn-fab from its SFC source.
- * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to the
- * phone screen (the real runtime keeps `position: fixed`).
+ * Demo: sn-fab (uni-end) — 图标触发按钮 + 「图标 + 文字」胶囊动作项。
+ *
+ *   - 触发按钮用内置 plus / close 图标（icon-name 双轨之一，另一轨见
+ *     fab-mp-icons 的 trigger 插槽 IconData），尺寸走 --sn-mp-icon-size-*
+ *     档位，与 96rpx 按钮径保持约 0.42 的视觉比例。
+ *   - 动作项为胶囊（icon + text），收起 / 展开由 v-model:active 驱动，
+ *     沿 direction="up" 向上依次滑出。
+ *   - 点动作项记录反馈并收起菜单；文案与 fab-mp-basic.en.vue 对等。
+ *
+ * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
+ * the phone screen (the real runtime keeps `position: fixed`).
  */
 import { ref } from 'vue';
-import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Camera, Edit, Image } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const active = ref(false);
-const lastAction = ref('—');
+const lastAction = ref('');
 
 function pick(label: string): void {
   lastAction.value = label;
@@ -20,17 +28,46 @@ function pick(label: string): void {
 
 <template>
   <view class="sn-demo sn-fab-demo__stage">
-    <text class="sn-fab-demo__meta">已触发：{{ lastAction }}</text>
+    <view class="sn-fab-demo__hint">
+      <text class="sn-fab-demo__hint-title">胶囊动作项</text>
+      <text class="sn-fab-demo__hint-text">
+        点右下角触发按钮，动作项沿上方依次滑出。最近选择：{{ lastAction === '' ? '尚未选择' : lastAction }}
+      </text>
+    </view>
 
     <SnFab
       v-model:active="active"
       position="right-bottom"
-      direction="top"
+      direction="up"
       custom-class="sn-demo-contained"
     >
-      <SnButton type="primary" round size="small" @tap="pick('写文章')">写</SnButton>
-      <SnButton type="success" round size="small" @tap="pick('上传图片')">传</SnButton>
-      <SnButton round size="small" @tap="pick('记笔记')">记</SnButton>
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="写文章"
+        @tap="pick('写文章')"
+      >
+        <SnIcon class="sn-fab-demo__pill-icon" :icon="Edit" size="var(--sn-mp-icon-size-medium)" />
+        <text class="sn-fab-demo__pill-text">写文章</text>
+      </view>
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="拍照"
+        @tap="pick('拍照')"
+      >
+        <SnIcon class="sn-fab-demo__pill-icon" :icon="Camera" size="var(--sn-mp-icon-size-medium)" />
+        <text class="sn-fab-demo__pill-text">拍照</text>
+      </view>
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="上传图片"
+        @tap="pick('上传图片')"
+      >
+        <SnIcon class="sn-fab-demo__pill-icon" :icon="Image" size="var(--sn-mp-icon-size-medium)" />
+        <text class="sn-fab-demo__pill-text">上传图片</text>
+      </view>
     </SnFab>
   </view>
 </template>
@@ -39,16 +76,51 @@ function pick(label: string): void {
 .sn-fab-demo__stage {
   position: relative;
   width: 100%;
-  height: 520rpx;
+  height: 560rpx;
   overflow: hidden;
-  border-radius: 16rpx;
-  background-color: var(--sn-mp-color-background-surface);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-subtle);
 }
-.sn-fab-demo__meta {
-  padding: 24rpx;
-  font-size: 26rpx;
+
+.sn-fab-demo__hint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-1);
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5) 0;
+}
+
+.sn-fab-demo__hint-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-fab-demo__hint-text {
+  font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-secondary);
 }
+
+.sn-fab-demo__pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  height: 72rpx;
+  padding: 0 var(--sn-mp-spacing-5);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: var(--sn-mp-shadow-sm);
+}
+
+.sn-fab-demo__pill-icon {
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-fab-demo__pill-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-primary);
+}
+
 /* Docs-preview only — pin the fixed layer to the phone screen. */
 .sn-fab.sn-demo-contained {
   position: absolute;

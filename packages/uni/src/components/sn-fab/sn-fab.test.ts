@@ -254,4 +254,34 @@ describe('sn-fab', () => {
     const wrapper = mount(SnFab, { props: { direction: 'left' } });
     expect(wrapper.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--left');
   });
+
+  it('defaults to the up direction with the canonical top classes', () => {
+    const wrapper = mount(SnFab);
+    expect(wrapper.classes()).toContain('sn-fab--top');
+    expect(wrapper.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--top');
+  });
+
+  it('normalizes the additive up / down aliases to the top / bottom classes', () => {
+    const up = mount(SnFab, { props: { direction: 'up' } });
+    expect(up.classes()).toContain('sn-fab--top');
+    expect(up.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--top');
+
+    const down = mount(SnFab, { props: { direction: 'down' } });
+    expect(down.classes()).toContain('sn-fab--bottom');
+    expect(down.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--bottom');
+  });
+
+  it('keeps the legacy top / bottom direction values working', () => {
+    const top = mount(SnFab, { props: { direction: 'top' } });
+    expect(top.classes()).toContain('sn-fab--top');
+
+    const bottom = mount(SnFab, { props: { direction: 'bottom' } });
+    expect(bottom.find('.sn-fab__menu').classes()).toContain('sn-fab__menu--bottom');
+  });
+
+  it('sizes the trigger glyph with the icon-size token, not a pixel box', () => {
+    const wrapper = mount(SnFab);
+    const iconStyle = wrapper.find('.sn-fab__trigger .sn-icon').attributes('style') ?? '';
+    expect(iconStyle).toContain('var(--sn-mp-icon-size-');
+  });
 });

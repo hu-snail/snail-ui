@@ -28,6 +28,10 @@
  *     the matching side of `gap`, exactly like the reference.
  *   - Drag does not "stick" to an edge after release (the reference snaps);
  *     the offset is kept where the user left it, clamped inside the viewport.
+ *   - `direction` additionally accepts `up` / `down` (additive aliases of
+ *     `top` / `bottom`, AUI-OPT-02) and the root lays the menu out strictly
+ *     along the chosen direction — even for side-centred anchors, where the
+ *     reference layout used to force a horizontal stack.
  *
  * Per AGENTS.md §32, this component handles rendering + interaction only.
  *
@@ -66,8 +70,12 @@ type FabPosition =
   | 'top-center'
   | 'bottom-center';
 
-/** Menu expansion direction. Mirrors `wd-fab` `direction`. */
-type FabDirection = 'top' | 'right' | 'bottom' | 'left';
+/**
+ * Menu expansion direction. Mirrors `wd-fab` `direction`; `up` / `down` are
+ * additive aliases (AUI-OPT-02) that normalize to `top` / `bottom`, which
+ * stay accepted for backward compatibility (AGENTS.md §78).
+ */
+type FabDirection = 'up' | 'down' | 'left' | 'right' | 'top' | 'bottom';
 
 /** Per-edge gap. Mirrors `wd-fab` `gap`. */
 export interface SnFabGap {
@@ -93,7 +101,7 @@ const props = withDefaults(
     position?: FabPosition;
     /** Allow dragging the trigger. */
     draggable?: boolean;
-    /** Menu expansion direction. */
+    /** Menu expansion direction (`up` / `down` alias `top` / `bottom`). */
     direction?: FabDirection;
     /** Disable the whole button. */
     disabled?: boolean;
@@ -125,7 +133,7 @@ const props = withDefaults(
     type: 'primary',
     position: 'right-bottom',
     draggable: false,
-    direction: 'top',
+    direction: 'up',
     disabled: false,
     inactiveIcon: 'plus',
     activeIcon: 'close',
@@ -175,6 +183,20 @@ const triggerIcon = computed(() =>
   resolveTriggerIcon(props.active ? props.activeIcon : props.inactiveIcon, props.active),
 );
 
+/**
+ * Trigger glyph size rides the icon-size token (40rpx ≈ 0.42 of the 96rpx
+ * trigger) instead of a hard-coded pixel box, so it follows the theme's
+ * icon scale (AGENTS.md §34 — no hard-coded geometry).
+ */
+const TRIGGER_ICON_SIZE = 'var(--sn-mp-icon-size-large)';
+
+/** Canonical direction: `up` / `down` normalize to `top` / `bottom`. */
+const resolvedDirection = computed<'top' | 'bottom' | 'left' | 'right'>(() => {
+  if (props.direction === 'up') return 'top';
+  if (props.direction === 'down') return 'bottom';
+  return props.direction;
+});
+
 /** Resolved edge gaps (per-side props win over `gap`). */
 const resolvedGap = computed(() => ({
   top: props.top ?? props.gap.top ?? DEFAULT_GAP.top,
@@ -217,7 +239,7 @@ const anchorStyle = computed(() => {
 const rootClass = computed(() => [
   'sn-fab',
   `sn-fab--${props.position}`,
-  `sn-fab--${props.direction}`,
+  `sn-fab--${resolvedDirection.value}`,
   {
     'sn-fab--active': props.active,
     'sn-fab--disabled': props.disabled,
@@ -247,7 +269,7 @@ const triggerClass = computed(() => [
 
 const menuClass = computed(() => [
   'sn-fab__menu',
-  `sn-fab__menu--${props.direction}`,
+  `sn-fab__menu--${resolvedDirection.value}`,
   { 'sn-fab__menu--open': props.active },
 ]);
 
@@ -322,7 +344,7 @@ function onTouchEnd(): void {
       @touchend="onTouchEnd"
     >
       <slot name="trigger">
-        <SnIcon :icon="triggerIcon" :size="48" />
+        <SnIcon :icon="triggerIcon" :size="TRIGGER_ICON_SIZE" />
       </slot>
     </view>
   </view>
@@ -335,7 +357,6 @@ function onTouchEnd(): void {
 .sn-fab {
   position: fixed;
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: var(--sn-mp-spacing-3);
   box-sizing: border-box;
@@ -385,38 +406,54 @@ function onTouchEnd(): void {
 
 .sn-fab__menu {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: var(--sn-mp-spacing-2);
+  gap: var(--sn-mp-spacing-3);
   opacity: 0;
   visibility: hidden;
   transition:
     opacity 0.2s ease,
+    transform 0.2s ease,
     visibility 0.2s ease;
 }
 
 .sn-fab__menu--open {
   opacity: 1;
   visibility: visible;
+  transform: translate(0, 0);
 }
 
-/* Direction: the menu stacks away from the trigger. */
+/* Direction: the menu stacks away from the trigger and slides out along the
+ * same axis while fading in (collapsed it starts offset toward the trigger). */
 .sn-fab__menu--top {
   flex-direction: column-reverse;
+  transform: translateY(var(--sn-mp-spacing-4));
 }
 .sn-fab__menu--bottom {
   flex-direction: column;
+  transform: translateY(calc(-1 * var(--sn-mp-spacing-4)));
 }
 .sn-fab__menu--right {
   flex-direction: row;
+  transform: translateX(calc(-1 * var(--sn-mp-spacing-4)));
 }
 .sn-fab__menu--left {
   flex-direction: row-reverse;
+  transform: translateX(var(--sn-mp-spacing-4));
 }
 
-/* Side-centred anchors lay the menu out horizontally. */
-.sn-fab--left-center,
-.sn-fab--right-center {
+/* Direction decides which side of the trigger the menu grows from; the
+ * menu is the first DOM child, so the reversed flows put it below / to the
+ * right of the trigger without touching the markup. */
+.sn-fab--top {
+  flex-direction: column;
+}
+.sn-fab--bottom {
+  flex-direction: column-reverse;
+}
+.sn-fab--left {
   flex-direction: row;
+}
+.sn-fab--right {
+  flex-direction: row-reverse;
 }
 </style>

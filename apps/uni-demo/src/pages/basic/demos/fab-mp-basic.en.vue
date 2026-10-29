@@ -1,16 +1,26 @@
 <script setup lang="ts">
 /**
- * Demo: sn-fab (uni-end) — anchored floating button with an expanding menu.
- * Per AUI-DOCS-016: imports the real @snui/uni sn-fab from its SFC source.
- * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to the
- * phone screen (the real runtime keeps `position: fixed`).
+ * Demo: sn-fab (uni-end) — icon trigger + "icon + text" pill action items.
+ *
+ *   - The trigger uses the built-in plus / close icons (one of the two
+ *     icon-name tracks; the other — the trigger slot with IconData — see
+ *     fab-mp-icons). Glyph size rides the --sn-mp-icon-size-* tier, keeping
+ *     a ~0.42 ratio to the 96rpx button.
+ *   - Action items are pills (icon + text); expansion is driven by
+ *     v-model:active and slides out sequentially along direction="up".
+ *   - Tapping an item records the feedback and collapses the menu; copy is
+ *     kept in parity with fab-mp-basic.vue.
+ *
+ * Docs preview: `custom-class="sn-demo-contained"` pins the fixed layer to
+ * the phone screen (the real runtime keeps `position: fixed`).
  */
 import { ref } from 'vue';
-import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnFab from '@snui/uni-src/components/sn-fab/sn-fab.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import { Camera, Edit, Image } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const active = ref(false);
-const lastAction = ref('—');
+const lastAction = ref('');
 
 function pick(label: string): void {
   lastAction.value = label;
@@ -20,17 +30,46 @@ function pick(label: string): void {
 
 <template>
   <view class="sn-demo sn-fab-demo__stage">
-    <text class="sn-fab-demo__meta">Triggered: {{ lastAction }}</text>
+    <view class="sn-fab-demo__hint">
+      <text class="sn-fab-demo__hint-title">Pill action items</text>
+      <text class="sn-fab-demo__hint-text">
+        Tap the bottom-right trigger; items slide out upwards one by one. Last picked: {{ lastAction === '' ? 'none yet' : lastAction }}
+      </text>
+    </view>
 
     <SnFab
       v-model:active="active"
       position="right-bottom"
-      direction="top"
+      direction="up"
       custom-class="sn-demo-contained"
     >
-      <SnButton type="primary" round size="small" @tap="pick('Compose')">C</SnButton>
-      <SnButton type="success" round size="small" @tap="pick('Upload')">U</SnButton>
-      <SnButton round size="small" @tap="pick('Note')">N</SnButton>
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Compose"
+        @tap="pick('Compose')"
+      >
+        <SnIcon class="sn-fab-demo__pill-icon" :icon="Edit" size="var(--sn-mp-icon-size-medium)" />
+        <text class="sn-fab-demo__pill-text">Compose</text>
+      </view>
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Camera"
+        @tap="pick('Camera')"
+      >
+        <SnIcon class="sn-fab-demo__pill-icon" :icon="Camera" size="var(--sn-mp-icon-size-medium)" />
+        <text class="sn-fab-demo__pill-text">Camera</text>
+      </view>
+      <view
+        class="sn-fab-demo__pill"
+        role="button"
+        aria-label="Upload photo"
+        @tap="pick('Upload photo')"
+      >
+        <SnIcon class="sn-fab-demo__pill-icon" :icon="Image" size="var(--sn-mp-icon-size-medium)" />
+        <text class="sn-fab-demo__pill-text">Upload</text>
+      </view>
     </SnFab>
   </view>
 </template>
@@ -39,16 +78,51 @@ function pick(label: string): void {
 .sn-fab-demo__stage {
   position: relative;
   width: 100%;
-  height: 520rpx;
+  height: 560rpx;
   overflow: hidden;
-  border-radius: 16rpx;
-  background-color: var(--sn-mp-color-background-surface);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-subtle);
 }
-.sn-fab-demo__meta {
-  padding: 24rpx;
-  font-size: 26rpx;
+
+.sn-fab-demo__hint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-1);
+  padding: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5) 0;
+}
+
+.sn-fab-demo__hint-title {
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: 600;
+  color: var(--sn-mp-color-text-primary);
+}
+
+.sn-fab-demo__hint-text {
+  font-size: var(--sn-mp-font-size-sm);
   color: var(--sn-mp-color-text-secondary);
 }
+
+.sn-fab-demo__pill {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--sn-mp-spacing-2);
+  height: 72rpx;
+  padding: 0 var(--sn-mp-spacing-5);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-elevated);
+  box-shadow: var(--sn-mp-shadow-sm);
+}
+
+.sn-fab-demo__pill-icon {
+  color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-fab-demo__pill-text {
+  font-size: var(--sn-mp-font-size-sm);
+  color: var(--sn-mp-color-text-primary);
+}
+
 /* Docs-preview only — pin the fixed layer to the phone screen. */
 .sn-fab.sn-demo-contained {
   position: absolute;
