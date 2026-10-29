@@ -1,41 +1,23 @@
 <script setup lang="ts">
 /**
  * 模板总览首页（tab）—— 模板商店布局：
- *   自定义导航（微信胶囊让位）→ sn-paging 根容器，#top 固定「搜索 + 热搜 +
- *   分类 Tab」，默认插槽渲染精选位 + 排序条 + 双列模板卡瀑布流。
- * 深浅色跟随系统（useTplTheme），原生 tabBar 由 pages.json 声明。
+ *   sn-paging 根容器，#top 固定「搜索 + 热搜 + 分类 Tab」，默认插槽渲染
+ *   精选位 + 排序条 + 双列模板卡瀑布流；页面无标题行，仅保留状态栏占位
+ *   （微信胶囊浮于状态栏带内，天然无冲突）。深浅色跟随系统（useTplTheme），
+ *   原生 tabBar 由 pages.json 声明。
  */
 import { ref, watch } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
-import {
-  ArrowRight,
-  Bell,
-  ChevronDown,
-  Search,
-  User,
-} from '@snui/uni-src/components/sn-icon/sn-icon-set';
-import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
-import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
+import { ArrowRight, ChevronDown } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
-import { FlameIcon, MicIcon, ScanIcon, SlidersIcon, SparklesIcon } from '../../common/icons';
+import SnSearch from '@snui/uni-src/components/sn-search/sn-search.vue';
+import { FlameIcon, SlidersIcon, SparklesIcon } from '../../common/icons';
 import { likedIds, TEMPLATES, TPL_CATEGORIES, TPL_SORTS, HOT_WORDS, type TplCat, type TplItem, type TplSortKey } from '../../common/templates';
 import { useTplTheme } from '../../common/theme';
 import TplCard from '../../common/tpl-card.vue';
 
 const { isDark } = useTplTheme();
-
-/* ── 微信自定义导航：右侧操作区避开胶囊按钮 ─────────────────────────── */
-let isMpWeixin = false;
-let capPad = '0px';
-// #ifdef MP-WEIXIN
-isMpWeixin = true;
-{
-  const capsule = uni.getMenuButtonBoundingClientRect?.();
-  const windowWidth = uni.getSystemInfoSync().windowWidth;
-  capPad = capsule ? `${Math.max(windowWidth - capsule.left + 8, 0)}px` : '12rpx';
-}
-// #endif
 
 /* ── 列表数据流：sn-paging @query → completeByTotal ────────────────── */
 const list = ref<TplItem[]>([]);
@@ -92,9 +74,6 @@ function onSortTap(key: TplSortKey): void {
   if (key === 'recommend') chooseSort();
   else activeSort.value = key;
 }
-function placeholderTip(text: string): void {
-  uni.showToast({ title: text, icon: 'none' });
-}
 
 const FEATURE = {
   chip: '每周精选 · 精选推荐',
@@ -106,36 +85,8 @@ const FEATURE = {
 
 <template>
   <view class="tpl-page tpl-home" :class="{ 'sn-theme-dark': isDark }">
-    <SnNavbar fixed safe-area-inset-top :custom-style="'background-color: var(--tplh-nav);'">
-      <template #title>
-        <view class="home-nav">
-          <view class="home-nav__brand">
-            <view class="home-nav__logo"><SnIcon :icon="SparklesIcon" :size="24" color="#06210f" /></view>
-            <view class="home-nav__brand-text">
-              <text class="home-nav__title">snui 模板</text>
-              <text class="home-nav__eyebrow">TEMPLATES</text>
-            </view>
-          </view>
-          <view class="home-nav__actions" :style="{ paddingRight: capPad }">
-            <view class="home-nav__action" role="button" aria-label="搜索" @tap="placeholderTip('试试下方搜索框')">
-              <SnIcon :icon="Search" :size="40" color="var(--tplh-text-2)" />
-            </view>
-            <view v-if="!isMpWeixin" class="home-nav__action" role="button" aria-label="扫码" @tap="placeholderTip('扫码为模板占位')">
-              <SnIcon :icon="ScanIcon" :size="40" color="var(--tplh-text-2)" />
-            </view>
-            <view class="home-nav__action home-nav__action--dot" role="button" aria-label="通知" @tap="placeholderTip('通知为模板占位')">
-              <SnIcon :icon="Bell" :size="40" color="var(--tplh-text-2)" />
-            </view>
-            <view v-if="!isMpWeixin" class="home-nav__avatar" role="button" aria-label="我的" @tap="placeholderTip('个人中心在底部 Tab')">
-              <SnIcon :icon="User" :size="22" color="#c9f4dd" />
-            </view>
-          </view>
-        </view>
-      </template>
-    </SnNavbar>
-
-    <!-- 占位：sn-navbar 的 placeholder 不含状态栏高度，这里统一补足 -->
-    <view class="home-nav-space" aria-hidden="true" />
+    <!-- 状态栏占位（页面为 custom 导航，无标题行；微信胶囊浮于状态栏带内） -->
+    <view class="home-status-space" aria-hidden="true" />
 
     <view class="home-paging">
       <SnPaging
@@ -149,22 +100,14 @@ const FEATURE = {
         <template #top>
           <view class="home-top">
             <view class="home-search">
-              <SnInput
+              <SnSearch
                 v-model="keyword"
-                placeholder="搜索登录页、启动页、设置页..."
-                aria-label="搜索模板"
-                :custom-bg="'var(--tplh-field)'"
-                :custom-style="{ height: '92rpx', borderRadius: '999rpx', border: '2rpx solid var(--tplh-line)', padding: '0 10rpx 0 30rpx' }"
-              >
-                <template #prefix>
-                  <SnIcon :icon="Search" :size="34" color="var(--tplh-text-3)" />
-                </template>
-                <template #suffix>
-                  <view class="home-search__mic" role="button" aria-label="语音搜索" @tap="placeholderTip('语音搜索为模板占位')">
-                    <SnIcon :icon="MicIcon" :size="26" color="#06210f" />
-                  </view>
-                </template>
-              </SnInput>
+                variant="filled"
+                hide-cancel
+                placeholder-left
+                placeholder="搜索模板"
+                custom-style="background-color: transparent; padding: 2rpx 24rpx 0;"
+              />
             </view>
 
             <scroll-view class="home-strip" scroll-x :show-scrollbar="false">
@@ -286,82 +229,10 @@ const FEATURE = {
   color: var(--tplh-text);
 }
 
-/* ── 自定义导航 ─────────────────────────────────────────────────────── */
-.home-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-.home-nav__brand {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-  min-width: 0;
-}
-.home-nav__logo {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 20rpx;
-  background: linear-gradient(135deg, #35a257, #0d7a4b);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.home-nav__brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.2;
-}
-.home-nav__title {
-  color: var(--tplh-text);
-  font-size: 30rpx;
-  font-weight: 800;
-}
-.home-nav__eyebrow {
-  color: var(--tplh-accent);
-  font-size: 17rpx;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-}
-.home-nav__actions {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-.home-nav__action {
-  position: relative;
-  width: 64rpx;
-  height: 64rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-.home-nav__action--dot::after {
-  content: '';
-  position: absolute;
-  top: 10rpx;
-  right: 10rpx;
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-  background: var(--tplh-accent);
-}
-.home-nav__avatar {
-  width: 60rpx;
-  height: 60rpx;
-  border-radius: 50%;
-  margin-left: 4rpx;
-  background: linear-gradient(135deg, #1d8f55, #0d5c38);
-  border: 3rpx solid rgba(76, 208, 136, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.home-nav-space {
+/* ── 状态栏占位（无标题行，内容直接从安全区下开始） ─────────────────── */
+.home-status-space {
   flex-shrink: 0;
-  height: calc(var(--status-bar-height, 0px) + 88rpx);
+  height: var(--status-bar-height, 0px);
 }
 .home-paging {
   flex: 1;
@@ -372,20 +243,11 @@ const FEATURE = {
 .home-top {
   display: flex;
   flex-direction: column;
-  gap: 18rpx;
-  padding: 12rpx 0 20rpx;
+  gap: 14rpx;
+  padding: 8rpx 0 18rpx;
 }
 .home-search {
-  padding: 0 24rpx;
-}
-.home-search__mic {
-  width: 64rpx;
-  height: 64rpx;
-  border-radius: 50%;
-  background: var(--tplh-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 0;
 }
 .home-strip {
   width: 100%;
@@ -394,7 +256,7 @@ const FEATURE = {
 .home-strip__track {
   display: inline-flex;
   align-items: center;
-  gap: 14rpx;
+  gap: 12rpx;
   padding: 0 24rpx;
 }
 .home-strip__lead {
@@ -411,21 +273,21 @@ const FEATURE = {
 }
 .home-chip {
   flex-shrink: 0;
-  padding: 8rpx 20rpx;
+  padding: 7rpx 18rpx;
   border-radius: 999rpx;
   background: var(--tplh-field);
   border: 2rpx solid var(--tplh-line);
 }
 .home-chip__text {
   color: var(--tplh-text-2);
-  font-size: 22rpx;
+  font-size: 21rpx;
 }
 .home-cat {
   display: flex;
   align-items: center;
-  gap: 6rpx;
+  gap: 5rpx;
   flex-shrink: 0;
-  padding: 12rpx 26rpx;
+  padding: 9rpx 22rpx;
   border-radius: 999rpx;
   background: var(--tplh-field);
   border: 2rpx solid var(--tplh-line);
@@ -436,7 +298,7 @@ const FEATURE = {
 }
 .home-cat__text {
   color: var(--tplh-text-2);
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 600;
 }
 .home-cat.is-active .home-cat__text {

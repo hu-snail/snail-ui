@@ -3,41 +3,14 @@ import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
 // 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
 import '@snui/uni/styles';
 import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import {
-  Bell,
-  ChevronRight,
-  Heart,
-  Home,
-  Search,
-  User,
-} from '@snui/uni-src/components/sn-icon/sn-icon-set';
-import {
-  ChartColumnIcon,
-  FlameIcon,
-  MapPinIcon,
-  MicIcon,
-  ScanIcon,
-  SlidersIcon,
-  SmartphoneIcon,
-  SparklesIcon,
-  ShoppingBagIcon,
-} from './common/icons';
+import { Heart, User } from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import { ChartColumnIcon, MapPinIcon, SparklesIcon } from './common/icons';
 
 // 注册模板工程用到的字符串名图标（sn-empty / sn-cell 的 registry 查找）。
 registerSnIcons({
-  search: Search,
-  bell: Bell,
-  user: User,
-  home: Home,
-  heart: Heart,
-  'chevron-right': ChevronRight,
   sparkles: SparklesIcon,
-  mic: MicIcon,
-  scan: ScanIcon,
-  flame: FlameIcon,
-  sliders: SlidersIcon,
-  smartphone: SmartphoneIcon,
-  'shopping-bag': ShoppingBagIcon,
+  heart: Heart,
+  user: User,
   'map-pin': MapPinIcon,
   'chart-column': ChartColumnIcon,
 });
