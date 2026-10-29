@@ -142,13 +142,18 @@ describe('SnBarcode rendering contract', () => {
     expect(wrapper.find('.sn-barcode__empty').text()).toContain('EAN-13 需要 12 或 13 位数字');
   });
 
-  it('should forward moduleWidth as the bar width (floored at 1px)', () => {
+  it('should scale each run width by its module count (proportional bar widths)', () => {
     const wrapper = mount(SnBarcode, {
       props: { text: '590123412345', moduleWidth: 3 },
     });
-    expect(wrapper.findAll('.sn-barcode__bars view')[0]?.attributes('style')).toContain(
-      'width: 3px',
+    const bars = wrapper.findAll('.sn-barcode__bars view');
+    // EAN-13 首组游程为 101 警戒条：1-1-1 模块。
+    expect(bars[0]?.attributes('style')).toContain('width: 3px');
+    // 后续存在多模块游程（数字 L 码 0001101 → 游程 1,2,1,1,3 等）。
+    const widths = bars.map((b) =>
+      Number((b.attributes('style') ?? '').match(/width: (\d+)px/)?.[1]),
     );
+    expect(Math.max(...widths)).toBeGreaterThan(3);
 
     const subPixel = mount(SnBarcode, {
       props: { text: '590123412345', moduleWidth: 0.4 },
@@ -156,6 +161,16 @@ describe('SnBarcode rendering contract', () => {
     expect(subPixel.findAll('.sn-barcode__bars view')[0]?.attributes('style')).toContain(
       'width: 1px',
     );
+  });
+
+  it('should render the full module count across all run widths', () => {
+    const wrapper = mount(SnBarcode, { props: { text: '590123412345', moduleWidth: 1 } });
+    const bars = wrapper.findAll('.sn-barcode__bars view');
+    const widths = bars.map((b) =>
+      Number((b.attributes('style') ?? '').match(/width: (\d+)px/)?.[1]),
+    );
+    // 模块总数 = 各游程宽度之和（moduleWidth=1）。
+    expect(widths.reduce((a, b) => a + b, 0)).toBe(95);
   });
 
   it('should forward height and lineColor into the bar style', () => {

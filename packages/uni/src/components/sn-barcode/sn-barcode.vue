@@ -26,6 +26,7 @@ import {
   type SnBarcodeEncoded,
   type SnBarcodeEncodeError,
   type SnBarcodeFormat,
+  type SnBarcodeRun,
 } from './sn-barcode-types';
 
 defineOptions({ name: 'SnBarcode' });
@@ -123,12 +124,13 @@ const effectiveLength = computed(() => (props.lineLength !== '' ? props.lineLeng
 
 const isVertical = computed(() => props.layout === 'vertical');
 
-const barStyle = computed(() => (bar: boolean): string => {
-  const moduleSize = `${Math.max(1, Math.round(props.moduleWidth))}px`;
+const barStyle = computed(() => (run: SnBarcodeRun): string => {
+  const moduleSize = Math.max(1, Math.round(props.moduleWidth));
+  const thickness = `${moduleSize * run.modules}px`;
   const parts = isVertical.value
-    ? [`width: ${effectiveLength.value}`, `height: ${moduleSize}`]
-    : [`width: ${moduleSize}`, `height: ${effectiveLength.value}`];
-  if (bar) parts.push(`background-color: ${props.lineColor}`);
+    ? [`width: ${effectiveLength.value}`, `height: ${thickness}`]
+    : [`width: ${thickness}`, `height: ${effectiveLength.value}`];
+  if (run.bar) parts.push(`background-color: ${props.lineColor}`);
   return parts.join('; ');
 });
 
@@ -152,7 +154,7 @@ const textStyle = computed(
       v-if="encoded !== null"
       :class="['sn-barcode__bars', isVertical ? 'sn-barcode__bars--vertical' : '']"
     >
-      <view v-for="(run, index) in encoded.runs" :key="index" :style="barStyle(run.bar)" />
+      <view v-for="(run, index) in encoded.runs" :key="index" :style="barStyle(run)" />
     </view>
     <view v-else class="sn-barcode__empty">
       <text class="sn-barcode__empty-text">{{ failure?.message ?? '' }}</text>
