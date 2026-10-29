@@ -3,10 +3,64 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "snui 场景模板"
+        "navigationBarTitleText": "snui 场景模板",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/explore/explore",
+      "style": {
+        "navigationBarTitleText": "探索",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/favorites/favorites",
+      "style": {
+        "navigationBarTitleText": "收藏",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/profile/profile",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom"
       }
     }
   ],
+  "tabBar": {
+    "color": "#98a2b3",
+    "selectedColor": "#35a257",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "模板",
+        "iconPath": "static/tab-grid.png",
+        "selectedIconPath": "static/tab-grid-on.png"
+      },
+      {
+        "pagePath": "pages/explore/explore",
+        "text": "探索",
+        "iconPath": "static/tab-compass.png",
+        "selectedIconPath": "static/tab-compass-on.png"
+      },
+      {
+        "pagePath": "pages/favorites/favorites",
+        "text": "收藏",
+        "iconPath": "static/tab-heart.png",
+        "selectedIconPath": "static/tab-heart-on.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "static/tab-person.png",
+        "selectedIconPath": "static/tab-person-on.png"
+      }
+    ]
+  },
   "subPackages": [
     {
       "root": "subpages",

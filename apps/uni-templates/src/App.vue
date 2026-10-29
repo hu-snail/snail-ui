@@ -2,6 +2,45 @@
 import { onHide, onLaunch, onShow } from '@dcloudio/uni-app';
 // 组件 token 样式（--sn-mp-* CSS 变量）。dist 产物，需先构建 @snui/uni。
 import '@snui/uni/styles';
+import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
+import {
+  Bell,
+  ChevronRight,
+  Heart,
+  Home,
+  Search,
+  User,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import {
+  ChartColumnIcon,
+  FlameIcon,
+  MapPinIcon,
+  MicIcon,
+  ScanIcon,
+  SlidersIcon,
+  SmartphoneIcon,
+  SparklesIcon,
+  ShoppingBagIcon,
+} from './common/icons';
+
+// 注册模板工程用到的字符串名图标（sn-empty / sn-cell 的 registry 查找）。
+registerSnIcons({
+  search: Search,
+  bell: Bell,
+  user: User,
+  home: Home,
+  heart: Heart,
+  'chevron-right': ChevronRight,
+  sparkles: SparklesIcon,
+  mic: MicIcon,
+  scan: ScanIcon,
+  flame: FlameIcon,
+  sliders: SlidersIcon,
+  smartphone: SmartphoneIcon,
+  'shopping-bag': ShoppingBagIcon,
+  'map-pin': MapPinIcon,
+  'chart-column': ChartColumnIcon,
+});
 
 onLaunch(() => {});
 onShow(() => {});
@@ -20,6 +59,32 @@ page {
   min-height: 100vh;
   box-sizing: border-box;
   padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 模板商店调色板 —— tab 页共用；.sn-theme-dark 下整体翻转（§112.5 契约）。 */
+.tpl-page {
+  --tplh-accent: #35a257;
+  --tplh-bg: #f6f7f9;
+  --tplh-nav: #f6f7f9;
+  --tplh-card: #ffffff;
+  --tplh-field: #eef1f5;
+  --tplh-line: #e5e9f0;
+  --tplh-text: #17202e;
+  --tplh-text-2: #5d6b7e;
+  --tplh-text-3: #98a2b3;
+  --tplh-shadow: 0 10rpx 30rpx rgba(15, 23, 42, 0.06);
+}
+.tpl-page.sn-theme-dark {
+  --tplh-accent: #4cd088;
+  --tplh-bg: #0b0f16;
+  --tplh-nav: #0b0f16;
+  --tplh-card: #131a24;
+  --tplh-field: #10151d;
+  --tplh-line: rgba(255, 255, 255, 0.09);
+  --tplh-text: #e8ecf3;
+  --tplh-text-2: #9aa6b6;
+  --tplh-text-3: #5c6675;
+  --tplh-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.45);
 }
 
 /* 通用卡片 / 分组面板 */

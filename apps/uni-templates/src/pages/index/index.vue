@@ -1,108 +1,656 @@
 <script setup lang="ts">
 /**
- * 模板中心（主包唯一页面）—— 场景模板目录，点击进入 subpages 分包模板页。
- * 主包只承载目录，保证小程序主包体积最小（分包按需下载）。
+ * 模板总览首页（tab）—— 模板商店布局：
+ *   自定义导航（微信胶囊让位）→ sn-paging 根容器，#top 固定「搜索 + 热搜 +
+ *   分类 Tab」，默认插槽渲染精选位 + 排序条 + 双列模板卡瀑布流。
+ * 深浅色跟随系统（useTplTheme），原生 tabBar 由 pages.json 声明。
  */
-const templates = [
-  { id: 'login', title: '登录页', desc: '验证码登录 / 三方入口', from: '#6366f1', to: '#a855f7' },
-  { id: 'mall', title: '商城首页', desc: '搜索 / 宫格 / 秒杀 / 底部导航', from: '#0ea5e9', to: '#22d3ee' },
-  { id: 'goods', title: '商品详情页', desc: '主图 / 规格 / 底部操作栏', from: '#f97316', to: '#facc15' },
-  { id: 'order', title: '订单页', desc: '状态分段 / 订单卡 / 去支付', from: '#8b5cf6', to: '#6366f1' },
-  { id: 'xhs', title: '图文社区', desc: '双列笔记流 / 点赞互动', from: '#ec4899', to: '#f43f5e' },
-  { id: 'news', title: '新闻首页', desc: '频道分段 / 图文列表', from: '#14b8a6', to: '#22c55e' },
-  { id: 'address', title: '地址管理', desc: '地址卡 / 默认标签 / 新增', from: '#64748b', to: '#94a3b8' },
-  { id: 'article', title: '文章详情', desc: '作者行 / 正文 / 互动栏', from: '#334155', to: '#64748b' },
-  { id: 'stats', title: '数据统计', desc: '指标卡 / 柱状图 / 来源分布', from: '#7c3aed', to: '#c084fc' },
-  { id: 'contacts', title: '通讯录', desc: '搜索 / 字母索引分组', from: '#2563eb', to: '#60a5fa' },
-  { id: 'form', title: '步骤表单', desc: '分步入驻 / 字段校验', from: '#059669', to: '#34d399' },
-] as const;
+import { ref, watch } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
+import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
+import {
+  ArrowRight,
+  Bell,
+  ChevronDown,
+  Search,
+  User,
+} from '@snui/uni-src/components/sn-icon/sn-icon-set';
+import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
+import SnNavbar from '@snui/uni-src/components/sn-navbar/sn-navbar.vue';
+import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
+import { FlameIcon, MicIcon, ScanIcon, SlidersIcon, SparklesIcon } from '../../common/icons';
+import { likedIds, TEMPLATES, TPL_CATEGORIES, TPL_SORTS, HOT_WORDS, type TplCat, type TplItem, type TplSortKey } from '../../common/templates';
+import { useTplTheme } from '../../common/theme';
+import TplCard from '../../common/tpl-card.vue';
 
-function open(id: string): void {
+const { isDark } = useTplTheme();
+
+/* ── 微信自定义导航：右侧操作区避开胶囊按钮 ─────────────────────────── */
+let isMpWeixin = false;
+let capPad = '0px';
+// #ifdef MP-WEIXIN
+isMpWeixin = true;
+{
+  const capsule = uni.getMenuButtonBoundingClientRect?.();
+  const windowWidth = uni.getSystemInfoSync().windowWidth;
+  capPad = capsule ? `${Math.max(windowWidth - capsule.left + 8, 0)}px` : '12rpx';
+}
+// #endif
+
+/* ── 列表数据流：sn-paging @query → completeByTotal ────────────────── */
+const list = ref<TplItem[]>([]);
+const paging = ref<InstanceType<typeof SnPaging> | null>(null);
+const keyword = ref('');
+const activeCat = ref<TplCat>('all');
+const activeSort = ref<TplSortKey>('recommend');
+const totalCount = ref(0);
+
+function query(pageNo: number, pageSize: number): void {
+  const kw = keyword.value.trim().toLowerCase();
+  const rows = TEMPLATES.filter(
+    (t) =>
+      (activeCat.value === 'all' || t.cat === activeCat.value) &&
+      (kw === '' ||
+        t.title.toLowerCase().includes(kw) ||
+        t.desc.toLowerCase().includes(kw) ||
+        t.tag.toLowerCase().includes(kw)),
+  ).sort((a, b) => {
+    if (activeSort.value === 'latest') return b.updated - a.updated;
+    if (activeSort.value === 'downloads') return b.downloads - a.downloads;
+    return 0;
+  });
+  totalCount.value = rows.length;
+  setTimeout(() => {
+    paging.value?.completeByTotal(rows.slice((pageNo - 1) * pageSize, pageNo * pageSize), rows.length);
+  }, 200);
+}
+watch([keyword, activeCat, activeSort], () => paging.value?.reload());
+
+function toggleLike(id: string): void {
+  likedIds.value[id] = !likedIds.value[id];
+}
+function openTpl(id: string): void {
   uni.navigateTo({ url: `/subpages/${id}` });
 }
+function chooseCat(): void {
+  uni.showActionSheet({
+    itemList: TPL_CATEGORIES.map((c) => c.label),
+    success: (res) => {
+      activeCat.value = TPL_CATEGORIES[res.tapIndex].key;
+    },
+  });
+}
+function chooseSort(): void {
+  uni.showActionSheet({
+    itemList: TPL_SORTS.map((s) => s.label),
+    success: (res) => {
+      activeSort.value = TPL_SORTS[res.tapIndex].key;
+    },
+  });
+}
+function onSortTap(key: TplSortKey): void {
+  if (key === 'recommend') chooseSort();
+  else activeSort.value = key;
+}
+function placeholderTip(text: string): void {
+  uni.showToast({ title: text, icon: 'none' });
+}
+
+const FEATURE = {
+  chip: '每周精选 · 精选推荐',
+  title: 'snui 场景模板库',
+  desc: '11 个真实业务场景模板 · H5 / 微信小程序双端适配',
+  author: '蜗蜗工作室',
+};
 </script>
 
 <template>
-  <view class="tpl-page index">
-    <view class="index__hero">
-      <text class="index__title">snui 场景模板</text>
-      <text class="index__sub">基于 @snui/uni 的真实页面模板 · 支持 H5 与微信小程序发布</text>
+  <view class="tpl-page tpl-home" :class="{ 'sn-theme-dark': isDark }">
+    <SnNavbar fixed safe-area-inset-top :custom-style="'background-color: var(--tplh-nav);'">
+      <template #title>
+        <view class="home-nav">
+          <view class="home-nav__brand">
+            <view class="home-nav__logo"><SnIcon :icon="SparklesIcon" :size="24" color="#06210f" /></view>
+            <view class="home-nav__brand-text">
+              <text class="home-nav__title">snui 模板</text>
+              <text class="home-nav__eyebrow">TEMPLATES</text>
+            </view>
+          </view>
+          <view class="home-nav__actions" :style="{ paddingRight: capPad }">
+            <view class="home-nav__action" role="button" aria-label="搜索" @tap="placeholderTip('试试下方搜索框')">
+              <SnIcon :icon="Search" :size="40" color="var(--tplh-text-2)" />
+            </view>
+            <view v-if="!isMpWeixin" class="home-nav__action" role="button" aria-label="扫码" @tap="placeholderTip('扫码为模板占位')">
+              <SnIcon :icon="ScanIcon" :size="40" color="var(--tplh-text-2)" />
+            </view>
+            <view class="home-nav__action home-nav__action--dot" role="button" aria-label="通知" @tap="placeholderTip('通知为模板占位')">
+              <SnIcon :icon="Bell" :size="40" color="var(--tplh-text-2)" />
+            </view>
+            <view v-if="!isMpWeixin" class="home-nav__avatar" role="button" aria-label="我的" @tap="placeholderTip('个人中心在底部 Tab')">
+              <SnIcon :icon="User" :size="22" color="#c9f4dd" />
+            </view>
+          </view>
+        </view>
+      </template>
+    </SnNavbar>
+
+    <!-- 占位：sn-navbar 的 placeholder 不含状态栏高度，这里统一补足 -->
+    <view class="home-nav-space" aria-hidden="true" />
+
+    <view class="home-paging">
+      <SnPaging
+        ref="paging"
+        v-model="list"
+        :default-page-size="6"
+        empty-text="没有找到相关模板"
+        custom-style="background-color: transparent;"
+        @query="query"
+      >
+        <template #top>
+          <view class="home-top">
+            <view class="home-search">
+              <SnInput
+                v-model="keyword"
+                placeholder="搜索登录页、启动页、设置页..."
+                aria-label="搜索模板"
+                :custom-bg="'var(--tplh-field)'"
+                :custom-style="{ height: '92rpx', borderRadius: '999rpx', border: '2rpx solid var(--tplh-line)', padding: '0 10rpx 0 30rpx' }"
+              >
+                <template #prefix>
+                  <SnIcon :icon="Search" :size="34" color="var(--tplh-text-3)" />
+                </template>
+                <template #suffix>
+                  <view class="home-search__mic" role="button" aria-label="语音搜索" @tap="placeholderTip('语音搜索为模板占位')">
+                    <SnIcon :icon="MicIcon" :size="26" color="#06210f" />
+                  </view>
+                </template>
+              </SnInput>
+            </view>
+
+            <scroll-view class="home-strip" scroll-x :show-scrollbar="false">
+              <view class="home-strip__track">
+                <view class="home-strip__lead">
+                  <SnIcon :icon="FlameIcon" :size="24" color="var(--tplh-accent)" />
+                  <text class="home-strip__lead-text">热搜</text>
+                </view>
+                <view v-for="w in HOT_WORDS" :key="w" class="home-chip" @tap="keyword = w">
+                  <text class="home-chip__text">{{ w }}</text>
+                </view>
+              </view>
+            </scroll-view>
+
+            <scroll-view class="home-strip home-strip--cats" scroll-x :show-scrollbar="false">
+              <view class="home-strip__track">
+                <view
+                  v-for="c in TPL_CATEGORIES"
+                  :key="c.key"
+                  class="home-cat"
+                  :class="{ 'is-active': activeCat === c.key }"
+                  @tap="activeCat = c.key"
+                >
+                  <SnIcon
+                    v-if="c.key === 'all'"
+                    :icon="SparklesIcon"
+                    :size="26"
+                    :color="activeCat === 'all' ? '#06210f' : 'var(--tplh-accent)'"
+                  />
+                  <text class="home-cat__text">{{ c.label }}</text>
+                </view>
+              </view>
+            </scroll-view>
+          </view>
+        </template>
+
+        <view class="home-body">
+          <view class="home-feature">
+            <view class="home-feature__cover">
+              <view class="home-feature__deco home-feature__deco--a" aria-hidden="true" />
+              <view class="home-feature__deco home-feature__deco--b" aria-hidden="true" />
+              <view class="home-feature__chip"><text class="home-feature__chip-text">{{ FEATURE.chip }}</text></view>
+            </view>
+            <view class="home-feature__body">
+              <view class="home-feature__head">
+                <text class="home-feature__title">{{ FEATURE.title }}</text>
+                <view class="home-feature__pro"><text class="home-feature__pro-text">v3.4 PRO</text></view>
+              </view>
+              <text class="home-feature__desc">{{ FEATURE.desc }}</text>
+              <view class="home-feature__foot">
+                <view class="home-feature__author">
+                  <view class="home-feature__avatar"><text class="home-feature__avatar-text">蜗</text></view>
+                  <text class="home-feature__author-name">{{ FEATURE.author }}</text>
+                </view>
+                <SnButton
+                  type="primary"
+                  size="small"
+                  bg-color="#35a257"
+                  :icon-data="ArrowRight"
+                  :icon-size="26"
+                  :custom-style="{ borderRadius: '999rpx', borderColor: '#35a257' }"
+                  @click="openTpl('login')"
+                >立即预览</SnButton>
+              </view>
+            </view>
+          </view>
+
+          <view class="home-sort">
+            <view class="home-sort__tabs">
+              <view
+                v-for="s in TPL_SORTS"
+                :key="s.key"
+                class="home-sort__item"
+                :class="{ 'is-active': activeSort === s.key }"
+                @tap="onSortTap(s.key)"
+              >
+                <text class="home-sort__text">{{ s.label }}</text>
+                <SnIcon v-if="s.key === 'recommend'" :icon="ChevronDown" :size="26" />
+              </view>
+            </view>
+            <view class="home-sort__filter" role="button" aria-label="筛选" @tap="chooseCat">
+              <SnIcon :icon="SlidersIcon" :size="26" color="var(--tplh-text-2)" />
+              <text class="home-sort__filter-text">筛选</text>
+            </view>
+          </view>
+
+          <view class="home-grid">
+            <TplCard
+              v-for="t in list"
+              :key="t.id"
+              :item="t"
+              :liked="!!likedIds[t.id]"
+              @open="openTpl(t.id)"
+              @like="toggleLike(t.id)"
+            />
+          </view>
+        </view>
+      </SnPaging>
     </view>
 
-    <view
-      v-for="tpl in templates"
-      :key="tpl.id"
-      class="tpl-card index__item"
-      @tap="open(tpl.id)"
-    >
-      <view class="index__cover" :style="{ background: `linear-gradient(135deg, ${tpl.from}, ${tpl.to})` }" />
-      <view class="index__meta">
-        <text class="index__name">{{ tpl.title }}</text>
-        <text class="index__desc">{{ tpl.desc }}</text>
+    <view class="home-fab">
+      <view class="home-fab__dot" aria-hidden="true" />
+      <text class="home-fab__text">已发现 {{ totalCount }} 套模板</text>
+      <view class="home-fab__btn" role="button" aria-label="一键筛选" @tap="chooseCat">
+        <text class="home-fab__btn-text">一键筛选</text>
+        <SnIcon :icon="SlidersIcon" :size="24" color="var(--tplh-accent)" />
       </view>
-      <text class="index__arrow">›</text>
-    </view>
-
-    <view class="index__foot">
-      <text>主包仅保留本目录页 · 模板全部位于 subpages 分包</text>
     </view>
   </view>
 </template>
 
 <style scoped>
-.index {
-  padding: 24rpx;
-}
-.index__hero {
-  padding: 28rpx 8rpx 24rpx;
+/* 调色板 --tplh-* 定义在 App.vue 的 .tpl-page / .sn-theme-dark 上（全局复用）。 */
+.tpl-home {
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  height: 100vh;
+  background: var(--tplh-bg);
+  color: var(--tplh-text);
 }
-.index__title {
-  font-size: 40rpx;
-  font-weight: 800;
-}
-.index__sub {
-  font-size: 24rpx;
-  color: #667085;
-  line-height: 1.5;
-}
-.index__item {
+
+/* ── 自定义导航 ─────────────────────────────────────────────────────── */
+.home-nav {
   display: flex;
   align-items: center;
-  gap: 20rpx;
-  margin-bottom: 20rpx;
+  justify-content: space-between;
+  width: 100%;
 }
-.index__cover {
-  width: 92rpx;
-  height: 92rpx;
-  border-radius: 20rpx;
-  flex-shrink: 0;
-}
-.index__meta {
-  flex: 1;
+.home-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
   min-width: 0;
+}
+.home-nav__logo {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 20rpx;
+  background: linear-gradient(135deg, #35a257, #0d7a4b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-nav__brand-text {
   display: flex;
   flex-direction: column;
-  gap: 4rpx;
+  line-height: 1.2;
 }
-.index__name {
+.home-nav__title {
+  color: var(--tplh-text);
   font-size: 30rpx;
+  font-weight: 800;
+}
+.home-nav__eyebrow {
+  color: var(--tplh-accent);
+  font-size: 17rpx;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+.home-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+.home-nav__action {
+  position: relative;
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.home-nav__action--dot::after {
+  content: '';
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: var(--tplh-accent);
+}
+.home-nav__avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  margin-left: 4rpx;
+  background: linear-gradient(135deg, #1d8f55, #0d5c38);
+  border: 3rpx solid rgba(76, 208, 136, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-nav-space {
+  flex-shrink: 0;
+  height: calc(var(--status-bar-height, 0px) + 88rpx);
+}
+.home-paging {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── #top：搜索 + 热搜 + 分类 Tab（固定区） ─────────────────────────── */
+.home-top {
+  display: flex;
+  flex-direction: column;
+  gap: 18rpx;
+  padding: 12rpx 0 20rpx;
+}
+.home-search {
+  padding: 0 24rpx;
+}
+.home-search__mic {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: var(--tplh-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-strip {
+  width: 100%;
+  white-space: nowrap;
+}
+.home-strip__track {
+  display: inline-flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 0 24rpx;
+}
+.home-strip__lead {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+}
+.home-strip__lead-text {
+  color: var(--tplh-accent);
+  font-size: 22rpx;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.home-chip {
+  flex-shrink: 0;
+  padding: 8rpx 20rpx;
+  border-radius: 999rpx;
+  background: var(--tplh-field);
+  border: 2rpx solid var(--tplh-line);
+}
+.home-chip__text {
+  color: var(--tplh-text-2);
+  font-size: 22rpx;
+}
+.home-cat {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  flex-shrink: 0;
+  padding: 12rpx 26rpx;
+  border-radius: 999rpx;
+  background: var(--tplh-field);
+  border: 2rpx solid var(--tplh-line);
+}
+.home-cat.is-active {
+  background: linear-gradient(120deg, #35a257, #1d8f55);
+  border-color: transparent;
+}
+.home-cat__text {
+  color: var(--tplh-text-2);
+  font-size: 24rpx;
+  font-weight: 600;
+}
+.home-cat.is-active .home-cat__text {
+  color: #eafff3;
+}
+
+/* ── 滚动内容：精选位 + 排序 + 瀑布卡 ───────────────────────────────── */
+.home-body {
+  padding: 4rpx 24rpx 160rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 28rpx;
+}
+.home-feature {
+  border-radius: 28rpx;
+  overflow: hidden;
+  background: var(--tplh-card);
+  border: 2rpx solid var(--tplh-line);
+  box-shadow: var(--tplh-shadow);
+}
+.home-feature__cover {
+  position: relative;
+  height: 220rpx;
+  background: linear-gradient(120deg, #0d5c38, #35a257 55%, #6ee7a0);
+  overflow: hidden;
+}
+.home-feature__deco {
+  position: absolute;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.16);
+}
+.home-feature__deco--a {
+  width: 170rpx;
+  height: 150rpx;
+  right: 40rpx;
+  top: 36rpx;
+  transform: rotate(-8deg);
+}
+.home-feature__deco--b {
+  width: 120rpx;
+  height: 120rpx;
+  right: 200rpx;
+  top: 80rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+}
+.home-feature__chip {
+  position: absolute;
+  top: 18rpx;
+  left: 18rpx;
+  padding: 6rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(6, 30, 17, 0.62);
+}
+.home-feature__chip-text {
+  color: #7ef0b0;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.home-feature__body {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+  padding: 22rpx 24rpx 24rpx;
+}
+.home-feature__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.home-feature__title {
+  color: var(--tplh-text);
+  font-size: 34rpx;
+  font-weight: 800;
+}
+.home-feature__pro {
+  padding: 4rpx 12rpx;
+  border-radius: 10rpx;
+  background: var(--tplh-field);
+  border: 2rpx solid var(--tplh-accent);
+}
+.home-feature__pro-text {
+  color: var(--tplh-accent);
+  font-size: 20rpx;
   font-weight: 700;
 }
-.index__desc {
-  font-size: 22rpx;
-  color: #98a2b3;
+.home-feature__desc {
+  color: var(--tplh-text-3);
+  font-size: 23rpx;
+  line-height: 1.5;
 }
-.index__arrow {
-  color: #98a2b3;
-  font-size: 36rpx;
+.home-feature__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 8rpx;
 }
-.index__foot {
-  padding: 16rpx 8rpx 40rpx;
-  text-align: center;
+.home-feature__author {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.home-feature__avatar {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #35a257, #0d7a4b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-feature__avatar-text {
+  color: #eafff3;
   font-size: 20rpx;
-  color: #b3bac6;
+  font-weight: 700;
+}
+.home-feature__author-name {
+  color: var(--tplh-text-2);
+  font-size: 22rpx;
+}
+
+.home-sort {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.home-sort__tabs {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+}
+.home-sort__item {
+  display: flex;
+  align-items: center;
+  gap: 2rpx;
+  color: var(--tplh-text-3);
+}
+.home-sort__text {
+  color: inherit;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+.home-sort__item.is-active .home-sort__text {
+  color: var(--tplh-accent);
+  font-weight: 800;
+}
+.home-sort__filter {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 18rpx;
+  border-radius: 999rpx;
+  background: var(--tplh-field);
+  border: 2rpx solid var(--tplh-line);
+}
+.home-sort__filter-text {
+  color: var(--tplh-text-2);
+  font-size: 22rpx;
+}
+
+.home-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+/* ── 悬浮统计条（tabbar 之上） ──────────────────────────────────────── */
+.home-fab {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 14rpx 24rpx;
+  border-radius: 999rpx;
+  background: var(--tplh-card);
+  border: 2rpx solid var(--tplh-line);
+  box-shadow: var(--tplh-shadow);
+  z-index: 30;
+}
+/* #ifdef H5 */
+.home-fab {
+  bottom: calc(100rpx + 16rpx);
+}
+/* #endif */
+/* #ifndef H5 */
+.home-fab {
+  bottom: calc(env(safe-area-inset-bottom) + 16rpx);
+}
+/* #endif */
+.home-fab__dot {
+  width: 14rpx;
+  height: 14rpx;
+  border-radius: 50%;
+  background: var(--tplh-accent);
+}
+.home-fab__text {
+  color: var(--tplh-text-2);
+  font-size: 22rpx;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.home-fab__btn {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  white-space: nowrap;
+}
+.home-fab__btn-text {
+  color: var(--tplh-accent);
+  font-size: 22rpx;
+  font-weight: 800;
+  white-space: nowrap;
 }
 </style>
