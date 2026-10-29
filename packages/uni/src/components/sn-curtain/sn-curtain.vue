@@ -404,9 +404,10 @@ const closeStyle = computed(() => props.customCloseStyle || undefined);
   height: 56rpx;
   box-sizing: border-box;
   border-radius: var(--sn-mp-radius-full);
-  border: 2rpx solid var(--sn-mp-color-border-default);
-  background-color: var(--sn-mp-color-background-elevated);
-  color: var(--sn-mp-color-text-secondary);
+  /* 白色圆圈 × —— 压在图片上，白描边 + 白色图标（透明底透出图片） */
+  border: 3rpx solid rgb(255 255 255 / 0.92);
+  background-color: transparent;
+  color: #ffffff;
 }
 
 /* `inset` = bottom-centre, inside the image (the wd default). */
