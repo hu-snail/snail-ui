@@ -35,6 +35,23 @@
  * `--sn-tooltip-offset-x` / `--sn-tooltip-offset-y` and folded into the
  * placement margins with `calc()`.
  *
+ * ## Click-outside close (transparent mask)
+ *
+ * wot-ui closes the tooltip on a tap outside the bubble. Miniprogram has no
+ * `document` to hang a global listener on, so the mechanism here is a
+ * transparent fixed mask (z-index 499 — below the bubble's 500, above the
+ * page) mounted exactly while the bubble is; tapping it calls `close()`.
+ * Consequence: while a bubble is shown, the first tap anywhere else —
+ * including on another tooltip's trigger — closes this one first.
+ *
+ * ## Bubble palette (wot-ui parity: --wot-tooltip-bg / --wot-tooltip-color)
+ *
+ * The fill defaults to the elevated surface (white in the light theme) and
+ * the label to the page text color; both flip with the mp dark theme. They
+ * are published as `--sn-tooltip-bg` / `--sn-tooltip-color` so consumers can
+ * recolor the bubble through `custom-style="--sn-tooltip-bg: …"` (inline
+ * beats the class default). The arrow follows the fill.
+ *
  * ## Timers (AGENTS.md §41)
  *
  * One transition timer keeps the bubble mounted for the fade-out leg. It is
@@ -297,6 +314,8 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
       <slot />
     </view>
 
+    <!-- Outside tap catcher: transparent, full viewport, one level under the bubble. -->
+    <view v-if="isMounted" class="sn-tooltip__mask" aria-hidden="true" @tap="close" />
     <view v-if="isMounted" :class="popClass" role="tooltip">
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
       <view class="sn-tooltip__body">
@@ -327,6 +346,9 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   position: relative;
   display: inline-block;
   box-sizing: border-box;
+  /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
+  --sn-tooltip-bg: var(--sn-mp-color-background-elevated);
+  --sn-tooltip-color: var(--sn-mp-color-text-primary);
 }
 
 .sn-tooltip__trigger {
@@ -345,10 +367,8 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   box-sizing: border-box;
   padding: var(--sn-mp-spacing-3) var(--sn-mp-spacing-4);
   border-radius: var(--sn-mp-radius-md);
-  /* Inverted surface: the page text color as the bubble fill, and the
-   * elevated surface color as the bubble text — both flip in dark mode. */
-  background-color: var(--sn-mp-color-text-primary);
-  color: var(--sn-mp-color-background-elevated);
+  background-color: var(--sn-tooltip-bg);
+  color: var(--sn-tooltip-color);
   font-size: var(--sn-mp-font-size-sm);
   line-height: var(--sn-mp-font-line-height-normal);
   box-shadow: var(--sn-mp-shadow-md);
@@ -359,6 +379,23 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
 
 .sn-tooltip--shown .sn-tooltip__pop {
   opacity: 1;
+  pointer-events: auto;
+}
+
+/* Outside tap catcher — invisible, full viewport, one level under the
+ * bubble. Inert during the fade legs so taps fall through to the page. */
+.sn-tooltip__mask {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 499;
+  background-color: transparent;
+  pointer-events: none;
+}
+
+.sn-tooltip--shown .sn-tooltip__mask {
   pointer-events: auto;
 }
 
@@ -378,7 +415,7 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   justify-content: center;
   width: 32rpx;
   height: 32rpx;
-  color: var(--sn-mp-color-background-elevated);
+  color: var(--sn-mp-color-text-secondary);
   opacity: 0.7;
 }
 
@@ -388,7 +425,7 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
   position: absolute;
   width: 16rpx;
   height: 16rpx;
-  background-color: var(--sn-mp-color-text-primary);
+  background-color: var(--sn-tooltip-bg);
   transform: rotate(45deg);
 }
 
