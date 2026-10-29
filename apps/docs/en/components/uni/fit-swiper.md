@@ -18,11 +18,11 @@ Page data flows in through `list` (one object per row); the page content is full
 
 ## Indicator
 
-Pass `indicator: false` to hide it; pass an object to pick the built-in style via `type` (`dots` / `dots-bar` with the elongating active item / `fraction`), and `minShowNum` to hide below a page count. `indicator-position` supports 8 anchors.
+Pass `indicator: false` to hide it; pass an object to pick the built-in style via `type` (`dots` / `dots-bar` with the elongating active item / `fraction` / `slider` — a thumb sliding along a rail), and `minShowNum` to hide below a page count. `indicator-position` supports 8 anchors.
 
 Colors are overridable through CSS variables: `--sn-fit-swiper-dot-color` (inactive dot / fraction pill), `--sn-fit-swiper-dot-active-color` (active dot), or directly via `customIndicatorClass` / `customIndicatorStyle`.
 
-<Demo name="fit-swiper-mp-indicator" description="dots / dots-bar / fraction built-in indicator styles." />
+<Demo name="fit-swiper-mp-indicator" description="dots / dots-bar / fraction / slider built-in indicator styles." />
 
 ## Custom indicator
 
@@ -55,7 +55,7 @@ The `#indicator` scoped slot (`{ current, total }`) fully replaces the built-in 
 | `radius`               | `string \| number`                                                                                   | `''`     | Container radius (bare number = rpx).                                         |
 | `animateHeight`        | `boolean`                                                                                            | `true`   | Animate the container height on page change.                                  |
 | `heightDuration`       | `number`                                                                                             | `300`    | Height transition duration (ms).                                              |
-| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction'; minShowNum?: number }`                      | `true`   | Indicator config; `false` hides it.                                           |
+| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction' \| 'slider'; minShowNum?: number }`          | `true`   | Indicator config; `false` hides it.                                           |
 | `indicatorPosition`    | `'left' \| 'top-left' \| 'top' \| 'top-right' \| 'bottom-left' \| 'bottom' \| 'bottom-right' \| 'right'` | `'bottom'` | Indicator anchor.                                                        |
 | `customClass`          | `string`                                                                                             | `''`     | Root class.                                                                   |
 | `customStyle`          | `string`                                                                                             | `''`     | Root inline style.                                                            |

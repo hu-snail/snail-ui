@@ -59,8 +59,8 @@ defineOptions({ name: 'SnFitSwiper' });
 /** One page's data row, handed back to the default slot verbatim. */
 export type SnFitSwiperPage = Record<string, unknown>;
 
-/** Indicator style. `dots-bar` is the Taobao-style elongating active dot. */
-type FitSwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction';
+/** Indicator style. `dots-bar` elongates the active dot; `slider` is the Taobao-style sliding thumb on a rail. */
+type FitSwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction' | 'slider';
 
 /** Indicator anchor. Mirrors the shared sn-swiper position set. */
 type FitSwiperIndicatorPosition =
@@ -379,6 +379,18 @@ defineExpose({
           <text class="sn-fit-swiper__fraction-text">{{ activeIndex + 1 }}/{{ props.list.length }}</text>
         </view>
 
+        <view v-else-if="indicatorType === 'slider'" class="sn-fit-swiper__slider">
+          <view
+            v-for="(_, index) in props.list"
+            :key="index"
+            class="sn-fit-swiper__slider-slot"
+          />
+          <view
+            class="sn-fit-swiper__slider-thumb"
+            :style="{ transform: `translateX(${activeIndex * 24}rpx)` }"
+          />
+        </view>
+
         <view v-else class="sn-fit-swiper__dots">
           <view
             v-for="(_, index) in props.list"
@@ -484,6 +496,37 @@ defineExpose({
   width: 32rpx;
   height: 8rpx;
   border-radius: var(--sn-mp-radius-xs);
+}
+
+/* ── Slider rail: a pill track with a thumb that slides to the active slot.
+ * Geometry is fixed in rpx (slot 12 + gap 12 = 24rpx step), so the thumb
+ * translate needs no runtime measurement. */
+.sn-fit-swiper__slider {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+  padding: 8rpx 12rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-fit-swiper-dot-color, var(--sn-mp-color-text-tertiary));
+}
+
+.sn-fit-swiper__slider-slot {
+  width: 12rpx;
+  height: 12rpx;
+}
+
+.sn-fit-swiper__slider-thumb {
+  position: absolute;
+  top: 50%;
+  left: 12rpx;
+  width: 12rpx;
+  height: 12rpx;
+  margin-top: -6rpx;
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-fit-swiper-dot-active-color, var(--sn-mp-color-action-primary));
+  transition: transform 300ms ease;
 }
 
 .sn-fit-swiper__fraction {

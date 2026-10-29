@@ -60,7 +60,7 @@ import { SnFitSwiper } from '@snui/uni';
 
 ```ts
 interface SnFitSwiperIndicator {
-  type?: 'dots' | 'dots-bar' | 'fraction';
+  type?: 'dots' | 'dots-bar' | 'fraction' | 'slider';
   minShowNum?: number; // default 2 — hide below this page count
 }
 ```

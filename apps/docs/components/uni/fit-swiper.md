@@ -18,11 +18,11 @@
 
 ## 指示器
 
-`indicator` 传 `false` 隐藏；传对象时 `type` 选内置样式（`dots` 圆点 / `dots-bar` 活动项拉长为条 / `fraction` 分式页码），`minShowNum` 控制低于多少页时整体隐藏。`indicator-position` 支持 8 个锚点方位。
+`indicator` 传 `false` 隐藏；传对象时 `type` 选内置样式（`dots` 圆点 / `dots-bar` 活动项拉长为条 / `fraction` 分式页码 / `slider` 滑轨条 —— 轨道上滑块随当前页平移），`minShowNum` 控制低于多少页时整体隐藏。`indicator-position` 支持 8 个锚点方位。
 
 指示器配色可用 CSS 变量覆盖：`--sn-fit-swiper-dot-color`（非活动点 / 分式底色）、`--sn-fit-swiper-dot-active-color`（活动点），或直接用 `customIndicatorClass` / `customIndicatorStyle`。
 
-<Demo name="fit-swiper-mp-indicator" description="dots / dots-bar / fraction 三种内置指示器样式。" />
+<Demo name="fit-swiper-mp-indicator" description="dots / dots-bar / fraction / slider 四种内置指示器样式。" />
 
 ## 自定义指示器
 
@@ -55,7 +55,7 @@
 | `radius`               | `string \| number`                                                                                   | `''`      | 容器圆角（裸数字按 rpx）。                                               |
 | `animateHeight`        | `boolean`                                                                                            | `true`    | 切页时是否动画过渡容器高度。                                             |
 | `heightDuration`       | `number`                                                                                             | `300`     | 高度过渡时长（ms）。                                                     |
-| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction'; minShowNum?: number }`                      | `true`    | 指示器配置；`false` 隐藏。                                               |
+| `indicator`            | `boolean \| { type?: 'dots' \| 'dots-bar' \| 'fraction' \| 'slider'; minShowNum?: number }`          | `true`    | 指示器配置；`false` 隐藏。                                               |
 | `indicatorPosition`    | `'left' \| 'top-left' \| 'top' \| 'top-right' \| 'bottom-left' \| 'bottom' \| 'bottom-right' \| 'right'` | `'bottom'` | 指示器锚点方位。                                                    |
 | `customClass`          | `string`                                                                                             | `''`      | 根节点类名。                                                             |
 | `customStyle`          | `string`                                                                                             | `''`      | 根节点内联样式。                                                         |

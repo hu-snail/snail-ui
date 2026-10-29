@@ -341,6 +341,20 @@ describe('sn-fit-swiper', () => {
       expect(wrapper.find('.sn-fit-swiper__fraction-text').text()).toBe('2/3');
     });
 
+    it('renders the slider rail with one slot per page and moves the thumb', async () => {
+      const wrapper = mount(SnFitSwiper, {
+        props: { list: pages, indicator: { type: 'slider' } },
+      });
+      expect(wrapper.findAll('.sn-fit-swiper__slider-slot')).toHaveLength(3);
+      const thumb = wrapper.find('.sn-fit-swiper__slider-thumb');
+      expect(thumb.attributes('style')).toContain('translateX(0rpx)');
+
+      await wrapper.find('.sn-fit-swiper__native').trigger('change', {
+        detail: { current: 2, source: 'touch' },
+      });
+      expect(thumb.attributes('style')).toContain('translateX(48rpx)');
+    });
+
     it('moves the active dot when the page changes', async () => {
       const wrapper = mount(SnFitSwiper, { props: { list: pages } });
       await wrapper.find('.sn-fit-swiper__native').trigger('change', {
