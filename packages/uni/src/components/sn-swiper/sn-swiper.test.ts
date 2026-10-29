@@ -9,6 +9,8 @@
  *   - `indicator` accepts `true`, `false` and a config object; `minShowNum`
  *     gates visibility and `type` picks dots / bars / fraction
  *   - `change` / `animationfinish` / `click` / `update:current` payloads
+ *   - `displayMultipleItems > 1` counts indicator PAGES (N-M+1), not slides
+ *   - `card3d` (AUI-additive) adds the root class + a per-slide 3D transform
  *
  * Untestable in happy-dom: autoplay timing with fake timers, loop wrap-around
  * and touch-swipe direction physics. The component delegates all of these to
@@ -23,6 +25,12 @@ import { mount } from '@vue/test-utils';
 import SnSwiper from './sn-swiper.vue';
 
 const list = ['https://x/1.png', 'https://x/2.png', 'https://x/3.png'];
+
+/** Parse the card3d `rotateY(...)` angle from an inline style (`null` when flat). */
+function readRotateY(style: string | undefined): number | null {
+  const match = /rotateY\((-?[\d.]+)deg\)/.exec(style ?? '');
+  return match ? Number(match[1]) : null;
+}
 
 describe('sn-swiper', () => {
   it('renders one native slide per list entry', () => {
@@ -343,6 +351,180 @@ describe('sn-swiper', () => {
       const dots = wrapper.findAll('.sn-swiper__dot');
       expect(dots[1]!.classes()).toContain('sn-swiper__dot--active');
       expect(dots[0]!.classes()).not.toContain('sn-swiper__dot--active');
+    });
+  });
+
+  describe('pages with displayMultipleItems', () => {
+    it('counts pages, not slides, for the dot indicator', () => {
+      const wrapper = mount(SnSwiper, { props: { list, displayMultipleItems: 2 } });
+      // 3 slides shown 2 at a time snap over 2 windows, not 3 slides.
+      const dots = wrapper.findAll('.sn-swiper__dot');
+      expect(dots).toHaveLength(2);
+      expect(dots[0]!.classes()).toContain('sn-swiper__dot--active');
+    });
+
+    it('lights the trailing page dot once the window reaches the end', () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, displayMultipleItems: 2, current: 2 },
+      });
+      const dots = wrapper.findAll('.sn-swiper__dot');
+      expect(dots).toHaveLength(2);
+      expect(dots[1]!.classes()).toContain('sn-swiper__dot--active');
+      expect(dots[0]!.classes()).not.toContain('sn-swiper__dot--active');
+    });
+
+    it('shows the fraction over pages, not slides', () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, displayMultipleItems: 2, current: 1, indicator: { type: 'fraction' } },
+      });
+      expect(wrapper.find('.sn-swiper__fraction-text').text()).toBe('2/2');
+    });
+  });
+
+  describe('card3d', () => {
+    it('adds the root class and slide transforms only when card3d is on', () => {
+      const flat = mount(SnSwiper, { props: { list } });
+      expect(flat.classes()).not.toContain('sn-swiper--card3d');
+      expect(flat.find('.sn-swiper__slide').attributes('style')).toBeUndefined();
+
+      const card = mount(SnSwiper, { props: { list, card3d: true } });
+      expect(card.classes()).toContain('sn-swiper--card3d');
+      expect(card.find('.sn-swiper__slide').attributes('style')).toContain('perspective(');
+    });
+
+    it('leaves the centre card flat and leans its neighbours', () => {
+      const wrapper = mount(SnSwiper, { props: { list, card3d: true, current: 1, loop: false } });
+      const slides = wrapper.findAll('.sn-swiper__slide');
+      expect(readRotateY(slides[1]!.attributes('style'))).toBeNull();
+      expect(readRotateY(slides[0]!.attributes('style'))).toBe(18);
+      expect(readRotateY(slides[2]!.attributes('style'))).toBe(-18);
+    });
+
+    it('re-centres the stack when current changes', async () => {
+      const wrapper = mount(SnSwiper, { props: { list, card3d: true, current: 0, loop: false } });
+      expect(readRotateY(wrapper.findAll('.sn-swiper__slide')[0]!.attributes('style'))).toBeNull();
+
+      await wrapper.setProps({ current: 2 });
+      const slides = wrapper.findAll('.sn-swiper__slide');
+      expect(readRotateY(slides[2]!.attributes('style'))).toBeNull();
+      expect(readRotateY(slides[0]!.attributes('style'))).toBe(36);
+    });
+
+    it('centres the middle card of a multi-item window', () => {
+      const wrapper = mount(SnSwiper, {
+        props: {
+          list: [...list, 'https://x/4.png', 'https://x/5.png'],
+          card3d: true,
+          displayMultipleItems: 3,
+          current: 0,
+          loop: false,
+        },
+      });
+      const slides = wrapper.findAll('.sn-swiper__slide');
+      // centre = current + floor((displayMultipleItems - 1) / 2) = 1.
+      expect(readRotateY(slides[1]!.attributes('style'))).toBeNull();
+      expect(readRotateY(slides[0]!.attributes('style'))).toBe(18);
+      expect(readRotateY(slides[2]!.attributes('style'))).toBe(-18);
+    });
+
+    it('wraps the offset so a looping far card does not take a huge angle', () => {
+      // The component wraps its own offsets; the native loop engine itself is
+      // still untestable in happy-dom (see the file header).
+      const wrapper = mount(SnSwiper, {
+        props: {
+          list: [...list, 'https://x/4.png', 'https://x/5.png'],
+          card3d: true,
+          current: 4,
+          loop: true,
+        },
+      });
+      // Slide 0 sits 4 steps ahead of the last slide, i.e. 1 step behind it.
+      expect(readRotateY(wrapper.findAll('.sn-swiper__slide')[0]!.attributes('style'))).toBe(-18);
+    });
+
+    it('scales the neighbour slides when coverflow is on', () => {
+      const flat = mount(SnSwiper, { props: { list } });
+      expect(flat.classes()).not.toContain('sn-swiper--coverflow');
+      expect(flat.find('.sn-swiper__slide').attributes('style')).toBeUndefined();
+
+      const cover = mount(SnSwiper, { props: { list, coverflow: true, current: 1, loop: false } });
+      expect(cover.classes()).toContain('sn-swiper--coverflow');
+      const slides = cover.findAll('.sn-swiper__slide');
+      expect(slides[1]!.attributes('style')).toContain('scale(1)');
+      expect(slides[0]!.attributes('style')).toContain('scale(0.85)');
+      expect(slides[2]!.attributes('style')).toContain('scale(0.85)');
+    });
+
+    it('peeks the neighbours by default when coverflow is on', () => {
+      const wrapper = mount(SnSwiper, { props: { list, coverflow: true } });
+      const style = wrapper.find('.sn-swiper__native').attributes('style') ?? '';
+      expect(style).toContain('--sn-swiper-previous-margin: 80rpx');
+      expect(style).toContain('--sn-swiper-next-margin: 80rpx');
+    });
+
+    it('keeps explicit margins as the coverflow peek-width knob', () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, coverflow: true, previousMargin: 30, nextMargin: 40 },
+      });
+      const style = wrapper.find('.sn-swiper__native').attributes('style') ?? '';
+      expect(style).toContain('--sn-swiper-previous-margin: 30rpx');
+      expect(style).toContain('--sn-swiper-next-margin: 40rpx');
+    });
+  });
+
+  describe('scale indicator', () => {
+    it('renders scale dots with size grading by distance from the active page', () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, current: 1, indicator: { type: 'scale' } },
+      });
+      expect(wrapper.find('.sn-swiper__indicator').classes()).toContain('sn-swiper__indicator--scale');
+      const dots = wrapper.findAll('.sn-swiper__dot');
+      expect(dots[1]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 20rpx');
+      expect(dots[0]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 14rpx');
+      expect(dots[2]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 14rpx');
+    });
+
+    it('keeps the size floor for far dots', () => {
+      const wrapper = mount(SnSwiper, {
+        props: {
+          list: [...list, 'https://x/4.png', 'https://x/5.png'],
+          current: 0,
+          indicator: { type: 'scale' },
+        },
+      });
+      const dots = wrapper.findAll('.sn-swiper__dot');
+      expect(dots[4]!.attributes('style')).toContain('--sn-swiper-scale-dot-size: 8rpx');
+    });
+  });
+
+  describe('controls navigation', () => {
+    it('steps current forward and back from the arrows', async () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, current: 1, indicator: { showControls: true } },
+      });
+      const controls = wrapper.findAll('.sn-swiper__control');
+      await controls[0]!.trigger('tap');
+      expect(wrapper.emitted('update:current')?.[0]).toEqual([0]);
+      await controls[1]!.trigger('tap');
+      expect(wrapper.emitted('update:current')?.[1]).toEqual([2]);
+    });
+
+    it('wraps at the ends when loop is on', async () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, current: 0, loop: true, indicator: { showControls: true } },
+      });
+      const controls = wrapper.findAll('.sn-swiper__control');
+      await controls[0]!.trigger('tap');
+      expect(wrapper.emitted('update:current')?.[0]).toEqual([2]);
+    });
+
+    it('clamps at the ends when loop is off', async () => {
+      const wrapper = mount(SnSwiper, {
+        props: { list, current: 0, loop: false, indicator: { showControls: true } },
+      });
+      const controls = wrapper.findAll('.sn-swiper__control');
+      await controls[0]!.trigger('tap');
+      expect(wrapper.emitted('update:current')?.[0]).toEqual([0]);
     });
   });
 

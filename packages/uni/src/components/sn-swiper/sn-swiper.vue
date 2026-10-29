@@ -38,6 +38,45 @@
  *     build renders no prev / next peek slides, so nothing consumes them yet.
  *   - `easing-function` is forwarded to the native swiper, which only honours
  *     its own fixed ease set — pass `default` unless a target documents support.
+ *
+ * ## Additive: 3D card mode (`card3d`)
+ * ## Additive: coverflow mode (`coverflow`)
+ *
+ * `coverflow` is an AUI-additive capability (no counterpart in wd-swiper;
+ * registered in AGENTS.md §112.3a): the active slide stays full-size while its
+ * neighbours peek out at both edges scaled down (App Store style). It rides on
+ * the native swiper's `previous-margin` / `next-margin` for the peek width —
+ * when `coverflow` is on and both margins are unset, they default to 80rpx
+ * each; pass `previous-margin` / `next-margin` to control the side width
+ * explicitly. Non-active slides get an inline `scale()` derived from their
+ * offset to the active index (`coverflow-scale`, default 0.85, clamped so far
+ * slides stop shrinking). Presentation only: paging, loop and autoplay remain
+ * the native swiper's; with `coverflow` off the DOM is exactly as before the
+ * prop existed.
+ *
+ * ## Additive: `scale` indicator + functional controls
+ *
+ * `indicator.type: 'scale'` is an AUI-additive dot style: dot size grades with
+ * distance from the active page (small → largest at active → small). The
+ * `show-controls` arrows are tappable and step `current` (wrapping under
+ * `loop`, clamping otherwise); they emit `update:current` and the native
+ * swiper mirrors the move back through its own `change` event — the controls
+ * themselves do not emit `change` directly.
+ *
+ *
+ * `card3d` is an AUI-additive capability (no counterpart in wd-swiper;
+ * registered in AGENTS.md §112.3a). Rationale: the reference can only lay
+ * slides out flat, so apps that want the common "card carousel" hero (App Store
+ * / Taobao style — cards leaning back behind a flat, largest centre card) had to
+ * fork the component. When `card3d` is on the root gains `sn-swiper--card3d`
+ * and every slide gets an inline `perspective() rotateY() scale()` transform
+ * plus a matching opacity, derived from its offset to the centre of the active
+ * window; neighbours lean back, shrink, fade and are inset by a gap so they read
+ * as separate cards. It is presentation only: the native `<swiper>` still owns
+ * paging, `displayMultipleItems` still decides how many cards share the screen,
+ * and with `card3d` off the DOM / classes / inline styles are exactly as before
+ * the prop existed.
+ *
  * Per AGENTS.md §32, this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -50,6 +89,8 @@ import SnImg from '../sn-img/sn-img.vue';
 
 defineOptions({ name: 'SnSwiper' });
 
+/* ── Types ────────────────────────────────────────────────────────────────── */
+
 /** Scroll axis. Mirrors `wd-swiper` `direction`. */
 type SwiperDirection = 'horizontal' | 'vertical';
 
@@ -61,7 +102,7 @@ type SwiperIndicatorPosition =
 type SwiperImageMode = 'scaleToFill' | 'aspectFit' | 'aspectFill' | 'widthFix' | 'heightFix';
 
 /** Indicator style. Mirrors `wd-swiper` `indicator.type`. */
-type SwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction';
+type SwiperIndicatorType = 'dots' | 'dots-bar' | 'fraction' | 'scale';
 
 /** One slide object. Mirrors the `SwiperItem` row group of the wd table. */
 export interface SnSwiperItem {
@@ -85,6 +126,8 @@ export interface SnSwiperIndicator {
   showControls?: boolean;
 }
 
+/* ── Props ────────────────────────────────────────────────────────────────── */
+
 const props = withDefaults(
   defineProps<{
     /** Autoplay. */
@@ -107,6 +150,18 @@ const props = withDefaults(
     list?: Array<string | SnSwiperItem>;
     /** Loop the slides. */
     loop?: boolean;
+    /**
+     * 3D 卡片模式：叠层透视卡片，一屏多个由 displayMultipleItems 控制。
+     * AUI-additive — wd-swiper has no 3D presentation (see the file header).
+     */
+    card3d?: boolean;
+    /**
+     * Coverflow 模式（AUI-additive）：中间全尺寸、两侧露出缩小。
+     * 露出宽度由 previous-margin / next-margin 控制（两者均未设置时默认各 80rpx）。
+     */
+    coverflow?: boolean;
+    /** Coverflow 模式非激活卡片的缩放比例（默认 0.85）。 */
+    coverflowScale?: number;
     /** Loop video items (declared for parity; video degrades to its poster). */
     videoLoop?: boolean;
     /** Mute video items (declared for parity; video degrades to its poster). */
@@ -179,6 +234,9 @@ const props = withDefaults(
     interval: 5000,
     list: () => [],
     loop: true,
+    card3d: false,
+    coverflow: false,
+    coverflowScale: 0.85,
     videoLoop: false,
     muted: false,
     autoplayVideo: false,
@@ -210,12 +268,16 @@ const props = withDefaults(
   },
 );
 
+/* ── Emits ────────────────────────────────────────────────────────────────── */
+
 const emit = defineEmits<{
   (e: 'click', payload: { index: number; item: string | SnSwiperItem }): void;
   (e: 'change', payload: { current: number; source: string }): void;
   (e: 'animationfinish', payload: { current: number; source: string }): void;
   (e: 'update:current', value: number): void;
 }>();
+
+/* ── Normalisation ────────────────────────────────────────────────────────── */
 
 /** Resolve a numeric-or-string length (bare number = rpx). */
 function toLength(value: string | number | undefined, fallback?: number): string | undefined {
@@ -247,36 +309,41 @@ const slides = computed<NormalisedSlide[]>(() =>
   }),
 );
 
-/**
- * Non-undefined views of the props the template forwards into sn-img props or
- * reads arithmetically. `withDefaults` narrows at runtime, but a bare prop
- * identifier in the template still types as `T | undefined`.
- */
-const imageModeValue = computed(() => props.imageMode);
-const showMenuValue = computed(() => props.showMenuByLongpress);
-const imageClassValue = computed(() => props.customImageClass);
-const currentIndex = computed(() => props.current);
+/* ── Derived state ────────────────────────────────────────────────────────── */
 
 /*
- * Video / adjust-height parity props. Declared so a wd-swiper config type-
- * checks unchanged; forwarded to the native `<swiper>` where the platform
- * understands them (Alipay for the adjust-height pair, no vendor for the
- * video pair — video items degrade to their poster, see the file header).
+ * Lengths. `radius` is only emitted when the caller set one, so the theme
+ * radius survives; `height` falls back to the wd-swiper default of 192.
+ */
+const heightStyle = computed(() => toLength(props.height, 192));
+const radiusStyle = computed(() => toLength(props.radius));
+/*
+ * Margins. With `coverflow` on and both margins unset, default to 80rpx each
+ * so the neighbours peek out of the box; an explicit margin (either side)
+ * keeps the caller's value — that is the documented knob for the peek width.
+ */
+const coverflowDefaultsMargins = computed(
+  () => props.coverflow && !props.previousMargin && !props.nextMargin,
+);
+const previousMarginStyle = computed(() =>
+  coverflowDefaultsMargins.value ? '80rpx' : toLength(props.previousMargin, 0),
+);
+const nextMarginStyle = computed(() =>
+  coverflowDefaultsMargins.value ? '80rpx' : toLength(props.nextMargin, 0),
+);
+
+/*
+ * Video / adjust-height parity props (see the file header). Declared so a
+ * wd-swiper config type-checks unchanged; forwarded to the native `<swiper>`
+ * where the platform understands them (Alipay for the adjust-height pair, no
+ * vendor for the video pair — video items degrade to their poster). They are
+ * read straight off `props` in the template; only `adjustHeight` needs a view,
+ * because its `''` "off" state must drop the attribute rather than forward an
+ * empty one.
  */
 const adjustHeightValue = computed(() =>
   props.adjustHeight === '' ? undefined : props.adjustHeight,
 );
-const adjustVerticalHeightValue = computed(() => props.adjustVerticalHeight);
-const videoLoopValue = computed(() => props.videoLoop);
-const mutedValue = computed(() => props.muted);
-const autoplayVideoValue = computed(() => props.autoplayVideo);
-const stopPreviousVideoValue = computed(() => props.stopPreviousVideo);
-const stopAutoplayWhenVideoPlayValue = computed(() => props.stopAutoplayWhenVideoPlay);
-
-const heightStyle = computed(() => toLength(props.height, 192));
-const radiusStyle = computed(() => toLength(props.radius));
-const previousMarginStyle = computed(() => toLength(props.previousMargin, 0));
-const nextMarginStyle = computed(() => toLength(props.nextMargin, 0));
 
 /** Resolved indicator config. */
 const indicatorConfig = computed<SnSwiperIndicator>(() => {
@@ -297,7 +364,32 @@ const showsControls = computed(
   () => indicatorConfig.value.showControls === true && slides.value.length > 1,
 );
 
-const rootClass = computed(() => ['sn-swiper', `sn-swiper--${props.direction}`, props.customClass]);
+/*
+ * The native swiper snaps whole *windows* of `displayMultipleItems` slides, so
+ * the indicator counts pages, not slides: N slides shown M at a time give
+ * N-M+1 windows. `current` is the leftmost slide of a window, which doubles as
+ * the page index except for the last window, where it overshoots — clamping it
+ * keeps the trailing page reachable instead of lighting a dot that a trailing
+ * slide owns but no page ever activates.
+ */
+const pageCount = computed(() =>
+  Math.max(1, slides.value.length - props.displayMultipleItems + 1),
+);
+
+const activePage = computed(() => Math.min(props.current, pageCount.value - 1));
+
+/** uni swiper's `easing-function` accepts a fixed name set; anything else is dropped. */
+const easingFunction = computed(() =>
+  props.easingFunction === 'default' ? undefined : props.easingFunction,
+);
+
+const rootClass = computed(() => [
+  'sn-swiper',
+  `sn-swiper--${props.direction}`,
+  props.card3d ? 'sn-swiper--card3d' : '',
+  props.coverflow ? 'sn-swiper--coverflow' : '',
+  props.customClass,
+]);
 
 const rootStyle = computed(() => {
   const parts = [`height: ${heightStyle.value}`];
@@ -317,11 +409,6 @@ const swiperStyle = computed(() => {
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
 
-/** uni swiper's `easing-function` accepts a fixed name set; anything else is dropped. */
-const easingFunction = computed(() =>
-  props.easingFunction === 'default' ? undefined : props.easingFunction,
-);
-
 const indicatorClass = computed(() => [
   'sn-swiper__indicator',
   `sn-swiper__indicator--${indicatorType.value}`,
@@ -330,6 +417,126 @@ const indicatorClass = computed(() => [
 ]);
 
 const textStyle = computed(() => (props.customTextStyle ? props.customTextStyle : undefined));
+
+/* ── 3D card mode (AUI-additive; see the file header) ─────────────────────── */
+
+/** Y-rotation per card step, in degrees: neighbours lean back toward the centre. */
+const CARD3D_ANGLE_PER_STEP = -18;
+
+/** Scale lost per card step. */
+const CARD3D_SCALE_PER_STEP = 0.06;
+
+/** Opacity lost per card step, so the stack reads front-to-back. */
+const CARD3D_FADE_PER_STEP = 0.12;
+
+/** How far the whole stack sits from the viewer. */
+const CARD3D_PERSPECTIVE = '1200rpx';
+
+/** Offset clamp for scale / fade: beyond two steps cards stop shrinking. */
+const CARD3D_MAX_STEP = 2;
+
+/**
+ * Wrap an offset into `[-floor(n/2), ceil(n/2)]` where `n` = slide count, i.e.
+ * the shortest way round a looping track. Without it a slide that is really one
+ * step "behind" the first slide of a loop would be counted as `n - 1` steps and
+ * lean by a whole track's worth of angle.
+ */
+function wrapCardOffset(offset: number, count: number): number {
+  if (count <= 1) return offset;
+  const min = -Math.floor(count / 2);
+  const max = Math.ceil(count / 2);
+  let wrapped = offset;
+  while (wrapped < min) wrapped += count;
+  while (wrapped > max) wrapped -= count;
+  return wrapped;
+}
+
+/**
+ * The slide the stack is centred on: the middle of the active window, clamped
+ * to the track. With `displayMultipleItems` > 1 the window is centred rather
+ * than left-aligned, so the cards fan out around it symmetrically.
+ */
+const cardCentre = computed(() => {
+  const lastIndex = Math.max(slides.value.length - 1, 0);
+  const centre = props.current + Math.floor((props.displayMultipleItems - 1) / 2);
+  return Math.min(Math.max(centre, 0), lastIndex);
+});
+
+/** Signed card offset of one slide from the centre (wrapped when `loop` is on). */
+function cardOffset(index: number): number {
+  const offset = index - cardCentre.value;
+  return props.loop ? wrapCardOffset(offset, slides.value.length) : offset;
+}
+
+/**
+ * Inline 3D presentation for one slide. `undefined` when `card3d` is off, so
+ * the default render keeps no transform and no extra class. The centre card
+ * (offset 0) carries no `rotateY` term at all — it is the flat, largest card
+ * facing the viewer; neighbours rotate, shrink and fade by their offset, and
+ * the transition on `.sn-swiper--card3d .sn-swiper__slide` animates the swap
+ * when `current` moves.
+ */
+function card3dStyle(index: number): string | undefined {
+  if (!props.card3d) return undefined;
+  const offset = cardOffset(index);
+  const step = Math.min(Math.abs(offset), CARD3D_MAX_STEP);
+  const rotateY = offset === 0 ? '' : ` rotateY(${offset * CARD3D_ANGLE_PER_STEP}deg)`;
+  return (
+    `transform: perspective(${CARD3D_PERSPECTIVE})${rotateY} scale(${1 - step * CARD3D_SCALE_PER_STEP}); ` +
+    `opacity: ${1 - step * CARD3D_FADE_PER_STEP};`
+  );
+}
+
+/* ── Coverflow mode (AUI-additive; see the file header) ───────────────────── */
+
+/**
+ * Inline presentation for one coverflow slide. `undefined` when `coverflow`
+ * is off, so the default render keeps no transform and no extra class. The
+ * active slide (offset 0) carries no `scale()` term — it is the full-size
+ * card; neighbours shrink toward `coverflowScale` by their offset, clamped so
+ * far slides stop shrinking. The transition on `.sn-swiper--coverflow
+ * .sn-swiper__slide` animates the swap when `current` moves.
+ */
+function coverflowStyle(index: number): string | undefined {
+  if (!props.coverflow) return undefined;
+  const offset = Math.min(Math.abs(cardOffset(index)), 1);
+  const scale = 1 - offset * (1 - props.coverflowScale);
+  return `transform: scale(${scale});`;
+}
+
+/* ── `scale` indicator (AUI-additive; see the file header) ────────────────── */
+
+/** Largest dot size (active), in rpx. */
+const SCALE_DOT_MAX = 20;
+/** Size lost per step away from the active page, in rpx. */
+const SCALE_DOT_STEP = 6;
+/** Dot size floor, in rpx. */
+const SCALE_DOT_MIN = 8;
+
+/**
+ * Inline dot size for one page of the `scale` indicator: size grades with the
+ * distance from the active page (small → largest at active → small).
+ */
+function scaleDotStyle(index: number): string | undefined {
+  if (indicatorType.value !== 'scale') return undefined;
+  const distance = Math.abs(index - activePage.value);
+  const size = Math.max(SCALE_DOT_MAX - distance * SCALE_DOT_STEP, SCALE_DOT_MIN);
+  return `--sn-swiper-scale-dot-size: ${size}rpx;`;
+}
+
+/** Step one page back from the controls (wrap under `loop`, clamp otherwise). */
+function onPrevControlTap(): void {
+  const last = pageCount.value - 1;
+  emit('update:current', activePage.value === 0 && props.loop ? last : Math.max(activePage.value - 1, 0));
+}
+
+/** Step one page forward from the controls (wrap under `loop`, clamp otherwise). */
+function onNextControlTap(): void {
+  const last = pageCount.value - 1;
+  emit('update:current', activePage.value === last && props.loop ? 0 : Math.min(activePage.value + 1, last));
+}
+
+/* ── Handlers ─────────────────────────────────────────────────────────────── */
 
 function onSwiperChange(event: { detail: { current: number; source: string } }): void {
   emit('update:current', event.detail.current);
@@ -351,23 +558,23 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
       class="sn-swiper__native"
       :style="swiperStyle"
       :autoplay="props.autoplay"
-      :current="currentIndex"
-      :vertical="direction === 'vertical'"
-      :display-multiple-items="displayMultipleItems"
-      :duration="duration"
+      :current="props.current"
+      :vertical="props.direction === 'vertical'"
+      :display-multiple-items="props.displayMultipleItems"
+      :duration="props.duration"
       :easing-function="easingFunction"
-      :interval="interval"
-      :circular="loop"
+      :interval="props.interval"
+      :circular="props.loop"
       :previous-margin="previousMarginStyle"
       :next-margin="nextMarginStyle"
-      :snap-to-edge="snapToEdge"
+      :snap-to-edge="props.snapToEdge"
       :adjust-height="adjustHeightValue"
-      :adjust-vertical-height="adjustVerticalHeightValue"
-      :video-loop="videoLoopValue"
-      :muted="mutedValue"
-      :autoplay-video="autoplayVideoValue"
-      :stop-previous-video="stopPreviousVideoValue"
-      :stop-autoplay-when-video-play="stopAutoplayWhenVideoPlayValue"
+      :adjust-vertical-height="props.adjustVerticalHeight"
+      :video-loop="props.videoLoop"
+      :muted="props.muted"
+      :autoplay-video="props.autoplayVideo"
+      :stop-previous-video="props.stopPreviousVideo"
+      :stop-autoplay-when-video-play="props.stopAutoplayWhenVideoPlay"
       @change="onSwiperChange"
       @animationfinish="onAnimationFinish"
     >
@@ -375,19 +582,23 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
         v-for="(slide, index) in slides"
         :key="index"
         class="sn-swiper__item"
-        :class="customItemClass"
+        :class="props.customItemClass"
       >
-        <view class="sn-swiper__slide" @tap="onSlideTap(slide, index)">
+        <view
+          class="sn-swiper__slide"
+          :style="card3dStyle(index) ?? coverflowStyle(index)"
+          @tap="onSlideTap(slide, index)"
+        >
           <SnImg
             :src="slide.src"
-            :mode="imageModeValue"
-            :show-menu-by-longpress="showMenuValue"
-            :custom-class="imageClassValue"
+            :mode="props.imageMode"
+            :show-menu-by-longpress="props.showMenuByLongpress"
+            :custom-class="props.customImageClass"
             width="100%"
             height="100%"
           />
           <view v-if="slide.text" class="sn-swiper__caption" :style="textStyle">
-            <text class="sn-swiper__caption-text" :class="customTextClass">
+            <text class="sn-swiper__caption-text" :class="props.customTextClass">
               {{ slide.text }}
             </text>
           </view>
@@ -397,26 +608,28 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
 
     <view v-if="showsIndicator" :class="indicatorClass" aria-hidden="true">
       <view v-if="indicatorType === 'fraction'" class="sn-swiper__fraction">
-        <text class="sn-swiper__fraction-text">{{ currentIndex + 1 }}/{{ slides.length }}</text>
+        <text class="sn-swiper__fraction-text">{{ activePage + 1 }}/{{ pageCount }}</text>
       </view>
 
       <view v-else class="sn-swiper__dots">
         <view
-          v-for="(_, index) in slides"
+          v-for="(_, index) in pageCount"
           :key="index"
           class="sn-swiper__dot"
           :class="{
-            'sn-swiper__dot--active': index === currentIndex,
+            'sn-swiper__dot--active': index === activePage,
             'sn-swiper__dot--bar': indicatorType === 'dots-bar',
+            'sn-swiper__dot--scale': indicatorType === 'scale',
           }"
+          :style="scaleDotStyle(index)"
         />
       </view>
 
       <template v-if="showsControls">
-        <view class="sn-swiper__control sn-swiper__control--prev">
+        <view class="sn-swiper__control sn-swiper__control--prev" @tap="onPrevControlTap">
           <text class="sn-swiper__control-text">‹</text>
         </view>
-        <view class="sn-swiper__control sn-swiper__control--next">
+        <view class="sn-swiper__control sn-swiper__control--next" @tap="onNextControlTap">
           <text class="sn-swiper__control-text">›</text>
         </view>
       </template>
@@ -455,6 +668,38 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
   overflow: hidden;
 }
 
+/* ── 3D card mode (AUI-additive; see the file header) ────────────────────── */
+
+.sn-swiper--card3d {
+  /* Inset gap so the perspective stack reads as separate cards, not one slab. */
+  --sn-swiper-card3d-gap: var(--sn-mp-spacing-2);
+}
+
+.sn-swiper--card3d .sn-swiper__item {
+  padding-right: var(--sn-swiper-card3d-gap);
+  padding-left: var(--sn-swiper-card3d-gap);
+}
+
+.sn-swiper--card3d .sn-swiper__slide {
+  /* The inline transform on each slide animates as `current` moves the stack. */
+  transition: transform 300ms ease, opacity 300ms ease;
+  backface-visibility: hidden;
+}
+
+
+/* ── Coverflow mode (AUI-additive; see the file header) ────────────────────── */
+
+.sn-swiper--coverflow .sn-swiper__slide {
+  /* The inline scale() on each slide animates as `current` moves. */
+  transition: transform 300ms ease;
+  will-change: transform;
+}
+
+/* The root keeps `overflow: hidden` for the track; each card rounds itself so
+ * the scaled-down neighbours read as separate rounded cards (设计图 1). */
+.sn-swiper--coverflow .sn-swiper__slide {
+  border-radius: var(--sn-mp-radius-lg);
+}
 .sn-swiper__caption {
   position: absolute;
   right: 0;
@@ -501,6 +746,7 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
 .sn-swiper__indicator--bottom-right {
   right: var(--sn-mp-spacing-3);
 }
+
 .sn-swiper__indicator--top,
 .sn-swiper__indicator--bottom {
   left: 0;
@@ -533,6 +779,13 @@ function onSlideTap(slide: NormalisedSlide, index: number): void {
   border-radius: var(--sn-mp-radius-xs);
 }
 
+/* `scale` indicator: the inline custom property carries the graded size (custom
+ * properties survive platforms' style parsing, raw rpx lengths do not). */
+.sn-swiper__dot--scale {
+  width: var(--sn-swiper-scale-dot-size, 12rpx);
+  height: var(--sn-swiper-scale-dot-size, 12rpx);
+  transition: width 300ms ease, height 300ms ease;
+}
 .sn-swiper__fraction {
   padding: 0 var(--sn-mp-spacing-2);
   border-radius: var(--sn-mp-radius-full);
