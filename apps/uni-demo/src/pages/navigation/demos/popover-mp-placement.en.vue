@@ -1,45 +1,72 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — placement / arrow / disabled.
+ * Demo: sn-popover (uni-end) — all 12 placement directions (wot-ui demo grid).
  * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
 
-const top = ref(false);
-const right = ref(false);
+type Placement =
+  | 'top'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom'
+  | 'bottom-start'
+  | 'bottom-end'
+  | 'left'
+  | 'left-start'
+  | 'left-end'
+  | 'right'
+  | 'right-start'
+  | 'right-end';
+
+/** One grid row; `null` fills a cell so the left / right families mirror. */
+const rows: (Placement | null)[][] = [
+  ['bottom-start', 'bottom', 'bottom-end'],
+  ['right-start', null, 'left-start'],
+  ['right', null, 'left'],
+  ['right-end', null, 'left-end'],
+  ['top-start', 'top', 'top-end'],
+];
+
+const openPlacement = ref<Placement | null>(null);
+
+function setOpen(placement: Placement, value: boolean): void {
+  openPlacement.value = value
+    ? placement
+    : openPlacement.value === placement
+      ? null
+      : openPlacement.value;
+}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnPopover
-      v-model="top"
-      content="placement = top, with the arrow"
-      placement="top"
-      custom-class="sn-demo-contained"
-    >
-      <SnButton block>Top bubble</SnButton>
-    </SnPopover>
+    <view class="sn-popover-demo__grid">
+      <template v-for="(row, rowIndex) in rows" :key="rowIndex">
+        <view
+          v-for="(placement, cellIndex) in row"
+          :key="placement ?? `empty-${rowIndex}-${cellIndex}`"
+          class="sn-popover-demo__cell"
+        >
+          <SnPopover
+            v-if="placement"
+            :model-value="openPlacement === placement"
+            :content="`${placement} hint text`"
+            :placement="placement"
+            @update:model-value="setOpen(placement, $event)"
+          >
+            <SnButton type="primary" size="small">{{ placement }}</SnButton>
+          </SnPopover>
+        </view>
+      </template>
+    </view>
 
-    <SnPopover
-      v-model="right"
-      content="placement = right-start, no arrow"
-      placement="right-start"
-      :visible-arrow="false"
-      custom-class="sn-demo-contained"
-    >
-      <SnButton block>Right bubble (no arrow)</SnButton>
-    </SnPopover>
-
-    <SnPopover
-      content="A disabled popover ignores taps"
-      disabled
-      placement="bottom"
-      custom-class="sn-demo-contained"
-    >
-      <SnButton block disabled>Disabled</SnButton>
-    </SnPopover>
+    <text class="sn-popover-demo__meta">
+      Miniprogram has no hover, so all 12 directions open on tap; tapping outside
+      the bubble (transparent mask) closes it too.
+    </text>
   </view>
 </template>
 
@@ -47,11 +74,20 @@ const right = ref(false);
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 32rpx;
+  gap: 16rpx;
+}
+.sn-popover-demo__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24rpx 16rpx;
   padding: 40rpx 0;
 }
-/* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
-.sn-popover.sn-demo-contained {
-  position: absolute;
+.sn-popover-demo__cell {
+  display: flex;
+  justify-content: center;
+}
+.sn-popover-demo__meta {
+  font-size: 24rpx;
+  color: var(--vp-c-text-2);
 }
 </style>

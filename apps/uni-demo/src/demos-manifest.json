@@ -282,6 +282,16 @@
           "hasEn": true
         },
         {
+          "name": "icon-mp-gallery",
+          "title": "图标总览",
+          "hasEn": true
+        },
+        {
+          "name": "icon-mp-iconify",
+          "title": "Iconify 按需",
+          "hasEn": true
+        },
+        {
           "name": "icon-mp-name",
           "title": "name",
           "hasEn": true
@@ -294,6 +304,11 @@
         {
           "name": "icon-mp-size",
           "title": "尺寸",
+          "hasEn": true
+        },
+        {
+          "name": "icon-mp-string",
+          "title": "目录用法",
           "hasEn": true
         }
       ]
@@ -901,6 +916,24 @@
         {
           "name": "calendar-view-mp-same-day-time",
           "title": "same-day-time",
+          "hasEn": true
+        }
+      ]
+    },
+    "captcha": {
+      "group": "form",
+      "title": "拼图验证",
+      "desc": "拖动拼图对齐缺口",
+      "page": "pages/form/captcha",
+      "demos": [
+        {
+          "name": "captcha-mp-basic",
+          "title": "基础用法",
+          "hasEn": true
+        },
+        {
+          "name": "captcha-mp-custom",
+          "title": "自定义",
           "hasEn": true
         }
       ]
@@ -1727,6 +1760,11 @@
           "name": "curtain-mp-custom",
           "title": "自定义",
           "hasEn": true
+        },
+        {
+          "name": "curtain-mp-image-tap",
+          "title": "点图片关闭",
+          "hasEn": true
         }
       ]
     },
@@ -2130,6 +2168,19 @@
           "name": "count-to-mp-type",
           "title": "类型",
           "hasEn": true
+        }
+      ]
+    },
+    "fit-swiper": {
+      "group": "display",
+      "title": "自适应轮播",
+      "desc": "贴合内容高度的金刚区轮播",
+      "page": "pages/display/fit-swiper",
+      "demos": [
+        {
+          "name": "fit-swiper-mp-basic",
+          "title": "基础用法",
+          "hasEn": false
         }
       ]
     },

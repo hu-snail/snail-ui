@@ -5,15 +5,16 @@
 > **与 wot-ui 的差异**
 >
 > - 小程序没有 `hover`，触发器固定用**点击**切换，因此不声明 `trigger` 属性。
+> - 点击气泡外部关闭通过透明遮罩实现（小程序没有 `document`，挂不了全局监听）。
 > - `root-portal` 已声明但**未实现**（小程序没有 portal 宿主）。
 > - `updatePosition()` 是兼容占位：气泡位置由 CSS 决定。
 > - `iconClass` 取 `sn-icon` 注册表名或图片地址，不是 CSS 类名（uni 端没有字体图标层）。
 
 ## 基础用法
 
-`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。
+`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。点击气泡外部（透明遮罩）或再点一次触发器收起。
 
-<Demo name="popover-mp-basic" description="normal 模式 + 关闭按钮，点击触发器切换。" />
+<Demo name="popover-mp-basic" description="normal 模式 + 关闭按钮，点击触发器切换，点击外部自动关闭。" />
 
 ## 菜单模式
 
@@ -21,14 +22,16 @@
 
 <Demo name="popover-mp-menu" description="菜单模式，图标来自 sn-icon 注册表，含一个禁用项。" />
 
-## 位置 / 箭头 / 禁用
+## 位置 / 箭头 / 禁用 / 配色
 
 - `placement` 支持 `top` / `bottom` / `left` / `right` 四组、每组 `-start` / `-end` 对齐变体（共 12 档）
 - `visibleArrow=false` 去掉箭头
 - `offset` 支持 `number`、`[x, y]`、`{ x, y }`，单位是设计稿 px
 - `disabled` 让触发器点击失效
 
-<Demo name="popover-mp-placement" description="top / right-start（无箭头）/ 禁用三种状态。" />
+- 气泡配色通过 `--sn-popover-bg` / `--sn-popover-color` 覆盖，默认白底深字（见「主题变量」）
+
+<Demo name="popover-mp-placement" description="12 个方位全部展示（wot-ui demo 网格布局），一次只开一个。" />
 
 ## 图片图标 / content 插槽 / 节点类名
 
@@ -93,8 +96,8 @@
 
 | 变量                                                            | 用途            |
 | --------------------------------------------------------------- | --------------- |
-| `--sn-mp-color-background-elevated`                             | 气泡底色        |
-| `--sn-mp-color-text-primary`                                    | 气泡 / 选项文字 |
+| `--sn-popover-bg`                                               | 气泡底色（默认 `--sn-mp-color-background-elevated`，亮色主题即白色；箭头同色；可用 `custom-style` 覆盖） |
+| `--sn-popover-color`                                            | 气泡 / 选项文字色（默认 `--sn-mp-color-text-primary`）                                                   |
 | `--sn-mp-color-text-secondary`                                  | 选项图标        |
 | `--sn-mp-color-text-disabled`                                   | 禁用选项        |
 | `--sn-mp-color-border-subtle`                                   | 气泡与箭头描边  |
@@ -108,11 +111,12 @@
 - 触发器带 `role="button"` + `aria-expanded` + `aria-disabled`
 - 气泡带 `role="dialog"`，箭头 `aria-hidden="true"`
 - `menu` 模式选项带 `role="menuitem"` + `aria-disabled`
+- 透明遮罩带 `aria-hidden="true"`（纯手势层，对辅助技术隐藏）
 - 交互统一用 `@tap`；移动端无键盘焦点陷阱
 
 ## 暗色模式
 
-气泡底色走 `--sn-mp-color-background-elevated`、文字走 `--sn-mp-color-text-primary`，两者都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动适配。可用 `<sn-config-provider theme="dark">` 包裹验证。
+气泡底色走 `--sn-popover-bg`（默认 `--sn-mp-color-background-elevated`，亮色主题即白色）、文字走 `--sn-popover-color`（默认 `--sn-mp-color-text-primary`），两个默认 token 都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动适配。需要自定义配色时，用 `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` 覆盖（对齐 wot-ui 的 `--wot-popover-bg` / `--wot-popover-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

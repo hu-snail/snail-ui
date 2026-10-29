@@ -240,6 +240,8 @@ const rootStyle = computed(() => {
 
 /** rpx offset for the handle (`1px design = 2rpx`). */
 const handleStyle = computed(() => `transform: translateX(${offset.value * 2}rpx)`);
+/** 进度填充宽度 = 把手左缘 + 把手宽（rpx）。 */
+const fillStyle = computed(() => `width: ${(offset.value + BUTTON_SIZE) * 2}rpx`);
 
 const hintText = computed(() => {
   if (state.value === 'success') return props.successText || '验证通过';
@@ -260,6 +262,13 @@ const hintText = computed(() => {
       class="sn-slide-verify__track"
       :aria-disabled="props.disabled ? 'true' : undefined"
     >
+      <!-- 拖动进度填充：随把手推进，成功后转成功色 -->
+      <view
+        class="sn-slide-verify__fill"
+        :class="{ 'sn-slide-verify__fill--success': state === 'success' }"
+        :style="fillStyle"
+        aria-hidden="true"
+      />
       <text class="sn-slide-verify__text">{{ hintText }}</text>
 
       <view
@@ -321,7 +330,23 @@ const hintText = computed(() => {
   box-sizing: border-box;
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-slide-verify-track-bg, var(--sn-mp-color-background-soft));
+  /* 内描边：给轨道一个清晰边界（压在填充层之上由 border 自带） */
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
   overflow: hidden;
+}
+
+/* 拖动进度填充：贴在轨道底层，宽度跟随把手 */
+.sn-slide-verify__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: var(--sn-mp-color-action-primary-soft);
+  pointer-events: none;
+}
+
+.sn-slide-verify__fill--success {
+  background-color: var(--sn-mp-color-feedback-success-soft);
 }
 
 .sn-slide-verify--success .sn-slide-verify__track {
@@ -352,8 +377,9 @@ const hintText = computed(() => {
   width: 88rpx;
   border-radius: var(--sn-mp-radius-md);
   background-color: var(--sn-mp-color-background-elevated);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
   color: var(--sn-mp-color-action-primary);
-  box-shadow: var(--sn-mp-shadow-sm);
+  box-shadow: var(--sn-mp-shadow-md);
 }
 
 .sn-slide-verify__handle--success {

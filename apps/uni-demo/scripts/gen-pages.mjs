@@ -53,6 +53,9 @@ const SCENARIO_LABELS = {
   icons: '图标',
   iconfont: '字体图标',
   'icon-font': '字体图标',
+  gallery: '图标总览',
+  string: '目录用法',
+  iconify: 'Iconify 按需',
   disabled: '禁用',
   style: '样式',
   scroll: '滚动',
@@ -73,6 +76,7 @@ const SCENARIO_LABELS = {
   threshold: '阈值',
   visibility: '可见性',
   hover: '悬停',
+  'image-tap': '点图片关闭',
 };
 
 const SCENARIO_LABELS_EN = {
@@ -96,6 +100,9 @@ const SCENARIO_LABELS_EN = {
   icons: 'Icons',
   iconfont: 'Iconfont',
   'icon-font': 'Iconfont',
+  gallery: 'Gallery',
+  string: 'Catalog names',
+  iconify: 'Iconify on demand',
   disabled: 'Disabled',
   style: 'Style',
   scroll: 'Scroll',

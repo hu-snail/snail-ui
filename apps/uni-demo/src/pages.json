@@ -230,6 +230,12 @@
           }
         },
         {
+          "path": "captcha",
+          "style": {
+            "navigationBarTitleText": "拼图验证"
+          }
+        },
+        {
           "path": "cascader",
           "style": {
             "navigationBarTitleText": "级联选择器"
@@ -493,6 +499,12 @@
           "path": "count-to",
           "style": {
             "navigationBarTitleText": "数字滚动"
+          }
+        },
+        {
+          "path": "fit-swiper",
+          "style": {
+            "navigationBarTitleText": "自适应轮播"
           }
         },
         {

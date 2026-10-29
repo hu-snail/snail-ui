@@ -30,12 +30,16 @@ export const PATCHES: Record<string, SourcePatch[]> = {
  * uni-app x App has no inline <svg> element: IconData renders through an
  * <image> with an SVG data URL instead. CSS currentColor cannot reach the
  * rasterized document, so the stroke falls back to a fixed ink color.
+ *
+ * displayIcon covers every IconData source: object icon, string icon
+ * resolved from the registry / built-in catalog, and async provider data.
  */
 const iconDataUrl = computed<string | undefined>(() => {
-  if (props.icon === undefined) return undefined
-  const vb: string = props.icon.viewBox ?? '0 0 24 24'
+  const icon = displayIcon.value
+  if (icon === null) return undefined
+  const vb: string = icon.viewBox ?? '0 0 24 24'
   const stroke: string = props.color === 'currentColor' ? '#1a1a1a' : props.color
-  const body: string = props.icon.paths
+  const body: string = icon.paths
     .map(
       (d) =>
         \`<path d="\${d}" fill="none" stroke="\${stroke}" stroke-width="\${props.strokeWidth}" stroke-linecap="round" stroke-linejoin="round"/>\`,
@@ -48,8 +52,14 @@ const iconDataUrl = computed<string | undefined>(() => {
       note: 'IconData rendering moved to <image> + SVG data URL (no inline <svg> on App)',
     },
     {
+      anchor: `    <view v-else-if="remoteSrc" class="sn-icon__remote" :style="remoteStyle" />`,
+      replacement: `    <!-- uni-app x App: background-image + SVG data URL is unreliable on native — use <image>. -->
+    <image v-else-if="remoteSrc" class="sn-icon__svg-img" :src="remoteSrc" mode="aspectFit" />`,
+      note: 'remote (iconify / provider URL) branch retargeted to <image :src>',
+    },
+    {
       anchor: `    <svg
-      v-else-if="icon"
+      v-else-if="displayIcon"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="viewBox"
       fill="none"
@@ -59,10 +69,10 @@ const iconDataUrl = computed<string | undefined>(() => {
       stroke-linejoin="round"
       focusable="false"
     >
-      <path v-for="(d, i) in icon.paths" :key="i" :d="d" />
+      <path v-for="(d, i) in displayIcon.paths" :key="i" :d="d" />
     </svg>`,
       replacement: `    <!-- uni-app x App: inline <svg> is not a built-in element — rasterize via <image>. -->
-    <image v-else-if="icon" class="sn-icon__svg-img" :src="iconDataUrl" mode="aspectFit" />`,
+    <image v-else-if="displayIcon" class="sn-icon__svg-img" :src="iconDataUrl" mode="aspectFit" />`,
       note: '<svg> block replaced by <image :src="iconDataUrl">',
     },
     {

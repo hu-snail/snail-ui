@@ -42,7 +42,7 @@ type UniTplDict = Record<string, string>;
 
 const zhDict: UniTplDict = {
   loginTitle: '登录页',
-  loginDesc: '验证码登录 · 三方入口',
+  loginDesc: '双方式登录 · 验证码 / 密码',
   mallTitle: '商城首页',
   mallDesc: '搜索 / 宫格 / 秒杀 / 底部导航',
   goodsTitle: '商品详情页',
@@ -72,7 +72,7 @@ const zhDict: UniTplDict = {
 
 const enDict: UniTplDict = {
   loginTitle: 'Login',
-  loginDesc: 'SMS code login · social entries',
+  loginDesc: 'Dual-mode login · SMS code / password',
   mallTitle: 'Mall Home',
   mallDesc: 'Search / grid / flash sale / tabbar',
   goodsTitle: 'Product Detail',

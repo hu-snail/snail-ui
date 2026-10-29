@@ -275,6 +275,7 @@ const sidebar = {
         { text: 'sn-sort-button 排序按钮'.trim(), link: '/components/uni/sort-button' },
         { text: 'sn-signature 签名'.trim(), link: '/components/uni/signature' },
         { text: 'sn-slide-verify 滑动验证'.trim(), link: '/components/uni/slide-verify' },
+        { text: 'sn-captcha 拼图验证'.trim(), link: '/components/uni/captcha' },
       ],
     },
     {
@@ -306,6 +307,7 @@ const sidebar = {
         { text: 'sn-card 卡片'.trim(), link: '/components/uni/card' },
         { text: 'sn-img 图片'.trim(), link: '/components/uni/img' },
         { text: 'sn-swiper 轮播'.trim(), link: '/components/uni/swiper' },
+        { text: 'sn-fit-swiper 自适应轮播'.trim(), link: '/components/uni/fit-swiper' },
         { text: 'sn-count-down 倒计时'.trim(), link: '/components/uni/count-down' },
         { text: 'sn-count-to 数字滚动'.trim(), link: '/components/uni/count-to' },
         { text: 'sn-watermark 水印'.trim(), link: '/components/uni/watermark' },
@@ -599,6 +601,7 @@ const enSidebar = {
         { text: 'sn-sort-button', link: '/en/components/uni/sort-button' },
         { text: 'sn-signature', link: '/en/components/uni/signature' },
         { text: 'sn-slide-verify', link: '/en/components/uni/slide-verify' },
+        { text: 'sn-captcha', link: '/en/components/uni/captcha' },
       ],
     },
     {
@@ -630,6 +633,7 @@ const enSidebar = {
         { text: 'sn-card', link: '/en/components/uni/card' },
         { text: 'sn-img', link: '/en/components/uni/img' },
         { text: 'sn-swiper', link: '/en/components/uni/swiper' },
+        { text: 'sn-fit-swiper', link: '/en/components/uni/fit-swiper' },
         { text: 'sn-count-down', link: '/en/components/uni/count-down' },
         { text: 'sn-count-to', link: '/en/components/uni/count-to' },
         { text: 'sn-watermark', link: '/en/components/uni/watermark' },

@@ -6,6 +6,7 @@
  *   - `disabled` blocks both the trigger and the imperative API
  *   - `content` renders as text lines; the `content` slot wins over it
  *   - `placement` becomes a class, `offset` becomes a CSS variable pair
+ *   - a tap on the transparent outside mask closes the bubble
  *   - `showClose` renders a close button that hides the bubble
  *   - the leave timer is cleared on unmount (§41)
  *
@@ -79,6 +80,33 @@ describe('sn-tooltip', () => {
       expect(w.attributes('style') ?? '').toContain('margin: 4px');
     });
 
+    it('forwards a --sn-tooltip-bg / --sn-tooltip-color override through customStyle', () => {
+      const w = mount(SnTooltip, {
+        props: { customStyle: '--sn-tooltip-bg: #1890ff; --sn-tooltip-color: #ffffff' },
+      });
+      const style = w.attributes('style') ?? '';
+      expect(style).toContain('--sn-tooltip-bg: #1890ff');
+      expect(style).toContain('--sn-tooltip-color: #ffffff');
+    });
+
+    it('mounts the transparent mask exactly while the bubble is mounted', async () => {
+      vi.useFakeTimers();
+      try {
+        const w = mount(SnTooltip, { props: { modelValue: true } });
+        const mask = w.find('.sn-tooltip__mask');
+        expect(mask.exists()).toBe(true);
+        expect(mask.attributes('aria-hidden')).toBe('true');
+        // Fade-out leg: the mask stays mounted with the bubble, then leaves.
+        await w.setProps({ modelValue: false });
+        expect(w.find('.sn-tooltip__mask').exists()).toBe(true);
+        vi.advanceTimersByTime(150);
+        await w.vm.$nextTick();
+        expect(w.find('.sn-tooltip__mask').exists()).toBe(false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
     it('publishes the offset as a CSS variable pair', () => {
       const w = mount(SnTooltip, { props: { offset: { x: 6, y: 2 } } });
       const style = w.attributes('style') ?? '';
@@ -143,6 +171,23 @@ describe('sn-tooltip', () => {
       expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
       expect(w.emitted('close')).toHaveLength(1);
       expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
+    });
+
+    it('closes on an outside tap (transparent mask)', async () => {
+      const w = mount(SnTooltip, { props: { modelValue: true } });
+      await w.find('.sn-tooltip__mask').trigger('tap');
+      expect(w.emitted('update:modelValue')?.[0]).toEqual([false]);
+      expect(w.emitted('close')).toHaveLength(1);
+      expect(w.emitted('change')?.[0]).toEqual([{ show: false }]);
+    });
+
+    it('closes on a mask tap even when the consumer ignores update:modelValue', async () => {
+      const w = mount(SnTooltip, { props: { modelValue: true } });
+      await w.find('.sn-tooltip__mask').trigger('tap');
+      await w.vm.$nextTick();
+      // The bubble keeps the fade-out leg but is no longer shown.
+      expect(w.find('.sn-tooltip__pop').exists()).toBe(true);
+      expect(w.classes()).not.toContain('sn-tooltip--shown');
     });
 
     it('ignores the trigger tap while disabled', async () => {

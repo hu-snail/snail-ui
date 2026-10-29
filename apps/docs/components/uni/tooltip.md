@@ -5,27 +5,29 @@
 > **与 wot-ui 的差异**
 >
 > - 小程序 / 触摸设备没有 `hover`，触发器改为**点击**切换显隐。
+> - 点击气泡外部关闭通过透明遮罩实现（小程序没有 `document`，挂不了全局监听）。
 > - `root-portal` 已声明但**未实现**（小程序没有 portal 宿主，无法把气泡挂到页面根节点）。
 > - `updatePosition()` 是兼容占位：气泡位置由 CSS 决定，没有需要重新测量的内容。
 
 ## 基础用法
 
-`v-model` 控制显隐；`content` 是提示文案。再点一次触发器收起。
+`v-model` 控制显隐；`content` 是提示文案。点击气泡外部（透明遮罩）或再点一次触发器收起。
 
-<Demo name="tooltip-mp-basic" description="点击按钮切换提示气泡，外部点击不会关闭。" />
+<Demo name="tooltip-mp-basic" description="点击按钮切换提示气泡，点击气泡外部自动关闭。" />
 
 ## 弹出方向
 
 `placement` 支持 `top` / `bottom` / `left` / `right` 四组，每组带 `-start` / `-end` 对齐变体（共 12 档）。箭头位置随方向自动调整。
 
-<Demo name="tooltip-mp-placement" description="四个方向的提示气泡，一次只开一个。" />
+<Demo name="tooltip-mp-placement" description="12 个方位全部展示（wot-ui demo 网格布局），一次只开一个。" />
 
-## 箭头 / 关闭按钮 / 偏移
+## 箭头 / 关闭按钮 / 偏移 / 配色
 
 - `visibleArrow=false` 去掉箭头
 - `showClose` 在气泡内渲染关闭按钮
 - `offset` 支持 `number`、`[x, y]`、`{ x, y }`，单位是设计稿 px，通过 `--sn-tooltip-offset-x` / `--sn-tooltip-offset-y` 参与定位计算
 - `disabled` 让触发器点击失效，气泡保持关闭
+- 气泡配色通过 `--sn-tooltip-bg` / `--sn-tooltip-color` 覆盖，默认白底深字（见「主题变量」）
 
 <Demo name="tooltip-mp-config" description="无箭头 / 带关闭按钮 + offset / 禁用三种状态。" />
 
@@ -77,10 +79,11 @@
 
 ## 主题变量
 
-| 变量                                                            | 用途                                 |
-| --------------------------------------------------------------- | ------------------------------------ |
-| `--sn-mp-color-text-primary`                                    | 气泡底色（反向表面，暗色下自动翻转） |
-| `--sn-mp-color-background-elevated`                             | 气泡文字色 / 关闭图标色              |
+| 变量                                                            | 用途                                                                                                     |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `--sn-tooltip-bg`                                               | 气泡底色（默认 `--sn-mp-color-background-elevated`，亮色主题即白色；箭头同色；可用 `custom-style` 覆盖） |
+| `--sn-tooltip-color`                                            | 气泡文字色（默认 `--sn-mp-color-text-primary`）                                                          |
+| `--sn-mp-color-text-secondary`                                  | 关闭图标色                                                                                               |
 | `--sn-mp-shadow-md`                                             | 气泡阴影                             |
 | `--sn-mp-radius-md`                                             | 气泡圆角                             |
 | `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 气泡内边距与间距                     |
@@ -92,11 +95,12 @@
 - 触发器带 `role="button"` + `aria-expanded` + `aria-disabled`
 - 气泡带 `role="tooltip"`，箭头 `aria-hidden="true"`
 - 关闭按钮带 `role="button"` + `aria-label="close"`
+- 透明遮罩带 `aria-hidden="true"`（纯手势层，对辅助技术隐藏）
 - 交互统一用 `@tap`；移动端无键盘焦点陷阱
 
 ## 暗色模式
 
-气泡使用「反向表面」配色：底色取 `--sn-mp-color-text-primary`、文字取 `--sn-mp-color-background-elevated`，这两个变量都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动变成浅底深字，无需额外处理。可用 `<sn-config-provider theme="dark">` 包裹验证。
+气泡默认是「普通表面」配色：底色取 `--sn-mp-color-background-elevated`（亮色主题即白色）、文字取 `--sn-mp-color-text-primary`。这两个 token 都在 `@snui/tokens-mp/styles` 的 `page.sn-theme-dark, .sn-theme-dark` 块里覆盖，因此暗色下自动变成深底浅字，无需额外处理。需要自定义配色时，用 `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` 覆盖（对齐 wot-ui 的 `--wot-tooltip-bg` / `--wot-tooltip-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
 
 ## 相关
 

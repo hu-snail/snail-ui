@@ -5,27 +5,29 @@
 > **Divergences from wot-ui**
 >
 > - Miniprogram / touch devices have no `hover`, so the trigger **taps** to toggle.
+> - Outside-tap close is implemented with a transparent mask (miniprogram has no `document` to attach a global listener to).
 > - `root-portal` is declared but **not implemented** (no portal host on miniprogram).
 > - `updatePosition()` is a compatibility no-op: the bubble is placed by CSS.
 
 ## Basic usage
 
-`v-model` controls visibility; `content` is the hint text. Tapping the trigger again closes it.
+`v-model` controls visibility; `content` is the hint text. Tapping outside the bubble (the transparent mask) or the trigger again closes it.
 
-<Demo name="tooltip-mp-basic" description="Tap the button to toggle the bubble; tapping outside does not close it." />
+<Demo name="tooltip-mp-basic" description="Tap the button to toggle the bubble; tapping outside closes it." />
 
 ## Placement
 
 `placement` has four groups — `top` / `bottom` / `left` / `right` — each with `-start` / `-end` alignment variants (12 in total). The arrow follows the placement automatically.
 
-<Demo name="tooltip-mp-placement" description="Four directions, one open at a time." />
+<Demo name="tooltip-mp-placement" description="All 12 directions in the wot-ui demo grid, one open at a time." />
 
-## Arrow / close button / offset
+## Arrow / close button / offset / colors
 
 - `visibleArrow=false` removes the arrow
 - `showClose` renders a close button inside the bubble
 - `offset` accepts a `number`, `[x, y]` or `{ x, y }`, in design px, and is published as `--sn-tooltip-offset-x` / `--sn-tooltip-offset-y`
 - `disabled` makes the trigger inert and keeps the bubble closed
+- Bubble colors are overridden through `--sn-tooltip-bg` / `--sn-tooltip-color`; the default is a white fill with dark text (see "Tokens")
 
 <Demo name="tooltip-mp-config" description="No arrow / close button + offset / disabled." />
 
@@ -79,8 +81,9 @@ An array `content` renders one line per entry (objects contribute whichever of `
 
 | Variable                                                        | Purpose                                                  |
 | --------------------------------------------------------------- | -------------------------------------------------------- |
-| `--sn-mp-color-text-primary`                                    | Bubble background (inverted surface, flips in dark mode) |
-| `--sn-mp-color-background-elevated`                             | Bubble text / close glyph                                |
+| `--sn-tooltip-bg`                                               | Bubble fill (defaults to `--sn-mp-color-background-elevated` — white in the light theme; the arrow follows it; override via `custom-style`) |
+| `--sn-tooltip-color`                                            | Bubble text color (defaults to `--sn-mp-color-text-primary`)                                                                             |
+| `--sn-mp-color-text-secondary`                                  | Close glyph color                                                                                                                        |
 | `--sn-mp-shadow-md`                                             | Bubble shadow                                            |
 | `--sn-mp-radius-md`                                             | Bubble corners                                           |
 | `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Bubble padding and gaps                                  |
@@ -92,11 +95,12 @@ An array `content` renders one line per entry (objects contribute whichever of `
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="tooltip"`; the arrow is `aria-hidden="true"`
 - Close button carries `role="button"` + `aria-label="close"`
+- Transparent mask carries `aria-hidden="true"` (pure gesture layer, hidden from assistive tech)
 - Interaction uses `@tap`; no keyboard focus trap on mobile
 
 ## Dark mode
 
-The bubble uses an inverted surface: the fill is `--sn-mp-color-text-primary` and the text is `--sn-mp-color-background-elevated`. Both are overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode becomes light-on-dark text automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The bubble defaults to a plain surface: the fill is `--sn-mp-color-background-elevated` (white in the light theme) and the text is `--sn-mp-color-text-primary`. Both tokens are overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode becomes dark-fill / light-text automatically. To recolor the bubble, override `custom-style="--sn-tooltip-bg: …; --sn-tooltip-color: …"` (the wot-ui `--wot-tooltip-bg` / `--wot-tooltip-color` parity); mind the dark-mode contrast yourself when you do. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 

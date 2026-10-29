@@ -5,15 +5,16 @@
 > **Divergences from wot-ui**
 >
 > - Miniprogram has no `hover`, so the trigger always taps to toggle — there is no `trigger` prop.
+> - Outside-tap close is implemented with a transparent mask (miniprogram has no `document` to attach a global listener to).
 > - `root-portal` is declared but **not implemented** (no portal host on miniprogram).
 > - `updatePosition()` is a compatibility no-op: the bubble is placed by CSS.
 > - `iconClass` is an `sn-icon` registry name or image URL, not a CSS class (uni has no font-icon layer).
 
 ## Basic usage
 
-In `normal` mode `content` is a string; `showClose` adds a close button inside the bubble.
+In `normal` mode `content` is a string; `showClose` adds a close button inside the bubble. Tapping outside the bubble (the transparent mask) or the trigger again closes it.
 
-<Demo name="popover-mp-basic" description="normal mode + close button; tapping the trigger toggles it." />
+<Demo name="popover-mp-basic" description="normal mode + close button; the trigger toggles it, an outside tap closes it." />
 
 ## Menu mode
 
@@ -21,14 +22,15 @@ With `mode="menu"` the `content` prop is an option array. Tapping a row emits `m
 
 <Demo name="popover-mp-menu" description="Menu mode with sn-icon registry icons and one disabled row." />
 
-## Placement / arrow / disabled
+## Placement / arrow / disabled / colors
 
 - `placement` has four groups — `top` / `bottom` / `left` / `right` — each with `-start` / `-end` variants (12 total)
 - `visibleArrow=false` removes the arrow
 - `offset` accepts a `number`, `[x, y]` or `{ x, y }` in design px
 - `disabled` makes the trigger inert
+- Bubble colors are overridden through `--sn-popover-bg` / `--sn-popover-color`; the default is a white fill with dark text (see "Tokens")
 
-<Demo name="popover-mp-placement" description="top / right-start (no arrow) / disabled." />
+<Demo name="popover-mp-placement" description="All 12 directions in the wot-ui demo grid, one open at a time." />
 
 ## Image icons / content slot / node classes
 
@@ -93,8 +95,8 @@ With `mode="menu"` the `content` prop is an option array. Tapping a row emits `m
 
 | Variable                                                        | Purpose                  |
 | --------------------------------------------------------------- | ------------------------ |
-| `--sn-mp-color-background-elevated`                             | Bubble background        |
-| `--sn-mp-color-text-primary`                                    | Bubble / row text        |
+| `--sn-popover-bg`                                               | Bubble fill (defaults to `--sn-mp-color-background-elevated` — white in the light theme; the arrow follows it; override via `custom-style`) |
+| `--sn-popover-color`                                            | Bubble / row text color (defaults to `--sn-mp-color-text-primary`)                                                                        |
 | `--sn-mp-color-text-secondary`                                  | Row icon                 |
 | `--sn-mp-color-text-disabled`                                   | Disabled row             |
 | `--sn-mp-color-border-subtle`                                   | Bubble and arrow outline |
@@ -109,10 +111,11 @@ With `mode="menu"` the `content` prop is an option array. Tapping a row emits `m
 - Bubble carries `role="dialog"`; the arrow is `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
 - Interaction uses `@tap`; no keyboard focus trap on mobile
+- Transparent mask carries `aria-hidden="true"` (pure gesture layer, hidden from assistive tech)
 
 ## Dark mode
 
-The bubble uses `--sn-mp-color-background-elevated` for its fill and `--sn-mp-color-text-primary` for text, both overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
+The bubble uses `--sn-popover-bg` for its fill (default `--sn-mp-color-background-elevated` — white in the light theme) and `--sn-popover-color` for text (default `--sn-mp-color-text-primary`); both default tokens are overridden in the `page.sn-theme-dark, .sn-theme-dark` block of `@snui/tokens-mp/styles`, so dark mode adapts automatically. To recolor the bubble, override `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` (the wot-ui `--wot-popover-bg` / `--wot-popover-color` parity); mind the dark-mode contrast yourself when you do. Verify by wrapping the demo in `<sn-config-provider theme="dark">`.
 
 ## Related
 

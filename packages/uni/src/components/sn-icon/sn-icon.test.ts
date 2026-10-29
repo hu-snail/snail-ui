@@ -13,9 +13,16 @@
  * attribute contract only.
  */
 
-import { describe, it, expect } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { mount, flushPromises } from '@vue/test-utils';
 import SnIcon, { type IconData } from './sn-icon.vue';
+import { registerSnIcons, clearSnIcons } from './sn-icon-registry';
+import { registerSnIconProvider } from './sn-icon-providers';
+import {
+  configSnIconify,
+  resetSnIconifyConfig,
+  clearSnIconifyCache,
+} from './sn-icon-iconify';
 
 const fakeIcon: IconData = {
   paths: ['M3 12h18', 'M12 3v18'],
@@ -25,6 +32,12 @@ const customViewBoxIcon: IconData = {
   viewBox: '0 0 16 16',
   paths: ['M2 8h12', 'M8 2v12'],
 };
+
+afterEach(() => {
+  clearSnIcons();
+  resetSnIconifyConfig();
+  clearSnIconifyCache();
+});
 
 describe('sn-icon', () => {
   it('renders an inline svg', () => {
@@ -187,5 +200,116 @@ describe('sn-icon root passthrough', () => {
     });
     expect(wrapper.find('svg').attributes('stroke-width')).toBe('2');
     expect(wrapper.find('svg').exists()).toBe(true);
+  });
+});
+
+describe('sn-icon string icon API（内置目录 / registry）', () => {
+  it('resolves a built-in catalog name into an inline svg', () => {
+    const wrapper = mount(SnIcon, { props: { icon: 'arrow-down' } });
+    expect(wrapper.find('svg').exists()).toBe(true);
+    expect(wrapper.findAll('path').length).toBe(2); // arrow-down = stem + head
+  });
+
+  it('resolves a registry-registered name before the catalog', () => {
+    registerSnIcons({ 'arrow-down': fakeIcon });
+    const wrapper = mount(SnIcon, { props: { icon: 'arrow-down' } });
+    expect(wrapper.find('svg').attributes('viewBox')).toBe('0 0 24 24');
+    expect(wrapper.findAll('path').length).toBe(2);
+  });
+
+  it('renders nothing and warns for an unresolvable plain name', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const wrapper = mount(SnIcon, { props: { icon: 'nope-not-an-icon' } });
+    await flushPromises();
+    expect(wrapper.find('svg').exists()).toBe(false);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('ICON_SOURCE_UNRESOLVED'),
+      expect.anything(),
+    );
+    warn.mockRestore();
+  });
+
+  it('keeps the iconfont glyph path winning over a string icon', () => {
+    const wrapper = mount(SnIcon, { props: { name: 'home', icon: 'arrow-down' } });
+    expect(wrapper.find('.sn-icon__glyph').exists()).toBe(true);
+    expect(wrapper.find('svg').exists()).toBe(false);
+  });
+
+  it('still renders object IconData verbatim', () => {
+    const wrapper = mount(SnIcon, { props: { icon: fakeIcon } });
+    expect(wrapper.findAll('path').length).toBe(2);
+  });
+});
+
+describe('sn-icon remote provider path (iconify / custom)', () => {
+  const svgDoc = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 3"/></svg>';
+
+  function injectRequest(doc: string, calls: Array<{ url: string; signal: AbortSignal }> = []) {
+    configSnIconify({
+      request: async (url, _timeout, signal) => {
+        calls.push({ url, signal });
+        return doc;
+      },
+    });
+  }
+
+  afterEach(() => {
+    resetSnIconifyConfig();
+    clearSnIconifyCache();
+  });
+
+  it('renders a remote background-image box once the provider resolves', async () => {
+    injectRequest(svgDoc);
+    const wrapper = mount(SnIcon, { props: { icon: 'mdi:home' } });
+    expect(wrapper.find('.sn-icon__remote').exists()).toBe(false); // 加载中：空盒
+    await flushPromises();
+    const remote = wrapper.find('.sn-icon__remote');
+    expect(remote.exists()).toBe(true);
+    expect(remote.attributes('style')).toContain('data:image/svg+xml');
+  });
+
+  it('bakes an explicit color into the provider request', async () => {
+    const calls: Array<{ url: string; signal: AbortSignal }> = [];
+    injectRequest(svgDoc, calls);
+    mount(SnIcon, { props: { icon: 'mdi:home', color: '#00ff00' } });
+    await flushPromises();
+    expect(calls[0]?.url).toContain('color=%2300ff00');
+  });
+
+  it('does not render the inline svg path for remote icons', async () => {
+    injectRequest(svgDoc);
+    const wrapper = mount(SnIcon, { props: { icon: 'mdi:home' } });
+    await flushPromises();
+    expect(wrapper.find('svg').exists()).toBe(false);
+  });
+
+  it('aborts the in-flight request on unmount', async () => {
+    const calls: Array<{ url: string; signal: AbortSignal }> = [];
+    injectRequest(svgDoc, calls);
+    const wrapper = mount(SnIcon, { props: { icon: 'mdi:home' } });
+    await flushPromises();
+    wrapper.unmount();
+    expect(calls[0]?.signal.aborted).toBe(true);
+  });
+
+  it('renders nothing and warns with the error code when the fetch fails', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    configSnIconify({ request: async () => { throw new Error('down'); } });
+    const wrapper = mount(SnIcon, { props: { icon: 'mdi:home' } });
+    await flushPromises();
+    expect(wrapper.find('.sn-icon__remote').exists()).toBe(false);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('ICON_FETCH_FAILED'),
+      expect.anything(),
+    );
+    warn.mockRestore();
+  });
+
+  it('renders async custom-provider IconData via the inline svg path', async () => {
+    registerSnIconProvider('app', { resolve: () => Promise.resolve(fakeIcon) });
+    const wrapper = mount(SnIcon, { props: { icon: 'app:logo' } });
+    await flushPromises();
+    expect(wrapper.find('svg').exists()).toBe(true);
+    expect(wrapper.find('.sn-icon__remote').exists()).toBe(false);
   });
 });

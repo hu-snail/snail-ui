@@ -32,6 +32,12 @@ export const ArrowRight = d(['M5 12h14', 'm12 5 7 7-7 7']);
 export const ArrowLeft = d(['M19 12H5', 'm12 19-7-7 7-7']);
 export const Check = d(['M20 6 9 17l-5-5']);
 export const X = d(['M18 6 6 18', 'm6 6 12 12']);
+export const RefreshCw = d([
+  'M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8',
+  'M21 3v5h-5',
+  'M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16',
+  'M8 16H3v5',
+]);
 export const Plus = d(['M5 12h14', 'M12 5v14']);
 export const Minus = d(['M5 12h14']);
 export const Search = d(['M11 3a8 8 0 1 0 0 16 8 8 0 1 0 0-16', 'm21 21-4.3-4.3']);
