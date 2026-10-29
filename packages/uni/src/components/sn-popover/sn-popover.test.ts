@@ -383,3 +383,27 @@ describe('sn-popover (icon rows and exposed no-op)', () => {
     expect(() => (w.vm as unknown as { updatePosition: () => void }).updatePosition()).not.toThrow();
   });
 });
+
+describe('sn-popover (outside-tap switching)', () => {
+  it('switches to another popover within the same gesture', async () => {
+    const a = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    const b = mount(SnPopover, { props: { modelValue: false, content: 'B' } });
+    // One gesture: touchstart on A's mask closes it early, then the same tap
+    // lands on B's trigger — B must open without a second tap.
+    await a.find('.sn-popover__mask').trigger('touchstart');
+    await b.find('.sn-popover__trigger').trigger('tap');
+    expect(a.emitted('close')).toHaveLength(1);
+    expect(b.emitted('update:modelValue')?.[0]).toEqual([true]);
+    a.unmount();
+    b.unmount();
+  });
+
+  it('does not instantly reopen the bubble it just closed via the mask', async () => {
+    const w = mount(SnPopover, { props: { modelValue: true, content: 'A' } });
+    await w.find('.sn-popover__mask').trigger('touchstart');
+    // The same-gesture tap on the just-closed trigger must be ignored.
+    await w.find('.sn-popover__trigger').trigger('tap');
+    expect(w.emitted('update:modelValue')).toEqual([[false]]);
+    w.unmount();
+  });
+});

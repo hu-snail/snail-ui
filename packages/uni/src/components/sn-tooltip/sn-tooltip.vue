@@ -41,8 +41,11 @@
  * `document` to hang a global listener on, so the mechanism here is a
  * transparent fixed mask (z-index 499 — below the bubble's 500, above the
  * page) mounted exactly while the bubble is; tapping it calls `close()`.
- * Consequence: while a bubble is shown, the first tap anywhere else —
- * including on another tooltip's trigger — closes this one first.
+ * The mask closes on `touchstart` — before the tap lands — so on H5 the same
+ * tap continues to the element underneath: tapping another trigger switches
+ * bubbles in one gesture (a same-instance reopen guard keeps the just-closed
+ * bubble closed). Miniprogram synthesizes the tap on the original touch node,
+ * so there a second tap is still needed to open the next bubble.
  *
  * ## Bubble palette (wot-ui parity: --wot-tooltip-bg / --wot-tooltip-color)
  *
@@ -68,11 +71,14 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, getCurrentInstance, nextTick, onBeforeUnmount, ref, watch } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
+import { markOutsideClose, shouldIgnoreTapAfterOutsideClose } from '../../utils/outside-close';
 
 defineOptions({ name: 'SnTooltip' });
+
+const instanceId = getCurrentInstance()?.uid ?? 0;
 
 /** Bubble anchor. Mirrors `wd-tooltip` `placement` (12 directions). */
 type TooltipPlacement =
@@ -251,8 +257,17 @@ defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
   if (props.disabled) return;
+  // Same-gesture guard: the outside mask closed this bubble on touchstart,
+  // and the very same tap then lands here — it must not reopen it.
+  if (shouldIgnoreTapAfterOutsideClose(instanceId)) return;
   if (props.modelValue) close();
   else open();
+}
+
+/** Mask handler — records the close so the same-gesture tap can be ignored. */
+function onMaskClose(): void {
+  markOutsideClose(instanceId);
+  close();
 }
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
@@ -315,7 +330,7 @@ const arrowClass = computed(() => ['sn-tooltip__arrow', props.customArrow]);
     </view>
 
     <!-- Outside tap catcher: transparent, full viewport, one level under the bubble. -->
-    <view v-if="isMounted" class="sn-tooltip__mask" aria-hidden="true" @tap="close" />
+    <view v-if="isMounted" class="sn-tooltip__mask" aria-hidden="true" @touchstart="onMaskClose" @tap="onMaskClose" />
     <view v-if="isMounted" :class="popClass" role="tooltip">
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
       <view class="sn-tooltip__body">

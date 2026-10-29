@@ -333,3 +333,27 @@ describe('sn-tooltip', () => {
     });
   });
 });
+
+describe('sn-tooltip (outside-tap switching)', () => {
+  it('switches to another tooltip within the same gesture', async () => {
+    const a = mount(SnTooltip, { props: { modelValue: true, content: 'A' } });
+    const b = mount(SnTooltip, { props: { modelValue: false, content: 'B' } });
+    // One gesture: touchstart on A's mask closes it early, then the same tap
+    // lands on B's trigger — B must open without a second tap.
+    await a.find('.sn-tooltip__mask').trigger('touchstart');
+    await b.find('.sn-tooltip__trigger').trigger('tap');
+    expect(a.emitted('close')).toHaveLength(1);
+    expect(b.emitted('update:modelValue')?.[0]).toEqual([true]);
+    a.unmount();
+    b.unmount();
+  });
+
+  it('does not instantly reopen the bubble it just closed via the mask', async () => {
+    const w = mount(SnTooltip, { props: { modelValue: true, content: 'A' } });
+    await w.find('.sn-tooltip__mask').trigger('touchstart');
+    // The same-gesture tap on the just-closed trigger must be ignored.
+    await w.find('.sn-tooltip__trigger').trigger('tap');
+    expect(w.emitted('update:modelValue')).toEqual([[false]]);
+    w.unmount();
+  });
+});
