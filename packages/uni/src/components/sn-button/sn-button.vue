@@ -192,7 +192,17 @@ const props = withDefaults(
 const resolvedIconData = computed<IconData | null>(() => {
   const icon = props.iconData ?? (props.iconName ? resolveIconByName(props.iconName) : null);
   return icon ? markRaw(icon) : null;
+
 });
+/**
+ * Inline loader glyph — lucide `loader-circle` (ISC). Rendered through the
+ * embedded SnIcon so the spinner reuses the same cross-end SVG pipeline as
+ * every other icon, and its stroke scales with `loading-size` instead of
+ * keeping a fixed border width (the old hand-rolled dot washed out at 48rpx+).
+ */
+const LOADER_CIRCLE: IconData = {
+  paths: ['M21 12a9 9 0 1 1-6.219-8.56'],
+};
 
 /**
  * Loading spinner appearance.
@@ -315,16 +325,12 @@ function onTap(event: Event): void {
         :css-icon="cssIcon"
         :size="iconSize ?? 32"
       />
-      <view
-        v-else-if="loading"
-        class="sn-button__spinner"
-        :style="spinnerColor ? `color: ${spinnerColor}` : undefined"
-        aria-hidden="true"
-      >
+      <view v-else-if="loading" class="sn-button__spinner" aria-hidden="true">
         <slot name="loading">
-          <view
-            class="sn-button__spinner-dot"
-            :style="`width: ${spinnerSize}rpx; height: ${spinnerSize}rpx`"
+          <SnIcon
+            :icon="LOADER_CIRCLE"
+            :size="`${spinnerSize}rpx`"
+            :color="spinnerColor || undefined"
           />
         </slot>
       </view>
@@ -482,19 +488,12 @@ function onTap(event: Event): void {
   background-color: transparent;
   border-radius: 0;
 }
-
-/* Spinner */
+/* Spinner — the glyph itself comes from the embedded SnIcon (loader-circle);
+ * the wrapper only owns the rotation so custom `loading` slots inherit it. */
 .sn-button__spinner {
   display: inline-flex;
   align-items: center;
   animation: sn-button-spin 0.8s linear infinite;
-}
-.sn-button__spinner-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border: 4rpx solid currentColor;
-  border-top-color: transparent;
-  border-radius: 50%;
 }
 @keyframes sn-button-spin {
   to {

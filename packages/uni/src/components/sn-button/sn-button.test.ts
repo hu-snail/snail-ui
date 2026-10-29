@@ -110,13 +110,13 @@ describe('sn-button', () => {
       expect(wrapper.find('.sn-icon').exists()).toBe(true);
     });
 
-    it('falls through to loading spinner when `iconName` is unregistered', () => {
+    it('falls through to the sn-icon loader when `iconName` is unregistered', () => {
       const wrapper = mount(SnButton, {
         props: { iconName: 'Missing', loading: true },
         slots: { default: 'X' },
       });
-      expect(wrapper.find('.sn-icon').exists()).toBe(false);
-      expect(wrapper.find('.sn-button__spinner').exists()).toBe(true);
+      /* The loader itself is an sn-icon (loader-circle glyph). */
+      expect(wrapper.find('.sn-button__spinner .sn-icon').exists()).toBe(true);
     });
 
     it('icon slot overrides iconData / iconName props', () => {
@@ -259,14 +259,29 @@ describe('sn-button', () => {
     expect(wrapper.attributes('style')).toContain('color: #123456');
   });
 
-  it('applies loadingColor to spinner style', () => {
+  it('renders the loading spinner through the embedded sn-icon', () => {
     const wrapper = mount(SnButton, {
       props: { loading: true, loadingColor: '#abcdef' },
       slots: { default: 'L' },
     });
-    expect(wrapper.find('.sn-button__spinner').attributes('style')).toContain('#abcdef');
+    const icon = wrapper.find('.sn-button__spinner .sn-icon svg');
+    expect(icon.exists()).toBe(true);
+    /* loadingColor rides SnIcon's color → svg stroke (currentColor pipeline). */
+    expect(icon.attributes('stroke')).toBe('#abcdef');
   });
 
+  it('scales the spinner with loading-size (rpx)', () => {
+    const wrapper = mount(SnButton, { props: { loading: true, loadingSize: 48 } });
+    /* happy-dom discards rpx lengths, so assert the forwarded size prop. */
+    expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('48rpx');
+  });
+
+  it('lets loading-props size fall through when the flat prop is untouched', () => {
+    const wrapper = mount(SnButton, {
+      props: { loading: true, loadingProps: { size: 64 } },
+    });
+    expect(wrapper.findComponent({ name: 'SnIcon' }).props('size')).toBe('64rpx');
+  });
   it('forwards customClass to the root', () => {
     const wrapper = mount(SnButton, {
       props: { customClass: 'my-cta' },
