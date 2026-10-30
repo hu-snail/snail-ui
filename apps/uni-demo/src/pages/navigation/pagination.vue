@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— pagination 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/pagination-mp-basic.vue';
-import Demo1 from './demos/pagination-mp-slots.vue';
-import Demo2 from './demos/pagination-mp-variant.vue';
+import Demo1 from './demos/pagination-mp-disabled.vue';
+import Demo2 from './demos/pagination-mp-simple.vue';
+import Demo3 from './demos/pagination-mp-slots.vue';
+import Demo4 from './demos/pagination-mp-variant.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -23,7 +25,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
+          <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -31,10 +33,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('变体', 'Variants') }}</text>
+          <text class="module__title">{{ t('simple', 'Simple') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('变体', 'Variants') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

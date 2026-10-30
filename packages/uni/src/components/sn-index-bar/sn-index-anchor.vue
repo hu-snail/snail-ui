@@ -23,9 +23,17 @@
  * Not responsible for:
  *   - 索引侧边栏 — 由 sn-index-bar 渲染
  *   - 分组数据 — 由使用方提供
+ *
+ * ## Additive: caller-supplied DOM id (additive (AUI-OPT-05, AGENTS.md §112.3a))
+ *
+ * `anchorId` lets the host give an anchor a stable, meaningful DOM id instead
+ * of the auto-generated `sn-index-anchor-<uid>`. wd-index-anchor has no such
+ * prop; this is an AUI addition (the reference surface stays 1:1). A contact
+ * page can then deep-link or drive an external `scroll-into-view` to a known
+ * group ("jump to contacts under C") without reaching into internals.
  */
 
-import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue';
+import { computed, inject, onBeforeUnmount, onMounted } from 'vue';
 import { nextUid } from '../../utils/uid';
 import { SN_INDEX_BAR_KEY, type SnIndexBarValue } from './sn-index-bar-types';
 
@@ -37,6 +45,12 @@ const props = withDefaults(
 
     /** 索引字符。 */
     index?: SnIndexBarValue;
+    /**
+     * 自定义锚点 DOM id（AUI 追加能力，additive (AUI-OPT-05, AGENTS.md
+     * §112.3a)；wd-index-anchor 无对应 prop）。为空时回退到内部生成的
+     * `sn-index-anchor-<uid>`。
+     */
+    anchorId?: string;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
@@ -44,6 +58,7 @@ const props = withDefaults(
   }>(),
   {
     index: '',
+    anchorId: '',
     customClass: '',
     customStyle: '',
   },
@@ -58,8 +73,8 @@ const bar = inject(SN_INDEX_BAR_KEY, null);
 
 const uid = nextUid();
 
-/** DOM id handed to `scroll-view scroll-into-view`. */
-const anchorId = `sn-index-anchor-${uid}`;
+/** DOM id handed to `scroll-view scroll-into-view`; host prop wins when set. */
+const anchorId = computed(() => props.anchorId || `sn-index-anchor-${uid}`);
 
 const isActive = computed(() => bar?.activeIndex() === props.index);
 
@@ -67,7 +82,7 @@ onMounted(() => {
   bar?.registerAnchor({
     uid,
     getIndex: () => props.index,
-    getId: () => anchorId,
+    getId: () => anchorId.value,
   });
 });
 

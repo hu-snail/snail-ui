@@ -9,7 +9,10 @@
 
 import { describe, it, expect } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import SnPagination from './sn-pagination.vue';
+import { ChevronLeft, ChevronRight } from '../sn-icon/sn-icon-set';
 
 describe('sn-pagination', () => {
   describe('press feedback (hover-class)', () => {
@@ -186,6 +189,76 @@ describe('sn-pagination', () => {
     });
   });
 
+  describe('step icons', () => {
+    it('points prev left and next right with the built-in chevrons', () => {
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 3, modelValue: 2, showIcon: true },
+      });
+      const icons = wrapper.findAllComponents({ name: 'SnIcon' });
+      expect(icons).toHaveLength(2);
+      expect(icons[0]!.props('icon')).toBe(ChevronLeft);
+      expect(icons[1]!.props('icon')).toBe(ChevronRight);
+    });
+
+    it('takes both chevron lengths from the medium icon token', () => {
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 8, modelValue: 3, showIcon: true },
+      });
+      const sizes = wrapper
+        .findAllComponents({ name: 'SnIcon' })
+        .map((icon) => icon.props('size'));
+      expect(sizes).toEqual([
+        'var(--sn-mp-icon-size-medium)',
+        'var(--sn-mp-icon-size-medium)',
+      ]);
+    });
+
+    it('renders the chevrons in the basic numeric-strip mode', () => {
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 8, modelValue: 3, showIcon: true },
+      });
+      expect(wrapper.find('.sn-pagination__pages').exists()).toBe(true);
+      expect(wrapper.find('.sn-pagination__prev .sn-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-pagination__next .sn-icon').exists()).toBe(true);
+    });
+
+    it('renders the chevrons in simple mode', () => {
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 8, modelValue: 3, simple: true, showIcon: true },
+      });
+      expect(wrapper.find('.sn-pagination__pages').exists()).toBe(false);
+      expect(wrapper.find('.sn-pagination__prev .sn-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-pagination__next .sn-icon').exists()).toBe(true);
+    });
+
+    it('keeps the chevrons rendered and inert in disabled mode', async () => {
+      const wrapper = mount(SnPagination, {
+        props: { totalPage: 8, modelValue: 3, disabled: true, showIcon: true },
+      });
+      expect(wrapper.find('.sn-pagination__prev .sn-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-pagination__next .sn-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-pagination__prev').attributes('aria-disabled')).toBe('true');
+      expect(wrapper.find('.sn-pagination__prev').attributes('hover-class')).toBe('none');
+      await wrapper.find('.sn-pagination__next').trigger('tap');
+      expect(wrapper.emitted('update:modelValue')).toBeUndefined();
+    });
+
+    it('marks the stepper buttons disabled at the window boundaries', () => {
+      const first = mount(SnPagination, {
+        props: { totalPage: 5, modelValue: 1, showIcon: true },
+      });
+      expect(first.find('.sn-pagination__prev').classes()).toContain(
+        'sn-pagination__button--disabled',
+      );
+      const last = mount(SnPagination, {
+        props: { totalPage: 5, modelValue: 5, showIcon: true },
+      });
+      expect(last.find('.sn-pagination__next').classes()).toContain(
+        'sn-pagination__button--disabled',
+      );
+    });
+  });
+
   describe('message / hide / variants', () => {
     it('renders the message only when showMessage is on', () => {
       const on = mount(SnPagination, {
@@ -215,6 +288,27 @@ describe('sn-pagination', () => {
     it('applies the button variant class', () => {
       expect(mount(SnPagination, { props: { buttonVariant: 'dashed' } }).classes()).toContain(
         'sn-pagination--dashed',
+      );
+    });
+
+    /**
+     * Regression: the base variant's two-class surface rule
+     * (`.sn-pagination--base .sn-pagination__page`, specificity 0,2,0)
+     * outranked the single-class active fill `.sn-pagination__page--active`
+     * (0,1,0), so the active page rendered surface-on-surface: white fill with
+     * the white `--sn-mp-color-text-on-primary` label — invisible in the
+     * browser while every DOM assertion here still passed. happy-dom discards
+     * stylesheets, so the cascade invariant is pinned on the source text: the
+     * restated active override must follow the base surface rule.
+     */
+    it('keeps the base variant active fill at matching specificity', () => {
+      const source = readFileSync(resolve(import.meta.dirname, 'sn-pagination.vue'), 'utf8');
+      const surfaceRule = source.indexOf('.sn-pagination--base .sn-pagination__page {');
+      const activeRule = source.indexOf('.sn-pagination--base .sn-pagination__page--active {');
+      expect(surfaceRule).toBeGreaterThan(-1);
+      expect(activeRule).toBeGreaterThan(surfaceRule);
+      expect(source.slice(activeRule)).toMatch(
+        /\.sn-pagination--base \.sn-pagination__page--active \{[^}]*background-color: var\(--sn-mp-color-action-primary\)/,
       );
     });
 

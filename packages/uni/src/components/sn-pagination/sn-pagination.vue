@@ -25,6 +25,17 @@
  * clamped to five entries centred on the current page with ellipses on either
  * side — the same idiom wd-pagination uses at narrow widths.
  *
+ * ## AUI additions on top of the mirrored surface
+ *
+ * `disabled` (whole-control freeze) and `simple` (prev / counter / next without
+ * the numeric strip) are additive (AUI-OPT-06, AGENTS.md §112.3a) — the
+ * reference surface has no equivalent, so they are strictly opt-in.
+ *
+ * Step glyphs (prev / next chevrons) take their length from the
+ * `--sn-mp-icon-size-*` token set (medium) rather than a literal px value, so
+ * the glyph-to-button ratio stays 1:1 with the token scale and dark / density
+ * swaps never leave a hard-coded size behind.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -41,6 +52,15 @@ defineOptions({ name: 'SnPagination' });
 
 /** Buttons per side of the current page when the window is clamped. */
 const PAGE_WINDOW = 2;
+
+/**
+ * Step-glyph length as the medium `--sn-mp-icon-size-*` token.
+ *
+ * A literal (the old `28`) is ~2× the button's inner box and reads as a glyph
+ * bursting out of its control; the token keeps the chevron inside the 56rpx
+ * button and follows any density / theme scale change (AGENTS.md §112.5).
+ */
+const STEP_ICON_SIZE = 'var(--sn-mp-icon-size-medium)';
 
 const props = withDefaults(
   defineProps<{
@@ -216,7 +236,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
           :total="slotScope.total"
           :pageSize="slotScope.pageSize"
         >
-          <SnIcon v-if="showIcon" :icon="ChevronLeft" :size="28" />
+          <SnIcon v-if="showIcon" :icon="ChevronLeft" :size="STEP_ICON_SIZE" />
           <text v-if="prevText" class="sn-pagination__text">{{ prevText }}</text>
         </slot>
       </view>
@@ -278,7 +298,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
           :pageSize="slotScope.pageSize"
         >
           <text v-if="nextText" class="sn-pagination__text">{{ nextText }}</text>
-          <SnIcon v-if="showIcon" :icon="ChevronRight" :size="28" />
+          <SnIcon v-if="showIcon" :icon="ChevronRight" :size="STEP_ICON_SIZE" />
         </slot>
       </view>
     </view>
@@ -334,10 +354,6 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
 .sn-pagination__button--pressed,
 .sn-pagination__page--pressed {
   opacity: 0.6;
-}
-
-.sn-pagination__button--disabled {
-  color: var(--sn-mp-color-text-disabled);
 }
 
 .sn-pagination__pages {
@@ -401,6 +417,14 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   background-color: var(--sn-mp-color-background-surface);
 }
 
+/* Base surface must not swallow the active marker: the two-class variant rule
+ * above outranks `.sn-pagination__page--active` (single class), so restate the
+ * active fill at matching specificity. */
+.sn-pagination--base .sn-pagination__page--active {
+  background-color: var(--sn-mp-color-action-primary);
+  border-color: var(--sn-mp-color-action-primary);
+}
+
 .sn-pagination--plain .sn-pagination__button,
 .sn-pagination--plain .sn-pagination__page {
   border-color: var(--sn-mp-color-action-primary);
@@ -417,9 +441,23 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
   font-weight: var(--sn-mp-font-weight-bold);
 }
 
+/* Disabled stepper — boundary reached (per-button) or whole control frozen.
+ *
+ * Declared after the variant rules so it wins the border-colour cascade at
+ * equal-or-higher specificity: a plain / dashed pager must not keep its brand
+ * border once the button is inert. The step glyph inside follows `color`
+ * through `currentColor`, so the icon dims with the label.
+ *
+ * `Background` uses the subtle surface token rather than a light literal so the
+ * disabled fill flips with `.sn-theme-dark` (AGENTS.md §112.5). */
+.sn-pagination__button.sn-pagination__button--disabled,
+.sn-pagination--disabled .sn-pagination__button {
+  border-color: var(--sn-mp-color-border-subtle);
+  background-color: var(--sn-mp-color-background-subtle);
+  color: var(--sn-mp-color-text-disabled);
+}
+
 /* Whole-control disabled state (Ant-style 禁用). */
-/* Whole-control disabled state (Ant-style 禁用). */
-.sn-pagination--disabled .sn-pagination__button,
 .sn-pagination--disabled .sn-pagination__page,
 .sn-pagination--disabled .sn-pagination__ellipsis,
 .sn-pagination--disabled .sn-pagination__simple-text {
@@ -427,7 +465,7 @@ const messageText = computed(() => `${currentPage.value} / ${totalPageNum.value}
 }
 
 .sn-pagination--disabled .sn-pagination__page--active {
-  background-color: var(--sn-mp-color-background-disabled, var(--sn-mp-color-action-primary));
+  background-color: var(--sn-mp-color-background-subtle);
   color: var(--sn-mp-color-text-disabled);
 }
 

@@ -30,19 +30,21 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ## Props — sn-index-bar
 
-| Name          | Type      | Default | Description        |
-| ------------- | --------- | ------- | ------------------ |
-| `sticky`      | `boolean` | `false` | Pin the index bar. |
-| `customClass` | `string`  | `''`    | Root forwarding.   |
-| `customStyle` | `string`  | `''`    | Root forwarding.   |
+| Name          | Type      | Default | Description                                                     |
+| ------------- | --------- | ------- | --------------------------------------------------------------- |
+| `sticky`      | `boolean` | `false` | Pin the index bar.                                              |
+| `showIndicator` | `boolean` | `false` | Echo the active index in a centre bubble. Additive (AUI-OPT-05). |
+| `customClass` | `string`  | `''`    | Root forwarding.                                                |
+| `customStyle` | `string`  | `''`    | Root forwarding.                                                |
 
 ## Props — sn-index-anchor
 
-| Name          | Type               | Default | Description             |
-| ------------- | ------------------ | ------- | ----------------------- |
-| `index`       | `string \| number` | `''`    | Index character(s).     |
-| `customClass` | `string`           | `''`    | Anchor root forwarding. |
-| `customStyle` | `string`           | `''`    | Anchor root forwarding. |
+| Name          | Type               | Default | Description                                             |
+| ------------- | ------------------ | ------- | ------------------------------------------------------- |
+| `index`       | `string \| number` | `''`    | Index character(s).                                     |
+| `anchorId`    | `string`           | `''`    | Custom anchor DOM id; auto-generated when empty. Additive (AUI-OPT-05). |
+| `customClass` | `string`           | `''`    | Anchor root forwarding.                                 |
+| `customStyle` | `string`           | `''`    | Anchor root forwarding.                                 |
 
 ## Events
 
@@ -67,6 +69,7 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 | Action primary          | `--sn-mp-color-action-primary`                                      | Active entry fill and heading |
 | Text on primary         | `--sn-mp-color-text-on-primary`                                     | Active entry label            |
 | Font / radius / spacing | `--sn-mp-font-size-xs`, `--sn-mp-radius-full`, `--sn-mp-spacing-1`  | Entry geometry                |
+| Indicator bubble        | `--sn-mp-radius-lg`, `--sn-mp-font-size-xl`, `--sn-mp-font-weight-semibold` | Active-index bubble (additive) |
 
 ## Accessibility
 

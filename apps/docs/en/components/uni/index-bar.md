@@ -20,6 +20,12 @@ Group content is fully custom, and `change` reports the active index:
 
 <Demo name="index-bar-mp-scrollto" description="scrollTo(index) jumps to a group from code; custom-class / custom-style on the root." />
 
+## Full-page contacts directory
+
+A complete contacts screen: a search bar filters by keyword (empty groups are dropped so the index bar follows along), every row uses an `sn-avatar` text avatar (the colour maps stably from a name hash onto a token palette); `show-indicator` echoes the active letter in the middle of the list and `anchor-id` gives each group a stable DOM id for deep links:
+
+<Demo name="index-bar-mp-contacts" description="Full-page contacts: built-in Search icon + keyword filter; sn-avatar text avatars; show-indicator centre bubble; stable anchor-group ids." />
+
 > **Contract slot**: `sticky` currently only toggles the `sn-index-bar--sticky` class on the root and ships no matching CSS rule, so it has no visible effect. The prop stays for contract parity.
 
 ## Auto registration (easycom)
@@ -43,19 +49,21 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ### sn-index-bar
 
-| Prop          | Type      | Default | Description                   |
-| ------------- | --------- | ------- | ----------------------------- |
-| `sticky`      | `boolean` | `false` | Pin the index bar             |
-| `customClass` | `string`  | `''`    | Extra class on the root node  |
-| `customStyle` | `string`  | `''`    | Inline style on the root node |
+| Prop            | Type      | Default | Description                             |
+| --------------- | --------- | ------- | --------------------------------------- |
+| `sticky`        | `boolean` | `false` | Pin the index bar                       |
+| `showIndicator` | `boolean` | `false` | Echo the active index in a centre bubble |
+| `customClass`   | `string`  | `''`    | Extra class on the root node            |
+| `customStyle`   | `string`  | `''`    | Inline style on the root node           |
 
 ### sn-index-anchor
 
-| Prop          | Type               | Default | Description                     |
-| ------------- | ------------------ | ------- | ------------------------------- |
-| `index`       | `string \| number` | `''`    | Index character(s)              |
-| `customClass` | `string`           | `''`    | Extra class on the anchor root  |
-| `customStyle` | `string`           | `''`    | Inline style on the anchor root |
+| Prop          | Type               | Default | Description                              |
+| ------------- | ------------------ | ------- | ---------------------------------------- |
+| `index`       | `string \| number` | `''`    | Index character(s)                       |
+| `anchorId`    | `string`           | `''`    | Custom anchor DOM id (auto value when empty) |
+| `customClass` | `string`           | `''`    | Extra class on the anchor root           |
+| `customStyle` | `string`           | `''`    | Inline style on the anchor root          |
 
 ## Events
 
@@ -83,7 +91,15 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 | `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | Entry / heading size                      |
 | `--sn-mp-font-weight-medium`                    | Heading weight                            |
 | `--sn-mp-radius-full`                           | Entry pill radius                         |
+| `--sn-mp-radius-lg`                             | Index tip bubble radius                   |
+| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | Index tip bubble size and weight  |
 | `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | Entry gap / heading padding               |
+
+## AI Patch Boundary
+
+- AI may patch display configs such as `sticky` / `showIndicator`, and each `sn-index-anchor`'s `index` / `anchorId`.
+- The `change` event and `scrollTo()` are runtime behaviour; patches must not fake index changes or hard-code scroll targets.
+- Group entry content (default slot) is business data; patches should only adjust container configs, never rewrite entry internals.
 
 ## Accessibility
 

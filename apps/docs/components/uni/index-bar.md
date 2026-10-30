@@ -20,6 +20,12 @@
 
 <Demo name="index-bar-mp-scrollto" description="scrollTo(index) 从代码跳转分组；custom-class / custom-style 自定义根节点。" />
 
+## 整页通讯录
+
+完整通讯录场景：顶部搜索栏按关键字过滤（空分组自动丢弃，索引栏随分组联动），每行联系人头像用 `sn-avatar` 文字头像（颜色由姓名哈希稳定映射到 token 色板）；`show-indicator` 在列表中央回显当前索引字母，`anchor-id` 给分组稳定的 DOM id 以便深链定位：
+
+<Demo name="index-bar-mp-contacts" description="整页通讯录：内置 Search 图标 + 搜索过滤；sn-avatar 文字头像；show-indicator 中央索引气泡；anchor-id 稳定分组 id。" />
+
 > **契约位**：`sticky` 当前只在根节点切换 `sn-index-bar--sticky` 类，没有配套的样式规则，因此页面上看不出差异。该 prop 保留以维持契约一致。
 
 ## 自动注册（easycom）
@@ -43,19 +49,21 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 
 ### sn-index-bar
 
-| 属性          | 类型      | 默认值  | 说明                      |
-| ------------- | --------- | ------- | ------------------------- |
-| `sticky`      | `boolean` | `false` | 索引是否吸顶              |
-| `customClass` | `string`  | `''`    | 根节点自定义类名          |
-| `customStyle` | `string`  | `''`    | 根节点自定义 inline style |
+| 属性            | 类型      | 默认值  | 说明                                    |
+| --------------- | --------- | ------- | --------------------------------------- |
+| `sticky`        | `boolean` | `false` | 索引是否吸顶                            |
+| `showIndicator` | `boolean` | `false` | 是否在列表视口中央显示当前索引提示气泡  |
+| `customClass`   | `string`  | `''`    | 根节点自定义类名                        |
+| `customStyle`   | `string`  | `''`    | 根节点自定义 inline style               |
 
 ### sn-index-anchor
 
-| 属性          | 类型               | 默认值 | 说明                      |
-| ------------- | ------------------ | ------ | ------------------------- |
-| `index`       | `string \| number` | `''`   | 索引字符                  |
-| `customClass` | `string`           | `''`   | 根节点自定义类名          |
-| `customStyle` | `string`           | `''`   | 根节点自定义 inline style |
+| 属性          | 类型               | 默认值 | 说明                                    |
+| ------------- | ------------------ | ------ | --------------------------------------- |
+| `index`       | `string \| number` | `''`   | 索引字符                                |
+| `anchorId`    | `string`           | `''`   | 自定义锚点 DOM id（为空时用内部生成值） |
+| `customClass` | `string`           | `''`   | 根节点自定义类名                        |
+| `customStyle` | `string`           | `''`   | 根节点自定义 inline style               |
 
 ## Events
 
@@ -83,7 +91,15 @@ import { SnIndexAnchor } from '@snui/uni/components/sn-index-bar/sn-index-anchor
 | `--sn-mp-font-size-xs` / `--sn-mp-font-size-sm` | 索引项 / 分组标题字号          |
 | `--sn-mp-font-weight-medium`                    | 分组标题字重                   |
 | `--sn-mp-radius-full`                           | 索引项胶囊圆角                 |
+| `--sn-mp-radius-lg`                             | 索引提示气泡圆角               |
+| `--sn-mp-font-size-xl` / `--sn-mp-font-weight-semibold` | 索引提示气泡字号与字重 |
 | `--sn-mp-spacing-1` / `--sn-mp-spacing-3`       | 索引项间距 / 分组标题内边距    |
+
+## AI Patch Boundary
+
+- AI 可通过 Patch 修改 `sticky` / `showIndicator` 等展示配置，以及各 `sn-index-anchor` 的 `index` / `anchorId`。
+- `change` 事件与 `scrollTo()` 属于运行时行为，Patch 不应伪造索引变化事件或写死滚动目标。
+- 分组条目内容（默认插槽）属于业务数据，Patch 只应调整容器配置，不应改写条目内部结构。
 
 ## 无障碍
 

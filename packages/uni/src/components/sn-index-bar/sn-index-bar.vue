@@ -32,6 +32,14 @@
  * Not responsible for:
  *   - 数据分组 / 排序 — 由使用方决定
  *   - 联系人列表业务逻辑 — 由宿主处理
+ *
+ * ## Additive: current-index indicator (additive (AUI-OPT-05, AGENTS.md §112.3a))
+ *
+ * `showIndicator` centres a bubble that echoes the active index inside the
+ * list viewport. wd-index-bar paints such a tip unconditionally; here it is
+ * exposed as an opt-in prop so the reference surface stays 1:1 (nothing
+ * existing changed meaning). A full contact list reads better with the
+ * current letter shown large while the reader scans.
  */
 
 import { computed, onBeforeUnmount, provide, ref, watch } from 'vue';
@@ -49,6 +57,11 @@ const props = withDefaults(
 
     /** 索引是否吸顶。 */
     sticky?: boolean;
+    /**
+     * 是否在列表视口中央显示当前索引提示气泡（AUI 追加能力，
+     * additive (AUI-OPT-05, AGENTS.md §112.3a)；wd-index-bar 无对应 prop）。
+     */
+    showIndicator?: boolean;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
@@ -56,6 +69,7 @@ const props = withDefaults(
   }>(),
   {
     sticky: false,
+    showIndicator: false,
     customClass: '',
     customStyle: '',
   },
@@ -115,6 +129,11 @@ const rootClass = computed(() => [
   props.customClass,
 ]);
 
+/** Indicator renders only when opted in and an active index exists. */
+const showIndicatorValue = computed(
+  () => props.showIndicator && activeIndexValue.value !== undefined,
+);
+
 onBeforeUnmount(() => {
   anchors.value = [];
 });
@@ -132,14 +151,21 @@ watch(anchors, (list) => {
 
 <template>
   <view data-snui-component="index-bar" :class="rootClass" :style="customStyle || undefined">
-    <scroll-view
-      class="sn-index-bar__list"
-      scroll-y
-      :scroll-into-view="scrollTarget || undefined"
-      :scroll-with-animation="true"
-    >
-      <slot />
-    </scroll-view>
+    <view class="sn-index-bar__body">
+      <scroll-view
+        class="sn-index-bar__list"
+        scroll-y
+        :scroll-into-view="scrollTarget || undefined"
+        :scroll-with-animation="true"
+      >
+        <slot />
+      </scroll-view>
+
+      <!-- Current-index indicator (additive): decorative, tab aria carries the state. -->
+      <view v-if="showIndicatorValue" class="sn-index-bar__indicator" aria-hidden="true">
+        <text class="sn-index-bar__indicator-text">{{ activeIndexValue }}</text>
+      </view>
+    </view>
 
     <view class="sn-index-bar__sidebar" role="tablist" aria-orientation="vertical">
       <view
@@ -168,10 +194,42 @@ watch(anchors, (list) => {
   background-color: var(--sn-mp-color-background-surface);
 }
 
+.sn-index-bar__body {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+}
+
 .sn-index-bar__list {
   flex: 1 1 auto;
   width: 100%;
   height: 100%;
+}
+
+/* ── Current-index indicator (additive) ─────────────────────────────────── */
+
+.sn-index-bar__indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112rpx;
+  height: 112rpx;
+  padding: 0 var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-action-primary);
+  transform: translate(-50%, -50%);
+}
+
+.sn-index-bar__indicator-text {
+  color: var(--sn-mp-color-text-on-primary);
+  font-size: var(--sn-mp-font-size-xl);
+  font-weight: var(--sn-mp-font-weight-semibold);
+  line-height: 1;
 }
 
 .sn-index-bar__sidebar {

@@ -261,3 +261,87 @@ describe('sn-index-anchor', () => {
     expect(wrapper.find('.sn-index-anchor').classes()).toContain('my-anchor');
   });
 });
+
+describe('sn-index-bar — current-index indicator (additive)', () => {
+  it('renders no indicator by default', async () => {
+    const wrapper = mountBar();
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.sn-index-bar__indicator').exists()).toBe(false);
+  });
+
+  it('shows the active index when enabled', async () => {
+    const wrapper = mountBar({ showIndicator: true });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.sn-index-bar__indicator').exists()).toBe(true);
+    expect(wrapper.find('.sn-index-bar__indicator-text').text()).toBe('A');
+  });
+
+  it('follows the tapped index', async () => {
+    const wrapper = mountBar({ showIndicator: true });
+    await wrapper.vm.$nextTick();
+    await wrapper.findAll('.sn-index-bar__index')[2]!.trigger('tap');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.sn-index-bar__indicator-text').text()).toBe('C');
+  });
+
+  it('drops the indicator once every anchor has gone', async () => {
+    const letters = ref(['A']);
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnIndexBar, { showIndicator: true }, {
+            default: () =>
+              letters.value.map((letter) =>
+                h(SnIndexAnchor, { index: letter }, { default: () => `items ${letter}` }),
+              ),
+          });
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.sn-index-bar__indicator').exists()).toBe(true);
+    letters.value = [];
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.sn-index-bar__indicator').exists()).toBe(false);
+  });
+});
+
+describe('sn-index-anchor — caller-supplied anchor id (additive)', () => {
+  it('uses the provided anchorId as the DOM id', async () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnIndexBar, {}, {
+            default: () => [h(SnIndexAnchor, { index: 'A', anchorId: 'contact-group-a' })],
+          });
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.sn-index-anchor').attributes('id')).toBe('contact-group-a');
+  });
+
+  it('jumps the scroll-view to the provided anchorId', async () => {
+    const Harness = defineComponent({
+      setup() {
+        return () =>
+          h(SnIndexBar, {}, {
+            default: () => [
+              h(SnIndexAnchor, { index: 'A' }, { default: () => 'A' }),
+              h(SnIndexAnchor, { index: 'B', anchorId: 'contact-group-b' }, { default: () => 'B' }),
+            ],
+          });
+      },
+    });
+    const wrapper = mount(Harness);
+    await wrapper.vm.$nextTick();
+    const bar = wrapper.findComponent(SnIndexBar).vm as unknown as {
+      scrollTo: (index: string) => void;
+    };
+    bar.scrollTo('B');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.sn-index-bar__list').attributes('scroll-into-view')).toBe(
+      'contact-group-b',
+    );
+  });
+});

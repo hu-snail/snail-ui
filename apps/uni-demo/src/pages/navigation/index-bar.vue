@@ -1,8 +1,9 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— index-bar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/index-bar-mp-basic.vue';
-import Demo1 from './demos/index-bar-mp-custom.vue';
-import Demo2 from './demos/index-bar-mp-scrollto.vue';
+import Demo1 from './demos/index-bar-mp-contacts.vue';
+import Demo2 from './demos/index-bar-mp-custom.vue';
+import Demo3 from './demos/index-bar-mp-scrollto.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -23,7 +24,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
+          <text class="module__title">{{ t('通讯录', 'Contacts') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -31,10 +32,18 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('scrollto', 'Scrollto') }}</text>
+          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('scrollto', 'Scrollto') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>
