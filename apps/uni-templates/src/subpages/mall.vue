@@ -340,7 +340,7 @@ function onTabChange(payload: { value: number | string }): void {
             <view class="mall-nav__row" :style="navStyle">
               <view class="mall-nav__place" @tap="tapFeature('切换地址')">
                 <SnIcon :icon="MapPin" size="40rpx" color="#111111" />
-                <text class="mall-nav__place-text">Home</text>
+                <text class="mall-nav__place-text">上海</text>
                 <SnIcon :icon="ChevronDown" size="30rpx" color="#111111" />
               </view>
               <view class="mall-nav__search" @tap="tapFeature('奶茶爆款半价')">

@@ -302,7 +302,7 @@ function shuffleRecs(): void {
                 <view class="art-nav__logo">
                   <text class="art-nav__logo-text">头</text>
                 </view>
-                <text class="art-nav__title">News Article Detail</text>
+                <text class="art-nav__title">{{ ARTICLE.author }}</text>
               </view>
               <view class="art-nav__acts">
                 <view class="art-nav__follow" @tap="toggleFollow">
