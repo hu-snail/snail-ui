@@ -1,65 +1,58 @@
 <script setup lang="ts">
-/** Demo: sn-tag (uni-end) — closable, icons and the inline "new tag" input. */
-import { ref, onBeforeUnmount } from 'vue';
+/** Demo: sn-tag (uni-end) — closable filter chips + the dynamic "new tag" input. */
+import { ref } from 'vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
-import { registerSnIcons, clearSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import { Check, Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
-registerSnIcons({ Check, Star });
+/** Selected filters: tap close to remove; tap the dashed tag to restore all. */
+const filters = ref(['Tech', 'Outdoor', 'Food', 'Movies']);
 
-const visible = ref(true);
-const tags = ref(['Frontend', 'Backend', 'Design']);
-const draftTags = ref<string[]>([]);
-
-function hide(): void {
-  visible.value = false;
+function removeFilter(filter: string): void {
+  filters.value = filters.value.filter((item) => item !== filter);
 }
 
-function remove(tag: string): void {
-  tags.value = tags.value.filter((item) => item !== tag);
+function resetFilters(): void {
+  filters.value = ['Tech', 'Outdoor', 'Food', 'Movies'];
 }
+
+/** Dynamic add: confirmed values join the list, each closable in turn. */
+const added = ref<string[]>([]);
 
 function addTag(payload: { value: string }): void {
   const value = payload.value.trim();
-  if (value) draftTags.value.push(value);
+  if (value !== '') added.value.push(value);
 }
 
-onBeforeUnmount(() => clearSnIcons());
+function removeAdded(tag: string): void {
+  added.value = added.value.filter((item) => item !== tag);
+}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <view class="sn-demo-row">
-      <SnTag v-if="visible" type="primary" closable @close="hide">Close me</SnTag>
-      <SnTag v-else type="primary">Closed</SnTag>
+    <view class="sn-demo__row">
+      <template v-if="filters.length > 0">
+        <SnTag
+          v-for="filter in filters"
+          :key="filter"
+          type="primary"
+          variant="light"
+          closable
+          @close="removeFilter(filter)"
+        >
+          {{ filter }}
+        </SnTag>
+      </template>
+      <SnTag v-else variant="dashed" @click="resetFilters">Cleared, tap to restore</SnTag>
     </view>
 
-    <view class="sn-demo-row">
-      <SnTag type="success" icon="Check">Verified</SnTag>
-      <SnTag type="warning" icon="Star">Starred</SnTag>
-    </view>
-
-    <view class="sn-demo-row">
-      <SnTag
-        v-for="tag in tags"
-        :key="tag"
-        type="primary"
-        variant="light"
-        closable
-        @close="remove(tag)"
-      >
-        {{ tag }}
-      </SnTag>
-    </view>
-
-    <view class="sn-demo-row">
+    <view class="sn-demo__row">
       <SnTag dynamic type="primary" variant="plain" @confirm="addTag" />
       <SnTag
-        v-for="tag in draftTags"
+        v-for="tag in added"
         :key="tag"
         type="primary"
         closable
-        @close="draftTags = draftTags.filter((t) => t !== tag)"
+        @close="removeAdded(tag)"
       >
         {{ tag }}
       </SnTag>
@@ -71,13 +64,14 @@ onBeforeUnmount(() => clearSnIcons());
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sn-mp-spacing-5);
   align-items: flex-start;
 }
-.sn-demo-row {
+
+.sn-demo__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
   align-items: center;
 }
 </style>

@@ -20,6 +20,18 @@
 
 <Demo name="cell-mp-layout" description="layout=vertical 纵向布局；required 必填星号（asterisk-position 控制位置）；title-width / value-align 控制列宽与对齐。" />
 
+## 图标来源与尺寸
+
+`prefixIconData` / `suffixIconData` 直接接收内置图标集对象，`prefixIconUrl` / `suffixIconUrl` 用 `<image>` 渲染图片图标；`iconSize` 支持档位名（映射 `--sn-mp-icon-size-*`），`iconColor` 控制 SVG 图标颜色：
+
+<Demo name="cell-mp-icon" description="三种图标来源对比：内置图标集对象、图片地址、注册表名；iconSize 传 tiny/small/medium/large/xlarge 档位；iconColor 走颜色 token。" />
+
+## 卡片单元格
+
+`card` 让每一行渲染为独立圆角卡片（分组容器转为透明，行间距 / 圆角 / 描边走 token）；在 `sn-cell-group` 上开启时整组继承，行内显式设置优先：
+
+<Demo name="cell-mp-card" description="card 模式下每行独立成卡：左侧图标 + 标题 + 右箭头；分组开启可整组继承。" />
+
 ## 自动注册（easycom）
 
 组件符合 easycom 规范，**无需 import 即可在模板中直接使用**：
@@ -52,6 +64,7 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `valueAlign`  | `'left' \| 'right' \| 'center'` | `'right'`      | 子单元格右侧对齐（继承）  |
 | `titleWidth`  | `string \| number`              | `undefined`    | 子单元格标题宽度（继承）  |
 | `center`      | `boolean`                       | `false`        | 子单元格垂直居中（继承）  |
+| `card`        | `boolean`                       | `false`        | 子单元格卡片形态（继承）  |
 | `customClass` | `string`                        | `''`           | 根节点自定义类名          |
 | `customStyle` | `string`                        | `''`           | 根节点自定义 inline style |
 
@@ -65,7 +78,13 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `label`             | `string`                              | `''`        | 标题下方描述信息                      |
 | `prefixIcon`        | `string`                              | `''`        | 前置图标名                            |
 | `suffixIcon`        | `string`                              | `''`        | 后置图标名                            |
-| `iconSize`          | `string \| number`                    | `undefined` | 图标大小                              |
+| `iconSize`          | `string \| number`                    | `undefined` | 图标大小：数字按 px；档位名 tiny / small / medium / large / xlarge 映射 `--sn-mp-icon-size-*` |
+| `iconColor`         | `string`                              | `''`        | SVG 图标颜色（传 `var(--sn-mp-color-*)` token） |
+| `prefixIconData`    | `IconData`                            | `undefined` | 前置图标数据对象（内置图标集 / 自定义），优先于 `prefixIcon` |
+| `suffixIconData`    | `IconData`                            | `undefined` | 后置图标数据对象（内置图标集 / 自定义），优先于 `suffixIcon` |
+| `prefixIconUrl`     | `string`                              | `''`        | 前置图片地址，渲染为 `<image>`；优先级低于 `prefixIconData`、高于 `prefixIcon` |
+| `suffixIconUrl`     | `string`                              | `''`        | 后置图片地址，渲染为 `<image>`；优先级低于 `suffixIconData`、高于 `suffixIcon` |
+| `card`              | `boolean`                             | `undefined` | 卡片形态：整行渲染为圆角独立卡片；组内未显式设置时继承 sn-cell-group |
 | `iconPrefix`        | `string`                              | `''`        | 图标类名前缀                          |
 | `cssIcon`           | `boolean \| string`                   | `false`     | CSS（字体）图标                       |
 | `to`                | `string`                              | `''`        | 跳转地址（仅随 `click` 透出）         |
@@ -128,6 +147,14 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `--sn-mp-font-weight-medium`                                    | 分组标题字重                 |
 | `--sn-mp-radius-lg`                                             | `insert` 圆角                |
 | `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 分组标题 / 单元格 / 图标间距 |
+| `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge`          | `iconSize` 档位名对应的图标尺寸 |
+| `--sn-mp-icon-stroke-width`                                   | SVG 图标描边宽度           |
+
+## AI Patch Boundary
+
+- AI 可通过 Patch 修改 `title` / `value` / `label` / `placeholder` / 图标配置（`prefixIcon` / `suffixIcon` / `prefixIconData` / `suffixIconData` / `prefixIconUrl` / `suffixIconUrl` / `iconSize` / `iconColor`）/ `card` / `required` / `layout` / `ellipsis` 等展示配置。
+- `click` 事件与 `to` / `replace` 参数属于宿主路由职责，Patch 不应伪造或拦截跳转。
+- 插槽内容（`title` / `label` / `default`）属于业务数据，Patch 只应调整容器配置，不应改写插槽内部结构。
 
 ## 无障碍
 

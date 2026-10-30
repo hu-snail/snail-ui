@@ -1,65 +1,58 @@
 <script setup lang="ts">
-/** Demo: sn-tag (uni-end) — 可关闭 + 图标 + 新增标签。 */
-import { onBeforeUnmount, ref } from 'vue';
+/** Demo: sn-tag (uni-end) — closable 筛选条件 + dynamic 新增标签。 */
+import { ref } from 'vue';
 import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
-import { registerSnIcons, clearSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import { Check, Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
-registerSnIcons({ Check, Star });
+/** 已选筛选条件：点关闭即移除，清空后点虚线标签整体恢复。 */
+const filters = ref(['数码', '户外', '美食', '影音']);
 
-const visible = ref(true);
-const tags = ref(['前端', '后端', '设计']);
-const draftTags = ref<string[]>([]);
-
-function hide(): void {
-  visible.value = false;
+function removeFilter(filter: string): void {
+  filters.value = filters.value.filter((item) => item !== filter);
 }
 
-function remove(tag: string): void {
-  tags.value = tags.value.filter((item) => item !== tag);
+function resetFilters(): void {
+  filters.value = ['数码', '户外', '美食', '影音'];
 }
+
+/** dynamic 新增：确认后进入已添加列表，同样可关闭。 */
+const added = ref<string[]>([]);
 
 function addTag(payload: { value: string }): void {
   const value = payload.value.trim();
-  if (value) draftTags.value.push(value);
+  if (value !== '') added.value.push(value);
 }
 
-onBeforeUnmount(() => clearSnIcons());
+function removeAdded(tag: string): void {
+  added.value = added.value.filter((item) => item !== tag);
+}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <view class="sn-demo-row">
-      <SnTag v-if="visible" type="primary" closable @close="hide">点右侧关闭</SnTag>
-      <SnTag v-else type="primary">已关闭</SnTag>
+    <view class="sn-demo__row">
+      <template v-if="filters.length > 0">
+        <SnTag
+          v-for="filter in filters"
+          :key="filter"
+          type="primary"
+          variant="light"
+          closable
+          @close="removeFilter(filter)"
+        >
+          {{ filter }}
+        </SnTag>
+      </template>
+      <SnTag v-else variant="dashed" @click="resetFilters">已清空，点此恢复</SnTag>
     </view>
 
-    <view class="sn-demo-row">
-      <SnTag type="success" icon="Check">已校验</SnTag>
-      <SnTag type="warning" icon="Star">已收藏</SnTag>
-    </view>
-
-    <view class="sn-demo-row">
-      <SnTag
-        v-for="tag in tags"
-        :key="tag"
-        type="primary"
-        variant="light"
-        closable
-        @close="remove(tag)"
-      >
-        {{ tag }}
-      </SnTag>
-    </view>
-
-    <view class="sn-demo-row">
+    <view class="sn-demo__row">
       <SnTag dynamic type="primary" variant="plain" @confirm="addTag" />
       <SnTag
-        v-for="tag in draftTags"
+        v-for="tag in added"
         :key="tag"
         type="primary"
         closable
-        @close="draftTags = draftTags.filter((t) => t !== tag)"
+        @close="removeAdded(tag)"
       >
         {{ tag }}
       </SnTag>
@@ -71,13 +64,14 @@ onBeforeUnmount(() => clearSnIcons());
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--sn-mp-spacing-5);
   align-items: flex-start;
 }
-.sn-demo-row {
+
+.sn-demo__row {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--sn-mp-spacing-4) var(--sn-mp-spacing-5);
   align-items: center;
 }
 </style>

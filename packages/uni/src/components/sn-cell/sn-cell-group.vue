@@ -16,9 +16,17 @@
  * both halves of the pair.)
  *
  * The group owns the card surface and the section heading; the cells inherit
- * `border` / `titleWidth` / `center` / `layout` / `valueAlign` through
+ * `border` / `titleWidth` / `center` / `layout` / `valueAlign` / `card` through
  * `provide`/`inject` (`sn-cell-types.ts`) — wd-cell's documented
  * "继承自 CellGroup" contract.
+ *
+ * ## Additive: `card` (AUI-OPT-01, AGENTS.md §112.3a)
+ *
+ * `insert` paints the whole group as one rounded card; `card` (additive) turns
+ * every row into its own independent card instead — the group goes transparent,
+ * the body gains a token gap and the group outline is dropped (each cell draws
+ * its own radius / border / shadow from tokens). `border` stays accepted but
+ * has no effect in card mode, so a card group never renders a doubled outline.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -54,6 +62,8 @@ const props = withDefaults(
     titleWidth?: string | number | undefined;
     /** 是否使内容垂直居中，子单元格继承。 */
     center?: boolean;
+    /** 卡片形态（additive）：每行渲染为独立圆角卡片，组背景透明并以 token 间距分行。 */
+    card?: boolean;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
@@ -69,6 +79,7 @@ const props = withDefaults(
     valueAlign: 'right',
     titleWidth: undefined,
     center: false,
+    card: false,
     customClass: '',
     customStyle: '',
   },
@@ -90,14 +101,17 @@ provide(SN_CELL_GROUP_KEY, {
   layout: toRef(props, 'layout'),
   valueAlign: toRef(props, 'valueAlign'),
   insert: toRef(props, 'insert'),
+  card: toRef(props, 'card'),
 });
 
 const rootClass = computed(() => [
   'sn-cell-group',
   {
     'sn-cell-group--insert': props.insert,
-    'sn-cell-group--bordered': props.border,
+    // Card mode owns the row outlines — the group outline would double up.
+    'sn-cell-group--bordered': props.border && !props.card,
     'sn-cell-group--large': props.size === 'large',
+    'sn-cell-group--card': props.card,
   },
   props.customClass,
 ]);
@@ -123,7 +137,7 @@ const rootClass = computed(() => [
         </slot>
       </view>
     </view>
-    <view class="sn-cell-group__body">
+    <view :class="['sn-cell-group__body', { 'sn-cell-group__body--card': props.card }]">
       <slot />
     </view>
   </view>
@@ -142,6 +156,16 @@ const rootClass = computed(() => [
   margin: var(--sn-mp-spacing-3);
   border-radius: var(--sn-mp-radius-lg);
   overflow: hidden;
+}
+
+/* Card mode (additive): every row paints its own card, so the group goes
+   transparent and the body spreads the rows with a token gap. */
+.sn-cell-group--card {
+  background-color: transparent;
+}
+
+.sn-cell-group__body--card {
+  gap: var(--sn-mp-spacing-3);
 }
 
 .sn-cell-group--bordered {

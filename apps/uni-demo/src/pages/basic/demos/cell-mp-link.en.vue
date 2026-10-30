@@ -1,33 +1,44 @@
 <script setup lang="ts">
-/** Demo: sn-cell — link arrow, icons and tap feedback. */
+/** Demo: sn-cell — tappable rows (arrow / toggle value / button value / hint + arrow). */
 import { ref } from 'vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 
-const tapped = ref('—');
+const notificationsOn = ref(true);
+const lastAction = ref('No action yet');
+
+function toggleNotifications(): void {
+  notificationsOn.value = !notificationsOn.value;
+  lastAction.value = notificationsOn.value ? 'Notifications turned on' : 'Notifications turned off';
+}
+
+function record(action: string): void {
+  lastAction.value = action;
+}
 </script>
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <SnCellGroup title="Settings">
+    <SnCellGroup>
       <SnCell
         title="Notifications"
-        label="Receive pushes and reminders"
-        is-link
-        prefix-icon="Bell"
-        @click="tapped = 'Notifications'"
+        :value="notificationsOn ? 'On' : 'Off'"
+        clickable
+        @click="toggleNotifications"
       />
+      <SnCell title="Shipping addresses" value="3" is-link @click="record('Open addresses')" />
+      <SnCell title="Feedback">
+        <SnButton size="small" type="primary" @click="record('Feedback submitted')">Give feedback</SnButton>
+      </SnCell>
       <SnCell
-        title="Account security"
-        value="Enabled"
+        title="Account & security"
+        label="Password, phone binding, account deletion"
         is-link
-        arrow-direction="down"
-        prefix-icon="User"
-        @click="tapped = 'Account security'"
+        @click="record('Open account & security')"
       />
-      <SnCell title="About" value="v0.1.0" clickable @click="tapped = 'About'" />
     </SnCellGroup>
-    <text class="sn-demo__meta">Last tapped: {{ tapped }}</text>
+    <text class="sn-demo__meta">Last action: {{ lastAction }}</text>
   </view>
 </template>
 
@@ -35,11 +46,11 @@ const tapped = ref('—');
 .sn-demo--column {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24rpx;
   width: 100%;
 }
 .sn-demo__meta {
-  font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

@@ -12,6 +12,7 @@ import { mount } from '@vue/test-utils';
 import { defineComponent, h } from 'vue';
 import SnCell from './sn-cell.vue';
 import SnCellGroup from './sn-cell-group.vue';
+import { Bell } from '../sn-icon/sn-icon-set';
 
 describe('sn-cell', () => {
   describe('content', () => {
@@ -364,6 +365,161 @@ describe('sn-cell', () => {
       expect(wrapper.attributes('hover-class')).toBe('none');
     });
   });
+
+  describe('icon data / image / colour (additive)', () => {
+    it('renders an IconData object passed through prefixIconData', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', prefixIconData: Bell } });
+      expect(wrapper.find('.sn-cell__icon.sn-icon').exists()).toBe(true);
+      expect(wrapper.find('.sn-cell__icon svg').exists()).toBe(true);
+    });
+
+    it('renders an IconData object passed through suffixIconData', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', suffixIconData: Bell } });
+      expect(wrapper.find('.sn-cell__icon svg').exists()).toBe(true);
+    });
+
+    it('prefers prefixIconData over the prefixIcon name', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIcon: 'Star', prefixIconData: Bell },
+      });
+      expect(wrapper.findAll('.sn-cell__icon')).toHaveLength(1);
+      clearSnIcons();
+    });
+
+    it('renders a prefix image when prefixIconUrl is set', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIconUrl: 'https://example.com/a.png' },
+      });
+      const img = wrapper.find('.sn-cell__image');
+      expect(img.exists()).toBe(true);
+      expect(img.attributes('src')).toBe('https://example.com/a.png');
+    });
+
+    it('prefers prefixIconData over prefixIconUrl', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIconData: Bell, prefixIconUrl: 'https://example.com/a.png' },
+      });
+      expect(wrapper.find('.sn-cell__image').exists()).toBe(false);
+      expect(wrapper.find('.sn-cell__icon').exists()).toBe(true);
+    });
+
+    it('prefers prefixIconUrl over the prefixIcon name', async () => {
+      const { registerSnIcons, clearSnIcons } = await import('../sn-icon/sn-icon-registry');
+      const { Star } = await import('../sn-icon/sn-icon-set');
+      registerSnIcons({ Star });
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIcon: 'Star', prefixIconUrl: 'https://example.com/a.png' },
+      });
+      expect(wrapper.find('.sn-cell__image').exists()).toBe(true);
+      expect(wrapper.find('.sn-cell__icon').exists()).toBe(false);
+      clearSnIcons();
+    });
+
+    it('renders the suffix image when suffixIconUrl is set', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', suffixIconUrl: 'https://example.com/b.png' },
+      });
+      expect(wrapper.find('.sn-cell__image').exists()).toBe(true);
+    });
+
+    it('resolves a built-in catalogue name without registration', () => {
+      // The name track forwards to SnIcon (registry → catalogue), so kebab-case
+      // lucide names resolve out of the box — sn-button's iconName contract.
+      const wrapper = mount(SnCell, { props: { title: 'A', prefixIcon: 'bell' } });
+      expect(wrapper.find('.sn-cell__icon.sn-icon svg').exists()).toBe(true);
+    });
+
+    it('resolves a built-in catalogue name on the suffix side', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', suffixIcon: 'settings' } });
+      expect(wrapper.find('.sn-cell__icon.sn-icon svg').exists()).toBe(true);
+    });
+
+    it('prefers prefixIconData over a catalogue-resolvable name', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIcon: 'bell', prefixIconData: Bell },
+      });
+      expect(wrapper.findAll('.sn-cell__icon')).toHaveLength(1);
+    });
+
+    it('keeps the font glyph ahead of the name chain when cssIcon is on', () => {
+      // cssIcon is the explicit iconfont opt-in — the glyph must not be
+      // hijacked by the catalogue resolution of the same name.
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIcon: 'bell', iconPrefix: 'sn', cssIcon: true },
+      });
+      expect(wrapper.find('.sn-cell__icon svg').exists()).toBe(false);
+      expect(wrapper.find('.sn-cell__icon').classes()).toContain('sn-bell');
+    });
+
+    it('keeps the arrow in place of a suffix icon while isLink', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', isLink: true, suffixIconData: Bell },
+      });
+      expect(wrapper.find('.sn-cell__arrow').exists()).toBe(true);
+      expect(wrapper.find('.sn-cell__icon').exists()).toBe(false);
+    });
+
+    it('applies iconColor as an inline colour', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIconData: Bell, iconColor: 'var(--sn-mp-color-feedback-warning)' },
+      });
+      expect(wrapper.find('.sn-cell__icon').attributes('style')).toContain(
+        'color: var(--sn-mp-color-feedback-warning)',
+      );
+    });
+
+    it('leaves the colour untouched when iconColor is empty', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', prefixIconData: Bell } });
+      expect(wrapper.find('.sn-cell__icon').attributes('style')).not.toContain('color:');
+    });
+
+    it('maps iconSize tier names to the mp icon-size tokens', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIconData: Bell, iconSize: 'large' },
+      });
+      expect(wrapper.find('.sn-cell__icon').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-large)',
+      );
+    });
+
+    it('passes unknown iconSize strings through', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIconData: Bell, iconSize: '2em' },
+      });
+      expect(wrapper.find('.sn-cell__icon').attributes('style')).toContain('width: 2em');
+    });
+
+    it('sizes the prefix image with the iconSize tier', () => {
+      const wrapper = mount(SnCell, {
+        props: { title: 'A', prefixIconUrl: 'https://example.com/a.png', iconSize: 'medium' },
+      });
+      expect(wrapper.find('.sn-cell__image').attributes('style')).toContain(
+        'var(--sn-mp-icon-size-medium)',
+      );
+    });
+  });
+
+  describe('card mode (additive)', () => {
+    it('applies the card class', () => {
+      expect(mount(SnCell, { props: { title: 'A', card: true } }).classes()).toContain(
+        'sn-cell--card',
+      );
+    });
+
+    it('suppresses the inner hairline while the card is on', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', card: true, border: true } });
+      expect(wrapper.classes()).not.toContain('sn-cell--border');
+      expect(wrapper.find('.sn-cell__hairline').exists()).toBe(false);
+    });
+
+    it('keeps the hairline when card is off', () => {
+      const wrapper = mount(SnCell, { props: { title: 'A', border: true } });
+      expect(wrapper.find('.sn-cell__hairline').exists()).toBe(true);
+    });
+  });
 });
 
 describe('sn-cell-group', () => {
@@ -405,6 +561,27 @@ describe('sn-cell-group', () => {
   it('marks the cells as insert rows inside an insert group', () => {
     expect(mountGroup({ insert: true }).find('.sn-cell').classes()).toContain('sn-cell--insert');
     expect(mountGroup().find('.sn-cell').classes()).not.toContain('sn-cell--insert');
+  });
+
+  it('inherits card into cells inside a card group', () => {
+    expect(mountGroup({ card: true }).find('.sn-cell').classes()).toContain('sn-cell--card');
+  });
+
+  it('lets an explicit cell card=false win over a card group', () => {
+    expect(
+      mountGroup({ card: true }, { card: false }).find('.sn-cell').classes(),
+    ).not.toContain('sn-cell--card');
+  });
+
+  it('drops the group outline in card mode', () => {
+    const wrapper = mountGroup({ card: true, border: true });
+    const group = wrapper.find('.sn-cell-group');
+    expect(group.classes()).toContain('sn-cell-group--card');
+    expect(group.classes()).not.toContain('sn-cell-group--bordered');
+  });
+
+  it('marks the body with the card gap class', () => {
+    expect(mountGroup({ card: true }).find('.sn-cell-group__body--card').exists()).toBe(true);
   });
 
   it('applies the large size class on the group', () => {

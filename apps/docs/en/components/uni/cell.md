@@ -20,6 +20,18 @@
 
 <Demo name="cell-mp-layout" description="layout=vertical stacks title over value; required adds the asterisk (asterisk-position moves it); title-width / value-align control width and alignment." />
 
+## Icon sources and sizes
+
+`prefixIconData` / `suffixIconData` take built-in icon-set objects directly, `prefixIconUrl` / `suffixIconUrl` render image icons through `<image>`; `iconSize` accepts tier names (mapped to `--sn-mp-icon-size-*`) and `iconColor` controls the SVG icon colour:
+
+<Demo name="cell-mp-icon" description="Three icon sources compared: built-in icon-set object, image URL, registry name; iconSize set to tiny/small/medium/large/xlarge tiers; iconColor through colour tokens." />
+
+## Card cells
+
+`card` renders each row as an independent rounded card (the group surface turns transparent; row gap / radius / border follow tokens); setting it on `sn-cell-group` lets the whole group inherit, while an explicit row value wins:
+
+<Demo name="cell-mp-card" description="Card mode: each row stands alone with a leading icon + title + right arrow; enabling it on the group inherits to every row." />
+
 ## Auto registration (easycom)
 
 The component follows the easycom convention, so **no import is needed in a template**:
@@ -52,6 +64,7 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `valueAlign`  | `'left' \| 'right' \| 'center'` | `'right'`      | Child value alignment (inherited)   |
 | `titleWidth`  | `string \| number`              | `undefined`    | Child title width (inherited)       |
 | `center`      | `boolean`                       | `false`        | Child vertical centring (inherited) |
+| `card`        | `boolean`                       | `false`        | Child card style (inherited)        |
 | `customClass` | `string`                        | `''`           | Extra class on the root node        |
 | `customStyle` | `string`                        | `''`           | Inline style on the root node       |
 
@@ -65,7 +78,13 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `label`             | `string`                              | `''`        | Description under the title                      |
 | `prefixIcon`        | `string`                              | `''`        | Leading icon name                                |
 | `suffixIcon`        | `string`                              | `''`        | Trailing icon name                               |
-| `iconSize`          | `string \| number`                    | `undefined` | Icon size                                        |
+| `iconSize`          | `string \| number`                    | `undefined` | Icon size: numbers are px; tier names tiny / small / medium / large / xlarge map to `--sn-mp-icon-size-*` |
+| `iconColor`         | `string`                              | `''`        | SVG icon colour (pass `var(--sn-mp-color-*)` tokens) |
+| `prefixIconData`    | `IconData`                            | `undefined` | Leading icon data object (built-in set / custom), wins over `prefixIcon` |
+| `suffixIconData`    | `IconData`                            | `undefined` | Trailing icon data object (built-in set / custom), wins over `suffixIcon` |
+| `prefixIconUrl`     | `string`                              | `''`        | Leading image URL rendered as `<image>`; below `prefixIconData`, above `prefixIcon` in priority |
+| `suffixIconUrl`     | `string`                              | `''`        | Trailing image URL rendered as `<image>`; below `suffixIconData`, above `suffixIcon` in priority |
+| `card`              | `boolean`                             | `undefined` | Card style: the row renders as an independent rounded card; inherits `sn-cell-group` when unset |
 | `iconPrefix`        | `string`                              | `''`        | Iconfont class prefix                            |
 | `cssIcon`           | `boolean \| string`                   | `false`     | Render a font icon                               |
 | `to`                | `string`                              | `''`        | Target path (forwarded through `click` only)     |
@@ -128,6 +147,14 @@ import { SnCellGroup } from '@snui/uni/components/sn-cell/sn-cell-group.vue';
 | `--sn-mp-font-weight-medium`                                    | Group heading weight           |
 | `--sn-mp-radius-lg`                                             | `insert` corner radius         |
 | `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Heading / row / icon spacing   |
+| `--sn-mp-icon-size-tiny` … `--sn-mp-icon-size-xlarge`          | Icon sizes for `iconSize` tier names |
+| `--sn-mp-icon-stroke-width`                                   | SVG icon stroke width       |
+
+## AI Patch Boundary
+
+- AI may patch display configs such as `title` / `value` / `label` / `placeholder` / icon configs (`prefixIcon` / `suffixIcon` / `prefixIconData` / `suffixIconData` / `prefixIconUrl` / `suffixIconUrl` / `iconSize` / `iconColor`) / `card` / `required` / `layout` / `ellipsis`.
+- The `click` event and `to` / `replace` parameters belong to host routing; patches must not fake or intercept navigation.
+- Slot content (`title` / `label` / `default`) is business data; patches should only adjust container configs, never rewrite slot internals.
 
 ## Accessibility
 
