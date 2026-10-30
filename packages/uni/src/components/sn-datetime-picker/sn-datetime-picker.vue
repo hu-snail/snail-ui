@@ -20,6 +20,13 @@
  * `v-model` is written on confirm, which is wd-datetime-picker's default
  * (`immediateChange: false`).
  *
+ * ## Header contract
+ *
+ * Three fixed slots — leading 取消 / centred 标题 / trailing 确认, both actions plain
+ * `<text>` (no icon glyphs, §113). The title slot owns the free space, so 确认 stays
+ * flush right with or without a title; the toolbar renders no other children (a
+ * stray text node would be a fourth flex item under `space-between`).
+ *
  * ## Documented divergences
  *
  *   - `root-portal` is declared and forwarded to `sn-popup`, but has no visual
@@ -262,22 +269,31 @@ const viewClass = computed(() => props.customViewClass);
     @update:model-value="emit('update:visible', $event)"
   >
     <view class="sn-datetime-picker" :data-snui-component="'datetime-picker'">
+      <!-- Header = cancel / title / confirm, fixed order so 确认 sits flush right.
+           All three children are elements: a stray text node would become an
+           anonymous flex item and shift the confirm off the edge. -->
       <view class="sn-datetime-picker__toolbar">
         <view
           class="sn-datetime-picker__action sn-datetime-picker__cancel"
           role="button"
           :aria-label="props.cancelButtonText"
+          hover-class="sn-datetime-picker__action--pressed"
           @tap="onCancel"
-          ><text>{{ props.cancelButtonText }}</text></view
         >
-        <text v-if="props.title" class="sn-datetime-picker__title">{{ props.title }}</text>
+          <text class="sn-datetime-picker__action-text">{{ props.cancelButtonText }}</text>
+        </view>
+        <view class="sn-datetime-picker__title-slot">
+          <text v-if="props.title" class="sn-datetime-picker__title">{{ props.title }}</text>
+        </view>
         <view
           class="sn-datetime-picker__action sn-datetime-picker__confirm"
           role="button"
           :aria-label="props.confirmButtonText"
+          hover-class="sn-datetime-picker__action--pressed"
           @tap="onConfirm"
-          ><text>{{ props.confirmButtonText }}</text></view>
         >
+          <text class="sn-datetime-picker__action-text">{{ props.confirmButtonText }}</text>
+        </view>
       </view>
 
       <SnDatetimePickerView
@@ -327,21 +343,43 @@ const viewClass = computed(() => props.customViewClass);
   border-bottom: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
-.sn-datetime-picker__title {
+/* Title slot owns the free space, so the actions never move and 确认 stays flush
+   right even when no title is given. */
+.sn-datetime-picker__title-slot {
+  display: flex;
   flex: 1 1 auto;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.sn-datetime-picker__title {
+  overflow: hidden;
+  color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
   font-weight: var(--sn-mp-font-weight-semibold);
-  overflow: hidden;
+  text-align: center;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
+/* Text-only actions (§113). 88rpx matches the toolbar so the full row is tappable. */
 .sn-datetime-picker__action {
+  display: flex;
   flex: 0 0 auto;
-  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
-  font-size: var(--sn-mp-font-size-md);
+  align-items: center;
+  min-height: 88rpx;
+  padding: 0 var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-secondary);
+}
+
+.sn-datetime-picker__action-text {
+  font-size: var(--sn-mp-font-size-md);
+}
+
+/* Press feedback rides hover-class (§116.2 — App has no :active pseudo). */
+.sn-datetime-picker__action--pressed {
+  opacity: 0.6;
 }
 
 .sn-datetime-picker__confirm {

@@ -1,7 +1,10 @@
 <script setup lang="ts">
-/** Demo: sn-datetime-picker — `type="time"` writes an `HH:mm` string; a `beforeConfirm` that returns false keeps the sheet open. */
+/** Demo: sn-datetime-picker — `type="time"` writes an `HH:mm` string; a `beforeConfirm` that returns false keeps the sheet open. Opened from an sn-cell row. */
 import { ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import { Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const time = ref<string | number | undefined>('10:30');
 const open = ref(false);
@@ -11,8 +14,18 @@ const guard = (value: string | number) => String(value) >= '09:00';
 
 <template>
   <view class="sn-demo sn-demo--column">
-    <view class="sn-demo__button" @tap="open = true">Pick a time</view>
-    <text class="sn-demo__meta">Selected: {{ time || '(none)' }}</text>
+    <SnCellGroup insert>
+      <SnCell
+        title="Time"
+        label="type=time + beforeConfirm (vetoes anything before 09:00)"
+        :prefix-icon-data="Clock"
+        placeholder="Select"
+        :value="time ? String(time) : ''"
+        is-link
+        @click="open = true"
+      />
+    </SnCellGroup>
+
     <SnDatetimePicker
       v-model="time"
       v-model:visible="open"
@@ -23,22 +36,3 @@ const guard = (value: string | number) => String(value) >= '09:00';
     />
   </view>
 </template>
-
-<style scoped>
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
-}
-</style>

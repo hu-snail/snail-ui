@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import { Calendar, Clock, Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -40,6 +41,11 @@ const hoursText = computed(() => {
   const d = new Date(Number(hours.value));
   return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 });
+const formattedText = computed(() => {
+  if (formatted.value === undefined) return '';
+  const d = new Date(Number(formatted.value));
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+});
 </script>
 
 <template>
@@ -48,6 +54,7 @@ const hoursText = computed(() => {
       <SnCell
         title="大行高滚筒"
         label="itemHeight 44 / 可见 6 行，范围 2024 全年"
+        :prefix-icon-data="Calendar"
         :value="dateText"
         is-link
         @click="openBig = true"
@@ -55,6 +62,7 @@ const hoursText = computed(() => {
       <SnCell
         title="限定时段"
         label="minHour 08 / maxHour 18，minMinute 15 / maxMinute 45"
+        :prefix-icon-data="Clock"
         :value="hoursText"
         is-link
         @click="openHours = true"
@@ -62,6 +70,7 @@ const hoursText = computed(() => {
       <SnCell
         title="精确到秒"
         label="useSecond + maxSecond 30"
+        :prefix-icon-data="Clock"
         :value="String(withSeconds)"
         is-link
         @click="openSeconds = true"
@@ -69,7 +78,8 @@ const hoursText = computed(() => {
       <SnCell
         title="格式化与过滤"
         label="列文案加单位；月份只留偶数月"
-        :value="dateText"
+        :prefix-icon-data="Filter"
+        :value="formattedText"
         is-link
         @click="openFormatted = true"
       />

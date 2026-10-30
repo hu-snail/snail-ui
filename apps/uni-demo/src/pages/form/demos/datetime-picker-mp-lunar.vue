@@ -5,6 +5,7 @@ import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-dat
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 import { formatLunar } from '@snui/uni-src/utils/sn-lunar';
+import { Calendar, Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const lunarDate = ref<string | number | undefined>(new Date(2025, 11, 1, 10, 30).getTime());
 const openDate = ref(false);
@@ -29,6 +30,7 @@ const clockText = computed(() => {
       <SnCell
         title="农历日期"
         label="lunar：年干支 / 月含闰月 / 日初一三十"
+        :prefix-icon-data="Calendar"
         placeholder="请选择"
         :value="lunarText"
         is-link
@@ -37,6 +39,7 @@ const clockText = computed(() => {
       <SnCell
         title="农历 + 时间"
         label="datetime + lunar：保留时分滚筒"
+        :prefix-icon-data="Clock"
         placeholder="请选择"
         :value="clockText"
         is-link

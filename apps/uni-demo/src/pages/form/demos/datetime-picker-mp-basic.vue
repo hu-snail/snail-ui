@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import { Calendar, Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const date = ref<string | number | undefined>(undefined);
 const openDate = ref(false);
@@ -32,6 +33,7 @@ const rangedText = computed(() => {
     <SnCellGroup insert>
       <SnCell
         title="日期选择"
+        :prefix-icon-data="Calendar"
         placeholder="请选择"
         :value="dateText"
         is-link
@@ -39,6 +41,7 @@ const rangedText = computed(() => {
       />
       <SnCell
         title="时间范围一年"
+        :prefix-icon-data="Clock"
         placeholder="请选择"
         :value="rangedText"
         is-link

@@ -4,6 +4,7 @@ import { ref } from 'vue';
 import SnDatetimePicker from '@snui/uni-src/components/sn-datetime-picker/sn-datetime-picker.vue';
 import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
+import { Clock } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const time = ref<string | number | undefined>('10:30');
 const open = ref(false);
@@ -17,6 +18,7 @@ const guard = (value: string | number) => String(value) >= '09:00';
       <SnCell
         title="选择时间"
         label="type=time + beforeConfirm（09:00 前拦截）"
+        :prefix-icon-data="Clock"
         placeholder="请选择"
         :value="time ? String(time) : ''"
         is-link
