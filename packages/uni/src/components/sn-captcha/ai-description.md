@@ -43,6 +43,7 @@ function onPass() { /* 发送业务请求 */ }
 | `zIndex` | `number` | `100` | 弹层层级 |
 | `closeOnClickModal` | `boolean` | `true` | 点遮罩关闭 |
 | `refreshable` | `boolean` | `true` | 显示"换一张"按钮 |
+| `inline` | `boolean` | `false` | 内嵌展示：不渲染遮罩、不抢焦点（additive，AUI-OPT-12） |
 | `customClass` / `customStyle` | `string` | `''` | 根节点类名 / 内联样式 |
 
 ## Events
