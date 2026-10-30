@@ -3,8 +3,10 @@
 import Demo0 from './demos/tag-mp-basic.vue';
 import Demo1 from './demos/tag-mp-closable.vue';
 import Demo2 from './demos/tag-mp-color-custom.vue';
-import Demo3 from './demos/tag-mp-size.vue';
-import Demo4 from './demos/tag-mp-variant.vue';
+import Demo3 from './demos/tag-mp-icon.vue';
+import Demo4 from './demos/tag-mp-shape.vue';
+import Demo5 from './demos/tag-mp-size.vue';
+import Demo6 from './demos/tag-mp-variant.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -41,7 +43,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('尺寸', 'Size') }}</text>
+          <text class="module__title">{{ t('图标', 'Icon') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -49,10 +51,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('变体', 'Variants') }}</text>
+          <text class="module__title">{{ t('形状', 'Shape') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('尺寸', 'Size') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('变体', 'Variants') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

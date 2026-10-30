@@ -1,11 +1,13 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— calendar 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/calendar-mp-basic.vue';
-import Demo1 from './demos/calendar-mp-grid-range.vue';
-import Demo2 from './demos/calendar-mp-hooks-parity.vue';
-import Demo3 from './demos/calendar-mp-lunar.vue';
-import Demo4 from './demos/calendar-mp-panel-sheet.vue';
-import Demo5 from './demos/calendar-mp-shortcuts-range.vue';
+import Demo1 from './demos/calendar-mp-card.vue';
+import Demo2 from './demos/calendar-mp-grid-range.vue';
+import Demo3 from './demos/calendar-mp-header.vue';
+import Demo4 from './demos/calendar-mp-hooks-parity.vue';
+import Demo5 from './demos/calendar-mp-lunar.vue';
+import Demo6 from './demos/calendar-mp-panel-sheet.vue';
+import Demo7 from './demos/calendar-mp-shortcuts-range.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -26,7 +28,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('grid-range', 'Grid Range') }}</text>
+          <text class="module__title">{{ t('卡片', 'Card') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -34,7 +36,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('hooks-parity', 'Hooks Parity') }}</text>
+          <text class="module__title">{{ t('grid-range', 'Grid Range') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -42,7 +44,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('农历', 'Lunar') }}</text>
+          <text class="module__title">{{ t('标题与描述', 'Title & description') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -50,7 +52,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('panel-sheet', 'Panel Sheet') }}</text>
+          <text class="module__title">{{ t('hooks-parity', 'Hooks Parity') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -58,10 +60,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('shortcuts-range', 'Shortcuts Range') }}</text>
+          <text class="module__title">{{ t('农历', 'Lunar') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('panel-sheet', 'Panel Sheet') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo6 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('shortcuts-range', 'Shortcuts Range') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo7 />
         </view>
       </view>
     </view>

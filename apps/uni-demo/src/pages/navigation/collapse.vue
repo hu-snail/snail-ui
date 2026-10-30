@@ -2,8 +2,10 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— collapse 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/collapse-mp-accordion.vue';
 import Demo1 from './demos/collapse-mp-basic.vue';
-import Demo2 from './demos/collapse-mp-slots.vue';
-import Demo3 from './demos/collapse-mp-viewmore.vue';
+import Demo2 from './demos/collapse-mp-card.vue';
+import Demo3 from './demos/collapse-mp-icon.vue';
+import Demo4 from './demos/collapse-mp-slots.vue';
+import Demo5 from './demos/collapse-mp-viewmore.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -32,7 +34,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
+          <text class="module__title">{{ t('卡片', 'Card') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -40,10 +42,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('viewmore', 'Viewmore') }}</text>
+          <text class="module__title">{{ t('图标', 'Icon') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('插槽', 'Slots') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('viewmore', 'Viewmore') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
         </view>
       </view>
     </view>

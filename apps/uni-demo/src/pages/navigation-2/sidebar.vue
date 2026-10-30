@@ -3,6 +3,7 @@
 import Demo0 from './demos/sidebar-mp-badge.vue';
 import Demo1 from './demos/sidebar-mp-basic.vue';
 import Demo2 from './demos/sidebar-mp-guard.vue';
+import Demo3 from './demos/sidebar-mp-scroll.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -35,6 +36,14 @@ const { t } = useDemoUi();
         </view>
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('滚动', 'Scroll') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
         </view>
       </view>
     </view>

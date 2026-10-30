@@ -2,6 +2,9 @@
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— captcha 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/captcha-mp-basic.vue';
 import Demo1 from './demos/captcha-mp-custom.vue';
+import Demo2 from './demos/captcha-mp-interaction.vue';
+import Demo3 from './demos/captcha-mp-popup.vue';
+import Demo4 from './demos/captcha-mp-verify.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -26,6 +29,30 @@ const { t } = useDemoUi();
         </view>
         <view class="module__body">
           <Demo1 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('交互', 'Interaction') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('弹窗', 'Popup') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('验证', 'Verification') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>

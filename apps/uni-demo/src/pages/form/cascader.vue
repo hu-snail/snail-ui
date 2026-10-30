@@ -1,10 +1,12 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— cascader 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/cascader-mp-basic.vue';
-import Demo1 from './demos/cascader-mp-fields.vue';
-import Demo2 from './demos/cascader-mp-lazy-confirm.vue';
-import Demo3 from './demos/cascader-mp-sheet.vue';
-import Demo4 from './demos/cascader-mp-strict-lazy.vue';
+import Demo1 from './demos/cascader-mp-card.vue';
+import Demo2 from './demos/cascader-mp-disabled.vue';
+import Demo3 from './demos/cascader-mp-fields.vue';
+import Demo4 from './demos/cascader-mp-lazy-confirm.vue';
+import Demo5 from './demos/cascader-mp-sheet.vue';
+import Demo6 from './demos/cascader-mp-strict-lazy.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -25,7 +27,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('字段', 'Fields') }}</text>
+          <text class="module__title">{{ t('卡片', 'Card') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -33,7 +35,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('lazy-confirm', 'Lazy Confirm') }}</text>
+          <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -41,7 +43,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('动作面板', 'Action sheet') }}</text>
+          <text class="module__title">{{ t('字段', 'Fields') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -49,10 +51,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('strict-lazy', 'Strict Lazy') }}</text>
+          <text class="module__title">{{ t('lazy-confirm', 'Lazy Confirm') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('动作面板', 'Action sheet') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo5 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('strict-lazy', 'Strict Lazy') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo6 />
         </view>
       </view>
     </view>

@@ -3,13 +3,19 @@
 import Demo0 from './demos/form-mp-basic.vue';
 import Demo1 from './demos/form-mp-cell.vue';
 import Demo2 from './demos/form-mp-cell-style.vue';
-import Demo3 from './demos/form-mp-disabled.vue';
-import Demo4 from './demos/form-mp-icon.vue';
-import Demo5 from './demos/form-mp-label.vue';
-import Demo6 from './demos/form-mp-reset-submit.vue';
-import Demo7 from './demos/form-mp-rules.vue';
-import Demo8 from './demos/form-mp-schema-layout.vue';
-import Demo9 from './demos/form-mp-validation-flow.vue';
+import Demo3 from './demos/form-mp-custom.vue';
+import Demo4 from './demos/form-mp-disabled.vue';
+import Demo5 from './demos/form-mp-fields.vue';
+import Demo6 from './demos/form-mp-form-type.vue';
+import Demo7 from './demos/form-mp-guard.vue';
+import Demo8 from './demos/form-mp-icon.vue';
+import Demo9 from './demos/form-mp-label.vue';
+import Demo10 from './demos/form-mp-reset-submit.vue';
+import Demo11 from './demos/form-mp-rules.vue';
+import Demo12 from './demos/form-mp-schema-layout.vue';
+import Demo13 from './demos/form-mp-state.vue';
+import Demo14 from './demos/form-mp-validate.vue';
+import Demo15 from './demos/form-mp-validation-flow.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -46,7 +52,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
+          <text class="module__title">{{ t('自定义', 'Custom') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
@@ -54,7 +60,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('图标', 'Icon') }}</text>
+          <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
         </view>
         <view class="module__body">
           <Demo4 />
@@ -62,7 +68,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('标签', 'Label') }}</text>
+          <text class="module__title">{{ t('字段', 'Fields') }}</text>
         </view>
         <view class="module__body">
           <Demo5 />
@@ -70,7 +76,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('reset-submit', 'Reset Submit') }}</text>
+          <text class="module__title">{{ t('表单类型', 'Form type') }}</text>
         </view>
         <view class="module__body">
           <Demo6 />
@@ -78,7 +84,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('rules', 'Rules') }}</text>
+          <text class="module__title">{{ t('拦截', 'Guard') }}</text>
         </view>
         <view class="module__body">
           <Demo7 />
@@ -86,7 +92,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('schema-layout', 'Schema Layout') }}</text>
+          <text class="module__title">{{ t('图标', 'Icon') }}</text>
         </view>
         <view class="module__body">
           <Demo8 />
@@ -94,10 +100,58 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('validation-flow', 'Validation Flow') }}</text>
+          <text class="module__title">{{ t('标签', 'Label') }}</text>
         </view>
         <view class="module__body">
           <Demo9 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('reset-submit', 'Reset Submit') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo10 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('rules', 'Rules') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo11 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('schema-layout', 'Schema Layout') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo12 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('状态', 'State') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo13 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('validate', 'Validate') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo14 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('validation-flow', 'Validation Flow') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo15 />
         </view>
       </view>
     </view>

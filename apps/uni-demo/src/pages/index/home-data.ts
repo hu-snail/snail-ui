@@ -51,7 +51,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '单元格',
         titleEn: 'Cell',
         desc: '列表行容器，可组合图标与箭头',
-        count: 3,
+        count: 5,
       },
       {
         key: 'config-provider',
@@ -75,7 +75,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '悬浮按钮',
         titleEn: 'Fab',
         desc: '可拖拽的悬浮操作按钮',
-        count: 4,
+        count: 5,
       },
       {
         key: 'gap',
@@ -130,7 +130,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '标签',
         titleEn: 'Tag',
         desc: '多色标记与可关闭标签',
-        count: 5,
+        count: 7,
       },
       {
         key: 'text',
@@ -161,7 +161,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '回到顶部',
         titleEn: 'Backtop',
         desc: '滚动回顶按钮',
-        count: 3,
+        count: 4,
       },
       {
         key: 'collapse',
@@ -169,7 +169,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '折叠面板',
         titleEn: 'Collapse',
         desc: '可展开收起的内容分组',
-        count: 4,
+        count: 6,
       },
       {
         key: 'drop-menu',
@@ -177,7 +177,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '下拉菜单',
         titleEn: 'Drop Menu',
         desc: '顶部下拉筛选',
-        count: 3,
+        count: 5,
       },
       {
         key: 'grid',
@@ -193,7 +193,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '索引栏',
         titleEn: 'Index Bar',
         desc: '字母索引快速定位',
-        count: 3,
+        count: 4,
       },
       {
         key: 'navbar',
@@ -209,7 +209,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '分页',
         titleEn: 'Pagination',
         desc: '页码切换',
-        count: 3,
+        count: 5,
       },
       {
         key: 'popover',
@@ -217,7 +217,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '气泡',
         titleEn: 'Popover',
         desc: '锚点弹出气泡卡片',
-        count: 4,
+        count: 5,
       },
     ],
   },
@@ -240,7 +240,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '侧边导航',
         titleEn: 'Sidebar',
         desc: '垂直分类侧边栏',
-        count: 3,
+        count: 4,
       },
       {
         key: 'steps',
@@ -248,7 +248,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '步骤条',
         titleEn: 'Steps',
         desc: '流程步骤指示',
-        count: 3,
+        count: 6,
       },
       {
         key: 'sticky',
@@ -272,7 +272,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '标签页',
         titleEn: 'Tabs',
         desc: '可滚动标签页与内容联动',
-        count: 4,
+        count: 9,
       },
       {
         key: 'tooltip',
@@ -303,7 +303,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '日历选择器',
         titleEn: 'Calendar',
         desc: '日期区间选择弹层',
-        count: 6,
+        count: 8,
       },
       {
         key: 'calendar-view',
@@ -319,7 +319,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '拼图验证',
         titleEn: 'Captcha',
         desc: '拖动拼图对齐缺口',
-        count: 2,
+        count: 5,
       },
       {
         key: 'cascader',
@@ -327,7 +327,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '级联选择器',
         titleEn: 'Cascader',
         desc: '多级联动选择',
-        count: 5,
+        count: 7,
       },
       {
         key: 'checkbox',
@@ -351,7 +351,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '时间选择器',
         titleEn: 'Datetime Picker',
         desc: '日期时间弹层选择',
-        count: 5,
+        count: 7,
       },
       {
         key: 'datetime-picker-view',
@@ -367,7 +367,7 @@ export const HOME_GROUPS: DemoHomeGroup[] = [
         title: '表单',
         titleEn: 'Form',
         desc: '校验与布局容器',
-        count: 10,
+        count: 16,
       },
       {
         key: 'input',

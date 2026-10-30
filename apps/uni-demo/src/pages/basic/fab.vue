@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— fab 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/fab-mp-basic.vue';
-import Demo1 from './demos/fab-mp-disabled.vue';
-import Demo2 from './demos/fab-mp-icons.vue';
-import Demo3 from './demos/fab-mp-position.vue';
+import Demo1 from './demos/fab-mp-direction.vue';
+import Demo2 from './demos/fab-mp-disabled.vue';
+import Demo3 from './demos/fab-mp-icons.vue';
+import Demo4 from './demos/fab-mp-position.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -24,7 +25,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
+          <text class="module__title">{{ t('方向', 'Direction') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -32,7 +33,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('图标', 'Icons') }}</text>
+          <text class="module__title">{{ t('禁用', 'Disabled') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
@@ -40,10 +41,18 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('位置', 'Position') }}</text>
+          <text class="module__title">{{ t('图标', 'Icons') }}</text>
         </view>
         <view class="module__body">
           <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('位置', 'Position') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>
