@@ -170,6 +170,13 @@ const props = withDefaults(
     isLink: false,
     arrowDirection: 'right',
     size: 'default',
+    /* `undefined` sentinels for the inherit-from-group booleans: with no
+     * `default` key Vue casts absent booleans to `false`, which would beat the
+     * group fallback in `props.border ?? group?.border.value` (cell-group
+     * inheritance would silently stop working). */
+    border: undefined,
+    center: undefined,
+    card: undefined,
     required: false,
     asteriskPosition: 'start',
     hideAsterisk: false,
