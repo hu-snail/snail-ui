@@ -2,11 +2,11 @@
 
 `sn-drop-menu` 是 `@snui/uni`（移动端 / 小程序 / H5）的筛选下拉菜单：一条菜单栏 + 一个滑出的选项面板，常用于列表页顶部的「排序 / 筛选」。基于 easycom 自动注册（`components/sn-drop-menu/sn-drop-menu.vue` → `<sn-drop-menu>`），样式几何值走 `rpx`。
 
-> **与 wot-ui 的差异**
+> **实现说明**
 >
-> - wot-ui 用 `wd-drop-menu` + `wd-drop-menu-item` 子组件组合；uni-app 的 easycom 无法要求复合子组件（`v-for` 一个子组件也会丢掉父子联动），因此选项列表改为本组件的 `options` 数组（字段结构 `{ label, value, tip }`，可用 `labelKey` / `valueKey` / `tipKey` 改字段名）。
+> - 选项列表由本组件的 `options` 数组驱动（字段结构 `{ label, value, tip }`，可用 `labelKey` / `valueKey` / `tipKey` 改字段名），而不是子组件组合——uni-app 的 easycom 无法保证复合子组件在 `v-for` 下的父子联动。
 > - `root-portal` 已声明但**未实现**（小程序没有 portal 宿主）。
-> - `custom-popup-class` / `custom-popup-style` 作用于内联的选项面板，而不是 `wd-popup` 实例。
+> - `custom-popup-class` / `custom-popup-style` 作用于内联的选项面板，而不是独立弹层实例。
 
 ## 基础用法
 
@@ -14,7 +14,26 @@
 
 <Demo name="drop-menu-mp-basic" description="排序菜单，含一个禁用项，选中后回报 selectedItem。" />
 
-## 展开方向 / 开关拦截 / 字段重命名
+## 展开方向
+
+`direction="down"`（默认）向下展开，向上用 `direction="up"`，菜单栏箭头随方向翻转：
+
+<Demo name="drop-menu-mp-direction" description="向下 / 向上展开对比，箭头随方向切换。" />
+
+## 选项图标
+
+每个选项支持三种图标来源，优先级 `iconData`(对象) > `iconUrl`(图片) > `icon`(名称解析链)；`iconSize` 控制选项与勾选图标尺寸（档位名 tiny/small/medium/large/xlarge 映射 `--sn-mp-icon-size-*`，不设置时取 medium 档），选中项勾选图标由 `iconName` 指定：
+
+<Demo name="drop-menu-mp-icon" description="选项图标三来源对比：IconData 对象、名称解析、图片地址；iconSize 档位；选中态勾选图标。" />
+
+## 展开层级（z-index）
+
+菜单打开时，面板与蒙层自动抬到 `--sn-drop-menu-overlay-z-index`（不低于 90）——页面浮层（导航栏、悬浮按钮、toast）不会再盖住展开的菜单；关闭时回到 `zIndex` 指定的常规层级（默认 12）。显式设置高于 90 的 `zIndex` 时以设置为准：
+
+- 空闲：`--sn-drop-menu-z-index`（= 组件 `zIndex`）
+- 展开：`--sn-drop-menu-overlay-z-index`（= `max(zIndex, 90)`）
+
+## 开关拦截 / 字段重命名
 
 - `direction="up"` 让面板向上展开
 - `beforeToggle` 接收 `{ status }`，返回 `false` 或 `Promise<false>` 时阻止开关
@@ -48,7 +67,7 @@
 | `iconName`          | `string`                                      | `'check'`      | 选中项图标（`sn-icon` 名）         |
 | `title`             | `string`                                      | `''`           | 菜单标题，设置后优先展示           |
 | `icon`              | `string`                                      | `'caret-down'` | 菜单栏箭头图标（`sn-icon` 名）     |
-| `iconSize`          | `string \| number`                            | `32`           | 箭头图标尺寸（设计稿 px）          |
+| `iconSize`          | `string \| number`                            | `''`           | 图标尺寸（档位名映射 `--sn-mp-icon-size-*`，数字按 px；空 = medium 档） |
 | `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | 开关前拦截函数                     |
 | `valueKey`          | `string`                                      | `'value'`      | 选项值字段名                       |
 | `labelKey`          | `string`                                      | `'label'`      | 选项文本字段名                     |
@@ -62,12 +81,15 @@
 
 ### SnDropMenuOption
 
-| 字段       | 类型               | 说明                                        |
-| ---------- | ------------------ | ------------------------------------------- |
-| `label`    | `string`           | 选项文本（字段名可配置）                    |
-| `value`    | `string \| number` | 选项值，通过 `v-model` 回报（字段名可配置） |
-| `tip`      | `string`           | 选项说明行（字段名可配置）                  |
-| `disabled` | `boolean`          | 禁用该项                                    |
+| 字段       | 类型               | 说明                                                    |
+| ---------- | ------------------ | ------------------------------------------------------- |
+| `label`    | `string`           | 选项文本（字段名可配置）                                |
+| `value`    | `string \| number` | 选项值，通过 `v-model` 回报（字段名可配置）              |
+| `tip`      | `string`           | 选项说明行（字段名可配置）                              |
+| `disabled` | `boolean`          | 禁用该项                                                |
+| `iconData` | `IconData`         | 选项图标：内置图标集对象（优先级最高）                  |
+| `iconUrl`  | `string`           | 选项图标：图片地址（渲染为 `<image>`，低于 `iconData`） |
+| `icon`     | `string`           | 选项图标：名称解析链（最低优先级）                      |
 
 ## Events
 
@@ -109,6 +131,14 @@
 | `--sn-mp-shadow-md`                                             | 面板阴影               |
 | `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 内边距                 |
 | `--sn-mp-font-size-md` / `--sn-mp-font-size-xs`                 | 选项文字与说明行字号   |
+| `--sn-mp-icon-size-medium`（档位默认）                          | 选项与勾选图标尺寸     |
+
+## AI Patch Boundary
+
+- AI 可通过 Patch 修改 `options`（含选项文本 / 值 / 禁用态 / 图标配置）、`title` / `disabled` / `direction` 等展示配置。
+- `modelValue` / `change` 与 `open` / `close` 系列事件属于运行时交互，Patch 不应伪造开关或选中事件。
+- `zIndex` 属于宿主层级决策；Patch 只应调整 `options` 与展示字段，不应随意抬高全局层级。
+- 默认插槽内容属于业务数据，Patch 只应调整容器配置，不应改写插槽内部结构。
 
 ## 无障碍
 

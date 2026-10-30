@@ -2,11 +2,11 @@
 
 `sn-drop-menu` is the filter drop-menu of `@snui/uni` (mobile / miniprogram / H5): a menu bar plus a sliding option panel, the "sort / filter" bar at the top of a list page. Auto-registered through easycom (`components/sn-drop-menu/sn-drop-menu.vue` → `<sn-drop-menu>`); geometry uses `rpx`.
 
-> **Divergences from wot-ui**
+> **Implementation notes**
 >
-> - wot-ui composes `wd-drop-menu` with `wd-drop-menu-item` children. uni-app easycom cannot require a compound child (and `v-for` over one would lose the parent/child wiring), so the option list lives in this component's `options` array (`{ label, value, tip }`, with `labelKey` / `valueKey` / `tipKey` for renaming).
+> - The option list is driven by this component's `options` array (`{ label, value, tip }`, with `labelKey` / `valueKey` / `tipKey` for renaming) rather than composed child components — uni-app easycom cannot guarantee parent/child wiring under `v-for`.
 > - `root-portal` is declared but **not implemented** (no portal host on miniprogram).
-> - `custom-popup-class` / `custom-popup-style` target the inline option panel, not a `wd-popup` instance.
+> - `custom-popup-class` / `custom-popup-style` target the inline option panel, not a separate popup instance.
 
 ## Basic usage
 
@@ -14,7 +14,26 @@
 
 <Demo name="drop-menu-mp-basic" description="Sort menu with one disabled row; picking a row reports selectedItem." />
 
-## Direction / toggle guard / field keys
+## Expansion direction
+
+`direction="down"` (the default) opens downwards; `direction="up"` opens upwards and the bar arrow flips with it:
+
+<Demo name="drop-menu-mp-direction" description="Down / up comparison; the arrow follows the direction." />
+
+## Option icons
+
+Every row supports three icon sources, precedence `iconData` (object) > `iconUrl` (image) > `icon` (name resolution chain); `iconSize` sets the row and check-glyph size (tier names tiny/small/medium/large/xlarge map to `--sn-mp-icon-size-*`, empty = medium), and `iconName` picks the selected-row glyph:
+
+<Demo name="drop-menu-mp-icon" description="Three icon sources compared: IconData object, name resolution, image URL; iconSize tiers; selected-row check glyph." />
+
+## Expansion stacking (z-index)
+
+While open, the panel and scrim are raised to `--sn-drop-menu-overlay-z-index` (never below 90) — page chrome (navigation bar, floating button, toast) can no longer cover an open menu; on close the level returns to the authored `zIndex` (default 12). An explicit `zIndex` above 90 wins:
+
+- Idle: `--sn-drop-menu-z-index` (= the `zIndex` prop)
+- Open: `--sn-drop-menu-overlay-z-index` (= `max(zIndex, 90)`)
+
+## Toggle guard / field keys
 
 - `direction="up"` opens the panel upwards
 - `beforeToggle` receives `{ status }`; returning `false` (or a promise of it) blocks the toggle
@@ -48,7 +67,7 @@
 | `iconName`          | `string`                                      | `'check'`      | `sn-icon` name of the selected-row glyph            |
 | `title`             | `string`                                      | `''`           | Menu title; overrides the selected label            |
 | `icon`              | `string`                                      | `'caret-down'` | `sn-icon` name of the bar arrow                     |
-| `iconSize`          | `string \| number`                            | `32`           | Arrow size in design px                             |
+| `iconSize`          | `string \| number`                            | `''`           | Icon size (tier names map to `--sn-mp-icon-size-*`, numbers are px; empty = medium tier) |
 | `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | Toggle guard                                        |
 | `valueKey`          | `string`                                      | `'value'`      | Option value field name                             |
 | `labelKey`          | `string`                                      | `'label'`      | Option label field name                             |
@@ -68,6 +87,9 @@
 | `value`    | `string \| number` | Value reported through `v-model` (key configurable) |
 | `tip`      | `string`           | Secondary tip line (key configurable)               |
 | `disabled` | `boolean`          | Disable the row                                     |
+| `iconData` | `IconData`         | Row icon: built-in set object (highest precedence)  |
+| `iconUrl`  | `string`           | Row icon: image URL rendered as `<image>` (below `iconData`) |
+| `icon`     | `string`           | Row icon: name resolution chain (lowest precedence) |
 
 ## Events
 
@@ -109,6 +131,14 @@
 | `--sn-mp-shadow-md`                                             | Panel shadow                 |
 | `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | Padding                      |
 | `--sn-mp-font-size-md` / `--sn-mp-font-size-xs`                 | Row text and tip line        |
+| `--sn-mp-icon-size-medium` (tier default)                       | Row and check glyph size     |
+
+## AI Patch Boundary
+
+- AI may patch `options` (label / value / disabled / icon config), `title` / `disabled` / `direction` and other display configs.
+- `modelValue` / `change` and the `open` / `close` event family are runtime interaction; patches must not fake toggles or picks.
+- `zIndex` is a host-level decision; patches should adjust `options` and display fields only, never raise global stacking casually.
+- Default slot content is business data; patches should only adjust container configs, never rewrite slot internals.
 
 ## Accessibility
 

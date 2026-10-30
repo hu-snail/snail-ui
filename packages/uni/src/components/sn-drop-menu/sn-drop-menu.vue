@@ -37,6 +37,58 @@
  * `sn-popup` would take it out to `position: fixed`. The scrim is rendered
  * from this root as well; both share the same `duration` transition.
  *
+ * ## Stacking (fixes a real occlusion bug — AUI-OPT-04)
+ *
+ * The root is a positioned box, so its `z-index` is the *ceiling* for every
+ * child: a panel that asks for a higher level inside the root still loses to
+ * a sibling of the root. The reference default is 12, which sits **below** the
+ * app's own transient band — `sn-fab` / `sn-dialog` / `sn-notify` run at 99,
+ * `sn-toast` / `sn-keyboard` at 100, `sn-popover` / `sn-tooltip` at 500 — so
+ * an open filter panel was covered by any floating button or banner on the
+ * page (and taps on its rows never landed).
+ *
+ * The fix keeps the prop semantics (authored level, wd parity) and adds two
+ * local custom properties on the root:
+ *
+ *   --sn-drop-menu-z-index          the authored level, used while idle
+ *   --sn-drop-menu-overlay-z-index  the same level floored at the overlay band
+ *
+ * While the panel is mounted (open leg *and* close animation) the root carries
+ * `sn-drop-menu--raised`, which switches it to the floored level. 90 clears
+ * page chrome (10), popups (10), pickers (15) and the floating button (99
+ * minus one step) while staying under the feedback band (99/100), so a dialog
+ * or a toast still wins over an open menu. An explicit `zIndex` above the
+ * floor is never lowered — that is the consumer's escape hatch upward.
+ *
+ * ## Direction
+ *
+ * `direction` was already declared for parity; the up leg now anchors the
+ * scrim to the bar's top edge (`bottom: 100%`) instead of leaving it below the
+ * bar (where it covered nothing while the panel opened upwards), and the bar
+ * arrow rests pointing up so the glyph always reads "what a tap does next".
+ *
+ * ## Option icons (additive, AUI-OPT-04, AGENTS.md §112.3a)
+ *
+ * A row may carry an icon from three sources, with sn-cell's precedence chain:
+ *
+ *   - `iconData` — an inline `IconData` object (built-in set icons are imported
+ *     by the consumer and passed as data, so no registration step is needed)
+ *   - `iconUrl`  — an image URL, rendered as `<image>`
+ *   - `icon`     — a name forwarded to SnIcon: registry → built-in catalogue →
+ *     `prefix:rest` providers
+ *
+ * Precedence: data > image URL > name. The selected-row glyph (`iconName`) and
+ * the bar arrow (`icon`) resolve through the same built-in chain instead of a
+ * two-name lookup table, so `circle-check` or a registered name now work.
+ *
+ * ## Icon geometry
+ *
+ * One glyph scale for the arrow, the check mark and every option icon:
+ * `--sn-mp-icon-size-medium` by default, overridable by tier name
+ * (`tiny|small|medium|large|xlarge`) or an explicit length through `iconSize`.
+ * The size box follows the glyph instead of a fixed 32rpx square, so a larger
+ * `iconSize` is never clipped.
+ *
  * ## Timers (AGENTS.md §41)
  *
  * One transition timer drives the open / closed legs and one generation token
@@ -56,7 +108,12 @@ import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, ref
 import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
-import { Check as CheckIcon, ChevronDown as ChevronDownIcon } from '../sn-icon/sn-icon-set';
+import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';
+import {
+  Check as CheckIcon,
+  ChevronDown as ChevronDownIcon,
+  ChevronUp as ChevronUpIcon,
+} from '../sn-icon/sn-icon-set';
 
 defineOptions({ name: 'SnDropMenu' });
 
@@ -80,6 +137,22 @@ export interface SnDropMenuOption {
   tip?: string;
   /** Disable the row — taps are ignored. */
   disabled?: boolean;
+  /**
+   * Row icon as inline SVG data (additive, AUI-OPT-04). Highest precedence —
+   * pass a built-in set object (`IconData`) and no registration is needed.
+   */
+  iconData?: IconData;
+  /**
+   * Row icon as an image URL (additive, AUI-OPT-04); rendered as `<image>`.
+   * Wins over `icon`, loses to `iconData`.
+   */
+  iconUrl?: string;
+  /**
+   * Row icon as a name (additive, AUI-OPT-04). Resolved through the SnIcon
+   * chain: registry (`registerSnIcons`) → built-in catalogue → `prefix:rest`
+   * providers. Lowest precedence of the three icon sources.
+   */
+  icon?: string;
   [key: string]: unknown;
 }
 
@@ -94,6 +167,34 @@ type DropMenuBeforeToggle = (payload: SnDropMenuBeforeTogglePayload) => boolean 
 
 /** Leave-animation length when the panel unmounts after closing. */
 const DEFAULT_DURATION = 200;
+
+/**
+ * Lowest stacking level the root takes while the panel is mounted.
+ *
+ * The band map this floor reads (all `@snui/uni` defaults): page chrome —
+ * `sn-navbar` / `sn-tabbar` / `sn-backtop` 10, `sn-sticky` 1; popup layer —
+ * `sn-popup` / `sn-overlay` / `sn-action-sheet` / `sn-curtain` 10, picker
+ * family 15; transient surfaces — `sn-fab` / `sn-dialog` / `sn-notify` 99,
+ * `sn-toast` / `sn-keyboard` 100; pointer surfaces — `sn-popover` /
+ * `sn-tooltip` 500, previews 1000.
+ *
+ * An open drop-menu panel is a navigation surface, not feedback: it must beat
+ * the page chrome and the floating button (hence 90, one step under 99) but
+ * stay below dialogs and toasts, which are modal/blocking and must cover it.
+ */
+const OPEN_MENU_Z_INDEX_FLOOR = 90;
+
+/** Named icon-size tiers → `--sn-mp-icon-size-*` (§112.5 — no literal fallbacks). */
+const ICON_SIZE_TIERS: Readonly<Record<string, string>> = {
+  tiny: 'var(--sn-mp-icon-size-tiny)',
+  small: 'var(--sn-mp-icon-size-small)',
+  medium: 'var(--sn-mp-icon-size-medium)',
+  large: 'var(--sn-mp-icon-size-large)',
+  xlarge: 'var(--sn-mp-icon-size-xlarge)',
+};
+
+/** Default glyph scale — matches the `--sn-mp-font-size-md` row text. */
+const DEFAULT_ICON_SIZE = 'var(--sn-mp-icon-size-medium)';
 
 const props = withDefaults(
   defineProps<{
@@ -113,13 +214,18 @@ const props = withDefaults(
     duration?: number;
     /** Disable the whole menu — taps are ignored. */
     disabled?: boolean;
-    /** Icon name (sn-icon registry) of the selected row. */
+    /** Icon name of the selected row's glyph (registry / built-in catalogue). */
     iconName?: string;
     /** Menu title; when set it replaces the selected option label in the bar. */
     title?: string;
-    /** Icon name (sn-icon registry) of the bar's arrow. */
+    /** Icon name of the bar arrow (registry / built-in catalogue). */
     icon?: string;
-    /** Size of the bar's arrow icon in design px. */
+    /**
+     * Glyph scale for the arrow, the selected-row check and every option icon:
+     * a named tier (`tiny|small|medium|large|xlarge`) maps to
+     * `--sn-mp-icon-size-*`, a number stays px, any other string passes
+     * through. Empty = the `medium` tier.
+     */
     iconSize?: string | number;
     /** Guard called before the menu toggles; `false` blocks the toggle. */
     beforeToggle?: DropMenuBeforeToggle;
@@ -157,7 +263,7 @@ const props = withDefaults(
     iconName: 'check',
     title: '',
     icon: 'caret-down',
-    iconSize: 32,
+    iconSize: '',
     valueKey: 'value',
     labelKey: 'label',
     tipKey: 'tip',
@@ -239,20 +345,60 @@ const barLabel = computed(
 /** Bar label falls back to the placeholder when nothing is selected. */
 const hasSelection = computed(() => barLabel.value !== '');
 
-/** Registry icon data for a name, or `null` when it is not registered. */
+/**
+ * Resolve a configured icon name to data.
+ *
+ * `caret-down` / `caret-up` are the wd-drop-menu default names and the only
+ * two glyphs the component itself needs; they ship with the built-in set.
+ * Everything else goes through SnIcon's own synchronous chain (registry →
+ * built-in catalogue), so a registered name or a catalogue name like
+ * `circle-check` resolves without a lookup table here. Unknown names return
+ * `null` and the caller decides the fallback.
+ */
 function resolveIcon(name: string): IconData | null {
-  // The two glyphs this component needs ship with the default set; anything
-  // else is looked up in the consumer registry.
-  if (name === 'check') return CheckIcon;
   if (name === 'caret-down') return ChevronDownIcon;
-  return null;
+  if (name === 'caret-up') return ChevronUpIcon;
+  return resolveSnIconStringSync(name);
 }
 
-const arrowIcon = computed<IconData>(() => resolveIcon(props.icon) ?? ChevronDownIcon);
+/**
+ * Arrow glyph.
+ *
+ * `caret-down` is the wd default and doubles as the direction-relative glyph:
+ * a downward menu rests on the down chevron, an upward menu rests on the up
+ * chevron, so the resting arrow always points at the edge the panel opens from.
+ * Any other configured `icon` is honoured verbatim. An empty / unknown `icon`
+ * falls back to the same direction-relative chevron.
+ */
+const arrowIcon = computed<IconData>(() => {
+  const fallback = props.direction === 'up' ? ChevronUpIcon : ChevronDownIcon;
+  if (props.icon === 'caret-down') return fallback;
+  return resolveIcon(props.icon) ?? fallback;
+});
 const checkIcon = computed<IconData>(() => resolveIcon(props.iconName) ?? CheckIcon);
 
-/** Arrow size — a plain number is design px (converted to rpx by uni). */
-const arrowSize = computed(() => props.iconSize);
+/** Effective glyph scale — tier name → token, number → px, else passthrough. */
+const effectiveIconSize = computed<string | number>(() => {
+  const size = props.iconSize;
+  if (size === '' || size === undefined) return DEFAULT_ICON_SIZE;
+  if (typeof size === 'number') return size;
+  return ICON_SIZE_TIERS[size] ?? size;
+});
+
+/** Size box for the image icon path, mirroring `effectiveIconSize`. */
+const iconBoxStyle = computed(() => {
+  const size = effectiveIconSize.value;
+  const len = typeof size === 'number' ? `${size}px` : size;
+  return `width: ${len}; height: ${len};`;
+});
+
+/** Which option-icon source renders: data object > image URL > name. */
+function optionIconSource(option: SnDropMenuOption): 'data' | 'url' | 'name' | 'none' {
+  if (option.iconData !== undefined) return 'data';
+  if (option.iconUrl !== undefined && option.iconUrl !== '') return 'url';
+  if (option.icon !== undefined && option.icon !== '') return 'name';
+  return 'none';
+}
 
 async function open(): Promise<void> {
   // Idempotent: repeating open (e.g. an extra imperative call while the panel
@@ -340,18 +486,40 @@ function onModalTap(): void {
 
 /* ── Presentation ──────────────────────────────────────────────────────── */
 
+/**
+ * Raised while the panel node exists (open leg + close animation), because the
+ * root's own `z-index` is the ceiling for every child. See the header block.
+ */
+const isRaised = computed(() => isMounted.value);
+
 const rootClass = computed(() => [
   'sn-drop-menu',
   `sn-drop-menu--${props.direction}`,
   {
     'sn-drop-menu--open': isOpen.value,
+    'sn-drop-menu--raised': isRaised.value,
     'sn-drop-menu--disabled': props.disabled,
   },
   props.customClass,
 ]);
 
+/**
+ * Both stacking levels travel as local custom properties; the stylesheet reads
+ * them into `z-index` (`.sn-drop-menu` / `--raised`) so the level is declared
+ * once instead of being duplicated across inline and class rules.
+ *
+ * Idle level = the authored `zIndex` (wd parity, 12). The raised value floors it
+ * at `OPEN_MENU_Z_INDEX_FLOOR`, so page chrome and the floating button can no
+ * longer cover an open menu; an explicit `zIndex` above the floor passes
+ * through untouched. Keeping them in variables also lets a host page retune the
+ * layer in one place (`--sn-drop-menu-overlay-z-index: 1200`) without a prop.
+ */
 const rootStyle = computed(() => {
-  const base = `z-index: ${props.zIndex}; --sn-drop-menu-duration: ${props.duration}ms`;
+  const base = [
+    `--sn-drop-menu-z-index: ${props.zIndex}`,
+    `--sn-drop-menu-overlay-z-index: ${Math.max(props.zIndex, OPEN_MENU_Z_INDEX_FLOOR)}`,
+    `--sn-drop-menu-duration: ${props.duration}ms`,
+  ].join('; ');
   return props.customStyle ? `${base}; ${props.customStyle}` : base;
 });
 
@@ -381,7 +549,7 @@ const popupStyle = computed(() => {
         {{ hasSelection ? barLabel : '请选择' }}
       </text>
       <view class="sn-drop-menu__arrow" :class="{ 'sn-drop-menu__arrow--active': isOpen }">
-        <SnIcon :icon="arrowIcon" :size="arrowSize" />
+        <SnIcon :icon="arrowIcon" :size="effectiveIconSize" />
       </view>
     </view>
 
@@ -407,6 +575,27 @@ const popupStyle = computed(() => {
             :aria-disabled="option.disabled ? 'true' : 'false'"
             @tap="onOptionTap(option)"
           >
+            <!-- Option icon precedence: data object > image URL > name chain. -->
+            <SnIcon
+              v-if="optionIconSource(option) === 'data'"
+              class="sn-drop-menu__option-icon"
+              :icon="option.iconData"
+              :size="effectiveIconSize"
+            />
+            <image
+              v-else-if="optionIconSource(option) === 'url'"
+              class="sn-drop-menu__option-image"
+              :src="option.iconUrl"
+              mode="aspectFill"
+              :style="iconBoxStyle"
+              aria-hidden="true"
+            />
+            <SnIcon
+              v-else-if="optionIconSource(option) === 'name'"
+              class="sn-drop-menu__option-icon"
+              :icon="option.icon"
+              :size="effectiveIconSize"
+            />
             <view class="sn-drop-menu__option-texts">
               <text class="sn-drop-menu__option-label">{{ optionLabel(option) }}</text>
               <text v-if="optionTip(option)" class="sn-drop-menu__option-tip">
@@ -414,7 +603,7 @@ const popupStyle = computed(() => {
               </text>
             </view>
             <view v-if="optionValue(option) === modelValue" class="sn-drop-menu__option-check">
-              <SnIcon :icon="checkIcon" :size="32" />
+              <SnIcon :icon="checkIcon" :size="effectiveIconSize" />
             </view>
           </view>
         </slot>
@@ -434,6 +623,17 @@ const popupStyle = computed(() => {
   box-sizing: border-box;
   width: 100%;
   background-color: var(--sn-mp-color-background-elevated);
+  /* Stacking contract (see header): the root's own level caps every child, so
+   * the panel cannot out-rank a sibling of the root by raising its own
+   * z-index. Idle = the authored `zIndex`; the explicit `--raised` class (set
+   * while the panel node exists) floors it at the overlay band. Both numbers
+   * come from the inline custom properties, so a host page retunes the layer
+   * in one place. */
+  z-index: var(--sn-drop-menu-z-index, 12);
+}
+
+.sn-drop-menu--raised {
+  z-index: var(--sn-drop-menu-overlay-z-index, 90);
 }
 
 /* ── Bar ───────────────────────────────────────────────────────────────── */
@@ -482,15 +682,26 @@ const popupStyle = computed(() => {
 
 /* ── Scrim ─────────────────────────────────────────────────────────────── */
 
+/* Anchored to the edge the panel opens away from, so it always covers the
+ * page behind the list: below the bar for `down`, above it for `up` (an
+ * upward panel used to leave the scrim parked underneath the bar, where it
+ * dimmed nothing the user could see). */
 .sn-drop-menu__modal {
   position: absolute;
-  top: 100%;
   left: 0;
   right: 0;
   height: 200vh;
   background-color: var(--sn-mp-color-background-overlay);
   opacity: 0;
   transition: opacity var(--sn-drop-menu-duration) ease;
+}
+
+.sn-drop-menu--down .sn-drop-menu__modal {
+  top: 100%;
+}
+
+.sn-drop-menu--up .sn-drop-menu__modal {
+  bottom: 100%;
 }
 
 .sn-drop-menu--open .sn-drop-menu__modal {
@@ -577,13 +788,37 @@ const popupStyle = computed(() => {
   font-size: var(--sn-mp-font-size-xs);
 }
 
+/* Glyph boxes follow `--sn-mp-icon-size-*` through the `:size` prop instead of
+ * a fixed square, so a larger `iconSize` is never clipped. */
+.sn-drop-menu__option-icon,
 .sn-drop-menu__option-check {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
+  flex: 0 0 auto;
+}
+
+.sn-drop-menu__option-check {
   color: var(--sn-mp-color-action-primary);
+}
+
+/* Row icon: muted at rest, accent while its row is selected. */
+.sn-drop-menu__option-icon {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-drop-menu__option--active .sn-drop-menu__option-icon {
+  color: var(--sn-mp-color-action-primary);
+}
+
+.sn-drop-menu__option--disabled .sn-drop-menu__option-icon {
+  color: var(--sn-mp-color-text-disabled);
+}
+
+/* Image icon source — mirrors the glyph scale carried by SnIcon. */
+.sn-drop-menu__option-image {
+  flex: 0 0 auto;
+  border-radius: var(--sn-mp-radius-xs);
 }
 
 /* Doodle skin — hand-drawn panel outline. */

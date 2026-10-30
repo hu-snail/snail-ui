@@ -35,15 +35,15 @@ import { SnDropMenu } from '@snui/uni';
 | `modelValue`        | `string \| number`                            | `''`           | no       | Current selected value (`v-model`).                                           |
 | `options`           | `SnDropMenuOption[]`                          | `[]`           | no       | Option rows; field names configurable via `valueKey` / `labelKey` / `tipKey`. |
 | `direction`         | `'up' \| 'down'`                              | `'down'`       | no       | Menu expansion direction.                                                     |
-| `zIndex`            | `number`                                      | `12`           | no       | Stacking level of the scrim + panel.                                          |
+| `zIndex`            | `number`                                      | `12`           | no       | Authored stacking level (idle). While the panel is mounted the root is raised to at least the overlay band (90) — see Stacking.                                                      |
 | `modal`             | `boolean`                                     | `true`         | no       | Render the scrim behind the panel.                                            |
 | `closeOnClickModal` | `boolean`                                     | `true`         | no       | Close the menu when the scrim is tapped.                                      |
 | `duration`          | `number`                                      | `200`          | no       | Open / close animation duration in ms.                                        |
 | `disabled`          | `boolean`                                     | `false`        | no       | Disable the whole menu — taps are ignored.                                    |
-| `iconName`          | `string`                                      | `'check'`      | no       | `sn-icon` name of the selected-row check glyph.                               |
+| `iconName`          | `string`                                      | `'check'`      | no       | Icon name of the selected-row check glyph (registry / built-in catalogue).    |
 | `title`             | `string`                                      | `''`           | no       | Menu title; when set it replaces the selected label in the bar.               |
-| `icon`              | `string`                                      | `'caret-down'` | no       | `sn-icon` name of the bar arrow.                                              |
-| `iconSize`          | `string \| number`                            | `32`           | no       | Arrow icon size in design px.                                                 |
+| `icon`              | `string`                                      | `'caret-down'` | no       | Icon name of the bar arrow. `caret-down` is direction-relative: it rests on the up chevron for `direction: 'up'`. Any other name / glyph is honoured verbatim. |
+| `iconSize`          | `string \| number`                            | `''`           | no       | Glyph scale for the arrow, the selected-row check and every option icon: a tier (`tiny\|small\|medium\|large\|xlarge` → `--sn-mp-icon-size-*`), a px number, or any CSS length. Empty = the `medium` tier. |
 | `beforeToggle`      | `({ status }) => boolean \| Promise<boolean>` | —              | no       | Guard before the menu toggles; `false` blocks it.                             |
 | `valueKey`          | `string`                                      | `'value'`      | no       | Field name of the option value.                                               |
 | `labelKey`          | `string`                                      | `'label'`      | no       | Field name of the option label.                                               |
@@ -63,6 +63,27 @@ import { SnDropMenu } from '@snui/uni';
 | `value`    | `string \| number` | Value echoed back through `v-model` (key configurable). |
 | `tip`      | `string`           | Secondary tip line (key configurable).                  |
 | `disabled` | `boolean`          | Disable the row — taps are ignored.                     |
+| `iconData` | `IconData`         | Row icon as inline SVG data. **Additive (AUI-OPT-04)** — highest precedence. |
+| `iconUrl`  | `string`           | Row icon as an image URL, rendered as `<image>`. **Additive** — wins over `icon`, loses to `iconData`. |
+| `icon`     | `string`           | Row icon as a name (registry → built-in catalogue → `prefix:rest` provider). **Additive** — lowest precedence. |
+
+Row-icon precedence: `iconData` > `iconUrl` > `icon`.
+
+## Stacking (occlusion fix — AUI-OPT-04)
+
+The root is a positioned box, so its own `z-index` caps every child; the
+reference default (12) sits below the app's transient band, so an open panel was
+covered by `sn-fab` / banners. The fix keeps `zIndex` as the authored (idle)
+level and adds two local custom properties on the root:
+
+- `--sn-drop-menu-z-index` — the authored level, used while idle.
+- `--sn-drop-menu-overlay-z-index` — the same level floored at 90.
+
+While the panel node is mounted (open leg **and** close animation) the root
+carries `sn-drop-menu--raised`, switching it to the floored level. 90 clears page
+chrome (10) / popups (10) / pickers (15) / `sn-fab` (99−1) while staying under
+dialogs (99) and toasts (100). An explicit `zIndex` above the floor passes
+through untouched.
 
 ## Events
 
@@ -97,20 +118,22 @@ import { SnDropMenu } from '@snui/uni';
 | Surface       | `--sn-mp-color-background-elevated`                     | Bar + panel background       |
 | Scrim         | `--sn-mp-color-background-overlay`                      | Scrim                        |
 | Text          | `--sn-mp-color-text-primary`                            | Bar label, option label      |
-| Muted text    | `--sn-mp-color-text-secondary/tertiary`                 | Placeholder, tip line, arrow |
-| Accent        | `--sn-mp-color-action-primary`                          | Active option + arrow        |
-| Disabled text | `--sn-mp-color-text-disabled`                           | Disabled bar / row           |
+| Muted text    | `--sn-mp-color-text-secondary/tertiary`                 | Placeholder, tip line, arrow, option icons |
+| Accent        | `--sn-mp-color-action-primary`                          | Active option + arrow + active icon |
+| Disabled text | `--sn-mp-color-text-disabled`                           | Disabled bar / row / option icon |
 | Border        | `--sn-mp-color-border-subtle`                           | Panel + row separators       |
 | Elevation     | `--sn-mp-shadow-md`                                     | Panel shadow                 |
-| Radius        | `--sn-mp-radius-xs` (doodle)                            | Skin outline                 |
+| Radius        | `--sn-mp-radius-xs` (doodle outline, option image)      | Skin outline / image icon    |
 | Spacing       | `--sn-mp-spacing-2/3/4`                                 | Bar / row padding            |
 | Typography    | `--sn-mp-font-size-md/xs`, `--sn-mp-font-weight-medium` | Row text                     |
+| Icon size     | `--sn-mp-icon-size-tiny/small/medium/large/xlarge`      | Arrow / check / option glyph scale (`iconSize` tiers) |
 
 ## Accessibility
 
 - Bar carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Option rows carry `role="menuitem"` + `aria-disabled`
 - Scrim is `aria-hidden="true"`
+- Image option icons are `aria-hidden="true"` (decorative — the row label carries the meaning)
 - Interaction uses `@tap`; no keyboard focus trap on mobile
 
 ## Documented Divergences

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // 由 scripts/gen-pages.mjs 生成，勿手改 —— drop-menu 组件全部场景聚合页（静态展开）。
 import Demo0 from './demos/drop-menu-mp-basic.vue';
-import Demo1 from './demos/drop-menu-mp-guard.vue';
-import Demo2 from './demos/drop-menu-mp-panel.vue';
+import Demo1 from './demos/drop-menu-mp-direction.vue';
+import Demo2 from './demos/drop-menu-mp-guard.vue';
+import Demo3 from './demos/drop-menu-mp-icon.vue';
+import Demo4 from './demos/drop-menu-mp-panel.vue';
 import DemoPageShell from '../../components/DemoPageShell.vue';
 import { useDemoUi } from '../../state/demo-ui';
 
@@ -23,7 +25,7 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('拦截', 'Guard') }}</text>
+          <text class="module__title">{{ t('方向', 'Direction') }}</text>
         </view>
         <view class="module__body">
           <Demo1 />
@@ -31,10 +33,26 @@ const { t } = useDemoUi();
       </view>
       <view class="module demo-glass">
         <view class="module__head">
-          <text class="module__title">{{ t('panel', 'Panel') }}</text>
+          <text class="module__title">{{ t('拦截', 'Guard') }}</text>
         </view>
         <view class="module__body">
           <Demo2 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('图标', 'Icon') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo3 />
+        </view>
+      </view>
+      <view class="module demo-glass">
+        <view class="module__head">
+          <text class="module__title">{{ t('panel', 'Panel') }}</text>
+        </view>
+        <view class="module__body">
+          <Demo4 />
         </view>
       </view>
     </view>
