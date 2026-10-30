@@ -71,11 +71,19 @@
         },
         {
           "path": "mall",
-          "style": { "navigationBarTitleText": "商城首页" }
+          "style": {
+            "navigationBarTitleText": "商城首页",
+            "navigationStyle": "custom",
+            "backgroundColor": "#f7f7f7"
+          }
         },
         {
           "path": "goods",
-          "style": { "navigationBarTitleText": "商品详情" }
+          "style": {
+            "navigationBarTitleText": "商品详情",
+            "navigationStyle": "custom",
+            "backgroundColor": "#f9f9fb"
+          }
         },
         {
           "path": "order",
@@ -95,7 +103,11 @@
         },
         {
           "path": "article",
-          "style": { "navigationBarTitleText": "文章详情" }
+          "style": {
+            "navigationBarTitleText": "文章详情",
+            "navigationStyle": "custom",
+            "backgroundColor": "#fcf9f8"
+          }
         },
         {
           "path": "stats",
