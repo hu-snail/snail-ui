@@ -28,6 +28,13 @@
  * one-way on purpose — once a pane has mounted, hiding it again must not throw
  * its state away, otherwise a form would lose every keystroke on tab switch.
  *
+ * ## Additive abilities (AUI-OPT-10, AGENTS.md §112.3a)
+ *
+ *   - `icon` / `iconImage`     导航项标题左侧的图标（数据 / 注册名 / 图片地址）
+ *   - `badgeProps`             标题角标配置，透传 `sn-badge`（对齐 wd-tab `badge-props`）
+ *   - swiper 内容区             容器的 `swipeable` 打开后本面板渲染为
+ *                              `<swiper-item>`（原生 swiper 只接受该子节点形态）
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -37,7 +44,8 @@
 
 import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { nextUid } from '../../utils/uid';
-import { SN_TABS_KEY, type SnTabsValue } from './sn-tabs-types';
+import type { IconData } from '../sn-icon/sn-icon.vue';
+import { SN_TABS_KEY, type SnTabBadgeProps, type SnTabsValue } from './sn-tabs-types';
 
 defineOptions({ name: 'SnTab' });
 
@@ -53,10 +61,19 @@ const props = withDefaults(
     disabled?: boolean;
     /** 是否懒加载内容（首次激活后才渲染）。 */
     lazy?: boolean;
+    /** 标题角标配置，透传给 `sn-badge`（对齐 wd-tab `badge-props`）。 */
+    badgeProps?: SnTabBadgeProps | undefined;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── AUI-OPT-10 追加能力（AGENTS.md §112.3a） ────────────────────────── */
+
+    /** 导航项标题左侧图标：IconData 数据或注册 / 内置图标名。 */
+    icon?: IconData | string | undefined;
+    /** 标题左侧图标图片地址（URL / base64），优先于 `icon`。 */
+    iconImage?: string;
   }>(),
   {
     name: undefined,
@@ -65,6 +82,7 @@ const props = withDefaults(
     lazy: true,
     customClass: '',
     customStyle: '',
+    iconImage: '',
   },
 );
 
@@ -74,6 +92,9 @@ defineSlots<{
 }>();
 
 const tabs = inject(SN_TABS_KEY, null);
+
+/** The container renders the pane list inside a native `<swiper>` when swipeable. */
+const inSwiper = computed(() => tabs?.swiperMode.value ?? false);
 
 /** Stable registration id — keeps the unregister call unambiguous. */
 const uid = nextUid();
@@ -95,7 +116,12 @@ watch(
 
 // The latch alone decides rendering: once a pane has been shown it stays
 // mounted (hidden by `v-show`), so switching tabs never drops its state.
-const shouldRender = computed(() => hasRendered.value);
+//
+// In swiper mode every pane is a slide the gesture can reveal mid-drag, so
+// deferring the content would show an empty pane until the change event lands.
+// The native swiper already renders all slides, so the lazy latch is skipped
+// there (`lazy` keeps its meaning in the flow body).
+const shouldRender = computed(() => inSwiper.value || hasRendered.value);
 
 onMounted(() => {
   if (!tabs) return;
@@ -104,6 +130,9 @@ onMounted(() => {
     getName: () => props.name,
     getTitle: () => props.title,
     getDisabled: () => props.disabled,
+    getIcon: () => props.icon,
+    getIconImage: () => props.iconImage,
+    getBadge: () => props.badgeProps,
   });
 });
 
@@ -112,14 +141,28 @@ onBeforeUnmount(() => tabs?.unregisterTab(uid));
 const rootClass = computed(() => [
   'sn-tab',
   {
-    'sn-tab--active': active.value,
+    /* swiper-item is laid out by the native swiper; only the flow branch
+     * needs the active display rule. */
+    'sn-tab--active': !inSwiper.value && active.value,
   },
   props.customClass,
 ]);
 </script>
 
 <template>
+  <swiper-item
+    v-if="inSwiper"
+    data-snui-component="tab"
+    :class="rootClass"
+    :style="customStyle || undefined"
+    role="tabpanel"
+    :aria-hidden="!active"
+  >
+    <slot v-if="shouldRender" />
+  </swiper-item>
+
   <view
+    v-else
     v-show="active"
     data-snui-component="tab"
     :class="rootClass"

@@ -25,6 +25,23 @@
  * which is template order, so an unnamed pane's index is stable without the
  * container having to know the child count up front.
  *
+ * ## Additive abilities (AUI-OPT-10, AGENTS.md §112.3a)
+ *
+ * Beyond the 1:1 surface above:
+ *   - `type`        导航形态 line / card / tag（下划线 / 卡片分段 / 独立胶囊）
+ *   - `activeTheme` 选中态强调 text / fill / pill，与 `type` 正交组合
+ *   - `sn-tab` 的 `icon` / `iconImage` / `badgeProps` 在导航项里渲染图标与角标
+ *   - 导航条走 `scroll-into-view`：选中项变化即滚进可视区（点击/外部改值都生效）
+ *   - `swipeable` 让内容区渲染为原生 `<swiper>`，`duration` / `swiperEasing` /
+ *     `swiperHeight` 配置其滑动手感；面板此时渲染为 `swiper-item`
+ *
+ * ## Why the active pane drives `scroll-into-view`
+ *
+ * uni `scroll-view` cannot be scrolled by offset — `scroll-into-view` takes a
+ * node id. The strip therefore stamps every item with a stable id and points
+ * `scroll-into-view` at the active one, so both a tap and an external
+ * `v-model` write pull the selection into view without measuring widths.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -33,8 +50,19 @@
  *   - 底部标签栏 — 用 sn-tabbar
  */
 
-import { computed, provide, ref, watch } from 'vue';
-import { SN_TABS_KEY, type SnTabEntry, type SnTabsValue } from './sn-tabs-types';
+import { computed, nextTick, provide, ref, watch } from 'vue';
+import SnBadge from '../sn-badge/sn-badge.vue';
+import SnIcon from '../sn-icon/sn-icon.vue';
+import {
+  SN_TABS_KEY,
+  type SnTabEntry,
+  type SnTabsActiveTheme,
+  type SnTabsLineTheme,
+  type SnTabsSlidable,
+  type SnTabsSwiperEasing,
+  type SnTabsType,
+  type SnTabsValue,
+} from './sn-tabs-types';
 
 defineOptions({ name: 'SnTabs' });
 
@@ -57,7 +85,7 @@ const props = withDefaults(
     /** 是否开启手势滑动切换。 */
     swipeable?: boolean;
     /** 底部条样式：normal / text / underline / dot。 */
-    lineTheme?: 'normal' | 'text' | 'underline' | 'dot';
+    lineTheme?: SnTabsLineTheme;
     /** 底部条宽度（数字按 px，字符串原样转发）。 */
     lineWidth?: number | string | undefined;
     /** 底部条高度（数字按 px，字符串原样转发）。 */
@@ -68,16 +96,27 @@ const props = withDefaults(
     inactiveColor?: string;
     /** 是否开启切换动画。 */
     animated?: boolean;
-    /** 动画时长，单位毫秒。 */
+    /** 动画时长，单位毫秒（swiper 模式下同时是内容区滑动时长）。 */
     duration?: number;
     /** 滚动导航：auto（超过阈值才滚动）/ always。 */
-    slidable?: 'auto' | 'always';
+    slidable?: SnTabsSlidable;
     /** 滚动时是否显示滚动条。 */
     showScrollbar?: boolean;
     /** 根节点自定义类名。 */
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── AUI-OPT-10 追加能力（AGENTS.md §112.3a） ────────────────────────── */
+
+    /** 导航形态：line 下划线 / card 卡片分段 / tag 独立胶囊。 */
+    type?: SnTabsType;
+    /** 选中态强调方式：text 仅文字 / fill 浅色圆角底 / pill 实心胶囊底。 */
+    activeTheme?: SnTabsActiveTheme;
+    /** 内容区 swiper 缓动函数（仅 `swipeable` 渲染 swiper 时生效）。 */
+    swiperEasing?: SnTabsSwiperEasing;
+    /** 内容区 swiper 高度（数字按 px，字符串原样转发；留空沿用平台默认高度）。 */
+    swiperHeight?: number | string | undefined;
   }>(),
   {
     modelValue: 0,
@@ -98,6 +137,10 @@ const props = withDefaults(
     showScrollbar: false,
     customClass: '',
     customStyle: '',
+    type: 'line',
+    activeTheme: 'text',
+    swiperEasing: 'default',
+    swiperHeight: '',
   },
 );
 
@@ -156,7 +199,18 @@ function unregisterTab(uid: number): void {
   tabs.value = tabs.value.filter((tab) => tab.uid !== uid);
 }
 
-/** Commit a selection. Disabled panes emit `disabled` instead. */
+/** Commit a selection: mirror the value and emit the change pair. */
+function commit(index: number): void {
+  const tab = tabs.value[index];
+  if (!tab) return;
+  const next: SnTabsValue = tab.getName() ?? index;
+  if (next === activeValue.value) return;
+  innerValue.value = next;
+  emit('update:modelValue', next);
+  emit('change', { index, name: tab.getName() });
+}
+
+/** Commit a selection from a tap. Disabled panes emit `disabled` instead. */
 function select(index: number): void {
   const tab = tabs.value[index];
   if (!tab) return;
@@ -166,34 +220,56 @@ function select(index: number): void {
     return;
   }
   emit('click', { index, name });
-  const next: SnTabsValue = name ?? index;
-  if (next === activeValue.value) return;
-  innerValue.value = next;
-  emit('update:modelValue', next);
-  emit('change', { index, name });
+  commit(index);
 }
 
-/** Swipe support — a horizontal drag past the threshold steps one pane. */
-const SWIPE_THRESHOLD = 40;
-let touchStartX = 0;
+/* ── Content area (native swiper when `swipeable`) ───────────────────────── */
 
-function onTouchStart(event: TouchEvent): void {
-  const touch = event.touches[0];
-  touchStartX = touch ? touch.clientX : 0;
+/** True while the body renders as a `<swiper>` — shared with `sn-tab` via context. */
+const swiperMode = computed(() => props.swipeable);
+
+/**
+ * Swiper's own position. It mirrors the active index, but stays separate so a
+ * swipe onto a disabled pane can be pushed back to the committed one.
+ */
+const swiperCurrent = ref(0);
+watch(
+  activeIndex,
+  (index) => {
+    swiperCurrent.value = index;
+  },
+  { immediate: true, flush: 'post' },
+);
+
+/** uni's swiper only accepts named easings; `default` means "leave it unset". */
+const swiperEasingValue = computed(() =>
+  props.swiperEasing === 'default' ? undefined : props.swiperEasing,
+);
+
+const swiperStyle = computed(() => {
+  const height = toLength(props.swiperHeight);
+  return height === undefined ? undefined : `height: ${height}`;
+});
+
+/** A swipe landed on another pane: commit it, or snap back off a disabled one. */
+function onSwiperChange(event: { detail: { current: number } }): void {
+  const index = event.detail.current;
+  if (index === activeIndex.value) return;
+  const tab = tabs.value[index];
+  if (!tab) return;
+  if (tab.getDisabled()) {
+    // Adopt where the gesture landed, then push `current` back on the next
+    // tick: the native swiper only animates when the prop actually changes.
+    swiperCurrent.value = index;
+    void nextTick(() => {
+      swiperCurrent.value = activeIndex.value;
+    });
+    return;
+  }
+  commit(index);
 }
 
-function onTouchEnd(event: TouchEvent): void {
-  if (!props.swipeable) return;
-  const touch = event.changedTouches[0];
-  if (!touch) return;
-  const delta = touch.clientX - touchStartX;
-  if (Math.abs(delta) < SWIPE_THRESHOLD) return;
-  const target = activeIndex.value + (delta < 0 ? 1 : -1);
-  if (target < 0 || target >= tabs.value.length) return;
-  select(target);
-}
-
-provide(SN_TABS_KEY, { activeValue, isActive, registerTab, unregisterTab });
+provide(SN_TABS_KEY, { activeValue, isActive, registerTab, unregisterTab, swiperMode });
 
 /** Public imperative API — mirrors wd-tabs' exposed methods (§14). */
 defineExpose({
@@ -249,34 +325,94 @@ const lineStyle = computed(() => {
   return parts.length > 0 ? parts.join('; ') : undefined;
 });
 
-function titleColor(index: number): string | undefined {
+/** Inline label colour: `color` on the active pane, `inactiveColor` elsewhere.
+ *  App renders `<text>` without inheriting the item's colour (§116.2), so the
+ *  pill emphasis has to hand the inverted colour down explicitly. */
+function titleStyle(index: number): string | undefined {
   const tab = tabs.value[index];
   if (!tab) return undefined;
   const active = isActive(index, tab.getName());
   const custom = active ? props.color : props.inactiveColor;
-  return custom === '' ? undefined : custom;
+  if (custom !== '') return `color: ${custom}`;
+  return active && emphasisClass(index) === 'sn-tabs__item--pill'
+    ? 'color: var(--sn-mp-color-text-on-primary)'
+    : undefined;
 }
+
+/** Nav-form modifiers (`type`): the strip box, its inner row, and every item. */
+const formClasses = computed<{ box: string; nav: string; item: string }>(() => {
+  if (props.type === 'card') {
+    return {
+      box: 'sn-tabs__nav--card',
+      nav: 'sn-tabs__nav-inner--card',
+      item: 'sn-tabs__item--card',
+    };
+  }
+  if (props.type === 'tag') {
+    return {
+      box: 'sn-tabs__nav--tag',
+      nav: 'sn-tabs__nav-inner--tag',
+      item: 'sn-tabs__item--tag',
+    };
+  }
+  return { box: '', nav: '', item: '' };
+});
+
+/**
+ * Active emphasis (`activeTheme`). Only the active, enabled pane carries it —
+ * a disabled pane must keep the disabled colour even when it is the value.
+ */
+function emphasisClass(index: number): string {
+  if (props.activeTheme === 'text') return '';
+  const tab = tabs.value[index];
+  if (!tab || tab.getDisabled() || !isActive(index, tab.getName())) return '';
+  return props.activeTheme === 'fill' ? 'sn-tabs__item--fill' : 'sn-tabs__item--pill';
+}
+
+/** The bottom bar belongs to the plain `line` look; other looks use a fill. */
+const showsLineBar = computed(() => props.type === 'line' && props.activeTheme === 'text');
+
+/** Nav icons ride the small tier of the icon-size tokens (AUI-OPT-10). */
+const NAV_ICON_SIZE = 'var(--sn-mp-icon-size-small)';
+
+/** DOM id that `scroll-into-view` targets — `nextUid()` is page-unique. */
+function itemId(uid: number): string {
+  return `sn-tabs-item-${uid}`;
+}
+
+/** The strip keeps the selected pane in view by pointing `scroll-into-view` at it. */
+const scrollIntoViewId = computed(() => {
+  const tab = tabs.value[activeIndex.value];
+  return tab ? itemId(tab.uid) : '';
+});
 </script>
 
 <template>
   <view data-snui-component="tabs" :class="rootClass" :style="rootStyle">
     <scroll-view
       class="sn-tabs__nav"
-      :class="{ 'sn-tabs__nav--sticky': sticky }"
+      :class="[{ 'sn-tabs__nav--sticky': sticky }, formClasses.box]"
       :style="navStyle"
       scroll-x
       :show-scrollbar="showScrollbar"
+      :scroll-into-view="scrollIntoViewId"
+      :scroll-with-animation="animated"
       role="tablist"
     >
-      <view class="sn-tabs__nav-inner">
+      <view class="sn-tabs__nav-inner" :class="formClasses.nav">
         <view
           v-for="(tab, index) in tabs"
+          :id="itemId(tab.uid)"
           :key="tab.uid"
           class="sn-tabs__item"
-          :class="{
-            'sn-tabs__item--active': isActive(index, tab.getName()),
-            'sn-tabs__item--disabled': tab.getDisabled(),
-          }"
+          :class="[
+            formClasses.item,
+            emphasisClass(index),
+            {
+              'sn-tabs__item--active': isActive(index, tab.getName()),
+              'sn-tabs__item--disabled': tab.getDisabled(),
+            },
+          ]"
           role="tab"
           :aria-selected="isActive(index, tab.getName())"
           :aria-disabled="tab.getDisabled()"
@@ -284,14 +420,46 @@ function titleColor(index: number): string | undefined {
           :hover-class="tab.getDisabled() ? 'none' : 'sn-tabs__item--pressed'"
           @tap="select(index)"
         >
-          <text
-            class="sn-tabs__title"
-            :style="titleColor(index) ? `color: ${titleColor(index)}` : undefined"
+          <image
+            v-if="tab.getIconImage()"
+            class="sn-tabs__icon-image"
+            :src="tab.getIconImage()"
+            mode="aspectFit"
+            aria-hidden="true"
+          />
+          <SnIcon
+            v-else-if="tab.getIcon()"
+            class="sn-tabs__icon"
+            :icon="tab.getIcon()"
+            :size="NAV_ICON_SIZE"
+          />
+          <!-- Explicit props, not `v-bind="obj"`: MP templates do not expand
+               object spreads (same constraint sn-input documents). -->
+          <sn-badge
+            v-if="tab.getBadge()"
+            :value="tab.getBadge()?.value"
+            :max="tab.getBadge()?.max"
+            :top="tab.getBadge()?.top"
+            :right="tab.getBadge()?.right"
+            :is-dot="tab.getBadge()?.isDot ?? false"
+            :hidden="tab.getBadge()?.hidden ?? false"
+            :type="tab.getBadge()?.type"
+            :bg-color="tab.getBadge()?.bgColor ?? ''"
+            :show-zero="tab.getBadge()?.showZero ?? false"
+            :shape="tab.getBadge()?.shape ?? 'circle'"
+            :border="tab.getBadge()?.border ?? false"
+            :custom-class="tab.getBadge()?.customClass ?? ''"
+            :custom-style="tab.getBadge()?.customStyle ?? ''"
           >
+            <text class="sn-tabs__title" :style="titleStyle(index)">
+              {{ tab.getTitle() }}
+            </text>
+          </sn-badge>
+          <text v-else class="sn-tabs__title" :style="titleStyle(index)">
             {{ tab.getTitle() }}
           </text>
           <view
-            v-if="isActive(index, tab.getName())"
+            v-if="showsLineBar && isActive(index, tab.getName())"
             class="sn-tabs__line"
             :style="lineStyle"
             aria-hidden="true"
@@ -300,7 +468,18 @@ function titleColor(index: number): string | undefined {
       </view>
     </scroll-view>
 
-    <view class="sn-tabs__body" @touchstart="onTouchStart" @touchend="onTouchEnd">
+    <swiper
+      v-if="swiperMode"
+      class="sn-tabs__body"
+      :style="swiperStyle"
+      :current="swiperCurrent"
+      :duration="duration"
+      :easing-function="swiperEasingValue"
+      @change="onSwiperChange"
+    >
+      <slot />
+    </swiper>
+    <view v-else class="sn-tabs__body">
       <slot />
     </view>
   </view>
@@ -367,10 +546,78 @@ function titleColor(index: number): string | undefined {
   opacity: 0.7;
 }
 
+/* ── Nav forms (`type`, AUI-OPT-10) ────────────────────────────────────── */
+
+/* card：描边分段条 —— 整条嵌进浅色容器，选中项抬到面板底色。
+ * 外边距落在 scroll-view 上（内层 `min-width: 100%`，用 margin 会把条挤出视口）。 */
+.sn-tabs__nav--card,
+.sn-tabs__nav--tag {
+  box-sizing: border-box;
+  padding: 0 var(--sn-mp-spacing-3);
+}
+
+.sn-tabs__nav-inner--card {
+  padding: var(--sn-mp-spacing-1);
+  border: 2rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-md);
+  background-color: var(--sn-mp-color-background-subtle);
+}
+
+.sn-tabs__item--card {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-sm);
+}
+
+.sn-tabs__item--card.sn-tabs__item--active {
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+/* tag：独立胶囊 —— 每个标签自带描边与间距，选中项由 activeTheme 强调。 */
+.sn-tabs__nav-inner--tag {
+  padding: 0;
+}
+
+.sn-tabs__item--tag {
+  margin: var(--sn-mp-spacing-1) var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-default);
+  border-radius: var(--sn-mp-radius-full);
+}
+
+/* ── Active emphasis (`activeTheme`, AUI-OPT-10) ───────────────────────── */
+
+/* fill：选中项浅色圆角底。两段 class 是为了盖过 card 选中态的面板底色。 */
+.sn-tabs__item.sn-tabs__item--fill {
+  border-radius: var(--sn-mp-radius-sm);
+  background-color: var(--sn-mp-color-action-primary-soft);
+}
+
+/* pill：选中项实心胶囊底，文字取 on-primary 反色。 */
+.sn-tabs__item.sn-tabs__item--pill {
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-action-primary);
+  color: var(--sn-mp-color-text-on-primary);
+}
+
+.sn-tabs__item--tag.sn-tabs__item--pill {
+  border-color: var(--sn-mp-color-action-primary);
+}
+
 .sn-tabs__title {
   color: inherit;
   font-size: inherit;
   white-space: nowrap;
+}
+
+/* Nav icons (AUI-OPT-10) — size comes from the icon-size tokens. */
+.sn-tabs__icon {
+  margin-right: var(--sn-mp-spacing-1);
+}
+
+.sn-tabs__icon-image {
+  width: var(--sn-mp-icon-size-small);
+  height: var(--sn-mp-icon-size-small);
+  margin-right: var(--sn-mp-spacing-1);
 }
 
 .sn-tabs__line {
