@@ -8,9 +8,13 @@
  * 微信小程序端导航行按胶囊几何让位（common/capsule）。
  */
 import { computed, ref } from 'vue';
+import SnDivider from '@snui/uni-src/components/sn-divider/sn-divider.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
+import SnProgress from '@snui/uni-src/components/sn-progress/sn-progress.vue';
+import SnRate from '@snui/uni-src/components/sn-rate/sn-rate.vue';
+import SnSwiper from '@snui/uni-src/components/sn-swiper/sn-swiper.vue';
 import { getCapsuleMetrics } from '../common/capsule';
 import { BadgeCheckIcon, HeadsetIcon, StoreIcon } from '../common/icons';
 import {
@@ -43,8 +47,11 @@ const HERO_IMAGES = [
   'https://lh3.googleusercontent.com/aida-public/AB6AXuD-ATtq0-NfCdDoKRQOT4aSRkYE5cN1iERSIxLmixsi6FY5VrV0BGpBgWAMIP-qCYLtBjFNKBS37Sizz3pHVVicGoW92VpGmnQ5RtexPE6gV0y8Kh_pC_jEAhE8uLVOnc-QFohlqhrG1qv8y6ClzQSu0hHLLr8ZZOPEjrUwDB5JlmxvUpppW_PSDIdxssmyVjRRwaSTvhDWR4_GHma6NKk98SGpVzZnM3HF7ji2Un8',
 ];
 const heroIndex = ref(0);
-function onHeroChange(e: { detail: { current: number } }): void {
-  heroIndex.value = e.detail.current;
+/** SnSwiper 的 slide 数据（`value` = 图片地址）。 */
+const HERO_SLIDES = HERO_IMAGES.map((value) => ({ value }));
+function onHeroSlideTap(payload: { index: number }): void {
+  heroIndex.value = payload.index;
+  previewHero(payload.index);
 }
 
 /* ── 静态内容 ─────────────────────────────────────────────────────────── */
@@ -133,7 +140,7 @@ function goBack(): void {
           <view class="goods-nav">
             <view class="goods-nav__row" :style="navStyle">
               <view class="goods-nav__back" role="button" aria-label="返回" @tap="goBack">
-                <SnIcon :icon="ChevronLeft" :size="40" color="#1a1c1d" />
+                <SnIcon :icon="ChevronLeft" size="44rpx" color="#1a1c1d" />
               </view>
               <scroll-view class="goods-nav__tabs" scroll-x :show-scrollbar="false">
                 <view class="goods-nav__tabs-track">
@@ -150,16 +157,16 @@ function goBack(): void {
               </scroll-view>
               <view class="goods-nav__acts">
                 <view class="goods-nav__act" role="button" aria-label="搜索" @tap="toast('搜索')">
-                  <SnIcon :icon="Search" :size="38" color="#1a1c1d" />
+                  <SnIcon :icon="Search" size="38rpx" color="#1a1c1d" />
                 </view>
                 <view class="goods-nav__act" role="button" aria-label="分享" @tap="toast('分享')">
-                  <SnIcon :icon="Share2" :size="38" color="#1a1c1d" />
+                  <SnIcon :icon="Share2" size="38rpx" color="#1a1c1d" />
                 </view>
                 <view class="goods-nav__act" role="button" aria-label="更多" @tap="toast('更多')">
-                  <SnIcon :icon="MoreHorizontal" :size="38" color="#1a1c1d" />
+                  <SnIcon :icon="MoreHorizontal" size="38rpx" color="#1a1c1d" />
                 </view>
                 <view class="goods-nav__avatar">
-                  <SnIcon :icon="User" :size="32" color="#ffffff" />
+                  <SnIcon :icon="User" size="32rpx" color="#ffffff" />
                 </view>
               </view>
             </view>
@@ -169,19 +176,26 @@ function goBack(): void {
 
       <!-- ═══ 详情内容 ═══ -->
       <view class="goods-body">
-        <!-- 主图轮播 -->
+        <!-- 主图轮播：SnSwiper（图片模式 / 循环 / 当前页 v-model 全走组件契约） -->
         <view class="goods-hero">
-          <swiper class="goods-hero__swiper" circular :autoplay="false" @change="onHeroChange">
-            <swiper-item v-for="(img, i) in HERO_IMAGES" :key="img" @tap="previewHero(i)">
-              <SnImg :src="img" mode="aspectFit" width="100%" height="100%" />
-            </swiper-item>
-          </swiper>
+          <SnSwiper
+            class="goods-hero__swiper"
+            :list="HERO_SLIDES"
+            image-mode="aspectFit"
+            height="750rpx"
+            :loop="true"
+            :indicator="false"
+            :current="heroIndex"
+            custom-style="width: 100%; height: 100%;"
+            @update:current="heroIndex = $event"
+            @click="onHeroSlideTap"
+          />
           <view class="goods-hero__video">
-            <SnIcon :icon="Zap" :size="22" color="#ffffff" />
+            <SnIcon :icon="Zap" size="28rpx" color="#ffffff" />
             <text class="goods-hero__video-text">3D全景视频</text>
           </view>
           <view class="goods-hero__auth">
-            <SnIcon :icon="BadgeCheckIcon" :size="24" color="#bb0025" />
+            <SnIcon :icon="BadgeCheckIcon" size="24rpx" color="#bb0025" />
             <text class="goods-hero__auth-text">官方正品 · 假一赔四</text>
           </view>
           <view class="goods-hero__count">
@@ -194,7 +208,7 @@ function goBack(): void {
           <view class="goods-subsidy__left">
             <view class="goods-subsidy__tags">
               <view class="goods-subsidy__brand">
-                <SnIcon :icon="Zap" :size="20" color="#bb0025" />
+                <SnIcon :icon="Zap" size="26rpx" color="#bb0025" />
                 <text class="goods-subsidy__brand-text">百亿补贴</text>
               </view>
               <view class="goods-subsidy__off">
@@ -217,7 +231,13 @@ function goBack(): void {
               <text class="goods-subsidy__timer-colon">:</text>
               <text class="goods-subsidy__timer-chip">18</text>
             </view>
-            <view class="goods-subsidy__track"><view class="goods-subsidy__fill" /></view>
+            <SnProgress
+              class="goods-subsidy__track"
+              :percentage="86"
+              hide-text
+              color="#ffddb5"
+              custom-style="width: 160rpx; margin-top: 12rpx; --sn-mp-color-background-subtle: rgba(47, 49, 50, 0.3);"
+            />
             <text class="goods-subsidy__sold">已抢购86%</text>
           </view>
         </view>
@@ -230,14 +250,14 @@ function goBack(): void {
               Apple/苹果 AirPods Pro (第二代) 配备USB-C接口 MagSafe无线充电盒 H2芯片 主动降噪入耳式蓝牙无线耳机
             </text>
             <view class="goods-help" @tap="toast('帮我选')">
-              <SnIcon :icon="Star" :size="36" color="#a83200" />
+              <SnIcon :icon="Star" size="40rpx" color="#a83200" />
               <text class="goods-help__text">帮我选</text>
             </view>
           </view>
 
           <view class="goods-rank">
             <view class="goods-rank__left">
-              <SnIcon :icon="BadgeCheckIcon" :size="30" color="#a83200" />
+              <SnIcon :icon="BadgeCheckIcon" size="30rpx" color="#a83200" />
               <text class="goods-rank__text">主动降噪耳机热卖榜 · 第1名</text>
             </view>
             <text class="goods-rank__sold">月销 5万+</text>
@@ -251,7 +271,7 @@ function goBack(): void {
             </view>
             <view class="goods-coupons__more" @tap="toast('领券')">
               <text class="goods-coupons__more-text">领券</text>
-              <SnIcon :icon="ChevronRight" :size="28" color="#a83200" />
+              <SnIcon :icon="ChevronRight" size="28rpx" color="#a83200" />
             </view>
           </view>
         </view>
@@ -267,7 +287,7 @@ function goBack(): void {
               </view>
               <text class="goods-row__sub">配送至 浙江省 杭州市 余杭区 文一西路969号</text>
             </view>
-            <SnIcon :icon="ChevronRight" :size="30" color="#917065" />
+            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
           </view>
           <view class="goods-row" @tap="toast('服务保障')">
             <text class="goods-row__label">保障</text>
@@ -277,7 +297,7 @@ function goBack(): void {
                 <text class="goods-service__text">{{ s }}</text>
               </view>
             </view>
-            <SnIcon :icon="ChevronRight" :size="30" color="#917065" />
+            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
           </view>
           <view class="goods-row" @tap="toast('选择规格')">
             <text class="goods-row__label">选择</text>
@@ -290,7 +310,7 @@ function goBack(): void {
                 <text class="goods-sku-count__text">共2种配置可选</text>
               </view>
             </view>
-            <SnIcon :icon="ChevronRight" :size="30" color="#917065" />
+            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
           </view>
           <view class="goods-row" @tap="toast('参数')">
             <text class="goods-row__label">参数</text>
@@ -299,7 +319,7 @@ function goBack(): void {
                 蓝牙5.3 · H2芯片 · 主动降噪 · IP54抗汗抗水
               </text>
             </view>
-            <SnIcon :icon="ChevronRight" :size="30" color="#917065" />
+            <SnIcon :icon="ChevronRight" size="30rpx" color="#917065" />
           </view>
         </view>
 
@@ -312,7 +332,7 @@ function goBack(): void {
             </view>
             <view class="goods-sec-head__more" @tap="toast('查看全部评价')">
               <text class="goods-sec-head__more-text">查看全部</text>
-              <SnIcon :icon="ChevronRight" :size="28" color="#5c4037" />
+              <SnIcon :icon="ChevronRight" size="28rpx" color="#5c4037" />
             </view>
           </view>
 
@@ -340,9 +360,15 @@ function goBack(): void {
                   <text class="goods-review__spec">规格：白色 USB-C充电盒款</text>
                 </view>
               </view>
-              <view class="goods-review__stars">
-                <SnIcon v-for="n in 5" :key="n" :icon="Star" :size="26" color="#a83200" />
-              </view>
+              <SnRate
+                class="goods-review__stars"
+                :model-value="5"
+                readonly
+                size="28rpx"
+                :space="4"
+                active-color="#a83200"
+                custom-style="flex-shrink: 0;"
+              />
             </view>
             <text class="goods-review__text">
               天猫自营验过了确实是全新未激活国行正品！在苹果官网查序列号保修期一天不差。开盖秒弹窗，在早高峰地铁体验降噪简直进入了另一个静音世界，USB-C接口出门终于不用带Lighting线了，充电超方便！
@@ -374,7 +400,7 @@ function goBack(): void {
             </view>
             <view class="goods-sec-head__more" @tap="toast('全部问题')">
               <text class="goods-sec-head__more-text">全部问题</text>
-              <SnIcon :icon="ChevronRight" :size="28" color="#5c4037" />
+              <SnIcon :icon="ChevronRight" size="28rpx" color="#5c4037" />
             </view>
           </view>
           <view class="goods-qa">
@@ -400,7 +426,7 @@ function goBack(): void {
           <view class="goods-store">
             <view class="goods-store__brand">
               <view class="goods-store__logo">
-                <SnIcon :icon="StoreIcon" :size="52" color="#1a1c1d" />
+                <SnIcon :icon="StoreIcon" size="64rpx" color="#1a1c1d" />
               </view>
               <view class="goods-store__meta">
                 <view class="goods-store__name-row">
@@ -437,11 +463,11 @@ function goBack(): void {
 
         <!-- 图文详情 -->
         <view class="goods-detail">
-          <view class="goods-detail__head">
-            <view class="goods-detail__rule" />
-            <text class="goods-detail__title">图文详情</text>
-            <view class="goods-detail__rule" />
-          </view>
+          <SnDivider
+            content-position="center"
+            color="#e5beb2"
+            custom-style="padding: 8rpx 0; --sn-mp-color-text-secondary: #5c4037; --sn-mp-color-background-surface: #f9f9fb;"
+          >图文详情</SnDivider>
 
           <view v-for="b in DETAIL_BLOCKS" :key="b.title" class="goods-detail__block">
             <view class="goods-detail__media">
@@ -468,15 +494,15 @@ function goBack(): void {
         <view class="goods-actionbar">
           <view class="goods-actionbar__icons">
             <view class="goods-actionbar__icon" @tap="toast('店铺')">
-              <SnIcon :icon="StoreIcon" :size="36" color="#5c4037" />
+              <SnIcon :icon="StoreIcon" size="36rpx" color="#5c4037" />
               <text class="goods-actionbar__icon-text">店铺</text>
             </view>
             <view class="goods-actionbar__icon" @tap="toast('联系客服')">
-              <SnIcon :icon="HeadsetIcon" :size="36" color="#5c4037" />
+              <SnIcon :icon="HeadsetIcon" size="36rpx" color="#5c4037" />
               <text class="goods-actionbar__icon-text">客服</text>
             </view>
             <view class="goods-actionbar__icon" @tap="toggleFavorite">
-              <SnIcon :icon="Heart" :size="36" :color="favorited ? '#bb0025' : '#5c4037'" />
+              <SnIcon :icon="Heart" size="36rpx" :color="favorited ? '#bb0025' : '#5c4037'" />
               <text
                 class="goods-actionbar__icon-text"
                 :class="{ 'goods-actionbar__icon-text--on': favorited }"
@@ -746,20 +772,6 @@ function goBack(): void {
 .goods-subsidy__timer-colon {
   color: #ffffff;
   font-size: 20rpx;
-}
-.goods-subsidy__track {
-  width: 160rpx;
-  height: 12rpx;
-  margin-top: 12rpx;
-  border-radius: 999rpx;
-  background: rgba(47, 49, 50, 0.3);
-  overflow: hidden;
-}
-.goods-subsidy__fill {
-  width: 86%;
-  height: 100%;
-  border-radius: 999rpx;
-  background: #ffddb5;
 }
 .goods-subsidy__sold {
   margin-top: 4rpx;
@@ -1089,9 +1101,6 @@ function goBack(): void {
   font-size: 18rpx;
 }
 .goods-review__stars {
-  display: flex;
-  align-items: center;
-  gap: 2rpx;
   flex-shrink: 0;
 }
 .goods-review__text {
@@ -1313,23 +1322,6 @@ function goBack(): void {
   flex-direction: column;
   gap: 16rpx;
   margin: 8rpx 16rpx 0;
-}
-.goods-detail__head {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16rpx;
-  padding: 8rpx 0;
-}
-.goods-detail__rule {
-  width: 96rpx;
-  height: 1rpx;
-  background: #e5beb2;
-}
-.goods-detail__title {
-  color: #5c4037;
-  font-size: 22rpx;
-  font-weight: 600;
 }
 .goods-detail__block {
   border-radius: 24rpx;

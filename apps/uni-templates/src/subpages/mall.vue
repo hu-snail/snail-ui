@@ -8,9 +8,11 @@
  */
 import { computed, onUnmounted, ref } from 'vue';
 import SnCountDown from '@snui/uni-src/components/sn-count-down/sn-count-down.vue';
+import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
+import SnProgress from '@snui/uni-src/components/sn-progress/sn-progress.vue';
 import {
   BedDoubleIcon,
   BikeIcon,
@@ -322,16 +324,16 @@ function tapFeature(word: string): void {
           <view class="mall-nav">
             <view class="mall-nav__row" :style="navStyle">
               <view class="mall-nav__place" @tap="tapFeature('切换地址')">
-                <SnIcon :icon="MapPin" :size="40" color="#111111" />
+                <SnIcon :icon="MapPin" size="40rpx" color="#111111" />
                 <text class="mall-nav__place-text">Home</text>
-                <SnIcon :icon="ChevronDown" :size="30" color="#111111" />
+                <SnIcon :icon="ChevronDown" size="30rpx" color="#111111" />
               </view>
               <view class="mall-nav__search" @tap="tapFeature('奶茶爆款半价')">
-                <SnIcon :icon="Search" :size="34" color="#666666" />
+                <SnIcon :icon="Search" size="34rpx" color="#666666" />
                 <text class="mall-nav__search-text">奶茶爆款半价 · 搜索</text>
               </view>
               <view v-if="!capsule.hasCapsule" class="mall-nav__avatar">
-                <SnIcon :icon="User" :size="34" color="#ffffff" />
+                <SnIcon :icon="User" size="34rpx" color="#ffffff" />
               </view>
             </view>
           </view>
@@ -344,26 +346,26 @@ function tapFeature(word: string): void {
         <view class="mall-hero">
           <view class="mall-hero__meta">
             <view class="mall-hero__addr" @tap="tapFeature('金茂大厦')">
-              <SnIcon :icon="MapPin" :size="36" color="#111111" />
+              <SnIcon :icon="MapPin" size="36rpx" color="#111111" />
               <text class="mall-hero__addr-text">金茂大厦 (陆家嘴)</text>
-              <SnIcon :icon="ChevronDown" :size="28" color="#111111" />
+              <SnIcon :icon="ChevronDown" size="28rpx" color="#111111" />
               <view class="mall-hero__weather">
-                <SnIcon :icon="SunIcon" :size="24" color="#ff8f00" />
+                <SnIcon :icon="SunIcon" size="26rpx" color="#ff8f00" />
                 <text class="mall-hero__weather-text">晴 24°C</text>
               </view>
             </view>
             <view class="mall-hero__acts">
               <view class="mall-hero__act" role="button" aria-label="扫一扫" @tap="tapFeature('扫一扫')">
-                <SnIcon :icon="ScanLineIcon" :size="40" color="#111111" />
+                <SnIcon :icon="ScanLineIcon" size="44rpx" color="#111111" />
               </view>
               <view class="mall-hero__act mall-hero__act--dot" role="button" aria-label="消息通知" @tap="tapFeature('消息通知')">
-                <SnIcon :icon="Bell" :size="40" color="#111111" />
+                <SnIcon :icon="Bell" size="44rpx" color="#111111" />
               </view>
             </view>
           </view>
 
           <view class="mall-hero__bar" @tap="tapFeature(TICKER_WORDS[tickerIndex])">
-            <SnIcon :icon="Search" :size="36" color="#81765f" />
+            <SnIcon :icon="Search" size="40rpx" color="#81765f" />
             <view class="mall-hero__ticker">
               <view
                 class="mall-hero__ticker-track"
@@ -385,7 +387,7 @@ function tapFeature(word: string): void {
                 class="mall-hot"
                 @tap="tapFeature(w)"
               >
-                <SnIcon v-if="i === 0" :icon="FlameIcon" :size="24" color="#e51932" />
+                <SnIcon v-if="i === 0" :icon="FlameIcon" size="26rpx" color="#e51932" />
                 <text class="mall-hot__text" :class="{ 'mall-hot__text--red': i === 0 }">{{ w }}</text>
               </view>
             </view>
@@ -396,7 +398,7 @@ function tapFeature(word: string): void {
         <view class="mall-cats">
           <view v-for="c in CATS" :key="c.label" class="mall-cat" @tap="tapFeature(c.label)">
             <view class="mall-cat__icon" :style="{ background: c.bg }">
-              <SnIcon :icon="c.icon" :size="46" :color="c.color" />
+              <SnIcon :icon="c.icon" size="52rpx" :color="c.color" />
               <view v-if="c.badge" class="mall-cat__badge">
                 <text class="mall-cat__badge-text">{{ c.badge }}</text>
               </view>
@@ -438,7 +440,7 @@ function tapFeature(word: string): void {
               </view>
               <view class="mall-mkt__grab" @tap="grabCoupon">
                 <text class="mall-mkt__grab-text">立即抢券</text>
-                <SnIcon :icon="ChevronRight" :size="24" color="#ffffff" />
+                <SnIcon :icon="ChevronRight" size="24rpx" color="#ffffff" />
               </view>
             </view>
           </view>
@@ -447,7 +449,7 @@ function tapFeature(word: string): void {
             <view class="mall-flash">
               <view class="mall-flash__head">
                 <view class="mall-flash__title">
-                  <SnIcon :icon="ShoppingCart" :size="28" color="#ff3141" />
+                  <SnIcon :icon="ShoppingCart" size="28rpx" color="#ff3141" />
                   <text class="mall-flash__title-text">限时秒杀</text>
                 </view>
                 <view class="mall-flash__cap">
@@ -463,7 +465,13 @@ function tapFeature(word: string): void {
                     <text class="mall-flash__price">¥9.9</text>
                     <text class="mall-flash__orig">¥28</text>
                   </view>
-                  <view class="mall-flash__track"><view class="mall-flash__fill" /></view>
+                  <SnProgress
+                    class="mall-flash__track"
+                    :percentage="86"
+                    hide-text
+                    color="#ff3141"
+                    custom-style="--sn-mp-color-background-subtle: #eae7e7;"
+                  />
                   <text class="mall-flash__hint">已抢86% · 马上抢光</text>
                 </view>
               </view>
@@ -521,7 +529,7 @@ function tapFeature(word: string): void {
                   class="mall-card__deliver"
                   :class="{ 'mall-card__deliver--amber': card.deliverAmber }"
                 >
-                  <SnIcon :icon="Clock" :size="22" color="#ffffff" />
+                  <SnIcon :icon="Clock" size="22rpx" color="#ffffff" />
                   <text class="mall-card__deliver-text">{{ card.deliver }}</text>
                 </view>
               </view>
@@ -529,11 +537,11 @@ function tapFeature(word: string): void {
                 <text class="mall-card__title">{{ card.title }}</text>
                 <text v-if="card.sub" class="mall-card__sub">{{ card.sub }}</text>
                 <view v-if="card.quote" class="mall-card__quote">
-                  <SnIcon :icon="QuoteIcon" :size="22" color="#ff8f00" />
+                  <SnIcon :icon="QuoteIcon" size="24rpx" color="#ff8f00" />
                   <text class="mall-card__quote-text">{{ card.quote }}</text>
                 </view>
                 <view v-if="card.rating" class="mall-card__rating">
-                  <SnIcon :icon="Star" :size="24" color="#ffc300" />
+                  <SnIcon :icon="Star" size="26rpx" color="#ffc300" />
                   <text class="mall-card__rating-score">{{ card.rating }}</text>
                   <text class="mall-card__rating-sold">{{ card.sold }}</text>
                 </view>
@@ -558,7 +566,7 @@ function tapFeature(word: string): void {
                   <view v-else class="mall-card__plus" role="button" aria-label="加入购物车" @tap.stop="addCart(card.title)">
                     <SnIcon
                       :icon="card.action === 'cart' ? ShoppingCart : Plus"
-                      :size="28"
+                      size="28rpx"
                       color="#251a00"
                     />
                   </view>
@@ -580,10 +588,17 @@ function tapFeature(word: string): void {
             @tap="tapFeature(tab.label)"
           >
             <view class="mall-tab__icon">
-              <SnIcon :icon="tab.icon" :size="46" :color="i === 0 ? '#111111' : '#9aa0a6'" />
-              <view v-if="tab.badge" class="mall-tab__badge">
-                <text class="mall-tab__badge-text">{{ tab.badge }}</text>
-              </view>
+              <SnBadge
+                :value="tab.badge"
+                :hidden="!tab.badge"
+                type="danger"
+                bg-color="#e51932"
+                shape="circle"
+                top="-8rpx"
+                right="-18rpx"
+              >
+                <SnIcon :icon="tab.icon" size="48rpx" :color="i === 0 ? '#111111' : '#9aa0a6'" />
+              </SnBadge>
             </view>
             <text class="mall-tab__label" :class="{ 'mall-tab__label--on': i === 0 }">{{ tab.label }}</text>
           </view>
@@ -1056,17 +1071,7 @@ function tapFeature(word: string): void {
   text-decoration: line-through;
 }
 .mall-flash__track {
-  height: 12rpx;
   margin-top: 12rpx;
-  border-radius: 999rpx;
-  background: #eae7e7;
-  overflow: hidden;
-}
-.mall-flash__fill {
-  width: 86%;
-  height: 100%;
-  border-radius: 999rpx;
-  background: #ff3141;
 }
 .mall-flash__hint {
   display: block;
@@ -1343,25 +1348,6 @@ function tapFeature(word: string): void {
 .mall-tab__icon {
   position: relative;
   display: flex;
-}
-.mall-tab__badge {
-  position: absolute;
-  top: -8rpx;
-  right: -18rpx;
-  min-width: 30rpx;
-  height: 30rpx;
-  padding: 0 6rpx;
-  border-radius: 999rpx;
-  background: #e51932;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-.mall-tab__badge-text {
-  color: #ffffff;
-  font-size: 18rpx;
-  line-height: 1;
 }
 .mall-tab__label {
   color: #9aa0a6;

@@ -10,9 +10,13 @@
  */
 import { computed, ref } from 'vue';
 import SnAvatar from '@snui/uni-src/components/sn-avatar/sn-avatar.vue';
+import SnBadge from '@snui/uni-src/components/sn-badge/sn-badge.vue';
+import SnDivider from '@snui/uni-src/components/sn-divider/sn-divider.vue';
 import SnIcon from '@snui/uni-src/components/sn-icon/sn-icon.vue';
 import SnImg from '@snui/uni-src/components/sn-img/sn-img.vue';
 import SnPaging from '@snui/uni-src/components/sn-paging/sn-paging.vue';
+import SnTag from '@snui/uni-src/components/sn-tag/sn-tag.vue';
+import SnVideoPreview from '@snui/uni-src/components/sn-video-preview/sn-video-preview.vue';
 import { getCapsuleMetrics } from '../common/capsule';
 import { MaximizeIcon, PenLineIcon, ThumbsDownIcon, Volume2Icon } from '../common/icons';
 import {
@@ -55,13 +59,16 @@ const LAUNCH_IMAGE =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuCt9QDGNbSdHXhxG05WgZ5W8hwdOSdp-pzxy_FF7sW1K2u3dZQ-6iDPsJy5sQZ4KXTrCvcsN5r5v5_jszUehSIsGn6xYOPYBgIBrOUKb4ESR1yqm4qnq7xCveQetppUOqcCfBlDdTYZexA23LdbEhgqYOEcTieg4por91i1s-FOYK5vMN1H4krromVHQpAArGnYIW_zj6F29c9JVDbDGuvQDBaXdXSEJb0udWasqYU';
 const VIDEO_COVER =
   'https://lh3.googleusercontent.com/aida-public/AB6AXuCF4gLpYPIhALSvXGM2TOtOUAzm7fqJNAq_AxE2jFYEzYWd3p0pIAngv1tHw4cvss5iBKRFZAHgHHRVQ-f-NclEECy0_spwpx9_Fy3lftXxd_qHVDJShy5Uj22pdh_k7nFXfrF7omxdxZr5NLMdMX_EZWI4-TF4QUM_rzbgkalM5r7qKeN6uPn7M7ZnADOdr3YHiP7luB7GvOm6AjI-QjX82nqAcumlnA1st2qjz1E';
+/** 演示视频源（公开样片；真实项目由宿主注入自有地址）。 */
+const VIDEO_SRC = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
 
 /* ── 互动状态 ─────────────────────────────────────────────────────────── */
 const following = ref(false);
 const liked = ref(false);
 const disliked = ref(false);
 const starred = ref(false);
-const videoPlaying = ref(false);
+/** SnVideoPreview 实例（全屏播放层由组件托管）。 */
+const videoPreview = ref<InstanceType<typeof SnVideoPreview> | null>(null);
 
 const likeCount = computed(() => (liked.value ? 4299 : 4298));
 
@@ -75,6 +82,13 @@ function toggleLike(): void {
 function toggleDislike(): void {
   disliked.value = !disliked.value;
   if (disliked.value) liked.value = false;
+}
+function openVideo(): void {
+  videoPreview.value?.open({
+    src: VIDEO_SRC,
+    poster: VIDEO_COVER,
+    title: '实录：垂直起降10公里全流程多视角回传',
+  });
 }
 function toast(text: string): void {
   uni.showToast({ title: text, icon: 'none' });
@@ -246,7 +260,7 @@ function shuffleRecs(): void {
           <view class="art-nav">
             <view class="art-nav__row" :style="navStyle">
               <view class="art-nav__back" role="button" aria-label="返回" @tap="goBack">
-                <SnIcon :icon="ChevronLeft" :size="44" color="#1b1c1c" />
+                <SnIcon :icon="ChevronLeft" size="48rpx" color="#1b1c1c" />
               </view>
               <view class="art-nav__brand">
                 <view class="art-nav__logo">
@@ -259,13 +273,13 @@ function shuffleRecs(): void {
                   <text class="art-nav__follow-text">{{ following ? '已关注' : '+ 关注' }}</text>
                 </view>
                 <view class="art-nav__act" role="button" aria-label="搜索" @tap="toast('搜索')">
-                  <SnIcon :icon="Search" :size="42" color="#5a413f" />
+                  <SnIcon :icon="Search" size="42rpx" color="#5a413f" />
                 </view>
                 <view class="art-nav__act" role="button" aria-label="分享" @tap="toast('分享')">
-                  <SnIcon :icon="Share2" :size="42" color="#5a413f" />
+                  <SnIcon :icon="Share2" size="42rpx" color="#5a413f" />
                 </view>
                 <view class="art-nav__avatar">
-                  <SnIcon :icon="User" :size="32" color="#ffffff" />
+                  <SnIcon :icon="User" size="32rpx" color="#ffffff" />
                 </view>
               </view>
             </view>
@@ -321,13 +335,14 @@ function shuffleRecs(): void {
 
         <text class="art-para">{{ ARTICLE.p2 }}</text>
 
-        <!-- 视频块 -->
+        <!-- 视频块：封面 + 播放浮层（点击交给 SnVideoPreview 全屏播放） -->
         <view class="art-video">
-          <view class="art-video__stage" role="button" :aria-label="videoPlaying ? '暂停视频' : '播放视频'" @tap="videoPlaying = !videoPlaying">
+          <SnVideoPreview ref="videoPreview" />
+          <view class="art-video__stage" role="button" aria-label="播放视频" @tap="openVideo">
             <SnImg :src="VIDEO_COVER" mode="aspectFill" width="100%" height="100%" />
-            <view v-if="!videoPlaying" class="art-video__overlay">
+            <view class="art-video__overlay">
               <view class="art-video__play">
-                <SnIcon :icon="Play" :size="56" color="#ffffff" />
+                <SnIcon :icon="Play" size="56rpx" color="#ffffff" />
               </view>
             </view>
             <view class="art-video__top">
@@ -338,12 +353,12 @@ function shuffleRecs(): void {
             </view>
             <view class="art-video__bottom">
               <view class="art-video__controls-left">
-                <SnIcon :icon="Play" :size="34" color="#ffffff" />
-                <text class="art-video__time">{{ videoPlaying ? '01:13' : '01:12' }} / 03:45</text>
+                <SnIcon :icon="Play" size="34rpx" color="#ffffff" />
+                <text class="art-video__time">01:12 / 03:45</text>
               </view>
               <view class="art-video__controls-right">
-                <SnIcon :icon="Volume2Icon" :size="34" color="#ffffff" />
-                <SnIcon :icon="MaximizeIcon" :size="34" color="#ffffff" />
+                <SnIcon :icon="Volume2Icon" size="34rpx" color="#ffffff" />
+                <SnIcon :icon="MaximizeIcon" size="34rpx" color="#ffffff" />
               </view>
             </view>
           </view>
@@ -407,16 +422,22 @@ function shuffleRecs(): void {
 
         <!-- 话题标签 -->
         <view class="art-tags">
-          <view v-for="t in TAGS" :key="t" class="art-tag" @tap="toast(t)">
-            <text class="art-tag__text">{{ t }}</text>
-          </view>
+          <SnTag
+            v-for="t in TAGS"
+            :key="t"
+            round
+            bg-color="#f0eded"
+            color="#5a413f"
+            custom-style="margin: 0 12rpx 12rpx 0;"
+            @click="toast(t)"
+          >{{ t }}</SnTag>
         </view>
 
         <!-- 互动栏 -->
         <view class="art-engage">
           <view class="art-engage__item" @tap="toggleLike">
             <view class="art-engage__circle" :class="{ 'art-engage__circle--on': liked }">
-              <SnIcon :icon="ThumbsUp" :size="52" :color="liked ? '#b0242b' : '#5a413f'" />
+              <SnIcon :icon="ThumbsUp" size="52rpx" :color="liked ? '#b0242b' : '#5a413f'" />
             </view>
             <text class="art-engage__label" :class="{ 'art-engage__label--on': liked }">{{ likeCount }} 赞</text>
           </view>
@@ -428,7 +449,7 @@ function shuffleRecs(): void {
           </view>
           <view class="art-engage__item" @tap="toggleDislike">
             <view class="art-engage__circle" :class="{ 'art-engage__circle--muted': disliked }">
-              <SnIcon :icon="ThumbsDownIcon" :size="48" :color="disliked ? '#b0242b' : '#5a413f'" />
+              <SnIcon :icon="ThumbsDownIcon" size="48rpx" :color="disliked ? '#b0242b' : '#5a413f'" />
             </view>
             <text class="art-engage__label art-engage__label--muted">{{ disliked ? '已反馈' : '不喜欢' }}</text>
           </view>
@@ -470,7 +491,7 @@ function shuffleRecs(): void {
                   </view>
                 </view>
                 <view class="art-comment__like" @tap="likeComment(c)">
-                  <SnIcon :icon="ThumbsUp" :size="30" :color="c.liked ? '#b0242b' : '#8e706e'" />
+                  <SnIcon :icon="ThumbsUp" size="30rpx" :color="c.liked ? '#b0242b' : '#8e706e'" />
                   <text class="art-comment__like-count" :class="{ 'is-on': c.liked }">{{ c.likes }}</text>
                 </view>
               </view>
@@ -500,7 +521,7 @@ function shuffleRecs(): void {
               <text class="art-recs__title">相关推荐</text>
             </view>
             <view class="art-recs__shuffle" @tap="shuffleRecs">
-              <SnIcon :icon="RefreshCw" :size="30" color="#8e706e" />
+              <SnIcon :icon="RefreshCw" size="30rpx" color="#8e706e" />
               <text class="art-recs__shuffle-text">换一换</text>
             </view>
           </view>
@@ -541,7 +562,7 @@ function shuffleRecs(): void {
                 <view class="art-rec__side-thumb">
                   <SnImg :src="r.images[0]" mode="aspectFill" width="100%" height="100%" radius="8" />
                   <view v-if="r.kind === 'video'" class="art-rec__play">
-                    <SnIcon :icon="Play" :size="26" color="#1b1c1c" />
+                    <SnIcon :icon="Play" size="32rpx" color="#1b1c1c" />
                   </view>
                   <text v-if="r.duration" class="art-rec__duration">{{ r.duration }}</text>
                 </view>
@@ -551,35 +572,41 @@ function shuffleRecs(): void {
         </view>
 
         <!-- 页末水印 -->
-        <view class="art-end">
-          <view class="art-end__rule" />
-          <text class="art-end__text">今日头条 · 智能推荐已就绪</text>
-          <view class="art-end__rule" />
-        </view>
+        <SnDivider
+          content-position="center"
+          color="#e5e2e1"
+          custom-style="margin: 24rpx 0; --sn-mp-color-text-secondary: #8e706e; --sn-mp-color-background-surface: #fcf9f8;"
+        >今日头条 · 智能推荐已就绪</SnDivider>
       </view>
 
       <!-- ═══ #bottom：评论操作栏 ═══ -->
       <template #bottom>
         <view class="art-actionbar">
           <view class="art-actionbar__input" @tap="toast('写评论')">
-            <SnIcon :icon="PenLineIcon" :size="34" color="#8e706e" />
+            <SnIcon :icon="PenLineIcon" size="34rpx" color="#8e706e" />
             <text class="art-actionbar__placeholder">写评论...</text>
           </view>
           <view class="art-actionbar__acts">
             <view class="art-actionbar__act" role="button" aria-label="评论区" @tap="toast('评论区')">
-              <SnIcon :icon="MessageCircle" :size="46" color="#5a413f" />
-              <view class="art-actionbar__badge">
-                <text class="art-actionbar__badge-text">48</text>
-              </view>
+              <SnBadge
+                :value="48"
+                type="danger"
+                bg-color="#b0242b"
+                shape="circle"
+                top="-6rpx"
+                right="-14rpx"
+              >
+                <SnIcon :icon="MessageCircle" size="46rpx" color="#5a413f" />
+              </SnBadge>
             </view>
             <view class="art-actionbar__act" role="button" :aria-label="liked ? '取消点赞' : '点赞'" @tap="toggleLike">
-              <SnIcon :icon="ThumbsUp" :size="46" :color="liked ? '#b0242b' : '#5a413f'" />
+              <SnIcon :icon="ThumbsUp" size="46rpx" :color="liked ? '#b0242b' : '#5a413f'" />
             </view>
             <view class="art-actionbar__act" role="button" :aria-label="starred ? '取消收藏' : '收藏'" @tap="starred = !starred">
-              <SnIcon :icon="Star" :size="46" :color="starred ? '#b0242b' : '#5a413f'" />
+              <SnIcon :icon="Star" size="46rpx" :color="starred ? '#b0242b' : '#5a413f'" />
             </view>
             <view class="art-actionbar__act" role="button" aria-label="分享到外部" @tap="toast('分享到外部')">
-              <SnIcon :icon="Share2" :size="46" color="#5a413f" />
+              <SnIcon :icon="Share2" size="46rpx" color="#5a413f" />
             </view>
           </view>
         </view>
@@ -1066,16 +1093,6 @@ function shuffleRecs(): void {
 .art-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 12rpx;
-}
-.art-tag {
-  padding: 10rpx 24rpx;
-  border-radius: 999rpx;
-  background: #f0eded;
-}
-.art-tag__text {
-  color: #5a413f;
-  font-size: 22rpx;
 }
 
 /* 互动栏 */
@@ -1444,24 +1461,7 @@ function shuffleRecs(): void {
   font-size: 18rpx;
 }
 
-/* 页末水印 */
-.art-end {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16rpx;
-  padding: 24rpx 0;
-}
-.art-end__rule {
-  width: 64rpx;
-  height: 1rpx;
-  background: #e5e2e1;
-}
-.art-end__text {
-  color: #8e706e;
-  font-size: 18rpx;
-  letter-spacing: 0.08em;
-}
+/* 页末水印由 sn-divider 承载（见模板）。 */
 
 /* ── 底部评论栏 ───────────────────────────────────────────────────────── */
 .art-actionbar {
@@ -1494,30 +1494,10 @@ function shuffleRecs(): void {
   flex-shrink: 0;
 }
 .art-actionbar__act {
-  position: relative;
   width: 80rpx;
   height: 80rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.art-actionbar__badge {
-  position: absolute;
-  top: 6rpx;
-  right: 6rpx;
-  min-width: 28rpx;
-  height: 28rpx;
-  padding: 0 6rpx;
-  border-radius: 999rpx;
-  background: #b0242b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-.art-actionbar__badge-text {
-  color: #ffffff;
-  font-size: 16rpx;
-  line-height: 1;
 }
 </style>
