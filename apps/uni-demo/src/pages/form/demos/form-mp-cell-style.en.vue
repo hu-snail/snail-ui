@@ -1,79 +1,123 @@
 <script setup lang="ts">
-/** Demo: sn-form + sn-form-item — form-level size / valueAlign / asteriskPosition / hideAsterisk cascade. */
+/**
+ * Demo: sn-form — form-level defaults: `size` / `valueAlign` /
+ * `asteriskPosition` / `hideAsterisk` set once on the form and inherited by
+ * every FormItem.
+ */
+import { reactive } from 'vue';
 import SnForm from '@snui/uni-src/components/sn-form/sn-form.vue';
 import SnFormItem from '@snui/uni-src/components/sn-form/sn-form-item.vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
-import { reactive } from 'vue';
 
-const a = reactive({ a: '', b: '' });
-const b = reactive({ a: '', b: '' });
-const c = reactive({ a: '', b: '' });
-const d = reactive({ a: '', b: '' });
+const defaultForm = reactive({ email: '', nickname: '' });
+const smallForm = reactive({ email: '', nickname: '' });
+const alignForm = reactive({ amount: '', quantity: '' });
+const asteriskForm = reactive({ email: '', nickname: '' });
 </script>
 
 <template>
-  <view class="sn-form-demo-grid">
-    <view>
-      <text class="sn-form-demo__title">Default</text>
-      <SnForm :model="a">
-        <SnFormItem prop="a" label="Email" required>
-          <SnInput v-model="a.a" />
-        </SnFormItem>
-        <SnFormItem prop="b" label="Nickname" required>
-          <SnInput v-model="a.b" />
-        </SnFormItem>
-      </SnForm>
-    </view>
+  <view class="sn-demo sn-demo--stack">
+    <view class="sn-demo__grid">
+      <view class="sn-demo__panel">
+        <text class="sn-demo__title">Default (medium, asterisk on the left)</text>
+        <SnForm :model="defaultForm">
+          <SnFormItem prop="email" label="Email" required>
+            <SnInput v-model="defaultForm.email" placeholder="Enter an email" clearable />
+          </SnFormItem>
+          <SnFormItem prop="nickname" label="Nickname" required>
+            <SnInput v-model="defaultForm.nickname" placeholder="Enter a nickname" clearable />
+          </SnFormItem>
+        </SnForm>
+      </view>
 
-    <view>
-      <text class="sn-form-demo__title">size="small"</text>
-      <SnForm :model="b" size="small">
-        <SnFormItem prop="a" label="Email" required>
-          <SnInput v-model="b.a" />
-        </SnFormItem>
-        <SnFormItem prop="b" label="Nickname" required>
-          <SnInput v-model="b.b" />
-        </SnFormItem>
-      </SnForm>
-    </view>
+      <view class="sn-demo__panel">
+        <text class="sn-demo__title">size="small"</text>
+        <SnForm :model="smallForm" size="small">
+          <SnFormItem prop="email" label="Email" required>
+            <SnInput
+              v-model="smallForm.email"
+              size="small"
+              placeholder="Enter an email"
+              clearable
+            />
+          </SnFormItem>
+          <SnFormItem prop="nickname" label="Nickname" required>
+            <SnInput
+              v-model="smallForm.nickname"
+              size="small"
+              placeholder="Enter a nickname"
+              clearable
+            />
+          </SnFormItem>
+        </SnForm>
+      </view>
 
-    <view>
-      <text class="sn-form-demo__title">valueAlign="right"</text>
-      <SnForm :model="c" value-align="right">
-        <SnFormItem prop="a" label="Amount" required>
-          <SnInput v-model="c.a" align-right />
-        </SnFormItem>
-        <SnFormItem prop="b" label="Quantity" required>
-          <SnInput v-model="c.b" align-right />
-        </SnFormItem>
-      </SnForm>
-    </view>
+      <view class="sn-demo__panel">
+        <text class="sn-demo__title">valueAlign="right" (numeric fields)</text>
+        <SnForm :model="alignForm" value-align="right">
+          <SnFormItem prop="amount" label="Amount" required>
+            <SnInput
+              v-model="alignForm.amount"
+              type="digit"
+              align-right
+              placeholder="Enter an amount"
+              clearable
+            />
+          </SnFormItem>
+          <SnFormItem prop="quantity" label="Quantity" required>
+            <SnInput
+              v-model="alignForm.quantity"
+              type="digit"
+              align-right
+              placeholder="Enter a quantity"
+              clearable
+            />
+          </SnFormItem>
+        </SnForm>
+      </view>
 
-    <view>
-      <text class="sn-form-demo__title">asteriskPosition="right" + hideAsterisk</text>
-      <SnForm :model="d" asterisk-position="right" hide-asterisk>
-        <SnFormItem prop="a" label="Email" required>
-          <SnInput v-model="d.a" />
-        </SnFormItem>
-        <SnFormItem prop="b" label="Nickname" required>
-          <SnInput v-model="d.b" />
-        </SnFormItem>
-      </SnForm>
+      <view class="sn-demo__panel">
+        <text class="sn-demo__title">asteriskPosition="right" + hideAsterisk</text>
+        <SnForm :model="asteriskForm" asterisk-position="right" hide-asterisk>
+          <SnFormItem prop="email" label="Email" required>
+            <SnInput v-model="asteriskForm.email" placeholder="Enter an email" clearable />
+          </SnFormItem>
+          <SnFormItem prop="nickname" label="Nickname" required>
+            <SnInput v-model="asteriskForm.nickname" placeholder="Enter a nickname" clearable />
+          </SnFormItem>
+        </SnForm>
+      </view>
     </view>
   </view>
 </template>
 
 <style scoped>
-.sn-form-demo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(440rpx, 1fr));
-  gap: 48rpx;
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  width: 100%;
 }
-.sn-form-demo__title {
-  display: block;
-  margin: 0 0 24rpx;
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--vp-c-text-2);
+
+.sn-demo__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400rpx, 1fr));
+  gap: var(--sn-mp-spacing-5);
+}
+
+.sn-demo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  padding: var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.sn-demo__title {
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
+  font-weight: var(--sn-mp-font-weight-semibold);
 }
 </style>

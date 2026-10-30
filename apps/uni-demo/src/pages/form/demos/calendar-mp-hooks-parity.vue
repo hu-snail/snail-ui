@@ -1,11 +1,16 @@
 <script setup lang="ts">
 /**
- * Demo: sn-calendar — 快捷 chip 回调与 wot-ui 对齐的占位参数。
- * onShortcutsClick 会被调用；timeFilter / hideSecond / innerDisplayFormat / ellipsis /
- * showTypeSwitch 声明但未实现（本构建没有时间滚筒与区间 tab），仅用于配置对齐。
+ * Demo: sn-calendar — 快捷回调与占位参数（cell 卡片布局）。
+ *
+ * onShortcutsClick 会被调用；timeFilter / hideSecond / innerDisplayFormat /
+ * ellipsis / showTypeSwitch 声明但未实现（本构建没有时间滚筒与区间 tab），
+ * 仅用于配置对齐。入口行与最近点击项各占一张 cell 卡片。
  */
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -35,13 +40,33 @@ const displayFormat = (payload: number | number[] | null) => {
 const guard = (payload: number | number[] | null) => payload !== null;
 
 const innerFormat = '自定义区间回显';
+
+/** 入口行右侧值：未选中时留空以显示 placeholder。 */
+const valueText = computed(() => (Array.isArray(value.value) ? displayFormat(value.value) : ''));
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">shortcuts + onShortcutsClick + beforeConfirm</text>
-    <view class="sn-demo__button" @tap="open = true">快捷选项</view>
-    <text class="sn-demo__meta">最近点击的快捷项：{{ lastShortcut }}</text>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup card title="快捷回调与对齐参数">
+      <SnCell
+        title="快捷选项"
+        label="shortcuts + on-shortcuts-click + before-confirm"
+        :value="valueText"
+        placeholder="未选择"
+        :prefix-icon-data="Filter"
+        is-link
+        @click="open = true"
+      />
+      <SnCell title="最近点击的快捷项" :value="lastShortcut" />
+    </SnCellGroup>
+
+    <text class="sn-demo__meta">
+      innerDisplayFormat / ellipsis / showTypeSwitch / hideSecond / timeFilter
+      为对齐参数：本构建没有时间滚筒与区间 tab，声明但不产生视觉效果（innerDisplayFormat
+      也接受格式化函数）。
+    </text>
+    <text class="sn-demo__meta">格式化函数示例：{{ displayFormat(value) }}</text>
+
     <SnCalendar
       v-model="value"
       v-model:visible="open"
@@ -59,37 +84,19 @@ const innerFormat = '自定义区间回显';
       :hide-second="true"
       :time-filter="evenHours"
     />
-
-    <text class="sn-demo__meta">
-      innerDisplayFormat / ellipsis / showTypeSwitch / hideSecond / timeFilter 为 wot-ui
-      对齐参数：本构建没有时间滚筒与区间 tab，声明但不产生视觉效果（innerDisplayFormat
-      也接受格式化函数）。
-    </text>
-    <text class="sn-demo__meta">格式化函数示例：{{ displayFormat(value) }}</text>
   </view>
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
 
 .sn-demo__meta {
-  font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

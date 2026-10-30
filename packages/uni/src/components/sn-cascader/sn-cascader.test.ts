@@ -263,8 +263,19 @@ describe('sn-cascader', () => {
       await optionsOf(w, 0)[0]?.trigger('tap');
       const tabs = w.findAll('.sn-cascader__tab');
       expect(tabs[0]?.find('.sn-cascader__tab-text').text()).toBe('Zhejiang');
-      // The drilled-into level has no selection yet.
-      expect(tabs[1]?.find('.sn-cascader__tab-text').text()).toBe('');
+      // The drilled-into level has no selection yet — it shows the hint chip.
+      expect(tabs[1]?.find('.sn-cascader__tab-text').text()).toBe('请选择');
+    });
+
+    it('drops the hint chip once the level holds a selection', async () => {
+      const w = mountCascader();
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      expect(w.findAll('.sn-cascader__tab-text--placeholder')).toHaveLength(1);
+      await optionsOf(w, 1)[1]?.trigger('tap');
+      expect(w.findAll('.sn-cascader__tab-text--placeholder')).toHaveLength(0);
+      expect(w.findAll('.sn-cascader__tab')[1]?.find('.sn-cascader__tab-text').text()).toBe(
+        'Ningbo',
+      );
     });
 
     it('activates the deepest tab seeded from a path modelValue', () => {
@@ -339,9 +350,9 @@ describe('sn-cascader', () => {
 
     it('renders the custom confirmText', () => {
       expect(
-        mountCascader({ checkStrictly: true, confirmText: 'done' }).find(
-          '.sn-cascader__confirm',
-        ).text(),
+        mountCascader({ checkStrictly: true, confirmText: 'done' })
+          .find('.sn-cascader__confirm')
+          .text(),
       ).toBe('done');
     });
 
@@ -432,6 +443,28 @@ describe('sn-cascader', () => {
       expect(w.findAll('.sn-cascader__tab')).toHaveLength(2);
       expect(optionsOf(w, 1)[0]?.text()).toBe('B1');
     });
+
+    it('does not yank the active level when a resolve lands after a step back', async () => {
+      const resolvers: Array<(children: unknown[]) => void> = [];
+      const w = mountCascader({
+        options: [{ value: 'a', text: 'A', isLeaf: false }],
+        lazyLoad: (_option, _index, resolve) => {
+          resolvers.push(resolve as (c: unknown[]) => void);
+        },
+      });
+      await w.findAll('.sn-cascader__option')[0]?.trigger('tap');
+      resolvers[0]?.([{ value: 'a1', text: 'A1', isLeaf: false }]);
+      await w.vm.$nextTick();
+      // Standing on level 1, ask for its children, then step back to level 0.
+      await optionsOf(w, 1)[0]?.trigger('tap');
+      await w.find('.sn-cascader__back').trigger('tap');
+      resolvers[1]?.([{ value: 'a2', text: 'A2', isLeaf: true }]);
+      await w.vm.$nextTick();
+      // The resolved level is appended, but the sheet stays where the user is.
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(3);
+      expect(w.findAll('.sn-cascader__tab')[0]?.classes()).toContain('sn-cascader__tab--active');
+      expect(w.find('.sn-cascader__loading').exists()).toBe(false);
+    });
   });
 
   describe('strict confirm payload', () => {
@@ -440,9 +473,7 @@ describe('sn-cascader', () => {
       await optionsOf(w, 0)[0]?.trigger('tap');
       await w.find('.sn-cascader__confirm').trigger('tap');
       await Promise.resolve();
-      expect(w.emitted('confirm')?.[0]).toEqual([
-        { value: 'zj', selectedOptions: [TREE[0]] },
-      ]);
+      expect(w.emitted('confirm')?.[0]).toEqual([{ value: 'zj', selectedOptions: [TREE[0]] }]);
       expect(w.emitted('update:visible')?.[0]).toEqual([false]);
     });
 
@@ -461,6 +492,153 @@ describe('sn-cascader', () => {
     it('marks the confirm button aria-disabled until a node is selected', () => {
       const w = mountCascader({ checkStrictly: true });
       expect(w.find('.sn-cascader__confirm').attributes('aria-disabled')).toBe('true');
+    });
+  });
+
+  describe('sheet chrome (AUI-OPT-13)', () => {
+    it('keeps the back control out of the root level', () => {
+      expect(mountCascader().find('.sn-cascader__back').exists()).toBe(false);
+    });
+
+    it('shows the back control once a level is drilled into', async () => {
+      const w = mountCascader();
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      expect(w.find('.sn-cascader__back').exists()).toBe(true);
+    });
+
+    it('steps the active level back up without dropping the deeper level', async () => {
+      const w = mountCascader();
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      await w.find('.sn-cascader__back').trigger('tap');
+      expect(w.findAll('.sn-cascader__tab')[0]?.classes()).toContain('sn-cascader__tab--active');
+      expect(w.findAll('.sn-cascader__tab')[1]?.classes()).not.toContain(
+        'sn-cascader__tab--active',
+      );
+      // Level two stays reachable through the tab strip.
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(2);
+    });
+
+    it('labels the back control as a button', async () => {
+      const w = mountCascader();
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      const back = w.find('.sn-cascader__back');
+      expect(back.attributes('role')).toBe('button');
+      expect(back.attributes('aria-label')).toBe('back');
+    });
+
+    it('hints a drill chevron on a branch row', () => {
+      const option = optionsOf(mountCascader(), 0)[0];
+      expect(option?.find('.sn-cascader__chevron').exists()).toBe(true);
+      expect(option?.find('.sn-cascader__check').exists()).toBe(false);
+    });
+
+    it('shows no affordance glyph on a plain leaf row', () => {
+      const w = mountCascader({ options: [{ value: 'a', text: 'A' }] });
+      expect(optionsOf(w, 0)[0]?.find('.sn-cascader__chevron').exists()).toBe(false);
+      expect(optionsOf(w, 0)[0]?.find('.sn-cascader__check').exists()).toBe(false);
+    });
+
+    it('swaps the chevron for the check glyph on the selected row', async () => {
+      const w = mountCascader();
+      await optionsOf(w, 0)[1]?.trigger('tap');
+      await optionsOf(w, 1)[0]?.trigger('tap');
+      const selectedBranch = optionsOf(w, 0)[1];
+      expect(selectedBranch?.find('.sn-cascader__check').exists()).toBe(true);
+      expect(selectedBranch?.find('.sn-cascader__chevron').exists()).toBe(false);
+    });
+
+    it('keeps a drill chevron on a lazy branch and none on a lazy leaf', () => {
+      const w = mountCascader({
+        options: [
+          { value: 'a', text: 'A', isLeaf: false },
+          { value: 'b', text: 'B', isLeaf: true },
+        ],
+        lazyLoad: () => {},
+      });
+      const [branch, leaf] = optionsOf(w, 0);
+      expect(branch?.find('.sn-cascader__chevron').exists()).toBe(true);
+      expect(leaf?.find('.sn-cascader__chevron').exists()).toBe(false);
+    });
+
+    it('marks the row affordance as decorative', () => {
+      expect(
+        optionsOf(mountCascader(), 0)[0]?.find('.sn-cascader__tail').attributes('aria-hidden'),
+      ).toBe('true');
+    });
+
+    it('drives press feedback through hover-class', () => {
+      const w = mountCascader();
+      expect(optionsOf(w, 0)[0]?.attributes('hover-class')).toBe('sn-cascader__option--pressed');
+      expect(w.find('.sn-cascader__cancel').attributes('hover-class')).toBe(
+        'sn-cascader__action--pressed',
+      );
+      expect(w.findAll('.sn-cascader__tab')[0]?.attributes('hover-class')).toBe(
+        'sn-cascader__tab--pressed',
+      );
+    });
+
+    it('suppresses press feedback on a disabled row', () => {
+      const w = mountCascader({ options: [{ value: 'a', text: 'A', disabled: true }] });
+      expect(optionsOf(w, 0)[0]?.attributes('hover-class')).toBe('none');
+    });
+
+    it('hints an empty level instead of rendering a blank panel', () => {
+      const empty = mountCascader({ options: [] }).find('.sn-cascader__empty');
+      expect(empty.exists()).toBe(true);
+      expect(empty.attributes('role')).toBe('status');
+      expect(empty.text()).toBe('暂无选项');
+    });
+
+    it('drops the empty hint once the level resolves options', async () => {
+      const w = mountCascader({ options: [] });
+      await w.setProps({ options: TREE });
+      expect(w.find('.sn-cascader__empty').exists()).toBe(false);
+    });
+
+    it('renders the spinner while a lazy level loads', async () => {
+      const w = mountCascader({
+        options: [{ value: 'a', text: 'A', isLeaf: false }],
+        lazyLoad: () => {},
+      });
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      expect(w.find('.sn-cascader__loading .sn-loading').exists()).toBe(true);
+    });
+  });
+
+  describe('card layout (AUI-OPT-13)', () => {
+    it('renders the list look by default', () => {
+      const w = mountCascader();
+      expect(optionsOf(w, 0)[0]?.classes()).not.toContain('sn-cascader__option--card');
+    });
+
+    it('marks every row and panel as a card', () => {
+      const w = mountCascader({ card: true });
+      expect(optionsOf(w, 0)[0]?.classes()).toContain('sn-cascader__option--card');
+      expect(w.findAll('.sn-cascader__panel')[0]?.classes()).toContain('sn-cascader__panel--card');
+    });
+
+    it('keeps the list classes off the default look', () => {
+      const w = mountCascader();
+      expect(optionsOf(w, 0)[0]?.classes()).not.toContain('sn-cascader__option--card');
+      expect(w.findAll('.sn-cascader__panel')[0]?.classes()).not.toContain(
+        'sn-cascader__panel--card',
+      );
+    });
+
+    it('follows the card flag when it flips at runtime', async () => {
+      const w = mountCascader();
+      await w.setProps({ card: true });
+      expect(optionsOf(w, 0)[0]?.classes()).toContain('sn-cascader__option--card');
+      await w.setProps({ card: false });
+      expect(optionsOf(w, 0)[0]?.classes()).not.toContain('sn-cascader__option--card');
+    });
+
+    it('keeps the row affordances and drilling in card mode', async () => {
+      const w = mountCascader({ card: true });
+      expect(optionsOf(w, 0)[0]?.find('.sn-cascader__chevron').exists()).toBe(true);
+      await optionsOf(w, 0)[0]?.trigger('tap');
+      expect(w.findAll('.sn-cascader__tab')).toHaveLength(2);
+      expect(w.findAll('.sn-cascader__tab')[1]?.classes()).toContain('sn-cascader__tab--active');
     });
   });
 

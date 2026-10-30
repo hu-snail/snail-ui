@@ -1,77 +1,105 @@
 <script setup lang="ts">
-/** Demo: sn-form + sn-form-item — validateTrigger / resetOnChange / errorType. */
+/**
+ * Demo: sn-form — 校验时序：字段级规则先于表单级规则合并执行，
+ * 异步规则执行期间可识别，最终结果由 @validate 回传错误表。
+ */
+import { reactive, ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnForm from '@snui/uni-src/components/sn-form/sn-form.vue';
 import SnFormItem from '@snui/uni-src/components/sn-form/sn-form-item.vue';
 import SnInput from '@snui/uni-src/components/sn-input/sn-input.vue';
 import type { FormRule } from '@snui/uni-src/components/sn-form/sn-form-types';
-import { reactive } from 'vue';
 
-const onBlur = reactive({ a: '' });
-const onChange = reactive({ a: '' });
-const silent = reactive({ a: '' });
+type FormRef = InstanceType<typeof SnForm>;
 
-const onBlurRules: Record<string, FormRule[]> = {
-  a: [{ required: true, message: 'Required on blur' }],
+const form = reactive({ handle: '', email: '' });
+const formRef = ref<FormRef | null>(null);
+const checking = ref(false);
+const log = ref('尚未校验');
+const errors = ref('（无）');
+
+/** 表单级规则：所有字段共享的约束。 */
+const formRules: Record<string, FormRule[]> = {
+  handle: [{ pattern: /^[a-z0-9_]+$/, message: '只能使用小写字母、数字与下划线（表单级）' }],
+  email: [{ type: 'email', message: '邮箱格式不正确（表单级）' }],
 };
-const onChangeRules: Record<string, FormRule[]> = {
-  a: [{ required: true, message: 'Required on every change' }],
-};
-const silentRules: Record<string, FormRule[]> = {
-  a: [{ required: true, message: 'Silent — errorType=none' }],
-};
+
+/** 字段级规则：先于表单级规则执行。 */
+const handleRules: FormRule[] = [
+  { required: true, message: '请填写用户名（字段级先执行）' },
+  {
+    asyncValidator: async (value) => {
+      checking.value = true;
+      await sleep(600);
+      checking.value = false;
+      return value !== 'taken' || '该用户名已被占用（异步规则）';
+    },
+    message: '用户名不可用',
+  },
+];
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function runValidate(): Promise<void> {
+  await formRef.value?.validate();
+  log.value = '校验流程已结束（字段级 → 表单级 → 结果回传）';
+}
+
+function onValidate(payload: { valid: boolean; errors: Record<string, string> }): void {
+  const keys = Object.keys(payload.errors);
+  errors.value = keys.length === 0 ? '（无）' : JSON.stringify(payload.errors);
+}
 </script>
 
 <template>
-  <view class="sn-form-demo-grid">
-    <view>
-      <text class="sn-form-demo__title">validateTrigger="blur" (默认)</text>
-      <SnForm :model="onBlur" :rules="onBlurRules">
-        <SnFormItem prop="a" label="Email">
-          <SnInput v-model="onBlur.a" />
-        </SnFormItem>
-      </SnForm>
-      <text class="sn-form-demo__hint">触碰字段后留空失焦 → 错误信息出现</text>
-    </view>
+  <view class="sn-demo sn-demo--stack">
+    <SnForm ref="formRef" :model="form" :rules="formRules" @validate="onValidate">
+      <SnFormItem prop="handle" label="用户名" :rules="handleRules" required>
+        <SnInput v-model="form.handle" placeholder="输入 taken 可看到异步占用提示" clearable />
+      </SnFormItem>
+      <SnFormItem prop="email" label="邮箱">
+        <SnInput v-model="form.email" type="email" placeholder="请输入邮箱" clearable />
+      </SnFormItem>
+      <SnButton type="primary" block :disabled="checking" @click="runValidate">
+        {{ checking ? '异步校验中…' : '校验' }}
+      </SnButton>
+    </SnForm>
 
-    <view>
-      <text class="sn-form-demo__title">validateTrigger="change"</text>
-      <SnForm :model="onChange" :rules="onChangeRules">
-        <SnFormItem prop="a" label="Email">
-          <SnInput v-model="onChange.a" />
-        </SnFormItem>
-      </SnForm>
-      <text class="sn-form-demo__hint">输入字符 → 错误信息实时刷新</text>
-    </view>
-
-    <view>
-      <text class="sn-form-demo__title">errorType="none" (静默)</text>
-      <SnForm :model="silent" :rules="silentRules" error-type="none">
-        <SnFormItem prop="a" label="Email">
-          <SnInput v-model="silent.a" />
-        </SnFormItem>
-      </SnForm>
-      <text class="sn-form-demo__hint">校验运行, 但不显示错误（@validate 监听）</text>
+    <view class="sn-demo__panel">
+      <text class="sn-demo__meta">{{ log }}</text>
+      <text class="sn-demo__meta">@validate 回传 errors：{{ errors }}</text>
+      <text class="sn-demo__meta"
+        >字段级规则先跑（required → 异步占用），再跑表单级规则（pattern / type）</text
+      >
     </view>
   </view>
 </template>
 
 <style scoped>
-.sn-form-demo-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(440rpx, 1fr));
-  gap: 48rpx;
+.sn-demo--stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-4);
+  width: 100%;
 }
-.sn-form-demo__title {
-  display: block;
-  margin: 0 0 24rpx;
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--vp-c-text-2);
+
+.sn-demo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-4);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
 }
-.sn-form-demo__hint {
-  display: block;
-  margin-top: 24rpx;
-  font-size: 24rpx;
-  color: var(--vp-c-text-2);
+
+.sn-demo__meta {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
 }
 </style>

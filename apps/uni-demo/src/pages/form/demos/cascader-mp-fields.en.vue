@@ -1,7 +1,15 @@
 <script setup lang="ts">
-/** Demo: sn-cascader — field mapping and tips: valueKey / textKey / childrenKey / tipKey. */
-import { ref } from 'vue';
+/**
+ * Demo: sn-cascader — Field mapping and the indicator: valueKey / textKey /
+ * childrenKey / tipKey.
+ *
+ * The value / label / children / tip keys of every option are configurable;
+ * lineTheme / lineHeight control the active-column indicator (a number is an
+ * rpx design value — 1 design value = 2rpx).
+ */
+import { computed, ref } from 'vue';
 import SnCascader from '@snui/uni-src/components/sn-cascader/sn-cascader.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
 
 /** Custom key names — id / name / items, mapped through the *-key props; tips come from tipKey. */
 const tree = [
@@ -20,17 +28,36 @@ const tree = [
   },
 ];
 
+/** Leaf value → display text, demo-only. */
+const TEXT: Record<string, string> = {
+  zj: 'Zhejiang',
+  hz: 'Hangzhou',
+  nb: 'Ningbo',
+  js: 'Jiangsu',
+  nj: 'Nanjing',
+};
+
 const value = ref<string | number>('hz');
 const open = ref(false);
+const selectedText = computed(() => TEXT[String(value.value)] ?? '');
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title"
-      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"</text
+  <view class="sn-demo sn-demo--column">
+    <text class="sn-demo__label"
+      >valueKey="id" / textKey="name" / childrenKey="items" / tipKey="tips"; indicator
+      lineTheme="text" + lineHeight.</text
     >
-    <view class="sn-demo__button" @tap="open = true">Field mapping</view>
-    <text class="sn-demo__meta">Selected: {{ value || '(not selected)' }}</text>
+    <view class="sn-demo__cards">
+      <SnCell
+        card
+        title="Home city"
+        placeholder="Please select"
+        :value="selectedText"
+        is-link
+        @click="open = true"
+      />
+    </view>
     <SnCascader
       v-model="value"
       v-model:visible="open"
@@ -39,36 +66,32 @@ const open = ref(false);
       text-key="name"
       children-key="items"
       tip-key="tips"
-      title="Field mapping"
+      title="Pick a city"
       check-strictly
       confirm-text="Use it"
-      line-width="6"
-      line-height="40"
+      line-theme="text"
+      :line-height="4"
     />
   </view>
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  width: 100%;
+}
+
+.sn-demo__cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
+}
+
+.sn-demo__label {
   color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
-}
-
-.sn-demo__meta {
-  font-size: 24rpx;
-  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

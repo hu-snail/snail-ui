@@ -22,6 +22,14 @@
  *     yet. `shortcuts` itself IS implemented (a row of chips that writes a
  *     preset value) and `on-shortcuts-click` is invoked after a chip tap.
  *
+ * ## Additive (AUI-OPT-11, AGENTS.md §112.3a — wd-calendar has no such slot)
+ *
+ *   - `header` slot — replaces the plain title row at the top of the sheet so
+ *     a host can drop a richer section (a `sn-cell` summary row, a segmented
+ *     control…) inside the sheet without losing the popup chrome. Without the
+ *     slot the default `title` text renders exactly as before, so the change
+ *     is purely additive.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
@@ -183,6 +191,15 @@ const emit = defineEmits<{
   (e: 'open'): void;
 }>();
 
+defineSlots<{
+  /** 弹层顶部区（additive）：替换默认标题行，可放 cell 摘要行等分节内容。 */
+  header?(): unknown;
+  /** 确认区域左侧插槽。 */
+  'confirm-left'?(): unknown;
+  /** 确认区域右侧插槽。 */
+  'confirm-right'?(): unknown;
+}>();
+
 /** Draft value while the sheet is open. */
 const draft = ref<CalendarValue>(props.modelValue);
 
@@ -294,7 +311,9 @@ const viewClass = computed(() => props.customViewClass);
   >
     <view class="sn-calendar" :data-snui-component="'calendar'">
       <view class="sn-calendar__header">
-        <text class="sn-calendar__title">{{ props.title }}</text>
+        <slot name="header">
+          <text class="sn-calendar__title">{{ props.title }}</text>
+        </slot>
       </view>
 
       <view v-if="props.shortcuts.length > 0" class="sn-calendar__shortcuts">

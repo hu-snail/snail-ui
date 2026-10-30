@@ -1,12 +1,18 @@
 <script setup lang="ts">
 /**
- * Demo: sn-calendar — shortcut callback plus the wot-ui parity placeholders.
- * onShortcutsClick IS invoked; timeFilter / hideSecond / innerDisplayFormat / ellipsis /
- * showTypeSwitch are declared but unimplemented (this build has no time roller and no
- * range tabs) and exist only so a wd-calendar config type-checks unchanged.
+ * Demo: sn-calendar — shortcut callback plus the parity placeholders (cell card layout).
+ *
+ * onShortcutsClick IS invoked. timeFilter / hideSecond / innerDisplayFormat /
+ * ellipsis / showTypeSwitch are declared but unimplemented in this build (no
+ * time roller, no range tabs) and exist only so a config written against the
+ * reference surface type-checks unchanged. The entry row and the last-tapped
+ * echo each get a cell card.
  */
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
+import { Filter } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -36,13 +42,33 @@ const displayFormat = (payload: number | number[] | null) => {
 const guard = (payload: number | number[] | null) => payload !== null;
 
 const innerFormat = 'Custom range echo';
+
+/** Entry row's right-hand value: blank while nothing is picked, so the placeholder shows. */
+const valueText = computed(() => (Array.isArray(value.value) ? displayFormat(value.value) : ''));
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">shortcuts + onShortcutsClick + beforeConfirm</text>
-    <view class="sn-demo__button" @tap="open = true">Shortcuts</view>
-    <text class="sn-demo__meta">Last shortcut tapped: {{ lastShortcut }}</text>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup card title="Shortcut callback &amp; parity props">
+      <SnCell
+        title="Shortcuts"
+        label="shortcuts + on-shortcuts-click + before-confirm"
+        :value="valueText"
+        placeholder="Not selected"
+        :prefix-icon-data="Filter"
+        is-link
+        @click="open = true"
+      />
+      <SnCell title="Last shortcut tapped" :value="lastShortcut" />
+    </SnCellGroup>
+
+    <text class="sn-demo__meta">
+      innerDisplayFormat / ellipsis / showTypeSwitch / hideSecond / timeFilter are parity props:
+      this build has no time roller and no range tabs, so they carry no visual effect
+      (innerDisplayFormat also accepts a formatter function).
+    </text>
+    <text class="sn-demo__meta">Formatter example: {{ displayFormat(value) }}</text>
+
     <SnCalendar
       v-model="value"
       v-model:visible="open"
@@ -60,37 +86,19 @@ const innerFormat = 'Custom range echo';
       :hide-second="true"
       :time-filter="evenHours"
     />
-
-    <text class="sn-demo__meta">
-      innerDisplayFormat / ellipsis / showTypeSwitch / hideSecond / timeFilter are wot-ui parity
-      props: this build has no time roller and no range tabs, so they are declared but have no
-      visual effect (innerDisplayFormat also accepts a formatter function).
-    </text>
-    <text class="sn-demo__meta">Formatter example: {{ displayFormat(value) }}</text>
   </view>
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
 
 .sn-demo__meta {
-  font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 </style>

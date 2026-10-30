@@ -229,6 +229,12 @@ describe('sn-calendar', () => {
       const w = mountCalendar({ firstDayOfWeek: 1 });
       expect(w.findAll('.sn-calendar-view__week').map((t) => t.text())[0]).toBe('一');
     });
+
+    it('forwards showLunar to the panel grid', () => {
+      const w = mountCalendar({ showLunar: true });
+      // 2024-06-15 = 甲辰年五月初十（当月第 15 格）。
+      expect(dayCells(w)[14]?.find('.sn-calendar-view__day-info--bottom').text()).toBe('初十');
+    });
   });
 
   describe('slots', () => {
@@ -248,6 +254,39 @@ describe('sn-calendar', () => {
       });
       expect(w.find('.right-slot').text()).toBe('filter');
       expect(w.find('.sn-calendar__footer-right').text()).toBe('filter');
+    });
+
+    it('replaces the default title with the header slot content (additive)', () => {
+      const w = mount(SnCalendar, {
+        props: { visible: true, title: '选择日期', minDate: new Date(2024, 5, 1).getTime() },
+        slots: { header: '<view class="header-slot">2 dates</view>' },
+      });
+      expect(w.find('.sn-calendar__header .header-slot').text()).toBe('2 dates');
+      // The default title row is gone while the slot owns the header.
+      expect(w.find('.sn-calendar__title').exists()).toBe(false);
+    });
+
+    it('keeps the default title row when the header slot is unused', () => {
+      const w = mountCalendar({ title: 'Pick a day' });
+      expect(w.find('.sn-calendar__title').text()).toBe('Pick a day');
+      expect(w.find('.sn-calendar__header').exists()).toBe(true);
+    });
+
+    it('keeps the rest of the sheet chrome while the header slot is used', () => {
+      const w = mount(SnCalendar, {
+        props: {
+          visible: true,
+          minDate: new Date(2024, 5, 1).getTime(),
+          shortcuts: [{ text: 'Today', days: 0 }],
+        },
+        slots: { header: '<view class="header-slot">2 dates</view>' },
+      });
+      // The additive slot only replaces the title row — grid, chips and footer stay.
+      expect(w.find('.sn-calendar__header .header-slot').exists()).toBe(true);
+      expect(w.find('.sn-calendar__shortcut').exists()).toBe(true);
+      expect(w.find('.sn-calendar-view__day').exists()).toBe(true);
+      expect(w.find('.sn-calendar__confirm').exists()).toBe(true);
+      expect(w.find('.sn-calendar__footer-left').exists()).toBe(true);
     });
   });
 
@@ -319,6 +358,17 @@ describe('sn-calendar', () => {
       await Promise.resolve();
       expect(w.emitted('confirm')).toHaveLength(1);
       expect(w.emitted('update:visible')?.[0]).toEqual([false]);
+    });
+
+    it('keeps the sheet open when an async beforeConfirm resolves false', async () => {
+      const w = mountCalendar({ beforeConfirm: async () => false });
+      await dayCells(w)[9]?.trigger('tap');
+      await w.find('.sn-calendar__confirm').trigger('tap');
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(w.emitted('confirm')).toBeUndefined();
+      expect(w.emitted('update:modelValue')).toBeUndefined();
+      expect(w.emitted('update:visible')).toBeUndefined();
     });
   });
 

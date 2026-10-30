@@ -1,7 +1,16 @@
 <script setup lang="ts">
-/** Demo: sn-calendar — 面板与弹层：panelHeight / showPanelTitle / switchMode / duration / immediateChange / showConfirm / 遮罩与层级。 */
-import { ref } from 'vue';
+/**
+ * Demo: sn-calendar — 面板与弹层（cell 卡片承载每项配置）。
+ *
+ * 三行卡片分别覆盖：面板尺寸与切换控件（panelHeight / showPanelTitle /
+ * switchMode / duration）、即时写回（immediateChange）、无确认按钮 +
+ * confirm-left 插槽 + 遮罩 / 安全区 / 层级 / 自定义类名与样式。
+ */
+import { computed, ref } from 'vue';
+import { Info, Settings, Zap } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 import SnCalendar from '@snui/uni-src/components/sn-calendar/sn-calendar.vue';
+import SnCell from '@snui/uni-src/components/sn-cell/sn-cell.vue';
+import SnCellGroup from '@snui/uni-src/components/sn-cell/sn-cell-group.vue';
 
 const min = new Date(2024, 0, 1).getTime();
 const max = new Date(2024, 11, 31).getTime();
@@ -14,12 +23,56 @@ const openInstant = ref(false);
 
 const noConfirm = ref<number | number[] | null>(new Date(2024, 5, 15).getTime());
 const openNoConfirm = ref(false);
+
+function fmtStamp(value: number | number[] | null): string {
+  if (typeof value !== 'number') return '';
+  const d = new Date(value);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+const monthSwitchText = computed(() => fmtStamp(monthSwitch.value));
+const instantText = computed(() => fmtStamp(instant.value));
+const noConfirmText = computed(() => fmtStamp(noConfirm.value));
 </script>
 
 <template>
-  <view class="sn-demo sn-demo--stack">
-    <text class="sn-demo__title">panelHeight / showPanelTitle / switchMode / duration</text>
-    <view class="sn-demo__button" @tap="openMonthSwitch = true">月 / 年切换</view>
+  <view class="sn-demo sn-demo--column">
+    <SnCellGroup card title="面板与弹层">
+      <SnCell
+        title="月 / 年切换"
+        label="switch-mode=year-month · panel-height=420 · show-panel-title=false · duration=320"
+        :value="monthSwitchText"
+        placeholder="未选择"
+        :prefix-icon-data="Settings"
+        is-link
+        @click="openMonthSwitch = true"
+      />
+      <SnCell
+        title="即时写回"
+        label="immediate-change：点格子即写 v-model"
+        :value="instantText"
+        placeholder="未选择"
+        :prefix-icon-data="Zap"
+        is-link
+        @click="openInstant = true"
+      />
+      <SnCell
+        title="无确认按钮 + 底栏插槽"
+        label="show-confirm=false · confirm-left 插槽置清空 · close-on-click-modal=false"
+        :value="noConfirmText"
+        placeholder="未选择"
+        :prefix-icon-data="Info"
+        is-link
+        @click="openNoConfirm = true"
+      />
+    </SnCellGroup>
+
+    <text class="sn-demo__meta">
+      三行配置：月 / 年切换（{{ monthSwitchText || '未选择' }}）· 即时写回（{{
+        instantText || '未选择'
+      }}）· 无确认按钮（{{ noConfirmText || '未选择' }}）
+    </text>
+
     <SnCalendar
       v-model="monthSwitch"
       v-model:visible="openMonthSwitch"
@@ -34,9 +87,6 @@ const openNoConfirm = ref(false);
       custom-view-class="sn-demo__panel"
     />
 
-    <text class="sn-demo__title">immediateChange（点格子即写 v-model）</text>
-    <view class="sn-demo__button" @tap="openInstant = true">即时写回</view>
-    <text class="sn-demo__meta">已选：{{ instant }}</text>
     <SnCalendar
       v-model="instant"
       v-model:visible="openInstant"
@@ -47,10 +97,6 @@ const openNoConfirm = ref(false);
       immediate-change
     />
 
-    <text class="sn-demo__title"
-      >showConfirm=false + closeOnClickModal + zIndex + safeAreaInsetBottom</text
-    >
-    <view class="sn-demo__button" @tap="openNoConfirm = true">无确认按钮</view>
     <SnCalendar
       v-model="noConfirm"
       v-model:visible="openNoConfirm"
@@ -65,39 +111,42 @@ const openNoConfirm = ref(false);
       root-portal
       custom-class="sn-demo__sheet"
       custom-style="border-radius: var(--sn-mp-radius-xl);"
-    />
+    >
+      <template #confirm-left>
+        <view class="sn-demo__reset" role="button" aria-label="清空" @tap="noConfirm = null">
+          <text>清空</text>
+        </view>
+      </template>
+    </SnCalendar>
   </view>
 </template>
 
 <style scoped>
-.sn-demo__title {
-  font-size: 26rpx;
-  font-weight: 600;
-  color: var(--sn-mp-color-text-secondary);
-}
-
-.sn-demo__button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 72rpx;
-  padding: 0 32rpx;
-  border-radius: var(--sn-mp-button-radius);
-  background-color: var(--sn-mp-color-action-primary);
-  color: var(--sn-mp-color-text-on-primary);
-  font-size: 28rpx;
+.sn-demo--column {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
 
 .sn-demo__meta {
-  font-size: 24rpx;
   color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
 }
 
 .sn-demo__panel {
-  border-top: 1rpx solid var(--sn-mp-color-border-subtle);
+  border-top: 2rpx solid var(--sn-mp-color-border-subtle);
 }
 
 .sn-demo__sheet {
   background-color: var(--sn-mp-color-background-elevated);
+}
+
+.sn-demo__reset {
+  padding: var(--sn-mp-spacing-2) var(--sn-mp-spacing-3);
+  border-radius: var(--sn-mp-radius-full);
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-secondary);
+  font-size: var(--sn-mp-font-size-sm);
 }
 </style>
