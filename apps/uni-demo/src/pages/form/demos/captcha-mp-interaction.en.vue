@@ -2,42 +2,84 @@
 /**
  * Demo: sn-captcha (uni-end) — two-stage verification with sn-slide-verify.
  *
- * The puzzle only appears after the slider passes: the common risk-tiering
- * flow (cheap slider first, escalate to a puzzle on failure or high risk).
- * The chain passes only when both stages pass.
+ * The puzzle only unfolds after the slider passes: the common risk-tiering
+ * flow (cheap slider first, escalate to the jigsaw when needed). Both stages
+ * must pass for the chain to pass; either can be retried in place, and the
+ * whole chain can be reset.
  *
  * Per AUI-DOCS-016 / §111: imports the real @snui/uni SFC sources.
  */
 import { computed, ref } from 'vue';
+import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnCaptcha from '@snui/uni-src/components/sn-captcha/sn-captcha.vue';
 import SnSlideVerify from '@snui/uni-src/components/sn-slide-verify/sn-slide-verify.vue';
 
-/** Stage one: the slider has passed. */
+/** Stage 1: the slider verdict. */
 const sliderPassed = ref(false);
-/** Stage two: the puzzle has passed. */
+/** Stage 2: the puzzle verdict. */
 const puzzlePassed = ref(false);
+/** Puzzle attempts, shown in the meta line. */
+const puzzleAttempts = ref(0);
 
-/** The chain passes only when both stages pass. */
+/** Both stages must pass. */
 const chainPassed = computed(() => sliderPassed.value && puzzlePassed.value);
 
-/** Stable network poster (picsum seed) for the puzzle notch. */
-const SOURCE = 'https://picsum.photos/seed/snui-captcha-chain/600/400';
+/** Stable network posters (picsum seeds) — a real photo makes the gap readable. */
+const SCENES = [
+  'https://picsum.photos/seed/snui-captcha-chain-a/600/400',
+  'https://picsum.photos/seed/snui-captcha-chain-b/600/400',
+];
 
+const sceneIndex = ref(0);
+const src = computed(() => SCENES[sceneIndex.value % SCENES.length] ?? SCENES[0]!);
+const statusText = computed(() => {
+  if (chainPassed.value) return 'chain passed';
+  if (!sliderPassed.value) return 'waiting for the slider';
+  return puzzlePassed.value ? 'chain passed' : 'waiting for the puzzle';
+});
+
+function onPuzzleSuccess(): void {
+  puzzlePassed.value = true;
+  puzzleAttempts.value += 1;
+}
+
+function onPuzzleFail(): void {
+  puzzlePassed.value = false;
+  puzzleAttempts.value += 1;
+}
+
+/** New photo on refresh, verdict cleared. */
+function onPuzzleRefresh(): void {
+  sceneIndex.value += 1;
+  puzzlePassed.value = false;
+}
+
+/** Reset both stages (the slider needs a fresh gesture to pass again). */
 function resetChain(): void {
   sliderPassed.value = false;
   puzzlePassed.value = false;
+  puzzleAttempts.value = 0;
+  sceneIndex.value = 0;
 }
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
     <view class="sn-demo__panel">
-      <text class="sn-demo__panel-title">Stage 1 · slider</text>
+      <view class="sn-demo__panel-head">
+        <text class="sn-demo__panel-title">1 · Slider</text>
+        <text
+          class="sn-demo__badge"
+          :class="sliderPassed ? 'sn-demo__badge--passed' : 'sn-demo__badge--idle'"
+        >
+          {{ sliderPassed ? 'passed' : 'pending' }}
+        </text>
+      </view>
       <text class="sn-demo__panel-desc">
-        Drag the handle to the far right; passing unlocks stage two.
+        Drag the slider to the far right; the puzzle unfolds once it passes.
       </text>
       <SnSlideVerify
-        text="Drag right to verify"
+        text="Drag the slider to the right"
         success-text="Slider verified"
         @success="sliderPassed = true"
         @fail="sliderPassed = false"
@@ -45,37 +87,41 @@ function resetChain(): void {
     </view>
 
     <view v-if="sliderPassed" class="sn-demo__panel">
-      <text class="sn-demo__panel-title">Stage 2 · puzzle</text>
+      <view class="sn-demo__panel-head">
+        <text class="sn-demo__panel-title">2 · Jigsaw</text>
+        <text
+          class="sn-demo__badge"
+          :class="puzzlePassed ? 'sn-demo__badge--passed' : 'sn-demo__badge--idle'"
+        >
+          {{ puzzlePassed ? 'passed' : 'pending' }}
+        </text>
+      </view>
       <text class="sn-demo__panel-desc">
-        Align the puzzle piece with the notch; both stages passing clears the
-        chain.
+        Align the puzzle piece with the gap; both stages must pass.
       </text>
       <SnCaptcha
-        v-model="puzzlePassed"
         inline
-        :src="SOURCE"
-        :width="280"
-        :height="180"
-        @success="puzzlePassed = true"
-        @fail="puzzlePassed = false"
+        :src="src"
+        :width="300"
+        :height="190"
+        @success="onPuzzleSuccess"
+        @fail="onPuzzleFail"
+        @refresh="onPuzzleRefresh"
       />
     </view>
 
-    <view v-else class="sn-demo__panel sn-demo__panel--placeholder">
-      <text class="sn-demo__placeholder-text">Finish the slider first</text>
+    <view v-else class="sn-demo__panel sn-demo__panel--locked">
+      <text class="sn-demo__panel-title sn-demo__panel-title--muted">2 · Jigsaw</text>
+      <text class="sn-demo__panel-desc">
+        Finish stage 1 first — the puzzle unlocks after the slider passes.
+      </text>
     </view>
 
     <text class="sn-demo__meta">
-      Slider: {{ sliderPassed ? 'passed' : 'pending' }} · Puzzle:
-      {{ puzzlePassed ? 'passed' : 'pending' }} · Chain:
-      {{ chainPassed ? 'passed' : 'incomplete' }}
+      Chain: {{ statusText }} · puzzle attempts: {{ puzzleAttempts }}
     </text>
 
-    <view class="sn-demo__actions">
-      <text class="sn-demo__reset" role="button" aria-label="Reset the verification chain" @tap="resetChain">
-        Reset chain
-      </text>
-    </view>
+    <SnButton size="small" block @tap="resetChain">Reset the chain</SnButton>
   </view>
 </template>
 
@@ -86,6 +132,7 @@ function resetChain(): void {
   gap: var(--sn-mp-spacing-3);
   width: 100%;
 }
+
 .sn-demo__panel {
   display: flex;
   flex-direction: column;
@@ -95,39 +142,54 @@ function resetChain(): void {
   border-radius: var(--sn-mp-radius-lg);
   background-color: var(--sn-mp-color-background-surface);
 }
-.sn-demo__panel--placeholder {
-  align-items: center;
-  justify-content: center;
-  min-height: 160rpx;
+
+/* Locked stage: dashed outline + sunken surface so "not yet unlocked" reads
+ * without relying on opacity alone. */
+.sn-demo__panel--locked {
+  border-style: dashed;
+  background-color: var(--sn-mp-color-background-soft);
 }
+
+.sn-demo__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .sn-demo__panel-title {
   color: var(--sn-mp-color-text-primary);
   font-size: var(--sn-mp-font-size-md);
   font-weight: var(--sn-mp-font-weight-semibold);
 }
+
+.sn-demo__panel-title--muted {
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-demo__badge {
+  padding: 4rpx 16rpx;
+  border-radius: var(--sn-mp-radius-full);
+  font-size: var(--sn-mp-font-size-xs);
+}
+
+.sn-demo__badge--idle {
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-demo__badge--passed {
+  background-color: var(--sn-mp-color-feedback-success-soft);
+  color: var(--sn-mp-color-feedback-success);
+}
+
 .sn-demo__panel-desc {
   color: var(--sn-mp-color-text-tertiary);
   font-size: var(--sn-mp-font-size-xs);
   line-height: var(--sn-mp-font-line-height-normal);
 }
-.sn-demo__placeholder-text {
-  color: var(--sn-mp-color-text-disabled);
-  font-size: var(--sn-mp-font-size-sm);
-}
+
 .sn-demo__meta {
   color: var(--sn-mp-color-text-tertiary);
-  font-size: var(--sn-mp-font-size-xs);
-}
-.sn-demo__actions {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-.sn-demo__reset {
-  padding: var(--sn-mp-spacing-1) var(--sn-mp-spacing-3);
-  border-radius: var(--sn-mp-radius-full);
-  background-color: var(--sn-mp-color-background-soft);
-  color: var(--sn-mp-color-action-primary);
   font-size: var(--sn-mp-font-size-xs);
 }
 </style>

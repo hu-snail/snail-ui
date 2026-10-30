@@ -400,6 +400,22 @@ describe('sn-captcha', () => {
   });
 
   describe('inline mode (additive, AUI-OPT-12)', () => {
+    it('should bind the mouse drag on an inline mount', async () => {
+      // Inline mounts have no `v-model` flip to trigger a re-bind, and the
+      // piece node may land after the first post-flush tick — the deferred
+      // bind must still arm the desktop mouse path.
+      vi.useFakeTimers();
+      const w = await mountOpen({ inline: true, modelValue: false, tolerance: 10 });
+      withStageBox(w);
+      const vm = w.vm as unknown as { target: { x: number }; refresh(): void };
+      vm.refresh();
+      // Let any deferred retry fire before dragging.
+      vi.advanceTimersByTime(500);
+      await nextTick();
+
+      await mouseDrag(w, 0, vm.target.x + 4);
+      expect(w.emitted('success')).toHaveLength(1);
+    });
     it('should render embedded without scrim or close button, ignoring v-model', async () => {
       const w = await mountOpen({ inline: true, modelValue: false });
       expect(w.find('.sn-captcha--inline').exists()).toBe(true);

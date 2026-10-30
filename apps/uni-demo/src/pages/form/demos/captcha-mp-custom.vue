@@ -1,44 +1,54 @@
 <script setup lang="ts">
 /**
- * Demo: sn-captcha (uni-end) — 自定义：文案 / 尺寸 / 容差 / 关闭遮罩行为。
- * Per AUI-DOCS-016: imports the real @snui/uni sn-captcha from its SFC source.
+ * Demo: sn-captcha (uni-end) — 自定义文案 / 尺寸 / 容差 / 遮罩行为。
+ *
+ * `tips` / `success-text` 改写提示与成功文案；`width` / `height` 调整舞台
+ * 尺寸（更宽的画幅让拼图更好辨认）；`tolerance` 放宽对齐窗口；
+ * `close-on-click-modal = false` 让点遮罩不再关闭，避免误触取消。
+ *
+ * Per AUI-DOCS-016 / §111: imports the real @snui/uni SFC source.
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnCaptcha from '@snui/uni-src/components/sn-captcha/sn-captcha.vue';
 
 const show = ref(false);
+const passed = ref(false);
 
-function poster(): string {
-  return (
-    'data:image/svg+xml;charset=utf-8,' +
-    encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="320">` +
-        `<rect width="640" height="320" fill="#f59e0b"/>` +
-        `<path d="M0 220 Q160 120 320 220 T640 220 V320 H0 Z" fill="#fbbf24"/>` +
-        `<circle cx="500" cy="90" r="46" fill="rgba(255,255,255,0.35)"/>` +
-        `</svg>`,
-    )
-  );
-}
+/** Stable network poster (picsum seed) so the puzzle cuts a real photo. */
+const SOURCE = 'https://picsum.photos/seed/snui-captcha-custom/640/320';
 </script>
 
 <template>
   <view class="sn-demo sn-demo--stack">
-    <SnButton type="primary" block @tap="show = true">
-      自定义文案 / 尺寸 / 容差 / 不可点遮罩
-    </SnButton>
+    <view class="sn-demo__panel">
+      <view class="sn-demo__panel-head">
+        <text class="sn-demo__panel-title">自定义文案 / 尺寸 / 容差</text>
+        <text
+          class="sn-demo__badge"
+          :class="passed ? 'sn-demo__badge--passed' : 'sn-demo__badge--idle'"
+        >
+          {{ passed ? '已通过' : '待验证' }}
+        </text>
+      </view>
+      <text class="sn-demo__panel-desc">
+        更宽的画幅 + 更宽松的容差，提示与成功文案改为自定义内容；点遮罩不关闭。
+      </text>
+      <SnButton type="primary" block @tap="show = true">打开自定义验证</SnButton>
+    </view>
 
     <SnCaptcha
       v-model="show"
-      :src="poster()"
+      :src="SOURCE"
       :width="320"
       :height="160"
       tips="把拼图滑到亮框里"
-      success-text=" humans check ✓ "
+      success-text="验证通过"
       :tolerance="16"
       :close-on-click-modal="false"
       custom-class="sn-demo-contained"
+      @success="passed = true"
+      @fail="passed = false"
     />
   </view>
 </template>
@@ -47,8 +57,54 @@ function poster(): string {
 .sn-demo--stack {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: var(--sn-mp-spacing-3);
+  width: 100%;
 }
+
+.sn-demo__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sn-mp-spacing-2);
+  padding: var(--sn-mp-spacing-3);
+  border: 2rpx solid var(--sn-mp-color-border-subtle);
+  border-radius: var(--sn-mp-radius-lg);
+  background-color: var(--sn-mp-color-background-surface);
+}
+
+.sn-demo__panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sn-demo__panel-title {
+  color: var(--sn-mp-color-text-primary);
+  font-size: var(--sn-mp-font-size-md);
+  font-weight: var(--sn-mp-font-weight-semibold);
+}
+
+.sn-demo__badge {
+  padding: 4rpx 16rpx;
+  border-radius: var(--sn-mp-radius-full);
+  font-size: var(--sn-mp-font-size-xs);
+}
+
+.sn-demo__badge--idle {
+  background-color: var(--sn-mp-color-background-soft);
+  color: var(--sn-mp-color-text-tertiary);
+}
+
+.sn-demo__badge--passed {
+  background-color: var(--sn-mp-color-feedback-success-soft);
+  color: var(--sn-mp-color-feedback-success);
+}
+
+.sn-demo__panel-desc {
+  color: var(--sn-mp-color-text-tertiary);
+  font-size: var(--sn-mp-font-size-xs);
+  line-height: var(--sn-mp-font-line-height-normal);
+}
+
 /* Docs-preview only — keep the fixed-position popup inside the phone screen. */
 .sn-captcha.sn-demo-contained {
   position: absolute;

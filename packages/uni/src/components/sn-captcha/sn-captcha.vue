@@ -39,9 +39,9 @@
  *   - **Mini-programs have no DOM at all**; the layout must be queried through
  *     `uni.createSelectorQuery()`.
  *
- * `measureStage()` covers both paths (DOM first, query as the cross-end
- * fallback) and falls back to the `width` prop as the travel base when a host
- * cannot measure at all (AGENTS.md §85).
+ * `init()` covers both paths (DOM first, query as the cross-end fallback) and
+ * falls back to the `width` prop as the travel base when a host cannot measure
+ * at all (AGENTS.md §85).
  *
  * ## Coordinate scale (the "对不齐" fix)
  *
