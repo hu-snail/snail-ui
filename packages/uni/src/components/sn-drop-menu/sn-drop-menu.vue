@@ -37,7 +37,7 @@
  * `sn-popup` would take it out to `position: fixed`. The scrim is rendered
  * from this root as well; both share the same `duration` transition.
  *
- * ## Stacking (fixes a real occlusion bug — AUI-OPT-04)
+ * ## Stacking (fixes a real occlusion bug — AUI-OPT-16)
  *
  * The root is a positioned box, so its `z-index` is the *ceiling* for every
  * child: a panel that asks for a higher level inside the root still loses to
@@ -67,7 +67,7 @@
  * bar (where it covered nothing while the panel opened upwards), and the bar
  * arrow rests pointing up so the glyph always reads "what a tap does next".
  *
- * ## Option icons (additive, AUI-OPT-04, AGENTS.md §112.3a)
+ * ## Option icons (additive, AUI-OPT-16, AGENTS.md §112.3a)
  *
  * A row may carry an icon from three sources, with sn-cell's precedence chain:
  *
@@ -138,17 +138,17 @@ export interface SnDropMenuOption {
   /** Disable the row — taps are ignored. */
   disabled?: boolean;
   /**
-   * Row icon as inline SVG data (additive, AUI-OPT-04). Highest precedence —
+   * Row icon as inline SVG data (additive, AUI-OPT-16). Highest precedence —
    * pass a built-in set object (`IconData`) and no registration is needed.
    */
   iconData?: IconData;
   /**
-   * Row icon as an image URL (additive, AUI-OPT-04); rendered as `<image>`.
+   * Row icon as an image URL (additive, AUI-OPT-16); rendered as `<image>`.
    * Wins over `icon`, loses to `iconData`.
    */
   iconUrl?: string;
   /**
-   * Row icon as a name (additive, AUI-OPT-04). Resolved through the SnIcon
+   * Row icon as a name (additive, AUI-OPT-16). Resolved through the SnIcon
    * chain: registry (`registerSnIcons`) → built-in catalogue → `prefix:rest`
    * providers. Lowest precedence of the three icon sources.
    */

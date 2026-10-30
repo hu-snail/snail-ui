@@ -10,7 +10,7 @@
  *   - the scrim honours `modal` / `closeOnClickModal`
  *   - the transition timer is cleared on unmount (§41)
  *   - stacking: the raised ceiling floors a low `zIndex` and never lowers a
- *     high one (AUI-OPT-04 occlusion fix)
+ *     high one (AUI-OPT-16 occlusion fix)
  *   - `direction` anchors the panel up or down and rests the arrow accordingly
  *   - option icons resolve three sources (data object > image URL > name) with
  *     a documented precedence chain
@@ -170,7 +170,7 @@ describe('sn-drop-menu', () => {
     });
   });
 
-  describe('stacking (occlusion fix — AUI-OPT-04)', () => {
+  describe('stacking (occlusion fix — AUI-OPT-16)', () => {
     it('publishes the authored level plus a floored overlay level', () => {
       const w = mount(SnDropMenu, { props: { options } });
       const style = w.attributes('style') ?? '';

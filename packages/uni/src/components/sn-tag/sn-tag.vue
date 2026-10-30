@@ -8,7 +8,7 @@
  *   size / type / icon / icon-prefix / css-icon / closable / dynamic / color /
  *   bg-color / round / mark / variant / custom-class / custom-style.
  *
- * Registered AUI-additive capabilities (AGENTS.md §112.3a, absent upstream):
+ * Registered AUI-additive capabilities (AUI-OPT-17, AGENTS.md §112.3a, absent upstream):
  *   - `shape` — special-shape variants `skew` / `ribbon` / `fold` / `ticket`;
  *     `round` stays as the legacy sugar for `shape: 'round'`. When both are
  *     given, `shape` wins (same semantics as the web-end SnTag).
@@ -69,7 +69,7 @@ defineOptions({ name: 'SnTag' });
 
 // Reference: wot-ui wd-tag Attributes
 //   (https://wot-ui.cn/component/tag.html)
-// All prop names match wd-tag 1:1; `shape` / `iconUrl` are AUI additive.
+// All prop names match wd-tag 1:1; `shape` / `iconUrl` are AUI additive (AUI-OPT-17).
 const props = withDefaults(
   defineProps<{
     /** 标签尺寸，可选值为 small、medium、large、extra-large、default。 */
@@ -97,7 +97,7 @@ const props = withDefaults(
      */
     icon?: string | IconData;
     /**
-     * 图片图标 URL（AUI additive）：渲染为 `<image>`，尺寸与图标档位
+     * 图片图标 URL（AUI-OPT-17）：渲染为 `<image>`，尺寸与图标档位
      * token 对齐。优先级低于 `icon` 插槽、高于 `icon`。
      */
     iconUrl?: string;
@@ -106,7 +106,7 @@ const props = withDefaults(
     /** CSS（字体）图标：`true` 用 `iconPrefix`，字符串则直接作为 class 前缀。 */
     cssIcon?: boolean | string;
     /**
-     * 异形形态（AUI additive，§112.3a）：square 直角矩形、skew 平行四边形、
+     * 异形形态（AUI-OPT-17，§112.3a）：square 直角矩形、skew 平行四边形、
      * ribbon 右端旗标、fold 右上折角、ticket 两侧票券缺口、round 胶囊。
      * 非 square 时优先于 `round` sugar。
      */
@@ -410,7 +410,7 @@ const rootStyle = computed(() => {
   border-radius: var(--sn-mp-radius-full);
 }
 
-/* ── Special shapes (AUI additive, §112.3a) ──────────────────────────────
+/* ── Special shapes (AUI-OPT-17, §112.3a) ──────────────────────────────
  * Pure visuals layered on the box: transform / clip-path / mask only. A
  * renderer without them (uni-app x App) degrades to the plain square tag and
  * never loses padding or label — layout never depends on these properties. */

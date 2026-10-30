@@ -63,13 +63,13 @@ import { SnDropMenu } from '@snui/uni';
 | `value`    | `string \| number` | Value echoed back through `v-model` (key configurable). |
 | `tip`      | `string`           | Secondary tip line (key configurable).                  |
 | `disabled` | `boolean`          | Disable the row — taps are ignored.                     |
-| `iconData` | `IconData`         | Row icon as inline SVG data. **Additive (AUI-OPT-04)** — highest precedence. |
+| `iconData` | `IconData`         | Row icon as inline SVG data. **Additive (AUI-OPT-16)** — highest precedence. |
 | `iconUrl`  | `string`           | Row icon as an image URL, rendered as `<image>`. **Additive** — wins over `icon`, loses to `iconData`. |
 | `icon`     | `string`           | Row icon as a name (registry → built-in catalogue → `prefix:rest` provider). **Additive** — lowest precedence. |
 
 Row-icon precedence: `iconData` > `iconUrl` > `icon`.
 
-## Stacking (occlusion fix — AUI-OPT-04)
+## Stacking (occlusion fix — AUI-OPT-16)
 
 The root is a positioned box, so its own `z-index` caps every child; the
 reference default (12) sits below the app's transient band, so an open panel was
