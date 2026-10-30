@@ -42,9 +42,9 @@ const activeTab = ref(0);
 
 /* ── 主图轮播 ─────────────────────────────────────────────────────────── */
 const HERO_IMAGES = [
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBZX9yCKP6t7qIHbeQH2ty0xq8GMmwqhNUcQxclR3zTtU_okSGLcaLSN9dluYh5zrZ2akD4D-ZilqLoUgldkdpjEeXimtukwA4RgM1exzR0Kx7NwkMXInFceu-r8MuWYnImT1CxLS7PmN4GzBPKiSzusY_WRZD09aZwUlbf7IZ-g_K9HcvPf6tqzGmS3A5Yno5zx--UiwASfdzmMRn6sn0JeTuDbuPMcTDBwm5XqQs',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuBXaj8N6kzizL7UwhQxm4oAN4JkvHFahXYMknrWk3ZT9G1rdtPXuJggVgtYU4jXWeo4a66CjDQPIKdf7cS8RZgWduPNhtRITOTgWQsueImvLrtnIpYCSr5jRm5MITbNhGZsdJMDwbGr09YeWzfCN6bOh803O4RDHEBeVYfZK-_Ck0Jj7s5Vlb_bsz34Mvxsuaw9grvLgQdZKKtbZQxhHNjyk4Xpn6domOOP6fglDCY',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuD-ATtq0-NfCdDoKRQOT4aSRkYE5cN1iERSIxLmixsi6FY5VrV0BGpBgWAMIP-qCYLtBjFNKBS37Sizz3pHVVicGoW92VpGmnQ5RtexPE6gV0y8Kh_pC_jEAhE8uLVOnc-QFohlqhrG1qv8y6ClzQSu0hHLLr8ZZOPEjrUwDB5JlmxvUpppW_PSDIdxssmyVjRRwaSTvhDWR4_GHma6NKk98SGpVzZnM3HF7ji2Un8',
+  'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&h=600&fit=crop&q=70',
+  'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&h=600&fit=crop&q=70',
+  'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop&q=70',
 ];
 const heroIndex = ref(0);
 /** SnSwiper 的 slide 数据（`value` = 图片地址）。 */
@@ -59,9 +59,9 @@ const COUPONS = ['满1500减120', '消费券可叠', '淘金币抵¥41.97'];
 const SERVICES = ['假一赔四', '极速退款', '7天无理由退货', '全国联保'];
 const REVIEW_TAGS = ['降噪绝了(4,210)', '正品行货(3,180)', '音质震撼(2,090)', '佩戴舒适(940)'];
 const REVIEW_IMAGES = [
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAGaWtOwiLS1cwuM4jHeeJWIHk4hx8fs0eFjHj2V3-X5f7J2BdcD7id5xIlTof1eFUDb3yP5sI9nRVT1xCHXIvlmpdWGM3SdrTV5HxjMdBZvz60YW8G6GQV9IVRfRhP7CS9X1WZ9fYxnP3V2ynW9alQB94d2ERBebezL86nTo-sljcweuc8SHS7iViwulN489AwP2qdFoO8oCHPMOpAvFPEbJ7neeJhpSDubc9ZWs4',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuD8iFhPPoYmX7oUYeS-_Dm7GVZ8y7ItwNYeKhcH818nKEdPMNReBEJcJuJFHlxo4EVxDnhQDXgFfONsG8YpK9pd9bCGmCcx-Mx7GixXzWWpYXKQmG-ncc-4_ByTITdjMDvv6T5NJvJ7VyvpBN1OpW3iGlCkYqi0t9dvQqMVn8EOo1eISlrO6_O5BD6a4QwPeQGY2-SdcZJ8l08uyvfsyllFdBhaERgoIyXXyPG7Awo',
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuD4r9KWvP6mOU8dZSTj1xrlBEjK_UgkNaQ8i_PaStejs5dNKyMj47axUxeEu2uRGbcIg-R3b8E9LsZ-X4ojDKV_l0R22lp676cQ9WTtQ0kqX7BJta5iMnnhCm1vSR7q_uWBGX1LgB_9A_bQnce_J-oc9bTjCri4VePiihFEN8APeq3OO1OSGq1Dz_r5ZiyW8-rbDRr-13mOJEg0L6QG89k_jJT9R0AEc4aF0CAo03U',
+  'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=320&h=320&fit=crop&q=70',
+  'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=320&h=320&fit=crop&q=70',
+  'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=320&h=320&fit=crop&q=70',
 ];
 const QA_LIST = [
   {
@@ -80,7 +80,7 @@ const STORE_METRICS = [
 ];
 const DETAIL_BLOCKS = [
   {
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAsy5bWqKEFsOO72yGNghoOdP03axOxCLuMd9GS5nnHKJmYcXY-g9qOCbV6QnSUH4tDrysu37GTBP7iqgkk-knY-VwzU0yabxQyDJsHLj57vvJDUuc76XZRoY6McZD0kgzqyEeZItXFme4wXC490zqzP9rpp-2ajSuf8PLPY7hzpFydAJtTkfLKG9DvM_N29hpXr1Nq0bibKkMd9UQKdcXj3b3B95LmZ0TU2Vr_Hjw',
+    img: 'https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?w=560&h=420&fit=crop&q=70',
     title: 'Apple 专属定制 H2 芯片',
     sub: '计算音频引擎打造出众的主动降噪表现与更强三维空间音频',
     accent: '#785a00',
@@ -88,7 +88,7 @@ const DETAIL_BLOCKS = [
     body: '协同麦克风与声学网罩在嘈杂环境里以极高频次监测外部杂音，精准发出反向抗噪声波，无论是机舱引擎还是城市街道轰鸣，一键开启即刻沉浸清净音乐空间。',
   },
   {
-    img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBTsOakva4F8-bakKvR_vbISzYiy6TZFOY13v-ON2SBNQ7Sek3AQytynutWpQIe2z54c0prCFOTXaz2ScpfL9WMT61sf_Pp4urxJS64JoFQ58uaE5Bv0iGPIuV25hlbV3P0Ll1UIxMrRQZN1rYRDV0PXQWVBH2XH6LpZzJ-ahVaO7VfZ1IDspFRjUV8_RYq_595Fv63ktkqd-MdUDx6mqQ6YrH3ZrGhazQkz-H7ISo',
+    img: 'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=560&h=420&fit=crop&q=70',
     title: 'USB-C 通用接口升级',
     sub: '一根通用线缆兼容 iPhone、Mac 与 iPad 充放电',
     accent: '#bb0022',
@@ -97,7 +97,7 @@ const DETAIL_BLOCKS = [
   },
 ];
 const SKU_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuAUhoQ8hzmscawaL1ILGhY8Xr-TpHisFRTeV2oDi8UOlYrH3G5KrzCIHKalx15T17iuwBNpUrm2ZdgiPoywaHjEdT7EiUCQt61UHQthgNRGiPFz6bUYuirJz8WPBT83soKzBmcCLPQCGbpwI3TErVP01GdfWqSBooSEiMsTJwpLjVCkFyGeb6aRD-t4PamG_3MEbF0ULrhQ2mR80YvPs0EvJOUN7xAdSR2F-yxxsdQ';
+  'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=120&h=120&fit=crop&q=70';
 
 /* ── 交互 ─────────────────────────────────────────────────────────────── */
 const favorited = ref(true);

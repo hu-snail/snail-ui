@@ -42,8 +42,6 @@ const statusStyle = computed(() => ({ height: `${capsule.statusBarHeight}px` }))
 const ARTICLE = {
   title: '我国新一代可重复使用火箭完成十公里级垂直起降试验：深度解析关键突破与空间站低成本货运未来',
   author: '科技前沿观察',
-  authorAvatar:
-    'https://lh3.googleusercontent.com/aida-public/AB6AXuCtpoVhfJmCmJkuefiFIXKazZxvAUX0CjOFK9hjnxQWbI9IXt0XzBP9H18grKZiru0RiDVxzXwCJLLTkxCbytRUfm9S-gFIeFATHiurdOde2PENNll5_r_XYnIRaUkxLxYdbvpjfdYvBUBXpcaVcexCop0or0EwIbOgPTFCaDt-2gZc1Hd2KBg7IPRfVd_0MY4hRWA523Ng1HPWG24xwswAxle-T4QgHAMy272R6Bw',
   meta: '05-18 10:24 · 北京 · 3.8万阅读',
   lead: '核心导读：这是我国目前起飞规模最大、飞行高度最高的可重复使用火箭垂直起降（VTVL）飞行试验，标志着重型可回收航天动力进入工程实用化攻坚阶段，为空间站常态化、低成本补给奠定关键基石。',
   p1: '北京时间5月18日清晨，西北戈壁腹地的酒泉卫星发射中心传来激荡人心的轰鸣。伴随着发动机矢量喷管喷出的炽热尾焰，我国自主研制的新一代可重复使用试验箭腾空而起，在空中平稳爬升至预定10公里高度后完成关机转向滑行，并在降落段精准点火反推，四支轻量化碳纤维着陆缓冲腿稳稳锚固于靶心着陆台。',
@@ -56,9 +54,9 @@ const ARTICLE = {
 };
 const TAGS = ['#航天科技', '#商业火箭', '#空间站建设', '#中国科技前沿'];
 const LAUNCH_IMAGE =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCt9QDGNbSdHXhxG05WgZ5W8hwdOSdp-pzxy_FF7sW1K2u3dZQ-6iDPsJy5sQZ4KXTrCvcsN5r5v5_jszUehSIsGn6xYOPYBgIBrOUKb4ESR1yqm4qnq7xCveQetppUOqcCfBlDdTYZexA23LdbEhgqYOEcTieg4por91i1s-FOYK5vMN1H4krromVHQpAArGnYIW_zj6F29c9JVDbDGuvQDBaXdXSEJb0udWasqYU';
+  'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=1000&h=625&fit=crop&q=70';
 const VIDEO_COVER =
-  'https://lh3.googleusercontent.com/aida-public/AB6AXuCF4gLpYPIhALSvXGM2TOtOUAzm7fqJNAq_AxE2jFYEzYWd3p0pIAngv1tHw4cvss5iBKRFZAHgHHRVQ-f-NclEECy0_spwpx9_Fy3lftXxd_qHVDJShy5Uj22pdh_k7nFXfrF7omxdxZr5NLMdMX_EZWI4-TF4QUM_rzbgkalM5r7qKeN6uPn7M7ZnADOdr3YHiP7luB7GvOm6AjI-QjX82nqAcumlnA1st2qjz1E';
+  'https://images.unsplash.com/photo-1517976487492-5750f3195933?w=1024&h=576&fit=crop&q=70';
 /** 演示视频源（公开样片；真实项目由宿主注入自有地址）。 */
 const VIDEO_SRC = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
 
@@ -102,7 +100,6 @@ interface CommentEntry {
   id: number;
   name: string;
   badge: string;
-  avatar: string;
   initial: string;
   location: string;
   time: string;
@@ -117,8 +114,6 @@ const COMMENTS = ref<CommentEntry[]>([
     id: 1,
     name: '动力推进学徒',
     badge: '航天系统工程师',
-    avatar:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuC_Qs3nSfY3jAf0rO6662cJN0i6S7KacGuxjfTlOeEysqLQjd11bAVOnnDhf15emzMqp9zfmY89QuDZ3X0Vb7Kw6xU0S13ESZtKz8SdIMZN9nXFolg1FU8k25-1GHvszH1NnB2I4HVftBfvKaMa5g5IhQTcZ5bzITkfAstoQeLrv_ppu8izn2E6IUeowxvm_fGItDb33mCkPBMiiO8ch6uVvVP2KMbk5Cl6CY-3XhA',
     initial: '动',
     location: 'IP属地：陕西',
     time: '3小时前',
@@ -136,8 +131,6 @@ const COMMENTS = ref<CommentEntry[]>([
     id: 2,
     name: '逐梦苍穹2030',
     badge: '',
-    avatar:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBbuoOf3Rgip4wRRrlMkS0F89ssTc-CjzBpoxmCcXjjM-KgiOfXw9ceSU58GnFD_4dvtHi2s8uSDtdVHgqEWk5duw4FdbINaCbELCYxgbIzTKj4gNzspXgo0uMhB4i3a11Q-ooFu3_vW6cKd6UKANZAKm2mIRpQ9ySVcKcG2xwtNdgqMlWMmSQonSgh4s7gQsJBUtP-CI_O8xFIkV64OjnH-_g6qSEE-ZurWjCgrGI',
     initial: '逐',
     location: 'IP属地：广东',
     time: '4小时前',
@@ -150,8 +143,6 @@ const COMMENTS = ref<CommentEntry[]>([
     id: 3,
     name: '星图观测员老陈',
     badge: '',
-    avatar:
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuDolYFRMjwEbcl-NpxZZMy3or43_2huZY7GVBU1RsT-9dvRzGsHskySR90sHgBs50o5vdYaEU4X3aNl2F-R23-m-u3rjN-dyGpVXG7eSneFJbNDt5p53oLsbQHW7GlULt1hYdxub7SLQ7pp6DPSKCICPlaCfSzYL_mxiZHDg7qoq8aZkaw149tI8frcPblzNQull1hnlxXlCp_uPkjC5c5WQ0qR1j9e4a2hm0XYcJc',
     initial: '星',
     location: 'IP属地：四川',
     time: '5小时前',
@@ -188,9 +179,9 @@ const RECS: RecEntry[] = [
     title: '盘点全球可回收运载火箭全谱系：中美商业航天赛道迎来全方位大提速',
     kind: 'triple',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBe6-b46LB0D9ZZieXhXcXJJy4yboJeFMRmulsHckqqXdZqVztr4ClXB5dwgG8rW5t3fYPoTiInRtWnR24V5dth3jQQiXF2ZuGYr2QEbxg0rAga70dc_fdyZHeV-d5ZTFIBiJCPWSdAkdWuI_pUdgyh6i_E43rh_aAlEeGiLQFPDRKqcroJPioFOFEWNZLGJSGXVOFBAQLz2OwHFGnU7s_zWJmjx-Hzh31yNuaN_XE',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAQyIFA_Y2ocLAAamk9Sn_5nFGA8ljQK2SOObKcPiDbK-no2olx7GvLRBuvtG71VOQlYHzPPC22nggXrwQYjOBLRsfZXCRC_TLtS-bxdYgLi5UX0T-wKT33sw5FD5crObJA-6fy2-2dz1_lOCRs-THGxP82hkfzeC2a6GII2otA6vH-AvneqvMF8Dw0Zyibnr9_eyfnM6A-Sz_1UHVtvApSBnJsLvzE3xn-ppNcjms',
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAXzJeDam-qj-MnDODmwvFeVdFX6iTFbv_UYTfUf2l_C-0FcUNrs9akI1JD5XOjwHA3hzQrkLDK3NKofch42ieD2Nli7WAG1H_DfH4h8mN046XqUCTD9zPvwoTcwJN3i62PCrC2OJfWfBzApPCMlcr7ftGLXl8fvYcVHQA896fnVp5is57leRM2G6zmObYME-KrJz2LB-fjSqZ409UcjQhbpfQ1MYx-6Hr5JIsA08I',
+      'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=320&h=240&fit=crop&q=70',
+      'https://images.unsplash.com/photo-1517976487492-5750f3195933?w=320&h=240&fit=crop&q=70',
+      'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=320&h=240&fit=crop&q=70',
     ],
     source: '环球航天洞察',
     meta: '168评论',
@@ -202,7 +193,7 @@ const RECS: RecEntry[] = [
     title: '空间站低成本货运飞船竞标方案解密：民营力量如何融入国家工程？',
     kind: 'single',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuD_xip5zEExRIwblqXW80ppx2yuK-ca6X6fNvrz5vfisUwvl8b3pDX2es2-enSvTRgmRa0Q4d1e7xdF18uDrSlgxqR1GEg5dOnMW5h4swe9Mx_VCEyVAGyfLzXP_fhK0gYgV3GvKYFfBfjcezWtWlD7IusrREjcYlERTLvh5H-cTmoWIzUDQIOeNxSmRDg0gWP1_M9VCqcrRDAsR970qfl0iFxQ-ytxgnOTu2XE2W8',
+      'https://images.unsplash.com/photo-1517976487492-5750f3195933?w=320&h=240&fit=crop&q=70',
     ],
     source: '新华科技',
     meta: '94评 · 1小时前',
@@ -214,7 +205,7 @@ const RECS: RecEntry[] = [
     title: '三维重演：10公里垂直起降火箭在下坠过程中如何克服强侧风？',
     kind: 'video',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAn86R-_fHF_93hj3ClNcMCiU1iM_OFvwGA6wINUPh0uyC6vNANvTgh6LfX4hQKnalvKkUvtYUjRbP7p1pxCU9RLr0Nvftmm-SCNNplen4UpsAxwyVKn1o9NNWN7ywbdJFiTAC5KeGe5366Enj03nRea0UOC60YoZn-OkYMyzr0N1PucFxiuLNzXecjEQCUkfIg47gKr_3lxZu6tNmbyGdZfHu9zT0vQjHSojDcOZo',
+      'https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=320&h=240&fit=crop&q=70',
     ],
     source: '硬核力学讲堂',
     meta: '5.2万次播放',
@@ -227,7 +218,7 @@ const RECS: RecEntry[] = [
     title: '液氧甲烷发动机完成千秒级长程试车：复用寿命再上台阶',
     kind: 'single',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAQyIFA_Y2ocLAAamk9Sn_5nFGA8ljQK2SOObKcPiDbK-no2olx7GvLRBuvtG71VOQlYHzPPC22nggXrwQYjOBLRsfZXCRC_TLtS-bxdYgLi5UX0T-wKT33sw5FD5crObJA-6fy2-2dz1_lOCRs-THGxP82hkfzeC2a6GII2otA6vH-AvneqvMF8Dw0Zyibnr9_eyfnM6A-Sz_1UHVtvApSBnJsLvzE3xn-ppNcjms',
+      'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=320&h=240&fit=crop&q=70',
     ],
     source: '深空动力',
     meta: '72评 · 20分钟前',
@@ -295,7 +286,7 @@ function shuffleRecs(): void {
         <view class="art-byline">
           <view class="art-byline__author">
             <view class="art-byline__avatar-wrap">
-              <SnAvatar :src="ARTICLE.authorAvatar" :text="'科'" :size="88" />
+              <SnAvatar text="科" :size="88" />
               <view class="art-byline__v">
                 <text class="art-byline__v-text">V</text>
               </view>
@@ -481,7 +472,7 @@ function shuffleRecs(): void {
           </view>
 
           <view v-for="c in sortedComments" :key="c.id" class="art-comment">
-            <SnAvatar :src="c.avatar" :text="c.initial" :size="72" />
+            <SnAvatar :text="c.initial" :size="72" />
             <view class="art-comment__body">
               <view class="art-comment__head">
                 <view class="art-comment__name-row">
