@@ -35,9 +35,33 @@
  *
  * ## Geometry
  *
- * The track width is measured once on mount (`onMounted` → one
- * `getBoundingClientRect`) and re-measured through the exposed `init()`.
- * No observer, no timer — nothing to dispose (AGENTS.md §41).
+ * The track width is measured on mount (`onMounted` → `init()`) and re-measured
+ * through the exposed `init()`. Two host realities shape `init()`:
+ *
+ *   - **uni H5 wraps `<view>` in a component**, so the template ref is the
+ *     component instance and the node lives on `$el` (same unwrap as
+ *     `sn-picker-view` + `sn-captcha`).
+ *   - **Mini-programs have no DOM**; the width comes from
+ *     `uni.createSelectorQuery()`.
+ *
+ * A zero width would make `maxOffset` 0 and every release a fail, so the
+ * gesture also re-measures lazily when it starts on an unmeasured track (a
+ * popup / tab opened after mount). No observer, no timer — nothing to dispose
+ * beyond the mouse listeners below (AGENTS.md §41).
+ *
+ * ## Desktop H5 mouse (additive — AUI-OPT-12, AGENTS.md §112.3a)
+ *
+ * The handle's drag is touch-based; a desktop browser never turns mouse drags
+ * into touch events, so `bindHorizontalDragMouse` (shared with `sn-captcha`)
+ * feeds the same drag core. Text selection along the sweep is suppressed and
+ * synthetic post-touch mousedowns are ignored.
+ *
+ * ## Coordinate scale
+ *
+ * `offset` / `maxOffset` are design px (`1 design px = 2rpx`) while a pointer
+ * delta arrives in CSS px; `pxPerDesign()` (shared) applies uni's own rpx rule
+ * (effective viewport capped at 960px, 375px base) so travel tracks the pointer
+ * on any viewport — 1:1 on the 375px reference, 2:1 on a 750px host.
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
@@ -46,10 +70,11 @@
  *   - 服务端票据校验 — 由宿主在 `success` 里完成
  */
 
-import { computed, markRaw, onMounted, ref } from 'vue';
+import { computed, getCurrentInstance, markRaw, onBeforeUnmount, onMounted, ref } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { Check as CheckIcon, ChevronRight as ChevronRightIcon } from '../sn-icon/sn-icon-set';
+import { bindHorizontalDragMouse, pxPerDesign, resolveNodeEl } from '../sn-captcha/sn-captcha-mouse';
 
 defineOptions({ name: 'SnSlideVerify' });
 
@@ -128,24 +153,94 @@ const successIconSizeValue = computed(() => props.successIconSize);
 
 /* ── Geometry ──────────────────────────────────────────────────────────── */
 
-/** Track width in px, measured on mount / `init()`. */
+/** Track width in px design units, measured on mount / `init()`. */
 const trackWidth = ref(0);
 /** Button width in px design units — fixed so the maths is stable. */
 const BUTTON_SIZE = 44;
 
-const trackRef = ref<{
-  getBoundingClientRect?: () => { width: number; left: number };
-} | null>(null);
+const trackRef = ref<unknown>(null);
+/** Handle node, for the desktop-mouse binding (H5 only). */
+const handleRef = ref<unknown>(null);
+/** Component instance — mini-program selector queries need it for `in()`. */
+const instance = getCurrentInstance();
 
+/** The slice of `uni.createSelectorQuery()` used here. */
+interface SelectorQueryLike {
+  in?(component: unknown): SelectorQueryLike;
+  select?(selector: string): SelectorQueryLike;
+  boundingClientRect?(callback: (rect: { width?: number } | null) => void): SelectorQueryLike;
+  exec?(): void;
+}
+
+/** Adopt a measured CSS-px width, converted into design px. */
+function applyTrackWidth(cssWidth: number): void {
+  if (cssWidth > 0) trackWidth.value = cssWidth / pxPerDesign();
+}
+
+/** Measure through `uni.createSelectorQuery()` (mini-programs / App). */
+function queryTrackWidth(): void {
+  const host = globalThis as { uni?: { createSelectorQuery?: () => SelectorQueryLike } };
+  const createSelectorQuery = host.uni?.createSelectorQuery;
+  if (typeof createSelectorQuery !== 'function' || instance === null) return;
+  try {
+    createSelectorQuery()
+      .in?.(instance.proxy)
+      .select?.('.sn-slide-verify__track')
+      .boundingClientRect?.((rect) => {
+        const width = typeof rect?.width === 'number' ? rect.width : 0;
+        applyTrackWidth(width);
+      })
+      .exec?.();
+  } catch {
+    // A host that rejects the query keeps the existing width (0 → re-measured
+    // on the next `init()` / gesture start).
+  }
+}
+
+/**
+ * Measure the track width in design px.
+ *
+ * `resolveNodeEl` unwraps the uni H5 `<view>` component ref; hosts without a
+ * DOM answer through the selector query instead.
+ */
 function init(): void {
-  const el = trackRef.value;
-  if (!el || typeof el.getBoundingClientRect !== 'function') return;
-  trackWidth.value = el.getBoundingClientRect().width;
+  const el = resolveNodeEl(trackRef.value) as { getBoundingClientRect?: () => { width: number } } | null;
+  if (el !== null && typeof el.getBoundingClientRect === 'function') {
+    const rect = el.getBoundingClientRect();
+    if (rect.width > 0) {
+      applyTrackWidth(rect.width);
+      return;
+    }
+  }
+  queryTrackWidth();
 }
 
 onMounted(init);
 
-/* ── Drag ──────────────────────────────────────────────────────────────── */
+/* ── Desktop H5 mouse (additive — AUI-OPT-12, AGENTS.md §112.3a) ───────── */
+
+let disposeMouse: (() => void) | null = null;
+/** True while a real touch gesture is live (mouse input defers to it). */
+let touchActive = false;
+
+onMounted(() => {
+  const el = resolveNodeEl(handleRef.value);
+  if (!(el instanceof HTMLElement)) return;
+  disposeMouse = bindHorizontalDragMouse(el, {
+    begin: beginDrag,
+    move: moveDrag,
+    end: endMouseDrag,
+    isLocked: () => props.disabled || state.value === 'success',
+    isTouchActive: () => touchActive,
+  });
+});
+
+onBeforeUnmount(() => {
+  disposeMouse?.();
+  disposeMouse = null;
+});
+
+/* ── Drag (touch + desktop H5 mouse share one core) ────────────────────── */
 
 const state = ref<VerifyState>('idle');
 /** Travel distance in px design units. */
@@ -154,14 +249,22 @@ let dragStartX = 0;
 /** Max travel: track width minus the button. */
 const maxOffset = computed(() => Math.max(trackWidth.value - BUTTON_SIZE, 0));
 
+/** Reference CSS-px position of an event, or 0 when it carries none. */
 function touchX(event: Event): number {
   const detail = event as unknown as {
     touches?: Array<{ clientX?: number; pageX?: number }>;
     changedTouches?: Array<{ clientX?: number; pageX?: number }>;
     detail?: { x?: number };
   };
-  const list = detail.touches ?? detail.changedTouches;
-  const point = list && list.length > 0 ? list[0] : undefined;
+  // A real `touchend` carries an empty `touches` array; only `changedTouches`
+  // has the point, and an empty array is not nullish — check the length.
+  const list =
+    detail.touches && detail.touches.length > 0
+      ? detail.touches
+      : detail.changedTouches && detail.changedTouches.length > 0
+        ? detail.changedTouches
+        : undefined;
+  const point = list ? list[0] : undefined;
   if (point && typeof point.clientX === 'number') return point.clientX;
   if (point && typeof point.pageX === 'number') return point.pageX;
   if (detail.detail && typeof detail.detail.x === 'number') return detail.detail.x;
@@ -172,20 +275,24 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
-function onTouchStart(event: Event): void {
-  if (props.disabled || state.value === 'success') return;
-  dragStartX = touchX(event);
+function beginDrag(clientX: number): void {
+  // A popup / tab opened after mount leaves the track unmeasured; measuring on
+  // the first gesture keeps the release check meaningful (maxOffset > 0).
+  if (trackWidth.value <= 0) init();
+  dragStartX = clientX;
+  offset.value = 0;
   state.value = 'dragging';
 }
 
-function onTouchMove(event: Event): void {
-  if (props.disabled || state.value !== 'dragging') return;
-  event.preventDefault();
-  const delta = touchX(event) - dragStartX;
+function moveDrag(clientX: number): void {
+  if (state.value !== 'dragging') return;
+  // Pointer delta is CSS px; the handle travels in design px.
+  const delta = (clientX - dragStartX) / pxPerDesign();
   offset.value = clamp(delta, 0, maxOffset.value);
 }
 
-function onTouchEnd(): void {
+/** Resolve the verdict on release (touch end / mouse up). */
+function settleDrag(): void {
   if (state.value !== 'dragging') return;
   const reached = maxOffset.value > 0 ? offset.value >= maxOffset.value - props.tolerance : false;
   if (reached) {
@@ -201,10 +308,34 @@ function onTouchEnd(): void {
   state.value = 'idle';
 }
 
+function onTouchStart(event: Event): void {
+  if (props.disabled || state.value === 'success') return;
+  touchActive = true;
+  beginDrag(touchX(event));
+}
+
+function onTouchMove(event: Event): void {
+  if (props.disabled || state.value !== 'dragging' || !touchActive) return;
+  event.preventDefault();
+  moveDrag(touchX(event));
+}
+
+function onTouchEnd(): void {
+  if (!touchActive) return;
+  touchActive = false;
+  settleDrag();
+}
+
 function onTouchCancel(): void {
-  if (state.value !== 'dragging') return;
+  if (!touchActive) return;
+  touchActive = false;
   offset.value = 0;
   state.value = 'idle';
+}
+
+/** Mouse release — the mouse path has no cancel, so it settles. */
+function endMouseDrag(): void {
+  settleDrag();
 }
 
 /** Public imperative API (wd-slide-verify parity). */
@@ -272,6 +403,7 @@ const hintText = computed(() => {
       <text class="sn-slide-verify__text">{{ hintText }}</text>
 
       <view
+        ref="handleRef"
         :class="[
           'sn-slide-verify__handle',
           { 'sn-slide-verify__handle--success': state === 'success' },
@@ -281,7 +413,7 @@ const hintText = computed(() => {
         :aria-label="hintText"
         :tabindex="props.disabled || state === 'success' ? -1 : 0"
         @touchstart="onTouchStart"
-        @touchmove="onTouchMove"
+        @touchmove.stop.prevent="onTouchMove"
         @touchend="onTouchEnd"
         @touchcancel="onTouchCancel"
       >
