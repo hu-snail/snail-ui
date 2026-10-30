@@ -276,6 +276,28 @@ function bindMouse(): void {
   }
 }
 
+/**
+ * Retry until the piece node exists.
+ *
+ * The piece lives inside the measured stage, so on the very first inline
+ * mount the watcher's single `nextTick()` can run before the node is in the
+ * tree — the bind silently no-ops and never retries, which left desktop H5
+ * without mouse dragging (touch still worked). Bounce through a couple of
+ * animation frames: `bindMouse` is idempotent once it succeeds.
+ */
+let bindRetry: ReturnType<typeof setTimeout> | null = null;
+
+function bindMouseWhenReady(attempt = 0): void {
+  if (disposeMouse) return;
+  bindMouse();
+  if (disposeMouse !== null || attempt >= 8) return;
+  if (bindRetry !== null) clearTimeout(bindRetry);
+  bindRetry = setTimeout(() => {
+    bindRetry = null;
+    bindMouseWhenReady(attempt + 1);
+  }, 50);
+}
+
 function unbindMouse(): void {
   disposeMouse?.();
   disposeMouse = null;
@@ -295,7 +317,7 @@ watch(
   async (visible) => {
     if (visible) {
       await nextTick();
-      bindMouse();
+      bindMouseWhenReady();
     } else {
       unbindMouse();
     }
@@ -348,6 +370,10 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   clearTimers();
+  if (bindRetry !== null) {
+    clearTimeout(bindRetry);
+    bindRetry = null;
+  }
   unbindMouse();
 });
 
