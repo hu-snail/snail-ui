@@ -9,10 +9,14 @@
 Tap-triggered bubble with two modes: `normal` (plain text / custom content) and
 `menu` (a tappable option list). Used for contextual actions ("more" menus) and
 inline rich hints on mobile / miniprogram.
-Outside taps close the bubble through the wot-ui-style `useQueue` /
-`closeOutside` page-root hook (see docs). The bubble
-defaults to the elevated surface — white in the light theme — with the page
-text color; recolor via `--sn-popover-bg` / `--sn-popover-color`.
+
+Outside taps close the bubble through a transparent full-viewport mask
+(`closeOnClickOutside`, default `true`) that captures the tap itself, so no
+page-root wiring is required; the page-root `useQueue` / `closeOutside`
+channel stays available as a second path. The bubble is auto-height: it grows
+with its content instead of clipping it. The bubble defaults to the elevated
+surface — white in the light theme — with the page text color; recolor via
+`--sn-popover-bg` / `--sn-popover-color`.
 
 ## Reference Library
 
@@ -36,29 +40,33 @@ import { SnPopover } from '@snui/uni';
 
 ## Props
 
-| Name           | Type                               | Default    | Required | Description                                                                |
-| -------------- | ---------------------------------- | ---------- | -------- | -------------------------------------------------------------------------- |
-| `modelValue`   | `boolean`                          | `false`    | no       | Whether the bubble is shown (`v-model`).                                   |
-| `content`      | `string \| SnPopoverMenuItem[]`    | `''`       | no       | A string in `normal` mode, a row list in `menu` mode.                      |
-| `mode`         | `'normal' \| 'menu'`               | `'normal'` | no       | Bubble display mode.                                                       |
-| `placement`    | 12-direction `PlacementType`       | `'bottom'` | no       | Bubble anchor.                                                             |
-| `offset`       | `number \| number[] \| { x?, y? }` | `0`        | no       | Gap in design px; published as `--sn-popover-offset-x` / `-y`.             |
-| `visibleArrow` | `boolean`                          | `true`     | no       | Render the arrow.                                                          |
-| `disabled`     | `boolean`                          | `false`    | no       | Disables the trigger.                                                      |
-| `showClose`    | `boolean`                          | `false`    | no       | Render a close button inside the bubble.                                   |
-| `customClass`  | `string`                           | `''`       | no       | Custom class for the root node.                                            |
-| `customStyle`  | `string`                           | `''`       | no       | Custom inline style for the root node.                                     |
-| `customArrow`  | `string`                           | `''`       | no       | Extra class on the arrow node.                                             |
-| `customPop`    | `string`                           | `''`       | no       | Extra class on the bubble node.                                            |
-| `rootPortal`   | `boolean`                          | `false`    | no       | **Not implemented** — declared for parity; miniprogram has no portal host. |
+| Name                  | Type                               | Default    | Required | Description                                                                        |
+| --------------------- | ---------------------------------- | ---------- | -------- | ---------------------------------------------------------------------------------- |
+| `modelValue`          | `boolean`                          | `false`    | no       | Whether the bubble is shown (`v-model`).                                           |
+| `content`             | `string \| SnPopoverMenuItem[]`    | `''`       | no       | A string in `normal` mode, a row list in `menu` mode.                              |
+| `mode`                | `'normal' \| 'menu'`               | `'normal'` | no       | Bubble display mode.                                                               |
+| `placement`           | 12-direction `PlacementType`       | `'bottom'` | no       | Bubble anchor.                                                                     |
+| `offset`              | `number \| number[] \| { x?, y? }` | `0`        | no       | Gap in design px; published as `--sn-popover-offset-x` / `-y`.                     |
+| `visibleArrow`        | `boolean`                          | `true`     | no       | Render the arrow.                                                                  |
+| `disabled`            | `boolean`                          | `false`    | no       | Disables the trigger.                                                              |
+| `showClose`           | `boolean`                          | `false`    | no       | Render a close button inside the bubble.                                           |
+| `closeOnClickOutside` | `boolean`                          | `true`     | no       | Close on an outside tap — a transparent mask takes the tap (additive, AUI-OPT-07). |
+| `customClass`         | `string`                           | `''`       | no       | Custom class for the root node.                                                    |
+| `customStyle`         | `string`                           | `''`       | no       | Custom inline style for the root node.                                             |
+| `customArrow`         | `string`                           | `''`       | no       | Extra class on the arrow node.                                                     |
+| `customPop`           | `string`                           | `''`       | no       | Extra class on the bubble node.                                                    |
+| `rootPortal`          | `boolean`                          | `false`    | no       | **Not implemented** — declared for parity; miniprogram has no portal host.         |
 
 ### `SnPopoverMenuItem`
 
-| Field       | Type      | Description                               |
-| ----------- | --------- | ----------------------------------------- |
-| `content`   | `string`  | Row label.                                |
-| `iconClass` | `string`  | `sn-icon` registry name, or an image URL. |
-| `disabled`  | `boolean` | Disable the row — taps are ignored.       |
+| Field       | Type       | Description                                                                           |
+| ----------- | ---------- | ------------------------------------------------------------------------------------- |
+| `content`   | `string`   | Row label.                                                                            |
+| `iconData`  | `IconData` | Inline icon data — highest precedence, no registration step (additive).               |
+| `iconUrl`   | `string`   | Image address, rendered as `<image>` (additive).                                      |
+| `icon`      | `string`   | Icon name resolved through SnIcon: registry → built-in catalog → provider (additive). |
+| `iconClass` | `string`   | Legacy field: an `sn-icon` name, or an image URL (lowest precedence).                 |
+| `disabled`  | `boolean`  | Disable the row — taps are ignored.                                                   |
 
 ## Events
 
@@ -87,33 +95,41 @@ import { SnPopover } from '@snui/uni';
 
 ## Tokens Consumed (end: mp)
 
-| Token         | CSS Variable                                              | Purpose                |
-| ------------- | --------------------------------------------------------- | ---------------------- |
-| Component vars | `--sn-popover-bg` (default: `--sn-mp-color-background-elevated`), `--sn-popover-color` (default: `--sn-mp-color-text-primary`) | Bubble fill (white in the light theme) / text; the arrow follows the fill |
-| Muted text    | `--sn-mp-color-text-secondary`                            | Row icon               |
-| Disabled text | `--sn-mp-color-text-disabled`                             | Disabled row           |
-| Border        | `--sn-mp-color-border-subtle`                             | Bubble + arrow outline |
-| Elevation     | `--sn-mp-shadow-md`                                       | Bubble shadow          |
-| Radius        | `--sn-mp-radius-md`                                       | Bubble corners         |
-| Spacing       | `--sn-mp-spacing-2/3/4`                                   | Padding / gaps         |
-| Typography    | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal` | Bubble text            |
+| Token          | CSS Variable                                                                                                                             | Purpose                                                                   |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Component vars | `--sn-popover-bg` (default: `--sn-mp-color-background-elevated`), `--sn-popover-color` (default: `--sn-mp-color-text-primary`)           | Bubble fill (white in the light theme) / text; the arrow follows the fill |
+| Glyph scale    | `--sn-popover-menu-icon-size` (default: `--sn-mp-icon-size-medium`), `--sn-popover-close-icon-size` (default: `--sn-mp-icon-size-small`) | Menu row glyph / close glyph; both are overridable via `custom-style`     |
+| Muted text     | `--sn-mp-color-text-secondary`                                                                                                           | Row icon                                                                  |
+| Disabled text  | `--sn-mp-color-text-disabled`                                                                                                            | Disabled row                                                              |
+| Border         | `--sn-mp-color-border-subtle`                                                                                                            | Bubble + arrow outline                                                    |
+| Elevation      | `--sn-mp-shadow-md`                                                                                                                      | Bubble shadow                                                             |
+| Radius         | `--sn-mp-radius-md`                                                                                                                      | Bubble corners                                                            |
+| Spacing        | `--sn-mp-spacing-2/3/4`                                                                                                                  | Padding / gaps                                                            |
+| Typography     | `--sn-mp-font-size-sm`, `--sn-mp-font-line-height-normal`                                                                                | Bubble text                                                               |
 
 ## Accessibility
 
 - Trigger carries `role="button"` + `aria-expanded` + `aria-disabled`
 - Bubble carries `role="dialog"`; the arrow is `aria-hidden="true"`
 - `menu` rows carry `role="menuitem"` + `aria-disabled`
+- The outside-close mask is `aria-hidden="true"` and takes no screen-reader focus
 - Interaction uses `@tap`; no hover trigger (miniprogram has none)
 
 ## Documented Divergences
 
 - No `trigger` prop: there is no hover on miniprogram, so the trigger is always tapped.
-- Click-outside close: wot-ui `useQueue` / `closeOutside` parity — the page
-  root binds the tap dispatcher; the component registers an idempotent close.
-  No mask is rendered (a mask swallowed taps and broke one-gesture switching).
+- Click-outside close: a transparent full-viewport mask (`closeOnClickOutside`,
+  default `true`, additive AUI-OPT-07) captures the outside tap itself. The
+  wot-ui `useQueue` / `closeOutside` page-root channel is kept as a second path.
+  Trade-off: the mask covers sibling triggers, so two-bubble switching costs two
+  taps; pass `closeOnClickOutside="false"` for one-gesture switching.
+- Auto height (additive AUI-OPT-07): the pop is `height: auto`, menu labels
+  wrap, and glyph boxes follow the icon-size tokens instead of a fixed square.
+- Menu row glyphs: `iconData` / `iconUrl` / `icon` are additive (AUI-OPT-07,
+  AGENTS.md §112.3a); the legacy `iconClass` field keeps its wd-parity
+  name-or-image-address semantics at the lowest precedence.
 - `root-portal` is declared but not implemented.
 - `updatePosition()` is a no-op.
-- `iconClass` is an `sn-icon` registry name / image URL, not a CSS class.
 
 ## Disposal
 

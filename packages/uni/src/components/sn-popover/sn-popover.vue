@@ -27,21 +27,56 @@
  *   - `iconClass` is accepted as an `sn-icon` registry name (or an image URL)
  *     rather than a CSS class — uni has no font-icon layer.
  *
- * ## Click-outside close (useQueue / closeOutside, wot-ui parity)
+ * ## Click-outside close (AUI-OPT-07)
  *
  * uni-app components cannot listen to taps outside their own subtree, so the
- * transparent-mask approach was dropped: it swallowed the whole tap and made
- * switching to another bubble a two-tap affair. Instead the component
- * registers an idempotent close in `utils/outside-close.ts` while mounted,
- * and the page root binds the tap-bubbling dispatcher:
+ * first cut left the tap to the host: the component registered an idempotent
+ * close in `utils/outside-close.ts` and the page root had to bind the
+ * dispatcher (`<view @tap="closeOutside"> … </view>`). That wiring is invisible
+ * from the call site — a page that never binds it (or any ancestor that
+ * swallows the tap) simply never outside-closes, and a `menu` bubble then has
+ * no way out but its own rows.
  *
- *   import { useQueue } from '@snui/uni';
- *   const { closeOutside } = useQueue();
- *   <view @tap="closeOutside"> … page … </view>
+ * The bubble now captures the outside tap itself:
  *
- * The trigger and the bubble bind `@tap.stop` so taps on them never reach
- * the root handler — tapping another trigger therefore switches bubbles in
- * one gesture. Pages that never bind the handler simply never outside-close.
+ *   - `closeOnClickOutside` (default `true`) renders a transparent
+ *     full-viewport mask below the bubble. The mask binds `@tap.stop`
+ *     (`catchtap` on miniprogram), so tapping anywhere outside the bubble
+ *     closes it and the tap never reaches the page behind.
+ *   - The mask is transparent: a popover is a pointer surface, not a modal, so
+ *     the page must not dim (contrast wd-popover's page-root `closeOutside`
+ *     demo, which needs no mask because the demo page wires the handler).
+ *   - The page-root `closeOutside` channel is kept as a second path, so a host
+ *     that wants one tap to close every overlay still gets it.
+ *
+ * Trade-off: an open bubble's mask covers sibling triggers, so switching
+ * between two bubbles costs a close tap plus an open tap. Pass
+ * `closeOnClickOutside="false"` to get one-gesture switching back (taps then
+ * only close through the page-root channel).
+ *
+ * ## Auto height (AUI-OPT-07)
+ *
+ * The bubble sizes to its content and never clips it: the pop is `height: auto`
+ * with no cap, menu labels wrap instead of forcing one line, and no glyph lives
+ * in a fixed square whose geometry disagrees with the icon's own scale — the
+ * row glyph and the close glyph are sized by `--sn-mp-icon-size-*` tokens, so a
+ * larger icon or a long label grows the bubble instead of overflowing it.
+ *
+ * ## Menu row icons (additive, AUI-OPT-07, AGENTS.md §112.3a)
+ *
+ * A `menu` row resolves its glyph from four sources, highest precedence first:
+ *
+ *   - `iconData`  — an inline `IconData` object; no registration step needed
+ *   - `iconUrl`   — an image address, rendered as `<image>`
+ *   - `icon`      — a name resolved by SnIcon (registry → built-in catalogue →
+ *                   `prefix:rest` provider)
+ *   - `iconClass` — wd-parity legacy field: a name, or an image address when
+ *                   the value looks like one (`http` / `data` / `//` / `/`)
+ *
+ * The glyph scale is `--sn-popover-menu-icon-size` (wd
+ * `--wot-popover-menu-icon-size` parity), defaulting to the `medium` icon tier;
+ * the close glyph follows `--sn-popover-close-icon-size`, defaulting to
+ * `small`. Both are published on the bubble, overridable via `custom-style`.
  *
  * ## Bubble palette (wot-ui parity: --wot-popover-bg / --wot-popover-color)
  *
@@ -67,19 +102,27 @@
  *   - 页面级下拉筛选 — 用 sn-drop-menu
  */
 
-import { computed, getCurrentInstance, markRaw, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import {
+  computed,
+  getCurrentInstance,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
 import { X as XIcon } from '../sn-icon/sn-icon-set';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
 import { registerOutsideClosable, unregisterOutsideClosable } from '../../utils/outside-close';
 
 defineOptions({ name: 'SnPopover' });
 
 const instanceId = getCurrentInstance()?.uid ?? 0;
 
-// Register while mounted so a page-root `@tap="closeOutside"` closes this
-// overlay too (the callback no-ops while the bubble is already closed).
+// Second outside-close path: a page-root `@tap="closeOutside"` closes this
+// overlay too (the callback no-ops while the bubble is already closed). The
+// primary path is the bubble's own mask, see `closeOnClickOutside`.
 onMounted(() =>
   registerOutsideClosable(instanceId, () => {
     // Idempotent: an already-closed bubble must not emit another close.
@@ -116,7 +159,27 @@ type PopoverOffset = number | number[] | { x?: number; y?: number };
 export interface SnPopoverMenuItem {
   /** Row label. */
   content?: string;
-  /** `sn-icon` registry name, or an image URL. */
+  /**
+   * Row glyph as inline SVG data (additive, AUI-OPT-07). Highest precedence —
+   * pass a built-in set object and no registration step is needed.
+   */
+  iconData?: IconData;
+  /**
+   * Row glyph as an image address (additive, AUI-OPT-07), rendered as
+   * `<image>`. Beats `icon` / `iconClass`, loses to `iconData`.
+   */
+  iconUrl?: string;
+  /**
+   * Row glyph as a name (additive, AUI-OPT-07), resolved through SnIcon:
+   * registry (`registerSnIcons`) → built-in catalogue → `prefix:rest`
+   * provider. Beats `iconClass`, loses to the two sources above.
+   */
+  icon?: string;
+  /**
+   * wd-parity legacy glyph field: an SnIcon registry name, or an image address
+   * when the value looks like one (`http` / `data` / `//` / `/` / `./`).
+   * Lowest precedence of the four glyph sources.
+   */
   iconClass?: string;
   /** Disable the row — taps are ignored. */
   disabled?: boolean;
@@ -124,6 +187,14 @@ export interface SnPopoverMenuItem {
 
 /** Fade-out leg length in ms (the leave leg keeps the node mounted). */
 const ANIMATION_DURATION = 150;
+
+/**
+ * Menu / close glyph scale. Published as component variables on the bubble so
+ * a consumer can resize every glyph through `custom-style` (wd
+ * `--wot-popover-menu-icon-size` / `--wot-popover-close-icon-size` parity).
+ */
+const MENU_ICON_SIZE = 'var(--sn-popover-menu-icon-size)';
+const CLOSE_ICON_SIZE = 'var(--sn-popover-close-icon-size)';
 
 const props = withDefaults(
   defineProps<{
@@ -143,6 +214,12 @@ const props = withDefaults(
     disabled?: boolean;
     /** Render a close button inside the bubble. */
     showClose?: boolean;
+    /**
+     * Close the bubble when the user taps outside it (additive, AUI-OPT-07):
+     * a transparent full-viewport mask captures the outside tap. Pass `false`
+     * to drop the mask and rely on the page-root `closeOutside` channel only.
+     */
+    closeOnClickOutside?: boolean;
     /** Extra class on the root node. */
     customClass?: string;
     /** Custom inline style for the root node. */
@@ -166,6 +243,7 @@ const props = withDefaults(
     visibleArrow: true,
     disabled: false,
     showClose: false,
+    closeOnClickOutside: true,
     customClass: '',
     customStyle: '',
     customArrow: '',
@@ -262,10 +340,14 @@ function open(): void {
   if (!props.modelValue) void enter();
 }
 
-/** Hide the bubble and notify the consumer. */
+/** Hide the bubble and notify the consumer. Idempotent (outside-close contract). */
 function close(): void {
+  // Idempotent: a second close gesture (the mask plus the page-root queue, a
+  // close button while the fade-out leg runs) must not replay the event pair.
+  // A bubble that is neither shown nor mounted is already fully closed.
+  const wasUp = props.modelValue || isShown.value || isMounted.value;
   emit('update:modelValue', false);
-  if (props.modelValue) leave();
+  if (wasUp) leave();
 }
 
 /** Compatibility no-op — see the header note (CSS-driven placement). */
@@ -277,7 +359,10 @@ defineExpose({ open, close, updatePosition });
 
 function onTriggerTap(): void {
   if (props.disabled) return;
-  if (props.modelValue) close();
+  // Toggle on the actual shown state, not `props.modelValue`: an uncontrolled
+  // bubble (consumer ignoring the v-model event) must still close on the
+  // second trigger tap.
+  if (isShown.value) close();
   else open();
 }
 
@@ -308,16 +393,30 @@ const menuItems = computed<SnPopoverMenuItem[]>(() =>
 /** Plain text body for `normal` mode. */
 const normalText = computed(() => (typeof props.content === 'string' ? props.content : ''));
 
-/** Looks like an image source rather than a registry icon name. */
+/** Looks like an image source rather than an icon name. */
 function isImageSource(value: string): boolean {
   return /^(https?:|data:|\/\/|\/|\.{1,2}\/)/.test(value);
 }
 
-/** Registry icon data for a menu row, or `null` when it is an image URL. */
-function resolveRowIcon(icon: string | undefined): IconData | null {
-  if (!icon || isImageSource(icon)) return null;
-  const data = resolveIconByName(icon);
-  return data ? markRaw(data) : null;
+/** Which glyph source a `menu` row uses (precedence: see the header). */
+function rowIconSource(item: SnPopoverMenuItem): 'data' | 'url' | 'name' | 'none' {
+  if (item.iconData !== undefined) return 'data';
+  if (item.iconUrl !== undefined && item.iconUrl !== '') return 'url';
+  if (item.icon !== undefined && item.icon !== '') return 'name';
+  const legacy = item.iconClass;
+  if (legacy === undefined || legacy === '') return 'none';
+  return isImageSource(legacy) ? 'url' : 'name';
+}
+
+/** Image address of a `url` row — `iconUrl`, or the URL-shaped legacy field. */
+function rowIconUrl(item: SnPopoverMenuItem): string {
+  if (item.iconUrl !== undefined && item.iconUrl !== '') return item.iconUrl;
+  return item.iconClass ?? '';
+}
+
+/** Glyph name of a `name` row — `icon`, or the legacy field's name form. */
+function rowIconName(item: SnPopoverMenuItem): string {
+  return item.icon !== undefined && item.icon !== '' ? item.icon : (item.iconClass ?? '');
 }
 
 const rootClass = computed(() => [
@@ -354,6 +453,18 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
       <slot />
     </view>
 
+    <!--
+      Outside-tap catcher (see the header): a transparent full-viewport mask
+      under the bubble. `@tap.stop` → catchtap on miniprogram, so the outside
+      tap closes the bubble and never reaches the page behind.
+    -->
+    <view
+      v-if="closeOnClickOutside && isShown"
+      class="sn-popover__mask"
+      aria-hidden="true"
+      @tap.stop="close"
+    />
+
     <view v-if="isMounted" :class="popClass" role="dialog" @tap.stop>
       <view v-if="visibleArrow" :class="arrowClass" aria-hidden="true" />
 
@@ -368,15 +479,26 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
             :aria-disabled="item.disabled ? 'true' : 'false'"
             @tap="onMenuTap(item, index)"
           >
-            <image
-              v-if="item.iconClass && isImageSource(item.iconClass)"
+            <!-- Row glyph precedence: inline data > image address > name. -->
+            <SnIcon
+              v-if="rowIconSource(item) === 'data'"
               class="sn-popover__menu-icon"
-              :src="item.iconClass"
-              mode="aspectFit"
+              :icon="item.iconData"
+              :size="MENU_ICON_SIZE"
             />
-            <view v-else-if="resolveRowIcon(item.iconClass)" class="sn-popover__menu-icon">
-              <SnIcon :icon="resolveRowIcon(item.iconClass)!" :size="32" />
-            </view>
+            <image
+              v-else-if="rowIconSource(item) === 'url'"
+              class="sn-popover__menu-icon"
+              :src="rowIconUrl(item)"
+              mode="aspectFit"
+              aria-hidden="true"
+            />
+            <SnIcon
+              v-else-if="rowIconSource(item) === 'name'"
+              class="sn-popover__menu-icon"
+              :icon="rowIconName(item)"
+              :size="MENU_ICON_SIZE"
+            />
             <text class="sn-popover__menu-text">{{ item.content }}</text>
           </view>
         </slot>
@@ -395,7 +517,7 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
         aria-label="close"
         @tap="close"
       >
-        <SnIcon :icon="XIcon" :size="24" />
+        <SnIcon :icon="XIcon" :size="CLOSE_ICON_SIZE" />
       </view>
     </view>
   </view>
@@ -412,10 +534,29 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   /* Bubble palette (see header). Inline `custom-style` beats these defaults. */
   --sn-popover-bg: var(--sn-mp-color-background-elevated);
   --sn-popover-color: var(--sn-mp-color-text-primary);
+  /* Glyph scale (see header): tier tokens, overridable via `custom-style`. */
+  --sn-popover-menu-icon-size: var(--sn-mp-icon-size-medium);
+  --sn-popover-close-icon-size: var(--sn-mp-icon-size-small);
 }
 
 .sn-popover__trigger {
   display: block;
+}
+
+/* ── Outside-tap mask ──────────────────────────────────────────────────── */
+
+/* Transparent full-viewport tap catcher under the bubble (z-index 499 < the
+ * pop's 500). An outside tap closes the bubble and never reaches the page
+ * behind (`@tap.stop` → catchtap on miniprogram). Deliberately transparent:
+ * a popover is a pointer surface, not a modal, so the page must not dim. See
+ * the header for the two-bubble switching trade-off. */
+.sn-popover__mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 499;
 }
 
 /* ── Bubble ────────────────────────────────────────────────────────────── */
@@ -430,6 +571,10 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
    * the trigger-sized root and `left: 50%` leaves only half of it available.
    * `max-content` grows past that cap; `max-width` still bounds long text. */
   width: max-content;
+  /* Auto height (AUI-OPT-07): the bubble grows with its content and never
+   * clips it — labels wrap and glyph boxes follow their tokens (no fixed
+   * square disagrees with the icon scale). */
+  height: auto;
   min-width: 160rpx;
   /* Never wider than the viewport: the bubble is centered on the trigger,
    * so an unclamped width overflows the screen near either edge. */
@@ -465,8 +610,9 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
+  flex: 0 0 auto;
+  width: var(--sn-popover-close-icon-size);
+  height: var(--sn-popover-close-icon-size);
   margin: var(--sn-mp-spacing-2);
   color: var(--sn-mp-color-text-secondary);
 }
@@ -497,18 +643,26 @@ const arrowClass = computed(() => ['sn-popover__arrow', props.customArrow]);
   color: var(--sn-mp-color-text-disabled);
 }
 
+/* Glyph boxes follow `--sn-popover-menu-icon-size` instead of a fixed square,
+ * so a bigger glyph or a longer label grows the bubble instead of overflowing
+ * it (auto height, AUI-OPT-07). */
 .sn-popover__menu-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32rpx;
-  height: 32rpx;
+  flex: 0 0 auto;
+  width: var(--sn-popover-menu-icon-size);
+  height: var(--sn-popover-menu-icon-size);
   color: var(--sn-mp-color-text-secondary);
 }
 
 .sn-popover__menu-text {
   display: block;
-  white-space: nowrap;
+  /* Long labels wrap inside the bubble's max-width instead of forcing one
+   * line and spilling out of the pop: flex + min-width let the text shrink
+   * below its max-content width. */
+  flex: 1;
+  min-width: 0;
 }
 
 /* ── Arrow ─────────────────────────────────────────────────────────────── */

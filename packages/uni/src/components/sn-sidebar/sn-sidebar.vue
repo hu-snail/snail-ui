@@ -16,16 +16,39 @@
  * (`sn-sidebar-item`) read the selection through `provide`/`inject`
  * (`sn-sidebar-types.ts`).
  *
+ * ## Scroll linkage (additive — AUI-OPT-08, AGENTS.md §112.3a)
+ *
+ * `scroll-spy` makes the highlight follow the content area instead of the
+ * finger: the host binds `scroll-top` from its own `scroll-view` `@scroll` (or
+ * the page's `onPageScroll`), each `sn-sidebar-item` declares the content
+ * section it belongs to through `anchor`, and the container measures those
+ * sections with `anchor-selector` to resolve which entry is on screen. The
+ * position travels in as a prop rather than through an internal listener —
+ * the sidebar does not own the scroll container and a miniprogram cannot read
+ * `window.scrollY`. Algorithm and measurement live in `sn-sidebar-scroll.ts`.
+ *
+ * Scroll-driven switches bypass `before-change`, which guards user taps only:
+ * the position of the content is the source of truth, so a veto would desync
+ * the highlight from what the reader sees. `refresh()` re-measures after the
+ * content changes.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
  *   - 右侧内容面板 — 由使用方按 `change` 自行切换
+ *   - 滚动容器 — 由宿主提供 `scroll-top` / `onPageScroll`
  *   - 横向分段器 — 用 sn-segmented
  *   - 顶部 / 底部导航 — 用 sn-navbar / sn-tabbar
  */
 
-import { computed, provide, ref, toRef, watch } from 'vue';
-import { SN_SIDEBAR_KEY, type SnSidebarValue } from './sn-sidebar-types';
+import { computed, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue';
+import {
+  measureSectionOffsets,
+  resolveActiveSection,
+  type SnSidebarAnchorRef,
+  type SnSidebarSectionOffset,
+} from './sn-sidebar-scroll';
+import { SN_SIDEBAR_KEY, type SnSidebarAnchorEntry, type SnSidebarValue } from './sn-sidebar-types';
 
 defineOptions({ name: 'SnSidebar' });
 
@@ -41,12 +64,36 @@ const props = withDefaults(
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── additive (AUI-OPT-08, AGENTS.md §112.3a) ───────────────────────── */
+
+    /**
+     * 打开右侧内容区滚动联动（scroll-spy）：`scrollTop` 变化时自动切换高亮。
+     * 需要 item 声明 `anchor` 且 `anchorSelector` 能匹配到内容区块。
+     */
+    scrollSpy?: boolean;
+    /**
+     * 内容区滚动距离（px），由宿主的 `scroll-view` `@scroll` 或页面
+     * `onPageScroll` 上报。`scrollSpy` 打开时作为联动输入。
+     */
+    scrollTop?: number;
+    /** 内容区块的 CSS 选择器，每个区块的 `id` 需与 item 的 `anchor` 一致。 */
+    anchorSelector?: string;
+    /**
+     * 激活判定的额外偏移（px），例如顶部吸顶头部的高度：区块顶部进入该偏移
+     * 范围即视为激活。
+     */
+    scrollThreshold?: number;
   }>(),
   {
     modelValue: 0,
     beforeChange: undefined,
     customClass: '',
     customStyle: '',
+    scrollSpy: false,
+    scrollTop: 0,
+    anchorSelector: '',
+    scrollThreshold: 0,
   },
 );
 
@@ -93,16 +140,104 @@ async function select(value: SnSidebarValue, label: string): Promise<void> {
   emit('change', { value, label });
 }
 
+/* ── Scroll linkage (additive — AUI-OPT-08) ─────────────────────────────── */
+
+/** Items that declared an `anchor`, in registration (mount) order. */
+const anchorEntries = ref<SnSidebarAnchorEntry[]>([]);
+
+/** Section offsets of the last successful measurement. */
+const sectionOffsets = ref<SnSidebarSectionOffset[]>([]);
+
+function registerAnchor(entry: SnSidebarAnchorEntry): void {
+  if (anchorEntries.value.some((registered) => registered.uid === entry.uid)) return;
+  anchorEntries.value = [...anchorEntries.value, entry];
+}
+
+function unregisterAnchor(uid: number): void {
+  anchorEntries.value = anchorEntries.value.filter((registered) => registered.uid !== uid);
+}
+
+/** Only items that named a section participate. */
+function anchorRefs(): SnSidebarAnchorRef[] {
+  return anchorEntries.value.flatMap((entry) => {
+    const anchor = entry.getAnchor();
+    return anchor === '' ? [] : [{ value: entry.getValue(), anchor }];
+  });
+}
+
+/** Re-measure the content sections; call after the linked content changes. */
+function refresh(): void {
+  if (!props.scrollSpy) return;
+  measureSectionOffsets(props.anchorSelector, anchorRefs(), (offsets) => {
+    sectionOffsets.value = offsets;
+    // The host may already be scrolled when anchors land.
+    syncScroll(props.scrollTop);
+  });
+}
+
+/**
+ * Follow the content position. Deliberately not routed through `select()`:
+ * `beforeChange` guards user taps, and a veto here would leave the highlight
+ * out of step with the visible section.
+ */
+function syncScroll(top: number): void {
+  if (!props.scrollSpy) return;
+  const next = resolveActiveSection(sectionOffsets.value, top, props.scrollThreshold);
+  if (next === undefined || next === innerValue.value) return;
+  const entry = anchorEntries.value.find((candidate) => candidate.getValue() === next);
+  innerValue.value = next;
+  emit('update:modelValue', next);
+  emit('change', { value: next, label: entry?.getLabel() ?? '' });
+}
+
+watch(
+  () => props.scrollTop,
+  (top) => {
+    syncScroll(top);
+  },
+);
+
+/* Re-measure when linkage turns on, the selector changes, or the anchor set
+ * moves — items added / removed, or an item's `anchor` renamed. */
+watch(
+  () => {
+    const anchors = anchorEntries.value.map((entry) => entry.getAnchor());
+    return [
+      props.scrollSpy,
+      props.anchorSelector,
+      anchorEntries.value.length,
+      anchors.join('\u0000'),
+    ] as const;
+  },
+  () => {
+    if (props.scrollSpy) refresh();
+  },
+  { flush: 'post' },
+);
+
+onMounted(() => {
+  if (props.scrollSpy) refresh();
+});
+
+/* Both watchers and the measurement are one-shot reads — no listener, timer or
+ * observer is created, so only the registry needs releasing (§41). */
+onBeforeUnmount(() => {
+  anchorEntries.value = [];
+  sectionOffsets.value = [];
+});
+
 provide(SN_SIDEBAR_KEY, {
   activeValue,
   isActive,
   select: (value: SnSidebarValue, label: string) => {
     void select(value, label);
   },
+  registerAnchor,
+  unregisterAnchor,
 });
 
 /** Public imperative API — host pages can drive the sidebar from code (§14). */
-defineExpose({ select });
+defineExpose({ select, refresh });
 
 const rootClass = computed(() => ['sn-sidebar', props.customClass]);
 </script>

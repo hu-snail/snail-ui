@@ -2,70 +2,102 @@
 
 `sn-popover` 是 `@snui/uni`（移动端 / 小程序 / H5）的气泡卡片：一个触发器加一个气泡，支持 `normal`（纯文本 / 自定义内容）与 `menu`（可点选项列表）两种模式。基于 easycom 自动注册（`components/sn-popover/sn-popover.vue` → `<sn-popover>`），样式几何值走 `rpx`。
 
-> **与 wot-ui 的差异**
->
-> - 小程序没有 `hover`，触发器固定用**点击**切换，因此不声明 `trigger` 属性。
-> - 点击气泡外部关闭遵循 wot-ui 的 `useQueue` 方案：页面根节点绑定 `@tap="closeOutside"`，点任意空白处关闭所有弹窗（tooltip / popover / drop-menu / toast / swipe-action / fab）；触发器与气泡已 `@tap.stop`，点另一个触发器可一步切换。组件自身不再渲染遮罩。
-> - `root-portal` 已声明但**未实现**（小程序没有 portal 宿主）。
-> - `updatePosition()` 是兼容占位：气泡位置由 CSS 决定。
-> - `iconClass` 取 `sn-icon` 注册表名或图片地址，不是 CSS 类名（uni 端没有字体图标层）。
+## 何时使用
 
-## 基础用法
+- 需要在锚点元素旁展示一段补充说明，且不希望打断页面流程
+- 需要一个「更多操作」菜单（编辑 / 分享 / 删除等），点选后立即执行
+- 提示内容长度不固定，气泡应随内容自适应高度而不是裁切
+- 不适用：纯文本轻提示（用 [`sn-tooltip`](/components/uni/tooltip)）；页面级下拉筛选（用 `sn-drop-menu`）；需要遮罩阻断的模态内容（用 `sn-dialog`）
 
-`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。点击气泡外部（页面根节点 `closeOutside`）或再点一次触发器收起。
+## 代码演示
 
-<Demo name="popover-mp-basic" description="normal 模式 + 关闭按钮，点击触发器切换，点击外部自动关闭。" />
+### 基础用法
 
-## 菜单模式
+`normal` 模式下 `content` 是字符串；`showClose` 在气泡内加关闭按钮。点击气泡外部任意位置（透明遮罩接管外部点击）或再点一次触发器即可收起。
 
-`mode="menu"` 时 `content` 是选项数组，点中某项触发 `menuclick` 并回报 `{ item, index }`。`disabled` 的选项不响应点击。
+<Demo name="popover-mp-basic" description="normal 模式 + 关闭按钮；触发器切换，点击外部关闭。" />
 
-<Demo name="popover-mp-menu" description="菜单模式，图标来自 sn-icon 注册表，含一个禁用项。" />
+### 自适应高度
 
-## 位置 / 箭头 / 禁用 / 配色
+气泡高度由内容决定：长文案在气泡最大宽度内换行、气泡向下增长，内容不会被裁切；菜单项的长文案同样换行。行内图标与关闭图标都走尺寸 token（`--sn-popover-menu-icon-size` / `--sn-popover-close-icon-size`），图标放大时行高随内容增长，不溢出。
+
+<Demo name="popover-mp-height" description="长文案 normal 气泡 + 长菜单项 + 放大图标（44rpx），气泡高度随内容自适应。" />
+
+### 菜单模式与图标配置
+
+`mode="menu"` 时 `content` 是选项数组，点中某项触发 `menuclick` 并回报 `{ item, index }`；`disabled` 的选项不响应点击。
+
+菜单项图标支持三种来源，优先级从高到低：
+
+1. `iconData` — 内联 `IconData` 对象（`{ viewBox, paths }`），无需注册，可直接传内置图标集对象
+2. `iconUrl` — 图片地址，渲染为 `<image>`（`http` / `data:` / `//` / `/` / `./` 开头）
+3. `icon` — 图标名称，走 SnIcon 解析链：注册表（`registerSnIcons`）→ 内置目录 → `prefix:rest` provider
+
+旧字段 `iconClass` 仍兼容：值像图片地址时按图片渲染，否则按名称解析（优先级最低）。
+
+<Demo name="popover-mp-menu" description="菜单模式，四种图标写法同屏：iconData / icon / iconUrl / iconClass（兼容字段），含一个禁用项。" />
+
+### 弹出位置 / 箭头 / 禁用 / 配色
 
 - `placement` 支持 `top` / `bottom` / `left` / `right` 四组、每组 `-start` / `-end` 对齐变体（共 12 档）
 - `visibleArrow=false` 去掉箭头
 - `offset` 支持 `number`、`[x, y]`、`{ x, y }`，单位是设计稿 px
 - `disabled` 让触发器点击失效
-
 - 气泡配色通过 `--sn-popover-bg` / `--sn-popover-color` 覆盖，默认白底深字（见「主题变量」）
 
-<Demo name="popover-mp-placement" description="12 个方位全部展示（wot-ui demo 网格布局），一次只开一个。" />
+<Demo name="popover-mp-placement" description="12 个方位全部展示（网格布局），一次只开一个。" />
 
-## 图片图标 / content 插槽 / 节点类名
+### 兼容图标字段 / content 插槽 / 节点类名
 
-- 菜单项的 `iconClass` 既可是 `sn-icon` 注册名，也可直接是图片地址（`http` / `//` / `/` / `./` 开头时按 `<image>` 渲染）
+- 旧字段 `iconClass` 既可是图标名称，也可直接是图片地址（`http` / `//` / `/` / `./` 开头时按 `<image>` 渲染）
 - `content` 插槽完全替换气泡正文，normal / menu 两种模式都可用
 - `custom-arrow` / `custom-pop` 分别给箭头节点与气泡节点追加类名
 - `offset` 与 `custom-style` 同时作用在根节点
 
-<Demo name="popover-mp-slot" description="菜单模式的图片图标；content 插槽自定义正文；custom-arrow / custom-pop 追加类名；offset 与 custom-style。" />
+<Demo name="popover-mp-slot" description="菜单模式旧字段 iconClass；content 插槽自定义正文；custom-arrow / custom-pop 追加类名；offset 与 custom-style。" />
+
+### 关闭行为
+
+- 默认 `closeOnClickOutside=true`：气泡打开时渲染一层**透明全屏遮罩**，点击气泡外任意位置关闭，且该次点击不会穿透到页面
+- 遮罩透明不压暗页面——气泡是轻量指针层，不是模态
+- 遮罩盖住相邻触发器，因此两个气泡之间切换是「先关后开」两次点击；需要一步切换时传 `closeOnClickOutside="false"`
+- 关闭外部点击后仍可保留页面根节点通道：页面根绑定 `@tap="closeOutside"`（`useQueue`），一次点击关闭所有已注册浮层
+
+```vue
+<sn-popover v-model="open" :close-on-click-outside="false" content="一步切换模式">
+  <sn-button>更多</sn-button>
+</sn-popover>
+```
+
 ## Props
 
-| 属性           | 类型                               | 默认值     | 说明                                         |
-| -------------- | ---------------------------------- | ---------- | -------------------------------------------- |
-| `modelValue`   | `boolean`                          | `false`    | 是否显示（`v-model`）                        |
-| `content`      | `string \| SnPopoverMenuItem[]`    | `''`       | `normal` 模式为字符串，`menu` 模式为选项数组 |
-| `mode`         | `'normal' \| 'menu'`               | `'normal'` | 显示模式                                     |
-| `placement`    | 12 档方向联合类型                  | `'bottom'` | 弹出位置                                     |
-| `offset`       | `number \| number[] \| { x?, y? }` | `0`        | 偏移量（设计稿 px）                          |
-| `visibleArrow` | `boolean`                          | `true`     | 是否显示箭头                                 |
-| `disabled`     | `boolean`                          | `false`    | 是否禁用                                     |
-| `showClose`    | `boolean`                          | `false`    | 是否显示关闭按钮                             |
-| `customClass`  | `string`                           | `''`       | 根节点自定义类名                             |
-| `customStyle`  | `string`                           | `''`       | 根节点自定义样式                             |
-| `customArrow`  | `string`                           | `''`       | 箭头节点自定义类名                           |
-| `customPop`    | `string`                           | `''`       | 气泡节点自定义类名                           |
-| `rootPortal`   | `boolean`                          | `false`    | **未实现**（小程序无 portal 宿主）           |
+| 属性                  | 类型                               | 默认值     | 说明                                         |
+| --------------------- | ---------------------------------- | ---------- | -------------------------------------------- |
+| `modelValue`          | `boolean`                          | `false`    | 是否显示（`v-model`）                        |
+| `content`             | `string \| SnPopoverMenuItem[]`    | `''`       | `normal` 模式为字符串，`menu` 模式为选项数组 |
+| `mode`                | `'normal' \| 'menu'`               | `'normal'` | 显示模式                                     |
+| `placement`           | 12 档方向联合类型                  | `'bottom'` | 弹出位置                                     |
+| `offset`              | `number \| number[] \| { x?, y? }` | `0`        | 偏移量（设计稿 px）                          |
+| `visibleArrow`        | `boolean`                          | `true`     | 是否显示箭头                                 |
+| `disabled`            | `boolean`                          | `false`    | 是否禁用                                     |
+| `showClose`           | `boolean`                          | `false`    | 是否显示关闭按钮                             |
+| `closeOnClickOutside` | `boolean`                          | `true`     | 点击气泡外部是否关闭（透明遮罩接管外部点击） |
+| `customClass`         | `string`                           | `''`       | 根节点自定义类名                             |
+| `customStyle`         | `string`                           | `''`       | 根节点自定义样式                             |
+| `customArrow`         | `string`                           | `''`       | 箭头节点自定义类名                           |
+| `customPop`           | `string`                           | `''`       | 气泡节点自定义类名                           |
+| `rootPortal`          | `boolean`                          | `false`    | **未实现**（小程序无 portal 宿主）           |
 
 ### SnPopoverMenuItem
 
-| 字段        | 类型      | 说明                           |
-| ----------- | --------- | ------------------------------ |
-| `content`   | `string`  | 选项文案                       |
-| `iconClass` | `string`  | `sn-icon` 注册表名，或图片地址 |
-| `disabled`  | `boolean` | 禁用该项                       |
+| 字段        | 类型       | 说明                                         |
+| ----------- | ---------- | -------------------------------------------- |
+| `content`   | `string`   | 选项文案                                     |
+| `iconData`  | `IconData` | 内联图标数据（优先级最高，无需注册）         |
+| `iconUrl`   | `string`   | 图片地址，渲染为 `<image>`                   |
+| `icon`      | `string`   | 图标名称（注册表 → 内置目录 → provider）     |
+| `iconClass` | `string`   | 兼容字段：图标名称，或图片地址（优先级最低） |
+| `disabled`  | `boolean`  | 禁用该项                                     |
 
 ## Events
 
@@ -94,28 +126,52 @@
 
 ## 主题变量
 
-| 变量                                                            | 用途            |
-| --------------------------------------------------------------- | --------------- |
+| 变量                                                            | 用途                                                                                                     |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | `--sn-popover-bg`                                               | 气泡底色（默认 `--sn-mp-color-background-elevated`，亮色主题即白色；箭头同色；可用 `custom-style` 覆盖） |
 | `--sn-popover-color`                                            | 气泡 / 选项文字色（默认 `--sn-mp-color-text-primary`）                                                   |
-| `--sn-mp-color-text-secondary`                                  | 选项图标        |
-| `--sn-mp-color-text-disabled`                                   | 禁用选项        |
-| `--sn-mp-color-border-subtle`                                   | 气泡与箭头描边  |
-| `--sn-mp-shadow-md`                                             | 气泡阴影        |
-| `--sn-mp-radius-md`                                             | 气泡圆角        |
-| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 内边距与间距    |
-| `--sn-mp-font-size-sm`                                          | 气泡字号        |
+| `--sn-popover-menu-icon-size`                                   | 菜单项图标尺寸（默认 `--sn-mp-icon-size-medium`）                                                        |
+| `--sn-popover-close-icon-size`                                  | 关闭图标尺寸（默认 `--sn-mp-icon-size-small`）                                                           |
+| `--sn-mp-color-text-secondary`                                  | 选项图标                                                                                                 |
+| `--sn-mp-color-text-disabled`                                   | 禁用选项                                                                                                 |
+| `--sn-mp-color-border-subtle`                                   | 气泡与箭头描边                                                                                           |
+| `--sn-mp-shadow-md`                                             | 气泡阴影                                                                                                 |
+| `--sn-mp-radius-md`                                             | 气泡圆角                                                                                                 |
+| `--sn-mp-spacing-2` / `--sn-mp-spacing-3` / `--sn-mp-spacing-4` | 内边距与间距                                                                                             |
+| `--sn-mp-font-size-sm`                                          | 气泡字号                                                                                                 |
 
 ## 无障碍
 
 - 触发器带 `role="button"` + `aria-expanded` + `aria-disabled`
 - 气泡带 `role="dialog"`，箭头 `aria-hidden="true"`
 - `menu` 模式选项带 `role="menuitem"` + `aria-disabled`
+- 外部关闭遮罩带 `aria-hidden="true"`，不参与读屏焦点
 - 交互统一用 `@tap`；移动端无键盘焦点陷阱
 
 ## 暗色模式
 
-气泡底色走 `--sn-popover-bg`（默认 `--sn-mp-color-background-elevated`，亮色主题即白色）、文字走 `--sn-popover-color`（默认 `--sn-mp-color-text-primary`），两个默认 token 都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动适配。需要自定义配色时，用 `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` 覆盖（对齐 wot-ui 的 `--wot-popover-bg` / `--wot-popover-color`），覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
+气泡底色走 `--sn-popover-bg`（默认 `--sn-mp-color-background-elevated`，亮色主题即白色）、文字走 `--sn-popover-color`（默认 `--sn-mp-color-text-primary`），两个默认 token 都在 `@snui/tokens-mp/styles` 的 `.sn-theme-dark` 块里覆盖，因此暗色下自动适配。需要自定义配色时，用 `custom-style="--sn-popover-bg: …; --sn-popover-color: …"` 覆盖，覆盖后请自行保证暗色下的对比度。可用 `<sn-config-provider theme="dark">` 包裹验证。
+
+## AI Patch Boundary
+
+AI 生成 / 修复 Schema 时只能触碰下表 `可写` 的字段；`只读` 字段属于组件契约，改动需走人工 Gate。
+
+| 字段                                                        | 可写性 | 约束                                                                                    |
+| ----------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------- |
+| `modelValue`                                                | 可写   | 布尔；受控组件需同时回写 `update:modelValue`                                            |
+| `content`（normal）                                         | 可写   | 字符串；过长文案由组件换行，勿手动插入换行符                                            |
+| `content`（menu）                                           | 可写   | 数组；每项仅允许 `content` / `iconData` / `iconUrl` / `icon` / `iconClass` / `disabled` |
+| `mode`                                                      | 可写   | `normal` \| `menu`，与 `content` 形态必须匹配                                           |
+| `placement`                                                 | 可写   | 12 档枚举；越界值渲染前必须校验                                                         |
+| `offset`                                                    | 可写   | `number` / `[x, y]` / `{ x, y }`，单位设计稿 px                                         |
+| `visibleArrow` / `disabled`                                 | 可写   | 布尔                                                                                    |
+| `showClose`                                                 | 可写   | 布尔                                                                                    |
+| `closeOnClickOutside`                                       | 可写   | 布尔；仅在需要「一步切换气泡」时设为 `false`                                            |
+| `customClass` / `customStyle` / `customArrow` / `customPop` | 可写   | 类名 / 内联样式字符串；不得注入非 token 硬编码颜色                                      |
+| `rootPortal`                                                | 只读   | 声明但未实现，写入无效                                                                  |
+| 事件 `open` / `close` / `change` / `menuclick`              | 只读   | 事件名与 payload 结构固定                                                               |
+| 方法 `open()` / `close()` / `updatePosition()`              | 只读   | 签名固定                                                                                |
+| `--sn-popover-*` 主题变量                                   | 可写   | 只能覆盖，不得新增未登记变量名                                                          |
 
 ## 相关
 

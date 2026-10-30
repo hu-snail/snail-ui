@@ -18,20 +18,42 @@
  * rest are `wait`. That keeps a plain `<sn-step title="…" />` list working
  * with nothing but `:active`.
  *
+ * ## Additive surface (AUI-OPT-09, AGENTS.md §112.3a — wd-step has none)
+ *
+ *   - `node` slot — replaces the whole indicator node, so a host can draw its
+ *     own badge / avatar / shape where the step number sits. The connector
+ *     line is container furniture and stays.
+ *   - `content` slot — replaces the title + description region in one piece;
+ *     the 1:1 `title` / `description` slots still replace one part each.
+ *   - icon sources, one precedence chain (sn-cell / sn-collapse's order):
+ *
+ *       `iconData` (IconData object) > `iconUrl` (image → `<image>`)
+ *         > `icon` (name → registry, then the built-in catalogue)
+ *
+ *     An unresolvable name falls through to the built-in status glyphs and the
+ *     step number, so the indicator is never blank (AGENTS.md §85 — the
+ *     fallback is explicit and predictable).
+ *   - `iconSize` — named tiers map to `--sn-mp-icon-size-*`; the family default
+ *     is `--sn-mp-icon-size-medium`, shared by every glyph in the node.
+ *   - `iconColor` — inline colour for every glyph in the node; pass a
+ *     `var(--sn-mp-color-*)` token (§112.5). Defaults to `currentColor`, which
+ *     is what lets finished / error glyphs take their state colours.
+ *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
  * Not responsible for:
  *   - 激活下标本身 — 由 sn-steps 持有
+ *   - 连接线样式 — 由 sn-steps 的 `connector` 统一持有
  *   - 步骤间流转 — 由宿主驱动
  */
 
 import { computed, inject, markRaw, onBeforeUnmount, onMounted, ref } from 'vue';
 import SnIcon from '../sn-icon/sn-icon.vue';
 import type { IconData } from '../sn-icon/sn-icon.vue';
-import { resolveIconByName } from '../sn-icon/sn-icon-registry';
+import { resolveSnIconStringSync } from '../sn-icon/sn-icon-providers';
 import { Check, X } from '../sn-icon/sn-icon-set';
 import { nextUid } from '../../utils/uid';
-import { SN_STEPS_KEY, type SnStepStatus } from './sn-steps-types';
+import { SN_STEPS_KEY, resolveSnStepIconSize, type SnStepStatus } from './sn-steps-types';
 
 defineOptions({ name: 'SnStep' });
 
@@ -43,7 +65,7 @@ const props = withDefaults(
     title?: string;
     /** 步骤描述。 */
     description?: string;
-    /** 步骤图标名（经 `registerSnIcons()` 注册）。 */
+    /** 步骤图标名（registry → 内置目录依次解析，未命中回退内置状态图标 / 序号）。 */
     icon?: string;
     /** 步骤状态：finished / process / error / wait（不传时由 active 推导）。 */
     status?: SnStepStatus | undefined;
@@ -51,6 +73,17 @@ const props = withDefaults(
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── additive (AUI-OPT-09, AGENTS.md §112.3a) ───────────────────────── */
+
+    /** 图标数据对象（内置图标集 / 自定义 IconData），优先级最高。 */
+    iconData?: IconData | undefined;
+    /** 图标图片地址：渲染为 `<image>`，优先级低于 `iconData`、高于 `icon`。 */
+    iconUrl?: string;
+    /** 图标尺寸：数字按 px；档位名（tiny/small/medium/large/xlarge）映射 `--sn-mp-icon-size-*`。 */
+    iconSize?: string | number | undefined;
+    /** 图标颜色；请传 `var(--sn-mp-color-*)` token，默认 `currentColor`（跟随节点状态色）。 */
+    iconColor?: string;
   }>(),
   {
     title: '',
@@ -59,16 +92,22 @@ const props = withDefaults(
     status: undefined,
     customClass: '',
     customStyle: '',
+    iconUrl: '',
+    iconColor: '',
   },
 );
 
 defineSlots<{
-  /** 自定义步骤图标。 */
+  /** 自定义步骤图标，渲染在默认节点内。 */
   icon?(): unknown;
   /** 自定义步骤标题。 */
   title?(): unknown;
   /** 自定义步骤描述。 */
   description?(): unknown;
+  /** additive：完全替换默认节点（覆盖序号 / 状态图标）。 */
+  node?(): unknown;
+  /** additive：完全替换节点内容区（标题 + 描述）。 */
+  content?(): unknown;
 }>();
 
 const steps = inject(SN_STEPS_KEY, null);
@@ -96,11 +135,45 @@ const isLast = computed(() => {
 const isVertical = computed(() => steps?.vertical.value ?? false);
 const isDot = computed(() => steps?.dot.value ?? false);
 
-/** Registry-resolved icon data for the `icon` prop (null when unset/unknown). */
-const iconData = computed<IconData | null>(() => {
-  if (!props.icon) return null;
-  const resolved = resolveIconByName(props.icon);
-  return resolved ? markRaw(resolved) : null;
+/** `icon` name resolved through registry → built-in catalogue (sync only). */
+const resolvedNameIcon = computed<IconData | undefined>(() => {
+  if (props.icon === '') return undefined;
+  const resolved = resolveSnIconStringSync(props.icon);
+  return resolved === null ? undefined : markRaw(resolved);
+});
+
+/** Which icon source renders — data object > image URL > name (additive). */
+const iconSource = computed<'data' | 'url' | 'name' | 'none'>(() => {
+  if (props.iconData !== undefined) return 'data';
+  if (props.iconUrl !== '') return 'url';
+  if (resolvedNameIcon.value !== undefined) return 'name';
+  return 'none';
+});
+
+/** One glyph scale per node: own `iconSize` → family default tier token. */
+const resolvedIconSize = computed<string | number>(() => resolveSnStepIconSize(props.iconSize));
+
+/** `currentColor` keeps the state colours; a token overrides them (§112.5). */
+const resolvedIconColor = computed(() => props.iconColor || 'currentColor');
+
+/** Size box for the image source, mirroring `resolvedIconSize`. */
+const iconBoxStyle = computed(() => {
+  const size = resolvedIconSize.value;
+  const len = typeof size === 'number' ? `${size}px` : size;
+  return `width: ${len}; height: ${len};`;
+});
+
+/**
+ * Connector style owned by the container, applied as an inline `border-style`.
+ *
+ * The line is a real element drawn with borders (sn-divider's pattern), so
+ * dashed / dotted stay pseudo-element-free on miniprogram / uvue (AGENTS.md
+ * §116). `solid` needs no inline style — it is the base rule.
+ */
+const connectorStyle = computed<string | undefined>(() => {
+  const connector = steps?.connector.value ?? 'solid';
+  if (connector === 'solid') return undefined;
+  return `border-top-style: ${connector}; border-left-style: ${connector};`;
 });
 
 /** Gap between the indicator and the next one — `space` overrides the default. */
@@ -138,32 +211,71 @@ const rootClass = computed(() => [
     :aria-current="resolvedStatus === 'process' ? 'step' : undefined"
   >
     <view class="sn-step__header">
-      <view class="sn-step__indicator">
-        <slot name="icon">
-          <!-- A registered `icon` name wins; unregistered names fall through to
-               the builtin status glyphs so the indicator is never blank. -->
-          <SnIcon v-if="iconData" :icon="iconData" :size="24" />
-          <SnIcon v-else-if="resolvedStatus === 'finished'" :icon="Check" :size="24" />
-          <SnIcon v-else-if="resolvedStatus === 'error'" :icon="X" :size="24" />
-          <text
-            v-else-if="resolvedStatus === 'wait' || resolvedStatus === 'process'"
-            class="sn-step__number"
-          >
-            {{ stepIndex + 1 }}
-          </text>
-        </slot>
-      </view>
-      <view v-if="!isLast && !isDot" class="sn-step__line" aria-hidden="true" />
+      <!-- additive `node` slot: a custom node replaces the default indicator
+           (number / status glyph) as a whole; the connector line stays. -->
+      <slot name="node">
+        <view class="sn-step__indicator">
+          <slot name="icon">
+            <!-- Icon precedence: IconData object > image URL > resolved name.
+                 An unresolvable name falls through to the builtin glyphs so
+                 the indicator is never blank. -->
+            <SnIcon
+              v-if="iconSource === 'data'"
+              :icon="iconData"
+              :size="resolvedIconSize"
+              :color="resolvedIconColor"
+            />
+            <image
+              v-else-if="iconSource === 'url'"
+              class="sn-step__image"
+              :src="iconUrl"
+              mode="aspectFit"
+              :style="iconBoxStyle"
+              aria-hidden="true"
+            />
+            <SnIcon
+              v-else-if="iconSource === 'name'"
+              :icon="resolvedNameIcon"
+              :size="resolvedIconSize"
+              :color="resolvedIconColor"
+            />
+            <SnIcon
+              v-else-if="resolvedStatus === 'finished'"
+              :icon="Check"
+              :size="resolvedIconSize"
+              :color="resolvedIconColor"
+            />
+            <SnIcon
+              v-else-if="resolvedStatus === 'error'"
+              :icon="X"
+              :size="resolvedIconSize"
+              :color="resolvedIconColor"
+            />
+            <text v-else class="sn-step__number">
+              {{ stepIndex + 1 }}
+            </text>
+          </slot>
+        </view>
+      </slot>
+      <view
+        v-if="!isLast && !isDot"
+        class="sn-step__line"
+        :style="connectorStyle"
+        aria-hidden="true"
+      />
     </view>
 
     <view class="sn-step__content">
-      <view class="sn-step__title-row">
-        <slot name="title">
-          <text class="sn-step__title">{{ title }}</text>
+      <!-- additive `content` slot: replaces title + description in one piece. -->
+      <slot name="content">
+        <view class="sn-step__title-row">
+          <slot name="title">
+            <text class="sn-step__title">{{ title }}</text>
+          </slot>
+        </view>
+        <slot name="description">
+          <text v-if="description" class="sn-step__description">{{ description }}</text>
         </slot>
-      </view>
-      <slot name="description">
-        <text v-if="description" class="sn-step__description">{{ description }}</text>
       </slot>
     </view>
   </view>
@@ -254,25 +366,40 @@ const rootClass = computed(() => [
   line-height: 1;
 }
 
+/* Image icon source (additive): sized by the same tier as the vector glyphs
+ * (the box comes from the inline style, one scale per node). */
+.sn-step__image {
+  display: block;
+}
+
+/**
+ * Connector line — a real element drawn with borders, not a background fill:
+ * the container's `connector` value is applied as an inline `border-style`
+ * (solid / dashed / dotted), which keeps miniprogram / uvue away from
+ * pseudo-elements (AGENTS.md §116). Every border declaration is a longhand so
+ * the uni-x descendant flattening keeps its fallback value when a rule only
+ * applies inside `.sn-step--vertical`.
+ */
 .sn-step__line {
   flex: 1 1 auto;
-  height: 2rpx;
-  background-color: var(--sn-mp-color-border-default);
+  height: 0;
+  border-color: var(--sn-mp-color-border-default);
+  border-top-width: 2rpx;
+  border-top-style: solid;
+  border-left-width: 0;
+  border-left-style: solid;
 }
 
 .sn-step--vertical .sn-step__line {
-  width: 2rpx;
+  width: 0;
   height: 100%;
   min-height: 40rpx;
+  border-top-width: 0;
+  border-left-width: 2rpx;
 }
 
 .sn-step--finished .sn-step__line {
-  background-color: var(--sn-mp-color-action-primary);
-}
-
-.sn-step--dot .sn-step__line {
-  height: 2rpx;
-  background-color: var(--sn-mp-color-border-subtle);
+  border-color: var(--sn-mp-color-action-primary);
 }
 
 .sn-step__content {

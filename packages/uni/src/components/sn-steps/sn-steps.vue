@@ -21,13 +21,16 @@
  *
  * Per AGENTS.md §32 this component handles rendering + interaction only.
  *
+ * Additive surface (AUI-OPT-09, AGENTS.md §112.3a):
+ *   - `connector` — connector line style (solid / dashed / dotted).
+ *
  * Not responsible for:
  *   - 单个步骤的渲染 — 用 sn-step
  *   - 步骤之间的业务流转 — 由宿主按 `active` 驱动
  */
 
 import { computed, provide, ref, toRef } from 'vue';
-import { SN_STEPS_KEY } from './sn-steps-types';
+import { SN_STEPS_KEY, type SnStepConnector } from './sn-steps-types';
 
 defineOptions({ name: 'SnSteps' });
 
@@ -49,6 +52,14 @@ const props = withDefaults(
     customClass?: string;
     /** 根节点自定义样式。 */
     customStyle?: string;
+
+    /* ── additive (AUI-OPT-09, AGENTS.md §112.3a) ───────────────────────── */
+
+    /**
+     * 连接线样式：`solid`（默认）/ `dashed`（虚线）/ `dotted`（点线）。
+     * 用真实元素 + `border-style` 切换，不使用伪元素（AGENTS.md §116）。
+     */
+    connector?: SnStepConnector;
   }>(),
   {
     active: 0,
@@ -58,6 +69,7 @@ const props = withDefaults(
     alignCenter: false,
     customClass: '',
     customStyle: '',
+    connector: 'solid',
   },
 );
 
@@ -87,6 +99,7 @@ provide(SN_STEPS_KEY, {
   dot: toRef(props, 'dot'),
   space: toRef(props, 'space'),
   alignCenter: toRef(props, 'alignCenter'),
+  connector: toRef(props, 'connector'),
   registerStep,
   unregisterStep,
   stepCount,

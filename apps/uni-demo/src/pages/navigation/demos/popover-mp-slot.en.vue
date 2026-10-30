@@ -1,12 +1,13 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover — image icons in menu mode, the `content` slot and
+ * Demo: sn-popover — the legacy `iconClass` field, the `content` slot and
  * `custom-arrow` / `custom-pop`.
  *
  * - with `mode="menu"` the `content` prop is an array of
- *   `{ content, iconClass, disabled }`; `iconClass` is either an `sn-icon` registry
- *   name or an image source (values starting with `http` / `//` / `/` / `./` render
- *   as `<image>`)
+ *   `{ content, iconClass, disabled }`; the legacy `iconClass` field is either an
+ *   icon name (resolved through SnIcon) or an image source (values starting with
+ *   `http` / `//` / `/` / `./` render as `<image>`)
+ * - the newer `iconData` / `iconUrl` / `icon` fields take precedence (see the menu demo)
  * - the `content` slot replaces the bubble body entirely (works in both modes)
  * - `custom-arrow` / `custom-pop` append a class to the arrow node / bubble node
  * - `offset` and `custom-style` both act on the root (`offset` goes through CSS vars)
@@ -17,19 +18,15 @@
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
-import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import { Edit, Star, Trash } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-
-registerSnIcons({ Edit, Star, Trash });
 
 const imageMenuOpen = ref(false);
 const slotOpen = ref(false);
 const picked = ref('—');
 
 const imageMenu = [
-  { content: 'Pin to top', iconClass: 'Star' },
-  { content: 'Edit', iconClass: 'Edit' },
-  { content: 'Delete', iconClass: 'Trash', disabled: true },
+  { content: 'Pin to top', iconClass: 'star' },
+  { content: 'Edit', iconClass: 'square-pen' },
+  { content: 'Delete', iconClass: 'trash-2', disabled: true },
 ];
 
 function onMenuClick(payload: { item: { content?: string } }): void {

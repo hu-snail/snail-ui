@@ -1,27 +1,37 @@
 <script setup lang="ts">
 /**
- * Demo: sn-popover (uni-end) — menu mode with a tappable option list.
+ * Demo: sn-popover (uni-end) — menu mode with the row-icon configuration.
  * Per AUI-DOCS-016: imports the real @snui/uni sn-popover from its SFC source.
+ *
+ * Row glyphs resolve from the three documented sources, highest precedence
+ * first:
+ *   - `iconData` — an inline IconData object, no registration step
+ *   - `iconUrl`  — an image address, rendered as `<image>`
+ *   - `icon`     — a name resolved through SnIcon (built-in catalog here)
+ * The legacy `iconClass` field keeps working (name or image address).
  */
 import { ref } from 'vue';
 import SnButton from '@snui/uni-src/components/sn-button/sn-button.vue';
 import SnPopover from '@snui/uni-src/components/sn-popover/sn-popover.vue';
-import { registerSnIcons } from '@snui/uni-src/components/sn-icon/sn-icon-registry';
-import { Edit, Download, Trash } from '@snui/uni-src/components/sn-icon/sn-icon-set';
-
-registerSnIcons({ Edit, Download, Trash });
+import { Star } from '@snui/uni-src/components/sn-icon/sn-icon-set';
 
 const open = ref(false);
 const picked = ref('—');
 
+/** Image-typed row glyph as an inline SVG data URL — offline-safe for docs. */
+const tagImage =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E";
+
 const menu = [
-  { content: 'Edit', iconClass: 'Edit' },
-  { content: 'Download', iconClass: 'Download' },
-  { content: 'Delete', iconClass: 'Trash', disabled: true },
+  { content: 'Star', iconData: Star },
+  { content: 'Share', icon: 'share' },
+  { content: 'Add tag', iconUrl: tagImage },
+  { content: 'Bookmark', iconClass: 'bookmark' },
+  { content: 'Delete', icon: 'trash-2', disabled: true },
 ];
 
 function onMenuClick(payload: { item: { content?: string } }): void {
-  picked.value = payload.item.content ?? '';
+  picked.value = payload.item.content ?? '—';
   open.value = false;
 }
 </script>
@@ -39,7 +49,11 @@ function onMenuClick(payload: { item: { content?: string } }): void {
       <SnButton type="primary" block>More actions</SnButton>
     </SnPopover>
 
-    <text class="sn-popover-demo__meta">Picked: {{ picked }}</text>
+    <text class="sn-demo__meta">Picked: {{ picked }}</text>
+    <text class="sn-demo__hint">
+      Glyph sources: iconData (inline, no registration) · icon (name) · iconUrl (image) · iconClass
+      (legacy field)
+    </text>
   </view>
 </template>
 
@@ -49,9 +63,13 @@ function onMenuClick(payload: { item: { content?: string } }): void {
   flex-direction: column;
   gap: 16rpx;
 }
-.sn-popover-demo__meta {
+.sn-demo__meta {
   font-size: 24rpx;
-  color: var(--vp-c-text-2);
+  color: var(--sn-mp-color-text-tertiary);
+}
+.sn-demo__hint {
+  font-size: 22rpx;
+  color: var(--sn-mp-color-text-secondary);
 }
 /* Docs-preview only — keep the absolutely-positioned bubble inside the phone. */
 .sn-popover.sn-demo-contained {
